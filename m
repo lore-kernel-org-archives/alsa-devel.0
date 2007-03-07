@@ -1,9 +1,9 @@
-From: "Simon Mall" <wyqlyai@snr-graphics.com>
-Subject: Simple key
-Date: Wed, 07 Mar 2007 01:54:47 +0100
-Message-ID: <1838876847.200703070154474622815@snr-graphics.com>
+From: "Benita Neal" <dopuddingstone@genie.it>
+Subject: so roundabout of procrustean
+Date: Wed, 7 Mar 2007 13:24:40 +0000
+Message-ID: <001001c760bc$6bc095d0$01cda08c@aranza>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_45EEB2CD.746C57E9"
+Content-Type: multipart/mixed; boundary="----------=_45EEBDDD.63B77718"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,12 +14,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------------=_45EEB2CD.746C57E9
+------------=_45EEBDDD.63B77718
 Content-Type: text/plain
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -31,34 +31,29 @@ has been attached to this so you can view it (if it isn't spam) or label
 similar future email.  If you have any questions, see
 the administrator of that system for details.
 
-Content preview:  hey This is PatchWork for all men with small williies W=
-ear
-   it with confidence & see it Grow. SoluitonIsHere [...]=20
+Content preview:  Get it before the RUSH!!! Lookup: NNCPCurrent: $0.019 (=
+UP!
+   58.33%) 5 Day Target price: $0.15Expected: Steadily climb for the top!=
+!!
+  Here comes the REAL BIG ONE!. [...]=20
 
-Content analysis details:   (10.9 points, 5.0 required)
+Content analysis details:   (8.2 points, 5.0 required)
 
  pts rule name              description
 ---- ---------------------- ---------------------------------------------=
 -----
- 0.7 DATE_IN_PAST_06_12     Date: is 6 to 12 hours before Received: date
- 1.3 RCVD_NUMERIC_HELO      Received: contains an IP address used for HEL=
-O
- 0.0 UNPARSEABLE_RELAY      Informational: message has unparseable relay =
-lines
+ 2.9 HELO_DYNAMIC_SPLIT_IP  Relay HELO'd using suspicious hostname (Split
+                            IP)
  0.0 HTML_MESSAGE           BODY: HTML included in message
- 0.1 MPART_ALT_DIFF         BODY: HTML and text parts are different
- 0.0 MIME_HTML_ONLY         BODY: Message only has text/html MIME parts
- 3.1 RCVD_IN_XBL            RBL: Received via a relay in Spamhaus XBL
-                            [88.87.14.66 listed in sbl-xbl.spamhaus.org]
- 1.2 RCVD_IN_SORBS_WEB      RBL: SORBS: sender is a abuseable web server
-                            [88.87.14.66 listed in dnsbl.sorbs.net]
- 1.1 URIBL_SBL              Contains an URL listed in the SBL blocklist
-                            [URIs: skiofler.com]
- 3.4 URIBL_JP_SURBL         Contains an URL listed in the JP SURBL blockl=
-ist
-                            [URIs: skiofler.com]
- 0.0 MIME_HTML_ONLY_MULTI   Multipart message only has text/html MIME par=
-ts
+ 0.3 HTML_FONT_BIG          BODY: HTML tag for a big font size
+ 2.0 RCVD_IN_SORBS_DUL      RBL: SORBS: sent directly from dynamic IP add=
+ress
+                            [83.37.93.89 listed in dnsbl.sorbs.net]
+ 1.3 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in bl.spamcop.net
+                 [Blocked - see <http://www.spamcop.net/bl.shtml?83.37.93=
+.89>]
+ 1.7 RCVD_IN_NJABL_DUL      RBL: NJABL: dialup sender did non-local SMTP
+                            [83.37.93.89 listed in combined.njabl.org]
 
 The original message was not completely plain text, and may be unsafe to
 open with some email clients; in particular, it may contain a virus,
@@ -66,68 +61,86 @@ or confirm that your address can receive spam.  If you wish to view
 it, it may be safer to save it to a file and open it with an editor.
 
 
-------------=_45EEB2CD.746C57E9
+------------=_45EEBDDD.63B77718
 Content-Type: message/rfc822; x-spam-type=original
 Content-Description: original message before SpamAssassin
 Content-Disposition: attachment
 Content-Transfer-Encoding: 7bit
 
-Return-Path: <alsa-devel@alsa-project.org>
-Received: from 88.87.14.66 (unknown [88.87.14.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AD6B2432D
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 13:40:44 +0100 (CET)
-Received: from mail.snr-graphics.com (mail.snr-graphics.com [216.127.75.211])
-	by 88.87.14.66 (Qmailv1) with ESMTP id R2PE3F4XD
-	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2007 14:40:65 +0200
-Received: from 216.127.75.211 ([snr-graphics.com]:16146 "EHLO snr-graphics.com"
-	smtp-auth: "wyqlyai" TLS-CIPHER: <none> TLS-PEER-CN1: <none>)
-	by mail.snr-graphics.com with ESMTP id AV1-4H42AbX33-rkB (ORCPT
-	<rfc822;wyqlyai@snr-graphics.com>); Wed, 07 Mar 2007 01:54:47 +0100
-Date: Wed, 07 Mar 2007 01:54:47 +0100
-From: "Simon Mall" <wyqlyai@snr-graphics.com>
-X-Mailer: The Bat! (v2.12.00) Personal
-X-Priority: 3
-Message-ID: <1838876847.200703070154474622815@snr-graphics.com>
-To: alsa-devel@alsa-project.org
-Subject: Simple key
+Return-Path: <dopuddingstone@genie.it>
+Received: from 89.Red-83-37-93.dynamicIP.rima-tde.net
+	(89.Red-83-37-93.dynamicIP.rima-tde.net [83.37.93.89])
+	by alsa0.perex.cz (Postfix) with SMTP id 86FB424331
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 14:27:56 +0100 (CET)
+Received: from aranza ([145.75.240.29])
+	by 89.Red-83-37-93.dynamicIP.rima-tde.net (4.29.1/4.29.1) with SMTP id
+	cOoOtS46bS02LW; Wed, 7 Mar 2007 13:27:58 +0000
+Message-ID: <001001c760bc$6bc095d0$01cda08c@aranza>
+From: "Benita Neal" <dopuddingstone@genie.it>
+To: "alsa-devel" <alsa-devel@alsa-project.org>
+Subject: so roundabout of procrustean
+Date: Wed, 7 Mar 2007 13:24:40 +0000
 MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="----------TSEM00MAC68FBB8DDW3D8"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000D_01C760BC.6BC095D0"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.3790.1158
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.3790.181
 
-------------TSEM00MAC68FBB8DDW3D8
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<body>
-hey<br>
-<br>
-This is PatchWork for all men with small williies<br>
-Wear it with confidence &amp; see it Grow.<br>
-<br>
-<a href="http://ignsabndfwevc.skiofler.com">SoluitonIsHere</a><br>
-<br>
-Let us know if it helped<br>
-<br>
-Regards<br>
-Jerry.M<br>
-Mighty Men Forum<br>
-<br>
-<br>
-The current stock drop was triggered last week by the enormous drop on China's souk in a time.
-That fed into fears about the state of the US economy at a time when many investors were curious whether part fine had risen too far too nippily.
-Many of the humanity top table and parts had rise to neck and neck not seen since the dotcom bubble rupture in 2000.
-</body>
-</html>
+------=_NextPart_000_000D_01C760BC.6BC095D0
+Content-Type: text/plain;
+        charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
 
 
 
 
-------------TSEM00MAC68FBB8DDW3D8--
+Get it before the RUSH!!!
 
 
-------------=_45EEB2CD.746C57E9
+Lookup: NNCPCurrent: $0.019 (UP! 58.33%) 5 Day Target price: =
+$0.15Expected: Steadily climb for the top!!!
+
+Here comes the REAL BIG ONE!.
+
+
+
+The hottest news are released for NNCP, alsa-devel!!
+
+------=_NextPart_000_000D_01C760BC.6BC095D0
+Content-Type: text/html;
+        charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
+windows-1251">
+<META content=3D"MSHTML 6.00.3790.2869" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#FF0066 size=3D3D4><FONT =
+size=3D2><STRONG>Get it before the RUSH...</STRONG></FONT></DIV>
+<BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#333366 size=3D2>Lookup: =
+<b>NNCP</b><br>Current: $0.019 (UP! 58.33%) <br>5 Day Target price: =
+$0.15<br>Expected: Steadily climb for the top...</FONT></DIV>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#000000 size=3D3>Here =
+comes the REAL BIG ONE!!!</FONT></DIV>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DTahoma color=3D#CC0033 size=3D4>The =
+hottest news are released for NNCP, alsa-devel...</FONT></DIV>
+<BR><BR><BR>
+</BODY></HTML>
+
+------=_NextPart_000_000D_01C760BC.6BC095D0--
+
+------------=_45EEBDDD.63B77718
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -138,7 +151,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-------------=_45EEB2CD.746C57E9
+------------=_45EEBDDD.63B77718
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -149,4 +162,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------------=_45EEB2CD.746C57E9--
+------------=_45EEBDDD.63B77718--
