@@ -1,20 +1,10 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: mm snapshot broken-out-2007-03-05-02-22.tar.gz
-	uploaded
-Date: Wed, 7 Mar 2007 11:50:24 -0800
-Message-ID: <20070307115024.756c848f.akpm@linux-foundation.org>
-References: <200703051024.l25AOIF3015951@shell0.pdx.osdl.net>
-	<45EC2DEB.1050108@googlemail.com> <45EEA3C4.7000501@googlemail.com>
-	<20070307104746.f08a2e84.akpm@linux-foundation.org>
-	<6bffcb0e0703071141j42309702w793e4a76b1b23bfa@mail.gmail.com>
+From: "Cupfuls A. Fluttering" <ellison@go2mex.com>
+Subject: International Legal RX
+Date: Wed, 07 Mar 2007 15:01:58 -0500
+Message-ID: <9043685988.20070307150158@go2mex.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----------=_45EF18D1.C070FA75"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 641072417E
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 20:50:28 +0100 (CET)
-In-Reply-To: <6bffcb0e0703071141j42309702w793e4a76b1b23bfa@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,216 +14,162 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Adrian Bunk <bunk@stusta.de>, Linus Torvalds <torvalds@linux-foundation.org>, Jaroslav Kysela <perex@suse.cz>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 7 Mar 2007 20:41:30 +0100 "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com> wrote:
+This is a multi-part message in MIME format.
 
-> > > 831466f4ad2b5fe23dff77edbe6a7c244435e973 is first bad commit
-> > > commit 831466f4ad2b5fe23dff77edbe6a7c244435e973
-> > > Author: Randy Cushman <rcushman_linux@earthlink.net>
-> > > Date:   Tue Dec 19 18:42:16 2006 +0100
-> > >
-> > >     [ALSA] ac97 - fix microphone and line_in selection logic
-> > >
-> > >     This patch fixes the Microphone and LINE_IN select logic for
-> > >     Analog Devices surround codecs with shared jacks.  The existing
-> > >     code can never utilize the shared jacks for Microphone and LINE_IN
-> > >     due to the reversed jack selection logic.  The patched code
-> > >     correctly selects the shared jack for input if the 'Channel Mode'
-> > >     selector does not specify that the jack is to be used for output.
-> > >     Specifically, in '2ch' mode the Center/LFE jack is used for
-> > >     microphone input and the Surround jack is used for LINE_IN,
-> > >     in '4ch' mode the Center/LFE jack is used for microphone input
-> > >     and the Surround jack is used for output, and in '6ch' mode
-> > >     both jacks are used for output.
-> > >
-> > >     Signed-off-by: Randy Cushman <rcushman_linux@earthlink.net>
-> > >     Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > >     Signed-off-by: Jaroslav Kysela <perex@suse.cz>
-> > >
-> >
-> > Is 2.6.21-rc3 similarly broken?
-> 
-> Yes.
-> 
+------------=_45EF18D1.C070FA75
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-OK.  Can you please confirm that applying the below fixes 2.6.21-rc3?
+Spam detection software, running on the system "alsa0.alsa-project.org", =
+has
+identified this incoming email as possible spam.  The original message
+has been attached to this so you can view it (if it isn't spam) or label
+similar future email.  If you have any questions, see
+the administrator of that system for details.
 
-If so, I'll queue it up for application in a week or two if there is no
-progress on this.
+Content preview:  Welcome to International RX! - Best quality drugs - Spe=
+cial
+   Internet prices - Fast and discreet worldwide shipping - Friendly cust=
+omer
+   support Men's Health Anti-Depressants Pain Relief General health Weigh=
+t loss
+   Anti-biotics Anti-herpes Women's health Anti-diabetic Blood Pressure/C=
+holesterol
+   Anti-Allergic/Asthma Anti-Acidity [...]=20
+
+Content analysis details:   (7.2 points, 5.0 required)
+
+ pts rule name              description
+---- ---------------------- ---------------------------------------------=
+-----
+ 0.0 UNPARSEABLE_RELAY      Informational: message has unparseable relay =
+lines
+ 0.0 HTML_MESSAGE           BODY: HTML included in message
+ 3.1 RCVD_IN_XBL            RBL: Received via a relay in Spamhaus XBL
+                            [89.137.48.38 listed in sbl-xbl.spamhaus.org]
+ 1.2 RCVD_IN_SORBS_WEB      RBL: SORBS: sender is a abuseable web server
+                            [89.137.48.38 listed in dnsbl.sorbs.net]
+ 1.7 RCVD_IN_NJABL_DUL      RBL: NJABL: dialup sender did non-local SMTP
+                            [89.137.48.38 listed in combined.njabl.org]
+ 1.1 URIBL_SBL              Contains an URL listed in the SBL blocklist
+                            [URIs: uniqa.hk]
+
+The original message was not completely plain text, and may be unsafe to
+open with some email clients; in particular, it may contain a virus,
+or confirm that your address can receive spam.  If you wish to view
+it, it may be safer to save it to a file and open it with an editor.
+
+
+------------=_45EF18D1.C070FA75
+Content-Type: message/rfc822; x-spam-type=original
+Content-Description: original message before SpamAssassin
+Content-Disposition: attachment
+Content-Transfer-Encoding: 7bit
+
+Return-Path: <ellison@go2mex.com>
+Received: from 142769576 (unknown [89.137.48.38])
+	by alsa0.perex.cz (Postfix) with SMTP id 296612417E
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 20:55:56 +0100 (CET)
+Received: from go2mex.com (144049336 [143956656])
+	by ginsel.com (Qmailv1) with ESMTP id 5FEED08F8E
+	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2007 15:01:58 -0500
+Date: Wed, 07 Mar 2007 15:01:58 -0500
+From: "Cupfuls A. Fluttering" <ellison@go2mex.com>
+X-Mailer: The Bat! (v2.00.3) Personal
+X-Priority: 3
+Message-ID: <9043685988.20070307150158@go2mex.com>
+To: Alsa <alsa-devel@alsa-project.org>
+Subject: International Legal RX
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----------C6FC36C4A02F9EF"
+X-RAV-Antivirus: This e-mail has been scanned for viruses on host: ginsel.com
+
+This is a multi-part message in MIME format.
+
+------------C6FC36C4A02F9EF
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+Welcome to International RX!
+- Best quality drugs 
+- Special Internet prices 
+- Fast and discreet worldwide shipping 
+- Friendly customer support 
+Men's Health 
+Anti-Depressants 
+Pain Relief 
+General health 
+Weight loss 
+Anti-biotics 
+Anti-herpes 
+Women's health 
+Anti-diabetic 
+Blood Pressure/Cholesterol 
+Anti-Allergic/Asthma 
+Anti-Acidity 
+
+View Full Products List
+http://uniqa.hk
+
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------C6FC36C4A02F9EF
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+<font color="#333333"><strong>Welcome to International RX!</strong><br>
+- Best quality drugs <br>
+- Special Internet prices <br>
+- Fast and discreet worldwide shipping <br>
+- Friendly customer support
+<p>Men's Health <br>
+  Anti-Depressants <br>
+  Pain Relief <br>
+  General health <br>
+  Weight loss <br>
+  Anti-biotics <br>
+  Anti-herpes <br>
+  Women's health <br>
+  Anti-diabetic <br>
+  Blood Pressure/Cholesterol <br>
+  Anti-Allergic/Asthma <br>
+  Anti-Acidity </p>
+</font>
+<p><font color="#333333"><a href="http://uniqa.hk">View Full Products List</a></font></p>
+</body>
+</html>
+
+------------C6FC36C4A02F9EF--
 
 
 
-
-From: Andrew Morton <akpm@linux-foundation.org>
-
-Revert 831466f4ad2b5fe23dff77edbe6a7c244435e973: "Michal Piotrowski"
-<michal.k.k.piotrowski@gmail.com> reports that it broke his 3d surround.
-
-Cc:"Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
-Cc: Randy Cushman <rcushman_linux@earthlink.net>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>
-Cc: Adrian Bunk <bunk@stusta.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- sound/pci/ac97/ac97_patch.c |   66 +++++++++++++---------------------
- 1 file changed, 26 insertions(+), 40 deletions(-)
-
-diff -puN sound/pci/ac97/ac97_patch.c~revert-ac97-fix-microphone-and-line_in-selection-logic sound/pci/ac97/ac97_patch.c
---- a/sound/pci/ac97/ac97_patch.c~revert-ac97-fix-microphone-and-line_in-selection-logic
-+++ a/sound/pci/ac97/ac97_patch.c
-@@ -178,28 +178,14 @@ static inline int is_clfe_on(struct snd_
- 	return ac97->channel_mode >= 2;
- }
- 
--/* system has shared jacks with surround out enabled */
--static inline int is_shared_surrout(struct snd_ac97 *ac97)
--{
--	return !ac97->indep_surround && is_surround_on(ac97);
--}
--
--/* system has shared jacks with center/lfe out enabled */
--static inline int is_shared_clfeout(struct snd_ac97 *ac97)
--{
--	return !ac97->indep_surround && is_clfe_on(ac97);
--}
--
--/* system has shared jacks with line in enabled */
- static inline int is_shared_linein(struct snd_ac97 *ac97)
- {
--	return !ac97->indep_surround && !is_surround_on(ac97);
-+	return ! ac97->indep_surround && is_surround_on(ac97);
- }
- 
--/* system has shared jacks with mic in enabled */
- static inline int is_shared_micin(struct snd_ac97 *ac97)
- {
--	return !ac97->indep_surround && !is_clfe_on(ac97);
-+	return ! ac97->indep_surround && is_clfe_on(ac97);
- }
- 
- 
-@@ -2473,12 +2459,12 @@ static void alc650_update_jacks(struct s
- {
- 	int shared;
- 	
--	/* shared Line-In / Surround Out */
--	shared = is_shared_surrout(ac97);
-+	/* shared Line-In */
-+	shared = is_shared_linein(ac97);
- 	snd_ac97_update_bits(ac97, AC97_ALC650_MULTICH, 1 << 9,
- 			     shared ? (1 << 9) : 0);
--	/* update shared Mic In / Center/LFE Out */
--	shared = is_shared_clfeout(ac97);
-+	/* update shared Mic */
-+	shared = is_shared_micin(ac97);
- 	/* disable/enable vref */
- 	snd_ac97_update_bits(ac97, AC97_ALC650_CLOCK, 1 << 12,
- 			     shared ? (1 << 12) : 0);
-@@ -2608,12 +2594,12 @@ static void alc655_update_jacks(struct s
- {
- 	int shared;
- 	
--	/* shared Line-In / Surround Out */
--	shared = is_shared_surrout(ac97);
-+	/* shared Line-In */
-+	shared = is_shared_linein(ac97);
- 	ac97_update_bits_page(ac97, AC97_ALC650_MULTICH, 1 << 9,
- 			      shared ? (1 << 9) : 0, 0);
--	/* update shared Mic In / Center/LFE Out */
--	shared = is_shared_clfeout(ac97);
-+	/* update shared mic */
-+	shared = is_shared_micin(ac97);
- 	/* misc control; vrefout disable */
- 	snd_ac97_update_bits(ac97, AC97_ALC650_CLOCK, 1 << 12,
- 			     shared ? (1 << 12) : 0);
-@@ -2757,16 +2743,16 @@ static void alc850_update_jacks(struct s
- {
- 	int shared;
- 	
--	/* shared Line-In / Surround Out */
--	shared = is_shared_surrout(ac97);
-+	/* shared Line-In */
-+	shared = is_shared_linein(ac97);
- 	/* SURR 1kOhm (bit4), Amp (bit5) */
- 	snd_ac97_update_bits(ac97, AC97_ALC850_MISC1, (1<<4)|(1<<5),
- 			     shared ? (1<<5) : (1<<4));
- 	/* LINE-IN = 0, SURROUND = 2 */
- 	snd_ac97_update_bits(ac97, AC97_ALC850_JACK_SELECT, 7 << 12,
- 			     shared ? (2<<12) : (0<<12));
--	/* update shared Mic In / Center/LFE Out */
--	shared = is_shared_clfeout(ac97);
-+	/* update shared mic */
-+	shared = is_shared_micin(ac97);
- 	/* Vref disable (bit12), 1kOhm (bit13) */
- 	snd_ac97_update_bits(ac97, AC97_ALC850_MISC1, (1<<12)|(1<<13),
- 			     shared ? (1<<12) : (1<<13));
-@@ -2839,9 +2825,9 @@ static int patch_alc850(struct snd_ac97 
-  */
- static void cm9738_update_jacks(struct snd_ac97 *ac97)
- {
--	/* shared Line-In / Surround Out */
-+	/* shared Line-In */
- 	snd_ac97_update_bits(ac97, AC97_CM9738_VENDOR_CTRL, 1 << 10,
--			     is_shared_surrout(ac97) ? (1 << 10) : 0);
-+			     is_shared_linein(ac97) ? (1 << 10) : 0);
- }
- 
- static const struct snd_kcontrol_new snd_ac97_cm9738_controls[] = {
-@@ -2923,12 +2909,12 @@ static const struct snd_kcontrol_new snd
- 
- static void cm9739_update_jacks(struct snd_ac97 *ac97)
- {
--	/* shared Line-In / Surround Out */
-+	/* shared Line-In */
- 	snd_ac97_update_bits(ac97, AC97_CM9739_MULTI_CHAN, 1 << 10,
--			     is_shared_surrout(ac97) ? (1 << 10) : 0);
--	/* shared Mic In / Center/LFE Out **/
-+			     is_shared_linein(ac97) ? (1 << 10) : 0);
-+	/* shared Mic */
- 	snd_ac97_update_bits(ac97, AC97_CM9739_MULTI_CHAN, 0x3000,
--			     is_shared_clfeout(ac97) ? 0x1000 : 0x2000);
-+			     is_shared_micin(ac97) ? 0x1000 : 0x2000);
- }
- 
- static const struct snd_kcontrol_new snd_ac97_cm9739_controls[] = {
-@@ -3040,8 +3026,8 @@ static void cm9761_update_jacks(struct s
- 
- 	val |= surr_on[ac97->spec.dev_flags][is_surround_on(ac97)];
- 	val |= clfe_on[ac97->spec.dev_flags][is_clfe_on(ac97)];
--	val |= surr_shared[ac97->spec.dev_flags][is_shared_surrout(ac97)];
--	val |= clfe_shared[ac97->spec.dev_flags][is_shared_clfeout(ac97)];
-+	val |= surr_shared[ac97->spec.dev_flags][is_shared_linein(ac97)];
-+	val |= clfe_shared[ac97->spec.dev_flags][is_shared_micin(ac97)];
- 
- 	snd_ac97_update_bits(ac97, AC97_CM9761_MULTI_CHAN, 0x3c88, val);
- }
-@@ -3289,12 +3275,12 @@ static int patch_vt1617a(struct snd_ac97
-  */
- static void it2646_update_jacks(struct snd_ac97 *ac97)
- {
--	/* shared Line-In / Surround Out */
-+	/* shared Line-In */
- 	snd_ac97_update_bits(ac97, 0x76, 1 << 9,
--			     is_shared_surrout(ac97) ? (1<<9) : 0);
--	/* shared Mic / Center/LFE Out */
-+			     is_shared_linein(ac97) ? (1<<9) : 0);
-+	/* shared Mic */
- 	snd_ac97_update_bits(ac97, 0x76, 1 << 10,
--			     is_shared_clfeout(ac97) ? (1<<10) : 0);
-+			     is_shared_micin(ac97) ? (1<<10) : 0);
- }
- 
- static const struct snd_kcontrol_new snd_ac97_controls_it2646[] = {
-_
-
+------------=_45EF18D1.C070FA75
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+------------=_45EF18D1.C070FA75
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+------------=_45EF18D1.C070FA75--
