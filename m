@@ -1,11 +1,16 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HObNi-0002DE-S7 delayed 24 hours
-Date: Wed, 07 Mar 2007 09:21:23 -0800
-Message-ID: <E1HOzpL-0002qt-OU@externalmx-1.sourceforge.net>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Problem access CVS web access
+Date: Wed, 7 Mar 2007 12:35:29 -0500
+Message-ID: <75b66ecd0703070935w3398a8e8n1b761f6a3d2a8da0@mail.gmail.com>
+References: <5FD5754DDBA0B1499B5A0B4BB5419485B0CBD0@fmsmsx411.amr.corp.intel.com>
+	<ad2655cb0703070905nbbf0f49vad60fb90bef4f47@mail.gmail.com>
+	<1173287829.16119.115.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1173287829.16119.115.camel@razman.gruemaster.com>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +20,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: alsa-devel@lists.sourceforge.net, James Courtier-Dutton <james.dutton@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+On 3/7/07, Tobin Davis <tdavis@dsl-only.net> wrote:
+>
+>  It's just below the "ALSA 0.9.x Developer documentation" section.
+>
+>  It should be updated to point to the correct CVS path with a note saying thatthis code is no longer maintained (unless someone wants to mirror HG with CVS).
+>
 
-The message identifier is:     1HObNi-0002DE-S7
-The subject of the message is: endureth for every in me and he returned unto
-The date of the message is:    Tue, 06 Mar 2007 20:44:18 +0530
+It should also be moved to a link at the top of the ALSA home page or
+at least to the top of the developers page.  Every time I need to use
+this I have a hard time finding it...
 
-The address to which the message has not yet been delivered is:
-
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Lee
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
