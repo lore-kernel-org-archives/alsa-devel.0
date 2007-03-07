@@ -1,23 +1,12 @@
-From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Subject: Re: [ibm-acpi-devel] Adding a alsa mixer interface to
-	ibm-acpi
-Date: Wed, 7 Mar 2007 20:42:40 -0300
-Message-ID: <20070307234240.GA12070@khazad-dum.debian.net>
-References: <20070225012017.GA19039@khazad-dum.debian.net>
-	<s5h649pue8z.wl%tiwai@suse.de>
-	<20070226162819.GE2909@khazad-dum.debian.net>
-	<s5hr6scswnp.wl%tiwai@suse.de>
-	<20070226174145.GF2909@khazad-dum.debian.net>
-	<20070227015024.GF8154@thunk.org>
-	<20070227021402.GC6828@khazad-dum.debian.net>
-	<s5hd53kaf5r.wl%tiwai@suse.de>
-	<41840b750703071512o1d171dfy9d2a615382e5e635@mail.gmail.com>
+From: Eduardo Pereira Habkost <ehabkost@raisama.net>
+Subject: Re: Question on hda mixer structures
+Date: Wed, 7 Mar 2007 20:50:50 -0300
+Message-ID: <20070307235049.GA4622@silverbrick.ctb.virtua.com.br>
+References: <5FD5754DDBA0B1499B5A0B4BB5419485B0CC81@fmsmsx411.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0096352714=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <41840b750703071512o1d171dfy9d2a615382e5e635@mail.gmail.com>
+In-Reply-To: <5FD5754DDBA0B1499B5A0B4BB5419485B0CC81@fmsmsx411.amr.corp.intel.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,54 +16,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Shem Multinymous <multinymous@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ibm-acpi-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, Theodore Tso <tytso@mit.edu>
+To: "Allyn, Mark A" <mark.a.allyn@intel.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 07 Mar 2007, Shem Multinymous wrote:
-> On 3/7/07, Takashi Iwai <tiwai@suse.de> wrote:
-> > > If they got a mixer applet worth something, it will list two cards, or allow
-> > > them to have two instances, one for each card.
-> >
-> > I guess it's rather confusing.  Both controls the very same device for
-> > the very same role in the end, so it'd be better to be merged in some
-> > level, IMO.
-> 
-> The ibm-acpi mixer also affects the BIOS-generated sounds (e.g.,
-> low-battery warnings) and PC speaker. So it useful even when the sound
-> card is unused or unsupported.
 
-True.  Here's the (probable) audio routing on a ThinkPad:
+--===============0096352714==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
 
-[embedded sound card/codec] -> [thinkpad hardware mixer] -> output
-[thinkpad firmware beep generator]   ----^
 
-The thinkpad firmware can generate a bunch of beeps that appear to not be
-really related to the std. PC buzzer :-)  and these beeps are used to signal
-firmware events.  I don't think they are routed through the AC97 or HDA
-codec.
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Note that it is possible that the normal PC buzzer IS routed through the
-codec.
+Hi,
 
-One of the things I don't know is exactly what is generating the firmware
-beeps on modern thinkpads: BIOS, or EC.  The volume control is done by the
-EC on a modern thinkpad, though.
+On Wed, Mar 07, 2007 at 08:34:48AM -0800, Allyn, Mark A wrote:
+> Folks:
+> =20
+> I am trying to figure out how the mixer control structurs are done for
+> each of the
+> codecs in the patch_sigmatel file for the Sigmatel codecs.
+>=20
+> A sample of one is as follows:
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> static struct snd_kcontrol_new stac925x_mixer[] =3D {
+>         HDA_CODEC_VOLUME("Master Playback Volume", 0xe, 0, HDA_OUTPUT),
+>         HDA_CODEC_MUTE("Master Playback Switch", 0xe, 0, HDA_OUTPUT),
+>         {
+>                 .iface =3D SNDRV_CTL_ELEM_IFACE_MIXER,
+>                 .name =3D "Input Source",
+>                 .count =3D 1,
+>                 .info =3D stac92xx_mux_enum_info,
+>                 .get =3D stac92xx_mux_enum_get,
+>                 .put =3D stac92xx_mux_enum_put,
+>         },
+>         HDA_CODEC_VOLUME("Capture Volume", 0x09, 0, HDA_OUTPUT),
+>         HDA_CODEC_MUTE("Capture Switch", 0x09, 0, HDA_OUTPUT),
+>         HDA_CODEC_VOLUME("Capture Mux Volume", 0x0f, 0, HDA_OUTPUT),
+>         { } /* end */
+> };
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> I am having a hard time seeing the connection between the widgets that
+> have a volume
+> control and the entries in the stac mixer structure above. Where are the
+> NID's for each
+> entry of this structure?=20
 
-So I'd have to provide a stand-alone "placeholder" card to hook the mixer to
-if no real sound-card driver is loaded?  urk.  It is doable, of course,
-but... ick.  The question is now, what should I do when doing a mixer
-piggy-back?  De-register the mixer-only audio card, or keep it around (and
-this give the user two cards)?
+The NIDs are the second parameter to HDA_CODEC_VOLUME and
+HDA_CODEC_MUTE. In the example above, they are 0x0e, 0x09, 0x0f.
 
--- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
+>=20
+> Also, the value HAD_OUTPUT is used apparently for both a capture node as
+> well as an
+> output node. Where would HDA_INPUT be used?
+
+HDA_OUTPUT means that the output amplifier of the widget will be
+controlled by the mixer control. Some widgets may have only input
+amplifiers, others only output amplifiers, some may have both. Having
+amplifiers on its input and/or output doesn't mean it is used for audio
+capture or playback. It just means that it has amplifier(s) connected
+at its input or output.
+
+In short, the macro parameters are all the information necessary to
+"address" an amplifier:
+
+- Widget NID
+- Amplifier index, for widgets that have multiple input amplifiers, such
+  as Sum Widget
+- HDA_OUTPUT or HDA_INPUT, telling if it is at the input or output of
+  the widget
+
+
+>=20
+> Is there any documentation on just how this structure is composed for a
+> new device?
+
+I don't know if there is any documentation on those strucutures. But
+basically you need to know which amplifiers you want to control, by
+looking at the widget connections in the codec. Looking at
+/proc/asound/card*/codec#* should be enough.
+
+I use a small script to generate a graphviz output from the codec
+information on /proc, to make this task easier. Maybe it helps. It is
+in a GIT repository at:
+
+http://raisama.net/gitweb?p=3Dhda-tools.git;a=3Dsummary
+git clone http://git.raisama.net/hda-tools.git
+
+--=20
+Eduardo
+
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFF70/ZcaRJ66w1lWgRAlj2AJoCeE3ms6iBO2+IOjy0qXGROlmojgCdFGJk
+0LGFf12lod2FSU72AnIQ0DI=
+=zSrE
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
+
+
+--===============0096352714==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0096352714==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0096352714==--
