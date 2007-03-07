@@ -1,18 +1,10 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: mm snapshot broken-out-2007-03-05-02-22.tar.gz
-	uploaded
-Date: Wed, 7 Mar 2007 10:47:46 -0800
-Message-ID: <20070307104746.f08a2e84.akpm@linux-foundation.org>
-References: <200703051024.l25AOIF3015951@shell0.pdx.osdl.net>
-	<45EC2DEB.1050108@googlemail.com> <45EEA3C4.7000501@googlemail.com>
+From: "Divert Q. Prestige" <dumas@gilli.com>
+Subject: Cheapest way to solve health problems.
+Date: Wed, 07 Mar 2007 11:50:37 -0500
+Message-ID: <2326479787.20070307115037@gilli.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="----------=_45EF0B25.0812635C"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD95D24336
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 19:47:51 +0100 (CET)
-In-Reply-To: <45EEA3C4.7000501@googlemail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,83 +14,102 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Adrian Bunk <bunk@stusta.de>, Linus Torvalds <torvalds@linux-foundation.org>, Jaroslav Kysela <perex@suse.cz>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAwNyBNYXIgMjAwNyAxMjozNjozNiArMDEwMCBNaWNoYWwgUGlvdHJvd3NraSA8bWlj
-aGFsLmsuay5waW90cm93c2tpQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IE1pY2hhbCBQaW90cm93c2tp
-IG5hcGlzYcWCKGEpOgo+ID4gSGksCj4gPiAKPiA+IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmcg
-bmFwaXNhxYIoYSk6Cj4gPj4gVGhlIG1tIHNuYXBzaG90IGJyb2tlbi1vdXQtMjAwNy0wMy0wNS0w
-Mi0yMi50YXIuZ3ogaGFzIGJlZW4gdXBsb2FkZWQgdG8KPiA+Pgo+ID4+ICAgIGZ0cDovL2Z0cC5r
-ZXJuZWwub3JnL3B1Yi9saW51eC9rZXJuZWwvcGVvcGxlL2FrcG0vbW0vYnJva2VuLW91dC0yMDA3
-LTAzLTA1LTAyLTIyLnRhci5nego+ID4+Cj4gPj4gSXQgY29udGFpbnMgdGhlIGZvbGxvd2luZyBw
-YXRjaGVzIGFnYWluc3QgMi42LjIxLXJjMjoKPiA+Pgo+ID4gCj4gPiBPdXRzdGFuZGluZyBpc3N1
-ZSAtIG15IDNkIHN1cnJvdW5kIGRvZXNuJ3Qgd29yayBzaW5jZSAyLjYuMjAuCj4gPiAKPiA+IEkn
-bGwgYmlzZWN0IHRoaXMgY29tbWl0cwo+ID4gaHR0cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4
-L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgtMi42LmdpdDthPWNvbW1pdDtoPTcyNDMzOWQ3NmQ5
-NDA3Y2QxYThhZDMyYTljMWZkZjY0ODQwY2M1MWIKPiA+IGh0dHA6Ly9naXQua2VybmVsLm9yZy8/
-cD1saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LTIuNi5naXQ7YT1jb21taXQ7aD02MDI2
-MTc5NTE5ODk2ZTdkMzViMjU2NGU3NTQ0NDg3ZDFjODk0OGU3Cj4gPiAKPiA+IDAwOjFmLjUgTXVs
-dGltZWRpYSBhdWRpbyBjb250cm9sbGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUVCL0VSIChJ
-Q0g1L0lDSDVSKSBBQyc5NyBBdWRpbyBDb250cm9sbGVyIChyZXYgMDIpCj4gPiAgICAgICAgIFN1
-YnN5c3RlbTogQVNVU1RlSyBDb21wdXRlciBJbmMuIFA0UDgwMCBNYWluYm9hcmQKPiA+ICAgICAg
-ICAgQ29udHJvbDogSS9PKyBNZW0rIEJ1c01hc3RlcisgU3BlY0N5Y2xlLSBNZW1XSU5WLSBWR0FT
-bm9vcC0gUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0gRmFzdEIyQi0KPiA+ICAgICAgICAgU3RhdHVz
-OiBDYXArIDY2TUh6LSBVREYtIEZhc3RCMkIrIFBhckVyci0gREVWU0VMPW1lZGl1bSA+VEFib3J0
-LSA8VEFib3J0LSA8TUFib3J0LSA+U0VSUi0gPFBFUlItCj4gPiAgICAgICAgIExhdGVuY3k6IDAK
-PiA+ICAgICAgICAgSW50ZXJydXB0OiBwaW4gQiByb3V0ZWQgdG8gSVJRIDE3Cj4gPiAgICAgICAg
-IFJlZ2lvbiAwOiBJL08gcG9ydHMgYXQgZDAwMCBbc2l6ZT0yNTZdCj4gPiAgICAgICAgIFJlZ2lv
-biAxOiBJL08gcG9ydHMgYXQgZDQwMCBbc2l6ZT02NF0KPiA+ICAgICAgICAgUmVnaW9uIDI6IE1l
-bW9yeSBhdCBmNWZmZjgwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT01MTJdCj4g
-PiAgICAgICAgIFJlZ2lvbiAzOiBNZW1vcnkgYXQgZjVmZmY0MDAgKDMyLWJpdCwgbm9uLXByZWZl
-dGNoYWJsZSkgW3NpemU9MjU2XQo+ID4gICAgICAgICBDYXBhYmlsaXRpZXM6IFs1MF0gUG93ZXIg
-TWFuYWdlbWVudCB2ZXJzaW9uIDIKPiA+ICAgICAgICAgICAgICAgICBGbGFnczogUE1FQ2xrLSBE
-U0ktIEQxLSBEMi0gQXV4Q3VycmVudD0zNzVtQSBQTUUoRDArLEQxLSxEMi0sRDNob3QrLEQzY29s
-ZCspCj4gPiAgICAgICAgICAgICAgICAgU3RhdHVzOiBEMCBQTUUtRW5hYmxlLSBEU2VsPTAgRFNj
-YWxlPTAgUE1FLQo+ID4gCj4gPiBBZHZhbmNlZCBMaW51eCBTb3VuZCBBcmNoaXRlY3R1cmUgRHJp
-dmVyIFZlcnNpb24gMS4wLjE0cmMyIChXZWQgRmViIDE0IDA3OjQyOjEzIDIwMDcgVVRDKS4KPiA+
-IAo+ID4gQ09ORklHX1NORD1tCj4gPiBDT05GSUdfU05EX1RJTUVSPW0KPiA+IENPTkZJR19TTkRf
-UENNPW0KPiA+IENPTkZJR19TTkRfUkFXTUlEST1tCj4gPiBDT05GSUdfU05EX1NFUVVFTkNFUj1t
-Cj4gPiBDT05GSUdfU05EX1NFUV9EVU1NWT1tCj4gPiBDT05GSUdfU05EX09TU0VNVUw9eQo+ID4g
-Q09ORklHX1NORF9NSVhFUl9PU1M9bQo+ID4gQ09ORklHX1NORF9QQ01fT1NTPW0KPiA+IENPTkZJ
-R19TTkRfUENNX09TU19QTFVHSU5TPXkKPiA+IENPTkZJR19TTkRfU0VRVUVOQ0VSX09TUz15Cj4g
-PiBDT05GSUdfU05EX1JUQ1RJTUVSPW0KPiA+IENPTkZJR19TTkRfU0VRX1JUQ1RJTUVSX0RFRkFV
-TFQ9eQo+ID4gIyBDT05GSUdfU05EX0RZTkFNSUNfTUlOT1JTIGlzIG5vdCBzZXQKPiA+IENPTkZJ
-R19TTkRfU1VQUE9SVF9PTERfQVBJPXkKPiA+IENPTkZJR19TTkRfVkVSQk9TRV9QUk9DRlM9eQo+
-ID4gIyBDT05GSUdfU05EX1ZFUkJPU0VfUFJJTlRLIGlzIG5vdCBzZXQKPiA+ICMgQ09ORklHX1NO
-RF9ERUJVRyBpcyBub3Qgc2V0Cj4gPiAKPiA+IENPTkZJR19TTkRfQUM5N19DT0RFQz1tCj4gPiBD
-T05GSUdfU05EX0RVTU1ZPW0KPiA+IENPTkZJR19TTkRfVklSTUlEST1tCj4gPiAKPiA+IENPTkZJ
-R19TTkRfSU5URUw4WDA9bQo+IAo+IEFzIEkgc2FpZCBhYm92ZSwgY2VudGVyIGFuZCByZWFyIHNw
-ZWFrZXJzIGRvZXNuJ3Qgd29yayB3aXRoIHRoaXMgcGF0Y2guCj4gCj4gJCBnaXQtYmlzZWN0IGdv
-b2QKPiA4MzE0NjZmNGFkMmI1ZmUyM2RmZjc3ZWRiZTZhN2MyNDQ0MzVlOTczIGlzIGZpcnN0IGJh
-ZCBjb21taXQKPiBjb21taXQgODMxNDY2ZjRhZDJiNWZlMjNkZmY3N2VkYmU2YTdjMjQ0NDM1ZTk3
-Mwo+IEF1dGhvcjogUmFuZHkgQ3VzaG1hbiA8cmN1c2htYW5fbGludXhAZWFydGhsaW5rLm5ldD4K
-PiBEYXRlOiAgIFR1ZSBEZWMgMTkgMTg6NDI6MTYgMjAwNiArMDEwMAo+IAo+ICAgICBbQUxTQV0g
-YWM5NyAtIGZpeCBtaWNyb3Bob25lIGFuZCBsaW5lX2luIHNlbGVjdGlvbiBsb2dpYwo+IAo+ICAg
-ICBUaGlzIHBhdGNoIGZpeGVzIHRoZSBNaWNyb3Bob25lIGFuZCBMSU5FX0lOIHNlbGVjdCBsb2dp
-YyBmb3IKPiAgICAgQW5hbG9nIERldmljZXMgc3Vycm91bmQgY29kZWNzIHdpdGggc2hhcmVkIGph
-Y2tzLiAgVGhlIGV4aXN0aW5nCj4gICAgIGNvZGUgY2FuIG5ldmVyIHV0aWxpemUgdGhlIHNoYXJl
-ZCBqYWNrcyBmb3IgTWljcm9waG9uZSBhbmQgTElORV9JTgo+ICAgICBkdWUgdG8gdGhlIHJldmVy
-c2VkIGphY2sgc2VsZWN0aW9uIGxvZ2ljLiAgVGhlIHBhdGNoZWQgY29kZQo+ICAgICBjb3JyZWN0
-bHkgc2VsZWN0cyB0aGUgc2hhcmVkIGphY2sgZm9yIGlucHV0IGlmIHRoZSAnQ2hhbm5lbCBNb2Rl
-Jwo+ICAgICBzZWxlY3RvciBkb2VzIG5vdCBzcGVjaWZ5IHRoYXQgdGhlIGphY2sgaXMgdG8gYmUg
-dXNlZCBmb3Igb3V0cHV0Lgo+ICAgICBTcGVjaWZpY2FsbHksIGluICcyY2gnIG1vZGUgdGhlIENl
-bnRlci9MRkUgamFjayBpcyB1c2VkIGZvcgo+ICAgICBtaWNyb3Bob25lIGlucHV0IGFuZCB0aGUg
-U3Vycm91bmQgamFjayBpcyB1c2VkIGZvciBMSU5FX0lOLAo+ICAgICBpbiAnNGNoJyBtb2RlIHRo
-ZSBDZW50ZXIvTEZFIGphY2sgaXMgdXNlZCBmb3IgbWljcm9waG9uZSBpbnB1dAo+ICAgICBhbmQg
-dGhlIFN1cnJvdW5kIGphY2sgaXMgdXNlZCBmb3Igb3V0cHV0LCBhbmQgaW4gJzZjaCcgbW9kZQo+
-ICAgICBib3RoIGphY2tzIGFyZSB1c2VkIGZvciBvdXRwdXQuCj4gCj4gICAgIFNpZ25lZC1vZmYt
-Ynk6IFJhbmR5IEN1c2htYW4gPHJjdXNobWFuX2xpbnV4QGVhcnRobGluay5uZXQ+Cj4gICAgIFNp
-Z25lZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KPiAgICAgU2lnbmVkLW9m
-Zi1ieTogSmFyb3NsYXYgS3lzZWxhIDxwZXJleEBzdXNlLmN6Pgo+IAoKSXMgMi42LjIxLXJjMyBz
-aW1pbGFybHkgYnJva2VuPwoKVGhpcyBwYXRjaCByZXZlcnRzIGNsZWFubHkgaWYgbmVlZGVkLiAK
-Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KVGFrZSBTdXJ2ZXlzLiBFYXJuIENhc2guIEluZmx1ZW5jZSB0aGUg
-RnV0dXJlIG9mIElUCkpvaW4gU291cmNlRm9yZ2UubmV0J3MgVGVjaHNheSBwYW5lbCBhbmQgeW91
-J2xsIGdldCB0aGUgY2hhbmNlIHRvIHNoYXJlIHlvdXIKb3BpbmlvbnMgb24gSVQgJiBidXNpbmVz
-cyB0b3BpY3MgdGhyb3VnaCBicmllZiBzdXJ2ZXlzLWFuZCBlYXJuIGNhc2gKaHR0cDovL3d3dy50
-ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9wYWdlPWpvaW4ucGhwJnA9c291cmNlZm9yZ2UmQ0lEPURF
-VkRFVgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9hbHNhLWRldmVsCg==
+This is a multi-part message in MIME format.
+
+------------=_45EF0B25.0812635C
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Spam detection software, running on the system "alsa0.alsa-project.org", =
+has
+identified this incoming email as possible spam.  The original message
+has been attached to this so you can view it (if it isn't spam) or label
+similar future email.  If you have any questions, see
+the administrator of that system for details.
+
+Content preview:  You can buy absolutely legal, perfect quality must have=
+ medications
+   at lowest prices just in few minutes! You don't believe it? Then visit=
+ US
+   Drug store http://uniqa.hk And improve your sexual life! Only Confiden=
+tial
+   purchase. Verified by VISA! [...]=20
+
+Content analysis details:   (7.9 points, 5.0 required)
+
+ pts rule name              description
+---- ---------------------- ---------------------------------------------=
+-----
+ 0.0 UNPARSEABLE_RELAY      Informational: message has unparseable relay =
+lines
+ 2.0 RCVD_IN_SORBS_DUL      RBL: SORBS: sent directly from dynamic IP add=
+ress
+                            [85.84.134.16 listed in dnsbl.sorbs.net]
+ 3.1 RCVD_IN_XBL            RBL: Received via a relay in Spamhaus XBL
+                            [85.84.134.16 listed in sbl-xbl.spamhaus.org]
+ 1.7 RCVD_IN_NJABL_DUL      RBL: NJABL: dialup sender did non-local SMTP
+                            [85.84.134.16 listed in combined.njabl.org]
+ 1.1 URIBL_SBL              Contains an URL listed in the SBL blocklist
+                            [URIs: uniqa.hk]
+
+
+
+------------=_45EF0B25.0812635C
+Content-Type: message/rfc822; x-spam-type=original
+Content-Description: original message before SpamAssassin
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+
+Return-Path: <dumas@gilli.com>
+Received: from -1216144984 (eu85-84-134-16.clientes.euskaltel.es
+	[85.84.134.16]) by alsa0.perex.cz (Postfix) with SMTP id 4AC6F24336
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 19:57:36 +0100 (CET)
+Received: from gilli.com (-1215334592 [-1215338080])
+	by eu85-84-134-16.clientes.euskaltel.es (Qmailv1) with ESMTP id
+	166CA4F9F7
+	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2007 11:50:37 -0500
+Date: Wed, 07 Mar 2007 11:50:37 -0500
+From: "Divert Q. Prestige" <dumas@gilli.com>
+X-Mailer: The Bat! (v2.00.1) Personal
+X-Priority: 3
+Message-ID: <2326479787.20070307115037@gilli.com>
+To: Alsa <alsa-devel@alsa-project.org>
+Subject: Cheapest way to solve health problems. 
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: by Ameriserv.net Anti-Virus E-Gateway
+
+You can buy absolutely legal, perfect quality must have medications at lowest prices just in few minutes! You don't believe it? Then visit US Drug store
+http://uniqa.hk
+
+And improve your sexual life! Only Confidential purchase. Verified by VISA! 
+
+
+------------=_45EF0B25.0812635C
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys-and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+------------=_45EF0B25.0812635C
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+------------=_45EF0B25.0812635C--
