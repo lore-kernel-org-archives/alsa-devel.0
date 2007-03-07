@@ -1,10 +1,12 @@
-From: "Elton Decker" <amgraph@mohi.org>
-Subject: Not in saskatoon
-Date: Wed, 7 Mar 2007 21:07:10 +0100
-Message-ID: <001b01c760fd$05ef9c10$0030236c@puesto>
+From: "Martinez de la Cruz, Leonides" <leonides@ti.com>
+Subject: TWL4030 Codec for OMAP
+Date: Wed, 7 Mar 2007 14:36:44 -0600
+Message-ID: <1E65310C3C9FCC4AAE66BA8952B9842D09DC13@dlee11.ent.ti.com>
+References: <1E65310C3C9FCC4AAE66BA8952B9842D09DBF5@dlee11.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_45EF1C37.D4C10DB6"
+Content-Type: multipart/mixed; boundary="===============0408860614=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,130 +16,418 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------------=_45EF1C37.D4C10DB6
-Content-Type: text/plain
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Spam detection software, running on the system "alsa0.alsa-project.org", =
-has
-identified this incoming email as possible spam.  The original message
-has been attached to this so you can view it (if it isn't spam) or label
-similar future email.  If you have any questions, see
-the administrator of that system for details.
-
-Content preview:  Take a look at this ONE!! Sym8oL: NNCPCurr Price: $0.01=
-9 (UP!
-   58.33%) 5 Day Target price: $0.15Action: Aggresive Buy/Hold!! All sign=
-s show
-   that this one is going to Explode! [...]=20
-
-Content analysis details:   (6.8 points, 5.0 required)
-
- pts rule name              description
----- ---------------------- ---------------------------------------------=
------
- 2.9 HELO_DYNAMIC_SPLIT_IP  Relay HELO'd using suspicious hostname (Split
-                            IP)
- 0.0 HTML_MESSAGE           BODY: HTML included in message
- 0.3 HTML_FONT_BIG          BODY: HTML tag for a big font size
- 2.0 RCVD_IN_SORBS_DUL      RBL: SORBS: sent directly from dynamic IP add=
-ress
-                            [83.33.56.32 listed in dnsbl.sorbs.net]
- 1.7 RCVD_IN_NJABL_DUL      RBL: NJABL: dialup sender did non-local SMTP
-                            [83.33.56.32 listed in combined.njabl.org]
-
-The original message was not completely plain text, and may be unsafe to
-open with some email clients; in particular, it may contain a virus,
-or confirm that your address can receive spam.  If you wish to view
-it, it may be safer to save it to a file and open it with an editor.
-
-
-------------=_45EF1C37.D4C10DB6
-Content-Type: message/rfc822; x-spam-type=original
-Content-Description: original message before SpamAssassin
-Content-Disposition: attachment
-Content-Transfer-Encoding: 7bit
-
-Return-Path: <amgraph@mohi.org>
-Received: from 32.Red-83-33-56.dynamicIP.rima-tde.net
-	(32.Red-83-33-56.dynamicIP.rima-tde.net [83.33.56.32])
-	by alsa0.perex.cz (Postfix) with SMTP id 852AE2432E
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 21:10:22 +0100 (CET)
-Received: from puesto ([170.126.253.170])
-	by 32.Red-83-33-56.dynamicIP.rima-tde.net (9.51.3/9.51.3) with SMTP id
-	7LAim0GqzLBDCi; Wed, 7 Mar 2007 21:10:24 +0100
-Message-ID: <001b01c760fd$05ef9c10$0030236c@puesto>
-From: "Elton Decker" <amgraph@mohi.org>
-To: "alsa-devel" <alsa-devel@alsa-project.org>
-Subject: Not in saskatoon
-Date: Wed, 7 Mar 2007 21:07:10 +0100
-MIME-Version: 1.0
+--===============0408860614==
+Content-class: urn:content-classes:message
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0018_01C760FD.05EF9C10"
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2900.181
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.1409
+	boundary="----_=_NextPart_001_01C760F8.52037206"
 
-------=_NextPart_000_0018_01C760FD.05EF9C10
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C760F8.52037206
 Content-Type: text/plain;
-        charset="windows-1250"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
+Hi,
+=20
+I am posting the link for the code:
+http://leonidosaurio.8m.com/TI/codec.html =
+<http://leonidosaurio.8m.com/TI/codec.html>=20
+=20
+It looks like the soundcard is registered and so do the controls, but I =
+can't have access to them.=20
+I am including the info I get if that can be helpful to point out what I =
+could be missing.=20
+=20
+Thanks again,
+Leo
+-------------------------------------------------------------------------=
+---
+=20
+root@# cat /sys/devices/L3/omap-audio7/
+bus              sound:controlC0  sound:pcmC0D0p
+driver           sound:pcmC0D0c
+root@# cat /proc/driver/
+snd-page-alloc  twl4030-rtc
+root@# cat /proc/driver/snd-page-alloc
+pages  : 262144 bytes (64 pages per 4kB)
+root@# cat /sys/module/
+8250         mmc_block    snd          snd_timer    v4l1_compat
+lockd        smc91x       snd_pcm      tcp_bic      video_buf
+root@# cat /sys/module/snd
+snd        snd_pcm    snd_timer
+root@# cat /sys/module/snd/parameters/
+cards_limit  major
+root@# cat /sys/module/snd/parameters/cards_limit
+1
+root@# cat /sys/module/snd_pcm/parameters/
+maximum_substreams  preallocate_dma
+root@# cat /sys/module/snd_pcm/parameters/maximum_substreams
+4
+root@# cat /sys/module/snd_timer/parameters/timer_limit
+1
+root@# more /proc/modules
+root@#
+root@# cat /dev/s [Tab]
+shm      snd      sndstat  stderr   stdin    stdout
+root@# cat /dev/snd
+snd      sndstat
+root@# cat /dev/snd/
+controlC0  pcmC0D0c   pcmC0D0p   timer
+root@# cat /dev/snd/controlC0
+cat: /dev/snd/controlC0: File descriptor in bad state         <-------- =
+!!!!
+root@# cat /dev/snd/pcmC0D0c
+cat: /dev/snd/pcmC0D0c: File descriptor in bad state          <-------- =
+!!!!
+root@# cat /dev/snd/pcmC0D0p
+cat: /dev/snd/pcmC0D0p: Invalid argument                      <-------- =
+!!!!
+root@# cat /dev/snd/timer
+[Ctrl + C]
+root@# cat /dev/sndstat
+cat: /dev/sndstat: No such file or directory
+root@#
+root@# cat /proc/asound/card0/pcm0c/info
+card: 0
+device: 0
+subdevice: 0
+stream: CAPTURE
+id: OMAP PCM
+name: omap alsa pcm
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+root@# cat /proc/asound/card0/pcm0p/info
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: OMAP PCM
+name: omap alsa pcm
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+root@#
+=20
+=20
+
+________________________________
+
+From: Martinez de la Cruz, Leonides
+Sent: Fri 3/2/2007 4:19 PM
+To: alsa-devel@lists.sourceforge.net
+Subject: TWL4030 Codec for OMAP
 
 
+Hi,=20
+=20
+I am currently working in porting a TWL4030 chip codec to use ALSA =
+library. I am using alsa-lib-1.0.13 and alsa-utils-1.0.13, in a 2.6.14 =
+kernel version. It seems the sound card is registered and also do the =
+mixer controls. But when trying to access the specific information of =
+one control, I get the following error:
+=20
+amixer: Control hw:0 element read error: Inappropriate ioctl for device
+=20
+Have anyone seen this type of error before? Am I missing to register =
+something correctly in the codec?
+Any hint will be appreciated. Thanks in advance for your help :)
+=20
+Regards,
+Leo
+=20
+I am including the log of what I get:
+-------------------------------------------------------------------------=
+------------------
+root@#
+root@# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: TWL4030 [TWL4030], device 0: OMAP PCM [omap alsa pcm]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+root@# arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: TWL4030 [TWL4030], device 0: OMAP PCM [omap alsa pcm]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+root@# amixer info
+Card default 'TWL4030'/'TWL4030'
+  Mixer name    : ''
+  Components    : ''
+  Controls      : 16
+amixer: Mixer load default error: Inappropriate ioctl for device
+root@# amixer -c0 controls
+numid=3D1,iface=3DMIXER,name=3D'Master Playback Volume'
+numid=3D10,iface=3DMIXER,name=3D'Master Capture Volume'
+numid=3D7,iface=3DMIXER,name=3D'Earphone Playback Switch'
+numid=3D6,iface=3DMIXER,name=3D'Earphone Playback Volume'
+numid=3D5,iface=3DMIXER,name=3D'Hands-free Playback Switch'
+numid=3D4,iface=3DMIXER,name=3D'Hands-free Playback Volume'
+numid=3D3,iface=3DMIXER,name=3D'Headset Playback Switch'
+numid=3D2,iface=3DMIXER,name=3D'Headset Playback Volume'
+numid=3D12,iface=3DMIXER,name=3D'Headset-Mic Capture Switch'
+numid=3D11,iface=3DMIXER,name=3D'Headset-Mic Capture Volume'
+numid=3D14,iface=3DMIXER,name=3D'Main-Mic Capture Switch'
+numid=3D13,iface=3DMIXER,name=3D'Main-Mic Capture Volume'
+numid=3D9,iface=3DMIXER,name=3D'Sidetone Playback Switch'
+numid=3D8,iface=3DMIXER,name=3D'Sidetone Playback Volume'
+numid=3D16,iface=3DMIXER,name=3D'Sub-Mic Capture Switch'
+numid=3D15,iface=3DMIXER,name=3D'Sub-Mic Capture Volume'
+root@# amixer -c0 scontrols
+amixer: Mixer hw:0 load error: Inappropriate ioctl for device
+root@# amixer -c0 cget numid=3D1
+numid=3D1,iface=3DMIXER,name=3D'Master Playback Volume'
+  ; =
+type=3DINTEGER,access=3Drw------,values=3D2,min=3D0,max=3D100,step=3D0
+amixer: Control hw:0 element read error: Inappropriate ioctl for device
+root@# amixer -c0 cset numid=3D1 50
+amixer: Control hw:0 element write error: Inappropriate ioctl for device
+root@#
 
-
-Take a look at this ONE!!
-
-Sym8oL: NNCPCurr Price: $0.019 (UP! 58.33%) 5 Day Target price: =
-$0.15Action: Aggresive Buy/Hold!!
-
-All signs show that this one is going to Explode!
-
-
-The hottest news are released for NNCP, alsa-devel..
-
-
-
-------=_NextPart_000_0018_01C760FD.05EF9C10
+------_=_NextPart_001_01C760F8.52037206
 Content-Type: text/html;
-        charset="windows-1250"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-windows-1250">
-<META content=3D"MSHTML 6.00.2900.2962" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#990033 size=3D3D4><FONT =
-size=3D4><STRONG>Take a look at this ONE!</STRONG></FONT></DIV>
-<BR><BR><BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#990000 size=3D2>Sym8oL: =
-<b>NNCP</b><br>Curr Price: $0.019 (UP! 58.33%) <br>5 Day Target price: =
-$0.15<br>Action: Aggresive Buy/Hold.</FONT></DIV>
-<BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#3300FF size=3D3>All =
-signs show that this one is going to Explode!</FONT></DIV>
-<BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#CC0033 size=3D3>The =
-hottest news are released for NNCP, alsa-devel...</FONT></DIV>
-<BR><BR><BR>
-</BODY></HTML>
+<HTML dir=3Dltr><HEAD>=0A=
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dunicode">=0A=
+<META content=3D"MSHTML 6.00.6000.16414" name=3DGENERATOR></HEAD>=0A=
+<BODY>=0A=
+<DIV id=3DidOWAReplyText26096 dir=3Dltr>=0A=
+<DIV dir=3Dltr><FONT face=3DArial color=3D#000000 =
+size=3D2>Hi,</FONT></DIV>=0A=
+<DIV dir=3Dltr>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2>I am posting the link for the =
+code:</FONT></DIV>=0A=
+<DIV dir=3Dltr><A =
+href=3D"http://leonidosaurio.8m.com/TI/codec.html"><FONT face=3DArial =
+size=3D2>http://leonidosaurio.8m.com/TI/codec.html</FONT></A></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2>It looks like the soundcard =
+is registered and so do the controls, but I can't have access to =
+them.&nbsp;</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2>I am including the =
+i</FONT><FONT face=3DArial size=3D2>nfo I get if&nbsp;that can be =
+helpful to point out what I&nbsp;could be&nbsp;missing. </FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2>Thanks again,</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2>Leo</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial =
+size=3D2>----------------------------------------------------------------=
+------------</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat =
+/sys/devices/L3/omap-audio7/</STRONG><BR>bus&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sound:controlC0&nbsp; =
+sound:pcmC0D0p<BR>driver&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp; sound:pcmC0D0c</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat /proc/driver/</STRONG><BR>snd-page-alloc&nbsp; =
+twl4030-rtc<BR></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat =
+/proc/driver/snd-page-alloc</STRONG><BR>pages&nbsp; : 262144 bytes (64 =
+pages per 4kB)</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat =
+/sys/module/</STRONG><BR>8250&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp; mmc_block&nbsp;&nbsp;&nbsp; =
+snd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+snd_timer&nbsp;&nbsp;&nbsp; =
+v4l1_compat<BR>lockd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+smc91x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+snd_pcm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+tcp_bic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; video_buf<BR></FONT><FONT =
+face=3D"Courier New" size=3D2><STRONG>root@</STRONG></FONT><FONT =
+face=3D"Courier New" size=3D2><STRONG># cat =
+/sys/module/snd</STRONG><BR>snd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+ snd_pcm&nbsp;&nbsp;&nbsp; snd_timer<BR></FONT><FONT face=3D"Courier =
+New" size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat =
+/sys/module/snd/parameters/</STRONG><BR>cards_limit&nbsp; =
+major<BR></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat =
+/sys/module/snd/parameters/cards_limit</STRONG><BR>1<BR></FONT><FONT =
+face=3D"Courier New" size=3D2><STRONG>root@</STRONG></FONT><FONT =
+face=3D"Courier New" size=3D2><STRONG># cat =
+/sys/module/snd_pcm/parameters/</STRONG><BR>maximum_substreams&nbsp; =
+preallocate_dma<BR></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat =
+/sys/module/snd_pcm/parameters/maximum_substreams<BR></STRONG>4<BR></FONT=
+><FONT face=3D"Courier New" size=3D2><STRONG>root@</STRONG></FONT><FONT =
+face=3D"Courier New" size=3D2><STRONG># cat =
+/sys/module/snd_timer/parameters/timer_limit</STRONG><BR>1</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><STRONG><FONT face=3D"Courier New" =
+size=3D2># more /proc/modules<BR></FONT><FONT face=3D"Courier New" =
+size=3D2>root@</FONT><FONT face=3D"Courier New" =
+size=3D2>#</FONT></STRONG></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat /dev/s =
+</STRONG>[Tab]<BR>shm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+snd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sndstat&nbsp; stderr&nbsp;&nbsp; =
+stdin&nbsp;&nbsp;&nbsp; stdout<BR></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat =
+/dev/snd</STRONG><BR>snd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+sndstat<BR></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat /dev/snd/</STRONG><BR>controlC0&nbsp; =
+pcmC0D0c&nbsp;&nbsp; pcmC0D0p&nbsp;&nbsp; timer<BR></FONT><FONT =
+face=3D"Courier New" size=3D2><STRONG>root@</STRONG></FONT><FONT =
+face=3D"Courier New" size=3D2><STRONG># cat =
+/dev/snd/controlC0</STRONG><BR>cat: /dev/snd/controlC0: File descriptor =
+in bad state&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+color=3D#ff0000>&lt;-------- !!!!</FONT><BR></FONT><FONT face=3D"Courier =
+New" size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat /dev/snd/pcmC0D0c</STRONG><BR>cat: =
+/dev/snd/pcmC0D0c: File descriptor in bad =
+state&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT =
+color=3D#ff0000>&lt;-------- !!!!<BR></FONT></FONT><FONT face=3D"Courier =
+New" size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat /dev/snd/pcmC0D0p</STRONG><BR>cat: =
+/dev/snd/pcmC0D0p: Invalid =
+argument&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT =
+color=3D#ff0000>&lt;-------- !!!!</FONT><BR></FONT><STRONG><FONT =
+face=3D"Courier New" size=3D2>root@</FONT><FONT face=3D"Courier New" =
+size=3D2># cat /dev/snd/timer</FONT></STRONG></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New" size=3D2>[Ctrl + =
+C]</FONT></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New" =
+size=3D2>ro<STRONG>ot@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat /dev/sndstat</STRONG><BR>cat: /dev/sndstat: No =
+such file or directory<BR></FONT><STRONG><FONT face=3D"Courier New" =
+size=3D2>root@</FONT><FONT face=3D"Courier New" =
+size=3D2>#</FONT></STRONG></DIV>=0A=
+<DIV dir=3Dltr><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat /proc/asound/card0/pcm0c/info</STRONG><BR>card: =
+0<BR>device: 0<BR>subdevice: 0<BR>stream: CAPTURE<BR>id: OMAP =
+PCM<BR>name: omap alsa pcm<BR>subname: subdevice #0<BR>class: =
+0<BR>subclass: 0<BR>subdevices_count: 1<BR>subdevices_avail: =
+1<BR></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New" =
+size=3D2><STRONG># cat /proc/asound/card0/pcm0p/info</STRONG><BR>card: =
+0<BR>device: 0<BR>subdevice: 0<BR>stream: PLAYBACK<BR>id: OMAP =
+PCM<BR>name: omap alsa pcm<BR>subname: subdevice #0<BR>class: =
+0<BR>subclass: 0<BR>subdevices_count: 1<BR>subdevices_avail: =
+1<BR></FONT><STRONG><FONT face=3D"Courier New" =
+size=3D2>root@</FONT><FONT face=3D"Courier New" =
+size=3D2>#</FONT></STRONG></DIV>=0A=
+<DIV dir=3Dltr><STRONG><FONT face=3D"Courier New" =
+size=3D2></FONT></STRONG>&nbsp;</DIV>=0A=
+<DIV dir=3Dltr><STRONG><FONT face=3D"Courier New" =
+size=3D2></FONT></STRONG>&nbsp;</DIV></DIV></DIV>=0A=
+<DIV dir=3Dltr><BR>=0A=
+<HR tabIndex=3D-1>=0A=
+<FONT face=3DTahoma size=3D2><B>From:</B> Martinez de la Cruz, =
+Leonides<BR><B>Sent:</B> Fri 3/2/2007 4:19 PM<BR><B>To:</B> =
+alsa-devel@lists.sourceforge.net<BR><B>Subject:</B> TWL4030 Codec for =
+OMAP<BR></FONT><BR></DIV>=0A=
+<DIV dir=3Dltr>=0A=
+<DIV><FONT face=3DArial color=3D#000000 size=3D2>=0A=
+<DIV><FONT face=3DArial size=3D2>Hi, </FONT></DIV>=0A=
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
+<DIV><FONT face=3DArial size=3D2>I am currently&nbsp;working in =
+porting&nbsp;a TWL4030 chip codec&nbsp;to use ALSA =
+library.&nbsp;I&nbsp;am using alsa-lib-1.0.13 and =
+alsa-utils-1.0.13,&nbsp;in a 2.6.14 kernel version. It seems the sound =
+card is registered and also do the mixer controls. But when trying to =
+access the specific information of one control, I get the following =
+error:</FONT></DIV>=0A=
+<DIV>&nbsp;</DIV>=0A=
+<DIV><FONT face=3D"Courier New" size=3D2>amixer: Control hw:0 element =
+read error: Inappropriate ioctl for device</FONT></DIV>=0A=
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>=0A=
+<DIV><FONT face=3DArial size=3D2>Have anyone seen this type of error =
+before? Am I missing to register something correctly in the =
+codec?</FONT></DIV>=0A=
+<DIV><FONT face=3DArial size=3D2>Any hint will be appreciated. Thanks in =
+advance for&nbsp;your help :)</FONT></DIV>=0A=
+<DIV>&nbsp;</DIV>=0A=
+<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>=0A=
+<DIV><FONT face=3DArial size=3D2>Leo</FONT></DIV>=0A=
+<DIV>&nbsp;</DIV>=0A=
+<DIV>I am including the log of what I get:</DIV>=0A=
+<DIV><FONT face=3DArial =
+size=3D2>----------------------------------------------------------------=
+---------------------------</FONT></DIV>=0A=
+<DIV><FONT color=3D#000000 size=3D2><FONT face=3D"Courier =
+New"><STRONG>root@</STRONG></FONT><STRONG><FONT face=3D"Courier =
+New">#<BR></FONT><FONT face=3D"Courier New">root@</FONT></STRONG><FONT =
+face=3D"Courier New"><STRONG># aplay -l</STRONG><BR>**** List of =
+PLAYBACK Hardware Devices ****<BR>card 0: TWL4030 [TWL4030], device 0: =
+OMAP PCM [omap alsa pcm]<BR>&nbsp; Subdevices: 1/1<BR>&nbsp; Subdevice =
+#0: subdevice #0<BR></FONT><FONT face=3D"Courier =
+New"><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New"><STRONG># =
+arecord -l</STRONG><BR>**** List of CAPTURE Hardware Devices =
+****<BR>card 0: TWL4030 [TWL4030], device 0: OMAP PCM [omap alsa =
+pcm]<BR>&nbsp; Subdevices: 1/1<BR>&nbsp; Subdevice #0: subdevice =
+#0<BR></FONT><FONT face=3D"Courier =
+New"><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New"><STRONG># =
+amixer info</STRONG><BR>Card default 'TWL4030'/'TWL4030'<BR>&nbsp; Mixer =
+name&nbsp;&nbsp;&nbsp; : ''<BR>&nbsp; Components&nbsp;&nbsp;&nbsp; : =
+''<BR>&nbsp; Controls&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 16<BR>amixer: =
+Mixer load default error: Inappropriate ioctl for device<BR></FONT><FONT =
+face=3D"Courier New"><STRONG>root@</STRONG></FONT><FONT face=3D"Courier =
+New"><STRONG># amixer -c0 =
+controls</STRONG><BR>numid=3D1,iface=3DMIXER,name=3D'Master Playback =
+Volume'<BR>numid=3D10,iface=3DMIXER,name=3D'Master Capture =
+Volume'<BR>numid=3D7,iface=3DMIXER,name=3D'Earphone Playback =
+Switch'<BR>numid=3D6,iface=3DMIXER,name=3D'Earphone Playback =
+Volume'<BR>numid=3D5,iface=3DMIXER,name=3D'Hands-free Playback =
+Switch'<BR>numid=3D4,iface=3DMIXER,name=3D'Hands-free Playback =
+Volume'<BR>numid=3D3,iface=3DMIXER,name=3D'Headset Playback =
+Switch'<BR>numid=3D2,iface=3DMIXER,name=3D'Headset Playback =
+Volume'<BR>numid=3D12,iface=3DMIXER,name=3D'Headset-Mic Capture =
+Switch'<BR>numid=3D11,iface=3DMIXER,name=3D'Headset-Mic Capture =
+Volume'<BR>numid=3D14,iface=3DMIXER,name=3D'Main-Mic Capture =
+Switch'<BR>numid=3D13,iface=3DMIXER,name=3D'Main-Mic Capture =
+Volume'<BR>numid=3D9,iface=3DMIXER,name=3D'Sidetone Playback =
+Switch'<BR>numid=3D8,iface=3DMIXER,name=3D'Sidetone Playback =
+Volume'<BR>numid=3D16,iface=3DMIXER,name=3D'Sub-Mic Capture =
+Switch'<BR>numid=3D15,iface=3DMIXER,name=3D'Sub-Mic Capture =
+Volume'<BR></FONT><FONT face=3D"Courier =
+New"><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New"><STRONG># =
+amixer -c0 scontrols</STRONG><BR>amixer: Mixer hw:0 load error: =
+Inappropriate ioctl for device<BR></FONT><FONT face=3D"Courier =
+New"><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New"><STRONG># =
+amixer -c0 cget =
+numid=3D1</STRONG><BR>numid=3D1,iface=3DMIXER,name=3D'Master Playback =
+Volume'<BR>&nbsp; ; =
+type=3DINTEGER,access=3Drw------,values=3D2,min=3D0,max=3D100,step=3D0<BR=
+>amixer: Control hw:0 element read error: Inappropriate ioctl for =
+device</FONT></FONT></DIV>=0A=
+<DIV><FONT color=3D#000000 size=3D2><FONT face=3D"Courier =
+New"><STRONG>root@</STRONG></FONT><FONT face=3D"Courier New"><STRONG># =
+amixer -c0 cset numid=3D1 50</STRONG><BR>amixer: Control hw:0 element =
+write error: Inappropriate ioctl for device</FONT></FONT></DIV>=0A=
+<DIV><FONT color=3D#000000 size=3D2><STRONG><FONT face=3D"Courier =
+New">root@</FONT><FONT face=3D"Courier =
+New">#</FONT></STRONG></FONT></DIV></FONT></DIV></DIV></BODY></HTML>
+------_=_NextPart_001_01C760F8.52037206--
 
-------=_NextPart_000_0018_01C760FD.05EF9C10--
 
-------------=_45EF1C37.D4C10DB6
+--===============0408860614==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -148,7 +438,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-------------=_45EF1C37.D4C10DB6
+--===============0408860614==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -159,4 +449,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------------=_45EF1C37.D4C10DB6--
+--===============0408860614==--
