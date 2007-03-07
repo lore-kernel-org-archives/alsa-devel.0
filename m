@@ -1,14 +1,11 @@
-From: "James Courtier-Dutton" <james.dutton@gmail.com>
-Subject: Re: Problem access CVS web access
-Date: Wed, 7 Mar 2007 17:05:12 +0000
-Message-ID: <ad2655cb0703070905nbbf0f49vad60fb90bef4f47@mail.gmail.com>
-References: <5FD5754DDBA0B1499B5A0B4BB5419485B0CBD0@fmsmsx411.amr.corp.intel.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HOooJ-0008Es-RL delayed 10 hours
+Date: Wed, 07 Mar 2007 09:08:31 -0800
+Message-ID: <E1HOzct-0001NF-5h@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <5FD5754DDBA0B1499B5A0B4BB5419485B0CBD0@fmsmsx411.amr.corp.intel.com>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,33 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "Allyn, Mark A" <mark.a.allyn@intel.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 07/03/07, Allyn, Mark A <mark.a.allyn@intel.com> wrote:
-> Folks:
->
-> I tried to use the link
-> http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/alsa/alsa-kernel/Document
-> ation/, which is on the
-> http://www.alsa-project.org/documentation.php#0.9doc website.
->
-> I get the following error:
->
-> Connection Failed
-> (113) No route to host
->
->
-> Are any of you aware of this problem?
->
-> Thanks
->
-> Mark Allyn
->
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-Can you please tell me where this information about CVS was?
-We need to re-edit it to point at the hg repository.
+The message identifier is:     1HOooJ-0008Es-RL
+The subject of the message is: the north, two mites, kingdoms of families of
+The date of the message is:    Wed, 07 Mar 2007 11:05:26 +0530
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
