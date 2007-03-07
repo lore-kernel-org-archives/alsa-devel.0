@@ -1,17 +1,20 @@
-From: Chanel Watches <wcortes@zlla.com>
-Subject: Replica watches, bags, pens
-Date: Wed, 07 Mar 2007 12:26:35 +0300
-Message-ID: <4c6b01c7609a$9121637a$9e15a104@zlla.com>
+From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Subject: Re: mm snapshot broken-out-2007-03-05-02-22.tar.gz
+	uploaded
+Date: Wed, 07 Mar 2007 12:36:36 +0100
+Message-ID: <45EEA3C4.7000501__32901.363579049$1173267559$gmane$org@googlemail.com>
+References: <200703051024.l25AOIF3015951@shell0.pdx.osdl.net>
+	<45EC2DEB.1050108@googlemail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1296020841=="
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E49BD2EF
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 10:31:54 +0100 (MET)
-Received: from localhost.localdomain (unknown [89.128.15.165])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	50D5399DA8
-	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 10:31:54 +0100 (MET)
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.185])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA94C2B2
+	for <alsa-devel@alsa-project.org>; Wed,  7 Mar 2007 12:38:24 +0100 (MET)
+Received: by nf-out-0910.google.com with SMTP id n29so136257nfc
+	for <alsa-devel@alsa-project.org>; Wed, 07 Mar 2007 03:38:24 -0800 (PST)
+In-Reply-To: <45EC2DEB.1050108@googlemail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,74 +24,129 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Randy Cushman <rcushman_linux@earthlink.net>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Michal Piotrowski napisa=B3(a):
+> Hi,
+> =
 
---===============1296020841==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0000_00004E1B.F39DBF9A"
+> akpm@linux-foundation.org napisa=B3(a):
+>> The mm snapshot broken-out-2007-03-05-02-22.tar.gz has been uploaded to
+>>
+>>    ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/mm/broken-out-2007-=
+03-05-02-22.tar.gz
+>>
+>> It contains the following patches against 2.6.21-rc2:
+>>
+> =
 
-This is a multi-part message in MIME format.
+> Outstanding issue - my 3d surround doesn't work since 2.6.20.
+> =
 
-------=_NextPart_000_0000_00004E1B.F39DBF9A
-Content-Type: text/plain;
-    charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+> I'll bisect this commits
+> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dco=
+mmit;h=3D724339d76d9407cd1a8ad32a9c1fdf64840cc51b
+> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dco=
+mmit;h=3D6026179519896e7d35b2564e7544487d1c8948e7
+> =
 
- EXQUISITE REPLICA WATCHESROLEX, CARTIER, BREITLING AND MORE...VISIT OUR
-ONLINE SHOP!
+> 00:1f.5 Multimedia audio controller: Intel Corporation 82801EB/ER (ICH5/I=
+CH5R) AC'97 Audio Controller (rev 02)
+>         Subsystem: ASUSTeK Computer Inc. P4P800 Mainboard
+>         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParEr=
+r- Stepping- SERR- FastB2B-
+>         Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=3Dmedium >TAbort=
+- <TAbort- <MAbort- >SERR- <PERR-
+>         Latency: 0
+>         Interrupt: pin B routed to IRQ 17
+>         Region 0: I/O ports at d000 [size=3D256]
+>         Region 1: I/O ports at d400 [size=3D64]
+>         Region 2: Memory at f5fff800 (32-bit, non-prefetchable) [size=3D5=
+12]
+>         Region 3: Memory at f5fff400 (32-bit, non-prefetchable) [size=3D2=
+56]
+>         Capabilities: [50] Power Management version 2
+>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D375mA PME(D0+,D1=
+-,D2-,D3hot+,D3cold+)
+>                 Status: D0 PME-Enable- DSel=3D0 DScale=3D0 PME-
+> =
 
-  
-------=_NextPart_000_0000_00004E1B.F39DBF9A
-Content-Type: text/html;
-    charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> Advanced Linux Sound Architecture Driver Version 1.0.14rc2 (Wed Feb 14 07=
+:42:13 2007 UTC).
+> =
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2912" name=3D"GENERATOR">
-</HEAD>
-<BODY text=3D#000000 bgColor=3D#ffffff>
+> CONFIG_SND=3Dm
+> CONFIG_SND_TIMER=3Dm
+> CONFIG_SND_PCM=3Dm
+> CONFIG_SND_RAWMIDI=3Dm
+> CONFIG_SND_SEQUENCER=3Dm
+> CONFIG_SND_SEQ_DUMMY=3Dm
+> CONFIG_SND_OSSEMUL=3Dy
+> CONFIG_SND_MIXER_OSS=3Dm
+> CONFIG_SND_PCM_OSS=3Dm
+> CONFIG_SND_PCM_OSS_PLUGINS=3Dy
+> CONFIG_SND_SEQUENCER_OSS=3Dy
+> CONFIG_SND_RTCTIMER=3Dm
+> CONFIG_SND_SEQ_RTCTIMER_DEFAULT=3Dy
+> # CONFIG_SND_DYNAMIC_MINORS is not set
+> CONFIG_SND_SUPPORT_OLD_API=3Dy
+> CONFIG_SND_VERBOSE_PROCFS=3Dy
+> # CONFIG_SND_VERBOSE_PRINTK is not set
+> # CONFIG_SND_DEBUG is not set
+> =
 
-<font size=3D"3" face=3D"Times New Roman"><p align=3D"center"><font =
-face=3D"Verdana" size=3D"5"><strong><font color=3D"#ff9900" =
-size=3D"6"><font color=3D"#cc0000">EXQUISITE REPLICA WATCHES</font><br =
-/></font><br />ROLEX, CARTIER, BREITLING AND MORE...<br /><br /><a =
-href=3D"http://letnpeeeer.com/"><font color=3D"#0000ff">VISIT OUR ONLINE=
- SHOP!</font></a></strong></font></p></font>
-</BODY>
-</HTML>
+> CONFIG_SND_AC97_CODEC=3Dm
+> CONFIG_SND_DUMMY=3Dm
+> CONFIG_SND_VIRMIDI=3Dm
+> =
 
-------=_NextPart_000_0000_00004E1B.F39DBF9A--
+> CONFIG_SND_INTEL8X0=3Dm
 
+As I said above, center and rear speakers doesn't work with this patch.
 
+$ git-bisect good
+831466f4ad2b5fe23dff77edbe6a7c244435e973 is first bad commit
+commit 831466f4ad2b5fe23dff77edbe6a7c244435e973
+Author: Randy Cushman <rcushman_linux@earthlink.net>
+Date:   Tue Dec 19 18:42:16 2006 +0100
 
+    [ALSA] ac97 - fix microphone and line_in selection logic
 
+    This patch fixes the Microphone and LINE_IN select logic for
+    Analog Devices surround codecs with shared jacks.  The existing
+    code can never utilize the shared jacks for Microphone and LINE_IN
+    due to the reversed jack selection logic.  The patched code
+    correctly selects the shared jack for input if the 'Channel Mode'
+    selector does not specify that the jack is to be used for output.
+    Specifically, in '2ch' mode the Center/LFE jack is used for
+    microphone input and the Surround jack is used for LINE_IN,
+    in '4ch' mode the Center/LFE jack is used for microphone input
+    and the Surround jack is used for output, and in '6ch' mode
+    both jacks are used for output.
 
---===============1296020841==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+    Signed-off-by: Randy Cushman <rcushman_linux@earthlink.net>
+    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+    Signed-off-by: Jaroslav Kysela <perex@suse.cz>
+
+:040000 040000 7146a2c5350578fe1b05586c64df99889fa423fe 10e98a9b4819b34ce2a=
+bb2c36adbf269d39b9e4c M      sound
+
+Regards,
+Michal
+
+-- =
+
+Michal K. K. Piotrowski
+LTG - Linux Testers Group (PL)
+(http://www.stardust.webpages.pl/ltg/)
+LTG - Linux Testers Group (EN)
+(http://www.stardust.webpages.pl/linux_testers_group_en/)
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1296020841==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1296020841==--
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
