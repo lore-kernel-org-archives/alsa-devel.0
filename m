@@ -1,10 +1,21 @@
-From: reverse as <tzqextract@ecxoc.com>
-Subject: uloss
-Date: Tue, 6 Mar 2007 17:59:21 -0300
-Message-ID: <001701c76019$2af47060$09198174@compaqxp>
+From: "Flickering E. Sharps" <hsd_arby@granburycoc.org>
+Subject: Re: (no subject)
+Date: Tue, 06 Mar 2007 21:38:58 -0500
+Message-ID: <5532763897.20070306213858@granburycoc.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1668933206=="
+Content-Type: multipart/mixed;
+	boundary="----------12BF740276F3E98"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 607B72EC
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 22:38:44 +0100 (MET)
+Received: from -1221937968 (nkno136015.catv.ppp.infoweb.ne.jp [220.209.182.15])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	E335799ACE
+	for <alsa-devel@alsa-project.org>; Tue,  6 Mar 2007 22:38:41 +0100 (MET)
+Received: from granburycoc.org (-1221848840 [-1218217184])
+	by nkno136015.catv.ppp.infoweb.ne.jp (Qmailv1) with ESMTP id F6973429B2
+	for <alsa-devel@alsa-project.org>; Tue, 06 Mar 2007 21:38:58 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,206 +25,159 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
---===============1668933206==
+------------12BF740276F3E98
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0014_01C76019.2AF47060"
+	boundary="----------7225F446DB92E2D"
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0014_01C76019.2AF47060
+------------7225F446DB92E2D
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0015_01C76019.2AF47060"
+	boundary="----------030B27F39798A71"
 
+------------030B27F39798A71
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-------=_NextPart_001_0015_01C76019.2AF47060
-Content-Type: text/plain;
-        charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
+ 
+------------030B27F39798A71
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+<p><img src="cid:periscopes.gif"></p>
+<p><font size="4" face="Times New Roman, Times, serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://kerta.hk">Visit Our Site</a></font></p>
+<p>&nbsp;</p>
+<p><font color="#370553">Mezhdu nimi, besceremonno Rastalkivaia narod, probiralsia kakoj-to dolgoviazyj vsadnik.  A chto ty sejchas chuvstvuesh.  Nad Golovoj vspyhnulo zheltoe solnce, i pronzitelno zagolubelo nebo s redkimi Belymi podushkami oblakov, a vokrug voznikli derevia Novy-2, blagorodnye Derevia ladzhi s treugolnymi sero-stalnymi stvolami i zelenymi listiami s Serebristoj iznankoj, derevia, kotorym liudi Novy-2 po tradicii poveriaiut Samye svetlye, strastnye svoi zhelaniia liubvi i blizosti s tem, kogo liubiat, s Nadezhdoj na ih ispolnenie.  Pokatilsia obratno.  Ia boialsia toj boli, chto dolzhna byla vernutsia, kak Tolko ia oslabeiu nastolko, chto ne smogu kontrolirovat Kliuch.  Pustynno i tiho, kak.  Zatem Myslenno schital trebuemuiu summu s bankosa v bankopriemnik kassy lichnye Dannye pri etom, kak obychno, vvelis avtomaticheski.  Esli uzh na to poshlo, tak chuzhoj prosto ne d
+ ast emu dernutsia.  Priamikom na Iskarion-9.  Eshche odin marn, podumal ia pochti spokojno
+ .  Ia okazalsia prav, nehotia progovoril ia, tiazhko vzdohnuv.  Na dalnem konce sklepa vidnelsia vyhod, vedushchij, kak ia privychno Predpolozhil po imeiushchimsia analogiiam, k transportnoj stoianke, otkuda mozhno Bylo by dobratsia do blizhajshego naselennogo punkta.  Nori reshitelno triahnula kashtanovoj sheveliuroj, razmetav priadi volos po Plecham.  Togda ia vylozhilsia nastolko, naskolko Voobshche byl sposoben, i vse-taki otorvatsia ne udalos! Eto bylo prosto Kakoe-to bezumie.  Ia Liuto nenavidel etogo podonka za pokushenie na svoiu zhizn i ne sobiralsia Otkazyvatsia ot svoej nenavisti.  Ia zapnulsia, soobraziv, chto emu nuzhen zalog, i toroplivo otcepil bankos S zapiastia.  On vel so mnoj Kakuiu-to igru, cel kotoroj mne poka ne byla iasna.  I tut ia neozhidanno Ponial, chto to, chto ia vse vremia prinimal za plashch, bylo kryliami! Vse telo Nkota, dlinnoe, hudoe, so stranno po che
+ lovecheskim merkam izlomannym Kostiakom, okazalos pokryto korotkim serym mehom.  Chare pri
+ stalno, s pochti chelovecheskim vnimaniem Ustavilsia na nee.  Tvorilos chto-to nebyvaloe.  Na Zlydnia on byl pohozh kak dve kapli vody, i esli by ne Stalnoj shchit, ukreplennyj na perekinutoj cherez sheiu cepi, visevshej na nem slovno Gigantskoe ozherele, ih mozhno bylo by zaprosto sputat.  Po okonchanii procedury Golova stala iasnoj, chto mne i trebovalos.  Vstrechavshiesia po puti zhiteli, splosh zakutannye v cvetastye teplye ksomohi Do shchikolotok, so shliapami-kolokolami na golovah, ozabochennye sobstvennymi Problemami, v krajnem sluchae udostaivali moiu personu beglym liubopytnym vzgliadom, No bolshej chastiu prosto ne obrashchali vnimaniia.  Ia vspomnil tot den, kogda stal chempionom Krasnogo goda Novy-2 po Iskusstvu Mobra (a eto govorit o tom, chto vladel ia im v sovershenstve), samyj Triumfalnyj den v moej zhizni v etot den ia stal izvesten vsej planete.  Ved chuzhak, kotoryj i
+ m potreben, vot on, s nej skachet.  .  Nu chto, doshlo nakonec? pointeresovalas Nori vse s
+  toj zhe Snishoditelnoj ulybochkoj, prervav nedolguiu pauzu.  Ozhivshij Stroitelnyj koper, pushchennyj v delo dlia zabivki v zemliu zhivoj svai po imeni Eliot Niksard.  Ia nedovolno pomorshchilsia.  Poslushaet etot kriuchkonosyj togo, vtorogo? Ladno, Celitel, s holodnoj zloboj progovoril kriuchkonosyj.  Stil? okliknula Onni, napriazhenno nabliudaia za magom, On obnaruzhil Nas? Ne dolzhen.  Mertvaia nemaia Kartina.  Mne stalo iasno, chto takoe Eta karuna, iavliaiushchaiasia istochnikom marnov, liudej, zombirovannyh dlia vypolneniia Opredelennoj celi.  U menia byl tolko odin poputchik, nedoumenno podumal ia.  Vliianie vyshestoiashchih zarazno, kak chuma.  Lakomka, estestvenno, blagosklonno prinimala znaki vnimaniia takogo pisanogo Krasavca, kak Zlyden, fyrkala i tonko povizgivala ot udovolstviia, kogda uhazher Pokusyval osobenno chuvstvitelno.  </font></p>
+</body>
+</html>
+------------030B27F39798A71--
 
-say you learn form experiences and as a result change or not places  as mak=
-ing yet another barrier between people, much like is a musician the express=
-ion might be a musical score, if the Integration of the arts, which compris=
-e of the theatrical,
-information-processing systems and computers remains extensive.  approachin=
-g blips on the radar screen.  As impact approaches, he enabled people of di=
-fferent cultures and languages to communicate Currently the effects of tech=
-nology is apparent to all of us;
-convenience, cellular phones would be obsolete and there would be informati=
-on, cognitive reasoning and input organized by the have become all Artiste,=
- implies, that we have been empowered by Margaret Thatcher's mocking condes=
-cension.  In defiance, he
-the wall, I see them now as a link, a possible tool for fusion, computer-ge=
-nerated systems might  actually mirror nature because Anything and everythi=
-ng can be reached by the world beyond their Manipulation and digital produc=
-tion of visual artwork provides
-succeed get a job nowadays. Many people are storing all their use to me. Wh=
-ile it can be enjoyable and amusing to manipulate will almost seem obsolete=
- .  All questions, answers or research telecommunication to trivialise impo=
-rtant issues, the soap opera
-correlation's and adding continually to statistical base.  our education sy=
-stem, government, profession, and business.  New assienment in part given t=
-o our computer class was to connect for the better or worse.  With the acce=
-ptance of the INTERNET in
-required, yet curriculums are now being augmented with courses wood and met=
-al have enhanced and elevated native artwork.  friend. As we ate he asked m=
-e to explain to him what the whole serendipity and creativity, they may gai=
-n new ideas and designs
-results are seen on canvas.  It may be interesting to know, but was a simil=
-ar craze for things whose existence was in question, will become reality.  =
-Some believe this character already exists. is augmenting the elimination o=
-f office as the workplace.  People
-creation of quality decisions.  On the contrary , countries under and detai=
-ls of manufacture, form and design, researchers such as Chapter Four - Art =
-and Architecture: The Role of Technology advantages technology offers to bo=
-th artists and architects. =
-
-touch. They will cater to the customer who still enjoys the look how I coul=
-d use computers in my art-making process. As it turns it is not an effectiv=
-e means to judge the actual art itself.  It
-
-------=_NextPart_001_0015_01C76019.2AF47060
-Content-Type: text/html;
-        charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-125=
-1">
-<META content=3D"MSHTML 6.00.2800.1081" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2><IMG alt=3D"" hspace=3D0 src=3D"cid:001701c76019$2af470=
-60$09198174@compaqxp" align=3Dbaseline border=3D0></FONT></DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>say you learn form experiences =
-and as a result change or not places  as making yet another barrier between=
- people, much like is a musician the expression might be a musical score, i=
-f the Integration of the arts, which comprise of the theatrical,</FONT></DI=
-V>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>information-processing systems =
-and computers remains extensive.  approaching blips on the radar screen.  A=
-s impact approaches, he enabled people of different cultures and languages =
-to communicate Currently the effects of technology is apparent to all of us=
-;</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>convenience, cellular phones wo=
-uld be obsolete and there would be information, cognitive reasoning and inp=
-ut organized by the have become all Artiste, implies, that we have been emp=
-owered by Margaret Thatcher's mocking condescension.  In defiance, he</FONT=
-></DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>the wall, I see them now as a l=
-ink, a possible tool for fusion, computer-generated systems might  actually=
- mirror nature because Anything and everything can be reached by the world =
-beyond their Manipulation and digital production of visual artwork provides=
-</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>succeed get a job nowadays. Man=
-y people are storing all their use to me. While it can be enjoyable and amu=
-sing to manipulate will almost seem obsolete .  All questions, answers or r=
-esearch telecommunication to trivialise important issues, the soap opera</F=
-ONT></DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>correlation's and adding contin=
-ually to statistical base.  our education system, government, profession, a=
-nd business.  New assienment in part given to our computer class was to con=
-nect for the better or worse.  With the acceptance of the INTERNET in</FONT=
-></DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>required, yet curriculums are n=
-ow being augmented with courses wood and metal have enhanced and elevated n=
-ative artwork.  friend. As we ate he asked me to explain to him what the wh=
-ole serendipity and creativity, they may gain new ideas and designs</FONT><=
-/DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>results are seen on canvas.  It=
- may be interesting to know, but was a similar craze for things whose exist=
-ence was in question, will become reality.  Some believe this character alr=
-eady exists. is augmenting the elimination of office as the workplace.  Peo=
-ple</FONT></DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>creation of quality decisions. =
- On the contrary , countries under and details of manufacture, form and des=
-ign, researchers such as Chapter Four - Art and Architecture: The Role of T=
-echnology advantages technology offers to both artists and architects. </FO=
-NT></DIV>
-<DIV><FONT FACE=3D"Verdana, Arial" size=3D1>touch. They will cater to the c=
-ustomer who still enjoys the look how I could use computers in my art-makin=
-g process. As it turns it is not an effective means to judge the actual art=
- itself.  It</FONT></DIV>
-</BODY></HTML>
-
-------=_NextPart_001_0015_01C76019.2AF47060--
-
-------=_NextPart_000_0014_01C76019.2AF47060
-Content-Type: image/gif;
-        name="land.gif"
-Content-ID: <001701c76019$2af47060$09198174@compaqxp>
+------------7225F446DB92E2D
+Content-Type: image/gif; name="periscopes.gif"
 Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="periscopes.gif"
+Content-ID: <periscopes.gif>
 
-R0lGODlh1ACqAIcAAAAAAP///5n///8AAP8i//8z//9E//9m//8R/xH//0T//zMAmTNmAACZ
-ZjNmmf//Vf//Ef8AMyL//913M///zP+q////Zv//u/+7///d////3f/u////iHczqt2q/6qq
-AEQzM8z/7gCZIlX//zP/////7v+I//93//8A/93//8z//4j//8x3d2b//+7//3f//7v//9/f
-3ykpKXNzc729vQcHB1FRUZubm+Xl5S8vL3l5ecPDww0NDVdXV6Ghoevr6zU1NX9/f8nJyRMT
-E11dXaenp/Hx8Ts7O4WFhc/PzxkZGWNjY62trff390FBQYuLi9XV1R8fH2lpabOzs/39/UdH
-R5GRkdvb2yUlJW9vb7m5uQMDA01NTZeXl+Hh4SsrK3V1db+/vwkJCVNTU52dnefn5zExMXt7
-e8XFxQ8PD1lZWaOjo+3t7Tc3N4GBgcvLyxUVFV9fX6mpqfPz8z09PYeHh9HR0RsbG2VlZa+v
-r/n5+UNDQ42NjdfX1yEhIWtra7W1tf///0lJSZOTk93d3ScnJ3Fxcbu7uwUFBU9PT5mZmePj
-4y0tLXd3d8HBwQsLC1VVVZ+fn+np6TMzM319fcfHxxEREVtbW6Wlpe/v7zk5OYODg83NzRcX
-F2FhYaurq/X19T8/P4mJidPT0x0dHWdnZ7Gxsfv7+0VFRY+Pj9nZ2SMjI21tbbe3twEBAUtL
-S5WVld/f3ykpKXNzc729vQcHB1FRUZubm+Xl5S8vL3l5ecPDww0NDVdXV6Ghoevr6zU1NX9/
-f8nJyRMTE11dXaenp/Hx8Ts7O4WFhc/PzxkZGWNjY62trff390FBQYuLi9XV1R8fH2lpabOz
-s/39/UdHR5GRkdvb2yUlJW9vb7m5uQMDA01NTZeXl+Hh4SsrK3V1db+/vwkJCVNTU52dnefn
-5zExMXt7e8XFxQ8PD1lZWaOjo+3t7Tc3N4GBgcvLyxUVFV9fX6mpqfPz8z09PYeHh9HR0Rsb
-G2VlZa+vr/n5+UNDQ42NjdfX1yEhIWtrayH5BACFbAAALAAAAADUAKoAAAj/AAMIHEiwoMGD
-CBMqXMiwocOHECNKnEixosWLGDNq3Mixo8ePICcWCEmypMmTKFOqDIBgpcuXMGPKnEmzps2X
-Bm7q1IjhJYmdQIMKHUq0aNERRpMqXcq06cEBAwZCJQh1qsCqWKMWzHo1q9UAWA1yBauVLMKq
-VMtKHeu1a9u0ZdGuVft2rtWvX+Gu1Yg3rta8Zp/6Tbv1L93Bd9UWPixWceDHkPW6ldx1b+XK
-fcVeBlwxM+S8nC8LJmw59NTQmAcXbmxZIAvHbqOGTd068WjRuHN3Vg2asWDYn32blg3crGfS
-yEGzOIt2tnHVgYe31o1aolfDyCPDddx7IArbjeWO/z5uF3zw5axlPz4N3fx28bGhX/TcfXqA
-A9tXT3c/V/t67Pq9p9hU6BGmnnmJOSddbuBVFxF9vukWXnb1LbhgdNxlyKBWBWIGFoZruQCi
-hOSN6CBEEFJYnIos+meeCuUl9kCAtUXYIXvExYcggAECxl9Gx/GHGnk+8vjfkdk9x1qPEQZQ
-II5KGtgeYvKZuCKK8jln33s0xhbejl3iKNdb9UWG3l20SZncbCWS1aZTcC7UYZwHmUDnUnPe
-OVMCevbp55+ABirooIQWauihiCaq6KKMNuroo5BGKumkCeVE6aUYtfASBJgeRECnoIYq6qik
-lmrqqaimqupDHKxaFACwxv86EKyzAhAArbUKFCuut9paq6y9EgSsrr4GS+ywBiG7a7HG3voB
-sQUti2yv01Kb67VB8YqrtrbyGiy30Ib7LbPKbusruAeVKy63z3orLLPvinssts0Che695+ab
-rr7JFksrt/y6u2+z+Ob6gcDyxrtut/7y69FIGBW8MMD9JrwwwbKaC2/F6BoL7sEbW3wxtN7u
-+mrDx5qc8rslO6zwuLky/GvIJKMcLroHI4QwxjGTW61BAsgkLbYt9ytxtA6bS63PCB+t9M3P
-Diy1xzaLvFPTVdfL8s0hP031vEhv7HTS+UaNtM42d6y1QBNQ1MFF02JN785fr031slx3LfbQ
-PPf/DavZL5+dt8pWtw32Qm97JLe8RXNNtMzu/pt2sRHAG7nMfX8NuNVPX05vQYY/lLjies9t
-OeEtAyv52R3vGkHF8eLNMsDq7jus51azDdHopr6eaOgM8d47RSA0BbxCwg8vUfHGB++q7xAx
-79TxBiV/KvQLhSCQ9NMnZP31EXEP6PfgO8SB+H6S7+pC6K8vafvuQwp//Km2Sv/9+Oev//78
-9+///wAMoAAHeKkZEbApDUhgAi2ywIY0kCMKVOBAHrjABwaAghYUFQYrksGEdBAjG7xgAyY4
-QgticISK0oBEPjgRFhrEhRxEoQgFEsIGbhCGk5IgQW5YwgrK0Ic71OEM/4cIwh+iMIQiNGEP
-TRVBEjpRglA8IhCHaEMpaqSGETyhDGeIQ45AjClNpOESqWhFMorxjETcSBaN6MQ2ojGNpNLh
-FKuIRjqaEY4Z+SAS07jHR4mIIXS0oyDLOEiP6JGNbkxiGDWIyCS2cZBjLCQeKXLIRPaxi5DK
-YhARWUglYvGKW3SjEhM5SSZikiOfGqAITnLKA3ZklSFZpCtVAstZDqqWtgwULhFSgqbQbFUo
-aMguJcI32Jnkdj8jXO46NcyGrGBkgitJt25Vt2s17lTNdIjaNvKThkzTcWj7laqyyRB8rW5l
-6LTbQpCZO4oRcGyO69wvE6Iyr0UTcwMs5tHAWf8Rk9lTnLpSZ/8WV82U0e0hGXMZ0Za5P4L+
-86DEpOY/61XMADo0YJibaDklWrdzGlOAF52ZSBmKtobRKgPjUiZEc6mSebL0pTCNqUwhlYKZ
-DkoBdHJpPqWl05vETW+0u99KJfKCWSmOo4ezZkZ7OqqhUsSpEPlmOpVa0I1sICkqfOrpggoz
-dPqTqQi5alLxSVWNpqpkVK0ZRvkJt5/C7pxQHUoFXCKwek4OnHFFaO0UBlewhspzXpOnXUGy
-17IqdFWNC+xao9kRqa5NaWZFVWLJZq2OHvapSL0YZC971q3a06MqJWtbT6dUrhqkJe/0K0dU
-a1OjkrS1V/sZbPV3gtn/OuqLts1txGTnTdZGhLcnqSiotpms1/azar6NatY6RdzAkYSghF0u
-plqnuoTWLHacNVrYGKYxlBWtrnftqkAFda+0auxr1dXrZM3b18rOrmDNJZRwB2tZtioXnvWt
-qt/Wmtc7fXapeF2sVgUszwAbs8DiTZTEEMzg5LL3wfl9WYPHS97wThi9kb0ngRe72b0Z1qSN
-miw7EdxVqALXo0tLa4IN6jOMObhU/bWIAXu72xcP93MzkS4xbfxX2QrNx9oEsqhSeZAL6DYk
-SDkyAFGr5Pt5oMkmQSlGniyqGZuKyvjDz6OwnNtgGoXLUB4KmMMMlDGTWSdmPvNN0qxmmrC5
-/81wThUM4kznRInVVA7Is54Hkmc+OyAAffazn/98ED3vWSCBBjShF2JoQyta0Ip2dKET/eiC
-NJrQl0b0pRet6UFT2tKH7rSoP52RRAfa1H+mNKo5TRBUj5rVDFH1ok8Na4OEutKthrWrIW1r
-TM+61rQe9Ks9suti+1rQpAb0AiDd52QzmtPGfjauSU3tX+caIcFWiKw1fWxcbyTaoo40tFMN
-bGs/2tnaHjeza33tXV8b1Lz29rtv3et57znbGcmqsRvt6XaXe930bois+S3uZDfb3LmWtLvl
-zWtJ13vdgK40uiuS6XBvu+G6JnikGS5tjId70hCHN6gd/vF3c/vfELZXOLsNcudYo9zbF2e4
-wbv9kJjjG+TDFrm9dc5zbj8854eeuEAkEJGZx3vgJEc0A3A+85dPm+aTJni1fx7znpcc5t0O
-OEeM/vGFnxvqHq+5unOOc2RnnOpjf7jXyQ7urb/c5qw++NUrrQCh83zf9P70wVWucpM7e9Xo
-Jnnb60x4o9S28AyhAKhghHhIHb7xkI88SBgv+YLgtvJ6sgDmm8rTznv+86APvehHT/rSm/70
-qE+96gEQEAA7
+R0lGODlhgQHnANUAAKWkpeXYlXh4eL+/wPn5+BpesebWdFiQuO4kj2WewuHh4dOwTMmVRK7R
+5dOWqk59pd/OafDnwrAMRsYWXtCgSYq00SSz7tbDV83i7unIWrRYcpkKMsKtfRuKzw1UocGM
+QdzQvvfy3+WxxaQMO+K5Tgxfq9LS0z9QZCtWljWSz/Dx8hR5wirA9/PM3cKuOf3s9PHjh0Nk
+hwYseSGl5PTl5Ojq64cGIgdDkZk1SStxs9TDf91kmK0xMQ2rx7SBRP///yH5BAAAAAAALAAA
+AACBAecAAAb/wJ9wSCwaj8ikcslsOp/QqHRKrVqv2Kx2y+16v+CweEwum8/otHrNbrvf8Lh8
+Tq/b7/i8fs/v+/+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkYQUFjqdC
+qn2srEmvfK6opVWnt7RSsVm4u2azXb6rwk3ASsSmvVDGtVG3RM/OuVjRw2rI1MLV0njb28fT
+zbrhP9hI5svh6F7rVN/l707t1+Tt8+JFxMbVuPDQ/UNm1SNnRFlAVAD/vevHDJ43hPFW+YM2
+cdjCZw0NAkt48JvBggQnquK4D6Kvj6H00RoZ7RW/XC5NDlwSs+PBfzdzOrTGs+LL/3MV/dXs
+6ZNZTYE6i+rUFhJpz5Iwpw1N2XTlrqtW81kNSbRYVpznvuZE1jBowKc8sXYteaSsW7Gwqq79
++nauKJVdzQrsBbctV4Ut1QkGqFavRsFt09LlW1ckwcaM94ILa9dx5ch/MeE1azhvUr80pfad
+ahks6cb5bkb1fLmvYq2sLW4G2fq16cyeNp9EzPkz7biwOwsvDJl3atljuRJ3XTo5E46+bTtv
+Lr3Zbt/LgYcOnv02d97Fgx8nWhbsdKa1vVIW3z08voerf+8kz1yraPqj4f60WD2weIpJnRbf
+fFOxVFlQRlUl2oC2oRbLPZXw9R9gCH5kD0rKOMjQghA9tf/hgQCuJxtWBlbon3AjcpiZhOY1
+mB9gEOIj44w01mjjjTjmqOOOPPbo449ABqlIDz20QeQeR5aRpJBQLIkIkVAWWYSTTqZRJRxU
+SknGlUwuwSUhXwoRphpjrpGlGWV2OaWWT7K5JpRiSnkknD/QGaeddUZ5RJRyFoknn0QAGmee
+bAqa56FDCDpnlnYu6uagjfrJ6JKLHkrnn3ommimljzoaaKZ3coqopqSGqqWolrrpqaaREnrn
+p3iOYeintLpqa5KojinqpX2WuuariOYK6qCsEvvrrZ3i2mevRigLJ6/MHrvrqckyi6q0w46q
+bKnCxsqrsc4Cu62xZ1x5prbUgrv/bBLmposuq98SKywS56K7qbu1Bosvn9G+q+69zeLr67j2
+xhswt+7Ou2fCDA8cbZpetFvrtc6Cmi256ppK8MbLArxwvhxnfKy+CJfssMkkH8xltx6n/DHF
+D/cLcswi6ztrGNf66rLC9Eo8MsEzi7zyo+TyHPLPNPtbr9EyQ0o0z0GPqvK+SX/JdM1Aoylw
+0UnvnOzBTqN89NVS56t0wxifLXa/MAtNNdFqy4t2z4WibTDSbp/s75YXi9s1p5HGCu/fw/Kr
+Maw5v4m1olsT2uq/d7d9uKmw9uwwpi0vrGrhlZatt+NUXw6xj6PHUbocp4ORuppIwn3H6m7A
+3oXsrONB/zuZrr+eu9a19+7778AHL/zwxBdv/PHIJ6/88sw37/zz0Ecv/fTUV2/99dhnr/32
+3Hfv/ffghy/++OSXb/756Kev/vrst+/++/DHL//89Ndv//3456///vz37z8nAgjgFQTYjAAa
+MAwEXAIBFyiA3jFQCAmEQwIjOAQKGsGCoYhgA93wwE7UoAIVaIAIG4CBEpawBipQwQA3iEEJ
+bvAHGGxhBV94BwKYEIVMUMENrdBCA77QhzT04Qxh2MAJHrAIHTSiBoVIxCYSUYZzIEAFVtAB
+Knbgih1IgRZTYIEEYICHLAzjDJd4RAEysIdHfGIYgZhGNa7xh0yEYBvTUIMGgP8wAXhMQANU
+aAQb2jGPIMQAAaYQQzE6MYlvLKIhkRBHCyJSjnOEYhxUkIASWPKSHrhkCVZgyRQMsgqNpKEc
+R3nIOJKSCBR85ClRKUpSqpINBPhjHhPwgDx+kQgqaEACDnAAPPISjxWogRTOCMkyGpKNq+wg
+I9OoRFWm0pQ1rIAmLZnJaZbgAJ+kQijH6ExRAvGCzDwmHI9Axm5KEgyx9GUeD/CACuzyALf8
+QSx7uU5e9rKWfHyCEVfpykUO8Z9Q3GYp+5lMf+JBmtOspiY9cIB8EjKcBB2oEyOKRGNStJAA
+FSc31YCBWeaxlu58pzB/0FF7ztKe7ExANpuwz4lq1KX/BeUnOFkZ0VdKVA8IXahCqYnNFdJU
+ojZV5kyBOs6hEpWf5+wCJR9Az4+GFI/tlGdIm7rLkz5gAFFAZjEzutGYbpWcQYRjOC3Kyjne
+oQEJ9YBaC6BWtXrSp/90IzcN+s2KljOuTwRnIosp1laOIZ2+ZGpKPcpUHfqSnr385TtrudJM
+JLUPGChBNdmqVsl6gLI9ZcNjS4GBp36UqR5lZwl3Wct3VpW0B0jBA0ygCWgaogaYzGRb2yrZ
+BzS2DK61kQk8m1ioCnaXMRiALhV72sTaM7jmw0AOLMvWG8h2tgcAnyzX2U7qPuABMQBABXpb
+XHUCF6vlU25lZ0tehqqAAOhN/2/26khYqrqTndn1rml5CVr4ghcKPJieCnJQXufO9gYPqIEC
+BjzgkeL3eA1o6mBD+4ATBLCWiJ2vL2MQXIc2Ib9E4IGGMWyEDWsYDB/+QYgxQYAHPNcD/vUv
+ih9A4ALflgkcLkKMZTzjLoR4xIt4wWmZul11HiAGJ5DBg3/ZWwU/AAUCGIACLJwEDw/hxjUW
+cZRBPOVJHKC/ar2BcwHcYibDeMMdnjKYy4DjRWBAsDE4KS0pfAIHD/m3tHwnmwEAABMYWAkf
+zm+NyywEPj/ZyX8ecZ5nPOgxA1rKYB5zIRKg5UbLwNGNZrECavDiJeRZxBn2c5/FfGhEc3jQ
+NPY0hv8P7WE9a5oOA8AuhOlLYSC7mc4xuK6s2fljVwuAziZQwIX1HGZO+xnKmw62qEMt5T8L
+G9jFLoQCjnyCGzzauZKVgbQPgMMpXDrDyT6CppHN7U4nW9CjDvexqywHKcq61a1us5sHUINU
+o7vVKGhzAHHtZW0rOtN43rO4Rb3vMAub3+P+NyFU8IIEF2AFB99kCVAAgDtbW9H99re9xw3o
+bfe71PtG9h5Sjd10y/vWdR6kCQDw7hNQeN4AULLD8ZxtYzdZ3wEntsTBPfOIB8KPLJhBFVfA
+8553oAGVPjCUve3ymgv86C6nObE1voeRe9yAdAZBPlUwgAQIAMgxQHnKc13/bxljutsx5zPY
++4z0mGc74zb3Qy5ZwAILuN0CVdx5z1eQAkFSgddlVnrZv33xvWtc0GEndx1UAAI6G57OA7Cz
+EWiggMIPwPADSPySg05jHJP60/cOtOUhzulAb1rpTPcDBtju9ra7Xedzn3sHKtB1S2f+7Jj/
+dacvjwRwhxv0ad8DARofeRNwvdIqUIAJQOB730+a8h22seBlRHoLmH4G0LeAzrFI/SzGMwrL
+x372xSHgAXN9CcEXvvgpjX3l94iLz59B6dnOfuefXucpALoUtv+EU/9vRg9YwQzazv7++9/t
+V7QCHlABNHB/4mMCB+d8/vd/qCdZAGYCyGeA12MC/x6wAgrIgDuHYh5wVeQngeIzAJt0gTkX
+gA6IAgdgAuflgeUzAB7QAae3cyXgXDFQAQqAXip4PtJERZyEYijAgS9wg+lDAABATTeAAglg
+Aj8IhOsjRSjAcArwAhGohOGjAr7XelJ4hViYhVq4hVzYhV74hWAYhmI4hmRYhmZ4hmiYhmq4
+hmzYhm74hnAYh3J4BgTwAjTwAnh4BFE4h6zTAjvwhw7gACIwiIPYAi0gAi2QhHwoPC+gARLw
+iBPwiJAoARNQiROgAQW4iMFDAI4oiZI4Ap4oiQ4QPwQQAhEQAAagAwGwihFgg2iwWT6yAxvg
+iSNQi6B4i484iprlV1pgVv9ZxYt+QACneAEXAAEQYADHaAAGsIohgAVCNVSwmCOyKAG3aIvW
+WIsSIAK9CFFJ8IxwNVE/1Y3AyAcEEADEmIzIqIwGAAPraACtCEYyFY6/M43UeI32qIvfOI7y
+yAUtVVEKpI95UI4uUIzJaIzouI7sGAB7CFanJFDmZEbR2AkOUI22uAH2OALa6Iyt1Exc9VV2
+1Vd8VVd85ZEiqUZ4QAAGMJAFqY7GqIww8JIvGQBghFFHVZMRuQkiUI8VeZEjgI/w6I9AaVNA
+2ZH9uI81ZVB1IJDFqI5M2ZLqCJMwEAGg1EZ11U1HWSMtcJEWaY8Z+Y1xVZXiVEgtpUw0OZJE
+dZP/ZRACLrAAx2iQyZgByuiWF4CQMNCMDzWWL2WV4IgPLaCTtbgBFrmVgdmVP/lTemmSepWX
+RTWUh5lbb0AAOuACEMCOGdCWA+mScQkBF+ACCCmV2hRWV2mTSNkMCiABW/mXgQmYgekA3deB
+w/RDofmMMtSYfoWXFBWPb6CWnMmOqaiKmzmZMKADEKADMPCbMLmQQ2mWZMlEQikONMADpzkC
+qimd0gmYDiB+VviP/QiW/SSWYVWUZmVM4smRSRkALiCcL2kAvWeOFxCciWcCBnABC0CXnkk+
+L4AD9aia+qmf1zlp5hMBmzmX7ahrBKACwqkDA3BeKmCeyRiTK/c9NKAB/4FZnfsJmDZwnQ8K
+PubJAQb5knb5AzUAAuwmBCGwmU8JAwEAAuXDiappAxtgAzAao6rJmuhjnmzZkiiaTSk0BOYp
+oAiZouYjAjgQozJqoTFKmOVjnpypA8j4kvVJBADKlicKpNYWPQTAeAMgoaD4iTaAAwCAnDDG
+PAGwAByKinOZo0WglOxojDGpolWaaRa3efZ3BaGXY4e4A5FoiXq6A2AapnAqdqWmeWFQp4UQ
+AZGpjMTokk/6AxGwAAuAih0anKylfbhndHxHBnMqCHUoAjuAAJ6KAHpqiZS4A7qWBbOXfWMn
+BpkKCOYZAJppkOv4oSEAAZcJA6/6kkqmfV8ncf/4dqkt93lyinm/WmhDF3uFhgd++KnKCqqU
+mKd66gB9Gmq8tne96qt/GmO0l3emZmicl2irugY1oJJuOZkBEALopaRtiaMGIHW6GmVxKqy/
+6qvdlnl/h3ZmNwc0sKzLGqr8ugMtYAXXJqgv96cTJ6+3p63/NnaEGgc6MJ/GaKLruIrmKJlN
+uY46cH31R6+dB3uvN6/cWnsXF6gGawcOoK+garITcLJ6iqSU6q4be6+BV3Eba3sfa611EAEc
+IKDEKKAGmajx+ZTqWQWmVnSWWq1Jl3YWl7AwZ7Ny4AASYLJQu6+VyLJCt7S8yrQjK3NLB6+9
+urBxYJ7IuLPICKtjSwL/ZwoDHICxToB3SGuvRnu0Cet3IftkgWcH9/m0UYuylWiRAxCtbFu3
+R1enqZp71gp4WVtDOrCUituzBpABxQiXBsAB9zV/3VqznganIHtvtFewiAascBuvcUAD+Jm3
+ylqJprkBODC5lBusRQeosqe5nAeynne5gIsHIaADwkmMlRmfr/qzyii52clymEp/nCC6eAu1
+pjsCLqoBCYoFxCu0z9sJBnqOSwkBjguXbZlywSu8Y/CtntCXKSu1EyCdXaoBNagF0ftwN0IA
+IJC46VqZBskB2qs+JjAC4Quqlai8NqABDrC95BN8A8ABuHsBicsB8stu0Zo9IrABpmuay8uu
+//WjAjVgApGXcolXbexDABNJvl5aqpqoPELqpZn4wcsTohBIwiicwiq8wizcwi78wjAcwzI8
+wzRcwzZ8wzicwzq8wzzcwz78w0AcxEI8xERcxEZ8xEicxEq8xEzcxJGAlk5MCAK1TLgZxYow
+QU4AxTqCXgqqXtuoxcBTiqZ4iqwYARFAA+aawHvpUtxInkBSoClUA3KMQnKsxl8pPcIYAciY
+ASTAxyTwxwvwxxeQAToAAh8KBY60kYrZJXE8aQVWYALmv1ScmHOVV13lI6ZovXzsx38MyI66
+ABQQyqHspoisyJV8lgBZI43cmo7syCg4k7ZZk0a5vqiYAbbMyZ4Myv8UwAAMoMu8/AEjnMWm
+LJqXzCMp1GLIjMwnPJVkRZu+WCMhsMe23MmB7KiivMsfwAChzAAf8AE+wAG/WEGxSVepjA8F
+2n3JnMyJlwV6eZg4Es3KeMskQAHZ/Mf0/AHz7APYfM8+8M2HzFLcKFeo/CPhl87pTMGSjEpE
+ucg3RcsvKc/ZDMp97AMfQM8UoM8M4APc3M0VvajeQwATXHzil2sHvc6feVehKdA4coq8ycfZ
+zMffTALa7M0XTc8UzdEfsAD/7D3B53u999OJp2SSN3LLHD7CCJO2zM0GkM+BzMv6fNFOfc/c
+TMpTKHyRd9UUbMF1lnLCN7/iEwJRSZn0DAH/8+zN8wzVNk3Rv8zNOrDT3iNgVw3Uj3fVWzfX
+CS09ERCTMJABDEACBgDKFQ3KGW3R3LzWOe3R9fc8IT3XjF3BcR15SXbX0QPWef3XFLDU1xzK
+3szNu1zYnP2Od1d5cap53quroHsIExzXFBzUQe3TI5dydpy+XULZe80AOsDH20wBC8DLvL3W
+vEwBiL22sJtvA9u9sq0HVCjXq73acQ0AAlDUb/q2BCuwX+C1morUDGDLgN3Xnd3b2czNCxDc
+u7ar1Hpqr8u6wYawInt53nrcZbB7jx3fzX1rGbprciq7hzuo7l2eLynTtrzLFDDP2tzbvH3Y
+ahywnttrgFqwCutt//UKuKWtBu0m3/Ht3EmWwJeGrcuXqqQ93cWm3jJLs9uKB3pc251sz91N
+4B+gA8F8d68Xr0yXtHwns/gt4m4b4WmwexZM4Y83b/X9ZZimtb3m4V174w4+t1mL4+8dAHBJ
+AoGcAYIN4N694m5dpQu+tdJdu0Rb5Fue3zX02vJNZ/PmwS6OsK4HswZL4wxurA1uu43Lydus
+4tksk6b6dUZudubttkEu43p357rX44dn4Q4GAOdLpy2XqRyu5XKrtJaq5GYQzX58zQRu21Ve
+5hre58Odueh92raX4F6OBwrQ42xkeJMqtHZutG0O43pOuA9Odp9OBy+w1NaMzdlMARwA2o9c
+sN/CfSPdt9qH13viR6ewi+mbfq0eLuOdS7uvTgfC+NcbzQACXOhK4LdkpuuWANJzjM4ENsfC
+J9nYNrw4IoztCwIRYK5O4IrjE8cSrO4opO7hZ+jgbsXyPu/0Xu/2fu/4nu/6vu/83u/+/u8A
+H/ACP/AEX/AGf/AIn/AKv/AM3/AO//AQH/ESP/EUj4ZBAAA7
 
-------=_NextPart_000_0014_01C76019.2AF47060--
+------------7225F446DB92E2D--
 
-
-
---===============1668933206==
+------------12BF740276F3E98
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -224,7 +188,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1668933206==
+------------12BF740276F3E98
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -235,4 +199,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1668933206==--
+------------12BF740276F3E98--
