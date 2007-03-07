@@ -1,74 +1,76 @@
-From: Henrique de Moraes Holschuh <hmh-N3TV7GIv+o9fyO9Q7EP/yw@public.gmane.org>
-Subject: Re: [Alsa-devel] Adding a alsa mixer interface to
-	ibm-acpi
-Date: Wed, 7 Mar 2007 20:02:50 -0300
-Message-ID: <20070307230249.GB1796@khazad-dum.debian.net>
-References: <20070225012017.GA19039@khazad-dum.debian.net>
-	<s5h649pue8z.wl%tiwai@suse.de>
-	<20070226162819.GE2909@khazad-dum.debian.net>
-	<s5hr6scswnp.wl%tiwai@suse.de>
-	<20070226174145.GF2909@khazad-dum.debian.net>
-	<20070227015024.GF8154@thunk.org>
-	<20070227021402.GC6828@khazad-dum.debian.net>
-	<s5hd53kaf5r.wl%tiwai@suse.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: RFC: Add support for monotonic clock for 2.6
+Date: Wed, 07 Mar 2007 23:03:16 +0000
+Message-ID: <45EF44B4.9080200@superbug.co.uk>
+References: <Pine.LNX.4.61.0702271533590.9439@tm8103-a.perex-int.cz>	<s5hirdcbsty.wl%tiwai@suse.de>	<45EF3DB5.3090008@superbug.co.uk>
+	<s5hejo0brg8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <s5hd53kaf5r.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ibm-acpi-devel>,
-	<mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=ibm-acpi-devel>
-List-Post: <mailto:ibm-acpi-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
-List-Help: <mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ibm-acpi-devel>,
-	<mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=subscribe>
-Sender: ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-Errors-To: ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: ibm-acpi-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Theodore Tso <tytso-3s7WtUTddSA@public.gmane.org>
+Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net
+	[194.217.242.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA1F124336
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 00:03:16 +0100 (CET)
+In-Reply-To: <s5hejo0brg8.wl%tiwai@suse.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-devel-bounces@lists.sourceforge.net
+Errors-To: alsa-devel-bounces@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 07 Mar 2007, Takashi Iwai wrote:
-> Well, it's a question whether this should be an add-on module or a
-> built-in to the sound driver.  From the usability viewpoint, the
-> latter is much easier.  Then we have no module loading order problem
-> and need no API extension.  Of course, the drawback is that the
-> unnecessary growth of the code / binary size for non-thinkpad users.
-
-Which is quite a serious drawback.  I am not at all opposed to writing a
-mixer piggy-back, but IMHO if we are going to do it that way, it would be
-best to create an API that allows an alsa module to extend the functionality
-of another module, *and* provide the proper callbacks to have it work in
-full hotplug mode (i.e. it will do the right thing no matter in which way
-the modules are loaded, and also if the device is hotplugged or
-hotunplugged).
-
-> > > I suppose it does mean you can use alsamixer to manipulate the sound,
-> > > but from the user's point of view, if it's not visible when they right
-> > > clock on the mixer applet (because it's not associated with the
-> > > laptop's primary sound card), is it really that useful?
-> > 
-> > If they got a mixer applet worth something, it will list two cards, or allow
-> > them to have two instances, one for each card.
+Takashi Iwai wrote:
+> At Wed, 07 Mar 2007 22:33:25 +0000,
+> James Courtier-Dutton wrote:
+>> Takashi Iwai wrote:
+>>> At Tue, 27 Feb 2007 15:52:41 +0100 (CET),
+>>> Jaroslav Kysela wrote:
+>>>> Hi,
+>>>>
+>>>> 	in 2.6 kernels, we can use ktime_get_ts() function to get 
+>>>> monotonic time which can be used for PCM timestamps. I would propose to 
+>>>> reuse the SNDRV_PCM_IOCTL_TSTAMP ioctl to enable using of monotonic clock.
+>>>> The "enable" (int) argument might mean:
+>>>>
+>>>> 0: standard clock - getnstimeofday()
+>>>> 1: standard clock - getnstimeofday() - for "compatibility"
+>>>> 2: monotonic clock - ktime_get_ts()
+>>> Good to add a new feature...  but is there any user of this PCM
+>>> timestamp so far?  I see some good purposes but rarely seen in the
+>>> reality, unfortunately...
+>>>
+>>>
+>>> Takashi
+>>>
+>> There are some good applications for it, but I have not got round to 
+>> writing them yet!
 > 
-> I guess it's rather confusing.  Both controls the very same device for
-> the very same role in the end, so it'd be better to be merged in some
-> level, IMO.
+> Me too ;)  But, I remember some difficulties regarding the
+> timestamping at the last time I tried (quite ago).  The timestamp is
+> somewhat hard to use because it's updated at each pointer or status
+> update although I wanted to get the exact time only at the period
+> boundary.  Maybe these usability issues should be sorted out all
+> together.
+> 
+> 
+> Takashi
 
-Very well.  Do you want me to start a "requirements" document for the API,
-so that we can start walking down that road?
+Yes, timestamp at period boundary would be more useful. I had not looked 
+at the current timestamp in enough details. A timestamp generated in the 
+IRQ routine would probably be the best. Could the timestamp be attached 
+to a particular PCM sample in the buffer. I.e. The app would retrieve 
+the timestamp, and be told that that timestamp applies to the sample X 
+samples from now, if using the snd_pcm_read() function.
 
-On the ibm-acpi side, I can just merge in the mixer as a separate card for
-now, with the proper notices that it is not a stable interface and that it
-will go away in the future.
+James
 
--- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
