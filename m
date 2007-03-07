@@ -1,110 +1,51 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Missing symbols since 1.0.14rc1
-Date: Wed, 07 Mar 2007 15:09:34 -0800
-Message-ID: <1173308974.4531.19.camel@razman.gruemaster.com>
+From: "Shem Multinymous" <multinymous-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [Alsa-devel] Adding a alsa mixer interface to
+	ibm-acpi
+Date: Wed, 7 Mar 2007 18:12:09 -0500
+Message-ID: <41840b750703071512o1d171dfy9d2a615382e5e635@mail.gmail.com>
+References: <20070225012017.GA19039@khazad-dum.debian.net>
+	<s5h649pue8z.wl%tiwai@suse.de>
+	<20070226162819.GE2909@khazad-dum.debian.net>
+	<s5hr6scswnp.wl%tiwai@suse.de>
+	<20070226174145.GF2909@khazad-dum.debian.net>
+	<20070227015024.GF8154@thunk.org>
+	<20070227021402.GC6828@khazad-dum.debian.net>
+	<s5hd53kaf5r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0465287781=="
-Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-devel-bounces@lists.sourceforge.net
-Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+In-Reply-To: <s5hd53kaf5r.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ibm-acpi-devel>,
+	<mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=ibm-acpi-devel>
+List-Post: <mailto:ibm-acpi-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
+List-Help: <mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ibm-acpi-devel>,
+	<mailto:ibm-acpi-devel-request-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org?subject=subscribe>
+Sender: ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+Errors-To: ibm-acpi-devel-bounces-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: ibm-acpi-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Theodore Tso <tytso-3s7WtUTddSA@public.gmane.org>, Henrique de Moraes Holschuh <hmh-N3TV7GIv+o9fyO9Q7EP/yw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 3/7/07, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org> wrote:
+> > If they got a mixer applet worth something, it will list two cards, or allow
+> > them to have two instances, one for each card.
+>
+> I guess it's rather confusing.  Both controls the very same device for
+> the very same role in the end, so it'd be better to be merged in some
+> level, IMO.
 
---===============0465287781==
-Content-Type: multipart/alternative; boundary="=-Ffx/h7ztjoEFq1Fdsyyw"
+The ibm-acpi mixer also affects the BIOS-generated sounds (e.g.,
+low-battery warnings) and PC speaker. So it useful even when the sound
+card is unused or unsupported.
 
-
---=-Ffx/h7ztjoEFq1Fdsyyw
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-I had a couple of users report that alsa-driver-1.0.14rc2 and
-alsa-driver-1.0.14rc3 would no longer load due to missing symbols.  I am
-able to reproduce this on a RedHat Enterprise Linux 4 update 4 kernel
-(2.6.9-42.0.0.0.1.EL) after modifying ./alsa-driver/include/adriver.h to
-not typedef gfp_t (Redhat pulled that typedef in starting with 4U3).
-
-The error when loading snd.ko is:
-
-        snd:  Unknown symbol sound_class1
-        FATAL:  Error inserting snd (<path to module>): Unknown symbol
-        in module, or unknown parameter (see dmesg).
-
-
-dmesg reports the same thing.
-
-This worked fine in 1.0.14rc1.  I'm looking through the change logs to
-see what may have broken it.
-
--- 
-Tobin Davis <tdavis@dsl-only.net>
-
---=-Ffx/h7ztjoEFq1Fdsyyw
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
-</HEAD>
-<BODY>
-I had a couple of users report that alsa-driver-1.0.14rc2 and alsa-driver-1.0.14rc3 would no longer load due to missing symbols.&nbsp; I am able to reproduce this on a RedHat Enterprise Linux 4 update 4 kernel (2.6.9-42.0.0.0.1.EL) after modifying ./alsa-driver/include/adriver.h to not typedef gfp_t (Redhat pulled that typedef in starting with 4U3).<BR>
-<BR>
-The error when loading snd.ko is:<BR>
-<BLOCKQUOTE>
-    snd:&nbsp; Unknown symbol sound_class1<BR>
-    FATAL:&nbsp; Error inserting snd (&lt;path to module&gt;): Unknown symbol in module, or unknown parameter (see dmesg).<BR>
-</BLOCKQUOTE>
-<BR>
-dmesg reports the same thing.<BR>
-<BR>
-This worked fine in 1.0.14rc1.&nbsp; I'm looking through the change logs to see what may have broken it.<BR>
-<BR>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
--- <BR>
-Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
-</TD>
-</TR>
-</TABLE>
-</BODY>
-</HTML>
-
---=-Ffx/h7ztjoEFq1Fdsyyw--
-
-
-
---===============0465287781==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+  Shem
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0465287781==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0465287781==--
