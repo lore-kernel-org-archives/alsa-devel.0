@@ -1,15 +1,13 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: pcm_multi broken in alsa-lib - no duplex mode
-	with	jackd
-Date: Thu, 8 Mar 2007 21:51:28 +0000
-Message-ID: <20070308215128.GA3349@localhost.localdomain>
-References: <45F044D2.1060903@mnet-online.de> <s5hslcfmuk0.wl%tiwai@suse.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: amixer bug
+Date: Fri, 09 Mar 2007 10:24:38 +1300
+Message-ID: <45F07F16.7080909@audioscience.com>
+References: <mailman.174113.1173383910.20110.alsa-devel@lists.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hslcfmuk0.wl%tiwai@suse.de>
+In-Reply-To: <mailman.174113.1173383910.20110.alsa-devel@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,26 +17,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: julian_cable@yahoo.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 08, 2007 at 07:58:23PM +0100, Takashi Iwai wrote:
-> At Thu, 08 Mar 2007 18:16:02 +0100,
-> Simon Lewis wrote:
-> > Many JACK users have successfully used the following patch:
-> > 
-> > http://www.sound-man.co.uk/linuxaudio/pcm_multi-patch
+> From: Julian Cable <julian_cable@yahoo.com> Subject: [Alsa-devel]
+> amixer bug
+
+> amixer correctly indicates that the default 0 value is equivalent to
+> 50%. If I set the value using the % syntax all is well:
 > 
-> Well, the patch is no real fix.  It's likely a workaround for JACK,
-> though.  Someone has to take time to track down this bug more deeply.
+> 0% -> -100 25% -> -50 50% -> 0 100% -> 100
+> 
+> But if I use the absolute notation then it rejects negative numbers.
+> 
+> If I use the incremental notation something even stranger happens. If
+> the current value is positive, all is well. If the current value is
+> +5 and I decrement by 10 then it correctly sets to -5, but if the
+> current value is -5 and I decrement by 10 it sets the value to +100
+> (ie the maximum).
+> 
+> So there are two problems:
+> 
+> 1) negative numbers are not allowed on the command line
 
-True, the patch is just a workaround for JACK. However, I would
-argue that most users of pcm_multi are probably JACK users.
-Surely adding code that breaks something for the majority of users (no
-matter how correct that code is in isolation) is not a good thing.
+Try adding -- between the options and the parameters
 
-John
+aplay cset numid=1 -- -5
+
+> 2) decrementing doesn't work when the current value is negative.
+
+Perusing amixer source, the increment syntax only works for controls
+identified as volumes.  Other integer controls don't support it.
+
+> 
+> I tried to raise this as a bug but I've forgotten my password and
+> bugzilla refuses to send a reminder to my registered account (this
+> one). cheers
+> 
+> Julian
+> 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
