@@ -1,17 +1,11 @@
-From: "Thumbing S. Deflect" <holliday@grandwazoo.com>
-Subject: Some useful advices for your health
-Date: Thu, 08 Mar 2007 00:39:53 -0500
-Message-ID: <5678132144.20070308003953@grandwazoo.com>
+From: "Soypa Uretim Danismanlik" <info@soypa.com.tr>
+Subject: Barter ile satislarinizi arttirin
+Date: Thu, 8 Mar 2007 08:00:56 +0200
+Message-ID: <E1HPBgH-00061a-8d@mail.sourceforge.net>
+Reply-To: Soypa Uretim Danismanlik <info@soypa.com.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0622037566=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from -1215056752 (unknown [58.82.22.171])
-	by alsa0.perex.cz (Postfix) with SMTP id 8DCE224350
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 06:33:48 +0100 (CET)
-Received: from grandwazoo.com (-1216663232 [-1212518624])
-	by gettechnologies.com (Qmailv1) with ESMTP id 32C744CFB5
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2007 00:39:53 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,26 +15,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The most powerful medicines for you!
+This is a multipart MIME message.
 
-Flomax - $1.2 - used to treat the symptoms of an enlarged prostate - a condition technically known as benign prostatic hyperplasia or BPH. 
+--===============0622037566==
+Content-Type: multipart/alternative; boundary="= Multipart Boundary 0308070800"
 
-Zovirax - $1.6 - the treatment of herpes simplex virus infections of the skin and mucous membranes including initial and recurrent genital herpes. 
+This is a multipart MIME message.
 
-Aciphex - $1.08 - used for the treatment of persistent, frequent heartburn and other symptoms associated with acid reflux disease. Persistent and frequent occurrences are classified as 2 or more days a week. 
+--= Multipart Boundary 0308070800
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-and more!
+Bu mailing calismasi sektorel hizmetler tarafindan gerceklestirilmistir.S=
+izde tanitiminizin bu sekilde yapilmasini istiyorsaniz "tikla" basarak bi=
+ze ulasiniz.
 
-our site http://uniqa.hk
+--= Multipart Boundary 0308070800
+Content-Type: text/html;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
+254">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE>BODY {
+	FONT-FAMILY: arial
+}
+</STYLE>
+</HEAD>
+<BODY>
+<DIV>
+<DIV>
+<DIV><FONT face=3DArial size=3D2><A href=3D"http://www.wtcbarter.com/"><I=
+MG alt=3D""=20
+hspace=3D0 src=3D"http://www.wtcankara.org.tr/images/BarterTeaser.jpg"=20
+align=3Dbaseline border=3D0></A></FONT></DIV>
+<DIV><FONT size=3D1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FO=
+NT></DIV>
+<DIV><FONT size=3D1>Bu mailing calismasi sektorel hizmetler tarafindan=20
+gerceklestirilmistir.Sizde tanitiminizin bu sekilde yapilmasini istiyorsa=
+niz=20
+</FONT><FONT size=3D2>"</FONT><A=20
+href=3D"about:blanksektorel.tanitim@gmail.com"><FONT size=3D2>tikla</FONT=
+></A><FONT=20
+size=3D1><FONT size=3D2>"</FONT> basarak bize=20
+ulasiniz.</FONT></DIV></DIV></DIV></BODY></HTML>
 
+--= Multipart Boundary 0308070800--
+
+
+
+--===============0622037566==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0622037566==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0622037566==--
