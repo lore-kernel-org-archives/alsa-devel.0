@@ -1,18 +1,10 @@
-From: Randy Cushman <rcushman_linux@earthlink.net>
-Subject: Re: mm snapshot broken-out-2007-03-05-02-22.tar.gz
-	uploaded
-Date: Thu, 08 Mar 2007 14:28:07 -0500
-Message-ID: <45F063C7.3030503@earthlink.net>
-References: <200703051024.l25AOIF3015951@shell0.pdx.osdl.net>	<45EEA3C4.7000501@googlemail.com>	<20070307104746.f08a2e84.akpm@linux-foundation.org>	<6bffcb0e0703071141j42309702w793e4a76b1b23bfa@mail.gmail.com>	<20070307115024.756c848f.akpm@linux-foundation.org>	<s5hvehcrdod.wl%tiwai@suse.de>	<45EF3B2C.9060801@googlemail.com>	<s5hfy8gbrmj.wl%tiwai@suse.de>	<45F02EE2.6040606@googlemail.com>	<s5h8xe7ognj.wl%tiwai@suse.de>	<6bffcb0e0703080852l4a06c0f9qeb51044a7a1a68a@mail.gmail.com>	<s5hwt1rn0aj.wl%tiwai@suse.de>	<45F0426D.6020408@earthlink.net>
-	<s5hvehbmuvb.wl%tiwai@suse.de>
+From: Julian Cable <julian_cable@yahoo.com>
+Subject: amixer bug
+Date: Thu, 8 Mar 2007 11:58:06 -0800 (PST)
+Message-ID: <320082.14718.qm@web35607.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0763884184=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mta18.adelphia.net (mta18.mail.adelphia.net [68.168.78.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E99724391
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 20:28:36 +0100 (CET)
-In-Reply-To: <s5hvehbmuvb.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,126 +14,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Adrian Bunk <bunk@stusta.de>, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Jaroslav Kysela <perex@suse.cz>, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 08 Mar 2007 12:05:49 -0500,
-> Randy Cushman wrote:
->   
->> Takashi Iwai wrote:
->>     
->>> At Thu, 8 Mar 2007 17:52:43 +0100,
->>> Michal Piotrowski wrote:
->>>   
->>>       
->>>> On 08/03/07, Takashi Iwai <tiwai@suse.de> wrote:
->>>>     
->>>>         
->>>>> At Thu, 08 Mar 2007 16:42:26 +0100,
->>>>> Michal Piotrowski wrote:
->>>>>       
->>>>>           
->>>>>>> Also, it'd be helpful if you compare
->>>>>>> /proc/asound/card0/codec97#0/ac97#0-0+regs file before and after the
->>>>>>> patch.  This reveals which register bits differ actually.
->>>>>>>           
->>>>>>>               
->>>>>> a2.txt is form 2.6.21-rc3 witchout 831466f4ad2b5fe23dff77edbe6a7c244435e973
->>>>>>
->>>>>> diff -uprN a2.txt /proc/asound/card0/codec97#0/ac97#0-0+regs
->>>>>> --- a2.txt      2007-03-08 16:36:47.000000000 +0100
->>>>>> +++ /proc/asound/card0/codec97#0/ac97#0-0+regs  2007-03-08 16:36:49.447083597 +0100
->>>>>> @@ -56,8 +56,8 @@
->>>>>>  0:6e = 0000
->>>>>>  0:70 = 0000
->>>>>>  0:72 = 0004
->>>>>> -0:74 = 1001
->>>>>> -0:76 = 64a4
->>>>>> +0:74 = 1201
->>>>>> +0:76 = 7ca4
->>>>>>  0:78 = 000c
->>>>>>  0:7a = 0000
->>>>>>  0:7c = 4144
->>>>>>         
->>>>>>             
->>>>> OK, some wrong bits there.  Could you try the patch below?
->>>>>       
->>>>>           
->>>> Problem fixed. Thanks!
->>>>
->>>> (speaker-test -c6 -Dplug:surround51 is still broken)
->>>>     
->>>>         
->>> Hm, how about turning off "Spread Front To..." control and run
->>> speaker-test?
->>>
->>>
->>> Takashi
->>>
->>>
->>>   
->>>       
->> Michal and Takashi,
->>
->> I've been researching your issue this morning.  I just noticed that your 
->> exchange had ensued.
->>
->> I configured my AD1986-based system as closely as I could to match your 
->> AD1985 mixer settings.  In doing so, I experienced results similar to 
->> what I'm assuming you described:  Only front channel sound came out of 
->> the surround and c/lfe jacks.
->>
->> Here is what I had to change to get the appropriate multichannel sound:
->>
->> 1) The command "speaker-test -c6" does not work on my system.  I have to 
->> use "speaker-test -Dsurround51 -c6"  (Perhaps this is related to running 
->> an old version of speaker-test.)
->>
->> 2) I disabled "Spread Front to Surround and Center/LFE"
->>
->> The explanation for 2) is this:  There can be only one source for each 
->> of the Surround and Center/LFE jacks active at one time.  When "Spread 
->> Front to Surround and Center/LFE" is disabled, the surround channels go 
->> to the the jacks; when this control is enabled, ONLY the front channels 
->> go to the surround and c/lfe jacks.
->>
->> Considering the register values Michal provided and Takashi's patch:
->>
->> The logic of the code is as follows:  (Slightly simplifying,) functions 
->> is_shared_linein() and is_shared_micin() return TRUE if the mixer is 
->> configured for shared jacks AND NOT for 6 channel mode.  In this case it 
->> is appropriate to
->> set these bits (LODIS and CLDIS).
->>     
->
-> Yep.  So, can you confirm that my fix is OK?
-> Then I'll queue it up to ALSA tree.
->
->
-> thanks,
->
-> Takashi
->
->
->   
-Takashi,
+--===============0763884184==
+Content-Type: multipart/alternative; boundary="0-892848063-1173383886=:14718"
 
-I need to think this through before I can confirm.  Something doesn't 
-seem right.
+--0-892848063-1173383886=:14718
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Let me figure out why I wrote ad1986_update_jacks() to be so different 
-from ad1888_update_jacks().
+Hi,=0A  I defined a new SNDRV_CTL_ELEM_IFACE_MIXER in the hdsp driver and t=
+ried to use it from amixer and got some strange behaviour. I set the contro=
+l up as follows:=0A=0Astatic int snd_hdsp_info_dds_offset(struct snd_kcontr=
+ol *kcontrol, struct snd_ctl_elem_info *uinfo)=0A{=0A    uinfo->type =3D SN=
+DRV_CTL_ELEM_TYPE_INTEGER;=0A    uinfo->count =3D 1;=0A    uinfo->value.int=
+eger.min =3D -100;=0A    uinfo->value.integer.max =3D 100;=0A    return 0;=
+=0A}=0A=0A=0Aamixer correctly indicates that the default 0 value is equival=
+ent to 50%. If I set the value using the % syntax all is well:=0A=0A0% -> -=
+100=0A25% -> -50=0A50% -> 0=0A100% -> 100=0A=0ABut if I use the absolute no=
+tation then it rejects negative numbers.=0A=0AIf I use the incremental nota=
+tion something even stranger happens. If the current value is positive, all=
+ is well. If the current value is +5 and I decrement by 10 then it correctl=
+y sets to -5, but if the current value is -5 and I decrement by 10 it sets =
+the value to +100 (ie the maximum).=0A=0ASo there are two problems:=0A=0A1)=
+ negative numbers are not allowed on the command line=0A2) decrementing doe=
+sn't work when the current value is negative.=0A=0AI tried to raise this as=
+ a bug but I've forgotten my password and bugzilla refuses to send a remind=
+er to my registered account (this one).=0Acheers=0A=0AJulian=0A=0A=0A=0A=0A=
+=09=0A=09=0A=09=09=0A______________________________________________________=
+_____ =0ANew Yahoo! Mail is the ultimate force in competitive emailing. Fin=
+d out more at the Yahoo! Mail Championships. Plus: play games and win prize=
+s. =0Ahttp://uk.rd.yahoo.com/evt=3D44106/*http://mail.yahoo.net/uk 
+--0-892848063-1173383886=:14718
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I'll keep you posted.
-
-Randy Cushman
+<html><head><style type=3D"text/css"><!-- DIV {margin:0px;} --></style></he=
+ad><body><div style=3D"font-family:times new roman, new york, times, serif;=
+font-size:12pt"><div>Hi,<br>&nbsp; I defined a new SNDRV_CTL_ELEM_IFACE_MIX=
+ER in the hdsp driver and tried to use it from amixer and got some strange =
+behaviour. I set the control up as follows:<br><br>static int snd_hdsp_info=
+_dds_offset(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)=
+<br>{<br>&nbsp;&nbsp;&nbsp; uinfo-&gt;type =3D SNDRV_CTL_ELEM_TYPE_INTEGER;=
+<br>&nbsp;&nbsp;&nbsp; uinfo-&gt;count =3D 1;<br>&nbsp;&nbsp;&nbsp; uinfo-&=
+gt;value.integer.min =3D -100;<br>&nbsp;&nbsp;&nbsp; uinfo-&gt;value.intege=
+r.max =3D 100;<br>&nbsp;&nbsp;&nbsp; return 0;<br>}<br><br><br>amixer corre=
+ctly indicates that the default 0 value is equivalent to 50%. If I set the =
+value using the % syntax all is well:<br><br>0% -&gt; -100<br>25% -&gt; -50=
+<br>50% -&gt; 0<br>100% -&gt; 100<br><br>But if I use the absolute notation=
+ then it rejects negative
+ numbers.<br><br>If I use the incremental notation something even stranger =
+happens. If the current value is positive, all is well. If the current valu=
+e is +5 and I decrement by 10 then it correctly sets to -5, but if the curr=
+ent value is -5 and I decrement by 10 it sets the value to +100 (ie the max=
+imum).<br><br>So there are two problems:<br><br>1) negative numbers are not=
+ allowed on the command line<br>2) decrementing doesn't work when the curre=
+nt value is negative.<br><br>I tried to raise this as a bug but I've forgot=
+ten my password and bugzilla refuses to send a reminder to my registered ac=
+count (this one).<br>cheers<br><br>Julian<br></div></div><br>=0A=09=09<hr s=
+ize=3D1> =0AWhat kind of emailer are you? Find out today - get a free analy=
+sis of your email personality. Take the quiz at the <a href=3D"http://uk.rd=
+.yahoo.com/mail/uk/taglines/default/championships/quiz/*http://uk.rd.yahoo.=
+com/evt=3D44106/*http://mail.yahoo.net/uk/">Yahoo! Mail Championship</a>.</=
+body></html>
+--0-892848063-1173383886=:14718--
 
 
+--===============0763884184==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0763884184==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0763884184==--
