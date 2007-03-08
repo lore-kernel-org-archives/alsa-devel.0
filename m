@@ -1,18 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: RFC: Add support for monotonic clock for 2.6
-Date: Thu, 8 Mar 2007 08:01:03 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0703080758570.7542@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0702271533590.9439@tm8103-a.perex-int.cz>
-	<s5hirdcbsty.wl%tiwai@suse.de> <45EF3DB5.3090008@superbug.co.uk>
-	<s5hejo0brg8.wl%tiwai@suse.de> <45EF44B4.9080200@superbug.co.uk>
+From: "Broadcasting F. Blab" <kraft@getmarriednow.com>
+Subject: International Legal RX
+Date: Thu, 08 Mar 2007 03:56:06 -0500
+Message-ID: <6777056508.20070308035606@getmarriednow.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1979350327=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51DE727A
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 08:01:05 +0100 (MET)
-In-Reply-To: <45EF44B4.9080200@superbug.co.uk>
+Received: from -1212583032 (unknown [61.150.201.220])
+	by alsa0.perex.cz (Postfix) with SMTP id CA7B024353
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 09:49:57 +0100 (CET)
+Received: from getmarriednow.com (-1220407904 [-1220400744])
+	by giardinis.com (Qmailv1) with ESMTP id E6AC203FF0
+	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2007 03:56:06 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,71 +20,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 7 Mar 2007, James Courtier-Dutton wrote:
+This is a multi-part message in MIME format.
 
-> Takashi Iwai wrote:
-> > At Wed, 07 Mar 2007 22:33:25 +0000,
-> > James Courtier-Dutton wrote:
-> > > Takashi Iwai wrote:
-> > > > At Tue, 27 Feb 2007 15:52:41 +0100 (CET),
-> > > > Jaroslav Kysela wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > 	in 2.6 kernels, we can use ktime_get_ts() function to
-> > > > > get monotonic time which can be used for PCM timestamps. I
-> > > > > would propose to reuse the SNDRV_PCM_IOCTL_TSTAMP ioctl to
-> > > > > enable using of monotonic clock.
-> > > > > The "enable" (int) argument might mean:
-> > > > > 
-> > > > > 0: standard clock - getnstimeofday()
-> > > > > 1: standard clock - getnstimeofday() - for "compatibility"
-> > > > > 2: monotonic clock - ktime_get_ts()
-> > > > Good to add a new feature...  but is there any user of this PCM
-> > > > timestamp so far?  I see some good purposes but rarely seen in
-> > > > the
-> > > > reality, unfortunately...
-> > > > 
-> > > > 
-> > > > Takashi
-> > > > 
-> > > There are some good applications for it, but I have not got round to
-> > > writing them yet!
-> > 
-> > Me too ;)  But, I remember some difficulties regarding the
-> > timestamping at the last time I tried (quite ago).  The timestamp is
-> > somewhat hard to use because it's updated at each pointer or status
-> > update although I wanted to get the exact time only at the period
-> > boundary.  Maybe these usability issues should be sorted out all
-> > together.
-> > 
-> > 
-> > Takashi
-> 
-> Yes, timestamp at period boundary would be more useful. I had not looked at
-> the current timestamp in enough details. A timestamp generated in the IRQ
-> routine would probably be the best. Could the timestamp be attached to a
-> particular PCM sample in the buffer. I.e. The app would retrieve the
-> timestamp, and be told that that timestamp applies to the sample X samples
-> from now, if using the snd_pcm_read() function.
+--===============1979350327==
+Content-Type: multipart/alternative;
+	boundary="----------5AFF27109FB9B1E"
 
-If SNDRV_PCM_TSTAMP_MMAP is set 
-(snd_pcm_sw_params_set_tstamp_mode(SND_PCM_TSTAMP_MMAP)) , the timestamp 
-is updated at each change of hw_ptr in driver (thus also in the interrupt 
-handler).
+This is a multi-part message in MIME format.
 
-						Jaroslav
+------------5AFF27109FB9B1E
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Welcome to International RX!
+- Best quality drugs 
+- Special Internet prices 
+- Fast and discreet worldwide shipping 
+- Friendly customer support 
+Men's Health 
+Anti-Depressants 
+Pain Relief 
+General health 
+Weight loss 
+Anti-biotics 
+Anti-herpes 
+Women's health 
+Anti-diabetic 
+Blood Pressure/Cholesterol 
+Anti-Allergic/Asthma 
+Anti-Acidity 
+
+View Full Products List
+http://uniqa.hk
+
+dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------5AFF27109FB9B1E
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+<font color="#333333"><strong>Welcome to International RX!</strong><br>
+- Best quality drugs <br>
+- Special Internet prices <br>
+- Fast and discreet worldwide shipping <br>
+- Friendly customer support
+<p>Men's Health <br>
+  Anti-Depressants <br>
+  Pain Relief <br>
+  General health <br>
+  Weight loss <br>
+  Anti-biotics <br>
+  Anti-herpes <br>
+  Women's health <br>
+  Anti-diabetic <br>
+  Blood Pressure/Cholesterol <br>
+  Anti-Allergic/Asthma <br>
+  Anti-Acidity </p>
+</font>
+<p><font color="#333333"><a href="http://uniqa.hk">View Full Products List</a></font></p>
+</body>
+</html>
+
+------------5AFF27109FB9B1E--
+
+
+
+
+--===============1979350327==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1979350327==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1979350327==--
