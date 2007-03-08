@@ -1,7 +1,9 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HObNi-0002DE-S7 delayed 48 hours
-Date: Thu, 08 Mar 2007 09:09:22 -0800
-Message-ID: <E1HPM7G-0006pt-GZ@externalmx-1.sourceforge.net>
+From: Simon Lewis <simon.lewis@mnet-online.de>
+Subject: pcm_multi broken in alsa-lib - no duplex mode with
+	jackd
+Date: Thu, 08 Mar 2007 18:16:02 +0100
+Message-ID: <45F044D2.1060903@mnet-online.de>
+Reply-To: simon.lewis@mnet-online.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,30 +20,25 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+Dear ALSA Developers
 
-The message identifier is:     1HObNi-0002DE-S7
-The subject of the message is: endureth for every in me and he returned unto
-The date of the message is:    Tue, 06 Mar 2007 20:44:18 +0530
+When I attempted to combine several device drivers using the pcm_multi
+function in .asound.conf I learned the hardway that pcm_multi doesn't
+work in duplex mode with jackd. Apparently pcm_multi was broken in
+alsa-lib 1.0.9rc1 and has never been fixed.
 
-The address to which the message has not yet been delivered is:
+Many JACK users have successfully used the following patch:
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+http://www.sound-man.co.uk/linuxaudio/pcm_multi-patch
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+I have since learned that many studio64 users have been bitten by this bug.
+
+Please, please, please add the above patch to version 1.014 of ALSA libs
+before they are finally released as stable.
+
+
+With many thanks, Simon.
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
