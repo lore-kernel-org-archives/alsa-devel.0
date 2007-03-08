@@ -1,27 +1,12 @@
-From: "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
-Subject: Re: mm snapshot broken-out-2007-03-05-02-22.tar.gz
-	uploaded
-Date: Thu, 8 Mar 2007 17:52:43 +0100
-Message-ID: <6bffcb0e0703080852l4a06c0f9qeb51044a7a1a68a@mail.gmail.com>
-References: <200703051024.l25AOIF3015951@shell0.pdx.osdl.net>
-	<45EEA3C4.7000501@googlemail.com>
-	<20070307104746.f08a2e84.akpm@linux-foundation.org>
-	<6bffcb0e0703071141j42309702w793e4a76b1b23bfa@mail.gmail.com>
-	<20070307115024.756c848f.akpm@linux-foundation.org>
-	<s5hvehcrdod.wl%tiwai@suse.de> <45EF3B2C.9060801@googlemail.com>
-	<s5hfy8gbrmj.wl%tiwai@suse.de> <45F02EE2.6040606@googlemail.com>
-	<s5h8xe7ognj.wl%tiwai@suse.de>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Question on hda mixer structures
+Date: Thu, 08 Mar 2007 08:52:44 -0800
+Message-ID: <1173372764.4531.78.camel@razman.gruemaster.com>
+References: <5FD5754DDBA0B1499B5A0B4BB5419485B0D5DD@fmsmsx411.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1360952858=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED3D12438D
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 17:52:48 +0100 (CET)
-Received: by ug-out-1314.google.com with SMTP id j3so966675ugf
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2007 08:52:44 -0800 (PST)
-In-Reply-To: <s5h8xe7ognj.wl%tiwai@suse.de>
-Content-Disposition: inline
+In-Reply-To: <5FD5754DDBA0B1499B5A0B4BB5419485B0D5DD@fmsmsx411.amr.corp.intel.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -31,53 +16,172 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Adrian Bunk <bunk@stusta.de>, Linus Torvalds <torvalds@linux-foundation.org>, Jaroslav Kysela <perex@suse.cz>
+To: "Allyn, Mark A" <mark.a.allyn@intel.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 08/03/07, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 08 Mar 2007 16:42:26 +0100,
-> Michal Piotrowski wrote:
-> >
-> > > Also, it'd be helpful if you compare
-> > > /proc/asound/card0/codec97#0/ac97#0-0+regs file before and after the
-> > > patch.  This reveals which register bits differ actually.
-> >
-> > a2.txt is form 2.6.21-rc3 witchout 831466f4ad2b5fe23dff77edbe6a7c244435e973
-> >
-> > diff -uprN a2.txt /proc/asound/card0/codec97#0/ac97#0-0+regs
-> > --- a2.txt      2007-03-08 16:36:47.000000000 +0100
-> > +++ /proc/asound/card0/codec97#0/ac97#0-0+regs  2007-03-08 16:36:49.447083597 +0100
-> > @@ -56,8 +56,8 @@
-> >  0:6e = 0000
-> >  0:70 = 0000
-> >  0:72 = 0004
-> > -0:74 = 1001
-> > -0:76 = 64a4
-> > +0:74 = 1201
-> > +0:76 = 7ca4
-> >  0:78 = 000c
-> >  0:7a = 0000
-> >  0:7c = 4144
->
-> OK, some wrong bits there.  Could you try the patch below?
 
-Problem fixed. Thanks!
+--===============1360952858==
+Content-Type: multipart/alternative; boundary="=-mbTFKqgY8qeZGpirXK2B"
 
-(speaker-test -c6 -Dplug:surround51 is still broken)
 
-Regards,
-Michal
+--=-mbTFKqgY8qeZGpirXK2B
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+On Thu, 2007-03-08 at 08:36 -0800, Allyn, Mark A wrote:
+
+> Folks:
+> 
+> Thanks for helping me on this. I do have another question. This may
+> sound too basic, but
+> I am still a little unclear. 
+> 
+> If I am creating a patch for a new codec, how do I decide what controls
+> don't get created by the stac92xx_build_controls and
+> stac92xx_auto_config? Do I start off with having no mixer structure at
+> all and then see what's missing based on the Codec widget diagram?
+> 
+
+
+That's what I would do.  Then you can add controls as needed.  Otherwise
+you end up with duplicate controls.
+
+The other thing you could do is if this is for a new codec currently not
+supported, and you are writing a new stac####_patch function, don't call
+the stac92xx_auto_config routine and do it manually.  Look at the
+STAC9872 Hack section for reference.
+
+
+
+
+> Thanks 
+> 
+> Mark Allyn
+> 
+> -----Original Message-----
+> From: Eduardo Pereira Habkost [mailto:ehabkost@raisama.net] 
+> Sent: Thursday, March 08, 2007 4:54 AM
+> To: Tobin Davis
+> Cc: Allyn, Mark A; alsa-devel@lists.sourceforge.net
+> Subject: Re: [Alsa-devel] Question on hda mixer structures
+> 
+> 
+> Hi,
+> 
+> On Wed, Mar 07, 2007 at 04:15:17PM -0800, Tobin Davis wrote:
+> > The stac925x_mixer structure is only for controls that don't get
+> created
+> > by stac92xx_build_controls{}.  The volume controls for inputs and
+> > outputs are auto-generated by this function.
+> 
+> Do you mean stac92xx_parse_auto_config()?
+> 
+> The controls in stac925x_mixer seem to be exactly the ones that do get
+> created by stac92xx_build_controls().
+> 
 
 -- 
-Michal K. K. Piotrowski
-LTG - Linux Testers Group (PL)
-(http://www.stardust.webpages.pl/ltg/)
-LTG - Linux Testers Group (EN)
-(http://www.stardust.webpages.pl/linux_testers_group_en/)
+Tobin Davis <tdavis@dsl-only.net>
+
+--=-mbTFKqgY8qeZGpirXK2B
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
+</HEAD>
+<BODY>
+On Thu, 2007-03-08 at 08:36 -0800, Allyn, Mark A wrote:
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">Folks:</FONT>
+
+<FONT COLOR="#000000">Thanks for helping me on this. I do have another question. This may</FONT>
+<FONT COLOR="#000000">sound too basic, but</FONT>
+<FONT COLOR="#000000">I am still a little unclear. </FONT>
+
+<FONT COLOR="#000000">If I am creating a patch for a new codec, how do I decide what controls</FONT>
+<FONT COLOR="#000000">don't get created by the stac92xx_build_controls and</FONT>
+<FONT COLOR="#000000">stac92xx_auto_config? Do I start off with having no mixer structure at</FONT>
+<FONT COLOR="#000000">all and then see what's missing based on the Codec widget diagram?</FONT>
+
+</PRE>
+</BLOCKQUOTE>
+<BR>
+That's what I would do.&nbsp; Then you can add controls as needed.&nbsp; Otherwise you end up with duplicate controls.<BR>
+<BR>
+The other thing you could do is if this is for a new codec currently not supported, and you are writing a new stac####_patch function, don't call the stac92xx_auto_config routine and do it manually.&nbsp; Look at the STAC9872 Hack section for reference.<BR>
+<BR>
+<BR>
+<BR>
+<BLOCKQUOTE TYPE=CITE>
+<PRE>
+<FONT COLOR="#000000">Thanks </FONT>
+
+<FONT COLOR="#000000">Mark Allyn</FONT>
+
+<FONT COLOR="#000000">-----Original Message-----</FONT>
+<FONT COLOR="#000000">From: Eduardo Pereira Habkost [mailto:<A HREF="mailto:ehabkost@raisama.net">ehabkost@raisama.net</A>] </FONT>
+<FONT COLOR="#000000">Sent: Thursday, March 08, 2007 4:54 AM</FONT>
+<FONT COLOR="#000000">To: Tobin Davis</FONT>
+<FONT COLOR="#000000">Cc: Allyn, Mark A; <A HREF="mailto:alsa-devel@lists.sourceforge.net">alsa-devel@lists.sourceforge.net</A></FONT>
+<FONT COLOR="#000000">Subject: Re: [Alsa-devel] Question on hda mixer structures</FONT>
+
+
+<FONT COLOR="#000000">Hi,</FONT>
+
+<FONT COLOR="#000000">On Wed, Mar 07, 2007 at 04:15:17PM -0800, Tobin Davis wrote:</FONT>
+<FONT COLOR="#000000">&gt; The stac925x_mixer structure is only for controls that don't get</FONT>
+<FONT COLOR="#000000">created</FONT>
+<FONT COLOR="#000000">&gt; by stac92xx_build_controls{}.  The volume controls for inputs and</FONT>
+<FONT COLOR="#000000">&gt; outputs are auto-generated by this function.</FONT>
+
+<FONT COLOR="#000000">Do you mean stac92xx_parse_auto_config()?</FONT>
+
+<FONT COLOR="#000000">The controls in stac925x_mixer seem to be exactly the ones that do get</FONT>
+<FONT COLOR="#000000">created by stac92xx_build_controls().</FONT>
+
+</PRE>
+</BLOCKQUOTE>
+<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR>
+<TD>
+-- <BR>
+Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
+
+--=-mbTFKqgY8qeZGpirXK2B--
+
+
+
+--===============1360952858==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1360952858==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1360952858==--
