@@ -1,16 +1,10 @@
-From: "Broadcasting F. Blab" <kraft@getmarriednow.com>
-Subject: International Legal RX
-Date: Thu, 08 Mar 2007 03:56:06 -0500
-Message-ID: <6777056508.20070308035606@getmarriednow.com>
+From: "Kellie Chacon" <vdproust@latty.plus.com>
+Subject: That or scat
+Date: Thu, 8 Mar 2007 17:02:52 +0800
+Message-ID: <001901c761a3$fae19600$00cfd734@Admin>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1979350327=="
+Content-Type: multipart/mixed; boundary="===============1559745620=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from -1212583032 (unknown [61.150.201.220])
-	by alsa0.perex.cz (Postfix) with SMTP id CA7B024353
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 09:49:57 +0100 (CET)
-Received: from getmarriednow.com (-1220407904 [-1220400744])
-	by giardinis.com (Qmailv1) with ESMTP id E6AC203FF0
-	for <alsa-devel@alsa-project.org>; Thu, 08 Mar 2007 03:56:06 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,78 +14,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
---===============1979350327==
+--===============1559745620==
 Content-Type: multipart/alternative;
-	boundary="----------5AFF27109FB9B1E"
+	boundary="----=_NextPart_000_0016_01C761A3.FAE19600"
 
-This is a multi-part message in MIME format.
-
-------------5AFF27109FB9B1E
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-Welcome to International RX!
-- Best quality drugs 
-- Special Internet prices 
-- Fast and discreet worldwide shipping 
-- Friendly customer support 
-Men's Health 
-Anti-Depressants 
-Pain Relief 
-General health 
-Weight loss 
-Anti-biotics 
-Anti-herpes 
-Women's health 
-Anti-diabetic 
-Blood Pressure/Cholesterol 
-Anti-Allergic/Asthma 
-Anti-Acidity 
-
-View Full Products List
-http://uniqa.hk
-
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-------------5AFF27109FB9B1E
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<font color="#333333"><strong>Welcome to International RX!</strong><br>
-- Best quality drugs <br>
-- Special Internet prices <br>
-- Fast and discreet worldwide shipping <br>
-- Friendly customer support
-<p>Men's Health <br>
-  Anti-Depressants <br>
-  Pain Relief <br>
-  General health <br>
-  Weight loss <br>
-  Anti-biotics <br>
-  Anti-herpes <br>
-  Women's health <br>
-  Anti-diabetic <br>
-  Blood Pressure/Cholesterol <br>
-  Anti-Allergic/Asthma <br>
-  Anti-Acidity </p>
-</font>
-<p><font color="#333333"><a href="http://uniqa.hk">View Full Products List</a></font></p>
-</body>
-</html>
-
-------------5AFF27109FB9B1E--
+------=_NextPart_000_0016_01C761A3.FAE19600
+Content-Type: text/plain;
+        charset="windows-1250"
+Content-Transfer-Encoding: quoted-printable
 
 
 
 
---===============1979350327==
+
+BULLISH REPORT!!
+
+
+S.umbol: NNCPCurrent price: $0.025 (UP! 31.6%) 5 Day Target price: =
+$0.15Recommendation: very aggresive buy!
+
+This sym is gaining momentum!!
+
+
+See the hottest news of the NNCP, alsa-devel..
+
+------=_NextPart_000_0016_01C761A3.FAE19600
+Content-Type: text/html;
+        charset="windows-1250"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
+windows-1250">
+<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#FF3300 size=3D=
+3D4><FONT size=3D2><STRONG>BULLISH REPORT!!</STRONG></FONT></DIV>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#3300FF size=3D=
+2>S.umbol: <b>NNCP</b><br>Current price: $0.025 (UP! 31.6%) <br>5 Day =
+Target price: $0.15<br>Recommendation: very aggresive buy!!</FONT></DIV>
+<BR><BR>
+<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#3300FF size=3D2>This =
+sym is gaining momentum!!</FONT></DIV>
+<BR>
+<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#003399 size=3D2>See =
+the hottest news of the NNCP, alsa-devel..</FONT></DIV>
+<BR><BR>
+</BODY></HTML>
+
+------=_NextPart_000_0016_01C761A3.FAE19600--
+
+
+--===============1559745620==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -102,7 +84,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1979350327==
+--===============1559745620==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -113,4 +95,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1979350327==--
+--===============1559745620==--
