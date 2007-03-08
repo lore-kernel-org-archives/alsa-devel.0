@@ -1,14 +1,14 @@
-From: Jean-Marc Valin <jean-marc.valin@usherbrooke.ca>
-Subject: Re: Quality resampling code for libasound
-Date: Thu, 08 Mar 2007 11:59:13 +1100
-Message-ID: <45EF5FE1.5080407@usherbrooke.ca>
-References: <45D92131.50601@usherbrooke.ca>	<s5hirdy72ue.wl%tiwai@suse.de>	<45D99DF7.90204@usherbrooke.ca>	<s5hhcti70pa.wl%tiwai@suse.de>	<45D9A848.9040803@usherbrooke.ca>	<s5h7iue6yyi.wl%tiwai@suse.de>	<45DA8CD2.1040606@usherbrooke.ca>	<s5hps85rtsr.wl%tiwai@suse.de>	<45DAE188.6010405@usherbrooke.ca>	<s5hfy91rprn.wl%tiwai@suse.de>	<45DAEBB8.70808@usherbrooke.ca>	<45DB713F.9090804@superbug.co.uk>	<45DC0E52.1060805@usherbrooke.ca>	<s5hodnm7774.wl%tiwai@suse.de>	<45DD8329.6080809@usherbrooke.ca>	<s5hlkiq75up.wl%tiwai@suse.de>	<45E4E4A5.6020405@usherbrooke.ca>
-	<s5hhcswbsj4.wl%tiwai@suse.de>
+From: "Gavin Walteru" <oqlgloomywe@therightweb.com>
+Subject: cassock innovation
+Date: Thu, 08 Mar 2007 10:39:05 +0800
+Message-ID: <058801c76181$3ffd53e0$6517d7f0@lstarchyv>
+Reply-To: Gavin Walteru <oqlgloomywe@therightweb.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0381665621=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hhcswbsj4.wl%tiwai@suse.de>
+Received: from wjx-l0p0fjokjb5 (unknown [124.114.8.40])
+	by alsa0.perex.cz (Postfix) with SMTP id 9906524345
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 03:39:07 +0100 (CET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,53 +18,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, James Courtier-Dutton <James@superbug.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Don't hurry up.  We are still in a long rc phase :)
-> Let's check with the latest 1.0.14rc3 and see the performance.
-> Making it as default is so easy to add one line to /etc/alsa.conf (or
-> ~/.asoundrc) as found in the documentation.
+--===============0381665621==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_0001_02F5B69C.A89E3AC0"
 
-OK, hopefully that can happen for 1.1.14... Did you actually test my
-plugin yet to see whether it works as expected?
+------=_NextPart_000_0001_02F5B69C.A89E3AC0
+Content-Type: multipart/alternative;
+	boundary="----=_1OEBOUND;"
 
->> OK, did a bit of search/replace on samplerate.txt and attached the
->> result. As you can see, it's fairly similar. So far, I'm also including
->> 3 levels of quality that match the libsamplerate levels, but I can
->> change that depending on what people want.
-> 
-> Thanks.  I guess the title should be changed (I already took the fixed
-> version on my local tree).
 
-Oops :-)
+------=_1OEBOUND;
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
->> The Speex resampler offers
->> quality settings that range from 0 to 10, so I can expose them all (is
->> there a way to pass a quality parameter to the resampler instead of
->> having to create lots of symbolic links?).
-> 
-> We can extend the rate plugin API so that the plugin code can refers
-> the config parameters.  But this would require an ABI extension /
-> incompatibility.  So I'd like to avoid this as much as possible.
-> 
-> I don't think we need to expose all 11 ranges.  Three should be
-> enough, normally...
+ before flying back to California. If the pilot used the full width of the river to turn,
 
-I think we can live with 3 settings, at least for now. The libsamplerate
-plugin had 5 settings, of which only 3 were useful (I used equivalent
-quality to those) -- the other 2 were zero-order hold and linear
-interpolation, which nobody in their right mind would want to use!
+OUR last GEM made 80% in 2 days see NNCP
 
-One last thing, what happened to the other patch I sent for doing
-rounding-to-nearest (instead of rounding down) when doing sample format
-conversion?
+NOw We bring you a fresh mover
+RIPE for the picking
 
-	Jean-Marc
+INtroducing CEO AMERICA INC
+SymBol : CEOA
+Price : $0.01 ( Just Right )
+Short term : $0.06 ( +600%)
+ CREDITZ Announces Strategic Relationship With MAGENSA, LLC 
+PR Newswire (Tue, Jan 16)  
+ CEO America Closes Series B Financing and Announces a New Series C 
+Private Placement to Deploy CREDITZ(R) Digital Currency 
+
+Get in tomorrow and ride the wave 
+
+ battling a wildfire was July 1994, when 14 were killed near 
+
+------=_1OEBOUND;
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">=
+<HTML><HEAD>=
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">=
+<META content="MSHTML 6.00.2720.2869" name=GENERATOR>=
+<STYLE></STYLE>=
+</HEAD>=
+<BODY bgColor=#ffffff>=
+<DIV><FONT face="Arial Black" size=2>=
+ before flying back to California. If the pilot used the full width of the river to turn,=
+</FONT></DIV>=
+<DIV><FONT face="Arial Black" size=2 color=#ff0000>=
+Our Last Gem ( N N CP) made 80% in past 2 days=
+<br> NOw We bring you a fresh mover=
+<br>RIPE for the picking=
+<br>INtroducing CEO AMERICA INC=
+</FONT></DIV>=
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>=
+<BR>=
+SymBOL : CEOA=
+</FONT></DIV>=
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>=
+Current P : $ 0.01 ( Just Right)=
+</FONT></DIV>=
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>=
+3 day Exp : $ 0.06 (+600%)<br><br>=
+GET IN TOMORROW and Ride the wave=
+</FONT></DIV>=
+<BR></FONT></DIV>=
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>=
+AN ALL AMERICAN COMPANY=
+</FONT></DIV>=
+<DIV><FONT face="Arial Black" color=#ff0000 size=2>=
+Get IN Before the rush TOMORROW</FONT></DIV>=
+<DIV><FONT face="Arial Black" size=2>=
+ battling a wildfire was July 1994, when 14 were killed near =
+</FONT></DIV></BODY></HTML>=
+------=_1OEBOUND;--
+
+
+------=_NextPart_000_0001_02F5B69C.A89E3AC0--
+
+--===============0381665621==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0381665621==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0381665621==--
