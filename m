@@ -1,11 +1,14 @@
 From: "Soypa Uretim Danismanlik" <info@soypa.com.tr>
 Subject: Barter ile satislarinizi arttirin
-Date: Thu, 8 Mar 2007 08:00:56 +0200
-Message-ID: <E1HPBgH-00061a-8d@mail.sourceforge.net>
+Date: Thu, 8 Mar 2007 08:00:35 +0200
+Message-ID: <20070308060024.BCD732434C@alsa0.perex.cz>
 Reply-To: Soypa Uretim Danismanlik <info@soypa.com.tr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0622037566=="
+Content-Type: multipart/mixed; boundary="===============0089620296=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from 192.168.1.2 (unknown [88.240.88.109])
+	by alsa0.perex.cz (Postfix) with SMTP id BCD732434C
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 07:00:21 +0100 (CET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,12 +18,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multipart MIME message.
 
---===============0622037566==
+--===============0089620296==
 Content-Type: multipart/alternative; boundary="= Multipart Boundary 0308070800"
 
 This is a multipart MIME message.
@@ -71,7 +74,7 @@ ulasiniz.</FONT></DIV></DIV></DIV></BODY></HTML>
 
 
 
---===============0622037566==
+--===============0089620296==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -82,7 +85,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0622037566==
+--===============0089620296==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -93,4 +96,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0622037566==--
+--===============0089620296==--
