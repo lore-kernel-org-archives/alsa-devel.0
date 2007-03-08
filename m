@@ -1,8 +1,8 @@
 From: Simon Lewis <simon.lewis@mnet-online.de>
 Subject: pcm_multi broken in alsa-lib - no duplex mode with
 	jackd
-Date: Thu, 08 Mar 2007 18:16:02 +0100
-Message-ID: <45F044D2.1060903@mnet-online.de>
+Date: Thu, 08 Mar 2007 18:17:30 +0100
+Message-ID: <45F0452A.40205@mnet-online.de>
 Reply-To: simon.lewis@mnet-online.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -38,6 +38,7 @@ before they are finally released as stable.
 
 
 With many thanks, Simon.
+
 
 
 -------------------------------------------------------------------------
