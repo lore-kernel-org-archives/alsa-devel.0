@@ -1,10 +1,18 @@
-From: "Kellie Chacon" <vdproust@latty.plus.com>
-Subject: That or scat
-Date: Thu, 8 Mar 2007 17:02:52 +0800
-Message-ID: <001901c761a3$fae19600$00cfd734@Admin>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: linux-2.6.21-rc2-gc3442e29 build #245
+	failed	in	sound/soc/soc-core.c:215
+Date: Thu, 08 Mar 2007 10:45:01 +0000
+Message-ID: <1173350701.3570.70.camel@localhost.localdomain>
+References: <200703070926.03460.toralf.foerster@gmx.de>
+	<s5hmz2oagwm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1559745620=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id 698E32435B
+	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 11:45:03 +0100 (CET)
+In-Reply-To: <s5hmz2oagwm.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,85 +22,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Toralf =?ISO-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1559745620==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0016_01C761A3.FAE19600"
+On Wed, 2007-03-07 at 22:21 +0100, Takashi Iwai wrote:
 
-------=_NextPart_000_0016_01C761A3.FAE19600
-Content-Type: text/plain;
-        charset="windows-1250"
-Content-Transfer-Encoding: quoted-printable
+> 
+> Could you check whether the patch below fixes the problem?
 
+Fixes it for me. :)
 
+Cheers
 
-
-
-BULLISH REPORT!!
+Liam
 
 
-S.umbol: NNCPCurrent price: $0.025 (UP! 31.6%) 5 Day Target price: =
-$0.15Recommendation: very aggresive buy!
-
-This sym is gaining momentum!!
-
-
-See the hottest news of the NNCP, alsa-devel..
-
-------=_NextPart_000_0016_01C761A3.FAE19600
-Content-Type: text/html;
-        charset="windows-1250"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-windows-1250">
-<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#FF3300 size=3D=
-3D4><FONT size=3D2><STRONG>BULLISH REPORT!!</STRONG></FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#3300FF size=3D=
-2>S.umbol: <b>NNCP</b><br>Current price: $0.025 (UP! 31.6%) <br>5 Day =
-Target price: $0.15<br>Recommendation: very aggresive buy!!</FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#3300FF size=3D2>This =
-sym is gaining momentum!!</FONT></DIV>
-<BR>
-<DIV align=3Dcenter><FONT face=3DGeorgia color=3D#003399 size=3D2>See =
-the hottest news of the NNCP, alsa-devel..</FONT></DIV>
-<BR><BR>
-</BODY></HTML>
-
-------=_NextPart_000_0016_01C761A3.FAE19600--
-
-
---===============1559745620==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1559745620==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1559745620==--
