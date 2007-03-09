@@ -1,16 +1,14 @@
-From: "Necessitated J. Reunifying" <crusherxlt@getbpm.com>
-Subject: International Legal RX
-Date: Fri, 09 Mar 2007 02:47:11 -0500
-Message-ID: <7766414091.20070309024711@getbpm.com>
+From: jlm devel <jlm_devel@laposte.net>
+Subject: Re: hercules nuse pocket lt usb : kindof work but not
+ really usable
+Date: Fri, 09 Mar 2007 09:12:27 +0100
+Message-ID: <45F116EB.7090702@laposte.net>
+References: <45F03529.8010501@laposte.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1115441476=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from -1220468296 (c91147b1.rjo.virtua.com.br [201.17.71.177])
-	by alsa0.perex.cz (Postfix) with SMTP id E177724410
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2007 08:41:04 +0100 (CET)
-Received: from getbpm.com (-1214203608 [-1214402208])
-	by c91147b1.rjo.virtua.com.br (Qmailv1) with ESMTP id 614DF385A3
-	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2007 02:47:11 -0500
+In-Reply-To: <45F03529.8010501@laposte.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,97 +18,450 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+jl malet a =E9crit :
+> hi
+> I've some problem with a muse pocket lt soundcard from hercules, it's an =
 
---===============1115441476==
-Content-Type: multipart/alternative;
-	boundary="----------F058DA5ED85FAE8"
+> usb card then it use snd-usb-audio, it works in the sense that I can =
 
-This is a multi-part message in MIME format.
+> hear sound.... and it don't in the sense that my pcm volume control has =
 
-------------F058DA5ED85FAE8
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> no effect, that the 2 lines volumes are able to control 2% of the volume =
 
-Welcome to International RX!
-- Best quality drugs 
-- Special Internet prices 
-- Fast and discreet worldwide shipping 
-- Friendly customer support 
-Men's Health 
-Anti-Depressants 
-Pain Relief 
-General health 
-Weight loss 
-Anti-biotics 
-Anti-herpes 
-Women's health 
-Anti-diabetic 
-Blood Pressure/Cholesterol 
-Anti-Allergic/Asthma 
-Anti-Acidity 
+> about (I can set 0% 1% 2% (about) and then all the remaining is TOO =
 
-View Full Products List
-http://uniqa.hk
+> LOOD! or saturated)
+>
+> here is what lsusb gave me :
+>
+>
+> Bus 001 Device 003: ID 06f8:c000 Guillemot Corp.
+> Device Descriptor:
+>   bLength                18
+>   bDescriptorType         1
+>   bcdUSB               1.10
+>   bDeviceClass            0 (Defined at Interface level)
+>   bDeviceSubClass         0
+>   bDeviceProtocol         0
+>   bMaxPacketSize0        64
+>   idVendor           0x06f8 Guillemot Corp.
+>   idProduct          0xc000
+>   bcdDevice            1.00
+>   iManufacturer           0
+>   iProduct                1 USB Audio
+>   iSerial                 0
+>   bNumConfigurations      1
+>   Configuration Descriptor:
+>     bLength                 9
+>     bDescriptorType         2
+>     wTotalLength          337
+>     bNumInterfaces          4
+>     bConfigurationValue     1
+>     iConfiguration          0
+>     bmAttributes         0xa0
+>       (Bus Powered)
+>       Remote Wakeup
+>     MaxPower              500mA
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        0
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      1 Control Device
+>       bInterfaceProtocol      0
+>       iInterface              0
+>       AudioControl Interface Descriptor:
+>         bLength                10
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (HEADER)
+>         bcdADC               1.00
+>         wTotalLength          147
+>         bInCollection           2
+>         baInterfaceNr( 0)       1
+>         baInterfaceNr( 1)       2
+>       AudioControl Interface Descriptor:
+>         bLength                12
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (INPUT_TERMINAL)
+>         bTerminalID             1
+>         wTerminalType      0x0101 USB Streaming
+>         bAssocTerminal          0
+>         bNrChannels             6
+>         wChannelConfig     0x003f
+>           Left Front (L)
+>           Right Front (R)
+>           Center Front (C)
+>           Low Freqency Enhancement (LFE)
+>           Left Surround (LS)
+>           Right Surround (RS)
+>         iChannelNames           0
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                12
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (INPUT_TERMINAL)
+>         bTerminalID             2
+>         wTerminalType      0x0201 Microphone
+>         bAssocTerminal          0
+>         bNrChannels             2
+>         wChannelConfig     0x0003
+>           Left Front (L)
+>           Right Front (R)
+>         iChannelNames           0
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                12
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (INPUT_TERMINAL)
+>         bTerminalID             3
+>         wTerminalType      0x0603 Line Connector
+>         bAssocTerminal          0
+>         bNrChannels             2
+>         wChannelConfig     0x0003
+>           Left Front (L)
+>           Right Front (R)
+>         iChannelNames           0
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                 9
+>         bDescriptorType        36
+>         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+>         bTerminalID             6
+>         wTerminalType      0x0301 Speaker
+>         bAssocTerminal          0
+>         bSourceID               9
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                 9
+>         bDescriptorType        36
+>         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+>         bTerminalID             7
+>         wTerminalType      0x0101 USB Streaming
+>         bAssocTerminal          0
+>         bSourceID               8
+>         iTerminal               0
+>       AudioControl Interface Descriptor:
+>         bLength                 8
+>         bDescriptorType        36
+>         bDescriptorSubtype      5 (SELECTOR_UNIT)
+>         bUnitID                 8
+>         bNrInPins               2
+>         baSource( 0)           10
+>         baSource( 1)           11
+>         iSelector               0
+>       AudioControl Interface Descriptor:
+>         bLength                14
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                 9
+>         bSourceID              15
+>         bControlSize            1
+>         bmaControls( 0)      0x03
+>           Mute
+>           Volume
+>         bmaControls( 1)      0x00
+>         bmaControls( 2)      0x00
+>         bmaControls( 3)      0x00
+>         bmaControls( 4)      0x00
+>         bmaControls( 5)      0x00
+>         bmaControls( 6)      0x00
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                10
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                10
+>         bSourceID               2
+>         bControlSize            1
+>         bmaControls( 0)      0x43
+>           Mute
+>           Volume
+>           Automatic Gain
+>         bmaControls( 1)      0x00
+>         bmaControls( 2)      0x00
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                10
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                11
+>         bSourceID               3
+>         bControlSize            1
+>         bmaControls( 0)      0x01
+>           Mute
+>         bmaControls( 1)      0x02
+>           Volume
+>         bmaControls( 2)      0x02
+>           Volume
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                10
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                13
+>         bSourceID               2
+>         bControlSize            1
+>         bmaControls( 0)      0x03
+>           Mute
+>           Volume
+>         bmaControls( 1)      0x00
+>         bmaControls( 2)      0x00
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                10
+>         bDescriptorType        36
+>         bDescriptorSubtype      6 (FEATURE_UNIT)
+>         bUnitID                14
+>         bSourceID               3
+>         bControlSize            1
+>         bmaControls( 0)      0x01
+>           Mute
+>         bmaControls( 1)      0x02
+>           Volume
+>         bmaControls( 2)      0x02
+>           Volume
+>         iFeature                0
+>       AudioControl Interface Descriptor:
+>         bLength                21
+>         bDescriptorType        36
+>         bDescriptorSubtype      4 (MIXER_UNIT)
+>         bUnitID                15
+>         bNrInPins               3
+>         baSourceID( 0)          1
+>         baSourceID( 1)         13
+>         baSourceID( 2)         14
+>         bNrChannels             6
+>         wChannelConfig     0x003f
+>           Left Front (L)
+>           Right Front (R)
+>           Center Front (C)
+>           Low Freqency Enhancement (LFE)
+>           Left Surround (LS)
+>           Right Surround (RS)
+>         iChannelNames           0
+>         bmControls         0x00
+>         bmControls         0x00
+>         bmControls         0x00
+>         iMixer                  0
+>         junk at descriptor end: 00 00 00 00 00
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol      0
+>       iInterface              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       1
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol      0
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 7
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bDelay                  3 frames
+>         wFormatTag              1 PCM
+>       AudioStreaming Interface Descriptor:
+>         bLength                11
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bNrChannels             2
+>         bSubframeSize           2
+>         bBitResolution         16
+>         bSamFreqType            1 Discrete
+>         tSamFreq[ 0]        48000
+>       Endpoint Descriptor:
+>         bLength                 9
+>         bDescriptorType         5
+>         bEndpointAddress     0x01  EP 1 OUT
+>         bmAttributes            9
+>           Transfer Type            Isochronous
+>           Synch Type               Adaptive
+>           Usage Type               Data
+>         wMaxPacketSize     0x00c8  1x 200 bytes
+>         bInterval               1
+>         bRefresh                0
+>         bSynchAddress           0
+>         AudioControl Endpoint Descriptor:
+>           bLength                 7
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bLockDelayUnits         1 Milliseconds
+>           wLockDelay              4 Milliseconds
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        1
+>       bAlternateSetting       2
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol      0
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 7
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           1
+>         bDelay                  1 frames
+>         wFormatTag              1 PCM
+>       AudioStreaming Interface Descriptor:
+>         bLength                11
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bNrChannels             6
+>         bSubframeSize           2
+>         bBitResolution         16
+>         bSamFreqType            1 Discrete
+>         tSamFreq[ 0]        48000
+>       Endpoint Descriptor:
+>         bLength                 9
+>         bDescriptorType         5
+>         bEndpointAddress     0x01  EP 1 OUT
+>         bmAttributes            9
+>           Transfer Type            Isochronous
+>           Synch Type               Adaptive
+>           Usage Type               Data
+>         wMaxPacketSize     0x0258  1x 600 bytes
+>         bInterval               1
+>         bRefresh                0
+>         bSynchAddress           0
+>         AudioControl Endpoint Descriptor:
+>           bLength                 7
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bLockDelayUnits         1 Milliseconds
+>           wLockDelay              2 Milliseconds
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        2
+>       bAlternateSetting       0
+>       bNumEndpoints           0
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol      0
+>       iInterface              0
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        2
+>       bAlternateSetting       1
+>       bNumEndpoints           1
+>       bInterfaceClass         1 Audio
+>       bInterfaceSubClass      2 Streaming
+>       bInterfaceProtocol      0
+>       iInterface              0
+>       AudioStreaming Interface Descriptor:
+>         bLength                 7
+>         bDescriptorType        36
+>         bDescriptorSubtype      1 (AS_GENERAL)
+>         bTerminalLink           7
+>         bDelay                  1 frames
+>         wFormatTag              1 PCM
+>       AudioStreaming Interface Descriptor:
+>         bLength                11
+>         bDescriptorType        36
+>         bDescriptorSubtype      2 (FORMAT_TYPE)
+>         bFormatType             1 (FORMAT_TYPE_I)
+>         bNrChannels             2
+>         bSubframeSize           2
+>         bBitResolution         16
+>         bSamFreqType            1 Discrete
+>         tSamFreq[ 0]        48000
+>       Endpoint Descriptor:
+>         bLength                 9
+>         bDescriptorType         5
+>         bEndpointAddress     0x82  EP 2 IN
+>         bmAttributes            5
+>           Transfer Type            Isochronous
+>           Synch Type               Asynchronous
+>           Usage Type               Data
+>         wMaxPacketSize     0x00c8  1x 200 bytes
+>         bInterval               1
+>         bRefresh                0
+>         bSynchAddress           0
+>         AudioControl Endpoint Descriptor:
+>           bLength                 7
+>           bDescriptorType        37
+>           bDescriptorSubtype      1 (EP_GENERAL)
+>           bmAttributes         0x00
+>           bLockDelayUnits         0 Undefined
+>           wLockDelay              0 Undefined
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        3
+>       bAlternateSetting       0
+>       bNumEndpoints           1
+>       bInterfaceClass         3 Human Interface Devices
+>       bInterfaceSubClass      0 No Subclass
+>       bInterfaceProtocol      0 None
+>       iInterface              0
+>         HID Device Descriptor:
+>           bLength                 9
+>           bDescriptorType        33
+>           bcdHID               1.00
+>           bCountryCode            0 Not supported
+>           bNumDescriptors         1
+>           bDescriptorType        34 Report
+>           wDescriptorLength      48
+>          Report Descriptors:
+>            ** UNAVAILABLE **
+>       Endpoint Descriptor:
+>         bLength                 7
+>         bDescriptorType         5
+>         bEndpointAddress     0x83  EP 3 IN
+>         bmAttributes            3
+>           Transfer Type            Interrupt
+>           Synch Type               None
+>           Usage Type               Data
+>         wMaxPacketSize     0x0003  1x 3 bytes
+>         bInterval              32
+> Device Status:     0x0000
+>   (Bus Powered)
+>
+>
+> can someone help me?
+> thanks
+>
+> -------------------------------------------------------------------------
+> Take Surveys. Earn Cash. Influence the Future of IT
+> Join SourceForge.net's Techsay panel and you'll get the chance to share y=
+our
+> opinions on IT & business topics through brief surveys-and earn cash
+> http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3D=
+DEVDEV
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>   =
 
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-------------F058DA5ED85FAE8
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<font color="#333333"><strong>Welcome to International RX!</strong><br>
-- Best quality drugs <br>
-- Special Internet prices <br>
-- Fast and discreet worldwide shipping <br>
-- Friendly customer support
-<p>Men's Health <br>
-  Anti-Depressants <br>
-  Pain Relief <br>
-  General health <br>
-  Weight loss <br>
-  Anti-biotics <br>
-  Anti-herpes <br>
-  Women's health <br>
-  Anti-diabetic <br>
-  Blood Pressure/Cholesterol <br>
-  Anti-Allergic/Asthma <br>
-  Anti-Acidity </p>
-</font>
-<p><font color="#333333"><a href="http://uniqa.hk">View Full Products List</a></font></p>
-</body>
-</html>
-
-------------F058DA5ED85FAE8--
-
-
-
-
---===============1115441476==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+nobody working on usb devices?
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1115441476==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1115441476==--
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
