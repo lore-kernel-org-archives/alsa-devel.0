@@ -1,12 +1,15 @@
-From: "Allyn, Mark A" <mark.a.allyn@intel.com>
-Subject: Amixer contents listing question
-Date: Mon, 12 Mar 2007 17:18:30 -0700
-Message-ID: <5FD5754DDBA0B1499B5A0B4BB541948586EC56@fmsmsx411.amr.corp.intel.com>
+From: =?iso-2022-jp?B?GyRCODdBKiEqSH5GfSUzJV8lZSVLJUYlIxsoQg==?= <chichi_081@beautiful_opai.com.oo>
+Subject: =?iso-2022-jp?b?GyRCImM0MEE0TDVOQSU3JTklRiVgImQbKEI=?=
+	=?iso-2022-jp?b?GyRCSH5GfSQsQCokPiRtJCQhKiEqGyhC?=
+Date: Sat, 10 Mar 2007 04:44:24 +0900
+Message-ID: <20070310044424.1281285680@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from localhost (unknown [218.25.20.203])
+	by alsa0.perex.cz (Postfix) with SMTP id 6643B24339
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2007 20:45:29 +0100 (CET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,22 +19,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+　　　　┏…┓┏━┓┏…┓┏━┓┏…┓┏━┓┏…┓
+　　　　┃美┃┃乳┃┃の┃┃さ┃┃さ┃┃や┃┃き┃
+　　　　┗━┛┗…┛┗━┛┗…┛┗━┛┗…┛┗━┛
+　＝＝＝★完全無料で本物の美乳をご紹介します♪★＝＝＝
 
-Hi:
+エッチが大好きな美乳の持ち主がこれまたエッチな出会いを求めて当コミュニティに登録されています！厳正な審査を通過した美乳さんばかりなので、おっぱいフェチには大好評を頂いております♪
+http://dlb.staticcling.org/beautiful_opai/index.html
 
-How do I find out the NID's associated with each control in the alsa mixer?
+本日も恒例の≪おっぱい祭り≫を実施中！！あなた様に素敵な美乳さんをご紹介したいと思います。
+http://dlb.staticcling.org/beautiful_opai/index.html
 
-When I do a amixer contents command to show the controls and the contents, I
-don't think I am seeing the widget nids associated with each control?
+当コミュニティーのシステムも≪完全無料≫にてご案内中♪簡単登録で素敵なおっぱいライフをお楽しみ下さい！
+http://dlb.staticcling.org/beautiful_opai/index.html
 
-I am asking this because I think that I am missing com controls.
-
-Thanks
-
-Mark Allyn
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
