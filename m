@@ -1,15 +1,11 @@
-From: David Friggens <david.friggens@mcs.vuw.ac.nz>
-Subject: Re: Sound on Packard Bell V7900 (ALC260): where from
-	here?
-Date: Fri, 9 Mar 2007 17:18:21 +1300
-Message-ID: <200703091718.21465.david.friggens@mcs.vuw.ac.nz>
-References: <200703090238.l292cvVv015055@turbo.physics.adelaide.edu.au>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HOooJ-0008Es-RL delayed 48 hours
+Date: Thu, 08 Mar 2007 22:05:40 -0800
+Message-ID: <E1HPYEW-0004Df-Go@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <200703090238.l292cvVv015055@turbo.physics.adelaide.edu.au>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,27 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jonathan
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-> Hmm, sorry about that.  Your issue must have dropped
-> off my radar - sorry.
+The message identifier is:     1HOooJ-0008Es-RL
+The subject of the message is: the north, two mites, kingdoms of families of
+The date of the message is:    Wed, 07 Mar 2007 11:05:26 +0530
 
-That's fine. I should have come looking for further help earlier but it 
-slipped off my radar somewhat too, as I'd managed to get at least some 
-sound out of it.
+The address to which the message has not yet been delivered is:
 
-> We can pick up on your problem now if you like
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-That would be great. Thanks.
-
-> I guess the first thing to do is to try the latest version of ALSA -
-> 1.0.14rc3 is out now.  There are many fixes in this version and it
-> gives us a known point of reference.
-
-OK I'll try that and report back off list.
-
-Cheers
-David
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
