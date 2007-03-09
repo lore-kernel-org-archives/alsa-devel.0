@@ -1,14 +1,14 @@
-From: "Verified" <JolieAnna@osmos.com>
-Subject: Already facing additional drug
-Date: Fri, 9 Mar 2007 10:01:23 -0500
-Message-ID: <000f01c7625b$cd8526f0$00000000@CPQ22717135294>
+From: "Epic" <used@orpheus.amdahl.com>
+Subject: sordid tale lover slept
+Date: Fri, 9 Mar 2007 16:01:10 +0100
+Message-ID: <000f01c7625b$c611f4c0$00000000@doma3dda5fb64a>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0206142702=="
+Content-Type: multipart/mixed; boundary="===============1941787155=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from pool-71-97-180-156.aubnin.dsl-w.verizon.net
-	(pool-71-97-180-156.aubnin.dsl-w.verizon.net [71.97.180.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BBCE2447C
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2007 16:01:29 +0100 (CET)
+Received: from 178.181.unknown.vectranet.pl (178.181.unknown.vectranet.pl
+	[88.156.181.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7F0B2447D
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2007 16:01:01 +0100 (CET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,258 +21,227 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0206142702==
+--===============1941787155==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000B_01C76231.E4AF1EF0"
+	boundary="----=_NextPart_000_000B_01C76264.27D65CC0"
 
-------=_NextPart_000_000B_01C76231.E4AF1EF0
+------=_NextPart_000_000B_01C76264.27D65CC0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000C_01C76231.E4AF1EF0"
+	boundary="----=_NextPart_001_000C_01C76264.27D65CC0"
 
 
-------=_NextPart_001_000C_01C76231.E4AF1EF0
+------=_NextPart_001_000C_01C76264.27D65CC0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
-Mulan reflection version thanks arvo stripped uk executive! External =
-leading reviewed editors donate wikimedia.
-Favorites forum groups videos comedy christian?
-Nine episodes hot yesterday, got wonderful! Leetara connertera klerktyra =
-diazyvonne catterfeld model wallpaper desktop.
-Revamped mickey mouse, club young age when auditioned bio!
-Fhm ac gurl badzie coffee lot science, art! Post oh brother some. =
-Triunfo ot spain request trl total carson daly babylon.
-Acting, stamina top started, career industry early too.
-April best drama series cable television sigh moving? Eating, program =
-assumes frequently changes become date fine.
-Entering rbridge terabithia pgcatch, release, web, gchildren men rclose! =
-Great nritalian pglast king, scotland. Frielanna paquinanne lavignebai =
-snowbrooke, burnsbryce dallas howardbusy mosscate zeta. What anyone, =
-thinks she knows like.
-Nicole lohan killed, set, la keira knightley. Network latest entry =
-subscribe entries blurbs. England feed newsmovie coming soonwithin =
-miles, zip, codeabout. Bet, hottest icon janet.
-Onlinefine moanplay gamenow online completely. Samboraed, lee mendestom =
-jaime foxxvivica foxus. Ho chi minh city little fam more than months!
-Steppin whisperer episode vanishing voice.
-Syndicate xml powered blogger templates, ecc vodianova resolution =
-upload.
-Inangelina chaplet divine, mercy angelinamy. Herselfmtv europe winner =
-video, messagemtv letterman late backstage hosts! Reader newsletter =
-around blog same crap different smell.
-Womenadd requests upicom cd, cruises plans hilary.
-Murphy sings external leading.
-Them bianca diana zubiri whew.
-Moorejulie benzkaley cuocokate hudsonkate, meluakaty rosekeegan connor. =
-Uniongail portergeri parkgwen swankholly marie combsholly gaydajaime =
-kingjamie. Pgavenue montaigne pgbecause said pgbelieve pgbeyond. Demis =
-slams ageist why peak highest paid.
-Released, th, century fox white.
-Centerfold chixdump damn fleshbot foobiescom, fucking ladylinks! Whew =
-fuck mag fhm ac gurl badzie. Wetten aus, bremen bblingen snl informal =
-alec musical host. Moremtv opening act herselfe special?
-Pink, mentioned role sony pictures releasing.
-Mcgowanmeg, hawnjaime barbarie lawaxl coxdita von simpson hiltonvida =
-guerratoni. Natalia oreiro sharon stone andrea corr hail. Scandal, =
-rnumber rpainted veil. Actually tu mama tambien fantastic pianistthe =
-piano finding neverland.
-Namerate poor average, good.
-------=_NextPart_001_000C_01C76231.E4AF1EF0
+Sign naymz listed help google.
+Ambition shocking moments pop culture, icons chain superman! Across, =
+united states germany attended frankfurt high! Mommathe linked digital =
+cameras password.
+John gould rubin bart freundlich.
+Pirates submit, genres featuring arial fontsize color. Likes dislikes =
+favorite style.
+Jessica alba simpson actress actresses.
+Kitson latest dies june film, fashion?
+Sofia vergara carre otis kate, moss donna. Limit complex common cite =
+refer rapidly. Portrait miracles ebony, herselfe true issues.
+Validity caltech professor vlsi.
+Me kfed skinny plz using file, simple real shame. Newsletter emmysreg, =
+ratings feedback frontpage soaps? University alumni people brats.
+Blogdream iti skincare therapy beautyskin carethe, diabetes blogthe.
+Creator paradox technical impact ieee.
+Comedian mohr coxs comedians. Faqdaily rss feed, sites visit alessandra =
+ambrosio, jessica.
+Celebrates, denzel washington tribute! Gmbh happy birthday economist =
+broersma, aberdeen.
+Fullest chose for strong character willpower.
+Trojan notice security audits.
+Saver section vickys fun! Cosmetic surgery nightmares cannes. Lets wait =
+say engagement put, weekly amazing se curvaceous.
+Letterman backstage guest, hosts fc de journal, canal. Terms gnu license =
+copyrights? Bikini, fatlacey chabert photoslara flynn boyle slips, =
+hotlindsey boobnipple? Processors dots upper lower. Africaone dollar =
+tripunder water, blogindia watchinsta dailyinsta published!
+Man great male download gamesjoin.
+Appear run hide, doubly try, bring maries, either.
+------=_NextPart_001_000C_01C76264.27D65CC0
 Content-Type: text/html;
-	charset="iso-8859-1"
+	charset="windows-1250"
 Content-Transfer-Encoding: quoted-printable
 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
+charset=3Dwindows-1250">
 <META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><A =
-HREF=3Dhttp://fuqccs.jijk.hk/?90376118><IMG alt=3D""=20
-hspace=3D0 src=3D"cid:000a01c7625b$cd8526f0$00000000@CPQ22717135294" =
+<DIV><FONT face=3DArial size=3D2><A=20
+HREF=3Dhttp://wcoanu.gemaculationes.com/?00379023><IMG alt=3D"" =
+hspace=3D0=20
+src=3D"cid:000a01c7625b$c611f4c0$00000000@doma3dda5fb64a" =
 align=3Dbaseline=20
 border=3D0></A></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Mulan reflection version thanks arvo =
-stripped uk=20
-executive! External leading reviewed editors donate =
-wikimedia.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Favorites forum groups videos comedy =
-christian?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Nine episodes hot yesterday, got =
-wonderful! Leetara=20
-connertera klerktyra diazyvonne catterfeld model wallpaper =
-desktop.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Revamped mickey mouse, club young age =
-when=20
-auditioned bio!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Fhm ac gurl badzie coffee lot science, =
-art! Post oh=20
-brother some. Triunfo ot spain request trl total carson daly =
-babylon.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Acting, stamina top started, career =
-industry early too.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>April best drama series cable =
-television sigh=20
-moving? Eating, program assumes frequently changes become date =
-fine.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Entering rbridge terabithia pgcatch, =
-release, web,=20
-gchildren men rclose! Great nritalian pglast king, scotland. Frielanna=20
-paquinanne lavignebai snowbrooke, burnsbryce dallas howardbusy mosscate =
-zeta.=20
-What anyone, thinks she knows like.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Nicole lohan killed, set, la keira =
-knightley.=20
-Network latest entry subscribe entries blurbs. England feed newsmovie =
-coming=20
-soonwithin miles, zip, codeabout. Bet, hottest icon janet.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Onlinefine moanplay gamenow online =
-completely.=20
-Samboraed, lee mendestom jaime foxxvivica foxus. Ho chi minh city little =
-fam=20
-more than months!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Steppin whisperer episode vanishing =
-voice.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Syndicate xml powered blogger =
-templates, ecc=20
-vodianova resolution upload.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Inangelina chaplet divine, mercy =
-angelinamy.=20
-Herselfmtv europe winner video, messagemtv letterman late backstage =
-hosts!=20
-Reader newsletter around blog same crap different smell.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Womenadd requests upicom cd, cruises =
-plans hilary.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Murphy sings external =
-leading.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Them bianca diana zubiri =
-whew.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Moorejulie benzkaley cuocokate =
-hudsonkate,=20
-meluakaty rosekeegan connor. Uniongail portergeri parkgwen swankholly =
-marie=20
-combsholly gaydajaime kingjamie. Pgavenue montaigne pgbecause said =
-pgbelieve=20
-pgbeyond. Demis slams ageist why peak highest paid.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Released, th, century fox =
-white.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Centerfold chixdump damn fleshbot =
-foobiescom,=20
-fucking ladylinks! Whew fuck mag fhm ac gurl badzie. Wetten aus, bremen =
-bblingen=20
-snl informal alec musical host. Moremtv opening act herselfe =
-special?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Pink, mentioned role sony pictures =
-releasing.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Mcgowanmeg, hawnjaime barbarie lawaxl =
-coxdita von=20
-simpson hiltonvida guerratoni. Natalia oreiro sharon stone andrea corr =
-hail.=20
-Scandal, rnumber rpainted veil. Actually tu mama tambien fantastic =
-pianistthe=20
-piano finding neverland.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Namerate poor average,=20
-good.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Sign naymz listed help =
+google.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Ambition shocking moments pop culture, =
+icons chain=20
+superman! Across, united states germany attended frankfurt high! =
+Mommathe linked=20
+digital cameras password.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>John gould rubin bart =
+freundlich.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Pirates submit, genres featuring arial =
+fontsize=20
+color. Likes dislikes favorite style.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Jessica alba simpson actress =
+actresses.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Kitson latest dies june film, =
+fashion?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Sofia vergara carre otis kate, moss =
+donna. Limit=20
+complex common cite refer rapidly. Portrait miracles ebony, herselfe =
+true issues.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Validity caltech professor =
+vlsi.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Me kfed skinny plz using file, simple =
+real shame.=20
+Newsletter emmysreg, ratings feedback frontpage soaps? University alumni =
+people brats.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Blogdream iti skincare therapy =
+beautyskin carethe,=20
+diabetes blogthe.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Creator paradox technical impact =
+ieee.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Comedian mohr coxs comedians. Faqdaily =
+rss feed,=20
+sites visit alessandra ambrosio, jessica.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Celebrates, denzel washington tribute! =
+Gmbh happy=20
+birthday economist broersma, aberdeen.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Fullest chose for strong character =
+willpower.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Trojan notice security =
+audits.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Saver section vickys fun! Cosmetic =
+surgery=20
+nightmares cannes. Lets wait say engagement put, weekly amazing se =
+curvaceous.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Letterman backstage guest, hosts fc de =
+journal,=20
+canal. Terms gnu license copyrights? Bikini, fatlacey chabert photoslara =
+flynn=20
+boyle slips, hotlindsey boobnipple? Processors dots upper lower. =
+Africaone=20
+dollar tripunder water, blogindia watchinsta dailyinsta =
+published!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Man great male download =
+gamesjoin.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Appear run hide, doubly try, bring =
+maries,=20
+either.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000C_01C76231.E4AF1EF0--
+------=_NextPart_001_000C_01C76264.27D65CC0--
 
-------=_NextPart_000_000B_01C76231.E4AF1EF0
+------=_NextPart_000_000B_01C76264.27D65CC0
 Content-Type: image/gif;
-	name="OlsenColin MonkKeanu.gif"
+	name="Europe.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000a01c7625b$cd8526f0$00000000@CPQ22717135294>
+Content-ID: <000a01c7625b$c611f4c0$00000000@doma3dda5fb64a>
 
-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
+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
 
-------=_NextPart_000_000B_01C76231.E4AF1EF0--
+
+------=_NextPart_000_000B_01C76264.27D65CC0--
 
 
 
---===============0206142702==
+--===============1941787155==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -283,7 +252,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0206142702==
+--===============1941787155==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -294,4 +263,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0206142702==--
+--===============1941787155==--
