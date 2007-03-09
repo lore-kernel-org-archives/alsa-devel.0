@@ -1,11 +1,17 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HPatR-0000aH-01 delayed 10 hours
-Date: Fri, 09 Mar 2007 11:25:51 -0800
-Message-ID: <E1HPkit-00021T-Iq@externalmx-1.sourceforge.net>
+From: "Afar P. Anterior" <any@gladesschools.org>
+Subject: Nobody will know bout your problems.
+Date: Fri, 09 Mar 2007 12:19:58 -0500
+Message-ID: <8059331545.20070309121958@gladesschools.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from 145556296 (unknown [203.125.66.48])
+	by alsa0.perex.cz (Postfix) with SMTP id 530EC1037E6
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2007 20:27:01 +0100 (CET)
+Received: from gladesschools.org (142852176 [142740104])
+	by gibsondoor.com (Qmailv1) with ESMTP id 0CA529822C
+	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2007 12:19:58 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +21,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+Don't want to expose your private life? There is no need to go to your local drug store! All medications you can find in US Drug stores! We have pills for any disease: ED, Weight loss, Antibiotics etc. Instant shipping, perfect support! 
+http://edeaq.hk
 
-The message identifier is:     1HPatR-0000aH-01
-The subject of the message is: endureth for every in me and he returned unto
-The date of the message is:    Fri, 09 Mar 2007 10:55:43 +0000
+Licensed medications! Confidential and Secure purchase! Instant shipping! Lowest prices you can find anywhere! 
 
-The address to which the message has not yet been delivered is:
-
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
