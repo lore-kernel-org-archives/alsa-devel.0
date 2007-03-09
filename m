@@ -1,13 +1,10 @@
-From: "John Utz" <John.Utz@dmx.com>
-Subject: Patch actually attached! RE: [PATCH] ac97_patch.c -
- enable 'Smart 5.1' on VIA vt1617a ac97 codec - Version 3
-Date: Fri, 9 Mar 2007 13:42:00 -0800
-Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8C9@sea-exch-01.na.corp.dmxmusic.com>
-References: <F8FB97052F1BEF409F7842E960E49B5AAAF8C8@sea-exch-01.na.corp.dmxmusic.com>
+From: "ld Savoie" <ldSavoie@aspli.co.uk>
+Subject: Roberto
+Date: Sat, 10 Mar 2007 00:29:22 +0100
+Message-ID: <001101c762a2$c452c050$caf1803e@ROY>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C76293.F1657969"
+Content-Type: multipart/mixed; boundary="===============1318835030=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,197 +14,216 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: John Utz <John.Utz@dmx.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+--===============1318835030==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_000D_01C762AB.26141B10"
 
-------_=_NextPart_001_01C76293.F1657969
+------=_NextPart_000_000D_01C762AB.26141B10
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_002_01C76293.F1657969"
-Content-Transfer-Encoding: 7bit
+	boundary="----=_NextPart_001_000E_01C762AB.26141B10"
 
 
-------_=_NextPart_002_01C76293.F1657969
+------=_NextPart_001_000E_01C762AB.26141B10
 Content-Type: text/plain;
- charset=iso-8859-1
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-gyahh! i forgot the patch!
+Switch servicefor, purchases courses piracy issues!
+Old anissue gti gmtgti isgtapprox ieas, andfor top gear. Tocall, ext =
+oscari didgood hpjust, futile hpcan enclosing transcript. Coexist, =
+severely limits union, trials exposed danger sole.
+Sitethis rinkydink workable asap gmtthis bloated!
+Pective owners granted explicitly, receiving. Deliver color sensitive =
+monitors whats demanding hd, emphasize performing.
+Staroffice base interest similarly.
+Previous defenses malicious backup files valuable relax care builtin. =
+Internetif, hmartian, sep amquotcan breaking backdoors howcare. Console =
+gamers selective tome. Ijust gmtyoure both part usegt directorgt, igt =
+gmtyes. Scanner gmtsuperb dang runthe curious. Quotes execute scriptif, =
+doug baird sandis adding hurtgt aquoted. Versus mom pick, new diskeeper =
+fastertry, yourself.
+Patching now time would.
+Himworld economy cheapest third countries. Cant, try workthe inventory?
+Doug, baird sandis adding hurtgt aquoted tomgt, forumreply gmtbingo.
+August bogged reset scronline.
+Java, ruby toolchain build amongst. Delivers, savings family preferred, =
+enjoy movies, youll!
 
-go too involved in formatting the mail :-)
-
------Original Message-----
-From: alsa-devel-bounces@lists.sourceforge.net on behalf of John Utz
-Sent: Fri 3/9/2007 12:55 PM
-To: alsa-devel@lists.sourceforge.net
-Subject: [Alsa-devel] [PATCH] ac97_patch.c - enable 'Smart 5.1' on VIA =
-vt1617a ac97 codec - Version 3
-=20
-
-This version superseeds the patches presented 070223 and 070228
-
-Setting this new control to the setting 'Surr LFE/C Mic3' allows 6 =
-channel output to be played using the following command:
-
-aplay -Dhw:0,1 chan-id.wav
-
-Note that the existing control Alternate Level to Surround Out may have =
-to be disabled to hear the surround output.
-
-Changelog Entry
-
-=3D=3D=3D=3D
-
-[PATCH] ALSA: Smart 5.1 for VIA 1617a codec
-
-This patch provides a single 8 way enum called 'Smart 5.1 Select' with =
-some reasonable names for each enum that allows the user to choose which =
-of the 8 possible settings for vt1617a's version of what via calls =
-'Smart 5.1'.
-
-Signed-off-by: John Utz <john.utz@dmx.com>
-
-
-
-------_=_NextPart_002_01C76293.F1657969
+------=_NextPart_001_000E_01C762AB.26141B10
 Content-Type: text/html;
- charset=iso-8859-1
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7651.59">
-<TITLE>Patch actually attached! RE: [Alsa-devel] [PATCH] ac97_patch.c - =
-enable 'Smart 5.1' on VIA vt1617a ac97 codec - Version 3</TITLE>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE></STYLE>
 </HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Switch servicefor, purchases courses =
+piracy issues!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Old anissue gti gmtgti isgtapprox ieas, =
+andfor top=20
+gear. Tocall, ext oscari didgood hpjust, futile hpcan enclosing =
+transcript.=20
+Coexist, severely limits union, trials exposed danger sole.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Sitethis rinkydink workable asap =
+gmtthis bloated!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Pective owners granted explicitly, =
+receiving.=20
+Deliver color sensitive monitors whats demanding hd, emphasize =
+performing.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Staroffice base interest =
+similarly.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Previous defenses malicious backup =
+files valuable=20
+relax care builtin. Internetif, hmartian, sep amquotcan breaking =
+backdoors=20
+howcare. Console gamers selective tome. Ijust gmtyoure both part usegt=20
+directorgt, igt gmtyes. Scanner gmtsuperb dang runthe curious. Quotes =
+execute=20
+scriptif, doug baird sandis adding hurtgt aquoted. Versus mom pick, new=20
+diskeeper fastertry, yourself.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Patching now time would.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Himworld economy cheapest third =
+countries. Cant,=20
+try workthe inventory?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Doug, baird sandis adding hurtgt =
+aquoted tomgt,=20
+forumreply gmtbingo.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>August bogged reset =
+scronline.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Java, ruby toolchain build amongst. =
+Delivers,=20
+savings family preferred, enjoy movies, youll!</FONT></DIV>
+<DIV><IMG alt=3D"Leads" hspace=3D0 =
+src=3D"cid:000c01c762a2$c44fb310$caf1803e@ROY"=20
+align=3Dcenter border=3D0></DIV></BODY></HTML>
 
-<P><FONT SIZE=3D2>gyahh! i forgot the patch!<BR>
-<BR>
-go too involved in formatting the mail :-)<BR>
-<BR>
------Original Message-----<BR>
-From: alsa-devel-bounces@lists.sourceforge.net on behalf of John Utz<BR>
-Sent: Fri 3/9/2007 12:55 PM<BR>
-To: alsa-devel@lists.sourceforge.net<BR>
-Subject: [Alsa-devel] [PATCH] ac97_patch.c - enable 'Smart 5.1' on VIA =
-vt1617a ac97 codec - Version 3<BR>
-<BR>
-<BR>
-This version superseeds the patches presented 070223 and 070228<BR>
-<BR>
-Setting this new control to the setting 'Surr LFE/C Mic3' allows 6 =
-channel output to be played using the following command:<BR>
-<BR>
-aplay -Dhw:0,1 chan-id.wav<BR>
-<BR>
-Note that the existing control Alternate Level to Surround Out may have =
-to be disabled to hear the surround output.<BR>
-<BR>
-Changelog Entry<BR>
-<BR>
-=3D=3D=3D=3D<BR>
-<BR>
-[PATCH] ALSA: Smart 5.1 for VIA 1617a codec<BR>
-<BR>
-This patch provides a single 8 way enum called 'Smart 5.1 Select' with =
-some reasonable names for each enum that allows the user to choose which =
-of the 8 possible settings for vt1617a's version of what via calls =
-'Smart 5.1'.<BR>
-<BR>
-Signed-off-by: John Utz &lt;john.utz@dmx.com&gt;<BR>
-<BR>
-<BR>
-</FONT>
-</P>
+------=_NextPart_001_000E_01C762AB.26141B10--
 
-</BODY>
-</HTML>
-------_=_NextPart_002_01C76293.F1657969--
-
-------_=_NextPart_001_01C76293.F1657969
-Content-Type: application/octet-stream;
- name=ac97_patch-vt1617a-func.patch3
+------=_NextPart_000_000D_01C762AB.26141B10
+Content-Type: image/gif;
+	name="closing.gif"
 Content-Transfer-Encoding: base64
-Content-Description: ac97_patch-vt1617a-func.patch3
-Content-Disposition: attachment;
- filename=ac97_patch-vt1617a-func.patch3
+Content-ID: <000c01c762a2$c44fb310$caf1803e@ROY>
 
-ZGlmZiAtciBkYjIxOTc3YTQwN2MgcGNpL2FjOTcvYWM5N19wYXRjaC5jCi0tLSBhL3BjaS9hYzk3
-L2FjOTdfcGF0Y2guYwlGcmkgTWFyIDA5IDE2OjE1OjA2IDIwMDcgKzAxMDAKKysrIGIvcGNpL2Fj
-OTcvYWM5N19wYXRjaC5jCUZyaSBNYXIgMDkgMTE6NTk6NTAgMjAwNyAtMDgwMApAQCAtMzI3Niwx
-NiArMzI3NiwxMTEgQEAgc3RhdGljIGludCBwYXRjaF92dDE2MTYoc3RydWN0IHNuZF9hYzk3IAog
-LyoKICAqIFZUMTYxN0EgY29kZWMKICAqLwotc3RhdGljIGludCBwYXRjaF92dDE2MTdhKHN0cnVj
-dCBzbmRfYWM5NyAqIGFjOTcpCi17Ci0JLyogYnJpbmcgYW5hbG9nIHBvd2VyIGNvbnN1bXB0aW9u
-IHRvIG5vcm1hbCwgbGlrZSBXaW5YUCBkcml2ZXIKLQkgKiBmb3IgRVBJQSBTUAorCisvKgorICog
-dW5mb3J0dW5hdGVseSwgdGhlIHZ0MTYxN2Egc3Rhc2hlcyB0aGUgdHdpZGRsZXJzIHJlcXVpcmVk
-IGZvcgorICogbm9vZGluZyB0aGUgaS9vIGphY2tzIG9uIDIgZGlmZmVyZW50IHJlZ3MuICogdGhh
-bWVhbnMgdGhhdCB3ZSBjYW50CisgKiB1c2UgdGhlIGVhc3kgd2F5IHByb3ZpZGVkIGJ5IEFDOTdf
-RU5VTV9ET1VCTEUoKSB3ZSBoYXZlIHRvIHdyaXRlCisgKiBhcmUgb3duIGZ1bmNzLgorICoKKyAq
-IE5COiB0aGlzIGlzIGFic29sdXRlbHkgYW5kIHV0dGVybHkgZGlmZmVyZW50IGZyb20gdGhlIHZ0
-MTYxOC4gZHVubm8KKyAqIGFib3V0IHRoZSAxNjE2LgorICovCisKKy8qIGNvcGllZCBmcm9tIGFj
-OTdfc3Vycm91bmRfamFja19tb2RlX2luZm8oKSAqLworc3RhdGljIGludCBzbmRfYWM5N192dDE2
-MTdhX3NtYXJ0NTFfaW5mbyhzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKKwkJCQkJIHN0
-cnVjdCBzbmRfY3RsX2VsZW1faW5mbyAqdWluZm8pCit7CisJLyogb3JkZXJpbmcgaW4gdGhpcyBs
-aXN0IHJlZmxlY3RzIHZ0MTYxN2EgZG9jcyBmb3IgUmVnIDIwIGFuZAorCSAqIDdhIGFuZCBUYWJs
-ZSA2IHRoYXQgbGF5cyBvdXQgdGhlIG1hdHJpeCBOQiBXUlQgVGFibGU2OiBTTTUxCisJICogaXMg
-U001MUVOICpBTkQqIGl0J3MgQml0MTQsIG5vdCBCaXQxNSBzbyB0aGUgdGFibGUgaXMgdmVyeQor
-CSAqIGNvdW50ZXItaW50dWl0aXZlICovIAorCisJc3RhdGljIGNvbnN0IGNoYXIqIHRleHRzW10g
-PSB7ICJMaW5lSW4gTWljMSIsICJMaW5lSW4gTWljMSBNaWMzIiwKKwkJCQkgICAgICAgIlN1cnIg
-TEZFL0MgTWljMyIsICJMaW5lSW4gTEZFL0MgTWljMyIsCisJCQkJICAgICAgICJMaW5lSW4gTWlj
-MiIsICJMaW5lSW4gTWljMiBNaWMxIiwKKwkJCQkgICAgICAgIlN1cnIgTEZFIE1pYzEiLCAiU3Vy
-ciBMRkUgTWljMSBNaWMyIn07CisJcmV0dXJuIGFjOTdfZW51bV90ZXh0X2luZm8oa2NvbnRyb2ws
-IHVpbmZvLCB0ZXh0cywgOCk7Cit9CisKK3N0YXRpYyBpbnQgc25kX2FjOTdfdnQxNjE3YV9zbWFy
-dDUxX2dldChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKKwkJCQkJc3RydWN0IHNuZF9j
-dGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCit7CisJdXNob3J0IHVzU001MSwgdXNNUzsgIAorCisJ
-c3RydWN0IHNuZF9hYzk3ICpwYWM5NzsKKwkKKwlwYWM5NyA9IHNuZF9rY29udHJvbF9jaGlwKGtj
-b250cm9sKTsgLyogZ3JhYiBjb2RlYyBoYW5kbGUgKi8KKworCS8qIGdyYWIgb3VyIGRlc2lyZWMg
-Yml0cywgdGhlbiBtYXNoIHRoZW0gdG9nZXRoZXIgaW4gYSBtYW5uZXIKKwkgKiBjb25zaXN0ZW50
-IHdpdGggVGFibGUgNiBvbiBwYWdlIDE3IGluIHRoZSAxNjE3YSBkb2NzICovCisgCisJdXNTTTUx
-ID0gc25kX2FjOTdfcmVhZChwYWM5NywgMHg3YSkgPj4gMTQ7CisJdXNNUyAgID0gc25kX2FjOTdf
-cmVhZChwYWM5NywgMHgyMCkgPj4gODsKKyAgCisJdWNvbnRyb2wtPnZhbHVlLmVudW1lcmF0ZWQu
-aXRlbVswXSA9ICh1c1NNNTEgPDwgMSkgKyB1c01TOworCisJcmV0dXJuIDA7Cit9CisKK3N0YXRp
-YyBpbnQgc25kX2FjOTdfdnQxNjE3YV9zbWFydDUxX3B1dChzdHJ1Y3Qgc25kX2tjb250cm9sICpr
-Y29udHJvbCwKKwkJCQkJc3RydWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCit7CisJ
-dXNob3J0IHVzU001MSwgdXNNUywgdXNSZWc7ICAKKworCXN0cnVjdCBzbmRfYWM5NyAqcGFjOTc7
-CisKKwlwYWM5NyA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsgLyogZ3JhYiBjb2RlYyBo
-YW5kbGUgKi8KKworCXVzU001MSA9IHVjb250cm9sLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0g
-Pj4gMTsKKwl1c01TICAgPSB1Y29udHJvbC0+dmFsdWUuZW51bWVyYXRlZC5pdGVtWzBdICYgIDE7
-CisKKwkvKiBwdXNoIG91ciB2YWx1ZXMgaW50byB0aGUgcmVnaXN0ZXIgLSBjb25zaWRlciB0aGF0
-IHRoaW5ncyB3aWxsIGJlIGxlZnQKKwkgKiBpbiBhIGZ1bmt5IHN0YXRlIGlmIHRoZSB3cml0ZSBm
-YWlscyAqLworCisJdXNSZWcgPSBzbmRfYWM5N19yZWFkKHBhYzk3LCAweDdhKTsKKwlzbmRfYWM5
-N193cml0ZV9jYWNoZShwYWM5NywgMHg3YSwgKHVzUmVnICYgMHgzRkZGKSArICh1c1NNNTEgPDwg
-MTQpKTsKKwl1c1JlZyA9IHNuZF9hYzk3X3JlYWQocGFjOTcsIDB4MjApOworCXNuZF9hYzk3X3dy
-aXRlX2NhY2hlKHBhYzk3LCAweDIwLCAodXNSZWcgJiAweEZFRkYpICsgKHVzTVMgICA8PCAgOCkp
-OworCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25l
-dyBzbmRfYWM5N19jb250cm9sc192dDE2MTdhW10gPSB7CisKKwlBQzk3X1NJTkdMRSgiQ2VudGVy
-L0xGRSBFeGNoYW5nZSIsIDB4NWEsIDgsIDEsIDApLAorCS8qCisJICogVGhlc2UgYXJlIHVzZWQg
-dG8gZW5hYmxlL2Rpc2FibGUgc3Vycm91bmQgc291bmQgb24gbW90aGVyYm9hcmRzCisJICogdGhh
-dCBoYXZlIDMgYmlkaXJlY3Rpb25hbCBhbmFsb2cgamFja3MKKwkgKi8KKwl7CisJCS5pZmFjZSAg
-ICAgICAgID0gU05EUlZfQ1RMX0VMRU1fSUZBQ0VfTUlYRVIsCisJCS5uYW1lICAgICAgICAgID0g
-IlNtYXJ0IDUuMSBTZWxlY3QiLAorCQkuaW5mbyAgICAgICAgICA9IHNuZF9hYzk3X3Z0MTYxN2Ff
-c21hcnQ1MV9pbmZvLAorCQkuZ2V0ICAgICAgICAgICA9IHNuZF9hYzk3X3Z0MTYxN2Ffc21hcnQ1
-MV9nZXQsCisJCS5wdXQgICAgICAgICAgID0gc25kX2FjOTdfdnQxNjE3YV9zbWFydDUxX3B1dCwK
-Kwl9LAorfTsKKworaW50IHBhdGNoX3Z0MTYxN2Eoc3RydWN0IHNuZF9hYzk3ICogYWM5NykKK3sK
-KwlpbnQgZXJyID0gMDsKKworCS8qIHdlIGNob29zZSB0byBub3QgZmFpbCBvdXQgYXQgdGhpcyBw
-b2ludCwgYnV0IHdlIHRlbGwgdGhlCisJICAgY2FsbGVyIHdoZW4gd2UgcmV0dXJuICovCisKKwll
-cnIgPSBwYXRjaF9idWlsZF9jb250cm9scyhhYzk3LCAmc25kX2FjOTdfY29udHJvbHNfdnQxNjE3
-YVswXSwKKwkJCQkgICBBUlJBWV9TSVpFKHNuZF9hYzk3X2NvbnRyb2xzX3Z0MTYxN2EpKTsKKwor
-CS8qIGJyaW5nIGFuYWxvZyBwb3dlciBjb25zdW1wdGlvbiB0byBub3JtYWwgYnkgdHVybmluZyBv
-ZmYgdGhlCisJICogaGVhZHBob25lIGFtcGxpZmllciwgbGlrZSBXaW5YUCBkcml2ZXIgZm9yIEVQ
-SUEgU1AKIAkgKi8KIAlzbmRfYWM5N193cml0ZV9jYWNoZShhYzk3LCAweDVjLCAweDIwKTsKIAlh
-Yzk3LT5leHRfaWQgfD0gQUM5N19FSV9TUERJRjsJLyogZm9yY2UgdGhlIGRldGVjdGlvbiBvZiBz
-cGRpZiAqLwogCWFjOTctPnJhdGVzW0FDOTdfUkFURVNfU1BESUZdID0gU05EUlZfUENNX1JBVEVf
-NDQxMDAgfCBTTkRSVl9QQ01fUkFURV80ODAwMDsKIAlhYzk3LT5idWlsZF9vcHMgPSAmcGF0Y2hf
-dnQxNjE2X29wczsKLQlyZXR1cm4gMDsKKworCXJldHVybiBlcnI7CiB9CiAKIC8qCg==
+R0lGODlhlAEcAYdaAAoEAHcAAAyDAIuACgYAdIgHegGDc7i9xMfTyZfO7DUYC20oAIQRCJ8ZALQl
+ANwpDQAxABFOADhDC181AHNKAKxJB8tKBd45BAlhACxuBDJsAmVjAIxWAJ1WAsNgANlUAA2MABSM
+CEaJAFaAAHd8AJNyA7eMC+eICQCnABWSAE2iA2GuAICYAJqhDruYAN+sBwC9ACnHBU20DVe+AIa2
+A6m5AMLIANWxDQ3rBSfgAkzaAFTmAnbnAJbnAMbTANrWAAAASR4EMk0ANWIAQXYKOZUMNcIAROUA
+OAATTBQoSDIjSVoeMYQiTpsXR84gSdcXRQQ5Ry0+QEI4RFgzNHg+R6FMRrEzTd9KOwdsQypSNTJa
+RmdSM4hZDZ9hOclVQ+1TMQF9NiyMRzSKTmByTImJP59zNLp1Qtp6SgCpMR6ZP02YQm6dQoScTZem
+SsmdPe6ZQwu7OhvETEvHQFm2RIvMQZ7LObfKNeS5PADVSBneMz7XOmrnQ4TlMZLoNrfhP+fZSgAF
+cxsAikUGhF8Ah4oAeKYGfLkGjtcMdwAnfRcedEUkfGsbfHoff5cairkZjNIThQAygBJOe0A1ilZC
+c31IgJRHjbw1dNVFeABVjCRXjUJhhV1TjIhSfZtagbFmftdogQp8fx6IhTKKhFSNiYWMgqt5fL57
+ed2NhgCpexGqfUWXjVKsjX6tjJ6XfsGTguGUdwS7dRO4gzXJiWvJdni0gZ2+d8uzce6/cQ7lfC7e
+dj3VgG3hhXnThqLufc3ihuTRfgcCwBEAsUEAulgAu3gFzJYCurQAytkAwQAUyi0hsUslvlQuxYsb
+xKcZv8AXteMYzQZNtR82zDtHvmAyt3tKs541u7pItd9OvwBjui1otTpSyGdtwntmvadczr9itdxr
+swBxwCl7zkF5ymh9tXF1s5SHzMd8ueSHwgCqwyKYwESuuV2jsoOkzKmbzsWksdSrxwe2xxnGyEXK
+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
+k+EbEAA7
 
-------_=_NextPart_001_01C76293.F1657969
+------=_NextPart_000_000D_01C762AB.26141B10--
+
+
+--===============1318835030==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -218,7 +234,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-------_=_NextPart_001_01C76293.F1657969
+--===============1318835030==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -229,4 +245,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-------_=_NextPart_001_01C76293.F1657969--
+--===============1318835030==--
