@@ -1,18 +1,17 @@
-From: "Cougars D. Mushroom" <ware@glorywill.com>
-Subject: Want to on the top all night?
-Date: Fri, 09 Mar 2007 03:09:06 -0500
-Message-ID: <0142348246.20070309030906@glorywill.com>
+From: "Corn G. Rotarian" <extreme_team@gourmetcuisineinc.com>
+Subject: Want to be a hero in a bed?
+Date: Fri, 09 Mar 2007 06:25:34 -0500
+Message-ID: <0639431260.20070309062534@gourmetcuisineinc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from -1216925856 (82-47-212-253.cable.ubr10.brad.blueyonder.co.uk
-	[82.47.212.253]) by alsa0.perex.cz (Postfix) with SMTP id B74C624435
-	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2007 11:59:54 +0100 (CET)
-Received: from glorywill.com (-1219294296 [-1217032600])
-	by 82-47-212-253.cable.ubr10.brad.blueyonder.co.uk (Qmailv1) with ESMTP
-	id 6A019242CB
-	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2007 03:09:06 -0500
+Received: from 147511496 (unknown [221.127.155.156])
+	by alsa0.perex.cz (Postfix) with SMTP id 2EFF324456
+	for <alsa-devel@alsa-project.org>; Fri,  9 Mar 2007 14:32:36 +0100 (CET)
+Received: from gourmetcuisineinc.com (143946024 [143236504])
+	by greenhillgalleries.com (Qmailv1) with ESMTP id B417DB3F76
+	for <alsa-devel@alsa-project.org>; Fri, 09 Mar 2007 06:25:34 -0500
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,10 +24,10 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-We can help you anytime! Various medications for any case! Lowest prices you can find anywhere. Only legal and quality pills here: 
+There is no need to let everybody know that you have health problems. You want to save your money and get licensed medications? I bet you do! Then click here:
 http://uniqa.hk
 
-No one will know that you are using medications. Completely CONIDENTIAL and SECURE purchase. 
+And no one will know that you have some problems. Absolutely confidential and secure purchase! 
 
 
 -------------------------------------------------------------------------
