@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HOooJ-0008Es-RL delayed 72 hours
-Date: Sat, 10 Mar 2007 04:27:24 -0800
-Message-ID: <E1HQ0fU-0003AM-TS@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HPrFD-0001Gr-6t delayed 10 hours
+Date: Sat, 10 Mar 2007 04:32:36 -0800
+Message-ID: <E1HQ0kW-0003p7-GE@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HOooJ-0008Es-RL
-The subject of the message is: the north, two mites, kingdoms of families of
-The date of the message is:    Wed, 07 Mar 2007 11:05:26 +0530
+The message identifier is:     1HPrFD-0001Gr-6t
+The subject of the message is: and He said Now these stood by a mighty nation
+The date of the message is:    Fri, 09 Mar 2007 22:22:37 -0600
 
 The address to which the message has not yet been delivered is:
 
