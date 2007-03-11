@@ -1,17 +1,11 @@
-From: "Enchilada G. Marquee" <mcnair@grancinema.net>
-Subject: Cheapest way to solve health problems.
-Date: Sun, 11 Mar 2007 18:56:50 -0400
-Message-ID: <8452419951.20070311185650@grancinema.net>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HQ5j6-00016V-BA delayed 24 hours
+Date: Sun, 11 Mar 2007 14:50:53 -0800
+Message-ID: <E1HQWsP-0008R6-PC@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from -1223343488 (www.szjlaw2.com [209.134.141.129])
-	by alsa0.perex.cz (Postfix) with SMTP id 21763245CD
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2007 23:50:04 +0100 (CET)
-Received: from grancinema.net (-1210461992 [-1223644848])
-	by www.szjlaw2.com (Qmailv1) with ESMTP id 4BFEBCCD1C
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2007 18:56:50 -0400
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,14 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-You can buy absolutely legal, perfect quality must have medications at lowest prices just in few minutes! You don't believe it? Then visit US Drug store
-http://edeaq.hk
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-Make secure and confidential purchase. Verified by VISA. Instant shipping worldwide! 
+The message identifier is:     1HQ5j6-00016V-BA
+The subject of the message is:  to he answered Saul Hear all
+The date of the message is:    Sat, 10 Mar 2007 23:21:24 +0530
 
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
