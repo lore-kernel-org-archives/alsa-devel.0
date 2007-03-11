@@ -1,11 +1,14 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HPrFD-0001Gr-6t delayed 24 hours
-Date: Sat, 10 Mar 2007 19:22:23 -0800
-Message-ID: <E1HQEdb-0005DH-9n@externalmx-1.sourceforge.net>
+From: galgal_loves@yahoo.co.jp
+Subject: =?iso-2022-jp?B?kFaCtYKijo6C3YFJjaGCyILnie+CooK9gqKV+pHogUmNoYKqg2CDg4OTg1iBSQ==?=
+Date: Sun, 11 Mar 2007 04:49:46 +0100 (CET)
+Message-ID: <24306.2105881565$1173585003@news.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0446293877=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from jihoitjslfgnsfskfgfts.com
+	(p2067-ipad414marunouchi.tokyo.ocn.ne.jp [60.39.113.67])
+	by alsa0.perex.cz (Postfix) with SMTP id 3532D1037F4
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2007 04:49:46 +0100 (CET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,36 +18,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+--===============0446293877==
+Content-Type: text/plain;
+	charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
 
-The message identifier is:     1HPrFD-0001Gr-6t
-The subject of the message is: and He said Now these stood by a mighty nation
-The date of the message is:    Fri, 09 Mar 2007 22:22:37 -0600
+┳━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【新着】　出会いの近道　　　　目的の人はココにいる！！ 　
+┻━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　　　　　激アツシステム遂に紹介!!　最後まで見てね＼(*^∇^*)／　　　
+　　　　　　┏┓　　　　　　　　　　　　　　　　　　　　┏┓　　　　　　
+　　　┏━━┻┻━━━━━━━━━━━━━━━━━━━━┻┻━━━━┓　
+　　
+　　　┃　　　　このシステムで会える確率が4割アップしました　　     ┃
+　　　┃         ★ http://candy-pink.sakura.ne.jp/r.cgi?sfkji ★       ┃　　　
+　　　┃　　　　　　　　　　　　　　　　　　　　　　　　　　　　    ┃　
+　　
+　　　┗━━┳┳━━━━━━━━━━━━━━━━━━━━┳┳━━━━┛　
+　　
+　　　　　　┃┃　　　　　　　　　　　　　　　　　　　　┃┃　　　　　　
+　　　───┸┸─◆◇ メッセンジャーの新しいかたち ◇◆─┸┸───　　　
+　　　　　　　  
+　:・ ☆゜ ・:*:・。 ヽ(・∀・)人(・∀・)ノ  。・:*:・゜ ☆ 
+      　＿＿＿＿＿＿＿＿＿
+      　＼▼▼▼▼▼▼▼／　　
+      　＜　人気沸騰中　＞
+      　／▲▲▲▲▲▲▲＼
+        ￣￣￣￣￣￣￣￣￣
+  ▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△▼△
+――――――――――――――――――――――――――――――――――
+:...:☆..*    　 貴方の理想の女性…見つけます。       *..☆:...:..
+☆:..       他でだめだったなら一度お試しください。　　　     ..:☆..
+　　　　　　http://candy-pink.sakura.ne.jp/r.cgi?sfkji
+――――――――――――――――――――――――――――――――――
 
-The address to which the message has not yet been delivered is:
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+--===============0446293877==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0446293877==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0446293877==--
