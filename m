@@ -1,11 +1,15 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HPatR-0000aH-01 delayed 48 hours
-Date: Sun, 11 Mar 2007 01:05:51 -0800
-Message-ID: <E1HQJzz-00053v-LJ@externalmx-1.sourceforge.net>
+From: "Carol" <janinewxho@frealm.com>
+Subject: Need Help with a Mortgage?
+Date: Sun, 11 Mar 2007 07:25:08 -0400
+Message-ID: <7396501397.20070311072508@vhyakvnjwvc>
+Reply-To: Carol Stern <janinewxho@frealm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from 61.47.207.186 (unknown [61.47.207.186])
+	by alsa0.perex.cz (Postfix) with SMTP id DC726103802
+	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2007 12:20:03 +0100 (CET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +19,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+Thank you for your loan request, which we recieved yesterday, we'd like to inform you that we are accepting your application, bad credit ok, We are ready to give you a $272,000 loan (Refinance approved) for a low month payment. Approval process will take only 1 minute. Please visit the confirmation link below and fill-out our short 30 second form. http://quertkes.com
 
-The message identifier is:     1HPatR-0000aH-01
-The subject of the message is: endureth for every in me and he returned unto
-The date of the message is:    Fri, 09 Mar 2007 10:55:43 +0000
-
-The address to which the message has not yet been delivered is:
-
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
