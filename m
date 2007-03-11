@@ -1,12 +1,11 @@
-From: "Allyn, Mark A" <mark.a.allyn@intel.com>
-Subject: Question on hda sigmatel codec dmics
-Date: Sat, 10 Mar 2007 21:13:44 -0800
-Message-ID: <5FD5754DDBA0B1499B5A0B4BB5419485B46185@fmsmsx411.amr.corp.intel.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HQ5j6-00016V-BA delayed 10 hours
+Date: Sat, 10 Mar 2007 22:44:16 -0800
+Message-ID: <E1HQHmy-0004CP-GW@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,37 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Folks:
- 
-I have yet another question; this having to do with the arrays of dmic
-nids for the STAC 9205. I look at the 
-patch_sigmatel.c file; the following section:
- 
-================================================
-static hda_nid_t stac9205_mux_nids[2] = {
-        0x19, 0x1a
-};
- 
-static hda_nid_t stac9205_dmic_nids[3] = {
-        0x17, 0x18, 0
-};
- 
-static hda_nid_t stac9200_pin_nids[8] = {
-        0x08, 0x09, 0x0d, 0x0e,
-        0x0f, 0x10, 0x11, 0x12,
-================================================
- 
-I notice that the dmic_nids array of hda_nit_t structure has one with a
-value of zero, 
-but the others, pin_nids and mux_nids don't. Later in the patch_9205
-code, the num_dmics
-is 2.
- 
-Why the extra dmic_nid with a value of 0?
- 
-Thanks
- 
-Mark Allyn
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+
+The message identifier is:     1HQ5j6-00016V-BA
+The subject of the message is:  to he answered Saul Hear all
+The date of the message is:    Sat, 10 Mar 2007 23:21:24 +0530
+
+The address to which the message has not yet been delivered is:
+
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
