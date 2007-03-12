@@ -1,14 +1,12 @@
-From: syou_meme@yahoo.co.jp
-Subject: =?iso-2022-jp?B?gZuBm4GbgZuCvoKvgvCDQYNpg16CyYFJgUmCsYLxgsiV+4LJg0mDWINYg4GCtYLcgreBSQ==?=
-Date: Sun, 11 Mar 2007 18:33:10 +0100 (CET)
-Message-ID: <39790.4807156467$1173720758@news.gmane.org>
+From: "Stephen Hassard" <steve@hassard.net>
+Subject: Adding MSI RS482M4 motherboard to Intel HDA driver
+Date: Mon, 12 Mar 2007 11:16:29 -0700
+Message-ID: <e4fbff80703121116x2119bcccp829c9acd5c61f341@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1234617738=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from xzxsddsfadfsgadfadfarfgva.com
-	(p2065-ipad71marunouchi.tokyo.ocn.ne.jp [220.97.35.65])
-	by alsa0.perex.cz (Postfix) with SMTP id 54EE02459D
-	for <alsa-devel@alsa-project.org>; Sun, 11 Mar 2007 18:33:10 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,87 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1234617738==
-Content-Type: text/plain;
-	charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Hi there,
 
-*****************************************************************************    
-　　★…┓　 ★━┓　 ★…┓　 ★━┓　 ★…┓　 ★━┓　 ★…┓　 ★…┓　　
-　　┃い┃　 ┃ま┃　 ┃す┃　 ┃ぐ┃　 ┃あ┃　 ┃え┃　 ┃る┃　 ┃ね┃　　
-　　┗━┛　 ┗…┛　 ┗━┛　 ┗…┛　 ┗━┛　 ┗…┛　 ┗━┛　 ┗━┛　　
-         ∴                        ■■           ∴       ∴         　　 
- ∴                 ∴           ／￣￣＼　∴                   ■■   ∴   
-           ■■           (( 　 ｜ ・ ・｜    ))    ｺﾂﾝ..     ／￣￣＼      
-     ∴  ／￣￣＼    ﾄﾝ..   ∴∴ ＼　- ／ ∴∴               ｜・ ・ ｜     
-　　　　｜ ・ ・｜　 　　　　　＼／　　＼／　　　　  (( mmmm  ＼ ‐ ／      
-　　　　 ＼  ‐／  !! )) 　　　 ｜　　  ｜　　∴　　　      ＼／　  ＼   ∴ 
-　　　　 ／　  ＼／　  　　　　　＼＿＿／　　　　　　        ｜　  　｜     
-　∴　  ｜　  　｜ 　　　仝仝仝仝仝仝仝仝仝仝仝仝仝　 　      ＼＿＿／      
-　　     ＼＿＿／　http://dontakosu.sakura.ne.jp/r.cgi?honny　 ∴        　∴
-　               　　仝仝仝仝仝仝仝仝仝仝仝仝仝仝仝仝仝                     
- ∴                仝仝仝仝仝仝仝仝仝仝仝仝仝仝仝仝仝仝仝     ■■    ∴    
-     ■■          　   ∥   　　　　　　      　 ∥ 　　　 ／￣￣＼        
-　 ／￣￣＼     　　    ∥  □□  ＿＿＿＿  □□  ∥ ｺﾝ! 　｜・ ・ ｜       
-  ｜ ・ ・｜ ﾊﾟｼｯ..     ∥  □□ ｜　　　｜ □□  ∥    ＠  ＼ ‐ ／   ∴   
-　 ＼  ‐／　　 　　    ∥    　 ｜　　　｜　     ∥　    ＼／　  ＼        
-   ／　  ＼／~~~~~ ))   ∥       ｜o     ｜       ∥ 　 　 ｜　  　｜       
-  ｜　  　｜　    　    ∥       ｜      ｜       ∥  　    ＼＿＿／   ∴   
-∴ ＼＿＿／ 　　　　    ∥       ｜      ｜       ∥　　 ∴                 
-∴∴∴∴∴ ∴∴∴∴∴　 ■■■■■■■■■■■■■■  ∴   ∴∴　∴∴∴  ∴ 
-*****************************************************************************
+I have an MSI RS482M4-ILD motherboard, using the ATI RS482 chipset and
+SB450 southbridge. Alsa version 1.0.14rc3 doesn't properly detect the
+on-board HDA. The motherboard is using the Realtek ALC880 chipset for
+audio.
 
-ｷﾀ━━━━━(ﾟ∀ﾟ)━━━━━━!!!! ｷﾀ━━━━━(ﾟ∀ﾟ)━━━━━━!!!! 
+The 'lspci -v' dump is as follows:
+-----
+00:14.2 Audio device: ATI Technologies Inc SB450 HDA Audio (rev 01)
+        Subsystem: Micro-Star International Co., Ltd. Unknown device 7191
+        Flags: slow devsel, IRQ 18
+        Memory at fe9e8000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0
+Enable-
+-----
 
-つまんない生活にオサラバ(~o~)/~~ エッチ好きな人が集まるサイト！！
-
-☆純粋な恋！秘密の恋！体だけの関係！貴方は何を求めますか？？
-
-すべてはココから始まる⇒　http://dontakosu.sakura.ne.jp/r.cgi?honny
-
-☆…………☆…………☆…………☆…………☆…………☆……………………☆
-
-	こんな方にオススメします！
-	
-	◆理想の人妻をゆっくり探したい。
-	
-	◆今までとは違う世界の人妻との出会いを求めたい。
-	
-	◆一人の時間、寂しさを埋める人妻が欲しい。
-	
-	◆セフレを作りたい
-	
-	◆人妻と恋がしたい。
-
-完全無料⇒　http://dontakosu.sakura.ne.jp/r.cgi?honny
-
-☆…………☆…………☆…………☆…………☆…………☆……………………☆
-
-
-
---===============1234617738==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks,
+Steve Hassard
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1234617738==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1234617738==--
