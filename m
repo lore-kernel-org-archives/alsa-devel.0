@@ -1,11 +1,13 @@
-From: "Stephen Hassard" <steve@hassard.net>
-Subject: Adding MSI RS482M4 motherboard to Intel HDA driver
-Date: Mon, 12 Mar 2007 11:16:29 -0700
-Message-ID: <e4fbff80703121116x2119bcccp829c9acd5c61f341@mail.gmail.com>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Adding MSI RS482M4 motherboard to Intel HDA driver
+Date: Mon, 12 Mar 2007 14:23:25 -0400
+Message-ID: <75b66ecd0703121123k5f74026bk9d4e1cd09c491433@mail.gmail.com>
+References: <e4fbff80703121116x2119bcccp829c9acd5c61f341@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <e4fbff80703121116x2119bcccp829c9acd5c61f341@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,29 +18,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Stephen Hassard <steve@hassard.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+On 3/12/07, Stephen Hassard <steve@hassard.net> wrote:
+> Hi there,
+>
+> I have an MSI RS482M4-ILD motherboard, using the ATI RS482 chipset and
+> SB450 southbridge. Alsa version 1.0.14rc3 doesn't properly detect the
+> on-board HDA. The motherboard is using the Realtek ALC880 chipset for
+> audio.
+>
 
-I have an MSI RS482M4-ILD motherboard, using the ATI RS482 chipset and
-SB450 southbridge. Alsa version 1.0.14rc3 doesn't properly detect the
-on-board HDA. The motherboard is using the Realtek ALC880 chipset for
-audio.
+I don't think this is enough information.
 
-The 'lspci -v' dump is as follows:
------
-00:14.2 Audio device: ATI Technologies Inc SB450 HDA Audio (rev 01)
-        Subsystem: Micro-Star International Co., Ltd. Unknown device 7191
-        Flags: slow devsel, IRQ 18
-        Memory at fe9e8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0
-Enable-
------
+How exactly does it fail, and what "model" option (if any) makes it
+work?  See Documentation/ALSA-Configuration.txt for a list of models
+for ALC880.
 
-Thanks,
-Steve Hassard
+Lee
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
