@@ -1,19 +1,24 @@
-From: "Stephen Hassard" <steve@hassard.net>
-Subject: Re: Adding MSI RS482M4 motherboard to Intel HDA driver
-Date: Mon, 12 Mar 2007 13:18:56 -0700
-Message-ID: <e4fbff80703121318k5b2b2376vbda6b9920660dbaa@mail.gmail.com>
-References: <e4fbff80703121116x2119bcccp829c9acd5c61f341@mail.gmail.com>
-	<75b66ecd0703121123k5f74026bk9d4e1cd09c491433@mail.gmail.com>
-	<e4fbff80703121208i386d54cbwa21ba2d1a8232436@mail.gmail.com>
-	<75b66ecd0703121209h7ad6542dg8d02031644f3839d@mail.gmail.com>
-	<e4fbff80703121223u2f36c043he5b2b1fe8df8348d@mail.gmail.com>
-	<s5h1wjuw7th.wl%tiwai@suse.de>
+From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Subject: Re: [ibm-acpi-devel] Adding a alsa mixer
+	interface	to	ibm-acpi
+Date: Mon, 12 Mar 2007 18:00:37 -0300
+Message-ID: <20070312210037.GA25991@khazad-dum.debian.net>
+References: <20070227015024.GF8154@thunk.org>
+	<20070227021402.GC6828@khazad-dum.debian.net>
+	<s5hd53kaf5r.wl%tiwai@suse.de>
+	<41840b750703071512o1d171dfy9d2a615382e5e635@mail.gmail.com>
+	<20070307234240.GA12070@khazad-dum.debian.net>
+	<1173311709.4531.30.camel@razman.gruemaster.com>
+	<20070308003806.GC12070@khazad-dum.debian.net>
+	<s5htzwugz22.wl%tiwai@suse.de>
+	<20070310035055.GB7606@khazad-dum.debian.net>
+	<s5hwt1mr7ng.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h1wjuw7th.wl%tiwai@suse.de>
 Content-Disposition: inline
+In-Reply-To: <s5hwt1mr7ng.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,31 +29,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+Cc: ibm-acpi-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, Theodore Tso <tytso@mit.edu>
 List-Id: alsa-devel@alsa-project.org
 
-On 3/12/07, Takashi Iwai <tiwai@suse.de> wrote:
-> Hm, the codec bit 3 is used for this device although this is out of
-> range defined in ICH controllers.  Maybe an extenion by ATI chip.
->
-> Could you try the patch below?  This reverts the max number of codecs
-> to 4, which was used in the ealier version.  If this works, we may
-> need to define AZX_MAX_CODECS selectively according to the controller
-> and/or the device SSID.
+On Mon, 12 Mar 2007, Takashi Iwai wrote:
+> The problem I state here is only the usability.  The implementation is
+> no matter at all.  When you look at KDE/GNOME, you'll find that the
+> mixer applets really suck if you have multiple devices.  It's
 
-This patch fixes the problem.
+Then, it is time for them to fix their broken-as-designed applets.  ALSA has
+supported multiple devices since way too long for mixer applets to have any
+valid excuse to not handle multiple cards sanely.
 
-snd-hda-intel detects the codec properly now:
+> especially confusing if the outputs from two different devices are
+> identical...
 
- cat /proc/asound/cards
- 0 [SB             ]: HDA-Intel - HDA ATI SB
-                     HDA ATI SB at 0xfe9e8000 irq 18
+So no two devices with the same control set.  That makes sense, and cuts
+down the choices a bit.
 
-It also outputs fine. madplay is playing audio fine through both the
-front and back panel headers.
+Anyway, I thought about the issue for quite a while, and the above point
+about the KDE/GNONE applets and no duplication of controls just gave me the
+last pieces of the puzzle:
 
-Thanks,
-Steve Hassard
+1. It *is* separate hardware, it has nothing to do with whatever might be
+the embedded soundcard and codecs, except that it sits between them and the
+speakers and line-out jacks.
+
+2. It controls more than just the embedded soundcard, it also controls the
+PC squeaker (independently of the embedded soundcard being able to control
+that or not), and also the firmware ACPI/APM/alarm beep generator.
+
+Therefore, it should go in a different card.  That works just fine, it
+requires no new API in ALSA, it follows the kernel standard for these things
+(if it is a separate device, export it as a separate device), and it makes a
+lot more sense from the system's point of view.
+
+A non-broken ALSA mixer applet will just let you add itself twice to the
+applet bar: once to control the thinkpad mixer, and the other to control the
+embedded soundcard.  Or it will allow you to pick your favourite set of
+controls out of those available from every card in the system.
+
+The above makes too much sense.  I must have forgotten something, it can't
+be that simple.  Would someone be so kind and point out why the above will
+just not work well in real life?
+
+-- 
+  "One disk to rule them all, One disk to find them. One disk to bring
+  them all and in the darkness grind them. In the Land of Redmond
+  where the shadows lie." -- The Silicon Valley Tarot
+  Henrique Holschuh
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
