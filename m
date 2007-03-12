@@ -1,14 +1,15 @@
-From: =?iso-2022-jp?B?TG92ZRskQiEhGyhCcmV2b2x1dGlvbg==?= <revolution.kakumei.ai_rooms.2007@nikosu.nec.bbj.jp>
-Subject: =?iso-2022-jp?b?GyRCOiNPQ0JqJE4hSSUiJWwhSSRyJDQbKEI=?=
-	=?iso-2022-jp?b?GyRCPlIycBsoQiEh?=
-Date: Fri, 09 Mar 2007 03:06:49 +0900
-Message-ID: <4701.75245213813$1173740865@news.gmane.org>
+From: Rask Ingemann Lambertsen <rask@sygehus.dk>
+Subject: Re: [RFC][RFT] Adding support for Jazz16 based sound
+	cards
+Date: Tue, 13 Mar 2007 00:23:57 +0100
+Message-ID: <20070312232356.GA25489@sygehus.dk>
+References: <20070311232436.GB9778@sygehus.dk> <s5h4poqsnun.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0047018697=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from localhost (unknown [218.25.20.197])
-	by alsa0.perex.cz (Postfix) with SMTP id C64C82437F
-	for <alsa-devel@alsa-project.org>; Thu,  8 Mar 2007 19:09:23 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h4poqsnun.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,84 +19,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adam Belay <ambx1@neo.rr.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0047018697==
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=ISO-2022-JP
+On Mon, Mar 12, 2007 at 12:28:00PM +0100, Takashi Iwai wrote:
+> At Mon, 12 Mar 2007 00:24:36 +0100,
+> Rask Ingemann Lambertsen wrote:
+> > 
+> >    Below is a patch against linux-2.6.20 to add support for Jazz16 sound
+> > cards. It consists of changes to ALSA's SoundBlaster support and a new PnP
+> > protocol for detecting the card, setting resources and such. Before
+> > submitting a patch for inclusion into Linux, I would like to have a few
+> > comments and perhaps a test report from someone else.
+> 
+> At a quick review, it's mostly OK.  There are small coding-style
+> issues (see below), but the code itself looks fine.
 
-　　 ■■■■■■■　　　　　　　　　　　　　　　　　　　　　  ■
- 　　■■■■■　　　　　　　　　　　　　　　　　　　　　　　■■
- 　　■■■■　　　　注┃目┃人┃気┃サ┃イ┃ト┃　　　　　■■■
- 　　■■■　　　　　━┛━┛━┛━┛━┛━┛━┛　　　　■■■■
- 　　■■　　　　　　　　　　　　　　　　　　　　　　　■■■■■
- 　　■　　　　　　　　　　　　　　　　　　　　　　　■■■■■■
-　　 　　　☆愛革命　　〜即会い、ＳＥＸ編〜☆
+   Will be fixed.
 
+> >    Setting the irq of the MPU-401 port requires the SB part to be active and
+> > even worse, DSP commands need to be sent. Would it be better to just use the
+> > MPU-401 port without an irq and avoid the complexity?
+> 
+> Isn't SB part already active?
 
-┃★┃割┃切┃り┃ネ┃ッ┃ト
-┗━┗━┗━┗━┗━┗━┗━
-　　　　┃Ｈ┃な┃出┃会┃い┃を┃ア┃ナ┃タ┃だ┃け┃に┃★
-　　　　┗━┗━┗━┗━┗━┗━┗━┗━┗━┗━┗━┗━┗━
+   Not the way it is right now, because the MPU-401 port is a separate PnP
+device. I'm not sure that is right, but it is consistent with the only
+example of a PNPb00f-device I have, which is the one at
+<URL:http://www.garbled.net/tmp/residual/residual.6015-2>.
 
-http://gtre.staticcling.org/revolution/index.html
-
-■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-　　　〜ようこそ、Love　revolution　へ！！！〜
-　　
-　　◆最寄の駅から簡単に出会いをＧＥＴ！！！素敵な出会いのお手伝い◆
-　　
-　　乱れた人妻、独身ＯＬ、看護婦などの制服美人色々あります。揃ってます！！
-　　どんな女性も欲求は同じ･･･。美人達の裏の素顔を垣間見てください。
-　　まずは、女性検索やメール送信でお楽しみ下さい。
-　　その後のお二人の約束は、ご自由にどうぞ･･･。
-　　
-　　↓↓↓
-http://gtre.staticcling.org/revolution/index.html
-
-。o○ .。o○ .。o○ .。o○ .。o○  ○o。. ○o。. ○o。. ○o。. ○o。.
-　　　　　　　　　　　〜即会い希望の女性達〜
-。o○ .。o○ .。o○ .。o○ .。o○  ○o。. ○o。. ○o。. ○o。. ○o。.
+> It's fine with non-irq version (which
+> uses timer) if the code gets too complicated, of course.
 
 
-恋のタイプは人それぞれ！！
-真剣交際から、即会い・割り切りのお付き合いを求める女性も♪
-そんな皆さんの出会いを応援いたします！！
+> > @@ -278,14 +377,14 @@ static int snd_sb8_capture_prepare(struc
+> >  	} else {
+> >  		snd_sbdsp_command(chip, 256 - runtime->rate_den);
+> >  	}
+> > -	if (chip->capture_format != SB_DSP_OUTPUT) {
+> > +	if (chip->capture_format != SB_DSP_INPUT) {
+> 
+> Is this a bug in the current code?
 
-↓理想のお相手を検索↓
-http://gtre.staticcling.org/revolution/index.html
+   I believe it is a bug, and if it is, will cause capture to fail on SB 1.0
+hardware. This should have been in a separate patch.
 
-ご希望の女性を見つけたら、無料のメールフォームからアプローチ！！
-直メや番号交換も可能なので、さっそく待ち合わせの約束♪
-
-↓さあ！貴方も出会いの扉を開きましょう！↓
-http://gtre.staticcling.org/revolution/index.html
-
-
-===========================================================================
-
-
---===============0047018697==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Rask Ingemann Lambertsen
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0047018697==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0047018697==--
