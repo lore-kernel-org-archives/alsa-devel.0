@@ -1,9 +1,10 @@
-From: "Alisa Webster" <iqvunidirectional@mail2sydney.com>
-Subject: in be chantilly
-Date: Mon, 12 Mar 2007 16:08:50 +0800
-Message-ID: <001501c764c0$e6a01de0$0f37effc@golden04>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HPrFD-0001Gr-6t delayed 48 hours
+Date: Mon, 12 Mar 2007 02:05:28 -0800
+Message-ID: <E1HQhPE-0008CW-TZ@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0913062541=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,86 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0913062541==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0012_01C764C0.E6A01DE0"
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-------=_NextPart_000_0012_01C764C0.E6A01DE0
-Content-Type: text/plain;
-        charset="windows-1250"
-Content-Transfer-Encoding: quoted-printable
+The message identifier is:     1HPrFD-0001Gr-6t
+The subject of the message is: and He said Now these stood by a mighty nation
+The date of the message is:    Fri, 09 Mar 2007 22:22:37 -0600
 
+The address to which the message has not yet been delivered is:
 
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-
-HOT ALERT.
-
-S.umbol: NNCPCurrent price: $0.043 (2 days - UP! 70%) 5 Day Target =
-price: $0.15Recommendation: very aggresive buy!!
-
-
-TRADE SMART AND WIN WITH US!
-
-
-
-See the hottest news of the NNCP, alsa-devel.
-
-------=_NextPart_000_0012_01C764C0.E6A01DE0
-Content-Type: text/html;
-        charset="windows-1250"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
-windows-1250">
-<META content=3D"MSHTML 6.00.2900.0000" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<BR><BR><BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#CC3300 size=3D3D4><FONT =
-size=3D2><STRONG>HOT ALERT!!</STRONG></FONT></DIV>
-<BR><BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#CC3300 size=3D=
-2>S.umbol: <b>NNCP</b><br>Current price: $0.043 (2 days - UP! 70%) <br>5 =
-Day Target price: $0.15<br>Recommendation: very aggresive =
-buy!!!</FONT></DIV>
-<BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#6600FF size=3D2>TRADE =
-SMART AND WIN WITH US!!</FONT></DIV>
-<BR>
-<DIV align=3Dcenter><FONT face=3DTahoma color=3D#FF3300 size=3D3>See the =
-hottest news of the NNCP, alsa-devel!!!</FONT></DIV>
-<BR>
-</BODY></HTML>
-
-------=_NextPart_000_0012_01C764C0.E6A01DE0--
-
-
---===============0913062541==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0913062541==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0913062541==--
