@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HPrFD-0001Gr-6t delayed 72 hours
-Date: Mon, 12 Mar 2007 20:06:31 -0800
-Message-ID: <E1HQyHP-0006zr-Ug@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HQZrt-0006D7-48 delayed 24 hours
+Date: Mon, 12 Mar 2007 21:29:51 -0800
+Message-ID: <E1HQza3-0000xX-Nb@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HPrFD-0001Gr-6t
-The subject of the message is: and He said Now these stood by a mighty nation
-The date of the message is:    Fri, 09 Mar 2007 22:22:37 -0600
+The message identifier is:     1HQZrt-0006D7-48
+The subject of the message is: thine for riches of the bitter Cry have mercy
+The date of the message is:    Sun, 11 Mar 2007 18:02:43 -0800
 
 The address to which the message has not yet been delivered is:
 
