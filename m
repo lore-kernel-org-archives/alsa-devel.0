@@ -1,10 +1,11 @@
-From: "Carroll" <dgii@yahoo.com.tw>
-Subject: I'm always thankful for reading anything that is
-	written in the best interest of people as opposed to big companies.
-Date: Tue, 13 Mar 2007 22:06:34 +0100
-Message-ID: <001201c765b4$2d1e2f20$cfc4bf5f@hini>
+From: "Mccarty" <cwk@ffic.com>
+Subject: Two research assistants visited each household,
+	administered a detailed questionnaire, conducted a home inspection,
+	and used a standardized protocol to collect samples.
+Date: Tue, 13 Mar 2007 22:06:17 +0100
+Message-ID: <001201c765b4$25b3af80$996b6aed@wvzl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0637930671=="
+Content-Type: multipart/mixed; boundary="===============0101095719=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,30 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0637930671==
+--===============0101095719==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000E_01C765BC.8EDA0BA0"
+	boundary="----=_NextPart_000_000E_01C765BC.87702840"
 
-------=_NextPart_000_000E_01C765BC.8EDA0BA0
+------=_NextPart_000_000E_01C765BC.87702840
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000F_01C765BC.8EDC2E80"
+	boundary="----=_NextPart_001_000F_01C765BC.87722410"
 
-------=_NextPart_001_000F_01C765BC.8EDC2E80
+------=_NextPart_001_000F_01C765BC.87722410
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-"On those days, I might use my extra inhaler just because of the added =
-risk. "These results have both scientific and public health =
-implications," says David A. Aloof doctors wondered if it was the =
-gallbladder. The symptoms characterized by this drought management =
-effort are given disease names by conventional medicine and then treated =
-with toxic prescription drugs.
-------=_NextPart_001_000F_01C765BC.8EDC2E80
+Probiotics are cultures of potentially beneficial bacteria that normally =
+reside in the healthy gut. I asked my internist to send me to an =
+allergist for a food allergy test. And that's available free of charge, =
+all you have to do is walk outside and get some sunshine on your skin. A =
+recent report of the state Department of Public Health found that the =
+highest rates of children with asthma occurred in rural parts of =
+Massachusetts.
+------=_NextPart_001_000F_01C765BC.87722410
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -47,31 +49,33 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"nothing" hspace=3D0=20
-src=3D"cid:000d01c765b4$2d1380c0$cfc4bf5f@hini" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"armed" hspace=3D0=20
+src=3D"cid:000d01c765b4$25a9c470$996b6aed@wvzl" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"On those days, I might use my extra =
-inhaler just=20
-because of the added risk. "These results have both scientific and =
-public health=20
-implications," says David A. Aloof doctors wondered if it was the =
-gallbladder. The=20
-symptoms characterized by this drought management effort are given =
-disease names by=20
-conventional medicine and then treated with toxic prescription=20
-drugs.</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial size=3D2>Probiotics are cultures of potentially =
+beneficial=20
+bacteria that normally reside in the healthy gut. I asked my internist =
+to send me to=20
+an allergist for a food allergy test. And that's available free of =
+charge, all you=20
+have to do is walk outside and get some sunshine on your skin. A recent =
+report of=20
+the state Department of Public Health found that the highest rates of =
+children with=20
+asthma occurred in rural parts of =
+Massachusetts.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000F_01C765BC.8EDC2E80--
+------=_NextPart_001_000F_01C765BC.87722410--
 
-------=_NextPart_000_000E_01C765BC.8EDA0BA0
+------=_NextPart_000_000E_01C765BC.87702840
 Content-Type: image/gif;
-	name="pump.gif"
+	name="reversible.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000d01c765b4$2d1380c0$cfc4bf5f@hini>
+Content-ID: <000d01c765b4$25a9c470$996b6aed@wvzl>
 
 R0lGODdhUAIoAfQSAOj20sf27sXg9I2uBRtOhHi2shFMCVtsXKCnlKC4agKVLWajDzUGKB23mJxA
 iPNIrLTvJjzE/2IBa3EN6OppBo9+8okKCQIzdYDpk0y6Bf7Qb+QAPBn7Vw9U6AoKBQEGwywAAAAA
@@ -303,11 +307,11 @@ dJ6tnoiTSse8R85CDkydBksiQQ+K0KcZNKEMbahD1XZGq+izhSNLU2HPSkfRh1Z0ohzt6BANJzn7
 8XNJZRupSevZyFwqDXMiPSkJSurSmIpRoxvtnig9GTOPZpSmPI2mTkco06AKlYQ/k6Uaf4pUwoUA
 ADs=
 
-------=_NextPart_000_000E_01C765BC.8EDA0BA0--
+------=_NextPart_000_000E_01C765BC.87702840--
 
 
 
---===============0637930671==
+--===============0101095719==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -318,7 +322,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0637930671==
+--===============0101095719==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -329,4 +333,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0637930671==--
+--===============0101095719==--
