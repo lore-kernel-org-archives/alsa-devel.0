@@ -1,11 +1,23 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HQZrt-0006D7-48 delayed 24 hours
-Date: Mon, 12 Mar 2007 21:29:51 -0800
-Message-ID: <E1HQza3-0000xX-Nb@externalmx-1.sourceforge.net>
+From: "=?UTF-8?Q?Rafael_Esp=C3=ADndola?=" <rafael.espindola@gmail.com>
+Subject: Re: Fwd: [PATCH] sound working on the macbook pro
+Date: Tue, 13 Mar 2007 07:14:19 +0000
+Message-ID: <564d96fb0703130014u371b91a8p4f6db354153dcec0@mail.gmail.com>
+References: <564d96fb0702180906u6dc0f0d9k2cd1d5e1409f1911@mail.gmail.com>
+	<s5hhcthrq3c.wl%tiwai@suse.de>
+	<564d96fb0702201205i11beca64g11ca9602a53ad433@mail.gmail.com>
+	<s5hy7mq5h5n.wl%tiwai@suse.de>
+	<564d96fb0702221201o54468523k20976544157c99c8@mail.gmail.com>
+	<s5hd5417xmx.wl%tiwai@suse.de>
+	<564d96fb0702262134t438dd480t45c83e556f315e2e@mail.gmail.com>
+	<s5h8xe8bqu8.wl%tiwai@suse.de>
+	<564d96fb0703092157t5b7f171cr1f94125cac32b782@mail.gmail.com>
+	<s5hwt1mjyll.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hwt1mjyll.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +27,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
+> I guess it's a missing initialization for the first line-out jack.
+> It works on ohter devices because the default PIN setup has
+> AC_PIN_OUT_EN.  But, on Mac, it has AC_PIN_IN_EN by some reason.
+>
+> The patch below should fix the problm.  Give it a try.
 
-The message identifier is:     1HQZrt-0006D7-48
-The subject of the message is: thine for riches of the bitter Cry have mercy
-The date of the message is:    Sun, 11 Mar 2007 18:02:43 -0800
+It does :-)
+The "Front" control now sets the speaker volume.
 
-The address to which the message has not yet been delivered is:
-
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
-
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+> Takashi
+Rafael
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
