@@ -1,12 +1,17 @@
-From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
-Subject: Re: Free Linux driver development offered
-Date: Tue, 13 Mar 2007 20:27:42 +1300
-Message-ID: <45F6526E.3080907@audioscience.com>
-Reply-To: eblennerhassett@audioscience.com
+From: Simon Lewis <simon.lewis@mnet-online.de>
+Subject: Re: pcm_multi broken in alsa-lib -	no duplex mode with
+ jackd
+Date: Tue, 13 Mar 2007 10:05:06 +0100
+Message-ID: <45F66942.2010406@mnet-online.de>
+References: <45F044D2.1060903@mnet-online.de>
+	<s5hslcfmuk0.wl%tiwai@suse.de>	<20070308215128.GA3349@localhost.localdomain>	<s5hslcegynp.wl%tiwai@suse.de>	<20070310141713.GA2868@localhost.localdomain>	<s5hveh66n4j.wl%tiwai@suse.de>
+	<s5habyhoqaa.wl%tiwai@suse.de>
+Reply-To: simon.lewis@mnet-online.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5habyhoqaa.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,31 +21,696 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: greg@kroah.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all, I'm sure you're aware of the recent offer by Greg K-H
+Dear Takashi
 
-http://thread.gmane.org/gmane.linux.kernel/487536 etc:
+Can I use the two patchs with alsa-lib 1.0.13 ?
 
-"In return, you will receive a complete and working Linux driver that is
-added to the main Linux kernel source tree"
+If yes, please let me know the terminal commands assuming that I have
+already cd'ed into the unpacked alsa-lib folder.
 
-I think "Yeah - we want that!"
+Many thanks, Simon
 
-So... how do we go about getting our driver out of alsa-devel and into
-alsa-kernel and thence into the main Linux kernel source tree?
 
-As far as support from a hardware vendor goes, we have spent many hours
-and will spend more developing our driver ourselves, and would be very
-keen to work with whoever to get it into mainline kernels.
+Takashi Iwai schrieb:
+> At Tue, 13 Mar 2007 00:46:52 +0100,
+> I wrote:
+>   
+>> At Sat, 10 Mar 2007 14:17:13 +0000,
+>> John Rigg wrote:
+>>     
+>>> On Fri, Mar 09, 2007 at 05:38:34PM +0100, Takashi Iwai wrote:
+>>>       
+>>>> At Thu, 8 Mar 2007 21:51:28 +0000,
+>>>> John Rigg wrote:
+>>>>         
+>>>>> On Thu, Mar 08, 2007 at 07:58:23PM +0100, Takashi Iwai wrote:
+>>>>>           
+>>>>>> At Thu, 08 Mar 2007 18:16:02 +0100,
+>>>>>> Simon Lewis wrote:
+>>>>>>             
+>>>>>>> Many JACK users have successfully used the following patch:
+>>>>>>>
+>>>>>>> http://www.sound-man.co.uk/linuxaudio/pcm_multi-patch
+>>>>>>>               
+>>>>>> Well, the patch is no real fix.  It's likely a workaround for JACK,
+>>>>>> though.  Someone has to take time to track down this bug more deeply.
+>>>>>>             
+>>>>> True, the patch is just a workaround for JACK. However, I would
+>>>>> argue that most users of pcm_multi are probably JACK users.
+>>>>>           
+>>>> No, multi plugin is used in many surround PCM definitions as default.
+>>>> It's pretty hidden, but multi streams are no rare case.
+>>>>         
+>>> I hadn't noticed that. Thanks for pointing it out (and thank you for
+>>> looking at this problem!)
+>>>
+>>>       
+>>>>> Surely adding code that breaks something for the majority of users (no
+>>>>> matter how correct that code is in isolation) is not a good thing.
+>>>>>           
+>>>> Sure.  However, this code addition was for bugfixes of major other use
+>>>> cases like above, IIRC.  The regression should be avoided and should
+>>>> be fixed.  But the point is, we (at least, I) haven't been enough
+>>>> informed, unfortunately (or simply burried in a big TODO list :)
+>>>>
+>>>> Now, let's back to the original problem:  Could someone give a pointer
+>>>> describing for this problem, or just explain a bit details here?
+>>>> I vaguely remember but not precisely at all now...
+>>>> I'm willing to dig down after knowing how I can reproduce the bug.
+>>>>         
+>>> To summarise, using multiple sound cards with pcm_multi and jackd
+>>> no longer works in duplex mode ever since extra linking code was
+>>> added to pcm_multi.c in alsa-lib-1.0.9rc1.
+>>>
+>>> Trying to start jackd in duplex fails with a poll timeout message.
+>>> It still works in playback-only or capture-only modes.
+>>> The lack of duplex operation makes overdubbing in a recording studio,
+>>> for example, impossible.
+>>>
+>>> A configuration which produces the problem with two ice1712 cards
+>>> set up as a 16 channel multi device is shown here:
+>>> http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
+>>>
+>>> With the .asoundrc described in the above link the following
+>>> command fails with a poll timeout message:
+>>>
+>>> jackd -d alsa -P multi_playback -C multi_capture
+>>>
+>>> The following still work:
+>>> jackd -d alsa -P multi_playback
+>>> jackd -d alsa -C multi_capture
+>>>       
+>> OK, played a bit around this bug.  A temporary fix is attached below.
+>> It's applied to HG tree now, too.  Please give it a try.
+>>
+>> The real fix will come later...
+>>     
+>
+> More complete fix is below.  Apply after the previous patch.
+> (Or more easily use the HG version.)
+>
+>
+> Takashi
+>
+>
+> # HG changeset patch
+> # User tiwai
+> # Date 1173750753 -3600
+> # Node ID 4883f0ba21df769cea44345f35dcdd3b6214b8e7
+> # Parent  78c78fa6c41db913484d6e3cff2f1e31e5fc6075
+> More better fix for linked start/stop
+>
+> Instead of link_fd, more generic callback link_slaves is introduced.
+> This is called for linking the slave streams as the source to the
+> given master stream.
+>
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm.c
+> --- a/src/pcm/pcm.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -6313,15 +6313,6 @@ snd_pcm_sframes_t snd_pcm_mmap_commit(sn
+>  }
+>  
+>  #ifndef DOC_HIDDEN
+> -
+> -int _snd_pcm_link_descriptors(snd_pcm_t *pcm, int *fds, int count,
+> -			      int (**failed)(snd_pcm_t *, int))
+> -{
+> -	assert(pcm);
+> -	if (pcm->fast_ops->link_fd)
+> -		return pcm->fast_ops->link_fd(pcm, fds, count, failed);
+> -	return -ENOSYS;
+> -}
+>  
+>  int _snd_pcm_poll_descriptor(snd_pcm_t *pcm)
+>  {
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_dmix.c
+> --- a/src/pcm/pcm_dmix.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_dmix.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -757,8 +757,8 @@ static snd_pcm_fast_ops_t snd_pcm_dmix_f
+>  	.rewind = snd_pcm_dmix_rewind,
+>  	.forward = snd_pcm_dmix_forward,
+>  	.resume = snd_pcm_direct_resume,
+> -	.link_fd = NULL,
+>  	.link = NULL,
+> +	.link_slaves = NULL,
+>  	.unlink = NULL,
+>  	.writei = snd_pcm_mmap_writei,
+>  	.writen = snd_pcm_mmap_writen,
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_dshare.c
+> --- a/src/pcm/pcm_dshare.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_dshare.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -562,8 +562,8 @@ static snd_pcm_fast_ops_t snd_pcm_dshare
+>  	.rewind = snd_pcm_dshare_rewind,
+>  	.forward = snd_pcm_dshare_forward,
+>  	.resume = snd_pcm_direct_resume,
+> -	.link_fd = NULL,
+>  	.link = NULL,
+> +	.link_slaves = NULL,
+>  	.unlink = NULL,
+>  	.writei = snd_pcm_mmap_writei,
+>  	.writen = snd_pcm_mmap_writen,
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_dsnoop.c
+> --- a/src/pcm/pcm_dsnoop.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_dsnoop.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -452,8 +452,8 @@ static snd_pcm_fast_ops_t snd_pcm_dsnoop
+>  	.rewind = snd_pcm_dsnoop_rewind,
+>  	.forward = snd_pcm_dsnoop_forward,
+>  	.resume = snd_pcm_direct_resume,
+> -	.link_fd = NULL,
+>  	.link = NULL,
+> +	.link_slaves = NULL,
+>  	.unlink = NULL,
+>  	.writei = snd_pcm_dsnoop_writei,
+>  	.writen = snd_pcm_dsnoop_writen,
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_file.c
+> --- a/src/pcm/pcm_file.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_file.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -373,8 +373,8 @@ static snd_pcm_fast_ops_t snd_pcm_file_f
+>  	.rewind = snd_pcm_file_rewind,
+>  	.forward = snd_pcm_file_forward,
+>  	.resume = snd_pcm_generic_resume,
+> -	.link_fd = snd_pcm_generic_link_fd,
+>  	.link = snd_pcm_generic_link,
+> +	.link_slaves = snd_pcm_generic_link_slaves,
+>  	.unlink = snd_pcm_generic_unlink,
+>  	.writei = snd_pcm_file_writei,
+>  	.writen = snd_pcm_file_writen,
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_generic.c
+> --- a/src/pcm/pcm_generic.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_generic.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -197,14 +197,6 @@ snd_pcm_sframes_t snd_pcm_generic_rewind
+>  	return snd_pcm_rewind(generic->slave, frames);
+>  }
+>  
+> -int snd_pcm_generic_link_fd(snd_pcm_t *pcm, int *fds, int count, int (**failed)(snd_pcm_t *, int))
+> -{
+> -	snd_pcm_generic_t *generic = pcm->private_data;
+> -	if (generic->slave->fast_ops->link_fd)
+> -		return generic->slave->fast_ops->link_fd(generic->slave->fast_op_arg, fds, count, failed);
+> -	return -ENOSYS;
+> -}
+> -
+>  int snd_pcm_generic_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+>  {
+>  	snd_pcm_generic_t *generic = pcm1->private_data;
+> @@ -213,44 +205,12 @@ int snd_pcm_generic_link(snd_pcm_t *pcm1
+>  	return -ENOSYS;
+>  }
+>  
+> -int snd_pcm_generic_link2(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+> -{
+> -	int fds1[16], fds2[16];
+> -	int (*failed1)(snd_pcm_t *, int) = NULL;
+> -	int (*failed2)(snd_pcm_t *, int) = NULL;
+> -	int count1 = _snd_pcm_link_descriptors(pcm1, fds1, 16, &failed1);
+> -	int count2 = _snd_pcm_link_descriptors(pcm2, fds2, 16, &failed2);
+> -	int i, err = 0;
+> -
+> -	if (count1 < 0)
+> -		return count1;
+> -	if (count2 < 0)
+> -		return count2;
+> -	for (i = 1; i < count1; i++) {
+> -		if (fds1[i] < 0)
+> -			return 0;
+> -		if (ioctl(fds1[0], SNDRV_PCM_IOCTL_LINK, fds1[i]) < 0) {
+> -			if (failed1 != NULL) {
+> -				err = failed1(pcm2, fds1[i]);
+> -			} else {
+> -				SYSMSG("SNDRV_PCM_IOCTL_LINK failed");
+> -				err = -errno;
+> -			}
+> -		}
+> -	}
+> -	for (i = 0; i < count2; i++) {
+> -		if (fds2[i] < 0)
+> -			return 0;
+> -		if (ioctl(fds1[0], SNDRV_PCM_IOCTL_LINK, fds2[i]) < 0) {
+> -			if (failed1 != NULL) {
+> -				err = failed2(pcm2, fds2[i]);
+> -			} else {
+> -				SYSMSG("SNDRV_PCM_IOCTL_LINK failed");
+> -				err = -errno;
+> -			}
+> -		}
+> -	}
+> -	return err;
+> +int snd_pcm_generic_link_slaves(snd_pcm_t *pcm, snd_pcm_t *master)
+> +{
+> +	snd_pcm_generic_t *generic = pcm->private_data;
+> +	if (generic->slave->fast_ops->link_slaves)
+> +		return generic->slave->fast_ops->link_slaves(generic->slave->fast_op_arg, master);
+> +	return -ENOSYS;
+>  }
+>  
+>  int snd_pcm_generic_unlink(snd_pcm_t *pcm)
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_generic.h
+> --- a/src/pcm/pcm_generic.h	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_generic.h	Tue Mar 13 02:52:33 2007 +0100
+> @@ -50,9 +50,8 @@ int snd_pcm_generic_delay(snd_pcm_t *pcm
+>  int snd_pcm_generic_delay(snd_pcm_t *pcm, snd_pcm_sframes_t *delayp);
+>  snd_pcm_sframes_t snd_pcm_generic_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+>  snd_pcm_sframes_t snd_pcm_generic_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+> -int snd_pcm_generic_link_fd(snd_pcm_t *pcm, int *fds, int count, int (**failed)(snd_pcm_t *, int)); 
+>  int snd_pcm_generic_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2);
+> -int snd_pcm_generic_link2(snd_pcm_t *pcm1, snd_pcm_t *pcm2);
+> +int snd_pcm_generic_link_slaves(snd_pcm_t *pcm, snd_pcm_t *master);
+>  int snd_pcm_generic_unlink(snd_pcm_t *pcm);
+>  snd_pcm_sframes_t snd_pcm_generic_writei(snd_pcm_t *pcm, const void *buffer, snd_pcm_uframes_t size);
+>  snd_pcm_sframes_t snd_pcm_generic_writen(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t size);
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_hooks.c
+> --- a/src/pcm/pcm_hooks.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_hooks.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -151,8 +151,8 @@ static snd_pcm_fast_ops_t snd_pcm_hooks_
+>  	.rewind = snd_pcm_generic_rewind,
+>  	.forward = snd_pcm_generic_forward,
+>  	.resume = snd_pcm_generic_resume,
+> -	.link_fd = snd_pcm_generic_link_fd,
+>  	.link = snd_pcm_generic_link,
+> +	.link_slaves = snd_pcm_generic_link_slaves,
+>  	.unlink = snd_pcm_generic_unlink,
+>  	.writei = snd_pcm_generic_writei,
+>  	.writen = snd_pcm_generic_writen,
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_hw.c
+> --- a/src/pcm/pcm_hw.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_hw.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -686,41 +686,35 @@ static int snd_pcm_hw_resume(snd_pcm_t *
+>  	return 0;
+>  }
+>  
+> -static int snd_pcm_hw_link_fd(snd_pcm_t *pcm, int *fds, int count, int (**failed)(snd_pcm_t *, int))
+> -{
+> -	snd_pcm_hw_t *hw = pcm->private_data;
+> -
+> -	if (count < 1)
+> +static int hw_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+> +{
+> +	snd_pcm_hw_t *hw1 = pcm1->private_data;
+> +	snd_pcm_hw_t *hw2 = pcm2->private_data;
+> +	if (ioctl(hw1->fd, SNDRV_PCM_IOCTL_LINK, hw2->fd) < 0) {
+> +		SYSMSG("SNDRV_PCM_IOCTL_LINK failed");
+> +		return -errno;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int snd_pcm_hw_link_slaves(snd_pcm_t *pcm, snd_pcm_t *master)
+> +{
+> +	if (master->type != SND_PCM_TYPE_HW) {
+> +		SYSMSG("Invalid type for SNDRV_PCM_IOCTL_LINK");
+>  		return -EINVAL;
+> -	*failed = NULL;
+> -	fds[0] = hw->fd;
+> -	return 1;
+> +	}
+> +	return hw_link(master, pcm);
+>  }
+>  
+>  static int snd_pcm_hw_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+>  {
+> -	snd_pcm_hw_t *hw = pcm1->private_data;
+> -	int fds[16];
+> -	int (*failed)(snd_pcm_t *, int) = NULL;
+> -	int count = _snd_pcm_link_descriptors(pcm2, fds, 16, &failed);
+> -	int i, err = 0;
+> -
+> -	if (count < 0)
+> -		return count;
+> -	for (i = 0; i < count; i++) {
+> -		if (fds[i] < 0)
+> -			return 0;
+> -		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_LINK, fds[i]) < 0) {
+> -			if (failed != NULL) {
+> -				err = failed(pcm2, fds[i]);
+> -			} else {
+> -				SYSMSG("SNDRV_PCM_IOCTL_LINK failed");
+> -				err = -errno;
+> -			}
+> -		}
+> -	}
+> -	return err;
+> -}
+> +	if (pcm2->type != SND_PCM_TYPE_HW) {
+> +		if (pcm2->fast_ops->link_slaves)
+> +			return pcm2->fast_ops->link_slaves(pcm2, pcm1);
+> +		return -ENOSYS;
+> +	}
+> +	return hw_link(pcm1, pcm2);
+> + }
+>  
+>  static int snd_pcm_hw_unlink(snd_pcm_t *pcm)
+>  {
+> @@ -1045,8 +1039,8 @@ static snd_pcm_fast_ops_t snd_pcm_hw_fas
+>  	.rewind = snd_pcm_hw_rewind,
+>  	.forward = snd_pcm_hw_forward,
+>  	.resume = snd_pcm_hw_resume,
+> -	.link_fd = snd_pcm_hw_link_fd,
+>  	.link = snd_pcm_hw_link,
+> +	.link_slaves = snd_pcm_hw_link_slaves,
+>  	.unlink = snd_pcm_hw_unlink,
+>  	.writei = snd_pcm_hw_writei,
+>  	.writen = snd_pcm_hw_writen,
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_ioplug.c
+> --- a/src/pcm/pcm_ioplug.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_ioplug.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -747,8 +747,8 @@ static snd_pcm_fast_ops_t snd_pcm_ioplug
+>  	.hwsync = snd_pcm_ioplug_hwsync,
+>  	.delay = snd_pcm_ioplug_delay,
+>  	.resume = snd_pcm_ioplug_resume,
+> -	.link_fd = NULL,
+>  	.link = NULL,
+> +	.link_slaves = NULL,
+>  	.unlink = NULL,
+>  	.rewind = snd_pcm_ioplug_rewind,
+>  	.forward = snd_pcm_ioplug_forward,
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_local.h
+> --- a/src/pcm/pcm_local.h	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_local.h	Tue Mar 13 02:52:33 2007 +0100
+> @@ -152,8 +152,8 @@ typedef struct {
+>  	int (*hwsync)(snd_pcm_t *pcm);
+>  	int (*delay)(snd_pcm_t *pcm, snd_pcm_sframes_t *delayp);
+>  	int (*resume)(snd_pcm_t *pcm);
+> -	int (*link_fd)(snd_pcm_t *pcm, int *fds, int count, int (**failed)(snd_pcm_t *, int));
+>  	int (*link)(snd_pcm_t *pcm1, snd_pcm_t *pcm2);
+> +	int (*link_slaves)(snd_pcm_t *pcm, snd_pcm_t *master);
+>  	int (*unlink)(snd_pcm_t *pcm);
+>  	snd_pcm_sframes_t (*rewind)(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+>  	snd_pcm_sframes_t (*forward)(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_multi.c
+> --- a/src/pcm/pcm_multi.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_multi.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -45,7 +45,7 @@ typedef struct {
+>  	snd_pcm_t *pcm;
+>  	unsigned int channels_count;
+>  	int close_slave;
+> -	int linked;
+> +	snd_pcm_t *linked;
+>  } snd_pcm_multi_slave_t;
+>  
+>  typedef struct {
+> @@ -57,7 +57,6 @@ typedef struct {
+>  	unsigned int slaves_count;
+>  	unsigned int master_slave;
+>  	snd_pcm_multi_slave_t *slaves;
+> -	int slave_link_master;
+>  	unsigned int channels_count;
+>  	snd_pcm_multi_channel_t *channels;
+>  } snd_pcm_multi_t;
+> @@ -314,6 +313,21 @@ static int snd_pcm_multi_hw_params_slave
+>  	return 0;
+>  }
+>  
+> +static void reset_links(snd_pcm_multi_t *multi)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < multi->slaves_count; ++i) {
+> +		if (multi->slaves[i].linked)
+> +			snd_pcm_unlink(multi->slaves[i].linked);
+> +		multi->slaves[0].linked = NULL;
+> +		if (! i)
+> +			continue;
+> +		if (snd_pcm_link(multi->slaves[0].pcm, multi->slaves[i].pcm) >= 0)
+> +			multi->slaves[i].linked = multi->slaves[0].pcm;
+> +	}
+> +}
+> +
+>  static int snd_pcm_multi_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
+>  {
+>  	snd_pcm_multi_t *multi = pcm->private_data;
+> @@ -331,12 +345,7 @@ static int snd_pcm_multi_hw_params(snd_p
+>  			return err;
+>  		}
+>  	}
+> -	multi->slaves[0].linked = 0;
+> -	multi->slave_link_master = 0;
+> -	for (i = 1; i < multi->slaves_count; ++i) {
+> -		err = snd_pcm_link(multi->slaves[0].pcm, multi->slaves[i].pcm);
+> -		multi->slaves[i].linked = (err >= 0);
+> -	}
+> +	reset_links(multi);
+>  	return 0;
+>  }
+>  
+> @@ -352,10 +361,10 @@ static int snd_pcm_multi_hw_free(snd_pcm
+>  			err = e;
+>  		if (!multi->slaves[i].linked)
+>  			continue;
+> -		multi->slaves[i].linked = 0;
+>  		e = snd_pcm_unlink(slave);
+>  		if (e < 0)
+>  			err = e;
+> +		multi->slaves[i].linked = NULL;
+>  	}
+>  	return err;
+>  }
+> @@ -421,7 +430,7 @@ static int snd_pcm_multi_prepare(snd_pcm
+>  static int snd_pcm_multi_prepare(snd_pcm_t *pcm)
+>  {
+>  	snd_pcm_multi_t *multi = pcm->private_data;
+> -	int err = 0;
+> +	int result = 0, err;
+>  	unsigned int i;
+>  	for (i = 0; i < multi->slaves_count; ++i) {
+>  		/* We call prepare to each slave even if it's linked.
+> @@ -429,75 +438,83 @@ static int snd_pcm_multi_prepare(snd_pcm
+>  		 */
+>  		err = snd_pcm_prepare(multi->slaves[i].pcm);
+>  		if (err < 0)
+> -			return err;
+> -	}
+> -	return err;
+> +			result = err;
+> +	}
+> +	return result;
+>  }
+>  
+>  static int snd_pcm_multi_reset(snd_pcm_t *pcm)
+>  {
+>  	snd_pcm_multi_t *multi = pcm->private_data;
+> -	int err = 0;
+> +	int result = 0, err;
+>  	unsigned int i;
+>  	for (i = 0; i < multi->slaves_count; ++i) {
+>  		/* Reset each slave, as well as in prepare */
+>  		err = snd_pcm_reset(multi->slaves[i].pcm);
+> +		if (err < 0) 
+> +			result = err;
+> +	}
+> +	return result;
+> +}
+> +
+> +static int snd_pcm_multi_start(snd_pcm_t *pcm)
+> +{
+> +	snd_pcm_multi_t *multi = pcm->private_data;
+> +	int err = 0;
+> +	unsigned int i;
+> +	if (multi->slaves[0].linked)
+> +		return snd_pcm_start(multi->slaves[0].linked);
+> +	for (i = 0; i < multi->slaves_count; ++i) {
+> +		if (multi->slaves[i].linked)
+> +			continue;
+> +		err = snd_pcm_start(multi->slaves[i].pcm);
+>  		if (err < 0)
+>  			return err;
+>  	}
+>  	return err;
+>  }
+>  
+> -static int snd_pcm_multi_start(snd_pcm_t *pcm)
+> +static int snd_pcm_multi_drop(snd_pcm_t *pcm)
+>  {
+>  	snd_pcm_multi_t *multi = pcm->private_data;
+>  	int err = 0;
+>  	unsigned int i;
+> +	if (multi->slaves[0].linked)
+> +		return snd_pcm_drop(multi->slaves[0].linked);
+>  	for (i = 0; i < multi->slaves_count; ++i) {
+>  		if (multi->slaves[i].linked)
+>  			continue;
+> -		err = snd_pcm_start(multi->slaves[i].pcm);
+> +		err = snd_pcm_drop(multi->slaves[i].pcm);
+>  		if (err < 0)
+>  			return err;
+>  	}
+>  	return err;
+>  }
+>  
+> -static int snd_pcm_multi_drop(snd_pcm_t *pcm)
+> +static int snd_pcm_multi_drain(snd_pcm_t *pcm)
+>  {
+>  	snd_pcm_multi_t *multi = pcm->private_data;
+>  	int err = 0;
+>  	unsigned int i;
+> +	if (multi->slaves[0].linked)
+> +		return snd_pcm_drain(multi->slaves[0].linked);
+>  	for (i = 0; i < multi->slaves_count; ++i) {
+>  		if (multi->slaves[i].linked)
+>  			continue;
+> -		err = snd_pcm_drop(multi->slaves[i].pcm);
+> +		err = snd_pcm_drain(multi->slaves[i].pcm);
+>  		if (err < 0)
+>  			return err;
+>  	}
+>  	return err;
+>  }
+>  
+> -static int snd_pcm_multi_drain(snd_pcm_t *pcm)
+> +static int snd_pcm_multi_pause(snd_pcm_t *pcm, int enable)
+>  {
+>  	snd_pcm_multi_t *multi = pcm->private_data;
+>  	int err = 0;
+>  	unsigned int i;
+> -	for (i = 0; i < multi->slaves_count; ++i) {
+> -		if (multi->slaves[i].linked)
+> -			continue;
+> -		err = snd_pcm_drain(multi->slaves[i].pcm);
+> -		if (err < 0)
+> -			return err;
+> -	}
+> -	return err;
+> -}
+> -
+> -static int snd_pcm_multi_pause(snd_pcm_t *pcm, int enable)
+> -{
+> -	snd_pcm_multi_t *multi = pcm->private_data;
+> -	int err = 0;
+> -	unsigned int i;
+> +	if (multi->slaves[0].linked)
+> +		return snd_pcm_pause(multi->slaves[0].linked, enable);
+>  	for (i = 0; i < multi->slaves_count; ++i) {
+>  		if (multi->slaves[i].linked)
+>  			continue;
+> @@ -587,6 +604,8 @@ static int snd_pcm_multi_resume(snd_pcm_
+>  	snd_pcm_multi_t *multi = pcm->private_data;
+>  	int err = 0;
+>  	unsigned int i;
+> +	if (multi->slaves[0].linked)
+> +		return snd_pcm_resume(multi->slaves[0].linked);
+>  	for (i = 0; i < multi->slaves_count; ++i) {
+>  		if (multi->slaves[i].linked)
+>  			continue;
+> @@ -597,46 +616,42 @@ static int snd_pcm_multi_resume(snd_pcm_
+>  	return err;
+>  }
+>  
+> -static int snd_pcm_multi_link_fd_failed(snd_pcm_t *pcm, int fd)
+> -{
+> -	snd_pcm_multi_t *multi = pcm->private_data;
+> -	unsigned int i;
+> -
+> -	for (i = 0; i < multi->slaves_count; ++i) {
+> -		if (_snd_pcm_link_descriptor(multi->slaves[i].pcm) != fd)
+> -			continue;
+> -		 multi->slaves[i].linked = 0;
+> -	}
+> -	return 0;
+> -}
+> -
+> -static int snd_pcm_multi_link_fd(snd_pcm_t *pcm, int *fds, int count, int (**failed)(snd_pcm_t *pcm, int fd))
+> +static int snd_pcm_multi_link_slaves(snd_pcm_t *pcm, snd_pcm_t *master)
+>  { 
+>  	snd_pcm_multi_t *multi = pcm->private_data;
+> -	unsigned int i;
+> -
+> -	if (count < (int)multi->slaves_count)
+> -		return -ENOMEM;
+> +	unsigned int i, j;
+> +	int err;
+> +
+> +	for (i = 0; i < multi->slaves_count; ++i) {
+> +		snd_pcm_unlink(multi->slaves[i].pcm);
+> +		multi->slaves[i].linked = NULL;
+> +		err = snd_pcm_link(master, multi->slaves[i].pcm);
+> +		if (err < 0) {
+> +			reset_links(multi);
+> +			return err;
+> +		}
+> +		multi->slaves[i].linked = master;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int snd_pcm_multi_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+> +{
+> +	snd_pcm_multi_t *multi = pcm1->private_data;
+> +	if (multi->slaves[0].pcm->fast_ops->link)
+> +		return multi->slaves[0].pcm->fast_ops->link(multi->slaves[0].pcm, pcm2);
+> +	return -ENOSYS;
+> +}
+> +
+> +static int snd_pcm_multi_unlink(snd_pcm_t *pcm)
+> +{
+> +	snd_pcm_multi_t *multi = pcm->private_data;
+> +	unsigned int i;
+> +
+>  	for (i = 0; i < multi->slaves_count; ++i) {
+>  		if (multi->slaves[i].linked)
+> -			snd_pcm_unlink(multi->slaves[i].pcm);
+> -		fds[i] = _snd_pcm_link_descriptor(multi->slaves[i].pcm);
+> -		if (i > 0)
+> -			multi->slaves[i].linked = 1;
+> -	}
+> -	*failed = snd_pcm_multi_link_fd_failed;
+> -	return multi->slaves_count;
+> -}
+> -
+> -static int snd_pcm_multi_unlink(snd_pcm_t *pcm)
+> -{
+> -	snd_pcm_multi_t *multi = pcm->private_data;
+> -	unsigned int i;
+> -
+> -	for (i = 0; i < multi->slaves_count; ++i) {
+> -		if (multi->slaves[i].linked)
+> -			snd_pcm_unlink(multi->slaves[i].pcm);
+> -		multi->slaves[i].linked = 0;
+> +			snd_pcm_unlink(multi->slaves[i].linked);
+> +		multi->slaves[0].linked = NULL;
+>  	}
+>  	return 0;
+>  }
+> @@ -727,8 +742,8 @@ static snd_pcm_fast_ops_t snd_pcm_multi_
+>  	.rewind = snd_pcm_multi_rewind,
+>  	.forward = snd_pcm_multi_forward,
+>  	.resume = snd_pcm_multi_resume,
+> -	.link_fd = snd_pcm_multi_link_fd,
+> -	.link = snd_pcm_generic_link2,
+> +	.link = snd_pcm_multi_link,
+> +	.link_slaves = snd_pcm_multi_link_slaves,
+>  	.unlink = snd_pcm_multi_unlink,
+>  	.avail_update = snd_pcm_multi_avail_update,
+>  	.mmap_commit = snd_pcm_multi_mmap_commit,
+> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_plugin.c
+> --- a/src/pcm/pcm_plugin.c	Tue Mar 13 00:40:22 2007 +0100
+> +++ b/src/pcm/pcm_plugin.c	Tue Mar 13 02:52:33 2007 +0100
+> @@ -566,8 +566,8 @@ snd_pcm_fast_ops_t snd_pcm_plugin_fast_o
+>  	.rewind = snd_pcm_plugin_rewind,
+>  	.forward = snd_pcm_plugin_forward,
+>  	.resume = snd_pcm_generic_resume,
+> -	.link_fd = snd_pcm_generic_link_fd,
+>  	.link = snd_pcm_generic_link,
+> +	.link_slaves = snd_pcm_generic_link_slaves,
+>  	.unlink = snd_pcm_generic_unlink,
+>  	.writei = snd_pcm_plugin_writei,
+>  	.writen = snd_pcm_plugin_writen,
+>
+> -------------------------------------------------------------------------
+> Take Surveys. Earn Cash. Influence the Future of IT
+> Join SourceForge.net's Techsay panel and you'll get the chance to share your
+> opinions on IT & business topics through brief surveys-and earn cash
+> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+>
+>   
 
-regards
--- 
-Eliot Blennerhassett                       *:-{)>
-AudioScience, Inc. (New Zealand Office)
-wwww.audioscience.com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
