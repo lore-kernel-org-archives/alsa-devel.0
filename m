@@ -1,10 +1,10 @@
-From: "Cody Prestonc" <marshlandnue@unx.sas.com>
-Subject: testbed wolf
-Date: Wed, 14 Mar 2007 08:35:55 +0800
-Message-ID: <563103203.8141972631@billgates>
-Reply-To: Cody Prestonc <marshlandnue@unx.sas.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HQ5j6-00016V-BA delayed 72 hours
+Date: Tue, 13 Mar 2007 19:30:41 -0800
+Message-ID: <E1HRKCH-0004ci-Ao@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0312558045=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,58 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org, alsa-user-request@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0312558045==
-Content-Type: text/html
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-<html>
-<head>
-</head>
-<body>
+The message identifier is:     1HQ5j6-00016V-BA
+The subject of the message is:  to he answered Saul Hear all
+The date of the message is:    Sat, 10 Mar 2007 23:21:24 +0530
 
+The address to which the message has not yet been delivered is:
 
-<p align="center"><b>Our Next Winner for<font color="#FF0000"> March 14th</font><br>
-<font color="#FF0000">CEO AMERICA INC </font><br>
-Tick : CEOA<br>
-<font color="#008080">Priced : $0.07</font><br>
-Won't last long at this stage, This one is going to<font color="#008080"> 
-$1.00</font><br>
-Grab yourself some<font color="#0000FF"> tomorrow </font>avoid the rush<br>
-And experience a <font color="#008080">10 bagger.</font></p>
-<p align="center"><br>
-<font size="2">leader, blasted Democrats on Friday, saying they have no plan to keep Americans safe <br>
-first for the five U.S. Forest Service firefighters who were overrun by flames =Mourners honored the firefighters killed by the California arson fire as the first <br>
-of five funerals began Friday, and praised authorities for charging the man accused =(Watch Michael J. Fox back McCaskill on stem cells -- :32 ) Democrats say they are ahead
-</font></b></p>
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-</body>
-
-</html>
-
-
-
---===============0312558045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0312558045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0312558045==--
