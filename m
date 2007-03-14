@@ -1,12 +1,16 @@
-From: Anton <Anton@c2i.net>
-Subject: Best Vacancy: RTSol, Correspondence manager,
-	Work at home, Right trading solutions
-Date: Wed, 14 Mar 2007 21:02:48 +0400
-Message-ID: <126C34D5.2334465@c2i.net>
+From: Simon Lewis <simon.lewis@mnet-online.de>
+Subject: Re: pcm_multi broken in alsa-lib -	no duplex mode with
+ jackd
+Date: Wed, 14 Mar 2007 19:41:21 +0100
+Message-ID: <45F841D1.6010804@mnet-online.de>
+References: <45F044D2.1060903@mnet-online.de>	<s5hslcfmuk0.wl%tiwai@suse.de>	<20070308215128.GA3349@localhost.localdomain>	<s5hslcegynp.wl%tiwai@suse.de>	<20070310141713.GA2868@localhost.localdomain>	<s5hveh66n4j.wl%tiwai@suse.de>	<s5habyhoqaa.wl%tiwai@suse.de>	<45F66942.2010406@mnet-online.de>
+	<s5hird533j6.wl%tiwai@suse.de>
+Reply-To: simon.lewis@mnet-online.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hird533j6.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,44 +20,838 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-General job description:
+Nice one Takashi!
 
-Handling of packages and letters from your own home!
-Receiving,
-sending, sorting and repacking of packages as well as
-checking for
-missing parts. 
-Job description: 
+I tested the new alsa-lib snapshot on a  "virgin" openSUSE 10.2 today.
+Jack started with no errors in duplex mode with my sound card using
+separate pcm_multi functions to group the inputs and outputs respectively.
 
-Those people who are accepted for this job will follow
-these simple
-instructions:
-Receive correspondence from our company and its
-clients at his/her residential address; 
-Report to our manager (every candidate will be
-included in a manager's lists) 
-Repack received items following the instructions our
-manager will send to you, check them for missing
-parts, if needed. 
-Receive money from our company or our company's
-partners for shipping and payment for each package
-shipped out. Money transfer methods described below.
-We offer 40 USD for each package shipped out  and and
-5% of each Money Order. 
-Fill in the forms and papers as indicated in our
-manager's instructions (you will receive an e-mail
-with instructions for each box). 
-Ship packages out
+Naturally John Rigg and the others at Jack-Devel will test the
+corrections more thoroughly but for me at least it appears to be working
+fine.
 
-Please visit our site for more information:
-http://rtsol-logistic.com/vacancies.php
+Best regards, Simon
+
+Simon Lewis
+Lautensackstrasse 12
+80687 M=FCnchen
+
+Tel.: +49 89 57869412
+Fax: +49 89 57869411
+e-mail: simon.lewis@mnet-online.de
+
+Takashi Iwai wrote:
+> At Tue, 13 Mar 2007 10:05:06 +0100,
+> Simon Lewis wrote:
+>   =
+
+>> Dear Takashi
+>>
+>> Can I use the two patchs with alsa-lib 1.0.13 ?
+>>     =
+
+>
+> Might work, but don't try.  It simply increases another unknown
+> factors.  First try the latest HG version with the patch to confirm
+> that it works.  After that, try any version you like.
+>
+>   =
+
+>> If yes, please let me know the terminal commands assuming that I have
+>> already cd'ed into the unpacked alsa-lib folder.
+>>     =
+
+>
+> 	% patch -p1 -i this_patch
+>
+> In doubt, wait until tomorrow, then grab the latest daily snapshot
+> tarball from =
+
+> 	ftp://ftp.suse.com/pub/projects/alsa/snapshot/
+>
+> which will include the all patches.
+>
+>
+> Takashi
+>   =
+
+>> Takashi Iwai schrieb:
+>>     =
+
+>>> At Tue, 13 Mar 2007 00:46:52 +0100,
+>>> I wrote:
+>>>   =
+
+>>>       =
+
+>>>> At Sat, 10 Mar 2007 14:17:13 +0000,
+>>>> John Rigg wrote:
+>>>>     =
+
+>>>>         =
+
+>>>>> On Fri, Mar 09, 2007 at 05:38:34PM +0100, Takashi Iwai wrote:
+>>>>>       =
+
+>>>>>           =
+
+>>>>>> At Thu, 8 Mar 2007 21:51:28 +0000,
+>>>>>> John Rigg wrote:
+>>>>>>         =
+
+>>>>>>             =
+
+>>>>>>> On Thu, Mar 08, 2007 at 07:58:23PM +0100, Takashi Iwai wrote:
+>>>>>>>           =
+
+>>>>>>>               =
+
+>>>>>>>> At Thu, 08 Mar 2007 18:16:02 +0100,
+>>>>>>>> Simon Lewis wrote:
+>>>>>>>>             =
+
+>>>>>>>>                 =
+
+>>>>>>>>> Many JACK users have successfully used the following patch:
+>>>>>>>>>
+>>>>>>>>> http://www.sound-man.co.uk/linuxaudio/pcm_multi-patch
+>>>>>>>>>               =
+
+>>>>>>>>>                   =
+
+>>>>>>>> Well, the patch is no real fix.  It's likely a workaround for JACK,
+>>>>>>>> though.  Someone has to take time to track down this bug more deep=
+ly.
+>>>>>>>>             =
+
+>>>>>>>>                 =
+
+>>>>>>> True, the patch is just a workaround for JACK. However, I would
+>>>>>>> argue that most users of pcm_multi are probably JACK users.
+>>>>>>>           =
+
+>>>>>>>               =
+
+>>>>>> No, multi plugin is used in many surround PCM definitions as default.
+>>>>>> It's pretty hidden, but multi streams are no rare case.
+>>>>>>         =
+
+>>>>>>             =
+
+>>>>> I hadn't noticed that. Thanks for pointing it out (and thank you for
+>>>>> looking at this problem!)
+>>>>>
+>>>>>       =
+
+>>>>>           =
+
+>>>>>>> Surely adding code that breaks something for the majority of users =
+(no
+>>>>>>> matter how correct that code is in isolation) is not a good thing.
+>>>>>>>           =
+
+>>>>>>>               =
+
+>>>>>> Sure.  However, this code addition was for bugfixes of major other u=
+se
+>>>>>> cases like above, IIRC.  The regression should be avoided and should
+>>>>>> be fixed.  But the point is, we (at least, I) haven't been enough
+>>>>>> informed, unfortunately (or simply burried in a big TODO list :)
+>>>>>>
+>>>>>> Now, let's back to the original problem:  Could someone give a point=
+er
+>>>>>> describing for this problem, or just explain a bit details here?
+>>>>>> I vaguely remember but not precisely at all now...
+>>>>>> I'm willing to dig down after knowing how I can reproduce the bug.
+>>>>>>         =
+
+>>>>>>             =
+
+>>>>> To summarise, using multiple sound cards with pcm_multi and jackd
+>>>>> no longer works in duplex mode ever since extra linking code was
+>>>>> added to pcm_multi.c in alsa-lib-1.0.9rc1.
+>>>>>
+>>>>> Trying to start jackd in duplex fails with a poll timeout message.
+>>>>> It still works in playback-only or capture-only modes.
+>>>>> The lack of duplex operation makes overdubbing in a recording studio,
+>>>>> for example, impossible.
+>>>>>
+>>>>> A configuration which produces the problem with two ice1712 cards
+>>>>> set up as a 16 channel multi device is shown here:
+>>>>> http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
+>>>>>
+>>>>> With the .asoundrc described in the above link the following
+>>>>> command fails with a poll timeout message:
+>>>>>
+>>>>> jackd -d alsa -P multi_playback -C multi_capture
+>>>>>
+>>>>> The following still work:
+>>>>> jackd -d alsa -P multi_playback
+>>>>> jackd -d alsa -C multi_capture
+>>>>>       =
+
+>>>>>           =
+
+>>>> OK, played a bit around this bug.  A temporary fix is attached below.
+>>>> It's applied to HG tree now, too.  Please give it a try.
+>>>>
+>>>> The real fix will come later...
+>>>>     =
+
+>>>>         =
+
+>>> More complete fix is below.  Apply after the previous patch.
+>>> (Or more easily use the HG version.)
+>>>
+>>>
+>>> Takashi
+>>>
+>>>
+>>> # HG changeset patch
+>>> # User tiwai
+>>> # Date 1173750753 -3600
+>>> # Node ID 4883f0ba21df769cea44345f35dcdd3b6214b8e7
+>>> # Parent  78c78fa6c41db913484d6e3cff2f1e31e5fc6075
+>>> More better fix for linked start/stop
+>>>
+>>> Instead of link_fd, more generic callback link_slaves is introduced.
+>>> This is called for linking the slave streams as the source to the
+>>> given master stream.
+>>>
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm.c
+>>> --- a/src/pcm/pcm.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -6313,15 +6313,6 @@ snd_pcm_sframes_t snd_pcm_mmap_commit(sn
+>>>  }
+>>>  =
+
+>>>  #ifndef DOC_HIDDEN
+>>> -
+>>> -int _snd_pcm_link_descriptors(snd_pcm_t *pcm, int *fds, int count,
+>>> -			      int (**failed)(snd_pcm_t *, int))
+>>> -{
+>>> -	assert(pcm);
+>>> -	if (pcm->fast_ops->link_fd)
+>>> -		return pcm->fast_ops->link_fd(pcm, fds, count, failed);
+>>> -	return -ENOSYS;
+>>> -}
+>>>  =
+
+>>>  int _snd_pcm_poll_descriptor(snd_pcm_t *pcm)
+>>>  {
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_dmix.c
+>>> --- a/src/pcm/pcm_dmix.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_dmix.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -757,8 +757,8 @@ static snd_pcm_fast_ops_t snd_pcm_dmix_f
+>>>  	.rewind =3D snd_pcm_dmix_rewind,
+>>>  	.forward =3D snd_pcm_dmix_forward,
+>>>  	.resume =3D snd_pcm_direct_resume,
+>>> -	.link_fd =3D NULL,
+>>>  	.link =3D NULL,
+>>> +	.link_slaves =3D NULL,
+>>>  	.unlink =3D NULL,
+>>>  	.writei =3D snd_pcm_mmap_writei,
+>>>  	.writen =3D snd_pcm_mmap_writen,
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_dshare.c
+>>> --- a/src/pcm/pcm_dshare.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_dshare.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -562,8 +562,8 @@ static snd_pcm_fast_ops_t snd_pcm_dshare
+>>>  	.rewind =3D snd_pcm_dshare_rewind,
+>>>  	.forward =3D snd_pcm_dshare_forward,
+>>>  	.resume =3D snd_pcm_direct_resume,
+>>> -	.link_fd =3D NULL,
+>>>  	.link =3D NULL,
+>>> +	.link_slaves =3D NULL,
+>>>  	.unlink =3D NULL,
+>>>  	.writei =3D snd_pcm_mmap_writei,
+>>>  	.writen =3D snd_pcm_mmap_writen,
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_dsnoop.c
+>>> --- a/src/pcm/pcm_dsnoop.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_dsnoop.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -452,8 +452,8 @@ static snd_pcm_fast_ops_t snd_pcm_dsnoop
+>>>  	.rewind =3D snd_pcm_dsnoop_rewind,
+>>>  	.forward =3D snd_pcm_dsnoop_forward,
+>>>  	.resume =3D snd_pcm_direct_resume,
+>>> -	.link_fd =3D NULL,
+>>>  	.link =3D NULL,
+>>> +	.link_slaves =3D NULL,
+>>>  	.unlink =3D NULL,
+>>>  	.writei =3D snd_pcm_dsnoop_writei,
+>>>  	.writen =3D snd_pcm_dsnoop_writen,
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_file.c
+>>> --- a/src/pcm/pcm_file.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_file.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -373,8 +373,8 @@ static snd_pcm_fast_ops_t snd_pcm_file_f
+>>>  	.rewind =3D snd_pcm_file_rewind,
+>>>  	.forward =3D snd_pcm_file_forward,
+>>>  	.resume =3D snd_pcm_generic_resume,
+>>> -	.link_fd =3D snd_pcm_generic_link_fd,
+>>>  	.link =3D snd_pcm_generic_link,
+>>> +	.link_slaves =3D snd_pcm_generic_link_slaves,
+>>>  	.unlink =3D snd_pcm_generic_unlink,
+>>>  	.writei =3D snd_pcm_file_writei,
+>>>  	.writen =3D snd_pcm_file_writen,
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_generic.c
+>>> --- a/src/pcm/pcm_generic.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_generic.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -197,14 +197,6 @@ snd_pcm_sframes_t snd_pcm_generic_rewind
+>>>  	return snd_pcm_rewind(generic->slave, frames);
+>>>  }
+>>>  =
+
+>>> -int snd_pcm_generic_link_fd(snd_pcm_t *pcm, int *fds, int count, int (=
+**failed)(snd_pcm_t *, int))
+>>> -{
+>>> -	snd_pcm_generic_t *generic =3D pcm->private_data;
+>>> -	if (generic->slave->fast_ops->link_fd)
+>>> -		return generic->slave->fast_ops->link_fd(generic->slave->fast_op_arg=
+, fds, count, failed);
+>>> -	return -ENOSYS;
+>>> -}
+>>> -
+>>>  int snd_pcm_generic_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+>>>  {
+>>>  	snd_pcm_generic_t *generic =3D pcm1->private_data;
+>>> @@ -213,44 +205,12 @@ int snd_pcm_generic_link(snd_pcm_t *pcm1
+>>>  	return -ENOSYS;
+>>>  }
+>>>  =
+
+>>> -int snd_pcm_generic_link2(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+>>> -{
+>>> -	int fds1[16], fds2[16];
+>>> -	int (*failed1)(snd_pcm_t *, int) =3D NULL;
+>>> -	int (*failed2)(snd_pcm_t *, int) =3D NULL;
+>>> -	int count1 =3D _snd_pcm_link_descriptors(pcm1, fds1, 16, &failed1);
+>>> -	int count2 =3D _snd_pcm_link_descriptors(pcm2, fds2, 16, &failed2);
+>>> -	int i, err =3D 0;
+>>> -
+>>> -	if (count1 < 0)
+>>> -		return count1;
+>>> -	if (count2 < 0)
+>>> -		return count2;
+>>> -	for (i =3D 1; i < count1; i++) {
+>>> -		if (fds1[i] < 0)
+>>> -			return 0;
+>>> -		if (ioctl(fds1[0], SNDRV_PCM_IOCTL_LINK, fds1[i]) < 0) {
+>>> -			if (failed1 !=3D NULL) {
+>>> -				err =3D failed1(pcm2, fds1[i]);
+>>> -			} else {
+>>> -				SYSMSG("SNDRV_PCM_IOCTL_LINK failed");
+>>> -				err =3D -errno;
+>>> -			}
+>>> -		}
+>>> -	}
+>>> -	for (i =3D 0; i < count2; i++) {
+>>> -		if (fds2[i] < 0)
+>>> -			return 0;
+>>> -		if (ioctl(fds1[0], SNDRV_PCM_IOCTL_LINK, fds2[i]) < 0) {
+>>> -			if (failed1 !=3D NULL) {
+>>> -				err =3D failed2(pcm2, fds2[i]);
+>>> -			} else {
+>>> -				SYSMSG("SNDRV_PCM_IOCTL_LINK failed");
+>>> -				err =3D -errno;
+>>> -			}
+>>> -		}
+>>> -	}
+>>> -	return err;
+>>> +int snd_pcm_generic_link_slaves(snd_pcm_t *pcm, snd_pcm_t *master)
+>>> +{
+>>> +	snd_pcm_generic_t *generic =3D pcm->private_data;
+>>> +	if (generic->slave->fast_ops->link_slaves)
+>>> +		return generic->slave->fast_ops->link_slaves(generic->slave->fast_op=
+_arg, master);
+>>> +	return -ENOSYS;
+>>>  }
+>>>  =
+
+>>>  int snd_pcm_generic_unlink(snd_pcm_t *pcm)
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_generic.h
+>>> --- a/src/pcm/pcm_generic.h	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_generic.h	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -50,9 +50,8 @@ int snd_pcm_generic_delay(snd_pcm_t *pcm
+>>>  int snd_pcm_generic_delay(snd_pcm_t *pcm, snd_pcm_sframes_t *delayp);
+>>>  snd_pcm_sframes_t snd_pcm_generic_forward(snd_pcm_t *pcm, snd_pcm_ufra=
+mes_t frames);
+>>>  snd_pcm_sframes_t snd_pcm_generic_rewind(snd_pcm_t *pcm, snd_pcm_ufram=
+es_t frames);
+>>> -int snd_pcm_generic_link_fd(snd_pcm_t *pcm, int *fds, int count, int (=
+**failed)(snd_pcm_t *, int)); =
+
+>>>  int snd_pcm_generic_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2);
+>>> -int snd_pcm_generic_link2(snd_pcm_t *pcm1, snd_pcm_t *pcm2);
+>>> +int snd_pcm_generic_link_slaves(snd_pcm_t *pcm, snd_pcm_t *master);
+>>>  int snd_pcm_generic_unlink(snd_pcm_t *pcm);
+>>>  snd_pcm_sframes_t snd_pcm_generic_writei(snd_pcm_t *pcm, const void *b=
+uffer, snd_pcm_uframes_t size);
+>>>  snd_pcm_sframes_t snd_pcm_generic_writen(snd_pcm_t *pcm, void **bufs, =
+snd_pcm_uframes_t size);
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_hooks.c
+>>> --- a/src/pcm/pcm_hooks.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_hooks.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -151,8 +151,8 @@ static snd_pcm_fast_ops_t snd_pcm_hooks_
+>>>  	.rewind =3D snd_pcm_generic_rewind,
+>>>  	.forward =3D snd_pcm_generic_forward,
+>>>  	.resume =3D snd_pcm_generic_resume,
+>>> -	.link_fd =3D snd_pcm_generic_link_fd,
+>>>  	.link =3D snd_pcm_generic_link,
+>>> +	.link_slaves =3D snd_pcm_generic_link_slaves,
+>>>  	.unlink =3D snd_pcm_generic_unlink,
+>>>  	.writei =3D snd_pcm_generic_writei,
+>>>  	.writen =3D snd_pcm_generic_writen,
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_hw.c
+>>> --- a/src/pcm/pcm_hw.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_hw.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -686,41 +686,35 @@ static int snd_pcm_hw_resume(snd_pcm_t *
+>>>  	return 0;
+>>>  }
+>>>  =
+
+>>> -static int snd_pcm_hw_link_fd(snd_pcm_t *pcm, int *fds, int count, int=
+ (**failed)(snd_pcm_t *, int))
+>>> -{
+>>> -	snd_pcm_hw_t *hw =3D pcm->private_data;
+>>> -
+>>> -	if (count < 1)
+>>> +static int hw_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+>>> +{
+>>> +	snd_pcm_hw_t *hw1 =3D pcm1->private_data;
+>>> +	snd_pcm_hw_t *hw2 =3D pcm2->private_data;
+>>> +	if (ioctl(hw1->fd, SNDRV_PCM_IOCTL_LINK, hw2->fd) < 0) {
+>>> +		SYSMSG("SNDRV_PCM_IOCTL_LINK failed");
+>>> +		return -errno;
+>>> +	}
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int snd_pcm_hw_link_slaves(snd_pcm_t *pcm, snd_pcm_t *master)
+>>> +{
+>>> +	if (master->type !=3D SND_PCM_TYPE_HW) {
+>>> +		SYSMSG("Invalid type for SNDRV_PCM_IOCTL_LINK");
+>>>  		return -EINVAL;
+>>> -	*failed =3D NULL;
+>>> -	fds[0] =3D hw->fd;
+>>> -	return 1;
+>>> +	}
+>>> +	return hw_link(master, pcm);
+>>>  }
+>>>  =
+
+>>>  static int snd_pcm_hw_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+>>>  {
+>>> -	snd_pcm_hw_t *hw =3D pcm1->private_data;
+>>> -	int fds[16];
+>>> -	int (*failed)(snd_pcm_t *, int) =3D NULL;
+>>> -	int count =3D _snd_pcm_link_descriptors(pcm2, fds, 16, &failed);
+>>> -	int i, err =3D 0;
+>>> -
+>>> -	if (count < 0)
+>>> -		return count;
+>>> -	for (i =3D 0; i < count; i++) {
+>>> -		if (fds[i] < 0)
+>>> -			return 0;
+>>> -		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_LINK, fds[i]) < 0) {
+>>> -			if (failed !=3D NULL) {
+>>> -				err =3D failed(pcm2, fds[i]);
+>>> -			} else {
+>>> -				SYSMSG("SNDRV_PCM_IOCTL_LINK failed");
+>>> -				err =3D -errno;
+>>> -			}
+>>> -		}
+>>> -	}
+>>> -	return err;
+>>> -}
+>>> +	if (pcm2->type !=3D SND_PCM_TYPE_HW) {
+>>> +		if (pcm2->fast_ops->link_slaves)
+>>> +			return pcm2->fast_ops->link_slaves(pcm2, pcm1);
+>>> +		return -ENOSYS;
+>>> +	}
+>>> +	return hw_link(pcm1, pcm2);
+>>> + }
+>>>  =
+
+>>>  static int snd_pcm_hw_unlink(snd_pcm_t *pcm)
+>>>  {
+>>> @@ -1045,8 +1039,8 @@ static snd_pcm_fast_ops_t snd_pcm_hw_fas
+>>>  	.rewind =3D snd_pcm_hw_rewind,
+>>>  	.forward =3D snd_pcm_hw_forward,
+>>>  	.resume =3D snd_pcm_hw_resume,
+>>> -	.link_fd =3D snd_pcm_hw_link_fd,
+>>>  	.link =3D snd_pcm_hw_link,
+>>> +	.link_slaves =3D snd_pcm_hw_link_slaves,
+>>>  	.unlink =3D snd_pcm_hw_unlink,
+>>>  	.writei =3D snd_pcm_hw_writei,
+>>>  	.writen =3D snd_pcm_hw_writen,
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_ioplug.c
+>>> --- a/src/pcm/pcm_ioplug.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_ioplug.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -747,8 +747,8 @@ static snd_pcm_fast_ops_t snd_pcm_ioplug
+>>>  	.hwsync =3D snd_pcm_ioplug_hwsync,
+>>>  	.delay =3D snd_pcm_ioplug_delay,
+>>>  	.resume =3D snd_pcm_ioplug_resume,
+>>> -	.link_fd =3D NULL,
+>>>  	.link =3D NULL,
+>>> +	.link_slaves =3D NULL,
+>>>  	.unlink =3D NULL,
+>>>  	.rewind =3D snd_pcm_ioplug_rewind,
+>>>  	.forward =3D snd_pcm_ioplug_forward,
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_local.h
+>>> --- a/src/pcm/pcm_local.h	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_local.h	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -152,8 +152,8 @@ typedef struct {
+>>>  	int (*hwsync)(snd_pcm_t *pcm);
+>>>  	int (*delay)(snd_pcm_t *pcm, snd_pcm_sframes_t *delayp);
+>>>  	int (*resume)(snd_pcm_t *pcm);
+>>> -	int (*link_fd)(snd_pcm_t *pcm, int *fds, int count, int (**failed)(sn=
+d_pcm_t *, int));
+>>>  	int (*link)(snd_pcm_t *pcm1, snd_pcm_t *pcm2);
+>>> +	int (*link_slaves)(snd_pcm_t *pcm, snd_pcm_t *master);
+>>>  	int (*unlink)(snd_pcm_t *pcm);
+>>>  	snd_pcm_sframes_t (*rewind)(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+>>>  	snd_pcm_sframes_t (*forward)(snd_pcm_t *pcm, snd_pcm_uframes_t frames=
+);
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_multi.c
+>>> --- a/src/pcm/pcm_multi.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_multi.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -45,7 +45,7 @@ typedef struct {
+>>>  	snd_pcm_t *pcm;
+>>>  	unsigned int channels_count;
+>>>  	int close_slave;
+>>> -	int linked;
+>>> +	snd_pcm_t *linked;
+>>>  } snd_pcm_multi_slave_t;
+>>>  =
+
+>>>  typedef struct {
+>>> @@ -57,7 +57,6 @@ typedef struct {
+>>>  	unsigned int slaves_count;
+>>>  	unsigned int master_slave;
+>>>  	snd_pcm_multi_slave_t *slaves;
+>>> -	int slave_link_master;
+>>>  	unsigned int channels_count;
+>>>  	snd_pcm_multi_channel_t *channels;
+>>>  } snd_pcm_multi_t;
+>>> @@ -314,6 +313,21 @@ static int snd_pcm_multi_hw_params_slave
+>>>  	return 0;
+>>>  }
+>>>  =
+
+>>> +static void reset_links(snd_pcm_multi_t *multi)
+>>> +{
+>>> +	unsigned int i;
+>>> +
+>>> +	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>> +		if (multi->slaves[i].linked)
+>>> +			snd_pcm_unlink(multi->slaves[i].linked);
+>>> +		multi->slaves[0].linked =3D NULL;
+>>> +		if (! i)
+>>> +			continue;
+>>> +		if (snd_pcm_link(multi->slaves[0].pcm, multi->slaves[i].pcm) >=3D 0)
+>>> +			multi->slaves[i].linked =3D multi->slaves[0].pcm;
+>>> +	}
+>>> +}
+>>> +
+>>>  static int snd_pcm_multi_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t=
+ *params)
+>>>  {
+>>>  	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> @@ -331,12 +345,7 @@ static int snd_pcm_multi_hw_params(snd_p
+>>>  			return err;
+>>>  		}
+>>>  	}
+>>> -	multi->slaves[0].linked =3D 0;
+>>> -	multi->slave_link_master =3D 0;
+>>> -	for (i =3D 1; i < multi->slaves_count; ++i) {
+>>> -		err =3D snd_pcm_link(multi->slaves[0].pcm, multi->slaves[i].pcm);
+>>> -		multi->slaves[i].linked =3D (err >=3D 0);
+>>> -	}
+>>> +	reset_links(multi);
+>>>  	return 0;
+>>>  }
+>>>  =
+
+>>> @@ -352,10 +361,10 @@ static int snd_pcm_multi_hw_free(snd_pcm
+>>>  			err =3D e;
+>>>  		if (!multi->slaves[i].linked)
+>>>  			continue;
+>>> -		multi->slaves[i].linked =3D 0;
+>>>  		e =3D snd_pcm_unlink(slave);
+>>>  		if (e < 0)
+>>>  			err =3D e;
+>>> +		multi->slaves[i].linked =3D NULL;
+>>>  	}
+>>>  	return err;
+>>>  }
+>>> @@ -421,7 +430,7 @@ static int snd_pcm_multi_prepare(snd_pcm
+>>>  static int snd_pcm_multi_prepare(snd_pcm_t *pcm)
+>>>  {
+>>>  	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> -	int err =3D 0;
+>>> +	int result =3D 0, err;
+>>>  	unsigned int i;
+>>>  	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>>  		/* We call prepare to each slave even if it's linked.
+>>> @@ -429,75 +438,83 @@ static int snd_pcm_multi_prepare(snd_pcm
+>>>  		 */
+>>>  		err =3D snd_pcm_prepare(multi->slaves[i].pcm);
+>>>  		if (err < 0)
+>>> -			return err;
+>>> -	}
+>>> -	return err;
+>>> +			result =3D err;
+>>> +	}
+>>> +	return result;
+>>>  }
+>>>  =
+
+>>>  static int snd_pcm_multi_reset(snd_pcm_t *pcm)
+>>>  {
+>>>  	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> -	int err =3D 0;
+>>> +	int result =3D 0, err;
+>>>  	unsigned int i;
+>>>  	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>>  		/* Reset each slave, as well as in prepare */
+>>>  		err =3D snd_pcm_reset(multi->slaves[i].pcm);
+>>> +		if (err < 0) =
+
+>>> +			result =3D err;
+>>> +	}
+>>> +	return result;
+>>> +}
+>>> +
+>>> +static int snd_pcm_multi_start(snd_pcm_t *pcm)
+>>> +{
+>>> +	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> +	int err =3D 0;
+>>> +	unsigned int i;
+>>> +	if (multi->slaves[0].linked)
+>>> +		return snd_pcm_start(multi->slaves[0].linked);
+>>> +	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>> +		if (multi->slaves[i].linked)
+>>> +			continue;
+>>> +		err =3D snd_pcm_start(multi->slaves[i].pcm);
+>>>  		if (err < 0)
+>>>  			return err;
+>>>  	}
+>>>  	return err;
+>>>  }
+>>>  =
+
+>>> -static int snd_pcm_multi_start(snd_pcm_t *pcm)
+>>> +static int snd_pcm_multi_drop(snd_pcm_t *pcm)
+>>>  {
+>>>  	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>>  	int err =3D 0;
+>>>  	unsigned int i;
+>>> +	if (multi->slaves[0].linked)
+>>> +		return snd_pcm_drop(multi->slaves[0].linked);
+>>>  	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>>  		if (multi->slaves[i].linked)
+>>>  			continue;
+>>> -		err =3D snd_pcm_start(multi->slaves[i].pcm);
+>>> +		err =3D snd_pcm_drop(multi->slaves[i].pcm);
+>>>  		if (err < 0)
+>>>  			return err;
+>>>  	}
+>>>  	return err;
+>>>  }
+>>>  =
+
+>>> -static int snd_pcm_multi_drop(snd_pcm_t *pcm)
+>>> +static int snd_pcm_multi_drain(snd_pcm_t *pcm)
+>>>  {
+>>>  	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>>  	int err =3D 0;
+>>>  	unsigned int i;
+>>> +	if (multi->slaves[0].linked)
+>>> +		return snd_pcm_drain(multi->slaves[0].linked);
+>>>  	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>>  		if (multi->slaves[i].linked)
+>>>  			continue;
+>>> -		err =3D snd_pcm_drop(multi->slaves[i].pcm);
+>>> +		err =3D snd_pcm_drain(multi->slaves[i].pcm);
+>>>  		if (err < 0)
+>>>  			return err;
+>>>  	}
+>>>  	return err;
+>>>  }
+>>>  =
+
+>>> -static int snd_pcm_multi_drain(snd_pcm_t *pcm)
+>>> +static int snd_pcm_multi_pause(snd_pcm_t *pcm, int enable)
+>>>  {
+>>>  	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>>  	int err =3D 0;
+>>>  	unsigned int i;
+>>> -	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>> -		if (multi->slaves[i].linked)
+>>> -			continue;
+>>> -		err =3D snd_pcm_drain(multi->slaves[i].pcm);
+>>> -		if (err < 0)
+>>> -			return err;
+>>> -	}
+>>> -	return err;
+>>> -}
+>>> -
+>>> -static int snd_pcm_multi_pause(snd_pcm_t *pcm, int enable)
+>>> -{
+>>> -	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> -	int err =3D 0;
+>>> -	unsigned int i;
+>>> +	if (multi->slaves[0].linked)
+>>> +		return snd_pcm_pause(multi->slaves[0].linked, enable);
+>>>  	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>>  		if (multi->slaves[i].linked)
+>>>  			continue;
+>>> @@ -587,6 +604,8 @@ static int snd_pcm_multi_resume(snd_pcm_
+>>>  	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>>  	int err =3D 0;
+>>>  	unsigned int i;
+>>> +	if (multi->slaves[0].linked)
+>>> +		return snd_pcm_resume(multi->slaves[0].linked);
+>>>  	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>>  		if (multi->slaves[i].linked)
+>>>  			continue;
+>>> @@ -597,46 +616,42 @@ static int snd_pcm_multi_resume(snd_pcm_
+>>>  	return err;
+>>>  }
+>>>  =
+
+>>> -static int snd_pcm_multi_link_fd_failed(snd_pcm_t *pcm, int fd)
+>>> -{
+>>> -	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> -	unsigned int i;
+>>> -
+>>> -	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>> -		if (_snd_pcm_link_descriptor(multi->slaves[i].pcm) !=3D fd)
+>>> -			continue;
+>>> -		 multi->slaves[i].linked =3D 0;
+>>> -	}
+>>> -	return 0;
+>>> -}
+>>> -
+>>> -static int snd_pcm_multi_link_fd(snd_pcm_t *pcm, int *fds, int count, =
+int (**failed)(snd_pcm_t *pcm, int fd))
+>>> +static int snd_pcm_multi_link_slaves(snd_pcm_t *pcm, snd_pcm_t *master)
+>>>  { =
+
+>>>  	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> -	unsigned int i;
+>>> -
+>>> -	if (count < (int)multi->slaves_count)
+>>> -		return -ENOMEM;
+>>> +	unsigned int i, j;
+>>> +	int err;
+>>> +
+>>> +	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>> +		snd_pcm_unlink(multi->slaves[i].pcm);
+>>> +		multi->slaves[i].linked =3D NULL;
+>>> +		err =3D snd_pcm_link(master, multi->slaves[i].pcm);
+>>> +		if (err < 0) {
+>>> +			reset_links(multi);
+>>> +			return err;
+>>> +		}
+>>> +		multi->slaves[i].linked =3D master;
+>>> +	}
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int snd_pcm_multi_link(snd_pcm_t *pcm1, snd_pcm_t *pcm2)
+>>> +{
+>>> +	snd_pcm_multi_t *multi =3D pcm1->private_data;
+>>> +	if (multi->slaves[0].pcm->fast_ops->link)
+>>> +		return multi->slaves[0].pcm->fast_ops->link(multi->slaves[0].pcm, pc=
+m2);
+>>> +	return -ENOSYS;
+>>> +}
+>>> +
+>>> +static int snd_pcm_multi_unlink(snd_pcm_t *pcm)
+>>> +{
+>>> +	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> +	unsigned int i;
+>>> +
+>>>  	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>>  		if (multi->slaves[i].linked)
+>>> -			snd_pcm_unlink(multi->slaves[i].pcm);
+>>> -		fds[i] =3D _snd_pcm_link_descriptor(multi->slaves[i].pcm);
+>>> -		if (i > 0)
+>>> -			multi->slaves[i].linked =3D 1;
+>>> -	}
+>>> -	*failed =3D snd_pcm_multi_link_fd_failed;
+>>> -	return multi->slaves_count;
+>>> -}
+>>> -
+>>> -static int snd_pcm_multi_unlink(snd_pcm_t *pcm)
+>>> -{
+>>> -	snd_pcm_multi_t *multi =3D pcm->private_data;
+>>> -	unsigned int i;
+>>> -
+>>> -	for (i =3D 0; i < multi->slaves_count; ++i) {
+>>> -		if (multi->slaves[i].linked)
+>>> -			snd_pcm_unlink(multi->slaves[i].pcm);
+>>> -		multi->slaves[i].linked =3D 0;
+>>> +			snd_pcm_unlink(multi->slaves[i].linked);
+>>> +		multi->slaves[0].linked =3D NULL;
+>>>  	}
+>>>  	return 0;
+>>>  }
+>>> @@ -727,8 +742,8 @@ static snd_pcm_fast_ops_t snd_pcm_multi_
+>>>  	.rewind =3D snd_pcm_multi_rewind,
+>>>  	.forward =3D snd_pcm_multi_forward,
+>>>  	.resume =3D snd_pcm_multi_resume,
+>>> -	.link_fd =3D snd_pcm_multi_link_fd,
+>>> -	.link =3D snd_pcm_generic_link2,
+>>> +	.link =3D snd_pcm_multi_link,
+>>> +	.link_slaves =3D snd_pcm_multi_link_slaves,
+>>>  	.unlink =3D snd_pcm_multi_unlink,
+>>>  	.avail_update =3D snd_pcm_multi_avail_update,
+>>>  	.mmap_commit =3D snd_pcm_multi_mmap_commit,
+>>> diff -r 78c78fa6c41d -r 4883f0ba21df src/pcm/pcm_plugin.c
+>>> --- a/src/pcm/pcm_plugin.c	Tue Mar 13 00:40:22 2007 +0100
+>>> +++ b/src/pcm/pcm_plugin.c	Tue Mar 13 02:52:33 2007 +0100
+>>> @@ -566,8 +566,8 @@ snd_pcm_fast_ops_t snd_pcm_plugin_fast_o
+>>>  	.rewind =3D snd_pcm_plugin_rewind,
+>>>  	.forward =3D snd_pcm_plugin_forward,
+>>>  	.resume =3D snd_pcm_generic_resume,
+>>> -	.link_fd =3D snd_pcm_generic_link_fd,
+>>>  	.link =3D snd_pcm_generic_link,
+>>> +	.link_slaves =3D snd_pcm_generic_link_slaves,
+>>>  	.unlink =3D snd_pcm_generic_unlink,
+>>>  	.writei =3D snd_pcm_plugin_writei,
+>>>  	.writen =3D snd_pcm_plugin_writen,
+>>>
+>>> -----------------------------------------------------------------------=
+--
+>>> Take Surveys. Earn Cash. Influence the Future of IT
+>>> Join SourceForge.net's Techsay panel and you'll get the chance to share=
+ your
+>>> opinions on IT & business topics through brief surveys-and earn cash
+>>> http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=
+=3DDEVDEV
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>>>
+>>>
+>>>   =
+
+>>>       =
+
+>
+>
+>   =
+
 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
