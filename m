@@ -1,11 +1,12 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HQ5j6-00016V-BA delayed 72 hours
-Date: Tue, 13 Mar 2007 19:30:41 -0800
-Message-ID: <E1HRKCH-0004ci-Ao@externalmx-1.sourceforge.net>
+From: "Margret Morac" <awdefendanteda@winix.net>
+Subject: yacht incentive
+Date: Wed, 14 Mar 2007 03:30:58 +0000 (UTC)
+Message-ID: <75385613.5470507197@121.97.177.99.BTI.NET.PH>
+Reply-To: Margret Morac <awdefendanteda@winix.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1194265399=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Date: Thu, 15 Mar 2007 10:41:11 -0800
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,36 +16,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+--===============1194265399==
+Content-Type: text/html
 
-The message identifier is:     1HQ5j6-00016V-BA
-The subject of the message is:  to he answered Saul Hear all
-The date of the message is:    Sat, 10 Mar 2007 23:21:24 +0530
+<html>
+<head>
+</head>
+<body>
 
-The address to which the message has not yet been delivered is:
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+<p align="center"><b>Our Next Winner for<font color="#FF0000"> March 14th</font><br>
+<font color="#FF0000">CEO AMERICA INC </font><br>
+Tick : CEOA<br>
+<font color="#008080">Priced : $0.07</font><br>
+Won't last long at this stage, This one is going to<font color="#008080"> 
+$1.00</font><br>
+Grab yourself some<font color="#0000FF"> tomorrow </font>avoid the rush<br>
+And experience a <font color="#008080">10 bagger.</font></p>
+<p align="center"><br>
+<font size="2">on terror. "If they say they want to win the war on terror, but call for America <br>
+can't answer that question," Bush said. "Harsh criticism is not a plan for victory. = and fell 30 stories to the street below. Investigators do not say whether they <br>
+Friday for blowing a small airplane carrying Yankees pitcher Cory Lidle off course =later date. President Bush, working a southwest Missouri campaign crowd like a yell 
+</font></b></p>
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+</body>
+
+</html>
+
+
+
+--===============1194265399==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1194265399==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1194265399==--
