@@ -1,7 +1,8 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HQZrt-0006D7-48 delayed 48 hours
-Date: Tue, 13 Mar 2007 21:42:32 -0800
-Message-ID: <E1HRMFs-0006Sv-3J@externalmx-1.sourceforge.net>
+From: Andreas Happe <andy@starseeders.net>
+Subject: [i8x0] docking station audio-out ceased to work
+Date: Wed, 14 Mar 2007 10:34:39 +0100
+Message-ID: <1173864879.3425.4.camel@localhost>
+Reply-To: andreashappe@snikt.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,30 +19,39 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+Hi,
+i tried to use the bug tracking system but your MX seems to be not
+available (thus I couldn't create an account for submitting).
+alsa-project.org seems to be down so my research was very limited.
 
-The message identifier is:     1HQZrt-0006D7-48
-The subject of the message is: thine for riches of the bitter Cry have mercy
-The date of the message is:    Sun, 11 Mar 2007 18:02:43 -0800
+Problem:
+The audio out on my Dell Docking station stopped working somewhere
+around 2.6.20-rc?. While the normal headphone (and speaker) output on
+the notebook are muted as soon as i attach the speakers to the docking
+station's audio out there's no signal on the output.
 
-The address to which the message has not yet been delivered is:
+I can test older kernel versions, but would like to make sure that I'm
+testing the right think first.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Hardware in question:
+Dell Latitude 610 with a Dell docking station.
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+| intel8x0_measure_ac97_clock: measured 50522 usecs
+| intel8x0: clocking to 48000
+| ACPI: PCI Interrupt 0000:00:1e.3[B] -> Link [LNKB] -> GSI 5 (level,
+low) -> IRQ 5
+| PCI: Setting latency timer of device 0000:00:1e.3 to 64
+| ALSA sound/pci/ac97/ac97_codec.c:2138: MC'97 1 converters and GPIO not
+ready (0xff00)
+| ALSA device list:
+|   #0: Intel ICH6 with STAC9750,51 at irq 11
+|   #1: Intel ICH6 Modem at irq 5
+
+Please contact me for further information.
+
+TIA,
+andreas happe
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
