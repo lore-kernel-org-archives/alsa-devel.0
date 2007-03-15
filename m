@@ -1,11 +1,12 @@
-From: "FPreston XMolina" <avaevazr@sunnyint.com>
-Subject: youthful cloudy
-Date: Wed, 14 Mar 2007 21:07:28 -0400
-Message-ID: <JSXEDSVET.5980665818@jordan.cpe.vivax.com.br>
-Reply-To: FPreston XMolina <avaevazr@sunnyint.com>
+From: "John Utz" <John.Utz@dmx.com>
+Subject: [PATCH] ac97_patch.c ac97_codec.{ch} - enable 'Smart
+ 5.1' UAJ on VIA vt1618 ac97 codec
+Date: Wed, 14 Mar 2007 18:12:58 -0700
+Message-ID: <F8FB97052F1BEF409F7842E960E49B5AAAF8CF@sea-exch-01.na.corp.dmxmusic.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0935564449=="
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C7669F.250BBEE5"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Content-class: urn:content-classes:message
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,30 +19,355 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0935564449==
-Content-Type: text/html
+This is a multi-part message in MIME format.
 
-<html>
-<head>
-</head>
-<body>
-<p align="center"><b><font face="Century"><font color="#FF0000">C E O A is 
-on A Roll</font><br>
-<font color="#006600">Up for 4 Straight Days</font><font color="#00CC00"><br>
-</font>And it's Only just begun<br>
-Get in and Experience it go from <font color="#0000FF">$0.08 to $1.00</font><br>
-<font color="#FF0000">Add C E O A&nbsp;&nbsp;&nbsp; To your Radar</font><br>
-8 Cents won't last long<br>
-<br>
-(Watch Michael J. Fox back McCaskill on stem cells -- :32 ) Democrats say they are ahead<br>
- after Sunday's expected announcement of a verdict in the trial of former Iraqi leader<br>
-Board said the wind, coupled with the pilot's inability to turn sharply, forced the </font></b></p>
-</body>
-</html>
+------_=_NextPart_001_01C7669F.250BBEE5
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_002_01C7669F.250BBEE5"
+Content-Transfer-Encoding: 7bit
 
 
+------_=_NextPart_002_01C7669F.250BBEE5
+Content-Type: text/plain;
+ charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
---===============0935564449==
+Greetings;
+
+Attached is support for configuring the ins and outs on a vt1618 codec. =
+This is a substantially more complicated patch than the previous one for =
+the vt1617a ( tis why i did that one first! :-) )
+
+Several controls are added, they may or may not be implemented on all =
+hardware,
+some of them seem to have no effect on an MSI CN700T mainboard:
+
+"Center/LFE Exchange"
+"DC Offset Removal"
+"Headphone Amp Disable"
+"Back Channel Disable"
+"Soft Mute  Disable"
+"Surround Back is Aux In"
+
+"Universal Audio Jack 0 (Speaker)"
+"Universal Audio Jack 1 (Line In)"
+"Universal Audio Jack 2 (Mic In)"
+
+
+Setting these 3 new controls to the settings to:
+
+  "DAC Mixed (5.1 Out)", "Reserved (5.1 Out)", "Reserved (5.1 Out)"
+
+allows 6 channel output to be played using the following command:
+
+  aplay -Dhw:0,1 chan-id.wav
+
+
+Note that 6 bits would require an impractical 64 way enum, thus the 3 =
+controls.
+
+
+Changelog Entry
+
+=3D=3D=3D=3D
+
+[PATCH] ALSA: Smart 5.1 / Universal Audio Jack for VIA 1618 codec
+
+This patch provides Universal Audio Jack support by way of 3 4 way enums =
+that allows the user to choose 1 of 64 possible settings for the =
+vt1618's version of what via calls 'Smart 5.1'
+
+A new codec patch function is implemented:
+
+   patch_vt1618
+
+Several functions are added for reading/writing the Universal Audio Jack =
+register:
+
+   snd_ac97_vt1618_UAJ{012}_{putget}
+
+A new pair of ac97_codec functions are added to allow for reading and =
+writing paged out registers:
+
+   snd_ac97_read_page
+   snd_ac97_write_page
+
+
+Signed-off-by: John Utz <john.utz@dmx.com>
+
+------_=_NextPart_002_01C7669F.250BBEE5
+Content-Type: text/html;
+ charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7651.59">
+<TITLE>[PATCH] ac97_patch.c ac97_codec.{ch} - enable 'Smart 5.1' UAJ on =
+VIA vt1618 ac97 codec</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
+
+<P><FONT SIZE=3D2>Greetings;<BR>
+<BR>
+Attached is support for configuring the ins and outs on a vt1618 codec. =
+This is a substantially more complicated patch than the previous one for =
+the vt1617a ( tis why i did that one first! :-) )<BR>
+<BR>
+Several controls are added, they may or may not be implemented on all =
+hardware,<BR>
+some of them seem to have no effect on an MSI CN700T mainboard:<BR>
+<BR>
+&quot;Center/LFE Exchange&quot;<BR>
+&quot;DC Offset Removal&quot;<BR>
+&quot;Headphone Amp Disable&quot;<BR>
+&quot;Back Channel Disable&quot;<BR>
+&quot;Soft Mute&nbsp; Disable&quot;<BR>
+&quot;Surround Back is Aux In&quot;<BR>
+<BR>
+&quot;Universal Audio Jack 0 (Speaker)&quot;<BR>
+&quot;Universal Audio Jack 1 (Line In)&quot;<BR>
+&quot;Universal Audio Jack 2 (Mic In)&quot;<BR>
+<BR>
+<BR>
+Setting these 3 new controls to the settings to:<BR>
+<BR>
+&nbsp; &quot;DAC Mixed (5.1 Out)&quot;, &quot;Reserved (5.1 Out)&quot;, =
+&quot;Reserved (5.1 Out)&quot;<BR>
+<BR>
+allows 6 channel output to be played using the following command:<BR>
+<BR>
+&nbsp; aplay -Dhw:0,1 chan-id.wav<BR>
+<BR>
+<BR>
+Note that 6 bits would require an impractical 64 way enum, thus the 3 =
+controls.<BR>
+<BR>
+<BR>
+Changelog Entry<BR>
+<BR>
+=3D=3D=3D=3D<BR>
+<BR>
+[PATCH] ALSA: Smart 5.1 / Universal Audio Jack for VIA 1618 codec<BR>
+<BR>
+This patch provides Universal Audio Jack support by way of 3 4 way enums =
+that allows the user to choose 1 of 64 possible settings for the =
+vt1618's version of what via calls 'Smart 5.1'<BR>
+<BR>
+A new codec patch function is implemented:<BR>
+<BR>
+&nbsp;&nbsp; patch_vt1618<BR>
+<BR>
+Several functions are added for reading/writing the Universal Audio Jack =
+register:<BR>
+<BR>
+&nbsp;&nbsp; snd_ac97_vt1618_UAJ{012}_{putget}<BR>
+<BR>
+A new pair of ac97_codec functions are added to allow for reading and =
+writing paged out registers:<BR>
+<BR>
+&nbsp;&nbsp; snd_ac97_read_page<BR>
+&nbsp;&nbsp; snd_ac97_write_page<BR>
+<BR>
+<BR>
+Signed-off-by: John Utz &lt;john.utz@dmx.com&gt;<BR>
+</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_002_01C7669F.250BBEE5--
+
+------_=_NextPart_001_01C7669F.250BBEE5
+Content-Type: application/octet-stream;
+ name=vt1618Smart51UAJ.patch
+Content-Transfer-Encoding: base64
+Content-Description: vt1618Smart51UAJ.patch
+Content-Disposition: attachment;
+ filename=vt1618Smart51UAJ.patch
+
+ZGlmZiAtciBkMWZkNzUzNDc5ZDYgaW5jbHVkZS9hYzk3X2NvZGVjLmgKLS0tIGEvaW5jbHVkZS9h
+Yzk3X2NvZGVjLmgJVHVlIE1hciAxMyAyMjoxMzo0NyAyMDA3ICswMTAwCisrKyBiL2luY2x1ZGUv
+YWM5N19jb2RlYy5oCVdlZCBNYXIgMTQgMTc6MTM6NTIgMjAwNyAtMDcwMApAQCAtNTUzLDcgKzU1
+Myw5IEBAIGNvbnN0IGNoYXIgKnNuZF9hYzk3X2dldF9zaG9ydF9uYW1lKHN0cnUKIAogdm9pZCBz
+bmRfYWM5N193cml0ZShzdHJ1Y3Qgc25kX2FjOTcgKmFjOTcsIHVuc2lnbmVkIHNob3J0IHJlZywg
+dW5zaWduZWQgc2hvcnQgdmFsdWUpOwogdW5zaWduZWQgc2hvcnQgc25kX2FjOTdfcmVhZChzdHJ1
+Y3Qgc25kX2FjOTcgKmFjOTcsIHVuc2lnbmVkIHNob3J0IHJlZyk7Cit1bnNpZ25lZCBzaG9ydCBz
+bmRfYWM5N19yZWFkX3BhZ2Uoc3RydWN0IHNuZF9hYzk3ICphYzk3LCB1bnNpZ25lZCBzaG9ydCBy
+ZWcsIHVuc2lnbmVkIHNob3J0IHBhZ2UpOwogdm9pZCBzbmRfYWM5N193cml0ZV9jYWNoZShzdHJ1
+Y3Qgc25kX2FjOTcgKmFjOTcsIHVuc2lnbmVkIHNob3J0IHJlZywgdW5zaWduZWQgc2hvcnQgdmFs
+dWUpOwordm9pZCBzbmRfYWM5N193cml0ZV9wYWdlKHN0cnVjdCBzbmRfYWM5NyAqYWM5NywgdW5z
+aWduZWQgc2hvcnQgcmVnLCAgdW5zaWduZWQgc2hvcnQgdmFsdWUsIHVuc2lnbmVkIHNob3J0IHBh
+Z2UpOwogaW50IHNuZF9hYzk3X3VwZGF0ZShzdHJ1Y3Qgc25kX2FjOTcgKmFjOTcsIHVuc2lnbmVk
+IHNob3J0IHJlZywgdW5zaWduZWQgc2hvcnQgdmFsdWUpOwogaW50IHNuZF9hYzk3X3VwZGF0ZV9i
+aXRzKHN0cnVjdCBzbmRfYWM5NyAqYWM5NywgdW5zaWduZWQgc2hvcnQgcmVnLCB1bnNpZ25lZCBz
+aG9ydCBtYXNrLCB1bnNpZ25lZCBzaG9ydCB2YWx1ZSk7CiAjaWZkZWYgQ09ORklHX1NORF9BQzk3
+X1BPV0VSX1NBVkUKZGlmZiAtciBkMWZkNzUzNDc5ZDYgcGNpL2FjOTcvYWM5N19jb2RlYy5jCi0t
+LSBhL3BjaS9hYzk3L2FjOTdfY29kZWMuYwlUdWUgTWFyIDEzIDIyOjEzOjQ3IDIwMDcgKzAxMDAK
+KysrIGIvcGNpL2FjOTcvYWM5N19jb2RlYy5jCVdlZCBNYXIgMTQgMTc6MDU6NTMgMjAwNyAtMDcw
+MApAQCAtMTY3LDcgKzE2Nyw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYWM5N19jb2RlY19pZCBz
+bmRfYWMKIHsgMHg1NDU4NGUyMCwgMHhmZmZmZmZmZiwgIlRMQzMyMEFEOXhDIiwJTlVMTCwJCU5V
+TEwgfSwKIHsgMHg1NjQ5NDE2MSwgMHhmZmZmZmZmZiwgIlZJQTE2MTJBIiwJCU5VTEwsCQlOVUxM
+IH0sIC8vIG1vZGlmaWVkIElDRTEyMzIgd2l0aCBTL1BESUYKIHsgMHg1NjQ5NDE3MCwgMHhmZmZm
+ZmZmZiwgIlZJQTE2MTdBIiwJCXBhdGNoX3Z0MTYxN2EsCU5VTEwgfSwgLy8gbW9kaWZpZWQgVlQx
+NjE2IHdpdGggUy9QRElGCi17IDB4NTY0OTQxODIsIDB4ZmZmZmZmZmYsICJWSUExNjE4IiwJCU5V
+TEwsCQlOVUxMIH0sCit7IDB4NTY0OTQxODIsIDB4ZmZmZmZmZmYsICJWSUExNjE4IiwJCXBhdGNo
+X3Z0MTYxOCwJTlVMTCB9LCAvLyBkaWZmZXJlbnQ7IHVzZXMgVUFKCiB7IDB4NTc0NTQzMDEsIDB4
+ZmZmZmZmZmYsICJXODM5NzFEIiwJCU5VTEwsCQlOVUxMIH0sCiB7IDB4NTc0ZDRjMDAsIDB4ZmZm
+ZmZmZmYsICJXTTk3MDFBIiwJCU5VTEwsCQlOVUxMIH0sCiB7IDB4NTc0ZDRDMDMsIDB4ZmZmZmZm
+ZmYsICJXTTk3MDMsV005NzA3LFdNOTcwOCxXTTk3MTciLCBwYXRjaF93b2xmc29uMDMsIE5VTEx9
+LApAQCAtMzAyLDYgKzMwMiwzNSBAQCBFWFBPUlRfU1lNQk9MKHNuZF9hYzk3X3JlYWQpOwogRVhQ
+T1JUX1NZTUJPTChzbmRfYWM5N19yZWFkKTsKIAogLyoqCisgKiBzbmRfYWM5N19yZWFkX3BhZ2Ug
+LSByZWFkIGEgdmFsdWUgZnJvbSB0aGUgZ2l2ZW4gcmVnaXN0ZXIgZnJvbSByZWdpc3RlciBwYWdl
+CisgKiBAYWM5NzogdGhlIGFjOTcgaW5zdGFuY2UKKyAqIEByZWc6IHRoZSByZWdpc3RlciB0byBy
+ZWFkCisgKiBAcGFnZTogdGhlIHBhZ2UgY29udGFpbmluZyB0aGUgcmVnaXN0ZXIgdG8gcmVhZAor
+ICoKKyAqIFJlYWRzIGEgdmFsdWUgZnJvbSB0aGUgZ2l2ZW4gcmVnaXN0ZXIgdXNpbmcgc25kX2Fj
+OTdfcmVhZCgpIGFmdGVyCisgKiBsb2NraW5nIHRoZSBwYWdlIG11dGV4IHNlbGVjdGluZyB0aGUg
+cmVxdWVzdGVkIHBhZ2UuCisgKiBUaGUgcGFnZSBpcyByZXN0b3JlZCBhbmQgdGhlIHBhZ2UgbXV0
+ZXggaXMgcmVsZWFzZWQgYWZ0ZXIgdGhlIHJlYWQgaXMgY29tcGxldGVkLgorICoKKyAqIFJldHVy
+bnMgdGhlIHJlYWQgdmFsdWUuCisgKi8KKwordW5zaWduZWQgc2hvcnQgc25kX2FjOTdfcmVhZF9w
+YWdlKHN0cnVjdCBzbmRfYWM5NyAqYWM5NywgdW5zaWduZWQgc2hvcnQgcmVnLCB1bnNpZ25lZCBz
+aG9ydCBwYWdlKQoreworCXVuc2lnbmVkIHNob3J0IHBhZ2Vfc2F2ZTsKKwl1bnNpZ25lZCBzaG9y
+dCByZXQ7CisKKwltdXRleF9sb2NrKCZhYzk3LT5wYWdlX211dGV4KTsKKwlwYWdlX3NhdmUgPSBz
+bmRfYWM5N19yZWFkKGFjOTcsIEFDOTdfSU5UX1BBR0lORykgJiBBQzk3X1BBR0VfTUFTSzsKKwlz
+bmRfYWM5N191cGRhdGVfYml0cyhhYzk3LCBBQzk3X0lOVF9QQUdJTkcsIEFDOTdfUEFHRV9NQVNL
+LCBwYWdlKTsKKwlyZXQgPSBzbmRfYWM5N19yZWFkKGFjOTcsIHJlZyk7IAorCXNuZF9hYzk3X3Vw
+ZGF0ZV9iaXRzKGFjOTcsIEFDOTdfSU5UX1BBR0lORywgQUM5N19QQUdFX01BU0ssIHBhZ2Vfc2F2
+ZSk7CisJbXV0ZXhfdW5sb2NrKCZhYzk3LT5wYWdlX211dGV4KTsgLyogdW5sb2NrIHBhZ2luZyAq
+LworCXJldHVybiByZXQ7Cit9CisKK0VYUE9SVF9TWU1CT0woc25kX2FjOTdfcmVhZF9wYWdlKTsK
+KworLyoqCiAgKiBzbmRfYWM5N193cml0ZV9jYWNoZSAtIHdyaXRlIGEgdmFsdWUgb24gdGhlIGdp
+dmVuIHJlZ2lzdGVyIGFuZCB1cGRhdGUgdGhlIGNhY2hlCiAgKiBAYWM5NzogdGhlIGFjOTcgaW5z
+dGFuY2UKICAqIEByZWc6IHRoZSByZWdpc3RlciB0byBjaGFuZ2UKQEAgLTMyMyw2ICszNTIsMzEg
+QEAgdm9pZCBzbmRfYWM5N193cml0ZV9jYWNoZShzdHJ1Y3Qgc25kX2FjOQogfQogCiBFWFBPUlRf
+U1lNQk9MKHNuZF9hYzk3X3dyaXRlX2NhY2hlKTsKKworLyoqCisgKiBzbmRfYWM5N193cml0ZV9w
+YWdlIC0gd3JpdGUgYSB2YWx1ZSB0byB0aGUgZ2l2ZW4gcmVnaXN0ZXIgZnJvbSByZWdpc3RlciBw
+YWdlCisgKiBAYWM5NzogdGhlIGFjOTcgaW5zdGFuY2UKKyAqIEByZWc6IHRoZSByZWdpc3RlciB0
+byByZWFkCisgKiBAcGFnZTogdGhlIHBhZ2UgY29udGFpbmluZyB0aGUgcmVnaXN0ZXIgdG8gcmVh
+ZAorICoKKyAqIFdyaXRlcyBhIHZhbHVlIHRvIHRoZSBnaXZlbiByZWdpc3RlciB1c2luZyBzbmRf
+YWM5N193cml0ZSgpIGFmdGVyCisgKiBsb2NraW5nIHRoZSBwYWdlIG11dGV4IHNlbGVjdGluZyB0
+aGUgcmVxdWVzdGVkIHBhZ2UuCisgKiBUaGUgcGFnZSBpcyByZXN0b3JlZCBhbmQgdGhlIHBhZ2Ug
+bXV0ZXggaXMgcmVsZWFzZWQgYWZ0ZXIgdGhlIHJlYWQgaXMgY29tcGxldGVkLgorICovCisKK3Zv
+aWQgc25kX2FjOTdfd3JpdGVfcGFnZShzdHJ1Y3Qgc25kX2FjOTcgKmFjOTcsIHVuc2lnbmVkIHNo
+b3J0IHJlZywgIHVuc2lnbmVkIHNob3J0IHZhbHVlLCB1bnNpZ25lZCBzaG9ydCBwYWdlKQorewor
+CXVuc2lnbmVkIHNob3J0IHBhZ2Vfc2F2ZTsKKworCW11dGV4X2xvY2soJmFjOTctPnBhZ2VfbXV0
+ZXgpOworCXBhZ2Vfc2F2ZSA9IHNuZF9hYzk3X3JlYWQoYWM5NywgQUM5N19JTlRfUEFHSU5HKSAm
+IEFDOTdfUEFHRV9NQVNLOworCXNuZF9hYzk3X3VwZGF0ZV9iaXRzKGFjOTcsIEFDOTdfSU5UX1BB
+R0lORywgQUM5N19QQUdFX01BU0ssIHBhZ2UpOworCXNuZF9hYzk3X3dyaXRlKGFjOTcsIHJlZywg
+dmFsdWUpOyAKKwlzbmRfYWM5N191cGRhdGVfYml0cyhhYzk3LCBBQzk3X0lOVF9QQUdJTkcsIEFD
+OTdfUEFHRV9NQVNLLCBwYWdlX3NhdmUpOworCW11dGV4X3VubG9jaygmYWM5Ny0+cGFnZV9tdXRl
+eCk7IC8qIHVubG9jayBwYWdpbmcgKi8KK30KKworRVhQT1JUX1NZTUJPTChzbmRfYWM5N193cml0
+ZV9wYWdlKTsKIAogLyoqCiAgKiBzbmRfYWM5N191cGRhdGUgLSB1cGRhdGUgdGhlIHZhbHVlIG9u
+IHRoZSBnaXZlbiByZWdpc3RlcgpkaWZmIC1yIGQxZmQ3NTM0NzlkNiBwY2kvYWM5Ny9hYzk3X3Bh
+dGNoLmMKLS0tIGEvcGNpL2FjOTcvYWM5N19wYXRjaC5jCVR1ZSBNYXIgMTMgMjI6MTM6NDcgMjAw
+NyArMDEwMAorKysgYi9wY2kvYWM5Ny9hYzk3X3BhdGNoLmMJV2VkIE1hciAxNCAxNzo0NjoyOSAy
+MDA3IC0wNzAwCkBAIC0zMzgzLDYgKzMzODMsMTg2IEBAIGludCBwYXRjaF92dDE2MTdhKHN0cnVj
+dCBzbmRfYWM5NyAqIGFjOTcKIAogCXJldHVybiBlcnI7CiB9CisvKgorICogVlQxNjE4IENvZGVj
+IAorICovCisKKy8qCisgKiBWSUEgaW1wbGVtZW50cyAnU21hcnQgNS4xJyBjb21wbGV0ZWx5IGRp
+ZmZlcmVudGx5IG9uIHRoZSAxNjE4IHRoYW4KKyAqIGl0IGRvZXMgb24gdGhlIDE2MTdhLiBhd2Vz
+b21lISBUaGV5IHNlZW0gdG8gaGF2ZSBzb3VyY2VkIHRoaXMKKyAqIHBhcnRpY3VsYXIgcmV2aXNp
+b24gb2YgdGhlIHRlY2hub2xvZ3kgZnJvbSBzb21lYm9keSBlbHNlLCBpdCdzCisgKiBjYWxsZWQg
+VW5pdmVyc2FsIEF1ZGlvIEphY2ssIGl0IHNob3dzIHVwIG9uIHNvbWUgb3RoZXIgZm9saydzIGNo
+aXBzCisgKiBhcyB3ZWxsLgorICoKKyAqIG9yZGVyaW5nIGluIHRoaXMgbGlzdCByZWZsZWN0cyB2
+dDE2MTggZG9jcyBmb3IgUmVnIDYwaCBhbmQKKyAqIHRoZSBibG9jayBkaWFncmFtLCBEQUNzIGFy
+ZSBhcyBmb2xsb3dzOiAKKyAqCisgKiAgICAgICAgT1VUX08gLT4gRnJvbnQsCisgKgkgIE9VVF8x
+IC0+IFN1cnJvdW5kLAorICoJICBPVVRfMiAtPiBDL0xGRQorICoKKyAqIFVubGlrZSB0aGUgMTYx
+N2EsIGVhY2ggT1VUIGhhcyBhIGNvbnNpc3RlbnQgc2V0IG9mIG1hcHBpbmdzCisgKiBmb3IgYWxs
+IGJpdHBhdHRlcm5zIG90aGVyIHRoYW4gMDA6CisgKgorICogICAgICAgIDAxICAgICAgIFVubWl4
+ZWQgT3V0cHV0CisgKiAgICAgICAgMTAgICAgICAgTGluZSBJbgorICogICAgICAgIDExICAgICAg
+IE1pYyAgSW4KKyAqCisgKiBTcGVjaWFsIENhc2Ugb2YgMDA6CisgKgorICogICAgICAgIE9VVF8w
+ICAgIE1peGVkIE91dHB1dAorICogICAgICAgIE9VVF8xICAgIFJlc2VydmVkCisgKiAgICAgICAg
+T1VUXzIgICAgUmVzZXJ2ZWQKKyAqCisgKiBJIGhhdmUgbm8gaWRlYSB3aGF0IHRoZSBoZWxsIFJl
+c2VydmVkIGRvZXMsIGJ1dCBvbiBhbiBNU0kKKyAqIENONzAwVCwgaSBoYXZlIHRvIHNldCBpdCB0
+byBnZXQgc3Vycm91bmQgb3V0cHV0IC0gWU1NViwgYmFkCisgKiBzaGl0IG1heSBoYXBwZW4uCisg
+KgorICogSWYgb3RoZXIgY2hpcHMgdXNlIFVuaXZlcnNhbCBBdWRpbyBKYWNrLCB0aGVuIHRoaXMg
+Y29kZSBtaWdodCBiZQorICogYXBwbGljYWJsZSB0byB0aGVtLgorICovCisgCisvKiBjb3BpZWQg
+ZnJvbSBhYzk3X3N1cnJvdW5kX2phY2tfbW9kZV9pbmZvKCkgb3JkZXJpbmcgaW4gdGhpcyBsaXN0
+CisgKiByZWZsZWN0cyB2dDE2MTggZG9jcyBmb3IgVmVuZG9yIERlZmluZWQgUmVnaXN0ZXIgMHg2
+MCAqLyAKKworc3RhdGljIGludCBzbmRfYWM5N192dDE2MThfVUFKMF9pbmZvKHN0cnVjdCBzbmRf
+a2NvbnRyb2wgKmtjb250cm9sLAorCQkJCSAgICAgc3RydWN0IHNuZF9jdGxfZWxlbV9pbmZvICp1
+aW5mbykKK3sKKwlzdGF0aWMgY29uc3QgY2hhciogdGV4dHNbXSA9IHsgIkRBQyBNaXhlZCAoNS4x
+IE91dCkiLCAiREFDIFVubWl4ZWQiLCAiTGluZSBJbiIsICJNaWMgSW4ifTsKKwlyZXR1cm4gYWM5
+N19lbnVtX3RleHRfaW5mbyhrY29udHJvbCwgdWluZm8sIHRleHRzLCA0KTsKK30KKworLyogVUFK
+MSBhbmQgVUFKMiBhcmUgbm90IHN1cHBvc2VkIHRvIGhhdmUgMDAgd3JpdHRlbiB0byB0aGVtPz8g
+aQorICogZHVubm8sIGJlY2F1c2UgdGhhdHMgc29tZXRoaW5nIHRoYXQgaSBoYXZlIHRvIGRvIHRv
+IGdldCA1LjEgb3V0IHRvCisgKiB3b3JrLiAqLworCitzdGF0aWMgY29uc3QgY2hhciogdGV4dHNV
+QUpSZXNbXSA9IHsgIlJlc2VydmVkICg1LjEgT3V0KSIsICJEQUMgVW5taXhlZCIsICJMaW5lIElu
+IiwgIk1pYyBJbiJ9OworCitzdGF0aWMgaW50IHNuZF9hYzk3X3Z0MTYxOF9VQUoxX2luZm8oc3Ry
+dWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCisJCQkJICAgICBzdHJ1Y3Qgc25kX2N0bF9lbGVt
+X2luZm8gKnVpbmZvKQoreworCXJldHVybiBhYzk3X2VudW1fdGV4dF9pbmZvKGtjb250cm9sLCB1
+aW5mbywgdGV4dHNVQUpSZXMsIDQpOworfQorCitzdGF0aWMgaW50IHNuZF9hYzk3X3Z0MTYxOF9V
+QUoyX2luZm8oc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsIHN0cnVjdCBzbmRfY3RsX2Vs
+ZW1faW5mbyAqdWluZm8pCit7CisJcmV0dXJuIGFjOTdfZW51bV90ZXh0X2luZm8oa2NvbnRyb2ws
+IHVpbmZvLCB0ZXh0c1VBSlJlcywgNCk7Cit9CisKKy8qIEFsbCBvZiB0aGUgdnQxNjE4IFVBSiB0
+d2lkZGxlcnMgYXJlIG9uIFZlbmRvciBEZWZpbmVkIFJlZ2lzdGVyIDB4NjAsIHBhZ2UgMC4gCisg
+ICBUaGUgYml0cywgYW5kIHRodXMgdGhlIG1hc2ssIGFyZSB0aGUgb25seSB0aGluZyB0aGF0IGNo
+YW5nZXMgKi8KKworc3RhdGljIGludCBzbmRfYWM5N192dDE2MThfVUFKX2dldChzdHJ1Y3Qgc25k
+X2tjb250cm9sICprY29udHJvbCwKKwkJCQkgICBzdHJ1Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICp1
+Y29udHJvbCwgdW5zaWduZWQgc2hvcnQgbWFzaykKK3sKKwlzdHJ1Y3Qgc25kX2FjOTcgKnBhYzk3
+OworCXVzaG9ydCB1c1VBSiwgdXNTaGlmdCA9IDA7IC8qIDAgaXMgYSBwb3NzaWJsZSB2YWx1ZSAq
+LworCisJaWYoMHgwMDBDID09IG1hc2spIHVzU2hpZnQgPSAyOworCWlmKDB4MDAzMCA9PSBtYXNr
+KSB1c1NoaWZ0ID0gNDsgCisKKwlwYWM5NyA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsg
+CisgCisJdXNVQUogPSBzbmRfYWM5N19yZWFkX3BhZ2UocGFjOTcsIDB4NjAsIDApICYgbWFzazsg
+CisJdWNvbnRyb2wtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXSA9IHVzVUFKID4+IHVzU2hpZnQ7
+CisgIAorCXJldHVybiAwOworfQorCitzdGF0aWMgaW50IHNuZF9hYzk3X3Z0MTYxOF9VQUowX2dl
+dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKKwkJCQkgICAgc3RydWN0IHNuZF9jdGxf
+ZWxlbV92YWx1ZSAqdWNvbnRyb2wpCit7CisJcmV0dXJuIHNuZF9hYzk3X3Z0MTYxOF9VQUpfZ2V0
+KGtjb250cm9sLCB1Y29udHJvbCwgMHgwMDAzKTsKK30KKworc3RhdGljIGludCBzbmRfYWM5N192
+dDE2MThfVUFKMV9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCisJCQkJICAgIHN0
+cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQoreworCXJldHVybiBzbmRfYWM5N192
+dDE2MThfVUFKX2dldChrY29udHJvbCwgdWNvbnRyb2wsIDB4MDAwQyk7Cit9CisKK3N0YXRpYyBp
+bnQgc25kX2FjOTdfdnQxNjE4X1VBSjJfZ2V0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9s
+LAorCQkJCSAgICBzdHJ1Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkKK3sKKwlyZXR1
+cm4gc25kX2FjOTdfdnQxNjE4X1VBSl9nZXQoa2NvbnRyb2wsIHVjb250cm9sLCAweDAwMzApOwor
+fQorCitzdGF0aWMgaW50IHNuZF9hYzk3X3Z0MTYxOF9VQUpfcHV0KHN0cnVjdCBzbmRfa2NvbnRy
+b2wgKmtjb250cm9sLAorCQkJCSAgIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9s
+LAorCQkJCSAgIHVuc2lnbmVkIHNob3J0IG1hc2spCit7CisJc3RydWN0IHNuZF9hYzk3ICpwYWM5
+NzsKKwl1c2hvcnQgdXNVQUosIHVzUmVnLCB1c1NoaWZ0ID0gMDsgLyogMCBpcyBhIHBvc3NpYmxl
+IHZhbHVlICovCisKKwlpZigweDAwMEMgPT0gbWFzaykgdXNTaGlmdCA9IDI7CisJaWYoMHgwMDMw
+ID09IG1hc2spIHVzU2hpZnQgPSA0OworCisJcGFjOTcgPSBzbmRfa2NvbnRyb2xfY2hpcChrY29u
+dHJvbCk7IAorCisJdXNVQUogPSB1Y29udHJvbC0+dmFsdWUuZW51bWVyYXRlZC5pdGVtWzBdIDw8
+IHVzU2hpZnQ7CisKKwl1c1JlZyA9IHNuZF9hYzk3X3JlYWRfcGFnZShwYWM5NywgMHg2MCwgMCkg
+JiB+bWFzazsKKworCXNuZF9hYzk3X3dyaXRlX3BhZ2UocGFjOTcsIDB4NjAsIHVzUmVnICsgdXNV
+QUosIDApOworCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgc25kX2FjOTdfdnQxNjE4X1VB
+SjBfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAorCQkJCSAgICBzdHJ1Y3Qgc25k
+X2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkKK3sKKwlyZXR1cm4gc25kX2FjOTdfdnQxNjE4X1VB
+Sl9wdXQoa2NvbnRyb2wsIHVjb250cm9sLCAweDAwMDMpOworfQorCitzdGF0aWMgaW50IHNuZF9h
+Yzk3X3Z0MTYxOF9VQUoxX3B1dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKKwkJCQkg
+ICAgc3RydWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCit7CisJcmV0dXJuIHNuZF9h
+Yzk3X3Z0MTYxOF9VQUpfcHV0KGtjb250cm9sLCB1Y29udHJvbCwgMHgwMDBDKTsKK30KKworc3Rh
+dGljIGludCBzbmRfYWM5N192dDE2MThfVUFKMl9wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2Nv
+bnRyb2wsCisJCQkJICAgIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQorewor
+CXJldHVybiBzbmRfYWM5N192dDE2MThfVUFKX3B1dChrY29udHJvbCwgdWNvbnRyb2wsIDB4MDAz
+MCk7Cit9CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBzbmRfYWM5N19j
+b250cm9sc192dDE2MThbXSA9IHsKKworCUFDOTdfU0lOR0xFKCJDZW50ZXIvTEZFIEV4Y2hhbmdl
+IiwgICAgIDB4NWEsICA4LCAxLCAwKSwgIC8qIHNhbWUgYXMgMTYxN2EgKi8KKwlBQzk3X1NJTkdM
+RSgiREMgT2Zmc2V0IFJlbW92YWwiLCAgICAgICAweDVhLCAxMCwgMSwgMCksICAvKiBzYW1lIGFz
+IDE2MTE3YSwgMTYxNiAqLworCUFDOTdfU0lOR0xFKCJIZWFkcGhvbmUgQW1wIERpc2FibGUiLCAg
+IDB4NWMsICA1LCAxLCAwKSwKKwlBQzk3X1NJTkdMRSgiQmFjayBDaGFubmVsIERpc2FibGUiLCAg
+ICAweDVjLCAgMywgMSwgMCksCisJQUM5N19TSU5HTEUoIlNvZnQgTXV0ZSAgRGlzYWJsZSIsICAg
+ICAgMHg1YywgIDEsIDEsIDApLAorCUFDOTdfU0lOR0xFKCJTdXJyb3VuZCBCYWNrIGlzIEF1eCBJ
+biIsIDB4NzYsICAzLCAxLCAwKSwKKwl7CisJCS5pZmFjZSA9IFNORFJWX0NUTF9FTEVNX0lGQUNF
+X01JWEVSLAorCQkubmFtZSAgPSAiVW5pdmVyc2FsIEF1ZGlvIEphY2sgMCAoU3BlYWtlcikiLAor
+CQkuaW5mbyAgPSBzbmRfYWM5N192dDE2MThfVUFKMF9pbmZvLAorCQkuZ2V0ICAgPSBzbmRfYWM5
+N192dDE2MThfVUFKMF9nZXQsCisJCS5wdXQgICA9IHNuZF9hYzk3X3Z0MTYxOF9VQUowX3B1dAor
+CX0sCisJeworCQkuaWZhY2UgPSBTTkRSVl9DVExfRUxFTV9JRkFDRV9NSVhFUiwKKwkJLm5hbWUg
+ID0gIlVuaXZlcnNhbCBBdWRpbyBKYWNrIDEgKExpbmUgSW4pIiwKKwkJLmluZm8gID0gc25kX2Fj
+OTdfdnQxNjE4X1VBSjFfaW5mbywKKwkJLmdldCAgID0gc25kX2FjOTdfdnQxNjE4X1VBSjFfZ2V0
+LAorCQkucHV0ICAgPSBzbmRfYWM5N192dDE2MThfVUFKMV9wdXQKKwl9LAorCXsKKwkJLmlmYWNl
+ID0gU05EUlZfQ1RMX0VMRU1fSUZBQ0VfTUlYRVIsCisJCS5uYW1lICA9ICJVbml2ZXJzYWwgQXVk
+aW8gSmFjayAyIChNaWMgSW4pIiwKKwkJLmluZm8gID0gc25kX2FjOTdfdnQxNjE4X1VBSjJfaW5m
+bywKKwkJLmdldCAgID0gc25kX2FjOTdfdnQxNjE4X1VBSjJfZ2V0LAorCQkucHV0ICAgPSBzbmRf
+YWM5N192dDE2MThfVUFKMl9wdXQKKwl9Cit9OworCitpbnQgcGF0Y2hfdnQxNjE4KHN0cnVjdCBz
+bmRfYWM5NyAqYWM5NykKK3sKKwlyZXR1cm4gcGF0Y2hfYnVpbGRfY29udHJvbHMoYWM5Nywgc25k
+X2FjOTdfY29udHJvbHNfdnQxNjE4LAorCQkJCSAgICBBUlJBWV9TSVpFKHNuZF9hYzk3X2NvbnRy
+b2xzX3Z0MTYxOCkpOworfQorCiAKIC8qCiAgKi8K
+
+------_=_NextPart_001_01C7669F.250BBEE5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -52,7 +378,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0935564449==
+------_=_NextPart_001_01C7669F.250BBEE5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -63,4 +389,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0935564449==--
+------_=_NextPart_001_01C7669F.250BBEE5--
