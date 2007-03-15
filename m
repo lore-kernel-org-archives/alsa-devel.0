@@ -1,14 +1,14 @@
-From: Andreas Happe <andy@starseeders.net>
-Subject: Re: [i8x0] docking station audio-out ceased to work
-Date: Thu, 15 Mar 2007 17:22:19 +0100
-Message-ID: <1173975739.3467.1.camel@localhost>
-References: <1173864879.3425.4.camel@localhost> <s5hd53a62t8.wl%tiwai@suse.de>
-Reply-To: andreashappe@snikt.net
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Problems with virtual rawmidi
+Date: Thu, 15 Mar 2007 17:45:57 +0100
+Message-ID: <1173977157.21511.1179641389@webmail.messagingengine.com>
+References: <200703151221.17744.vetter@bury.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hd53a62t8.wl%tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <200703151221.17744.vetter@bury.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,26 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: andreashappe@snikt.net, alsa-devel@lists.sourceforge.net
+To: Robert Vetter <vetter@bury.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-03-15 at 14:42 +0100, Takashi Iwai wrote:
-> > I can test older kernel versions, but would like to make sure that I'm
-> > testing the right think first.
+Robert Vetter wrote:
+> when I create a virtual midi in port in my application calling:
 > 
-> I don't expect it ever worked as it is as I have a long-standing
-> bugzilla entry for this.
+> snd_rawmidi_open(&handle_in,NULL,"virtual",0); 
+> 
+> and connect midi out port from the Keystation to the midi port of the 
+> Application (using QJackctl), I get problems. Some bytes are skipped, as it 
+> looks like. For example: Right after everything is started and set up I press 
+> a key and keyboard and get only the status byte (0x90) and note number, but 
+> no velocity byte.
 
-Well it worked for me (tm) as long as I didn't change normal and docking
-station line-out while running. I will test older kernels, maybe there
-are some clues in the debug output (as i boot windows from time to times
-it could also be that the windows driver did setup some registers, we'll
-see).
+Does the same happen with amidi?  (try "amidi --dump --port virtual")
 
-cheers,
-andreas
+> Then when I release the key I don't get any status byte, 
+> but only note number and velocity byte( 0 in this case).
 
+This is running status, i.e., not a bug.
+
+
+Regards,
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
