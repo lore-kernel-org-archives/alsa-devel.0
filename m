@@ -1,14 +1,12 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Problems with virtual rawmidi
-Date: Thu, 15 Mar 2007 17:45:57 +0100
-Message-ID: <1173977157.21511.1179641389@webmail.messagingengine.com>
-References: <200703151221.17744.vetter@bury.com>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: [RFC] Sign offs for alsa-driver -> alsa-kernel derived
+	works.
+Date: Thu, 15 Mar 2007 17:30:20 +0000
+Message-ID: <1173979821.27299.182.camel@batley.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200703151221.17744.vetter@bury.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,30 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Robert Vetter <vetter@bury.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Giorgio Padrin <giorgio@mandarinlogiq.org>, Richard Purdie <rpurdie@rpsys.net>
 List-Id: alsa-devel@alsa-project.org
 
-Robert Vetter wrote:
-> when I create a virtual midi in port in my application calling:
-> 
-> snd_rawmidi_open(&handle_in,NULL,"virtual",0); 
-> 
-> and connect midi out port from the Keystation to the midi port of the 
-> Application (using QJackctl), I get problems. Some bytes are skipped, as it 
-> looks like. For example: Right after everything is started and set up I press 
-> a key and keyboard and get only the status byte (0x90) and note number, but 
-> no velocity byte.
+I'd like to gather some clarification wrt sign offs for alsa-driver to
+alsa-kernel derived works.
 
-Does the same happen with amidi?  (try "amidi --dump --port virtual")
+Example in case: alsa-driver:i2c/uda1380.c was extensively modified to
+become alsa-kernel:soc/codecs/uda1380.c
 
-> Then when I release the key I don't get any status byte, 
-> but only note number and velocity byte( 0 in this case).
+I submitted the derived driver with sign-off from 3 developers who had
+worked on the derived work (Richard Purdie, Philipp Zabel and myself)
+and the original alsa-driver:uda1380.c author (Giorgio Padrin) who was
+not involved in creating the derived work.
 
-This is running status, i.e., not a bug.
+I included Giorgio in the sign-off for the following reasons :-
+
+1. There are sections of his original (non alsa-kernel) code and
+algorithms within the derived work. This was to certify the origins of
+*all* the code and algorithms within the derived driver as the original
+driver only existed within alsa-driver and hence none of it's code had
+been signed-off into the kernel.
+
+Iirc, sign-off from Giorgio would not have been required if the original
+driver was already part of the kernel. 
+
+2. To give credit to where credit was due.
 
 
-Regards,
-Clemens
+Takashi, Jaroslav, could you guys clarify the sign-off relationship
+between alsa-driver -> alsa-kernel (inc derived works). I assume
+original work from alsa-driver can be pushed into alsa-kernel due to
+it's original sign-off ?
+
+If original author sign-off is not required for this situation, I can
+resubmit the code.
+
+Many thanks
+
+Liam
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
