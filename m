@@ -1,12 +1,11 @@
-From: Robert Vetter <vetter@bury.com>
-Subject: Problems with virtual rawmidi
-Date: Thu, 15 Mar 2007 12:21:17 +0100
-Message-ID: <200703151221.17744.vetter@bury.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HQMiP-0003IT-L4 delayed 72 hours
+Date: Thu, 15 Mar 2007 03:27:06 -0800
+Message-ID: <E1HRo6s-0004BO-4B@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,33 +18,30 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-Hello,
+The message identifier is:     1HQMiP-0003IT-L4
+The subject of the message is: what they ceased.
+The date of the message is:    Sun, 11 Mar 2007 12:59:53 +0100
 
-I'm working on an MIDI application with ALSA support on LInux. I have problems 
-with reading MIDI from virtual rawmidi device.
+The address to which the message has not yet been delivered is:
 
-When I open the device (M-Audio Keystation 49e) in "pure" raw mode calling:
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
-snd_rawmidi_open(&handle_in,NULL,"hw:1,0",0); 
-
-everything is ok and I can read the MIDI stream without problems. BUT when I 
-create a virtual midi in port in my application calling:
-
-snd_rawmidi_open(&handle_in,NULL,"virtual",0); 
-
-and connect midi out port from the Keystation to the midi port of the 
-Application (using QJackctl), I get problems. Some bytes are skipped, as it 
-looks like. For example: Right after everything is started and set up I press 
-a key and keyboard and get only the status byte (0x90) and note number, but 
-no velocity byte. Then when I release the key I don't get any status byte, 
-but only note number and velocity byte( 0 in this case).
-
-Could somoene please check it?
-
-Thank you
-
-Robert
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
