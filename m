@@ -1,15 +1,12 @@
-From: Nicolas Boichat <nicolas@boichat.ch>
-Subject: Re: Macbook Pro pins in patch_sigmatel
-Date: Thu, 15 Mar 2007 12:56:58 +0800
-Message-ID: <45F8D21A.1040201@boichat.ch>
-References: <45F844E0.7060707@boichat.ch> <s5habyf4n93.wl%tiwai@suse.de>
-	<564d96fb0703142040i4ed2ab2o9f7cd44b699bdee9@mail.gmail.com>
-	<45F8D02B.3030406@boichat.ch>
+From: Robert Vetter <vetter@bury.com>
+Subject: Problems with virtual rawmidi
+Date: Thu, 15 Mar 2007 12:21:17 +0100
+Message-ID: <200703151221.17744.vetter@bury.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45F8D02B.3030406@boichat.ch>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,85 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: =?UTF-8?B?UmFmYWVsIEVzcMOtbmRvbGE=?= <rafael.espindola@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-U29ycnkgdGhlIHBhdGNoIGdvdCB3cmFwcGVkLi4uLi4uLgoKTmljb2xhcyBCb2ljaGF0IHdyb3Rl
-Ogo+IEhlbGxvLAo+Cj4gUmFmYWVsIEVzcMOtbmRvbGEgd3JvdGU6Cj4gICAKPj4+IFRoZSBwYXRj
-aCBpcyBiYXNlZCBvbiByZXBvcnRzIGJ5IFJhZmFlbCBFc3BpbmRvbGEgKENjJ2VkKS4KPj4+IFJh
-ZmFlbCwgd2hpY2ggbW9kZWwgZG8geW91IGhhdmUgZXhhY3RsPwo+Pj4gICAgICAgCj4+IEEgY29y
-ZSAyIGR1byAoc2Vjb25kIGdlbmVyYXRpb24pLgo+PiAgICAgCj4KPiBPayBJIGFkZGVkIGEgY29t
-bWVudCBpbiB0aGUgY29kZSBhYm91dCB0aGlzLgo+Cj4gICAKPj4+IElNTywgaXQncyBiYWQgdG8g
-cmVuYW1lIHRoZSBleGlzdGluZyBtb2RlbCBuYW1lIGFzIGl0IGhhcyBiZWVuIGFscmVhZHkKPj4+
-IHVzZWQgaW4gQUxTQSB0cmVlLiAgU28gcGxlYXNlIHNpbXBseSBhZGQgYSBuZXcgbW9kZWwgbmFt
-ZSBmb3IgeW91cgo+Pj4gZGV2aWNlLCBlLmcuIG1hY2Jvb2stcHJvLXYxLgo+Pj4gICAgICAgCj4K
-PiBGaXhlZC4KPgo+ICAgCj4+PiBPdGhlcndpc2UgdGhlIHBhdGNoIGxvb2tzIGdvb2QgdG8gbWUu
-Cj4+PiAgICAgICAKPj4gSnVzdCBuaXRwaWNraW5nOiBEbyB3ZSB1c2UgdXBwZXIgb3IgbG93ZXIg
-Y2FzZSBpbiBoZXhhZGVjaW1hbCBudW1iZXI/Cj4+ICAgICAKPgo+IE9rIG9rLi4uIExvd2VyIGNh
-c2UgLi0pIFRoZSBvdGhlciBwaW5zIGFyZSBsb3dlciBjYXNlLi4uCj4KPiBOZXcgcGF0Y2ggYXR0
-YWNoZWQuCj4gICAKRml4IGF1ZGlvIG9uIE1hY2Jvb2sgUHJvIDFzdCBnZW5lcmF0aW9uLgoKU2ln
-bmVkLW9mZi1ieTogTmljb2xhcyBCb2ljaGF0IDxuaWNvbGFzQGJvaWNoYXQuY2g+CgotLS0KCiBE
-b2N1bWVudGF0aW9uL3NvdW5kL2Fsc2EvQUxTQS1Db25maWd1cmF0aW9uLnR4dCB8ICAgIDMgKyst
-CiBzb3VuZC9wY2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMgICAgICAgICAgICAgICAgICB8ICAgMjUg
-KysrKysrKysrKysrKysrKystLS0tLS0KIDIgZmlsZXMgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygr
-KSwgNyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL3NvdW5kL2Fsc2Ev
-QUxTQS1Db25maWd1cmF0aW9uLnR4dCBiL0RvY3VtZW50YXRpb24vc291bmQvYWxzYS9BTFNBLUNv
-bmZpZ3VyYXRpb24udHh0CmluZGV4IGRiMzk4YTYuLjQzOGYzZmUgMTAwNjQ0Ci0tLSBhL0RvY3Vt
-ZW50YXRpb24vc291bmQvYWxzYS9BTFNBLUNvbmZpZ3VyYXRpb24udHh0CisrKyBiL0RvY3VtZW50
-YXRpb24vc291bmQvYWxzYS9BTFNBLUNvbmZpZ3VyYXRpb24udHh0CkBAIC05MDYsNyArOTA2LDgg
-QEAgUHJpb3IgdG8gdmVyc2lvbiAwLjkuMHJjNCBvcHRpb25zIGhhZCBhICdzbmRfJyBwcmVmaXgu
-IFRoaXMgd2FzIHJlbW92ZWQuCiAJICA1c3RhY2sJRDk0NSA1c3RhY2sgKyBTUERJRgogCSAgbWFj
-bWluaQlJbnRlbCBNYWMgTWluaQogCSAgbWFjYm9vawlJbnRlbCBNYWMgQm9vawotCSAgbWFjYm9v
-ay1wcm8JSW50ZWwgTWFjIEJvb2sgUHJvCisJICBtYWNib29rLXByby12MSBJbnRlbCBNYWMgQm9v
-ayBQcm8gMXN0IGdlbmVyYXRpb24KKwkgIG1hY2Jvb2stcHJvCUludGVsIE1hYyBCb29rIFBybyAy
-bmQgZ2VuZXJhdGlvbgogCiAJU1RBQzkyMDIvOTI1MC85MjUxCiAJICByZWYJCVJlZmVyZW5jZSBi
-b2FyZCwgYmFzZSBjb25maWcKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfc2lnbWF0
-ZWwuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYwppbmRleCA0YzdiMDM5Li4yZDc4
-YTlmIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMKKysrIGIvc291
-bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCkBAIC02MCw3ICs2MCw4IEBAIGVudW0gewogCVNU
-QUNfRDk0NUdUUDUsCiAJU1RBQ19NQUNNSU5JLAogCVNUQUNfTUFDQk9PSywKLQlTVEFDX01BQ0JP
-T0tfUFJPLAorCVNUQUNfTUFDQk9PS19QUk9fVjEsCisJU1RBQ19NQUNCT09LX1BST19WMiwKIAlT
-VEFDXzkyMlhfTU9ERUxTCiB9OwogCkBAIC01MjksNyArNTMwLDEzIEBAIHN0YXRpYyB1bnNpZ25l
-ZCBpbnQgbWFjYm9va19waW5fY29uZmlnc1sxMF0gPSB7CiAJMHg0MDAwMDBmYywgMHg0MDAwMDBm
-YiwKIH07CiAKLXN0YXRpYyB1bnNpZ25lZCBpbnQgbWFjYm9va19wcm9fcGluX2NvbmZpZ3NbMTBd
-ID0geworc3RhdGljIHVuc2lnbmVkIGludCBtYWNib29rX3Byb192MV9waW5fY29uZmlnc1sxMF0g
-PSB7CisJMHgwMzIxZTIzMCwgMHgwM2ExZTAyMCwgMHg5MDE3ZTExMCwgMHgwMTAxNDAxMCwKKwkw
-eDAxYTE5MDIxLCAweDAzODFlMDIxLCAweDEzNDVlMjQwLCAweDEzYzVlMjJlLAorCTB4MDJhMTkz
-MjAsIDB4NDAwMDAwZmIKK307CisKK3N0YXRpYyB1bnNpZ25lZCBpbnQgbWFjYm9va19wcm9fdjJf
-cGluX2NvbmZpZ3NbMTBdID0gewogCTB4MDIyMTQwMWYsIDB4OTBhNzAxMjAsIDB4MDE4MTMwMjQs
-IDB4MDEwMTQwMTAsCiAJMHg0MDAwMDBmZCwgMHgwMTAxNjAxMSwgMHgxMzQ1ZTI0MCwgMHgxM2M1
-ZTIyZSwKIAkweDQwMDAwMGZjLCAweDQwMDAwMGZiLApAQCAtNTQxLDcgKzU0OCw4IEBAIHN0YXRp
-YyB1bnNpZ25lZCBpbnQgKnN0YWM5MjJ4X2JyZF90YmxbU1RBQ185MjJYX01PREVMU10gPSB7CiAJ
-W1NUQUNfRDk0NUdUUDVdID0gZDk0NWd0cDVfcGluX2NvbmZpZ3MsCiAJW1NUQUNfTUFDTUlOSV0g
-PSBkOTQ1Z3RwNV9waW5fY29uZmlncywKIAlbU1RBQ19NQUNCT09LXSA9IG1hY2Jvb2tfcGluX2Nv
-bmZpZ3MsCi0JW1NUQUNfTUFDQk9PS19QUk9dID0gbWFjYm9va19wcm9fcGluX2NvbmZpZ3MsCisJ
-W1NUQUNfTUFDQk9PS19QUk9fVjFdID0gbWFjYm9va19wcm9fdjFfcGluX2NvbmZpZ3MsCisJW1NU
-QUNfTUFDQk9PS19QUk9fVjJdID0gbWFjYm9va19wcm9fdjJfcGluX2NvbmZpZ3MsCiB9OwogCiBz
-dGF0aWMgY29uc3QgY2hhciAqc3RhYzkyMnhfbW9kZWxzW1NUQUNfOTIyWF9NT0RFTFNdID0gewpA
-QCAtNTUwLDcgKzU1OCw4IEBAIHN0YXRpYyBjb25zdCBjaGFyICpzdGFjOTIyeF9tb2RlbHNbU1RB
-Q185MjJYX01PREVMU10gPSB7CiAJW1NUQUNfRDk0NUdUUDNdCT0gIjNzdGFjayIsCiAJW1NUQUNf
-TUFDTUlOSV0JPSAibWFjbWluaSIsCiAJW1NUQUNfTUFDQk9PS10JPSAibWFjYm9vayIsCi0JW1NU
-QUNfTUFDQk9PS19QUk9dCT0gIm1hY2Jvb2stcHJvIiwKKwlbU1RBQ19NQUNCT09LX1BST19WMV0J
-PSAibWFjYm9vay1wcm8tdjEiLAorCVtTVEFDX01BQ0JPT0tfUFJPX1YyXQk9ICJtYWNib29rLXBy
-byIsCiB9OwogCiBzdGF0aWMgc3RydWN0IHNuZF9wY2lfcXVpcmsgc3RhYzkyMnhfY2ZnX3RibFtd
-ID0gewpAQCAtMTg4OSw5ICsxODk4LDEzIEBAIHN0YXRpYyBpbnQgcGF0Y2hfc3RhYzkyMngoc3Ry
-dWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJCS8qIEludGVsIE1hY3MgaGF2ZSBhbGwgc2FtZSBQQ0kg
-U1NJRCwgc28gd2UgbmVlZCB0byBjaGVjawogCQkgKiBjb2RlYyBTU0lEIHRvIGRpc3Rpbmd1aXNo
-IHRoZSBleGFjdCBtb2RlbHMKIAkJICovCisJCXByaW50ayhLRVJOX0lORk8gImhkYV9jb2RlYzog
-U1RBQzkyMngsIEFwcGxlIHN1YnN5c19pZD0leFxuIiwgY29kZWMtPnN1YnN5c3RlbV9pZCk7CiAJ
-CXN3aXRjaCAoY29kZWMtPnN1YnN5c3RlbV9pZCkgewotCQljYXNlIDB4MTA2YjFlMDA6Ci0JCQlz
-cGVjLT5ib2FyZF9jb25maWcgPSBTVEFDX01BQ0JPT0tfUFJPOworCQljYXNlIDB4MTA2YjAyMDA6
-IC8qIE1hY0Jvb2sgUHJvIGZpcnN0IGdlbmVyYXRpb24gKi8KKwkJCXNwZWMtPmJvYXJkX2NvbmZp
-ZyA9IFNUQUNfTUFDQk9PS19QUk9fVjE7CisJCQlicmVhazsKKwkJY2FzZSAweDEwNmIxZTAwOiAv
-KiBNYWNCb29rIFBybyBzZWNvbmQgZ2VuZXJhdGlvbiAqLworCQkJc3BlYy0+Ym9hcmRfY29uZmln
-ID0gU1RBQ19NQUNCT09LX1BST19WMjsKIAkJCWJyZWFrOwogCQl9CiAJfQoKCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tClRha2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2UgdGhlIEZ1dHVyZSBvZiBJ
-VApKb2luIFNvdXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQgdGhl
-IGNoYW5jZSB0byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElUICYgYnVzaW5lc3MgdG9waWNzIHRo
-cm91Z2ggYnJpZWYgc3VydmV5cy1hbmQgZWFybiBjYXNoCmh0dHA6Ly93d3cudGVjaHNheS5jb20v
-ZGVmYXVsdC5waHA/cGFnZT1qb2luLnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZERVYKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
-b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+Hello,
+
+I'm working on an MIDI application with ALSA support on LInux. I have problems 
+with reading MIDI from virtual rawmidi device.
+
+When I open the device (M-Audio Keystation 49e) in "pure" raw mode calling:
+
+snd_rawmidi_open(&handle_in,NULL,"hw:1,0",0); 
+
+everything is ok and I can read the MIDI stream without problems. BUT when I 
+create a virtual midi in port in my application calling:
+
+snd_rawmidi_open(&handle_in,NULL,"virtual",0); 
+
+and connect midi out port from the Keystation to the midi port of the 
+Application (using QJackctl), I get problems. Some bytes are skipped, as it 
+looks like. For example: Right after everything is started and set up I press 
+a key and keyboard and get only the status byte (0x90) and note number, but 
+no velocity byte. Then when I release the key I don't get any status byte, 
+but only note number and velocity byte( 0 in this case).
+
+Could somoene please check it?
+
+Thank you
+
+Robert
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys-and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
