@@ -1,17 +1,17 @@
-From: "Hockey S. Nationality" <isteddee@globalmovingsystems.com>
-Subject: No need to visit local drug store.
-Date: Thu, 15 Mar 2007 18:53:37 +0000
-Message-ID: <0261395418.20070315185337@globalmovingsystems.com>
+From: "Duse F. Sentence" <larry.gamble@golfingvilla.com>
+Subject: Can you satisfy your girlfriend?
+Date: Thu, 15 Mar 2007 14:58:23 -0400
+Message-ID: <6889156811.20070315145823@golfingvilla.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from -1212282016 (unknown [86.123.36.202])
-	by alsa0.perex.cz (Postfix) with SMTP id 195B3244C6
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2007 19:53:25 +0100 (CET)
-Received: from globalmovingsystems.com (-1212204616 [-1212861744])
-	by 86-123-36-202.rdsnet.ro (Qmailv1) with ESMTP id DBAB19CCE6
-	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2007 18:53:37 +0000
+Received: from -1217409312 (VDSL-130-13-68-70.PHNX.QWEST.NET [130.13.68.70])
+	by alsa0.perex.cz (Postfix) with SMTP id 0796F244F0
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2007 22:48:52 +0100 (CET)
+Received: from golfingvilla.com (-1217729552 [-1217427832])
+	by VDSL-130-13-68-70.PHNX.QWEST.NET (Qmailv1) with ESMTP id 34E73EC07D
+	for <alsa-devel@alsa-project.org>; Thu, 15 Mar 2007 14:58:23 -0400
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,10 +24,10 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is no need to let everybody know that you have health problems. You want to save your money and get licensed medications? I bet you do! Then click here:
+US Drug store presents lots of medications at cheapest prices. You won't find such prices in United States or even Canada. We sell legal and quality pills, our friendly support will help you anytime you need. 
 http://sujji.hk
 
-Make secure and confidential purchase and you don't have to visit your local drug store. Friendly support. Instant shipping worldwide! 
+Make right choice: buy medications at LegalRXMedications drug store! 
 
 
 -------------------------------------------------------------------------
