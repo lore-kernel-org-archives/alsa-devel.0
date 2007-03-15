@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HQMiP-0003IT-L4 delayed 72 hours
-Date: Thu, 15 Mar 2007 03:27:06 -0800
-Message-ID: <E1HRo6s-0004BO-4B@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HQZrt-0006D7-48 delayed 72 hours
+Date: Thu, 15 Mar 2007 03:29:55 -0800
+Message-ID: <E1HRo9b-0004sl-B7@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -22,9 +22,9 @@ This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
 recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HQMiP-0003IT-L4
-The subject of the message is: what they ceased.
-The date of the message is:    Sun, 11 Mar 2007 12:59:53 +0100
+The message identifier is:     1HQZrt-0006D7-48
+The subject of the message is: thine for riches of the bitter Cry have mercy
+The date of the message is:    Sun, 11 Mar 2007 18:02:43 -0800
 
 The address to which the message has not yet been delivered is:
 
