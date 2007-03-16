@@ -1,12 +1,11 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Switching sound cards on the fly
-Date: Thu, 15 Mar 2007 21:29:32 -0400
-Message-ID: <75b66ecd0703151829t1513551dkc94b3d4025cee98a@mail.gmail.com>
+From: pxl <pixeldotz@yahoo.com>
+Subject: =?utf-8?q?alesis=5Fmultimix8=5Fusb=2E?=
+Date: Fri, 16 Mar 2007 02:02:37 +0000 (UTC)
+Message-ID: <loom.20070316T025832-694@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,20 +15,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: markknecht@gmail.com
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-How difficult would it be to add to alsa-lib a mechanism where
-applications can register an "ALSA config changed" callback that would
-be invoked when an app like gnome-sound-properties changes the default
-sound device by updating .asoundrc?  Changes to ALSA config files
-could be detected via inotify.
+does anyone know if it's possible to get this mixer working within ALSA so i can
+record? the mixer is about a year old and lsusb shows  that my notebook picks it
+up and recognizes it just nothing else.
 
-I think this could allow for relatively seamless switching of the
-audio output device.
 
-Lee
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
