@@ -1,47 +1,188 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HRxxz-0002nv-BO delayed 10 hours
-Date: Fri, 16 Mar 2007 00:39:43 -0800
-Message-ID: <E1HS7yR-0000IS-RD@externalmx-1.sourceforge.net>
+From: Nicolas Boichat <nicolas@boichat.ch>
+Subject: Macmini pins in sigmatel_audio
+Date: Fri, 16 Mar 2007 17:50:33 +0800
+Message-ID: <45FA6869.40701@boichat.ch>
+References: <E1HRY1h-0003Y6-2M@sc8-pr-svn1.sourceforge.net>	<20070314192940.GA18255@dose.home.local>	<45F8DD78.9020508@boichat.ch>	<20070315080134.GA22654@dose.home.local>	<45F91C0E.7020600@boichat.ch>
+	<20070315185433.GA10186@dose.home.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-devel-bounces@lists.sourceforge.net
-Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+Return-path: <mactel-linux-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <20070315185433.GA10186@dose.home.local>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/mactel-linux-devel>,
+	<mailto:mactel-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=mactel-linux-devel>
+List-Post: <mailto:mactel-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:mactel-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/mactel-linux-devel>,
+	<mailto:mactel-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: mactel-linux-devel-bounces@lists.sourceforge.net
+Errors-To: mactel-linux-devel-bounces@lists.sourceforge.net
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net, mactel-linux-devel@lists.sourceforge.net, Tino Keitel <tino.keitel+mactel-devel@tikei.de>
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+Hi,
 
-The message identifier is:     1HRxxz-0002nv-BO
-The subject of the message is: asked are before they offered.  Now.  For all
-The date of the message is:    Thu, 15 Mar 2007 23:58:43 +0200
+I just got this input from a Macmini user (subsys id: 0x106b0800), after
+asking him to try different pins settings. (the sound doesn't work
+properly with a vanilla 2.6.21-rc3 kernel)
 
-The address to which the message has not yet been delivered is:
+Tino Keitel wrote:
+> On Thu, Mar 15, 2007 at 18:12:30 +0800, Nicolas Boichat wrote:
+>
+> [...]
+>
+>   
+>> Considered it worked with the mactel patches, you should try
+>> STAC_MACBOOK_PRO_V1 first....
+>>     
+>
+> You are right, with STAC_MACBOOK_PRO_V1 I can use all required
+> features. Here are the results:
+>
+> - analog line in works, if "Line In as Output" is muted
+>
+> - analog line out works, it is controlled by  the "Front" channel in
+>   alsamixer
+>
+> - digital line out works
+>
+> - the internal speaker works, it is controlled by the "Master" channel
+>   in alsamixer
+>
+> - the internal speaker is silent if there is an analog plug in line out
+>
+> - the internal speker still works if a (optical) digital cable is
+>   plugged in line out, I guess because the optical plastic cable
+>   doesn't short circuit the line out plug
+>
+> Minor glitches:
+>
+> There is an input selector that has the options "Line", "Mic" and
+> "Front Mic". However, I think that only "Line" is really usable, as I
+> had so signal when I connected a Mic to line in and a "Front Mic" is
+> also not present in the mini.
+>
+> There is a "Mic as output" switch in alsamixer, but there is not "Mic"
+> jack.
+>   
+Considering these pins have been used for a long time on mactel-linux,
+and that they are working fine with MacBook (1st generation at least),
+Macmini and Macbook Pro (1st generation only), I think the following
+patch is appropriate (please apply it after the patch sent yesterday).
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Best regards,
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
+Nicolas
+
+Fix audio on Macmini and Macbook.
+
+Signed-off-by: Nicolas Boichat <nicolas@boichat.ch>
+
+---
+
+ Documentation/sound/alsa/ALSA-Configuration.txt |    5 ++--
+ sound/pci/hda/patch_sigmatel.c                  |   27 +++++------------------
+ 2 files changed, 8 insertions(+), 24 deletions(-)
+
+diff --git a/Documentation/sound/alsa/ALSA-Configuration.txt b/Documentation/sound/alsa/ALSA-Configuration.txt
+index 438f3fe..c13885a 100644
+--- a/Documentation/sound/alsa/ALSA-Configuration.txt
++++ b/Documentation/sound/alsa/ALSA-Configuration.txt
+@@ -904,9 +904,8 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
+ 	  ref		Reference board
+ 	  3stack	D945 3stack
+ 	  5stack	D945 5stack + SPDIF
+-	  macmini	Intel Mac Mini
+-	  macbook	Intel Mac Book
+-	  macbook-pro-v1 Intel Mac Book Pro 1st generation
++	  mac		Intel Mac
++			     (Mac Mini, Mac Book, Mac Book Pro 1st generation)
+ 	  macbook-pro	Intel Mac Book Pro 2nd generation
+ 
+ 	STAC9202/9250/9251
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 2d78a9f..1293632 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -58,9 +58,7 @@ enum {
+ 	STAC_D945_REF,
+ 	STAC_D945GTP3,
+ 	STAC_D945GTP5,
+-	STAC_MACMINI,
+-	STAC_MACBOOK,
+-	STAC_MACBOOK_PRO_V1,
++	STAC_MAC,
+ 	STAC_MACBOOK_PRO_V2,
+ 	STAC_922X_MODELS
+ };
+@@ -524,13 +522,7 @@ static unsigned int d945gtp5_pin_configs[10] = {
+ 	0x02a19320, 0x40000100,
+ };
+ 
+-static unsigned int macbook_pin_configs[10] = {
+-	0x0321e230, 0x03a1e020, 0x400000fd, 0x9017e110,
+-	0x400000fe, 0x0381e021, 0x1345e240, 0x13c5e22e,
+-	0x400000fc, 0x400000fb,
+-};
+-
+-static unsigned int macbook_pro_v1_pin_configs[10] = {
++static unsigned int mac_pin_configs[10] = {
+ 	0x0321e230, 0x03a1e020, 0x9017e110, 0x01014010,
+ 	0x01a19021, 0x0381e021, 0x1345e240, 0x13c5e22e,
+ 	0x02a19320, 0x400000fb
+@@ -546,9 +538,7 @@ static unsigned int *stac922x_brd_tbl[STAC_922X_MODELS] = {
+ 	[STAC_D945_REF] = ref922x_pin_configs,
+ 	[STAC_D945GTP3] = d945gtp3_pin_configs,
+ 	[STAC_D945GTP5] = d945gtp5_pin_configs,
+-	[STAC_MACMINI] = d945gtp5_pin_configs,
+-	[STAC_MACBOOK] = macbook_pin_configs,
+-	[STAC_MACBOOK_PRO_V1] = macbook_pro_v1_pin_configs,
++	[STAC_MAC] = mac_pin_configs,
+ 	[STAC_MACBOOK_PRO_V2] = macbook_pro_v2_pin_configs,
+ };
+ 
+@@ -556,9 +546,7 @@ static const char *stac922x_models[STAC_922X_MODELS] = {
+ 	[STAC_D945_REF]	= "ref",
+ 	[STAC_D945GTP5]	= "5stack",
+ 	[STAC_D945GTP3]	= "3stack",
+-	[STAC_MACMINI]	= "macmini",
+-	[STAC_MACBOOK]	= "macbook",
+-	[STAC_MACBOOK_PRO_V1]	= "macbook-pro-v1",
++	[STAC_MAC]	= "mac",
+ 	[STAC_MACBOOK_PRO_V2]	= "macbook-pro",
+ };
+ 
+@@ -622,7 +610,7 @@ static struct snd_pci_quirk stac922x_cfg_tbl[] = {
+ 	/* other systems  */
+ 	/* Apple Mac Mini (early 2006) */
+ 	SND_PCI_QUIRK(0x8384, 0x7680,
+-		      "Mac Mini", STAC_MACMINI),
++		      "Intel Mac", STAC_MAC),
+ 	{} /* terminator */
+ };
+ 
+@@ -1893,16 +1881,13 @@ static int patch_stac922x(struct hda_codec *codec)
+ 	spec->board_config = snd_hda_check_board_config(codec, STAC_922X_MODELS,
+ 							stac922x_models,
+ 							stac922x_cfg_tbl);
+-	if (spec->board_config == STAC_MACMINI) {
++	if (spec->board_config == STAC_MAC) {
+ 		spec->gpio_mute = 1;
+ 		/* Intel Macs have all same PCI SSID, so we need to check
+ 		 * codec SSID to distinguish the exact models
+ 		 */
+ 		printk(KERN_INFO "hda_codec: STAC922x, Apple subsys_id=%x\n", codec->subsystem_id);
+ 		switch (codec->subsystem_id) {
+-		case 0x106b0200: /* MacBook Pro first generation */
+-			spec->board_config = STAC_MACBOOK_PRO_V1;
+-			break;
+ 		case 0x106b1e00: /* MacBook Pro second generation */
+ 			spec->board_config = STAC_MACBOOK_PRO_V2;
+ 			break;
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
