@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HS6qf-0007lZ-CZ delayed 10 hours
-Date: Fri, 16 Mar 2007 12:50:11 -0800
-Message-ID: <E1HSJNL-0008WH-Gm@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HRxxz-0002nv-BO delayed 24 hours
+Date: Fri, 16 Mar 2007 14:32:56 -0800
+Message-ID: <E1HSKym-0005ca-52@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 24 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HS6qf-0007lZ-CZ
-The subject of the message is: They utter by me, said, unto me?  Whosoever
-The date of the message is:    Fri, 16 Mar 2007 12:57:36 +0530
+The message identifier is:     1HRxxz-0002nv-BO
+The subject of the message is: asked are before they offered.  Now.  For all
+The date of the message is:    Thu, 15 Mar 2007 23:58:43 +0200
 
 The address to which the message has not yet been delivered is:
 
