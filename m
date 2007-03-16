@@ -1,11 +1,13 @@
-From: Ciaccia <ciacciax@yahoo.com>
-Subject: Static build of alsa-lib
-Date: Fri, 16 Mar 2007 06:17:00 -0700 (PDT)
-Message-ID: <217312.5363.qm@web31004.mail.mud.yahoo.com>
+From: "Joachim Deguara" <joachim.deguara@amd.com>
+Subject: Re: HDA buffer alignment
+Date: Fri, 16 Mar 2007 14:21:34 +0100
+Message-ID: <45FA99DE.2060909@amd.com>
+References: <45FA855A.3040205@amd.com> <s5hejnpwg86.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hejnpwg86.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,50 +17,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
-I would like to compile an alsa application for an
-embedded system with no shared-libraries support. My
-application just needs PCM, with no plug-ins, no mixer
-and no midi and the application should be a standalone
-executable with no external dependencies, otherwise it
-will not work.
+"Takashi Iwai" <tiwai@suse.de> wrote on 13:00 16/03/2007 +0100 :
+> At Fri, 16 Mar 2007 12:54:02 +0100,
+> Joachim Deguara wrote:
+>> >From the HDA spec it appears that the buffers written to the BDL and
+>> sent to a codec must be 128 byte aligned (section 4.5.1).  The alignment
+>> was not happening especially when playing 6 channels.  This patch set
+>> the alignment of buffers and periods to 128 bytes.
+> 
+> Good catch.
+> 
+> The changes look good to me, but please fold lines to fit within 80
+> chars.  Also, please give a sign-off for the patch to apply to the
+> upstream.
 
-I tried to compile alsa-lib with static support, but
-without luck (-ldl is always needed in the gcc line
-and gcc always prints some weird warnings). Since I
-don't need external plugins nor ladspa, I think there
-should be a way to compile an application in a 100%
-static manner, but I still have to figure out how.
+>From the HDA spec it appears that the buffers written to the BDL and
+sent to a codec must be 128 byte aligned (section 4.5.1).  The alignment
+was not happening especially when playing 6 channels.  This patch set
+the alignment of buffers and periods to 128 bytes.
 
-I also found this thread with a similar problem with
-uClinux
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg18253.html
-but at the end I did not understand how/if the problem
-was solved.
+Signed-off-by: Joachim Deguara <joachim.deguara@amd.com>
 
-Do you think it should be possible to compile alsa-lib
-with no dependencies on dl? How?
-
-Otherwise, would it be possible to write an alsa
-application that does not rely on alsa-lib (i.e.,
-by using the alsa kernel APIs directly)? Has someone
-already tried it? Some hints?
-
-Every hint is extremely welcome
-
-Thanks a lot
-Best regards
-Andrea
+diff -r f8284261b2be pci/hda/hda_intel.c
+--- a/pci/hda/hda_intel.c       Thu Mar 15 15:10:28 2007 +0100
++++ b/pci/hda/hda_intel.c       Fri Mar 16 07:04:47 2007 +0100
+@@ -1087,6 +1087,10 @@ static int azx_pcm_open(struct snd_pcm_s
+        runtime->hw.rates = hinfo->rates;
+        snd_pcm_limit_hw_rates(runtime);
+        snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++       snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++                                  128);
++        snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
++                                  128);
+        if ((err = hinfo->ops.open(hinfo, apcm->codec, substream)) < 0) {
+                azx_release_device(azx_dev);
+                mutex_unlock(&chip->open_mutex);
 
 
- 
-____________________________________________________________________________________
-Food fight? Enjoy some healthy debate 
-in the Yahoo! Answers Food & Drink Q&A.
-http://answers.yahoo.com/dir/?link=list&sid=396545367
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
