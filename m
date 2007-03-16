@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HRu2S-00013S-0k delayed 10 hours
-Date: Thu, 15 Mar 2007 22:42:43 -0800
-Message-ID: <E1HS69D-0001Yc-Ni@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HRxxz-0002nv-BO delayed 10 hours
+Date: Fri, 16 Mar 2007 00:39:43 -0800
+Message-ID: <E1HS7yR-0000IS-RD@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -22,9 +22,9 @@ This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
 recipients after more than 10 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HRu2S-00013S-0k
-The subject of the message is: were chargeable three, companies and over Israel; saying,
-The date of the message is:    Thu, 15 Mar 2007 10:45:73 -0700
+The message identifier is:     1HRxxz-0002nv-BO
+The subject of the message is: asked are before they offered.  Now.  For all
+The date of the message is:    Thu, 15 Mar 2007 23:58:43 +0200
 
 The address to which the message has not yet been delivered is:
 
