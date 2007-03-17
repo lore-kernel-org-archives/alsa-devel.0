@@ -1,11 +1,13 @@
-From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HRu2S-00013S-0k delayed 48 hours
-Date: Sat, 17 Mar 2007 13:21:44 -0800
-Message-ID: <E1HSgLQ-0005Z9-H4@externalmx-1.sourceforge.net>
+From: Pieter Palmers <pieterp@joow.be>
+Subject: Re: Development Question
+Date: Sat, 17 Mar 2007 22:36:31 +0100
+Message-ID: <45FC5F5F.4090104@joow.be>
+References: <BAY120-F3AD6DD98410316B330D259C700@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <BAY120-F3AD6DD98410316B330D259C700@phx.gbl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,33 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: "M. Gagnon" <fire_void@hotmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message was created automatically by mail delivery software.
-A message that you sent has not yet been delivered to one or more of its
-recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
+M. Gagnon wrote:
+> Hi, i am now trying to port an application to linux using Alsa. At some 
+> point, i have midi bytes as char* and i have to play them. This is exactly 
+> the same data you'd find in a file, expect that it's in memory instead. How 
+> is that possible?
+> 
+> If this is not possible, i could always take any help on playing midi using 
+> sequencers I looked at the docs, i found a few samples, but they seemed to 
+> be outdated and the one that could interest me segfaulted. After i debugged 
+> it and fixed the segfault, it played nothing... (and i'm sure my midi is 
+> configured correctly BTW, pmidi works and i also succeeded in getting single 
+> notes to play)
+This is how I do playback in the freebob backend for jack:
 
-The message identifier is:     1HRu2S-00013S-0k
-The subject of the message is: were chargeable three, companies and over Israel; saying,
-The date of the message is:    Thu, 15 Mar 2007 10:45:73 -0700
+for (s=0;s<samples_read;s++) {
+   signed int *byte=(buff+s);
+   snd_seq_event_t ev;
+   if ((snd_midi_event_encode_byte(
+          port->parser,(*byte) & 0xFF, &ev)
+        ) > 0) {
+       // a midi message is complete, send it out to ALSA
+       snd_seq_ev_set_subs(&ev);
+       snd_seq_ev_set_direct(&ev);
+       snd_seq_ev_set_source(&ev, port->seq_port_nr);
+       snd_seq_event_output_direct(port->seq_handle, &ev);			   }
+}
 
-The address to which the message has not yet been delivered is:
+you can check the freebob_driver_midi_* functions in the freebob jack 
+backend for more detail.
 
-  alsa-devel@lists.sourceforge.net
-    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
-    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
-    451-Could not complete sender verify callout for
-    451-<alsa-devel@lists.sourceforge.net>.
-    451-The mail server(s) for the domain may be temporarily unreachable, or
-    451-they may be permanently unreachable from this server. In the latter case,
-    451-you need to change the address or create an MX record for its domain
-    451-if it is supposed to 
+Pieter
 
-No action is required on your part. Delivery attempts will continue for
-some time, and this warning may be repeated at intervals if the message
-remains undelivered. Eventually the mail delivery software will give up,
-and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
