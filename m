@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HRqph-0003rf-Bm delayed 48 hours
-Date: Sat, 17 Mar 2007 12:14:53 -0800
-Message-ID: <E1HSfIj-0003hw-5I@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HRu2S-00013S-0k delayed 48 hours
+Date: Sat, 17 Mar 2007 13:21:44 -0800
+Message-ID: <E1HSgLQ-0005Z9-H4@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -22,9 +22,9 @@ This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
 recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HRqph-0003rf-Bm
-The subject of the message is: eat our father.  My strength; and to their one accord and they knew
-The date of the message is:    Thu, 15 Mar 2007 09:21:42 -0500
+The message identifier is:     1HRu2S-00013S-0k
+The subject of the message is: were chargeable three, companies and over Israel; saying,
+The date of the message is:    Thu, 15 Mar 2007 10:45:73 -0700
 
 The address to which the message has not yet been delivered is:
 
