@@ -1,9 +1,9 @@
-From: Sandy <eun@minitel.net>
-Subject: hotbed provide
-Date: Sat, 17 Mar 2007 13:44:24 +0100
-Message-ID: <45FBE2A8.9040205@minitel.net>
+From: Rosamund <ecpvyf@eu.decoma.com>
+Subject: regret staggering
+Date: Sat, 17 Mar 2007 13:44:40 +0100
+Message-ID: <45FBE2B8.9070404@eu.decoma.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0472409023=="
+Content-Type: multipart/mixed; boundary="===============0000549028=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,14 +14,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0472409023==
+--===============0000549028==
 Content-Type: multipart/related;
-	boundary="------------060506010700010303060804"
+	boundary="------------070303060009060205000800"
 
---------------060506010700010303060804
+--------------070303060009060205000800
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -31,55 +31,59 @@ Content-Transfer-Encoding: 7bit
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 </head>
 <body bgcolor="#ffffff" text="#000000">
-<img alt="emir" src="cid:part1.03090906.08070806@minitel.net"
+<img alt="stillness" src="cid:part1.03080004.07030305@eu.decoma.com"
  height="326" width="418"><br>
-Responsibilities include the preparation of site grading and utility
-plans, street improvement plans, hydraulic calculations and project
-management.<br>
-DUTIES and RESPONSIBILITIES: The manufacturing engineer is responsible
-for development, planning, documentation, and problem resolution for
-field return hardware for repair and overhaul.<br>
-A bonus is offered for exceeding performance expectations.<br>
-Responsible for monitoring CP program.<br>
-in the refinery industry.<br>
-A wide degree of creativity and latitude is expected. Do you have a
-degree from a 4 year accredited university?<br>
-Strong programming skills, good teamwork and communication skills are a
-must.<br>
-The candidate will also be expected to maintain the Kaijo interposer
-wire bonder with good up time and regular PM .<br>
-Summarize your experience with lean principles.<br>
-Please specify experience doing power distribution design, motor control
-scheme design, short circuit analysis.<br>
-These hourly positions are responsible for maintenance in a food
-manufacturing environment that involves wiring, servos drives, electro
-drives and troubleshooting.<br>
-Must have experience designing pressure vessels, shell and tube heat
-exchangers, distillation columns, towers and tanks, etc.<br>
-Are you available and interested in the possibility of doing a Temp to
-Perm assignment?<br>
-You will also develop new product lines based upon customer ideas into
-completely new products.<br>
-Understanding and experience with Oracle development processes. These
-hourly positions are responsible for maintenance in a food manufacturing
-environment that involves wiring, servos drives, electro drives and
-troubleshooting. This position would also be responsible for database
-maintenance, trouble shooting and problem resolution. You will also
-create reference designs in the applications areas mentioned above.<br>
-Keywords: pump, fan, rotating, impeller, compressor, blowers Questions
-you will be asked - Why are you interested in a position near Los
-Angeles? Prefer local candidates, no relocation available at this
-time.<br>
+Engineering company is seeking a Sationary Equipment Mechanical Engineer
+for a position near Los Angeles, CA.<br>
+He or she has direct responsibility for defining detailed product
+requirements and features and for working cross-functionally to
+successfully deliver the product to market.<br>
+Explain your experience with panel layout, panel design, and panel
+wiring.<br>
+Questions you will be asked - Please list your experience with GPRS
+protocol development.<br>
+You will be managing the subcontractors and program budget for
+mechanical and lighting retrofits.<br>
+A leader in the aerospace industry is actively seeking a Supply Chain
+professional to lead the Strategic and New Program Sourcing activities
+for new products and components. Works on complex tasks, often with
+diverse scope with high degree of autonomy, leveraging experience,
+skills, established procedures and team resources to deliver quality
+products to DI customers.<br>
+Describe in detail your experience with reading and interpreting
+drawings, specifications and implementing procedures for assembly,
+erection and setting of equipment and components.<br>
+Good interpersonal skills.<br>
+We develop, produce and market entertainment, news and information to a
+global market.<br>
+in the refinery industry?<br>
+Additionally, the individual should have direct experience in the
+construction techniques involved in the installation and erection of
+these types of equipment.<br>
+Questions you will be asked - Please list your experience with GPRS
+protocol development.<br>
+Development of JSP pages for templates.<br>
+Do you want to be considered for this position as a Contract, Temp to
+Perm, or Direct Hire employee?<br>
+Great company in the San Francisco vicinity for a strategic applications
+engineer. IMMEDIATE NEED for a Senior Software Engineer position located
+in Southern California. We service all aspects of the development
+process, including land planning, environmental impact reports, agency
+presentations, architectural design review, leasing and sales. Their job
+location is highly desirable and offer a growth opportunity for the
+right candidate.<br>
+Pay based on experience. The exceptional benefits include a good per
+diem allowance.<br>
 </body>
 </html>
 
---------------060506010700010303060804
+--------------070303060009060205000800
 Content-Type: image/gif;
- name="camper.gif"
+ name="uteri.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <part1.03090906.08070806@minitel.net>
+Content-ID: <part1.03080004.07030305@eu.decoma.com>
 Content-Disposition: inline;
- filename="camper.gif"
+ filename="uteri.gif"
 
 R0lGODdhsAFRAfMHACkFFRIYMR4zF35ppfnR9/3Fg5KLhOkAvgf8XCbR/UWeDEAs/v5mFghxe7nt
 A6QhGiwAAAAArwFRAQAE/xDISau9IOjNu/9gKI5k6Qloqq5s675wrGJ0bd94ru+8Jf/AoHBILBqP
@@ -221,11 +225,11 @@ t+n8Z0AHWrovDq6eDc01QSc6BWrgM3oVfdjFUeLQkz70ixpdW0pP99KbluKjEZxpUIeaYToWdalN
 HWZO99cM0O1Vql3dVk/HWtYnPHWtkTvXWeda10d49TrQOohdB/sVtt6zpIl96F4/IrTJZvZbsXps
 aNda2FGOD62afW2qghmyRe70tJ2bVW/PJtpj3iRc+DdudBODj+beX7rPzGl38ziOAsZ2jSMc7tqc
 Qy593Wi9IeHIeEc7AgA7
---------------060506010700010303060804--
+--------------070303060009060205000800--
 
 
 
---===============0472409023==
+--===============0000549028==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -236,7 +240,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0472409023==
+--===============0000549028==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -247,4 +251,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0472409023==--
+--===============0000549028==--
