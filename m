@@ -1,14 +1,12 @@
-From: Nicolas Boichat <nicolas@boichat.ch>
-Subject: Re: Macmini pins in sigmatel_audio
-Date: Sat, 17 Mar 2007 13:58:51 +0800
-Message-ID: <45FB839B.6040309@boichat.ch>
-References: <E1HRY1h-0003Y6-2M@sc8-pr-svn1.sourceforge.net>	<20070314192940.GA18255@dose.home.local>	<45F8DD78.9020508@boichat.ch>	<20070315080134.GA22654@dose.home.local>	<45F91C0E.7020600@boichat.ch>	<20070315185433.GA10186@dose.home.local>	<45FA6869.40701@boichat.ch>
-	<s5hird178fb.wl%tiwai@suse.de>
+From: Huw Hawkins <huwrh@yahoo.com.au>
+Subject: Recently committed change to kernel 2.6.20.2 breaks
+	snd-hda-intel on AOpen EZ482
+Date: Sat, 17 Mar 2007 18:05:04 +1100 (EST)
+Message-ID: <697313.33968.qm@web53613.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hird178fb.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,90 +16,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, mactel-linux-devel@lists.sourceforge.net, Tino Keitel <tino.keitel+mactel-devel@tikei.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
+  The change under kernel 2.4.20.2 which reduced the
+number of codexs (as in the below bit of the patch
+files) from 4 to 3 stops the sound card properly
+initialising (failed with an error about not finding
+codecs). Bumping it back up to 4 gets me my sound
+devices back again.
 
-Takashi Iwai wrote:
-> At Fri, 16 Mar 2007 17:50:33 +0800,
-> Nicolas Boichat wrote:
->> Hi,
->>
->> I just got this input from a Macmini user (subsys id: 0x106b0800), after
->> asking him to try different pins settings. (the sound doesn't work
->> properly with a vanilla 2.6.21-rc3 kernel)
->>
->> Tino Keitel wrote:
->>> On Thu, Mar 15, 2007 at 18:12:30 +0800, Nicolas Boichat wrote:
->>>
->>> [...]
->>>
->>>   
->>>> Considered it worked with the mactel patches, you should try
->>>> STAC_MACBOOK_PRO_V1 first....
->>>>     
->>> You are right, with STAC_MACBOOK_PRO_V1 I can use all required
->>> features. Here are the results:
->>>
->>> - analog line in works, if "Line In as Output" is muted
->>>
->>> - analog line out works, it is controlled by  the "Front" channel in
->>>   alsamixer
->>>
->>> - digital line out works
->>>
->>> - the internal speaker works, it is controlled by the "Master" channel
->>>   in alsamixer
->>>
->>> - the internal speaker is silent if there is an analog plug in line out
->>>
->>> - the internal speker still works if a (optical) digital cable is
->>>   plugged in line out, I guess because the optical plastic cable
->>>   doesn't short circuit the line out plug
->>>
->>> Minor glitches:
->>>
->>> There is an input selector that has the options "Line", "Mic" and
->>> "Front Mic". However, I think that only "Line" is really usable, as I
->>> had so signal when I connected a Mic to line in and a "Front Mic" is
->>> also not present in the mini.
->>>
->>> There is a "Mic as output" switch in alsamixer, but there is not "Mic"
->>> jack.
->>>   
->> Considering these pins have been used for a long time on mactel-linux,
-> 
-> Grrr, someone should have informed us.  I didn't know of this.
+--------------------------------------------------
 
-Sorry... Was quite busy recently, and I'm trying to get all our patches
-upstream now...
+diff --git a/sound/pci/hda/hda_intel.c
+b/sound/pci/hda/hda_intel.c
+index 1a7e821..77f8ec7 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -199,7 +199,7 @@ enum { SDI0, SDI1, SDI2, SDI3,
+SDO0, SDO1, SDO2, SDO3 };
 
->> and that they are working fine with MacBook (1st generation at least),
->> Macmini and Macbook Pro (1st generation only), I think the following
->> patch is appropriate (please apply it after the patch sent yesterday).
-> 
-> But the glitches above don't appear on your macbook-pro-v1, right?
+ /* STATESTS int mask: SD2,SD1,SD0 */
+ #define STATESTS_INT_MASK      0x07
+-#define AZX_MAX_CODECS         4
++#define AZX_MAX_CODECS         3
 
-Yeah I have some glitches too... For "Input source" I have "Front Mic",
-"Mic" and "Line", while only "Mic" and "Line" are useful. I also have a
-Mic as Output which is not relevant (no Mic jack)... I'll try to have a
-look at this.
+-----------------------------------------------
 
-Also, to get the Mic to work, even if the "Input Source" is set to Mic
-at boot time, I have to switch to Line or Front Mic and then back to Mic.
+OUtput os lspci -vv is as follows:
 
-> Then I suppose macmini requires slightly different pin configs for
-> inputs.  As for now, I think it's OK to use macbook-pro-v1 pin configs
-> for macmini since it's much better.  So, how about to just keep the
-> models and change the pin definitions to use the same table?
+00:14.2 Audio device: ATI Technologies Inc SB450 HDA
+Audio (rev 01)
+        Subsystem: AOPEN Inc. Unknown device 0569
+        Control: I/O- Mem+ BusMaster+ SpecCycle-
+MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr-
+DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, Cache Line Size: 32 bytes
+        Interrupt: pin ? routed to IRQ 16
+        Region 0: Memory at fe024000 (64-bit,
+non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2-
+AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0
+PME-
+        Capabilities: [60] Message Signalled
+Interrupts: Mask- 64bit+ Queue=0/0 Enable-
+                Address: 0000000000000000  Data: 0000
 
-I saw your patch. Thx.
+----------------------------------------------
 
-Best regards,
+  I'm not on this list so please CC me in any reply,
+or if more info is required. I couldn't see this in
+the bugtrack, although admittedly I didn't look too
+hard so appologies if it is known.
 
-Nicolas
+Thanks
+
+Huw
+
+huwrh at yahoo dot com dot au
+
+Send instant messages to your online friends http://au.messenger.yahoo.com 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
