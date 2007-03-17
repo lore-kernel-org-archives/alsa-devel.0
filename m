@@ -1,18 +1,13 @@
-From: Randy Cushman <rcushman_linux@earthlink.net>
-Subject: [RFC] Standard for Multichannel Mixer Control Names
-Date: Sat, 17 Mar 2007 17:51:54 -0400
-Message-ID: <45FC62FA.5080403@earthlink.net>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: isa_bus: sb8
+Date: Sun, 18 Mar 2007 00:28:34 +0100
+Message-ID: <45FC79A2.6080807@gmail.com>
+References: <45E4A2F5.3080607@gmail.com> <20070317195829.GA6455@sygehus.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mta11.adelphia.net (mta11.adelphia.net [68.168.78.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id D117D24460
-	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2007 22:52:05 +0100 (CET)
-Received: from [127.0.0.1] (really [67.20.25.133]) by mta11.adelphia.net
-	(InterMail vM.6.01.05.02 201-2131-123-102-20050715) with ESMTP
-	id <20070317215203.XPDV2195.mta11.adelphia.net@[127.0.0.1]>
-	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2007 17:52:03 -0400
+In-Reply-To: <20070317195829.GA6455@sygehus.dk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,55 +17,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Rask Ingemann Lambertsen <rask@sygehus.dk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-In an exchange with Takashi regarding my proposal for changing some 
-mixer control names, he recommended that I start a thread in attempt to 
-reach consensus regarding a convention/standard for mixer control names 
-in ALSA.
+On 03/17/2007 08:58 PM, Rask Ingemann Lambertsen wrote:
 
-My name-changing effort was complicated by the fact that, as Takashi put 
-it:  "Many apps assume either 'Master' or 'PCM' mixer exists."
+> On Tue, Feb 27, 2007 at 10:30:29PM +0100, Rene Herman wrote:
 
-(Background:  The only multichannel audio adapter to which I have access 
-for testing is an Analog Devices AD1986A CODEC attached to an AC '97 
-chipset on a motherboard.)
+>> 1. sb8 only probed for it's port, and then failed the load with
+>> "can't grab irq 65535". This does away with the port autoprobe as
+>> well; if you insist, I can add back irq and dma autoprobe instead
+>> as well.
+> 
+> I have an Aztech Sound Galaxy NX Pro which means EEPROM instead of 
+> jumpers for port, irq and dma configuration. Autoprobe would be nice
+> for irq and dma because I only know that the port is 0x220.
 
-In desiring to rename controls, I assumed that the AC '97 multichannel 
-driver control names represented an ALSA standard.  Actually I don't 
-know how other drivers name their multichannel controls.  (The AC '97 
-driver generically uses "Master" playback to control the front channel 
-pin attenuation, and "PCM" playback to control multichannel DAC levels 
-into the mixer.  "Surround", "Center" and "LFE" playback controls adjust 
-pin attenuation for the respective channels.)
+The unfortunate thing is that autoprobe on ISA is a quite horribly bad 
+idea...
 
-The AD1986/AD1986A CODECs are at variance with the AC '97 standard, 
-causing "Master" playback to control pin attenuation for all channels, 
-"PCM" playback to control only the front channel DAC levels, and 
-"Surround", "Center" and "LFE" playback controls to affect DAC levels 
-for their respective channels.  Hence my original reasoning that these 
-control names are inappropriate.
+On a PCI/ISA system you need to know the IRQ and DMA channel(s) the card 
+is using _anyway_ since you need to tell the BIOS to not hand those out 
+to PCI or ISA-PnP cards (or, in the case of IRQs, even tell it to make 
+that IRQ available to ISA).
 
-(Other AD AC '97 multichannel CODECs are even less intuitive regarding 
-their control usage, but in the interest of brevity I'll save that 
-discussion for later.)
+Having the driver promise to figure things out for you automatically to 
+then only have it fail anyway since you didn't reserve the resources in 
+the BIOS (something it's not going to be able to provide you with a good 
+diagnostic for) stinks. You stand a much better chance of figuring out 
+what you did wrong if you actually have to spell it out.
 
-Questions:
+ISA only systems don't have the BIOS setup problem but then we're 
+talking 386/486 systems and the number of those in active use which 
+aren't operated by the type of PC archeologist who'd be actively 
+insulted if someone implies they shouldn't specify it all manually 
+(that's me) makes for a heck of an excuse to also delete the port 
+autoprobe to avoid the other and main problem with ISA autoprobing; 
+poking around a non-discoverable bus willy-nilly can have certain bad 
+consequences. Most famously, locking up a NE2000 NIC by touching its 
+ports...
 
-What is the function of playback controls "Master" and "PCM" for 
-multichannel CODECs driven by modules other than snd_ac97_codec?  Which 
-control controls the front channels only, and which controls all 
-channels?  What is the function of playback controls with names such as 
-"Surround", "Center", and "LFE"?
+Now, in actual practice, port autoprobing doesn't in fact cause all that 
+much trouble so even if it might conceptually be wrong, it's also a bit 
+of an "oh well" kind of situation. The sb8 driver indeed does not probe 
+for IRQ and DMA (perhaps due the above considerations, I don't know) and 
+the patch you replied to removed the port probe mainly due to 
+consistency. Ie, specify nothing or specify it all, but let's not have 
+some per-driver random ruleset.
 
-Does ALSA need to standardize mixer control names, or should we continue 
-to use whatever names are convenient for a given chipset/CODEC?  What 
-standard should we use?
+(the old OSS driver also needs io= passed in, by the way).
 
-Randy Cushman
+I need to fast forward my attempts to alsa-current but things are being 
+annoying again and I'm not finding the time. I'll try and gather Iwai's 
+input on my next submission for SB8. I also still need to figure out if 
+it's expected that all my "DSP 2.1" SB8 cards can't set their volumes to 
+anything other than max. I do seem to have snd-sgalaxy working...
 
+But thanks for the comment. I believe I'm seeing that doing IRQ and DMA 
+autoprobe would actually be really messy (and there's that BIOS setup 
+thing) but the reply is logged...
 
+By the way -- are you in fact using a SG NX Pro? Not a SG NX Pro 16 or 
+some other 16-bit SG? The NX Pro should have an FCCID of I38-MMSD802. If 
+you are in fact using a 16-bit SG the card's better of being used in 
+it's native WSS mode, though snd-sgalaxy.
+
+>> However, when I tried driving an SB16 with the SB8 driver, it
+>> didn't actually work. Would you happen to know/remember if this is
+>> expected? Or is it a "bug"?
+> 
+> IIRC, the SB16 is not SBPro compatible. Look at the Sound Blaster 
+> Hardware Programming Guide.
+
+I haven't looked closely at the guts of the driver itself yet but as far 
+as I'm aware, it _should_ work. The SB16 could certainly run all those 
+DOS games that were programmed against an SB8 fine.
+
+Rene.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
