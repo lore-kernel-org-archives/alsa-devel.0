@@ -1,13 +1,18 @@
-From: Pieter Palmers <pieterp@joow.be>
-Subject: Re: Development Question
-Date: Sat, 17 Mar 2007 22:36:31 +0100
-Message-ID: <45FC5F5F.4090104@joow.be>
-References: <BAY120-F3AD6DD98410316B330D259C700@phx.gbl>
+From: Randy Cushman <rcushman_linux@earthlink.net>
+Subject: [RFC] Standard for Multichannel Mixer Control Names
+Date: Sat, 17 Mar 2007 17:51:54 -0400
+Message-ID: <45FC62FA.5080403@earthlink.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <BAY120-F3AD6DD98410316B330D259C700@phx.gbl>
+Received: from mta11.adelphia.net (mta11.adelphia.net [68.168.78.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id D117D24460
+	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2007 22:52:05 +0100 (CET)
+Received: from [127.0.0.1] (really [67.20.25.133]) by mta11.adelphia.net
+	(InterMail vM.6.01.05.02 201-2131-123-102-20050715) with ESMTP
+	id <20070317215203.XPDV2195.mta11.adelphia.net@[127.0.0.1]>
+	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2007 17:52:03 -0400
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,41 +22,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "M. Gagnon" <fire_void@hotmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-M. Gagnon wrote:
-> Hi, i am now trying to port an application to linux using Alsa. At some 
-> point, i have midi bytes as char* and i have to play them. This is exactly 
-> the same data you'd find in a file, expect that it's in memory instead. How 
-> is that possible?
-> 
-> If this is not possible, i could always take any help on playing midi using 
-> sequencers I looked at the docs, i found a few samples, but they seemed to 
-> be outdated and the one that could interest me segfaulted. After i debugged 
-> it and fixed the segfault, it played nothing... (and i'm sure my midi is 
-> configured correctly BTW, pmidi works and i also succeeded in getting single 
-> notes to play)
-This is how I do playback in the freebob backend for jack:
+In an exchange with Takashi regarding my proposal for changing some 
+mixer control names, he recommended that I start a thread in attempt to 
+reach consensus regarding a convention/standard for mixer control names 
+in ALSA.
 
-for (s=0;s<samples_read;s++) {
-   signed int *byte=(buff+s);
-   snd_seq_event_t ev;
-   if ((snd_midi_event_encode_byte(
-          port->parser,(*byte) & 0xFF, &ev)
-        ) > 0) {
-       // a midi message is complete, send it out to ALSA
-       snd_seq_ev_set_subs(&ev);
-       snd_seq_ev_set_direct(&ev);
-       snd_seq_ev_set_source(&ev, port->seq_port_nr);
-       snd_seq_event_output_direct(port->seq_handle, &ev);			   }
-}
+My name-changing effort was complicated by the fact that, as Takashi put 
+it:  "Many apps assume either 'Master' or 'PCM' mixer exists."
 
-you can check the freebob_driver_midi_* functions in the freebob jack 
-backend for more detail.
+(Background:  The only multichannel audio adapter to which I have access 
+for testing is an Analog Devices AD1986A CODEC attached to an AC '97 
+chipset on a motherboard.)
 
-Pieter
+In desiring to rename controls, I assumed that the AC '97 multichannel 
+driver control names represented an ALSA standard.  Actually I don't 
+know how other drivers name their multichannel controls.  (The AC '97 
+driver generically uses "Master" playback to control the front channel 
+pin attenuation, and "PCM" playback to control multichannel DAC levels 
+into the mixer.  "Surround", "Center" and "LFE" playback controls adjust 
+pin attenuation for the respective channels.)
+
+The AD1986/AD1986A CODECs are at variance with the AC '97 standard, 
+causing "Master" playback to control pin attenuation for all channels, 
+"PCM" playback to control only the front channel DAC levels, and 
+"Surround", "Center" and "LFE" playback controls to affect DAC levels 
+for their respective channels.  Hence my original reasoning that these 
+control names are inappropriate.
+
+(Other AD AC '97 multichannel CODECs are even less intuitive regarding 
+their control usage, but in the interest of brevity I'll save that 
+discussion for later.)
+
+Questions:
+
+What is the function of playback controls "Master" and "PCM" for 
+multichannel CODECs driven by modules other than snd_ac97_codec?  Which 
+control controls the front channels only, and which controls all 
+channels?  What is the function of playback controls with names such as 
+"Surround", "Center", and "LFE"?
+
+Does ALSA need to standardize mixer control names, or should we continue 
+to use whatever names are convenient for a given chipset/CODEC?  What 
+standard should we use?
+
+Randy Cushman
+
 
 
 -------------------------------------------------------------------------
