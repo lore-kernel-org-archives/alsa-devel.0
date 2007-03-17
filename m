@@ -1,14 +1,11 @@
-From: Rask Ingemann Lambertsen <rask@sygehus.dk>
-Subject: Re: isa_bus: sb8
-Date: Sat, 17 Mar 2007 20:58:29 +0100
-Message-ID: <20070317195829.GA6455@sygehus.dk>
-References: <45E4A2F5.3080607@gmail.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HRqph-0003rf-Bm delayed 48 hours
+Date: Sat, 17 Mar 2007 12:14:53 -0800
+Message-ID: <E1HSfIj-0003hw-5I@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <45E4A2F5.3080607@gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,28 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Rene Herman <rene.herman@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 27, 2007 at 10:30:29PM +0100, Rene Herman wrote:
-> 1. sb8 only probed for it's port, and then failed the load with "can't 
-> grab irq 65535". This does away with the port autoprobe as well; if you 
-> insist, I can add back irq and dma autoprobe instead as well.
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-   I have an Aztech Sound Galaxy NX Pro which means EEPROM instead of
-jumpers for port, irq and dma configuration. Autoprobe would be nice for irq
-and dma because I only know that the port is 0x220.
+The message identifier is:     1HRqph-0003rf-Bm
+The subject of the message is: eat our father.  My strength; and to their one accord and they knew
+The date of the message is:    Thu, 15 Mar 2007 09:21:42 -0500
 
-> However, when I tried driving an SB16 with the SB8 driver, it didn't 
-> actually work. Would you happen to know/remember if this is expected? Or 
-> is it a "bug"?
+The address to which the message has not yet been delivered is:
 
-   IIRC, the SB16 is not SBPro compatible. Look at the Sound Blaster
-Hardware Programming Guide.
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
 
--- 
-Rask Ingemann Lambertsen
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
