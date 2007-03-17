@@ -1,13 +1,13 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Recently committed change to kernel
-	2.6.20.2	breaks snd-hda-intel on AOpen EZ482
-Date: Sat, 17 Mar 2007 01:22:51 -0700
-Message-ID: <1174119771.4484.146.camel@razman.gruemaster.com>
-References: <697313.33968.qm@web53613.mail.yahoo.com>
+From: Ciaccia <ciacciax@yahoo.com>
+Subject: Re: Static build of alsa-lib
+Date: Sat, 17 Mar 2007 03:13:06 -0700 (PDT)
+Message-ID: <879835.22038.qm@web31007.mail.mud.yahoo.com>
+References: <s5h3b45w9ur.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-JoxT+u6PuQYCcaj7g60p"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <697313.33968.qm@web53613.mail.yahoo.com>
+In-Reply-To: <s5h3b45w9ur.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,287 +17,280 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Huw Hawkins <huwrh@yahoo.com.au>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
+I downloaded the last snapshot from hg
+(alsa-lib-hg20070317) and I applied the patch you
+included in your email. Then I configured alsa-lib as
+following:
 
---=-JoxT+u6PuQYCcaj7g60p
-Content-Type: multipart/alternative; boundary="=-gw8YYrOTiZOVRN8dCmVY"
+./configure --enable-static --disable-shared
+--disable-mixer --disable-hwdep --disable-rawmidi
+--disable-seq --disable-instr --disable-alisp
+-with-pcm-plugins=no
 
 
---=-gw8YYrOTiZOVRN8dCmVY
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+I just need PCM, so I disable all the packages but
+PCM. Then I compiled my mini application (just
+snd_pcm_open, configure it and write some data to it)
+with the following command-line (I'm using gcc 4.1):
 
-Thanks.  This was actually discovered earlier this week and a change
-specific to ATI chipsets has been made.  Attached is the new patch that
-was added to alsa.
+$ gcc -o test test.c
+-L/tmp/alsa-lib-hg20070317/src/.libs/ -lasound -lm
+-lpthread -static
+          
+and I got the following errors/warnings:
 
-Tobin
+/tmp/alsa-lib-hg20070317/src/.libs//libasound.a(control_shm.o):
+In function `_snd_ctl_shm_open':
+/tmp/alsa-lib-hg20070317/src/control/control_shm.c:664:
+warning: Using 'gethostbyname' in statically linked
+applications requires at runtime the shared libraries
+from the glibc version used for linking
+/tmp/alsa-lib-hg20070317/src/.libs//libasound.a(dlmisc.o):
+In function `snd_dlsym_verify':
+/tmp/alsa-lib-hg20070317/src/dlmisc.c:115: undefined
+reference to `dlsym'
+/tmp/alsa-lib-hg20070317/src/.libs//libasound.a(dlmisc.o):
+In function `snd_dlsym':
+/tmp/alsa-lib-hg20070317/src/dlmisc.c:159: undefined
+reference to `dlsym'
+/tmp/alsa-lib-hg20070317/src/.libs//libasound.a(dlmisc.o):
+In function `snd_dlclose':
+/tmp/alsa-lib-hg20070317/src/dlmisc.c:85: undefined
+reference to `dlclose'
+/tmp/alsa-lib-hg20070317/src/.libs//libasound.a(dlmisc.o):
+In function `snd_dlopen':
+/tmp/alsa-lib-hg20070317/src/dlmisc.c:64: undefined
+reference to `dlopen'
+collect2: ld returned 1 exit status
+                                      
+Am I doing something wrong?!?
 
-On Sat, 2007-03-17 at 18:05 +1100, Huw Hawkins wrote:
+Thanks
+Bye
+Andrea
 
-> Hi,
->   The change under kernel 2.4.20.2 which reduced the
-> number of codexs (as in the below bit of the patch
-> files) from 4 to 3 stops the sound card properly
-> initialising (failed with an error about not finding
-> codecs). Bumping it back up to 4 gets me my sound
-> devices back again.
+--- Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Fri, 16 Mar 2007 06:17:00 -0700 (PDT),
+> Ciaccia wrote:
+> > 
+> > Hi there,
+> > I would like to compile an alsa application for an
+> > embedded system with no shared-libraries support.
+> My
+> > application just needs PCM, with no plug-ins, no
+> mixer
+> > and no midi and the application should be a
+> standalone
+> > executable with no external dependencies,
+> otherwise it
+> > will not work.
+> > 
+> > I tried to compile alsa-lib with static support,
+> but
+> > without luck (-ldl is always needed in the gcc
+> line
+> > and gcc always prints some weird warnings). Since
+> I
+> > don't need external plugins nor ladspa, I think
+> there
+> > should be a way to compile an application in a
+> 100%
+> > static manner, but I still have to figure out how.
+> > 
+> > I also found this thread with a similar problem
+> with
+> > uClinux
+> >
+>
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg18253.html
+> > but at the end I did not understand how/if the
+> problem
+> > was solved.
+> > 
+> > Do you think it should be possible to compile
+> alsa-lib
+> > with no dependencies on dl? How?
+> > 
+> > Otherwise, would it be possible to write an alsa
+> > application that does not rely on alsa-lib (i.e.,
+> > by using the alsa kernel APIs directly)? Has
+> someone
+> > already tried it? Some hints?
+> > 
+> > Every hint is extremely welcome
 > 
-> --------------------------------------------------
+> I worked on this sometime ago, and made a patch to
+> build alsa-lib
+> without pthread and libdl.  I don't remember why
+> this wasn't applied.
+> IIRC, ulibc has the wrappers for pthread and libdl,
+> so this wasn't
+> needed at that time in the end.
 > 
-> diff --git a/sound/pci/hda/hda_intel.c
-> b/sound/pci/hda/hda_intel.c
-> index 1a7e821..77f8ec7 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -199,7 +199,7 @@ enum { SDI0, SDI1, SDI2, SDI3,
-> SDO0, SDO1, SDO2, SDO3 };
+> Otherwise, it should work.  Build with
+> --enable-static
+> --disable-shared, --disble-mixer, --disable-hwdep,
+> etc.
 > 
->  /* STATESTS int mask: SD2,SD1,SD0 */
->  #define STATESTS_INT_MASK      0x07
-> -#define AZX_MAX_CODECS         4
-> +#define AZX_MAX_CODECS         3
 > 
-> -----------------------------------------------
+> Takashi
 > 
-> OUtput os lspci -vv is as follows:
+> diff -r f1203eb7eb48 configure.in
+> --- a/configure.in	Tue Mar 13 10:44:28 2007 +0100
+> +++ b/configure.in	Fri Mar 16 15:07:51 2007 +0100
+> @@ -148,6 +148,23 @@ else
+>  else
+>    AC_MSG_RESULT(no)
+>  fi
+> +
+> +AC_CHECK_LIB([dl], [dlsym], [HAVE_LIBDL="yes"])
+> +AC_CHECK_LIB([pthread], [pthread_join],
+> [HAVE_LIBPTHREAD="yes"])
+> +
+> +ALSA_DEPLIBS=""
+> +if test "$softfloat" != "yes"; then
+> +  ALSA_DEPLIBS="-lm"
+> +fi
+> +if test "$HAVE_LIBDL" = "yes"; then
+> +  ALSA_DEPLIBS="$ALSA_DEPLIBS -ldl"
+> +  AC_DEFINE([HAVE_LIBDL], 1, [Have libdl])
+> +fi
+> +if test "$HAVE_LIBPTHREAD" = "yes"; then
+> +  ALSA_DEPLIBS="$ALSA_DEPLIBS -lpthread"
+> +  AC_DEFINE([HAVE_LIBPTHREAD], 1, [Have
+> libpthread])
+> +fi
+> +AC_SUBST(ALSA_DEPLIBS)
+>  
+>  dnl Check for architecture
+>  AC_MSG_CHECKING(for architecture)
+> diff -r f1203eb7eb48 include/local.h
+> --- a/include/local.h	Tue Mar 13 10:44:28 2007 +0100
+> +++ b/include/local.h	Fri Mar 16 15:07:51 2007 +0100
+> @@ -36,6 +36,11 @@
+>  #include "config.h"
+>  #ifdef SUPPORT_RESMGR
+>  #include <resmgr.h>
+> +#endif
+> +#ifdef HAVE_LIBDL
+> +#include <dlfcn.h>
+> +#else
+> +#define RTLD_NOW	0
+>  #endif
+>  
+>  #define _snd_config_iterator list_head
+> diff -r f1203eb7eb48 src/Makefile.am
+> --- a/src/Makefile.am	Tue Mar 13 10:44:28 2007 +0100
+> +++ b/src/Makefile.am	Fri Mar 16 15:07:51 2007 +0100
+> @@ -41,7 +41,7 @@ libasound_la_LIBADD +=
+> alisp/libalisp.la
+>  libasound_la_LIBADD += alisp/libalisp.la
+>  endif
+>  SUBDIRS += compat conf
+> -libasound_la_LIBADD += compat/libcompat.la -lm -ldl
+> -lpthread
+> +libasound_la_LIBADD += compat/libcompat.la
+> @ALSA_DEPLIBS@
+>  
+>  libasound_la_LDFLAGS = -version-info $(COMPATNUM)
+> $(VSYMS)
+>  
+> diff -r f1203eb7eb48 src/async.c
+> --- a/src/async.c	Tue Mar 13 10:44:28 2007 +0100
+> +++ b/src/async.c	Fri Mar 16 15:07:51 2007 +0100
+> @@ -151,9 +151,11 @@ int
+> snd_async_del_handler(snd_async_hand
+>  	if (!list_empty(&handler->hlist))
+>  		goto _end;
+>  	switch (handler->type) {
+> +#ifdef BUILD_PCM
+>  	case SND_ASYNC_HANDLER_PCM:
+>  		err = snd_pcm_async(handler->u.pcm, -1, 1);
+>  		break;
+> +#endif
+>  	case SND_ASYNC_HANDLER_CTL:
+>  		err = snd_ctl_async(handler->u.ctl, -1, 1);
+>  		break;
+> diff -r f1203eb7eb48 src/conf.c
+> --- a/src/conf.c	Tue Mar 13 10:44:28 2007 +0100
+> +++ b/src/conf.c	Fri Mar 16 15:07:51 2007 +0100
+> @@ -415,12 +415,13 @@ beginning:</P>
+>  
+>  
+>  #include <stdarg.h>
+> -#include <dlfcn.h>
+>  #include <limits.h>
+>  #include <sys/stat.h>
+> -#include <pthread.h>
+>  #include <locale.h>
+>  #include "local.h"
+> +#ifdef HAVE_LIBPTHREAD
+> +#include <pthread.h>
+> +#endif
+>  
+>  #ifndef DOC_HIDDEN
+>  
+> @@ -3080,7 +3081,9 @@ int
+> snd_config_update_r(snd_config_t **_
+>  	return 1;
+>  }
+>  
+> +#ifdef HAVE_LIBPTHREAD
+>  static pthread_mutex_t snd_config_update_mutex =
+> PTHREAD_MUTEX_INITIALIZER;
+> +#endif
+>  
+>  /** 
+>   * \brief Updates #snd_config by rereading the
+> global configuration files (if needed).
+> @@ -3099,9 +3102,13 @@ int snd_config_update(void)
+>  {
+>  	int err;
+>  
+> +#ifdef HAVE_LIBPTHREAD
+>  	pthread_mutex_lock(&snd_config_update_mutex);
+> +#endif
+>  	err = snd_config_update_r(&snd_config,
+> &snd_config_global_update, NULL);
+> +#ifdef HAVE_LIBPTHREAD
+>  	pthread_mutex_unlock(&snd_config_update_mutex);
+> +#endif
+>  	return err;
+>  }
+>  
+> @@ -3128,15 +3135,18 @@ int
+> snd_config_update_free(snd_config_up
+>   */
+>  int snd_config_update_free_global(void)
+>  {
+> +#ifdef HAVE_LIBPTHREAD
+>  	pthread_mutex_lock(&snd_config_update_mutex);
+> +#endif
+>  	if (snd_config)
+>  		snd_config_delete(snd_config);
+>  	snd_config = NULL;
+>  	if (snd_config_global_update)
+>  		snd_config_update_free(snd_config_global_update);
+>  	snd_config_global_update = NULL;
 > 
-> 00:14.2 Audio device: ATI Technologies Inc SB450 HDA
-> Audio (rev 01)
->         Subsystem: AOPEN Inc. Unknown device 0569
->         Control: I/O- Mem+ BusMaster+ SpecCycle-
-> MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
->         Status: Cap+ 66MHz- UDF- FastB2B- ParErr-
-> DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR-
->         Latency: 64, Cache Line Size: 32 bytes
->         Interrupt: pin ? routed to IRQ 16
->         Region 0: Memory at fe024000 (64-bit,
-> non-prefetchable) [size=16K]
->         Capabilities: [50] Power Management version 2
->                 Flags: PMEClk- DSI- D1- D2-
-> AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
->                 Status: D0 PME-Enable- DSel=0 DScale=0
-> PME-
->         Capabilities: [60] Message Signalled
-> Interrupts: Mask- 64bit+ Queue=0/0 Enable-
->                 Address: 0000000000000000  Data: 0000
-> 
-> ----------------------------------------------
-> 
->   I'm not on this list so please CC me in any reply,
-> or if more info is required. I couldn't see this in
-> the bugtrack, although admittedly I didn't look too
-> hard so appologies if it is known.
-> 
-> Thanks
-> 
-> Huw
-> 
-> huwrh at yahoo dot com dot au
-> 
-> Send instant messages to your online friends http://au.messenger.yahoo.com 
-> 
-> -------------------------------------------------------------------------
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to share your
-> opinions on IT & business topics through brief surveys-and earn cash
-> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
--- 
-Tobin Davis <tdavis@dsl-only.net>
-
---=-gw8YYrOTiZOVRN8dCmVY
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
-<HTML>
-<HEAD>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
-  <META NAME="GENERATOR" CONTENT="GtkHTML/3.12.0">
-</HEAD>
-<BODY>
-Thanks.&nbsp; This was actually discovered earlier this week and a change specific to ATI chipsets has been made.&nbsp; Attached is the new patch that was added to alsa.<BR>
-<BR>
-Tobin<BR>
-<BR>
-On Sat, 2007-03-17 at 18:05 +1100, Huw Hawkins wrote:
-<BLOCKQUOTE TYPE=CITE>
-<PRE>
-<FONT COLOR="#000000">Hi,</FONT>
-<FONT COLOR="#000000">  The change under kernel 2.4.20.2 which reduced the</FONT>
-<FONT COLOR="#000000">number of codexs (as in the below bit of the patch</FONT>
-<FONT COLOR="#000000">files) from 4 to 3 stops the sound card properly</FONT>
-<FONT COLOR="#000000">initialising (failed with an error about not finding</FONT>
-<FONT COLOR="#000000">codecs). Bumping it back up to 4 gets me my sound</FONT>
-<FONT COLOR="#000000">devices back again.</FONT>
-
-<FONT COLOR="#000000">--------------------------------------------------</FONT>
-
-<FONT COLOR="#000000">diff --git a/sound/pci/hda/hda_intel.c</FONT>
-<FONT COLOR="#000000">b/sound/pci/hda/hda_intel.c</FONT>
-<FONT COLOR="#000000">index 1a7e821..77f8ec7 100644</FONT>
-<FONT COLOR="#000000">--- a/sound/pci/hda/hda_intel.c</FONT>
-<FONT COLOR="#000000">+++ b/sound/pci/hda/hda_intel.c</FONT>
-<FONT COLOR="#000000">@@ -199,7 +199,7 @@ enum { SDI0, SDI1, SDI2, SDI3,</FONT>
-<FONT COLOR="#000000">SDO0, SDO1, SDO2, SDO3 };</FONT>
-
-<FONT COLOR="#000000"> /* STATESTS int mask: SD2,SD1,SD0 */</FONT>
-<FONT COLOR="#000000"> #define STATESTS_INT_MASK      0x07</FONT>
-<FONT COLOR="#000000">-#define AZX_MAX_CODECS         4</FONT>
-<FONT COLOR="#000000">+#define AZX_MAX_CODECS         3</FONT>
-
-<FONT COLOR="#000000">-----------------------------------------------</FONT>
-
-<FONT COLOR="#000000">OUtput os lspci -vv is as follows:</FONT>
-
-<FONT COLOR="#000000">00:14.2 Audio device: ATI Technologies Inc SB450 HDA</FONT>
-<FONT COLOR="#000000">Audio (rev 01)</FONT>
-<FONT COLOR="#000000">        Subsystem: AOPEN Inc. Unknown device 0569</FONT>
-<FONT COLOR="#000000">        Control: I/O- Mem+ BusMaster+ SpecCycle-</FONT>
-<FONT COLOR="#000000">MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-</FONT>
-<FONT COLOR="#000000">        Status: Cap+ 66MHz- UDF- FastB2B- ParErr-</FONT>
-<FONT COLOR="#000000">DEVSEL=slow &gt;TAbort- &lt;TAbort- &lt;MAbort- &gt;SERR- &lt;PERR-</FONT>
-<FONT COLOR="#000000">        Latency: 64, Cache Line Size: 32 bytes</FONT>
-<FONT COLOR="#000000">        Interrupt: pin ? routed to IRQ 16</FONT>
-<FONT COLOR="#000000">        Region 0: Memory at fe024000 (64-bit,</FONT>
-<FONT COLOR="#000000">non-prefetchable) [size=16K]</FONT>
-<FONT COLOR="#000000">        Capabilities: [50] Power Management version 2</FONT>
-<FONT COLOR="#000000">                Flags: PMEClk- DSI- D1- D2-</FONT>
-<FONT COLOR="#000000">AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)</FONT>
-<FONT COLOR="#000000">                Status: D0 PME-Enable- DSel=0 DScale=0</FONT>
-<FONT COLOR="#000000">PME-</FONT>
-<FONT COLOR="#000000">        Capabilities: [60] Message Signalled</FONT>
-<FONT COLOR="#000000">Interrupts: Mask- 64bit+ Queue=0/0 Enable-</FONT>
-<FONT COLOR="#000000">                Address: 0000000000000000  Data: 0000</FONT>
-
-<FONT COLOR="#000000">----------------------------------------------</FONT>
-
-<FONT COLOR="#000000">  I'm not on this list so please CC me in any reply,</FONT>
-<FONT COLOR="#000000">or if more info is required. I couldn't see this in</FONT>
-<FONT COLOR="#000000">the bugtrack, although admittedly I didn't look too</FONT>
-<FONT COLOR="#000000">hard so appologies if it is known.</FONT>
-
-<FONT COLOR="#000000">Thanks</FONT>
-
-<FONT COLOR="#000000">Huw</FONT>
-
-<FONT COLOR="#000000">huwrh at yahoo dot com dot au</FONT>
-
-<FONT COLOR="#000000">Send instant messages to your online friends <A HREF="http://au.messenger.yahoo.com">http://au.messenger.yahoo.com</A> </FONT>
-
-<FONT COLOR="#000000">-------------------------------------------------------------------------</FONT>
-<FONT COLOR="#000000">Take Surveys. Earn Cash. Influence the Future of IT</FONT>
-<FONT COLOR="#000000">Join SourceForge.net's Techsay panel and you'll get the chance to share your</FONT>
-<FONT COLOR="#000000">opinions on IT &amp; business topics through brief surveys-and earn cash</FONT>
-<FONT COLOR="#000000"><A HREF="http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV">http://www.techsay.com/default.php?page=join.php&amp;p=sourceforge&amp;CID=DEVDEV</A></FONT>
-<FONT COLOR="#000000">_______________________________________________</FONT>
-<FONT COLOR="#000000">Alsa-devel mailing list</FONT>
-<FONT COLOR="#000000"><A HREF="mailto:Alsa-devel@lists.sourceforge.net">Alsa-devel@lists.sourceforge.net</A></FONT>
-<FONT COLOR="#000000"><A HREF="https://lists.sourceforge.net/lists/listinfo/alsa-devel">https://lists.sourceforge.net/lists/listinfo/alsa-devel</A></FONT>
-</PRE>
-</BLOCKQUOTE>
-<TABLE CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
-<TR>
-<TD>
--- <BR>
-Tobin Davis &lt;<A HREF="mailto:tdavis@dsl-only.net">tdavis@dsl-only.net</A>&gt;
-</TD>
-</TR>
-</TABLE>
-</BODY>
-</HTML>
-
---=-gw8YYrOTiZOVRN8dCmVY--
-
---=-JoxT+u6PuQYCcaj7g60p
-Content-Disposition: attachment; filename=ATI-fix.patch
-Content-Type: text/x-patch; name=ATI-fix.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+=== message truncated ===
 
 
-# HG changeset patch
-# User tiwai
-# Date 1173731446 -3600
-# Node ID 5115624fea3145104669f7d94eca6af5c746430a
-# Parent e87b2114ceaea19d2d83d646187c01d0ab03cc4e
-hda-intel - Fix codec probe with ATI contorllers
 
-ATI controllers may have up to 4 codecs while ICH up to 3.
-Thus the earlier fix to change AZX_MAX_CODECS to 3 cause a regression
-on some devices that have the audio codec at bit#3.
-
-Now max codecs is defined according to the driver type, either 3 or 4.
-Currently 4 is set only to ATI chips.  Other might need the same
-change, too.
-
-Patch-level: ASAP
-
---- a/pci/hda/hda_intel.c	Mon Mar 12 12:54:23 2007 +0100
-+++ b/pci/hda/hda_intel.c	Mon Mar 12 21:30:46 2007 +0100
-@@ -199,7 +199,6 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO
  
- /* STATESTS int mask: SD2,SD1,SD0 */
- #define STATESTS_INT_MASK	0x07
--#define AZX_MAX_CODECS		3
- 
- /* SD_CTL bits */
- #define SD_CTL_STREAM_RESET	0x01	/* stream reset bit */
-@@ -966,6 +965,16 @@ static int azx_setup_controller(struct a
-  * Codec initialization
-  */
- 
-+static unsigned int azx_max_codecs[] __devinitdata = {
-+	[AZX_DRIVER_ICH] = 3,
-+	[AZX_DRIVER_ATI] = 4,
-+	[AZX_DRIVER_ATIHDMI] = 4,
-+	[AZX_DRIVER_VIA] = 3,		/* FIXME: correct? */
-+	[AZX_DRIVER_SIS] = 3,		/* FIXME: correct? */
-+	[AZX_DRIVER_ULI] = 3,		/* FIXME: correct? */
-+	[AZX_DRIVER_NVIDIA] = 3,	/* FIXME: correct? */
-+};
-+
- static int __devinit azx_codec_create(struct azx *chip, const char *model)
- {
- 	struct hda_bus_template bus_temp;
-@@ -982,7 +991,7 @@ static int __devinit azx_codec_create(st
- 		return err;
- 
- 	codecs = 0;
--	for (c = 0; c < AZX_MAX_CODECS; c++) {
-+	for (c = 0; c < azx_max_codecs[chip->driver_type]; c++) {
- 		if ((chip->codec_mask & (1 << c)) & probe_mask) {
- 			err = snd_hda_codec_new(chip->bus, c, NULL);
- 			if (err < 0)
-
-
---=-JoxT+u6PuQYCcaj7g60p
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+____________________________________________________________________________________
+Bored stiff? Loosen up... 
+Download and play hundreds of games for free on Yahoo! Games.
+http://games.yahoo.com/games/front
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---=-JoxT+u6PuQYCcaj7g60p
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---=-JoxT+u6PuQYCcaj7g60p--
