@@ -1,19 +1,13 @@
-From: "cbookshop" <cbooks@isp.com>
-Subject: Government funding available
-Date: Fri, 16 Mar 2007 23:34:34 -0400
-Message-ID: <20070317033451.5283367DD9@mail2.sea.safepages.com>
+From: pxl <pixeldotz@yahoo.com>
+Subject: Re: =?utf-8?q?alesis=5Fmultimix8=5Fusb=2E?=
+Date: Sat, 17 Mar 2007 04:50:29 +0000 (UTC)
+Message-ID: <loom.20070317T052120-590@post.gmane.org>
+References: <loom.20070316T025832-694@post.gmane.org>
+	<1174062048.9606.1179833223@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail2.sea.safepages.com (mail2.sea.safepages.com
-	[216.127.148.222])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E1952436D
-	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2007 04:34:58 +0100 (CET)
-Received: from 67.150.44.240 (67-150-35-115.lsan.mdsg-pacwest.com
-	[67.150.35.115])
-	by mail2.sea.safepages.com (Postfix) with ESMTP id 5283367DD9
-	for <alsa-devel@alsa-project.org>; Sat, 17 Mar 2007 03:34:51 +0000 (GMT)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,54 +17,124 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Canada Books
-833 Boise de la Riviere
-Prevost, Qc
-Canada
-J0R 1B0
+
+here's everything.
+
+Bus 004 Device 002: ID 046d:c408 Logitech, Inc.
+Bus 004 Device 001: ID 0000:0000  
+Bus 003 Device 001: ID 0000:0000  
+Bus 002 Device 002: ID 08bb:2900 Texas Instruments Japan 
+Bus 002 Device 001: ID 0000:0000  
+Bus 001 Device 001: ID 0000:0000  
+
+Bus 002 Device 001: ID 0000:0000  
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Unused
+  bDeviceProtocol         0 
+  bMaxPacketSize0        64
+  idVendor           0x0000 
+  idProduct          0x0000 
+  bcdDevice            2.06
+  iManufacturer           3 
+  iProduct                2 
+  iSerial                 1 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0xe0
+      Self Powered
+      Remote Wakeup
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0002  1x 2 bytes
+        bInterval             255
+can't get hub descriptor: Operation not permitted
+cannot read device status, Operation not permitted (1)
+
+Bus 001 Device 001: ID 0000:0000  
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Unused
+  bDeviceProtocol         1 Single TT
+  bMaxPacketSize0        64
+  idVendor           0x0000 
+  idProduct          0x0000 
+  bcdDevice            2.06
+  iManufacturer           3 
+  iProduct                2 
+  iSerial                 1 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0xe0
+      Self Powered
+      Remote Wakeup
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0002  1x 2 bytes
+        bInterval              12
+can't get hub descriptor: Operation not permitted
+can't get device qualifier: Operation not permitted
+can't get debug descriptor: Operation not permitted
+cannot read device status, Operation not permitted (1)
 
 
-Press Release
-3/16/2007
 
-The Canadian subsidy Directory is now available. 
-Our publication contains more than 3300 listings
-of grants and loans offered by both the federal and 
-provincial governments. It also includes foundations 
-and associations. 
-
-What you get:
-
--Full description of Grant
--Url to gvt website
--Full mailing address
--Phone and fax number
-
-Businesses, individuals, municipalities, government 
-departments,institutions, foundations, and associations 
-will find a wealth of information that could help them 
-start a business, improve existent activities, set up a 
-business plan, finance personal projects, studies and 
-research or obtain assistance from experts in various 
-fields of interest.
-
-
-The American Grants and Loans Directory
-is also available for the United States.
-
-
-CD Version: $69.95
-Printed Version: $149.95
-
-To order please call: 819-322-7533
-
-If you do not wish to receive communication from us 
-in the future please write "csd" in the subject line 
-to: unsub2@hotpop.com
 
 
 -------------------------------------------------------------------------
