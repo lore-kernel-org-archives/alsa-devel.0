@@ -1,17 +1,15 @@
-From: "Perjurer I. Shinier" <agasr@gitanjalionline.com>
-Subject: Why should you pay more?
-Date: Sun, 18 Mar 2007 03:12:38 +0000
-Message-ID: <8482963637.20070318031238@gitanjalionline.com>
+From: Giorgio Padrin <giorgio@mandarinlogiq.org>
+Subject: Re: [RFC] Sign offs for alsa-driver ->
+	alsa-kernel	derived	works.
+Date: Sun, 18 Mar 2007 07:51:45 +0100
+Message-ID: <1174200705.4420.7.camel@matisseg>
+References: <1173979821.27299.182.camel@batley.wolfsonmicro.main>
+	<s5hfy85wgez.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from 146704072 (unknown [220.249.64.114])
-	by alsa0.perex.cz (Postfix) with SMTP id BD47D244B3
-	for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2007 04:12:36 +0100 (CET)
-Received: from gitanjalionline.com (142320136 [147399096])
-	by gestoriallano.e.telefonica.net (Qmailv1) with ESMTP id 259868D44D
-	for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2007 03:12:38 +0000
+In-Reply-To: <s5hfy85wgez.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,22 +19,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Richard Purdie <rpurdie@rpsys.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The most powerful medicines for you!
+Il giorno ven, 16/03/2007 alle 12.56 +0100, Takashi Iwai ha scritto:
+> At Thu, 15 Mar 2007 17:30:20 +0000,
+> Liam Girdwood wrote:
+> > 
+> > I'd like to gather some clarification wrt sign offs for alsa-driver to
+> > alsa-kernel derived works.
+> > 
+> > Example in case: alsa-driver:i2c/uda1380.c was extensively modified to
+> > become alsa-kernel:soc/codecs/uda1380.c
+> > 
+> > I submitted the derived driver with sign-off from 3 developers who had
+> > worked on the derived work (Richard Purdie, Philipp Zabel and myself)
+> > and the original alsa-driver:uda1380.c author (Giorgio Padrin) who was
+> > not involved in creating the derived work.
+> > 
+> > I included Giorgio in the sign-off for the following reasons :-
+> > 
+> > 1. There are sections of his original (non alsa-kernel) code and
+> > algorithms within the derived work. This was to certify the origins of
+> > *all* the code and algorithms within the derived driver as the original
+> > driver only existed within alsa-driver and hence none of it's code had
+> > been signed-off into the kernel.
+> > 
+> > Iirc, sign-off from Giorgio would not have been required if the original
+> > driver was already part of the kernel. 
+> > 
+> > 2. To give credit to where credit was due.
+> > 
+> > 
+> > Takashi, Jaroslav, could you guys clarify the sign-off relationship
+> > between alsa-driver -> alsa-kernel (inc derived works). I assume
+> > original work from alsa-driver can be pushed into alsa-kernel due to
+> > it's original sign-off ?
+> 
+>  From my understanding, the sign-off is a kind of approvals.
+> The patch author needs to sign off first, then the people who review
+> and approve the patch sign off in the next.
+> 
+> So, in your case, basically you don't need a sign-off by Giorgio since
+> "the patch" you wrote is different from his original one.
+> 
+> > If original author sign-off is not required for this situation, I can
+> > resubmit the code.
+> 
+> I don't think resubmission is needed.
 
-Prilosec - $1.33 - can be taken to decrease the amount of acid produced in the stomach. 
+As long as that sign-off-by line is expunged from the submission, cause
+not coming from me. For the health of the process.
 
-Avandia - $0.96 - Avandia, in addition to diet and exercise, improves blood sugar control in adults with type 2 (non-insulin-dependent) diabetes. 
-
-Ultram - $1.83 - an analgesic used to treat or prevent pain. 
-
-and more!
-
-our site http://sujji.hk
-
-dfglirsjiel UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+giorgio
 
 
 -------------------------------------------------------------------------
