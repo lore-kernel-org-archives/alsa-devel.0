@@ -1,15 +1,11 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: hg-mirror 403
-Date: Sun, 18 Mar 2007 17:27:44 +0100
-Message-ID: <45FD6880.7030108@gmail.com>
-References: <45FD633F.8060608@gmail.com>
-	<1174234316.4484.173.camel@razman.gruemaster.com>
-	<45FD679C.9070702@gmail.com>
+From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
+Subject: Warning: message 1HRu2S-00013S-0k delayed 72 hours
+Date: Sun, 18 Mar 2007 10:06:42 -0800
+Message-ID: <E1HSzmE-0002kW-Ru@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <45FD679C.9070702@gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,18 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2007 05:23 PM, Rene Herman wrote:
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
 
-> Thank you. How does this work? I seem to be put in a changelog only, and 
-> am not getting to the tree itself?
+The message identifier is:     1HRu2S-00013S-0k
+The subject of the message is: were chargeable three, companies and over Israel; saying,
+The date of the message is:    Thu, 15 Mar 2007 10:45:73 -0700
 
-Never mind. "manifest" seems to be the thing to pick.
+The address to which the message has not yet been delivered is:
 
-Rene.
+  alsa-devel@lists.sourceforge.net
+    Delay reason: SMTP error from remote mailer after RCPT TO:<alsa-devel@lists.sourceforge.net>:
+    host mail.sourceforge.net [66.35.250.206]: 451-Could not complete sender verify callout
+    451-Could not complete sender verify callout for
+    451-<alsa-devel@lists.sourceforge.net>.
+    451-The mail server(s) for the domain may be temporarily unreachable, or
+    451-they may be permanently unreachable from this server. In the latter case,
+    451-you need to change the address or create an MX record for its domain
+    451-if it is supposed to 
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
