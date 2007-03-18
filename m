@@ -1,12 +1,13 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: SPAM SPAM SPAM SPAM
-Date: Sun, 18 Mar 2007 16:09:03 -0400
-Message-ID: <75b66ecd0703181309p1c9493q3f701752b5710d10@mail.gmail.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: SPAM SPAM SPAM SPAM
+Date: Sun, 18 Mar 2007 21:33:07 +0100
+Message-ID: <45FDA203.5010804@gmail.com>
+References: <75b66ecd0703181309p1c9493q3f701752b5710d10@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <75b66ecd0703181309p1c9493q3f701752b5710d10@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,18 +17,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: ALSA devel <alsa-devel@lists.sourceforge.net>, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-Can someone PLEASE do SOMETHING about the fucking spam on this list?
-Every thread ends inconclusively and I am sick of it.  The problem is
-getting worse not better.
+On 03/18/2007 09:09 PM, Lee Revell wrote:
 
-Something needs to be done NOW or this list will have no subscribers
-left by the time the problem is fixed.  That cannot be a good outcome
-for ALSA development.
+> Can someone PLEASE do SOMETHING about the fucking spam on this list? 
+> Every thread ends inconclusively and I am sick of it.  The problem is
+> getting worse not better.
 
-Lee
+Quite :-)
+
+Given how used mozilla by now is that most anything coming from this
+list is spam, I usually end up reading most of alsa-devel from within my
+local "junk" folder...
+
+> Something needs to be done NOW or this list will have no subscribers 
+> left by the time the problem is fixed.  That cannot be a good outcome
+> for ALSA development.
+
+A few weeks ago Jaroslav asked for a volunteer to help moderate as an
+immediate solution until better spam filtering was in place and I should
+still be able to do that. Never heard back though, nor anything on my
+proposal to try and get alsa-project.org mail setup on the nl.linux.org
+server.
+
+The problem is indeed very bad. If we can have a "it should improve via
+a new setup within N weeks" statement for some sufficiently small value
+of N or something like that we can sit it out I guess but I quite agree
+something is relatively urgently needed.
+
+Rene.
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
