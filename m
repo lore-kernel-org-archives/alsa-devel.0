@@ -1,14 +1,15 @@
 From: Rene Herman <rene.herman@gmail.com>
 Subject: Re: hg-mirror 403
-Date: Sun, 18 Mar 2007 17:23:56 +0100
-Message-ID: <45FD679C.9070702@gmail.com>
+Date: Sun, 18 Mar 2007 17:27:44 +0100
+Message-ID: <45FD6880.7030108@gmail.com>
 References: <45FD633F.8060608@gmail.com>
 	<1174234316.4484.173.camel@razman.gruemaster.com>
+	<45FD679C.9070702@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1174234316.4484.173.camel@razman.gruemaster.com>
+In-Reply-To: <45FD679C.9070702@gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,16 +23,12 @@ To: Tobin Davis <tdavis@dsl-only.net>
 Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/18/2007 05:11 PM, Tobin Davis wrote:
+On 03/18/2007 05:23 PM, Rene Herman wrote:
 
-> hg-mirror may be down for maintenance.
+> Thank you. How does this work? I seem to be put in a changelog only, and 
+> am not getting to the tree itself?
 
-Was the same when I tried something like a week ago...
-
-> Try http://hg.alsa-project.org
-
-Thank you. How does this work? I seem to be put in a changelog only, and 
-am not getting to the tree itself?
+Never mind. "manifest" seems to be the thing to pick.
 
 Rene.
 
