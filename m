@@ -1,9 +1,9 @@
-From: whichever <fclx@bloom.otis.com>
-Subject: beveled tinker
-Date: Sun, 18 Mar 2007 14:24:09 +0100
-Message-ID: <45FD3D79.9020207@bloom.otis.com>
+From: buildup <gbs@integctr.com>
+Subject: moo spectrum
+Date: Sun, 18 Mar 2007 14:26:45 +0100
+Message-ID: <45FD3E15.3020300@integctr.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2086988043=="
+Content-Type: multipart/mixed; boundary="===============1826778198=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,14 +14,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============2086988043==
+--===============1826778198==
 Content-Type: multipart/related;
-	boundary="------------090708060505070909050003"
+	boundary="------------020407090701020604000600"
 
---------------090708060505070909050003
+--------------020407090701020604000600
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -31,46 +31,49 @@ Content-Transfer-Encoding: 7bit
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 </head>
 <body bgcolor="#ffffff" text="#000000">
-<img alt="sinner" src="cid:part1.04020807.05010507@bloom.otis.com"
+<img alt="self-inflicted" src="cid:part1.08010808.09000808@integctr.com"
  height="193" width="653"><br>
-But by being able to pick and choose among the various investment firms
-out there, you can be more selective about the funds you do choose. As
-an incentive, at the end of each month, Sherelle matches whatever
-Sharmon takes to the bank.<br>
-And to hedge their risk, lending standards have tightened.<br>
-Believe me, this isn't rocket science.<br>
-Those three steps should get you started. You could pay double or even
-triple the fare if you wait, says Tom Parsons of Bestfares.<br>
-My wife and I may never be able to afford a house now.<br>
-"I've no doubt that global warming is occurring, but we don't want to
-undermine that case by crying wolf.<br>
-It could determine whether deposits of hydrogen, water-ice and
-hydrocarbons are trapped in the Moon's cold regions.<br>
-Like payroll deduction, this is a great way to make saving easy,
-convenient and more likely to happen. 1 percent in the past month. "I
-didn't anticipate how quickly the industry would fall off - and how
-investors would move out of these stocks," Muhlenkamp says.<br>
-Prices on domestic flights may be a bit lower this season, especially on
-major routes, according to Anne Banas of SmarterTravel. Invest smart,
-but keep it simple. At the moment the system can only route a single
-digital TV channel over the network but Devolo aims to improve this soon
-so people can watch different channels in different rooms. "Then you
-have an automatic connection to the internet so by the time you are home
-you can log on and see how you did. Bottom line: When you needed that
-loan, you should have asked your parents if they could help instead of
-assuming you knew what their answer would be. That's when I started to
-save a lot of money," said Derico, who now works as senior consultant in
-project management for Booz Allen Hamilton in the Washington, D.<br>
+Relatively inexpensive. There is an incredible amount of detail at the
+scale of metres that we've never been able to see topographically.<br>
+i forget when i first saw him, but he seemed so arrogant and i hated
+him.<br>
+"Fast forward a couple of years, and the Sanons, like so many other
+subprime borrowers today, are struggling to keep their heads above
+water.<br>
+The National Oceanic and Atmospheric Administration said El Nino, a
+seasonal warming of parts of the Pacific Ocean, had also contributed to
+the warmth. On the other hand, it's always wise to hedge your bets a
+bit.<br>
+would you mind exchanging blog links?<br>
+You'll want to get offers from at least three lenders so you can compare
+the terms of your mortgage.<br>
+2: Get in nowIdeally you should book your flight eight weeks out,
+according to SmarterTravel.<br>
+Co-author Glen Cushing, from the US Geological Survey in Flagstaff,
+Arizona, said this was exactly what would be expected if the feature
+were a cave. Both men hold the mainstream view on climate change - that
+human activity is the cause. Millionaire to be: How a single mother
+saves - Jan.<br>
+And at least at the moment, some - like Citibank's e-savings account at
+4. And you already seem to have a good head start given that you've
+pared down your debt, started an emergency fund and have already begun
+to save. "OK, these swamps are pretty remote, but there are hundreds of
+people in there, right now, looking for the ivory-billed woodpecker.
+Co-author Glen Cushing, from the US Geological Survey in Flagstaff,
+Arizona, said this was exactly what would be expected if the feature
+were a cave. Believe me, this isn't rocket science. 'Sibling rivalry:
+'My brother is trying to stiff me'Does a fat cat's kid deserve special
+treatment?<br>
 </body>
 </html>
 
---------------090708060505070909050003
+--------------020407090701020604000600
 Content-Type: image/gif;
- name="mattress.gif"
+ name="commander.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <part1.04020807.05010507@bloom.otis.com>
+Content-ID: <part1.08010808.09000808@integctr.com>
 Content-Disposition: inline;
- filename="mattress.gif"
+ filename="commander.gif"
 
 R0lGODdhqALIAPUYAAIaER0dCSIFIb6hnsG3urORteXp0L304MTbq5Np4/mPefOMu1zb0VZWeVrH
 8/nBeGilY53zPaxil4dfSTF1PSd7xb0VzgbTqKyYN8t3fUcVLoUzEhhYGXsW1PbP+gAehwvm9+Uw
@@ -333,11 +336,11 @@ bwJncArncJpQbqKDaiJncirncjJnczrnc0JndErndFJndVrndWJndmqndBJnd3rnd4JneIrneJJn
 eZrneaJneqrnerJne7rne8JnfMrnfNJnEm7nfbZafernfvInf3ZXfwJogArogBJogRrogSJogiro
 gjJogzrog0JohErohFJohVrohWJohmrohnJoh3roh4JoiIroiJJoiZqoEuJnF4qq6IqC5qmd6Is6
 DIvK6IzSaI0qXxAAADs=
---------------090708060505070909050003--
+--------------020407090701020604000600--
 
 
 
---===============2086988043==
+--===============1826778198==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -348,7 +351,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============2086988043==
+--===============1826778198==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -359,4 +362,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2086988043==--
+--===============1826778198==--
