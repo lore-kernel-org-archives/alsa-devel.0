@@ -1,9 +1,9 @@
-From: lookalike <pfl@cnbank.com>
-Subject: nauseous irresponsible
-Date: Sun, 18 Mar 2007 14:24:34 +0000
-Message-ID: <45FD4BA2.7060100@cnbank.com>
+From: satisfying <attq@bina.koenig.su>
+Subject: beret prickly
+Date: Sun, 18 Mar 2007 14:24:57 +0000
+Message-ID: <45FD4BB9.4000307@bina.koenig.su>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0621575321=="
+Content-Type: multipart/mixed; boundary="===============1495693194=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,14 +14,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0621575321==
+--===============1495693194==
 Content-Type: multipart/related;
-	boundary="------------080106090801060106010907"
+	boundary="------------070803030902030202020002"
 
---------------080106090801060106010907
+--------------070803030902030202020002
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -31,87 +31,81 @@ Content-Transfer-Encoding: 7bit
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 </head>
 <body bgcolor="#ffffff" text="#000000">
-<img alt="slump" src="cid:part1.02030706.03010804@cnbank.com"
+<img alt="fulfilling" src="cid:part1.01000102.04040002@bina.koenig.su"
  height="291" width="764"><br>
-Most of the game documents available here assume that you as "the
-reader" have some experience with this kind of RPG.<br>
-"Hex" creates a solitaire gaming experience similar to the dungeon
-crawling adventures of your favorite table-top or computer RPG.<br>
 InterfableThe original home of free online storygaming.<br>
-Excerpt from "Feathers and Fur"Finding TreasureIf you defeat a Wandering
-Monster, on the next cycle, in that room, you get to roll on the Random
-Treasure Table.<br>
-Peer review and critique is a big part of the fun and challenge of this
-project.<br>
-Consider expanding on the rules on the page to add to your
-experience.<br>
-Abstract Nova EntertainmentAbstract Nova Entertainment is a new
-publisher committed to producing imaginative role-playing games and
-supplements. If your work is incomplete or unfinished, consider posting
-to the forum for peer review.<br>
-All of the friends are child-like versions of these strange little
-monsters. Initial enemies probably only have 1 rank in that skill, with
-more powerful enemies having additional ranks or several magick
-abilities.<br>
-Excerpt from "Owlbear: Fragile Duality"Starting the gameTo start the
-game, the GM describes the Owlbears entering a region where something is
-out of balance. Lately, things are pretty much about gathering up honey
-from the hives in local trees. There is a cold, inhuman order to the
-world. Well, we all know that full-grown Gelatin Cubes are ten feet on
-all sides, but that would mean that you are much, much bigger than the
-Owl-Pooh.<br>
-The small keep behind him was a strong stone structure and in good
-repair.<br>
-Most of the game documents available here assume that you as "the
-reader" have some experience with this kind of RPG.<br>
-The husband will fearful of insects but fine with the dark. "Add To:    
-If you find this information helpful, please leave a donation to support
-1KM1KT's ongoing mission to promote independent RPG developers and the
-roleplaying game community.<br>
-Well, not all the things that a Gelatin Cube can do, but things that
-make Gelatin Cubes Gelatin Cubes and not Owl-Poohs. On their turn each
-PC could roll some dice and consult the rules of the game to determine
-if they were able to hit and injure the wolf.<br>
-E-mail us if you would like us to publish your free online rpg.<br>
-The Player CharactersAfter the departed member of the family has been
-fleshed out, the rest of the family must be constructed. He's also a
-very special sort of Owl.<br>
-Once you think you have a good "feel" f He had the ability to see many
-worlds through different spans of time and many different forms.<br>
-Send us an e-mail with a descriptive subject line, and we'll do our best
-to find answers to your questions.<br>
-Machines stir from quiescence, propelled by evil. This is their
-statement of fact, and the die is then rolled again and they ask a
-question of the next player.<br>
-The office is a dehumanizing environment for the employees - the kind of
-thing that makes you a cog in the machine - a number. Assign 8 points
-between your two attribute scores.<br>
-Jennifer rolls more dice to determine how much damage the sword blow
-does to the wolf and the GM reduces the wolf's "life" by the damage
-amount.<br>
-Barons of Hell and the larger Hell Knights lead the forces. Have each
-player create their Owlbear character, as described below.<br>
-This game is part of the BPG Owlbear Challenge.<br>
-Combat is not intended to be a major part of this game.<br>
-A seeker starts with 1 advancement, and can get the rest by accruing
-advance points which are gained through exploration of haunted houses.
-InterfableThe original home of free online storygaming.<br>
-Maybe they are super powered vigilantes who don spandex costumes to
-patrol the streets of a modern city and fight to keep it free of
-crime.<br>
-xmlOr, get updates via email. Excerpt from "Frogger"This game was
-written as part of the 1KM1KT 24-Hour RPG challenge, which called for
-designers to adapt a computer game into a tabletop RPG in 24 Hours.<br>
+"We creep up and observe the humans, making an attack formation.<br>
+1KM1KT Hosts RPG Contests: 1KM1KT has been hosting a lot of independent
+RPG contests lately and we're really enjoying it.<br>
+"I want Travos to go look at the animal tracks to see what they are, but
+since this guy seems like he wants to talk to me, I'll wait to do that
+for a minute and go up to him.<br>
+Why did they want to be buried away from their home?<br>
+Build farms and mine resources to battle other players in the kingdom of
+Mardelan.<br>
+Then they make their characters who have an "advantage". I have seen
+this world ruled by animals and man was non-existent.<br>
+Are they far-flung but linked by communication or shared interests? A
+crunchy boardgame RPG suitable only for the most fit Owlbears.<br>
+There is a cold, inhuman order to the world. The Compendium is a free
+service provided for gamers by gamers, and continues to grow. MotiveEach
+player must choose one Motive for their character. The whole world is
+too big to control, but what if your world suddenly becomes much
+smaller?<br>
+It is alienation and it is generated anew each shift as men, women, and
+children toil at the machines.<br>
+They just find it very tasty.<br>
+It orders man and machine, life and matter, according to its sublime and
+alien rationality. "Assuming the player characters decide to accept this
+challenge, the above encounter is meant to provide the PCs with a reason
+to venture out into the forest and do battle with wolves.<br>
+Adventure stories are often filled with perilous action sequences that
+endanger the heroes of the story in some manner. The preplanned actions
+of GR controlled characters, the events the GR has planned and the
+players actions are co-ordinated with time.<br>
+In order to be considered a servant of Hell, Sinners must be acting on
+their own free will.<br>
+Please respect our wished and remove the Owlbears game from your website
+immediately. "We creep up and observe the humans, making an attack
+formation.<br>
+After estimating the fixed time, the GR adds a d2, d3 or d4 or to the
+total time. All of the friends are child-like versions of these strange
+little monsters.<br>
+Like solitaire, computer RPGs and MMORPGs began life at the
+tabletop.<br>
+Each player starts by rolling 1d6 for initiative . It's important to
+keep that in the back of your mind: You've done wrong before, and you've
+seen the bloodshed that can result.<br>
+The migration from tabletop to computer is a popular trend in gaming.
+That freedom is terrible and empty.<br>
+Inside, a man paces, bothered by an unidentifiable something.<br>
+It's a game by "Samuel Clemens", a young man with lots of energy. This
+is your time to shine, poor misunderstood Owlbear!<br>
+The GR counts off the seconds and any completed actions take place at
+the end of the second.<br>
+People are alienated from their labor, since work is not done to fulfill
+the worker's human needs and creativity but to meet the external agenda
+of the owner.<br>
+The GR counts off the seconds and any completed actions take place at
+the end of the second. Spend exp to add additional ranks to Attributes
+and Skills.<br>
+The fault line extends in fit and starts, forcing the broken to leap
+ahead in time and sideways in space.<br>
+Before their death, the deceased family member made the rest of the
+family promise to bury him or her in a nearby town. Excerpt from
+"Frogger"This game was written as part of the 1KM1KT 24-Hour RPG
+challenge, which called for designers to adapt a computer game into a
+tabletop RPG in 24 Hours.<br>
 </body>
 </html>
 
---------------080106090801060106010907
+--------------070803030902030202020002
 Content-Type: image/gif;
- name="schoolboy.gif"
+ name="min..gif"
 Content-Transfer-Encoding: base64
-Content-ID: <part1.02030706.03010804@cnbank.com>
+Content-ID: <part1.01000102.04040002@bina.koenig.su>
 Content-Disposition: inline;
- filename="schoolboy.gif"
+ filename="min..gif"
 
 R0lGODdh/AJYAfcAAMYNtmDP+4yjRVAtJcTGvDiDlvZJYMKw+y4nlCbxtHq4wTAYkSulNHH1Ype5
 KVPyrOno9kqqpkXZztoAwI56eFCrkOHXNRZIK3jf5KEz104cv0RnauqtQ7mHQ3kWvvJmaYNIQLle
@@ -423,11 +417,11 @@ zFG0k8hr0TwQTxxxRhuJXLGh64Dkjb3itmKwuiLTUxE+KWsUUEYFoXwsyy2x2pHH5aZs8rkljdQR
 vdFuA1Az3LBkcyQu4bzRqzj9M9POO/ejc7jjwuzQxjQX7LE8PSn00kem3uovz8jELHJNytp0k7Mv
 D7zyUUILxVOzS18MEVP7fGtP00pLyxHDRgMc1UXgPOQ0OjDJQlJOBz89VEQUVdUwQh1P1arMXJ9k
 lUnvbHUVKllhCggAOw==
---------------080106090801060106010907--
+--------------070803030902030202020002--
 
 
 
---===============0621575321==
+--===============1495693194==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -438,7 +432,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0621575321==
+--===============1495693194==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -449,4 +443,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0621575321==--
+--===============1495693194==--
