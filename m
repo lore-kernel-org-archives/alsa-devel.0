@@ -1,7 +1,7 @@
 From: Mail Delivery System <Mailer-Daemon@lists.sourceforge.net>
-Subject: Warning: message 1HRqph-0003rf-Bm delayed 72 hours
-Date: Sun, 18 Mar 2007 10:19:01 -0800
-Message-ID: <E1HSzy9-0004TY-OZ@externalmx-1.sourceforge.net>
+Subject: Warning: message 1HS6qf-0007lZ-CZ delayed 48 hours
+Date: Sun, 18 Mar 2007 10:28:21 -0800
+Message-ID: <E1HT07B-00067K-16@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -20,11 +20,11 @@ List-Id: alsa-devel@alsa-project.org
 
 This message was created automatically by mail delivery software.
 A message that you sent has not yet been delivered to one or more of its
-recipients after more than 72 hours on the queue on externalmx-1.sourceforge.net.
+recipients after more than 48 hours on the queue on externalmx-1.sourceforge.net.
 
-The message identifier is:     1HRqph-0003rf-Bm
-The subject of the message is: eat our father.  My strength; and to their one accord and they knew
-The date of the message is:    Thu, 15 Mar 2007 09:21:42 -0500
+The message identifier is:     1HS6qf-0007lZ-CZ
+The subject of the message is: They utter by me, said, unto me?  Whosoever
+The date of the message is:    Fri, 16 Mar 2007 12:57:36 +0530
 
 The address to which the message has not yet been delivered is:
 
