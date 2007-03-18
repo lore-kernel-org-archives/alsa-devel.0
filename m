@@ -1,15 +1,16 @@
-From: Rask Ingemann Lambertsen <rask@sygehus.dk>
-Subject: Re: isa_bus: sb8
-Date: Sun, 18 Mar 2007 01:56:59 +0100
-Message-ID: <20070318005659.GA10328@sygehus.dk>
-References: <45E4A2F5.3080607@gmail.com> <20070317195829.GA6455@sygehus.dk>
-	<45FC79A2.6080807@gmail.com>
+From: "=?iso-8859-9?B?U91CRVJDQURERQ==?=" <gidenler@gmail.com>
+Subject: =?iso-8859-9?q?S=DDBERCADDE=2ECOM_hayat=FDn_g=FClen_?=
+	=?iso-8859-9?q?y=FCz=FC?=
+Date: Sun, 18 Mar 2007 03:11:59 +0200
+Message-ID: <d7ebda2614286f4d1efed5872d834e14@gmail.com>
+Reply-To: gidenler@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-9"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <45FC79A2.6080807@gmail.com>
+Received: from sibercadde.local (unknown [88.246.50.205])
+	by alsa0.perex.cz (Postfix) with SMTP id 1A103244A3
+	for <alsa-devel@alsa-project.org>; Sun, 18 Mar 2007 02:12:12 +0100 (CET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,49 +20,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Rene Herman <rene.herman@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 18, 2007 at 12:28:34AM +0100, Rene Herman wrote:
-> The unfortunate thing is that autoprobe on ISA is a quite horribly bad 
-> idea...
-> 
-> On a PCI/ISA system you need to know the IRQ and DMA channel(s) the card 
-> is using _anyway_ since you need to tell the BIOS to not hand those out 
-> to PCI or ISA-PnP cards (or, in the case of IRQs, even tell it to make 
-> that IRQ available to ISA).
+T=DCRK=DDYEN=DDN ARKADA=DELIK VE SEVG=DD PORTALI
 
-   I have one of those nearly useless AmiBIOSes in a Pentium2 box. It does
-nothing for ISA-PnP cards except to print their names. I have forced it to
-assign the same IRQ to all PCI cards or I would not have any left for ISA
-cards, ISA-PnP or not.
+     www.S=DDBERCADDE.com
 
-   Considering that
-1) there are only a few valid SB8 ports, and
-2) a wrong port is detected immediately, and
-3) there are only three valid DMA channels
-I think an IRQ auto-probe is the most useful one of the three. You'd need an
-average of 15 attempts to guess IRQ and DMA at the same time (10 possible
-IRQs, 3 possible DMAs). AFAIK, autoprobing for IRQ works well in practice.
+# =DCcretsiz  =FCye olabilirsiniz. :)
 
-> By the way -- are you in fact using a SG NX Pro? Not a SG NX Pro 16 or 
-> some other 16-bit SG? The NX Pro should have an FCCID of I38-MMSD802. If 
-> you are in fact using a 16-bit SG the card's better of being used in 
-> it's native WSS mode, though snd-sgalaxy.
+# =DCyelik bilgilerinizin tamam=FDn=FD istedi=F0iniz zaman g=FCncelleyip de=
+=F0i=FEtirebilirsiniz
+# Sevdiklerinize E-Kart g=F6nderebilirsiniz.
+# Sesli mesajlar b=FDrakabilirsiniz.
+# G=F6r=FCnt=FCl=FC mesaj b=FDrakabilirsiniz
+# =D6zel foto=F0raflar=FDn=FDz=FD upload edebilir ve dilerseniz bu foto=F0r=
+aflara =FEifre koyup herkesin g=F6rmesini engelleyebilir diledi=F0iniz ki=
+=FEilere =FEifrenizi verebilirisiniz.
+# =DDlgilendi=F0iniz =FCye ile site i=E7i mailbox ileti=FEimi kurabilirsini=
+z.
+# =DDlgilendi=F0iniz =FCyeye sanal =E7i=E7ek g=F6nderebilirsiniz.
+# Chat yapabilir veya =F6zel chat odan=FDz=FD a=E7arak diledi=F0iniz =FCye =
+ile sohbet edebilirsiniz
+# =DDstedi=F0iniz =FCyeyi favori listenize alabilirsiniz.
+# Ho=FElanmad=FD=F0=FDn=FDz ki=FEileri kara listeniz al=FDp t=FCm ileti=FEi=
+m kurma yollar=FDn=FD kapatabilirsiniz.
+# Sizin profilinizi inceleyen =FCyeleri g=F6rebilirsiniz.
+# Sizin inceledi=F0iniz profilleri g=F6rebilirsiniz.
+# =DDstedi=F0iniz =FCyenin ileti=FEim bilgilerini sat=FDn alabilirsiniz.
+# Profil bilgilerinizin =FCcretsiz verilmesini sa=F0layabilirsiniz.
+# Be=F0endi=F0iniz veya be=F0enmedi=F0iniz profiller i=E7in oy kullanabilir=
+siniz.
+# =DCyelerimizin upload etti=F0i foto=F0raf ve ek foto=F0raflar=FD oylayabi=
+lirsiniz.
+# Tan=FD=FEma hikayelerinizi veya itiraflar=FDn=FDz=FD yazarak di=F0er =FCy=
+elerle payla=FEabilirsiniz.
+# =C7ok fonsiyonlu =F6zel kontrol panelinizle her i=FElemi yapabilirsiniz.
+# =DCyeli=F0inizi istedi=F0iniz zaman dondurabilir veya tekrar aktif edebil=
+irsiniz.
+# Dile=F0iniz zaman =FCyeli=F0inizi komple iptal edebilirsiniz (Bu i=FElemi=
+n d=F6n=FC=FE=FC yoktur tekrar =FCye olmay=FD gerektirir)
+# Yenilikler
+# Ki=FEisel Ziyaret=E7i defterinizi ister a=E7=FDk b=FDrak=FDn ziyaret eden=
+ler mesaj b=FDraks=FDn isterseniz kapat=FDn veya dondurup sonra a=E7=FDn.
+# Shoubox =F6zelli=F0i ile fikir ve =F6nerilerinizi di=F0er =FCyelerle payl=
+a=FEabilirsiniz.
+# Arkada=FE listenizi olu=FEturarak =FCyelerimiz i=E7inde bir arkada=FE gru=
+bu olu=FEturabilirsiniz.
+# =C7e=FEitli yaz=FDl=FDmlar ile olu=FEturulan otomatik =FCyeli=F0e engel i=
+=E7in =FCye kayd=FDna g=FCvenlik karekterleri eklenmi=FEtir.
+# Servislerimize herzaman i=E7in bir yenisi eklenebilir bu sayfay=FD s=FDk =
+s=FDk izlemeye devam ediniz. www.sibercadde.com hayat=FDn g=FClen y=FCz=FC =
+...
 
-   The FCCID is I38-SGNXPRO. According to
-<URL:http://www.amitech.dk/includes/drivers/lydkort.asp>, all of
-I38-SGNXPRO, I38-MMSN802 and I38-MMSD802 are SG NX Pro. The three largest
-chips on the board are AZT-NXPMIX0592, AZTSSPT0592-U01 and AZTDSP31H. There
-is room for a SCSI controller chip and a SCSI connector. There is a Mitsumi
-CDROM interface.
-
--- 
-Rask Ingemann Lambertsen
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
