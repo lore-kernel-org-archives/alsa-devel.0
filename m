@@ -1,16 +1,14 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: alesis_multimix8_usb.
-Date: Mon, 19 Mar 2007 09:27:01 +0100
-Message-ID: <1174292821.14944.1180144695@webmail.messagingengine.com>
-References: <loom.20070316T025832-694@post.gmane.org>
-	<1174062048.9606.1179833223@webmail.messagingengine.com>
-	<loom.20070317T052120-590@post.gmane.org>
+Subject: Re: Development Question
+Date: Mon, 19 Mar 2007 09:33:02 +0100
+Message-ID: <1174293182.15615.1180145133@webmail.messagingengine.com>
+References: <BAY120-F25C7398C33AE2729557D689C770@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <loom.20070317T052120-590@post.gmane.org>
+In-Reply-To: <BAY120-F25C7398C33AE2729557D689C770@phx.gbl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,20 +18,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: pxl <pixeldotz@yahoo.com>, alsa-devel@lists.sourceforge.net
+To: "M. Gagnon" <fire_void@hotmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-pxl wrote:
-> here's everything.
-> 
-> can't get hub descriptor: Operation not permitted
-> cannot read device status, Operation not permitted (1)
-> can't get hub descriptor: Operation not permitted
-> can't get device qualifier: Operation not permitted
-> can't get debug descriptor: Operation not permitted
-> cannot read device status, Operation not permitted (1)
+M. Gagnon wrote:
+> Okay, i tried with the docs. This is what i came up with, however i can't 
+> seem to be able to play anything more than the first event, like time was 
+> not moving, Perhaps i've missed something simple to make the time start?
 
-The interesting parts are missing.  Please try running lsusb as root.
+What is the output of the program?
+What are the contents of /proc/asound/seq/queues and .../timers while it's
+trying to play?
 
 
 Regards,
