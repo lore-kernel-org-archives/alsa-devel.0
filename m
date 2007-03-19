@@ -1,9 +1,9 @@
-From: "Hays" <qusc@cubbison.com>
-Subject: pinch veto
-Date: Mon, 19 Mar 2007 02:35:03 -0500
-Message-ID: <000a01c769f9$faed3010$868e6d2e@mvt>
+From: "Mason" <qnlrzz@daveyslocker.com>
+Subject: amphibious wise
+Date: Mon, 19 Mar 2007 02:38:15 -0500
+Message-ID: <000a01c769fa$03a4c920$c54f5ac4@rlb>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1649042504=="
+Content-Type: multipart/mixed; boundary="===============1329685482=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,73 +14,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============1649042504==
+--===============1329685482==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0006_01C769D8.73D74A50"
+	boundary="----=_NextPart_000_0006_01C769D8.7C8EE360"
 
-------=_NextPart_000_0006_01C769D8.73D74A50
+------=_NextPart_000_0006_01C769D8.7C8EE360
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0007_01C769D8.73D85BC0"
+	boundary="----=_NextPart_001_0007_01C769D8.7C8FF4D0"
 
-------=_NextPart_001_0007_01C769D8.73D85BC0
+------=_NextPart_001_0007_01C769D8.7C8FF4D0
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-This is a function of nurturing a sincere interest in the lives of =
-people and the work of the various departments of government that serve =
-the people. He is a relative and close friend of the Normans.
-American air strikes ostensibly targeting the I. For the sake of a =
-better understanding of the heroic angle many Sierra Leoneans are =
-espousing in honor of Norman, we must shed some light on the motivation =
-behind his actions in the civil war. Once the territories and their =
-subjects were demarcated, the coordinates didn't change. However, there =
-has been a growing abhorrence to child fighting in the international =
-community, due mainly to the growth in human rights protection. 's claim =
-of bringing peace to Sierra Leone.
-In international humanitarian law, the most important instruments of =
-protection for children in armed conflict are the Geneva Conventions of =
-1949, and two additional Protocols added in 1977. Another war-crimes =
-convict, Capt. "The prosecution appears to be politically motivated, and =
-it seems that Marie-Therese Nlandu is being targeted for her work as a =
-lawyer and her peaceful political activities.
-When the dust settled, an A. They need to connect emotionally with the =
-people they serve and engender their goodwill. A Return to Warlord Rule? =
-It seemed impossible to attend both classes and training sessions.
-Transition of power within the Zanu PF caucus can only happen if and =
-when Mugabe sanctions it. And it included a few unexpected perks of =
-being a professional golfer .
-Ghana's Joy Online (Jan.
-Annan was perhaps born for greatness; a Fante-Asante twin and the =
-descendent of chiefs on both sides.
-"As long as I'm breathing, I will fight with the foreign troops who are =
-coming to our country," said Abdiqadir Hassan Diriye, Associated Press =
-reported on Feb.
-These crimes were the product of fighting one of the most ruthless civil =
-wars in recent histories.
-trained hit men assassinated two of his compatriots. Who Killed Sam =
-Hinga Norman? But in Norman's last interview with the BBC, he verified =
-that he was in prison.
-" So, loosely speaking, individuals aged 10 to 18 can be defined as =
-children.
-One great strategy with the potential of developing dedicated public =
-servants is unannounced presidential or vice presidential visits to =
-various departments and parastatals. The Special Court stated probable =
-heart failure as the cause of Norman's death before a proper medical =
-autopsy was performed.
-, COOPI (Cooperazione Internazionale) for therapeutic feeding and =
-general medical treatment. Prisoners have to share the little food =
-available, meaning that each inmate has one daily meal of maize and =
-beans. His cabinet ministers looted their respective departments, =
-selling off official assets and passing the lion's share up to Stevens. =
-trained hit men assassinated two of his compatriots. Innocent Mayembe =
-said. reported, "Factional violence has again become a feature of life =
-in Mogadishu since the Islamic movement fled.
-------=_NextPart_001_0007_01C769D8.73D85BC0
+and other stakeholders acknowledge that the situation as it currently =
+stands is dire and unsustainable, but cannot agree on how to resolve it. =
+One of the reasons for the increase in the number of young people taking =
+part in armed conflict can be attributed to population bulges.
+Secretary-General Kofi Annan for his service to the cause of world =
+peace. Among an array of reasons, he stated that the S. This is one of =
+the places at which the broader definition of "youth" as up to the age =
+of 25 may well be a more appropriate category. "With this =
+overpopulation, there is a likelihood of a lot of diseases affecting the =
+prisoners," Assani said. A Return to Warlord Rule?
+Meanwhile, in Western countries such as Britain, young people can join =
+the army from 17-years-old, so long as they do so of their own volition =
+and with their parents' consent. They can also be attracted to join the =
+army as it can be a safer place to be rather than the conflict area =
+itself. Some of the prosecution evidence that may be presented was =
+reportedly obtained through torture or ill-treatment, which would make =
+it inadmissible under international law," Amnesty International says.
+21, two weeks before President Kabila's inauguration, when she went to =
+Kin-Maziere Police Station to visit and bring food to six of her =
+associates who had been arrested the previous day. The operation and its =
+aftermath epitomized the suffering of the people of Zimbabwe and widened =
+the rift between the government and the opposition M. France's =
+motivation is that Western Europe is in a struggle over its former =
+colonies for the spoils of cold war victory. In times of conflict and =
+poverty, young people are attracted to the military as it offers them an =
+identity they are otherwise deprived of.
+Their role has never been as important as it is now. "With this =
+overpopulation, there is a likelihood of a lot of diseases affecting the =
+prisoners," Assani said.
+29 2006 when one of his accomplices shot him in the leg in a foiled =
+robbery attempt in Bunia.
+Some saw his return as a portend of greater things for their country.
+envoy, said he didn't expect Annan to take much of a role in local =
+affairs.
+Parliamentarian, Ansu Kai Kai of Pujehun, who was officially charged by =
+the S.
+But only if they perform exceptionally will they be offered fixed-term =
+employment. The same night, Ufoyuru Agenong'a, convicted for killing two =
+United Nations observers in Mongwalu, a mine 80 kilometers north of =
+Bunia, also escaped. But he still counted himself lucky to walk out of a =
+case that ended up in another execution spree of Stevens' political =
+opponents.
+At age 12, Missah dropped out of school, to make more time to play.
+19, 2006 at the United Nations in New York. A government report found =
+the health ministry failed to distribute 95 percent of the medicine and =
+equipment intended for public hospitals.
+Ghana lost to Brazil in the battle to enter the quarterfinals, but beat =
+the United States. As well, members of the African National Congress and =
+the apartheid government of South Africa committed serious crimes =
+against humanity on the long walk to freedom. The former soldiers, many =
+of them youths, are returned to their communities. Missah keeps jogging =
+to the nearest pitch, and praises God for sending him a guardian. It may =
+be an opportune period for a negotiated political settlement to restore =
+confidence in people that at least somebody cares. Mutakama, who escaped =
+during his integration into the national army in Mushake, had been =
+sentenced to seven years in prison by the military tribunal in Bunia for =
+violating military orders.
+------=_NextPart_001_0007_01C769D8.7C8FF4D0
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -89,107 +97,122 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"shiver" hspace=3D0=20
-src=3D"cid:000501c769f9$fae7d8e0$868e6d2e@mvt" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"resolution" hspace=3D0=20
+src=3D"cid:000501c769fa$039f71f0$c54f5ac4@rlb" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This is a function of nurturing a =
-sincere interest=20
-in the lives of people and the work of the various departments of =
-government that=20
-serve the people. He is a relative and close friend of the =
-Normans.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>American air strikes ostensibly =
-targeting the I.=20
-For the sake of a better understanding of the heroic angle many Sierra =
-Leoneans are=20
-espousing in honor of Norman, we must shed some light on the motivation =
-behind his=20
-actions in the civil war. Once the territories and their subjects were =
-demarcated,=20
-the coordinates didn't change. However, there has been a growing =
-abhorrence to child=20
-fighting in the international community, due mainly to the growth in =
-human rights=20
-protection. 's claim of bringing peace to Sierra Leone.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>In international humanitarian law, the =
-most=20
-important instruments of protection for children in armed conflict are =
-the Geneva=20
-Conventions of 1949, and two additional Protocols added in 1977. Another =
-war-crimes=20
-convict, Capt. "The prosecution appears to be politically motivated, and =
-it seems=20
-that Marie-Therese Nlandu is being targeted for her work as a lawyer and =
-her=20
-peaceful political activities.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>When the dust settled, an A. They need =
-to connect=20
-emotionally with the people they serve and engender their goodwill. A =
-Return to=20
-Warlord Rule? It seemed impossible to attend both classes and =
-training=20
-sessions.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Transition of power within the Zanu PF =
-caucus can=20
-only happen if and when Mugabe sanctions it. And it included a few =
-unexpected perks=20
-of being a professional golfer .</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Ghana's Joy Online (Jan.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Annan was perhaps born for greatness; =
+<DIV><FONT face=3DArial size=3D2>and other stakeholders acknowledge that =
+the=20
+situation as it currently stands is dire and unsustainable, but cannot =
+agree on how=20
+to resolve it. One of the reasons for the increase in the number of =
+young people=20
+taking part in armed conflict can be attributed to population =
+bulges.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Secretary-General Kofi Annan for his =
+service to the=20
+cause of world peace. Among an array of reasons, he stated that the S. =
+This is one=20
+of the places at which the broader definition of "youth" as up to the =
+age of 25 may=20
+well be a more appropriate category. "With this overpopulation, there is =
 a=20
-Fante-Asante twin and the descendent of chiefs on both =
-sides.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"As long as I'm breathing, I will fight =
-with the=20
-foreign troops who are coming to our country," said Abdiqadir Hassan =
-Diriye,=20
-Associated Press reported on Feb.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>These crimes were the product of =
-fighting one of=20
-the most ruthless civil wars in recent histories.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>trained hit men assassinated two of =
-his=20
-compatriots. Who Killed Sam Hinga Norman? But in Norman's last interview =
-with the=20
-BBC, he verified that he was in prison.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>" So, loosely speaking, individuals =
-aged 10 to 18=20
-can be defined as children.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>One great strategy with the potential =
-of developing=20
-dedicated public servants is unannounced presidential or vice =
-presidential visits to=20
-various departments and parastatals. The Special Court stated probable =
-heart failure=20
-as the cause of Norman's death before a proper medical autopsy was=20
-performed.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>, COOPI (Cooperazione Internazionale) =
-for=20
-therapeutic feeding and general medical treatment. Prisoners have to =
-share the=20
-little food available, meaning that each inmate has one daily meal of =
-maize and=20
-beans. His cabinet ministers looted their respective departments, =
-selling off=20
-official assets and passing the lion's share up to Stevens. trained hit =
-men=20
-assassinated two of his compatriots. Innocent Mayembe said. reported, =
-"Factional=20
-violence has again become a feature of life in Mogadishu since the =
-Islamic movement=20
-fled.</FONT></DIV></BODY></HTML>
+likelihood of a lot of diseases affecting the prisoners," Assani said. A =
+Return to=20
+Warlord Rule?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Meanwhile, in Western countries such as =
+Britain,=20
+young people can join the army from 17-years-old, so long as they do so =
+of their own=20
+volition and with their parents' consent. They can also be attracted to =
+join the=20
+army as it can be a safer place to be rather than the conflict area =
+itself. Some of=20
+the prosecution evidence that may be presented was reportedly obtained =
+through=20
+torture or ill-treatment, which would make it inadmissible under =
+international law,"=20
+Amnesty International says.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>21, two weeks before President =
+Kabila's=20
+inauguration, when she went to Kin-Maziere Police Station to visit and =
+bring food to=20
+six of her associates who had been arrested the previous day. The =
+operation and its=20
+aftermath epitomized the suffering of the people of Zimbabwe and widened =
+the rift=20
+between the government and the opposition M. France's motivation is that =
+Western=20
+Europe is in a struggle over its former colonies for the spoils of cold =
+war victory.=20
+In times of conflict and poverty, young people are attracted to the =
+military as it=20
+offers them an identity they are otherwise deprived of.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Their role has never been as important =
+as it is=20
+now. "With this overpopulation, there is a likelihood of a lot of =
+diseases affecting=20
+the prisoners," Assani said.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>29 2006 when one of his accomplices =
+shot him in the=20
+leg in a foiled robbery attempt in Bunia.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Some saw his return as a portend of =
+greater things=20
+for their country.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>envoy, said he didn't expect Annan to =
+take much of=20
+a role in local affairs.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Parliamentarian, Ansu Kai Kai of =
+Pujehun, who was=20
+officially charged by the S.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>But only if they perform exceptionally =
+will they be=20
+offered fixed-term employment. The same night, Ufoyuru Agenong'a, =
+convicted for=20
+killing two United Nations observers in Mongwalu, a mine 80 kilometers =
+north of=20
+Bunia, also escaped. But he still counted himself lucky to walk out of a =
+case that=20
+ended up in another execution spree of Stevens' political =
+opponents.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>At age 12, Missah dropped out of =
+school, to make=20
+more time to play.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>19, 2006 at the United Nations in New =
+York. A=20
+government report found the health ministry failed to distribute 95 =
+percent of the=20
+medicine and equipment intended for public hospitals.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Ghana lost to Brazil in the battle to =
+enter the=20
+quarterfinals, but beat the United States. As well, members of the =
+African National=20
+Congress and the apartheid government of South Africa committed serious =
+crimes=20
+against humanity on the long walk to freedom. The former soldiers, many =
+of them=20
+youths, are returned to their communities. Missah keeps jogging to the =
+nearest=20
+pitch, and praises God for sending him a guardian. It may be an =
+opportune period for=20
+a negotiated political settlement to restore confidence in people that =
+at least=20
+somebody cares. Mutakama, who escaped during his integration into the =
+national army=20
+in Mushake, had been sentenced to seven years in prison by the military =
+tribunal in=20
+Bunia for violating military orders.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_0007_01C769D8.73D85BC0--
+------=_NextPart_001_0007_01C769D8.7C8FF4D0--
 
-------=_NextPart_000_0006_01C769D8.73D74A50
+------=_NextPart_000_0006_01C769D8.7C8EE360
 Content-Type: image/gif;
-	name="paradoxical.gif"
+	name="notify.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000501c769f9$fae7d8e0$868e6d2e@mvt>
+Content-ID: <000501c769fa$039f71f0$c54f5ac4@rlb>
 
 R0lGODdhPQNhAfMLAAwHHQMSOwY9Qd2si5Hj23OIbJtQ+9f76jj+pPUCtEMIuO2OC5kABin/LAOg
 /8P9MywAAAAAPQNhAQAE/xCISasVIOvN+75gKI4klpVoqqJe675wLAd0bd+4rEtrT+3AoDBWwhmP
@@ -629,11 +652,11 @@ PtLD7AVwfsl7WanQUp8P9WpoGR1FHmPYnSo+q1ymesk9wVSoDL6zpye1pkQDsavIvfSoCWpqVa/6
 PJW+W1MRKWXEmHnOpKWPI2HMaUVQlsX+LQjNtOZMTELT0JJGqZtLnWwQyzDI4J40XEyqiWkTOYZe
 urbtcMts3hDVufOmojcrKWxNN1vL/ry1t1ZW6HAPkNz51rGAURnY3oGafxeIAAA7
 
-------=_NextPart_000_0006_01C769D8.73D74A50--
+------=_NextPart_000_0006_01C769D8.7C8EE360--
 
 
 
---===============1649042504==
+--===============1329685482==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -644,7 +667,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1649042504==
+--===============1329685482==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -655,4 +678,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1649042504==--
+--===============1329685482==--
