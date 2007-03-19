@@ -1,14 +1,11 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [RFC][RFT] Adding support for Jazz16 based sound
- cards
-Date: Mon, 19 Mar 2007 01:32:15 +0100
-Message-ID: <45FDDA0F.7050503@gmail.com>
-References: <20070311232436.GB9778@sygehus.dk>
+From: root@gmml24.itg.hitachi.co.jp
+Subject: Conversion failure : Recipients-Information is not
+	available.
+Date: Mon, 19 Mar 2007 10:39:42 +0900
+Message-ID: <200703190139.l2J1djW7815298@gmml24.itg.hitachi.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0231087336=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <20070311232436.GB9778@sygehus.dk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,62 +15,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Rask Ingemann Lambertsen <rask@sygehus.dk>
-Cc: Adam Belay <ambx1@neo.rr.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 03/12/2007 12:24 AM, Rask Ingemann Lambertsen wrote:
+--===============0231087336==
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="GMAILSMTPBOUND01070319103942"
+Content-Transfer-Encoding: 7bit
 
-> Below is a patch against linux-2.6.20 to add support for Jazz16 sound
-> cards. It consists of changes to ALSA's SoundBlaster support and a
-> new PnP protocol for detecting the card, setting resources and such.
-> Before submitting a patch for inclusion into Linux, I would like to
-> have a few comments and perhaps a test report from someone else.
+--GMAILSMTPBOUND01070319103942
 
-I just now tested this on a standalone Jazz16 and it seems to be working 
-fine for me. I once had ogg123 segfault on me at the end of playback but 
-was unsuccesful in reproducing -- may have been a fluke.
+This report relates to your message:
+	
 
-As to the comments...
+	of Mon, 19 Mar 2007 10:39:42 +0900
 
-The changes to the SB code to support the Jazz16 I ofcourse agree with. 
-Supporting a new card is great. I am however not a huge fan of the new 
-PnP protocol. It's cute, but I feel it's a little over-engineered and 
-could just as well live directly in snd-jazz16.
 
-Currently you have jazz16 specific code in drivers/pnp. It's not code 
-that can be more generally used so snd-jazz16 is the correct place for 
-it I feel. Right now you've essentially just split one driver into two 
-pieces and placed the pieces in different corners of the tree.
+Your message was not delivered to: kusuda-takashi@hitachi-ul.co.jp
+	for the following reason: unable-to-transfer
+	and the following diagonostic: recipient-reassignment-prohibited
 
-In snd-jazz16, you'd take port= as a parameter (or autoprobe 220-260 as 
-you do now; not a fan of autoprobing but that's not the issue now) same 
-as other alsa drivers do and take irq/dma8/dma16 parameters as requests 
-to use those specified resources and program the card for it. sgalaxy 
-does this as well for irq and dma for example.
+***** The following information is directed towards the local administrator
 
-This setup also shares that same problem with the BIOS generally not 
-having reserved/routed the resources -- on a general PCI/ISA system the 
-user needs to go into the BIOS setup and reserve the resources the card 
-is (or will be, in this case) set to. So now the user really needs to 
-know what resources are going to be assigned, destroying the plug and 
-play idea...
+--GMAILSMTPBOUND01070319103942
+Content-Type: message/delivery-status
 
-A while ago when I was doing the isa_bus thing I also looked into 
-integrating plain old ISA with PnP and ran into those same issues. 
-Basically, there are no practical advantages, and a few disadvantages 
-(user needing to have reserved the resources, not being able to keep all 
-code specific to one piece of hardware in one place, needing to invent 
-PnP IDs).
+Reporting-MTA: x400; gmml24.itg.hitachi.co.jp
+Arrival-Date: Mon, 19 Mar 2007 10:39:42 +0900
+DSN-Gateway: dns; gmml24.itg.hitachi.co.jp
 
-Yes, the setup is sort of nice conceptually, so I hope you don't too 
-much mind me not liking it in practice.
+Final-Recipient: RFC822; kusuda-takashi@hitachi-ul.co.jp
+Action: failed
+Status: 5.4.0
+Last-Attempt-Date: Mon, 19 Mar 2007 10:39:42 +0900
 
-Rene.
+--GMAILSMTPBOUND01070319103942
+Content-Type: text/rfc822-headers
 
+Received: from mlsv3.hitachi.co.jp by gmml24.itg.hitachi.co.jp (AIX5.2/8.11.6p2/8.11.0) id l2J1dcO6648028; Mon, 19 Mar 2007 10:39:38 +0900
+Received: from mfilter-r1.hitachi.co.jp by mlsv3.hitachi.co.jp (8.12.10/8.12.10) id l2J1dfS6024361; Mon, 19 Mar 2007 10:39:41 +0900
+Received: from vshutr3.hitachi.co.jp (unverified) by mfilter-r1.hitachi.co.jp
+ (Clearswift SMTPRS 5.2.5) with SMTP id <T7e7630a5b40ac90682d74@mfilter-r1.hitachi.co.jp> for <kusuda-takashi@hitachi-ul.co.jp>;
+ Mon, 19 Mar 2007 10:39:38 +0900
+Received: from hitiij.hitachi.co.jp ([133.145.224.3])
+ by vshutr3.hitachi.co.jp with SMTP id M2007031910393818884
+ for <kusuda-takashi@hitachi-ul.co.jp>; Mon, 19 Mar 2007 10:39:38 +0900
+Received: from hitachi-ul.co.jp (unknown [59.92.140.56])
+	by hitiij.hitachi.co.jp (Postfix) with ESMTP id E228A33CE8
+	for <kusuda-takashi@hitachi-ul.co.jp>; Mon, 19 Mar 2007 10:39:35 +0900 (JST)
+From: alsa-devel@lists.sourceforge.net
+To: kusuda-takashi@hitachi-ul.co.jp
+Subject: Thank you!
+Date: Mon, 19 Mar 2007 07:09:37 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
+X-Priority: 3
+X-MSMail-Priority: Normal
+Message-Id: <20070319013935.E228A33CE8@hitiij.hitachi.co.jp>
+
+
+--GMAILSMTPBOUND01070319103942--
+
+
+--===============0231087336==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0231087336==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0231087336==--
