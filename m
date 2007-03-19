@@ -1,16 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [RFC: 2.6.21 patch] fix
-	sound/pci/ice1712/wtm.c:wtm_init()
-Date: Mon, 19 Mar 2007 10:24:38 +0100
-Message-ID: <20070319092438.GL752@stusta.de>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: alsa userspace interface
+Date: Mon, 19 Mar 2007 11:08:54 +0100
+Message-ID: <1174298934.28822.1180148355@webmail.messagingengine.com>
+References: <3BC073ED-BC5A-48AB-A3D0-21F3A23B4DDB@xant.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailhub.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0EC0424624
-	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2007 10:24:35 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <3BC073ED-BC5A-48AB-A3D0-21F3A23B4DDB@xant.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,52 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Clement Guedez <klem.dev@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@suse.cz>
+To: Andrea Guzzo <xant@xant.net>, alsa-devel@lists.sourceforge.net
+Cc: Stefan Richter <stefanr@s5r6.in-berlin.de>, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The Coverity checker spotted this bogus for() loop that produces an 
-array overrun.
+Andrea Guzzo wrote:
+> we are wondering if it's possible to register an alsa device from
+> userspace.
 
-It seems what actually should be done is quite simple?
+It is not possible to register a kernel device from userspace, but it is
+possible to write a plugin that is used by the alsa library like a
+kernel device.
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+Have a look into the alsa-plugins package.
 
----
+> Is there any working or experimental one?
 
- sound/pci/ice1712/wtm.c |   14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+The FreeBoB project is writing an ALSA plugin for some IEEE1394 devices.
 
---- linux-2.6.21-rc3-mm2/sound/pci/ice1712/wtm.c.old	2007-03-19 01:29:23.000000000 +0100
-+++ linux-2.6.21-rc3-mm2/sound/pci/ice1712/wtm.c	2007-03-19 01:33:06.000000000 +0100
-@@ -489,23 +489,15 @@
- 
- static int __devinit wtm_init(struct snd_ice1712 *ice)
- {
--	static unsigned short stac_inits_prodigy[] = {
--		STAC946X_RESET, 0,
--		(unsigned short)-1
--	};
--	unsigned short *p;
--		
- 	/*WTM 192M*/
- 	ice->num_total_dacs = 8;
- 	ice->num_total_adcs = 4;
- 	ice->force_rdma1 = 1;
- 
- 	/*initialize codec*/
--	p = stac_inits_prodigy;
--	for (; *p != (unsigned short)-1; p += 2) {
--		stac9460_put(ice, p[0], p[1]);
--		stac9460_2_put(ice, p[0], p[1]);
--	}
-+	stac9460_put(ice, STAC946X_RESET, 0);
-+	stac9460_2_put(ice, STAC946X_RESET, 0);
-+
- 	return 0;
- }
- 
+> Another interesting use of an hypothetical alsa userspace interface  
+> for device drivers implementation would be the possibility to
+> implement virtual audio devices ....for example you could implement a
+> transparent sound server that doesn't require applications to support  
+> it explicitly and to link specific libraries, but it would be simply
+> accessed like any other alsa device and, with the use of substreams,
+> it would allow multiple applications to access audio facilities....
+> but this is another story :P
 
+This story is called dmix.  This plugin has been part of alsa-lib for
+years, and it doesn't need a server.  :-)
+
+
+Regards,
+Clemens
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
