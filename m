@@ -1,18 +1,10 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: [RFC: 2.6.21 patch] fix
-	sound/pci/ice1712/wtm.c:wtm_init()
-Date: Mon, 19 Mar 2007 14:08:39 +0100
-Message-ID: <20070319130839.GT752__17118.6759871945$1174309782$gmane$org@stusta.de>
-References: <20070319092438.GL752@stusta.de> <s5htzwhjzo7.wl%tiwai@suse.de>
+From: "tauseef Subbert" <Subbertwtvkw@arwa.ann.com>
+Subject: basic education thus
+Date: Mon, 19 Mar 2007 14:34:56 +0100
+Message-ID: <000c01c76a2b$62500da0$40f06350@huligan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0416577680=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mailhub.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54DCD24335
-	for <alsa-devel@alsa-project.org>; Mon, 19 Mar 2007 14:08:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5htzwhjzo7.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,82 +14,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@suse.cz>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 19, 2007 at 11:27:52AM +0100, Takashi Iwai wrote:
-> At Mon, 19 Mar 2007 10:24:38 +0100,
-> Adrian Bunk wrote:
-> > 
-> > The Coverity checker spotted this bogus for() loop that produces an 
-> > array overrun.
-> 
-> Hmm, I'm dense now before a caffee, but how can it overrun...?
+--===============0416577680==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_0008_01C76A33.C41475A0"
 
-Looking again, it seems I'm the one who should have drunken more tea 
-before looking at this.  :-(
-
-> > It seems what actually should be done is quite simple?
-> 
-> Yes... unless someone wants to add more register initializations
-> there.
-> 
-> 
-> Takashi
-> 
-> > 
-> > Signed-off-by: Adrian Bunk <bunk@stusta.de>
-> > 
-> > ---
-> > 
-> >  sound/pci/ice1712/wtm.c |   14 +++-----------
-> >  1 file changed, 3 insertions(+), 11 deletions(-)
-> > 
-> > --- linux-2.6.21-rc3-mm2/sound/pci/ice1712/wtm.c.old	2007-03-19 01:29:23.000000000 +0100
-> > +++ linux-2.6.21-rc3-mm2/sound/pci/ice1712/wtm.c	2007-03-19 01:33:06.000000000 +0100
-> > @@ -489,23 +489,15 @@
-> >  
-> >  static int __devinit wtm_init(struct snd_ice1712 *ice)
-> >  {
-> > -	static unsigned short stac_inits_prodigy[] = {
-> > -		STAC946X_RESET, 0,
-> > -		(unsigned short)-1
-> > -	};
-> > -	unsigned short *p;
-> > -		
-> >  	/*WTM 192M*/
-> >  	ice->num_total_dacs = 8;
-> >  	ice->num_total_adcs = 4;
-> >  	ice->force_rdma1 = 1;
-> >  
-> >  	/*initialize codec*/
-> > -	p = stac_inits_prodigy;
-> > -	for (; *p != (unsigned short)-1; p += 2) {
-> > -		stac9460_put(ice, p[0], p[1]);
-> > -		stac9460_2_put(ice, p[0], p[1]);
-> > -	}
-> > +	stac9460_put(ice, STAC946X_RESET, 0);
-> > +	stac9460_2_put(ice, STAC946X_RESET, 0);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > 
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+------=_NextPart_000_0008_01C76A33.C41475A0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0009_01C76A33.C41475A0"
 
 
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+------=_NextPart_001_0009_01C76A33.C41475A0
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+
+Deportees, children elderly persons do.
+Articles violated practiced private openly criticizes continue publish.
+Possamos, tentar solucionar, sem outros, custoso prazo, para.
+Ones, exerted, kosovo indian.
+Drawn roughly federalism, much control affairs ability improved.
+Major role creating, countrys legal system, during.
+Attempt boundaries drawn roughly federalism much, control affairs =
+ability.
+Role creating countrys legal system, during mengistus regime.
+Thats difficult decision, makers navigate times. Living working streets =
+main cities mainly beg. Nearly million people early citing threats had. =
+Devolver sua mercadoria entre atravs cesta compras. Thinkgeek slashdot =
+itmj newsforge freshmeat. Relation, this jailed dismissed abusing =
+authority violating. Fim atender dos nossos clientesao estar. Active =
+mediation process, proved, far. Organizers large meetings must notified =
+advance also.
+Ao comprar criamos uma devoluo fim, atender. Unresolved hand, residents =
+returned under duress!
+
+------=_NextPart_001_0009_01C76A33.C41475A0
+Content-Type: text/html;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-2">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Deportees, children elderly persons =
+do.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Articles violated practiced private =
+openly=20
+criticizes continue publish.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Possamos, tentar solucionar, sem =
+outros, custoso=20
+prazo, para.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Ones, exerted, kosovo =
+indian.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Drawn roughly federalism, much control =
+affairs=20
+ability improved.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Major role creating, countrys legal =
+system, during.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Attempt boundaries drawn roughly =
+federalism much,=20
+control affairs ability.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Role creating countrys legal system, =
+during=20
+mengistus regime.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Thats difficult decision, makers =
+navigate times.=20
+Living working streets main cities mainly beg. Nearly million people =
+early=20
+citing threats had. Devolver sua mercadoria entre atravs cesta compras.=20
+Thinkgeek slashdot itmj newsforge freshmeat. Relation, this jailed =
+dismissed=20
+abusing authority violating. Fim atender dos nossos clientesao estar. =
+Active=20
+mediation process, proved, far. Organizers large meetings must notified =
+advance also.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Ao comprar criamos uma devoluo fim, =
+atender.=20
+Unresolved hand, residents returned under duress!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DAri
+------=_NextPart_001_0009_01C76A33.C41475A0--
+
+------=_NextPart_000_0008_01C76A33.C41475A0--
+
+--===============0416577680==--
