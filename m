@@ -1,10 +1,19 @@
-From: "tauseef Subbert" <Subbertwtvkw@arwa.ann.com>
-Subject: basic education thus
-Date: Mon, 19 Mar 2007 14:34:56 +0100
-Message-ID: <000c01c76a2b$62500da0$40f06350@huligan>
+From: Giorgio Padrin <giorgio@mandarinlogiq.org>
+Subject: Re: [RFC] Sign offs for
+	alsa-driver	->	alsa-kernel	derived	works.
+Date: Mon, 19 Mar 2007 15:02:30 +0100
+Message-ID: <1174312950.17844.60.camel@matisseg>
+References: <1173979821.27299.182.camel@batley.wolfsonmicro.main>
+	<s5hfy85wgez.wl%tiwai@suse.de> <1174200705.4420.7.camel@matisseg>
+	<s5hr6rljzhl.wl%tiwai@suse.de>
+	<1174301628.5824.6.camel@localhost.localdomain>
+	<s5hircxjxye.wl%tiwai@suse.de>
+	<1174302781.5824.10.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0416577680=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1174302781.5824.10.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,95 +23,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Richard Purdie <rpurdie@rpsys.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0416577680==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_0008_01C76A33.C41475A0"
-
-------=_NextPart_000_0008_01C76A33.C41475A0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0009_01C76A33.C41475A0"
-
-
-------=_NextPart_001_0009_01C76A33.C41475A0
-Content-Type: text/plain;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-
-Deportees, children elderly persons do.
-Articles violated practiced private openly criticizes continue publish.
-Possamos, tentar solucionar, sem outros, custoso prazo, para.
-Ones, exerted, kosovo indian.
-Drawn roughly federalism, much control affairs ability improved.
-Major role creating, countrys legal system, during.
-Attempt boundaries drawn roughly federalism much, control affairs =
-ability.
-Role creating countrys legal system, during mengistus regime.
-Thats difficult decision, makers navigate times. Living working streets =
-main cities mainly beg. Nearly million people early citing threats had. =
-Devolver sua mercadoria entre atravs cesta compras. Thinkgeek slashdot =
-itmj newsforge freshmeat. Relation, this jailed dismissed abusing =
-authority violating. Fim atender dos nossos clientesao estar. Active =
-mediation process, proved, far. Organizers large meetings must notified =
-advance also.
-Ao comprar criamos uma devoluo fim, atender. Unresolved hand, residents =
-returned under duress!
-
-------=_NextPart_001_0009_01C76A33.C41475A0
-Content-Type: text/html;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Deportees, children elderly persons =
-do.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Articles violated practiced private =
-openly=20
-criticizes continue publish.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Possamos, tentar solucionar, sem =
-outros, custoso=20
-prazo, para.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Ones, exerted, kosovo =
-indian.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Drawn roughly federalism, much control =
-affairs=20
-ability improved.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Major role creating, countrys legal =
-system, during.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Attempt boundaries drawn roughly =
-federalism much,=20
-control affairs ability.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Role creating countrys legal system, =
-during=20
-mengistus regime.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Thats difficult decision, makers =
-navigate times.=20
-Living working streets main cities mainly beg. Nearly million people =
-early=20
-citing threats had. Devolver sua mercadoria entre atravs cesta compras.=20
-Thinkgeek slashdot itmj newsforge freshmeat. Relation, this jailed =
-dismissed=20
-abusing authority violating. Fim atender dos nossos clientesao estar. =
-Active=20
-mediation process, proved, far. Organizers large meetings must notified =
-advance also.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Ao comprar criamos uma devoluo fim, =
-atender.=20
-Unresolved hand, residents returned under duress!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DAri
-------=_NextPart_001_0009_01C76A33.C41475A0--
-
-------=_NextPart_000_0008_01C76A33.C41475A0--
-
---===============0416577680==--
+SWwgZ2lvcm5vIGx1biwgMTkvMDMvMjAwNyBhbGxlIDExLjEzICswMDAwLCBSaWNoYXJkIFB1cmRp
+ZSBoYSBzY3JpdHRvOgo+IE9uIE1vbiwgMjAwNy0wMy0xOSBhdCAxMjowNCArMDEwMCwgVGFrYXNo
+aSBJd2FpIHdyb3RlOgo+ID4gQXQgTW9uLCAxOSBNYXIgMjAwNyAxMDo1Mzo0OCArMDAwMCwgUmlj
+aGFyZCBQdXJkaWUgd3JvdGU6Cj4gPiA+IFRoYXQgd291bGQgYmUgQWNrZWQtYnkgd2hlcmUgeW91
+IHJldmlldyBpdCBhbmQganVzdCBjb25maXJtIGl0cyBvayBieQo+ID4gPiB5b3UuCj4gPiA+IAo+
+ID4gPiBTaWduZWQtb2ZmLWJ5IG1lYW5zIHRoZSBwYXRjaCBwYXNzZWQgdGhyb3VnaCB0aGUgaGFu
+ZHMgb2YgdGhlIHBlcnNvbiBvbgo+ID4gPiBpdHMgd2F5IGludG8gbWFpbmxpbmUuIFRoZSBTb0Mg
+cGF0Y2hlcyB0aGF0IGhhZCBteSBzaWduZWQtb2ZmLWJ5IGxpbmUKPiA+ID4gd2VyZSBjb3JyZWN0
+IGFzIEknZCBwYXNzZWQgdGhlbSB0byBMaWFtIHdobyBjb2xsZWN0ZWQgdGhlbSwgdGhlbiBwdXNo
+ZWQKPiA+ID4gdGhlbSB1cHN0cmVhbSAtIHRoZSBwYXRjaGVzIHBhc3NlZCB0aHJvdWdoIGJvdGgg
+b3VyIGhhbmRzLgo+ID4gPiAKPiA+ID4gSW4gdGhpcyBjYXNlIChhcyBJIHVuZGVyc3RhbmQgaXQp
+LCBHaW9yZ2lvIHdyb3RlIHNvbWUgb2YgdGhlIGNvZGUgaXQgd2FzCj4gPiA+IGJhc2VkIG9uIGFu
+ZCB0aGVyZWZvcmUgc2hvdWxkIGdldCBhIG1lbnRpb24gaW4gdGhlIGNvbW1pdCBtZXNzYWdlIGFu
+ZAo+ID4gPiBoZWFkZXJzIG9mIHRoZSBmaWxlcyBjb25jZXJuZWQuIElmIGhlIGFncmVlcyB3aXRo
+IHRoZSBjb2RlLCBoZSBjYW4gYWxzbwo+ID4gPiBBY2sgaXQuIEhlIGhhc24ndCBiZWVuIGRpcmVj
+dGx5IHBhcnQgb2YgdGhlIGNoYWluIG9mIHN1Ym1pc3Npb24gdGhvdWdoLgo+ID4gCj4gPiBJbiB0
+aGUgZXhhY3QgZGVmaW50aW9uLCB5ZXMsIHlvdSdyZSBjb3JyZWN0Lgo+ID4gCj4gPiBCdXQsIGEg
+cGF0Y2ggY2FuIGJlIHN1Ym1pdHRlZCBmcm9tIG11bHRpcGxlIHBhdGhzLCBpLmUuIEkgbWF5IHJl
+Y2VpdmUKPiA+IHRoZSB2ZXJ5IHNhbWUgcGF0Y2ggZnJvbSBtdWx0aXBsZSBwZXJzb25zIGF0IHRo
+ZSBzYW1lIHRpbWUuICBJbiB0aGF0Cj4gPiBjYXNlLCBTaWduZWQtb2ZmLWJ5IGlzbid0IGNvbXBs
+ZXRlbHkgd3JvbmcgKGV4Y2VwdCBmb3IgdGhlIHRpbWUtbGluZQo+ID4gOi0pCj4gPiAKPiA+IE5v
+dGUgdGhhdCB3ZSBjYW5ub3QgbW9kaWZ5IHRoZSBjb21taXQgbG9nIG9uIHB1YmxpYyBHaXQgb3Ig
+SEcgdHJlZQo+ID4gZWFzaWx5LCBhbmQgc2lnbi1vZmZzIGFyZSBpbiBjb21taXQgbG9ncy4gIFNv
+LCByZW1vdmluZyBhIHNpZ24tb2ZmCj4gPiBmcm9tIHRoZSBwdWJsaWMgdHJlZSBzaG91bGQgYmUg
+dGhlIHZlcnkgbGFzdCBjaG9pY2UuCj4gCj4gSSB1bmRlcnN0YW5kIHRoYXQuIEknbSBtYWlubHkg
+Y29uY2VybmVkIHdpdGggcGVvcGxlIGdldHRpbmcgaXQgcmlnaHQgaW4KPiBmdXR1cmUgd2hpY2gg
+SSB0aGluayBpdCB3aHkgTGlhbSBhc2tlZCB0aGUgb3JpZ2luYWwgcXVlc3Rpb24uIEZvciB0aGUK
+PiByZWFzb24geW91IG1lbnRpb24sIHRoYXQgc3BlY2lmaWMgY2FzZSBtaWdodCBuZWVkIGEgZGlm
+ZmVyZW50IGhhbmRsaW5nCj4gZm9yIHRoZSByZWFzb24geW91J3ZlIG1lbnRpb25lZC4KCkknbSBp
+biBhIHNlbnNlIGFtYXplZCBhdCBkaXZhZ2F0aW9ucyBpbiB0aGlzIHRocmVhZC4KSSdtIGludGVy
+ZXN0ZWQgdGhhdCBzaWduLW9mZiBhbm5vdGF0aW9ucyBjb21lIGZyb20gdGhlaXIgc3RhdGVkCnNp
+Z25lcnMgOkQuIFRoaXMgc2hvdWxkIGJlIGEgYmFzaWMgZmFjdCBpbiB0aGUgcHJvY2Vzcywgw6dh
+IHZhIHNhbnMgZGlyZS4KCkZvciB0aGUgcmVzdCwgdGhpcyBjYXNlIGlzIG5vIG1vcmUgdGhhbiBh
+IG1pbm9yIGFjY2lkZW50LCBub3Qgd29ydGggdGhlCnRpbWUgb2Ygbm9ib2R5IGluIGNvcnJlY3Rp
+bmcsIGlmIGl0IHdvdWxkIGJlIHRvbyBjb21wbGljYXRlZC4gVGFrYXNoaSwKZmVlbCBmcmVlIHRv
+IHBhc3MgYmV5b25kIGl0LgoKZ2lvcmdpbwoKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUYWtlIFN1cnZl
+eXMuIEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVQKSm9pbiBTb3VyY2VGb3Jn
+ZS5uZXQncyBUZWNoc2F5IHBhbmVsIGFuZCB5b3UnbGwgZ2V0IHRoZSBjaGFuY2UgdG8gc2hhcmUg
+eW91cgpvcGluaW9ucyBvbiBJVCAmIGJ1c2luZXNzIHRvcGljcyB0aHJvdWdoIGJyaWVmIHN1cnZl
+eXMtYW5kIGVhcm4gY2FzaApodHRwOi8vd3d3LnRlY2hzYXkuY29tL2RlZmF1bHQucGhwP3BhZ2U9
+am9pbi5waHAmcD1zb3VyY2Vmb3JnZSZDSUQ9REVWREVWCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
+c3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
