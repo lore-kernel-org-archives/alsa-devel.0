@@ -1,10 +1,9 @@
-From: "Dora James" <uhd@dtholding.com>
-Subject: My song parodies are here,
-	and my other (non-political) humor blog is here.
-Date: Mon, 19 Mar 2007 01:25:21 +0100
-Message-ID: <000e01c769be$013bd6b0$51a9bac2@yfjvf>
+From: "Virginia Vasquez" <bnkoav@scriptinglang.com>
+Subject: Unless we fight, we won't be free.
+Date: Mon, 19 Mar 2007 01:30:12 +0100
+Message-ID: <000e01c769be$02001110$31b25118@ogdva>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0564983641=="
+Content-Type: multipart/mixed; boundary="===============1687940060=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,73 +14,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0564983641==
+--===============1687940060==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_000A_01C769C6.62F0FC70"
+	boundary="----=_NextPart_000_000A_01C769C6.63B49A90"
 
-------=_NextPart_000_000A_01C769C6.62F0FC70
+------=_NextPart_000_000A_01C769C6.63B49A90
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000B_01C769C6.62F4CD00"
+	boundary="----=_NextPart_001_000B_01C769C6.63B89230"
 
-------=_NextPart_001_000B_01C769C6.62F4CD00
+------=_NextPart_001_000B_01C769C6.63B89230
 Content-Type: text/plain;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 
 
-Laissez-les manger casino chips.
-You could have blocked Alito, but you failed to. Carnival of Satire =
-Carnival of the Liberals Tour de America: A Tribute to Patriot Floyd =
-Landis Howard Mortman is helping  a great non-partisan charity called =
-ThanksUSA. His video files Of Jon Stewart are wild, And with laughter my =
-mood he transforms.
-It's time to dump some tea.
-Link                   Email     Mad Kane's Forum      Subscribe to =
-Newsletter      July 3, 2006  Bush Isn't God.
-Talk about writing speech. )  My humorous how-to's are here and my  =
-workplace humor is here. Notice an entire month has passed and you =
-haven't started writing speech.
-Spend the next week scheming to extricate yourself from your commitment.
-Don't want you back, your war support is damning.
-Obsess about writing speech. Laissez-les manger casino chips.
-Ne monkey pas avec les babouins!
-Our founders told us to beware  The blight of tyranny.
-If you're lucky, it won't be any worse than this:      1.
+My Condi Rice song parody is here    and my  music related humor is =
+here.
+And show disdain for Dems who disagree. My limericks and poetry are =
+here. Talk about writing speech.
+By Madeleine Begun Kane The Supremes slapped George Dubya  quite hard, =
+Saying George, you ain't Czar, King, or God.
+Though an arrogant liar, The media buys her, A "pundit" who's clearly =
+unglued.
+You cast aside the virtues of our nation. But there's one thing he's =
+mastered: It's causing disasters So huge, we can't measure their scope. =
+And show disdain for Dems who disagree.
+Try to talk your spouse into phoning your regrets.
 Though our nation's at  war, You can't break the law, So stop riding =
-o'er Congress roughshod. But a GOP whore, Who's still wrong on the war, =
-Has to  forfeit his Senator title. Receive invitation to speak because =
-of your expertise in tapestry, arachnids, the World Wide Web.
-Laissez-les manger casino chips. He flouts it joyfully.
-Try to talk your spouse into phoning your regrets. La radio est =
-dangereuse, n'est-ce pas ?
-Receive invitation to speak because of your expertise in tapestry, =
-arachnids, the World Wide Web. If you're lucky, it won't be any worse =
-than this:      1. Wonder if your doctor would give you a note =
-diagnosing laryngitis of indeterminate duration.
-(AllHatNoCattle)   Jim of  The Rittenhouse Review on the death of =
-legendary oboist John Mack Perm. Spend the next week scheming to =
-extricate yourself from your commitment.
-Wonder if your doctor would give you a note diagnosing laryngitis of =
-indeterminate duration. A family medical emergency (my father's =
-hospitalization) has kept me from posting  and out of the news loop.
+o'er Congress roughshod.
+August 14, 2006  Bush's Favorite Hymn Gets A Rewrite: Amazing Disgrace =
+So, not only is Amazing Grace George Dubya's favorite hymn, but it =
+actually reduces the poor sensitive lad to tears. My legal humor is =
+here, and my  Supreme Court humor is here.
+Suffer from nightmares featuring you, your microphone, and three angry =
+apes.
+A family medical emergency (my father's hospitalization) has kept me =
+from posting  and out of the news loop.
+It's  kept our people free.
+Decide you should really give speech because it will enhance your =
+reputation, be educational, build character. to the extent I can =
+remember my high school French. And the winner is Norm Jenson Of =
+OneGoodMove.
 But here's some non-political humor about giving a speech, which  you =
-might enjoy.
-But here's some non-political humor about giving a speech, which  you =
-might enjoy. Laissez-les manger casino chips.
+might enjoy. My Ode To Skippy is here and my  Ode To Avedon Carol is =
+here.
+Bush-Cheney threaten rights held dear. Decide you should really give =
+speech because it will enhance your reputation, be educational, build =
+character.
+Obsess about writing speech. La radio est dangereuse, n'est-ce pas ? Ne =
+monkey pas avec les babouins!
+Decide you should really give speech because it will enhance your =
+reputation, be educational, build character. Amazing Disgrace  (To be =
+sung to the tune of  Amazing Grace)  By Madeleine Begun Kane Our Bill of =
+Rights, how sweet the sound.
+Plage fausse avec des cordes jointes. Try to talk your spouse into =
+phoning your regrets.
+Plage fausse avec des cordes jointes.
+Joementum Joe, it's time to end your Sen. Do you think my new set of =
+lyrics will make Bush cry too?
+Some Notable Posts: Skippy interviews Prof.
+(Here's Alta Vista's Babel Fish Translation  page, just in case my =
+meaning isn't sufficiently obvious. Link                   Email     Mad =
+Kane's Forum      Subscribe to Newsletter      July 20, 2006  Ode To The =
+Groper Ode To The Groper  By Madeleine Begun Kane When diplomacy's =
+needed, Bush gropes.
+Je blog, donc je suis. My media humor is here, and my  Ann Coulter humor =
+is here.
+My No Liebe For Lieberman is here    and my  song parodies are here. =
 Here's the personal limerick I've written in his honor: Ode to Norm =
 Jenson of OneGoodMove  By Madeleine Begun Kane The OneGoodMove blogger =
 named Norm Religiously posts and informs.
-Joementum Joe, Joementum Joe, it's time to go. You cast aside the =
-virtues of our nation.
-It's time to dump some tea. His video files Of Jon Stewart are wild, And =
-with laughter my mood he transforms.
-Talk about writing speech. Amazing Disgrace  (To be sung to the tune of  =
-Amazing Grace)  By Madeleine Begun Kane Our Bill of Rights, how sweet =
-the sound.
-------=_NextPart_001_000B_01C769C6.62F4CD00
+------=_NextPart_001_000B_01C769C6.63B89230
 Content-Type: text/html;
 	charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
@@ -90,115 +96,117 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Diso-8859-2">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"scare" hspace=3D0=20
-src=3D"cid:000901c769be$0128c3e0$51a9bac2@yfjvf" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"angling" hspace=3D0=20
+src=3D"cid:000901c769be$01ec3af0$31b25118@ogdva" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Laissez-les manger casino =
-chips.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You could have blocked Alito, but you =
-failed to.=20
-Carnival of Satire Carnival of the Liberals Tour de America: A Tribute =
-to Patriot=20
-Floyd Landis Howard Mortman is helping  a great non-partisan charity =
-called=20
-ThanksUSA. His video files Of Jon Stewart are wild, And with laughter my =
-mood he=20
-transforms.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It's time to dump some =
-tea.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Link                   Email     Mad =
-Kane's Forum  =20
-   Subscribe to Newsletter      July 3, 2006  Bush Isn't =
+<DIV><FONT face=3DArial size=3D2>My Condi Rice song parody is here    =
+and my  music=20
+related humor is here.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>And show disdain for Dems who disagree. =
+My=20
+limericks and poetry are here. Talk about writing speech.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>By Madeleine Begun Kane The Supremes =
+slapped George=20
+Dubya  quite hard, Saying George, you ain't Czar, King, or =
 God.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Talk about writing speech. )  My =
-humorous how-to's=20
-are here and my  workplace humor is here. Notice an entire month has =
-passed and you=20
-haven't started writing speech.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Spend the next week scheming to =
-extricate yourself=20
-from your commitment.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Don't want you back, your war support =
-is=20
-damning.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Obsess about writing speech. =
-Laissez-les manger=20
-casino chips.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Ne monkey pas avec les =
-babouins!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Our founders told us to beware  The =
-blight of=20
-tyranny.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If you're lucky, it won't be any worse =
-than this:  =20
-   1.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Though an arrogant liar, The media buys =
+her, A=20
+"pundit" who's clearly unglued.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You cast aside the virtues of our =
+nation. But=20
+there's one thing he's mastered: It's causing disasters So huge, we =
+can't measure=20
+their scope. And show disdain for Dems who disagree.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Try to talk your spouse into phoning =
+your=20
+regrets.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>Though our nation's at  war, You can't =
 break the=20
-law, So stop riding o'er Congress roughshod. But a GOP whore, Who's =
-still wrong on=20
-the war, Has to  forfeit his Senator title. Receive invitation to speak =
-because of=20
-your expertise in tapestry, arachnids, the World Wide Web.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Laissez-les manger casino chips. He =
-flouts it=20
-joyfully.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Try to talk your spouse into phoning =
-your regrets.=20
-La radio est dangereuse, n'est-ce pas ?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Receive invitation to speak because of =
+law, So stop riding o'er Congress roughshod.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>August 14, 2006  Bush's Favorite Hymn =
+Gets A=20
+Rewrite: Amazing Disgrace So, not only is Amazing Grace George Dubya's =
+favorite=20
+hymn, but it actually reduces the poor sensitive lad to tears. My legal =
+humor is=20
+here, and my  Supreme Court humor is here.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Suffer from nightmares featuring you, =
 your=20
-expertise in tapestry, arachnids, the World Wide Web. If you're lucky, =
-it won't be=20
-any worse than this:      1. Wonder if your doctor would give you a note =
-diagnosing=20
-laryngitis of indeterminate duration.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>(AllHatNoCattle)   Jim of  The =
-Rittenhouse Review=20
-on the death of legendary oboist John Mack Perm. Spend the next week =
-scheming to=20
-extricate yourself from your commitment.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Wonder if your doctor would give you a =
-note=20
-diagnosing laryngitis of indeterminate duration. A family medical =
-emergency (my=20
-father's hospitalization) has kept me from posting  and out of the =
-news=20
+microphone, and three angry apes.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>A family medical emergency (my =
+father's=20
+hospitalization) has kept me from posting  and out of the news =
 loop.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It's  kept our people =
+free.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Decide you should really give speech =
+because it=20
+will enhance your reputation, be educational, build character. to the =
+extent I can=20
+remember my high school French. And the winner is Norm Jenson Of=20
+OneGoodMove.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>But here's some non-political humor =
 about giving a=20
-speech, which  you might enjoy.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But here's some non-political humor =
-about giving a=20
-speech, which  you might enjoy. Laissez-les manger casino =
-chips.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Here's the personal limerick I've =
-written in his=20
-honor: Ode to Norm Jenson of OneGoodMove  By Madeleine Begun Kane The =
-OneGoodMove=20
-blogger named Norm Religiously posts and informs.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Joementum Joe, Joementum Joe, it's time =
-to go. You=20
-cast aside the virtues of our nation.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It's time to dump some tea. His video =
-files Of Jon=20
-Stewart are wild, And with laughter my mood he transforms.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Talk about writing speech. Amazing =
-Disgrace  (To be=20
-sung to the tune of  Amazing Grace)  By Madeleine Begun Kane Our Bill of =
-Rights, how=20
-sweet the sound.</FONT></DIV></BODY></HTML>
+speech, which  you might enjoy. My Ode To Skippy is here and my  Ode To =
+Avedon Carol=20
+is here.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Bush-Cheney threaten rights held dear. =
+Decide you=20
+should really give speech because it will enhance your reputation, be =
+educational,=20
+build character.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Obsess about writing speech. La radio =
+est=20
+dangereuse, n'est-ce pas ? Ne monkey pas avec les babouins!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Decide you should really give speech =
+because it=20
+will enhance your reputation, be educational, build character. Amazing =
+Disgrace  (To=20
+be sung to the tune of  Amazing Grace)  By Madeleine Begun Kane Our Bill =
+of Rights,=20
+how sweet the sound.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Plage fausse avec des cordes jointes. =
+Try to talk=20
+your spouse into phoning your regrets.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Plage fausse avec des cordes =
+jointes.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Joementum Joe, it's time to end your =
+Sen. Do you=20
+think my new set of lyrics will make Bush cry too?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Some Notable Posts: Skippy =
+interviews=20
+Prof.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>(Here's Alta Vista's Babel Fish =
+Translation  page,=20
+just in case my meaning isn't sufficiently obvious. Link                 =
+  Email    =20
+Mad Kane's Forum      Subscribe to Newsletter      July 20, 2006  Ode To =
+The Groper=20
+Ode To The Groper  By Madeleine Begun Kane When diplomacy's needed, =
+Bush=20
+gropes.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Je blog, donc je suis. My media humor =
+is here, and=20
+my  Ann Coulter humor is here.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>My No Liebe For Lieberman is here    =
+and my  song=20
+parodies are here. Here's the personal limerick I've written in his =
+honor: Ode to=20
+Norm Jenson of OneGoodMove  By Madeleine Begun Kane The OneGoodMove =
+blogger named=20
+Norm Religiously posts and informs.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_000B_01C769C6.62F4CD00--
+------=_NextPart_001_000B_01C769C6.63B89230--
 
-------=_NextPart_000_000A_01C769C6.62F0FC70
+------=_NextPart_000_000A_01C769C6.63B49A90
 Content-Type: image/gif;
-	name="virulent.gif"
+	name="upholster.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000901c769be$0128c3e0$51a9bac2@yfjvf>
+Content-ID: <000901c769be$01ec3af0$31b25118@ogdva>
 
 R0lGODdhLQLoAPUSAODU2b337Objw/vbxzF+e3VTaImQnHlzEhYNOS9mTrcIKo8SgGuGYhBjsxQz
 S3FgpURrCltyMbyMUQcxFcwHqy81xkO9pVOoGnyvJOVyj8dIYn3sHsMxKAakYwvlV5kU1zey4LLH
@@ -493,11 +501,11 @@ cIw2OVAn+a4u+TbvrZMvbglT7NQON10RlZRjNYZLFX77dirm6LCZcA2bFVrfuJdT8Qs/txnM91Fn
 uRvPNJy683iIa6R3eQFT+mUCNGQ3uBVnulNP6xnP7ZU79wbnrqJXAhjTeQbPLJE3U327roVXNZP/
 taxLsGj77ghr86MHtgvCEquC83C0WkEQAAA7
 
-------=_NextPart_000_000A_01C769C6.62F0FC70--
+------=_NextPart_000_000A_01C769C6.63B49A90--
 
 
 
---===============0564983641==
+--===============1687940060==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -508,7 +516,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0564983641==
+--===============1687940060==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -519,4 +527,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0564983641==--
+--===============1687940060==--
