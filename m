@@ -1,12 +1,15 @@
-From: "Rich Rattanni" <rattanni@gmail.com>
-Subject: ALSA driver problem after standby/resume
-Date: Mon, 19 Mar 2007 12:31:16 -0400
-Message-ID: <3187bd480703190931t919183ej9a54ff4fc3cba89b@mail.gmail.com>
+From: Rodrigo Pinheiro <ametade@gmail.com>
+Subject: Re: SPAM SPAM SPAM SPAM
+Date: Mon, 19 Mar 2007 16:21:45 +0000
+Message-ID: <1174321305.7624.5.camel@rodrigo-laptop>
+References: <75b66ecd0703181309p1c9493q3f701752b5710d10@mail.gmail.com>
+	<45FDA203.5010804@gmail.com> <s5hps75jzag.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0703191712420.7973@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0703191712420.7973@tm8103.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,33 +22,58 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-All:
-
-I have noticed a strange behaviour in the ALSA driver that seems to be
-occur after initiating a power standby and resume.  I am working on an
-application that uses FusionSound to playback OGG audio files.  When
-the application recognizes it is idle, it tells the OS to enter
-standby mode.  Upon resuming from standby, the ALSA API call made by
-fusionsound no longer acts as a blocking read, instead it returns
-immediately.  I have confirmed this with Denis Oliver Kropp of the
-DirectFB / FusionSound project.  He suggested that the ALSA driver
-should be repaired to prevent this problem from occuring.
-
-The system specifications are...
-Linux            -   Openembedded distro linux kernel 2.6.20
-GCC             -    4.1.1
-ALSA            -    1.0.13-r1
-FusionSound - 0.9.26-r0
-
-I guess I am looking for confirmation of this behavior with ALSA and
-any possible suggestions to patch the driver to operate correctly with
-power management functions under linux.
-
-Thanks in advance,
-Rich
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+SGkgdGhlcmUsCgpIYXZlIHlvdSBjb25zaWRlcmVkIFBvc3RncmV5IGluc3RlYWQgb2YgU3BhbWFz
+c2Fzc2luLiBJJ20gdXNpbmcgaXQgb24Kc2V2ZXJhbCBzZXJ2ZXIgd2l0aCBtdWNoIGJldHRlciBy
+ZXN1bHRzLgoKUm9kcmlnbwoKU2VnLCAyMDA3LTAzLTE5IMOgcyAxNzoxNiArMDEwMCwgSmFyb3Ns
+YXYgS3lzZWxhIGVzY3JldmV1Ogo+IE9uIE1vbiwgMTkgTWFyIDIwMDcsIFRha2FzaGkgSXdhaSB3
+cm90ZToKPiAKPiA+IEF0IFN1biwgMTggTWFyIDIwMDcgMjE6MzM6MDcgKzAxMDAsCj4gPiBSZW5l
+IEhlcm1hbiB3cm90ZToKPiA+ID4gCj4gPiA+IE9uIDAzLzE4LzIwMDcgMDk6MDkgUE0sIExlZSBS
+ZXZlbGwgd3JvdGU6Cj4gPiA+IAo+ID4gPiA+IENhbiBzb21lb25lIFBMRUFTRSBkbyBTT01FVEhJ
+TkcgYWJvdXQgdGhlIGZ1Y2tpbmcgc3BhbSBvbiB0aGlzIGxpc3Q/IAo+ID4gPiA+IEV2ZXJ5IHRo
+cmVhZCBlbmRzIGluY29uY2x1c2l2ZWx5IGFuZCBJIGFtIHNpY2sgb2YgaXQuICBUaGUgcHJvYmxl
+bSBpcwo+ID4gPiA+IGdldHRpbmcgd29yc2Ugbm90IGJldHRlci4KPiA+ID4gCj4gPiA+IFF1aXRl
+IDotKQo+ID4gPiAKPiA+ID4gR2l2ZW4gaG93IHVzZWQgbW96aWxsYSBieSBub3cgaXMgdGhhdCBt
+b3N0IGFueXRoaW5nIGNvbWluZyBmcm9tIHRoaXMKPiA+ID4gbGlzdCBpcyBzcGFtLCBJIHVzdWFs
+bHkgZW5kIHVwIHJlYWRpbmcgbW9zdCBvZiBhbHNhLWRldmVsIGZyb20gd2l0aGluIG15Cj4gPiA+
+IGxvY2FsICJqdW5rIiBmb2xkZXIuLi4KPiA+ID4gCj4gPiA+ID4gU29tZXRoaW5nIG5lZWRzIHRv
+IGJlIGRvbmUgTk9XIG9yIHRoaXMgbGlzdCB3aWxsIGhhdmUgbm8gc3Vic2NyaWJlcnMgCj4gPiA+
+ID4gbGVmdCBieSB0aGUgdGltZSB0aGUgcHJvYmxlbSBpcyBmaXhlZC4gIFRoYXQgY2Fubm90IGJl
+IGEgZ29vZCBvdXRjb21lCj4gPiA+ID4gZm9yIEFMU0EgZGV2ZWxvcG1lbnQuCj4gPiA+IAo+ID4g
+PiBBIGZldyB3ZWVrcyBhZ28gSmFyb3NsYXYgYXNrZWQgZm9yIGEgdm9sdW50ZWVyIHRvIGhlbHAg
+bW9kZXJhdGUgYXMgYW4KPiA+ID4gaW1tZWRpYXRlIHNvbHV0aW9uIHVudGlsIGJldHRlciBzcGFt
+IGZpbHRlcmluZyB3YXMgaW4gcGxhY2UgYW5kIEkgc2hvdWxkCj4gPiA+IHN0aWxsIGJlIGFibGUg
+dG8gZG8gdGhhdC4gTmV2ZXIgaGVhcmQgYmFjayB0aG91Z2gsIG5vciBhbnl0aGluZyBvbiBteQo+
+ID4gPiBwcm9wb3NhbCB0byB0cnkgYW5kIGdldCBhbHNhLXByb2plY3Qub3JnIG1haWwgc2V0dXAg
+b24gdGhlIG5sLmxpbnV4Lm9yZwo+ID4gPiBzZXJ2ZXIuCj4gPiA+IAo+ID4gPiBUaGUgcHJvYmxl
+bSBpcyBpbmRlZWQgdmVyeSBiYWQuIElmIHdlIGNhbiBoYXZlIGEgIml0IHNob3VsZCBpbXByb3Zl
+IHZpYQo+ID4gPiBhIG5ldyBzZXR1cCB3aXRoaW4gTiB3ZWVrcyIgc3RhdGVtZW50IGZvciBzb21l
+IHN1ZmZpY2llbnRseSBzbWFsbCB2YWx1ZQo+ID4gPiBvZiBOIG9yIHNvbWV0aGluZyBsaWtlIHRo
+YXQgd2UgY2FuIHNpdCBpdCBvdXQgSSBndWVzcyBidXQgSSBxdWl0ZSBhZ3JlZQo+ID4gPiBzb21l
+dGhpbmcgaXMgcmVsYXRpdmVseSB1cmdlbnRseSBuZWVkZWQuCj4gPiAKPiA+IEluZGVlZC4KPiA+
+IAo+ID4gSmFyb3NsYXYsIHRoZSBzcGFtIGxldmVsIGRvZXNuJ3QgZGVjcmVhc2UgbXVjaCBub3cu
+ICBXZSBuZWVkIGltbWVkaWF0ZQo+ID4gYWN0aW9uLgo+IAo+IFRoZSBwcmltYXJ5IE1YIGZvciBh
+bHNhLXByb2plY3Qub3JnIGlzIG5vdyBydW5uaW5nIHNwYW1hc3Nhc3Npbi4gSSdtIAo+IGZpZ3Vy
+aW5nIHdoYXQgaXMgdGhlIHNwYW0gc291cmNlIG5vdy4gVGhlIGFsc2EtZGV2ZWwgbGlzdCBpcyBt
+b2RlcmF0ZWQuCj4gVGFrYXNoaSwgUmVuZSwgTGVlIGhhdmUgbW9kZXJhdG9yIHByaXZpZGdlcyBu
+b3cuIENoZWNrOgo+IAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2FkbWlu
+L2Fsc2EtZGV2ZWwKPiAKPiAJCQkJCQlKYXJvc2xhdgo+IAo+IC0tLS0tCj4gSmFyb3NsYXYgS3lz
+ZWxhIDxwZXJleEBzdXNlLmN6Pgo+IExpbnV4IEtlcm5lbCBTb3VuZCBNYWludGFpbmVyCj4gQUxT
+QSBQcm9qZWN0LCBTVVNFIExhYnMKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGFrZSBTdXJ2ZXlz
+LiBFYXJuIENhc2guIEluZmx1ZW5jZSB0aGUgRnV0dXJlIG9mIElUCj4gSm9pbiBTb3VyY2VGb3Jn
+ZS5uZXQncyBUZWNoc2F5IHBhbmVsIGFuZCB5b3UnbGwgZ2V0IHRoZSBjaGFuY2UgdG8gc2hhcmUg
+eW91cgo+IG9waW5pb25zIG9uIElUICYgYnVzaW5lc3MgdG9waWNzIHRocm91Z2ggYnJpZWYgc3Vy
+dmV5cy1hbmQgZWFybiBjYXNoCj4gaHR0cDovL3d3dy50ZWNoc2F5LmNvbS9kZWZhdWx0LnBocD9w
+YWdlPWpvaW4ucGhwJnA9c291cmNlZm9yZ2UmQ0lEPURFVkRFVgo+IF9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+PiBBbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNl
+Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCgotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRh
+a2UgU3VydmV5cy4gRWFybiBDYXNoLiBJbmZsdWVuY2UgdGhlIEZ1dHVyZSBvZiBJVApKb2luIFNv
+dXJjZUZvcmdlLm5ldCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNoYW5jZSB0
+byBzaGFyZSB5b3VyCm9waW5pb25zIG9uIElUICYgYnVzaW5lc3MgdG9waWNzIHRocm91Z2ggYnJp
+ZWYgc3VydmV5cy1hbmQgZWFybiBjYXNoCmh0dHA6Ly93d3cudGVjaHNheS5jb20vZGVmYXVsdC5w
+aHA/cGFnZT1qb2luLnBocCZwPXNvdXJjZWZvcmdlJkNJRD1ERVZERVYKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
