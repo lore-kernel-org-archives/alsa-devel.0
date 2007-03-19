@@ -1,18 +1,12 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: alesis_multimix8_usb.
-Date: Mon, 19 Mar 2007 17:41:41 +0100
-Message-ID: <1174322501.23411.1180227547@webmail.messagingengine.com>
-References: <loom.20070316T025832-694@post.gmane.org>
-	<1174062048.9606.1179833223@webmail.messagingengine.com>
-	<loom.20070317T052120-590@post.gmane.org>
-	<1174292821.14944.1180144695@webmail.messagingengine.com>
-	<loom.20070319T121850-163@post.gmane.org>
+From: "Rich Rattanni" <rattanni@gmail.com>
+Subject: ALSA driver problem after standby/resume
+Date: Mon, 19 Mar 2007 12:31:16 -0400
+Message-ID: <3187bd480703190931t919183ej9a54ff4fc3cba89b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <loom.20070319T121850-163@post.gmane.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,20 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: pxl <pixeldotz@yahoo.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-pxl wrote:
-> Bus 002 Device 002: ID 08bb:2900 Texas Instruments Japan 
-> ...
+All:
 
-Looks OK.
+I have noticed a strange behaviour in the ALSA driver that seems to be
+occur after initiating a power standby and resume.  I am working on an
+application that uses FusionSound to playback OGG audio files.  When
+the application recognizes it is idle, it tells the OS to enter
+standby mode.  Upon resuming from standby, the ALSA API call made by
+fusionsound no longer acts as a blocking read, instead it returns
+immediately.  I have confirmed this with Denis Oliver Kropp of the
+DirectFB / FusionSound project.  He suggested that the ALSA driver
+should be repaired to prevent this problem from occuring.
 
-What happens when you try to record?
+The system specifications are...
+Linux            -   Openembedded distro linux kernel 2.6.20
+GCC             -    4.1.1
+ALSA            -    1.0.13-r1
+FusionSound - 0.9.26-r0
 
+I guess I am looking for confirmation of this behavior with ALSA and
+any possible suggestions to patch the driver to operate correctly with
+power management functions under linux.
 
-Regards,
-Clemens
+Thanks in advance,
+Rich
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
