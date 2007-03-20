@@ -1,12 +1,13 @@
-From: "Sven Johnsson" <sven.johnsson@gmail.com>
-Subject: Newbie question
-Date: Tue, 20 Mar 2007 01:02:47 +0100
-Message-ID: <d04c41d0703191702l682d29f1xcf96399f7ac7a1fe@mail.gmail.com>
+From: "M. Gagnon" <fire_void@hotmail.com>
+Subject: Re: Development Question
+Date: Mon, 19 Mar 2007 20:27:10 -0400
+Message-ID: <BAY120-F107E83F9DDD0189BB6554C9C750@phx.gbl>
+References: <1174293182.15615.1180145133@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1174293182.15615.1180145133@webmail.messagingengine.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,17 +20,59 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I'm developing an embedded VoIP Linux phone and will soon write a
-simple ALSA driver for mono usage. I have all the necessary code to
-access the hardware. Can anyone advise me about how to interface ALSA?
+>What is the output of the program?
 
-Best Regards,
-Sven Johnsson
+14:0 --> Midi Through Port-0
+128:0 --> TiMidity port 0
+128:1 --> TiMidity port 1
+128:2 --> TiMidity port 2
+128:3 --> TiMidity port 3
+pending events size: 28
+pending events size: 56
+pending events size: 84
+pending events size: 112
+pending events size: 140
+pending events size: 168
+pending events size: 196
+pending events size: 224
+pending events size: 252
+pending events size: 280
+pending events size: 308
+pending events size: 336
+pending events size: 364
+pending events size: 392
+pending events size: 420
+pending events size: 448
+BEFORE DRAIN: pending events size: 476
+AFTER DRAIN: pending events size: 0
+all events drained
+
+everything seems okay to me (i may not be adding the same number of notes a=
+s =
+
+in the sample i posted, and i have more console prints now, so small =
+
+differences could appear from the code i posted)
+
+>What are the contents of /proc/asound/seq/queues and .../timers while it's
+>trying to play?
+
+i'm sorry, but despite some googling this still sounds esoteric to me. Any =
+
+reference i could look at to know how to do this?
+
+thanks
+
+_________________________________________________________________
+Participez au concours Tourn=E9e Live Mobile d=E8s maintenant! =
+
+http://www.concertmobilelive.ca
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
