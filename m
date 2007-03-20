@@ -1,14 +1,14 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Development Question
-Date: Tue, 20 Mar 2007 09:12:23 +0100
-Message-ID: <1174378343.6231.1180356935@webmail.messagingengine.com>
-References: <BAY120-F107E83F9DDD0189BB6554C9C750@phx.gbl>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Newbie question
+Date: Mon, 19 Mar 2007 23:36:11 -0400
+Message-ID: <75b66ecd0703192036h38a25ad5s24553768388a98df@mail.gmail.com>
+References: <d04c41d0703191702l682d29f1xcf96399f7ac7a1fe@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <d04c41d0703191702l682d29f1xcf96399f7ac7a1fe@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <BAY120-F107E83F9DDD0189BB6554C9C750@phx.gbl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,35 +18,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "M. Gagnon" <fire_void@hotmail.com>, alsa-devel@lists.sourceforge.net
+To: Sven Johnsson <sven.johnsson@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-M. Gagnon wrote:
-> >What is the output of the program?
-> 
-> pending events size: 28
-> pending events size: 56
-> pending events size: 84
-> ...
-> BEFORE DRAIN: pending events size: 476
-> AFTER DRAIN: pending events size: 0
+On 3/19/07, Sven Johnsson <sven.johnsson@gmail.com> wrote:
+> I'm developing an embedded VoIP Linux phone and will soon write a
+> simple ALSA driver for mono usage. I have all the necessary code to
+> access the hardware. Can anyone advise me about how to interface ALSA?
 
-Looks OK.  In theory, all events should be sent somewhere.
+Google "writing an alsa driver" and it's the first hit.
 
-Please run aseqdump and send the events to its port.  What does it
-output?
-
-> >What are the contents of /proc/asound/seq/queues and .../timers while it's
-> >trying to play?
-> 
-> i'm sorry, but despite some googling this still sounds esoteric to me.
-
-These are just file names.  Run "cat /proc/asound/seq/queues" and
-"cat /proc/asound/seq/timer".
-
-
-Regards,
-Clemens
+Lee
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
