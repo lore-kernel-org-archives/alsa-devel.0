@@ -1,14 +1,22 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: s/sf.net/alsa-devel.org/
-Date: Tue, 20 Mar 2007 18:07:28 +0100
-Message-ID: <460014D0.9050408@gmail.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: RESUBSCRIBE - New alsa-devel mailing list
+Date: Tue, 20 Mar 2007 18:25:59 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0703201822480.7973@tm8103.perex-int.cz>
+References: <20070311232436.GB9778@sygehus.dk> <45FDDA0F.7050503@gmail.com>
+	<45FEFB4D.20108@gmail.com> <45FEFF19.4000805@gmail.com>
+	<45FF0360.9010006@gmail.com>
+	<s5h648wdsh2.wl%tiwai@suse.de> <s5hzm68cd64.wl%tiwai@suse.de>
+	<s5hvegwccug.wl%tiwai@suse.de> <45FFDA31.8000106@gmail.com>
+	<Pine.LNX.4.61.0703201551080.7973@tm8103.perex-int.cz>
+	<46000961.9090809@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080602000209020403020301"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 69E2624748
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2007 18:08:23 +0100 (CET)
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1030824748
+	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2007 18:26:00 +0100 (CET)
+In-Reply-To: <46000961.9090809@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,114 +26,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Rene Herman <rene.herman@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080602000209020403020301
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, 20 Mar 2007, Rene Herman wrote:
 
-Hi Takashi.
+> On 03/20/2007 03:58 PM, Jaroslav Kysela wrote:
+> 
+> > because never ending story with SF services, I quickly setup new 
+> > mailman alsa-devel list on new ALSA server (we'll get working list
+> > archive as bonus).
+> 
+> [ ... ]
+> 
+> > The posts from non-members are moderated now!
+> 
+> Thank you, that should improve things. I suppose a non-subcriber doesn't 
+> get a message they're in a moderation queue? I already have a few spam 
 
-This replaces all occurences of alsa-devel@lists.s[ource]f[orge].net 
-that a simple recursive grep found in the current HG ALSA repos by 
-alsa-devel@alsa-project.org.
+No, they don't. Messages are on hold until moderator process them.
 
-Signed-off-by: Rene Herman <rene.herman@gmail.com>
+> messages in my "moderation requests folder" so I guess this would amount 
+> to sending hundreds of replies to spammers...
+> 
+> The spam that currently entered my moderation request folder says things 
+> like:
+> 
+>    Content preview:  Spam detection software, running on the system
+>    "alsa0.alsa-project.org", has identified this incoming email as
+>    possible spam.
+> 
+>     [ ... ]
+> 
+>     Content analysis details:   (10.4 points, 5.0 required)
+> 
+> and everything it so marked is quite obvious spam. To quickly moderate 
+> I'd believe these might as well just be discarded automatically, with 
+> only the ones that were refused just because of non-subscriber put on 
+> the moderation queue. I don't know mailman, but I suppose it should be 
+> able to do that?
 
-Rene.
+I already figured what to set for mailman, so these messages are already 
+discarded automatically (I hope). If it's not true (for 
+mailman.alsa-project.org), please, notify me.
 
+						Jaroslav
 
---------------080602000209020403020301
-Content-Type: text/plain;
- name="alsa-devel_alsa-project.org.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-devel_alsa-project.org.diff"
-
-diff -urN alsa.orig/alsa-driver/pci/bt87x.patch alsa/alsa-driver/pci/bt87x.patch
---- alsa.orig/alsa-driver/pci/bt87x.patch	2006-06-29 23:22:39.000000000 +0200
-+++ alsa/alsa-driver/pci/bt87x.patch	2007-03-20 17:52:59.000000000 +0100
-@@ -39,7 +39,7 @@
- +	           pci->device, subsystem_vendor, subsystem_device);
-  	snd_printk(KERN_DEBUG "please mail id, board name, and, "
-  		   "if it works, the correct digital_rate option to "
-- 		   "<alsa-devel@lists.sf.net>\n");
-+ 		   "<alsa-devel@alsa-project.org>\n");
- @@ -935,3 +948,5 @@
-  
-  module_init(alsa_card_bt87x_init)
-diff -urN alsa.orig/alsa-kernel/Documentation/ALSA-Configuration.txt alsa/alsa-kernel/Documentation/ALSA-Configuration.txt
---- alsa.orig/alsa-kernel/Documentation/ALSA-Configuration.txt	2007-02-26 17:00:05.000000000 +0100
-+++ alsa/alsa-kernel/Documentation/ALSA-Configuration.txt	2007-03-20 17:54:24.000000000 +0100
-@@ -2049,4 +2049,4 @@
-        https://bugtrack.alsa-project.org/bugs/
- 
-   ALSA Developers ML
--       mailto:alsa-devel@lists.sourceforge.net
-+       mailto:alsa-devel@alsa-project.org
-diff -urN alsa.orig/alsa-kernel/Documentation/Bt87x.txt alsa/alsa-kernel/Documentation/Bt87x.txt
---- alsa.orig/alsa-kernel/Documentation/Bt87x.txt	2006-06-29 23:25:22.000000000 +0200
-+++ alsa/alsa-kernel/Documentation/Bt87x.txt	2007-03-20 17:55:06.000000000 +0100
-@@ -36,8 +36,8 @@
- other values than the default 32000 (often it's 44100 or 64000).
- 
- If you have an unknown card, please mail the ID and board name to
--<alsa-devel@lists.sf.net>, regardless of whether audio capture works or
--not, so that future versions of this driver know about your card.
-+<alsa-devel@alsa-project.org>, regardless of whether audio capture works
-+or not, so that future versions of this driver know about your card.
- 
- 
- Audio modes
-diff -urN alsa.orig/alsa-kernel/pci/bt87x.c alsa/alsa-kernel/pci/bt87x.c
---- alsa.orig/alsa-kernel/pci/bt87x.c	2007-03-06 11:30:32.000000000 +0100
-+++ alsa/alsa-kernel/pci/bt87x.c	2007-03-20 17:56:40.000000000 +0100
-@@ -835,7 +835,7 @@
- 	           pci->device, pci->subsystem_vendor, pci->subsystem_device);
- 	snd_printk(KERN_DEBUG "please mail id, board name, and, "
- 		   "if it works, the correct digital_rate option to "
--		   "<alsa-devel@lists.sf.net>\n");
-+		   "<alsa-devel@alsa-project.org>\n");
- 	return 32000; /* default rate */
- }
- 
-diff -urN alsa.orig/alsa-kernel/pci/cs46xx/cs46xx_lib.c alsa/alsa-kernel/pci/cs46xx/cs46xx_lib.c
---- alsa.orig/alsa-kernel/pci/cs46xx/cs46xx_lib.c	2006-11-21 18:00:06.000000000 +0100
-+++ alsa/alsa-kernel/pci/cs46xx/cs46xx_lib.c	2007-03-20 17:55:54.000000000 +0100
-@@ -3107,7 +3107,7 @@
- 	snd_printk(KERN_ERR "ERROR: snd-cs46xx: never read ISV3 & ISV4 from AC'97\n");
- 	snd_printk(KERN_ERR "       Try reloading the ALSA driver, if you find something\n");
-         snd_printk(KERN_ERR "       broken or not working on your soundcard upon\n");
--	snd_printk(KERN_ERR "       this message please report to alsa-devel@lists.sourceforge.net\n");
-+	snd_printk(KERN_ERR "       this message please report to alsa-devel@alsa-project.org\n");
- 
- 	return -EIO;
- #endif
-diff -urN alsa.orig/alsa-lib/src/conf/cards/USB-Audio.conf alsa/alsa-lib/src/conf/cards/USB-Audio.conf
---- alsa.orig/alsa-lib/src/conf/cards/USB-Audio.conf	2007-02-13 10:00:05.000000000 +0100
-+++ alsa/alsa-lib/src/conf/cards/USB-Audio.conf	2007-03-20 17:57:20.000000000 +0100
-@@ -9,7 +9,7 @@
- #  cards.USB-Audio.pcm.use_dmix."NoiseBlaster 3000" no
- #
- #  If your device requires such a definition to work correctly, please report it
--#  to <alsa-devel@lists.sourceforge.net>.
-+#  to <alsa-devel@alsa-project.org>.
- 
- 
- # If a device has sample formats not supported by dmix, dmix can be disabled
-
---------------080602000209020403020301
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------080602000209020403020301--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
