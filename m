@@ -1,40 +1,46 @@
-From: Himanshu Chauhan <hs.chauhan@gmail.com>
-Subject: Problem in dummy driver
-Date: Wed, 21 Mar 2007 07:58:38 +0530
-Message-ID: <46009856.4060601@gmail.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: The alsa-devel mailing list has moved!
+Date: Wed, 21 Mar 2007 10:07:54 +0100
+Message-ID: <4600F5EA.6070309@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id D183C2434D
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2007 03:29:00 +0100 (CET)
-Received: by nz-out-0506.google.com with SMTP id l8so52408nzf
-	for <alsa-devel@alsa-project.org>; Tue, 20 Mar 2007 19:28:59 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-devel-bounces@lists.sourceforge.net
+Errors-To: alsa-devel-bounces@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Dear all,
+Hello everyone,
 
-I am working on the dummy driver provided with the ALSA. I took it from
-the linux kernel 2.6.20.1
-I build the module and load it. The XMMS seems to play ok (doesn't hang
-and all) but none of
-the recording application seem to record from the driver.
+	because never ending story with SF services, I quickly setup new
+mailman alsa-devel list on new ALSA server (we'll get working list 
+archive as bonus). Because I don't want to move automatically all 
+subscribers, please, subscribe yourself to new list:
 
-Can the driver in current state work as the loop back cable between
-applications?
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Thanks in advance...
+	New list is available as alsa-devel@alsa-project.org while old on SF is 
+available as alsa-devel@lists.sourceforge.net .
 
-Warm Regards
---Himanshu
+	The archive for new alsa-devel mailing list is here:
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/
+
+	The posts from non-members are moderated now!
+
+						Jaroslav
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys-and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
