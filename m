@@ -1,7 +1,7 @@
-From: Rene Herman <rene.herman@gmail.com>
+From: Jean-Marc Valin <jean-marc.valin@usherbrooke.ca>
 Subject: Re: [Alsa-devel] Quality resampling code for libasound
-Date: Wed, 21 Mar 2007 16:27:26 +0100
-Message-ID: <46014EDE.6090700@gmail.com>
+Date: Thu, 22 Mar 2007 02:34:31 +1100
+Message-ID: <46015087.6090003@usherbrooke.ca>
 References: <45D92131.50601@usherbrooke.ca>
 	<s5hirdy72ue.wl%tiwai@suse.de>	<45D99DF7.90204@usherbrooke.ca>
 	<s5hhcti70pa.wl%tiwai@suse.de>	<45D9A848.9040803@usherbrooke.ca>
@@ -16,16 +16,16 @@ References: <45D92131.50601@usherbrooke.ca>
 	<s5hodmoc99l.wl%tiwai@suse.de>	<45FFEAA9.4040606@usherbrooke.ca>
 	<s5hlkhsc812.wl%tiwai@suse.de>	<4600539A.2070804@usherbrooke.ca>
 	<s5hslbyc02f.wl%tiwai@suse.de>	<46012E39.3020201@usherbrooke.ca>
-	<s5hmz26buws.wl%tiwai@suse.de>
+	<s5hmz26buws.wl%tiwai@suse.de> <46014EDE.6090700@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 227EC24405
-	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2007 16:28:26 +0100 (CET)
-In-Reply-To: <s5hmz26buws.wl%tiwai@suse.de>
+Received: from idefix.homelinux.org (142.163.233.220.exetel.com.au
+	[220.233.163.142])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC31E243C7
+	for <alsa-devel@alsa-project.org>; Wed, 21 Mar 2007 16:34:32 +0100 (CET)
+In-Reply-To: <46014EDE.6090700@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,31 +35,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, James Courtier-Dutton <James@superbug.co.uk>, Jean-Marc Valin <jean-marc.valin@usherbrooke.ca>
+To: Rene Herman <rene.herman@gmail.com>
+Cc: alsa-devel@alsa-project.org, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/21/2007 02:14 PM, Takashi Iwai wrote:
+> Users of these distributions would then have to be fairly familiar with
+> alsa to know they could improve sound by recompiling alsa-lib against
+> the speex libraries, but given that it's (also) dirt cheap soundcards
+> that need the resampling, their users aren't too likely to _be_ fairly
+> familiar. They'd just observe (still) that their sound is "much better
+> on windows".
 
-> In the ideal situation, we may link to speex resampler as a dynamic 
-> library -- e.g. adding a configure option to let user choose the 
-> built-in or system-wide library resampler code.  Does libspeex
-> provide this code snip as exported?
+Oh, I meant using a copy of the pph code in the mean time, not the
+current linear interpolation resampler.
 
-There's one problem with that solution though; people generally don't 
-compile and install alsa-lib themselves these days and since 
-distributions may not be too keen on having their alsa-lib package 
-dependent on their speex package they might just compile with the 
-builtin code.
+> If the standard code is as lousy as I've read in this thread, keeping it
+> as default is probably not the best thing.
 
-Users of these distributions would then have to be fairly familiar with 
-alsa to know they could improve sound by recompiling alsa-lib against 
-the speex libraries, but given that it's (also) dirt cheap soundcards 
-that need the resampling, their users aren't too likely to _be_ fairly 
-familiar. They'd just observe (still) that their sound is "much better 
-on windows".
+It's worse than you think :-) Try playing an 8 kHz file to a soundcard
+that only does 44.1/48. It's just horrible.
 
-If the standard code is as lousy as I've read in this thread, keeping it 
-as default is probably not the best thing.
-
-Rene.
+	Jean-Marc
