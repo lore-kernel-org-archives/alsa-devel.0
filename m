@@ -1,67 +1,49 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: ALSA initialization still seems to be too late?
-Date: Fri, 23 Mar 2007 21:36:27 +0100
-Message-ID: <20070323203627.GW752@stusta.de>
+From: "Ustun ERGENOGLU" <ustun.ergenoglu@gmail.com>
+Subject: hopeless about snd-hda-intel driver.
+Date: Sat, 24 Mar 2007 16:57:24 +0200
+Message-ID: <681812960703240757k58a1f160u7ea8d5e5768cb93d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S2992561AbXCWUg0@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, Linus Torvalds <torvalds@osdl.org>, linux-kernel@vger.kernel.org, mchehab@infradead.org, v4l-dvb-maintainer@linuxtv.org
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The commit below from 2005 (sic) seems to be an example that workarounds 
-often have quite a long lifetime.
+Hello everybody,
 
-Can we get this sorted out properly for 2.6.22?
+for more than one month I have been crawling through the net to find a
+cure for my endless torment about ATI SB450 Realtek ALC861 soundcard.
+I have no problem with playback, but when it comes recording there is
+nothing wrong in the beginning but after sometime recording stops and
+I see a message about time out in dmesg output.
 
-TIA
-Adrian
+I have made a bug report in the ALSA bug tracking system but got no
+response :(. It's here:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2970
 
+Can anybody, please, tell me where to begin to solve this problem. I
+can even start hacking ALSA code with my next to nothing knowledge
+about kernel driver programming as I have more than average c
+programming experience. This is more than enough motivation to start
+some coding, I suppose.
 
-commit c7ac6b42ffba28c350cbcd48268f46689f6eb1cc
-Author: Linus Torvalds <torvalds@g5.osdl.org>
-Date:   Wed Dec 21 14:52:32 2005 -0800
+I would greatly appreciate any recommendation or help.
 
-    Initialize drivers/media/video/saa7134 late
-    
-    When compiled-in, make sure the sound system has initialized
-    before these drivers do.
-    
-    Reported by Adrian Bunk <bunk@stusta.de>
-    
-    (The right fix would be to make the sound core use "subsys_initcall()"
-    and thus initialize before all normal drivers, but this is the quick
-    and limited safe fix for 2.6.15).
-    
-    Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+Thanks
+Ustun
 
-diff --git a/drivers/media/video/saa7134/saa7134-alsa.c b/drivers/media/video/saa7134/saa7134-alsa.c
-index 953d5fe..6752dd1 100644
---- a/drivers/media/video/saa7134/saa7134-alsa.c
-+++ b/drivers/media/video/saa7134/saa7134-alsa.c
-@@ -1028,7 +1028,8 @@ static void saa7134_alsa_exit(void)
- 	return;
- }
- 
--module_init(saa7134_alsa_init);
-+/* We initialize this late, to make sure the sound system is up and running */
-+late_initcall(saa7134_alsa_init);
- module_exit(saa7134_alsa_exit);
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Ricardo Cerqueira");
-diff --git a/drivers/media/video/saa7134/saa7134-oss.c b/drivers/media/video/saa7134/saa7134-oss.c
-index 513a699..c450d57 100644
---- a/drivers/media/video/saa7134/saa7134-oss.c
-+++ b/drivers/media/video/saa7134/saa7134-oss.c
-@@ -1002,7 +1002,8 @@ static void saa7134_oss_exit(void)
- 	return;
- }
- 
--module_init(saa7134_oss_init);
-+/* We initialize this late, to make sure the sound system is up and running */
-+late_initcall(saa7134_oss_init);
- module_exit(saa7134_oss_exit);
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Gerd Knorr <kraxel@bytesex.org> [SuSE Labs]");
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys-and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
