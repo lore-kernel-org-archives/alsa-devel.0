@@ -1,16 +1,16 @@
 From: Adrian Bunk <bunk@stusta.de>
-Subject: [2/4] 2.6.21-rc5: known regressions (v2)
-Date: Fri, 30 Mar 2007 23:32:15 +0200
-Message-ID: <20070330213215.GN14134@stusta.de>
-References: <Pine.LNX.4.64.0703251559560.6730@woody.linux-foundation.org>
+Subject: [2/3] 2.6.21-rc6: known regressions
+Date: Sat, 14 Apr 2007 02:38:01 +0200
+Message-ID: <20070414003801.GT5907@stusta.de>
+References: <Pine.LNX.4.64.0704051944230.6730@woody.linux-foundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932178AbXC3VcT@vger.kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754154AbXDNAk7@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0703251559560.6730@woody.linux-foundation.org>
+In-Reply-To: <Pine.LNX.4.64.0704051944230.6730@woody.linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Hans-Georg Rist <hg.rist@web.de>, perex@suse.cz, alsa-devel@alsa-project.org, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Andi Kleen <ak@suse.de>, Oliver Neukum <oneukum@suse.de>, greg@kroah.com, linux-usb-devel@lists.sourceforge.net, Marcelo Tosatti <marcelo@kvack.org>, CIJOML <cijoml@volny.cz>, v4l-dvb-maintainer@linuxtv.org, Ingo Molnar <mingo@elte.hu>, Ayaz Abdulla <aabdulla@nvidia.com>, jgarzik@pobox.com, netdev@vger.kernel.org
+Cc: Hans-Georg Rist <hg.rist@web.de>, perex@suse.cz, alsa-devel@alsa-project.org, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Andi Kleen <ak@suse.de>, Oliver Neukum <oneukum@suse.de>, greg@kroah.com, linux-usb-devel@lists.sourceforge.net, Tino Keitel <tino.keitel@gmx.de>, Marcelo Tosatti <marcelo@kvack.org>, CIJOML <cijoml@volny.cz>, Markus Rechberger <markus.rechberger@amd.com>, v4l-dvb-maintainer@linuxtv.org
 List-Id: alsa-devel@alsa-project.org
 
 This email lists some known regressions in Linus' tree compared to 2.6.20.
@@ -54,12 +54,6 @@ Status     : problem is being debuggged
 Subject    : USB: Oops when changing DVB-T adapter
 References : http://lkml.org/lkml/2007/3/9/212
 Submitter  : CIJOML <cijoml@volny.cz>
-Status     : unknown
-
-
-Subject    : forcedeth: sporadic under-load crashes
-References : http://lkml.org/lkml/2007/3/26/63
-Submitter  : Ingo Molnar <mingo@elte.hu>
-Handled-By : Ingo Molnar <mingo@elte.hu>
-             Ayaz Abdulla <aabdulla@nvidia.com>
-Status     : problem is being debugged
+Handled-By : Markus Rechberger <markus.rechberger@amd.com>
+Patch      : http://lkml.org/lkml/2007/4/5/154
+Status     : patches available
