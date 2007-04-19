@@ -1,23 +1,18 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: alsa-lib functions reporting conflicting
-	information with two sound cards
-Date: Thu, 19 Apr 2007 14:45:36 -0400
-Message-ID: <75b66ecd0704191145u3414a5e6id9e3f10ef9c6b854@mail.gmail.com>
-References: <560009e30704190730q1047b43fh37f5df5fef9ec51f@mail.gmail.com>
-	<75b66ecd0704190846g4036b493q8d7c2bec8cdc08b2@mail.gmail.com>
-	<4627B015.7030401@gmail.com>
+From: Tim Harvey <tim_harvey@yahoo.com>
+Subject: Re: Questions about writing a new ALSA driver for a
+	very limitted device
+Date: Thu, 19 Apr 2007 14:30:29 -0700 (PDT)
+Message-ID: <95415.40128.qm@web35606.mail.mud.yahoo.com>
+References: <s5hwt0cvgjg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qb-out-0506.google.com (qb-out-0506.google.com [72.14.204.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42706245C9
+Received: from web35606.mail.mud.yahoo.com (web35606.mail.mud.yahoo.com
+	[66.163.179.145]) by alsa0.perex.cz (Postfix) with SMTP id 9F17C245DD
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Apr 2007 20:45:38 +0200 (CEST)
-Received: by qb-out-0506.google.com with SMTP id e14so1340902qbc
-	for <alsa-devel@alsa-project.org>; Thu, 19 Apr 2007 11:45:37 -0700 (PDT)
-In-Reply-To: <4627B015.7030401@gmail.com>
-Content-Disposition: inline
+	Thu, 19 Apr 2007 23:30:45 +0200 (CEST)
+In-Reply-To: <s5hwt0cvgjg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,32 +22,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nicholas Smethurst <smethurst@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 4/19/07, Nicholas Smethurst <smethurst@gmail.com> wrote:
-> Lee Revell wrote:
-> > On 4/19/07, nick smethurst <nick.smethurst@gmail.com> wrote:
-> >> I am rather confused that I am getting crossed information when
-> >> calling snd_names_list
-> >> and snd_pcm_info in order to gather information about pcm devices.
-> >
-> > I think ALSA's new device enumeration API can do this for you.  See
-> > the implementation of aplay -l (or -L, don't remember which) in the
-> > latest alsa-utils.
-> Ok, thanks for the hint (no pun intended :) ).
->
-> I see that the pcm_list() function has changed in aplay. The new hints
-> API looks good.
->
-> However, I note that snd_device_name_hint() does not return hw, plughw,
-> plug, dmix, etc. Are these obtained elsewhere? I would like to build a
-> complete list of all available devices in order to allow the user to
-> select them from a dropdown list in a GUI.
 
-Not sure, I don't have access to a machine with a modern ALSA now but
-the new aplay list function definitely lists those.  I do know that
-yours is exactly the problem it was designed to solve.
+--- Takashi Iwai <tiwai@suse.de> wrote:
 
-Lee
+> The "period" defines the frequency to update the status, usually via
+> the invokation of interrupts.  The "period_size" defines the frame
+> sizes corresponding to the "period time".  This term corresponds to
+> the "fragment size" on OSS.  On major sound hardwares, a ring-buffer
+> is divided to several parts and an irq is issued on each boundary.
+> The period_size defines the size of this chunk.
+> 
+> On some hardwares, the irq is controlled on the basis of a timer.  In
+> this case, the period is defined as the timer frequency to invoke an
+> irq.
+> 
+> 
+
+My system has a hardware buffer of 4096 bytes (so I will use an intermediate
+buffer ) and is fixed at 8KHz 16bit stereo.  The 4K hw buffer would accommodate
+128ms of data which is pretty small.  Therefore I'll choose to use a 32K
+intermediate buffer which will accommodate about 1sec of audio data.  My IRQ is
+timer based so I will need to decide upon a reasonable period.  As the period
+seems to dictate the ability for the middle layer to see the status of the
+buffer I'll use 4 periods allowing a 250ms granularity in my intermediate
+buffer.
+
+I'm assuming that the snd_pcm_hardware struct has a min AND max period_bytes
+and periods because the framesize can vary if your hardware supports multiple
+configurations.  As mine only supports 8Khz 16bit stereo, my min/max values
+should all be the same correct?
+
+So using the above info my struct should look like:
+
+static snd_pcm_hardware_t snd_my_playback_hw = {
+        .info = (SNDRV_PCM_INFO_MMAP |
+                 SNDRV_PCM_INFO_INTERLEAVED |
+                 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+                 SNDRV_PCM_INFO_MMAP_VALID),
+        .formats =          SNDRV_PCM_FMTBIT_U16_BE,
+        .rates =            SNDRV_PCM_RATE_8000,
+        .rate_min =         8000,
+        .rate_max =         8000,
+        .channels_min =     2,
+        .channels_max =     2,
+        .buffer_bytes_max = 32768,
+        .period_bytes_min = 8192,
+        .period_bytes_max = 8192,
+        .periods_min =      4,
+        .periods_max =      4,
+};
+
+Does this seem reasonable?
+
+Because I'm using a 32K intermediate buffer I'll preallocate it with
+snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+  snd_dma_continuous_data(GFP_KERNEL), 0, 32768);
+
+I want to make sure I'm implementing things properly for full duplex
+capability.  I'm creating the pcm device via:
+
+snd_pcm_new(card, "my dev", 0, 1 /* play streams */, 1 /* capt streams */,
+&pcm)
+
+If I understand this preallocation a 32K DMAable buffer will be allocated by
+ALSA for each stream my device can play/capture (= 2 streams, 1 playback and 1
+capture).  I can obtain the buffer pre-allocated from the runtime data in the
+prepare callback and use that buffer as my intermediate buffer correct?  I
+don't have a great grasp of the 'prepare' callback yet, but because thats the
+first time you've got access to valid format/buffer info I'll assume that each
+time 'prepare' is called your PCM buffer/hardware/stream should be initialized.
+
+If I understand correctly the pointer callback should return the num of frames
+processed in the 'intermediate buffer'.  Because this is a virtual ring buffer,
+I guess I should simply return the offset in the buffer (divided by my
+bytes_per_frame which is 4) that I last pulled data from?
+
+I've looked at the example dealing with the hw interrupt and period_elapsed in
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x773.htm.  The example
+doesn't specify where it was getting runtime pointer from so I am assuming that
+I'll need to keep a pointer to each (playback and capture) substream so that I
+can call period_elapsed appropriately for each if they are concurrent?
+
+Thanks for all the help.  I've got rudimentary playback working but I'm pretty
+sure I'm not implementing the period_elapsed and the pointer callback correctly
+as the relatively simple playback app I'm using sits for a few seconds after
+playback of the 2 sec test sample I'm using completes.
+
+Tim
