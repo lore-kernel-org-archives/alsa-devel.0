@@ -1,60 +1,88 @@
-From: Pete Zaitcev <zaitcev@redhat.com>
-Subject: Strange code in
-Date: Fri, 20 Apr 2007 15:26:38 -0700
-Message-ID: <20070420152638.1834b1b5.zaitcev@redhat.com>
+From: Dmitry Ursegov <dursegov@jet.su>
+Subject: ad1986a snd_hda_intel patch
+Date: Fri, 20 Apr 2007 23:55:41 +0400
+Message-ID: <1177098941.7389.16.camel@dmitry-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-devel-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
-List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
-List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
-	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: linux-usb-devel-bounces@lists.sourceforge.net
-Errors-To: linux-usb-devel-bounces@lists.sourceforge.net
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, zaitcev@redhat.com, linux-usb-devel@lists.sourceforge.net, j.w.r.degoede@hhs.nl
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.jet.msk.su (mx.jet.msk.su [62.117.74.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F4C224692
+	for <alsa-devel@alsa-project.org>;
+	Fri, 20 Apr 2007 21:55:54 +0200 (CEST)
+Received: from [62.117.85.97] (helo=[192.168.1.2])
+	by mx.jet.msk.su with asmtp (SSLv3:RC4-MD5:128) (Exim 4.34)
+	id 1HezCx-0000h8-Hg
+	for alsa-devel@alsa-project.org; Fri, 20 Apr 2007 23:55:51 +0400
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Takashi:
+Hello!
 
-Hans de Goede (on cc:) hits a problem when snd-usb-audio breaks with:
-"USB device is in the shutdown state, cannot create a card instance".
+I have an asus a8jn laptop and a integrated audio with Analog Devices
+AD1986A chip.
 
-This is how the place looks:
+$ lspci -vnn
+0:1b.0 Audio device [0403]: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller [8086:27d8] (rev 02)
+        Subsystem: ASUSTeK Computer Inc. Unknown device [1043:1447]
+        Flags: bus master, fast devsel, latency 0, IRQ 21
+        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: <access denied>
 
-	chip = NULL;
-	for (i = 0; i < SNDRV_CARDS; i++) {
-		if (usb_chip[i] && usb_chip[i]->dev == dev) {
-			if (usb_chip[i]->shutdown) {
-				snd_printk(KERN_ERR "USB device is in the shutdown state, cannot create a card instance\n");
-				goto __error;
-			}
-			chip = usb_chip[i];
-			break;
-		}
-	}
+The audio seems to work properly on the right channel, but not on the
+left. All I get on the left channel is a loud screeching noise followed
+by a pop when the audio turns off. The microphon jack don't work also.
 
-The code looks broken to me, because dev at this time is a new device
-structure, freshly allocated. You cannot compare it with an old instance,
-and I don't know why you would want to.
+I make a patch from the solution described in this
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-March/000093.html message:
 
-Unfortunately (for fortunately), I have zero clue about the way ALSA
-works, specifically rules for snd_device_ops.dev_free, so I am asking
-you to look at this problem.
+diff -Nur alsa-driver-1.0.14rc3/alsa-kernel/pci/hda/patch_analog.c
+alsa-driver-1.0.14rc3_ad1986a/alsa-kernel/pci/hda/patch_analog.c
+--- alsa-driver-1.0.14rc3/alsa-kernel/pci/hda/patch_analog.c
+2007-03-06 15:26:32.000000000 +0300
++++ alsa-driver-1.0.14rc3_ad1986a/alsa-kernel/pci/hda/patch_analog.c
+2007-04-20 23:32:19.000000000 +0400
+@@ -873,7 +873,7 @@
+        board_config = snd_hda_check_board_config(codec, AD1986A_MODELS,
+                                                  ad1986a_models,
+                                                  ad1986a_cfg_tbl);
+-       switch (board_config) {
++/*     switch (board_config) {
+        case AD1986A_3STACK:
+                spec->num_mixers = 2;
+                spec->mixers[1] = ad1986a_3st_mixers;
+@@ -912,6 +912,18 @@
+                spec->multiout.dig_out_nid = 0;
+                break;
+        }
++*/
++
++                spec->num_mixers = 2;
++                spec->mixers[1] = ad1986a_3st_mixers;
++                spec->num_init_verbs = 3;
++                spec->init_verbs[1] = ad1986a_3st_init_verbs;
++                spec->init_verbs[2] = ad1986a_ch2_init;
++                spec->channel_mode = ad1986a_modes;
++                spec->num_channel_mode = ARRAY_SIZE(ad1986a_modes);
++                spec->need_dac_fix = 1;
++                spec->multiout.max_channels = 2;
++                spec->multiout.num_dacs = 1;
 
-Yours,
--- Pete
+        return 0;
+ }
 
--------------------------------------------------------------------------
-This SF.net email is sponsored by DB2 Express
-Download DB2 Express C - the FREE version of DB2 express and take
-control of your XML. No limits. Just data. Click to get it now.
-http://sourceforge.net/powerbar/db2/
-_______________________________________________
-linux-usb-devel@lists.sourceforge.net
-To unsubscribe, use the last form field at:
-https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
+I don't know, why snd_hda_check_board_config() return wrong value, but
+that workaround works.
+
+Thanks!
+Dmitry Ursegov
