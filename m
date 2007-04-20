@@ -1,114 +1,60 @@
-From: Tim Harvey <tim_harvey@yahoo.com>
-Subject: Re: Questions about writing a new ALSA driver for a
-	very limitted device
-Date: Thu, 19 Apr 2007 14:30:29 -0700 (PDT)
-Message-ID: <95415.40128.qm@web35606.mail.mud.yahoo.com>
-References: <s5hwt0cvgjg.wl%tiwai@suse.de>
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH 16/16] alsa sound support for mips
+Date: Fri, 20 Apr 2007 18:39:20 +0900 (JST)
+Message-ID: <20070420.183920.128619859.nemoto@toshiba-tops.co.jp>
+References: <11766507674145-git-send-email-tiansm@lemote.com>
+	<20070418135412.GG3938@linux-mips.org>
+	<4626276E.3000303@ict.ac.cn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web35606.mail.mud.yahoo.com (web35606.mail.mud.yahoo.com
-	[66.163.179.145]) by alsa0.perex.cz (Postfix) with SMTP id 9F17C245DD
-	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Apr 2007 23:30:45 +0200 (CEST)
-In-Reply-To: <s5hwt0cvgjg.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <4626276E.3000303@ict.ac.cn>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: fxzhang@ict.ac.cn
+Cc: ralf@linux-mips.org, tiansm@lemote.com, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, zhangfx@lemote.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 18 Apr 2007 22:13:02 +0800, Fuxin Zhang <fxzhang@ict.ac.cn> wrote:
+> >> +#if defined(__mips__) && defined(CONFIG_DMA_NONCOHERENT)
+> >> +	/* all mmap using uncached mode */
+> >> +	area->vm_page_prot = pgprot_noncached(area->vm_page_prot);
+> >> +	area->vm_flags |= ( VM_RESERVED | VM_IO);
+> >>     
+> >
+> > VM_RESERVED will prevent the buffer from being freed.  I assume that is
+> > another workaround for some kernel subsystem blowing up when being fed a
+> > pointer to an uncached RAM address?  This smells like a memory leak.
+> >
+> >   
+> Oh, VM_RESERVED should be a memory leak problem, we can remove it.
+> I don't remember any case of other subsystem's problem, just did not 
+> think much
+> to add those flags.
 
---- Takashi Iwai <tiwai@suse.de> wrote:
+I think pgprot_noncached() is needed because user mapping for a DMA
+buffer (runtime->dma_area) should be uncache.  If so, doing this in
+snd_pcm_mmap() looks a bit suspicious.  It seems snd_pcm_mmap_data()
+is a place to do such an adjustment.  But for now, both
+snd_pcm_mmap_status() and snd_pcm_mmap_control() returns -ENXIO for
+MIPS so this is not a real problem.
 
-> The "period" defines the frequency to update the status, usually via
-> the invokation of interrupts.  The "period_size" defines the frame
-> sizes corresponding to the "period time".  This term corresponds to
-> the "fragment size" on OSS.  On major sound hardwares, a ring-buffer
-> is divided to several parts and an irq is issued on each boundary.
-> The period_size defines the size of this chunk.
-> 
-> On some hardwares, the irq is controlled on the basis of a timer.  In
-> this case, the period is defined as the timer frequency to invoke an
-> irq.
-> 
-> 
+And I wonder if VM_IO is really needed.  The area is a DMA buffer,
+_not_ a memory mapped IO area, isn't it?
 
-My system has a hardware buffer of 4096 bytes (so I will use an intermediate
-buffer ) and is fixed at 8KHz 16bit stereo.  The 4K hw buffer would accommodate
-128ms of data which is pretty small.  Therefore I'll choose to use a 32K
-intermediate buffer which will accommodate about 1sec of audio data.  My IRQ is
-timer based so I will need to decide upon a reasonable period.  As the period
-seems to dictate the ability for the middle layer to see the status of the
-buffer I'll use 4 periods allowing a 250ms granularity in my intermediate
-buffer.
+> > I would suggest to get rid of this ifdef with a new arch-specific function
+> > like vmap_io_buffer which will do whatever a platform seems fit for this
+> > case?
+> >   
+> I think arch-specific function is the correct way, but don't know what 
+> the alsa gods think.
 
-I'm assuming that the snd_pcm_hardware struct has a min AND max period_bytes
-and periods because the framesize can vary if your hardware supports multiple
-configurations.  As mine only supports 8Khz 16bit stereo, my min/max values
-should all be the same correct?
+JFYI, there were some discussions on this topic a while ago:
 
-So using the above info my struct should look like:
+http://lkml.org/lkml/2006/1/25/117
 
-static snd_pcm_hardware_t snd_my_playback_hw = {
-        .info = (SNDRV_PCM_INFO_MMAP |
-                 SNDRV_PCM_INFO_INTERLEAVED |
-                 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-                 SNDRV_PCM_INFO_MMAP_VALID),
-        .formats =          SNDRV_PCM_FMTBIT_U16_BE,
-        .rates =            SNDRV_PCM_RATE_8000,
-        .rate_min =         8000,
-        .rate_max =         8000,
-        .channels_min =     2,
-        .channels_max =     2,
-        .buffer_bytes_max = 32768,
-        .period_bytes_min = 8192,
-        .period_bytes_max = 8192,
-        .periods_min =      4,
-        .periods_max =      4,
-};
+and I'v seen MIPS version of dma_mmap_coherent(), etc. somewhere...
 
-Does this seem reasonable?
-
-Because I'm using a 32K intermediate buffer I'll preallocate it with
-snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
-  snd_dma_continuous_data(GFP_KERNEL), 0, 32768);
-
-I want to make sure I'm implementing things properly for full duplex
-capability.  I'm creating the pcm device via:
-
-snd_pcm_new(card, "my dev", 0, 1 /* play streams */, 1 /* capt streams */,
-&pcm)
-
-If I understand this preallocation a 32K DMAable buffer will be allocated by
-ALSA for each stream my device can play/capture (= 2 streams, 1 playback and 1
-capture).  I can obtain the buffer pre-allocated from the runtime data in the
-prepare callback and use that buffer as my intermediate buffer correct?  I
-don't have a great grasp of the 'prepare' callback yet, but because thats the
-first time you've got access to valid format/buffer info I'll assume that each
-time 'prepare' is called your PCM buffer/hardware/stream should be initialized.
-
-If I understand correctly the pointer callback should return the num of frames
-processed in the 'intermediate buffer'.  Because this is a virtual ring buffer,
-I guess I should simply return the offset in the buffer (divided by my
-bytes_per_frame which is 4) that I last pulled data from?
-
-I've looked at the example dealing with the hw interrupt and period_elapsed in
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x773.htm.  The example
-doesn't specify where it was getting runtime pointer from so I am assuming that
-I'll need to keep a pointer to each (playback and capture) substream so that I
-can call period_elapsed appropriately for each if they are concurrent?
-
-Thanks for all the help.  I've got rudimentary playback working but I'm pretty
-sure I'm not implementing the period_elapsed and the pointer callback correctly
-as the relatively simple playback app I'm using sits for a few seconds after
-playback of the 2 sec test sample I'm using completes.
-
-Tim
+---
+Atsushi Nemoto
