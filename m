@@ -1,18 +1,18 @@
-From: Nyx <keres.nyx@gmail.com>
-Subject: [Alsa-devel] Read the input of a soundcard with ALSA
-Date: Fri, 20 Apr 2007 17:20:50 +0200
-Message-ID: <50fdad60704200820x77d22314x36786198c7872d6@mail.gmail.com>
+From: Rask Ingemann Lambertsen <rask@sygehus.dk>
+Subject: Re: [PATCHv2] ALSA: Support Media Vision Jazz16 chips
+Date: Fri, 20 Apr 2007 21:31:13 +0200
+Message-ID: <20070420193113.GB3192@sygehus.dk>
+References: <20070412182238.GA5324@sygehus.dk> <4620312D.7040907@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.235])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4596324670
+Received: from pfepc.post.tele.dk (pfepc.post.tele.dk [195.41.46.237])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADFE92468B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Apr 2007 17:20:52 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so737247nzf
-	for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2007 08:20:51 -0700 (PDT)
+	Fri, 20 Apr 2007 21:31:16 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <4620312D.7040907@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,99 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, alsa-devel@lists.sourceforge.net
+To: Rene Herman <rene.herman@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, Apr 14, 2007 at 03:41:01AM +0200, Rene Herman wrote:
+> On 04/12/2007 08:22 PM, Rask Ingemann Lambertsen wrote:
+> 
+> >+	static uint dev_num = 0;
+> >+
+> >+	if (enable[dev_num])
+> >+		card = snd_card_new(index[dev_num], id[dev_num], 
+> >THIS_MODULE, 0);
+> >+	else
+> >+		card = NULL;
+> >+	dev_num++;
+> >+	if (card == NULL)
+> >+		return enable[dev_num] ? -ENOMEM : -ENODEV;
+> 
+> You should also guard against dev_num overrunning SNDRV_CARDS. How about:
 
-I have some problems to read the input of my soundcard using Alsa and I
-don't really understand how to have access to the input of my soundcard.
-I follow :
-http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_8c-example.html
-http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2latency_8c-example.html
+   Oops. Also notice dev_num++ between two checks of what was supposed to be
+the same enable[dev_num]. :-(
 
-# So, in my program, I have created two handles for capture and playback :
-char *device = "hw:0,0";
-snd_output_t *output;
-snd_input_t *input;
-snd_pcm_t *phandle, *chandle;
+   I fixed the other bits as well. I'll post a new patch in a few days.
 
-# then I connect the phandle to the out
-err = snd_output_stdio_attach(&output, stdout, 0);
-if (..)
-
-# Do I have to connect the chandle with the input ?
-# err = snd_input_stdio_attach(&input, stdin, 0);
-
-# I open the access to PCM
-err = snd_pcm_open(&phandle, pdevice, SND_PCM_STREAM_PLAYBACK, 0)
-if (..)
-err = snd_pcm_open(&chandle, pdevice, SND_PCM_STREAM_CAPTURE, 0)
-if(..)
-
-# Hardware and software Parameters
-## Hardware Parameters
-snd_pcm_hw_params;
-int err;
-
-err = snd_pcm_hw_params_any(phandle, params); if(..);
-err = snd_pcm_hw_params_set_access(phandle,
-params,SND_PCM_ACCESS_RW_INTERLEAVED); if(..);
-err = snd_pcm_hw_params_set_format(phandle, params,SND_PCM_FORMAT_S16);
-if(..);
-err = snd_pcm_hw_params_set_channels(phandle, params, 1); if(..);
-err = snd_pcm_hw_params_set_rate_near(phandle, params, 44100, 0); if(..);
-err = snd_pcm_hw_params_set_buffer_time_near(phandle, params, 500000, &dir);
-if(..);
-err = snd_pcm_hw_params_set_time_near(phandle, params, 100000, &dir),
-if(..);
-err = snd_pcm_hw_params(phandle, params);
-
-##Software parameters
-err = snd_pcm_sw_params(phandle, params); if(..);
-err = snd_pcm_sw_params_set_start_threshold(phandle, swparams, 0x7fffffff);
-if(..);
-err = snd_pcm_sw_params_set_avail_min(phandle, swparams, 4);
-
-# same configuration for phandle
-
-# Link output to input and start
-err = snd_pcm_link(chandle, phandle); if(..);
-err = snd_pcm_start(chandle); if(..);
-
-#Then I want to read my input
-frames_in = 0;
-in_max = 0;
-latency = 28;
-buffer = malloc((latency_max * snd_pcm_format_width(format) / 8) * 2);
-while (1) {
-        r = readbuf(chandle, buffer, latency, &frames_in, &in_max)); if(..);
-}
-
-# description of the function
-long readbuf(snd_pcm_t *handle, char *buf, long len, size_t *frames, size_t
-*max)
-{
-        long r;
-        do {
-      r = snd_pcm_readi(handle, buf, len);
-} while (r == -EAGAIN);
-
-if  (r > 0) {
-*frames += r;
-if ((long)*max < r)
-*max = r;
-}
-printf ("r = %s,  len %li and buf[%d] %f \r", snd_strerror(r), len,i,
-buf[i]);
-return r;
-}
-
-So I compile it and I run it, and I have
-$ read = Broken Pipe, len = 28 and buf[..] = 0.000
-
-Anyone can help me to read the input of my sound card ?
-
-Thank you
 -- 
-K
+Rask Ingemann Lambertsen
