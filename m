@@ -1,59 +1,60 @@
-From: Rask Ingemann Lambertsen <rask@sygehus.dk>
-Subject: Re: [PATCH] PnP: Protocol for Media Vision
-	Jazz16	sound cards
-Date: Fri, 20 Apr 2007 22:00:07 +0200
-Message-ID: <20070420200007.GD3192@sygehus.dk>
-References: <20070412195523.GC5324@sygehus.dk> <4628F7FD.7000808@gmail.com>
+From: Pete Zaitcev <zaitcev@redhat.com>
+Subject: Strange code in
+Date: Fri, 20 Apr 2007 15:26:38 -0700
+Message-ID: <20070420152638.1834b1b5.zaitcev@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pfepb.post.tele.dk (pfepb.post.tele.dk [195.41.46.236])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1995B2468C
-	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Apr 2007 22:00:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4628F7FD.7000808@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@gmail.com>
-Cc: Adam Belay <ambx1@neo.rr.com>, alsa-devel@alsa-project.org
+Return-path: <linux-usb-devel-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
+List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
+List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: linux-usb-devel-bounces@lists.sourceforge.net
+Errors-To: linux-usb-devel-bounces@lists.sourceforge.net
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, zaitcev@redhat.com, linux-usb-devel@lists.sourceforge.net, j.w.r.degoede@hhs.nl
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 20, 2007 at 07:27:25PM +0200, Rene Herman wrote:
-> 
-> Just got around to giving this a spin again and unfortunately the preffered 
-> options code isn't working for me:
-> 
-> rene@5bt1:~$ cat /sys/bus/pnp/devices/02\:01/options
-> Dependent: 01 - Priority preferred
->    port 0x220-0x220, align 0x0, size 0x10, 10-bit address decoding
->    port 0x330-0x330, align 0x0, size 0x2, 10-bit address decoding
->    port 0x388-0x388, align 0x0, size 0x4, 10-bit address decoding
->    irq 5 High-Edge
->    irq 2/9 High-Edge
->    dma 1 8-bit compatible
+Dear Takashi:
 
-   Do you have a PCI device like this one? /sbin/lspci -v:
+Hans de Goede (on cc:) hits a problem when snd-usb-audio breaks with:
+"USB device is in the shutdown state, cannot create a card instance".
 
-00:07.3 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 01)
-        Flags: medium devsel, IRQ 9
+This is how the place looks:
 
-   I don't know who to blame, but I know of no way of moving that device off
-of IRQ 9. It may also just be a bug in the PCI code, because lspci -v -b
-gives:
+	chip = NULL;
+	for (i = 0; i < SNDRV_CARDS; i++) {
+		if (usb_chip[i] && usb_chip[i]->dev == dev) {
+			if (usb_chip[i]->shutdown) {
+				snd_printk(KERN_ERR "USB device is in the shutdown state, cannot create a card instance\n");
+				goto __error;
+			}
+			chip = usb_chip[i];
+			break;
+		}
+	}
 
-00:07.3 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 01)
-        Flags: medium devsel
+The code looks broken to me, because dev at this time is a new device
+structure, freshly allocated. You cannot compare it with an old instance,
+and I don't know why you would want to.
 
-   I.e. no IRQ as seen from the bus.
+Unfortunately (for fortunately), I have zero clue about the way ALSA
+works, specifically rules for snd_device_ops.dev_free, so I am asking
+you to look at this problem.
 
--- 
-Rask Ingemann Lambertsen
+Yours,
+-- Pete
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by DB2 Express
+Download DB2 Express C - the FREE version of DB2 express and take
+control of your XML. No limits. Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
+_______________________________________________
+linux-usb-devel@lists.sourceforge.net
+To unsubscribe, use the last form field at:
+https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
