@@ -1,23 +1,17 @@
-From: John Dey <jsdey@optonline.net>
-Subject: Buffer Overrun Messages
-Date: Fri, 20 Apr 2007 16:36:57 -0400
-Message-ID: <20267daccbbad88e814c591cac550e5b@optonline.net>
+From: "Ben DiDonc" <ben.didonc@gmail.com>
+Subject: No sound with ATI SB450
+Date: Sat, 21 Apr 2007 14:56:34 +1000
+Message-ID: <feca60390704202156h5a34ef0ao975d8c398dee9473@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_158014_23212278.1177131394138"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta2.srv.hcvlny.cv.net (mta2.srv.hcvlny.cv.net [167.206.4.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7482024355
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4656D246AC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Apr 2007 22:37:05 +0200 (CEST)
-Received: from robo1.jsdey.com (ool-44c1fb41.dyn.optonline.net [68.193.251.65])
-	by mta2.srv.hcvlny.cv.net
-	(Sun Java System Messaging Server 6.2-6.01 (built Apr  3 2006))
-	with ESMTP id <0JGT00M2AD9N9NA0@mta2.srv.hcvlny.cv.net> for
-	alsa-devel@alsa-project.org; Fri, 20 Apr 2007 16:37:00 -0400 (EDT)
-Received: from [192.168.0.2] (robo2.jsdey.com [192.168.0.2])
-	by robo1.jsdey.com (8.13.8/8.13.8) with ESMTP id l3KKaxpq006810	for
-	<alsa-devel@alsa-project.org>; Fri, 20 Apr 2007 16:36:59 -0400
+	Sat, 21 Apr 2007 06:56:35 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c18so1120445anc
+	for <alsa-devel@alsa-project.org>; Fri, 20 Apr 2007 21:56:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,15 +24,49 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+------=_Part_158014_23212278.1177131394138
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I have been driving fluidsynth with with aplaymidi and get the 
-following:  fluidsynth: ALSAsequencer buffer overrun, lost event.  I 
-have played around with buffer size and buffer number and also run with 
-and without jackd.  The sound out doesn't seem to be affect.  Can 
-anyone give me some guidance on how to eliminate the error.  Could the 
-error be caused by fluidsynth?  I have also run the program on 
-PS2/Yellowdog linux and CCRMA fc5 (x86) both with similar results.  
-Thanks.
+Hi
+I have a toshiba A100 (see attached file lspci-nnv) with a ATI SB450.
+Sound worked fine with kernel 2.6.17 and alsa 1.0.12rc1 (ubuntu edgy).
+I just did a fresh install of ubuntu feisty (kernel 2.6.20, alsa
+1.0.14rc1) and the only mixer settings available are those of the
+modem, named off-hook and caller-id (see output of amixer, aplay -l ,
+and the rest in attached file output_feisty)
 
-John
+I decided to upgrade alsa-driver and alsa-lib to 1.0.14rc2. after
+downloading the package, I unloaded all sound related modules
+(everything with "snd_" in it) in the right order and did:
+./configure --with-oss=yes --with-cards=hda-intel;make; sudo make
+install; sudo modprobe snd_hda_intel
+A minor improvement: the mixer now shows controls for both the modem
+and the sound card (see output_after_upgrade_to_rc2), but
+unfortunately, there is still no sound coming out of those speakers
+(even though alsamixer shows control for PCM and the rest...).
+
+Finally, I downloaded alsa-driver-1.0.14rc3 and gave it a shot. This
+time again, only modem related settings appeared in alsamixer, and no
+sound card stuff (see aplay and amixer in
+output_after_upgrade_to_rc3), and no sound either.
+
+Does anyone know how to get some sound out of these speakers (given
+that it used to work with alsa1.0.12rc1...) ?
+
+Thanks for your help
+Ben
+
+------=_Part_158014_23212278.1177131394138
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_Part_158014_23212278.1177131394138--
