@@ -1,18 +1,23 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH] sound: fix incorrect use of
-	platform_device_register()
-Date: Sat, 21 Apr 2007 16:23:39 +0900
-Message-ID: <20070421072339.GA3699@APFDCB5C>
+From: "Ben DiDonc" <ben.didonc@gmail.com>
+Subject: Fwd:  No sound with ATI SB450
+Date: Sat, 21 Apr 2007 20:27:46 +1000
+Message-ID: <feca60390704210327qa3e355di9c07b1f191025345@mail.gmail.com>
+References: <feca60390704202156h5a34ef0ao975d8c398dee9473@mail.gmail.com>
+	<1177134516.21521.143.camel@razman.gruemaster.com>
+	<feca60390704202300hd987409nd6fc8b2ee316c771@mail.gmail.com>
+	<1177135815.21521.145.camel@razman.gruemaster.com>
+	<feca60390704210129v2180efefl4c94e2e9c80fcaa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B665243CA
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id E2404246D7
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Apr 2007 09:29:03 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so873750nzf
-	for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2007 00:29:02 -0700 (PDT)
+	Sat, 21 Apr 2007 12:27:48 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c18so1167717anc
+	for <alsa-devel@alsa-project.org>; Sat, 21 Apr 2007 03:27:47 -0700 (PDT)
+In-Reply-To: <feca60390704210129v2180efefl4c94e2e9c80fcaa@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,59 +29,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-The platform_device allocated by platform_device_alloc()
-should be added to the device hierarchy by platform_device_add()
-instead of platform_device_register().
+Tobin,
+I downloaded and installed alsa-driver, alsa-lib and alsa-utils, but still
+no sound coming out of those speakers...
+I ran alsa-info.sh and the results are at http://pastebin.ca/451128
+I am clueless as to what to do next, but I m ready to try anything.
+ Any help would be greatly appreciated.
+Ben
 
-Otherwise it will hit WARN_ON() in platform_device_register().
-by illegal refcount.
-
-This patch fixes such incorrect usages in portman2x4 and mts64 drivers.
-Also it removes unnecessary trailing whitespaces.
-
-Cc: Jaroslav Kysela <perex@suse.cz>
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-
-Index: 2.6-mm/sound/drivers/portman2x4.c
-===================================================================
---- 2.6-mm.orig/sound/drivers/portman2x4.c
-+++ 2.6-mm/sound/drivers/portman2x4.c
-@@ -676,13 +676,13 @@ static void __devinit snd_portman_attach
- 	struct platform_device *device;
- 
- 	device = platform_device_alloc(PLATFORM_DRIVER, device_count);
--	if (!device) 
-+	if (!device)
- 		return;
- 
- 	/* Temporary assignment to forward the parport */
- 	platform_set_drvdata(device, p);
- 
--	if (platform_device_register(device) < 0) {
-+	if (platform_device_add(device) < 0) {
- 		platform_device_put(device);
- 		return;
- 	}
-Index: 2.6-mm/sound/drivers/mts64.c
-===================================================================
---- 2.6-mm.orig/sound/drivers/mts64.c
-+++ 2.6-mm/sound/drivers/mts64.c
-@@ -892,13 +892,13 @@ static void __devinit snd_mts64_attach(s
- 	struct platform_device *device;
- 
- 	device = platform_device_alloc(PLATFORM_DRIVER, device_count);
--	if (!device) 
-+	if (!device)
- 		return;
- 
- 	/* Temporary assignment to forward the parport */
- 	platform_set_drvdata(device, p);
- 
--	if (platform_device_register(device) < 0) {
-+	if (platform_device_add(device) < 0) {
- 		platform_device_put(device);
- 		return;
- 	}
+On 4/21/07, Tobin Davis < tdavis@dsl-only.net> wrote:
+>
+>  Try downloading a current daily snapshot from ftp://ftp.suse.com/pub/projects/alsa/snapshot/
+> .
+>
+> There was an issue with the ATI HD Audio detection that was fixed after
+> 14rc3 was released.
+>
+> Tobin
+>
+> On Sat, 2007-04-21 at 16:00 +1000, Ben DiDonc wrote:
+>
+> The output of alsa-info.sh is available at http://pastebin.ca/451007
+>
+>
+>  On 4/21/07, *Tobin Davis* < tdavis@dsl-only.net> wrote:
+>
+>  Could you download an run http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
+> , then post the resulting link?  This will help determine what setup you
+> have.
+>
+> Tobin Davis
+>
+>
+>
+> On Sat, 2007-04-21 at 14:56 +1000, Ben DiDonc wrote:
+>
+>   Hi I have a toshiba A100 (see attached file lspci-nnv) with a ATI SB450.
+> Sound worked fine with kernel 2.6.17 and alsa 1.0.12rc1 (ubuntu edgy). I
+> just did a fresh install of ubuntu feisty (kernel 2.6.20, alsa 1.0.14rc1)
+> and the only mixer settings available are those of the modem, named off-hook
+> and caller-id (see output of amixer, aplay -l , and the rest in attached
+> file output_feisty) I decided to upgrade alsa-driver and alsa-lib to
+> 1.0.14rc2. after downloading the package, I unloaded all sound related
+> modules (everything with "snd_" in it) in the right order and did:
+> ./configure --with-oss=yes --with-cards=hda-intel;make; sudo make install;
+> sudo modprobe snd_hda_intel A minor improvement: the mixer now shows
+> controls for both the modem and the sound card (see
+> output_after_upgrade_to_rc2), but unfortunately, there is still no sound
+> coming out of those speakers (even though alsamixer shows control for PCM
+> and the rest...). Finally, I downloaded alsa-driver-1.0.14rc3 and gave it
+> a shot. This time again, only modem related settings appeared in alsamixer,
+> and no sound card stuff (see aplay and amixer in
+> output_after_upgrade_to_rc3), and no sound either. Does anyone know how to
+> get some sound out of these speakers (given that it used to work with
+> alsa1.0.12rc1...) ? Thanks for your help Ben
+>
+>    _______________________________________________Alsa-devel mailing listAlsa-devel@alsa-project.orghttp://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>    --
+> Tobin Davis <tdavis@dsl-only.net>
+>
+>
+>   --
+> Tobin Davis <tdavis@dsl-only.net>
+>
