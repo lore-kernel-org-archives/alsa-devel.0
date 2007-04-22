@@ -1,19 +1,24 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] PnP: Protocol for Media
- Vision	Jazz16	sound cards
-Date: Sun, 22 Apr 2007 18:27:44 +0200
-Message-ID: <462B8D00.8020305@gmail.com>
-References: <20070412195523.GC5324@sygehus.dk> <4628F7FD.7000808@gmail.com>
-	<20070420200007.GD3192@sygehus.dk>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Fwd: No sound with ATI SB450
+Date: Sun, 22 Apr 2007 10:07:00 -0700
+Message-ID: <1177261620.9698.18.camel@razman.gruemaster.com>
+References: <feca60390704202156h5a34ef0ao975d8c398dee9473@mail.gmail.com>
+	<1177134516.21521.143.camel@razman.gruemaster.com>
+	<feca60390704202300hd987409nd6fc8b2ee316c771@mail.gmail.com>
+	<1177135815.21521.145.camel@razman.gruemaster.com>
+	<feca60390704210129v2180efefl4c94e2e9c80fcaa@mail.gmail.com>
+	<feca60390704210327qa3e355di9c07b1f191025345@mail.gmail.com>
+	<1177172786.21521.163.camel@razman.gruemaster.com>
+	<feca60390704220245o1cd98dd3od5d4bb999f25c71@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040903080801010604030707"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C13A247D1
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82C80247D1
 	for <alsa-devel@alsa-project.org>;
-	Sun, 22 Apr 2007 18:29:56 +0200 (CEST)
-In-Reply-To: <20070420200007.GD3192@sygehus.dk>
+	Sun, 22 Apr 2007 19:07:03 +0200 (CEST)
+In-Reply-To: <feca60390704220245o1cd98dd3od5d4bb999f25c71@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,98 +28,183 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rask Ingemann Lambertsen <rask@sygehus.dk>
-Cc: Adam Belay <ambx1@neo.rr.com>, alsa-devel@alsa-project.org
+To: Ben DiDonc <ben.didonc@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040903080801010604030707
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+I reviewed the changelogs after the patch you found was added, and found
+this entry (patch is attached so you can review it):
 
-On 04/20/2007 10:00 PM, Rask Ingemann Lambertsen wrote:
+        Probing the codec slots on ATI controller causes problems on
+        some
+         devices like Acer laptops. On these devices, reading from codec
+         slot 3 results in the communication failure with the codec
+        chip.
+         Meanwhile, some laptops (e.g. Gateway) have the codec
+        connection
+         only on slot 3, and probing this slot is mandatory for them.
+         
+         The patch improves the probing robustness. The additional slots
+         are now checked only when no codecs are found in the primary
+        three
+         slots.
 
-> On Fri, Apr 20, 2007 at 07:27:25PM +0200, Rene Herman wrote:
+The problem is that there are so many issues with ATI based chipsets,
+that we almost need to fix this on a case by case basis.  Your
+particular system has the modem wired to show up before the audio chip
+on the HDA bus.  I'm also willing to bet that the acpi issues are
+affecting your system as well.
 
->> Just got around to giving this a spin again and unfortunately the preffered 
->> options code isn't working for me:
+I'm also looking through my email archives to see what other users had
+reported to me since I added your system to the driver back in October.
+Maybe they can shed some light on these issues.
 
->    Do you have a PCI device like this one? /sbin/lspci -v:
+For a simple test, could you try alsa-driver-1.0.14rc2?  It has your
+system, but none of the ATI issues (from what I can tell).  In the mean
+time, I'll see if I can come up with a clean solution to this.
+
+Tobin
+
+On Sun, 2007-04-22 at 19:45 +1000, Ben DiDonc wrote:
+
+> Tobin,
 > 
-> 00:07.3 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 01)
->         Flags: medium devsel, IRQ 9
+> 
+> >Which snapshot did you download?
+> 
+> I used alsa-driver-hd20070421
+> 
+> 
+> > It looks as if the driver isn't detecting your codec at all.  Is it
+> possible that your audio is disabled in bios?
+> 
+> I agree with you. This laptop has a strange BIOS, you can disable a
+> couple of things (network card,...) but not the sound card.
+> 
+> > Also, Toshiba's are notorious for their acpi issues.  Try rebooting
+> with "acpi=off" on the kernel boot parameters list. 
+> 
+> No  improvement here, no difference with what I had before... still no
+> sound ...
+> 
+> 
+> 
+> 
+>         To help us debug this further if the above steps don't work,
+>         try recompiling the drivers with "./configure
+>         --with-debug=detect --with-cards=hda-intel".  Then rebuild and
+>         reinstall the drivers, and look at the dmesg log with "dmesg |
+>         fgrep ALSA".
+> 
+> Ok, I rebuild the drivers with the configure options you gave me, and
+> reloaded them. I grepped my syslog and got a single line out of it:
+> Apr 22 19:07:50 tosh-it kernel: [89422.940000]
+> ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-hg20070421/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:696: codec_mask = 0x9 
+> 
+> 
+> 
+> but still no proper senses shown in alsamixer and no sound. See output
+> of alsa-info.sh at http://pastebin.ca/452475
+> 
+> 
+>         Your system "should" show up as a Toshiba with RealTek ALC861
+>         audio codec.  The alsa-info.sh listing doesn't show that
+>         codec, but does list the subdevice ID.
+>         
+>         Tobin
+> 
+> I did a bit of research on the devel mailing list and found
+> http://article.gmane.org/gmane.linux.alsa.devel/45881
+> I tried applying the patch (to hda_intel.c) and realised most of it
+> already was in the snapshot EXCEPT line 995, which i replaced with the
+> one from the patch. It now is 
+> for (c = 0; c < azx_max_codecs[chip->driver_type]; c++) {
+> 
+>  I rebuilt the whole lot, reloaded snd_hda_intel and got these two
+> lines this time:
+> 
+> Apr 22 19:39:01 tosh-it kernel: [91293.576000]
+> ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-hg20070421/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:696: codec_mask = 0x9 
+> Apr 22 19:39:01 tosh-it kernel: [91293.916000]
+> ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-hg20070421/pci/hda/hda_codec.c:1819: hda_codec: model 'toshiba' is selected for config 1179:ff10 (Toshiba) 
+> 
+> This time the right codec is loaded (or so it seems), alsamixer only
+> shows a PCM control (for playback), but there is still no sound.
+> alsa-info.sh output at http://pastebin.ca/452493
+> 
+> I m a bit confused with these results...
+> Ben
+> 
+> 
+> 
+> 
+>         On Sat, 2007-04-21 at 20:27 +1000, Ben DiDonc wrote:
+>         
+>         > Tobin, I downloaded and installed alsa-driver, alsa-lib and
+>         > alsa-utils, but still no sound coming out of those
+>         > speakers... I ran alsa-info.sh and the results are at
+>         > http://pastebin.ca/451128 I am clueless as to what to do
+>         > next, but I m ready to try anything.  Any help would be
+>         > greatly appreciated. Ben On 4/21/07, Tobin Davis <
+>         > tdavis@dsl-only.net> wrote: > >  Try downloading a current
+>         > daily snapshot from
+>         > ftp://ftp.suse.com/pub/projects/alsa/snapshot/ > . > > There
+>         > was an issue with the ATI HD Audio detection that was fixed
+>         > after > 14rc3 was released. > > Tobin > > On Sat, 2007-04-21
+>         > at 16:00 +1000, Ben DiDonc wrote: > > The output of
+>         > alsa-info.sh is available at http://pastebin.ca/451007 > > >
+>         > On 4/21/07, *Tobin Davis* < tdavis@dsl-only.net> wrote: > >
+>         > Could you download an run
+>         > http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
+>         > > , then post the resulting link?  This will help determine
+>         > what setup you > have. > > Tobin Davis > > > > On Sat,
+>         > 2007-04-21 at 14:56 +1000, Ben DiDonc wrote: > >   Hi I have
+>         > a toshiba A100 (see attached file lspci-nnv) with a ATI
+>         > SB450. > Sound worked fine with kernel 2.6.17 and alsa
+>         > 1.0.12rc1 (ubuntu edgy). I > just did a fresh install of
+>         > ubuntu feisty (kernel 2.6.20, alsa 1.0.14rc1) > and the only
+>         > mixer settings available are those of the modem, named
+>         > off-hook > and caller-id (see output of amixer, aplay -l ,
+>         > and the rest in attached > file output_feisty) I decided to
+>         > upgrade alsa-driver and alsa-lib to > 1.0.14rc2. after
+>         > downloading the package, I unloaded all sound related >
+>         > modules (everything with "snd_" in it) in the right order
+>         > and did: > ./configure --with-oss=yes
+>         > --with-cards=hda-intel;make; sudo make install; > sudo
+>         > modprobe snd_hda_intel A minor improvement: the mixer now
+>         > shows > controls for both the modem and the sound card (see
+>         > > output_after_upgrade_to_rc2), but unfortunately, there is
+>         > still no sound > coming out of those speakers (even though
+>         > alsamixer shows control for PCM > and the rest...). Finally,
+>         > I downloaded alsa-driver-1.0.14rc3 and gave it > a shot.
+>         > This time again, only modem related settings appeared in
+>         > alsamixer, > and no sound card stuff (see aplay and amixer
+>         > in > output_after_upgrade_to_rc3), and no sound either. Does
+>         > anyone know how to > get some sound out of these speakers
+>         > (given that it used to work with > alsa1.0.12rc1...) ?
+>         > Thanks for your help Ben > 
+>         > 
+>         > >    _______________________________________________Alsa-devel mailing 
+>         > listAlsa-devel@alsa-project.orghttp://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>         > 
+>         > >
+>         > >    --
+>         > > Tobin Davis <tdavis@dsl-only.net>
+>         > >
+>         > >
+>         > >   --
+>         > > Tobin Davis <tdavis@dsl-only.net>
+>         > >
+>         > _______________________________________________
+>         > Alsa-devel mailing list
+>         > Alsa-devel@alsa-project.org
+>         > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>         > 
+>         
+>         -- 
+>         Tobin Davis <tdavis@dsl-only.net>
+> 
+> 
 
-Mmm, yes, I do. Was on an Intel 430VX chipset with a PIIX3 last time and on 
-a 430TX with the PIIX4 this time.
-
-> I don't know who to blame, but I know of no way of moving that device off
-> of IRQ 9.
-
-Indeed; it seems to be a well-known problem.
-
-The Intel 430TX and 440BX (which also uses the PIIX4 if I'm not mistaken) 
-were hugely popular chipsets in the later generation of boards that still 
-had ISA slots and given that noone will deperately want the MPU-401 IRQ 
-assigned; how would you feel about the attached? Just adds the preffered 
-options minus the MPU IRQ as the first acceptable. Works for me...
-
-I ran the driver through a complete test again. Playback, capture (from 
-line, CD and mic), the OPL3 synth and MPU-401 out- and input (both with and 
-without the MPU-401 IRQ) and all work fine. Feel free to add my signed-off 
-to the ALSA part.
-
-As to the PnP part; other than that IRQ9 thing everything also working fine 
-and if you think the attached is ugly; I don't much care. I still have the 
-possible objection with the BIOS maybe needing to know about the card anyway 
-so it can route the IRQ to ISA (and the slight discomfort about Jazz16 code 
-in drivers/pnp). But next iteration can be final.
-
-If Adam still isn't commenting by then, let's just feed it through Andrew 
-Morton and LKML.
-
-Rene.
-
-
---------------040903080801010604030707
-Content-Type: text/plain;
- name="jazz16pnp-irq9.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="jazz16pnp-irq9.diff"
-
-commit ff9c54ec792041f6f7f45d5abceb5af47a71a2f7
-Author: Rene Herman <rene.herman@gmail.com>
-Date:   Sat Apr 21 09:07:44 2007 +0200
-
-    IRQ 9 is unavailable on PIIX4 boards -- the MPU-401 UART can
-    do without an IRQ as well...
-
-diff --git a/drivers/pnp/jazz16pnp.c b/drivers/pnp/jazz16pnp.c
-index b71381b..020b6bb 100644
---- a/drivers/pnp/jazz16pnp.c
-+++ b/drivers/pnp/jazz16pnp.c
-@@ -233,6 +233,11 @@ static int __init jazz16pnp_add_sb(void)
- 				   jazz16pnp_pref_dmas, 1))
- 		goto out_no_sboption;
- 	if (!jazz16pnp_easy_option(sbdev, PNP_RES_PRIORITY_ACCEPTABLE,
-+				   jazz16pnp_pref_ports, 3,
-+				   jazz16pnp_pref_irqs, 1,
-+				   jazz16pnp_pref_dmas, 1))
-+		goto out_no_sboption;
-+	if (!jazz16pnp_easy_option(sbdev, PNP_RES_PRIORITY_ACCEPTABLE,
- 				   jazz16pnp_ports, 3,
- 				   jazz16pnp_irqs, 2,
- 				   jazz16pnp_dmas, 1))
-
---------------040903080801010604030707
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------040903080801010604030707--
+-- 
+Tobin Davis <tdavis@dsl-only.net>
