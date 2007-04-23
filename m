@@ -1,17 +1,28 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Problem with Conexant
-Date: Sun, 22 Apr 2007 19:27:24 -0700
-Message-ID: <1177295244.9698.40.camel@razman.gruemaster.com>
-References: <1177273495.5730.5.camel@dv2000.site>
+From: "Ben DiDonc" <ben.didonc@gmail.com>
+Subject: Re: Fwd: No sound with ATI SB450
+Date: Mon, 23 Apr 2007 13:41:27 +1000
+Message-ID: <feca60390704222041m15a04b5cj418152756ce5dd67@mail.gmail.com>
+References: <feca60390704202156h5a34ef0ao975d8c398dee9473@mail.gmail.com>
+	<1177134516.21521.143.camel@razman.gruemaster.com>
+	<feca60390704202300hd987409nd6fc8b2ee316c771@mail.gmail.com>
+	<1177135815.21521.145.camel@razman.gruemaster.com>
+	<feca60390704210129v2180efefl4c94e2e9c80fcaa@mail.gmail.com>
+	<feca60390704210327qa3e355di9c07b1f191025345@mail.gmail.com>
+	<1177172786.21521.163.camel@razman.gruemaster.com>
+	<feca60390704220245o1cd98dd3od5d4bb999f25c71@mail.gmail.com>
+	<1177261620.9698.18.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1F1A245EF
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id A855E24347
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2007 04:27:30 +0200 (CEST)
-In-Reply-To: <1177273495.5730.5.camel@dv2000.site>
+	Mon, 23 Apr 2007 05:41:30 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c18so1575134anc
+	for <alsa-devel@alsa-project.org>; Sun, 22 Apr 2007 20:41:29 -0700 (PDT)
+In-Reply-To: <1177261620.9698.18.camel@razman.gruemaster.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,52 +32,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Black X <x.thug.85@gmail.com>
+To: Tobin Davis <tdavis@dsl-only.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Could you try the latest alsa-driver snapshot from
-ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver?
+Tobin,
+Some encouraging news when I tried 1.0.14rc2:
+This release probes and detects the codec successfully, two lines are added
+to syslog after modprob'ing snd-hda-intel:
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:696:
+codec_mask = 0x9
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:1764:
+hda_codec: model 'toshiba' is selected for config 1179:ff10 (Toshiba)
 
-I can't tell what revision of Conexant code you are using based on your
-email.   Anything after 20070413 should work better, and it will also be
-the most current.  I haven't made any changes to the code since ~April
-6.  If you are still having audio issues, let me know.
+AND the microphone works. I ran 'arecord test.wav' and played it back
+successfully on another machine. However, playback is still not working on
+the ATI SB450...
+alsa-info.sh output for the rc2 test is at http://pastebin.ca/453663
 
-Tobin 
+Not sure whether it helps or not, but here are the lines added to syslog
+when I ran arecord (shortened a bit):
+
+//Start of arecord
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1158:
+azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x8, stream=0x1, channel=0, format=0x11
 
 
-On Sun, 2007-04-22 at 23:31 +0307, Black X wrote:
+//End of a record
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x8, stream=0x0, channel=0, format=0x0
 
-> Hello
-> 
-> First at all I wanna thanks Tobin Davis for his support to get Conexant
-> audio devices working under Linux, and I was testing his last patchs,
-> but I had a little problems with my sound card, the first one is about
-> headphone, it is works but with noise, and when I'm maximize the volume
-> of headphone the sound quality starting so weak.
-> 
-> The Second problem I had it is when I run the 3D Desktop Effects (XGL
-> with Compiz), that when I play any sound clip and moving any window or
-> rotate desktop cube that's making a noise with the sound, and the
-> quality of the sound clip it is so weak with slow playing in the sound.
-> 
-> I make a little screen cast about this problem and you can see it at
-> this link:
-> http://www.zshare.net/download/conexantproblem-ogg-tar-gz.html
-> 
-> any way this is my alsa information:  http://pastebin.ca/452453
-> finaly my device information :
-> http://h10025.www1.hp.com/ewfrf/wc/document?docname=c00715998&dlc=en&lc=en&cc=us
-> 
-> I 'm sorry, but the English it's not my mother language.
-> 
-> Thank you.
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+And these are the ones for "aplay test.wav"
 
--- 
-Tobin Davis <tdavis@dsl-only.net>
+//start of aplay
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1158:
+azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x11
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x6, stream=0x5, channel=0, format=0x11
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x5, stream=0x5, channel=0, format=0x11
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x11
+
+//End of aplay
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x3, stream=0x0, channel=0, format=0x0
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x6, stream=0x0, channel=0, format=0x0
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x5, stream=0x0, channel=0, format=0x0
+ALSA /media/sda3/gilles_files/download/drivers/alsa-driver-1.0.14rc2/pci/hda/hda_codec.c:627:
+hda_codec_setup_stream: NID=0x4, stream=0x0, channel=0, format=0x0
+
+
+Is hda_codec_setup_stream meant to be called different times with 4
+different nids ?
