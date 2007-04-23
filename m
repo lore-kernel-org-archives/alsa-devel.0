@@ -1,34 +1,58 @@
-From: dustin@seznam.cz
-Subject: Compilation of latest alsa-hg
-Date: Mon, 23 Apr 2007 23:39:50 +0200 (CEST)
-Message-ID: <9327.23908-1091-1904985596-1177364390@seznam.cz>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [1/3] 2.6.21-rc7: known regressions (v2)
+Date: Mon, 23 Apr 2007 23:48:47 +0200
+Message-ID: <20070423214847.GB3468@stusta.de>
+References: <Pine.LNX.4.64.0704151659570.5473@woody.linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxh.seznam.cz (mxln.seznam.cz [212.80.76.44])
-	by alsa0.perex.cz (Postfix) with SMTP id 5E7D6248AA
-	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2007 23:39:52 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754242AbXDWVsi@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0704151659570.5473@woody.linux-foundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Wolfgang Erig <Wolfgang.Erig@gmx.de>, Andi Kleen <ak@suse.de>, Oliver Neukum <oneukum@suse.de>, greg@kroah.com, linux-usb-devel@lists.sourceforge.net, CIJOML <cijoml@volny.cz>, Markus Rechberger <markus.rechberger@amd.com>, v4l-dvb-maintainer@linuxtv.org, Hans-Georg Rist <hg.rist@web.de>, perex@suse.cz, alsa-devel@alsa-project.org, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpwbGVhc2UgY291bGQgeW91IHBvaW50IG1lIGF0IGEgZnVuY3Rpb25pbmcgZGVzY3Jp
-cHRpb24gb2YgbGF0ZXN0IGNvbXBsZXRlIGhnIHRyZWUgY29tcGlsYXRpb24/IFRoZSBndWlkZXMg
-ZS5nLiBodHRwOi8vd3d3LnN1c2Vmb3J1bXMubmV0L2luZGV4LnBocD9zaG93dG9waWM9MzAxNTYm
-cGlkPTE3MDcwNyZzdD0wJiNlbnRyeTE3MDcwNyBlbmQgdXAgd2l0aCAKCi9ob21lL3BhdmVsL3Rt
-cC9hbHNhLWhnL2Fsc2EvYWxzYS1kcml2ZXIvc29jL2NvZGVjcy8uLi8uLi9hbHNhLWtlcm5lbC9z
-b2MvY29kZWNzL3dtODc1My5jOjE3MDc6IGVycm9yOiDigJhJMkNfRFJJVkVSSURfV004NzUz4oCZ
-IHVuZGVjbGFyZWQgaGVyZSAobm90IGluIGEgZnVuY3Rpb24pCgpUaGFua3MgYSBsb3QuCgpQYXZl
-bC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This email lists some known regressions in Linus' tree compared to 2.6.20.
+
+If you find your name in the Cc header, you are either submitter of one
+of the bugs, maintainer of an affectected subsystem or driver, a patch
+of you caused a breakage or I'm considering you in any other way
+possibly involved with one or more of these issues.
+
+Due to the huge amount of recipients, please trim the Cc when answering.
+
+
+Subject    : gammu no longer works
+References : http://lkml.org/lkml/2007/4/20/84
+Submitter  : Wolfgang Erig <Wolfgang.Erig@gmx.de>
+Status     : unknown
+
+
+Subject    : hal daemon crashes after pulling a USB serial device
+References : http://www.opensubscriber.com/message/linux-usb-devel@lists.sourceforge.net/6369800.html
+Submitter  : Andi Kleen <ak@suse.de>
+Handled-By : Oliver Neukum <oneukum@suse.de>
+Status     : problem is being debugged
+
+
+Subject    : Oops when changing USB DVB-T adapter
+References : http://lkml.org/lkml/2007/3/9/212
+             http://lkml.org/lkml/2007/4/5/154
+Submitter  : CIJOML <cijoml@volny.cz>
+Handled-By : Markus Rechberger <markus.rechberger@amd.com>
+Status     : patches available
+
+
+Subject    : snd_hda_intel doesn't work with ASUS M2V mainboard
+References : http://bugzilla.kernel.org/show_bug.cgi?id=8273
+Submitter  : Hans-Georg Rist <hg.rist@web.de>
+Status     : unknown
+
+
+Subject    : snd_intel8x0: divide error: 0000
+References : http://lkml.org/lkml/2007/3/5/252
+Submitter  : Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Handled-By : Takashi Iwai <tiwai@suse.de>
+Patch      : http://lkml.org/lkml/2007/4/20/117
+Status     : patch available
