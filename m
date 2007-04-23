@@ -1,19 +1,18 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Problem with Conexant
-Date: Sun, 22 Apr 2007 22:38:20 -0700
-Message-ID: <1177306700.9698.51.camel@razman.gruemaster.com>
-References: <1177273495.5730.5.camel@dv2000.site>
-	<1177295244.9698.40.camel@razman.gruemaster.com>
-	<1177304689.23557.7.camel@dv2000.site>
+From: "Jeffrey Arbuckle" <jbarbuc@gmail.com>
+Subject: partial fix for bug #2708: [ALSA - driver] PCI -
+	hda-intel
+Date: Sun, 22 Apr 2007 20:29:35 -0600
+Message-ID: <8114c7980704221929i3e8300ebu6fa2d0ddb38c884@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_141917_7780395.1177295375239"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B0E9243D9
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.237])
+	by alsa0.perex.cz (Postfix) with ESMTP id 87D79245EF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Apr 2007 07:38:25 +0200 (CEST)
-In-Reply-To: <1177304689.23557.7.camel@dv2000.site>
+	Mon, 23 Apr 2007 04:29:39 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id m59so1241218wrm
+	for <alsa-devel@alsa-project.org>; Sun, 22 Apr 2007 19:29:36 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,74 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Black X <x.thug.85@gmail.com>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Did you try adjusting the PCM volume levels?  They may be set too low.
-That particular sound chip required a lot of manipulating to get
-functional, and is still very problematic.  Unfortunately, I have no way
-of testing it, so users (like yourself) have to be my ears.  The last
-time I worked with that particular configuration, the user that was
-testing said that it took a bit of tweaking with the PCM and other
-volume levels to get good sound.
+------=_Part_141917_7780395.1177295375239
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Tobin
+Using alsa-driver-1.0.14rc3 with an iMac Core2 Duo 24" results in audio only
+available through the headphones.  Additionally the sound is very low, even
+at
+the highest mixer setting.
 
-On Mon, 2007-04-23 at 08:11 +0307, Black X wrote:
+This problem is very similar to the bug recently fixed in 1.0.14rc2 with the
+audio
+on the MacPro.   I was able to make a patch that applies the same fix for
+the MacPro
+to my iMac.   The patch fixes the audio so that the built in speakers work
+normally,
+but now the headphones do not work at all.   Obviously some more work is
+needed
+on this.
 
-> after I install the last alsa-driver from the link you give me it
-> ( alsa-driver-hg20070421.tar.bz2 ) I still have the same problem.  now
-> what I most to do to inform you about this issue?
-> 
-> 
-> Thank you.
-> 
-> On Sun, 2007-04-22 at 19:27 -0700, Tobin Davis wrote:
-> > Could you try the latest alsa-driver snapshot from
-> > ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver?
-> > 
-> > I can't tell what revision of Conexant code you are using based on
-> > your email.   Anything after 20070413 should work better, and it will
-> > also be the most current.  I haven't made any changes to the code
-> > since ~April 6.  If you are still having audio issues, let me know.
-> > 
-> > Tobin 
-> > 
-> > 
-> > On Sun, 2007-04-22 at 23:31 +0307, Black X wrote: 
-> > > Hello
-> > > 
-> > > First at all I wanna thanks Tobin Davis for his support to get Conexant
-> > > audio devices working under Linux, and I was testing his last patchs,
-> > > but I had a little problems with my sound card, the first one is about
-> > > headphone, it is works but with noise, and when I'm maximize the volume
-> > > of headphone the sound quality starting so weak.
-> > > 
-> > > The Second problem I had it is when I run the 3D Desktop Effects (XGL
-> > > with Compiz), that when I play any sound clip and moving any window or
-> > > rotate desktop cube that's making a noise with the sound, and the
-> > > quality of the sound clip it is so weak with slow playing in the sound.
-> > > 
-> > > I make a little screen cast about this problem and you can see it at
-> > > this link:
-> > > http://www.zshare.net/download/conexantproblem-ogg-tar-gz.html
-> > > 
-> > > any way this is my alsa information:  http://pastebin.ca/452453
-> > > finaly my device information :
-> > > http://h10025.www1.hp.com/ewfrf/wc/document?docname=c00715998&dlc=en&lc=en&cc=us
-> > > 
-> > > I 'm sorry, but the English it's not my mother language.
-> > > 
-> > > Thank you.
-> > > 
-> > > _______________________________________________
-> > > Alsa-devel mailing list
-> > > Alsa-devel@alsa-project.org
-> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > -- 
-> > Tobin Davis <tdavis@dsl-only.net>
-> 
+The patch I've attached just adds my device's' PCI SSID to an existing
+switch statement.
 
--- 
-Tobin Davis <tdavis@dsl-only.net>
+I am willing to provide some more testing if necessary.
+
+
+
+Here is my systems info:
+
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+        Subsystem: Realtek Semiconductor Co., Ltd. Unknown device 0885
+        Flags: bus master, fast devsel, latency 0, IRQ 21
+        Memory at 92400000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+
+Queue=0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+
+# cat /proc/asound/card0/codec#0
+Codec: Realtek ALC885
+Address: 0
+Vendor Id: 0x10ec0885
+Subsystem Id: 0x106b1000
+Revision Id: 0x100103
+
+# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.14rc3.
+Compiled on Apr 22 2007 for kernel 2.6.20-15-generic (SMP).
+
+------=_Part_141917_7780395.1177295375239
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_Part_141917_7780395.1177295375239--
