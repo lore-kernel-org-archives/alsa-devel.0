@@ -1,29 +1,18 @@
-From: "Ben DiDonc" <ben.didonc@gmail.com>
-Subject: Re: Fwd: No sound with ATI SB450
-Date: Tue, 24 Apr 2007 10:15:30 +1000
-Message-ID: <feca60390704231715o6e98b77eg27ee0aa378d67d88@mail.gmail.com>
-References: <feca60390704202156h5a34ef0ao975d8c398dee9473@mail.gmail.com>
-	<s5h4pn7uzns.wl%tiwai@suse.de>
-	<feca60390704230405y12d44483t4ce7561913cfbca5@mail.gmail.com>
-	<s5h3b2ruysq.wl%tiwai@suse.de>
-	<feca60390704230458h43404a8ao75c1261974d1962a@mail.gmail.com>
-	<s5h1wibuva5.wl%tiwai@suse.de>
-	<feca60390704230545h90510d9rb138fff6df6aa372@mail.gmail.com>
-	<s5hvefntfz3.wl%tiwai@suse.de>
-	<feca60390704230712p57311d2fl3f8d710bf20b7684@mail.gmail.com>
-	<s5hejmb40vu.wl%tiwai@suse.de>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Buffer Overrun Messages
+Date: Tue, 24 Apr 2007 09:05:39 +0200
+Message-ID: <1177398339.1092.1186220335@webmail.messagingengine.com>
+References: <20267daccbbad88e814c591cac550e5b@optonline.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70CFB248BA
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id A7567248E1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Apr 2007 02:15:32 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c18so1952145anc
-	for <alsa-devel@alsa-project.org>; Mon, 23 Apr 2007 17:15:31 -0700 (PDT)
-In-Reply-To: <s5hejmb40vu.wl%tiwai@suse.de>
+	Tue, 24 Apr 2007 09:05:39 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20267daccbbad88e814c591cac550e5b@optonline.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,77 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: John Dey <jsdey@optonline.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
-I applied your patch (to alsa-driver-hg-20070421) and modprobe'd
-snd_hda_intel without probe_mask, but with model=auto. It worked and
-detected the ALC861 codec straight away, just like it did with
-probe_mask=8. I max'ed all playback and capture volumes , ran arecord
-| aplay ,which worked fine. The laptop I have (toshiba A100) only has
-builtin speakers and a headphone jack for output (and a mic jack for
-input). There are no other jacks. I tried both the speakers and
-headphones, both worked (the speakers are muted when the headphone is
-connected).
-Next I modprobe'd again snd_hda_intel without any parameters this
-time, and it worked fine too. the codec was detected and both playback
-and capture worked fine.
+John Dey wrote:
+> I have been driving fluidsynth with with aplaymidi and get the 
+> following:  fluidsynth: ALSAsequencer buffer overrun, lost event.
 
-On 4/24/07, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 24 Apr 2007 00:12:46 +1000,
-> Ben DiDonc wrote:
-> >
-> > Here are the two codec files:
-> > codec#3-working-14rc1 was obtained after loading snd-hda-intel with
-> > probe_mask=8 and model=auto
-> > the other was obtained after loading the module without special parameters
->
-> Thanks.  Let's cut out bugs step by step.
->
-> The probing problem with the latest driver might be fixed by the patch
-> below.  Could you try it and load without probe_mask option?
->
-> Also, what output did you test actually?  Is the output from the
-> built-in speaker (if any), the output from HP-jack or both?
->
->
-> Takashi
->
-> diff -r aed6a15c9398 pci/hda/hda_intel.c
-> --- a/pci/hda/hda_intel.c       Mon Apr 23 11:54:41 2007 +0200
-> +++ b/pci/hda/hda_intel.c       Mon Apr 23 16:18:35 2007 +0200
-> @@ -979,7 +979,7 @@ static int __devinit azx_codec_create(st
->  static int __devinit azx_codec_create(struct azx *chip, const char *model)
->  {
->         struct hda_bus_template bus_temp;
-> -       int c, codecs, err;
-> +       int c, codecs, audio_codecs, err;
->
->         memset(&bus_temp, 0, sizeof(bus_temp));
->         bus_temp.private_data = chip;
-> @@ -991,16 +991,19 @@ static int __devinit azx_codec_create(st
->         if ((err = snd_hda_bus_new(chip->card, &bus_temp, &chip->bus)) < 0)
->                 return err;
->
-> -       codecs = 0;
-> +       codecs = audio_codecs = 0;
->         for (c = 0; c < AZX_MAX_CODECS; c++) {
->                 if ((chip->codec_mask & (1 << c)) & probe_mask) {
-> -                       err = snd_hda_codec_new(chip->bus, c, NULL);
-> +                       struct hda_codec *codec;
-> +                       err = snd_hda_codec_new(chip->bus, c, &codec);
->                         if (err < 0)
->                                 continue;
->                         codecs++;
-> +                       if (codec->afg)
-> +                               audio_codecs++;
->                 }
->         }
-> -       if (!codecs) {
-> +       if (!audio_codecs) {
->                 /* probe additional slots if no codec is found */
->                 for (; c < azx_max_codecs[chip->driver_type]; c++) {
->                         if ((chip->codec_mask & (1 << c)) & probe_mask) {
->
+This happens when more MIDI events are sent to fluidsynth at the same
+time than it can handle.
+
+Does this happen with some specific .mid file?
+
+
+Regards,
+Clemens
