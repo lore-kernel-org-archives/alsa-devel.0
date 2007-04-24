@@ -1,15 +1,14 @@
-From: Tobin Davis <gruemaster@email.uophx.edu>
+From: Tobin Davis <tdavis@dsl-only.net>
 Subject: HDA-Intel: Fix headphone squeal on Conexant audio
-Date: Tue, 24 Apr 2007 08:50:15 -0700
-Message-ID: <1177429815.4274.94.camel@razman.gruemaster.com>
+Date: Tue, 24 Apr 2007 09:21:52 -0700
+Message-ID: <1177431712.4274.115.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="=-bknETlAutK9iKT7rDaUA"
+Content-Type: multipart/mixed; boundary="=-CwkEY1w7w2dnU5tO++Bu"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ONLPEXCVWL06.OLS.Phoenix.edu (unknown [204.17.31.62])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FAA124911
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2DB0A24909
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Apr 2007 17:50:18 +0200 (CEST)
+	Tue, 24 Apr 2007 18:21:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,7 +22,7 @@ To: ALSA Developers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-bknETlAutK9iKT7rDaUA
+--=-CwkEY1w7w2dnU5tO++Bu
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
@@ -31,10 +30,12 @@ This patch fixes the headphone squeal and noise on Conexant CX20551
 (Waikiki) audio.
 
 
--- 
-Tobin Davis <gruemaster@email.uophx.edu>
 
---=-bknETlAutK9iKT7rDaUA
+Signed off by Tobin Davis <tdavis@dsl-only.net>
+
+Wrong "From" email address selected earlier.  Oops.
+
+--=-CwkEY1w7w2dnU5tO++Bu
 Content-Disposition: attachment; filename=conexant-test20.patch
 Content-Type: text/x-patch; name=conexant-test20.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
@@ -80,7 +81,7 @@ diff -r 05d4738cc065 pci/hda/patch_conexant.c
  	/* Record selector: Mic */
  	{0x12, AC_VERB_SET_CONNECT_SEL,0x03},
 
---=-bknETlAutK9iKT7rDaUA
+--=-CwkEY1w7w2dnU5tO++Bu
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -91,4 +92,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---=-bknETlAutK9iKT7rDaUA--
+--=-CwkEY1w7w2dnU5tO++Bu--
