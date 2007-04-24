@@ -1,15 +1,18 @@
-From: Tobin Davis <gruemaster@email.uophx.edu>
-Subject: HDA-Intel: Fix headphone squeal on Conexant audio
-Date: Tue, 24 Apr 2007 07:44:38 -0700
-Message-ID: <1177425878.4274.90.camel@razman.gruemaster.com>
+From: Florian <alsa@bome.com>
+Subject: Re: crash/reboot with rawmidi on ice1712 dual opteron
+Date: Tue, 24 Apr 2007 16:53:20 +0200
+Message-ID: <462E19E0.6040206@bome.com>
+References: <461FD727.8080400@bome.com>	<s5hfy6zcmtc.wl%tiwai@suse.de>	<4626361D.3080801@bome.com>	<s5hmz0y0w6m.wl%tiwai@suse.de>	<462E05BB.4000300@bome.com>	<s5h8xch28o2.wl%tiwai@suse.de>	<462E099A.7000702@bome.com>	<s5h7is1284n.wl%tiwai@suse.de>	<462E103A.3080601@bome.com>
+	<s5hzm4xzw8w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="=-Z6xnXJ5pg1PbgXtK/2as"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ONLPEXCVWL06.OLS.Phoenix.edu (unknown [204.17.31.62])
-	by alsa0.perex.cz (Postfix) with ESMTP id B343324591
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16C0524591
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Apr 2007 16:44:46 +0200 (CEST)
+	Tue, 24 Apr 2007 16:53:23 +0200 (CEST)
+In-Reply-To: <s5hzm4xzw8w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,76 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+> When the hang-up occurs at the first write, it must be in 
+> snd_mpu401_uart_cmd().  At the very beginning, it calls 
+> mpu->write(mpu, 0x00, MPU401D(mpu)); Try to comment out this and
+> see what happens.
 
---=-Z6xnXJ5pg1PbgXtK/2as
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+I had tried that - I think that I just commented out the reset
+command. It would not crash or reboot, but it did not haver
+functionality either.
 
-This patch fixes the headphone squeal and noise on Conexant CX20551
-(Waikiki) audio.
+> Do I understand correctly that this bug happens when you open a 
+> rawmidi device for read, e.g. % cat /dev/snd/midiC0D0 > /dev/null
+> 
+yes. I usually used
+amidi -p hw:0 -d
 
+> Perhaps an easiest but foolishest way to trace this is to put
+> printk at each io-port access and any other important points, and
+> give some sleep at each point, then watch the kernel message.
+> You can get rid of spin_lock_*() around that, just for testing.
+
+I've done this until I traced it to the first outb() call, i.e. the
+initialization mentioned above. The first outb() will cause the reboot.
+
+Florian
+
+
+> ??
+> 
+> 
+> Takashi
+> 
+> 
 
 -- 
-Tobin Davis <gruemaster@email.uophx.edu>
+Florian Bomers
+bome.com
 
---=-Z6xnXJ5pg1PbgXtK/2as
-Content-Disposition: attachment; filename=conexant-test20.patch
-Content-Type: text/x-patch; name=conexant-test20.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-diff -r 05d4738cc065 pci/hda/patch_conexant.c
---- a/pci/hda/patch_conexant.c	Mon Apr 23 17:17:48 2007 +0200
-+++ b/pci/hda/patch_conexant.c	Mon Apr 23 09:00:46 2007 -0700
-@@ -993,22 +993,10 @@ static struct snd_kcontrol_new cxt5047_m
- 	HDA_CODEC_MUTE("PCM Switch", 0x10, 0x00, HDA_OUTPUT),
- 	HDA_CODEC_VOLUME("PCM-2 Volume", 0x1c, 0x00, HDA_OUTPUT),
- 	HDA_CODEC_MUTE("PCM-2 Switch", 0x1c, 0x00, HDA_OUTPUT),
--	{
--		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = "Master Playback Volume",
--		.info = snd_hda_mixer_amp_volume_info,
--		.get = snd_hda_mixer_amp_volume_get,
--		.put = cxt5047_hp_master_vol_put,
--		.private_value = HDA_COMPOSE_AMP_VAL(0x13, 3, 0, HDA_OUTPUT),
--	},
--	{
--		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = "Master Playback Switch",
--		.info = cxt_eapd_info,
--		.get = cxt_eapd_get,
--		.put = cxt5047_hp_master_sw_put,
--		.private_value = 0x13,
--	},
-+	HDA_CODEC_VOLUME("Speaker Volume", 0x1d, 0x00, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Speaker Switch", 0x1d, 0x00, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Headphone Volume", 0x13, 0x00, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Headphone Switch", 0x13, 0x00, HDA_OUTPUT),
- 
- 	{}
- };
-@@ -1079,7 +1067,8 @@ static struct hda_verb cxt5047_init_verb
- 	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_50 },
- 	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_50 },
- 	/* HP, Speaker  */
--	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
-+	{0x13, AC_VERB_SET_CONNECT_SEL,0x1},
- 	{0x1d, AC_VERB_SET_CONNECT_SEL,0x0},
- 	/* Record selector: Mic */
- 	{0x12, AC_VERB_SET_CONNECT_SEL,0x03},
-
---=-Z6xnXJ5pg1PbgXtK/2as
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-Z6xnXJ5pg1PbgXtK/2as--
+-------------------------------------------------------
+Music Software, Development Tools:  http://www.bome.com
+Java Sound extensions, plugins: http://www.tritonus.org
+The Java Sound Resources:    http://www.jsresources.org
+-------------------------------------------------------
+Please quote this email in your reply. Thanks!
