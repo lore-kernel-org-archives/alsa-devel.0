@@ -1,44 +1,52 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: playback open error:
-Date: Wed, 25 Apr 2007 16:11:20 -0400
-Message-ID: <75b66ecd0704251311i3aa51757s8276e6a712017905@mail.gmail.com>
-References: <975f530d0704250815t294d7cd4g4e5818a2a4c89eaa@mail.gmail.com>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: 2.6.21-rc7: known regressions with patches
+Date: Thu, 26 Apr 2007 01:40:43 +0200
+Message-ID: <20070425234043.GI3468@stusta.de>
+References: <Pine.LNX.4.64.0704151659570.5473@woody.linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.237])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CBA624894
-	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Apr 2007 22:11:21 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so418694nzf
-	for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2007 13:11:20 -0700 (PDT)
-In-Reply-To: <975f530d0704250815t294d7cd4g4e5818a2a4c89eaa@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-scsi-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashlesha Shintre <ashlesha.shintre@gmail.com>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <Pine.LNX.4.64.0704151659570.5473@woody.linux-foundation.org>
+Sender: linux-scsi-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, CIJOML <cijoml@volny.cz>, Markus Rechberger <markus.rechberger@amd.com>, v4l-dvb-maintainer@linuxtv.org, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Takashi Iwai <tiwai@suse.de>, perex@suse.cz, alsa-devel@alsa-project.org, David Miller <davem@davemloft.net>, Robert Peterson <rpeterso@redhat.com>, linux-driver@qlogic.com, linux-scsi@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 4/25/07, Ashlesha Shintre <ashlesha.shintre@gmail.com> wrote:
-> Hi,
->
-> I m trying to run the simple playback program that I have attached with this
-> email -- and I get the following error:
->
-> ALSA lib pcm_dmix.c:862:(snd_pcm_dmix_open) unable to open slave
-> > Playback open error: Device or resource busy
->
+This email lists some known regressions in Linus' tree compared to 2.6.20
+with patches available.
 
-Are you calling wavplay in a loop or something?  Maybe a delay is
-required between closing the device and opening it again.
+If you find your name in the Cc header, you are either submitter of one
+of the bugs, maintainer of an affectected subsystem or driver, a patch
+of you caused a breakage or I'm considering you in any other way
+possibly involved with one or more of these issues.
 
-Lee
+Due to the huge amount of recipients, please trim the Cc when answering.
+
+
+Subject    : Oops when changing USB DVB-T adapter
+References : http://lkml.org/lkml/2007/3/9/212
+             http://lkml.org/lkml/2007/4/5/154
+Submitter  : CIJOML <cijoml@volny.cz>
+Handled-By : Markus Rechberger <markus.rechberger@amd.com>
+Status     : patches available
+
+
+Subject    : snd_intel8x0: divide error: 0000
+References : http://lkml.org/lkml/2007/3/5/252
+Submitter  : Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Handled-By : Takashi Iwai <tiwai@suse.de>
+Patch      : http://lkml.org/lkml/2007/4/20/117
+Status     : patch available
+
+
+Subject    : qla2xxx driver no longer works
+References : http://lkml.org/lkml/2007/4/16/49
+             http://lkml.org/lkml/2007/4/20/224
+Submitter  : David Miller <davem@davemloft.net>
+             Robert Peterson <rpeterso@redhat.com>
+Handled-By : David Miller <davem@davemloft.net>
+Patch      : http://lkml.org/lkml/2007/4/16/234
+Status     : patch was suggested
+
+
