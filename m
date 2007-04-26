@@ -1,17 +1,16 @@
-From: Manuel Lauss <mano@roarinelk.homelinux.net>
-Subject: [ASoC] list corruption during AC97 registration
-Date: Thu, 26 Apr 2007 19:16:43 +0200
-Message-ID: <20070426171643.GA27510@roarinelk.homelinux.net>
+From: Tim Harvey <tim_harvey@yahoo.com>
+Subject: Re: Questions about writing a new ALSA driver for a
+	very limitted device
+Date: Thu, 26 Apr 2007 15:30:41 -0700 (PDT)
+Message-ID: <20131.44734.qm@web35606.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
-	[217.175.205.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8952824733
+Received: from web35606.mail.mud.yahoo.com (web35606.mail.mud.yahoo.com
+	[66.163.179.145]) by alsa0.perex.cz (Postfix) with SMTP id 9AB7B24ABB
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2007 19:16:44 +0200 (CEST)
-Content-Disposition: inline
+	Fri, 27 Apr 2007 00:30:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,42 +21,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: lg@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Folks,
+Thanks to the help I've gotten on this list my alsa driver is working great.  I
+got a little hung up not realizing that the alsa core basically provides
+everything you need to implement your own circular buffer if you need to use an
+intermediate buffer.
 
-I hit the following oops (on 2.6.21) when ASoC registers an AC97 codec.
-Happens both on MIPS and SH, for example the mips oops:
+The only question I still have is that if alsa allocates your DMA buffer for
+you based on snd_pcm_hardware_t buffer_bytes_max what exactly does
+snd_pcm_lib_preallocate_pages_for_all allocate buffers for?  Does this allocate
+the buffers that would be passed to the copy callback?
 
-asoc: AC97 HiFi <-> au1xpsc-ac97-1 mapping ok
-list_add corruption. prev->next should be next (80488f60), but was 865ffad8. (prev=865ffad8).
-<snip> 
-Call Trace:
-[<80271290>] __list_add+0x68/0x94
-[<802ac0e4>] bus_attach_device+0x48/0x78
-[<802aa4c4>] device_add+0x3d8/0x844
-[<c00882a8>] snd_soc_register_card+0x1d0/0x2c8 [snd_soc_core]
-[<c00b3268>] ac97_soc_probe+0x17c/0x1e4 [snd_soc_ac97]
-[<c0088f48>] soc_probe+0xb0/0x1ac [snd_soc_core]
-[<802ad410>] really_probe+0x148/0x268
-[<802ac1cc>] bus_for_each_drv+0x50/0xa0
-[<802ad758>] device_attach+0xe4/0x194
-[<802ac0cc>] bus_attach_device+0x30/0x78
-[<802aa4c4>] device_add+0x3d8/0x844
-[<802aff24>] platform_device_add+0x13c/0x198
-[<c00b71c8>] exm1200_mobo_ac97_init+0x1c8/0x1fc [snd_soc_exmmb_ac97]
-[<801478d0>] sys_init_module+0x1448/0x15b8
-[<8010bcc0>] stack_done+0x20/0x3c
+Thanks,
 
-System.map says:
-80488e60 D ac97_bus_type
+Tim
 
-As I said, it happens on both MIPS and SH (with machine and PCM drivers
-written by myself). With CONFIG_DEBUG_LIST disabled the code works and plays
-sound, but still I'd like to know what causes this list corruption.
+--- Tim Harvey <tim_harvey@yahoo.com> wrote:
 
-Thanks for any hints!
-
--- 
- Manuel Lauss
+> Greetings,
+> 
+> I'm setting out to write an ALSA driver for a very limited device thats
+> behind
+> a PLD.  The actual codec is a uda1380 and does 16bit MSB stereo
+> encode/decode. 
+> The way the device is driven the sampling rate is limited to 8KHz and data
+> transfer to/from the device I have to handle manually.
+> 
+> I've read over the 'writing an ALSA driver' tutorial and have started the
+> driver but have run into a few questions:
+> 
+>  - for the specs I've given above: 8000Hz sampling rate, 16bit stereo MSB
+> samples does the following snd_pcm_hardware_t look right?:
+> 
+> static snd_pcm_hardware_t my_playback_hw = {
+>         .info = (SNDRV_PCM_INFO_MMAP |
+>                  SNDRV_PCM_INFO_INTERLEAVED |
+>                  SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>                  SNDRV_PCM_INFO_MMAP_VALID),
+>         .formats =          SNDRV_PCM_FMTBIT_U16_BE,  // is this 16bit MSB?
+>         .rates =            SNDRV_PCM_RATE_8000,      // seems redundant?
+>         .rate_min =         8000,
+>         .rate_max =         8000,
+>         .channels_min =     2,
+>         .channels_max =     2,
+>         .buffer_bytes_max = 32768,
+>         .period_bytes_min = 4096,
+>         .period_bytes_max = 32768,
+>         .periods_min =      1,
+>         .periods_max =      1024,
+> };
+> 
+>  - I'm a little confused at how to deal with copying data from/to the device.
+> 
+> It looks like I would implement the copy callback and copy the passed buffer
+> to
+> the device in the device specific manner I need to (playback), but I'm not
+> clear where to put data that I receive from the device (capture).  I notice
+> that when the hw_params callback is called a dma buffer has been created by
+> ALSA in the substream->runtime struct.  I assume this is created based on hte
+> buffer_bytes_max field above and I'm to copy data to this buffer?  How do I
+> know where to copy it within the buffer and what data ALSA has already
+> consumed
+> from the buffer?
+> 
+>  - I might need to create an intermediate buffer between ALSA's rather large
+> buffers and my hardware buffer.  Is there any driver that I could look at
+> that
+> does this?  The tutorial talks about the vxpocket driver but that code looks
+> very foriegn from the rest of the ALSA drivers.
+> 
+>  - I'm not sure I understand what the 'period' is about.  Its clear to me
+> that
+> I need to call snd_pcm_period_elapsed() periodically from either an IRQ or
+> other timed callback, but I'm not clear what the hardware pointer is or how
+> that converts to 'frames' and 'periods'.
+> 
+>  - in general, if my hardware device only allows 16bit MSB 8KHz, does ALSA
+> provides a mechanism for converting data from other formats?
+> 
+> Thanks for any pointers,
+> 
+> Tim
+> 
