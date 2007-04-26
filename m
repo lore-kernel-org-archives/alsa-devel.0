@@ -1,52 +1,125 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: 2.6.21-rc7: known regressions with patches
-Date: Thu, 26 Apr 2007 01:40:43 +0200
-Message-ID: <20070425234043.GI3468@stusta.de>
-References: <Pine.LNX.4.64.0704151659570.5473@woody.linux-foundation.org>
+From: =?iso-8859-1?q?Fl=E1vio=20Yuiti?= <f_yuiti@yahoo.com.br>
+Subject: How to play a pcm file
+Date: Wed, 25 Apr 2007 21:51:14 -0300 (ART)
+Message-ID: <778314.78890.qm@web32215.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-scsi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0704151659570.5473@woody.linux-foundation.org>
-Sender: linux-scsi-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, CIJOML <cijoml@volny.cz>, Markus Rechberger <markus.rechberger@amd.com>, v4l-dvb-maintainer@linuxtv.org, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Takashi Iwai <tiwai@suse.de>, perex@suse.cz, alsa-devel@alsa-project.org, David Miller <davem@davemloft.net>, Robert Peterson <rpeterso@redhat.com>, linux-driver@qlogic.com, linux-scsi@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from web32215.mail.mud.yahoo.com (web32215.mail.mud.yahoo.com
+	[68.142.207.146]) by alsa0.perex.cz (Postfix) with SMTP id 98B9324A19
+	for <alsa-devel@alsa-project.org>;
+	Thu, 26 Apr 2007 02:51:15 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This email lists some known regressions in Linus' tree compared to 2.6.20
-with patches available.
+Greetings,
+   =
 
-If you find your name in the Cc header, you are either submitter of one
-of the bugs, maintainer of an affectected subsystem or driver, a patch
-of you caused a breakage or I'm considering you in any other way
-possibly involved with one or more of these issues.
+  I'm a new user of alsa api and I need to play pcm, adpcm and wav files us=
+ing Alsa api. My code is below. I did a test with pcm file and the sound is=
+ playing very fast, the properties of the pcm file are 128kbps, 16 bits lit=
+tle endian, 1 channel, 8 khz, but I don't know how to set correctly the par=
+ameters in api. Please help me with this problem. Point me my errors.
+   =
 
-Due to the huge amount of recipients, please trim the Cc when answering.
+  Thanks,
+   =
 
+  Flavio
+   =
 
-Subject    : Oops when changing USB DVB-T adapter
-References : http://lkml.org/lkml/2007/3/9/212
-             http://lkml.org/lkml/2007/4/5/154
-Submitter  : CIJOML <cijoml@volny.cz>
-Handled-By : Markus Rechberger <markus.rechberger@amd.com>
-Status     : patches available
+  int Sound::PlayFile(char *pszFileName, ULONG initialPoint, UINT qtdTimesT=
+oPlay, BOOL mix)
+  {
+  int dir;
+  int result;
+  int size;
+  unsigned int val;
+  snd_pcm_hw_params_t *params;
+  snd_pcm_uframes_t frames;
+  char* buffer;
+  long tamanhoBuffer;
+  FILE* file;
+  int bytesLidos;
+   =
 
+  // Open PCM device for playback.
+  if((result =3D snd_pcm_open(&handleSound,"hw:0,0",SND_PCM_STREAM_PLAYBACK=
+,0)) < 0)
+  {
+  fprintf(stderr,"\nUnable to open pcm device: %s",snd_strerror(result));
+  exit(1);
+  }
+  =
 
-Subject    : snd_intel8x0: divide error: 0000
-References : http://lkml.org/lkml/2007/3/5/252
-Submitter  : Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Handled-By : Takashi Iwai <tiwai@suse.de>
-Patch      : http://lkml.org/lkml/2007/4/20/117
-Status     : patch available
+  // Allocate a hardware parameters object.
+  snd_pcm_hw_params_alloca(&hardwareParam);
+  // Fill it in with default values.
+  snd_pcm_hw_params_any(handleSound,hardwareParam);
+  // Set the desired hardware parameters.
+  // Interleaved mode.
+  snd_pcm_hw_params_set_access(handleSound,hardwareParam,SND_PCM_ACCESS_RW_=
+INTERLEAVED);
+  // Signed 16-bit little-endian format.
+  snd_pcm_hw_params_set_format(handleSound,hardwareParam,SND_PCM_FORMAT_S16=
+_LE);
+  // Two channels (stereo), one channel mono.
+  snd_pcm_hw_params_set_channels(handleSound,hardwareParam,1);
+  // Set rate.
+  //snd_pcm_hw_params_set_rate(handleSound,hardwareParam,8000,0);
+  // Set period size to 16384 frames.
+  //snd_pcm_hw_params_set_period_size(handleSound,hardwareParam,16384,0);
+  // Write the parameters to the driver.
+  if((result =3D snd_pcm_hw_params(handleSound,hardwareParam)) < 0)
+  {
+  fprintf(stderr,"\nUnable to set hw parameters: %s",snd_strerror(result));
+  exit(1);
+  }
+  =
 
+  tamanhoBuffer =3D 16384;
+  if((result =3D snd_pcm_prepare(handleSound)) < 0)
+  {
+  fprintf(stderr,"Cannot prepare audio interface for use: %s\n",snd_strerro=
+r(result));
+  exit(1);
+  }
+  file =3D fopen(pszFileName,"rb");
+  buffer =3D (char *)malloc(tamanhoBuffer);
+  while((bytesLidos =3D fread(buffer,1,tamanhoBuffer,file)) > 0)
+  {
+  if((result =3D snd_pcm_writei(handleSound,buffer,tamanhoBuffer)) !=3D tam=
+anhoBuffer)
+  {
+  fprintf(stderr,"Write to audio interface failed: %s\n",snd_strerror(resul=
+t));
+  exit(1);
+  }
+  }
+  =
 
-Subject    : qla2xxx driver no longer works
-References : http://lkml.org/lkml/2007/4/16/49
-             http://lkml.org/lkml/2007/4/20/224
-Submitter  : David Miller <davem@davemloft.net>
-             Robert Peterson <rpeterso@redhat.com>
-Handled-By : David Miller <davem@davemloft.net>
-Patch      : http://lkml.org/lkml/2007/4/16/234
-Status     : patch was suggested
+  snd_pcm_drain(handleSound);
+  snd_pcm_close(handleSound);
+  free(buffer);
+  fclose(file);
+  =
 
+  =
 
+  return OK;
+  }
+
+ __________________________________________________
+Fale com seus amigos  de gra=E7a com o novo Yahoo! Messenger =
+
+http://br.messenger.yahoo.com/ =
