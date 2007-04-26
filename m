@@ -1,20 +1,17 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] PnP: Protocol for Media Vision
- Jazz16	sound cards
-Date: Thu, 26 Apr 2007 17:11:22 +0200
-Message-ID: <4630C11A.4070806@gmail.com>
-References: <20070412195523.GC5324@sygehus.dk>	<4628F7FD.7000808@gmail.com>	<20070420200007.GD3192@sygehus.dk>	<462B8D00.8020305@gmail.com>	<20070423185221.GA3157@sygehus.dk>	<4630A127.1030908@gmail.com>
-	<s5hk5vzp9xn.wl%tiwai@suse.de>
+From: =?iso-8859-1?q?Fl=E1vio=20Yuiti?= <f_yuiti@yahoo.com.br>
+Subject: Re: How to play a pcm file
+Date: Thu, 26 Apr 2007 13:26:34 -0300 (ART)
+Message-ID: <970914.35013.qm@web32205.mail.mud.yahoo.com>
+References: <1177569394.26330.1186645873@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 259AC24A81
+Received: from web32205.mail.mud.yahoo.com (web32205.mail.mud.yahoo.com
+	[68.142.207.136]) by alsa0.perex.cz (Postfix) with SMTP id A5EE724A89
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Apr 2007 17:13:31 +0200 (CEST)
-In-Reply-To: <s5hk5vzp9xn.wl%tiwai@suse.de>
+	Thu, 26 Apr 2007 18:26:41 +0200 (CEST)
+In-Reply-To: <1177569394.26330.1186645873@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adam Belay <ambx1@neo.rr.com>, abelay@MIT.EDU, alsa-devel@alsa-project.org
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/26/2007 03:00 PM, Takashi Iwai wrote:
+Clemens,
+   =
 
->> I've had to remove the jazz16 again for a bit and I haven't tested an 
->> allocation failure yet. That looks to be an "obvious fix" though. Now all we 
->> need is a PnP maintainer...
-> 
-> I'd suggest to post LKML once, then.  If you get no negative feedback,
-> let's try to push together with ALSA patch.
+  thanks for your help. Can you explain what function of alsa api I insert =
+128kbps value of pcm file? In my example, I'm reading the content of pcm fi=
+le and writing directly on sound device, however I don't know the length of=
+ buffer that I send to sound device. Can be any length of buffer?
+   =
 
-I have one other email address for Adam Belay (added to CC). Let's see if 
-that one's active...
+  Thanks,
+   =
 
-Rene.
+  Flavio
+   =
+
+  =
+
+Clemens Ladisch <cladisch@fastmail.net> escreveu:
+  Fl=E1vio Yuiti wrote:
+> I did a test with pcm file and the sound is playing very fast,
+> =
+
+> snd_pcm_open(&handleSound,"hw:0,0",SND_PCM_STREAM_PLAYBACK,0)
+
+Use "default" as device name. Using "hw" will prevent any automatic
+sample format/rate conversions.
+
+> //snd_pcm_hw_params_set_rate(handleSound,hardwareParam,8000,0);
+
+This shouldn't be commented out, and you should check the return
+values of all these functions.
+
+
+HTH
+Clemens
+
+
+ __________________________________________________
+Fale com seus amigos  de gra=E7a com o novo Yahoo! Messenger =
+
+http://br.messenger.yahoo.com/ =
