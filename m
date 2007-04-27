@@ -1,16 +1,17 @@
-From: Tim Harvey <tim_harvey@yahoo.com>
-Subject: Re: Questions about writing a new ALSA driver for a
-	very limitted device
-Date: Thu, 26 Apr 2007 15:30:41 -0700 (PDT)
-Message-ID: <20131.44734.qm@web35606.mail.mud.yahoo.com>
+From: Markus Korber <korbse@gmx.at>
+Subject: Re: [ASoC] Sample format non available
+Date: Fri, 27 Apr 2007 08:13:43 +0200
+Message-ID: <6zps5qwdig.fsf@odpc25.int.ondemand.co.at>
+References: <6zwszzjn7u.fsf@odpc25.int.ondemand.co.at>
+	<1177595163.32188.465.camel@a10072.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web35606.mail.mud.yahoo.com (web35606.mail.mud.yahoo.com
-	[66.163.179.145]) by alsa0.perex.cz (Postfix) with SMTP id 9AB7B24ABB
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 810D82478E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Apr 2007 00:30:42 +0200 (CEST)
+	Fri, 27 Apr 2007 08:13:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,87 +21,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks to the help I've gotten on this list my alsa driver is working great.  I
-got a little hung up not realizing that the alsa core basically provides
-everything you need to implement your own circular buffer if you need to use an
-intermediate buffer.
+Thus spake Liam Girdwood:
 
-The only question I still have is that if alsa allocates your DMA buffer for
-you based on snd_pcm_hardware_t buffer_bytes_max what exactly does
-snd_pcm_lib_preallocate_pages_for_all allocate buffers for?  Does this allocate
-the buffers that would be passed to the copy callback?
+> On Thu, 2007-04-26 at 15:10 +0200, Markus Korber wrote:
+>
+>> I'm currently implementing a ASoC solution for a custom chip and I've
+>> written a codec, I2S, PCM, and machine driver.  However, when using
+>> aplay I get the following error (requested format was: 2):
+>> 
+>> root:~# aplay -M -D hw:0,0 test.wav 
+>> Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+>> aplay: set_params:906: Sample format non available
+>> 
+>> However, I've told each piece involved, that it is capable of playing
+>> S16_LE.  So I don't know what I am missing here?
+>
+> Is your target CPU ARM based ?
 
-Thanks,
+Yes, it's an arm926ejs.
 
-Tim
+> If so, there is a gcc optimisation bug that causes a refinement error
+> (like above).  
+>
+> http://gcc.gnu.org/bugzilla/show_bug.cgi?id=27363
 
---- Tim Harvey <tim_harvey@yahoo.com> wrote:
+I'm using buildroot:
 
-> Greetings,
-> 
-> I'm setting out to write an ALSA driver for a very limited device thats
-> behind
-> a PLD.  The actual codec is a uda1380 and does 16bit MSB stereo
-> encode/decode. 
-> The way the device is driven the sampling rate is limited to 8KHz and data
-> transfer to/from the device I have to handle manually.
-> 
-> I've read over the 'writing an ALSA driver' tutorial and have started the
-> driver but have run into a few questions:
-> 
->  - for the specs I've given above: 8000Hz sampling rate, 16bit stereo MSB
-> samples does the following snd_pcm_hardware_t look right?:
-> 
-> static snd_pcm_hardware_t my_playback_hw = {
->         .info = (SNDRV_PCM_INFO_MMAP |
->                  SNDRV_PCM_INFO_INTERLEAVED |
->                  SNDRV_PCM_INFO_BLOCK_TRANSFER |
->                  SNDRV_PCM_INFO_MMAP_VALID),
->         .formats =          SNDRV_PCM_FMTBIT_U16_BE,  // is this 16bit MSB?
->         .rates =            SNDRV_PCM_RATE_8000,      // seems redundant?
->         .rate_min =         8000,
->         .rate_max =         8000,
->         .channels_min =     2,
->         .channels_max =     2,
->         .buffer_bytes_max = 32768,
->         .period_bytes_min = 4096,
->         .period_bytes_max = 32768,
->         .periods_min =      1,
->         .periods_max =      1024,
-> };
-> 
->  - I'm a little confused at how to deal with copying data from/to the device.
-> 
-> It looks like I would implement the copy callback and copy the passed buffer
-> to
-> the device in the device specific manner I need to (playback), but I'm not
-> clear where to put data that I receive from the device (capture).  I notice
-> that when the hw_params callback is called a dma buffer has been created by
-> ALSA in the substream->runtime struct.  I assume this is created based on hte
-> buffer_bytes_max field above and I'm to copy data to this buffer?  How do I
-> know where to copy it within the buffer and what data ALSA has already
-> consumed
-> from the buffer?
-> 
->  - I might need to create an intermediate buffer between ALSA's rather large
-> buffers and my hardware buffer.  Is there any driver that I could look at
-> that
-> does this?  The tutorial talks about the vxpocket driver but that code looks
-> very foriegn from the rest of the ALSA drivers.
-> 
->  - I'm not sure I understand what the 'period' is about.  Its clear to me
-> that
-> I need to call snd_pcm_period_elapsed() periodically from either an IRQ or
-> other timed callback, but I'm not clear what the hardware pointer is or how
-> that converts to 'frames' and 'periods'.
-> 
->  - in general, if my hardware device only allows 16bit MSB 8KHz, does ALSA
-> provides a mechanism for converting data from other formats?
-> 
-> Thanks for any pointers,
-> 
-> Tim
-> 
+,----[ arm-linux-gcc -v ]
+| Using built-in specs.
+| Target: arm-linux-uclibcgnueabi
+| gcc version 4.1.1
+`----
+
+> Fwiw, Openembedded builds a working toolchain for ARM and ALSA.
+
+Unfortunately, so far I have had no luck building this toolchain.  I'll
+give it another try as soon as possible.  Meanwhile I've compiled with
+-O1 with the results shown below.
+
+>> Should I provide more debugging output like RULES_DEBUG output from
+>> sound/core/pcm_native.c?
+>
+> Yes please. Can you also set SOC_DEBUG to 1 in soc-core.c
+> [...]
+> Can you send the debug output with the debug turned on (as above) and
+> with aplay writing directly to the hardware  i.e.
+>
+> aplay -Dhw:0,0 test.wav
+
+root:~# ./alsa-hg/alsa-utils/aplay/aplay -M -D hw:0,0 test.wav 
+chip-pcm: Entered chip_pcm_open
+board_cs4265: Entered board_cs4265_startup
+asoc: CS4265 <-> chip-i2s info:
+asoc: rate mask 0xe0
+asoc: min ch 2 max ch 2
+asoc: min rate 32000 max rate 48000
+Playing WAVE 'teACCESS = st.wav' : Signed00000000ffffffffffffffff ->  16 bit Lit
+tle E0000000000000012
+ndian, Rate 4410FORMAT = 0 Hz, Stereo
+00000000ffffffffffffffff -> 0000000000000004
+SUBFORMAT = 00000000ffffffffffffffff -> 0000000000000001
+SAMPLE_BITS = [0 4294967295] -> [0 4294967295]
+FRAME_BITS = [0 4294967295] -> [0 4294967295]
+CHANNELS = [0 4294967295] -> [2 2]
+RATE = [0 4294967295] -> [32000 48000]
+PERIOD_TIME = [0 4294967295] -> [0 4294967295]
+PERIOD_SIZE = [0 4294967295] -> [0 4294967295]
+PERIOD_BYTES = [0 4294967295] -> [32 8192]
+PERIODS = [0 4294967295] -> [2 1024]
+BUFFER_TIME = [0 4294967295] -> [0 4294967295]
+BUFFER_SIZE = [0 4294967295] -> [0 4294967295]
+BUFFER_BYTES = [0 4294967295] -> [32 32768]
+TICK_TIME = [0 4294967295] -> [10000 10000]
+Rule 0 [c01b0ea8]: FORMAT = 4 -> 0
+aplay: set_params:878: Broken configuration for this PCM: no configurations available
+
+Regards,
+Markus Korber
