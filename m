@@ -1,17 +1,16 @@
-From: "Wolke Liu" <wolke.liu@amd.com>
-Subject: [patch]Add ATI RS780,R600 HDMI audio support
-Date: Fri, 27 Apr 2007 18:04:47 +0800
-Message-ID: <FFECF24D2A7F6D418B9511AF6F35860201927679@shacnexch2.atitech.com>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: [ASoC] list corruption during AC97 registration
+Date: Fri, 27 Apr 2007 11:21:18 +0100
+Message-ID: <1177669283.11953.25.camel@llanelli.wolfsonmicro.main>
 References: <20070426171643.GA27510@roarinelk.homelinux.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from outbound1-blu-R.bigfish.com (outbound-blu.frontbridge.com
-	[65.55.251.16]) by alsa0.perex.cz (Postfix) with ESMTP id 2762024B18
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7A8B24B18
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Apr 2007 12:05:03 +0200 (CEST)
-Content-class: urn:content-classes:message
+	Fri, 27 Apr 2007 12:21:25 +0200 (CEST)
 In-Reply-To: <20070426171643.GA27510@roarinelk.homelinux.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,55 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Yufei Ma <yufei.ma@amd.com>
+To: Manuel Lauss <mano@roarinelk.homelinux.net>
+Cc: alsa-devel@alsa-project.org, lg@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch is for ATI RS780 and R600 HDMI support.
-Signed-off-by: Wolke Liu <wolke.liu <at> amd.com>
+On Thu, 2007-04-26 at 19:16 +0200, Manuel Lauss wrote:
+> Hi Folks,
+> 
+> I hit the following oops (on 2.6.21) when ASoC registers an AC97 codec.
+> Happens both on MIPS and SH, for example the mips oops:
+> 
+> asoc: AC97 HiFi <-> au1xpsc-ac97-1 mapping ok
+> list_add corruption. prev->next should be next (80488f60), but was 865ffad8. (prev=865ffad8).
+> <snip> 
+> Call Trace:
+> [<80271290>] __list_add+0x68/0x94
+> [<802ac0e4>] bus_attach_device+0x48/0x78
+> [<802aa4c4>] device_add+0x3d8/0x844
+> [<c00882a8>] snd_soc_register_card+0x1d0/0x2c8 [snd_soc_core]
+> [<c00b3268>] ac97_soc_probe+0x17c/0x1e4 [snd_soc_ac97]
+> [<c0088f48>] soc_probe+0xb0/0x1ac [snd_soc_core]
+> [<802ad410>] really_probe+0x148/0x268
+> [<802ac1cc>] bus_for_each_drv+0x50/0xa0
+> [<802ad758>] device_attach+0xe4/0x194
+> [<802ac0cc>] bus_attach_device+0x30/0x78
+> [<802aa4c4>] device_add+0x3d8/0x844
+> [<802aff24>] platform_device_add+0x13c/0x198
+> [<c00b71c8>] exm1200_mobo_ac97_init+0x1c8/0x1fc [snd_soc_exmmb_ac97]
+> [<801478d0>] sys_init_module+0x1448/0x15b8
+> [<8010bcc0>] stack_done+0x20/0x3c
+> 
+> System.map says:
+> 80488e60 D ac97_bus_type
+> 
+> As I said, it happens on both MIPS and SH (with machine and PCM drivers
+> written by myself). With CONFIG_DEBUG_LIST disabled the code works and plays
+> sound, but still I'd like to know what causes this list corruption.
+> 
+> Thanks for any hints!
 
-diff -r 67cb6a84c18a pci/hda/hda_intel.c
---- a/pci/hda/hda_intel.c       Fri Apr 20 16:11:43 2007 +0200
-+++ b/pci/hda/hda_intel.c       Fri Apr 27 04:56:54 2007 -0400
-@@ -88,6 +88,8 @@ MODULE_SUPPORTED_DEVICE("{{Intel, ICH6},
-                         "{ATI, SB600},"
-                         "{ATI, RS600},"
-                         "{ATI, RS690},"
-+                        "{ATI, RS780},"
-+                        "{ATI, R600},"
-                         "{VIA, VT8251},"
-                         "{VIA, VT8237A},"
-                         "{SiS, SIS966},"
-@@ -1770,6 +1772,8 @@ static struct pci_device_id azx_ids[] =
-        { 0x1002, 0x4383, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATI
-}, /* ATI SB600 */
-        { 0x1002, 0x793b, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RS600 HDMI */
-        { 0x1002, 0x7919, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RS690 HDMI */
-+       { 0x1002, 0x960c, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RS780 HDMI */
-+       { 0x1002, 0xaa00, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI R600 HDMI */
-        { 0x1106, 0x3288, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_VIA
-}, /* VIA VT8251/VT8237A */
-        { 0x1039, 0x7502, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_SIS
-}, /* SIS966 */
-        { 0x10b9, 0x5461, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ULI
-}, /* ULI M5461 */
-diff -r 67cb6a84c18a pci/hda/patch_atihdmi.c
---- a/pci/hda/patch_atihdmi.c   Fri Apr 20 16:11:43 2007 +0200
-+++ b/pci/hda/patch_atihdmi.c   Fri Apr 27 04:57:29 2007 -0400
-@@ -173,6 +173,7 @@ static int patch_atihdmi(struct hda_code
-  */
- struct hda_codec_preset snd_hda_preset_atihdmi[] = {
-        { .id = 0x1002793c, .name = "ATI RS600 HDMI", .patch =
-patch_atihdmi },
--       { .id = 0x1002791a, .name = "ATI RS690 HDMI", .patch =
-patch_atihdmi },
-+       { .id = 0x1002791a, .name = "ATI RS690/780 HDMI", .patch =
-patch_atihdmi },
-+       { .id = 0x1002aa01, .name = "ATI R600 HDMI", .patch =
-patch_atihdmi },
-        {} /* terminator */
- };
+Thanks for reporting this. I'll add to ALSA bugtracker (after some new
+categories have been added) and fix on early next week when I have
+access to my AC97 hardware. 
+
+Fwiw, I'd start by looking at soc_ac97_dev_register()
+
+HTH
+
+Liam
