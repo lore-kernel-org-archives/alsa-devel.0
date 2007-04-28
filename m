@@ -1,47 +1,41 @@
-From: Hannu Savolainen <hannu@opensound.com>
-Subject: Re: [Alsa-user] ALSA Newbie - Getting
- Ensoniq	SoundscapeVivo to work?
-Date: Sat, 28 Apr 2007 14:52:15 +0300
-Message-ID: <4633356F.9090404@opensound.com>
+From: "Cody Jung" <funkycat32@gmail.com>
+Subject: Re: ALSA Newbie - Getting Ensoniq SoundscapeVivo to
+	work?
+Date: Sat, 28 Apr 2007 10:56:54 -0500
+Message-ID: <d382e1990704280856j533b89d4wc8ee45d949704aa6@mail.gmail.com>
 References: <d382e1990704272206y9712a84x1e07d07eda58fb18@mail.gmail.com>
 	<463319CA.4040309@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
 In-Reply-To: <463319CA.4040309@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
 To: Rene Herman <rene.herman@gmail.com>
-Cc: Cody Jung <funkycat32@gmail.com>, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+Cc: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman kirjoitti:
-> On 04/28/2007 07:06 AM, Cody Jung wrote:
->
->   
->> As it suggests in the subject, I'm both a Linux-newbie and an
->> ALSA-newbie. I have an old clunker of a machine running Ubuntu Feisty
->> that I built out of parts left on curbs during spring cleanup, and that's
->> how I came across my sound card. It's an Ensoniq SoundscapeVivo (Not a 
->> Vivo90, AFAIK).
->>     
->
-> As far as I'm aware, there are no other VIVO's than the VIVO90.
->   
-Wrong. VIVO and VIVO90 are different models but I can't remember exactly 
-what was the difference (maybe VIVO90 was PnP and VIVO just plain ISA). 
-Both models were supported by earlier versions of OSS (not OSS/Free). 
-ISA drivers are no longer included in OSS but older 3.9.8 version 
-(requires 2.4.x kernel) still has it.
+> I tested that when I acquired it a while ago and if I remember correctly, it
+> just worked... mmm. come to think of it, it might be the case that I needed
+> to add its PnP ID to the driver. Not sure anymore. Could you confirm whether
+> or not your Soundscape is an ISA-PnP card and if so (that's also a way to
+> find out if you don't know if it is) run "pnpdump" with it installed and
+> look for a PnP-ID for the card in it? Something of the form "ENSxxxx".
 
-Best regards,
+There was a Vendor Id (ENS4081) and two Logical device Ids (ENS1011
+and ENS2020).
 
-Hannu
+-------------------------------------------------------------------------
+This SF.net email is sponsored by DB2 Express
+Download DB2 Express C - the FREE version of DB2 express and take
+control of your XML. No limits. Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
