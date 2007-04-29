@@ -1,21 +1,16 @@
-From: "xinyun liu" <xinyunliu.osc@gmail.com>
-Subject: Re: Can't record sound on Aser Aspire 5100. ATI SB450,
-	RelTek ALC 883
-Date: Sun, 29 Apr 2007 22:29:17 +0800
-Message-ID: <afc365e50704290729n7d35c112uc363f7ebe4b9415@mail.gmail.com>
-References: <afc365e50704290722s1867f059h3759d078607ed3ad@mail.gmail.com>
+From: Daniel Drake <dsd@gentoo.org>
+Subject: [PATCH] hda_codec: restore control element values
+	during resume
+Date: Sun, 29 Apr 2007 17:14:21 +0100 (BST)
+Message-ID: <20070429161421.863777B409F@zog.reactivated.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 645FD24532
+Received: from mtaout01-winn.ispmail.ntl.com (mtaout01-winn.ispmail.ntl.com
+	[81.103.221.47]) by alsa0.perex.cz (Postfix) with ESMTP id CA47724549
 	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Apr 2007 16:29:19 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c18so984617anc
-	for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2007 07:29:18 -0700 (PDT)
-In-Reply-To: <afc365e50704290722s1867f059h3759d078607ed3ad@mail.gmail.com>
-Content-Disposition: inline
+	Sun, 29 Apr 2007 18:14:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,79 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I know it's the system bios does not set the pin configuration right.
-But I don't know how to try out a correct model.
+After resume from suspend-to-RAM, there is no sound output from my Intel HDA
+hardware:
 
-Can anyone help to give some hints to fix it?
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 01)
+Found in a Dell Inspiron 640m, SigmaTel STAC9200 chip.
 
+After resuming, sound immediately returns when you adjust the volume one notch
+in either direction. I reported this on the ALSA bug tracker (#0002989).
 
-Regards,
-Xinyun
+Further investigation shows that the AC_VERB_SET_AMP_GAIN_MUTE verb is not
+being executed during resume, which seems strange. Does other hardware really
+store this value during a suspend/resume cycle? Or maybe the volume is
+generally controlled through other means on other setups? I'm not entirely
+sure what the difference is between kcontrol and kcontrol_new structures, but
+I note that there is already some code to restore the values for kcontrol_new
+elements.
 
+I solved the issue with the following patch. Is it correct?
 
-2007/4/29, xinyun liu <xinyunliu.osc@gmail.com>:
-> hi,
-> I have an Acer Aspire 5100. I can play sound but with the build in
-> mic, I can't record sound. The driver is the latest HG code.
-> http://pastebin.ca/464406
->
-> [root@localhost ~]# lspci -nnv -d1002:437b
-> 00:14.2 0403: 1002:437b (rev 01)
->        Subsystem: 1025:009f
->        Flags: bus master, slow devsel, latency 64, IRQ 19
->        Memory at c0000000 (64-bit, non-prefetchable) [size=16K]
->        Capabilities: [50] Power Management version 2
->        Capabilities: [60] Message Signalled Interrupts: 64bit+
-> Queue=0/0 Enable-
->
->
-> [root@localhost ~]# dmesg | fgrep ALSA > /tmp/1
-> [root@localhost ~]# vi /tmp/1
-> ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:698:
-> codec_mask = 0xb
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:1820: hda_codec: model 'acer'
-> is selected for config 1025:0 (Acer laptop)
-> ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:698:
-> codec_mask = 0xb
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:1820: hda_codec: model 'acer'
-> is selected for config 1025:0 (Acer laptop)
-> ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
-> azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x2, stream=0x5, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x4, stream=0x5, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x3, stream=0x5, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x5, stream=0x5, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x2, stream=0x0, channel=0, format=0x0
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x4, stream=0x0, channel=0, format=0x0
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x3, stream=0x0, channel=0, format=0x0
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x5, stream=0x0, channel=0, format=0x0
-> ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
-> azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x8, stream=0x1, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x8, stream=0x0, channel=0, format=0x0
-> ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
-> azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x2, stream=0x5, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x4, stream=0x5, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x3, stream=0x5, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x5, stream=0x5, channel=0, format=0x11
-> ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> NID=0x2, stream=0x0, channel=0, format=0x0
->
+Signed-off-by: Daniel Drake <dsd@gentoo.org>
+
+Index: linux-2.6/sound/pci/hda/hda_codec.c
+===================================================================
+--- linux-2.6.orig/sound/pci/hda/hda_codec.c
++++ linux-2.6/sound/pci/hda/hda_codec.c
+@@ -2248,15 +2248,39 @@ EXPORT_SYMBOL(snd_hda_suspend);
+ int snd_hda_resume(struct hda_bus *bus)
+ {
+ 	struct list_head *p;
++	struct snd_ctl_elem_value *val = kmalloc(sizeof(*val), GFP_KERNEL);
++
++	if (!val)
++		return -ENOMEM;
+ 
+ 	list_for_each(p, &bus->codec_list) {
+ 		struct hda_codec *codec = list_entry(p, struct hda_codec, list);
++		struct snd_kcontrol *kctl;
++
++		codec->in_resume = 1;
++
+ 		hda_set_power_state(codec,
+ 				    codec->afg ? codec->afg : codec->mfg,
+ 				    AC_PWRST_D0);
++
++
++		list_for_each_entry(kctl, &bus->card->controls, list) {
++			memset(val, 0, sizeof(*val));
++			val->id = kctl->id;
++			/* Assume that get callback reads only from cache,
++			 * not accessing the real hardware
++			 */
++			if (snd_ctl_elem_read(bus->card, val) < 0)
++				continue;
++			snd_ctl_elem_write(bus->card, NULL, val);
++		}
++
+ 		if (codec->patch_ops.resume)
+ 			codec->patch_ops.resume(codec);
++
++		codec->in_resume = 0;
+ 	}
++	kfree(val);
+ 	return 0;
+ }
