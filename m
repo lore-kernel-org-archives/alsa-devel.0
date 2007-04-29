@@ -1,132 +1,69 @@
-From: Andrei Popa <andrei.popa@i-neo.ro>
-Subject: Re: [ALSA][hda-codec] fix-connexant-headphone-mute
-Date: Sun, 29 Apr 2007 05:19:50 +0300
-Message-ID: <1177813190.10642.1.camel@localhost>
-References: <1177811017.23940.7.camel@localhost>
-Reply-To: andrei.popa@i-neo.ro
+From: "Cody Jung" <funkycat32@gmail.com>
+Subject: Re: [alsa-devel] ALSA Newbie - Getting Ensoniq
+	SoundscapeVivo to work? [Solved]
+Date: Sun, 29 Apr 2007 16:18:25 -0500
+Message-ID: <d382e1990704291418x20550cc7l17239562227f2a61@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from megainternet.ro (unknown [85.204.20.254])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5E2F244D4
-	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Apr 2007 04:19:58 +0200 (CEST)
-In-Reply-To: <1177811017.23940.7.camel@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Rene Herman <rene.herman@gmail.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, ALSA user <alsa-user@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2007-04-29 at 04:43 +0300, Andrei Popa wrote:
-> Hi,
-> 
-> The sound works ok with the built-in speakers on my Fujitsu laptop(amilo
-> pro v3205). But if I plug in headphones in the audio out jack there is
-> no sound in the headphones. With kernel 2.6.20 it worked ok. With 2.6.21
-> it doesn't.
-> This BUG is reported in ALSA bugtracking system with ID 0003039.
-> 
-> Patch that fixes this bug:
-> 
-> diff --git a/sound/pci/hda/patch_conexant.c
-> b/sound/pci/hda/patch_conexant.c
-> index 46e93c6..5edd330 100644
-> --- a/sound/pci/hda/patch_conexant.c
-> +++ b/sound/pci/hda/patch_conexant.c
-> @@ -636,7 +636,7 @@ static void cxt5045_hp_automute(struct hda_codec
-> *codec)
-> 
->         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
->         snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0x80,
-> bits);
-> -       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0x80,
-> bits);
-> +       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0,
-> bits);
->  }
-> 
->  /* unsolicited event for HP jack sensing */
-> @@ -988,10 +988,10 @@ static void cxt5047_hp_automute(struct hda_codec
-> *codec)
-> 
->         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
->         snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0x80,
-> bits);
-> -       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0x80,
-> bits);
-> +       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0,
-> bits);
->         /* Mute/Unmute PCM 2 for good measure - some systems need this
-> */
->         snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0x80,
-> bits);
-> -       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0x80,
-> bits);
-> +       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0,
-> bits);
->  }
-> 
->  /* toggle input of built-in and mic jack appropriately */
-> 
+On 4/29/07, Rene Herman <rene.herman@gmail.com> wrote:
+> On 04/29/2007 09:31 AM, Rene Herman wrote:
+>
+> > I've attached (to try and avoid linewrap) the lines that you will need in
+> > /etc/modprobe.conf.
+>
+> No I haven't.
+>
+> Rene.
+>
+> alias           snd-card-0      snd-cs4231
+> alias           sound-slot-0    snd-cs4231
+>
+> options         snd-cs4231      index=0 port=0x534 irq=5 dma1=1 dma2=0
+>
+> install         snd-cs4231      echo activate >/sys/bus/pnp/devices/01\:01.00/resources &&\
+>                                 sleep 1 &&\
+>                                 /sbin/modprobe --ignore-install snd-cs4231
+>
+> remove          snd-cs4231      /sbin/modprobe -r --ignore-remove snd-cs4231 &&\
+>                                 echo disable >/sys/bus/pnp/devices/01\:01.00/resources
+>
+>
 
-first patch was broken. it only worked for the right channel.
-this fixes this:
+Wahoo! Thank you, thank you!
 
-diff --git a/sound/pci/hda/patch_conexant.c
-b/sound/pci/hda/patch_conexant.c
-index 46e93c6..0822df7 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -635,8 +635,8 @@ static void cxt5045_hp_automute(struct hda_codec
-*codec)
-                                     AC_VERB_GET_PIN_SENSE, 0) &
-0x80000000;
+I ended up not going the /etc/modules way, partially because it wasn't
+working and partially because I didn't know what I was doing. Instead
+I added the following 4 lines to a file and included it in my init
+scripts.
 
-        bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
--       snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0x80,
-bits);
--       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0x80,
-bits);
-+       snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0,
-bits);
-+       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0,
-bits);
- }
+echo activate > /sys/bus/pnp/devices/01\:01.00/resources
+sleep 1
+modprobe snd
+modprobe snd-cs4231 port=0x534 irq=5 dma1=1 dma2=0
 
- /* unsolicited event for HP jack sensing */
-@@ -987,11 +987,11 @@ static void cxt5047_hp_automute(struct hda_codec
-*codec)
-                                     AC_VERB_GET_PIN_SENSE, 0) &
-0x80000000;
+And it works great!
 
-        bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
--       snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0x80,
-bits);
--       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0x80,
-bits);
-+       snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0,
-bits);
-+       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0,
-bits);
-        /* Mute/Unmute PCM 2 for good measure - some systems need this
-*/
--       snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0x80,
-bits);
--       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0x80,
-bits);
-+       snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0,
-bits);
-+       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0,
-bits);
- }
+Thanks again for putting up with my incompetence.
+~Cody Jung
 
- /* toggle input of built-in and mic jack appropriately */
+-------------------------------------------------------------------------
+This SF.net email is sponsored by DB2 Express
+Download DB2 Express C - the FREE version of DB2 express and take
+control of your XML. No limits. Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
