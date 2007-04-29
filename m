@@ -1,16 +1,20 @@
-From: Daniel Drake <dsd@gentoo.org>
-Subject: [PATCH] hda_codec: restore control element values
-	during resume
-Date: Sun, 29 Apr 2007 17:14:21 +0100 (BST)
-Message-ID: <20070429161421.863777B409F@zog.reactivated.net>
+From: "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
+Subject: Re: Boot failure with 2.6.21 with snd-maestro3
+Date: Sun, 29 Apr 2007 19:40:37 +0200
+Message-ID: <6bffcb0e0704291040q6dc04683yf2543a0dd578a05f@mail.gmail.com>
+References: <944251.71448.qm@web32407.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mtaout01-winn.ispmail.ntl.com (mtaout01-winn.ispmail.ntl.com
-	[81.103.221.47]) by alsa0.perex.cz (Postfix) with ESMTP id CA47724549
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.236])
+	by alsa0.perex.cz (Postfix) with ESMTP id B025524557
 	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Apr 2007 18:14:19 +0200 (CEST)
+	Sun, 29 Apr 2007 19:40:39 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id m59so1248521wrm
+	for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2007 10:40:38 -0700 (PDT)
+In-Reply-To: <944251.71448.qm@web32407.mail.mud.yahoo.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,72 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org
+To: Giridhar Pemmasani <pgiri@yahoo.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-After resume from suspend-to-RAM, there is no sound output from my Intel HDA
-hardware:
+Hi,
 
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition
-Audio Controller (rev 01)
-Found in a Dell Inspiron 640m, SigmaTel STAC9200 chip.
+On 29/04/07, Giridhar Pemmasani <pgiri@yahoo.com> wrote:
+> When snd-maestro3 (ESS Maestro 3 driver) is enabled, kernel 2.6.21 fails to
+> boot - it seems to stop at various points depending on what other modules are
+> enabled. Disabling snd-maestro3 fixes all issues. Moreover, with everything
+> else being same, using maestro3.c from 2.6.20 kernel and using it in 2.6.21
+> kernel also works - i.e., system boots fine. I will try to isolate the issue
+> and follow up.
 
-After resuming, sound immediately returns when you adjust the volume one notch
-in either direction. I reported this on the ALSA bug tracker (#0002989).
+Please revert this patches
+http://www.stardust.webpages.pl/files/patches/alsa_revert/
+and test kernel after each revert.
 
-Further investigation shows that the AC_VERB_SET_AMP_GAIN_MUTE verb is not
-being executed during resume, which seems strange. Does other hardware really
-store this value during a suspend/resume cycle? Or maybe the volume is
-generally controlled through other means on other setups? I'm not entirely
-sure what the difference is between kcontrol and kcontrol_new structures, but
-I note that there is already some code to restore the values for kcontrol_new
-elements.
+Takashi, I'll add this to known regressions for -stable team.
 
-I solved the issue with the following patch. Is it correct?
+>
+> Giri
 
-Signed-off-by: Daniel Drake <dsd@gentoo.org>
+Regards,
+Michal
 
-Index: linux-2.6/sound/pci/hda/hda_codec.c
-===================================================================
---- linux-2.6.orig/sound/pci/hda/hda_codec.c
-+++ linux-2.6/sound/pci/hda/hda_codec.c
-@@ -2248,15 +2248,39 @@ EXPORT_SYMBOL(snd_hda_suspend);
- int snd_hda_resume(struct hda_bus *bus)
- {
- 	struct list_head *p;
-+	struct snd_ctl_elem_value *val = kmalloc(sizeof(*val), GFP_KERNEL);
-+
-+	if (!val)
-+		return -ENOMEM;
- 
- 	list_for_each(p, &bus->codec_list) {
- 		struct hda_codec *codec = list_entry(p, struct hda_codec, list);
-+		struct snd_kcontrol *kctl;
-+
-+		codec->in_resume = 1;
-+
- 		hda_set_power_state(codec,
- 				    codec->afg ? codec->afg : codec->mfg,
- 				    AC_PWRST_D0);
-+
-+
-+		list_for_each_entry(kctl, &bus->card->controls, list) {
-+			memset(val, 0, sizeof(*val));
-+			val->id = kctl->id;
-+			/* Assume that get callback reads only from cache,
-+			 * not accessing the real hardware
-+			 */
-+			if (snd_ctl_elem_read(bus->card, val) < 0)
-+				continue;
-+			snd_ctl_elem_write(bus->card, NULL, val);
-+		}
-+
- 		if (codec->patch_ops.resume)
- 			codec->patch_ops.resume(codec);
-+
-+		codec->in_resume = 0;
- 	}
-+	kfree(val);
- 	return 0;
- }
+-- 
+Michal K. K. Piotrowski
+Kernel Monkeys
+(http://kernel.wikidot.com/start)
