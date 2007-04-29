@@ -1,17 +1,19 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [Alsa-user] ALSA Newbie - Getting Ensoniq
- SoundscapeVivo to work?
-Date: Sun, 29 Apr 2007 09:33:23 +0200
-Message-ID: <46344A43.8000203@gmail.com>
-References: <d382e1990704272206y9712a84x1e07d07eda58fb18@mail.gmail.com>	
-	<463319CA.4040309@gmail.com> <4633356F.9090404@opensound.com>	
-	<4633CD22.9070305@gmail.com>
-	<d382e1990704281918g42165aaas4cac717fe5b4bab0@mail.gmail.com>
-	<463449E0.70909@gmail.com>
+From: "xinyun liu" <xinyunliu.osc@gmail.com>
+Subject: Can't record sound on Aser Aspire 5100. ATI SB450,
+	RelTek ALC 883
+Date: Sun, 29 Apr 2007 22:22:26 +0800
+Message-ID: <afc365e50704290722s1867f059h3759d078607ed3ad@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000003020304010001020702"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <463449E0.70909@gmail.com>
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id C721C24530
+	for <alsa-devel@alsa-project.org>;
+	Sun, 29 Apr 2007 16:22:28 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id m59so1226717wrm
+	for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2007 07:22:27 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,52 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Cody Jung <funkycat32@gmail.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, ALSA user <alsa-user@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000003020304010001020702
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+hi,
+I have an Acer Aspire 5100. I can play sound but with the build in
+mic, I can't record sound. The driver is the latest HG code.
+http://pastebin.ca/464406
 
-On 04/29/2007 09:31 AM, Rene Herman wrote:
+[root@localhost ~]# lspci -nnv -d1002:437b
+00:14.2 0403: 1002:437b (rev 01)
+        Subsystem: 1025:009f
+        Flags: bus master, slow devsel, latency 64, IRQ 19
+        Memory at c0000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+
+Queue=0/0 Enable-
 
-> I've attached (to try and avoid linewrap) the lines that you will need in
-> /etc/modprobe.conf.
 
-No I haven't.
-
-Rene.
-
---------------000003020304010001020702
-Content-Type: text/plain;
- name="modprobe.conf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="modprobe.conf"
-
-alias		snd-card-0	snd-cs4231
-alias		sound-slot-0	snd-cs4231
-
-options		snd-cs4231	index=0 port=0x534 irq=5 dma1=1 dma2=0
-
-install		snd-cs4231	echo activate >/sys/bus/pnp/devices/01\:01.00/resources &&\
-				sleep 1 &&\
-				/sbin/modprobe --ignore-install snd-cs4231
-
-remove		snd-cs4231	/sbin/modprobe -r --ignore-remove snd-cs4231 &&\
-				echo disable >/sys/bus/pnp/devices/01\:01.00/resources
-
---------------000003020304010001020702
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------000003020304010001020702--
+[root@localhost ~]# dmesg | fgrep ALSA > /tmp/1
+[root@localhost ~]# vi /tmp/1
+ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:698:
+codec_mask = 0xb
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:1820: hda_codec: model 'acer'
+is selected for config 1025:0 (Acer laptop)
+ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:698:
+codec_mask = 0xb
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:1820: hda_codec: model 'acer'
+is selected for config 1025:0 (Acer laptop)
+ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
+azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x2, stream=0x5, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x4, stream=0x5, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x3, stream=0x5, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x5, stream=0x5, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x2, stream=0x0, channel=0, format=0x0
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x4, stream=0x0, channel=0, format=0x0
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x3, stream=0x0, channel=0, format=0x0
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x5, stream=0x0, channel=0, format=0x0
+ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
+azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x8, stream=0x1, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x8, stream=0x0, channel=0, format=0x0
+ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
+azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x2, stream=0x5, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x4, stream=0x5, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x3, stream=0x5, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x5, stream=0x5, channel=0, format=0x11
+ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
+NID=0x2, stream=0x0, channel=0, format=0x0
