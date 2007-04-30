@@ -1,14 +1,16 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [Alsa-user] ALSA Newbie - Getting Ensoniq
- SoundscapeVivo to work? [Solved]
-Date: Mon, 30 Apr 2007 00:04:20 +0200
-Message-ID: <46351664.2010509@gmail.com>
-References: <d382e1990704291418x20550cc7l17239562227f2a61@mail.gmail.com>
+From: Daniel Drake <dsd@gentoo.org>
+Subject: [PATCH] snd-usb-audio: explicitly match Logitech
+	QuickCam
+Date: Mon, 30 Apr 2007 04:13:00 +0100 (BST)
+Message-ID: <20070430031301.206B07B409F@zog.reactivated.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <d382e1990704291418x20550cc7l17239562227f2a61@mail.gmail.com>
+Received: from mtaout01-winn.ispmail.ntl.com (mtaout01-winn.ispmail.ntl.com
+	[81.103.221.47]) by alsa0.perex.cz (Postfix) with ESMTP id DA515245B0
+	for <alsa-devel@alsa-project.org>;
+	Mon, 30 Apr 2007 05:13:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,37 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Cody Jung <funkycat32@gmail.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, ALSA user <alsa-user@alsa-project.org>
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, stern@rowland.harvard.edu, linux-usb-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 04/29/2007 11:18 PM, Cody Jung wrote:
+Commit 93c8bf45e083b89dffe3a708363c15c1b220c723 modified the USB device
+matching behaviour to ignore interface class matches if the device class
+is vendor-specific.
 
-> Instead I added the following 4 lines to a file and included it in my
-> init scripts.
-> 
-> echo activate > /sys/bus/pnp/devices/01\:01.00/resources
-> sleep 1
-> modprobe snd
-> modprobe snd-cs4231 port=0x534 irq=5 dma1=1 dma2=0
+This patch adds an explicit ID match for the Logitech QuickCam Messenger,
+which has a vendor specific device class (but standards-compliant audio
+interfaces).
 
-Sure, that'll do as well. Bit strange that (/if) you need to "modprobe snd" 
-seperately; "modprobe snd-cs4231" should pull it in automatically, but not 
-important.
+This fixes a 2.6.20 regression where the audio component of this device was
+no longer usable.
 
-Do note that if you change the machine's hardware configuration the VIVOs 
-resources migth change again. If you for example put another card on IRQ9, 
-the PnP layer won't be able to use the VIVOs preferred options, and will 
-configure it on irq 7 instead of 5. Checking the resources in the /sys tree 
-after activating as I showed will work...
+http://bugs.gentoo.org/show_bug.cgi?id=175715
+https://bugs.launchpad.net/ubuntu/+source/linux-source-2.6.20/+bug/93822
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3040
 
-> And it works great!
-> 
-> Thanks again for putting up with my incompetence.
+Based on a patch from sergiom
 
-Not so much incompetence; just the misfortune that your card isn't (really) 
-supported by ALSA. That's the kind of thing that immediately gets you deep 
-into the bowels of a Linux system. Glad I could at least help and as said, 
-some future verson of ALSA will probably grow a real/better driver for the card.
+Signed-off-by: Daniel Drake <dsd@gentoo.org>
 
-Rene.
+Index: linux/sound/usb/usbquirks.h
+===================================================================
+--- linux.orig/sound/usb/usbquirks.h
++++ linux/sound/usb/usbquirks.h
+@@ -40,6 +40,21 @@
+ 	.bInterfaceClass = USB_CLASS_VENDOR_SPEC
+ 
+ /*
++ * Logitech QuickCam: bDeviceClass is vendor-specific, so generic interface
++ * class matches do not take effect without an explicit ID match.
++ */
++
++{
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.idVendor = 0x046d,
++	.idProduct = 0x08f0,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL
++},
++
++/*
+  * Yamaha devices
+  */
