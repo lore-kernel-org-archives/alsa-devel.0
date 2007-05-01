@@ -1,15 +1,15 @@
 From: Ciaccia <ciacciax@yahoo.com>
-Subject: Endiannes and alsa (in an embedded device)
-Date: Tue, 1 May 2007 11:49:18 -0700 (PDT)
-Message-ID: <247122.45569.qm@web31011.mail.mud.yahoo.com>
+Subject: Re: Endiannes and alsa (in an embedded device)
+Date: Tue, 1 May 2007 14:45:17 -0700 (PDT)
+Message-ID: <597229.81223.qm@web31001.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web31011.mail.mud.yahoo.com (web31011.mail.mud.yahoo.com
-	[68.142.201.69]) by alsa0.perex.cz (Postfix) with SMTP id 0ACFA24446
+Received: from web31001.mail.mud.yahoo.com (web31001.mail.mud.yahoo.com
+	[68.142.200.164]) by alsa0.perex.cz (Postfix) with SMTP id 511FF24179
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 May 2007 20:49:35 +0200 (CEST)
+	Tue,  1 May 2007 23:45:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,8 +19,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ciaccia <ciacciax@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+Forget about that, it took 4 hours but I understood why it was not working...
+
+Since I'm working with 24bit resolution (and not 16 as I usually do), the samples were to little... Now I replaced the sin line with:
+
+sample = (int)(4000000.0f * sin((float)i * 2.0f * M_PI / (512.0f / 50.0f)));
+
+and it's working fine. I really thought it was too strange to be true...
+Sorry for the spam :-|
+Andrea
+
+----- Original Message ----
+From: Ciaccia <ciacciax@yahoo.com>
+To: alsa-devel@alsa-project.org
+Sent: Tuesday, May 1, 2007 8:49:18 PM
+Subject: [alsa-devel] Endiannes and alsa (in an embedded device)
 
 Dear all,
 I have a question that really puzzles me, I wonder if someone can explain to me what I'm doing wrong... :-|
@@ -79,6 +96,18 @@ I think the driver is ok, since all the applications run with no problem at all.
 Every help is greatly appreciated
 Thanks in advance
 Andrea
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+
 
 
 __________________________________________________
