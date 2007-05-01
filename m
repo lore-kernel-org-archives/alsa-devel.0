@@ -1,26 +1,21 @@
-From: Jason Heeris <heerij01@student.uwa.edu.au>
-Subject: Set fragment size for USB sound card
-Date: Tue, 01 May 2007 12:15:33 +0800
-Message-ID: <1177992933.4464.20.camel@localhost.localdomain>
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: Support for SAM9407?
+Date: Tue, 01 May 2007 06:18:30 -0500
+Message-ID: <20070501111831.35E301F50B1@ws1-2.us4.outblaze.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vscan03.westnet.com.au (vscan03.westnet.com.au [203.10.1.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04F2624399
+Received: from webmail-outgoing.us4.outblaze.com
+	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01D70243E3
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 May 2007 06:12:31 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by localhost (Postfix) with ESMTP id 9C5AFB60336
-	for <alsa-devel@alsa-project.org>; Tue,  1 May 2007 12:12:26 +0800 (WST)
-Received: from vscan03.westnet.com.au ([127.0.0.1])
-	by localhost (vscan03.westnet.com.au [127.0.0.1]) (amavisd-new,
-	port 10024) with ESMTP id 13536-01 for <alsa-devel@alsa-project.org>;
-	Tue,  1 May 2007 12:12:06 +0800 (WST)
-Received: from [192.168.1.101] (dsl-58-7-135-118.wa.westnet.com.au
-	[58.7.135.118])
-	by vscan03.westnet.com.au (Postfix) with ESMTP id 9E957B602B8
-	for <alsa-devel@alsa-project.org>; Tue,  1 May 2007 12:12:02 +0800 (WST)
+	Tue,  1 May 2007 13:18:34 +0200 (CEST)
+Received: from unknown (unknown [192.168.8.90])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	725E018001A1
+	for <alsa-devel@alsa-project.org>; Tue,  1 May 2007 11:18:31 +0000 (GMT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,123 +28,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-System: NEC Versa M540 laptop
-Dist: Debian Etch/Lenny
-Kernel: 2.6.18
-Alsa: using drivers in kernel, although no difference when compiled from
-alsa-source package.
-Card in question: C-Media USB sound card (more info below)
+Hi, I've just been digging around for information on the old Dream SAM9407 chip.
+What's the current support status in ALSA for this chip? I know some work was
+done on producing drivers for cards based on this chip and I know there were
+plans to port the efforts to ALSA. Did that ever happen? It doesn't seem so.
+Was there a specific reason why it wasn't ported in the end?
 
-Hi there,
+In the interest of making ALSA that bit more complete as well as trying to
+improve my skills, I've been looking around for some older hardware that I can
+write drivers for.
 
-I realise that this may not be strictly a developer list question, but
-someone on the alsa-user list suggested I try here. Any help would be
-appreciated.
+This chip seems like a good candidate considering the cards haven't quite
+disappeared into oblivion :) I was looking into the possiblity of porting the
+remaining kernel OSS drivers to ALSA...but I can't even find any test hardware
+because they're so rare.
 
-The question is a continuation of:
+Ash Willis
 
-http://sourceforge.net/mailarchive/forum.php?thread_name=1176015858.4497.9.camel%40localhost.localdomain&forum_name=alsa-user
-and
-http://www.linuxquestions.org/questions/showthread.php?t=540205
-
-Essentially, I have a C-Media USB audio adaptor with which to use my
-headphones, and it only works with a fragment size of 2048 or less
-(discovered using 'alsaplayer -f 2048'). I would like to be able to plug
-it in, have ALSA recognise it and use this fragment size for it.
-
-Without specifying this fragment size, I get:
-
---
-$ alsaplayer -i text -o alsa -d hw:2 /usr/share/sounds/generic.wav 
-Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (23219 23220)
-PERIOD_SIZE: 1024
-PERIOD_BYTES: 4096
-PERIODS: 8
-BUFFER_TIME: (185759 185760)
-BUFFER_SIZE: 8192
-BUFFER_BYTES: 32768
-TICK_TIME: 1000
-failed to configure output device...trying OSS
-
-
-...done playing
---
-
-...and the sound comes through the laptop speakers. I tried defining a
-slave PCM:
-
---
-pcm.usbtest {
-        type dmix
-        ipc_key 192837465
-        ipc_key_add_uid true
-        slave {
-                pcm "hw:2,0"
-                # period_size 2048
-                buffer_size 2048
-        }
-}
---
-
-But trying 'alsaplayer -i text -o alsa -d
-usbtest /usr/share/sounds/generic.wav' gave exactly the same error.
-
->From my previous post:
-
---
-
-...I also tried forcing the index of the card by adding the
-following to /etc/modprobe.d/alsa-base, but even this only works half of
-the time:
-
---
-# Prevent abnormal drivers from grabbing index 0
-options snd-bt87x index=-2
-options snd-cx88_alsa index=-2
-options snd-atiixp-modem index=-2
-# options snd-intel8x0m index=-2
-options snd-via82xx-modem index=-2
-
-options snd-intel8x0 index=0
-options snd-intel8x0m index=1
-options snd-usb-audio index=2 vid=0d8c pid=000c
-options snd-usb-audio index=3
---
-
-The contents of '/proc/asound/cards' are:
-
---
- 0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                      Intel 82801DB-ICH4 with ALC655 at 0xf0000400, irq
-5
- 1 [Modem          ]: ICH-MODEM - Intel 82801DB-ICH4 Modem
-                      Intel 82801DB-ICH4 Modem at 0xe200, irq 5
- 2 [default        ]: USB-Audio - C-Media USB Headphone Set  
-                      C-Media USB Headphone Set   at usb-0000:00:1d.1-1,
-full speed
---
-
-...although sometimes the ICH-MODEM is missing and the C-Media card is
-at #1.
-
-Card information from 'lsusb':
-
-Bus 002 Device 003: ID 0d8c:000c C-Media Electronics, Inc. Audio Adapter
-
-Usually I boot with the card plugged in, but if I plug it in after
-booting, the new modules loaded are: snd_hwdep, snd_rawmidi,
-snd_usb_audio and snd_usb_lib.
---
-
-Anyway, as I said, any help would be appreciated.
-
-Cheers,
-Jason
+=
