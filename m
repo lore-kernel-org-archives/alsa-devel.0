@@ -1,19 +1,15 @@
-From: "=?UTF-8?Q?Martin-=C3=89ric_Racine?=" <q-funk@iki.fi>
-Subject: Re: porter wanted: AMD Geode SCx200 driver OSS to ALSA
-Date: Wed, 2 May 2007 02:36:11 +0300
-Message-ID: <11fae7c70705011636h12e04a31n70d72ee4f05ddd5@mail.gmail.com>
-References: <11fae7c70704270706s2894e89dj7033874756a56734@mail.gmail.com>
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: Re: Support for SAM9407?
+Date: Tue, 01 May 2007 18:55:43 -0500
+Message-ID: <20070501235543.3C79D1F50C4@ws1-2.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.235])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62BA324361
+Received: from ws1-2.us4.outblaze.com (ws1-2.us4.outblaze.com [205.158.62.81])
+	by alsa0.perex.cz (Postfix) with ESMTP id D49482435C
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2007 01:36:13 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id m59so1842247wrm
-	for <alsa-devel@alsa-project.org>; Tue, 01 May 2007 16:36:12 -0700 (PDT)
-In-Reply-To: <11fae7c70704270706s2894e89dj7033874756a56734@mail.gmail.com>
+	Wed,  2 May 2007 01:55:45 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,42 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-UmVwbHlpbmcgdG8gbXkgb3duIHBvc3QsIGl0IGFwcGVhcnMgdGhhdCB0aGUgZG9jdW1lbnRhdGlv
-biBuZWVkZWQgd291bGQgYmU6CgpmdHA6Ly9mdHAuYWxzYS1wcm9qZWN0Lm9yZy9wdWIvZGF0YXNo
-ZWV0cy9uc2MvQ1M1NTMwLnBkZgoKLi4uYW5kIHRoZSBvcmlnaW5hbCBPU1MgY29kZToKCmh0dHA6
-Ly93d3cuYW1kLmNvbS9maWxlcy9jb25uZWN0aXZpdHlzb2x1dGlvbnMvZ2VvZGUvc2MxMTAwL0F1
-ZGlvX0xpbnV4T1NTX1NDeHgwMF8xLjIuMF9zcmMudGFyLmd6CgpIZWFkZXJzIGluIHRoYXQgT1NT
-IHNvdXJjZSBzdWdnZXN0IHRoYXQgdGhlIGV4aXN0aW5nIHNuZC1jczU1MzVhdWRpbwpmcm9tIHRo
-ZSB2YW5pbGxhIDIuNiBrZXJuZWwgY291bGQgYmUgZXh0ZW5kZWQgdG8gc3VwcG9ydCB0aGUgd2hv
-bGUKR2VvZGUgbGluZSdzIGF1ZGlvLgoKSWYgdGhhdCdzIHRoZSBjYXNlLCB0aGUgcG9ydCBjb3Vs
-ZCBlYXNpbHkgYmUgc2tpcHBlZCBhbmQgaW5zdGVhZAphZGRpbmcgYWRkdGlvbmFsIGlmZGVmcyBh
-bmQgZGV2aWNlIElEcyB0byB0aGUgc25kLWNzNTUzNWF1ZGlvIGRyaXZlcgptaWdodCBiZSBhbGwg
-dGhhdCdzIG5lZWRlZC4KCkFueWhvdywgR2VvZGUgdXNlIHN0YW5kYXJkIEFDOTcgY29kZWNzLCBz
-byB0aGF0IHNob3VsZCBiZSBmYWlybHkKc3RyYWlnaHRmb3J3YXJkIHRvIGFueW9uZSBmYW1pbGlh
-ciB3aXRoIEFDOTcgY29kaW5nIG9uIEFMU0EuCgpPbiA0LzI3LzA3LCBNYXJ0aW4tw4lyaWMgUmFj
-aW5lIDxxLWZ1bmtAaWtpLmZpPiB3cm90ZToKPiBHcmVldGluZ3MsCj4KPiBJIHdvcmsgZm9yIGEg
-Y29tcGFueSB0aGF0IGRldmVsb3BzIGhhcmR3YXJlIHVzaW5nIHRoZSBBTUQgR2VvZGUgY2hpcHNl
-dC4KPgo+IFdoaWxlIG91ciBjdXJyZW50IHByb2R1Y3QgbGluZSBpcyBiYXNlZCBvbiB0aGUgR2Vv
-ZGUgTFggbW9kZWwgKHdoaWNoCj4gaXMgdmVyeSB3ZWxsIHN1cHBvcnRlZCBpbiBBTFNBKSwgb3Vy
-IGxlZ2FjeSBwcm9kdWN0cyBhcmUgYmFzZWQgb24gdGhlCj4gZWFybGllciBHZW9kZSBTQzEyMDAg
-YW5kIFNDMjIwMCwgZm9yIHdoaWNoIG5vIEFMU0Egc3VwcG9ydCBleGlzdHMuCj4KPiBIb3dldmVy
-LCBBTUQgaGFzIE9TUyBkcml2ZXIgc291cmNlIGNvZGUgYXZhaWxhYmxlIGF0Ogo+Cj4gaHR0cDov
-L3d3dy5hbWQuY29tL3VzLWVuL0Nvbm5lY3Rpdml0eVNvbHV0aW9ucy9UZWNobmljYWxSZXNvdXJj
-ZXMvMCwsNTBfMjMzNF8yNDUyXzExMzYzLDAwLmh0bWwKPgo+IFdlIGJhc2ljYWxseSBuZWVkIHRo
-aXMgcG9ydGVkIHRvIGFuIEFMU0Egc25kLXNjeDIwMCBtb2R1bGUgdG8gcmVwbGFjZSBpdC4KPgo+
-IChXb3VsZCBub3cgYWxzbyBiZSBhIGdvb2QgdGltZSB0byBhc2sgZm9yIHNuZC1zYzU1MzVhdWRp
-byB0byBiZQo+IHJlbmFtZWQgc25kLXNjNTUzNSBmb3IgY29uc2lzdGVuY2Ugd2l0aCBvdGhlciBk
-cml2ZXIgbmFtZXM/KQo+Cj4gV2UgY291bGQgcHJvdmlkZSBhIHNhbXBsZSBTQzIyMDAtYmFzZWQg
-dW5pdCB0byB3aG9ldmVyIHZvbHVudGVlcnMgZm9yCj4gcG9ydGluZyBBTUQncyBvbGQgT1NTIGNv
-ZGUgdG8gQUxTQSwgIFBsZWFzZSBjb250YWN0IG1lIGZvciBkZXRhaWxzLgo+Cj4gVGhlIHJlc3Vs
-dGluZyBjb2RlIHdpbGwgYmUgZGlyZWN0bHkgc3VibWl0dGVkIHRvIHRoZSBBTFNBIHByb2plY3Qg
-Zm9yCj4gaW5jbHVzaW9uIGluIHRoZSBtYWluc3RyZWFtIGtlcm5lbCwgdG8gbWFrZSBzdXJlIHRo
-YXQgZXZlcnlvbmUgY2FuCj4gYmVuZWZpdCBmcm9tIGl0Lgo+Cj4gQmVzdCBSZWdhcmRzLAo+IC0t
-Cj4gTWFydGluLcOJcmljIFJhY2luZQo+IGh0dHA6Ly9xLWZ1bmsuaWtpLmZpCj4KCgotLSAKTWFy
-dGluLcOJcmljIFJhY2luZQpodHRwOi8vcS1mdW5rLmlraS5maQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Thanks for your detailed response. That chip definitely does seem like a beast
+that I really don't want to tame...
+
+> 
+> How about a Media Vision Pro Audio Spectrum 16? Those can still be found
+> relatively easily and it's one the cards for which an OSS/Free driver is
+> still kept in the tree. I have a pair of those as well so I'll happily test
+> if you want to write a driver for it...
+> 
+
+Yeah, we have a winner. I just ordered one. I'm busy right now but I will
+get this started in 4 weeks. Thanks for the offer of testing. I'll hunt you
+down when I have something to show you :)
+
+Ash
+
+=
