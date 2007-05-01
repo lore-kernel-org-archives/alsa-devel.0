@@ -1,15 +1,20 @@
-From: Ciaccia <ciacciax@yahoo.com>
-Subject: Re: Endiannes and alsa (in an embedded device)
-Date: Tue, 1 May 2007 14:45:17 -0700 (PDT)
-Message-ID: <597229.81223.qm@web31001.mail.mud.yahoo.com>
+From: "=?UTF-8?Q?Martin-=C3=89ric_Racine?=" <q-funk@iki.fi>
+Subject: Re: porter wanted: AMD Geode SCx200 driver OSS to ALSA
+Date: Wed, 2 May 2007 02:36:11 +0300
+Message-ID: <11fae7c70705011636h12e04a31n70d72ee4f05ddd5@mail.gmail.com>
+References: <11fae7c70704270706s2894e89dj7033874756a56734@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web31001.mail.mud.yahoo.com (web31001.mail.mud.yahoo.com
-	[68.142.200.164]) by alsa0.perex.cz (Postfix) with SMTP id 511FF24179
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.235])
+	by alsa0.perex.cz (Postfix) with ESMTP id 62BA324361
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 May 2007 23:45:20 +0200 (CEST)
+	Wed,  2 May 2007 01:36:13 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id m59so1842247wrm
+	for <alsa-devel@alsa-project.org>; Tue, 01 May 2007 16:36:12 -0700 (PDT)
+In-Reply-To: <11fae7c70704270706s2894e89dj7033874756a56734@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,98 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ciaccia <ciacciax@yahoo.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Forget about that, it took 4 hours but I understood why it was not working...
-
-Since I'm working with 24bit resolution (and not 16 as I usually do), the samples were to little... Now I replaced the sin line with:
-
-sample = (int)(4000000.0f * sin((float)i * 2.0f * M_PI / (512.0f / 50.0f)));
-
-and it's working fine. I really thought it was too strange to be true...
-Sorry for the spam :-|
-Andrea
-
------ Original Message ----
-From: Ciaccia <ciacciax@yahoo.com>
-To: alsa-devel@alsa-project.org
-Sent: Tuesday, May 1, 2007 8:49:18 PM
-Subject: [alsa-devel] Endiannes and alsa (in an embedded device)
-
-Dear all,
-I have a question that really puzzles me, I wonder if someone can explain to me what I'm doing wrong... :-|
-
-I have programmed an ALSA driver for an embedded device, everything works fine and all the application use my driver without any glitches. The snd_pcm_hardware for this device is defined as following:
-
-static const struct snd_pcm_hardware ep93xx_pcm_hardware = {
-    .info= SNDRV_PCM_INFO_MMAP |
-            SNDRV_PCM_INFO_MMAP_VALID |
-            SNDRV_PCM_INFO_INTERLEAVED |
-            SNDRV_PCM_INFO_BLOCK_TRANSFER,
-    .rates =            SNDRV_PCM_RATE_8000_48000,
-    .rate_min =         8000,
-    .rate_max =         48000,
-    .channels_min =     2,
-    .channels_max =     2,
-    .formats = SNDRV_PCM_FMTBIT_S24_LE,
-    .buffer_bytes_max = 131072,
-    .period_bytes_min = 512,
-    .period_bytes_max = 32768,
-    .periods_min = 1,
-    .periods_max = MAX_PERIODS,
-    .fifo_size = 32,
-};
-
-Then I tried to program a test application that uses the hardware device directly (without using alsa-lib to convert the format and so on). I open the device as following:
-
-if ((err = snd_pcm_open (&playback_handle, "hw:0,0", SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
-
-Everything works fine until I try to write data to the stream. I tried both SND_PCM_ACCESS_RW_INTERLEAVED and SND_PCM_ACCESS_MMAP_INTERLEAVED, but I always have the following problem.
-
-When I want to write data to the stream, I have to "reverse" the byte order, otherwise I hear noise on the speaker. The system I am working on is little-endian (it has cirrus ep93xx arm core), so I assume I could write data directly to the buffer. Here is what I have to do:
-
-// fill the buffer
-for (i = 0; i < 512; i++) {
-    int sample = (int)(20000.0f * sin((float)i * 2.0f * M_PI / 512.0f));
-    int reversed;
-    char *src = (char *)(&sample);
-    char *dst = (char *)(&reversed);
-    dst[0] = src[3];
-    dst[1] = src[2];
-
-    dst[2] = src[1];
-
-    dst[3] = src[0];
-    *(buffer++) = reversed;
-    *(buffer++) = reversed;
-}
-
-It this normal? I thought that since the system is little-endian and the format of the driver is S24_LE, I could copy the data directly to the stream (either using snd_pcm_writei or snd_pcm_mmap_begin).
-
-
-
-I think the driver is ok, since all the applications run with no problem at all. Can someone explain to me how/why the applications such as aplay/arecord work ok?
-
-Every help is greatly appreciated
-Thanks in advance
-Andrea
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+UmVwbHlpbmcgdG8gbXkgb3duIHBvc3QsIGl0IGFwcGVhcnMgdGhhdCB0aGUgZG9jdW1lbnRhdGlv
+biBuZWVkZWQgd291bGQgYmU6CgpmdHA6Ly9mdHAuYWxzYS1wcm9qZWN0Lm9yZy9wdWIvZGF0YXNo
+ZWV0cy9uc2MvQ1M1NTMwLnBkZgoKLi4uYW5kIHRoZSBvcmlnaW5hbCBPU1MgY29kZToKCmh0dHA6
+Ly93d3cuYW1kLmNvbS9maWxlcy9jb25uZWN0aXZpdHlzb2x1dGlvbnMvZ2VvZGUvc2MxMTAwL0F1
+ZGlvX0xpbnV4T1NTX1NDeHgwMF8xLjIuMF9zcmMudGFyLmd6CgpIZWFkZXJzIGluIHRoYXQgT1NT
+IHNvdXJjZSBzdWdnZXN0IHRoYXQgdGhlIGV4aXN0aW5nIHNuZC1jczU1MzVhdWRpbwpmcm9tIHRo
+ZSB2YW5pbGxhIDIuNiBrZXJuZWwgY291bGQgYmUgZXh0ZW5kZWQgdG8gc3VwcG9ydCB0aGUgd2hv
+bGUKR2VvZGUgbGluZSdzIGF1ZGlvLgoKSWYgdGhhdCdzIHRoZSBjYXNlLCB0aGUgcG9ydCBjb3Vs
+ZCBlYXNpbHkgYmUgc2tpcHBlZCBhbmQgaW5zdGVhZAphZGRpbmcgYWRkdGlvbmFsIGlmZGVmcyBh
+bmQgZGV2aWNlIElEcyB0byB0aGUgc25kLWNzNTUzNWF1ZGlvIGRyaXZlcgptaWdodCBiZSBhbGwg
+dGhhdCdzIG5lZWRlZC4KCkFueWhvdywgR2VvZGUgdXNlIHN0YW5kYXJkIEFDOTcgY29kZWNzLCBz
+byB0aGF0IHNob3VsZCBiZSBmYWlybHkKc3RyYWlnaHRmb3J3YXJkIHRvIGFueW9uZSBmYW1pbGlh
+ciB3aXRoIEFDOTcgY29kaW5nIG9uIEFMU0EuCgpPbiA0LzI3LzA3LCBNYXJ0aW4tw4lyaWMgUmFj
+aW5lIDxxLWZ1bmtAaWtpLmZpPiB3cm90ZToKPiBHcmVldGluZ3MsCj4KPiBJIHdvcmsgZm9yIGEg
+Y29tcGFueSB0aGF0IGRldmVsb3BzIGhhcmR3YXJlIHVzaW5nIHRoZSBBTUQgR2VvZGUgY2hpcHNl
+dC4KPgo+IFdoaWxlIG91ciBjdXJyZW50IHByb2R1Y3QgbGluZSBpcyBiYXNlZCBvbiB0aGUgR2Vv
+ZGUgTFggbW9kZWwgKHdoaWNoCj4gaXMgdmVyeSB3ZWxsIHN1cHBvcnRlZCBpbiBBTFNBKSwgb3Vy
+IGxlZ2FjeSBwcm9kdWN0cyBhcmUgYmFzZWQgb24gdGhlCj4gZWFybGllciBHZW9kZSBTQzEyMDAg
+YW5kIFNDMjIwMCwgZm9yIHdoaWNoIG5vIEFMU0Egc3VwcG9ydCBleGlzdHMuCj4KPiBIb3dldmVy
+LCBBTUQgaGFzIE9TUyBkcml2ZXIgc291cmNlIGNvZGUgYXZhaWxhYmxlIGF0Ogo+Cj4gaHR0cDov
+L3d3dy5hbWQuY29tL3VzLWVuL0Nvbm5lY3Rpdml0eVNvbHV0aW9ucy9UZWNobmljYWxSZXNvdXJj
+ZXMvMCwsNTBfMjMzNF8yNDUyXzExMzYzLDAwLmh0bWwKPgo+IFdlIGJhc2ljYWxseSBuZWVkIHRo
+aXMgcG9ydGVkIHRvIGFuIEFMU0Egc25kLXNjeDIwMCBtb2R1bGUgdG8gcmVwbGFjZSBpdC4KPgo+
+IChXb3VsZCBub3cgYWxzbyBiZSBhIGdvb2QgdGltZSB0byBhc2sgZm9yIHNuZC1zYzU1MzVhdWRp
+byB0byBiZQo+IHJlbmFtZWQgc25kLXNjNTUzNSBmb3IgY29uc2lzdGVuY2Ugd2l0aCBvdGhlciBk
+cml2ZXIgbmFtZXM/KQo+Cj4gV2UgY291bGQgcHJvdmlkZSBhIHNhbXBsZSBTQzIyMDAtYmFzZWQg
+dW5pdCB0byB3aG9ldmVyIHZvbHVudGVlcnMgZm9yCj4gcG9ydGluZyBBTUQncyBvbGQgT1NTIGNv
+ZGUgdG8gQUxTQSwgIFBsZWFzZSBjb250YWN0IG1lIGZvciBkZXRhaWxzLgo+Cj4gVGhlIHJlc3Vs
+dGluZyBjb2RlIHdpbGwgYmUgZGlyZWN0bHkgc3VibWl0dGVkIHRvIHRoZSBBTFNBIHByb2plY3Qg
+Zm9yCj4gaW5jbHVzaW9uIGluIHRoZSBtYWluc3RyZWFtIGtlcm5lbCwgdG8gbWFrZSBzdXJlIHRo
+YXQgZXZlcnlvbmUgY2FuCj4gYmVuZWZpdCBmcm9tIGl0Lgo+Cj4gQmVzdCBSZWdhcmRzLAo+IC0t
+Cj4gTWFydGluLcOJcmljIFJhY2luZQo+IGh0dHA6Ly9xLWZ1bmsuaWtpLmZpCj4KCgotLSAKTWFy
+dGluLcOJcmljIFJhY2luZQpodHRwOi8vcS1mdW5rLmlraS5maQpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
