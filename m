@@ -1,17 +1,20 @@
-From: Joerg Platte <lists@naasa.net>
-Subject: Intel ICH6 with AD1986: Mic not working
-Date: Wed, 2 May 2007 15:28:53 +0200
-Message-ID: <200705021528.54015.lists@naasa.net>
-Reply-To: jplatte@naasa.net
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: [ALSA][hda-codec] fix-connexant-headphone-mute
+Date: Wed, 02 May 2007 07:55:51 -0700
+Message-ID: <1178117751.17556.19.camel@razman.gruemaster.com>
+References: <1177811017.23940.7.camel@localhost>
+	<1177813190.10642.1.camel@localhost> <s5hslafbkdz.wl%tiwai@suse.de>
+	<1178102873.7511.3.camel@localhost>  <s5hlkg7bibm.wl%tiwai@suse.de>
+	<1178105336.6255.2.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rosi.naasa.net (rosi.naasa.net [212.8.0.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id 645652442B
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57CD12434B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2007 15:28:56 +0200 (CEST)
-Content-Disposition: inline
+	Wed,  2 May 2007 16:55:54 +0200 (CEST)
+In-Reply-To: <1178105336.6255.2.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,108 +24,204 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: andrei.popa@i-neo.ro
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkhCgpPbiBteSBjb21wdXRlciBib3RoIG1pY3JvcGhvbmVzIGFyZSBub3Qgd29ya2luZyBidXQg
-cGxheWJhY2sgYW5kIGFsbCBvdGhlciAKYXVkaW8gc3R1ZmYgc2VlbXMgdG8gd29yay4gSSdtIG5v
-dCBzdXJlIGlmIHRoZSBtaWNyb3Bob25lcyBldmVyIHdvcmtlZCB3aXRoIAphbHNhIGJlY2F1c2Ug
-SSBuZXZlciB0cmllZCBpdCBiZWZvcmUuIE9uIHdpbmRvd3MgdGhleSBhcmUgd29ya2luZyBhcyAK
-ZXhwZWN0ZWQsIGhlbmNlIHRoZSBoYXJkd2FyZSBzZWVtcyB0byBiZSBPSy4gSXMgdGhlcmUgYW55
-dGhpbmcgSSBjYW4gZG8gdG8gCmZ1cnRoZXIgZGVidWcgdGhpcz8gSXMgaXQgYSBrbm93biBwcm9i
-bGVtPwoKQmVsb3cgeW91IGNhbiBmaW5kIG1vcmUgaW5mb3JtYXRpb24gYWJvdXQgdGhlIGhhcmR3
-YXJlOgoKcm9vdEBkczE5On4+IHVuYW1lIC1hCkxpbnV4IGRzMTkgMi42LjIwLTEtNjg2ICMxIFNN
-UCBUdWUgQXByIDI0IDIxOjUyOjExIFVUQyAyMDA3IGk2ODYgR05VL0xpbnV4CihEZWJpYW4ga2Vy
-bmVsKQpEb2Vzbid0IHdvcmsgd2l0aCAyLjYuMTggYXMgd2VsbC4KCnJvb3RAZHMxOTp+PiBjYXQg
-L3Byb2MvYXNvdW5kL2NhcmQwL2NvZGVjOTcjMC9hYzk3IzAtMAowLTAvMDogQW5hbG9nIERldmlj
-ZXMgQUQxOTg2CgpQQ0kgU3Vic3lzIFZlbmRvcjogMHgxNzM0ClBDSSBTdWJzeXMgRGV2aWNlOiAw
-eDEwNWEKClJldmlzaW9uICAgICAgICAgOiAweDAyCkNvbXBhdC4gQ2xhc3MgICAgOiAweDAwClN1
-YnN5cy4gVmVuZG9yIElEOiAweDAwMDAKU3Vic3lzLiBJRCAgICAgICA6IDB4MDAwMAoKQ2FwYWJp
-bGl0aWVzICAgICA6IC1oZWFkcGhvbmUgb3V0LQpEQUMgcmVzb2x1dGlvbiAgIDogMjAtYml0CkFE
-QyByZXNvbHV0aW9uICAgOiAxNi1iaXQKM0QgZW5oYW5jZW1lbnQgICA6IE5vIDNEIFN0ZXJlbyBF
-bmhhbmNlbWVudAoKQ3VycmVudCBzZXR1cApNaWMgZ2FpbiAgICAgICAgIDogKzIwZEIgWysyMGRC
-XQpQT1AgcGF0aCAgICAgICAgIDogcHJlIDNEClNpbS4gc3RlcmVvICAgICAgOiBvZmYKM0QgZW5o
-YW5jZW1lbnQgICA6IG9mZgpMb3VkbmVzcyAgICAgICAgIDogb2ZmCk1vbm8gb3V0cHV0ICAgICAg
-OiBNSVgKTWljIHNlbGVjdCAgICAgICA6IE1pYzEKQURDL0RBQyBsb29wYmFjayA6IG9mZgpEb3Vi
-bGUgcmF0ZSBzbG90czogMTAvMTEKRXh0ZW5kZWQgSUQgICAgICA6IGNvZGVjPTAgcmV2PTIgQU1B
-UCBMREFDIFNEQUMgQ0RBQyBEU0E9MCBTUERJRiBEUkEgVlJBCkV4dGVuZGVkIHN0YXR1cyAgOiBT
-UENWIExEQUMgU0RBQyBDREFDIFNQRElGPTEwLzExIFZSQQpQQ00gZnJvbnQgREFDICAgIDogNDgw
-MDBIegpQQ00gU3VyciBEQUMgICAgIDogNDgwMDBIegpQQ00gTEZFIERBQyAgICAgIDogNDgwMDBI
-egpQQ00gQURDICAgICAgICAgIDogNDgwMDBIegpTUERJRiBDb250cm9sICAgIDogQ29uc3VtZXIg
-UENNIENvcHlyaWdodCBDYXRlZ29yeT0weDIyIEdlbmVyYXRpb249MSAKUmF0ZT00OGtIegoKICAg
-ICAgICAgICAgICAgICAgICBHYWluICAgICBJbnZlcnRlZCAgQnVmZmVyIGRlbGF5ICBMb2NhdGlv
-bgpNYXN0ZXIgT3V0ICAgICAgIDogICAwLjAgZEJWICAgIC0gICAgICAxNi9mcyAgICAgICAgIFJl
-YXIgSS9PIFBhbmVsCkFVWCBPdXQgICAgICAgICAgOiAgIDAuMCBkQlYgICAgLSAgICAgIDE2L2Zz
-ICAgICAgICAgUmVhciBJL08gUGFuZWwKQ2VudGVyL0xGRSBPdXQgICA6ICAgMC4wIGRCViAgICAt
-ICAgICAgMTYvZnMgICAgICAgICBSZWFyIEkvTyBQYW5lbApNaWMgMSAgICAgICAgICAgIDogICAw
-LjAgZEJWICAgIC0gICAgICAxNi9mcyAgICAgICAgIFJlYXIgSS9PIFBhbmVsCk1pYyAyICAgICAg
-ICAgICAgOiAgIDAuMCBkQlYgICAgLSAgICAgIDE2L2ZzICAgICAgICAgUmVhciBJL08gUGFuZWwK
-TGluZSBJbiAgICAgICAgICA6ICAgMC4wIGRCViAgICAtICAgICAgMTYvZnMgICAgICAgICBSZWFy
-IEkvTyBQYW5lbAoKCgpBRDE4WFggY29uZmlndXJhdGlvbgpVbmNoYWluZWQgICAgICAgIDogMHgx
-MDAwLDB4MDAwMCwweDAwMDAKQ2hhaW5lZCAgICAgICAgICA6IDB4MDAwMCwweDAwMDAsMHgwMDAw
-Cgpyb290QGRzMTk6fj4gY2F0IC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYzk3IzAvYWM5NyMwLTAr
-cmVncwowOjAwID0gMDA5MAowOjAyID0gMDQwNAowOjA0ID0gMDYwNgowOjA2ID0gMDAwNgowOjA4
-ID0gMDAwMAowOjBhID0gMDAwMAowOjBjID0gODAxZgowOjBlID0gMDA0MAowOjEwID0gOWY5Zgow
-OjEyID0gMDYwNgowOjE0ID0gMDAwMAowOjE2ID0gOWY5ZgowOjE4ID0gMDYwNgowOjFhID0gMDAw
-MAowOjFjID0gMDAwMAowOjFlID0gMDAwMAowOjIwID0gMDAwMAowOjIyID0gMDAwMAowOjI0ID0g
-MDAwMAowOjI2ID0gODAwZgowOjI4ID0gMGJjNwowOjJhID0gMDVmMQowOjJjID0gYmI4MAowOjJl
-ID0gYmI4MAowOjMwID0gYmI4MAowOjMyID0gYmI4MAowOjM0ID0gMDAwMAowOjM2ID0gMDMwMAow
-OjM4ID0gMDIwMgowOjNhID0gMmEyMAowOjNjID0gMDAwMAowOjNlID0gMDAwMAowOjQwID0gMDAw
-MAowOjQyID0gMDAwMAowOjQ0ID0gMDAwMAowOjQ2ID0gMDAwMAowOjQ4ID0gMDAwMAowOjRhID0g
-MDAwMAowOjRjID0gMDAwMAowOjRlID0gMDAwMAowOjUwID0gMDAwMAowOjUyID0gMDAwMAowOjU0
-ID0gMDAwMAowOjU2ID0gMDAwMAowOjU4ID0gMDAwMAowOjVhID0gMDAwMAowOjVjID0gMTAwMAow
-OjVlID0gMDAwMAowOjYwID0gODA4MAowOjYyID0gMDAwMAowOjY0ID0gMDAwMAowOjY2ID0gMDAw
-MAowOjY4ID0gMDAwMAowOjZhID0gMDAwMAowOjZjID0gODA4MAowOjZlID0gODA4MAowOjcwID0g
-MDAwMAowOjcyID0gMDAwMAowOjc0ID0gMTAwMQowOjc2ID0gN2M3YwowOjc4ID0gMDAwMAowOjdh
-ID0gMDAwMAowOjdjID0gNDE0NAowOjdlID0gNTM3OAoKcm9vdEBkczE5On4+IGNhdCAvcHJvYy9h
-c291bmQvY2FyZHMKIDAgW0lDSDYgICAgICAgICAgIF06IElDSDQgLSBJbnRlbCBJQ0g2CiAgICAg
-ICAgICAgICAgICAgICAgICBJbnRlbCBJQ0g2IHdpdGggQUQxOTg2IGF0IDB4ZjAxNDA4MDAsIGly
-cSAxNgoKcm9vdEBkczE5On4+IGxzcGNpCjAwOjAwLjAgSG9zdCBicmlkZ2U6IEludGVsIENvcnBv
-cmF0aW9uIDgyOTE1Ry9QL0dWL0dML1BMLzkxMEdMIE1lbW9yeSAKQ29udHJvbGxlciBIdWIgKHJl
-diAwNCkKMDA6MDIuMCBWR0EgY29tcGF0aWJsZSBjb250cm9sbGVyOiBJbnRlbCBDb3Jwb3JhdGlv
-biA4MjkxNUcvR1YvOTEwR0wgCkludGVncmF0ZWQgR3JhcGhpY3MgQ29udHJvbGxlciAocmV2IDA0
-KQowMDowMi4xIERpc3BsYXkgY29udHJvbGxlcjogSW50ZWwgQ29ycG9yYXRpb24gODI5MTVHIElu
-dGVncmF0ZWQgR3JhcGhpY3MgCkNvbnRyb2xsZXIgKHJldiAwNCkKMDA6MWMuMCBQQ0kgYnJpZGdl
-OiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZCL0ZCTS9GUi9GVy9GUlcgKElDSDYgRmFtaWx5KSBQ
-Q0kgCkV4cHJlc3MgUG9ydCAxIChyZXYgMDMpCjAwOjFjLjEgUENJIGJyaWRnZTogSW50ZWwgQ29y
-cG9yYXRpb24gODI4MDFGQi9GQk0vRlIvRlcvRlJXIChJQ0g2IEZhbWlseSkgUENJIApFeHByZXNz
-IFBvcnQgMiAocmV2IDAzKQowMDoxYy4yIFBDSSBicmlkZ2U6IEludGVsIENvcnBvcmF0aW9uIDgy
-ODAxRkIvRkJNL0ZSL0ZXL0ZSVyAoSUNINiBGYW1pbHkpIFBDSSAKRXhwcmVzcyBQb3J0IDMgKHJl
-diAwMykKMDA6MWMuMyBQQ0kgYnJpZGdlOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZCL0ZCTS9G
-Ui9GVy9GUlcgKElDSDYgRmFtaWx5KSBQQ0kgCkV4cHJlc3MgUG9ydCA0IChyZXYgMDMpCjAwOjFk
-LjAgVVNCIENvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9uIDgyODAxRkIvRkJNL0ZSL0ZXL0ZS
-VyAoSUNINiBGYW1pbHkpIApVU0IgVUhDSSAjMSAocmV2IDAzKQowMDoxZC4xIFVTQiBDb250cm9s
-bGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZCL0ZCTS9GUi9GVy9GUlcgKElDSDYgRmFtaWx5
-KSAKVVNCIFVIQ0kgIzIgKHJldiAwMykKMDA6MWQuMiBVU0IgQ29udHJvbGxlcjogSW50ZWwgQ29y
-cG9yYXRpb24gODI4MDFGQi9GQk0vRlIvRlcvRlJXIChJQ0g2IEZhbWlseSkgClVTQiBVSENJICMz
-IChyZXYgMDMpCjAwOjFkLjMgVVNCIENvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9uIDgyODAx
-RkIvRkJNL0ZSL0ZXL0ZSVyAoSUNINiBGYW1pbHkpIApVU0IgVUhDSSAjNCAocmV2IDAzKQowMDox
-ZC43IFVTQiBDb250cm9sbGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZCL0ZCTS9GUi9GVy9G
-UlcgKElDSDYgRmFtaWx5KSAKVVNCMiBFSENJIENvbnRyb2xsZXIgKHJldiAwMykKMDA6MWUuMCBQ
-Q0kgYnJpZGdlOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMSBQQ0kgQnJpZGdlIChyZXYgZDMpCjAw
-OjFlLjIgTXVsdGltZWRpYSBhdWRpbyBjb250cm9sbGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiA4Mjgw
-MUZCL0ZCTS9GUi9GVy9GUlcgCihJQ0g2IEZhbWlseSkgQUMnOTcgQXVkaW8gQ29udHJvbGxlciAo
-cmV2IDAzKQowMDoxZi4wIElTQSBicmlkZ2U6IEludGVsIENvcnBvcmF0aW9uIDgyODAxRkIvRlIg
-KElDSDYvSUNINlIpIExQQyBJbnRlcmZhY2UgCkJyaWRnZSAocmV2IDAzKQowMDoxZi4xIElERSBp
-bnRlcmZhY2U6IEludGVsIENvcnBvcmF0aW9uIDgyODAxRkIvRkJNL0ZSL0ZXL0ZSVyAoSUNINiBG
-YW1pbHkpIApJREUgQ29udHJvbGxlciAocmV2IDAzKQowMDoxZi4yIElERSBpbnRlcmZhY2U6IElu
-dGVsIENvcnBvcmF0aW9uIDgyODAxRkIvRlcgKElDSDYvSUNINlcpIFNBVEEgCkNvbnRyb2xsZXIg
-KHJldiAwMykKMDA6MWYuMyBTTUJ1czogSW50ZWwgQ29ycG9yYXRpb24gODI4MDFGQi9GQk0vRlIv
-RlcvRlJXIChJQ0g2IEZhbWlseSkgU01CdXMgCkNvbnRyb2xsZXIgKHJldiAwMykKMDc6MDAuMCBF
-dGhlcm5ldCBjb250cm9sbGVyOiBCcm9hZGNvbSBDb3Jwb3JhdGlvbiBOZXRYdHJlbWUgQkNNNTc1
-MSBHaWdhYml0IApFdGhlcm5ldCBQQ0kgRXhwcmVzcyAocmV2IDAxKQoKcm9vdEBkczE5On4+IGxz
-bW9kIHwgZ3JlcCBzbmQKc25kX2ludGVsOHgwICAgICAgICAgICAzMTQyMCAgMQpzbmRfYWM5N19j
-b2RlYyAgICAgICAgIDg5NDEyICAxIHNuZF9pbnRlbDh4MAphYzk3X2J1cyAgICAgICAgICAgICAg
-ICAyNDMyICAxIHNuZF9hYzk3X2NvZGVjCnNuZF9wY21fb3NzICAgICAgICAgICAgMzkyMzIgIDAK
-c25kX21peGVyX29zcyAgICAgICAgICAxNTQ4OCAgMSBzbmRfcGNtX29zcwpzbmRfcGNtICAgICAg
-ICAgICAgICAgIDcyMDM2ICAzIHNuZF9pbnRlbDh4MCxzbmRfYWM5N19jb2RlYyxzbmRfcGNtX29z
-cwpzbmRfdGltZXIgICAgICAgICAgICAgIDIwOTY0ICAxIHNuZF9wY20Kc25kICAgICAgICAgICAg
-ICAgICAgICA0ODE5NiAgOCAKc25kX2ludGVsOHgwLHNuZF9hYzk3X2NvZGVjLHNuZF9wY21fb3Nz
-LHNuZF9taXhlcl9vc3Msc25kX3BjbSxzbmRfdGltZXIKc291bmRjb3JlICAgICAgICAgICAgICAg
-NzYxNiAgMSBzbmQKc25kX3BhZ2VfYWxsb2MgICAgICAgICAgOTczNiAgMiBzbmRfaW50ZWw4eDAs
-c25kX3BjbQoKcmVnYXJkcywKSsO2cmcKR3LDvMOfZSwKSsO2cmcKCi0tIApQR1AgS2V5OiBzZW5k
-IG1haWwgd2l0aCBzdWJqZWN0ICdTRU5EIFBHUC1LRVknIFBHUCBLZXktSUQ6IEZEIDRFIDIxIDFE
-ClBHUCBGaW5nZXJwcmludDogMzg4QTg3MkFGQzU2NDlEMyBCQ0VDNjU3NzhCRTBDNjA1CgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Sorry for not jumping in earlier, LinuxFest NW & job interviews have
+been taking my time recently.
+
+First, don't make any changes to cxt5047 code as it doesn't pertain to
+your system and is currently working for everyone that has tested it.
+Your patch would break their functionality.
+
+Second, the proposed patch has the exact opposite effect that other
+systems need, which I find rather interesting.
+
+I'll do some experimenting with my test board here and see what it
+reports.  I'd like to hold off on any patches for the immediate moment
+though, as it would seem to break more systems than it would fix.  This
+may require a separation of functions for each system.
+
+Tobin
+
+On Wed, 2007-05-02 at 14:28 +0300, Andrei Popa wrote:
+
+> On Wed, 2007-05-02 at 13:01 +0200, Takashi Iwai wrote: 
+> > [keep cc to alsa-devel please]
+> 
+> I am not subscribed to alsa-devel and when I send there a mail I get a
+> replay:
+> "
+> Your mail to 'Alsa-devel' with the subject
+> 
+>     Re: [ALSA][hda-codec] fix-connexant-headphone-mute
+> 
+> Is being held until the list moderator can review it for approval.
+> 
+> The reason it is being held:
+> 
+>     Post by non-member to a members-only list
+> "
+> 
+> > 
+> > At Wed, 02 May 2007 13:47:53 +0300,
+> > Andrei Popa wrote:
+> > > 
+> > > On Wed, 2007-05-02 at 12:16 +0200, Takashi Iwai wrote:
+> > > > At Sun, 29 Apr 2007 05:19:50 +0300,
+> > > > Andrei Popa wrote:
+> > > > > 
+> > > > > On Sun, 2007-04-29 at 04:43 +0300, Andrei Popa wrote:
+> > > > > > Hi,
+> > > > > > 
+> > > > > > The sound works ok with the built-in speakers on my Fujitsu laptop(amilo
+> > > > > > pro v3205). But if I plug in headphones in the audio out jack there is
+> > > > > > no sound in the headphones. With kernel 2.6.20 it worked ok. With 2.6.21
+> > > > > > it doesn't.
+> > > > > > This BUG is reported in ALSA bugtracking system with ID 0003039.
+> > > > > > 
+> > > > > > Patch that fixes this bug:
+> > > > > > 
+> > > > > > diff --git a/sound/pci/hda/patch_conexant.c
+> > > > > > b/sound/pci/hda/patch_conexant.c
+> > > > > > index 46e93c6..5edd330 100644
+> > > > > > --- a/sound/pci/hda/patch_conexant.c
+> > > > > > +++ b/sound/pci/hda/patch_conexant.c
+> > > > > > @@ -636,7 +636,7 @@ static void cxt5045_hp_automute(struct hda_codec
+> > > > > > *codec)
+> > > > > > 
+> > > > > >         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
+> > > > > >         snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0x80,
+> > > > > > bits);
+> > > > > > -       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0x80,
+> > > > > > bits);
+> > > > > > +       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0,
+> > > > > > bits);
+> > > > > >  }
+> > > > > > 
+> > > > > >  /* unsolicited event for HP jack sensing */
+> > > > > > @@ -988,10 +988,10 @@ static void cxt5047_hp_automute(struct hda_codec
+> > > > > > *codec)
+> > > > > > 
+> > > > > >         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
+> > > > > >         snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0x80,
+> > > > > > bits);
+> > > > > > -       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0x80,
+> > > > > > bits);
+> > > > > > +       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0,
+> > > > > > bits);
+> > > > > >         /* Mute/Unmute PCM 2 for good measure - some systems need this
+> > > > > > */
+> > > > > >         snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0x80,
+> > > > > > bits);
+> > > > > > -       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0x80,
+> > > > > > bits);
+> > > > > > +       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0,
+> > > > > > bits);
+> > > > > >  }
+> > > > > > 
+> > > > > >  /* toggle input of built-in and mic jack appropriately */
+> > > > > > 
+> > > > > 
+> > > > > first patch was broken. it only worked for the right channel.
+> > > > > this fixes this:
+> > > > > 
+> > > > > diff --git a/sound/pci/hda/patch_conexant.c
+> > > > > b/sound/pci/hda/patch_conexant.c
+> > > > > index 46e93c6..0822df7 100644
+> > > > > --- a/sound/pci/hda/patch_conexant.c
+> > > > > +++ b/sound/pci/hda/patch_conexant.c
+> > > > > @@ -635,8 +635,8 @@ static void cxt5045_hp_automute(struct hda_codec
+> > > > > *codec)
+> > > > >                                      AC_VERB_GET_PIN_SENSE, 0) &
+> > > > > 0x80000000;
+> > > > > 
+> > > > >         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
+> > > > > -       snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0x80,
+> > > > > bits);
+> > > > > -       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0x80,
+> > > > > bits);
+> > > > > +       snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0,
+> > > > > bits);
+> > > > > +       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0,
+> > > > > bits);
+> > > > >  }
+> > > > > 
+> > > > >  /* unsolicited event for HP jack sensing */
+> > > > > @@ -987,11 +987,11 @@ static void cxt5047_hp_automute(struct hda_codec
+> > > > > *codec)
+> > > > >                                      AC_VERB_GET_PIN_SENSE, 0) &
+> > > > > 0x80000000;
+> > > > > 
+> > > > >         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
+> > > > > -       snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0x80,
+> > > > > bits);
+> > > > > -       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0x80,
+> > > > > bits);
+> > > > > +       snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0,
+> > > > > bits);
+> > > > > +       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0,
+> > > > > bits);
+> > > > >         /* Mute/Unmute PCM 2 for good measure - some systems need this
+> > > > > */
+> > > > > -       snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0x80,
+> > > > > bits);
+> > > > > -       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0x80,
+> > > > > bits);
+> > > > > +       snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0,
+> > > > > bits);
+> > > > > +       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0,
+> > > > > bits);
+> > > > >  }
+> > > > > 
+> > > > >  /* toggle input of built-in and mic jack appropriately */
+> > > > 
+> > > > But this means to _unmute_ the speaker (0x1d) when you plug HP.
+> > > > So, something else should be wrong.  Is hp_present detected properly
+> > > > per plugging or unplugging?
+> > > > 
+> > > 
+> > > when I debugged the problem I think hp_present was "0" when the HP were
+> > > plugged in and "-28953535"(a big negative number) when the HP were
+> > > unplugged.
+> > 
+> > Weird, then this returns exactly the inversed bit.
+> > Could you double-check?
+> 
+> I was mistaken, it's how you said it must be:
+> 
+> static void cxt5045_hp_automute(struct hda_codec *codec)
+> {
+>         struct conexant_spec *spec = codec->spec;
+>         unsigned int bits;
+> 
+>         spec->hp_present = snd_hda_codec_read(codec, 0x11, 0,
+>                                      AC_VERB_GET_PIN_SENSE, 0) &
+> 0x80000000;
+> 
+>         printk(KERN_INFO "hp_present=%d\n",spec->hp_present);
+> 
+>         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
+>         snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0,
+> bits);
+>         snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0,
+> bits);
+> }
+> 
+> 
+> hp_present=0 /* HP unplugged */
+> hp_present=-2147483648 /* HP plugged */
+> 
+> 
+> > 
+> > Anyway, having both this auto-mute and manual switches is confusing.
+> > If they exist, we'd need to add notifier to the control at unsol
+> > event handler.
+> > 
+> > 
+> > Takashi
+> 
+
+-- 
+Tobin Davis <tdavis@dsl-only.net>
