@@ -1,23 +1,16 @@
-From: Nyx <keres.nyx@gmail.com>
-Subject: Re: Fwd: [Alsa-devel] Read the input of a soundcard
-	with ALSA
-Date: Wed, 2 May 2007 14:23:13 +0200
-Message-ID: <50fdad60705020523w6451a94ahc94533adc256f826@mail.gmail.com>
-References: <50fdad60704200820x77d22314x36786198c7872d6@mail.gmail.com>
-	<4628FD65.4020407@gmail.com>
-	<50fdad60704230718jb9403b3yceaa217dc9a9162d@mail.gmail.com>
-	<s5hirbl2a48.wl%tiwai@suse.de>
+From: Joerg Platte <lists@naasa.net>
+Subject: Intel ICH6 with AD1986: Mic not working
+Date: Wed, 2 May 2007 15:28:53 +0200
+Message-ID: <200705021528.54015.lists@naasa.net>
+Reply-To: jplatte@naasa.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A6B224407
+Received: from rosi.naasa.net (rosi.naasa.net [212.8.0.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 645652442B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2007 14:23:22 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so102743nzf
-	for <alsa-devel@alsa-project.org>; Wed, 02 May 2007 05:23:19 -0700 (PDT)
-In-Reply-To: <s5hirbl2a48.wl%tiwai@suse.de>
+	Wed,  2 May 2007 15:28:56 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,128 +21,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-OK. I only want to read on the input of soundcard. So I wrote an other
-program easier than the first, I write the data in file, but it seems that
-it doesn't work...
-
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "alsa/asoundlib.h"
-#include <errno.h>
-
-unsigned int rate =3D 44100;
-unsigned int nb_channels =3D 2;
-
-int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *hw_params)
-{
-    int err;
-    int dir=3D0;
-    if ((err =3D snd_pcm_hw_params_malloc (&hw_params)) < 0) {
-        fprintf (stderr, "cannot allocate hardware parameter structure
-(%s)\n", snd_strerror (err));
-        exit (1);
-    }
-
-    if ((err =3D snd_pcm_hw_params_any (handle, hw_params)) < 0) {
-        fprintf (stderr, "cannot initialize hardware parameter structure
-(%s)\n", snd_strerror (err));
-        exit (1);
-    }
-    printf("Initialisation des param=E8tres\n");
-
-    if ((err =3D snd_pcm_hw_params_set_access (handle, hw_params,
-SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
-        fprintf (stderr, "cannot set access type (%s)\n", snd_strerror
-(err));
-        exit (1);
-    }
-    printf("Access card configuration\n");
-
-    if ((err =3D snd_pcm_hw_params_set_format (handle, hw_params,
-SND_PCM_FORMAT_S16_LE)) < 0) {
-        fprintf (stderr, "cannot set sample format (%s)\n", snd_strerror
-(err));
-        exit (1);
-    }
-
-    if ((err =3D snd_pcm_hw_params_set_rate_near (handle, hw_params, &rate,
-&dir)) < 0) {
-        fprintf (stderr, "cannot set sample rate (%s)\n", snd_strerror
-(err));
-        exit (1);
-    }
-    if ((err =3D snd_pcm_hw_params_set_channels (handle, hw_params, nb_chan=
-n))
-< 0) {
-        fprintf (stderr, "cannot set channel count (%s)\n", snd_strerror
-(err));
-        exit (1);
-    }
-
-    if ((err =3D snd_pcm_hw_params (handle, hw_params)) < 0) {
-        fprintf (stderr, "cannot set parameters (%s)\n", snd_strerror
-(err));
-        exit (1);
-    }
-    printf("Parameters recorded\n");
-
-    //snd_pcm_hw_params_free (hw_params);
-
-    if ((err =3D snd_pcm_prepare (handle)) < 0) {
-        fprintf (stderr, "cannot prepare audio interface for use (%s)\n",
-snd_strerror (err));
-        exit (1);
-    }
-        return 0;
-}
-
-int main(int   argc, char *argv[]){
-    int err;
-    int j;
-    printf("Beginning \n");
-    snd_pcm_hw_params_t *hw_params_capture, *hw_params_playback;
-    short buf[256];
-    FILE *file;
-
-    fichier =3D fopen( "/root/Desktop/Test/Audio/Capture.001", "w");
-    if (fichier =3D=3D NULL) printf("cannot create file : %i\n", errno);
-    else printf("file created\n");
-
-    /*Open soundcard as capture*/
-    snd_pcm_t *capture_handle;
-
-    if ((err =3D snd_pcm_open (&capture_handle, "hw:0,0",
-SND_PCM_STREAM_CAPTURE, 0)) < 0) {
-        fprintf (stderr, "cannot open audio device %s (%s)\n",  argv[1],
- snd_strerror (err));
-        exit (1);
-    }
-
-   set_hwparams(capture_handle, hw_params_capture);
-
-   for (j =3D 0 ;  j < 256 ; j++) {
-            if ((err =3D snd_pcm_readi (capture_handle, buf, 128)) < 0)
-printf("cherche pas\n");
-            putc(buf[j], file);       //write in file LEFT Channel
-            putc(buf[j+1], file);  //write in file RIGHT Channel
-            putc(0x0A, file);
-    }
-
-    printf("Close File\n");
-    fclose(file);
-    snd_pcm_close (capture_handle);
-    return 0 ;
-}
-
-
-What do you think about this program... ? I searched about an How-to or some
-help for capture on a soundcard with ALSA, but I didn't found
-
-Thank you
--- =
-
-K
+SGkhCgpPbiBteSBjb21wdXRlciBib3RoIG1pY3JvcGhvbmVzIGFyZSBub3Qgd29ya2luZyBidXQg
+cGxheWJhY2sgYW5kIGFsbCBvdGhlciAKYXVkaW8gc3R1ZmYgc2VlbXMgdG8gd29yay4gSSdtIG5v
+dCBzdXJlIGlmIHRoZSBtaWNyb3Bob25lcyBldmVyIHdvcmtlZCB3aXRoIAphbHNhIGJlY2F1c2Ug
+SSBuZXZlciB0cmllZCBpdCBiZWZvcmUuIE9uIHdpbmRvd3MgdGhleSBhcmUgd29ya2luZyBhcyAK
+ZXhwZWN0ZWQsIGhlbmNlIHRoZSBoYXJkd2FyZSBzZWVtcyB0byBiZSBPSy4gSXMgdGhlcmUgYW55
+dGhpbmcgSSBjYW4gZG8gdG8gCmZ1cnRoZXIgZGVidWcgdGhpcz8gSXMgaXQgYSBrbm93biBwcm9i
+bGVtPwoKQmVsb3cgeW91IGNhbiBmaW5kIG1vcmUgaW5mb3JtYXRpb24gYWJvdXQgdGhlIGhhcmR3
+YXJlOgoKcm9vdEBkczE5On4+IHVuYW1lIC1hCkxpbnV4IGRzMTkgMi42LjIwLTEtNjg2ICMxIFNN
+UCBUdWUgQXByIDI0IDIxOjUyOjExIFVUQyAyMDA3IGk2ODYgR05VL0xpbnV4CihEZWJpYW4ga2Vy
+bmVsKQpEb2Vzbid0IHdvcmsgd2l0aCAyLjYuMTggYXMgd2VsbC4KCnJvb3RAZHMxOTp+PiBjYXQg
+L3Byb2MvYXNvdW5kL2NhcmQwL2NvZGVjOTcjMC9hYzk3IzAtMAowLTAvMDogQW5hbG9nIERldmlj
+ZXMgQUQxOTg2CgpQQ0kgU3Vic3lzIFZlbmRvcjogMHgxNzM0ClBDSSBTdWJzeXMgRGV2aWNlOiAw
+eDEwNWEKClJldmlzaW9uICAgICAgICAgOiAweDAyCkNvbXBhdC4gQ2xhc3MgICAgOiAweDAwClN1
+YnN5cy4gVmVuZG9yIElEOiAweDAwMDAKU3Vic3lzLiBJRCAgICAgICA6IDB4MDAwMAoKQ2FwYWJp
+bGl0aWVzICAgICA6IC1oZWFkcGhvbmUgb3V0LQpEQUMgcmVzb2x1dGlvbiAgIDogMjAtYml0CkFE
+QyByZXNvbHV0aW9uICAgOiAxNi1iaXQKM0QgZW5oYW5jZW1lbnQgICA6IE5vIDNEIFN0ZXJlbyBF
+bmhhbmNlbWVudAoKQ3VycmVudCBzZXR1cApNaWMgZ2FpbiAgICAgICAgIDogKzIwZEIgWysyMGRC
+XQpQT1AgcGF0aCAgICAgICAgIDogcHJlIDNEClNpbS4gc3RlcmVvICAgICAgOiBvZmYKM0QgZW5o
+YW5jZW1lbnQgICA6IG9mZgpMb3VkbmVzcyAgICAgICAgIDogb2ZmCk1vbm8gb3V0cHV0ICAgICAg
+OiBNSVgKTWljIHNlbGVjdCAgICAgICA6IE1pYzEKQURDL0RBQyBsb29wYmFjayA6IG9mZgpEb3Vi
+bGUgcmF0ZSBzbG90czogMTAvMTEKRXh0ZW5kZWQgSUQgICAgICA6IGNvZGVjPTAgcmV2PTIgQU1B
+UCBMREFDIFNEQUMgQ0RBQyBEU0E9MCBTUERJRiBEUkEgVlJBCkV4dGVuZGVkIHN0YXR1cyAgOiBT
+UENWIExEQUMgU0RBQyBDREFDIFNQRElGPTEwLzExIFZSQQpQQ00gZnJvbnQgREFDICAgIDogNDgw
+MDBIegpQQ00gU3VyciBEQUMgICAgIDogNDgwMDBIegpQQ00gTEZFIERBQyAgICAgIDogNDgwMDBI
+egpQQ00gQURDICAgICAgICAgIDogNDgwMDBIegpTUERJRiBDb250cm9sICAgIDogQ29uc3VtZXIg
+UENNIENvcHlyaWdodCBDYXRlZ29yeT0weDIyIEdlbmVyYXRpb249MSAKUmF0ZT00OGtIegoKICAg
+ICAgICAgICAgICAgICAgICBHYWluICAgICBJbnZlcnRlZCAgQnVmZmVyIGRlbGF5ICBMb2NhdGlv
+bgpNYXN0ZXIgT3V0ICAgICAgIDogICAwLjAgZEJWICAgIC0gICAgICAxNi9mcyAgICAgICAgIFJl
+YXIgSS9PIFBhbmVsCkFVWCBPdXQgICAgICAgICAgOiAgIDAuMCBkQlYgICAgLSAgICAgIDE2L2Zz
+ICAgICAgICAgUmVhciBJL08gUGFuZWwKQ2VudGVyL0xGRSBPdXQgICA6ICAgMC4wIGRCViAgICAt
+ICAgICAgMTYvZnMgICAgICAgICBSZWFyIEkvTyBQYW5lbApNaWMgMSAgICAgICAgICAgIDogICAw
+LjAgZEJWICAgIC0gICAgICAxNi9mcyAgICAgICAgIFJlYXIgSS9PIFBhbmVsCk1pYyAyICAgICAg
+ICAgICAgOiAgIDAuMCBkQlYgICAgLSAgICAgIDE2L2ZzICAgICAgICAgUmVhciBJL08gUGFuZWwK
+TGluZSBJbiAgICAgICAgICA6ICAgMC4wIGRCViAgICAtICAgICAgMTYvZnMgICAgICAgICBSZWFy
+IEkvTyBQYW5lbAoKCgpBRDE4WFggY29uZmlndXJhdGlvbgpVbmNoYWluZWQgICAgICAgIDogMHgx
+MDAwLDB4MDAwMCwweDAwMDAKQ2hhaW5lZCAgICAgICAgICA6IDB4MDAwMCwweDAwMDAsMHgwMDAw
+Cgpyb290QGRzMTk6fj4gY2F0IC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYzk3IzAvYWM5NyMwLTAr
+cmVncwowOjAwID0gMDA5MAowOjAyID0gMDQwNAowOjA0ID0gMDYwNgowOjA2ID0gMDAwNgowOjA4
+ID0gMDAwMAowOjBhID0gMDAwMAowOjBjID0gODAxZgowOjBlID0gMDA0MAowOjEwID0gOWY5Zgow
+OjEyID0gMDYwNgowOjE0ID0gMDAwMAowOjE2ID0gOWY5ZgowOjE4ID0gMDYwNgowOjFhID0gMDAw
+MAowOjFjID0gMDAwMAowOjFlID0gMDAwMAowOjIwID0gMDAwMAowOjIyID0gMDAwMAowOjI0ID0g
+MDAwMAowOjI2ID0gODAwZgowOjI4ID0gMGJjNwowOjJhID0gMDVmMQowOjJjID0gYmI4MAowOjJl
+ID0gYmI4MAowOjMwID0gYmI4MAowOjMyID0gYmI4MAowOjM0ID0gMDAwMAowOjM2ID0gMDMwMAow
+OjM4ID0gMDIwMgowOjNhID0gMmEyMAowOjNjID0gMDAwMAowOjNlID0gMDAwMAowOjQwID0gMDAw
+MAowOjQyID0gMDAwMAowOjQ0ID0gMDAwMAowOjQ2ID0gMDAwMAowOjQ4ID0gMDAwMAowOjRhID0g
+MDAwMAowOjRjID0gMDAwMAowOjRlID0gMDAwMAowOjUwID0gMDAwMAowOjUyID0gMDAwMAowOjU0
+ID0gMDAwMAowOjU2ID0gMDAwMAowOjU4ID0gMDAwMAowOjVhID0gMDAwMAowOjVjID0gMTAwMAow
+OjVlID0gMDAwMAowOjYwID0gODA4MAowOjYyID0gMDAwMAowOjY0ID0gMDAwMAowOjY2ID0gMDAw
+MAowOjY4ID0gMDAwMAowOjZhID0gMDAwMAowOjZjID0gODA4MAowOjZlID0gODA4MAowOjcwID0g
+MDAwMAowOjcyID0gMDAwMAowOjc0ID0gMTAwMQowOjc2ID0gN2M3YwowOjc4ID0gMDAwMAowOjdh
+ID0gMDAwMAowOjdjID0gNDE0NAowOjdlID0gNTM3OAoKcm9vdEBkczE5On4+IGNhdCAvcHJvYy9h
+c291bmQvY2FyZHMKIDAgW0lDSDYgICAgICAgICAgIF06IElDSDQgLSBJbnRlbCBJQ0g2CiAgICAg
+ICAgICAgICAgICAgICAgICBJbnRlbCBJQ0g2IHdpdGggQUQxOTg2IGF0IDB4ZjAxNDA4MDAsIGly
+cSAxNgoKcm9vdEBkczE5On4+IGxzcGNpCjAwOjAwLjAgSG9zdCBicmlkZ2U6IEludGVsIENvcnBv
+cmF0aW9uIDgyOTE1Ry9QL0dWL0dML1BMLzkxMEdMIE1lbW9yeSAKQ29udHJvbGxlciBIdWIgKHJl
+diAwNCkKMDA6MDIuMCBWR0EgY29tcGF0aWJsZSBjb250cm9sbGVyOiBJbnRlbCBDb3Jwb3JhdGlv
+biA4MjkxNUcvR1YvOTEwR0wgCkludGVncmF0ZWQgR3JhcGhpY3MgQ29udHJvbGxlciAocmV2IDA0
+KQowMDowMi4xIERpc3BsYXkgY29udHJvbGxlcjogSW50ZWwgQ29ycG9yYXRpb24gODI5MTVHIElu
+dGVncmF0ZWQgR3JhcGhpY3MgCkNvbnRyb2xsZXIgKHJldiAwNCkKMDA6MWMuMCBQQ0kgYnJpZGdl
+OiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZCL0ZCTS9GUi9GVy9GUlcgKElDSDYgRmFtaWx5KSBQ
+Q0kgCkV4cHJlc3MgUG9ydCAxIChyZXYgMDMpCjAwOjFjLjEgUENJIGJyaWRnZTogSW50ZWwgQ29y
+cG9yYXRpb24gODI4MDFGQi9GQk0vRlIvRlcvRlJXIChJQ0g2IEZhbWlseSkgUENJIApFeHByZXNz
+IFBvcnQgMiAocmV2IDAzKQowMDoxYy4yIFBDSSBicmlkZ2U6IEludGVsIENvcnBvcmF0aW9uIDgy
+ODAxRkIvRkJNL0ZSL0ZXL0ZSVyAoSUNINiBGYW1pbHkpIFBDSSAKRXhwcmVzcyBQb3J0IDMgKHJl
+diAwMykKMDA6MWMuMyBQQ0kgYnJpZGdlOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZCL0ZCTS9G
+Ui9GVy9GUlcgKElDSDYgRmFtaWx5KSBQQ0kgCkV4cHJlc3MgUG9ydCA0IChyZXYgMDMpCjAwOjFk
+LjAgVVNCIENvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9uIDgyODAxRkIvRkJNL0ZSL0ZXL0ZS
+VyAoSUNINiBGYW1pbHkpIApVU0IgVUhDSSAjMSAocmV2IDAzKQowMDoxZC4xIFVTQiBDb250cm9s
+bGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZCL0ZCTS9GUi9GVy9GUlcgKElDSDYgRmFtaWx5
+KSAKVVNCIFVIQ0kgIzIgKHJldiAwMykKMDA6MWQuMiBVU0IgQ29udHJvbGxlcjogSW50ZWwgQ29y
+cG9yYXRpb24gODI4MDFGQi9GQk0vRlIvRlcvRlJXIChJQ0g2IEZhbWlseSkgClVTQiBVSENJICMz
+IChyZXYgMDMpCjAwOjFkLjMgVVNCIENvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9uIDgyODAx
+RkIvRkJNL0ZSL0ZXL0ZSVyAoSUNINiBGYW1pbHkpIApVU0IgVUhDSSAjNCAocmV2IDAzKQowMDox
+ZC43IFVTQiBDb250cm9sbGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZCL0ZCTS9GUi9GVy9G
+UlcgKElDSDYgRmFtaWx5KSAKVVNCMiBFSENJIENvbnRyb2xsZXIgKHJldiAwMykKMDA6MWUuMCBQ
+Q0kgYnJpZGdlOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMSBQQ0kgQnJpZGdlIChyZXYgZDMpCjAw
+OjFlLjIgTXVsdGltZWRpYSBhdWRpbyBjb250cm9sbGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiA4Mjgw
+MUZCL0ZCTS9GUi9GVy9GUlcgCihJQ0g2IEZhbWlseSkgQUMnOTcgQXVkaW8gQ29udHJvbGxlciAo
+cmV2IDAzKQowMDoxZi4wIElTQSBicmlkZ2U6IEludGVsIENvcnBvcmF0aW9uIDgyODAxRkIvRlIg
+KElDSDYvSUNINlIpIExQQyBJbnRlcmZhY2UgCkJyaWRnZSAocmV2IDAzKQowMDoxZi4xIElERSBp
+bnRlcmZhY2U6IEludGVsIENvcnBvcmF0aW9uIDgyODAxRkIvRkJNL0ZSL0ZXL0ZSVyAoSUNINiBG
+YW1pbHkpIApJREUgQ29udHJvbGxlciAocmV2IDAzKQowMDoxZi4yIElERSBpbnRlcmZhY2U6IElu
+dGVsIENvcnBvcmF0aW9uIDgyODAxRkIvRlcgKElDSDYvSUNINlcpIFNBVEEgCkNvbnRyb2xsZXIg
+KHJldiAwMykKMDA6MWYuMyBTTUJ1czogSW50ZWwgQ29ycG9yYXRpb24gODI4MDFGQi9GQk0vRlIv
+RlcvRlJXIChJQ0g2IEZhbWlseSkgU01CdXMgCkNvbnRyb2xsZXIgKHJldiAwMykKMDc6MDAuMCBF
+dGhlcm5ldCBjb250cm9sbGVyOiBCcm9hZGNvbSBDb3Jwb3JhdGlvbiBOZXRYdHJlbWUgQkNNNTc1
+MSBHaWdhYml0IApFdGhlcm5ldCBQQ0kgRXhwcmVzcyAocmV2IDAxKQoKcm9vdEBkczE5On4+IGxz
+bW9kIHwgZ3JlcCBzbmQKc25kX2ludGVsOHgwICAgICAgICAgICAzMTQyMCAgMQpzbmRfYWM5N19j
+b2RlYyAgICAgICAgIDg5NDEyICAxIHNuZF9pbnRlbDh4MAphYzk3X2J1cyAgICAgICAgICAgICAg
+ICAyNDMyICAxIHNuZF9hYzk3X2NvZGVjCnNuZF9wY21fb3NzICAgICAgICAgICAgMzkyMzIgIDAK
+c25kX21peGVyX29zcyAgICAgICAgICAxNTQ4OCAgMSBzbmRfcGNtX29zcwpzbmRfcGNtICAgICAg
+ICAgICAgICAgIDcyMDM2ICAzIHNuZF9pbnRlbDh4MCxzbmRfYWM5N19jb2RlYyxzbmRfcGNtX29z
+cwpzbmRfdGltZXIgICAgICAgICAgICAgIDIwOTY0ICAxIHNuZF9wY20Kc25kICAgICAgICAgICAg
+ICAgICAgICA0ODE5NiAgOCAKc25kX2ludGVsOHgwLHNuZF9hYzk3X2NvZGVjLHNuZF9wY21fb3Nz
+LHNuZF9taXhlcl9vc3Msc25kX3BjbSxzbmRfdGltZXIKc291bmRjb3JlICAgICAgICAgICAgICAg
+NzYxNiAgMSBzbmQKc25kX3BhZ2VfYWxsb2MgICAgICAgICAgOTczNiAgMiBzbmRfaW50ZWw4eDAs
+c25kX3BjbQoKcmVnYXJkcywKSsO2cmcKR3LDvMOfZSwKSsO2cmcKCi0tIApQR1AgS2V5OiBzZW5k
+IG1haWwgd2l0aCBzdWJqZWN0ICdTRU5EIFBHUC1LRVknIFBHUCBLZXktSUQ6IEZEIDRFIDIxIDFE
+ClBHUCBGaW5nZXJwcmludDogMzg4QTg3MkFGQzU2NDlEMyBCQ0VDNjU3NzhCRTBDNjA1CgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
