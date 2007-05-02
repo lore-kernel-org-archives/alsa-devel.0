@@ -1,18 +1,15 @@
-From: "Michel Benoit" <murpme@gmail.com>
-Subject: alsa driver api
-Date: Wed, 2 May 2007 19:40:29 +0200
-Message-ID: <c88e466f0705021040p1166b247t864288e3355dc25c@mail.gmail.com>
+From: Ciaccia <ciacciax@yahoo.com>
+Subject: Re: alsa driver api
+Date: Wed, 2 May 2007 10:56:18 -0700 (PDT)
+Message-ID: <99356.5221.qm@web31007.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.232])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5076224451
+Received: from web31007.mail.mud.yahoo.com (web31007.mail.mud.yahoo.com
+	[68.142.200.170]) by alsa0.perex.cz (Postfix) with SMTP id 0DFB724467
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2007 19:40:31 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so209954nzf
-	for <alsa-devel@alsa-project.org>; Wed, 02 May 2007 10:40:30 -0700 (PDT)
-Content-Disposition: inline
+	Wed,  2 May 2007 19:56:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,8 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ciacciax@yahoo.com, alsa-devel@alsa-project.org
+To: Michel Benoit <murpme@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+Hi Michel,
+Maybe you are referring to my post. I always use alsa-lib to send data to the driver, I think it is the easiest way and preferred way.
+
+Months ago I wanted to do the same (i.e. send data to the alsa-driver without alsa-lib) but then I understood this was not the right way. I'm not saying you cannot or should not try that, but from my experience (I spent a lot of time) it's not going to work.
+
+The problem I had was that my system did not support shared objects, nor -ldl, so I could not user the "standard" alsa-lib (which usually require pthread, dl, an *.so). Then Takashi gave me a patch for that, and now I'm an happy "static" alsa-lib user.
+
+Maybe one of the gurus (Takashi?) will give you some tips, but I think you really need a good reason for that.
+
+Good luck, sorry for not helping you
+Andrea
+
+----- Original Message ----
+From: Michel Benoit <murpme@gmail.com>
+To: ciacciax@yahoo.com; alsa-devel@alsa-project.org
+Sent: Wednesday, May 2, 2007 7:40:29 PM
+Subject: alsa driver api
 
 Hi
 
@@ -41,3 +56,11 @@ complete application.
 Thanks,
 
 Michel
+
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
