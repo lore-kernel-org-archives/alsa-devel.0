@@ -1,20 +1,17 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: [ALSA][hda-codec] fix-connexant-headphone-mute
-Date: Wed, 02 May 2007 07:55:51 -0700
-Message-ID: <1178117751.17556.19.camel@razman.gruemaster.com>
-References: <1177811017.23940.7.camel@localhost>
-	<1177813190.10642.1.camel@localhost> <s5hslafbkdz.wl%tiwai@suse.de>
-	<1178102873.7511.3.camel@localhost>  <s5hlkg7bibm.wl%tiwai@suse.de>
-	<1178105336.6255.2.camel@localhost>
+From: "Ashlesha Shintre" <ashlesha.shintre@gmail.com>
+Subject: error in recovery from buffer under-run.
+Date: Wed, 2 May 2007 11:26:01 -0400
+Message-ID: <975f530d0705020826p7bdaa979hef9003e75cac9fd9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_6863_24827294.1178119561031"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 57CD12434B
+Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id 299CA2443C
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 May 2007 16:55:54 +0200 (CEST)
-In-Reply-To: <1178105336.6255.2.camel@localhost>
+	Wed,  2 May 2007 17:26:02 +0200 (CEST)
+Received: by wx-out-0506.google.com with SMTP id h30so165525wxd
+	for <alsa-devel@alsa-project.org>; Wed, 02 May 2007 08:26:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,204 +21,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: andrei.popa@i-neo.ro
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Aditya Shankar <mc.aditya@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for not jumping in earlier, LinuxFest NW & job interviews have
-been taking my time recently.
+------=_Part_6863_24827294.1178119561031
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-First, don't make any changes to cxt5047 code as it doesn't pertain to
-your system and is currently working for everyone that has tested it.
-Your patch would break their functionality.
+Hi,
 
-Second, the proposed patch has the exact opposite effect that other
-systems need, which I find rather interesting.
+Thanks for the link you emailed earlier.  I tried writing my own code, based
+on the how to in the alsa wiki.  I have attached that code with this email.
 
-I'll do some experimenting with my test board here and see what it
-reports.  I'd like to hold off on any patches for the immediate moment
-though, as it would seem to break more systems than it would fix.  This
-may require a separation of functions for each system.
 
-Tobin
+The problem it faces is a buffer underrun every alternate time, i try
+writing to the device.
 
-On Wed, 2007-05-02 at 14:28 +0300, Andrei Popa wrote:
+In my code, to take care of underruns, I do the following:
 
-> On Wed, 2007-05-02 at 13:01 +0200, Takashi Iwai wrote: 
-> > [keep cc to alsa-devel please]
-> 
-> I am not subscribed to alsa-devel and when I send there a mail I get a
-> replay:
-> "
-> Your mail to 'Alsa-devel' with the subject
-> 
->     Re: [ALSA][hda-codec] fix-connexant-headphone-mute
-> 
-> Is being held until the list moderator can review it for approval.
-> 
-> The reason it is being held:
-> 
->     Post by non-member to a members-only list
-> "
-> 
-> > 
-> > At Wed, 02 May 2007 13:47:53 +0300,
-> > Andrei Popa wrote:
-> > > 
-> > > On Wed, 2007-05-02 at 12:16 +0200, Takashi Iwai wrote:
-> > > > At Sun, 29 Apr 2007 05:19:50 +0300,
-> > > > Andrei Popa wrote:
-> > > > > 
-> > > > > On Sun, 2007-04-29 at 04:43 +0300, Andrei Popa wrote:
-> > > > > > Hi,
-> > > > > > 
-> > > > > > The sound works ok with the built-in speakers on my Fujitsu laptop(amilo
-> > > > > > pro v3205). But if I plug in headphones in the audio out jack there is
-> > > > > > no sound in the headphones. With kernel 2.6.20 it worked ok. With 2.6.21
-> > > > > > it doesn't.
-> > > > > > This BUG is reported in ALSA bugtracking system with ID 0003039.
-> > > > > > 
-> > > > > > Patch that fixes this bug:
-> > > > > > 
-> > > > > > diff --git a/sound/pci/hda/patch_conexant.c
-> > > > > > b/sound/pci/hda/patch_conexant.c
-> > > > > > index 46e93c6..5edd330 100644
-> > > > > > --- a/sound/pci/hda/patch_conexant.c
-> > > > > > +++ b/sound/pci/hda/patch_conexant.c
-> > > > > > @@ -636,7 +636,7 @@ static void cxt5045_hp_automute(struct hda_codec
-> > > > > > *codec)
-> > > > > > 
-> > > > > >         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
-> > > > > >         snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0x80,
-> > > > > > bits);
-> > > > > > -       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0x80,
-> > > > > > bits);
-> > > > > > +       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0,
-> > > > > > bits);
-> > > > > >  }
-> > > > > > 
-> > > > > >  /* unsolicited event for HP jack sensing */
-> > > > > > @@ -988,10 +988,10 @@ static void cxt5047_hp_automute(struct hda_codec
-> > > > > > *codec)
-> > > > > > 
-> > > > > >         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
-> > > > > >         snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0x80,
-> > > > > > bits);
-> > > > > > -       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0x80,
-> > > > > > bits);
-> > > > > > +       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0,
-> > > > > > bits);
-> > > > > >         /* Mute/Unmute PCM 2 for good measure - some systems need this
-> > > > > > */
-> > > > > >         snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0x80,
-> > > > > > bits);
-> > > > > > -       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0x80,
-> > > > > > bits);
-> > > > > > +       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0,
-> > > > > > bits);
-> > > > > >  }
-> > > > > > 
-> > > > > >  /* toggle input of built-in and mic jack appropriately */
-> > > > > > 
-> > > > > 
-> > > > > first patch was broken. it only worked for the right channel.
-> > > > > this fixes this:
-> > > > > 
-> > > > > diff --git a/sound/pci/hda/patch_conexant.c
-> > > > > b/sound/pci/hda/patch_conexant.c
-> > > > > index 46e93c6..0822df7 100644
-> > > > > --- a/sound/pci/hda/patch_conexant.c
-> > > > > +++ b/sound/pci/hda/patch_conexant.c
-> > > > > @@ -635,8 +635,8 @@ static void cxt5045_hp_automute(struct hda_codec
-> > > > > *codec)
-> > > > >                                      AC_VERB_GET_PIN_SENSE, 0) &
-> > > > > 0x80000000;
-> > > > > 
-> > > > >         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
-> > > > > -       snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0x80,
-> > > > > bits);
-> > > > > -       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0x80,
-> > > > > bits);
-> > > > > +       snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0,
-> > > > > bits);
-> > > > > +       snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0,
-> > > > > bits);
-> > > > >  }
-> > > > > 
-> > > > >  /* unsolicited event for HP jack sensing */
-> > > > > @@ -987,11 +987,11 @@ static void cxt5047_hp_automute(struct hda_codec
-> > > > > *codec)
-> > > > >                                      AC_VERB_GET_PIN_SENSE, 0) &
-> > > > > 0x80000000;
-> > > > > 
-> > > > >         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
-> > > > > -       snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0x80,
-> > > > > bits);
-> > > > > -       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0x80,
-> > > > > bits);
-> > > > > +       snd_hda_codec_amp_update(codec, 0x1d, 0, HDA_OUTPUT, 0, 0,
-> > > > > bits);
-> > > > > +       snd_hda_codec_amp_update(codec, 0x1d, 1, HDA_OUTPUT, 0, 0,
-> > > > > bits);
-> > > > >         /* Mute/Unmute PCM 2 for good measure - some systems need this
-> > > > > */
-> > > > > -       snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0x80,
-> > > > > bits);
-> > > > > -       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0x80,
-> > > > > bits);
-> > > > > +       snd_hda_codec_amp_update(codec, 0x1c, 0, HDA_OUTPUT, 0, 0,
-> > > > > bits);
-> > > > > +       snd_hda_codec_amp_update(codec, 0x1c, 1, HDA_OUTPUT, 0, 0,
-> > > > > bits);
-> > > > >  }
-> > > > > 
-> > > > >  /* toggle input of built-in and mic jack appropriately */
-> > > > 
-> > > > But this means to _unmute_ the speaker (0x1d) when you plug HP.
-> > > > So, something else should be wrong.  Is hp_present detected properly
-> > > > per plugging or unplugging?
-> > > > 
-> > > 
-> > > when I debugged the problem I think hp_present was "0" when the HP were
-> > > plugged in and "-28953535"(a big negative number) when the HP were
-> > > unplugged.
-> > 
-> > Weird, then this returns exactly the inversed bit.
-> > Could you double-check?
-> 
-> I was mistaken, it's how you said it must be:
-> 
-> static void cxt5045_hp_automute(struct hda_codec *codec)
+period_size=64;
+buffer is a short int array which is 16000 in length.
+every alternate call to snd_pcm_writei is successful but only write in the
+vicinity of 1350 frames, instead of size which is initialised to length of
+buffer.
+
+Now, in the code below, the snd_pcm_recover function prints a message
+indicating a buffer under-run has occured, however, it returns a 0,
+indicating success in recovery from the error!
+
+I am not sure how to deal with this -- is there a problem with my ALSA
+libraries?
+Sorry about the length of this email and thanks again,
+
+Ashlesha.
+
+while(size>(2*period_size))
 > {
->         struct conexant_spec *spec = codec->spec;
->         unsigned int bits;
-> 
->         spec->hp_present = snd_hda_codec_read(codec, 0x11, 0,
->                                      AC_VERB_GET_PIN_SENSE, 0) &
-> 0x80000000;
-> 
->         printk(KERN_INFO "hp_present=%d\n",spec->hp_present);
-> 
->         bits = (spec->hp_present || !spec->cur_eapd) ? 0x80 : 0;
->         snd_hda_codec_amp_update(codec, 0x10, 0, HDA_OUTPUT, 0, 0,
-> bits);
->         snd_hda_codec_amp_update(codec, 0x10, 1, HDA_OUTPUT, 0, 0,
-> bits);
+> frames = snd_pcm_writei (pcm_handle, buffer, size);
+> printf("frames returned is %d\n",frames);
+> if (frames>0)
+>     temp=frames;
+> if (frames ==  -32){
+>           frames = snd_pcm_recover(pcm_handle, frames, 0);
+>           printf("recover returned %d\n",frames);
+>           }
+> if (frames < 0){
+>           printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
+>           return -1;
+>           }
+> printf("%d frames written\n",frames);
+> if(temp>0)
+>     size=size-temp;
 > }
-> 
-> 
-> hp_present=0 /* HP unplugged */
-> hp_present=-2147483648 /* HP plugged */
-> 
-> 
-> > 
-> > Anyway, having both this auto-mute and manual switches is confusing.
-> > If they exist, we'd need to add notifier to the control at unsol
-> > event handler.
-> > 
-> > 
-> > Takashi
-> 
+>
 
--- 
-Tobin Davis <tdavis@dsl-only.net>
+------=_Part_6863_24827294.1178119561031
+Content-Type: text/x-csrc; name="async_ash.c"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="async_ash.c"
+X-Attachment-Id: f_f17xylk7
+
+LyogTXkgY29kZSB1c2luZyB0aGUgQUxTQSBBc3luY2hyb25vdXMgcGxheWJhY2sgd2lraSAqLwoK
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDwvdXNyL2luY2x1ZGUvYWxzYS9hc291bmRsaWIu
+aD4KI2luY2x1ZGUgPC91c3IvaW5jbHVkZS9hbHNhL3BjbS5oPgojaW5jbHVkZSA8c3lzL3R5cGVz
+Lmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPGZjbnRsLmg+CgojZGVmaW5lIFNJWkUg
+MTI2OTc2CgovKkdsb2JhbCBWYXJpYWJsZXMgKi8KaW50IGVycjsgCmNvbnN0IGNoYXIgKmRldmlj
+ZV9uYW1lID0gImRlZmF1bHQiOyAKCgppbnQgbWFpbigpCnsKCnNuZF9wY21fdCAqcGNtX2hhbmRs
+ZTsKCnVuc2lnbmVkIGludCBycmF0ZSA9IDE2MDAwOwppbnQgZmQxLGNvdW50LGJ5dGVzcmVhZD0x
+LGEsZXJyLGZyYW1lcyxpLHNpemU9U0laRSx0ZW1wOwpzaG9ydCBpbnQgYnVmZmVyW1NJWkVdOwpj
+aGFyIGQ7CmNoYXIgZXJyc3RyWzUwXTsKCnNuZF9wY21fdWZyYW1lc190IGJ1ZmZlcl9zaXplID0g
+MTAyNDsKc25kX3BjbV91ZnJhbWVzX3QgcGVyaW9kX3NpemUgPSA2NDsKc25kX3BjbV9od19wYXJh
+bXNfdCAqaHdfcGFyYW1zOwpzbmRfcGNtX3N3X3BhcmFtc190ICpzd19wYXJhbXM7CgogaWYoKGZk
+MT1vcGVuKCJvcmlnLndhdiIsT19SRE9OTFksMCkpPT0tMSkgewogICAgICAgIHByaW50ZigiZXJy
+b3Igb3BlbmluZyBmaWxlXG4iKTsKICAgICAgICByZXR1cm4gLTE7CiAgICB9CiAgICAgICAgIAog
+ICAgZm9yKGNvdW50PTA7Y291bnQ8NDQ7Y291bnQrKykKICAgIHsKICAgICAgICBhPXJlYWQoZmQx
+LCZkLHNpemVvZihjaGFyKSk7ICAgICAgICAvL2ZpcnN0IDQwIGJ5dGVzIG9mIHRoZSB3YXYgZmls
+ZQogICAgfSAgICAKICAgICAgICAgICAgCiAgICAgICAgCiAgIGNvdW50PTA7CiAgIHdoaWxlKGJ5
+dGVzcmVhZCA+MCAmJiBjb3VudDxTSVpFKQogICAgICAgICBieXRlc3JlYWQgPSByZWFkKCBmZDEg
+LCAmYnVmZmVyW2NvdW50KytdLCBzaXplb2YoIHNob3J0IGludCApICk7CgogICBwcmludGYoIm5v
+LiBvZiBzYW1wbGVzIEAxNjAwMEh6IGFyZSAlZFxuIixjb3VudCk7ICAgLy8gY291bnQgaXMgdGhl
+IHNpemUgb2YgdGhlIHdhdmUgZmlsZQogICBwcmludGYoImJ5dGVzcmVhZCA9ICVkXG4iLGJ5dGVz
+cmVhZCk7ICAgICAgICAKCgoKaWYoKGVyciA9IHNuZF9wY21fb3BlbiAoJnBjbV9oYW5kbGUsIGRl
+dmljZV9uYW1lLCBTTkRfUENNX1NUUkVBTV9QTEFZQkFDSywgMCkpIT0wKQogICAgICAgIHsKICAg
+ICAgICBwcmludGYoImVyciBpbiBwY20gb3BlblxuIik7CiAgICAgICAgcHJpbnRmKCJlcnJzdHIg
+aXMgJXNcbiIsc25kX3N0cmVycm9yIChlcnIpKTsKICAgICAgICByZXR1cm4gLTE7CiAgICAgICAg
+fQoKaWYoKGVycj1zbmRfcGNtX2h3X3BhcmFtc19tYWxsb2MgKCZod19wYXJhbXMpKSE9MCl7CiAg
+ICAgICAgcHJpbnRmKCJtYWxsb2MgZXJyXG4iKTsKICAgICAgICBwcmludGYoImVycnN0ciBpcyAl
+c1xuIixzbmRfc3RyZXJyb3IgKGVycikpOwogICAgICAgIHJldHVybiAtMTsKICAgICAgICB9CgoK
+CmlmICgoZXJyID0gc25kX3BjbV9zZXRfcGFyYW1zKCAgICAgICAgICAgICAgcGNtX2hhbmRsZSwK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTTkRfUENNX0ZPUk1B
+VF9TMTZfTEUsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU05E
+X1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgMSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAxNjAwMCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAx
+LAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEwMCkpIDwgMCkg
+eyAgIAogICAgICAgICAgICAgIHByaW50ZigiUGxheWJhY2sgb3BlbiBlcnJvcjogJXNcbiIsIHNu
+ZF9zdHJlcnJvcihlcnIpKTsKICAgICAgICAgICAgICBleGl0KEVYSVRfRkFJTFVSRSk7CiAgICAg
+ICAgICAgICAgfQoKCgppZiAoKGVycj1zbmRfcGNtX3ByZXBhcmUgKHBjbV9oYW5kbGUpKTwwKXsK
+ICAgIHByaW50ZigicGNtIHByZXBhcmUgZXJyb3IgJWRcbiIsZXJyKTsKICAgIHByaW50ZigiZXJy
+c3RyIGlzICVzXG4iLHNuZF9zdHJlcnJvciAoZXJyKSk7CiAgICB9CmZyYW1lcz0wOwoKc2l6ZT1T
+SVpFOwp0ZW1wPTA7CndoaWxlKHNpemU+KDIqcGVyaW9kX3NpemUpKQp7CmZyYW1lcyA9IHNuZF9w
+Y21fd3JpdGVpIChwY21faGFuZGxlLCBidWZmZXIsIHNpemUpOwpwcmludGYoImZyYW1lcyByZXR1
+cm5lZCBpcyAlZFxuIixmcmFtZXMpOwppZiAoZnJhbWVzPjApCiAgICB0ZW1wPWZyYW1lczsKaWYg
+KGZyYW1lcyA9PSAgLTMyKXsKICAgICAgICAgIGZyYW1lcyA9IHNuZF9wY21fcmVjb3ZlcihwY21f
+aGFuZGxlLCBmcmFtZXMsIDApOwogICAgICAgICAgcHJpbnRmKCJyZWNvdmVyIHJldHVybmVkICVk
+XG4iLGZyYW1lcyk7CiAgICAgICAgICB9CmlmIChmcmFtZXMgPCAwKXsKICAgICAgICAgIHByaW50
+Zigic25kX3BjbV93cml0ZWkgZmFpbGVkOiAlc1xuIiwgc25kX3N0cmVycm9yKGZyYW1lcykpOwog
+ICAgICAgICAgcmV0dXJuIC0xOwogICAgICAgICAgfQpwcmludGYoIiVkIGZyYW1lcyB3cml0dGVu
+XG4iLGZyYW1lcyk7CmlmKHRlbXA+MCkKICAgIHNpemU9c2l6ZS10ZW1wOwp9CnNuZF9wY21fY2xv
+c2UgKHBjbV9oYW5kbGUpOwpyZXR1cm4gMDsKfQo=
+------=_Part_6863_24827294.1178119561031
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_Part_6863_24827294.1178119561031--
