@@ -1,95 +1,155 @@
-From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Subject: 2.6.21: known regressions with patches  (for -stable team)
-Date: Wed, 02 May 2007 14:09:58 +0200
-Message-ID: <46387F96.30409@googlemail.com>
+From: Nyx <keres.nyx@gmail.com>
+Subject: Re: Fwd: [Alsa-devel] Read the input of a soundcard
+	with ALSA
+Date: Wed, 2 May 2007 14:23:13 +0200
+Message-ID: <50fdad60705020523w6451a94ahc94533adc256f826@mail.gmail.com>
+References: <50fdad60704200820x77d22314x36786198c7872d6@mail.gmail.com>
+	<4628FD65.4020407@gmail.com>
+	<50fdad60704230718jb9403b3yceaa217dc9a9162d@mail.gmail.com>
+	<s5hirbl2a48.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Sender: linux-acpi-owner@vger.kernel.org
-To: stable@kernel.org, David Miller <davem@davemloft.net>, Robert Peterson <rpeterso@redhat.com>, James.Bottomley@steeleye.com, linux-scsi@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, perex@suse.cz, Markus Rechberger <markus.rechberger@amd.com>, CIJOML <cijoml@volny.cz>, david-b@pacbell.net, Jeff Mahoney <jeffm@suse.com>, reiserfs-dev@namesys.com, Brett Ryland <nappers@gmail.com>, Daniele Venzano <venza@brownhat.org>, netdev@vger.kernel.org, Sebastian Kemper <sebastian_ml@gmx.net>, Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, Mark Lord <lkml@rtr.ca>, Daniel Walker <dwalker@mvista.com>, Thomas Gleixner <tglx@linutronix.de>, Jan Kiszka <jan.kiszka@web.de>, =?ISO-8859-2?Q?Rafa=B3_Bilski?= <rafalbilski@interia.pl>, Dave Jones <davej@codemonkey.org.uk>, Greg KH <gregkh@suse.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A6B224407
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 May 2007 14:23:22 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so102743nzf
+	for <alsa-devel@alsa-project.org>; Wed, 02 May 2007 05:23:19 -0700 (PDT)
+In-Reply-To: <s5hirbl2a48.wl%tiwai@suse.de>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+OK. I only want to read on the input of soundcard. So I wrote an other
+program easier than the first, I write the data in file, but it seems that
+it doesn't work...
 
-Here is a list of known regressions with patches available.
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "alsa/asoundlib.h"
+#include <errno.h>
 
-Feel free to add new regressions/remove fixed etc.
-http://kernelnewbies.org/known_regressions
+unsigned int rate =3D 44100;
+unsigned int nb_channels =3D 2;
+
+int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *hw_params)
+{
+    int err;
+    int dir=3D0;
+    if ((err =3D snd_pcm_hw_params_malloc (&hw_params)) < 0) {
+        fprintf (stderr, "cannot allocate hardware parameter structure
+(%s)\n", snd_strerror (err));
+        exit (1);
+    }
+
+    if ((err =3D snd_pcm_hw_params_any (handle, hw_params)) < 0) {
+        fprintf (stderr, "cannot initialize hardware parameter structure
+(%s)\n", snd_strerror (err));
+        exit (1);
+    }
+    printf("Initialisation des param=E8tres\n");
+
+    if ((err =3D snd_pcm_hw_params_set_access (handle, hw_params,
+SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
+        fprintf (stderr, "cannot set access type (%s)\n", snd_strerror
+(err));
+        exit (1);
+    }
+    printf("Access card configuration\n");
+
+    if ((err =3D snd_pcm_hw_params_set_format (handle, hw_params,
+SND_PCM_FORMAT_S16_LE)) < 0) {
+        fprintf (stderr, "cannot set sample format (%s)\n", snd_strerror
+(err));
+        exit (1);
+    }
+
+    if ((err =3D snd_pcm_hw_params_set_rate_near (handle, hw_params, &rate,
+&dir)) < 0) {
+        fprintf (stderr, "cannot set sample rate (%s)\n", snd_strerror
+(err));
+        exit (1);
+    }
+    if ((err =3D snd_pcm_hw_params_set_channels (handle, hw_params, nb_chan=
+n))
+< 0) {
+        fprintf (stderr, "cannot set channel count (%s)\n", snd_strerror
+(err));
+        exit (1);
+    }
+
+    if ((err =3D snd_pcm_hw_params (handle, hw_params)) < 0) {
+        fprintf (stderr, "cannot set parameters (%s)\n", snd_strerror
+(err));
+        exit (1);
+    }
+    printf("Parameters recorded\n");
+
+    //snd_pcm_hw_params_free (hw_params);
+
+    if ((err =3D snd_pcm_prepare (handle)) < 0) {
+        fprintf (stderr, "cannot prepare audio interface for use (%s)\n",
+snd_strerror (err));
+        exit (1);
+    }
+        return 0;
+}
+
+int main(int   argc, char *argv[]){
+    int err;
+    int j;
+    printf("Beginning \n");
+    snd_pcm_hw_params_t *hw_params_capture, *hw_params_playback;
+    short buf[256];
+    FILE *file;
+
+    fichier =3D fopen( "/root/Desktop/Test/Audio/Capture.001", "w");
+    if (fichier =3D=3D NULL) printf("cannot create file : %i\n", errno);
+    else printf("file created\n");
+
+    /*Open soundcard as capture*/
+    snd_pcm_t *capture_handle;
+
+    if ((err =3D snd_pcm_open (&capture_handle, "hw:0,0",
+SND_PCM_STREAM_CAPTURE, 0)) < 0) {
+        fprintf (stderr, "cannot open audio device %s (%s)\n",  argv[1],
+ snd_strerror (err));
+        exit (1);
+    }
+
+   set_hwparams(capture_handle, hw_params_capture);
+
+   for (j =3D 0 ;  j < 256 ; j++) {
+            if ((err =3D snd_pcm_readi (capture_handle, buf, 128)) < 0)
+printf("cherche pas\n");
+            putc(buf[j], file);       //write in file LEFT Channel
+            putc(buf[j+1], file);  //write in file RIGHT Channel
+            putc(0x0A, file);
+    }
+
+    printf("Close File\n");
+    fclose(file);
+    snd_pcm_close (capture_handle);
+    return 0 ;
+}
 
 
-Subject    : 2.6.21: longhaul freq-scaling broken
-References : http://lkml.org/lkml/2007/5/1/260
-Submitter  : Jan Kiszka <jan.kiszka@web.de>
-Patch      : http://git.kernel.org/?p=linux/kernel/git/davej/cpufreq.git;a=commitdiff_plain;h=07844252ffd81ec192a62014bada1016c9703765
-Status     : patch available
+What do you think about this program... ? I searched about an How-to or some
+help for capture on a soundcard with ALSA, but I didn't found
 
+Thank you
+-- =
 
-Subject    : Kernel hang at "kernel: switched to high resolution mode on cpu 0" when 
-             either/both of CONFIG_NO_HZ, CONFIG_HIGH_RES_TIMERS is used
-References : http://lkml.org/lkml/2007/4/30/464
-Submitter  : Mark Lord <lkml@rtr.ca>
-Handled-By : Daniel Walker <dwalker@mvista.com>
-             Thomas Gleixner <tglx@linutronix.de>
-Patch      : http://lkml.org/lkml/2007/4/13/190
-Status     : patch was suggested
-
-
-Subject    : ACPI related kernel panic
-References : http://lkml.org/lkml/2007/4/30/193
-             http://bugzilla.kernel.org/show_bug.cgi?id=8385
-Submitter  : Sebastian Kemper <sebastian_ml@gmx.net>
-Patches    : http://bugzilla.kernel.org/attachment.cgi?id=11331&action=view
-             http://bugzilla.kernel.org/attachment.cgi?id=11332&action=view
-Status     : patches was suggested
-
-
-Subject    : sis900 oops in 2.6.21.1 after bringing up the network
-References : http://lkml.org/lkml/2007/4/29/138
-             http://lkml.org/lkml/2007/4/29/151
-Patch      : http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=dc5a144991ba803bc8afded105c9db1dea0e57ab
-Submitter  : Brett Ryland <nappers@gmail.com>
-Status     : patch available
-
-
-Subject    : reiserfs -- circular locking
-References : http://lkml.org/lkml/2007/4/26/648
-Submitter  : David Brownell < david-b@pacbell.net >
-Handled-By : Jeff Mahoney < jeffm@suse.com >
-Patch      : http://lkml.org/lkml/2007/4/27/332
-Status     : patch available
-
-
-Subject    : Oops when changing USB DVB-T adapter
-References : http://lkml.org/lkml/2007/3/9/212
-             http://lkml.org/lkml/2007/4/5/154
-Submitter  : CIJOML <cijoml@volny.cz>
-Handled-By : Markus Rechberger < markus.rechberger@amd.com >
-Status     : patches available
-
-
-Subject    : snd_intel8x0: divide error: 0000
-References : http://lkml.org/lkml/2007/3/5/252
-Submitter  : Michal Piotrowski < michal.k.k.piotrowski@gmail.com >
-Handled-By : Takashi Iwai < tiwai@suse.de >
-Patch      : http://lkml.org/lkml/2007/4/20/117
-Status     : patch available
-
-
-Subject    : qla2xxx driver no longer works
-References : http://lkml.org/lkml/2007/4/16/49
-             http://lkml.org/lkml/2007/4/20/224
-Submitter  : David Miller < davem@davemloft.net >
-             Robert Peterson < rpeterso@redhat.com >
-Handled-By : David Miller < davem@davemloft.net >
-Patch      : http://lkml.org/lkml/2007/4/16/234
-Status     : patch was suggested
-
-
-Regards,
-Michal
-
--- 
-Michal K. K. Piotrowski
-Kernel Monkeys
-(http://kernel.wikidot.com/start)
+K
