@@ -1,15 +1,21 @@
-From: Steve Longerbeam <stevel@embeddedalley.com>
-Subject: [PATCH] Add sequence parsing for speaker-outs in
-	snd_hda_parse_pin_def_config()
-Date: Thu, 03 May 2007 10:40:30 -0700
-Message-ID: <463A1E8E.1060303@embeddedalley.com>
+From: "Prabhu Sivaraja" <prabhu.sivaraja@gmail.com>
+Subject: Re: dmix does not mix small files??
+Date: Thu, 3 May 2007 10:48:27 -0700
+Message-ID: <49f264960705031048r2dbd5178mdb8fe99d2b4fb257@mail.gmail.com>
+References: <49f264960705030014v7441c188y3d2ed918472c6085@mail.gmail.com>
+	<Pine.LNX.4.61.0705031042180.8516@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040303010704020009060901"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp105.biz.mail.re2.yahoo.com (smtp105.biz.mail.re2.yahoo.com
-	[206.190.52.174]) by alsa0.perex.cz (Postfix) with SMTP id 08D2C2437D
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.232])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1CB322437D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 May 2007 19:40:57 +0200 (CEST)
+	Thu,  3 May 2007 19:48:29 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so578194nzf
+	for <alsa-devel@alsa-project.org>; Thu, 03 May 2007 10:48:28 -0700 (PDT)
+In-Reply-To: <Pine.LNX.4.61.0705031042180.8516@tm8103.perex-int.cz>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,201 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040303010704020009060901
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Thanks for your suggestion. I do agree with you. But when I change my
+period_size to 4KB and set number of periods to 16, my hw_ptr or appl_ptr
+never move from their initial value of 0. So you think this a driver
+problem? But the hw_ptr is not something the driver controls? Would
+appreciate if you could explain more on this.
+
+Thanks.
+Prabhu.
 
 
+ On 5/3/07, Jaroslav Kysela <perex@suse.cz> wrote:
 
---------------040303010704020009060901
-Content-Type: text/x-patch;
- name="speaker-seq.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="speaker-seq.patch"
-
-changeset:   5028:01537f056c79
-tag:         tip
-user:        stevel@embeddedalley.com
-date:        Thu May 03 10:30:04 2007 -0700
-summary:     Add speaker pin sequencing to hda_codec.c:snd_hda_parse_pin_def_config().
-
-Some verb tables (such as an Asus VT sent by IDT) contain only speaker
-outs in the default pin configs, and no line-outs. In such a case the
-speaker sequence numbers have to be used to order the speaker out
-pins, just as is being done for line-out pins. Then, when speaker-outs
-are copied to line-outs, the line-outs will be ordered properly.
-
-Signed-off-by: Steve Longerbeam <stevel@embeddedalley.com>
-
-diff -r c7366efee611 -r 01537f056c79 pci/hda/hda_codec.c
---- a/pci/hda/hda_codec.c	Thu May 03 10:24:35 2007 -0700
-+++ b/pci/hda/hda_codec.c	Thu May 03 10:30:04 2007 -0700
-@@ -2112,6 +2112,32 @@ static int __devinit is_in_nid_list(hda_
- 	return 0;
- }
- 
-+
-+/*
-+ * Sort an associated group of pins according to their sequence numbers.
-+ */
-+static void sort_pins_by_sequence(hda_nid_t * pins, short * sequences,
-+				  int num_pins)
-+{
-+	int i, j;
-+	short seq;
-+	hda_nid_t nid;
-+	
-+	for (i = 0; i < num_pins; i++) {
-+		for (j = i + 1; j < num_pins; j++) {
-+			if (sequences[i] > sequences[j]) {
-+				seq = sequences[i];
-+				sequences[i] = sequences[j];
-+				sequences[j] = seq;
-+				nid = pins[i];
-+				pins[i] = pins[j];
-+				pins[j] = nid;
-+			}
-+		}
-+	}
-+}
-+
-+
- /*
-  * Parse all pin widgets and store the useful pin nids to cfg
-  *
-@@ -2134,13 +2160,16 @@ int __devinit snd_hda_parse_pin_def_conf
- 					   hda_nid_t *ignore_nids)
- {
- 	hda_nid_t nid, nid_start;
--	int i, j, nodes;
--	short seq, assoc_line_out, sequences[ARRAY_SIZE(cfg->line_out_pins)];
-+	int nodes;
-+	short seq, assoc_line_out, assoc_speaker;
-+	short sequences_line_out[ARRAY_SIZE(cfg->line_out_pins)];
-+	short sequences_speaker[ARRAY_SIZE(cfg->speaker_pins)];
- 
- 	memset(cfg, 0, sizeof(*cfg));
- 
--	memset(sequences, 0, sizeof(sequences));
--	assoc_line_out = 0;
-+	memset(sequences_line_out, 0, sizeof(sequences_line_out));
-+	memset(sequences_speaker, 0, sizeof(sequences_speaker));
-+	assoc_line_out = assoc_speaker = 0;
- 
- 	nodes = snd_hda_get_sub_nodes(codec, codec->afg, &nid_start);
- 	for (nid = nid_start; nid < nodes + nid_start; nid++) {
-@@ -2175,13 +2204,22 @@ int __devinit snd_hda_parse_pin_def_conf
- 			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins))
- 				continue;
- 			cfg->line_out_pins[cfg->line_outs] = nid;
--			sequences[cfg->line_outs] = seq;
-+			sequences_line_out[cfg->line_outs] = seq;
- 			cfg->line_outs++;
- 			break;
- 		case AC_JACK_SPEAKER:
-+			seq = get_defcfg_sequence(def_conf);
-+			assoc = get_defcfg_association(def_conf);
-+			if (! assoc)
-+				continue;
-+			if (! assoc_speaker)
-+				assoc_speaker = assoc;
-+			else if (assoc_speaker != assoc)
-+				continue;
- 			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins))
- 				continue;
- 			cfg->speaker_pins[cfg->speaker_outs] = nid;
-+			sequences_speaker[cfg->speaker_outs] = seq;
- 			cfg->speaker_outs++;
- 			break;
- 		case AC_JACK_HP_OUT:
-@@ -2227,16 +2265,32 @@ int __devinit snd_hda_parse_pin_def_conf
- 	}
- 
- 	/* sort by sequence */
--	for (i = 0; i < cfg->line_outs; i++)
--		for (j = i + 1; j < cfg->line_outs; j++)
--			if (sequences[i] > sequences[j]) {
--				seq = sequences[i];
--				sequences[i] = sequences[j];
--				sequences[j] = seq;
--				nid = cfg->line_out_pins[i];
--				cfg->line_out_pins[i] = cfg->line_out_pins[j];
--				cfg->line_out_pins[j] = nid;
--			}
-+	sort_pins_by_sequence(cfg->line_out_pins, sequences_line_out,
-+			      cfg->line_outs);
-+	sort_pins_by_sequence(cfg->speaker_pins, sequences_speaker,
-+			      cfg->speaker_outs);
-+	
-+	/*
-+	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
-+	 * as a primary output
-+	 */
-+	if (!cfg->line_outs) {
-+		if (cfg->speaker_outs) {
-+			cfg->line_outs = cfg->speaker_outs;
-+			memcpy(cfg->line_out_pins, cfg->speaker_pins,
-+			       sizeof(cfg->speaker_pins));
-+			cfg->speaker_outs = 0;
-+			memset(cfg->speaker_pins, 0, sizeof(cfg->speaker_pins));
-+			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
-+		} else if (cfg->hp_outs) {
-+			cfg->line_outs = cfg->hp_outs;
-+			memcpy(cfg->line_out_pins, cfg->hp_pins,
-+			       sizeof(cfg->hp_pins));
-+			cfg->hp_outs = 0;
-+			memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
-+			cfg->line_out_type = AUTO_PIN_HP_OUT;
-+		}
-+	}
- 
- 	/* Reorder the surround channels
- 	 * ALSA sequence is front/surr/clfe/side
-@@ -2278,28 +2332,6 @@ int __devinit snd_hda_parse_pin_def_conf
- 		   cfg->input_pins[AUTO_PIN_CD],
- 		   cfg->input_pins[AUTO_PIN_AUX]);
- 
--	/*
--	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
--	 * as a primary output
--	 */
--	if (!cfg->line_outs) {
--		if (cfg->speaker_outs) {
--			cfg->line_outs = cfg->speaker_outs;
--			memcpy(cfg->line_out_pins, cfg->speaker_pins,
--			       sizeof(cfg->speaker_pins));
--			cfg->speaker_outs = 0;
--			memset(cfg->speaker_pins, 0, sizeof(cfg->speaker_pins));
--			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
--		} else if (cfg->hp_outs) {
--			cfg->line_outs = cfg->hp_outs;
--			memcpy(cfg->line_out_pins, cfg->hp_pins,
--			       sizeof(cfg->hp_pins));
--			cfg->hp_outs = 0;
--			memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
--			cfg->line_out_type = AUTO_PIN_HP_OUT;
--		}
--	}
--
- 	return 0;
- }
- 
-
-
---------------040303010704020009060901
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------040303010704020009060901--
+> On Thu, 3 May 2007, Prabhu Sivaraja wrote:
+>
+> > Hi,
+> >
+> > I've been stuck on this dmix problem for the past week and have tried
+> > everything under the sun. Please any help or comment is much
+> appreciated.
+> > Thanks a lot.
+>
+> For nice dmix support, it's better to have more periods than 2 and small
+> ones. Your allowed configuration 2 x 32KB is not very good.
+>
+> But judging from the current dmix code, this code may cause to skip large
+> count of samples or your driver behaves badly:
+>
+> /* If we have too litte periods, better to align the start  position
+> * to the period boundary so that the interrupt can be handled  properly
+> * at the right time.
+> */
+> dmix->slave_appl_ptr = ((dmix->slave_appl_ptr + dmix->slave_period_size -
+> 1)
+>                       / dmix->slave_period_size) *
+> dmix->slave_period_size;
+>
+>
+> It's from changeset:
+>
+> hangeset:   2109:349c0b0018b9
+> user:        tiwai
+> date:        Fri Mar 24 14:53:41 2006 +0000
+> files:       src/pcm/pcm_direct.c src/pcm/pcm_dmix.c
+> description:
+> Fix noisy output of dmix with two periods
+>
+> Fixed the noisy output of dmix with two (or less) periods.
+> The dmix tends to give noise or XRUN when running with two periods
+> because of its implementation nature.  To avoid this, the start
+> position is aligned to the period size, so that the updates are synced
+> with interrupts of slave PCM.
+>
+> > So in order to debug this I tried to decrease my period_size = 4KB but
+> when
+> > I do this my hw_ptr never moves.
+>
+> Driver problem?
+>
+>                                        Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SUSE Labs
+>
