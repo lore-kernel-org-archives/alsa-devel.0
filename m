@@ -1,17 +1,15 @@
 From: Steve Longerbeam <stevel@embeddedalley.com>
-Subject: Re: [PATCH] multi-channel playback and capture fixes
- for	stac92xx codecs
-Date: Thu, 03 May 2007 10:20:58 -0700
-Message-ID: <463A19FA.7000102@embeddedalley.com>
-References: <46392437.7040807@embeddedalley.com> <s5hy7k6uq28.wl%tiwai@suse.de>
+Subject: [PATCH] Add sequence parsing for speaker-outs in
+	snd_hda_parse_pin_def_config()
+Date: Thu, 03 May 2007 10:40:30 -0700
+Message-ID: <463A1E8E.1060303@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040103070501070803000506"
+Content-Type: multipart/mixed; boundary="------------040303010704020009060901"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp101.biz.mail.re2.yahoo.com (smtp101.biz.mail.re2.yahoo.com
-	[68.142.229.215]) by alsa0.perex.cz (Postfix) with SMTP id 2708024373
+Received: from smtp105.biz.mail.re2.yahoo.com (smtp105.biz.mail.re2.yahoo.com
+	[206.190.52.174]) by alsa0.perex.cz (Postfix) with SMTP id 08D2C2437D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 May 2007 19:21:06 +0200 (CEST)
-In-Reply-To: <s5hy7k6uq28.wl%tiwai@suse.de>
+	Thu,  3 May 2007 19:40:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,299 +19,193 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------040103070501070803000506
+--------------040303010704020009060901
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Takashi Iwai wrote:
-> At Wed, 02 May 2007 16:52:23 -0700,
-> Steve Longerbeam wrote:
->   
->> Hi,
->>
->> I have picked up where Matt Porter left off on stac92xx HDA codec devel. 
->> I've been working with the 9200, 9221, 9202, 9250, and 9205 codecs, and 
->> I found some problems with muti-channel playback on 922x and 9205. Also 
->> a problem with input mux selection for codecs with more than one 
->> configured input pin. I've tested the attached patch on all the above 
->> listed codecs.
->>     
->
-> Thanks, the patch looks good to me.
-> Could you fix minor coding-style issues (put space around '=' in some
-> places) and give a sign-off for merge?
->   
-
-Ok, added spaces around a couple '='s and added a sign-off.
-
-Thanks,
-Steve
 
 
---------------040103070501070803000506
+--------------040303010704020009060901
 Content-Type: text/x-patch;
- name="stac92xx.patch"
+ name="speaker-seq.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="stac92xx.patch"
+ filename="speaker-seq.patch"
 
-searching for changes
-changeset:   5026:3bb67e1503c4
+changeset:   5028:01537f056c79
 tag:         tip
 user:        stevel@embeddedalley.com
-date:        Wed May 02 15:51:36 2007 -0700
-summary:     bug fixes for stac92xx HDA codecs.
+date:        Thu May 03 10:30:04 2007 -0700
+summary:     Add speaker pin sequencing to hda_codec.c:snd_hda_parse_pin_def_config().
 
-* fixed surround playback on stac922x. Pin direction control bits were
-  not being set correctly in stac92xx_set_pinctl(). Specifically it
-  would refuse to set the port as an output if the port was already
-  configured as an input. Last hunk (#8).
-
-* fixed an input mux bug on 92xx codecs. When there is more than one
-  possible input calculated for the muxes, the actual mux widget never
-  gets set from its reset default, which is index 0, in the stac9221
-  case that is port E. So alsamixer/amixer/gnome-mixer report the Mic
-  as being the selected input source, but in fact is something else
-  (line-in port E in stac9221 case). Another problem with this is that
-  if you actually try to set the mux input to "Mic", nothing happens
-  because *cur_val == idx (see snd_hda_input_mux_put). You have to
-  actually toggle input source to line-in then back to mic to actually
-  set the mux widget. Hunk #7.
-
-* fixed some typos in patch_sigmatel.c. Hunk #6.
-
-* fix to stac92xx_add_dyn_out_pins() that fixes surround playback on
-  codecs with less that 4 DACs (stac9205 for example). It reads the widget
-  caps cache created by hda_codec to count the total number of analog DACs
-  found. It then uses that to determine whether there will be enough
-  independent DACs available for line/mic switch controls. Hunk #1, #2,
-  and #3.
-
-* improvements to stac92xx_auto_fill_dac_nids() to make it more general.
-  This fixes surround playback on some codecs in combination with the
-  fix to stac92xx_add_dyn_out_pins() above. It reads the full connection
-  list now, instead of just the first entry, and then locates an analog
-  DAC in the list. If one is found and it's free, assign it to that line-out.
-  If no free DAC is found for the line-out, return -ENODEV. It also makes
-  sure to actually select the chosen DAC if more than one DAC is input to
-  the pin. Hunks #4, #5.
+Some verb tables (such as an Asus VT sent by IDT) contain only speaker
+outs in the default pin configs, and no line-outs. In such a case the
+speaker sequence numbers have to be used to order the speaker out
+pins, just as is being done for line-out pins. Then, when speaker-outs
+are copied to line-outs, the line-outs will be ordered properly.
 
 Signed-off-by: Steve Longerbeam <stevel@embeddedalley.com>
 
-diff -r 4e09f3b9fd66 -r 3bb67e1503c4 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Wed May 02 12:09:48 2007 +0200
-+++ b/pci/hda/patch_sigmatel.c	Wed May 02 15:51:36 2007 -0700
-@@ -1070,11 +1070,23 @@ static int stac92xx_add_dyn_out_pins(str
- static int stac92xx_add_dyn_out_pins(struct hda_codec *codec, struct auto_pin_cfg *cfg)
- {
- 	struct sigmatel_spec *spec = codec->spec;
--
-+	unsigned int wcaps, wtype;
-+	int i, num_dacs = 0;
-+	
-+	/* use the wcaps cache to count all DACs available for line-outs */
-+	for (i = 0; i < codec->num_nodes; i++) {
-+		wcaps = codec->wcaps[i];
-+		wtype = (wcaps & AC_WCAP_TYPE) >> AC_WCAP_TYPE_SHIFT;
-+		if (wtype == AC_WID_AUD_OUT && !(wcaps & AC_WCAP_DIGITAL))
-+			num_dacs++;
-+	}
-+
-+	snd_printdd("%s: total dac count=%d\n", __func__, num_dacs);
-+	
- 	switch (cfg->line_outs) {
- 	case 3:
- 		/* add line-in as side */
--		if (cfg->input_pins[AUTO_PIN_LINE]) {
-+		if (cfg->input_pins[AUTO_PIN_LINE] && num_dacs > 3) {
- 			cfg->line_out_pins[3] = cfg->input_pins[AUTO_PIN_LINE];
- 			spec->line_switch = 1;
- 			cfg->line_outs++;
-@@ -1082,12 +1094,12 @@ static int stac92xx_add_dyn_out_pins(str
- 		break;
- 	case 2:
- 		/* add line-in as clfe and mic as side */
--		if (cfg->input_pins[AUTO_PIN_LINE]) {
-+		if (cfg->input_pins[AUTO_PIN_LINE] && num_dacs > 2) {
- 			cfg->line_out_pins[2] = cfg->input_pins[AUTO_PIN_LINE];
- 			spec->line_switch = 1;
- 			cfg->line_outs++;
- 		}
--		if (cfg->input_pins[AUTO_PIN_MIC]) {
-+		if (cfg->input_pins[AUTO_PIN_MIC] && num_dacs > 3) {
- 			cfg->line_out_pins[3] = cfg->input_pins[AUTO_PIN_MIC];
- 			spec->mic_switch = 1;
- 			cfg->line_outs++;
-@@ -1095,12 +1107,12 @@ static int stac92xx_add_dyn_out_pins(str
- 		break;
- 	case 1:
- 		/* add line-in as surr and mic as clfe */
--		if (cfg->input_pins[AUTO_PIN_LINE]) {
-+		if (cfg->input_pins[AUTO_PIN_LINE] && num_dacs > 1) {
- 			cfg->line_out_pins[1] = cfg->input_pins[AUTO_PIN_LINE];
- 			spec->line_switch = 1;
- 			cfg->line_outs++;
- 		}
--		if (cfg->input_pins[AUTO_PIN_MIC]) {
-+		if (cfg->input_pins[AUTO_PIN_MIC] && num_dacs > 2) {
- 			cfg->line_out_pins[2] = cfg->input_pins[AUTO_PIN_MIC];
- 			spec->mic_switch = 1;
- 			cfg->line_outs++;
-@@ -1111,33 +1123,76 @@ static int stac92xx_add_dyn_out_pins(str
+diff -r c7366efee611 -r 01537f056c79 pci/hda/hda_codec.c
+--- a/pci/hda/hda_codec.c	Thu May 03 10:24:35 2007 -0700
++++ b/pci/hda/hda_codec.c	Thu May 03 10:30:04 2007 -0700
+@@ -2112,6 +2112,32 @@ static int __devinit is_in_nid_list(hda_
  	return 0;
  }
  
 +
-+static int is_in_dac_nids(struct sigmatel_spec *spec, hda_nid_t nid)
++/*
++ * Sort an associated group of pins according to their sequence numbers.
++ */
++static void sort_pins_by_sequence(hda_nid_t * pins, short * sequences,
++				  int num_pins)
 +{
-+	int i;
++	int i, j;
++	short seq;
++	hda_nid_t nid;
 +	
-+	for (i = 0; i < spec->multiout.num_dacs; i++) {
-+		if (spec->multiout.dac_nids[i] == nid)
-+			return 1;
++	for (i = 0; i < num_pins; i++) {
++		for (j = i + 1; j < num_pins; j++) {
++			if (sequences[i] > sequences[j]) {
++				seq = sequences[i];
++				sequences[i] = sequences[j];
++				sequences[j] = seq;
++				nid = pins[i];
++				pins[i] = pins[j];
++				pins[j] = nid;
++			}
++		}
 +	}
-+
-+	return 0;
 +}
 +
++
  /*
-- * XXX The line_out pin widget connection list may not be set to the
-- * desired DAC nid. This is the case on 927x where ports A and B can
-- * be routed to several DACs.
-- *
-- * This requires an analysis of the line-out/hp pin configuration
-- * to provide a best fit for pin/DAC configurations that are routable.
-- * For now, 927x DAC4 is not supported and 927x DAC1 output to ports
-- * A and B is not supported.
-+ * Fill in the dac_nids table from the parsed pin configuration
-+ * This function only works when every pin in line_out_pins[]
-+ * contains atleast one DAC in its connection list. Some 92xx
-+ * codecs are not connected directly to a DAC, such as the 9200
-+ * and 9202/925x. For those, dac_nids[] must be hard-coded.
-  */
--/* fill in the dac_nids table from the parsed pin configuration */
- static int stac92xx_auto_fill_dac_nids(struct hda_codec *codec,
- 				       const struct auto_pin_cfg *cfg)
+  * Parse all pin widgets and store the useful pin nids to cfg
+  *
+@@ -2134,13 +2160,16 @@ int __devinit snd_hda_parse_pin_def_conf
+ 					   hda_nid_t *ignore_nids)
  {
- 	struct sigmatel_spec *spec = codec->spec;
--	hda_nid_t nid;
--	int i;
--
--	/* check the pins hardwired to audio widget */
-+	int i, j, conn_len = 0; 
-+	hda_nid_t nid, conn[HDA_MAX_CONNECTIONS];
-+	unsigned int wcaps, wtype;
-+	
- 	for (i = 0; i < cfg->line_outs; i++) {
- 		nid = cfg->line_out_pins[i];
--		spec->multiout.dac_nids[i] = snd_hda_codec_read(codec, nid, 0,
--					AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
--	}
--
--	spec->multiout.num_dacs = cfg->line_outs;
--
-+		conn_len = snd_hda_get_connections(codec, nid, conn,
-+						   HDA_MAX_CONNECTIONS);
-+		for (j = 0; j < conn_len; j++) {
-+			wcaps = snd_hda_param_read(codec, conn[j],
-+						   AC_PAR_AUDIO_WIDGET_CAP);
-+			wtype = (wcaps & AC_WCAP_TYPE) >> AC_WCAP_TYPE_SHIFT;
-+
-+			if (wtype != AC_WID_AUD_OUT ||
-+			    (wcaps & AC_WCAP_DIGITAL))
+ 	hda_nid_t nid, nid_start;
+-	int i, j, nodes;
+-	short seq, assoc_line_out, sequences[ARRAY_SIZE(cfg->line_out_pins)];
++	int nodes;
++	short seq, assoc_line_out, assoc_speaker;
++	short sequences_line_out[ARRAY_SIZE(cfg->line_out_pins)];
++	short sequences_speaker[ARRAY_SIZE(cfg->speaker_pins)];
+ 
+ 	memset(cfg, 0, sizeof(*cfg));
+ 
+-	memset(sequences, 0, sizeof(sequences));
+-	assoc_line_out = 0;
++	memset(sequences_line_out, 0, sizeof(sequences_line_out));
++	memset(sequences_speaker, 0, sizeof(sequences_speaker));
++	assoc_line_out = assoc_speaker = 0;
+ 
+ 	nodes = snd_hda_get_sub_nodes(codec, codec->afg, &nid_start);
+ 	for (nid = nid_start; nid < nodes + nid_start; nid++) {
+@@ -2175,13 +2204,22 @@ int __devinit snd_hda_parse_pin_def_conf
+ 			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins))
+ 				continue;
+ 			cfg->line_out_pins[cfg->line_outs] = nid;
+-			sequences[cfg->line_outs] = seq;
++			sequences_line_out[cfg->line_outs] = seq;
+ 			cfg->line_outs++;
+ 			break;
+ 		case AC_JACK_SPEAKER:
++			seq = get_defcfg_sequence(def_conf);
++			assoc = get_defcfg_association(def_conf);
++			if (! assoc)
 +				continue;
-+			/* conn[j] is a DAC routed to this line-out */
-+			if (!is_in_dac_nids(spec, conn[j]))
-+				break;
-+		}
-+
-+		if (j == conn_len) {
-+			/* error out, no available DAC found */
-+			snd_printk(KERN_ERR
-+				   "%s: No available DAC for pin 0x%x\n",
-+				   __func__, nid);
-+			return -ENODEV;
-+		}
-+
-+		spec->multiout.dac_nids[i] = conn[j];
-+		spec->multiout.num_dacs++;
-+		if (conn_len > 1) {
-+			/* select this DAC in the pin's input mux */
-+			snd_hda_codec_write(codec, nid, 0,
-+					    AC_VERB_SET_CONNECT_SEL, j);
-+
++			if (! assoc_speaker)
++				assoc_speaker = assoc;
++			else if (assoc_speaker != assoc)
++				continue;
+ 			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins))
+ 				continue;
+ 			cfg->speaker_pins[cfg->speaker_outs] = nid;
++			sequences_speaker[cfg->speaker_outs] = seq;
+ 			cfg->speaker_outs++;
+ 			break;
+ 		case AC_JACK_HP_OUT:
+@@ -2227,16 +2265,32 @@ int __devinit snd_hda_parse_pin_def_conf
+ 	}
+ 
+ 	/* sort by sequence */
+-	for (i = 0; i < cfg->line_outs; i++)
+-		for (j = i + 1; j < cfg->line_outs; j++)
+-			if (sequences[i] > sequences[j]) {
+-				seq = sequences[i];
+-				sequences[i] = sequences[j];
+-				sequences[j] = seq;
+-				nid = cfg->line_out_pins[i];
+-				cfg->line_out_pins[i] = cfg->line_out_pins[j];
+-				cfg->line_out_pins[j] = nid;
+-			}
++	sort_pins_by_sequence(cfg->line_out_pins, sequences_line_out,
++			      cfg->line_outs);
++	sort_pins_by_sequence(cfg->speaker_pins, sequences_speaker,
++			      cfg->speaker_outs);
++	
++	/*
++	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
++	 * as a primary output
++	 */
++	if (!cfg->line_outs) {
++		if (cfg->speaker_outs) {
++			cfg->line_outs = cfg->speaker_outs;
++			memcpy(cfg->line_out_pins, cfg->speaker_pins,
++			       sizeof(cfg->speaker_pins));
++			cfg->speaker_outs = 0;
++			memset(cfg->speaker_pins, 0, sizeof(cfg->speaker_pins));
++			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
++		} else if (cfg->hp_outs) {
++			cfg->line_outs = cfg->hp_outs;
++			memcpy(cfg->line_out_pins, cfg->hp_pins,
++			       sizeof(cfg->hp_pins));
++			cfg->hp_outs = 0;
++			memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
++			cfg->line_out_type = AUTO_PIN_HP_OUT;
 +		}
 +	}
-+
-+	snd_printd("dac_nids=%d (0x%x/0x%x/0x%x/0x%x/0x%x)\n",
-+		   spec->multiout.num_dacs,
-+		   spec->multiout.dac_nids[0],
-+		   spec->multiout.dac_nids[1],
-+		   spec->multiout.dac_nids[2],
-+		   spec->multiout.dac_nids[3],
-+		   spec->multiout.dac_nids[4]);
+ 
+ 	/* Reorder the surround channels
+ 	 * ALSA sequence is front/surr/clfe/side
+@@ -2278,28 +2332,6 @@ int __devinit snd_hda_parse_pin_def_conf
+ 		   cfg->input_pins[AUTO_PIN_CD],
+ 		   cfg->input_pins[AUTO_PIN_AUX]);
+ 
+-	/*
+-	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
+-	 * as a primary output
+-	 */
+-	if (!cfg->line_outs) {
+-		if (cfg->speaker_outs) {
+-			cfg->line_outs = cfg->speaker_outs;
+-			memcpy(cfg->line_out_pins, cfg->speaker_pins,
+-			       sizeof(cfg->speaker_pins));
+-			cfg->speaker_outs = 0;
+-			memset(cfg->speaker_pins, 0, sizeof(cfg->speaker_pins));
+-			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
+-		} else if (cfg->hp_outs) {
+-			cfg->line_outs = cfg->hp_outs;
+-			memcpy(cfg->line_out_pins, cfg->hp_pins,
+-			       sizeof(cfg->hp_pins));
+-			cfg->hp_outs = 0;
+-			memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
+-			cfg->line_out_type = AUTO_PIN_HP_OUT;
+-		}
+-	}
+-
  	return 0;
  }
  
-@@ -1204,12 +1259,8 @@ static int stac92xx_auto_create_multi_ou
- 
- static int check_in_dac_nids(struct sigmatel_spec *spec, hda_nid_t nid)
- {
--	int i;
--
--	for (i = 0; i < spec->multiout.num_dacs; i++) {
--		if (spec->multiout.dac_nids[i] == nid)
--			return 1;
--	}
-+	if (is_in_dac_nids(spec, nid))
-+		return 1;
- 	if (spec->multiout.hp_nid == nid)
- 		return 1;
- 	return 0;
-@@ -1251,10 +1302,8 @@ static int stac92xx_auto_create_hp_ctls(
- 		add_spec_dacs(spec, nid);
- 	}
- 	for (i = 0; i < cfg->speaker_outs; i++) {
--		nid = snd_hda_codec_read(codec, cfg->speaker_pins[0], 0,
-+		nid = snd_hda_codec_read(codec, cfg->speaker_pins[i], 0,
- 					 AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
--		if (check_in_dac_nids(spec, nid))
--			nid = 0;
- 		if (check_in_dac_nids(spec, nid))
- 			nid = 0;
- 		if (! nid)
-@@ -1370,7 +1419,7 @@ static int stac92xx_auto_create_analog_i
- 		imux->num_items++;
- 	}
- 
--	if (imux->num_items == 1) {
-+	if (imux->num_items) {
- 		/*
- 		 * Set the current input for the muxes.
- 		 * The STAC9221 has two input muxes with identical source
-@@ -1690,8 +1739,12 @@ static void stac92xx_set_pinctl(struct h
- {
- 	unsigned int pin_ctl = snd_hda_codec_read(codec, nid,
- 			0, AC_VERB_GET_PIN_WIDGET_CONTROL, 0x00);
--	if (flag == AC_PINCTL_OUT_EN && (pin_ctl & AC_PINCTL_IN_EN))
--		return;
-+
-+	/* if setting pin direction bits, clear the current
-+	   direction bits first */
-+	if (flag & (AC_PINCTL_IN_EN | AC_PINCTL_OUT_EN))
-+		pin_ctl &= ~(AC_PINCTL_IN_EN | AC_PINCTL_OUT_EN);
-+	
- 	snd_hda_codec_write(codec, nid, 0,
- 			AC_VERB_SET_PIN_WIDGET_CONTROL,
- 			pin_ctl | flag);
 
 
---------------040103070501070803000506
+--------------040303010704020009060901
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -324,4 +216,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------040103070501070803000506--
+--------------040303010704020009060901--
