@@ -1,18 +1,14 @@
-From: "Prabhu Sivaraja" <prabhu.sivaraja@gmail.com>
-Subject: dmix does not mix small files??
-Date: Thu, 3 May 2007 00:14:24 -0700
-Message-ID: <49f264960705030014v7441c188y3d2ed918472c6085@mail.gmail.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Add support for new HP DV series laptops
+Date: Thu, 03 May 2007 00:15:57 -0700
+Message-ID: <1178176557.4854.8.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-IxXlH7XMJ/WdC1uKA5VU"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65C2A2446B
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A33B244E9
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 May 2007 09:14:26 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so394811nzf
-	for <alsa-devel@alsa-project.org>; Thu, 03 May 2007 00:14:24 -0700 (PDT)
-Content-Disposition: inline
+	Thu,  3 May 2007 09:15:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,66 +18,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de, perex@suse.cz
+To: ALSA Developers <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I've been stuck on this dmix problem for the past week and have tried
-everything under the sun. Please any help or comment is much appreciated.
-Thanks a lot.
+--=-IxXlH7XMJ/WdC1uKA5VU
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Background info.
------------------------
-In my ALSA driver I have thread that keeps track of hw_ptr(dmix)
-appl_ptr(for all other cases) and copies the incoming data from kernal
-buffer into device circular buffer(which is monitored by the device). I
-allocate 64KB kernal buffer in my module_init function . (See allocation
-below)
-snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
-snd_dma_continuous_data(GFP_KERNEL),  64*1024 , 64*1024);
+This patch adds support for 3 new HP laptops to the Conexant "Venice"
+driver.
 
-So I monitor this kernal buffer and copy data from this to my device
-circular buffer which is also 64KB.
 
-My period size is defined as 32KB. (See below)
-substream->runtime->hw.period_bytes_min = 1024*32;
-substream->runtime->hw.period_bytes_max = 1024*32;
-substream->runtime->hw.periods_min = 2;
-substream->runtime->hw.periods_max = 2;
+Signed off by Tobin Davis <tdavis@dsl-only.net>
 
-My asound.conf file
-   pcm.mix {
-        type dmix
-        ipc_key 1024
-        slave {
-        pcm "hw:0,0"
-           rate 48000
-        }
-    }
-    pcm.!default {
-        type plug
-        slave.pcm "mix"
-    }
+--=-IxXlH7XMJ/WdC1uKA5VU
+Content-Disposition: attachment; filename=conexant-test21.patch
+Content-Type: text/x-patch; name=conexant-test21.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Everything was working fine until I noticed something weird. When I am
-playing a long wav file by invoking aplay and then try and play another
-small wav file simultaneously, the second file never gets mixed if the file
-is less than 64KB(my buffer size). If the second file is larger than
-64KB then the second file gets mixed with the first one as it should since I
-am using dmix plugin.
+diff -r 4e09f3b9fd66 pci/hda/patch_conexant.c
+--- a/pci/hda/patch_conexant.c	Wed May 02 12:09:48 2007 +0200
++++ b/pci/hda/patch_conexant.c	Thu May 03 00:11:20 2007 -0700
+@@ -787,6 +787,9 @@ static struct snd_pci_quirk cxt5045_cfg_
+ static struct snd_pci_quirk cxt5045_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x30b7, "HP DV6000Z", CXT5045_LAPTOP),
+ 	SND_PCI_QUIRK(0x103c, 0x30bb, "HP DV8000", CXT5045_LAPTOP),
++	SND_PCI_QUIRK(0x103c, 0x30b2, "HP DV Series", CXT5045_LAPTOP),
++	SND_PCI_QUIRK(0x103c, 0x30b5, "HP DV2120", CXT5045_LAPTOP),
++	SND_PCI_QUIRK(0x103c, 0x30cd, "HP DV Series", CXT5045_LAPTOP),
+ 	SND_PCI_QUIRK(0x1734, 0x10ad, "Fujitsu Si1520", CXT5045_FUJITSU),
+ 	SND_PCI_QUIRK(0x8086, 0x2111, "Conexant Reference board", CXT5045_LAPTOP),
+ 	{}
 
-So in order to debug this I tried to decrease my period_size = 4KB but when
-I do this my hw_ptr never moves.
+--=-IxXlH7XMJ/WdC1uKA5VU
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-My question.
-1. Why do you think a file smaller than 64KB does not get mixed. (Obviously
-it has something to do with my buffer size but I dont get why?)
-2. When I decrease my period_size to 4KB while keeping my buffer size at
-64KB, why doesnt my hw_ptr move?
-3. How else would I debug this?
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Thanks in advance. I would really appreciate any help.
-
-Regards
-Prabhu.
+--=-IxXlH7XMJ/WdC1uKA5VU--
