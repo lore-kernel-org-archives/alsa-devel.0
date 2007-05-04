@@ -1,19 +1,17 @@
 From: Steve Longerbeam <stevel@embeddedalley.com>
 Subject: Re: [PATCH] Add support for gain in softvol plugin
-Date: Fri, 04 May 2007 09:27:40 -0700
-Message-ID: <463B5EFC.6080801@embeddedalley.com>
-References: <463A33D8.3090907@embeddedalley.com>
-	<Pine.LNX.4.61.0705032121110.7861@tm8103.perex-int.cz>
-	<463A6100.3070708@embeddedalley.com>
-	<Pine.LNX.4.61.0705040938540.7594@tm8103.perex-int.cz>
+Date: Fri, 04 May 2007 10:33:16 -0700
+Message-ID: <463B6E5C.70802@embeddedalley.com>
+References: <463A33D8.3090907@embeddedalley.com>	<Pine.LNX.4.61.0705032121110.7861@tm8103.perex-int.cz>	<463A6100.3070708@embeddedalley.com>	<Pine.LNX.4.61.0705040938540.7594@tm8103.perex-int.cz>
+	<463B5EFC.6080801@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040204070504000400050007"
+Content-Type: multipart/mixed; boundary="------------010909080902040203090604"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp103.biz.mail.mud.yahoo.com (smtp103.biz.mail.mud.yahoo.com
-	[68.142.200.238]) by alsa0.perex.cz (Postfix) with SMTP id 9BFD5244A5
+	[68.142.200.238]) by alsa0.perex.cz (Postfix) with SMTP id DF3BD244AC
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 May 2007 18:27:43 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.61.0705040938540.7594@tm8103.perex-int.cz>
+	Fri,  4 May 2007 19:33:19 +0200 (CEST)
+In-Reply-To: <463B5EFC.6080801@embeddedalley.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,70 +26,41 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------040204070504000400050007
+--------------010909080902040203090604
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Jaroslav Kysela wrote:
-> On Thu, 3 May 2007, Steve Longerbeam wrote:
->
->   
->> Jaroslav Kysela wrote:
->>     
->>> On Thu, 3 May 2007, Steve Longerbeam wrote:
->>>
->>>   
->>>       
->>>> Hi all,
->>>>
->>>> What do you think of this patch? I tested this using a stac9205 HDA codec with
->>>> all sample formats supported by softvol (s32, s16, s24, big and little
->>>> endian).
->>>>     
->>>>         
->>> I would not add extra defines to alsa.conf:
->>>
->>> +defaults.pcm.dsnoop_softvol.card defaults.pcm.card
->>> +defaults.pcm.dsnoop_softvol.device defaults.pcm.device
->>>
->>> Simply reuse pcm.dsnoop.card / device.
->>>   
->>>       
->> Hi Jaroslav,
+Steve Longerbeam wrote:
+> Jaroslav Kysela wrote:
+>> <snip>
 >>
->> How do I do this exactly? Should I add:
->>
->> @args.CARD {
->>     type string
->>     default {
->>         @func refer
->>          name defaults.pcm.card
->>     
+>> Please, resend your patch with this modification. Thanks.
+>>   
 >
-> Replace with: name defaults.pcm.dsnoop.card
+> ok, here it is again, with CARD/DEV defaults moved out of alsa.conf 
+> and into dsnoop_softvol.conf.
 >
-> Please, resend your patch with this modification. Thanks.
->   
 
-ok, here it is again, with CARD/DEV defaults moved out of alsa.conf and 
-into dsnoop_softvol.conf.
+I realized I wasn't handling max_dB < 0 (svol->zero_dB_val = 0) in all 
+cases.
+
+Patch attached again along with an interdiff from my last patch.
 
 Steve
 
 
-
---------------040204070504000400050007
+--------------010909080902040203090604
 Content-Type: text/x-patch;
- name="softvol-gain.2.patch"
+ name="softvol-gain.3.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="softvol-gain.2.patch"
+ filename="softvol-gain.3.patch"
 
 searching for changes
-changeset:   2285:2d9964bee8bb
+changeset:   2285:b328ce286286
 tag:         tip
 user:        stevel@embeddedalley.com
-date:        Fri May 04 09:22:49 2007 -0700
+date:        Fri May 04 10:25:39 2007 -0700
 summary:     Add support for gain in softvol plugin.
 
 This patch allows for gain in the softvol plugin, in addition to attenuation.
@@ -122,9 +91,9 @@ via software.
 
 Signed-off-by: Steve Longerbeam <stevel@embeddedalley.com>
 
-diff -r ae8426a8928c -r 2d9964bee8bb src/conf/alsa.conf
+diff -r ae8426a8928c -r b328ce286286 src/conf/alsa.conf
 --- a/src/conf/alsa.conf	Thu May 03 20:55:54 2007 +0200
-+++ b/src/conf/alsa.conf	Fri May 04 09:22:49 2007 -0700
++++ b/src/conf/alsa.conf	Fri May 04 10:25:39 2007 -0700
 @@ -127,6 +127,7 @@ pcm.spdif iec958
  pcm.spdif iec958
  pcm.dmix cards.pcm.dmix
@@ -133,9 +102,9 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/conf/alsa.conf
  pcm.modem cards.pcm.modem
  pcm.phoneline cards.pcm.phoneline
  
-diff -r ae8426a8928c -r 2d9964bee8bb src/conf/cards/HDA-Intel.conf
+diff -r ae8426a8928c -r b328ce286286 src/conf/cards/HDA-Intel.conf
 --- a/src/conf/cards/HDA-Intel.conf	Thu May 03 20:55:54 2007 +0200
-+++ b/src/conf/cards/HDA-Intel.conf	Fri May 04 09:22:49 2007 -0700
++++ b/src/conf/cards/HDA-Intel.conf	Fri May 04 10:25:39 2007 -0700
 @@ -19,6 +19,8 @@ HDA-Intel.pcm.front.0 {
  		card $CARD
  	}
@@ -154,9 +123,9 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/conf/cards/HDA-Intel.conf
  		}
  	}
  }
-diff -r ae8426a8928c -r 2d9964bee8bb src/conf/pcm/Makefile.am
+diff -r ae8426a8928c -r b328ce286286 src/conf/pcm/Makefile.am
 --- a/src/conf/pcm/Makefile.am	Thu May 03 20:55:54 2007 +0200
-+++ b/src/conf/pcm/Makefile.am	Fri May 04 09:22:49 2007 -0700
++++ b/src/conf/pcm/Makefile.am	Fri May 04 10:25:39 2007 -0700
 @@ -2,7 +2,7 @@ cfg_files = default.conf front.conf rear
  	    surround40.conf surround41.conf \
  	    surround50.conf surround51.conf \
@@ -166,9 +135,9 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/conf/pcm/Makefile.am
  	    dpl.conf
  
  EXTRA_DIST = $(cfg_files)
-diff -r ae8426a8928c -r 2d9964bee8bb src/conf/pcm/dsnoop_softvol.conf
+diff -r ae8426a8928c -r b328ce286286 src/conf/pcm/dsnoop_softvol.conf
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/src/conf/pcm/dsnoop_softvol.conf	Fri May 04 09:22:49 2007 -0700
++++ b/src/conf/pcm/dsnoop_softvol.conf	Fri May 04 10:25:39 2007 -0700
 @@ -0,0 +1,28 @@
 +pcm.!dsnoop_softvol {
 +	@args [ CARD DEV ]
@@ -198,9 +167,9 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/conf/pcm/dsnoop_softvol.conf
 +	min_dB -30.0
 +	max_dB 40.0
 +}
-diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
+diff -r ae8426a8928c -r b328ce286286 src/pcm/pcm_softvol.c
 --- a/src/pcm/pcm_softvol.c	Thu May 03 20:55:54 2007 +0200
-+++ b/src/pcm/pcm_softvol.c	Fri May 04 09:22:49 2007 -0700
++++ b/src/pcm/pcm_softvol.c	Fri May 04 10:25:39 2007 -0700
 @@ -25,7 +25,7 @@
   *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
   *
@@ -336,19 +305,28 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  	return snd_ctl_elem_tlv_write(svol->ctl, &cinfo->id, tlv);
  }
  
-@@ -567,9 +599,9 @@ static int add_user_ctl(snd_pcm_softvol_
+@@ -562,14 +594,17 @@ static int add_user_ctl(snd_pcm_softvol_
+ {
+ 	int err;
+ 	int i;
+-
++	unsigned int def_val;
++	
+ 	err = snd_ctl_elem_add_integer(svol->ctl, &cinfo->id, count, 0, svol->max_val, 0);
  	if (err < 0)
  		return err;
  	add_tlv_info(svol, cinfo);
 -	/* set max value as default */
-+	/* set zero dB value as default */
++	/* set zero dB value as default, or max_val if
++	   there is no 0 dB setting */
++	def_val = svol->zero_dB_val ? svol->zero_dB_val : svol->max_val;
  	for (i = 0; i < count; i++)
 -		svol->elem.value.integer.value[i] = svol->max_val;
-+		svol->elem.value.integer.value[i] = svol->zero_dB_val;
++		svol->elem.value.integer.value[i] = def_val;
  	return snd_ctl_elem_write(svol->ctl, &svol->elem);
  }
  
-@@ -581,7 +613,8 @@ static int add_user_ctl(snd_pcm_softvol_
+@@ -581,7 +616,8 @@ static int add_user_ctl(snd_pcm_softvol_
   */
  static int softvol_load_control(snd_pcm_t *pcm, snd_pcm_softvol_t *svol,
  				int ctl_card, snd_ctl_elem_id_t *ctl_id,
@@ -358,7 +336,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  {
  	char tmp_name[32];
  	snd_pcm_info_t *info;
-@@ -610,7 +643,14 @@ static int softvol_load_control(snd_pcm_
+@@ -610,7 +646,14 @@ static int softvol_load_control(snd_pcm_
  	svol->elem.id = *ctl_id;
  	svol->max_val = resolution - 1;
  	svol->min_dB = min_dB;
@@ -374,7 +352,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  	snd_ctl_elem_info_alloca(&cinfo);
  	snd_ctl_elem_info_set_id(cinfo, ctl_id);
  	if ((err = snd_ctl_elem_info(svol->ctl, cinfo)) < 0) {
-@@ -650,24 +690,25 @@ static int softvol_load_control(snd_pcm_
+@@ -650,24 +693,26 @@ static int softvol_load_control(snd_pcm_
  		}
  	}
  
@@ -401,14 +379,15 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
 -		svol->dB_value[svol->max_val] = 65535;
 +			svol->dB_value[i] = (unsigned int)v;
 +		}
-+		svol->dB_value[svol->zero_dB_val] = 65535;
++		if (svol->zero_dB_val)
++			svol->dB_value[svol->zero_dB_val] = 65535;
  #else
 -		SNDERR("Cannot handle the given min_dB and resolution");
 +		SNDERR("Cannot handle the given dB range and resolution");
  		return -EINVAL;
  #endif
  	}
-@@ -698,6 +739,7 @@ static snd_pcm_ops_t snd_pcm_softvol_ops
+@@ -698,6 +743,7 @@ static snd_pcm_ops_t snd_pcm_softvol_ops
   * \param ctl_id The control element
   * \param cchannels PCM channels
   * \param min_dB minimal dB value
@@ -416,7 +395,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
   * \param resolution resolution of control
   * \param slave Slave PCM handle
   * \param close_slave When set, the slave PCM handle is closed with copy PCM
-@@ -710,7 +752,7 @@ int snd_pcm_softvol_open(snd_pcm_t **pcm
+@@ -710,7 +756,7 @@ int snd_pcm_softvol_open(snd_pcm_t **pcm
  			 snd_pcm_format_t sformat,
  			 int ctl_card, snd_ctl_elem_id_t *ctl_id,
  			 int cchannels,
@@ -425,7 +404,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  			 snd_pcm_t *slave, int close_slave)
  {
  	snd_pcm_t *pcm;
-@@ -728,7 +770,7 @@ int snd_pcm_softvol_open(snd_pcm_t **pcm
+@@ -728,7 +774,7 @@ int snd_pcm_softvol_open(snd_pcm_t **pcm
  	if (! svol)
  		return -ENOMEM;
  	err = softvol_load_control(slave, svol, ctl_card, ctl_id, cchannels,
@@ -434,7 +413,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  	if (err < 0) {
  		softvol_free(svol);
  		return err;
-@@ -812,6 +854,7 @@ pcm.name {
+@@ -812,6 +858,7 @@ pcm.name {
  		[count INT]     # control channels 1 or 2 (default: 2)
  	}
  	[min_dB REAL]           # minimal dB value (default: -51.0)
@@ -442,7 +421,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  	[resolution INT]        # resolution (default: 256)
  }
  \endcode
-@@ -851,6 +894,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pc
+@@ -851,6 +898,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pc
  	snd_ctl_elem_id_t *ctl_id;
  	int resolution = PRESET_RESOLUTION;
  	double min_dB = PRESET_MIN_DB;
@@ -450,7 +429,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  	int card = -1, cchannels = 2;
  
  	snd_config_for_each(i, next, conf) {
-@@ -886,6 +930,14 @@ int _snd_pcm_softvol_open(snd_pcm_t **pc
+@@ -886,6 +934,14 @@ int _snd_pcm_softvol_open(snd_pcm_t **pc
  			}
  			continue;
  		}
@@ -465,7 +444,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  		SNDERR("Unknown field %s", id);
  		return -EINVAL;
  	}
-@@ -899,6 +951,11 @@ int _snd_pcm_softvol_open(snd_pcm_t **pc
+@@ -899,6 +955,11 @@ int _snd_pcm_softvol_open(snd_pcm_t **pc
  	}
  	if (min_dB >= 0) {
  		SNDERR("min_dB must be a negative value");
@@ -477,7 +456,7 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  		return -EINVAL;
  	}
  	if (resolution < 0 || resolution > 1024) {
-@@ -930,7 +987,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pc
+@@ -930,7 +991,7 @@ int _snd_pcm_softvol_open(snd_pcm_t **pc
  		return err;
  	}
  	err = snd_pcm_softvol_open(pcmp, name, sformat, card, ctl_id, cchannels,
@@ -488,7 +467,49 @@ diff -r ae8426a8928c -r 2d9964bee8bb src/pcm/pcm_softvol.c
  	return err;
 
 
---------------040204070504000400050007
+--------------010909080902040203090604
+Content-Type: text/plain;
+ name="softvol-gain.3.idiff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="softvol-gain.3.idiff"
+
+diff -u b/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
+--- b/src/pcm/pcm_softvol.c	Fri May 04 09:22:49 2007 -0700
++++ b/src/pcm/pcm_softvol.c	Fri May 04 10:25:39 2007 -0700
+@@ -594,14 +594,17 @@
+ {
+ 	int err;
+ 	int i;
+-
++	unsigned int def_val;
++	
+ 	err = snd_ctl_elem_add_integer(svol->ctl, &cinfo->id, count, 0, svol->max_val, 0);
+ 	if (err < 0)
+ 		return err;
+ 	add_tlv_info(svol, cinfo);
+-	/* set zero dB value as default */
++	/* set zero dB value as default, or max_val if
++	   there is no 0 dB setting */
++	def_val = svol->zero_dB_val ? svol->zero_dB_val : svol->max_val;
+ 	for (i = 0; i < count; i++)
+-		svol->elem.value.integer.value[i] = svol->zero_dB_val;
++		svol->elem.value.integer.value[i] = def_val;
+ 	return snd_ctl_elem_write(svol->ctl, &svol->elem);
+ }
+ 
+@@ -706,7 +709,8 @@
+ 			double v = (pow(10.0, db / 20.0) * (double)(1 << VOL_SCALE_SHIFT));
+ 			svol->dB_value[i] = (unsigned int)v;
+ 		}
+-		svol->dB_value[svol->zero_dB_val] = 65535;
++		if (svol->zero_dB_val)
++			svol->dB_value[svol->zero_dB_val] = 65535;
+ #else
+ 		SNDERR("Cannot handle the given dB range and resolution");
+ 		return -EINVAL;
+
+--------------010909080902040203090604
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -499,4 +520,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------040204070504000400050007--
+--------------010909080902040203090604--
