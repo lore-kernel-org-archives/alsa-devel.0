@@ -1,17 +1,17 @@
-From: Pieter Palmers <pieterp@joow.be>
+From: Michael Gerdau <mgd@technosis.de>
 Subject: Re: Aureon 7.1 Firewire supported by ALSA ?
-Date: Fri, 04 May 2007 11:02:10 +0200
-Message-ID: <463AF692.9080904@joow.be>
-References: <200705040808.30501.mgd@technosis.de>
+Date: Fri, 4 May 2007 13:18:43 +0200
+Message-ID: <200705041318.55858.mgd@technosis.de>
+References: <200705040808.30501.mgd@technosis.de> <463AF692.9080904@joow.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8963807206188595803=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from thumbler.kulnet.kuleuven.ac.be (thumbler.kulnet.kuleuven.ac.be
-	[134.58.240.45]) by alsa0.perex.cz (Postfix) with ESMTP id 5F8162445B
+Received: from server021.webpack.hosteurope.de
+	(server021.webpack.hosteurope.de [80.237.130.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1C072446C
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 May 2007 11:02:14 +0200 (CEST)
-In-Reply-To: <200705040808.30501.mgd@technosis.de>
+	Fri,  4 May 2007 13:18:56 +0200 (CEST)
+In-Reply-To: <463AF692.9080904@joow.be>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Gerdau <mgd@technosis.de>
+To: Pieter Palmers <pieterp@joow.be>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Michael Gerdau wrote:
-> Hi list,
-> 
-> looking for an external (USB or Firewire) interface to record at
-> least a single stereo 44.1kHz/24bit S/P-DIF signal I've come
-> across the Aureon 7.1 Firewire but have not been able to find out
-> whether it is already supported by ALSA.
-> 
-It is not supported by ALSA. But it is supported by FreeBoB, meaning 
-that you can use it with any jack-enabled application.
+--===============8963807206188595803==
+Content-Type: multipart/signed;
+  boundary="nextPart2330936.BRpMf7YRqp";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-There is not native ALSA support yet.
+--nextPart2330936.BRpMf7YRqp
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Greets,
+> It is not supported by ALSA. But it is supported by FreeBoB, meaning=20
+> that you can use it with any jack-enabled application.
+>=20
+> There is not native ALSA support yet.
 
-Pieter Palmers
+Thanks alot. Being supported by jack is sufficient for the intended
+application and the time being.
 
-Check:
-freebob.sf.net
-ffado.org
+Best,
+Michael
+=2D-=20
+ Technosis GmbH, Gesch=E4ftsf=FChrer: Michael Gerdau, Tobias Dittmar
+ Sitz Hamburg; HRB 89145 Amtsgericht Hamburg
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ Michael Gerdau       email: mgd@technosis.de
+ GPG-keys available on request or at public keyserver
+
+--nextPart2330936.BRpMf7YRqp
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBGOxafUYYhyuxDQc4RAsFFAKCcxJzHHLCMb3miLYsSUjbnwITeVQCfe3vo
+DYhTN47LRdVygGzJOzXw0BA=
+=fnyF
+-----END PGP SIGNATURE-----
+
+--nextPart2330936.BRpMf7YRqp--
+
+--===============8963807206188595803==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8963807206188595803==--
