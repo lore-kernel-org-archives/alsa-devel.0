@@ -1,15 +1,18 @@
-From: Michael Gerdau <mgd@technosis.de>
-Subject: Aureon 7.1 Firewire supported by ALSA ?
-Date: Fri, 4 May 2007 08:08:16 +0200
-Message-ID: <200705040808.30501.mgd@technosis.de>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: DMix period_size should always be half of buffer
+	size?
+Date: Fri, 4 May 2007 09:06:05 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0705040903340.7594@tm8103.perex-int.cz>
+References: <49f264960705031550q4884453ck6d9d6a1f1b6ef6d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2140938282360270839=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server021.webpack.hosteurope.de
-	(server021.webpack.hosteurope.de [80.237.130.29])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0927724423
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FC1224430
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 May 2007 08:08:30 +0200 (CEST)
+	Fri,  4 May 2007 09:06:06 +0200 (CEST)
+In-Reply-To: <49f264960705031550q4884453ck6d9d6a1f1b6ef6d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,68 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Prabhu Sivaraja <prabhu.sivaraja@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============2140938282360270839==
-Content-Type: multipart/signed;
-  boundary="nextPart2006129.KhR1ZE9sdS";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Thu, 3 May 2007, Prabhu Sivaraja wrote:
 
---nextPart2006129.KhR1ZE9sdS
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+> This is a followup to my earlier question about dmix not being able to mix
+> small files. I investigated it more and here is what I found.
+> 
+> Again background info.
+> I have a 64KB as kernel buffer and a 64KB circular buffer for my device. In
+> a poll thread I copy the data obtained from ALSA lib from the kernel buffer
+> to my device circular buffer by keeping track of appl_ptr and hw_ptr(dmix
+> only). Everything was working fine except when I was trying to mix files
+> smaller than 64KB(my buffer size), the small file was not getting mixed
+> through the dmix plugin. Anything over 64KB was getting mixed just fine. So
+> I set about reducing my period size from 32KB to 4KB while maintaining my
+> buffer size at 64KB.
+> 
+> When I tried to do this my hw_ptr never gets incremented from 0. Hence my
+> driver is stuck in a loop waiting for bytes to copy. This is only observed
+> when I am using dmix plugin and NOT when using hw or plughw. When my period
+> size is half the size of my buffer everything works fine with dmix (I
+> verified this by reducing my buffer size to 8KB and making my period size
+> 4KB. hw_ptr gets incremented then but I get buffer problems). It seems like
+> dmix is forcing me to keep my period size half the size of my buffer. hw and
+> plughw devices do not seem to do that.
+> 
+> Is this a limitation of dmix. Could anyone comment on the dmix limitation
+> that I am experiencing.
 
-Hi list,
+No, dmix works with more periods well. Send us debug info from 
+/proc/asound/card0/pcm0p (when the stream is opened) and check, if your 
+driver notifies higher PCM level with period_elapsed() and if your 
+position callback returns right value when the stream is started.
 
-looking for an external (USB or Firewire) interface to record at
-least a single stereo 44.1kHz/24bit S/P-DIF signal I've come
-across the Aureon 7.1 Firewire but have not been able to find out
-whether it is already supported by ALSA.
+						Jaroslav
 
-Another option would be the Aureon 5.1 USB MKII but according to
-the specs it is 16bit only. However when feeding S/P-DIF with a
-stereo 44.1kHz/24bit would the driver be recognize that and give
-me that signal unaltered or would it be trimmed to 16bit ?
-[Or is my understanding of S/P-DIF just plain wrong and such a
-signal would not go through the box at all ?]
-
-Any advice welcome, best,
-Michael
-
-=2D-=20
- Technosis GmbH, Gesch=E4ftsf=FChrer: Michael Gerdau, Tobias Dittmar
- Sitz Hamburg; HRB 89145 Amtsgericht Hamburg
- Vote against SPAM - see http://www.politik-digital.de/spam/
- Michael Gerdau       email: mgd@technosis.de
- GPG-keys available on request or at public keyserver
-
---nextPart2006129.KhR1ZE9sdS
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQBGOs3eUYYhyuxDQc4RAsMYAJwIq43GWkGETOAj0Uz/l1vqw/lxXgCfT610
-b5zxx6EOILK098ovZlnq20U=
-=nCiU
------END PGP SIGNATURE-----
-
---nextPart2006129.KhR1ZE9sdS--
-
---===============2140938282360270839==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2140938282360270839==--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
