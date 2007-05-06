@@ -1,18 +1,20 @@
-From: Steve Longerbeam <stevel@embeddedalley.com>
-Subject: Re: [PATCH] Add sequence parsing for speaker-outs in
- snd_hda_parse_pin_def_config()
-Date: Sat, 05 May 2007 11:16:44 -0700
-Message-ID: <463CCA0C.20800@embeddedalley.com>
-References: <463A1E8E.1060303@embeddedalley.com>
+From: Daniel Drake <dsd@gentoo.org>
+Subject: Re: [PATCH] hda_codec: restore control element values
+ during resume
+Date: Sat, 05 May 2007 20:09:22 -0400
+Message-ID: <463D1CB2.5090206@gentoo.org>
+References: <20070429161421.863777B409F@zog.reactivated.net>	<s5htzuvbkww.wl%tiwai@suse.de>	<4638B4CC.4060606@gentoo.org>
+	<s5h647aw5tf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp106.biz.mail.mud.yahoo.com (smtp106.biz.mail.mud.yahoo.com
-	[68.142.200.254]) by alsa0.perex.cz (Postfix) with SMTP id 106522439E
+Received: from smtp161.iad.emailsrvr.com (smtp161.iad.emailsrvr.com
+	[207.97.245.161])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB195243FD
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 May 2007 20:16:44 +0200 (CEST)
-In-Reply-To: <463A1E8E.1060303@embeddedalley.com>
+	Sun,  6 May 2007 02:10:12 +0200 (CEST)
+In-Reply-To: <s5h647aw5tf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,194 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Any comments on this patch? It really is needed because some BIOS's only 
-define speaker-out's in the HDA codec default pin configs, and no 
-line-outs. So speaker-out's must be sequenced just as is being done for 
-line-out's, otherwise the surround pin assignments will be wrong.
+Takashi Iwai wrote:
+> OK, it's a simple error.  The resume callback should call
+> snd_hda_resume_ctls() with spec->mixer argument.  The other codec
+> codes store this also onto spec->mixers[] array, so I overlooked.
 
-Steve
-
-
-Steve Longerbeam wrote:
->
-> ------------------------------------------------------------------------
->
-> changeset:   5028:01537f056c79
-> tag:         tip
-> user:        stevel@embeddedalley.com
-> date:        Thu May 03 10:30:04 2007 -0700
-> summary:     Add speaker pin sequencing to hda_codec.c:snd_hda_parse_pin_def_config().
->
-> Some verb tables (such as an Asus VT sent by IDT) contain only speaker
-> outs in the default pin configs, and no line-outs. In such a case the
-> speaker sequence numbers have to be used to order the speaker out
-> pins, just as is being done for line-out pins. Then, when speaker-outs
-> are copied to line-outs, the line-outs will be ordered properly.
->
-> Signed-off-by: Steve Longerbeam <stevel@embeddedalley.com>
->
-> diff -r c7366efee611 -r 01537f056c79 pci/hda/hda_codec.c
-> --- a/pci/hda/hda_codec.c	Thu May 03 10:24:35 2007 -0700
-> +++ b/pci/hda/hda_codec.c	Thu May 03 10:30:04 2007 -0700
-> @@ -2112,6 +2112,32 @@ static int __devinit is_in_nid_list(hda_
->  	return 0;
->  }
->  
-> +
-> +/*
-> + * Sort an associated group of pins according to their sequence numbers.
-> + */
-> +static void sort_pins_by_sequence(hda_nid_t * pins, short * sequences,
-> +				  int num_pins)
-> +{
-> +	int i, j;
-> +	short seq;
-> +	hda_nid_t nid;
-> +	
-> +	for (i = 0; i < num_pins; i++) {
-> +		for (j = i + 1; j < num_pins; j++) {
-> +			if (sequences[i] > sequences[j]) {
-> +				seq = sequences[i];
-> +				sequences[i] = sequences[j];
-> +				sequences[j] = seq;
-> +				nid = pins[i];
-> +				pins[i] = pins[j];
-> +				pins[j] = nid;
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +
->  /*
->   * Parse all pin widgets and store the useful pin nids to cfg
->   *
-> @@ -2134,13 +2160,16 @@ int __devinit snd_hda_parse_pin_def_conf
->  					   hda_nid_t *ignore_nids)
->  {
->  	hda_nid_t nid, nid_start;
-> -	int i, j, nodes;
-> -	short seq, assoc_line_out, sequences[ARRAY_SIZE(cfg->line_out_pins)];
-> +	int nodes;
-> +	short seq, assoc_line_out, assoc_speaker;
-> +	short sequences_line_out[ARRAY_SIZE(cfg->line_out_pins)];
-> +	short sequences_speaker[ARRAY_SIZE(cfg->speaker_pins)];
->  
->  	memset(cfg, 0, sizeof(*cfg));
->  
-> -	memset(sequences, 0, sizeof(sequences));
-> -	assoc_line_out = 0;
-> +	memset(sequences_line_out, 0, sizeof(sequences_line_out));
-> +	memset(sequences_speaker, 0, sizeof(sequences_speaker));
-> +	assoc_line_out = assoc_speaker = 0;
->  
->  	nodes = snd_hda_get_sub_nodes(codec, codec->afg, &nid_start);
->  	for (nid = nid_start; nid < nodes + nid_start; nid++) {
-> @@ -2175,13 +2204,22 @@ int __devinit snd_hda_parse_pin_def_conf
->  			if (cfg->line_outs >= ARRAY_SIZE(cfg->line_out_pins))
->  				continue;
->  			cfg->line_out_pins[cfg->line_outs] = nid;
-> -			sequences[cfg->line_outs] = seq;
-> +			sequences_line_out[cfg->line_outs] = seq;
->  			cfg->line_outs++;
->  			break;
->  		case AC_JACK_SPEAKER:
-> +			seq = get_defcfg_sequence(def_conf);
-> +			assoc = get_defcfg_association(def_conf);
-> +			if (! assoc)
-> +				continue;
-> +			if (! assoc_speaker)
-> +				assoc_speaker = assoc;
-> +			else if (assoc_speaker != assoc)
-> +				continue;
->  			if (cfg->speaker_outs >= ARRAY_SIZE(cfg->speaker_pins))
->  				continue;
->  			cfg->speaker_pins[cfg->speaker_outs] = nid;
-> +			sequences_speaker[cfg->speaker_outs] = seq;
->  			cfg->speaker_outs++;
->  			break;
->  		case AC_JACK_HP_OUT:
-> @@ -2227,16 +2265,32 @@ int __devinit snd_hda_parse_pin_def_conf
->  	}
->  
->  	/* sort by sequence */
-> -	for (i = 0; i < cfg->line_outs; i++)
-> -		for (j = i + 1; j < cfg->line_outs; j++)
-> -			if (sequences[i] > sequences[j]) {
-> -				seq = sequences[i];
-> -				sequences[i] = sequences[j];
-> -				sequences[j] = seq;
-> -				nid = cfg->line_out_pins[i];
-> -				cfg->line_out_pins[i] = cfg->line_out_pins[j];
-> -				cfg->line_out_pins[j] = nid;
-> -			}
-> +	sort_pins_by_sequence(cfg->line_out_pins, sequences_line_out,
-> +			      cfg->line_outs);
-> +	sort_pins_by_sequence(cfg->speaker_pins, sequences_speaker,
-> +			      cfg->speaker_outs);
-> +	
-> +	/*
-> +	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
-> +	 * as a primary output
-> +	 */
-> +	if (!cfg->line_outs) {
-> +		if (cfg->speaker_outs) {
-> +			cfg->line_outs = cfg->speaker_outs;
-> +			memcpy(cfg->line_out_pins, cfg->speaker_pins,
-> +			       sizeof(cfg->speaker_pins));
-> +			cfg->speaker_outs = 0;
-> +			memset(cfg->speaker_pins, 0, sizeof(cfg->speaker_pins));
-> +			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
-> +		} else if (cfg->hp_outs) {
-> +			cfg->line_outs = cfg->hp_outs;
-> +			memcpy(cfg->line_out_pins, cfg->hp_pins,
-> +			       sizeof(cfg->hp_pins));
-> +			cfg->hp_outs = 0;
-> +			memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
-> +			cfg->line_out_type = AUTO_PIN_HP_OUT;
-> +		}
-> +	}
->  
->  	/* Reorder the surround channels
->  	 * ALSA sequence is front/surr/clfe/side
-> @@ -2278,28 +2332,6 @@ int __devinit snd_hda_parse_pin_def_conf
->  		   cfg->input_pins[AUTO_PIN_CD],
->  		   cfg->input_pins[AUTO_PIN_AUX]);
->  
-> -	/*
-> -	 * FIX-UP: if no line-outs are detected, try to use speaker or HP pin
-> -	 * as a primary output
-> -	 */
-> -	if (!cfg->line_outs) {
-> -		if (cfg->speaker_outs) {
-> -			cfg->line_outs = cfg->speaker_outs;
-> -			memcpy(cfg->line_out_pins, cfg->speaker_pins,
-> -			       sizeof(cfg->speaker_pins));
-> -			cfg->speaker_outs = 0;
-> -			memset(cfg->speaker_pins, 0, sizeof(cfg->speaker_pins));
-> -			cfg->line_out_type = AUTO_PIN_SPEAKER_OUT;
-> -		} else if (cfg->hp_outs) {
-> -			cfg->line_outs = cfg->hp_outs;
-> -			memcpy(cfg->line_out_pins, cfg->hp_pins,
-> -			       sizeof(cfg->hp_pins));
-> -			cfg->hp_outs = 0;
-> -			memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
-> -			cfg->line_out_type = AUTO_PIN_HP_OUT;
-> -		}
-> -	}
-> -
->  	return 0;
->  }
->  
->
->   
-> ------------------------------------------------------------------------
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->   
+Thanks, this works splendidly.
