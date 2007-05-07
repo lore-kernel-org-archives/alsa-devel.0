@@ -1,17 +1,17 @@
-From: "Chris Schumann" <chris@idlelion.net>
+From: "Ash Willis" <ashwillis@programmer.net>
 Subject: Re: Getting Started on Alsa
-Date: Sun, 6 May 2007 20:32:41 -0500
-Message-ID: <000101c79047$9b83c390$6417a8c0@piv17>
-References: <20070506222600.49A5D8734B@cal1-1.us4.outblaze.com>
+Date: Sun, 06 May 2007 21:12:20 -0500
+Message-ID: <20070507021220.DA6BD8735B@cal1-1.us4.outblaze.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sccrmhc14.comcast.net (sccrmhc14.comcast.net [63.240.77.84])
-	by alsa0.perex.cz (Postfix) with ESMTP id A231F24511
+Received: from cal1-1.us4.outblaze.com (cal1-1.us4.outblaze.com
+	[205.158.62.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D6B52451A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 May 2007 03:32:48 +0200 (CEST)
-In-Reply-To: <20070506222600.49A5D8734B@cal1-1.us4.outblaze.com>
+	Mon,  7 May 2007 04:12:22 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,51 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Ash Willis' <ashwillis@programmer.net>, alsa-devel@alsa-project.org
+To: Chris Schumann <chris@idlelion.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Behalf Of Ash Willis
+> Thanks for the tips, Ash. I've found the Iwai document. Now there's some
+> light reading. I take it that it's still relevant, even though it hasn't
+> been updated since 2005.
+>
+ 
+I haven't actually read it since 2005 I'm afraid :) but I don't think
+anything's changed that drastically. The fundamentals are all there.
 
-> Hi Chris,
+> Yes, the cs46xx driver. That chip is in a lot of machines (at least ten
+> ThinkPad models), and with this bug nobody running Alsa likes Linux very
+> much.
 > 
-> > I'd like to take action on bug #305, since it's my own 
-> itch. I've done 
-> > very low-level programming, but not on Linux device 
-> drivers. I'm very 
-> > familiar with command line development tools.
-> > 
+
+Yeah, it's a pretty poor show that this bug has existed for so long.
+Let's hope you can zap it!
+
+> Is there some (handy) way to dump the registers from DOS or Windows as a
+> comparison?
 > 
-> If you're not familiar with drivers or audio drivers in 
-> particular then reading Writing an ALSA Driver by Takashi 
-> Iwai might be a good place to start.
-> 
-> You're referring to the suspend/resume bug in the cs46xx 
-> driver, right?
-> Maybe try dumping all the registers while it's working and 
-> dumping them while it's broken and comparing the two sets of data?
-> 
-> I guess the suspend function is doing something that it 
-> shouldn't be, or the resume function isn't doing something 
-> that it should be...good luck on finding out what that is.
-> 
-> Ash
 
-Thanks for the tips, Ash. I've found the Iwai document. Now there's some
-light reading. I take it that it's still relevant, even though it hasn't
-been updated since 2005.
+Well, that depends. I'm not familiar with the hardware. There's a Windows
+program called PCItree. It allows you to view the current status of the
+ioport of a chosen device. Now, that's pretty handy if the regs for the card
+are mapped directly onto the io port. It's usually the case though, I think,
+that the registers aren't just mapped on and you'll need to query the card.
+If they're not mapped onto the io port (and forgive me again - not familiar
+with this chip) then you could use a debugger such as Numega SoftIce to
+manually issue queries to find out the contents of the registers. Sounds like
+a happy fun time. Writing the code to do a reg dump might be fun too.
+You may also want to use a debugger/disassembler with Windows (or other)
+drivers in order to find out what those drivers do to the card on resume.
 
-Yes, the cs46xx driver. That chip is in a lot of machines (at least ten
-ThinkPad models), and with this bug nobody running Alsa likes Linux very
-much.
+> For development: Since the drivers go into the kernel, I should be able to
+> find a page on getting a development environment set up... right? I'm
 
-Is there some (handy) way to dump the registers from DOS or Windows as a
-comparison?
+You don't need to mess with the kernel as ALSA is available as a package.
+All you really need is the latest copy of alsa-driver and a compiler and
+you're good to go.
 
-For development: Since the drivers go into the kernel, I should be able to
-find a page on getting a development environment set up... right? I'm
-guessing most people do development on a machine with the device in
-question. That could be interesting because my 600X crapped out, but there
-are two more in the house I can borrow now and again.
+Ash
 
-Chris
-(using the address I subscribed with this time)
+=
