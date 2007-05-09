@@ -1,18 +1,18 @@
-From: "Vegard Nossum" <vegard@peltkore.net>
-Subject: intel8x0 / ALC655 no-capture solved
-Date: Wed, 9 May 2007 23:07:11 +0200 (CEST)
-Message-ID: <61585.84.210.74.57.1178744831.squirrel@peltkore.net>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Mic and Line In Capture AC97 slots issue
+Date: Thu, 10 May 2007 02:45:42 +0530
+Message-ID: <8d6898730705091415s74685223r4c4409e87ff587c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from S3.cableone.net (s3.cableone.net [24.116.0.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B0E2244B9
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6952A244B9
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2007 23:07:57 +0200 (CEST)
-Received: from peltkore.net (unverified [69.92.239.228])
-	by S3.cableone.net (CableOne SMTP Service S3) with ESMTP id 107241603
-	for <alsa-devel@alsa-project.org>; Wed, 09 May 2007 14:07:55 -0700
+	Wed,  9 May 2007 23:15:44 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so339856nzf
+	for <alsa-devel@alsa-project.org>; Wed, 09 May 2007 14:15:43 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-May/000835.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-May/000837.html
 
-I've successfully debugged a problem I've had with being unable to record
-anything from microphones or line-in. Detailed information about the bug
-along with a temporary work-around can be found here:
-http://bugtrack.alsa-project.org/alsa-bug/view.php?id=3066
+the overrun  issue was because my application was not fast enough.
 
-Now I'd just like to inform about the presence of the bug (at least I'm
-pretty sure it's a bug), and that it's solved by the means of a
-work-around. I'd be very happy to see a fix in the *code* for this,
-however. I'd even like to try it myself (heck, it's just a register
-write), but I'm not certain WHERE/WHEN to make the write, under which
-conditions, and for which range of cards (ie. is it specific to the ALC655
-or ALC*, or perhaps Realtek chips, or should the fix be made for the Intel
-driver, or all AC'97 cards?). Guidance would be appreciated :) Maybe it's
-even as easy as a card config option, but I wouldn't know.
+I resolved that problem by disabling capture of AC-Link slot4 in my
+ac97 controller.
+So capture happens only in slot3.
 
-Thanks.
+According to ac97 spec Mic comes in Slot6 of AC-Link.
+
+I am using wolfson wm9713 codec.
+
+In this LineR and LineL are routed to LeftADC and RightADC.
+
+And Mic1 (Mic A) is also coonected to LeftADC and RightADC.
 
 
-Kinds regards,
-Vegard Nossum
+So i am assuming that Mic 1 will come in Slot3 and Slot4.
 
-PS: I'm not on the list, so please CC any replies.
+But my application is taking only mono data, so XRUN will happen.
+
+
+What is the correct configuration for this?
+What should be the configuration if i want to capture both Line IN and Mic?
+means AC-Link settings
+
+Thanks
