@@ -1,18 +1,18 @@
 From: "Nobin Mathew" <nobin.mathew@gmail.com>
 Subject: [ASoC] Mic record is not working with wm9713 ASoC
 	driver
-Date: Wed, 9 May 2007 13:02:35 +0530
-Message-ID: <8d6898730705090032k375babefl973819bd3d9d85@mail.gmail.com>
+Date: Wed, 9 May 2007 14:45:49 +0530
+Message-ID: <8d6898730705090215s573660d8obebee755251e065@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id D90B42440D
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.236])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4DBB824416
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2007 09:32:39 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c18so26360anc
-	for <alsa-devel@alsa-project.org>; Wed, 09 May 2007 00:32:38 -0700 (PDT)
+	Wed,  9 May 2007 11:15:51 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 58so118326wri
+	for <alsa-devel@alsa-project.org>; Wed, 09 May 2007 02:15:50 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
