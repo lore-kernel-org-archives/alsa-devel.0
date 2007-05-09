@@ -1,101 +1,82 @@
-From: Manuel Lauss <mano@roarinelk.homelinux.net>
-Subject: Re: [RFC PATCH] ASoC AC97/I2S for SH7760
-Date: Wed, 9 May 2007 07:25:03 +0200
-Message-ID: <20070509052503.GA32573@roarinelk.homelinux.net>
-References: <20070508174027.GB28884@roarinelk.homelinux.net>
-	<20070509005255.GB19043@linux-sh.org>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: [ASoC] Mic record is not working with wm9713 ASoC
+	driver
+Date: Wed, 9 May 2007 13:02:35 +0530
+Message-ID: <8d6898730705090032k375babefl973819bd3d9d85@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxsh-dev-bounces@lists.sourceforge.net>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.244])
+	by alsa0.perex.cz (Postfix) with ESMTP id D90B42440D
+	for <alsa-devel@alsa-project.org>;
+	Wed,  9 May 2007 09:32:39 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c18so26360anc
+	for <alsa-devel@alsa-project.org>; Wed, 09 May 2007 00:32:38 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20070509005255.GB19043@linux-sh.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
-	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
-List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
-List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
-	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
-Sender: linuxsh-dev-bounces@lists.sourceforge.net
-Errors-To: linuxsh-dev-bounces@lists.sourceforge.net
-To: Paul Mundt <lethal@linux-sh.org>, alsa-devel@alsa-project.org, linuxsh-dev@lists.sf.net
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
+I am trying to record mic with AsoC wm9713 driver. My Mic is connected "Mic 1".
 
-thank you for the review!
+My settings
 
-On Wed, May 09, 2007 at 09:52:55AM +0900, Paul Mundt wrote:
-> On Tue, May 08, 2007 at 07:40:27PM +0200, Manuel Lauss wrote:
-> > diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
-> > new file mode 100644
-> > index 0000000..157268c
-> > --- /dev/null
-> > +++ b/sound/soc/sh/hac.c
-> [snip]
-> > + * dont forget to set IPSEL/OMSEL register bits (in your board code) to
-> > + * enable HAC output pins!
-> > + */
-> Yuck.. I suppose this is a good argument for a demux API..
+'Mic A Source' -> "Mic 1"
+'Mic Boost (+20dB)' [on]
+'Capture' [on]
+'Left Capture Source' "Mic 1"
+'Right Capture Source' "Mic 1"
 
-Yes. Give me some time and I'll hack something up.
- 
-> > +struct hac_priv {
-> > +	unsigned long mmio;	/* HAC base address */
-> > +} hac_cpu_data[] = {
-> > +#if defined(CONFIG_CPU_SUBTYPE_SH7760)
-> > +	{
-> > +		.mmio	= 0xFE240000,
-> > +	},
-> > +	{
-> > +		.mmio	= 0xFE250000,
-> > +	},
-> > +#elif defined(CONFIG_CPU_SUBTYPE_SH7780)
-> > +	{
-> > +		.mmio	= 0xFFE40000,
-> > +	},
-> > +#else
-> > +#error "Unsupported SuperH SoC"
-> > +#endif
-> > +};
-> 
-> Platform device resources, please.
 
-It's not that easy with asoc: first it does not pass any
-information to the ac97_read/write functions, and I haven't
-yet found a way to pass information from the probe() callbacks
-to the asoc core, hence this hack.
-In general, ASoC does not anticipate devices like the 7760 with
-2 independent audio units.
- 
-> > diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
-> > new file mode 100644
-> > index 0000000..79642e0
-> > --- /dev/null
-> > +#ifdef SSI_DEBUG
-> > +#define MSG(x...)	printk(KERN_INFO "sh4-i2s: " x)
-> > +#else
-> > +#define MSG(x...)	do {} while (0)
-> > +#endif
-> > +
-> pr_debug()?
+i am issuing following command to record
+"arecord -M -f S16_LE sound.wav"
 
-Okay, gone.
+But what i found is driver is not enabling "Mic bias" and "Mic A PGA"
 
-> This can also go in to a platform device resource. You'll want the
-> private data there anyways in case you decide to do something more
-> interesting with the clock.
+this dump of /sys/devices/platform/soc-audio/dapm_widget while
+"arecord" is running is given below
 
-the SSI depends on a board-specific clocksource; my board can change
-this clock depending on requested sample rate, which is nice to work
-around an oops triggered by ALSA when it mmap()s buffers...
 
-Thanks again
-	Manuel Lauss
+Mic Bias: Off
+Mic B Pre Amp: Off
+Mic A Pre Amp: On
+Mic B PGA: Off
+Mic A PGA: Off
+Mono In: Off
+Right Line In: Off
+Left Line In: Off
+Mono Out: Off
+Out 4: Off
+Out 3: Off
+Right Speaker: Off
+Left Speaker: Off
+Right Headphone: Off
+Left Headphone: Off
+Right ADC: On
+Left ADC: On
+Aux DAC: Off
+Voice DAC: Off
+Capture Mixer: Off
+HP Mixer: Off
+AC97 Mixer: Off
+Right DAC: Off
+Left DAC: Off
+Speaker Mixer: Off
+Mono Mixer: Off
+Right HP Mixer: Off
+Left HP Mixer: Off
+PM State: D0
 
--------------------------------------------------------------------------
-This SF.net email is sponsored by DB2 Express
-Download DB2 Express C - the FREE version of DB2 express and take
-control of your XML. No limits. Just data. Click to get it now.
-http://sourceforge.net/powerbar/db2/
+In idea why this is happening?
+what is going wrong with my settings?
+
+Nobin Mathew
