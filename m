@@ -1,75 +1,99 @@
-From: "r10 kindsofpeople" <r10kindsofpeople@hotmail.com>
-Subject: snd-serial-u16550 overflow problems?
-Date: Tue, 08 May 2007 14:36:07 -0500
-Message-ID: <BAY117-F2201D66003C25DD596F221CD440@phx.gbl>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [RFC PATCH] ASoC AC97/I2S for SH7760
+Date: Wed, 9 May 2007 09:52:55 +0900
+Message-ID: <20070509005255.GB19043@linux-sh.org>
+References: <20070508174027.GB28884@roarinelk.homelinux.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4656266427726348133=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc2-s30.bay0.hotmail.com (bay0-omc2-s30.bay0.hotmail.com
-	[65.54.246.166]) by alsa0.perex.cz (Postfix) with ESMTP id F23CF243A1
-	for <alsa-devel@alsa-project.org>;
-	Tue,  8 May 2007 21:36:13 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxsh-dev-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20070508174027.GB28884@roarinelk.homelinux.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+Sender: linuxsh-dev-bounces@lists.sourceforge.net
+Errors-To: linuxsh-dev-bounces@lists.sourceforge.net
+To: Manuel Lauss <mano@roarinelk.homelinux.net>
+Cc: alsa-devel@alsa-project.org, linuxsh-dev@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
---===============4656266427726348133==
-Content-Type: text/plain; format=flowed
+On Tue, May 08, 2007 at 07:40:27PM +0200, Manuel Lauss wrote:
+> diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
+> new file mode 100644
+> index 0000000..157268c
+> --- /dev/null
+> +++ b/sound/soc/sh/hac.c
+[snip]
+> + * dont forget to set IPSEL/OMSEL register bits (in your board code) to
+> + * enable HAC output pins!
+> + */
+Yuck.. I suppose this is a good argument for a demux API..
 
-{reposting (with apologies) from alsa-user at another user's suggestion}
+> +struct hac_priv {
+> +	unsigned long mmio;	/* HAC base address */
+> +} hac_cpu_data[] = {
+> +#if defined(CONFIG_CPU_SUBTYPE_SH7760)
+> +	{
+> +		.mmio	= 0xFE240000,
+> +	},
+> +	{
+> +		.mmio	= 0xFE250000,
+> +	},
+> +#elif defined(CONFIG_CPU_SUBTYPE_SH7780)
+> +	{
+> +		.mmio	= 0xFFE40000,
+> +	},
+> +#else
+> +#error "Unsupported SuperH SoC"
+> +#endif
+> +};
 
-I'm having what appears to be overflow problems within the snd-serial-u16550 
-driver.
+Platform device resources, please.
 
-I'm using 1.0.14rc1.
+> diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
+> new file mode 100644
+> index 0000000..79642e0
+> --- /dev/null
+> +#ifdef SSI_DEBUG
+> +#define MSG(x...)	printk(KERN_INFO "sh4-i2s: " x)
+> +#else
+> +#define MSG(x...)	do {} while (0)
+> +#endif
+> +
+pr_debug()?
 
-When calling "amidi -p hw:0,0,0 -s FILE.SYX" where hw:0,0,0 is the 
-snd-serial-u16550 port,  the data coming from the serial port appears to be 
-a small fraction (900 bytes) of the total file size (13000 bytes).
+> +struct ssi_priv {
+> +	unsigned long mmio;
+> +	unsigned long sysclk;
+> +	int inuse;
+> +} ssi_cpu_data[] = {
+> +#if defined(CONFIG_CPU_SUBTYPE_SH7760)
+> +	{
+> +		.mmio	= 0xFE680000,
+> +	},
+> +	{
+> +		.mmio	= 0xFE690000,
+> +	},
+> +#elif defined(CONFIG_CPU_SUBTYPE_SH7780)
+> +	{
+> +		.mmio	= 0xFFE70000,
+> +	},
+> +#else
+> +#error "Unsupported SuperH SoC"
+> +#endif
+> +};
+> +
+This can also go in to a platform device resource. You'll want the
+private data there anyways in case you decide to do something more
+interesting with the clock.
 
-If I repeat the experiment, but send to a USB MIDI port, all is well.
-If I send the data to the serial port using calls to 
-snd_seq_event_output_direct(), and I add a 1 second pause between every 
-sysex message, all is well (aside from it taking too long).
-I'm logging data directly at the PC serial port using another PC, so I've 
-eliminated the possibility that the serial-to-MIDI hardware is losing the 
-data.
-
-My code is using blocking mode, and besides, amidi behaves the same way as 
-my code.
-
-I'm hesitant to blame the driver code (especially given that last time I did 
-this, it was an interrupt configuration problem), but I could use some help 
-figuring out where to look next.  Please?
-
-Are there calls I can use to ensure that the previous message has gone out 
-before writing the next one?  Given the amount of data I'm sending, should I 
-be using snd_seq_event_output and scheduling the events on the queue?
-
-John
-
-_________________________________________________________________
-More photos, more messages, more storage—get 2GB with Windows Live Hotmail. 
-http://imagine-windowslive.com/hotmail/?locale=en-us&ocid=TXT_TAGHM_migration_HM_mini_2G_0507
-
-
---===============4656266427726348133==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4656266427726348133==--
+-------------------------------------------------------------------------
+This SF.net email is sponsored by DB2 Express
+Download DB2 Express C - the FREE version of DB2 express and take
+control of your XML. No limits. Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
