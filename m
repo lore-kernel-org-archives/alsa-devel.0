@@ -1,18 +1,17 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Mic and Line In Capture AC97 slots issue
-Date: Thu, 10 May 2007 02:45:42 +0530
-Message-ID: <8d6898730705091415s74685223r4c4409e87ff587c@mail.gmail.com>
+From: "John L. Utz III" <john.utz@dmx.com>
+Subject: Re: embedded sound architecture question
+Date: Wed, 9 May 2007 14:20:44 -0700
+Message-ID: <20070509142044.33de8ba2@jutz-fc6.na.corp.dmxmusic.com>
+References: <1178743654.29464.1.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6952A244B9
+Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id B0743244BB
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 May 2007 23:15:44 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so339856nzf
-	for <alsa-devel@alsa-project.org>; Wed, 09 May 2007 14:15:43 -0700 (PDT)
-Content-Disposition: inline
+	Wed,  9 May 2007 23:19:09 +0200 (CEST)
+In-Reply-To: <1178743654.29464.1.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: Joachim =?UTF-8?B?RsO2cnN0ZXI=?= <mls.JOFT@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2007-May/000835.html
-http://mailman.alsa-project.org/pipermail/alsa-devel/2007-May/000837.html
-
-the overrun  issue was because my application was not fast enough.
-
-I resolved that problem by disabling capture of AC-Link slot4 in my
-ac97 controller.
-So capture happens only in slot3.
-
-According to ac97 spec Mic comes in Slot6 of AC-Link.
-
-I am using wolfson wm9713 codec.
-
-In this LineR and LineL are routed to LeftADC and RightADC.
-
-And Mic1 (Mic A) is also coonected to LeftADC and RightADC.
-
-
-So i am assuming that Mic 1 will come in Slot3 and Slot4.
-
-But my application is taking only mono data, so XRUN will happen.
-
-
-What is the correct configuration for this?
-What should be the configuration if i want to capture both Line IN and Mic?
-means AC-Link settings
-
-Thanks
+T24gV2VkLCAwOSBNYXkgMjAwNyAyMjo0NzozNCArMDIwMAoiSm9hY2hpbSBGw7Zyc3RlciIgPG1s
+cy5KT0ZUQGdteC5kZT4gd3JvdGU6Cgo+IEhpIEFMU0EgZGV2cywKPiAKPiBJJ20gZ29pbmcgdG8g
+d3JpdGUgYW4gQUxTQSBkcml2ZXIgZm9yIGEgbm90IHlldCBleGlzdGluZyBBQzk3Cj4gY29udHJv
+bGxlciwgd2hpY2ggaXMgZ29pbmcgdG8gYmUgIndyaXR0ZW4iIChWSERMKSwgdG9vIChhdCB0aGUg
+c2FtZQo+IHRpbWUpLiBQbGF0Zm9ybS9Cb2FyZCBpcyBhIFhpbGlueCBNTDQwMyB3aXRoIFZpcnRl
+eC00IEZQR0EsIFBvd2VyUEMKPiA0MDUgYXJjaGl0ZWN0dXJlLCBPUEIvT0NQIGJ1cywgQUM5NyBD
+b2RlYyBMTTQ1NTAuCgp0aGF0IGtpbmRhIHNvdW5kcyBsaWtlIGZ1biEgaSB3aXNoIGkgY291bGQg
+ZG8gdmhkbCBpbiBteSBqb2IgdG9vLgoKPiBCZWZvcmUgcHJlc2VudGluZyBteSBxdWVzdGlvbiwg
+SSBoYXZlIHRvIHNheSwgdGhhdCBJJ20gYSBiZWdpbm5lciB3aXRoCj4gQUxTQS9MaW51eCBkcml2
+ZXIgZGV2ZWxvcG1lbnQuCgppbiBub3ZlbWJlciBvZiAwNiwgc28gd2FzIGkuIGkgYW0gc3RpbGwg
+Oi0pCgo+IE15IHF1ZXN0aW9uIGlzOiBEb2VzIHRoZSBhcmNoaXRlY3R1cmUgZGVzY3JpYmVkIGJl
+bG93IG1ha2Ugc2Vuc2UvaXMKPiByZWFzb25hYmxlIHdpdGggQUxTQSBhbmQgTGludXg/CgppIHRo
+aW5rIHlvdSBtaWdodCBoYXZlIHRvIGFuc3dlciBhbiBlYXJsaWVyIHF1ZXN0aW9uIGZpcnN0OyAn
+ZG9lcyBpdAptYWtlIHNlbnNlIHRvIGNhbGwgdGhpcyBhbiBhYzk3IGNvbnRyb2xsZXI/JyBJIGRv
+bnQgcmVjYWxsIHNlZWluZyBhCnJpbmcgYnVmZmVyIGFzIHBhcnQgb2YgdGhlIGFjOTcgc3RhbmRh
+cmQuIGknZCBzdWdnZXN0IHRoYXQgeW91IHRha2UgdGhlCnRpbWUgdG8gZmxlc2ggb3V0IGNvbXBs
+ZXRlbHkgaG93IHRoZSByaW5nIGJ1ZmZlciBpcyBzdXBwb3NlZCB0byByZXBsYWNlCmRtYSBhbmQg
+cmFtIHdoaWxlIHN0aWxsIHByZXNlbnRpbmcgYW4gYWM5NyBzZXQgb2YgdmVyYnMgYmVjYXVzZSBp
+IGFtCnN0dWNrIHdpdGggdGhlIGd1dCBmZWVsaW5nIHRoYXQgeW91IHdpbGwgc29tZSBpbXBvcnRh
+bnQgdGhpbmdzIHdpbGwKaGF2ZSB0byBiZSByZWFsbHkgZGlmZmVyZW50LgoKYnV0IGFnYWluLCBp
+IGFtIGEgYmVnaW5uZXIgc28gbXkgZ3V0IGZlZWxpbmcgY291bGQgYmUgd3JvbmcuCgpvciwgaSBj
+b3VsZCBiZSBjb3JyZWN0LCBidXQgdGhhdCB0aGUgZm9sa3MgdGhhdCBhcmUgcG9ydGluZyBhbHNh
+IHRvIGRtYQpmcmVlIGFyY2hpdGVjdHVyZXMgaGF2ZSBhbHJlYWR5IGZpZ3VyZWQgb3V0IGEgcm9i
+dXN0IGFuZCBzdGFuZGFyZApzb2x1dGlvbiB0aGF0IHlvdSBjb3VsZCBhZG9wdCAtIGknbGwgYmUg
+Y3VyaW91cyB0byBzZWUgd2hhdCBvdGhlcnMKc2F5Li4uCgo+IFRoZSBwcm9ibGVtIGlzLCB0aGF0
+IHRoZXJlIGlzIG5vIERNQSBjb250cm9sbGVyIGFuZCBpbXBsZW1lbnRpbmcgYW4KPiBPUEIgbWFz
+dGVyIGRldmljZSB3aGljaCB3b3VsZCBiZSBhYmxlIHRvIGRvIERNQSBpdHNlbGYgaXMgbm90IGFu
+Cj4gb3B0aW9uIGF0IHRoaXMgdGltZS4KPiBTbyBvdXIgdGhvdWdodHMgd2VyZTogSW50ZWdyYXRl
+IHRoZSAiRE1BIHJpbmcgYnVmZmVyIiAod2hpY2ggaXMKPiB1c3VhbGx5IHNvbWV3aGVyZSBpbiBt
+YWluIG1lbW9yeS9SQU0pIGludG8gdGhlIEFDOTcgY29udHJvbGxlci4gTWFrZQo+IEFMU0EgYWNj
+ZXNzIHRoaXMgSFcgYnVmZmVyIGFzIGlmIGl0IHdhcyBpbiBtYWluIG1lbW9yeS4gVGhpcyB3YXks
+IHRoZQo+IGRldmljZSAoQUM5NyBjb250cm9sbGVyKSBoYXMgImRpcmVjdCBhY2Nlc3MiIHRvIGl0
+cyBidWZmZXIgIm1lbW9yeSIgLQo+IHRoaXMgY291bGQgYmUgY2FsbGVkICJmYWtlIERNQSIuCj4g
+VGhlIEFDOTcgY29udHJvbGxlciB3b3VsZCBoYXZlIHRlbGwgdXMgd2hlcmUgaXQgaXMgd2hpbGUg
+cGxheWluZyBhbmQKPiBmaXJpbmcgaW50ZXJydXB0cyBhZnRlciBvbmUgcGVyaW9kLCBzbyB0aGF0
+IHdlIGRvbid0IHdyaXRlIHRvIHZhbHVlcwo+IHdoaWNoIGFyZSBpbiB0aGUgY3VycmVudCBwZXJp
+b2QsIGluc3RlYWQgdXBkYXRlIHRoZSBhcmVhIHdoZXJlIG9mIHRoZQo+IHBhc3QgcGxheWVkIHBl
+cmlvZHMgZXRjLiAuLi4gVGhlIGJ1ZmZlciBzaG91bGQgYmUgYSAicmluZyBidWZmZXIiLAo+IHJp
+Z2h0Pwo+IAo+IE1hcHBpbmcgdGhpcyAiSU8gbWVtb3J5IiBpbnRvIGtlcm5lbCBzcGFjZSBzaG91
+bGQgYmUgcG9zc2libGUgd2l0aAo+IGlvX3JlbWFwX3BhZ2VfcmFuZ2UoKSwgcmlnaHQ/Cj4gSSB3
+b3VsZCBoYXZlIHRvIGltcGxlbWVudCB0aGUgbW1hcCgpIGNhbGxiYWNrIGluIG15IGRyaXZlciwg
+dG8gc2V0dXAKPiB0aGUgZ2l2ZW4gVk1BICh3aXRoIHRoZSBhYm92ZSBmdW5jdGlvbiksIHJpZ2h0
+Pwo+IFNvLCBBTFNBIGxpYnJhcnkvYXBwbGljYXRpb25zIHdpbGwgYmUgYWJsZSB0byB1c2UgTU1B
+UCBtb2RlLCB3aGljaCBpcwo+IHdoYXQgd2Ugd2FudCB0byBhY2hpZXZlPwo+IFtXZSBkb24ndCB3
+YW50IGNvcHkoKS9zaWxlbmNlKCkuIEFuIGludGVybWVkaWF0ZSBidWZmZXIgd2l0aAo+IGFjaygp
+L3Rhc2tsZXQvd29ya3F1ZXVlICsgRklGTyBpbiBIVyB3b3VsZCBiZSBhbiBhbHRlcm5hdGl2ZS5d
+Cj4gCj4gSSByZWFkLCB0aGF0IG1hbnkgYXBwbGljYXRpb25zIGRvbid0IHdvcmssIGlmIE1NQVAg
+bW9kZSBpcyBub3QKPiBzdXBwb3J0ZWQgYW5kIGNsYXNzaWMgcmVhZC93cml0ZSAoY29weSgpL3Np
+bGVuY2UoKSkgaXMgdXNlZCwgb25seS4gSXMKPiB0aGVyZSBhIGJsYWNrIGxpc3Qgb2YgYXBwcywg
+d2hpY2ggZG9uJ3Qgd29yaz8KCmkgZG91YnQgc2VyaW91c2x5IHRoYXQgc3VjaCBhIHRoaW5nIGV4
+aXN0cywgaG93IGNvdWxkIGl0PyBuZXcgYXBwcyBhcmUKd3JpdHRlbiBldmVyeWRheSwgb2xkIGFw
+cHMgaW4gYmluYXJ5IG9ubHkgZm9ybSBnZXQgJ3NoaW1tZWQnIGZvcndhcmQKd2l0aCBjb21hcHRp
+YmlsaXR5IGxpYnJhcmllcyB0byB3b3JrIGluIG5ld2VyIG9wZXJhdGluZyBzeXN0ZW1zLgoKPiBU
+aGFua3MgZm9yIHJlYWRpbmcgJiB5b3VyIHRpbWUsCgpnb29kIGx1Y2shCgpqb2hudQoKPiAgSm9h
+Y2hpbQo+IAo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo+IAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
