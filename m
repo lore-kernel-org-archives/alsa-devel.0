@@ -1,23 +1,15 @@
-From: Daniel Drake <dsd@gentoo.org>
-Subject: [PATCH] snd-usb-audio: Another Logitech QuickCam ID
-Date: Thu, 10 May 2007 00:17:16 +0100 (BST)
-Message-ID: <20070509231716.BBC5C7B409F@zog.reactivated.net>
+From: Kjeld Flarup <kjeld.flarup@liberalismen.dk>
+Subject: Recording stops after a short while on ATI SB450
+Date: Thu, 10 May 2007 01:48:01 +0200
+Message-ID: <46425DB1.8010008@liberalismen.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mtaout03-winn.ispmail.ntl.com (mtaout03-winn.ispmail.ntl.com
-	[81.103.221.49]) by alsa0.perex.cz (Postfix) with ESMTP id 36D98244D0
+Received: from pfepc.post.tele.dk (pfepc.post.tele.dk [195.41.46.237])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54285244D5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2007 01:17:12 +0200 (CEST)
-Received: from aamtaout03-winn.ispmail.ntl.com ([81.103.221.35])
-	by mtaout03-winn.ispmail.ntl.com with ESMTP id
-	<20070509231711.JALR16175.mtaout03-winn.ispmail.ntl.com@aamtaout03-winn.ispmail.ntl.com>
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2007 00:17:11 +0100
-Received: from zog.reactivated.net ([86.14.211.88])
-	by aamtaout03-winn.ispmail.ntl.com with ESMTP id
-	<20070509231711.ZNGF26699.aamtaout03-winn.ispmail.ntl.com@zog.reactivated.net>
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2007 00:17:11 +0100
+	Thu, 10 May 2007 01:48:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,31 +22,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the ID for another quickcam microphone, reported by freqmod
-on ALSA ticket #0003040
+Hello
 
-I'm going to submit a USB patch separately to provide a macro to simplify these
-entries, as suggested by Alan Stern. We could switch to using that in future.
+This list first got to my attention after I filed a bug =
 
-Signed-off-by: Daniel Drake <dsd@gentoo.org>
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D3064
 
-Index: linux/sound/usb/usbquirks.h
-===================================================================
---- linux.orig/sound/usb/usbquirks.h
-+++ linux/sound/usb/usbquirks.h
-@@ -49,6 +49,15 @@
- 		       USB_DEVICE_ID_MATCH_INT_CLASS |
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
- 	.idVendor = 0x046d,
-+	.idProduct = 0x0850,
-+	.bInterfaceClass = USB_CLASS_AUDIO,
-+	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL
-+},
-+{
-+	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-+		       USB_DEVICE_ID_MATCH_INT_CLASS |
-+		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-+	.idVendor = 0x046d,
- 	.idProduct = 0x08f0,
- 	.bInterfaceClass = USB_CLASS_AUDIO,
- 	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL
+The short story is that then using arecord the input stops after a short =
+
+while.
+The only bug report I get is this when starting to capture.
+hda-intel: Invalid position buffer, using LPIB read method instead.
+
+I'm actually on the edge of buying a USB headset for this computer. I =
+
+unfortunately only have it for 2=BD weeks, then my mother in law is going =
+
+to have it. Meanwhile I can test almost anything if anybody has an idea.
+
+-- =
+
+-------------------- Med Liberalistiske Hilsner ----------------------
+  Civilingeni=F8r, Kjeld Flarup - Mit sind er mere =E5bent end min tegnebog
+  Forssavej 49, 7600 Struer, Tlf: 40 29 41 49
+  Den ikke akademiske hjemmeside for liberalismen - www.liberalismen.dk
