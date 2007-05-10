@@ -1,17 +1,18 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH5/5] ASoC S3C24xx machine drivers - Kconfig
-Date: Thu, 10 May 2007 14:00:52 +0100
-Message-ID: <1178802052.10518.73.camel@a10072.wolfsonmicro.main>
+Subject: [PATCH4/5] ASoC S3C24xx machine drivers - I2C ID for
+	LM4857
+Date: Thu, 10 May 2007 14:00:45 +0100
+Message-ID: <1178802045.10518.72.camel@a10072.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-kqCZArFDxAEnaZsFzAqe"
+Content-Type: multipart/mixed; boundary="=-XVsQbBrzVSUhMCSMVdfN"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mimesweeper.wolfsonmicro.main (lumison.wolfsonmicro.com
-	[87.246.78.27]) by alsa0.perex.cz (Postfix) with ESMTP id 64FDC2438C
+	[87.246.78.27]) by alsa0.perex.cz (Postfix) with ESMTP id 108D424391
 	for <alsa-devel@alsa-project.org>;
 	Thu, 10 May 2007 15:01:05 +0200 (CEST)
 Received: from orlando.wolfsonmicro.main (orlando.wolfsonmicro.main) by
 	mimesweeper.wolfsonmicro.main (Clearswift SMTPRS 5.2.3) with ESMTP id
-	<T7f82b3bae8ac140805bcc@mimesweeper.wolfsonmicro.main> for
+	<T7f82b3ba8bac140805bcc@mimesweeper.wolfsonmicro.main> for
 	<alsa-devel@alsa-project.org>; Thu, 10 May 2007 14:01:03 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,18 +27,14 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---=-kqCZArFDxAEnaZsFzAqe
+--=-XVsQbBrzVSUhMCSMVdfN
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-From: Graeme Gregory <gg@opensource.wolfsonmicro.com>
+This patch adds I2C ID for the LM4857 audio amp and corrects the spacing
+of the WM8731, WM8750 and WM8753 ID's.
 
-This patch adds Kconfig and build support for the Neo1973, SMDK2443 and
-S3C2443 AC97 ALSA audio drivers.
-
-Signed-off-by: Graeme Gregory <gg@opensource.wolfsonmicro.com>
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-
 
 Privacy & Confidentiality Notice
 -------------------------------------------------
@@ -57,71 +54,29 @@ Registered office:
 Westfield House, 26 Westfield Road, Edinburgh, EH11 2QB, UK
 
 
---=-kqCZArFDxAEnaZsFzAqe
-Content-Disposition: attachment; filename="kconfig.patch"
-Content-Type: text/x-patch; name="kconfig.patch"; charset=UTF-8
+--=-XVsQbBrzVSUhMCSMVdfN
+Content-Disposition: attachment; filename="i2c-id.patch"
+Content-Type: text/x-patch; name="i2c-id.patch"; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
---- a/soc/s3c24xx/Kconfig	Mon May 07 09:29:32 2007 +0200
-+++ b/soc/s3c24xx/Kconfig	Wed May 09 11:12:48 2007 +0100
-@@ -1,6 +1,7 @@ config SND_S3C24XX_SOC
- config SND_S3C24XX_SOC
- 	tristate "SoC Audio for the Samsung S3C24XX chips"
- 	depends on ARCH_S3C2410 && SND_SOC
-+	select SND_PCM
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the S3C24XX AC97, I2S or SSP interface. You will also need
-@@ -8,3 +9,29 @@ config SND_S3C24XX_SOC
+--- a/kernel/include/linux/i2c-id.h	Mon May 07 09:29:32 2007 +0200
++++ b/kernel/include/linux/i2c-id.h	Tue May 08 10:16:09 2007 +0100
+@@ -116,9 +116,10 @@
+ #define I2C_DRIVERID_KS0127	86	/* Samsung ks0127 video decoder */
+ #define I2C_DRIVERID_TLV320AIC23B 87	/* TI TLV320AIC23B audio codec  */
+ #define I2C_DRIVERID_ISL1208	88	/* Intersil ISL1208 RTC		*/
+-#define I2C_DRIVERID_WM8731		89	/* Wolfson WM8731 audio codec */
+-#define I2C_DRIVERID_WM8750		90	/* Wolfson WM8750 audio codec */
+-#define I2C_DRIVERID_WM8753		91	/* Wolfson WM8753 audio codec */
++#define I2C_DRIVERID_WM8731	89	/* Wolfson WM8731 audio codec */
++#define I2C_DRIVERID_WM8750	90	/* Wolfson WM8750 audio codec */
++#define I2C_DRIVERID_WM8753	91	/* Wolfson WM8753 audio codec */
++#define I2C_DRIVERID_LM4857 	92 	/* LM4857 Audio Amplifier */
  
- config SND_S3C24XX_SOC_I2S
- 	tristate
-+
-+config SND_S3C2443_SOC_AC97
-+	tristate
-+	select AC97_BUS
-+	select SND_AC97_CODEC
-+	select SND_SOC_AC97_BUS
-+	
-+config SND_S3C24XX_SOC_NEO1973_WM8753
-+	tristate "SoC I2S Audio support for NEO1973 - WM8753"
-+	depends on SND_S3C24XX_SOC && MACH_GTA01
-+	select SND_S3C24XX_SOC_I2S
-+	select SND_SOC_WM8753
-+	help
-+	  Say Y if you want to add support for SoC audio on smdk2440
-+	  with the WM8753.
-+
-+config SND_S3C24XX_SOC_SMDK2443_WM9710
-+	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
-+	depends on SND_S3C24XX_SOC && MACH_SMDK2443
-+	select SND_S3C2443_SOC_AC97
-+	select SND_SOC_AC97_CODEC
-+	help
-+	  Say Y if you want to add support for SoC audio on smdk2443
-+	  with the WM9710.
-+
-+
---- a/soc/s3c24xx/Makefile	Mon May 07 09:29:32 2007 +0200
-+++ b/soc/s3c24xx/Makefile	Tue May 08 10:16:09 2007 +0100
-@@ -1,6 +1,15 @@
- # S3c24XX Platform Support
- snd-soc-s3c24xx-objs := s3c24xx-pcm.o
- snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
-+snd-soc-s3c2443-ac97-objs := s3c2443-ac97.o
- 
- obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
- obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
-+obj-$(CONFIG_SND_S3C2443_SOC_AC97) += snd-soc-s3c2443-ac97.o
-+
-+# S3C24XX Machine Support
-+snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
-+snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
-+
-+obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
-+obj-$(CONFIG_SND_S3C24XX_SOC_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
+ #define I2C_DRIVERID_I2CDEV	900
+ #define I2C_DRIVERID_ARP        902    /* SMBus ARP Client              */
 
---=-kqCZArFDxAEnaZsFzAqe
+--=-XVsQbBrzVSUhMCSMVdfN
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -132,4 +87,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---=-kqCZArFDxAEnaZsFzAqe--
+--=-XVsQbBrzVSUhMCSMVdfN--
