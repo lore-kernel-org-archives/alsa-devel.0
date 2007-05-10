@@ -1,45 +1,61 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: Recording stops after a short while on ATI SB450
-Date: Wed, 9 May 2007 20:04:24 -0400
-Message-ID: <75b66ecd0705091704u75d65cbfo3a6d223a72cd718b@mail.gmail.com>
-References: <46425DB1.8010008@liberalismen.dk>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [RFC PATCH] ASoC AC97/I2S for SH7760
+Date: Thu, 10 May 2007 09:37:48 +0900
+Message-ID: <20070510003748.GA25709@linux-sh.org>
+References: <20070508174027.GB28884@roarinelk.homelinux.net>
+	<20070509005255.GB19043@linux-sh.org>
+	<20070509052503.GA32573@roarinelk.homelinux.net>
+	<1178706319.3740.22.camel@a10072.wolfsonmicro.main>
+	<20070508174027.GB28884@roarinelk.homelinux.net>
+	<20070509005255.GB19043@linux-sh.org>
+	<20070509052503.GA32573@roarinelk.homelinux.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.231])
-	by alsa0.perex.cz (Postfix) with ESMTP id D91C9244D8
-	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2007 02:04:25 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so378685nzf
-	for <alsa-devel@alsa-project.org>; Wed, 09 May 2007 17:04:24 -0700 (PDT)
-In-Reply-To: <46425DB1.8010008@liberalismen.dk>
+Return-path: <linuxsh-dev-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kjeld Flarup <kjeld.flarup@liberalismen.dk>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <1178706319.3740.22.camel@a10072.wolfsonmicro.main>
+	<20070509052503.GA32573@roarinelk.homelinux.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+Sender: linuxsh-dev-bounces@lists.sourceforge.net
+Errors-To: linuxsh-dev-bounces@lists.sourceforge.net
+To: Manuel Lauss <mano@roarinelk.homelinux.net>, Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linuxsh-dev@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 5/9/07, Kjeld Flarup <kjeld.flarup@liberalismen.dk> wrote:
-> Hello
->
-> This list first got to my attention after I filed a bug
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3064
->
-> The short story is that then using arecord the input stops after a short
-> while.
-> The only bug report I get is this when starting to capture.
-> hda-intel: Invalid position buffer, using LPIB read method instead.
+On Wed, May 09, 2007 at 07:25:03AM +0200, Manuel Lauss wrote:
+> On Wed, May 09, 2007 at 09:52:55AM +0900, Paul Mundt wrote:
+> > Platform device resources, please.
+> 
+> It's not that easy with asoc: first it does not pass any
+> information to the ac97_read/write functions, and I haven't
+> yet found a way to pass information from the probe() callbacks
+> to the asoc core, hence this hack.
+> In general, ASoC does not anticipate devices like the 7760 with
+> 2 independent audio units.
+>  
 
-Did you unmute capture channels and raise volumes?  Some chips
-inexplicably don't generate interrupts if the mixer is muted.
+On Wed, May 09, 2007 at 11:25:19AM +0100, Liam Girdwood wrote:
+> Fwiw, this is on my todo list for after the next merge. Sadly, I'm
+> struggling for free time to add ac97 private data atm. 
+> 
 
-Lee
+Given that, I don't have any other concerns about this particular patch.
+The patch that this depends on is already merged for -rc1, so there
+shouldn't be anything holding this up now.
+
+When there's proper ac97 private data, it would be nice to redo these for
+platform devices. In the meantime, we'll simply have to ifdef for all of
+the CPU subtypes that might be able to leverage this..
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by DB2 Express
+Download DB2 Express C - the FREE version of DB2 express and take
+control of your XML. No limits. Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
