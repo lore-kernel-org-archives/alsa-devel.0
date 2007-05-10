@@ -1,17 +1,17 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: Mic and Line In Capture AC97 slots issue
-Date: Thu, 10 May 2007 11:48:59 +0100
-Message-ID: <1178794139.10518.12.camel@a10072.wolfsonmicro.main>
-References: <8d6898730705091415s74685223r4c4409e87ff587c@mail.gmail.com>
+From: Markus Korber <korbse@gmx.at>
+Subject: Re: Audio DMA buffer layout
+Date: Thu, 10 May 2007 12:52:20 +0200
+Message-ID: <6z8xbxj6hn.fsf@odpc25.int.ondemand.co.at>
+References: <6zbqgvsfj0.fsf@odpc25.int.ondemand.co.at>
+	<s5hvef25eai.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35C3F24365
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 0B7A224365
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2007 12:49:01 +0200 (CEST)
-In-Reply-To: <8d6898730705091415s74685223r4c4409e87ff587c@mail.gmail.com>
+	Thu, 10 May 2007 12:52:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,48 +21,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nobin Mathew <nobin.mathew@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Markus Korber <korbse@gmx.at>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-05-10 at 02:45 +0530, Nobin Mathew wrote:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-May/000835.html
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-May/000837.html
-> 
-> the overrun  issue was because my application was not fast enough.
-> 
-> I resolved that problem by disabling capture of AC-Link slot4 in my
-> ac97 controller.
-> So capture happens only in slot3.
-> 
-> According to ac97 spec Mic comes in Slot6 of AC-Link.
-> 
-> I am using wolfson wm9713 codec.
-> 
-> In this LineR and LineL are routed to LeftADC and RightADC.
-> 
-> And Mic1 (Mic A) is also coonected to LeftADC and RightADC.
-> 
-> 
-> So i am assuming that Mic 1 will come in Slot3 and Slot4.
-> 
-> But my application is taking only mono data, so XRUN will happen.
-> 
-> 
-> What is the correct configuration for this?
-> What should be the configuration if i want to capture both Line IN and Mic?
-> means AC-Link settings
-> 
+Thus spake Takashi Iwai:
 
-At least 2 AC97 slots must be active in order to capture 2 separate
-channels (i.e. Mic1 and Line II). Hence, you will need to enable slots 3
-& 4 for _stereo_ audio capture.
+First of all, thanks for your answer.  However, 
 
-Mono capture (1 AC97 slot) of Mic1, Line R & L can be accomplished on
-the WM9713 by mixing all the required signals into the Mono mixer and
-capturing the mixer output with either the left ADC (slot 3) or the
-right ADC (slot 4). The easiest way to set this up is to look at the
-audio diagram on page 13 of the datasheet and run alsamixer to change
-the mixers. alsactl can then be used to store your mixer settings.
+> At Tue, 08 May 2007 13:47:47 +0200,
+> Markus Korber wrote:
+>>
+>>
+>>      IRQ1 +----------------+
+>>           | page_3 (right) |\
+>>           +----------------+ > double buffer 1
+>>           | page_2 (left)  |/
+>>      IRQ0 +----------------+
+>>           | page_1 (right) |\
+>>           +----------------+ > double buffer 0
+>>           | page_0 (left)  |/
+>>           +----------------+
+>
+> If I understand correctly, the samples for a channel (e.g. left) is
+> practically split to two regions, page 0 and page 2 in the above?
 
-Liam
+Correct.
+
+> If yes, this h/w design is hard to implement mmap mode
+> straightforwardly because the alsa-lib (and apps) assume "linear"
+> buffers.  For normal read/write without mmap, this shouldn't be that
+> hard as you guess, though.
+
+Are there any drawbacks if I use the R/W mode without mmap, regarding
+applications (mplayer), dmix, etc.?
+
+Furthermore, in mmap mode, I think I could use an intermediate buffer
+(with the layout as above), where I copy the data from the (linear)
+mmap'd buffer to, could I?  Maybe using helpers from struct
+pcm-indirect.h?  But this is not very beautiful.
+
+> A workaround would be to use SG-buffer (if possible).  The constraint
+> is thta both double buffers above have to be aligned in PAGE_SIZE
+> (depending on architecture, 4KB mostly).
+
+It's a custom chip with an ARM core and an AMBA-AHB bus.  PAGE_SIZE
+alignment wouldn't be a problem, although then buffer_size would be
+fixed to multiples of PAGE_SIZE, i guess?
+
+I'm not quite sure how to implement this:
+
+chip_pcm_new
+        - snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+                snd_dma_continuous_data(GFP_KERNEL), PAGE_SIZE, PAGE_SIZE)
+
+chip_hw_params
+        - snd_pcm_lib_malloc_pages(substream,
+                                   params_buffer_bytes(hw_params))
+        - map sg-pages with snd_pcm_sgbuf_get_addr()
+        
+        Why/How?
+
+I mean, my hardware DMA layout is fixed (apart from the double buffer
+page sizes, which should be a multiple of PAGE_SIZE).  
+So do I have to call snd_pcm_lib_malloc_pages() and/or do I need to call
+dma_map_sg() with a scatterlist?  Or how do I tell ALSA about my DMA
+layout?  And how is the application informed about this?
+
+> For implementing a SG buffer, you can use either mmap or page pcm_ops.
+> The mmap is to do the whole mmap operation, so you can do all what
+> you'd like.
+
+My understanding is, that the application mmap's my allocated buffer
+(currently allocated with dma_alloc_writecombine) and the ALSA library
+tells it, where it is allowed to put its data.  (ALSA gets this info
+through the pointer() callback and calls to snd_pcm_period_elapsed.)
+Thus, this mmap() callback is only called once in normal mmap mode.
+
+Now, if I would use a SG approach, how would I handle this mmap
+operation in my callback?  I guess, I have to provide similar
+functionality as in dma_mmap() but with 2 different base addresses?
+
+> The page is a callback used by the default ALSA mmap handler and you
+> can return the page pointer corresponding to the given buffer offset.
+
+This approach looks easier to me.  Am I right, that here I would just
+call snd_pcm_sgbuf_ops_page() from my page() callback handler?  What
+else do I need to do in this case to let the application know which
+buffer it should fill?
+
+Regards,
+Markus Korber
