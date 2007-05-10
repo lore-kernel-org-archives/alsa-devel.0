@@ -1,17 +1,17 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [PATCH3/5] ASoC S3C24xx machine drivers - SMDK 2443
-Date: Thu, 10 May 2007 14:00:34 +0100
-Message-ID: <1178802034.10518.71.camel@a10072.wolfsonmicro.main>
+Subject: [PATCH5/5] ASoC S3C24xx machine drivers - Kconfig
+Date: Thu, 10 May 2007 14:00:52 +0100
+Message-ID: <1178802052.10518.73.camel@a10072.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-gN6V2R14CtL1PJgTJtAE"
+Content-Type: multipart/mixed; boundary="=-kqCZArFDxAEnaZsFzAqe"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mimesweeper.wolfsonmicro.main (lumison.wolfsonmicro.com
-	[87.246.78.27]) by alsa0.perex.cz (Postfix) with ESMTP id B68FD24390
+	[87.246.78.27]) by alsa0.perex.cz (Postfix) with ESMTP id 64FDC2438C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2007 15:01:04 +0200 (CEST)
+	Thu, 10 May 2007 15:01:05 +0200 (CEST)
 Received: from orlando.wolfsonmicro.main (orlando.wolfsonmicro.main) by
 	mimesweeper.wolfsonmicro.main (Clearswift SMTPRS 5.2.3) with ESMTP id
-	<T7f82b3ba4cac140805bcc@mimesweeper.wolfsonmicro.main> for
+	<T7f82b3bae8ac140805bcc@mimesweeper.wolfsonmicro.main> for
 	<alsa-devel@alsa-project.org>; Thu, 10 May 2007 14:01:03 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,13 +26,14 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---=-gN6V2R14CtL1PJgTJtAE
+--=-kqCZArFDxAEnaZsFzAqe
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 From: Graeme Gregory <gg@opensource.wolfsonmicro.com>
 
-This patch adds ALSA support for the SMDK2443 reference board.
+This patch adds Kconfig and build support for the Neo1973, SMDK2443 and
+S3C2443 AC97 ALSA audio drivers.
 
 Signed-off-by: Graeme Gregory <gg@opensource.wolfsonmicro.com>
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
@@ -56,102 +57,71 @@ Registered office:
 Westfield House, 26 Westfield Road, Edinburgh, EH11 2QB, UK
 
 
---=-gN6V2R14CtL1PJgTJtAE
-Content-Disposition: attachment; filename="smdk2443-wm9710.patch"
-Content-Type: text/x-patch; name="smdk2443-wm9710.patch"; charset=UTF-8
+--=-kqCZArFDxAEnaZsFzAqe
+Content-Disposition: attachment; filename="kconfig.patch"
+Content-Type: text/x-patch; name="kconfig.patch"; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-diff -r d3759641c380 soc/s3c24xx/smdk2443_wm9710.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/soc/s3c24xx/smdk2443_wm9710.c	Thu May 10 13:50:11 2007 +0100
-@@ -0,0 +1,85 @@
-+/*
-+ * smdk2443_wm9710.c  --  SoC audio for smdk2443
-+ *
-+ * Copyright 2007 Wolfson Microelectronics PLC.
-+ * Author: Graeme Gregory
-+ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ *  Revision history
-+ *    8th Mar 2007   Initial version.
-+ *
-+ */
+--- a/soc/s3c24xx/Kconfig	Mon May 07 09:29:32 2007 +0200
++++ b/soc/s3c24xx/Kconfig	Wed May 09 11:12:48 2007 +0100
+@@ -1,6 +1,7 @@ config SND_S3C24XX_SOC
+ config SND_S3C24XX_SOC
+ 	tristate "SoC Audio for the Samsung S3C24XX chips"
+ 	depends on ARCH_S3C2410 && SND_SOC
++	select SND_PCM
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the S3C24XX AC97, I2S or SSP interface. You will also need
+@@ -8,3 +9,29 @@ config SND_S3C24XX_SOC
+ 
+ config SND_S3C24XX_SOC_I2S
+ 	tristate
 +
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <sound/driver.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
++config SND_S3C2443_SOC_AC97
++	tristate
++	select AC97_BUS
++	select SND_AC97_CODEC
++	select SND_SOC_AC97_BUS
++	
++config SND_S3C24XX_SOC_NEO1973_WM8753
++	tristate "SoC I2S Audio support for NEO1973 - WM8753"
++	depends on SND_S3C24XX_SOC && MACH_GTA01
++	select SND_S3C24XX_SOC_I2S
++	select SND_SOC_WM8753
++	help
++	  Say Y if you want to add support for SoC audio on smdk2440
++	  with the WM8753.
 +
-+#include "../codecs/ac97.h"
-+#include "s3c24xx-pcm.h"
-+#include "s3c24xx-ac97.h"
++config SND_S3C24XX_SOC_SMDK2443_WM9710
++	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
++	depends on SND_S3C24XX_SOC && MACH_SMDK2443
++	select SND_S3C2443_SOC_AC97
++	select SND_SOC_AC97_CODEC
++	help
++	  Say Y if you want to add support for SoC audio on smdk2443
++	  with the WM9710.
 +
-+static struct snd_soc_machine smdk2443;
 +
-+static struct snd_soc_dai_link smdk2443_dai[] = {
-+{
-+	.name = "AC97",
-+	.stream_name = "AC97 HiFi",
-+	.cpu_dai = &s3c2443_ac97_dai[0],
-+	.codec_dai = &ac97_dai,
-+},
-+};
+--- a/soc/s3c24xx/Makefile	Mon May 07 09:29:32 2007 +0200
++++ b/soc/s3c24xx/Makefile	Tue May 08 10:16:09 2007 +0100
+@@ -1,6 +1,15 @@
+ # S3c24XX Platform Support
+ snd-soc-s3c24xx-objs := s3c24xx-pcm.o
+ snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
++snd-soc-s3c2443-ac97-objs := s3c2443-ac97.o
+ 
+ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
++obj-$(CONFIG_SND_S3C2443_SOC_AC97) += snd-soc-s3c2443-ac97.o
 +
-+static struct snd_soc_machine smdk2443 = {
-+	.name = "SMDK2443",
-+	.dai_link = smdk2443_dai,
-+	.num_links = ARRAY_SIZE(smdk2443_dai),
-+};
++# S3C24XX Machine Support
++snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
++snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
 +
-+static struct snd_soc_device smdk2443_snd_ac97_devdata = {
-+	.machine = &smdk2443,
-+	.platform = &s3c24xx_soc_platform,
-+	.codec_dev = &soc_codec_dev_ac97,
-+};
-+
-+static struct platform_device *smdk2443_snd_ac97_device;
-+
-+static int __init smdk2443_init(void)
-+{
-+	int ret;
-+
-+	smdk2443_snd_ac97_device = platform_device_alloc("soc-audio", -1);
-+	if (!smdk2443_snd_ac97_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(smdk2443_snd_ac97_device,
-+				&smdk2443_snd_ac97_devdata);
-+	smdk2443_snd_ac97_devdata.dev = &smdk2443_snd_ac97_device->dev;
-+	ret = platform_device_add(smdk2443_snd_ac97_device);
-+
-+	if (ret)
-+		platform_device_put(smdk2443_snd_ac97_device);
-+
-+	return ret;
-+}
-+
-+static void __exit smdk2443_exit(void)
-+{
-+	platform_device_unregister(smdk2443_snd_ac97_device);
-+}
-+
-+module_init(smdk2443_init);
-+module_exit(smdk2443_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Graeme Gregory, graeme.gregory@wolfsonmicro.com, www.wolfsonmicro.com");
-+MODULE_DESCRIPTION("ALSA SoC WM9710 SMDK2443");
-+MODULE_LICENSE("GPL");
++obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
++obj-$(CONFIG_SND_S3C24XX_SOC_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
 
---=-gN6V2R14CtL1PJgTJtAE
+--=-kqCZArFDxAEnaZsFzAqe
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -162,4 +132,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---=-gN6V2R14CtL1PJgTJtAE--
+--=-kqCZArFDxAEnaZsFzAqe--
