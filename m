@@ -1,23 +1,20 @@
 From: "xinyun liu" <xinyunliu.osc@gmail.com>
-Subject: Re: Can't record sound on Aser Aspire 5100. ATI SB450,
-	RelTek ALC 883
-Date: Fri, 11 May 2007 04:13:28 +0800
-Message-ID: <afc365e50705101313g5284f17djedaec9d75496090e@mail.gmail.com>
-References: <afc365e50704290722s1867f059h3759d078607ed3ad@mail.gmail.com>
-	<afc365e50704290729n7d35c112uc363f7ebe4b9415@mail.gmail.com>
-	<681812960704291617pfb0517evf95e784fbe51e914@mail.gmail.com>
-	<afc365e50705101304x55a79f27t832f7ad577926a0e@mail.gmail.com>
+Subject: Re: detect extern/internel mic
+Date: Fri, 11 May 2007 04:24:22 +0800
+Message-ID: <afc365e50705101324nd532b2bk6d6db4a84075a372@mail.gmail.com>
+References: <afc365e50705090943k23f5e482k672b59101cd587b2@mail.gmail.com>
+	<s5hmz0ej5fs.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.237])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBACD24406
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id 51B5E24406
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2007 22:13:29 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so705698nzf
-	for <alsa-devel@alsa-project.org>; Thu, 10 May 2007 13:13:28 -0700 (PDT)
-In-Reply-To: <afc365e50705101304x55a79f27t832f7ad577926a0e@mail.gmail.com>
+	Thu, 10 May 2007 22:24:24 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so708988nzf
+	for <alsa-devel@alsa-project.org>; Thu, 10 May 2007 13:24:23 -0700 (PDT)
+In-Reply-To: <s5hmz0ej5fs.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,126 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ustun ERGENOGLU <ustun.ergenoglu@gmail.com>, alsa-devel@alsa-project.org, tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For such issue, how to try out or create a correct model for special machine?
+I have test on my laptop by playing a long .wav file.
 
-Thx!
+During playing, I plugged the external headphone, and the sound is
+continuously and switch from external headphone to internal speaker.
+It uses hda-intel driver. Does this mean it's the hardware do it?
 
+Thx
 
-
-2007/5/11, xinyun liu <xinyunliu.osc@gmail.com>:
-> I have test all modes for alc883. The result is here:
->
-> 0. 3stack-dig.  both extern/internal can play, but can't record sound
-> 1.  3stack-6ch-dig  same with 3stack-dig
-> 2.  3stack-6ch  can play, but can't record sound.  Can hear noise from the Mic.
-> 3. 6stack-dig  both can play sound, can't record sound
-> 4. tarta-dig  With alsamixer, can set to 2ch or 6ch, both can play sound, can't
-> 5. tarta-2ch-dig  both can play sound, can't record sound.
-> 6. 6stack-dig-demo both can play sound, can't record sound.
-> 7. aser    both can play sound, can't record sound
-> 8. medion    can't play sound
-> 9. laptop-eapd   can play sound, but can't record sound
-> 10. lenovo-101e  both can play sound, can't record sound
->
-> 11. auto  both can play sound, and can record sound.
-> But the sound quality is too bad to use from the internel Mic.
-> After test it a while on switching the extern/internal Mic, the
-> quality both droped.
-> So I use lenovo-101e model, ( rebuild the driver, rmmod/insmod, use
-> alsamixer to adjust the limits). Then I use auto mode,  and the sound
-> record work again from external Mic. After I switch to internel Mic,
-> the quality droped again.
->
-> Do you have any idea about it? Thx!
->
->
->
-> 2007/4/30, Ustun ERGENOGLU <ustun.ergenoglu@gmail.com>:
-> > I have a Fujitsu Siemens Amilo pa1510, with the same sound hardware,
-> > and the same problem. I have posted some messages here, made a bug
-> > report but no answer came :( i'm going hopeless.
+2007/5/10, Takashi Iwai <tiwai@suse.de>:
+> At Thu, 10 May 2007 00:43:07 +0800,
+> xinyun liu wrote:
 > >
-> > 2007/4/29, xinyun liu <xinyunliu.osc@gmail.com>:
-> > > I know it's the system bios does not set the pin configuration right.
-> > > But I don't know how to try out a correct model.
-> > >
-> > > Can anyone help to give some hints to fix it?
-> > >
-> > >
-> > > Regards,
-> > > Xinyun
-> > >
-> > >
-> > > 2007/4/29, xinyun liu <xinyunliu.osc@gmail.com>:
-> > > > hi,
-> > > > I have an Acer Aspire 5100. I can play sound but with the build in
-> > > > mic, I can't record sound. The driver is the latest HG code.
-> > > > http://pastebin.ca/464406
-> > > >
-> > > > [root@localhost ~]# lspci -nnv -d1002:437b
-> > > > 00:14.2 0403: 1002:437b (rev 01)
-> > > >        Subsystem: 1025:009f
-> > > >        Flags: bus master, slow devsel, latency 64, IRQ 19
-> > > >        Memory at c0000000 (64-bit, non-prefetchable) [size=16K]
-> > > >        Capabilities: [50] Power Management version 2
-> > > >        Capabilities: [60] Message Signalled Interrupts: 64bit+
-> > > > Queue=0/0 Enable-
-> > > >
-> > > >
-> > > > [root@localhost ~]# dmesg | fgrep ALSA > /tmp/1
-> > > > [root@localhost ~]# vi /tmp/1
-> > > > ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:698:
-> > > > codec_mask = 0xb
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:1820: hda_codec: model 'acer'
-> > > > is selected for config 1025:0 (Acer laptop)
-> > > > ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:698:
-> > > > codec_mask = 0xb
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:1820: hda_codec: model 'acer'
-> > > > is selected for config 1025:0 (Acer laptop)
-> > > > ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
-> > > > azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x2, stream=0x5, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x4, stream=0x5, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x3, stream=0x5, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x5, stream=0x5, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x2, stream=0x0, channel=0, format=0x0
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x4, stream=0x0, channel=0, format=0x0
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x3, stream=0x0, channel=0, format=0x0
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x5, stream=0x0, channel=0, format=0x0
-> > > > ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
-> > > > azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x8, stream=0x1, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x8, stream=0x0, channel=0, format=0x0
-> > > > ALSA ~/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1188:
-> > > > azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x2, stream=0x5, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x4, stream=0x5, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x3, stream=0x5, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x5, stream=0x5, channel=0, format=0x11
-> > > > ALSA ~/alsa-driver/pci/hda/hda_codec.c:630: hda_codec_setup_stream:
-> > > > NID=0x2, stream=0x0, channel=0, format=0x0
-> > > >
-> > > _______________________________________________
-> > > Alsa-devel mailing list
-> > > Alsa-devel@alsa-project.org
-> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > >
+> > It's interesting that when I plug in a headphone or an external
+> > microphone, the build in headphone and microphone will not work.
 > >
+> > Is it a driver feature or the hardware do it?
+> >
+> > Can anyone give some clue? I'd like to see the code but don't know how
+> > to start. Please give me help. Thx!
+>
+> Needs more hardware information of your device for better diagnosis.
+>
+> I guess it's a hardware, but some hda-intel drivers do that by
+> themselves for usability, for example.
+>
+>
+> Takashi
 >
