@@ -1,17 +1,21 @@
-From: "John L. Utz III" <john.utz@dmx.com>
-Subject: Re: Mackie XD-2 Spike USB Drivers for Linux
-Date: Thu, 10 May 2007 10:55:18 -0700
-Message-ID: <20070510105518.6b1ca72c@jutz-fc6.na.corp.dmxmusic.com>
-References: <200705101549.02071.tictactatic@gmail.com>
+From: Chris Pemberton <cjpembo@gmail.com>
+Subject: Re: alsa-driver-1.0.14rc3 won't compile with kernel
+ 2.6.20.3 when Processor family is Core2
+Date: Thu, 10 May 2007 13:26:27 -0500
+Message-ID: <464363D3.7000502@gmail.com>
+References: <46429F60.1000206@gmail.com>	<s5hirb1jbce.wl%tiwai@suse.de>	<46434592.4080906@gmail.com>
+	<s5hsla4iqn8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1A8DD243CF
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0983B243D5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2007 19:53:22 +0200 (CEST)
-In-Reply-To: <200705101549.02071.tictactatic@gmail.com>
+	Thu, 10 May 2007 20:26:26 +0200 (CEST)
+Received: by py-out-1112.google.com with SMTP id a25so623831pyi
+	for <alsa-devel@alsa-project.org>; Thu, 10 May 2007 11:26:26 -0700 (PDT)
+In-Reply-To: <s5hsla4iqn8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,61 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sava Tatic <tictactatic@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Sava
+Takashi Iwai wrote:
+> At Thu, 10 May 2007 11:17:22 -0500,
+> Chris Pemberton wrote:
+>   
+>> Takashi Iwai wrote:
+>>     
+>>> At Wed, 09 May 2007 23:28:16 -0500,
+>>> Chris Pemberton wrote:
+>>>   
+>>>       
+>>>> Laptop has Pentium Dual Core and Intel HD Audio
+>>>> Kernel is 2.6.20.3 compiled for Processor family Core2.
+>>>> In-kernel alsa drivers are 1.0.14rc3 (cat /proc/asound/version) and 
+>>>> compile ok.
+>>>> In-kernel drivers do not work for this sound card.
+>>>>
+>>>> Downloaded 1.0.14rc3 and applied patch_realtek.c
+>>>> ./configure --prefix=/usr --with-cards=hda-intel
+>>>> "make" gives the following error:
+>>>>
+>>>> make[1]: Entering directory `/usr/src/linux-2.6.20.3'
+>>>>     
+>>>>         
+>>>>> /usr/src/linux-2.6.20.3/Makefile:491: 
+>>>>> /usr/src/linux-2.6.20.3/arch//Makefile: No such file or directory
+>>>>>       
+>>>>>           
+>>>> If the kernel is compiled with Processor family = Pentium M, the 
+>>>> external alsa drivers compile clean and the soundcard works.
+>>>>
+>>>> So, Processor family = Core2 cannot be selected when using external 
+>>>> alsa-driver-1.0.14rc3.
+>>>>     
+>>>>         
+>>> This should have been fixed on 1.0.14rc4.  Give it a try.
+>>>
+>>>
+>>> Takashi
+>>>
+>>>   
+>>>       
+>> Does 1.0.14rc4 contain the patch_realtek.c?  Or will I have to apply the 
+>> patch there too?
+>>     
+>
+> It has since a few years ago.  I don't know which patch you're
+> referring, but most of patches have been already merged in 1.0.14rc4.
+>
+>
+> Takashi
+>
+>   
+I was referring to this patch (version6)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2725
 
-On Thu, 10 May 2007 15:49:01 +0200
-"Sava Tatic" <tictactatic@gmail.com> wrote:
+I am recompiling kernel for core2 and will let you know if 1.0.14rc4 works
 
-> Hello,
-> 
-> I have been trying to get the Mackie XD-2 Spike 
-> (http://www.mackie.com/products/spike/) to work on my Kubuntu Feisty
-> machine, and so far I have only gotten it to play out (I had to use
-> plughw instead of hw). I am using the generic USB drivers that came
-> with the distro. I am having trouble recording anything on the card.
-> Alsamixer (or Kmix) do not see the card. When I do alsamixer -c 1 (0
-> is my onboard card), it returns "no mixer elems found". 
-> 
-> I am aware that this card is not in the ALSA Matrix of supported
-> cards, but I am wondering what would it take for it to become
-> supported? 
-
-USB audio is a standard so it might be incredibly easy to do this
-depending on what mackie did.
-
-if the documentation indicates that it needs no drivers for OSX than
-it's a class compliant device and all you should need to do is find
-it's ID string using lsusp and then stick it into the appropriate array
-in the driver:
-
-[jutz@jutz-fc6 ~]$ /sbin/lsusb 
-Bus 002 Device 001: ID 0000:0000  
-Bus 001 Device 001: ID 0000:0000  
-Bus 003 Device 001: ID 0000:0000  
-Bus 005 Device 001: ID 0000:0000  
-Bus 004 Device 001: ID 0000:0000  
-Bus 004 Device 002: ID 045e:0040 Microsoft Corp. Wheel Mouse Optical
-
-you should be able to find it this way.
-
-if osx needs a driver or loads firmware for it, then it gets more
-complex, but not too complex.
-
-An example of a firmware loading device is the Emagic A26 and A26m. It
-works in linux because it's class compliant after the linux driver loads
-the firmware and then exits(i think it exits!).
-
-> All the best,
-> 
-> Sava
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+Chris
