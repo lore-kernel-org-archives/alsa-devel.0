@@ -1,15 +1,20 @@
-From: Kjeld Flarup <kjeld.flarup@liberalismen.dk>
-Subject: Recording stops after a short while on ATI SB450
-Date: Thu, 10 May 2007 01:48:01 +0200
-Message-ID: <46425DB1.8010008@liberalismen.dk>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Recording stops after a short while on ATI SB450
+Date: Wed, 9 May 2007 20:04:24 -0400
+Message-ID: <75b66ecd0705091704u75d65cbfo3a6d223a72cd718b@mail.gmail.com>
+References: <46425DB1.8010008@liberalismen.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pfepc.post.tele.dk (pfepc.post.tele.dk [195.41.46.237])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54285244D5
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id D91C9244D8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2007 01:48:02 +0200 (CEST)
+	Thu, 10 May 2007 02:04:25 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so378685nzf
+	for <alsa-devel@alsa-project.org>; Wed, 09 May 2007 17:04:24 -0700 (PDT)
+In-Reply-To: <46425DB1.8010008@liberalismen.dk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Kjeld Flarup <kjeld.flarup@liberalismen.dk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+On 5/9/07, Kjeld Flarup <kjeld.flarup@liberalismen.dk> wrote:
+> Hello
+>
+> This list first got to my attention after I filed a bug
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3064
+>
+> The short story is that then using arecord the input stops after a short
+> while.
+> The only bug report I get is this when starting to capture.
+> hda-intel: Invalid position buffer, using LPIB read method instead.
 
-This list first got to my attention after I filed a bug =
+Did you unmute capture channels and raise volumes?  Some chips
+inexplicably don't generate interrupts if the mixer is muted.
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D3064
-
-The short story is that then using arecord the input stops after a short =
-
-while.
-The only bug report I get is this when starting to capture.
-hda-intel: Invalid position buffer, using LPIB read method instead.
-
-I'm actually on the edge of buying a USB headset for this computer. I =
-
-unfortunately only have it for 2=BD weeks, then my mother in law is going =
-
-to have it. Meanwhile I can test almost anything if anybody has an idea.
-
--- =
-
--------------------- Med Liberalistiske Hilsner ----------------------
-  Civilingeni=F8r, Kjeld Flarup - Mit sind er mere =E5bent end min tegnebog
-  Forssavej 49, 7600 Struer, Tlf: 40 29 41 49
-  Den ikke akademiske hjemmeside for liberalismen - www.liberalismen.dk
+Lee
