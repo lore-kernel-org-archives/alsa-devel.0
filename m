@@ -1,18 +1,17 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC AC97 device reg bugfix
-Date: Thu, 10 May 2007 18:09:15 +0100
-Message-ID: <1178816955.10518.129.camel@a10072.wolfsonmicro.main>
-References: <1178814513.10518.127.camel@a10072.wolfsonmicro.main>
-	<s5htzukiqqk.wl%tiwai@suse.de>
+From: "John L. Utz III" <john.utz@dmx.com>
+Subject: Re: Mackie XD-2 Spike USB Drivers for Linux
+Date: Thu, 10 May 2007 10:55:18 -0700
+Message-ID: <20070510105518.6b1ca72c@jutz-fc6.na.corp.dmxmusic.com>
+References: <200705101549.02071.tictactatic@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id B27F124358
+Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1A8DD243CF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 May 2007 19:09:17 +0200 (CEST)
-In-Reply-To: <s5htzukiqqk.wl%tiwai@suse.de>
+	Thu, 10 May 2007 19:53:22 +0200 (CEST)
+In-Reply-To: <200705101549.02071.tictactatic@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Manuel Lauss <mano@roarinelk.homelinux.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Sava Tatic <tictactatic@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-05-10 at 18:32 +0200, Takashi Iwai wrote:
-> At Thu, 10 May 2007 17:28:33 +0100,
-> Liam Girdwood wrote:
-> > 
-> > This patch fixes a bug whereby AC97 bus device data was being clobbered
-> > when AC97 codecs using the generic ac97_codec.c driver were being
-> > registered. Codecs that didn't use the generic driver were unaffected
-> > (e.g. WM9712, WM9713).
-> > 
-> > Changes:-
-> > 
-> >  o Add new AC97 codec class for custom (or need bus dev registration)
-> > AC97 codecs.
-> >  o Only register/deregister this custom codec device with the AC97 bus.
-> > The generic AC97 driver already does this for generic codec devices.
-> > 
-> > This may be related to bug #3038 :-
-> >  
-> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3038
-> > 
-> > Manuel, can you try this on SH & Au1x00.
+Hello Sava
+
+On Thu, 10 May 2007 15:49:01 +0200
+"Sava Tatic" <tictactatic@gmail.com> wrote:
+
+> Hello,
 > 
-> Is this supposed to be merged to the upstream?  Then give a sign-off,
-> please.
+> I have been trying to get the Mackie XD-2 Spike 
+> (http://www.mackie.com/products/spike/) to work on my Kubuntu Feisty
+> machine, and so far I have only gotten it to play out (I had to use
+> plughw instead of hw). I am using the generic USB drivers that came
+> with the distro. I am having trouble recording anything on the card.
+> Alsamixer (or Kmix) do not see the card. When I do alsamixer -c 1 (0
+> is my onboard card), it returns "no mixer elems found". 
+> 
+> I am aware that this card is not in the ALSA Matrix of supported
+> cards, but I am wondering what would it take for it to become
+> supported? 
 
+USB audio is a standard so it might be incredibly easy to do this
+depending on what mackie did.
 
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+if the documentation indicates that it needs no drivers for OSX than
+it's a class compliant device and all you should need to do is find
+it's ID string using lsusp and then stick it into the appropriate array
+in the driver:
 
-Thanks
+[jutz@jutz-fc6 ~]$ /sbin/lsusb 
+Bus 002 Device 001: ID 0000:0000  
+Bus 001 Device 001: ID 0000:0000  
+Bus 003 Device 001: ID 0000:0000  
+Bus 005 Device 001: ID 0000:0000  
+Bus 004 Device 001: ID 0000:0000  
+Bus 004 Device 002: ID 045e:0040 Microsoft Corp. Wheel Mouse Optical
 
-Liam
+you should be able to find it this way.
+
+if osx needs a driver or loads firmware for it, then it gets more
+complex, but not too complex.
+
+An example of a firmware loading device is the Emagic A26 and A26m. It
+works in linux because it's class compliant after the linux driver loads
+the firmware and then exits(i think it exits!).
+
+> All the best,
+> 
+> Sava
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
