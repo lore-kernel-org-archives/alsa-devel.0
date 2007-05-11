@@ -1,19 +1,29 @@
-From: Manuel Lauss <mano@roarinelk.homelinux.net>
-Subject: Re: [PATCH] ASoC AC97 device reg bugfix
-Date: Fri, 11 May 2007 07:02:50 +0200
-Message-ID: <20070511050250.GA14711@roarinelk.homelinux.net>
-References: <1178814513.10518.127.camel@a10072.wolfsonmicro.main>
+From: "Michel Benoit" <murpme@gmail.com>
+Subject: Re: alsa on Atmel at91
+Date: Fri, 11 May 2007 09:13:49 +0200
+Message-ID: <c88e466f0705110013n72325746w3698f4627cbbea6e@mail.gmail.com>
+References: <c88e466f0704151238q326df219uf95679897f4c44@mail.gmail.com>
+	<1176827782.32188.224.camel@a10072.wolfsonmicro.main>
+	<c88e466f0704180218p708ba602h766f6a3f36c1add0@mail.gmail.com>
+	<1176889951.32188.246.camel@a10072.wolfsonmicro.main>
+	<c88e466f0704180500l2f016c4bs28c6a3c1a3663575@mail.gmail.com>
+	<1176900272.32188.274.camel@a10072.wolfsonmicro.main>
+	<c88e466f0704180745k1201ff11kc477d9cc8ebf899c@mail.gmail.com>
+	<c88e466f0705100429w7a4e86deyfea22508370358fd@mail.gmail.com>
+	<c88e466f0705100644q50f89fbfr3499a4491d741f2b@mail.gmail.com>
+	<c88e466f0705100716j44711fdnaa6f83e2f27afa3d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
-	[217.175.205.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF18424449
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6C9E24455
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2007 07:02:50 +0200 (CEST)
+	Fri, 11 May 2007 09:13:51 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so846809nzf
+	for <alsa-devel@alsa-project.org>; Fri, 11 May 2007 00:13:50 -0700 (PDT)
+In-Reply-To: <c88e466f0705100716j44711fdnaa6f83e2f27afa3d@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <1178814513.10518.127.camel@a10072.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +34,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 10, 2007 at 05:28:33PM +0100, Liam Girdwood wrote:
-> This patch fixes a bug whereby AC97 bus device data was being clobbered
-> when AC97 codecs using the generic ac97_codec.c driver were being
-> registered. Codecs that didn't use the generic driver were unaffected
-> (e.g. WM9712, WM9713).
-> 
-> Changes:-
+> After reading up on .symvers it seems that there is a version number
+> used to select which function to link against.
+>
+> If I look in the file src/Versions it seems that there is no
+> definition for ALSA_1.0.13.  Could this be the problem?  I'm still
+> trying to figure out how and where the version ALSA_X.X.X is passed in
+> to the linker.
 
-> This may be related to bug #3038 :-
->  
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3038
-> 
-> Manuel, can you try this on SH & Au1x00.
+More research reveals that the symbol defined with @@ is the default
+symbol taht is used when no version is given.  In my case the symbols
+defined in pcm.c are:
 
-Yes, its fixed on both, thank you very much!
+.symver __snd_pcm_hw_params_get_period_size,snd_pcm_hw_params_get_period_size@@ALSA_0.9.0rc4
+.symver __old_snd_pcm_hw_params_get_period_size,snd_pcm_hw_params_get_period_size@ALSA_0.9
 
-	Manuel Lauss
+
+and the __old version of the function should only be called if version
+ALSA_0.9 is explicitely set by the app or somehow the default version
+is being disabled or ignored.
+
+Does anyone know how an application defines which version of symbols
+it wants to use from a library?
+
+Is there a way to disable symbol versioning in a lib?
+
+Is any of this done explicitely as part of the alsa-lib and alsa-utils
+build procedures?
+
+Michel
