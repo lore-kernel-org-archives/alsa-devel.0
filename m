@@ -1,21 +1,19 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: Can someone verify support for "AzTech Sound
- Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset - FCC-ID:I38-MMSN846"
- ?
-Date: Fri, 11 May 2007 23:42:48 +0200
-Message-ID: <4644E358.8090601@gmail.com>
-References: <20070511164410.96BA11BF281@ws1-1.us4.outblaze.com>
+From: Ctirad Fertr <c.fertr@volny.cz>
+Subject: e-mu 1212m and 1820(m) patch
+Date: Fri, 11 May 2007 23:54:15 +0200
+Message-ID: <200705112354.15848.c.fertr@volny.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_HYORGYV2Cfp4pxE"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 354FF244DC
+Received: from smtp1.vol.cz (smtp1.vol.cz [195.250.128.78])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D2AF244DB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2007 23:45:21 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id j3so667151ugf
-	for <alsa-devel@alsa-project.org>; Fri, 11 May 2007 14:45:20 -0700 (PDT)
-In-Reply-To: <20070511164410.96BA11BF281@ws1-1.us4.outblaze.com>
+	Fri, 11 May 2007 23:54:23 +0200 (CEST)
+Received: from [10.16.3.4] (dsl-tn-6-43.static.adsl.vol.cz [83.148.7.43])
+	by smtp1.vol.cz (Postfix) with ESMTP id 71294407DC
+	for <alsa-devel@alsa-project.org>;
+	Fri, 11 May 2007 23:54:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,54 +23,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ramkromberg@mail.com
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/11/2007 06:44 PM, ramkromberg@mail.com wrote:
+--Boundary-00=_HYORGYV2Cfp4pxE
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> o, I thought the epprom settings are default until the
-> driver kicks in...
+Hello,
 
-Only if you set the JMPCFG jumper to EEPROM; otherwise the card's just dead 
-in the water until software enables it (by writing to some specific I/O 
-port; not sure which).
+here is a little patch which enables ADAT and S/PDIF functionality. It adds 
+possibility to sync  with either S/PDIF or ADAT clock as well.  44.1/48kHz 
+only, though it  works pretty well for me. 
 
-> So I set the jumpers accordingly and still no luck:
-> IDESEL: 1-2 (Disabled - Its the CD IDE ON\OFF)
-> JMPCFG: 1-2 (EPPROM ON)
-> JMPB0: 1-2 (22XH)
-> IDEIRQ: 1 (IRQ 15 - shouldn't make a different)
-> JX1: 2-3 (Carbon MIC - again just letting you know though it shouldn't 
-> make a different)
-> 
-> This should make sense with the picture I sent earlier...
-> I also removed another card I had connected - ISA Modem, Just making 
-> sure their are no conflicts...
-> 
-> Here's the grim results:
-> 
-> sudo modprobe snd-sb8 port=0x220 irq=5 dma8=1
-> FATAL: Error inserting snd_sb8 
-> (/lib/modules/2.6.20-15-generic/kernel/sound/isa/sb/snd-sb8.ko): No such 
-> device
+Regards,
 
-Okay, that's unfortunate. It works fine here with my AZT2316R and AZT1605 cards.
+Ctirad
 
-1. Did you restore the default settings to the EEPROM with "HWSET /MR /MS"?
+--Boundary-00=_HYORGYV2Cfp4pxE
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="adat-ext_sync.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="adat-ext_sync.diff"
 
-If an "EEPROM.SYS" is being loaded from your CONFIG.SYS in the DOS setup 
-also try that HWSET after rebooting with that line commented out. maybe it's 
-interfering (EEPROM.SYS is the "software" that takes on the role of the 
-physical EEPROM when you have the JMPCFG jumper set to "software").
+diff -ruN a/pci/emu10k1/emumixer.c b/pci/emu10k1/emumixer.c
+--- a/pci/emu10k1/emumixer.c	2007-05-11 19:47:09.000000000 +0200
++++ b/pci/emu10k1/emumixer.c	2007-05-11 19:22:49.000000000 +0200
+@@ -500,17 +500,19 @@
+ static int snd_emu1010_internal_clock_info(struct snd_kcontrol *kcontrol,
+ 					  struct snd_ctl_elem_info *uinfo)
+ {
+-	static char *texts[2] = {
+-		"44100", "48000"
++	static char *texts[4] = {
++		"44100", "48000", "SPDIF", "ADAT"
+ 	};
+-
++		
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
+-	uinfo->value.enumerated.items = 2;
+-	if (uinfo->value.enumerated.item > 1)
+-                uinfo->value.enumerated.item = 1;
++	uinfo->value.enumerated.items = 4;
++	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
++		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
+ 	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
+ 	return 0;
++	
++	
+ }
+ 
+ static int snd_emu1010_internal_clock_get(struct snd_kcontrol *kcontrol,
+@@ -568,6 +570,44 @@
+ 			/* Unmute all */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE );
+ 			break;
++			
++		case 2: /* Take clock from S/PDIF IN */
++			/* Mute all */
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
++			/* Default fallback clock 48kHz */
++			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K );
++			/* Word Clock source, sync to S/PDIF input */
++			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
++				EMU_HANA_WCLOCK_HANA_SPDIF_IN | EMU_HANA_WCLOCK_1X );
++			/* Set LEDs on Audio Dock */
++			snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2,
++				EMU_HANA_DOCK_LEDS_2_EXT | EMU_HANA_DOCK_LEDS_2_LOCK );
++			/* FIXME: We should set EMU_HANA_DOCK_LEDS_2_LOCK only when clock signal is present and valid */	
++			/* Allow DLL to settle */
++			msleep(10);
++			/* Unmute all */
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE );
++			break;
++		
++		case 3: 			
++			/* Take clock from ADAT IN */
++			/* Mute all */
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
++			/* Default fallback clock 48kHz */
++			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K );
++			/* Word Clock source, sync to ADAT input */
++			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
++				EMU_HANA_WCLOCK_HANA_ADAT_IN | EMU_HANA_WCLOCK_1X );
++			/* Set LEDs on Audio Dock */
++			snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, EMU_HANA_DOCK_LEDS_2_EXT | EMU_HANA_DOCK_LEDS_2_LOCK );
++			/* FIXME: We should set EMU_HANA_DOCK_LEDS_2_LOCK only when clock signal is present and valid */	
++			/* Allow DLL to settle */
++			msleep(10);
++			/*   Unmute all */
++			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_UNMUTE );
++			 
++			
++			break;		
+ 		}
+ 	}
+         return change;
+diff -ruN a/pci/emu10k1/emu10k1_main.c b/pci/emu10k1/emu10k1_main.c
+--- a/pci/emu10k1/emu10k1_main.c	2007-05-11 19:47:09.000000000 +0200
++++ b/pci/emu10k1/emu10k1_main.c	2007-05-10 21:25:57.000000000 +0200
+@@ -765,8 +765,8 @@
+ 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg );
+ 	snd_printk(KERN_INFO "emu1010: Card options=0x%x\n",reg);
+ 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTICAL_TYPE, &tmp ); 
+-	/* ADAT input. */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, 0x01 );
++	/* Optical -> ADAT I/O  */
++	snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, EMU_HANA_OPTICAL_IN_ADAT | EMU_HANA_OPTICAL_OUT_ADAT );
+ 	snd_emu1010_fpga_read(emu, EMU_HANA_ADC_PADS, &tmp );
+ 	/* Set no attenuation on Audio Dock pads. */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_ADC_PADS, 0x00 );
+@@ -1048,7 +1048,7 @@
+ 	emu->emu1010.output_source[23] = 28;
+ 
+ 	/* TEMP: Select SPDIF in/out */
+-	snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, 0x0); /* Output spdif */
++	//snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, 0x0); /* Output spdif */
+ 
+ 	/* TEMP: Select 48kHz SPDIF out */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x0); /* Mute all */
 
-2. What do the last few lines of "dmesg" say after the modprobe?
+--Boundary-00=_HYORGYV2Cfp4pxE
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-3. Both my AZT2316A cards actually needed the JMPCFG jumper set to the 
-"software" setting to even have the DSP show up at 0x220 which seems like it 
-just might be a strange fluke. But if it really won't work, try the HWSET 
-and loading of the snd-sb8 driver also with the JMPCFG jumper switched again...
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Don't seem to have more bright ideas...
-
-Rene.
+--Boundary-00=_HYORGYV2Cfp4pxE--
