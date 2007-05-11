@@ -1,18 +1,20 @@
-From: "thomas@devbase.at" <thomas@devbase.at>
-Subject: [PATCH] Coping with short replies in usbmixer
-Date: Fri, 11 May 2007 22:28:16 +0200
-Message-ID: <4644D1E0.2010203@devbase.at>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: [PATCH] remove email addresses from MODULE_AUTHOR
+ tag
+Date: Fri, 11 May 2007 23:12:58 +0200
+Message-ID: <4644DC5A.7060905@gmail.com>
+References: <4643C20C.8050105@gmail.com> <s5hd517ich2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060208000405070703050605"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpgw01.world4you.com (smtpgw01.world4you.com [80.243.163.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0E66244AF
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id A0A51244D5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2007 22:28:18 +0200 (CEST)
-Received: from [85.124.169.7] (helo=[192.168.1.76])
-	by smtpgw01.world4you.com with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.67) (envelope-from <thomas@devbase.at>) id 1Hmbir-0000NY-TY
-	for alsa-devel@alsa-project.org; Fri, 11 May 2007 22:28:18 +0200
+	Fri, 11 May 2007 23:15:30 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id j3so664066ugf
+	for <alsa-devel@alsa-project.org>; Fri, 11 May 2007 14:15:30 -0700 (PDT)
+In-Reply-To: <s5hd517ich2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060208000405070703050605
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On 05/11/2007 05:52 PM, Takashi Iwai wrote:
 
-Hi,
-while trying to find out why a USB handset (Yealink P1K) frequently gets 
-muted when changing volume, I found that short USB responses cause the 
-problem.
+>> Following up the recent MODULE_MAINTAINER discussion on LKML:
+>>
+>> http://lkml.org/lkml/2007/4/4/170
+>>
+>> that concluded with MODULE_MAINTAINER not being a good idea, here's a patch 
+>> that just deletes the email addresses from the MODULE_AUTHOR tags for ALSA.
+>>
+>> The email address is the problem I was trying to fix; with multiple current 
+>> and non-current authors and maintainers who might not even be authors the 
+>> address(es) available from the tag confuse the issue of whom to contact. 
+>> It's moreover also information that easily outdated.
+>>
+>> A bit more than half of the tags in the kernel don't include an email 
+>> address already (the core contributors typically don't include any) and I'll 
+>> submit patches removing more.
+> 
+> Did we get consensus about this removal action?
+> I've seen only one follow up by Krzysztof.
+> (I personlly don't mind to remove mail addresses, though.)
 
-The function get_ctl_value(..) in usbmixer.c requests the state of a 
-certain control and retries up to 10 times if an error occurs. However a 
-short USB response is not treated as an error as neither the transfer 
-flag URB_SHORT_NOT_OK is set nor is the return value of 
-snd_usb_ctl_msg(..) compared with the requested amount of data. As a 
-result the function get_ctl_value(..) might not retry the USB request 
-but returns an unpredictable result without reporting an error.
+Yep, Krysztof was the only one to specifically ACK but seeing as how I asked 
+for objections:
 
-The attached patch forces the number of returned bytes to be at least 
-val_len. It was generated from kernel version 2.6.21. If there are any 
-issues with the patch please let me know. Otherwise I would be happy if 
-it could be applied to the ALSA sources.
-Regards,
--Thomas
+http://lkml.org/lkml/2007/4/27/488
 
---------------060208000405070703050605
-Content-Type: text/x-patch;
- name="usbmixer.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="usbmixer.patch"
+I took not seeing any as more ACKs. Alan Cox is objecting a bit again though 
+preferring the originally proposed MODULE_MAINTAINER:
 
-diff -rup a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
---- a/sound/usb/usbmixer.c	2007-05-11 21:58:33.000000000 +0200
-+++ b/sound/usb/usbmixer.c	2007-05-11 21:59:14.000000000 +0200
-@@ -360,7 +360,7 @@ static int get_ctl_value(struct usb_mixe
- 				    request,
- 				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
- 				    validx, cval->mixer->ctrlif | (cval->id << 8),
--				    buf, val_len, 100) >= 0) {
-+				    buf, val_len, 100) >= val_len) {
- 			*value_ret = convert_signed_value(cval, snd_usb_combine_bytes(buf, val_len));
- 			return 0;
- 		}
+http://lkml.org/lkml/2007/5/10/628
 
---------------060208000405070703050605
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I seem unlikely to convince him but I believe it's upto specific subsystems 
+whether or not they'll take patches removing the email adresses from the 
+tag, ie, in the case of ALSA upto you and Jaroslav.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+I do believe it actually solves a problem. In the end, all that I really 
+care about are the ones that I specifically want to take on (which in the 
+case of ALSA is eventually most or all of isa/, but I'm not sufficiently 
+upto speed yet, and certainly not on the _real_ driver code as opposed to 
+the bus glue) but in a global sense, I'd like to just see them all go.
 
---------------060208000405070703050605--
+Rene.
