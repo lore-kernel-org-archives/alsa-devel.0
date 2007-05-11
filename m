@@ -1,23 +1,18 @@
-From: ramkromberg@mail.com
-Subject: Re: Can someone verify support for "AzTech Sound
- Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset - FCC-ID:I38-MMSN846"
- ?
-Date: Fri, 11 May 2007 18:44:09 +0200
-Message-ID: <20070511164410.96BA11BF281@ws1-1.us4.outblaze.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Mackie XD-2 Spike USB Drivers for Linux
+Date: Fri, 11 May 2007 18:45:08 +0200
+Message-ID: <1178901908.26158.1189349485@webmail.messagingengine.com>
+References: <200705101549.02071.tictactatic@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail-outgoing.us4.outblaze.com
-	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77C5D24428
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 166392434E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2007 18:44:18 +0200 (CEST)
-Received: from unknown (unknown [192.168.8.90])
-	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
-	D02D618001A6
-	for <alsa-devel@alsa-project.org>; Fri, 11 May 2007 16:44:15 +0000 (GMT)
+	Fri, 11 May 2007 18:45:09 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <200705101549.02071.tictactatic@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,37 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Sava Tatic <tictactatic@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-o, I thought the epprom settings are default until the
-driver kicks in...
+Sava Tatic wrote:
+> I have been trying to get the Mackie XD-2 Spike 
+> (http://www.mackie.com/products/spike/) to work on my Kubuntu Feisty machine, 
+> and so far I have only gotten it to play out (I had to use plughw instead of 
+> hw).
 
-So I set the jumpers accordingly and still no luck:
-IDESEL: 1-2 (Disabled - Its the CD IDE ON\OFF)
-JMPCFG: 1-2 (EPPROM ON)
-JMPB0: 1-2 (22XH)
-IDEIRQ: 1 (IRQ 15 - shouldn't make a different)
-JX1: 2-3 (Carbon MIC - again just letting you know though it shouldn't
-make a different)
+If playing works, then the driver has already found and recognized your
+device.
 
-This should make sense with the picture I sent earlier...
-I also removed another card I had connected - ISA Modem, Just making sure
-their are no conflicts...
+> I am having trouble recording anything on the card.
 
-Here's the grim results:
+What exactly is the trouble?
 
-sudo modprobe snd-sb8 port=0x220 irq=5 dma8=1
-FATAL: Error inserting snd_sb8
-(/lib/modules/2.6.20-15-generic/kernel/sound/isa/sb/snd-sb8.ko): No such
-device
+> Alsamixer (or Kmix) do not see the card. When I do alsamixer -c 1 (0 is
+> my onboard card), it returns "no mixer elems found". 
 
-P.S: Also an interesting note is that I now installed Win98 on top of
-that Dos and it worked too -
-It did also mention to use IRQ 11 so I also reserved in the bios, but
-again to no avail.
+Many USB devices do not have any software-accessible mixer controls.
 
-Maybe I'm missing something ?
-Ram Kromberg
-ramkromberg@mail.com
+
+Regards,
+Clemens
