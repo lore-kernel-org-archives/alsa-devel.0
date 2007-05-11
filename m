@@ -1,20 +1,15 @@
-From: Nicholas Smethurst <nick.smethurst@gmail.com>
-Subject: Re: Getting a full device list
-Date: Fri, 11 May 2007 19:01:41 +0200
-Message-ID: <4644A175.4000004@gmail.com>
-References: <560009e30704190730q1047b43fh37f5df5fef9ec51f@mail.gmail.com>	<75b66ecd0704190846g4036b493q8d7c2bec8cdc08b2@mail.gmail.com>	<4627B015.7030401@gmail.com>	<75b66ecd0704191145u3414a5e6id9e3f10ef9c6b854@mail.gmail.com>	<4644455B.4080706@gmail.com>	<Pine.LNX.4.61.0705111233090.7579@tm8103.perex-int.cz>	<46444E00.1040808@gmail.com>
-	<s5hfy63iea8.wl%tiwai@suse.de>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Undefined Symbols: snd-aoa-codec-tas.c:944 warning:
+	implicit	declaration of function 'of_get_property'
+Date: Fri, 11 May 2007 22:14:59 +0200
+Message-ID: <20070511201459.GA28331@frodo.home.lxtec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0119498270196723862=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 652EE2434E
+Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id C4A6F244D1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2007 19:01:49 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id j3so632013ugf
-	for <alsa-devel@alsa-project.org>; Fri, 11 May 2007 10:01:48 -0700 (PDT)
-In-Reply-To: <s5hfy63iea8.wl%tiwai@suse.de>
+	Fri, 11 May 2007 22:15:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> You can override the values easily in user configuration, e.g. by
-> adding the following line to ~/.asoundrc:
-> 
-> 	defaults.namehist.showall	on
-> 
-> To force to override even the variable type, you can add '!' modifier,
-> 
-> 	defaults.namehist.!showall	1
 
-So global variables found in alsa.conf can be overridden in ~/.asoundrc.. I
-didn't realise this either..
+--===============0119498270196723862==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
+Content-Disposition: inline
 
-Thanks for the advice.
 
-Nicholas
+--ew6BAiZeqk4r7MaW
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+
+Hi all,
+
+
+the aoa drivers in 1.0.14rc4 are not usable. Compiling the modules
+there are much warnings "implicit declaration of function
+'of_get_property'" Loading the module dmesg tells: snd_aoa: Unknown
+symbol of_get_property. rc3 out of 2.6.21 works fine.
+
+
+Any hints?
+
+Thanks
+Elimar
+
+
+
+--=20
+  You cannot propel yourself forward by
+  patting yourself on the back.
+
+--ew6BAiZeqk4r7MaW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFGRM7D3Ig8bsVPf7ARAuilAJ9LC3HTqffovXTV9LdfTRSsAk6XzQCgo9Cz
+ycwrJSrHYnQeBdRSkSFBEl8=
+=SlXu
+-----END PGP SIGNATURE-----
+
+--ew6BAiZeqk4r7MaW--
+
+--===============0119498270196723862==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0119498270196723862==--
