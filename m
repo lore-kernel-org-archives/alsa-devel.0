@@ -1,20 +1,21 @@
 From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] remove email addresses from MODULE_AUTHOR
- tag
-Date: Fri, 11 May 2007 23:12:58 +0200
-Message-ID: <4644DC5A.7060905@gmail.com>
-References: <4643C20C.8050105@gmail.com> <s5hd517ich2.wl%tiwai@suse.de>
+Subject: Re: Can someone verify support for "AzTech Sound
+ Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset - FCC-ID:I38-MMSN846"
+ ?
+Date: Fri, 11 May 2007 23:42:48 +0200
+Message-ID: <4644E358.8090601@gmail.com>
+References: <20070511164410.96BA11BF281@ws1-1.us4.outblaze.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0A51244D5
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 354FF244DC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 May 2007 23:15:30 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id j3so664066ugf
-	for <alsa-devel@alsa-project.org>; Fri, 11 May 2007 14:15:30 -0700 (PDT)
-In-Reply-To: <s5hd517ich2.wl%tiwai@suse.de>
+	Fri, 11 May 2007 23:45:21 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id j3so667151ugf
+	for <alsa-devel@alsa-project.org>; Fri, 11 May 2007 14:45:20 -0700 (PDT)
+In-Reply-To: <20070511164410.96BA11BF281@ws1-1.us4.outblaze.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
+To: ramkromberg@mail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/11/2007 05:52 PM, Takashi Iwai wrote:
+On 05/11/2007 06:44 PM, ramkromberg@mail.com wrote:
 
->> Following up the recent MODULE_MAINTAINER discussion on LKML:
->>
->> http://lkml.org/lkml/2007/4/4/170
->>
->> that concluded with MODULE_MAINTAINER not being a good idea, here's a patch 
->> that just deletes the email addresses from the MODULE_AUTHOR tags for ALSA.
->>
->> The email address is the problem I was trying to fix; with multiple current 
->> and non-current authors and maintainers who might not even be authors the 
->> address(es) available from the tag confuse the issue of whom to contact. 
->> It's moreover also information that easily outdated.
->>
->> A bit more than half of the tags in the kernel don't include an email 
->> address already (the core contributors typically don't include any) and I'll 
->> submit patches removing more.
+> o, I thought the epprom settings are default until the
+> driver kicks in...
+
+Only if you set the JMPCFG jumper to EEPROM; otherwise the card's just dead 
+in the water until software enables it (by writing to some specific I/O 
+port; not sure which).
+
+> So I set the jumpers accordingly and still no luck:
+> IDESEL: 1-2 (Disabled - Its the CD IDE ON\OFF)
+> JMPCFG: 1-2 (EPPROM ON)
+> JMPB0: 1-2 (22XH)
+> IDEIRQ: 1 (IRQ 15 - shouldn't make a different)
+> JX1: 2-3 (Carbon MIC - again just letting you know though it shouldn't 
+> make a different)
 > 
-> Did we get consensus about this removal action?
-> I've seen only one follow up by Krzysztof.
-> (I personlly don't mind to remove mail addresses, though.)
+> This should make sense with the picture I sent earlier...
+> I also removed another card I had connected - ISA Modem, Just making 
+> sure their are no conflicts...
+> 
+> Here's the grim results:
+> 
+> sudo modprobe snd-sb8 port=0x220 irq=5 dma8=1
+> FATAL: Error inserting snd_sb8 
+> (/lib/modules/2.6.20-15-generic/kernel/sound/isa/sb/snd-sb8.ko): No such 
+> device
 
-Yep, Krysztof was the only one to specifically ACK but seeing as how I asked 
-for objections:
+Okay, that's unfortunate. It works fine here with my AZT2316R and AZT1605 cards.
 
-http://lkml.org/lkml/2007/4/27/488
+1. Did you restore the default settings to the EEPROM with "HWSET /MR /MS"?
 
-I took not seeing any as more ACKs. Alan Cox is objecting a bit again though 
-preferring the originally proposed MODULE_MAINTAINER:
+If an "EEPROM.SYS" is being loaded from your CONFIG.SYS in the DOS setup 
+also try that HWSET after rebooting with that line commented out. maybe it's 
+interfering (EEPROM.SYS is the "software" that takes on the role of the 
+physical EEPROM when you have the JMPCFG jumper set to "software").
 
-http://lkml.org/lkml/2007/5/10/628
+2. What do the last few lines of "dmesg" say after the modprobe?
 
-I seem unlikely to convince him but I believe it's upto specific subsystems 
-whether or not they'll take patches removing the email adresses from the 
-tag, ie, in the case of ALSA upto you and Jaroslav.
+3. Both my AZT2316A cards actually needed the JMPCFG jumper set to the 
+"software" setting to even have the DSP show up at 0x220 which seems like it 
+just might be a strange fluke. But if it really won't work, try the HWSET 
+and loading of the snd-sb8 driver also with the JMPCFG jumper switched again...
 
-I do believe it actually solves a problem. In the end, all that I really 
-care about are the ones that I specifically want to take on (which in the 
-case of ALSA is eventually most or all of isa/, but I'm not sufficiently 
-upto speed yet, and certainly not on the _real_ driver code as opposed to 
-the bus glue) but in a global sense, I'd like to just see them all go.
+Don't seem to have more bright ideas...
 
 Rene.
