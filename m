@@ -1,18 +1,19 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
+From: Johannes Berg <johannes@sipsolutions.net>
 Subject: Re: Undefined Symbols: snd-aoa-codec-tas.c:944
 	warning: implicit	declaration of function 'of_get_property'
-Date: Sat, 12 May 2007 23:59:37 +0200
-Message-ID: <20070512215937.GA22641@frodo.home.lxtec.de>
+Date: Sun, 13 May 2007 00:09:26 +0200
+Message-ID: <1179007766.2647.22.camel@johannes.berg>
 References: <20070511201459.GA28331@frodo.home.lxtec.de>
 	<1178914848.31156.2.camel@johannes.berg>
+	<20070512215937.GA22641@frodo.home.lxtec.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1748706953026678799=="
+Content-Type: multipart/mixed; boundary="===============5747240160041265396=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id AED7B245E4
+Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B10E245D5
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 May 2007 23:59:42 +0200 (CEST)
-In-Reply-To: <1178914848.31156.2.camel@johannes.berg>
+	Sun, 13 May 2007 00:09:22 +0200 (CEST)
+In-Reply-To: <20070512215937.GA22641@frodo.home.lxtec.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,65 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Johannes Berg <johannes@sipsolutions.net>
+To: Elimar Riesebieter <riesebie@lxtec.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1748706953026678799==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
-Content-Disposition: inline
+--===============5747240160041265396==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-4qjSmpt3xkYG2y5cSnNN"
 
 
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+--=-4qjSmpt3xkYG2y5cSnNN
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 11 May 2007 the mental interface of
-Johannes Berg told:
+On Sat, 2007-05-12 at 23:59 +0200, Elimar Riesebieter wrote:
+> On Fri, 11 May 2007 the mental interface of
 
-> On Fri, 2007-05-11 at 22:14 +0200, Elimar Riesebieter wrote:
+> Hmm, we want to run the alsa-drivers on distributed kernels as well
+> i.e. the Debian one.
 >=20
-> > the aoa drivers in 1.0.14rc4 are not usable. Compiling the modules
-> > there are much warnings "implicit declaration of function
-> > 'of_get_property'" Loading the module dmesg tells: snd_aoa: Unknown
-> > symbol of_get_property. rc3 out of 2.6.21 works fine.
->=20
-> You probably need a more current kernel to run that against, the
-> of_get_property things were changed to be shared between powerpc and
-> sparc iirc. ISTR that of_get_property is now a macro for something else
-> but I haven't checked.
+> Isn't 2.6.2(0|1) hot enough?
 
-Hmm, we want to run the alsa-drivers on distributed kernels as well
-i.e. the Debian one.
+I don't know how alsa drivers 1.0.14rc4 are cut. If they get updates
+from the kernel tree then they got the patches that went in there and
+make it not work with older kernels, if they didn't then they won't work
+with newer kernels... For the value of "older" meaning older than a
+recent git snapshot :)
 
-Isn't 2.6.2(0|1) hot enough?
+johannes
 
-Elimar
-
-
---=20
-  Never make anything simple and efficient when a way=20
-  can be found to make it complex and wonderful ;-)
-
---AqsLC8rIMeq19msA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+--=-4qjSmpt3xkYG2y5cSnNN
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Johannes Berg (powerbook)
 
-iD4DBQFGRjjJ3Ig8bsVPf7ARAlKSAJ0Rc13CzaOVKzDq9n2rPe1GRy8KgwCYo1qy
-aDqy8MaEQkothXbVxT8lsQ==
-=HmsX
+iD8DBQBGRjsV/ETPhpq3jKURAn15AKCzx4lg/omyncr+dwU/XT/8RTNB9QCgnNgz
+VCetYjPD60TbZfQXkltiZYQ=
+=d7Dc
 -----END PGP SIGNATURE-----
 
---AqsLC8rIMeq19msA--
+--=-4qjSmpt3xkYG2y5cSnNN--
 
---===============1748706953026678799==
+
+--===============5747240160041265396==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -91,4 +78,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============1748706953026678799==--
+--===============5747240160041265396==--
