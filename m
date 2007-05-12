@@ -1,18 +1,20 @@
-From: Rask Ingemann Lambertsen <rask@sygehus.dk>
-Subject: Re: embedded sound architecture question
-Date: Sat, 12 May 2007 18:40:49 +0200
-Message-ID: <20070512164049.GJ5690@sygehus.dk>
-References: <1178743654.29464.1.camel@localhost>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: [PATCH] remove email addresses from MODULE_AUTHOR
+ tag
+Date: Sat, 12 May 2007 19:01:40 +0200
+Message-ID: <4645F2F4.2010807@gmail.com>
+References: <4643C20C.8050105@gmail.com> <s5hd517ich2.wl%tiwai@suse.de>
+	<4644DC5A.7060905@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pfepa.post.tele.dk (pfepa.post.tele.dk [195.41.46.235])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80CEB24596
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id C47E12459B
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 May 2007 18:40:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1178743654.29464.1.camel@localhost>
+	Sat, 12 May 2007 19:21:04 +0200 (CEST)
+In-Reply-To: <4644DC5A.7060905@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joachim =?iso-8859-1?Q?F=F6rster?= <mls.JOFT@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 09, 2007 at 10:47:34PM +0200, Joachim F=F6rster wrote:
-[snip]
-> So our thoughts were: Integrate the "DMA ring buffer" (which is usually
-> somewhere in main memory/RAM) into the AC97 controller. Make ALSA access
-> this HW buffer as if it was in main memory.
-[snip]
-> Mapping this "IO memory" into kernel space should be possible with
-> io_remap_page_range(), right?
-> I would have to implement the mmap() callback in my driver, to setup the
-> given VMA (with the above function), right?
-> So, ALSA library/applications will be able to use MMAP mode, which is
-> what we want to achieve?
+On 05/11/2007 11:12 PM, Rene Herman wrote:
 
-   You can't assume that IO memory can be accessed just as if it was memory
-on all architectures. However, in this case it seems that you can make sure
-that this is so. I think you should ask on the kernel mailing list what you
-should do designing the hardware to make sure it will work.
-  =
+> I seem unlikely to convince him but I believe it's upto specific 
+> subsystems whether or not they'll take patches removing the email 
+> adresses from the tag, ie, in the case of ALSA upto you and Jaroslav.
 
--- =
+For what it's worth, Linus merged the patch removing the advice to include 
+an email address in the MODULE_AUTHOR comment:
 
-Rask Ingemann Lambertsen
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=108f39a1b3b1e4b28ca8cc156f06171445499d21
+
+He was aware of Alan's objection. Removing existing ones is ofcourse not 
+quite the same as not introducing new ones though so ofcourse still up to 
+you. I'm still signing off on it...
+
+Rene.
