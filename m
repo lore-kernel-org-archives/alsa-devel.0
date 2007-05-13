@@ -1,16 +1,23 @@
-From: Lorenz Kolb <alsa-dev@lkmail.de>
-Subject: embedded sound architecture question
-Date: Sun, 13 May 2007 12:02:13 +0200
-Message-ID: <4646E225.2000602@lkmail.de>
+From: ramkromberg@mail.com
+Subject: Re: Can someone verify support for "AzTech Sound
+ Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset - FCC-ID:I38-MMSN846"
+ ?
+Date: Sun, 13 May 2007 12:17:57 +0200
+Message-ID: <20070513101757.8C8191BF23B@ws1-1.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pm1.terions.de (pm1.terions.de [83.137.96.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FCAC24633
+Received: from webmail-outgoing.us4.outblaze.com
+	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id E014724638
 	for <alsa-devel@alsa-project.org>;
-	Sun, 13 May 2007 12:03:03 +0200 (CEST)
-References: 1178743654.29464.1.camel@localhost
+	Sun, 13 May 2007 12:18:00 +0200 (CEST)
+Received: from unknown (unknown [192.168.8.90])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	232E91800130
+	for <alsa-devel@alsa-project.org>; Sun, 13 May 2007 10:17:58 +0000 (GMT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,79 +27,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2007-05-09 at 14:20 -0700, John L. Utz III wrote:
- > On Wed, 09 May 2007 22:47:34 +0200
- > "Joachim F=F6rster" <mls.JOFT at gmx.de> wrote:
- > > My question is: Does the architecture described below make sense/is
- > > reasonable with ALSA and Linux?
- >
- > i think you might have to answer an earlier question first; 'does it
- > make sense to call this an ac97 controller?' I dont recall seeing a
- > ring buffer as part of the ac97 standard. i'd suggest that you take the
- > time to flesh out completely how the ring buffer is supposed to replace
- > dma and ram while still presenting an ac97 set of verbs because i am
- > stuck with the gut feeling that you will some important things will
- > have to be really different.
+EPPROM ON:
 
-Hi, I am the "Hardware-Guy" in the project.
+OK, I formated that dos partition and simply sys a: c:,
+then I installed the driver (copying them to the partition from the linux
+install),
+in theinstall I selected the defaults settings (220 irq5 dma1...) and
+rebooted,
+now in dos again I used diagnose to test the audio and hwset /mr /ms to
+reset and save the epprom.
 
-And I am quite sure there is no limitation on what to built into the =
+now I rebooted and loged to linux:
 
-AC'97 controller (from a specs point of view)
-The controller's job in the AC'97 standard is afaik mainly a parallel to =
+sudo modprobe snd-sb8 port=0x220 irq=5 dma8=1
+FATAL: Error inserting snd_sb8
+(/lib/modules/2.6.20-15-generic/kernel/sound/isa/sb/snd-sb8.ko): No such
+device
 
-serial conversion. As the codec's link is serial.
-But I am not quite sure, if you do understand: we have complete control =
+dmesg last lines (
+[  319.827327] Sound Blaster soundcard not found or device busy
 
-of what the hardware-part does. So our main idea is: presenting some =
+-reboot-
 
-sort of "dedicated" RAM to the system.
-So what does memory mean for a system: it is a bunch of addresses =
+EPPROM OFF (SOFTWARE ON):
 
-offering both a read() and a write() (maybe also a burst_read() and =
+in dos: diagnose works,
+reboot and back to lin: sudo modprobe snd-sb8 port=0x220 irq=5 dma8=1
 
-burst_write()).
-The only question is: will Linux-kernel be able to see our dedicated =
+no error, no mention in dmesg, but xmms gives the usual error...
 
-memory as memory and does this way make sense for ALSA.
-It is not a question of "is this possible for a AC'97 controller?".
-We are not building a simple/stupid AC'97 controller as it can be found =
+Heres lsmod just for kicks:
 
-on billions of mainboards, but in some parts it sticks to the rules of =
+Module                  Size  Used by
+snd_sb8                 9216  0
+snd_sb8_dsp            12288  1 snd_sb8
+snd_sb_common          17792  2 snd_sb8,snd_sb8_dsp
+snd_opl3_lib           11520  1 snd_sb8
+snd_hwdep               9988  1 snd_opl3_lib
+snd_pcm_oss            44544  0
+snd_pcm                79876  3 snd_sb8,snd_sb8_dsp,snd_pcm_oss
+snd_mixer_oss          17408  1 snd_pcm_oss
+snd_seq_dummy           4740  0
+snd_seq_oss            32896  0
+snd_seq_midi            9600  0
+snd_rawmidi            25472  2 snd_sb8_dsp,snd_seq_midi
+snd_seq_midi_event      8448  2 snd_seq_oss,snd_seq_midi
+snd_seq                52592  6
+snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
+snd_timer              23684  3 snd_opl3_lib,snd_pcm,snd_seq
+snd_seq_device          9100  6
+snd_opl3_lib,snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_rawmidi,snd_seq
+snd                    54020  13
+snd_sb8,snd_sb8_dsp,snd_sb_common,snd_opl3_lib,snd_hwdep,snd_pcm_oss,snd_pcm,snd_mixer_oss,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
+soundcore               8672  1 snd
+snd_page_alloc         10888  1 snd_pcm
+nfs                   240876  0
+nfsd                  218992  17
+exportfs                6912  1 nfsd
+lockd                  64904  3 nfs,nfsd
+sunrpc                161340  12 nfs,nfsd,lockd
+apm                    22752  2
+ppdev                  10116  0
+cpufreq_stats           7360  0
+cpufreq_ondemand        9228  0
+cpufreq_powersave       2688  0
+freq_table              5792  2 cpufreq_stats,cpufreq_ondemand
+cpufreq_conservative     8200  0
+cpufreq_userspace       5408  0
+nls_iso8859_1           5120  1
+nls_cp437               6784  1
+vfat                   14208  1
+fat                    53916  1 vfat
+ext2                   66824  1
+lp                     12452  0
+parport_pc             36388  1
+parport                36936  3 ppdev,lp,parport_pc
+pcspkr                  4224  0
+ipv6                  268704  8
+tsdev                   8768  0
+evdev                  11008  1
+ext3                  133128  1
+jbd                    59816  1 ext3
+mbcache                 9604  2 ext2,ext3
+ide_disk               17024  5
+8139too                27648  0
+ide_cd                 32672  0
+cdrom                  37664  1 ide_cd
+floppy                 59524  0
+ehci_hcd               34188  0
+8139cp                 25088  0
+mii                     6528  2 8139too,8139cp
+uhci_hcd               25360  0
+usbcore               134280  3 ehci_hcd,uhci_hcd
+piix                   10756  0 [permanent]
+generic                 5124  0 [permanent]
+ata_generic             9092  0
+libata                125720  1 ata_generic
+scsi_mod              142348  1 libata
+fbcon                  42656  0
+tileblit                3584  1 fbcon
+font                    9216  1 fbcon
+bitblit                 6912  1 fbcon
+softcursor              3200  1 bitblit
+vesafb                  9220  0
+capability              5896  0
+commoncap               8192  1 capability
 
-AC'97 (at least in case of the interface towards the codec, as the codec =
+So now atleast we know its not the jumpers ;-)
+Is their the slight chance xmms is the problem ? gxine crushs too...
+Is their something like "beep" only for the sound card ?
+Maybe droping some data to /dev/### to produce a beep ?
 
-is an AC'97). So actually it is an AC'97 controller, as it drives an =
-
-AC'97 codec.
-So what are the benefits of the idea not using "normal" DMA?
-Each write/read to memory normally "freezes" the CPU, either because the =
-
-CPU does this read/write or because the Bus is occupied. Having an =
-
-dedicated memory in the controller avoids this quite well. The CPU =
-
-freezes only whenever it writes data to the controller's memory (or =
-
-reads from it). Accessing the memory from the controller does not have =
-
-an effect on the bus and thus neither cpu nor memory nor bus become =
-
-occupied.
-The main reason why we do not want to rely on the cpu is because it is =
-
-for an embedded system. So we do not talk about giga-hertz. We talk =
-
-about a system with a 100 MHz bus architecture and a PowerPC with 300 =
-
-MHz. And the system has more tasks than only playing some audio...
-So the design goal is minimizing the system load while offering a =
-
-maximum of features (with an affordable amount of logic).
-
-Greetings,
-
-Lorenz Kolb
+Ram Kromberg
+ramkromberg@mail.com
