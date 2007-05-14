@@ -1,19 +1,18 @@
-From: Thomas Reitmayr <thomas@devbase.at>
-Subject: Re: [PATCH] Coping with short replies in usbmixer
-Date: Mon, 14 May 2007 19:54:34 +0200
-Message-ID: <1179165274.10762.12.camel@tomcom.at.home>
+From: Steve Longerbeam <stevel@embeddedalley.com>
+Subject: Re: [PATCH] Add support for gain in softvol plugin
+Date: Mon, 14 May 2007 12:37:15 -0700
+Message-ID: <4648BA6B.3020101@embeddedalley.com>
+References: <463A33D8.3090907@embeddedalley.com>	<Pine.LNX.4.61.0705032121110.7861@tm8103.perex-int.cz>	<463A6100.3070708@embeddedalley.com>	<Pine.LNX.4.61.0705040938540.7594@tm8103.perex-int.cz>	<463B5EFC.6080801@embeddedalley.com>	<463B6E5C.70802@embeddedalley.com>	<s5hzm4e5flo.wl%tiwai@suse.de>	<46437916.2050408@embeddedalley.com>
+	<s5hejljhi38.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpgw01.world4you.com (smtpgw01.world4you.com [80.243.163.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 723452470A
+Received: from smtp104.biz.mail.mud.yahoo.com (smtp104.biz.mail.mud.yahoo.com
+	[68.142.200.252]) by alsa0.perex.cz (Postfix) with SMTP id 44BE3247B6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2007 19:54:45 +0200 (CEST)
-Received: from [85.124.169.7] (helo=[192.168.1.76])
-	by smtpgw01.world4you.com with esmtpsa (TLSv1:RC4-MD5:128)
-	(Exim 4.67) (envelope-from <thomas@devbase.at>) id 1Hnekt-0003vL-Tj
-	for alsa-devel@alsa-project.org; Mon, 14 May 2007 19:54:44 +0200
+	Mon, 14 May 2007 21:37:30 +0200 (CEST)
+In-Reply-To: <s5hejljhi38.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-here is it again and signed off.
+Takashi Iwai wrote:
+> At Thu, 10 May 2007 12:57:10 -0700,
+> Steve Longerbeam wrote:
+>   
+>> Hi Takashi,
+>>
+>> Thanks, that's much better. I tried doing that myself a while ago, but I 
+>> must have been doing something wrong because the capture device wasn't 
+>> being recognized. But your version works.
+>>
+>> Version 4 of the patch is attached. It's much better, only two modified 
+>> files: pcm_softvol.c and HDA-Intel.conf.
+>>
+>> I also reduced the gain range, it's now -30 to +30 dB.
+>>     
+>
+> I'm afraid that this choice would be bad for the current TLV
+> representation.  The default resolution is 256, so -30/30 dB range
+> doesn't match to this resolution.  We should change either resolution
+> (e.g. 120, corresponding to 0.5dB step), or the range.
+>   
 
-This patch makes sure that short USB replies are treated as an
-error when requesting the value of a certain mixer control.
+ok, that's no problem. How about we change the range to (in HDA-Intel.conf):
 
-Signed-off-by: Thomas Reitmayr <thomas@devbase.at>
----
+min_dB: -21.0
+max_dB: 30.0
 
- sound/usb/usbmixer.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-
-diff -rup a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
---- a/sound/usb/usbmixer.c	2007-05-11 21:58:33.000000000 +0200
-+++ b/sound/usb/usbmixer.c	2007-05-11 21:59:14.000000000 +0200
-@@ -360,7 +360,7 @@ static int get_ctl_value(struct usb_mixe
- 				    request,
- 				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
- 				    validx, cval->mixer->ctrlif | (cval->id << 8),
--				    buf, val_len, 100) >= 0) {
-+				    buf, val_len, 100) >= val_len) {
- 			*value_ret = convert_signed_value(cval, snd_usb_combine_bytes(buf, val_len));
- 			return 0;
- 		}
+Steve
+> Otherwise it looks fine to me.
+>
+>
+> Thanks,
+>
+> Takashi
+>
+>   
