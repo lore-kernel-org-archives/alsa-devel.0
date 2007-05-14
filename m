@@ -1,17 +1,20 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Meaning of this Plug PCM Transformation table?
-Date: Mon, 14 May 2007 12:53:14 +0530
-Message-ID: <8d6898730705140023j1c91656fyd7cf4e0addf506a4@mail.gmail.com>
+From: "Michel Benoit" <murpme@gmail.com>
+Subject: Re: soft vol
+Date: Mon, 14 May 2007 10:22:32 +0200
+Message-ID: <c88e466f0705140122q40509106uaa997b88a86e49c4@mail.gmail.com>
+References: <c88e466f0705110336l5596cf8fwc434b0f071f5ee15@mail.gmail.com>
+	<s5hejlnid9b.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4301D2432D
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3B3424719
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 May 2007 09:23:16 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so1598715nzf
-	for <alsa-devel@alsa-project.org>; Mon, 14 May 2007 00:23:15 -0700 (PDT)
+	Mon, 14 May 2007 10:22:34 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so1609907nzf
+	for <alsa-devel@alsa-project.org>; Mon, 14 May 2007 01:22:33 -0700 (PDT)
+In-Reply-To: <s5hejlnid9b.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,118 +25,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Plug PCM: Route conversion PCM (sformat=S16_LE)
-  Transformation table:
-    0 <- 0
-    1 <- 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 16
-  buffer_size  : 4000
-  period_size  : 256
-  period_time  : 32000
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 256
-  xfer_align   : 256
-  start_threshold  : 3840
-  stop_threshold   : 4000
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 2097152000
-Slave: Hardware PCM card 0 'IDENTITY' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 16
-  buffer_size  : 4000
-  period_size  : 256
-  period_time  : 32000
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 256
-  xfer_align   : 256
-  start_threshold  : 3840
-  stop_threshold   : 4000
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 2097152000
+>From a printk in the soc driver:
+
+SNDRV_CTL_IOCTL_ELEM_READ is 0xc2c85512
+
+Is that correct?
 
 
-
-This is capture Handle logs
-
-Plug PCM: Route conversion PCM (sformat=S16_LE)
-  Transformation table:
-    0 <- 0*0.5 + 1*0.5
-Its setup is:
-  stream       : CAPTURE
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 16
-  buffer_size  : 4000
-  period_size  : 256
-  period_time  : 32000
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 256
-  xfer_align   : 256
-  start_threshold  : 1
-  stop_threshold   : 4000
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 2097152000
-Slave: Hardware PCM card 0 'IDENTITY' device 0 subdevice 0
-Its setup is:
-  stream       : CAPTURE
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 16
-  buffer_size  : 4000
-  period_size  : 256
-  period_time  : 32000
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 256
-  xfer_align   : 256
-  start_threshold  : 1
-  stop_threshold   : 4000
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 2097152000
-
-
-I am having an application which does capture and playback
-simultaneously and is single threaded?
-
-What is the meaning of this Transformation table?
+On 5/11/07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Fri, 11 May 2007 12:36:01 +0200,
+> Michel Benoit wrote:
+> >
+> > Hello
+> >
+> > Now that I have my pcm playback working with aplay with our at91 aSoc
+> > sound driver I would like to control the volume with softvol.
+> >
+> > I followed the instructions from
+> > http://alsa.opensrc.org/How_to_use_softvol_to_control_the_master_volume
+> > and I have the following asound.con file in /etc
+> >
+> > pcm.!default {
+> >     type             plug
+> >     slave.pcm       "softvol"
+> > }
+> >
+> > pcm.softvol {
+> >     type        softvol
+> >     slave {
+> >         pcm     "plughw:0,0"
+> >     }
+> >     control {
+> >         name    "PCM volume"
+> >         card    0
+> >     }
+> > }
+> >
+> > When I play a wav file directly to the device it works fine:
+> >
+> > # aplay -Dplughw:0,0 Front_Center.wav
+> > Playing WAVE 'Front_Center.wav' : Signed 16 bit Little Endian, Rate
+> > 48000 Hz, Mono
+> >
+> > but when I try to use the default softvol device I get the following
+> > output (and no sound):
+> >
+> > # aplay Front_Center.wav
+> > Playing WAVE 'Front_Center.wav' : Signed 16 bit Little Endian, Rate
+> > 48000 Hz, Mono
+> > ALSA sound/core/control.c:1244: unknown ioctl = 0xc2c45512
+> > ALSA sound/core/control.c:1244: unknown ioctl = 0xc2c45512
+> > ALSA sound/core/control.c:1244: unknown ioctl = 0xc2c45512
+> > ALSA sound/core/control.c:1244: unknown ioctl = 0xc2c45512
+> > ALSA sound/core/control.c:1244: unknown ioctl = 0xc2c45512
+> > ...
+> >
+> > Does anyone have any ideas as to why this is happening?
+>
+> This should be SNDRV_CTL_IOCTL_ELEM_READ.
+>
+> Could you check which number this ioctl is in the kernel code?
+> e.g. try printk("0x%x\n", SNDRV_CTL_IOCTL_ELEM_READ) in kernel
+> and in alsa-lib, too.
+>
+>
+> Takashi
+>
