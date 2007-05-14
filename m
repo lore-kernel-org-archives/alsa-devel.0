@@ -1,23 +1,17 @@
-From: Ctirad Fertr <c.fertr@volny.cz>
-Subject: Re: e-mu 1212m and 1820(m) patch
-Date: Sun, 13 May 2007 15:37:42 +0200
-Message-ID: <200705131537.43084.c.fertr@volny.cz>
-References: <200705112354.15848.c.fertr@volny.cz>
-	<200705121738.03567.c.fertr@volny.cz>
-	<4646FEAF.1020008@superbug.co.uk>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Meaning of this Plug PCM Transformation table?
+Date: Mon, 14 May 2007 12:53:14 +0530
+Message-ID: <8d6898730705140023j1c91656fyd7cf4e0addf506a4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.vol.cz (smtp2.vol.cz [195.250.128.75])
-	by alsa0.perex.cz (Postfix) with ESMTP id C072F24651
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4301D2432D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 13 May 2007 15:37:55 +0200 (CEST)
-Received: from [10.16.3.21] (dsl-tn-6-43.static.adsl.vol.cz [83.148.7.43])
-	by smtp2.vol.cz (Postfix) with ESMTP id ED1722873B
-	for <alsa-devel@alsa-project.org>;
-	Sun, 13 May 2007 15:37:54 +0200 (CEST)
-In-Reply-To: <4646FEAF.1020008@superbug.co.uk>
+	Mon, 14 May 2007 09:23:16 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so1598715nzf
+	for <alsa-devel@alsa-project.org>; Mon, 14 May 2007 00:23:15 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,16 +25,115 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > A friend of mine does 16 channel recordings on 1820m under windows, so
-> > it's definitely possible. I have only 1212M (old version) and it's
-> > capable of 12 ins and 12 outs at 44.1/48kHz, 8 ins and 8 outs at 96kHz
-> > and finally 4 ins and 4 outs at 192kHz.
->
-> What resolution? 16bit or 24bit. I could get the above working for 16bit
-> capture.
+Plug PCM: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0
+    1 <- 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 16
+  buffer_size  : 4000
+  period_size  : 256
+  period_time  : 32000
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 256
+  xfer_align   : 256
+  start_threshold  : 3840
+  stop_threshold   : 4000
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 2097152000
+Slave: Hardware PCM card 0 'IDENTITY' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 16
+  buffer_size  : 4000
+  period_size  : 256
+  period_time  : 32000
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 256
+  xfer_align   : 256
+  start_threshold  : 3840
+  stop_threshold   : 4000
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 2097152000
 
-24 bit. A pro card with 16 bit resolution would be quite a rarity nowdays ;) 
 
-Regards,
 
-Ctirad
+This is capture Handle logs
+
+Plug PCM: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0*0.5 + 1*0.5
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 16
+  buffer_size  : 4000
+  period_size  : 256
+  period_time  : 32000
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 256
+  xfer_align   : 256
+  start_threshold  : 1
+  stop_threshold   : 4000
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 2097152000
+Slave: Hardware PCM card 0 'IDENTITY' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 16
+  buffer_size  : 4000
+  period_size  : 256
+  period_time  : 32000
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 256
+  xfer_align   : 256
+  start_threshold  : 1
+  stop_threshold   : 4000
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 2097152000
+
+
+I am having an application which does capture and playback
+simultaneously and is single threaded?
+
+What is the meaning of this Transformation table?
