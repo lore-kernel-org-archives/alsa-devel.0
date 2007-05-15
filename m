@@ -1,406 +1,468 @@
-From: Heikki Orsila <shdl@zakalwe.fi>
-Subject: Re: [PATCH] ALSA sound driver for SEGA Dreamcast AICA (pcm)
-Date: Tue, 15 May 2007 03:47:51 +0300
-Message-ID: <20070515004751.GD10873@zakalwe.fi>
-References: <92a12cdb0705141514v4c928041i6030267fd322e87@mail.gmail.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: 2.6.22-rc1 lost snd_4236 device
+Date: Tue, 15 May 2007 07:42:41 +0200
+Message-ID: <46494851.4020006@gmail.com>
+References: <200705131623.l4DGNqta003015@clem.clem-digital.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1760915AbXEOAsw@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <92a12cdb0705141514v4c928041i6030267fd322e87@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adrian McMenamin <adrianmcmenamin@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxsh-dev@lists.sourceforge.net
+Content-Type: multipart/mixed; boundary="------------080109060902050003030109"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3F658247F4
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 May 2007 07:45:21 +0200 (CEST)
+In-Reply-To: <200705131623.l4DGNqta003015@clem.clem-digital.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Pete Clements <clem@clem.clem-digital.net>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I still noticed some type cleanups, and possibly a good debug message..
+This is a multi-part message in MIME format.
+--------------080109060902050003030109
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, May 14, 2007 at 11:14:55PM +0100, Adrian McMenamin wrote:
-> +/* spu_memload - write to SPU address space */
-> +static void spu_memload(u32 toi, void __iomem * from, int length)
-> +{
-> +	u32 __iomem *froml = from;
-> +	u32 __iomem *to = (u32 __iomem *) (SPU_MEMORY_BASE + toi);
-> +	int i, val;
+On 05/13/2007 06:23 PM, Pete Clements wrote:
 
-You should use "void *from" because it's not IO memory. Also, use "u32 val"
-since that is the native type of "u32 *from".
+> Fyi:
+> With 2.6.22-rc1 get following when loading sound device module. Introduced
+> with 2.6.21-git16.
+> 
+> FATAL: Error inserting snd_cs4236 (/lib/modules/2.6.22-rc1/kernel/sound/isa/cs423x/snd-cs4236.ko): No such device
+> FATAL: Error running install command for snd_cs4236
 
-> +	length = DIV_ROUND_UP(length, 4);
-> +	spu_write_wait();
-> +	for (i = 0; i < length; i++) {
-> +		val = *froml;
-> +		writel(val, to);
-> +		froml++;
-> +		to++;
-> +		if (i && !(i % 8))
-> +			spu_write_wait();
-> +	}
-> +}
+Yup; the conversion of the mixed legacy/pnp ALSA drivers to the isa_bus 
+framework is not quite right. Wants the attached.
 
-It seems a small simplification is possible:
+Takashi, this needs to go to Linus. Can you make sure it gets there? This is 
+against -linus HEAD.
 
-	/* remove first spu_write_wait(); */
-	for (i = 0; i < length; i++) {
-		if (!(i % 8))
-			spu_write_wait();
-		val = *froml;
-		...
-	}
+Signed-off-by: Rene Herman <rene.herman@gmail.com>
 
+Rene.
 
-> +/* SPU specific functions */
-> +/* spu_write_wait - wait for G2-SH FIFO to clear */
-> +static void spu_write_wait(void)
-> +{
-> +	int time_count; 
-> +	time_count = 0;
-> +	while (1) {
-> +		if (!(readl(G2_FIFO) & 0x11))
-> +			break;
-> +		/* To ensure hardware failure doesn't wedge kernel */
-> +		time_count++;
-> +		if (time_count > 0x10000)
+--------------080109060902050003030109
+Content-Type: text/plain;
+ name="alsa_isa_registered.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa_isa_registered.diff"
 
-Maybe this deserves a printk() message?
+diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
+index 214d65d..f471f8a 100644
+--- a/sound/isa/cmi8330.c
++++ b/sound/isa/cmi8330.c
+@@ -109,6 +109,7 @@ module_param_array(wssdma, int, NULL, 0444);
+ MODULE_PARM_DESC(wssdma, "DMA for CMI8330 WSS driver.");
+ 
+ #ifdef CONFIG_PNP
++static int isa_registered;
+ static int pnp_registered;
+ #endif
+ 
+@@ -686,14 +687,18 @@ static int __init alsa_card_cmi8330_init(void)
+ 	int err;
+ 
+ 	err = isa_register_driver(&snd_cmi8330_driver, SNDRV_CARDS);
+-	if (err < 0)
+-		return err;
+ #ifdef CONFIG_PNP
++	if (!err)
++		isa_registered = 1;
++
+ 	err = pnp_register_card_driver(&cmi8330_pnpc_driver);
+ 	if (!err)
+ 		pnp_registered = 1;
++
++	if (isa_registered)
++		err = 0;
+ #endif
+-	return 0;
++	return err;
+ }
+ 
+ static void __exit alsa_card_cmi8330_exit(void)
+@@ -701,8 +706,10 @@ static void __exit alsa_card_cmi8330_exit(void)
+ #ifdef CONFIG_PNP
+ 	if (pnp_registered)
+ 		pnp_unregister_card_driver(&cmi8330_pnpc_driver);
++
++	if (isa_registered)
+ #endif
+-	isa_unregister_driver(&snd_cmi8330_driver);
++		isa_unregister_driver(&snd_cmi8330_driver);
+ }
+ 
+ module_init(alsa_card_cmi8330_init)
+diff --git a/sound/isa/cs423x/cs4236.c b/sound/isa/cs423x/cs4236.c
+index 87f1392..1a14f33 100644
+--- a/sound/isa/cs423x/cs4236.c
++++ b/sound/isa/cs423x/cs4236.c
+@@ -127,6 +127,7 @@ module_param_array(dma2, int, NULL, 0444);
+ MODULE_PARM_DESC(dma2, "DMA2 # for " IDENT " driver.");
+ 
+ #ifdef CONFIG_PNP
++static int isa_registered;
+ static int pnpc_registered;
+ #ifdef CS4232
+ static int pnp_registered;
+@@ -770,9 +771,9 @@ static int __init alsa_card_cs423x_init(void)
+ 	int err;
+ 
+ 	err = isa_register_driver(&cs423x_isa_driver, SNDRV_CARDS);
+-	if (err < 0)
+-		return err;
+ #ifdef CONFIG_PNP
++	if (!err)
++		isa_registered = 1;
+ #ifdef CS4232
+ 	err = pnp_register_driver(&cs4232_pnp_driver);
+ 	if (!err)
+@@ -781,8 +782,14 @@ static int __init alsa_card_cs423x_init(void)
+ 	err = pnp_register_card_driver(&cs423x_pnpc_driver);
+ 	if (!err)
+ 		pnpc_registered = 1;
+-#endif /* CONFIG_PNP */
+-	return 0;
++#ifdef CS4232
++	if (pnp_registered)
++		err = 0;
++#endif
++	if (isa_registered)
++		err = 0;
++#endif
++	return err;
+ }
+ 
+ static void __exit alsa_card_cs423x_exit(void)
+@@ -794,8 +801,9 @@ static void __exit alsa_card_cs423x_exit(void)
+ 	if (pnp_registered)
+ 		pnp_unregister_driver(&cs4232_pnp_driver);
+ #endif
+-#endif /* CONFIG_PNP */
+-	isa_unregister_driver(&cs423x_isa_driver);
++	if (isa_registered)
++#endif
++		isa_unregister_driver(&cs423x_isa_driver);
+ }
+ 
+ module_init(alsa_card_cs423x_init)
+diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
+index d2a9c7d..f7732bf 100644
+--- a/sound/isa/es18xx.c
++++ b/sound/isa/es18xx.c
+@@ -2036,7 +2036,9 @@ module_param_array(dma2, int, NULL, 0444);
+ MODULE_PARM_DESC(dma2, "DMA 2 # for ES18xx driver.");
+ 
+ #ifdef CONFIG_PNP
+-static int pnp_registered, pnpc_registered;
++static int isa_registered;
++static int pnp_registered;
++static int pnpc_registered;
+ 
+ static struct pnp_device_id snd_audiodrive_pnpbiosids[] = {
+ 	{ .id = "ESS1869" },
+@@ -2466,18 +2468,22 @@ static int __init alsa_card_es18xx_init(void)
+ 	int err;
+ 
+ 	err = isa_register_driver(&snd_es18xx_isa_driver, SNDRV_CARDS);
+-	if (err < 0)
+-		return err;
+-
+ #ifdef CONFIG_PNP
++	if (!err)
++		isa_registered = 1;
++
+ 	err = pnp_register_driver(&es18xx_pnp_driver);
+ 	if (!err)
+ 		pnp_registered = 1;
++
+ 	err = pnp_register_card_driver(&es18xx_pnpc_driver);
+ 	if (!err)
+ 		pnpc_registered = 1;
++
++	if (isa_registered || pnp_registered)
++		err = 0;
+ #endif
+-	return 0;
++	return err;
+ }
+ 
+ static void __exit alsa_card_es18xx_exit(void)
+@@ -2487,8 +2493,9 @@ static void __exit alsa_card_es18xx_exit(void)
+ 		pnp_unregister_card_driver(&es18xx_pnpc_driver);
+ 	if (pnp_registered)
+ 		pnp_unregister_driver(&es18xx_pnp_driver);
++	if (isa_registered)
+ #endif
+-	isa_unregister_driver(&snd_es18xx_isa_driver);
++		isa_unregister_driver(&snd_es18xx_isa_driver);
+ }
+ 
+ module_init(alsa_card_es18xx_init)
+diff --git a/sound/isa/gus/interwave.c b/sound/isa/gus/interwave.c
+index 3e46572..0220cdb 100644
+--- a/sound/isa/gus/interwave.c
++++ b/sound/isa/gus/interwave.c
+@@ -135,6 +135,7 @@ struct snd_interwave {
+ 
+ 
+ #ifdef CONFIG_PNP
++static int isa_registered;
+ static int pnp_registered;
+ 
+ static struct pnp_card_device_id snd_interwave_pnpids[] = {
+@@ -934,15 +935,18 @@ static int __init alsa_card_interwave_init(void)
+ 	int err;
+ 
+ 	err = isa_register_driver(&snd_interwave_driver, SNDRV_CARDS);
+-	if (err < 0)
+-		return err;
+ #ifdef CONFIG_PNP
+-	/* ISA PnP cards */
++	if (!err)
++		isa_registered = 1;
++
+ 	err = pnp_register_card_driver(&interwave_pnpc_driver);
+ 	if (!err)
+ 		pnp_registered = 1;
++
++	if (isa_registered)
++		err = 0;
+ #endif
+-	return 0;
++	return err;
+ }
+ 
+ static void __exit alsa_card_interwave_exit(void)
+@@ -950,8 +954,9 @@ static void __exit alsa_card_interwave_exit(void)
+ #ifdef CONFIG_PNP
+ 	if (pnp_registered)
+ 		pnp_unregister_card_driver(&interwave_pnpc_driver);
++	if (isa_registered)
+ #endif
+-	isa_unregister_driver(&snd_interwave_driver);
++		isa_unregister_driver(&snd_interwave_driver);
+ }
+ 
+ module_init(alsa_card_interwave_init)
+diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
+index 48743eb..61a323c 100644
+--- a/sound/isa/opl3sa2.c
++++ b/sound/isa/opl3sa2.c
+@@ -92,6 +92,7 @@ module_param_array(opl3sa3_ymode, int, NULL, 0444);
+ MODULE_PARM_DESC(opl3sa3_ymode, "Speaker size selection for 3D Enhancement mode: Desktop/Large Notebook/Small Notebook/HiFi.");
+ 
+ #ifdef CONFIG_PNP
++static int isa_registered;
+ static int pnp_registered;
+ static int pnpc_registered;
+ #endif
+@@ -967,17 +968,22 @@ static int __init alsa_card_opl3sa2_init(void)
+ 	int err;
+ 
+ 	err = isa_register_driver(&snd_opl3sa2_isa_driver, SNDRV_CARDS);
+-	if (err < 0)
+-		return err;
+ #ifdef CONFIG_PNP
++	if (!err)
++		isa_registered = 1;
++
+ 	err = pnp_register_driver(&opl3sa2_pnp_driver);
+ 	if (!err)
+ 		pnp_registered = 1;
++
+ 	err = pnp_register_card_driver(&opl3sa2_pnpc_driver);
+ 	if (!err)
+ 		pnpc_registered = 1;
++
++	if (isa_registered || pnp_registered)
++		err = 0;
+ #endif
+-	return 0;
++	return err;
+ }
+ 
+ static void __exit alsa_card_opl3sa2_exit(void)
+@@ -987,8 +993,9 @@ static void __exit alsa_card_opl3sa2_exit(void)
+ 		pnp_unregister_card_driver(&opl3sa2_pnpc_driver);
+ 	if (pnp_registered)
+ 		pnp_unregister_driver(&opl3sa2_pnp_driver);
++	if (isa_registered)
+ #endif
+-	isa_unregister_driver(&snd_opl3sa2_isa_driver);
++		isa_unregister_driver(&snd_opl3sa2_isa_driver);
+ }
+ 
+ module_init(alsa_card_opl3sa2_init)
+diff --git a/sound/isa/sb/sb16.c b/sound/isa/sb/sb16.c
+index 2a19b0a..c4ba24b 100644
+--- a/sound/isa/sb/sb16.c
++++ b/sound/isa/sb/sb16.c
+@@ -129,6 +129,7 @@ MODULE_PARM_DESC(seq_ports, "Number of sequencer ports for WaveTable synth.");
+ #endif
+ 
+ #ifdef CONFIG_PNP
++static int isa_registered;
+ static int pnp_registered;
+ #endif
+ 
+@@ -702,15 +703,18 @@ static int __init alsa_card_sb16_init(void)
+ 	int err;
+ 
+ 	err = isa_register_driver(&snd_sb16_isa_driver, SNDRV_CARDS);
+-	if (err < 0)
+-		return err;
+ #ifdef CONFIG_PNP
+-	/* PnP cards at last */
++	if (!err)
++		isa_registered = 1;
++
+ 	err = pnp_register_card_driver(&sb16_pnpc_driver);
+ 	if (!err)
+ 		pnp_registered = 1;
++
++	if (isa_registered)
++		err = 0;
+ #endif
+-	return 0;
++	return err;
+ }
+ 
+ static void __exit alsa_card_sb16_exit(void)
+@@ -718,8 +722,9 @@ static void __exit alsa_card_sb16_exit(void)
+ #ifdef CONFIG_PNP
+ 	if (pnp_registered)
+ 		pnp_unregister_card_driver(&sb16_pnpc_driver);
++	if (isa_registered)
+ #endif
+-	isa_unregister_driver(&snd_sb16_isa_driver);
++		isa_unregister_driver(&snd_sb16_isa_driver);
+ }
+ 
+ module_init(alsa_card_sb16_init)
+diff --git a/sound/isa/sscape.c b/sound/isa/sscape.c
+index 08c1497..9ea417b 100644
+--- a/sound/isa/sscape.c
++++ b/sound/isa/sscape.c
+@@ -69,7 +69,9 @@ module_param_array(dma, int, NULL, 0444);
+ MODULE_PARM_DESC(dma, "DMA # for SoundScape driver.");
+ 
+ #ifdef CONFIG_PNP
++static int isa_registered;
+ static int pnp_registered;
++
+ static struct pnp_card_device_id sscape_pnpids[] = {
+ 	{ .id = "ENS3081", .devs = { { "ENS0000" } } },
+ 	{ .id = "" }	/* end */
+@@ -1405,22 +1407,21 @@ static struct pnp_card_driver sscape_pnpc_driver = {
+ 
+ static int __init sscape_init(void)
+ {
+-	int ret;
++	int err;
+ 
+-	/*
+-	 * First check whether we were passed any parameters.
+-	 * These MUST take precedence over ANY automatic way
+-	 * of allocating cards, because the operator is
+-	 * S-P-E-L-L-I-N-G it out for us...
+-	 */
+-	ret = isa_register_driver(&snd_sscape_driver, SNDRV_CARDS);
+-	if (ret < 0)
+-		return ret;
++	err = isa_register_driver(&snd_sscape_driver, SNDRV_CARDS);
+ #ifdef CONFIG_PNP
+-	if (pnp_register_card_driver(&sscape_pnpc_driver) == 0)
++	if (!err)
++		isa_registered = 1;
++
++	err = pnp_register_card_driver(&sscape_pnpc_driver);
++	if (!err)
+ 		pnp_registered = 1;
++
++	if (isa_registered)
++		err = 0;
+ #endif
+-	return 0;
++	return err;
+ }
+ 
+ static void __exit sscape_exit(void)
+@@ -1428,8 +1429,9 @@ static void __exit sscape_exit(void)
+ #ifdef CONFIG_PNP
+ 	if (pnp_registered)
+ 		pnp_unregister_card_driver(&sscape_pnpc_driver);
++	if (isa_registered)
+ #endif
+-	isa_unregister_driver(&snd_sscape_driver);
++		isa_unregister_driver(&snd_sscape_driver);
+ }
+ 
+ module_init(sscape_init);
+diff --git a/sound/isa/wavefront/wavefront.c b/sound/isa/wavefront/wavefront.c
+index 75673f7..83c2fc4 100644
+--- a/sound/isa/wavefront/wavefront.c
++++ b/sound/isa/wavefront/wavefront.c
+@@ -86,6 +86,7 @@ module_param_array(use_cs4232_midi, bool, NULL, 0444);
+ MODULE_PARM_DESC(use_cs4232_midi, "Use CS4232 MPU-401 interface (inaccessibly located inside your computer)");
+ 
+ #ifdef CONFIG_PNP
++static int isa_registered;
+ static int pnp_registered;
+ 
+ static struct pnp_card_device_id snd_wavefront_pnpids[] = {
+@@ -706,14 +707,18 @@ static int __init alsa_card_wavefront_init(void)
+ 	int err;
+ 
+ 	err = isa_register_driver(&snd_wavefront_driver, SNDRV_CARDS);
+-	if (err < 0)
+-		return err;
+ #ifdef CONFIG_PNP
++	if (!err)
++		isa_registered = 1;
++
+ 	err = pnp_register_card_driver(&wavefront_pnpc_driver);
+ 	if (!err)
+ 		pnp_registered = 1;
++
++	if (isa_registered)
++		err = 0;
+ #endif
+-	return 0;
++	return err;
+ }
+ 
+ static void __exit alsa_card_wavefront_exit(void)
+@@ -721,8 +726,9 @@ static void __exit alsa_card_wavefront_exit(void)
+ #ifdef CONFIG_PNP
+ 	if (pnp_registered)
+ 		pnp_unregister_card_driver(&wavefront_pnpc_driver);
++	if (isa_registered)
+ #endif
+-	isa_unregister_driver(&snd_wavefront_driver);
++		isa_unregister_driver(&snd_wavefront_driver);
+ }
+ 
+ module_init(alsa_card_wavefront_init)
 
-> +static struct snd_pcm_hardware snd_pcm_aica_playback_hw = {
-> +	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
-> +	.formats =
-> +	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-> +	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
-> +	.rates = SNDRV_PCM_RATE_8000_48000,
-> +	.rate_min = 8000,
-> +	.rate_max = 48000,
-> +	.channels_min = 1,
-> +	.channels_max = 2,
-> +	.buffer_bytes_max = AICA_BUFFER_SIZE,
-> +	.period_bytes_min = AICA_PERIOD_SIZE,
-> +	.period_bytes_max = AICA_PERIOD_SIZE,
-> +	.periods_min = AICA_PERIOD_NUMBER,
-> +	.periods_max = AICA_PERIOD_NUMBER,
-> +};
-> +
-> +static int aica_dma_transfer(int channels, int buffer_size,
-> +			     struct snd_pcm_substream *substream)
-> +{
-> +	int q, err, period_offset;
-> +	struct snd_card_aica *dreamcastcard;
-> +	struct snd_pcm_runtime *runtime;
-> +	err = 0;
-> +	dreamcastcard = substream->pcm->private_data;
-> +	period_offset = dreamcastcard->clicks;
-> +	period_offset %= (AICA_PERIOD_NUMBER / channels);
-> +	runtime = substream->runtime;
-> +	for (q = 0; q < channels; q++) {
-> +		err = dma_xfer(AICA_DMA_CHANNEL,
-> +			       (unsigned long)(runtime->dma_area +
-> +					       (AICA_BUFFER_SIZE * q) /
-> +					       channels +
-> +					       AICA_PERIOD_SIZE *
-> +					       period_offset),
-> +			       AICA_CHANNEL0_OFFSET + q * CHANNEL_OFFSET +
-> +			       AICA_PERIOD_SIZE * period_offset,
-> +			       buffer_size / channels, AICA_DMA_MODE);
-> +		if (unlikely(err < 0))
-> +			break;
-> +		dma_wait_for_completion(AICA_DMA_CHANNEL);
-> +	}
-> +	return err;
-> +}
-> +
-> +static void startup_aica(struct snd_card_aica *dreamcastcard)
-> +{
-> +	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
-> +		    (u8 *) dreamcastcard->channel,
+--------------080109060902050003030109
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Why cast to u8 *? spu_memload gets a void *, and the void * is casted 
-into an u32 *. 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-> +		    sizeof(struct aica_channel));
-> +	aica_chn_start();
-> +}
-> +
-> +static void run_spu_dma(struct work_struct *work)
-> +{
-> +	int buffer_size;
-> +	struct snd_pcm_substream *substream;
-> +	struct snd_pcm_runtime *runtime;
-> +	struct snd_card_aica *dreamcastcard;
-> +	struct spu_work_holder *holder = container_of(work, struct spu_work_holder, spu_dma_work);
-> +	substream = holder-> sspointer;
-> +	dreamcastcard = substream->pcm->private_data;
-> +	runtime = substream->runtime;
-> +	if (unlikely(dreamcastcard->dma_check == 0)) {
-> +		buffer_size = frames_to_bytes(runtime, runtime->buffer_size);
-> +		if (runtime->channels > 1)
-> +			dreamcastcard->channel->flags |= 0x01;
-> +		aica_dma_transfer(runtime->channels, buffer_size, substream);
-> +		startup_aica(dreamcastcard);
-> +		dreamcastcard->clicks =
-> +		    buffer_size / (AICA_PERIOD_SIZE * runtime->channels);
-> +		return;
-> +	} else {
-> +		aica_dma_transfer(runtime->channels,
-> +				  AICA_PERIOD_SIZE * runtime->channels,
-> +				  substream);
-> +		snd_pcm_period_elapsed(dreamcastcard->substream);
-> +		dreamcastcard->clicks++;
-> +		if (unlikely(dreamcastcard->clicks >= AICA_PERIOD_NUMBER))
-> +		{
-> +			dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
-> +		}
-> +		mod_timer(&dreamcastcard->timer, jiffies + 1);
-> +	}
-> +}
-> +
-> +static void aica_period_elapsed(unsigned long timer_var)
-> +{
-> +	/*timer function - so cannot sleep */
-> +	int play_period;
-> +	struct snd_pcm_runtime *runtime;
-> +	struct snd_pcm_substream *substream;
-> +	struct snd_card_aica *dreamcastcard;
-> +	substream = (struct snd_pcm_substream *)timer_var;
-> +	runtime = substream->runtime;
-> +	dreamcastcard = substream->pcm->private_data;
-> +	/* Have we played out an additional period? */
-> +	play_period =
-> +	    frames_to_bytes(runtime,
-> +			    readl
-> +			    (AICA_CONTROL_CHANNEL_SAMPLE_NUMBER)) /
-> +	    AICA_PERIOD_SIZE;
-> +	if (play_period == dreamcastcard->current_period) {
-> +		/* reschedule the timer */
-> +		mod_timer(&(dreamcastcard->timer), jiffies + 1);
-> +		return;
-> +	}
-> +	if (runtime->channels > 1)
-> +		dreamcastcard->current_period = play_period;
-> +	if (unlikely(dreamcastcard->dma_check == 0))
-> +		dreamcastcard->dma_check = 1;
-> +		queue_work(aica_queue, &(spu_working.spu_dma_work));
-> +}
-> +
-> +static void spu_begin_dma(struct snd_pcm_substream *substream)
-> +{
-> +	/* Must be atomic */
-> +	struct snd_card_aica *dreamcastcard;
-> +	struct snd_pcm_runtime *runtime;
-> +	runtime = substream->runtime;
-> +	dreamcastcard = substream->pcm->private_data;
-> +	/*  Use queue to do the heavy lifting */
-> +	spu_working.sspointer = substream;
-> +	INIT_WORK(&(spu_working.spu_dma_work), run_spu_dma);
-> +	queue_work(aica_queue, &(spu_working.spu_dma_work));
-> +	/* Timer may already be running */
-> +	if (unlikely(dreamcastcard->timer.data)) {
-> +		mod_timer(&dreamcastcard->timer, jiffies + 4);
-> +		return;
-> +	}
-> +	init_timer(&(dreamcastcard->timer));
-> +	dreamcastcard->timer.data = (unsigned long)substream;
-> +	dreamcastcard->timer.function = aica_period_elapsed;
-> +	dreamcastcard->timer.expires = jiffies + 4;
-> +	add_timer(&(dreamcastcard->timer));
-> +}
-> +
-> +static int snd_aicapcm_pcm_open(struct snd_pcm_substream
-> +				*substream)
-> +{
-> +	struct snd_pcm_runtime *runtime;
-> +	struct aica_channel *channel;
-> +	struct snd_card_aica *dreamcastcard;
-> +	if (!enable)
-> +		return -ENOENT;
-> +	dreamcastcard = substream->pcm->private_data;
-> +	channel = kmalloc(sizeof(struct aica_channel), GFP_KERNEL);
-> +	if (!channel)
-> +		return -ENOMEM;
-> +	/* set defaults for channel */
-> +	channel->sfmt = SM_8BIT;
-> +	channel->cmd = AICA_CMD_START;
-> +	channel->vol = dreamcastcard->master_volume;
-> +	channel->pan = 0x80;
-> +	channel->pos = 0;
-> +	channel->flags = 0;	/* default to mono */
-> +	dreamcastcard->channel = channel;
-> +	runtime = substream->runtime;
-> +	runtime->hw = snd_pcm_aica_playback_hw;
-> +	spu_enable();
-> +	dreamcastcard->clicks = 0;
-> +	dreamcastcard->current_period = 0;
-> +	dreamcastcard->dma_check = 0;
-> +	return 0;
-> +}
-> +
-> +static int snd_aicapcm_pcm_close(struct snd_pcm_substream
-> +				 *substream)
-> +{
-> +	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
-> +	del_timer(&dreamcastcard->timer);
-> +	kfree(dreamcastcard->channel);
-> +	spu_disable();
-> +	return 0;
-> +}
-> +
-> +static int snd_aicapcm_pcm_hw_free(struct snd_pcm_substream
-> +				   *substream)
-> +{
-> +	/* Free the DMA buffer */
-> +	return snd_pcm_lib_free_pages(substream);
-> +}
-> +
-> +static int snd_aicapcm_pcm_hw_params(struct snd_pcm_substream
-> +				     *substream, struct snd_pcm_hw_params
-> +				     *hw_params)
-> +{
-> +	/* Allocate a DMA buffer using ALSA built-ins */
-> +	return
-> +	    snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
-> +}
-> +
-> +static int snd_aicapcm_pcm_prepare(struct snd_pcm_substream
-> +				   *substream)
-> +{
-> +	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
-> +	if ((substream->runtime)->format == SNDRV_PCM_FORMAT_S16_LE)
-> +		dreamcastcard->channel->sfmt = SM_16BIT;
-> +	dreamcastcard->channel->freq = substream->runtime->rate;
-> +	dreamcastcard->substream = substream;
-> +	return 0;
-> +}
-> +
-> +static int snd_aicapcm_pcm_trigger(struct snd_pcm_substream
-> +				   *substream, int cmd)
-> +{
-> +	struct snd_card_aica *dreamcastcard;
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +		spu_begin_dma(substream);
-> +		break;
-> +	case SNDRV_PCM_TRIGGER_STOP:
-> +		dreamcastcard = substream->pcm->private_data;
-> +		if (dreamcastcard->timer.data)
-> +			del_timer(&dreamcastcard->timer);
-> +		aica_chn_halt();
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static unsigned long snd_aicapcm_pcm_pointer(struct snd_pcm_substream
-> +					     *substream)
-> +{
-> +	return readl(AICA_CONTROL_CHANNEL_SAMPLE_NUMBER);
-> +}
-> +
-> +static struct snd_pcm_ops snd_aicapcm_playback_ops = {
-> +	.open = snd_aicapcm_pcm_open,
-> +	.close = snd_aicapcm_pcm_close,
-> +	.ioctl = snd_pcm_lib_ioctl,
-> +	.hw_params = snd_aicapcm_pcm_hw_params,
-> +	.hw_free = snd_aicapcm_pcm_hw_free,
-> +	.prepare = snd_aicapcm_pcm_prepare,
-> +	.trigger = snd_aicapcm_pcm_trigger,
-> +	.pointer = snd_aicapcm_pcm_pointer,
-> +};
-> +
-> +/* TO DO: set up to handle more than one pcm instance */
-> +static int __init snd_aicapcmchip(struct snd_card_aica
-> +				  *dreamcastcard, int pcm_index)
-> +{
-> +	struct snd_pcm *pcm;
-> +	int err;
-> +	/* AICA has no capture ability */
-> +	err =
-> +	    snd_pcm_new(dreamcastcard->card, "AICA PCM", pcm_index, 1, 0, &pcm);
-> +	if (unlikely(err < 0))
-> +		return err;
-> +	pcm->private_data = dreamcastcard;
-> +	strcpy(pcm->name, "AICA PCM");
-> +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-> +			&snd_aicapcm_playback_ops);
-> +	/* Allocate the DMA buffers */
-> +	err =
-> +	    snd_pcm_lib_preallocate_pages_for_all(pcm,
-> +						  SNDRV_DMA_TYPE_CONTINUOUS,
-> +						  snd_dma_continuous_data
-> +						  (GFP_KERNEL),
-> +						  AICA_BUFFER_SIZE,
-> +						  AICA_BUFFER_SIZE);
-> +	return err;
-> +}
-> +
-> +/* Mixer controls */
-> +static int aica_pcmswitch_info(struct snd_kcontrol *kcontrol,
-> +			       struct snd_ctl_elem_info *uinfo)
-> +{
-> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-> +	uinfo->count = 1;
-> +	uinfo->value.integer.min = 0;
-> +	uinfo->value.integer.max = 1;
-> +	return 0;
-> +}
-> +
-> +static int aica_pcmswitch_get(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	ucontrol->value.integer.value[0] = 1;	/* TO DO: Fix me */
-> +	return 0;
-> +}
-> +
-> +static int aica_pcmswitch_put(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	if (ucontrol->value.integer.value[0] == 1)
-> +		return 0;	/* TO DO: Fix me */
-> +	else
-> +		aica_chn_halt();
-> +	return 0;
-> +}
-> +
-> +static int aica_pcmvolume_info(struct snd_kcontrol *kcontrol,
-> +			       struct snd_ctl_elem_info *uinfo)
-> +{
-> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-> +	uinfo->count = 1;
-> +	uinfo->value.integer.min = 0;
-> +	uinfo->value.integer.max = 0xFF;
-> +	return 0;
-> +}
-> +
-> +static int aica_pcmvolume_get(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_card_aica *dreamcastcard;
-> +	dreamcastcard = kcontrol->private_data;
-> +	if (unlikely(!dreamcastcard->channel))
-> +		return -ETXTBSY;	/* we've not yet been set up */
-> +	ucontrol->value.integer.value[0] = dreamcastcard->channel->vol;
-> +	return 0;
-> +}
-> +
-> +static int aica_pcmvolume_put(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_card_aica *dreamcastcard;
-> +	dreamcastcard = kcontrol->private_data;
-> +	if (unlikely(!dreamcastcard->channel))
-> +		return -ETXTBSY;
-> +	if (unlikely(dreamcastcard->channel->vol ==
-> +		     ucontrol->value.integer.value[0]))
-> +		return 0;
-> +	dreamcastcard->channel->vol = ucontrol->value.integer.value[0];
-> +	dreamcastcard->master_volume = ucontrol->value.integer.value[0];
-> +	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
-> +		    (u8 *) dreamcastcard->channel,
-
-Unuseful cast again.
-
--- 
-Heikki Orsila			Barbie's law:
-heikki.orsila@iki.fi		"Math is hard, let's go shopping!"
-http://www.iki.fi/shd
+--------------080109060902050003030109--
