@@ -1,25 +1,15 @@
-From: "Ivan N. Zlatev" <contact@i-nz.net>
-Subject: Re: Strange findings about the microphone in SigmaTel
-	STAC9221 A1
-Date: Tue, 15 May 2007 18:23:13 +0100
-Message-ID: <3db1ec7f0705151023g681b9db2n9321ea9250668908@mail.gmail.com>
-References: <3db1ec7f0705110248p788b3d9q2ea5774331fded9d@mail.gmail.com>
-	<s5hps52gtmx.wl%tiwai@suse.de>
-	<3db1ec7f0705150741k72427556y6b91d9ab13cba5c5@mail.gmail.com>
-	<s5hbqgmgm8h.wl%tiwai@suse.de>
-	<3db1ec7f0705151011w7e511e50p9397a8429083d956@mail.gmail.com>
+From: "Norman Schleicher" <NormanSchleicher@gmx.de>
+Subject: Steinberg Midex 8 driver development
+Date: Tue, 15 May 2007 11:35:57 +0200
+Message-ID: <20070515093557.311300@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19B852485D
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 56B7924346
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2007 19:23:14 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 58so1952153wri
-	for <alsa-devel@alsa-project.org>; Tue, 15 May 2007 10:23:14 -0700 (PDT)
-In-Reply-To: <3db1ec7f0705151011w7e511e50p9397a8429083d956@mail.gmail.com>
-Content-Disposition: inline
+	Tue, 15 May 2007 11:35:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,18 +19,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/15/07, Ivan N. Zlatev <contact@i-nz.net> wrote:
->
-> I have tried using this pinconfig with rc4 and the input is set okay,
-> but I still need to set capture to 0.
+I am currently on development for the Steinberg Midex8 USB driver.
 
-Actually wrong. I still have to change from mic to line and back.
--- 
-Ivan N. Zlatev
+At the moment I can send notes to my Midi equipment via this device. Receiving is currently not implemented.
 
-Web: http://www.i-nZ.net
-"It's all some kind of whacked out conspiracy."
+My questions are:
+1. Are there any tools to test the Alsa-Midi compatiblity ?
+2. May I release some milestone results to the Alsa project ? Eg when the driver supports a small subset of send commands supported by midi.
+3. What are the requirements to get released in an official alsa release package ?
+4. Who is responsible for the version management ? Where can I read how the source code is organized in the repository and how to manage tags and branches for the development ?(I don't need an introduction how to use CVS, thats clear for me.)
+
+Regards Norman
