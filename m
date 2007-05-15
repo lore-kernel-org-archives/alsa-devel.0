@@ -1,50 +1,56 @@
-From: Pete Clements <clem@clem.clem-digital.net>
-Subject: Re: 2.6.22-rc1 lost snd_4236 device
-Date: Tue, 15 May 2007 09:48:47 -0400 (EDT)
-Message-ID: <200705151348.l4FDmlD7001813@clem.clem-digital.net>
-References: <s5hy7jqgymj.wl%tiwai@suse.de>
+From: K <keres.nyx@gmail.com>
+Subject: [Alsa-devel] Crosstool for PDA iPAQ hx4700
+Date: Tue, 15 May 2007 16:33:53 +0200
+Message-ID: <50fdad60705150733xf4b7624i3f9576b383104cfe@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1760801AbXEONtS@vger.kernel.org>
-In-Reply-To: <s5hy7jqgymj.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Rene Herman <rene.herman@gmail.com>, Pete Clements <clem@clem.clem-digital.net>, linux-kernel <linux-kernel@vger.kernel.org>, ALSA devel <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id A71442439B
+	for <Alsa-devel@alsa-project.org>;
+	Tue, 15 May 2007 16:33:54 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so152135nzf
+	for <Alsa-devel@alsa-project.org>; Tue, 15 May 2007 07:33:53 -0700 (PDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Takashi Iwai
-  > At Tue, 15 May 2007 07:42:41 +0200,
-  > Rene Herman wrote:
-  > > 
-  > > [1  <text/plain; ISO-8859-15 (7bit)>]
-  > > On 05/13/2007 06:23 PM, Pete Clements wrote:
-  > > 
-  > > > Fyi:
-  > > > With 2.6.22-rc1 get following when loading sound device module. Introduced
-  > > > with 2.6.21-git16.
-  > > > 
-  > > > FATAL: Error inserting snd_cs4236 (/lib/modules/2.6.22-rc1/kernel/sound/isa/cs423x/snd-cs4236.ko): No such device
-  > > > FATAL: Error running install command for snd_cs4236
-  > > 
-  > > Yup; the conversion of the mixed legacy/pnp ALSA drivers to the isa_bus 
-  > > framework is not quite right. Wants the attached.
-  > 
-  > Grr, forgot about the error return at probe.
-  > 
-  > > Takashi, this needs to go to Linus. Can you make sure it gets there? This is 
-  > > against -linus HEAD.
-  > > 
-  > > Signed-off-by: Rene Herman <rene.herman@gmail.com>
-  > 
-  > Thanks.  I applied it to ALSA tree so that it will be queued in the
-  > next push round.
-  > 
-  > 
-  > Takashi
-  > -
+Hi,
 
-Applied patch. Module loads.
+I want to port a audio program on my hx4700, So I will use a prebuilt
+toolchain. I have downloaded
+ftp://ftp.handhelds.org/projects/toolchain/arm-linux-gcc-3.4.1.tar.bz2
+and I extract this file to /usr/local/arm
+
+I have downloaded alsa-lib from
+ftp://ftp.alsa-project.org/pub/lib/stable/alsa-lib-0.0.9.tar.gz
+
+I have compiled it :
+#./configure --prefix=/usr/local/arm-linux --host=arm-linux
+#make
+#make install
+
+after I compile my program :
+#arm-linux-gcc -Wa,-mfpu=fpa11 -mcpu=xscale record.c -lasound -I
+/usr/local/arm/3.4.1/include/
+/usr/local/arm/3.4.1/lib/gcc/arm-linux/3.4.1/../../../../arm-linux/bin/ld:
+cannot find -lasound
+collect2: ld returned 1 exit status
+
+Do you have an idea ? Can you help me ?
+I want to port a Vumeter, Peakmeter and other audio tools on hx4700.
+
+Thank you
 
 -- 
-Pete Clements 
+K
