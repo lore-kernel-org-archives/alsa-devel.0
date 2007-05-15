@@ -1,35 +1,50 @@
-From: dustin@seznam.cz
-Subject: Multichannel capture support in E-MU 1212
-Date: Tue, 15 May 2007 15:26:34 +0200 (CEST)
-Message-ID: <9723.25058-11506-1683663200-1179235594@seznam.cz>
+From: Pete Clements <clem@clem.clem-digital.net>
+Subject: Re: 2.6.22-rc1 lost snd_4236 device
+Date: Tue, 15 May 2007 09:48:47 -0400 (EDT)
+Message-ID: <200705151348.l4FDmlD7001813@clem.clem-digital.net>
+References: <s5hy7jqgymj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxl.seznam.cz (mxhn.seznam.cz [212.80.76.26])
-	by alsa0.perex.cz (Postfix) with SMTP id D64C02482D
-	for <Alsa-devel@alsa-project.org>;
-	Tue, 15 May 2007 15:26:38 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1760801AbXEONtS@vger.kernel.org>
+In-Reply-To: <s5hy7jqgymj.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Rene Herman <rene.herman@gmail.com>, Pete Clements <clem@clem.clem-digital.net>, linux-kernel <linux-kernel@vger.kernel.org>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Quoting Takashi Iwai
+  > At Tue, 15 May 2007 07:42:41 +0200,
+  > Rene Herman wrote:
+  > > 
+  > > [1  <text/plain; ISO-8859-15 (7bit)>]
+  > > On 05/13/2007 06:23 PM, Pete Clements wrote:
+  > > 
+  > > > Fyi:
+  > > > With 2.6.22-rc1 get following when loading sound device module. Introduced
+  > > > with 2.6.21-git16.
+  > > > 
+  > > > FATAL: Error inserting snd_cs4236 (/lib/modules/2.6.22-rc1/kernel/sound/isa/cs423x/snd-cs4236.ko): No such device
+  > > > FATAL: Error running install command for snd_cs4236
+  > > 
+  > > Yup; the conversion of the mixed legacy/pnp ALSA drivers to the isa_bus 
+  > > framework is not quite right. Wants the attached.
+  > 
+  > Grr, forgot about the error return at probe.
+  > 
+  > > Takashi, this needs to go to Linus. Can you make sure it gets there? This is 
+  > > against -linus HEAD.
+  > > 
+  > > Signed-off-by: Rene Herman <rene.herman@gmail.com>
+  > 
+  > Thanks.  I applied it to ALSA tree so that it will be queued in the
+  > next push round.
+  > 
+  > 
+  > Takashi
+  > -
 
-I am working together with Ctirad on supporting more capture channels in E-MU1212. So far we have managed to increase the number of channels from the default of 8 to 16 (A_FXWC2 = 0xffffffff, added new  snd_emu10k1_audigy_dsp_convert_32_to_2x16 calls in emufx.c), there is still a number of issues to solve.
+Applied patch. Module loads.
 
-I would like to get your opinion on the form of adding this support to the module. The options are either hard-coding the 16 capture channels into the code, assuming that users would prefer as many channels as possible and do the routing in jack, or introducing a module parameter emu1010-capture-channels (range e.g. 1 to 16 - untested yet) and leaving the  default number at the existing 8.
-
-Furthermore, the PCMs other than efx seem to be of no use for the EMU-1x1x models, probably fairly confusing for new users. Would you find it OK, if  they were removed for this specific card (if (emu->card_capabilities->emu1010)), keeping only the playback and capture PCM id 2?
-
-Thanks a lot for your suggestions. Based on them, I will prepare the patch (with comments on what we found out about the card - it is a pitty that the driver has almost no big-picture comments on the supported cards' specifics, making new developers spend a number of long nights going through the nontrivial code and guessing).
-
-Pavel.
+-- 
+Pete Clements 
