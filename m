@@ -1,17 +1,22 @@
-From: "Michel Benoit" <murpme@gmail.com>
-Subject: default PCM volume
-Date: Tue, 15 May 2007 10:11:18 +0200
-Message-ID: <c88e466f0705150111x4a9f8e0cy5b908a30721ccea0@mail.gmail.com>
+From: ramkromberg@mail.com
+Subject: Re: Can someone verify support for "AzTech Sound
+ Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset - FCC-ID:I38-MMSN846"
+ ?
+Date: Tue, 15 May 2007 10:50:16 +0200
+Message-ID: <20070515085016.C02081BF258@ws1-1.us4.outblaze.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.236])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32AD6244F5
+Received: from webmail-outgoing.us4.outblaze.com
+	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 438EB24803
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2007 10:11:20 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so47292nzf
-	for <alsa-devel@alsa-project.org>; Tue, 15 May 2007 01:11:18 -0700 (PDT)
+	Tue, 15 May 2007 10:50:19 +0200 (CEST)
+Received: from unknown (unknown [192.168.8.90])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	080E11800128
+	for <alsa-devel@alsa-project.org>; Tue, 15 May 2007 08:50:17 +0000 (GMT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,25 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello again,
+You did it Rene !!!
+>sudo ./eeprom
+>sudo modprobe snd-sgalaxy sbport=0x220 wssport=0x530
 
-I am running alsa on a custom AT91SAM9260 arm based SOC board together
-with a a simple external PCM1725 codec.  When using alsa-lib and the
-at91 soc driver (pcm+i2s) I can playback PCM samples using both aplay
-and test/pcm.  Using softvol I can also reduce the volume of the
-playback.
+It's working now !!
+I downloaded the binary (i didn't compile the code), chmod it, sudo it
+and the sgalaxy worked !!!
+the sb8 didn't work but I don't really care for that anyhow :-)
 
-The problem I have is that the playback volume (with softvol=100%) is
-not very loud.  The volume is the same even without the softvol
-plugin. The PCM codec has no hw volume control.   According to our hw
-team the sound level should be much higher.
+For the record, I tested it on xubuntu 7.04 with xmms.
 
-Is there a default PCM attenuation (volume reduction) built into alsa
-lib?  If so, how can it be adjusted?
+Are you now planning to implement the code to the driver itself ?
+If you want me to test anything, let me know.
 
-Thanks,
+i'm also considering installing slackware 11 since I need the
+preformance...
 
-Michel
+THANKS !!!
+Ram Kromberg
+ramkromberg@mail.com
