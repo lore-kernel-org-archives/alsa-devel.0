@@ -1,22 +1,19 @@
-From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
-Subject: Re: [PATCH] ALSA sound driver for SEGA Dreamcast AICA
-	(pcm)
-Date: Tue, 15 May 2007 22:31:15 +0100
-Message-ID: <92a12cdb0705151431r57cdd98cq9b77e218f5293214@mail.gmail.com>
-References: <92a12cdb0705141514v4c928041i6030267fd322e87@mail.gmail.com>
-	<20070515004751.GD10873@zakalwe.fi>
-	<92a12cdb0705151430o66e11fc3m2ec0abd423dc4a6e@mail.gmail.com>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Question to integrate a new driver
+Date: Tue, 15 May 2007 17:35:31 -0400
+Message-ID: <75b66ecd0705151435s199645f0wef5ca64e076137cf@mail.gmail.com>
+References: <1179349709.6403.12.camel@piorce>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F95E2441C
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.236])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30BC0248A4
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2007 23:31:17 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id l8so296703nzf
-	for <alsa-devel@alsa-project.org>; Tue, 15 May 2007 14:31:16 -0700 (PDT)
-In-Reply-To: <92a12cdb0705151430o66e11fc3m2ec0abd423dc4a6e@mail.gmail.com>
+	Tue, 15 May 2007 23:35:33 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so298091nzf
+	for <alsa-devel@alsa-project.org>; Tue, 15 May 2007 14:35:32 -0700 (PDT)
+In-Reply-To: <1179349709.6403.12.camel@piorce>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,51 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Heikki Orsila <shdl@zakalwe.fi>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxsh-dev@lists.sourceforge.net
+To: Jean-Christian Hassler <jhassler@free.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 15/05/07, Adrian McMenamin <adrianmcmenamin@gmail.com> wrote:
-> On 15/05/07, Heikki Orsila <shdl@zakalwe.fi> wrote:
-> > I still noticed some type cleanups, and possibly a good debug message..
-> >
-> > On Mon, May 14, 2007 at 11:14:55PM +0100, Adrian McMenamin wrote:
-> > > +/* spu_memload - write to SPU address space */
-> > > +static void spu_memload(u32 toi, void __iomem * from, int length)
-> > > +{
-> > > +     u32 __iomem *froml = from;
-> > > +     u32 __iomem *to = (u32 __iomem *) (SPU_MEMORY_BASE + toi);
-> > > +     int i, val;
-> >
-> > You should use "void *from" because it's not IO memory. Also, use "u32 val"
-> > since that is the native type of "u32 *from".
-> >
-> > > +     length = DIV_ROUND_UP(length, 4);
-> > > +     spu_write_wait();
-> > > +     for (i = 0; i < length; i++) {
-> > > +             val = *froml;
-> > > +             writel(val, to);
-> > > +             froml++;
-> > > +             to++;
-> > > +             if (i && !(i % 8))
-> > > +                     spu_write_wait();
-> > > +     }
-> > > +}
-> >
-> > It seems a small simplification is possible:
-> >
-> >         /* remove first spu_write_wait(); */
-> >         for (i = 0; i < length; i++) {
-> >                 if (!(i % 8))
-> >                         spu_write_wait();
-> >                 val = *froml;
-> >                 ...
-> >         }
-> >
+On 5/16/07, Jean-Christian Hassler <jhassler@free.fr> wrote:
+> I wrote with a friend an ALSA driver for the emagic AUDIOWERK 2
+> soundcard. Now it works for the analog inputs/outputs.
 >
-> No, that would be dangerous because we don't know what state the FIFO
-> is in when this is called.
+> The project page is here : http://home.gna.org/aw2-alsa/index.html
 >
+> We have 2 questions to continue our work :
+> 1- what is the way to submit our code to be integrated in the ALSA
+> tree ?
 
+Post to alsa-devel as a patch against ALSA Hg sources.  Include
+signed-off-by line and description.  See alsa-devel archives for some
+examples.
 
-Sorry, should think before I post!
+> 2- We develop on two different version of the kernel (2.6.17-14 &
+> 2.6.20) and the request_irq function prototype has changed between these
+> two versions(the "struct pt_regs *" does no longer exists), how is this
+> managed in ALSA ?
+
+Post a patch against latest alsa sources and the ALSA build process
+will automagically patch the code so it can be build against older
+kernels.  No need to worry about old kernels in your driver.
+
+Some minor kernel coding style issues to fix before submitting:
+
+Don't use StudlyCaps (pcmDevice->streamNumber should be
+pcm_device->stream_number)
+Don't use typedefs for structs
+Preferred if/else style is:
+if (foo) {
+    stuff;
+} else {
+    other_stuff;
+}
+Use DMA_32BIT_MASK constant rather than 0xffffffff
+Don't use C++ style comments (//)
+
+Lee
