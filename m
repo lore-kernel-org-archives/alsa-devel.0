@@ -1,277 +1,406 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Alsa 1.0.13 (and others) does not work on ALC880
-Date: Mon, 14 May 2007 16:39:36 -0700
-Message-ID: <1179185976.4415.71.camel@razman.gruemaster.com>
-References: <1179147373.22361.17.camel@gondor>
+From: Heikki Orsila <shdl@zakalwe.fi>
+Subject: Re: [PATCH] ALSA sound driver for SEGA Dreamcast AICA (pcm)
+Date: Tue, 15 May 2007 03:47:51 +0300
+Message-ID: <20070515004751.GD10873@zakalwe.fi>
+References: <92a12cdb0705141514v4c928041i6030267fd322e87@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id EC5D0247DC
-	for <alsa-devel@alsa-project.org>;
-	Tue, 15 May 2007 01:39:41 +0200 (CEST)
-In-Reply-To: <1179147373.22361.17.camel@gondor>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric <eric@valombre.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1760915AbXEOAsw@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <92a12cdb0705141514v4c928041i6030267fd322e87@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adrian McMenamin <adrianmcmenamin@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxsh-dev@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-V2l0aCBhbHNhLWRyaXZlci0xLjAuMTRyYzQsIHRyeSBsb2FkaW5nIHdpdGggIm1vZGVsPWNsZXZv
-Iiwgb3Igb25lIG9mCnRoZSBvdGhlciBtb2RlbHMgZm9yIHRoZSBBTEM4ODAgY2hpcCBhcyBkZWZp
-bmVkIGluCmFsc2EtZHJpdmVyLTEuMC4xNHJjNC9hbHNhLWtlcm5lbC9Eb2N1bWVudGF0aW9uL0FM
-U0EtQ29uZmlndXJhdGlvbi50eHQuCgpJZiBvbmUgb2YgdGhlbSB3b3JrcyB3ZWxsLCB3ZSBjYW4g
-ZWFzaWx5IGFkZCB5b3VyIGRldmljZSBpZCB0byB0aGUKZHJpdmVyLiAgT3RoZXJ3aXNlLCB3ZSB3
-aWxsIG5lZWQgdG8gZG8gbW9yZSBkZXZlbG9wbWVudCBmb3IgeW91ciBtb2RlbC4KQ291bGQgeW91
-IGFsc28gYWRkIHRoZSBsaW5rIGNyZWF0ZWQgYnkgdGhpcyBzY3JpcHQ6ICAKaHR0cDovL2J1bGxl
-dHByb29mLnNlcnZlYmVlci5jb20vYWxzYS9zY3JpcHRzL2Fsc2EtaW5mby5zaAoKVGhhbmtzLAoK
-VG9iaW4KCk9uIE1vbiwgMjAwNy0wNS0xNCBhdCAxNDo1NiArMDIwMCwgRXJpYyB3cm90ZToKCj4g
-SSBpbnN0YWxsZWQgVWJ1bnR1IEZlaXN0eSBvbiBhIEQ5MDB0IGxhcHRvcCA6IGl0IGNvbnRhaW5z
-IGEgQUxDODgwIGF1ZGlvCj4gY2hpcHNldCAKPiAKPiBlcmljQGdvbmRvcjp+JCBsc3BjaSB8Z3Jl
-cCBBdWRpbwo+IDAwOjFiLjAgQXVkaW8gZGV2aWNlOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUZC
-L0ZCTS9GUi9GVy9GUlcgKElDSDYKPiBGYW1pbHkpIEhpZ2ggRGVmaW5pdGlvbiBBdWRpbyBDb250
-cm9sbGVyIChyZXYgMDMpCj4gCj4gV2hlbiBtb2Rwcm9iaW5nIHRoZSBtb2R1bGVzIEkgZ2V0IDoK
-PiBlcmljQGdvbmRvcjp+JCBzdWRvIG1vZHByb2JlIC12IHNuZC1oZGEtaW50ZWwgbW9kZWw9M3N0
-YWNrLWRpZ291dAo+IGluc21vZCAvbGliL21vZHVsZXMvMi42LjIwLTE1LWdlbmVyaWMva2VybmVs
-L3NvdW5kL3BjaS9oZGEvc25kLWhkYS1jb2RlYy5rbyAKPiBpbnNtb2QgL2xpYi9tb2R1bGVzLzIu
-Ni4yMC0xNS1nZW5lcmljL2tlcm5lbC9zb3VuZC9wY2kvaGRhL3NuZC1oZGEtaW50ZWwua28gbW9k
-ZWw9M3N0YWNrLWRpZ291dAo+IAo+IHdoaWxlIC92YXIvbG9nL21lc3NhZ2VzIHNheXMgOgo+IE1h
-eSAxNCAxNDo0Mjo0NSBnb25kb3Iga2VybmVsOiBbIDM2OTkuMDcwOTA0XSBoZGFfaW50ZWw6Cj4g
-YXp4X2dldF9yZXNwb25zZSB0aW1lb3V0LCBzd2l0Y2hpbmcgdG8gcG9sbGluZyBtb2RlLi4uCj4g
-Cj4gCj4gRmVpc3R5IGRpc3QuIGlzIHByb3ZpZGVkIHdpdGggYWxzYS0xLjAuMTMuIEkgZ2V0IG5v
-IHNvdW5kLCBoZXJlIGFyZSB0aGUKPiByZXN1bHRzIG9mIGFwbGF5IDoKPiAKPiBlcmljQGdvbmRv
-cjp+JCBhcGxheQo+IEFMU0EgbGliIHBjbV9kaXJlY3QuYzo4Njc6KHNuZF9wY21fZGlyZWN0X2lu
-aXRpYWxpemVfc2xhdmUpCj4gc25kX3BjbV9od19wYXJhbXNfYW55IGZhaWxlZAo+IEFMU0EgbGli
-IHBjbV9kbWl4LmM6ODc2OihzbmRfcGNtX2RtaXhfb3BlbikgdW5hYmxlIHRvIGluaXRpYWxpemUg
-c2xhdmUKPiBhcGxheTogbWFpbjo1NTA6IEVycmV1ciBkJ291dmVydHVyZSBhdWRpbzogQXJndW1l
-bnQgaW52YWxpZGUKPiBlcmljQGdvbmRvcjp+JCAKPiAKPiBIZXJlIGFyZSBzb21lIG90aGVyIGlu
-Zm9zIDoKPiAKPiBlcmljQGdvbmRvcjp+JCB0YWlsIC0yIC9wcm9jL2Fzb3VuZC9vc3Mvc25kc3Rh
-dAo+IDA6IFJlYWx0ZWsgQUxDODgwCj4gMTogU0FBNzEzNCBNaXhlcgo+IAo+IGFtaXhlciBzaG93
-cyB0aGlzIDoKPiBlcmljQGdvbmRvcjp+JCBhbWl4ZXIgCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wg
-J0hlYWRwaG9uZScsMAo+ICAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoCj4gICBQbGF5YmFjayBjaGFu
-bmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0Cj4gICBNb25vOgo+ICAgRnJvbnQgTGVmdDog
-UGxheWJhY2sgW29uXQo+ICAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIFtvbl0KPiBTaW1wbGUgbWl4
-ZXIgY29udHJvbCAnUENNJywwCj4gICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUKPiAgIFBsYXliYWNr
-IGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKPiAgIExpbWl0czogUGxheWJhY2sg
-MCAtIDI1NQo+ICAgTW9ubzoKPiAgIEZyb250IExlZnQ6IFBsYXliYWNrIDIyOCBbODklXQo+ICAg
-RnJvbnQgUmlnaHQ6IFBsYXliYWNrIDIyOCBbODklXQo+IFNpbXBsZSBtaXhlciBjb250cm9sICdG
-cm9udCcsMAo+ICAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKPiAgIFBsYXliYWNrIGNo
-YW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKPiAgIExpbWl0czogUGxheWJhY2sgMCAt
-IDEyNwo+ICAgTW9ubzoKPiAgIEZyb250IExlZnQ6IFBsYXliYWNrIDYwIFs0NyVdIFstMjE0NC4w
-MGRCXSBbb25dCj4gICBGcm9udCBSaWdodDogUGxheWJhY2sgNjAgWzQ3JV0gWy0yMTQ0LjAwZEJd
-IFtvbl0KPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnRnJvbnQgTWljJywwCj4gICBDYXBhYmlsaXRp
-ZXM6IHB2b2x1bWUgcHN3aXRjaAo+ICAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBG
-cm9udCBSaWdodAo+ICAgTGltaXRzOiBQbGF5YmFjayAwIC0gMTI3Cj4gICBNb25vOgo+ICAgRnJv
-bnQgTGVmdDogUGxheWJhY2sgNTUgWzQzJV0gWy0yMzA0LjAwZEJdIFtvbl0KPiAgIEZyb250IFJp
-Z2h0OiBQbGF5YmFjayA1NSBbNDMlXSBbLTIzMDQuMDBkQl0gW29uXQo+IFNpbXBsZSBtaXhlciBj
-b250cm9sICdTdXJyb3VuZCcsMAo+ICAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKPiAg
-IFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKPiAgIExpbWl0czog
-UGxheWJhY2sgMCAtIDEyNwo+ICAgTW9ubzoKPiAgIEZyb250IExlZnQ6IFBsYXliYWNrIDY0IFs1
-MCVdIFstMjAxNi4wMGRCXSBbb25dCj4gICBGcm9udCBSaWdodDogUGxheWJhY2sgNjQgWzUwJV0g
-Wy0yMDE2LjAwZEJdIFtvbl0KPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnQ2VudGVyJywwCj4gICBD
-YXBhYmlsaXRpZXM6IHB2b2x1bWUgcHZvbHVtZS1qb2luZWQgcHN3aXRjaCBwc3dpdGNoLWpvaW5l
-ZAo+ICAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KPiAgIExpbWl0czogUGxheWJhY2sgMCAtIDEy
-Nwo+ICAgTW9ubzogUGxheWJhY2sgNTYgWzQ0JV0gWy0yMjcyLjAwZEJdIFtvbl0KPiBTaW1wbGUg
-bWl4ZXIgY29udHJvbCAnTEZFJywwCj4gICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHZvbHVtZS1q
-b2luZWQgcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAo+ICAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8K
-PiAgIExpbWl0czogUGxheWJhY2sgMCAtIDEyNwo+ICAgTW9ubzogUGxheWJhY2sgNTggWzQ2JV0g
-Wy0yMjA4LjAwZEJdIFtvbl0KPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnTGluZScsMAo+ICAgQ2Fw
-YWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKPiAgIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBM
-ZWZ0IC0gRnJvbnQgUmlnaHQKPiAgIExpbWl0czogUGxheWJhY2sgMCAtIDEyNwo+ICAgTW9ubzoK
-PiAgIEZyb250IExlZnQ6IFBsYXliYWNrIDYwIFs0NyVdIFstMjE0NC4wMGRCXSBbb25dCj4gICBG
-cm9udCBSaWdodDogUGxheWJhY2sgNjAgWzQ3JV0gWy0yMTQ0LjAwZEJdIFtvbl0KPiBTaW1wbGUg
-bWl4ZXIgY29udHJvbCAnQ0QnLDAKPiAgIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoCj4g
-ICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0Cj4gICBMaW1pdHM6
-IFBsYXliYWNrIDAgLSAxMjcKPiAgIE1vbm86Cj4gICBGcm9udCBMZWZ0OiBQbGF5YmFjayA1OCBb
-NDYlXSBbLTIyMDguMDBkQl0gW29uXQo+ICAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDU4IFs0NiVd
-IFstMjIwOC4wMGRCXSBbb25dCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01pYycsMAo+ICAgQ2Fw
-YWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKPiAgIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9udCBM
-ZWZ0IC0gRnJvbnQgUmlnaHQKPiAgIExpbWl0czogUGxheWJhY2sgMCAtIDEyNwo+ICAgTW9ubzoK
-PiAgIEZyb250IExlZnQ6IFBsYXliYWNrIDU3IFs0NSVdIFstMjI0MC4wMGRCXSBbb25dCj4gICBG
-cm9udCBSaWdodDogUGxheWJhY2sgNTcgWzQ1JV0gWy0yMjQwLjAwZEJdIFtvbl0KPiBTaW1wbGUg
-bWl4ZXIgY29udHJvbCAnSUVDOTU4JywwCj4gICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3aXRj
-aC1qb2luZWQKPiAgIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCj4gICBNb25vOiBQbGF5YmFjayBb
-b2ZmXQo+IFNpbXBsZSBtaXhlciBjb250cm9sICdQQyBTcGVha2VyJywwCj4gICBDYXBhYmlsaXRp
-ZXM6IHB2b2x1bWUgcHN3aXRjaAo+ICAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBG
-cm9udCBSaWdodAo+ICAgTGltaXRzOiBQbGF5YmFjayAwIC0gMTI3Cj4gICBNb25vOgo+ICAgRnJv
-bnQgTGVmdDogUGxheWJhY2sgNTMgWzQyJV0gWy0yMzY4LjAwZEJdIFtvbl0KPiAgIEZyb250IFJp
-Z2h0OiBQbGF5YmFjayA1MyBbNDIlXSBbLTIzNjguMDBkQl0gW29uXQo+IFNpbXBsZSBtaXhlciBj
-b250cm9sICdDYXB0dXJlJywwCj4gICBDYXBhYmlsaXRpZXM6IGN2b2x1bWUgY3N3aXRjaAo+ICAg
-Q2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0Cj4gICBMaW1pdHM6IENh
-cHR1cmUgMCAtIDEyNwo+ICAgRnJvbnQgTGVmdDogQ2FwdHVyZSAzMSBbMjQlXSBbLTMwNzIuMDBk
-Ql0gW29uXQo+ICAgRnJvbnQgUmlnaHQ6IENhcHR1cmUgMzEgWzI0JV0gWy0zMDcyLjAwZEJdIFtv
-bl0KPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnQ2FwdHVyZScsMQo+ICAgQ2FwYWJpbGl0aWVzOiBj
-dm9sdW1lIGNzd2l0Y2gKPiAgIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBS
-aWdodAo+ICAgTGltaXRzOiBDYXB0dXJlIDAgLSAxMjcKPiAgIEZyb250IExlZnQ6IENhcHR1cmUg
-MjcgWzIxJV0gWy0zMjAwLjAwZEJdIFtvbl0KPiAgIEZyb250IFJpZ2h0OiBDYXB0dXJlIDI3IFsy
-MSVdIFstMzIwMC4wMGRCXSBbb25dCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0NhcHR1cmUnLDIK
-PiAgIENhcGFiaWxpdGllczogY3ZvbHVtZSBjc3dpdGNoCj4gICBDYXB0dXJlIGNoYW5uZWxzOiBG
-cm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKPiAgIExpbWl0czogQ2FwdHVyZSAwIC0gMTI3Cj4gICBG
-cm9udCBMZWZ0OiBDYXB0dXJlIDI0IFsxOSVdIFstMzI5Ni4wMGRCXSBbb25dCj4gICBGcm9udCBS
-aWdodDogQ2FwdHVyZSAyNCBbMTklXSBbLTMyOTYuMDBkQl0gW29uXQo+IFNpbXBsZSBtaXhlciBj
-b250cm9sICdDYWxsZXIgSUQnLDAKPiAgIENhcGFiaWxpdGllczogcHN3aXRjaCBwc3dpdGNoLWpv
-aW5lZAo+ICAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KPiAgIE1vbm86IFBsYXliYWNrIFtvbl0K
-PiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnQ2hhbm5lbCBNb2RlJywwCj4gICBDYXBhYmlsaXRpZXM6
-IGVudW0KPiAgIEl0ZW1zOiAnMmNoJyAnNmNoJwo+ICAgSXRlbTA6ICc2Y2gnCj4gU2ltcGxlIG1p
-eGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMAo+ICAgQ2FwYWJpbGl0aWVzOiBlbnVtCj4gICBJ
-dGVtczogJ01pYycgJ0Zyb250IE1pYycgJ0xpbmUnICdDRCcKPiAgIEl0ZW0wOiAnTWljJwo+IFNp
-bXBsZSBtaXhlciBjb250cm9sICdJbnB1dCBTb3VyY2UnLDEKPiAgIENhcGFiaWxpdGllczogZW51
-bQo+ICAgSXRlbXM6ICdNaWMnICdGcm9udCBNaWMnICdMaW5lJyAnQ0QnCj4gICBJdGVtMDogJ01p
-YycKPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW5wdXQgU291cmNlJywyCj4gICBDYXBhYmlsaXRp
-ZXM6IGVudW0KPiAgIEl0ZW1zOiAnTWljJyAnRnJvbnQgTWljJyAnTGluZScgJ0NEJwo+ICAgSXRl
-bTA6ICdNaWMnCj4gU2ltcGxlIG1peGVyIGNvbnRyb2wgJ09mZi1ob29rJywwCj4gICBDYXBhYmls
-aXRpZXM6IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQKPiAgIFBsYXliYWNrIGNoYW5uZWxzOiBNb25v
-Cj4gICBNb25vOiBQbGF5YmFjayBbb25dCj4gCj4gYXBsYXkgLWwgc2VlbXMgdG8gd29yayA6Cj4g
-Cj4gZXJpY0Bnb25kb3I6fiQgYXBsYXkgLWwKPiAqKioqIExpc3RlIGRlcyBQTEFZQkFDSyBww6ly
-aXBow6lyaXF1ZXMgKioqKgo+IGNhcnRlICAwOiBJbnRlbCBbSERBIEludGVsXSwgcMOpcmlwaMOp
-cmlxdWUgMCA6IEFMQzg4MCBBbmFsb2cgW0FMQzg4MAo+IEFuYWxvZ10KPiAgIFNvdXMtcMOpcmlw
-aMOpcmlxdWVzOiAxLzEKPiAgIFNvdXMtcMOpcmlwaMOpcmlxdWU6ICMwOiBzdWJkZXZpY2UgIzAK
-PiBjYXJ0ZSAgMDogSW50ZWwgW0hEQSBJbnRlbF0sIHDDqXJpcGjDqXJpcXVlIDEgOiBBTEM4ODAg
-RGlnaXRhbCBbQUxDODgwCj4gRGlnaXRhbF0KPiAgIFNvdXMtcMOpcmlwaMOpcmlxdWVzOiAxLzEK
-PiAgIFNvdXMtcMOpcmlwaMOpcmlxdWU6ICMwOiBzdWJkZXZpY2UgIzAKPiBjYXJ0ZSAgMDogSW50
-ZWwgW0hEQSBJbnRlbF0sIHDDqXJpcGjDqXJpcXVlIDYgOiBTaTMwNTQgTW9kZW0gW1NpMzA1NAo+
-IE1vZGVtXQo+ICAgU291cy1ww6lyaXBow6lyaXF1ZXM6IDEvMQo+ICAgU291cy1ww6lyaXBow6ly
-aXF1ZTogIzA6IHN1YmRldmljZSAjMAo+IAo+IAo+IGVyaWNAZ29uZG9yOn4kIGNhdCAvcHJvYy9h
-c291bmQvY2FyZHMgCj4gIDAgW0ludGVsICAgICAgICAgIF06IEhEQS1JbnRlbCAtIEhEQSBJbnRl
-bAo+ICAgICAgICAgICAgICAgICAgICAgICBIREEgSW50ZWwgYXQgMHhiMDAwMDAwMCBpcnEgMTcK
-PiAgMSBbU0FBNzEzNCAgICAgICAgXTogU0FBNzEzNCAtIFNBQTcxMzQKPiAgICAgICAgICAgICAg
-ICAgICAgICAgc2FhNzEzM1swXSBhdCAweGIzMDA2MDAwIGlycSAyMgo+IAo+IGlmIEkgdHJ5IHRv
-IGRvIGEgY2F0IC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYyMwIGl0IGhhbmdzCj4gd2hpbGUgL3Zh
-ci9sb2cvbWVzc2FnZXMgZ2l2ZXMgYSBsb3Qgb2YKPiAKPiBNYXkgMTQgMTQ6NDQ6NTIgZ29uZG9y
-IGtlcm5lbDogWyAzODI1LjQ1NzQxMl0gaGRhX2NvZGVjOiBpbnZhbGlkCj4gZGVwX3JhbmdlX3Zh
-bCAwOjdmZmYKPiBNYXkgMTQgMTQ6NDQ6NTIgZ29uZG9yIGtlcm5lbDogWyAzODI1LjQ1NzY5Nl0g
-aGRhX2NvZGVjOiBpbnZhbGlkCj4gZGVwX3JhbmdlX3ZhbCAwOjdmZmYKPiAuLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4KPiAKPiBlcmljQGdvbmRvcjp+JCBzdWRvIGxzcGNpIC1udgo+IDAwOjAwLjAg
-MDYwMDogODA4NjoyNTgwIChyZXYgMDQpCj4gICAgICAgICBTdWJzeXN0ZW06IDE1NTg6MDkwMAo+
-ICAgICAgICAgRmxhZ3M6IGJ1cyBtYXN0ZXIsIGZhc3QgZGV2c2VsLCBsYXRlbmN5IDAKPiAgICAg
-ICAgIENhcGFiaWxpdGllczogW2UwXSBWZW5kb3IgU3BlY2lmaWMgSW5mb3JtYXRpb24KPiAKPiAw
-MDowMS4wIDA2MDQ6IDgwODY6MjU4MSAocmV2IDA0KSAocHJvZy1pZiAwMCBbTm9ybWFsIGRlY29k
-ZV0pCj4gICAgICAgICBGbGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kgMAo+
-ICAgICAgICAgQnVzOiBwcmltYXJ5PTAwLCBzZWNvbmRhcnk9MDEsIHN1Ym9yZGluYXRlPTAxLCBz
-ZWMtbGF0ZW5jeT0wCj4gICAgICAgICBNZW1vcnkgYmVoaW5kIGJyaWRnZTogYjEwMDAwMDAtYjJm
-ZmZmZmYKPiAgICAgICAgIFByZWZldGNoYWJsZSBtZW1vcnkgYmVoaW5kIGJyaWRnZTogYzAwMDAw
-MDAtY2ZmZmZmZmYKPiAgICAgICAgIENhcGFiaWxpdGllczogWzg4XSBTdWJzeXN0ZW06IDgwODY6
-MjU4Mgo+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbODBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lv
-biAyCj4gICAgICAgICBDYXBhYmlsaXRpZXM6IFs5MF0gTWVzc2FnZSBTaWduYWxsZWQgSW50ZXJy
-dXB0czogTWFzay0gNjRiaXQtCj4gUXVldWU9MC8wIEVuYWJsZS0KPiAgICAgICAgIENhcGFiaWxp
-dGllczogW2EwXSBFeHByZXNzIFJvb3QgUG9ydCAoU2xvdCspIElSUSAwCj4gCj4gMDA6MWIuMCAw
-NDAzOiA4MDg2OjI2NjggKHJldiAwMykKPiAgICAgICAgIFN1YnN5c3RlbTogMTU1ODowOTAwCj4g
-ICAgICAgICBGbGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kgMCwgSVJRIDIw
-Cj4gICAgICAgICBNZW1vcnkgYXQgYjAwMDAwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNoYWJsZSkg
-W3NpemU9MTZLXQo+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbNTBdIFBvd2VyIE1hbmFnZW1lbnQg
-dmVyc2lvbiAyCj4gICAgICAgICBDYXBhYmlsaXRpZXM6IFs2MF0gTWVzc2FnZSBTaWduYWxsZWQg
-SW50ZXJydXB0czogTWFzay0gNjRiaXQrCj4gUXVldWU9MC8wIEVuYWJsZS0KPiAgICAgICAgIENh
-cGFiaWxpdGllczogWzcwXSBFeHByZXNzIFVua25vd24gdHlwZSBJUlEgMAo+IAo+IDAwOjFkLjAg
-MGMwMzogODA4NjoyNjU4IChyZXYgMDMpIChwcm9nLWlmIDAwIFtVSENJXSkKPiAgICAgICAgIFN1
-YnN5c3RlbTogMTU1ODowOTAwCj4gICAgICAgICBGbGFnczogYnVzIG1hc3RlciwgbWVkaXVtIGRl
-dnNlbCwgbGF0ZW5jeSAwLCBJUlEgMTgKPiAgICAgICAgIEkvTyBwb3J0cyBhdCAxODAwIFtzaXpl
-PTMyXQo+IAo+IDAwOjFkLjEgMGMwMzogODA4NjoyNjU5IChyZXYgMDMpIChwcm9nLWlmIDAwIFtV
-SENJXSkKPiAgICAgICAgIFN1YnN5c3RlbTogMTU1ODowOTAwCj4gICAgICAgICBGbGFnczogYnVz
-IG1hc3RlciwgbWVkaXVtIGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEgMTkKPiAgICAgICAgIEkvTyBw
-b3J0cyBhdCAzMDAwIFtzaXplPTMyXQo+IAo+IDAwOjFkLjIgMGMwMzogODA4NjoyNjVhIChyZXYg
-MDMpIChwcm9nLWlmIDAwIFtVSENJXSkKPiAgICAgICAgIFN1YnN5c3RlbTogMTU1ODowOTAwCj4g
-ICAgICAgICBGbGFnczogYnVzIG1hc3RlciwgbWVkaXVtIGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEg
-MTcKPiAgICAgICAgIEkvTyBwb3J0cyBhdCAzMDIwIFtzaXplPTMyXQo+IAo+IDAwOjFkLjMgMGMw
-MzogODA4NjoyNjViIChyZXYgMDMpIChwcm9nLWlmIDAwIFtVSENJXSkKPiAgICAgICAgIFN1YnN5
-c3RlbTogMTU1ODowOTAwCj4gICAgICAgICBGbGFnczogYnVzIG1hc3RlciwgbWVkaXVtIGRldnNl
-bCwgbGF0ZW5jeSAwLCBJUlEgMjAKPiAgICAgICAgIEkvTyBwb3J0cyBhdCAzMDQwIFtzaXplPTMy
-XQo+IAo+IDAwOjFkLjcgMGMwMzogODA4NjoyNjVjIChyZXYgMDMpIChwcm9nLWlmIDIwIFtFSENJ
-XSkKPiAgICAgICAgIFN1YnN5c3RlbTogMTU1ODowOTAwCj4gICAgICAgICBGbGFnczogYnVzIG1h
-c3RlciwgbWVkaXVtIGRldnNlbCwgbGF0ZW5jeSAwLCBJUlEgMTgKPiAgICAgICAgIE1lbW9yeSBh
-dCBiMDAwNDAwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xS10KPiAgICAgICAg
-IENhcGFiaWxpdGllczogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgo+ICAgICAgICAg
-Q2FwYWJpbGl0aWVzOiBbNThdIERlYnVnIHBvcnQKPiAKPiAwMDoxZS4wIDA2MDQ6IDgwODY6MjQ0
-ZSAocmV2IGQzKSAocHJvZy1pZiAwMSBbU3VidHJhY3RpdmUgZGVjb2RlXSkKPiAgICAgICAgIEZs
-YWdzOiBidXMgbWFzdGVyLCBmYXN0IGRldnNlbCwgbGF0ZW5jeSAwCj4gICAgICAgICBCdXM6IHBy
-aW1hcnk9MDAsIHNlY29uZGFyeT0wYSwgc3Vib3JkaW5hdGU9MGUsIHNlYy1sYXRlbmN5PTMyCj4g
-ICAgICAgICBJL08gYmVoaW5kIGJyaWRnZTogMDAwMDQwMDAtMDAwMDRmZmYKPiAgICAgICAgIE1l
-bW9yeSBiZWhpbmQgYnJpZGdlOiBiMzAwMDAwMC1iMzBmZmZmZgo+ICAgICAgICAgUHJlZmV0Y2hh
-YmxlIG1lbW9yeSBiZWhpbmQgYnJpZGdlOgo+IDAwMDAwMDAwNTAwMDAwMDAtMDAwMDAwMDA1NWZm
-ZmZmZgo+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiBbNTBdIFN1YnN5c3RlbTogMTU1ODowOTAwCj4g
-Cj4gMDA6MWYuMCAwNjAxOiA4MDg2OjI2NDAgKHJldiAwMykKPiAgICAgICAgIFN1YnN5c3RlbTog
-MTU1ODowOTAwCj4gICAgICAgICBGbGFnczogYnVzIG1hc3RlciwgbWVkaXVtIGRldnNlbCwgbGF0
-ZW5jeSAwCj4gCj4gMDA6MWYuMSAwMTAxOiA4MDg2OjI2NmYgKHJldiAwMykgKHByb2ctaWYgOGEg
-W01hc3RlciBTZWNQIFByaVBdKQo+ICAgICAgICAgU3Vic3lzdGVtOiAxNTU4OjA5MDAKPiAgICAg
-ICAgIEZsYWdzOiBidXMgbWFzdGVyLCBtZWRpdW0gZGV2c2VsLCBsYXRlbmN5IDAsIElSUSAxNwo+
-ICAgICAgICAgSS9PIHBvcnRzIGF0IDAxZjAgW3NpemU9OF0KPiAgICAgICAgIEkvTyBwb3J0cyBh
-dCAwM2Y0IFtzaXplPTFdCj4gICAgICAgICBJL08gcG9ydHMgYXQgMDE3MCBbc2l6ZT04XQo+ICAg
-ICAgICAgSS9PIHBvcnRzIGF0IDAzNzQgW3NpemU9MV0KPiAgICAgICAgIEkvTyBwb3J0cyBhdCAz
-MDgwIFtzaXplPTE2XQo+IAo+IDAwOjFmLjMgMGMwNTogODA4NjoyNjZhIChyZXYgMDMpCj4gICAg
-ICAgICBTdWJzeXN0ZW06IDE1NTg6MDkwMAo+ICAgICAgICAgRmxhZ3M6IG1lZGl1bSBkZXZzZWws
-IElSUSAxMAo+ICAgICAgICAgSS9PIHBvcnRzIGF0IDMwNjAgW3NpemU9MzJdCj4gCj4gMDE6MDAu
-MCAwMzAwOiAxMGRlOjAwYzggKHJldiBhMikgKHByb2ctaWYgMDAgW1ZHQV0pCj4gICAgICAgICBT
-dWJzeXN0ZW06IDE1NTg6MDkwMAo+ICAgICAgICAgRmxhZ3M6IGJ1cyBtYXN0ZXIsIGZhc3QgZGV2
-c2VsLCBsYXRlbmN5IDAsIElSUSAxMQo+ICAgICAgICAgTWVtb3J5IGF0IGIyMDAwMDAwICgzMi1i
-aXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTE2TV0KPiAgICAgICAgIE1lbW9yeSBhdCBjMDAw
-MDAwMCAoNjQtYml0LCBwcmVmZXRjaGFibGUpIFtzaXplPTI1Nk1dCj4gICAgICAgICBNZW1vcnkg
-YXQgYjEwMDAwMDAgKDY0LWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9MTZNXQo+ICAgICAg
-ICAgQ2FwYWJpbGl0aWVzOiBbNjBdIFBvd2VyIE1hbmFnZW1lbnQgdmVyc2lvbiAyCj4gICAgICAg
-ICBDYXBhYmlsaXRpZXM6IFs2OF0gTWVzc2FnZSBTaWduYWxsZWQgSW50ZXJydXB0czogTWFzay0g
-NjRiaXQrCj4gUXVldWU9MC8wIEVuYWJsZS0KPiAgICAgICAgIENhcGFiaWxpdGllczogWzc4XSBF
-eHByZXNzIEVuZHBvaW50IElSUSAwCj4gCj4gMGE6MDAuMCAwNjA3OiAxMDRjOmFjNTAgKHJldiAw
-MikKPiAgICAgICAgIFN1YnN5c3RlbTogMTU1ODowOTAwCj4gICAgICAgICBGbGFnczogYnVzIG1h
-c3RlciwgbWVkaXVtIGRldnNlbCwgbGF0ZW5jeSAxNjgsIElSUSAxNwo+ICAgICAgICAgTWVtb3J5
-IGF0IGIzMDA3MDAwICgzMi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTRLXQo+ICAgICAg
-ICAgQnVzOiBwcmltYXJ5PTBhLCBzZWNvbmRhcnk9MGIsIHN1Ym9yZGluYXRlPTBlLCBzZWMtbGF0
-ZW5jeT0xNzYKPiAgICAgICAgIE1lbW9yeSB3aW5kb3cgMDogNTAwMDAwMDAtNTNmZmYwMDAgKHBy
-ZWZldGNoYWJsZSkKPiAgICAgICAgIE1lbW9yeSB3aW5kb3cgMTogNTgwMDAwMDAtNWJmZmYwMDAK
-PiAgICAgICAgIEkvTyB3aW5kb3cgMDogMDAwMDQ4MDAtMDAwMDQ4ZmYKPiAgICAgICAgIEkvTyB3
-aW5kb3cgMTogMDAwMDRjMDAtMDAwMDRjZmYKPiAgICAgICAgIDE2LWJpdCBsZWdhY3kgaW50ZXJm
-YWNlIHBvcnRzIGF0IDAwMDEKPiAKPiAwYTowMS4wIDBjMDA6IDEwNGM6ODAyMyAocHJvZy1pZiAx
-MCBbT0hDSV0pCj4gICAgICAgICBTdWJzeXN0ZW06IDE1NTg6MDkwMAo+ICAgICAgICAgRmxhZ3M6
-IGJ1cyBtYXN0ZXIsIG1lZGl1bSBkZXZzZWwsIGxhdGVuY3kgNjQsIElSUSAyMQo+ICAgICAgICAg
-TWVtb3J5IGF0IGIzMDA0MDAwICgzMi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTJLXQo+
-ICAgICAgICAgTWVtb3J5IGF0IGIzMDAwMDAwICgzMi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtz
-aXplPTE2S10KPiAgICAgICAgIENhcGFiaWxpdGllczogWzQ0XSBQb3dlciBNYW5hZ2VtZW50IHZl
-cnNpb24gMgo+IAo+IDBhOjAyLjAgMDEwNDogMTA1YTozMzczIChyZXYgMDIpCj4gICAgICAgICBT
-dWJzeXN0ZW06IDE1NTg6MDkwMAo+ICAgICAgICAgRmxhZ3M6IGJ1cyBtYXN0ZXIsIDY2TUh6LCBt
-ZWRpdW0gZGV2c2VsLCBsYXRlbmN5IDk2LCBJUlEgMTkKPiAgICAgICAgIEkvTyBwb3J0cyBhdCA0
-NDgwIFtzaXplPTY0XQo+ICAgICAgICAgSS9PIHBvcnRzIGF0IDQ0YzAgW3NpemU9MTZdCj4gICAg
-ICAgICBJL08gcG9ydHMgYXQgNDQwMCBbc2l6ZT0xMjhdCj4gICAgICAgICBNZW1vcnkgYXQgYjMw
-MDUwMDAgKDMyLWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9NEtdCj4gICAgICAgICBNZW1v
-cnkgYXQgYjMwMjAwMDAgKDMyLWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9MTI4S10KPiAg
-ICAgICAgIENhcGFiaWxpdGllczogWzYwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgo+IAo+
-IDBhOjAzLjAgMDIwMDogMTBlYzo4MTY5IChyZXYgMTApCj4gICAgICAgICBTdWJzeXN0ZW06IDE1
-NTg6MDkwMAo+ICAgICAgICAgRmxhZ3M6IGJ1cyBtYXN0ZXIsIDY2TUh6LCBtZWRpdW0gZGV2c2Vs
-LCBsYXRlbmN5IDY0LCBJUlEgMjIKPiAgICAgICAgIEkvTyBwb3J0cyBhdCA0MDAwIFtzaXplPTI1
-Nl0KPiAgICAgICAgIE1lbW9yeSBhdCBiMzAwNDgwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxl
-KSBbc2l6ZT0yNTZdCj4gICAgICAgICBbdmlydHVhbF0gRXhwYW5zaW9uIFJPTSBhdCA1NDAwMDAw
-MCBbZGlzYWJsZWRdIFtzaXplPTEyOEtdCj4gICAgICAgICBDYXBhYmlsaXRpZXM6IFtkY10gUG93
-ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIKPiAKPiAwYTowNC4wIDA0ODA6IDExMzE6NzEzMyAocmV2
-IGYwKQo+ICAgICAgICAgU3Vic3lzdGVtOiAxNDYxOmYzMWUKPiAgICAgICAgIEZsYWdzOiBidXMg
-bWFzdGVyLCBtZWRpdW0gZGV2c2VsLCBsYXRlbmN5IDY0LCBJUlEgMjMKPiAgICAgICAgIE1lbW9y
-eSBhdCBiMzAwNjAwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0yS10KPiAgICAg
-ICAgIENhcGFiaWxpdGllczogWzQwXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgo+IAo+IDBh
-OjA1LjAgMDI4MDogMTgxNDowMjAxIChyZXYgMDEpCj4gICAgICAgICBTdWJzeXN0ZW06IDE0NjI6
-NjgzMwo+ICAgICAgICAgRmxhZ3M6IGJ1cyBtYXN0ZXIsIHNsb3cgZGV2c2VsLCBsYXRlbmN5IDY0
-LCBJUlEgMjAKPiAgICAgICAgIE1lbW9yeSBhdCBiMzAwODAwMCAoMzItYml0LCBub24tcHJlZmV0
-Y2hhYmxlKSBbc2l6ZT04S10KPiAgICAgICAgIENhcGFiaWxpdGllczogWzQwXSBQb3dlciBNYW5h
-Z2VtZW50IHZlcnNpb24gMgo+IAo+IGFzb3VuZGNvbmYgb3V0cHV0IDoKPiBlcmljQGdvbmRvcjp+
-JCBhc291bmRjb25mIGxpc3QKPiBOYW1lcyBvZiBhdmFpbGFibGUgc291bmQgY2FyZHM6Cj4gSW50
-ZWwKPiBTQUE3MTM0Cj4gCj4gSSB0cmllZCBhIGxvdCBvZiB3b3JrYXJvdW5kcyBidXQgbm9uZSB3
-b3JrZWQgOiBib290IG9wdGlvbnMgKGlycXBvbGwsCj4gcGNpPW5vYWNwaSksIHNpbmdsZV9jbWQ9
-MSwgcG9zaXRpb25fZml4PTEsIHNldmVyYWwgbW9kZWxzIG9mIGhkYS1pbnRlbAo+IGRyaXZlciwg
-SSB0cmllZCAxLjAuMTMgYW5kIDEuMC4xNHJjNCBkcml2ZXIsIHdpdGggZGVidWcgb24uLi4gCj4g
-Cj4gSSBtdXN0IGFkZCB0aGF0IEkgYWxyZWFkeSBoYWQgdGhpcyBwcm9ibGVtIHdpdGggcHJldmlv
-dXMgZGlzdHJpYnV0aW9ucwo+IG9mIFVidW50dS4gSXQgd29ya2VkIHdpdGggYW4gb2xkIG9uZSAo
-QnJlZXp5KSB0aGVuIGluIERhcHBlciBhbmQgRWRneSwKPiBpdCBkaWQgd29ya2VkIE9OTFkgd2hl
-biBJIHNlbGYtY29tcGlsZWQgdGhlIGRyaXZlciB3aXRoIGRlYnVnIG9wdGlvbgo+IGVuYWJsZWQg
-SSBuZXZlciB1bmRlcnN0b29kIHdoeS4gQW5kIG5vdyB3aXRoIEZlaXN0eS9hbHNhIDEuMC4xMy91
-YnVudHUKPiBrZXJuZWwgMi42LjIwLCBvciBhbiB1YnVudHUga2VybmVsIHdpdGggc2VsZi1jb21w
-aWxlZCBhbHNhIDEuMC4xNHJjNCwgaXQKPiBkb2VzIG5vdCB3b3JrLiBJIGNhbm5vdCBoYXZlIG9u
-ZSBzb3VuZCA6LSguCj4gCj4gUGxlYXNlIGhlbHAgbWUgLi4uLgo+IAo+IAo+IEVyaWMKPiAKPiAK
-PiAKPiAKPiAKPiAKPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwKCi0tIApUb2JpbiBEYXZpcyA8dGRhdmlzQGRzbC1vbmx5Lm5ldD4KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+I still noticed some type cleanups, and possibly a good debug message..
+
+On Mon, May 14, 2007 at 11:14:55PM +0100, Adrian McMenamin wrote:
+> +/* spu_memload - write to SPU address space */
+> +static void spu_memload(u32 toi, void __iomem * from, int length)
+> +{
+> +	u32 __iomem *froml = from;
+> +	u32 __iomem *to = (u32 __iomem *) (SPU_MEMORY_BASE + toi);
+> +	int i, val;
+
+You should use "void *from" because it's not IO memory. Also, use "u32 val"
+since that is the native type of "u32 *from".
+
+> +	length = DIV_ROUND_UP(length, 4);
+> +	spu_write_wait();
+> +	for (i = 0; i < length; i++) {
+> +		val = *froml;
+> +		writel(val, to);
+> +		froml++;
+> +		to++;
+> +		if (i && !(i % 8))
+> +			spu_write_wait();
+> +	}
+> +}
+
+It seems a small simplification is possible:
+
+	/* remove first spu_write_wait(); */
+	for (i = 0; i < length; i++) {
+		if (!(i % 8))
+			spu_write_wait();
+		val = *froml;
+		...
+	}
+
+
+> +/* SPU specific functions */
+> +/* spu_write_wait - wait for G2-SH FIFO to clear */
+> +static void spu_write_wait(void)
+> +{
+> +	int time_count; 
+> +	time_count = 0;
+> +	while (1) {
+> +		if (!(readl(G2_FIFO) & 0x11))
+> +			break;
+> +		/* To ensure hardware failure doesn't wedge kernel */
+> +		time_count++;
+> +		if (time_count > 0x10000)
+
+Maybe this deserves a printk() message?
+
+> +static struct snd_pcm_hardware snd_pcm_aica_playback_hw = {
+> +	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
+> +	.formats =
+> +	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
+> +	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
+> +	.rates = SNDRV_PCM_RATE_8000_48000,
+> +	.rate_min = 8000,
+> +	.rate_max = 48000,
+> +	.channels_min = 1,
+> +	.channels_max = 2,
+> +	.buffer_bytes_max = AICA_BUFFER_SIZE,
+> +	.period_bytes_min = AICA_PERIOD_SIZE,
+> +	.period_bytes_max = AICA_PERIOD_SIZE,
+> +	.periods_min = AICA_PERIOD_NUMBER,
+> +	.periods_max = AICA_PERIOD_NUMBER,
+> +};
+> +
+> +static int aica_dma_transfer(int channels, int buffer_size,
+> +			     struct snd_pcm_substream *substream)
+> +{
+> +	int q, err, period_offset;
+> +	struct snd_card_aica *dreamcastcard;
+> +	struct snd_pcm_runtime *runtime;
+> +	err = 0;
+> +	dreamcastcard = substream->pcm->private_data;
+> +	period_offset = dreamcastcard->clicks;
+> +	period_offset %= (AICA_PERIOD_NUMBER / channels);
+> +	runtime = substream->runtime;
+> +	for (q = 0; q < channels; q++) {
+> +		err = dma_xfer(AICA_DMA_CHANNEL,
+> +			       (unsigned long)(runtime->dma_area +
+> +					       (AICA_BUFFER_SIZE * q) /
+> +					       channels +
+> +					       AICA_PERIOD_SIZE *
+> +					       period_offset),
+> +			       AICA_CHANNEL0_OFFSET + q * CHANNEL_OFFSET +
+> +			       AICA_PERIOD_SIZE * period_offset,
+> +			       buffer_size / channels, AICA_DMA_MODE);
+> +		if (unlikely(err < 0))
+> +			break;
+> +		dma_wait_for_completion(AICA_DMA_CHANNEL);
+> +	}
+> +	return err;
+> +}
+> +
+> +static void startup_aica(struct snd_card_aica *dreamcastcard)
+> +{
+> +	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
+> +		    (u8 *) dreamcastcard->channel,
+
+Why cast to u8 *? spu_memload gets a void *, and the void * is casted 
+into an u32 *. 
+
+> +		    sizeof(struct aica_channel));
+> +	aica_chn_start();
+> +}
+> +
+> +static void run_spu_dma(struct work_struct *work)
+> +{
+> +	int buffer_size;
+> +	struct snd_pcm_substream *substream;
+> +	struct snd_pcm_runtime *runtime;
+> +	struct snd_card_aica *dreamcastcard;
+> +	struct spu_work_holder *holder = container_of(work, struct spu_work_holder, spu_dma_work);
+> +	substream = holder-> sspointer;
+> +	dreamcastcard = substream->pcm->private_data;
+> +	runtime = substream->runtime;
+> +	if (unlikely(dreamcastcard->dma_check == 0)) {
+> +		buffer_size = frames_to_bytes(runtime, runtime->buffer_size);
+> +		if (runtime->channels > 1)
+> +			dreamcastcard->channel->flags |= 0x01;
+> +		aica_dma_transfer(runtime->channels, buffer_size, substream);
+> +		startup_aica(dreamcastcard);
+> +		dreamcastcard->clicks =
+> +		    buffer_size / (AICA_PERIOD_SIZE * runtime->channels);
+> +		return;
+> +	} else {
+> +		aica_dma_transfer(runtime->channels,
+> +				  AICA_PERIOD_SIZE * runtime->channels,
+> +				  substream);
+> +		snd_pcm_period_elapsed(dreamcastcard->substream);
+> +		dreamcastcard->clicks++;
+> +		if (unlikely(dreamcastcard->clicks >= AICA_PERIOD_NUMBER))
+> +		{
+> +			dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
+> +		}
+> +		mod_timer(&dreamcastcard->timer, jiffies + 1);
+> +	}
+> +}
+> +
+> +static void aica_period_elapsed(unsigned long timer_var)
+> +{
+> +	/*timer function - so cannot sleep */
+> +	int play_period;
+> +	struct snd_pcm_runtime *runtime;
+> +	struct snd_pcm_substream *substream;
+> +	struct snd_card_aica *dreamcastcard;
+> +	substream = (struct snd_pcm_substream *)timer_var;
+> +	runtime = substream->runtime;
+> +	dreamcastcard = substream->pcm->private_data;
+> +	/* Have we played out an additional period? */
+> +	play_period =
+> +	    frames_to_bytes(runtime,
+> +			    readl
+> +			    (AICA_CONTROL_CHANNEL_SAMPLE_NUMBER)) /
+> +	    AICA_PERIOD_SIZE;
+> +	if (play_period == dreamcastcard->current_period) {
+> +		/* reschedule the timer */
+> +		mod_timer(&(dreamcastcard->timer), jiffies + 1);
+> +		return;
+> +	}
+> +	if (runtime->channels > 1)
+> +		dreamcastcard->current_period = play_period;
+> +	if (unlikely(dreamcastcard->dma_check == 0))
+> +		dreamcastcard->dma_check = 1;
+> +		queue_work(aica_queue, &(spu_working.spu_dma_work));
+> +}
+> +
+> +static void spu_begin_dma(struct snd_pcm_substream *substream)
+> +{
+> +	/* Must be atomic */
+> +	struct snd_card_aica *dreamcastcard;
+> +	struct snd_pcm_runtime *runtime;
+> +	runtime = substream->runtime;
+> +	dreamcastcard = substream->pcm->private_data;
+> +	/*  Use queue to do the heavy lifting */
+> +	spu_working.sspointer = substream;
+> +	INIT_WORK(&(spu_working.spu_dma_work), run_spu_dma);
+> +	queue_work(aica_queue, &(spu_working.spu_dma_work));
+> +	/* Timer may already be running */
+> +	if (unlikely(dreamcastcard->timer.data)) {
+> +		mod_timer(&dreamcastcard->timer, jiffies + 4);
+> +		return;
+> +	}
+> +	init_timer(&(dreamcastcard->timer));
+> +	dreamcastcard->timer.data = (unsigned long)substream;
+> +	dreamcastcard->timer.function = aica_period_elapsed;
+> +	dreamcastcard->timer.expires = jiffies + 4;
+> +	add_timer(&(dreamcastcard->timer));
+> +}
+> +
+> +static int snd_aicapcm_pcm_open(struct snd_pcm_substream
+> +				*substream)
+> +{
+> +	struct snd_pcm_runtime *runtime;
+> +	struct aica_channel *channel;
+> +	struct snd_card_aica *dreamcastcard;
+> +	if (!enable)
+> +		return -ENOENT;
+> +	dreamcastcard = substream->pcm->private_data;
+> +	channel = kmalloc(sizeof(struct aica_channel), GFP_KERNEL);
+> +	if (!channel)
+> +		return -ENOMEM;
+> +	/* set defaults for channel */
+> +	channel->sfmt = SM_8BIT;
+> +	channel->cmd = AICA_CMD_START;
+> +	channel->vol = dreamcastcard->master_volume;
+> +	channel->pan = 0x80;
+> +	channel->pos = 0;
+> +	channel->flags = 0;	/* default to mono */
+> +	dreamcastcard->channel = channel;
+> +	runtime = substream->runtime;
+> +	runtime->hw = snd_pcm_aica_playback_hw;
+> +	spu_enable();
+> +	dreamcastcard->clicks = 0;
+> +	dreamcastcard->current_period = 0;
+> +	dreamcastcard->dma_check = 0;
+> +	return 0;
+> +}
+> +
+> +static int snd_aicapcm_pcm_close(struct snd_pcm_substream
+> +				 *substream)
+> +{
+> +	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
+> +	del_timer(&dreamcastcard->timer);
+> +	kfree(dreamcastcard->channel);
+> +	spu_disable();
+> +	return 0;
+> +}
+> +
+> +static int snd_aicapcm_pcm_hw_free(struct snd_pcm_substream
+> +				   *substream)
+> +{
+> +	/* Free the DMA buffer */
+> +	return snd_pcm_lib_free_pages(substream);
+> +}
+> +
+> +static int snd_aicapcm_pcm_hw_params(struct snd_pcm_substream
+> +				     *substream, struct snd_pcm_hw_params
+> +				     *hw_params)
+> +{
+> +	/* Allocate a DMA buffer using ALSA built-ins */
+> +	return
+> +	    snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+> +}
+> +
+> +static int snd_aicapcm_pcm_prepare(struct snd_pcm_substream
+> +				   *substream)
+> +{
+> +	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
+> +	if ((substream->runtime)->format == SNDRV_PCM_FORMAT_S16_LE)
+> +		dreamcastcard->channel->sfmt = SM_16BIT;
+> +	dreamcastcard->channel->freq = substream->runtime->rate;
+> +	dreamcastcard->substream = substream;
+> +	return 0;
+> +}
+> +
+> +static int snd_aicapcm_pcm_trigger(struct snd_pcm_substream
+> +				   *substream, int cmd)
+> +{
+> +	struct snd_card_aica *dreamcastcard;
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +		spu_begin_dma(substream);
+> +		break;
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +		dreamcastcard = substream->pcm->private_data;
+> +		if (dreamcastcard->timer.data)
+> +			del_timer(&dreamcastcard->timer);
+> +		aica_chn_halt();
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static unsigned long snd_aicapcm_pcm_pointer(struct snd_pcm_substream
+> +					     *substream)
+> +{
+> +	return readl(AICA_CONTROL_CHANNEL_SAMPLE_NUMBER);
+> +}
+> +
+> +static struct snd_pcm_ops snd_aicapcm_playback_ops = {
+> +	.open = snd_aicapcm_pcm_open,
+> +	.close = snd_aicapcm_pcm_close,
+> +	.ioctl = snd_pcm_lib_ioctl,
+> +	.hw_params = snd_aicapcm_pcm_hw_params,
+> +	.hw_free = snd_aicapcm_pcm_hw_free,
+> +	.prepare = snd_aicapcm_pcm_prepare,
+> +	.trigger = snd_aicapcm_pcm_trigger,
+> +	.pointer = snd_aicapcm_pcm_pointer,
+> +};
+> +
+> +/* TO DO: set up to handle more than one pcm instance */
+> +static int __init snd_aicapcmchip(struct snd_card_aica
+> +				  *dreamcastcard, int pcm_index)
+> +{
+> +	struct snd_pcm *pcm;
+> +	int err;
+> +	/* AICA has no capture ability */
+> +	err =
+> +	    snd_pcm_new(dreamcastcard->card, "AICA PCM", pcm_index, 1, 0, &pcm);
+> +	if (unlikely(err < 0))
+> +		return err;
+> +	pcm->private_data = dreamcastcard;
+> +	strcpy(pcm->name, "AICA PCM");
+> +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+> +			&snd_aicapcm_playback_ops);
+> +	/* Allocate the DMA buffers */
+> +	err =
+> +	    snd_pcm_lib_preallocate_pages_for_all(pcm,
+> +						  SNDRV_DMA_TYPE_CONTINUOUS,
+> +						  snd_dma_continuous_data
+> +						  (GFP_KERNEL),
+> +						  AICA_BUFFER_SIZE,
+> +						  AICA_BUFFER_SIZE);
+> +	return err;
+> +}
+> +
+> +/* Mixer controls */
+> +static int aica_pcmswitch_info(struct snd_kcontrol *kcontrol,
+> +			       struct snd_ctl_elem_info *uinfo)
+> +{
+> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+> +	uinfo->count = 1;
+> +	uinfo->value.integer.min = 0;
+> +	uinfo->value.integer.max = 1;
+> +	return 0;
+> +}
+> +
+> +static int aica_pcmswitch_get(struct snd_kcontrol *kcontrol,
+> +			      struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	ucontrol->value.integer.value[0] = 1;	/* TO DO: Fix me */
+> +	return 0;
+> +}
+> +
+> +static int aica_pcmswitch_put(struct snd_kcontrol *kcontrol,
+> +			      struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	if (ucontrol->value.integer.value[0] == 1)
+> +		return 0;	/* TO DO: Fix me */
+> +	else
+> +		aica_chn_halt();
+> +	return 0;
+> +}
+> +
+> +static int aica_pcmvolume_info(struct snd_kcontrol *kcontrol,
+> +			       struct snd_ctl_elem_info *uinfo)
+> +{
+> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+> +	uinfo->count = 1;
+> +	uinfo->value.integer.min = 0;
+> +	uinfo->value.integer.max = 0xFF;
+> +	return 0;
+> +}
+> +
+> +static int aica_pcmvolume_get(struct snd_kcontrol *kcontrol,
+> +			      struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_card_aica *dreamcastcard;
+> +	dreamcastcard = kcontrol->private_data;
+> +	if (unlikely(!dreamcastcard->channel))
+> +		return -ETXTBSY;	/* we've not yet been set up */
+> +	ucontrol->value.integer.value[0] = dreamcastcard->channel->vol;
+> +	return 0;
+> +}
+> +
+> +static int aica_pcmvolume_put(struct snd_kcontrol *kcontrol,
+> +			      struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_card_aica *dreamcastcard;
+> +	dreamcastcard = kcontrol->private_data;
+> +	if (unlikely(!dreamcastcard->channel))
+> +		return -ETXTBSY;
+> +	if (unlikely(dreamcastcard->channel->vol ==
+> +		     ucontrol->value.integer.value[0]))
+> +		return 0;
+> +	dreamcastcard->channel->vol = ucontrol->value.integer.value[0];
+> +	dreamcastcard->master_volume = ucontrol->value.integer.value[0];
+> +	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
+> +		    (u8 *) dreamcastcard->channel,
+
+Unuseful cast again.
+
+-- 
+Heikki Orsila			Barbie's law:
+heikki.orsila@iki.fi		"Math is hard, let's go shopping!"
+http://www.iki.fi/shd
