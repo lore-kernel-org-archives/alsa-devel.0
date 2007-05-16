@@ -1,23 +1,24 @@
-From: Tomas Pospisek's Mailing Lists <tpo2@sourcepole.ch>
-Subject: No state is present for card CMI8738
-Date: Wed, 16 May 2007 00:28:02 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0705160024160.13010@localhost>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: ICE1712/1724 HW mixing?
+Date: Wed, 16 May 2007 03:24:58 +0200
+Message-ID: <464A5D6A.9020104@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from viefep25-int.chello.at (viefep13-int.chello.at [213.46.255.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E5DF248A7
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8CDC8248B7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 May 2007 00:27:56 +0200 (CEST)
-Received: from localhost ([193.247.120.15]) by viefep25-int.chello.at
-	(InterMail vM.7.08.02.00 201-2186-121-20061213) with ESMTP
-	id <20070515222755.HDXK5420.viefep25-int.chello.at@localhost>
-	for <alsa-devel@alsa-project.org>; Wed, 16 May 2007 00:27:55 +0200
-Received: from tpo2 (helo=localhost)
-	by localhost with local-esmtp (Exim 3.36 #1 (Debian))
-	id 1Ho5Uw-0003OV-00
-	for <alsa-devel@alsa-project.org>; Wed, 16 May 2007 00:28:02 +0200
+	Wed, 16 May 2007 03:27:39 +0200 (CEST)
+Received: from [213.51.130.190] (port=54109 helo=smtp1.groni1.gr.home.nl)
+	by smtpq2.groni1.gr.home.nl with esmtp (Exim 4.30)
+	id 1Ho8Ik-0003b7-SU
+	for alsa-devel@alsa-project.org; Wed, 16 May 2007 03:27:38 +0200
+Received: from cc334381-b.groni1.gr.home.nl ([82.73.12.33]:35165
+	helo=[192.168.0.3]) by smtp1.groni1.gr.home.nl with esmtp (Exim 4.30)
+	id 1Ho8Ii-0006IG-4r
+	for alsa-devel@alsa-project.org; Wed, 16 May 2007 03:27:36 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,82 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since alsa-user is rather ... errr ... silent, I dare to repost the same 
-question here.
+Good day.
 
-I've seen that Alsa likes the Terratec cards, however since they're also 
-based on the CMI chipset, and at least /my/ onboard CMI chipset here sucks 
-badly I wonder what low cost card I can use?
+I've been updating the TerraTec vendor page in the new wiki matrix:
 
-I hope somebody can give me a clue,
-*t
+http://bugtrack.alsa-project.org/main/index.php/Matrix:Vendor-Terratec
 
-PS: Mic input is barely loud enough with my onboard sound. Mic boost has
-     no effect.
+The problem with information that looks maintained though is that when 
+something's _not_ mentioned, it might be interpreted to mean it's not 
+actually working....
 
---
------------------------------------------------------------
-   Tomas Pospisek
-   http://sourcepole.com -  Linux & Open Source Solutions
------------------------------------------------------------
+I have the older TerraTec cards (both ISA and PCI) but not any of the 
+ICE1712/ICE1724 ones. Could someone verify/confirm that the ICE1712 
+(Envy24?) does not support 24-bit samples?
 
----------- Forwarded message ----------
-Date: Mon, 14 May 2007 14:39:36 +0200 (CEST)
-From: Tomas Pospisek's Mailing Lists <tpo2@sourcepole.ch>
-To: alsa-user@lists.sourceforge.net
-Subject: [Alsa-user] No state is present for card CMI8738
+And that ICE1724 supports only 32-bit in hardware?
 
-The following is my problem:
+Does either chip/driver support hardware mixing?
 
-$ alsactl -f .alsavoip restore
-No state is present for card CMI8738
+Filling out some of the Digital I/O tags for any Aureon card that you know 
+would be nice as well.
 
-I see this "sometimes". Sometimes the above works and sometimes it returns
-with that error message.
-
-It needs to be noted that I am suspending to ram. Nevertheless, the
-behaveour is not consistent in between "s2ram"s and I don't know whether
-that has anything to do with it either.
-
-It also needs to be noted that alsamixer *never* has any problems
-accessing the card. But even after changing the card settings with
-alsamixer, alsactl will keep on repeating that error message.
-
-* $ lspci
-    00:0d.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev 10)
-
-* alsa userspace is at 1.0.13
-* kernel is Debian's 2.6.18-4-686
-
-Further, minor problems:
-
-* After waking up from suspend the card looses its microphone   settings -
-    that is - "Mic Capture" is allway reset to zero.
-
-* Further on the choice to hide the microphone setting "Mic Capture" in
-    alsamixer behind F5 irritates me a bit - there are *a lot* of very
-    obscure settings (such as "IEC958 5V" - huh?), that are displayed by
-    default.
-
-What's up with that error above? What does it mean? Is there any
-way I can fix or circumvent it? Anybody a hint?
-*t
-
---
------------------------------------------------------------
-    Tomas Pospisek
-    http://sourcepole.com -  Linux & Open Source Solutions
------------------------------------------------------------
-
--------------------------------------------------------------------------
-This SF.net email is sponsored by DB2 Express
-Download DB2 Express C - the FREE version of DB2 express and take
-control of your XML. No limits. Just data. Click to get it now.
-http://sourceforge.net/powerbar/db2/
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
+Rene.
