@@ -1,24 +1,18 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: ICE1712/1724 HW mixing?
-Date: Wed, 16 May 2007 03:24:58 +0200
-Message-ID: <464A5D6A.9020104@gmail.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Steinberg Midex 8 driver development
+Date: Wed, 16 May 2007 09:17:24 +0200
+Message-ID: <1179299844.4902.1190076781@webmail.messagingengine.com>
+References: <20070515093557.311300@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CDC8248B7
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A3F1124131
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 May 2007 03:27:39 +0200 (CEST)
-Received: from [213.51.130.190] (port=54109 helo=smtp1.groni1.gr.home.nl)
-	by smtpq2.groni1.gr.home.nl with esmtp (Exim 4.30)
-	id 1Ho8Ik-0003b7-SU
-	for alsa-devel@alsa-project.org; Wed, 16 May 2007 03:27:38 +0200
-Received: from cc334381-b.groni1.gr.home.nl ([82.73.12.33]:35165
-	helo=[192.168.0.3]) by smtp1.groni1.gr.home.nl with esmtp (Exim 4.30)
-	id 1Ho8Ii-0006IG-4r
-	for alsa-devel@alsa-project.org; Wed, 16 May 2007 03:27:36 +0200
+	Wed, 16 May 2007 09:17:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20070515093557.311300@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,28 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: Norman Schleicher <NormanSchleicher@gmx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Good day.
+Norman Schleicher wrote:
+> I am currently on development for the Steinberg Midex8 USB driver.
+> 
+> At the moment I can send notes to my Midi equipment via this device.
+> Receiving is currently not implemented.
+> 
+> My questions are:
+> 1. Are there any tools to test the Alsa-Midi compatiblity ?
 
-I've been updating the TerraTec vendor page in the new wiki matrix:
+You can send raw MIDI data with amidi, or play entire .mid files with
+aplaymidi.
 
-http://bugtrack.alsa-project.org/main/index.php/Matrix:Vendor-Terratec
+To see received data, use amidi or aseqdump.
 
-The problem with information that looks maintained though is that when 
-something's _not_ mentioned, it might be interpreted to mean it's not 
-actually working....
+> 2. May I release some milestone results to the Alsa project ?
 
-I have the older TerraTec cards (both ISA and PCI) but not any of the 
-ICE1712/ICE1724 ones. Could someone verify/confirm that the ICE1712 
-(Envy24?) does not support 24-bit samples?
+Just publish them somewhere.
 
-And that ICE1724 supports only 32-bit in hardware?
+> 3. What are the requirements to get released in an official alsa release
+> package ?
 
-Does either chip/driver support hardware mixing?
+Post the patches against the latest Hg tree here.
 
-Filling out some of the Digital I/O tags for any Aureon card that you know 
-would be nice as well.
+> 4. Where can I read how the source code is organized in the repository
 
-Rene.
+The alsa-kernel tree contains an almost exact copy of the sound/
+directory in the Linux kernel tree.
+
+The alsa-driver tree contains the build mechanism for the separate
+alsa-driver package, patches and compatibility code to make the code
+in alsa-kernel work with older kernels, and some drivers that are too
+new or too horrible to allow them into the kernel.
+
+> and how to manage tags and branches for the development ?
+
+https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=SourceCodeRepository
+and see the Hg docs.
+
+
+HTH
+Clemens
