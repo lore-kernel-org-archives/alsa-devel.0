@@ -1,70 +1,77 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: HDA:  Add more systems to Sigmatel codec.
-Date: Wed, 16 May 2007 11:42:58 -0700
-Message-ID: <1179340978.4415.232.camel@razman.gruemaster.com>
+From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Subject: [1/3] 2.6.22-rc1: known regressions v2
+Date: Wed, 16 May 2007 22:31:30 +0200
+Message-ID: <464B6A22.905__26514.1427204528$1179347532$gmane$org@googlemail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-UqUNP2L890JE04yyHmyj"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D9A32438C
-	for <alsa-devel@alsa-project.org>;
-	Wed, 16 May 2007 20:43:00 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Bob Tracy <rct@gherkin.frus.com>, Dave Jones <davej@codemonkey.org.uk>, linux-acpi@vger.kernel.org, Len Brown <lenb@kernel.org>, Ray Lee <ray-lk@madrabbit.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Pete Clements <clem@clem.clem-digital.net>, Rene Herman <rene.herman@gmail.com>, viro@zeniv.linux.org.uk, Uwe Bugla <uwe.bugla@gmx.de>, linux-crypto@vger.kernel.org, Luca Tettamanti <kronos.it@gmail.com>, Herbert Xu <herbert@gondor.apana.org.au>
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
---=-UqUNP2L890JE04yyHmyj
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Here is a list of some known regressions in 2.6.22-rc1.
 
-This patch adds more Dell systems and a Panasonic laptop with Stac9200
-codecs.
+Feel free to add new regressions/remove fixed etc.
+http://kernelnewbies.org/known_regressions
 
 
-Signed off by Tobin Davis <tdavis@dsl-only.net>
 
---=-UqUNP2L890JE04yyHmyj
-Content-Disposition: attachment; filename=Dell-640M.patch
-Content-Type: text/x-patch; name=Dell-640M.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Unclassified
 
-diff -r 5bd948503866 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Tue May 15 11:47:48 2007 +0200
-+++ b/pci/hda/patch_sigmatel.c	Wed May 16 11:41:23 2007 -0700
-@@ -469,6 +474,14 @@ static struct snd_pci_quirk stac9200_cfg
- 		      "Dell Precision M90", STAC_REF),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01d6,
- 		      "unknown Dell", STAC_REF),
-+        SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01d8,
-+                      "Dell Inspiron 640m", STAC_REF),
-+        SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01f5,
-+                      "Dell Inspiron 1501", STAC_REF),
-+
-+        /* Panasonic */
-+        SND_PCI_QUIRK(0x10f7, 0x8338, "Panasonic CF-74", STAC_REF),
-+
- 	{} /* terminator */
- };
- 
+Subject    : AMD k6-III/450 won't boot w/2.6.22-rc1
+References : http://lkml.org/lkml/2007/5/16/192
+Submitter  : Bob Tracy <rct@gherkin.frus.com>
+Handled-By : Dave Jones <davej@codemonkey.org.uk>
+Status     : problem is being debugged
 
---=-UqUNP2L890JE04yyHmyj
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---=-UqUNP2L890JE04yyHmyj--
+ACPI
+
+Subject    : nx6125 has lost fan control
+References : http://lkml.org/lkml/2007/5/16/249
+Submitter  : Ray Lee <ray-lk@madrabbit.org>
+Status     : Unknown
+
+
+
+ALSA
+
+Subject    : lost snd_4236 device
+References : http://lkml.org/lkml/2007/5/13/87
+Submitter  : Pete Clements <clem@clem.clem-digital.net>
+Handled-By : Rene Herman <rene.herman@gmail.com>
+Patch      : http://lkml.org/lkml/2007/5/15/23
+Status     : patch available
+
+
+
+Block devices
+
+Subject    : loop devices limited to one single device
+References : http://lkml.org/lkml/2007/5/16/229
+Submitter  : Uwe Bugla <uwe.bugla@gmx.de>
+Status     : Unknown
+
+
+
+Cryptography
+
+Subject    : cryptomgr oops
+References : http://lkml.org/lkml/2007/5/14/283
+Submitter  : Luca Tettamanti <kronos.it@gmail.com>
+Handled-By : Herbert Xu <herbert@gondor.apana.org.au>
+Status     : problem is being debugged
+
+
+
+Regards,
+Michal
+
+--
+Michal K. K. Piotrowski
+Kernel Monkeys
+(http://kernel.wikidot.com/start)
