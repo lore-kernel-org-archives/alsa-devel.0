@@ -1,17 +1,18 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: Newbie questions regarding ALSA drivers
-Date: Thu, 17 May 2007 16:07:25 +0100
-Message-ID: <1179414445.29525.65.camel@a10072.wolfsonmicro.main>
-References: <61445c750705170721l4180dce2tbaea1081c9e7d47f@mail.gmail.com>
+From: Steve Longerbeam <stevel@embeddedalley.com>
+Subject: Re: [PATCH] Add support for gain in softvol plugin
+Date: Thu, 17 May 2007 15:00:35 -0700
+Message-ID: <464CD083.6090306@embeddedalley.com>
+References: <463A33D8.3090907@embeddedalley.com>	<Pine.LNX.4.61.0705032121110.7861@tm8103.perex-int.cz>	<463A6100.3070708@embeddedalley.com>	<Pine.LNX.4.61.0705040938540.7594@tm8103.perex-int.cz>	<463B5EFC.6080801@embeddedalley.com>	<463B6E5C.70802@embeddedalley.com>	<s5hzm4e5flo.wl%tiwai@suse.de>	<46437916.2050408@embeddedalley.com>	<s5hejljhi38.wl%tiwai@suse.de>
+	<4648BA6B.3020101@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id D40F824482
+Received: from smtp105.biz.mail.re2.yahoo.com (smtp105.biz.mail.re2.yahoo.com
+	[206.190.52.174]) by alsa0.perex.cz (Postfix) with SMTP id A9396244CF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 May 2007 17:07:27 +0200 (CEST)
-In-Reply-To: <61445c750705170721l4180dce2tbaea1081c9e7d47f@mail.gmail.com>
+	Fri, 18 May 2007 00:00:53 +0200 (CEST)
+In-Reply-To: <4648BA6B.3020101@embeddedalley.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-05-17 at 19:51 +0530, Pharaoh . wrote:
-> Hi,
-> I am very new to ALSA and just trying to get familier with the things, I
-> have
-> got few questions.
-> 
-> 1. Is it true that all the OSS drivers are included only in directory
-> linux/sound/oss  and no where else?
+Steve Longerbeam wrote:
+> Takashi Iwai wrote:
+>   
+>> At Thu, 10 May 2007 12:57:10 -0700,
+>> Steve Longerbeam wrote:
+>>   
+>>     
+>>> Hi Takashi,
+>>>
+>>> Thanks, that's much better. I tried doing that myself a while ago, but I 
+>>> must have been doing something wrong because the capture device wasn't 
+>>> being recognized. But your version works.
+>>>
+>>> Version 4 of the patch is attached. It's much better, only two modified 
+>>> files: pcm_softvol.c and HDA-Intel.conf.
+>>>
+>>> I also reduced the gain range, it's now -30 to +30 dB.
+>>>     
+>>>       
+>> I'm afraid that this choice would be bad for the current TLV
+>> representation.  The default resolution is 256, so -30/30 dB range
+>> doesn't match to this resolution.  We should change either resolution
+>> (e.g. 120, corresponding to 0.5dB step), or the range.
+>>   
+>>     
+>
+> ok, that's no problem. How about we change the range to (in HDA-Intel.conf):
+>
+> min_dB: -21.0
+> max_dB: 30.0
+>
+>
+>   
 
-Afaik, mostly yes. I've seen some in other places, although they were
-never official.
+Hi Takashi, should I send another patch with this change?
 
-> 2. There are arch specific folders like ARM, MIPS etc, so all the drivers in
-> these folders are ALSA or OSS?
+Steve
 
-ALSA
-
-> 3. If I write a new driver for an OMAP based board, it should go in to
-> linux/sound/arm/omap/ right? Or only ALSA drivers for this board should go
-> there?
-
-It could either go in linux/sound/arm or you could write a more generic
-omap driver (i.e. not tightly coupled to either your board or codec) and
-place it in sound/soc/omap/, this would allow your work to be used on
-other boards/platforms.
-
-
-> 4. I have some old OSS drivers
-> which were written for my board, do I need to make them ALSA drivers
-> to be in line with the latest trend i.e. phasing out OSS drivers?
-
-Yes, I would recommend this.
-
-Liam
+>> Otherwise it looks fine to me.
+>>
+>>
+>> Thanks,
+>>
+>> Takashi
+>>
+>>   
+>>     
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>   
