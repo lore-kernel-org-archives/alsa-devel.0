@@ -1,20 +1,26 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: Can someone verify support for "AzTech Sound
- Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset - FCC-ID:I38-MMSN846"
- ?
-Date: Thu, 17 May 2007 11:22:56 +0200
-Message-ID: <464C1EF0.2080809@gmail.com>
-References: <20070517084847.550D91CE303@ws1-6.us4.outblaze.com>
+From: Gunter Ohrner <G.Ohrner@post.rwth-aachen.de>
+Subject: Linux 2.6.21 regression with hda-intel (Conexant 5045)
+Date: Thu, 17 May 2007 12:04:14 +0200
+Message-ID: <f2h9a9$d15$1@sea.gmane.org>
+Reply-To: G.Ohrner@post.rwth-aachen.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 664372442B
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BBE024442
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 May 2007 11:25:38 +0200 (CEST)
-In-Reply-To: <20070517084847.550D91CE303@ws1-6.us4.outblaze.com>
+	Thu, 17 May 2007 13:00:03 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1HodiD-0006lt-V7
+	for alsa-devel@alsa-project.org; Thu, 17 May 2007 13:00:01 +0200
+Received: from bras-co-85-197-6-232.westend.de ([85.197.6.232])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 May 2007 13:00:01 +0200
+Received: from G.Ohrner by bras-co-85-197-6-232.westend.de with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 May 2007 13:00:01 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +30,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ramkromberg@mail.com
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/17/2007 10:48 AM, ramkromberg@mail.com wrote:
+Hi!
 
-> Yes, its like you said Rene, sb8 works although the sound is distorted 
-> and the module can't be removed...
-> Later I can modprobe sgalaxy too, and the sound works without a hitch.
+First of all: Sorry if this question is dumb or a fix should be obvious, but
+as a non-ALSA_expert I'm a bit a a loss at the moment... I searched the
+bugtracker and this list but could not find anything appropriate - most
+probably I missed a relevant post or didn't recognize it as being
+relevant...
 
-Okay, don't know what the trouble is with that distortion (if you haven't 
-set the volumes to 100, that is) but not too important right now.
+Any pointers are greatly appreciated!
 
-> Also since now I can compile some code - your "eeprom.c" compiles and 
-> works - I'm available for further testing...
+The situation is as follows: Using Linux 2.6.20.4, my laptop's soundcard
+works just fine. Using 2.6.21.1, it also works, but the headphone socket is
+dead. Plugging a headphone into it correctly mustes the internal speakers,
+but no sound is output via the headphones.
 
-I might want you to test some mode-resetting code later; will be sure to ask 
-if needed.
+Details:
 
-> I also noticed that the binary you sent was 506kb while my compilation 
-> is 9kb, maybe you sent an early/later version with some additional 
-> includes for verbose ?
-> I compiled it with "gcc -W -Wall -o eeprom eeprom.c" like you said (on 
-> my xubuntu 7.04 with build-essentials deb package installed).
+- Fujitsu Simens Amilo Si1520
+- Codec: Conexant ID 5045 (as reported by Linux 2.6.20.4)
 
-Now try it with "gcc -static -W -Wall -o eeprom eeprom.c". I compiled the 
-binary I provided with that "-static" flag which means the program includes 
-all library code directly inside the binary and doesn't link to the library 
-code you already have on your system.
+Alsa device details between both Linux kernels differ completely, with Linux
+2.6.20.4 only reporting a single a single analog PCM device and Linux
+2.6.21.1 reporting a Conexant Analog and a Conexant Digital device. Should
+I still post the complete information from /proc/asound/* for both kernels?
 
-I did this to avoid any version problems that may exist between different 
-distributions. Essentially you're only guaranteed that a dynamic executable 
-will work on the system on which it was compiled (rather, on a system with 
-the same versions of the libraries installed as on the system on which it 
-was compiled). In this case the program only links to the system C library 
-and did nothing weird so it wasn't much of an issue, but I don't even want 
-to deal with any _possible_ problems of that nature...
+I tried applying conexant-test22.patch by Tobin Davis, but it does not seem
+to match the in-kernel ALSA code. It also does not seem to be related to
+the 5045 chip...
 
-Yes, with a normal (ie, dynamic) link that 9k is correct.
+Any ideas?
 
-Rene.
+Greetings,
+
+  Gunter
