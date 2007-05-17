@@ -1,22 +1,21 @@
-From: Rask Ingemann Lambertsen <rask@sygehus.dk>
-Subject: Re: Can someone verify support for "AzTech
-	Sound	Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset
-	-	FCC-ID:I38-MMSN846" ?
-Date: Thu, 17 May 2007 15:08:11 +0200
-Message-ID: <20070517130811.GY5690@sygehus.dk>
-References: <20070513101757.8C8191BF23B@ws1-1.us4.outblaze.com>
-	<4648DA4E.8050107@gmail.com> <4648E10B.4010403@gmail.com>
-	<20070515101259.GS5690@sygehus.dk> <464B955F.3030508@gmail.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: Audio driver for OMAP 730 based board - hpw to
+	migrate from OSS to ALSA
+Date: Thu, 17 May 2007 18:54:20 +0530
+Message-ID: <61445c750705170624h512ca734s90f5624a3029c64f@mail.gmail.com>
+References: <61445c750705160518i6a6d96dfr6757576e6b3bbd11@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pfepa.post.tele.dk (pfepa.post.tele.dk [195.41.46.235])
-	by alsa0.perex.cz (Postfix) with ESMTP id ABA932446C
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.224])
+	by alsa0.perex.cz (Postfix) with ESMTP id 29F7D243FA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 May 2007 15:08:16 +0200 (CEST)
+	Thu, 17 May 2007 15:24:23 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 58so518881wri
+	for <alsa-devel@alsa-project.org>; Thu, 17 May 2007 06:24:21 -0700 (PDT)
+In-Reply-To: <61445c750705160518i6a6d96dfr6757576e6b3bbd11@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <464B955F.3030508@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,20 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@gmail.com>
-Cc: alsa-devel@alsa-project.org, ramkromberg@mail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 17, 2007 at 01:35:59AM +0200, Rene Herman wrote:
+After seeing the sources I gathered that there is no support for these
+OMAPs, but generic audio handling drivers for OMAPs are available. Any
+idea or pointers regarding how to get started will be
+helpful.
 
-> Does your NX Pro have an EEPROM? It should be a small 8-pin chip marked 
-> with something close to "X24C00", near a clock chip and probably near an 
-> Intel 8051 microcontroller. And does it have a jumper that sounds like it 
-> has anything to do with things?
+Regards,
+Pharaoh.
 
-   I've found the X24C00 chip, a 12 MHz crystal or oscilator (I'm not sure
-which) and an Intel S-80C51FANM chip. The uncommented jumpers J1 and J2 are
-my best bet, although they are connected to the AZTSSPT0592 chip.
-
--- 
-Rask Ingemann Lambertsen
+On 5/16/07, Pharaoh . <pharaoh137@gmail.com> wrote:
+> Hi
+> I am new here and have slight idea about the Linux audio drivers.
+> I am working on OMAP 730 based p2-sample board. AFAIK, there is no audio
+> driver support for this board. I have found
+> 2.4 drivers for the same board which I have ported to 2.6, but it is an OSS
+> driver.
+>
+> So, the questions:
+>
+> 1. Has anyone written audio drivers for the above mentioned board? Any plans
+> to make them open source? Any pointers will be useful regarding the same.
+>
+> 2. How should I go about migrating the OSS driver to ALSA, if something like
+> this is necessary?
+>
+> 3. Any resources which will be helpful for writing ALSA drivers?
+>
+>
+> Thanks & regards,
+> Pharaoh.
+>
