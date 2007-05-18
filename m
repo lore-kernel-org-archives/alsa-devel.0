@@ -1,29 +1,18 @@
-From: Gunter Ohrner <G.Ohrner@post.rwth-aachen.de>
-Subject: Re: Linux 2.6.21 regression with hda-intel
-	(Conexant	5045)
-Date: Fri, 18 May 2007 11:05:15 +0200
-Message-ID: <f2jq7l$5ru$1@sea.gmane.org>
-References: <f2h9a9$d15$1@sea.gmane.org>
-	<1179414132.4415.295.camel@razman.gruemaster.com>
-Reply-To: G.Ohrner@post.rwth-aachen.de
+From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
+Subject: submitting a patch against the ALSA repos
+Date: Fri, 18 May 2007 10:16:26 +0100
+Message-ID: <92a12cdb0705180216k4bb70a64x7da9c03313220623@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5EAAF24352
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 698102452C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 May 2007 11:05:16 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HoyOc-0007UE-It
-	for alsa-devel@alsa-project.org; Fri, 18 May 2007 11:05:10 +0200
-Received: from bras-co-85-197-6-232.westend.de ([85.197.6.232])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 18 May 2007 11:05:10 +0200
-Received: from G.Ohrner by bras-co-85-197-6-232.westend.de with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 18 May 2007 11:05:10 +0200
+	Fri, 18 May 2007 11:16:31 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c18so221452anc
+	for <alsa-devel@alsa-project.org>; Fri, 18 May 2007 02:16:29 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,31 +25,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tobin Davis wrote:
-> what kernels.  The best thing to do is download the
-> alsa-driver-1.0.14rc4.tar.bz2 release from alsa-project.org and use it.
-> It is the most current for that codec.
+I have submitted my patch against the 2.6.21 kernel tree but I dare
+say I need to actually submit it against the alsa repos.
 
-This driver version does not seem to compile with Linux 2.6.21:
+I have a few questions:
 
-In file included
-from /usr/src/tmp/alsa-driver-1.0.14rc4/acore/memalloc.inc:13,
-                 from /usr/src/tmp/alsa-driver-1.0.14rc4/acore/memalloc.c:1:
-/usr/src/tmp/alsa-driver-1.0.14rc4/include/adriver.h: In
-function 'snd_pci_orig_save_state':
-/usr/src/tmp/alsa-driver-1.0.14rc4/include/adriver.h:1168: error: too many
-arguments to function 'pci_save_state'
-/usr/src/tmp/alsa-driver-1.0.14rc4/include/adriver.h: In
-function 'snd_pci_orig_restore_state':
-/usr/src/tmp/alsa-driver-1.0.14rc4/include/adriver.h:1172: error: too many
-arguments to function 'pci_restore_state'
-make[4]: *** [/usr/src/tmp/alsa-driver-1.0.14rc4/acore/memalloc.o] Fehler 1
-make[3]: *** [/usr/src/tmp/alsa-driver-1.0.14rc4/acore] Fehler 2
-make[2]: *** [_module_/usr/src/tmp/alsa-driver-1.0.14rc4] Fehler 2
+1. Which set of sources do I patch - I assume alsa-driver - is that right?
 
-I noticed no errors before this one and no failed includes or similar in
-paticular.
+2. How do I patch the firmware repo? As it is a binary I assume it is
+by some means other than patch(1)
 
-Greetings,
-
-  Gunter
+3. This is a new architecture - there are no other SuperH drivers in
+alsa (afaik) - how do I add a new architecture? My memory is that when
+I tried this a year ago it was a bit of a nightmare.
