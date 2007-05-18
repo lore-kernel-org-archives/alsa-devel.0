@@ -1,19 +1,25 @@
-From: =?ISO-8859-1?Q?Christian_Rothl=E4nder?= <Mailinglisten@rothlaender.net>
-Subject: Re: [PATCH] SM56 Modem in Asus A8J Notebook Series
-Date: Fri, 18 May 2007 16:22:23 +0200
-Message-ID: <464DB69F.301@rothlaender.net>
+From: Tomas Pospisek's Mailing Lists <tpo2@sourcepole.ch>
+Subject: Re: No state is present for card CMI8738
+Date: Fri, 18 May 2007 16:42:51 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0705181634160.22953@localhost>
+References: <Pine.LNX.4.64.0705160024160.13010@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8380810726879831687=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo-p00-ob.rzone.de (mo-p00-ob.rzone.de [81.169.146.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6C2224380
+Received: from viefep23-int.chello.at (viefep13-int.chello.at [213.46.255.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F24024385
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 May 2007 16:22:22 +0200 (CEST)
-Received: from [10.0.10.1]
-	(HSI-KBW-085-216-074-109.hsi.kabelbw.de [85.216.74.109])
-	by post.webmailer.de (fruni mo10) (RZmta 6.3)
-	with ESMTP id 702c02j4ICn4Kl for <alsa-devel@alsa-project.org>;
-	Fri, 18 May 2007 16:22:22 +0200 (MEST)
+	Fri, 18 May 2007 16:42:54 +0200 (CEST)
+Received: from localhost ([193.247.120.15]) by viefep23-int.chello.at
+	(InterMail vM.7.08.02.00 201-2186-121-20061213) with ESMTP
+	id <20070518144253.FYWC19392.viefep23-int.chello.at@localhost>
+	for <alsa-devel@alsa-project.org>; Fri, 18 May 2007 16:42:53 +0200
+Received: from tpo2 (helo=localhost)
+	by localhost with local-esmtp (Exim 3.36 #1 (Debian))
+	id 1Hp3fP-0005yb-00
+	for <alsa-devel@alsa-project.org>; Fri, 18 May 2007 16:42:51 +0200
+In-Reply-To: <Pine.LNX.4.64.0705160024160.13010@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,141 +32,71 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a cryptographically signed message in MIME format.
+Since I got no feedback neither here nor on the users list, may I ask why?
 
---===============8380810726879831687==
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms080505000002010109050701"
+* is it that nobody knows the answer to my question?
+* or is it because the question is stupid (as in: read the FAQ, the wiki,
+   the archive and use google (all of which did not help me btw.))
 
-This is a cryptographically signed message in MIME format.
+?
+*t
 
---------------ms080505000002010109050701
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Wed, 14 May 2007, Tomas Pospisek's Mailing Lists wrote [modified for 
+clarity]:
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+[...]
+> ---------- Forwarded message ----------
+> Date: Mon, 14 May 2007 14:39:36 +0200 (CEST)
+> From: Tomas Pospisek's Mailing Lists <tpo2@sourcepole.ch>
+> To: alsa-user@lists.sourceforge.net
+> Subject: [Alsa-user] No state is present for card CMI8738
+>
+> The following is my problem:
+>
+> $ alsactl -f .alsavoip restore
+> No state is present for card CMI8738
+>
+> I see this "sometimes". Sometimes the above works and sometimes it returns
+> with that error message.
+>
+> I happen to be suspending to ram regulary. Nevertheless, the behaveour 
+> is not consistent in between "s2ram"s and I don't know whether that has 
+> anything to do with it either.
+>
+> It also needs to be noted that alsamixer *never* has any problems
+> accessing the card. But even after changing the card settings with
+> alsamixer, alsactl will keep on repeating that error message.
+>
+> * $ lspci
+>    00:0d.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev 10)
+>
+> * alsa userspace is at 1.0.13
+> * kernel is Debian's 2.6.18-4-686
+>
+> Further, minor problems:
+>
+> * After waking up from suspend the card looses its microphone   settings -
+>    that is - "Mic Capture" is allway reset to zero.
+>
+> * Further on the choice to hide the microphone setting "Mic Capture" in
+>    alsamixer behind F5 irritates me a bit - there are *a lot* of very
+>    obscure settings (such as "IEC958 5V" - huh?), that are displayed by
+>    default.
+>
+> * I've seen that Alsa likes the Terratec cards, however since they're
+>   also based on the CMI chipset, and at least /my/ onboard CMI chipset
+>   here sucks badly I wonder what low cost card (other than CMI based
+>   ones) are recommended?
+>
+> * Mic input is barely loud enough with my onboard sound. Mic boost
+>   has no effect.
+>
+> What's up with that error above? What does it mean? Is there any
+> way I can fix or circumvent it? Anybody a hint?
+> *t
 
-Hi there
-
-It's support for the SI3054 Chip build into the Asus A8J Notebook Series.
-In Windows it's called "Motorola SM56".
-
-What do you mean with "sign-off"?
-I'm pretty happy when it walks into upstream, so that the requests on my homepage about how to patch alsa to run that
-modem are ceasing down.
-
-Just a small issue is left. With the alsa driver buildin into 2.6.19 slmodem is working, with any newer one (either
-standalone or buildin driver) we have a "hda-intel: invalid format_val, rate=9600, ch=1, format=2" error in dmesg. Seems
-something has been broken on that step (probably 1.0.13 to 1.0.14?). Sadly I'm not able to tell right now which alsa was
-included into 2.6.19. I'm trying to compare the files to get an idea what's wrong (#2799 and #2820 are reporting similar
-problems).
-
-Christian
-
-
-Takashi Iwai wrote:
-> Thanks, the patch looks good to me.
-> Could you give a brief description of the patch and your sign-off to
-> merge to the upstream?
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.4 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFGTbafYMBp7Qf+VpkRAgl1AJ4uWR1vVVE6APAMB2SQjcPmhByJpQCfdweP
-vJZuXa7/0njBJ0h8vFWdUH0=
-=Dbm9
------END PGP SIGNATURE-----
-
---------------ms080505000002010109050701
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIILXTCC
-Az8wggKooAMCAQICAQ0wDQYJKoZIhvcNAQEFBQAwgdExCzAJBgNVBAYTAlpBMRUwEwYDVQQI
-EwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENv
-bnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAi
-BgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVy
-c29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0xMzA3MTYyMzU5
-NTlaMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBM
-dGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCBnzAN
-BgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9Vvy
-Gna9fww6YfK/Uc4B1OVQCjDXAmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOC
-dz0Dviv+uxg+B79AgAJk16emu59l0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCB
-kTASBgNVHRMBAf8ECDAGAQH/AgEAMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhh
-d3RlLmNvbS9UaGF3dGVQZXJzb25hbEZyZWVtYWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNV
-HREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxhYmVsMi0xMzgwDQYJKoZIhvcNAQEFBQAD
-gYEASIzRUIPqCy7MDaNmrGcPf6+svsIXoUOWlJ1/TCG4+DYfqi2fNi/A9BxQIJNwPP2t4WFi
-w9k6GX6EsZkbAMUaC4J0niVQlGLH2ydxVyWN3amcOY6MIE9lX5Xa9/eH1sYITq726jTlEBpb
-NU1341YheILcIRk13iSx0x1G/11fZU8wggQJMIIDcqADAgECAhAxOFXG3lIzEWoE4+oH6KIK
-MA0GCSqGSIb3DQEBBAUAMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3Vs
-dGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNz
-dWluZyBDQTAeFw0wNjA3MDkwOTQ0MjNaFw0wNzA3MDkwOTQ0MjNaMIIBAjEUMBIGA1UEBBML
-Um90aGxhZW5kZXIxEjAQBgNVBCoTCUNocmlzdGlhbjEeMBwGA1UEAxMVQ2hyaXN0aWFuIFJv
-dGhsYWVuZGVyMSgwJgYJKoZIhvcNAQkBFhlDaHJpc3RpYW5AUm90aGxhZW5kZXIubmV0MSww
-KgYJKoZIhvcNAQkBFh1NYWlsaW5nbGlzdGVuQHJvdGhsYWVuZGVyLm5ldDEfMB0GCSqGSIb3
-DQEJARYQYXNkY2hyaXNpQHdlYi5kZTE9MDsGCSqGSIb3DQEJARYuY2hyaXN0aWFuLnJvdGhs
-YWVuZGVyQHN0dWRlbnQudW5pLXR1ZWJpbmdlbi5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEP
-ADCCAQoCggEBAKuzQ0LvIhT2gvKmuu3a91DQnOQ16Bk+iNCvufPQ1zfJyhNbIxl91Vme6aGW
-Nghp1Hz8kya2VTLgzq5IdF7ValmKq4HCbFjxTxGDlwXA5Vki43xbrPz4jpRJjIP3aVnmf0Ro
-SSpLdvle1j5n7DYhhJ//TbSxZgSldfQJiGVqQ/fbvdqkAKmm4BPg+m6BtwfEkQ5csriZDCKh
-qrdttlsAkAWLYXsFQFxtHXmEtmFD9X617xPVHWkF8SsmtrTtAOQWElG217px76ylXth8mBwi
-rDAGhw9HvzKxD4Q56/mWCXN/43SSHd2VWhj1xaRTMWi123MQ8gj/E+DW3e55olcunykCAwEA
-AaOBmTCBljCBhQYDVR0RBH4wfIEZQ2hyaXN0aWFuQFJvdGhsYWVuZGVyLm5ldIEdTWFpbGlu
-Z2xpc3RlbkByb3RobGFlbmRlci5uZXSBEGFzZGNocmlzaUB3ZWIuZGWBLmNocmlzdGlhbi5y
-b3RobGFlbmRlckBzdHVkZW50LnVuaS10dWViaW5nZW4uZGUwDAYDVR0TAQH/BAIwADANBgkq
-hkiG9w0BAQQFAAOBgQB5NKmtji0B6l3akyofnK3M8HJi44Rl0WANOLIqQrtiixrWi6jB+B0i
-pmpjwrTXqSM/Slag5ijGln5ZhKdeOM/tp29EeLtFvc8xRMKjC9TUGH+A42JNPQxJ7JwZIajJ
-TdfZTctIXbaG8ujNiudI+9rp+2zsNHrWSqcvtqb8Nq/SGjCCBAkwggNyoAMCAQICEDE4Vcbe
-UjMRagTj6gfoogowDQYJKoZIhvcNAQEEBQAwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRo
-YXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBG
-cmVlbWFpbCBJc3N1aW5nIENBMB4XDTA2MDcwOTA5NDQyM1oXDTA3MDcwOTA5NDQyM1owggEC
-MRQwEgYDVQQEEwtSb3RobGFlbmRlcjESMBAGA1UEKhMJQ2hyaXN0aWFuMR4wHAYDVQQDExVD
-aHJpc3RpYW4gUm90aGxhZW5kZXIxKDAmBgkqhkiG9w0BCQEWGUNocmlzdGlhbkBSb3RobGFl
-bmRlci5uZXQxLDAqBgkqhkiG9w0BCQEWHU1haWxpbmdsaXN0ZW5Acm90aGxhZW5kZXIubmV0
-MR8wHQYJKoZIhvcNAQkBFhBhc2RjaHJpc2lAd2ViLmRlMT0wOwYJKoZIhvcNAQkBFi5jaHJp
-c3RpYW4ucm90aGxhZW5kZXJAc3R1ZGVudC51bmktdHVlYmluZ2VuLmRlMIIBIjANBgkqhkiG
-9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq7NDQu8iFPaC8qa67dr3UNCc5DXoGT6I0K+589DXN8nK
-E1sjGX3VWZ7poZY2CGnUfPyTJrZVMuDOrkh0XtVqWYqrgcJsWPFPEYOXBcDlWSLjfFus/PiO
-lEmMg/dpWeZ/RGhJKkt2+V7WPmfsNiGEn/9NtLFmBKV19AmIZWpD99u92qQAqabgE+D6boG3
-B8SRDlyyuJkMIqGqt222WwCQBYthewVAXG0deYS2YUP1frXvE9UdaQXxKya2tO0A5BYSUbbX
-unHvrKVe2HyYHCKsMAaHD0e/MrEPhDnr+ZYJc3/jdJId3ZVaGPXFpFMxaLXbcxDyCP8T4Nbd
-7nmiVy6fKQIDAQABo4GZMIGWMIGFBgNVHREEfjB8gRlDaHJpc3RpYW5AUm90aGxhZW5kZXIu
-bmV0gR1NYWlsaW5nbGlzdGVuQHJvdGhsYWVuZGVyLm5ldIEQYXNkY2hyaXNpQHdlYi5kZYEu
-Y2hyaXN0aWFuLnJvdGhsYWVuZGVyQHN0dWRlbnQudW5pLXR1ZWJpbmdlbi5kZTAMBgNVHRMB
-Af8EAjAAMA0GCSqGSIb3DQEBBAUAA4GBAHk0qa2OLQHqXdqTKh+crczwcmLjhGXRYA04sipC
-u2KLGtaLqMH4HSKmamPCtNepIz9KVqDmKMaWflmEp144z+2nb0R4u0W9zzFEwqML1NQYf4Dj
-Yk09DEnsnBkhqMlN19lNy0hdtoby6M2K50j72un7bOw0etZKpy+2pvw2r9IaMYIDZDCCA2AC
-AQEwdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkg
-THRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECEDE4
-VcbeUjMRagTj6gfoogowCQYFKw4DAhoFAKCCAcMwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEH
-ATAcBgkqhkiG9w0BCQUxDxcNMDcwNTE4MTQyMjIzWjAjBgkqhkiG9w0BCQQxFgQUhMuD+G2b
-Qii0H9WtY8ZhR0oITJwwUgYJKoZIhvcNAQkPMUUwQzAKBggqhkiG9w0DBzAOBggqhkiG9w0D
-AgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwgYUGCSsGAQQB
-gjcQBDF4MHYwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQ
-dHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENB
-AhAxOFXG3lIzEWoE4+oH6KIKMIGHBgsqhkiG9w0BCRACCzF4oHYwYjELMAkGA1UEBhMCWkEx
-JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0
-ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAhAxOFXG3lIzEWoE4+oH6KIKMA0GCSqG
-SIb3DQEBAQUABIIBAD6RaT7UHG3fGiBsiRLvChd8yi+QkF29QgHPW6bp0fePdiOEAqPCFQ6y
-rakXQRoOw7V0gSrp4Jt/F9QM6E2Yl7dE8X8A7ZxtDqQtGu3ZC3B3fpqc1Xh8s3yIZiPj1INP
-pgXYJU4u7qvtsszwBg9L8hdqiH88tDtAYCPnQKPb3cWGKqRZQZAzN/LFwJFuMEgvS5Z5mygO
-K+4RXzvrqcT4tPM6gsJHlKGvO9M1l2KKcfFGPVb1C8+IxCevwOX9joqo3mdLJufiJty/e+eO
-qs7O/D+LRHTkNnOhSSjI4Vaus6uqeDLklVgxNUTibkXdVVAp/XJEgt+QzxSgHewixaqz2MgA
-AAAAAAA=
---------------ms080505000002010109050701--
-
---===============8380810726879831687==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8380810726879831687==--
+--
+-----------------------------------------------------------
+   Tomas Pospisek
+   http://sourcepole.com -  Linux & Open Source Solutions
+-----------------------------------------------------------
