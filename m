@@ -1,20 +1,17 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: Patch - Revo7.1 PCM Playback Switch
-Date: Fri, 18 May 2007 17:34:55 -0400
-Message-ID: <75b66ecd0705181434kbfee145qab84ff9d53892cb6@mail.gmail.com>
-References: <9723.25254-1219-662959343-1179521630@seznam.cz>
+From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
+Subject: Firmware to add - Dreamcast AICA
+Date: Fri, 18 May 2007 23:41:08 +0100
+Message-ID: <92a12cdb0705181541l3af0ad7cm6c236968ff229dd0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_69623_4413440.1179528068360"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB64424413
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 04E0D24409
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 May 2007 23:34:56 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 58so987589wri
-	for <alsa-devel@alsa-project.org>; Fri, 18 May 2007 14:34:55 -0700 (PDT)
-In-Reply-To: <9723.25254-1219-662959343-1179521630@seznam.cz>
-Content-Disposition: inline
+	Sat, 19 May 2007 00:41:09 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so1381627nzf
+	for <alsa-devel@alsa-project.org>; Fri, 18 May 2007 15:41:08 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "dustin@seznam.cz" <dustin@seznam.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/18/07, dustin@seznam.cz <dustin@seznam.cz> wrote:
-> I would like to get your opinion on the form of adding this support to the module. The options are either hard-coding the 16 capture channels into the code, assuming that users would prefer as many channels as possible and do the routing in jack, or introducing a module parameter emu1010-capture-channels (range e.g. 1 to 16 - untested yet) and leaving the default number at the existing 8.
+------=_Part_69623_4413440.1179528068360
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I think you should hard code 16 channels.  If this device works
-anything like the emu10k1, then you can achieve lower latency by
-capturing more channels (because the capture buffer limits are in
-bytes, so more channels = fill an N byte buffer faster = lower
-latency).
+Please add this to the firmware repo
 
-This is how I did multichannel support for the emu10k1 and it works
-great, no one has ever complained about wanting to capture fewer
-channels...
+------=_Part_69623_4413440.1179528068360
+Content-Type: application/x-bzip2; name="aica_firmware.tar.bz2"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="aica_firmware.tar.bz2"
+X-Attachment-Id: f_f1v8jga6
 
-Lee
+QlpoOTFBWSZTWVqZSREABAN///////z////+/vf//f/3////////////////////////4AZvQ+UH
+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
+------=_Part_69623_4413440.1179528068360
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_Part_69623_4413440.1179528068360--
