@@ -1,24 +1,18 @@
-From: Andrew Callan <acallan.alsa@ugnet.org>
-Subject: Re: Alsa 1.0.13 (and others) does not work on ALC880
-Date: Sat, 19 May 2007 02:08:14 -0500 (CDT)
-Message-ID: <Pine.LNX.4.58.0705190144230.8331@integrity.ugnet.org>
+From: Jasiu <kiputnik@gmail.com>
+Subject: Broken JACK plugin in alsa-plugins and a way to fix it.
+Date: Sat, 19 May 2007 15:44:45 +0200
+Message-ID: <f13492b00705190644s51a0cc99g95e676257a4e9044@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from integrity.ugnet.org (integrity.ugnet.org [208.251.149.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73C4C24475
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14769244E6
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 May 2007 08:08:47 +0200 (CEST)
-Received: from integrity.ugnet.org (localhost [127.0.0.1])
-	by integrity.ugnet.org (8.12.11.20060308/8.12.10) with ESMTP id
-	l4J78EP0009056
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Sat, 19 May 2007 02:08:34 -0500
-Received: from localhost (acc@localhost)
-	by integrity.ugnet.org (8.12.11.20060308/8.12.6/Submit) with ESMTP id
-	l4J78E2A009053
-	for <alsa-devel@alsa-project.org>; Sat, 19 May 2007 02:08:14 -0500
+	Sat, 19 May 2007 15:44:46 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c18so310724anc
+	for <alsa-devel@alsa-project.org>; Sat, 19 May 2007 06:44:46 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,27 +25,26 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have been without sound using Fedora Core ever since the 2.6.16 or
-2.6.17 kernel update (2.6.16 crashed during initialization, so I could not
-tell whether sound worked or not).  It had worked well through the 2.6.15
-Fedora kernels.  I finally sat down tonight to work the problem as hard as
-I could and happened upon Eric and Tobin's timely exchange.
+Hi.
 
-First, simply adding probe_mask=1 to the snd-hda-intel options worked for
-me as well; I did not end up having to specify a specific model.
+I want to note that JACK plugin in alsa-plugins in broken. (At least
+on my two systems.) It just plays for a few seconds and then stops
+hanging the application that was sending data to it. When it hangs
+jackd spits out this:
 
-Second, I too was seeing a LONG hang when trying to do:
-cat /proc/asound/card0/codec#0
-but now with the probe_mask=1, I do not see this.
+subgraph starting at alsa-jack.jackP.3635.0 timed out
+(subgraph_wait_fd=7, status = 0, state = Running)
 
-If it helps, the alsa-info.sh output for my system is at
-http://pastebin.ca/496293
-If it makes any difference, I'm not sure which model I had specified on
-the modprobe line at the time I captured this output.
+What I want to note is that there is a fix to that and I would like it
+to be included in the tree. I'm not sure if it doesn't break anything
+else, but it works for me ok.
 
-One thing I do notice is that after adding probe_mask=1, aplay -l does not
-show the Si3054 Modem which shows up in the alsa-info output.
+Open pcm_jack.c and on the line 146 you'll find:
 
-Thanks for the help you gave in the thread with Eric.
+write(jack->fd, buf, 1); /* for polling */
 
-Andrew
+Deleting this seems to get rid of the problem.
+So please if you can patch this out. (I didn't make a patch myself
+since this is so tiny fix that it isn't really worth.)
+
+Cheers.
