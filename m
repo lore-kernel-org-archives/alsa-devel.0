@@ -1,20 +1,21 @@
 From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] remove email addresses from MODULE_AUTHOR
- tag
-Date: Sat, 19 May 2007 03:38:07 +0200
-Message-ID: <464E54FF.7080207@gmail.com>
-References: <4643C20C.8050105@gmail.com> <s5hd517ich2.wl%tiwai@suse.de>
-	<4644DC5A.7060905@gmail.com> <4645F2F4.2010807@gmail.com>
+Subject: Re: ICE1712/1724 HW mixing?
+Date: Sat, 19 May 2007 04:28:38 +0200
+Message-ID: <464E60D6.7080300@gmail.com>
+References: <464A5D6A.9020104@gmail.com>
+	<200705160927.40433.gineera@aspect135.co.uk>
+	<464B8B84.60302@gmail.com>
+	<200705181114.01667.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id A888724447
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6F6D2444D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 May 2007 03:41:47 +0200 (CEST)
-In-Reply-To: <4645F2F4.2010807@gmail.com>
+	Sat, 19 May 2007 04:31:19 +0200 (CEST)
+In-Reply-To: <200705181114.01667.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/12/2007 07:01 PM, Rene Herman wrote:
+On 05/18/2007 12:14 PM, Alan Horstmann wrote:
 
-> On 05/11/2007 11:12 PM, Rene Herman wrote:
+>> Could you "cat /proc/asound/card0/pcm0p/info" (replace the 0,0 with
+>> where your 6Fire PCM is at) and confirm that "subdevices_count" is
+>> larger than 1 to confirm it's HWMIXing in the ALSA sense?
 > 
->> I seem unlikely to convince him but I believe it's upto specific 
->> subsystems whether or not they'll take patches removing the email 
->> adresses from the tag, ie, in the case of ALSA upto you and Jaroslav.
-> 
-> For what it's worth, Linus merged the patch removing the advice to 
-> include an email address in the MODULE_AUTHOR comment:
-> 
-> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=108f39a1b3b1e4b28ca8cc156f06171445499d21 
-> 
-> 
-> He was aware of Alan's objection. Removing existing ones is ofcourse not 
-> quite the same as not introducing new ones though so ofcourse still up 
-> to you. I'm still signing off on it...
+> subdevices_count: 1
+> Lee has explained this confusion:- this card has a hardware mixer but
+> does not do 'Hardware Mixing' in the Alsa sense! Thanks for that Lee!
 
-Takashi, Jaroslav, could you get me an ACK or NAK on this? I'm waiting 
-around before submitting more to see if you'll take 'em.
+Thanks. Will leave out "HWMIX" from the ICE1712/1724 card tags.
+
+>>> The DMX6fire has both optical and phono SPDIF connectors
+>> Both both input and output?
+> 
+> Yes. The two inputs can be switch selected; the outputs are in parallel.
+
+Thanks again, just added "RCAio" to the 6Fire.
+
+>> I've for example added "ANALOGio" to every single card on the TerraTec page
+>> which felt a bit silly. 
+> 
+> Actually as I understand it, the EWS88D is essentially digital (ADAT etc) only 
+> though it seems to have a secondary low-grade audio out for system sounds 
+> etc.
+
+You're right, just checked the manual. I see the driver creating a 8/16-bit 
+8-48 kHz "ICE1712 consumer" PCM that I suppose will be the one that ends up 
+at that backplate analog out. The "low-grade" will be fairly relative so 
+I'll leave in the ANALOGio tag for the ES88D as well. If someone reading 
+this knows better, please yell...
 
 Rene.
