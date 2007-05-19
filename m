@@ -1,18 +1,18 @@
-From: "E.D.V." <erdv38@gmail.com>
+From: Tobin Davis <tdavis@dsl-only.net>
 Subject: Re: Alsa 1.0.13 (and others) does not work on ALC880
-Date: Sat, 19 May 2007 19:22:12 +0200
-Message-ID: <464F3244.6010602@gmail.com>
+Date: Sat, 19 May 2007 10:51:22 -0700
+Message-ID: <1179597082.15236.54.camel@razman.gruemaster.com>
 References: <Pine.LNX.4.58.0705190144230.8331@integrity.ugnet.org>
-	<s5h7ir4etl6.wl%tiwai@suse.de>
+	<s5h7ir4etl6.wl%tiwai@suse.de>  <464F3244.6010602@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp23.orange.fr (smtp23.orange.fr [193.252.22.126])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E67624461
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92B9224510
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 May 2007 19:22:14 +0200 (CEST)
-In-Reply-To: <s5h7ir4etl6.wl%tiwai@suse.de>
+	Sat, 19 May 2007 19:51:24 +0200 (CEST)
+In-Reply-To: <464F3244.6010602@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Andrew Callan <acallan.alsa@ugnet.org>
+To: "E.D.V." <erdv38@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Callan <acallan.alsa@ugnet.org>
 List-Id: alsa-devel@alsa-project.org
 
-Well, on this laptop (D900t Eurocom) BIOS modification is very limited,
-and it is not possible to modify or switch codecs, so as I think it is
-enabled it is not possible to disable it ...
-
-Takashi Iwai a =E9crit :
-> At Sat, 19 May 2007 02:08:14 -0500 (CDT),
-> Andrew Callan wrote:
->   =
-
->> I have been without sound using Fedora Core ever since the 2.6.16 or
->> 2.6.17 kernel update (2.6.16 crashed during initialization, so I could n=
-ot
->> tell whether sound worked or not).  It had worked well through the 2.6.15
->> Fedora kernels.  I finally sat down tonight to work the problem as hard =
-as
->> I could and happened upon Eric and Tobin's timely exchange.
->>
->> First, simply adding probe_mask=3D1 to the snd-hda-intel options worked =
-for
->> me as well; I did not end up having to specify a specific model.
->>
->> Second, I too was seeing a LONG hang when trying to do:
->> cat /proc/asound/card0/codec#0
->> but now with the probe_mask=3D1, I do not see this.
->>
->> If it helps, the alsa-info.sh output for my system is at
->> http://pastebin.ca/496293
->> If it makes any difference, I'm not sure which model I had specified on
->> the modprobe line at the time I captured this output.
->>
->> One thing I do notice is that after adding probe_mask=3D1, aplay -l does=
- not
->> show the Si3054 Modem which shows up in the alsa-info output.
->>
->> Thanks for the help you gave in the thread with Eric.
->>
->> Andrew
->>     =
-
->
-> Interesting.  I've seen similar reports that probe_mask helps.
-> Do you disable the modem codec on BIOS or is it enabled?
->
-> If this happens even though it's enabled on BIOS, we'd need a
-> blacklist of non-working devices, or a more robust probing routine...
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->   =
+VHJ5ICJwcm9iZV9tYXNrPTMiLiAgVGhhdCBzaG91bGQgZW5hYmxlIHRoZSBhdWRpbyBhbmQgbW9k
+ZW0gY29kZWMgdG8gc2VlCmlmIGl0IGlzIHRoZSBjYXVzZSBvZiB0aGVzZSBpc3N1ZXMuIElmIGl0
+IGlzLCB0aGVyZSBpcyBhbiBpc3N1ZSB3aXRoIGl0LgpJZiBub3QsIGl0J3MgaW4gdGhlIHByb2Jl
+IHJvdXRpbmUuCgpUb2JpbgoKT24gU2F0LCAyMDA3LTA1LTE5IGF0IDE5OjIyICswMjAwLCBFLkQu
+Vi4gd3JvdGU6Cgo+IFdlbGwsIG9uIHRoaXMgbGFwdG9wIChEOTAwdCBFdXJvY29tKSBCSU9TIG1v
+ZGlmaWNhdGlvbiBpcyB2ZXJ5IGxpbWl0ZWQsCj4gYW5kIGl0IGlzIG5vdCBwb3NzaWJsZSB0byBt
+b2RpZnkgb3Igc3dpdGNoIGNvZGVjcywgc28gYXMgSSB0aGluayBpdCBpcwo+IGVuYWJsZWQgaXQg
+aXMgbm90IHBvc3NpYmxlIHRvIGRpc2FibGUgaXQgLi4uCj4gCj4gVGFrYXNoaSBJd2FpIGEgw6lj
+cml0IDoKPiA+IEF0IFNhdCwgMTkgTWF5IDIwMDcgMDI6MDg6MTQgLTA1MDAgKENEVCksCj4gPiBB
+bmRyZXcgQ2FsbGFuIHdyb3RlOgo+ID4gICAKPiA+PiBJIGhhdmUgYmVlbiB3aXRob3V0IHNvdW5k
+IHVzaW5nIEZlZG9yYSBDb3JlIGV2ZXIgc2luY2UgdGhlIDIuNi4xNiBvcgo+ID4+IDIuNi4xNyBr
+ZXJuZWwgdXBkYXRlICgyLjYuMTYgY3Jhc2hlZCBkdXJpbmcgaW5pdGlhbGl6YXRpb24sIHNvIEkg
+Y291bGQgbm90Cj4gPj4gdGVsbCB3aGV0aGVyIHNvdW5kIHdvcmtlZCBvciBub3QpLiAgSXQgaGFk
+IHdvcmtlZCB3ZWxsIHRocm91Z2ggdGhlIDIuNi4xNQo+ID4+IEZlZG9yYSBrZXJuZWxzLiAgSSBm
+aW5hbGx5IHNhdCBkb3duIHRvbmlnaHQgdG8gd29yayB0aGUgcHJvYmxlbSBhcyBoYXJkIGFzCj4g
+Pj4gSSBjb3VsZCBhbmQgaGFwcGVuZWQgdXBvbiBFcmljIGFuZCBUb2JpbidzIHRpbWVseSBleGNo
+YW5nZS4KPiA+Pgo+ID4+IEZpcnN0LCBzaW1wbHkgYWRkaW5nIHByb2JlX21hc2s9MSB0byB0aGUg
+c25kLWhkYS1pbnRlbCBvcHRpb25zIHdvcmtlZCBmb3IKPiA+PiBtZSBhcyB3ZWxsOyBJIGRpZCBu
+b3QgZW5kIHVwIGhhdmluZyB0byBzcGVjaWZ5IGEgc3BlY2lmaWMgbW9kZWwuCj4gPj4KPiA+PiBT
+ZWNvbmQsIEkgdG9vIHdhcyBzZWVpbmcgYSBMT05HIGhhbmcgd2hlbiB0cnlpbmcgdG8gZG86Cj4g
+Pj4gY2F0IC9wcm9jL2Fzb3VuZC9jYXJkMC9jb2RlYyMwCj4gPj4gYnV0IG5vdyB3aXRoIHRoZSBw
+cm9iZV9tYXNrPTEsIEkgZG8gbm90IHNlZSB0aGlzLgo+ID4+Cj4gPj4gSWYgaXQgaGVscHMsIHRo
+ZSBhbHNhLWluZm8uc2ggb3V0cHV0IGZvciBteSBzeXN0ZW0gaXMgYXQKPiA+PiBodHRwOi8vcGFz
+dGViaW4uY2EvNDk2MjkzCj4gPj4gSWYgaXQgbWFrZXMgYW55IGRpZmZlcmVuY2UsIEknbSBub3Qg
+c3VyZSB3aGljaCBtb2RlbCBJIGhhZCBzcGVjaWZpZWQgb24KPiA+PiB0aGUgbW9kcHJvYmUgbGlu
+ZSBhdCB0aGUgdGltZSBJIGNhcHR1cmVkIHRoaXMgb3V0cHV0Lgo+ID4+Cj4gPj4gT25lIHRoaW5n
+IEkgZG8gbm90aWNlIGlzIHRoYXQgYWZ0ZXIgYWRkaW5nIHByb2JlX21hc2s9MSwgYXBsYXkgLWwg
+ZG9lcyBub3QKPiA+PiBzaG93IHRoZSBTaTMwNTQgTW9kZW0gd2hpY2ggc2hvd3MgdXAgaW4gdGhl
+IGFsc2EtaW5mbyBvdXRwdXQuCj4gPj4KPiA+PiBUaGFua3MgZm9yIHRoZSBoZWxwIHlvdSBnYXZl
+IGluIHRoZSB0aHJlYWQgd2l0aCBFcmljLgo+ID4+Cj4gPj4gQW5kcmV3Cj4gPj4gICAgIAo+ID4K
+PiA+IEludGVyZXN0aW5nLiAgSSd2ZSBzZWVuIHNpbWlsYXIgcmVwb3J0cyB0aGF0IHByb2JlX21h
+c2sgaGVscHMuCj4gPiBEbyB5b3UgZGlzYWJsZSB0aGUgbW9kZW0gY29kZWMgb24gQklPUyBvciBp
+cyBpdCBlbmFibGVkPwo+ID4KPiA+IElmIHRoaXMgaGFwcGVucyBldmVuIHRob3VnaCBpdCdzIGVu
+YWJsZWQgb24gQklPUywgd2UnZCBuZWVkIGEKPiA+IGJsYWNrbGlzdCBvZiBub24td29ya2luZyBk
+ZXZpY2VzLCBvciBhIG1vcmUgcm9idXN0IHByb2Jpbmcgcm91dGluZS4uLgo+ID4KPiA+Cj4gPiBU
+YWthc2hpCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xwo+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwo+ID4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwKPiA+ICAgCj4gCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCgotLSAKVG9iaW4gRGF2aXMgPHRkYXZpc0Bkc2wtb25seS5u
+ZXQ+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
