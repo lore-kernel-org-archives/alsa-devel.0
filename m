@@ -1,21 +1,23 @@
 From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: ICE1712/1724 HW mixing?
-Date: Sat, 19 May 2007 04:28:38 +0200
-Message-ID: <464E60D6.7080300@gmail.com>
-References: <464A5D6A.9020104@gmail.com>
-	<200705160927.40433.gineera@aspect135.co.uk>
-	<464B8B84.60302@gmail.com>
-	<200705181114.01667.gineera@aspect135.co.uk>
+Subject: Re: Can someone verify support for "AzTech
+ Sound	Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset
+ -	FCC-ID:I38-MMSN846" ?
+Date: Sat, 19 May 2007 04:55:12 +0200
+Message-ID: <464E6710.4000909@gmail.com>
+References: <20070513101757.8C8191BF23B@ws1-1.us4.outblaze.com>
+	<4648DA4E.8050107@gmail.com> <4648E10B.4010403@gmail.com>
+	<20070515101259.GS5690@sygehus.dk> <464B955F.3030508@gmail.com>
+	<20070517130811.GY5690@sygehus.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
 	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6F6D2444D
+	by alsa0.perex.cz (Postfix) with ESMTP id 1146E2445B
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 May 2007 04:31:19 +0200 (CEST)
-In-Reply-To: <200705181114.01667.gineera@aspect135.co.uk>
+	Sat, 19 May 2007 04:57:55 +0200 (CEST)
+In-Reply-To: <20070517130811.GY5690@sygehus.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,40 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Rask Ingemann Lambertsen <rask@sygehus.dk>
+Cc: alsa-devel@alsa-project.org, ramkromberg@mail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/18/2007 12:14 PM, Alan Horstmann wrote:
+On 05/17/2007 03:08 PM, Rask Ingemann Lambertsen wrote:
 
->> Could you "cat /proc/asound/card0/pcm0p/info" (replace the 0,0 with
->> where your 6Fire PCM is at) and confirm that "subdevices_count" is
->> larger than 1 to confirm it's HWMIXing in the ALSA sense?
-> 
-> subdevices_count: 1
-> Lee has explained this confusion:- this card has a hardware mixer but
-> does not do 'Hardware Mixing' in the Alsa sense! Thanks for that Lee!
+> I've found the X24C00 chip, a 12 MHz crystal or oscilator (I'm not sure 
+> which) and an Intel S-80C51FANM chip. The uncommented jumpers J1 and J2
+> are my best bet, although they are connected to the AZTSSPT0592 chip.
 
-Thanks. Will leave out "HWMIX" from the ICE1712/1724 card tags.
+Right, so you also have that one. Also the AZT-NXPMIX0592? If so, then your 
+NX Pro is just my NX Pro 16 minus the AD1848 codec it seems.
 
->>> The DMX6fire has both optical and phono SPDIF connectors
->> Both both input and output?
-> 
-> Yes. The two inputs can be switch selected; the outputs are in parallel.
+If J1 and J2 are connected to pin 17 and 18 at the top (the side which is 
+"up" when you can read the markings) of the AZTSSPT0592 then those will be 
+my J4/J5. Also unmarked, but I have the booklet!
 
-Thanks again, just added "RCAio" to the 6Fire.
+If they're the same, then you should have a "virtual parallel port" at 0x278 
+when they're closed for "Disney Sound Source" compatibility.
 
->> I've for example added "ANALOGio" to every single card on the TerraTec page
->> which felt a bit silly. 
-> 
-> Actually as I understand it, the EWS88D is essentially digital (ADAT etc) only 
-> though it seems to have a secondary low-grade audio out for system sounds 
-> etc.
-
-You're right, just checked the manual. I see the driver creating a 8/16-bit 
-8-48 kHz "ICE1712 consumer" PCM that I suppose will be the one that ends up 
-at that backplate analog out. The "low-grade" will be fairly relative so 
-I'll leave in the ANALOGio tag for the ES88D as well. If someone reading 
-this knows better, please yell...
+If I find out this NX Pro 16 is software configurable, I'll send you test 
+code for your NX Pro...
 
 Rene.
