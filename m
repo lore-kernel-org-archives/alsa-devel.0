@@ -1,25 +1,26 @@
 From: "Ivan N. Zlatev" <contact@i-nz.net>
 Subject: Re: Strange findings about the microphone in SigmaTel
 	STAC9221 A1
-Date: Sat, 19 May 2007 21:28:31 +0100
-Message-ID: <3db1ec7f0705191328i6c40366w196c278b1ebaca7a@mail.gmail.com>
+Date: Sat, 19 May 2007 22:23:27 +0100
+Message-ID: <3db1ec7f0705191423p9d30f0coeebb9fb6e06bf2b6@mail.gmail.com>
 References: <3db1ec7f0705110248p788b3d9q2ea5774331fded9d@mail.gmail.com>
 	<s5hps52gtmx.wl%tiwai@suse.de>
 	<3db1ec7f0705150741k72427556y6b91d9ab13cba5c5@mail.gmail.com>
 	<s5hbqgmgm8h.wl%tiwai@suse.de>
 	<3db1ec7f0705151011w7e511e50p9397a8429083d956@mail.gmail.com>
 	<s5hveeqkqd2.wl%tiwai@suse.de>
+	<3db1ec7f0705191328i6c40366w196c278b1ebaca7a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----=_Part_31005_3696346.1179606511984"
+	boundary="----=_Part_31301_10087709.1179609807149"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3CCE52452D
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.168])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA98E243D9
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 May 2007 22:28:33 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id j3so565669ugf
-	for <alsa-devel@alsa-project.org>; Sat, 19 May 2007 13:28:32 -0700 (PDT)
-In-Reply-To: <s5hveeqkqd2.wl%tiwai@suse.de>
+	Sat, 19 May 2007 23:23:27 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id j3so571157ugf
+	for <alsa-devel@alsa-project.org>; Sat, 19 May 2007 14:23:27 -0700 (PDT)
+In-Reply-To: <3db1ec7f0705191328i6c40366w196c278b1ebaca7a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,10 +34,17 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_31005_3696346.1179606511984
+------=_Part_31301_10087709.1179609807149
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
+
+Please appologise me for making the diffs the wrong way round. Below
+you will find the information corrected.
+
+Also one addition thing I just found out is that it even with capture
+volume on max the recorded volume is *very* low. This problem seems
+not to be present with the auto-config from alsa rc4.
 
 > - Build the latest driver with your pingconfig patch.
 
@@ -60,25 +68,25 @@ Playback works.
 Recording doesn't work. Codec diff:
 
  Node 0x02 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
-   Amp-Out caps: N/A
--  Amp-Out vals:  [0x7f 0x7f]
-+  Amp-Out vals:  [0xff 0xff]
-   Power: 0x0
+  Amp-Out caps: N/A
+-  Amp-Out vals:  [0xff 0xff]
++  Amp-Out vals:  [0x7f 0x7f]
+  Power: 0x0
  Node 0x03 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
-   Amp-Out caps: N/A
--  Amp-Out vals:  [0x7f 0x7f]
-+  Amp-Out vals:  [0xff 0xff]
-   Power: 0x0
+  Amp-Out caps: N/A
+-  Amp-Out vals:  [0xff 0xff]
++  Amp-Out vals:  [0x7f 0x7f]
+  Power: 0x0
  Node 0x04 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
-   Amp-Out caps: N/A
--  Amp-Out vals:  [0x7f 0x7f]
-+  Amp-Out vals:  [0xff 0xff]
-   Power: 0x0
+  Amp-Out caps: N/A
+-  Amp-Out vals:  [0xff 0xff]
++  Amp-Out vals:  [0x7f 0x7f]
+  Power: 0x0
  Node 0x05 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out
-   Amp-Out caps: N/A
--  Amp-Out vals:  [0x7f 0x7f]
-+  Amp-Out vals:  [0xff 0xff]
-   Power: 0x0
+  Amp-Out caps: N/A
+-  Amp-Out vals:  [0xff 0xff]
++  Amp-Out vals:  [0x7f 0x7f]
+  Power: 0x0
 
 > - If not working, try resetting the input source.
 >   Test recording.  Get codec dump.
@@ -91,11 +99,11 @@ info and recording still doesn't work.
 After this recording works! Woho! :-)
 
  Node 0x17 [Audio Selector] wcaps 0x300903: Stereo Amp-In
-   Amp-In caps: N/A
--  Amp-In vals:  [0x0e 0x0e]
-+  Amp-In vals:  [0x00 0x00]
-   Connection: 1
-      0x12
+  Amp-In caps: N/A
+-  Amp-In vals:  [0x00 0x00]
++  Amp-In vals:  [0x0e 0x0e]
+  Connection: 1
+     0x12
 
 > - Raise "Mux Capture Volume".  Test recording, get codec dump.
 
@@ -103,24 +111,60 @@ For the sake of the test I have also umuted and increased Mux, which
 results the following diff and a non-working recording
 
  Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
--  Amp-Out vals:  [0x04 0x04]
-+  Amp-Out vals:  [0x00 0x00]
-   Connection: 7
-      0x0e 0x15 0x0f 0x0b* 0x0c 0x0d 0x0a
+  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+-  Amp-Out vals:  [0x00 0x00]
++  Amp-Out vals:  [0x04 0x04]
+  Connection: 7
+     0x0e 0x15 0x0f 0x0b* 0x0c 0x0d 0x0a
 
 
 Regards.
--- 
+- Show quoted text -
+--
 Ivan N. Zlatev
 
 Web: http://www.i-nZ.net
 "It's all some kind of whacked out conspiracy."
 
-------=_Part_31005_3696346.1179606511984
+------=_Part_31301_10087709.1179609807149
+Content-Type: text/x-diff; name=imac20_alsa.patch; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_f1v5qr7o
+Content-Disposition: attachment; filename="imac20_alsa.patch"
+
+ZGlmZiAtciBiZTczNTAwYmQ0MmEgcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCi0tLSBhL3BjaS9o
+ZGEvcGF0Y2hfc2lnbWF0ZWwuYwlTYXQgTWF5IDE5IDE3OjIxOjA0IDIwMDcgKzAyMDAKKysrIGIv
+cGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCUZyaSBNYXkgMTggMjA6NDg6MDEgMjAwNyArMDEwMApA
+QCAtNjQsNiArNjQsNyBAQCBlbnVtIHsKIAlTVEFDX01BQ0JPT0tfUFJPX1YxLAogCVNUQUNfTUFD
+Qk9PS19QUk9fVjIsCiAJU1RBQ19JTUFDX0lOVEVMLAorCVNUQUNfSU1BQ19JTlRFTF8yMCwKIAlT
+VEFDXzkyMlhfTU9ERUxTCiB9OwogCkBAIC01NjcsNiArNTY4LDEyIEBAIHN0YXRpYyB1bnNpZ25l
+ZCBpbnQgaW1hY19pbnRlbF9waW5fY29uZmkKIAkweDQwMDAwMGZjLCAweDQwMDAwMGZiLAogfTsK
+IAorc3RhdGljIHVuc2lnbmVkIGludCBpbWFjX2ludGVsXzIwX3Bpbl9jb25maWdzWzEwXSA9IHsK
+KwkweDAxMjFFMjFGLCAweDkwQTcwMTJFLCAweDkwMTdFMTEwLCAweDQwMDAwMEZELAorCTB4NDAw
+MDAwRkUsIDB4MDE4MUUwMjAsIDB4MTE0NUUyMzAsIDB4MTFDNUUyNDAsCisJMHg0MDAwMDBGQywg
+MHg0MDAwMDBGQiwKK307CisKIHN0YXRpYyB1bnNpZ25lZCBpbnQgKnN0YWM5MjJ4X2JyZF90Ymxb
+U1RBQ185MjJYX01PREVMU10gPSB7CiAJW1NUQUNfRDk0NV9SRUZdID0gcmVmOTIyeF9waW5fY29u
+ZmlncywKIAlbU1RBQ19EOTQ1R1RQM10gPSBkOTQ1Z3RwM19waW5fY29uZmlncywKQEAgLTU3Niw2
+ICs1ODMsNyBAQCBzdGF0aWMgdW5zaWduZWQgaW50ICpzdGFjOTIyeF9icmRfdGJsW1NUCiAJW1NU
+QUNfTUFDQk9PS19QUk9fVjFdID0gbWFjYm9va19wcm9fdjFfcGluX2NvbmZpZ3MsCiAJW1NUQUNf
+TUFDQk9PS19QUk9fVjJdID0gbWFjYm9va19wcm9fdjJfcGluX2NvbmZpZ3MsCiAJW1NUQUNfSU1B
+Q19JTlRFTF0gPSBpbWFjX2ludGVsX3Bpbl9jb25maWdzLAorCVtTVEFDX0lNQUNfSU5URUxfMjBd
+ID0gaW1hY19pbnRlbF8yMF9waW5fY29uZmlncywKIH07CiAKIHN0YXRpYyBjb25zdCBjaGFyICpz
+dGFjOTIyeF9tb2RlbHNbU1RBQ185MjJYX01PREVMU10gPSB7CkBAIC01ODcsNiArNTk1LDcgQEAg
+c3RhdGljIGNvbnN0IGNoYXIgKnN0YWM5MjJ4X21vZGVsc1tTVEFDXwogCVtTVEFDX01BQ0JPT0tf
+UFJPX1YxXQk9ICJtYWNib29rLXByby12MSIsCiAJW1NUQUNfTUFDQk9PS19QUk9fVjJdCT0gIm1h
+Y2Jvb2stcHJvIiwKIAlbU1RBQ19JTUFDX0lOVEVMXSA9ICJpbWFjLWludGVsIiwKKwlbU1RBQ19J
+TUFDX0lOVEVMXzIwXSA9ICJpbWFjLWludGVsLTIwIiwKIH07CiAKIHN0YXRpYyBzdHJ1Y3Qgc25k
+X3BjaV9xdWlyayBzdGFjOTIyeF9jZmdfdGJsW10gPSB7CkBAIC0yMDIyLDYgKzIwMzEsOSBAQCBz
+dGF0aWMgaW50IHBhdGNoX3N0YWM5MjJ4KHN0cnVjdCBoZGFfY29kCiAJCWNhc2UgMHgxMDZiMDcw
+MDogLyogSW50ZWwtYmFzZWQgaU1hYyAqLwogCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19J
+TUFDX0lOVEVMOwogCQkJYnJlYWs7CisJCWNhc2UgMHgxMDZiMTcwMDogLyogSW50ZWwgaU1hYyAy
+MCAqLworCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTUFDX0lOVEVMXzIwOworCQkJYnJl
+YWs7CiAJCX0KIAl9CiAK
+------=_Part_31301_10087709.1179609807149
 Content-Type: application/octet-stream; name=initial-codec
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f1v3sq89
+X-Attachment-Id: f_f1v5qvqk
 Content-Disposition: attachment; filename="initial-codec"
 
 Q29kZWM6IFNpZ21hVGVsIFNUQUM5MjIxIEExCkFkZHJlc3M6IDAKVmVuZG9yIElkOiAweDgzODQ3
@@ -201,42 +245,7 @@ Y2FwcyAweDQwMDMwMTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwODEwOiBPVVQKICBQaW4g
 RGVmYXVsdCAweDQwMDAwMGZiOiBbTi9BXSBMaW5lIE91dCBhdCBFeHQgTi9BCiAgICBDb25uID0g
 VW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4MDA6CiAgQ29ubmVjdGlvbjog
 MQogICAgIDB4MWEK
-------=_Part_31005_3696346.1179606511984
-Content-Type: text/x-diff; name=imac20_alsa.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f1v3vfd2
-Content-Disposition: attachment; filename="imac20_alsa.patch"
-
-ZGlmZiAtciBiZTczNTAwYmQ0MmEgcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCi0tLSBhL3BjaS9o
-ZGEvcGF0Y2hfc2lnbWF0ZWwuYwlTYXQgTWF5IDE5IDE3OjIxOjA0IDIwMDcgKzAyMDAKKysrIGIv
-cGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCUZyaSBNYXkgMTggMjA6NDg6MDEgMjAwNyArMDEwMApA
-QCAtNjQsNiArNjQsNyBAQCBlbnVtIHsKIAlTVEFDX01BQ0JPT0tfUFJPX1YxLAogCVNUQUNfTUFD
-Qk9PS19QUk9fVjIsCiAJU1RBQ19JTUFDX0lOVEVMLAorCVNUQUNfSU1BQ19JTlRFTF8yMCwKIAlT
-VEFDXzkyMlhfTU9ERUxTCiB9OwogCkBAIC01NjcsNiArNTY4LDEyIEBAIHN0YXRpYyB1bnNpZ25l
-ZCBpbnQgaW1hY19pbnRlbF9waW5fY29uZmkKIAkweDQwMDAwMGZjLCAweDQwMDAwMGZiLAogfTsK
-IAorc3RhdGljIHVuc2lnbmVkIGludCBpbWFjX2ludGVsXzIwX3Bpbl9jb25maWdzWzEwXSA9IHsK
-KwkweDAxMjFFMjFGLCAweDkwQTcwMTJFLCAweDkwMTdFMTEwLCAweDQwMDAwMEZELAorCTB4NDAw
-MDAwRkUsIDB4MDE4MUUwMjAsIDB4MTE0NUUyMzAsIDB4MTFDNUUyNDAsCisJMHg0MDAwMDBGQywg
-MHg0MDAwMDBGQiwKK307CisKIHN0YXRpYyB1bnNpZ25lZCBpbnQgKnN0YWM5MjJ4X2JyZF90Ymxb
-U1RBQ185MjJYX01PREVMU10gPSB7CiAJW1NUQUNfRDk0NV9SRUZdID0gcmVmOTIyeF9waW5fY29u
-ZmlncywKIAlbU1RBQ19EOTQ1R1RQM10gPSBkOTQ1Z3RwM19waW5fY29uZmlncywKQEAgLTU3Niw2
-ICs1ODMsNyBAQCBzdGF0aWMgdW5zaWduZWQgaW50ICpzdGFjOTIyeF9icmRfdGJsW1NUCiAJW1NU
-QUNfTUFDQk9PS19QUk9fVjFdID0gbWFjYm9va19wcm9fdjFfcGluX2NvbmZpZ3MsCiAJW1NUQUNf
-TUFDQk9PS19QUk9fVjJdID0gbWFjYm9va19wcm9fdjJfcGluX2NvbmZpZ3MsCiAJW1NUQUNfSU1B
-Q19JTlRFTF0gPSBpbWFjX2ludGVsX3Bpbl9jb25maWdzLAorCVtTVEFDX0lNQUNfSU5URUxfMjBd
-ID0gaW1hY19pbnRlbF8yMF9waW5fY29uZmlncywKIH07CiAKIHN0YXRpYyBjb25zdCBjaGFyICpz
-dGFjOTIyeF9tb2RlbHNbU1RBQ185MjJYX01PREVMU10gPSB7CkBAIC01ODcsNiArNTk1LDcgQEAg
-c3RhdGljIGNvbnN0IGNoYXIgKnN0YWM5MjJ4X21vZGVsc1tTVEFDXwogCVtTVEFDX01BQ0JPT0tf
-UFJPX1YxXQk9ICJtYWNib29rLXByby12MSIsCiAJW1NUQUNfTUFDQk9PS19QUk9fVjJdCT0gIm1h
-Y2Jvb2stcHJvIiwKIAlbU1RBQ19JTUFDX0lOVEVMXSA9ICJpbWFjLWludGVsIiwKKwlbU1RBQ19J
-TUFDX0lOVEVMXzIwXSA9ICJpbWFjLWludGVsLTIwIiwKIH07CiAKIHN0YXRpYyBzdHJ1Y3Qgc25k
-X3BjaV9xdWlyayBzdGFjOTIyeF9jZmdfdGJsW10gPSB7CkBAIC0yMDIyLDYgKzIwMzEsOSBAQCBz
-dGF0aWMgaW50IHBhdGNoX3N0YWM5MjJ4KHN0cnVjdCBoZGFfY29kCiAJCWNhc2UgMHgxMDZiMDcw
-MDogLyogSW50ZWwtYmFzZWQgaU1hYyAqLwogCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19J
-TUFDX0lOVEVMOwogCQkJYnJlYWs7CisJCWNhc2UgMHgxMDZiMTcwMDogLyogSW50ZWwgaU1hYyAy
-MCAqLworCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTUFDX0lOVEVMXzIwOworCQkJYnJl
-YWs7CiAJCX0KIAl9CiAK
-------=_Part_31005_3696346.1179606511984
+------=_Part_31301_10087709.1179609807149
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -247,4 +256,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-------=_Part_31005_3696346.1179606511984--
+------=_Part_31301_10087709.1179609807149--
