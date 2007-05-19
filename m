@@ -1,23 +1,24 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: Can someone verify support for "AzTech
- Sound	Galaxy Nova 16 Extra II-3D - using AZT-2316/R Chipset
- -	FCC-ID:I38-MMSN846" ?
-Date: Sat, 19 May 2007 04:55:12 +0200
-Message-ID: <464E6710.4000909@gmail.com>
-References: <20070513101757.8C8191BF23B@ws1-1.us4.outblaze.com>
-	<4648DA4E.8050107@gmail.com> <4648E10B.4010403@gmail.com>
-	<20070515101259.GS5690@sygehus.dk> <464B955F.3030508@gmail.com>
-	<20070517130811.GY5690@sygehus.dk>
+From: Andrew Callan <acallan.alsa@ugnet.org>
+Subject: Re: Alsa 1.0.13 (and others) does not work on ALC880
+Date: Sat, 19 May 2007 02:08:14 -0500 (CDT)
+Message-ID: <Pine.LNX.4.58.0705190144230.8331@integrity.ugnet.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1146E2445B
+Received: from integrity.ugnet.org (integrity.ugnet.org [208.251.149.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73C4C24475
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 May 2007 04:57:55 +0200 (CEST)
-In-Reply-To: <20070517130811.GY5690@sygehus.dk>
+	Sat, 19 May 2007 08:08:47 +0200 (CEST)
+Received: from integrity.ugnet.org (localhost [127.0.0.1])
+	by integrity.ugnet.org (8.12.11.20060308/8.12.10) with ESMTP id
+	l4J78EP0009056
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Sat, 19 May 2007 02:08:34 -0500
+Received: from localhost (acc@localhost)
+	by integrity.ugnet.org (8.12.11.20060308/8.12.6/Submit) with ESMTP id
+	l4J78E2A009053
+	for <alsa-devel@alsa-project.org>; Sat, 19 May 2007 02:08:14 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,27 +28,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rask Ingemann Lambertsen <rask@sygehus.dk>
-Cc: alsa-devel@alsa-project.org, ramkromberg@mail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/17/2007 03:08 PM, Rask Ingemann Lambertsen wrote:
+I have been without sound using Fedora Core ever since the 2.6.16 or
+2.6.17 kernel update (2.6.16 crashed during initialization, so I could not
+tell whether sound worked or not).  It had worked well through the 2.6.15
+Fedora kernels.  I finally sat down tonight to work the problem as hard as
+I could and happened upon Eric and Tobin's timely exchange.
 
-> I've found the X24C00 chip, a 12 MHz crystal or oscilator (I'm not sure 
-> which) and an Intel S-80C51FANM chip. The uncommented jumpers J1 and J2
-> are my best bet, although they are connected to the AZTSSPT0592 chip.
+First, simply adding probe_mask=1 to the snd-hda-intel options worked for
+me as well; I did not end up having to specify a specific model.
 
-Right, so you also have that one. Also the AZT-NXPMIX0592? If so, then your 
-NX Pro is just my NX Pro 16 minus the AD1848 codec it seems.
+Second, I too was seeing a LONG hang when trying to do:
+cat /proc/asound/card0/codec#0
+but now with the probe_mask=1, I do not see this.
 
-If J1 and J2 are connected to pin 17 and 18 at the top (the side which is 
-"up" when you can read the markings) of the AZTSSPT0592 then those will be 
-my J4/J5. Also unmarked, but I have the booklet!
+If it helps, the alsa-info.sh output for my system is at
+http://pastebin.ca/496293
+If it makes any difference, I'm not sure which model I had specified on
+the modprobe line at the time I captured this output.
 
-If they're the same, then you should have a "virtual parallel port" at 0x278 
-when they're closed for "Disney Sound Source" compatibility.
+One thing I do notice is that after adding probe_mask=1, aplay -l does not
+show the Si3054 Modem which shows up in the alsa-info output.
 
-If I find out this NX Pro 16 is software configurable, I'll send you test 
-code for your NX Pro...
+Thanks for the help you gave in the thread with Eric.
 
-Rene.
+Andrew
