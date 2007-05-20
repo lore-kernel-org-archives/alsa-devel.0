@@ -1,7 +1,7 @@
 From: Andrew Callan <acallan.alsa@ugnet.org>
 Subject: Re: Alsa 1.0.13 (and others) does not work on ALC880
-Date: Sat, 19 May 2007 21:49:05 -0500 (CDT)
-Message-ID: <Pine.LNX.4.58.0705192144540.31970@integrity.ugnet.org>
+Date: Sat, 19 May 2007 22:26:18 -0500 (CDT)
+Message-ID: <Pine.LNX.4.58.0705192215030.32460@integrity.ugnet.org>
 References: <Pine.LNX.4.58.0705190144230.8331@integrity.ugnet.org>
 	<s5h7ir4etl6.wl%tiwai@suse.de>
 Mime-Version: 1.0
@@ -9,9 +9,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from integrity.ugnet.org (integrity.ugnet.org [208.251.149.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA6CD244DA
+	by alsa0.perex.cz (Postfix) with ESMTP id AF81524544
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 May 2007 03:49:39 +0200 (CEST)
+	Sun, 20 May 2007 04:26:51 +0200 (CEST)
 In-Reply-To: <s5h7ir4etl6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,11 +26,10 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The Phoenix cME FirstBIOS Pro, Revision V146 1.00.01 on this machine has
-very limited options in general.  There is not any option for
-enabling/disabling the modem (or other devices such as NIC, wireless NIC,
-sound, etc.).  So I guess I would assume that it is always enabled through
-the BIOS?
+I tried probe_mask=3.  aplay -l shows the Si3054 Modem device again.
+Sound does not work.  So I guess this points to the modem rather than the
+probing.  It looks like Eric has the same modem as I do; the Vendor Id,
+Subsystem Id, and Revision Id all match.
 
 Andrew
 
