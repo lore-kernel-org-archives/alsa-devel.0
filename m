@@ -1,25 +1,23 @@
-From: Rossco <r.maclachlan@strath.ac.uk>
-Subject: ICE1724 alsa driver
-Date: Tue, 22 May 2007 12:07:06 +0000 (UTC)
-Message-ID: <loom.20070522T134651-295@post.gmane.org>
+From: Jasiu <kiputnik@gmail.com>
+Subject: Re: Broken JACK plugin in alsa-plugins and a way to
+	fix it.
+Date: Tue, 22 May 2007 14:27:18 +0200
+Message-ID: <f13492b00705220527m296904apd6431b056ad407f7@mail.gmail.com>
+References: <f13492b00705190644s51a0cc99g95e676257a4e9044@mail.gmail.com>
+	<f13492b00705190754x6ddae848j8ef07382ac49a544@mail.gmail.com>
+	<s5hlkfip4gl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A4BA244F9
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.234])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E95C24451
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2007 14:25:04 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1HqTQE-0000p4-I7
-	for alsa-devel@alsa-project.org; Tue, 22 May 2007 14:25:02 +0200
-Received: from notrouble.cc.strath.ac.uk ([130.159.248.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 22 May 2007 14:25:02 +0200
-Received: from r.maclachlan by notrouble.cc.strath.ac.uk with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 22 May 2007 14:25:02 +0200
+	Tue, 22 May 2007 14:27:21 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id l8so2233930nzf
+	for <alsa-devel@alsa-project.org>; Tue, 22 May 2007 05:27:20 -0700 (PDT)
+In-Reply-To: <s5hlkfip4gl.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,45 +27,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Unfortunately, mpg321 doesn't exhibit similar problem. I've also
+tested aplay changing various options (mmap, nonblocking, period,
+buffer, etc.) to no avail. Whatever I feed to the plugin works ok,
+except mplayer. If I'm not mistaken WINE did the same thing as mplayer
+when I checked some time ago - I'm not sure if it still does, but not
+much has changed probably. It could be as well bug in these
+applications, but other plugins work ok with them so jack one should
+do the same, I quess.
 
-I hope someone can help me. (tried the user list but no response)
+Yes, I'm aware of mplayer's subpar code quality. I've looked there a
+few times - it isn't the most bizzare code I've ever seen, but it's
+certainly not pretty. =)
 
-I have a hitpoint 7.1ch Envy24ht-s based card with the usual vt1616 multichannel
-codec and the wolfson WM8728. The card is recognised as a chaintech av710 with
-the only difference being that the card has spdif in as well as out. It appears
-to be physically similar to the maddog entertainer (would be good to know if
-this is also recognised as an AV710)
+Thanks for the reply.
 
-By default 2 channel stereo in played through the "front" channel of the card
-through the vt1616 codec and I appear to be able to set spdif out through the
-mixer (but dont have another device to test at the moment). I have been able to
-change default output to go through the wolfson dac through an asound.state file
-posted on the web. I have to admit I do not quite understand what the file has
-done as it only appears to have removed some of the controls rather than change
-or add anything. Only two devices are detected for the card the vt1616 and
-IEC958, neither are shown as having any subdevices, therefore I am unsure how
-the asound.state file was able to address the wolfson chip which requires i2s
-input rather ac-link. This seems to indicate i2s and ac-link modes of the
-envy24ht-s chip are active.
-
-Most AV710 users seem happy enough to be able to route to toslink out and/or the
-higher quality wolfson chip, therefore there is little discussion of addressing
-the other channels of the card. I really want to be able to address each of the
-channels of the card so that I can use the convolution programme Brutefir with
-the card to create a multiway crossover for my loudspeakers. Is there anyway I
-can define each of the cards outputs so that I can select to send audio to any
-one of them? 
-
-I am also keen to get the spdif in working and particularly the syncing to spdif
-in of the clock that the ice1724 chip supports.
-
-Can these features be added to the driver? Please advise of any required info, I
-have all the datasheets and can trace chip pins also.
-
-Thanks in advance.
-
-Ross
+On 5/21/07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sat, 19 May 2007 15:44:45 +0200,
+> Jasiu wrote:
+> >
+> > Hi.
+> >
+> > I want to note that JACK plugin in alsa-plugins in broken. (At least
+> > on my two systems.) It just plays for a few seconds and then stops
+> > hanging the application that was sending data to it. When it hangs
+> > jackd spits out this:
+> >
+> > subgraph starting at alsa-jack.jackP.3635.0 timed out
+> > (subgraph_wait_fd=7, status = 0, state = Running)
+> >
+> > What I want to note is that there is a fix to that and I would like it
+> > to be included in the tree. I'm not sure if it doesn't break anything
+> > else, but it works for me ok.
+> >
+> > Open pcm_jack.c and on the line 146 you'll find:
+> >
+> > write(jack->fd, buf, 1); /* for polling */
+> >
+> > Deleting this seems to get rid of the problem.
+> > So please if you can patch this out. (I didn't make a patch myself
+> > since this is so tiny fix that it isn't really worth.)
+>
+> It's always worth to make a patch.
+> A patch contains some contexts around the changed line, so it's more
+> robust than giving just a line number.
+>
+>
+> At Sat, 19 May 2007 16:54:45 +0200,
+> Jasiu wrote:
+> >
+> > Sorry, it seems that while that fixed the problem for some apps
+> > (notably mplayer) it broke a few others. (amarok, artsd) So please
+> > just ignore my remake about the fix for now. It would be nice if
+> > someone could explain to me why that bug happens, because currently
+> > I'm more and more confused about that.
+>
+> Possibly a difference of running mode, mmap or not?
+> Or, it might requires some special period or buffer sizes.
+>
+> Since mplayer uses libao, some other apps like ogg123 or mpg321 should
+> face the same problem.  Could you check it?  If yes, it's much easier
+> than debugging with mplayer.  The source code of mplayer is... well,
+> you can judget after seeing it by yourself :)
+>
+>
+> Takashi
+>
