@@ -1,27 +1,30 @@
-From: Rossco <r.maclachlan@strath.ac.uk>
-Subject: Re: ICE1724 alsa driver
-Date: Wed, 23 May 2007 17:55:02 +0000 (UTC)
-Message-ID: <loom.20070523T194915-68@post.gmane.org>
-References: <loom.20070522T233114-523@post.gmane.org>
-	<9723.25499-31972-2031248606-1179930079@seznam.cz>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: Can someone verify support for
+Date: Wed, 23 May 2007 20:03:58 +0000 (UTC)
+Message-ID: <loom.20070523T215013-179@post.gmane.org>
+References: <20070513101757.8C8191BF23B@ws1-1.us4.outblaze.com>
+	<4648DA4E.8050107@gmail.com> <4648E10B.4010403@gmail.com>
+	<20070515101259.GS5690@sygehus.dk> <464B955F.3030508@gmail.com>
+	<20070517130811.GY5690@sygehus.dk> <464E6710.4000909@gmail.com>
+	<20070520122349.GB5690@sygehus.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id F078024667
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D2B52467A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 May 2007 19:55:24 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Hqv3L-0001er-99
-	for alsa-devel@alsa-project.org; Wed, 23 May 2007 19:55:15 +0200
-Received: from cpc2-cowc2-0-0-cust277.renf.cable.ntl.com ([86.16.109.22])
+	Wed, 23 May 2007 22:15:40 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1HqxEc-0007Ta-Jf
+	for alsa-devel@alsa-project.org; Wed, 23 May 2007 22:15:03 +0200
+Received: from cc334381-b.groni1.gr.home.nl ([82.73.12.33])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 23 May 2007 19:55:15 +0200
-Received: from r.maclachlan by cpc2-cowc2-0-0-cust277.renf.cable.ntl.com with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 23 May 2007 19:55:15 +0200
+	for <alsa-devel@alsa-project.org>; Wed, 23 May 2007 22:15:02 +0200
+Received: from rene.herman by cc334381-b.groni1.gr.home.nl with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 23 May 2007 22:15:02 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,33 +37,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- <dustin <at> seznam.cz> writes:
+Rask Ingemann Lambertsen <rask <at> sygehus.dk> writes:
 
+> > If J1 and J2 are connected to pin 17 and 18 at the top (the side which is 
+> > "up" when you can read the markings) of the AZTSSPT0592 then those will be 
+> > my J4/J5. Also unmarked, but I have the booklet!
 > 
-> Hello Ross,
-> 
-> what kind of SPDIF receiver the HV-7.1CH Hitpoint card uses? 
-> 
-> http://www.hitpoint.com.tw/computer/en/product/soundcard/via/hv-71ch.htm
-> 
-> I guess it is the chip right next to the two TOSLINK connectors. If it is
-CS8415 (looks similar), support for
-> this chip could be taken from aureon.c, or perhaps the whole aureon code would
-fit this card better than the
-> amp.c code with Chaintec AV710.
-> 
-> Regards,
-> 
+>    They are. I also have J4/J5 labelled PC SPKR, do you happen to know what
+> they are for?
 
+I seem to have misplaced this message; am replying through gmane hoping it will
+keep the thread intact...
 
-Hi Pavel,
+Those will be my J1/J2. Mine are next to the CD-ROM audio connector (and next to
+a waveblaster header).
 
-I replied to you be email, just realised this should probably have been through
-the list. It is a CS8415. I would be grateful if you could advise how I might go
-about trying the aureon.c with the hitpoint (I am new to ALSA and indeed linux).
-Or is this something that needs further developer attention and information
-about the card (I will provide anything required)?
+My J2 is the one actually labeled "PC SPK" and is not a jumper but a two pin
+connector; with my NX Pro 16 comes a one-wire cable with a 4-pin connector that
+you plug onto the motherboard speaker-out connector and a 2-pin connector that
+you stick on J2, after which the soundcard fills the role of the PC speaker.
 
-Regards,
+J1 is the "speaker amplification jumper". To quote the manual: 
 
-Ross
+"PCs from various manufacturers may have different internal PC speaker loudness.
+Thus, the function of the Speaker Amplification Jumper (J1) is to compensate for
+this differing internal PC speaker loudness among PCs."
+
+Open is low amplification, closed is high.
+
+(my Nx Pro 16 by the way also has an additional 4-pin "PHONE1" connector that
+can be used to again attach the PC speaker to)
+
+Rene.
