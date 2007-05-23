@@ -1,22 +1,19 @@
-From: "Ash Willis" <ashwillis@programmer.net>
-Subject: [PATCH 2/2] Add support for Cyrix/NatSemi Geode SC5530
-	(VSA1)
-Date: Wed, 23 May 2007 15:50:38 -0500
-Message-ID: <20070523205038.0D6581158CD@ws1-7.us4.outblaze.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: [patch] bugfix and clean driver/pci/asihpi/hpi6205.[ch]
+Date: Thu, 24 May 2007 10:05:29 +1200
+Message-ID: <200705241005.29822.linux@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed; boundary="Boundary-00=_pqLVG6RRa1/a++4"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail-outgoing.us4.outblaze.com
-	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE4842467C
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 29BD02468D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 May 2007 22:50:21 +0200 (CEST)
-Received: from unknown (unknown [192.168.8.90])
-	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
-	75133180013C
-	for <alsa-devel@alsa-project.org>; Wed, 23 May 2007 20:50:38 +0000 (GMT)
-Content-Disposition: inline
+	Thu, 24 May 2007 00:05:24 +0200 (CEST)
+Received: from zaphod.local
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JII008G5LCVUQ00@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 24 May 2007 10:05:20 +1200 (NZST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,359 +24,289 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for the Cyrix/NatSemi Geode SC5530 chips.
-This driver is ported from oss/kahlua.c and is made up of two patches.
+--Boundary-00=_pqLVG6RRa1/a++4
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Patch 1/2 adds some stuff to the SB layer to allow for some hardware quirks and
-is to be applied to alsa-kernel.
-Patch 2/2 adds the actual driver code to be applied to alsa-driver.
-Patch 2 depends on patch 1.
+Attached patch Signed-off-by: Eliot Blennerhassett 
+<eblennerhassett@audioscience.com>
 
-Signed off by: Ash Willis <ashwillis@programmer.net>
+Patch makes power of 2 buffering unconditional.
+and fixes incorrect buffer allocation when requested size was rounded up to a 
+power of 2.
 
----
+--
+Eliot
 
-summary:     Add Cyrix/NatSemi Geode CS5530 driver
 
-diff -r 5c25d0e8819c -r c9be7b8611e7 pci/Kconfig
---- a/pci/Kconfig	Fri May 18 17:56:53 2007 +0200
-+++ b/pci/Kconfig	Thu May 24 02:24:57 2007 +0100
-@@ -20,5 +20,15 @@ config SND_ASIHPI
- 	help
- 	  Say 'Y' or 'M' to include support for AudioScience ASIxxxx soundcards.
+--Boundary-00=_pqLVG6RRa1/a++4
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="alsa-driver-hg3285_hpi6205.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="alsa-driver-hg3285_hpi6205.patch"
+
+diff -r 5c25d0e8819c pci/asihpi/hpi6205.c
+--- a/pci/asihpi/hpi6205.c	Fri May 18 17:56:53 2007 +0200
++++ b/pci/asihpi/hpi6205.c	Thu May 24 09:28:43 2007 +1200
+@@ -728,11 +728,6 @@ static void AdapterGetAsserts(HPI_ADAPTE
+ 	return;
+ }
  
-+config SND_CS5530
-+	tristate "CS5530 Audio"
-+	depends on SND
-+	select SND_SB16
-+	help
-+	  Say Y here to include support for audio on Cyrix/NatSemi CS5530 chips.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-cs5530.
-+
- endmenu
+-#ifdef HPI6205_POW2BUFFERING
+-/* Helper functions for power of 2 buffering */
+-
+-#endif
+-
+ //////////////////////////////////////////////////////////////////////
+ //                                              OutStream Host buffer functions
+ //////////////////////////////////////////////////////////////////////
+@@ -747,11 +742,7 @@ static void OutStreamHostBufferAllocate(
+ 	tBusMasteringInterfaceBuffer *interface = pHw6205->pInterfaceBuffer;
  
-diff -r 5c25d0e8819c -r c9be7b8611e7 pci/Makefile
---- a/pci/Makefile	Fri May 18 17:56:53 2007 +0200
-+++ b/pci/Makefile	Thu May 24 02:24:57 2007 +0100
-@@ -13,6 +13,9 @@ clean-files := ad1889.c bt87x.c intel8x0
+ 	HPI_InitResponse(phr, phm->wObject, phm->wFunction, 0);
+-#ifdef HPI6205_POW2BUFFERING
+ 	dwSizeToAllocate = roundup_pow_of_two(phm->u.d.u.Buffer.dwBufferSize);
+-#else
+-	dwSizeToAllocate = phm->u.d.u.Buffer.dwBufferSize;
+-#endif
+ 	phr->u.d.u.stream_info.dwDataAvailable =
+ 	    pHw6205->OutStreamHostBufferSize[phm->u.d.wStreamIndex];
+ 	phr->u.d.u.stream_info.dwBufferSize = dwSizeToAllocate;
+@@ -775,8 +766,7 @@ static void OutStreamHostBufferAllocate(
+ 			    HpiOs_LockedMem_Alloc(&pHw6205->
+ 						  OutStreamHostBuffers[phm->u.d.
+ 								       wStreamIndex],
+-						  phm->u.d.u.Buffer.
+-						  dwBufferSize,
++						  dwSizeToAllocate,
+ 						  pao->Pci.pOsData);
  
- obj-$(CONFIG_SND) += pdplus/ asihpi/
+ 			if (wError) {
+@@ -809,7 +799,7 @@ static void OutStreamHostBufferAllocate(
+ 		status->dwStreamState = HPI_STATE_STOPPED;
+ 		status->dwDSPIndex = 0;
+ 		status->dwHostIndex = status->dwDSPIndex;
+-		status->dwSizeInBytes = phm->u.d.u.Buffer.dwBufferSize;
++		status->dwSizeInBytes = dwSizeToAllocate;
+ 		wError =
+ 		    HpiOs_LockedMem_GetPhysAddr(pHw6205->
+ 						OutStreamHostBuffers[phm->u.d.
+@@ -866,26 +856,11 @@ HPI_InitResponse( phr, HPI_OBJ_OSTREAM, 
+ */
+ }
  
-+snd-cs5530-objs := cs5530.o
-+obj-$(CONFIG_SND_CS5530) += snd-cs5530.o
+-#ifdef HPI6205_POW2BUFFERING
+ static long OutStreamGetSpaceAvailable(H620_HOSTBUFFER_STATUS * status)
+ {
+ 	return status->dwSizeInBytes - ((long)(status->dwHostIndex) -
+ 					(long)(status->dwDSPIndex));
+ }
+-#else
+-static long OutStreamGetSpaceAvailable(H620_HOSTBUFFER_STATUS * status)
+-{
+-	long nDiff;
+-
+-// When dwDSPindex==dwHostIndex the buffer is empty
+-// Need to add code to the HOST to make sure that the buffer is never filled
+-// to the point that dwDSPindex==dwHostIndex.
+-	nDiff = (long)(status->dwDSPIndex) - (long)(status->dwHostIndex) - 4;	// - 4 bytes at end so we don't overfill
+-	if (nDiff < 0)
+-		nDiff += status->dwSizeInBytes;
+-	return nDiff;
+-}
+-#endif
+ 
+ static void OutStreamWrite(HPI_ADAPTER_OBJ * pao, HPI_MESSAGE * phm,
+ 			   HPI_RESPONSE * phr)
+@@ -925,7 +900,7 @@ static void OutStreamWrite(HPI_ADAPTER_O
+ 		phr->wError = HPI_ERROR_INVALID_DATASIZE;
+ 		return;
+ 	}
+-#ifdef HPI6205_POW2BUFFERING
 +
- #
- #
- #
-diff -r 5c25d0e8819c -r c9be7b8611e7 pci/cs5530.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/pci/cs5530.c	Thu May 24 02:24:57 2007 +0100
-@@ -0,0 +1,296 @@
-+/*
-+ * cs5530.c - Initialisation code for Cyrix/NatSemi VSA1 softaudio
-+ *
-+ * 	(C) Copyright 2007 Ash Willis <ashwillis@programmer.net>
-+ *	(C) Copyright 2003 Red Hat Inc <alan@redhat.com>
-+ *
-+ * This driver was ported (shamelessly ripped ;) from oss/kahlua.c but I did
-+ * mess with it a bit. The chip seems to have to have trouble with full duplex
-+ * mode. If we're recording in 8bit 8000kHz, say, and we then attempt to
-+ * simultaneously play back audio at 16bit 44100kHz, the device actually plays
-+ * back in the same format in which it is capturing. By forcing the chip to
-+ * always play/capture in 16/44100, we can let alsa-lib convert the samples and
-+ * that way we can hack up some full duplex audio. 
-+ * 
-+ * XpressAudio(tm) is used on the Cyrix MediaGX (now NatSemi Geode) systems.
-+ * The older version (VSA1) provides fairly good soundblaster emulation
-+ * although there are a couple of bugs: large DMA buffers break record,
-+ * and the MPU event handling seems suspect. VSA2 allows the native driver
-+ * to control the AC97 audio engine directly and requires a different driver.
-+ *
-+ * Thanks to National Semiconductor for providing the needed information
-+ * on the XpressAudio(tm) internals.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License as published by the
-+ * Free Software Foundation; either version 2, or (at your option) any
-+ * later version.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * TO DO:
-+ *	Investigate whether we can portably support Cognac (5520) in the
-+ *	same manner.
-+ */
+ /* either all data, or enough to fit from current to end of BBM buffer */
+ 	lFirstWrite = min(phm->u.d.u.Data.dwDataSize,
+ 			  status->dwSizeInBytes -
+@@ -938,31 +913,6 @@ static void OutStreamWrite(HPI_ADAPTER_O
+ 	       phm->u.d.u.Data.dwDataSize - lFirstWrite);
+ 
+ 	status->dwHostIndex += phm->u.d.u.Data.dwDataSize;
+-#else
+-	lFirstWrite = status->dwSizeInBytes - status->dwHostIndex;
+-	if (lFirstWrite > (long)phm->u.d.u.Data.dwDataSize)
+-		lFirstWrite = (long)phm->u.d.u.Data.dwDataSize;
+-
+-	{
+-		u32 dwHostIndex = status->dwHostIndex;
+-		long lSecondWrite =
+-		    (long)phm->u.d.u.Data.dwDataSize - lFirstWrite;;
+-
+-		CheckBeforeBBMCopy(status, pBBMData, lFirstWrite, lSecondWrite);
+-		memcpy(&pBBMData[dwHostIndex], &pAppData[0], lFirstWrite);
+-		dwHostIndex += (u32) lFirstWrite;
+-		if (dwHostIndex >= status->dwSizeInBytes)
+-			dwHostIndex -= status->dwSizeInBytes;
+-		if (lSecondWrite) {
+-			memcpy(&pBBMData[dwHostIndex], &pAppData[lFirstWrite],
+-			       lSecondWrite);
+-			dwHostIndex += (u32) lSecondWrite;
+-			if (dwHostIndex >= status->dwSizeInBytes)
+-				dwHostIndex -= status->dwSizeInBytes;
+-		}
+-		status->dwHostIndex = dwHostIndex;
+-	}
+-#endif
+ }
+ 
+ static void OutStreamGetInfo(HPI_ADAPTER_OBJ * pao, HPI_MESSAGE * phm,
+@@ -1022,11 +972,7 @@ static void InStreamHostBufferAllocate(H
+ 	tBusMasteringInterfaceBuffer *interface = pHw6205->pInterfaceBuffer;
+ 
+ 	HPI_InitResponse(phr, phm->wObject, phm->wFunction, 0);
+-#ifdef HPI6205_POW2BUFFERING
+ 	dwSizeToAllocate = roundup_pow_of_two(phm->u.d.u.Buffer.dwBufferSize);
+-#else
+-	dwSizeToAllocate = phm->u.d.u.Buffer.dwBufferSize;
+-#endif
+ 	phr->u.d.u.stream_info.dwDataAvailable =
+ 	    pHw6205->InStreamHostBufferSize[phm->u.d.wStreamIndex];
+ 	phr->u.d.u.stream_info.dwBufferSize = dwSizeToAllocate;
+@@ -1049,8 +995,7 @@ static void InStreamHostBufferAllocate(H
+ 			    HpiOs_LockedMem_Alloc(&pHw6205->
+ 						  InStreamHostBuffers[phm->u.d.
+ 								      wStreamIndex],
+-						  phm->u.d.u.Buffer.
+-						  dwBufferSize,
++						  dwSizeToAllocate,
+ 						  pao->Pci.pOsData);
+ 
+ 			if (wError) {
+@@ -1082,7 +1027,7 @@ static void InStreamHostBufferAllocate(H
+ 		status->dwStreamState = HPI_STATE_STOPPED;
+ 		status->dwDSPIndex = 0;
+ 		status->dwHostIndex = status->dwDSPIndex;
+-		status->dwSizeInBytes = phm->u.d.u.Buffer.dwBufferSize;
++		status->dwSizeInBytes = dwSizeToAllocate;
+ 		wError =
+ 		    HpiOs_LockedMem_GetPhysAddr(pHw6205->
+ 						InStreamHostBuffers[phm->u.d.
+@@ -1163,25 +1108,10 @@ nValue = (nValue+1) & 0x7fff;
+ 	HW_Message(pao, phm, phr);
+ }
+ 
+-#ifdef HPI6205_POW2BUFFERING
+ static long InStreamGetBytesAvailable(H620_HOSTBUFFER_STATUS * status)
+ {
+ 	return (long)(status->dwDSPIndex) - (long)(status->dwHostIndex);
+ }
+-#else
+-static long InStreamGetBytesAvailable(H620_HOSTBUFFER_STATUS * status)
+-{
+-	long nDiff;
+-
+-// When dwDSPindex==dwHostIndex the buffer is empty
+-// Need to add code to the DSP to make sure that the buffer is never fulled
+-// to the point that dwDSPindex==dwHostIndex.
+-	nDiff = (long)(status->dwDSPIndex) - (long)(status->dwHostIndex);
+-	if (nDiff < 0)
+-		nDiff += status->dwSizeInBytes;
+-	return nDiff;
+-}
+-#endif
+ 
+ static void InStreamRead(HPI_ADAPTER_OBJ * pao, HPI_MESSAGE * phm,
+ 			 HPI_RESPONSE * phr)
+@@ -1216,7 +1146,7 @@ long *pTest;
+ 		phr->wError = HPI_ERROR_INVALID_DATASIZE;
+ 		return;
+ 	}
+-#ifdef HPI6205_POW2BUFFERING
 +
-+#include <sound/driver.h>
-+#include <linux/delay.h>
-+#include <linux/moduleparam.h>
-+#include <linux/pci.h>
-+#include <sound/core.h>
-+#include <sound/sb.h>
-+#include <sound/initval.h>
-+
-+MODULE_AUTHOR("Ash Willis");
-+MODULE_DESCRIPTION("CS5530 Audio");
-+MODULE_LICENSE("GPL");
-+
-+static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
-+static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
-+static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
-+
-+struct snd_cs5530 {
-+	struct snd_card *card;
-+	struct pci_dev *pci;
-+	struct snd_sb *sb;
-+	unsigned long pci_base;
-+};
-+
-+static struct pci_device_id snd_cs5530_ids[] = {
-+	{PCI_VENDOR_ID_CYRIX, PCI_DEVICE_ID_CYRIX_5530_AUDIO, PCI_ANY_ID,
-+							PCI_ANY_ID, 0, 0},
-+	{0,}
-+};
-+
-+MODULE_DEVICE_TABLE(pci, snd_cs5530_ids);
-+
-+static int snd_cs5530_free(struct snd_cs5530 *chip)
-+{
-+	pci_release_regions(chip->pci);
-+	pci_disable_device(chip->pci);
-+	kfree(chip);
-+	return 0;
-+}
-+
-+static int snd_cs5530_dev_free(struct snd_device *device)
-+{
-+	struct snd_cs5530 *chip = device->device_data;
-+	return snd_cs5530_free(chip);
-+}
-+
-+static void __devexit snd_cs5530_remove(struct pci_dev *pci)
-+{
-+	snd_card_free(pci_get_drvdata(pci));
-+	pci_set_drvdata(pci, NULL);
-+}
-+
-+static u8 __devinit snd_cs5530_mixer_read(unsigned long io, u8 reg)
-+{
-+	outb(reg, io + 4);
-+	udelay(20);
-+	reg = inb(io + 5);
-+	udelay(20);
-+	return reg;
-+}
-+
-+static int __devinit snd_cs5530_create(struct snd_card *card,
-+				       struct pci_dev *pci,
-+				       struct snd_cs5530 **rchip)
-+{
-+	struct snd_cs5530 *chip;
-+	unsigned long sb_base;
-+	u8 irq, dma8, dma16 = 0;
-+	u16 map;
-+	void __iomem *mem;
-+	int err;
-+
-+	static struct snd_device_ops ops = {
-+		.dev_free = snd_cs5530_dev_free,
-+	};
-+	*rchip = NULL;
-+
-+	if ((err = pci_enable_device(pci)) < 0)
-+		return err;
-+
-+	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
-+	if (chip == NULL) {
-+		pci_disable_device(pci);
-+		return -ENOMEM;
-+	}
-+
-+	chip->card = card;
-+	chip->pci = pci;
-+
-+	if ((err = pci_request_regions(pci, "CS5530")) < 0) {
-+		kfree(chip); 
-+		pci_disable_device(pci);
-+		return err;
-+	}
-+	chip->pci_base = pci_resource_start(pci, 0);
-+
-+	mem = ioremap_nocache(chip->pci_base, pci_resource_len(pci, 0));
-+	map = readw(mem + 0x18);
-+	iounmap(mem);
-+
-+	/* Map bits
-+		0:1	* 0x20 + 0x200 = sb base
-+		2	sb enable
-+		3	adlib enable
-+		5	MPU enable 0x330
-+		6	MPU enable 0x300
-+
-+	   The other bits may be used internally so must be masked */
-+
-+	sb_base = 0x220 + 0x20 * (map & 3);
-+
-+	if (map & (1<<2))
-+		printk(KERN_INFO "CS5530: XpressAudio at 0x%lx\n", sb_base);
-+	else
-+	{
-+		printk(KERN_ERR "Could not find XpressAudio!\n");
-+		snd_cs5530_free(chip);
-+		return -ENODEV;
-+	}
-+
-+	if (map & (1<<5))
-+		printk(KERN_INFO "CS5530: MPU at 0x300\n");
-+	else if (map & (1<<6))
-+		printk(KERN_INFO "CS5530: MPU at 0x330\n");
-+
-+	irq = snd_cs5530_mixer_read(sb_base, 0x80) & 0x0F;
-+	dma8 = snd_cs5530_mixer_read(sb_base, 0x81);
-+
-+	if (dma8 & 0x20)
-+		dma16 = 5;
-+	else if (dma8 & 0x40)
-+		dma16 = 6;
-+	else if (dma8 & 0x80)
-+		dma16 = 7;
-+	else
-+	{
-+		printk(KERN_ERR "CS5530: No 16bit DMA enabled\n");
-+		snd_cs5530_free(chip);
-+		return -ENODEV;
-+	}
-+
-+	if (dma8 & 0x01)
-+		dma8 = 0;
-+	else if (dma8 & 02)
-+		dma8 = 1;
-+	else if (dma8 & 0x08)
-+		dma8 = 3;
-+	else
-+	{
-+		printk(KERN_ERR "CS5530: No 8bit DMA enabled\n");
-+		snd_cs5530_free(chip);
-+		return -ENODEV;
-+	}
-+
-+	if (irq & 1)
-+		irq = 9;
-+	else if (irq & 2)
-+		irq = 5;
-+	else if (irq & 4)
-+		irq = 7;
-+	else if (irq & 8)
-+		irq = 10;
-+	else
-+	{
-+		printk(KERN_ERR "CS5530: SoundBlaster IRQ not set\n");
-+		snd_cs5530_free(chip);
-+		return -ENODEV;
-+	}
-+
-+	printk(KERN_INFO "CS5530: IRQ: %d DMA8: %d DMA16: %d\n", irq, dma8, 
-+									dma16);
-+
-+	if ((err = snd_sbdsp_create(card, sb_base, irq, snd_sb16dsp_interrupt,
-+				dma8, dma16, SB_HW_CS5530, &chip->sb)) < 0) {
-+		printk(KERN_ERR "CS5530: Could not create SoundBlaster\n");
-+		snd_cs5530_free(chip);
-+		return err;
-+	}
-+
-+	if ((err = snd_sb16dsp_pcm(chip->sb, 0, &chip->sb->pcm)) < 0) {
-+		printk(KERN_ERR "CS5530: Could not create PCM\n");
-+		snd_cs5530_free(chip);
-+		return err;
-+	}
-+
-+	if ((err = snd_sbmixer_new(chip->sb)) < 0) {
-+		printk(KERN_ERR "CS5530: Could not create Mixer\n");
-+		snd_cs5530_free(chip);
-+		return err;
-+	}
-+
-+	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
-+		snd_cs5530_free(chip);
-+		return err;
-+	}
-+
-+	snd_card_set_dev(card, &pci->dev);
-+	*rchip = chip;
-+	return 0;
-+}
-+
-+static int __devinit snd_cs5530_probe(struct pci_dev *pci,
-+					const struct pci_device_id *pci_id)
-+{
-+	static int dev;
-+	struct snd_card *card;
-+	struct snd_cs5530 *chip = NULL;
-+	int err;
-+
-+	if (dev >= SNDRV_CARDS)
-+		return -ENODEV;
-+	if (!enable[dev]) {
-+		dev++;
-+		return -ENOENT;
-+	}
-+
-+	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
-+
-+	if (card == NULL)
-+		return -ENOMEM;
-+
-+	if ((err = snd_cs5530_create(card, pci, &chip)) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+
-+	strcpy(card->driver, "CS5530");
-+	strcpy(card->shortname, "CS5530 Audio");
-+	sprintf(card->longname, "%s at 0x%lx", card->shortname, chip->pci_base);
-+
-+	if ((err = snd_card_register(card)) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+	pci_set_drvdata(pci, card);
-+	dev++;
-+	return 0;
-+}
-+
-+static struct pci_driver driver = {
-+	.name = "CS5530_Audio",
-+	.id_table = snd_cs5530_ids,
-+	.probe = snd_cs5530_probe,
-+	.remove = __devexit_p(snd_cs5530_remove),
-+};
-+
-+static int __init alsa_card_cs5530_init(void)
-+{
-+	return pci_register_driver(&driver);
-+}
-+
-+static void __exit alsa_card_cs5530_exit(void)
-+{
-+	pci_unregister_driver(&driver);
-+}
-+
-+module_init(alsa_card_cs5530_init)
-+module_exit(alsa_card_cs5530_exit)
-+
+ /* either all data, or enough to fit from current to end of BBM buffer */
+ 	lFirstRead = min(phm->u.d.u.Data.dwDataSize,
+ 			 status->dwSizeInBytes -
+@@ -1231,45 +1161,6 @@ long *pTest;
+ 	       phm->u.d.u.Data.dwDataSize - lFirstRead);
+ 
+ 	status->dwHostIndex += phm->u.d.u.Data.dwDataSize;
+-#else
+-	lFirstRead = status->dwSizeInBytes - status->dwHostIndex;
+-	if (lFirstRead > (long)phm->u.d.u.Data.dwDataSize)
+-		lFirstRead = (long)phm->u.d.u.Data.dwDataSize;
+-
+-	{			// avoid having status->dwHostIndex invalid, even momentarily
+-		u32 dwHostIndex = status->dwHostIndex;
+-		long lSecondRead =
+-		    (long)phm->u.d.u.Data.dwDataSize - lFirstRead;
+-
+-		memcpy(&pAppData[0], &pBBMData[dwHostIndex], lFirstRead);
+-		dwHostIndex += (u32) lFirstRead;
+-		if (dwHostIndex >= status->dwSizeInBytes)
+-			dwHostIndex -= status->dwSizeInBytes;
+-		if (lSecondRead) {
+-			memcpy(&pAppData[lFirstRead], &pBBMData[dwHostIndex],
+-			       lSecondRead);
+-			dwHostIndex += (u32) lSecondRead;
+-			if (dwHostIndex >= status->dwSizeInBytes)
+-				dwHostIndex -= status->dwSizeInBytes;
+-		}
+-		status->dwHostIndex = dwHostIndex;
+-	}
+-#endif
+-/* DBEUG */
+-/*
+-pTest = (long *)phm->u.d.u.Data.dwpbData;
+-for(i=0;i<phm->u.d.u.Data.dwDataSize/sizeof(long);i++)
+-{
+-if(pTest[i])
+-pTest[i]--;
+-}
+-pTest = (long *)((char *)buffer) + sizeof(H620_HOSTBUFFER_STATUS);
+-for(i=0;i<buffer->dwSizeInBytes/sizeof(long);i++)
+-{
+-if(pTest[i])
+-pTest[i]--;
+-}
+-*/
+ }
+ 
+ static void InStreamGetInfo(HPI_ADAPTER_OBJ * pao, HPI_MESSAGE * phm,
+diff -r 5c25d0e8819c pci/asihpi/hpi6205.h
+--- a/pci/asihpi/hpi6205.h	Fri May 18 17:56:53 2007 +0200
++++ b/pci/asihpi/hpi6205.h	Thu May 24 09:28:39 2007 +1200
+@@ -27,15 +27,9 @@ Copyright AudioScience, Inc., 2003
+ 
+ #include "hpi.h"
+ 
+-/** Enable buffering using buffers restricted to power of 2 length.
+-Simplifies R/W pointer wrap logic. Allows buffers to be completely filled
+-*/
+-#define HPI6205_POW2BUFFERING
+-
+ /***********************************************************
+ Defines used for basic messaging
+ ************************************************************/
+-
+ #define H620_HIF_RESET          0
+ #define H620_HIF_IDLE           1
+ #define H620_HIF_GET_RESP       2
 
+--Boundary-00=_pqLVG6RRa1/a++4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-=
-Work From Home & Learn How To Make Money
-Learn How To Make Money Online With Help & Guidance From The Pro's.
-http://a8-asy.a8ww.net/a8-ads/adftrclick?redirectid=db055100ca96c7d9527d2fadfac750b9
+--Boundary-00=_pqLVG6RRa1/a++4--
