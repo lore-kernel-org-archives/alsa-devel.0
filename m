@@ -1,17 +1,27 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: ASoC and a codec that can't be controlled
-Date: Wed, 23 May 2007 16:37:57 +0100
-Message-ID: <1179934677.12071.30.camel@a10072.wolfsonmicro.main>
-References: <46531097.5040600@freescale.com>
+From: Rossco <r.maclachlan@strath.ac.uk>
+Subject: Re: ICE1724 alsa driver
+Date: Wed, 23 May 2007 17:55:02 +0000 (UTC)
+Message-ID: <loom.20070523T194915-68@post.gmane.org>
+References: <loom.20070522T233114-523@post.gmane.org>
+	<9723.25499-31972-2031248606-1179930079@seznam.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 748C524649
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id F078024667
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 May 2007 17:37:59 +0200 (CEST)
-In-Reply-To: <46531097.5040600@freescale.com>
+	Wed, 23 May 2007 19:55:24 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Hqv3L-0001er-99
+	for alsa-devel@alsa-project.org; Wed, 23 May 2007 19:55:15 +0200
+Received: from cpc2-cowc2-0-0-cust277.renf.cable.ntl.com ([86.16.109.22])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 23 May 2007 19:55:15 +0200
+Received: from r.maclachlan by cpc2-cowc2-0-0-cust277.renf.cable.ntl.com with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 23 May 2007 19:55:15 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,44 +31,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2007-05-22 at 10:47 -0500, Timur Tabi wrote:
-> I'm working on some ASoC drivers for a new board, and we're using a CS4270.  The CS4270 is 
-> interesting in that if it is connected in stand-alone mode, there is no way to configure 
-> it.  The board wirings determine all the parameters.
-> 
-> Therefore, my CS4270 codec driver will probably be very skimpy.
-> 
-> My question is: does this mean that my cs4270.c file will *never* call these functions:
-> 
-> snd_ctl_add
-> snd_soc_cnew
-
-These functions are only required in the codec driver to change volume,
-mixer settings etc. If your codec has no volume or mixers then you don't
-need them.
-
-
-> snd_soc_dapm_new_control
-> snd_soc_dapm_connect_input
-> snd_soc_dapm_new_widgets
-
-These are used for setting up the dynamic audio power management and
-won't be needed in stand alone mode.
+ <dustin <at> seznam.cz> writes:
 
 > 
-> These are the functions used to add new controls and widgets.
+> Hello Ross,
 > 
-> So how does ALSA know that it needs to call my I2S driver *instead* of my codec driver to 
-> do stuff like change volume?
+> what kind of SPDIF receiver the HV-7.1CH Hitpoint card uses? 
+> 
+> http://www.hitpoint.com.tw/computer/en/product/soundcard/via/hv-71ch.htm
+> 
+> I guess it is the chip right next to the two TOSLINK connectors. If it is
+CS8415 (looks similar), support for
+> this chip could be taken from aureon.c, or perhaps the whole aureon code would
+fit this card better than the
+> amp.c code with Chaintec AV710.
+> 
+> Regards,
+> 
 
-You probably want to create a volume kcontrol in your I2S driver. I
-assume your I2S controller can digitally adjust the volume by altering
-the PCM stream ? The kcontrols can be added in your I2S driver probe
-function.
 
+Hi Pavel,
 
-Liam
+I replied to you be email, just realised this should probably have been through
+the list. It is a CS8415. I would be grateful if you could advise how I might go
+about trying the aureon.c with the hitpoint (I am new to ALSA and indeed linux).
+Or is this something that needs further developer attention and information
+about the card (I will provide anything required)?
+
+Regards,
+
+Ross
