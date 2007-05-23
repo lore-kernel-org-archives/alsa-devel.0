@@ -1,26 +1,18 @@
-From: Rossco <r.maclachlan@strath.ac.uk>
-Subject: Re: ICE1724 alsa driver
-Date: Tue, 22 May 2007 21:35:33 +0000 (UTC)
-Message-ID: <loom.20070522T233114-523@post.gmane.org>
-References: <loom.20070522T134651-295@post.gmane.org>
+From: "Prabhu Sivaraja" <prabhu.sivaraja@gmail.com>
+Subject: Default Sample rate Conversion
+Date: Tue, 22 May 2007 21:40:43 -0700
+Message-ID: <49f264960705222140n56b7b561r70102cf17d6991cf@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id B77FC24592
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7682A245B2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 May 2007 23:36:26 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Hqc1j-0002TI-BB
-	for alsa-devel@alsa-project.org; Tue, 22 May 2007 23:36:19 +0200
-Received: from cpc2-cowc2-0-0-cust277.renf.cable.ntl.com ([86.16.109.22])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 22 May 2007 23:36:19 +0200
-Received: from r.maclachlan by cpc2-cowc2-0-0-cust277.renf.cable.ntl.com with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 22 May 2007 23:36:19 +0200
+	Wed, 23 May 2007 06:40:45 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id i11so186527nzi
+	for <alsa-devel@alsa-project.org>; Tue, 22 May 2007 21:40:44 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,19 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Does ALSA automatically convert to my devices sample rate?
+My alsa.conf file is below
 
-Hi,
+ pcm.mix {
+        type dmix
+        ipc_key 1024
+        slave {
+         pcm "hw:0,0"
+         rate 48000
+        }
+    }
+    pcm.!default {
+        type plug
+        slave.pcm "mix"
+    }
 
-I have been a little hasty about posting about routing to the vt1616 channels -
-think I will now be able to achieve what I am after with alsa's route plugin.
+When I play a 32KHz file with aplay does it get up sampled to my device's
+48KHz sample rate? I am assuming it does as it plays just fine but I am not
+sure where the upsampling happens?
 
-However, I am still keen to enable spdif in within a driver that usually does
-not support such a feature. Would be grateful for any discussion of how this
-could be implemented.
-
-Cheers,
-
-Ross
+Thanks.
