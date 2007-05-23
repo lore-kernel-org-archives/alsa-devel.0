@@ -1,17 +1,17 @@
-From: "Prabhu Sivaraja" <prabhu.sivaraja@gmail.com>
-Subject: Default Sample rate Conversion
-Date: Tue, 22 May 2007 21:40:43 -0700
-Message-ID: <49f264960705222140n56b7b561r70102cf17d6991cf@mail.gmail.com>
+From: "Chris Pemberton" <cjpembo@gmail.com>
+Subject: bios update alters hda-intel and alsamixer
+Date: Tue, 22 May 2007 23:55:55 -0500
+Message-ID: <ccc103cf0705222155q70db032ckdedfbbde4ccda832@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7682A245B2
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.243])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3252E245B3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 May 2007 06:40:45 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id i11so186527nzi
-	for <alsa-devel@alsa-project.org>; Tue, 22 May 2007 21:40:44 -0700 (PDT)
+	Wed, 23 May 2007 06:55:56 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so13719ana
+	for <alsa-devel@alsa-project.org>; Tue, 22 May 2007 21:55:55 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,27 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Does ALSA automatically convert to my devices sample rate?
-My alsa.conf file is below
+After updating the bios on a Lenovo notebook, my hda-intel sound "changed"
 
- pcm.mix {
-        type dmix
-        ipc_key 1024
-        slave {
-         pcm "hw:0,0"
-         rate 48000
-        }
-    }
-    pcm.!default {
-        type plug
-        slave.pcm "mix"
-    }
+Before the bios update I used kernel 2.6.20.3, external
+alsa-driver-1.0.14rc3 and the attached patch_realtek.c (in-kernel alsa
+wouldn't work)
 
-When I play a 32KHz file with aplay does it get up sampled to my device's
-48KHz sample rate? I am assuming it does as it plays just fine but I am not
-sure where the upsampling happens?
+After the bios update I use just the alsa contained in kernel 2.6.20.3.
 
-Thanks.
+Before bios update, my mixer contained many items:  including master,
+front, mic, pcm, etc.
+
+Now it only contains master and pcm.
+
+So, I have a few questions:
+
+How can I determine what items are "supposed" to show up in alsamixer?
+
+Where can I submit my laptop soundcard information to help finalize
+support of this model/card?
+
+Thank you
