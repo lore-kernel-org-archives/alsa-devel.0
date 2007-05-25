@@ -1,22 +1,22 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] [PATCH 0/2] ASoC sound support
-	for	SMDK2440boards
-Date: Fri, 25 May 2007 12:16:44 +0100
-Message-ID: <1180091804.13652.47.camel@localhost.localdomain>
-References: <5b7270f40705240728p4f579269g1ddc8e8db8d59f81@mail.gmail.com>
-	<AC2729D6E3A3314A922E4E0FBE513F65D1FD65@MAIL.eldorado.org.br>
-	<5b7270f40705241445t59a89b24sacbd3abf0a1b129d@mail.gmail.com>
-	<1180086712.13652.34.camel@localhost.localdomain>
-	<5b7270f40705250352k2dcacfc1gc6c8fc5587d12edd@mail.gmail.com>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Re: [ALSA] ALSA Power Management,
+	Drivers behaving unexpectedly after suspend/resume cycle
+Date: Fri, 25 May 2007 17:34:08 +0530
+Message-ID: <8d6898730705250504p442190e6u5bf71fbcd947df38@mail.gmail.com>
+References: <8d6898730705242257k6da2088fi80f0d4034ed78986@mail.gmail.com>
+	<s5h3b1lp75g.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8D1624419
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C1C624453
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 May 2007 13:16:45 +0200 (CEST)
-In-Reply-To: <5b7270f40705250352k2dcacfc1gc6c8fc5587d12edd@mail.gmail.com>
+	Fri, 25 May 2007 14:04:09 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id i11so880760nzi
+	for <alsa-devel@alsa-project.org>; Fri, 25 May 2007 05:04:08 -0700 (PDT)
+In-Reply-To: <s5h3b1lp75g.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +26,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Zoltan Devai <zdevai@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2007-05-25 at 12:52 +0200, Zoltan Devai wrote:
-> 2007/5/25, Liam Girdwood <lg@opensource.wolfsonmicro.com>:
+Every ALSA driver is calling these for suspend
 
+snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+snd_pcm_suspend_all(pcm[i]);
+
+And for resume
+snd_power_change_state(card, SNDRV_CTL_POWER_D0)
+
+
+In ALSA ASoC no driver is calling any of this, even not in soc-core.c
+
+My driver is an ASoC driver and I am also not calling these functions
+
+Will this cause any Issue?
+
+Thanks
+
+On 5/25/07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Fri, 25 May 2007 11:27:10 +0530,
+> Nobin Mathew wrote:
 > >
-> > Thanks, I'll apply all to the ASoC dev branch.
-> 
-> 
-> Please don't!! :)
-> These patches are just for testing the board and codec code.
-> They are no way final, and not meant for inclusion.
-> Please read:
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-May/001150.html
-> 
-
-ok, np. ;)
-
-Fwiw, the ASoC dev branch is my place holder for work that is deemed to
-be in-progress. It just helps me (and hopefully others) find stuff
-easier.
-
-There is a for-alsa-kernel branch that's only for mature stuff destined
-for alsa-kernel Hg.
-
-
-Cheers
-
-Liam  
+> > I am implementing power management in my ALSA sound drivers. ALSA
+> > drivers are not working properly after resume. All registers values
+> > are proper and I am able to read back the codec register contents.
+> >
+> > If I do a playback after resume then I am getting lots of "underrun".
+>
+> As Liam already pointed, the underrun is usually irrelevant from the
+> codec registers, as codec chips don't control the DMA transfer.
+> So, it's likely a controller side problem.
+>
+> > After a reboot playback is working fine.
+> >
+> > Is there any known issues with ALSA power  management?
+>
+> No.  Some drivers may have, but no problem in general.
+>
+> > Why Ubuntu and Redhat does ALSA modules removal before suspend and
+> > insertion after resume?
+>
+> They are either too lazy or too conservative :)
+>
+>
+> Takashi
+>
