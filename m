@@ -1,22 +1,17 @@
-From: "Zoltan Devai" <zdevai@gmail.com>
-Subject: Re: [RFC] [PATCH 1/2] ASoC sound support for SMDK2440
-	boards: UDA1341 driver
-Date: Fri, 25 May 2007 00:19:38 +0200
-Message-ID: <5b7270f40705241519u1a6cc145t2c76b2443fb621b0@mail.gmail.com>
-References: <5b7270f40705240736h7f47e0a0p16ac2b36ae07a5d0@mail.gmail.com>
-	<s5hhcq2p2le.wl%tiwai@suse.de>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Suggestion for getting alsa to use Conexant
+Date: Thu, 24 May 2007 19:32:55 -0700
+Message-ID: <1180060375.9034.18.camel@razman.gruemaster.com>
+References: <000301c78d28$9d7a3a70$bbe664d0@PC120716747189>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C0092439D
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF4DB243E0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 May 2007 00:19:44 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so141848ana
-	for <alsa-devel@alsa-project.org>; Thu, 24 May 2007 15:19:38 -0700 (PDT)
-In-Reply-To: <s5hhcq2p2le.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Fri, 25 May 2007 04:32:59 +0200 (CEST)
+In-Reply-To: <000301c78d28$9d7a3a70$bbe664d0@PC120716747189>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Victor Schneider <vtailor@copper.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2007/5/24, Takashi Iwai <tiwai@suse.de>:
-> At Thu, 24 May 2007 16:36:53 +0200,
-> Zoltan Devai wrote:
-> >
-> > ASoC Support for the UDA1341 codec.
-> > Please note that until there is a final L3-bus driver, this patch won't work.
->
-> So, how is the status of L3-bus driver?
-> Is it supposed to be merged to the next (2.6.23) kernel (e.g. already
-> in mm tree)?  Or, should we keep your driver code in alsa-driver tree
-> for _not_ merging to 2.6.23?
+I don't think this is limited to the Conexant CX20549 (5045) or the
+CX20551 (5047).  I have a laptop with a Conexant vendor ID of 2bfa.  The
+hda-intel driver picks it up, but uses the hda-generic configuration.
 
-Thanks for the feedback Takashi, Liam.
+On the CX20549 & CX20551, I think I need to toggle a bit to enable the
+MFG portion.  I have a test board here, but the drivers are not
+detecting it, even without my patch_conexant code.  I'll look at the
+intel-80xm module, but it is written for the AC'97 bus specification,
+which is very different from the HDA bus specification.
 
-These patches weren't meant to be included immediately.
-I want to clear two issues as mentioned in the first patch-mail:
-- L3: The code originates from 2001, and AFAIK was in 2.5 kernels
-but not in 2.6 anymore. I doubt that it's OK for mainline in its current state.
-- Other SMDK boards: The patches are probably OK for other boards as well,
-and could be more general but I lack the hardware info to be sure.
+Tobin
 
-I'll bring up the topic on the arm-kernel list, as there are a lot of SMDK users
-along with the original author of the L3 code :)
+On Wed, 2007-05-02 at 21:13 -0500, Victor Schneider wrote:
 
-Anyway, if there's no solution in a week I'll just post the coding-style clean
-patches which you can keep in the alsa-tree.
+> How about being able to parameterize Alsa modules so that the intel 80xm 
+> module finds any hda modem that also acts as an Intel hda chip? I am 
+> referring to the Conexant combination modem and hda chip that gets 
+> identified as "Conexant Waikiki" by alsamixer, but that 80xm can't find as a 
+> modem. Giving the 80xm module the device:identifier value to override its 
+> detection of the Intel version of the Conexant hda modem might let slmodemd 
+> work.
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Zoltan
+-- 
+Tobin Davis <tdavis@dsl-only.net>
