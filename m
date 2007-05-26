@@ -1,20 +1,16 @@
-From: "j t" <mark473@gmail.com>
-Subject: Re: Will the real alsa wiki please stand up?
-Date: Sat, 26 May 2007 12:16:02 +0100
-Message-ID: <b88f52540705260416n412f59c4md6d402c960d95c76@mail.gmail.com>
-References: <b88f52540705260200s5521d02bq7d115d783b7aeb3d@mail.gmail.com>
-	<4658013E.9000408@ingomueller.net>
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: [PATCH] Disable debugging output for the ALS300 driver
+Date: Sat, 26 May 2007 13:26:35 +0000
+Message-ID: <20070526132636.0972E87301@cal1-1.us4.outblaze.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id A37FB24568
+Received: from cal1-1.us4.outblaze.com (cal1-1.us4.outblaze.com
+	[205.158.62.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA8AB243B8
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 May 2007 13:16:03 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so320289ana
-	for <alsa-devel@alsa-project.org>; Sat, 26 May 2007 04:16:02 -0700 (PDT)
-In-Reply-To: <4658013E.9000408@ingomueller.net>
+	Sat, 26 May 2007 15:26:43 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,49 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On 5/26/07, Ingo M=FCller <alsa@ingomueller.net> wrote:
-> Hi!
->
-> If you had read carefully what the main page of alsa.opensrc.org sais,
-> you'd know that this is an unofficial wiki.
+Disables debugging output in the ALS300 driver.
+Also contains a whitespace cleanup and a fix for a potential bug.
 
-Oops - my bad. Sorry...
+Signed-off-by: Ash Willis <ashwillis@programmer.net>
 
-> The story of the other wiki
-> is bit harder to find, but if you want, you can read it at
->
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-April/000412.ht=
-ml
->
-> The basic of the story is, that it has been created maybe two months ago
-> by official ALSA developpers to replace the official ALSA web site,
-> which was difficult to maintain and to keep up to date. The thing is,
-> that only a few people seem to care that much that they would help to
-> transfer content from the web site to the new wiki (thanks a lot to
-> those who do care!). Feel free to contribute :-)
+----------------------------------------------------
 
-I will, just as soon as I work out which of the two wikis I should be
-contributing to...
-
->
-> Anyway, I totally agree with you that having one single wiki would be a
-> lot better for everybody. Again, the problem is, that the merging has to
-> be done by someone and this means work.
-
-I could be wrong (that's my normal disclaimer out of the way), but
-surely the effort of merging would seem to be futile if the majority
-of edits subsequently go to the "wrong" wiki (I'm talking here from a
-practical viewpoint).
-
-Does anyone know if the people who maintain the "unofficial" wiki
-would be offended/"put up resistance"/disagree if their wiki were
-"superceded"? If no, a note could be added to the unofficial about the
-new "official" one (it's interesting to note that the unofficial wiki
-doesn't mention the official one at all, although that could just be a
-lack of resources, rather than something intentional).
-
-I hope that at least some of this makes sense...
-
-Jaime
+diff -r 337962e19de6 -r 8ea4fa014563 pci/als300.c
+--- a/pci/als300.c=A0=A0=A0 Fri May 25 12:18:49 2007 +0200
++++ b/pci/als300.c=A0=A0=A0 Sat May 26 14:04:14 2007 +0000
+@@ -88,8 +88,8 @@
+=A0#define PLAYBACK_BLOCK_COUNTER=A0=A0=A0 0x9A
+=A0#define RECORD_BLOCK_COUNTER=A0=A0=A0 0x9B
+=A0
+-#define DEBUG_CALLS=A0=A0=A0 1
+-#define DEBUG_PLAY_REC=A0=A0=A0 1
++#define DEBUG_CALLS=A0=A0=A0 0
++#define DEBUG_PLAY_REC=A0=A0=A0 0
+=A0
+=A0#if DEBUG_CALLS
+=A0#define snd_als300_dbgcalls(format, args...) printk(format, ##args)
+@@ -730,10 +730,9 @@ static int __devinit snd_als300_create(s
+=A0=A0=A0=A0 }
+=A0=A0=A0=A0 chip->irq =3D pci->irq;
+=A0
+-
+=A0=A0=A0=A0 snd_als300_init(chip);
+=A0
+-=A0=A0=A0 if (snd_als300_ac97(chip) < 0) {
++=A0=A0=A0 if ((err =3D snd_als300_ac97(chip)) < 0) {
+=A0=A0=A0=A0 =A0=A0=A0 snd_printk(KERN_WARNING "Could not create ac97\n");
+=A0=A0=A0=A0 =A0=A0=A0 snd_als300_free(chip);
+=A0=A0=A0=A0 =A0=A0=A0 return err;
