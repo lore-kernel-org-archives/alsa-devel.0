@@ -1,18 +1,18 @@
 From: "Ivan N. Zlatev" <contact@i-nz.net>
-Subject: Intel HD SigmaTel STAC9221 - Wrong input after output
-	change
-Date: Sun, 27 May 2007 23:33:27 +0100
-Message-ID: <3db1ec7f0705271533m440de9bci6513c4c6453c5e16@mail.gmail.com>
+Subject: SigmaTel STAC9221 - Mux Amp-Out > 0x02 == microphone
+	not working
+Date: Sun, 27 May 2007 23:50:35 +0100
+Message-ID: <3db1ec7f0705271550n4e61e012l245f888ff34558c0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----=_Part_6884_22210004.1180305207668"
+	boundary="----=_Part_6928_4454440.1180306235441"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0458246BD
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B942244D1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2007 00:33:28 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id o2so525849uge
-	for <alsa-devel@alsa-project.org>; Sun, 27 May 2007 15:33:28 -0700 (PDT)
+	Mon, 28 May 2007 00:50:36 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so527838uge
+	for <alsa-devel@alsa-project.org>; Sun, 27 May 2007 15:50:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,7 +25,7 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_6884_22210004.1180305207668
+------=_Part_6928_4454440.1180306235441
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
@@ -34,90 +34,60 @@ Hello,
 
 I am on an iMac ("*imac-20" model/pinconfig) with a Intel HD card with
 the SigmaTel STAC9221 codec. I have attached the inital codec info
-after modprobe. When I plug in and then unplug my speakers the
-microphone stops working. Reproduction steps with codec dump diffs as
-follows
+after modprobe. I am using Alsa HG. Setting the mux gain to a value >
+20 (0x02 Amp-Out value) results a non-working microphone. Steps and
+codec diffs as follows:
+
+1) initial - microphone working
+2) Mux Gain = 10 - microphone working
+
+ Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+-  Amp-Out vals:  [0x00 0x00]
++  Amp-Out vals:  [0x01 0x01]
+   Connection: 7
+      0x0e 0x15 0x0f 0x0b* 0x0c 0x0d 0x0a
+
+3) Mux Gain = 20 - microphone working
+
+ Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+-  Amp-Out vals:  [0x01 0x01]
++  Amp-Out vals:  [0x02 0x02]
+   Connection: 7
+      0x0e 0x15 0x0f 0x0b* 0x0c 0x0d 0x0a
 
 
-1) Initial codec info - attached - Microphone working
+4) Mux Gain = 30 - microphone not working
 
-2) Plug in speakers - Microphone working
-
- Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
-   Pincap 0x081737: IN OUT Detect
-   Pin Default 0x9017e110: [Fixed] Speaker at Int N/A
-     Conn = Analog, Color = White
--  Pin-ctls: 0x00:
-+  Pin-ctls: 0x40: OUT
-   Connection: 1
-      0x03
+ Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+-  Amp-Out vals:  [0x02 0x02]
++  Amp-Out vals:  [0x03 0x03]
+   Connection: 7
+      0x0e 0x15 0x0f 0x0b* 0x0c 0x0d 0x0a
 
 
-3) Unplug speakers - Microphone not working
+4) Mux Gain = 40 - microphone not working
 
-Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
-   Pincap 0x081737: IN OUT Detect
-   Pin Default 0x90a7012e: [Fixed] Mic at Int N/A
-     Conn = Analog, Color = Unknown
--  Pin-ctls: 0x44: OUT
-+  Pin-ctls: 0x04:
-   Connection: 1
-      0x04
- Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
-   Pincap 0x081737: IN OUT Detect
-   Pin Default 0x9017e110: [Fixed] Speaker at Int N/A
-     Conn = Analog, Color = White
--  Pin-ctls: 0x40: OUT
-+  Pin-ctls: 0x00:
-   Connection: 1
-      0x03
- Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
-   Pincap 0x0837: IN OUT Detect
-   Pin Default 0x0181e020: [Jack] Line In at Ext Rear
-     Conn = 1/8, Color = White
--  Pin-ctls: 0x40: OUT
-+  Pin-ctls: 0x00:
-   Connection: 1
-      0x05
+ Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+-  Amp-Out vals:  [0x03 0x03]
++  Amp-Out vals:  [0x04 0x04]
+   Connection: 7
+      0x0e 0x15 0x0f 0x0b* 0x0c 0x0d 0x0a
 
-
-4) Plug in speakers again - Microphone not working
-
- Node 0x0b [Pin Complex] wcaps 0x400181: Stereo
-   Pincap 0x081737: IN OUT Detect
-   Pin Default 0x90a7012e: [Fixed] Mic at Int N/A
-     Conn = Analog, Color = Unknown
--  Pin-ctls: 0x04:
-+  Pin-ctls: 0x44: OUT
-   Connection: 1
-      0x04
- Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
-   Pincap 0x081737: IN OUT Detect
-   Pin Default 0x9017e110: [Fixed] Speaker at Int N/A
-     Conn = Analog, Color = White
--  Pin-ctls: 0x00:
-+  Pin-ctls: 0x40: OUT
-   Connection: 1
-      0x03
- Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
-   Pincap 0x0837: IN OUT Detect
-   Pin Default 0x0181e020: [Jack] Line In at Ext Rear
-     Conn = 1/8, Color = White
--  Pin-ctls: 0x00:
-+  Pin-ctls: 0x40: OUT
-   Connection: 1
-      0x05
-
+Regards
 -- 
 Ivan N. Zlatev
 
 Web: http://www.i-nZ.net
 "It's all some kind of whacked out conspiracy."
 
-------=_Part_6884_22210004.1180305207668
+------=_Part_6928_4454440.1180306235441
 Content-Type: application/octet-stream; name=codec-info
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f282wmqw
+X-Attachment-Id: f_f283bjh4
 Content-Disposition: attachment; filename="codec-info"
 
 Q29kZWM6IFNpZ21hVGVsIFNUQUM5MjIxIEExCkFkZHJlc3M6IDAKVmVuZG9yIElkOiAweDgzODQ3
@@ -198,7 +168,7 @@ eF0gd2NhcHMgMHg0MDAzMDE6IFN0ZXJlbyBEaWdpdGFsCiAgUGluY2FwIDB4MDgxMDogT1VUCiAg
 UGluIERlZmF1bHQgMHg0MDAwMDBmYjogW04vQV0gTGluZSBPdXQgYXQgRXh0IE4vQQogICAgQ29u
 biA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDAwOgogIENvbm5lY3Rp
 b246IDEKICAgICAweDFhCg==
-------=_Part_6884_22210004.1180305207668
+------=_Part_6928_4454440.1180306235441
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -209,4 +179,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-------=_Part_6884_22210004.1180305207668--
+------=_Part_6928_4454440.1180306235441--
