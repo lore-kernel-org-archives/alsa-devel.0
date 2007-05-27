@@ -1,14 +1,18 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: HDA Codec:  Add support for MSI K9N Ultra
-Date: Sun, 27 May 2007 00:09:28 -0700
-Message-ID: <1180249768.9034.81.camel@razman.gruemaster.com>
+From: Matthias Nyffenegger <matthias.nyffenegger@bluewin.ch>
+Subject: alsa playback channel interleaving question
+Date: Sun, 27 May 2007 22:36:10 +0200
+Message-ID: <4659EBBA.9050701@bluewin.ch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-AP0fFlnkbZjjRjHMCycs"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 823F524604
+Received: from mail18.bluewin.ch (mail18.bluewin.ch [195.186.19.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61DA224699
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 May 2007 09:09:30 +0200 (CEST)
+	Sun, 27 May 2007 22:33:26 +0200 (CEST)
+Received: from [192.168.1.44] (85.2.12.198) by mail18.bluewin.ch (Bluewin
+	7.3.121) id 4649A0200026FBF9 for alsa-devel@alsa-project.org;
+	Sun, 27 May 2007 20:33:25 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,45 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---=-AP0fFlnkbZjjRjHMCycs
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Earlier this year I wrote to this list:
 
-This patch adds the MSI K9N Ultra system to the realtek patch.
+> I am trying to write an alsa driver for my audiowerk8 soundcard.
+> The aw8 uses a Philips saa7146 chipset. There are 2 capture and
+> 8 playback channels mapped on the saa7146's DMA as follows:
+> 
+> DMA1: 2xcapture
+> DMA2: 4xplayback
+> DMA3: 4xplayback
+> 
+> Sample format is 16bit.
+> 
+> Frame format is as follows:
+> (A number corresponds to a channel, a stereo channel-pair is embraced
+> by [] and 1 digit corresponds to one sample byte)
+> 
+> capture channels [0,1] on DMA1:        00--11--
+> playback channels [2,3],[4,5] on DMA2: 22443355
+> playback channels [6,7],[8,9] on DMA3: 66887799
 
+I tried to find a way to handle this in the card, but this special 
+interleaving
+for the playback channels is by hardware restriction and can't be worked 
+around
+in the soundcard itself.
+AFAIK alsa provides the samples interleaved like 22334455 (66778899). To 
+avoid
+channel switching I guess some special processing in the alsa driver is 
+required.
+Where is this done best? Do I have to move around the samples in the 
+interrupt
+handler or does alsa provide some (possibly better) means to achive the 
+correct
+(for the soundcard) interleaving?
 
-Signed off by Tobin Davis <tdavis@dsl-only.net>
-
---=-AP0fFlnkbZjjRjHMCycs
-Content-Disposition: attachment; filename=MSI-K9N.patch
-Content-Type: text/x-patch; name=MSI-K9N.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-diff -r 45179b325c8e pci/hda/patch_realtek.c
---- a/pci/hda/patch_realtek.c	Wed May 23 16:27:32 2007 +0200
-+++ b/pci/hda/patch_realtek.c	Sun May 27 00:05:47 2007 -0700
-@@ -6379,6 +6382,7 @@ static struct snd_pci_quirk alc883_cfg_t
- 	SND_PCI_QUIRK(0x1458, 0xa002, "MSI", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x6668, "MSI", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x7187, "MSI", ALC883_6ST_DIG),
-+	SND_PCI_QUIRK(0x1462, 0x7250, "MSI", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x7280, "MSI", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x0579, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3ef9, "MSI", ALC883_TARGA_DIG),
-
---=-AP0fFlnkbZjjRjHMCycs
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-AP0fFlnkbZjjRjHMCycs--
+Regards, Matthias
