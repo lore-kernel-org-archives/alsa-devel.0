@@ -1,22 +1,18 @@
-From: =?ISO-8859-1?Q?Ingo_M=FCller?= <alsa@ingomueller.net>
-Subject: Re: Will the real alsa wiki please stand up?
-Date: Sun, 27 May 2007 23:10:16 +0200
-Message-ID: <4659F3B8.8090705@ingomueller.net>
-References: <b88f52540705260200s5521d02bq7d115d783b7aeb3d@mail.gmail.com>	<4658013E.9000408@ingomueller.net>
-	<b88f52540705260416n412f59c4md6d402c960d95c76@mail.gmail.com>
+From: "Ivan N. Zlatev" <contact@i-nz.net>
+Subject: [PATCH] Sigmatel STAC9221 - Add Configs for all Apple
+	Intel Macs
+Date: Sun, 27 May 2007 22:59:41 +0100
+Message-ID: <3db1ec7f0705271459xb780f7em39df715b0ace772a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+	boundary="----=_Part_6788_23699530.1180303181795"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server2.internet4ever.de (unknown [212.112.224.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DB442458F
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA66C246A3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 May 2007 23:10:24 +0200 (CEST)
-Received: from [192.168.0.7] (p57B0A4CF.dip0.t-ipconnect.de [87.176.164.207])
-	by server2.internet4ever.de (Postfix) with ESMTP id E64FACD069C
-	for <alsa-devel@alsa-project.org>;
-	Sun, 27 May 2007 23:10:22 +0200 (CEST)
-In-Reply-To: <b88f52540705260416n412f59c4md6d402c960d95c76@mail.gmail.com>
+	Sun, 27 May 2007 23:59:42 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so521745uge
+	for <alsa-devel@alsa-project.org>; Sun, 27 May 2007 14:59:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,87 +25,147 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+------=_Part_6788_23699530.1180303181795
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Being one of the wiki sysops and certainly the most contributing user of
-the last half year, I would not only "not put resistance", but greatly
-appriciate if the two wiki were merged. I started to work on the wiki,
-because I wasn't happy with ALSA's documentation and especially that it
-was splattered all over the internet instead of being concentrated on
-its official web site. Therefore I welcome anything that improves this
-miss-situation.
+This patch:
+ * adds the pinconfigs for all 5 Apple boards and 14 Subsystem IDs
+(support for possibly all iMac, Mac, MacMini etc etc)
+ * adds "intel-mac-v1" to v5 models which replace the current
+ * reflects changes in Alsa-Configuration.txt
 
-I don't know what the main administrator and creator of the wiki would
-say, though. We should probably just ask him what he thinks of this
-idea. His name is Mark Constable and you can contact him through his
-user page of the wiki at
+Please review. Regards.
+-- 
+Ivan N. Zlatev
 
-http://alsa.opensrc.org/User_talk:Markc
+Web: http://www.i-nZ.net
+"It's all some kind of whacked out conspiracy."
 
-In the meantime, as a personal opinion, I'd contribute to the unofficial
-wiki. It largely beats the new wiki in matters of popularity and
-completeness. Anyway, it doesn't matter that much, were you contribute,
-because everything can be copied from one wiki to the other once we
-decided how to proceed further...
+------=_Part_6788_23699530.1180303181795
+Content-Type: text/x-patch; name=apple_alsa.patch; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_f280rgfn
+Content-Disposition: attachment; filename="apple_alsa.patch"
 
-If you do want to contribute to the new wiki, you should have a look at
-http://alsa.opensrc.org/ALSA:Community_Portal. There is an (unordered)
-todo list and discussions about the wiki. Feel free to add more points
-to the list and share ideas about the wiki :-)
+ZGlmZiAtciAzMzc5NjJlMTlkZTYgRG9jdW1lbnRhdGlvbi9BTFNBLUNvbmZpZ3VyYXRpb24udHh0
+Ci0tLSBhL0RvY3VtZW50YXRpb24vQUxTQS1Db25maWd1cmF0aW9uLnR4dAlGcmkgTWF5IDI1IDEy
+OjE4OjQ5IDIwMDcgKzAyMDAKKysrIGIvRG9jdW1lbnRhdGlvbi9BTFNBLUNvbmZpZ3VyYXRpb24u
+dHh0CVN1biBNYXkgMjcgMjI6MjA6MzQgMjAwNyArMDEwMApAQCAtOTIzLDEyICs5MjMsMTEgQEAg
+UHJpb3IgdG8gdmVyc2lvbiAwLjkuMHJjNCBvcHRpb25zIGhhZCBhIAogCSAgcmVmCQlSZWZlcmVu
+Y2UgYm9hcmQKIAkgIDNzdGFjawlEOTQ1IDNzdGFjawogCSAgNXN0YWNrCUQ5NDUgNXN0YWNrICsg
+U1BESUYKLQkgIG1hY21pbmkJSW50ZWwgTWFjIE1pbmkKLQkgIG1hY2Jvb2sJSW50ZWwgTWFjIEJv
+b2sKLQkgIG1hY2Jvb2stcHJvLXYxIEludGVsIE1hYyBCb29rIFBybyAxc3QgZ2VuZXJhdGlvbgot
+CSAgbWFjYm9vay1wcm8JSW50ZWwgTWFjIEJvb2sgUHJvIDJuZCBnZW5lcmF0aW9uCi0JICBpbWFj
+LWludGVsCUludGVsIGlNYWMKLQkgIGltYWMtaW50ZWwtMjAJSW50ZWwgaU1hYyAobmV3ZXIgdmVy
+c2lvbikKKwkgIGludGVsLW1hYy12MQlJbnRlbCBNYWMgVHlwZSAxCisJICBpbnRlbC1tYWMtdjIJ
+SW50ZWwgTWFjIFR5cGUgMgorCSAgaW50ZWwtbWFjLXYzCUludGVsIE1hYyBUeXBlIDMKKwkgIGlu
+dGVsLW1hYy12NAlJbnRlbCBNYWMgVHlwZSA0CisJICBpbnRlbC1tYWMtdjUJSW50ZWwgTWFjIFR5
+cGUgNQogCiAJU1RBQzkyMDIvOTI1MC85MjUxCiAJICByZWYJCVJlZmVyZW5jZSBib2FyZCwgYmFz
+ZSBjb25maWcKZGlmZiAtciAzMzc5NjJlMTlkZTYgcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCi0t
+LSBhL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYwlGcmkgTWF5IDI1IDEyOjE4OjQ5IDIwMDcgKzAy
+MDAKKysrIGIvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCVN1biBNYXkgMjcgMjI6MTk6MTQgMjAw
+NyArMDEwMApAQCAtNTksMTIgKzU5LDExIEBAIGVudW0gewogCVNUQUNfRDk0NV9SRUYsCiAJU1RB
+Q19EOTQ1R1RQMywKIAlTVEFDX0Q5NDVHVFA1LAotCVNUQUNfTUFDTUlOSSwKLQlTVEFDX01BQ0JP
+T0ssCi0JU1RBQ19NQUNCT09LX1BST19WMSwKLQlTVEFDX01BQ0JPT0tfUFJPX1YyLAotCVNUQUNf
+SU1BQ19JTlRFTCwKLQlTVEFDX0lNQUNfSU5URUxfMjAsCisJU1RBQ19JTlRFTF9NQUNfVjEsCisJ
+U1RBQ19JTlRFTF9NQUNfVjIsCisJU1RBQ19JTlRFTF9NQUNfVjMsCisJU1RBQ19JTlRFTF9NQUNf
+VjQsCisJU1RBQ19JTlRFTF9NQUNfVjUsCiAJU1RBQ185MjJYX01PREVMUwogfTsKIApAQCAtNTUw
+LDI3ICs1NDksMzMgQEAgc3RhdGljIHVuc2lnbmVkIGludCBkOTQ1Z3RwNV9waW5fY29uZmlncwog
+CTB4MDJhMTkzMjAsIDB4NDAwMDAxMDAsCiB9OwogCi1zdGF0aWMgdW5zaWduZWQgaW50IG1hY2Jv
+b2tfcHJvX3YxX3Bpbl9jb25maWdzWzEwXSA9IHsKLQkweDAzMjFlMjMwLCAweDAzYTFlMDIwLCAw
+eDkwMTdlMTEwLCAweDAxMDE0MDEwLAotCTB4MDFhMTkwMjEsIDB4MDM4MWUwMjEsIDB4MTM0NWUy
+NDAsIDB4MTNjNWUyMmUsCi0JMHgwMmExOTMyMCwgMHg0MDAwMDBmYgotfTsKLQotc3RhdGljIHVu
+c2lnbmVkIGludCBtYWNib29rX3Byb192Ml9waW5fY29uZmlnc1sxMF0gPSB7Ci0JMHgwMjIxNDAx
+ZiwgMHg5MGE3MDEyMCwgMHgwMTgxMzAyNCwgMHgwMTAxNDAxMCwKLQkweDQwMDAwMGZkLCAweDAx
+MDE2MDExLCAweDEzNDVlMjQwLCAweDEzYzVlMjJlLAotCTB4NDAwMDAwZmMsIDB4NDAwMDAwZmIs
+Ci19OwotCi1zdGF0aWMgdW5zaWduZWQgaW50IGltYWNfaW50ZWxfcGluX2NvbmZpZ3NbMTBdID0g
+ewotCTB4MDEyMWUyMzAsIDB4OTBhNzAxMjAsIDB4OTAxN2UxMTAsIDB4NDAwMDAwZmUsCi0JMHg0
+MDAwMDBmZCwgMHgwMTgxZTAyMSwgMHgxMTQ1ZTA0MCwgMHg0MDAwMDBmYSwKLQkweDQwMDAwMGZj
+LCAweDQwMDAwMGZiLAotfTsKLQotc3RhdGljIHVuc2lnbmVkIGludCBpbWFjX2ludGVsXzIwX3Bp
+bl9jb25maWdzWzEwXSA9IHsKK3N0YXRpYyB1bnNpZ25lZCBpbnQgYXBwbGVfbWFjX3YxX3Bpbl9j
+b25maWdzWzEwXSA9IHsKKwkweDAxMjFFMjFGLCAweDQwMDAwMEZGLCAweDkwMTdFMTEwLCAweDQw
+MDAwMEZELAorCTB4NDAwMDAwRkUsIDB4MDE4MUUwMjAsIDB4MTE0NUUwMzAsIDB4MTFDNUUyNDAs
+CisJMHg0MDAwMDBGQywgMHg0MDAwMDBGQiwKK307CisKK3N0YXRpYyB1bnNpZ25lZCBpbnQgYXBw
+bGVfbWFjX3YyX3Bpbl9jb25maWdzWzEwXSA9IHsKKwkweDAxMjFFMjFGLCAweDkwQTcwMTJFLCAw
+eDkwMTdFMTEwLCAweDQwMDAwMEZELAorCTB4NDAwMDAwRkUsIDB4MDE4MUUwMjAsIDB4MTE0NUUy
+MzAsIDB4NTAwMDAwRkEsCisJMHg0MDAwMDBGQywgMHg0MDAwMDBGQiwKK307CisKK3N0YXRpYyB1
+bnNpZ25lZCBpbnQgYXBwbGVfbWFjX3YzX3Bpbl9jb25maWdzWzEwXSA9IHsKIAkweDAxMjFFMjFG
+LCAweDkwQTcwMTJFLCAweDkwMTdFMTEwLCAweDQwMDAwMEZELAogCTB4NDAwMDAwRkUsIDB4MDE4
+MUUwMjAsIDB4MTE0NUUyMzAsIDB4MTFDNUUyNDAsCisJMHg0MDAwMDBGQywgMHg0MDAwMDBGQiwK
+K307CisKK3N0YXRpYyB1bnNpZ25lZCBpbnQgYXBwbGVfbWFjX3Y0X3Bpbl9jb25maWdzWzEwXSA9
+IHsKKwkweDAzMjFFMjFGLCAweDAzQTFFMDJFLCAweDkwMTdFMTEwLCAweDkwMTdFMTFGLAorCTB4
+NDAwMDAwRkUsIDB4MDM4MUUwMjAsIDB4MTM0NUUyMzAsIDB4MTNDNUUyNDAsCisJMHg0MDAwMDBG
+QywgMHg0MDAwMDBGQiwKK307CisKK3N0YXRpYyB1bnNpZ25lZCBpbnQgYXBwbGVfbWFjX3Y1X3Bp
+bl9jb25maWdzWzEwXSA9IHsKKwkweDAzMjFFMjFGLCAweDAzQTFFMDJFLCAweDkwMTdFMTEwLCAw
+eDkwMTdFMTFGLAorCTB4NDAwMDAwRkUsIDB4MDM4MUUwMjAsIDB4MTM0NUUyMzAsIDB4MTNDNUUy
+NDAsCiAJMHg0MDAwMDBGQywgMHg0MDAwMDBGQiwKIH07CiAKQEAgLTU3OCwyNCArNTgzLDIyIEBA
+IHN0YXRpYyB1bnNpZ25lZCBpbnQgKnN0YWM5MjJ4X2JyZF90YmxbU1QKIAlbU1RBQ19EOTQ1X1JF
+Rl0gPSByZWY5MjJ4X3Bpbl9jb25maWdzLAogCVtTVEFDX0Q5NDVHVFAzXSA9IGQ5NDVndHAzX3Bp
+bl9jb25maWdzLAogCVtTVEFDX0Q5NDVHVFA1XSA9IGQ5NDVndHA1X3Bpbl9jb25maWdzLAotCVtT
+VEFDX01BQ01JTkldID0gbWFjYm9va19wcm9fdjFfcGluX2NvbmZpZ3MsCi0JW1NUQUNfTUFDQk9P
+S10gPSBtYWNib29rX3Byb192MV9waW5fY29uZmlncywKLQlbU1RBQ19NQUNCT09LX1BST19WMV0g
+PSBtYWNib29rX3Byb192MV9waW5fY29uZmlncywKLQlbU1RBQ19NQUNCT09LX1BST19WMl0gPSBt
+YWNib29rX3Byb192Ml9waW5fY29uZmlncywKLQlbU1RBQ19JTUFDX0lOVEVMXSA9IGltYWNfaW50
+ZWxfcGluX2NvbmZpZ3MsCi0JW1NUQUNfSU1BQ19JTlRFTF8yMF0gPSBpbWFjX2ludGVsXzIwX3Bp
+bl9jb25maWdzLAorCVtTVEFDX0lOVEVMX01BQ19WMV0gPSBhcHBsZV9tYWNfdjFfcGluX2NvbmZp
+Z3MsCisJW1NUQUNfSU5URUxfTUFDX1YyXSA9IGFwcGxlX21hY192Ml9waW5fY29uZmlncywKKwlb
+U1RBQ19JTlRFTF9NQUNfVjNdID0gYXBwbGVfbWFjX3YzX3Bpbl9jb25maWdzLAorCVtTVEFDX0lO
+VEVMX01BQ19WNF0gPSBhcHBsZV9tYWNfdjRfcGluX2NvbmZpZ3MsCisJW1NUQUNfSU5URUxfTUFD
+X1Y1XSA9IGFwcGxlX21hY192NV9waW5fY29uZmlncywKIH07CiAKIHN0YXRpYyBjb25zdCBjaGFy
+ICpzdGFjOTIyeF9tb2RlbHNbU1RBQ185MjJYX01PREVMU10gPSB7CiAJW1NUQUNfRDk0NV9SRUZd
+CT0gInJlZiIsCiAJW1NUQUNfRDk0NUdUUDVdCT0gIjVzdGFjayIsCiAJW1NUQUNfRDk0NUdUUDNd
+CT0gIjNzdGFjayIsCi0JW1NUQUNfTUFDTUlOSV0JPSAibWFjbWluaSIsCi0JW1NUQUNfTUFDQk9P
+S10JPSAibWFjYm9vayIsCi0JW1NUQUNfTUFDQk9PS19QUk9fVjFdCT0gIm1hY2Jvb2stcHJvLXYx
+IiwKLQlbU1RBQ19NQUNCT09LX1BST19WMl0JPSAibWFjYm9vay1wcm8iLAotCVtTVEFDX0lNQUNf
+SU5URUxdID0gImltYWMtaW50ZWwiLAotCVtTVEFDX0lNQUNfSU5URUxfMjBdID0gImltYWMtaW50
+ZWwtMjAiLAorCVtTVEFDX0lOVEVMX01BQ19WMV0gPSAiaW50ZWwtbWFjLXYxIiwKKwlbU1RBQ19J
+TlRFTF9NQUNfVjJdID0gImludGVsLW1hYy12MiIsCisJW1NUQUNfSU5URUxfTUFDX1YzXSA9ICJp
+bnRlbC1tYWMtdjMiLAorCVtTVEFDX0lOVEVMX01BQ19WNF0gPSAiaW50ZWwtbWFjLXY0IiwKKwlb
+U1RBQ19JTlRFTF9NQUNfVjVdID0gImludGVsLW1hYy12NSIsCiB9OwogCiBzdGF0aWMgc3RydWN0
+IHNuZF9wY2lfcXVpcmsgc3RhYzkyMnhfY2ZnX3RibFtdID0gewpAQCAtNjU4LDcgKzY2MSw3IEBA
+IHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBzdGFjOTIyeF9jZmcKIAkvKiBvdGhlciBzeXN0
+ZW1zICAqLwogCS8qIEFwcGxlIE1hYyBNaW5pIChlYXJseSAyMDA2KSAqLwogCVNORF9QQ0lfUVVJ
+UksoMHg4Mzg0LCAweDc2ODAsCi0JCSAgICAgICJNYWMgTWluaSIsIFNUQUNfTUFDTUlOSSksCisJ
+CSAgICAgICJNYWMgTWluaSIsIFNUQUNfSU5URUxfTUFDX1YzKSwKIAl7fSAvKiB0ZXJtaW5hdG9y
+ICovCiB9OwogCkBAIC0yMDEyLDI3ICsyMDE1LDM2IEBAIHN0YXRpYyBpbnQgcGF0Y2hfc3RhYzky
+Mngoc3RydWN0IGhkYV9jb2QKIAlzcGVjLT5ib2FyZF9jb25maWcgPSBzbmRfaGRhX2NoZWNrX2Jv
+YXJkX2NvbmZpZyhjb2RlYywgU1RBQ185MjJYX01PREVMUywKIAkJCQkJCQlzdGFjOTIyeF9tb2Rl
+bHMsCiAJCQkJCQkJc3RhYzkyMnhfY2ZnX3RibCk7Ci0JaWYgKHNwZWMtPmJvYXJkX2NvbmZpZyA9
+PSBTVEFDX01BQ01JTkkpIHsKKwlpZiAoc3BlYy0+Ym9hcmRfY29uZmlnID09IFNUQUNfSU5URUxf
+TUFDX1YzKSB7CiAJCXNwZWMtPmdwaW9fbXV0ZSA9IDE7CiAJCS8qIEludGVsIE1hY3MgaGF2ZSBh
+bGwgc2FtZSBQQ0kgU1NJRCwgc28gd2UgbmVlZCB0byBjaGVjawogCQkgKiBjb2RlYyBTU0lEIHRv
+IGRpc3Rpbmd1aXNoIHRoZSBleGFjdCBtb2RlbHMKIAkJICovCiAJCXByaW50ayhLRVJOX0lORk8g
+ImhkYV9jb2RlYzogU1RBQzkyMngsIEFwcGxlIHN1YnN5c19pZD0leFxuIiwgY29kZWMtPnN1YnN5
+c3RlbV9pZCk7CiAJCXN3aXRjaCAoY29kZWMtPnN1YnN5c3RlbV9pZCkgewotCQljYXNlIDB4MTA2
+YjBhMDA6IC8qIE1hY0Jvb2sgRmlyc3QgZ2VuZXJhdG9pbiAqLwotCQkJc3BlYy0+Ym9hcmRfY29u
+ZmlnID0gU1RBQ19NQUNCT09LOworCisJCWNhc2UgMHgxMDZCMDgwMDoKKwkJCXNwZWMtPmJvYXJk
+X2NvbmZpZyA9IFNUQUNfSU5URUxfTUFDX1YxOwogCQkJYnJlYWs7Ci0JCWNhc2UgMHgxMDZiMDIw
+MDogLyogTWFjQm9vayBQcm8gZmlyc3QgZ2VuZXJhdGlvbiAqLwotCQkJc3BlYy0+Ym9hcmRfY29u
+ZmlnID0gU1RBQ19NQUNCT09LX1BST19WMTsKKwkJY2FzZSAweDEwNkIwNjAwOgorCQljYXNlIDB4
+MTA2QjA3MDA6CisJCQlzcGVjLT5ib2FyZF9jb25maWcgPSBTVEFDX0lOVEVMX01BQ19WMjsKIAkJ
+CWJyZWFrOwotCQljYXNlIDB4MTA2YjFlMDA6IC8qIE1hY0Jvb2sgUHJvIHNlY29uZCBnZW5lcmF0
+aW9uICovCi0JCQlzcGVjLT5ib2FyZF9jb25maWcgPSBTVEFDX01BQ0JPT0tfUFJPX1YyOworCQlj
+YXNlIDB4MTA2QjBFMDA6CisJCWNhc2UgMHgxMDZCMEYwMDoKKwkJY2FzZSAweDEwNkIxNjAwOgor
+CQljYXNlIDB4MTA2QjE3MDA6CisJCWNhc2UgMHgxMDZCMDIwMDoKKwkJY2FzZSAweDEwNkIxRTAw
+OgorCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTlRFTF9NQUNfVjM7CiAJCQlicmVhazsK
+LQkJY2FzZSAweDEwNmIwNzAwOiAvKiBJbnRlbC1iYXNlZCBpTWFjICovCi0JCQlzcGVjLT5ib2Fy
+ZF9jb25maWcgPSBTVEFDX0lNQUNfSU5URUw7CisJCWNhc2UgMHgxMDZCMUEwMDoKKwkJY2FzZSAw
+eDAwMDAwMTAwOgorCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTlRFTF9NQUNfVjQ7CiAJ
+CQlicmVhazsKLQkJY2FzZSAweDEwNmIxNzAwOiAvKiBJbnRlbCBpTWFjIDIwICovCi0JCQlzcGVj
+LT5ib2FyZF9jb25maWcgPSBTVEFDX0lNQUNfSU5URUxfMjA7CisJCWNhc2UgMHgxMDZiMEEwMDoK
+KwkJY2FzZSAweDEwNkIyMjAwOgorCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTlRFTF9N
+QUNfVjU7CiAJCQlicmVhazsKIAkJfQogCX0K
+------=_Part_6788_23699530.1180303181795
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Greets, Ingo
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
-
-j t schrieb:
-> On 5/26/07, Ingo M=FCller <alsa@ingomueller.net> wrote:
->> Hi!
->>
->> If you had read carefully what the main page of alsa.opensrc.org sais,
->> you'd know that this is an unofficial wiki.
-> =
-
-> Oops - my bad. Sorry...
-> =
-
->> The story of the other wiki
->> is bit harder to find, but if you want, you can read it at
->>
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-April/000412.h=
-tml
->>
->> The basic of the story is, that it has been created maybe two months ago
->> by official ALSA developpers to replace the official ALSA web site,
->> which was difficult to maintain and to keep up to date. The thing is,
->> that only a few people seem to care that much that they would help to
->> transfer content from the web site to the new wiki (thanks a lot to
->> those who do care!). Feel free to contribute :-)
-> =
-
-> I will, just as soon as I work out which of the two wikis I should be
-> contributing to...
-> =
-
->> Anyway, I totally agree with you that having one single wiki would be a
->> lot better for everybody. Again, the problem is, that the merging has to
->> be done by someone and this means work.
-> =
-
-> I could be wrong (that's my normal disclaimer out of the way), but
-> surely the effort of merging would seem to be futile if the majority
-> of edits subsequently go to the "wrong" wiki (I'm talking here from a
-> practical viewpoint).
-> =
-
-> Does anyone know if the people who maintain the "unofficial" wiki
-> would be offended/"put up resistance"/disagree if their wiki were
-> "superceded"? If no, a note could be added to the unofficial about the
-> new "official" one (it's interesting to note that the unofficial wiki
-> doesn't mention the official one at all, although that could just be a
-> lack of resources, rather than something intentional).
-> =
-
-> I hope that at least some of this makes sense...
-> =
-
-> Jaime
+------=_Part_6788_23699530.1180303181795--
