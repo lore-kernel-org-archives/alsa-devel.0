@@ -1,18 +1,16 @@
-From: "Ivan N. Zlatev" <contact@i-nz.net>
-Subject: [PATCH] Sigmatel STAC9221 - Add Configs for all Apple
-	Intel Macs
-Date: Sun, 27 May 2007 22:59:41 +0100
-Message-ID: <3db1ec7f0705271459xb780f7em39df715b0ace772a@mail.gmail.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Alsa-OSS Duplex bug (revisited)
+Date: Sun, 27 May 2007 23:23:13 +0100
+Message-ID: <200705272323.13056.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_6788_23699530.1180303181795"
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_RTgWGxFLUsft1j9"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA66C246A3
+Received: from smtp.talktalk.net (unknown [62.24.128.253])
+	by alsa0.perex.cz (Postfix) with ESMTP id E93002458F
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 May 2007 23:59:42 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id o2so521745uge
-	for <alsa-devel@alsa-project.org>; Sun, 27 May 2007 14:59:42 -0700 (PDT)
+	Mon, 28 May 2007 00:15:05 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,142 +20,245 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_6788_23699530.1180303181795
-Content-Type: text/plain; charset=UTF-8; format=flowed
+
+--Boundary-00=_RTgWGxFLUsft1j9
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-This patch:
- * adds the pinconfigs for all 5 Apple boards and 14 Subsystem IDs
-(support for possibly all iMac, Mac, MacMini etc etc)
- * adds "intel-mac-v1" to v5 models which replace the current
- * reflects changes in Alsa-Configuration.txt
+About a year ago I posted an explaination of the cause of non-functioning with 
+Alsa-OSS in duplex, together with a workaround patch.  After some discussion 
+the thread ended.  However since then there has been a steady trickle of 
+downloads of the patches from my host (it can also be found elsewhere) and 
+some reports of great success,eg
 
-Please review. Regards.
--- 
-Ivan N. Zlatev
+	http://audacityteam.org/forum/thread/1388  (2nd page especially)
 
-Web: http://www.i-nZ.net
-"It's all some kind of whacked out conspiracy."
+In attempting to tidy up some loose ends, I hope you can bear with me 
+revisiting this and making the case for it's acceptance.  I am aware the 
+Alsa-OSS is not of much interest to developers, and it might be said 'use 
+native Alsa'; however that is not possible or desirable in all applications, 
+and anyway, why provide an OSS emulation that cannot be made to work 
+properly?
 
-------=_Part_6788_23699530.1180303181795
-Content-Type: text/x-patch; name=apple_alsa.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f280rgfn
-Content-Disposition: attachment; filename="apple_alsa.patch"
+To summarise the problem first:
 
-ZGlmZiAtciAzMzc5NjJlMTlkZTYgRG9jdW1lbnRhdGlvbi9BTFNBLUNvbmZpZ3VyYXRpb24udHh0
-Ci0tLSBhL0RvY3VtZW50YXRpb24vQUxTQS1Db25maWd1cmF0aW9uLnR4dAlGcmkgTWF5IDI1IDEy
-OjE4OjQ5IDIwMDcgKzAyMDAKKysrIGIvRG9jdW1lbnRhdGlvbi9BTFNBLUNvbmZpZ3VyYXRpb24u
-dHh0CVN1biBNYXkgMjcgMjI6MjA6MzQgMjAwNyArMDEwMApAQCAtOTIzLDEyICs5MjMsMTEgQEAg
-UHJpb3IgdG8gdmVyc2lvbiAwLjkuMHJjNCBvcHRpb25zIGhhZCBhIAogCSAgcmVmCQlSZWZlcmVu
-Y2UgYm9hcmQKIAkgIDNzdGFjawlEOTQ1IDNzdGFjawogCSAgNXN0YWNrCUQ5NDUgNXN0YWNrICsg
-U1BESUYKLQkgIG1hY21pbmkJSW50ZWwgTWFjIE1pbmkKLQkgIG1hY2Jvb2sJSW50ZWwgTWFjIEJv
-b2sKLQkgIG1hY2Jvb2stcHJvLXYxIEludGVsIE1hYyBCb29rIFBybyAxc3QgZ2VuZXJhdGlvbgot
-CSAgbWFjYm9vay1wcm8JSW50ZWwgTWFjIEJvb2sgUHJvIDJuZCBnZW5lcmF0aW9uCi0JICBpbWFj
-LWludGVsCUludGVsIGlNYWMKLQkgIGltYWMtaW50ZWwtMjAJSW50ZWwgaU1hYyAobmV3ZXIgdmVy
-c2lvbikKKwkgIGludGVsLW1hYy12MQlJbnRlbCBNYWMgVHlwZSAxCisJICBpbnRlbC1tYWMtdjIJ
-SW50ZWwgTWFjIFR5cGUgMgorCSAgaW50ZWwtbWFjLXYzCUludGVsIE1hYyBUeXBlIDMKKwkgIGlu
-dGVsLW1hYy12NAlJbnRlbCBNYWMgVHlwZSA0CisJICBpbnRlbC1tYWMtdjUJSW50ZWwgTWFjIFR5
-cGUgNQogCiAJU1RBQzkyMDIvOTI1MC85MjUxCiAJICByZWYJCVJlZmVyZW5jZSBib2FyZCwgYmFz
-ZSBjb25maWcKZGlmZiAtciAzMzc5NjJlMTlkZTYgcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCi0t
-LSBhL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYwlGcmkgTWF5IDI1IDEyOjE4OjQ5IDIwMDcgKzAy
-MDAKKysrIGIvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCVN1biBNYXkgMjcgMjI6MTk6MTQgMjAw
-NyArMDEwMApAQCAtNTksMTIgKzU5LDExIEBAIGVudW0gewogCVNUQUNfRDk0NV9SRUYsCiAJU1RB
-Q19EOTQ1R1RQMywKIAlTVEFDX0Q5NDVHVFA1LAotCVNUQUNfTUFDTUlOSSwKLQlTVEFDX01BQ0JP
-T0ssCi0JU1RBQ19NQUNCT09LX1BST19WMSwKLQlTVEFDX01BQ0JPT0tfUFJPX1YyLAotCVNUQUNf
-SU1BQ19JTlRFTCwKLQlTVEFDX0lNQUNfSU5URUxfMjAsCisJU1RBQ19JTlRFTF9NQUNfVjEsCisJ
-U1RBQ19JTlRFTF9NQUNfVjIsCisJU1RBQ19JTlRFTF9NQUNfVjMsCisJU1RBQ19JTlRFTF9NQUNf
-VjQsCisJU1RBQ19JTlRFTF9NQUNfVjUsCiAJU1RBQ185MjJYX01PREVMUwogfTsKIApAQCAtNTUw
-LDI3ICs1NDksMzMgQEAgc3RhdGljIHVuc2lnbmVkIGludCBkOTQ1Z3RwNV9waW5fY29uZmlncwog
-CTB4MDJhMTkzMjAsIDB4NDAwMDAxMDAsCiB9OwogCi1zdGF0aWMgdW5zaWduZWQgaW50IG1hY2Jv
-b2tfcHJvX3YxX3Bpbl9jb25maWdzWzEwXSA9IHsKLQkweDAzMjFlMjMwLCAweDAzYTFlMDIwLCAw
-eDkwMTdlMTEwLCAweDAxMDE0MDEwLAotCTB4MDFhMTkwMjEsIDB4MDM4MWUwMjEsIDB4MTM0NWUy
-NDAsIDB4MTNjNWUyMmUsCi0JMHgwMmExOTMyMCwgMHg0MDAwMDBmYgotfTsKLQotc3RhdGljIHVu
-c2lnbmVkIGludCBtYWNib29rX3Byb192Ml9waW5fY29uZmlnc1sxMF0gPSB7Ci0JMHgwMjIxNDAx
-ZiwgMHg5MGE3MDEyMCwgMHgwMTgxMzAyNCwgMHgwMTAxNDAxMCwKLQkweDQwMDAwMGZkLCAweDAx
-MDE2MDExLCAweDEzNDVlMjQwLCAweDEzYzVlMjJlLAotCTB4NDAwMDAwZmMsIDB4NDAwMDAwZmIs
-Ci19OwotCi1zdGF0aWMgdW5zaWduZWQgaW50IGltYWNfaW50ZWxfcGluX2NvbmZpZ3NbMTBdID0g
-ewotCTB4MDEyMWUyMzAsIDB4OTBhNzAxMjAsIDB4OTAxN2UxMTAsIDB4NDAwMDAwZmUsCi0JMHg0
-MDAwMDBmZCwgMHgwMTgxZTAyMSwgMHgxMTQ1ZTA0MCwgMHg0MDAwMDBmYSwKLQkweDQwMDAwMGZj
-LCAweDQwMDAwMGZiLAotfTsKLQotc3RhdGljIHVuc2lnbmVkIGludCBpbWFjX2ludGVsXzIwX3Bp
-bl9jb25maWdzWzEwXSA9IHsKK3N0YXRpYyB1bnNpZ25lZCBpbnQgYXBwbGVfbWFjX3YxX3Bpbl9j
-b25maWdzWzEwXSA9IHsKKwkweDAxMjFFMjFGLCAweDQwMDAwMEZGLCAweDkwMTdFMTEwLCAweDQw
-MDAwMEZELAorCTB4NDAwMDAwRkUsIDB4MDE4MUUwMjAsIDB4MTE0NUUwMzAsIDB4MTFDNUUyNDAs
-CisJMHg0MDAwMDBGQywgMHg0MDAwMDBGQiwKK307CisKK3N0YXRpYyB1bnNpZ25lZCBpbnQgYXBw
-bGVfbWFjX3YyX3Bpbl9jb25maWdzWzEwXSA9IHsKKwkweDAxMjFFMjFGLCAweDkwQTcwMTJFLCAw
-eDkwMTdFMTEwLCAweDQwMDAwMEZELAorCTB4NDAwMDAwRkUsIDB4MDE4MUUwMjAsIDB4MTE0NUUy
-MzAsIDB4NTAwMDAwRkEsCisJMHg0MDAwMDBGQywgMHg0MDAwMDBGQiwKK307CisKK3N0YXRpYyB1
-bnNpZ25lZCBpbnQgYXBwbGVfbWFjX3YzX3Bpbl9jb25maWdzWzEwXSA9IHsKIAkweDAxMjFFMjFG
-LCAweDkwQTcwMTJFLCAweDkwMTdFMTEwLCAweDQwMDAwMEZELAogCTB4NDAwMDAwRkUsIDB4MDE4
-MUUwMjAsIDB4MTE0NUUyMzAsIDB4MTFDNUUyNDAsCisJMHg0MDAwMDBGQywgMHg0MDAwMDBGQiwK
-K307CisKK3N0YXRpYyB1bnNpZ25lZCBpbnQgYXBwbGVfbWFjX3Y0X3Bpbl9jb25maWdzWzEwXSA9
-IHsKKwkweDAzMjFFMjFGLCAweDAzQTFFMDJFLCAweDkwMTdFMTEwLCAweDkwMTdFMTFGLAorCTB4
-NDAwMDAwRkUsIDB4MDM4MUUwMjAsIDB4MTM0NUUyMzAsIDB4MTNDNUUyNDAsCisJMHg0MDAwMDBG
-QywgMHg0MDAwMDBGQiwKK307CisKK3N0YXRpYyB1bnNpZ25lZCBpbnQgYXBwbGVfbWFjX3Y1X3Bp
-bl9jb25maWdzWzEwXSA9IHsKKwkweDAzMjFFMjFGLCAweDAzQTFFMDJFLCAweDkwMTdFMTEwLCAw
-eDkwMTdFMTFGLAorCTB4NDAwMDAwRkUsIDB4MDM4MUUwMjAsIDB4MTM0NUUyMzAsIDB4MTNDNUUy
-NDAsCiAJMHg0MDAwMDBGQywgMHg0MDAwMDBGQiwKIH07CiAKQEAgLTU3OCwyNCArNTgzLDIyIEBA
-IHN0YXRpYyB1bnNpZ25lZCBpbnQgKnN0YWM5MjJ4X2JyZF90YmxbU1QKIAlbU1RBQ19EOTQ1X1JF
-Rl0gPSByZWY5MjJ4X3Bpbl9jb25maWdzLAogCVtTVEFDX0Q5NDVHVFAzXSA9IGQ5NDVndHAzX3Bp
-bl9jb25maWdzLAogCVtTVEFDX0Q5NDVHVFA1XSA9IGQ5NDVndHA1X3Bpbl9jb25maWdzLAotCVtT
-VEFDX01BQ01JTkldID0gbWFjYm9va19wcm9fdjFfcGluX2NvbmZpZ3MsCi0JW1NUQUNfTUFDQk9P
-S10gPSBtYWNib29rX3Byb192MV9waW5fY29uZmlncywKLQlbU1RBQ19NQUNCT09LX1BST19WMV0g
-PSBtYWNib29rX3Byb192MV9waW5fY29uZmlncywKLQlbU1RBQ19NQUNCT09LX1BST19WMl0gPSBt
-YWNib29rX3Byb192Ml9waW5fY29uZmlncywKLQlbU1RBQ19JTUFDX0lOVEVMXSA9IGltYWNfaW50
-ZWxfcGluX2NvbmZpZ3MsCi0JW1NUQUNfSU1BQ19JTlRFTF8yMF0gPSBpbWFjX2ludGVsXzIwX3Bp
-bl9jb25maWdzLAorCVtTVEFDX0lOVEVMX01BQ19WMV0gPSBhcHBsZV9tYWNfdjFfcGluX2NvbmZp
-Z3MsCisJW1NUQUNfSU5URUxfTUFDX1YyXSA9IGFwcGxlX21hY192Ml9waW5fY29uZmlncywKKwlb
-U1RBQ19JTlRFTF9NQUNfVjNdID0gYXBwbGVfbWFjX3YzX3Bpbl9jb25maWdzLAorCVtTVEFDX0lO
-VEVMX01BQ19WNF0gPSBhcHBsZV9tYWNfdjRfcGluX2NvbmZpZ3MsCisJW1NUQUNfSU5URUxfTUFD
-X1Y1XSA9IGFwcGxlX21hY192NV9waW5fY29uZmlncywKIH07CiAKIHN0YXRpYyBjb25zdCBjaGFy
-ICpzdGFjOTIyeF9tb2RlbHNbU1RBQ185MjJYX01PREVMU10gPSB7CiAJW1NUQUNfRDk0NV9SRUZd
-CT0gInJlZiIsCiAJW1NUQUNfRDk0NUdUUDVdCT0gIjVzdGFjayIsCiAJW1NUQUNfRDk0NUdUUDNd
-CT0gIjNzdGFjayIsCi0JW1NUQUNfTUFDTUlOSV0JPSAibWFjbWluaSIsCi0JW1NUQUNfTUFDQk9P
-S10JPSAibWFjYm9vayIsCi0JW1NUQUNfTUFDQk9PS19QUk9fVjFdCT0gIm1hY2Jvb2stcHJvLXYx
-IiwKLQlbU1RBQ19NQUNCT09LX1BST19WMl0JPSAibWFjYm9vay1wcm8iLAotCVtTVEFDX0lNQUNf
-SU5URUxdID0gImltYWMtaW50ZWwiLAotCVtTVEFDX0lNQUNfSU5URUxfMjBdID0gImltYWMtaW50
-ZWwtMjAiLAorCVtTVEFDX0lOVEVMX01BQ19WMV0gPSAiaW50ZWwtbWFjLXYxIiwKKwlbU1RBQ19J
-TlRFTF9NQUNfVjJdID0gImludGVsLW1hYy12MiIsCisJW1NUQUNfSU5URUxfTUFDX1YzXSA9ICJp
-bnRlbC1tYWMtdjMiLAorCVtTVEFDX0lOVEVMX01BQ19WNF0gPSAiaW50ZWwtbWFjLXY0IiwKKwlb
-U1RBQ19JTlRFTF9NQUNfVjVdID0gImludGVsLW1hYy12NSIsCiB9OwogCiBzdGF0aWMgc3RydWN0
-IHNuZF9wY2lfcXVpcmsgc3RhYzkyMnhfY2ZnX3RibFtdID0gewpAQCAtNjU4LDcgKzY2MSw3IEBA
-IHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBzdGFjOTIyeF9jZmcKIAkvKiBvdGhlciBzeXN0
-ZW1zICAqLwogCS8qIEFwcGxlIE1hYyBNaW5pIChlYXJseSAyMDA2KSAqLwogCVNORF9QQ0lfUVVJ
-UksoMHg4Mzg0LCAweDc2ODAsCi0JCSAgICAgICJNYWMgTWluaSIsIFNUQUNfTUFDTUlOSSksCisJ
-CSAgICAgICJNYWMgTWluaSIsIFNUQUNfSU5URUxfTUFDX1YzKSwKIAl7fSAvKiB0ZXJtaW5hdG9y
-ICovCiB9OwogCkBAIC0yMDEyLDI3ICsyMDE1LDM2IEBAIHN0YXRpYyBpbnQgcGF0Y2hfc3RhYzky
-Mngoc3RydWN0IGhkYV9jb2QKIAlzcGVjLT5ib2FyZF9jb25maWcgPSBzbmRfaGRhX2NoZWNrX2Jv
-YXJkX2NvbmZpZyhjb2RlYywgU1RBQ185MjJYX01PREVMUywKIAkJCQkJCQlzdGFjOTIyeF9tb2Rl
-bHMsCiAJCQkJCQkJc3RhYzkyMnhfY2ZnX3RibCk7Ci0JaWYgKHNwZWMtPmJvYXJkX2NvbmZpZyA9
-PSBTVEFDX01BQ01JTkkpIHsKKwlpZiAoc3BlYy0+Ym9hcmRfY29uZmlnID09IFNUQUNfSU5URUxf
-TUFDX1YzKSB7CiAJCXNwZWMtPmdwaW9fbXV0ZSA9IDE7CiAJCS8qIEludGVsIE1hY3MgaGF2ZSBh
-bGwgc2FtZSBQQ0kgU1NJRCwgc28gd2UgbmVlZCB0byBjaGVjawogCQkgKiBjb2RlYyBTU0lEIHRv
-IGRpc3Rpbmd1aXNoIHRoZSBleGFjdCBtb2RlbHMKIAkJICovCiAJCXByaW50ayhLRVJOX0lORk8g
-ImhkYV9jb2RlYzogU1RBQzkyMngsIEFwcGxlIHN1YnN5c19pZD0leFxuIiwgY29kZWMtPnN1YnN5
-c3RlbV9pZCk7CiAJCXN3aXRjaCAoY29kZWMtPnN1YnN5c3RlbV9pZCkgewotCQljYXNlIDB4MTA2
-YjBhMDA6IC8qIE1hY0Jvb2sgRmlyc3QgZ2VuZXJhdG9pbiAqLwotCQkJc3BlYy0+Ym9hcmRfY29u
-ZmlnID0gU1RBQ19NQUNCT09LOworCisJCWNhc2UgMHgxMDZCMDgwMDoKKwkJCXNwZWMtPmJvYXJk
-X2NvbmZpZyA9IFNUQUNfSU5URUxfTUFDX1YxOwogCQkJYnJlYWs7Ci0JCWNhc2UgMHgxMDZiMDIw
-MDogLyogTWFjQm9vayBQcm8gZmlyc3QgZ2VuZXJhdGlvbiAqLwotCQkJc3BlYy0+Ym9hcmRfY29u
-ZmlnID0gU1RBQ19NQUNCT09LX1BST19WMTsKKwkJY2FzZSAweDEwNkIwNjAwOgorCQljYXNlIDB4
-MTA2QjA3MDA6CisJCQlzcGVjLT5ib2FyZF9jb25maWcgPSBTVEFDX0lOVEVMX01BQ19WMjsKIAkJ
-CWJyZWFrOwotCQljYXNlIDB4MTA2YjFlMDA6IC8qIE1hY0Jvb2sgUHJvIHNlY29uZCBnZW5lcmF0
-aW9uICovCi0JCQlzcGVjLT5ib2FyZF9jb25maWcgPSBTVEFDX01BQ0JPT0tfUFJPX1YyOworCQlj
-YXNlIDB4MTA2QjBFMDA6CisJCWNhc2UgMHgxMDZCMEYwMDoKKwkJY2FzZSAweDEwNkIxNjAwOgor
-CQljYXNlIDB4MTA2QjE3MDA6CisJCWNhc2UgMHgxMDZCMDIwMDoKKwkJY2FzZSAweDEwNkIxRTAw
-OgorCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTlRFTF9NQUNfVjM7CiAJCQlicmVhazsK
-LQkJY2FzZSAweDEwNmIwNzAwOiAvKiBJbnRlbC1iYXNlZCBpTWFjICovCi0JCQlzcGVjLT5ib2Fy
-ZF9jb25maWcgPSBTVEFDX0lNQUNfSU5URUw7CisJCWNhc2UgMHgxMDZCMUEwMDoKKwkJY2FzZSAw
-eDAwMDAwMTAwOgorCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTlRFTF9NQUNfVjQ7CiAJ
-CQlicmVhazsKLQkJY2FzZSAweDEwNmIxNzAwOiAvKiBJbnRlbCBpTWFjIDIwICovCi0JCQlzcGVj
-LT5ib2FyZF9jb25maWcgPSBTVEFDX0lNQUNfSU5URUxfMjA7CisJCWNhc2UgMHgxMDZiMEEwMDoK
-KwkJY2FzZSAweDEwNkIyMjAwOgorCQkJc3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTlRFTF9N
-QUNfVjU7CiAJCQlicmVhazsKIAkJfQogCX0K
-------=_Part_6788_23699530.1180303181795
+OSS provides a single SNDCTL_DSP_CHANNELS ioctl; where a device is duplex the 
+number of capture and playback channels cannot be set separately.  With 
+original OSS this was not a problem AFAIK because separate devices are 
+created for capture and playback, ie they are not used duplex.  However 
+Alsa-OSS in most cases creates a single combined device, which only operates 
+correctly when an equal number of capture and playback channels are used.
+
+The Workaround:
+
+The workaround I proposed and now use constantly is like a secret trapdoor.  
+Where the existing interface is adequate (ie captue channels == playback 
+channels, or non-duplex) nothing changes, and SNDCTL_DSP_CHANNELS is set with 
+a number between 0 and 128.  It is fully compatible with apps that don't know 
+of the secret door -the front door is used!
+
+However, if an app needs to set capture channels != playback channels, in 
+duplex, at present the stream will malfunction every time.  But with this 
+patch applied, if the app knows the workaround, then it can simply set 
+SNDCTL_DSP_CHANNELS as  playback + 256*capture channels, and this will be 
+interpreted correctly in the patched Alsa-OSS and the stream functions 
+correctly.
+
+As I say, there is therefore no loss of compatibility in either direction.  
+Providing the app only uses the special formula when necessary rather than 
+always, it is only providing a way to fix something that is broken.  It would 
+seem to me of value to add the patch to Alsa so that the workaround can be 
+effected by changes to the app only, without also having to patch and compile 
+a replacement Alsa.  Whilst it is by no means ideal, it does overcome the 
+underlying problem successfully.  Details of the workaround could be added to 
+the  OSS-Emulation.html document.
+
+Patch for 1.0.14rc4 is attached for consideration, together with example 
+portaudio patch.
+
+Regards  Alan
+
+
+
+
+
+
+
+
+
+--Boundary-00=_RTgWGxFLUsft1j9
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="pcm_oss.c-1.0.14rc4-duplex-channels-set.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="pcm_oss.c-1.0.14rc4-duplex-channels-set.diff"
+
+--- alsa-kernel/core/oss/pcm_oss-orig.c	2006-04-13 11:51:24.000000000 +0100
++++ alsa-kernel/core/oss/pcm_oss.c	2006-06-19 11:08:07.000000000 +0100
+@@ -1665,25 +1665,65 @@
+ 	return substream->runtime->oss.rate;
+ }
+ 
++static int snd_pcm_oss_get_substream_channels(struct snd_pcm_oss_file *pcm_oss_file, int substrindx)
++{
++	struct snd_pcm_substream *substream;
++	int err = -1;
++
++	if (substrindx < 0 || substrindx > 1)
++		return err;
++	substream = pcm_oss_file->streams[substrindx];
++	if (substream == NULL)
++		return 0; /* Don't complain, consider as zero active channels */
++	return substream->runtime->oss.channels;
++}
++
+ static int snd_pcm_oss_set_channels(struct snd_pcm_oss_file *pcm_oss_file, unsigned int channels)
+ {
+-	int idx;
++	struct snd_pcm_substream *substream;
++	int playback_channels, capture_channels, channels_set = -1;
++
+ 	if (channels < 1)
+ 		channels = 1;
+-	if (channels > 128)
++	if (channels > 65025)
+ 		return -EINVAL;
+-	for (idx = 1; idx >= 0; --idx) {
+-		struct snd_pcm_substream *substream = pcm_oss_file->streams[idx];
+-		struct snd_pcm_runtime *runtime;
+-		if (substream == NULL)
+-			continue;
+-		runtime = substream->runtime;
+-		if (runtime->oss.channels != channels) {
+-			runtime->oss.params = 1;
+-			runtime->oss.channels = channels;
++
++	playback_channels = channels & 255;
++			/* lower 8 bits always set playback channels */
++	if (playback_channels > 128)
++		return -EINVAL;
++	substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
++	if (substream != NULL)
++		if (substream->runtime->oss.channels != playback_channels) {
++			substream->runtime->oss.params = 1;
++			substream->runtime->oss.channels = playback_channels;
+ 		}
++
++	substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
++	if (channels >255) { /* Enhanced channel set mode */
++		capture_channels = channels / 256 & 255;
++			 /* 2nd 8 bits set capture channels */
++		if (capture_channels > 128)
++			return -EINVAL;
++		if (substream != NULL)
++			if (substream->runtime->oss.channels != capture_channels) {
++				substream->runtime->oss.params = 1;
++				substream->runtime->oss.channels = capture_channels;
++			}
++		channels_set = snd_pcm_oss_get_substream_channels(
++				   pcm_oss_file, SNDRV_PCM_STREAM_PLAYBACK)
++				   + 256 * snd_pcm_oss_get_substream_channels(
++				   pcm_oss_file, SNDRV_PCM_STREAM_CAPTURE);
++	} else {  /* Standard mode, same num channels play and capture */
++		if (substream != NULL)
++			if (substream->runtime->oss.channels != channels) {
++				 /* Capture channels same as playback */
++				substream->runtime->oss.params = 1;
++				substream->runtime->oss.channels = channels;
++			}
++		channels_set = snd_pcm_oss_get_channels(pcm_oss_file);
+ 	}
+-	return snd_pcm_oss_get_channels(pcm_oss_file);
++	return channels_set;
+ }
+
+ static int snd_pcm_oss_get_channels(struct snd_pcm_oss_file *pcm_oss_file)
+
+--Boundary-00=_RTgWGxFLUsft1j9
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="pa-oss-duplex-chans-fix.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="pa-oss-duplex-chans-fix.diff"
+
+--- lib-src/portaudio/pa_unix_oss/pa_unix-orig.c	2004-11-18 06:17:34.000000000 +0000
++++ lib-src/portaudio/pa_unix_oss/pa_unix.c	2006-07-05 15:23:19.000000000 +0100
+@@ -5,6 +5,8 @@
+  *
+  * Copyright (c) 1999-2000 Phil Burk
+  *
++ *  Linux-Duplex-'bug' fix Alan Horstmann  26.6.06
++ *
+  * Permission is hereby granted, free of charge, to any person obtaining
+  * a copy of this software and associated documentation files
+  * (the "Software"), to deal in the Software without restriction,
+@@ -778,12 +781,11 @@
+ 
+     /* ------------------------- OPEN DEVICE -----------------------*/
+ 
+-    /* just output */
+     if (past->past_OutputDeviceID == past->past_InputDeviceID)
+     {
+ 
+         if ((past->past_NumOutputChannels > 0) && (past->past_NumInputChannels > 0) )
+-        {
++        {  /* Duplex; input and output from same device */
+             pad = Pa_GetInternalDevice( past->past_OutputDeviceID );
+             DBUG(("PaHost_OpenStream: attempt to open %s for O_RDWR\n", pad->pad_DeviceName ));
+ 
+@@ -806,17 +807,30 @@
+                 result = paHostError;
+                 goto error;
+             }
++
++            int format_NumChannels, latency_NumChannels;
++
++            if (past->past_NumInputChannels > past->past_NumOutputChannels )
++                latency_NumChannels = past->past_NumInputChannels;
++            else
++                latency_NumChannels = past->past_NumOutputChannels ;
++
++            if (past->past_NumOutputChannels == past->past_NumInputChannels)
++                format_NumChannels = past->past_NumOutputChannels ;
++            else  /* Use new AH enhanced OSS channel setting feature  */
++                format_NumChannels = past->past_NumOutputChannels  + 256 * past->past_NumInputChannels;
++
+             Pa_SetLatency( pahsc->pahsc_OutputHandle,
+                            past->past_NumUserBuffers, past->past_FramesPerUserBuffer,
+-                           past->past_NumOutputChannels );
++                           latency_NumChannels );
+             result = Pa_SetupDeviceFormat( pahsc->pahsc_OutputHandle,
+-                                           past->past_NumOutputChannels, (int)past->past_SampleRate );
++                                           format_NumChannels, (int)past->past_SampleRate );
+         }
+     }
+     else
+     {
+         if (past->past_NumOutputChannels > 0)
+-        {
++        {  /*  Output only  */
+             pad = Pa_GetInternalDevice( past->past_OutputDeviceID );
+             DBUG(("PaHost_OpenStream: attempt to open %s for O_WRONLY\n", pad->pad_DeviceName ));
+             /* dmazzoni: test it first in nonblocking mode to
+@@ -845,7 +857,7 @@
+         }
+ 
+         if (past->past_NumInputChannels > 0)
+-        {
++        {  /*  Input capture only  */
+             pad = Pa_GetInternalDevice( past->past_InputDeviceID );
+             DBUG(("PaHost_OpenStream: attempt to open %s for O_RDONLY\n", pad->pad_DeviceName ));
+             /* dmazzoni: test it first in nonblocking mode to
+
+--Boundary-00=_RTgWGxFLUsft1j9
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -168,4 +269,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-------=_Part_6788_23699530.1180303181795--
+--Boundary-00=_RTgWGxFLUsft1j9--
