@@ -1,17 +1,14 @@
-From: "Ash Willis" <ashwillis@programmer.net>
-Subject: [PATCH] Disable debugging output for the ALS300 driver
-Date: Sat, 26 May 2007 13:26:35 +0000
-Message-ID: <20070526132636.0972E87301@cal1-1.us4.outblaze.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: HDA Codec:  Add support for MSI K9N Ultra
+Date: Sun, 27 May 2007 00:09:28 -0700
+Message-ID: <1180249768.9034.81.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="=-AP0fFlnkbZjjRjHMCycs"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cal1-1.us4.outblaze.com (cal1-1.us4.outblaze.com
-	[205.158.62.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA8AB243B8
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 823F524604
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 May 2007 15:26:43 +0200 (CEST)
-Content-Disposition: inline
+	Sun, 27 May 2007 09:09:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,40 +18,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: ALSA Developers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Disables debugging output in the ALS300 driver.
-Also contains a whitespace cleanup and a fix for a potential bug.
 
-Signed-off-by: Ash Willis <ashwillis@programmer.net>
+--=-AP0fFlnkbZjjRjHMCycs
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-----------------------------------------------------
+This patch adds the MSI K9N Ultra system to the realtek patch.
 
-diff -r 337962e19de6 -r 8ea4fa014563 pci/als300.c
---- a/pci/als300.c=A0=A0=A0 Fri May 25 12:18:49 2007 +0200
-+++ b/pci/als300.c=A0=A0=A0 Sat May 26 14:04:14 2007 +0000
-@@ -88,8 +88,8 @@
-=A0#define PLAYBACK_BLOCK_COUNTER=A0=A0=A0 0x9A
-=A0#define RECORD_BLOCK_COUNTER=A0=A0=A0 0x9B
-=A0
--#define DEBUG_CALLS=A0=A0=A0 1
--#define DEBUG_PLAY_REC=A0=A0=A0 1
-+#define DEBUG_CALLS=A0=A0=A0 0
-+#define DEBUG_PLAY_REC=A0=A0=A0 0
-=A0
-=A0#if DEBUG_CALLS
-=A0#define snd_als300_dbgcalls(format, args...) printk(format, ##args)
-@@ -730,10 +730,9 @@ static int __devinit snd_als300_create(s
-=A0=A0=A0=A0 }
-=A0=A0=A0=A0 chip->irq =3D pci->irq;
-=A0
--
-=A0=A0=A0=A0 snd_als300_init(chip);
-=A0
--=A0=A0=A0 if (snd_als300_ac97(chip) < 0) {
-+=A0=A0=A0 if ((err =3D snd_als300_ac97(chip)) < 0) {
-=A0=A0=A0=A0 =A0=A0=A0 snd_printk(KERN_WARNING "Could not create ac97\n");
-=A0=A0=A0=A0 =A0=A0=A0 snd_als300_free(chip);
-=A0=A0=A0=A0 =A0=A0=A0 return err;
+
+Signed off by Tobin Davis <tdavis@dsl-only.net>
+
+--=-AP0fFlnkbZjjRjHMCycs
+Content-Disposition: attachment; filename=MSI-K9N.patch
+Content-Type: text/x-patch; name=MSI-K9N.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+diff -r 45179b325c8e pci/hda/patch_realtek.c
+--- a/pci/hda/patch_realtek.c	Wed May 23 16:27:32 2007 +0200
++++ b/pci/hda/patch_realtek.c	Sun May 27 00:05:47 2007 -0700
+@@ -6379,6 +6382,7 @@ static struct snd_pci_quirk alc883_cfg_t
+ 	SND_PCI_QUIRK(0x1458, 0xa002, "MSI", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x6668, "MSI", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x7187, "MSI", ALC883_6ST_DIG),
++	SND_PCI_QUIRK(0x1462, 0x7250, "MSI", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x7280, "MSI", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x0579, "MSI", ALC883_TARGA_2ch_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x3ef9, "MSI", ALC883_TARGA_DIG),
+
+--=-AP0fFlnkbZjjRjHMCycs
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-AP0fFlnkbZjjRjHMCycs--
