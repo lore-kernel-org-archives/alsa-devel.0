@@ -1,27 +1,16 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Re: [ALSA] ALSA Power Management,
-	Drivers behaving unexpectedly after suspend/resume cycle
-Date: Mon, 28 May 2007 18:09:38 +0530
-Message-ID: <8d6898730705280539l7220370eyc090947800d94118@mail.gmail.com>
-References: <8d6898730705242257k6da2088fi80f0d4034ed78986@mail.gmail.com>
-	<s5h3b1lp75g.wl%tiwai@suse.de>
-	<8d6898730705250504p442190e6u5bf71fbcd947df38@mail.gmail.com>
-	<1180096780.13652.57.camel@localhost.localdomain>
-	<s5hmyztnijd.wl%tiwai@suse.de>
-	<8d6898730705280216v54aeb08y9d1dbb8be7acc7a2@mail.gmail.com>
-	<8d6898730705280315s2afcce2fk22bbeb0031f410d3@mail.gmail.com>
+From: "Jose Henrique Spahn Torres" <jose.torres@eldorado.org.br>
+Subject: sound on smdk2410
+Date: Mon, 28 May 2007 11:26:44 -0300
+Message-ID: <AC2729D6E3A3314A922E4E0FBE513F65D6BB03@MAIL.eldorado.org.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.236])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54F91245EE
+Received: from mail.eldorado.org.br (mail.eldorado.org.br [200.168.210.67])
+	by alsa0.perex.cz (Postfix) with SMTP id C08232473A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2007 14:39:40 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 58so480665wri
-	for <alsa-devel@alsa-project.org>; Mon, 28 May 2007 05:39:39 -0700 (PDT)
-In-Reply-To: <8d6898730705280315s2afcce2fk22bbeb0031f410d3@mail.gmail.com>
-Content-Disposition: inline
+	Mon, 28 May 2007 16:26:47 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,113 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-i was getting those overrun issue because of one controller bug, if i
-write zero to TXCR/RXCR register to disable both transmit and receive
-logic before low power mode then i am getting this overrun error after
-resume.
+Hi,
+I am trying recent Zoltan Devai's patchs for kernel 2.6.22-rc2 on a
+smdk2410
+board. I reached the point where the kernel recognized the uda1341 sound
+chip,
+however, when I try to play something, I get the output below.
+Can anyone, please, show me the path to follow to get sound working?
+
+Thanks,
+Henrique
 
 
-Thanks a lot for your help
+/home $ l
+drwxr-xr-x    3 root     root            0 Jan  1 00:00 .
+drwxr-xr-x   18 root     root         1024 May 18  2007 ..
+-r--r--r--    1 root     root      3419671 Jan  1  1970 jj.mp3
+/home $ mpg123 jj.mp3
+High Performance MPEG 1.0/2.0/2.5 Audio Player for Layers 1, 2 anasoc:
+UDA1341 <-> s3c24xx-i2s info:
+asoc: rate mask 0xfe
+asoc: min ch 2 max ch 2
+asoc: min rate 8000 max rate 48000
+version 0.65; written and copyright by Michael Hipp and others
+free software (LGPL/GPL) without any warranty but with best wishes
+asoc: machine hw_params failed
+...
+(lots of asoc: messages)
+...
+asoc: machine hw_params failed
 
-Thanks
-Nobin Mathew
+pop wq checking: Playback status: inactive waiting: yes
+pop wq D3 UDA1341 Playback
 
-
-
-On 5/28/07, Nobin Mathew <nobin.mathew@gmail.com> wrote:
-> I think i found the issue. Issue is in controller. Soon i will get
-> back with more details
->
->
->
-> On 5/28/07, Nobin Mathew <nobin.mathew@gmail.com> wrote:
-> > I did some more investigation into this issue.
-> >
-> > There are two cases, in the first case it is working after resume()
-> > and in the second case it is not working after resume
-> >
-> > 1st Case:
-> >
-> > 1) boot the system
-> > 2)Load sound modules
-> > 2)mixer setting (alsactl restore 0)
-> > 3)Do power managemnt (sleep) suspend()
-> > 4)Come out of suspend, resume()
-> > 5)
-> > sound is coming out in this case
-> >
-> > 2nd Case:
-> > 1)boot the system
-> > 2)load sound modules
-> > 3)mixer settings (alsactl restore 0)
-> > 4)Do playback aplay -M /usr/share/sounds/alsa/Side_Right.wav
-> > 5) Let aplay to completion and kill all alsa apps if any running.
-> > 6)Do power managemnt (sleep) suspend()
-> > 7)Come out of suspend, resume()
-> > 8)Do playback aplay -M /usr/share/sounds/alsa/Side_Right.wav
-> >
-> > in this case no sound is coming out and i am getting underrun error.
-> >
-> >
-> > I am attaching some logs, these are the ac97 codec register values at
-> > various stages.
-> >
-> > Mainly look at the register 3c.
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> > On 5/25/07, Takashi Iwai <tiwai@suse.de> wrote:
-> > > At Fri, 25 May 2007 13:39:40 +0100,
-> > > Liam Girdwood wrote:
-> > > >
-> > > > On Fri, 2007-05-25 at 17:34 +0530, Nobin Mathew wrote:
-> > > > > Every ALSA driver is calling these for suspend
-> > > > >
-> > > > > snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-> > > > > snd_pcm_suspend_all(pcm[i]);
-> > > > >
-> > > > > And for resume
-> > > > > snd_power_change_state(card, SNDRV_CTL_POWER_D0)
-> > > > >
-> > > > >
-> > > > > In ALSA ASoC no driver is calling any of this, even not in soc-core.c
-> > > > >
-> > > > > My driver is an ASoC driver and I am also not calling these functions
-> > > > >
-> > > > > Will this cause any Issue?
-> > > > >
-> > > >
-> > > > These should probably be called to inform the upper layers of the PM
-> > > > state. Can you log a bug for this in ALSA bugzilla.
-> > > >
-> > > > Fwiw, this _shouldn't_ effect your resume. You should still see calls to
-> > > > trigger for your DMA / AC97 to re-start transmission of PCM data.
-> > >
-> > > I think this does matter.  Without calling snd_pcm_suspend*(), the
-> > > stream is assumed to be still active, thus eventually neither prepare
-> > > nor trigger is called at resume.  If the hardware is perfectly
-> > > resumed as it was before suspend, it may still work somehow.
-> > >
-> > > However, usually it's impossible to resume the hardware perfectly.
-> > > Thus, we need one stop the stream via snd_pcm_suspend*(), and let apps
-> > > (or OSS layer) parepare (if needed) and restart the stream again.
-> > >
-> > >
-> > > Takashi
-> > >
-> >
-> >
->
+Playing MPEG stream 1 of 1: jj.mp3 ...
+Title:   Times Like These                Artist: Jack Johnson
+Comment:                                 Album:  On And On
+Year:    2003                            Genre:  Acoustic
+MPEG 1.0 layer III, 192 kbits/s, 44100 Hz stereo
+[audio.c:264] error: No supported rate found!
+/home $
