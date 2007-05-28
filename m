@@ -1,17 +1,24 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: sound on smdk2410
-Date: Mon, 28 May 2007 15:39:26 +0100
-Message-ID: <1180363166.5816.56.camel@a10072.wolfsonmicro.main>
-References: <AC2729D6E3A3314A922E4E0FBE513F65D6BB03@MAIL.eldorado.org.br>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: another ALSA question
+Date: Mon, 28 May 2007 17:55:47 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0705281738360.7894@tm8103.perex-int.cz>
+References: <20070413191258.GA15076@suse.de>
+	<b130c85e0704140922v7a7b15acj3f36a8c2537dd0ca@mail.gmail.com>
+	<Pine.LNX.4.61.0704141913320.7963@tm8103.perex-int.cz>
+	<46211955.60701@gmail.com>
+	<Pine.LNX.4.61.0704142019590.7963@tm8103.perex-int.cz>
+	<465AC260.3060601@gmail.com>
+	<Pine.LNX.4.61.0705281356090.7894@tm8103.perex-int.cz>
+	<465AE6A8.4040906@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9029924735
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3247724720
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2007 16:39:27 +0200 (CEST)
-In-Reply-To: <AC2729D6E3A3314A922E4E0FBE513F65D6BB03@MAIL.eldorado.org.br>
+	Mon, 28 May 2007 17:55:48 +0200 (CEST)
+In-Reply-To: <465AE6A8.4040906@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,63 +28,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jose Henrique Spahn Torres <jose.torres@eldorado.org.br>
-Cc: alsa-devel@alsa-project.org
+To: Maarten Lankhorst <m.b.lankhorst@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2007-05-28 at 11:26 -0300, Jose Henrique Spahn Torres wrote:
-> Hi,
-> I am trying recent Zoltan Devai's patchs for kernel 2.6.22-rc2 on a
-> smdk2410
-> board. I reached the point where the kernel recognized the uda1341 sound
-> chip,
-> however, when I try to play something, I get the output below.
-> Can anyone, please, show me the path to follow to get sound working?
-> 
-> Thanks,
-> Henrique
-> 
-> 
-> /home $ l
-> drwxr-xr-x    3 root     root            0 Jan  1 00:00 .
-> drwxr-xr-x   18 root     root         1024 May 18  2007 ..
-> -r--r--r--    1 root     root      3419671 Jan  1  1970 jj.mp3
-> /home $ mpg123 jj.mp3
-> High Performance MPEG 1.0/2.0/2.5 Audio Player for Layers 1, 2 anasoc:
-> UDA1341 <-> s3c24xx-i2s info:
-> asoc: rate mask 0xfe
-> asoc: min ch 2 max ch 2
-> asoc: min rate 8000 max rate 48000
-> version 0.65; written and copyright by Michael Hipp and others
-> free software (LGPL/GPL) without any warranty but with best wishes
-> asoc: machine hw_params failed
-> ...
-> (lots of asoc: messages)
-> ...
-> asoc: machine hw_params failed
 
-Could you attach all the messages. It's difficult to debug without them.
+I'm CCing alsa-devel because this discussion might be interesting for 
+other developers, too.
 
-> 
-> pop wq checking: Playback status: inactive waiting: yes
-> pop wq D3 UDA1341 Playback
-> 
-> Playing MPEG stream 1 of 1: jj.mp3 ...
-> Title:   Times Like These                Artist: Jack Johnson
-> Comment:                                 Album:  On And On
-> Year:    2003                            Genre:  Acoustic
-> MPEG 1.0 layer III, 192 kbits/s, 44100 Hz stereo
-> [audio.c:264] error: No supported rate found!
-> /home $
+On Mon, 28 May 2007, Maarten Lankhorst wrote:
 
-Can you try playing a wav with aplay and send the results.
+> Jaroslav Kysela schreef:
+> > On Mon, 28 May 2007, Maarten Lankhorst wrote:
+> >   
+> >> After playing around a little more with alsa I tried to do manipulation
+> >> of pointer using the instructions, I wrote some simple code either does
+> >> rewind or forward to get to the right point, taking in respect the
+> >> amount of delay and where to go.
+> >>
+> >> However it doesn't seem to work: Looking at the source code it seems
+> >> rewinding isn't implemented, using the #if 0'd code there gives problems
+> >> when doing snd_pcm_forward later: It then ends up at the pointer where
+> >> the sound is currently being played at.
+> >>     
+> >
+> > Not all alsa-lib plugins are capable or have implemented this fine 
+> > position control (check error value).
+> >   
+> For a plugin like dmix, I would expect it to be implemented, especially
+> since most cards sold are integrated cards that don't have multiple
+> sound buffers.
 
-Imho, it could be 1 of three things atm.
+Go ahead and send us patches. We're doing open source :-) Anyway any 
+rewind operation mens "undo" - it will eat extra CPU ticks for nothing.
 
-1. OSS app (and hence OSS emulation) is initially setting hw_params to
-8kHz 16 bit mono (this may not be supported by the driver and thus
-hw_params returns EINVAL).
-2. audio rate, channels, format is not supported by driver.
-3. ARM gcc < 4.1.1 CSE bug.
+> >> As workaround I used the following in my own code:
+> >> typeof(snd_pcm_forward) snd_pcm_mmap_appl_forward;
+> >> #define snd_pcm_forward snd_pcm_mmap_appl_forward
+> >>
+> >> typeof(snd_pcm_rewind) snd_pcm_mmap_appl_backward;
+> >> #define snd_pcm_rewind snd_pcm_mmap_appl_backward
+> >>
+> >> This works, but I wonder if there is a cleaner way to do it.
+> >>     
+> >
+> > It won't work with all plugins and mentioned functions are not part of 
+> > public API.
+> >   
+> As I work in wine on it's DirectSound implementation, I can tell it
+> relies heavily on the fact that it can lock a buffer at an arbitrary
+> position, and that it works with absolute pointers, rather then
+> relative. So if snd_pcm_rewind/snd_pcm_forward don't work as expected,
+> an alsa driver for it would become nearly useless, I don't expect it to
+> always work, but I would expect it to work for a common plugin like dmix
+> at least.
+> >> Also, I noticed some audio glitches when using this in combination with
+> >> alsa-lib's resampling, is that because of the way it is done or is
+> >> something else wrong?
+> >>     
+> >
+> > You should not use mentioned functions.
+> >
+> > You can try to use the direct hardware access (hw:CARD_NAME) devices 
+> > (you'll lose all stream conversions from the ALSA side) or use an 
+> > intermediate buffer for fine position control and configure ALSA to use 
+> > smallest ring buffer as possible (to minimalize latency).
+> >
+> > 						Jarosla
+> I wish that would work, directsound expects to have access to a fixed
+> size buffer, and if I go for direct hardware access, I lose the ability
+> to work properly with most cheap cards on the market, since people want
+> to be able to listen to music on background while gaming. For now it
+> seems I have to use the internal calls in case of dmix, or modify
+> already committed data, which is what winealsa's current driver does. I
+> don't know what is the least of those 2 evils, or if there is a third
+> option. I'm open for advice.
 
-Liam 
+I'm afraid, that you're trying to exactly copy DirectSound API. Playing 
+with the buffer position in this way is always dangerous, because it's 
+really hard to predict the final result in the multitasking environment.
+
+Think about these proposals:
+
+1) what sample (ring buffer) rewritting is supposed to do - maybe you can 
+   change only not yet commited samples with satisfactory results
+2) use a small ALSA ring buffer and use own "big" ring buffer for changes 
+   before you commit samples to ALSA's ring buffer - you'll increase a bit 
+   sample flow latency, but you can do anything you want (you just add 
+   extra buffering to avoid rewind / forward for ALSA API)
+3) fix (or better implement) dmix plugin rewind function
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
