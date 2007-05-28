@@ -1,17 +1,16 @@
-From: dustin@seznam.cz
-Subject: Re: ICE1724 alsa driver
-Date: Mon, 28 May 2007 10:48:18 +0200 (CEST)
-Message-ID: <10237.25773-11092-1347170241-1180342098@seznam.cz>
-References: <loom.20070523T194915-68@post.gmane.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Reasonable sound hardware parameters?
+Date: Mon, 28 May 2007 10:52:18 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0705281045310.7894@tm8103.perex-int.cz>
+References: <1180162229.5468.21.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1653132244-1180342338=:7894"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxh.seznam.cz (mxhn.seznam.cz [212.80.76.26])
-	by alsa0.perex.cz (Postfix) with SMTP id 7F994246FE
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73DF624701
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 May 2007 10:48:22 +0200 (CEST)
-In-Reply-To: <loom.20070523T194915-68@post.gmane.org>
+	Mon, 28 May 2007 10:52:19 +0200 (CEST)
+In-Reply-To: <1180162229.5468.21.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,89 +20,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rossco <r.maclachlan@strath.ac.uk>
+To: Joachim =?ISO-8859-1?Q?F=F6rster?= <mls.JOFT@gmx.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Ross,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I apologize for a delayed  reply. Joint work on adding support to your card=
- sounds certainly interesting to me, it's just the current time pressure an=
-d a work on another card I would like to finish first. One or two weeks I h=
-ope.
+--8323584-1653132244-1180342338=:7894
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Regards,
+On Sat, 26 May 2007, Joachim F=F6rster wrote:
 
-Pavel.
+> Hi ALSA devs,
+>=20
+> as I already described in one of my last posts on the list, I'm going to
+> write a ALSA driver for a sound controller which will also be "written"
+> at the same time (VHDL for FPGA) - on top of an embedded system (Xilinx
+> ML403 EvalBoard, PowerPC 405). We will do playback feature only.
+>=20
+> The point is, that we will have _no_ real DMA and we don't want to use
+> the copy/silence or ack/workqueue (with intermediate buffer). So we
+> decided to move the ring buffer, which usually exists in RAM into the
+> sound controller and handle it as some kind of device IO memory, which
+> should be mmap'able (kernel function io_remap_pfn_range()). So, the
+> important goal is, to have mmap feature in the ALSA driver.
+>=20
+> First question: To implement mmap on such kind of device IO memory, I
+> have to use snd_pcm_lib_mmap_iomem() as mmap() callback - like it is
+> used in the rme32 driver, right?
 
+Yes. rme32 is quite similar.
 
+> Second question: Do the following parameters make sense regarding the
+> size of the HW ring buffer and period sizes:
+>=20
+> .buffer_bytes_max=3D16*1024;
+> .period_bytes_max=3D8*1024;
+> .period_bytes_min=3D?? resonable value ??
 
+32 or 64
 
->  ------------ P=F9vodn=ED zpr=E1va ------------
->  Od: Rossco <r.maclachlan@strath.ac.uk>
->  P=F8edm=ECt: Re: [alsa-devel] ICE1724 alsa driver
->  Datum: 23.5.2007 19:55:37
->  ----------------------------------------
->   <dustin <at> seznam.cz> writes:
->  =
+> .periods_min=3D2;
+> .periods_max=3D?? resonable value ??
 
->  > =
+16
 
->  > Hello Ross,
->  > =
+> Furthermore, the sound controller will fire an interrupt after one=20
+> period is played. Are there any arguments against these values? Any=20
+> comments?
 
->  > what kind of SPDIF receiver the HV-7.1CH Hitpoint card uses? =
+Yes, I think that the access through a PCI I/O window to a PCI device is=20
+much slower than PCI DMA transfers with bursts. I would really consider to=
+=20
+design hardware with real DMA. Of course, if it's only experimental stuff,=
+=20
+then don't worry.
 
->  > =
+=09=09=09=09=09=09Jaroslav
 
->  > http://www.hitpoint.com.tw/computer/en/product/soundcard/via/hv-71ch.h=
-tm
->  > =
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
+--8323584-1653132244-1180342338=:7894
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->  > I guess it is the chip right next to the two TOSLINK connectors. If it=
- is
->  CS8415 (looks similar), support for
->  > this chip could be taken from aureon.c, or perhaps the whole aureon co=
-de
->  would
->  fit this card better than the
->  > amp.c code with Chaintec AV710.
->  > =
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
->  > Regards,
->  > =
-
->  =
-
->  =
-
->  Hi Pavel,
->  =
-
->  I replied to you be email, just realised this should probably have been =
-through
->  the list. It is a CS8415. I would be grateful if you could advise how I =
-might
->  go
->  about trying the aureon.c with the hitpoint (I am new to ALSA and indeed
->  linux).
->  Or is this something that needs further developer attention and informat=
-ion
->  about the card (I will provide anything required)?
->  =
-
->  Regards,
->  =
-
->  Ross
->  =
-
->  _______________________________________________
->  Alsa-devel mailing list
->  Alsa-devel@alsa-project.org
->  http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->  =
-
->  =
-
->  =
+--8323584-1653132244-1180342338=:7894--
