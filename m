@@ -1,27 +1,19 @@
-From: Rossco <r.maclachlan@strath.ac.uk>
-Subject: Re: ICE1724 alsa driver
-Date: Tue, 29 May 2007 10:37:41 +0000 (UTC)
-Message-ID: <loom.20070529T122337-464@post.gmane.org>
-References: <loom.20070523T194915-68@post.gmane.org>
-	<10237.25773-11092-1347170241-1180342098@seznam.cz>
+From: "Jose Henrique Spahn Torres" <jose.torres@eldorado.org.br>
+Subject: Re: sound on smdk2410
+Date: Tue, 29 May 2007 08:50:50 -0300
+Message-ID: <AC2729D6E3A3314A922E4E0FBE513F65D6BCA3@MAIL.eldorado.org.br>
+References: <AC2729D6E3A3314A922E4E0FBE513F65D6BB03@MAIL.eldorado.org.br>
+	<1180363166.5816.56.camel@a10072.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id A31842432E
+Received: from mail.eldorado.org.br (mail.eldorado.org.br [200.168.210.67])
+	by alsa0.perex.cz (Postfix) with SMTP id 855C72434B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 May 2007 12:37:54 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Hsz5K-0001ti-Ho
-	for alsa-devel@alsa-project.org; Tue, 29 May 2007 12:37:50 +0200
-Received: from notrouble.cc.strath.ac.uk ([130.159.248.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 12:37:50 +0200
-Received: from r.maclachlan by notrouble.cc.strath.ac.uk with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 12:37:50 +0200
+	Tue, 29 May 2007 13:50:52 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <1180363166.5816.56.camel@a10072.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,50 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+-----Original Message-----
+From: Liam Girdwood [mailto:lg@opensource.wolfsonmicro.com] 
+Sent: segunda-feira, 28 de Maio de 2007 11:39
+To: Jose Henrique Spahn Torres
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] sound on smdk2410
 
-<dustin <at> seznam.cz> writes:
+On Mon, 2007-05-28 at 11:26 -0300, Jose Henrique Spahn Torres wrote:
+> Hi,
+> I am trying recent Zoltan Devai's patchs for kernel 2.6.22-rc2 on a 
+> smdk2410 board. I reached the point where the kernel recognized the 
+> uda1341 sound chip, however, when I try to play something, I get the 
+> output below.
+> Can anyone, please, show me the path to follow to get sound working?
+> 
+> Thanks,
+> Henrique
+> 
+> 
+> /home $ l
+> drwxr-xr-x    3 root     root            0 Jan  1 00:00 .
+> drwxr-xr-x   18 root     root         1024 May 18  2007 ..
+> -r--r--r--    1 root     root      3419671 Jan  1  1970 jj.mp3
+> /home $ mpg123 jj.mp3
+> High Performance MPEG 1.0/2.0/2.5 Audio Player for Layers 1, 2 anasoc:
+> UDA1341 <-> s3c24xx-i2s info:
+> asoc: rate mask 0xfe
+> asoc: min ch 2 max ch 2
+> asoc: min rate 8000 max rate 48000
+> version 0.65; written and copyright by Michael Hipp and others free 
+> software (LGPL/GPL) without any warranty but with best wishes
+> asoc: machine hw_params failed
+> ...
+> (lots of asoc: messages)
+> ...
+> asoc: machine hw_params failed
+
+Could you attach all the messages. It's difficult to debug without them.
 
 > 
-> Hi Ross,
+> pop wq checking: Playback status: inactive waiting: yes pop wq D3 
+> UDA1341 Playback
 > 
-> I apologize for a delayed  reply. Joint work on adding support to your card
-sounds certainly interesting to
-> me, it's just the current time pressure and a work on another card I would
-like to finish first. One or two
-> weeks I hope.
-> 
-> Regards,
-> 
-> Pavel.
+> Playing MPEG stream 1 of 1: jj.mp3 ...
+> Title:   Times Like These                Artist: Jack Johnson
+> Comment:                                 Album:  On And On
+> Year:    2003                            Genre:  Acoustic
+> MPEG 1.0 layer III, 192 kbits/s, 44100 Hz stereo [audio.c:264] error: 
+> No supported rate found!
+> /home $
 
-Hi Pavel,
+Can you try playing a wav with aplay and send the results.
 
-No worries on the delayed response, just glad to hear that support can be added.
-I will continue to read through alsa documentation and try to get as far as I
-can on my own over the next few weeks and then will give you an update on my
-progress at this stage.
+Imho, it could be 1 of three things atm.
 
-I suspect it will not be possible to use the complete aureon driver. The
-hitpoint (and av710) uses a combination of the 6 channel vt1616 codec (ac-link)
-and the 2 channel wolfson WM8728 (I2S) to achieve the 8 channels. The aureon
-uses the 8 channel wm8770 which is all I2s. You may be able to advise that
-despite the differences in chip the control of the envy24ht-s remains the same?
-But as far as I can see the envy chip has different modes to make use of
-ac-link, i2s or a mix of both.
+1. OSS app (and hence OSS emulation) is initially setting hw_params to
+8kHz 16 bit mono (this may not be supported by the driver and thus
+hw_params returns EINVAL).
+2. audio rate, channels, format is not supported by driver.
+3. ARM gcc < 4.1.1 CSE bug.
 
-Hopefully the cs8415 is hooked up in exactly the same way on both cards and
-therefore this code will be reuseable. 
+Liam 
 
-Of course I would be glad to hear from anyone who has experience in adapting
-ALSA drivers in the way that is required here. The resultant driver will most
-likely add spdif input functionality to the more readily available maddog
-entertainer 7.1 under linux (unless someone can confirm that this is already
-working).
+Hi Liam,
+the messages printed on the output are all the same (asoc:machine
+hw_params failed). It is printed tens of times...
+I couldn't play a .wav either.
 
-Cheers,
+I am using gcc 4.1.2, so it is not 3.
 
-Ross
+I will check 1 and 2 but I need some hints on where in the code this is
+set.
+
+Thanks,
+Henrique
