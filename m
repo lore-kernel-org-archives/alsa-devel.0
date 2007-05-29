@@ -1,19 +1,27 @@
-From: "Lorenz Kolb" <alsa-dev@lkmail.de>
-Subject: Re: Reasonable sound hardware parameters?
-Date: Tue, 29 May 2007 11:54:50 +0200
-Message-ID: <001501c7a1d7$68709e00$3951da00$@de>
-References: <000401c7a10e$71729fe0$5457dfa0$@de>
-	<Pine.LNX.4.61.0705281419030.7894@tm8103.perex-int.cz>
+From: Rossco <r.maclachlan@strath.ac.uk>
+Subject: Re: ICE1724 alsa driver
+Date: Tue, 29 May 2007 10:37:41 +0000 (UTC)
+Message-ID: <loom.20070529T122337-464@post.gmane.org>
+References: <loom.20070523T194915-68@post.gmane.org>
+	<10237.25773-11092-1347170241-1180342098@seznam.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pm1.terions.de (pm1.terions.de [83.137.96.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D456243AA
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id A31842432E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 May 2007 11:54:57 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.61.0705281419030.7894@tm8103.perex-int.cz>
-Content-Language: de
+	Tue, 29 May 2007 12:37:54 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Hsz5K-0001ti-Ho
+	for alsa-devel@alsa-project.org; Tue, 29 May 2007 12:37:50 +0200
+Received: from notrouble.cc.strath.ac.uk ([130.159.248.222])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 12:37:50 +0200
+Received: from r.maclachlan by notrouble.cc.strath.ac.uk with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 12:37:50 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +31,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Jaroslav Kysela' <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 28 May 2007 Jaroslav, Kysela wrote:
- 
-> On Mon, 28 May 2007, Lorenz Kolb wrote:
-> > Or did we miss something?
-> 
-> Probably not :-) I was speaking about standard PCI architecture in PC.
-> Your design is quite different. Anyway, I wonder for what purpose you
-> need such embedded platform with Linux? Perhaps, I'm too curious ;-)
 
-You know what happened to the cat because of curiosity? ;-)
-I know it is not polite to answer with a question, but why not using Linux
-in embedded platforms?
-Linux allows full control over the kernel (ok, as long as one complies to
-the GPL), it is widely spread and offers an enormous amount of client
-software and even more it is free (of charge, not of cost).
-And just have a look at companies like AVM. They do have great success using
-Linux in the embedded field.
-Unfortunately a multi-media-box (that's at least the goal) will not be multi
-without audio ;-)
+
+<dustin <at> seznam.cz> writes:
 
 > 
-> 						Jaroslav
+> Hi Ross,
 > 
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SUSE Labs
+> I apologize for a delayed  reply. Joint work on adding support to your card
+sounds certainly interesting to
+> me, it's just the current time pressure and a work on another card I would
+like to finish first. One or two
+> weeks I hope.
+> 
+> Regards,
+> 
+> Pavel.
 
-Lorenz
+Hi Pavel,
 
---
-Lorenz Kolb <alsa-dev@lkmail.de>
-Embedded specialist
-ESIC-Solutions
+No worries on the delayed response, just glad to hear that support can be added.
+I will continue to read through alsa documentation and try to get as far as I
+can on my own over the next few weeks and then will give you an update on my
+progress at this stage.
+
+I suspect it will not be possible to use the complete aureon driver. The
+hitpoint (and av710) uses a combination of the 6 channel vt1616 codec (ac-link)
+and the 2 channel wolfson WM8728 (I2S) to achieve the 8 channels. The aureon
+uses the 8 channel wm8770 which is all I2s. You may be able to advise that
+despite the differences in chip the control of the envy24ht-s remains the same?
+But as far as I can see the envy chip has different modes to make use of
+ac-link, i2s or a mix of both.
+
+Hopefully the cs8415 is hooked up in exactly the same way on both cards and
+therefore this code will be reuseable. 
+
+Of course I would be glad to hear from anyone who has experience in adapting
+ALSA drivers in the way that is required here. The resultant driver will most
+likely add spdif input functionality to the more readily available maddog
+entertainer 7.1 under linux (unless someone can confirm that this is already
+working).
+
+Cheers,
+
+Ross
