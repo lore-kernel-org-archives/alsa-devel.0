@@ -1,25 +1,21 @@
-From: "Daniel T. Chen" <crimsun@fungus.sh.nu>
-Subject: Re: [PATCH] Add quirk for Supermicro PDSBA
-	to	alc883_cfg_tbl[]
-Date: Tue, 29 May 2007 03:52:52 -0400
-Message-ID: <1180425172.22486.6.camel@Box.ncat.edu>
-References: <1180424788.22486.3.camel@Box.ncat.edu>
-Reply-To: crimsun@ubuntu.com
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: ASoC and a codec that can't be controlled
+Date: Tue, 29 May 2007 09:53:10 +0100
+Message-ID: <1180428790.5816.76.camel@a10072.wolfsonmicro.main>
+References: <46531097.5040600@freescale.com>
+	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>
+	<46574453.10808@freescale.com>
+	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>
+	<465B716F.7090908@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5350744548622917525=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ns1.mcdownloads.com (ns1.mcdownloads.com [216.239.132.98])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF1BE24378
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id 209B024394
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 May 2007 09:52:54 +0200 (CEST)
-Received: from ns1.mcdownloads.com (localhost [127.0.0.1])
-	by ns1.mcdownloads.com (Postfix) with ESMTP id 7E7EC2844E12D
-	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 00:52:52 -0700 (PDT)
-Received: from [127.0.0.1] (adhd.irule.net [66.81.0.197])
-	(Authenticated sender: crimsun@fungus.sh.nu)
-	by ns1.mcdownloads.com (Postfix) with ESMTP
-	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 00:52:52 -0700 (PDT)
-In-Reply-To: <1180424788.22486.3.camel@Box.ncat.edu>
+	Tue, 29 May 2007 10:53:12 +0200 (CEST)
+In-Reply-To: <465B716F.7090908@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,79 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5350744548622917525==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-mGJx+ZnI/SuNC6P4Kfds"
-
-
---=-mGJx+ZnI/SuNC6P4Kfds
-Content-Type: multipart/mixed; boundary="=-B63D51WB+mEuH5t1ebYa"
-
-
---=-B63D51WB+mEuH5t1ebYa
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2007-05-29 at 03:46 -0400, Daniel T. Chen wrote:
-> Attached is a diff against current alsa-kernel hg tip.
-
-Err, let's use the correct one from hg export.  Apologies for the
-earlier clutter.
-
---=-B63D51WB+mEuH5t1ebYa
-Content-Disposition: attachment; filename=diff.1
-Content-Type: text/plain; name=diff.1; charset=UTF-8
-Content-Transfer-Encoding: base64
-
-IyBIRyBjaGFuZ2VzZXQgcGF0Y2gNCiMgVXNlciBjcmltc3VuQEJveC5uY2F0LmVkdQ0KIyBEYXRl
-IDExODA0MjQ1MTUgMTQ0MDANCiMgTm9kZSBJRCBiZWM4MjcyN2ZkMDAzNDA2YmQxYzUzZjhmZTAy
-ODMwNTg5OTNiYTMwDQojIFBhcmVudCAgMzM3OTYyZTE5ZGU2MTg2MjU2YjY2N2ZmZWJlMmI4ZDQ4
-Y2ViODQyNw0KW1BBVENIXSBBZGQgcXVpcmsgZm9yIFN1cGVybWljcm8gUERTQkEgdG8gYWxjODgz
-X2NmZ190YmxbXQ0KDQpUZXN0ZWQgYW5kIHZlcmlmaWVkIGluICNhbHNhL0ZyZWVub2RlIG9uIFR1
-ZXNkYXksIE1heSAyOSwgMjAwNy4NCg0KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3Jp
-bXN1bkB1YnVudHUuY29tPg0KDQpkaWZmIC1yIDMzNzk2MmUxOWRlNiAtciBiZWM4MjcyN2ZkMDAg
-cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMNCi0tLSBhL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCUZy
-aSBNYXkgMjUgMTI6MTg6NDkgMjAwNyArMDIwMA0KKysrIGIvcGNpL2hkYS9wYXRjaF9yZWFsdGVr
-LmMJVHVlIE1heSAyOSAwMzo0MTo1NSAyMDA3IC0wNDAwDQpAQCAtNjM5Miw2ICs2MzkyLDcgQEAg
-c3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzg4M19jZmdfdA0KIAlTTkRfUENJX1FVSVJL
-KDB4MTQ2MiwgMHg0MzI0LCAiTVNJIiwgQUxDODgzX1RBUkdBX0RJRyksDQogCVNORF9QQ0lfUVVJ
-UksoMHgxNDYyLCAweGE0MjIsICJNU0kiLCBBTEM4ODNfVEFSR0FfMmNoX0RJRyksDQogCVNORF9Q
-Q0lfUVVJUksoMHgxMDI1LCAwLCAiQWNlciBsYXB0b3AiLCBBTEM4ODNfQUNFUiksDQorCVNORF9Q
-Q0lfUVVJUksoMHgxNWQ5LCAweDg3ODAsICJTdXBlcm1pY3JvIFBEU0JBIiwgQUxDODgzXzNTVF82
-Y2gpLA0KIAlTTkRfUENJX1FVSVJLKDB4MTYxZiwgMHgyMDU0LCAiTWVkaW9uIGxhcHRvcCIsIEFM
-Qzg4M19NRURJT04pLA0KIAlTTkRfUENJX1FVSVJLKDB4MTA3MSwgMHg4MjU4LCAiRXZlc2hhbSBW
-b3lhZWdlciIsIEFMQzg4M19MQVBUT1BfRUFQRCksDQogCVNORF9QQ0lfUVVJUksoMHg4MDg2LCAw
-eGQ2MDEsICJEMTAyR0dDIiwgQUxDODgzXzNTVF82Y2gpLA0K
+On Mon, 2007-05-28 at 19:18 -0500, Timur Tabi wrote:
+> Liam Girdwood wrote:
+> 
+> > Yes, although my feeling is that a codec "driver" would still be needed
+> > to define the capabilities of your codec within the audio subsystem.
+> > 
+> > e.g. supported sample rates, interface formats, etc
+> 
+> I'm curious - why would the codec driver dictate all that?  On my board, the sample rates are determined by the I2S controller, not the codec, because in order to change the sample rate, I program new divisors into the I2S controller's registers.
 
 
---=-B63D51WB+mEuH5t1ebYa--
+Some codecs can only support a small range of sample rates e.g. 8k &
+48k, whilst your controller may support more. This just makes sure the
+audio is set a rate the codec can handle, otherwise audio quality will
+probably suffer.
 
---=-mGJx+ZnI/SuNC6P4Kfds
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBGW9vUe9GwFciKvaMRAsYBAJwOS8sQW0AN7d7mU0OSNIsWr1fa0gCgi7Lg
-9RFsiMCBX0rh/qL4IUDk9eY=
-=vYPv
------END PGP SIGNATURE-----
-
---=-mGJx+ZnI/SuNC6P4Kfds--
-
---===============5350744548622917525==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5350744548622917525==--
+Liam
