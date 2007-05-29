@@ -1,79 +1,161 @@
-From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Subject: [1/4] 2.6.22-rc3: known regressions
-Date: Tue, 29 May 2007 14:52:53 +0200
-Message-ID: <465C2225.2000100@googlemail.com>
+From: "Ivan N. Zlatev" <contact@i-nz.net>
+Subject: Re: [PATCH] Sigmatel STAC9221 - Add Configs for all
+	Apple Intel Macs
+Date: Tue, 29 May 2007 13:57:38 +0100
+Message-ID: <3db1ec7f0705290557w4cc6d3c6tc79794a4bdeff253@mail.gmail.com>
+References: <3db1ec7f0705271459xb780f7em39df715b0ace772a@mail.gmail.com>
+	<s5h7iqrom5h.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Miklos Szeredi <miklos@szeredi.hu>, Ingo Molnar <mingo@elte.hu>, linux-acpi@vger.kernel.org, Len Brown <lenb@kernel.org>, Thierry Volpiatto <tvolpiatt@neuf.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Ben Collins <bcollins@ubuntu.com>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, Florin Iucha <florin@iucha.net>, Sam Ravnborg <sam@ravnborg.org>, Andrey Borzenkov <arvidjaar@mail.ru>
+Content-Type: multipart/mixed;
+	boundary="----=_Part_60170_28918249.1180443458058"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8595424358
+	for <alsa-devel@alsa-project.org>;
+	Tue, 29 May 2007 14:57:40 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so542345ana
+	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 05:57:38 -0700 (PDT)
+In-Reply-To: <s5h7iqrom5h.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+------=_Part_60170_28918249.1180443458058
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Here is a list of some known regressions in 2.6.22-rc3.
+Patch updated not to remove old models, but to rather alias them with
+lowercase pinconfigs.
 
-=46eel free to add new regressions/remove fixed etc.
-http://kernelnewbies.org/known_regressions
+Regards.
+-- 
+Ivan N. Zlatev
 
+Web: http://www.i-nZ.net
+"It's all some kind of whacked out conspiracy."
 
+------=_Part_60170_28918249.1180443458058
+Content-Type: text/x-patch; name=apple_alsa.patch; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_f2adj0mo
+Content-Disposition: attachment; filename="apple_alsa.patch"
 
-Unclassified
+ZGlmZiAtciAzMzc5NjJlMTlkZTYgcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCi0tLSBhL3BjaS9o
+ZGEvcGF0Y2hfc2lnbWF0ZWwuYwlGcmkgTWF5IDI1IDEyOjE4OjQ5IDIwMDcgKzAyMDAKKysrIGIv
+cGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCVR1ZSBNYXkgMjkgMTM6NTY6MzkgMjAwNyArMDEwMApA
+QCAtNTksNiArNTksMTIgQEAgZW51bSB7CiAJU1RBQ19EOTQ1X1JFRiwKIAlTVEFDX0Q5NDVHVFAz
+LAogCVNUQUNfRDk0NUdUUDUsCisJU1RBQ19JTlRFTF9NQUNfVjEsCisJU1RBQ19JTlRFTF9NQUNf
+VjIsCisJU1RBQ19JTlRFTF9NQUNfVjMsCisJU1RBQ19JTlRFTF9NQUNfVjQsCisJU1RBQ19JTlRF
+TF9NQUNfVjUsCisJLyogZm9yIGJhY2t3YXJkIGNvbXBpdGFiaWxpdHkgKi8KIAlTVEFDX01BQ01J
+TkksCiAJU1RBQ19NQUNCT09LLAogCVNUQUNfTUFDQk9PS19QUk9fVjEsCkBAIC01NTAsNDYgKzU1
+Niw2NCBAQCBzdGF0aWMgdW5zaWduZWQgaW50IGQ5NDVndHA1X3Bpbl9jb25maWdzCiAJMHgwMmEx
+OTMyMCwgMHg0MDAwMDEwMCwKIH07CiAKLXN0YXRpYyB1bnNpZ25lZCBpbnQgbWFjYm9va19wcm9f
+djFfcGluX2NvbmZpZ3NbMTBdID0gewotCTB4MDMyMWUyMzAsIDB4MDNhMWUwMjAsIDB4OTAxN2Ux
+MTAsIDB4MDEwMTQwMTAsCi0JMHgwMWExOTAyMSwgMHgwMzgxZTAyMSwgMHgxMzQ1ZTI0MCwgMHgx
+M2M1ZTIyZSwKLQkweDAyYTE5MzIwLCAweDQwMDAwMGZiCi19OwotCi1zdGF0aWMgdW5zaWduZWQg
+aW50IG1hY2Jvb2tfcHJvX3YyX3Bpbl9jb25maWdzWzEwXSA9IHsKLQkweDAyMjE0MDFmLCAweDkw
+YTcwMTIwLCAweDAxODEzMDI0LCAweDAxMDE0MDEwLAotCTB4NDAwMDAwZmQsIDB4MDEwMTYwMTEs
+IDB4MTM0NWUyNDAsIDB4MTNjNWUyMmUsCitzdGF0aWMgdW5zaWduZWQgaW50IGludGVsX21hY192
+MV9waW5fY29uZmlnc1sxMF0gPSB7CisJMHgwMTIxZTIxZiwgMHg0MDAwMDBmZiwgMHg5MDE3ZTEx
+MCwgMHg0MDAwMDBmZCwKKwkweDQwMDAwMGZlLCAweDAxODFlMDIwLCAweDExNDVlMDMwLCAweDEx
+YzVlMjQwLAogCTB4NDAwMDAwZmMsIDB4NDAwMDAwZmIsCiB9OwogCi1zdGF0aWMgdW5zaWduZWQg
+aW50IGltYWNfaW50ZWxfcGluX2NvbmZpZ3NbMTBdID0gewotCTB4MDEyMWUyMzAsIDB4OTBhNzAx
+MjAsIDB4OTAxN2UxMTAsIDB4NDAwMDAwZmUsCi0JMHg0MDAwMDBmZCwgMHgwMTgxZTAyMSwgMHgx
+MTQ1ZTA0MCwgMHg0MDAwMDBmYSwKK3N0YXRpYyB1bnNpZ25lZCBpbnQgaW50ZWxfbWFjX3YyX3Bp
+bl9jb25maWdzWzEwXSA9IHsKKwkweDAxMjFlMjFmLCAweDkwYTcwMTJlLCAweDkwMTdlMTEwLCAw
+eDQwMDAwMGZkLAorCTB4NDAwMDAwZmUsIDB4MDE4MWUwMjAsIDB4MTE0NWUyMzAsIDB4NTAwMDAw
+ZmEsCiAJMHg0MDAwMDBmYywgMHg0MDAwMDBmYiwKIH07CiAKLXN0YXRpYyB1bnNpZ25lZCBpbnQg
+aW1hY19pbnRlbF8yMF9waW5fY29uZmlnc1sxMF0gPSB7Ci0JMHgwMTIxRTIxRiwgMHg5MEE3MDEy
+RSwgMHg5MDE3RTExMCwgMHg0MDAwMDBGRCwKLQkweDQwMDAwMEZFLCAweDAxODFFMDIwLCAweDEx
+NDVFMjMwLCAweDExQzVFMjQwLAotCTB4NDAwMDAwRkMsIDB4NDAwMDAwRkIsCitzdGF0aWMgdW5z
+aWduZWQgaW50IGludGVsX21hY192M19waW5fY29uZmlnc1sxMF0gPSB7CisJMHgwMTIxZTIxZiwg
+MHg5MGE3MDEyZSwgMHg5MDE3ZTExMCwgMHg0MDAwMDBmZCwKKwkweDQwMDAwMGZlLCAweDAxODFl
+MDIwLCAweDExNDVlMjMwLCAweDExYzVlMjQwLAorCTB4NDAwMDAwZmMsIDB4NDAwMDAwZmIsCit9
+OworCitzdGF0aWMgdW5zaWduZWQgaW50IGludGVsX21hY192NF9waW5fY29uZmlnc1sxMF0gPSB7
+CisJMHgwMzIxZTIxZiwgMHgwM2ExZTAyZSwgMHg5MDE3ZTExMCwgMHg5MDE3ZTExZiwKKwkweDQw
+MDAwMGZlLCAweDAzODFlMDIwLCAweDEzNDVlMjMwLCAweDEzYzVlMjQwLAorCTB4NDAwMDAwZmMs
+IDB4NDAwMDAwZmIsCit9OworCitzdGF0aWMgdW5zaWduZWQgaW50IGludGVsX21hY192NV9waW5f
+Y29uZmlnc1sxMF0gPSB7CisJMHgwMzIxZTIxZiwgMHgwM2ExZTAyZSwgMHg5MDE3ZTExMCwgMHg5
+MDE3ZTExZiwKKwkweDQwMDAwMGZlLCAweDAzODFlMDIwLCAweDEzNDVlMjMwLCAweDEzYzVlMjQw
+LAorCTB4NDAwMDAwZmMsIDB4NDAwMDAwZmIsCiB9OwogCiBzdGF0aWMgdW5zaWduZWQgaW50ICpz
+dGFjOTIyeF9icmRfdGJsW1NUQUNfOTIyWF9NT0RFTFNdID0gewogCVtTVEFDX0Q5NDVfUkVGXSA9
+IHJlZjkyMnhfcGluX2NvbmZpZ3MsCiAJW1NUQUNfRDk0NUdUUDNdID0gZDk0NWd0cDNfcGluX2Nv
+bmZpZ3MsCiAJW1NUQUNfRDk0NUdUUDVdID0gZDk0NWd0cDVfcGluX2NvbmZpZ3MsCi0JW1NUQUNf
+TUFDTUlOSV0gPSBtYWNib29rX3Byb192MV9waW5fY29uZmlncywKLQlbU1RBQ19NQUNCT09LXSA9
+IG1hY2Jvb2tfcHJvX3YxX3Bpbl9jb25maWdzLAotCVtTVEFDX01BQ0JPT0tfUFJPX1YxXSA9IG1h
+Y2Jvb2tfcHJvX3YxX3Bpbl9jb25maWdzLAotCVtTVEFDX01BQ0JPT0tfUFJPX1YyXSA9IG1hY2Jv
+b2tfcHJvX3YyX3Bpbl9jb25maWdzLAotCVtTVEFDX0lNQUNfSU5URUxdID0gaW1hY19pbnRlbF9w
+aW5fY29uZmlncywKLQlbU1RBQ19JTUFDX0lOVEVMXzIwXSA9IGltYWNfaW50ZWxfMjBfcGluX2Nv
+bmZpZ3MsCisJW1NUQUNfSU5URUxfTUFDX1YxXSA9IGludGVsX21hY192MV9waW5fY29uZmlncywK
+KwlbU1RBQ19JTlRFTF9NQUNfVjJdID0gaW50ZWxfbWFjX3YyX3Bpbl9jb25maWdzLAorCVtTVEFD
+X0lOVEVMX01BQ19WM10gPSBpbnRlbF9tYWNfdjNfcGluX2NvbmZpZ3MsCisJW1NUQUNfSU5URUxf
+TUFDX1Y0XSA9IGludGVsX21hY192NF9waW5fY29uZmlncywKKwlbU1RBQ19JTlRFTF9NQUNfVjVd
+ID0gaW50ZWxfbWFjX3Y1X3Bpbl9jb25maWdzLAorCS8qIGZvciBiYWNrd2FyZCBjb21waXRhYmls
+aXR5ICovCisJW1NUQUNfTUFDTUlOSV0gPSBpbnRlbF9tYWNfdjNfcGluX2NvbmZpZ3MsCisJW1NU
+QUNfTUFDQk9PS10gPSBpbnRlbF9tYWNfdjVfcGluX2NvbmZpZ3MsCisJW1NUQUNfTUFDQk9PS19Q
+Uk9fVjFdID0gaW50ZWxfbWFjX3YzX3Bpbl9jb25maWdzLAorCVtTVEFDX01BQ0JPT0tfUFJPX1Yy
+XSA9IGludGVsX21hY192M19waW5fY29uZmlncywKKwlbU1RBQ19JTUFDX0lOVEVMXSA9IGludGVs
+X21hY192Ml9waW5fY29uZmlncywKKwlbU1RBQ19JTUFDX0lOVEVMXzIwXSA9IGludGVsX21hY192
+M19waW5fY29uZmlncywKIH07CiAKIHN0YXRpYyBjb25zdCBjaGFyICpzdGFjOTIyeF9tb2RlbHNb
+U1RBQ185MjJYX01PREVMU10gPSB7CiAJW1NUQUNfRDk0NV9SRUZdCT0gInJlZiIsCiAJW1NUQUNf
+RDk0NUdUUDVdCT0gIjVzdGFjayIsCiAJW1NUQUNfRDk0NUdUUDNdCT0gIjNzdGFjayIsCisJW1NU
+QUNfSU5URUxfTUFDX1YxXSA9ICJpbnRlbC1tYWMtdjEiLAorCVtTVEFDX0lOVEVMX01BQ19WMl0g
+PSAiaW50ZWwtbWFjLXYyIiwKKwlbU1RBQ19JTlRFTF9NQUNfVjNdID0gImludGVsLW1hYy12MyIs
+CisJW1NUQUNfSU5URUxfTUFDX1Y0XSA9ICJpbnRlbC1tYWMtdjQiLAorCVtTVEFDX0lOVEVMX01B
+Q19WNV0gPSAiaW50ZWwtbWFjLXY1IiwKKwkvKiBmb3IgYmFja3dhcmQgY29tcGl0YWJpbGl0eSAq
+LwogCVtTVEFDX01BQ01JTkldCT0gIm1hY21pbmkiLAogCVtTVEFDX01BQ0JPT0tdCT0gIm1hY2Jv
+b2siLAogCVtTVEFDX01BQ0JPT0tfUFJPX1YxXQk9ICJtYWNib29rLXByby12MSIsCkBAIC02NTgs
+NyArNjgyLDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIHN0YWM5MjJ4X2NmZwogCS8q
+IG90aGVyIHN5c3RlbXMgICovCiAJLyogQXBwbGUgTWFjIE1pbmkgKGVhcmx5IDIwMDYpICovCiAJ
+U05EX1BDSV9RVUlSSygweDgzODQsIDB4NzY4MCwKLQkJICAgICAgIk1hYyBNaW5pIiwgU1RBQ19N
+QUNNSU5JKSwKKwkJICAgICAgIk1hYyBNaW5pIiwgU1RBQ19JTlRFTF9NQUNfVjMpLAogCXt9IC8q
+IHRlcm1pbmF0b3IgKi8KIH07CiAKQEAgLTIwMTIsMjcgKzIwMzYsMzYgQEAgc3RhdGljIGludCBw
+YXRjaF9zdGFjOTIyeChzdHJ1Y3QgaGRhX2NvZAogCXNwZWMtPmJvYXJkX2NvbmZpZyA9IHNuZF9o
+ZGFfY2hlY2tfYm9hcmRfY29uZmlnKGNvZGVjLCBTVEFDXzkyMlhfTU9ERUxTLAogCQkJCQkJCXN0
+YWM5MjJ4X21vZGVscywKIAkJCQkJCQlzdGFjOTIyeF9jZmdfdGJsKTsKLQlpZiAoc3BlYy0+Ym9h
+cmRfY29uZmlnID09IFNUQUNfTUFDTUlOSSkgeworCWlmIChzcGVjLT5ib2FyZF9jb25maWcgPT0g
+U1RBQ19JTlRFTF9NQUNfVjMpIHsKIAkJc3BlYy0+Z3Bpb19tdXRlID0gMTsKIAkJLyogSW50ZWwg
+TWFjcyBoYXZlIGFsbCBzYW1lIFBDSSBTU0lELCBzbyB3ZSBuZWVkIHRvIGNoZWNrCiAJCSAqIGNv
+ZGVjIFNTSUQgdG8gZGlzdGluZ3Vpc2ggdGhlIGV4YWN0IG1vZGVscwogCQkgKi8KIAkJcHJpbnRr
+KEtFUk5fSU5GTyAiaGRhX2NvZGVjOiBTVEFDOTIyeCwgQXBwbGUgc3Vic3lzX2lkPSV4XG4iLCBj
+b2RlYy0+c3Vic3lzdGVtX2lkKTsKIAkJc3dpdGNoIChjb2RlYy0+c3Vic3lzdGVtX2lkKSB7Ci0J
+CWNhc2UgMHgxMDZiMGEwMDogLyogTWFjQm9vayBGaXJzdCBnZW5lcmF0b2luICovCi0JCQlzcGVj
+LT5ib2FyZF9jb25maWcgPSBTVEFDX01BQ0JPT0s7CisKKwkJY2FzZSAweDEwNkIwODAwOgorCQkJ
+c3BlYy0+Ym9hcmRfY29uZmlnID0gU1RBQ19JTlRFTF9NQUNfVjE7CiAJCQlicmVhazsKLQkJY2Fz
+ZSAweDEwNmIwMjAwOiAvKiBNYWNCb29rIFBybyBmaXJzdCBnZW5lcmF0aW9uICovCi0JCQlzcGVj
+LT5ib2FyZF9jb25maWcgPSBTVEFDX01BQ0JPT0tfUFJPX1YxOworCQljYXNlIDB4MTA2QjA2MDA6
+CisJCWNhc2UgMHgxMDZCMDcwMDoKKwkJCXNwZWMtPmJvYXJkX2NvbmZpZyA9IFNUQUNfSU5URUxf
+TUFDX1YyOwogCQkJYnJlYWs7Ci0JCWNhc2UgMHgxMDZiMWUwMDogLyogTWFjQm9vayBQcm8gc2Vj
+b25kIGdlbmVyYXRpb24gKi8KLQkJCXNwZWMtPmJvYXJkX2NvbmZpZyA9IFNUQUNfTUFDQk9PS19Q
+Uk9fVjI7CisJCWNhc2UgMHgxMDZCMEUwMDoKKwkJY2FzZSAweDEwNkIwRjAwOgorCQljYXNlIDB4
+MTA2QjE2MDA6CisJCWNhc2UgMHgxMDZCMTcwMDoKKwkJY2FzZSAweDEwNkIwMjAwOgorCQljYXNl
+IDB4MTA2QjFFMDA6CisJCQlzcGVjLT5ib2FyZF9jb25maWcgPSBTVEFDX0lOVEVMX01BQ19WMzsK
+IAkJCWJyZWFrOwotCQljYXNlIDB4MTA2YjA3MDA6IC8qIEludGVsLWJhc2VkIGlNYWMgKi8KLQkJ
+CXNwZWMtPmJvYXJkX2NvbmZpZyA9IFNUQUNfSU1BQ19JTlRFTDsKKwkJY2FzZSAweDEwNkIxQTAw
+OgorCQljYXNlIDB4MDAwMDAxMDA6CisJCQlzcGVjLT5ib2FyZF9jb25maWcgPSBTVEFDX0lOVEVM
+X01BQ19WNDsKIAkJCWJyZWFrOwotCQljYXNlIDB4MTA2YjE3MDA6IC8qIEludGVsIGlNYWMgMjAg
+Ki8KLQkJCXNwZWMtPmJvYXJkX2NvbmZpZyA9IFNUQUNfSU1BQ19JTlRFTF8yMDsKKwkJY2FzZSAw
+eDEwNmIwQTAwOgorCQljYXNlIDB4MTA2QjIyMDA6CisJCQlzcGVjLT5ib2FyZF9jb25maWcgPSBT
+VEFDX0lOVEVMX01BQ19WNTsKIAkJCWJyZWFrOwogCQl9CiAJfQo=
+------=_Part_60170_28918249.1180443458058
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Subject    : long freezes on thinkpad t60
-References : http://lkml.org/lkml/2007/5/24/100
-Submitter  : Miklos Szeredi <miklos@szeredi.hu>
-Handled-By : Ingo Molnar <mingo@elte.hu>
-Status     : problem is being debugged
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
-
-ACPI
-
-Subject    : unable to shutdown on kernel 2.6.22-rc2
-References : http://bugzilla.kernel.org/show_bug.cgi?id=3D8516
-Submitter  : Thierry Volpiatto <tvolpiatt@neuf.fr>
-Status     : Unknown
-
-
-
-ALSA
-
-Subject    : snd-aoa causes badness in lib/kref.c:33
-References : http://bugzilla.kernel.org/show_bug.cgi?id=3D8513
-Submitter  : Ben Collins <bcollins@ubuntu.com>
-Status     : Unknown
-
-
-
-=46ile systems
-
-Subject    : Oops in dentry_iput with 2.6.22-rc2 on AMD64
-References : http://lkml.org/lkml/2007/5/22/4
-Submitter  : Florin Iucha <florin@iucha.net>
-Status     : Unknown
-
-
-
-Kbuild
-
-Subject    : make M=3D$PWD modules_install does nothing
-References : http://lkml.org/lkml/2007/5/27/190
-Submitter  : Andrey Borzenkov <arvidjaar@mail.ru>
-Status     : Unknown
-
-
-
-Regards,
-Michal
-
---
-"Najbardziej brakowa=B3o mi twojego milczenia."
--- Andrzej Sapkowski "Co=B6 wi=EAcej"
-
--
-To unsubscribe from this list: send the line "unsubscribe linux-acpi" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+------=_Part_60170_28918249.1180443458058--
