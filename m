@@ -1,21 +1,19 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: Question on snd_soc_dai_link
-Date: Tue, 29 May 2007 15:51:48 +0100
-Message-ID: <1180450308.5816.155.camel@a10072.wolfsonmicro.main>
-References: <46575B3E.2020603@freescale.com>
-	<1180354777.5816.39.camel@a10072.wolfsonmicro.main>
-	<465B83B4.4000801@freescale.com>
-	<1180448356.5816.145.camel@a10072.wolfsonmicro.main>
-	<465C3A53.10902@freescale.com>
+From: chris@idlelion.net
+Subject: Next steps
+Date: Tue, 29 May 2007 09:55:22 -0500 (CDT)
+Message-ID: <Pine.LNX.4.64.0705290952230.2627@tick.idlelion.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 38C0F243A0
+Received: from alnrmhc11.comcast.net (alnrmhc11.comcast.net [206.18.177.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6D813243A0
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 May 2007 16:51:50 +0200 (CEST)
-In-Reply-To: <465C3A53.10902@freescale.com>
+	Tue, 29 May 2007 16:55:36 +0200 (CEST)
+Received: from localhost (tick.idlelion.net [127.0.0.1])
+	by tick.idlelion.net (8.13.8/8.13.4) with ESMTP id l4TEtMNi002768
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 09:55:22 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2007-05-29 at 09:36 -0500, Timur Tabi wrote:
-> Liam Girdwood wrote:
-> 
-> > 
-> > Please let me know if I'm way off here. The device tree looks like an
-> > elegant solution for machine initialisation/description.
-> 
-> I'm going to study this and run it by others in my department (we handle all the Linux architectural issues for Freescale SOCs).  I can tell you that you're very close, but it will require some tweaks.  Off the top of my head, I see a few problems:
-> 
-> 1) The I2C addresses are specified in a separate I2C node
-> 2) I don't know much about the 5200, but on my part, the DMA operations are provided by the I2S device.  We don't use the generic DMA engine.
+Hey gang,
 
-Fwiw, ASoC splits out the audio DMA code from I2S, AC97 or PCM
-controllers as there isn't too much difference between audio DMA code
-for each interface. Any controller specific data is passed in at
-hw_params time (by the I2S/AC97/PCM controller driver) to configure
-addresses, width, etc
+I'm trying to work on issue 305, suspend/resume for cs46xx.
 
-Liam
+I'm running CentOS 5, so I'd like to work on what's current for that 
+distribution first, and patch to latest if needed after that.
+
+I think I have the correct source package, but the only mention of cs46xx 
+I could find in the source is a configuration file. Running make doesn't 
+make the cs46xx module, AFAICT.
+
+Which source (package)(s) should I have?
+
+How do I track down the source file(s) I need to examine?
+
+Thanks,
+Chris
