@@ -1,19 +1,21 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Reasonable sound hardware parameters?
-Date: Tue, 29 May 2007 20:17:51 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0705292011350.7894@tm8103.perex-int.cz>
-References: <000401c7a10e$71729fe0$5457dfa0$@de>
-	<Pine.LNX.4.61.0705281419030.7894@tm8103.perex-int.cz>
-	<001501c7a1d7$68709e00$3951da00$@de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: ASoC and a codec that can't be controlled
+Date: Tue, 29 May 2007 13:47:45 -0500
+Message-ID: <465C7551.1010404@freescale.com>
+References: <46531097.5040600@freescale.com>	
+	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>	
+	<46574453.10808@freescale.com>
+	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13A5C243C2
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCE29243CD
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 May 2007 20:17:52 +0200 (CEST)
-In-Reply-To: <001501c7a1d7$68709e00$3951da00$@de>
+	Tue, 29 May 2007 20:47:51 +0200 (CEST)
+In-Reply-To: <1180354247.5816.30.camel@a10072.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lorenz Kolb <alsa-dev@lkmail.de>
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 29 May 2007, Lorenz Kolb wrote:
-
-> On Mon, 28 May 2007 Jaroslav, Kysela wrote:
->  
-> > On Mon, 28 May 2007, Lorenz Kolb wrote:
-> > > Or did we miss something?
-> > 
-> > Probably not :-) I was speaking about standard PCI architecture in PC.
-> > Your design is quite different. Anyway, I wonder for what purpose you
-> > need such embedded platform with Linux? Perhaps, I'm too curious ;-)
+Liam Girdwood wrote:
+> On Fri, 2007-05-25 at 15:17 -0500, Timur Tabi wrote:
+>> Liam Girdwood wrote:
+>>
+>>> These are used for setting up the dynamic audio power management and
+>>> won't be needed in stand alone mode.
+>> So if I don't care about power management, can I completely ignore anything with "dapm" in it?
 > 
-> You know what happened to the cat because of curiosity? ;-) I know it is 
-> not polite to answer with a question, but why not using Linux in 
-> embedded platforms? Linux allows full control over the kernel (ok, as 
-> long as one complies to the GPL), it is widely spread and offers an 
-> enormous amount of client software and even more it is free (of charge, 
-> not of cost). And just have a look at companies like AVM. They do have 
-> great success using Linux in the embedded field. Unfortunately a 
-> multi-media-box (that's at least the goal) will not be multi without 
-> audio ;-)
+> Yes.
+> 
+>> Also, do I need a codec driver at all, even if I can't control the codec?  That is, can I 
+>> do stuff like this:
+>>
+>> static struct snd_soc_device mysoc_snd_devdata = {
+>> 	.machine = &snd_soc_machine_mysoc,
+>> 	.platform = &mysoc_soc_platform,
+>> };
+>>
+>> static struct snd_soc_dai_link mpc8610hpcd_dai = {
+>> 	.name = "CS4270",
+>> 	.stream_name = "CS4270",
+>> 	.cpu_dai = &mysoc_i2s_dai,
+>> 	.init = mpc8610hpcd_machine_init,
+>> 	.ops = &mpc8610hpcd_ops,
+>> };
+> 
+> Yes, although my feeling is that a codec "driver" would still be needed
+> to define the capabilities of your codec within the audio subsystem.
 
-Yes, I know about Linux flexibility, but I'm curious what's special in 
-your hardware platform - or what was the reason to design a new platform 
-(you mentioned that main CPU is not very powerful). Several PC based 
-platforms exist with Geode or VIA processors which has enough I/Os 
-integrated including AC97 sound and PCI slots for further expansion..
-Maybe size of final product or a special acceleration?
+Another question:
 
-						Jaroslav
+Why do I need to specify the codec DAI in two different structures?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+eti_b1_wm8731.c:
+
+static struct snd_soc_dai_link eti_b1_dai = {
+	.name = "WM8731",
+	.stream_name = "WM8731",
+	.cpu_dai = &at91_i2s_dai[1],
+	.codec_dai = &wm8731_dai,	<----
+	.init = eti_b1_wm8731_init,
+	.ops = &eti_b1_ops,
+};
+
+wm8731.c:
+
+static int wm8731_init(struct snd_soc_device *socdev)
+{
+	struct snd_soc_codec *codec = socdev->codec;
+...
+	int reg, ret = 0;
+
+	codec->dai = &wm8731_dai;	<-----
+
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
