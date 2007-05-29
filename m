@@ -1,19 +1,21 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Alsa-OSS Duplex bug (revisited)
-Date: Tue, 29 May 2007 23:16:17 +0100
-Message-ID: <200705292316.17947.gineera@aspect135.co.uk>
-References: <200705272323.13056.gineera@aspect135.co.uk>
-	<s5hodk3zi09.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: ASoC and a codec that can't be controlled
+Date: Tue, 29 May 2007 18:05:00 -0500
+Message-ID: <465CB19C.7080602@freescale.com>
+References: <46531097.5040600@freescale.com>	
+	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>	
+	<46574453.10808@freescale.com>
+	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6498624401
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 53D00243A4
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2007 00:07:39 +0200 (CEST)
-In-Reply-To: <s5hodk3zi09.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Wed, 30 May 2007 01:05:08 +0200 (CEST)
+In-Reply-To: <1180354247.5816.30.camel@a10072.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,64 +25,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 29 May 2007 17:55, you wrote:
-> At Sun, 27 May 2007 23:23:13 +0100,
->
-> Alan Horstmann wrote:
-.......................................
-> > Patch for 1.0.14rc4 is attached for consideration, together with example
-> > portaudio patch.
->
-> Thanks for the patch.  I see how you struggled with this problem.
+Liam Girdwood wrote:
 
-Thanks for giving this some consideration...
+> Yes, although my feeling is that a codec "driver" would still be needed
+> to define the capabilities of your codec within the audio subsystem.
 
-> Well, this is a bit hard problem to decide which to go.
-> While I see the advantage by your hack (small and backward
-> compatible), I feel that it's too hackish -- it introduces an
-> incompatible way of the existing ioctl.
->
-Do you mean in that ioctls in general are not meant to work like that, in 
-effect passing 2 numbers rather than one?
+Ok, I just noticed this:
 
-> So, I'm not fully convinced by this change yet.
->
-> OK, let's whip this dead horse again.
->
-> After a quick thought, another possible fix would be to let apps open
-> each direction separately.  For that,
->
-> - add some way to make the given PCM stream to non-fullduplex
->   (proc or module options?)
+at91-i2s.c:
 
-Are you thinking that if an option were set, Alsa-OSS would create separate 
-devices for capture and playback rather than a single duplex device?  That 
-would remove the problem, I think.
+#define AT91_I2S_RATES (SNDRV_PCM_RATE_8000  | SNDRV_PCM_RATE_11025 |\
+			SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
+			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
+			SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
+			SNDRV_PCM_RATE_96000)
 
-> or
->
-> - change portaudio to open each direction separately, O_RDONLY and
->   O_WRONLY at first, then use O_RDWR as fallback
+struct snd_soc_cpu_dai at91_i2s_dai[NUM_SSC_DEVICES] = {
+	{	.name = "at91_ssc0/i2s",
+		.id = 0,
+		.type = SND_SOC_DAI_I2S,
+		.suspend = at91_i2s_suspend,
+		.resume = at91_i2s_resume,
+		.playback = {
+			.channels_min = 1,
+			.channels_max = 2,
+			.rates = AT91_I2S_RATES,
+			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
+		.capture = {
+			.channels_min = 1,
+			.channels_max = 2,
+			.rates = AT91_I2S_RATES,
+			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
 
-Do you mean O_RDONLY first, set capture channels, then O_WRONLY and set 
-playback channels before finally O_RDWR in such a way that the previous 
-values are retained?  This sounds tricky to implement depending on the apps 
-code structure, but might be effective.
+wm8731.c:
 
-> Are these feasible?
+#define WM8731_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
+		SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
+		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
+		SNDRV_PCM_RATE_96000)
 
-The advantage of my proposal is that the ioctl value is a simple integer, and 
-can pass between functions as a parameter, or be part of a varible structure 
-in just the same way as the present channels number.  Therefore changes to 
-the app are very small (portaudio is just one example).
+#define WM8731_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+	SNDRV_PCM_FMTBIT_S24_LE)
 
-What is frustrating is that the Alsa-OSS stream is fine in duplex with 
-variable numbers of channels, but it is simply the lack of a way to pass the 
-two numbers to the stream since the OSS ioctl only has one number.  If two 
-had been used originally, all would be fine!
+struct snd_soc_codec_dai wm8731_dai = {
+	.name = "WM8731",
+	.playback = {
+		.stream_name = "Playback",
+		.channels_min = 1,
+		.channels_max = 2,
+		.rates = WM8731_RATES,
+		.formats = WM8731_FORMATS,},
+	.capture = {
+		.stream_name = "Capture",
+		.channels_min = 1,
+		.channels_max = 2,
+		.rates = WM8731_RATES,
+		.formats = WM8731_FORMATS,},
 
-Alan
+So does this mean that ALSA looks at the rate and format capabilities of the I2S interface 
+and the codec, and then only chooses ones that both support?
+
+Also, what does it mean for the codec to support little-endian?  On PowerPC, all registers 
+are big-endian, so my version of at91-i2s.c has to have SNDRV_PCM_FMTBIT_S24_BE.
+
+Your codec driver says it's little-endian.  But the I2S standard is serial, so endianness 
+doesn't apply.  Yet if I say the codec is little-endian, but the I2S interface is 
+big-endian, how can ALSA resolve that?
+
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
