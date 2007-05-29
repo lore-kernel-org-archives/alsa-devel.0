@@ -1,21 +1,21 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: ASoC and a codec that can't be controlled
-Date: Tue, 29 May 2007 14:02:14 -0500
-Message-ID: <465C78B6.3000001@freescale.com>
-References: <46531097.5040600@freescale.com>	
-	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>	
-	<46574453.10808@freescale.com>
-	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>
+From: "Lorenz Kolb" <alsa-dev@lkmail.de>
+Subject: Re: Reasonable sound hardware parameters?
+Date: Tue, 29 May 2007 21:15:09 +0200
+Message-ID: <000001c7a225$ae486c20$0ad94460$@de>
+References: <000401c7a10e$71729fe0$5457dfa0$@de>
+	<Pine.LNX.4.61.0705281419030.7894@tm8103.perex-int.cz>
+	<001501c7a1d7$68709e00$3951da00$@de>
+	<Pine.LNX.4.61.0705292011350.7894@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C4C1243CF
+Received: from pm1.terions.de (pm1.terions.de [83.137.96.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E777243D1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 May 2007 21:02:19 +0200 (CEST)
-In-Reply-To: <1180354247.5816.30.camel@a10072.wolfsonmicro.main>
+	Tue, 29 May 2007 21:15:15 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.61.0705292011350.7894@tm8103.perex-int.cz>
+Content-Language: de
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+To: 'Jaroslav Kysela' <perex@suse.cz>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
+On Tue, 29 May 2007 Jaroslav wrote:
+> 
+> Yes, I know about Linux flexibility, but I'm curious what's special in
+> your hardware platform - or what was the reason to design a new
+> platform
+> (you mentioned that main CPU is not very powerful). Several PC based
+> platforms exist with Geode or VIA processors which has enough I/Os
+> integrated including AC97 sound and PCI slots for further expansion..
+> Maybe size of final product or a special acceleration?
+> 
+> 						Jaroslav
 
-> Yes, although my feeling is that a codec "driver" would still be needed
-> to define the capabilities of your codec within the audio subsystem.
+Ok, now I got Your point. The project is all about being highly energy
+efficient, flexible and provide massive parallelism (and we are not talking
+about just 4 cores like in an Intel). Unfortunately size matters as well and
+you'll guess it: it has to be cost efficient. Probably You know the word
+"eierlegende Wollmilchsau" (dict.leo.org translates it with: "all-in-one
+device suitable for every purpose" though the humor gets lost with that
+translation), actually that's the goal.
 
-Another question:
+Regards,
 
-Why is it the codec driver that calls snd_soc_new_pcms()?  Shouldn't the PCM driver be 
-doing that?
-
-Looking in snd_soc_new_pcms() itself, I see this:
-
-	codec->card = snd_card_new(idx, xid, codec->owner, 0);
-
-Here we create a new "sound card", and we assign it to the
-
-I guess I just don't understand why the codec driver is acting like the "master" driver of 
-ASOC.  IMHO, the codec driver should be doing two things:
-
-1) Specifying the capabilities of the codec hardware itself, without any assumption that 
-these capabilities dictate the capabilities of the system as a whole (e.g. the codec 
-shouldn't assume that the system supports every sampling rate that the codec does).
-2) Providing APIs for controlling the codec.
-
-ASOC and the machine driver should then work in tandem to decide which driver will do what 
-and which capabilities are *actually* supported.  *Something* needs to look at the entire 
-system and say to each device, "Well, yes, I know about this little feature of yours, but 
-we're just not going to support that today."
-
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+Lorenz
