@@ -1,23 +1,23 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: ASoC and a codec that can't be controlled
-Date: Wed, 30 May 2007 13:10:28 -0500
-Message-ID: <465DBE14.5020206@freescale.com>
-References: <46531097.5040600@freescale.com>	
-	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>	
-	<46574453.10808@freescale.com>	
-	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>	
-	<465C78B6.3000001@freescale.com>
-	<1180529741.29590.54.camel@a10072.wolfsonmicro.main>
+From: "j t" <mark473@gmail.com>
+Subject: Re: Will the real alsa wiki please stand up?
+Date: Wed, 30 May 2007 20:29:53 +0100
+Message-ID: <b88f52540705301229h70cb3e23wba7a768d5bbab665@mail.gmail.com>
+References: <b88f52540705260200s5521d02bq7d115d783b7aeb3d@mail.gmail.com>
+	<4658013E.9000408@ingomueller.net>
+	<b88f52540705260416n412f59c4md6d402c960d95c76@mail.gmail.com>
+	<4659F3B8.8090705@ingomueller.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93153244F7
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.243])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1A6E244F8
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2007 20:10:38 +0200 (CEST)
-In-Reply-To: <1180529741.29590.54.camel@a10072.wolfsonmicro.main>
+	Wed, 30 May 2007 21:29:57 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so795464ana
+	for <alsa-devel@alsa-project.org>; Wed, 30 May 2007 12:29:53 -0700 (PDT)
+In-Reply-To: <4659F3B8.8090705@ingomueller.net>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,70 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
+On 5/27/07, Ingo M=FCller <alsa@ingomueller.net> wrote:
+> Hi!
+>
+> Being one of the wiki sysops and certainly the most contributing user of
+> the last half year, I would not only "not put resistance", but greatly
+> appriciate if the two wiki were merged.
 
->> I guess I just don't understand why the codec driver is acting like the "master" driver of 
->> ASOC.  IMHO, the codec driver should be doing two things:
-> 
-> I guess this is due to an ordering issue we had during early
-> development. We had to make sure that the I2C probe of the codec
-> succeeded before registering the card, pcms, etc. Fwiw, I do intend to
-> address this in future versions (I should probably add a road map to the
-> wiki now).
+I've been looking into this a little more, and I've just found out
+that the official alsa wiki contains 20 articles, while the unofficial
+wiki contains 602 articles. Unless somebody can machine-merge these
+two wikis together, surely it would be a better idea (less effort!) to
+copy the contents of the official into the unofficial, and then
+transfer the whole unofficial one over to the official domain.
 
-In that case, I think we can solve this problem as well as the PowerPC device tree problem 
-in one shot, because they're basically the same problem.
+Am I missing something obvious? (Is there a reason why the new
+official wiki was created "blank", rather than with a dump from the
+unofficial one)?
 
-Anyway, let me see if I get this right:
-
-1. The first function called is eti_b1_init().
-2. eti_b1_init() calls platform_device_add() to add an soc-audio class device and register 
-the eti_b1_snd_devdata structure.
-3. The registration causes a number of things to happen, one of which is a call to 
-soc_probe().
-4. soc_probe() sees that the snd_soc_machine_eti_b1.probe is NULL, so that part is skipped.
-3. soc_probe() sees that snd_soc_machine_eti_b1.dai_link->cpu_dai->probe is also NULL, so 
-that part is skipped. (eti_b1_snd_devdata.machine == snd_soc_machine_eti_b1)
-4. soc_probe() sees that soc_codec_dev_wm8731.probe is not NULL, so it calls wm8731_probe().
-5. wm8731_probe() registers an I2C driver.
-6. The I2C class driver calls wm8731_i2c_driver.attach_adapter, which is wm8731_i2c_attach().
-7. wm8731_i2c_attach() calls i2c_probe(), which in turn calls wm8731_codec_probe()
-8. wm8731_codec_probe() allocates a snd_soc_codec structure.
-8. wm8731_codec_probe() calls wm8731_init().
-
-This means that if there is no I2C support, wm8731_init() will never be called.
-
-9. wm8731_init() initializes the snd_soc_codec structure.
-
-Question: why doesn't wm8731_probe() initialize the non-I2C parts of the snd_soc_codec 
-structure?  For example, snd_soc_codec.dai, snd_soc_codec.name, and snd_soc_codec.owner? 
-That way, the snd_soc_codec structure will be properly initialized even when there's no I2C.
-
-10. wm8731_init() calls snd_soc_new_pcms.
-11. wm8731_init() exits, wm8731_codec_probe() exits, wm8731_i2c_attach() exits, and then 
-wm8731_probe() exits.  Control returns to soc_probe().
-12. soc_probe() notices that eti_b1_snd_devdata.platform.probe is NULL, so it skips that.
-
-Question: why don't you define a function for at91_soc_platform.probe, and in that 
-function you can call snd_soc_new_pcms()?  That way, you guarantee the codec driver's I2C 
-interface is initialized before snd_soc_new_pcms() is called, and you avoid have PCM calls 
-in the codec driver.
-
->> ASOC and the machine driver should then work in tandem to decide which driver will do what 
->> and which capabilities are *actually* supported.  *Something* needs to look at the entire 
->> system and say to each device, "Well, yes, I know about this little feature of yours, but 
->> we're just not going to support that today."
->>
-> 
-> The machine driver pretty much already does this. It can override valid
-> hardware configurations and return -EINVAl if required. 
-
-Do you have an example of that?  Would that be eti_b1_hw_params()?
-
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+Jaime
