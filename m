@@ -1,21 +1,23 @@
 From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 Subject: Re: ASoC and a codec that can't be controlled
-Date: Wed, 30 May 2007 13:20:51 +0100
-Message-ID: <1180527651.29590.36.camel@a10072.wolfsonmicro.main>
+Date: Wed, 30 May 2007 13:28:40 +0100
+Message-ID: <1180528120.29590.42.camel@a10072.wolfsonmicro.main>
 References: <46531097.5040600@freescale.com>
 	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>
 	<46574453.10808@freescale.com>
 	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>
-	<465C7551.1010404@freescale.com>
+	<465B716F.7090908@freescale.com>
+	<1180428790.5816.76.camel@a10072.wolfsonmicro.main>
+	<465C6C81.2060105@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 249AC24466
+	by alsa0.perex.cz (Postfix) with ESMTP id 35FD324466
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2007 14:20:53 +0200 (CEST)
-In-Reply-To: <465C7551.1010404@freescale.com>
+	Wed, 30 May 2007 14:28:42 +0200 (CEST)
+In-Reply-To: <465C6C81.2060105@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,71 +31,26 @@ To: Timur Tabi <timur@freescale.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2007-05-29 at 13:47 -0500, Timur Tabi wrote:
+On Tue, 2007-05-29 at 13:10 -0500, Timur Tabi wrote:
 > Liam Girdwood wrote:
-> > On Fri, 2007-05-25 at 15:17 -0500, Timur Tabi wrote:
-> >> Liam Girdwood wrote:
-> >>
-> >>> These are used for setting up the dynamic audio power management and
-> >>> won't be needed in stand alone mode.
-> >> So if I don't care about power management, can I completely ignore anything with "dapm" in it?
-> > 
-> > Yes.
-> > 
-> >> Also, do I need a codec driver at all, even if I can't control the codec?  That is, can I 
-> >> do stuff like this:
-> >>
-> >> static struct snd_soc_device mysoc_snd_devdata = {
-> >> 	.machine = &snd_soc_machine_mysoc,
-> >> 	.platform = &mysoc_soc_platform,
-> >> };
-> >>
-> >> static struct snd_soc_dai_link mpc8610hpcd_dai = {
-> >> 	.name = "CS4270",
-> >> 	.stream_name = "CS4270",
-> >> 	.cpu_dai = &mysoc_i2s_dai,
-> >> 	.init = mpc8610hpcd_machine_init,
-> >> 	.ops = &mpc8610hpcd_ops,
-> >> };
-> > 
-> > Yes, although my feeling is that a codec "driver" would still be needed
-> > to define the capabilities of your codec within the audio subsystem.
 > 
-> Another question:
+> > Some codecs can only support a small range of sample rates e.g. 8k &
+> > 48k, whilst your controller may support more. This just makes sure the
+> > audio is set a rate the codec can handle, otherwise audio quality will
+> > probably suffer.
 > 
-> Why do I need to specify the codec DAI in two different structures?
-> 
-> eti_b1_wm8731.c:
-> 
-> static struct snd_soc_dai_link eti_b1_dai = {
-> 	.name = "WM8731",
-> 	.stream_name = "WM8731",
-> 	.cpu_dai = &at91_i2s_dai[1],
-> 	.codec_dai = &wm8731_dai,	<----
-> 	.init = eti_b1_wm8731_init,
-> 	.ops = &eti_b1_ops,
-> };
-> 
-> wm8731.c:
-> 
-> static int wm8731_init(struct snd_soc_device *socdev)
-> {
-> 	struct snd_soc_codec *codec = socdev->codec;
-> ...
-> 	int reg, ret = 0;
-> 
-> 	codec->dai = &wm8731_dai;	<-----
+> What about boards where the codec does *not* dictate the available sample rates?  That is, 
+> what if the SOC can't generate the frequencies necessary to drive the codec at all the 
+> rates it supports?  The codec driver would then need to be told by the machine driver 
+> which sample rates are going to be used.  When the codec driver is initialized, it needs 
+> to set the snd_soc_codec.dai field to point to the codec's DAI, and that structure 
+> contains the list of supported sample rates.
 > 
 
-Looks like some naming confusion on my part here, so his probably needs
-a little refactoring in the codec struct.  
-
-The codec struct contains a pointer to _all_ the digital audio
-interfaces it supports (e.g. some codecs support more than 1 DAI),
-whilst the link struct contains a mapping between codec interface n and
-SoC interface n. In this example the WM8731 only has 1 DAI, so it does
-look like duplication.
-
-I'll refactor this in a future patch.
+ASoC creates a bitmask of supported sample rates from the DMA, I2S
+controller and codec and then AND's them together. It then checks the
+requested rate, etc against this bitmask before proceeding. This way the
+whole audio system dictates the supported rate and not any single
+component.
 
 Liam
