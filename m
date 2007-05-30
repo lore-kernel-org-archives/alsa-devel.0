@@ -1,30 +1,54 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [1/4] 2.6.22-rc3: known regressions
-Date: Wed, 30 May 2007 06:35:22 +0200
-Message-ID: <20070530043522.GA11512@uranus.ravnborg.org>
-References: <465C2225.2000100@googlemail.com>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Power management state flow in ALSA
+Date: Wed, 30 May 2007 11:52:31 +0530
+Message-ID: <8d6898730705292322w2dbf2a2fu4761370c4cc7ea16@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-acpi-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5EEF24438
+	for <alsa-devel@alsa-project.org>;
+	Wed, 30 May 2007 08:22:32 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id n7so1060852wag
+	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 23:22:31 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <465C2225.2000100@googlemail.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Miklos Szeredi <miklos@szeredi.hu>, Ingo Molnar <mingo@elte.hu>, linux-acpi@vger.kernel.org, Len Brown <lenb@kernel.org>, Thierry Volpiatto <tvolpiatt@neuf.fr>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Ben Collins <bcollins@ubuntu.com>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, Florin Iucha <florin@iucha.net>, Andrey Borzenkov <arvidjaar@mail.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: lg@opensource.wolfsonmicro.com, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 29, 2007 at 02:52:53PM +0200, Michal Piotrowski wrote:
-> Hi all,
-> 
-> Here is a list of some known regressions in 2.6.22-rc3.
-> 
-> 
-> Kbuild
-> 
-> Subject    : make M=$PWD modules_install does nothing
-> References : http://lkml.org/lkml/2007/5/27/190
-> Submitter  : Andrey Borzenkov <arvidjaar@mail.ru>
-> Status     : Unknown
-Closed - see http://lkml.org/lkml/2007/5/29/497
+I am having a doubt regarding ALSA power management.
 
-	Sam
+My understanding of APM suspend() is like this.
+
+Freeze the ALSA apps
+
+Call ALSA driver suspend ()
+
+in the ALSA suspend() function it saves the current state of substream
+and changes the state of substream to SUSPENDED.
+
+My understanding of APM resume() is like this
+
+Call ALSA driver resume ()
+
+Activate the ALSA apps
+
+In ALSA resume function it restores the saved state of substream.
+
+
+So my question is when ALSA app will get to know the SUSPENDED state
+of substream.???
+
+I am using linux kernel 2.6.17
+ALSA driver version 1.0.11rc4
+ASoC patch version 0.12.4
