@@ -1,19 +1,20 @@
-From: stan <stanl@cox.net>
-Subject: Fw: hardware not asking for more data using asyn call
-	back
-Date: Wed, 30 May 2007 09:58:54 -0700
-Message-ID: <20070530095854.5b0a7637@localhost.localdomain>
+From: "Jose Henrique Spahn Torres" <jose.torres@eldorado.org.br>
+Subject: Re: [RFC] [PATCH 0/2] ASoC
+	soundsupport	forSMDK2440boards
+Date: Wed, 30 May 2007 14:02:43 -0300
+Message-ID: <AC2729D6E3A3314A922E4E0FBE513F65D6C0B6@MAIL.eldorado.org.br>
+References: <5b7270f40705240728p4f579269g1ddc8e8db8d59f81@mail.gmail.com><AC2729D6E3A3314A922E4E0FBE513F65D1FD65@MAIL.eldorado.org.br><5b7270f40705241445t59a89b24sacbd3abf0a1b129d@mail.gmail.com><AC2729D6E3A3314A922E4E0FBE513F65D1FE77@MAIL.eldorado.org.br><5b7270f40705250750u1ba4619dm973fcb297c8fefb1@mail.gmail.com><AC2729D6E3A3314A922E4E0FBE513F65D6B8B8@MAIL.eldorado.org.br><5b7270f40705251040r56bee4dfqdb2e66fd2b7fbdcd@mail.gmail.com><AC2729D6E3A3314A922E4E0FBE513F65D6BE87@MAIL.eldorado.org.br><5b7270f40705300830g7aef9faajc0b9e82d6d983d@mail.gmail.com>
+	<1180539750.5111.7.camel@gg-desktop.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=MP_q+sc.wXCEC53VaRylwP5UxF
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao105.cox.net (fed1rmmtao105.cox.net [68.230.241.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA0A5244CF
+Received: from mail.eldorado.org.br (mail.eldorado.org.br [200.168.210.67])
+	by alsa0.perex.cz (Postfix) with SMTP id 916DE244D0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2007 18:59:05 +0200 (CEST)
-Received: from fed1rmimpo01.cox.net ([70.169.32.71]) by fed1rmmtao105.cox.net
-	(InterMail vM.7.05.02.00 201-2174-114-20060621) with ESMTP
-	id <20070530165856.BDMR9600.fed1rmmtao105.cox.net@fed1rmimpo01.cox.net>
-	for <alsa-devel@alsa-project.org>; Wed, 30 May 2007 12:58:56 -0400
+	Wed, 30 May 2007 19:02:51 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <1180539750.5111.7.camel@gg-desktop.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,68 +27,71 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---MP_q+sc.wXCEC53VaRylwP5UxF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ 
 
+-----Original Message-----
+From: alsa-devel-bounces@alsa-project.org
+[mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Graeme Gregory
+Sent: quarta-feira, 30 de Maio de 2007 12:43
+To: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [RFC] [PATCH 0/2] ASoC soundsupport
+forSMDK2440boards
 
+On Wed, 2007-05-30 at 17:30 +0200, Zoltan Devai wrote:
+> 2007/5/29, Jose Henrique Spahn Torres <jose.torres@eldorado.org.br>:
+> > I used speaker-test as indicated above and the result is:
+> >
+> > pendrive $ ./speaker-test -r 44100
+> >
+> > speaker-test 1.0.11
+> >
+> > Playback device is default
+> > Stream parameters are 44100Hz, S16_LE, 1 channels Using 16 octaves 
+> > of pink noise ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown 
+> > PCM default Playback open error: -2,No such file or directory ALSA 
+> > lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default Playback 
+> > open error: -2,No such file or directory ALSA lib 
+> > pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default Playback open
 
-Begin forwarded message:
+> > error: -2,No such file or directory ALSA lib 
+> > pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default Playback open
 
-Date: Tue, 29 May 2007 15:19:12 -0400
-From: "Ashlesha Shintre" <ashlesha.shintre@gmail.com>
-To: stanl@cox.net, alsa-devel@alsa-project.org
-Subject: Re: hardware not asking for more data using asyn call back
+> > error: -2,No such file or directory ALSA lib 
+> > pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default Playback open
+
+> > error: -2,No such file or directory
+> >
+> > I have also tried:
+> >
+> > /pendrive $ ./aplay -f cd 01-jack_johnson-times_like_these-rns.wav
+> > ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default
+> > aplay: main:547: audio open error: No such file or directory 
+> > /pendrive $
+> >
+> > so I don't know what is happening here.
+> > Does anyone have any idea?
+> 
+> You seem to have two problems:
+> 1. Using OSS applications which try to set the sample rate to 8000Hz, 
+> which is not supported by the hardware 2. A non-working ALSA 
+> installation, with some alsa-lib or device file misconfiguration
+> 
+> Try to fix both...
+
+Is this compilation using buildroot? We have had many people with
+bugreports that turned out to be gcc CSE bug which is not patched in
+buildroot. And the fact the build root doesnt seem to install the config
+files for alsa-lib.
+
+For testing here we always use images generated by OpenEmbedded
+www.openembedded.org. So that gets better ALSA support for ASoC stuff
+anyway :-)
+
+Graeme
 
 
 Hi,
 
-Thanks Stan, for your response - Instead of copying pcm data from a wav
-file, i decided to copy all the data to a master buffer first and then
-see if the circular buffer implementation works -
+thanks for the hints, I will do that
 
-so now instead of copying from the wave file, i m copying data from the
-master buffer to the circular buffer.. however, as per your suggestion,
-if i copy the data in the while loop in main, then, it might not always
-be copied between 2 consecutive callbacks, but maybe more, as the
-callbacks are asynchronous.
-
-however, the hardware still does not ask for more data after executing
-the callback function about twice -- is there a way to flush the
-hardware buffer before beginning playback? I have pasted my code below
-
-Regards,
-Ashlesha.
-
-<snip>
-
-I've been doing some thinking about what you are trying to accomplish
-and have a suggestion.  I think you would be better off letting jack
-handle the back end/sound portion.  Run a daemon/service listening on
-an arbitrary tcp/ip port.  On startup it initializes alsa and jack.
-When it receives a request, it forks a process which opens a new
-channel on jack and creates a buffer for it.  It then plays the sound it
-receives on that link via jack, silence when the buffer is empty.  You
-would have to write client software for the user on the network to
-contact your daemon/service.
-
-You might even find something like this already out there.
-
---MP_q+sc.wXCEC53VaRylwP5UxF
-MIME-Version: 1.0
-Content-Type: text/plain
-
-
---MP_q+sc.wXCEC53VaRylwP5UxF
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---MP_q+sc.wXCEC53VaRylwP5UxF--
+Henrique
