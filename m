@@ -1,18 +1,20 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Power management state flow in ALSA
-Date: Wed, 30 May 2007 11:52:31 +0530
-Message-ID: <8d6898730705292322w2dbf2a2fu4761370c4cc7ea16@mail.gmail.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Alsa-OSS Duplex bug (revisited)
+Date: Wed, 30 May 2007 08:47:14 +0200
+Message-ID: <1180507634.27605.1192457693@webmail.messagingengine.com>
+References: <200705272323.13056.gineera@aspect135.co.uk>
+	<s5hodk3zi09.wl%tiwai@suse.de>
+	<200705292316.17947.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5EEF24438
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id CC6A824409
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2007 08:22:32 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id n7so1060852wag
-	for <alsa-devel@alsa-project.org>; Tue, 29 May 2007 23:22:31 -0700 (PDT)
+	Wed, 30 May 2007 08:47:15 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <200705292316.17947.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: lg@opensource.wolfsonmicro.com, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>, ALSA devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-I am having a doubt regarding ALSA power management.
+Alan Horstmann wrote:
+> On Tuesday 29 May 2007 17:55, you wrote:
+> > While I see the advantage by your hack (small and backward
+> > compatible), I feel that it's too hackish -- it introduces an
+> > incompatible way of the existing ioctl.
+> 
+> Do you mean in that ioctls in general are not meant to work like that, in 
+> effect passing 2 numbers rather than one?
 
-My understanding of APM suspend() is like this.
+No, packing two values into one numbers is done with other ioctls too,
+e.g., SNDCTL_DSP_SETFRAGMENT.
 
-Freeze the ALSA apps
+The problem I see is that your patch changes the OSS API in a way that
+is incompatible with every implementation other than ALSA's.  The whole
+purpose of providing the OSS API in the first place is to be compatible
+with other implementations.
 
-Call ALSA driver suspend ()
+> > After a quick thought, another possible fix would be to let apps open
+> > each direction separately.  For that,
+> >
+> > - add some way to make the given PCM stream to non-fullduplex
+> >   (proc or module options?)
+> 
+> Are you thinking that if an option were set, Alsa-OSS would create separate 
+> devices for capture and playback rather than a single duplex device? 
 
-in the ALSA suspend() function it saves the current state of substream
-and changes the state of substream to SUSPENDED.
+No; just a way to disable DSP_CAP_DUPLEX and/or SNDCTL_DSP_SETDUPLEX.
+When these do not work, applications are forced to open the playback
+and capture devices separately, e.g.:
 
-My understanding of APM resume() is like this
+fd_playback = open("/dev/dsp", O_WRONLY);
+fd_capture = open("/dev/dsp", O_RDONLY);
 
-Call ALSA driver resume ()
+> > - change portaudio to open each direction separately, O_RDONLY and
+> >   O_WRONLY at first, then use O_RDWR as fallback
 
-Activate the ALSA apps
+This would be the preferred way.  After all, this is the only way that
+is possible with the existing OSS API when you want to use different
+sample formats, and it is recommended in all cases (see
+<http://manuals.opensound.com/developer/full_duplex.html>).
 
-In ALSA resume function it restores the saved state of substream.
 
-
-So my question is when ALSA app will get to know the SUSPENDED state
-of substream.???
-
-I am using linux kernel 2.6.17
-ALSA driver version 1.0.11rc4
-ASoC patch version 0.12.4
+Regards,
+Clemens
