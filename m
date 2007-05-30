@@ -1,31 +1,23 @@
-From: Graeme Gregory <gg@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] [PATCH 0/2] ASoC sound
-	support	forSMDK2440boards
-Date: Wed, 30 May 2007 16:42:30 +0100
-Message-ID: <1180539750.5111.7.camel@gg-desktop.wolfsonmicro.main>
-References: <5b7270f40705240728p4f579269g1ddc8e8db8d59f81@mail.gmail.com>
-	<AC2729D6E3A3314A922E4E0FBE513F65D1FD65@MAIL.eldorado.org.br>
-	<5b7270f40705241445t59a89b24sacbd3abf0a1b129d@mail.gmail.com>
-	<AC2729D6E3A3314A922E4E0FBE513F65D1FE77@MAIL.eldorado.org.br>
-	<5b7270f40705250750u1ba4619dm973fcb297c8fefb1@mail.gmail.com>
-	<AC2729D6E3A3314A922E4E0FBE513F65D6B8B8@MAIL.eldorado.org.br>
-	<5b7270f40705251040r56bee4dfqdb2e66fd2b7fbdcd@mail.gmail.com>
-	<AC2729D6E3A3314A922E4E0FBE513F65D6BE87@MAIL.eldorado.org.br>
-	<5b7270f40705300830g7aef9faajc0b9e82d6d983d@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: ASoC and a codec that can't be controlled
+Date: Wed, 30 May 2007 10:46:12 -0500
+Message-ID: <465D9C44.5020902@freescale.com>
+References: <46531097.5040600@freescale.com>	
+	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>	
+	<46574453.10808@freescale.com>	
+	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>	
+	<465CB19C.7080602@freescale.com>
+	<1180530395.29590.57.camel@a10072.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 796E4244A1
+Received: from az33egw01.freescale.net (az33egw01.freescale.net
+	[192.88.158.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id D9A86244A1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2007 17:45:07 +0200 (CEST)
-Received: from gg-desktop.local (lumison.wolfsonmicro.com [87.246.78.27])
-	(using SSLv3 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by opensource.wolfsonmicro.com (Postfix) with ESMTP id E4A10D8091
-	for <alsa-devel@alsa-project.org>; Wed, 30 May 2007 15:37:11 +0100 (BST)
-In-Reply-To: <5b7270f40705300830g7aef9faajc0b9e82d6d983d@mail.gmail.com>
+	Wed, 30 May 2007 17:46:23 +0200 (CEST)
+In-Reply-To: <1180530395.29590.57.camel@a10072.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,56 +27,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2007-05-30 at 17:30 +0200, Zoltan Devai wrote:
-> 2007/5/29, Jose Henrique Spahn Torres <jose.torres@eldorado.org.br>:
-> > I used speaker-test as indicated above and the result is:
-> >
-> > pendrive $ ./speaker-test -r 44100
-> >
-> > speaker-test 1.0.11
-> >
-> > Playback device is default
-> > Stream parameters are 44100Hz, S16_LE, 1 channels
-> > Using 16 octaves of pink noise
-> > ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default
-> > Playback open error: -2,No such file or directory
-> > ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default
-> > Playback open error: -2,No such file or directory
-> > ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default
-> > Playback open error: -2,No such file or directory
-> > ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default
-> > Playback open error: -2,No such file or directory
-> > ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default
-> > Playback open error: -2,No such file or directory
-> >
-> > I have also tried:
-> >
-> > /pendrive $ ./aplay -f cd 01-jack_johnson-times_like_these-rns.wav
-> > ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM default
-> > aplay: main:547: audio open error: No such file or directory
-> > /pendrive $
-> >
-> > so I don't know what is happening here.
-> > Does anyone have any idea?
-> 
-> You seem to have two problems:
-> 1. Using OSS applications which try to set the sample rate to 8000Hz,
-> which is not supported by the hardware
-> 2. A non-working ALSA installation, with some alsa-lib or device file
-> misconfiguration
-> 
-> Try to fix both...
+Liam Girdwood wrote:
 
-Is this compilation using buildroot? We have had many people with
-bugreports that turned out to be gcc CSE bug which is not patched in
-buildroot. And the fact the build root doesnt seem to install the config
-files for alsa-lib.
+> Fwiw, you should be ok in the mean time as most audio data is stored on
+> file in little endian format. Your media player should open such little
+> endian files as *_LE when it configures the ALSA pcm. This should work
+> if your I2S, DMA and codec are marked as supporting LE formats.
 
-For testing here we always use images generated by OpenEmbedded
-www.openembedded.org. So that gets better ALSA support for ASoC stuff
-anyway :-)
+What about this snippet in asound.h:
 
-Graeme
+#ifdef  __LITTLE_ENDIAN
+#define SNDRV_LITTLE_ENDIAN
+#else
+#ifdef __BIG_ENDIAN
+#define SNDRV_BIG_ENDIAN
+
+...
+
+#ifdef SNDRV_LITTLE_ENDIAN
+#define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
+#define	SNDRV_PCM_FORMAT_U16		SNDRV_PCM_FORMAT_U16_LE
+#define	SNDRV_PCM_FORMAT_S24		SNDRV_PCM_FORMAT_S24_LE
+...
+#endif
+#ifdef SNDRV_BIG_ENDIAN
+#define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_BE
+#define	SNDRV_PCM_FORMAT_U16		SNDRV_PCM_FORMAT_U16_BE
+#define	SNDRV_PCM_FORMAT_S24		SNDRV_PCM_FORMAT_S24_BE
+...
+#endif
+
+I could then do this:
+
+#define CS4270_FORMATS SNDRV_PCM_FMTBIT_S24
+
+On big-endian platforms like mine, CS4270_FORMATS will be SNDRV_PCM_FORMAT_S24_BE and on 
+little-endian platforms it will be SNDRV_PCM_FORMAT_S24_LE.  Assuming the I2S registers 
+are the same endian as the platform, will this work?
+
+If not, then what about this:
+
+#define CS4270_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE)
+
+That would tell ALSA that the CS4270 supports both formats, which isn't technically true, 
+but it wouldn't matter because the I2S interface is what determines the actual 
+"endianness" of the serial data.
+
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
