@@ -1,16 +1,15 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: snd_soc_dai_link.init()
-Date: Wed, 30 May 2007 17:34:29 -0500
-Message-ID: <465DFBF5.9040800@freescale.com>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Hardware-accelerated OpenAL support with ALSA?
+Date: Wed, 30 May 2007 23:29:34 +0100 (BST)
+Message-ID: <686006.93309.qm@web52903.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D6212452D
+Received: from web52903.mail.re2.yahoo.com (web52903.mail.re2.yahoo.com
+	[206.190.49.13]) by alsa0.perex.cz (Postfix) with SMTP id CA7E12452D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 31 May 2007 00:34:35 +0200 (CEST)
+	Thu, 31 May 2007 00:29:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: dino.puller@gmail.com, alsa-users@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam,
+Hi,
 
-Why does the init() function pointer in the snd_soc_dai_link structure take a 
-snd_soc_codec pointer?  Wouldn't it make more sense for it to take a snd_soc_dai_link 
-pointer?  That way, I could use the init() function to initialize the structure.
+I have been looking at getting OpenAL working on my machine, since OpenAL is the only way that
+games under Windows Vista can now provide hardware-accelerated sound effects. This suggests that a
+lot of PC games could be adding OpenAL support soon, which means that it would be handy if Linux
+had an efficient native OpenAL implementation that Wine could wrap. Fedora Core does provide an
+OpenAL library from www.openal.org, but it looks as if this library's ALSA backend does not
+provide any hardware acceleration. (I have an "Audigy 2 ZS" sound card, which can at least support
+hardware mixing.) Various alternative ALSA-based solutions do seem to exist on the Web, e.g.
 
-I'm trying to write a function that will initialize the codec_dai pointer.  I thought I 
-could use snd_soc_dai_link.init(), but I don't know how to get the pointer to the 
-snd_soc_dai_link structure from a snd_soc_codec structure.
+http://dino.e4a.it/openal-alsa/
+
+and
+
+http://www.lost.org.uk/openal.html
+
+However, it seems to me that OpenAL support would be better served as an actual ALSA package that
+distros would be able to ship.
+
+Are there any plans to provide official OpenAL support in ALSA, please?
+
+Thanks for any information,
+Chris
+
+P.S. My Audigy 2 also seems to have EAX support. Does the ALSA driver support that functionality
+too? I can't say that "World of Warcraft" seems to use it, although Wine's DirectSound3D support
+still has lots of gaps.
 
 
 
-/* SoC machine DAI configuration, glues a codec and cpu DAI together */
-struct snd_soc_dai_link  {
-	char *name;			/* Codec name */
-	char *stream_name;		/* Stream name */
-
-	/* DAI */
-	struct snd_soc_codec_dai *codec_dai;
-	struct snd_soc_cpu_dai *cpu_dai;
-
-	/* machine stream operations */
-	struct snd_soc_ops *ops;
-
-	/* codec/machine specific init - e.g. add machine controls */
-	int (*init)(struct snd_soc_codec *codec);
-};
-
-
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+      _________________________________________________________
+Inbox cluttering up with junk? Clean up with Yahoo! Mail.
+http://uk.docs.yahoo.com/mail/isp_targeting.html
