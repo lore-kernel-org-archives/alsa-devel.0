@@ -1,23 +1,22 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: ASoC and a codec that can't be controlled
-Date: Wed, 30 May 2007 13:28:40 +0100
-Message-ID: <1180528120.29590.42.camel@a10072.wolfsonmicro.main>
-References: <46531097.5040600@freescale.com>
-	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>
-	<46574453.10808@freescale.com>
-	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>
-	<465B716F.7090908@freescale.com>
-	<1180428790.5816.76.camel@a10072.wolfsonmicro.main>
-	<465C6C81.2060105@freescale.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: How the dma interrupt handlers have been
+	registered in ALSA?
+Date: Wed, 30 May 2007 18:06:12 +0530
+Message-ID: <61445c750705300536w5e531751g185b0d1c367e6258@mail.gmail.com>
+References: <61445c750705280911r325521efoaa925aa74ce85c38@mail.gmail.com>
+	<s5hsl9fzik5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35FD324466
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id F2AF224470
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2007 14:28:42 +0200 (CEST)
-In-Reply-To: <465C6C81.2060105@freescale.com>
+	Wed, 30 May 2007 14:36:15 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id j2so909324nzf
+	for <alsa-devel@alsa-project.org>; Wed, 30 May 2007 05:36:14 -0700 (PDT)
+In-Reply-To: <s5hsl9fzik5.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,30 +26,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2007-05-29 at 13:10 -0500, Timur Tabi wrote:
-> Liam Girdwood wrote:
-> 
-> > Some codecs can only support a small range of sample rates e.g. 8k &
-> > 48k, whilst your controller may support more. This just makes sure the
-> > audio is set a rate the codec can handle, otherwise audio quality will
-> > probably suffer.
-> 
-> What about boards where the codec does *not* dictate the available sample rates?  That is, 
-> what if the SOC can't generate the frequencies necessary to drive the codec at all the 
-> rates it supports?  The codec driver would then need to be told by the machine driver 
-> which sample rates are going to be used.  When the codec driver is initialized, it needs 
-> to set the snd_soc_codec.dai field to point to the codec's DAI, and that structure 
-> contains the list of supported sample rates.
-> 
+On 5/29/07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Mon, 28 May 2007 21:41:59 +0530,
+> Pharaoh . wrote:
+> >
+> > Hi
+> >
+> > I am referring omap-alsa-dma.c and the related codec files. We usually
+> > register the IRQ handler by calling
+> > request_irq() function but in this mentioned files the IRQ handler etc is
+> > defined but it is not registered anywhere i.e. request_irq is not used
+> > anywhere. Is there any other way of registering irq handlers? The irq
+> > handlers address is passed to
+> > omap_request_dma, but there also it is not registered. I am missing the
+> > entire thing?
+>
+> There is nothing but request_irq().  So, it implies that your code
+> flow isn't somehow correct.  Missing probe hooks?
+>
+>
+> Takashi
+>
 
-ASoC creates a bitmask of supported sample rates from the DMA, I2S
-controller and codec and then AND's them together. It then checks the
-requested rate, etc against this bitmask before proceeding. This way the
-whole audio system dictates the supported rate and not any single
-component.
 
-Liam
+Apologies if this sounds novice, but after referring the omap specific
+alsa drivers, I wasn't able to locate any request_irq function getting
+called, I have traced the omap_request_dma function but it also
+doesn't explicaitly call request_irq, but in the file
+arch/arm/plat-omap/dma.c there is call arch_initcall(omap_init_dma),
+which calls request_irq. As per my humble knowledge this is part of
+board specific init and is done at boot time, so does this mean that
+it is done only once at boot time and any driver specific callback is
+called from this function? Can anyone throw more light on this, or
+answer my basic question why there is no request_irq in any of the
+omap specific files? I am using 2.6.19 kernel.
