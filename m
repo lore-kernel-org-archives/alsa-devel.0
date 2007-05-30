@@ -1,23 +1,15 @@
-From: "j t" <mark473@gmail.com>
-Subject: Re: Will the real alsa wiki please stand up?
-Date: Wed, 30 May 2007 20:29:53 +0100
-Message-ID: <b88f52540705301229h70cb3e23wba7a768d5bbab665@mail.gmail.com>
-References: <b88f52540705260200s5521d02bq7d115d783b7aeb3d@mail.gmail.com>
-	<4658013E.9000408@ingomueller.net>
-	<b88f52540705260416n412f59c4md6d402c960d95c76@mail.gmail.com>
-	<4659F3B8.8090705@ingomueller.net>
+From: Klaus Zimmermann <klaus_zimmermann@gmx.de>
+Subject: Userspace Device Driver
+Date: Thu, 31 May 2007 00:03:02 +0200
+Message-ID: <1180562582.1904.8.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1A6E244F8
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id D3F652452A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 May 2007 21:29:57 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so795464ana
-	for <alsa-devel@alsa-project.org>; Wed, 30 May 2007 12:29:53 -0700 (PDT)
-In-Reply-To: <4659F3B8.8090705@ingomueller.net>
-Content-Disposition: inline
+	Thu, 31 May 2007 00:03:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,22 +22,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/27/07, Ingo M=FCller <alsa@ingomueller.net> wrote:
-> Hi!
->
-> Being one of the wiki sysops and certainly the most contributing user of
-> the last half year, I would not only "not put resistance", but greatly
-> appriciate if the two wiki were merged.
+Greetings List,
 
-I've been looking into this a little more, and I've just found out
-that the official alsa wiki contains 20 articles, while the unofficial
-wiki contains 602 articles. Unless somebody can machine-merge these
-two wikis together, surely it would be a better idea (less effort!) to
-copy the contents of the official into the unofficial, and then
-transfer the whole unofficial one over to the official domain.
+on various places on the alsa site I read about the possibility of
+writing a userspace device driver.
+I am interested thatin, since I have a nice Edirol FA-66 ieee1394
+interface which works nicely under jack with the ffado
+(http://ffado.org , former freebob) driver. 
 
-Am I missing something obvious? (Is there a reason why the new
-official wiki was created "blank", rather than with a dump from the
-unofficial one)?
+>From what I read it seems I could either write an external plugin to the
+alsa-lib, which would be truly userspace and fine except I it would
+always have to be configured from .asoundrc and would probably not be
+found by legacy programs like ekiga.
 
-Jaime
+Or I could get really messy and have a userspace daemon relay audio data
+between the ffado library, i.e. librawieee1394, and a yet to be written
+alsa-driver module.
+This would at least yield the advantage, that the driver was
+indistinguishable from a true hardware driver.
+
+So: Is it possible to write a userspace driver that is indistinguishable
+from a hardware driver?
+
+TIA
+Klaus Zimmermann
+
+P.S.: I am aware of the jackplug plugin. However even with very
+conservative buffer settings I get underruns and x-runs quickly leading
+to a failing jack :(
