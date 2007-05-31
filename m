@@ -1,21 +1,23 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Native Instruments - Audio Kontrol 1
-	-	snd_usb_caiaq module
-Date: Wed, 30 May 2007 23:55:12 -0700
-Message-ID: <1180594512.31116.22.camel@razman.gruemaster.com>
-References: <465AE933.60605@gmx.net>
-	<1180424951.19802.1192252459@webmail.messagingengine.com>
-	<s5hr6ozzigh.wl%tiwai@suse.de> <465E0AD2.70309@gmx.net>
-	<1180593570.28319.1192666947@webmail.messagingengine.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: 1.0.14 test packages
+Date: Thu, 31 May 2007 11:03:08 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0705311058180.15545@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id D394F24573
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4689B2458C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 31 May 2007 08:55:14 +0200 (CEST)
-In-Reply-To: <1180593570.28319.1192666947@webmail.messagingengine.com>
+	Thu, 31 May 2007 11:03:09 +0200 (CEST)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	3167714995E for <alsa-devel@alsa-project.org>;
+	Thu, 31 May 2007 11:03:09 +0200 (CEST)
+Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	1C55684357 for <alsa-devel@alsa-project.org>;
+	Thu, 31 May 2007 11:03:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-uname -r will output the version of the running kernel.  The directory
-is created when you install a kernel and it's modules, whether it's a
-pre-compiled package or a custom kernel you build from source.
+Hello all,
 
-On Thu, 2007-05-31 at 08:39 +0200, Clemens Ladisch wrote:
+	I put 1.0.14-final test packages to
 
-> Alex Pintilie wrote:
-> > # make install-modules
-> > rm -f /lib/modules/2.6.20.3-ubuntu1/misc/snd*.*o 
-> > ...
-> > Then "make" continues to work with /lib/modules/2.6.20.3-ubuntu1/ as 
-> > destination directory. The problem is, I don't know where this directory 
-> > comes from, I never saw it before nor did I install any packages with 
-> > that number. My installed kernels are 2.6.20-16-generic  
-> > 2.6.20-16-lowlatency.
-> 
-> The configure scripts checks the following directories to find the
-> kernel source:
-> 1) the directory specified with --with-kernel=...
-> 2) /lib/modules/`uname -r`/source
-> 3) /lib/modules/`uname -r`/build
-> 4) /usr/src/linux
-> 
-> What is the output of "uname -r"?
-> 
-> 
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+ftp://ftp.alsa-project.org/pub/testing
 
--- 
-Tobin Davis <tdavis@dsl-only.net>
+	Note that these packages are not an official release. They are 
+indended for compilation tests. Anyway, if you find a compilation (not 
+functionality) issue, please, let me know ASAP through e-mail. I'm going 
+to release 1.0.14 packages on next Monday.
+
+	Note for alsa developers: Please, no more HG repository updates 
+until packages are released.
+
+					Thanks,
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
