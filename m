@@ -1,25 +1,17 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: ASoC and a codec that can't be controlled
-Date: Fri, 01 Jun 2007 16:34:19 -0500
-Message-ID: <466090DB.7060102@freescale.com>
-References: <46531097.5040600@freescale.com>	
-	<1179934677.12071.30.camel@a10072.wolfsonmicro.main>	
-	<46574453.10808@freescale.com>	
-	<1180354247.5816.30.camel@a10072.wolfsonmicro.main>	
-	<465C78B6.3000001@freescale.com>	
-	<1180529741.29590.54.camel@a10072.wolfsonmicro.main>	
-	<465DBE14.5020206@freescale.com>
-	<1180631970.29590.102.camel@a10072.wolfsonmicro.main>
+Subject: [PATCH] ALSA: Fix prototype for
+	snd_soc_dai_link.init() function pointer
+Date: Fri,  1 Jun 2007 17:44:57 -0500
+Message-ID: <11807378971701-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from de01egw01.freescale.net (de01egw01.freescale.net
 	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8087E24747
+	by alsa0.perex.cz (Postfix) with ESMTP id 5242124753
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2007 23:34:24 +0200 (CEST)
-In-Reply-To: <1180631970.29590.102.camel@a10072.wolfsonmicro.main>
+	Sat,  2 Jun 2007 00:45:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,18 +21,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: lg@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Cc: Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
+Change the snd_soc_dai_link.init() function to take a pointer to the
+corresponding snd_soc_dai_link structure, instead of a pointer to a
+snd_soc_codec structure.  This allows the initialization function to initialize
+its own structure.
 
-> I think the best place to call snd_soc_new_pcms is in the machine
-> driver. This means we don't have to add any pcms that are not used. 
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
 
-Are you talking about the snd_soc_dai_link.init() function?  If so, then  where do you 
-call snd_soc_free_pcms()?  The snd_soc_dai_link structure has no "exit" function.
+This is a fix for ALSA bug 3135
+(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3135).  Since I
+don't have an ARM cross-compiler, and currently all ASoC drivers are for ARM
+platforms only, I'm not sure if this fix is correct.
 
+ include/sound/soc.h            |    2 +-
+ sound/soc/at91/eti_b1_wm8731.c |    3 ++-
+ sound/soc/pxa/corgi.c          |    3 ++-
+ sound/soc/pxa/poodle.c         |    3 ++-
+ sound/soc/pxa/spitz.c          |    3 ++-
+ sound/soc/pxa/tosa.c           |    3 ++-
+ sound/soc/soc-core.c           |    2 +-
+ 7 files changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index db6edba..86e1b1d 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -410,7 +410,7 @@ struct snd_soc_dai_link  {
+ 	struct snd_soc_ops *ops;
+ 
+ 	/* codec/machine specific init - e.g. add machine controls */
+-	int (*init)(struct snd_soc_codec *codec);
++	int (*init)(struct snd_soc_dai_link *codec);
+ };
+ 
+ /* SoC machine */
+diff --git a/sound/soc/at91/eti_b1_wm8731.c b/sound/soc/at91/eti_b1_wm8731.c
+index 820a676..a4f5a99 100644
+--- a/sound/soc/at91/eti_b1_wm8731.c
++++ b/sound/soc/at91/eti_b1_wm8731.c
+@@ -216,9 +216,10 @@ static const char *intercon[][3] = {
+ /*
+  * Logic for a wm8731 as connected on a Endrelia ETI-B1 board.
+  */
+-static int eti_b1_wm8731_init(struct snd_soc_codec *codec)
++static int eti_b1_wm8731_init(struct snd_soc_dai_link *dai)
+ {
+ 	int i;
++	struct snd_soc_codec *codec = dai->codec_dai->codec;
+ 
+ 	DBG("eti_b1_wm8731_init() called\n");
+ 
+diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+index 5ee51a9..43237f9 100644
+--- a/sound/soc/pxa/corgi.c
++++ b/sound/soc/pxa/corgi.c
+@@ -286,9 +286,10 @@ static const struct snd_kcontrol_new wm8731_corgi_controls[] = {
+ /*
+  * Logic for a wm8731 as connected on a Sharp SL-C7x0 Device
+  */
+-static int corgi_wm8731_init(struct snd_soc_codec *codec)
++static int corgi_wm8731_init(struct snd_soc_dai_link *dai)
+ {
+ 	int i, err;
++	struct snd_soc_codec *codec = dai->codec_dai->codec;
+ 
+ 	snd_soc_dapm_set_endpoint(codec, "LLINEIN", 0);
+ 	snd_soc_dapm_set_endpoint(codec, "RLINEIN", 0);
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index 0915cf7..5e8cb76 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -246,9 +246,10 @@ static const snd_kcontrol_new_t wm8731_poodle_controls[] = {
+ /*
+  * Logic for a wm8731 as connected on a Sharp SL-C7x0 Device
+  */
+-static int poodle_wm8731_init(struct snd_soc_codec *codec)
++static int poodle_wm8731_init(struct snd_soc_dai_link *dai)
+ {
+ 	int i, err;
++	struct snd_soc_codec *codec = dai->codec_dai->codec;
+ 
+ 	snd_soc_dapm_set_endpoint(codec, "LLINEIN", 0);
+ 	snd_soc_dapm_set_endpoint(codec, "RLINEIN", 0);
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index 80e8210..95dcaa4 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -292,9 +292,10 @@ static const struct snd_kcontrol_new wm8750_spitz_controls[] = {
+ /*
+  * Logic for a wm8750 as connected on a Sharp SL-Cxx00 Device
+  */
+-static int spitz_wm8750_init(struct snd_soc_codec *codec)
++static int spitz_wm8750_init(struct snd_soc_dai_link *dai)
+ {
+ 	int i, err;
++	struct snd_soc_codec *codec = dai->codec_dai->codec;
+ 
+ 	/* NC codec pins */
+ 	snd_soc_dapm_set_endpoint(codec, "RINPUT1", 0);
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index 5504e30..b438349 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -192,9 +192,10 @@ static const struct snd_kcontrol_new tosa_controls[] = {
+ 		tosa_set_spk),
+ };
+ 
+-static int tosa_ac97_init(struct snd_soc_codec *codec)
++static int tosa_ac97_init(struct snd_soc_dai_link *dai)
+ {
+ 	int i, err;
++	struct snd_soc_codec *codec = dai->codec_dai->codec;
+ 
+ 	snd_soc_dapm_set_endpoint(codec, "OUT3", 0);
+ 	snd_soc_dapm_set_endpoint(codec, "MONOOUT", 0);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 92d5d91..654a517 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1093,7 +1093,7 @@ int snd_soc_register_card(struct snd_soc_device *socdev)
+ 	mutex_lock(&codec->mutex);
+ 	for(i = 0; i < machine->num_links; i++) {
+ 		if (socdev->machine->dai_link[i].init) {
+-			err = socdev->machine->dai_link[i].init(codec);
++			err = socdev->machine->dai_link[i].init(&machine->dai_link[i]);
+ 			if (err < 0) {
+ 				printk(KERN_ERR "asoc: failed to init %s\n",
+ 					socdev->machine->dai_link[i].stream_name);
 -- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+1.5.0.2.260.g2eb065
