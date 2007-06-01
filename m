@@ -1,21 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: snd_soc_dai_link.init()
-Date: Thu, 31 May 2007 18:14:26 -0500
-Message-ID: <465F56D2.70201@freescale.com>
-References: <465DFBF5.9040800@freescale.com>	
-	<1180630964.29590.83.camel@a10072.wolfsonmicro.main>	
-	<465F0025.4010008@freescale.com>
-	<1180631362.29590.90.camel@a10072.wolfsonmicro.main>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: 1.0.14 test packages
+Date: Fri, 01 Jun 2007 08:53:32 +0200
+Message-ID: <1180680812.27046.1192869623@webmail.messagingengine.com>
+References: <Pine.LNX.4.61.0705311058180.15545@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E8A524628
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 2666B244BA
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jun 2007 01:14:30 +0200 (CEST)
-In-Reply-To: <1180631362.29590.90.camel@a10072.wolfsonmicro.main>
+	Fri,  1 Jun 2007 08:53:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0705311058180.15545@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
+Jaroslav Kysela wrote:
+> ftp://ftp.alsa-project.org/pub/testing
 
-> http://opensource.wolfsonmicro.com/cgi-bin/gitweb/gitweb.cgi?p=linux-2.6-asoc;a=summary
-> 
-> Master branch should be up to date with mainline, for-alsa-kernel branch
-> should be close to alsa-kernel Hg.
+Some platform_* wrappers for 2.4.x are missing:
 
-Does the http:// protocol work with your git repo?  Our corporate firewall doesn't allow 
-the git:// protocol.
-
-
-
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+depmod: *** Unresolved symbols in /lib/modules/2.4.31/kernel/sound/drivers/snd-portman2x4.o
+depmod:         platform_device_alloc
+depmod:         platform_device_put
+depmod:         platform_device_add
