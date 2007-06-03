@@ -1,18 +1,23 @@
-From: acallan.alsa@ugnet.org
-Subject: Re: Alsa 1.0.13 (and others) does not work on ALC880
-Date: Sat, 2 Jun 2007 22:20:04 -0500 (CDT)
-Message-ID: <Pine.LNX.4.58.0706022134120.29661@integrity.ugnet.org>
-References: <Pine.LNX.4.58.0705190144230.8331@integrity.ugnet.org>
-	<s5h7ir4etl6.wl%tiwai@suse.de>
+From: "Daniel T. Chen" <crimsun@fungus.sh.nu>
+Subject: [PATCH] Add support for another X-Fi Extreme Audio
+	(really SB Live	24bit)
+Date: Sat, 02 Jun 2007 22:26:06 -0400
+Message-ID: <1180837566.8636.1.camel@Box.ncat.edu>
+Reply-To: crimsun@ubuntu.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8180140598847096114=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from integrity.ugnet.org (integrity.ugnet.org [208.251.149.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D230243F5
+Received: from ns1.mcdownloads.com (ns1.mcdownloads.com [216.239.132.98])
+	by alsa0.perex.cz (Postfix) with ESMTP id 91005243F8
 	for <alsa-devel@alsa-project.org>;
-	Sun,  3 Jun 2007 04:20:41 +0200 (CEST)
-In-Reply-To: <s5h7ir4etl6.wl%tiwai@suse.de>
+	Sun,  3 Jun 2007 04:26:13 +0200 (CEST)
+Received: from ns1.mcdownloads.com (localhost [127.0.0.1])
+	by ns1.mcdownloads.com (Postfix) with ESMTP id 87CA2284860AB
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2007 19:26:10 -0700 (PDT)
+Received: from [127.0.0.1] (adhd.irule.net [66.81.0.197])
+	(Authenticated sender: crimsun@fungus.sh.nu)
+	by ns1.mcdownloads.com (Postfix) with ESMTP
+	for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2007 19:26:10 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,97 +27,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I've tried to chase this problem deeper.  The chip has two codecs, 1 is
-audio, 2 is modem.  In setup_fg_nodes() [hda_codec.c], the call to
-snd_hda_get_sub_nodes() returns total_nodes=1 and nid=0x01 for the audio
-codec.  The same call returns total_nodes=39 and nid=0x00 for the modem
-codec.
 
-Calls to azx_corb_send_cmd() [hda_intel.c] can be seen for
-AC_PAR_VENDOR_ID, AC_PAR_SUBSYSTEM_ID, AC_PAR_REV_ID, AC_PAR_NODE_COUNT,
-and AC_PAR_FUNCTION_TYPE for the audio codec.  32 calls to
-azx_corb_send_cmd() can then be seen for AC_PAR_AUDIO_WIDGET_CAP for the
-audio codec.
-For the modem codec, calls to azx_corb_send_cmd() can be seen for
-AC_PAR_VENDOR_ID, AC_PAR_SUBSYSTEM_ID, AC_PAR_REV_ID, and
-AC_PAR_NODE_COUNT followed by 39 calls to azx_corb_send_cmd() for
-AC_PAR_FUNCTION_TYPE for the modem codec.  These each return the value
-AC_GRP_MODEM_FUNCTION and so the codec->mfg ends up being set to the 39th
-nid (0x26).  Everything appears to be going smoothly until
-read_widget_caps() is called for them modem codec.  When
-snd_hda_get_sub_nodes() is called inside read_widget_caps() for fg_node
-0x26, this triggers a call to azx_corb_send_cmd() for AC_PAR_NODE_COUNT.
-The function azx_rirb_get_response() ends up timing out with the following
-lines appearing in my dmesg log:
-hda_intel: azx_get_response timeout, switching to polling mode...
-hda_intel: azx_get_response timeout, switching to single_cmd mode...
+--===============8180140598847096114==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-vHaVhdEuwnn73K7rSnoC"
 
->From following the code, it appears that chip->single_cmd = 1 from this
-point on.  The note above the function azx_single_send_cmd() makes it
-clear that this function should not be used for normal operation.  And,
-indeed, after this point, calls to the chip for the audio codec seem to
-return bogus values (as could be seen in the Default PCM and Node sections
-of the Codec information at http://pastebin.ca/496293).
 
-So, I have a few questions:
-1)  Does it make sense that the modem codec would have 39 fg nodes?
-2)  Does it make sense that the switch to single_cmd mode would possibly
-be the cause of the bogus values being returned later?  (I haven't really
-traced much past this point since that comment about azx_single_send_cmd
-seemed to make it clear that I was already in trouble by this point.)
-3)  What other things would it be helpful to look at to try to chase this
-problem further?
+--=-vHaVhdEuwnn73K7rSnoC
+Content-Type: multipart/mixed; boundary="=-grB6uvnXHQAfIUwT2OpL"
 
-Andrew
 
--- 
-accallan@ugnet.org
-http://www.ugnet.org/
+--=-grB6uvnXHQAfIUwT2OpL
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 19 May 2007, Takashi Iwai wrote:
+Hi,
 
-> At Sat, 19 May 2007 02:08:14 -0500 (CDT),
-> Andrew Callan wrote:
-> >
-> > I have been without sound using Fedora Core ever since the 2.6.16 or
-> > 2.6.17 kernel update (2.6.16 crashed during initialization, so I could not
-> > tell whether sound worked or not).  It had worked well through the 2.6.15
-> > Fedora kernels.  I finally sat down tonight to work the problem as hard as
-> > I could and happened upon Eric and Tobin's timely exchange.
-> >
-> > First, simply adding probe_mask=1 to the snd-hda-intel options worked for
-> > me as well; I did not end up having to specify a specific model.
-> >
-> > Second, I too was seeing a LONG hang when trying to do:
-> > cat /proc/asound/card0/codec#0
-> > but now with the probe_mask=1, I do not see this.
-> >
-> > If it helps, the alsa-info.sh output for my system is at
-> > http://pastebin.ca/496293
-> > If it makes any difference, I'm not sure which model I had specified on
-> > the modprobe line at the time I captured this output.
-> >
-> > One thing I do notice is that after adding probe_mask=1, aplay -l does not
-> > show the Si3054 Modem which shows up in the alsa-info output.
-> >
-> > Thanks for the help you gave in the thread with Eric.
-> >
-> > Andrew
->
-> Interesting.  I've seen similar reports that probe_mask helps.
-> Do you disable the modem codec on BIOS or is it enabled?
->
-> If this happens even though it's enabled on BIOS, we'd need a
-> blacklist of non-working devices, or a more robust probing routine...
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Attached please find an hg changeset against current alsa-kernel tip.
+
+Thanks,
+Daniel Chen
+
+--=-grB6uvnXHQAfIUwT2OpL
+Content-Disposition: attachment; filename=new.diff
+Content-Type: text/x-patch; name=new.diff; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+IyBIRyBjaGFuZ2VzZXQgcGF0Y2gNCiMgVXNlciBjcmltc3VuQEJveC5uY2F0LmVkdQ0KIyBEYXRl
+IDExODA4MzcwNTUgMTQ0MDANCiMgTm9kZSBJRCBmZmIxODgyMTBiNDlhMzdhODFkYWI2YjA4YTMw
+OGU4OTU0NjFjMTBmDQojIFBhcmVudCAgZDI2NjJmMGQ0M2IxMTAyZmYzMDM1ODMyOTk1ZDYxMTNm
+MTEyNGZlOA0KW1BBVENIXSBBZGQgc3VwcG9ydCBmb3IgYW5vdGhlciBYLUZpIEV4dHJlbWUgQXVk
+aW8gKHJlYWxseSBTQiBMaXZlIDI0Yml0KQ0KDQpBZGQgaW5mbyBmb3IgYW5vdGhlciBYLUZpIEV4
+dHJlbWUgQXVkaW8gbW9kZWwuDQoNClNpZ25lZC1vZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1z
+dW5AdWJ1bnR1LmNvbT4NCg0KZGlmZiAtciBkMjY2MmYwZDQzYjEgLXIgZmZiMTg4MjEwYjQ5IHBj
+aS9jYTAxMDYvY2EwMTA2X21haW4uYw0KLS0tIGEvcGNpL2NhMDEwNi9jYTAxMDZfbWFpbi5jCVRo
+dSBNYXkgMzEgMDk6MDk6MjAgMjAwNyArMDIwMA0KKysrIGIvcGNpL2NhMDEwNi9jYTAxMDZfbWFp
+bi5jCVNhdCBKdW4gMDIgMjI6MTc6MzUgMjAwNyAtMDQwMA0KQEAgLTE4Niw2ICsxODYsMTQgQEAg
+c3RhdGljIHN0cnVjdCBzbmRfY2EwMTA2X2RldGFpbHMgY2EwMTA2Xw0KIAkgICAubmFtZSAgID0g
+IlgtRmkgRXh0cmVtZSBBdWRpbyBbU0IwNzkwXSIsDQogCSAgIC5ncGlvX3R5cGUgPSAxLA0KIAkg
+ICAuaTJjX2FkYyA9IDEgfSAsDQorCSAvKiBBbm90aGVyIFgtRmkgRXh0cmVtZSBBdWRpbyBbU0Iw
+NzkwXSwgdmVyaWZpZWQgaW4gI2Fsc2EvRnJlZW5vZGUNCisJICAqIG9uIFNhdCwgSnVuIDIsIDIw
+MDcgYnkgQW5kZXJzIEp1ZWwgSmVuc2VuIGFuZCBQZXRlciBKb2hhbg0KKwkgICogU29lcmVuc2Vu
+LiAgTm9ybWFsIFNCIExpdmUgMjRiaXQuDQorCSAgKi8NCisJIHsgLnNlcmlhbCA9IDB4MTAxMzEx
+MDIsDQorCSAgIC5uYW1lICAgPSAiWC1GaSBFeHRyZW1lIEF1ZGlvIFtTQjA3OTBdIiwNCisJICAg
+LmdwaW9fdHlwZSA9IDEsDQorCSAgIC5pMmNfYWRjID0gMSB9ICwNCiAJIC8qIE5ldyBEZWxsIFNv
+dW5kIEJsYXN0ZXIgTGl2ZSEgNy4xIDI0Yml0LiBUaGlzIGRvZXMgbm90IGhhdmUgYW4gQUM5Ny4g
+ICovDQogCSAvKiBBdWRpZ3lMU1tTQjAzMTBdICovDQogCSB7IC5zZXJpYWwgPSAweDEwMDIxMTAy
+LA0K
+
+
+--=-grB6uvnXHQAfIUwT2OpL--
+
+--=-vHaVhdEuwnn73K7rSnoC
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBGYia+e9GwFciKvaMRAhcPAKCyCLbnC/ONHD3ucx/gLbBxCvJcbACfVHrU
+L56mfS+dowSuzTqp8H12ACM=
+=7NHn
+-----END PGP SIGNATURE-----
+
+--=-vHaVhdEuwnn73K7rSnoC--
+
+--===============8180140598847096114==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8180140598847096114==--
