@@ -1,20 +1,19 @@
-From: "Edwin Smulders" <edwin.smulders@gmail.com>
-Subject: Re: snd_hda_intel: Conexant CX20551 (Waikiki)
-Date: Sun, 3 Jun 2007 20:07:47 +0200
-Message-ID: <9a85a1550706031107p98ff5f7o617bd10229a9534@mail.gmail.com>
-References: <9a85a1550706030812s61d5112dk45e735ca82e28ac6@mail.gmail.com>
-	<1180884802.4335.74.camel@razman.gruemaster.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Alsa-OSS Duplex bug (revisited)
+Date: Sun, 3 Jun 2007 20:55:27 +0100
+Message-ID: <200706032055.27495.gineera@aspect135.co.uk>
+References: <200705272323.13056.gineera@aspect135.co.uk>
+	<200705312200.25483.gineera@aspect135.co.uk>
+	<s5h8xb4c80t.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 38239244B9
+Received: from smtp.talktalk.net (unknown [62.24.128.253])
+	by alsa0.perex.cz (Postfix) with ESMTP id 692E7244CB
 	for <alsa-devel@alsa-project.org>;
-	Sun,  3 Jun 2007 20:07:49 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id a29so1936799pyi
-	for <alsa-devel@alsa-project.org>; Sun, 03 Jun 2007 11:07:47 -0700 (PDT)
-In-Reply-To: <1180884802.4335.74.camel@razman.gruemaster.com>
+	Sun,  3 Jun 2007 21:45:32 +0200 (CEST)
+In-Reply-To: <s5h8xb4c80t.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,44 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Yeah, that is probably going to fix it.
+On Friday 01 June 2007 10:56, you wrote:
+> At Thu, 31 May 2007 22:00:25 +0100,
+>
+> Alan Horstmann wrote:
+> > On Wednesday 30 May 2007 07:47, you wrote:
+> > > Alan Horstmann wrote:
 
-I'm adding my laptop model to this thread for the sake of google and other
-owners of toshiba laptops :) (forgot in the original mail)
-Toshiba Satellite P100-232
+<< Edited snippets >>
 
-Im having a bit of trouble using the howto because of differences in
-distributions but ill ask around on the ubuntu forums and on irc for that.
+> > > fd_playback = open("/dev/dsp", O_WRONLY);
+> > > fd_capture = open("/dev/dsp", O_RDONLY);
+> > >
+> > > > > - change portaudio to open each direction separately, O_RDONLY and
+> > > > >   O_WRONLY at first, then use O_RDWR as fallback
+> > >
+> > > This would be the preferred way.  After all, this is the only way that
+> > > is possible with the existing OSS API when you want to use different
+> > > sample formats, and it is recommended in all cases (see
+> > > <http://manuals.opensound.com/developer/full_duplex.html>).
+> >
+> > My reading of the 4Front info is different.  I read that they recommend
+> > best opening SEPARATE devices, one O_RDONLY and the other O_WRONLY, in
+> > their scheme called 'twodevice'.  It also states in fulldup.c:-
+> >
+> > "... The one device full duplex scheme requires that the device file is
+> > opened with O_RDWR."
+> >
 
-Many thanks for the links Tobin, this problem has been bugging me for almost
-a year now.
+> Well, I'd say that the current ALSA-OSS implementation _is_ compatible
+> to OSS API.  What they do is also a pure hack, as you know, just a
+> workaround because the API doesn't provide the functionality
+> properly for full-duplex with multi-channels.  The solution might be
+> different, but it's not the question about "compatibility".
+>
+>
+> Following this thread, I come to believe that the problem with
+> audacity is actually the application problem.  It tries to open a
+> full-duplex device with different number of channels for both
+> directions.  It cannot work because it's not defined in API.  OTOH, if
+> the number of channels are same for both directions, it should work
+> with O_RDWR.
+>
 
-~~Edwin
+Thanks for sticking with it so far -hopefully we are moving towards a 
+conclusion so that the result is a definitive recommendation for how to solve 
+the problem of the OSS API limitation.
 
-On 6/3/07, Tobin Davis <tdavis@dsl-only.net> wrote:
->
->  This is a known acpi issue with Toshiba (I can tell by the subsystem id:
-> 1179:ff31 for device 0:1b.0).   Here are a few links to help fix the
-> problem:
->
-> http://www.linuxquestions.org/questions/showthread.php?t=531575
-> http://gentoo-wiki.com/HARDWARE_Toshiba_Satellite_P100
->
->
-> Tobin
->
-> On Sun, 2007-06-03 at 17:12 +0200, Edwin Smulders wrote:
->
-> Hi,
-> I believe there's still a problem with the HDA Intel chip ConexantCX20551 (Waikiki) not working.However, im not entirely sure the problem the problem is with alsa,because it starts working when i boot with acpi=off (a fix suggestedon the ubuntu forums, but not quite useful on a laptop [plus, itbreaks my ethernet])
-> The reason I'm mailing is, can you confirm this is something alsacan/should/will fix or are we all looking in the wrong direction andthis is really an acpi problem?
-> If you can fix this or know of something that might work, I would behappy to hear it.I've attached my lspci -nv and cat /proc/asound/card0/codec\#* just incase. I would be happy to give you any more info you might need.
-> ~~ Edwin
-> _______________________________________________Alsa-devel mailing listAlsa-devel@alsa-project.orghttp://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->   --
-> Tobin Davis <tdavis@dsl-only.net>
->
+So that there is no misunderstanding, are you willing to confirm that, as far 
+as Alsa-OSS goes, opening both
+	input_handle = open("/dev/dsp", O_RDONLY)
+and
+	output_handle = open("/dev/dsp", O_WRONLY)
+at the same time is a reliable way to open the device bi-directional, enabling 
+different sample formats and/or numbers of channels to be set?  (Actually, I 
+am curious whether different sample rates would also work?)
+
+Provided this is so, the recommendation then for duplex as I understand it 
+is:-
+	a) where the format and no.channels is the same in each direction, 
+	    use 
+		input_handle = output_handle = open("device", O_RDWR)
+
+	b) where the 2 directions have different format or no.channels use
+		input_handle = open("device", O_RDONLY)
+		output_handle = open("device", O_WRONLY)
+
+since a) may improve compatibility with other OSS's but b) is necessary due to 
+the limitations of the OSS API, whether or not it works with other OSS's.
+
+Alan
