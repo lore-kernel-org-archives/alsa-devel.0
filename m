@@ -1,17 +1,20 @@
-From: "John L. Utz III" <john.utz@dmx.com>
-Subject: Re: SALSA-Lib version 0.0.1 release
-Date: Mon, 4 Jun 2007 09:19:07 -0700
-Message-ID: <20070604091907.6ed9a3cc@jutz-fc6.na.corp.dmxmusic.com>
-References: <s5hsl97aj5d.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ALSA: Fix prototype
+ for	snd_soc_dai_link.init() function pointer
+Date: Mon, 04 Jun 2007 11:44:51 -0500
+Message-ID: <46644183.9090109@freescale.com>
+References: <11807378971701-git-send-email-timur@freescale.com>
+	<s5hmyzgau3t.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5076324498
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B04B2459C
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jun 2007 18:16:17 +0200 (CEST)
-In-Reply-To: <s5hsl97aj5d.wl%tiwai@suse.de>
+	Mon,  4 Jun 2007 18:44:57 +0200 (CEST)
+In-Reply-To: <s5hmyzgau3t.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,47 +28,36 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 04 Jun 2007 16:28:30 +0200
-"Takashi Iwai" <tiwai@suse.de> wrote:
+Takashi Iwai wrote:
+> At Fri,  1 Jun 2007 17:44:57 -0500,
+> Timur Tabi wrote:
+>> Change the snd_soc_dai_link.init() function to take a pointer to the
+>> corresponding snd_soc_dai_link structure, instead of a pointer to a
+>> snd_soc_codec structure.  This allows the initialization function to initialize
+>> its own structure.
+>>
+>> Signed-off-by: Timur Tabi <timur@freescale.com>
+> 
+> Liam, is this change OK for you?
+> If yes, I'll add this to HG tree after 1.0.14 release.
 
-> Hi all,
-> 
-> I created a small replacement of ALSA-library, mainly for embedded
-> systems with limited resources.  The library is named as "SALSA-Lib"
-> (too easy, eh?)
+Please note my comment in the patch.  I have not compiled all the code that I changed, so 
+I don't know if this patch is good.  I would like someone to test this patch.
 
-dude, u rawk my world! :-) thankyou very much!!!
+This patch is just a refactoring - no new features have been added, so after applying this 
+patch, everything should still compile and run exactly the same.
 
-> It has no plugin layer but only hw layer, thus no sexy features like
-> dmix and format conversions are available.  It supports no shiny and
-> complex configuration files.  And it supports no sequencer.  The only
-> goal of this library is the reduction of the size of library and
-> running binaries by inlining functions with direct syscalls.
+The key code changes are:
 
-This has the possibility of being an absolutely marvelous thing.
+	struct snd_soc_codec *codec = dai->codec_dai->codec;
 
-> The library is designed to be source-level API compatible with the
-> normal alsa-lib 1.0.14.  Note that it is _not_ designed to be
-> binary-compatible at all, and it will be never so.
-> 
-> The first released version 0.0.1 is available at:
-> 
-> 	ftp://ftp.suse.com/pub/people/tiwai/salsa-lib/salsa-lib-0.0.1.tar.bz2
-> 
-> The package is released under LGPL as well as the original alsa-lib.
+I'm hoping that 'codec' contains the same value that it did before the patch, and
 
-I will try and put it to use after i get my current product issue
-resolved.
+	err = socdev->machine->dai_link[i].init(&machine->dai_link[i]);
 
-> I've tested it only on i386, and tests on other architectures would be
-> greatly appreciated.
-> 
-> 
-> (And, no, I didn't make it on HG tree yet.)
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+I hope this passes the correct snd_soc_dai_link pointer.
+
+
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
