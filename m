@@ -1,20 +1,15 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: 1.0.14 test packages
-Date: Mon, 04 Jun 2007 08:21:55 +0200
-Message-ID: <1180938115.14327.1193257035@webmail.messagingengine.com>
-References: <Pine.LNX.4.61.0705311058180.15545@tm8103.perex-int.cz>
-	<1180680812.27046.1192869623@webmail.messagingengine.com>
-	<s5h7iqoc7h7.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: v1.0.14 - test packages #2
+Date: Mon, 4 Jun 2007 09:31:40 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0706040930220.7767@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id AC1BB24435
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id A3D1624531
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jun 2007 08:21:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h7iqoc7h7.wl%tiwai@suse.de>
+	Mon,  4 Jun 2007 09:31:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +19,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
-> > depmod: *** Unresolved symbols in /lib/modules/2.4.31/kernel/sound/drivers/snd-portman2x4.o
-> 
-> Argh, let's add this to 2.6 only, too.
-> Could you check it and commit the fix?
+Hi,
 
-Done.
+	I recreated driver and tools packages in /pub/testing to fix
+reported problems. Please, test...
 
+					Thanks,
+						Jaroslav
 
-Clemens
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
