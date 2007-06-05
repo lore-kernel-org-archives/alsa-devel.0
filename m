@@ -1,16 +1,20 @@
-From: "John L. Utz III" <john.utz@dmx.com>
-Subject: using 'type softvol' in a card conf file in
- /usr/share/alsa/cards, am i doing this right?
-Date: Mon, 4 Jun 2007 15:23:06 -0700
-Message-ID: <20070604152306.61bb6a2b@jutz-fc6.na.corp.dmxmusic.com>
+From: acallan.alsa@ugnet.org
+Subject: Re: Alsa 1.0.13 (and others) does not work on ALC880
+Date: Mon, 4 Jun 2007 23:17:33 -0500 (CDT)
+Message-ID: <Pine.LNX.4.58.0706042306580.23775@integrity.ugnet.org>
+References: <Pine.LNX.4.58.0705190144230.8331@integrity.ugnet.org>
+	<s5h7ir4etl6.wl%tiwai@suse.de>
+	<Pine.LNX.4.58.0706022134120.29661@integrity.ugnet.org>
+	<s5hvee3ajs9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4C1E24500
+Received: from integrity.ugnet.org (integrity.ugnet.org [208.251.149.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id E84EC24355
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jun 2007 00:20:34 +0200 (CEST)
+	Tue,  5 Jun 2007 05:18:10 +0200 (CEST)
+In-Reply-To: <s5hvee3ajs9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,54 +24,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello;
+That patch gets me further.  However, the same rirb timeout / single_cmd
+mode occurs when hda_set_power_state() calls snd_hda_get_sub_nodes() on
+the modem codec with the fg set to the last nid (0x26) -- the same
+condition which you worked around in your patch.
 
-I am working with an CMEDIA 8738-MC6 and i am trying to gain control of
-the second DAC by way of softvolume. but i seem to not be succeeding
-because my application cant find my 'Rear' control, am i doing this
-correctly?
+I wrapped the three calls to hda_set_power_state() (in hda_codec.c) with:
+if (codec->afg)
+and the sound now works even with modprobe=3.  However, I am assuming that
+this leaves the power state for the modem codec in an uninitialized state.
 
-the original /usr/share/alsa/cards/CMI8738-MC6.conf
+Andrew
 
-CMI8738-MC6.pcm.rear.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type hw
-	card $CARD
-	device 1
-}
+On Mon, 4 Jun 2007, Takashi Iwai wrote:
 
-i have modified it to look thusly: notice that the type is now softvol
-and the original hardware description is encapsulated in slave.pcm
-
-# 2nd DAC
-CMI8738-MC6.pcm.rear.0 {
-        @args [ CARD ]
-        @args.CARD {
-                type string
-        }
-        type softvol
-        slave.pcm {
-                type hw
-                card $CARD
-                device 1
-        }
-        control {
-                name "Rear Playback Volume"
-                card $CARD
-        }
-}
-
-Shouldnt i now be able to see 'Rear Playback Volume' in the output of
-amixer controls ??
-
-as it stands right now, i can not. what am i doing incorrectly?
-
-tnx!
-
-johnu
+> At Sat, 2 Jun 2007 22:20:04 -0500 (CDT),
+> acallan.alsa@ugnet.org wrote:
+> >
+> > I've tried to chase this problem deeper.  The chip has two codecs, 1 is
+> > audio, 2 is modem.  In setup_fg_nodes() [hda_codec.c], the call to
+> > snd_hda_get_sub_nodes() returns total_nodes=1 and nid=0x01 for the audio
+> > codec.  The same call returns total_nodes=39 and nid=0x00 for the modem
+> > codec.
+> >
+> > Calls to azx_corb_send_cmd() [hda_intel.c] can be seen for
+> > AC_PAR_VENDOR_ID, AC_PAR_SUBSYSTEM_ID, AC_PAR_REV_ID, AC_PAR_NODE_COUNT,
+> > and AC_PAR_FUNCTION_TYPE for the audio codec.  32 calls to
+> > azx_corb_send_cmd() can then be seen for AC_PAR_AUDIO_WIDGET_CAP for the
+> > audio codec.
+> > For the modem codec, calls to azx_corb_send_cmd() can be seen for
+> > AC_PAR_VENDOR_ID, AC_PAR_SUBSYSTEM_ID, AC_PAR_REV_ID, and
+> > AC_PAR_NODE_COUNT followed by 39 calls to azx_corb_send_cmd() for
+> > AC_PAR_FUNCTION_TYPE for the modem codec.  These each return the value
+> > AC_GRP_MODEM_FUNCTION and so the codec->mfg ends up being set to the 39th
+> > nid (0x26).  Everything appears to be going smoothly until
+> > read_widget_caps() is called for them modem codec.  When
+> > snd_hda_get_sub_nodes() is called inside read_widget_caps() for fg_node
+> > 0x26, this triggers a call to azx_corb_send_cmd() for AC_PAR_NODE_COUNT.
+> > The function azx_rirb_get_response() ends up timing out with the following
+> > lines appearing in my dmesg log:
+> > hda_intel: azx_get_response timeout, switching to polling mode...
+> > hda_intel: azx_get_response timeout, switching to single_cmd mode...
+>
+> OK, then the problem gets started at reading the widget capabilities.
+> Thanks for the analysis!
+>
+> > From following the code, it appears that chip->single_cmd = 1 from this
+> > point on.  The note above the function azx_single_send_cmd() makes it
+> > clear that this function should not be used for normal operation.  And,
+> > indeed, after this point, calls to the chip for the audio codec seem to
+> > return bogus values (as could be seen in the Default PCM and Node sections
+> > of the Codec information at http://pastebin.ca/496293).
+>
+> Yes, that's already a known issue.
+>
+> > So, I have a few questions:
+> > 1)  Does it make sense that the modem codec would have 39 fg nodes?
+>
+> That should be OK.
+>
+> > 2)  Does it make sense that the switch to single_cmd mode would possibly
+> > be the cause of the bogus values being returned later?  (I haven't really
+> > traced much past this point since that comment about azx_single_send_cmd
+> > seemed to make it clear that I was already in trouble by this point.)
+>
+> Yes, some devices have been broken.  And, I guess it won't be get
+> recovered even if you don't change to single_cmd mode.
+>
+> > 3)  What other things would it be helpful to look at to try to chase this
+> > problem further?
+>
+> Could you try the patch below?
+>
+>
+> thanks,
+>
+> Takashi
+> diff -r eb7241f88cdd pci/hda/hda_codec.c
+> --- a/pci/hda/hda_codec.c	Mon Jun 04 09:21:19 2007 +0200
+> +++ b/pci/hda/hda_codec.c	Mon Jun 04 16:11:02 2007 +0200
+> @@ -562,7 +562,7 @@ int __devinit snd_hda_codec_new(struct h
+>  		return -ENODEV;
+>  	}
+>
+> -	if (read_widget_caps(codec, codec->afg ? codec->afg : codec->mfg) < 0) {
+> +	if (codec->afg && read_widget_caps(codec, codec->afg) < 0) {
+>  		snd_printk(KERN_ERR "hda_codec: cannot malloc\n");
+>  		snd_hda_codec_free(codec);
+>  		return -ENOMEM;
+> diff -r eb7241f88cdd pci/hda/hda_local.h
+> --- a/pci/hda/hda_local.h	Mon Jun 04 09:21:19 2007 +0200
+> +++ b/pci/hda/hda_local.h	Mon Jun 04 16:09:27 2007 +0200
+> @@ -271,7 +271,7 @@ int snd_hda_parse_pin_def_config(struct
+>   */
+>  static inline u32 get_wcaps(struct hda_codec *codec, hda_nid_t nid)
+>  {
+> -	if (nid < codec->start_nid ||
+> +	if (!codec->wcaps || nid < codec->start_nid ||
+>  	    nid >= codec->start_nid + codec->num_nodes)
+>  		return snd_hda_param_read(codec, nid, AC_PAR_AUDIO_WIDGET_CAP);
+>  	return codec->wcaps[nid - codec->start_nid];
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
