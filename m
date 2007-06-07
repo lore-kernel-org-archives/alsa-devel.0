@@ -1,17 +1,17 @@
-From: Manuel Lauss <mano@roarinelk.homelinux.net>
-Subject: [PATCH] soc/sh: let SND_SOC_PCM_SH7760 depend on
-	SH_DMABRG
-Date: Thu, 7 Jun 2007 11:39:02 +0200
-Message-ID: <20070607093902.GA1672@roarinelk.homelinux.net>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: [ASoC]one Small Suggestion
+Date: Thu, 7 Jun 2007 18:28:56 +0530
+Message-ID: <8d6898730706070558r6c5c08aft8e00563b7a8ba607@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
-	[217.175.205.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 035E024579
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE4CF245FC
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Jun 2007 11:39:02 +0200 (CEST)
+	Thu,  7 Jun 2007 14:58:57 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id j2so467027nzf
+	for <alsa-devel@alsa-project.org>; Thu, 07 Jun 2007 05:58:56 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,26 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Liam,
 
-Let SND_SOC_PCM_SH7760 depend on SH_DMABRG rather than select'ing it.
-Gets rid of the Kbuild warning about SH_DMABRG being undefined on non-sh
-builds.
-
-
-Signed-off-by:  Manuel Lauss <mano@roarinelk.homelinux.net>
+Thank you for your support, my work is almost complete now, driver is
+working perfectly now.
 
 
---- linux-2.6.22-rc4-mm2/sound/soc/sh/Kconfig~	2007-06-07 11:09:30.000000000 +0200
-+++ linux-2.6.22-rc4-mm2/sound/soc/sh/Kconfig	2007-06-07 11:09:30.000000000 +0200
-@@ -2,8 +2,7 @@ menu "SoC Audio support for SuperH"
- 
- config SND_SOC_PCM_SH7760
- 	tristate "SoC Audio support for Renesas SH7760"
--	depends on CPU_SUBTYPE_SH7760 && SND_SOC
--	select SH_DMABRG
-+	depends on CPU_SUBTYPE_SH7760 && SND_SOC && SH_DMABRG
- 	help
- 	  Enable this option for SH7760 AC97/I2S audio support.
+I have one suggestion,
+
+I modified the wm9713.c codec driver in probe function , so that
+
+
+	if(socdev->machine->dai_link->cpu_dai->private_data)
+		codec->ac97->bus->private_data =
+socdev->machine->dai_link->cpu_dai->private_data;
+
+Here i am assigning the controller private data.
+
+
+so that my following ac97 read and write to access codec registers become good.
+
+static void aaci_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+unsigned short val)
+{
+	struct platform_controller *controller = ac97->bus->private_data;
+	struct aaci *aaci = (struct aaci *)controller->bus_controller;
+
+
+static unsigned short aaci_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+{
+	struct platform_controller *controller = ac97->bus->private_data;
+	struct aaci *aaci = (struct aaci *)controller->bus_controller;
+	u32 v;
+
+
+Is there a way to accomodate this in existing ASoC design?
+Or a better way to do this?
