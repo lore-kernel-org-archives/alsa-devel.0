@@ -1,24 +1,20 @@
-From: acallan.alsa@ugnet.org
-Subject: Re: Alsa 1.0.13 (and others) does not work on ALC880
-Date: Thu, 7 Jun 2007 01:01:54 -0500 (CDT)
-Message-ID: <Pine.LNX.4.58.0706070053430.25249@integrity.ugnet.org>
-References: <Pine.LNX.4.58.0705190144230.8331@integrity.ugnet.org>
-	<s5h7ir4etl6.wl%tiwai@suse.de>
-	<Pine.LNX.4.58.0706022134120.29661@integrity.ugnet.org>
-	<s5hvee3ajs9.wl%tiwai@suse.de>
-	<Pine.LNX.4.58.0706042306580.23775@integrity.ugnet.org>
-	<s5hzm3e65tv.wl%tiwai@suse.de>
-	<Pine.LNX.4.58.0706060101550.19660@integrity.ugnet.org>
-	<s5hfy55450v.wl%tiwai@suse.de>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: Audio driver for omap 24xx.
+Date: Thu, 7 Jun 2007 10:14:02 +0300
+Message-ID: <bd7b27490706070014j70c5630au18c5a13872ea84ee@mail.gmail.com>
+References: <61445c750706060423s5e52fd86l8f69092a4fd85648@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from integrity.ugnet.org (unknown [208.251.149.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D80724547
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2CEF024550
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Jun 2007 07:02:57 +0200 (CEST)
-In-Reply-To: <s5hfy55450v.wl%tiwai@suse.de>
+	Thu,  7 Jun 2007 09:14:03 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so635740uge
+	for <alsa-devel@alsa-project.org>; Thu, 07 Jun 2007 00:14:02 -0700 (PDT)
+In-Reply-To: <61445c750706060423s5e52fd86l8f69092a4fd85648@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,93 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: "Pharaoh ." <pharaoh137@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 6 Jun 2007, Takashi Iwai wrote:
-
-> At Wed, 6 Jun 2007 01:07:15 -0500 (CDT),
-> acallan.alsa@ugnet.org wrote:
-> >
-> > cat /proc/asound/card0/codec#1 works just fine, and sound still works
-> > fine even after that.  Looking at the function print_codec_info()
-> > (hda_proc.c), there is already the check:
-> > if (! codec->afg)
-> >         return;
-> > after the vendor, subsystem, and revision are retrieved but before the
-> > pcm, amp caps, and node information are retrieved.
->
-> Oh silly me.
->
-> I guess the following patch works alone.  Could you test it?
+On 6/6/07, Pharaoh . <pharaoh137@gmail.com> wrote:
 >
 >
-> Takashi
->
+> Also, omap 24xx driver doesn't seem to follow the framework/structure of
+> other omap alsa drivers in sound/arm/omap/ , any particular
+> reason?  Please
+> enlighten. I know this
+> might be little off topic here, but there are only two places where I can
+> ask this question, so I am
+> trying both.
 
-I had to also add in the workarounds for the power states as in the
-following patch.
 
-Andrew
+FYI: this was discussed in linux-omap-open-source list
 
-diff -r 8bc69e73a655 pci/hda/hda_codec.c
---- a/pci/hda/hda_codec.c	Wed Jun 06 14:48:52 2007 +0200
-+++ b/pci/hda/hda_codec.c	Wed Jun 06 23:35:39 2007 -0500
-@@ -562,7 +562,7 @@ int __devinit snd_hda_codec_new(struct h
- 		return -ENODEV;
- 	}
+http://linux.omap.com/pipermail/linux-omap-open-source/2007-June/010284.html
 
--	if (read_widget_caps(codec, codec->afg ? codec->afg : codec->mfg) < 0) {
-+	if (codec->afg && read_widget_caps(codec, codec->afg) < 0) {
- 		snd_printk(KERN_ERR "hda_codec: cannot malloc\n");
- 		snd_hda_codec_free(codec);
- 		return -ENOMEM;
-@@ -1389,9 +1389,8 @@ int __devinit snd_hda_build_controls(str
- 	/* initialize */
- 	list_for_each_entry(codec, &bus->codec_list, list) {
- 		int err;
--		hda_set_power_state(codec,
--				    codec->afg ? codec->afg : codec->mfg,
--				    AC_PWRST_D0);
-+		if (codec->afg)
-+			hda_set_power_state(codec, codec->afg, AC_PWRST_D0);
- 		if (!codec->patch_ops.init)
- 			continue;
- 		err = codec->patch_ops.init(codec);
-@@ -2375,9 +2374,8 @@ int snd_hda_suspend(struct hda_bus *bus,
- 	list_for_each_entry(codec, &bus->codec_list, list) {
- 		if (codec->patch_ops.suspend)
- 			codec->patch_ops.suspend(codec, state);
--		hda_set_power_state(codec,
--				    codec->afg ? codec->afg : codec->mfg,
--				    AC_PWRST_D3);
-+		if (codec->afg)
-+			hda_set_power_state(codec, codec->afg, AC_PWRST_D3);
- 	}
- 	return 0;
- }
-@@ -2394,9 +2392,8 @@ int snd_hda_resume(struct hda_bus *bus)
- 	struct hda_codec *codec;
 
- 	list_for_each_entry(codec, &bus->codec_list, list) {
--		hda_set_power_state(codec,
--				    codec->afg ? codec->afg : codec->mfg,
--				    AC_PWRST_D0);
-+		if (codec->afg)
-+			hda_set_power_state(codec, codec->afg, AC_PWRST_D0);
- 		if (codec->patch_ops.resume)
- 			codec->patch_ops.resume(codec);
- 	}
-diff -r 8bc69e73a655 pci/hda/hda_local.h
---- a/pci/hda/hda_local.h	Wed Jun 06 14:48:52 2007 +0200
-+++ b/pci/hda/hda_local.h	Wed Jun 06 23:32:46 2007 -0500
-@@ -274,7 +274,7 @@ static inline u32 get_wcaps(struct hda_c
- 	if (nid < codec->start_nid ||
- 	    nid >= codec->start_nid + codec->num_nodes)
- 		return snd_hda_param_read(codec, nid, AC_PAR_AUDIO_WIDGET_CAP);
--	return codec->wcaps[nid - codec->start_nid];
-+	return codec->wcaps ? codec->wcaps[nid - codec->start_nid] : 0;
- }
-
- int snd_hda_override_amp_caps(struct hda_codec *codec, hda_nid_t nid, int dir,
+-- 
+Jarkko
