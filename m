@@ -1,18 +1,18 @@
-From: "Juan Manuel Lopez Baio" <jmbaio@gmail.com>
-Subject: Callback trouble
-Date: Fri, 8 Jun 2007 14:58:11 -0300
-Message-ID: <ef9bc5590706081058u32355d53l82b39a78d103d9e6@mail.gmail.com>
+From: Brian Phelps <brphelps@customlightandsound.com>
+Subject: Sound Devices USBPre
+Date: Fri, 08 Jun 2007 14:15:34 -0400
+Message-ID: <1181326534.24327.6.camel@localhost.localdomain>
+Reply-To: lm317t+alsa@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.236])
-	by alsa0.perex.cz (Postfix) with ESMTP id B01CC243EC
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66D2224412
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2007 19:58:12 +0200 (CEST)
-Received: by wx-out-0506.google.com with SMTP id r21so973146wxc
-	for <alsa-devel@alsa-project.org>; Fri, 08 Jun 2007 10:58:11 -0700 (PDT)
-Content-Disposition: inline
+	Fri,  8 Jun 2007 20:15:24 +0200 (CEST)
+Received: by py-out-1112.google.com with SMTP id a29so1377394pyi
+	for <alsa-devel@alsa-project.org>; Fri, 08 Jun 2007 11:15:23 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,62 +25,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello. I'm having some problems with the asynchronous usage of ALSA API, and
-I'm not sure if this usage is correct. What I have done so far is the
-following:
-I have an class that encapsulates the ALSA API, working in a multithreaded
-environment. I use alsa to capture audio and want to do so in an
-asynchronous and non-blocing way, so I defined a static method in my class
-that functions as callback, which receives a pointer to the instance of my
-class and calls on a member function, like this:
+Hey guys,
+I contacted Sound Devices at sounddevices.com about writing a Linux
+driver (I was going to head the project but would take any help I can
+get) for the USBPre, a 2ch-in 2ch-out USB preamp with highquality
+balanced XLR Mic inputs.  
 
-void alsaDevice::myCallback(snd_async_handler_t *handler) //STATIC
-{
-        alsaDevice *dev =
-(alsaDevice*)snd_async_handler_get_callback_private(handler);
-        dev->triggerCondition();
-}
+They said that they would love to have a Linux Driver and
+will provide specs for me, I am still waiting on the info though.  I
+have not asked if I can view their firmware sourcecode yet, and if it
+requires an NDA, I will have to work around that.  What advice do you
+have for writing a driver for alsa?  I have
+written some small kernel drivers for embedded Linux devices, a few
+audio programs in C, and I come from a DSP background, but I am not sure
+exactly where to start, besides the specs and firmware.
 
-void alsaDevice::triggerCondition()
-{
-        LogError(0,"Trigger en placa %d device %d",cn,dn);
-        m_condMutex.lock();
-        m_noDataCondition.trigger();
-        m_condMutex.unlock();
-}
+Thanks for your help
 
-To init ALSA, I do this:
-
-
-int mode = SND_PCM_ASYNC | SND_PCM_NONBLOCK;
-if ((err=snd_pcm_open(&pcm_cap_handle, pcm_name.str().c_str(),
-SND_PCM_STREAM_CAPTURE, mode) < 0))
-{
-LogError(0,"Opening ALSA PCM device %s:
-%s",pcm_name.str().c_str(),snd_strerror(err));
-pcm_cap_handle=NULL;
-return false;
-}
-
-then set all the pertinent parameters, and finally
-
-
-if((asyncaddresult=snd_async_add_pcm_handler(&ahandler,pcm_cap_handle,alsaDevice::myCallback,this))<0)
-                {
-                        LogError(0,"No se pudo registrar la callback; PCM
-Error: %i",asyncaddresult);
-                }
-                if ((asyncaddresult=snd_pcm_start(pcm_cap_handle))<0)
-                        LogError(0,"No se pudo start pcm; PCM Error:
-%i",asyncaddresult);
-
-
-Afterwards, the first time that a call to snd_pcm_readn returns EAGAIN I
-call wait() on a condition object with a 100 ms timeout, which is triggered
-by the callback, as seen before.
-The problem is that the callback never seems to get called (so shows the
-log), so I'm not really sure if the previous steps were right.
-Any light you can shed on this would be much appreciated.
-Thanks!
-
-juan
+-Brian Phelps
