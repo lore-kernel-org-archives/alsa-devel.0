@@ -1,21 +1,21 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Testing/forcing XRUN
-Date: Fri, 08 Jun 2007 17:59:05 +1200
-Message-ID: <200706081759.06021.linux@audioscience.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Quirks device not showing up
+Date: Fri, 08 Jun 2007 08:27:22 +0200
+Message-ID: <1181284042.2424.1194097060@webmail.messagingengine.com>
+References: <46506D9D.4000701@gmx.net>
+	<75b66ecd0705201225w5e6a7e28t7a61f000cd5e2352@mail.gmail.com>
+	<s5hk5v2p4az.wl%tiwai@suse.de> <46520655.7000402@gmx.net>
+	<4668715B.1020208@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (unknown [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 98DBA2442E
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 3C37E24678
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2007 07:59:13 +0200 (CEST)
-Received: from zaphod.local
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JJA00LJ5ZA7EP00@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 08 Jun 2007 17:58:56 +1200 (NZST)
-Content-disposition: inline
+	Fri,  8 Jun 2007 08:27:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4668715B.1020208@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: LCID Fire <lcid-fire@gmx.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+LCID Fire wrote:
+> Well I defined a quirks for my usb device. I mined the probe code with
+> output and it creates a new driver instance for my device as well as it
+> finds the channels. Nevertheless I don't get my device listed in
+> userspace. Is there anything special to be done besides defining a
+> quirks?
 
-I want to test my driver behaviour when an xrun happens.
+All quirks have been written as specific workarounds for certain
+devices.  It is possible that you device behaves in some different way.
 
-I have tried using aplay/arecord, and suspending (ctrl-Z) them while 
-playing/recording but this doesn't have the desired effect. (I don't see my 
-driver code detecting an xrun).  Instead I see a trigger-stop command to the 
-driver.
+I'd tell you what the actual problem with your quirk is, but my crystal
+ball is under repair just now.  Please show your code and the output of
+"lsusb -v" for your device.
 
-The apps do report an overrun when they are restarted though.
 
-Can anyone answer these:
-
-1) Is this a valid way to simulate an xrun due to application not keeping up?
-
-1.1) If not, what is? Do I have to write an app that deliberately starves the 
-streams?
-
-2) Where is the xrun being detected if my driver doesnt see it?  Where does 
-the trigger-stop command come from when I suspend the app?
-
-thanks
-
-Eliot Blennerhassett
-AudioScience Inc.
+Regards,
+Clemens
