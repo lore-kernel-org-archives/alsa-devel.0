@@ -1,25 +1,24 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: Quirks device not showing up
-Date: Fri, 8 Jun 2007 17:17:58 -0400
-Message-ID: <75b66ecd0706081417r6a1b0ba3s879aaa9178a547e8@mail.gmail.com>
-References: <46506D9D.4000701@gmx.net>
-	<75b66ecd0705201225w5e6a7e28t7a61f000cd5e2352@mail.gmail.com>
-	<s5hk5v2p4az.wl%tiwai@suse.de> <46520655.7000402@gmx.net>
-	<4668715B.1020208@gmx.net>
-	<1181284042.2424.1194097060@webmail.messagingengine.com>
-	<466964F7.6040809@gmx.net>
+From: Eran Guendelman <erang@stanford.edu>
+Subject: probing state of high definition audio card in windows
+ / SigmaTel STAC9221 microphone problems
+Date: Fri, 08 Jun 2007 03:36:12 -0700
+Message-ID: <4669311C.6020800@stanford.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id 428692445A
+Received: from agp.stanford.edu (agp.Stanford.EDU [171.67.73.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1978244D7
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2007 23:18:04 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id j2so787098nzf
-	for <alsa-devel@alsa-project.org>; Fri, 08 Jun 2007 14:18:00 -0700 (PDT)
-In-Reply-To: <466964F7.6040809@gmx.net>
-Content-Disposition: inline
+	Fri,  8 Jun 2007 12:37:08 +0200 (CEST)
+Received: from window.stanford.edu ([171.64.77.10])
+	by agp.stanford.edu with esmtp (Exim 4.43) id 1Hwbq7-0004qZ-1r
+	for alsa-devel@alsa-project.org; Fri, 08 Jun 2007 03:37:07 -0700
+Received: from c-69-181-74-191.hsd1.ca.comcast.net ([69.181.74.191]
+	helo=[192.168.1.200])
+	by window.Stanford.EDU with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.43) id 1Hwbq6-0006tq-AM
+	for alsa-devel@alsa-project.org; Fri, 08 Jun 2007 03:37:06 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,17 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: LCID Fire <lcid-fire@gmx.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/8/07, LCID Fire <lcid-fire@gmx.net> wrote:
-> Clemens Ladisch wrote:
-> > I'd tell you what the actual problem with your quirk is, but my crystal
-> > ball is under repair just now.  Please show your code and the output of
-> > "lsusb -v" for your device.
-> It's the following:
+Hi, I am struggling to get the (external) microphone working on a 
+SigmaTel STAC9221 A1 device on my Dell XPS M1210 laptop.  I saw other 
+emails indicating that this was still problematic, and the latest 
+drivers from alsa 1.0.14 did not seem to fix the problem.
 
-Where's the code?
+So now that I've started reading and trying to understand the basics 
+behind the hda codec in an effort to fix this problem, I was wondering 
+if it was possible for me to boot into windows (I've got a dual-boot 
+setup), get into a state where the microphone is working, and somehow 
+probe the codec's state at that time (all of the pin configurations, 
+etc.)... then theoretically, if I reproduce that configuration on the 
+linux side, it should work (right?).
 
-Lee
+So the question is, does anyone have a ready-made utility for Windows to 
+do this probe of the high definition audio codec?  I could probably try 
+writing one myself, but thought I'd check if it already exists.
+
+Thanks.
+
+Please send responses by email too (not subscribed).
