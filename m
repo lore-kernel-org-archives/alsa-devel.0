@@ -1,18 +1,21 @@
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [ASoC] machine driver and channel configuration
-Date: Fri, 08 Jun 2007 17:55:03 +0200
-Message-ID: <46697BD7.50104@parrot.com>
-References: <loom.20070608T161908-148@post.gmane.org>
-	<46697657.2000302@freescale.com>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: probing state of high definition audio card in
+	windows / SigmaTel STAC9221 microphone problems
+Date: Fri, 8 Jun 2007 18:24:15 -0400
+Message-ID: <75b66ecd0706081524v6242f1adw1038dc27d015ab4d@mail.gmail.com>
+References: <4669311C.6020800@stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from toronto.xi-lite.net (co202.xi-lite.net [149.6.83.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id 22F4A243BB
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6BDA24478
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Jun 2007 17:59:04 +0200 (CEST)
-In-Reply-To: <46697657.2000302@freescale.com>
+	Sat,  9 Jun 2007 00:24:16 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so1330660wag
+	for <alsa-devel@alsa-project.org>; Fri, 08 Jun 2007 15:24:15 -0700 (PDT)
+In-Reply-To: <4669311C.6020800@stanford.edu>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
+To: Eran Guendelman <erang@stanford.edu>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 6/8/07, Eran Guendelman <erang@stanford.edu> wrote:
+> So the question is, does anyone have a ready-made utility for Windows to
+> do this probe of the high definition audio codec?  I could probably try
+> writing one myself, but thought I'd check if it already exists.
 
-Timur Tabi a =E9crit :
-> Matthieu CASTET wrote:
->> Hi,
->>
->> If the platform/cpu_dai driver and codec support capture and playback =
+I think it's just in the .inf file.
 
->> channels.
->> But on the board only the playback link is connected.
->>
->> In this configuration, the codec and platform/cpu_dai driver shouldn't =
-
->> try to
->> use the capture path (and the resource associated to this).
->>
->>
->> Is there a way to do something like that ?
-> =
-
-> I'm just learning about ASoC myself, but using wm8731.c as an example, =
-
-> wouldn't this work:
-> =
-
-> struct snd_soc_codec_dai wm8731_dai =3D {
->     .name =3D "WM8731",
->     .playback =3D {
->         .stream_name =3D "Playback",
->         .channels_min =3D 1,
->         .channels_max =3D 2,
->         .rates =3D WM8731_RATES,
->         .formats =3D WM8731_FORMATS,},
->     .capture =3D {
->         .stream_name =3D "Capture",
->         .channels_min =3D 1,
->         .channels_max =3D 2,
->         .rates =3D WM8731_RATES,
->         .formats =3D WM8731_FORMATS,},
-> =
-
-> Just change capture.channels_min and channels_max to 0.
-> =
-
-
-Hum, yes I could change channel info at runtime before doing the =
-
-platform_device_add in machine driver.
-
-I'll try that.
-
-Thanks.
-Matthieu
+Lee
