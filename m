@@ -1,57 +1,74 @@
-From: Eran Guendelman <erang@stanford.edu>
-Subject: Re: probing state of high definition audio card in
- windows / SigmaTel STAC9221 microphone problems
-Date: Fri, 08 Jun 2007 15:40:19 -0700
-Message-ID: <4669DAD3.3080301@stanford.edu>
-References: <4669311C.6020800@stanford.edu>
-	<75b66ecd0706081524v6242f1adw1038dc27d015ab4d@mail.gmail.com>
+From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Subject: Re: [2/3] 2.6.22-rc4: known regressions v2
+Date: Sat, 09 Jun 2007 19:40:25 +0200
+Message-ID: <466AE609.1030605@googlemail.com>
+References: <466ADBE4.5090707@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from agp.stanford.edu (agp.Stanford.EDU [171.67.73.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C8F924487
-	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Jun 2007 00:40:21 +0200 (CEST)
-In-Reply-To: <75b66ecd0706081524v6242f1adw1038dc27d015ab4d@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-2;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-ide-owner@vger.kernel.org>
+In-Reply-To: <466ADBE4.5090707@googlemail.com>
+Sender: linux-ide-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Ben Collins <bcollins@ubuntu.com>, Jeff Garzik <jeff@garzik.org>, linux-ide@vger.kernel.org, Robert de Rooy <robert.de.rooy@gmail.com>, Gregor Jasny <gjasny@googlemail.com>, sparclinux@vger.kernel.org, David Miller <davem@davemloft.net>, Mark Lord <mlord@pobox.com>, Tejun Heo <htejun@gmail.com>, Alan Cox <alan@redhat.com>, Mikael Pettersson <mikpe@it.uu.se>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On 6/8/07, Eran Guendelman <erang@stanford.edu> wrote:
->> So the question is, does anyone have a ready-made utility for Windows to
->> do this probe of the high definition audio codec?  I could probably try
->> writing one myself, but thought I'd check if it already exists.
-> 
-> I think it's just in the .inf file.
-> 
-> Lee
-> 
+Hi all,
 
-I was able to find the default pin configurations in the .INI file, but 
-have not yet understood what the rest of the stuff in the .INI file 
-means (and I haven't really looked at any .INF files).  If you know of 
-any guides to help understand the SigmaTel-codec related contents of an 
-INI/INF file I would be happy to look at that.  I do see stuff like
+Here is a list of some known regressions in 2.6.22-rc4.
 
-[HKLM\SOFTWARE\SigmaTel\STSysTray\1.0\EventExpressions\JackPresensec]
-Action1="if(JackState(10) == 0 && JackState(15) == 0 && JackState(12) == 
-0 && GetPortPopup(12) == 1,(SetDeviceType(10,2)),(0))"
-Action2="if(JackState(10) == 0 && JackState(15) == 0 && JackState(12) == 
-0 && GetPortPopup(12) == 1,(SetDeviceType(15,2)),(0))"
-Action3="if(JackState(10) == 0 && JackState(15) == 0 && JackState(12) == 
-0 && GetPortPopup(12) == 1,(SetDeviceType(12,8)),(0))"
+=46eel free to add new regressions/remove fixed etc.
+http://kernelnewbies.org/known_regressions
 
-which could hold the key to what I'm looking for...
 
-Thanks.
+
+ALSA
+
+Subject    : snd-aoa causes badness in lib/kref.c:33
+References : http://bugzilla.kernel.org/show_bug.cgi?id=3D8513
+Submitter  : Ben Collins <bcollins@ubuntu.com>
+Handled-By : Takashi Iwai <tiwai@suse.de>
+Status     : Unknown
+
+
+
+IDE
+
+Subject    : libata and legacy ide pcmcia failure
+References : http://lkml.org/lkml/2007/5/17/305
+Submitter  : Robert de Rooy <robert.de.rooy@gmail.com>
+Handled-By : Mark Lord <mlord@pobox.com>
+Status     : problem is being debugged
+
+
+
+SATA/PATA
+
+Subject    : 22-rc3 broke the CDROM in Dell notebook
+References : http://lkml.org/lkml/2007/5/27/63
+Submitter  : Gregor Jasny <gjasny@googlemail.com>
+Handled-By : Tejun Heo <htejun@gmail.com>
+             Jeff Garzik <jeff@garzik.org>
+Caused-By  : Tejun Heo <htejun@gmail.com>
+             commit d4b2bab4f26345ea1803feb23ea92fbe3f6b77bc
+Status     : problem is being debugged
+
+
+
+Sparc64
+
+Subject    : 2.6.22-rc broke X on Ultra5
+References : http://lkml.org/lkml/2007/5/22/78
+Submitter  : Mikael Pettersson <mikpe@it.uu.se>
+Handled-By : David Miller <davem@davemloft.net>
+Status     : problem is being debugged
+
+
+
+Regards,
+Michal
+
+--
+"Najbardziej brakowa=B3o mi twojego milczenia."
+-- Andrzej Sapkowski "Co=B6 wi=EAcej"
