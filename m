@@ -1,26 +1,17 @@
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: =?utf-8?q?=5BASoC=5D_bug_in_soc=5Fpcm=5Fopen?=
-Date: Mon, 11 Jun 2007 15:02:54 +0000 (UTC)
-Message-ID: <loom.20070611T165936-889@post.gmane.org>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: [PATCH] asihpi: Fix compatibility with 64-bit
+	resource_size_t
+Date: Mon, 11 Jun 2007 20:26:48 +0400
+Message-ID: <20070611162648.GB5347@procyon.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id EEA60103818
+Received: from master.altlinux.org (master.altlinux.org [62.118.250.235])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31EE110381C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2007 17:14:36 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HxlTy-0008Tm-4G
-	for alsa-devel@alsa-project.org; Mon, 11 Jun 2007 17:07:02 +0200
-Received: from ASt-Lambert-152-1-34-237.w82-124.abo.wanadoo.fr
-	([82.124.160.237]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 17:07:02 +0200
-Received: from matthieu.castet by
-	ASt-Lambert-152-1-34-237.w82-124.abo.wanadoo.fr with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 17:07:02 +0200
+	Mon, 11 Jun 2007 18:27:26 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,46 +24,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In recent kernels the resource_size_t type can be either 32-bit or
+64-bit depending on config options.  The proper way to printk such
+values is to cast them to unsigned long long.
 
-it seems there is a bug in soc_pcm_open. In some case [1] we are in a error
-path, but we don't set the ret return value.
+Signed-off-by: Sergey Vlasov <vsu@altlinux.ru>
 
-This cause bug/crash from alsa core.
+---
+Without the patch compilation on 2.6.18 produces warnings:
 
-Thanks
+.../pci/asihpi/hpimod.c: In function 'adapter_probe':
+.../pci/asihpi/hpimod.c:460: warning: format '%x' expects type 'unsigned int', but argument 4 has type 'resource_size_t'
+.../pci/asihpi/hpimod.c:460: warning: format '%x' expects type 'unsigned int', but argument 5 has type 'resource_size_t'
 
-Matthieu
 
-
-
-[1]http://hg-mirror.alsa-project.org/alsa-kernel/file/38926de0e79c/soc/soc-core.c
-if (!runtime->hw.rates) {
-
-      218 		printk(KERN_ERR "asoc: %s <-> %s No matching rates\n",
-
-      219 			codec_dai->name, cpu_dai->name);
-
-      220 		goto machine_err;
-
-      221 	}
-
-      222 	if (!runtime->hw.formats) {
-
-      223 		printk(KERN_ERR "asoc: %s <-> %s No matching formats\n",
-
-      224 			codec_dai->name, cpu_dai->name);
-
-      225 		goto machine_err;
-
-      226 	}
-
-      227 	if (!runtime->hw.channels_min || !runtime->hw.channels_max) {
-
-      228 		printk(KERN_ERR "asoc: %s <-> %s No matching channels\n",
-
-      229 			codec_dai->name, cpu_dai->name);
-
-      230 		goto machine_err;
-
-      231 	}
+--- alsa-driver-1.0.14/pci/asihpi/hpimod.c.alt-asihpi-warnings	2007-06-11 16:29:28 +0400
++++ alsa-driver-1.0.14/pci/asihpi/hpimod.c	2007-06-11 19:58:30 +0400
+@@ -457,10 +457,10 @@ static int __devinit adapter_probe(struc
+ 
+ 	// fill in HPI_PCI information from kernel provided information
+ 	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
+-		HPI_DEBUG_LOG4(DEBUG, "Resource %d %s %x-%x\n", idx,
++		HPI_DEBUG_LOG4(DEBUG, "Resource %d %s %llx-%llx\n", idx,
+ 			       pci_dev->resource[idx].name,
+-			       pci_resource_start(pci_dev, idx),
+-			       pci_resource_end(pci_dev, idx));
++			       (unsigned long long)pci_resource_start(pci_dev, idx),
++			       (unsigned long long)pci_resource_end(pci_dev, idx));
+ 
+ 		memlen = pci_resource_len(pci_dev, idx);
+ 		if (memlen) {
