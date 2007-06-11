@@ -1,20 +1,18 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Re: [ASoC] bug in soc_pcm_open
-Date: Tue, 12 Jun 2007 02:14:49 +0530
-Message-ID: <8d6898730706111344x6a6f53e1n4a21d8b93da83f70@mail.gmail.com>
-References: <loom.20070611T165936-889@post.gmane.org>
+From: LCID Fire <lcid-fire@gmx.net>
+Subject: Re: Quirks device not showing up
+Date: Mon, 11 Jun 2007 23:25:13 +0200
+Message-ID: <466DBDB9.2080309@gmx.net>
+References: <46506D9D.4000701@gmx.net>	<75b66ecd0705201225w5e6a7e28t7a61f000cd5e2352@mail.gmail.com>	<s5hk5v2p4az.wl%tiwai@suse.de>	<46520655.7000402@gmx.net>
+	<4668715B.1020208@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.231])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1C1B10381F
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 0616A10381C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2007 22:44:54 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id j2so1270686nzf
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 13:44:53 -0700 (PDT)
-In-Reply-To: <loom.20070611T165936-889@post.gmane.org>
-Content-Disposition: inline
+	Mon, 11 Jun 2007 23:25:14 +0200 (CEST)
+In-Reply-To: <4668715B.1020208@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,76 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Seems like a problem,
-Adding to that
-
-if (machine->ops && machine->ops->shutdown)
-		machine->ops->shutdown(substream);
-
-if (platform->pcm_ops->close)
-		platform->pcm_ops->close(substream);
-
-if (cpu_dai->ops.shutdown)
-		cpu_dai->ops.shutdown(substream);
-
-if it is a error condition then above functions are called twice (also
-in snd_codec_close())
-
-Nobin Mathew
-
-
-On 6/11/07, Matthieu CASTET <matthieu.castet@parrot.com> wrote:
-> Hi,
->
-> it seems there is a bug in soc_pcm_open. In some case [1] we are in a error
-> path, but we don't set the ret return value.
->
-> This cause bug/crash from alsa core.
->
-> Thanks
->
-> Matthieu
->
->
->
-> [1]http://hg-mirror.alsa-project.org/alsa-kernel/file/38926de0e79c/soc/soc-core.c
-> if (!runtime->hw.rates) {
->
->      218               printk(KERN_ERR "asoc: %s <-> %s No matching rates\n",
->
->      219                       codec_dai->name, cpu_dai->name);
->
->      220               goto machine_err;
->
->      221       }
->
->      222       if (!runtime->hw.formats) {
->
->      223               printk(KERN_ERR "asoc: %s <-> %s No matching formats\n",
->
->      224                       codec_dai->name, cpu_dai->name);
->
->      225               goto machine_err;
->
->      226       }
->
->      227       if (!runtime->hw.channels_min || !runtime->hw.channels_max) {
->
->      228               printk(KERN_ERR "asoc: %s <-> %s No matching channels\n",
->
->      229                       codec_dai->name, cpu_dai->name);
->
->      230               goto machine_err;
->
->      231       }
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+LCID Fire wrote:
+> Well I defined a quirks for my usb device. I mined the probe code with
+> output and it creates a new driver instance for my device as well as it
+> finds the channels. Nevertheless I don't get my device listed in
+> userspace. Is there anything special to be done besides defining a quirks?
+I have to correct myself a bit. The patch is actually working - and my
+card and it's channels are detected just fine - problem is there seems
+to be no mixer available for my channels.
+When I try to access my card using alsamixer I get a message "No mixer
+elems found". Is there a special .conf file necessary and what's the
+format for it?
