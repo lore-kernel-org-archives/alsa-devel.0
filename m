@@ -1,19 +1,19 @@
 From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Re: Trouble understanding ALSA's DMA buffers
-Date: Tue, 12 Jun 2007 01:59:45 +0530
-Message-ID: <8d6898730706111329y666c7abdv5b464cbe4e9bb3b@mail.gmail.com>
-References: <466DA941.40309@freescale.com>
+Subject: Re: [ASoC] bug in soc_pcm_open
+Date: Tue, 12 Jun 2007 02:14:49 +0530
+Message-ID: <8d6898730706111344x6a6f53e1n4a21d8b93da83f70@mail.gmail.com>
+References: <loom.20070611T165936-889@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14FFF103824
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1C1B10381F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2007 22:29:46 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so2368350wag
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 13:29:45 -0700 (PDT)
-In-Reply-To: <466DA941.40309@freescale.com>
+	Mon, 11 Jun 2007 22:44:54 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id j2so1270686nzf
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 13:44:53 -0700 (PDT)
+In-Reply-To: <loom.20070611T165936-889@post.gmane.org>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,57 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Seems like a problem,
+Adding to that
 
-Now ALSA (audio ) buffer is divided into periods, i.e. a chain of small packets.
+if (machine->ops && machine->ops->shutdown)
+		machine->ops->shutdown(substream);
 
-periods size is configurable. Data transfer to the codec starts only
-after reaching start_threshold point (start_threshold is in periods),
-this time DMA trigger is called.
+if (platform->pcm_ops->close)
+		platform->pcm_ops->close(substream);
 
-This trigger onwards application will get notification from the kernel
-saying that period buffer is empty you can write into it.Till the end
-of music file.
+if (cpu_dai->ops.shutdown)
+		cpu_dai->ops.shutdown(substream);
+
+if it is a error condition then above functions are called twice (also
+in snd_codec_close())
 
 Nobin Mathew
 
 
-
-On 6/12/07, Timur Tabi <timur@freescale.com> wrote:
-> I'm writing an ALSA SOC driver for an I2S-based device, and I'm having a really hard time
-> understanding how ALSA uses the DMA buffers.  And yes, I've read the documentation and
-> studied some sample source code.
+On 6/11/07, Matthieu CASTET <matthieu.castet@parrot.com> wrote:
+> Hi,
 >
-> I used to write audio drivers for a living, but that was many years ago, and it wasn't for
-> Linux.  Perhaps the concepts in my head are outdated, but I just don't see enough
-> explanation as to how DMA buffers are supposed to work.
+> it seems there is a bug in soc_pcm_open. In some case [1] we are in a error
+> path, but we don't set the ret return value.
 >
-> Back then, audio drivers used "ping pong" DMA buffers.  A single DMA buffer is allocated,
-> and the audio hardware is programmed to read from that buffer in a loop.  That is, it
-> would automatically restart reading from the beginning of the buffer without any
-> reprogramming.  The hardware would also be programmed to issue an interrupt when it got to
-> the end of the buffer, and when it got to the half-way point.
+> This cause bug/crash from alsa core.
 >
-> To start playback, you first filled the whole buffer with audio data, and then told the
-> hardware to start playing.  After the hardware got to the half-way point, it would issue
-> an interrupt.  You would then tell the OS you need more data, and you'd get it.  You then
-> copy that data into the first half of the buffer *while* the hardware was playing the
-> second half.  Later, the hardware would interrupt you when it got to the end of the
-> buffer.  You'd then copy more data to the 2nd half while the hardware is playing the first
-> half.
+> Thanks
 >
-> And so - hardware plays one half while you copy data to the other half.  Hence, "ping pong".
+> Matthieu
 >
-> So how do I implement this in ALSA?  The "Writing an ALSA Driver" document doesn't even
-> contain the words "ping" or "pong".
 >
-> --
-> Timur Tabi
-> Linux Kernel Developer @ Freescale
+>
+> [1]http://hg-mirror.alsa-project.org/alsa-kernel/file/38926de0e79c/soc/soc-core.c
+> if (!runtime->hw.rates) {
+>
+>      218               printk(KERN_ERR "asoc: %s <-> %s No matching rates\n",
+>
+>      219                       codec_dai->name, cpu_dai->name);
+>
+>      220               goto machine_err;
+>
+>      221       }
+>
+>      222       if (!runtime->hw.formats) {
+>
+>      223               printk(KERN_ERR "asoc: %s <-> %s No matching formats\n",
+>
+>      224                       codec_dai->name, cpu_dai->name);
+>
+>      225               goto machine_err;
+>
+>      226       }
+>
+>      227       if (!runtime->hw.channels_min || !runtime->hw.channels_max) {
+>
+>      228               printk(KERN_ERR "asoc: %s <-> %s No matching channels\n",
+>
+>      229                       codec_dai->name, cpu_dai->name);
+>
+>      230               goto machine_err;
+>
+>      231       }
+>
+>
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
