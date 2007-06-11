@@ -1,17 +1,23 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: [PATCH] snd-usb-caiaq: Fix compatibility with kernels
-	< 2.6.19
-Date: Mon, 11 Jun 2007 20:39:44 +0400
-Message-ID: <20070611163943.GC5347@procyon.home>
+From: Timur Tabi <timur@freescale.com>
+Subject: Trouble understanding ALSA's DMA buffers
+Date: Mon, 11 Jun 2007 14:57:53 -0500
+Message-ID: <466DA941.40309@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from master.altlinux.org (master.altlinux.org [62.118.250.235])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3532E24483
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D6F510381F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jun 2007 18:40:18 +0200 (CEST)
-Content-Disposition: inline
+	Mon, 11 Jun 2007 21:58:02 +0200 (CEST)
+Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
+	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
+	l5BJvs2C027641
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 12:57:59 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id l5BJvrJ4008027
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 14:57:54 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,105 +30,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Kernels before 2.6.19 used a different signature for the urb->complete
-callback (an additional "struct pt_regs *regs" parameter was present),
-therefore snd-usb-caiaq needs some compatibility patches in
-alsa-driver, like snd-usb-audio.
+I'm writing an ALSA SOC driver for an I2S-based device, and I'm having a really hard time 
+understanding how ALSA uses the DMA buffers.  And yes, I've read the documentation and 
+studied some sample source code.
 
-Signed-off-by: Sergey Vlasov <vsu@altlinux.ru>
+I used to write audio drivers for a living, but that was many years ago, and it wasn't for 
+Linux.  Perhaps the concepts in my head are outdated, but I just don't see enough 
+explanation as to how DMA buffers are supposed to work.
 
----
-The snd_usb_caiaq_midi_output_done() part is somewhat hackish - the
-problem is that snd_usb_caiaq_midi_output_done() is declared in
-caiaq-midi.h, and the alsa-driver build system does not support
-patching of *.h files.  The rest is basically copied from
-usbaudio.patch.
+Back then, audio drivers used "ping pong" DMA buffers.  A single DMA buffer is allocated, 
+and the audio hardware is programmed to read from that buffer in a loop.  That is, it 
+would automatically restart reading from the beginning of the buffer without any 
+reprogramming.  The hardware would also be programmed to issue an interrupt when it got to 
+the end of the buffer, and when it got to the half-way point.
 
-Without the patch compiling for 2.6.18 produces warnings:
+To start playback, you first filled the whole buffer with audio data, and then told the 
+hardware to start playing.  After the hardware got to the half-way point, it would issue 
+an interrupt.  You would then tell the OS you need more data, and you'd get it.  You then 
+copy that data into the first half of the buffer *while* the hardware was playing the 
+second half.  Later, the hardware would interrupt you when it got to the end of the 
+buffer.  You'd then copy more data to the 2nd half while the hardware is playing the first
+half.
 
-.../usb/caiaq/caiaq-device.c: In function 'init_card':
-.../usb/caiaq/caiaq-device.c:316: warning: passing argument 6 of 'usb_fill_bulk_urb' from incompatible pointer type
-.../usb/caiaq/caiaq-device.c:321: warning: passing argument 6 of 'usb_fill_bulk_urb' from incompatible pointer type
-.../usb/caiaq/caiaq-audio.c: In function 'alloc_urbs':
-.../usb/caiaq/caiaq-audio.c:583: warning: assignment from incompatible pointer type
+And so - hardware plays one half while you copy data to the other half.  Hence, "ping pong".
 
+So how do I implement this in ALSA?  The "Writing an ALSA Driver" document doesn't even 
+contain the words "ping" or "pong".
 
---- alsa-driver-1.0.14/usb/caiaq/Makefile.alt-caiaq-api	2007-06-11 16:29:28 +0400
-+++ alsa-driver-1.0.14/usb/caiaq/Makefile	2007-06-11 19:50:39 +0400
-@@ -5,6 +5,13 @@ endif
- include $(SND_TOPDIR)/toplevel.config
- include $(SND_TOPDIR)/Makefile.conf
- 
-+clean-files := caiaq-audio.c caiaq-device.c
-+
- include $(SND_TOPDIR)/alsa-kernel/usb/caiaq/Makefile
- 
-+EXTRA_CFLAGS += -I$(SND_TOPDIR)/alsa-kernel/usb/caiaq
-+
- include $(SND_TOPDIR)/Rules.make
-+
-+caiaq-audio.c: caiaq-audio.patch $(SND_TOPDIR)/alsa-kernel/usb/caiaq/caiaq-audio.c
-+caiaq-device.c: caiaq-device.patch $(SND_TOPDIR)/alsa-kernel/usb/caiaq/caiaq-device.c
---- alsa-driver-1.0.14/usb/caiaq/caiaq-audio.patch.alt-caiaq-api	2007-06-11 19:18:40 +0400
-+++ alsa-driver-1.0.14/usb/caiaq/caiaq-audio.patch	2007-06-11 19:18:17 +0400
-@@ -0,0 +1,26 @@
-+--- ../../alsa-kernel/usb/caiaq/caiaq-audio.c	2007-06-11 16:29:28 +0400
-++++ caiaq-audio.c	2007-06-11 19:17:38 +0400
-+@@ -464,7 +464,11 @@ static void fill_out_urb(struct snd_usb_
-+ 	check_for_elapsed_periods(dev, dev->sub_playback);
-+ }
-+ 
-++#if !defined(OLD_USB) && !defined(CONFIG_SND_NEW_IRQ_HANDLER)
-++static void read_completed(struct urb *urb, struct pt_regs *regs)
-++#else
-+ static void read_completed(struct urb *urb)
-++#endif
-+ {
-+ 	struct snd_usb_caiaq_cb_info *info = urb->context; 
-+ 	struct snd_usb_caiaqdev *dev;
-+@@ -518,7 +522,11 @@ static void read_completed(struct urb *u
-+ 	usb_submit_urb(urb, GFP_ATOMIC);
-+ }
-+ 
-++#if !defined(OLD_USB) && !defined(CONFIG_SND_NEW_IRQ_HANDLER)
-++static void write_completed(struct urb *urb, struct pt_regs *regs)
-++#else
-+ static void write_completed(struct urb *urb)
-++#endif
-+ {
-+ 	struct snd_usb_caiaq_cb_info *info = urb->context;
-+ 	struct snd_usb_caiaqdev *dev = info->dev;
---- alsa-driver-1.0.14/usb/caiaq/caiaq-device.patch.alt-caiaq-api	2007-06-11 19:55:17 +0400
-+++ alsa-driver-1.0.14/usb/caiaq/caiaq-device.patch	2007-06-11 19:54:49 +0400
-@@ -0,0 +1,31 @@
-+--- ../../alsa-kernel/usb/caiaq/caiaq-device.c	2007-06-11 16:29:28 +0400
-++++ caiaq-device.c	2007-06-11 19:54:46 +0400
-+@@ -100,7 +100,11 @@ static struct usb_device_id snd_usb_id_t
-+ 	{ /* terminator */ }
-+ };
-+ 
-++#if !defined(OLD_USB) && !defined(CONFIG_SND_NEW_IRQ_HANDLER)
-++static void usb_ep1_command_reply_dispatch (struct urb* urb, struct pt_regs *regs)
-++#else
-+ static void usb_ep1_command_reply_dispatch (struct urb* urb)
-++#endif
-+ {
-+ 	int ret;
-+ 	struct snd_usb_caiaqdev *dev = urb->context;
-+@@ -295,6 +299,16 @@ static struct snd_card* create_card(stru
-+ 	return card;
-+ }
-+ 
-++#if !defined(OLD_USB) && !defined(CONFIG_SND_NEW_IRQ_HANDLER)
-++static void snd_usb_caiaq_midi_output_done_wrapper(struct urb* urb,
-++						   struct pt_regs *regs)
-++{
-++	snd_usb_caiaq_midi_output_done(urb);
-++}
-++#undef snd_usb_caiaq_midi_output_done
-++#define snd_usb_caiaq_midi_output_done snd_usb_caiaq_midi_output_done_wrapper
-++#endif
-++
-+ static int init_card(struct snd_usb_caiaqdev *dev)
-+ {
-+ 	char *c;
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
