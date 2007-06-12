@@ -1,20 +1,19 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Re: snd_pcm_lib_malloc_pages()
-Date: Tue, 12 Jun 2007 11:41:50 +0530
-Message-ID: <8d6898730706112311n30e8b772xc319516f31cf4e3f@mail.gmail.com>
-References: <46688D51.8030407@freescale.com>
+From: Mark Rivera <marr@lumin.us>
+Subject: Source of timing for MIDI and/or audio synchronization
+Date: Tue, 12 Jun 2007 01:17:57 -0500
+Message-ID: <466E3A95.8070900@lumin.us>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF61810382A
+Received: from swarthymail-a5.g.dreamhost.com
+	(sd-green-bigip-207.dreamhost.com [208.97.132.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 054D410382A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jun 2007 08:11:51 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id j2so1387782nzf
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 23:11:50 -0700 (PDT)
-In-Reply-To: <46688D51.8030407@freescale.com>
-Content-Disposition: inline
+	Tue, 12 Jun 2007 08:18:03 +0200 (CEST)
+Received: from [192.168.1.101] (unknown [24.224.35.97])
+	by swarthymail-a5.g.dreamhost.com (Postfix) with ESMTP id 961E4109EAC
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 23:17:59 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In the new patch 13.4 see the implementation of imx it uses
-use snd_pcm_lib_malloc_pages()
 
-http://opensource.wolfsonmicro.com/~lg/asoc/
+Hello (new to list), and thank you for the work you have been doing. As 
+an end-user of the ALSA project's development, I am very grateful for 
+being able to use softwares which provide audio functionality to Linux.
 
-patch version 13.4
+I have been reading up on the docs and list archives, but I still have 
+an open question for which I hope you can lead me to an answer.
 
-On 6/8/07, Timur Tabi <timur@freescale.com> wrote:
-> Liam
->
-> Why do none of the ASoC drivers use snd_pcm_lib_malloc_pages()?  They all allocate their
-> DMA buffers by hand.
->
-> --
-> Timur Tabi
-> Linux Kernel Developer @ Freescale
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+I designed and built a MIDI sequencer based around a Microchip PIC18 
+MCU, and used the built-in hardware timers and interrupt levels to drive 
+the 'scheduler' for initiating MIDI output (EUSART) routines. In this 
+same vein, I would like to write a software sequencer with as 'tight' 
+timing as possible. So, in a similar concept for Linux - from where does 
+the timing of audio and MIDI events come from?
+
+It occurred to me that it would be nice to have a loadable kernel module 
+(LKM) to which userland programs could subscribe for receiving 'soft 
+interrupts' based on some timer (cpu ticks?) so that various software 
+could all reference the same notion of the "current time" - a sort of 
+"master clock" with start/stop/continue as well.
+
+Does ALSA provide this functionality? Can someone point me in the right 
+direction for learning more about this?
+
+Many thanks.
+
+Mark
