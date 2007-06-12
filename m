@@ -1,19 +1,19 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [ASoC] bug in soc_pcm_open
-Date: Tue, 12 Jun 2007 17:29:38 +0100
-Message-ID: <1181665778.29999.66.camel@a10072.wolfsonmicro.main>
-References: <loom.20070611T165936-889@post.gmane.org>
-	<8d6898730706111344x6a6f53e1n4a21d8b93da83f70@mail.gmail.com>
-	<8d6898730706112251j6226601bia95c1596ef655582@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: Trouble understanding ALSA's DMA buffers
+Date: Tue, 12 Jun 2007 11:36:33 -0500
+Message-ID: <466ECB91.2030609@freescale.com>
+References: <466DA941.40309@freescale.com>	<8d6898730706111329y666c7abdv5b464cbe4e9bb3b@mail.gmail.com>
+	<s5hsl8xv4qz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDABC245AD
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id A3CCC1037F7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jun 2007 18:29:39 +0200 (CEST)
-In-Reply-To: <8d6898730706112251j6226601bia95c1596ef655582@mail.gmail.com>
+	Tue, 12 Jun 2007 18:36:38 +0200 (CEST)
+In-Reply-To: <s5hsl8xv4qz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nobin Mathew <nobin.mathew@gmail.com>
-Cc: alsa-devel@alsa-project.org, Matthieu CASTET <matthieu.castet@parrot.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Nobin Mathew <nobin.mathew@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2007-06-12 at 11:21 +0530, Nobin Mathew wrote:
-> Same will cause problems in ALSA also, because nobody is checking
-> whether channel_min/max is zero; it is used in pcm_native.c
-> 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-June/001400.html
-> 
-> 
-> On 6/12/07, Nobin Mathew <nobin.mathew@gmail.com> wrote:
-> > Seems like a problem,
-> > Adding to that
-> >
-> > if (machine->ops && machine->ops->shutdown)
-> >                 machine->ops->shutdown(substream);
-> >
-> > if (platform->pcm_ops->close)
-> >                 platform->pcm_ops->close(substream);
-> >
-> > if (cpu_dai->ops.shutdown)
-> >                 cpu_dai->ops.shutdown(substream);
-> >
-> > if it is a error condition then above functions are called twice (also
-> > in snd_codec_close())
- 
-They should only be called once (in open()) as close() should only be
-called after the device has successfully opened.
+Takashi Iwai wrote:
 
-Fwiw, I placed some debug in close just to make sure nothing in the
-upper layers was calling close when open failed. Everything seems to
-work as expected.
+> Yes.  And the "ping-poing" is the case that you have two periods in a
+> ring buffer.
 
-Liam
+Ok, I understand the 'periods' concept now, thanks.
+
+So when/where does ALSA copy data to the DMA buffer?  Isn't there supposed to be some kind 
+of callback where ALSA calls the driver and says, "here's some data, please copy it to 
+your DMA buffer?"
+
+Or does ALSA do all the copying itself whenever the driver calls snd_pcm_period_elapsed()?
+
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
