@@ -1,20 +1,19 @@
 From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Re: [ASoC] machine driver and channel configuration
-Date: Tue, 12 Jun 2007 11:31:51 +0530
-Message-ID: <8d6898730706112301n25be349fr726d0aa8011d25d7@mail.gmail.com>
-References: <loom.20070608T161908-148@post.gmane.org>
-	<46697657.2000302@freescale.com> <46697BD7.50104@parrot.com>
+Subject: Re: snd_pcm_lib_malloc_pages()
+Date: Tue, 12 Jun 2007 11:41:50 +0530
+Message-ID: <8d6898730706112311n30e8b772xc319516f31cf4e3f@mail.gmail.com>
+References: <46688D51.8030407@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id F106F10382A
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF61810382A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jun 2007 08:01:52 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so2522668wag
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 23:01:51 -0700 (PDT)
-In-Reply-To: <46697BD7.50104@parrot.com>
+	Tue, 12 Jun 2007 08:11:51 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id j2so1387782nzf
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2007 23:11:50 -0700 (PDT)
+In-Reply-To: <46688D51.8030407@freescale.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,64 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I think you can have multiple dai objects, in your dai object dont
-enable support for Capture, and use that dai object in your Machine
-driver.
+In the new patch 13.4 see the implementation of imx it uses
+use snd_pcm_lib_malloc_pages()
 
-This should solve the issue
+http://opensource.wolfsonmicro.com/~lg/asoc/
 
+patch version 13.4
 
-
-On 6/8/07, Matthieu CASTET <matthieu.castet@parrot.com> wrote:
-> Hi,
+On 6/8/07, Timur Tabi <timur@freescale.com> wrote:
+> Liam
 >
-> Timur Tabi a =E9crit :
-> > Matthieu CASTET wrote:
-> >> Hi,
-> >>
-> >> If the platform/cpu_dai driver and codec support capture and playback
-> >> channels.
-> >> But on the board only the playback link is connected.
-> >>
-> >> In this configuration, the codec and platform/cpu_dai driver shouldn't
-> >> try to
-> >> use the capture path (and the resource associated to this).
-> >>
-> >>
-> >> Is there a way to do something like that ?
-> >
-> > I'm just learning about ASoC myself, but using wm8731.c as an example,
-> > wouldn't this work:
-> >
-> > struct snd_soc_codec_dai wm8731_dai =3D {
-> >     .name =3D "WM8731",
-> >     .playback =3D {
-> >         .stream_name =3D "Playback",
-> >         .channels_min =3D 1,
-> >         .channels_max =3D 2,
-> >         .rates =3D WM8731_RATES,
-> >         .formats =3D WM8731_FORMATS,},
-> >     .capture =3D {
-> >         .stream_name =3D "Capture",
-> >         .channels_min =3D 1,
-> >         .channels_max =3D 2,
-> >         .rates =3D WM8731_RATES,
-> >         .formats =3D WM8731_FORMATS,},
-> >
-> > Just change capture.channels_min and channels_max to 0.
-> >
+> Why do none of the ASoC drivers use snd_pcm_lib_malloc_pages()?  They all allocate their
+> DMA buffers by hand.
 >
-> Hum, yes I could change channel info at runtime before doing the
-> platform_device_add in machine driver.
->
-> I'll try that.
->
-> Thanks.
-> Matthieu
+> --
+> Timur Tabi
+> Linux Kernel Developer @ Freescale
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
