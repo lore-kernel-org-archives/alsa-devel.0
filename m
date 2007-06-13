@@ -1,18 +1,14 @@
-From: Eran Guendelman <erang@stanford.edu>
-Subject: Re: Got microphone working with SigmaTel STAC 9221 A1
- on a	Dell XPS M1210
-Date: Tue, 12 Jun 2007 23:49:23 -0700
-Message-ID: <466F9373.5050106@stanford.edu>
-References: <466B39A7.3000905@stanford.edu> <s5hy7ipux89.wl%tiwai@suse.de>
+From: Joachim =?ISO-8859-1?Q?F=F6rster?= <mls.JOFT@gmx.de>
+Subject: ALSA always writes _whole_ periods, right?
+Date: Wed, 13 Jun 2007 18:23:38 +0200
+Message-ID: <1181751818.5752.13.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2595423178214930337=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from agp.stanford.edu (agp.Stanford.EDU [171.67.73.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id D41AA10384D
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 11AD6103864
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2007 08:49:04 +0200 (CEST)
-In-Reply-To: <s5hy7ipux89.wl%tiwai@suse.de>
+	Wed, 13 Jun 2007 18:23:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,51 +18,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> So, we need to add a new model.  Could you give the output of "lspci
-> -nv", too?  We need PCI SSID to identify the device.  Then I can write
-> a patch to try.
 
-00:1b.0 Class 0403: 8086:27d8 (rev 01)
-         Subsystem: 1028:01d7
-         Flags: bus master, fast devsel, latency 0, IRQ 233
-         Memory at efffc000 (64-bit, non-prefetchable) [size=16K]
-         Capabilities: [50] Power Management version 2
-         Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ 
-Queue=0/0 Enable-
-         Capabilities: [70] Express Unknown type IRQ 0
-         Capabilities: [100] Virtual Channel
-         Capabilities: [130] Unknown (5)
-
->> - Does the snd_hda_intel driver currently (or will it eventually) 
->> support dynamic switching so I can switch from the Mic In to Line In or 
->> to Rear Speakers Out, etc, just like in the Windows driver?
-> 
-> Hm?  It should have already the switches, "Line In As Output" and "Mic
-> As Output"...
-
-I did see those when I tried the 3stack mode, but in my current fix 
-(modifying "ref" with my pin configs) I don't get such options in the 
-mixer.  Any idea what I would need to do to get it to add these switches 
-to the mixer?  This is the output from "amixer controls"
-
-numid=8,iface=MIXER,name='Master Playback Switch'
-numid=7,iface=MIXER,name='Master Playback Volume'
-numid=13,iface=MIXER,name='PCM Playback Volume'
-numid=6,iface=MIXER,name='Front Playback Switch'
-numid=5,iface=MIXER,name='Front Playback Volume'
-numid=3,iface=MIXER,name='Capture Switch'
-numid=2,iface=MIXER,name='Capture Volume'
-numid=9,iface=MIXER,name='IEC958 Playback Con Mask'
-numid=10,iface=MIXER,name='IEC958 Playback Pro Mask'
-numid=11,iface=MIXER,name='IEC958 Playback Default'
-numid=12,iface=MIXER,name='IEC958 Playback Switch'
-numid=14,iface=MIXER,name='Digital Capture Volume'
-numid=1,iface=MIXER,name='Input Source'
-numid=4,iface=MIXER,name='Mux Capture Volume'
+--===============2595423178214930337==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-YA6srMpFICh3+8KbIRDk"
 
 
-Thanks.
+--=-YA6srMpFICh3+8KbIRDk
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hi ALSA devs,
+
+I have a quick question regarding the filling of the usual ring buffer
+in RAM (used by sound controllers via DMA), just to be really sure:
+
+Is it true, that ALSA always writes (via mmap'ing) _whole_ periods?
+
+I took snd-dummy and modified it to use "ack()" method and tried to
+confirm, if the above is true _without_ memory mapping (classical
+read/write). It seem's to be true, ALSA is "filling up" the last (not
+always complete) period - e.g. if the played wav file is not a multiple
+of periodsize in length.
+But well, with mmap, I cannot see the copying action (done by ALSA
+library, right?) ... so, thus my question ;-) .
+
+Thanks,
+ Joachim
+
+
+--=-YA6srMpFICh3+8KbIRDk
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQBGcBoKZY86bR8HqNwRAsZ+AJ9bd1a0QH9NKnYnaJL5hn3jh1QaAwCfTQ7g
+u43kfMr6EhZ+ku3av20TUIA=
+=f7S9
+-----END PGP SIGNATURE-----
+
+--=-YA6srMpFICh3+8KbIRDk--
+
+
+--===============2595423178214930337==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2595423178214930337==--
