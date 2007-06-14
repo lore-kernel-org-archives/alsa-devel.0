@@ -1,78 +1,54 @@
-From: Joachim =?ISO-8859-1?Q?F=F6rster?= <mls.JOFT@gmx.de>
-Subject: ALSA always writes _whole_ periods, right?
-Date: Wed, 13 Jun 2007 18:23:38 +0200
-Message-ID: <1181751818.5752.13.camel@localhost>
+From: vignesh babu <vignesh.babu@wipro.com>
+Subject: [KJ] [PATCH]is_power_of_2-sound/pcm_params.h
+Date: Thu, 14 Jun 2007 13:39:52 +0530
+Message-ID: <1181808592.2474.13.camel@merlin.linuxcoe.com>
+Reply-To: vignesh.babu@wipro.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2595423178214930337=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 11AD6103864
-	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jun 2007 18:23:42 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <kernel-janitors-bounces@lists.linux-foundation.org>
+List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/kernel-janitors>,
+	<mailto:kernel-janitors-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linux-foundation.org/pipermail/kernel-janitors>
+List-Post: <mailto:kernel-janitors@lists.linux-foundation.org>
+List-Help: <mailto:kernel-janitors-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/kernel-janitors>,
+	<mailto:kernel-janitors-request@lists.linux-foundation.org?subject=subscribe>
+Sender: kernel-janitors-bounces@lists.linux-foundation.org
+Errors-To: kernel-janitors-bounces@lists.linux-foundation.org
+To: perex@suse.cz
+Cc: Kernel Janitors List <kernel-janitors@lists.osdl.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2595423178214930337==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-YA6srMpFICh3+8KbIRDk"
+Replacing (n & (n-1)) in the context of power of 2 checks
+with is_power_of_2
 
+Signed-off-by: vignesh babu <vignesh.babu@wipro.com>
+--- 
+diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
+index 85cf1cf..dee298e 100644
+--- a/include/sound/pcm_params.h
++++ b/include/sound/pcm_params.h
+@@ -21,6 +21,7 @@
+  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+  *
+  */
++#include <linux/log2.h>
+ 
+ int snd_pcm_hw_param_first(struct snd_pcm_substream *pcm, 
+ 			   struct snd_pcm_hw_params *params,
+@@ -170,7 +171,7 @@ static inline int snd_mask_single(const struct snd_mask *mask)
+ 	for (i = 0; i < SNDRV_MASK_SIZE; i++) {
+ 		if (! mask->bits[i])
+ 			continue;
+-		if (mask->bits[i] & (mask->bits[i] - 1))
++		if (!is_power_of_2(mask->bits[i]))
+ 			return 0;
+ 		if (c)
+ 			return 0;
 
---=-YA6srMpFICh3+8KbIRDk
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-Hi ALSA devs,
-
-I have a quick question regarding the filling of the usual ring buffer
-in RAM (used by sound controllers via DMA), just to be really sure:
-
-Is it true, that ALSA always writes (via mmap'ing) _whole_ periods?
-
-I took snd-dummy and modified it to use "ack()" method and tried to
-confirm, if the above is true _without_ memory mapping (classical
-read/write). It seem's to be true, ALSA is "filling up" the last (not
-always complete) period - e.g. if the played wav file is not a multiple
-of periodsize in length.
-But well, with mmap, I cannot see the copying action (done by ALSA
-library, right?) ... so, thus my question ;-) .
-
-Thanks,
- Joachim
-
-
---=-YA6srMpFICh3+8KbIRDk
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQBGcBoKZY86bR8HqNwRAsZ+AJ9bd1a0QH9NKnYnaJL5hn3jh1QaAwCfTQ7g
-u43kfMr6EhZ+ku3av20TUIA=
-=f7S9
------END PGP SIGNATURE-----
-
---=-YA6srMpFICh3+8KbIRDk--
-
-
---===============2595423178214930337==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2595423178214930337==--
+-- 
+Vignesh Babu BM 
+_____________________________________________________________ 
+"Why is it that every time I'm with you, makes me believe in magic?"
