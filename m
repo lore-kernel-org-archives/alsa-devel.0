@@ -1,20 +1,19 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: question about bluez using alsa and patches
-Date: Thu, 14 Jun 2007 20:38:59 -0400
-Message-ID: <75b66ecd0706141738o22a05c9bw29f86b84fa382ca9@mail.gmail.com>
-References: <200706141945.25383.wshekrota@optonline.net>
+From: Robert Lemmen <robertle@semistable.com>
+Subject: Re: hda-intel without headphone output
+Date: Thu, 14 Jun 2007 20:27:03 +0200
+Message-ID: <20070614182703.GA9443@sandbender>
+References: <20070614083156.GB26945@sandbender> <s5h8xamk612.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB682247E0
+Received: from d80-237-144-212.dds.hosteurope.de (debian.semistable.com
+	[80.237.144.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 11A8B247BD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2007 02:39:00 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id j2so704640nzf
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2007 17:38:59 -0700 (PDT)
-In-Reply-To: <200706141945.25383.wshekrota@optonline.net>
+	Thu, 14 Jun 2007 20:32:42 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5h8xamk612.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Walt Shekrota <wshekrota@optonline.net>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/14/07, Walt Shekrota <wshekrota@optonline.net> wrote:
-> I was told that when using the btsco(bluez) and/or plugs bluetooth headset
-> software a patch is always required.
+On Thu, Jun 14, 2007 at 03:41:13PM +0200, Takashi Iwai wrote:
+> The conexant codec is much better supported on ALSA 1.0.14.
+> Give it a try first.
 
-What patch?  Do you have a reference?
+and i thought my alsa version was recent :P
 
-Lee
+this did the trick in combination with model=laptop, other models didn't
+work. thanks for the help, and if there is any additional information
+you need in order to make the driver autodetect the model in future
+versions (if such a thing is possible), just tell me.
+
+thanks again  robert
+
+-- 
+Robert Lemmen                               http://www.semistable.com 
