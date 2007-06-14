@@ -1,19 +1,23 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: aplay hangs with execve("/build/bin/aplay", ["aplay"],
-	[/* 8 vars */
-Date: Thu, 14 Jun 2007 20:06:36 +0530
-Message-ID: <61445c750706140736hb5314a3nc0079f71ca99f426@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Documentation for params_xxx() macros?
+Date: Thu, 14 Jun 2007 11:31:40 -0500
+Message-ID: <46716D6C.2060609@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2677B103880
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC505245A2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Jun 2007 16:36:38 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id j2so548773nzf
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2007 07:36:37 -0700 (PDT)
-Content-Disposition: inline
+	Thu, 14 Jun 2007 18:31:44 +0200 (CEST)
+Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
+	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
+	l5EGVeHJ023407
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2007 09:31:41 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id l5EGVeGZ028313
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2007 11:31:40 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,14 +30,10 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Is there documentation that describes each of the params_xxx() macros?
 
-I am using alsa lib and alsa utils 1.0.14 on my omap based board.
-When I try to test my my alsa driver using aplay it just hangs at the very
-first step.
+If not, then which macro tells me how many periods there are?  Is it params_periods()?
 
-The strace output shows nothing else except the following line,
-
-execve("/build/bin/aplay", ["aplay"], [/* 8 vars */
-
-What I am missing?
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
