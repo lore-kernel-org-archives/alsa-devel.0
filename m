@@ -1,15 +1,24 @@
-From: =?ISO-8859-1?Q?Jonathan_Ph=E9nix?= <jonathan@linuxant.com>
-Subject: [PATCH] Output MFG information for HDA devices
-Date: Thu, 14 Jun 2007 16:35:53 -0400
-Message-ID: <4671A6A9.2080201@linuxant.com>
-Reply-To: jonathan@linuxant.com
+From: Timur Tabi <timur@freescale.com>
+Subject: Difference between substream->dma_buffer and
+	substream->runtime->dma_buffer_p?
+Date: Thu, 14 Jun 2007 17:47:58 -0500
+Message-ID: <4671C59E.70407@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090003050309010100000101"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oasis.linuxant.com (oasis.linuxant.com [63.246.136.80])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E256247C7
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id B42AD247D1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Jun 2007 22:35:59 +0200 (CEST)
+	Fri, 15 Jun 2007 00:48:06 +0200 (CEST)
+Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
+	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
+	l5EMlw2d023814
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2007 15:48:03 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id l5EMlwS9024394
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2007 17:47:58 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,67 +31,43 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090003050309010100000101
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+The snd_pcm_substream structure has a snd_dma_buffer structure.  snd_dma_buffer looks like 
+this:
 
-Hi,
+struct snd_dma_buffer {
+	struct snd_dma_device dev;	/* device type */
+	unsigned char *area;	/* virtual pointer */
+	dma_addr_t addr;	/* physical address */
+	size_t bytes;		/* buffer size in bytes */
+	void *private_data;	/* private for allocator; don't touch */
+};
 
-this patch output information about the MFG (Modem Function Group) to=20
-the /proc/asound/card?/codec#? file. This information is important to=20
-identify if a HDA device has a modem or not.
+snd_pcm_substream also has a snd_pcm_runtime structure, which looks like this:
 
-Regards,
+struct snd_pcm_runtime {
+...
 
-Jonathan Ph=E9nix
-Technical specialist / Linuxant
-www.linuxant.com
-jonathan@linuxant.com
+	/* -- DMA -- */
+	unsigned char *dma_area;	/* DMA area */
+	dma_addr_t dma_addr;		/* physical bus address (not accessible from main CPU) */
+	size_t dma_bytes;		/* size of DMA area */
 
-
-
---------------090003050309010100000101
-Content-Type: text/x-patch;
- name="alsa-hg-mfg.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-hg-mfg.patch"
-
-searching for changes
-changeset:   5106:c63e54409236
-tag:         tip
-user:        root@silver
-date:        Thu Jun 14 13:48:53 2007 -0400
-summary:     Added MFG in HDA /proc output
-
-diff -r 96495fe7cc13 -r c63e54409236 pci/hda/hda_proc.c
---- a/pci/hda/hda_proc.c	Thu Jun 14 12:58:23 2007 +0200
-+++ b/pci/hda/hda_proc.c	Thu Jun 14 13:48:53 2007 -0400
-@@ -250,6 +250,12 @@ static void print_codec_info(struct snd_
- 	snd_iprintf(buffer, "Vendor Id: 0x%x\n", codec->vendor_id);
- 	snd_iprintf(buffer, "Subsystem Id: 0x%x\n", codec->subsystem_id);
- 	snd_iprintf(buffer, "Revision Id: 0x%x\n", codec->revision_id);
-+
-+	if (codec->mfg)
-+		snd_iprintf(buffer, "Modem Function Group: 0x%x\n", codec->mfg);
-+	else
-+		snd_iprintf(buffer, "No Modem Function Group found\n");
-+
- 	if (! codec->afg)
- 		return;
- 	snd_iprintf(buffer, "Default PCM:\n");
+	struct snd_dma_buffer *dma_buffer_p;	/* allocated buffer */
 
 
---------------090003050309010100000101
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Why the redundancy?  Not only does snd_pcm_runtime have dma_area, dma_addr, and dma_bytes, 
+but it also has a pointer to a dns_dma_buffer structure, which also has this information!
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+So given a snd_pcm_substream structure, you can obtain the physical address of the DMA 
+buffer three ways:
 
---------------090003050309010100000101--
+substream->dma_buffer.addr
+substream->runtime->dma_addr
+substream->runtime->dma_buffer_p->addr
+
+When will these three variable contain different values?  If the answer is never, then why 
+do they all exist?
+
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
