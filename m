@@ -1,18 +1,20 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [RFC][ASoC] New device/driver arch
-Date: Fri, 15 Jun 2007 10:04:19 +0100
-Message-ID: <1181898259.26658.53.camel@localhost.localdomain>
-References: <1181842832.26658.42.camel@localhost.localdomain>
-	<20070614180656.GA22664@roarinelk.homelinux.net>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Re: Software mixing according to priority of streams
+Date: Fri, 15 Jun 2007 16:30:27 +0530
+Message-ID: <8d6898730706150400h6126ec15sae1694b80b47ad53@mail.gmail.com>
+References: <8d6898730706150110m35fdfb59m6961aa25d0fcc3b3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18530103880
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3B9624806
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2007 11:04:21 +0200 (CEST)
-In-Reply-To: <20070614180656.GA22664@roarinelk.homelinux.net>
+	Fri, 15 Jun 2007 13:00:28 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so1112856wag
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2007 04:00:27 -0700 (PDT)
+In-Reply-To: <8d6898730706150110m35fdfb59m6961aa25d0fcc3b3@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <mano@roarinelk.homelinux.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Timur Tabi <timur@freescale.com>, Nobin Mathew <nobin.mathew@gmail.com>
+To: alsa-devel@alsa-project.org, Liam Girdwood <lg@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-06-14 at 20:06 +0200, Manuel Lauss wrote:
-> Hi Liam,
-> 
-> Is it possible to have 2 physical I2S units (which are connected to the same
-> codec) be repesented as a single ASoC device? (The SH7760 has 2 I2S units
-> which are "halfduplex" (only transmit OR capture at a time). My dev platform
-> simply uses the second unit for capture
-> 
+Can somebody throw some ideas on this ?
 
-Yes. I would create two struct snd_soc_device_drivers in your i2s.c
-file. The first would be the driver for the 2 halfduplex I2S units and
-the second would be a full duplex driver for a merged I2S controller
-(made up of the 2 halfduplex units). This way a device can either probe
-against the halfduplex or full duplex driver based on the driver ID.
 
-> 
-> I need a trigger callback in the  machine driver to properly support
-> multichannel I2S audio on Au1200 (the  Au1200 can only do stereo; to get
-> more channels we double/quadruple the I2S LRCLK coming from the codec;
-> however the CPLD needs to be told when a new sample starts; although
-> maybe that can be worked around in VHDL)
-> 
-
-I'll add trigger. Probably easier to do this in C than VHDL ;)
-
-Liam
+On 6/15/07, Nobin Mathew <nobin.mathew@gmail.com> wrote:
+> Hi,
+>
+> Is there any sound mixer which does mixing according to priority of
+> streams, i.e. i will have streams with different priority like audio
+> stream , bluettoth sco stream, gps navigation sound stream etc. Since
+> my hardware will not support hardware mixing i will have to do this
+> mixing in software.
+>
+> If bluetooth sco stream is opened while audio stream is playing then
+> the application
+> (sound server) should stop the playback of audio stream and should
+> start playback of bletooth sco stream.
+>
+> priority order is
+> bluettoth sco > gps navigation sound > audio
+>
+> Can dmix and Jack server the purpose.
+>
+> Nobin Mathew
+>
