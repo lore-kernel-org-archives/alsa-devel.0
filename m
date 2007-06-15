@@ -1,17 +1,24 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: Writing an AT91SAM9260-EK Dumb Codec Driver
-Date: Fri, 15 Jun 2007 20:08:39 +0100
-Message-ID: <1181934519.26658.94.camel@localhost.localdomain>
-References: <61c0054e0706151146i26514503hb0bfc99ad8399791@mail.gmail.com>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Re: Software mixing according to priority of streams
+Date: Sat, 16 Jun 2007 01:16:11 +0530
+Message-ID: <8d6898730706151246k63b00563w92758ba66845368c@mail.gmail.com>
+References: <8d6898730706150110m35fdfb59m6961aa25d0fcc3b3@mail.gmail.com>
+	<8d6898730706150400h6126ec15sae1694b80b47ad53@mail.gmail.com>
+	<75b66ecd0706151112h663009ub99740d026c168a6@mail.gmail.com>
+	<8d6898730706151116s631893e1ja083f861c80d07cb@mail.gmail.com>
+	<75b66ecd0706151159x4974c488ye31e78a63a7fad63@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7928810389B
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57C9A103880
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2007 21:08:41 +0200 (CEST)
-In-Reply-To: <61c0054e0706151146i26514503hb0bfc99ad8399791@mail.gmail.com>
+	Fri, 15 Jun 2007 21:46:13 +0200 (CEST)
+Received: by py-out-1112.google.com with SMTP id a29so1751583pyi
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2007 12:46:12 -0700 (PDT)
+In-Reply-To: <75b66ecd0706151159x4974c488ye31e78a63a7fad63@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,62 +28,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Kavan <pkavan@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2007-06-15 at 13:46 -0500, Paul Kavan wrote:
+yes, i thought only software mixing can do it
 
-> 
-> Now to making the driver once the code is done. I am relatively new to
-> writing linux drivers. In the 6 or so that I have written, I usually
-> cross-compile them as modules and then insmod them. I have tried that here
-> and am getting a strange warning that I am unsure of.  I have a pretty
-> simple Makefile and when I execute it, I get:
-> 
-> make ARCH=arm CROSS_COMPILE=arm-linux-
-> make -C ~/Linux_Builds/linux-2.6.21.5M=/home/grhuser/Door_Access_System/Remotes/Driver/sound
-> modules
-> make[1]: Entering directory `/home/grhuser/Linux_Builds/linux- 2.6.21.5'
->   CC [M]
-> /home/grhuser/Door_Access_System/Remotes/Driver/sound/grh_ek_w6811.o
->   Building modules, stage 2.
->   MODPOST 1 modules
-> WARNING: "at91_ssc_dai"
-> [/home/grhuser/Door_Access_System/Remotes/Driver/sound/grh_ek_w6811.ko]
-> undefined!
->   CC
-> /home/grhuser/Door_Access_System/Remotes/Driver/sound/grh_ek_w6811.mod.o
->   LD [M]
-> /home/grhuser/Door_Access_System/Remotes/Driver/sound/grh_ek_w6811.ko
-> make[1]: Leaving directory `/home/grhuser/Linux_Builds/linux- 2.6.21.5'
-> 
 
-It looks like the AT91 platform code is not being built. i.e. at91-ssc,
-at91-pcm.
-
-> As you can see, I am using linux-2.6.21.5 I have ALSA checked and AT91-SoC
-> checked in my .config file. For this attempt to build the driver, I have a
-> separate folder than contains: at91-ssc.h and at91-pcm.h. If there is a more
-> correct way to do this and be able to debug it, please let me know.
-> 
-
-It's probably going to be easier in the long run to copy your driver
-code to linux/sound/soc/at91 and then add an entry for your driver in
-the linux/sound/soc/at91/ Makefile & Kconfig
-
-e.g. for Kconfig
-
-config SND_AT91_SOC_ETI_B1_WM8731
-	tristate "SoC Audio support for WM8731-based Endrelia ETI-B1 boards"
-	depends on SND_AT91_SOC && (MACH_ETI_B1 || MACH_ETI_C1)
-	select SND_AT91_SOC_SSC
-	select SND_SOC_WM8731
-	help
-	  Say Y if you want to add support for SoC audio on WM8731-based
-	  Endrelia Technologies Inc ETI-B1 or ETI-C1 boards.
-
-This can then tell the build system (via the select keyword above) that
-your board driver depends on the AT91 platform driver and your codec. 
-
-Liam
+On 6/16/07, Lee Revell <rlrevell@joe-job.com> wrote:
+> On 6/15/07, Nobin Mathew <nobin.mathew@gmail.com> wrote:
+> > A sound server can do this
+> >
+> > Maintain a buffer per application ,
+> > and each buffer will have priority. when data comes on higher priority
+> > buffer stop taking data from low priority buffer, and configure the
+> > audio and start pumping data from high priority buffer.
+>
+> Ah, so you do NOT want software mixing - you want the low priority
+> stream to stop when the high priority stream starts.
+>
+> Lee
+>
