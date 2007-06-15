@@ -1,17 +1,22 @@
-From: "Paul Kavan" <pkavan@gmail.com>
-Subject: Writing an AT91SAM9260-EK Dumb Codec Driver
-Date: Fri, 15 Jun 2007 13:46:59 -0500
-Message-ID: <61c0054e0706151146i26514503hb0bfc99ad8399791@mail.gmail.com>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Software mixing according to priority of streams
+Date: Fri, 15 Jun 2007 14:59:08 -0400
+Message-ID: <75b66ecd0706151159x4974c488ye31e78a63a7fad63@mail.gmail.com>
+References: <8d6898730706150110m35fdfb59m6961aa25d0fcc3b3@mail.gmail.com>
+	<8d6898730706150400h6126ec15sae1694b80b47ad53@mail.gmail.com>
+	<75b66ecd0706151112h663009ub99740d026c168a6@mail.gmail.com>
+	<8d6898730706151116s631893e1ja083f861c80d07cb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96BEE10387D
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.234])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5CB0F24839
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jun 2007 20:47:00 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id o2so932875uge
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2007 11:47:00 -0700 (PDT)
+	Fri, 15 Jun 2007 20:59:10 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id j2so947137nzf
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2007 11:59:09 -0700 (PDT)
+In-Reply-To: <8d6898730706151116s631893e1ja083f861c80d07cb@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,59 +27,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Nobin Mathew <nobin.mathew@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all:
+On 6/15/07, Nobin Mathew <nobin.mathew@gmail.com> wrote:
+> A sound server can do this
+>
+> Maintain a buffer per application ,
+> and each buffer will have priority. when data comes on higher priority
+> buffer stop taking data from low priority buffer, and configure the
+> audio and start pumping data from high priority buffer.
 
-I am working on a driver for a dumb codec to work with the SSC as a PCM on
-the AT91SAM9260. I have, with the gracious help of Frank Mandarino, have the
-glue code written without too many problems. However, I need some guidance
-on getting a few things configured correctly for my codec and then getting
-it to compile and load correctly.
+Ah, so you do NOT want software mixing - you want the low priority
+stream to stop when the high priority stream starts.
 
-For configuration, I am using the Winbond W6811. For this, I am going to use
-a 256kHz BCLK and an 8kHz frame. Each sample consists of 8-bit u-law PCM,
-MSB first. When I execute a read from the codec to the processor, I need to
-make the reads on the falling edge of the BCLK at each sync pulse. When
-executing a write from the processor to the codec I need to write on the
-rising edge at each sync pulse. I think I the timing correct in my driver
-with:
-
-    cmr_div = 187;    /* PCM_CLK = ~96MHz/(2*187) = 256kHz */
-   period = 15;    /* PCM_SYNC = PCM_CLK/(2*(15+1)) = 8000Hz */
-
-However, I am not sure how to get the following correct for my needs:
-
-#define W6811_FORMATS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE)
-
-Now to making the driver once the code is done. I am relatively new to
-writing linux drivers. In the 6 or so that I have written, I usually
-cross-compile them as modules and then insmod them. I have tried that here
-and am getting a strange warning that I am unsure of.  I have a pretty
-simple Makefile and when I execute it, I get:
-
-make ARCH=arm CROSS_COMPILE=arm-linux-
-make -C ~/Linux_Builds/linux-2.6.21.5M=/home/grhuser/Door_Access_System/Remotes/Driver/sound
-modules
-make[1]: Entering directory `/home/grhuser/Linux_Builds/linux- 2.6.21.5'
-  CC [M]
-/home/grhuser/Door_Access_System/Remotes/Driver/sound/grh_ek_w6811.o
-  Building modules, stage 2.
-  MODPOST 1 modules
-WARNING: "at91_ssc_dai"
-[/home/grhuser/Door_Access_System/Remotes/Driver/sound/grh_ek_w6811.ko]
-undefined!
-  CC
-/home/grhuser/Door_Access_System/Remotes/Driver/sound/grh_ek_w6811.mod.o
-  LD [M]
-/home/grhuser/Door_Access_System/Remotes/Driver/sound/grh_ek_w6811.ko
-make[1]: Leaving directory `/home/grhuser/Linux_Builds/linux- 2.6.21.5'
-
-As you can see, I am using linux-2.6.21.5 I have ALSA checked and AT91-SoC
-checked in my .config file. For this attempt to build the driver, I have a
-separate folder than contains: at91-ssc.h and at91-pcm.h. If there is a more
-correct way to do this and be able to debug it, please let me know.
-
-I have attached copies of my driver. I would appreciate any and all feedback
-and assistance on getting this running.
+Lee
