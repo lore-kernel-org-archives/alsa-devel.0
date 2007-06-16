@@ -1,18 +1,16 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Query regarding pcm->private_data
-Date: Sat, 16 Jun 2007 19:43:27 +0530
-Message-ID: <61445c750706160713u3fe57101ic524fe20d4b5eee@mail.gmail.com>
+From: Joachim =?ISO-8859-1?Q?F=F6rster?= <mls.JOFT@gmx.de>
+Subject: Re: ALSA always writes _whole_ periods, right?
+Date: Sat, 16 Jun 2007 23:35:15 +0200
+Message-ID: <1182029715.2605.12.camel@localhost>
+References: <1181751818.5752.13.camel@localhost> <s5hlkemkefd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2058914132608430984=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D4A410381A
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 7159F10381F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 Jun 2007 16:13:29 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id a29so2139186pyi
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jun 2007 07:13:28 -0700 (PDT)
-Content-Disposition: inline
+	Sat, 16 Jun 2007 23:35:18 +0200 (CEST)
+In-Reply-To: <s5hlkemkefd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-I am reading 'Wring an alsa driver'.  It says following about the
-private_data:
+--===============2058914132608430984==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-4jrCxch95AwH72cx3DsC"
 
-You can allocate a record for the substream and store it in
-runtime->private_data. Usually, this is done in the open callback.
-Don't mix this with pcm->private_data. The pcm->private_data usually
-points the chip instance assigned statically at the creation of PCM,
-while the
-runtime->private_data points a dynamic data created at the PCM open callback.
 
-What does static and dynamic mean here? Apologies for this question
-if it sounds very novice, since my understanding is it doesn't mean static
-and dynamic in the usual way like stack and heap etc. Why I am being
-so paranoid about this has reason:
+--=-4jrCxch95AwH72cx3DsC
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-In my ALSA driver I am assigning pcm->private_data = mychip, but it is
-NULL in the snd_pcm_attach_substream() function. I have checked my
-code many times and I tried with another driver which was working when
-tested using ALSA utils. Currently I am testing using the OSS
-emulation i.e. simply cat /dev/audio.
+Hi Takashi,
+
+thanks for your answer,
+
+On Thu, 2007-06-14 at 12:39 +0200, Takashi Iwai wrote:
+> > I have a quick question regarding the filling of the usual ring buffer
+> > in RAM (used by sound controllers via DMA), just to be really sure:
+> >=20
+> > Is it true, that ALSA always writes (via mmap'ing) _whole_ periods?
+>=20
+> The whole buffer is, of course, used.  Otherwise you'll get obvious
+> noises :)
+>=20
+> But if you're asking about the timinig, then no.  How much data is
+> written at which timing isn't strictly defined in mmap mode.  The
+> PCM core just checks the available size at each
+> snd_pcm_period_elapsed(), and reports XRUN if needed.  That's all.
+
+Ok, ahm, I think my question was not about what I really wanted to know
+- sorry. I have to reformulate it: In fact I would like to know, how the
+ALSA-library mmap code behaves regarding the last chunk of samples, for
+example: Consider aplay, playing a wav file and the wav file's
+size/number of samples does _not_ fit to a multiple of a period's size.
+Then, does the mmap code copy these last samples as is _or_ does it copy
+one whole last period (which is filled with zeros)?
+
+Thanks,
+ Joachim
+
+
+--=-4jrCxch95AwH72cx3DsC
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQBGdFeTZY86bR8HqNwRAiBTAJ4hO9Y6vMS1FFCGh55g9pzBKF5VBQCaAw/a
+tz+Af7wmYoiS+wjZhTkmEGw=
+=3Z7A
+-----END PGP SIGNATURE-----
+
+--=-4jrCxch95AwH72cx3DsC--
+
+
+--===============2058914132608430984==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2058914132608430984==--
