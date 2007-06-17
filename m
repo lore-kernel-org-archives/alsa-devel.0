@@ -1,87 +1,71 @@
-From: "Furkan Cayci" <furkanca02@gmail.com>
-Subject: Sound problem in Toshiba
-Date: Sat, 16 Jun 2007 17:02:52 -0400
-Message-ID: <957855860706161402o649cc43fk615534213164e50d@mail.gmail.com>
+From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Subject: [1/2] 2.6.22-rc5: known regressions
+Date: Sun, 17 Jun 2007 16:23:29 +0200
+Message-ID: <467543E1.1060001@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF711103820
-	for <alsa-devel@alsa-project.org>;
-	Sat, 16 Jun 2007 23:02:53 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id a29so2280751pyi
-	for <alsa-devel@alsa-project.org>; Sat, 16 Jun 2007 14:02:53 -0700 (PDT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <reiserfs-devel-owner@vger.kernel.org>
+Sender: reiserfs-devel-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Rodrigo Luiz <troops.of.doom@gmail.com>, "Darrick J. Wong" <djwong@us.ibm.com>, "Siddha, Suresh B" <suresh.b.siddha@intel.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Ben Collins <bcollins@ubuntu.com>, reiserfs-devel@vger.kernel.org, "Vladimir V. Saveliev" <vs@namesys.com>, Randy Dunlap <randy.dunlap@oracle.com>, linux-pci@atrey.karlin.mff.cuni.cz, Greg Kroah-Hartman <gregkh@suse.de>, Malte Cornils <malte@cornils.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi all,
 
-I am using Ubuntu 7.04.
-After installing Ubuntu, I could't hear any sound from
-my Toshiba Satellite A205-S4577, so I did the things
-related with this article;
-http://pastebin.ca/522731
+Here is a list of some known regressions in 2.6.22-rc5.
 
-After restarting laptop, I didn't take any errors, but there was
-no sound again. Then I realized the output of the dmesg.
+Feel free to add new regressions/remove fixed etc.
+http://kernelnewbies.org/known_regressions
 
-$ dmesg|grep alsa
-[   18.948000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:2339:
-autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
-[   18.948000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:2343:
-speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-[   18.948000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:2347:
-hp_outs=1 (0x15/0x0/0x0/0x0/0x0)
-[   18.948000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:2355:
-inputs: mic=0x19, fmic=0x18, line=0x0, fline=0x0, cd=0x0, aux=0x0
-[   19.672000] ALSA
-/home/leonetix/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:244:
-si3054: cannot initialize. EXT MID = 0000
-[   19.680000] ALSA
-/home/leonetix/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:256:
-Link Frame Detect(FDT) is not ready (line status: 0000)
-[   33.572000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:1810:
-hda_codec: model 'auto' is selected
-[   33.620000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:2339:
-autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
-[   33.620000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:2343:
-speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-[   33.620000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:2347:
-hp_outs=1 (0x15/0x0/0x0/0x0/0x0)
-[   33.620000] ALSA /home/leonetix/alsa-driver/pci/hda/hda_codec.c:2355:
-inputs: mic=0x19, fmic=0x18, line=0x0, fline=0x0, cd=0x0, aux=0x0
-[   34.360000] ALSA
-/home/leonetix/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:244:
-si3054: cannot initialize. EXT MID = 0000
-[   34.368000] ALSA
-/home/leonetix/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:256:
-Link Frame Detect(FDT) is not ready (line status: 0000)
--------------------------
 
-So, there is something wrong, but I didn't understand
-and I was wondering if you could solve or show a way to do it.
 
-Also, here is the output of lcpci -v
-"00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-        Subsystem: Toshiba America Info Systems Unknown device ff10
-        Flags: bus master, fast devsel, latency 0, IRQ 21
-        Memory at f0b40000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+
-Queue=0/0 Enable-
-        Capabilities: [70] Express Unknown type IRQ 0"
+Unclassified
 
-Thanks for your help,
-Furkan
+Subject    : Kernel hang on CMOS_READ
+References : http://lkml.org/lkml/2007/6/3/138
+Submitter  : Rodrigo Luiz <troops.of.doom@gmail.com>
+Status     : Unknown
+
+Subject    : Device hang when offlining a CPU due to IRQ misrouting
+References : http://lkml.org/lkml/2007/5/31/419
+Submitter  : Darrick J. Wong <djwong@us.ibm.com>
+Handled-By : Siddha, Suresh B <suresh.b.siddha@intel.com>
+Status     : problem is being debugged
+
+
+
+ALSA
+
+Subject    : snd-aoa causes badness in lib/kref.c:33
+References : http://bugzilla.kernel.org/show_bug.cgi?id=8513
+Submitter  : Ben Collins <bcollins@ubuntu.com>
+Handled-By : Takashi Iwai <tiwai@suse.de>
+Status     : Unknown
+
+
+
+FS
+
+Subject    : 2.6.22-rc4-git5 reiserfs: null ptr deref.
+References : http://lkml.org/lkml/2007/6/13/322
+Submitter  : Randy Dunlap <randy.dunlap@oracle.com>
+Handled-By : Vladimir V. Saveliev <vs@namesys.com>
+Status     : problem is being debugged
+
+
+
+PCI
+
+Subject    : PCI setup hangs on Asus Notebook (nolapic helps)
+References : http://lkml.org/lkml/2007/6/14/161
+Submitter  : Malte Cornils <malte@cornils.net>
+Status     : unknown
+
+
+
+Regards,
+Michal
+
+--
+LOG
+http://www.stardust.webpages.pl/log/
