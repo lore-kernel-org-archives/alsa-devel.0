@@ -1,54 +1,33 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: .asoundrc
-Date: Mon, 18 Jun 2007 16:04:04 +0530
-Message-ID: <8d6898730706180334j27251fccm80c30894c931898f@mail.gmail.com>
+From: Malte Cornils <malte@cornils.net>
+Subject: Re: [1/2] 2.6.22-rc5: known regressions
+Date: Mon, 18 Jun 2007 13:02:42 +0200
+Message-ID: <200706181302.42951.malte@cornils.net>
+References: <467543E1.1060001@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.236])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82C6824366
-	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Jun 2007 12:34:06 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id j2so1251876nzf
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2007 03:34:05 -0700 (PDT)
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1762916AbXFRLDJ@vger.kernel.org>
+In-Reply-To: <467543E1.1060001@googlemail.com>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Seth Forshee <seth.forshee@gmail.com>, Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Rodrigo Luiz <troops.of.doom@gmail.com>, "Darrick J. Wong" <djwong@us.ibm.com>, "Siddha, Suresh B" <suresh.b.siddha@intel.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Ben Collins <bcollins@ubuntu.com>, reiserfs-devel@vger.kernel.org, "Vladimir V. Saveliev" <vs@namesys.com>, Randy Dunlap <randy.dunlap@oracle.com>, linux-pci@atrey.karlin.mff.cuni.cz, Greg Kroah-Hartman <gregkh@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello,
 
-I am trying to write one .asoundrc file
+Am Sonntag, 17. Juni 2007 16:23 schrieb Michal Piotrowski:
+> Here is a list of some known regressions in 2.6.22-rc5.
+> PCI
+>
+> Subject    : PCI setup hangs on Asus Notebook (nolapic helps)
+> References : http://lkml.org/lkml/2007/6/14/161
+> Submitter  : Malte Cornils <malte@cornils.net>
+> Status     : unknown
 
-What i am currently doing is rate conversion
+The original report was made on 2.6.22-rc3, I just checked and it still 
+happens on 2.6.22-rc5.
 
-My .asounrc file contains
-
-pcm.sirf3a {
-        type rate
-        slave {
-                pcm "hw:0,0"
-                rate 8000
-        }
-}
-
-
-I am using following command
-
-aplay -M -D sirf3a /usr/share/sounds/alsa/Side_Right.wav
-
-But it is giving me some errors
-
-aplay: set_params:909: Channels count non available
-
-Any idea why this?
-where I am going wrong?
+Yours
+-Malte Cornils
