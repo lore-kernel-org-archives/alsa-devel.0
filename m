@@ -1,18 +1,18 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Query regarding pcm->private_data
-Date: Mon, 18 Jun 2007 09:43:20 +0200
-Message-ID: <1182152600.10064.1195675067@webmail.messagingengine.com>
-References: <61445c750706160713u3fe57101ic524fe20d4b5eee@mail.gmail.com>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: .asoundrc
+Date: Mon, 18 Jun 2007 16:04:04 +0530
+Message-ID: <8d6898730706180334j27251fccm80c30894c931898f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8F9EF2417B
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.236])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82C6824366
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Jun 2007 09:43:20 +0200 (CEST)
+	Mon, 18 Jun 2007 12:34:06 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id j2so1251876nzf
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2007 03:34:05 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <61445c750706160713u3fe57101ic524fe20d4b5eee@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Seth Forshee <seth.forshee@gmail.com>, Liam Girdwood <lg@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pharaoh . wrote:
-> I am reading 'Wring an alsa driver'.  It says following about the
-> private_data:
-> 
-> You can allocate a record for the substream and store it in
-> runtime->private_data. Usually, this is done in the open callback.
-> Don't mix this with pcm->private_data. The pcm->private_data usually
-> points the chip instance assigned statically at the creation of PCM, while the
-> runtime->private_data points a dynamic data created at the PCM open callback.
-> 
-> What does static and dynamic mean here?
+Hi,
 
-Nothing much.  "Static" just means that this is not allocated/freed
-together with a stream's runtime.  The my_chip data is usually allocated
-from the heap, but the runtime->private_data is _more_ dynamic because
-it is allocated every time a stream is opened.
+I am trying to write one .asoundrc file
+
+What i am currently doing is rate conversion
+
+My .asounrc file contains
+
+pcm.sirf3a {
+        type rate
+        slave {
+                pcm "hw:0,0"
+                rate 8000
+        }
+}
 
 
-HTH
-Clemens
+I am using following command
+
+aplay -M -D sirf3a /usr/share/sounds/alsa/Side_Right.wav
+
+But it is giving me some errors
+
+aplay: set_params:909: Channels count non available
+
+Any idea why this?
+where I am going wrong?
