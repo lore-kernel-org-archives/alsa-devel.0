@@ -1,22 +1,20 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: pcm->private_data is NULL in alsa core!!
-Date: Mon, 18 Jun 2007 17:28:46 +0530
-Message-ID: <61445c750706180458r2d2e6ef4q167dfe34ea187721@mail.gmail.com>
-References: <61445c750706160550i592b416as6c766532de830147@mail.gmail.com>
-	<1182152265.9399.1195673497@webmail.messagingengine.com>
-	<61445c750706180456i5228c8dbqbd168e5a3bbbe435@mail.gmail.com>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: [ASoC] Missing shutdown() vectors in ASoC
+Date: Mon, 18 Jun 2007 13:15:51 +0100
+Message-ID: <1182168951.26658.103.camel@localhost.localdomain>
+References: <8d6898730706120004u31ddc1edj9e38e575b6aa5e53@mail.gmail.com>
+	<8d6898730706120514na050b79j813ba93db23dc768@mail.gmail.com>
+	<1181655900.29999.28.camel@a10072.wolfsonmicro.main>
+	<8d6898730706180042v5f980486j73d783a04f9ddf5f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07E4D2437E
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id 191A72432E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Jun 2007 13:58:47 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so2208672wag
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2007 04:58:46 -0700 (PDT)
-In-Reply-To: <61445c750706180456i5228c8dbqbd168e5a3bbbe435@mail.gmail.com>
-Content-Disposition: inline
+	Mon, 18 Jun 2007 14:15:53 +0200 (CEST)
+In-Reply-To: <8d6898730706180042v5f980486j73d783a04f9ddf5f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,37 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
+To: Nobin Mathew <nobin.mathew@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ignore that one thing in above post, it's accidental.
+On Mon, 2007-06-18 at 13:12 +0530, Nobin Mathew wrote:
+> Hi Liam,
+> 
+>  Can you please look at this mail Thread.
+> 
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-June/001436.html
+> 
 
-On 6/18/07, Pharaoh . <pharaoh137@gmail.com> wrote:
-> Hi Clemens,
-> Sorry, I forgot to attach the source files. I am attaching the
-> corressponding files, the code is still pretty much in development and
-> messy. One thing
->
-> -pharaoh.
->
-> On 6/18/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
-> > Pharaoh . wrote:
-> > > I have set the pcm->private_data = my_chip after registering the pcm
-> ops,
-> >
-> > Should work.
-> >
-> > > ... but after I do snd_card_register(card) the pcm->private_data is
-> > > corrupted !!
-> > >
-> > > I have checked my source atleast 5 times and couldn't find anything in
-> it.
-> >
-> > I couldn't find anything either.  Not even your source code.
-> >
-> >
-> > Regards,
-> > Clemens
-> >
->
+Atm, shutdown can be implemented in the current version of ASoC by
+adding a shutdown callback to the "soc-audio" platform device in
+soc-core.c. This callback could then call your codec/platform/machine
+shutdown()'s.
+
+Future versions (in dev-ppc branch atm) wont need this as shutdown can
+be added to each driver in the regular Linux way.
+
+Liam 
