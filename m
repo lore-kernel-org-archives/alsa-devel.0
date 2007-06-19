@@ -1,37 +1,41 @@
-From: Malte Cornils <malte@cornils.net>
-Subject: Re: [1/2] 2.6.22-rc5: known regressions
-Date: Tue, 19 Jun 2007 01:26:22 +0200
-Message-ID: <200706190126.23091.malte@cornils.net>
-References: <467543E1.1060001@googlemail.com> <200706181302.42951.malte@cornils.net> <20070618162915.GA7440@kroah.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Changing the sample rate/channels of an already
+ opened PCM stream
+Date: Tue, 19 Jun 2007 07:59:42 +0200
+Message-ID: <1182232782.12152.1195873653@webmail.messagingengine.com>
+References: <20070618184758.GL27942@hoeg.nl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S933791AbXFRX0x@vger.kernel.org>
-In-Reply-To: <20070618162915.GA7440@kroah.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C86E32432E
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Jun 2007 07:59:43 +0200 (CEST)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg KH <greg@kroah.com>
-Cc: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Rodrigo Luiz <troops.of.doom@gmail.com>, "Darrick J. Wong" <djwong@us.ibm.com>, "Siddha, Suresh B" <suresh.b.siddha@intel.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Ben Collins <bcollins@ubuntu.com>, reiserfs-devel@vger.kernel.org, "Vladimir V. Saveliev" <vs@namesys.com>, Randy Dunlap <randy.dunlap@oracle.com>, linux-pci@atrey.karlin.mff.cuni.cz, Greg Kroah-Hartman <gregkh@suse.de>
+In-Reply-To: <20070618184758.GL27942@hoeg.nl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ed Schouten <ed@fxq.nl>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Ed Schouten wrote:
+> I have been trying to get the device to reset so I can change the sample
+> rate, but for some reason, it just gets ignored. Can someone explain me
+> how it's possible to reset the sample rate after preparing the handle?
 
-Am Montag, 18. Juni 2007 18:29 schrieb Greg KH:
-> On Mon, Jun 18, 2007 at 01:02:42PM +0200, Malte Cornils wrote:
-> > Hello,
-> > > Subject    : PCI setup hangs on Asus Notebook (nolapic helps)
-> > > References : http://lkml.org/lkml/2007/6/14/161
-> > > Submitter  : Malte Cornils <malte@cornils.net>
-> > > Status     : unknown
-> >
-> > The original report was made on 2.6.22-rc3, I just checked and it still
-> > happens on 2.6.22-rc5.
->
-> Can you use 'git bisect' to track down the patch that causes this to
-> fail?
+The various snd_pcm_hw_params_set_xxx() functions choose some value for
+a parameter that has not yet been set, but they do not change a
+parameter once it has been set.  To reset all parameters in a hw_params
+container, call snd_pcm_hw_params_any() again.
 
-I will do this, however, it will likely take me a day or two to find. I'll 
-report back then.
 
--Malte Cornils
+HTH
+Clemens
