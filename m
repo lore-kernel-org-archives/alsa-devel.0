@@ -1,19 +1,18 @@
-From: =?UTF-8?B?VmFzaWxpcyBNYW7Ov2xvcG91bG9z?= <vmanolop@gmail.com>
-Subject: Re: Surround problems with cs46xx
-Date: Tue, 19 Jun 2007 21:49:01 -0700
-Message-ID: <4678B1BD.5050906@gmail.com>
-References: <4673EC25.1020507@gmail.com> <s5h4pl4i5hg.wl%tiwai@suse.de>
+From: "Paul Kavan" <pkavan@gmail.com>
+Subject: Using aplay and arecord on an ARM
+Date: Tue, 19 Jun 2007 14:37:56 -0500
+Message-ID: <61c0054e0706191237n666fd422wcf13f874f108e64a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67A73243C1
+	by alsa0.perex.cz (Postfix) with ESMTP id B130B24407
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jun 2007 20:49:04 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id o2so177570uge
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2007 11:49:04 -0700 (PDT)
-In-Reply-To: <s5h4pl4i5hg.wl%tiwai@suse.de>
+	Tue, 19 Jun 2007 21:37:57 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so188035uge
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2007 12:37:57 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,52 +22,217 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ClRoYW5rcyBmb3IgdGhlIHJlcGx5IFRha2FzaGkuCkkgZG9uJ3QgdGhpbmsgdGhhdCB0aGlzIGlz
-IGhhcmR3YXJlIHByb2JsZW0sIGNhdXNlIGluIHdpbmRvd3MgWFAsIHVzaW5nIAp0aGUgZHJpdmVy
-cyBieSB0aGUgbWFudWZhY3R1cmVyIEhlcmN1bGVzLCB0aGUgc291bmQgaXMgZmluZS4gQWJvdXQg
-dGhlIAp0ZXN0IHlvdSBtZW50aW9uZWQsIEkgJ2xsIGNoZWNrIGl0IHdoZW4gSSBmaW5kIGZyZWUg
-dGltZSBvbiB3ZWVrZW5kIGFuZCAKSSAnbGwgbGV0IHlvdSBrbm93IHRoZSByZXN1bHRzLiBJIGhv
-cGUgeW91IGNvdWxkIHByb3ZpZGUgbWUgc29tZSBmdXJ0aGVyIApoZWxwIHRoZW4uIFVuZm9ydHVu
-YXRlbHkgSSBhbSBuZXcgaW4gbGludXggJiBzb3VuZCBpc3N1ZXMsIHNvIGNyZWF0aW5nIGEgCjYg
-Y2hhbm5lbCB3YXYgZmlsZSBhbmQgdGhlIHdob2xlIHByb2NlZHVyZSBpcyBhIGJpdCBkaWZmaWN1
-bHQgdG8gbWUgYW5kIAppdCdzIGJldHRlciB0byBkZWFsIHdpdGggaXQgaW4gdGhlIHdlZWtlbmQh
-IQoKCgpSZWdhcmRzLgoKCgpPL0ggVGFrYXNoaSBJd2FpIM6tzrPPgc6xz4jOtToKPiBBdCBTYXQs
-IDE2IEp1biAyMDA3IDE2OjU2OjUzICswMzAwLAo+IFZhc2lsaXMgTWFud2xvcG91bG9zIHdyb3Rl
-Ogo+ICAgCj4+IEhpLAo+Pgo+Pgo+PiBTb3JyeSBmb3IgYm90aGVyaW5nIHRoZSBsaXN0IGFnYWlu
-LCBidXQgSSBoYXZlIG1ham9yIHByb2JsZW1zIHdpdGggdGhlIAo+PiBzdXJyb3VuZCA1LjEgc291
-bmQuIEkgaGF2ZSBtYW51YWxseSBjb21waWxlZC9pbnN0YWxsZWQgdGggbGF0ZXN0IAo+PiBhbHNh
-LTEuMC4xNCBkcml2ZXJzIGJ1dCBub3RoaW5nIGltcHJvdmVkLiBJIGFtIHVzaW5nIFVidW50dSA3
-LjA0IGFuZCBteSAKPj4gc291bmRjYXJkIGlzICB0aGUgSGVyY3VsZXMgRm9ydGlzc2ltbyBJSUku
-IFRoaXMgaXMsIGFzIGZhciBhcyBJIGtub3cgYnkgCj4+IHJlYWRpbmcgb24gSW50ZXJuZXQsIHN1
-cHBvcnRlZCBieSB0aGUgbW9kdWxlIHNuZC1jczQ2eHggaW4gQUxTQS4gSSBoYXZlIAo+PiBlbmFi
-bGVkIHRoZSBzdXJyb3VuZCBzb3VuZCBieSBjcmVhdGluZyB0aGUgZm9sbG93aW5nIC5hc291bmRy
-YyBmaWxlLgo+Pgo+PiBwY20uIWRlZmF1bHQgewo+PiAgICAgdHlwZSBwbHVnCj4+ICAgICBzbGF2
-ZS5wY20gInN1cnJvdW5kNTEiCj4+ICAgICBzbGF2ZS5jaGFubmVscyA2Cj4+ICAgICByb3V0ZV9w
-b2xpY3kgZHVwbGljYXRlCj4+IH0KPj4KPj4KPj4gVGhlIHByb2JsZW0gaXMgdGhhdCBzb3VuZCBw
-YXVzZXMgd2hlbmV2ZXIgSSB0cnkgdG8gZG8gc29tZXRoaW5nICJoZWF2eSIgCj4+IHN1Y2ggYXMg
-b3BlbmluZyBhIG5ldyBmaXJlZm94IHdpbmRvdyBvciBnZW5lcmFsbHkgYW5vdGhlciBhcHAuIEFs
-c28sIAo+PiB0aGVyZSBhcmUgZGVsYXlzIGFuZCBlY2hvIGJldHdlZW4gdGhlIGZyb250IGFuZCB0
-aGUgcmVhciBzcGVha2VycyBmcm9tIAo+PiB0aW1lIHRvIHRpbWUuIEkgdGhpbmsgdGhhdCB0aGUg
-cHJvYmxlbSBpcyB0aGF0LCB0aGlzIGFsc2Egc2V0dXAobWVhbmluZyAKPj4gc3Vycm91bmQ1LjEg
-YW5kIHRoZSBzcGVjaWZpYyBzb3VuZGNhcmQpIHBsYWNlcyBhIGhlYXZ5IGxvYWQgb24gdGhlIGNw
-dS4gCj4+IFRoZXJlIGFyZSA5OSUgY3B1IHVzYWdlIHRpbWVzIHdoZW4gdGhlIG9ubHkgdGhpbmcg
-YWN0aXZlIGlzIGEgcGxheWVyIAo+PiBwbGF5aW5nIGEgIm5vcm1hbCBiaXRyYXRlIiBtcDMuIFdo
-ZW4gSSBkZWxldGUgdGhlIC5hc291bmRyYyBmaWxlIGFuZCBJIAo+PiBzd2l0Y2ggdG8gZGVmYXVs
-dCBzdGVyZW8gc291bmQgdXNpbmcgb25seSB0aGUgMiBmcm9udCBzcGVha2VycyB0aGUgCj4+IHBy
-b2JsZW1zIGRpc2FwcGVhci4KPj4KPj4gQ2FuIGFueW9uZSBzdWdnZXN0IGFueXRoaW5nIGFib3V0
-IHRoaXM/Cj4+ICAgICAKPgo+IEZpcnN0LCB0cnkgdG8gaW52ZXN0aWdhdGUgd2hldGhlciBpdCdz
-IGEgcHJvYmxlbSBvZiBzdXJyb3VuZDUxCj4gaW1wbGVtZW50YXRpb24gb3IgcmF0aGVyIHRoZSAi
-ZGVmYXVsdCIgZGVmaW5pdGlvbiBhYm92ZS4KPiBGb3IgZXhhbXBsZSwgcHJlcGFyZSBhIDYtY2hh
-bm5lbCBXQVYgZmlsZSwgYW5kIHBsYXkgZGlyZWN0bHkgd2l0aAo+IHN1cnJvdW5kNTEgUENNLgo+
-Cj4gQnV0LCBmcm9tIHRoZSBzeW1wdG9tLCBJJ20gYWZyYWlkIGl0J3MgcmF0aGVyIGEgaGFyZHdh
-cmUgcHJvYmxlbS4KPiBUaGUgY3M0Nnh4IHVzZXMgdGhyZWUgc3RlcmVvIHN0cmVhbXMgZm9yIDUu
-MSBvdXRwdXQsIGFuZCB0aGV5IGFyZSBub3QKPiBzdHJpY3RseSBzeW5jaHJvbml6ZWQuICBBbmQs
-IGRlYnVnZ2luZyBjczQ2eHggZHJpdmVyIGlzIHJlYWxseSBhCj4gbmlnaHRtYXJlLi4uCj4KPgo+
-IFRha2FzaGkKPgo+ICAgCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+Liam:
+
+I have managed to get the alsa-libs and aplay, arecord, and speaker-test on
+my board, but I am unsure how to get them to play. I have tried making the
+device nodes and am using a simple alsa.conf, but still no joy. I am sure
+there is something simple I am missing.
+
+Trying to find some documentation on this. I am assuming there is some
+disconnect between the interface and my conf file. I have my alsa.conf file
+in /usr/share/alsa/ and it is:
+
+pcm.!default {
+   type hw
+   card 0
+}
+pcm.hw {
+   type hw
+   card 0
+   device 0
+   subdevice 0
+}
+ctl.!default {
+   type hw
+   card 0
+}
+ctl.hw {
+   type hw
+   card 0
+}
+
+
+ctl.w6811 {
+       type hw
+       card 0
+}
+pcm.w6811 {
+       type hw
+       card 0
+       device 0
+       subdevice 0
+}
+
+ctl.!default    = ctl.w6811
+pcm.!default    = pcm.w6811
+
+ctl.hw {
+       @args[ CARD ]
+       @args.CARD {
+               type string
+               default "0"
+       }
+       type hw
+       card $CARD
+}
+
+pcm.hw {
+       @args[ CARD DEV SUBDEV ]
+       @args.CARD {
+               type string
+               default "0"
+       }
+       @args.DEV {
+               type integer
+               default 0
+       }
+       @args.SUBDEV {
+               type integer
+               default 0
+       }
+       type hw
+       card $CARD
+       device $DEV
+       subdevice $SUBDEV
+}
+
+I have some /proc/ entries:
+
+/proc/asound $ ls
+GRHEKW6811  cards       pcm         version
+card0       devices     timers
+
+
+/proc/asound $ cat cards
+ 0 [GRHEKW6811     ]: W6811 - GRH_EK_W6811
+                      GRH_EK_W6811 (W6811)
+
+
+/proc/asound $ cat devices
+  0: [ 0]   : control
+ 16: [ 0- 0]: digital audio playback
+ 24: [ 0- 0]: digital audio capture
+ 33:        : timer
+
+
+/proc/asound $ cat pcm
+00-00: W6811 W6811-PCM-0 :  : playback 1 : capture 1
+
+
+/proc/asound $ cat timers
+G0: system timer : 10000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+
+
+/proc/asound $ cat version
+Advanced Linux Sound Architecture Driver Version 1.0.14rc4 (Wed May 09
+09:51:39.
+
+
+Now, into GRHEKW6811 (which takes me to card0) I get a pcm0c and pcm0p
+directory. Using cat info, I get:
+
+/proc/asound/card0/pcm0c $ cat info
+card: 0
+device: 0
+subdevice: 0
+stream: CAPTURE
+id: W6811 W6811-PCM-0
+name:
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+
+/proc/asound/card0/pcm0c $ cd ../pcm0p/
+/proc/asound/card0/pcm0p $ cat info
+card: 0
+device: 0
+subdevice: 0
+stream:
+PLAYBACK
+id: W6811
+W6811-PCM-0
+name:
+
+subname: subdevice
+#0
+class:
+0
+subclass:
+0
+subdevices_count:
+1
+subdevices_avail: 1
+
+
+I then did:
+
+mknod -m 666 /dev/snd/pcm0p c 116 0
+mknod -m 666 /dev/snd/pcm0c c 116 0
+
+However, when I try speaker-test, I get:
+
+
+/usr/lib/bin $ ./speaker-test -D pcm0p
+
+speaker-test 1.0.14
+
+Playback device is pcm0p
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+ALSA lib pcm.c:2144:(snd_pcm_open_noupdate) Unknown PCM pcm0p
+Playback open error: -2,No such file or directory
+
+Same for default:
+
+/usr/lib/bin $ ./speaker-test -D
+default
+
+
+speaker-test 1.0.14
+
+
+
+Playback device is
+default
+Stream parameters are 48000Hz, S16_LE, 1
+channels
+Using 16 octaves of pink
+noise
+ALSA lib pcm.c:2144:(snd_pcm_open_noupdate) Unknown PCM
+default
+Playback open error: -2,No such file or directory
+
+When I try aplay -l and arecord -l, I get:
+
+/usr/lib/bin $ ./aplay
+-l
+aplay: device_list:204: no soundcards
+found...
+/usr/lib/bin $ ./arecord
+-l
+arecord: device_list:204: no soundcards found...
+
+I am at a loss here. Anyone have any advice, pointers, tips, etc......
+
+Thanks.
+
+Paul
+
+-- 
+***************************************
+Paul David Kavan
+Project Engineer
+GRH Electronics, Inc.
+402-734-4900
+pkavan@gmail.com
+***************************************
