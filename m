@@ -1,19 +1,19 @@
-From: Nathan Allen Stratton <nathan@robotics.net>
-Subject: $1000 bounty for getting audio working under linux on
-	a Osprey 440
-Date: Tue, 19 Jun 2007 14:26:56 -0400 (EDT)
-Message-ID: <Pine.LNX.4.58.0706191425360.15975@barney.robotics.net>
+From: =?UTF-8?B?VmFzaWxpcyBNYW7Ov2xvcG91bG9z?= <vmanolop@gmail.com>
+Subject: Re: Surround problems with cs46xx
+Date: Tue, 19 Jun 2007 21:49:01 -0700
+Message-ID: <4678B1BD.5050906@gmail.com>
+References: <4673EC25.1020507@gmail.com> <s5h4pl4i5hg.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barney.robotics.net (cyber.robotics.net [209.150.98.82])
-	by alsa0.perex.cz (Postfix) with ESMTP id AABD4243F8
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67A73243C1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jun 2007 20:26:55 +0200 (CEST)
-Received: from barney.robotics.net (barney.robotics.net [209.150.98.82])
-	by barney.robotics.net (8.12.10/8.12.10) with ESMTP id l5JIQuFX015989
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2007 14:26:56 -0400
+	Tue, 19 Jun 2007 20:49:04 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so177570uge
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2007 11:49:04 -0700 (PDT)
+In-Reply-To: <s5h4pl4i5hg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,195 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Need to get audio working on Osprey 440 card.
-
-http://www.viewcast.com/pages.asp?page=osprey-440
-
-The card is bt878 based, and ViewCast says it is supported on linux
-however not something they support. Audio is not detected by default, but
-does how up when you do a modprobe snd-bt87x load-all(see below). However
-I have not been able to pull audio from the card (only get high pitched
-noise). Bid may require patching bt878.c if modprobe options don't work.
-Only mono support is required.
-
-[root@video share]# amixer
-Simple mixer control 'Bass',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 48
-  Mono: 30 [62%]
-Simple mixer control 'Bass Boost',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Treble',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 48
-  Mono: 24 [50%]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume cvolume pswitch pswitch-joined cswitch
-cswitch-joined
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 44 Capture 0 - 15
-  Mono: Capture 15 [100%] [15.00dB] [on]
-  Front Left: Playback 44 [100%] [3.00dB] [on]
-  Front Right: Playback 44 [100%] [3.00dB] [on]
-Simple mixer control 'PCM Capture Source',0
-  Capabilities: enum
-  Items: 'PCM' 'Mic' 'Input 2'
-  Item0: 'Input 2'
-Simple mixer control 'PCM',1
-  Capabilities: cvolume
-  Capture channels: Mono
-  Limits: Capture 0 - 656
-  Mono: Capture 0 [0%] [-41.00dB]
-Simple mixer control 'Mic',0
-  Capabilities: cvolume
-  Capture channels: Mono
-  Limits: Capture 0 - 15
-  Mono: Capture 0 [0%] [16.00dB]
-Simple mixer control 'Auto Gain Control',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-[root@video share]# amixer -c 1
-Simple mixer control 'FM',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'Mic/Line',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [on]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume
-  Capture channels: Mono
-  Limits: Capture 0 - 15
-  Mono: Capture 15 [100%]
-Simple mixer control 'Capture Boost',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'TV Tuner',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-
-::::::::::::::
-cards
-::::::::::::::
- 0 [INport         ]: USB-Audio - INport
-                      Xitel INport at usb-0000:00:1d.0-1, full speed
- 1 [Bt878          ]: Bt87x - Brooktree Bt878
-                      Brooktree Bt878 at 0xd8001000, irq 16
- 2 [Bt878_1        ]: Bt87x - Brooktree Bt878
-                      Brooktree Bt878 at 0xd8003000, irq 17
- 3 [Bt878_2        ]: Bt87x - Brooktree Bt878
-                      Brooktree Bt878 at 0xd8005000, irq 18
- 4 [Bt878_3        ]: Bt87x - Brooktree Bt878
-                      Brooktree Bt878 at 0xd8007000, irq 19
-::::::::::::::
-devices
-::::::::::::::
-  2:        : timer
-  3:        : sequencer
-  4: [ 0- 0]: digital audio playback
-  5: [ 0- 0]: digital audio capture
-  6: [ 0]   : control
-  7: [ 1- 1]: digital audio capture
-  8: [ 1- 0]: digital audio capture
-  9: [ 1]   : control
- 10: [ 2- 1]: digital audio capture
- 11: [ 2- 0]: digital audio capture
- 12: [ 2]   : control
- 13: [ 3- 1]: digital audio capture
- 14: [ 3- 0]: digital audio capture
- 15: [ 3]   : control
- 16: [ 4- 1]: digital audio capture
- 17: [ 4- 0]: digital audio capture
- 18: [ 4]   : control
-::::::::::::::
-hwdep
-::::::::::::::
-
-*** INport: directory ***
-
-::::::::::::::
-modules
-::::::::::::::
- 0 snd_usb_audio
- 1 snd_bt87x
- 2 snd_bt87x
- 3 snd_bt87x
- 4 snd_bt87x
-
-*** oss: directory ***
-
-::::::::::::::
-pcm
-::::::::::::::
-00-00: USB Audio : USB Audio : playback 1 : capture 1
-01-01: Bt87x Analog : Bt87x Analog : capture 1
-01-00: Bt87x Digital : Bt87x Digital : capture 1
-02-01: Bt87x Analog : Bt87x Analog : capture 1
-02-00: Bt87x Digital : Bt87x Digital : capture 1
-03-01: Bt87x Analog : Bt87x Analog : capture 1
-03-00: Bt87x Digital : Bt87x Digital : capture 1
-04-01: Bt87x Analog : Bt87x Analog : capture 1
-04-00: Bt87x Digital : Bt87x Digital : capture 1
-
-*** seq: directory ***
-
-::::::::::::::
-timers
-::::::::::::::
-G0: system timer : 1000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P1-0-1: PCM capture 1-0-1 : SLAVE
-P1-1-1: PCM capture 1-1-1 : SLAVE
-P2-0-1: PCM capture 2-0-1 : SLAVE
-P2-1-1: PCM capture 2-1-1 : SLAVE
-P3-0-1: PCM capture 3-0-1 : SLAVE
-P3-1-1: PCM capture 3-1-1 : SLAVE
-P4-0-1: PCM capture 4-0-1 : SLAVE
-P4-1-1: PCM capture 4-1-1 : SLAVE
-::::::::::::::
-version
-::::::::::::::
-Advanced Linux Sound Architecture Driver Version 1.0.14rc3 (Wed Mar 14
-07:25:50 2007 UTC).
-
-
-unknown card 0x878-0x70:0xff07, using default rate 32000
-please mail id, board name, and, if it works, the correct digital_rate
-option to <alsa-devel@lists.sf.net>
-ACPI: PCI Interrupt 0000:06:04.1[A] -> GSI 16 (level, low) -> IRQ 16
-unknown card 0x878-0x70:0xff07, using default rate 32000
-please mail id, board name, and, if it works, the correct digital_rate
-option to <alsa-devel@lists.sf.net>
-ACPI: PCI Interrupt 0000:06:05.1[A] -> GSI 17 (level, low) -> IRQ 17
-unknown card 0x878-0x70:0xff07, using default rate 32000
-please mail id, board name, and, if it works, the correct digital_rate
-option to <alsa-devel@lists.sf.net>
-ACPI: PCI Interrupt 0000:06:06.1[A] -> GSI 18 (level, low) -> IRQ 18
-unknown card 0x878-0x70:0xff07, using default rate 32000
-please mail id, board name, and, if it works, the correct digital_rate
-option to <alsa-devel@lists.sf.net>
-ACPI: PCI Interrupt 0000:06:07.1[A] -> GSI 19 (level, low) -> IRQ 19
-
-><>
-Nathan Stratton                         CTO, Voila IP Communications
-nathan at robotics.net                  nathan at voilaip.com
-http://www.robotics.net                 http://www.voilaip.com
+ClRoYW5rcyBmb3IgdGhlIHJlcGx5IFRha2FzaGkuCkkgZG9uJ3QgdGhpbmsgdGhhdCB0aGlzIGlz
+IGhhcmR3YXJlIHByb2JsZW0sIGNhdXNlIGluIHdpbmRvd3MgWFAsIHVzaW5nIAp0aGUgZHJpdmVy
+cyBieSB0aGUgbWFudWZhY3R1cmVyIEhlcmN1bGVzLCB0aGUgc291bmQgaXMgZmluZS4gQWJvdXQg
+dGhlIAp0ZXN0IHlvdSBtZW50aW9uZWQsIEkgJ2xsIGNoZWNrIGl0IHdoZW4gSSBmaW5kIGZyZWUg
+dGltZSBvbiB3ZWVrZW5kIGFuZCAKSSAnbGwgbGV0IHlvdSBrbm93IHRoZSByZXN1bHRzLiBJIGhv
+cGUgeW91IGNvdWxkIHByb3ZpZGUgbWUgc29tZSBmdXJ0aGVyIApoZWxwIHRoZW4uIFVuZm9ydHVu
+YXRlbHkgSSBhbSBuZXcgaW4gbGludXggJiBzb3VuZCBpc3N1ZXMsIHNvIGNyZWF0aW5nIGEgCjYg
+Y2hhbm5lbCB3YXYgZmlsZSBhbmQgdGhlIHdob2xlIHByb2NlZHVyZSBpcyBhIGJpdCBkaWZmaWN1
+bHQgdG8gbWUgYW5kIAppdCdzIGJldHRlciB0byBkZWFsIHdpdGggaXQgaW4gdGhlIHdlZWtlbmQh
+IQoKCgpSZWdhcmRzLgoKCgpPL0ggVGFrYXNoaSBJd2FpIM6tzrPPgc6xz4jOtToKPiBBdCBTYXQs
+IDE2IEp1biAyMDA3IDE2OjU2OjUzICswMzAwLAo+IFZhc2lsaXMgTWFud2xvcG91bG9zIHdyb3Rl
+Ogo+ICAgCj4+IEhpLAo+Pgo+Pgo+PiBTb3JyeSBmb3IgYm90aGVyaW5nIHRoZSBsaXN0IGFnYWlu
+LCBidXQgSSBoYXZlIG1ham9yIHByb2JsZW1zIHdpdGggdGhlIAo+PiBzdXJyb3VuZCA1LjEgc291
+bmQuIEkgaGF2ZSBtYW51YWxseSBjb21waWxlZC9pbnN0YWxsZWQgdGggbGF0ZXN0IAo+PiBhbHNh
+LTEuMC4xNCBkcml2ZXJzIGJ1dCBub3RoaW5nIGltcHJvdmVkLiBJIGFtIHVzaW5nIFVidW50dSA3
+LjA0IGFuZCBteSAKPj4gc291bmRjYXJkIGlzICB0aGUgSGVyY3VsZXMgRm9ydGlzc2ltbyBJSUku
+IFRoaXMgaXMsIGFzIGZhciBhcyBJIGtub3cgYnkgCj4+IHJlYWRpbmcgb24gSW50ZXJuZXQsIHN1
+cHBvcnRlZCBieSB0aGUgbW9kdWxlIHNuZC1jczQ2eHggaW4gQUxTQS4gSSBoYXZlIAo+PiBlbmFi
+bGVkIHRoZSBzdXJyb3VuZCBzb3VuZCBieSBjcmVhdGluZyB0aGUgZm9sbG93aW5nIC5hc291bmRy
+YyBmaWxlLgo+Pgo+PiBwY20uIWRlZmF1bHQgewo+PiAgICAgdHlwZSBwbHVnCj4+ICAgICBzbGF2
+ZS5wY20gInN1cnJvdW5kNTEiCj4+ICAgICBzbGF2ZS5jaGFubmVscyA2Cj4+ICAgICByb3V0ZV9w
+b2xpY3kgZHVwbGljYXRlCj4+IH0KPj4KPj4KPj4gVGhlIHByb2JsZW0gaXMgdGhhdCBzb3VuZCBw
+YXVzZXMgd2hlbmV2ZXIgSSB0cnkgdG8gZG8gc29tZXRoaW5nICJoZWF2eSIgCj4+IHN1Y2ggYXMg
+b3BlbmluZyBhIG5ldyBmaXJlZm94IHdpbmRvdyBvciBnZW5lcmFsbHkgYW5vdGhlciBhcHAuIEFs
+c28sIAo+PiB0aGVyZSBhcmUgZGVsYXlzIGFuZCBlY2hvIGJldHdlZW4gdGhlIGZyb250IGFuZCB0
+aGUgcmVhciBzcGVha2VycyBmcm9tIAo+PiB0aW1lIHRvIHRpbWUuIEkgdGhpbmsgdGhhdCB0aGUg
+cHJvYmxlbSBpcyB0aGF0LCB0aGlzIGFsc2Egc2V0dXAobWVhbmluZyAKPj4gc3Vycm91bmQ1LjEg
+YW5kIHRoZSBzcGVjaWZpYyBzb3VuZGNhcmQpIHBsYWNlcyBhIGhlYXZ5IGxvYWQgb24gdGhlIGNw
+dS4gCj4+IFRoZXJlIGFyZSA5OSUgY3B1IHVzYWdlIHRpbWVzIHdoZW4gdGhlIG9ubHkgdGhpbmcg
+YWN0aXZlIGlzIGEgcGxheWVyIAo+PiBwbGF5aW5nIGEgIm5vcm1hbCBiaXRyYXRlIiBtcDMuIFdo
+ZW4gSSBkZWxldGUgdGhlIC5hc291bmRyYyBmaWxlIGFuZCBJIAo+PiBzd2l0Y2ggdG8gZGVmYXVs
+dCBzdGVyZW8gc291bmQgdXNpbmcgb25seSB0aGUgMiBmcm9udCBzcGVha2VycyB0aGUgCj4+IHBy
+b2JsZW1zIGRpc2FwcGVhci4KPj4KPj4gQ2FuIGFueW9uZSBzdWdnZXN0IGFueXRoaW5nIGFib3V0
+IHRoaXM/Cj4+ICAgICAKPgo+IEZpcnN0LCB0cnkgdG8gaW52ZXN0aWdhdGUgd2hldGhlciBpdCdz
+IGEgcHJvYmxlbSBvZiBzdXJyb3VuZDUxCj4gaW1wbGVtZW50YXRpb24gb3IgcmF0aGVyIHRoZSAi
+ZGVmYXVsdCIgZGVmaW5pdGlvbiBhYm92ZS4KPiBGb3IgZXhhbXBsZSwgcHJlcGFyZSBhIDYtY2hh
+bm5lbCBXQVYgZmlsZSwgYW5kIHBsYXkgZGlyZWN0bHkgd2l0aAo+IHN1cnJvdW5kNTEgUENNLgo+
+Cj4gQnV0LCBmcm9tIHRoZSBzeW1wdG9tLCBJJ20gYWZyYWlkIGl0J3MgcmF0aGVyIGEgaGFyZHdh
+cmUgcHJvYmxlbS4KPiBUaGUgY3M0Nnh4IHVzZXMgdGhyZWUgc3RlcmVvIHN0cmVhbXMgZm9yIDUu
+MSBvdXRwdXQsIGFuZCB0aGV5IGFyZSBub3QKPiBzdHJpY3RseSBzeW5jaHJvbml6ZWQuICBBbmQs
+IGRlYnVnZ2luZyBjczQ2eHggZHJpdmVyIGlzIHJlYWxseSBhCj4gbmlnaHRtYXJlLi4uCj4KPgo+
+IFRha2FzaGkKPgo+ICAgCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
