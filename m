@@ -1,18 +1,20 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: Kernel 2.6.21 M-Audio Delta 1010L
-Date: Wed, 20 Jun 2007 18:45:47 +0100
-Message-ID: <20070620174547.GC2533@localhost>
-References: <217939.58163.qm@web26512.mail.ukl.yahoo.com>
+From: derek@darlingsong.net
+Subject: Yamaha Cards
+Date: Wed, 20 Jun 2007 10:45:06 -0700 (PDT)
+Message-ID: <20070620174507.19184.fh045.wm@smtp.sc0.cp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC57324371
+Received: from n120.sc0.he.tucows.com (smtpout1124.sc0.he.tucows.com
+	[64.97.144.124]) by alsa0.perex.cz (Postfix) with ESMTP id 897C12436D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jun 2007 19:43:25 +0200 (CEST)
+	Wed, 20 Jun 2007 19:45:17 +0200 (CEST)
+Received: from smtp.sc0.cp.net (64.97.131.2) by n120.sc0.he.tucows.com
+	(7.2.069.1) (authenticated as derek@darlingsong.net)
+	id 4677333E0004EC1C for alsa-devel@alsa-project.org;
+	Wed, 20 Jun 2007 17:45:07 +0000
 Content-Disposition: inline
-In-Reply-To: <217939.58163.qm@web26512.mail.ukl.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Suso =?iso-8859-1?Q?Comesa=F1a?= <susobaco@yahoo.es>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 20, 2007 at 07:05:52AM +0000, Suso Comesa=F1a wrote:
-> =
+Hi all, first post for me. I have a Yamaha DS2416 mixer
+card and Yamaha SW1000XG sound card that I would like
+to use onLinux (Fedora 6). I have used them on the
+"other" OS, along with ProTools, etc. 
 
-> =
+Does anyone know if Linux drivers are available? I have
+looked around, and it seems not to be the case.
 
-> Hello...
-> My name is Suso Comesa=F1a...I have 2 computers with a M-Audio card Delta=
- 1010L...the problem is the following one:
-> With kernel 2.6.17-2-multimedia-486... I can record sounds
-> perfectly...
-> 	   but, kernel 2.6.21... I cannot record nothing...
-> 	   You have some idea?...
-> 	    You need that she sends some information to you?
+any help would bve appreciated.
 
-Have you also updated alsa-lib and alsa-tools (envy24control)
-to the appropriate versions?
-
-John
+Derekd
+Vancouver, BC
