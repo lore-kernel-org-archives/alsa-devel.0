@@ -1,23 +1,25 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Re: Using aplay and arecord on an ARM
-Date: Wed, 20 Jun 2007 16:24:51 +0530
-Message-ID: <8d6898730706200354vf5195e1u95c0484a89fe472a@mail.gmail.com>
-References: <61c0054e0706191237n666fd422wcf13f874f108e64a@mail.gmail.com>
-	<75b66ecd0706191307m2a93ae4mdf9b1b6dd4ee425a@mail.gmail.com>
-	<61c0054e0706191328y76f64570ne6a28108abafc2d5@mail.gmail.com>
-	<75b66ecd0706191331y52ccc60dlc2634987c7309aba@mail.gmail.com>
-	<s5hzm2vaqs7.wl%tiwai@suse.de>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: pcm->private_data is NULL in alsa core!!
+Date: Wed, 20 Jun 2007 16:42:56 +0530
+Message-ID: <61445c750706200412i52e6666fjc7a5552972b18f7b@mail.gmail.com>
+References: <61445c750706160550i592b416as6c766532de830147@mail.gmail.com>
+	<1182152265.9399.1195673497@webmail.messagingengine.com>
+	<61445c750706180456i5228c8dbqbd168e5a3bbbe435@mail.gmail.com>
+	<1182251430.29389.1195911445@webmail.messagingengine.com>
+	<61445c750706190430i7d8f37b3g95326d7aee6c5056@mail.gmail.com>
+	<1182263378.1273.1195944481@webmail.messagingengine.com>
+	<61445c750706200318h6758cf78o64dfd3e6a88ea8bb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 272911037EF
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F1D3244B6
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jun 2007 12:54:51 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so61986wag
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2007 03:54:51 -0700 (PDT)
-In-Reply-To: <s5hzm2vaqs7.wl%tiwai@suse.de>
+	Wed, 20 Jun 2007 13:12:57 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id j2so152771nzf
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2007 04:12:56 -0700 (PDT)
+In-Reply-To: <61445c750706200318h6758cf78o64dfd3e6a88ea8bb@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,44 +30,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Paul Kavan <pkavan@gmail.com>, alsa-devel@alsa-project.org, Lee Revell <rlrevell@joe-job.com>
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Build alsa-lib and alsa-utils with prefix option
-
---prefix=/usr
-
-while installing give the destination directory
-
-make install DESTDIR=$MYINSTALLDIR
-
-Then copy the installed executables to ARM root file sytem
-
-This should solve the issue.
-
-On 6/20/07, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 19 Jun 2007 16:31:31 -0400,
-> Lee Revell wrote:
+On 6/20/07, Pharaoh . <pharaoh137@gmail.com> wrote:
+> I think I have fixed the problem, atleast the value of
+> pcm->private_data doesn't get currupted anymore...After enabling
+> kernel debugging for semaphores/mutexes, I realised that code was
+> sleeping in a place where it was not supposed to. I dont know/didn't
+> check where exactly the memory was getting corrupted but after doing
+> appropriate lock/unlock the pcm->private_data seems looks healthy.
+>
+> But now when I do cat /dev/audio/ the machine just hangs!! Looking in to it.
+>
+> Clemens, I was holding mutexes in register_codec(), there it was
+> corrupting. Thanks for help.
+>
+> -pharaoh.
+>
+> On 6/19/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
+> > Pharaoh . wrote:
+> > > in register codec 4 pvt data is c3d81180
+> > > Registering the sound card
+> > > in register codec 5 pvt data is c3998f20
+> > >
+> > > i.e. after registering the sound card the value changes/gets
+> > > corrupted, and c3998f20
+> > > is not the value I get everytime, so I am thinking it is corrrupted
+> > somehow.
 > >
-> > On 6/19/07, Paul Kavan <pkavan@gmail.com> wrote:
-> > > it should not be looking in this directory, but rather in
-> > > "usr/share/alsa/alsa.conf". Might be why it cannot find the alsa.conf
+> > I'd guess the memory gets overwritten.
 > >
-> > I struggled with the exact same problem about a year ago, I don't
-> > remember the solution but it's in the list archives.
->
-> The problem is likely you pass --prefix=$MYROOT/usr or so.
-> The prefix option should be unchanged.
->
-> Anyway, alsa-lib-1.0.14a has extra configure options,
-> --with-configdir and --with-plugindir, with which you can specify the
-> exact paths, independent from $prefix.
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > But back in probe, after above function are executed, i.e. after
+> > > register codec is over, I get the correct value for
+> > > eac->pcm->private_data i.e. c3d81180, but by now the value of
+> > > pcm->private_data is corrupted!
+> >
+> > This implies that eac->pcm != pcm.
+> >
+> > It seems quite a lot of memory gets corrupted.
+> > Try to check which one of the various "eac" and "pcm" pointers changes
+> > its value.
+> >
+> >
+> > HTH
+> > Clemens
+> >
 >
