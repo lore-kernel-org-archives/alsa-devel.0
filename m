@@ -1,28 +1,17 @@
-From: "Matt Mullins" <mokomull@gmail.com>
-Subject: Re: Fwd: Problems with hda_intel, Santa Rosa,
-	and suspend
-Date: Wed, 20 Jun 2007 16:18:46 -0500
-Message-ID: <dfd4051f0706201418o4d19a1f2g78081b052e8766e4@mail.gmail.com>
-References: <dfd4051f0706161836xa191176ke10deff2868ad8d6@mail.gmail.com>
-	<200706171149.27547.rjw@sisk.pl>
-	<dfd4051f0706171355i7bc3d4b7qe9aee2acb904c8c@mail.gmail.com>
-	<dfd4051f0706171735s72033440sf4d1dc83046e0e05@mail.gmail.com>
-	<75b66ecd0706171749x1c29b4b2u8978ac68888960d@mail.gmail.com>
-	<dfd4051f0706171859m721411bbvf9ac0352c8599a67@mail.gmail.com>
-	<s5h1wg8i56k.wl%tiwai@suse.de>
-	<dfd4051f0706191354i679c5b82pd8d788dfb012df3d@mail.gmail.com>
-	<s5hvedjaq66.wl%tiwai@suse.de>
+From: "Paul Kavan" <pkavan@gmail.com>
+Subject: at91 SoC Modifications
+Date: Wed, 20 Jun 2007 16:21:35 -0500
+Message-ID: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4605A243D0
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3ACE9243D0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jun 2007 23:18:47 +0200 (CEST)
-Received: by mu-out-0910.google.com with SMTP id w8so297644mue
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2007 14:18:46 -0700 (PDT)
-In-Reply-To: <s5hvedjaq66.wl%tiwai@suse.de>
+	Wed, 20 Jun 2007 23:21:36 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so436046uge
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2007 14:21:35 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,55 +22,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>, Liam Girdwood <lg@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-That doesn't seem to change anything.  Maybe I should have been more
-clear: I get the azx_get_response timeouts whenever the driver
-initializes; DMA never works for that codec.  single_cmd mode just
-happens to work before a suspend, but not after.  In other words,
-reloading the module doesn't really fix the problem, it just masks it
-decently enough.   I'll work a little bit trying to figure out which
-commands cause the timeouts.  And what *is* S2D?
+Hello:
 
-Sorry about not CCing the mailing list, Gmail makes it way too easy to
-do that, and too unnoticeable when it happens.  I'll be more careful.
+Okay, so after probing the various pcm lines, I think I see that the format
+used for the pcm is a little bit off of what my codec likes to play nice. In
+my machine/codec driver, I see that I have some lines:
 
-On 6/20/07, Takashi Iwai <tiwai@suse.de> wrote:
-> [Please don't strip Cc to ML!]
->
-> At Tue, 19 Jun 2007 15:54:42 -0500,
-> Matt Mullins wrote:
-> >
-> > I played around with probe_mask, and found that probe_mask=0x1 causes
-> > the error, but probe_mask=0x2 does not cause the timeout.  Codec 1 is
-> > my Sigmatel STAC9205, which is what plays sound on my laptop, and
-> > codec 2 is my Conexant modem.  The modem isn't the codec causing
-> > problems; the audio codec is!
->
-> OK, good to know.  Does this problem occur with S2D?
-> What is the very first command that triggers this timeout error?
->
-> I'm wondering what is the difference between them -- according to your
-> report, reloading the module fixes the problem.  But, the resume
-> callback is almost identical with the re-initiailzation.
-> Perhaps it's something to do with the power-state management.
-> What about the patch below?
->
->
-> Takashi
->
-> diff -r c531d63e820b sound/pci/hda/hda_intel.c
-> --- a/sound/pci/hda/hda_intel.c Wed Jun 20 12:03:09 2007 +0200
-> +++ b/sound/pci/hda/hda_intel.c Wed Jun 20 12:09:40 2007 +0200
-> @@ -1450,7 +1450,7 @@ static int azx_suspend(struct pci_dev *p
->                 pci_disable_msi(chip->pci);
->         pci_disable_device(pci);
->         pci_save_state(pci);
-> -       pci_set_power_state(pci, pci_choose_state(pci, state));
-> +       /* pci_set_power_state(pci, pci_choose_state(pci, state)); */
->         return 0;
->  }
->
->
+    /* set cpu DAI configuration */
+    ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_A |
+        SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+
+I believe this is where it is selecting the format. In at91-ssc.c, I see
+that this format is given as:
+
+    case SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_CBS_CFS:
+        /*
+         * DSP/PCM Mode A format, SSC provides BCLK and LRC clocks.
+         *
+         * The SSC transmit and receive clocks are generated from the
+         * MCK divider, and the BCLK signal is output on the SSC TK line.
+         */
+        rcmr =      (( ssc_p->rcmr_period        << 24) & AT91_SSC_PERIOD)
+            | (( 1                << 16) & AT91_SSC_STTDLY)
+            | (( AT91_SSC_START_RISING_RF         ) & AT91_SSC_START)
+            | (( AT91_SSC_CK_RISING             ) & AT91_SSC_CKI)
+            | (( AT91_SSC_CKO_NONE             ) & AT91_SSC_CKO)
+            | (( AT91_SSC_CKS_DIV             ) & AT91_SSC_CKS);
+
+        rfmr =      (( AT91_SSC_FSEDGE_POSITIVE         ) & AT91_SSC_FSEDGE)
+            | (( AT91_SSC_FSOS_POSITIVE         ) & AT91_SSC_FSOS)
+            | (( 0                << 16) & AT91_SSC_FSLEN)
+            | (((channels - 1)        <<  8) & AT91_SSC_DATNB)
+            | (( 1                <<  7) & AT91_SSC_MSBF)
+            | (( 0                <<  5) & AT91_SSC_LOOP)
+            | (((bits - 1)            <<  0) & AT91_SSC_DATALEN);
+
+        tcmr =      (( ssc_p->tcmr_period        << 24) & AT91_SSC_PERIOD)
+            | (( 1                << 16) & AT91_SSC_STTDLY)
+            | (( AT91_SSC_START_RISING_RF        ) & AT91_SSC_START)
+            | (( AT91_SSC_CK_RISING             ) & AT91_SSC_CKI)
+            | (( AT91_SSC_CKO_CONTINUOUS         ) & AT91_SSC_CKO)
+            | (( AT91_SSC_CKS_DIV             ) & AT91_SSC_CKS);
+
+        tfmr =      (( AT91_SSC_FSEDGE_POSITIVE         ) & AT91_SSC_FSEDGE)
+
+            | (( 0                << 23) & AT91_SSC_FSDEN)
+            | (( AT91_SSC_FSOS_POSITIVE         ) & AT91_SSC_FSOS)
+            | (( 0                << 16) & AT91_SSC_FSLEN)
+            | (((channels - 1)        <<  8) & AT91_SSC_DATNB)
+            | (( 1                <<  7) & AT91_SSC_MSBF)
+            | (( 0                <<  5) & AT91_SSC_DATDEF)
+            | (((bits - 1)            <<  0) & AT91_SSC_DATALEN);
+
+
+
+            break;
+
+I should have caught this before--I spent enough time dealing with the HW
+registers. The simple ssc pcm driver I wrote sets the regs a little
+differently to get the peak performance out of the codec, e.g.
+
+In RCMR, I have STTDLY=0, AT91_SSC_CKI_FALLING, AT91_SSC_CKS_PIN.
+
+In RFMR everything looks okay except that I have FSOS_NONE as I borrow it
+from TF0
+
+In TCMR the STTDLY=0 in mine
+
+In TFMR I do nothing with the FSEDGE and FSDEN and I have FSLEN=7 and
+DATADEF=1.
+
+So, I left with a decision. Do I add a mode or do I modify DSP A to fit my
+needs? I am not sure how much coding it would take to add a mode--I *do*
+know it would take little time to modify DSP A, but I am reluctant to make a
+change to something that is probably 'standard'.
+
+Any thoughts on this?
+
+Paul
+
+-- 
+***************************************
+Paul David Kavan
+Project Engineer
+GRH Electronics, Inc.
+402-734-4900
+pkavan@gmail.com
+***************************************
