@@ -1,28 +1,28 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: pcm->private_data is NULL in alsa core!!
-Date: Wed, 20 Jun 2007 21:59:01 +0530
-Message-ID: <61445c750706200929t79393137uf8f1ff29d9c16e82@mail.gmail.com>
-References: <61445c750706160550i592b416as6c766532de830147@mail.gmail.com>
-	<1182152265.9399.1195673497@webmail.messagingengine.com>
-	<61445c750706180456i5228c8dbqbd168e5a3bbbe435@mail.gmail.com>
-	<1182251430.29389.1195911445@webmail.messagingengine.com>
-	<61445c750706190430i7d8f37b3g95326d7aee6c5056@mail.gmail.com>
-	<1182263378.1273.1195944481@webmail.messagingengine.com>
-	<61445c750706200318h6758cf78o64dfd3e6a88ea8bb@mail.gmail.com>
-	<61445c750706200412i52e6666fjc7a5552972b18f7b@mail.gmail.com>
-	<61445c750706200416y4654fcfcq8a064c645956f5e@mail.gmail.com>
-	<1182355995.14744.1196173731@webmail.messagingengine.com>
+From: "Paul Kavan" <pkavan@gmail.com>
+Subject: Re: Using aplay and arecord on an ARM
+Date: Wed, 20 Jun 2007 12:04:08 -0500
+Message-ID: <61c0054e0706201004o2aac3328me0912debd94feba2@mail.gmail.com>
+References: <61c0054e0706191237n666fd422wcf13f874f108e64a@mail.gmail.com>
+	<61c0054e0706200739k2b934a9avbffb133937adba4c@mail.gmail.com>
+	<61c0054e0706200824v444d6c8dr6b6023b16043fa7@mail.gmail.com>
+	<61c0054e0706200827h389e2c6v46dfc544def95e82@mail.gmail.com>
+	<61c0054e0706200840k2b0f13c9q57581c380d39d2fc@mail.gmail.com>
+	<s5hwsxyaa5r.wl%tiwai@suse.de>
+	<61c0054e0706200912m1779bef8gfab9da178bd888b4@mail.gmail.com>
+	<75b66ecd0706200916i2105cb49xf40313e0440bc821@mail.gmail.com>
+	<61c0054e0706200918pbc56676h60640cb08de633b8@mail.gmail.com>
+	<s5htzt2a938.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.236])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15BB124340
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1A3924347
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jun 2007 18:29:02 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id j2so236806nzf
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2007 09:29:01 -0700 (PDT)
-In-Reply-To: <1182355995.14744.1196173731@webmail.messagingengine.com>
+	Wed, 20 Jun 2007 19:04:09 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so387662uge
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2007 10:04:08 -0700 (PDT)
+In-Reply-To: <s5htzt2a938.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,31 +33,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Lee Revell <rlrevell@joe-job.com>, Nobin Mathew <nobin.mathew@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Value of pcm pointer doesn't change. Other fields which are populated
-by me do not change except private_data.
+Gentleman:
 
-The following shows it:
+I have the alsa-libs and alsa-utils on my board now. I want to thank all for
+the time and advice.
 
-# cat a.sh > dev/audio
-pcm name is omap  alsa pcm //Intact
-pcm id is OMAP PCM               //Intact
-pcm private is 00000000       //Only this changes
+For the benefit of the archives, I have a at91sam9260ek running Linux
+2.6.22-rc1. I am using buildroot to for my cross-compiling tools and to
+generate my rfs. To get the alsa libs and utils on board, I did the
+following:
 
-On 6/20/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
-> Pharaoh . wrote:
-> > Registering the sound card
-> > pcm->private in snd_device_register_all is c1d7d310 //correct
-> > Inside snd_pcm_dev_register, pcm is c1f05d44(correct), pcm->pvt_data
-> > is 00000000(This shouldn't be NULL)
->
-> Does the value of pcm itself change?
-> Do other fields in pcm change?
->
->
-> Regards,
-> Clemens
->
+For alsa-libs:
+CC=arm-linux-gcc ./configure --target=arm-linux --host=i686-pc-linux-gnu
+--prefix=/usr
+
+and then
+make install DESTDIR=$HOME/buildroot/build_arm/root/
+
+where the rfs for my target is built in $HOME/buildroot/build_arm/root
+before making the image.
+
+For alsa-utils:
+CC=arm-linux-gcc ./configure --target=arm-linux --host=i686-pc-linux-gnu
+--prefix=/usr
+--with-alsa-inc-prefix=$HOME/Linux_Builds/buildroot/build_arm/root/usr/include
+--with-alsa-prefix=$HOME/Linux_Builds/buildroot/build_arm/root/usr/lib
+--disable-alsamixer
+
+and then
+make install DESTDIR=/home/grhuser/buildroot/build_arm/root/
+
+Then I remade the image and booted my board. I do not have the nodes built
+automatically yet, so I had to do that....giving me:
+
+/dev/snd $ ls -l
+crw-rw-rw-    1 root     root     116,   0 Dec 31 17:08 controlC0
+crw-rw-rw-    1 root     root     116,  24 Dec 31 17:09 pcmC0D0c
+crw-rw-rw-    1 root     root     116,  16 Dec 31 17:10 pcmC0D0p
+
+when I check with aplay, I get:
+
+/dev/snd $ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: GRHEKW6811 [GRH_EK_W6811], device 0: W6811 W6811-PCM-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+and with arecord:
+/dev/snd $ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: GRHEKW6811 [GRH_EK_W6811], device 0: W6811 W6811-PCM-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+
+However, I have been unable to achieve any kind of playback using
+speaker-test or aplay. The speaker pops like it wants to play, but I get the
+following when trying speaker test:
+
+/dev/snd $ speaker-test -D default -r 8000 -f 1020 -F S8
+
+speaker-test 1.0.14
+
+Playback device is default
+Stream parameters are 8000Hz, S8, 1 channels
+Using 16 octaves of pink noise
+Rate set to 8000Hz (requested 8000Hz)
+Buffer size range from 64 to 32768
+Period size range from 32 to 8192
+Using max buffer size 32768
+Periods = 4
+was set period_size = 0
+was set buffer_size = 32768
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+/dev/snd $
+
+
+Anyone know where I should look for the problem?
+
+Thanks.
+
+Paul
+
+***************************************
+Paul David Kavan
+Project Engineer
+GRH Electronics, Inc.
+402-734-4900
+pkavan@gmail.com
+***************************************
