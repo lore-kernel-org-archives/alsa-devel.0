@@ -1,18 +1,24 @@
-From: ChernYue Kwok <chernyue@gdc-tech.com>
-Subject: Re: Output levels on SBLive! 5.1 on ALSA vs WIndows
-Date: Wed, 20 Jun 2007 17:12:39 +0800
-Message-ID: <200706201712.40062.chernyue@gdc-tech.com>
-References: <200706181737.47296.chernyue@gdc-tech.com>
-	<s5hzm2wgqh6.wl%tiwai@suse.de>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: pcm->private_data is NULL in alsa core!!
+Date: Wed, 20 Jun 2007 15:48:02 +0530
+Message-ID: <61445c750706200318h6758cf78o64dfd3e6a88ea8bb@mail.gmail.com>
+References: <61445c750706160550i592b416as6c766532de830147@mail.gmail.com>
+	<1182152265.9399.1195673497@webmail.messagingengine.com>
+	<61445c750706180456i5228c8dbqbd168e5a3bbbe435@mail.gmail.com>
+	<1182251430.29389.1195911445@webmail.messagingengine.com>
+	<61445c750706190430i7d8f37b3g95326d7aee6c5056@mail.gmail.com>
+	<1182263378.1273.1195944481@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from helium.gdc-tech.com (www.gdc-tech.com [203.132.205.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1F83244A2
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A993244B0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jun 2007 11:12:46 +0200 (CEST)
-In-Reply-To: <s5hzm2wgqh6.wl%tiwai@suse.de>
+	Wed, 20 Jun 2007 12:18:03 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so52565wag
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2007 03:18:02 -0700 (PDT)
+In-Reply-To: <1182263378.1273.1195944481@webmail.messagingengine.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,71 +29,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Pranay Kumar <pranay@gdc-tech.com>
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 19 June 2007 18:59:01 Takashi Iwai wrote:
-> At Mon, 18 Jun 2007 17:37:46 +0800,
->
-> ChernYue Kwok wrote:
-> > Hello,
+I think I have fixed the problem, atleast the value of
+pcm->private_data doesn't get currupted anymore...After enabling
+kernel debugging for semaphores/mutexes, I realised that code was
+sleeping in a place where it was not supposed to. I dont know/didn't
+check where exactly the memory was getting corrupted but after doing
+appropriate lock/unlock the pcm->private_data seems looks healthy.
+
+But now when I do cat /dev/audio/ the machine just hangs!! Looking in to it.
+
+Clemens, I was holding mutexes in register_codec(), there it was
+corrupting. Thanks for help.
+
+-pharaoh.
+
+On 6/19/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
+> Pharaoh . wrote:
+> > in register codec 4 pvt data is c3d81180
+> > Registering the sound card
+> > in register codec 5 pvt data is c3998f20
 > >
-> > I am using an SBLive! 5.1 sound card (emu10k1 chipset) with 6 channel
-> > output. Due to the nature of my work, I need to be able to play sound
-> > through all 6 channels at the same output level to an amplifier.
-> >
-> > Using Linux and the emu10k1 ALSA driver, I measured output voltage levels
-> > on an oscilloscope while playing a sine wave on all 6 channels, and I got
-> > three different output voltage amplitudes for the front, rear and
-> > center/subwoofer channels.
-> > Repeating the same test with the same card on WIndows using the Creative
-> > SBLive drivers from their website, I am able to get the same output
-> > voltage amplitude on all 6 channels.
-> > For both tests, all output levels in the relevant mixers were set to
-> > their maximum levels.
-> >
-> > I would like to know if this output normalizing 'feature' of the SBLive
-> > Windows driver can be found in the emu10k1 ALSA driver, or in any other
-> > ALSA driver. Failing that, is there any other solution to set output
-> > levels in the driver, or am I doomed to twiddle in alsamixer to get the
-> > output levels that I want?
+> > i.e. after registering the sound card the value changes/gets
+> > corrupted, and c3998f20
+> > is not the value I get everytime, so I am thinking it is corrrupted
+> somehow.
 >
-> Did you check the dB level appearing in mixer?  The recent version of
-> ALSA shows dB level in alsamixer and amixer.  Note that the "Master"
-> and "PCM" controls are applied only for front channels.  So, set them
-> to 0dB and control the volume via Wave* digital mixers.
+> I'd guess the memory gets overwritten.
+>
+> > But back in probe, after above function are executed, i.e. after
+> > register codec is over, I get the correct value for
+> > eac->pcm->private_data i.e. c3d81180, but by now the value of
+> > pcm->private_data is corrupted!
+>
+> This implies that eac->pcm != pcm.
+>
+> It seems quite a lot of memory gets corrupted.
+> Try to check which one of the various "eac" and "pcm" pointers changes
+> its value.
 >
 >
-> Takashi
-
-Hi Takashi,
-
-Thanks for your suggestions.
-Based on your advice on dB levels, I set the PCM and Master channels to 0dB 
-gain, and maxed the levels on the Center, LFE, and Surround channels.
-The Wave* channels were set to 0 since I was playing surround and not stereo 
-sound.
-
-Playing the same 6-channel sine wave again, I was able to obtain the 
-following, more evenly matched, results:
-
-Front channels: 0.64V peak to peak
-Rear channels: 0.68V peak to peak
-Center and subwoofer: 0.48V peak to peak
-
-The front and rear channel output voltages were more evenly matched, but the 
-center/subwoofer channel shows a large difference from the other channels.
-For comparison, the results I obtained in Windows using the Creative SB Live 
-drivers are:
-
-Front channels: 0.72V peak to peak
-Rear channels: 0.68V peak to peak
-Center and subwoofer: 0.64V peak to peak
-
-Is there any way to increase output on the center and subwoofer channels in 
-ALSA?
-I already have the Center and LFE channels set to maximum gain in alsamixer, 
-so any suggestions to further boost the output are most certainly welcome. :)
-
-Thanks in advance.
+> HTH
+> Clemens
+>
