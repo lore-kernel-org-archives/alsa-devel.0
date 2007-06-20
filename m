@@ -1,15 +1,15 @@
 From: =?iso-8859-1?Q?Suso_Comesa=F1a?= <susobaco@yahoo.es>
 Subject: Kernel 2.6.21 M-Audio Delta 1010L
-Date: Wed, 20 Jun 2007 06:58:19 +0000 (GMT)
-Message-ID: <522435.56493.qm@web26512.mail.ukl.yahoo.com>
+Date: Wed, 20 Jun 2007 07:05:52 +0000 (GMT)
+Message-ID: <217939.58163.qm@web26512.mail.ukl.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from web26512.mail.ukl.yahoo.com (web26512.mail.ukl.yahoo.com
-	[217.146.177.59]) by alsa0.perex.cz (Postfix) with SMTP id 65C1024488
+	[217.146.177.59]) by alsa0.perex.cz (Postfix) with SMTP id 8956A2448A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jun 2007 08:58:20 +0200 (CEST)
+	Wed, 20 Jun 2007 09:05:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,6 +21,7 @@ Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
 
 
 Hello...
