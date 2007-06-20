@@ -1,14 +1,18 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: add eapd support to additional idt codecs
-Date: Tue, 19 Jun 2007 10:27:25 -0400
-Message-ID: <4677E7CD.40209@embeddedalley.com>
+From: Nathan Allen Stratton <nathan@robotics.net>
+Subject: Re: $1000 bounty for getting audio working under linux
+ on a Osprey 440
+Date: Tue, 19 Jun 2007 20:19:43 -0400 (EDT)
+Message-ID: <Pine.LNX.4.58.0706192018050.20805@barney.robotics.net>
+References: <Pine.LNX.4.58.0706191425360.15975@barney.robotics.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040804050509030106090004"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp102.biz.mail.re2.yahoo.com (smtp102.biz.mail.re2.yahoo.com
-	[68.142.229.216]) by alsa0.perex.cz (Postfix) with SMTP id C6F90243A1
+Received: from barney.robotics.net (cyber.robotics.net [209.150.98.82])
+	by alsa0.perex.cz (Postfix) with ESMTP id A003B24420
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jun 2007 16:27:19 +0200 (CEST)
+	Wed, 20 Jun 2007 02:19:41 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.58.0706191425360.15975@barney.robotics.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,89 +23,208 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+Cc: video4linux-list@redhat.com
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040804050509030106090004
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Added support for EAPD on the 927x, and 9227-8 IDT HDA codecs.
-Enabling EAPD powers the internal speaker amp otherwise there is no 
-sound on systems with an internal amp.
----
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+A few people mentioned that instead of a cash I should offer a card (since
+the card is about 1K anyway). If anyone is willing to do this for a Osprey
+440 card that also works.
 
---------------040804050509030106090004
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="alsa_patch_sigmatel.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa_patch_sigmatel.patch"
+><>
+Nathan Stratton                         CTO, Voila IP Communications
+nathan at robotics.net                  nathan at voilaip.com
+http://www.robotics.net                 http://www.voilaip.com
 
-diff -r 96495fe7cc13 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Thu Jun 14 12:58:23 2007 +0200
-+++ b/pci/hda/patch_sigmatel.c	Mon Jun 18 17:10:38 2007 -0400
-@@ -832,6 +832,18 @@ static void stac92xx_set_config_regs(str
- 	}
- }
- 
-+static void stac92xx_enable_eapd(struct hda_codec *codec)
-+{
-+	/* Configure GPIO0 as output */
-+	snd_hda_codec_write(codec, codec->afg, 0, AC_VERB_SET_GPIO_DIRECTION, 0x00000001);
-+	/* Configure GPIO0 as CMOS */
-+	snd_hda_codec_write(codec, codec->afg, 0, 0x7e7, 0x00000000);
-+	/* Assert GPIO0 high */
-+	snd_hda_codec_write(codec, codec->afg, 0, AC_VERB_SET_GPIO_DATA, 0x00000001);
-+	/* Enable GPIO0 */
-+	snd_hda_codec_write(codec, codec->afg, 0, AC_VERB_SET_GPIO_MASK, 0x00000001);
-+}
-+
- /*
-  * Analog playback callbacks
-  */
-@@ -2193,7 +2205,8 @@ static int patch_stac927x(struct hda_cod
- 	}
- 
- 	spec->multiout.dac_nids = spec->dac_nids;
--
-+	stac92xx_enable_eapd(codec);
-+	
- 	err = stac92xx_parse_auto_config(codec, 0x1e, 0x20);
- 	if (!err) {
- 		if (spec->board_config < 0) {
-@@ -2254,18 +2267,7 @@ static int patch_stac9205(struct hda_cod
- 	spec->mixer = stac9205_mixer;
- 
- 	spec->multiout.dac_nids = spec->dac_nids;
--
--	/* Configure GPIO0 as EAPD output */
--	snd_hda_codec_write(codec, codec->afg, 0,
--			    AC_VERB_SET_GPIO_DIRECTION, 0x00000001);
--	/* Configure GPIO0 as CMOS */
--	snd_hda_codec_write(codec, codec->afg, 0, 0x7e7, 0x00000000);
--	/* Assert GPIO0 high */
--	snd_hda_codec_write(codec, codec->afg, 0,
--			    AC_VERB_SET_GPIO_DATA, 0x00000001);
--	/* Enable GPIO0 */
--	snd_hda_codec_write(codec, codec->afg, 0,
--			    AC_VERB_SET_GPIO_MASK, 0x00000001);
-+	stac92xx_enable_eapd(codec);
- 
- 	err = stac92xx_parse_auto_config(codec, 0x1f, 0x20);
- 	if (!err) {
+On Tue, 19 Jun 2007, Nathan Allen Stratton wrote:
 
---------------040804050509030106090004
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------040804050509030106090004--
+>
+> Need to get audio working on Osprey 440 card.
+>
+> http://www.viewcast.com/pages.asp?page=osprey-440
+>
+> The card is bt878 based, and ViewCast says it is supported on linux
+> however not something they support. Audio is not detected by default, but
+> does how up when you do a modprobe snd-bt87x load-all(see below). However
+> I have not been able to pull audio from the card (only get high pitched
+> noise). Bid may require patching bt878.c if modprobe options don't work.
+> Only mono support is required.
+>
+> [root@video share]# amixer
+> Simple mixer control 'Bass',0
+>   Capabilities: volume volume-joined
+>   Playback channels: Mono
+>   Capture channels: Mono
+>   Limits: 0 - 48
+>   Mono: 30 [62%]
+> Simple mixer control 'Bass Boost',0
+>   Capabilities: pswitch pswitch-joined
+>   Playback channels: Mono
+>   Mono: Playback [on]
+> Simple mixer control 'Treble',0
+>   Capabilities: volume volume-joined
+>   Playback channels: Mono
+>   Capture channels: Mono
+>   Limits: 0 - 48
+>   Mono: 24 [50%]
+> Simple mixer control 'PCM',0
+>   Capabilities: pvolume cvolume pswitch pswitch-joined cswitch
+> cswitch-joined
+>   Playback channels: Front Left - Front Right
+>   Capture channels: Mono
+>   Limits: Playback 0 - 44 Capture 0 - 15
+>   Mono: Capture 15 [100%] [15.00dB] [on]
+>   Front Left: Playback 44 [100%] [3.00dB] [on]
+>   Front Right: Playback 44 [100%] [3.00dB] [on]
+> Simple mixer control 'PCM Capture Source',0
+>   Capabilities: enum
+>   Items: 'PCM' 'Mic' 'Input 2'
+>   Item0: 'Input 2'
+> Simple mixer control 'PCM',1
+>   Capabilities: cvolume
+>   Capture channels: Mono
+>   Limits: Capture 0 - 656
+>   Mono: Capture 0 [0%] [-41.00dB]
+> Simple mixer control 'Mic',0
+>   Capabilities: cvolume
+>   Capture channels: Mono
+>   Limits: Capture 0 - 15
+>   Mono: Capture 0 [0%] [16.00dB]
+> Simple mixer control 'Auto Gain Control',0
+>   Capabilities: pswitch pswitch-joined
+>   Playback channels: Mono
+>   Mono: Playback [on]
+> [root@video share]# amixer -c 1
+> Simple mixer control 'FM',0
+>   Capabilities: cswitch cswitch-joined cswitch-exclusive
+>   Capture exclusive group: 0
+>   Capture channels: Mono
+>   Mono: Capture [off]
+> Simple mixer control 'Mic/Line',0
+>   Capabilities: cswitch cswitch-joined cswitch-exclusive
+>   Capture exclusive group: 0
+>   Capture channels: Mono
+>   Mono: Capture [on]
+> Simple mixer control 'Capture',0
+>   Capabilities: cvolume
+>   Capture channels: Mono
+>   Limits: Capture 0 - 15
+>   Mono: Capture 15 [100%]
+> Simple mixer control 'Capture Boost',0
+>   Capabilities: pswitch pswitch-joined
+>   Playback channels: Mono
+>   Mono: Playback [off]
+> Simple mixer control 'TV Tuner',0
+>   Capabilities: cswitch cswitch-joined cswitch-exclusive
+>   Capture exclusive group: 0
+>   Capture channels: Mono
+>   Mono: Capture [off]
+>
+> ::::::::::::::
+> cards
+> ::::::::::::::
+>  0 [INport         ]: USB-Audio - INport
+>                       Xitel INport at usb-0000:00:1d.0-1, full speed
+>  1 [Bt878          ]: Bt87x - Brooktree Bt878
+>                       Brooktree Bt878 at 0xd8001000, irq 16
+>  2 [Bt878_1        ]: Bt87x - Brooktree Bt878
+>                       Brooktree Bt878 at 0xd8003000, irq 17
+>  3 [Bt878_2        ]: Bt87x - Brooktree Bt878
+>                       Brooktree Bt878 at 0xd8005000, irq 18
+>  4 [Bt878_3        ]: Bt87x - Brooktree Bt878
+>                       Brooktree Bt878 at 0xd8007000, irq 19
+> ::::::::::::::
+> devices
+> ::::::::::::::
+>   2:        : timer
+>   3:        : sequencer
+>   4: [ 0- 0]: digital audio playback
+>   5: [ 0- 0]: digital audio capture
+>   6: [ 0]   : control
+>   7: [ 1- 1]: digital audio capture
+>   8: [ 1- 0]: digital audio capture
+>   9: [ 1]   : control
+>  10: [ 2- 1]: digital audio capture
+>  11: [ 2- 0]: digital audio capture
+>  12: [ 2]   : control
+>  13: [ 3- 1]: digital audio capture
+>  14: [ 3- 0]: digital audio capture
+>  15: [ 3]   : control
+>  16: [ 4- 1]: digital audio capture
+>  17: [ 4- 0]: digital audio capture
+>  18: [ 4]   : control
+> ::::::::::::::
+> hwdep
+> ::::::::::::::
+>
+> *** INport: directory ***
+>
+> ::::::::::::::
+> modules
+> ::::::::::::::
+>  0 snd_usb_audio
+>  1 snd_bt87x
+>  2 snd_bt87x
+>  3 snd_bt87x
+>  4 snd_bt87x
+>
+> *** oss: directory ***
+>
+> ::::::::::::::
+> pcm
+> ::::::::::::::
+> 00-00: USB Audio : USB Audio : playback 1 : capture 1
+> 01-01: Bt87x Analog : Bt87x Analog : capture 1
+> 01-00: Bt87x Digital : Bt87x Digital : capture 1
+> 02-01: Bt87x Analog : Bt87x Analog : capture 1
+> 02-00: Bt87x Digital : Bt87x Digital : capture 1
+> 03-01: Bt87x Analog : Bt87x Analog : capture 1
+> 03-00: Bt87x Digital : Bt87x Digital : capture 1
+> 04-01: Bt87x Analog : Bt87x Analog : capture 1
+> 04-00: Bt87x Digital : Bt87x Digital : capture 1
+>
+> *** seq: directory ***
+>
+> ::::::::::::::
+> timers
+> ::::::::::::::
+> G0: system timer : 1000.000us (10000000 ticks)
+> P0-0-0: PCM playback 0-0-0 : SLAVE
+> P0-0-1: PCM capture 0-0-1 : SLAVE
+> P1-0-1: PCM capture 1-0-1 : SLAVE
+> P1-1-1: PCM capture 1-1-1 : SLAVE
+> P2-0-1: PCM capture 2-0-1 : SLAVE
+> P2-1-1: PCM capture 2-1-1 : SLAVE
+> P3-0-1: PCM capture 3-0-1 : SLAVE
+> P3-1-1: PCM capture 3-1-1 : SLAVE
+> P4-0-1: PCM capture 4-0-1 : SLAVE
+> P4-1-1: PCM capture 4-1-1 : SLAVE
+> ::::::::::::::
+> version
+> ::::::::::::::
+> Advanced Linux Sound Architecture Driver Version 1.0.14rc3 (Wed Mar 14
+> 07:25:50 2007 UTC).
+>
+>
+> unknown card 0x878-0x70:0xff07, using default rate 32000
+> please mail id, board name, and, if it works, the correct digital_rate
+> option to <alsa-devel@lists.sf.net>
+> ACPI: PCI Interrupt 0000:06:04.1[A] -> GSI 16 (level, low) -> IRQ 16
+> unknown card 0x878-0x70:0xff07, using default rate 32000
+> please mail id, board name, and, if it works, the correct digital_rate
+> option to <alsa-devel@lists.sf.net>
+> ACPI: PCI Interrupt 0000:06:05.1[A] -> GSI 17 (level, low) -> IRQ 17
+> unknown card 0x878-0x70:0xff07, using default rate 32000
+> please mail id, board name, and, if it works, the correct digital_rate
+> option to <alsa-devel@lists.sf.net>
+> ACPI: PCI Interrupt 0000:06:06.1[A] -> GSI 18 (level, low) -> IRQ 18
+> unknown card 0x878-0x70:0xff07, using default rate 32000
+> please mail id, board name, and, if it works, the correct digital_rate
+> option to <alsa-devel@lists.sf.net>
+> ACPI: PCI Interrupt 0000:06:07.1[A] -> GSI 19 (level, low) -> IRQ 19
+>
+> ><>
+> Nathan Stratton                         CTO, Voila IP Communications
+> nathan at robotics.net                  nathan at voilaip.com
+> http://www.robotics.net                 http://www.voilaip.com
+>
