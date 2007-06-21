@@ -1,19 +1,21 @@
-From: chris@idlelion.net
-Subject: No time for cs4624
-Date: Wed, 20 Jun 2007 17:30:26 -0500 (CDT)
-Message-ID: <Pine.LNX.4.64.0706201728180.29340@tick.idlelion.net>
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: OSS/4Front
+Date: Wed, 20 Jun 2007 20:23:08 -0500
+Message-ID: <20070621012308.C0A1816427C@ws1-4.us4.outblaze.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sccrmhc11.comcast.net (sccrmhc11.comcast.net [63.240.77.81])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CF7C243EE
+Received: from webmail-outgoing.us4.outblaze.com
+	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id D43952441F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jun 2007 00:30:30 +0200 (CEST)
-Received: from localhost (tick.idlelion.net [127.0.0.1])
-	by tick.idlelion.net (8.13.8/8.13.4) with ESMTP id l5KMUQ6j031039
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2007 17:30:27 -0500
+	Thu, 21 Jun 2007 03:25:14 +0200 (CEST)
+Received: from unknown (unknown [192.168.8.90])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	EC457180013C
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2007 01:23:08 +0000 (GMT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,13 +28,18 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I really wanted to work on the cs4624 suspend resume bug (#305), but there 
-is no time, especially given the lack of technical information.
+Hi,
+Does anyone know if there's any kind of list showing a comparison of
+hardware support between ALSA and OSS/4Front?
 
-I'm wondering if I were to lend or give a laptop that exhibits the problem 
-to one of you alsa developers, if that would be useful and provide some 
-impetus to fix the bug, or if it would just be a big pain?
+With the recent open sourcing of OSS, it would be nice to port code
+to ALSA for devices that are only currently covered by OSS. There
+has to be at least a few devices that we can grab support for, right?
+It may at least provide us with insight into a few bugfixes.
 
-Opinions?
+Ash
 
-Chris
+-- 
+Get a Free E-mail Account at Mail.com!
+Choose From 100+ Personalized Domains
+Visit http://www.mail.com today
