@@ -1,24 +1,14 @@
-From: Robert Lemmen <robertle@semistable.com>
-Subject: Re: hda-intel without headphone output
-Date: Thu, 21 Jun 2007 19:12:30 +0200
-Message-ID: <20070621171230.GA2057@sandbender>
-References: <20070614083156.GB26945@sandbender> <s5h8xamk612.wl%tiwai@suse.de>
-	<20070614182703.GA9443@sandbender>
-	<1181874374.12385.203.camel@razman.gruemaster.com>
-	<s5hhcp4i711.wl%tiwai@suse.de> <20070619113525.GA4477@sandbender>
-	<s5htzt4gof6.wl%tiwai@suse.de> <20070620190240.GA13021@sandbender>
-	<s5hejk5a9m0.wl%tiwai@suse.de>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: HDA - Change default configuration for Fujitsu Si3515.
+Date: Thu, 21 Jun 2007 10:50:21 -0700
+Message-ID: <1182448221.15219.251.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-6VnCmjbQ/7HEAauu41y6"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d80-237-144-212.dds.hosteurope.de (debian.semistable.com
-	[80.237.144.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02A22103843
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D31710384B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jun 2007 19:18:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hejk5a9m0.wl%tiwai@suse.de>
+	Thu, 21 Jun 2007 19:50:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,22 +18,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Developers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 21, 2007 at 12:24:23PM +0200, Takashi Iwai wrote:
-> > i am sorry, but this still doesn't work.
-> 
-> Are you sure that you remove model option with that patch?
-> The model option overrides the default model preset.
 
-sorry for the confusion, but the second patch i got here (the one where
-the model is set to "laptop" in the quirks stuff), actually *does* work
-fine. it seems it was a bit late for me, and i got confused with
-different versions of the modules under /lib/**.
+--=-6VnCmjbQ/7HEAauu41y6
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-cu  robert
+This patch changes the default configuration for the Fujitsu Siemens
+Si3515 Laptop.
+ 
 
--- 
-Robert Lemmen                               http://www.semistable.com 
+Signed off by Tobin Davis <tdavis@dsl-only.net>
+
+--=-6VnCmjbQ/7HEAauu41y6
+Content-Disposition: attachment; filename=conexant-FS3515-2.patch
+Content-Type: text/x-patch; name=conexant-FS3515-2.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+diff -r deaa182aebd8 pci/hda/patch_conexant.c
+--- a/pci/hda/patch_conexant.c	Wed Jun 20 15:46:13 2007 +0200
++++ b/pci/hda/patch_conexant.c	Thu Jun 21 10:48:49 2007 -0700
+@@ -802,7 +802,7 @@ static struct snd_pci_quirk cxt5045_cfg_
+ 	SND_PCI_QUIRK(0x103c, 0x30b5, "HP DV2120", CXT5045_LAPTOP),
+ 	SND_PCI_QUIRK(0x103c, 0x30cd, "HP DV Series", CXT5045_LAPTOP),
+ 	SND_PCI_QUIRK(0x1734, 0x10ad, "Fujitsu Si1520", CXT5045_FUJITSU),
+-	SND_PCI_QUIRK(0x1734, 0x10cb, "Fujitsu Si3515", CXT5045_FUJITSU),
++	SND_PCI_QUIRK(0x1734, 0x10cb, "Fujitsu Si3515", CXT5045_LAPTOP),
+ 	SND_PCI_QUIRK(0x8086, 0x2111, "Conexant Reference board", CXT5045_LAPTOP),
+ 	{}
+ };
+
+--=-6VnCmjbQ/7HEAauu41y6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-6VnCmjbQ/7HEAauu41y6--
