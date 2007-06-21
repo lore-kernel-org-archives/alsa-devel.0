@@ -1,22 +1,21 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: hda-intel without headphone output
-Date: Thu, 21 Jun 2007 10:52:34 -0700
-Message-ID: <1182448354.15219.254.camel@razman.gruemaster.com>
-References: <20070614083156.GB26945@sandbender>
-	<s5h8xamk612.wl%tiwai@suse.de> <20070614182703.GA9443@sandbender>
-	<1181874374.12385.203.camel@razman.gruemaster.com>
-	<s5hhcp4i711.wl%tiwai@suse.de> <20070619113525.GA4477@sandbender>
-	<s5htzt4gof6.wl%tiwai@suse.de> <20070620190240.GA13021@sandbender>
-	<s5hejk5a9m0.wl%tiwai@suse.de>  <20070621171230.GA2057@sandbender>
+From: "Paul Kavan" <pkavan@gmail.com>
+Subject: Re: at91 SoC Modifications
+Date: Thu, 21 Jun 2007 14:10:54 -0500
+Message-ID: <61c0054e0706211210s40158268oea170946cf62a9f@mail.gmail.com>
+References: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>
+	<61c0054e0706210747gc83f1dx2a6ee8bc5cf346f9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id E1A1310384B
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FA15103855
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jun 2007 19:52:35 +0200 (CEST)
-In-Reply-To: <20070621171230.GA2057@sandbender>
+	Thu, 21 Jun 2007 21:10:55 +0200 (CEST)
+Received: by mu-out-0910.google.com with SMTP id w8so591066mue
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2007 12:10:54 -0700 (PDT)
+In-Reply-To: <61c0054e0706210747gc83f1dx2a6ee8bc5cf346f9@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,31 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Lemmen <robertle@semistable.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>, Liam Girdwood <lg@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Oops.  The patch I sent you was based on a previous HG snapshot.  I
-updated my tree and remade the patch.  It just went out to the mailing
-list & Takashi for integration in the main tree.
+If possible, I am more confused now then I was this morning--and that is
+after a lot of exploration and probing of the device.
 
-Tobin
+The playback side of everything seems to work well for .raw files. I have
+some that I made with my old ssc polling driver. The sound fine using aplay
+with either the bare bones or the default alsa.conf file. However, I cannot
+use arecord at all. I am not sure why, but something is preventing the sync
+line from working during record. The sync line has a .3V,pp square that
+rides around 3V DC. The frequency is that of the bit clock ~256.4K. Now,
+when I playback a sample, the RF0 and RD0 look like they should.
 
-On Thu, 2007-06-21 at 19:12 +0200, Robert Lemmen wrote:
+I have RF0 and TF0 tied together and assume TF0 generates the sync. Also, I
+have TK0 and RK0 tied together and assume TK0 generates the clock. Could
+this be the problem.
 
-> On Thu, Jun 21, 2007 at 12:24:23PM +0200, Takashi Iwai wrote:
-> > > i am sorry, but this still doesn't work.
-> > 
-> > Are you sure that you remove model option with that patch?
-> > The model option overrides the default model preset.
-> 
-> sorry for the confusion, but the second patch i got here (the one where
-> the model is set to "laptop" in the quirks stuff), actually *does* work
-> fine. it seems it was a bit late for me, and i got confused with
-> different versions of the modules under /lib/**.
-> 
-> cu  robert
-> 
+Oh...and playback with PCM A (DSP_A) works fine, but no recording still. I
+get the same type of signal on RF0 as before with PCM A fmt. Does anyone
+have a sense if this is a ssc configuration problem or an alsa problem?
 
+Thanks.
+
+Paul
 -- 
-Tobin Davis <tdavis@dsl-only.net>
+***************************************
+Paul David Kavan
+Project Engineer
+GRH Electronics, Inc.
+402-734-4900
+pkavan@gmail.com
+***************************************
