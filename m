@@ -1,19 +1,21 @@
-From: Nathan Allen Stratton <nathan@robotics.net>
-Subject: Re: Osprey 440 almost supported!!! Need X9221 i2c
- support!
-Date: Fri, 22 Jun 2007 11:10:02 -0400 (EDT)
-Message-ID: <Pine.LNX.4.58.0706221108350.21405@barney.robotics.net>
-References: <Pine.LNX.4.58.0706212241460.15772@barney.robotics.net>
-	<1182502291.5842.1196490029@webmail.messagingengine.com>
+From: "Paul Kavan" <pkavan@gmail.com>
+Subject: Re: at91 SoC Modifications
+Date: Fri, 22 Jun 2007 10:53:45 -0500
+Message-ID: <61c0054e0706220853x5502066ck8765365df9b3abf0@mail.gmail.com>
+References: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>
+	<61c0054e0706210747gc83f1dx2a6ee8bc5cf346f9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barney.robotics.net (cyber.robotics.net [209.150.98.82])
-	by alsa0.perex.cz (Postfix) with ESMTP id B001B24515
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7679E2451B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jun 2007 17:10:01 +0200 (CEST)
-In-Reply-To: <1182502291.5842.1196490029@webmail.messagingengine.com>
+	Fri, 22 Jun 2007 17:53:46 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so813927uge
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2007 08:53:45 -0700 (PDT)
+In-Reply-To: <61c0054e0706210747gc83f1dx2a6ee8bc5cf346f9@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>, Liam Girdwood <lg@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 22 Jun 2007, Clemens Ladisch wrote:
+I just don't think it is a hardware problem. I a polling ssc driver that
+works very nicely for this codec. However, it is polling and I do not want
+to rely on it when I have more of a load on the processor.
 
-> Nathan Allen Stratton wrote:
-> > [...]
-> > So the issue now is that the audio is WAY to high so it is very distorted.
-> > The audio is controlled via X9221A chips on the i2c bus at 0x50, there are
-> > not drivers for X9221 so I can't lower the audio levels.
->
-> There is a datasheet for these chips, so writing some code for this
-> should be easy.  However, the I2C controller is not managed by the
-> snd-bt87x driver but by the bttv driver.
+I have the machine/codec code and at91-ssc.c configured so that the
+registers and gpio should be set up identical to what I had before and it is
+not generating a proper sync signal with arecord. When I do strace on
+arecord it hangs at this first line before finishing.
 
-Old linux drivers (no longer compile on suse, or fedora) should help:
 
-ftp://ftp.viewcast.com/pub/OSP-MM/Linux/latest
+ioctl(4, 0x800c4151, 0xbed9cc34)        = -1 EIO (Input/output error)
+write(2, "arecord", 7arecord)                  = 7
+write(2, ": ", 2: )                       = 2
+write(2, "pcm_read", 8pcm_read)                 = 8
+write(2, ":", 1:)                        = 1
+write(2, "1346", 41346)                     = 4
+write(2, ": ", 2: )                       = 2
+write(2, "read error: ", 12read error: )            = 12
+write(2, "Input/output error", 18Input/output error)      = 18
+write(2, "\n", 1
+)                       = 1
+exit(1)                                 = ?
 
-Now that we know the GPIO settings, how hard is it to add i2c support in
-bttv?
 
--Nathan
+Does anyone know what this line is doing? I think it might give a clue. The
+sync line still ripples at about .3V peak to peak with f=256k (Bit Clock
+Rate).
+
+Frank: I modified the machine code so that RF0 and RK0 are set in the gpio.
+The only differences are that the sync line no longer tri-states after going
+trying to record and instead of seeing the ripple around 3V it is now around
+200 mV.
+
+Has anyone seen this behavior before?
+
+Paul
