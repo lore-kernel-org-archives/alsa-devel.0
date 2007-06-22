@@ -1,22 +1,27 @@
-From: "Paul Kavan" <pkavan@gmail.com>
+From: Frank Mandarino <fmandarino@endrelia.com>
 Subject: Re: at91 SoC Modifications
-Date: Fri, 22 Jun 2007 12:23:53 -0500
-Message-ID: <61c0054e0706221023j2801c971ya370e8ff79621f5e@mail.gmail.com>
-References: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>
-	<61c0054e0706210747gc83f1dx2a6ee8bc5cf346f9@mail.gmail.com>
-	<61c0054e0706220853x5502066ck8765365df9b3abf0@mail.gmail.com>
+Date: Fri, 22 Jun 2007 15:00:44 -0400
+Message-ID: <467C1C5C.4030700@endrelia.com>
+References: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>	
+	<61c0054e0706210747gc83f1dx2a6ee8bc5cf346f9@mail.gmail.com>	
+	<61c0054e0706220853x5502066ck8765365df9b3abf0@mail.gmail.com>	
 	<467BFD95.3080707@endrelia.com>
+	<61c0054e0706221023j2801c971ya370e8ff79621f5e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_168031_30985461.1182533033610"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C15E2452A
+Received: from tomts33-srv.bellnexxia.net (tomts33.bellnexxia.net
+	[209.226.175.107])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF6B0243A3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jun 2007 19:23:55 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id o2so831125uge
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2007 10:23:53 -0700 (PDT)
-In-Reply-To: <467BFD95.3080707@endrelia.com>
+	Fri, 22 Jun 2007 21:00:47 +0200 (CEST)
+Received: from toip37-bus.srvr.bell.ca ([67.69.240.38])
+	by tomts33-srv.bellnexxia.net
+	(InterMail vM.5.01.06.13 201-253-122-130-113-20050324) with ESMTP id
+	<20070622190045.MBFS23566.tomts33-srv.bellnexxia.net@toip37-bus.srvr.bell.ca>
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2007 15:00:45 -0400
+In-Reply-To: <61c0054e0706221023j2801c971ya370e8ff79621f5e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,146 +31,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Frank Mandarino <fmandarino@endrelia.com>
+To: Paul Kavan <pkavan@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_168031_30985461.1182533033610
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Paul Kavan wrote:
+> 
+> 
+>     Perhaps it would be useful to see a diagram of the connections between
+>     the SSC and codec on your board, including directions. 
+> 
+> 
+> Attached is a quick diagram. As far as the wiring, they only connect
+> where you see a node connection....did not have a real circuit program
+> handy. Let me know if you have questions on the diagram. I tried to make
+> it as clear as possible.
+> 
+> I have the bitclocks and codec master clock tied together. Also, I have
+> the frames tied together.
 
->
-> Perhaps it would be useful to see a diagram of the connections between
-> the SSC and codec on your board, including directions.
+The diagram is clear except for the signal directions.  I assume that
+all signals are outputs from SSC to codec except for RD0 - PCMT.
 
+Could you please provide the settings that you are currently working with?
 
-Attached is a quick diagram. As far as the wiring, they only connect where
-you see a node connection....did not have a real circuit program handy. Let
-me know if you have questions on the diagram. I tried to make it as clear as
-possible.
+In particular, I would like to see how RFMR.FSOS is set.  If TF0 is
+outputting the frame sync and tied to RF0, then you probably want RF0
+configured as an input (RFMR.FSOS = None).
 
-I have the bitclocks and codec master clock tied together. Also, I have the
-frames tied together.
+And if RF0 and RK0 are receiving signals on their GPIO lines, you do
+need to initialize the GPIO registers in your machine driver.
 
-Thanks.
-
-Paul
-
-
-
-
+../fam
 -- 
-***************************************
-Paul David Kavan
-Project Engineer
-GRH Electronics, Inc.
-402-734-4900
-pkavan@gmail.com
-***************************************
-
-------=_Part_168031_30985461.1182533033610
-Content-Type: application/pdf; name=Codec_and_at91_pcm.pdf
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f38xmdbl
-Content-Disposition: attachment; filename="Codec_and_at91_pcm.pdf"
-
-JVBERi0xLjMKJcfsj6IKNSAwIG9iago8PC9MZW5ndGggNiAwIFIvRmlsdGVyIC9GbGF0ZURlY29k
-ZT4+CnN0cmVhbQp4nN1WS25cNxDc8xTcxQ7gNrv5X/oTeWELiGcekANMYtmBZmFnkeun+KeUIAcY
-aEF1sbq7iuQj57s2xNqUvz5erur1KeqHv5SjKE68/lux/qYqR58+qEjBmSAao8k2aeZsyLMWm5iM
-6B9/qLOywoZC+n9SJudSrc85EXstRiDD6evMH8gj6IPF0QYKeWMN5AnLiaP0hNWRnSUZckLYO3Zk
-Z6UUyApI7AMauQE8TuC/dProyNesaBLZOIDHCey6JSdLWbY1GEjykXKMYA2NC1l5zI7J2erEZjJ2
-IpWVnBDnbe0GEoxQCnv1hZz7rv94UN8Vt//7cLnqtwdOCkoy5ZyDPr6odoIY+igZg1UJJBE9jqt6
-cXpvXh5/oiDMk4lWH7+rF8fHCgpWw3lAnwDdmZc/YXhfhlLsVanqEmXPWAusjeDMlIpvjsznN/dZ
-Qq8MZuWKJQaXYTVJpf4WEnMhDYXWehIHPvwWwt35VKZfiSuHsjRlS7ZkQ+XprjeYOgvYpY8EX9aV
-69Sv7+6PlmCZOJmG3p07KB5fgskVfPvu08djLx4rfA/43y1R99TQrVmpUNFfDvUZUw+KgwhWGCfJ
-RsIpuW4IXGHkssUG30jOto4+RrIrvuBce6GwMyxiuyrMuPUoGQMJQq4wWgUxSWi16CH4XcOYnxJ7
-+jMTF/Xl5+1GMvrDrfr8Wq6QGCyVew1nJVdnAzCMTwqjsxRTOb6Iy5XI+ORXXNpmR3ZjBFw+NqwK
-M24tSsZAPK6BwugVIj7YuFq0EPyhYcx3hT37qYO6fTfo6mu9W0Nu8oevhTRZuGtzk9tkS8JL5P1m
-TGLOlDZGjIjtqjDj0XkhTdqs0ITPFsPY1DDmh8Se/sxE3bAbdVY2zRo8kvU7Nbk/mx3B6417xmpr
-cDTwyHMOiPHTJePkhBWjcUblbDcGhORZoIejQ+F3wDriMt/SxXjXfou0BiO+qCFhIEt0q/DcRN20
-G3W2bxoeZ+y07NbYhPK7clozKSxfJdhMtbnmqOfNsBWejhjXOzmZjhinCu/9Kt3j5WggS1mr8Fz7
-k726DUNliz6rfwCoi2d5ZW5kc3RyZWFtCmVuZG9iago2IDAgb2JqCjgwMgplbmRvYmoKNCAwIG9i
-ago8PC9UeXBlL1BhZ2UvTWVkaWFCb3ggWzAgMCA0NDEgMjQwXQovUGFyZW50IDMgMCBSCi9SZXNv
-dXJjZXM8PC9Qcm9jU2V0Wy9QREYgL1RleHRdCi9FeHRHU3RhdGUgMTAgMCBSCi9Gb250IDExIDAg
-Ugo+PgovQ29udGVudHMgNSAwIFIKPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9L
-aWRzIFsKNCAwIFIKXSAvQ291bnQgMQo+PgplbmRvYmoKMSAwIG9iago8PC9UeXBlIC9DYXRhbG9n
-IC9QYWdlcyAzIDAgUgo+PgplbmRvYmoKNyAwIG9iago8PC9UeXBlL0V4dEdTdGF0ZQovT1BNIDE+
-PmVuZG9iagoxMCAwIG9iago8PC9SNwo3IDAgUj4+CmVuZG9iagoxMSAwIG9iago8PC9SOQo5IDAg
-Uj4+CmVuZG9iagoxMiAwIG9iago8PC9TdWJ0eXBlL1R5cGUxQy9GaWx0ZXIvRmxhdGVEZWNvZGUv
-TGVuZ3RoIDEzIDAgUj4+c3RyZWFtCnicZZVrVBPXFsdnSDIztshV0iwe1pC2WlsRBSoaxGrlodai
-RcAH2koDBEgJL4GQQB68RY4CAiE8QxAhUhWhPFWKolLx1tZqa30sXUqX3ra31Ja29+5JTz7cCd72
-frhfZs3MmbP/e//Of+8hCb4TQZKkc7QiVZ7lE5meKktzPHuzC0j2RSd2IQ/p/pDapIKFRHgrby5y
-5iFnvuXF55a4AjsfbvwNRucRPJLs++xBSHqGZr8iKTlb8tqOyF2ve3sv+98bv8DAQEmc5s8VSag8
-S5GUJnmVu1HJlekZqfK07CBJCPe1UqmIlyQpNRnJWRJZQoI8wbFtp0wpT5FsVCgVGRnpKslrIa9L
-/H19/Xy4i3+QZFtOqnx/+jKJIi1RkabI1khkaQmSd1PlSTJJqixB7ggQmqrI3q+RrPRVpP21e5si
-NS4nSzJbsWRbeqAkXBIpT8pRyvb//wpBEMLwDVuDQ0IjNkZGRb+zy9fPf5U0kCB8iJeJ5cQrxCJi
-MeFHLCHeIFYSAcQyQkrMJ1wJIeFGeBCexAscYoJP7CHOka+RXzhtchrnSXlWvj//hkAsOEVJqUbq
-IR1AH2OWMCaodGEBmdUfs7+YXZ/OuAkz2BsQLMqT67K1eckJ0RopYjZTwfojPV5sKo1uNjbeq2bM
-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
-ihdgl6/WAHFxsHnggjgOr8Y8CV6WycCnYBOh3ANFBUXpWYn6JMSs3/sNPH+5+Yql06ul7Vj9ccR8
-OxKA13q55LaxO9sguo3qfu7R8921zs6PWp3nEsR/AAMF0EkKZW5kc3RyZWFtCmVuZG9iagoxMyAw
-IG9iagoyNDA3CmVuZG9iago5IDAgb2JqCjw8L0Jhc2VGb250L05ZT0NXWitUaW1lcy1Sb21hbi9G
-b250RGVzY3JpcHRvciA4IDAgUi9UeXBlL0ZvbnQKL0ZpcnN0Q2hhciA0OC9MYXN0Q2hhciA4Ny9X
-aWR0aHNbCjUwMCA1MDAgNTAwIDAgMCAwIDUwMCAwIDUwMCA1MDAgMCAwIDAgMCAwIDAKMCA3MjIg
-NjY3IDY2NyA3MjIgMCA1NTYgMCAwIDAgMCA3MjIgNjExIDg4OSAwIDAKNTU2IDAgNjY3IDU1NiA2
-MTEgMCAwIDk0NF0KL0VuY29kaW5nL1dpbkFuc2lFbmNvZGluZy9TdWJ0eXBlL1R5cGUxPj4KZW5k
-b2JqCjggMCBvYmoKPDwvVHlwZS9Gb250RGVzY3JpcHRvci9Gb250TmFtZS9OWU9DV1orVGltZXMt
-Um9tYW4vRm9udEJCb3hbMCAtMTQgOTMyIDY3Nl0vRmxhZ3MgNAovQXNjZW50IDY3NgovQ2FwSGVp
-Z2h0IDY3NgovRGVzY2VudCAtMTQKL0l0YWxpY0FuZ2xlIDAKL1N0ZW1WIDEzOQovTWlzc2luZ1dp
-ZHRoIDI1MAovQ2hhclNldCgvTC9BL00vQi96ZXJvL0Mvb25lL0QvdHdvL1AvRi9SL1Mvc2l4L1Qv
-ZWlnaHQvSy9uaW5lL1cpL0ZvbnRGaWxlMyAxMiAwIFI+PgplbmRvYmoKMiAwIG9iago8PC9Qcm9k
-dWNlcihFU1AgR2hvc3RzY3JpcHQgODE1LjAyKQovQ3JlYXRpb25EYXRlKEQ6MjAwNzA2MjIxMjEz
-NTIpCi9Nb2REYXRlKEQ6MjAwNzA2MjIxMjEzNTIpCi9UaXRsZShDb2RlY19hbmRfYXQ5MV9wY20u
-cGRmKQovQ3JlYXRvcihmaWcyZGV2IFZlcnNpb24gMy4yIFBhdGNobGV2ZWwgNS1hbHBoYTcpPj5l
-bmRvYmoKeHJlZgowIDE0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMTExNiAwMDAwMCBuIAow
-MDAwMDA0MzE3IDAwMDAwIG4gCjAwMDAwMDEwNTcgMDAwMDAgbiAKMDAwMDAwMDkwNiAwMDAwMCBu
-IAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMDA4ODcgMDAwMDAgbiAKMDAwMDAwMTE2NCAwMDAw
-MCBuIAowMDAwMDA0MDUxIDAwMDAwIG4gCjAwMDAwMDM3NzkgMDAwMDAgbiAKMDAwMDAwMTIwNSAw
-MDAwMCBuIAowMDAwMDAxMjM1IDAwMDAwIG4gCjAwMDAwMDEyNjUgMDAwMDAgbiAKMDAwMDAwMzc1
-OCAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDE0IC9Sb290IDEgMCBSIC9JbmZvIDIgMCBSCi9J
-RCBbKJfYl9/APe/TJY3csHPFVN8pKJfYl9/APe/TJY3csHPFVN8pXQo+PgpzdGFydHhyZWYKNDUw
-OQolJUVPRgo=
-------=_Part_168031_30985461.1182533033610
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_168031_30985461.1182533033610--
+Frank Mandarino                                fmandarino(a)endrelia.com
+Endrelia Technologies Inc.
+Toronto, Ontario, Canada
