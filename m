@@ -1,27 +1,29 @@
-From: Frank Mandarino <fmandarino@endrelia.com>
-Subject: Re: at91 SoC Modifications
-Date: Fri, 22 Jun 2007 15:00:44 -0400
-Message-ID: <467C1C5C.4030700@endrelia.com>
-References: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>	
-	<61c0054e0706210747gc83f1dx2a6ee8bc5cf346f9@mail.gmail.com>	
-	<61c0054e0706220853x5502066ck8765365df9b3abf0@mail.gmail.com>	
-	<467BFD95.3080707@endrelia.com>
-	<61c0054e0706221023j2801c971ya370e8ff79621f5e@mail.gmail.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: pcm->private_data is NULL in alsa core!!
+Date: Sat, 23 Jun 2007 01:33:57 +0530
+Message-ID: <61445c750706221303q1fbd1d19u55480e109997841b@mail.gmail.com>
+References: <61445c750706160550i592b416as6c766532de830147@mail.gmail.com>
+	<61445c750706180456i5228c8dbqbd168e5a3bbbe435@mail.gmail.com>
+	<1182251430.29389.1195911445@webmail.messagingengine.com>
+	<61445c750706190430i7d8f37b3g95326d7aee6c5056@mail.gmail.com>
+	<1182263378.1273.1195944481@webmail.messagingengine.com>
+	<61445c750706200318h6758cf78o64dfd3e6a88ea8bb@mail.gmail.com>
+	<61445c750706200412i52e6666fjc7a5552972b18f7b@mail.gmail.com>
+	<61445c750706200416y4654fcfcq8a064c645956f5e@mail.gmail.com>
+	<1182355995.14744.1196173731@webmail.messagingengine.com>
+	<61445c750706200929t79393137uf8f1ff29d9c16e82@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tomts33-srv.bellnexxia.net (tomts33.bellnexxia.net
-	[209.226.175.107])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF6B0243A3
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA2CF2434D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jun 2007 21:00:47 +0200 (CEST)
-Received: from toip37-bus.srvr.bell.ca ([67.69.240.38])
-	by tomts33-srv.bellnexxia.net
-	(InterMail vM.5.01.06.13 201-253-122-130-113-20050324) with ESMTP id
-	<20070622190045.MBFS23566.tomts33-srv.bellnexxia.net@toip37-bus.srvr.bell.ca>
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2007 15:00:45 -0400
-In-Reply-To: <61c0054e0706221023j2801c971ya370e8ff79621f5e@mail.gmail.com>
+	Fri, 22 Jun 2007 22:03:58 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so898079wag
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2007 13:03:57 -0700 (PDT)
+In-Reply-To: <61445c750706200929t79393137uf8f1ff29d9c16e82@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,39 +33,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Kavan <pkavan@gmail.com>
+To: Clemens Ladisch <cladisch@fastmail.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Kavan wrote:
-> 
-> 
->     Perhaps it would be useful to see a diagram of the connections between
->     the SSC and codec on your board, including directions. 
-> 
-> 
-> Attached is a quick diagram. As far as the wiring, they only connect
-> where you see a node connection....did not have a real circuit program
-> handy. Let me know if you have questions on the diagram. I tried to make
-> it as clear as possible.
-> 
-> I have the bitclocks and codec master clock tied together. Also, I have
-> the frames tied together.
+Problem solved guys...many misc things were wrong..after fixing them
+it worked. Thank you all.
 
-The diagram is clear except for the signal directions.  I assume that
-all signals are outputs from SSC to codec except for RD0 - PCMT.
-
-Could you please provide the settings that you are currently working with?
-
-In particular, I would like to see how RFMR.FSOS is set.  If TF0 is
-outputting the frame sync and tied to RF0, then you probably want RF0
-configured as an input (RFMR.FSOS = None).
-
-And if RF0 and RK0 are receiving signals on their GPIO lines, you do
-need to initialize the GPIO registers in your machine driver.
-
-../fam
--- 
-Frank Mandarino                                fmandarino(a)endrelia.com
-Endrelia Technologies Inc.
-Toronto, Ontario, Canada
+On 6/20/07, Pharaoh . <pharaoh137@gmail.com> wrote:
+> Value of pcm pointer doesn't change. Other fields which are populated
+> by me do not change except private_data.
+>
+> The following shows it:
+>
+> # cat a.sh > dev/audio
+> pcm name is omap  alsa pcm //Intact
+> pcm id is OMAP PCM               //Intact
+> pcm private is 00000000       //Only this changes
+>
+> On 6/20/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
+> > Pharaoh . wrote:
+> > > Registering the sound card
+> > > pcm->private in snd_device_register_all is c1d7d310 //correct
+> > > Inside snd_pcm_dev_register, pcm is c1f05d44(correct), pcm->pvt_data
+> > > is 00000000(This shouldn't be NULL)
+> >
+> > Does the value of pcm itself change?
+> > Do other fields in pcm change?
+> >
+> >
+> > Regards,
+> > Clemens
+> >
+>
