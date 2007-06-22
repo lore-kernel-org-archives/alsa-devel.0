@@ -1,25 +1,23 @@
 From: Frank Mandarino <fmandarino@endrelia.com>
-Subject: Re: at91 SoC Modifications
-Date: Fri, 22 Jun 2007 12:49:25 -0400
-Message-ID: <467BFD95.3080707@endrelia.com>
-References: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>	
-	<61c0054e0706210747gc83f1dx2a6ee8bc5cf346f9@mail.gmail.com>
-	<61c0054e0706220853x5502066ck8765365df9b3abf0@mail.gmail.com>
+Subject: Re: AT91 SoC PCM Capture
+Date: Fri, 22 Jun 2007 13:19:26 -0400
+Message-ID: <467C049E.8060807@endrelia.com>
+References: <61c0054e0706220935y22b58671l72b11cf9c77c4b35@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tomts47-srv.bellnexxia.net (tomts47.bellnexxia.net
-	[209.226.175.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7835A24528
+Received: from tomts24-srv.bellnexxia.net (tomts24.bellnexxia.net
+	[209.226.175.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4AC4C2452B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jun 2007 18:49:32 +0200 (CEST)
-Received: from toip35-bus.srvr.bell.ca ([67.69.240.36])
-	by tomts47-srv.bellnexxia.net
+	Fri, 22 Jun 2007 19:19:36 +0200 (CEST)
+Received: from toip38-bus.srvr.bell.ca ([67.69.240.39])
+	by tomts24-srv.bellnexxia.net
 	(InterMail vM.5.01.06.13 201-253-122-130-113-20050324) with ESMTP id
-	<20070622164925.KUUT13220.tomts47-srv.bellnexxia.net@toip35-bus.srvr.bell.ca>
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2007 12:49:25 -0400
-In-Reply-To: <61c0054e0706220853x5502066ck8765365df9b3abf0@mail.gmail.com>
+	<20070622171927.HFLS26892.tomts24-srv.bellnexxia.net@toip38-bus.srvr.bell.ca>
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2007 13:19:27 -0400
+In-Reply-To: <61c0054e0706220935y22b58671l72b11cf9c77c4b35@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,52 +32,24 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Paul Kavan wrote:
-> I just don't think it is a hardware problem. I a polling ssc driver that
-> works very nicely for this codec. However, it is polling and I do not
-> want to rely on it when I have more of a load on the processor.
-> 
-> I have the machine/codec code and at91-ssc.c configured so that the
-> registers and gpio should be set up identical to what I had before and
-> it is not generating a proper sync signal with arecord. When I do strace
-> on arecord it hangs at this first line before finishing.
-> 
-> 
-> ioctl(4, 0x800c4151, 0xbed9cc34)        = -1 EIO (Input/output error)
-> write(2, "arecord", 7arecord)                  = 7
-> write(2, ": ", 2: )                       = 2
-> write(2, "pcm_read", 8pcm_read)                 = 8
-> write(2, ":", 1:)                        = 1
-> write(2, "1346", 41346)                     = 4
-> write(2, ": ", 2: )                       = 2
-> write(2, "read error: ", 12read error: )            = 12
-> write(2, "Input/output error", 18Input/output error)      = 18
-> write(2, "\n", 1
-> )                       = 1
-> exit(1)                                 = ?
-> 
-> 
-> Does anyone know what this line is doing? I think it might give a clue.
-> The sync line still ripples at about .3V peak to peak with f=256k (Bit
-> Clock Rate).
+> I am wondering what piece of code contains the capture functionality for
+> the at91 soc. I am hoping to see how and when the pcm activates the ssc
+> at read time. I just cannot figure out why TD0 would behave at such with
+> this set of code and yet behave correctly with my polling code. Not a
+> criticism....just wanting to figure this out.
 
-Sorry, I have no idea what that line is doing.
+There is very little distinction between Playback and Capture in the
+ASoC AT91 implementation.  Each SSC has 2 DMA structures, one for each
+direction.  The Playback DMA structure points at the SSC PDC transmit
+registers and SSC transmit register masks, and the Capture DMA structure
+points at the SSC PDC receive registers and SSC receive masks.  The DMA
+structure to use is selected in at91_ssc_hw_params().
 
-> Frank: I modified the machine code so that RF0 and RK0 are set in the
-> gpio. The only differences are that the sync line no longer tri-states
-> after going trying to record and instead of seeing the ripple around 3V
-> it is now around 200 mV.
+By doing this, at91-pcm.c DMA code can simply run the DMA transfers
+without having to know which direction the data is being transferred.
 
-Now that I think about, if you are using RK0 as an input and driving it
-from TK0, then you should be initializing the RK0 GPIO.  On our board,
-the RK2 GPIO pin is not used since RK2 is generated internally from the
-TK2 clock signal (AT91_SSC_CKS_CLOCK), so there was no need to
-initialize it.
-
-Also, the RF2 GPIO is not used on our board, because there is a single
-sync signal sent to the codec, and this is supplied by TF2.
-
-Perhaps it would be useful to see a diagram of the connections between
-the SSC and codec on your board, including directions.
+Both receive and transmit SSC registers are initialized in
+at91_ssc_hw_params(), regardless of the direction.
 
 ../fam
 -- 
