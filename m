@@ -1,19 +1,19 @@
-From: Nathan Allen Stratton <nathan@robotics.net>
-Subject: Re: $1000 bounty for getting audio working under linux
- on a Osprey 440
-Date: Sun, 24 Jun 2007 21:00:53 -0400 (EDT)
-Message-ID: <Pine.LNX.4.58.0706242053190.13089@barney.robotics.net>
-References: <Pine.LNX.4.58.0706191425360.15975@barney.robotics.net>
-	<1182319147.5073.1196082513@webmail.messagingengine.com>
+From: albox@free.fr
+Subject: No sound on Medion laptop (intel 82801G)
+Date: Mon, 25 Jun 2007 05:27:18 +0200
+Message-ID: <1182742038.467f361683784@imp.free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barney.robotics.net (cyber.robotics.net [209.150.98.82])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9EDA91037F7
+Received: from smtp5-g19.free.fr (smtp5-g19.free.fr [212.27.42.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43A1524412
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jun 2007 03:00:50 +0200 (CEST)
-In-Reply-To: <1182319147.5073.1196082513@webmail.messagingengine.com>
+	Mon, 25 Jun 2007 04:27:21 +0200 (CEST)
+Received: from imp3-g19.free.fr (imp3-g19.free.fr [212.27.42.3])
+	by smtp5-g19.free.fr (Postfix) with ESMTP id C645844195
+	for <alsa-devel@alsa-project.org>;
+	Mon, 25 Jun 2007 04:27:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 20 Jun 2007, Clemens Ladisch wrote:
+Hi,
+I reported a bug about medion laptops having an intel 82801G sound card that
+doesn't work with ALSA 1.0.14rc4 on Kubuntu :
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=3160
+I didn't get any news yet. As I said, I'm willing to help. Any ideas about what
+I should check ? Is there any web page that could help me to detect the problem
+?
 
-> Did you try the digital input and the three analog inputs?
-
-Analong inputs are all tied to ground, so no, you don't get anything on
-them. I got nothing on digital inputs until I figured out the GPIO by
-booting in windows and checking it out with a logic probe.
-
-modprobe bttv card=140 bttv_gpio=1 bttv_verbose=2 bttv_debug=1 gpiomask=0x000303 audioall=0xFFFCFC
-
-The above will let you get audio, but gain is very high by default. The
-gain is controlled via the Altera X9221 on address 0x50. I am not sure how
-to add support for alsa, but I found old btaudio drivers from viewcast
-that are out of date and no longer supported.
-
-ftp://ftp.viewcast.com/pub/OSP-MM/Linux/latest
-
--Nathan
+Thanks
