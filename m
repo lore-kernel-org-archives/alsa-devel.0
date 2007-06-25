@@ -1,15 +1,16 @@
-From: antoniorc@4lineas.net
-Subject: Intel Realtek ALC268 don't sound
-Date: Mon, 25 Jun 2007 19:25:15 +0200
-Message-ID: <1182792315.467ffa7b4db77@webmail.4lineas.net>
+From: "Stefano Radaelli" <puttext@tiscali.it>
+Subject: problem with audigy2 ZS remote
+Date: Mon, 25 Jun 2007 18:47:59 +0200
+Message-ID: <467FF1BF.7070203@tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.territoriolibre.net (unknown [209.8.31.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9BC222434D
+Received: from mx1.provincia.mi.it (89-96-217-150.ip14.fastwebnet.it
+	[89.96.217.150]) by alsa0.perex.cz (Postfix) with ESMTP id A5197243B6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jun 2007 19:25:16 +0200 (CEST)
+	Mon, 25 Jun 2007 18:48:05 +0200 (CEST)
+Content-Class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +23,13 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I tried latest HG driver version of Alsa, with patch included for ALC268.
-Apparently card is detected and mixer show correctly volumes bars, but don't
-sound.
-
-I tried option 3stack and auto in /etc/modprobe.d/alsa-base but nothing
-difference.
-
-I've a HP Pavilion dv6528 with Santa Rosa.
-
-Please tell me that I can do?
-
-Thanks
+Hi all!
+Sorry for my bad english.
+I have a problem with the livedrive of an audigy2 ZS. After some
+upgrades (on a gentoo linux system) the eternal panel seems to stop
+working. Even after the "initialization" (with echo on the midi device),
+the IR led not blink on remote action. This worked correctly in the past
+but after some upgrade (i don't know exactly what) it stoipped working.
+I don't known where i have to look (logs?) or what type of debugging
+it's necessary.
+Help me please
