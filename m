@@ -1,15 +1,18 @@
-From: albox@free.fr
-Subject: Re: No sound on Medion laptop (intel 82801G)
-Date: Mon, 25 Jun 2007 07:24:44 +0200
-Message-ID: <1182749084.467f519cd06e8@imp.free.fr>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Input/output error while playing a file using aplay
+Date: Mon, 25 Jun 2007 08:56:37 +0200
+Message-ID: <1182754597.9211.1196859135@webmail.messagingengine.com>
+References: <61445c750706221312t4449c847p72523339f228a101@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5-g19.free.fr (smtp5-g19.free.fr [212.27.42.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 874A624422
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id CA52524363
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jun 2007 06:24:45 +0200 (CEST)
+	Mon, 25 Jun 2007 08:56:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <61445c750706221312t4449c847p72523339f228a101@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,23 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Pharaoh ." <pharaoh137@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Here is the result :
-$ sudo dmesg -c
-$ sudo rmmod snd-hda-intel && sudo modprobe snd-hda-intel probe_mask=1
-$ dmesg
-[  638.324000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-[  638.368000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ
-22
-[  638.368000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
-[  638.400000] ALSA
-/home/alboot/Sources/alsa1.0.14rc4/alsa-driver-1.0.14rc4/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:698:
-codec_mask = 0x3
-[  638.576000] ALSA
-/home/alboot/Sources/alsa1.0.14rc4/alsa-driver-1.0.14rc4/pci/hda/hda_codec.c:1820:
-hda_codec: model 'medion' is selected for config 161f:2054 (Medion laptop)
+Pharaoh . wrote:
+> ...
+> It waits here for sometime and then I get
+> snd_omap_alsa_trigger starte error: Input/output error
 
-I can hear a quick sound (like a "bip") when I enter the command but after that,
-the sound doesn't work.
+The ALSA framework will stop the stream and return the error code EIO
+when there was no interrupt for ten seconds, i.e., when
+snd_pcm_period_elapsed() was not called.
+
+Either s->active got corrupted, or your interrupt handler never got
+called.
+
+BTW: snd_pcm_period_elapsed() can stop the stream in some situations,
+so you should move this call to the end of the interrupt handler, or
+check s->active again after calling it.
+
+
+HTH
+Clemens
