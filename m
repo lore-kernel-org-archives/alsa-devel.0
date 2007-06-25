@@ -1,24 +1,19 @@
-From: Robert Lemmen <robertle@semistable.com>
-Subject: Re: hda-intel without headphone output
-Date: Mon, 25 Jun 2007 10:07:44 +0200
-Message-ID: <20070625080744.GA15207@sandbender>
-References: <s5h8xamk612.wl%tiwai@suse.de> <20070614182703.GA9443@sandbender>
-	<1181874374.12385.203.camel@razman.gruemaster.com>
-	<s5hhcp4i711.wl%tiwai@suse.de> <20070619113525.GA4477@sandbender>
-	<s5htzt4gof6.wl%tiwai@suse.de> <20070620190240.GA13021@sandbender>
-	<s5hejk5a9m0.wl%tiwai@suse.de> <20070621171230.GA2057@sandbender>
-	<s5h1wg4jf0u.wl%tiwai@suse.de>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: ARM in embedded audio
+Date: Mon, 25 Jun 2007 16:16:31 +0100
+Message-ID: <1182784591.26658.290.camel@localhost.localdomain>
+References: <200706222325.43188.gineera@aspect135.co.uk>
+	<8d6898730706222149p3e7ca214ndf00acd697ed16d4@mail.gmail.com>
+	<200706251626.38760.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d80-237-144-212.dds.hosteurope.de (debian.semistable.com
-	[80.237.144.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4311A2436B
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id A2D942433D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jun 2007 10:14:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h1wg4jf0u.wl%tiwai@suse.de>
+	Mon, 25 Jun 2007 17:16:34 +0200 (CEST)
+In-Reply-To: <200706251626.38760.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,32 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Nobin Mathew <nobin.mathew@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-hi takashi,
+On Mon, 2007-06-25 at 16:26 +0100, Alan Horstmann wrote:
+> On Saturday 23 June 2007 05:49, you wrote:
+> > This will be almost same as Desktop PCs, only thing is you will have
+> > to cross compile.
+> >
+> > Which chipset you are using? which codec?
+> 
+> That is not decided yet -hence my enquiry.  We are trying to estimate how hard 
+> or straightforward it wil be to get a low-cost platform up and running.  But 
+> we will need I2S.
+> 
 
-On Fri, Jun 22, 2007 at 03:27:13PM +0200, Takashi Iwai wrote:
-> Do you mean the patch below (posted by Tobin)?
-> If this really works for you, I'll merge it happily.
-> [...]
-> diff -r deaa182aebd8 pci/hda/patch_conexant.c
-> --- a/pci/hda/patch_conexant.c	Wed Jun 20 15:46:13 2007 +0200
-> +++ b/pci/hda/patch_conexant.c	Thu Jun 21 10:48:49 2007 -0700
-> @@ -802,7 +802,7 @@ static struct snd_pci_quirk cxt5045_cfg_
->  	SND_PCI_QUIRK(0x103c, 0x30b5, "HP DV2120", CXT5045_LAPTOP),
->  	SND_PCI_QUIRK(0x103c, 0x30cd, "HP DV Series", CXT5045_LAPTOP),
->  	SND_PCI_QUIRK(0x1734, 0x10ad, "Fujitsu Si1520", CXT5045_FUJITSU),
-> -	SND_PCI_QUIRK(0x1734, 0x10cb, "Fujitsu Si3515", CXT5045_FUJITSU),
-> +	SND_PCI_QUIRK(0x1734, 0x10cb, "Fujitsu Si3515", CXT5045_LAPTOP),
->  	SND_PCI_QUIRK(0x8086, 0x2111, "Conexant Reference board", CXT5045_LAPTOP),
->  	{}
->  };
+Fwiw, currently supported codecs and platforms under ASoC :-
 
-exactly, this works perfectly on my machine!
+http://opensource.wolfsonmicro.com/cgi-bin/gitweb/gitweb.cgi?p=linux-2.6-asoc;a=tree;f=sound/soc;h=232b0ff3ccc8a37861c077618d18a9755376133d;hb=dev
 
-cu  robert
+Sorry, can't advise any further as I'm biased.
 
--- 
-Robert Lemmen                               http://www.semistable.com 
+Liam
