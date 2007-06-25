@@ -1,24 +1,19 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: Input/output error while playing a file using aplay
-Date: Tue, 26 Jun 2007 00:08:44 +0530
-Message-ID: <61445c750706251138r290c2a7br6b911be6da7e53ce@mail.gmail.com>
-References: <61445c750706221312t4449c847p72523339f228a101@mail.gmail.com>
-	<1182754597.9211.1196859135@webmail.messagingengine.com>
-	<61445c750706250156p42de468vecbf7ca4f373f2b0@mail.gmail.com>
-	<1182769239.15228.1196888507@webmail.messagingengine.com>
-	<61445c750706250504k23d02f75y52619c6cd081a5a8@mail.gmail.com>
-	<61445c750706250635i61be8752lbf7a7b1930a8ca79@mail.gmail.com>
+From: "Paul Kavan" <pkavan@gmail.com>
+Subject: Re: at91 SoC Modifications
+Date: Mon, 25 Jun 2007 15:09:56 -0500
+Message-ID: <61c0054e0706251309lf60afabi86ab192e10a0635@mail.gmail.com>
+References: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BACC2435A
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E80B243F9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jun 2007 20:38:46 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id j2so1306722nzf
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2007 11:38:45 -0700 (PDT)
-In-Reply-To: <61445c750706250635i61be8752lbf7a7b1930a8ca79@mail.gmail.com>
+	Mon, 25 Jun 2007 22:10:00 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id o2so1349994uge
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2007 13:09:59 -0700 (PDT)
+In-Reply-To: <61c0054e0706201421x3725f809g80822d32d78d216e@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,176 +24,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Frank Mandarino <fmandarino@endrelia.com>, Liam Girdwood <lg@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-I am pruning the logs in previous e-mails here since its becoming too
-lengthy to read. After rewriting the pointer function I am not getting
-the input/output error but I am getting underruns. I think I am little
-closer to the
-working driver now, am I?
+Hello all:
 
-here is the log, after getting couple of underrun error messages the
-dma just gets halted.
+I have been struggling to determine why the sync line (TF0) behaves so
+strangely when in capture mode yet acts fine in playback mode. So far, no
+real clues. However, I do have a few questions. I have DATADEF set for TD0
+set to 1. However, at the end of a playback it pulls to zero. Any clue why
+this might be happening?
 
-Log:
+Also, in the machine code, I set up some test code to printk back the gpio
+registers:
 
-snd_card_omap_alsa_open start
+the code for the gpio is given as
 
-eac_enable_clocks start
-Clocks are already enabled
-eac_set_samplerate start
+#define AT91_PIO_TK0    (1 << (AT91_PIN_PB16 - PIN_BASE) % 32)
+#define AT91_PIO_TF0    (1 << (AT91_PIN_PB17 - PIN_BASE) % 32)
+#define AT91_PIO_TD0    (1 << (AT91_PIN_PB18 - PIN_BASE) % 32)
+#define AT91_PIO_RD0    (1 << (AT91_PIN_PB19 - PIN_BASE) % 32)
+#define AT91_PIO_RK0    (1 << (AT91_PIN_PB20 - PIN_BASE) % 32)
+#define AT91_PIO_RF0    (1 << (AT91_PIN_PB21 - PIN_BASE) % 32)
+.
+.
+.
+    ssc_pio_lines = AT91_PIO_TF0 | AT91_PIO_TK0 | AT91_PIO_TD0
+            | AT91_PIO_RD0 /*| AT91_PIO_RK0 | AT91_PIO_RF0*/ ;
 
-eac_set_samplerate end
-after audio init
-audio_dma_request start
-omap_request_alsa_sound_dma start
-omap_request_alsa_sound_dma end
-snd_card_omap_alsa_open end
-Playing WAVE 'startup.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-snd_omap_alsa_hw_params start
-data format is 2 -- Channel 0 rate =2 and buffer size is ac44
-snd_omap_alsa_hw_params end
-snd_omap_alsa_prepare start
-audio_configure_dma_channel start
-dma_size is 2000
-dma_ptr is c3540000
-snd_omap_alsa_prepare end
-SNDRV_PCM_IOCTL1_RESET
-Inside snd_pcm_lib_ioctl_reset
-Inside snd_pcm_do_start
-snd_omap_alsa_trigger start
-audio_set_dma_params_play start
-audio_set_dma_params_play end
-audio_start_dma_chain start
-/*These are the platform specific dma setup routines*/
-Inside omap_start_dma 1
-Inside omap_start_dma 2
-Inside omap_start_dma 3
-audio_start_dma_chain end
-snd_omap_alsa_trigger end
-sound_dma_irq_handler start
-!!! In DMA IRQ handler
-lch=0,status=0x20, dma_status=32, data=c3cb5704
-callback_omap_alsa_sound_dma start
-Inside /snd_pcm_period_elapsed
-Inside snd_pcm_update_hw_ptr_interrupt
-Inside snd_pcm_update_hw_ptr_pos
-snd_omap_alsa_pointer start
-Inside snd_pcm_update_hw_ptr_pos, pos is 18153472
-/**Here is a BUG**/
-ALSA sound/core/pcm_lib.c:167: BUG: stream = 0, pos = 0x1150000,
-buffer size = 0x4000, period size = 0x800
-Inside snd_pcm_do_stop
-snd_omap_alsa_trigger start
-audio_stop_dma start
-omap_stop_alsa_sound_dma end
-omap_clear_alsa_sound_dma start
-omap_clear_alsa_sound_dma end
-snd_omap_alsa_trigger end
-Not active
-sound_dma_irq_handler end
-Inside snd_pcm_status
-/***Under run here ****/
-underrun!!! (at least -33.431 mssnd_omap_alsa_prepare start
- long)
-audio_configure_dma_channel start
-dma_size is 2000
-dma_ptr is c3540000
-snd_omap_alsa_prepare end
-SNDRV_PCM_IOCTL1_RESET
-Inside snd_pcm_lib_ioctl_reset
-Inside snd_pcm_do_start
-snd_omap_alsa_trigger start
-audio_set_dma_params_play start
-audio_set_dma_params_play end
-audio_start_dma_chain start
-Inside omap_start_dma 1
-Inside omap_start_dma 2
-Inside omap_start_dma 3
-audio_start_dma_chain end
-snd_omap_alsa_trigger end
-sound_dma_irq_handler start
-!!! In DMA IRQ handler
-lch=0,status=0x20, dma_status=32, data=c3cb5704
-callback_omap_alsa_sound_dma start
-Inside /snd_pcm_period_elapsed
-Inside snd_pcm_update_hw_ptr_interrupt
-Inside snd_pcm_update_hw_ptr_pos
-snd_omap_alsa_pointer start
-Inside snd_pcm_update_hw_ptr_pos, pos is 18153472
+        printk("SSC PIO LINES is 0x%x\n",ssc_pio_lines);
+    /* Reset all PIO registers and assign lines to peripheral A */
+     at91_sys_write(AT91_PIOB + PIO_PDR,  ssc_pio_lines);
+     at91_sys_write(AT91_PIOB + PIO_ODR,  ssc_pio_lines);
+     at91_sys_write(AT91_PIOB + PIO_IFDR, ssc_pio_lines);
+     at91_sys_write(AT91_PIOB + PIO_CODR, ssc_pio_lines);
+     at91_sys_write(AT91_PIOB + PIO_IDR,  ssc_pio_lines);
+     at91_sys_write(AT91_PIOB + PIO_MDDR, ssc_pio_lines);
+     at91_sys_write(AT91_PIOB + PIO_PUDR, ssc_pio_lines);
+     at91_sys_write(AT91_PIOB + PIO_ASR,  ssc_pio_lines);
+     at91_sys_write(AT91_PIOB + PIO_OWDR, ssc_pio_lines);
 
-/***Bug ***/
-ALSA sound/core/pcm_lib.c:167: BUG: stream = 0, pos = 0x1150000,
-buffer size = 0x4000, period size = 0x800
-Inside snd_pcm_do_stop
-snd_omap_alsa_trigger start
-audio_stop_dma start
-omap_stop_alsa_sound_dma end
-omap_clear_alsa_sound_dma start
-omap_clear_alsa_sound_dma end
-snd_omap_alsa_trigger end
-Not active
-sound_dma_irq_handler end
-Inside snd_pcm_status
-/***underrun***/
-underrun!!! (at least -33.633 mssnd_omap_alsa_prepare start
- long)
-audio_configure_dma_channel start
-dma_size is 2000
-dma_ptr is c3540000
-snd_omap_alsa_prepare end
-SNDRV_PCM_IOCTL1_RESET
-Inside snd_pcm_lib_ioctl_reset
-Inside snd_pcm_do_start
-snd_omap_alsa_trigger start
-audio_set_dma_params_play start
-audio_set_dma_params_play end
-audio_start_dma_chain start
-Inside omap_start_dma 1
-Inside omap_start_dma 2
-Inside omap_start_dma 3
-audio_start_dma_chain end
-snd_omap_alsa_trigger end
-sound_dma_irq_handler start
-!!! In DMA IRQ handler
-lch=0,status=0x20, dma_status=32, data=c3cb5704
-callback_omap_alsa_sound_dma start
-Inside /snd_pcm_period_elapsed
-Inside snd_pcm_update_hw_ptr_interrupt
-Inside snd_pcm_update_hw_ptr_pos
-snd_omap_alsa_pointer start
-Inside snd_pcm_update_hw_ptr_pos, pos is 18153472
-/***BUG**/
-ALSA sound/core/pcm_lib.c:167: BUG: stream = 0, pos = 0x1150000,
-buffer size = 0x4000, period size = 0x800
-Inside snd_pcm_do_stop
-snd_omap_alsa_trigger start
-audio_stop_dma start
-omap_stop_alsa_sound_dma end
-omap_clear_alsa_sound_dma start
-omap_clear_alsa_sound_dma end
-snd_omap_alsa_trigger end
-Not active
-sound_dma_irq_handler end
-Inside snd_pcm_status
-/***Underrun**/
-underrun!!! (at least -33.759 mssnd_omap_alsa_prepare start
- long)
-audio_configure_dma_channel start
-dma_size is 2000
-dma_ptr is c3540000
-snd_omap_alsa_prepare end
-SNDRV_PCM_IOCTL1_RESET
-Inside snd_pcm_lib_ioctl_reset
-Inside snd_pcm_do_start
-snd_omap_alsa_trigger start
-audio_set_dma_params_play start
-audio_set_dma_params_play end
-audio_start_dma_chain start
-Inside omap_start_dma 1
-Inside omap_start_dma 2
+        /*TEST CODE*/
+        printk("PIOB-PDR is set to %d\n",at91_sys_read(AT91_PIOB +
+PIO_PDR));
+     printk("PIOB-ODR is set to %d\n",at91_sys_read(AT91_PIOB + PIO_ODR));
+     printk("PIOB-IFDR is set to %d\n",at91_sys_read(AT91_PIOB + PIO_IFDR));
+     printk("PIOB-CODR is set to %d\n",at91_sys_read(AT91_PIOB + PIO_CODR));
+     printk("PIOB-IRD is set to %d\n",at91_sys_read(AT91_PIOB + PIO_IDR));
+     printk("PIOB-MDDR is set to %d\n",at91_sys_read(AT91_PIOB + PIO_MDDR));
+     printk("PIOB-PUDR is set to %d\n",at91_sys_read(AT91_PIOB + PIO_PUDR));
+     printk("PIOB-ASR is set to %d\n",at91_sys_read(AT91_PIOB + PIO_ASR));
+     printk("PIOB-OWDR is set to %d\n",at91_sys_read(AT91_PIOB + PIO_OWDR));
+        /*END OF TEST CODE*/
 
-/******It hangs here, the dma halts here and no further messages are
-shown*******/
+
+and the result at boot is:
+
+AT91SAM9260EK W6811 Driver <1>
+w6811: W6811 PCM SoC Audio 0.1
+asoc: W6811 <-> at91-ssc0 mapping ok
+SSC PIO LINES is 0xf0000
+PIOB-PDR is set to 0
+PIOB-ODR is set to 0
+PIOB-IFDR is set to 0
+PIOB-CODR is set to 0
+PIOB-IRD is set to 0
+PIOB-MDDR is set to 0
+PIOB-PUDR is set to 0
+PIOB-ASR is set to 0
+PIOB-OWDR is set to 0
+
+...why are all the registers set to 0?
+
+I may have to try separating TF0/RF0 and TK0/RK0....but should not have to I
+do not think.
+
+Paul
+
+-- 
+***************************************
+Paul David Kavan
+Project Engineer
+GRH Electronics, Inc.
+402-734-4900
+pkavan@gmail.com
+***************************************
