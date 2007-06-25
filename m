@@ -1,19 +1,21 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: alsa-lib: pcm_softvol.c: attenuation curve - it
- seems to be too quiet at full volume
-Date: Mon, 25 Jun 2007 09:13:10 +0200
-Message-ID: <1182755590.11876.1196861307@webmail.messagingengine.com>
-References: <20070622165006.412ed10a@jutz-fc6.na.corp.dmxmusic.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: Input/output error while playing a file using aplay
+Date: Mon, 25 Jun 2007 14:26:44 +0530
+Message-ID: <61445c750706250156p42de468vecbf7ca4f373f2b0@mail.gmail.com>
+References: <61445c750706221312t4449c847p72523339f228a101@mail.gmail.com>
+	<1182754597.9211.1196859135@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id A9A4A24367
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 432DF24389
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jun 2007 09:13:11 +0200 (CEST)
+	Mon, 25 Jun 2007 10:56:46 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so1733895wag
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2007 01:56:44 -0700 (PDT)
+In-Reply-To: <1182754597.9211.1196859135@webmail.messagingengine.com>
 Content-Disposition: inline
-In-Reply-To: <20070622165006.412ed10a@jutz-fc6.na.corp.dmxmusic.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "John L. Utz III" <john.utz@dmx.com>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-John L. Utz III wrote:
-> Softvol works quite well *except* that the max volume for the rear
-> channel is now much quieter than it is without softvol. :-(
+>The ALSA framework will stop the stream and return the error code EIO
+>when there was no interrupt for ten seconds, i.e., when
+>snd_pcm_period_elapsed() was not called.
 
-You should be able to get the original volume by setting the mixer to
-0 dB.
+I am getting the interrupts, but why there wont be any interrupt for
+10 seconds?
+I am setting the periods in prepare as periods = runtime->period, so
+interrupts should
+at period boundaries.
+
+May be s->active got corrupted.
 
 
-Regards,
-Clemens
+On 6/25/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
+> Pharaoh . wrote:
+> > ...
+> > It waits here for sometime and then I get
+> > snd_omap_alsa_trigger starte error: Input/output error
+>
+> The ALSA framework will stop the stream and return the error code EIO
+> when there was no interrupt for ten seconds, i.e., when
+> snd_pcm_period_elapsed() was not called.
+>
+> Either s->active got corrupted, or your interrupt handler never got
+> called.
+>
+> BTW: snd_pcm_period_elapsed() can stop the stream in some situations,
+> so you should move this call to the end of the interrupt handler, or
+> check s->active again after calling it.
+>
+>
+> HTH
+> Clemens
+>
