@@ -1,9 +1,8 @@
 From: "Pharaoh ." <pharaoh137@gmail.com>
 Subject: Re: Input/output error while playing a file using aplay
-Date: Tue, 26 Jun 2007 19:13:37 +0530
-Message-ID: <61445c750706260643s3f3bfb0end3731eea97c9bb68@mail.gmail.com>
+Date: Tue, 26 Jun 2007 22:47:18 +0530
+Message-ID: <61445c750706261017i4947eac2l4556d849613555e0@mail.gmail.com>
 References: <61445c750706221312t4449c847p72523339f228a101@mail.gmail.com>
-	<1182754597.9211.1196859135@webmail.messagingengine.com>
 	<61445c750706250156p42de468vecbf7ca4f373f2b0@mail.gmail.com>
 	<1182769239.15228.1196888507@webmail.messagingengine.com>
 	<61445c750706250504k23d02f75y52619c6cd081a5a8@mail.gmail.com>
@@ -12,17 +11,18 @@ References: <61445c750706221312t4449c847p72523339f228a101@mail.gmail.com>
 	<1182842511.3512.1197069785@webmail.messagingengine.com>
 	<61445c750706260351v2ef766bbrb8685275a0451cec@mail.gmail.com>
 	<1182863878.22603.1197116759@webmail.messagingengine.com>
+	<61445c750706260643s3f3bfb0end3731eea97c9bb68@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8150C103816
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.224])
+	by alsa0.perex.cz (Postfix) with ESMTP id E928A2445D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jun 2007 15:43:39 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so2260594wag
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2007 06:43:37 -0700 (PDT)
-In-Reply-To: <1182863878.22603.1197116759@webmail.messagingengine.com>
+	Tue, 26 Jun 2007 19:17:19 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id j2so1615321nzf
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2007 10:17:18 -0700 (PDT)
+In-Reply-To: <61445c750706260643s3f3bfb0end3731eea97c9bb68@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,51 +37,8 @@ To: Clemens Ladisch <cladisch@fastmail.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QXMgcGVyIHRoZSBwbGF0LW9tYXAvZG1hLmMgdGhlIGZ1bmN0aW9uIGlzIGxpa2UgdGhpczoKCi8q
-CiAgKiBSZXR1cm5zIGN1cnJlbnQgcGh5c2ljYWwgc291cmNlIGFkZHJlc3MgZm9yIHRoZSBnaXZl
-biBETUEgY2hhbm5lbC4KICAqIElmIHRoZSBjaGFubmVsIGlzIHJ1bm5pbmcgdGhlIGNhbGxlciBt
-dXN0IGRpc2FibGUgaW50ZXJydXB0cyBwcmlvciBjYWxsaW5nCiAgKiB0aGlzIGZ1bmN0aW9uIGFu
-ZCBwcm9jZXNzIHRoZSByZXR1cm5lZCB2YWx1ZSBiZWZvcmUgcmUtZW5hYmxpbmcgaW50ZXJydXB0
-IHRvCiAgKiBwcmV2ZW50IHJhY2VzIHdpdGggdGhlIGludGVycnVwdCBoYW5kbGVyLiBOb3RlIHRo
-YXQgaW4gY29udGludW91cyBtb2RlIHRoZXJlCiAgKiBpcyBhIGNoYW5jZSBmb3IgQ1NTQV9MIHJl
-Z2lzdGVyIG92ZXJmbG93IGluYmV0d2VlbiB0aGUgdHdvIHJlYWRzIHJlc3VsdGluZwogICogaW4g
-aW5jb3JyZWN0IHJldHVybiB2YWx1ZS4KICAqLwogZG1hX2FkZHJfdCBvbWFwX2dldF9kbWFfc3Jj
-X3BvcyhpbnQgbGNoKQogewogICAgICAgICBkbWFfYWRkcl90IG9mZnNldDsKCiAgICAgICAgIGlm
-IChjcHVfY2xhc3NfaXNfb21hcDEoKSkKICAgICAgICAgICAgICAgICBvZmZzZXQgPSAoZG1hX2Fk
-ZHJfdCkgKE9NQVAxX0RNQV9DU1NBX0xfUkVHKGxjaCkgfAogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgKE9NQVAxX0RNQV9DU1NBX1VfUkVHKGxjaCkgPDwgMTYpKTsKCiAg
-ICAgICAgIGlmIChjcHVfaXNfb21hcDI0eHgoKSkKICAgICAgICAgICAgICAgICBvZmZzZXQgPSBP
-TUFQX0RNQV9DU0FDX1JFRyhsY2gpOwoKICAgICAgICAgcmV0dXJuIG9mZnNldDsKfQoKSSBoYXZl
-IG9uZSBkb3VidCBoZXJlLCBJIGFtIHJlZmVycmluZyBXcml0aW5nIEFMU0EgZHJpdmVyIGJ5IFRh
-a2FzaGkKaXQgc2F5cyBmb2xsb3dpbmcgYWJvdXQgdGhlIGRtYV9hZGRyX3QuCgpJZiB5b3UgdXNl
-IGEgc3RhbmRhcmQgQUxTQSBmdW5jdGlvbiwgc25kX3BjbV9saWJfbWFsbG9jX3BhZ2VzKCksIGZv
-cgphbGxvY2F0aW5nIHRoZSBidWZmZXIsIHRoZXNlIO+sgWVsZHMgYXJlIHNldCBieSB0aGUgQUxT
-QSBtaWRkbGUgbGF5ZXIsCmFuZCB5b3Ugc2hvdWxkIG5vdCBjaGFuZ2UgdGhlbSBieSB5b3Vyc2Vs
-Zi4KCkkgYW0gdXNpbmcgdGhlIHN0YW5kYXJkIGhlbHBlciBmdW5jdGlvbiB0byBhbGxvY2F0ZSB0
-aGUgRE1BIGJ1ZmZlciBpbgpteSBod19wYXJhbXMsIHNvIEkgYW0gbm90IHNldHRpbmcgdGhlIHJ1
-bnRpbWUtPmRtYV9hZGRyIGZpZWxkLCBwY20KbGF5ZXIgbXVzdCBiZSBzZXR0aW5nIGl0LCByaWdo
-dD8KCkJ1dCBpbiBteSBwb2ludGVyIGZ1bmN0aW9uIEkgYW0gYWNjZXNzaW5nIHJ1bnRpbWUtPmRt
-YV9hZGRyIHdoZXJlIGFzCnRoZSBndWlkZSBzYXlzIGl0IGlzIGkuZSB0aGUgcGh5c2ljYWwgYnVz
-IGFkZHJlc3MgaXMgbm90IGFjY2Vzc2libGUKZnJvbSB0aGUgbWFpbiBDUFUuIEkgYW0gZG9pbmcg
-d3JvbmcgYWNjZXNzaW5nIGl0PwoKQWZ0ZXIgYWxsb2NhdGluZyB0aGUgYnVmZmVyIGluIGh3X3Bh
-cmFtcyBpIGFtICB0cnlpbmcgdG8gY2hlY2sgdGhlCnBoeXNpY2FsIGFuZCB2aXJ0dWFsIGFkZHIg
-b2YgdGhlIERNQSBidWZmZXIsIEkgZ2V0CgpQaHlzaWNhbCBETUEgYWRkciBpcyAwMDAwMDAwMCBh
-bmQgdmlydHVhbCBhZGRyIGlzIGMzNTQwMDAwCgpkb2VzIGl0IG1lYW4gdGhhdCBkbWFfYWRkciBp
-cyByZWFsbHkgbm90IGFjY2Vzc2libGUgZnJvbSBtYWluIENQVT8KCkluIHBvaW50ZXIgd2hlbiBJ
-IGNoZWNrIHRoZSBkbWEgYWRkciBJIGdldAoKcnVudGltZS0+ZG1hX2FkZHIgaXMgMDAwMDAwMDAg
-ISEKCkhvdyBjb21lPz8KCi1waGFyYW9oLgoKT24gNi8yNi8wNywgQ2xlbWVucyBMYWRpc2NoIDxj
-bGFkaXNjaEBmYXN0bWFpbC5uZXQ+IHdyb3RlOgo+IFBoYXJhb2ggLiB3cm90ZToKPiA+ICAgICAg
-ICAgICAgICAgICBzcmMgPSBvbWFwX2dldF9kbWFfc3JjX3BvcyhzLT5sY2hbcy0+ZG1hX3FfaGVh
-ZF0pOwo+ID4gICAgICAgICAgICAgICAgIG9mZnNldCA9IHNyYyAtIHJ1bnRpbWUtPmRtYV9hZGRy
-Owo+ID4gICAgICAgICAgICAgICAgIHByaW50aygic3JjIGlzICV1IGFuZCBvZmZzZXQgaXMgJXVc
-biIsZGVzdCxvZmZzZXQpOwo+ID4KPiA+IHNyYyBpcyAzMjQ2NzkyOTI4IGFuZCBvZmZzZXQgaXMg
-MzMwNDE5NDA0OAo+ID4gUmV0dXJuaW5nIHBvcyA9IDIwNzQyMTQ0Cj4gPiBBTFNBIHNvdW5kL2Nv
-cmUvcGNtX2xpYi5jOjE2NzogQlVHOiBzdHJlYW0gPSAwLCBwb3MgPSAweDEzYzgwMDAsIGJ1ZmZl
-cgo+IHNpemUgPSAweDQwMDAsIHBlcmlvZCBzaXplID0gMHg4MDAKPgo+IGRtYV9hZGRyID0gMHhG
-Qzk0MjBFMCAoaXMgdGhpcyBjb3JyZWN0PykKPiBzcmMgICAgICA9IDB4QzE4NjIwRTAKPiBvZmZz
-ZXQgICA9IDB4QzRGMjAwMDAKPgo+IEFwcGFyZW50bHksIHRoZSByZXR1cm4gdmFsdWUgb2Ygb21h
-cF9nZXRfZG1hX3NyY19wb3MoKSBpcyB3cm9uZy4KPiBTaG91bGQgdGhpcyB2YWx1ZSBiZSAxNiBi
-aXRzPwo+Cj4KPiBSZWdhcmRzLAo+IENsZW1lbnMKPgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+>In pointer when I check the dma addr I get
+>runtime->dma_addr is 00000000 !!
+
+I think runtime->dma_addr is set to 0 when the dma buffer is
+physically non-contiguous.
