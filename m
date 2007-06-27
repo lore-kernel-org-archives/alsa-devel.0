@@ -1,18 +1,18 @@
-From: "J. Scott Merritt" <alsauser@pragmasoft.com>
-Subject: SALSA-Lib: snd_pcm_hw_params_any clobbers memory
-Date: Wed, 27 Jun 2007 16:33:52 -0400
-Message-ID: <20070627163352.2559a026.alsauser@pragmasoft.com>
+From: "Daniel J Blueman" <daniel.blueman@gmail.com>
+Subject: [HDA Intel/STAC92xx] mic not working (retasking?)...
+Date: Wed, 27 Jun 2007 21:28:43 +0100
+Message-ID: <6278d2220706271328u79afd988r44cc1fbfc41c6014@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6.server.rpi.edu (smtp6.server.rpi.edu [128.113.2.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8ECD624524
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6090524524
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jun 2007 22:30:49 +0200 (CEST)
-Received: from RPI02.localdomain (voiceflight.inc.rpi.edu [128.113.36.139])
-	by smtp6.server.rpi.edu (8.13.1/8.13.1) with SMTP id l5RKUm5k001671
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2007 16:30:48 -0400
+	Wed, 27 Jun 2007 22:28:44 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id h2so428356ugf
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2007 13:28:43 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear list,
+With both 2.6.20 and 2.6.22 kernels on Ubuntu 7.04 on my Sony Vaio
+SZ240, I'm unable to get my mic connector working at any cost.
 
-Using SALSA-Lib 0.0.2, I call
-   snd_pcm_open
-   snd_pcm_hw_params_malloc
-   snd_pcm_hw_params_any
+Well, almost...reading from /dev/dsp, I do see a minute change from
+127 for 126 or 128 if I tap my external mic. This would imply the
+jack-retasking feature of this darn STAC chipset, right?
 
-The call to snd_pcm_hw_params_any appears to clobber memory beyond the
-end of the hw_params allocated by snd_pcm_hw_params_malloc (as reported
-by linking in -lmcheck).
+How can I change the jack retasking with the Intel HDA drivers or get
+further insight into this problem?
 
-The code is being cross-compiled and tested on an ARM processor
-(PXA270) which is running linux kernel 2.6.21.   This same code sequence
--does- operate properly (in the same ARM test environment) when compiled
-against AlsaLib 1.0.13.
+Thanks in advance,
+  Daniel
 
-I got "lost" somewhere around the hw_refine IOCTL ....  Any suggestions
-appreciated :)
+--- [1]
 
-Thanks, Scott.
+$ lspci -s0:1b.0
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+
+$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+$ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+
+$ amixer info
+Card default 'Intel'/'HDA Intel at 0xde400000 irq 22'
+  Mixer name    : 'SigmaTel CXD9872RD/K'
+  Components    : 'HDA:83847661 HDA:14f12bfa'
+  Controls      : 6
+  Simple ctrls  : 5
+
+$ amixer controls
+numid=2,iface=MIXER,name='Master Playback Switch'
+numid=1,iface=MIXER,name='Master Playback Volume'
+numid=6,iface=MIXER,name='PCM Playback Volume'
+numid=5,iface=MIXER,name='Capture Source'
+numid=4,iface=MIXER,name='Capture Switch'
+numid=3,iface=MIXER,name='Capture Volume'
+
+$ amixer scontrols
+Simple mixer control 'Master',0
+Simple mixer control 'PCM',0
+Simple mixer control 'Line',0
+Simple mixer control 'Mic',0
+Simple mixer control 'Capture',0
+
+$ amixer contents
+numid=2,iface=MIXER,name='Master Playback Switch'
+  ; type=BOOLEAN,access=rw------,values=2
+  : values=on,on
+numid=1,iface=MIXER,name='Master Playback Volume'
+  ; type=INTEGER,access=rw------,values=2,min=0,max=127,step=0
+  : values=66,66
+numid=6,iface=MIXER,name='PCM Playback Volume'
+  ; type=INTEGER,access=rw---RW-,values=2,min=0,max=255,step=0
+  : values=230,230
+  | dBscale-min=-51.00dB,step=0.20dB,mute=0
+numid=5,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw------,values=1,items=2
+  ; Item #0 'Line'
+  ; Item #1 'Mic'
+  : values=1
+numid=4,iface=MIXER,name='Capture Switch'
+  ; type=BOOLEAN,access=rw------,values=2
+  : values=on,on
+numid=3,iface=MIXER,name='Capture Volume'
+  ; type=INTEGER,access=rw---R--,values=2,min=0,max=15,step=0
+  : values=15,15
+  | dBscale-min=0.00dB,step=1.50dB,mute=0
+-- 
+Daniel J Blueman
