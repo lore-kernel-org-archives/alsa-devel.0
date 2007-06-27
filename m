@@ -1,18 +1,20 @@
-From: "Daniel J Blueman" <daniel.blueman@gmail.com>
-Subject: [HDA Intel/STAC92xx] mic not working (retasking?)...
-Date: Wed, 27 Jun 2007 21:28:43 +0100
-Message-ID: <6278d2220706271328u79afd988r44cc1fbfc41c6014@mail.gmail.com>
+From: Steven Zakulec <spzakulec@mail.widener.edu>
+Subject: [HDA-Intel/ALC268] no sound
+Date: Wed, 27 Jun 2007 17:34:15 -0400 (EDT)
+Message-ID: <89157807.1182980055151.JavaMail.root@ccprodapp22>
+Reply-To: Steven Zakulec <spzakulec@mail.widener.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6090524524
+Received: from ccprodapp22.campuscruiser.com (email.campuscruiser.com
+	[216.35.68.59]) by alsa0.perex.cz (Postfix) with ESMTP id 09C8C24532
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jun 2007 22:28:44 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so428356ugf
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2007 13:28:43 -0700 (PDT)
-Content-Disposition: inline
+	Wed, 27 Jun 2007 23:34:26 +0200 (CEST)
+Received: from ccprodapp22 (localhost [127.0.0.1])
+	by ccprodapp22.campuscruiser.com (8.13.1/8.13.1) with ESMTP id
+	l5RLYFPS010655
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2007 17:34:25 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,85 +24,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-With both 2.6.20 and 2.6.22 kernels on Ubuntu 7.04 on my Sony Vaio
-SZ240, I'm unable to get my mic connector working at any cost.
+(Continued from this thread: http://mailman.alsa-project.org/pipermail/alsa-devel/2007-June/001459.html)
 
-Well, almost...reading from /dev/dsp, I do see a minute change from
-127 for 126 or 128 if I tap my external mic. This would imply the
-jack-retasking feature of this darn STAC chipset, right?
+I've included the result of alsactl -f somefile store.  I thought it got sent to the list earlier, but apparently not. Below this I also added the alsa things from dmesg.
 
-How can I change the jack retasking with the Intel HDA drivers or get
-further insight into this problem?
+state.Intel {
+        control.1 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 64'
+                iface MIXER
+                name 'Front Playback Volume'
+                value.0 57
+                value.1 57
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Front Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 64'
+                iface MIXER
+                name 'Headphone Playback Volume'
+                value.0 63
+                value.1 63
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Headphone Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type INTEGER
+               comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 1
+                value.1 1
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 false
+                value.1 false
+        }
+        control.7 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Capture Volume'
+                index 1
+                value.0 1
+                value.1 1
+        }
+        control.8 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                index 1
+                value.0 false
+                value.1 false
+        }
+        control.9 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 Mic
+                comment.item.1 'Front Mic'
+                iface MIXER
+                name 'Input Source'
+                value Mic
+        }
+        control.10 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 Mic
+                comment.item.1 'Front Mic'
+                iface MIXER
+                name 'Input Source'
+                index 1
+                value Mic
+        }
+        control.11 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Off-hook Switch'
+                value false
+        }
+        control.12 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Caller ID Switch'
+                value false
+        }
+        control.13 {
+                comment.access 'read write user'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 255'
+                comment.tlv '0000000100000008ffffec1400000014'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 255
+                value.1 255
+        }
+}
+hda_codec: Unknown model for ALC268, trying auto-probe from BIOS...
+[   18.512000] ALSA /home/szakulec/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2339: autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
+[   18.512000] ALSA /home/szakulec/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2343:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+[   18.512000] ALSA /home/szakulec/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2347:    hp_outs=1 (0x15/0x0/0x0/0x0/0x0)
+[   18.512000] ALSA /home/szakulec/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2355:    inputs: mic=0x19, fmic=0x18, line=0x0, fline=0x0, cd=0x0, aux=0x0
+[   19.236000] ALSA /home/szakulec/alsa-hg/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:244: si3054: cannot initialize. EXT MID = 0000
+[   19.244000] ALSA /home/szakulec/alsa-hg/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:256: Link Frame Detect(FDT) is not ready (line status: 0000)
 
-Thanks in advance,
-  Daniel
 
---- [1]
 
-$ lspci -s0:1b.0
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-
-$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-$ arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
-  Subdevices: 2/2
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-
-$ amixer info
-Card default 'Intel'/'HDA Intel at 0xde400000 irq 22'
-  Mixer name    : 'SigmaTel CXD9872RD/K'
-  Components    : 'HDA:83847661 HDA:14f12bfa'
-  Controls      : 6
-  Simple ctrls  : 5
-
-$ amixer controls
-numid=2,iface=MIXER,name='Master Playback Switch'
-numid=1,iface=MIXER,name='Master Playback Volume'
-numid=6,iface=MIXER,name='PCM Playback Volume'
-numid=5,iface=MIXER,name='Capture Source'
-numid=4,iface=MIXER,name='Capture Switch'
-numid=3,iface=MIXER,name='Capture Volume'
-
-$ amixer scontrols
-Simple mixer control 'Master',0
-Simple mixer control 'PCM',0
-Simple mixer control 'Line',0
-Simple mixer control 'Mic',0
-Simple mixer control 'Capture',0
-
-$ amixer contents
-numid=2,iface=MIXER,name='Master Playback Switch'
-  ; type=BOOLEAN,access=rw------,values=2
-  : values=on,on
-numid=1,iface=MIXER,name='Master Playback Volume'
-  ; type=INTEGER,access=rw------,values=2,min=0,max=127,step=0
-  : values=66,66
-numid=6,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---RW-,values=2,min=0,max=255,step=0
-  : values=230,230
-  | dBscale-min=-51.00dB,step=0.20dB,mute=0
-numid=5,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw------,values=1,items=2
-  ; Item #0 'Line'
-  ; Item #1 'Mic'
-  : values=1
-numid=4,iface=MIXER,name='Capture Switch'
-  ; type=BOOLEAN,access=rw------,values=2
-  : values=on,on
-numid=3,iface=MIXER,name='Capture Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=15,step=0
-  : values=15,15
-  | dBscale-min=0.00dB,step=1.50dB,mute=0
--- 
-Daniel J Blueman
+                comment.count 2
+:
