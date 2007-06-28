@@ -1,25 +1,18 @@
-From: Per Eriksson <per@erinet.se>
-Subject: MOTU development
-Date: Thu, 28 Jun 2007 16:30:10 +0200
-Message-ID: <1183041010.14814.4.camel@dhcppc1>
+From: "J. Scott Merritt" <alsauser@pragmasoft.com>
+Subject: Re: SALSA-Lib: snd_pcm_hw_params_any clobbers memory
+Date: Thu, 28 Jun 2007 14:45:02 -0400
+Message-ID: <20070628144502.515c47d0.alsauser@pragmasoft.com>
+References: <20070627163352.2559a026.alsauser@pragmasoft.com>
+	<s5h3b0ce30v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from av12-2-sn2.hy.skanova.net (av12-2-sn2.hy.skanova.net
-	[81.228.8.186]) by alsa0.perex.cz (Postfix) with ESMTP id DC12C24429
+Received: from smtp6.server.rpi.edu (smtp6.server.rpi.edu [128.113.2.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADEFE24416
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Jun 2007 16:30:12 +0200 (CEST)
-Received: from smtp4-1-sn2.hy.skanova.net (smtp4-1-sn2.hy.skanova.net
-	[81.228.8.92])
-	by av12-2-sn2.hy.skanova.net (Postfix) with ESMTP id E18A937E69
-	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Jun 2007 16:30:11 +0200 (CEST)
-Received: from [10.13.0.2] (81-231-247-226-no29.tbcn.telia.com
-	[81.231.247.226])
-	by smtp4-1-sn2.hy.skanova.net (Postfix) with ESMTP id BB92537E5B
-	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Jun 2007 16:30:10 +0200 (CEST)
+	Thu, 28 Jun 2007 20:41:58 +0200 (CEST)
+In-Reply-To: <s5h3b0ce30v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,22 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear list,
+On Thu, 28 Jun 2007 13:23:28 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-My name is Per Eriksson, working as a musician with music and
-interactive content in Sweden.
+> At Wed, 27 Jun 2007 16:33:52 -0400,
+> J. Scott Merritt wrote:
+> > 
+> > Dear list,
+> > 
+> > Using SALSA-Lib 0.0.2, I call
+> >    snd_pcm_open
+> >    snd_pcm_hw_params_malloc
+> >    snd_pcm_hw_params_any
+> > 
+> > The call to snd_pcm_hw_params_any appears to clobber memory beyond
+> > the end of the hw_params allocated by snd_pcm_hw_params_malloc (as
+> > reported by linking in -lmcheck).
+> 
+> Gosh, my bad.  I didn't test *_malloc() at all.
+> 
+> There was a stupid bug in the template I copy-n-pasted.  The fix patch
+> is below.  I'll release version 0.0.3 soon later.
+> 
+> Thanks for reporting!
+> 
+> 
+> Takashi
 
-I'd like to know more about the health on the connections to MOTU, if
-they give any information about their products and how the development
-has proceeded over the years.
-
-I am thankful for any input.
-
-
-Best Regards
-
-Per Eriksson
-per@erinet.se
+Problem resolved in SALSA-Lib 0.0.3 - thanks :)
+(subsequent problem reported in new thread)
