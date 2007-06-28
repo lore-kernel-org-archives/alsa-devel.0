@@ -1,18 +1,19 @@
-From: "Paul Kavan" <pkavan@gmail.com>
-Subject: ALSA Application Programming Questions
-Date: Thu, 28 Jun 2007 15:41:38 -0500
-Message-ID: <61c0054e0706281341o605c7b9bke27fc9c1148e63ba@mail.gmail.com>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: MOTU development
+Date: Fri, 29 Jun 2007 09:13:42 +0930 (CST)
+Message-ID: <200706282343.l5SNhg98016085@turbo.physics.adelaide.edu.au>
+References: <mailman.606.1183056120.2053.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F07A24482
+Received: from adelphi.physics.adelaide.edu.au
+	(adelphi.physics.adelaide.edu.au [129.127.102.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id B07A424383
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Jun 2007 22:41:39 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id b21so19992nfd
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2007 13:41:38 -0700 (PDT)
-Content-Disposition: inline
+	Fri, 29 Jun 2007 01:43:46 +0200 (CEST)
+In-Reply-To: <mailman.606.1183056120.2053.alsa-devel@alsa-project.org> from
+	"alsa-devel-request@alsa-project.org" at Jun 28, 2007 08:42:00 PM
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: per@erinet.se, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all:
+Hi Per
 
-I have been working on getting ALSA to work on my at91sam9260 with a simple
-voice codec for a few weeks. For the most part, I have my ARM board
-producing nice audio with aplay/arecord. Now I need a custom application
-that will allow me to create an 'intercom' like device with my ARM board. I
-am planning on writing the application as I do not think there is something
-out there that will accomplish what I want.
+> I'd like to know more about the health on the connections to MOTU, if
+> they give any information about their products and how the development
+> has proceeded over the years.
 
-I am really new to ALSA--as some of you know--and, as such, have never
-written an application for ALSA. I have found the ALSA driver api page on
-the alsa site. Wondering if there is any other good documentation on writing
-alsa applications?
+It kind of depends which MOTU devices you're asking about.  There is, for
+example, an alsa driver for the MOTU Midi Timepiece AV (MTPAV) which
+presumedly makes the midi side of this available via the ALSA sequencer
+system.
 
-Any advice is greatly appreciated as well. One of my concerns is building
-the applications against the libs. I have the libs on my target machine. As
-my host machine has a version of my rfs on it, the libs are there as well.
-Just wondering how to accomplish cross-compiling new apps. I suppose I could
-copy the libs into the directory with my cross-compiling tools.
+I can't speak for any of MOTU's PCI/PCIe cards.  However, in connection with
+their more recent outboard interfaces MOTU have been, to put it mildly,
+extremely unhelpful.  Some on the net go so far as to say they are hostile
+to Linux.  The facts are that despite multiple people requesting information
+from MOTU on how to drive their firewire interfaces MOTU have responded
+every time with a very terse non-negotiable "no, never".  I don't know if
+anyone's ever asked about their USB-equipped devices but I can't imagine the
+answer would be any different.
 
-Again, any advice would be great.
+Despite this, some progress is being made in supporting MOTU firewire
+devices under linux.  For various reasons this support is not through ALSA
+but instead as part of the FFADO project.  FFADO provides a userspace
+library for driving firewire audio devices in general and a JACK backend
+allowing such devices to be used by any jack-enabled software.  An ALSA
+backend is planned but no work has been done towards this yet.  Check out
+www.ffado.org for information on this project.
 
-Thanks.
+Device support in FFADO varies.  Some interfaces for which we have vendor
+support are doing very well, while supporting an interface such as the MOTUs
+without any documentation is challenging.  However, the MOTU control
+protocol is pretty well understood at this point in time and it is possible
+to actually use the MOTU firewire devices for real work under Linux (as I
+have been for about 9 months now).  The trap is that one needs to use an
+earlier revision of ffado at present.  Back in February some key FFADO
+infrastructure changed.  From before that until the last week or so I've
+been busy with production projects and so haven't had a chance to update the
+MOTU FFADO driver and restore its functionality.  I'm back on the case now
+though and hope to make progress in the next month or so.
 
-Paul
+If you want further details about all this please contact me off-list and
+I'll fill you in.
 
--- 
-***************************************
-Paul David Kavan
-Project Engineer
-GRH Electronics, Inc.
-402-734-4900
-pkavan@gmail.com
-***************************************
+Best regards
+  jonathan
