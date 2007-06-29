@@ -1,21 +1,20 @@
-From: "Ash Willis" <ashwillis@programmer.net>
-Subject: Re: Creative Soundblaster X-Fi
-Date: Fri, 29 Jun 2007 13:21:06 -0500
-Message-ID: <20070629182106.4121B102EB@ws1-3.us4.outblaze.com>
+From: "J. Scott Merritt" <Scott@PragmaSoft.com>
+Subject: Re: SALSA-Lib: Playback overrun on initial PCM start
+Date: Fri, 29 Jun 2007 12:26:45 -0400
+Message-ID: <20070629122645.13f25b63.Scott@PragmaSoft.com>
+References: <20070628150108.271f4493.alsauser@pragmasoft.com>
+	<s5hmyyjcdtv.wl%tiwai@suse.de>
+	<20070629112409.27e67cea.alsauser@pragmasoft.com>
+	<s5hbqeyd9s7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail-outgoing.us4.outblaze.com
-	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF97724573
+Received: from starfish.geekisp.com (mail.geekisp.com [216.168.135.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9C391037FF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jun 2007 20:25:49 +0200 (CEST)
-Received: from unknown (unknown [192.168.8.90])
-	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
-	9423D180012E
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2007 18:21:05 +0000 (GMT)
-Content-Disposition: inline
+	Fri, 29 Jun 2007 18:23:44 +0200 (CEST)
+In-Reply-To: <s5hbqeyd9s7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +24,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tim Laszlo <tim.laszlo@gmail.com>, Shinichiro HIDA <shinichiro@stained-g.net>, tiwai@suse.de
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-Sorry for straying a little off topic, but talk of these couple of chips got me
-thinking about unsupported hardware in general.
+On Fri, 29 Jun 2007 18:07:20 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-Does anyone know the legal implications of reverse engineering with regards to
-producing new drivers? I myself wouldn't mind reversing a certain chip or two
-but I'm not too aware of the legality of it all, particularly in the case where
-the vendor is hostile or unwilling to release chip information.
+> At Fri, 29 Jun 2007 11:24:09 -0400,
+> J. Scott Merritt wrote:
+> > 
+> > On Fri, 29 Jun 2007 11:25:16 +0200
+> > Takashi Iwai <tiwai@suse.de> wrote:
+> > 
+> > > At Thu, 28 Jun 2007 15:01:08 -0400,
+> > > J. Scott Merritt wrote:
+> > > > 
+> > > > Dear List,
+> > > > 
+> > > > Using SALSA-Lib 0.0.3, I call:	
+> > > > 
+> > > > snd_pcm_open (&playback_handle, argv[1], SND_PCM_STREAM_PLAYBACK, 0);
+> > > > snd_pcm_hw_params_malloc (&hw_params);
+> > > > snd_pcm_hw_params_any (playback_handle, hw_params);
+> > > > snd_pcm_hw_params_set_access (playback_handle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
+> > > > snd_pcm_hw_params_set_format (playback_handle, hw_params, SND_PCM_FORMAT_S16_LE));
+> > > > snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, 44100, 0);
+> > > > snd_pcm_hw_params_set_channels (playback_handle, hw_params, 2);
+> > > > snd_pcm_hw_params_set_buffer_size_last (playback_handle, hw_params, &bfrsize);
+> > > > snd_pcm_hw_params_get_buffer_size (hw_params, &bfrsize);
+> > > > snd_pcm_hw_params (playback_handle, hw_params);
+> > > > snd_pcm_hw_params_free (hw_params);
+> > > > 	
+> > > > snd_pcm_sw_params_malloc (&sw_params);
+> > > > snd_pcm_sw_params_current (playback_handle, sw_params);
+> > > > snd_pcm_sw_params_set_avail_min (playback_handle, sw_params, 4096);
+> > > > snd_pcm_sw_params_set_start_threshold (playback_handle, sw_params, 10000U);
+> > > > snd_pcm_sw_params_set_xfer_align (playback_handle, sw_params, 1);
+> > > > snd_pcm_sw_params (playback_handle, sw_params);
+> > > > 	
+> > > > state = snd_pcm_state (playback_handle);
+> > > > frames_to_deliver = snd_pcm_avail_update (playback_handle);
+> > > > 
+> > > > while ((frames_to_deliver = snd_pcm_avail_update (playback_handle)) > 4096) {
+> > > >    snd_pcm_writei (playback_handle, &buf, 4096) }
+> > > > 
+> > > > 
+> > > > As soon as the buffer start threshold is reached, or alternatively
+> > > > if I manually start PCM stream, the PCM stream reports an overrun
+> > > > (i.e. "Broken Pipe").  If I then examine the PCM state, it is in the
+> > > > overrun (XRUN) state.
+> > > 
+> > > What are the buffer and period sizes?  Did you try alsa-lib with hw,
+> > > too, right?
+> > 
+> > In sample program above, buffer size is set to "last", which results
+> > in a buffer size of 32768 (which matches the allocation in the kernel driver).
+> > The sample programs above does not establish a period size and is unknown.
+> > 
+> > I added code to set the period size to 1024 frames and experienced the
+> > same (overrun) result.   I also forced the buffer size to 8192 and lowered
+> > the sample rate to 16 kHz and did not see any improvement.
+> > 
+> > Yes, the same exact code runs properly on the target hardware with
+> > alsa-lib 1.0.13.
+> 
+> OK, looks like a bug in salsa-lib, then.
+> I fixed some remaining bugs and release 0.0.4 now.  Please give it a
+> try.  (Note that it might take some time until the ftp server is
+> exported / mirrored.)
 
-In general, is it legally acceptable to reverse engineer for the purposes of
-interoperability?
+Much better :)
 
-Are vendors likely to make a noise if their hardware gains support under Linux
-without or against their consent? or is it more a matter of protecting the
-original product specification than hiding details of the product's interface?
+I no longer get the PlayBack overrun on PCM start.  However, it appears
+that "poll" or the snd_pcm_sw_params_set_avail_min (=4096) is not being
+properly honored.  With the normal alsa-lib, when the "poll" returns
+snd_pcm_avail_update reports that space is available for 4096 frames.
+However, in my initial testing, when running with SALSA lib, only about
+100 frames or so are available when the poll returns.
 
-Takashi, may I ask your thoughts on this? What's your position on accepting
-reverse engineered code? (Let's assume that the driver works as well as one
-written in a more correct manner ;))
-I'm fully aware that uncooperative vendors don't deserve to have their hardware
-supported, but I think that Linux users and Linux itself deserves the support.
-
-Ash
-
--- 
-We've Got Your Name at http://www.mail.com!
-Get a FREE E-mail Account Today - Choose From 100+ Domains
+I will examine this more closely.
