@@ -1,67 +1,87 @@
-From: Rainer Menzner <rmenzner@L1id.com>
-Subject: NVidia AC97 / CK804: arecord hangs in system call
-	poll()
-Date: Fri, 29 Jun 2007 13:36:15 +0200
-Message-ID: <4684EEAF.5050108@L1id.com>
+From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Subject: [1/2] 2.6.22-rc6: known regressions v2
+Date: Fri, 29 Jun 2007 17:13:11 +0200
+Message-ID: <46852187.3080504@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx3.rz.ruhr-uni-bochum.de (mx3.rz.ruhr-uni-bochum.de
-	[134.147.64.33]) by alsa0.perex.cz (Postfix) with SMTP id E5EA424532
-	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jun 2007 13:36:16 +0200 (CEST)
-Received: from tijuana.zn-ag.com ([192.168.10.5])
-	by langley.de.viisage.com (8.12.10/8.12.10/SuSE Linux 0.7) with ESMTP
-	id l5TBaFmH030179
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2007 13:36:15 +0200
-Received: from mailserver.zn-ag.com (berlin.zn-ag.com [192.168.10.1])
-	by tijuana.zn-ag.com (8.12.9/8.12.8) with ESMTP id l5TBaFiT029848
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2007 13:36:15 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developer Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-ide-owner@vger.kernel.org>
+Sender: linux-ide-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Rodrigo Luiz <troops.of.doom@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Ben Collins <bcollins@ubuntu.com>, reiserfs-devel@vger.kernel.org, "Vladimir V. Saveliev" <vs@namesys.com>, Randy Dunlap <randy.dunlap@oracle.com>, linux-ide@vger.kernel.org, David Chinner <dgc@sgi.com>, Jeff Garzik <jeff@garzik.org>, Tejun Heo <htejun@gmail.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Rodney Gordon II <meff@spherevision.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi all,
 
-my soundcard is an onboard AC97 CK804 NVidia. I use snd-intel8x0 module. 
-Everything works fine except recording sound. When calling
+Here is a list of some known regressions in 2.6.22-rc6.
 
-   arecord -f cd buffer.wav
+=46eel free to add new regressions/remove fixed etc.
+http://kernelnewbies.org/known_regressions
 
-the program infinitely hangs, and an strace shows that it is a poll() 
-call that does not return. After interrupting, a wave file of 44 bytes 
-which is the header only is left. My setup is Kernel 2.6.21.3, all 
-ALSA-software is updated to the latest version, that is 1.0.14(a).
+List of Aces
 
-In a previous setup with an older ALSA version and kernel 2.6.16.11 
-recording did work with the same hardware. Now that I updated all ALSA 
-software, even with that older kernel version the same recording problem 
-came up. From that I concluded that it is somehow related to the 
-ALSA-lib version. I have tried to downgrade ALSA-lib down to 1.0.0 to no 
-avail.
+Name                    Regressions fixed since 21-Jun-2007
+Hugh Dickins                           2
+Andi Kleen                             1
+Bj=F6rn Steinbrink                       1
+Bjorn Helgaas                          1
+Jean Delvare                           1
+Olaf Hering                            1
+Siddha, Suresh B                       1
+Trent Piepho                           1
+Ville Syrj=E4l=E4                          1
 
-I have also made tests appropriate if this would be an interrupt problem 
-(using pci=noroute et al) which also did not solve the problem.
 
-I have scrolled though the archives of alsa-user and there have been a 
-few posts regarding the same problem (but with other chip sets). 
-However, in those threads no definitive solution of the problem has been 
-discussed. So I tried it again in alsa-user but did not get any feedback ...
 
-Now, I finally try this developer list. Your comments and help are much 
-appreciated. Let me know if you need further info. I'm not a Linux 
-system programmer or specialist, but I would be willing to do some 
-debugging if somebody explains what to check.
+Unclassified
 
-Thanks for any support,
+Subject    : Kernel hang on CMOS_READ
+References : http://lkml.org/lkml/2007/6/3/138
+Submitter  : Rodrigo Luiz <troops.of.doom@gmail.com>
+Status     : Unknown
 
--Rainer
+
+
+ALSA
+
+Subject    : snd-aoa causes badness in lib/kref.c:33
+References : http://bugzilla.kernel.org/show_bug.cgi?id=3D8513
+Submitter  : Ben Collins <bcollins@ubuntu.com>
+Handled-By : Takashi Iwai <tiwai@suse.de>
+Status     : Unknown
+
+
+
+=46S
+
+Subject    : 2.6.22-rc4-git5 reiserfs: null ptr deref.
+References : http://lkml.org/lkml/2007/6/13/322
+Submitter  : Randy Dunlap <randy.dunlap@oracle.com>
+Handled-By : Vladimir V. Saveliev <vs@namesys.com>
+Status     : problem is being debugged
+
+
+
+IDE
+
+Subject    : 2.6.22-rcX: hda: lost interrupt
+References : http://lkml.org/lkml/2007/6/29/121
+Submitter  : David Chinner <dgc@sgi.com>
+Status     : unknown
+
+
+
+SATA/PATA
+
+Subject    : libata IT821X driver still fails! Hard-freezes system
+References : http://lkml.org/lkml/2007/6/14/82
+Submitter  : Rodney Gordon II <meff@spherevision.org>
+Status     : unknown
+
+
+
+Regards,
+Michal
+
+--
+LOG
+http://www.stardust.webpages.pl/log/
