@@ -1,42 +1,58 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [1/2] 2.6.22-rc6: known regressions v2
-Date: Fri, 29 Jun 2007 19:24:20 +0100
-Message-ID: <20070629192420.0d501a93@the-village.bc.nu>
-References: <46852187.3080504@googlemail.com>
-	<20070629175920.6af0c62b@the-village.bc.nu>
-	<468543CE.6080401@redhat.com>
-	<20070629190602.4ef6a0cb@the-village.bc.nu>
-	<46854B29.80906@garzik.org>
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: Re: Creative Soundblaster X-Fi
+Date: Fri, 29 Jun 2007 13:21:06 -0500
+Message-ID: <20070629182106.4121B102EB@ws1-3.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <reiserfs-devel-owner@vger.kernel.org>
-In-Reply-To: <46854B29.80906@garzik.org>
-Sender: reiserfs-devel-owner@vger.kernel.org
-To: Jeff Garzik <jeff@garzik.org>
-Cc: Chuck Ebbert <cebbert@redhat.com>, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Rodrigo Luiz <troops.of.doom@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, Ben Collins <bcollins@ubuntu.com>, reiserfs-devel@vger.kernel.org, "Vladimir V. Saveliev" <vs@namesys.com>, Randy Dunlap <randy.dunlap@oracle.com>, linux-ide@vger.kernel.org, David Chinner <dgc@sgi.com>, Tejun Heo <htejun@gmail.com>, Rodney Gordon II <meff@spherevision.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webmail-outgoing.us4.outblaze.com
+	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF97724573
+	for <alsa-devel@alsa-project.org>;
+	Fri, 29 Jun 2007 20:25:49 +0200 (CEST)
+Received: from unknown (unknown [192.168.8.90])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	9423D180012E
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2007 18:21:05 +0000 (GMT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Tim Laszlo <tim.laszlo@gmail.com>, Shinichiro HIDA <shinichiro@stained-g.net>, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 29 Jun 2007 14:10:49 -0400
-Jeff Garzik <jeff@garzik.org> wrote:
+Hi all,
+Sorry for straying a little off topic, but talk of these couple of chips got me
+thinking about unsupported hardware in general.
 
-> Alan Cox wrote:
-> >>> I'm not even sure this report is IT8212 related rather than just an IRQ
-> >>> storm
-> >> Why does the driver report "irq 0"?
-> >>
-> >> ata7: PATA max UDMA/133 cmd <blah> ctl <blah> bmdma <blah> irq 0  <====
-> >>
-> >> Above that, the ACPI layer says it assigned IRQ 20
-> > 
-> > Because the libata core code in 2.6.22rc6 reports all the ports and IRQ
-> > values wrongly ?
-> 
-> AFAIK that was fixed, for IRQ.  Please point out examples where it 
-> remains broken...
+Does anyone know the legal implications of reverse engineering with regards to
+producing new drivers? I myself wouldn't mind reversing a certain chip or two
+but I'm not too aware of the legality of it all, particularly in the case where
+the vendor is hostile or unwilling to release chip information.
 
-2.6.22-rc6 it is broken, for all the systems I've looked at, as are the
-port numbers. Tejun posted fixes for the IRQ but they do not seem to have
-been applied, or if they were it was post -rc6 to a git tree.
+In general, is it legally acceptable to reverse engineer for the purposes of
+interoperability?
 
-Alan
+Are vendors likely to make a noise if their hardware gains support under Linux
+without or against their consent? or is it more a matter of protecting the
+original product specification than hiding details of the product's interface?
+
+Takashi, may I ask your thoughts on this? What's your position on accepting
+reverse engineered code? (Let's assume that the driver works as well as one
+written in a more correct manner ;))
+I'm fully aware that uncooperative vendors don't deserve to have their hardware
+supported, but I think that Linux users and Linux itself deserves the support.
+
+Ash
+
+-- 
+We've Got Your Name at http://www.mail.com!
+Get a FREE E-mail Account Today - Choose From 100+ Domains
