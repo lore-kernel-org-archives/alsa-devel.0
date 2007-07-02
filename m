@@ -1,17 +1,24 @@
-From: gt bradley <gt.bradley@gmail.com>
-Subject: PS3 - Surround sound on SPDIF set-up
-Date: Mon, 02 Jul 2007 19:17:35 -0700
-Message-ID: <4689B1BF.2050709@gmail.com>
+From: "Daniel J Blueman" <daniel.blueman@gmail.com>
+Subject: Re: [HDA Intel/STAC92xx] mic not working
+	(retasking?)...
+Date: Mon, 2 Jul 2007 23:39:14 +0100
+Message-ID: <6278d2220707021539g1485af71v3cbb639f0844b271@mail.gmail.com>
+References: <6278d2220706271328u79afd988r44cc1fbfc41c6014@mail.gmail.com>
+	<s5hved6z75l.wl%tiwai@suse.de>
+	<6278d2220706301407p739ebfb5i52d4a2af3a17ecd8@mail.gmail.com>
+	<s5habuec264.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C3F710383F
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 779AD103844
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2007 04:13:41 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so2470371wag
-	for <alsa-devel@alsa-project.org>; Mon, 02 Jul 2007 19:13:40 -0700 (PDT)
+	Tue,  3 Jul 2007 00:39:16 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id h2so1380986ugf
+	for <alsa-devel@alsa-project.org>; Mon, 02 Jul 2007 15:39:15 -0700 (PDT)
+In-Reply-To: <s5habuec264.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,84 +28,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I've been beating my had against this for several weeks now.  (started
-with fedora 6, tried adding in the plugings etc (version 1.0.12) -- also
-tried upgrading to the current 1.0.14 version, without success (couldn't
-produce surround-sound on teh spdif output).  I have now switched to
-fedorea 7 and was able to have rythmbox play surround sound via spdif,
-but have since lost that ability.  (but I'm convinced the hardware and
-low-level drivers support it).  In order to limit the number of moving
-parts, I have reduced to just trying to get speaker-test to play on all
-6 speakers.
+Hi Takashi,
 
-from pirut &
-I have alsa-lib 1.0.14-0.4.rc3.fc7.ppc(64) and
-alsa-utils 1.0.14-0.7.rc2.fc7.ppc
+On 02/07/07, Takashi Iwai <tiwai@suse.de> wrote:
+> > > Daniel J Blueman wrote:
+> > > >
+> > > > With both 2.6.20 and 2.6.22 kernels on Ubuntu 7.04 on my Sony Vaio
+> > > > SZ240, I'm unable to get my mic connector working at any cost.
+[snip]
+> > > > How can I change the jack retasking with the Intel HDA drivers or get
+> > > > further insight into this problem?
+> > >
+> > > First, show the contents of /proc/asound/card0/codec#* files...
+> >
+> > Firstly, thank you for replying; the only related cases I've been able
+> > to find on the internet suggest to use the 'model=vaio' option to the
+> > snd-hda-intel module, but this does not help.
+>
+> Try the patch below, choose "Line" as the capture source (if you want
+> a mic-input jack -- for the built-in mic, chooes "Mic"), and raise the
+> newly added "Capture Boost" volume.
 
-The default install has no asound.conf file.  (attempts to create a
-"better" one didn't improve the situation).
+Firstly, thank you for your time and help.
 
-I do not see a file matching the ps3 device in etc/alsa/cards nor
-etc/alsa/pcm, but I have not found any documentation on adding entries
-to the above directories.
+I have discovered the bug preventing me using the external mic socket
+before: in the mixer, the user has to select the [internal] mic input,
+then re-select the line-in (actually external mic) input; reading from
+(eg) /dev/dsp while changing this, the output suddenly is as expected
+when the line-in is re-selected.
 
+Since we've got started, where should I look for the 'before' and
+'after' state to compare to see into this?
 
-[root@ps3 pcm0p]# cat /proc/asound/card0/pcm0p/info
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: SPDIF
-name: SPDIF
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 1
+This behaviour is reproducible with both 2.6.20 and 2.6.22-rc7.
 
-
-[root@ps3 ~]# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: PS3 [PS3], device 0: SPDIF [SPDIF]
- Subdevices: 1/1
- Subdevice #0: subdevice #0
-[root@ps3 ~]# aplay -L
-null
-   Discard all samples (playback) or generate zero samples (capture)
-[root@ps3 ~]# amixer
-[root@ps3 ~]# amixer scontrols
-[root@ps3 ~]# speaker-test -c 6
-
-speaker-test 1.0.14rc2
-
-Playback device is default
-Stream parameters are 48000Hz, S16_BE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 4096 to 8192
-Period size range from 256 to 256
-Using max buffer size 8192
-Periods = 4
-was set period_size = 256
-was set buffer_size = 8192
- 0 - Front Left
- 4 - Center
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
- 5 - LFE
-Time per period = 17.821324
-
-* above test only produces sound on channels 0 & 1.
-
-xmms produces no sound and emits the following:
-** WARNING **: alsa_setup_mixer(): Failed to find mixer element: PCM
-
-Is it possible to get some help/pointers in the right direction?
-thanks
-GT*
-*
+Many thanks!
+  Daniel
+-- 
+Daniel J Blueman
