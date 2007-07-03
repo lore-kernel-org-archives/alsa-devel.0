@@ -1,17 +1,20 @@
-From: "Paul Kavan" <pkavan@gmail.com>
-Subject: Errors in application building
-Date: Tue, 3 Jul 2007 13:29:40 -0500
-Message-ID: <61c0054e0707031129t28cc1421sde4d3b4ac4b6428b@mail.gmail.com>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Errors in application building
+Date: Tue, 3 Jul 2007 14:37:48 -0400
+Message-ID: <75b66ecd0707031137i4c302270oa307df11e0a6ad3@mail.gmail.com>
+References: <61c0054e0707031129t28cc1421sde4d3b4ac4b6428b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_125171_33197548.1183487380407"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67B912443F
+Received: from qb-out-0506.google.com (qb-out-0506.google.com [72.14.204.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id 45BC3103812
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2007 20:29:41 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so150795ugf
-	for <alsa-devel@alsa-project.org>; Tue, 03 Jul 2007 11:29:40 -0700 (PDT)
+	Tue,  3 Jul 2007 20:37:50 +0200 (CEST)
+Received: by qb-out-0506.google.com with SMTP id f9so1030543qba
+	for <alsa-devel@alsa-project.org>; Tue, 03 Jul 2007 11:37:49 -0700 (PDT)
+In-Reply-To: <61c0054e0707031129t28cc1421sde4d3b4ac4b6428b@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,248 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Paul Kavan <pkavan@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_125171_33197548.1183487380407
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On 7/3/07, Paul Kavan <pkavan@gmail.com> wrote:
+> grhuser@pcL7:$ arm-linux-gcc -Wall -o grh_audio grh_audio.c
 
-Hello all:
+You need to add -lasound to the gcc command line.
 
-I am working on my first bit of application code for ALSA and am not sure
-how to properly compile it against the libs. I have to cross compile the
-application on my host machine i686 PC for use on a ARM development board. I
-copied the alsa include directory into my staging include directory (this is
-where the cross-compiler works from), which allowed the program to find
-alsa/asoundlib.h However, I am still getting some errors that indicate to me
-it cannot find everything it needs.
-
-I am getting the following errors:
-
-grhuser@pcL7:$ arm-linux-gcc -Wall -o grh_audio grh_audio.c
-grh_audio.c: In function 'grh_capture':
-grh_audio.c:113: warning: pointer targets in passing argument 3 of
-'snd_pcm_hw_params_set_rate_near' differ in signedness
-grh_audio.c: In function 'grh_playback':
-grh_audio.c:208: warning: pointer targets in passing argument 3 of
-'snd_pcm_hw_params_set_rate_near' differ in signedness
-/tmp/ccMn48zN.o: In function `grh_capture':
-grh_audio.c:(.text+0x16c): undefined reference to `snd_pcm_open'
-grh_audio.c:(.text+0x198): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x1c0): undefined reference to `snd_pcm_hw_params_malloc'
-grh_audio.c:(.text+0x1e4): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x214): undefined reference to `snd_pcm_hw_params_any'
-grh_audio.c:(.text+0x238): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x26c): undefined reference to
-`snd_pcm_hw_params_set_access'
-grh_audio.c:(.text+0x290): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x2c4): undefined reference to
-`snd_pcm_hw_params_set_format'
-grh_audio.c:(.text+0x2e8): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x324): undefined reference to
-`snd_pcm_hw_params_set_rate_near'
-grh_audio.c:(.text+0x348): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x380): undefined reference to
-`snd_pcm_hw_params_set_channels'
-grh_audio.c:(.text+0x3a4): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x3d4): undefined reference to `snd_pcm_hw_params'
-grh_audio.c:(.text+0x3f8): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x420): undefined reference to `snd_pcm_hw_params_free'
-grh_audio.c:(.text+0x42c): undefined reference to `snd_pcm_prepare'
-grh_audio.c:(.text+0x450): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x494): undefined reference to `snd_pcm_readi'
-grh_audio.c:(.text+0x4c0): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x500): undefined reference to `snd_pcm_close'
-/tmp/ccMn48zN.o: In function `grh_playback':
-grh_audio.c:(.text+0x5b8): undefined reference to `snd_pcm_open'
-grh_audio.c:(.text+0x5e4): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x60c): undefined reference to `snd_pcm_hw_params_malloc'
-grh_audio.c:(.text+0x630): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x660): undefined reference to `snd_pcm_hw_params_any'
-grh_audio.c:(.text+0x684): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x6b8): undefined reference to
-`snd_pcm_hw_params_set_access'
-grh_audio.c:(.text+0x6dc): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x710): undefined reference to
-`snd_pcm_hw_params_set_format'
-grh_audio.c:(.text+0x734): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x770): undefined reference to
-`snd_pcm_hw_params_set_rate_near'
-grh_audio.c:(.text+0x794): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x7cc): undefined reference to
-`snd_pcm_hw_params_set_channels'
-grh_audio.c:(.text+0x7f0): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x820): undefined reference to `snd_pcm_hw_params'
-grh_audio.c:(.text+0x844): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x86c): undefined reference to `snd_pcm_hw_params_free'
-grh_audio.c:(.text+0x878): undefined reference to `snd_pcm_prepare'
-grh_audio.c:(.text+0x89c): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x8e0): undefined reference to `snd_pcm_writei'
-grh_audio.c:(.text+0x90c): undefined reference to `snd_strerror'
-grh_audio.c:(.text+0x94c): undefined reference to `snd_pcm_close'
-collect2: ld returned 1 exit status
-
-My application code is attached. If anyone could give me some pointers as to
-why these errors are occurring, I would appreciate it greatly.
-
-Thanks.
-
-Paul
-
-
--- 
-***************************************
-Paul David Kavan
-Project Engineer
-GRH Electronics, Inc.
-402-734-4900
-pkavan@gmail.com
-***************************************
-
-------=_Part_125171_33197548.1183487380407
-Content-Type: text/x-csrc; name=grh_audio.c; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f3ops96t
-Content-Disposition: attachment; filename="grh_audio.c"
-
-LyogR1JIIEF1ZGlvIFByb2dyYW0KICoKICogQXV0aG9yOiBQYXVsIEthdmFuLCBQcm9qZWN0IEVu
-Z2luZWVyCiAqIERhdGU6IEp1bHkgMywgMjAwNwogKi8KCiNpbmNsdWRlIDxzdGRpby5oPgojaW5j
-bHVkZSA8c3RkbGliLmg+CiNpbmNsdWRlIDxhbHNhL2Fzb3VuZGxpYi5oPgoKCi8qKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqCiAqIFZhcmlhYmxlIGFuZCBGdW5jdGlvbiBEZWNs
-YXJhdGlvbnMgCiAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwppbnQgICAg
-ICAgICAgICAgYXVkaW9fdHlwZTsgICAgICAgICAgICAgICAgICAgICAvLzAgPSBzbGVlcDsgMSA9
-IGNhcHR1cmU7IDIgPSBwbGF5YmFjawppbnQgICAgICAgICAgICAgbmNoYW5uZWxzID0gMTsKaW50
-ICAgICAgICAgICAgIGJ1ZmZlcl9zaXplID0gNTEyOwppbnQgICAgICAgICAgICAgc2FtcGxlX3Jh
-dGUgPSA4MDAwOwppbnQgICAgICAgICAgICAgYml0cyA9IDg7CmNoYXIgICAgICAgICAgICpzbmRf
-ZGV2aWNlX2luICA9ICJodzowLDAiOwpjaGFyICAgICAgICAgICAqc25kX2RldmljZV9vdXQgPSAi
-aHc6MCwwIjsKCnZvaWQgZ3JoX2NhcHR1cmUodm9pZCk7CnZvaWQgZ3JoX3BsYXliYWNrKHZvaWQp
-OwoKCi8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiAqIE1haW4gUHJvZ3Jh
-bSBTZWN0aW9uCiAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwppbnQgbWFp
-bih2b2lkKQp7CiAgLy9UZXN0aW5nIHJvdXRpbmUKICBwcmludGYoIlByZXNzIGVudGVyIHRvIGJl
-Z2luIHJlY29yZGluZ1xuIik7CiAgZ2V0Y2hhcigpOwogIGdyaF9jYXB0dXJlKCk7CiAgcHJpbnRm
-KCJBdWRpbyBDYXB0dXJlZC4gUHJlc3MgZW50ZXIgdG8gcGxheWJhY2tcbiIpOwogIGdldGNoYXIo
-KTsKCiAgICAKICAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiAgICogRGVj
-aWRlIGJldHdlZW4gcGxheWJhY2sgb3IgY2FwdHVyZQogICAqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKiovCiAgLy9UT0RPIERldGVybWluZSBiZXN0IHdheSB0byByZWNlaXZlIGlu
-dGVycnVwdHMvbWdzIHRvIHBhcnNlCiAgLy8gICAgIGJldHdlZW4gcGxheWJhY2sgYW5kIGNhcHR1
-cmUKCgogIC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKICAgKiBDYWxsIHRo
-ZSBhcHByb3ByaWF0ZSBmdW5jdGlvbiBmb3IKICAgKiBlaXRoZXIgcGxheWJhY2sgb3IgY2FwdHVy
-ZQogICAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiAgLyppZihhdWRpb190
-eXBlPT0xKQogICAgZ3JoX2NhcHR1cmUoKTsKICBpZihhdWRpb190eXBlPT0yKQogICAgZ3JoX3Bs
-YXliYWNrKCk7Ki8KCiAgcmV0dXJuIDA7Cn0KCgoKLyoqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioKICogQ2FwdHVyZSBGdW5jdGlvbjoKICogVGhpcyBmdWN0
-aW9uIHNob3VsZCBjYXB0dXJlIGF1ZGlvIGZyb20gdGhlIFBDTSAKICogYW5kIHN0b3JlIGl0IGlu
-IGEgYnVmZmVyIGZvciB0cmFuc21pc3Npb24KICoqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKiovCnZvaWQgZ3JoX2NhcHR1cmUodm9pZCkKewogIGludCBpOwog
-IGludCBlcnI7CiAgc2hvcnQgYnVmW2J1ZmZlcl9zaXplXTsKICBzbmRfcGNtX3QgKmNhcHR1cmVf
-aGFuZGxlOwogIHNuZF9wY21faHdfcGFyYW1zX3QgKmh3X3BhcmFtczsKCiAgLyoqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKgogICAqIE9wZW4gdGhlIHBjbSBpbnRlcmZhY2UKICAg
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwogIGlmICgoZXJyID0gc25kX3Bj
-bV9vcGVuKCZjYXB0dXJlX2hhbmRsZSwgc25kX2RldmljZV9pbiwgU05EX1BDTV9TVFJFQU1fQ0FQ
-VFVSRSwgMCkpIDwgMCkKICB7CiAgICBmcHJpbnRmKHN0ZGVyciwgIkZhaWxlZCB0byBvcGVuIGlu
-cHV0IGF1ZGlvIGRldmljZSAlczogJXNcbiIsIHNuZF9kZXZpY2Vfb3V0LCBzbmRfc3RyZXJyb3Io
-ZXJyKSk7CiAgICBleGl0KDEpOwogIH0KCiAgLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKgogICAqIENvbmZpZ3VyZSB0aGUgZGV2aWNlcwogICAqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKiovCiAgaWYgKChlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19tYWxsb2Mg
-KCZod19wYXJhbXMpKSA8IDApIAogIHsKICAgIGZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBhbGxv
-Y2F0ZSBoYXJkd2FyZSBwYXJhbWV0ZXIgc3RydWN0dXJlICglcylcbiIsCiAgICAgICAgc25kX3N0
-cmVycm9yIChlcnIpKTsKICAgIGV4aXQgKDEpOwogIH0KCiAgaWYgKChlcnIgPSBzbmRfcGNtX2h3
-X3BhcmFtc19hbnkgKGNhcHR1cmVfaGFuZGxlLCBod19wYXJhbXMpKSA8IDApIAogIHsKICAgIGZw
-cmludGYgKHN0ZGVyciwgImNhbm5vdCBpbml0aWFsaXplIGhhcmR3YXJlIHBhcmFtZXRlciBzdHJ1
-Y3R1cmUgKCVzKVxuIiwKICAgICAgICBzbmRfc3RyZXJyb3IgKGVycikpOwogICAgZXhpdCAoMSk7
-CiAgfQoJCiAgaWYgKChlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfYWNjZXNzIChjYXB0dXJl
-X2hhbmRsZSwgaHdfcGFyYW1zLCBTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZFRCkpIDwgMCkg
-CiAgewogICAgZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IHNldCBhY2Nlc3MgdHlwZSAoJXMpXG4i
-LAogICAgICAgIHNuZF9zdHJlcnJvciAoZXJyKSk7CiAgICBleGl0ICgxKTsKICB9CgogIGlmICgo
-ZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2Zvcm1hdCAoY2FwdHVyZV9oYW5kbGUsIGh3X3Bh
-cmFtcywgU05EX1BDTV9GT1JNQVRfUzgpKSA8IDApIHsKICAgIGZwcmludGYgKHN0ZGVyciwgImNh
-bm5vdCBzZXQgc2FtcGxlIGZvcm1hdCAoJXMpXG4iLAogICAgICAgIHNuZF9zdHJlcnJvciAoZXJy
-KSk7CiAgICBleGl0ICgxKTsKICB9CgogIGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0
-X3JhdGVfbmVhciAoY2FwdHVyZV9oYW5kbGUsIGh3X3BhcmFtcywgJnNhbXBsZV9yYXRlLCAwKSkg
-PCAwKSAKICB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgc2V0IHNhbXBsZSByYXRlICgl
-cylcbiIsCiAgICAgICAgc25kX3N0cmVycm9yIChlcnIpKTsKICAgIGV4aXQgKDEpOwogIH0KCQog
-IGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2NoYW5uZWxzIChjYXB0dXJlX2hhbmRs
-ZSwgaHdfcGFyYW1zLCBuY2hhbm5lbHMpKSA8IDApIAogIHsKICAgIGZwcmludGYgKHN0ZGVyciwg
-ImNhbm5vdCBzZXQgY2hhbm5lbCBjb3VudCAoJXMpXG4iLAogICAgICAgIHNuZF9zdHJlcnJvciAo
-ZXJyKSk7CiAgICBleGl0ICgxKTsKICB9CgogIGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXMg
-KGNhcHR1cmVfaGFuZGxlLCBod19wYXJhbXMpKSA8IDApIHsKICAgIGZwcmludGYgKHN0ZGVyciwg
-ImNhbm5vdCBzZXQgcGFyYW1ldGVycyAoJXMpXG4iLAogICAgICAgIHNuZF9zdHJlcnJvciAoZXJy
-KSk7CiAgICBleGl0ICgxKTsKICB9CgogIHNuZF9wY21faHdfcGFyYW1zX2ZyZWUgKGh3X3BhcmFt
-cyk7CgogIGlmICgoZXJyID0gc25kX3BjbV9wcmVwYXJlIChjYXB0dXJlX2hhbmRsZSkpIDwgMCkg
-ewogICAgZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IHByZXBhcmUgYXVkaW8gaW50ZXJmYWNlIGZv
-ciB1c2UgKCVzKVxuIiwKICAgICAgICBzbmRfc3RyZXJyb3IgKGVycikpOwogICAgZXhpdCAoMSk7
-CiAgfQoKICAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiAgICog
-UGVyZm9ybSBjYXB0dXJlIGFuZCBzdG9yZSB0byBidWZmZXIKICAgKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqLwogIGZvciAoaSA9IDA7IGkgPCAxMDsgKytpKSB7CiAg
-ICBpZiAoKGVyciA9IHNuZF9wY21fcmVhZGkgKGNhcHR1cmVfaGFuZGxlLCBidWYsIGJ1ZmZlcl9z
-aXplKSkgIT0gYnVmZmVyX3NpemUpIHsKICAgICAgZnByaW50ZiAoc3RkZXJyLCAicmVhZCBmcm9t
-IGF1ZGlvIGludGVyZmFjZSBmYWlsZWQgKCVzKVxuIiwKICAgICAgICAgIHNuZF9zdHJlcnJvciAo
-ZXJyKSk7CiAgICAgIGV4aXQgKDEpOwogICAgfQogIH0KCiAgLyoqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioKICAgKiBDbG9zZSBQQ00gaW50ZXJmYWNlIGFuZCBleGl0
-CiAgICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiAgc25kX3Bj
-bV9jbG9zZSAoY2FwdHVyZV9oYW5kbGUpOwogIGV4aXQgKDApOwp9CgovKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiAqIFBsYXliYWNrIEZ1bmN0aW9uOgog
-KiBUaGlzIGZ1bmN0aW9uIHNob3VsZCByZXRyaWV2ZSBhdWRpbyBmcm9tIGEgCiAqIGJ1ZmZlciBh
-bmQgc2VuZCBpdCB0byB0aGUgUENNIGZvciBwbGF5YmFjawogKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqLwp2b2lkIGdyaF9wbGF5YmFjayh2b2lkKQp7CiAg
-aW50IGk7CiAgaW50IGVycjsKICBzaG9ydCBidWZbYnVmZmVyX3NpemVdOwogIHNuZF9wY21fdCAq
-cGxheWJhY2tfaGFuZGxlOwogIHNuZF9wY21faHdfcGFyYW1zX3QgKmh3X3BhcmFtczsKCiAgLyoq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgogICAqIE9wZW4gdGhlIHBjbSBpbnRl
-cmZhY2UKICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwogIGlmICgoZXJy
-ID0gc25kX3BjbV9vcGVuKCZwbGF5YmFja19oYW5kbGUsIHNuZF9kZXZpY2Vfb3V0LCBTTkRfUENN
-X1NUUkVBTV9QTEFZQkFDSywgMCkpIDwgMCkgCiAgewogICAgZnByaW50ZihzdGRlcnIsICJGYWls
-ZWQgdG8gb3BlbiBvdXRwdXQgYXVkaW8gZGV2aWNlICVzOiAlc1xuIiwgc25kX2RldmljZV9pbiwg
-c25kX3N0cmVycm9yKGVycikpOwogICAgZXhpdCgxKTsKICB9CgogIC8qKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioKICAgKiBDb25maWd1cmUgdGhlIGRldmljZXMKICAgKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwogIGlmICgoZXJyID0gc25kX3BjbV9od19w
-YXJhbXNfbWFsbG9jICgmaHdfcGFyYW1zKSkgPCAwKSB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJj
-YW5ub3QgYWxsb2NhdGUgaGFyZHdhcmUgcGFyYW1ldGVyIHN0cnVjdHVyZSAoJXMpXG4iLAogICAg
-ICAgIHNuZF9zdHJlcnJvciAoZXJyKSk7CiAgICBleGl0ICgxKTsKICB9CgkJCQkgCiAgaWYgKChl
-cnIgPSBzbmRfcGNtX2h3X3BhcmFtc19hbnkgKHBsYXliYWNrX2hhbmRsZSwgaHdfcGFyYW1zKSkg
-PCAwKSB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3QgaW5pdGlhbGl6ZSBoYXJkd2FyZSBw
-YXJhbWV0ZXIgc3RydWN0dXJlICglcylcbiIsCiAgICAgICAgc25kX3N0cmVycm9yIChlcnIpKTsK
-ICAgIGV4aXQgKDEpOwogIH0KCQogIGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2Fj
-Y2VzcyAocGxheWJhY2tfaGFuZGxlLCBod19wYXJhbXMsIFNORF9QQ01fQUNDRVNTX1JXX0lOVEVS
-TEVBVkVEKSkgPCAwKSB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgc2V0IGFjY2VzcyB0
-eXBlICglcylcbiIsCiAgICAgICAgc25kX3N0cmVycm9yIChlcnIpKTsKICAgIGV4aXQgKDEpOwog
-IH0KCQogIGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2Zvcm1hdCAocGxheWJhY2tf
-aGFuZGxlLCBod19wYXJhbXMsIFNORF9QQ01fRk9STUFUX1M4KSkgPCAwKSB7CiAgICBmcHJpbnRm
-IChzdGRlcnIsICJjYW5ub3Qgc2V0IHNhbXBsZSBmb3JtYXQgKCVzKVxuIiwKICAgICAgICBzbmRf
-c3RyZXJyb3IgKGVycikpOwogICAgZXhpdCAoMSk7CiAgfQoJCiAgaWYgKChlcnIgPSBzbmRfcGNt
-X2h3X3BhcmFtc19zZXRfcmF0ZV9uZWFyIChwbGF5YmFja19oYW5kbGUsIGh3X3BhcmFtcywgJnNh
-bXBsZV9yYXRlLCAwKSkgPCAwKSB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgc2V0IHNh
-bXBsZSByYXRlICglcylcbiIsCiAgICAgICAgc25kX3N0cmVycm9yIChlcnIpKTsKICAgIGV4aXQg
-KDEpOwogIH0KCQogIGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2NoYW5uZWxzIChw
-bGF5YmFja19oYW5kbGUsIGh3X3BhcmFtcywgbmNoYW5uZWxzKSkgPCAwKSB7CiAgICBmcHJpbnRm
-IChzdGRlcnIsICJjYW5ub3Qgc2V0IGNoYW5uZWwgY291bnQgKCVzKVxuIiwKICAgICAgICBzbmRf
-c3RyZXJyb3IgKGVycikpOwogICAgZXhpdCAoMSk7CiAgfQoKICBpZiAoKGVyciA9IHNuZF9wY21f
-aHdfcGFyYW1zIChwbGF5YmFja19oYW5kbGUsIGh3X3BhcmFtcykpIDwgMCkgewogICAgZnByaW50
-ZiAoc3RkZXJyLCAiY2Fubm90IHNldCBwYXJhbWV0ZXJzICglcylcbiIsCiAgICAgICAgc25kX3N0
-cmVycm9yIChlcnIpKTsKICAgIGV4aXQgKDEpOwogIH0KCQogIHNuZF9wY21faHdfcGFyYW1zX2Zy
-ZWUgKGh3X3BhcmFtcyk7CgogIGlmICgoZXJyID0gc25kX3BjbV9wcmVwYXJlIChwbGF5YmFja19o
-YW5kbGUpKSA8IDApIHsKICAgIGZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBwcmVwYXJlIGF1ZGlv
-IGludGVyZmFjZSBmb3IgdXNlICglcylcbiIsCiAgICAgICAgc25kX3N0cmVycm9yIChlcnIpKTsK
-ICAgIGV4aXQgKDEpOwogIH0KCiAgLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKgogICAqIFBsYXliYWNrIGZyb20gYnVmZmVyCiAgICoqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKi8KICBmb3IgKGkgPSAwOyBpIDwgMTA7ICsraSkgewogICAg
-aWYgKChlcnIgPSBzbmRfcGNtX3dyaXRlaSAocGxheWJhY2tfaGFuZGxlLCBidWYsIGJ1ZmZlcl9z
-aXplKSkgIT0gYnVmZmVyX3NpemUpIHsKICAgICAgZnByaW50ZiAoc3RkZXJyLCAid3JpdGUgdG8g
-YXVkaW8gaW50ZXJmYWNlIGZhaWxlZCAoJXMpXG4iLAogICAgICAgICAgc25kX3N0cmVycm9yIChl
-cnIpKTsKICAgICAgZXhpdCAoMSk7CiAgICB9CiAgfQoKICAvKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKgogICAqIENsb3NlIFBDTSBpbnRlcmZhY2UgYW5kIGV4aXQK
-ICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KICBzbmRfcGNt
-X2Nsb3NlIChwbGF5YmFja19oYW5kbGUpOwogIGV4aXQgKDApOwp9Cg==
-------=_Part_125171_33197548.1183487380407
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_125171_33197548.1183487380407--
+Lee
