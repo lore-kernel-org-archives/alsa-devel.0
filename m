@@ -1,22 +1,27 @@
-From: "Paul Kavan" <pkavan@gmail.com>
-Subject: Re: Errors in application building
-Date: Tue, 3 Jul 2007 14:06:14 -0500
-Message-ID: <61c0054e0707031206i1717e36dy8e69c872b4f33a@mail.gmail.com>
-References: <61c0054e0707031129t28cc1421sde4d3b4ac4b6428b@mail.gmail.com>
-	<75b66ecd0707031137i4c302270oa307df11e0a6ad3@mail.gmail.com>
-	<61c0054e0707031151n6d90fc97v4493f41c1ab0cd1@mail.gmail.com>
+From: Fausto Carvalho Marques SIlva <fausto@tse.gov.br>
+Subject: Remove dynamic configuration from alsa-lib
+Date: Tue, 03 Jul 2007 16:11:58 -0300
+Message-ID: <468A9F7E.3030806@tse.gov.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB859103837
+Received: from dexter.tse.gov.br (dexter.tse.gov.br [200.252.157.99])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB6E610383D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2007 21:06:18 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so157155ugf
-	for <alsa-devel@alsa-project.org>; Tue, 03 Jul 2007 12:06:18 -0700 (PDT)
-In-Reply-To: <61c0054e0707031151n6d90fc97v4493f41c1ab0cd1@mail.gmail.com>
-Content-Disposition: inline
+	Tue,  3 Jul 2007 21:13:06 +0200 (CEST)
+Received: from dexter.tse.gov.br (localhost.tse.gov.br [127.0.0.1])
+	by nod32.tse.gov.br (Postfix) with ESMTP id 7E0C0FCDDA
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2007 16:13:04 -0300 (BRT)
+Received: from webmail.tse.gov.br (webmail.tse.gov.br [10.28.1.25])
+	by dexter.tse.gov.br (Postfix) with ESMTP id 64B9CFCDDD
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2007 16:13:03 -0300 (BRT)
+Received: from webmail.tse.gov.br (localhost.localdomain [127.0.0.1])
+	by nod32.tse.gov.br (Postfix) with ESMTP id 41B9614C11F
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2007 16:13:03 -0300 (BRT)
+Received: from [10.28.219.33] (unknown [10.28.219.33])
+	by webmail.tse.gov.br (Postfix) with ESMTP id 37B6714C11E
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2007 16:13:03 -0300 (BRT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,77 +32,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Lee Revell <rlrevell@joe-job.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/3/07, Paul Kavan <pkavan@gmail.com> wrote:
->
->
->
-> On 7/3/07, Lee Revell <rlrevell@joe-job.com> wrote:
-> >
-> > On 7/3/07, Paul Kavan <pkavan@gmail.com> wrote:
-> > > grhuser@pcL7:$ arm-linux-gcc -Wall -o grh_audio grh_audio.c
-> >
-> > You need to add -lasound to the gcc command line.
-> >
-> > Lee
-> >
->
-> Thanks Lee. I was digging and just found that. When I tried, I lose all
-> the other errors, still keep the warnings, but get a new error. The compile
-> attempts looks like this:
->
->  arm-linux-gcc -lasound -Wall -o grh_audio grh_audio.c
-> grh_audio.c: In function 'grh_capture':
-> grh_audio.c:112: warning: pointer targets in passing argument 3 of
-> 'snd_pcm_hw_params_set_rate_near' differ in signedness
-> grh_audio.c: In function 'grh_playback':
-> grh_audio.c:207: warning: pointer targets in passing argument 3 of
-> 'snd_pcm_hw_params_set_rate_near' differ in signedness
-> /home/grhuser/buildroot/build_arm/staging_dir/lib/gcc/arm-linux-uclibc/4.1.2/../../../../arm-linux-uclibc/bin/ld:
-> cannot find -lasound
-> collect2: ld returned 1 exit status
->
-> I guess I am not sure where lasound ought to be....do you know what file
-> name I should be looking for and where it should be located for proper
-> compiling?
->
-
-
-OK, my face is more than a little red. Was making that much more difficult
-than it needed to be. Moved the asound libs to my staging directory and the
-program compiles to an executable...although with the two warnings:
-
-grhuser@pcL7:$ arm-linux-gcc -lasound -Wall -o grh_audio grh_audio.c
-grh_audio.c: In function 'grh_capture':
-grh_audio.c:112: warning: pointer targets in passing argument 3 of
-'snd_pcm_hw_params_set_rate_near' differ in signedness
-grh_audio.c: In function 'grh_playback':
-grh_audio.c:207: warning: pointer targets in passing argument 3 of
-'snd_pcm_hw_params_set_rate_near' differ in signedness
-
-Which comes from the code:
-
-112:   if ((err = snd_pcm_hw_params_set_rate_near (capture_handle,
-hw_params, &sample_rate, 0)) < 0)
-
-
-207:   if ((err = snd_pcm_hw_params_set_rate_near (playback_handle,
-hw_params, &sample_rate, 0)) < 0)
-
-
-I followed a piece of example code. I will look at this function to see if I
-can parse this warning out.
-
-Paul
-
-
--- 
-***************************************
-Paul David Kavan
-Project Engineer
-GRH Electronics, Inc.
-402-734-4900
-pkavan@gmail.com
-***************************************
+I have a hard job...to remove dynamic configuration from alsa-lib 
+(conf.c,confmisc.c).
+I found it difficult because snd_conf_* functions are spread all over 
+*.c files.
+Is there am easy way of doing it ? Does anyone have some "guidelines" of 
+doing it?
+Any help is wellcome...
+Fausto Carvalho Marques Silva
