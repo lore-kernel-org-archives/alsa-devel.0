@@ -1,23 +1,19 @@
-From: "Daniel J Blueman" <daniel.blueman@gmail.com>
-Subject: Re: [HDA Intel/STAC92xx] mic not working
-	(retasking?)...
-Date: Mon, 2 Jul 2007 23:39:14 +0100
-Message-ID: <6278d2220707021539g1485af71v3cbb639f0844b271@mail.gmail.com>
-References: <6278d2220706271328u79afd988r44cc1fbfc41c6014@mail.gmail.com>
-	<s5hved6z75l.wl%tiwai@suse.de>
-	<6278d2220706301407p739ebfb5i52d4a2af3a17ecd8@mail.gmail.com>
-	<s5habuec264.wl%tiwai@suse.de>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: PS3 - Surround sound on SPDIF set-up
+Date: Tue, 3 Jul 2007 11:27:58 -0400
+Message-ID: <75b66ecd0707030827t7d5e71c5ya5f79a44009cb39f@mail.gmail.com>
+References: <4689B1BF.2050709@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 779AD103844
+Received: from qb-out-0506.google.com (qb-out-0506.google.com [72.14.204.236])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12E1724427
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jul 2007 00:39:16 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so1380986ugf
-	for <alsa-devel@alsa-project.org>; Mon, 02 Jul 2007 15:39:15 -0700 (PDT)
-In-Reply-To: <s5habuec264.wl%tiwai@suse.de>
+	Tue,  3 Jul 2007 17:28:02 +0200 (CEST)
+Received: by qb-out-0506.google.com with SMTP id q12so2133163qba
+	for <alsa-devel@alsa-project.org>; Tue, 03 Jul 2007 08:28:01 -0700 (PDT)
+In-Reply-To: <4689B1BF.2050709@gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,45 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: gt bradley <gt.bradley@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On 7/2/07, gt bradley <gt.bradley@gmail.com> wrote:
+> Hi,
+> I've been beating my had against this for several weeks now.  (started
+> with fedora 6, tried adding in the plugings etc (version 1.0.12) -- also
+> tried upgrading to the current 1.0.14 version, without success (couldn't
+> produce surround-sound on teh spdif output).  I have now switched to
+> fedorea 7 and was able to have rythmbox play surround sound via spdif,
+> but have since lost that ability.  (but I'm convinced the hardware and
+> low-level drivers support it).  In order to limit the number of moving
+> parts, I have reduced to just trying to get speaker-test to play on all
+> 6 speakers.
 
-On 02/07/07, Takashi Iwai <tiwai@suse.de> wrote:
-> > > Daniel J Blueman wrote:
-> > > >
-> > > > With both 2.6.20 and 2.6.22 kernels on Ubuntu 7.04 on my Sony Vaio
-> > > > SZ240, I'm unable to get my mic connector working at any cost.
-[snip]
-> > > > How can I change the jack retasking with the Intel HDA drivers or get
-> > > > further insight into this problem?
-> > >
-> > > First, show the contents of /proc/asound/card0/codec#* files...
-> >
-> > Firstly, thank you for replying; the only related cases I've been able
-> > to find on the internet suggest to use the 'model=vaio' option to the
-> > snd-hda-intel module, but this does not help.
->
-> Try the patch below, choose "Line" as the capture source (if you want
-> a mic-input jack -- for the built-in mic, chooes "Mic"), and raise the
-> newly added "Capture Boost" volume.
+SPDIF only supports 2 channels unless the stream is AC3 encoded.
 
-Firstly, thank you for your time and help.
-
-I have discovered the bug preventing me using the external mic socket
-before: in the mixer, the user has to select the [internal] mic input,
-then re-select the line-in (actually external mic) input; reading from
-(eg) /dev/dsp while changing this, the output suddenly is as expected
-when the line-in is re-selected.
-
-Since we've got started, where should I look for the 'before' and
-'after' state to compare to see into this?
-
-This behaviour is reproducible with both 2.6.20 and 2.6.22-rc7.
-
-Many thanks!
-  Daniel
--- 
-Daniel J Blueman
+Lee
