@@ -1,18 +1,20 @@
-From: "Jose Henrique Spahn Torres" <jose.torres@eldorado.org.br>
-Subject: Re: Easiest way to test playback on an ASOC driver?
-Date: Wed, 4 Jul 2007 09:55:15 -0300
-Message-ID: <AC2729D6E3A3314A922E4E0FBE513F65E4760F@MAIL.eldorado.org.br>
-References: <468AD6B3.2090905@freescale.com>
+From: "Roy Huang" <royhuang9@gmail.com>
+Subject: [PATCH]fix mmap emulation bug of recording doesn't work
+Date: Wed, 4 Jul 2007 22:18:24 +0800
+Message-ID: <afe668f90707040718j15495e7bt375b62eb355a1a28@mail.gmail.com>
+References: <afe668f90707032251v693c78a6g37e2e009ec13f3b0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.eldorado.org.br (mail.eldorado.org.br [200.168.210.67])
-	by alsa0.perex.cz (Postfix) with SMTP id 0D0692449D
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9653E244A1
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2007 14:55:18 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <468AD6B3.2090905@freescale.com>
+	Wed,  4 Jul 2007 16:18:26 +0200 (CEST)
+Received: by py-out-1112.google.com with SMTP id u77so3878009pyb
+	for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2007 07:18:25 -0700 (PDT)
+In-Reply-To: <afe668f90707032251v693c78a6g37e2e009ec13f3b0@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +24,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Record doesn't work if enabling mmap emulation and rate conversion
+needed, this patch fix this bug.
 
------Original Message-----
-From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-p=
-roject.org] On Behalf Of Timur Tabi
-Sent: ter=E7a-feira, 3 de Julho de 2007 20:08
-To: alsa-devel@alsa-project.org
-Subject: [alsa-devel] Easiest way to test playback on an ASOC driver?
+diff -uNr alsa-lib-1.0.14a/src/pcm/pcm_hw.c alsa-lib-new/src/pcm/pcm_hw.c
+--- alsa-lib-1.0.14a/src/pcm/pcm_hw.c   2007-06-11 16:53:13.000000000 +0800
++++ alsa-lib-new/src/pcm/pcm_hw.c       2007-07-04 12:16:31.000000000 +0800
+@@ -96,6 +96,7 @@
+        int shadow_appl_ptr: 1,
+            avail_update_flag: 1,
+            mmap_shm: 1;
++       snd_pcm_uframes_t hw_ptr;
+        snd_pcm_uframes_t appl_ptr;
+        /* restricted parameters */
+        snd_pcm_format_t format;
+@@ -373,7 +374,9 @@
+        if (pcm->stream == SND_PCM_STREAM_CAPTURE) {
+                if (hw->mmap_shm) {
+                        hw->shadow_appl_ptr = 1;
++                       hw->hw_ptr = 0;
+                        hw->appl_ptr = 0;
++                       snd_pcm_set_hw_ptr(pcm, &hw->hw_ptr, -1, 0);
+                        snd_pcm_set_appl_ptr(pcm, &hw->appl_ptr, -1, 0);
+                } else {
+                        hw->shadow_appl_ptr = 0;
+@@ -949,28 +952,91 @@
+        return size;
+ }
 
-I'm in the early stages of testing an ASOC driver, i.e. I'm trying to get p=
-layback to work.
++static inline snd_pcm_uframes_t snd_pcm_hw_capture_avail(snd_pcm_t *pcm)
++{
++       snd_pcm_sframes_t avail;
++       snd_pcm_hw_t *hw = pcm->private_data;
++
++       avail = hw->mmap_status->hw_ptr - hw->mmap_control->appl_ptr;
++       if (avail < 0)
++               avail += pcm->boundary;
++       return avail;
++}
++
++static snd_pcm_sframes_t snd_pcm_hw_read_mmap(snd_pcm_t *pcm,
+snd_pcm_uframes_t size)
++{
++       snd_pcm_uframes_t xfer = 0;
++       snd_pcm_sframes_t err = 0;
++       snd_pcm_hw_t *hw = pcm->private_data;
++       if (! size)
++               return 0;
++       while (xfer < size) {
++               snd_pcm_uframes_t frames = size - xfer;
++               snd_pcm_uframes_t appl_offset = hw->mmap_control->appl_ptr %
+pcm->buffer_size;
++               snd_pcm_uframes_t cont = pcm->buffer_size - appl_offset;
++               if (cont < frames)
++                       frames = cont;
++               switch (pcm->access) {
++               case SND_PCM_ACCESS_MMAP_INTERLEAVED:
++               {
++                       const snd_pcm_channel_area_t *a =
+snd_pcm_mmap_areas(pcm);
++                       char *buf = snd_pcm_channel_area_addr(a, appl_offset);
++                       err = _snd_pcm_readi(pcm, buf, frames);
++                       if (err >= 0)
++                               frames = err;
++                       break;
++               }
++               case SND_PCM_ACCESS_MMAP_NONINTERLEAVED:
++               {
++                       snd_pcm_uframes_t channels = pcm->channels;
++                       unsigned int c;
++                       void *bufs[channels];
++                       const snd_pcm_channel_area_t *areas =
+snd_pcm_mmap_areas(pcm);
++                       for (c = 0; c < channels; ++c) {
++                               const snd_pcm_channel_area_t *a = &areas[c];
++                               bufs[c] = snd_pcm_channel_area_addr(a,
+appl_offset);
++                       }
++                       err = _snd_pcm_readn(pcm->fast_op_arg, bufs, frames);
++                       if (err >= 0)
++                               frames = err;
++               }
++               default:
++                       SNDMSG("invalid access type %d", pcm->access);
++                       return -EINVAL;
++               }
++               if (err < 0)
++                       break;
++               xfer += frames;
++       }
++       if (xfer > 0)
++               return xfer;
++       return err;
++}
++
+ static snd_pcm_sframes_t snd_pcm_hw_avail_update(snd_pcm_t *pcm)
+ {
+        snd_pcm_hw_t *hw = pcm->private_data;
+-       snd_pcm_uframes_t avail;
++       snd_pcm_uframes_t avail, xfer_avail;
 
-What is the easiest way to test playback?  Is there a particular tool I sho=
-uld be using that does the most basic and direct playback of audio data thr=
-ough ALSA?
-
---
-Timur Tabi
-Linux Kernel Developer @ Freescale
-_______________________________________________
-
-
-I am also working on an ASOC system (smdk2410).
-After you compiled alsa-driver and alsa-lib, you can compile alsa-utils
-which will give you aplay, arecord and speaker-test app.
-You can test your system with these app.
-
-Bye,
-Henrique
+        sync_ptr(hw, 0);
+        if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
+                avail = snd_pcm_mmap_playback_avail(pcm);
+        } else {
+                avail = snd_pcm_mmap_capture_avail(pcm);
+-               if (avail > 0 && hw->mmap_shm) {
++               if (avail < pcm->avail_min && hw->mmap_shm) {
+                        snd_pcm_sframes_t err;
+-                       snd_pcm_hw_t *hw = pcm->private_data;
+-                       hw->avail_update_flag = 1;
+-                       err = snd_pcm_read_mmap(pcm, avail);
+-                       hw->avail_update_flag = 0;
+-                       if (err < 0)
+-                               return err;
+-                       if ((snd_pcm_uframes_t)err != avail)
+-                               SNDMSG("short read %ld for avail %ld",
+err, avail);
+-                       return err;
+-               }
++                       xfer_avail = snd_pcm_hw_capture_avail(pcm);
++                       xfer_avail -= xfer_avail % pcm->xfer_align;
++                       if (xfer_avail > 0) {
++                               hw->avail_update_flag = 1;
++                               err = snd_pcm_hw_read_mmap(pcm, xfer_avail);
++                               hw->avail_update_flag = 0;
++                               if (err < 0)
++                                       return err;
++                               hw->hw_ptr += err;
++                               avail = snd_pcm_mmap_capture_avail(pcm);
++                       }
++               }
+        }
+        switch (FAST_PCM_STATE(hw)) {
+        case SNDRV_PCM_STATE_RUNNING:
