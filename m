@@ -1,18 +1,18 @@
-From: "Maurizio Monge" <maurizio.monge@gmail.com>
-Subject: Very low headphones volume on HDA + Realtek ALC268
-Date: Wed, 4 Jul 2007 19:12:24 +0100
-Message-ID: <e4c519350707041112v208ef67es289657c6e178c97f@mail.gmail.com>
+From: "Brian Hinz" <bphinz@hotmail.com>
+Subject: Re: stac9200 speaker/hp not detected
+Date: Wed, 04 Jul 2007 15:08:15 -0400
+Message-ID: <BAY105-F309EE6462F1B1F083AC6D1C8030@phx.gbl>
+References: <s5hved08qn7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFF83244B8
+Received: from bay0-omc1-s40.bay0.hotmail.com (bay0-omc1-s40.bay0.hotmail.com
+	[65.54.246.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB85D1038B6
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2007 20:12:25 +0200 (CEST)
-Received: by ik-out-1112.google.com with SMTP id b35so1813284ika
-	for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2007 11:12:24 -0700 (PDT)
-Content-Disposition: inline
+	Wed,  4 Jul 2007 21:08:19 +0200 (CEST)
+In-Reply-To: <s5hved08qn7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,242 +22,213 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, i've got an hda/alc268 card (pci id: [8086:284b], subsytem id:
-[1025:011f]) on my laptop, and the sound is ok for the loudspeakers
-but it is very very low for the headphones (the volume is at the top
-in the mixer, if i reduce the volume in the mixer the sound gets even
-lower).
-Under windows vista the headphones work well (ok, worked, before that
-i removed windows from my computer).
-I am using alsa hg, the most recent version at the moment i'm writing
-this e-mail.
-I there is any experiment that i can do or if i can help in any way (i
-know C very well) to fix this bug just let me know, and i'll be happy
-to contribute.
-More information about the hardware follows.
-Thanks!
+I found the stac9200 datasheet and went through it, comparing it to the 
+windows ini file and I don't see any obvious issues - everything looks like 
+it's muxed right, except for the fact that there is physically no spdif jack 
+on this particular machine.  The GPIO stuff looks like maybe it's mic boost 
+or something, but what are these init verbs?
 
--- 
-Ciao
-Maurizio
-http://stregatto.wordpress.com
+<snip>
+InitVerbs                    = hex: 0x03, 0xa0, 0x43, 0x01
+<snip>
 
-"Well we all shine on
-Like the moon and the stars and the sun" (John Lennon)
+Here's the output from /proc/asound/card0/codec#0:
 
-lspci entry:
-00:1b.0 Audio device [0403]: Intel Corporation 82801H (ICH8 Family) HD
-Audio Controller [8086:284b] (rev 03)
-        Subsystem: Acer Incorporated [ALI] Unknown device [1025:011f]
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR+ FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size: 64 bytes
-        Interrupt: pin A routed to IRQ 22
-        Region 0: Memory at fc300000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+
-Queue=0/0 Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0, ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown, Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-
-
-
-
-
-/proc/asound/card0/codec#0
-Codec: Realtek ALC268
+Codec: SigmaTel STAC9200
 Address: 0
-Vendor Id: 0x10ec0268
-Subsystem Id: 0x1025011f
-Revision Id: 0x100003
+Vendor Id: 0x83847690
+Subsystem Id: 0x107b0205
+Revision Id: 0x102201
 No Modem Function Group found
 Default PCM:
-    rates [0x560]: 44100 48000 96000 192000
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
     bits [0xe]: 16 20 24
     formats [0x1]: PCM
 Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x40 0x40]
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x2f 0x2f]
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-Node 0x07 [Audio Input] wcaps 0x100111: Stereo
+Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+Node 0x02 [Audio Output] wcaps 0xd0401: Stereo
+  Power: 0x0
+Node 0x03 [Audio Input] wcaps 0x1d0541: Stereo
+  Power: 0x0
+  Connection: 1
+     0x0a
+Node 0x04 [Audio Input] wcaps 0x140311: Stereo Digital
   PCM:
     rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
   Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x100111: Stereo
+     0x08
+Node 0x05 [Audio Output] wcaps 0x40211: Stereo Digital
   PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0d [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00]
-  Connection: 1
-     0x02
-Node 0x0f [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80]
-  Connection: 2
-     0x02 0x1d
-Node 0x10 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80]
+    rates [0x1e0]: 44100 48000 88200 96000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+Node 0x06 [Vendor Defined Widget] wcaps 0xf30201: Stereo Digital
+Node 0x07 [Audio Selector] wcaps 0x300901: Stereo
   Connection: 3
-     0x03 0x1d 0x02
-Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
+     0x02* 0x08 0x0a
+Node 0x08 [Pin Complex] wcaps 0x430681: Stereo Digital
+  Pincap 0x0810024: IN EAPD Detect
+  Pin Default 0x400000fe: [N/A] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
   Pin-ctls: 0x00:
-Node 0x13 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x00:
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x081003c: IN OUT HP EAPD Detect
-  Pin Default 0x02214020: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
+  Power: 0x0
+Node 0x09 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x00451030: [Jack] SPDIF Out at Ext N/A
+    Conn = Optical, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 2
+     0x05* 0x0a
+Node 0x0a [Audio Selector] wcaps 0x30090d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x0d 0x0d]
   Connection: 1
-     0x0f
-Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x081003c: IN OUT HP EAPD Detect
-  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
-    Conn = ATAPI, Color = Unknown
+     0x0c
+Node 0x0b [Audio Selector] wcaps 0x300105: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x1f 0x1f]
+  Connection: 1
+     0x07
+Node 0x0c [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x04 0x04]
+  Connection: 5
+     0x10* 0x0f 0x0e 0x0d 0x12
+Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x083f: IN OUT HP Detect
+  Pin Default 0x400100f0: [N/A] Line Out at Ext N/A
+    Conn = 1/8, Color = Unknown
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x0b
+Node 0x0e [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x083f: IN OUT HP Detect
+  Pin Default 0x90110010: [Fixed] Speaker at Int N/A
+    Conn = 1/8, Color = Unknown
   Pin-ctls: 0x40: OUT
   Connection: 1
-     0x10
-Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x0810: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x00:
+     0x0b
+Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0837: IN OUT Detect
+  Pin Default 0x400100f1: [N/A] Line Out at Ext N/A
+    Conn = 1/8, Color = Unknown
+  Pin-ctls: 0x20: IN
   Connection: 1
-     0x0e
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x083734: IN OUT Detect
-  Pin Default 0x02a19830: [Jack] Mic at Ext Front
+     0x0b
+Node 0x10 [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x081737: IN OUT Detect
+  Pin Default 0x02a1902e: [Jack] Mic at Ext Front
     Conn = 1/8, Color = Pink
   Pin-ctls: 0x24: IN
   Connection: 1
-     0x02
-Node 0x19 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
-  Amp-In vals:
-  Pincap 0x083724: IN Detect
-  Pin Default 0x99a30931: [Fixed] Mic at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x24: IN
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x083734: IN OUT Detect
-  Pin Default 0x0281303e: [Jack] Line In at Ext Front
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x02
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x4017952d: [N/A] Speaker at Ext N/A
-    Conn = Analog, Color = Pink
-  Pin-ctls: 0x20: IN
-Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
+     0x0b
+Node 0x11 [Pin Complex] wcaps 0x400104: Mono Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x00]
   Pincap 0x0810: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x40: OUT
+  Pin Default 0x500000f2: [N/A] Line Out at Int N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x00:
   Connection: 1
-     0x06
-Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x90 0x90]
-  Connection: 7
-     0x18 0x19 0x1a 0x1c 0x14 0x15* 0x12
-Node 0x24 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x01 0x01]
-  Connection: 7
-     0x18 0x19 0x1a 0x1c 0x14* 0x15 0x13
+     0x13
+Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x500000f3: [N/A] Line Out at Int N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x13 [Audio Mixer] wcaps 0x200100: Mono
+  Connection: 1
+     0x07
+Node 0x14 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
+  Amp-Out vals:  [0x00]
 
+dmesg:
 
+[  493.668000] ALSA 
+/home/bphinz/alsa/alsa-hg/alsa-driver/pci/hda/hda_codec.c:1810: hda_codec: 
+model 'm4' is selected
+[  493.668000] ALSA 
+/home/bphinz/alsa/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2339: autoconfig: 
+line_outs=1 (0xe/0x0/0x0/0x0/0x0)
+[  493.668000] ALSA 
+/home/bphinz/alsa/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2343:    
+speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+[  493.668000] ALSA 
+/home/bphinz/alsa/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2347:    hp_outs=0 
+(0x0/0x0/0x0/0x0/0x0)
+[  493.668000] ALSA 
+/home/bphinz/alsa/alsa-hg/alsa-driver/pci/hda/hda_codec.c:2355:    inputs: 
+mic=0x0, fmic=0x10, line=0x0, fline=0x0, cd=0x0, aux=0x0
+[  493.796000] ALSA 
+/home/bphinz/alsa/alsa-hg/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:244: 
+si3054: cannot initialize. EXT MID = 0000
+[  493.796000] ALSA 
+/home/bphinz/alsa/alsa-hg/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_si3054.c:256: 
+Link Frame Detect(FDT) is not ready (line status: 0000)
 
+Thanks,
+-brian
 
-
-/proc/asound/card0/codec#1:
-Codec: Conexant ID 2c06
-Address: 1
-Vendor Id: 0x14f12c06
-Subsystem Id: 0x10250093
-Revision Id: 0x100000
-Modem Function Group: 0x2
+>From: Takashi Iwai <tiwai@suse.de>
+>To: "Brian Hinz" <bphinz@hotmail.com>
+>CC: alsa-devel@alsa-project.org
+>Subject: Re: [alsa-devel] stac9200 speaker/hp not detected
+>Date: Wed, 04 Jul 2007 11:27:56 +0200
+>
+>At Wed, 04 Jul 2007 05:25:39 -0400,
+>Brian Hinz wrote:
+> >
+> > Hi Takashi,
+> >
+> > Sorry, I recompiled the driver from the hg sources and hadn't re-run
+> > alsamixer to unmute.  It still doesn't work though - any suggestions?
+>
+>Attach the latest information, then.
+>
+>
+>Takashi
+>
+> >
+> > Thanks,
+> > -brian
+> >
+> >
+> > >From: Takashi Iwai <tiwai@suse.de>
+> > >To: "Brian Hinz" <bphinz@hotmail.com>
+> > >CC: alsa-devel@alsa-project.org
+> > >Subject: Re: [alsa-devel] stac9200 speaker/hp not detected
+> > >Date: Wed, 04 Jul 2007 10:43:12 +0200
+> > >
+> > >At Tue, 03 Jul 2007 23:08:42 -0400,
+> > >Brian Hinz wrote:
+> > > >
+> > > > This laptop has only an internal speaker, a headphone out, and a mic 
+>in
+> > > > (unless there are other outs enabled when the dock is connected).  
+>The
+> > > > windows INI seems to be setting some gpio bits but I don't 
+>understand
+> > >how to
+> > > > map the ini syntax into the alsa driver (or if it needs to be...)
+> > >
+> > >Might be needed, but...
+> > >
+> > > > Node 0x0b [Audio Selector] wcaps 0x300105: Stereo Amp-Out
+> > > >   Amp-Out caps: N/A
+> > > >   Amp-Out vals:  [0x80 0x80]
+> > > >   Connection: 1
+> > > >      0x07
+> > >
+> > >You didn't unmute "Master" mixer switch?
+> > >
+> > >
+> > >Takashi
+> >
+> >
