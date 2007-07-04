@@ -1,29 +1,17 @@
-From: "Matt Mullins" <mokomull@gmail.com>
-Subject: Re: Fwd: Problems with hda_intel, Santa Rosa,
-	and suspend
-Date: Wed, 4 Jul 2007 15:37:22 -0500
-Message-ID: <dfd4051f0707041337m276d5536r6c65fd6d29463f39@mail.gmail.com>
-References: <dfd4051f0706161836xa191176ke10deff2868ad8d6@mail.gmail.com>
-	<s5h1wg8i56k.wl%tiwai@suse.de>
-	<dfd4051f0706191354i679c5b82pd8d788dfb012df3d@mail.gmail.com>
-	<s5hvedjaq66.wl%tiwai@suse.de>
-	<dfd4051f0706201418o4d19a1f2g78081b052e8766e4@mail.gmail.com>
-	<s5hd4zpa9d9.wl%tiwai@suse.de>
-	<dfd4051f0706221331r681503d7h9d755bd91750a8ec@mail.gmail.com>
-	<s5hejk0ibhj.wl%tiwai@suse.de>
-	<dfd4051f0706251316uf265b3dw9c069dc5f75ceedf@mail.gmail.com>
-	<s5hsl8deffy.wl%tiwai@suse.de>
+From: "Roy Huang" <royhuang9@gmail.com>
+Subject: [PATCH]fix mmap emulation bug of recording doesn't work
+Date: Wed, 4 Jul 2007 13:51:53 +0800
+Message-ID: <afe668f90707032251v693c78a6g37e2e009ec13f3b0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id 626CE244D7
+Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id 731251038B8
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2007 22:37:23 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so360251ugf
-	for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2007 13:37:22 -0700 (PDT)
-In-Reply-To: <s5hsl8deffy.wl%tiwai@suse.de>
+	Wed,  4 Jul 2007 07:51:55 +0200 (CEST)
+Received: by ik-out-1112.google.com with SMTP id b35so1651337ika
+	for <alsa-devel@alsa-project.org>; Tue, 03 Jul 2007 22:51:54 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,18 +22,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On a whim, I decided to extract the sound/pci/hda from vanilla 2.6.20
-kernel sources and compile it under 2.6.22-rc5 (yes, I know, I
-probably shouldn't have done that).  I had to add a typedef to
-patch_sigmatel.c to get it to compile.  When I loaded the modules, I
-did *not* get the "switching to single_cmd" error, but I haven't
-gotten sound yet, either, probably because I'm using pieces of two
-different versions of ALSA.  However, this suggests to me that perhaps
-there is a problem with the hda_intel driver, and not necessarily an
-ACPI problem.
+Record doesn't work if enabling mmap emulation and rate conversion
+needed, this patch fix this bug.
 
-I'm going to keep working on this, as much as I can understand right now.
+diff -uNr alsa-lib-1.0.14a/src/pcm/pcm_hw.c alsa-lib-new/src/pcm/pcm_hw.c
+--- alsa-lib-1.0.14a/src/pcm/pcm_hw.c	2007-06-11 16:53:13.000000000 +0800
++++ alsa-lib-new/src/pcm/pcm_hw.c	2007-07-04 12:16:31.000000000 +0800
+@@ -96,6 +96,7 @@
+ 	int shadow_appl_ptr: 1,
+ 	    avail_update_flag: 1,
+ 	    mmap_shm: 1;
++	snd_pcm_uframes_t hw_ptr;
+ 	snd_pcm_uframes_t appl_ptr;
+ 	/* restricted parameters */
+ 	snd_pcm_format_t format;
+@@ -373,7 +374,9 @@
+ 	if (pcm->stream == SND_PCM_STREAM_CAPTURE) {
+ 		if (hw->mmap_shm) {
+ 			hw->shadow_appl_ptr = 1;
++			hw->hw_ptr = 0;
+ 			hw->appl_ptr = 0;
++			snd_pcm_set_hw_ptr(pcm, &hw->hw_ptr, -1, 0);
+ 			snd_pcm_set_appl_ptr(pcm, &hw->appl_ptr, -1, 0);
+ 		} else {
+ 			hw->shadow_appl_ptr = 0;
+@@ -949,28 +952,91 @@
+ 	return size;
+ }
+
++static inline snd_pcm_uframes_t snd_pcm_hw_capture_avail(snd_pcm_t *pcm)
++{
++	snd_pcm_sframes_t avail;
++	snd_pcm_hw_t *hw = pcm->private_data;
++
++	avail = hw->mmap_status->hw_ptr - hw->mmap_control->appl_ptr;
++	if (avail < 0)
++		avail += pcm->boundary;
++	return avail;
++}
++
++static snd_pcm_sframes_t snd_pcm_hw_read_mmap(snd_pcm_t *pcm,
+snd_pcm_uframes_t size)
++{
++	snd_pcm_uframes_t xfer = 0;
++	snd_pcm_sframes_t err = 0;
++	snd_pcm_hw_t *hw = pcm->private_data;
++	if (! size)
++		return 0;
++	while (xfer < size) {
++		snd_pcm_uframes_t frames = size - xfer;
++		snd_pcm_uframes_t appl_offset = hw->mmap_control->appl_ptr %
+pcm->buffer_size;
++		snd_pcm_uframes_t cont = pcm->buffer_size - appl_offset;
++		if (cont < frames)
++			frames = cont;
++		switch (pcm->access) {
++		case SND_PCM_ACCESS_MMAP_INTERLEAVED:
++		{
++			const snd_pcm_channel_area_t *a = snd_pcm_mmap_areas(pcm);
++			char *buf = snd_pcm_channel_area_addr(a, appl_offset);
++			err = _snd_pcm_readi(pcm, buf, frames);
++			if (err >= 0)
++				frames = err;
++			break;
++		}
++		case SND_PCM_ACCESS_MMAP_NONINTERLEAVED:
++		{
++			snd_pcm_uframes_t channels = pcm->channels;
++			unsigned int c;
++			void *bufs[channels];
++			const snd_pcm_channel_area_t *areas = snd_pcm_mmap_areas(pcm);
++			for (c = 0; c < channels; ++c) {
++				const snd_pcm_channel_area_t *a = &areas[c];
++				bufs[c] = snd_pcm_channel_area_addr(a, appl_offset);
++			}
++			err = _snd_pcm_readn(pcm->fast_op_arg, bufs, frames);
++			if (err >= 0)
++				frames = err;
++		}
++		default:
++			SNDMSG("invalid access type %d", pcm->access);
++			return -EINVAL;
++		}
++		if (err < 0)
++			break;
++		xfer += frames;
++	}
++	if (xfer > 0)
++		return xfer;
++	return err;
++}
++
+ static snd_pcm_sframes_t snd_pcm_hw_avail_update(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
+-	snd_pcm_uframes_t avail;
++	snd_pcm_uframes_t avail, xfer_avail;
+
+ 	sync_ptr(hw, 0);
+ 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
+ 		avail = snd_pcm_mmap_playback_avail(pcm);
+ 	} else {
+ 		avail = snd_pcm_mmap_capture_avail(pcm);
+-		if (avail > 0 && hw->mmap_shm) {
++		if (avail < pcm->avail_min && hw->mmap_shm) {
+ 			snd_pcm_sframes_t err;
+-			snd_pcm_hw_t *hw = pcm->private_data;
+-			hw->avail_update_flag = 1;
+-			err = snd_pcm_read_mmap(pcm, avail);
+-			hw->avail_update_flag = 0;
+-			if (err < 0)
+-				return err;
+-			if ((snd_pcm_uframes_t)err != avail)
+-				SNDMSG("short read %ld for avail %ld", err, avail);
+-			return err;
+-		}
++			xfer_avail = snd_pcm_hw_capture_avail(pcm);
++			xfer_avail -= xfer_avail % pcm->xfer_align;
++			if (xfer_avail > 0) {
++				hw->avail_update_flag = 1;
++				err = snd_pcm_hw_read_mmap(pcm, xfer_avail);
++				hw->avail_update_flag = 0;
++				if (err < 0)
++					return err;
++				hw->hw_ptr += err;
++				avail = snd_pcm_mmap_capture_avail(pcm);
++			}
++		}
+ 	}
+ 	switch (FAST_PCM_STATE(hw)) {
+ 	case SNDRV_PCM_STATE_RUNNING:
