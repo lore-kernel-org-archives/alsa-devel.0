@@ -1,20 +1,22 @@
-From: "Roy Huang" <royhuang9@gmail.com>
-Subject: [PATCH]fix mmap emulation bug of recording doesn't work
-Date: Wed, 4 Jul 2007 22:18:24 +0800
-Message-ID: <afe668f90707040718j15495e7bt375b62eb355a1a28@mail.gmail.com>
-References: <afe668f90707032251v693c78a6g37e2e009ec13f3b0@mail.gmail.com>
+From: Steffen Schulz <pepe_ml@gmx.net>
+Subject: hda-intel on macbook: unknown model for ACL882
+Date: Wed, 4 Jul 2007 18:50:22 +0200
+Message-ID: <20070704165022.GA8783@cbg.dyndns.org>
+References: <20070701132728.GA5827@cbg.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9653E244A1
+Received: from mx2.rz.ruhr-uni-bochum.de (mx2.rz.ruhr-uni-bochum.de
+	[134.147.64.30]) by alsa0.perex.cz (Postfix) with SMTP id E03631038C4
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2007 16:18:26 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id u77so3878009pyb
-	for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2007 07:18:25 -0700 (PDT)
-In-Reply-To: <afe668f90707032251v693c78a6g37e2e009ec13f3b0@mail.gmail.com>
+	Wed,  4 Jul 2007 18:50:22 +0200 (CEST)
+Received: from cbg.dyndns.org (knox_zi408.hm.ruhr-uni-bochum.de [10.0.52.70])
+	by mulch.hm.ruhr-uni-bochum.de (Postfix) with ESMTP id 4BD1DF55F
+	for <alsa-devel@alsa-project.org>;
+	Wed,  4 Jul 2007 18:50:26 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20070701132728.GA5827@cbg.dyndns.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,137 +29,73 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Record doesn't work if enabling mmap emulation and rate conversion
-needed, this patch fix this bug.
+Hi all,
 
-diff -uNr alsa-lib-1.0.14a/src/pcm/pcm_hw.c alsa-lib-new/src/pcm/pcm_hw.c
---- alsa-lib-1.0.14a/src/pcm/pcm_hw.c   2007-06-11 16:53:13.000000000 +0800
-+++ alsa-lib-new/src/pcm/pcm_hw.c       2007-07-04 12:16:31.000000000 +0800
-@@ -96,6 +96,7 @@
-        int shadow_appl_ptr: 1,
-            avail_update_flag: 1,
-            mmap_shm: 1;
-+       snd_pcm_uframes_t hw_ptr;
-        snd_pcm_uframes_t appl_ptr;
-        /* restricted parameters */
-        snd_pcm_format_t format;
-@@ -373,7 +374,9 @@
-        if (pcm->stream == SND_PCM_STREAM_CAPTURE) {
-                if (hw->mmap_shm) {
-                        hw->shadow_appl_ptr = 1;
-+                       hw->hw_ptr = 0;
-                        hw->appl_ptr = 0;
-+                       snd_pcm_set_hw_ptr(pcm, &hw->hw_ptr, -1, 0);
-                        snd_pcm_set_appl_ptr(pcm, &hw->appl_ptr, -1, 0);
-                } else {
-                        hw->shadow_appl_ptr = 0;
-@@ -949,28 +952,91 @@
-        return size;
- }
 
-+static inline snd_pcm_uframes_t snd_pcm_hw_capture_avail(snd_pcm_t *pcm)
-+{
-+       snd_pcm_sframes_t avail;
-+       snd_pcm_hw_t *hw = pcm->private_data;
-+
-+       avail = hw->mmap_status->hw_ptr - hw->mmap_control->appl_ptr;
-+       if (avail < 0)
-+               avail += pcm->boundary;
-+       return avail;
-+}
-+
-+static snd_pcm_sframes_t snd_pcm_hw_read_mmap(snd_pcm_t *pcm,
-snd_pcm_uframes_t size)
-+{
-+       snd_pcm_uframes_t xfer = 0;
-+       snd_pcm_sframes_t err = 0;
-+       snd_pcm_hw_t *hw = pcm->private_data;
-+       if (! size)
-+               return 0;
-+       while (xfer < size) {
-+               snd_pcm_uframes_t frames = size - xfer;
-+               snd_pcm_uframes_t appl_offset = hw->mmap_control->appl_ptr %
-pcm->buffer_size;
-+               snd_pcm_uframes_t cont = pcm->buffer_size - appl_offset;
-+               if (cont < frames)
-+                       frames = cont;
-+               switch (pcm->access) {
-+               case SND_PCM_ACCESS_MMAP_INTERLEAVED:
-+               {
-+                       const snd_pcm_channel_area_t *a =
-snd_pcm_mmap_areas(pcm);
-+                       char *buf = snd_pcm_channel_area_addr(a, appl_offset);
-+                       err = _snd_pcm_readi(pcm, buf, frames);
-+                       if (err >= 0)
-+                               frames = err;
-+                       break;
-+               }
-+               case SND_PCM_ACCESS_MMAP_NONINTERLEAVED:
-+               {
-+                       snd_pcm_uframes_t channels = pcm->channels;
-+                       unsigned int c;
-+                       void *bufs[channels];
-+                       const snd_pcm_channel_area_t *areas =
-snd_pcm_mmap_areas(pcm);
-+                       for (c = 0; c < channels; ++c) {
-+                               const snd_pcm_channel_area_t *a = &areas[c];
-+                               bufs[c] = snd_pcm_channel_area_addr(a,
-appl_offset);
-+                       }
-+                       err = _snd_pcm_readn(pcm->fast_op_arg, bufs, frames);
-+                       if (err >= 0)
-+                               frames = err;
-+               }
-+               default:
-+                       SNDMSG("invalid access type %d", pcm->access);
-+                       return -EINVAL;
-+               }
-+               if (err < 0)
-+                       break;
-+               xfer += frames;
-+       }
-+       if (xfer > 0)
-+               return xfer;
-+       return err;
-+}
-+
- static snd_pcm_sframes_t snd_pcm_hw_avail_update(snd_pcm_t *pcm)
- {
-        snd_pcm_hw_t *hw = pcm->private_data;
--       snd_pcm_uframes_t avail;
-+       snd_pcm_uframes_t avail, xfer_avail;
+Since I didn't get much feedback on alsa-users, I figured I'd place
+a pointer here, too.
 
-        sync_ptr(hw, 0);
-        if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
-                avail = snd_pcm_mmap_playback_avail(pcm);
-        } else {
-                avail = snd_pcm_mmap_capture_avail(pcm);
--               if (avail > 0 && hw->mmap_shm) {
-+               if (avail < pcm->avail_min && hw->mmap_shm) {
-                        snd_pcm_sframes_t err;
--                       snd_pcm_hw_t *hw = pcm->private_data;
--                       hw->avail_update_flag = 1;
--                       err = snd_pcm_read_mmap(pcm, avail);
--                       hw->avail_update_flag = 0;
--                       if (err < 0)
--                               return err;
--                       if ((snd_pcm_uframes_t)err != avail)
--                               SNDMSG("short read %ld for avail %ld",
-err, avail);
--                       return err;
--               }
-+                       xfer_avail = snd_pcm_hw_capture_avail(pcm);
-+                       xfer_avail -= xfer_avail % pcm->xfer_align;
-+                       if (xfer_avail > 0) {
-+                               hw->avail_update_flag = 1;
-+                               err = snd_pcm_hw_read_mmap(pcm, xfer_avail);
-+                               hw->avail_update_flag = 0;
-+                               if (err < 0)
-+                                       return err;
-+                               hw->hw_ptr += err;
-+                               avail = snd_pcm_mmap_capture_avail(pcm);
-+                       }
-+               }
-        }
-        switch (FAST_PCM_STATE(hw)) {
-        case SNDRV_PCM_STATE_RUNNING:
+
+The revision 3 macbook pro(santa-rosa) ships with a ALC882.
+
+Loading hda_intel with auto-detection results in very VERY quiet sound
+out of the headphones if 'front' is set to 100%, mic input seems to
+work too, but also very quiet.
+
+
+Providing an option 'model=w2jc' to modprobe however results in
+working(loud) front and mic. But this model does not seem to provide
+headphones output, so they don't work.
+
+
+This sounds to me like it may be easy to fix, so I hope you find this
+information useful. Would be great to have the sound working.
+
+
+Regards,
+Steffen (subscribed for the moment..)
+
+
+> The snd-hda-module loads with the following message:
+> | kernel: hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+> | kernel: ALSA /usr/src/alsa/alsa-driver/pci/hda/hda_codec.c:2339: autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
+> | kernel: ALSA /usr/src/alsa/alsa-driver/pci/hda/hda_codec.c:2343:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+> | kernel: ALSA /usr/src/alsa/alsa-driver/pci/hda/hda_codec.c:2347:    hp_outs=1 (0x15/0x0/0x0/0x0/0x0)
+> | kernel: ALSA /usr/src/alsa/alsa-driver/pci/hda/hda_codec.c:2355:    inputs: mic=0x18, fmic=0x0, line=0x1a, fline=0x0, cd=0x0, aux=0x0
+> 
+> aplay -l says:
+> 
+> | **** List of PLAYBACK Hardware Devices ****
+> | card 0: Intel [HDA Intel], device 0: ALC882 Analog [ALC882 Analog]
+> |   Subdevices: 1/1
+> |   Subdevice #0: subdevice #0
+> | card 0: Intel [HDA Intel], device 1: ALC882 Digital [ALC882 Digital]
+> |   Subdevices: 1/1
+> |   Subdevice #0: subdevice #0
+> 
+> lspci -vv -nn says:
+> 
+> | 00:1b.0 Audio device [0403]: Intel Corporation 82801H (ICH8 Family) HD Audio Controller [8086:284b] (rev 03)
+> | 	Subsystem: Apple Computer Inc. Unknown device [106b:00a0]
+> | 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+> | 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+> | 	Latency: 0, Cache Line Size: 256 bytes
+> | 	Interrupt: pin A routed to IRQ 20
+> | 	Region 0: Memory at 9b500000 (64-bit, non-prefetchable) [size=16K]
+> | 	Capabilities: [50] Power Management version 2
+> | 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+> | 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+> | 	Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
+> | 		Address: 0000000000000000  Data: 0000
+> | 	Capabilities: [70] Express Unknown type IRQ 0
+> | 		Device: Supported: MaxPayload 128 bytes, PhantFunc 0, ExtTag-
+> | 		Device: Latency L0s <64ns, L1 <1us
+> | 		Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
+> | 		Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+> | 		Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+> | 		Link: Supported Speed unknown, Width x0, ASPM unknown, Port 0
+> | 		Link: Latency L0s <64ns, L1 <1us
+> | 		Link: ASPM Disabled CommClk- ExtSynch-
+> | 		Link: Speed unknown, Width x0
+> | 	Capabilities: [100] Virtual Channel
+> | 	Capabilities: [130] Unknown (5)
