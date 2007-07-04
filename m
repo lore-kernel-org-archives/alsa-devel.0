@@ -1,26 +1,19 @@
-From: "Daniel J Blueman" <daniel.blueman@gmail.com>
-Subject: Re: [HDA Intel/STAC92xx] mic not working
-	(retasking?)...
-Date: Wed, 4 Jul 2007 00:12:46 +0100
-Message-ID: <6278d2220707031612i1c129969ga9c0d5d77b7c73db@mail.gmail.com>
-References: <6278d2220706271328u79afd988r44cc1fbfc41c6014@mail.gmail.com>
-	<s5hved6z75l.wl%tiwai@suse.de>
-	<6278d2220706301407p739ebfb5i52d4a2af3a17ecd8@mail.gmail.com>
-	<s5habuec264.wl%tiwai@suse.de>
-	<6278d2220707021539g1485af71v3cbb639f0844b271@mail.gmail.com>
-	<s5h3b057u8d.wl%tiwai@suse.de>
+From: Paul Vojta <vojta@Math.Berkeley.EDU>
+Subject: Re: another device for opl3sa2
+Date: Tue, 3 Jul 2007 19:24:23 -0700
+Message-ID: <20070704022423.GA2012@math.berkeley.edu>
+References: <20070703002739.GA27389@math.berkeley.edu>
+	<s5hfy45ajk1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id BEB6F103879
+Received: from mail.math.berkeley.edu (mail.math.Berkeley.EDU [169.229.58.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9933B24463
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jul 2007 01:12:47 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so189793ugf
-	for <alsa-devel@alsa-project.org>; Tue, 03 Jul 2007 16:12:47 -0700 (PDT)
-In-Reply-To: <s5h3b057u8d.wl%tiwai@suse.de>
+	Wed,  4 Jul 2007 04:24:26 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hfy45ajk1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,91 +23,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Tobin Davis <tdavis@dsl-only.net>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03/07/07, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 2 Jul 2007 23:39:14 +0100,
-> Daniel J Blueman wrote:
-> > > > > > With both 2.6.20 and 2.6.22 kernels on Ubuntu 7.04 on my Sony Vaio
-> > > > > > SZ240, I'm unable to get my mic connector working at any cost.
-> > > > >
-> > > > > First, show the contents of /proc/asound/card0/codec#* files...
-[snip]
-> > I have discovered the bug preventing me using the external mic socket
-> > before: in the mixer, the user has to select the [internal] mic input,
-> > then re-select the line-in (actually external mic) input; reading from
-> > (eg) /dev/dsp while changing this, the output suddenly is as expected
-> > when the line-in is re-selected.
->
-> Could you elaborate?  What do yo mean "output" here, and what did you
-> expect?
+On Tue, Jul 03, 2007 at 12:05:50PM +0200, Takashi Iwai wrote:
+> At Mon, 2 Jul 2007 17:27:39 -0700,
+> Paul Vojta wrote:
+> > 
+> > Folks:
+> > 
+> > Here's a patch to add support for an (admittedly old) device:
+> > 
+> > 
+> > --- linux-2.6.21.5/sound/isa/opl3sa2.c.orig	2007-06-11 11:37:06.000000000 -0700
+> > +++ linux-2.6.21.5/sound/isa/opl3sa2.c	2007-06-30 23:29:43.000000000 -0700
+> > @@ -165,6 +165,8 @@
+> >  	{ .id = "YMH0801", .devs = { { "YMH0021" } } },
+> >  	/* NeoMagic MagicWave 3DX */
+> >  	{ .id = "NMX2200", .devs = { { "YMH2210" } } },
+> > +	/* NeoMagic MagicWave 3D */
+> > +	{ .id = "NMX2200", .devs = { { "NMX2210" } } },
+> >  	/* --- */
+> >  	{ .id = "" }	/* end */
+> >  };
+> > 
+> 
+> Thanks, could you give your sign-off?
 
-Looking at what is printed from the command 'cat /dev/dsp', what is
-shown changes when I de-select 'line-in' and then reselect it. Let me
-know if you're still unclear.
+Description:
 
-> > Since we've got started, where should I look for the 'before' and
-> > 'after' state to compare to see into this?
->
-> Yes, comparing the codec dump file would be helpful.
+	Add Neomagic MagicWave 3D to list of supported devices for opl3sa2
+	driver.
 
-Changing from the initial mixer state of 'Line-in' being selected to
-'Microphone' does not change anything in the
-/proc/asound/card0/codec#{0,1} files. After, changing the input back
-to 'Line-in' does show a change [1] (which we'd expect).
+Signed-off by:  Paul Vojta <vojta at math.berkeley.edu>
 
-My interpretation of this is that (in the initial state) the STAC
-registers are set to record from the internal mic (which doesn't
-actually exist; there is a tiny amount of crosstalk) and the mixer
-settings ALSA reports show the line-in/external mic selected [2].
 
-I've been looking at patch_stac9872() and it does seem the
-CXD9872RD_VAIO path is being taken [3]. I'll enable the debug
-messages; perhaps the BIOS is storing some bad defaults?
+> > (There may be a bug in the initialization code, though -- it doesn't work
+> > the first time after booting, just the second and subsequent times.
+> > For example, the first time I try running "aplay file.wav" it'll sit there
+> > silently instead of playing the file, but if I type "aplay file.wav" again
+> > then it'll play.)
+> 
+> What do you mean "doesn't work"?  The module wasn't loaded or
+> malfunctional?
 
-Where can you suggest to look, or what to check?
+The driver was malfunctional the first time after reboot or rmmod+modprobe.
 
-Thanks again,
-  Daniel
+aplay would give all appearances of working, and waited the proper amount
+of time, but did not produce sound.  It was as if the sound was played at
+volume zero.
 
---- [1]
+Second and subsequent invocations of aplay worked properly.
 
---- codec0-before        2007-07-03 19:10:13.000000000 +0100
-+++ codec0-after 2007-07-03 19:10:32.000000000 +0100
-@@ -118,7 +118,7 @@
-Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=1
-   Amp-Out vals:  [0x00 0x00]
-   Connection: 4
--     0x0a 0x0d 0x14* 0x02
-+     0x0a 0x0d* 0x14 0x02
- Node 0x16 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-   Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=0
-   Amp-Out vals:  [0x00]
+> > I don't know whether snd_opl3sa2_pnpbiosids[] should also be changed.
+> 
+> The table you changed is for ISA-PnP, while *_pnpbiosids[] is for PnP
+> BIOS.  There are slight differences.  And, "NMX2210" is already
+> there.
 
---- [2]
+Oops, sorry.
 
-$ amixer scontents
-[snip]
-Simple mixer control 'Line',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [on]
-Simple mixer control 'Mic',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-[snip]
+> > Also, why does nm256.c direct users to the cs423x drivers and not opl3sa2?
+> > If it had mentioned opl3sa2 it would have saved me many hours.
+> 
+> Patch please?  Also, it'd be better to fix ALSA-Configuration.txt,
+> too...
 
---- [3]
+ALSA-Configuration.txt already mentions opl3sa2.
 
-$ lspci -vvns 00:1b.0
-00:1b.0 0403: 8086:27d8 (rev 02)
-        Subsystem: 104d:81e6
-...
--- 
-Daniel J Blueman
+For nm256.c:
+
+Description:
+
+	Adds mention of opl3sa2 driver to a diagnostic message for
+	NeoMagic nm256 driver.
+
+Signed-off by:  Paul Vojta <vojta at math.berkeley.edu>
+
+--- a/sound/pci/nm256/nm256.c	2007-06-11 11:37:06.000000000 -0700
++++ b/sound/pci/nm256/nm256.c	2007-07-03 13:00:11.000000000 -0700
+@@ -1533,7 +1533,8 @@
+ 				printk(KERN_ERR "  force the driver to load by "
+ 				       "passing in the module parameter\n");
+ 				printk(KERN_ERR "    force_ac97=1\n");
+-				printk(KERN_ERR "  or try sb16 or cs423x drivers instead.\n");
++				printk(KERN_ERR "  or try sb16, opl3sa2, or "
++				       "cs423x drivers instead.\n");
+ 				err = -ENXIO;
+ 				goto __error;
+ 			}
+
+
+Sincerely,
+
+
+Paul Vojta
+vojta@math.berkeley.edu
