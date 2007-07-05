@@ -1,18 +1,29 @@
-From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
-Subject: [PATCH] ALSA AICA sound on SEGA Dreamcast - fix
-	behaviour in poor resource conditions
-Date: Thu, 5 Jul 2007 23:07:44 +0100
-Message-ID: <92a12cdb0707051507r7ab1516blb7ea755d89c25efa@mail.gmail.com>
+From: "Matt Mullins" <mokomull@gmail.com>
+Subject: Re: Fwd: Problems with hda_intel, Santa Rosa,
+	and suspend
+Date: Thu, 5 Jul 2007 17:13:48 -0500
+Message-ID: <dfd4051f0707051513p697f22a2p4e34d9910f44f15e@mail.gmail.com>
+References: <dfd4051f0706161836xa191176ke10deff2868ad8d6@mail.gmail.com>
+	<s5hvedjaq66.wl%tiwai@suse.de>
+	<dfd4051f0706201418o4d19a1f2g78081b052e8766e4@mail.gmail.com>
+	<s5hd4zpa9d9.wl%tiwai@suse.de>
+	<dfd4051f0706221331r681503d7h9d755bd91750a8ec@mail.gmail.com>
+	<s5hejk0ibhj.wl%tiwai@suse.de>
+	<dfd4051f0706251316uf265b3dw9c069dc5f75ceedf@mail.gmail.com>
+	<s5hsl8deffy.wl%tiwai@suse.de>
+	<dfd4051f0707041337m276d5536r6c65fd6d29463f39@mail.gmail.com>
+	<s5hvecz5cz3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 091C4103807
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id B16AE1038E2
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2007 00:07:45 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so34871wag
-	for <alsa-devel@alsa-project.org>; Thu, 05 Jul 2007 15:07:44 -0700 (PDT)
+	Fri,  6 Jul 2007 00:13:51 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id h2so591889ugf
+	for <alsa-devel@alsa-project.org>; Thu, 05 Jul 2007 15:13:49 -0700 (PDT)
+In-Reply-To: <s5hvecz5cz3.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,131 +34,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Patch against code in alsa-kernel - tested with patched up 2.6.21-rc7
-and working well
+After some hacking, I found that for some reason, something is calling
+azx_send_cmd with nids much wider than 7 bits.  This happens exactly
+twice, once with nid=0x534c, and nid=0x8845.  Both times, the verb is
+0xf1c, and para=0x00.  This clobbers parts of "val" in both
+azx_single_send_cmd and azx_corb_send_cmd.  I added the following code
+to azx_send_cmd, and it works now:
+if (!direct && (nid >> 7)) {
+        snd_printd(SFX "Uh oh, too wide an NID value. codec=0x%x,
+direct=0x%x, nid=0x%x, verb=0x%x, para=0x%x\n", (codec->addr)&0xf,
+direct, nid, verb, para);
+        return -EIO;
+}
 
-Submitted by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Signed-off by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+This outputs:
 
+[136890.000388] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide an NID value. codec=0x0, direct=0x0,
+nid=0x534c, verb=0xf1c, para=0x0
+[136890.000393] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide an NID value. codec=0x0, direct=0x0,
+nid=0x8845, verb=0xf1c, para=0x0
 
-diff -ruN aicaold/aica.c aicanew/aica.c
---- aicaold/aica.c	2007-07-05 23:01:39.000000000 +0100
-+++ aicanew/aica.c	2007-07-05 23:02:02.000000000 +0100
-@@ -65,10 +65,6 @@
+I do realize that the problem is not completely fixed, and we still
+need to figure out what actually calls azx_send_cmd with the offending
+parameters.  However, I am now lost in a sea of function pointers...
 
- /* Use workqueue */
-
--static struct spu_work_holder {
--	struct work_struct spu_dma_work;
--	void *sspointer;
--} spu_working;
-
- static struct workqueue_struct *aica_queue;
-
-@@ -252,18 +248,15 @@
- static void run_spu_dma(struct work_struct *work)
- {
- 	int buffer_size;
--	struct snd_pcm_substream *substream;
- 	struct snd_pcm_runtime *runtime;
- 	struct snd_card_aica *dreamcastcard;
--	struct spu_work_holder *holder = container_of(work, struct
-spu_work_holder, spu_dma_work);
--	substream = holder-> sspointer;
--	dreamcastcard = substream->pcm->private_data;
--	runtime = substream->runtime;
-+	dreamcastcard = container_of(work, struct snd_card_aica, spu_dma_work);
-+	runtime = dreamcastcard->substream->runtime;
- 	if (unlikely(dreamcastcard->dma_check == 0)) {
- 		buffer_size = frames_to_bytes(runtime, runtime->buffer_size);
- 		if (runtime->channels > 1)
- 			dreamcastcard->channel->flags |= 0x01;
--		aica_dma_transfer(runtime->channels, buffer_size, substream);
-+		aica_dma_transfer(runtime->channels, buffer_size, dreamcastcard->substream);
- 		startup_aica(dreamcastcard);
- 		dreamcastcard->clicks =
- 		    buffer_size / (AICA_PERIOD_SIZE * runtime->channels);
-@@ -271,7 +264,7 @@
- 	} else {
- 		aica_dma_transfer(runtime->channels,
- 				  AICA_PERIOD_SIZE * runtime->channels,
--				  substream);
-+				  dreamcastcard->substream);
- 		snd_pcm_period_elapsed(dreamcastcard->substream);
- 		dreamcastcard->clicks++;
- 		if (unlikely(dreamcastcard->clicks >= AICA_PERIOD_NUMBER))
-@@ -307,7 +300,8 @@
- 		dreamcastcard->current_period = play_period;
- 	if (unlikely(dreamcastcard->dma_check == 0))
- 		dreamcastcard->dma_check = 1;
--		queue_work(aica_queue, &(spu_working.spu_dma_work));
-+		queue_work(aica_queue, &(dreamcastcard->spu_dma_work));
-+
- }
-
- static void spu_begin_dma(struct snd_pcm_substream *substream)
-@@ -317,10 +311,8 @@
- 	struct snd_pcm_runtime *runtime;
- 	runtime = substream->runtime;
- 	dreamcastcard = substream->pcm->private_data;
--	/*  Use queue to do the heavy lifting */
--	spu_working.sspointer = substream;
--	INIT_WORK(&(spu_working.spu_dma_work), run_spu_dma);
--	queue_work(aica_queue, &(spu_working.spu_dma_work));
-+	//get the queue to do the work
-+	queue_work(aica_queue, &(dreamcastcard->spu_dma_work));
- 	/* Timer may already be running */
- 	if (unlikely(dreamcastcard->timer.data)) {
- 		mod_timer(&dreamcastcard->timer, jiffies + 4);
-@@ -366,7 +358,9 @@
- 				 *substream)
- {
- 	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
-+	flush_workqueue(aica_queue);
- 	del_timer(&dreamcastcard->timer);
-+	aica_chn_halt();
- 	kfree(dreamcastcard->channel);
- 	spu_disable();
- 	return 0;
-@@ -402,17 +396,10 @@
- static int snd_aicapcm_pcm_trigger(struct snd_pcm_substream
- 				   *substream, int cmd)
- {
--	struct snd_card_aica *dreamcastcard;
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 		spu_begin_dma(substream);
- 		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--		dreamcastcard = substream->pcm->private_data;
--		if (dreamcastcard->timer.data)
--			del_timer(&dreamcastcard->timer);
--		aica_chn_halt();
--		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -610,6 +597,8 @@
- 	strcpy(dreamcastcard->card->shortname, SND_AICA_DRIVER);
- 	strcpy(dreamcastcard->card->longname,
- 	       "Yamaha AICA Super Intelligent Sound Processor for SEGA Dreamcast");
-+	//start the worker thread
-+	INIT_WORK(&(dreamcastcard->spu_dma_work), run_spu_dma);
- 	/* Load the PCM 'chip' */
- 	err = snd_aicapcmchip(dreamcastcard, 0);
- 	if (unlikely(err < 0))
-diff -ruN aicaold/aica.h aicanew/aica.h
---- aicaold/aica.h	2007-07-05 23:01:39.000000000 +0100
-+++ aicanew/aica.h	2007-07-05 23:02:02.000000000 +0100
-@@ -69,6 +69,7 @@
- };
-
- struct snd_card_aica {
-+	struct work_struct spu_dma_work;
- 	struct snd_card *card;
- 	struct aica_channel *channel;
- 	struct snd_pcm_substream *substream;
+And it still doesn't work after a suspend, and I get a handful more
+"uh oh"s upon resume:
+[    3.942647] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x534c, verb=0x71c, para=0xff
+[    3.942658] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x534c, verb=0x71d, para=0xff
+[    3.942668] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x534c, verb=0x71e, para=0xff
+[    3.942678] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x534c, verb=0x71f, para=0xff
+[    3.942688] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x534c, verb=0xf1c, para=0x0
+[    3.942697] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x8845, verb=0x71c, para=0xff
+[    3.942707] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x8845, verb=0x71d, para=0xff
+[    3.942717] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x8845, verb=0x71e, para=0xff
+[    3.942727] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x8845, verb=0x71f, para=0xff
+[    3.942736] ALSA
+/home/mmullins/Desktop/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:644:
+hda-intel: Uh oh, too wide a NID value. codec=0x0, direct=0x0, nid
+=0x8845, verb=0xf1c, para=0x0
+----
+Matt Mullins
