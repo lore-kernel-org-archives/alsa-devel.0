@@ -1,19 +1,19 @@
 From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: error in snd_pcm_drain()
-Date: Thu, 05 Jul 2007 19:37:41 +1200
-Message-ID: <200707051937.42073.linux@audioscience.com>
+Subject: linked streams question
+Date: Thu, 05 Jul 2007 19:53:36 +1200
+Message-ID: <200707051953.36150.linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2054A1038C4
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id B94BC1038C6
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jul 2007 09:36:05 +0200 (CEST)
+	Thu,  5 Jul 2007 09:51:43 +0200 (CEST)
 Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JKP001BE3RNJ730@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 05 Jul 2007 19:35:52 +1200 (NZST)
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JKP009IO4I5FL30@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 05 Jul 2007 19:51:41 +1200 (NZST)
 Content-disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,24 +27,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Maybe an error in snd_pcm_drain - not sure what effect it might have...
-	
-snd_pcm_group_for_each_entry(s, substream) {
-		runtime = s->runtime;
-...
-	}
-	up_read(&snd_pcm_link_rwsem);
-	snd_pcm_stream_lock_irq(substream);
+Greetings,
 
-/* pcm_native.c around line 1491: */
-/* error? runtime has been changed by group_for_each 
-should use substream->runtime instead?
-*/
+I'm adding linked stream support to my driver (asihpi), and having some 
+trouble with the end of playback.
 
-	/* resume pause */
-	if (runtime->status->state == SNDRV_PCM_STATE_PAUSED)
-		snd_pcm_pause(substream, 0);
+What happens is that the slave streams never transition to SETUP state at the 
+end of playback.
+(Eg playing 4 channel wav file to 2 linked stereo streams with aplay).
 
+The master stream reaches snd_pcm_drain_done() which then causes 
+trigger(stop),  resulting in all linked streams being stopped.
+But only the master state is set to SETUP
 
---
+However, now the slave streams are stopped,  period_elapsed() is not called 
+for a final time to (I assme) cause them to transition to the SETUP state.
+Eventually I get "playback drain error (DMA or IRQ trouble?)\n"
+
+My workaround is to set the state of each substream to SETUP in the 
+trigger-stop operator, but no other driver needs to do this so I think it is 
+probably the wrong solution - maybe misses some other cleanup code?  
+
+Any suggestions on the proper way to handle this?
+
+regards
+
 Eliot
