@@ -1,20 +1,21 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: linked streams question
-Date: Thu, 05 Jul 2007 19:53:36 +1200
-Message-ID: <200707051953.36150.linux@audioscience.com>
+From: Paul Vojta <vojta@Math.Berkeley.EDU>
+Subject: Re: another device for opl3sa2
+Date: Thu, 5 Jul 2007 01:03:02 -0700
+Message-ID: <20070705080302.GA6818@math.berkeley.edu>
+References: <20070703002739.GA27389@math.berkeley.edu>
+	<s5hfy45ajk1.wl%tiwai@suse.de>
+	<20070704022423.GA2012@math.berkeley.edu>
+	<s5h4pkka6tq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id B94BC1038C6
+Received: from mail.math.berkeley.edu (mail.math.Berkeley.EDU [169.229.58.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id A151B1038C6
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jul 2007 09:51:43 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JKP009IO4I5FL30@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 05 Jul 2007 19:51:41 +1200 (NZST)
-Content-disposition: inline
+	Thu,  5 Jul 2007 10:03:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h4pkka6tq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+On Wed, Jul 04, 2007 at 10:53:05AM +0200, Takashi Iwai wrote:
+> At Tue, 3 Jul 2007 19:24:23 -0700,
+> 
+> Hm, the silence appears to be an insufficient mixer initialization.
+> Touching mixer values doesn't help?
 
-I'm adding linked stream support to my driver (asihpi), and having some 
-trouble with the end of playback.
+Not sure what you mean by "touching mixer values".  I tried running
+alsamixer and immediately hitting Escape, but the bug still occurred.
 
-What happens is that the slave streams never transition to SETUP state at the 
-end of playback.
-(Eg playing 4 channel wav file to 2 linked stereo streams with aplay).
+By the way, if I use the cs-4232 driver instead, then I don't experience
+the problem.  Of course, with cs-4232 the PNP is all wrong, so I used a
+non-pnp kernel with:
 
-The master stream reaches snd_pcm_drain_done() which then causes 
-trigger(stop),  resulting in all linked streams being stopped.
-But only the master state is set to SETUP
+modprobe snd-cs4232 \
+  port=0x534 cport=0x120 mpu_port=0x330 fm_port=0x388 sb_port=0x220 \
+  irq=5 dma1=0 dma2=1
 
-However, now the slave streams are stopped,  period_elapsed() is not called 
-for a final time to (I assme) cause them to transition to the SETUP state.
-Eventually I get "playback drain error (DMA or IRQ trouble?)\n"
+For comparison, the settings for opl3sa2 would be:
 
-My workaround is to set the state of each substream to SETUP in the 
-trigger-stop operator, but no other driver needs to do this so I think it is 
-probably the wrong solution - maybe misses some other cleanup code?  
+  sb_port=0x220 wss_port=0x530 fm_port=0x388 midi_port=0x330 port=0x370 \
+  irq=5 dma1=0 dma2=1
 
-Any suggestions on the proper way to handle this?
 
-regards
-
-Eliot
+--Paul Vojta, vojta@math.berkeley.edu
