@@ -1,27 +1,26 @@
-From: Fausto Carvalho Marques SIlva <fausto@tse.gov.br>
-Subject: Alsa lib configure asoundlib.h
-Date: Thu, 05 Jul 2007 12:15:06 -0300
-Message-ID: <468D0AFA.20208@tse.gov.br>
+From: "Paul Kavan" <pkavan@gmail.com>
+Subject: Re: Errors in application building
+Date: Thu, 5 Jul 2007 13:42:34 -0500
+Message-ID: <61c0054e0707051142h46cd5beer29d91e8b6fd4560c@mail.gmail.com>
+References: <61c0054e0707031129t28cc1421sde4d3b4ac4b6428b@mail.gmail.com>
+	<75b66ecd0707031137i4c302270oa307df11e0a6ad3@mail.gmail.com>
+	<61c0054e0707031151n6d90fc97v4493f41c1ab0cd1@mail.gmail.com>
+	<61c0054e0707031206i1717e36dy8e69c872b4f33a@mail.gmail.com>
+	<61c0054e0707031240y6d60fed3yea2317b8ad888110@mail.gmail.com>
+	<75b66ecd0707031247h842da9j97bce3f85cda33b1@mail.gmail.com>
+	<61c0054e0707031414r7565c10ax3edab20bd78d4d4c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dexter.tse.gov.br (dexter.tse.gov.br [200.252.157.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C01E103859
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 76E7F24548
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jul 2007 20:01:29 +0200 (CEST)
-Received: from dexter.tse.gov.br (localhost.tse.gov.br [127.0.0.1])
-	by nod32.tse.gov.br (Postfix) with ESMTP id C1408FCF57
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2007 15:01:26 -0300 (BRT)
-Received: from webmail.tse.gov.br (webmail.tse.gov.br [10.28.1.25])
-	by dexter.tse.gov.br (Postfix) with ESMTP id BEC55FC33F
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2007 15:01:26 -0300 (BRT)
-Received: from webmail.tse.gov.br (localhost.localdomain [127.0.0.1])
-	by nod32.tse.gov.br (Postfix) with ESMTP id A8EC714C0D6
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2007 15:01:26 -0300 (BRT)
-Received: from [10.28.219.33] (unknown [10.28.219.33])
-	by webmail.tse.gov.br (Postfix) with ESMTP id A662314C0D5
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2007 15:01:26 -0300 (BRT)
+	Thu,  5 Jul 2007 20:42:36 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id b21so88459nfd
+	for <alsa-devel@alsa-project.org>; Thu, 05 Jul 2007 11:42:35 -0700 (PDT)
+In-Reply-To: <61c0054e0707031414r7565c10ax3edab20bd78d4d4c@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,30 +30,303 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In salsa library(this library really saved my life, from am alsa-lib of 
-600K to 45K!!!), developed by Takashi Iwai, the creation of  asoundlib.h 
-is dynamic and based on the configure options ( --disable-mixer will 
-remove mixer.h from asoundlib.h).
-Can alsa-lib do the same??I think it is a good "cleanup" way of doing 
-client header files.
+On 7/3/07, Paul Kavan <pkavan@gmail.com> wrote:
+>
+> On 7/3/07, Lee Revell <rlrevell@joe-job.com> wrote:
+> >
+> > Use gdb, strace is not useful for this
+> >
+> > On 7/3/07, Paul Kavan <pkavan@gmail.com> wrote:
+> > > Hello all:
+> > >
+> > > Just tried to run with the warnings:
+> > >
+> > >
+> > > >
+> > > >
+> > > > grhuser@pcL7:$ arm-linux-gcc -lasound -Wall -o grh_audio grh_audio.c
+> > > > grh_audio.c: In function 'grh_capture':
+> > > > grh_audio.c:112: warning: pointer targets in passing argument 3 of
+> > > 'snd_pcm_hw_params_set_rate_near' differ in signedness
+> > > > grh_audio.c: In function 'grh_playback':
+> > > > grh_audio.c:207: warning: pointer targets in passing argument 3 of
+> > > 'snd_pcm_hw_params_set_rate_near' differ in signedness
+> > > >
+> > > > Which comes from the code:
+> > > >
+> > > > 112:   if ((err = snd_pcm_hw_params_set_rate_near (capture_handle,
+> > > hw_params, &sample_rate, 0)) < 0)
+> > > >
+> > > >
+> > > > 207:   if ((err = snd_pcm_hw_params_set_rate_near (playback_handle,
+> > > hw_params, &sample_rate, 0)) < 0)
+> > >
+> > > However,  I get a seg fault when I ran it. The strace of this is:
+> > >
+> > > /usr/sbin $ strace grh_audio
+> > > execve("/usr/sbin/grh_audio", ["grh_audio"], [/* 7 vars */]) = 0
+> > > mmap2(NULL, 20, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =
+> > > 0x40005000
+> > > stat("/etc/ld.so.cache", {st_mode=S_IFREG|0644, st_size=1150, ...}) =
+> > 0
+> > > open("/etc/ld.so.cache", O_RDONLY)      = 3
+> > > mmap2(NULL, 1150, PROT_READ, MAP_SHARED, 3, 0) = 0x40006000
+> > > close(3)                                = 0
+> > > open("/usr/lib/libasound.so.2", O_RDONLY) = 3
+> > > fstat(3, {st_mode=S_IFREG|0755, st_size=762072, ...}) = 0
+> > > mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =
+> > > 0x40007000
+> > > read(3,
+> > > "\177ELF\1\1\1a\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0x\367\1\000"...,
+> > > 4096) = 4096
+> > > mmap2(NULL, 794624, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> > > 0x4000e000
+> > > mmap2(0x4000e000, 745564, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
+> > 3, 0)
+> > > = 0x4000e000
+> > > mmap2(0x400cc000, 15508, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+> > 3,
+> > > 0xb6) = 0x400cc000
+> > > close(3)                                = 0
+> > > munmap(0x40007000, 4096)                = 0
+> > > open("/lib/libgcc_s.so.1", O_RDONLY)    = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=44167, ...}) = 0
+> > > mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =
+> > > 0x40007000
+> > > read(3,
+> > > "\177ELF\1\1\1a\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0X\25\0\000"...,
+> > > 4096) = 4096
+> > > mmap2(NULL, 65536, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> > 0x400d0000
+> > > mmap2(0x400d0000, 28800, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
+> > 3, 0) =
+> > > 0x400d0000
+> > > mmap2(0x400df000, 548, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3,
+> > 0x7)
+> > > = 0x400df000
+> > > close(3)                                = 0
+> > > munmap(0x40007000, 4096)                = 0
+> > > open("/lib/libc.so.0", O_RDONLY)        = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=309840, ...}) = 0
+> > > mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =
+> > > 0x40007000
+> > > read(3,
+> > > "\177ELF\1\1\1a\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0000\253\0"...,
+> > > 4096) = 4096
+> > > mmap2(NULL, 360448, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> > > 0x400e0000
+> > > mmap2(0x400e0000, 302380, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
+> > 3, 0)
+> > > = 0x400e0000
+> > > mmap2(0x40132000, 5172, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+> > 3,
+> > > 0x4a) = 0x40132000
+> > > mmap2(0x40134000, 16020, PROT_READ|PROT_WRITE,
+> > > MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40130
+> > > close(3)                                = 0
+> > > munmap(0x40007000, 4096)                = 0
+> > > open("/lib/libm.so.0", O_RDONLY)        = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=45812, ...}) = 0
+> > > mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =
+> > > 0x40007000
+> > > read(3,
+> > > "\177ELF\1\1\1a\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0t\22\0\000"...,
+> > > 4096) = 4096
+> > > mmap2(NULL, 81920, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> > 0x40138000
+> > > mmap2(0x40138000, 41428, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
+> > 3, 0) =
+> > > 0x40138000
+> > > mmap2(0x4014a000, 4100, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+> > 3, 0xa)
+> > > = 0x4014a000
+> > > close(3)                                = 0
+> > > munmap(0x40007000, 4096)                = 0
+> > > open("/lib/libdl.so.0", O_RDONLY)       = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=8900, ...}) = 0
+> > > mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =
+> > > 0x40007000
+> > > read(3,
+> > > "\177ELF\1\1\1a\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0(\10\0\000"...,
+> > > 4096) = 4096
+> > > mmap2(NULL, 40960, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> > 0x4014c000
+> > > mmap2(0x4014c000, 5760, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED, 3,
+> > 0) =
+> > > 0x4014c000
+> > > mmap2(0x40155000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+> > 3, 0x1)
+> > > = 0x40155000
+> > > close(3)                                = 0
+> > > munmap(0x40007000, 4096)                = 0
+> > > open("/lib/libpthread.so.0", O_RDONLY)  = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=63852, ...}) = 0
+> > > mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =
+> > > 0x40007000
+> > > read(3,
+> > > "\177ELF\1\1\1a\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0D<\0\0004"...,
+> > > 4096) = 4096
+> > > mmap2(NULL, 106496, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> > > 0x40156000
+> > > mmap2(0x40156000, 40952, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
+> > 3, 0) =
+> > > 0x40156000
+> > > mmap2(0x40168000, 21732, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED,
+> > 3,
+> > > 0xa) = 0x40168000
+> > > mmap2(0x4016e000, 5788, PROT_READ|PROT_WRITE,
+> > > MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4016e0
+> > > close(3)                                = 0
+> > > munmap(0x40007000, 4096)                = 0
+> > > open("/lib/libgcc_s.so.1", O_RDONLY)    = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=44167, ...}) = 0
+> > > close(3)                                = 0
+> > > open("/lib/libc.so.0", O_RDONLY)        = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=309840, ...}) = 0
+> > > close(3)                                = 0
+> > > open("/lib/libc.so.0", O_RDONLY)        = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=309840, ...}) = 0
+> > > close(3)                                = 0
+> > > open("/lib/libc.so.0", O_RDONLY)        = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=309840, ...}) = 0
+> > > close(3)                                = 0
+> > > open("/lib/libc.so.0", O_RDONLY)        = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=309840, ...}) = 0
+> > > close(3)                                = 0
+> > > open("/lib/libc.so.0", O_RDONLY)        = 3
+> > > fstat(3, {st_mode=S_IFREG|0644, st_size=309840, ...}) = 0
+> > > close(3)                                = 0
+> > > munmap(0x40006000, 1150)                = 0
+> > > stat("/lib/ld-uClibc.so.0", {st_mode=S_IFREG|0755, st_size=21096,
+> > ...}) = 0
+> > > mprotect(0x40132000, 4096, PROT_READ)   = 0
+> > > mprotect(0x4014a000, 4096, PROT_READ)   = 0
+> > > mprotect(0x40155000, 4096, PROT_READ)   = 0
+> > > mprotect(0x40168000, 4096, PROT_READ)   = 0
+> > > mprotect(0x4000c000, 4096, PROT_READ)   = 0
+> > > ioctl(0, SNDCTL_TMR_TIMEBASE or TCGETS, {B115200 opost isig icanon
+> > echo
+> > > ...}) = 0
+> > > ioctl(1, SNDCTL_TMR_TIMEBASE or TCGETS, {B115200 opost isig icanon
+> > echo
+> > > ...}) = 0
+> > > getpid()                                = 756
+> > > getrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM_INFINITY})
+> > = 0
+> > > setrlimit(RLIMIT_STACK, {rlim_cur=2040*1024, rlim_max=RLIM_INFINITY})
+> > = 0
+> > > rt_sigaction(SIGRTMIN, {0x4015fd70, [], 0x4000000 /* SA_??? */}, NULL,
+> > 8) =
+> > > 0
+> > > rt_sigaction(SIGRT_1, {0x4015fc98, [RTMIN], 0x4000000 /* SA_??? */},
+> > NULL,
+> > > 8) = 0
+> > > rt_sigaction(SIGRT_2, {0x4015f2d0, [], 0x4000000 /* SA_??? */}, NULL,
+> > 8) = 0
+> > > rt_sigprocmask(SIG_BLOCK, [RTMIN], NULL, 8) = 0
+> > > rt_sigprocmask(SIG_UNBLOCK, [RT_1], NULL, 8) = 0
+> > > --- SIGSEGV (Segmentation fault) @ 0 (0) ---
+> > > +++ killed by SIGSEGV +++
+> > > Process 756 detached
+> > >
+> > >
+> > > I am still trying to locate why those warnings are popping up, but as
+> > that
+> > > part of the code is not called immediately, I am wondering why the seg
+> > fault
+> > > is occurring. Any clues?
+>
+>
+>
+> Lee:
+>
+> Have attempted to run this with gdb. However, I get:
+>
+> /usr/sbin $ gdb grh_audio
+>
+>
+> dlopen failed on 'libthread_db.so.1' - File not found
+> GDB will not be able to debug pthreads.
+>
+> GNU gdb 6.5
+> Copyright (C) 2006 Free Software Foundation, Inc.
+> GDB is free software, covered by the GNU General Public License, and you
+> are
+> welcome to change it and/or distribute copies of it under certain
+> conditions.
+> Type "show copying" to see the conditions.
+> There is absolutely no warranty for GDB.  Type "show warranty" for
+> details.
+> This GDB was configured as "arm-linux-uclibc"...(no debugging symbols
+> found)
+>
+> (gdb)
+>
+> Trying to determine why...will let you know asap what I find.
+>
 
-Example from configure.ac from salsa-0.0.6:
+Still trying to see if I can determine what is going on here. I tried 'run'
+with gdb and get the following:
 
-"
-echo "Creating asoundlib.h..."
-cp "$srcdir"/src/asoundlib-head.h src/asoundlib.h
-test "$mixer" = "yes" && echo "#include \"mixer.h\"" >> src/asoundlib.h
-test "$rawmidi" = "yes" && echo "#include \"rawmidi.h\"" >> src/asoundlib.h
-test "$hwdep" = "yes" && echo "#include \"hwdep.h\"" >> src/asoundlib.h
-test "$timer" = "yes" && echo "#include \"timer.h\"" >> src/asoundlib.h
-test "$sndconf" = "yes" && echo "#include \"conf.h\"" >> src/asoundlib.h
-test "$sndseq" = "yes" && echo "#include \"seq_event.h\"" >> src/asoundlib.h
-test "$sndseq" = "yes" && echo "#include \"seq.h\"" >> src/asoundlib.h
-test "$sndseq" = "yes" && echo "#include \"seqmid.h\"" >> src/asoundlib.h
-cat "$srcdir"/src/asoundlib-tail.h >> src/asoundlib.h
-"
+ /usr/sbin $ gdb grh_audio
 
-Fausto Carvalho Marques Silva
+
+dlopen failed on 'libthread_db.so.1' - File not found
+GDB will not be able to debug pthreads.
+
+GNU gdb 6.5
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain
+conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "arm-linux-uclibc"...
+(gdb) run
+Starting program: /usr/sbin/grh_audio
+Using host libthread_db library "libthread_db.so.1".
+Segmentation fault
+
+
+Any ideas why this is occurring.
+
+Also, I get the following warning when compiling:
+
+grh_audio.c:112: warning: pointer targets in passing argument 3 of
+'snd_pcm_hw_params_set_rate_near' differ in signedness
+
+for the line:
+
+112:   if ((err = snd_pcm_hw_params_set_rate_near (capture_handle,
+hw_params, &sample_rate, 0)) < 0)
+
+
+I have googled this and cannot seem to find an answer. I used some example
+code for this, so perhaps there is something wrong with that. I tried to
+find a page detailing the call, but could not even find that.
+
+Any clues, pointers, etc. on this are greatly appreciated.
+
+Paul
+
+
+
+-- 
+***************************************
+Paul David Kavan
+Project Engineer
+GRH Electronics, Inc.
+402-734-4900
+pkavan@gmail.com
+***************************************
