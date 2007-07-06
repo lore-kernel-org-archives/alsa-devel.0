@@ -1,21 +1,19 @@
-From: Steven Zakulec <spzakulec@mail.widener.edu>
-Subject: Re: [Fixed-Mostly] ALC268
-Date: Fri, 6 Jul 2007 10:51:39 -0400 (EDT)
-Message-ID: <28960558.1183733499339.JavaMail.root@ccprodapp10.campuscruiser.com>
-Reply-To: Steven Zakulec <spzakulec@mail.widener.edu>
+From: Thorsten Leemhuis <fedora@leemhuis.info>
+Subject: Re: Fwd: Problems with hda_intel, Santa Rosa,
+	and suspend
+Date: Fri, 06 Jul 2007 17:46:04 +0200
+Message-ID: <468E63BC.6070401@leemhuis.info>
+References: <dfd4051f0706161836xa191176ke10deff2868ad8d6@mail.gmail.com>	<dfd4051f0706201418o4d19a1f2g78081b052e8766e4@mail.gmail.com>	<s5hd4zpa9d9.wl%tiwai@suse.de>	<dfd4051f0706221331r681503d7h9d755bd91750a8ec@mail.gmail.com>	<s5hejk0ibhj.wl%tiwai@suse.de>	<dfd4051f0706251316uf265b3dw9c069dc5f75ceedf@mail.gmail.com>	<s5hsl8deffy.wl%tiwai@suse.de>	<dfd4051f0707041337m276d5536r6c65fd6d29463f39@mail.gmail.com>	<s5hvecz5cz3.wl%tiwai@suse.de>	<dfd4051f0707051513p697f22a2p4e34d9910f44f15e@mail.gmail.com>	<dfd4051f0707051942n699f69cava8a9d83b3bae5e1@mail.gmail.com>
+	<s5hzm29513m.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_942_31449213.1183733499337"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ccprodapp10.campuscruiser.com (email.campuscruiser.com
-	[216.35.68.59]) by alsa0.perex.cz (Postfix) with ESMTP id 7D97B245BB
+Received: from TZMXR01.htp-tel.de (tzmxr01.htp-tel.de [81.14.243.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7618F1037F8
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2007 16:51:40 +0200 (CEST)
-Received: from ccprodapp10.campuscruiser.com (localhost.localdomain
-	[127.0.0.1])
-	by ccprodapp10.campuscruiser.com (8.13.1/8.13.1) with ESMTP id
-	l66Epd5M022474
-	for <alsa-devel@alsa-project.org>; Fri, 6 Jul 2007 10:51:39 -0400
+	Fri,  6 Jul 2007 17:46:05 +0200 (CEST)
+In-Reply-To: <s5hzm29513m.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,287 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Matt Mullins <mokomull@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_942_31449213.1183733499337
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Hi!
 
-I've found another issue: I've lost some mixer options now.  I've lost 1 capture source at least.  I've attached the result of alsactl -f somefile store from before sound worked and after.
+FYI, I own the same laptop-model as Matt and have similar (identical?)
+problems.
 
----------------------------------------
-Original E-mail
-From: Steven Zakulec [spzakulec@mail.widener.edu]
-Date: 07/06/2007 10:04 AM 
-To: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [Fixed-Mostly] ALC268
+On 06.07.2007 11:32, Takashi Iwai wrote:
+> At Thu, 5 Jul 2007 21:42:21 -0500,
+> Matt Mullins wrote:
+>> Found what I think is the problem... patch_sigmatel.c set
+>> spec->num_pins=14, yet spec->pin_nids pointed to stac9205_pin_nids,
+>> which was an array of only 12 NIDs.  That caused [total guess here]
+>> either stac92xx_save_bios_config_regs or stac92xx_set_config_regs to
+>> read past the end of the array and into an uninitialized area.  I
+>> changed the 14 to a 12, and it seems to work.  The attached patch is
+>> against the current Mercurial sources, but I made the similar change
+>> to kernel 2.6.22-rc7, and it doesn't use single_cmd anymore.
+> Argh!  Thanks for spotting this nasty bug.
 
-I was finally able to get sound working, thanks to the bugreport here: https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3104
+Agreed; Matt, thx for your work.
 
-What I did was get the patch_realtek.c from the bugreport, put it in alsa-kernel/pci/hda, and then re-build the driver (plus I re-built the lib, but probably not necessary).  I wasn't able to rmmod snd-hda-intel after the build finished, so I restarted the computer, and then it just worked.
+> It'd be better to use ARRAY_SIZE there.  Then typos would be more
+> obvious.  Could you check the patch below?
 
-Unfortunately, the headphone jack is not working.  The sound is only slightly, if at all, muted from the speakers when the headphones are plugged in.
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Works fine for me (patch was applied to alsa-driver 1.0.14 sources and
+compiled against/tested on a Fedora 2.6.21 kernel and a 2.6.22-rc7-git3
+kernel from the Fedora devel tree)
 
+>>  It still
+>> doesn't work after a suspend, though, making me unload and reload the
+>> module.
+> Do you mean you'll get a communication error after suspend, or got no
+> sound output, or any other problem?
 
+I simply don't get any audio output at all after either suspend or
+hibernate. Reloading the module after suspend/hibernate makes the sound
+working again.
 
-------=_Part_942_31449213.1183733499337
-Content-Type: multipart/mixed;
-	boundary="----=_Part_943_17512636.1183733499337"
-
-------=_Part_943_17512636.1183733499337
-Content-Type: application/octet-stream; name=somefile
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=somefile
-
-state.Intel {
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		iface MIXER
-		name 'Front Playback Volume'
-		value.0 57
-		value.1 57
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Front Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		iface MIXER
-		name 'Headphone Playback Volume'
-		value.0 63
-		value.1 63
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 1
-		value.1 1
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		value.0 false
-		value.1 false
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Capture Volume'
-		index 1
-		value.0 1
-		value.1 1
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		index 1
-		value.0 false
-		value.1 false
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Mic
-		comment.item.1 'Front Mic'
-		iface MIXER
-		name 'Input Source'
-		value Mic
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Mic
-		comment.item.1 'Front Mic'
-		iface MIXER
-		name 'Input Source'
-		index 1
-		value Mic
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Off-hook Switch'
-		value false
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Caller ID Switch'
-		value false
-	}
-	control.13 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008ffffec1400000014'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 255
-		value.1 255
-	}
-}
-
-------=_Part_943_17512636.1183733499337
-Content-Type: application/octet-stream; name=somefile2
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=somefile2
-
-state.Intel {
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		iface MIXER
-		name 'Front Playback Volume'
-		value.0 56
-		value.1 56
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Front Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		iface MIXER
-		name 'Headphone Playback Volume'
-		value.0 30
-		value.1 30
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 1
-		value.1 1
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		value.0 false
-		value.1 false
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Mic
-		comment.item.1 'Front Mic'
-		comment.item.2 Line
-		comment.item.3 CD
-		iface MIXER
-		name 'Input Source'
-		value Mic
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Off-hook Switch'
-		value false
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Caller ID Switch'
-		value false
-	}
-	control.10 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008ffffec1400000014'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 137
-		value.1 137
-	}
-}
-
-------=_Part_943_17512636.1183733499337--
-
-------=_Part_942_31449213.1183733499337
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_942_31449213.1183733499337--
+CU
+thl
