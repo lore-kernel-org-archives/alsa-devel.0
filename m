@@ -1,19 +1,18 @@
-From: joe+alsa@nahmias.net
-Subject: Re: [HDA Intel/AD1984] Alsa 1.0.14 not working on
-	ThinkPad T61
-Date: Fri, 6 Jul 2007 16:53:07 +0000
-Message-ID: <20070706165307.GA24074@nahmias.net>
-References: <20070704173641.GA7087@nahmias.net> <s5hd4z76vhj.wl%tiwai@suse.de>
+From: Thorsten Leemhuis <fedora@leemhuis.info>
+Subject: Re: Fwd: Problems with hda_intel, Santa Rosa,
+	and suspend
+Date: Fri, 06 Jul 2007 18:56:54 +0200
+Message-ID: <468E7456.4020109@leemhuis.info>
+References: <dfd4051f0706161836xa191176ke10deff2868ad8d6@mail.gmail.com>	<dfd4051f0706201418o4d19a1f2g78081b052e8766e4@mail.gmail.com>	<s5hd4zpa9d9.wl%tiwai@suse.de>	<dfd4051f0706221331r681503d7h9d755bd91750a8ec@mail.gmail.com>	<s5hejk0ibhj.wl%tiwai@suse.de>	<dfd4051f0706251316uf265b3dw9c069dc5f75ceedf@mail.gmail.com>	<s5hsl8deffy.wl%tiwai@suse.de>	<dfd4051f0707041337m276d5536r6c65fd6d29463f39@mail.gmail.com>	<s5hvecz5cz3.wl%tiwai@suse.de>	<dfd4051f0707051513p697f22a2p4e34d9910f44f15e@mail.gmail.com>	<dfd4051f0707051942n699f69cava8a9d83b3bae5e1@mail.gmail.com>	<s5hzm29513m.wl%tiwai@suse.de>
+	<468E63BC.6070401@leemhuis.info> <s5hwsxd33oo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070203010405090406030207"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dot.nahmias.net (dot.nahmias.net [64.71.168.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FF981037F8
+Received: from H3MXR01.htp-tel.de (h3mxr01.htp-tel.de [81.14.243.49])
+	by alsa0.perex.cz (Postfix) with ESMTP id A2D4710381A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2007 18:53:08 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hd4z76vhj.wl%tiwai@suse.de>
+	Fri,  6 Jul 2007 18:56:56 +0200 (CEST)
+In-Reply-To: <s5hwsxd33oo.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +22,178 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Matt Mullins <mokomull@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 05, 2007 at 11:38:32AM +0200, Takashi Iwai wrote:
-> At Wed, 4 Jul 2007 17:36:41 +0000,
-> joe+alsa@nahmias.net wrote:
-> > 
-> > Hello,
-> > 
-> > I'm having trouble getting sound on my ThinkPad T61 working.  According
-> > to the changelog for alsa-driver 1.0.14, support was added in that
-> > version; however, no sound is coming out.
-> 
-> Try the latest ALSA HG version.  There are some bug fixes for AD1984
-> since 1.0.14.
+This is a multi-part message in MIME format.
+--------------070203010405090406030207
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Thanks Takashi, latest HG seems to work for me.  Also fixes a kernel BUG
-that was occuring with 1.0.14 when doing `alsactl store`.
+On 06.07.2007 18:19, Takashi Iwai wrote:
+> At Fri, 06 Jul 2007 17:46:04 +0200,
+> Thorsten Leemhuis wrote:
+>> On 06.07.2007 11:32, Takashi Iwai wrote:
+>>> At Thu, 5 Jul 2007 21:42:21 -0500,
+>>> Matt Mullins wrote:
+> [...]
+>>>>  It still
+>>>> doesn't work after a suspend, though, making me unload and reload the
+>>>> module.
+>>> Do you mean you'll get a communication error after suspend, or got no
+>>> sound output, or any other problem?
+>> I simply don't get any audio output at all after either suspend or
+>> hibernate. Reloading the module after suspend/hibernate makes the sound
+>> working again.
+> Doesn't changing the mixer values after resume have any effect?
 
-> Takashi
+No, I tried that beforehand already and just re-tried -- changing 
+the mixer values does not help. Everything still silent. 
+ 
+> Also, could you compare the codec#* proc dump before and after
+> suspend/resume?
 
---Joe
+--- codec0-before       2007-07-06 18:40:47.000000000 +0200
++++ codec0-aftersuspend 2007-07-06 18:42:50.000000000 +0200
+@@ -22,7 +22,7 @@
+     Conn = 1/8, Color = Black
+   Pin-ctls: 0x20: IN
+   Connection: 2
+-     0x10 0x11*
++     0x10* 0x11
+ Node 0x0c [Pin Complex] wcaps 0x400181: Stereo
+   Pincap 0x081737: IN OUT Detect
+   Pin Default 0x90a70120: [Fixed] Mic at Int N/A
+@@ -103,7 +103,7 @@
+   Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+   Amp-Out vals:  [0x00 0x00]
+   Connection: 7
+-     0x0e 0x16 0x0f 0x0b 0x0c* 0x0d 0x0a
++     0x0e* 0x16 0x0f 0x0b 0x0c 0x0d 0x0a
+ Node 0x1b [Audio Selector] wcaps 0x300103: Stereo Amp-In
+   Amp-In caps: N/A
+   Amp-In vals:  [0x00 0x00]
+
+
+-----
+
+No changes for codec#1; full file before suspend attached.
+
+HTH and thx for your help.
+
+CU
+thl
+
+--------------070203010405090406030207
+Content-Type: text/plain;
+ name="codec0-before"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="codec0-before"
+
+Q29kZWM6IFNpZ21hVGVsIFNUQUM5MjA1CkFkZHJlc3M6IDAKVmVuZG9yIElkOiAweDgzODQ3
+NmEwClN1YnN5c3RlbSBJZDogMHgxMDI4MDFmOQpSZXZpc2lvbiBJZDogMHgxMDAyMDQKRGVm
+YXVsdCBQQ006CiAgICByYXRlcyBbMHg3ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAx
+NzY0MDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgx
+XTogUENNCkRlZmF1bHQgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwZiwgc3Rl
+cHNpemU9MHgwNSwgbXV0ZT0wCkRlZmF1bHQgQW1wLU91dCBjYXBzOiBvZnM9MHg3ZiwgbnN0
+ZXBzPTB4N2YsIHN0ZXBzaXplPTB4MDIsIG11dGU9MQpOb2RlIDB4MGEgW1BpbiBDb21wbGV4
+XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgxNzNmOiBJTiBPVVQgSFAg
+RGV0ZWN0CiAgUGluIERlZmF1bHQgMHgwMzIxMTAxZjogW0phY2tdIEhQIE91dCBhdCBFeHQg
+TGVmdAogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogIFBpbi1jdGxzOiAweGMwOiBP
+VVQgSFAKICBDb25uZWN0aW9uOiAyCiAgICAgMHgxMCogMHgxMQpOb2RlIDB4MGIgW1BpbiBD
+b21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgxNzM3OiBJTiBP
+VVQgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHgwMzgxMTAyZTogW0phY2tdIExpbmUgSW4gYXQg
+RXh0IExlZnQKICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmxhY2sKICBQaW4tY3RsczogMHgy
+MDogSU4KICBDb25uZWN0aW9uOiAyCiAgICAgMHgxMCAweDExKgpOb2RlIDB4MGMgW1BpbiBD
+b21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgxNzM3OiBJTiBP
+VVQgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg5MGE3MDEyMDogW0ZpeGVkXSBNaWMgYXQgSW50
+IE4vQQogICAgQ29ubiA9IEFuYWxvZywgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4
+MjQ6IElOCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTEKTm9kZSAweDBkIFtQaW4gQ29tcGxl
+eF0gd2NhcHMgMHg0MDAxODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4M2Y6IElOIE9VVCBIUCBE
+ZXRlY3QKICBQaW4gRGVmYXVsdCAweDkwMTcwMTEwOiBbRml4ZWRdIFNwZWFrZXIgYXQgSW50
+IE4vQQogICAgQ29ubiA9IEFuYWxvZywgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4
+NDA6IE9VVAogIENvbm5lY3Rpb246IDEKICAgICAweDEwCk5vZGUgMHgwZSBbUGluIENvbXBs
+ZXhdIHdjYXBzIDB4NDAwMTgxOiBTdGVyZW8KICBQaW5jYXAgMHgwODE3Mzc6IElOIE9VVCBE
+ZXRlY3QKICBQaW4gRGVmYXVsdCAweDQwZjAwMGYwOiBbTi9BXSBPdGhlciBhdCBFeHQgTi9B
+CiAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4MDA6
+CiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTAKTm9kZSAweDBmIFtQaW4gQ29tcGxleF0gd2Nh
+cHMgMHg0MDAxODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MTczNzogSU4gT1VUIERldGVjdAog
+IFBpbiBEZWZhdWx0IDB4NDBmMDAwZjE6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIENv
+bm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICBQaW4tY3RsczogMHgwMDoKICBDb25u
+ZWN0aW9uOiAxCiAgICAgMHgxMQpOb2RlIDB4MTAgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHhk
+MGMwNTogU3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IE4vQQogIEFtcC1PdXQgdmFs
+czogIFsweDVmIDB4NWZdCiAgUG93ZXI6IDB4MApOb2RlIDB4MTEgW0F1ZGlvIE91dHB1dF0g
+d2NhcHMgMHhkMGMwNTogU3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IE4vQQogIEFt
+cC1PdXQgdmFsczogIFsweDVmIDB4NWZdCiAgUG93ZXI6IDB4MApOb2RlIDB4MTIgW0F1ZGlv
+IElucHV0XSB3Y2FwcyAweDFkMDU0MTogU3RlcmVvCiAgUG93ZXI6IDB4MAogIENvbm5lY3Rp
+b246IDEKICAgICAweDFkCk5vZGUgMHgxMyBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MWQwNTQx
+OiBTdGVyZW8KICBQb3dlcjogMHgwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MWUKTm9kZSAw
+eDE0IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxMGM6IE1vbm8gQW1wLU91dAogIEFtcC1P
+dXQgY2Fwczogb2ZzPTB4MWYsIG5zdGVwcz0weDFmLCBzdGVwc2l6ZT0weDA1LCBtdXRlPTEK
+ICBBbXAtT3V0IHZhbHM6ICBbMHgwMF0KICBQaW5jYXAgMHgwODEwOiBPVVQKICBQaW4gRGVm
+YXVsdCAweDQwZjAwMGYyOiBbTi9BXSBPdGhlciBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5r
+bm93biwgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4MDA6CiAgQ29ubmVjdGlvbjog
+MQogICAgIDB4MTUKTm9kZSAweDE1IFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMDA6IE1v
+bm8KICBDb25uZWN0aW9uOiAxCiAgICAgMHgxMApOb2RlIDB4MTYgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDAwMTogU3RlcmVvCiAgUGluY2FwIDB4MDgyMDogSU4KICBQaW4gRGVmYXVs
+dCAweDQwZjAwMGYzOiBbTi9BXSBPdGhlciBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93
+biwgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4MDA6Ck5vZGUgMHgxNyBbUGluIENv
+bXBsZXhdIHdjYXBzIDB4NDAwMDAxOiBTdGVyZW8KICBQaW5jYXAgMHgwODIwOiBJTgogIFBp
+biBEZWZhdWx0IDB4NDBmMDAwZjQ6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIENvbm4g
+PSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICBQaW4tY3RsczogMHgyMDogSU4KTm9kZSAw
+eDE4IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAwMDE6IFN0ZXJlbwogIFBpbmNhcCAweDA4
+MjA6IElOCiAgUGluIERlZmF1bHQgMHg0MGYwMDBmNTogW04vQV0gT3RoZXIgYXQgRXh0IE4v
+QQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDIw
+OiBJTgpOb2RlIDB4MTkgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDEwZDogU3RlcmVv
+IEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwNCwgc3RlcHNp
+emU9MHgyNywgbXV0ZT0wCiAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KICBDb25uZWN0
+aW9uOiA3CiAgICAgMHgwZSAweDE2IDB4MGYgMHgwYiAweDBjKiAweDBkIDB4MGEKTm9kZSAw
+eDFhIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGQ6IFN0ZXJlbyBBbXAtT3V0CiAg
+QW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDQsIHN0ZXBzaXplPTB4MjcsIG11
+dGU9MAogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgQ29ubmVjdGlvbjogNwogICAg
+IDB4MGUgMHgxNiAweDBmIDB4MGIgMHgwYyogMHgwZCAweDBhCk5vZGUgMHgxYiBbQXVkaW8g
+U2VsZWN0b3JdIHdjYXBzIDB4MzAwMTAzOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6
+IE4vQQogIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0KICBDb25uZWN0aW9uOiAxCiAgICAg
+MHgxOQpOb2RlIDB4MWMgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDEwMzogU3RlcmVv
+IEFtcC1JbgogIEFtcC1JbiBjYXBzOiBOL0EKICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBd
+CiAgQ29ubmVjdGlvbjogMQogICAgIDB4MWEKTm9kZSAweDFkIFtBdWRpbyBTZWxlY3Rvcl0g
+d2NhcHMgMHgzMDA5MGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgw
+MCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczog
+IFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMwogICAgIDB4MWIqIDB4MTcgMHgxOApOb2Rl
+IDB4MWUgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDkwZDogU3RlcmVvIEFtcC1PdXQK
+ICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwg
+bXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBDb25uZWN0aW9uOiAzCiAg
+ICAgMHgxYyogMHgxNyAweDE4Ck5vZGUgMHgxZiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQw
+MjExOiBTdGVyZW8gRGlnaXRhbAogIFBDTToKICAgIHJhdGVzIFsweDVlMF06IDQ0MTAwIDQ4
+MDAwIDg4MjAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZv
+cm1hdHMgWzB4NV06IFBDTSBBQzMKTm9kZSAweDIwIFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgx
+NDAzMTE6IFN0ZXJlbyBEaWdpdGFsCiAgUENNOgogICAgcmF0ZXMgWzB4MTYwXTogNDQxMDAg
+NDgwMDAgOTYwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDVd
+OiBQQ00gQUMzCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MjIKTm9kZSAweDIxIFtQaW4gQ29t
+cGxleF0gd2NhcHMgMHg0MDAzMDE6IFN0ZXJlbyBEaWdpdGFsCiAgUGluY2FwIDB4MDgxMDog
+T1VUCiAgUGluIERlZmF1bHQgMHg0MGYwMDBmNjogW04vQV0gT3RoZXIgYXQgRXh0IE4vQQog
+ICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDAwOgog
+IENvbm5lY3Rpb246IDMKICAgICAweDFmKiAweDFkIDB4MWUKTm9kZSAweDIyIFtQaW4gQ29t
+cGxleF0gd2NhcHMgMHg0MzA2ODE6IFN0ZXJlbyBEaWdpdGFsCiAgUGluY2FwIDB4MDgxMDAy
+NDogSU4gRUFQRCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDQwZjAwMGY3OiBbTi9BXSBPdGhl
+ciBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgUGlu
+LWN0bHM6IDB4MDA6CiAgUG93ZXI6IDB4MApOb2RlIDB4MjMgW0JlZXAgR2VuZXJhdG9yIFdp
+ZGdldF0gd2NhcHMgMHg3MDAwMGM6IE1vbm8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2Zz
+PTB4MDMsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDE3LCBtdXRlPTAKICBBbXAtT3V0IHZh
+bHM6ICBbMHgwMF0KTm9kZSAweDI0IFtWb2x1bWUgS25vYiBXaWRnZXRdIHdjYXBzIDB4NjAw
+MDAwOiBNb25vCk5vZGUgMHgyNSBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYw
+MDAwMTogU3RlcmVvCg==
+--------------070203010405090406030207
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070203010405090406030207--
