@@ -1,20 +1,20 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Unable to find an usable access for 'default'
-Date: Fri, 06 Jul 2007 12:50:27 +0200
-Message-ID: <1183719027.2620.1198799059@webmail.messagingengine.com>
-References: <468ACB86.1040303@freescale.com>
-	<1183530859.19025.1198427403@webmail.messagingengine.com>
-	<468CE7AD.8020305@freescale.com>
+From: Steven Zakulec <spzakulec@mail.widener.edu>
+Subject: [Fixed-Mostly] ALC268
+Date: Fri, 6 Jul 2007 10:04:58 -0400 (EDT)
+Message-ID: <10305193.1183730698546.JavaMail.root@ccprodapp11.campuscruiser.com>
+Reply-To: Steven Zakulec <spzakulec@mail.widener.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 65D1F245A4
+Received: from ccprodapp11.campuscruiser.com (email.campuscruiser.com
+	[216.35.68.59]) by alsa0.perex.cz (Postfix) with ESMTP id 579351038F7
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jul 2007 12:50:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <468CE7AD.8020305@freescale.com>
+	Fri,  6 Jul 2007 16:05:00 +0200 (CEST)
+Received: from ccprodapp11 (localhost.localdomain [127.0.0.1])
+	by ccprodapp11.campuscruiser.com (8.13.1/8.13.1) with ESMTP id
+	l66E4waW013608
+	for <alsa-devel@alsa-project.org>; Fri, 6 Jul 2007 10:04:58 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +24,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> Clemens Ladisch wrote:
-> > It means that the plug plugin (that the ALSA lib uses to automatically
-> > convert between sample formats) was not able to find any combination of
-> > format/rate/channels/access that would work with your hardware.
-> 
-> ... When you say "access", what do you mean by that?
+I was finally able to get sound working, thanks to the bugreport here: https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3104
 
-ALSA-lib's access type specifies whether to use mmap or not, and whether
-the sample are interleaved or not.  (The SNDRV_PCM_INFO_*INTERLEAVED and
-SNDRV_PCM_INFO_MMAP* flags specify the capabilities of the device.)
+What I did was get the patch_realtek.c from the bugreport, put it in alsa-kernel/pci/hda, and then re-build the driver (plus I re-built the lib, but probably not necessary).  I wasn't able to rmmod snd-hda-intel after the build finished, so I restarted the computer, and then it just worked.
 
-> > It is possible that some entries in the snd_pcm_hardware struct are set
-> > in an inconsistent way.  Please show the code of the driver.
-> 
-> I'd like to show the code, but the project is unannounced, so I can't
-> yet.  Can you give me a suggestion as to what I should be looking for to
-> resolve this?
-
-Look at the values in the snd_pcm_hardware structure and at the
-constraints the driver adds manually, if there are any.
-
-
-HTH
-Clemens
+Unfortunately, the headphone jack is not working.  The sound is only slightly, if at all, muted from the speakers when the headphones are plugged in.
