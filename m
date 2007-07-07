@@ -1,21 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Unable to find an usable access for 'default'
-Date: Fri, 06 Jul 2007 17:32:37 -0500
-Message-ID: <468EC305.8080301@freescale.com>
-References: <468ACB86.1040303@freescale.com>
-	<1183530859.19025.1198427403@webmail.messagingengine.com>
-	<468CE7AD.8020305@freescale.com>
-	<1183719027.2620.1198799059@webmail.messagingengine.com>
+From: "Aaron \"Caustik\" Robinson" <caustik@gmail.com>
+Subject: dmix and sounds less than 64kb
+Date: Fri, 6 Jul 2007 20:28:13 -0700
+Message-ID: <61e8390b0707062028t63c913eeg1ab5a40f830af597@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 39959103905
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 242F71037F3
 	for <alsa-devel@alsa-project.org>;
-	Sat,  7 Jul 2007 00:32:43 +0200 (CEST)
-In-Reply-To: <1183719027.2620.1198799059@webmail.messagingengine.com>
+	Sat,  7 Jul 2007 05:28:15 +0200 (CEST)
+Received: by mu-out-0910.google.com with SMTP id w8so47028mue
+	for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2007 20:28:14 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
+We have been having one heck of a time tracking down the cause of some ALSA
+audio playback issues.
 
-> ALSA-lib's access type specifies whether to use mmap or not, and whether
-> the sample are interleaved or not.  (The SNDRV_PCM_INFO_*INTERLEAVED and
-> SNDRV_PCM_INFO_MMAP* flags specify the capabilities of the device.)
+It appears that any time we play a very short sound (<64kb), either the
+sound doesn't play at all, or only a fragment of it plays. We haven't had
+much luck finding a solution to this issue, then I found this thread on the
+history of this email group:
 
-Is mmap support ever required?  I don't have that support turned on in my PCM driver, so 
-could that cause some ALSA applications to fail to match?
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-April/000526.html
 
-> Look at the values in the snd_pcm_hardware structure and at the
-> constraints the driver adds manually, if there are any.
+Our problem is pretty much exactly like his issues relating to <64k sounds.
 
-Ok, I think I fixed some issues there, but I'm still having problems.
+My question is - has anybody else run into this problem? To the OP of the
+above thread, if you're still listening - did you ever find a solution to
+your problem? I'd be very interested to hear any help you can provide.
 
-I think part of the problem is that I'm telling ALSA that I only support these sample 
-rates: 192000, 96000, 64000, 48000, 32000, and 16000.  For playback, I'm using alsaplayer 
-to play an MP3.  Could it be that alsaplayer is picking a sample rate like 44100 and since 
-it doesn't find a match, it's failing?  I thought ALSA always did sample rate conversion. 
-  Is that not true?
-
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+Thanks much,
+caustik
