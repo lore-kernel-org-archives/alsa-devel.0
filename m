@@ -1,17 +1,25 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: [Pkg-alsa-devel] [PATCH] amixer and special
-	'front...' channels
-Date: Sun, 8 Jul 2007 00:19:25 +0200
-Message-ID: <20070707221925.GA31973@frodo.home.lxtec.de>
-References: <468FF5F5.1070402@free.fr>
+From: Paul Vojta <vojta@Math.Berkeley.EDU>
+Subject: Re: another device for opl3sa2
+Date: Sun, 8 Jul 2007 01:02:24 -0700
+Message-ID: <20070708080224.GA14178@math.berkeley.edu>
+References: <20070703002739.GA27389@math.berkeley.edu>
+	<s5hfy45ajk1.wl%tiwai@suse.de>
+	<20070704022423.GA2012@math.berkeley.edu>
+	<s5h4pkka6tq.wl%tiwai@suse.de>
+	<20070705080302.GA6818@math.berkeley.edu>
+	<s5hk5te6hku.wl%tiwai@suse.de>
+	<20070706074136.GA4460@math.berkeley.edu>
+	<s5hy7ht50ir.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3962234597876910825=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1628F103851
+Received: from mail.math.berkeley.edu (mail.Math.Berkeley.EDU [169.229.58.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FA0A243E0
 	for <alsa-devel@alsa-project.org>;
-	Sun,  8 Jul 2007 00:19:30 +0200 (CEST)
-In-Reply-To: <468FF5F5.1070402@free.fr>
+	Sun,  8 Jul 2007 10:02:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hy7ht50ir.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,179 +29,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Decotigny <com.d2@free.fr>
-Cc: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>, Debian ALSA Maintainers <pkg-alsa-devel@lists.alioth.debian.org>, alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 06, 2007 at 11:45:00AM +0200, Takashi Iwai wrote:
+> 0x0b = CS4231_TEST_INIT, and 0x20 = CS4231_CALIB_IN_PROGRESS.
+> At least, mce_down() should show messages if the calibration gets
+> timeout.  Did you see any related messages?  Or didn't you build with
+> --with-debug=full?
 
---===============3962234597876910825==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sm4nu43k4a2Rpi4c"
-Content-Disposition: inline
+I didn't build with --debug=full.  I've been using ALSA as supplied with
+linux kernel 2.6.21.1, and built without CONFIG_SND_DEBUG or
+CONFIG_SND_DEBUG_DETECT
+
+I have now switched to 2.6.21.6, and turned on both of CONFIG_SND_DEBUG*.
+I also uncommented the printk() calls in mce_down(), and moved the first
+one down below the definition of the variable 'timeout'.
+
+Here are the kernel messages I got:
+
+Device opl3sa2:
+
+Initialization
+
+ALSA sound/isa/cs423x/cs4231_lib.c:1015: cs4231: port = 0x534, id = 0xa
+(1) timeout = 12
+(1) timeout = 95
+(1) timeout = 31
+(1) timeout = 73
+(1) timeout = 80
+(1) timeout = 72
+(1) timeout = 92
 
 
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ran aplay first time (no sound)
+
+ALSA sound/isa/cs423x/cs4231_lib.c:331: mce_down [0x0] - auto calibration time out (0)
+(1) timeout = 72
+
+Ran aplay second time
+
+(1) timeout = 72
 
 
-This isn't Ubuntu/Debian specific and should be applied upstream?
+Device cs4232:
 
-On Sat, 07 Jul 2007 the mental interface of
-David Decotigny told:
+Initialization
 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->=20
->=20
-> Hi,
->=20
-> Imagine you have this kind of control:
->=20
-> Simple mixer control 'Input Source',0
->   Capabilities: enum
->   Items: 'Mic' 'Front Mic' 'Line'
->   Item0: 'Mic'
->=20
-> ... and you want to set it to 'Front Mic':
->=20
-> shell> amixer sset 'Input Source' 'Front Mic'
-> Simple mixer control 'Input Source',0
->   Capabilities: enum
->   Items: 'Mic' 'Front Mic' 'Line'
->   Item0: 'Mic'
->=20
-> This does not work ! Because amixer will think that 'Front' is a
-> modifier for 'Mic'.
->=20
-> Attached is a patch against alsa-utils-1.0.13-1ubuntu5 that solves this.
-> With this patch, one can bypass the modifier parsing: one simply escapes
-> the parameter with one or more backslash(es), and that's all:
->=20
-> shell> amixer sset 'Input Source' '\Front Mic'
-> Simple mixer control 'Input Source',0
->   Capabilities: enum
->   Items: 'Mic' 'Front Mic' 'Line'
->   Item0: 'Front Mic'
->=20
-> What this patch also does, is that it adds correct identification of
-> items. With the original version, given the following enumeration:
->   foo foobar
-> Then the parameter 'foobar' will be identified as 'foo', not 'foobar'.
-> The patch should solve this potential problem (not tested though).
->=20
-> Bye,
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.6 (GNU/Linux)
-> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
->=20
-> iD8DBQFGj/X0ld7vhusVrCERAjIZAJ9w9GLD+QBwDCaTs32hpW6i9nVMfgCfdS5w
-> jhipZ2jm87fq4zx4f5Q9Vsc=3D
-> =3DM2KP
-> -----END PGP SIGNATURE-----
+ALSA sound/isa/cs423x/cs4231_lib.c:1015: cs4231: port = 0x534, id = 0xa
+ALSA sound/isa/cs423x/cs4231_lib.c:1021: CS4231: VERSION (I25) = 0x80
+(1) timeout = 23
+(1) timeout = 95
+(1) timeout = 11
+(1) timeout = 73
+(1) timeout = 80
+(1) timeout = 72
+(2) timeout = 495, jiffies = -64562
+(3) jiffies = -64558
+(4) jiffies = -64558
+ALSA sound/isa/cs423x/cs4231_lib.c:383: mce_down - exit = 0xb
+(1) timeout = 92
 
-> diff -ru alsa-utils-1.0.13/amixer/amixer.1 alsa-utils-1.0.13-mine/amixer/=
-amixer.1
-> --- alsa-utils-1.0.13/amixer/amixer.1	2006-09-29 04:53:26.000000000 -0700
-> +++ alsa-utils-1.0.13-mine/amixer/amixer.1	2007-07-07 13:09:04.000000000 =
--0700
-> @@ -44,11 +44,14 @@
->  The parameters \fIcap, nocap, mute, unmute, toggle\fP are used to
->  change capture (recording) and muting for the group specified.
-> =20
-> -The optional modifiers can be put as extra parameters to specify
-> -the stream direction or channels to apply.
-> -The modifiers \fIplayback\fP and \fIcapture\fP specify the stream,
-> -and the modifiers \fIfront, rear, center, woofer\fP are used to specify
-> -channels to be changed.=20
-> +The optional modifiers can be put as extra parameters to specify the
-> +stream direction or channels to apply.  The modifiers \fIplayback\fP
-> +and \fIcapture\fP specify the stream, and the modifiers \fIfront,
-> +rear, center, woofer\fP are used to specify channels to be changed. If
-> +there is a confusion between the parameter and these modifiers, then
-> +any character in the parameter may be escaped with a backslash to
-> +disambiguate: '\\Front Mic' will be understood as "parameter 'Front
-> +Mic'", and not as "modifier 'Front' applied to 'Mic' parameter".
-> =20
->  A simple mixer control must be specified. Only one device can be control=
-led
->  at a time.
-> diff -ru alsa-utils-1.0.13/amixer/amixer.c alsa-utils-1.0.13-mine/amixer/=
-amixer.c
-> --- alsa-utils-1.0.13/amixer/amixer.c	2007-07-07 13:03:39.000000000 -0700
-> +++ alsa-utils-1.0.13-mine/amixer/amixer.c	2007-07-07 12:59:19.000000000 =
--0700
-> @@ -1333,6 +1333,16 @@
->  	return def;
->  }
-> =20
-> +/** Transform '\a\b c \de' into 'ab c de' */
-> +static void unescape(char * arg)
-> +{
-> +  char * c;
-> +  for (c =3D arg ; arg && *arg ; arg ++)
-> +    if (*arg !=3D '\\')
-> +      *(c++) =3D *arg;
-> +  *c =3D '\0';
-> +}
-> +
->  static int get_enum_item_index(snd_mixer_elem_t *elem, char **ptrp)
->  {
->  	char *ptr =3D *ptrp;
-> @@ -1347,7 +1357,7 @@
->  		if (snd_mixer_selem_get_enum_item_name(elem, i, sizeof(name)-1, name) =
-< 0)
->  			continue;
->  		len =3D strlen(name);
-> -		if (! strncmp(name, ptr, len)) {
-> +		if (!strncmp(name, ptr, len) && (ptr[len] =3D=3D '\0')) {
->  			if (! ptr[len] || ptr[len] =3D=3D ',' || ptr[len] =3D=3D '\n') {
->  				ptr +=3D len;
->  				*ptrp =3D ptr;
-> @@ -1428,6 +1438,7 @@
->  		dir =3D dir_mask(&ptr, dir);
->  		if (*ptr =3D=3D '\0')
->  			continue;
-> +		unescape(ptr);
->  		multi =3D (strchr(ptr, ',') !=3D NULL);
->  		optr =3D ptr;
->  		for (chn =3D 0; chn <=3D SND_MIXER_SCHN_LAST; chn++) {
 
-> _______________________________________________
-> Pkg-alsa-devel mailing list
-> Pkg-alsa-devel@lists.alioth.debian.org
-> http://lists.alioth.debian.org/mailman/listinfo/pkg-alsa-devel
+Ran aplay first time
 
---=20
-  "Talking much about oneself can also=20
-   be a means to conceal oneself."
-         -Friedrich Nietzsche
+ALSA sound/isa/cs423x/cs4231_lib.c:331: mce_down [0x0] - auto calibration time out (0)
+(1) timeout = 72
+(2) timeout = 500, jiffies = -45004
+(3) jiffies = -45000
+(4) jiffies = -45000
+ALSA sound/isa/cs423x/cs4231_lib.c:383: mce_down - exit = 0xb
 
---sm4nu43k4a2Rpi4c
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
+Ran aplay second time
 
-iD8DBQFGkBFs3Ig8bsVPf7ARAiwIAKC6j6tL8UMwANFVCmNG7NPX0C3JzACeMj9J
-Uxnd1oxVRJXwdyZxhVQf3Is=
-=ML9r
------END PGP SIGNATURE-----
+(1) timeout = 72
 
---sm4nu43k4a2Rpi4c--
 
---===============3962234597876910825==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3962234597876910825==--
+--Paul Vojta, vojta@math.berkeley.edu
