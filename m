@@ -1,17 +1,17 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Writing a new plugin for ALSA
-Date: Mon, 9 Jul 2007 17:29:17 +0530
-Message-ID: <8d6898730707090459o10ea89a0qc9fc888af153b85b@mail.gmail.com>
+From: "Xavi de Blas" <xaviblas@gmail.com>
+Subject: Intel hda ICH7 not worked anymore after using wine
+Date: Mon, 9 Jul 2007 14:16:43 +0200
+Message-ID: <256a87490707090516s3126fa56g89f8624bd4351048@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFD60103898
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C95210383D
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jul 2007 13:59:19 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id m22so597210nzf
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2007 04:59:18 -0700 (PDT)
+	Mon,  9 Jul 2007 14:16:44 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so1238847wag
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2007 05:16:43 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,41 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello, I installed Wine on my Ubuntu Feisty on IBM-lenovo X60s, and
+after reboot, sound never worked again.
 
-I am trying to write a new ALSA plugin, like dmix.
+I tried to activate and to hide modem on the bios. I tried to stop
+machine, take off battery, wait 10s, put battery again, and boot
+without the power cable connected... and i tried lots of things from
+ubuntuforums. I reinstalled feisty and sound doesn't work.
 
-My intend is to give priority to streams, i will not do up sample and
-down sample as we do in the case of dmix.
+I used alsa-info.sh script, here is the result:
 
-If we do up sample and down sample then I think it will take lot of cpu.
+http://pastebin.ca/610317
 
-In my case I have three streams audio, bluetooth sco and Navigation sound data.
+Should the new kernel 2.6.22 help me?
 
-priority is audio < sco < Nav
-
-audio rate is 44100hz, sco rate is 8000hz
-
-when sco is up audio should pause playback and audio should continue
-when sco is finished. I dont want to do software mixing. Thats why I
-am trying to write this new plugin.
-
-
-Assume that audio is active first, then sco comes to active state. So
-what i will do is in the library i will put audio app in sleep(), and
-re-configure the pcm for sco. Once sco is finished i will re-configure
-pcm for audio again like wise.
-
-so my question is there any api in the alsa-lib to take a copy of pcm
-structures, so when audio comes back gain i can use these saved pcm
-conf to that.
-
-Is there any api in the alsa-lib to reset the pcm structure to
-initialized state, means state just after open.
+http://kernelnewbies.org/Linux_2_6_22#head-0d133cda430e5d18f1c72dd3cfaa6a9206be4ba9
 
 Thanks
-Nobin Mathew
