@@ -1,7 +1,7 @@
-From: "Xavi de Blas" <xaviblas@gmail.com>
+From: Tobin Davis <tdavis@dsl-only.net>
 Subject: Re: Intel hda ICH7 not worked anymore after using wine
-Date: Mon, 9 Jul 2007 16:56:54 +0200
-Message-ID: <256a87490707090756h5ec226ddv63a081562808efc9@mail.gmail.com>
+Date: Mon, 09 Jul 2007 08:07:19 -0700
+Message-ID: <1183993639.9416.237.camel@razman.gruemaster.com>
 References: <256a87490707090516s3126fa56g89f8624bd4351048@mail.gmail.com>
 	<s5h3azxvke9.wl%tiwai@suse.de>
 	<256a87490707090626o47383918u84db607c6753a5df@mail.gmail.com>
@@ -10,18 +10,15 @@ References: <256a87490707090516s3126fa56g89f8624bd4351048@mail.gmail.com>
 	<s5hd4z1mz0s.wl%tiwai@suse.de>
 	<256a87490707090736x224632b4j22c0019b674a42a0@mail.gmail.com>
 	<s5hbqelmyd5.wl%tiwai@suse.de>
+	<256a87490707090756h5ec226ddv63a081562808efc9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-ahdPdJdYBmYC6pfcNJ6m"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.232])
-	by alsa0.perex.cz (Postfix) with ESMTP id CFC75103885
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id B16E2103885
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jul 2007 16:56:56 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id m22so643328nzf
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2007 07:56:56 -0700 (PDT)
-In-Reply-To: <s5hbqelmyd5.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Mon,  9 Jul 2007 17:07:22 +0200 (CEST)
+In-Reply-To: <256a87490707090756h5ec226ddv63a081562808efc9@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,129 +28,187 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Xavi de Blas <xaviblas@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2007/7/9, Takashi Iwai <tiwai@suse.de>:
-> At Mon, 9 Jul 2007 16:36:35 +0200,
-> Xavi de Blas wrote:
-> >
-> > 2007/7/9, Takashi Iwai <tiwai@suse.de>:
-> > > At Mon, 9 Jul 2007 15:58:30 +0200,
-> > > Xavi de Blas wrote:
-> > > >
-> > > > 2007/7/9, Takashi Iwai <tiwai@suse.de>:
-> > > > > At Mon, 9 Jul 2007 15:26:59 +0200,
-> > > > > Xavi de Blas wrote:
-> > > > > >
-> > > > > > Hello
-> > > > > >
-> > > > > > 2007/7/9, Takashi Iwai <tiwai@suse.de>:
-> > > > > > > At Mon, 9 Jul 2007 14:16:43 +0200,
-> > > > > > > Xavi de Blas wrote:
-> > > > > > > >
-> > > > > > > > Hello, I installed Wine on my Ubuntu Feisty on IBM-lenovo X60s, and
-> > > > > > > > after reboot, sound never worked again.
-> > > > > > > >
-> > > > > > > > I tried to activate and to hide modem on the bios. I tried to stop
-> > > > > > > > machine, take off battery, wait 10s, put battery again, and boot
-> > > > > > > > without the power cable connected... and i tried lots of things from
-> > > > > > > > ubuntuforums. I reinstalled feisty and sound doesn't work.
-> > > > > > > >
-> > > > > > > > I used alsa-info.sh script, here is the result:
-> > > > > > > >
-> > > > > > > > http://pastebin.ca/610317
-> > > > > > >
-> > > > > > > The codec isn't handled via the proper support code but only by the
-> > > > > > > generic parser.  It won't work for Thinkpad.
-> > > > > > >
-> > > > > >
-> > > > > > I'm not sure if i understood... then, no solution for me now?
-> > > > > >
-> > > > > > should i try the alsa svn code?
-> > > > > >
-> > > > > >
-> > > > > > > > Should the new kernel 2.6.22 help me?
-> > > > > > >
-> > > > > > > X60 is known to work with recent kernels (but you'd better to give
-> > > > > > > probe_mask=1 option to avoid the modem codec).
-> > > > > > >
-> > > > > >
-> > > > > > I tried, rebooted and pastebin changed:
-> > > > > > http://pastebin.ca/610387
-> > > > > >
-> > > > > > This doesn't exist now:
-> > > > > > # Codec: Conexant ID 2bfa
-> > > > > > # Address: 1
-> > > > > > # Vendor Id: 0x14f12bfa
-> > > > > > # Subsystem Id: 0x17aa201b
-> > > > > > # Revision Id: 0x90000
-> > > > >
-> > > > > Err, it's a modem codec.  Pass probe_mask=2 instead, then.
-> > > > >
-> > > >
-> > > > Now i have still no sound. But there's no messages about hda on dmesg
-> > > >
-> > > > $ dmesg | grep -i hda
-> > > >
-> > > > $ tail -2 /etc/modprobe.d/alsa-base
-> > > > options snd-hda-intel probe_mask=2
-> > > >
-> > > > I commented the /etc/modprobe.d/snd-hda-intel.modprobe
-> > > >
-> > > > On pastebin:
-> > > > http://pastebin.ca/610431
-> > > >
-> > > > The "HDA-Intel Codec information" changed a lot.
-> > > >
-> > > > Still any ideas?
-> > >
-> > > It's really from 2.6.22 kernel?  I won't debug 2.6.20 kernel drivers
-> > > unless you build ALSA 1.0.14 driver from tarball separately.
-> > >
-> > > Once after upgrading 2.6.22 kernel, try at first without any module
-> > > options for snd-hda-intel.  Check /proc/asound/card0/codec#* file (if
-> > > any) whether it recogizes AD1981 codec.  If not, play with probe_mask
-> > > option.  Once after the module gets loaded, then make sure that you
-> > > unmuted / adjusted the mixer volumes.  Use aplay or speaker-test for
-> > > testing.  Finally, if it still doesn't work, report again.
-> > >
-> >
-> >
-> > No, it's this kernel:
-> > $ uname -a
-> > Linux corall 2.6.20-16-generic #2 SMP Thu Jun 7 20:19:32 UTC 2007 i686 GNU/Linux
-> >
-> > I asked about upgrading to 2.6.22, but i'm still on 2.6.20
-> >
-> > But i built alsa 1.0.14 separately
->
-> Then it should work definitely... at least on Thinkpad X60.
->
->
-> > My asound/card... is:
-> >
-> > $ cat /proc/asound/card0/codec#*
-> > Codec: Conexant ID 2bfa
-> > Address: 1
-> > Vendor Id: 0x14f12bfa
-> > Subsystem Id: 0x17aa201b
-> > Revision Id: 0x90000
-> >
-> > If you can help me now, i will be glad, if not, i will try to upload
-> > to 2.6.22 as soon as possible. Thanks
->
-> Remove all module options for snd-hda-intel.  That's the first step.
-> After loading the module, see the file
-> /sys/modules/snd_hda_intel/parameters/probe_mask.  This value should
-> be -1 (not 1 or 2).
->
-> Honestly, this is a kind of topic that is handled on alsa-users ML...
->
 
-I continue on that list, thanks Takashi
+--=-ahdPdJdYBmYC6pfcNJ6m
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
->
-> Takashi
->
+Sorry for missing this thread.  I just woke up.
+
+I looked at your first pastebin output, and the actual audio codec shows
+up as 0x51d41981, when it should be 0x11d41981.  This is why the Analog
+driver patch isn't detecting it.
+
+Can you try this patch against alsa-driver-1.0.14?  It should detect
+this codec.  Still not sure why it is misconfigured, unless there is a
+bios issue.
+
+Tobin
+
+
+
+On Mon, 2007-07-09 at 16:56 +0200, Xavi de Blas wrote:
+
+> 2007/7/9, Takashi Iwai <tiwai@suse.de>:
+> > At Mon, 9 Jul 2007 16:36:35 +0200,
+> > Xavi de Blas wrote:
+> > >
+> > > 2007/7/9, Takashi Iwai <tiwai@suse.de>:
+> > > > At Mon, 9 Jul 2007 15:58:30 +0200,
+> > > > Xavi de Blas wrote:
+> > > > >
+> > > > > 2007/7/9, Takashi Iwai <tiwai@suse.de>:
+> > > > > > At Mon, 9 Jul 2007 15:26:59 +0200,
+> > > > > > Xavi de Blas wrote:
+> > > > > > >
+> > > > > > > Hello
+> > > > > > >
+> > > > > > > 2007/7/9, Takashi Iwai <tiwai@suse.de>:
+> > > > > > > > At Mon, 9 Jul 2007 14:16:43 +0200,
+> > > > > > > > Xavi de Blas wrote:
+> > > > > > > > >
+> > > > > > > > > Hello, I installed Wine on my Ubuntu Feisty on IBM-lenovo X60s, and
+> > > > > > > > > after reboot, sound never worked again.
+> > > > > > > > >
+> > > > > > > > > I tried to activate and to hide modem on the bios. I tried to stop
+> > > > > > > > > machine, take off battery, wait 10s, put battery again, and boot
+> > > > > > > > > without the power cable connected... and i tried lots of things from
+> > > > > > > > > ubuntuforums. I reinstalled feisty and sound doesn't work.
+> > > > > > > > >
+> > > > > > > > > I used alsa-info.sh script, here is the result:
+> > > > > > > > >
+> > > > > > > > > http://pastebin.ca/610317
+> > > > > > > >
+> > > > > > > > The codec isn't handled via the proper support code but only by the
+> > > > > > > > generic parser.  It won't work for Thinkpad.
+> > > > > > > >
+> > > > > > >
+> > > > > > > I'm not sure if i understood... then, no solution for me now?
+> > > > > > >
+> > > > > > > should i try the alsa svn code?
+> > > > > > >
+> > > > > > >
+> > > > > > > > > Should the new kernel 2.6.22 help me?
+> > > > > > > >
+> > > > > > > > X60 is known to work with recent kernels (but you'd better to give
+> > > > > > > > probe_mask=1 option to avoid the modem codec).
+> > > > > > > >
+> > > > > > >
+> > > > > > > I tried, rebooted and pastebin changed:
+> > > > > > > http://pastebin.ca/610387
+> > > > > > >
+> > > > > > > This doesn't exist now:
+> > > > > > > # Codec: Conexant ID 2bfa
+> > > > > > > # Address: 1
+> > > > > > > # Vendor Id: 0x14f12bfa
+> > > > > > > # Subsystem Id: 0x17aa201b
+> > > > > > > # Revision Id: 0x90000
+> > > > > >
+> > > > > > Err, it's a modem codec.  Pass probe_mask=2 instead, then.
+> > > > > >
+> > > > >
+> > > > > Now i have still no sound. But there's no messages about hda on dmesg
+> > > > >
+> > > > > $ dmesg | grep -i hda
+> > > > >
+> > > > > $ tail -2 /etc/modprobe.d/alsa-base
+> > > > > options snd-hda-intel probe_mask=2
+> > > > >
+> > > > > I commented the /etc/modprobe.d/snd-hda-intel.modprobe
+> > > > >
+> > > > > On pastebin:
+> > > > > http://pastebin.ca/610431
+> > > > >
+> > > > > The "HDA-Intel Codec information" changed a lot.
+> > > > >
+> > > > > Still any ideas?
+> > > >
+> > > > It's really from 2.6.22 kernel?  I won't debug 2.6.20 kernel drivers
+> > > > unless you build ALSA 1.0.14 driver from tarball separately.
+> > > >
+> > > > Once after upgrading 2.6.22 kernel, try at first without any module
+> > > > options for snd-hda-intel.  Check /proc/asound/card0/codec#* file (if
+> > > > any) whether it recogizes AD1981 codec.  If not, play with probe_mask
+> > > > option.  Once after the module gets loaded, then make sure that you
+> > > > unmuted / adjusted the mixer volumes.  Use aplay or speaker-test for
+> > > > testing.  Finally, if it still doesn't work, report again.
+> > > >
+> > >
+> > >
+> > > No, it's this kernel:
+> > > $ uname -a
+> > > Linux corall 2.6.20-16-generic #2 SMP Thu Jun 7 20:19:32 UTC 2007 i686 GNU/Linux
+> > >
+> > > I asked about upgrading to 2.6.22, but i'm still on 2.6.20
+> > >
+> > > But i built alsa 1.0.14 separately
+> >
+> > Then it should work definitely... at least on Thinkpad X60.
+> >
+> >
+> > > My asound/card... is:
+> > >
+> > > $ cat /proc/asound/card0/codec#*
+> > > Codec: Conexant ID 2bfa
+> > > Address: 1
+> > > Vendor Id: 0x14f12bfa
+> > > Subsystem Id: 0x17aa201b
+> > > Revision Id: 0x90000
+> > >
+> > > If you can help me now, i will be glad, if not, i will try to upload
+> > > to 2.6.22 as soon as possible. Thanks
+> >
+> > Remove all module options for snd-hda-intel.  That's the first step.
+> > After loading the module, see the file
+> > /sys/modules/snd_hda_intel/parameters/probe_mask.  This value should
+> > be -1 (not 1 or 2).
+> >
+> > Honestly, this is a kind of topic that is handled on alsa-users ML...
+> >
+> 
+> I continue on that list, thanks Takashi
+> 
+> >
+> > Takashi
+> >
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- 
+Tobin Davis <tdavis@dsl-only.net>
+
+--=-ahdPdJdYBmYC6pfcNJ6m
+Content-Disposition: attachment; filename=LenovoX60S.patch
+Content-Type: text/x-patch; name=LenovoX60S.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+diff -r 42d31b8a307d pci/hda/patch_analog.c
+--- a/pci/hda/patch_analog.c	Thu Jul 05 13:10:51 2007 +0200
++++ b/pci/hda/patch_analog.c	Mon Jul 09 08:05:56 2007 -0700
+@@ -3402,6 +3402,7 @@ struct hda_codec_preset snd_hda_preset_a
+ 	{ .id = 0x11d41882, .name = "AD1882", .patch = patch_ad1882 },
+ 	{ .id = 0x11d41884, .name = "AD1884", .patch = patch_ad1884 },
+ 	{ .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
++	{ .id = 0x51d41981, .name = "AD1981", .patch = patch_ad1981 },
+ 	{ .id = 0x11d41983, .name = "AD1983", .patch = patch_ad1983 },
+ 	{ .id = 0x11d41984, .name = "AD1984", .patch = patch_ad1984 },
+ 	{ .id = 0x11d41986, .name = "AD1986A", .patch = patch_ad1986a },
+
+--=-ahdPdJdYBmYC6pfcNJ6m
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-ahdPdJdYBmYC6pfcNJ6m--
