@@ -1,22 +1,17 @@
-From: Hakan Lennestal <Hakan.Lennestal@brfsodrahamn.se>
-Subject: Re: RE :  M-Audio Audiophile USB,
- native little endian  (S16_LE) ?
-Date: Mon, 09 Jul 2007 12:39:35 +0200
-Message-ID: <20070709103936.2540F5813E@ip2-138.brfsodrahamn.se>
-References: <Thibault.LeMeur@supelec.fr>
-Reply-To: Hakan Lennestal <Hakan.Lennestal@brfsodrahamn.se>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: Question about write asoc driver
+Date: Mon, 09 Jul 2007 12:01:50 +0100
+Message-ID: <1183978910.11330.180.camel@localhost.localdomain>
+References: <afe668f90707090150q28f6c837l69980dfaba3afe33@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ip2-138.brfsodrahamn.se (ip2-138.brfsodrahamn.se
-	[213.187.199.138])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB927103833
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92578103877
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jul 2007 12:39:36 +0200 (CEST)
-In-Reply-To: Message from "Thibault Le Meur" <Thibault.LeMeur@supelec.fr>
-	of "Mon, 09 Jul 2007 10:12:38 +0200."
-	<000201c7c200$ed5026b0$161ce4a0@supelec.fr>
+	Mon,  9 Jul 2007 13:01:51 +0200 (CEST)
+In-Reply-To: <afe668f90707090150q28f6c837l69980dfaba3afe33@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,49 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Roy Huang <royhuang9@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2007-07-09 at 16:50 +0800, Roy Huang wrote:
+> Hi guys,
+> 
+> I am write a codec driver under asoc frame work for ad1980 by study
+> the sample driver wm9712.c. I find there are some control item likes
+> "out3 switch" to control 16h:15. There are also some widget item likes
+> "out 3 PGA" to control 24:5. How can I determine a register bit should
+> be a control item or widget item? Thanks ahead.
+> 
 
-> > I don't know if this is already known (?), but the M-Audio =
+A widget describes a power block within the audio subsystem (this
+includes the codec and machine). Widgets usually have several kcontrols
+that control their power state and map to hardware audio components like
+mixers, amps, DAC'c, ADC's, etc (anything that draws power). A widget is
+"on" when there is a valid signal path routing from it's source to sink.
 
-> > Audiophile USB seem to be possible to run in native S16_LE =
+Widgets are entirely optional under ASoC and are only used by DAPM when
+making power management decisions. I'd recommend adding them in only for
+low power codecs and after you have audio working in the codec driver
+(easier to debug).
 
-> > mode if initialized with device_setup=3D0x01 (possibly with =
+A general rule for deciding whether something is a widget :-
 
-> > 0x11 also, have not tested that).
-> =
+ * Is a widget if it control audio signal routing (e.g. mixer, mux,
+jack)
+ * Is a codec/machine audio sink or source (pin, DAC, ADC)
 
-> No I wasn't aware of this !
-> How did you figure this out ?
+HTH
 
-When initialized with device_setup=3D0x01 my box only produces noise.
-With 0x00 (or omitted) it works ok, except for spdif out sometimes
-not being setup correctly (no signal detect by the amp it is connected to).
-0x09 seem to work without problems. Have not tested any other combinations.
-
-Using a setup with 0x01 and preparing a raw S16_LE file (with "mpg123 -s") =
-
-and then playing with "aplay -D hw:2 -f S16_BE -r 44100 -c 2" produced good =
-
-quality sound.
-This made me suspect that the device really is operating in native S16_LE.
- =
-
-> When you say 'it is possible' to run it in S16_LE do you mean it both
-> recognizes S16_BE and S16_LE or only S16_LE ?
-
-Sorry, a bit unclear. Only S16_LE.
-
-> Mine works with S16_BE but I must admit I haven't tested with S16_LE.
-
-Ok, this then seem to be something that has changed over time in the firmwa=
-re =
-
-(or hw) ?
-The fw version of my box is 1.01.
-
-Regards.
-
-/H=E5kan
+Liam     
