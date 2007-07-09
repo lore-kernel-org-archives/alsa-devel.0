@@ -1,27 +1,21 @@
-From: Paul Vojta <vojta@Math.Berkeley.EDU>
-Subject: Re: another device for opl3sa2
-Date: Mon, 9 Jul 2007 11:14:17 -0700
-Message-ID: <20070709181417.GA20169@math.berkeley.edu>
-References: <20070703002739.GA27389@math.berkeley.edu>
-	<s5hfy45ajk1.wl%tiwai@suse.de>
-	<20070704022423.GA2012@math.berkeley.edu>
-	<s5h4pkka6tq.wl%tiwai@suse.de>
-	<20070705080302.GA6818@math.berkeley.edu>
-	<s5hk5te6hku.wl%tiwai@suse.de>
-	<20070706074136.GA4460@math.berkeley.edu>
-	<s5hy7ht50ir.wl%tiwai@suse.de>
-	<20070708080224.GA14178@math.berkeley.edu>
-	<s5hwsx9u4sk.wl%tiwai@suse.de>
+From: "Aaron \"Caustik\" Robinson" <caustik@gmail.com>
+Subject: Re: dmix and sounds less than 64kb
+Date: Mon, 9 Jul 2007 12:40:22 -0700
+Message-ID: <61e8390b0707091240i657f82ev306ac851759c791f@mail.gmail.com>
+References: <61e8390b0707062028t63c913eeg1ab5a40f830af597@mail.gmail.com>
+	<s5hir8tvrvt.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.math.berkeley.edu (mail.Math.Berkeley.EDU [169.229.58.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54B601038B0
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id C464E1038B5
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jul 2007 20:14:20 +0200 (CEST)
+	Mon,  9 Jul 2007 21:40:25 +0200 (CEST)
+Received: by mu-out-0910.google.com with SMTP id w8so820322mue
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2007 12:40:22 -0700 (PDT)
+In-Reply-To: <s5hir8tvrvt.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <s5hwsx9u4sk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,17 +29,42 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 09, 2007 at 02:42:35PM +0200, Takashi Iwai wrote:
+We actually dumped the pcm data as it was arriving to the driver (via the
+trigger start and irq functions), and it was corrupted at that point. Also I
+have dumped the pcm data after it has been mixed by the dmix plugin, and it
+is fine there as well.
 
-> Hmm, if I understand correctly from your debug messages, I don't see
-> significant differences between opl3sa2 and cs4232 cases.
-
-Well, with opl3sa2, it never reaches the end of mce_down
-
-> Just to be sure, both first and second aplay on opl3sa2 didn't work
-> (no sound output) while cs4232 was OK, right?
-
-No, only the first aplay on opl3sa2 produced no output.  The second one
-worked fine.
-
---Paul Vojta
+On 7/9/07, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> At Fri, 6 Jul 2007 20:28:13 -0700,
+> Aaron "Caustik" Robinson wrote:
+> >
+> > We have been having one heck of a time tracking down the cause of some
+> ALSA
+> > audio playback issues.
+> >
+> > It appears that any time we play a very short sound (<64kb), either the
+> > sound doesn't play at all, or only a fragment of it plays. We haven't
+> had
+> > much luck finding a solution to this issue, then I found this thread on
+> the
+> > history of this email group:
+> >
+> >
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-April/000526.html
+> >
+> > Our problem is pretty much exactly like his issues relating to <64k
+> sounds.
+> >
+> > My question is - has anybody else run into this problem? To the OP of
+> the
+> > above thread, if you're still listening - did you ever find a solution
+> to
+> > your problem? I'd be very interested to hear any help you can provide.
+>
+> It works fine with my systems, so the problem should be pretty
+> driver-specific...
+>
+>
+> Takashi
+>
