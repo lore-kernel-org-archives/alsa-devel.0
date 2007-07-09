@@ -1,17 +1,18 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: Question about write asoc driver
-Date: Mon, 09 Jul 2007 12:01:50 +0100
-Message-ID: <1183978910.11330.180.camel@localhost.localdomain>
-References: <afe668f90707090150q28f6c837l69980dfaba3afe33@mail.gmail.com>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Writing a new plugin for ALSA
+Date: Mon, 9 Jul 2007 17:29:17 +0530
+Message-ID: <8d6898730707090459o10ea89a0qc9fc888af153b85b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92578103877
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id BFD60103898
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jul 2007 13:01:51 +0200 (CEST)
-In-Reply-To: <afe668f90707090150q28f6c837l69980dfaba3afe33@mail.gmail.com>
+	Mon,  9 Jul 2007 13:59:19 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id m22so597210nzf
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2007 04:59:18 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Roy Huang <royhuang9@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2007-07-09 at 16:50 +0800, Roy Huang wrote:
-> Hi guys,
-> 
-> I am write a codec driver under asoc frame work for ad1980 by study
-> the sample driver wm9712.c. I find there are some control item likes
-> "out3 switch" to control 16h:15. There are also some widget item likes
-> "out 3 PGA" to control 24:5. How can I determine a register bit should
-> be a control item or widget item? Thanks ahead.
-> 
+Hi,
 
-A widget describes a power block within the audio subsystem (this
-includes the codec and machine). Widgets usually have several kcontrols
-that control their power state and map to hardware audio components like
-mixers, amps, DAC'c, ADC's, etc (anything that draws power). A widget is
-"on" when there is a valid signal path routing from it's source to sink.
+I am trying to write a new ALSA plugin, like dmix.
 
-Widgets are entirely optional under ASoC and are only used by DAPM when
-making power management decisions. I'd recommend adding them in only for
-low power codecs and after you have audio working in the codec driver
-(easier to debug).
+My intend is to give priority to streams, i will not do up sample and
+down sample as we do in the case of dmix.
 
-A general rule for deciding whether something is a widget :-
+If we do up sample and down sample then I think it will take lot of cpu.
 
- * Is a widget if it control audio signal routing (e.g. mixer, mux,
-jack)
- * Is a codec/machine audio sink or source (pin, DAC, ADC)
+In my case I have three streams audio, bluetooth sco and Navigation sound data.
 
-HTH
+priority is audio < sco < Nav
 
-Liam     
+audio rate is 44100hz, sco rate is 8000hz
+
+when sco is up audio should pause playback and audio should continue
+when sco is finished. I dont want to do software mixing. Thats why I
+am trying to write this new plugin.
+
+
+Assume that audio is active first, then sco comes to active state. So
+what i will do is in the library i will put audio app in sleep(), and
+re-configure the pcm for sco. Once sco is finished i will re-configure
+pcm for audio again like wise.
+
+so my question is there any api in the alsa-lib to take a copy of pcm
+structures, so when audio comes back gain i can use these saved pcm
+conf to that.
+
+Is there any api in the alsa-lib to reset the pcm structure to
+initialized state, means state just after open.
+
+Thanks
+Nobin Mathew
