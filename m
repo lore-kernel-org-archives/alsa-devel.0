@@ -1,18 +1,27 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Intel hda ICH7 not worked anymore after using	wine
-	(SOLVED!)
-Date: Mon, 09 Jul 2007 10:04:17 -0700
-Message-ID: <1184000657.27029.15.camel@razman.gruemaster.com>
-References: <256a87490707090958w39a1aa3epb38dc61fde92fb68@mail.gmail.com>
+From: Paul Vojta <vojta@Math.Berkeley.EDU>
+Subject: Re: another device for opl3sa2
+Date: Mon, 9 Jul 2007 11:14:17 -0700
+Message-ID: <20070709181417.GA20169@math.berkeley.edu>
+References: <20070703002739.GA27389@math.berkeley.edu>
+	<s5hfy45ajk1.wl%tiwai@suse.de>
+	<20070704022423.GA2012@math.berkeley.edu>
+	<s5h4pkka6tq.wl%tiwai@suse.de>
+	<20070705080302.GA6818@math.berkeley.edu>
+	<s5hk5te6hku.wl%tiwai@suse.de>
+	<20070706074136.GA4460@math.berkeley.edu>
+	<s5hy7ht50ir.wl%tiwai@suse.de>
+	<20070708080224.GA14178@math.berkeley.edu>
+	<s5hwsx9u4sk.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50D19103842
+Received: from mail.math.berkeley.edu (mail.Math.Berkeley.EDU [169.229.58.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54B601038B0
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jul 2007 19:04:19 +0200 (CEST)
-In-Reply-To: <256a87490707090958w39a1aa3epb38dc61fde92fb68@mail.gmail.com>
+	Mon,  9 Jul 2007 20:14:20 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hwsx9u4sk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,104 +31,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Xavi de Blas <xaviblas@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Then I humbly sign off on that patch.
+On Mon, Jul 09, 2007 at 02:42:35PM +0200, Takashi Iwai wrote:
 
-For the record:
+> Hmm, if I understand correctly from your debug messages, I don't see
+> significant differences between opl3sa2 and cs4232 cases.
 
-Summary:  HDA - patch to fix issue with Lenovo Thinkpad codec ID.
+Well, with opl3sa2, it never reaches the end of mce_down
 
-This patch fixes an issue in Lenovo Thinkpads where the codec ID gets
-changed.
+> Just to be sure, both first and second aplay on opl3sa2 didn't work
+> (no sound output) while cs4232 was OK, right?
 
-Signed off by Tobin Davis <tdavis@dsl-only.net>
+No, only the first aplay on opl3sa2 produced no output.  The second one
+worked fine.
 
-On Mon, 2007-07-09 at 18:58 +0200, Xavi de Blas wrote:
-
-> It worked!!!
-> 
-> Thanks a lot
-> 
-> I thought my hardware was broken!
-> 
-> 
-> 2007/7/9, Tobin Davis <tdavis@dsl-only.net>:
-> 
->         Patch needs to be applied as follows:
->         
->         
->                 cd alsa-driver-1.0.14/alsa-kernel
->                 patch -p1 < LenovoX60S.patch
->                 cd ..
->         
->         Then you can rerun configure && make && make install.
->         
->         Tobin
->         
->         
->         
->         On Mon, 2007-07-09 at 17:25 +0200, Xavi de Blas wrote: 
->         
->         > 2007/7/9, Tobin Davis <tdavis@dsl-only.net>:
->         > > Sorry for missing this thread.  I just woke up.
->         > >
->         > > I looked at your first pastebin output, and the actual audio codec shows
->         > > up as 0x51d41981, when it should be 0x11d41981.  This is why the Analog
->         > > driver patch isn't detecting it.
->         > >
->         > > Can you try this patch against alsa-driver-1.0.14?  It should detect
->         > > this codec.  Still not sure why it is misconfigured, unless there is a
->         > > bios issue.
->         > >
->         > 
->         > I'm afraid, probably when i tried the Linuxant codecs for the modem it broke the
->         > bios. Not sure, but sound worked, and continued working some reboots
->         > later. But when i tried a few things with wine and rebooted, sound
->         > never worked again
->         > 
->         > When i aply the patch (probably i don't do it good) there are problems:
->         > 
->         > 
->         > xavier@corall:/usr/local/src/alsa-src/alsa-driver-1.0.14$ cat
->         > LenovoX60S.patch | patch -p1
->         > patching file pci/hda/patch_analog.c
->         > Hunk #1 FAILED at 3402.
->         > 1 out of 1 hunk FAILED -- saving rejects to file pci/hda/patch_analog.c.rej
->         > 
->         > 
->         > xavier@corall:/usr/local/src/alsa-src/alsa-driver-1.0.14/pci/hda$ cat
->         > patch_analog.c.rej
->         > *************** struct hda_codec_preset snd_hda_preset_a
->         > *** 3402,3407 ****
->         >        { .id = 0x11d41882, .name = "AD1882", .patch = patch_ad1882 },
->         >        { .id = 0x11d41884, .name = "AD1884", .patch = patch_ad1884 },
->         >        { .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
->         >        { .id = 0x11d41983, .name = "AD1983", .patch = patch_ad1983 },
->         >        { .id = 0x11d41984, .name = "AD1984", .patch = patch_ad1984 },
->         >        { .id = 0x11d41986, .name = "AD1986A", .patch = patch_ad1986a },
->         > --- 3402,3408 ----
->         >        { .id = 0x11d41882, .name = "AD1882", .patch = patch_ad1882 },
->         >        { .id = 0x11d41884, .name = "AD1884", .patch = patch_ad1884 },
->         >        { .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
->         > +       { .id = 0x51d41981, .name = "AD1981", .patch = patch_ad1981 },
->         >        { .id = 0x11d41983, .name = "AD1983", .patch = patch_ad1983 },
->         >        { .id = 0x11d41984, .name = "AD1984", .patch = patch_ad1984 },
->         >        { .id = 0x11d41986, .name = "AD1986A", .patch = patch_ad1986a },
->         > 
->         > 
->         > The patch is ok?
->         > 
->         > Thanks
->         > 
->         > (Tobin sorry for sending messge two times)
->         
->         -- 
->         Tobin Davis <tdavis@dsl-only.net>
-> 
-> 
-
--- 
-Tobin Davis <tdavis@dsl-only.net>
+--Paul Vojta
