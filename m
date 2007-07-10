@@ -1,24 +1,19 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Unable to find an usable access for 'default'
-Date: Tue, 10 Jul 2007 08:29:18 +0200
-Message-ID: <1184048958.4318.1199353265@webmail.messagingengine.com>
-References: <468ACB86.1040303@freescale.com>
-	<1183530859.19025.1198427403@webmail.messagingengine.com>
-	<468CE7AD.8020305@freescale.com>
-	<1183719027.2620.1198799059@webmail.messagingengine.com>
-	<468EC305.8080301@freescale.com>
-	<1183963895.22813.1199147561@webmail.messagingengine.com>
-	<4692A262.2080908@freescale.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: dmix and sounds less than 64kb
+Date: Tue, 10 Jul 2007 09:57:37 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0707100954280.7300@tm8103.perex-int.cz>
+References: <61e8390b0707062028t63c913eeg1ab5a40f830af597@mail.gmail.com>
+	<s5hir8tvrvt.wl%tiwai@suse.de>
+	<61e8390b0707091240i657f82ev306ac851759c791f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 585982441A
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E4D21038B9
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2007 08:29:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4692A262.2080908@freescale.com>
+	Tue, 10 Jul 2007 09:57:39 +0200 (CEST)
+In-Reply-To: <61e8390b0707091240i657f82ev306ac851759c791f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,30 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: "Aaron \"Caustik\" Robinson" <caustik@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> Clemens Ladisch wrote:
-> > This is possible.  Try using aplay with a .wav file that uses a sample
-> > format supported by the hardware.
-> 
-> I tried that, and I'm still having problems.  Here's the output with rule debugging turned
-> on.  I can't make sense of this, so could you interpret this for me?
+On Mon, 9 Jul 2007, Aaron "Caustik" Robinson wrote:
 
-The output shows that the application tries to set several parameters,
-but never sets all parameters.
+> We actually dumped the pcm data as it was arriving to the driver (via the
+> trigger start and irq functions), and it was corrupted at that point. Also I
+> have dumped the pcm data after it has been mixed by the dmix plugin, and it
+> is fine there as well.
 
-Please play to the "hw" device instead of the "default" one so that
-alsa-lib doesn't try other sample formats.
+Which hardware and driver? It seems like a driver (wrong pointer 
+management) or hardware issue. For example, ARM CPUs does not guarantee 
+cache coherency between two virtual address spaces pointing to one 
+physical space.
 
-It would help to tell me what the sample format of the file actually is.
+					Jaroslav
 
-And please show at least the struct snd_pcm_hardware definition of your
-driver, together with any code that changes its filed and all calls to
-snd_pcm_hw_constraint_*, if any.
+> On 7/9/07, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > At Fri, 6 Jul 2007 20:28:13 -0700,
+> > Aaron "Caustik" Robinson wrote:
+> > >
+> > > We have been having one heck of a time tracking down the cause of some
+> > ALSA
+> > > audio playback issues.
+> > >
+> > > It appears that any time we play a very short sound (<64kb), either the
+> > > sound doesn't play at all, or only a fragment of it plays. We haven't
+> > had
+> > > much luck finding a solution to this issue, then I found this thread on
+> > the
+> > > history of this email group:
+> > >
+> > >
+> > http://mailman.alsa-project.org/pipermail/alsa-devel/2007-April/000526.html
+> > >
+> > > Our problem is pretty much exactly like his issues relating to <64k
+> > sounds.
+> > >
+> > > My question is - has anybody else run into this problem? To the OP of
+> > the
+> > > above thread, if you're still listening - did you ever find a solution
+> > to
+> > > your problem? I'd be very interested to hear any help you can provide.
+> >
+> > It works fine with my systems, so the problem should be pretty
+> > driver-specific...
 
-
-Regards,
-Clemens
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
