@@ -1,18 +1,19 @@
-From: "Thibault Le Meur" <Thibault.LeMeur@supelec.fr>
-Subject: RE : RE :  RE : RE :  M-Audio Audiophile USB,
-	native little endian	 (S16_LE) ?
-Date: Wed, 11 Jul 2007 13:39:45 +0200
-Message-ID: <013001c7c3b0$3156eff0$161ce4a0@supelec.fr>
-References: <s5hwsx7i5e7.wl%tiwai@suse.de>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Can I mmap buffer allocated using
+	SNDRV_DMA_TYPE_CONTINUOUS?
+Date: Wed, 11 Jul 2007 18:13:51 +0530
+Message-ID: <61445c750707110543w4cecbb1bk73515b9086c347a6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpn.supelec.fr (smtpn.supelec.fr [160.228.120.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01EC3103807
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A516103917
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Jul 2007 13:39:54 +0200 (CEST)
-In-Reply-To: <s5hwsx7i5e7.wl%tiwai@suse.de>
+	Wed, 11 Jul 2007 14:43:52 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so2157821wag
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 05:43:51 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, 'Hakan Lennestal' <Hakan.Lennestal@brfsodrahamn.se>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+I have allocated the DMA buffer using snd_pcm_lib_malloc_pages() and
+it was preallocated as:
 
+snd_pcm_lib_preallocate_pages_for_all(pcm,
+                                             SNDRV_DMA_TYPE_CONTINUOUS,
+                                             snd_dma_continuous_data
+                                             (GFP_KERNEL),
+                                             128 * 1024, 128 * 1024);
 
-> -----Message d'origine-----
-> De : Takashi Iwai [mailto:tiwai@suse.de] =
+Can I mmap such a dma buffer? I think yes...
 
-> Envoy=E9 : mercredi 11 juillet 2007 12:47
-> =C0 : Thibault Le Meur
-> Cc : alsa-devel@alsa-project.org; 'Hakan Lennestal'
-> Objet : Re: RE : [alsa-devel] RE : RE : M-Audio Audiophile =
-
-> USB,native little endian (S16_LE) ?
-> =
-
-> =
-
-> At Wed, 11 Jul 2007 12:44:27 +0200,
-> Thibault Le Meur wrote:
-> > =
-
-> > =
-
-> > >  =
-
-> > > Ok, since Hakan reported a success for this patch, I'll
-> > > prepare a new diff including Documentation update.
-> > =
-
-> > Takashi,
-> > =
-
-> > What is the deadline and what will be the =
-
-> alsa-release/kernel-version =
-
-> > including this patch (info needed for doc update) ?
-> =
-
-> We need it ASAP because of the merge window for 2.6.23 =
-
-> kernel.
-
-I'll work on this tonight then.
-
-> The patch should be prepared against the latest HG =
-
-> tree. I guess the patch to 1.0.14 should be applicable to the =
-
-> current version without hitches, though.
-
-I'll generate it against hg-tree as was my last patch.
-
-Thanks,
-Thibault.
+-pharaoh.
