@@ -1,17 +1,27 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
-Subject: [PATCH] Add LG LW20 si3054 modem id
-Date: Wed, 11 Jul 2007 15:20:42 -0300
-Message-ID: <5f52f6d70707111120n1e920f3fk60cd99c8d1fe7b1e@mail.gmail.com>
+From: Fausto Carvalho Marques SIlva <fausto@tse.gov.br>
+Subject: Setting audio channels on ICH5 with SALSA
+Date: Wed, 11 Jul 2007 17:04:45 -0300
+Message-ID: <469537DD.3020901@tse.gov.br>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_6945_4964387.1184178042380"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8551410387F
+Received: from dexter.tse.gov.br (dexter.tse.gov.br [200.252.157.99])
+	by alsa0.perex.cz (Postfix) with ESMTP id 33FB0103926
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Jul 2007 20:20:44 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so172259ugf
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 11:20:43 -0700 (PDT)
+	Wed, 11 Jul 2007 22:08:28 +0200 (CEST)
+Received: from dexter.tse.gov.br (localhost.tse.gov.br [127.0.0.1])
+	by nod32.tse.gov.br (Postfix) with ESMTP id 3E109FD3A7
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 17:08:25 -0300 (BRT)
+Received: from webmail.tse.gov.br (webmail.tse.gov.br [10.28.1.25])
+	by dexter.tse.gov.br (Postfix) with ESMTP id 3BF8DFD1D5
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 17:08:25 -0300 (BRT)
+Received: from webmail.tse.gov.br (localhost.localdomain [127.0.0.1])
+	by nod32.tse.gov.br (Postfix) with ESMTP id 250F314C0D9
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 17:08:25 -0300 (BRT)
+Received: from [10.28.219.33] (unknown [10.28.219.33])
+	by webmail.tse.gov.br (Postfix) with ESMTP id 22F1514C054
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 17:08:25 -0300 (BRT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +32,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_6945_4964387.1184178042380
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-This patch adds the id of the LG LW20 laptop modem.
-
-------=_Part_6945_4964387.1184178042380
-Content-Type: text/x-patch;
-	name=0009-ALSA-hda-codec-Add-LG-LW20-si3054-modem-id.patch;
-	charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f404zjxx
-Content-Disposition: attachment; filename="0009-ALSA-hda-codec-Add-LG-LW20-si3054-modem-id.patch"
-
-RnJvbSA0ZTA2NWE0NjFiY2RkZWVmY2ExYTBmNTdhYzE4ZDlhMjgxZmYwOGI5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBDbGF1ZGlvIE1hdHN1b2thIDxjbWF0c3Vva2FAZ21haWwuY29t
-PgpEYXRlOiBXZWQsIDExIEp1bCAyMDA3IDE1OjExOjU1IC0wMzAwClN1YmplY3Q6IFtQQVRDSF0g
-W0FMU0FdIGhkYS1jb2RlYyAtIEFkZCBMRyBMVzIwIHNpMzA1NCBtb2RlbSBpZAoKU2lnbmVkLW9m
-Zi1ieTogQ2xhdWRpbyBNYXRzdW9rYSA8Y21hdHN1b2thQGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9w
-Y2kvaGRhL3BhdGNoX3NpMzA1NC5jIHwgICAgMiArKwogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2Vy
-dGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRj
-aF9zaTMwNTQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfc2kzMDU0LmMKaW5kZXggNWRkOWY2MS4u
-NmQyZWNjMyAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9zaTMwNTQuYworKysgYi9z
-b3VuZC9wY2kvaGRhL3BhdGNoX3NpMzA1NC5jCkBAIC0zMDgsNiArMzA4LDggQEAgc3RydWN0IGhk
-YV9jb2RlY19wcmVzZXQgc25kX2hkYV9wcmVzZXRfc2kzMDU0W10gPSB7CiAJeyAuaWQgPSAweDEx
-MDYzMjg4LCAubmFtZSA9ICJTaTMwNTQiLCAucGF0Y2ggPSBwYXRjaF9zaTMwNTQgfSwKIAkvKiBB
-c3VzIEE4SiBNb2RlbSAoU001NikgKi8KIAl7IC5pZCA9IDB4MTU0MzMxNTUsIC5uYW1lID0gIlNp
-MzA1NCIsIC5wYXRjaCA9IHBhdGNoX3NpMzA1NCB9LAorCS8qIExHIExXMjAgbW9kZW0gKi8KKwl7
-IC5pZCA9IDB4MTg1NDAwMTgsIC5uYW1lID0gIlNpMzA1NCIsIC5wYXRjaCA9IHBhdGNoX3NpMzA1
-NCB9LAogCXt9CiB9OwogCi0tIAoxLjUuMi4zCgo=
-------=_Part_6945_4964387.1184178042380
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_6945_4964387.1184178042380--
+Setting audio channels on ICH5 with SALSA generates and: EINVAL
+Numbers of channels is 1. Does anyone have some ideias?? ( on ICH6 and 
+ICH7 works well)
+thanks...
+Fausto Carvalho Marques Silva
