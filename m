@@ -1,18 +1,20 @@
-From: "Matt Hirsch" <matthew.hirsch@gmail.com>
-Subject: snd-hda-intel auto detect incorrect
-Date: Wed, 11 Jul 2007 12:01:57 -0400
-Message-ID: <975d09800707110901p42e133f7u3df3df985548d494@mail.gmail.com>
+From: Steve Longerbeam <stevel@embeddedalley.com>
+Subject: Re: non-interleaved mode
+Date: Wed, 11 Jul 2007 09:23:12 -0700
+Message-ID: <469503F0.80706@embeddedalley.com>
+References: <4693CB01.5060804@embeddedalley.com>
+	<s5hbqejjphf.wl%tiwai@suse.de>	<20070711091324.43424685.alsauser@pragmasoft.com>
+	<s5hps2zhxlb.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B92510391E
+Received: from smtp105.biz.mail.mud.yahoo.com (smtp105.biz.mail.mud.yahoo.com
+	[68.142.200.253])
+	by alsa0.perex.cz (Postfix) with SMTP id 284A3103918
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Jul 2007 18:01:59 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so347118ana
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 09:01:58 -0700 (PDT)
-Content-Disposition: inline
+	Wed, 11 Jul 2007 18:23:16 +0200 (CEST)
+In-Reply-To: <s5hps2zhxlb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +24,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "J. Scott Merritt" <alsauser@pragmasoft.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have an hp pavilion tx 1000 laptop running fedora 7.  The auto
-detect feature of the snd-hda-intel dirver doesn't work on my sound
-card.  As requested in Documentation/sound/alsa/ALSA-Configuration.txt
-I am forwarding the following to the developer mailing list:
+Takashi Iwai wrote:
+> At Wed, 11 Jul 2007 09:13:24 -0400,
+> J. Scott Merritt wrote:
+>   
+>> On Wed, 11 Jul 2007 10:47:56 +0200
+>> Takashi Iwai <tiwai@suse.de> wrote:
+>>
+>>     
+>>> At Tue, 10 Jul 2007 11:08:01 -0700,
+>>> Steve Longerbeam wrote:
+>>>       
+>>>> Hi,
+>>>>
+>>>> The driver for the sound engine I'm working on requires NONINTERLEAVED. 
+>>>> Will ALSA core give my driver a full period of left-only samples, 
+>>>> followed by a full period of right-only samples? Or are left/right 
+>>>> samples split within a single period (ie. first half of period is left 
+>>>> samples, second half is right samples)?
+>>>>         
+>>> The former case.  The standard non-interleaved buffer consists of
+>>> (the same buffer-size of) full-length of mono-streams.
+>>>
+>>>
+>>> Takashi
+>>>       
+>> Doesn't this depend upon the driver implementation ?  IIRC, I tried to
+>> request NON-INTERLEAVED on the PXA270 AC97 driver and it told me that
+>> wasn't a permitted operation (one of the reasons that I needed to use
+>> mmap access in SALSA-Lib).
+>>     
+>
+> The latter case, "multi-streams in each period" style, cannot be
+> represented in ALSA API, more specifically, snd_pcm_channel_info
+> struct.  Thus, it has to be remapped virtually to the normal
+> non-interleaved streams (each with full periods), or to avoid mmap and
+> copy the data inside the driver.
+>
+> There is another COMPLEX_MMAP access type, but it's also for linear
+> frames with constant increments, where each channel can be represented
+> with snd_pcm_channel_info record.  The "multi-streams in each period"
+> is non-linear.
+>
+>
+>   
 
-#uname -a
-Linux laptop 2.6.21-1.3228.fc7 #1 SMP Tue Jun 12 14:56:37 EDT 2007
-x86_64 x86_64 x86_64 GNU/Linux
+Last night I ran an experiment.  I created a 16-bit stereo .wav file 
+with all left samples = 0x5555, and all right samples = 0xAAAA. I then 
+played the .wav using aplay, and just before trigger start in my driver 
+I searched the DMA buffer for the first occurrence of 0xAAAA. The right 
+samples didn't start until exactly half-way through the entire DMA buffer!
 
-# lspci -s 00:10.1
-00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio (rev a2)
+So now I'm confused, you say there should be one full period of left, 
+followed by one full period of right, but I'm observing that the whole 
+buffer is split in half, with the first half left, the second half 
+right. How did this happen? Is there any way for a driver to query ALSA 
+core about the non-interleaved layout of samples in memory?
 
-# lspci -s 00:10.1 -nv
-00:10.1 0403: 10de:026c (rev a2)
-       Subsystem: 103c:30bf
-       Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 17
-       Memory at c0000000 (32-bit, non-prefetchable) [size=16K]
-       Capabilities: [44] Power Management version 2
-       Capabilities: [50] Message Signalled Interrupts: Mask+ 64bit+
-Queue=0/0 Enable-
-       Capabilities: [6c] HyperTransport: MSI Mapping
+I'm running 2.6.21.1 which is alsa-driver 1.0.14rc3, and I'm using 
+alsa-lib 1.0.14rc3 and alsa-utils 1.0.14rc2.
 
-# yum list alsa-\*
-Installed Packages
-alsa-lib.x86_64                          1.0.14-0.4.rc3.fc7     installed
-alsa-lib.i386                            1.0.14-0.4.rc3.fc7     installed
-alsa-utils.x86_64                        1.0.14-0.7.rc2.fc7     installed
-
-With no options I get the following log message and the audio doesn't work:
- kernel: hda_codec: Unknown model for ALC660VD/ALC861VD, trying
-auto-probe from BIOS...
-
-When loading the module as follows, the audio works:
-modprobe snd-hda-intel model=3stack
-
-I believe the card was detected as 3stack-dig, as the alsamixer
-options match when either no option or model=3stack-dig are given.
-
-Hope this helped.
-
-Thanks for all your hard work!
-
-Matt
+Steve
