@@ -1,19 +1,23 @@
-From: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-Subject: Re: RE :  M-Audio Audiophile USB,
-	native little endian	 (S16_LE) ?
-Date: Tue, 10 Jul 2007 23:22:03 +0200
-Message-ID: <20070710232203.kl84d2l85csco88o@webmail.supelec.fr>
-References: <20070709103936.2540F5813E@ip2-138.brfsodrahamn.se>
+From: "Gao, Jonathan" <Jonathan.Gao@spansion.com>
+Subject: [Alsa-devel] xrun problem
+Date: Wed, 11 Jul 2007 09:45:29 +0800
+Message-ID: <D66A5610D809884EA3968F92900EFCAA0189EEC9@cnsuzexmbpf1.spansion.com>
+References: <D66A5610D809884EA3968F92900EFCAA0189EEB3@cnsuzexmbpf1.spansion.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="=_5aybnb8j8q04"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpn.supelec.fr (smtpn.supelec.fr [160.228.120.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1127B1038C9
+Received: from usspausgw01.spansion.com (usspausgw01.spansion.com
+	[12.110.209.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE6D5103835
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jul 2007 23:22:05 +0200 (CEST)
-In-Reply-To: <20070709103936.2540F5813E@ip2-138.brfsodrahamn.se>
+	Wed, 11 Jul 2007 03:45:39 +0200 (CEST)
+Received: from USAUSEXBH1.spansion.com (usausexbh1.spansion.com [10.248.26.58])
+	by usspausgw01.spansion.com (Tumbleweed MailGate) with ESMTP id
+	3BB72483099F5
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2007 20:47:57 -0500 (CDT)
+Content-class: urn:content-classes:message
+In-Reply-To: <D66A5610D809884EA3968F92900EFCAA0189EEB3@cnsuzexmbpf1.spansion.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,95 +27,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hakan Lennestal <Hakan.Lennestal@brfsodrahamn.se>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, 'Pavel Polischouk' <pavelp@rogers.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message is in MIME format.
+Hi,
+I am writing a PCM driver on a Soc for 2.6.10 kernel.
+The test code I'm using is from alsa-lib-1.0.6rc1/test/pcm.c.
+The runtime log gives me like this...
+-----------------------------------------------------------------
+open callback: 
+hw params callback: alloc result = 1, buffer bytes = 4608
 
---=_5aybnb8j8q04
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+/* --------- HW params ------------- */
+format = 2,     rate = 44100,   channels= 2,    period_size = 288,
+periods = 4,    buffer_size = 1152
 
+prepare callback
+/* --------- Runtime Info ---------- */
+state = 1 (SNDRV_PCM_STATE_SETUP),      hw_ptr = 0,     appl_ptr = 0,
+avail_min = 288
+avail_max = 0,  hw_ptr_base = 0,        hw_ptr_interrupt = 0
 
->
->> > I don't know if this is already known (?), but the M-Audio
->> > Audiophile USB seem to be possible to run in native S16_LE
->> > mode if initialized with device_setup=3D0x01 (possibly with
->> > 0x11 also, have not tested that).
-Hakan,
+trigger callback: START
 
-Seems that you're right. After some more tests, I was able to play a =20
-raw file  supposed to be S16_BE (recorded from my audiophile usb) to a =20
-Little endian only device.
+Codec Do Copy:
+/* --------- Runtime Info ---------- */
+state = 3 (SNDRV_PCM_STATE_RUNNING),      hw_ptr = 0,     appl_ptr =
+1152,        avail_min = 288
+avail_max = 0,  hw_ptr_base = 0,        hw_ptr_interrupt = 0
 
-I think we should fix this then, however I think that we should prefer =20
-a fix that do not use device_setup too much because it is something =20
-that could disapear in the future (see the old thread "[PATCH 1/2] =20
-M-Audio USB").
+pointer callback: hw pointer: 288 (return value of pointer callback)
 
-You'll find attached an equivalent fix that checks alt-settings =20
-instead of device_setup param: Can you try it Hakan ?
+Codec Do Copy:
+/* --------- Runtime Info ---------- */
+state = 3 (SNDRV_PCM_STATE_RUNNING),      hw_ptr = 288,   appl_ptr =
+1152,        avail_min = 288
+avail_max = 288,        hw_ptr_base = 0,        hw_ptr_interrupt = 288
 
-Moreover, it adds an extra reset-to-altset0 call at module =20
-initialization time which proves to be useful to switch sample depth =20
-modes without having to turn off the device. It is taken from Pavel =20
-Polischouk's patch which wasn't really finalized (at least until now). =20
-(Pavel are you still reading to this list?)
+pointer callback: hw pointer: 576 (return value of pointer callback)
 
-Takashi, let me know if you want to apply one of the proposed fixes, =20
-cause I'll have to update the Documentation as well.
+Codec Do Copy: 
+/* --------- Runtime Info ---------- */
+state = 3 (SNDRV_PCM_STATE_RUNNING),      hw_ptr = 576,   appl_ptr =
+1152,        avail_min = 288
+avail_max = 576,        hw_ptr_base = 0,        hw_ptr_interrupt = 576
 
-Regards,
-Thibault
+pointer callback: hw pointer: 864 (return value of pointer callback)
 
+Codec Do Copy:
+/* --------- Runtime Info ---------- */
+state = 3 (SNDRV_PCM_STATE_RUNNING),      hw_ptr = 864,   appl_ptr =
+1152,        avail_min = 288
+avail_max = 864,        hw_ptr_base = 0,        hw_ptr_interrupt = 864
 
---=_5aybnb8j8q04
-Content-Type: text/x-patch;
-	charset=UTF-8;
-	name="ma-audiophile-patch.diff"
-Content-Disposition: attachment;
-	filename="ma-audiophile-patch.diff"
-Content-Transfer-Encoding: 7bit
+pointer callback: hw pointer: 0  (return value of pointer callback)
 
---- orig/alsa-kernel/usb/usbaudio.c	2007-07-10 21:16:07.000000000 +0200
-+++ alsa-kernel/usb/usbaudio.c	2007-07-10 21:32:16.000000000 +0200
-@@ -2350,7 +2350,9 @@
- 			return 1;
- 		break;
- 	case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
--		return 1;
-+		if (fp->altsetting==1 || fp->altsetting==2 ||
-+                    fp->altsetting==3)
-+			return 1;
- 	}
- 	return 0;
- }
-@@ -3251,6 +3253,10 @@
- static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
- 					 int iface, int altno)
- {
-+	/* Reset ALL ifaces to 0 altsetting. 
-+	Call it for every possible altsetting of every interface. */
-+	usb_set_interface(chip->dev, iface, 0); 
-+
- 	if (device_setup[chip->index] & AUDIOPHILE_SET) {
- 		if ((device_setup[chip->index] & AUDIOPHILE_SET_DTS)
- 		    && altno != 6)
+trigger callback: STOP
+prepare callback
+/* --------- Runtime Info ---------- */
+state = 4 (SNDRV_PCM_STATE_XRUN),      hw_ptr = 1152,  appl_ptr = 1152,
+avail_min = 288
+avail_max = 1152,       hw_ptr_base = 1152,     hw_ptr_interrupt = 1152
+-----------------------------------------------------------------
 
---=_5aybnb8j8q04
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The kernel hangs after prepare callback, from  strace, I can see a
+endless ioctl(4, ..., ...) repeated.
+Does anyone have a few pointers on what is going wrong?
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=_5aybnb8j8q04--
+Best Regards,
+Jonathan
