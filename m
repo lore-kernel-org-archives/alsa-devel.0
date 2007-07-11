@@ -1,17 +1,29 @@
-From: "Paul Kavan" <pkavan@gmail.com>
-Subject: Help with ALSA application development
-Date: Wed, 11 Jul 2007 16:55:49 -0500
-Message-ID: <61c0054e0707111455j6981b200s883e82bf8b0a87bd@mail.gmail.com>
+From: Fausto Carvalho Marques SIlva <fausto@tse.gov.br>
+Subject: Re: Setting audio channels on ICH5 with SALSA
+Date: Wed, 11 Jul 2007 19:17:23 -0300
+Message-ID: <469556F3.9060600@tse.gov.br>
+References: <469537DD.3020901@tse.gov.br>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_13625_6440401.1184190949947"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FAAD1038F1
+Received: from dexter.tse.gov.br (dexter.tse.gov.br [200.252.157.99])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCE4F103817
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Jul 2007 23:55:51 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so211815ugf
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 14:55:50 -0700 (PDT)
+	Thu, 12 Jul 2007 00:21:05 +0200 (CEST)
+Received: from dexter.tse.gov.br (localhost.tse.gov.br [127.0.0.1])
+	by nod32.tse.gov.br (Postfix) with ESMTP id 88571FCC32
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 19:21:03 -0300 (BRT)
+Received: from webmail.tse.gov.br (webmail.tse.gov.br [10.28.1.25])
+	by dexter.tse.gov.br (Postfix) with ESMTP id 85B2FFCBED
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 19:21:03 -0300 (BRT)
+Received: from webmail.tse.gov.br (localhost.localdomain [127.0.0.1])
+	by nod32.tse.gov.br (Postfix) with ESMTP id 6F7B014C0DD
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 19:21:03 -0300 (BRT)
+Received: from [10.28.219.33] (unknown [10.28.219.33])
+	by webmail.tse.gov.br (Postfix) with ESMTP id 6D0F114C0DC
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 19:21:03 -0300 (BRT)
+In-Reply-To: <469537DD.3020901@tse.gov.br>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,158 +36,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_13625_6440401.1184190949947
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+More info:
+Even getting the number of avaiable audio channels i get error: EINVAL
+Debuging gets me to:
 
-Hello:
+SNDRV_PCM_HW_PARAM_CHANNELS
+params->intervals[2] =  {min = 2, max = 6, openmin = 0, openmax = 0, 
+integer = 1, empty = 0}
+so snd_interval_single does not get valid ...
 
-I am still trying to write my own basic application that captures and plays
-audio. I am working in an embedded linux environment and have the drivers
-working well. I can use arecord/aplay without any problem. However, I have
-been trying to follow some web examples for simple capture and playback
-without any success. Does anyone know of some sample code for S8 formatted,
-8k rate capture and playback. I think my problem is two-fold.
+Any help is wellcome...
+Fausto Carvalho Marques Silva
 
-First is getting the hw-params set correctly. I have a function call that
-sets the interface up. I am trying to use the same params that aplay -v
-returns to me, but perhaps I have them wrong somehow.
-
-Secondly is buffering the samples. I am not sure I have that correct. Does
-anyone have some pointers on that?
-
-I have attached my code. If anyone has some time and insight into this, I
-would greatly appreciate it. Thanks.
-
-Paul
-
-------=_Part_13625_6440401.1184190949947
-Content-Type: text/x-csrc; name="grh_audio0.c"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="grh_audio0.c"
-X-Attachment-Id: f_f40cphxy
-
-LyogR1JIIEF1ZGlvIFByb2dyYW0KICoKICogQXV0aG9yOiBQYXVsIEthdmFuLCBQcm9qZWN0IEVu
-Z2luZWVyCiAqIERhdGU6IEp1bHkgMywgMjAwNwogKi8KCiNpbmNsdWRlIDxzdGRpby5oPgojaW5j
-bHVkZSA8c3RkbGliLmg+CiNpbmNsdWRlIDxhbHNhL2Fzb3VuZGxpYi5oPgoKLyoqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioKICogVmFyaWFibGUgYW5kIEZ1bmN0aW9uIERlY2xh
-cmF0aW9ucyAKICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCmxvbmcgICAg
-ICAgICAgICAgICAgICAgIGxvb3BzOwp1bnNpZ25lZCBpbnQgICAgICAgICAgICB2YWw7CmludCAg
-ICAgICAgICAgICAgICAgICAgIG5jaGFubmVscyA9IDE7CnN0YXRpYyBzbmRfcGNtX3VmcmFtZXNf
-dCBwZXJpb2RfZnJhbWVzID0gMTAwMDsKc3RhdGljIHNuZF9wY21fdWZyYW1lc190IGJ1ZmZlcl9m
-cmFtZXMgPSA0MDAwOwpzdGF0aWMgdW5zaWduZWQgICAgICAgICBwZXJpb2RfdGltZSA9IDEyNTAw
-MDsKdW5zaWduZWQgaW50ICAgICAgICAgICAgc2FtcGxlX3JhdGUgPSA4MDAwOwpjaGFyICAgICAg
-ICAgICAgICAgICAgICAqYnVmZmVyOwpzbmRfcGNtX3QgICAgICAgICAgICAgICAqcGNtX2hhbmRs
-ZTsKCmludCBncmhfY2FwdHVyZSh2b2lkKTsKaW50IGdyaF9wbGF5YmFjayh2b2lkKTsKaW50IGdy
-aF9wY21fY29uZmlnKHZvaWQpOwoKLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioKICogTWFpbiBQcm9ncmFtIFNlY3Rpb24KICoqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKiovCmludCBtYWluKHZvaWQpCnsKICBpbnQgZXJyOwogIC8vVGVzdGluZyByb3V0aW5l
-CiAgcHJpbnRmKCJQcmVzcyBlbnRlciB0byBiZWdpbiByZWNvcmRpbmdcbiIpOwogIGdldGNoYXIo
-KTsKICBlcnIgPSBncmhfY2FwdHVyZSgpOwogIHByaW50ZigiQXVkaW8gQ2FwdHVyZWQuIFByZXNz
-IGVudGVyIHRvIHBsYXliYWNrXG4iKTsKICB3aGlsZSgxKXsKICBnZXRjaGFyKCk7CiAgZXJyID0g
-Z3JoX3BsYXliYWNrKCk7CiAgcHJpbnRmKCJBdWRpbyBwbGF5YmFjayBjb21wbGV0ZS4gQWdhaW4/
-XG4iKTt9CiAgcmV0dXJuIDA7Cn0KCi8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqCiAqIENhcHR1cmUgRnVuY3Rpb246CiAqIFRoaXMgZnVjdGlvbiBzaG91
-bGQgY2FwdHVyZSBhdWRpbyBmcm9tIHRoZSBQQ00gCiAqIGFuZCBzdG9yZSBpdCBpbiBhIGJ1ZmZl
-ciBmb3IgdHJhbnNtaXNzaW9uCiAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqLwppbnQgZ3JoX2NhcHR1cmUodm9pZCkKewogIGludCBlcnI7CgogIC8qKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKICAgKiBPcGVuIHRoZSBwY20gaW50ZXJm
-YWNlCiAgICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KICBpZiAoKGVyciA9
-IHNuZF9wY21fb3BlbigmcGNtX2hhbmRsZSwgImRlZmF1bHQiLCBTTkRfUENNX1NUUkVBTV9DQVBU
-VVJFLCAwKSkgPCAwKQogIHsKICAgIGZwcmludGYoc3RkZXJyLCAiRmFpbGVkIHRvIG9wZW4gaW5w
-dXQgYXVkaW8gZGV2aWNlICVzOiAlc1xuIiwgImRlZmF1bHQiLCBzbmRfc3RyZXJyb3IoZXJyKSk7
-CiAgICBleGl0KDEpOwogIH0KCiAgLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KgogICAqIENvbmZpZ3VyZSB0aGUgZGV2aWNlcwogICAqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKiovCiAgZXJyID0gZ3JoX3BjbV9jb25maWcoKTsKCiAgLyoqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKgogICAqIFBlcmZvcm0gY2FwdHVyZSBhbmQgc3Rv
-cmUgdG8gYnVmZmVyCiAgICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-Ki8KICB3aGlsZShsb29wcyA+IDApIHsKICAgIGxvb3BzLS07CiAgICBpZiAoKGVyciA9IHNuZF9w
-Y21fcmVhZGkgKHBjbV9oYW5kbGUsIGJ1ZmZlciwgcGVyaW9kX2ZyYW1lcykpICE9IHBlcmlvZF9m
-cmFtZXMpIHsKICAgICAgZnByaW50ZiAoc3RkZXJyLCAicmVhZCBmcm9tIGF1ZGlvIGludGVyZmFj
-ZSBmYWlsZWQgKCVzKVxuIixzbmRfc3RyZXJyb3IgKGVycikpOwogICAgICBleGl0ICgxKTsKICAg
-IH0KICB9CgogIC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiAg
-ICogQ2xvc2UgUENNIGludGVyZmFjZSBhbmQgZXhpdAogICAqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqLwogIHNuZF9wY21fY2xvc2UgKHBjbV9oYW5kbGUpOwogIHJl
-dHVybiAwOwp9CgovKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqCiAqIFBsYXliYWNrIEZ1bmN0aW9uOgogKiBUaGlzIGZ1bmN0aW9uIHNob3VsZCByZXRyaWV2
-ZSBhdWRpbyBmcm9tIGEgCiAqIGJ1ZmZlciBhbmQgc2VuZCBpdCB0byB0aGUgUENNIGZvciBwbGF5
-YmFjawogKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwpp
-bnQgZ3JoX3BsYXliYWNrKHZvaWQpCnsKICBpbnQgZXJyOwoKICAvKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqCiAgICogT3BlbiB0aGUgcGNtIGludGVyZmFjZQogICAqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiAgaWYgKChlcnIgPSBzbmRfcGNtX29wZW4o
-JnBjbV9oYW5kbGUsICJkZWZhdWx0IiwgU05EX1BDTV9TVFJFQU1fUExBWUJBQ0ssIDApKSA8IDAp
-IAogIHsKICAgIGZwcmludGYoc3RkZXJyLCAiRmFpbGVkIHRvIG9wZW4gb3V0cHV0IGF1ZGlvIGRl
-dmljZSAlczogJXNcbiIsICJkZWZhdWx0Iiwgc25kX3N0cmVycm9yKGVycikpOwogICAgZXhpdCgx
-KTsKICB9CgogIC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKICAgKiBDb25m
-aWd1cmUgdGhlIGRldmljZXMKICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-LwogIGVyciA9IGdyaF9wY21fY29uZmlnKCk7CgogIC8qKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioKICAgKiBQbGF5YmFjayBmcm9tIGJ1ZmZlcgogICAqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiAgd2hpbGUgKGxvb3BzID4gMCkgewog
-ICAgbG9vcHMtLTsKICAgIGlmICgoZXJyID0gc25kX3BjbV93cml0ZWkgKHBjbV9oYW5kbGUsIGJ1
-ZmZlciwgcGVyaW9kX2ZyYW1lcykpICE9IHBlcmlvZF9mcmFtZXMpIHsKICAgICAgZnByaW50ZiAo
-c3RkZXJyLCAid3JpdGUgdG8gYXVkaW8gaW50ZXJmYWNlIGZhaWxlZCAoJXMpXG4iLHNuZF9zdHJl
-cnJvciAoZXJyKSk7CiAgICAgIGV4aXQgKDEpOwogICAgfQogIH0KCiAgLyoqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioKICAgKiBDbG9zZSBQQ00gaW50ZXJmYWNlIGFu
-ZCBleGl0CiAgICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiAg
-c25kX3BjbV9jbG9zZSAocGNtX2hhbmRsZSk7CiAgcmV0dXJuIDA7Cn0KCgovKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgogKiBQQ00gY29uZmlndXJlIGZ1
-bmN0aW9uCiAqIFRoaXMgZnVuY3Rpb24gY29uZmlndXJlcyB0aGUgcGNtIGZvciBhbiBhdWRpbwog
-KiBvcGVyYXRpb24uIE1vc3QgcGFyYW1zIHN0YXkgdGhlIHNhbWUsIHRoZSBvbmx5IAogKiBkaWZm
-ZXJlbmNlIGlzIGluIHRoZSBwY21faGFuZGxlCiAqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqLwppbnQgZ3JoX3BjbV9jb25maWcodm9pZCkKewogIGludCBl
-cnI7CiAgc25kX3BjbV9od19wYXJhbXNfdCAqaHdfcGFyYW1zOwogICAgCiAgaWYgKChlcnIgPSBz
-bmRfcGNtX2h3X3BhcmFtc19tYWxsb2MgKCZod19wYXJhbXMpKSA8IDApCiAgewogICAgZnByaW50
-ZiAoc3RkZXJyLCAiY2Fubm90IGFsbG9jYXRlIGhhcmR3YXJlIHBhcmFtZXRlciBzdHJ1Y3R1cmUg
-KCVzKVxuIixzbmRfc3RyZXJyb3IgKGVycikpOwogICAgZXhpdCAoMSk7CiAgfQoKICBpZiAoKGVy
-ciA9IHNuZF9wY21faHdfcGFyYW1zX2FueSAocGNtX2hhbmRsZSwgaHdfcGFyYW1zKSkgPCAwKSAK
-ICB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3QgaW5pdGlhbGl6ZSBoYXJkd2FyZSBwYXJh
-bWV0ZXIgc3RydWN0dXJlICglcylcbiIsc25kX3N0cmVycm9yIChlcnIpKTsKICAgIGV4aXQgKDEp
-OwogIH0KCQogIGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2FjY2VzcyAocGNtX2hh
-bmRsZSwgaHdfcGFyYW1zLCBTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxFQVZFRCkpIDwgMCkgCiAg
-ewogICAgZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IHNldCBhY2Nlc3MgdHlwZSAoJXMpXG4iLHNu
-ZF9zdHJlcnJvciAoZXJyKSk7CiAgICBleGl0ICgxKTsKICB9CgogIGlmICgoZXJyID0gc25kX3Bj
-bV9od19wYXJhbXNfc2V0X2Zvcm1hdCAocGNtX2hhbmRsZSwgaHdfcGFyYW1zLCBTTkRfUENNX0ZP
-Uk1BVF9TOCkpIDwgMCkgewogICAgZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IHNldCBzYW1wbGUg
-Zm9ybWF0ICglcylcbiIsc25kX3N0cmVycm9yIChlcnIpKTsKICAgIGV4aXQgKDEpOwogIH0KCiAg
-aWYgKChlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfcmF0ZV9uZWFyIChwY21faGFuZGxlLCBo
-d19wYXJhbXMsICZzYW1wbGVfcmF0ZSwgMCkpIDwgMCkgCiAgewogICAgZnByaW50ZiAoc3RkZXJy
-LCAiQ2Fubm90IHNldCBzYW1wbGUgcmF0ZSAoJXMpXG4iLHNuZF9zdHJlcnJvciAoZXJyKSk7CiAg
-ICBleGl0ICgxKTsKICB9CgogIGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X3Blcmlv
-ZF9zaXplX25lYXIocGNtX2hhbmRsZSwgaHdfcGFyYW1zLCAmcGVyaW9kX2ZyYW1lcywgMCkpIDwg
-MCkKICB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJDYW5ub3Qgc2V0IHBlcmlvZCBzaXplICglcylc
-biIsc25kX3N0cmVycm9yIChlcnIpKTsKICAgIGV4aXQgKDEpOwogIH0KCiAgCQogIGlmICgoZXJy
-ID0gc25kX3BjbV9od19wYXJhbXNfc2V0X3BlcmlvZF90aW1lX25lYXIocGNtX2hhbmRsZSwgaHdf
-cGFyYW1zLCAmcGVyaW9kX3RpbWUsIDApKSA8IDApCiAgewogICAgZnByaW50ZiAoc3RkZXJyLCAi
-Y2Fubm90IHNldCBwZXJpb2QgdGltZSAoJXMpXG4iLHNuZF9zdHJlcnJvciAoZXJyKSk7CiAgICBl
-eGl0ICgxKTsKICB9CgogIGlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2J1ZmZlcl9z
-aXplX25lYXIocGNtX2hhbmRsZSwgaHdfcGFyYW1zLCAmYnVmZmVyX2ZyYW1lcykpIDwgMCkKICB7
-CiAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgc2V0IGJ1ZmZlcl9zaXplICglcylcbiIsc25k
-X3N0cmVycm9yIChlcnIpKTsKICAgIGV4aXQgKDEpOwogIH0KCiAgaWYgKChlcnIgPSBzbmRfcGNt
-X2h3X3BhcmFtc19zZXRfY2hhbm5lbHMgKHBjbV9oYW5kbGUsIGh3X3BhcmFtcywgbmNoYW5uZWxz
-KSkgPCAwKSAKICB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgc2V0IGNoYW5uZWwgY291
-bnQgKCVzKVxuIixzbmRfc3RyZXJyb3IgKGVycikpOwogICAgZXhpdCAoMSk7CiAgfQoKICBpZiAo
-KGVyciA9IHNuZF9wY21faHdfcGFyYW1zIChwY21faGFuZGxlLCBod19wYXJhbXMpKSA8IDApIHsK
-ICAgIGZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBzZXQgcGFyYW1ldGVycyAoJXMpXG4iLHNuZF9z
-dHJlcnJvciAoZXJyKSk7CiAgICBleGl0ICgxKTsKICB9CgogIHNuZF9wY21faHdfcGFyYW1zX2Zy
-ZWUgKGh3X3BhcmFtcyk7CgogIGlmICgoZXJyID0gc25kX3BjbV9wcmVwYXJlIChwY21faGFuZGxl
-KSkgPCAwKSB7CiAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3QgcHJlcGFyZSBhdWRpbyBpbnRl
-cmZhY2UgZm9yIHVzZSAoJXMpXG4iLHNuZF9zdHJlcnJvciAoZXJyKSk7CiAgICBleGl0ICgxKTsK
-ICB9CgogIC8qIFVzZSBhIGJ1ZmZlciBsYXJnZSBlbm91Z2ggdG8gaG9sZCBvbmUgcGVyaW9kICov
-CiAgc25kX3BjbV9od19wYXJhbXNfZ2V0X3BlcmlvZF9zaXplKGh3X3BhcmFtcywgJnBlcmlvZF9m
-cmFtZXMsIDApOwogIGJ1ZmZlciA9IChjaGFyICopIG1hbGxvYyhwZXJpb2RfZnJhbWVzKTsKCiAg
-LyogV2Ugd2FudCB0byBsb29wIGZvciA1IHNlY29uZHMgKi8KICBzbmRfcGNtX2h3X3BhcmFtc19n
-ZXRfcGVyaW9kX3RpbWUoaHdfcGFyYW1zLCAmdmFsLCAwKTsKICBsb29wcyA9IDUwMDAwMDAgLyB2
-YWw7CiAgcmV0dXJuIDA7Cn0K
-------=_Part_13625_6440401.1184190949947
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_13625_6440401.1184190949947--
+>Setting audio channels on ICH5 with SALSA generates and: EINVAL
+>Numbers of channels is 1. Does anyone have some ideias?? ( on ICH6 and 
+>ICH7 works well)
+>thanks...
+>Fausto Carvalho Marques Silva
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@alsa-project.org
+>http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>  
+>
