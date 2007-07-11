@@ -1,22 +1,18 @@
-From: Hakan Lennestal <Hakan.Lennestal@brfsodrahamn.se>
-Subject: Re: RE :  M-Audio Audiophile USB,
- native little endian  (S16_LE) ?
-Date: Wed, 11 Jul 2007 12:34:50 +0200
-Message-ID: <20070711103450.3AD0B5840A@ip2-138.brfsodrahamn.se>
-References: <Thibault.LeMeur@supelec.fr>
-Reply-To: Hakan Lennestal <Hakan.Lennestal@brfsodrahamn.se>
+From: "Matt Hirsch" <matthew.hirsch@gmail.com>
+Subject: snd-hda-intel auto detect incorrect
+Date: Wed, 11 Jul 2007 12:01:57 -0400
+Message-ID: <975d09800707110901p42e133f7u3df3df985548d494@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ip2-138.brfsodrahamn.se (ip2-138.brfsodrahamn.se
-	[213.187.199.138])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E3A62437F
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B92510391E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Jul 2007 12:34:39 +0200 (CEST)
-In-Reply-To: Message from Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-	of "Tue, 10 Jul 2007 23:22:03 +0200."
-	<20070710232203.kl84d2l85csco88o@webmail.supelec.fr>
+	Wed, 11 Jul 2007 18:01:59 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so347118ana
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2007 09:01:58 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,15 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, 'Pavel Polischouk' <pavelp@rogers.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I have an hp pavilion tx 1000 laptop running fedora 7.  The auto
+detect feature of the snd-hda-intel dirver doesn't work on my sound
+card.  As requested in Documentation/sound/alsa/ALSA-Configuration.txt
+I am forwarding the following to the developer mailing list:
 
-> You'll find attached an equivalent fix that checks alt-settings  =
+#uname -a
+Linux laptop 2.6.21-1.3228.fc7 #1 SMP Tue Jun 12 14:56:37 EDT 2007
+x86_64 x86_64 x86_64 GNU/Linux
 
-> instead of device_setup param: Can you try it Hakan ?
+# lspci -s 00:10.1
+00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio (rev a2)
 
-Ok, patch tested now. Seem to work.
+# lspci -s 00:10.1 -nv
+00:10.1 0403: 10de:026c (rev a2)
+       Subsystem: 103c:30bf
+       Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 17
+       Memory at c0000000 (32-bit, non-prefetchable) [size=16K]
+       Capabilities: [44] Power Management version 2
+       Capabilities: [50] Message Signalled Interrupts: Mask+ 64bit+
+Queue=0/0 Enable-
+       Capabilities: [6c] HyperTransport: MSI Mapping
 
-/H=E5kan
+# yum list alsa-\*
+Installed Packages
+alsa-lib.x86_64                          1.0.14-0.4.rc3.fc7     installed
+alsa-lib.i386                            1.0.14-0.4.rc3.fc7     installed
+alsa-utils.x86_64                        1.0.14-0.7.rc2.fc7     installed
+
+With no options I get the following log message and the audio doesn't work:
+ kernel: hda_codec: Unknown model for ALC660VD/ALC861VD, trying
+auto-probe from BIOS...
+
+When loading the module as follows, the audio works:
+modprobe snd-hda-intel model=3stack
+
+I believe the card was detected as 3stack-dig, as the alsamixer
+options match when either no option or model=3stack-dig are given.
+
+Hope this helped.
+
+Thanks for all your hard work!
+
+Matt
