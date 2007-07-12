@@ -1,19 +1,19 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Using speaker-test for sound cards which dont
  support mmap
-Date: Thu, 12 Jul 2007 09:08:56 +0200
-Message-ID: <1184224136.8682.1199761053@webmail.messagingengine.com>
+Date: Thu, 12 Jul 2007 09:13:41 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0707120911080.7300@tm8103.perex-int.cz>
 References: <61445c750707110940x6da830e3o48221ad6adbb7bcd@mail.gmail.com>
+	<1184224136.8682.1199761053@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 4693424360
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF43A24360
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Jul 2007 09:08:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <61445c750707110940x6da830e3o48221ad6adbb7bcd@mail.gmail.com>
+	Thu, 12 Jul 2007 09:13:41 +0200 (CEST)
+In-Reply-To: <1184224136.8682.1199761053@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: "Pharaoh ." <pharaoh137@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pharaoh . wrote:
-> Is it possible to use speaker-test for sound cards which do not support
-> mmap?
+On Thu, 12 Jul 2007, Clemens Ladisch wrote:
 
-If a sound card does not support DMA, the driver has to copy the samples
-from ALSA's buffer to the hardware with some other mechanism.  However,
-there is always the ALSA buffer that can be mmap()ed to userspace.
+> >From the point of view of userspace applications, all sound cards
+> support mmap.
 
->From the point of view of userspace applications, all sound cards
-support mmap.
+It's not really true. Some drivers might not support mmap, but the mmap 
+access can be partly "emulated" in alsa-lib using standard read/write 
+mechanism.
 
+						Jaroslav
 
-Regards,
-Clemens
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
