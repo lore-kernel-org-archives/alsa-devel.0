@@ -1,44 +1,29 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Using speaker-test for sound cards which dont
- support mmap
-Date: Thu, 12 Jul 2007 09:13:41 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0707120911080.7300@tm8103.perex-int.cz>
-References: <61445c750707110940x6da830e3o48221ad6adbb7bcd@mail.gmail.com>
-	<1184224136.8682.1199761053@webmail.messagingengine.com>
+From: sknauert@wesleyan.edu
+Subject: Re: [alsa-devel] [RFC] SGI O2 MACE audio ALSA module
+Date: Thu, 12 Jul 2007 01:50:12 -0600 (MDT)
+Message-ID: <37831.129.133.89.141.1184226612.squirrel@webmail.wesleyan.edu>
+References: <6849c8890707020427q47704326od05ebb8241c3cf@mail.gmail.com>
+    <s5hejjpaiwa.wl%tiwai@suse.de>
+    <6849c8890707091407g61fe2f01jc4eb8ee41e624f15@mail.gmail.com>
+    <s5h644rjmn2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF43A24360
-	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Jul 2007 09:13:41 +0200 (CEST)
-In-Reply-To: <1184224136.8682.1199761053@webmail.messagingengine.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: "Pharaoh ." <pharaoh137@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <s5h644rjmn2.wl%tiwai@suse.de>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: TJ <tj.trevelyan@gmail.com>, Linux MIPS List <linux-mips@linux-mips.org>, ALSA Dev List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Jul 2007, Clemens Ladisch wrote:
+Okay, I got the module compiled and it and ALSA installed.
 
-> >From the point of view of userspace applications, all sound cards
-> support mmap.
+I noticed the timing bug, I doubt its a frequency issue as the ALSA guides
+to downsample (i.e. if it were doing 48kHz instead of 44.1kHz) didn't
+help.
 
-It's not really true. Some drivers might not support mmap, but the mmap 
-access can be partly "emulated" in alsa-lib using standard read/write 
-mechanism.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+You mentioned on some players it would sound okay? I tried everything from
+aplay to xmms and always seemed to play too fast. What CPU are you running
+this on, by the way? Aplay does give underruns if I'm heavily
+multitasking, though sound output seems the same.
