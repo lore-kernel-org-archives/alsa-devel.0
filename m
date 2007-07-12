@@ -1,23 +1,17 @@
-From: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-Subject: Re: RE : RE :  M-Audio Audiophile USB,
-	native little	endian  (S16_LE) ?
-Date: Thu, 12 Jul 2007 23:21:19 +0200
-Message-ID: <20070712232119.59bibpnreo84s0sc@webmail.supelec.fr>
-References: <012401c7c3a7$a1719a00$161ce4a0@supelec.fr>
-	<012501c7c3a8$77077d10$161ce4a0@supelec.fr>
-	<s5hwsx7i5e7.wl%tiwai@suse.de>
-	<20070711234803.ar9mahpbks0sogc0@webmail.supelec.fr>
-	<s5hbqeihsx4.wl%tiwai@suse.de>
+From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
+Subject: [PATCH] Add quirk for HP Samba (ALC888)
+Date: Thu, 12 Jul 2007 19:41:18 -0300
+Message-ID: <5f52f6d70707121541l6e51325ayb8303b8f986a2cb1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="=_6hdhnk75u30o"
-Content-Transfer-Encoding: 7bit
+	boundary="----=_Part_21566_32779326.1184280078086"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpn.supelec.fr (smtpn.supelec.fr [160.228.120.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 142DB103843
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4846710384F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Jul 2007 23:21:21 +0200 (CEST)
-In-Reply-To: <s5hbqeihsx4.wl%tiwai@suse.de>
+	Fri, 13 Jul 2007 00:41:19 +0200 (CEST)
+Received: by mu-out-0910.google.com with SMTP id w8so368559mue
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jul 2007 15:41:18 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,156 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, 'Hakan Lennestal' <Hakan.Lennestal@brfsodrahamn.se>
+Cc: Takashi Iwai <tiwai@suse.de>, lcapitulino@mandriva.com
 List-Id: alsa-devel@alsa-project.org
 
-This message is in MIME format.
-
---=_6hdhnk75u30o
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
+------=_Part_21566_32779326.1184280078086
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-
--
->> Summary: Audiophile-usb fix (corrects little-endianness in 16bit
->> modes, resets interfaces at device initialization, and updates the
->> documentation)
->>
->> Signed-Of-By: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
->
-> Thanks, applied now.
->
->
-> Takashi
+Content-Disposition: inline
 
 Hi,
 
-Hakan reported to me (off-list) that the AC3 function works correctly  
-with the device except in device_setup=0x00 mode because the interface  
-is reported to be little endian whereas it is in fact big-endian (in  
-this mode only).
+This patch fixes 5.1 surround output for the HP Samba using the same
+quirk as the HP Lucknow. If HP machines are uniform in their wiring, I
+think we should rename ALC888_HP_NETTLE to ALC888_6ST_HP and
+ALC888_HP_LUCKNOW to ALC888_3ST_HP for generic HP 6stack and 3stack
+configurations.
 
-With the help of Hakan I made a fix and updated the doc accordingly.
-Hakan could you test this fix (to be applied after my last one) and  
-report if it is ok for you ?
+I'll probably receive more HP machines soon, so I'll see if this is the case.
 
-Takashi, in case everything is ok and you want to apply the patch:
+Best regards,
+Claudio
 
-Summary: Fixed AC3 interface in device_setup=0x00 mode thanks to Hakan  
-Lennestal and updated documentation
-Signed-Of-By: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
+------=_Part_21566_32779326.1184280078086
+Content-Type: text/x-diff;
+	name=0011-ALSA-hda-codec-Add-quirk-for-HP-Samba.patch;
+	charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_f41tpd11
+Content-Disposition: attachment; filename="0011-ALSA-hda-codec-Add-quirk-for-HP-Samba.patch"
 
-
-Thanks in advance,
-Thibault
-
-
-
---=_6hdhnk75u30o
-Content-Type: text/x-patch;
-	charset=UTF-8;
-	name="ma-audiophile-ac3fix.diff"
-Content-Disposition: attachment;
-	filename="ma-audiophile-ac3fix.diff"
-Content-Transfer-Encoding: quoted-printable
-
---- alsa-kernel/Documentation/Audiophile-Usb.txt=092007-07-12 23:15:04.00000=
-0000 +0200
-+++ new/alsa-kernel/Documentation/Audiophile-Usb.txt=092007-07-12 23:00:04.0=
-00000000 +0200
-@@ -1,4 +1,4 @@
--=09Guide to using M-Audio Audiophile USB with ALSA and Jack=09v1.4
-+=09Guide to using M-Audio Audiophile USB with ALSA and Jack=09v1.5
- =09=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-=20
- =09    Thibault Le Meur <Thibault.LeMeur@supelec.fr>
-@@ -12,6 +12,8 @@
-  - Added Low Endianness nature of 16bits-modes
-    found by Hakan Lennestal <Hakan.Lennestal@brfsodrahamn.se>
-  - Modifying document structure
-+* v1.5 - Thibault Le Meur (2007-07-12)
-+ - Added AC3/DTS passthru info
-=20
-=20
- 1 - Audiophile USB Specs and correct usage
-@@ -105,9 +107,12 @@
-=20
- In this mode, the device uses Big Endian byte-encoding so that=20
- supported audio format are S16_BE for 16-bit depth modes and S24_3BE for=20
--24-bits depth mode. One exception is the hw:1,2 port which is reported=20
--to be Little Endian compliant (supposedly supporting S16_LE) but processes=
-=20
--in fact only S16_BE streams.
-+24-bits depth mode.
-+
-+One exception is the hw:1,2 port which was reported to be Little Endian=20
-+compliant (supposedly supporting S16_LE) but processes in fact only S16_BE =
-streams.
-+This has been fixed in kernel 2.6.23 and above and now the hw:1,2 interface=
-=20
-+is reported to be big endian in this default driver mode.
-=20
- Examples:
-  * playing a S24_3BE encoded raw file to the Ao port
-@@ -116,6 +121,8 @@
-    % arecord -D hw:1,1 -c2  -t raw -r48000 -fS24_3BE test.raw
-  * playing a S16_BE encoded raw file to the Do port
-    % aplay -D hw:1,1 -c2 -t raw -r48000 -fS16_BE test.raw
-+ * playing an ac3 sample file to the Do port
-+   % aplay -D hw:1,2 --channels=3D6 ac3_S16_BE_encoded_file.raw
-=20
- If you're happy with the default Alsa driver mode and don't experience any=
-=20
- issue with this mode, then you can skip the following chapter.
-@@ -205,13 +212,16 @@
-=20
- 3.2.1.3 - AC3 w/ DTS passthru mode
-=20
--This mode is untested, I have no AC3 compliant device to test it. I uses:
-+Thanks to Hakan Lennestal, I now have a report saying that this mode works.
-=20
-  * device_setup=3D0x03
-    - 16bits 48kHz mode with only the Do port enabled=20
--   - AC3 with DTS passthru (not tested)
-+   - AC3 with DTS passthru
-    - Caution with this setup the Do port is mapped to the pcm device hw:1,0
-=20
-+The command line used to playback the AC3/DTS encoded .wav-files in this mo=
-de:
-+   % aplay -D hw:1,0 --channels=3D6 ac3_S16_LE_encoded_file.raw
-+
- 3.2.2 - How to use the device_setup parameter
- ----------------------------------------------
-=20
---- alsa-kernel/usb/usbaudio.c=092007-07-12 23:15:05.000000000 +0200
-+++ new/alsa-kernel/usb/usbaudio.c=092007-07-12 22:33:32.000000000 +0200
-@@ -2532,7 +2532,18 @@
- =09=09 *        but we give normal PCM format to get the existing
- =09=09 *        apps working...
- =09=09 */
--=09=09pcm_format =3D SNDRV_PCM_FORMAT_S16_LE;
-+=09=09switch (chip->usb_id) {
-+
-+=09=09case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
-+=09=09=09if (device_setup[chip->index] =3D=3D 0x00 &&=20
-+=09=09=09    fp->altsetting =3D=3D 6)
-+=09=09=09=09pcm_format =3D SNDRV_PCM_FORMAT_S16_BE;
-+=09=09=09else
-+=09=09=09=09pcm_format =3D SNDRV_PCM_FORMAT_S16_LE;
-+=09=09=09break;
-+=09=09default:
-+=09=09=09pcm_format =3D SNDRV_PCM_FORMAT_S16_LE;
-+=09=09}
- =09} else {
- =09=09pcm_format =3D parse_audio_format_i_type(chip, fp, format, fmt);
- =09=09if (pcm_format < 0)
-
---=_6hdhnk75u30o
+RnJvbSA5MDE3OGI0YzAxYzA5ODcyNTkxMGI5MGY3ODI0YzUzMGRiNmZjZWIxIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDbGF1ZGlvIE1hdHN1b2thIDxjbWF0c3Vva2FAZ21haWwuY29t
+PgpEYXRlOiBUaHUsIDEyIEp1bCAyMDA3IDE5OjM4OjA5IC0wMzAwClN1YmplY3Q6IFtQQVRDSF0g
+W0FMU0FdIGhkYS1jb2RlYyAtIEFkZCBxdWlyayBmb3IgSFAgU2FtYmEKClRoaXMgcGF0Y2ggZml4
+ZXMgNS4xIHN1cnJvdW5kIG91dHB1dCBmb3IgdGhlIEhQIFNhbWJhIHVzaW5nIHRoZSBzYW1lCnF1
+aXJrIGFzIHRoZSBIUCBMdWNrbm93LiBJZiBIUCBtYWNoaW5lcyBhcmUgdW5pZm9ybSBpbiB0aGVp
+ciB3aXJpbmcsCndlIHNob3VsZCByZW5hbWUgQUxDODg4X0hQX05FVFRMRSB0byBBTEM4ODhfNlNU
+X0hQIGFuZCBBTEM4ODhfSFBfTFVDS05PVwp0byBBTEM4ODhfM1NUX0hQIGZvciBnZW5lcmljIEhQ
+IDZzdGFjayBhbmQgM3N0YWNrIGNvbmZpZ3VyYXRpb25zLgoKU2lnbmVkLW9mZi1ieTogQ2xhdWRp
+byBNYXRzdW9rYSA8Y21hdHN1b2thQGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9wY2kvaGRhL3BhdGNo
+X3JlYWx0ZWsuYyB8ICAgIDEgKwogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDAg
+ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMg
+Yi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCAyNjQ2MmM0Li4zMGU1ZjYyIDEw
+MDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kv
+aGRhL3BhdGNoX3JlYWx0ZWsuYwpAQCAtNjU0MSw2ICs2NTQxLDcgQEAgc3RhdGljIHN0cnVjdCBz
+bmRfcGNpX3F1aXJrIGFsYzg4M19jZmdfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDE3YWEs
+IDB4MjA4NSwgIkxlbm92byBOQjA3NjMiLCBBTEM4ODNfTEVOT1ZPX05CMDc2MyksCiAJU05EX1BD
+SV9RVUlSSygweDEwM2MsIDB4MmE2MSwgIkhQIE5ldHRsZSIsIEFMQzg4OF9IUF9ORVRUTEUpLAog
+CVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDJhNjAsICJIUCBMdWNrbm93IiwgQUxDODg4X0hQX0xV
+Q0tOT1cpLAorCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDJhNGYsICJIUCBTYW1iYSIsIEFMQzg4
+OF9IUF9MVUNLTk9XKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdjMCwgMHg0MDcxLCAiTUVESU9OIE1E
+MiIsIEFMQzg4M19NRURJT05fTUQyKSwKIAl7fQogfTsKLS0gCjEuNS4yLjMKCg==
+------=_Part_21566_32779326.1184280078086
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -188,4 +84,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---=_6hdhnk75u30o--
+------=_Part_21566_32779326.1184280078086--
