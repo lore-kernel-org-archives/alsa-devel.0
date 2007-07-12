@@ -1,14 +1,24 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: stac9202 mixer fix
-Date: Thu, 12 Jul 2007 09:11:42 -0400
-Message-ID: <4696288E.1030709@embeddedalley.com>
+From: TJ <tj.trevelyan@gmail.com>
+Subject: Re: [RFC] SGI O2 MACE audio ALSA module
+Date: Thu, 12 Jul 2007 14:24:00 +0100
+Message-ID: <6849c8890707120624o308d53ep88c5b8939903449f@mail.gmail.com>
+References: <6849c8890707020427q47704326od05ebb8241c3cf@mail.gmail.com>
+	<s5hejjpaiwa.wl%tiwai@suse.de>
+	<6849c8890707091407g61fe2f01jc4eb8ee41e624f15@mail.gmail.com>
+	<s5h644rjmn2.wl%tiwai@suse.de>
+	<37831.129.133.89.141.1184226612.squirrel@webmail.wesleyan.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080801060302030405050404"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp102.biz.mail.re2.yahoo.com (smtp102.biz.mail.re2.yahoo.com
-	[68.142.229.216]) by alsa0.perex.cz (Postfix) with SMTP id BD3D624361
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 130F024361
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Jul 2007 15:11:43 +0200 (CEST)
+	Thu, 12 Jul 2007 15:24:01 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so169492wag
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jul 2007 06:24:00 -0700 (PDT)
+In-Reply-To: <37831.129.133.89.141.1184226612.squirrel@webmail.wesleyan.edu>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,66 +28,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de, mporter@embeddedalley.com, stevel@embeddedalley.com
+To: "sknauert@wesleyan.edu" <sknauert@wesleyan.edu>
+Cc: Linux MIPS List <linux-mips@linux-mips.org>, ALSA Dev List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080801060302030405050404
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi,
 
-Added support for line out controls for STAC9202 cards, and fixed issue 
-where master mixer control was being created twice for headphone and 
-speaker outs.
----
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+All playback sounds too fast, some players seem faster then others,
+but I maybe wrong on that. The source file's sample rate seems to make
+no difference, i've tried 22k,34k,44k,48k.
 
---------------080801060302030405050404
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="stac9202_master_ctl.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="stac9202_master_ctl.patch"
+I have now been given a sin wave generator script, which I've been
+meaning to try, but I lack an OCR so I will have to rely on my
+hearing.
 
-diff -r 273fac42ced9 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Wed Jul 04 15:17:38 2007 +0200
-+++ b/pci/hda/patch_sigmatel.c	Wed Jul 11 22:13:06 2007 -0400
-@@ -334,8 +334,6 @@ static struct snd_kcontrol_new stac9200_
- };
- 
- static struct snd_kcontrol_new stac925x_mixer[] = {
--	HDA_CODEC_VOLUME("Master Playback Volume", 0xe, 0, HDA_OUTPUT),
--	HDA_CODEC_MUTE("Master Playback Switch", 0xe, 0, HDA_OUTPUT),
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 		.name = "Input Source",
-@@ -1401,7 +1399,15 @@ static int stac92xx_auto_create_hp_ctls(
- 			continue;
- 		add_spec_dacs(spec, nid);
- 	}
--
-+	for (i = 0; i < cfg->line_outs; i++) {
-+		nid = snd_hda_codec_read(codec, cfg->line_out_pins[i], 0,
-+					AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
-+		if (check_in_dac_nids(spec, nid))
-+			nid = 0;
-+		if (! nid)
-+			continue;
-+		add_spec_dacs(spec, nid);
-+	}
- 	for (i = old_num_dacs; i < spec->multiout.num_dacs; i++) {
- 		static const char *pfxs[] = {
- 			"Speaker", "External Speaker", "Speaker2",
+ALSA doesn't need to change sample rate, nor will it if the sample is
+within the range supported/reported by the driver (as far as i know).
 
---------------080801060302030405050404
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Mace audio supports 8k to 48k. You can look at the set clock speed for
+the DAC in /proc/asound/card0/ad1843
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+You can manually override the clock speed by playing with
+ad1843_setup_dac in ad1843.c
 
---------------080801060302030405050404--
+You can try lying to ALSA by playing with snd_mace_audio_hw[1] (or
+sma_audio_hw[1]) in mace_audio.c
+
+If anyone can see why it plays too fast, please let me know.
+
+Thorben
+
+On 12/07/07, sknauert@wesleyan.edu <sknauert@wesleyan.edu> wrote:
+> Okay, I got the module compiled and it and ALSA installed.
+>
+> I noticed the timing bug, I doubt its a frequency issue as the ALSA guides
+> to downsample (i.e. if it were doing 48kHz instead of 44.1kHz) didn't
+> help.
+>
+> You mentioned on some players it would sound okay? I tried everything from
+> aplay to xmms and always seemed to play too fast. What CPU are you running
+> this on, by the way? Aplay does give underruns if I'm heavily
+> multitasking, though sound output seems the same.
+>
+>
