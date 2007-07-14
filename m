@@ -1,27 +1,21 @@
-From: Per Eriksson <per@erinet.se>
-Subject: MOTU PCI-424
-Date: Sat, 14 Jul 2007 19:11:50 +0200
-Message-ID: <1184433111.6920.16.camel@dhcppc1>
-References: <mailman.1167.1184356127.2053.alsa-devel@alsa-project.org>
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: Re: [PATCH] Fix request_irq error handling
+Date: Sat, 14 Jul 2007 14:22:14 -0500
+Message-ID: <20070714192214.A1A101BF28D@ws1-1.us4.outblaze.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from av7-1-sn3.vrr.skanova.net (av7-1-sn3.vrr.skanova.net
-	[81.228.9.181]) by alsa0.perex.cz (Postfix) with ESMTP id BA2A32439E
+Received: from webmail-outgoing.us4.outblaze.com
+	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43EF41038A3
 	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Jul 2007 19:10:08 +0200 (CEST)
-Received: from smtp3-2-sn3.vrr.skanova.net (smtp3-2-sn3.vrr.skanova.net
-	[81.228.9.102])
-	by av7-1-sn3.vrr.skanova.net (Postfix) with ESMTP id 24C0437F78
-	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Jul 2007 19:09:15 +0200 (CEST)
-Received: from [10.13.0.2] (81-231-247-226-no29.tbcn.telia.com
-	[81.231.247.226])
-	by smtp3-2-sn3.vrr.skanova.net (Postfix) with ESMTP id C302537E42
-	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Jul 2007 19:10:07 +0200 (CEST)
-In-Reply-To: <mailman.1167.1184356127.2053.alsa-devel@alsa-project.org>
+	Sat, 14 Jul 2007 21:30:53 +0200 (CEST)
+Received: from unknown (unknown [192.168.8.90])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	D954D180012E
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jul 2007 19:22:14 +0000 (GMT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,36 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ash Willis <ashwillis@programmer.net>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hah, um, ignore me. It seems that my c needs some work ;)
+In if(some_expression), I always though it is true if the expression is > 0, not
+!= 0. 
+If anything, that was a CodingStyle patch because it lets us see exactly what
+we're getting from request_irq but I can see that it is totally unnecessary :)
 
-After talking to Jonathan Woithe about the development done to support
-MOTUs product families, Jonathan and I have reached the conclusion that
-ALSA support for the PCI-424 series of cards would mean a great benefit
-for Linux users to get high quality audio at a fair price.
+> ----- Original Message -----
+> From: "Ash Willis" <ashwillis@programmer.net>
+> To: alsa-devel@alsa-project.org
+> Subject: [alsa-devel] [PATCH] Fix request_irq error handling
+> Date: Sat, 14 Jul 2007 02:29:19 -0500
+> 
+> 
+> request_irq returns 0 on success and a negative code on failure.
+> Many ALSA drivers incorrectly check for failure by testing for a
+> positive code instead of a negative one.
+> 
+> Signed-Off-By: Ash Willis <ashwillis@programmer.net>
+> 
+> 
+> --
+> We've Got Your Name at http://www.mail.com!
+> Get a FREE E-mail Account Today - Choose From 100+ Domains
+> << request_irq_error_handling.patch >>
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-The PCI-424 card is used to drive the following products:
-
-MOTU 2408mk3
-MOTU HD192
-MOTU 24I/O
-
-The work will start this autumn, as soon as I get everything set-up, and
-the progress will be published on
-https://erinet.se/alsa/motu_pci_424/pci-424 specification.pdf
-
-The actual driver will for me be a later issue to solve, I hope to
-gather some understanding by reading the list and look through the
-releases.
+>
 
 
-However, I would like some more information on how the Matrix is
-supposed to be used in the wiki system. Are the vendor pages only for
-supported devices, or also for devices concidered for being supported?
-
-Thanks,
-
-
-Per
+-- 
+We've Got Your Name at http://www.mail.com!
+Get a FREE E-mail Account Today - Choose From 100+ Domains
