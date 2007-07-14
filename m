@@ -1,32 +1,24 @@
-From: Pavel Kysilka <pavelk@bsys.cz>
-Subject: cs46xx thinkpad resume fix - #bug1946
-Date: Sat, 14 Jul 2007 17:55:52 +0200
-Message-ID: <20070714155552.GA2896@prog3>
-Reply-To: Pavel Kysilka <pavelk@bsys.cz>
+From: stan <stanl@cox.net>
+Subject: Re: Install of alsa 1.0.14.final on Fedora 7
+Date: Sat, 14 Jul 2007 15:41:21 -0700
+Message-ID: <20070714154121.0f7c834c@localhost.localdomain>
+References: <20070713124843.59729a4b@localhost.localdomain>
+	<20070714000931.hqd2n4icam20ow8g@webmail.dsl-only.net>
+	<20070714072701.057106a3@localhost.localdomain>
+	<20070714081537.ayf2b2byrxq88kok@webmail.dsl-only.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="VbJkn9YxBvnuCH5J"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rak.bsys.cz (bsys.cz [88.86.106.116])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28D6D10389E
+Received: from fed1rmmtao101.cox.net (fed1rmmtao101.cox.net [68.230.241.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A4FB1038B5
 	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Jul 2007 17:55:54 +0200 (CEST)
-Received: from rak.bsys.cz (localhost [127.0.0.1])
-	by rak.bsys.cz (Postfix) with ESMTP id E38D580479
-	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Jul 2007 17:55:53 +0200 (CEST)
-Received: from prog3.hq.bsys.cz (r5k42.net.upc.cz [86.49.10.42])
-	by rak.bsys.cz (Postfix) with ESMTP id B937180478
-	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Jul 2007 17:55:53 +0200 (CEST)
-Received: from prog3.hq.bsys.cz (goldenfish@localhost [127.0.0.1])
-	by prog3.hq.bsys.cz (8.13.8/8.13.8/Debian-3) with ESMTP id
-	l6EFtqMS003093
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jul 2007 17:55:52 +0200
-Received: (from goldenfish@localhost)
-	by prog3.hq.bsys.cz (8.13.8/8.13.8/Submit) id l6EFtquO003092
-	for alsa-devel@alsa-project.org; Sat, 14 Jul 2007 17:55:52 +0200
-Content-Disposition: inline
+	Sun, 15 Jul 2007 00:41:23 +0200 (CEST)
+Received: from fed1rmimpo02.cox.net ([70.169.32.72]) by fed1rmmtao101.cox.net
+	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP
+	id <20070714224122.HZTA1349.fed1rmmtao101.cox.net@fed1rmimpo02.cox.net>
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jul 2007 18:41:22 -0400
+In-Reply-To: <20070714081537.ayf2b2byrxq88kok@webmail.dsl-only.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -39,55 +31,87 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 14 Jul 2007 08:15:37 -0700
+tdavis@dsl-only.net wrote:
 
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset=utf8
-Content-Disposition: inline
+> Quoting stan <stanl@cox.net>:
+> 
+> > On Sat, 14 Jul 2007 00:09:31 -0700
+> > tdavis@dsl-only.net wrote:
+> >
+> >> Quoting stan <stanl@cox.net>:
+> >>
+> >> > On Fri, 13 Jul 2007 08:53:47 -0700
+> >> > tdavis@dsl-only.net wrote:
+> >> >
+> >> >> For RPM based systems, I have a build environment for the
+> >> >> drivers, libs, and utils packages at
+> >> >> http://members.dsl-only.net/~tdavis/my-build.tar.bz2.  You need
+> >> >> to be root to build them, but they won't interfere with your rpm
+> >> >> distribution.  THe driver rpm will also make a backup of your
+> >> >> current drivers prior to installation.
+> >> >>
+> >> >> Tobin
+> >> >>
+> >> >
+> >> > Hi Tobin,
+> >> >
+> >> > I unpacked the archive and typed make.  It created 4 RPMs.
+> >> > Two of them installed, alsa-lib and alsa-lib-devel.  When I run a
+> >> > test on the drivers rpm, there are conflicts with the kernel
+> >> > headers already on the box.  And I have no sound now, except in
+> >> > the audio configuration screen which is using the 14.rc3
+> >> > packages.  The packages are named with rh7 instead of fc7 as
+> >> > well.
+> >> >
+> >> > Do I have to run make install to get everything working, or is
+> >> > the header incompatability in the drivers a show stopper?
+> >> >
+> >> >
+> >> >
+> >> > Thanks.
+> >> > _______________________________________________
+> >> > Alsa-devel mailing list
+> >> > Alsa-devel@alsa-project.org
+> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >> >
+> >>
+> >> I'll have to look at the rpm build process to see why they are
+> >> named RH7 instead of FC7.  To install, you should just type
+> >> "audio_install".
+> >>
+> >> If there is a conflict, just type "rpm -Uvh <package> --force".
+> >>
+> > Thanks Tobin.  I was going to upgrade to the latest kernel to see if
+> > the header conflicts would go away.  All of the conflicts seem to be
+> > alsa related (surprise, surprise) so should have only positive
+> > effect on compiles.  I was concerned about a package update for
+> > alsa and what these different files would do.  Should I remove the
+> > alsa 14.rc3 packages?
+> 
+> Yes.  I just looked at the audio_install script again, and it
+> doesn't upgrade, just forces it's way in (not my script).  I also
+> haven't had a chance to work with Fedora Core in a while.
+> 
+> When I get back home on Monday (I'm monitoring email while on a sudo  
+> vacation), I'll install it in a VM on my desktop system and fix the  
+> packaging system to recognize that distro.
+> 
+> Tobin
 
-   Hi,
-
-attached patch fix resume on thinkpad notebooks with cs46xx chip.
-Tested with Thinkpad A21m.
-
-Patch is opposite latest linus git 2.6.22.
-
-Bug #1946 may be closed.
-
-Signed-off-by: Pavel Kysilka <pavelk@bsys.cz>
-
- Pavel Kysilka
-
-
-
-________ Information from NOD32 ________
-This message was checked by NOD32 Antivirus System for Linux Mail Servers.
-http://www.eset.com
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset=utf8
-Content-Disposition: attachment; filename="cs46xx_thinkpad_resume_fix.diff"
-
-diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
-index bef1f6d..73f66d7 100644
---- a/sound/pci/cs46xx/cs46xx_lib.c
-+++ b/sound/pci/cs46xx/cs46xx_lib.c
-@@ -3715,6 +3715,7 @@ int snd_cs46xx_resume(struct pci_dev *pci)
- 	chip->active_ctrl(chip, 1); /* force to on */
- 
- 	snd_cs46xx_chip_init(chip);
-+	snd_cs46xx_start_dsp(chip); /* upload dsp code */
- 
- #if 0
- 	snd_cs46xx_codec_write(chip, BA0_AC97_GENERAL_PURPOSE, 
-
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---VbJkn9YxBvnuCH5J--
+I did it another way.  I went into your source rpm folder and ran 
+RPM --rebuild alsa*.  This put all of the final RPMs in the system
+folder /usr/src/redhat/RPMS/i386. i.e. the official place.  I then went
+into the folder and ran rpm -Uvh --force alsa*.  And the system
+upgraded to the new version.  Unfortunately, this didn't work.  I had
+to erase, then reinstall the 14.rc3 and remove the kernel and reinstall
+it before I got sound back.  
+I also tried the audit install, but it complained and failed as
+well.  I'll keep looking at this, but I'm beginning to think messing
+with something as basic as alsa is difficult on a package based system
+(at least without a lot of understanding of the packaging mechanism).
+And the sound is missing from my app whether I use default or
+plughw:0,0 now. The plughw:0,0 seems to setup OK and the app shows that
+it continues to send output, it just doesn't sound. Seems like it is
+just a small glitch somewhere.  Could be leftovers from the cleaned up
+install too.
