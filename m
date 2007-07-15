@@ -1,24 +1,25 @@
 From: stan <stanl@cox.net>
 Subject: Re: Install of alsa 1.0.14.final on Fedora 7
-Date: Sat, 14 Jul 2007 15:41:21 -0700
-Message-ID: <20070714154121.0f7c834c@localhost.localdomain>
+Date: Sun, 15 Jul 2007 12:47:00 -0700
+Message-ID: <20070715124700.4d35d20e@localhost.localdomain>
 References: <20070713124843.59729a4b@localhost.localdomain>
 	<20070714000931.hqd2n4icam20ow8g@webmail.dsl-only.net>
 	<20070714072701.057106a3@localhost.localdomain>
 	<20070714081537.ayf2b2byrxq88kok@webmail.dsl-only.net>
+	<20070714154121.0f7c834c@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao101.cox.net (fed1rmmtao101.cox.net [68.230.241.45])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A4FB1038B5
+Received: from fed1rmmtao104.cox.net (fed1rmmtao104.cox.net [68.230.241.42])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8EC09243A3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 Jul 2007 00:41:23 +0200 (CEST)
-Received: from fed1rmimpo02.cox.net ([70.169.32.72]) by fed1rmmtao101.cox.net
+	Sun, 15 Jul 2007 21:47:02 +0200 (CEST)
+Received: from fed1rmimpo02.cox.net ([70.169.32.72]) by fed1rmmtao104.cox.net
 	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP
-	id <20070714224122.HZTA1349.fed1rmmtao101.cox.net@fed1rmimpo02.cox.net>
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jul 2007 18:41:22 -0400
-In-Reply-To: <20070714081537.ayf2b2byrxq88kok@webmail.dsl-only.net>
+	id <20070715194702.TBYV1393.fed1rmmtao104.cox.net@fed1rmimpo02.cox.net>
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2007 15:47:02 -0400
+In-Reply-To: <20070714154121.0f7c834c@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,87 +32,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 14 Jul 2007 08:15:37 -0700
-tdavis@dsl-only.net wrote:
+On Sat, 14 Jul 2007 15:41:21 -0700
+stan <stanl@cox.net> wrote:
+> And the sound is missing from my app whether I use default or
+> plughw:0,0 now. The plughw:0,0 seems to setup OK and the app shows
+> that it continues to send output, it just doesn't sound. Seems like
+> it is just a small glitch somewhere.  Could be leftovers from the
+> cleaned up install too.
 
-> Quoting stan <stanl@cox.net>:
-> 
-> > On Sat, 14 Jul 2007 00:09:31 -0700
-> > tdavis@dsl-only.net wrote:
-> >
-> >> Quoting stan <stanl@cox.net>:
-> >>
-> >> > On Fri, 13 Jul 2007 08:53:47 -0700
-> >> > tdavis@dsl-only.net wrote:
-> >> >
-> >> >> For RPM based systems, I have a build environment for the
-> >> >> drivers, libs, and utils packages at
-> >> >> http://members.dsl-only.net/~tdavis/my-build.tar.bz2.  You need
-> >> >> to be root to build them, but they won't interfere with your rpm
-> >> >> distribution.  THe driver rpm will also make a backup of your
-> >> >> current drivers prior to installation.
-> >> >>
-> >> >> Tobin
-> >> >>
-> >> >
-> >> > Hi Tobin,
-> >> >
-> >> > I unpacked the archive and typed make.  It created 4 RPMs.
-> >> > Two of them installed, alsa-lib and alsa-lib-devel.  When I run a
-> >> > test on the drivers rpm, there are conflicts with the kernel
-> >> > headers already on the box.  And I have no sound now, except in
-> >> > the audio configuration screen which is using the 14.rc3
-> >> > packages.  The packages are named with rh7 instead of fc7 as
-> >> > well.
-> >> >
-> >> > Do I have to run make install to get everything working, or is
-> >> > the header incompatability in the drivers a show stopper?
-> >> >
-> >> >
-> >> >
-> >> > Thanks.
-> >> > _______________________________________________
-> >> > Alsa-devel mailing list
-> >> > Alsa-devel@alsa-project.org
-> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >> >
-> >>
-> >> I'll have to look at the rpm build process to see why they are
-> >> named RH7 instead of FC7.  To install, you should just type
-> >> "audio_install".
-> >>
-> >> If there is a conflict, just type "rpm -Uvh <package> --force".
-> >>
-> > Thanks Tobin.  I was going to upgrade to the latest kernel to see if
-> > the header conflicts would go away.  All of the conflicts seem to be
-> > alsa related (surprise, surprise) so should have only positive
-> > effect on compiles.  I was concerned about a package update for
-> > alsa and what these different files would do.  Should I remove the
-> > alsa 14.rc3 packages?
-> 
-> Yes.  I just looked at the audio_install script again, and it
-> doesn't upgrade, just forces it's way in (not my script).  I also
-> haven't had a chance to work with Fedora Core in a while.
-> 
-> When I get back home on Monday (I'm monitoring email while on a sudo  
-> vacation), I'll install it in a VM on my desktop system and fix the  
-> packaging system to recognize that distro.
-> 
-> Tobin
-
-I did it another way.  I went into your source rpm folder and ran 
-RPM --rebuild alsa*.  This put all of the final RPMs in the system
-folder /usr/src/redhat/RPMS/i386. i.e. the official place.  I then went
-into the folder and ran rpm -Uvh --force alsa*.  And the system
-upgraded to the new version.  Unfortunately, this didn't work.  I had
-to erase, then reinstall the 14.rc3 and remove the kernel and reinstall
-it before I got sound back.  
-I also tried the audit install, but it complained and failed as
-well.  I'll keep looking at this, but I'm beginning to think messing
-with something as basic as alsa is difficult on a package based system
-(at least without a lot of understanding of the packaging mechanism).
-And the sound is missing from my app whether I use default or
-plughw:0,0 now. The plughw:0,0 seems to setup OK and the app shows that
-it continues to send output, it just doesn't sound. Seems like it is
-just a small glitch somewhere.  Could be leftovers from the cleaned up
-install too.
+Couldn't get this to work as long as I was using time based buffer
+allocation.  As soon as I switched back to using size based buffer
+allocation, sound was working again.  And as a bonus, the original
+problem I reported about high data rates not working under 1.0.14.rc3
+went away.  I suspect something somewhere got updated with 1.0.14.final
+and is still there despite my efforts to remove everything.  And it
+works for both plughw:0,0 and default, though there is some speed
+degradation using default compared to plughw:0,0.  I can run
+plughw:0,0 at 96000 without underruns, but default has a few underruns
+at that rate on the test file.
