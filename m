@@ -1,25 +1,19 @@
-From: stan <stanl@cox.net>
-Subject: Re: Install of alsa 1.0.14.final on Fedora 7
-Date: Sun, 15 Jul 2007 12:47:00 -0700
-Message-ID: <20070715124700.4d35d20e@localhost.localdomain>
-References: <20070713124843.59729a4b@localhost.localdomain>
-	<20070714000931.hqd2n4icam20ow8g@webmail.dsl-only.net>
-	<20070714072701.057106a3@localhost.localdomain>
-	<20070714081537.ayf2b2byrxq88kok@webmail.dsl-only.net>
-	<20070714154121.0f7c834c@localhost.localdomain>
+From: albox@free.fr
+Subject: Re: No sound on Medion laptop (intel 82801G)
+Date: Mon, 16 Jul 2007 06:44:45 +0200
+Message-ID: <1184561085.469af7bd4a727@imp.free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao104.cox.net (fed1rmmtao104.cox.net [68.230.241.42])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8EC09243A3
+Received: from smtp5-g19.free.fr (smtp5-g19.free.fr [212.27.42.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5BA5024355
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 Jul 2007 21:47:02 +0200 (CEST)
-Received: from fed1rmimpo02.cox.net ([70.169.32.72]) by fed1rmmtao104.cox.net
-	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP
-	id <20070715194702.TBYV1393.fed1rmmtao104.cox.net@fed1rmimpo02.cox.net>
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2007 15:47:02 -0400
-In-Reply-To: <20070714154121.0f7c834c@localhost.localdomain>
+	Mon, 16 Jul 2007 05:44:46 +0200 (CEST)
+Received: from imp3-g19.free.fr (imp3-g19.free.fr [212.27.42.3])
+	by smtp5-g19.free.fr (Postfix) with ESMTP id CE36F4446F
+	for <alsa-devel@alsa-project.org>;
+	Mon, 16 Jul 2007 05:44:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,21 +26,13 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 14 Jul 2007 15:41:21 -0700
-stan <stanl@cox.net> wrote:
-> And the sound is missing from my app whether I use default or
-> plughw:0,0 now. The plughw:0,0 seems to setup OK and the app shows
-> that it continues to send output, it just doesn't sound. Seems like
-> it is just a small glitch somewhere.  Could be leftovers from the
-> cleaned up install too.
+I have added a note for this bug on :
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3160
 
-Couldn't get this to work as long as I was using time based buffer
-allocation.  As soon as I switched back to using size based buffer
-allocation, sound was working again.  And as a bonus, the original
-problem I reported about high data rates not working under 1.0.14.rc3
-went away.  I suspect something somewhere got updated with 1.0.14.final
-and is still there despite my efforts to remove everything.  And it
-works for both plughw:0,0 and default, though there is some speed
-degradation using default compared to plughw:0,0.  I can run
-plughw:0,0 at 96000 without underruns, but default has a few underruns
-at that rate on the test file.
+I'm not really sure but it seems that the file /etc/modprobe.d/alsa-base is not
+loaded.
+http://ubuntuforums.org/showthread.php?p=3026300#post3026300
+
+Any idea ?
+
+Thanks
