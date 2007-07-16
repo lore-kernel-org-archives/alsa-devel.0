@@ -1,20 +1,15 @@
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-Subject: Re: [PATCH 2/2] ALSA sound driver for the AT73C213 DAC
- using Atmel SSC driver
-Date: Mon, 16 Jul 2007 17:27:46 +0200
-Message-ID: <20070716172746.777afe0e@dhcp-255-175.norway.atmel.com>
-References: <11845952993023-git-send-email-hcegtvedt@atmel.com>
-	<11845952991232-git-send-email-hcegtvedt@atmel.com>
-	<s5hwsx0xu7h.wl%tiwai@suse.de>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Enable SPDIF in/out on some stac9205
+	boards
+Date: Mon, 16 Jul 2007 17:05:20 -0400
+Message-ID: <469BDD90.3060509@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="------------080803050207000306080707"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.atmel.no (nat-132.atmel.no [80.232.32.132])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82AA81037FD
+Received: from smtp100.biz.mail.re2.yahoo.com (smtp100.biz.mail.re2.yahoo.com
+	[206.190.52.46]) by alsa0.perex.cz (Postfix) with SMTP id 5DBCF103818
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jul 2007 17:27:50 +0200 (CEST)
-In-Reply-To: <s5hwsx0xu7h.wl%tiwai@suse.de>
+	Mon, 16 Jul 2007 23:05:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +19,204 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kernel@avr32linux.org, Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: "Tellman, Steven" <Steven.Tellman@idt.com>, Matt Porter <mporter@embeddedalley.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAxNiBKdWwgMjAwNyAxNzowODowMiArMDIwMApUYWthc2hpIEl3YWkgPHRpd2FpQHN1
-c2UuZGU+IHdyb3RlOgoKPiA+ICtzdHJ1Y3QgYXQ3M2MyMTNfYm9hcmRfaW5mbyB7Cj4gPiArCWlu
-dAkJc3NjX2lkOwo+ID4gKwlzdHJ1Y3QgY2xrCSpkYWNfY2xrOwo+ID4gKwljaGFyCQlzaG9ydG5h
-bWVbMzJdOwo+ID4gK307Cj4gPiArCj4gPiArI2VuZGlmIC8qIF9fTElOVVhfU1BJX0FUNzNDMjEz
-X0ggKi8gIAo+IAo+IEFueSByZWFzb24gdG8gcHV0IHRoaXMgaW50byBpbmNsdWRlL2xpbnV4PyAg
-QXJlIChvciB3aWxsIGJlKSB0aGVyZQo+IHVzZXJzIG9mIHRoaXMgZXhjZXB0IGZvciBBTFNBIGRy
-aXZlcj8KClRoaXMgc3RydWN0IGNvbnRhaW5zIGluZm9ybWF0aW9uIGFib3V0IGhvdyB0aGUgc291
-bmQgY2hpcCBpcyBob29rZWQgdXAKb24gdGhlIGJvYXJkLCBzbyBpdCBuZWVkcyB0byBiZSBkZWZp
-bmVkIGluIGEgcGxhY2Ugd2hlcmUgdGhlIHBsYXRmb3JtCmNvZGUgY2FuIGVhc2lseSBmaW5kIGl0
-LiBTaW5jZSBpdCdzIG5vdCBhcmNoIHNwZWNpZmljLCBpdCBkb2Vzbid0CmJlbG9uZyB1bmRlciA8
-YXNtLy4uLj4gc28gPGxpbnV4L3NwaS8uLi4+IHNlZW1zIGxpa2UgYSBsb2dpY2FsIGNob2ljZS4K
-ClRoaXMgcGF0Y2ggc2hvd3MgaG93IGl0J3MgbWVhbnQgdG8gYmUgdXNlZDoKCmh0dHA6Ly9hdnIz
-MmxpbnV4Lm9yZy9hcmNoaXZlcy9rZXJuZWwvMjAwNy1KdWx5LzAwMDEyNC5odG1sCgpIw6V2YXJk
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This is a multi-part message in MIME format.
+--------------080803050207000306080707
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Added support for some boards with SPDIF in/out, and cleaned up the GPIO 
+enable function.
+---
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+
+--------------080803050207000306080707
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="stac_m43xx_gpio_spdif.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="stac_m43xx_gpio_spdif.patch"
+
+diff -r 631a50e624df pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Mon Jul 16 11:01:30 2007 +0200
++++ b/pci/hda/patch_sigmatel.c	Mon Jul 16 16:34:46 2007 -0400
+@@ -44,6 +44,7 @@ enum {
+ 
+ enum {
+ 	STAC_9205_REF,
++	STAC_M43xx,
+ 	STAC_9205_MODELS
+ };
+ 
+@@ -218,7 +219,6 @@ static hda_nid_t stac9205_pin_nids[12] =
+ 	0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+ 	0x0f, 0x14, 0x16, 0x17, 0x18,
+ 	0x21, 0x22,
+-	
+ };
+ 
+ static int stac92xx_dmux_enum_info(struct snd_kcontrol *kcontrol,
+@@ -773,7 +773,8 @@ static unsigned int ref9205_pin_configs[
+ };
+ 
+ static unsigned int *stac9205_brd_tbl[STAC_9205_MODELS] = {
+-	ref9205_pin_configs,
++	[STAC_REF] = ref9205_pin_configs,
++	[STAC_M43xx] = NULL,
+ };
+ 
+ static const char *stac9205_models[STAC_9205_MODELS] = {
+@@ -784,6 +785,10 @@ static struct snd_pci_quirk stac9205_cfg
+ 	/* SigmaTel reference board */
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
+ 		      "DFI LanParty", STAC_9205_REF),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01f8,
++              "Dell Precision", STAC_M43xx),
++    SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01ff,
++              "Dell Precision", STAC_M43xx), 
+ 	{} /* terminator */
+ };
+ 
+@@ -813,48 +818,52 @@ static int stac92xx_save_bios_config_reg
+ 	return 0;
+ }
+ 
++static void stac92xx_set_config_reg(struct hda_codec *codec, hda_nid_t pin_nid, unsigned int pin_config)
++{
++    int i;
++ 	snd_hda_codec_write(codec, pin_nid, 0,
++ 			AC_VERB_SET_CONFIG_DEFAULT_BYTES_0,
++ 			pin_config & 0x000000ff);
++ 	snd_hda_codec_write(codec, pin_nid, 0,
++ 			AC_VERB_SET_CONFIG_DEFAULT_BYTES_1,
++ 			(pin_config & 0x0000ff00) >> 8);
++ 	snd_hda_codec_write(codec, pin_nid, 0,
++ 			AC_VERB_SET_CONFIG_DEFAULT_BYTES_2,
++ 			(pin_config & 0x00ff0000) >> 16);
++ 	snd_hda_codec_write(codec, pin_nid, 0,
++ 			AC_VERB_SET_CONFIG_DEFAULT_BYTES_3,
++ 			pin_config >> 24);
++ 	i = snd_hda_codec_read(codec, pin_nid, 0,
++ 			AC_VERB_GET_CONFIG_DEFAULT,
++ 			0x00);	
++ 	snd_printdd(KERN_INFO "hda_codec: pin nid %2.2x pin config %8.8x\n", pin_nid, i);
++} 
++
+ static void stac92xx_set_config_regs(struct hda_codec *codec)
+ {
+ 	int i;
+ 	struct sigmatel_spec *spec = codec->spec;
+-	unsigned int pin_cfg;
+-
+-	if (! spec->pin_nids || ! spec->pin_configs)
+-		return;
+-
+-	for (i = 0; i < spec->num_pins; i++) {
+-		snd_hda_codec_write(codec, spec->pin_nids[i], 0,
+-				    AC_VERB_SET_CONFIG_DEFAULT_BYTES_0,
+-				    spec->pin_configs[i] & 0x000000ff);
+-		snd_hda_codec_write(codec, spec->pin_nids[i], 0,
+-				    AC_VERB_SET_CONFIG_DEFAULT_BYTES_1,
+-				    (spec->pin_configs[i] & 0x0000ff00) >> 8);
+-		snd_hda_codec_write(codec, spec->pin_nids[i], 0,
+-				    AC_VERB_SET_CONFIG_DEFAULT_BYTES_2,
+-				    (spec->pin_configs[i] & 0x00ff0000) >> 16);
+-		snd_hda_codec_write(codec, spec->pin_nids[i], 0,
+-				    AC_VERB_SET_CONFIG_DEFAULT_BYTES_3,
+-				    spec->pin_configs[i] >> 24);
+-		pin_cfg = snd_hda_codec_read(codec, spec->pin_nids[i], 0,
+-					     AC_VERB_GET_CONFIG_DEFAULT,
+-					     0x00);	
+-		snd_printdd(KERN_INFO "hda_codec: pin nid %2.2x pin config %8.8x\n", spec->pin_nids[i], pin_cfg);
+-	}
+-}
+-
+-static void stac92xx_enable_eapd(struct hda_codec *codec)
+-{
+-	/* Configure GPIO0 as output */
++ 	if (!spec->pin_configs)
++ 		return;
++ 
++ 	for (i=0; i < spec->num_pins; i++)
++ 		stac92xx_set_config_reg(codec, spec->pin_nids[i],
++ 					spec->pin_configs[i]);
++}
++
++static void stac92xx_enable_gpio_mask(struct hda_codec *codec,int gpio_mask,int gpio_data)
++{
++	/* Configure GPIOx as output */
+ 	snd_hda_codec_write(codec, codec->afg, 0,
+-			    AC_VERB_SET_GPIO_DIRECTION, 0x00000001);
+-	/* Configure GPIO0 as CMOS */
++			    AC_VERB_SET_GPIO_DIRECTION, gpio_mask);
++	/* Configure GPIOx as CMOS */
+ 	snd_hda_codec_write(codec, codec->afg, 0, 0x7e7, 0x00000000);
+-	/* Assert GPIO0 high */
++	/* Assert GPIOx */
+ 	snd_hda_codec_write(codec, codec->afg, 0,
+-			    AC_VERB_SET_GPIO_DATA, 0x00000001);
+-	/* Enable GPIO0 */
++			    AC_VERB_SET_GPIO_DATA, gpio_data);
++	/* Enable GPIOx */
+ 	snd_hda_codec_write(codec, codec->afg, 0,
+-			    AC_VERB_SET_GPIO_MASK, 0x00000001);
++			    AC_VERB_SET_GPIO_MASK, gpio_mask);
+ }
+ 
+ /*
+@@ -2233,7 +2242,7 @@ static int patch_stac927x(struct hda_cod
+ 	}
+ 
+ 	spec->multiout.dac_nids = spec->dac_nids;
+-	stac92xx_enable_eapd(codec);
++	stac92xx_enable_gpio_mask(codec, 0x00000001, 0x00000001); /* GPIO0 High = Enable EAPD */
+ 	
+ 	err = stac92xx_parse_auto_config(codec, 0x1e, 0x20);
+ 	if (!err) {
+@@ -2258,7 +2267,7 @@ static int patch_stac9205(struct hda_cod
+ static int patch_stac9205(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec;
+-	int err;
++	int err, gpio_mask, gpio_data;
+ 
+ 	spec  = kzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (spec == NULL)
+@@ -2295,8 +2304,19 @@ static int patch_stac9205(struct hda_cod
+ 	spec->mixer = stac9205_mixer;
+ 
+ 	spec->multiout.dac_nids = spec->dac_nids;
+-	stac92xx_enable_eapd(codec);
+-
++	
++	if (spec->board_config == STAC_M43xx) {
++		/* Enable SPDIF in/out */
++		stac92xx_set_config_reg(codec, 0x1f, 0x01441030);
++		stac92xx_set_config_reg(codec, 0x20, 0x1c410030);
++
++		gpio_mask = 0x00000007; /* GPIO0-2 */
++		gpio_data = 0x00000005; /* GPIO0 High = EAPD, GPIO1 Low = DRM, GPIO2 High = Headphone Mute */
++	}
++	else
++		gpio_mask = gpio_data = 0x00000001; /* GPIO0 High = EAPD */
++
++	stac92xx_enable_gpio_mask(codec, gpio_mask, gpio_data);
+ 	err = stac92xx_parse_auto_config(codec, 0x1f, 0x20);
+ 	if (!err) {
+ 		if (spec->board_config < 0) {
+
+--------------080803050207000306080707
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------080803050207000306080707--
