@@ -1,21 +1,19 @@
-From: Matthias Dahl <ml_alsa@mortal-soul.de>
-Subject: snd-hda-intel,
-	AD 1988b: SPDIF output not working correctly,
-	volume low for analog output
-Date: Tue, 17 Jul 2007 08:32:00 +0200
-Message-ID: <200707170832.01976.ml_alsa@mortal-soul.de>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: Re: [PATCH 2/2] ALSA sound driver for the
+	AT73C213	DAC	using Atmel SSC driver
+Date: Tue, 17 Jul 2007 10:37:21 +0200
+Message-ID: <1184661441.12675.6.camel@localhost.localdomain>
+References: <11845952993023-git-send-email-hcegtvedt@atmel.com>
+	<11845952991232-git-send-email-hcegtvedt@atmel.com>
+	<s5hwsx0xu7h.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_hJGnGeGxYAQF5Ky"
+Content-Type: multipart/mixed; boundary="=-AUyv9PDBqTOzFdJ/BnKL"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dd15922.kasserver.com (dd15922.kasserver.com [85.13.137.18])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC8B8103815
+Received: from relay.atmel.no (nat-132.atmel.no [80.232.32.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4724410381C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Jul 2007 08:31:58 +0200 (CEST)
-Received: from marvin (unknown [88.134.217.56])
-	by dd15922.kasserver.com (Postfix) with ESMTP id AD87B1804A300
-	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Jul 2007 08:31:58 +0200 (CEST)
+	Tue, 17 Jul 2007 10:35:36 +0200 (CEST)
+In-Reply-To: <s5hwsx0xu7h.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,183 +23,1593 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kernel@avr32linux.org
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_hJGnGeGxYAQF5Ky
-Content-Type: text/plain;
-  charset="us-ascii"
+
+--=-AUyv9PDBqTOzFdJ/BnKL
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-Hello everyone.
+On Mon, 2007-07-16 at 17:08 +0200, Takashi Iwai wrote:
+> At Mon, 16 Jul 2007 16:14:59 +0200,
+> Hans-Christian Egtvedt wrote:
+> > 
+> > --- /dev/null
+> > +++ b/include/linux/spi/at73c213.h
+> > @@ -0,0 +1,25 @@
+> > +/*
+> > + * Board-specific data used to set up AT73c213 audio DAC driver.
+> > + */
+> > +
+> > +#ifndef __LINUX_SPI_AT73C213_H
+> > +#define __LINUX_SPI_AT73C213_H
+> > +
+> > +/**
+> > + * at73c213_board_info - how the external DAC is wired to the device.
+> > + *
+> > + * @ssc_id: SSC platform_driver id the DAC shall use to stream the audio.
+> > + * @dac_clk: the external clock used to provide master clock to the DAC.
+> > + * @shortname: a short discription for the DAC, seen by userspace tools.
+> > + *
+> > + * This struct contains the configuration of the hardware connection to the
+> > + * external DAC. The DAC needs a master clock and a I2S audio stream. It also
+> > + * provides a name which is used to identify it in userspace tools.
+> > + */
+> > +struct at73c213_board_info {
+> > +	int		ssc_id;
+> > +	struct clk	*dac_clk;
+> > +	char		shortname[32];
+> > +};
+> > +
+> > +#endif /* __LINUX_SPI_AT73C213_H */
+> 
+> Any reason to put this into include/linux?  Are (or will be) there
+> users of this except for ALSA driver?
 
-I very recently upgraded my system to a Asus Crosshair (AM2, nforce 590 sli) 
-board because it seemed just good quality. Unfortunately the AD1988b chip on 
-it is causing me some trouble.
+I think Haavards answer describes the usage well.
 
-1] SPDIF output 
+> > diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+> > new file mode 100644
+> > index 0000000..ea6126b
+> > --- /dev/null
+> > +++ b/sound/spi/at73c213.c
+> (snip)
+> > +#include <linux/kmod.h>
+> 
+> Unneeded.
 
-When I use it for dts/dolby passthrough, it works just fine even though from 
-time to time spdif just hangs- not during playback but when I start the 
-playback. (analog output is unaffected) Meaning that either the player is 
-hanging or playback starts but I hear no sound. After that only a reboot 
-solves the problem... restarting alsa has not effect.
+Removed
 
-Also when the passthrough stops or during playback of anything else besides a 
-dts/dolby stream, I hear a low pitch beating (usually in combination with a 
-very high pitch sound) in the background.
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/io.h>
+> > +
+> > +#include <sound/initval.h>
+> > +#include <sound/driver.h>
+> 
+> Please put sound/driver.h at first.  This will make it for us much
+> easier to maintain the out-of-kernel tree.
 
-I double checked everything to be sure that my other equipment was fine and 
-not the cause of this.
+Ok, applied.
 
-2] analog output
+> > +/*
+> > + * Calculate and set bitrate and divisions.
+> > + */
+> > +static int snd_at73c213_set_bitrate(struct snd_at73c213 *chip)
+> > +{
+> > +	unsigned long ssc_rate = clk_get_rate(chip->ssc->clk);
+> > +	unsigned long dac_rate_new, ssc_div, status;
+> > +	unsigned long ssc_div_max, ssc_div_min;
+> > +	int max_tries;
+> > +
+> > +	/*
+> > +	 * We connect two clocks here, picking divisors so the I2S clocks
+> > +	 * out data at the same rate the DAC clocks it in ... and as close
+> > +	 * as practical to the desired target rate.
+> > +	 *
+> > +	 * The DAC master clock (MCLK) is programmable, and is either 256
+> > +	 * or (not here) 384 times the I2S output clock (BCLK).
+> > +	 */
+> > +
+> > +	/* SSC clock / (bitrate * stereo * 16-bit). */
+> > +	ssc_div = ssc_rate / (BITRATE_TARGET * 2 * 16);
+> > +	ssc_div_min = ssc_rate / (BITRATE_MAX * 2 * 16);
+> > +	ssc_div_max = ssc_rate / (BITRATE_MIN * 2 * 16);
+> > +	max_tries = (ssc_div_max - ssc_div_min) / 2;
+> > +
+> > +	/* ssc_div must be a power of 2. */
+> > +	ssc_div = (ssc_div + 1) & ~1UL;
+> > +
+> > +	if ((ssc_rate / (ssc_div * 2 * 16)) < BITRATE_MIN) {
+> > +		ssc_div -= 2;
+> > +		if ((ssc_rate / (ssc_div * 2 * 16)) > BITRATE_MAX) {
+> > +			return -ENXIO;
+> > +		}
+> 
+> Remove braces for a single-if block.
 
-I am unable to get it as loud as with the win drivers without overdriving it. 
-The volume is okay... but not on par with the win drivers. That's especially 
-true for the SPDIF output. Increasing the SPDIF volume usually results in 
-worse audio quality over spdif and increased "noise" (see above).
+Applied.
 
-Like said earlier, I checked with the win drivers, and everything (audio wise) 
-works just fine there. So it's not a hardware fault. (relief -g-)
+> > +	}
+> > +
+> > +	/* Search for a possible bitrate. */
+> > +	do {
+> > +		/* SSC clock / (ssc divider * 16-bit * stereo). */
+> > +		if ((ssc_rate / (ssc_div * 2 * 16)) < BITRATE_MIN)
+> > +			return -ENXIO;
+> > +
+> > +		/* 256 / (2 * 16) = 8 */
+> > +		dac_rate_new = 8 * (ssc_rate / ssc_div);
+> > +
+> > +		status = clk_round_rate(chip->board->dac_clk, dac_rate_new);
+> > +		if (status < 0)
+> > +			return status;
+> > +
+> > +		/* Ignore difference smaller than 256 Hz. */
+> > +		if ((status/256) == (dac_rate_new/256))
+> > +			goto set_rate;
+> > +
+> > +		ssc_div += 2;
+> > +	} while (--max_tries);
+> 
+> Can't be max_tries = 0 in theory?
 
-My guess would be that the AD 1988b is quite a bit different to program from 
-its 1988 predecessors as it contains dts live and stuff. Just a guess...
+Added a check earlier in the code which sets max_tries to 1 if it is
+smaller than 1. Could have been ugly for really low rates on the module,
+although it should not happen(tm).
 
-I have attached some hopefully useful informations. If you need anything else, 
-please let me know. I really need that spdif working, so I am more than 
-willing to test just about anything. :-)
+	if (max_tries < 1)
+		max_tries = 1;
 
-Last but not leat, I have tried the latest official alsa drivers as well as a 
-mercurial snapshot from yesterday. (which I am currently using) Both show the 
-same problems.
+> > +static int snd_at73c213_pcm_trigger(struct snd_pcm_substream *substream,
+> > +				   int cmd)
+> > +{
+> > +	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
+> > +	int retval = 0;
+> > +	unsigned long flags = 0;
+> > +
+> > +	spin_lock_irqsave(&chip->lock, flags);
+> 
+> The trigger callback is already spinlock+irqsaved.
+> So, spin_lock() / spin_unlock() should be enough.
 
-Thanks for any help in advance,
-matthew.
+Ok, applied.
 
---Boundary-00=_hJGnGeGxYAQF5Ky
-Content-Type: application/x-gzip;
-  name="lspci_output.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="lspci_output.gz"
+> > +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &at73c213_playback_ops);
+> > +
+> > +	retval = snd_pcm_lib_preallocate_pages_for_all(chip->pcm,
+> > +			SNDRV_DMA_TYPE_DEV,
+> > +			snd_dma_continuous_data(GFP_KERNEL),
+> > +			64 * 1024, 64 * 1024);
+> 
+> For SNDRV_DMA_TYPE_DEV, pass the struct device pointer of the device
+> to the third argument.  Then the pre-allocator will allocate the
+> memory via dma_alloc_coherent() with the givn device.  If it's not
+> appropriate, SNDRV_DMA_TYPE_CONTINUOUS type.  Anyway,
+> snd_dma_continuous_data() is only for SNDRV_DMA_TYPE_CONTINUOUS.
 
-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
-6IiA+334fz9zFmG9ZQAA
+Ok, applied. Using &chip->spi->dev.
 
---Boundary-00=_hJGnGeGxYAQF5Ky
-Content-Type: application/x-gzip;
-  name="proc_output1.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="proc_output1.gz"
+> > +/*
+> > + * Mixer functions.
+> > + */
+> > +static int snd_at73c213_mono_get(struct snd_kcontrol *kcontrol,
+> > +				 struct snd_ctl_elem_value *ucontrol)
+> > +{
+> > +	struct snd_at73c213 *chip = snd_kcontrol_chip(kcontrol);
+> > +	unsigned long flags;
+> > +	int reg = kcontrol->private_value & 0xff;
+> > +	int shift = (kcontrol->private_value >> 8) & 0xff;
+> > +	int mask = (kcontrol->private_value >> 16) & 0xff;
+> > +	int invert = (kcontrol->private_value >> 24) & 0xff;
+> > +
+> > +	spin_lock_irqsave(&chip->lock, flags);
+> 
+> The mixer (control) callbacks are all schedulable, so you need no
+> irqsave but spin_lock_irq() should be fine.
 
-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
+Ok, applied.
 
---Boundary-00=_hJGnGeGxYAQF5Ky
-Content-Type: application/x-gzip;
-  name="proc_output2.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="proc_output2.gz"
+> > +static int __devinit snd_at73c213_mixer(struct snd_at73c213 *chip)
+> > +{
+> > +	struct snd_card *card;
+> > +	int errval, idx;
+> > +
+> > +	if (chip == NULL || chip->pcm == NULL)
+> > +		return -EINVAL;
+> > +
+> > +	card = chip->card;
+> > +
+> > +	strcpy(card->mixername, chip->pcm->name);
+> > +
+> > +	for (idx = 0; idx < ARRAY_SIZE(snd_at73c213_controls); idx++) {
+> > +		if ((errval = snd_ctl_add(card,
+> > +				snd_ctl_new1(&snd_at73c213_controls[idx],
+> > +				chip))) < 0) {
+> > +			goto cleanup;
+> > +		}
+> 
+> Split errval = ; and if (errval < 0) ...
+> Also drop braces for a single if block.
 
-H4sICMhgnEYAA3Byb2Nfb3V0cHV0MgB9ktuOgjAQhu95irnUC0gLHlbuiGz2EN2YmHhjjOlC1UZs
-tS1G334H8BhwJyEpw/fP/EwHCMx/ZiIVDK6xCOEzjtwvaXkGbnGGinCgMe4AMAvktOLEJxgg9AF8
-gioSwhzIAtkQEiWtVhlmaXitEILhh5zLhGsHaK+kXRSEkIq1sCwDlqdCwT5j51+WbBHqXyD6D+R3
-XlZK2N7mmiPTfVnoxgTBg1MrdoVLAkamy03KlqKYk0OIS/CHopgO3k4QXwo1JK72gBbDqFoALfXk
-hkeSZWoN9fdGdeB8oNScjeW7yh9+pHgDHj65gVZxLm/EimRr2s4Em7komQzH94plDoXTUTR7rxBa
-Idc+ZeqZCOpE8Ex060T3kaANRuizEVo3Qh+MROmR4eqkMBIyP8FU5TKFSCcbYXlS8rEWRxzKjGsj
-lATqEY92PGeodnuRoRBz33mGm4frSvqwUhq2XEtcf9/reb7vUTdZGfdIB9Cajidtz/kD2qB/BDcD
-AAA=
+Ok, applied.
 
---Boundary-00=_hJGnGeGxYAQF5Ky
+I have attached an updated patch with the changes you noted above.
+Thanks for the review.
+
+-- 
+With kind regards,
+
+Hans-Christian Egtvedt, siv.ing. (M.Sc.)
+Applications Engineer - AVR32 System Solutions - Atmel Norway
+
+--=-AUyv9PDBqTOzFdJ/BnKL
+Content-Disposition: attachment; filename*0=0001-ALSA-sound-driver-for-the-AT73C213-DAC-using-Atmel-S.pat; filename*1=ch
+Content-Type: application/mbox; name=0001-ALSA-sound-driver-for-the-AT73C213-DAC-using-Atmel-S.patch
+Content-Transfer-Encoding: 7bit
+
+>From 9a5c464308d1f3712ffca1ab3948a49d53da9a6f Mon Sep 17 00:00:00 2001
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Date: Thu, 5 Jul 2007 18:09:33 +0200
+Subject: [PATCH 1/1] ALSA sound driver for the AT73C213 DAC using Atmel SSC driver
+
+This patch adds support for the AT73C213 DAC using the misc Atmel SSC driver in
+I2S mode. The driver also requires a SPI to setup the registers and control
+volume.
+
+It has been tested with an AT32AP7000 on the ATSTK1000 development board. The
+driver should also work with any Atmel device with an SSC module supported by
+the Atmel SSC driver (atmel-ssc).
+
+The atmel-ssc driver is just submitted to the Linux kernel. Please see mail
+thread http://lkml.org/lkml/2007/7/16/32
+
+Signed-off-by: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+---
+ include/linux/spi/at73c213.h |   25 +
+ sound/spi/Kconfig            |   25 +
+ sound/spi/Makefile           |    3 +
+ sound/spi/at73c213.c         | 1121 ++++++++++++++++++++++++++++++++++++++++++
+ sound/spi/at73c213.h         |  119 +++++
+ 5 files changed, 1293 insertions(+), 0 deletions(-)
+ create mode 100644 include/linux/spi/at73c213.h
+ create mode 100644 sound/spi/at73c213.c
+ create mode 100644 sound/spi/at73c213.h
+
+diff --git a/include/linux/spi/at73c213.h b/include/linux/spi/at73c213.h
+new file mode 100644
+index 0000000..0f20a70
+--- /dev/null
++++ b/include/linux/spi/at73c213.h
+@@ -0,0 +1,25 @@
++/*
++ * Board-specific data used to set up AT73c213 audio DAC driver.
++ */
++
++#ifndef __LINUX_SPI_AT73C213_H
++#define __LINUX_SPI_AT73C213_H
++
++/**
++ * at73c213_board_info - how the external DAC is wired to the device.
++ *
++ * @ssc_id: SSC platform_driver id the DAC shall use to stream the audio.
++ * @dac_clk: the external clock used to provide master clock to the DAC.
++ * @shortname: a short discription for the DAC, seen by userspace tools.
++ *
++ * This struct contains the configuration of the hardware connection to the
++ * external DAC. The DAC needs a master clock and a I2S audio stream. It also
++ * provides a name which is used to identify it in userspace tools.
++ */
++struct at73c213_board_info {
++	int		ssc_id;
++	struct clk	*dac_clk;
++	char		shortname[32];
++};
++
++#endif /* __LINUX_SPI_AT73C213_H */
+diff --git a/sound/spi/Kconfig b/sound/spi/Kconfig
+index 60fbb2a..0d08c29 100644
+--- a/sound/spi/Kconfig
++++ b/sound/spi/Kconfig
+@@ -3,4 +3,29 @@
+ menu "SPI devices"
+ 	depends on SND != n
+ 
++config SND_AT73C213
++	tristate "Atmel AT73C213 DAC driver"
++	depends on ATMEL_SSC
++	select SND_PCM
++	help
++	  Say Y here if you want to use the Atmel AT73C213 external DAC. This
++	  DAC can be found on Atmel development boards.
++
++	  This driver requires the Atmel SSC driver for sound sink, a
++	  peripheral found on most AT91 and AVR32 microprocessors.
++
++	  To compile this driver as a module, choose M here: the module will be
++	  called snd-at73c213.
++
++config SND_AT73C213_TARGET_BITRATE
++	int "Target bitrate for AT73C213"
++	depends on SND_AT73C213
++	default "48000"
++	range 8000 50000
++	help
++	  Sets the target bitrate for the bitrate calculator in the driver.
++	  Limited by hardware to be between 8000 Hz and 50000 Hz.
++
++	  Set to 48000 Hz by default.
++
+ endmenu
+diff --git a/sound/spi/Makefile b/sound/spi/Makefile
+index 30d8ec9..026fb73 100644
+--- a/sound/spi/Makefile
++++ b/sound/spi/Makefile
+@@ -1,2 +1,5 @@
+ # Makefile for SPI drivers
+ 
++snd-at73c213-objs		:= at73c213.o
++
++obj-$(CONFIG_SND_AT73C213)	+= snd-at73c213.o
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+new file mode 100644
+index 0000000..a466929
+--- /dev/null
++++ b/sound/spi/at73c213.c
+@@ -0,0 +1,1121 @@
++/*
++ * Driver for AT73C213 16-bit stereo DAC connected to Atmel SSC
++ *
++ * Copyright (C) 2006-2007 Atmel Norway
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ */
++
++/*#define DEBUG*/
++
++#include <linux/clk.h>
++#include <linux/err.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/dma-mapping.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/io.h>
++
++#include <sound/driver.h>
++#include <sound/initval.h>
++#include <sound/control.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++
++#include <linux/atmel-ssc.h>
++
++#include <linux/spi/spi.h>
++#include <linux/spi/at73c213.h>
++
++#include "at73c213.h"
++
++#define BITRATE_MIN	 8000 /* Hardware limit? */
++#define BITRATE_TARGET	CONFIG_SND_AT73C213_TARGET_BITRATE
++#define BITRATE_MAX	50000 /* Hardware limit. */
++
++/* Initial (hardware reset) AT73C213 register values. */
++static u8 snd_at73c213_original_image[18] =
++{
++	0x00,	/* 00 - CTRL    */
++	0x05,	/* 01 - LLIG    */
++	0x05,	/* 02 - RLIG    */
++	0x08,	/* 03 - LPMG    */
++	0x08,	/* 04 - RPMG    */
++	0x00,	/* 05 - LLOG    */
++	0x00,	/* 06 - RLOG    */
++	0x22,	/* 07 - OLC     */
++	0x09,	/* 08 - MC      */
++	0x00,	/* 09 - CSFC    */
++	0x00,	/* 0A - MISC    */
++	0x00,	/* 0B -         */
++	0x00,	/* 0C - PRECH   */
++	0x05,	/* 0D - AUXG    */
++	0x00,	/* 0E -         */
++	0x00,	/* 0F -         */
++	0x00,	/* 10 - RST     */
++	0x00,	/* 11 - PA_CTRL */
++};
++
++struct snd_at73c213 {
++	struct snd_card			*card;
++	struct snd_pcm			*pcm;
++	struct snd_pcm_substream	*substream;
++	struct at73c213_board_info	*board;
++	int				irq;
++	int				period;
++	unsigned long			bitrate;
++	struct clk			*bitclk;
++	struct ssc_device		*ssc;
++	struct spi_device		*spi;
++	u8				spi_wbuffer[2];
++	u8				spi_rbuffer[2];
++	/* Image of the SPI registers in AT73C213. */
++	u8				reg_image[18];
++	/* Protect registers against concurrent access. */
++	spinlock_t			lock;
++};
++
++#define get_chip(card) ((struct snd_at73c213 *)card->private_data)
++
++static int
++snd_at73c213_write_reg(struct snd_at73c213 *chip, u8 reg, u8 val)
++{
++	struct spi_message msg;
++	struct spi_transfer msg_xfer = {
++		.len		= 2,
++		.cs_change	= 0,
++	};
++	int retval;
++
++	spi_message_init(&msg);
++
++	chip->spi_wbuffer[0] = reg;
++	chip->spi_wbuffer[1] = val;
++
++	msg_xfer.tx_buf = chip->spi_wbuffer;
++	msg_xfer.rx_buf = chip->spi_rbuffer;
++	spi_message_add_tail(&msg_xfer, &msg);
++
++	retval = spi_sync(chip->spi, &msg);
++
++	if (!retval)
++		chip->reg_image[reg] = val;
++
++	return retval;
++}
++
++static struct snd_pcm_hardware snd_at73c213_playback_hw = {
++	.info		= SNDRV_PCM_INFO_INTERLEAVED |
++			  SNDRV_PCM_INFO_BLOCK_TRANSFER,
++	.formats	= SNDRV_PCM_FMTBIT_S16_BE,
++	.rates		= SNDRV_PCM_RATE_CONTINUOUS,
++	.rate_min	= 8000,  /* Replaced by chip->bitrate later. */
++	.rate_max	= 50000, /* Replaced by chip->bitrate later. */
++	.channels_min	= 2,
++	.channels_max	= 2,
++	.buffer_bytes_max = 64 * 1024 - 1,
++	.period_bytes_min = 512,
++	.period_bytes_max = 64 * 1024 - 1,
++	.periods_min	= 4,
++	.periods_max	= 1024,
++};
++
++/*
++ * Calculate and set bitrate and divisions.
++ */
++static int snd_at73c213_set_bitrate(struct snd_at73c213 *chip)
++{
++	unsigned long ssc_rate = clk_get_rate(chip->ssc->clk);
++	unsigned long dac_rate_new, ssc_div, status;
++	unsigned long ssc_div_max, ssc_div_min;
++	int max_tries;
++
++	/*
++	 * We connect two clocks here, picking divisors so the I2S clocks
++	 * out data at the same rate the DAC clocks it in ... and as close
++	 * as practical to the desired target rate.
++	 *
++	 * The DAC master clock (MCLK) is programmable, and is either 256
++	 * or (not here) 384 times the I2S output clock (BCLK).
++	 */
++
++	/* SSC clock / (bitrate * stereo * 16-bit). */
++	ssc_div = ssc_rate / (BITRATE_TARGET * 2 * 16);
++	ssc_div_min = ssc_rate / (BITRATE_MAX * 2 * 16);
++	ssc_div_max = ssc_rate / (BITRATE_MIN * 2 * 16);
++	max_tries = (ssc_div_max - ssc_div_min) / 2;
++
++	if (max_tries < 1)
++		max_tries = 1;
++
++	/* ssc_div must be a power of 2. */
++	ssc_div = (ssc_div + 1) & ~1UL;
++
++	if ((ssc_rate / (ssc_div * 2 * 16)) < BITRATE_MIN) {
++		ssc_div -= 2;
++		if ((ssc_rate / (ssc_div * 2 * 16)) > BITRATE_MAX)
++			return -ENXIO;
++	}
++
++	/* Search for a possible bitrate. */
++	do {
++		/* SSC clock / (ssc divider * 16-bit * stereo). */
++		if ((ssc_rate / (ssc_div * 2 * 16)) < BITRATE_MIN)
++			return -ENXIO;
++
++		/* 256 / (2 * 16) = 8 */
++		dac_rate_new = 8 * (ssc_rate / ssc_div);
++
++		status = clk_round_rate(chip->board->dac_clk, dac_rate_new);
++		if (status < 0)
++			return status;
++
++		/* Ignore difference smaller than 256 Hz. */
++		if ((status/256) == (dac_rate_new/256))
++			goto set_rate;
++
++		ssc_div += 2;
++	} while (--max_tries);
++
++	/* Not able to find a valid bitrate. */
++	return -ENXIO;
++
++set_rate:
++	status = clk_set_rate(chip->board->dac_clk, status);
++	if (status < 0)
++		return status;
++
++	/* Set divider in SSC device. */
++	ssc_writel(chip->ssc->regs, CMR, ssc_div/2);
++
++	/* SSC clock / (ssc divider * 16-bit * stereo). */
++	chip->bitrate = ssc_rate / (ssc_div * 16 * 2);
++
++	dev_info(&chip->spi->dev,
++			"at73c213: supported bitrate is %lu (%lu divider)\n",
++			chip->bitrate, ssc_div);
++
++	return 0;
++}
++
++static int snd_at73c213_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	snd_at73c213_playback_hw.rate_min = chip->bitrate;
++	snd_at73c213_playback_hw.rate_max = chip->bitrate;
++	runtime->hw = snd_at73c213_playback_hw;
++	chip->substream = substream;
++
++	return 0;
++}
++
++static int snd_at73c213_pcm_close(struct snd_pcm_substream *substream)
++{
++	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
++	chip->substream = NULL;
++	return 0;
++}
++
++static int snd_at73c213_pcm_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
++{
++	return snd_pcm_lib_malloc_pages(substream,
++					params_buffer_bytes(hw_params));
++}
++
++static int snd_at73c213_pcm_hw_free(struct snd_pcm_substream *substream)
++{
++	return snd_pcm_lib_free_pages(substream);
++}
++
++static int snd_at73c213_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int block_size;
++
++	block_size = frames_to_bytes(runtime, runtime->period_size);
++
++	chip->period = 0;
++
++	ssc_writel(chip->ssc->regs, PDC_TPR,
++			(long)runtime->dma_addr);
++	ssc_writel(chip->ssc->regs, PDC_TCR, runtime->period_size * 2);
++	ssc_writel(chip->ssc->regs, PDC_TNPR,
++			(long)runtime->dma_addr + block_size);
++	ssc_writel(chip->ssc->regs, PDC_TNCR, runtime->period_size * 2);
++
++	return 0;
++}
++
++static int snd_at73c213_pcm_trigger(struct snd_pcm_substream *substream,
++				   int cmd)
++{
++	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
++	int retval = 0;
++
++	spin_lock(&chip->lock);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		ssc_writel(chip->ssc->regs, IER, SSC_BIT(IER_ENDTX));
++		ssc_writel(chip->ssc->regs, PDC_PTCR, SSC_BIT(PDC_PTCR_TXTEN));
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		ssc_writel(chip->ssc->regs, PDC_PTCR, SSC_BIT(PDC_PTCR_TXTDIS));
++		ssc_writel(chip->ssc->regs, IDR, SSC_BIT(IDR_ENDTX));
++		break;
++	default:
++		dev_dbg(&chip->spi->dev, "spurious command %x\n", cmd);
++		retval = -EINVAL;
++		break;
++	}
++
++	spin_unlock(&chip->lock);
++
++	return retval;
++}
++
++static snd_pcm_uframes_t
++snd_at73c213_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	snd_pcm_uframes_t pos;
++	unsigned long bytes;
++
++	bytes = ssc_readl(chip->ssc->regs, PDC_TPR)
++		- (unsigned long)runtime->dma_addr;
++
++	pos = bytes_to_frames(runtime, bytes);
++	if (pos >= runtime->buffer_size)
++		pos -= runtime->buffer_size;
++
++	return pos;
++}
++
++static struct snd_pcm_ops at73c213_playback_ops = {
++	.open		= snd_at73c213_pcm_open,
++	.close		= snd_at73c213_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= snd_at73c213_pcm_hw_params,
++	.hw_free	= snd_at73c213_pcm_hw_free,
++	.prepare	= snd_at73c213_pcm_prepare,
++	.trigger	= snd_at73c213_pcm_trigger,
++	.pointer	= snd_at73c213_pcm_pointer,
++};
++
++static void snd_at73c213_pcm_free(struct snd_pcm *pcm)
++{
++	struct snd_at73c213 *chip = snd_pcm_chip(pcm);
++	if (chip->pcm) {
++		snd_pcm_lib_preallocate_free_for_all(chip->pcm);
++		chip->pcm = NULL;
++	}
++}
++
++static int __devinit snd_at73c213_pcm_new(struct snd_at73c213 *chip, int device)
++{
++	struct snd_pcm *pcm;
++	int retval;
++
++	retval = snd_pcm_new(chip->card, chip->card->shortname,
++			device, 1, 0, &pcm);
++	if (retval < 0)
++		goto out;
++
++	pcm->private_data = chip;
++	pcm->private_free = snd_at73c213_pcm_free;
++	pcm->info_flags = SNDRV_PCM_INFO_BLOCK_TRANSFER;
++	strcpy(pcm->name, "at73c213");
++	chip->pcm = pcm;
++
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &at73c213_playback_ops);
++
++	retval = snd_pcm_lib_preallocate_pages_for_all(chip->pcm,
++			SNDRV_DMA_TYPE_DEV, &chip->spi->dev,
++			64 * 1024, 64 * 1024);
++out:
++	return retval;
++}
++
++static irqreturn_t snd_at73c213_interrupt(int irq, void *dev_id)
++{
++	struct snd_at73c213 *chip = dev_id;
++	struct snd_pcm_runtime *runtime = chip->substream->runtime;
++	u32 status;
++	int offset;
++	int block_size;
++	int next_period;
++	int retval = IRQ_NONE;
++
++	spin_lock(&chip->lock);
++
++	block_size = frames_to_bytes(runtime, runtime->period_size);
++	status = ssc_readl(chip->ssc->regs, IMR);
++
++	if (status & SSC_BIT(IMR_ENDTX)) {
++		chip->period++;
++		if (chip->period == runtime->periods)
++			chip->period = 0;
++		next_period = chip->period + 1;
++		if (next_period == runtime->periods)
++			next_period = 0;
++
++		offset = block_size * next_period;
++
++		ssc_writel(chip->ssc->regs, PDC_TNPR,
++				(long)runtime->dma_addr + offset);
++		ssc_writel(chip->ssc->regs, PDC_TNCR, runtime->period_size * 2);
++		retval = IRQ_HANDLED;
++	}
++
++	ssc_readl(chip->ssc->regs, IMR);
++	spin_unlock(&chip->lock);
++
++	if (status & SSC_BIT(IMR_ENDTX))
++		snd_pcm_period_elapsed(chip->substream);
++
++	return retval;
++}
++
++/*
++ * Mixer functions.
++ */
++static int snd_at73c213_mono_get(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_at73c213 *chip = snd_kcontrol_chip(kcontrol);
++	int reg = kcontrol->private_value & 0xff;
++	int shift = (kcontrol->private_value >> 8) & 0xff;
++	int mask = (kcontrol->private_value >> 16) & 0xff;
++	int invert = (kcontrol->private_value >> 24) & 0xff;
++
++	spin_lock_irq(&chip->lock);
++
++	ucontrol->value.integer.value[0] = (chip->reg_image[reg] >> shift) & mask;
++
++	if (invert)
++		ucontrol->value.integer.value[0] =
++			(mask - ucontrol->value.integer.value[0]);
++
++	spin_unlock_irq(&chip->lock);
++
++	return 0;
++}
++
++static int snd_at73c213_mono_put(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_at73c213 *chip = snd_kcontrol_chip(kcontrol);
++	int reg = kcontrol->private_value & 0xff;
++	int shift = (kcontrol->private_value >> 8) & 0xff;
++	int mask = (kcontrol->private_value >> 16) & 0xff;
++	int invert = (kcontrol->private_value >> 24) & 0xff;
++	int change, retval;
++	unsigned short val;
++
++	val = (ucontrol->value.integer.value[0] & mask);
++	if (invert)
++		val = mask - val;
++	val <<= shift;
++
++	spin_lock_irq(&chip->lock);
++
++	val = (chip->reg_image[reg] & ~(mask << shift)) | val;
++	change = val != chip->reg_image[reg];
++	retval = snd_at73c213_write_reg(chip, reg, val);
++
++	spin_unlock_irq(&chip->lock);
++
++	if (retval)
++		return retval;
++
++	return change;
++}
++
++static int snd_at73c213_stereo_info(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_info *uinfo)
++{
++	int mask = (kcontrol->private_value >> 24) & 0xff;
++
++	if (mask == 1)
++		uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	else
++		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++
++	uinfo->count = 2;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = mask;
++
++	return 0;
++}
++
++static int snd_at73c213_stereo_get(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_at73c213 *chip = snd_kcontrol_chip(kcontrol);
++	int left_reg = kcontrol->private_value & 0xff;
++	int right_reg = (kcontrol->private_value >> 8) & 0xff;
++	int shift_left = (kcontrol->private_value >> 16) & 0x07;
++	int shift_right = (kcontrol->private_value >> 19) & 0x07;
++	int mask = (kcontrol->private_value >> 24) & 0xff;
++	int invert = (kcontrol->private_value >> 22) & 1;
++
++	spin_lock_irq(&chip->lock);
++
++	ucontrol->value.integer.value[0] =
++		(chip->reg_image[left_reg] >> shift_left) & mask;
++	ucontrol->value.integer.value[1] =
++		(chip->reg_image[right_reg] >> shift_right) & mask;
++
++	if (invert) {
++		ucontrol->value.integer.value[0] =
++			(mask - ucontrol->value.integer.value[0]);
++		ucontrol->value.integer.value[1] =
++			(mask - ucontrol->value.integer.value[1]);
++	}
++
++	spin_unlock_irq(&chip->lock);
++
++	return 0;
++}
++
++static int snd_at73c213_stereo_put(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_at73c213 *chip = snd_kcontrol_chip(kcontrol);
++	int left_reg = kcontrol->private_value & 0xff;
++	int right_reg = (kcontrol->private_value >> 8) & 0xff;
++	int shift_left = (kcontrol->private_value >> 16) & 0x07;
++	int shift_right = (kcontrol->private_value >> 19) & 0x07;
++	int mask = (kcontrol->private_value >> 24) & 0xff;
++	int invert = (kcontrol->private_value >> 22) & 1;
++	int change, retval;
++	unsigned short val1, val2;
++
++	val1 = ucontrol->value.integer.value[0] & mask;
++	val2 = ucontrol->value.integer.value[1] & mask;
++	if (invert) {
++		val1 = mask - val1;
++		val2 = mask - val2;
++	}
++	val1 <<= shift_left;
++	val2 <<= shift_right;
++
++	spin_lock_irq(&chip->lock);
++
++	val1 = (chip->reg_image[left_reg] & ~(mask << shift_left)) | val1;
++	val2 = (chip->reg_image[right_reg] & ~(mask << shift_right)) | val2;
++	change = val1 != chip->reg_image[left_reg]
++		|| val2 != chip->reg_image[right_reg];
++	retval = snd_at73c213_write_reg(chip, left_reg, val1);
++	if (retval) {
++		spin_unlock_irq(&chip->lock);
++		goto out;
++	}
++	retval = snd_at73c213_write_reg(chip, right_reg, val2);
++	if (retval) {
++		spin_unlock_irq(&chip->lock);
++		goto out;
++	}
++
++	spin_unlock_irq(&chip->lock);
++
++	return change;
++
++out:
++	return retval;
++}
++
++static int snd_at73c213_mono_switch_info(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 1;
++
++	return 0;
++}
++
++static int snd_at73c213_mono_switch_get(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_at73c213 *chip = snd_kcontrol_chip(kcontrol);
++	int reg = kcontrol->private_value & 0xff;
++	int shift = (kcontrol->private_value >> 8) & 0xff;
++	int invert = (kcontrol->private_value >> 24) & 0xff;
++
++	spin_lock_irq(&chip->lock);
++
++	ucontrol->value.integer.value[0] = (chip->reg_image[reg] >> shift) & 0x01;
++
++	if (invert)
++		ucontrol->value.integer.value[0] =
++			(0x01 - ucontrol->value.integer.value[0]);
++
++	spin_unlock_irq(&chip->lock);
++
++	return 0;
++}
++
++static int snd_at73c213_mono_switch_put(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_at73c213 *chip = snd_kcontrol_chip(kcontrol);
++	int reg = kcontrol->private_value & 0xff;
++	int shift = (kcontrol->private_value >> 8) & 0xff;
++	int mask = (kcontrol->private_value >> 16) & 0xff;
++	int invert = (kcontrol->private_value >> 24) & 0xff;
++	int change, retval;
++	unsigned short val;
++
++	if (ucontrol->value.integer.value[0])
++		val = mask;
++	else
++		val = 0;
++
++	if (invert)
++		val = mask - val;
++	val <<= shift;
++
++	spin_lock_irq(&chip->lock);
++
++	val |= (chip->reg_image[reg] & ~(mask << shift));
++	change = val != chip->reg_image[reg];
++
++	retval = snd_at73c213_write_reg(chip, reg, val);
++
++	spin_unlock_irq(&chip->lock);
++
++	if (retval)
++		return retval;
++
++	return change;
++}
++
++static int snd_at73c213_pa_volume_info(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = ((kcontrol->private_value >> 16) & 0xff) - 1;
++
++	return 0;
++}
++
++static int snd_at73c213_line_capture_volume_info(
++		struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 2;
++	/* When inverted will give values 0x10001 => 0. */
++	uinfo->value.integer.min = 14;
++	uinfo->value.integer.max = 31;
++
++	return 0;
++}
++
++static int snd_at73c213_aux_capture_volume_info(
++		struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	/* When inverted will give values 0x10001 => 0. */
++	uinfo->value.integer.min = 14;
++	uinfo->value.integer.max = 31;
++
++	return 0;
++}
++
++#define AT73C213_MONO_SWITCH(xname, xindex, reg, shift, mask, invert)	\
++{									\
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,				\
++	.name = xname,							\
++	.index = xindex,						\
++	.info = snd_at73c213_mono_switch_info,				\
++	.get = snd_at73c213_mono_switch_get,				\
++	.put = snd_at73c213_mono_switch_put,				\
++	.private_value = (reg | (shift << 8) | (mask << 16) | (invert << 24)) \
++}
++
++#define AT73C213_STEREO(xname, xindex, left_reg, right_reg, shift_left, shift_right, mask, invert) \
++{									\
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,				\
++	.name = xname,							\
++	.index = xindex,						\
++	.info = snd_at73c213_stereo_info,				\
++	.get = snd_at73c213_stereo_get,					\
++	.put = snd_at73c213_stereo_put,					\
++	.private_value = (left_reg | (right_reg << 8)			\
++			| (shift_left << 16) | (shift_right << 19)	\
++			| (mask << 24) | (invert << 22))		\
++}
++
++static struct snd_kcontrol_new snd_at73c213_controls[] __devinitdata = {
++AT73C213_STEREO("Master Playback Volume", 0, DAC_LMPG, DAC_RMPG, 0, 0, 0x1f, 1),
++AT73C213_STEREO("Master Playback Switch", 0, DAC_LMPG, DAC_RMPG, 5, 5, 1, 1),
++AT73C213_STEREO("PCM Playback Volume", 0, DAC_LLOG, DAC_RLOG, 0, 0, 0x1f, 1),
++AT73C213_STEREO("PCM Playback Switch", 0, DAC_LLOG, DAC_RLOG, 5, 5, 1, 1),
++AT73C213_MONO_SWITCH("Mono PA Playback Switch", 0, DAC_CTRL, DAC_CTRL_ONPADRV, 0x01, 0),
++{
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name	= "PA Playback Volume",
++	.index	= 0,
++	.info	= snd_at73c213_pa_volume_info,
++	.get	= snd_at73c213_mono_get,
++	.put	= snd_at73c213_mono_put,
++	.private_value	= PA_CTRL | (PA_CTRL_APAGAIN << 8) | (0x0f << 16) | (1 << 24),
++},
++AT73C213_MONO_SWITCH("PA High Gain Playback Switch", 0, PA_CTRL, PA_CTRL_APALP, 0x01, 1),
++AT73C213_MONO_SWITCH("PA Playback Switch", 0, PA_CTRL, PA_CTRL_APAON, 0x01, 0),
++{
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name	= "Aux Capture Volume",
++	.index	= 0,
++	.info	= snd_at73c213_aux_capture_volume_info,
++	.get	= snd_at73c213_mono_get,
++	.put	= snd_at73c213_mono_put,
++	.private_value	= DAC_AUXG | (0 << 8) | (0x1f << 16) | (1 << 24),
++},
++AT73C213_MONO_SWITCH("Aux Capture Switch", 0, DAC_CTRL, DAC_CTRL_ONAUXIN, 0x01, 0),
++{
++	.iface	= SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name	= "Line Capture Volume",
++	.index	= 0,
++	.info	= snd_at73c213_line_capture_volume_info,
++	.get	= snd_at73c213_stereo_get,
++	.put	= snd_at73c213_stereo_put,
++	.private_value	= DAC_LLIG | (DAC_RLIG << 8) | (0 << 16) | (0 << 19)
++		| (0x1f << 24) | (1 << 22),
++},
++AT73C213_MONO_SWITCH("Line Capture Switch", 0, DAC_CTRL, 0, 0x03, 0),
++};
++
++static int __devinit snd_at73c213_mixer(struct snd_at73c213 *chip)
++{
++	struct snd_card *card;
++	int errval, idx;
++
++	if (chip == NULL || chip->pcm == NULL)
++		return -EINVAL;
++
++	card = chip->card;
++
++	strcpy(card->mixername, chip->pcm->name);
++
++	for (idx = 0; idx < ARRAY_SIZE(snd_at73c213_controls); idx++) {
++		errval = snd_ctl_add(card,
++				snd_ctl_new1(&snd_at73c213_controls[idx],
++					chip));
++		if (errval < 0)
++			goto cleanup;
++	}
++
++	return 0;
++
++cleanup:
++	for (idx = 1; idx < ARRAY_SIZE(snd_at73c213_controls) + 1; idx++) {
++		struct snd_kcontrol *kctl;
++		kctl = snd_ctl_find_numid(card, idx);
++		if (kctl)
++			snd_ctl_remove(card, kctl);
++	}
++	return errval;
++}
++
++/*
++ * Device functions
++ */
++static int snd_at73c213_ssc_init(struct snd_at73c213 *chip)
++{
++	/*
++	 * Continuous clock output.
++	 * Starts on falling TF.
++	 * Delay 1 cycle (1 bit).
++	 * Periode is 16 bit (16 - 1).
++	 */
++	ssc_writel(chip->ssc->regs, TCMR,
++			SSC_BF(TCMR_CKO, 1)
++			| SSC_BF(TCMR_START, 4)
++			| SSC_BF(TCMR_STTDLY, 1)
++			| SSC_BF(TCMR_PERIOD, 16 - 1));
++	/*
++	 * Data length is 16 bit (16 - 1).
++	 * Transmit MSB first.
++	 * Transmit 2 words each transfer.
++	 * Frame sync length is 16 bit (16 - 1).
++	 * Frame starts on negative pulse.
++	 */
++	ssc_writel(chip->ssc->regs, TFMR,
++			SSC_BF(TFMR_DATLEN, 16 - 1)
++			| SSC_BIT(TFMR_MSBF)
++			| SSC_BF(TFMR_DATNB, 1)
++			| SSC_BF(TFMR_FSLEN, 16 - 1)
++			| SSC_BF(TFMR_FSOS, 1));
++
++	return 0;
++}
++
++static int snd_at73c213_chip_init(struct snd_at73c213 *chip)
++{
++	int retval;
++	unsigned char dac_ctrl = 0;
++
++	retval = snd_at73c213_set_bitrate(chip);
++	if (retval)
++		goto out;
++
++	/* Enable DAC master clock. */
++	clk_enable(chip->board->dac_clk);
++
++	/* Initialize at73c213 on SPI bus. */
++	retval = snd_at73c213_write_reg(chip, DAC_RST, 0x04);
++	if (retval)
++		goto out_clk;
++	msleep(1);
++	retval = snd_at73c213_write_reg(chip, DAC_RST, 0x03);
++	if (retval)
++		goto out_clk;
++
++	/* Precharge everything. */
++	retval = snd_at73c213_write_reg(chip, DAC_PRECH, 0xff);
++	if (retval)
++		goto out_clk;
++	retval = snd_at73c213_write_reg(chip, PA_CTRL, (1<<PA_CTRL_APAPRECH));
++	if (retval)
++		goto out_clk;
++	retval = snd_at73c213_write_reg(chip, DAC_CTRL,
++			(1<<DAC_CTRL_ONLNOL) | (1<<DAC_CTRL_ONLNOR));
++	if (retval)
++		goto out_clk;
++
++	msleep(50);
++
++	/* Stop precharging PA. */
++	retval = snd_at73c213_write_reg(chip, PA_CTRL,
++			(1<<PA_CTRL_APALP) | 0x0f);
++	if (retval)
++		goto out_clk;
++
++	msleep(450);
++
++	/* Stop precharging DAC, turn on master power. */
++	retval = snd_at73c213_write_reg(chip, DAC_PRECH, (1<<DAC_PRECH_ONMSTR));
++	if (retval)
++		goto out_clk;
++
++	msleep(1);
++
++	/* Turn on DAC. */
++	dac_ctrl = (1<<DAC_CTRL_ONDACL) | (1<<DAC_CTRL_ONDACR)
++		| (1<<DAC_CTRL_ONLNOL) | (1<<DAC_CTRL_ONLNOR);
++
++	retval = snd_at73c213_write_reg(chip, DAC_CTRL, dac_ctrl);
++	if (retval)
++		goto out_clk;
++
++	/* Mute sound. */
++	retval = snd_at73c213_write_reg(chip, DAC_LMPG, 0x3f);
++	if (retval)
++		goto out_clk;
++	retval = snd_at73c213_write_reg(chip, DAC_RMPG, 0x3f);
++	if (retval)
++		goto out_clk;
++	retval = snd_at73c213_write_reg(chip, DAC_LLOG, 0x3f);
++	if (retval)
++		goto out_clk;
++	retval = snd_at73c213_write_reg(chip, DAC_RLOG, 0x3f);
++	if (retval)
++		goto out_clk;
++	retval = snd_at73c213_write_reg(chip, DAC_LLIG, 0x11);
++	if (retval)
++		goto out_clk;
++	retval = snd_at73c213_write_reg(chip, DAC_RLIG, 0x11);
++	if (retval)
++		goto out_clk;
++	retval = snd_at73c213_write_reg(chip, DAC_AUXG, 0x11);
++	if (retval)
++		goto out_clk;
++
++	/* Enable I2S device, i.e. clock output. */
++	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXEN));
++
++	goto out;
++
++out_clk:
++	clk_disable(chip->board->dac_clk);
++out:
++	return retval;
++}
++
++static int snd_at73c213_dev_free(struct snd_device *device)
++{
++	struct snd_at73c213 *chip = device->device_data;
++
++	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
++	if (chip->irq >= 0) {
++		free_irq(chip->irq, chip);
++		chip->irq = -1;
++	}
++
++	return 0;
++}
++
++static int __devinit snd_at73c213_dev_init(struct snd_card *card,
++					 struct spi_device *spi)
++{
++	static struct snd_device_ops ops = {
++		.dev_free	= snd_at73c213_dev_free,
++	};
++	struct snd_at73c213 *chip = get_chip(card);
++	int irq, retval;
++
++	irq = chip->ssc->irq;
++	if (irq < 0)
++		return irq;
++
++	spin_lock_init(&chip->lock);
++	chip->card = card;
++	chip->irq = -1;
++
++	retval = request_irq(irq, snd_at73c213_interrupt, 0, "at73c213", chip);
++	if (retval) {
++		dev_dbg(&chip->spi->dev, "unable to request irq %d\n", irq);
++		goto out;
++	}
++	chip->irq = irq;
++
++	memcpy(&chip->reg_image, &snd_at73c213_original_image,
++			sizeof(snd_at73c213_original_image));
++
++	retval = snd_at73c213_ssc_init(chip);
++	if (retval)
++		goto out_irq;
++
++	retval = snd_at73c213_chip_init(chip);
++	if (retval)
++		goto out_irq;
++
++	retval = snd_at73c213_pcm_new(chip, 0);
++	if (retval)
++		goto out_irq;
++
++	retval = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (retval)
++		goto out_irq;
++
++	retval = snd_at73c213_mixer(chip);
++	if (retval)
++		goto out_snd_dev;
++
++	snd_card_set_dev(card, &spi->dev);
++
++	goto out;
++
++out_snd_dev:
++	snd_device_free(card, chip);
++out_irq:
++	free_irq(chip->irq, chip);
++	chip->irq = -1;
++out:
++	return retval;
++}
++
++static int snd_at73c213_probe(struct spi_device *spi)
++{
++	struct snd_card			*card;
++	struct snd_at73c213		*chip;
++	struct at73c213_board_info	*board;
++	int				retval;
++	char				id[16];
++
++	board = spi->dev.platform_data;
++	if (!board) {
++		dev_dbg(&spi->dev, "no platform_data\n");
++		return -ENXIO;
++	}
++
++	if (!board->dac_clk) {
++		dev_dbg(&spi->dev, "no DAC clk\n");
++		return -ENXIO;
++	}
++
++	if (IS_ERR(board->dac_clk)) {
++		dev_dbg(&spi->dev, "no DAC clk\n");
++		return PTR_ERR(board->dac_clk);
++	}
++
++	retval = -ENOMEM;
++
++	/* Allocate "card" using some unused identifiers. */
++	snprintf(id, sizeof id, "at73c213_%d", board->ssc_id);
++	card = snd_card_new(-1, id, THIS_MODULE, sizeof(struct snd_at73c213));
++	if (!card)
++		goto out;
++
++	chip = card->private_data;
++	chip->spi = spi;
++	chip->board = board;
++
++	chip->ssc = ssc_request(board->ssc_id);
++	if (IS_ERR(chip->ssc)) {
++		dev_dbg(&spi->dev, "could not get ssc%d device\n",
++				board->ssc_id);
++		retval = PTR_ERR(chip->ssc);
++		goto out_card;
++	}
++
++	retval = snd_at73c213_dev_init(card, spi);
++	if (retval)
++		goto out_ssc;
++
++	strcpy(card->driver, "at73c213");
++	strcpy(card->shortname, board->shortname);
++	sprintf(card->longname, "%s on irq %d", card->shortname, chip->irq);
++
++	retval = snd_card_register(card);
++	if (retval)
++		goto out_ssc;
++
++	dev_set_drvdata(&spi->dev, card);
++
++	goto out;
++
++out_ssc:
++	ssc_free(chip->ssc);
++out_card:
++	snd_card_free(card);
++out:
++	return retval;
++}
++
++static int __devexit snd_at73c213_remove(struct spi_device *spi)
++{
++	struct snd_card *card = dev_get_drvdata(&spi->dev);
++	struct snd_at73c213 *chip = card->private_data;
++	int retval;
++
++	/* Stop playback. */
++	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
++
++	/* Mute sound. */
++	retval = snd_at73c213_write_reg(chip, DAC_LMPG, 0x3f);
++	if (retval)
++		goto out;
++	retval = snd_at73c213_write_reg(chip, DAC_RMPG, 0x3f);
++	if (retval)
++		goto out;
++	retval = snd_at73c213_write_reg(chip, DAC_LLOG, 0x3f);
++	if (retval)
++		goto out;
++	retval = snd_at73c213_write_reg(chip, DAC_RLOG, 0x3f);
++	if (retval)
++		goto out;
++	retval = snd_at73c213_write_reg(chip, DAC_LLIG, 0x11);
++	if (retval)
++		goto out;
++	retval = snd_at73c213_write_reg(chip, DAC_RLIG, 0x11);
++	if (retval)
++		goto out;
++	retval = snd_at73c213_write_reg(chip, DAC_AUXG, 0x11);
++	if (retval)
++		goto out;
++
++	/* Turn off PA. */
++	retval = snd_at73c213_write_reg(chip, PA_CTRL, (chip->reg_image[PA_CTRL]|0x0f));
++	if (retval)
++		goto out;
++	msleep(10);
++	retval = snd_at73c213_write_reg(chip, PA_CTRL, (1<<PA_CTRL_APALP)|0x0f);
++	if (retval)
++		goto out;
++
++	/* Turn off external DAC. */
++	retval = snd_at73c213_write_reg(chip, DAC_CTRL, 0x0c);
++	if (retval)
++		goto out;
++	msleep(2);
++	retval = snd_at73c213_write_reg(chip, DAC_CTRL, 0x00);
++	if (retval)
++		goto out;
++
++	/* Turn off master power. */
++	retval = snd_at73c213_write_reg(chip, DAC_PRECH, 0x00);
++	if (retval)
++		goto out;
++
++out:
++	/* Stop DAC master clock. */
++	clk_disable(chip->board->dac_clk);
++
++	ssc_free(chip->ssc);
++	snd_card_free(card);
++	dev_set_drvdata(&spi->dev, NULL);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int snd_at73c213_suspend(struct spi_device *spi, pm_message_t msg)
++{
++	struct snd_card *card = dev_get_drvdata(&spi->dev);
++	struct snd_at73c213 *chip = card->private_data;
++
++	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXDIS));
++	clk_disable(chip->board->dac_clk);
++
++	return 0;
++}
++
++static int snd_at73c213_resume(struct spi_device *spi)
++{
++	struct snd_card *card = dev_get_drvdata(&spi->dev);
++	struct snd_at73c213 *chip = card->private_data;
++
++	clk_enable(chip->board->dac_clk);
++	ssc_writel(chip->ssc->regs, CR, SSC_BIT(CR_TXEN));
++
++	return 0;
++}
++#else
++#define snd_at73c213_suspend NULL
++#define snd_at73c213_resume NULL
++#endif
++
++static struct spi_driver at73c213_driver = {
++	.driver		= {
++		.name	= "at73c213",
++	},
++	.probe		= snd_at73c213_probe,
++	.suspend	= snd_at73c213_suspend,
++	.resume		= snd_at73c213_resume,
++	.remove		= __devexit_p(snd_at73c213_remove),
++};
++
++static int __init at73c213_init(void)
++{
++	return spi_register_driver(&at73c213_driver);
++}
++module_init(at73c213_init);
++
++static void __exit at73c213_exit(void)
++{
++	spi_unregister_driver(&at73c213_driver);
++}
++module_exit(at73c213_exit);
++
++MODULE_AUTHOR("Hans-Christian Egtvedt <hcegtvedt@atmel.com>");
++MODULE_DESCRIPTION("Sound driver for AT73C213 with Atmel SSC");
++MODULE_LICENSE("GPL");
+diff --git a/sound/spi/at73c213.h b/sound/spi/at73c213.h
+new file mode 100644
+index 0000000..fd8b372
+--- /dev/null
++++ b/sound/spi/at73c213.h
+@@ -0,0 +1,119 @@
++/*
++ * Driver for the AT73C213 16-bit stereo DAC on Atmel ATSTK1000
++ *
++ * Copyright (C) 2006 - 2007 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of the
++ * License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
++ * 02111-1307, USA.
++ *
++ * The full GNU General Public License is included in this
++ * distribution in the file called COPYING.
++ */
++
++#ifndef _SND_AT73C213_H
++#define _SND_AT73C213_H
++
++/* DAC control register */
++#define DAC_CTRL		0x00
++#define DAC_CTRL_ONPADRV	7
++#define DAC_CTRL_ONAUXIN	6
++#define DAC_CTRL_ONDACR		5
++#define DAC_CTRL_ONDACL		4
++#define DAC_CTRL_ONLNOR		3
++#define DAC_CTRL_ONLNOL		2
++#define DAC_CTRL_ONLNIR		1
++#define DAC_CTRL_ONLNIL		0
++
++/* DAC left line in gain register */
++#define DAC_LLIG		0x01
++#define DAC_LLIG_LLIG		0
++
++/* DAC right line in gain register */
++#define DAC_RLIG		0x02
++#define DAC_RLIG_RLIG		0
++
++/* DAC Left Master Playback Gain Register */
++#define DAC_LMPG		0x03
++#define DAC_LMPG_LMPG		0
++
++/* DAC Right Master Playback Gain Register */
++#define DAC_RMPG		0x04
++#define DAC_RMPG_RMPG		0
++
++/* DAC Left Line Out Gain Register */
++#define DAC_LLOG		0x05
++#define DAC_LLOG_LLOG		0
++
++/* DAC Right Line Out Gain Register */
++#define DAC_RLOG		0x06
++#define DAC_RLOG_RLOG		0
++
++/* DAC Output Level Control Register */
++#define DAC_OLC			0x07
++#define DAC_OLC_RSHORT		7
++#define DAC_OLC_ROLC		4
++#define DAC_OLC_LSHORT		3
++#define DAC_OLC_LOLC		0
++
++/* DAC Mixer Control Register */
++#define DAC_MC			0x08
++#define DAC_MC_INVR		5
++#define DAC_MC_INVL		4
++#define DAC_MC_RMSMIN2		3
++#define DAC_MC_RMSMIN1		2
++#define DAC_MC_LMSMIN2		1
++#define DAC_MC_LMSMIN1		0
++
++/* DAC Clock and Sampling Frequency Control Register */
++#define DAC_CSFC		0x09
++#define DAC_CSFC_OVRSEL		4
++
++/* DAC Miscellaneous Register */
++#define DAC_MISC		0x0A
++#define DAC_MISC_VCMCAPSEL	7
++#define DAC_MISC_DINTSEL	4
++#define DAC_MISC_DITHEN		3
++#define DAC_MISC_DEEMPEN	2
++#define DAC_MISC_NBITS		0
++
++/* DAC Precharge Control Register */
++#define DAC_PRECH		0x0C
++#define DAC_PRECH_PRCHGPDRV	7
++#define DAC_PRECH_PRCHGAUX1	6
++#define DAC_PRECH_PRCHGLNOR	5
++#define DAC_PRECH_PRCHGLNOL	4
++#define DAC_PRECH_PRCHGLNIR	3
++#define DAC_PRECH_PRCHGLNIL	2
++#define DAC_PRECH_PRCHG		1
++#define DAC_PRECH_ONMSTR	0
++
++/* DAC Auxiliary Input Gain Control Register */
++#define DAC_AUXG		0x0D
++#define DAC_AUXG_AUXG		0
++
++/* DAC Reset Register */
++#define DAC_RST			0x10
++#define DAC_RST_RESMASK		2
++#define DAC_RST_RESFILZ		1
++#define DAC_RST_RSTZ		0
++
++/* Power Amplifier Control Register */
++#define PA_CTRL			0x11
++#define PA_CTRL_APAON		6
++#define PA_CTRL_APAPRECH	5
++#define PA_CTRL_APALP		4
++#define PA_CTRL_APAGAIN		0
++
++#endif /* _SND_AT73C213_H */
+-- 
+1.5.2.3
+
+
+--=-AUyv9PDBqTOzFdJ/BnKL
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -212,4 +1620,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---Boundary-00=_hJGnGeGxYAQF5Ky--
+--=-AUyv9PDBqTOzFdJ/BnKL--
