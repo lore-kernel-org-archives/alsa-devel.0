@@ -1,19 +1,24 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: SALSA and aplay
-Date: Tue, 17 Jul 2007 12:33:36 +0100
-Message-ID: <200707171233.36222.gineera@aspect135.co.uk>
-References: <200707161340.23503.gineera@aspect135.co.uk>
-	<s5hzm1wwmxw.wl%tiwai@suse.de>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: Re: [PATCH 2/2] ALSA sound driver for
+	the	AT73C213	DAC	using Atmel SSC driver
+Date: Tue, 17 Jul 2007 13:23:31 +0200
+Message-ID: <1184671411.12675.13.camel@localhost.localdomain>
+References: <11845952993023-git-send-email-hcegtvedt@atmel.com>
+	<11845952991232-git-send-email-hcegtvedt@atmel.com>
+	<s5hwsx0xu7h.wl%tiwai@suse.de>
+	<1184661441.12675.6.camel@localhost.localdomain>
+	<20070717104859.34f76382@dhcp-255-175.norway.atmel.com>
+	<1184662459.12675.8.camel@localhost.localdomain>
+	<s5hvecjwcoz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CF6C1037F3
+Received: from relay.atmel.no (nat-132.atmel.no [80.232.32.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FE1710381B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Jul 2007 13:12:14 +0200 (CEST)
-In-Reply-To: <s5hzm1wwmxw.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Tue, 17 Jul 2007 13:21:44 +0200 (CEST)
+In-Reply-To: <s5hvecjwcoz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,47 +28,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kernel@avr32linux.org, Haavard Skinnemoen <hskinnemoen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 16 July 2007 13:30, you wrote:
-> At Mon, 16 Jul 2007 13:40:23 +0100,
->
-> Alan Horstmann wrote:
-> > Quick questions:
-> >
-> > 1. Does SALSA provide everything needed by aplay?
->
-> Most but not everything.  The missing features are:
-> - snd_pcm_mmap_read*/write*() (corresponding to -M option)
-> - device listing (namehint)
+On Tue, 2007-07-17 at 12:23 +0200, Takashi Iwai wrote:
+> At Tue, 17 Jul 2007 10:54:19 +0200,
+> Hans-Christian Egtvedt wrote:
+> > On Tue, 2007-07-17 at 10:48 +0200, Haavard Skinnemoen wrote:
+> > > On Tue, 17 Jul 2007 10:37:21 +0200
+> > > Hans-Christian Egtvedt <hcegtvedt@atmel.com> wrote:
 
-Thanks.  Presumably that explains 'undeclared' error for 'snd_devname_t' and 
-'snd_config' when linking aplay code to salsa.  I commented out all 
-applicable bits and it is OK.
+<cut memory preallocation discussion>
 
-Can salsa-lib be installed at the same time as alsa-lib?  There seems to be 
-conflicts.  For now I have uninstalled and installed alternately.
+> > New patch attached.
+> 
+> The patch looks fine, but I suppose it's a post-2.6.23 material,
+> judging from the current situation.  Is it OK?
 
-I have very crudely hacked the aplay code and included it as a function in 
-code to make a simple key-press play a set file.  Linking -lasound this seems 
-to work fine.  However, linking -lsalsa results in the file playing too fast, 
-but not as much as double.
+I guess post-2.6.23 is fine since it seems nobody is reacting to the
+atmel-ssc driver, will bump it later today.
 
-As my experimental system has ice1712 card, I am having to use a 10 track WAV 
-file S32_LE as I think that is the only format supported, the card working 
-with 24-bits loose fitted in 32-bits.  Is that right?  Is there still 
-something that alsa-lib is doing to the data that salsa doesn't?  My example 
-wav file was recorded using standard  aplay, and has meaningful sound just on 
-the first 4 tracks, which appear correctly in pcm out 1-4 (visible in 
-envy24control), at the correct level, just too fast.  The included aplay 
-correctly reports
+I will notify you if it seems like they will fit it for 2.6.23.
 
-	try3.wav' : Signed 32 bit Little Endian, Rate 44100 Hz, Channels 10
+> Then I'll queue it soon after the merge window is closed, so that your
+> driver appears in the mm tree.
 
-when begining to play.
+Thanks.
 
-Can you give any pointers to issues to investigate etc or things to consider?
+-- 
+With kind regards,
 
-Alan
+Hans-Christian Egtvedt, siv.ing. (M.Sc.)
+Applications Engineer - AVR32 System Solutions - Atmel Norway
