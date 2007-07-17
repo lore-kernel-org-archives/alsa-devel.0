@@ -1,19 +1,21 @@
 From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
-Subject: Re: [PATCH 2/2] ALSA sound driver for the
-	AT73C213	DAC	using Atmel SSC driver
-Date: Tue, 17 Jul 2007 10:37:21 +0200
-Message-ID: <1184661441.12675.6.camel@localhost.localdomain>
+Subject: Re: [PATCH 2/2] ALSA sound driver for the AT73C213	DAC
+	using Atmel SSC driver
+Date: Tue, 17 Jul 2007 10:54:19 +0200
+Message-ID: <1184662459.12675.8.camel@localhost.localdomain>
 References: <11845952993023-git-send-email-hcegtvedt@atmel.com>
 	<11845952991232-git-send-email-hcegtvedt@atmel.com>
 	<s5hwsx0xu7h.wl%tiwai@suse.de>
+	<1184661441.12675.6.camel@localhost.localdomain>
+	<20070717104859.34f76382@dhcp-255-175.norway.atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-AUyv9PDBqTOzFdJ/BnKL"
+Content-Type: multipart/mixed; boundary="=-zhf1GaBSeEtL5hs3rxas"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay.atmel.no (nat-132.atmel.no [80.232.32.132])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4724410381C
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D8FD2434B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Jul 2007 10:35:36 +0200 (CEST)
-In-Reply-To: <s5hwsx0xu7h.wl%tiwai@suse.de>
+	Tue, 17 Jul 2007 10:52:33 +0200 (CEST)
+In-Reply-To: <20070717104859.34f76382@dhcp-255-175.norway.atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,221 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kernel@avr32linux.org
+To: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel@avr32linux.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-AUyv9PDBqTOzFdJ/BnKL
+--=-zhf1GaBSeEtL5hs3rxas
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Mon, 2007-07-16 at 17:08 +0200, Takashi Iwai wrote:
-> At Mon, 16 Jul 2007 16:14:59 +0200,
-> Hans-Christian Egtvedt wrote:
+
+On Tue, 2007-07-17 at 10:48 +0200, Haavard Skinnemoen wrote:
+> On Tue, 17 Jul 2007 10:37:21 +0200
+> Hans-Christian Egtvedt <hcegtvedt@atmel.com> wrote:
+> 
+> > > > +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &at73c213_playback_ops);
+> > > > +
+> > > > +	retval = snd_pcm_lib_preallocate_pages_for_all(chip->pcm,
+> > > > +			SNDRV_DMA_TYPE_DEV,
+> > > > +			snd_dma_continuous_data(GFP_KERNEL),
+> > > > +			64 * 1024, 64 * 1024);  
+> > > 
+> > > For SNDRV_DMA_TYPE_DEV, pass the struct device pointer of the device
+> > > to the third argument.  Then the pre-allocator will allocate the
+> > > memory via dma_alloc_coherent() with the givn device.  If it's not
+> > > appropriate, SNDRV_DMA_TYPE_CONTINUOUS type.  Anyway,
+> > > snd_dma_continuous_data() is only for SNDRV_DMA_TYPE_CONTINUOUS.  
 > > 
-> > --- /dev/null
-> > +++ b/include/linux/spi/at73c213.h
-> > @@ -0,0 +1,25 @@
-> > +/*
-> > + * Board-specific data used to set up AT73c213 audio DAC driver.
-> > + */
-> > +
-> > +#ifndef __LINUX_SPI_AT73C213_H
-> > +#define __LINUX_SPI_AT73C213_H
-> > +
-> > +/**
-> > + * at73c213_board_info - how the external DAC is wired to the device.
-> > + *
-> > + * @ssc_id: SSC platform_driver id the DAC shall use to stream the audio.
-> > + * @dac_clk: the external clock used to provide master clock to the DAC.
-> > + * @shortname: a short discription for the DAC, seen by userspace tools.
-> > + *
-> > + * This struct contains the configuration of the hardware connection to the
-> > + * external DAC. The DAC needs a master clock and a I2S audio stream. It also
-> > + * provides a name which is used to identify it in userspace tools.
-> > + */
-> > +struct at73c213_board_info {
-> > +	int		ssc_id;
-> > +	struct clk	*dac_clk;
-> > +	char		shortname[32];
-> > +};
-> > +
-> > +#endif /* __LINUX_SPI_AT73C213_H */
+> > Ok, applied. Using &chip->spi->dev.
 > 
-> Any reason to put this into include/linux?  Are (or will be) there
-> users of this except for ALSA driver?
-
-I think Haavards answer describes the usage well.
-
-> > diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
-> > new file mode 100644
-> > index 0000000..ea6126b
-> > --- /dev/null
-> > +++ b/sound/spi/at73c213.c
-> (snip)
-> > +#include <linux/kmod.h>
+> Not that I think it matters at the moment, but that's not entirely
+> correct. The memory is used for DMA transfers to the SSC controller,
+> not the SPI device, so you should pass the SSC's struct device here.
 > 
-> Unneeded.
+> In other words, I think you should use &chip->ssc->pdev->dev.
 
-Removed
+Hmm, my fault, applied.
 
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/io.h>
-> > +
-> > +#include <sound/initval.h>
-> > +#include <sound/driver.h>
-> 
-> Please put sound/driver.h at first.  This will make it for us much
-> easier to maintain the out-of-kernel tree.
-
-Ok, applied.
-
-> > +/*
-> > + * Calculate and set bitrate and divisions.
-> > + */
-> > +static int snd_at73c213_set_bitrate(struct snd_at73c213 *chip)
-> > +{
-> > +	unsigned long ssc_rate = clk_get_rate(chip->ssc->clk);
-> > +	unsigned long dac_rate_new, ssc_div, status;
-> > +	unsigned long ssc_div_max, ssc_div_min;
-> > +	int max_tries;
-> > +
-> > +	/*
-> > +	 * We connect two clocks here, picking divisors so the I2S clocks
-> > +	 * out data at the same rate the DAC clocks it in ... and as close
-> > +	 * as practical to the desired target rate.
-> > +	 *
-> > +	 * The DAC master clock (MCLK) is programmable, and is either 256
-> > +	 * or (not here) 384 times the I2S output clock (BCLK).
-> > +	 */
-> > +
-> > +	/* SSC clock / (bitrate * stereo * 16-bit). */
-> > +	ssc_div = ssc_rate / (BITRATE_TARGET * 2 * 16);
-> > +	ssc_div_min = ssc_rate / (BITRATE_MAX * 2 * 16);
-> > +	ssc_div_max = ssc_rate / (BITRATE_MIN * 2 * 16);
-> > +	max_tries = (ssc_div_max - ssc_div_min) / 2;
-> > +
-> > +	/* ssc_div must be a power of 2. */
-> > +	ssc_div = (ssc_div + 1) & ~1UL;
-> > +
-> > +	if ((ssc_rate / (ssc_div * 2 * 16)) < BITRATE_MIN) {
-> > +		ssc_div -= 2;
-> > +		if ((ssc_rate / (ssc_div * 2 * 16)) > BITRATE_MAX) {
-> > +			return -ENXIO;
-> > +		}
-> 
-> Remove braces for a single-if block.
-
-Applied.
-
-> > +	}
-> > +
-> > +	/* Search for a possible bitrate. */
-> > +	do {
-> > +		/* SSC clock / (ssc divider * 16-bit * stereo). */
-> > +		if ((ssc_rate / (ssc_div * 2 * 16)) < BITRATE_MIN)
-> > +			return -ENXIO;
-> > +
-> > +		/* 256 / (2 * 16) = 8 */
-> > +		dac_rate_new = 8 * (ssc_rate / ssc_div);
-> > +
-> > +		status = clk_round_rate(chip->board->dac_clk, dac_rate_new);
-> > +		if (status < 0)
-> > +			return status;
-> > +
-> > +		/* Ignore difference smaller than 256 Hz. */
-> > +		if ((status/256) == (dac_rate_new/256))
-> > +			goto set_rate;
-> > +
-> > +		ssc_div += 2;
-> > +	} while (--max_tries);
-> 
-> Can't be max_tries = 0 in theory?
-
-Added a check earlier in the code which sets max_tries to 1 if it is
-smaller than 1. Could have been ugly for really low rates on the module,
-although it should not happen(tm).
-
-	if (max_tries < 1)
-		max_tries = 1;
-
-> > +static int snd_at73c213_pcm_trigger(struct snd_pcm_substream *substream,
-> > +				   int cmd)
-> > +{
-> > +	struct snd_at73c213 *chip = snd_pcm_substream_chip(substream);
-> > +	int retval = 0;
-> > +	unsigned long flags = 0;
-> > +
-> > +	spin_lock_irqsave(&chip->lock, flags);
-> 
-> The trigger callback is already spinlock+irqsaved.
-> So, spin_lock() / spin_unlock() should be enough.
-
-Ok, applied.
-
-> > +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &at73c213_playback_ops);
-> > +
-> > +	retval = snd_pcm_lib_preallocate_pages_for_all(chip->pcm,
-> > +			SNDRV_DMA_TYPE_DEV,
-> > +			snd_dma_continuous_data(GFP_KERNEL),
-> > +			64 * 1024, 64 * 1024);
-> 
-> For SNDRV_DMA_TYPE_DEV, pass the struct device pointer of the device
-> to the third argument.  Then the pre-allocator will allocate the
-> memory via dma_alloc_coherent() with the givn device.  If it's not
-> appropriate, SNDRV_DMA_TYPE_CONTINUOUS type.  Anyway,
-> snd_dma_continuous_data() is only for SNDRV_DMA_TYPE_CONTINUOUS.
-
-Ok, applied. Using &chip->spi->dev.
-
-> > +/*
-> > + * Mixer functions.
-> > + */
-> > +static int snd_at73c213_mono_get(struct snd_kcontrol *kcontrol,
-> > +				 struct snd_ctl_elem_value *ucontrol)
-> > +{
-> > +	struct snd_at73c213 *chip = snd_kcontrol_chip(kcontrol);
-> > +	unsigned long flags;
-> > +	int reg = kcontrol->private_value & 0xff;
-> > +	int shift = (kcontrol->private_value >> 8) & 0xff;
-> > +	int mask = (kcontrol->private_value >> 16) & 0xff;
-> > +	int invert = (kcontrol->private_value >> 24) & 0xff;
-> > +
-> > +	spin_lock_irqsave(&chip->lock, flags);
-> 
-> The mixer (control) callbacks are all schedulable, so you need no
-> irqsave but spin_lock_irq() should be fine.
-
-Ok, applied.
-
-> > +static int __devinit snd_at73c213_mixer(struct snd_at73c213 *chip)
-> > +{
-> > +	struct snd_card *card;
-> > +	int errval, idx;
-> > +
-> > +	if (chip == NULL || chip->pcm == NULL)
-> > +		return -EINVAL;
-> > +
-> > +	card = chip->card;
-> > +
-> > +	strcpy(card->mixername, chip->pcm->name);
-> > +
-> > +	for (idx = 0; idx < ARRAY_SIZE(snd_at73c213_controls); idx++) {
-> > +		if ((errval = snd_ctl_add(card,
-> > +				snd_ctl_new1(&snd_at73c213_controls[idx],
-> > +				chip))) < 0) {
-> > +			goto cleanup;
-> > +		}
-> 
-> Split errval = ; and if (errval < 0) ...
-> Also drop braces for a single if block.
-
-Ok, applied.
-
-I have attached an updated patch with the changes you noted above.
-Thanks for the review.
+New patch attached.
 
 -- 
 With kind regards,
@@ -245,12 +70,12 @@ With kind regards,
 Hans-Christian Egtvedt, siv.ing. (M.Sc.)
 Applications Engineer - AVR32 System Solutions - Atmel Norway
 
---=-AUyv9PDBqTOzFdJ/BnKL
+--=-zhf1GaBSeEtL5hs3rxas
 Content-Disposition: attachment; filename*0=0001-ALSA-sound-driver-for-the-AT73C213-DAC-using-Atmel-S.pat; filename*1=ch
 Content-Type: application/mbox; name=0001-ALSA-sound-driver-for-the-AT73C213-DAC-using-Atmel-S.patch
 Content-Transfer-Encoding: 7bit
 
->From 9a5c464308d1f3712ffca1ab3948a49d53da9a6f Mon Sep 17 00:00:00 2001
+>From 65eff8723a851c0df1f429112e817e0d5f1ab798 Mon Sep 17 00:00:00 2001
 From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
 Date: Thu, 5 Jul 2007 18:09:33 +0200
 Subject: [PATCH 1/1] ALSA sound driver for the AT73C213 DAC using Atmel SSC driver
@@ -355,7 +180,7 @@ index 30d8ec9..026fb73 100644
 +obj-$(CONFIG_SND_AT73C213)	+= snd-at73c213.o
 diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
 new file mode 100644
-index 0000000..a466929
+index 0000000..f514f47
 --- /dev/null
 +++ b/sound/spi/at73c213.c
 @@ -0,0 +1,1121 @@
@@ -701,7 +526,7 @@ index 0000000..a466929
 +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &at73c213_playback_ops);
 +
 +	retval = snd_pcm_lib_preallocate_pages_for_all(chip->pcm,
-+			SNDRV_DMA_TYPE_DEV, &chip->spi->dev,
++			SNDRV_DMA_TYPE_DEV, &chip->ssc->pdev->dev,
 +			64 * 1024, 64 * 1024);
 +out:
 +	return retval;
@@ -1609,7 +1434,7 @@ index 0000000..fd8b372
 1.5.2.3
 
 
---=-AUyv9PDBqTOzFdJ/BnKL
+--=-zhf1GaBSeEtL5hs3rxas
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1620,4 +1445,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---=-AUyv9PDBqTOzFdJ/BnKL--
+--=-zhf1GaBSeEtL5hs3rxas--
