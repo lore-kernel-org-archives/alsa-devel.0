@@ -1,16 +1,17 @@
-From: David Webb <david.webb@noc.soton.ac.uk>
-Subject: The users view of an audio card
-Date: Thu, 19 Jul 2007 18:12:54 +0100
-Message-ID: <200707191812.55106.david.webb@noc.soton.ac.uk>
+From: "Yann Le Brech" <yann@le-brech.fr>
+Subject: Problem and workaround for Intel HDA
+Date: Thu, 19 Jul 2007 18:58:42 +0200
+Message-ID: <f3642ae30707190958idfedba3g923de8213d1a6881@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgate5.iss.soton.ac.uk (mailgate5.iss.soton.ac.uk
-	[152.78.128.106])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1774724179
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.232])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF982103811
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jul 2007 19:10:48 +0200 (CEST)
+	Thu, 19 Jul 2007 18:58:43 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id m22so554405nzf
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2007 09:58:42 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,77 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-I've been editing a couple of the unofficial wiki pages and a number of issues 
-have arisen.  My own system has the NVidia/Realtek motherboard chips so I may 
-be in the dark about what is available on other chips.  Some of the questions 
-are background to ensure that what I write later in the wiki is correct.  
-Takashi Iwai suggested I raise the issues here:
+The problem : missing controls of the sound cards for an Intel HDA,
+Toshiba Satellite Pro U200
 
-1.  A large number of users seem to be reporting problems with Nvidia and Via 
-soundcards.  As far as I can tell Nvidia and Via do not produce soundcards 
-but they do produce chipsets with southbridges which can connect to a 
-motherboard audio chip.  The when alsamixer (or Kmix) runs it reports 
-something like:
-  Card:  NVidia CK804
-  Chip:  Realtek AL650 rev 0
-Presumably because the southbridge is the primary PCI device.
+Full description :
+I was using the kernel 2.6.19 for a while, and I got some interesting
+functions like controlling the sound level on headphones or speakers
+separately. Then I upgraded to the kernel 2.6.21.1 and suddently the
+level controls changed, to useless level controls, like Master and PCM
+only (and some other useless). I wanted to get back to the previous
+control set, and I've found a solution by checking what was done in
+debugging mode. The previous kernel was not detecting the model
+config, but the new one did. So I simply strapped the detection
+routine by a return -1 and it did the trick. I know its not the best
+thing to do, but it was the simplest thing I thought about.
 
-So:
+Outputs :
+2.6.19's Alsa output :
 
-1.1  Is the above always correct (so I can add it to the wiki)?
-1.2   Could alsamixer etc be modified to give a more sensible answer for 
-non-experts.  
+ALSA sound/pci/hda/hda_intel.c:695: codec_mask = 0x3
 
-Something like:
-  Card:  Motherboard via NVidia CK804
-  Chip:  Realtek AL650 rev 0
-might work.  I presume a look-up table is used to convert the PCI 2-byte 
-integers to the above names so presumably the extra information needed could 
-be obtained at this level.
+2.6.21.1 :
 
-2.  On different motherboards a Realtek 650 may be connected using a NVidia 
-CK804 with the intel8x0 alsa driver or using a VIA VT8233 with the vt82xx 
-driver.
+ALSA sound/pci/hda/hda_intel.c:695: codec_mask = 0x3
+ALSA sound/pci/hda/hda_codec.c:1757: hda_codec: model 'toshiba' is
+selected for config 1179:1 (Toshiba U205)
 
-2.1  Given that the audio chip registers are the same in both cases why are 
-two different drivers needed?  (Are they?)
-2.2  If it is something to do with the southbridges, where may the manuals 
-that describe the differences be found?  
-2.3  What would happen if the motherboard manufacturers kept the same 
-southbridges but started using an audio chip with a different set of 
-registers?
-(2.2a  Where can an AD'97 manual be found? - I could not find one on the intel 
-site)
+How to see the problem :
+Just see the list of controls in any mixer software.
 
-3.  The Realtek 650 datasheet implies that independently of the mixing in the 
-main input -> line-out pathway, the input to the ADC (i.e. on capture) may 
-include more than one source (i.e. both audio and microphone).  However 
-alsamixer (and kmix) only allows me one input stream.  So:
+Environment :
+Toshiba Satellite Pro U200
 
-3.1  Is the manual misleading or have I misread it?
-3.2  Is the manual correct but the driver is based on an earlier intel chip 
-which did not have this facility?
+Software :
+KateOS 3.2 with Linux 2.6.19 (working) and 2.6.21.1 (not working)
 
-Related to this the manual seems to show a number of options which I cannot 
-identify in alsamixer.  For example the manual shows two surroundsound volume 
-stages between which there are switched links, one to and two from the main 
-stero path.  Alsamixer shows a single amplifier.  It has one link 'from' the 
-main path but I could not find a link 'to' the main path. 
+Workaround :
 
-3.3  Is the driver assuming a old layout which fits most of the new audio chip 
-layout but not all?  (This is really a question about what sort of 
-warnings/advice should my write up include).
+int __devinit snd_hda_check_board_config(struct hda_codec *codec,
+					 int num_configs, const char **models,
+					 const struct snd_pci_quirk *tbl)
+{
+	return -1;  // WORKAROUND
+	if (codec->bus->modelname && models) {
+		int i;
+		for (i = 0; i < num_configs; i++) {
+			if (models[i] &&
 
-3.4  At which stage does alsa relate the registers to the descriptions, 
-aux-volume, aux-mute etc?  Again does it assume a layout which fits most 
-aspects of the chips listed?
-
-Thats enough for the moment.  I presume I could sit down for a year and read 
-and understand the code - but in the meantime any help will be welcome.
-
-Regards,
-
-David Webb.
+-- 
+a++
+Y.
