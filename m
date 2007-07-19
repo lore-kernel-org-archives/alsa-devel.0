@@ -1,18 +1,17 @@
-From: "Yann Le Brech" <yann@le-brech.fr>
-Subject: Problem and workaround for Intel HDA
-Date: Thu, 19 Jul 2007 18:58:42 +0200
-Message-ID: <f3642ae30707190958idfedba3g923de8213d1a6881@mail.gmail.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: The users view of an audio card
+Date: Thu, 19 Jul 2007 10:52:19 -0700
+Message-ID: <1184867539.4826.10.camel@razman.gruemaster.com>
+References: <200707191812.55106.david.webb@noc.soton.ac.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.232])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF982103811
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id A86A72433C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jul 2007 18:58:43 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id m22so554405nzf
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2007 09:58:42 -0700 (PDT)
-Content-Disposition: inline
+	Thu, 19 Jul 2007 19:52:26 +0200 (CEST)
+In-Reply-To: <200707191812.55106.david.webb@noc.soton.ac.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Webb <david.webb@noc.soton.ac.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The problem : missing controls of the sound cards for an Intel HDA,
-Toshiba Satellite Pro U200
+On Thu, 2007-07-19 at 18:12 +0100, David Webb wrote:
 
-Full description :
-I was using the kernel 2.6.19 for a while, and I got some interesting
-functions like controlling the sound level on headphones or speakers
-separately. Then I upgraded to the kernel 2.6.21.1 and suddently the
-level controls changed, to useless level controls, like Master and PCM
-only (and some other useless). I wanted to get back to the previous
-control set, and I've found a solution by checking what was done in
-debugging mode. The previous kernel was not detecting the model
-config, but the new one did. So I simply strapped the detection
-routine by a return -1 and it did the trick. I know its not the best
-thing to do, but it was the simplest thing I thought about.
+> (2.2a  Where can an AD'97 manual be found? - I could not find one on
+> the intel 
+> site) 
 
-Outputs :
-2.6.19's Alsa output :
+The AC'97 PRM is here:
+http://download.intel.com/design/chipsets/manuals/30701701.pdf
+The Intel HD Audio PRM is here:
+http://download.intel.com/design/chipsets/manuals/30234903.pdf
 
-ALSA sound/pci/hda/hda_intel.c:695: codec_mask = 0x3
+Both are specs for onboard codec buses.  More recent chipsets utilize
+the HD Audio bus specification, as it gives superior output capabilities
+and supports more devices (like modems and other vendor defined codecs).
+One of the main improvements over the AC'97 spec is the uniform
+programming interface (which is one of the problems you seem to be
+running into).
 
-2.6.21.1 :
-
-ALSA sound/pci/hda/hda_intel.c:695: codec_mask = 0x3
-ALSA sound/pci/hda/hda_codec.c:1757: hda_codec: model 'toshiba' is
-selected for config 1179:1 (Toshiba U205)
-
-How to see the problem :
-Just see the list of controls in any mixer software.
-
-Environment :
-Toshiba Satellite Pro U200
-
-Software :
-KateOS 3.2 with Linux 2.6.19 (working) and 2.6.21.1 (not working)
-
-Workaround :
-
-int __devinit snd_hda_check_board_config(struct hda_codec *codec,
-					 int num_configs, const char **models,
-					 const struct snd_pci_quirk *tbl)
-{
-	return -1;  // WORKAROUND
-	if (codec->bus->modelname && models) {
-		int i;
-		for (i = 0; i < num_configs; i++) {
-			if (models[i] &&
+Beyond that, others will need to interject more answers to your
+questions.
 
 -- 
-a++
-Y.
+Tobin Davis  
+
+
+In every non-trivial program there is at least one bug.
