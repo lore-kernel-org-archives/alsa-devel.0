@@ -1,19 +1,21 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Hidden rate conversion, and Alsa configuration
-Date: Fri, 20 Jul 2007 13:33:38 +0100
-Message-ID: <200707201333.38449.gineera@aspect135.co.uk>
-References: <200707161340.23503.gineera@aspect135.co.uk>
-	<s5hy7hcu49f.wl%tiwai@suse.de> <20070719142440.GA2467@localhost>
+From: Saurav SAHU <saurav.sahu@st.com>
+Subject: ALSA-USB driver issues with C-Media chipset
+Date: Fri, 20 Jul 2007 12:49:05 +0800
+Message-ID: <03ff01c7ca89$4d538d00$7c70500a@amk.st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (unknown [62.24.128.253])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA1C110388A
+Received: from s200aog10.obsmtp.com (s200aog10.obsmtp.com [207.126.144.124])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90B9C1037EC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Jul 2007 14:11:28 +0200 (CEST)
-In-Reply-To: <20070719142440.GA2467@localhost>
-Content-Disposition: inline
+	Fri, 20 Jul 2007 06:49:19 +0200 (CEST)
+Received: from zeta.dmz-ap.st.com (ns6.st.com [138.198.234.13])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 95E02DA4D
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2007 04:49:06 +0000 (GMT)
+Received: from mail1.amk.st.com (mail1.amk.st.com [138.198.240.233])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 780FD4A5BA
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2007 04:49:06 +0000 (GMT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,76 +25,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-< Previously subject: Re: SALSA and aplay >
+We have encountered some audio recording quality issues on the recent ALSA-USB drivers. These problems are faced on C-Media chipset based external USB audio devices. The recorded audio with 'arecord' is quite noisy, unclear and jerky. The version of ALSA I encountered are 1.0.12 and beyond. It seemed to work well previously on ALSA version 1.0.8. If I record with a Philips webcam mic (Philips chipset), the audio recording is very clear on across all ALSA versions.
 
-On Thursday 19 July 2007 15:24, you wrote:
-> On Thu, Jul 19, 2007 at 11:33:32AM +0200, Takashi Iwai wrote:
-> > At Wed, 18 Jul 2007 17:20:29 +0100,
-> >
-> > Alan Horstmann wrote:
-> > > Actually, I think I have an idea what is happening, but not why.
-> > >
-> > > It attempts to set the card to 48000, which fails since I have it
-> > > locked! When I recorded the file the same was true, so from "default"
-> > > the file plays back correct although it is in fact wrong, and plays
-> > > wrong when imported into Audacity.  The set-up listed above suggests to
-> > > me that Alsa is rate converting to 48000 and Mmap'ing to the card.  If
-> > > correct, is that really necessary?  I dislike any rate conversions on a
-> > > serious recording system, and especially hidden ones.  Is this a
-> > > configuration issue that might have changed since, say, 1.0.10 or
-> > > 1.0.12?
-> >
-> > The 48k-fixed rate is due to dmix plugin.  It requires a fixed sample
-> > rate for all apps.  In theory, it may accept multiple rates, but the
-> > feature is not implemented yet.
-> >
-> > You can change the default rate by overriding defaults.pcm.dmix.rate
-> > config item, e.g. define the below in ~/.asoundrc:
-> >
-> > 	defaults.pcm.dmix.rate 44100
->
-> Wouldn't it be better to specify hw:0 (or whatever card you are using)
-> in this case? With this type of hardware I'd rather make sure that dmix
-> isn't used at all (I assume that dmix is now the default instead of
-> hw:0).
+In case you have observed similar issues with C-Media drivers and aware of them, please let me know.
 
-I have less concern with dmix than the hidden rate conversion, but would 
-happily loose both.  Using "hw" forces use of 12 capture and 10 playback 
-channels in this case, doesn't it?  So I need some plugin to play 2 channels?
-
-There are 2 issues for me:
-
-1. With the cards rate state = 'locked' alsa (not sure what bit of it) was 
-unable to set the desired clock rate, yet did not report an error.  Data was 
-then eg captured from the card as if it was running at 48K, but actually it 
-remained at 44.1K.  Thus the recorded data was wrong.
-
-snd_pcm_hw_params_set_rate_near(..)
-
-did not report error because it was asking for 44.1K; somewhere else the 
-configuration decided 48K was better, but did not highlight that the card 
-refused to change setting.  Surely this should class as a bug.
-
-Since the inverse error happens on capture, it is not immediately obvious that 
-there is a problem with the recording, so important recordings could be 
-completely messed up.
-
-2. These ice1712-based pro/semi-pro hardware systems should IMO NEVER perform 
-secret rate conversion.  They are designed for readers of 'Sound on Sound' 
-etc, and Paul White et al would rightly blast M-Audio or Terratec if their 
-Windows drivers quietly set the card to a different rate to that requested 
-and rate converted the data!  Especially so on a capture stream.  Remember 
-the cards are 24-bit 96KHz capable and approach 100dB signal-to-noise ratio.
-
-Whilst there may be circumstances in which material recorded at different 
-rates has to be used in the same project, it is only converted once, in full 
-knowledge.
-
-Can't dmix be configured to run at whatever rate is set on the card, or the 
-requested rate, rather than attempt to overule both of them?
-
-Alan
+Best Regards
+Saurav
