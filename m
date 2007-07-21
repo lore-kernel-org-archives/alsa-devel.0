@@ -1,178 +1,96 @@
-From: Natalie Protasevich <protasnb@gmail.com>
-Subject: [BUG] Open Kernel Bugs
-Date: Sat, 21 Jul 2007 10:16:12 -0700
-Message-ID: <200707211016.12205.protasnb@gmail.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH] Fix tas_suspend/resume build warning
+Date: Sat, 21 Jul 2007 19:29:26 +0200
+Message-ID: <1185038966.868.5.camel@johannes.berg>
+References: <20070722002937.11e234f8.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-input@atrey.karlin.mff.cuni.cz>
-Content-Disposition: inline
-Sender: owner-linux-input@atrey.karlin.mff.cuni.cz
-List-Help: <mailto:majordomo@atrey.karlin.mff.cuni.cz?body=help>
-List-Owner: <mailto:owner-linux-input@atrey.karlin.mff.cuni.cz>
-List-Post: <mailto:linux-input@atrey.karlin.mff.cuni.cz>
-List-Unsubscribe: <mailto:linux-input-request@atrey.karlin.mff.cuni.cz?body=unsubscribe>
-To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@kernel-bugs.osdl.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2567C103808
+	for <alsa-devel@alsa-project.org>;
+	Sat, 21 Jul 2007 19:29:52 +0200 (CEST)
+In-Reply-To: <20070722002937.11e234f8.sfr@canb.auug.org.au>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is the first listing of the open bugs that will  be sent out and will 
-contain bugs on specific areas.
-
-The bugs on the list below are about a year old and most of them  confirmed 
-(or  claimed) to still  be a problem.
-
-It would be appreciated if the corresponding maintenance team could take a 
-look, close off any which are fixed and see if we can fix any which aren't.
-
-NOTE: when replying to this email, please add the bug number to the Subject in 
-the form [Bug 1234] so that bugzilla will capture the discussion. 
-Thanks.
-
-
-bugzilla: timers
-
-[BUG 7967] TIMER_ABSTIME cleared resulting in userland deadlock
-	http://bugzilla.kernel.org/show_bug.cgi?id=7967
-
-
-bugzilla: parallel
-
-[BUG 7492] parport doesn't work if DMA is used
-	http://bugzilla.kernel.org/show_bug.cgi?id=7492
-
-
-bugzilla: network
-
-[BUG 8106] tx_errors and tx_fifo_errors not updated consistantly
-	http://bugzilla.kernel.org/show_bug.cgi?id=8106  - error reporting
-
-[BUG 7856] b44 WOL problem (bcm4401)
-	http://bugzilla.kernel.org/show_bug.cgi?id=7856
-
-[BUG 5839] uli526x partially recognizing interface
-	http://bugzilla.kernel.org/show_bug.cgi?id=5839
-
-[BUG 6613] iptables broken on 32-bit PReP (ARCH=ppc)
-	 http://bugzilla.kernel.org/show_bug.cgi?id=6613
-
-
-bugzilla: sound (ALSA)
-
-[BUG 7195] pc doesn't correctly shut down because of hda_intel
-	http://bugzilla.kernel.org/show_bug.cgi?id=7195
-
-[BUG 6244] cs46xx in Thinkapad A21m after suspend/resume doesn't play
-	http://bugzilla.kernel.org/process_bug.cgi?id=6244
-
-
-bugzilla: scheduler
-
-[BUG 7372] Unusable system (ie slow) when copying large files.
-	http://bugzilla.kernel.org/show_bug.cgi?id=7372
-
-
-bugzilla: input
-
-[BUG 7746] Support for unicode dead keys
-	http://bugzilla.kernel.org/show_bug.cgi?id=7746
-
-[BUG 7941] The atkbd module makes system unusable
-	http://bugzilla.kernel.org/process_bug.cgi?id=7941
-
-
-bugzilla: dvb-usb
-
-[BUG 8179] Yuan ub300 card not working/tuning
-	http://bugzilla.kernel.org/show_bug.cgi?id=8179
-
-
-bugzilla: PCI
-
-[BUG 7528] pci=assign-busses needed on DELL Latitude D810
-	http://bugzilla.kernel.org/show_bug.cgi?id=7528
-
-[BUG 8187] 2.6.20 "PCI: Quirks" patch breaks X11 on I82801
-	http://bugzilla.kernel.org/show_bug.cgi?id=8187
-
-[BUG 7917] "PCI: Failed to allocate mem resource" for PCI E-to-PCI Bridge
-	http://bugzilla.kernel.org/show_bug.cgi?id=7917
-
-
-bugzilla: i386
-
-[BUG 5565] Guess of i386 APIC PTE area scribble
-	http://bugzilla.kernel.org/show_bug.cgi?id=5565
-
-[BUG 7589] libata: does not work anymore on VIA VT8251 AHCI/SATA 4-Port 
-Controller
-	http://bugzilla.kernel.org/show_bug.cgi?id=7589
-
-
-bugzilla: Interrupts
-
-[BUG 7673] Memory card reader 5-in-1 don't working on Lenovo N100 3000
-	http://bugzilla.kernel.org/show_bug.cgi?id=7673
-
-
-bugzilla: I/O - Storage
-
-[BUG 7921] oops in 2.6.20-rc6-git3 &&udf && pktcdvd
-	http://bugzilla.kernel.org/show_bug.cgi?id=7921
-
-[BUG 7507] pata_it821x: system freezes
-	http://bugzilla.kernel.org/show_bug.cgi?id=7507
-
-[BUG 7506] it821x: long wait time due to dma_timer_expiry
-	http://bugzilla.kernel.org/show_bug.cgi?id=7506
-
-[BUG 7703] hpt366 does not find drives
-	http://bugzilla.kernel.org/show_bug.cgi?id=7703
-
-[BUG 6516] wrong value for avgqu-sz
-	http://bugzilla.kernel.org/show_bug.cgi?id=6516
-
-bugzilla: serial
-
-[BUG 7750] open/close loop causes disabled irq
-	http://bugzilla.kernel.org/show_bug.cgi?id=7750
-
-
-bugzilla: PCMCIA
-
-[BUG 7788] System freeze as soon as PCMCIA card is inserted
-	http://bugzilla.kernel.org/show_bug.cgi?id=7788
-
-[BUG 8118] Wrong device identifiers returned in lspci for pccard with RL5c476 
-II (rev 80)
-	http://bugzilla.kernel.org/show_bug.cgi?id=8118
-
-[BUG 8262] PCMCIA: socket *** DANGER *** unable to remove socket power
-	http://bugzilla.kernel.org/show_bug.cgi?id=8262
-
-[BUG 7215] PCMCIA network card causes either X or kernel to freeze
-	http://bugzilla.kernel.org/show_bug.cgi?id=7215
-
-
-bugzilla: SCSI
-
-[BUG 4880] dpt_i2o.c does not register itself with sysfs
-	http://bugzilla.kernel.org/show_bug.cgi?id=4880
-
-
-bugzilla: File Systems
-
-[BUG 6124] mount of UDF fs ignores UID and GID options
-	http://bugzilla.kernel.org/show_bug.cgi?id=6124
-
-
-bugzilla: USB
-
-[BUG 8104] kernel floods console with "connect-debounce failed"
-	http://bugzilla.kernel.org/show_bug.cgi?id=8104
-
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------
-
--------------------------------------------------------
+On Sun, 2007-07-22 at 00:29 +1000, Stephen Rothwell wrote:
+> sound/aoa/codecs/snd-aoa-codec-tas.c:750: warning: 'tas_suspend' defined but not used
+> sound/aoa/codecs/snd-aoa-codec-tas.c:760: warning: 'tas_resume' defined but not used
+
+Heh. I daresay I never compiled a kernel without PM. Not sure why you'd
+want to, but still good to have it fixed. Thanks.
+
+
+[full copy below for Takashi, I suppose it'll go through his tree]
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Fix tas_suspend/resume build warning
+
+sound/aoa/codecs/snd-aoa-codec-tas.c:750: warning: 'tas_suspend' defined but not used
+sound/aoa/codecs/snd-aoa-codec-tas.c:760: warning: 'tas_resume' defined but not used
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Acked-by: Johannes Berg <johannes@sipsolutions.net>
+---
+ sound/aoa/codecs/snd-aoa-codec-tas.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+-- 
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+
+diff --git a/sound/aoa/codecs/snd-aoa-codec-tas.c b/sound/aoa/codecs/snd-aoa-codec-tas.c
+index 2f771f5..3cbfe46 100644
+--- a/sound/aoa/codecs/snd-aoa-codec-tas.c
++++ b/sound/aoa/codecs/snd-aoa-codec-tas.c
+@@ -743,6 +743,7 @@ static int tas_switch_clock(struct codec_info_item *cii, enum clock_switch clock
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM
+ /* we are controlled via i2c and assume that is always up
+  * If that wasn't the case, we'd have to suspend once
+  * our i2c device is suspended, and then take note of that! */
+@@ -768,7 +769,6 @@ static int tas_resume(struct tas *tas)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+ static int _tas_suspend(struct codec_info_item *cii, pm_message_t state)
+ {
+ 	return tas_suspend(cii->codec_data);
+@@ -778,7 +778,10 @@ static int _tas_resume(struct codec_info_item *cii)
+ {
+ 	return tas_resume(cii->codec_data);
+ }
+-#endif
++#else /* CONFIG_PM */
++#define _tas_suspend	NULL
++#define _tas_resume	NULL
++#endif /* CONFIG_PM */
+ 
+ static struct codec_info tas_codec_info = {
+ 	.transfers = tas_transfers,
+@@ -791,10 +794,8 @@ static struct codec_info tas_codec_info = {
+ 	.owner = THIS_MODULE,
+ 	.usable = tas_usable,
+ 	.switch_clock = tas_switch_clock,
+-#ifdef CONFIG_PM
+ 	.suspend = _tas_suspend,
+ 	.resume = _tas_resume,
+-#endif
+ };
+ 
+ static int tas_init_codec(struct aoa_codec *codec)
