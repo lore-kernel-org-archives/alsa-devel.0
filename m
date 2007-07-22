@@ -1,19 +1,23 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: [PATCH] Support for muting channels DAC with CA0106 -
-	SB0570
-Date: Sat, 21 Jul 2007 17:10:08 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0707211653410.2511@shell2.speakeasy.net>
+From: stan <stanl@cox.net>
+Subject: Re: Hidden rate conversion, and Alsa configuration
+Date: Sun, 22 Jul 2007 12:56:39 -0700
+Message-ID: <20070722125639.350d6a11@localhost.localdomain>
+References: <200707161340.23503.gineera@aspect135.co.uk>
+	<s5hy7hcu49f.wl%tiwai@suse.de> <20070719142440.GA2467@localhost>
+	<200707201333.38449.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="289735540-1998957811-1185063008=:2511"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail4.sea5.speakeasy.net (mail4.sea5.speakeasy.net
-	[69.17.117.6]) by alsa0.perex.cz (Postfix) with ESMTP id 0F8332441B
+Received: from fed1rmmtao102.cox.net (fed1rmmtao102.cox.net [68.230.241.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3627B10380C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 22 Jul 2007 02:10:11 +0200 (CEST)
-Received: from shell2.sea5.speakeasy.net ([69.17.116.3])
-	(envelope-sender <xyzzy@speakeasy.org>)
-	by mail4.sea5.speakeasy.net (qmail-ldap-1.03) with AES256-SHA encrypted
-	SMTP for <alsa-devel@alsa-project.org>; 22 Jul 2007 00:10:09 -0000
+	Sun, 22 Jul 2007 21:56:44 +0200 (CEST)
+Received: from fed1rmimpo02.cox.net ([70.169.32.72]) by fed1rmmtao102.cox.net
+	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP
+	id <20070722195639.NDYG1428.fed1rmmtao102.cox.net@fed1rmimpo02.cox.net>
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jul 2007 15:56:39 -0400
+In-Reply-To: <200707201333.38449.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,137 +30,70 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Fri, 20 Jul 2007 13:33:38 +0100
+Alan Horstmann <gineera@aspect135.co.uk> wrote:
 
---289735540-1998957811-1185063008=:2511
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+[snip]
 
-This patch adds mute controls for the analog output channels.  It does this
-by sending SPI commands to the DAC on cards like the SB live 24-bit /
-Audigy SE that have an SPI DAC.
---289735540-1998957811-1185063008=:2511
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="ca0106_mute.patch"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.58.0707211710080.2511@shell2.speakeasy.net>
-Content-Description: 
-Content-Disposition: attachment; filename="ca0106_mute.patch"
+> I have less concern with dmix than the hidden rate conversion, but
+> would happily loose both.  Using "hw" forces use of 12 capture and 10
+> playback channels in this case, doesn't it?  So I need some plugin to
+> play 2 channels?
+> 
+> There are 2 issues for me:
+> 
+> 1. With the cards rate state = 'locked' alsa (not sure what bit of
+> it) was unable to set the desired clock rate, yet did not report an
+> error.  Data was then eg captured from the card as if it was running
+> at 48K, but actually it remained at 44.1K.  Thus the recorded data
+> was wrong.
+> 
+> snd_pcm_hw_params_set_rate_near(..)
+> 
+> did not report error because it was asking for 44.1K; somewhere else
+> the configuration decided 48K was better, but did not highlight that
+> the card refused to change setting.  Surely this should class as a
+> bug.
+> 
+> Since the inverse error happens on capture, it is not immediately
+> obvious that there is a problem with the recording, so important
+> recordings could be completely messed up.
+> 
+> 2. These ice1712-based pro/semi-pro hardware systems should IMO NEVER
+> perform secret rate conversion.  They are designed for readers of
+> 'Sound on Sound' etc, and Paul White et al would rightly blast
+> M-Audio or Terratec if their Windows drivers quietly set the card to
+> a different rate to that requested and rate converted the data!
+> Especially so on a capture stream.  Remember the cards are 24-bit
+> 96KHz capable and approach 100dB signal-to-noise ratio.
+> 
+> Whilst there may be circumstances in which material recorded at
+> different rates has to be used in the same project, it is only
+> converted once, in full knowledge.
+> 
+> Can't dmix be configured to run at whatever rate is set on the card,
+> or the requested rate, rather than attempt to overule both of them?
+> 
+> Alan
 
-IyBIRyBjaGFuZ2VzZXQgcGF0Y2gNCiMgVXNlciBUcmVudCBQaWVwaG8gPHh5
-enp5QHNwZWFrZWFzeS5vcmc+DQojIERhdGUgMTE4NTA2Mjg3OSAyNTIwMA0K
-IyBOb2RlIElEIDJjMzUxNGY0NjA3YjY5MjcxMTQ4MzM3YWYxNWJlNTVkMzIw
-NWFmNzANCiMgUGFyZW50ICAwNGI3NzcxZjdjMzE3MDllOWQxODgzMjY0YmNk
-ZTdlMzQ3ODFhNTkwDQpjYTAxMDY6IEFkZCBhbmFsb2cgbXV0ZSBjb250cm9s
-cyBmb3IgY2FyZHMgd2l0aCBTUEkgREFDDQoNCkFkZCBmb3VyIG11dGUgY29u
-dHJvbHMgZm9yIHRoZSBhbmFsb2cgb3V0cHV0IGNoYW5uZWxzIGZvciBjYXJk
-cyB0aGF0IHVzZQ0KYSBzcGkgZGFjLCBsaWtlIFNCMDU3MCBTQiBMaXZlISAg
-MjQtYml0IC8gQXVkaWd5IFNFLiAgVGhlIFdvbGZzb24gZGFjDQpkb2Vzbid0
-IHN1cHBvcnQgbXV0aW5nIGVhY2ggY2hhbm5lbCBzbyB0aGUgY29udHJvbHMg
-YXJlIG1vbm8uDQoNClRoZSBjaGlwIHN0YXRlIHN0cnVjdCBnZXRzIGEgMzIt
-Ynl0ZSBhcnJheSB0byBhY3QgYXMgYSBzaGFkb3cgb2YgdGhlIHNwaQ0KZGFj
-IHJlZ2lzdGVycy4gIE9ubHkgdHdvIHJlZ2lzdGVycyBhcmUgdXNlZCBmb3Ig
-bXV0ZSwgYnV0IG1vcmUgd291bGQgYmUNCm5lZWRlZCBmb3IgZGUtZW1waGFz
-aXMsIERBQyBwb3dlciBkb3duLCBwaGFzZSBpbnZlcnNpb24sIGFuZCBvdGhl
-cg0KZmVhdHVyZXMuDQoNCmRpZmYgLXIgMDRiNzc3MWY3YzMxIC1yIDJjMzUx
-NGY0NjA3YiBwY2kvY2EwMTA2L2NhMDEwNi5oDQotLS0gYS9wY2kvY2EwMTA2
-L2NhMDEwNi5oCUZyaSBKdWwgMjAgMTA6NTI6NDYgMjAwNyArMDIwMA0KKysr
-IGIvcGNpL2NhMDEwNi9jYTAxMDYuaAlTYXQgSnVsIDIxIDE3OjA3OjU5IDIw
-MDcgLTA3MDANCkBAIC02MTEsNiArNjExLDggQEAgc3RydWN0IHNuZF9jYTAx
-MDYgew0KIA0KIAlzdHJ1Y3Qgc25kX2NhX21pZGkgbWlkaTsNCiAJc3RydWN0
-IHNuZF9jYV9taWRpIG1pZGkyOw0KKw0KKwl1MTYgc3BpX2RhY19yZWdbMTZd
-Ow0KIH07DQogDQogaW50IHNuZF9jYTAxMDZfbWl4ZXIoc3RydWN0IHNuZF9j
-YTAxMDYgKmVtdSk7DQpAQCAtNjI3LDQgKzYyOSw1IEBAIHZvaWQgc25kX2Nh
-MDEwNl9wdHJfd3JpdGUoc3RydWN0IHNuZF9jYTANCiANCiBpbnQgc25kX2Nh
-MDEwNl9pMmNfd3JpdGUoc3RydWN0IHNuZF9jYTAxMDYgKmVtdSwgdTMyIHJl
-ZywgdTMyIHZhbHVlKTsNCiANCi0NCitpbnQgc25kX2NhMDEwNl9zcGlfd3Jp
-dGUoc3RydWN0IHNuZF9jYTAxMDYgKiBlbXUsDQorCQkJCSAgIHVuc2lnbmVk
-IGludCBkYXRhKTsNCmRpZmYgLXIgMDRiNzc3MWY3YzMxIC1yIDJjMzUxNGY0
-NjA3YiBwY2kvY2EwMTA2L2NhMDEwNl9tYWluLmMNCi0tLSBhL3BjaS9jYTAx
-MDYvY2EwMTA2X21haW4uYwlGcmkgSnVsIDIwIDEwOjUyOjQ2IDIwMDcgKzAy
-MDANCisrKyBiL3BjaS9jYTAxMDYvY2EwMTA2X21haW4uYwlTYXQgSnVsIDIx
-IDE3OjA3OjU5IDIwMDcgLTA3MDANCkBAIC0xNDc1LDggKzE0NzUsMTEgQEAg
-c3RhdGljIGludCBfX2RldmluaXQgc25kX2NhMDEwNl9jcmVhdGUoaQ0KIAkJ
-aW50IHNpemUsIG47DQogDQogCQlzaXplID0gQVJSQVlfU0laRShzcGlfZGFj
-X2luaXQpOw0KLQkJZm9yIChuPTA7IG4gPCBzaXplOyBuKyspDQorCQlmb3Ig
-KG49MDsgbiA8IHNpemU7IG4rKykgew0KIAkJCXNuZF9jYTAxMDZfc3BpX3dy
-aXRlKGNoaXAsIHNwaV9kYWNfaW5pdFtuXSk7DQorCQkJaWYgKChzcGlfZGFj
-X2luaXRbbl0+PjkpIDwgQVJSQVlfU0laRShjaGlwLT5zcGlfZGFjX3JlZykp
-DQorCQkJCWNoaXAtPnNwaV9kYWNfcmVnW3NwaV9kYWNfaW5pdFtuXT4+OV0g
-PSBzcGlfZGFjX2luaXRbbl07DQorCQl9DQogCX0NCiANCiAJaWYgKChlcnIg
-PSBzbmRfZGV2aWNlX25ldyhjYXJkLCBTTkRSVl9ERVZfTE9XTEVWRUwsDQpk
-aWZmIC1yIDA0Yjc3NzFmN2MzMSAtciAyYzM1MTRmNDYwN2IgcGNpL2NhMDEw
-Ni9jYTAxMDZfbWl4ZXIuYw0KLS0tIGEvcGNpL2NhMDEwNi9jYTAxMDZfbWl4
-ZXIuYwlGcmkgSnVsIDIwIDEwOjUyOjQ2IDIwMDcgKzAyMDANCisrKyBiL3Bj
-aS9jYTAxMDYvY2EwMTA2X21peGVyLmMJU2F0IEp1bCAyMSAxNzowNzo1OSAy
-MDA3IC0wNzAwDQpAQCAtNDcwLDYgKzQ3MCw0MSBAQCBzdGF0aWMgaW50IHNu
-ZF9jYTAxMDZfaTJjX3ZvbHVtZV9wdXQoc3RyDQogCXJldHVybiBjaGFuZ2U7
-DQogfQ0KIA0KK3N0YXRpYyBpbnQgc3BpX211dGVfaW5mbyhzdHJ1Y3Qgc25k
-X2tjb250cm9sICprY29udHJvbCwgc3RydWN0IHNuZF9jdGxfZWxlbV9pbmZv
-ICp1aW5mbykNCit7DQorCXVpbmZvLT50eXBlID0gU05EUlZfQ1RMX0VMRU1f
-VFlQRV9CT09MRUFOOw0KKwl1aW5mby0+Y291bnQgPSAxOw0KKwl1aW5mby0+
-dmFsdWUuaW50ZWdlci5taW4gPSAwOw0KKwl1aW5mby0+dmFsdWUuaW50ZWdl
-ci5tYXggPSAxOw0KKwlyZXR1cm4gMDsNCit9DQorDQorc3RhdGljIGludCBz
-cGlfbXV0ZV9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsIHN0
-cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQ0KK3sNCisJc3Ry
-dWN0IHNuZF9jYTAxMDYgKmVtdSA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250
-cm9sKTsNCisJdW5zaWduZWQgaW50IHJlZyA9IGtjb250cm9sLT5wcml2YXRl
-X3ZhbHVlID4+IDk7DQorCXVuc2lnbmVkIGludCBiaXQgPSBrY29udHJvbC0+
-cHJpdmF0ZV92YWx1ZSAmIDB4MWZmOw0KKw0KKwl1Y29udHJvbC0+dmFsdWUu
-aW50ZWdlci52YWx1ZVswXSA9ICEoZW11LT5zcGlfZGFjX3JlZ1tyZWddICYg
-Yml0KTsNCisJcmV0dXJuIDA7DQorfQ0KKw0KK3N0YXRpYyBpbnQgc3BpX211
-dGVfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLCBzdHJ1Y3Qg
-c25kX2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkNCit7DQorCXN0cnVjdCBz
-bmRfY2EwMTA2ICplbXUgPSBzbmRfa2NvbnRyb2xfY2hpcChrY29udHJvbCk7
-DQorCXVuc2lnbmVkIGludCByZWcgPSBrY29udHJvbC0+cHJpdmF0ZV92YWx1
-ZSA+PiA5Ow0KKwl1bnNpZ25lZCBpbnQgYml0ID0ga2NvbnRyb2wtPnByaXZh
-dGVfdmFsdWUgJiAweDFmZjsNCisJaW50IHJldDsNCisNCisJaWYgKHVjb250
-cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzBdKQ0KKwkJZW11LT5zcGlfZGFj
-X3JlZ1tyZWddICY9IH5iaXQ7DQorCWVsc2UNCisJCWVtdS0+c3BpX2RhY19y
-ZWdbcmVnXSB8PSBiaXQ7DQorDQorCXJldCA9IHNuZF9jYTAxMDZfc3BpX3dy
-aXRlKGVtdSwgZW11LT5zcGlfZGFjX3JlZ1tyZWddKTsNCisJcmV0dXJuIHJl
-dCA/IC0xIDogMTsNCit9DQorDQogI2RlZmluZSBDQV9WT0xVTUUoeG5hbWUs
-Y2hpZCxyZWcpIFwNCiB7CQkJCQkJCQlcDQogCS5pZmFjZSA9IFNORFJWX0NU
-TF9FTEVNX0lGQUNFX01JWEVSLCAubmFtZSA9IHhuYW1lLAlcDQpAQCAtNTYw
-LDYgKzU5NSwyMyBAQCBzdGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcg
-c25kX2NhMDEwDQogICAgICAgICBJMkNfVk9MVU1FKCJNaWMgQ2FwdHVyZSBW
-b2x1bWUiLCAxKSwNCiAgICAgICAgIEkyQ19WT0xVTUUoIkxpbmUgaW4gQ2Fw
-dHVyZSBWb2x1bWUiLCAyKSwNCiAgICAgICAgIEkyQ19WT0xVTUUoIkF1eCBD
-YXB0dXJlIFZvbHVtZSIsIDMpLA0KK307DQorDQorI2RlZmluZSBTUElfU1dJ
-VENIKHhuYW1lLHJlZyxiaXQpIFwNCit7CQkJCQkJCQlcDQorCS5pZmFjZSAJ
-PSBTTkRSVl9DVExfRUxFTV9JRkFDRV9NSVhFUiwgLm5hbWUgPSB4bmFtZSwJ
-XA0KKwkuYWNjZXNzID0gU05EUlZfQ1RMX0VMRU1fQUNDRVNTX1JFQURXUklU
-RSwJCVwNCisJLmluZm8JPSBzcGlfbXV0ZV9pbmZvLAkJCQlcDQorCS5nZXQJ
-PSBzcGlfbXV0ZV9nZXQsCQkJCQlcDQorCS5wdXQJPSBzcGlfbXV0ZV9wdXQs
-CQkJCQlcDQorCS5wcml2YXRlX3ZhbHVlID0gKHJlZzw8OSkgfCAoMTw8Yml0
-KQkJCVwNCit9DQorDQorc3RhdGljIHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3
-IHNuZF9jYTAxMDZfdm9sdW1lX3NwaV9kYWNfY3Rsc1tdIF9fZGV2aW5pdGRh
-dGEgPSB7DQorCVNQSV9TV0lUQ0goIkFuYWxvZyBGcm9udCBQbGF5YmFjayBT
-d2l0Y2giLCAxNSwgMiksDQorCVNQSV9TV0lUQ0goIkFuYWxvZyBSZWFyIFBs
-YXliYWNrIFN3aXRjaCIsIDksIDMpLA0KKwlTUElfU1dJVENIKCJBbmFsb2cg
-Q2VudGVyL0xGRSBQbGF5YmFjayBTd2l0Y2giLCA5LCA1KSwNCisJU1BJX1NX
-SVRDSCgiQW5hbG9nIFNpZGUgUGxheWJhY2sgU3dpdGNoIiwgOSwgNCksDQog
-fTsNCiANCiBzdGF0aWMgaW50IF9fZGV2aW5pdCByZW1vdmVfY3RsKHN0cnVj
-dCBzbmRfY2FyZCAqY2FyZCwgY29uc3QgY2hhciAqbmFtZSkNCkBAIC02NTgs
-NiArNzEwLDEzIEBAIGludCBfX2RldmluaXQgc25kX2NhMDEwNl9taXhlcihz
-dHJ1Y3Qgc24NCiAJCWlmIChlcnIgPCAwKQ0KIAkJCXJldHVybiBlcnI7DQog
-CX0NCisJaWYgKGVtdS0+ZGV0YWlscy0+c3BpX2RhYyA9PSAxKSB7DQorCQlm
-b3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShzbmRfY2EwMTA2X3ZvbHVtZV9z
-cGlfZGFjX2N0bHMpOyBpKyspIHsNCisJCQllcnIgPSBzbmRfY3RsX2FkZChj
-YXJkLCBzbmRfY3RsX25ldzEoJnNuZF9jYTAxMDZfdm9sdW1lX3NwaV9kYWNf
-Y3Rsc1tpXSwgZW11KSk7DQorCQkJaWYgKGVyciA8IDApDQorCQkJCXJldHVy
-biBlcnI7DQorCQl9DQorCX0NCiAgICAgICAgIHJldHVybiAwOw0KIH0NCiAN
-Cg==
+For what it's worth, I agree with Alan here.  Any sound library with
+aspirations to professional use can't have hidden conversions and
+silent corrections going on.
 
---289735540-1998957811-1185063008=:2511
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+However, I also agree with Takashi that for the average user having the
+dmix plugin as a default is a very good thing.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+So, would it be possible to have an api call in the interface to
+disable the dmix plugin for any instance of alsa.  For example,  I call
+the interface to open the default sound device.  Another call gets me
+the hardware associated with the default device.  I then tell the
+interface to bypass any filters or plugins, basically giving access to
+the hw interface for whichever card is default for this stream only.
 
---289735540-1998957811-1185063008=:2511--
+Maybe this already exists.  If it does, could you point me in the right
+direction (which function).  If not, where would it be best implemented
+(which source file)?  I don't know that I could or will write it, but I
+would like to have a look at how difficult it would be.
+
+Thanks.
+stan
