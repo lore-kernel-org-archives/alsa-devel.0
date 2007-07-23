@@ -1,18 +1,17 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: dustin@seznam.cz
 Subject: Re: SNDRV_PCM_FMTBIT_S24_LE vs.
 	SNDRV_PCM_FMTBIT_S24_3LE
-Date: Mon, 23 Jul 2007 20:17:39 +0100
-Message-ID: <46A4FED3.2010903@superbug.co.uk>
+Date: Mon, 23 Jul 2007 21:22:05 +0200 (CEST)
+Message-ID: <11505.27621-24387-105789712-1185218525@seznam.cz>
 References: <46A4F700.5030603@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net
-	[194.217.242.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 968D0103898
+Received: from mxl.seznam.cz (mxhn.seznam.cz [212.80.76.26])
+	by alsa0.perex.cz (Postfix) with SMTP id 9F471103899
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jul 2007 21:17:40 +0200 (CEST)
+	Mon, 23 Jul 2007 21:22:06 +0200 (CEST)
 In-Reply-To: <46A4F700.5030603@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,14 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: =?us-ascii?Q?Timur=20Tabi?= <timur@freescale.com>
+Cc: =?us-ascii?Q?ALSA=20devel?= <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> What is the difference between SNDRV_PCM_FMTBIT_S24_LE and SNDRV_PCM_FMTBIT_S24_3LE?
-> 
 
-SNDRV_PCM_FMTBIT_S24_LE is 24bit audio padded to fill 4 bytes.
-SNDRV_PCM_FMTBIT_S24_3LE is 24bit audio with no padding, thus taking 
-only 3 types.
+>  ------------ P=F9vodn=ED zpr=E1va ------------
+>
+>  ----------------------------------------
+>  What is the difference between SNDRV_PCM_FMTBIT_S24_LE and
+>  SNDRV_PCM_FMTBIT_S24_3LE?
+
+The asound.h says S24_LE is stored in lower three bytes of four, whereas S2=
+4_3LE is stored in three bytes total.
+
+
+Pavel.
+
+>  =
+
+>  -- =
+
+>  Timur Tabi
+>  Linux Kernel Developer @ Freescale
+>  _______________________________________________
+>  Alsa-devel mailing list
+>  Alsa-devel@alsa-project.org
+>  http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>  =
+
+>  =
+
+>  =
