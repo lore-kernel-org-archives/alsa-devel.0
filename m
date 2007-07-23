@@ -1,20 +1,27 @@
-From: Ingmar Stieger <alsauser@stiegerhs.de>
-Subject: Intel HDA digital out distortion
-Date: Mon, 23 Jul 2007 23:09:24 +0200
-Message-ID: <46A51904.3010606@stiegerhs.de>
+From: Marek Zelem <marek@terminus.sk>
+Subject: No sound card found for ATI SB600 Azalia
+Date: Mon, 23 Jul 2007 23:00:17 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0707232239190.25733@shell.terminus.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from stiegerhs.de (lvps87-230-14-58.dedicated.hosteurope.de
-	[87.230.14.58]) by alsa0.perex.cz (Postfix) with ESMTP id C740D1038A2
+Received: from s-mail.terminus.sk (seldon.terminus.sk [85.248.119.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40072103899
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jul 2007 23:09:31 +0200 (CEST)
-Received: from p5498c6f3.dip.t-dialin.net ([84.152.198.243]
-	helo=[192.168.1.20])
-	by stiegerhs.de with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA:32)
-	(Exim 4.50) id 1ID59h-00039J-6F
-	for alsa-devel@alsa-project.org; Mon, 23 Jul 2007 23:09:30 +0200
+	Mon, 23 Jul 2007 23:00:35 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by s-mail.terminus.sk (Postfix) with ESMTP id 8168634058
+	for <alsa-devel@alsa-project.org>;
+	Mon, 23 Jul 2007 23:00:34 +0200 (CEST)
+Received: from s-mail.terminus.sk ([127.0.0.1])
+	by localhost (s-mail [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 09132-01 for <alsa-devel@alsa-project.org>;
+	Mon, 23 Jul 2007 23:00:19 +0200 (CEST)
+Received: from shell.terminus.sk (unknown [10.9.9.69])
+	by s-mail.terminus.sk (Postfix) with ESMTP id 2263B34060
+	for <alsa-devel@alsa-project.org>;
+	Mon, 23 Jul 2007 23:00:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,33 +34,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-a couple of weeks ago, I bought an ASUS mainboard with integrated Intel HDA and 
-an AD1988B codec. Unfortunately, the digital / SPDIF output gets distorted with 
-stock 1.0.14 drivers. It does not matter what the volume levels of the various 
-mixers are set to.
+	Hello
 
-I think I might have found the source for this problem. Maybe it's only a 
-workaround, but it solved the issue and digital out now works fine for me, so I 
-thought I'd share.
+   I have Dell Latitude D531 notebook with
+	00:14.2 Audio device: ATI Technologies Inc SB600 Azalia
+sound card. Module snd_hda_intel is automaticaly loaded but no sound card
+is detected. Here is the dmesg output:
 
-In patch_analog.c, in static struct hda_verb ad1988_spdif_init_verbs[], 
-changeing the forth entry
+ACPI: PCI Interrupt 0000:00:14.2[A] -> GSI 16 (level, low) -> IRQ 16
+ALSA
+/usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:558:
+hda_intel: azx_get_response timeout, switching to polling mode...
+ALSA
+/usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:564:
+hda_intel: azx_get_response timeout, switching to single_cmd mode...
+hda_codec: No auto-config is available, default to model=ref
+ALSA
+/usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1020:
+hda-intel: no codecs initialized
+ACPI: PCI interrupt for device 0000:00:14.2 disabled
 
-from {0x1d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
+I have linux kernel 2.6.22.1. Also tried alsa 1.0.14 kernel modules built
+from alsa sources. The result was the same.
 
-to {0x1d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)}
+I have also tried all model=xxx arguments, nothing helped.
 
-mutes what might be an feedback loop from the analog inputs. The distortion is 
-gone if the input to this widget is muted.
+A also tried pci=noacpi but that caused boot failure.
 
-On a side note, the settings for the ADCs with NID:08, 09, and 0F looks fishy, 
-too. According to the functional diagram, those should have no amps, and thus 
-should not be muteable. The driver mutes them anyway...
+Am I doing something wrong? Can you please help me with that?
 
-I'd like to help somebody who really understands this stuff to solve the 
-problem for good. What would the next step be ?
+Btw, the system is 64bit, could that be a problem?
 
-Thanks,
-Ingmar
+lspci -nnv for sound card is:
+
+00:14.2 Audio device [0403]: ATI Technologies Inc SB600 Azalia [1002:4383]
+        Subsystem: Dell Unknown device [1028:0206]
+        Flags: slow devsel, IRQ 16
+        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+
+  Thanks in advance
+
+Marek
