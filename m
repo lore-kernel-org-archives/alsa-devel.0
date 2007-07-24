@@ -1,27 +1,20 @@
-From: Marek Zelem <marek@terminus.sk>
-Subject: No sound card found for ATI SB600 Azalia
-Date: Mon, 23 Jul 2007 23:00:17 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0707232239190.25733@shell.terminus.sk>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: No sound card found for ATI SB600 Azalia
+Date: Mon, 23 Jul 2007 22:42:07 -0400
+Message-ID: <75b66ecd0707231942k15fa92c3mc67211764375bee8@mail.gmail.com>
+References: <Pine.LNX.4.58.0707232239190.25733@shell.terminus.sk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from s-mail.terminus.sk (seldon.terminus.sk [85.248.119.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40072103899
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE27F1038AA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jul 2007 23:00:35 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by s-mail.terminus.sk (Postfix) with ESMTP id 8168634058
-	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jul 2007 23:00:34 +0200 (CEST)
-Received: from s-mail.terminus.sk ([127.0.0.1])
-	by localhost (s-mail [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 09132-01 for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jul 2007 23:00:19 +0200 (CEST)
-Received: from shell.terminus.sk (unknown [10.9.9.69])
-	by s-mail.terminus.sk (Postfix) with ESMTP id 2263B34060
-	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jul 2007 23:00:19 +0200 (CEST)
+	Tue, 24 Jul 2007 04:42:08 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id m22so1284557nzf
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2007 19:42:07 -0700 (PDT)
+In-Reply-To: <Pine.LNX.4.58.0707232239190.25733@shell.terminus.sk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,49 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Marek Zelem <marek@terminus.sk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 7/23/07, Marek Zelem <marek@terminus.sk> wrote:
+> ACPI: PCI Interrupt 0000:00:14.2[A] -> GSI 16 (level, low) -> IRQ 16
+> ALSA
+> /usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:558:
+> hda_intel: azx_get_response timeout, switching to polling mode...
+> ALSA
+> /usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:564:
+> hda_intel: azx_get_response timeout, switching to single_cmd mode...
+> hda_codec: No auto-config is available, default to model=ref
+> ALSA
+> /usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1020:
+> hda-intel: no codecs initialized
 
-	Hello
+Takashi-san,
 
-   I have Dell Latitude D531 notebook with
-	00:14.2 Audio device: ATI Technologies Inc SB600 Azalia
-sound card. Module snd_hda_intel is automaticaly loaded but no sound card
-is detected. Here is the dmesg output:
+Maybe you should add another printk() to HDA intel driver that
+instructs the user to post relevant debug info
+(/proc/asound/card0/codecblah...) to alsa-devel in these cases where
+we encounter some problem that is likely to result in no sound?  Other
+subsystems do it in similar cases (essentially, too many hardware
+variants for the maintainers to have any chance of testing them all)
+and it seems to produce good results.  It would make a lot of users
+happy to not have to google for what to do next...
 
-ACPI: PCI Interrupt 0000:00:14.2[A] -> GSI 16 (level, low) -> IRQ 16
-ALSA
-/usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:558:
-hda_intel: azx_get_response timeout, switching to polling mode...
-ALSA
-/usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:564:
-hda_intel: azx_get_response timeout, switching to single_cmd mode...
-hda_codec: No auto-config is available, default to model=ref
-ALSA
-/usr/src/modules/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1020:
-hda-intel: no codecs initialized
-ACPI: PCI interrupt for device 0000:00:14.2 disabled
-
-I have linux kernel 2.6.22.1. Also tried alsa 1.0.14 kernel modules built
-from alsa sources. The result was the same.
-
-I have also tried all model=xxx arguments, nothing helped.
-
-A also tried pci=noacpi but that caused boot failure.
-
-Am I doing something wrong? Can you please help me with that?
-
-Btw, the system is 64bit, could that be a problem?
-
-lspci -nnv for sound card is:
-
-00:14.2 Audio device [0403]: ATI Technologies Inc SB600 Azalia [1002:4383]
-        Subsystem: Dell Unknown device [1028:0206]
-        Flags: slow devsel, IRQ 16
-        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-
-  Thanks in advance
-
-Marek
+Lee
