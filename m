@@ -1,18 +1,19 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Query regarding ALSA control interface
-Date: Tue, 24 Jul 2007 08:57:30 +0200
-Message-ID: <1185260250.4021.1201714071@webmail.messagingengine.com>
-References: <61445c750707231616s1936fda3p4fa0677cc187860c@mail.gmail.com>
+Subject: Re: SNDRV_PCM_FMTBIT_S24_LE vs.
+	SNDRV_PCM_FMTBIT_S24_3LE
+Date: Tue, 24 Jul 2007 09:03:05 +0200
+Message-ID: <1185260585.4926.1201714631@webmail.messagingengine.com>
+References: <11505.27621-24387-105789712-1185218525@seznam.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 85DE8103812
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 33E0A103852
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 08:57:31 +0200 (CEST)
+	Tue, 24 Jul 2007 09:03:06 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <61445c750707231616s1936fda3p4fa0677cc187860c@mail.gmail.com>
+In-Reply-To: <11505.27621-24387-105789712-1185218525@seznam.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>, alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Pharaoh . wrote:
-> Now, I have to implement a control which takes four different values..namely
-> 0,1.100 and 101. In this case what shoud be the type of control? It should
-> be ENUMERATED or INTEGER? I am confused here since the values are not
-> exactly in a range.
+dustin@seznam.cz wrote:
+> >  What is the difference between SNDRV_PCM_FMTBIT_S24_LE and
+> >  SNDRV_PCM_FMTBIT_S24_3LE?
+> 
+> The asound.h says S24_LE is stored in lower three bytes of four, whereas
+> S24_3LE is stored in three bytes total.
 
-An INTEGER control takes numeric values in a specific range, while an
-ENUMERATED control takes values that are not numerically related (but
-that are _internally_ represented as integers in a specific range).
-
-In your case, you'd probably want to use an enumerated control with the
-range 0..3, which maps to the four names "0", "1", "100" and "101".
+To use a sample format with 24 bits stored in the upper three bytes of
+four, use S32_LE.  In that case, you have to call
+"snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24)" in the PCM open
+callback to tell ALSA that some of the lower bits aren't used.
 
 
 HTH
