@@ -1,20 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: How do I tell ALSA that my driver supports every
- possible sample rate?
-Date: Tue, 24 Jul 2007 14:30:29 -0500
-Message-ID: <46A65355.4040101@freescale.com>
-References: <46A4CF38.3050107@freescale.com>	<1185210867.7590.1201603759@webmail.messagingengine.com>	<46A4E503.50207@freescale.com>	<1185261264.6647.1201715813@webmail.messagingengine.com>	<46A612A0.6000807@freescale.com>
-	<s5hd4yhyh5n.wl%tiwai@suse.de>
+From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
+Subject: Effect of CONFIG_SND_PCM_OSS_PLUGINS
+Date: Tue, 24 Jul 2007 23:30:02 +0100
+Message-ID: <92a12cdb0707241530h3703a721md7bceeac2cd3144a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6ED001038BB
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31BB9103803
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 21:30:38 +0200 (CEST)
-In-Reply-To: <s5hd4yhyh5n.wl%tiwai@suse.de>
+	Wed, 25 Jul 2007 00:30:05 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id m22so17nzf
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2007 15:30:03 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Unless CONFIG_SND_PCM_OSS_PLUGINS is set then with my driver the
+userspace (and OSS) app mpg123 doesn't work properly - not outputting
+any sound.
 
->> #define SNDRV_PCM_RATE_ALL (SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATES_5512)
-> 
-> I'd prefer 5512_19200.  The word "ALL" may vary in future.
+Is this likely to be a problem with my driver or with the app?
 
-That's the point.  It's supposed to indicate all sample rates no matter what they are or 
-will be.  However, that may be a moot point ...
-
-> Anyway, the bits SND_PCM_RATES_[0-9]* are ignored when _CONTINUOUS or
-> _KNOT is passed.  Only the values in rate_min/rate_max fields are
-> referred as actual min/max rates.
-
-Ah!  I wish this stuff were documented in the source files.
-
-So can I do this?
-
-static const struct snd_pcm_hardware mpc86xx_pcm_hardware = {
-
-	.rates			= SNDRV_PCM_RATE_CONTINUOUS,
-	.rate_min		= 1,
-	.rate_max		= (unsigned int) -1,
-
-
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+Adrian
