@@ -1,14 +1,16 @@
-From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
-Subject: [PATCH] s3c24xx-pcm: fix hw_params dma handling
-Date: Tue, 24 Jul 2007 10:56:29 +0200
-Message-ID: <854pjufade.fsf@Orfeo.duckcorp.org>
+From: Carlo Florendo <subscribermail@gmail.com>
+Subject: How to get correct midi timings from ALSA using the
+	library only
+Date: Tue, 24 Jul 2007 17:01:19 +0800
+Message-ID: <46A5BFDF.4040906@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.duckcorp.org (orfeo.duckcorp.org [195.5.254.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D2532449E
+Received: from mx1.hq.astra.ph (unknown [202.78.101.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86C682449F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 10:56:33 +0200 (CEST)
+	Tue, 24 Jul 2007 11:00:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,83 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: laforge@openmoko.org, gg@opensource.wolfsonmicro.com, ben-linux@fluff.org
+Cc: linux-audio-dev@lists.linuxaudio.org
 List-Id: alsa-devel@alsa-project.org
-
---=-=-=
 
 Hi,
 
-While testing the recently merged driver for the neo1973, I found out
-that it was not working due to dma allocation failure. The problem is
-that there's only one dma channel available on s3c2410 and there may be
-more than one call to pcm_ops->hw_params(), resulting in dma request
-failures. This patch from Harald Welte fix this.
+(1) I've written a command line MIDI sequencer for lightweight systems and 
+am successful in making it work using the ALSA queue API.  However, one 
+drawback of the API is its lack of callback functions.  I wish to be able 
+to track events as they are drained by the queue.
 
-Arnaud
+(2) I know and have successfully worked on a work around whereby the 
+application itself subscribes to the output port so as to see events as 
+they are played.
 
+However, I wish to be able to make the sequencer or player work without the 
+use of the ALSA queue nor the workaround in (2).
 
---=-=-=
-Content-Type: text/x-diff
-Content-Disposition: inline;
- filename=asoc-platform-hw_init-pcm_emulation-fix.patch
+Here's the pseudo-code of the relevant MIDI player routine:
 
-Since the PCM emulation can call multiple times to hw_setup(), but we 
-can only once allocate/request the DMA channel, we have to handle
-this gracefully.
+for (i = 0; i < number_of_events; i++)
+{
+     usleep(event[i].delta_time_in_microseconds);
+     output_and_drain_event(event[i]);
+}
 
-Signed-off-by: Harald Welte <laforge@openmoko.org>
-Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
+This routine gives a non-bearable latency on 2.4 kernels but not so much on 
+2.6 kernels.
 
-Index: linux-2.6.20/sound/soc/s3c24xx/s3c24xx-pcm.c
-===================================================================
---- linux-2.6.20.orig/sound/soc/s3c24xx/s3c24xx-pcm.c	2007-02-15 21:50:25.000000000 +0100
-+++ linux-2.6.20/sound/soc/s3c24xx/s3c24xx-pcm.c	2007-02-15 22:25:10.000000000 +0100
-@@ -155,18 +155,22 @@
- 	if (!dma)
- 		return 0;
- 
--	/* prepare DMA */
--	prtd->params = dma;
--
--	DBG("params %p, client %p, channel %d\n", prtd->params,
--		prtd->params->client, prtd->params->channel);
--
--	ret = s3c2410_dma_request(prtd->params->channel,
--				  prtd->params->client, NULL);
--
--	if (ret) {
--		DBG(KERN_ERR "failed to get dma channel\n");
--		return ret;
-+	/* this may get called several times by oss emulation
-+	 * with different params -HW */
-+	if (prtd->params == NULL) {
-+		/* prepare DMA */
-+		prtd->params = dma;
-+
-+		DBG("params %p, client %p, channel %d\n", prtd->params,
-+			prtd->params->client, prtd->params->channel);
-+
-+		ret = s3c2410_dma_request(prtd->params->channel,
-+					  prtd->params->client, NULL);
-+
-+		if (ret) {
-+			DBG(KERN_ERR "failed to get dma channel\n");
-+			return ret;
-+		}
- 	}
- 
- 	/* channel needs configuring for mem=>device, increment memory addr,
+How could I get the app to <u|nano>sleep() in the most accurate way in 
+userspace without using the ALSA queue nor the extra subscription to an 
+output port?   Or, is there a drain or output routine that supports 
+callbacks?  If so, I will be grateful if you could point them out.  I seem 
+not to find any output callback routine under the docs.
 
---=-=-=
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thank you very much.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Best Regards,
 
---=-=-=--
+Carlo
+
+-- 
+Carlo Florendo
+Softare Engineer/Network Co-Administrator
+Astra Philippines Inc.
+UP-Ayala Technopark, Diliman 1101, Quezon City
+Philippines
+http://www.astra.ph
+
+--
+The Astra Group of Companies
+5-3-11 Sekido, Tama City
+Tokyo 206-0011, Japan
+http://www.astra.co.jp
