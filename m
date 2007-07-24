@@ -1,86 +1,67 @@
-From: Florian Schmidt <mista.tapas-hi6Y0CQ0nG0@public.gmane.org>
-Subject: Re: [LAD] How to get correct midi timings from ALSA using the library
-	only
-Date: Tue, 24 Jul 2007 12:06:09 +0200
-Message-ID: <200707241206.09991.mista.tapas@gmx.net>
-References: <46A5BFDF.4040906@gmail.com>
-Reply-To: The Linux Audio Developers' Mailing List <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+From: Andy <hornett83@yahoo.co.uk>
+Subject: ALC262 - HDA-Intel
+Date: Tue, 24 Jul 2007 11:08:29 +0100 (BST)
+Message-ID: <20070724100829.46373.qmail@web27209.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-In-Reply-To: <46A5BFDF.4040906-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Content-Disposition: inline
-List-Unsubscribe: <http://lists.linuxaudio.org/mailman/listinfo.cgi/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linuxaudio.org/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/mailman/listinfo.cgi/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-To: linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from web27209.mail.ukl.yahoo.com (web27209.mail.ukl.yahoo.com
+	[217.146.182.99]) by alsa0.perex.cz (Postfix) with SMTP id 1E6CB2449F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 24 Jul 2007 12:08:30 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 24 July 2007, Carlo Florendo wrote:
-> Hi,
->
-> (1) I've written a command line MIDI sequencer for lightweight systems and
-> am successful in making it work using the ALSA queue API.  However, one
-> drawback of the API is its lack of callback functions.  I wish to be able
-> to track events as they are drained by the queue.
->
-> (2) I know and have successfully worked on a work around whereby the
-> application itself subscribes to the output port so as to see events as
-> they are played.
->
-> However, I wish to be able to make the sequencer or player work without the
-> use of the ALSA queue nor the workaround in (2).
->
-> Here's the pseudo-code of the relevant MIDI player routine:
->
-> for (i = 0; i < number_of_events; i++)
-> {
->      usleep(event[i].delta_time_in_microseconds);
->      output_and_drain_event(event[i]);
-> }
->
-> This routine gives a non-bearable latency on 2.4 kernels but not so much on
-> 2.6 kernels.
->
-> How could I get the app to <u|nano>sleep() in the most accurate way in
-> userspace without using the ALSA queue nor the extra subscription to an
-> output port?   Or, is there a drain or output routine that supports
-> callbacks?  If so, I will be grateful if you could point them out.  I seem
-> not to find any output callback routine under the docs.
+I have a ALC262 hda-intel card which doesn't function
+quite correctly. Details can be found at
+https://bugs.launchpad.net/ubuntu/+source/linux-source-2.6.20/+bug/110145
 
-One way to improve timing is to make sure your process has the highest prio in 
-the system, so that even in the case that other tasks want to run, too, at 
-the moment of wakeup, your process gets the CPU.
+I got bored of waiting for it to be fixed, and had a
+go myself. My knowledge of ALSA is very limited, but
+nevertheless it was really simple to add my device ids
+to the quirks list in the patch_realtek.c file - eg:
 
-Try running your process with SCHED_FIFO scheduling and a high prio of e.g. 
-99.
+...
+SND_PCI_QUIRK(0x104d, 0x900e, "Sony ASSAMD",
+ALC262_SONY_ASSAMD),
+SND_PCI_QUIRK(0x104d, 0x1f00, "Sony ASSAMD",
+ALC262_SONY_ASSAMD),
+/* My card... */
+SND_PCI_QUIRK(0x104d, 0x820f, "Sony ASSAMD",
+ALC262_SONY_ASSAMD),
+...
 
-Also using a kernel patched with ingo molnar's -rt patches might help quite a 
-bit (additional to running your process SCHED_FIFO).
+I found by trial and error that ALC262_SONY_ASSAMD
+almost works. Connecting headphones disables built-in
+speakers and unplugging them re-enables them.
 
-Also you want to check on every wakeup (after your sleep expired) how long you 
-really slept, so you can adjust the next sleep time. clock_gettime 
-(CLOCK_MONOTONIC) might be useful for this..
+However, something does not get initialised until this
+is done. That is, every bootup using
+ALC262_SONY_ASSAMD, I must plug in and remove my
+headphones before the device is initialised properly. 
 
-Another approach, that works very well in my experience, is to not sleep the 
-total required time until the next event, but rather regularly sleep for very 
-short amounts of time (< 1ms), wakeup, measure the current time and if any 
-event time now lies in the past, simply play it back immediately. This way 
-the sleep time doesn't need to be accurate at all. All that's needed is that 
-it's small enough to get some decent timing.
+Until this is done, I get no sound and the little GUI
+mixer in XFCE doesn't show the list of supported
+outputs on the device. 
 
-Regards,
-Flo
+I'm posting this to the devel list as I'm more
+interested the code side of things rather than
+actually having working sound :)
 
--- 
-Palimm Palimm!
-http://tapas.affenbande.org
+Thanks
+Andy.
+
+
+      ___________________________________________________________ 
+Yahoo! Mail is the world's favourite email. Don't settle for less, sign up for
+your free account today http://uk.rd.yahoo.com/evt=44106/*http://uk.docs.yahoo.com/mail/winter07.html 
