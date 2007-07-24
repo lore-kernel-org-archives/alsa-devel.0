@@ -1,15 +1,21 @@
-From: Neeraj Vaidya <neeraj.vaidya@yahoo.co.in>
-Subject: SuSE 9.1 on Toshiba Satellite A105 - S4004
-Date: Tue, 24 Jul 2007 08:21:09 +0100 (BST)
-Message-ID: <947983.8341.qm@web7901.mail.in.yahoo.com>
+From: Markus Franke <markus.franke@s2002.tu-chemnitz.de>
+Subject: basic workflow when playing some sounddata
+Date: Tue, 24 Jul 2007 13:51:09 +0530
+Message-ID: <46A5B675.5050202@hrz.tu-chemnitz.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web7901.mail.in.yahoo.com (web7901.mail.in.yahoo.com
-	[202.86.4.77]) by alsa0.perex.cz (Postfix) with SMTP id A4F16103847
+Received: from john.hrz.tu-chemnitz.de (john.hrz.tu-chemnitz.de
+	[134.109.132.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A710103852
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 09:21:15 +0200 (CEST)
+	Tue, 24 Jul 2007 10:18:40 +0200 (CEST)
+Received: from [203.145.183.24] (helo=dexsys58.DOMAIN.dexceldesigns.com)
+	by john.hrz.tu-chemnitz.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.66) (envelope-from <markus.franke@s2002.tu-chemnitz.de>)
+	id 1IDFbL-0004bn-SH
+	for alsa-devel@alsa-project.org; Tue, 24 Jul 2007 10:18:40 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +28,43 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Dear Alsa-Developers,
 
-I've installed this distro on my toshiba laptop.
-In YaST , when I try to configure the sound card , it says no sound card detected.
+I am very new to Alsa driver development and have some problems to get a
+clue how the process of playing sounddata works. Let me explain my point
+of view and it would be nice if anybody could give some clarifications
+and corrections on it.
 
-To cut a long story short , I do not get any sounds to work on my laptop.
-Sound works beautifully on XP , but I am trying to migrate all of my routine activities to linux ;)
+Suppose I want to play a *.wav file from userspace with "aplay". After
+triggering all the configuration functions for PCM and the DAI at some
+point the chip_pcm_trigger() function get's called. As per "Writing Alsa
+Drivers" the TRIGGER_START command should now do something for "enabling
+the PCM engine". As per my understanding this could be for example to
+enable the interrupts of my DAI, which is (I2S over GSI) in my case. The
+interrupt handler by itself should call snd_pcm_period_elapsed()
+whenever a period of sounddata is copied to the device. Furthermore the
+so called "hw_pointer" should be updated in the interrupt handler,
+right? To make it easy I don't want to use DMA in the beginning. I
+simply want to copy the data to the hardware buffer of my DAI (I2S via
+GSI) and from there it is copied automatically to my codec. The question
+is now, at which place in the alsa framework I have to put the copy
+process of the sounddata. It should not be done in the interrupt handler
+because this would take to much time. But whereelse could this be done?
 
-I am a newbie to the ALSA mailing list. Have a feeling that something to do with ALSA configuration can help me sort out this problem.
+Also I don't know the meaning of chip_pcm_pointer() callback. As far as
+I could figure out from the source, this function is called whenever
+snd_pcm_period_elapsed() is called, right? But what should be done
+exactly in this callback. Again I want to say that I don't want to use
+DMA at all by now.
 
-When I run lspci , I do not see any audio card as being detected.
+I've read already "Writing Alsa Drivers" but the questions above still
+remain for me and I am quite confused as you maybe noticed already from
+my questions above. ;-) It would be nice if anybody can give me a basic
+workflow which functions/callbacks are necessary for the playing part of
+an Alsa driver.
 
-Can someone please help me out ?  Also , send me some diagnostic steps , if not the entire solution , so that we can sort this out in a series of emails , if the entire solution can not be provided in one email.
 
-Thanks in Advance!
--Neeraj
+Thanks in advance for any help,
 
-       
----------------------------------
- Get the freedom to save as many mails as you wish. Click here to know how.
+Regards,
+Markus
