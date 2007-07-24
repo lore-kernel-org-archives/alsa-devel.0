@@ -1,30 +1,20 @@
-From: Jan Zuchhold <Jan@zuchhold.com>
-Subject: Re: YMFPCI: IEC958 volume does not work anymore
-	(2.6.18->2.6.21)
-Date: Tue, 24 Jul 2007 20:41:31 +0200
-Message-ID: <200707242041.39538.Jan@zuchhold.com>
-References: <200707200922.48147.Jan@zuchhold.com>
-	<1185206160.23070.1201588859@webmail.messagingengine.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: How do I tell ALSA that my driver supports every
+ possible sample rate?
+Date: Tue, 24 Jul 2007 14:30:29 -0500
+Message-ID: <46A65355.4040101@freescale.com>
+References: <46A4CF38.3050107@freescale.com>	<1185210867.7590.1201603759@webmail.messagingengine.com>	<46A4E503.50207@freescale.com>	<1185261264.6647.1201715813@webmail.messagingengine.com>	<46A612A0.6000807@freescale.com>
+	<s5hd4yhyh5n.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1789912118567679133=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.dmz.labffm.de (ad96e004c.dsl.de.colt.net [217.110.0.76])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7E2A61038BB
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6ED001038BB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 20:41:41 +0200 (CEST)
-Received: from localhost (smtp.dmz.labffm.de [192.168.10.73])
-	by smtp.dmz.labffm.de (Postfix) with ESMTP id C9913179E7
-	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 20:41:40 +0200 (CEST)
-Received: from smtp.dmz.labffm.de ([192.168.10.73])
-	by localhost (smtp [192.168.10.73]) (amavisd-new, port 10024)
-	with ESMTP id 08887-03 for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 20:41:40 +0200 (CEST)
-Received: from echo.ke.zuchhold.de (unknown [192.168.10.34])
-	by smtp.dmz.labffm.de (Postfix) with ESMTP id 8F10716907
-	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 20:41:40 +0200 (CEST)
-In-Reply-To: <1185206160.23070.1201588859@webmail.messagingengine.com>
+	Tue, 24 Jul 2007 21:30:38 +0200 (CEST)
+In-Reply-To: <s5hd4yhyh5n.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,64 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============1789912118567679133==
-Content-Type: multipart/signed;
-  boundary="nextPart3890747.yVzOn0c0gs";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Takashi Iwai wrote:
 
---nextPart3890747.yVzOn0c0gs
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+>> #define SNDRV_PCM_RATE_ALL (SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATES_5512)
+> 
+> I'd prefer 5512_19200.  The word "ALL" may vary in future.
 
-Hello,
+That's the point.  It's supposed to indicate all sample rates no matter what they are or 
+will be.  However, that may be a moot point ...
 
-> > i'm using a Hoontech Soundtrack Digital-XG (YMF744) and after i've
-> > upgraded to kernel 2.6.21, i can't control the IEC958 volume (using "Wa=
-ve
-> > volume") any longer.
->
-> This happens only for 44.1 kHz data.
->
-> Try the attached patch.
+> Anyway, the bits SND_PCM_RATES_[0-9]* are ignored when _CONTINUOUS or
+> _KNOT is passed.  Only the values in rate_min/rate_max fields are
+> referred as actual min/max rates.
 
-great, it's working!
+Ah!  I wish this stuff were documented in the source files.
 
-Could you please mail me a way to reward you (Paypal account? Amazon wishli=
-st=20
-etc?)?
+So can I do this?
 
-Thank you,
-Jan
+static const struct snd_pcm_hardware mpc86xx_pcm_hardware = {
 
---nextPart3890747.yVzOn0c0gs
-Content-Type: application/pgp-signature
+	.rates			= SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min		= 1,
+	.rate_max		= (unsigned int) -1,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
 
-iD8DBQBGpkfhQ65WEO0u/U4RAhP1AKDBQ28E627IgefYlY+NoHoc/sMPUACfeVe9
-bpCHjgoRwzzPy99hR1foTuM=
-=59VS
------END PGP SIGNATURE-----
-
---nextPart3890747.yVzOn0c0gs--
-
---===============1789912118567679133==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1789912118567679133==--
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
