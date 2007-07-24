@@ -1,18 +1,21 @@
-From: Matthias Dahl <ml_alsa@mortal-soul.de>
-Subject: Re: Intel HDA digital out distortion
-Date: Tue, 24 Jul 2007 09:06:45 +0200
-Message-ID: <200707240906.49135.ml_alsa@mortal-soul.de>
-References: <46A51904.3010606@stiegerhs.de>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: How do I tell ALSA that my driver supports every
+ possible sample rate?
+Date: Tue, 24 Jul 2007 09:14:24 +0200
+Message-ID: <1185261264.6647.1201715813@webmail.messagingengine.com>
+References: <46A4CF38.3050107@freescale.com>
+	<1185210867.7590.1201603759@webmail.messagingengine.com>
+	<46A4E503.50207@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dd15922.kasserver.com (dd15922.kasserver.com [85.13.137.18])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00C0E10386F
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id B370B103852
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 09:06:34 +0200 (CEST)
-In-Reply-To: <46A51904.3010606@stiegerhs.de>
+	Tue, 24 Jul 2007 09:14:24 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <46A4E503.50207@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Ingmar Stieger <alsauser@stiegerhs.de>
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Ingmar.
+Timur Tabi wrote:
+> Clemens Ladisch wrote:
+> > To indicate that the PCM device supports all sample rates between the
+> > minimum and the maximum, set SNDRV_PCM_RATE_CONTINUOUS in addition to
+> > the other supported bits.
+> 
+> So I should do this:
+> 
+> 	SNDRV_PCM_RATES_5512 | SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_CONTINUOUS
 
-On Monday 23 July 2007 23:09:24 Ingmar Stieger wrote:
+Yes.
 
-> a couple of weeks ago, I bought an ASUS mainboard with integrated Intel HDA
-> and an AD1988B codec. Unfortunately, the digital / SPDIF output gets
-> distorted with stock 1.0.14 drivers. It does not matter what the volume
-> levels of the various mixers are set to.
+> That's not really elegant.
 
-That makes two of us. I've reported similar problems a few weeks back. So the 
-thread "snd-hda-intel, AD 1988b: SPDIF output not working correctly, volume 
-low for analog output" maybe of interest to you too. (I posted a similar 
-patch just a few minutes before your's by the way -g-)
+How could this be made more elegant?
 
-Could you please tell me what board you have...? If you play back analog sound 
-through spdif, do you hear "distortions" in the background like bass-like low 
-frequency pumping and so on...?
+It would be possible for ALSA to automatically set the single rate bits
+that fall into the minimum/maximum range when the CONTINUOUS bit is set,
+but this wouldn't help in your case because you'd still need to set
+these bits in case one of the I2S/codec drivers has to remove the
+CONTINUOUS bit.
 
-Best regards,
-Matthias Dahl
+
+Regards,
+Clemens
