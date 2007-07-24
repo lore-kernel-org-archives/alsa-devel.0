@@ -1,21 +1,18 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: Query regarding ALSA control interface
-Date: Tue, 24 Jul 2007 20:02:37 +0530
-Message-ID: <61445c750707240732jbe7bca0sf4881ed57e20ff13@mail.gmail.com>
-References: <61445c750707231616s1936fda3p4fa0677cc187860c@mail.gmail.com>
-	<1185260250.4021.1201714071@webmail.messagingengine.com>
+From: Harald Welte <laforge@openmoko.org>
+Subject: Re: [PATCH] s3c24xx-pcm: fix hw_params dma handling
+Date: Tue, 24 Jul 2007 17:41:12 +0800
+Message-ID: <20070724094112.GR7335@prithivi.gnumonks.org>
+References: <854pjufade.fsf@Orfeo.duckcorp.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 981EC1037FE
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50B7924346
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 16:32:38 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so2579112wag
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2007 07:32:37 -0700 (PDT)
-In-Reply-To: <1185260250.4021.1201714071@webmail.messagingengine.com>
+	Tue, 24 Jul 2007 11:41:29 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <854pjufade.fsf@Orfeo.duckcorp.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: Arnaud Patard <arnaud.patard@rtp-net.org>
+Cc: alsa-devel@alsa-project.org, gg@opensource.wolfsonmicro.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On 7/24/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
->
-> Pharaoh . wrote:
-> > Now, I have to implement a control which takes four different
-> values..namely
-> > 0,1.100 and 101. In this case what shoud be the type of control? It
-> should
-> > be ENUMERATED or INTEGER? I am confused here since the values are not
-> > exactly in a range.
->
-> An INTEGER control takes numeric values in a specific range, while an
-> ENUMERATED control takes values that are not numerically related (but
-> that are _internally_ represented as integers in a specific range).
->
-> In your case, you'd probably want to use an enumerated control with the
-> range 0..3, which maps to the four names "0", "1", "100" and "101".
->
->
-> HTH
-> Clemens
+On Tue, Jul 24, 2007 at 10:56:29AM +0200, Arnaud Patard wrote:
+ 
+> While testing the recently merged driver for the neo1973, I found out
+> that it was not working due to dma allocation failure. The problem is
+> that there's only one dma channel available on s3c2410 and there may be
+> more than one call to pcm_ops->hw_params(), resulting in dma request
+> failures. This patch from Harald Welte fix this.
+> 
+Thanks for picking up that one, Arnaud!  I didn't submit this myself
+since it was just a 'quick fix' and I don't understand enough about ALSA
+to be sure that this really is the proper fix...
 
-
-
-Thanks Clemens, I had implemented it using  ENUM type. It works.
-
--pharaoh.
+-- 
+- Harald Welte <laforge@openmoko.org>          	        http://openmoko.org/
+============================================================================
+Software for the world's first truly open Free Software mobile phone
