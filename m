@@ -1,18 +1,18 @@
-From: Harald Welte <laforge@openmoko.org>
-Subject: Re: [PATCH] s3c24xx-pcm: fix hw_params dma handling
-Date: Tue, 24 Jul 2007 17:41:12 +0800
-Message-ID: <20070724094112.GR7335@prithivi.gnumonks.org>
-References: <854pjufade.fsf@Orfeo.duckcorp.org>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH] Patch for AICA
+Date: Tue, 24 Jul 2007 20:06:13 +0900
+Message-ID: <20070724110613.GB9138@linux-sh.org>
+References: <92a12cdb0707240351h147b35a7r8d99252aab2f18b1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50B7924346
+Received: from smtp.ocgnet.org (smtp.ocgnet.org [64.20.243.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60E942437A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 11:41:29 +0200 (CEST)
+	Tue, 24 Jul 2007 13:06:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <854pjufade.fsf@Orfeo.duckcorp.org>
+In-Reply-To: <92a12cdb0707240351h147b35a7r8d99252aab2f18b1@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: alsa-devel@alsa-project.org, gg@opensource.wolfsonmicro.com, ben-linux@fluff.org
+To: Adrian McMenamin <adrianmcmenamin@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 24, 2007 at 10:56:29AM +0200, Arnaud Patard wrote:
- 
-> While testing the recently merged driver for the neo1973, I found out
-> that it was not working due to dma allocation failure. The problem is
-> that there's only one dma channel available on s3c2410 and there may be
-> more than one call to pcm_ops->hw_params(), resulting in dma request
-> failures. This patch from Harald Welte fix this.
+On Tue, Jul 24, 2007 at 11:51:53AM +0100, Adrian McMenamin wrote:
+> I submitted this yesterday via lkml and it was accepted by the SH
+> maintainer. Probably should have copied in the ALSA list too - though
+> the change is so small and consequential of another issue I was
+> dealing with I forgot.
 > 
-Thanks for picking up that one, Arnaud!  I didn't submit this myself
-since it was just a 'quick fix' and I don't understand enough about ALSA
-to be sure that this really is the proper fix...
-
--- 
-- Harald Welte <laforge@openmoko.org>          	        http://openmoko.org/
-============================================================================
-Software for the world's first truly open Free Software mobile phone
+I included this with your changeset, as it was an obvious and trivial
+change. If the ALSA folks wish to feed this part in through their tree,
+that's fine with me, otherwise it will show up with the next batch of SH
+updates automatically.
