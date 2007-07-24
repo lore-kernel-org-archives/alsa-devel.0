@@ -1,21 +1,15 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: How do I tell ALSA that my driver supports every
- possible sample rate?
-Date: Tue, 24 Jul 2007 09:14:24 +0200
-Message-ID: <1185261264.6647.1201715813@webmail.messagingengine.com>
-References: <46A4CF38.3050107@freescale.com>
-	<1185210867.7590.1201603759@webmail.messagingengine.com>
-	<46A4E503.50207@freescale.com>
+From: Neeraj Vaidya <neeraj.vaidya@yahoo.co.in>
+Subject: SuSE 9.1 on Toshiba Satellite A105 - S4004
+Date: Tue, 24 Jul 2007 08:21:09 +0100 (BST)
+Message-ID: <947983.8341.qm@web7901.mail.in.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id B370B103852
+Received: from web7901.mail.in.yahoo.com (web7901.mail.in.yahoo.com
+	[202.86.4.77]) by alsa0.perex.cz (Postfix) with SMTP id A4F16103847
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 09:14:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <46A4E503.50207@freescale.com>
+	Tue, 24 Jul 2007 09:21:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,32 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> Clemens Ladisch wrote:
-> > To indicate that the PCM device supports all sample rates between the
-> > minimum and the maximum, set SNDRV_PCM_RATE_CONTINUOUS in addition to
-> > the other supported bits.
-> 
-> So I should do this:
-> 
-> 	SNDRV_PCM_RATES_5512 | SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATE_CONTINUOUS
+Hi,
 
-Yes.
+I've installed this distro on my toshiba laptop.
+In YaST , when I try to configure the sound card , it says no sound card detected.
 
-> That's not really elegant.
+To cut a long story short , I do not get any sounds to work on my laptop.
+Sound works beautifully on XP , but I am trying to migrate all of my routine activities to linux ;)
 
-How could this be made more elegant?
+I am a newbie to the ALSA mailing list. Have a feeling that something to do with ALSA configuration can help me sort out this problem.
 
-It would be possible for ALSA to automatically set the single rate bits
-that fall into the minimum/maximum range when the CONTINUOUS bit is set,
-but this wouldn't help in your case because you'd still need to set
-these bits in case one of the I2S/codec drivers has to remove the
-CONTINUOUS bit.
+When I run lspci , I do not see any audio card as being detected.
 
+Can someone please help me out ?  Also , send me some diagnostic steps , if not the entire solution , so that we can sort this out in a series of emails , if the entire solution can not be provided in one email.
 
-Regards,
-Clemens
+Thanks in Advance!
+-Neeraj
+
+       
+---------------------------------
+ Get the freedom to save as many mails as you wish. Click here to know how.
