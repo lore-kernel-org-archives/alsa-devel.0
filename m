@@ -1,18 +1,30 @@
-From: Andy <hornett83@yahoo.co.uk>
-Subject: Re: ALC262 - HDA-Intel
-Date: Tue, 24 Jul 2007 18:08:24 +0100 (BST)
-Message-ID: <20070724170824.23198.qmail@web27211.mail.ukl.yahoo.com>
-References: <s5hsl7ex8gb.wl%tiwai@suse.de>
+From: Jan Zuchhold <Jan@zuchhold.com>
+Subject: Re: YMFPCI: IEC958 volume does not work anymore
+	(2.6.18->2.6.21)
+Date: Tue, 24 Jul 2007 20:41:31 +0200
+Message-ID: <200707242041.39538.Jan@zuchhold.com>
+References: <200707200922.48147.Jan@zuchhold.com>
+	<1185206160.23070.1201588859@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1789912118567679133=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web27211.mail.ukl.yahoo.com (web27211.mail.ukl.yahoo.com
-	[217.146.182.101])
-	by alsa0.perex.cz (Postfix) with SMTP id 29749103841
+Received: from smtp.dmz.labffm.de (ad96e004c.dsl.de.colt.net [217.110.0.76])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E2A61038BB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 19:08:25 +0200 (CEST)
-In-Reply-To: <s5hsl7ex8gb.wl%tiwai@suse.de>
+	Tue, 24 Jul 2007 20:41:41 +0200 (CEST)
+Received: from localhost (smtp.dmz.labffm.de [192.168.10.73])
+	by smtp.dmz.labffm.de (Postfix) with ESMTP id C9913179E7
+	for <alsa-devel@alsa-project.org>;
+	Tue, 24 Jul 2007 20:41:40 +0200 (CEST)
+Received: from smtp.dmz.labffm.de ([192.168.10.73])
+	by localhost (smtp [192.168.10.73]) (amavisd-new, port 10024)
+	with ESMTP id 08887-03 for <alsa-devel@alsa-project.org>;
+	Tue, 24 Jul 2007 20:41:40 +0200 (CEST)
+Received: from echo.ke.zuchhold.de (unknown [192.168.10.34])
+	by smtp.dmz.labffm.de (Postfix) with ESMTP id 8F10716907
+	for <alsa-devel@alsa-project.org>;
+	Tue, 24 Jul 2007 20:41:40 +0200 (CEST)
+In-Reply-To: <1185206160.23070.1201588859@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,234 +34,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thank-you Takashi,
+--===============1789912118567679133==
+Content-Type: multipart/signed;
+  boundary="nextPart3890747.yVzOn0c0gs";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I applied the patch (to the in-kernel version from
-2.6.22.1) but sadly it did not fix the problem.  
+--nextPart3890747.yVzOn0c0gs
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I noticed that my XFCE mixer wasn't broken before I
-plugged the 'phones in this time, not sure if the
-patch fixed that, but it seems like a step in the
-right direction!
+Hello,
 
-Regards,
-Andy.
-
-
---- Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Tue, 24 Jul 2007 11:08:29 +0100 (BST),
-> Andy wrote:
-> > 
-> > I have a ALC262 hda-intel card which doesn't
-> function
-> > quite correctly. Details can be found at
-> >
+> > i'm using a Hoontech Soundtrack Digital-XG (YMF744) and after i've
+> > upgraded to kernel 2.6.21, i can't control the IEC958 volume (using "Wa=
+ve
+> > volume") any longer.
 >
-https://bugs.launchpad.net/ubuntu/+source/linux-source-2.6.20/+bug/110145
-> > 
-> > I got bored of waiting for it to be fixed, and had
-> a
-> > go myself. My knowledge of ALSA is very limited,
-> but
-> > nevertheless it was really simple to add my device
-> ids
-> > to the quirks list in the patch_realtek.c file -
-> eg:
-> > 
-> > ...
-> > SND_PCI_QUIRK(0x104d, 0x900e, "Sony ASSAMD",
-> > ALC262_SONY_ASSAMD),
-> > SND_PCI_QUIRK(0x104d, 0x1f00, "Sony ASSAMD",
-> > ALC262_SONY_ASSAMD),
-> > /* My card... */
-> > SND_PCI_QUIRK(0x104d, 0x820f, "Sony ASSAMD",
-> > ALC262_SONY_ASSAMD),
-> > ...
-> > 
-> > I found by trial and error that ALC262_SONY_ASSAMD
-> > almost works. Connecting headphones disables
-> built-in
-> > speakers and unplugging them re-enables them.
-> > 
-> > However, something does not get initialised until
-> this
-> > is done. That is, every bootup using
-> > ALC262_SONY_ASSAMD, I must plug in and remove my
-> > headphones before the device is initialised
-> properly. 
-> > 
-> > Until this is done, I get no sound and the little
-> GUI
-> > mixer in XFCE doesn't show the list of supported
-> > outputs on the device. 
-> > 
-> > I'm posting this to the devel list as I'm more
-> > interested the code side of things rather than
-> > actually having working sound :)
-> 
-> Could you try the patch below?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> diff -r 2250b8a4b66a pci/hda/patch_realtek.c
-> --- a/pci/hda/patch_realtek.c	Tue Jul 24 12:49:39
-> 2007 +0200
-> +++ b/pci/hda/patch_realtek.c	Tue Jul 24 15:00:15
-> 2007 +0200
-> @@ -7269,21 +7269,17 @@ static struct hda_verb
-> alc262_sony_unsol
->  };
->  
->  /* mute/unmute internal speaker according to the hp
-> jack and mute state */
-> -static void alc262_hippo_automute(struct hda_codec
-> *codec, int force)
-> -{
-> -	struct alc_spec *spec = codec->spec;
-> +static void alc262_hippo_automute(struct hda_codec
-> *codec)
-> +{
->  	unsigned int mute;
-> -
-> -	if (force || !spec->sense_updated) {
-> -		unsigned int present;
-> -		/* need to execute and sync at first */
-> -		snd_hda_codec_read(codec, 0x15, 0,
-> AC_VERB_SET_PIN_SENSE, 0);
-> -		present = snd_hda_codec_read(codec, 0x15, 0,
-> -				    	 AC_VERB_GET_PIN_SENSE, 0);
-> -		spec->jack_present = (present & 0x80000000) != 0;
-> -		spec->sense_updated = 1;
-> -	}
-> -	if (spec->jack_present) {
-> +	unsigned int present;
-> +
-> +	/* need to execute and sync at first */
-> +	snd_hda_codec_read(codec, 0x15, 0,
-> AC_VERB_SET_PIN_SENSE, 0);
-> +	present = snd_hda_codec_read(codec, 0x15, 0,
-> +				     AC_VERB_GET_PIN_SENSE, 0);
-> +	present = (present & 0x80000000) != 0;
-> +	if (present) {
->  		/* mute internal speaker */
->  		snd_hda_codec_amp_update(codec, 0x14, 0,
-> HDA_OUTPUT, 0,
->  					 0x80, 0x80);
-> @@ -7306,24 +7302,19 @@ static void
-> alc262_hippo_unsol_event(str
->  {
->  	if ((res >> 26) != ALC880_HP_EVENT)
->  		return;
-> -	alc262_hippo_automute(codec, 1);
-> -}
-> -
-> -static void alc262_hippo1_automute(struct hda_codec
-> *codec, int force)
-> -{
-> -	struct alc_spec *spec = codec->spec;
-> +	alc262_hippo_automute(codec);
-> +}
-> +
-> +static void alc262_hippo1_automute(struct hda_codec
-> *codec)
-> +{
->  	unsigned int mute;
-> -
-> -	if (force || !spec->sense_updated) {
-> -		unsigned int present;
-> -		/* need to execute and sync at first */
-> -		snd_hda_codec_read(codec, 0x1b, 0,
-> AC_VERB_SET_PIN_SENSE, 0);
-> -		present = snd_hda_codec_read(codec, 0x1b, 0,
-> -				    	 AC_VERB_GET_PIN_SENSE, 0);
-> -		spec->jack_present = (present & 0x80000000) != 0;
-> -		spec->sense_updated = 1;
-> -	}
-> -	if (spec->jack_present) {
-> +	unsigned int present;
-> +
-> +	snd_hda_codec_read(codec, 0x1b, 0,
-> AC_VERB_SET_PIN_SENSE, 0);
-> +	present = snd_hda_codec_read(codec, 0x1b, 0,
-> +				     AC_VERB_GET_PIN_SENSE, 0);
-> +	present = (present & 0x80000000) != 0;
-> +	if (present) {
->  		/* mute internal speaker */
->  		snd_hda_codec_amp_update(codec, 0x14, 0,
-> HDA_OUTPUT, 0,
->  					 0x80, 0x80);
-> @@ -7346,7 +7337,7 @@ static void
-> alc262_hippo1_unsol_event(st
->  {
->  	if ((res >> 26) != ALC880_HP_EVENT)
->  		return;
-> -	alc262_hippo1_automute(codec, 1);
-> +	alc262_hippo1_automute(codec);
->  }
->  
->  /*
-> @@ -7923,6 +7914,7 @@ static struct snd_pci_quirk
-> alc262_cfg_t
->  	SND_PCI_QUIRK(0x17ff, 0x058f, "Benq Hippo",
-> ALC262_HIPPO_1),
->  	SND_PCI_QUIRK(0x17ff, 0x0560, "Benq ED8",
-> ALC262_BENQ_ED8),
->  	SND_PCI_QUIRK(0x17ff, 0x058d, "Benq T31-16",
-> ALC262_BENQ_T31),
-> +	SND_PCI_QUIRK(0x104d, 0x820f, "Sony ASSAMD",
-> ALC262_SONY_ASSAMD),
->  	SND_PCI_QUIRK(0x104d, 0x9015, "Sony 0x9015",
-> ALC262_SONY_ASSAMD),
->  	SND_PCI_QUIRK(0x104d, 0x900e, "Sony ASSAMD",
-> ALC262_SONY_ASSAMD),
->  	SND_PCI_QUIRK(0x104d, 0x1f00, "Sony ASSAMD",
-> ALC262_SONY_ASSAMD),
-> @@ -7951,6 +7943,7 @@ static struct
-> alc_config_preset alc262_p
->  		.channel_mode = alc262_modes,
->  		.input_mux = &alc262_capture_source,
->  		.unsol_event = alc262_hippo_unsol_event,
-> +		.init_hook = alc262_hippo_automute,
->  	},
->  	[ALC262_HIPPO_1] = {
->  		.mixers = { alc262_hippo1_mixer },
-> @@ -7963,6 +7956,7 @@ static struct
-> alc_config_preset alc262_p
->  		.channel_mode = alc262_modes,
->  		.input_mux = &alc262_capture_source,
->  		.unsol_event = alc262_hippo1_unsol_event,
-> +		.init_hook = alc262_hippo1_automute,
->  	},
->  	[ALC262_FUJITSU] = {
->  		.mixers = { alc262_fujitsu_mixer },
-> @@ -8027,6 +8021,7 @@ static struct
-> alc_config_preset alc262_p
->  		.channel_mode = alc262_modes,
->  		.input_mux = &alc262_capture_source,
->  		.unsol_event = alc262_hippo_unsol_event,
-> +		.init_hook = alc262_hippo_automute,
->  	},
->  	[ALC262_BENQ_T31] = {
->  		.mixers = { alc262_benq_t31_mixer },
-> @@ -8038,6 +8033,7 @@ static struct
-> alc_config_preset alc262_p
->  		.channel_mode = alc262_modes,
->  		.input_mux = &alc262_capture_source,
->  		.unsol_event = alc262_hippo_unsol_event,
-> 
-=== message truncated ===
+> This happens only for 44.1 kHz data.
+>
+> Try the attached patch.
 
+great, it's working!
 
+Could you please mail me a way to reward you (Paypal account? Amazon wishli=
+st=20
+etc?)?
 
-      ___________________________________________________________
-Yahoo! Answers - Got a question? Someone out there knows the answer. Try it
-now.
-http://uk.answers.yahoo.com/ 
+Thank you,
+Jan
+
+--nextPart3890747.yVzOn0c0gs
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBGpkfhQ65WEO0u/U4RAhP1AKDBQ28E627IgefYlY+NoHoc/sMPUACfeVe9
+bpCHjgoRwzzPy99hR1foTuM=
+=59VS
+-----END PGP SIGNATURE-----
+
+--nextPart3890747.yVzOn0c0gs--
+
+--===============1789912118567679133==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1789912118567679133==--
