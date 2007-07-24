@@ -1,18 +1,21 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: [PATCH] Patch for AICA
-Date: Tue, 24 Jul 2007 20:06:13 +0900
-Message-ID: <20070724110613.GB9138@linux-sh.org>
-References: <92a12cdb0707240351h147b35a7r8d99252aab2f18b1@mail.gmail.com>
+From: Markus Franke <markus.franke@s2002.tu-chemnitz.de>
+Subject: basic workflow when playing some sounddata
+Date: Tue, 24 Jul 2007 12:41:16 +0530
+Message-ID: <46A5A614.2020400@hrz.tu-chemnitz.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.ocgnet.org (smtp.ocgnet.org [64.20.243.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60E942437A
+Received: from john.hrz.tu-chemnitz.de (john.hrz.tu-chemnitz.de
+	[134.109.132.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D1F2103852
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jul 2007 13:06:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <92a12cdb0707240351h147b35a7r8d99252aab2f18b1@mail.gmail.com>
+	Tue, 24 Jul 2007 09:08:48 +0200 (CEST)
+Received: from [203.145.183.24] (helo=dexsys58.DOMAIN.dexceldesigns.com)
+	by john.hrz.tu-chemnitz.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.66) (envelope-from <markus.franke@s2002.tu-chemnitz.de>)
+	id 1IDEVi-00056x-VQ
+	for alsa-devel@alsa-project.org; Tue, 24 Jul 2007 09:08:47 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adrian McMenamin <adrianmcmenamin@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 24, 2007 at 11:51:53AM +0100, Adrian McMenamin wrote:
-> I submitted this yesterday via lkml and it was accepted by the SH
-> maintainer. Probably should have copied in the ALSA list too - though
-> the change is so small and consequential of another issue I was
-> dealing with I forgot.
-> 
-I included this with your changeset, as it was an obvious and trivial
-change. If the ALSA folks wish to feed this part in through their tree,
-that's fine with me, otherwise it will show up with the next batch of SH
-updates automatically.
+Dear Alsa-Developers,
+
+I am very new to Alsa driver development and have some problems to get a 
+clue how the process of playing sounddata works. Let me explain my point 
+of view and it would be nice if anybody could give some clarifications 
+and corrections on it.
+
+Suppose I want to play a *.wav file from userspace with "aplay". After 
+triggering all the configuration functions for PCM and the DAI at some 
+point the chip_pcm_trigger() function get's called. As per "Writing Alsa 
+Drivers" the TRIGGER_START command should now do something for "enabling 
+the PCM engine". As per my understanding this could be for example to 
+enable the interrupts of my DAI, which is (I2S over GSI) in my case. The 
+interrupt handler by itself should call snd_pcm_period_elapsed() 
+whenever a period of sounddata is copied to the device. Furthermore the 
+so called "hw_pointer" should be updated in the interrupt handler, 
+right? To make it easy I don't want to use DMA in the beginning. I 
+simply want to copy the data to the hardware buffer of my DAI (I2S via 
+GSI) and from there it is copied automatically to my codec. The question 
+is now, at which place in the alsa framework I have to put the copy 
+process of the sounddata. It should not be done in the interrupt handler 
+because this would take to much time. But whereelse could this be done?
+
+Also I don't know the meaning of chip_pcm_pointer() callback. As far as 
+I could figure out from the source, this function is called whenever 
+snd_pcm_period_elapsed() is called, right? But what should be done 
+exactly in this callback. Again I want to say that I don't want to use 
+DMA at all by now.
+
+I've read already "Writing Alsa Drivers" but the questions above still 
+remain for me and I am quite confused as you maybe noticed already from 
+my questions above. ;-) It would be nice if anybody can give me a basic 
+workflow which functions/callbacks are necessary for the playing part of 
+an Alsa driver.
+
+
+Thanks in advance for any help,
+
+Regards,
+Markus
