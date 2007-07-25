@@ -1,80 +1,77 @@
-From: Carlo Florendo <subscribermail@gmail.com>
-Subject: Re: [LAD] How to get correct midi timings from ALSA
- using the library only
-Date: Wed, 25 Jul 2007 17:16:28 +0800
-Message-ID: <46A714EC.10408@gmail.com>
+From: Florian Schmidt <mista.tapas-hi6Y0CQ0nG0@public.gmane.org>
+Subject: Re: [LAD] How to get correct midi timings from ALSA using the library
+	only
+Date: Wed, 25 Jul 2007 11:25:29 +0200
+Message-ID: <200707251125.29740.mista.tapas@gmx.net>
 References: <46A5BFDF.4040906@gmail.com>
-	<1185272655.7458.1201738081@webmail.messagingengine.com>
-	<46A69F4D.7050002@gmail.com>
-	<1185351898.28416.1201921883@webmail.messagingengine.com>
+	<200707241206.09991.mista.tapas@gmx.net>
+	<46A6B2DC.3030906@gmail.com>
+Reply-To: The Linux Audio Developers' Mailing List <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.hq.astra.ph (unknown [202.78.101.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FC0910381A
-	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jul 2007 11:16:04 +0200 (CEST)
-In-Reply-To: <1185351898.28416.1201921883@webmail.messagingengine.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org, linux-audio-dev@lists.linuxaudio.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+In-Reply-To: <46A6B2DC.3030906-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://lists.linuxaudio.org/mailman/listinfo.cgi/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/mailman/listinfo.cgi/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: Carlo Florendo <subscribermail-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Carlo Florendo wrote:
->> Clemens Ladisch wrote:
->>>> However, I wish to be able to make the sequencer or player work without the 
->>>> use of the ALSA queue nor the workaround in (2).
->>> Why?
->> Because the queue output and draining, AFAICS, is implemented in a blocking 
->> manner.
-> 
-> When non-blocking mode is set (see snd_seq_nonblock()),
-> snd_seq_drain_output() does not block but writes only as many events to
-> the kernel buffer as fit inside (or returns -EAGAIN if the kernel buffer
-> is completely full).
+On Wednesday 25 July 2007, Carlo Florendo wrote:
 
-Bingo! My recent tests show that snd_seq_nonblock() is indeed a useful 
-function and enables me to have control of the sequencer every time it 
-outputs an event :)
+> > Try running your process with SCHED_FIFO scheduling and a high prio of
+> > e.g. 99.
+>
+> I've tried that in kernel 2.4 and I get the same latency results.  Let me
+> try tweaking that though by running the system with high priority.  The
+> reason why I'd like to make it work in 2.4 kernels is so that existing
+> systems with 2.4 kernels could run the app without need for a kernel patc=
+h.
 
-Gee, I've read the ALSA lib doc for months and never came across this 
-function.  Up to now, I've not seen the part of the doc that describes 
-snd_seq_nonblock so I went straight to the source code of alsa-lib under 
-src/seq/seq.c and grepped for snd_seq_block().
+2.4.x kernels are terribly unsuited to do any serious sort of realtime work=
+,=20
+be it audio or midi.=20
 
-The alsa-lib docs have to be improved :)
+=46rom my experience this is a classification with increasing suitedness fo=
+r=20
+realtime work:
 
-Thank you for the pointers!
+1] vanilla 2.4.x
+2] patched 2.4.x [lowlatency patches]
+3] vanilla 2.6.x
+4] patched 2.6.x [ingo molnar's realtime preemption patches]
 
-> 
-> Regards,
-> Clemens
-> 
+There really should be like 100 bogus places between 2] and 3] and another =
+100=20
+between unpatched and patched 2.6.x because 2.6.x really is vastly better=20
+than 2.4.x and -rt patched 2.6.x actually is a realtime system which can be=
+=20
+made to work up to microsecond resolution [not millisecond ;)].
 
-Best Regards,
+>
+> Your ideas have been most helpful :)
 
-Carlo
+No problem. BTW: even when you use ALSA queues, the kernel still plays a bi=
+g=20
+role. Then it's simply ALSA's responsibility to provide good timing and it=
+=20
+basically uses the same mechanisms as a userspace program would.
 
--- 
-Carlo Florendo
-Softare Engineer/Network Co-Administrator
-Astra Philippines Inc.
-UP-Ayala Technopark, Diliman 1101, Quezon City
-Philippines
-http://www.astra.ph
+So thrash 2.4.x for all realtime purposes..=20
 
---
-The Astra Group of Companies
-5-3-11 Sekido, Tama City
-Tokyo 206-0011, Japan
-http://www.astra.co.jp
+=46lo
+
+
+=2D-=20
+Palimm Palimm!
+http://tapas.affenbande.org
