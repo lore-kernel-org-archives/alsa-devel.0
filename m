@@ -1,8 +1,8 @@
 From: Carlo Florendo <subscribermail@gmail.com>
 Subject: Re: [LAD] How to get correct midi timings from ALSA
  using the library only
-Date: Wed, 25 Jul 2007 16:51:46 +0800
-Message-ID: <46A70F22.5010707@gmail.com>
+Date: Wed, 25 Jul 2007 17:16:28 +0800
+Message-ID: <46A714EC.10408@gmail.com>
 References: <46A5BFDF.4040906@gmail.com>
 	<1185272655.7458.1201738081@webmail.messagingengine.com>
 	<46A69F4D.7050002@gmail.com>
@@ -12,9 +12,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.hq.astra.ph (unknown [202.78.101.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A4161038CA
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FC0910381A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jul 2007 10:51:28 +0200 (CEST)
+	Wed, 25 Jul 2007 11:16:04 +0200 (CEST)
 In-Reply-To: <1185351898.28416.1201921883@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -43,12 +43,19 @@ Clemens Ladisch wrote:
 > the kernel buffer as fit inside (or returns -EAGAIN if the kernel buffer
 > is completely full).
 
-Gee!  I haven't read the ALSA lib API docs that much but this sounds and 
-looks like a solution to the problem :)
+Bingo! My recent tests show that snd_seq_nonblock() is indeed a useful 
+function and enables me to have control of the sequencer every time it 
+outputs an event :)
 
-Thank you very much for the pointers and for all your patience.
+Gee, I've read the ALSA lib doc for months and never came across this 
+function.  Up to now, I've not seen the part of the doc that describes 
+snd_seq_nonblock so I went straight to the source code of alsa-lib under 
+src/seq/seq.c and grepped for snd_seq_block().
 
-> 
+The alsa-lib docs have to be improved :)
+
+Thank you for the pointers!
+
 > 
 > Regards,
 > Clemens
@@ -57,8 +64,6 @@ Thank you very much for the pointers and for all your patience.
 Best Regards,
 
 Carlo
-
-
 
 -- 
 Carlo Florendo
