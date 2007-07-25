@@ -1,25 +1,18 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: How do I tell ALSA that my driver
-	supports	every	possible sample rate?
-Date: Wed, 25 Jul 2007 16:24:11 +0100
-Message-ID: <1185377051.3301.34.camel@localhost.localdomain>
-References: <46A4CF38.3050107@freescale.com>
-	<1185210867.7590.1201603759@webmail.messagingengine.com>
-	<46A4E503.50207@freescale.com>
-	<1185261264.6647.1201715813@webmail.messagingengine.com>
-	<46A612A0.6000807@freescale.com> <s5hd4yhyh5n.wl%tiwai@suse.de>
-	<46A65355.4040101@freescale.com> <s5hsl7cwzv0.wl%tiwai@suse.de>
-	<46A7602E.6090809@freescale.com> <s5h4pjswmfa.wl%tiwai@suse.de>
-	<s5h3azcwm84.wl%tiwai@suse.de>
+From: Andy <hornett83@yahoo.co.uk>
+Subject: Re: ALC262 - HDA-Intel
+Date: Wed, 25 Jul 2007 16:51:25 +0100 (BST)
+Message-ID: <925727.61387.qm@web27201.mail.ukl.yahoo.com>
+References: <s5hr6mwwzkh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 392E410386D
+Received: from web27201.mail.ukl.yahoo.com (web27201.mail.ukl.yahoo.com
+	[217.146.182.91])
+	by alsa0.perex.cz (Postfix) with SMTP id 751361038CE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jul 2007 17:24:13 +0200 (CEST)
-In-Reply-To: <s5h3azcwm84.wl%tiwai@suse.de>
+	Wed, 25 Jul 2007 17:51:26 +0200 (CEST)
+In-Reply-To: <s5hr6mwwzkh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,53 +23,230 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2007-07-25 at 17:12 +0200, Takashi Iwai wrote:
-> At Wed, 25 Jul 2007 17:08:41 +0200,
-> I wrote:
+Hello again Takashi,
+
+I put in some printks, and indeed the function does
+run and it correctly detects that there are no
+headphones present, but the speakers are not unmuted.
+
+(the 'mute' variable both times is reported as being
+0x80 after it is set with snd_hda_codec_amp_read)
+
+Thanks,
+Andy
+
+--- Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Tue, 24 Jul 2007 18:08:24 +0100 (BST),
+> Andy wrote:
 > > 
-> > At Wed, 25 Jul 2007 09:37:34 -0500,
-> > Timur Tabi wrote:
-> > > 
-> > > Takashi Iwai wrote:
-> > > 
-> > > >> So can I do this?
-> > > >>
-> > > >> static const struct snd_pcm_hardware mpc86xx_pcm_hardware = {
-> > > >>
-> > > >> 	.rates			= SNDRV_PCM_RATE_CONTINUOUS,
-> > > >> 	.rate_min		= 1,
-> > > >> 	.rate_max		= (unsigned int) -1,
+> > Thank-you Takashi,
+> > 
+> > I applied the patch (to the in-kernel version from
+> > 2.6.22.1) but sadly it did not fix the problem.  
+> > 
+> > I noticed that my XFCE mixer wasn't broken before
+> I
+> > plugged the 'phones in this time, not sure if the
+> > patch fixed that, but it seems like a step in the
+> > right direction!
+> 
+> I don't understand how XFCE mixer behavior changes,
+> but you mean that
+> the playback still doesn't work without replugging
+> the jack?
+> If yes, add a debug printk in
+> alc262_hippo_automute() to check whether
+> this function gets really called without replugging
+> at loading the
+> module.  (And you can check the variable "preset"
+> there which
+> indicates the presence of the jack.)
+> 
+> 
+> Takashi
+> 
+> > 
+> > Regards,
+> > Andy.
+> > 
+> > 
+> > --- Takashi Iwai <tiwai@suse.de> wrote:
+> > 
+> > > At Tue, 24 Jul 2007 11:08:29 +0100 (BST),
+> > > Andy wrote:
 > > > > 
-> > > > In theory, yes, but these rate_min and rate_max are nothing but
-> > > > confusing in practice.  Your hardware won't support definitely such
-> > > > rates, but the application can't know.  Set some reasonable values
-> > > > there.
+> > > > I have a ALC262 hda-intel card which doesn't
+> > > function
+> > > > quite correctly. Details can be found at
+> > > >
+> > >
+> >
+>
+https://bugs.launchpad.net/ubuntu/+source/linux-source-2.6.20/+bug/110145
+> > > > 
+> > > > I got bored of waiting for it to be fixed, and
+> had
+> > > a
+> > > > go myself. My knowledge of ALSA is very
+> limited,
+> > > but
+> > > > nevertheless it was really simple to add my
+> device
+> > > ids
+> > > > to the quirks list in the patch_realtek.c file
+> -
+> > > eg:
+> > > > 
+> > > > ...
+> > > > SND_PCI_QUIRK(0x104d, 0x900e, "Sony ASSAMD",
+> > > > ALC262_SONY_ASSAMD),
+> > > > SND_PCI_QUIRK(0x104d, 0x1f00, "Sony ASSAMD",
+> > > > ALC262_SONY_ASSAMD),
+> > > > /* My card... */
+> > > > SND_PCI_QUIRK(0x104d, 0x820f, "Sony ASSAMD",
+> > > > ALC262_SONY_ASSAMD),
+> > > > ...
+> > > > 
+> > > > I found by trial and error that
+> ALC262_SONY_ASSAMD
+> > > > almost works. Connecting headphones disables
+> > > built-in
+> > > > speakers and unplugging them re-enables them.
+> > > > 
+> > > > However, something does not get initialised
+> until
+> > > this
+> > > > is done. That is, every bootup using
+> > > > ALC262_SONY_ASSAMD, I must plug in and remove
+> my
+> > > > headphones before the device is initialised
+> > > properly. 
+> > > > 
+> > > > Until this is done, I get no sound and the
+> little
+> > > GUI
+> > > > mixer in XFCE doesn't show the list of
+> supported
+> > > > outputs on the device. 
+> > > > 
+> > > > I'm posting this to the devel list as I'm more
+> > > > interested the code side of things rather than
+> > > > actually having working sound :)
 > > > 
-> > > This is an ASOC driver.  My understanding is that ASOC will take all
-> > > the values from the machine, PCM, I2S, and codec drivers and create
-> > > the subset that matches all drivers.  That's the point I was trying
-> > > to make: my PCM driver does *not* decide what the capabilities of
-> > > the system are, because my DMA controller can handle all speeds.  So
-> > > I don't want to put some arbitrary limits in the PCM driver, and
-> > > then perhaps one day it gets attached to a codec driver that can
-> > > handle 4000Hz, but ASOC won't allow it because I used
-> > > SNDRV_PCM_RATE_8000_192000 | SNDRV_PCM_RATES_5512 in my PCM driver.
-> > > ASOC would incorrectly believe that the PCM driver can't handle
-> > > 4000Hz. 
-> > 
-> > Then,
-> > 	rates = -1U,
-> > 	rate_min = 0,
-> > 	rate_max = -1U,
-> > are the correct values.
+> > > Could you try the patch below?
+> > > 
+> > > 
+> > > thanks,
+> > > 
+> > > Takashi
+> > > 
+> > > diff -r 2250b8a4b66a pci/hda/patch_realtek.c
+> > > --- a/pci/hda/patch_realtek.c	Tue Jul 24
+> 12:49:39
+> > > 2007 +0200
+> > > +++ b/pci/hda/patch_realtek.c	Tue Jul 24
+> 15:00:15
+> > > 2007 +0200
+> > > @@ -7269,21 +7269,17 @@ static struct hda_verb
+> > > alc262_sony_unsol
+> > >  };
+> > >  
+> > >  /* mute/unmute internal speaker according to
+> the hp
+> > > jack and mute state */
+> > > -static void alc262_hippo_automute(struct
+> hda_codec
+> > > *codec, int force)
+> > > -{
+> > > -	struct alc_spec *spec = codec->spec;
+> > > +static void alc262_hippo_automute(struct
+> hda_codec
+> > > *codec)
+> > > +{
+> > >  	unsigned int mute;
+> > > -
+> > > -	if (force || !spec->sense_updated) {
+> > > -		unsigned int present;
+> > > -		/* need to execute and sync at first */
+> > > -		snd_hda_codec_read(codec, 0x15, 0,
+> > > AC_VERB_SET_PIN_SENSE, 0);
+> > > -		present = snd_hda_codec_read(codec, 0x15, 0,
+> > > -				    	 AC_VERB_GET_PIN_SENSE, 0);
+> > > -		spec->jack_present = (present & 0x80000000)
+> != 0;
+> > > -		spec->sense_updated = 1;
+> > > -	}
+> > > -	if (spec->jack_present) {
+> > > +	unsigned int present;
+> > > +
+> > > +	/* need to execute and sync at first */
+> > > +	snd_hda_codec_read(codec, 0x15, 0,
+> > > AC_VERB_SET_PIN_SENSE, 0);
+> > > +	present = snd_hda_codec_read(codec, 0x15, 0,
+> > > +				     AC_VERB_GET_PIN_SENSE, 0);
+> > > +	present = (present & 0x80000000) != 0;
+> > > +	if (present) {
+> > >  		/* mute internal speaker */
+> > >  		snd_hda_codec_amp_update(codec, 0x14, 0,
+> > > HDA_OUTPUT, 0,
+> > >  					 0x80, 0x80);
+> > > @@ -7306,24 +7302,19 @@ static void
+> > > alc262_hippo_unsol_event(str
+> > >  {
+> > >  	if ((res >> 26) != ALC880_HP_EVENT)
+> > >  		return;
+> > > -	alc262_hippo_automute(codec, 1);
+> > > -}
+> > > -
+> > > -static void alc262_hippo1_automute(struct
+> hda_codec
+> > > *codec, int force)
+> > > -{
+> > > -	struct alc_spec *spec = codec->spec;
+> > > +	alc262_hippo_automute(codec);
+> > > +}
+> > > +
+> > > +static void alc262_hippo1_automute(struct
+> hda_codec
+> > > *codec)
+> > > +{
+> > >  	unsigned int mute;
+> > > -
+> > > -	if (force || !spec->sense_updated) {
+> > > -		unsigned int present;
+> > > -		/* need to execute and sync at first */
+> > > -		snd_hda_codec_read(codec, 0x1b, 0,
+> > > AC_VERB_SET_PIN_SENSE, 0);
+> > > -		present = snd_hda_codec_read(codec, 0x1b, 0,
+> > > -				    	 AC_VERB_GET_PIN_SENSE, 0);
+> > > -		spec->jack_present = (present & 0x80000000)
+> != 0;
+> > > -		spec->sense_updated = 1;
+> > > -	}
+> > > -	if (spec->jack_present) {
+> > > +	unsigned int present;
+> > > +
+> > > +	snd_hda_codec_read(codec, 0x1b, 0,
+> > > AC_VERB_SET_PIN_SENSE, 0);
+> > > +	present = snd_hda_codec_read(codec, 0x1b, 0,
+> > > +				     AC_VERB_GET_PIN_SENSE, 0);
+> > > +	present = (present & 0x80000000) != 0;
+> > > +	if (present) {
+> > >  		/* mute internal speaker */
+> > >  		snd_hda_codec_amp_update(codec, 0x14, 0,
+> > > HDA_OUTPUT, 0,
+> > >  					 0x80, 0x80);
+> > > @@ -7346,7 +7337,7 @@ static void
+> > > alc262_hippo1_unsol_event(st
 > 
-> ... of course, this assumes that codec and platform have the sane rate
-> setting.  ASoC should do some sanity checks...
-> 
+=== message truncated ===
 
-Ok, I've marked this on my todo list ;)
 
-Liam
+
+      ___________________________________________________________ 
+Yahoo! Mail is the world's favourite email. Don't settle for less, sign up for
+your free account today http://uk.rd.yahoo.com/evt=44106/*http://uk.docs.yahoo.com/mail/winter07.html 
