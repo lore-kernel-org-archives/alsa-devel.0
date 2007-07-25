@@ -1,18 +1,21 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Effect of CONFIG_SND_PCM_OSS_PLUGINS
-Date: Wed, 25 Jul 2007 08:36:38 +0200
-Message-ID: <1185345398.10658.1201916763@webmail.messagingengine.com>
-References: <92a12cdb0707241530h3703a721md7bceeac2cd3144a@mail.gmail.com>
+Subject: Re: [LAD] How to get correct midi timings from ALSA
+ using the library only
+Date: Wed, 25 Jul 2007 10:24:58 +0200
+Message-ID: <1185351898.28416.1201921883@webmail.messagingengine.com>
+References: <46A5BFDF.4040906@gmail.com>
+	<1185272655.7458.1201738081@webmail.messagingengine.com>
+	<46A69F4D.7050002@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id F28072435F
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id B816F1038BD
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jul 2007 08:36:39 +0200 (CEST)
+	Wed, 25 Jul 2007 10:24:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <92a12cdb0707241530h3703a721md7bceeac2cd3144a@mail.gmail.com>
+In-Reply-To: <46A69F4D.7050002@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adrian McMenamin <adrianmcmenamin@gmail.com>, alsa-devel@alsa-project.org
+To: Carlo Florendo <subscribermail@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-audio-dev@lists.linuxaudio.org
 List-Id: alsa-devel@alsa-project.org
 
-Adrian McMenamin wrote:
-> Unless CONFIG_SND_PCM_OSS_PLUGINS is set then with my driver the
-> userspace (and OSS) app mpg123 doesn't work properly - not outputting
-> any sound.
+Carlo Florendo wrote:
+> Clemens Ladisch wrote:
+> >> However, I wish to be able to make the sequencer or player work without the 
+> >> use of the ALSA queue nor the workaround in (2).
+> > 
+> > Why?
+> 
+> Because the queue output and draining, AFAICS, is implemented in a blocking 
+> manner.
 
-This symbol enables (limited) automatic sample rate/format conversion.
-
-Apparently, your sound device does not support any of mpg123's supported
-sample formats.
-
-> Is this likely to be a problem with my driver or with the app?
-
-I would say that the problem is the missing CONFIG_SND_PCM_OSS_PLUGINS.
-;-)
-
-Well, your driver does support S16_LE, doesn't it?
+When non-blocking mode is set (see snd_seq_nonblock()),
+snd_seq_drain_output() does not block but writes only as many events to
+the kernel buffer as fit inside (or returns -EAGAIN if the kernel buffer
+is completely full).
 
 
 Regards,
