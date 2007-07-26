@@ -1,17 +1,19 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: BT87x ALSA driver patches
-Date: Wed, 25 Jul 2007 15:43:50 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0707251520530.30561@shell4.speakeasy.net>
-References: <Pine.LNX.4.58.0707211727490.2511@shell2.speakeasy.net>
-	<1185200670.8251.3.camel@gaivota>
+From: Carlo Florendo <subscribermail@gmail.com>
+Subject: Re: [LAD] How to get correct midi timings from ALSA
+ using the library only
+Date: Thu, 26 Jul 2007 12:51:25 +0800
+Message-ID: <46A8284D.9020404@gmail.com>
+References: <46A5BFDF.4040906@gmail.com>
+	<200707241206.09991.mista.tapas@gmx.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1913207790921377603=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.sea5.speakeasy.net (mail1.sea5.speakeasy.net
-	[69.17.117.3]) by alsa0.perex.cz (Postfix) with ESMTP id 59E6E1038DC
+Received: from mx1.hq.astra.ph (unknown [202.78.101.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id 752322436E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jul 2007 00:43:53 +0200 (CEST)
-In-Reply-To: <1185200670.8251.3.camel@gaivota>
+	Thu, 26 Jul 2007 06:51:06 +0200 (CEST)
+In-Reply-To: <200707241206.09991.mista.tapas@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mauro Carvalho Chehab <mchehab@infradead.org>
-Cc: v4l-dvb maintainer list <v4l-dvb-maintainer@linuxtv.org>, alsa-devel@alsa-project.org
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: alsa-devel@alsa-project.org, linux-audio-dev@lists.linuxaudio.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1913207790921377603==
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Florian Schmidt wrote:
+> Another approach, that works very well in my experience, is to not sleep the 
+> total required time until the next event, but rather regularly sleep for very 
+> short amounts of time (< 1ms), wakeup, measure the current time and if any 
+> event time now lies in the past, simply play it back immediately. This way 
+> the sleep time doesn't need to be accurate at all. All that's needed is that 
+> it's small enough to get some decent timing.
 
-On Mon, 23 Jul 2007, Mauro Carvalho Chehab wrote:
-> Em S=C3=A1b, 2007-07-21 =C3=A0s 17:36 -0700, Trent Piepho escreveu:
-> > 01/01: bttv: Fix Viewcast Osprey 440 support
-> > http://linuxtv.org/hg/~tap/v4l-dvb?cmd=3Dchangeset;node=3D8e72fe5675b3
-> >
-> > I have two other changes that only affect the ALSA driver part.  Should=
- I
-> > send those to ALSA or to you?
->
-> Please send to ALSA guys, c/c me.
+I've now finished implementing this approach, sleeping around 10000 
+microseconds instead of  less than 1ms, and it works very well!  Thanks!
 
-Ok, I'll do that.  What about the two lines to bt87x.c that this patch adde=
-d?
-I seemed logical to me that they should be part of the same patch at git as
-the changes to bttv-cards.c, but I suppose it's not 100% necessary to do so=
-,
-the kernel will still compile and not crash.
+I'm getting very decent timing even with complicated MIDI files that have 
+numerous pitch bends at very short times.
 
-Do you plan to send this to git as one patch, or to strip out the ALSA chan=
-ge?
-I'm just wondering if I should send these two lines to the ALSA people as a
-separate patch, of if they will get them into their hg via a kernel-sync
-patch.  My bt87x patches depend on this one, so somehow the ALSA hg needs
-to get this change before I can send them the next two.
+I'm about to try your other suggestions later on.
 
-The problem really, is that having two divers for the same chip split into
-v4l-dvb and ALSA like this a pain.  IMHO, it would make a lot more sense
-to put the bttv alsa driver into v4l-dvb, like the saa7134 alsa and oss
-and cx88 alsa drivers are.
+Thank you very much.
 
-> >  drivers/media/video/bt8xx/bttv-cards.c |  240 ++++++++++++++++++------=
----------
-> >  sound/pci/bt87x.c                      |    2
-> >  2 files changed, 137 insertions(+), 105 deletions(-)
+> 
+> Regards,
+> Flo
+> 
 
---===============1913207790921377603==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Best Regards,
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Carlo
 
---===============1913207790921377603==--
+
+-- 
+Carlo Florendo
+Softare Engineer/Network Co-Administrator
+Astra Philippines Inc.
+UP-Ayala Technopark, Diliman 1101, Quezon City
+Philippines
+http://www.astra.ph
+
+--
+The Astra Group of Companies
+5-3-11 Sekido, Tama City
+Tokyo 206-0011, Japan
+http://www.astra.co.jp
