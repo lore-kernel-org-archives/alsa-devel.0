@@ -1,17 +1,20 @@
-From: "Steven King" <steven.king.80@gmail.com>
-Subject: Intel HDA Driver - Bug
-Date: Thu, 26 Jul 2007 16:28:35 +0100
-Message-ID: <af8dbbad0707260828v5c5091f2xe809926b6dcfa635@mail.gmail.com>
+From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
+Subject: Re: Effect of CONFIG_SND_PCM_OSS_PLUGINS
+Date: Thu, 26 Jul 2007 22:00:06 +0100
+Message-ID: <92a12cdb0707261400u624be88av154447e7ea5be081@mail.gmail.com>
+References: <92a12cdb0707241530h3703a721md7bceeac2cd3144a@mail.gmail.com>
+	<1185345398.10658.1201916763@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D1B8243FD
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FFE210381F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jul 2007 17:28:37 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so542616ugf
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2007 08:28:36 -0700 (PDT)
+	Thu, 26 Jul 2007 23:00:07 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so788195wag
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2007 14:00:06 -0700 (PDT)
+In-Reply-To: <1185345398.10658.1201916763@webmail.messagingengine.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,56 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 25/07/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
+> Adrian McMenamin wrote:
+> > Unless CONFIG_SND_PCM_OSS_PLUGINS is set then with my driver the
+> > userspace (and OSS) app mpg123 doesn't work properly - not outputting
+> > any sound.
+>
+> This symbol enables (limited) automatic sample rate/format conversion.
+>
+> Apparently, your sound device does not support any of mpg123's supported
+> sample formats.
+>
+> > Is this likely to be a problem with my driver or with the app?
+>
+> I would say that the problem is the missing CONFIG_SND_PCM_OSS_PLUGINS.
+> ;-)
+>
+> Well, your driver does support S16_LE, doesn't it?
+>
+>
+I think so
 
-I have been trying to get the sound on my Dell Inspiron 1720 laptop
-running under Debian Etch (STAC 9205). Originally, I could only get
-sound through the main speakers, there was no headphone sound or mic.
-
-I downloaded the latest alsa-drivers package (1.0.14), compiled it and
-installed it. I received the following messages (and the device would
-not register itself):
-
-hda_intel: azx_get_response timeout, switching to polling mode...
-hda_intel: azx_get_response timeout, switching to single_cmd mode...
-
-I started digging into the driver code and found an issue with one of
-the routines going outside an array.
-
-The offending code is (all in patch_sigmatel):
-static void stac92xx_set_config_regs(struct hda_codec *codec)
-{
-// ...
-for (i = 0; i < spec->num_pins; i++) {
-// ...
-}
-
-And in:
-static int patch_stac9205(struct hda_codec *codec)
-{
-// ..
-spec->num_pins = 14 ; //ERROR
-// ..
-}
-
-However, there are only 12 pins with 12 corresponding NIDs and default
-configuration so in stac92xx_set_config_regs it accesses
-spec->pin_configs[i] and spec->pin_nids[i] outside of bounds.
-
-Fix: Add a define (STAC_9205_MAX_PINS = 12) and use for array defines
-and num_pins.
-
-The driver loads now, but I still only have sound out the main
-speaker. If I get rid of the configuration sent to the chipset
-altogether. I get sound through Headphone and Speakers (with detect
-working on HP), but still no MIC.
-
-How can I add support for my Dell as I don't know the configuration to
-use or am I missing something here?
-
-Thanks,
-
-Steve
+.formats =
+	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
+	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
