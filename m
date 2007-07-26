@@ -1,21 +1,20 @@
-From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
-Subject: Re: Effect of CONFIG_SND_PCM_OSS_PLUGINS
-Date: Thu, 26 Jul 2007 22:00:06 +0100
-Message-ID: <92a12cdb0707261400u624be88av154447e7ea5be081@mail.gmail.com>
-References: <92a12cdb0707241530h3703a721md7bceeac2cd3144a@mail.gmail.com>
-	<1185345398.10658.1201916763@webmail.messagingengine.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: Will the real alsa wiki please stand up?
+Date: Fri, 27 Jul 2007 09:40:45 +1200
+Message-ID: <200707270940.45326.linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FFE210381F
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3584610380C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jul 2007 23:00:07 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so788195wag
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2007 14:00:06 -0700 (PDT)
-In-Reply-To: <1185345398.10658.1201916763@webmail.messagingengine.com>
-Content-Disposition: inline
+	Thu, 26 Jul 2007 23:35:02 +0200 (CEST)
+Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JLT003O42KJ5X30@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Fri, 27 Jul 2007 09:33:55 +1200 (NZST)
+Content-disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 25/07/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
-> Adrian McMenamin wrote:
-> > Unless CONFIG_SND_PCM_OSS_PLUGINS is set then with my driver the
-> > userspace (and OSS) app mpg123 doesn't work properly - not outputting
-> > any sound.
->
-> This symbol enables (limited) automatic sample rate/format conversion.
->
-> Apparently, your sound device does not support any of mpg123's supported
-> sample formats.
->
-> > Is this likely to be a problem with my driver or with the app?
->
-> I would say that the problem is the missing CONFIG_SND_PCM_OSS_PLUGINS.
-> ;-)
->
-> Well, your driver does support S16_LE, doesn't it?
->
->
-I think so
+I'm confused again.  Which is the real official wiki?
 
-.formats =
-	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
+This one "AlsaWiki"
+http://bugtrack.alsa-project.org/main/index.php/Main_Page
+(MediaWiki, last change 25 July)
+ 
+OR
+
+This one  "Official Alsa Wiki for Developers"
+https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=AlsaWiki
+(Powered by Wikka Wakka Wiki) approx 28 content pages, last change 24 July)
+
+It was made clear a while ago that this is the UNofficial wiki:
+http://alsa.opensrc.org/index.php/Main_Page
+(MediaWiki)
+
+Gosh!, how much fragmentation do we need????
+
+If 3 wikis really are necessary, can we at least have links to the others on 
+the main page of each wiki, and explanation of which is most approriate for 
+different content?
+
+thanks
+
+Eliot
