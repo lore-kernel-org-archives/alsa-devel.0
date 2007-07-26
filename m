@@ -1,19 +1,24 @@
-From: Carlo Florendo <subscribermail@gmail.com>
-Subject: Re: [LAD] How to get correct midi timings from ALSA
- using the library only
-Date: Thu, 26 Jul 2007 12:51:25 +0800
-Message-ID: <46A8284D.9020404@gmail.com>
-References: <46A5BFDF.4040906@gmail.com>
-	<200707241206.09991.mista.tapas@gmx.net>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: Re: [PATCH 2/2] ALSA sound driver
+	for	the	AT73C213	DAC	using Atmel SSC driver
+Date: Thu, 26 Jul 2007 08:21:20 +0200
+Message-ID: <1185430880.31437.28.camel@localhost.localdomain>
+References: <11845952993023-git-send-email-hcegtvedt@atmel.com>
+	<11845952991232-git-send-email-hcegtvedt@atmel.com>
+	<s5hwsx0xu7h.wl%tiwai@suse.de>
+	<1184661441.12675.6.camel@localhost.localdomain>
+	<20070717104859.34f76382@dhcp-255-175.norway.atmel.com>
+	<1184662459.12675.8.camel@localhost.localdomain>
+	<s5hvecjwcoz.wl%tiwai@suse.de>  <s5hhcnvyy37.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.hq.astra.ph (unknown [202.78.101.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id 752322436E
+Received: from relay.atmel.no (nat-132.atmel.no [80.232.32.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70D0424379
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jul 2007 06:51:06 +0200 (CEST)
-In-Reply-To: <200707241206.09991.mista.tapas@gmx.net>
+	Thu, 26 Jul 2007 08:20:41 +0200 (CEST)
+In-Reply-To: <s5hhcnvyy37.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +28,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Florian Schmidt <mista.tapas@gmx.net>
-Cc: alsa-devel@alsa-project.org, linux-audio-dev@lists.linuxaudio.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kernel@avr32linux.org, Haavard Skinnemoen <hskinnemoen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Florian Schmidt wrote:
-> Another approach, that works very well in my experience, is to not sleep the 
-> total required time until the next event, but rather regularly sleep for very 
-> short amounts of time (< 1ms), wakeup, measure the current time and if any 
-> event time now lies in the past, simply play it back immediately. This way 
-> the sleep time doesn't need to be accurate at all. All that's needed is that 
-> it's small enough to get some decent timing.
 
-I've now finished implementing this approach, sleeping around 10000 
-microseconds instead of  less than 1ms, and it works very well!  Thanks!
-
-I'm getting very decent timing even with complicated MIDI files that have 
-numerous pitch bends at very short times.
-
-I'm about to try your other suggestions later on.
-
-Thank you very much.
-
+On Mon, 2007-07-23 at 16:49 +0200, Takashi Iwai wrote:
+> At Tue, 17 Jul 2007 12:23:56 +0200,
+> I wrote:
+> > 
+> > Then I'll queue it soon after the merge window is closed, so that your
+> > driver appears in the mm tree.
 > 
-> Regards,
-> Flo
-> 
+> FYI, I applied the patches to ALSA HG tree now (for 2.6.24).
 
-Best Regards,
-
-Carlo
-
+Thanks, the SSC driver is also in Andrews -mm tree, so user should be
+able to test this by fetching both trees.
 
 -- 
-Carlo Florendo
-Softare Engineer/Network Co-Administrator
-Astra Philippines Inc.
-UP-Ayala Technopark, Diliman 1101, Quezon City
-Philippines
-http://www.astra.ph
+With kind regards,
 
---
-The Astra Group of Companies
-5-3-11 Sekido, Tama City
-Tokyo 206-0011, Japan
-http://www.astra.co.jp
+Hans-Christian Egtvedt, siv.ing. (M.Sc.)
+Applications Engineer - AVR32 System Solutions - Atmel Norway
