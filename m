@@ -1,22 +1,22 @@
-From: Mauro Carvalho Chehab <mchehab@infradead.org>
-Subject: Re: BT87x ALSA driver patches
-Date: Fri, 27 Jul 2007 12:26:15 -0300
-Message-ID: <1185549975.17840.57.camel@gaivota>
-References: <Pine.LNX.4.58.0707211727490.2511@shell2.speakeasy.net>
-	<1185200670.8251.3.camel@gaivota>
-	<Pine.LNX.4.58.0707251520530.30561@shell4.speakeasy.net>
-	<s5hsl7bv603.wl%tiwai@suse.de> <1185549075.17840.53.camel@gaivota>
-	<s5hk5slvpsb.wl%tiwai@suse.de>
+From: "Steven King" <steven.king.80@gmail.com>
+Subject: Re: Intel HDA Driver - Bug
+Date: Fri, 27 Jul 2007 16:34:56 +0100
+Message-ID: <af8dbbad0707270834m76da17bfja2c1e7a859866585@mail.gmail.com>
+References: <af8dbbad0707260832t6d6d2182kbac2a6ff2ad8a88a@mail.gmail.com>
+	<s5hhcnrtbz0.wl%tiwai@suse.de>
+	<af8dbbad0707261014i5aef678exa5626c888f348406@mail.gmail.com>
+	<s5hk5snw0em.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_6934_23842440.1185550496148"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pentafluge.infradead.org (pentafluge.infradead.org
-	[213.146.154.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id A1753103834
+Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id 952BA103836
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Jul 2007 17:28:11 +0200 (CEST)
-In-Reply-To: <s5hk5slvpsb.wl%tiwai@suse.de>
+	Fri, 27 Jul 2007 17:34:58 +0200 (CEST)
+Received: by ik-out-1112.google.com with SMTP id b35so705440ika
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2007 08:34:57 -0700 (PDT)
+In-Reply-To: <s5hk5snw0em.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +27,202 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: v4l-dvb maintainer list <v4l-dvb-maintainer@linuxtv.org>, Trent Piepho <xyzzy@speakeasy.org>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_6934_23842440.1185550496148
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> > Do you wanna me also to take care of the changesets improving bt87x to
-> > properly work with Osprey 440, or do you prefer if Trent sent you
-> > directly, c/c me?
-> 
-> I don't mind you apply and push it from your tree at all, but patches
-> are always welcome, even only for checking.
+Hi Takashi,
 
-For me, both ways should work fine. Of course, it is important to have
-your eyes looking at those changesets.
+See the attached files for the alsaconfig and card info. This is the
+first time I've looked into the drivers of ALSA, so please be patient
+:)
 
--- 
-Cheers,
-Mauro
+Thanks,
+
+Steve
+
+On 7/26/07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 26 Jul 2007 18:14:03 +0100,
+> Steven King wrote:
+> >
+> > Hi Takashi,
+> >
+> > I have grabbed the source tree: hg clone http://hg.alsa-project.org/alsa-kernel , hg
+> > clone http://hg.alsa-project.org/alsa-driver
+> >
+> > I compiled the module and reloaded it. The main speaker and headphones work (with HP
+> > jack detect), however the mic is still not working (a mic jack).  In alsamixer I get:
+> > ADCMux, InMux and InVol, I turned these all up to full and tried using
+> > gnome-sound-recorder to record sound, no luck. With Digital Input Source ->
+> >
+> > What can I do to work out the correct input device? I think that no mic input is
+> > detected during autoconfiguration.
+>
+> Well, I'm not sure whether the recording works on _all_ mac models
+> there.  It was confirmed to work at least on some models, but not on
+> every model.
+>
+> Anyway, let's sort out the possible mixer setting problem.
+> Please attach the contents of /proc/asound/card0/codec#* (for audio
+> codec) and the generated file via "alsactl -f somefile store" for
+> further analysis.
+>
+>
+> Takashi
+>
+
+------=_Part_6934_23842440.1185550496148
+Content-Type: text/plain; name=sound-alsaconfig.txt; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_f4n936ty
+Content-Disposition: attachment; filename="sound-alsaconfig.txt"
+
+c3RhdGUuSW50ZWwgewoJY29udHJvbC4xIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScK
+CQljb21tZW50LnR5cGUgRU5VTUVSQVRFRAoJCWNvbW1lbnQuY291bnQgMQoJCWNvbW1lbnQuaXRl
+bS4wICdBbmFsb2cgSW5wdXRzJwoJCWNvbW1lbnQuaXRlbS4xICdEaWdpdGFsIE1pYyAxJwoJCWlm
+YWNlIE1JWEVSCgkJbmFtZSAnRGlnaXRhbCBJbnB1dCBTb3VyY2UnCgkJdmFsdWUgJ0FuYWxvZyBJ
+bnB1dHMnCgl9Cgljb250cm9sLjIgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNv
+bW1lbnQudHlwZSBFTlVNRVJBVEVECgkJY29tbWVudC5jb3VudCAxCgkJY29tbWVudC5pdGVtLjAg
+TGluZQoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSW5wdXQgU291cmNlJwoJCXZhbHVlIExpbmUKCX0K
+CWNvbnRyb2wuMyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBl
+IElOVEVHRVIKCQljb21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gNCcKCQlpZmFj
+ZSBNSVhFUgoJCW5hbWUgJ0luTXV4IENhcHR1cmUgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVl
+LjEgMAoJfQoJY29udHJvbC40IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21t
+ZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAx
+NScKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0luVm9sIENhcHR1cmUgVm9sdW1lJwoJCXZhbHVlLjAg
+MAoJCXZhbHVlLjEgMAoJfQoJY29udHJvbC41IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
+ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWNvbW1lbnQuY291bnQgMgoJCWlmYWNlIE1JWEVS
+CgkJbmFtZSAnQURDTXV4IENhcHR1cmUgU3dpdGNoJwoJCXZhbHVlLjAgZmFsc2UKCQl2YWx1ZS4x
+IGZhbHNlCgl9Cgljb250cm9sLjYgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNv
+bW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5jb3VudCAyCgkJY29tbWVudC5yYW5nZSAnMCAt
+IDEyNycKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0Zyb250IFBsYXliYWNrIFZvbHVtZScKCQl2YWx1
+ZS4wIDExMQoJCXZhbHVlLjEgMTExCgl9Cgljb250cm9sLjcgewoJCWNvbW1lbnQuYWNjZXNzICdy
+ZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29tbWVudC5jb3VudCAyCgkJaWZh
+Y2UgTUlYRVIKCQluYW1lICdGcm9udCBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUuMCB0cnVlCgkJ
+dmFsdWUuMSB0cnVlCgl9Cgljb250cm9sLjggewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRl
+JwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5jb3VudCAyCgkJY29tbWVudC5yYW5n
+ZSAnMCAtIDEyNycKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1N1cnJvdW5kIFBsYXliYWNrIFZvbHVt
+ZScKCQl2YWx1ZS4wIDgxCgkJdmFsdWUuMSA4MQoJfQoJY29udHJvbC45IHsKCQljb21tZW50LmFj
+Y2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWNvbW1lbnQuY291bnQg
+MgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnU3Vycm91bmQgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVl
+LjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJfQoJY29udHJvbC4xMCB7CgkJY29tbWVudC5hY2Nlc3Mg
+J3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQljb21tZW50LmNvdW50IDEKCQlp
+ZmFjZSBNSVhFUgoJCW5hbWUgJ0xpbmUgSW4gYXMgT3V0cHV0IFN3aXRjaCcKCQl2YWx1ZSBmYWxz
+ZQoJfQoJY29udHJvbC4xMSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUgdXNlcicKCQlj
+b21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAg
+LSAyNTUnCgkJY29tbWVudC50bHYgJzAwMDAwMDAxMDAwMDAwMDhmZmZmZWMxNDAwMDAwMDE0JwoJ
+CWlmYWNlIE1JWEVSCgkJbmFtZSAnUENNIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDIwMAoJ
+CXZhbHVlLjEgMjAwCgl9Cn0K
+------=_Part_6934_23842440.1185550496148
+Content-Type: text/plain; name=sound-card0.txt; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_f4n93ahb
+Content-Disposition: attachment; filename="sound-card0.txt"
+
+Q29kZWM6IFNpZ21hVGVsIFNUQUM5MjA1CkFkZHJlc3M6IDAKVmVuZG9yIElkOiAweDgzODQ3NmEw
+ClN1YnN5c3RlbSBJZDogMHgxMDI4MDFmMgpSZXZpc2lvbiBJZDogMHgxMDAyMDQKTm8gTW9kZW0g
+RnVuY3Rpb24gR3JvdXAgZm91bmQKRGVmYXVsdCBQQ006CiAgICByYXRlcyBbMHg3ZTBdOiA0NDEw
+MCA0ODAwMCA4ODIwMCA5NjAwMCAxNzY0MDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAy
+NAogICAgZm9ybWF0cyBbMHgxXTogUENNCkRlZmF1bHQgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBu
+c3RlcHM9MHgwZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0wCkRlZmF1bHQgQW1wLU91dCBjYXBzOiBv
+ZnM9MHg3ZiwgbnN0ZXBzPTB4N2YsIHN0ZXBzaXplPTB4MDIsIG11dGU9MQpOb2RlIDB4MGEgW1Bp
+biBDb21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgxNzNmOiBJTiBP
+VVQgSFAgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHgwMzIxMTAxZjogW0phY2tdIEhQIE91dCBhdCBF
+eHQgTGVmdAogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogIFBpbi1jdGxzOiAweGMwOiBP
+VVQgSFAKICBDb25uZWN0aW9uOiAyCiAgICAgMHgxMCogMHgxMQpOb2RlIDB4MGIgW1BpbiBDb21w
+bGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgxNzM3OiBJTiBPVVQgRGV0
+ZWN0CiAgUGluIERlZmF1bHQgMHgwMzgxMTAyMDogW0phY2tdIExpbmUgSW4gYXQgRXh0IExlZnQK
+ICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmxhY2sKICBQaW4tY3RsczogMHgyMDogSU4KICBDb25u
+ZWN0aW9uOiAyCiAgICAgMHgxMCAweDExKgpOb2RlIDB4MGMgW1BpbiBDb21wbGV4XSB3Y2FwcyAw
+eDQwMDE4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgxNzM3OiBJTiBPVVQgRGV0ZWN0CiAgUGluIERl
+ZmF1bHQgMHg0MGYwMDBmMDogW04vQV0gT3RoZXIgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25v
+d24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDAwOgogIENvbm5lY3Rpb246IDEKICAg
+ICAweDExCk5vZGUgMHgwZCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMTgxOiBTdGVyZW8KICBQ
+aW5jYXAgMHgwODNmOiBJTiBPVVQgSFAgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg5MDE3MDExMDog
+W0ZpeGVkXSBTcGVha2VyIGF0IEludCBOL0EKICAgIENvbm4gPSBBbmFsb2csIENvbG9yID0gVW5r
+bm93bgogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxMApOb2Rl
+IDB4MGUgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgx
+NzM3OiBJTiBPVVQgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MGYwMDBmMTogW04vQV0gT3RoZXIg
+YXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxz
+OiAweDAwOgogIENvbm5lY3Rpb246IDEKICAgICAweDEwCk5vZGUgMHgwZiBbUGluIENvbXBsZXhd
+IHdjYXBzIDB4NDAwMTgxOiBTdGVyZW8KICBQaW5jYXAgMHgwODE3Mzc6IElOIE9VVCBEZXRlY3QK
+ICBQaW4gRGVmYXVsdCAweDQwZjAwMGYyOiBbTi9BXSBPdGhlciBhdCBFeHQgTi9BCiAgICBDb25u
+ID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4MDA6CiAgQ29ubmVjdGlv
+bjogMQogICAgIDB4MTEKTm9kZSAweDEwIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4ZDBjMDU6IFN0
+ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6ICBbMHg2ZiAw
+eDZmXQogIFBvd2VyOiAweDAKTm9kZSAweDExIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4ZDBjMDU6
+IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6ICBbMHg1
+MSAweDUxXQogIFBvd2VyOiAweDAKTm9kZSAweDEyIFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxZDA1
+NDE6IFN0ZXJlbwogIFBvd2VyOiAweDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxZApOb2RlIDB4
+MTMgW0F1ZGlvIElucHV0XSB3Y2FwcyAweDFkMDU0MTogU3RlcmVvCiAgUG93ZXI6IDB4MAogIENv
+bm5lY3Rpb246IDEKICAgICAweDFlCk5vZGUgMHgxNCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAw
+MTBjOiBNb25vIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IG9mcz0weDFmLCBuc3RlcHM9MHgxZiwg
+c3RlcHNpemU9MHgwNSwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4MDBdCiAgUGluY2FwIDB4
+MDgxMDogT1VUCiAgUGluIERlZmF1bHQgMHg0MGYwMDBmMzogW04vQV0gT3RoZXIgYXQgRXh0IE4v
+QQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDAwOgog
+IENvbm5lY3Rpb246IDEKICAgICAweDE1Ck5vZGUgMHgxNSBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4
+MjAwMTAwOiBNb25vCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTAKTm9kZSAweDE2IFtQaW4gQ29t
+cGxleF0gd2NhcHMgMHg0MDAwMDE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MjA6IElOCiAgUGluIERl
+ZmF1bHQgMHg0MGYwMDBmNDogW04vQV0gT3RoZXIgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25v
+d24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDAwOgpOb2RlIDB4MTcgW1BpbiBDb21w
+bGV4XSB3Y2FwcyAweDQwMDAwMTogU3RlcmVvCiAgUGluY2FwIDB4MDgyMDogSU4KICBQaW4gRGVm
+YXVsdCAweDkwYTYwMDMwOiBbRml4ZWRdIE1pYyBhdCBJbnQgTi9BCiAgICBDb25uID0gRGlnaXRh
+bCwgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4MjA6IElOCk5vZGUgMHgxOCBbUGluIENv
+bXBsZXhdIHdjYXBzIDB4NDAwMDAxOiBTdGVyZW8KICBQaW5jYXAgMHgwODIwOiBJTgogIFBpbiBE
+ZWZhdWx0IDB4NDBmMDAwZjU6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtu
+b3duLCBDb2xvciA9IFVua25vd24KICBQaW4tY3RsczogMHgyMDogSU4KTm9kZSAweDE5IFtBdWRp
+byBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBz
+OiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDQsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1PdXQg
+dmFsczogIFsweDAwIDB4MDBdCiAgQ29ubmVjdGlvbjogNwogICAgIDB4MGUgMHgxNiAweDBmIDB4
+MGIqIDB4MGMgMHgwZCAweDBhCk5vZGUgMHgxYSBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAw
+MTBkOiBTdGVyZW8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDA0
+LCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHgwMCAweDAwXQogIENv
+bm5lY3Rpb246IDcKICAgICAweDBlIDB4MTYgMHgwZiAweDBiKiAweDBjIDB4MGQgMHgwYQpOb2Rl
+IDB4MWIgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDEwMzogU3RlcmVvIEFtcC1JbgogIEFt
+cC1JbiBjYXBzOiBOL0EKICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdCiAgQ29ubmVjdGlvbjog
+MQogICAgIDB4MTkKTm9kZSAweDFjIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMDM6IFN0
+ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2FwczogTi9BCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAw
+XQogIENvbm5lY3Rpb246IDEKICAgICAweDFhCk5vZGUgMHgxZCBbQXVkaW8gU2VsZWN0b3JdIHdj
+YXBzIDB4MzAwOTBkOiBTdGVyZW8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5z
+dGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAw
+eDgwXQogIENvbm5lY3Rpb246IDMKICAgICAweDFiKiAweDE3IDB4MTgKTm9kZSAweDFlIFtBdWRp
+byBTZWxlY3Rvcl0gd2NhcHMgMHgzMDA5MGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBz
+OiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQg
+dmFsczogIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMwogICAgIDB4MWMqIDB4MTcgMHgxOApO
+b2RlIDB4MWYgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MDIxMTogU3RlcmVvIERpZ2l0YWwKICBQ
+Q006CiAgICByYXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAKICAg
+IGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDVdOiBQQ00gQUMzCk5vZGUgMHgy
+MCBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MTQwMzExOiBTdGVyZW8gRGlnaXRhbAogIFBDTToKICAg
+IHJhdGVzIFsweDE2MF06IDQ0MTAwIDQ4MDAwIDk2MDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAy
+NAogICAgZm9ybWF0cyBbMHg1XTogUENNIEFDMwogIENvbm5lY3Rpb246IDEKICAgICAweDIyCk5v
+ZGUgMHgyMSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMzAxOiBTdGVyZW8gRGlnaXRhbAogIFBp
+bmNhcCAweDA4MTA6IE9VVAogIFBpbiBEZWZhdWx0IDB4NDBmMDAwZjY6IFtOL0FdIE90aGVyIGF0
+IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICBQaW4tY3Rsczog
+MHgwMDoKICBDb25uZWN0aW9uOiAzCiAgICAgMHgxZiogMHgxZCAweDFlCk5vZGUgMHgyMiBbUGlu
+IENvbXBsZXhdIHdjYXBzIDB4NDMwNjgxOiBTdGVyZW8gRGlnaXRhbAogIFBpbmNhcCAweDA4MTAw
+MjQ6IElOIEVBUEQgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MGYwMDBmNzogW04vQV0gT3RoZXIg
+YXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxz
+OiAweDAwOgogIFBvd2VyOiAweDAKTm9kZSAweDIzIFtCZWVwIEdlbmVyYXRvciBXaWRnZXRdIHdj
+YXBzIDB4NzAwMDBjOiBNb25vIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAzLCBuc3Rl
+cHM9MHgwMywgc3RlcHNpemU9MHgxNywgbXV0ZT0wCiAgQW1wLU91dCB2YWxzOiAgWzB4MDBdCk5v
+ZGUgMHgyNCBbVm9sdW1lIEtub2IgV2lkZ2V0XSB3Y2FwcyAweDYwMDAwMDogTW9ubwpOb2RlIDB4
+MjUgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDE6IFN0ZXJlbwpDb2RlYzog
+Q29uZXhhbnQgSUQgMmMwNgpBZGRyZXNzOiAxClZlbmRvciBJZDogMHgxNGYxMmMwNgpTdWJzeXN0
+ZW0gSWQ6IDB4MTRmMTAwMGYKUmV2aXNpb24gSWQ6IDB4MTAwMDAwCk1vZGVtIEZ1bmN0aW9uIEdy
+b3VwOiAweDIK
+------=_Part_6934_23842440.1185550496148
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_Part_6934_23842440.1185550496148--
