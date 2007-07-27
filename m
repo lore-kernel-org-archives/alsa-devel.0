@@ -1,20 +1,20 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: Will the real alsa wiki please stand up?
-Date: Fri, 27 Jul 2007 09:40:45 +1200
-Message-ID: <200707270940.45326.linux@audioscience.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Effect of CONFIG_SND_PCM_OSS_PLUGINS
+Date: Fri, 27 Jul 2007 08:21:23 +0200
+Message-ID: <1185517283.21908.1202305699@webmail.messagingengine.com>
+References: <92a12cdb0707241530h3703a721md7bceeac2cd3144a@mail.gmail.com>
+	<1185345398.10658.1201916763@webmail.messagingengine.com>
+	<92a12cdb0707261400u624be88av154447e7ea5be081@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3584610380C
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id B88E124479
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jul 2007 23:35:02 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JLT003O42KJ5X30@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 27 Jul 2007 09:33:55 +1200 (NZST)
-Content-disposition: inline
+	Fri, 27 Jul 2007 08:21:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <92a12cdb0707261400u624be88av154447e7ea5be081@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrianmcmenamin@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm confused again.  Which is the real official wiki?
+Adrian McMenamin wrote:
+> On 25/07/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
+> > Well, your driver does support S16_LE, doesn't it?
+> 
+> I think so
+> 
+> .formats =
+> 	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
+> 	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
 
-This one "AlsaWiki"
-http://bugtrack.alsa-project.org/main/index.php/Main_Page
-(MediaWiki, last change 25 July)
- 
-OR
+Looks OK.
 
-This one  "Official Alsa Wiki for Developers"
-https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=AlsaWiki
-(Powered by Wikka Wakka Wiki) approx 28 content pages, last change 24 July)
+What are the other snd_pcm_hardware settings?
 
-It was made clear a while ago that this is the UNofficial wiki:
-http://alsa.opensrc.org/index.php/Main_Page
-(MediaWiki)
 
-Gosh!, how much fragmentation do we need????
-
-If 3 wikis really are necessary, can we at least have links to the others on 
-the main page of each wiki, and explanation of which is most approriate for 
-different content?
-
-thanks
-
-Eliot
+Regards,
+Clemens
