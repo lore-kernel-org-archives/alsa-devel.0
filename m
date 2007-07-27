@@ -1,23 +1,25 @@
-From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
-Subject: Re: Effect of CONFIG_SND_PCM_OSS_PLUGINS
-Date: Fri, 27 Jul 2007 08:15:13 +0100
-Message-ID: <92a12cdb0707270015n712854ceg6fe93bb41fa6153f@mail.gmail.com>
-References: <92a12cdb0707241530h3703a721md7bceeac2cd3144a@mail.gmail.com>
-	<1185345398.10658.1201916763@webmail.messagingengine.com>
-	<92a12cdb0707261400u624be88av154447e7ea5be081@mail.gmail.com>
-	<1185517283.21908.1202305699@webmail.messagingengine.com>
+From: Paul Vojta <vojta@Math.Berkeley.EDU>
+Subject: Re: another device for opl3sa2
+Date: Fri, 27 Jul 2007 00:55:14 -0700
+Message-ID: <20070727075514.GA2368@math.berkeley.edu>
+References: <20070703002739.GA27389@math.berkeley.edu>
+	<s5hfy45ajk1.wl%tiwai@suse.de>
+	<20070704022423.GA2012@math.berkeley.edu>
+	<s5h4pkka6tq.wl%tiwai@suse.de>
+	<20070705080302.GA6818@math.berkeley.edu>
+	<s5hk5te6hku.wl%tiwai@suse.de>
+	<20070706074136.GA4460@math.berkeley.edu>
+	<s5hy7ht50ir.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CA1624486
+Received: from mail.math.berkeley.edu (mail.math.Berkeley.EDU [169.229.58.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C19824495
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Jul 2007 09:15:15 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so942282wag
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2007 00:15:14 -0700 (PDT)
-In-Reply-To: <1185517283.21908.1202305699@webmail.messagingengine.com>
+	Fri, 27 Jul 2007 09:55:17 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hy7ht50ir.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,43 +29,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 27/07/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
-> Adrian McMenamin wrote:
-> > On 25/07/07, Clemens Ladisch <cladisch@fastmail.net> wrote:
-> > > Well, your driver does support S16_LE, doesn't it?
-> >
-> > I think so
-> >
-> > .formats =
-> >           (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-> >            SNDRV_PCM_FMTBIT_IMA_ADPCM),
+On Fri, Jul 06, 2007 at 11:45:00AM +0200, Takashi Iwai wrote:
 >
-> Looks OK.
->
-> What are the other snd_pcm_hardware settings?
->
+> 0x0b = CS4231_TEST_INIT, and 0x20 = CS4231_CALIB_IN_PROGRESS.
+> At least, mce_down() should show messages if the calibration gets
+> timeout.  Did you see any related messages?  Or didn't you build with
+> --with-debug=full?
 
-static struct snd_pcm_hardware snd_pcm_aica_playback_hw = {
-	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
-	.formats =
-	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
-	.rates = SNDRV_PCM_RATE_8000_48000,
-	.rate_min = 8000,
-	.rate_max = 48000,
-	.channels_min = 1,
-	.channels_max = 2,
-	.buffer_bytes_max = AICA_BUFFER_SIZE,
-	.period_bytes_min = AICA_PERIOD_SIZE,
-	.period_bytes_max = AICA_PERIOD_SIZE,
-	.periods_min = AICA_PERIOD_NUMBER,
-	.periods_max = AICA_PERIOD_NUMBER,
-};
+I have now recompiled the alsa drivers from alsa-driver-hg20070718
+and with --debug=full.
 
-#define AICA_BUFFER_SIZE 0x8000
-#define AICA_PERIOD_SIZE 0x800
-#define AICA_PERIOD_NUMBER 16
+I found that the bug would also occur the first time playing a .wav file
+after "aplay -t au file.au".
+
+The difference between opl3sa2 and 4232 occurred because of the lines
+
+	if ((timeout & CS4231_MCE) == 0 ||
+	    !(chip->hardware & (CS4231_HW_CS4231_MASK | CS4231_HW_CS4232_MASK))) {
+		return;
+	}
+
+in mce_down() in cs4231_lib.c.  With opl3sa2 it was always returning at this
+step, hence it didn't finish recalibrating before trying to play the sound.
+
+If I changed it so that the second test is always false for opl3sa2, then
+sound would mostly work, but intermittently I would get messages about
+"auto calibration time out" or "serious init problem - codec still busy".
+If I put a printk() statement in the beginning of mce_down to help debug
+this, then the problem would go away, so I put in udelay(100) and that
+also made the problems go away.
+
+Therefore, I submit the following patch.
+
+Synopsis:  Fix bugs in mode change/recalibration for opl3sa2 driver.
+
+Signed-off by:  Paul Vojta <vojta@math.berkeley.edu>
+
+
+diff -ur /tmp/alsa-driver-hg20070718/alsa-kernel/include/cs4231.h alsa-driver-hg20070718/alsa-kernel/include/cs4231.h
+--- /tmp/alsa-driver-hg20070718/alsa-kernel/include/cs4231.h	2006-10-10 17:00:21.000000000 -0700
++++ alsa-driver-hg20070718/alsa-kernel/include/cs4231.h	2007-07-21 00:39:55.000000000 -0700
+@@ -210,7 +210,7 @@
+ #define CS4231_HW_CS4239	0x0404	/* CS4239 - Crystal Clear (tm) stereo enhancement */
+ /* compatible, but clones */
+ #define CS4231_HW_INTERWAVE     0x1000	/* InterWave chip */
+-#define CS4231_HW_OPL3SA2       0x1001	/* OPL3-SA2 chip */
++#define CS4231_HW_OPL3SA2       0x1101	/* OPL3-SA2 chip, similar to cs4231 */
+ 
+ /* defines for codec.hwshare */
+ #define CS4231_HWSHARE_IRQ	(1<<0)
+diff -ur /tmp/alsa-driver-hg20070718/alsa-kernel/isa/cs423x/cs4231_lib.c alsa-driver-hg20070718/alsa-kernel/isa/cs423x/cs4231_lib.c
+--- /tmp/alsa-driver-hg20070718/alsa-kernel/isa/cs423x/cs4231_lib.c	2007-02-22 17:00:24.000000000 -0800
++++ alsa-driver-hg20070718/alsa-kernel/isa/cs423x/cs4231_lib.c	2007-07-25 22:49:04.000000000 -0700
+@@ -555,6 +555,9 @@
+ 			snd_cs4231_out(chip, CS4231_PLAYBK_FORMAT, chip->image[CS4231_PLAYBK_FORMAT] = pdfr);
+ 		}
+ 		spin_unlock_irqrestore(&chip->reg_lock, flags);
++		if (chip->hardware == CS4231_HW_OPL3SA2) {
++			udelay(100);	/* this seems to help */
++		}
+ 		snd_cs4231_mce_down(chip);
+ 	}
+ 	snd_cs4231_calibrate_mute(chip, 0);
+diff -ur /tmp/alsa-driver-hg20070718/alsa-kernel/isa/opl3sa2.c alsa-driver-hg20070718/alsa-kernel/isa/opl3sa2.c
+--- /tmp/alsa-driver-hg20070718/alsa-kernel/isa/opl3sa2.c	2007-07-04 17:00:11.000000000 -0700
++++ alsa-driver-hg20070718/alsa-kernel/isa/opl3sa2.c	2007-07-25 21:19:39.000000000 -0700
+@@ -253,6 +253,7 @@
+ 		/* 0x03 - YM715B */
+ 		/* 0x04 - YM719 - OPL-SA4? */
+ 		/* 0x05 - OPL3-SA3 - Libretto 100 */
++		/* 0x07 - unknown - Neomagic MagicWave 3D */
+ 		break;
+ 	}
+ 	str[0] = chip->version + '0';
