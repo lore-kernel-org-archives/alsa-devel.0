@@ -1,16 +1,15 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH] snd_usb_caiaq_input_free() fix
-Date: Fri, 27 Jul 2007 12:06:50 +0200
-Message-ID: <200707271206.51137.annabellesgarden@yahoo.de>
+From: Niels Gram Jeppesen <ip3@nielsgj.dk>
+Subject: VT1618 driver
+Date: Fri, 27 Jul 2007 11:40:26 +0200
+Message-ID: <46A9BD8A.2040608@nielsgj.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout1.freenet.de (mout1.freenet.de [195.4.92.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 047E41037EF
+Received: from dns2.fullrate.dk (dns2.fullrate.dk [89.150.129.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E4E2103815
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Jul 2007 12:06:39 +0200 (CEST)
-Content-Disposition: inline
+	Fri, 27 Jul 2007 12:18:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,28 +19,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-input_free_device()'s comment says:
-input_free_device() should only be used if input_register_device() was
-not called yet or if it failed. Once device was registered
-use input_unregister_device() and memory will be freed once last
-refrence to the device is dropped.
+I have a VIA CN1000G mini-ITX board with a VT1618 that I would like to have up and running with sound next week. I see (https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=VT1618&show_comments=0) that there exist a still unreleased driver for the chip. If possible, I would like to play arround with that driver next week.
 
-Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
----
+Best regards and thanks in advance,
 
-
-diff -pur rt9/sound/usb/caiaq/caiaq-input.c rt9-kw/sound/usb/caiaq/caiaq-input.c
---- rt9/sound/usb/caiaq/caiaq-input.c	2007-07-10 20:56:30.000000000 +0200
-+++ rt9-kw/sound/usb/caiaq/caiaq-input.c	2007-07-27 11:45:52.000000000 +0200
-@@ -238,7 +238,6 @@ void snd_usb_caiaq_input_free(struct snd
- 		return;
- 
- 	input_unregister_device(dev->input_dev);
--	input_free_device(dev->input_dev);
- 	dev->input_dev = NULL;
- }
+Niels Gram Jeppesen
