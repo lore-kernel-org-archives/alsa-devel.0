@@ -1,17 +1,19 @@
-From: midtown123@gmail.com
-Subject: USB Audio out PS3
-Date: Sat, 28 Jul 2007 23:19:35 +0000
-Message-ID: <1856980340-1185664861-cardhu_decombobulator_blackberry.rim.net-692376594-@bxe103.bisx.prod.on.blackberry>
+From: gt bradley <baykelper@gmail.com>
+Subject: Re: USB Audio out PS3
+Date: Sun, 29 Jul 2007 14:39:13 -0700
+Message-ID: <46AD0901.1080108@gmail.com>
+References: <mailman.0.1185703202.30883.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qb-out-0506.google.com (qb-out-0506.google.com [72.14.204.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55727103831
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E07724371
 	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Jul 2007 01:21:08 +0200 (CEST)
-Received: by qb-out-0506.google.com with SMTP id q12so1172012qba
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jul 2007 16:21:07 -0700 (PDT)
+	Sun, 29 Jul 2007 23:39:10 +0200 (CEST)
+Received: by rv-out-0910.google.com with SMTP id k20so251680rvb
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jul 2007 14:39:09 -0700 (PDT)
+In-Reply-To: <mailman.0.1185703202.30883.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,7 +26,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Is there a way I can get audio out from the USB on my ps3?
+I have connected a soundblaster mp3+ via usb to my ps3.
+it shows up in the sound-config applet and plays stereo just fine using 
+the various test commands.
 
-Thanks
-Martin
+I was using Fedora 7, (which has alsa ver. 1.0.14),  and had been 
+compiling bleeding edge kernels, with the sound modules set up as modules.
+
+The stereo part was almost plug-and-play, except that to install the 
+USB, I did have to enable the "CONFIG_USB_EHCI_SPLIT_ISO (Experimental) 
+" option in the kernel. 
+
+I gave up trying to configure the SPDIF to do surround sound (long story).
+GT
