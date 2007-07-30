@@ -1,16 +1,16 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] ASoC CS4270 codec device driver
-Date: Mon, 30 Jul 2007 13:18:12 -0500
-Message-ID: <11858194924152-git-send-email-timur@freescale.com>
+From: Michael Gerdau <mgd@technosis.de>
+Subject: [Regression] snd-hda-intel no longer loads as of
+	alsa-driver-hg20070728
+Date: Mon, 30 Jul 2007 20:22:48 +0200
+Message-ID: <200707302023.12091.mgd@technosis.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3539900537913051307=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id EEDDF10383B
+Received: from server021.webpack.hosteurope.de
+	(server021.webpack.hosteurope.de [80.237.130.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D29810383B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Jul 2007 20:18:22 +0200 (CEST)
+	Mon, 30 Jul 2007 20:23:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,937 +20,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: lg@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
-Cc: Timur Tabi <timur@freescale.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds ALSA SoC support for the Cirrus Logic CS4270 codec.  The
-following features are suppored:
+--===============3539900537913051307==
+Content-Type: multipart/signed;
+  boundary="nextPart1693475.Wk3W558U7A";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-1) Stand-alone and software mode
-2) Software mode via I2C only
-3) Master mode, not Slave
-4) No power management
+--nextPart1693475.Wk3W558U7A
+Content-Type: multipart/mixed;
+  boundary="Boundary-01=_4xirGu+/fUuEXUi"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
+--Boundary-01=_4xirGu+/fUuEXUi
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-This code is based on the Liam Girdwood's ASoC tree.
+Hi list,
 
-Please note that I was unable to clone Liam's ASoC git repositories because
-the http interface does not work for me, and my corporate firewall blocks the
-git protocol.  I had to download a snapshot and create a bare git repository
-from it.  Therefore, git may complain when trying to apply this patch.
+snd-hda-intel does no longer load on my Dell XPS M1710 using
+alsa-driver-hg20070728. However it works without apparent problems
+with alsa-driver-hg20070727.
 
- include/linux/i2c-id.h    |    1 +
- sound/soc/codecs/Kconfig  |   20 ++
- sound/soc/codecs/Makefile |    2 +
- sound/soc/codecs/cs4270.c |  803 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs4270.h |   28 ++
- 5 files changed, 854 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/cs4270.c
- create mode 100644 sound/soc/codecs/cs4270.h
+I'm running 2.6.22.1-cfs-v19 on a SuSE 10.2 x86_64.
 
-diff --git a/include/linux/i2c-id.h b/include/linux/i2c-id.h
-index 0051203..6b3d207 100644
---- a/include/linux/i2c-id.h
-+++ b/include/linux/i2c-id.h
-@@ -119,6 +119,7 @@
- #define I2C_DRIVERID_WM8750		90	/* Wolfson WM8750 audio codec */
- #define I2C_DRIVERID_WM8753		91	/* Wolfson WM8753 audio codec */
- #define I2C_DRIVERID_WM8951             92      /* Wolfson WM8753 audio codec */
-+#define I2C_DRIVERID_CS4270	93	/* Cirrus Logic 4270 audio codec */
- 
- #define I2C_DRIVERID_I2CDEV	900
- #define I2C_DRIVERID_ARP        902    /* SMBus ARP Client              */
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e71667f..9c84eb2 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -78,4 +78,24 @@ config SND_SOC_WM9713
- 	tristate
- 	depends on SND_SOC
- 
-+# Cirrus Logic CS4270 Codec
-+config SND_SOC_CS4270
-+	tristate
-+	depends on SND_SOC
-+
-+# Cirrus Logic CS4270 Codec Hardware Mute Support
-+# Select if you have external muting circuitry attached to your CS4270.
-+config SND_SOC_CS4270_HWMUTE
-+	bool
-+	depends on SND_SOC_CS4270
-+
-+# Cirrus Logic CS4270 Codec VD = 3.3V Errata
-+# Select if you are affected by the errata where the part will not function
-+# if MCLK divide-by-1.5 is selected and VD is set to 3.3V.  The driver will
-+# not select any sample rates that require MCLK to be divided by 1.5.
-+config SND_SOC_CS4270_VD33_ERRATA
-+	bool
-+	depends on SND_SOC_CS4270
-+
-+
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 07d0b59..d9237a1 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -18,6 +18,7 @@ snd-soc-wm8976-objs := wm8976.o
- snd-soc-wm8980-objs := wm8980.o
- snd-soc-wm9712-objs := wm9712.o
- snd-soc-wm9713-objs := wm9713.o
-+snd-soc-cs4270-objs := cs4270.o
- 
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
- obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
-@@ -39,3 +40,4 @@ obj-$(CONFIG_SND_SOC_WM8976)	+= snd-soc-wm8976.o
- obj-$(CONFIG_SND_SOC_WM8980)	+= snd-soc-wm8980.o
- obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
- obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
-+obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-new file mode 100644
-index 0000000..6719590
---- /dev/null
-+++ b/sound/soc/codecs/cs4270.c
-@@ -0,0 +1,803 @@
-+/**
-+ * CS4270 ALSA SoC (ASoC) codec driver
-+ *
-+ * Author: Timur Tabi <timur@freescale.com>
-+ *
-+ * Copyright 2007 Freescale Semiconductor, Inc.  This file is licensed under
-+ * the terms of the GNU General Public License version 2.  This program
-+ * is licensed "as is" without any warranty of any kind, whether express
-+ * or implied.
-+ *
-+ * This is an ASoC device driver for the Cirrus Logic CS4270 codec.
-+ *
-+ * Current features/limitations:
-+ *
-+ * 1) Stand-alone and software mode is supported.  Stand-alone is
-+ *    automatically selected if I2C is disabled or if a CS4270 is not found
-+ *    on the I2C bus.
-+ * 2) Only I2C is supported, not SPI
-+ * 3) Only Master mode is supported, not Slave.
-+ * 4) The machine driver's 'startup' function must call
-+ *    cs4270_set_dai_sysclk() with the value of MCLK.
-+ * 5) Only I2S and left-justified modes are supported
-+ * 6) Power management is not supported
-+ * 7) The only supported control is volume and hardware mute (if enabled)
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/driver.h>
-+#include <sound/core.h>
-+#include <sound/soc.h>
-+#include <sound/initval.h>
-+#include <linux/i2c.h>
-+
-+#include "cs4270.h"
-+
-+/* Private data for the CS4270 */
-+struct cs4270_private {
-+	unsigned int mclk; /* Input frequency of the MCLK pin */
-+	unsigned int mode; /* The mode (I2S or left-justified) */
-+};
-+
-+/**
-+ * The codec isn't really big-endian or little-endian, since the I2S
-+ * interface requires data to be sent serially with the MSbit first.
-+ * However, to support BE and LE I2S devices, we specify both here.  That
-+ * way, ALSA will always match the bit patterns.  Also, it appears that the
-+ * CS4270 doesn't like S8.
-+ *
-+ * FIXME: This list should contain only signed values, not unsigned. The I2S
-+ * protocol requires signed samples.
-+ */
-+#define CS4270_FORMATS (SNDRV_PCM_FMTBIT_S8      | \
-+			SNDRV_PCM_FMTBIT_S16_LE  | SNDRV_PCM_FMTBIT_S16_BE  | \
-+			SNDRV_PCM_FMTBIT_S18_3LE | SNDRV_PCM_FMTBIT_S18_3BE | \
-+			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S20_3BE | \
-+			SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_3BE | \
-+			SNDRV_PCM_FMTBIT_S24_LE  | SNDRV_PCM_FMTBIT_S24_BE)
-+
-+#ifdef CONFIG_I2C
-+
-+/* CS4270 registers addresses */
-+#define CS4270_CHIPID	0x01	/* Chip ID */
-+#define CS4270_PWRCTL	0x02	/* Power Control */
-+#define CS4270_MODE	0x03	/* Mode Control */
-+#define CS4270_FORMAT	0x04	/* Serial Format, ADC/DAC Control */
-+#define CS4270_TRANS	0x05	/* Transition Control */
-+#define CS4270_MUTE	0x06	/* Mute Control */
-+#define CS4270_VOLA	0x07	/* DAC Channel A Volume Control */
-+#define CS4270_VOLB	0x08	/* DAC Channel B Volume Control */
-+
-+#define CS4270_FIRSTREG	0x01
-+#define CS4270_LASTREG	0x08
-+#define CS4270_NUMREGS	(CS4270_LASTREG - CS4270_FIRSTREG + 1)
-+
-+/* Bit masks for the CS4270 registers */
-+#define CS4270_CHIPID_ID	0xF0
-+#define CS4270_CHIPID_REV	0x0F
-+#define CS4270_PWRCTL_FREEZE	0x80
-+#define CS4270_PWRCTL_PDN_ADC	0x20
-+#define CS4270_PWRCTL_PDN_DAC	0x02
-+#define CS4270_PWRCTL_PDN	0x01
-+#define CS4270_MODE_SPEED_MASK	0x30
-+#define CS4270_MODE_1X		0x00
-+#define CS4270_MODE_2X		0x10
-+#define CS4270_MODE_4X		0x20
-+#define CS4270_MODE_SLAVE	0x30
-+#define CS4270_MODE_DIV_MASK	0x0E
-+#define CS4270_MODE_DIV1	0x00
-+#define CS4270_MODE_DIV15	0x02
-+#define CS4270_MODE_DIV2	0x04
-+#define CS4270_MODE_DIV3	0x06
-+#define CS4270_MODE_DIV4	0x08
-+#define CS4270_MODE_POPGUARD	0x01
-+#define CS4270_FORMAT_FREEZE_A	0x80
-+#define CS4270_FORMAT_FREEZE_B	0x40
-+#define CS4270_FORMAT_LOOPBACK	0x20
-+#define CS4270_FORMAT_DAC_MASK	0x18
-+#define CS4270_FORMAT_DAC_LJ	0x00
-+#define CS4270_FORMAT_DAC_I2S	0x08
-+#define CS4270_FORMAT_DAC_RJ16	0x18
-+#define CS4270_FORMAT_DAC_RJ24	0x10
-+#define CS4270_FORMAT_ADC_MASK	0x01
-+#define CS4270_FORMAT_ADC_LJ	0x00
-+#define CS4270_FORMAT_ADC_I2S	0x01
-+#define CS4270_TRANS_ONE_VOL	0x80
-+#define CS4270_TRANS_SOFT	0x40
-+#define CS4270_TRANS_ZERO	0x20
-+#define CS4270_TRANS_INV_ADC_A	0x08
-+#define CS4270_TRANS_INV_ADC_B	0x10
-+#define CS4270_TRANS_INV_DAC_A	0x02
-+#define CS4270_TRANS_INV_DAC_B	0x04
-+#define CS4270_TRANS_DEEMPH	0x01
-+#define CS4270_MUTE_AUTO	0x20
-+#define CS4270_MUTE_ADC_A	0x08
-+#define CS4270_MUTE_ADC_B	0x10
-+#define CS4270_MUTE_POLARITY	0x04
-+#define CS4270_MUTE_DAC_A	0x01
-+#define CS4270_MUTE_DAC_B	0x02
-+
-+/**
-+ * A list of addresses on which this CS4270 could use.  I2C addresses are
-+ * 7 bits.  For the CS4270, the upper four bits are always 1001, and the
-+ * lower three bits are determined via the AD2, AD1, and AD0 pins
-+ * (respectively).
-+ */
-+static unsigned short normal_i2c[] = {
-+	0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, I2C_CLIENT_END
-+};
-+I2C_CLIENT_INSMOD;
-+
-+/**
-+ * Pre-fill the CS4270 register cache.
-+ *
-+ * We use the auto-increment feature of the CS4270 to read all registers in
-+ * one shot.
-+ */
-+static int cs4270_fill_cache(struct snd_soc_codec *codec)
-+{
-+	u8 *cache = codec->reg_cache;
-+	struct i2c_client *i2c_client = codec->control_data;
-+	s32 length;
-+
-+	length = i2c_smbus_read_i2c_block_data(i2c_client,
-+		CS4270_FIRSTREG | 0x80, CS4270_NUMREGS, cache);
-+
-+	if (length != CS4270_NUMREGS) {
-+		printk(KERN_ERR "cs4270: I2C read failure, addr=%u\n",
-+			i2c_client->addr);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * Read from the CS4270 register cache.
-+ *
-+ * This CS4270 registers are cached to avoid excessive I2C I/O operations.
-+ * After the initial read to pre-fill the cache, the CS4270 never updates
-+ * the register values, so we won't have a cache coherncy problem.
-+ */
-+static unsigned int cs4270_read_reg_cache(struct snd_soc_codec *codec, unsigned int reg)
-+{
-+	u8 *cache = codec->reg_cache;
-+
-+	if ((reg < CS4270_FIRSTREG) || (reg > CS4270_LASTREG))
-+		return -EIO;
-+
-+	return cache[reg - CS4270_FIRSTREG];
-+}
-+
-+/**
-+ * Write to a CS4270 register via the I2C bus.
-+ *
-+ * This function writes the given value to the given CS4270 register, and
-+ * also updates the register cache.
-+ *
-+ * Note that we don't use the hw_write function pointer of snd_soc_codec.
-+ * That's because it's too clunky: the hw_write_t prototype does not match
-+ * i2c_smbus_write_byte_data(), and it's just another layer of overhead.
-+ */
-+static int cs4270_i2c_write(struct snd_soc_codec *codec, unsigned int reg,
-+	unsigned int value)
-+{
-+	if ((reg < CS4270_FIRSTREG) || (reg > CS4270_LASTREG))
-+		return -EIO;
-+
-+	if (i2c_smbus_write_byte_data(codec->control_data, reg, value) == 0) {
-+		/* We've written to the hardware, so update the cache */
-+		u8 *cache = codec->reg_cache;
-+		cache[reg - CS4270_FIRSTREG] = value;
-+		return 0;
-+	} else {
-+		printk(KERN_ERR "cs4270: I2C write failed\n");
-+		return -EIO;
-+	}
-+}
-+
-+/**
-+ * Clock Ratio Selection for Master Mode.
-+ *
-+ * The data for this chart is taken from Table 5 of the CS4270 reference
-+ * manual.
-+ *
-+ * This table is used to determine how to program the Mode Control register.
-+ * It is also used by cs4270_set_dai_sysclk() to tell ALSA which sampling
-+ * rates the CS4270 currently supports.
-+ *
-+ * 'ratio' is the MCLK/LRCK ratio.  MCLK is usually a fixed input frequency,
-+ * and LRCK is equal to the sampling rate. The CS4270 only supports sampling
-+ * rates where this ratio is one of: 64, 96, 128, 192, 256, 384, 512, 768 or
-+ * 1024.
-+ *
-+ * 'speed_mode' is the corresponding bit pattern to be written to the
-+ * MODE bits of the Mode Control Register
-+ *
-+ * 'mclk' is the corresponding bit pattern to be wirten to the MCLK bits of
-+ * the Mode Control Register.
-+ *
-+ * In situations where a single ratio is represented by multiple speed
-+ * modes, we favor the slowest speed.  E.g, for a ratio of 128, we pick
-+ * double-speed instead of quad-speed.  However, the CS4270 errata states
-+ * that Divide-By-1.5 can cause failures, so we avoid that mode where
-+ * possible.
-+ *
-+ * ERRATA: There is an errata for the CS4270 where divide-by-1.5 does not
-+ * work if VD = 3.3V.  If this effects you, select the
-+ * CONFIG_SND_SOC_CS4270_VD33_ERRATA Kconfig option, and the driver will
-+ * never select any sample rates that require divide-by-1.5.
-+ */
-+static struct {
-+	unsigned int ratio;
-+	u8 speed_mode;
-+	u8 mclk;
-+} cs4270_mode_ratios[] = {
-+	{64, CS4270_MODE_4X, CS4270_MODE_DIV1},
-+#ifndef CONFIG_SND_SOC_CS4270_VD33_ERRATA
-+	{96, CS4270_MODE_4X, CS4270_MODE_DIV15},
-+#endif
-+	{128, CS4270_MODE_2X, CS4270_MODE_DIV1},
-+	{192, CS4270_MODE_4X, CS4270_MODE_DIV3},
-+	{256, CS4270_MODE_1X, CS4270_MODE_DIV1},
-+	{384, CS4270_MODE_2X, CS4270_MODE_DIV3},
-+	{512, CS4270_MODE_1X, CS4270_MODE_DIV2},
-+	{768, CS4270_MODE_1X, CS4270_MODE_DIV3},
-+	{1024, CS4270_MODE_1X, CS4270_MODE_DIV4}
-+};
-+
-+/**
-+ * Program the CS4270 with the given hardware parameters.
-+ *
-+ * The .dai_ops functions are used to provide board-specific data, like
-+ * input frequencies, to this driver.  This function takes that information,
-+ * combines it with the hardware parameters provided, and programs the
-+ * hardware accordingly.
-+ */
-+static int cs4270_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct cs4270_private *cs4270 = codec->private_data;
-+	unsigned int ret = 0, i, rate, ratio;
-+        int reg;
-+
-+	/* Figure out which MCLK/LRCK ratio to use */
-+
-+	rate = params_rate(params); 	/* Sampling rate, in Hz */
-+	ratio = cs4270->mclk / rate;	/* MCLK/LRCK ratio */
-+
-+	for (i=0; i<ARRAY_SIZE(cs4270_mode_ratios); i++) {
-+		if (cs4270_mode_ratios[i].ratio == ratio) {
-+			break;
-+		}
-+	}
-+
-+	if (i == ARRAY_SIZE(cs4270_mode_ratios)) {
-+		/* We did not find a matching ratio */
-+		printk(KERN_ERR "cs4270: could not find matching ratio\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Freeze and power-down the codec */
-+
-+	ret = snd_soc_write(codec, CS4270_PWRCTL, CS4270_PWRCTL_FREEZE |
-+		CS4270_PWRCTL_PDN_ADC | CS4270_PWRCTL_PDN_DAC |
-+		CS4270_PWRCTL_PDN);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: I2C write failed\n");
-+		return ret;
-+	}
-+
-+	/* Program the mode control register */
-+
-+	reg = snd_soc_read(codec, CS4270_MODE);
-+	reg &= ~(CS4270_MODE_SPEED_MASK | CS4270_MODE_DIV_MASK);
-+	reg |= cs4270_mode_ratios[i].speed_mode | cs4270_mode_ratios[i].mclk;
-+
-+	ret = snd_soc_write(codec, CS4270_MODE, reg);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: I2C write failed\n");
-+		return ret;
-+	}
-+
-+	/* Program the format register */
-+
-+	reg = snd_soc_read(codec, CS4270_FORMAT);
-+	reg &= ~(CS4270_FORMAT_DAC_MASK | CS4270_FORMAT_ADC_MASK);
-+
-+	switch (cs4270->mode) {
-+		case SND_SOC_DAIFMT_I2S:
-+			reg |= CS4270_FORMAT_DAC_I2S | CS4270_FORMAT_ADC_I2S;
-+			break;
-+		case SND_SOC_DAIFMT_LEFT_J:
-+			reg |= CS4270_FORMAT_DAC_LJ | CS4270_FORMAT_ADC_LJ;
-+			break;
-+		default:
-+			printk(KERN_ERR "cs4270: unknown format\n");
-+			return -EINVAL;
-+	}
-+
-+	ret = snd_soc_write(codec, CS4270_FORMAT, reg);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: I2C write failed\n");
-+		return ret;
-+	}
-+
-+	/* Disable auto-mute.  This feature appears to be buggy, because in
-+	   some situations, auto-mute will not deactivate when it should. */
-+
-+	reg = snd_soc_read(codec, CS4270_MUTE);
-+	reg &= ~CS4270_MUTE_AUTO;
-+	ret = snd_soc_write(codec, CS4270_MUTE, reg);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: I2C write failed\n");
-+		return ret;
-+	}
-+
-+	/* Thaw and power-up the codec */
-+
-+	ret = snd_soc_write(codec, CS4270_PWRCTL, 0);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: I2C write failed\n");
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+#ifdef CONFIG_SND_SOC_CS4270_HWMUTE
-+
-+/**
-+ * Set the CS4270 external mute
-+ *
-+ * This function toggles the mute bits in the MUTE register.  The CS4270's
-+ * mute capability is intended for external muting circuitry, so if the
-+ * board does not have the MUTEA or MUTEB pins connected to such circuitry,
-+ * then this function will do nothing.
-+ */
-+static int cs4270_mute(struct snd_soc_codec_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	int reg6;
-+
-+	reg6 = snd_soc_read(codec, CS4270_MUTE);
-+
-+	if (mute)
-+		reg6 |= CS4270_MUTE_ADC_A | CS4270_MUTE_ADC_B |
-+			CS4270_MUTE_DAC_A | CS4270_MUTE_DAC_B;
-+	else
-+		reg6 &= ~(CS4270_MUTE_ADC_A | CS4270_MUTE_ADC_B |
-+			CS4270_MUTE_DAC_A | CS4270_MUTE_DAC_B);
-+
-+	return snd_soc_write(codec, CS4270_MUTE, reg6);
-+}
-+
-+#endif
-+
-+/**
-+ * Sampling rate <-> bit patter mapping
-+ *
-+ * This array maps sampling rates to their SNDRV_PCM_RATE_x equivalent.
-+ *
-+ * This is really something that ALSA should provide.
-+ *
-+ * This table is used by cs4270_set_dai_sysclk() to tell ALSA which sampling
-+ * rates the CS4270 currently supports.
-+ */
-+static struct {
-+	unsigned int rate;
-+	unsigned int bit;
-+} rate_map[] = {
-+	{5512, SNDRV_PCM_RATE_5512},
-+	{8000, SNDRV_PCM_RATE_8000},
-+	{11025, SNDRV_PCM_RATE_11025},
-+	{16000, SNDRV_PCM_RATE_16000},
-+	{22050, SNDRV_PCM_RATE_22050},
-+	{32000, SNDRV_PCM_RATE_32000},
-+	{44100, SNDRV_PCM_RATE_44100},
-+	{48000, SNDRV_PCM_RATE_48000},
-+	{64000, SNDRV_PCM_RATE_64000},
-+	{88200, SNDRV_PCM_RATE_88200},
-+	{96000, SNDRV_PCM_RATE_96000},
-+	{176400, SNDRV_PCM_RATE_176400},
-+	{192000, SNDRV_PCM_RATE_192000}
-+};
-+
-+/**
-+ * Determine the CS4270 samples rates.
-+ *
-+ * 'freq' is the input frequency to MCLK.  The other parameters are ignored.
-+ *
-+ * The value of MCLK is used to determine which sample rates are supported
-+ * by the CS4270.  The ratio of MCLK / Fs must be equal to one of nine
-+ * support values: 64, 96, 128, 192, 256, 384, 512, 768, and 1024.
-+ *
-+ * This function calculates the nine ratios and determines which ones match
-+ * a standard sample rate.  If there's a match, then it is added to the list
-+ * of support sample rates.
-+ *
-+ * This function must be called by the machine driver's 'startup' function,
-+ * otherwise the list of supported sample rates will not be available in
-+ * time for ALSA.
-+ */
-+static int cs4270_set_dai_sysclk(struct snd_soc_codec_dai *codec_dai,
-+	int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct cs4270_private *cs4270 = codec->private_data;
-+	unsigned int rates = 0, rate_min = -1, rate_max = 0, i, j;
-+
-+	cs4270->mclk = freq;
-+
-+	for (i=0; i<ARRAY_SIZE(cs4270_mode_ratios); i++) {
-+		unsigned int rate;
-+		rate = freq / cs4270_mode_ratios[i].ratio;
-+		for (j = 0; j<ARRAY_SIZE(rate_map); j++) {
-+			if (rate == rate_map[j].rate) {
-+				rates |= rate_map[j].bit;
-+				if (rate < rate_min)
-+					rate_min = rate;
-+				if (rate > rate_max)
-+					rate_max = rate;
-+			}
-+		}
-+	}
-+
-+	if (!rate_max) {
-+		printk(KERN_ERR "cs4270: could not find a valid rate\n");
-+		return -EINVAL;
-+	}
-+
-+	codec_dai->playback.rates = rates;
-+	codec_dai->playback.rate_min = rate_min;
-+	codec_dai->playback.rate_max = rate_max;
-+
-+	codec_dai->capture.rates = rates;
-+	codec_dai->capture.rate_min = rate_min;
-+	codec_dai->capture.rate_max = rate_max;
-+
-+	return 0;
-+}
-+
-+/**
-+ * Configure the codec for the selected audio format
-+ *
-+ * This function takes a bitmask of SND_SOC_DAIFMT_x bits and programs the
-+ * codec accordingly.
-+ *
-+ * Currently, this function only supports SND_SOC_DAIFMT_I2S and
-+ * SND_SOC_DAIFMT_LEFT_J.  The CS4270 codec also supports right-justified
-+ * data for playback only, but ASoC currently does not support different
-+ * formats for playback vs. record.
-+ */
-+static int cs4270_set_dai_fmt(struct snd_soc_codec_dai *codec_dai,
-+	unsigned int format)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct cs4270_private *cs4270 = codec->private_data;
-+	int ret = 0;
-+
-+	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
-+		case SND_SOC_DAIFMT_I2S:
-+		case SND_SOC_DAIFMT_LEFT_J:
-+			cs4270->mode = format & SND_SOC_DAIFMT_FORMAT_MASK;
-+			break;
-+		default:
-+			printk(KERN_ERR "cs4270: invalid DAI format\n");
-+			ret = -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
-+static int cs4270_i2c_probe(struct i2c_adapter *adap, int addr, int kind);
-+
-+/**
-+ * Notify the driver that a new I2C bus has been found.
-+ *
-+ * This function is called for each I2C bus in the system.  The function
-+ * then asks the I2C subsystem to probe that bus at the addresses on which
-+ * our device (the CS4270) could exist.  If a device is found at one of
-+ * those addresses, then our probe function (cs4270_i2c_probe) is called.
-+ */
-+static int cs4270_i2c_attach(struct i2c_adapter *adapter)
-+{
-+	return i2c_probe(adapter, &addr_data, cs4270_i2c_probe);
-+}
-+
-+static int cs4270_i2c_detach(struct i2c_client *client)
-+{
-+	struct snd_soc_codec* codec = i2c_get_clientdata(client);
-+
-+	i2c_detach_client(client);
-+	codec->control_data = NULL;
-+
-+	kfree(codec->reg_cache);
-+	codec->reg_cache = NULL;
-+
-+	kfree(client);
-+	return 0;
-+}
-+
-+/* A list of non-DAPM controls that the CS4270 supports */
-+static const struct snd_kcontrol_new cs4270_snd_controls[] = {
-+	SOC_DOUBLE_R("Master Playback Volume", CS4270_VOLA, CS4270_VOLB, 0, 0xFF, 0)
-+};
-+
-+static struct i2c_driver cs4270_i2c_driver = {
-+	.driver = {
-+		.name = "CS4270 I2C",
-+		.owner = THIS_MODULE,
-+	},
-+	.id =             I2C_DRIVERID_CS4270,
-+	.attach_adapter = cs4270_i2c_attach,
-+	.detach_client =  cs4270_i2c_detach,
-+};
-+
-+/**
-+ * Global variable to store socdev for i2c probe function.
-+ *
-+ * If struct i2c_driver had a private_data field, we wouldn't need to use
-+ * cs4270_socdec.  This is the only way to pass the socdev structure to
-+ * cs4270_i2c_probe().
-+ *
-+ * The real solution to cs4270_socdev is to create a mechanism
-+ * that maps I2C addresses to snd_soc_device structures.  Perhaps the
-+ * creation of the snd_soc_device object should be moved out of
-+ * cs4270_probe() and into cs4270_i2c_probe(), but that would make this
-+ * driver dependent on I2C.  The CS4270 supports "stand-alone" mode, whereby
-+ * the chip is *not* connected to the I2C bus, but is instead configured via
-+ * input pins.
-+ */
-+static struct snd_soc_device *cs4270_socdev;
-+
-+/**
-+ * Initialize the I2C interface of the CS4270
-+ *
-+ * This function is called for whenever the I2C subsystem finds a device
-+ * at a particular address.
-+ *
-+ * Note: snd_soc_new_pcms() must be called before this function can be called,
-+ * because of snd_ctl_add().
-+ */
-+static int cs4270_i2c_probe(struct i2c_adapter *adapter, int addr, int kind)
-+{
-+	struct snd_soc_device *socdev = cs4270_socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct i2c_client *i2c_client = NULL;
-+	int i, ret = 0;
-+
-+	/* Probing all possible addresses has one drawback: if there are
-+	   multiple CS4270s on the bus, then you cannot specify which
-+	   socdev is matched with which CS4270.  For now, we just reject
-+	   this I2C device if the socdev already has one attached. */
-+	if (codec->control_data) {
-+		return -ENODEV;
-+	}
-+
-+	/* Note: codec_dai->codec is NULL here */
-+
-+        i2c_client = kzalloc(sizeof(struct i2c_client), GFP_KERNEL);
-+	if (!i2c_client) {
-+		printk(KERN_ERR "cs4270: could not allocate I2C client\n");
-+		return -ENOMEM;
-+	}
-+
-+	codec->reg_cache = kzalloc(CS4270_NUMREGS, GFP_KERNEL);
-+	if (!codec->reg_cache) {
-+		printk(KERN_ERR "cs4270: could not allocate register cache\n");
-+		ret = -ENOMEM;
-+		goto error;
-+	}
-+
-+	i2c_set_clientdata(i2c_client, codec);
-+	strcpy(i2c_client->name, "CS4270");
-+
-+	i2c_client->driver = &cs4270_i2c_driver;
-+	i2c_client->adapter = adapter;
-+	i2c_client->addr = addr;
-+
-+	/* Verify that we have a CS4270 */
-+
-+	ret = i2c_smbus_read_byte_data(i2c_client, CS4270_CHIPID);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: failed to read I2C\n");
-+		goto error;
-+	}
-+	/* The top four bits of the chip ID should be 1100. */
-+	if ((ret & 0xF0) != 0xC0) {
-+		/* The device at this address is not a CS4270 codec */
-+		ret = -ENODEV;
-+		goto error;
-+	}
-+
-+	printk(KERN_INFO "cs4270: found device at I2C address %X\n", addr);
-+	printk(KERN_INFO "cs4270: hardware revision %X\n", ret & 0xF);
-+
-+	/* Tell the I2C layer a new client has arrived */
-+
-+	ret = i2c_attach_client(i2c_client);
-+	if (ret) {
-+		printk(KERN_ERR "cs4270: failed to attach codec at I2C addr %x\n", addr);
-+		goto error;
-+	}
-+
-+	codec->control_data = i2c_client;
-+	codec->read = cs4270_read_reg_cache;
-+	codec->write = cs4270_i2c_write;
-+	codec->reg_cache_size = CS4270_NUMREGS;
-+
-+	/* The I2C interface is set up, so pre-fill our register cache */
-+
-+	ret = cs4270_fill_cache(codec);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: failed to fill register cache\n");
-+		goto error;
-+	}
-+
-+	/* Add the non-DAPM controls */
-+
-+	for (i = 0; i < ARRAY_SIZE(cs4270_snd_controls); i++) {
-+		struct snd_kcontrol *kctrl =
-+			snd_soc_cnew(&cs4270_snd_controls[i], codec, NULL);
-+
-+                ret = snd_ctl_add(codec->card, kctrl);
-+		if (ret < 0)
-+			goto error;
-+	}
-+
-+	return 0;
-+
-+error:
-+	if (codec->control_data) {
-+		i2c_detach_client(i2c_client);
-+		codec->control_data = NULL;
-+	}
-+
-+	kfree(codec->reg_cache);
-+	codec->reg_cache = NULL;
-+	codec->reg_cache_size = 0;
-+
-+	kfree(i2c_client);
-+
-+	return ret;
-+}
-+
-+#endif
-+
-+struct snd_soc_codec_dai cs4270_dai = {
-+	.name = "CS4270",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = 0,
-+		.formats = CS4270_FORMATS,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = 0,
-+		.formats = CS4270_FORMATS,
-+	},
-+	.dai_ops = {
-+		.set_sysclk = cs4270_set_dai_sysclk,
-+		.set_fmt = cs4270_set_dai_fmt,
-+	}
-+};
-+EXPORT_SYMBOL_GPL(cs4270_dai);
-+
-+/**
-+ * ASoC probe function
-+ *
-+ * This function is called when the machine driver calls
-+ * platform_device_add().
-+ */
-+static int cs4270_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec;
-+	int ret = 0;
-+
-+	printk(KERN_INFO "CS4270 ALSA SoC Codec\n");
-+
-+	/* Allocate enough space for the snd_soc_codec structure
-+	   and our private data together. */
-+	codec = kzalloc(ALIGN(sizeof(struct snd_soc_codec), 4) +
-+		sizeof(struct cs4270_private), GFP_KERNEL);
-+	if (!codec) {
-+		printk(KERN_ERR "cs4270: Could not allocate codec structure.\n");
-+		return -ENOMEM;
-+	}
-+
-+	mutex_init(&codec->mutex);
-+	INIT_LIST_HEAD(&codec->dapm_widgets);
-+	INIT_LIST_HEAD(&codec->dapm_paths);
-+
-+	codec->name = "CS4270";
-+	codec->owner = THIS_MODULE;
-+	codec->dai = &cs4270_dai;
-+	codec->num_dai = 1;
-+	codec->private_data = codec + ALIGN(sizeof(struct snd_soc_codec), 4);
-+
-+	socdev->codec = codec;
-+
-+	/* Register PCMs */
-+
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: failed to create PCMs\n");
-+		return ret;
-+	}
-+
-+#ifdef CONFIG_I2C
-+	cs4270_socdev = socdev;
-+
-+	ret = i2c_add_driver(&cs4270_i2c_driver);
-+	if (ret) {
-+		printk(KERN_ERR "cs4270: failed to attach driver");
-+		snd_soc_free_pcms(socdev);
-+		return ret;
-+	}
-+
-+	/* Did we find a CS4270 on the I2C bus? */
-+	if (codec->control_data) {
-+		/* Initialize codec ops */
-+		cs4270_dai.ops.hw_params = cs4270_hw_params;
-+#ifdef CONFIG_SND_SOC_CS4270_HWMUTE
-+		cs4270_dai.dai_ops.digital_mute = cs4270_mute;
-+#endif
-+	} else {
-+		printk(KERN_INFO "cs4270: no I2C device found, using stand-alone mode\n");
-+	}
-+#else
-+	printk(KERN_INFO "cs4270: I2C disabled, using stand-alone mode\n");
-+#endif
-+
-+	ret = snd_soc_register_card(socdev);
-+	if (ret < 0) {
-+		printk(KERN_ERR "cs4270: failed to register card\n");
-+		snd_soc_free_pcms(socdev);
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static int cs4270_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+
-+	snd_soc_free_pcms(socdev);
-+
-+#ifdef CONFIG_I2C
-+	if (socdev->codec->control_data)
-+		i2c_del_driver(&cs4270_i2c_driver);
-+#endif
-+
-+	kfree(socdev->codec);
-+	socdev->codec = NULL;
-+
-+	return 0;
-+}
-+
-+/**
-+ * ASoC codec device structure
-+ *
-+ * Assign this variable to the codec_dev field of the machine driver's
-+ * snd_soc_device structure.
-+ */
-+struct snd_soc_codec_device soc_codec_device_cs4270 = {
-+	.probe = 	cs4270_probe,
-+	.remove = 	cs4270_remove
-+};
-+EXPORT_SYMBOL_GPL(soc_codec_device_cs4270);
-+
-+MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
-+MODULE_DESCRIPTION("Cirrus Logic CS4270 ALSA SoC Codec Driver");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/cs4270.h b/sound/soc/codecs/cs4270.h
-new file mode 100644
-index 0000000..35e5fe3
---- /dev/null
-+++ b/sound/soc/codecs/cs4270.h
-@@ -0,0 +1,28 @@
-+/*
-+ * Cirrus Logic CS4270 ALSA SoC Codec Driver
-+ *
-+ * Author: Timur Tabi <timur@freescale.com>
-+ *
-+ * Copyright 2007 Freescale Semiconductor, Inc.  This file is licensed under
-+ * the terms of the GNU General Public License version 2.  This program
-+ * is licensed "as is" without any warranty of any kind, whether express
-+ * or implied.
-+ */
-+
-+#ifndef _CS4270_H
-+#define _CS4270_H
-+
-+/**
-+ * The ASoC codec DAI structure for the CS4270.  Assign this structure to
-+ * the .codec_dai field of your machine driver's snd_soc_dai_link structure.
-+ */
-+extern struct snd_soc_codec_dai cs4270_dai;
-+
-+/**
-+ * The ASoC codec device structure for the CS4270.  Assign this structure
-+ * to the .codec_dev field of your machine driver's snd_soc_device
-+ * structure.
-+ */
-+extern struct snd_soc_codec_device soc_codec_device_cs4270;
-+
-+#endif
--- 
-1.5.2.4
+=46ind attached an excerpt from /var/log/messages first loading
+hg20070727 followed by hg20070728.
+
+If you need additional info drop me a note.
+
+Best,
+Michael
+=2D-=20
+ Technosis GmbH, Gesch=C3=A4ftsf=C3=BChrer: Michael Gerdau, Tobias Dittmar
+ Sitz Hamburg; HRB 89145 Amtsgericht Hamburg
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ Michael Gerdau       email: mgd@technosis.de
+ GPG-keys available on request or at public keyserver
+
+--Boundary-01=_4xirGu+/fUuEXUi
+Content-Type: text/plain;
+  charset="utf-8";
+  name="messages.alsa"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="messages.alsa"
+
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:timer
+Jul 30 20:08:06 seneca kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 21 (level, low) -> IRQ 21
+Jul 30 20:08:06 seneca kernel: PCI: Setting latency timer of device 0000:00:1b.0 to 64
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:695: codec_mask = 0x3
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:1827: hda_codec: model 'ref' is selected for config 1028:1ce (Dell XPS M1710)
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:841: hda_codec: pin nid 08 pin config 01c47010
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:841: hda_codec: pin nid 09 pin config 01447010
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:841: hda_codec: pin nid 0d pin config 0221401f
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:841: hda_codec: pin nid 0e pin config 01114010
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:841: hda_codec: pin nid 0f pin config 02a19020
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:841: hda_codec: pin nid 10 pin config 01a19021
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:841: hda_codec: pin nid 11 pin config 90100140
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:841: hda_codec: pin nid 12 pin config 01813122
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:2331: autoconfig: line_outs=1 (0xe/0x0/0x0/0x0/0x0)
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:2335:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:2339:    hp_outs=1 (0xd/0x0/0x0/0x0/0x0)
+Jul 30 20:08:06 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:2347:    inputs: mic=0x10, fmic=0xf, line=0x12, fline=0x0, cd=0x0, aux=0x0
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:card0
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:pcmC0D1p
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:pcmC0D1c
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:pcmC0D0p
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:pcmC0D0c
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:controlC0
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:seq
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:mixer
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:adsp
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:dsp
+Jul 30 20:08:06 seneca kernel: PM: Adding info for No Bus:audio
+Jul 30 20:08:18 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1185: azx_pcm_prepare: bufsize=0x4000, fragsize=0x2000, format=0x4011
+Jul 30 20:08:18 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:631: hda_codec_setup_stream: NID=0x5, stream=0x5, channel=0, format=0x4011
+Jul 30 20:08:18 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:631: hda_codec_setup_stream: NID=0x2, stream=0x5, channel=0, format=0x4011
+Jul 30 20:08:18 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1185: azx_pcm_prepare: bufsize=0x4000, fragsize=0x2000, format=0x4011
+Jul 30 20:08:18 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:631: hda_codec_setup_stream: NID=0x5, stream=0x5, channel=0, format=0x4011
+Jul 30 20:08:18 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:631: hda_codec_setup_stream: NID=0x2, stream=0x5, channel=0, format=0x4011
+Jul 30 20:08:21 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:631: hda_codec_setup_stream: NID=0x2, stream=0x0, channel=0, format=0x0
+Jul 30 20:08:21 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:631: hda_codec_setup_stream: NID=0x5, stream=0x0, channel=0, format=0x0
+Jul 30 20:08:21 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070727/pci/hda/hda_codec.c:631: hda_codec_setup_stream: NID=0x2, stream=0x0, channel=0, format=0x0
+Jul 30 20:10:48 seneca su: (to root) mgd on /dev/pts/8
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:adsp
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:dsp
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:audio
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:mixer
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:seq
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:pcmC0D1p
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:pcmC0D1c
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:pcmC0D0p
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:pcmC0D0c
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:controlC0
+Jul 30 20:11:22 seneca kernel: ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+Jul 30 20:11:22 seneca kernel: PM: Removing info for No Bus:card0
+Jul 30 20:11:23 seneca kernel: PM: Removing info for No Bus:timer
+Jul 30 20:11:23 seneca kernel: PM: Adding info for No Bus:timer
+Jul 30 20:11:23 seneca kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 21 (level, low) -> IRQ 21
+Jul 30 20:11:23 seneca kernel: PCI: Setting latency timer of device 0000:00:1b.0 to 64
+Jul 30 20:11:23 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070728/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:708: codec_mask = 0x3
+Jul 30 20:11:23 seneca kernel: hda-codec: No codec parser is available
+Jul 30 20:11:23 seneca kernel: hda-codec: No codec parser is available
+Jul 30 20:11:23 seneca kernel: ALSA /home/mgd/src/alsa-driver-hg20070728/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1039: hda-intel: no codecs initialized
+Jul 30 20:11:23 seneca kernel: ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+Jul 30 20:11:23 seneca kernel: PM: Adding info for No Bus:seq
+
+--Boundary-01=_4xirGu+/fUuEXUi--
+
+--nextPart1693475.Wk3W558U7A
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBGriyQUYYhyuxDQc4RAt7PAJ0fDWiDf98T8QifWYgpdmfmYBIH2gCdGyiN
+1mhQYEajT2wLIsbnJTF3ygY=
+=gwiR
+-----END PGP SIGNATURE-----
+
+--nextPart1693475.Wk3W558U7A--
+
+--===============3539900537913051307==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3539900537913051307==--
