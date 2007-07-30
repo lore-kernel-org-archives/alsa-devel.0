@@ -1,15 +1,15 @@
-From: Susovan Ghosh <susovan@tataelxsi.co.in>
-Subject: problem to build alsa shared library for arm platform
-Date: Mon, 30 Jul 2007 09:38:58 +0530
-Message-ID: <000201c7d25f$5b539980$9529320a@telxsi.com>
+From: Bill McKie <mckie@sky.arc.nasa.gov>
+Subject: Gateway MP-6954 laptop, FC6, no sound
+Date: Mon, 30 Jul 2007 00:51:54 -0700
+Message-ID: <200707300751.l6U7ps2n008306@sky.arc.nasa.gov>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.tataelxsi.co.in (mail.tataelxsi.co.in [203.200.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 053A1103803
+Received: from sky.arc.nasa.gov (sky.arc.nasa.gov [128.102.154.165])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58BE21037FF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Jul 2007 06:07:22 +0200 (CEST)
+	Mon, 30 Jul 2007 09:51:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,112 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: mckie@sky.arc.nasa.gov
 List-Id: alsa-devel@alsa-project.org
 
+I've been running FC6 on a Gateway MP-6954 laptop computer
+since Oct-2006, and have been hoping that the regular FC6 yum
+updates will eventually provide an alsa update that will support
+the MP-6954's sound hardware.  So far, that hasn't happened,
+and my system has never had sound capability.
 
+Current system stuff:
 
-Hi All,
+uname -r
+2.6.20-1.2962.fc6
 
- we want to use alsa library for arm platform.
-  while configuration we specified option for shared library.
-  but its alwaye creating static library after compilation.
-  when we build the test application pcm_min.c we got the
-  following error.
+rpm -q -a | grep -i alsa
+alsa-lib-1.0.14-0.1.rc1.fc6
+alsa-lib-devel-1.0.14-0.1.rc1.fc6
+alsa-utils-1.0.14-0.2.rc1.fc6
 
-   /usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0x194): In function
-`snd_pcm_ladspa_free_plugins':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:188:
-undefined reference to `dlclose'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0xd28): In function
-`snd_pcm_ladspa_connect_controls':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:515:
-undefined reference to `log'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0xd50):/home/susovan/alsa/lib/
-alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:515: undefined reference to `log'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0xd74):/home/susovan/alsa/lib/
-alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:536: undefined reference to `exp'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0xd9c):/home/susovan/alsa/lib/
-alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:526: undefined reference to `sqrtf'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0xdac):/home/susovan/alsa/lib/
-alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:536: undefined reference to `log'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0xdd4):/home/susovan/alsa/lib/
-alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:536: undefined reference to `log'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0x1fac): In function
-`snd_pcm_ladspa_check_file':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:1087:
-undefined reference to `dlopen'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0x1fc0):/home/susovan/alsa/lib
-/alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:1089: undefined reference to
-`dlsym'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0x20b8):/home/susovan/alsa/lib
-/alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:1132: undefined reference to
-`dlclose'
-/usr/lib_alsa/libasound.a(pcm_ladspa.o)(.text+0x20e0):/home/susovan/alsa/lib
-/alsa-lib-1.0.14rc4/src/pcm/pcm_ladspa.c:1124: undefined reference to
-`dlclose'
-/usr/lib_alsa/libasound.a(dlmisc.o)(.text+0xc): In function `snd_dlopen':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/dlmisc.c:64: undefined
-reference to `dlopen'
-/usr/lib_alsa/libasound.a(dlmisc.o)(.text+0x24): In function `snd_dlclose':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/dlmisc.c:85: undefined
-reference to `dlclose'
-/usr/lib_alsa/libasound.a(dlmisc.o)(.text+0xa8): In function
-`snd_dlsym_verify':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/dlmisc.c:115: undefined
-reference to `dlsym'
-/usr/lib_alsa/libasound.a(dlmisc.o)(.text+0x144): In function `snd_dlsym':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/dlmisc.c:161: undefined
-reference to `dlsym'
-/usr/lib_alsa/libasound.a(pcm_meter.o)(.text+0x74c): In function
-`snd_pcm_meter_avail_update':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_meter.c:106: undefined
-reference to `pthread_mutex_trylock'
-/usr/lib_alsa/libasound.a(pcm_meter.o)(.text+0xa54): In function
-`snd_pcm_meter_hw_params':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_meter.c:470: undefined
-reference to `pthread_create'
-/usr/lib_alsa/libasound.a(pcm_meter.o)(.text+0xaec): In function
-`snd_pcm_meter_hw_free':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_meter.c:483: undefined
-reference to `pthread_join'
-/usr/lib_alsa/libasound.a(pcm_meter.o)(.text+0xf84): In function
-`snd_pcm_meter_add_scope_conf':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_meter.c:664: undefined
-reference to `dlsym'
-/usr/lib_alsa/libasound.a(pcm_route.o)(.text+0x12c8): In function
-`snd_pcm_route_convert1_many':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_route.c:453: undefined
-reference to `rint'
-/usr/lib_alsa/libasound.a(pcm_share.o)(.text+0x1dd0): In function
-`snd_pcm_share_close':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_share.c:1243:
-undefined reference to `pthread_join'
-/usr/lib_alsa/libasound.a(pcm_share.o)(.text+0x21b8): In function
-`snd_pcm_share_open':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_share.c:1474:
-undefined reference to `pthread_create'
-/usr/lib_alsa/libasound.a(pcm_softvol.o)(.text+0x18a4): In function
-`softvol_load_control':
-/home/susovan/alsa/lib/alsa-lib-1.0.14rc4/src/pcm/pcm_softvol.c:665:
-undefined reference to `pow'
+cat /etc/modprobe.conf
+alias eth0 sky2
+alias scsi_hostadapter ahci
+remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
+    /sbin/modprobe -r --ignore-remove snd-hda-intel
+options snd cards_limit=8
+alias snd-card-0 snd-hda-intel
+options snd-hda-intel index=0
+alias snd-card-7 snd-usb-audio
+options snd-usb-audio index=7
 
+alsamixer (v1.0.14rc1) reports:
+ Card: HDA Intel
+ Chip: SigmaTel ID 7634
 
-we tried with the following releases-
-        1)alsa-lib-1.0.14
-        2) alsa-lib-1.0.14a
-        3)alsa-lib-1.0.14rc4
-But when we tried to build alsa shared library for x68 platform we did not
-face
-this problem , but when we built the alsa static library for x86 and tried
-to compile the
-test application we face the above "undefine reference " error.
+Some Internet googling showed that Tobin Davis released
+a source level Sigmatel STAC9250 (7634) test patch 6
+(gateway-mp6954.patch.6) that appears to address this
+problem back in December 2006.
 
-Can any one help me to understand and solve this problem?
+  http://www.spinics.net/lists/alsa-devel/msg05113.html
 
-Thank you
+Is this gateway-mp6954.patch.6 still appropriate to be 
+used on my FC6 system? (My FC6 sys has all the current
+yum updates applied.)
 
-Susovan Ghosh
-Engineer (D&D )
-PRDE
-Ph No:-998667320
-Bangalore-560048
+If this patch is appropriate, should I first remove the
+existing alsa rpms before installing alsa from source
+with the patch.  I.e. should I remove all 3 packages:
+
+ alsa-lib-1.0.14-0.1.rc1.fc6
+ alsa-lib-devel-1.0.14-0.1.rc1.fc6
+ alsa-utils-1.0.14-0.2.rc1.fc6
+
+Will subsequent FC6 yum updates involving alsa then
+disturb the patched alsa?
+
+Thanks much,
+Bill
