@@ -1,19 +1,26 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH v2] ASoC CS4270 codec device driver
-Date: Tue, 31 Jul 2007 08:36:55 -0500
-Message-ID: <46AF3AF7.10905@freescale.com>
-References: <11858269303921-git-send-email-timur@freescale.com>
-	<s5hodhsvki1.wl%tiwai@suse.de>
+From: Vadim Lebedev <vadim@mbdsys.com>
+Subject: Output to Input routing
+Date: Tue, 31 Jul 2007 14:33:04 +0000 (UTC)
+Message-ID: <loom.20070731T162636-233@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E88C243A3
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB81E24572
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Jul 2007 15:35:29 +0200 (CEST)
-In-Reply-To: <s5hodhsvki1.wl%tiwai@suse.de>
+	Tue, 31 Jul 2007 16:50:08 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1IFt2w-0005LW-62
+	for alsa-devel@alsa-project.org; Tue, 31 Jul 2007 16:50:02 +0200
+Received: from LAubervilliers-153-52-29-171.w217-128.abo.wanadoo.fr
+	([217.128.124.171])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2007 16:50:02 +0200
+Received: from vadim by LAubervilliers-153-52-29-171.w217-128.abo.wanadoo.fr
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2007 16:50:02 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +30,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Hello,
 
-> Better now.  But, I found that your patch can't be applied cleanly to
-> the latest ALSA tree.  Could you regenerate it for mm tree (or
-> perex/alsa.git mm branch)?
+I remember reading AC97 specs that there si possibility to configure it
+in such a way, that when doing stereo capture, left input channel will get
+actual MIC input and  right input channel will get the copy of speaker output.
+This setting is ideal for echo cancellation algorithm.
+To my grand dismay i'm unable to find a doc of ALSA mixer API so i'm
+unsucessuful  writing code to put mixer in such mode.  
+Can some kind soul please contibuite a code snippet....
 
-I'll use perex/alsa.git, since I my corporate firewall doesn't block kernel.org.
 
-> 
-> Another thing I noticed is that the comment style.  /** is used for
-> JavaDoc style comments, which are processed via kerneldoc.  Normal
-> comments should use simply /* instead.
-
-Ok, I'll fix that.  My editor has special features for handling /** comments, which is why I prefer them.
+Thanks
+Vadim 
