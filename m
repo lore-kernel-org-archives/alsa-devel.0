@@ -1,19 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
+From: Trent Piepho <xyzzy@speakeasy.org>
 Subject: Re: [PATCH v3] ASoC CS4270 codec device driver
-Date: Tue, 31 Jul 2007 11:41:44 -0500
-Message-ID: <46AF6648.5000803@freescale.com>
-References: <1185896812320-git-send-email-timur@freescale.com>	<s5h4pjkva0g.wl%tiwai@suse.de>	<46AF5F7C.5020309@freescale.com>	<s5h3az4v97m.wl%tiwai@suse.de>
-	<s5hy7gwttzp.wl%tiwai@suse.de>
+Date: Tue, 31 Jul 2007 11:34:37 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0707311122470.15067@shell2.speakeasy.net>
+References: <1185896812320-git-send-email-timur@freescale.com>
+	<s5h4pjkva0g.wl%tiwai@suse.de> <46AF5F7C.5020309@freescale.com>
+	<s5h3az4v97m.wl%tiwai@suse.de> <s5hy7gwttzp.wl%tiwai@suse.de>
+	<46AF6648.5000803@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91D7524405
+Received: from mail3.sea5.speakeasy.net (mail3.sea5.speakeasy.net
+	[69.17.117.5]) by alsa0.perex.cz (Postfix) with ESMTP id 8A4CB1037F8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Jul 2007 18:41:48 +0200 (CEST)
-In-Reply-To: <s5hy7gwttzp.wl%tiwai@suse.de>
+	Tue, 31 Jul 2007 20:34:40 +0200 (CEST)
+In-Reply-To: <46AF6648.5000803@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On Tue, 31 Jul 2007, Timur Tabi wrote:
+> Takashi Iwai wrote:
+> > Also,
+> >
+> > #ifdef CONFIG_I2C
+> >
+> > isn't enough.  It should be
+> >
+> > #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+>
+> I asked about that a while ago, and I never got an answer.  Where does CONFIG_I2C_MODULE
+> come from?  I don't see it in any Kconfig or any header file.  And if I2C can be a module,
+> then why wouldn't CONFIG_I2C also be defined?
 
-> OK, now found another problem.  The driver seems not built without
-> CONFIG_I2C.
-> =
+If config FOO is compiled in (i.e.  it's "y"), CONFIG_FOO will be defined.
+If it's a module, CONFIG_FOO_MODULE will be defined.  It's one or the
+other, not both.
 
-> In file included from sound/soc/codecs/cs4270.c:1:
-> sound/soc/codecs/cs4270.c:694: error: =91cs4270_set_dai_sysclk=92 undecla=
-red here (not in a function)
-> sound/soc/codecs/cs4270.c:695: error: =91cs4270_set_dai_fmt=92 undeclared=
- here (not in a function)
-> =
+If you want your code to comple differently if it has i2c available, you should
+do this:
 
-> Shouldn't the driver be dependent on I2C?
+#if defined(CONFIG_I2C) || (defined(CONFIG_I2C_MODULE) && defined(MODULE))
+/* code that needs i2c goes here, i2c_transfer(), etc. */
+#endif
 
-Well, technically no.  It should work find without I2C, but I admit I never=
- tried that. =
+Note that just checking defined(CONFIG_I2C_MODULE) isn't correct.  If your
+code is compiled in and i2c is a module, you can't call i2c functions or
+the kernel won't link.
 
-I'll provide a fix soon.
-
-> Also,
-> =
-
-> #ifdef CONFIG_I2C
-> =
-
-> isn't enough.  It should be
-> =
-
-> #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-
-I asked about that a while ago, and I never got an answer.  Where does CONF=
-IG_I2C_MODULE =
-
-come from?  I don't see it in any Kconfig or any header file.  And if I2C c=
-an be a module, =
-
-then why wouldn't CONFIG_I2C also be defined?
-
--- =
-
-Timur Tabi
-Linux Kernel Developer @ Freescale
+Of course, if you need i2c to work in any reasonble way, you should just
+have your driver depend on i2c in Kconfig.
