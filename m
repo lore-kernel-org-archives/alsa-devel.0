@@ -1,20 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] CS4270 driver does not compile with I2C
-	disabled
-Date: Wed, 01 Aug 2007 08:50:52 -0500
-Message-ID: <46B08FBC.2050602@freescale.com>
-References: <11859237332561-git-send-email-timur@freescale.com>
-	<s5hsl73tuyu.wl%tiwai@suse.de>
+From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Subject: [RFC][PATCH] Coding style fix
+	sound/pci/ca0106/ca_midi.h
+Date: Wed, 01 Aug 2007 16:45:34 +0200
+Message-ID: <46B09C8E.3010103@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 117B5103800
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2031E10381D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Aug 2007 15:50:28 +0200 (CEST)
-In-Reply-To: <s5hsl73tuyu.wl%tiwai@suse.de>
+	Wed,  1 Aug 2007 16:46:04 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id b21so55198nfd
+	for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2007 07:46:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,12 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@linux-foundation.org>, Tilman Kranz <tilde@tk-sls.de>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Hi,
 
-> Applied to HG tree.  Thanks.
+Coding style fix
 
-I'm new to the ALSA development cycle.  When will the HG tree be pulled into Linus' git repository?
+Regards,
+Michal
+
+--
+LOG
+http://www.stardust.webpages.pl/log/
+
+Signed-off-by: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+
+--- linux-mm-clean/sound/pci/ca0106/ca_midi.h	2007-07-09 01:32:17.000000000 +0200
++++ linux-mm/sound/pci/ca0106/ca_midi.h	2007-08-01 16:38:54.000000000 +0200
+@@ -22,9 +22,9 @@
+  *
+  */
+ 
+-#include<linux/spinlock.h>
+-#include<sound/rawmidi.h>
+-#include<sound/mpu401.h>
++#include <linux/spinlock.h>
++#include <sound/rawmidi.h>
++#include <sound/mpu401.h>
+ 
+ #define CA_MIDI_MODE_INPUT	MPU401_MODE_INPUT
+ #define CA_MIDI_MODE_OUTPUT	MPU401_MODE_OUTPUT
