@@ -1,23 +1,20 @@
-From: =?iso-8859-2?q?Rafa=B3_Zawadzki?= <bluszcz@jabberpl.org>
-Subject: Re: problem with ATI SB600 Azalia
-Date: Thu, 2 Aug 2007 00:32:00 +0200
-Message-ID: <200708020032.00930.bluszcz@jabberpl.org>
-References: <200708012157.11350.bluszcz@jabberpl.org>
-	<s5hk5sezz2v.wl%tiwai@suse.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: [PATCH alsa-driver asihpi] Fix StreamGetInfo
+Date: Thu, 02 Aug 2007 10:35:23 +1200
+Message-ID: <200708021035.23240.linux@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.jabberpl.org (unknown [195.116.239.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 278BE10384D
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58DB8103820
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Aug 2007 00:32:08 +0200 (CEST)
-Received: from antichrist.local (chello084010037230.chello.pl [84.10.37.230])
-	by mail.jabberpl.org (Postfix) with ESMTP id 5EA649437E
-	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Aug 2007 00:32:01 +0200 (CEST)
-In-Reply-To: <s5hk5sezz2v.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Thu,  2 Aug 2007 00:35:15 +0200 (CEST)
+Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JM400J6F9EBH230@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 02 Aug 2007 10:35:00 +1200 (NZST)
+Content-disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,48 +27,44 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 02 August 2007 00:09:44 Takashi Iwai wrote:
-> At Wed, 1 Aug 2007 21:57:11 +0200,
->
-> Rafa=B3 Zawadzki wrote:
-> > Hello. I tried earlier on alsa-user, but nobody answer. Propably this is
-> > the better place for this post. I have the same problem as mentioned
-> > here:
-> >
-> > http://thread.gmane.org/gmane.linux.alsa.devel/47688/focus=3D47827 (the
-> > same laptop).
-> >
-> > I tried this solution, but unfortunately i had below error during kernel
-> > compilation (kernel source ubuntu 2.6.20-16). What is proper way to make
-> > upgrade alsa to alsa-hg?
->
-> Use alsa-driver tree to build external modules. =
+StreamGetInfo queried wrong stream type.
+(minor) correct case of Playback and Capture control names
 
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+---
 
-It is not so easy :) :
-
-./configure: line 11726: ALSA_TOPLEVEL_SELECT: command not found
-./configure: line 11739: ALSA_TOPLEVEL_DEFINES: command not found
-./configure: line 11749: ALSA_TOPLEVEL_OUTPUT: command not found
-configure: creating ./config.status
-config.status: creating version
-config.status: creating Makefile.conf
-config.status: WARNING:  Makefile.conf.in seems to ignore the --datarootdir =
-
-setting
-config.status: creating snddevices
-config.status: creating utils/alsa-driver.spec
-config.status: creating utils/buildrpm
-config.status: error: cannot find input file: toplevel.config.in
-bluszcz@antichrist:~/usr/src/alsachuj/alsa-driver$   =
-
-
-Any idea?
-
--- =
-
-Rafa=B3 bluszcz Zawadzki =
-
-http://my.jabberpl.org - use jabber
-http://glam.pl - try secondhand clothes
-http://bluszcz.net - my homepage
+diff -r a2861559e4ed pci/asihpi/asihpi.c
+--- a/pci/asihpi/asihpi.c       Fri Jul 27 08:54:15 2007 +1200
++++ b/pci/asihpi/asihpi.c       Thu Aug 02 10:25:24 2007 +1200
+@@ -228,11 +228,11 @@ static inline u16 HPI_StreamGetInfoEx(HP
+                                      u32 * pdwAuxiliaryData)
+ {
+        if (HPI_HandleObject(hStream) == HPI_OBJ_OSTREAM)
+-               return HPI_InStreamGetInfoEx(hS, hStream, pwState,
++               return HPI_OutStreamGetInfoEx(hS, hStream, pwState,
+                                             pdwBufferSize, pdwDataInBuffer,
+                                             pdwSampleCount, pdwAuxiliaryData);
+        else
+-               return HPI_OutStreamGetInfoEx(hS, hStream, pwState,
++               return HPI_InStreamGetInfoEx(hS, hStream, pwState,
+                                              pdwBufferSize, pdwDataInBuffer,
+                                              pdwSampleCount, pdwAuxiliaryData);
+ }
+@@ -1201,7 +1201,7 @@ struct hpi_control {
+ #define ASIHPI_SOURCENODE_STRINGS \
+ { \
+        TEXT("no source"), \
+-       TEXT("PCM playback"), \
++       TEXT("PCM Playback"), \
+        TEXT("Line in"), \
+        TEXT("Digital in"), \
+        TEXT("Tuner"), \
+@@ -1230,7 +1230,7 @@ struct hpi_control {
+ #define ASIHPI_DESTNODE_STRINGS \
+ { \
+        TEXT("no destination"), \
+-       TEXT("PCM capture"), \
++       TEXT("PCM Capture"), \
+        TEXT("Line out"), \
+        TEXT("Digital out"), \
+        TEXT("RF"), \
