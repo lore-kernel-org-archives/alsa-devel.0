@@ -1,18 +1,17 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [RFC][PATCH] Get rid of dead code
-	in	sound/pci/ac97/ac97_patch.c
-Date: Wed, 01 Aug 2007 13:14:56 +0100
-Message-ID: <1185970496.3078.181.camel@localhost.localdomain>
-References: <46AF9D47.5090302@googlemail.com>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: Re: [patch] Add a software amplifier plugin
+Date: Wed, 01 Aug 2007 16:26:53 +0400
+Message-ID: <46B07C0D.5040202@aknet.ru>
+References: <46B07580.6050705@aknet.ru> <s5hejintqar.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 823A42459B
+Received: from mail.aknet.ru (241-226.umostel.ru [77.246.241.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26BE22459D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Aug 2007 14:14:57 +0200 (CEST)
-In-Reply-To: <46AF9D47.5090302@googlemail.com>
+	Wed,  1 Aug 2007 14:28:00 +0200 (CEST)
+In-Reply-To: <s5hejintqar.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>, LKML <linux-kernel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'd prefer we keep this code in atm. The WM97xx touch driver needs it to
-eliminate any audio noise from the touchscreen ADC.
+Hello.
 
-I'll post the remaining touch driver patches in time for the next merge
-window. 
+Takashi Iwai wrote:
+> Did you try the recent softvol plugin?
+Yep, I tried it for the whole day with
+alsa-lib-1.0.14, trying to feed it with
+the max_dB value to no avail.
 
-Liam 
-
-On Tue, 2007-07-31 at 22:36 +0200, Michal Piotrowski wrote:
-> Hi,
-> 
-> File /home/devel/linux-rdc/sound/pci/ac97/ac97_patch.c line 484
-> Unknown CONFIG option! CONFIG_TOUCHSCREEN_WM9705
-> 
-> Regards,
-> Michal
-> 
+> It supports already amplifier (> 0dB), not only attenuation.
+Oh, it does so only in hg, not in 1.0.14,
+now I see.
+Well, it seems to me that my plugin gives
+a way better quality (doing sine amplification,
+while yours probably does linear), but then
+yes, there is no point for the new plugin
+indeed.
