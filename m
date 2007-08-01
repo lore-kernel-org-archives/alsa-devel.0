@@ -1,79 +1,50 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: [PATCH] add the ESS1879 pnpbios ID to the es18xx driver
-Date: Wed, 01 Aug 2007 23:11:02 +0200
-Message-ID: <46B0F6E6.2050904@gmail.com>
+From: lokowich <lokowich@acdstar.com>
+Subject: Re: MPC5200 I2S driver for ASoC
+Date: Wed, 01 Aug 2007 16:03:57 -0500
+Message-ID: <46B0F53D.4060308@acdstar.com>
+References: <46B0C3EE.5020401@acdstar.com>
+	<9e4733910708011241g3c52339cte955a39c3e4f80df@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090204020308090905000002"
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, ALSA user <alsa-user@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sentry.acdstar.com (mail.acdstar.com [209.98.244.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE9892442A
+	for <alsa-devel@alsa-project.org>;
+	Wed,  1 Aug 2007 23:16:25 +0200 (CEST)
+Received: from MailerDaemon by sentry.acdstar.com with local-bsmtp (Exim 4.63)
+	(envelope-from <lokowich@acdstar.com>) id 1IGLYO-0001X9-KR
+	for alsa-devel@alsa-project.org; Wed, 01 Aug 2007 16:16:24 -0500
+Received: from [192.168.2.3] (port=48355 helo=mail.acdstar.com)
+	by sentry.acdstar.com with esmtp (Exim 4.63)
+	(envelope-from <lokowich@acdstar.com>) id 1IGLYL-0001X0-5L
+	for alsa-devel@alsa-project.org; Wed, 01 Aug 2007 16:16:21 -0500
+In-Reply-To: <9e4733910708011241g3c52339cte955a39c3e4f80df@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090204020308090905000002
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Thanks, must've missed that one when grabbing the FEC patch.  This AC97 
+driver seems more mature than the BSP version, but relies on the powerpc 
+architecture rather than ppc.  I've dabbled but haven't made the jump to 
+the newer scheme.  Are we stopping further MPC52xx development in ppc?
 
-Hi Takashi.
+Jon Smirl wrote:
+> This was posted to linux-ppc in May. It may have some updated code.
+>
+> Patch: [PATCH 9/9] sound: Add support for Freescale MPC5200 AC97 interface.
+> http://patchwork.ozlabs.org/linuxppc/patch?id=11102
+>
+>
+>   
 
-As reported by Troy Heidner, the "Gateway Solo 5150" laptop (for one) has an 
-onboard ESS1879 that identifies itself through PNPBIOS as just that. He also 
-confirmed that other than not knowing about it, snd-es18xx drives the chip 
-fine, so this adds the ID to the driver.
-
-Signed-off-by: Rene Herman <rene.herman@gmail.com>
-
-
-
---------------090204020308090905000002
-Content-Type: text/plain;
- name="alsa-es18xx_ess1879-pnpbios.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-es18xx_ess1879-pnpbios.diff"
-
-diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
-index f7732bf..69b1c8a 100644
---- a/sound/isa/es18xx.c
-+++ b/sound/isa/es18xx.c
-@@ -2042,6 +2042,7 @@ static int pnpc_registered;
- 
- static struct pnp_device_id snd_audiodrive_pnpbiosids[] = {
- 	{ .id = "ESS1869" },
-+	{ .id = "ESS1879" },
- 	{ .id = "" }		/* end */
- };
- 
-
---------------090204020308090905000002
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc.
-Still grepping through log files to find problems?  Stop.
-Now Search log events and configuration files using AJAX and a browser.
-Download your FREE copy of Splunk now >>  http://get.splunk.com/
---------------090204020308090905000002
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
-
---------------090204020308090905000002--
+This email was Anti Virus checked by Astaro Security Gateway. http://www.astaro.com
