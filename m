@@ -1,18 +1,26 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: User space drivers
-Date: Fri, 03 Aug 2007 01:25:08 +0200
-Message-ID: <46B267D4.3040702@gmail.com>
-References: <C7A98C6EB85FFF4FAE03BD695D68EC7601239680@NAEX05.na.qualcomm.com>
+From: "Wallace, Brooke" <brookew@qualcomm.com>
+Subject: trouble compiling alsa-drivers
+Date: Thu, 2 Aug 2007 16:53:23 -0700
+Message-ID: <C7A98C6EB85FFF4FAE03BD695D68EC760123970A@NAEX05.na.qualcomm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE85C103863
+Received: from ithilien.qualcomm.com (ithilien.qualcomm.com [129.46.51.59])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A527103863
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Aug 2007 01:27:52 +0200 (CEST)
-In-Reply-To: <C7A98C6EB85FFF4FAE03BD695D68EC7601239680@NAEX05.na.qualcomm.com>
+	Fri,  3 Aug 2007 01:53:26 +0200 (CEST)
+Received: from hamtaro.qualcomm.com (hamtaro.qualcomm.com [129.46.61.157])
+	by ithilien.qualcomm.com (8.13.6/8.12.5/1.0) with ESMTP id
+	l72NrOjG010379
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <alsa-devel@alsa-project.org>; Thu, 2 Aug 2007 16:53:24 -0700
+Received: from SANEXCAS03.na.qualcomm.com (sanexcas03.qualcomm.com
+	[172.30.32.65])
+	by hamtaro.qualcomm.com (8.13.6/8.13.6/1.0) with ESMTP id
+	l72NrNPx022080
+	for <alsa-devel@alsa-project.org>; Thu, 2 Aug 2007 16:53:24 -0700 (PDT)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +30,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Wallace, Brooke" <brookew@qualcomm.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/02/2007 11:39 PM, Wallace, Brooke wrote:
-
-> I've been trying to sort thru the ALSA docs and am starting to get the 
-> impression that all of the existing drivers are written as Kernel 
-> Modules.
-
-Yes. Some stuff like mixing happens in userspace but the lowlevel drivers 
-are in kernel space.
-
-> Doesn't this mean that they are running in Kernel space and infact are
-> not User Space drivers?
-
-Yes.
-
-> Shouldn't there be an ALSA Drivers API document that covers an API that
-> User Space Drivers can use? I must be mssing something here...
-
-I believe you are. Who told you that ALSA drivers ran in userspace?
-
-> I'm looking into ALSA because my company wants to use this standard for 
-> writing User Space drivers for our product running on various linux 
-> kernels. The reasoning for this is strictly proprietary licensing - our 
-> leagl department is not comfortable with the GPL and the possiblitiy that
-> something written for Kernel space could at some time be considered as
-> required to be GPL - not my decision...
-
-You have a sensible legal department. Many hold that distributing Linux 
-kernelspace code under a non GPL compatible license is illegal, period.
-
-Your job, should you chose to accept it, is convince them that releasing the 
-code you will be writing under a GPL compatible license is not actually all 
-that scary. Pointing them to all the other companies that do so can help.
-
-The other option you have is make do without _any_ help from _anyone_ on 
-this list at least. Good luck.
-
-Rene.
+The alsa-drivers INSTALL file tells me:
+ 
+   On 2.6 kernels, the build directory has to be given via
+--with-build=<kernel_build_dir> option additionaly, too.
+ 
+What exactly is mean by kernel_build_dir? I should not have to recompile
+my kernel because I already have the sourcecore module.
+ 
+Configure seems to work fine and locates my kernel source code:
+ 
+./configure --with-cards=hda-intel --with-sequencer=yes
+ 
+But when I compile, it fails in acore/pcm_native.c line #75,
+acore/pcm_native.c line #75 uses the macro DEFINE_RWLOCK which
+apparently has not been defined yet.
+ 
+Searching thu the alsa-drivers source, I find that include/adriver.h
+defines this macro.
+ 
+What am I doing wrong? Why doesn't adriver.h get included when I compile
+acore/pcm_native.c?
+ 
+ 
+I'm using the latest release - alsa-driver-1.0.14rc4
+ 
+My Kernel sources are: 2.6.9-34.EL-smp-i686
+ 
+Alsa is already working fine on this system using the HDA Intel driver,
+its a RHEL- 3.4.5-2 system. I just want to re-compile the latest ALSA
+software and start writing a dummy user space driver that prints to a
+file or something. I should be able to cmopile all of the latest ALSA
+software...
+ 
+Any help is appreciated.
+ 
+-Brooke
