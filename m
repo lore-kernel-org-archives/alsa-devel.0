@@ -1,20 +1,15 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: [PATCH alsa-driver asihpi] Fix StreamGetInfo
-Date: Thu, 02 Aug 2007 10:35:23 +1200
-Message-ID: <200708021035.23240.linux@audioscience.com>
+From: Susovan Ghosh <susovan@tataelxsi.co.in>
+Subject: problem while reading the data from device(phone)
+Date: Thu, 2 Aug 2007 09:20:15 +0530
+Message-ID: <000001c7d4b8$3d3baae0$9529320a@telxsi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58DB8103820
+Received: from mail.tataelxsi.co.in (mail.tataelxsi.co.in [203.200.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id B1F131038F2
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Aug 2007 00:35:15 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JM400J6F9EBH230@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 02 Aug 2007 10:35:00 +1200 (NZST)
-Content-disposition: inline
+	Thu,  2 Aug 2007 05:48:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,44 +22,19 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-StreamGetInfo queried wrong stream type.
-(minor) correct case of Playback and Capture control names
 
-Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
----
 
-diff -r a2861559e4ed pci/asihpi/asihpi.c
---- a/pci/asihpi/asihpi.c       Fri Jul 27 08:54:15 2007 +1200
-+++ b/pci/asihpi/asihpi.c       Thu Aug 02 10:25:24 2007 +1200
-@@ -228,11 +228,11 @@ static inline u16 HPI_StreamGetInfoEx(HP
-                                      u32 * pdwAuxiliaryData)
- {
-        if (HPI_HandleObject(hStream) == HPI_OBJ_OSTREAM)
--               return HPI_InStreamGetInfoEx(hS, hStream, pwState,
-+               return HPI_OutStreamGetInfoEx(hS, hStream, pwState,
-                                             pdwBufferSize, pdwDataInBuffer,
-                                             pdwSampleCount, pdwAuxiliaryData);
-        else
--               return HPI_OutStreamGetInfoEx(hS, hStream, pwState,
-+               return HPI_InStreamGetInfoEx(hS, hStream, pwState,
-                                              pdwBufferSize, pdwDataInBuffer,
-                                              pdwSampleCount, pdwAuxiliaryData);
- }
-@@ -1201,7 +1201,7 @@ struct hpi_control {
- #define ASIHPI_SOURCENODE_STRINGS \
- { \
-        TEXT("no source"), \
--       TEXT("PCM playback"), \
-+       TEXT("PCM Playback"), \
-        TEXT("Line in"), \
-        TEXT("Digital in"), \
-        TEXT("Tuner"), \
-@@ -1230,7 +1230,7 @@ struct hpi_control {
- #define ASIHPI_DESTNODE_STRINGS \
- { \
-        TEXT("no destination"), \
--       TEXT("PCM capture"), \
-+       TEXT("PCM Capture"), \
-        TEXT("Line out"), \
-        TEXT("Digital out"), \
-        TEXT("RF"), \
+Hi All,
+       We are using ALSA for a application.We have a phone and RJ11 phone
+adaptor-duel.I connect the phone to PC through the adaptor amd use the ALSA
+function snd_pcm_readi() to capture what ever spoke in the phone.Adapter is
+a USB device.we mention "plughw:0,0" as a capture device.When we run the
+program we get an error "device is unavailable ".what may be the problem? or
+de we required any thing more?
+
+Thanx,
+Susovan Ghosh
+Engineer (D&D )
+PRDE
+Ph No:-998667320
+Bangalore-560048
