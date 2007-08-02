@@ -1,24 +1,18 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: Will the real alsa wiki please stand up?
-Date: Fri, 03 Aug 2007 10:37:35 +1200
-Message-ID: <200708031037.36014.linux@audioscience.com>
-References: <200707270940.45326.linux@audioscience.com>
-	<200707312154.54926.linux@audioscience.com>
-	<s5hfy32rtgc.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: User space drivers
+Date: Fri, 03 Aug 2007 01:25:08 +0200
+Message-ID: <46B267D4.3040702@gmail.com>
+References: <C7A98C6EB85FFF4FAE03BD695D68EC7601239680@NAEX05.na.qualcomm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id F1668103886
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE85C103863
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Aug 2007 00:38:20 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JM600EYV460NP10@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 03 Aug 2007 10:37:12 +1200 (NZST)
-In-reply-to: <s5hfy32rtgc.wl%tiwai@suse.de>
-Content-disposition: inline
+	Fri,  3 Aug 2007 01:27:52 +0200 (CEST)
+In-Reply-To: <C7A98C6EB85FFF4FAE03BD695D68EC7601239680@NAEX05.na.qualcomm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,52 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
+To: "Wallace, Brooke" <brookew@qualcomm.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 03 August 2007 00:50:43 Takashi Iwai wrote:
-> At Tue, 31 Jul 2007 21:54:54 +1200,
->
-> Eliot Blennerhassett wrote:
-> > If the (currently active) contributors to the developer wiki agreed, I'd
-> > be willing to do the grunt work of moving the pages.
->
-> That'd be greatly appreciated.
->
-> > but the page 'owners' might
-> > prefer to do the copy and keep the  authorship intact...
-> >
-> > JamesCourtierDutton 15 pages
-> > LiamGirdwood 2 or 3 pages
-> > ClemensLadisch 1 page
-> > NormanSchleicher 2 pages
-> > JohnUtz 3 pages
-> > JaroslavKysela 5 pages
->
-> Any of you have objections about this?
-> (sorry I couldn't find Norman's address...)
+On 08/02/2007 11:39 PM, Wallace, Brooke wrote:
 
-If I don't hear back otherwise, I will start some time next week copying the 
-pages, with backlink and attribution
+> I've been trying to sort thru the ALSA docs and am starting to get the 
+> impression that all of the existing drivers are written as Kernel 
+> Modules.
 
-> > And, in the official wiki,  would we want a separate Development:
-> > namespace? Something the wiki-master needs to create.
-> > or is a Development: category a better way to go.
+Yes. Some stuff like mixing happens in userspace but the lowlevel drivers 
+are in kernel space.
 
-I created development category  (just need to add [[Category:Development]] to 
-any page.  
-http://bugtrack.alsa-project.org/main/index.php/Category:Development
+> Doesn't this mean that they are running in Kernel space and infact are
+> not User Space drivers?
 
-> I think the catgoery should suffice.  But I'm no Wiki expert al all,
-> so would like to hear from other skilled guys.
+Yes.
 
-However it seems there is already a namespace "AlsaWiki" which contains only 2 
-pages. By default its excluded from search.  Maybe this was intended for the 
-alsa dev wiki content (Jaroslav?)
+> Shouldn't there be an ALSA Drivers API document that covers an API that
+> User Space Drivers can use? I must be mssing something here...
 
-http://bugtrack.alsa-project.org/main/index.php/AlsaWiki:About
-http://bugtrack.alsa-project.org/main/index.php/AlsaWiki:Developer_Zone
+I believe you are. Who told you that ALSA drivers ran in userspace?
 
---
-Eliot
+> I'm looking into ALSA because my company wants to use this standard for 
+> writing User Space drivers for our product running on various linux 
+> kernels. The reasoning for this is strictly proprietary licensing - our 
+> leagl department is not comfortable with the GPL and the possiblitiy that
+> something written for Kernel space could at some time be considered as
+> required to be GPL - not my decision...
+
+You have a sensible legal department. Many hold that distributing Linux 
+kernelspace code under a non GPL compatible license is illegal, period.
+
+Your job, should you chose to accept it, is convince them that releasing the 
+code you will be writing under a GPL compatible license is not actually all 
+that scary. Pointing them to all the other companies that do so can help.
+
+The other option you have is make do without _any_ help from _anyone_ on 
+this list at least. Good luck.
+
+Rene.
