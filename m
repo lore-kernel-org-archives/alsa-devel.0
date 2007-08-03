@@ -1,19 +1,19 @@
-From: "Wallace, Brooke" <brookew@qualcomm.com>
-Subject: Re: trouble compiling alsa-drivers
-Date: Fri, 3 Aug 2007 14:29:47 -0700
-Message-ID: <C7A98C6EB85FFF4FAE03BD695D68EC7601239914@NAEX05.na.qualcomm.com>
-References: <C7A98C6EB85FFF4FAE03BD695D68EC760123970A@NAEX05.na.qualcomm.com>
-	<1186104048.21191.220.camel@razman.gruemaster.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Hidden rate conversion, and Alsa configuration
+Date: Fri, 3 Aug 2007 22:56:49 +0100
+Message-ID: <200708032256.49911.gineera@aspect135.co.uk>
+References: <200707161340.23503.gineera@aspect135.co.uk>
+	<46B33BDC.80408@superbug.co.uk> <s5hzm18ps98.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from numenor.qualcomm.com (numenor.qualcomm.com [129.46.51.58])
-	by alsa0.perex.cz (Postfix) with ESMTP id 506002437E
-	for <Alsa-devel@alsa-project.org>;
-	Fri,  3 Aug 2007 23:29:52 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <1186104048.21191.220.camel@razman.gruemaster.com>
+Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3959E24361
+	for <alsa-devel@alsa-project.org>;
+	Fri,  3 Aug 2007 23:56:12 +0200 (CEST)
+In-Reply-To: <s5hzm18ps98.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,127 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: Alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Package alsa-driver-1.0.14.tar.b2z also fails to compile with the same
-error.
- 
-Is there a particualr version of the Kernel that is recommended to use?
- 
-I don't think the issue is with including the macro itself, it is
-defined in adriver.h and including that file directly generates the same
-error. Seems that MARCO depends on another MACRO "RW_LOCK_UNLOCKED" and
-somewhere down the line there is a syntax error....
- 
-make[1]: Entering directory `/usr/src/kernels/2.6.9-34.EL-smp-i686'
-  CC [M]
-/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14/acore/memallo
-c.o
-  CC [M]
-/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14/acore/sgbuf.o
-  CC [M]
-/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14/acore/memory_
-wrapper.o
-  CC [M]
-/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14/acore/pcm.o
-  CC [M]
-/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14/acore/pcm_nat
-ive.o
-/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14/acore/pcm_nat
-ive.c:75: error: syntax error before "snd_pcm_link_rwlock"
-... [Many more similar errors] ...
-make[4]: ***
-[/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14/acore/pcm_na
-tive.o] Error 1
-make[3]: ***
-[/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14/acore] Error
-2
-make[2]: ***
-[_module_/local/mnt/views/brookew/alsa/workspace/alsa-driver-1.0.14]
-Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/kernels/2.6.9-34.EL-smp-i686'
-make: *** [compile] Error 2
- 
-I will do some more digging around, but I don't want to go off the
-deep-end hacking software I don't understand, at least not yet.
- 
--Brooke
- 
+On Friday 03 August 2007 16:11, you wrote:
+> At Fri, 03 Aug 2007 15:29:48 +0100,
+>
+> James Courtier-Dutton wrote:
+> > Alan Horstmann wrote:
+> > > On Friday 27 July 2007 21:16, Jaroslav Kysela wrote:
+> > >> On Fri, 27 Jul 2007, stan wrote:
+> > >>> I really want to avoid rate resampling if I can, while format
+> > >>> conversion has to occur somewhere in order to match the hardware in
+> > >>> most cases.  I assume that any format conversion alsa does
+> > >>> is at least as good as one I would do myself.  While the rate
+> > >>
+> > >> I answered this numerous times on this list. We have a function to
+> > >> notify the plugins that resampling should be avoided - it's
+> > >> snd_pcm_hw_params_set_rate_resample().
+> > >
+> > > Can this function be built into an ALSA configuration file in some way,
+> > > or can it only be called from an app?
+> > >
+> > > Alan
+> >
+> > It is only really sensible to have the app do the call, and not a config
+> > file.
+> > Reason being, if the app does the call, it must also be able to handle
+> > the resampling itself.
+> > If the config file did it, the app might not be able to do the
+> > resampling itself and therefore fail to play anything.
+> > Generally, the app is the best place to do the resampling, as it can
+> > handle the quality issues better.
+> > The resampler in ALSA is only really there to let other apps that don't
+> > do resampling limp along ok.
+>
+> Well, it's basically a user's choice whether he really wants only a
+> fixed certain samplerate over all apps or not.  If he wants, he can
+> set up his own default PCM, of course.
+>
+> As a hint, the plug plugin can have "slave.rate unchanged" parameter.
+> For example,
+>
+> 	pcm.mypcm {
+> 		type plug
+> 		slave.pcm "myownhw"
+> 		slave.rate unchanged
+> 	}
+>
+> would wrap the slave PCM "myownhw" with plug layer but the automatic
+> rate conversion is suppressed there.  This allow, however, automatic
+> conversions of other parameters such as channels and format.
 
+Thanks! I'll experiment with this when back from hols.
 
-________________________________
-
-	From: Tobin Davis [mailto:tdavis@dsl-only.net] 
-	Sent: Thursday, August 02, 2007 6:21 PM
-	To: Wallace, Brooke
-	Subject: Re: [alsa-devel] trouble compiling alsa-drivers
-	
-	
-	Alsa 1.0.14rc4 is NOT the latest.  1.0.14 went final a few weeks
-after, and there was a patch to fix build issues on Redhat's broken
-kernels that went into it.
-	
-	Tobin
-	
-	On Thu, 2007-08-02 at 16:53 -0700, Wallace, Brooke wrote: 
-
-		The alsa-drivers INSTALL file tells me:
-		 
-		   On 2.6 kernels, the build directory has to be given
-via
-		--with-build=<kernel_build_dir> option additionaly, too.
-		 
-		What exactly is mean by kernel_build_dir? I should not
-have to recompile
-		my kernel because I already have the sourcecore module.
-		 
-		Configure seems to work fine and locates my kernel
-source code:
-		 
-		./configure --with-cards=hda-intel --with-sequencer=yes
-		 
-		But when I compile, it fails in acore/pcm_native.c line
-#75,
-		acore/pcm_native.c line #75 uses the macro DEFINE_RWLOCK
-which
-		apparently has not been defined yet.
-		 
-		Searching thu the alsa-drivers source, I find that
-include/adriver.h
-		defines this macro.
-		 
-		What am I doing wrong? Why doesn't adriver.h get
-included when I compile
-		acore/pcm_native.c?
-		 
-		
-		I'm using the latest release - alsa-driver-1.0.14rc4
-		 
-		My Kernel sources are: 2.6.9-34.EL-smp-i686
-		 
-		Alsa is already working fine on this system using the
-HDA Intel driver,
-		its a RHEL- 3.4.5-2 system. I just want to re-compile
-the latest ALSA
-		software and start writing a dummy user space driver
-that prints to a
-		file or something. I should be able to cmopile all of
-the latest ALSA
-		software...
-		 
-		Any help is appreciated.
-		 
-		-Brooke
-		_______________________________________________
-		Alsa-devel mailing list
-		Alsa-devel@alsa-project.org
-	
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- Tobin Davis 
-
-
-Laetrile is the pits.
+Alan
