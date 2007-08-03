@@ -1,20 +1,30 @@
-From: stan <stanl@cox.net>
-Subject: snd_pcm_hw_params_set_format fails with invalid
-	argument
-Date: Fri, 3 Aug 2007 11:20:49 -0700
-Message-ID: <20070803112049.7ced76ec@localhost.localdomain>
+From: "Wallace, Brooke" <brookew@qualcomm.com>
+Subject: Wiki login,
+	Was: Will the real alsa wiki please stand up?
+Date: Fri, 3 Aug 2007 11:44:50 -0700
+Message-ID: <C7A98C6EB85FFF4FAE03BD695D68EC76012398A0@NAEX05.na.qualcomm.com>
+References: <200707270940.45326.linux@audioscience.com><200707312154.54926.linux@audioscience.com><s5hfy32rtgc.wl%tiwai@suse.de><200708031037.36014.linux@audioscience.com><46B2D6FF.3050009@ingomueller.net>
+	<Pine.LNX.4.61.0708031122100.7461@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao105.cox.net (fed1rmmtao105.cox.net [68.230.241.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26481103840
+Received: from numenor.qualcomm.com (numenor.qualcomm.com [129.46.51.58])
+	by alsa0.perex.cz (Postfix) with ESMTP id 89B58103831
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Aug 2007 20:20:51 +0200 (CEST)
-Received: from fed1rmimpo01.cox.net ([70.169.32.71]) by fed1rmmtao105.cox.net
-	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP id
-	<20070803182050.WQST26965.fed1rmmtao105.cox.net@fed1rmimpo01.cox.net>
-	for <alsa-devel@alsa-project.org>; Fri, 3 Aug 2007 14:20:50 -0400
+	Fri,  3 Aug 2007 20:44:56 +0200 (CEST)
+Received: from sabrina.qualcomm.com (sabrina.qualcomm.com [129.46.61.150])
+	by numenor.qualcomm.com (8.13.6/8.12.5/1.0) with ESMTP id
+	l73IisLr022835
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <alsa-devel@alsa-project.org>; Fri, 3 Aug 2007 11:44:54 -0700
+Received: from sanexcas01.na.qualcomm.com (sanexcas01.qualcomm.com
+	[172.30.36.175])
+	by sabrina.qualcomm.com (8.13.6/8.13.6/1.0) with ESMTP id
+	l73IisMM016843
+	for <alsa-devel@alsa-project.org>; Fri, 3 Aug 2007 11:44:54 -0700
+Content-class: urn:content-classes:message
+In-Reply-To: <Pine.LNX.4.61.0708031122100.7461@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +34,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fedora 7 upgraded alsa to 1.0.14 from RC3.  I was going to test the
-default device sound for my prior problem (as requested by Takashi
-weeks ago). Unfortunately when I try to run my app it won't start.  The
-snd_pcm_hw_params_set_format fails when I try to use it as follows.
+I just tried to create an account on the new wiki via the "login/create account" link in the upper right hand corner, but it only allows logins, there is nothing there for creating a new account.
 
-  err = snd_pcm_hw_params_set_access (alsa_dev, hw_params, ND_PCM_ACCESS_RW_INTERLEAVED);
-	if (err < 0)
-	{	fprintf (stderr, "cannot set access type (%s)\n", snd_strerror (err)) ;
-		goto catch_error ;
-		} ;
+I'm willing to volunteer some, but will need a login to the wiki.
 
-  err = snd_pcm_hw_params_set_format (alsa_dev, hw_params, SND_PCM_FORMAT_FLOAT64_LE);
-  //err = snd_pcm_hw_params_set_format (alsa_dev, hw_params, SND_PCM_FORMAT_S32_LE);
-	if (err < 0)
-	{	fprintf (stderr, "cannot set sample format (%s)\n", snd_strerror (err)) ;
-		goto catch_error ;
-		} ;
-
-
-cannot set sample format (Invalid argument)
-
-It compiles cleanly.  When I replace the SND_PCM_FORMAT_FLOAT64_LE
-with the S32_LE, it sets it, but of course the sound is garbage
-as it is still receiving doubles.
-
-This code worked fine under RC3.
-Is there some change that occurred in the step from 1.0.14.rc3 to
-1.0.14 that would explain the above and suggest a fix?
-
-Thank you.
-
-$ uname -r
-2.6.22.1-41.fc7
-
-$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.14 (Thu May 31
-09:03:25 2007 UTC).
-
-$ ls /proc/asound/card0
-ice1724  id  oss_mixer  pcm0c  pcm0p  pcm1p  pcm2p
+-Brooke
