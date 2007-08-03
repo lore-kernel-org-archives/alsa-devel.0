@@ -1,23 +1,18 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: User space drivers
-Date: Fri, 03 Aug 2007 14:55:23 +1200
-Message-ID: <46B2991B.6080402@audioscience.com>
-References: <C7A98C6EB85FFF4FAE03BD695D68EC7601239680@NAEX05.na.qualcomm.com>
-	<46B27108.1000409@superbug.co.uk>
+From: =?ISO-8859-1?Q?Ingo_M=FCller?= <alsa@ingomueller.net>
+Subject: Re: Will the real alsa wiki please stand up?
+Date: Fri, 03 Aug 2007 09:19:27 +0200
+Message-ID: <46B2D6FF.3050009@ingomueller.net>
+References: <200707270940.45326.linux@audioscience.com>	<200707312154.54926.linux@audioscience.com>	<s5hfy32rtgc.wl%tiwai@suse.de>
+	<200708031037.36014.linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 388AB24391
+Received: from server2.internet4ever.de (unknown [212.112.224.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D9DE103834
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Aug 2007 04:55:53 +0200 (CEST)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JM600AQ9G4CZA30@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 03 Aug 2007 14:55:24 +1200 (NZST)
-In-reply-to: <46B27108.1000409@superbug.co.uk>
+	Fri,  3 Aug 2007 09:19:36 +0200 (CEST)
+In-Reply-To: <200708031037.36014.linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,31 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> Wallace, Brooke wrote:
->> Hi,
->>  
->> I've been trying to sort thru the ALSA docs and am starting to get the
->> impression that all of the existing drivers are written as Kernel
->> Modules. Doesn't this mean that they are running in Kernel space and
->> infact are not User Space drivers? Shouldn't there be an ALSA Drivers
->> API document that covers an API that User Space Drivers can use? I must
->> be mssing something here...
+Hi!
 
-What you may be looking for is the plugins API.
-Take a look at the alsa-plugins source, there are some examples of
-things that talk to other userspace things (E.g. jack or pulseaudio
-plugin) or other non alsa drivers (E.g. oss or freebob)
+Eliot Blennerhassett schrieb:
+> However it seems there is already a namespace "AlsaWiki" which contains only 2 
+> pages. By default its excluded from search.  Maybe this was intended for the 
+> alsa dev wiki content (Jaroslav?)
+> 
+> http://bugtrack.alsa-project.org/main/index.php/AlsaWiki:About
+> http://bugtrack.alsa-project.org/main/index.php/AlsaWiki:Developer_Zone
 
-http://hg-mirror.alsa-project.org/alsa-plugins/
+The AlsaWiki namespace is the project namespace as the wiki's name is
+"AlsaWiki" (wikipedias project namespace is "Wikipedia:...". The project
+namespace is for articles about the wiki itself and its organisation and
+should not be used for articles about the topic of the wiki.
 
-But remember not to put any GPL code in your non-gpl driver ;)
-
-As others have mentioned you may not be able to get much help for this
-kind of endeavour if you are not prepared to "show us the source".
-
---
-Eliot
+Greets, Ingo
