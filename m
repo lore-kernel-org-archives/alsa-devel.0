@@ -1,44 +1,40 @@
-From: Jesper Juhl <jesper.juhl@gmail.com>
-Subject: [PATCH][RESEND] au88x0: mem leak fix in snd_vortex_create()
-Date: Sat, 4 Aug 2007 20:30:34 +0200
-Message-ID: <200708042030.34804.jesper.juhl@gmail.com>
+From: Felix Rauscher <felixrauscher@alice-dsl.net>
+Subject: Noise on rear speaker when switching from 2.0 to 5.1
+	sound
+Date: Sat, 4 Aug 2007 20:19:04 +0200
+Message-ID: <200708042019.04441.felixrauscher@alice-dsl.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932578AbXHDSd3@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out01.alice-dsl.net (smtp-out01.alice-dsl.net
+	[88.44.60.11]) by alsa0.perex.cz (Postfix) with ESMTP id 2D9511038B8
+	for <alsa-devel@alsa-project.org>;
+	Sat,  4 Aug 2007 20:19:08 +0200 (CEST)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Manuel Jander <mjander@embedded.cl>, Jesper Juhl <jesper.juhl@gmail.com>, alsa-devel@alsa-project.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(resend of patch previously submitted on 04-Aug-2007 02:09)
+Hello,
 
+I have a Hercules Muse 5.1 DVD (C-Media PCI CMI8738-MC6). I have a problem 
+when a running xine (e.g xineliboutput from vdr) switches from 2.0 to 5.1 
+output. Then the sound quality of the rear speakers is terrible. There is a 
+noise on the rear speakers.
 
-Hi,
+If I start the xineliboutput-client when vdr already plays a programme with a 
+5.1 sound track, the quality is ok. It looks like the switching between 2.0 
+to 5.1 is a problem. 
 
-In sound/pci/au88x0/au88x0.c::snd_vortex_create() : 
-The Coverity checker found that if we allocate storage for 'chip' 
-but then leave via the  regions_out:  label, then we end up leaking 
-the storage allocated for 'chip'.
-I believe simply freeing 'chip' before the "return err;" line is 
-all we need to fix this, but please double-check me :)
+Thank you for your help!
 
-
-Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
-Acked-by: Rene Herman <rene.herman@gmail.com>
----
-
-diff --git a/sound/pci/au88x0/au88x0.c b/sound/pci/au88x0/au88x0.c
-index 5ec1b6f..f70286a 100644
---- a/sound/pci/au88x0/au88x0.c
-+++ b/sound/pci/au88x0/au88x0.c
-@@ -232,6 +232,7 @@ snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
- 	pci_disable_device(chip->pci_dev);
- 	//FIXME: this not the right place to unregister the gameport
- 	vortex_gameport_unregister(chip);
-+	kfree(chip);
- 	return err;
- }
- 
+Felix
