@@ -1,40 +1,37 @@
-From: Jesper Juhl <jesper.juhl@gmail.com>
-Subject: [PATCH] au88x0: mem leak fix in snd_vortex_create()
-Date: Sat, 4 Aug 2007 02:09:25 +0200
-Message-ID: <200708040209.25589.jesper.juhl@gmail.com>
+From: Gert Robben <lkml@gert.robben.nu>
+Subject: Re: PROBLEM: snd-au8830: dead after software suspend
+Date: Sat, 04 Aug 2007 02:51:44 +0200
+Message-ID: <46B3CDA0.90804@gert.robben.nu>
+References: <46B3A4F5.2000708@gert.robben.nu> <46B3C44D.7020801@gert.robben.nu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1764271AbXHDAL0@vger.kernel.org>
-Content-Disposition: inline
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1762396AbXHDAvy@vger.kernel.org>
+In-Reply-To: <46B3C44D.7020801@gert.robben.nu>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Manuel Jander <mjander@embedded.cl>, Jesper Juhl <jesper.juhl@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mjander@embedded.cl, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>>> Have you reported this to the ALSA people?
+>> No, I thought this might as well be something for PCI or PM people, and 
+>> I expected some ALSA people are also reading this list.
+>> If not, where else should I report this exactly?
+> alsa-devel [...] the author of the driver
+Done (original message below). Thanks again :)
 
-In sound/pci/au88x0/au88x0.c::snd_vortex_create() : 
-The Coverity checker found that if we allocate storage for 'chip' 
-but then leave via the  regions_out:  label, then we end up leaking 
-the storage allocated for 'chip'.
-I believe simply freeing 'chip' before the "return err;" line is 
-all we need to fix this, but please double-check me :)
-
-
-Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
----
-
-diff --git a/sound/pci/au88x0/au88x0.c b/sound/pci/au88x0/au88x0.c
-index 5ec1b6f..f70286a 100644
---- a/sound/pci/au88x0/au88x0.c
-+++ b/sound/pci/au88x0/au88x0.c
-@@ -232,6 +232,7 @@ snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
- 	pci_disable_device(chip->pci_dev);
- 	//FIXME: this not the right place to unregister the gameport
- 	vortex_gameport_unregister(chip);
-+	kfree(chip);
- 	return err;
- }
- 
+Gert Robben wrote:
+> After a suspend-resume cycle (using Suspend2), my sound card doesn't 
+> work anymore. It works again after reloading the module.
+> 
+> dmesg, initial boot:
+>> Linux version 2.6.22-ck1
+> ----8<----
+>> PCI driver au8830 lacks driver specific resume support.
+> 
+> dmesg, after resume, trying to use the card:
+>> vortex: ac97 codec stuck busy
+> 
+> Thanks for any help!
+> 
+> Gert Robben
