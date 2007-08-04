@@ -1,48 +1,44 @@
-From: Adam Seychell <a_seychell@yahoo.com.au>
-Subject: a newbie overwhelmed with this API
-Date: Sat, 04 Aug 2007 21:50:24 +1000
-Message-ID: <46B46800.6020509@yahoo.com.au>
+From: Jesper Juhl <jesper.juhl@gmail.com>
+Subject: [PATCH][RESEND] au88x0: mem leak fix in snd_vortex_create()
+Date: Sat, 4 Aug 2007 20:30:34 +0200
+Message-ID: <200708042030.34804.jesper.juhl@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail06.syd.optusnet.com.au (mail06.syd.optusnet.com.au
-	[211.29.132.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25FBC1038A5
-	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Aug 2007 13:50:28 +0200 (CEST)
-Received: from [192.168.0.106] (c211-28-147-59.brodm2.vic.optusnet.com.au
-	[211.28.147.59]) (authenticated sender eseychell)
-	by mail06.syd.optusnet.com.au (8.13.1/8.13.1) with ESMTP id
-	l74BoPxK001638
-	for <alsa-devel@alsa-project.org>; Sat, 4 Aug 2007 21:50:25 +1000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932578AbXHDSd3@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Manuel Jander <mjander@embedded.cl>, Jesper Juhl <jesper.juhl@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm writing simple audio application and I have successfully used the 
-DirectSound API under Windows. Now I'm looking at porting to Linux using 
-ALSA. I have tried reading the online ALSA API documentation, but it 
-seems too early in development and insufficient compared what one can 
-learn reading Microsoft's DirectX SDK documentation. Excuse my ignorance 
-for a minute, but the API seems quite large compared to DirectSound and 
-so I'm wondering if there is good reason why so many functions exists ?
-Was there an early design decision not to write ALSA in C++ ?
+(resend of patch previously submitted on 04-Aug-2007 02:09)
 
-I would like to help out with documentation but of course I thats 
-impossible for someone who is a complete novice to the ALSA project. I 
-know that writing good documentation takes a lot of hard work, 
-especially for software developers who spend enough time on coding. Its 
-an unfortunate paradox among all open source projects. Software 
-developers who posses the knowledge can't readily communicate it to 
-potential volunteer documentation writers in an open source environment.
 
-Adam
+Hi,
+
+In sound/pci/au88x0/au88x0.c::snd_vortex_create() : 
+The Coverity checker found that if we allocate storage for 'chip' 
+but then leave via the  regions_out:  label, then we end up leaking 
+the storage allocated for 'chip'.
+I believe simply freeing 'chip' before the "return err;" line is 
+all we need to fix this, but please double-check me :)
+
+
+Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
+Acked-by: Rene Herman <rene.herman@gmail.com>
+---
+
+diff --git a/sound/pci/au88x0/au88x0.c b/sound/pci/au88x0/au88x0.c
+index 5ec1b6f..f70286a 100644
+--- a/sound/pci/au88x0/au88x0.c
++++ b/sound/pci/au88x0/au88x0.c
+@@ -232,6 +232,7 @@ snd_vortex_create(struct snd_card *card, struct pci_dev *pci, vortex_t ** rchip)
+ 	pci_disable_device(chip->pci_dev);
+ 	//FIXME: this not the right place to unregister the gameport
+ 	vortex_gameport_unregister(chip);
++	kfree(chip);
+ 	return err;
+ }
+ 
