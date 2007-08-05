@@ -1,16 +1,21 @@
-From: Felix Rauscher <felixrauscher@alice-dsl.net>
-Subject: Noise on rear speaker when switching from 2.0 to 5.1
-	sound
-Date: Sat, 4 Aug 2007 20:19:04 +0200
-Message-ID: <200708042019.04441.felixrauscher@alice-dsl.net>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: MPC5200 I2S driver for ASoC
+Date: Sat, 4 Aug 2007 20:11:59 -0400
+Message-ID: <9e4733910708041711r5973f60em4578bfe4dbac0091@mail.gmail.com>
+References: <46B0C3EE.5020401@acdstar.com>
+	<9e4733910708011241g3c52339cte955a39c3e4f80df@mail.gmail.com>
+	<46B0F53D.4060308@acdstar.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out01.alice-dsl.net (smtp-out01.alice-dsl.net
-	[88.44.60.11]) by alsa0.perex.cz (Postfix) with ESMTP id 2D9511038B8
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A2DC1038C3
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Aug 2007 20:19:08 +0200 (CEST)
+	Sun,  5 Aug 2007 02:12:01 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so1409251wag
+	for <alsa-devel@alsa-project.org>; Sat, 04 Aug 2007 17:12:00 -0700 (PDT)
+In-Reply-To: <46B0F53D.4060308@acdstar.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,20 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: lokowich <lokowich@acdstar.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The complete patch set for BestComm support is here:
+http://www.246tnt.com/mpc52xx/dev_full/
 
-I have a Hercules Muse 5.1 DVD (C-Media PCI CMI8738-MC6). I have a problem 
-when a running xine (e.g xineliboutput from vdr) switches from 2.0 to 5.1 
-output. Then the sound quality of the rear speakers is terrible. There is a 
-noise on the rear speakers.
+This patch is part of the series.
+0009-sound-Add-support-for-Freescale-MPC5200-AC97-interf.patch
 
-If I start the xineliboutput-client when vdr already plays a programme with a 
-5.1 sound track, the quality is ok. It looks like the switching between 2.0 
-to 5.1 is a problem. 
+This tarball includes those patches and a couple of other 5200 ones.
+http://dev.gentoo.org/~nixnut/efika/efika-patches-2.6.22.tar.bz2
 
-Thank you for your help!
+I'm starting a new project that needs MPC5200 I2S DMA support so I'm
+interested in any patches that are developed.
 
-Felix
+-- 
+Jon Smirl
+jonsmirl@gmail.com
