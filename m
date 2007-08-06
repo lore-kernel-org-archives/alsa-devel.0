@@ -1,180 +1,83 @@
-From: stan <stanl@cox.net>
-Subject: SOLVED Re: snd_pcm_hw_params_set_format fails with
-	invalid argument
-Date: Mon, 6 Aug 2007 09:04:57 -0700
-Message-ID: <20070806090457.1ec96108@localhost.localdomain>
-References: <20070803112049.7ced76ec@localhost.localdomain>
-	<20070805131041.67c04d1e@localhost.localdomain>
+From: Gert Robben <lkml@gert.robben.nu>
+Subject: Re: [alsa-devel] PROBLEM: snd-au8830: dead after software suspend
+Date: Mon, 06 Aug 2007 18:15:27 +0200
+Message-ID: <46B7491F.2020105@gert.robben.nu>
+References: <46B3A4F5.2000708@gert.robben.nu>	<46B3C44D.7020801@gert.robben.nu>	<46B3CDA0.90804@gert.robben.nu> <s5h7io8er3n.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao107.cox.net (fed1rmmtao107.cox.net [68.230.241.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4157A243D8
-	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Aug 2007 18:04:59 +0200 (CEST)
-Received: from fed1rmimpo02.cox.net ([70.169.32.72]) by fed1rmmtao107.cox.net
-	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP
-	id <20070806160458.EVZX7349.fed1rmmtao107.cox.net@fed1rmimpo02.cox.net>
-	for <alsa-devel@alsa-project.org>; Mon, 6 Aug 2007 12:04:58 -0400
-In-Reply-To: <20070805131041.67c04d1e@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1762444AbXHFQPk@vger.kernel.org>
+In-Reply-To: <s5h7io8er3n.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, mjander@embedded.cl
 List-Id: alsa-devel@alsa-project.org
 
-I downloaded the hg alsa-lib snapshot of July 14, 2007, compiled it,
-(on Fedora 7 you will have to make a link to compile,
-cd /usr/include
-ln -s python2.5 python)
-and linked my program against it.  It works again so the issue has been
-fixed in the latest version of alsa lib.  Any estimate of when this
-version will be released for public consumption?  My app is dead in the
-water with the current version of alsa, so anyone trying to use it will
-have a terrible user experience.  :-(  I want to give some indication of
-when people can expect it to start working again.  In the meantime I'll
-create instructions on how to install the hg version to usr/local and
-change the library linking.
+Takashi Iwai wrote:
+> The below is an untested fix.  Give it a try.
+With the patch, things seem to be much better (but I'm no expert).
 
-Thanks.
+The things remaining seem to be:
+- sound can't be heard
+- MPlayer gives an error, instead of doing nothing.
 
+I've enabled debugging, and did the following, without and with the patch:
+boot, mplayer start+pause, suspend, resume, mplayer unpause+exit+start+exit,
+rmmod.
 
-On Sun, 5 Aug 2007 13:10:41 -0700
-stan <stanl@cox.net> wrote:
+Below is an edited diff of the dmesges (printk's begin with a "k"),
+without and with the patch, with my comments added. I hope this is 
+enough info. If you need the full dmesges, let me know.
 
-> On Fri, 3 Aug 2007 11:20:49 -0700
-> stan <stanl@cox.net> wrote:
-> 
-> > Fedora 7 upgraded alsa to 1.0.14 from RC3.  I was going to test the
-> > default device sound for my prior problem (as requested by Takashi
-> > weeks ago). Unfortunately when I try to run my app it won't start.
-> > The snd_pcm_hw_params_set_format fails when I try to use it as
-> > follows.
-> > 
-> >   err = snd_pcm_hw_params_set_access (alsa_dev, hw_params,
-> > ND_PCM_ACCESS_RW_INTERLEAVED); if (err < 0)
-> > 	{	fprintf (stderr, "cannot set access type (%s)\n",
-> > snd_strerror (err)) ; goto catch_error ;
-> > 		} ;
-> > 
-> >   err = snd_pcm_hw_params_set_format (alsa_dev, hw_params,
-> > SND_PCM_FORMAT_FLOAT64_LE); //err = snd_pcm_hw_params_set_format
-> > (alsa_dev, hw_params, SND_PCM_FORMAT_S32_LE); if (err < 0)
-> > 	{	fprintf (stderr, "cannot set sample format (%s)\n",
-> > snd_strerror (err)) ; goto catch_error ;
-> > 		} ;
-> > 
-> > 
-> > cannot set sample format (Invalid argument)
-> > 
-> > It compiles cleanly.  When I replace the SND_PCM_FORMAT_FLOAT64_LE
-> > with the S32_LE, it sets it, but of course the sound is garbage
-> > as it is still receiving doubles.
-> > 
-> > This code worked fine under RC3.
-> > Is there some change that occurred in the step from 1.0.14.rc3 to
-> > 1.0.14 that would explain the above and suggest a fix?
-> 
-> Used gdb to look at what was happening here.  It seems to succeed in
-> the alsa lib but a return value gets translated from 1 to -22.  
-> 
-> int _snd_pcm_hw_param_set(snd_pcm_hw_params_t *params,
-> 			  snd_pcm_hw_param_t var, unsigned int val,
-> int dir) { int changed;
-> 	if (hw_is_mask(var)) {
-> 		snd_mask_t *m = hw_param_mask(params, var);
-> 		if (val == 0 && dir < 0) {
-> 			changed = -EINVAL;
-> 			snd_mask_none(m);
-> 		} else {
-> 			if (dir > 0)
-> 				val++;
-> 			else if (dir < 0)
-> 				val--;
-> 			changed =
-> snd_mask_refine_set(hw_param_mask(params, var), val); }  <-- returns
-> 1, change occurred ...
-> 	if (changed) {  <-- this branch is taken
-> 		params->cmask |= 1 << var;
-> 		params->rmask |= 1 << var;
-> 	}
-> 	return changed;  <-- changed is still 1 at this point
-> }
-> 
-> 
-> In the function below, which calls the function above, gdb tells me
-> the return value, err, has been
-> optimized away when I try to check it.  When I check the return value 
-> in the calling program for the function below it is -22.
-> 
-> int snd_pcm_hw_param_set(snd_pcm_t *pcm, snd_pcm_hw_params_t *params,
-> 			 snd_set_mode_t mode,
-> 			 snd_pcm_hw_param_t var, unsigned int val,
-> int dir) { snd_pcm_hw_params_t save;
-> 	int err;
-> 	switch (mode) {
-> 	case SND_CHANGE:
-> 		break;
-> 	case SND_TRY:
-> 		save = *params;  <-- takes this branch
-> 		break;
-> 	case SND_TEST:
-> 		save = *params;
-> 		params = &save;
-> 		break;
-> 	default:
-> 		assert(0);
-> 		return -EINVAL;
-> 	}
-> 
-> err is optimized away in the code below, but must be less than zero
-> as it takes the _fail branch.  The return value from the function
-> above is 1 so it shouldn't be taking the fail branch.
-> 
-> 	err = _snd_pcm_hw_param_set(params, var, val, dir);  
-> 	if (err < 0)
-> 		goto _fail; 
-> 
-> When I ignore the return value in my program from within gdb,
-> everything runs, but the sound is incorrect (static).  And I get a
-> garbage value back.
-> 
-> Format (3157552) <-- actual value set by alsa-lib
-> Format (3157552) differs from requested (16) <-- this is
-> SND_PCM_FORMAT_FLOAT64
-> 
-> When I ignore the return value in my program with optimization (O2)
-> turned on, everything runs but the sound is incorrect (static).  
-> The value that comes back is different though.
-> 
-> Format (0) <-- actual value set by alsa-lib
-> Format (0) differs from requested (16) <-- this is
-> SND_PCM_FORMAT_FLOAT64
-> 
-> I find it hard to believe that this is a compiler optimization error.
-> It seems like the stack is becoming corrupted for just one call.  All
-> other calls succeed.
-> 
-> Has anyone a suggestion of where the error might be or a possible
-> workaround? Could invalid values in the ICE1724 driver cause this?
-> 
-> > 
-> > Thank you.
-> > 
-> > $ uname -r
-> > 2.6.22.1-41.fc7
-> > 
-> > $ cat /proc/asound/version
-> > Advanced Linux Sound Architecture Driver Version 1.0.14 (Thu May 31
-> > 09:03:25 2007 UTC).
-> > 
-> > $ ls /proc/asound/card0
-> > ice1724  id  oss_mixer  pcm0c  pcm0p  pcm1p  pcm2p
-> > 
+Anyway, thanks for you work :)
+
+Gert Robben
+
+--- without patch
++++ with patch
+  initial boot:
+  k ACPI: PCI Interrupt 0000:00:11.0[A] -> GSI 19 (level, low) -> IRQ 19
+  k Vortex: init.... <3>ALSA sound/core/control.c:331: control 3:0:0:Play
+  k back PCM advanced processing:0 is already present
+  k done.
+-k PCI driver au8830 lacks driver specific resume support.
+  during suspend:
++k Vortex: shutdown...<6>done.
++k ACPI: PCI interrupt for device 0000:00:11.0 disabled
+  during resume:
++k PM: Writing back config space on device 0000:00:11.0 at offset 1 (was
+  k  2900007, writing 2900003)
+  k ACPI: PCI Interrupt 0000:00:11.0[A] -> GSI 19 (level, low) -> IRQ 19
++k Vortex: init.... <6>ata1.00: configured for UDMA/33
++k ALSA sound/core/control.c:331: control 3:0:0:Playback PCM advanced pr
+  k ocessing:0 is already present
++k done.
+  mplayer unpause:
++- gives mplayer error: alsa-lib: pcm_hw.c:612(snd_pcm_hw_pause) SNDRV_P
+    CM_IOCTL_PAUSE failed: File descriptor in bad state
+  - nothing else happens
+  mplayer exit:
++k vortex_adb_delroutes: route not found! 0x40
++k vortex_adb_delroutes: route not found! 0x2060
+  k src alarm
++k vortex_adb_delroutes: route not found! 0x41
++k vortex_adb_delroutes: route not found! 0x2161
+  k src alarm
+  mplayer start:
+-- nothing happens
++- mplayer seems to play fine, but no sound can be heard
+  rmmod:
+-k vortex: ac97 codec stuck busy
+-k vortex: ac97 codec stuck busy
+-k vortex: ac97 codec stuck busy
+-k vortex: ac97 codec stuck busy
+  k analog.c: 0 out of 0 reads (0%) on pci0000:00:11.0/gameport0 failed
+-k Vortex: shutdown...<3>mix ALARM 0
+-k mix ALARM 0
+-k mix ALARM 0
+-k mix ALARM 0
+-k mix ALARM 0
+-k mix ALARM 0
+-k done.
++k Vortex: shutdown...<6>done.
+  k ACPI: PCI interrupt for device 0000:00:11.0 disabled
