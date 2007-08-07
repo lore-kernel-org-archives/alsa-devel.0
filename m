@@ -1,89 +1,56 @@
-From: "Dajie Tan" <jiankemeng@gmail.com>
-Subject: Re: ALSA on MIPS platform
-Date: Tue, 7 Aug 2007 10:18:04 +0400
-Message-ID: <5861a7880708062317t21970c81w3f16580858bf50af@mail.gmail.com>
-References: <46B03CC0.3090000@lemote.com>
-	 <20070802.235606.122255120.anemo@mba.ocn.ne.jp>
-	 <46B332AC.8020403@lemote.com>
-	 <5861a7880708062253x7133659cm1ff17f451e4f82f8@mail.gmail.com>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Re: Possible problems with alsa soc
+Date: Tue, 7 Aug 2007 14:12:18 +0530
+Message-ID: <8d6898730708070142v5097c4fdo8c997936774fb318@mail.gmail.com>
+References: <8d6898730708060649q6163f65u76259c9d6e6840e1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <5861a7880708062253x7133659cm1ff17f451e4f82f8@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E94F103860
+	for <alsa-devel@alsa-project.org>;
+	Tue,  7 Aug 2007 10:42:20 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so2167518wag
+	for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2007 01:42:18 -0700 (PDT)
+In-Reply-To: <8d6898730708060649q6163f65u76259c9d6e6840e1@mail.gmail.com>
 Content-Disposition: inline
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: Songmao Tian <tiansm@lemote.com>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Ralf <ralf@linux-mips.org>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Takashi Iwai <tiwai@suse.de>, greg@kroah.com
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
+Cc: Sudhanshu Saxena <sudhanshu.saxena@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-U29ycnksIHRoYXQgYWltIGF0IDIuNi4xOC4KCkluIHRoZSBsYXRlc3Qga2VybmVsOgoKLS0tIGEv
-aW5jbHVkZS9hc20tbWlwcy9pby5oICAgICAyMDA3LTA4LTA3IDEwOjE4OjAzLjAwMDAwMDAwMCAr
-MDgwMAorKysgYi9pbmNsdWRlL2FzbS1taXBzL2lvLmggICAgIDIwMDctMDgtMDcgMTA6MTg6NTYu
-MDAwMDAwMDAwICswODAwCkBAIC0xMTYsNyArMTE2LDcgQEAKICAqLwogc3RhdGljIGlubGluZSB1
-bnNpZ25lZCBsb25nIHZpcnRfdG9fcGh5cyh2b2xhdGlsZSBjb25zdCB2b2lkICphZGRyZXNzKQog
-ewotICAgICAgIHJldHVybiAodW5zaWduZWQgbG9uZylhZGRyZXNzIC0gUEFHRV9PRkZTRVQgKyBQ
-SFlTX09GRlNFVDsKKyAgICAgICByZXR1cm4gKCh1bnNpZ25lZCBsb25nKWFkZHJlc3MgJiAweDFm
-ZmZmZmZmKSArIFBIWVNfT0ZGU0VUOwogfQoKSSB0aGluayB2aXJ0X3RvX3BoeXMgb3IgX19wYSBz
-aG91bGQgYWNjZXB0IGtzZWcxIGFkZHJlc3MuCgpUYW4KCjIwMDcvOC83LCBEYWppZSBUYW4gPGpp
-YW5rZW1lbmdAZ21haWwuY29tPjoKPiBJIHRoaW5rIHRoaXMgcHJvYmxlbSBjYW4gYmUgc29sdmVk
-IGJ5IHJldmlzaW5nIHRoZSBfX3BhIG1hY3JvIGxpa2UgdGhpczoKPgo+IC0tLSBhL2luY2x1ZGUv
-YXNtLW1pcHMvcGFnZS5oICAgICAgMjAwNy0wOC0wNyAwOTo0NTowMC4wMDAwMDAwMDAgKzA4MDAK
-PiArKysgYi9pbmNsdWRlL2FzbS1taXBzL3BhZ2UuaCAgICAgMjAwNy0wOC0wNyAwOTo0Njo1OS4w
-MDAwMDAwMDAgKzA4MDAKPiBAQCAtMTUwLDcgKzE1MCw3IEBACj4gIH0pCj4gICNlbHNlCj4gICNk
-ZWZpbmUgX19wYSh4KQo+ICAgICAgICAgIFwKPiAtICAgICgodW5zaWduZWQgbG9uZykoeCkgLSBQ
-QUdFX09GRlNFVCArIFBIWVNfT0ZGU0VUKQo+ICsgICAgKCgodW5zaWduZWQgbG9uZykoeCkgJiAw
-eDFmZmZmZmZmKSArIFBIWVNfT0ZGU0VUKQo+ICAjZW5kaWYKPgo+IFNvLCB0aGUgdmlydF90b19w
-YWdlIGNhbiBhY2NlcHQgYWxsIGNhY2hlZCBvciB1bmNhY2hlZCBhZGRyZXNzLgo+Cj4KPiBUYW4K
-Pgo+IDIwMDcvOC8zLCBTb25nbWFvIFRpYW4gPHRpYW5zbUBsZW1vdGUuY29tPjoKPiA+IEF0c3Vz
-aGkgTmVtb3RvIHdyb3RlOgo+ID4gPiBPbiBXZWQsIDAxIEF1ZyAyMDA3IDE1OjU2OjQ4ICswODAw
-LCBTb25nbWFvIFRpYW4gPHRpYW5zbUBsZW1vdGUuY29tPiB3cm90ZToKPiA+ID4KPiA+ID4+ICAg
-ICBUaGUgcHJvYmxlbSBpcyBjbGVhcjoKPiA+ID4+IDEuIGRtYV9hbGxvY19ub25jb2hlcmVudCgp
-IHJldHVybiBhIG5vbi1jYWNoZWQgYWRkcmVzcywgYW5kCj4gPiA+PiB2aXJ0X3RvX3BhZ2UoKSBu
-ZWVkIGEgY2FjaGVkIGxvZ2ljYWwgYWRkciAoSGF2ZSBJIG5hbWVkIGl0IHJpZ2h0PykKPiA+ID4+
-IDIuIG1tYXBlZCBkYW0gYnVmZmVyIHNob3VsZCBiZSBub24tY2FjaGVkLgo+ID4gPj4KPiA+ID4+
-IFdlIGhhdmUgYSB1Z2x5IHBhdGNoLCBidXQgd2Ugd2FudCB0byBzb2x2ZSB0aGUgcHJvYmxlbSBj
-bGVhbmx5LCBzbyBjYW4KPiA+ID4+IGFueW9uZSBzaG93IG1lIHRoZSB3YXk/Cj4gPiA+Pgo+ID4g
-Pgo+ID4gPiB2aXJ0X3RvX3BhZ2UoKSBpcyB1c2VkIGluIG1hbnkgcGxhY2UgaW4gbW0gc28gbWFr
-aW5nIGl0IHJvYnVzdCBtaWdodAo+ID4gPiBhZmZlY3QgcGVyZm9ybWFuY2UuICBJTUhPIHZpcnRf
-dG9fcGFnZSgpIHNlZW1zIHRvbyBsb3ctbGV2ZWwgYXMgRE1BCj4gPiA+IEFQSS4KPiA+ID4KPiA+
-ID4gSWYgc29tZXRoaW5nIGxpa2UgZG1hX3ZpcnRfdG9fcGFnZShkZXYsIGNwdV9hZGRyKSB3aGlj
-aCBjYW4gdGFrZSBhIGNwdQo+ID4gPiBhZGRyZXNzIHJldHVybmVkIGJ5IGRtYV94eHggQVBJcyB3
-YXMgZGVmaW5lZCwgTUlQUyBjYW4gaW1wbGVtZW50IGl0Cj4gPiA+IGFwcHJvcHJpYXRlbHkuCj4g
-PiA+Cj4gPiA+IEFuZCB0aGVuIHBncHJvdF9ub25jYWNoZWQgaXNzdWVzIHN0aWxsIGV4aXN0Li4u
-Cj4gPiA+Cj4gPiA+IC0tLQo+ID4gPiBBdHN1c2hpIE5lbW90bwo+ID4gPgo+ID4gPgo+ID4gPgo+
-ID4gPgo+ID4KPiA+IEkgYWdyZWUsIGFuZCBJIGFtIGludmVzdGlnYXRpbmcgdG8gaW1wbGVtZW50
-IGEgZG1hX21hcF9jb2hlcmVudCwgYnV0IEl0Cj4gPiBzZWVtcyBkbWFfbWFwX2NvaGVyZW50IGRv
-ZXNuJ3Qgc29sdmUgYWxsIHRoZSBwcm9ibGVtIGFuZCB3aWxsIGNoYW5nZSBhCj4gPiBsb3Qgb2Yg
-Y29kZTooCj4gPgo+ID4KPiA+IGRtYV92aXJ0X3RvX3BhZ2UgY2FuIGJlIHNvbWV0aGluZyBsaWtl
-IHRoaXMuCj4gPgo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvYXNtLW1pcHMvcGFnZS5oIGIvaW5j
-bHVkZS9hc20tbWlwcy9wYWdlLmgKPiA+IGluZGV4IGI5MmRkOGMuLmQyZWFkOGEgMTAwNjQ0Cj4g
-PiAtLS0gYS9pbmNsdWRlL2FzbS1taXBzL3BhZ2UuaAo+ID4gKysrIGIvaW5jbHVkZS9hc20tbWlw
-cy9wYWdlLmgKPiA+IEBAIC0xODEsNiArMTgxLDggQEAgdHlwZWRlZiBzdHJ1Y3QgeyB1bnNpZ25l
-ZCBsb25nIHBncHJvdDsgfSBwZ3Byb3RfdDsKPiA+ICAjZGVmaW5lIHZpcnRfdG9fcGFnZShrYWRk
-cikgICAgcGZuX3RvX3BhZ2UoUEZOX0RPV04odmlydF90b19waHlzKGthZGRyKSkpCj4gPiAgI2Rl
-ZmluZSB2aXJ0X2FkZHJfdmFsaWQoa2FkZHIpICAgIHBmbl92YWxpZChQRk5fRE9XTih2aXJ0X3Rv
-X3BoeXMoa2FkZHIpKSkKPiA+Cj4gPiArI2RlZmluZSBkbWFfdmlydF90b19wYWdlKGRtYV9hZGRy
-KQo+ID4gcGZuX3RvX3BhZ2UoUEZOX0RPV04odmlydF90b19waHlzKENBQ19BRERSKGthZGRyKSkp
-KQo+ID4gKwo+ID4gICNkZWZpbmUgVk1fREFUQV9ERUZBVUxUX0ZMQUdTICAgIChWTV9SRUFEIHwg
-Vk1fV1JJVEUgfCBWTV9FWEVDIHwgXAo+ID4gICAgICAgICAgICAgICAgICAgVk1fTUFZUkVBRCB8
-IFZNX01BWVdSSVRFIHwgVk1fTUFZRVhFQykKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
-aW51eC9tbS5oIGIvaW5jbHVkZS9saW51eC9tbS5oCj4gPiBpbmRleCA2NTUwOTRkLi41ZTY5NGRk
-IDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9tbS5oCj4gPiArKysgYi9pbmNsdWRlL2xp
-bnV4L21tLmgKPiA+IEBAIC0zOSw2ICszOSwxMCBAQCBleHRlcm4gaW50IHN5c2N0bF9sZWdhY3lf
-dmFfbGF5b3V0Owo+ID4gICNpbmNsdWRlIDxhc20vcGd0YWJsZS5oPgo+ID4gICNpbmNsdWRlIDxh
-c20vcHJvY2Vzc29yLmg+Cj4gPgo+ID4gKyNpZm5kZWYgZG1hX3ZpcnRfdG9fcGFnZQo+ID4gKyNk
-ZWZpbmUgZG1hX3ZpcnRfdG9fcGFnZSB2aXJ0X3RvX3BhZ2UKPiA+ICsjZW5kaWYKPiA+ICsKPiA+
-ICAjZGVmaW5lIG50aF9wYWdlKHBhZ2UsbikgcGZuX3RvX3BhZ2UocGFnZV90b19wZm4oKHBhZ2Up
-KSArIChuKSkKPiA+Cj4gPiAgLyoKPiA+IGRpZmYgLS1naXQgYS9zb3VuZC9jb3JlL3NnYnVmLmMg
-Yi9zb3VuZC9jb3JlL3NnYnVmLmMKPiA+IGluZGV4IGNlZmQyMjguLjhiMjliZmQgMTAwNjQ0Cj4g
-PiAtLS0gYS9zb3VuZC9jb3JlL3NnYnVmLmMKPiA+ICsrKyBiL3NvdW5kL2NvcmUvc2didWYuYwo+
-ID4gQEAgLTkxLDcgKzkxLDcgQEAgdm9pZCAqc25kX21hbGxvY19zZ2J1Zl9wYWdlcyhzdHJ1Y3Qg
-ZGV2aWNlICpkZXZpY2UsCj4gPiAgICAgICAgICB9Cj4gPiAgICAgICAgICBzZ2J1Zi0+dGFibGVb
-aV0uYnVmID0gdG1wYi5hcmVhOwo+ID4gICAgICAgICAgc2didWYtPnRhYmxlW2ldLmFkZHIgPSB0
-bXBiLmFkZHI7Cj4gPiAtICAgICAgICBzZ2J1Zi0+cGFnZV90YWJsZVtpXSA9IHZpcnRfdG9fcGFn
-ZSh0bXBiLmFyZWEpOwo+ID4gKyAgICAgICAgc2didWYtPnBhZ2VfdGFibGVbaV0gPSBkbWFfdmly
-dF90b19wYWdlKHRtcGIuYXJlYSk7Cj4gPiAgICAgICAgICBzZ2J1Zi0+cGFnZXMrKzsKPiA+ICAg
-ICAgfQo+ID4KPiA+Cj4KCgotLSAK5Li65aSp5Zyw56uL5b+DCuS4uueUn+awkeeri+WRvQrkuLrl
-voDlnKPnu6fnu53lraYK5Li65LiH5LiW5byA5aSq5bmzCg==
+Any way calling close() before open() is not possible, i will restate
+it as calling close() before prepare().
+
+Thanks
+Nobin Mathew
+
+On 8/6/07, Nobin Mathew <nobin.mathew@gmail.com> wrote:
+> Hi Liam,
+>
+> There are some players which will call snd-pcm_close() before any open
+> call, i dont know why they are calling this. So in ASoC it will put
+> the stream in SNDRV_CTL_POWER_D3hot and pop_wait equal to 1. This
+> state will make problems in snd_pcm_prepare (i.e soc_pcm_prepare).
+>
+> Trouble creating players and libraries are mpg123 and gstreamer library.
+>
+> Takashi,
+>
+>  We now have priority based alsa plugin, as I explained earlier. all
+> these credits goes to Sudhanshu. This will be usefull for many gps,
+> bluetooth and audio SoCs. But we need to make some changes to make it
+> generic, later we will summit this as a patch.
+>
+> Thanks
+> Nobin Mathew
+>
