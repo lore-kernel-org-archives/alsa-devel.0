@@ -1,22 +1,21 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
-Subject: Re: Possible problems with alsa soc
-Date: Wed, 8 Aug 2007 11:12:59 +0530
-Message-ID: <8d6898730708072242tcfd14cre5fd6abde06c1101@mail.gmail.com>
-References: <8d6898730708060649q6163f65u76259c9d6e6840e1@mail.gmail.com>
-	<8d6898730708070142v5097c4fdo8c997936774fb318@mail.gmail.com>
-	<1186478835.3078.289.camel@localhost.localdomain>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Problem with CME UF5 MIDI keyboard master volume
+ slider
+Date: Wed, 08 Aug 2007 10:11:44 +0200
+Message-ID: <1186560704.30326.1204316209@webmail.messagingengine.com>
+References: <1186223690.3246.11.camel@localhost.localdomain>
+	<1186396868.28794.1203930879@webmail.messagingengine.com>
+	<1186503487.3160.26.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
-	by alsa0.perex.cz (Postfix) with ESMTP id 393D910388B
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 4C043103903
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Aug 2007 07:43:01 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so74773wag
-	for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2007 22:42:59 -0700 (PDT)
-In-Reply-To: <1186478835.3078.289.camel@localhost.localdomain>
+	Wed,  8 Aug 2007 10:11:46 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1186503487.3160.26.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,45 +25,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Sudhanshu Saxena <sudhanshu.saxena@gmail.com>
+To: Damon Chaplin <damon@karuna.eclipse.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Liam,
+Damon Chaplin wrote:
+> On Mon, 2007-08-06 at 12:41 +0200, Clemens Ladisch wrote:
+> > Damon Chaplin wrote:
+> > > I have a CME UF5 MIDI keyboard (USB), which mostly works fine with ALSA.
+> > > 
+> > > However if I move the Master Volume slider I stop getting MIDI events -
+> > > I have to disconnect the snd_seq port and reconnect it to get MIDI
+> > > events working again.
+> > 
+> > Is there any error message in the system log when this happens?
+> 
+> No, I don't think so. You mean /var/log/messages?
 
-        Since the stream is in SNDRV_CTL_POWER_D3hot state, all
-widgets are switched off. since the pop_wait is set ,
-soc_pcm_prepare() will not turn on the widgets (or it will not change
-the stream state to SNDRV_CTL_POWER_D0). So actual sound will not come
-out.
+Yes.
 
-Thanks
-Nobin Mathew
+> > > Also, I wanted to try the rawmidi test app, but what would the device ID
+> > > be?
+> > 
+> > Have a look at the output of "amidi -l".
+> 
+> Thanks. I've got rawmidi working, and it doesn't seem to have a problem
+> with the master volume slider. So I guess it is an alsa-seq issue.
+> 
+> If I move the slider I get this in rawmidi (4 lines for each increment):
+> 
+> read f0
+> read 01
+> read 7f
+> read 7e
+> 
+> read f0
+> read 01
+> read 7f
+> read 7d
+> 
+> Are they valid MIDI messages?
 
-On 8/7/07, Liam Girdwood <lg@opensource.wolfsonmicro.com> wrote:
-> On Tue, 2007-08-07 at 14:12 +0530, Nobin Mathew wrote:
-> > Any way calling close() before open() is not possible, i will restate
-> > it as calling close() before prepare().
-> >
-> > Thanks
-> > Nobin Mathew
-> >
-> > On 8/6/07, Nobin Mathew <nobin.mathew@gmail.com> wrote:
-> > > Hi Liam,
-> > >
-> > > There are some players which will call snd-pcm_close() before any open
-> > > call, i dont know why they are calling this. So in ASoC it will put
-> > > the stream in SNDRV_CTL_POWER_D3hot and pop_wait equal to 1. This
-> > > state will make problems in snd_pcm_prepare (i.e soc_pcm_prepare).
-> > >
-> > > Trouble creating players and libraries are mpg123 and gstreamer library.
->
-> Can you give more detail about the problems. It's not obvious from your
-> message. SNDRV_CTL_POWER_D3hot and pop_wait should not stop audio
-> playback starting again.
->
-> Thanks
->
-> Liam
->
->
+No.  These look like the first four bytes of master volume sysex
+messages, but anything after the first four bytes seems to be missing.
+Sysex messages end with a F7 byte, so it's possible that the following
+data gets misinterpreted.
+
+Please show the output of "amidi --dump" with some key presses after
+you've used the master volume slider.
+
+
+Regards,
+Clemens
