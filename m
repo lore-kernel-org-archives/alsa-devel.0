@@ -1,21 +1,15 @@
-From: "Ash Willis" <ashwillis@programmer.net>
-Subject: Re: Website to Wiki migration
-Date: Wed, 8 Aug 2007 17:54:29 -0500
-Message-ID: <20070808225429.5C0401F50B1@ws1-2.us4.outblaze.com>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Linux 2.6.22 and SB-Live! - broken microphone capture?
+Date: Thu, 9 Aug 2007 00:33:40 +0100 (BST)
+Message-ID: <459662.26615.qm@web52912.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail-outgoing.us4.outblaze.com
-	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id A67FA103841
+Received: from web52912.mail.re2.yahoo.com (web52912.mail.re2.yahoo.com
+	[206.190.49.22]) by alsa0.perex.cz (Postfix) with SMTP id C306510384B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Aug 2007 00:59:25 +0200 (CEST)
-Received: from unknown (unknown [192.168.9.180])
-	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
-	706C818001A4
-	for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2007 22:54:29 +0000 (GMT)
-Content-Disposition: inline
+	Thu,  9 Aug 2007 01:33:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,44 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>, ALSA Developers <alsa-devel@alsa-project.org>
-Cc: alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-> Anything missing - tell about it here:
-> http://bugtrack.alsa-project.org/main/index.php/MigrationPlan
-> 
-> One proposal for prettier front page is here:
-> http://bugtrack.alsa-project.org/main/index.php/Talk:Main_Page
-> Go ahead - criticise, praise, make your own...
-> 
+I have been testing my old SB Live! card with Linux 2.6.22 and the 1.0.14 alsa lib and utils, and
+I have discovered that the following no longer works:
 
-The Wiki's looking great. It's obvious that you've thought about where
-everything should be and how it should all tie in instead of blinding
-porting the old pages. It's looking very fresh and making much more sense.
+$ arecord -f cd -t wav -d 4 > testin.wav
+Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+arecord: pcm_read:1346: read error: Input/output error
 
-Is it just me though, or is
+The testin.wav file is always 44 bytes long.
 
-"Vendor-A-trend    Vendor-ALi    Vendor-AMD"
+The microphone works, is plugged into the correct slot, and (AFAICT) all the mixer settings are
+correct:
 
-much harder to read than
+- playback AC97 = 0
+- capture AC97 = 100
+- mic select = mic1
+- mic set to capture
+- capture volume = 100, and set to capture
 
-"A-trend    ALi    AMD"?
+Has something broken in ALSA, please? Playback seems fine, and I get some kind of noise from the
+speakers if I raise the Microphone playback volume to 100 and then blow on the microphone.
 
-Am I OK to go ahead and remove those prefixes or do we want those kept?
-Same with the modules, although I find the module prefixes much easier
-to deal with visually for some odd reason.
+I also have an Audigy 2 card, and microphone capture works fine there.
 
-Also, two of the modules that don't have pages were written by myself.
-I'd be glad to make the pages for those modules but I don't really know
-what should go on those pages TBH. IMO, most of the info on the module
-pages is outdated and pointless. At the very least, it's heavily repeated.
-Is this something we should look at? Personally I find that it's letting
-down the rather nice new site.
+Can anyone confirm this, please?
+Thanks,
+Chris
 
-Ash
 
--- 
-We've Got Your Name at http://www.mail.com !
-Get a FREE E-mail Account Today - Choose From 100+ Domains
+
+      ___________________________________________________________ 
+Yahoo! Mail is the world's favourite email. Don't settle for less, sign up for
+your free account today http://uk.rd.yahoo.com/evt=44106/*http://uk.docs.yahoo.com/mail/winter07.html 
