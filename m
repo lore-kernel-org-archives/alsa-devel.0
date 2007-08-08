@@ -1,21 +1,23 @@
-From: Damon Chaplin <damon@karuna.eclipse.co.uk>
-Subject: Re: Problem with CME UF5 MIDI keyboard master
-	volume	slider
-Date: Wed, 08 Aug 2007 14:53:59 +0100
-Message-ID: <1186581239.3160.6.camel@localhost.localdomain>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Problem with CME UF5 MIDI keyboard master volume
+ slider
+Date: Wed, 08 Aug 2007 16:44:44 +0200
+Message-ID: <1186584284.2915.1204373387@webmail.messagingengine.com>
 References: <1186223690.3246.11.camel@localhost.localdomain>
 	<1186396868.28794.1203930879@webmail.messagingengine.com>
 	<1186503487.3160.26.camel@localhost.localdomain>
 	<1186560704.30326.1204316209@webmail.messagingengine.com>
+	<1186581239.3160.6.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mra05.ch.as12513.net (mra05.ch.as12513.net [82.153.254.73])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7EBC0103951
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id DAC8A10383E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Aug 2007 15:54:26 +0200 (CEST)
-In-Reply-To: <1186560704.30326.1204316209@webmail.messagingengine.com>
+	Wed,  8 Aug 2007 16:44:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1186581239.3160.6.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,61 +27,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
+To: Damon Chaplin <damon@karuna.eclipse.co.uk>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2007-08-08 at 10:11 +0200, Clemens Ladisch wrote:
-> Damon Chaplin wrote:
-
-> > If I move the slider I get this in rawmidi (4 lines for each increment):
-> > 
-> > read f0
-> > read 01
-> > read 7f
-> > read 7e
-> > 
-> > read f0
-> > read 01
-> > read 7f
-> > read 7d
-> > 
-> > Are they valid MIDI messages?
+Damon Chaplin wrote:
+> On Wed, 2007-08-08 at 10:11 +0200, Clemens Ladisch wrote:
+> > Please show the output of "amidi --dump" with some key presses after
+> > you've used the master volume slider.
 > 
-> No.  These look like the first four bytes of master volume sysex
-> messages, but anything after the first four bytes seems to be missing.
-> Sysex messages end with a F7 byte, so it's possible that the following
-> data gets misinterpreted.
+> Here's a few key presses, then some master volume slider movement, then
+> another few keypresses:
 > 
-> Please show the output of "amidi --dump" with some key presses after
-> you've used the master volume slider.
+> 90 2B 4A
+> 80 2B 24
+> 90 30 34
+> 80 30 27
+> 90 34 3A
+> 80 34 3A
+> F0 01 7F 7D
+> F0 01 7F 7C
+> F0 01 7F 7B
+> F0 01 7F 7A
+> F0 01 7F 79
+> F0 01 7F 78
+> F0 01 7F 77
+> F0 01 7F 76
+> 90 2D 29
+> 80 2D 1D
+> 90 30 29
+> 80 30 24
+> 90 34 49
+> 80 34 34
+
+All keypresses arrive correctly.
+
+Looks like a bug in the keyboard's firmware.
+
+Please check whether the later keypresses arrive when using aseqdump.
 
 
-Here's a few key presses, then some master volume slider movement, then
-another few keypresses:
-
-90 2B 4A
-80 2B 24
-90 30 34
-80 30 27
-90 34 3A
-80 34 3A
-F0 01 7F 7D
-F0 01 7F 7C
-F0 01 7F 7B
-F0 01 7F 7A
-F0 01 7F 79
-F0 01 7F 78
-F0 01 7F 77
-F0 01 7F 76
-90 2D 29
-80 2D 1D
-90 30 29
-80 30 24
-90 34 49
-80 34 34
-
-Damon
-
-(By the way another UF5 user has noticed the same problem, so it isn't
-just my system. And I'm using Fedora 6, which has alsa-lib-1.0.12-2.fc6)
+Regards,
+Clemens
