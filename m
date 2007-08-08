@@ -1,14 +1,23 @@
-From: Gavin Panella <gavin.panella@canonical.com>
-Subject: ALSA bugs and Launchpad
-Date: Wed, 8 Aug 2007 18:21:26 +0200
-Message-ID: <CF02B638-B64A-4240-84C5-A57F16AC19E6@canonical.com>
-Mime-Version: 1.0 (Apple Message framework v752.3)
-Content-Type: multipart/mixed; boundary="===============7420871495979555965=="
+From: Damon Chaplin <damon@karuna.eclipse.co.uk>
+Subject: Re: Problem with CME UF5 MIDI keyboard master volume
+	slider
+Date: Wed, 08 Aug 2007 17:36:02 +0100
+Message-ID: <1186590962.3160.10.camel@localhost.localdomain>
+References: <1186223690.3246.11.camel@localhost.localdomain>
+	<1186396868.28794.1203930879@webmail.messagingengine.com>
+	<1186503487.3160.26.camel@localhost.localdomain>
+	<1186560704.30326.1204316209@webmail.messagingengine.com>
+	<1186581239.3160.6.camel@localhost.localdomain>
+	<1186584284.2915.1204373387@webmail.messagingengine.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.ubuntu.com (adelie.ubuntu.com [82.211.81.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A95F10389D
+Received: from mra05.ch.as12513.net (mra05.ch.as12513.net [82.153.254.73])
+	by alsa0.perex.cz (Postfix) with ESMTP id C176E10389D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Aug 2007 18:22:21 +0200 (CEST)
+	Wed,  8 Aug 2007 18:36:39 +0200 (CEST)
+In-Reply-To: <1186584284.2915.1204373387@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,116 +27,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Tillenius Bjorn <bjorn.tillenius@canonical.com>, Reis Christian <kiko@async.com.br>
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============7420871495979555965==
-Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha1; boundary="Apple-Mail-9--23027451"
-Content-Transfer-Encoding: 7bit
+On Wed, 2007-08-08 at 16:44 +0200, Clemens Ladisch wrote:
+> Damon Chaplin wrote:
+> > On Wed, 2007-08-08 at 10:11 +0200, Clemens Ladisch wrote:
+> > > Please show the output of "amidi --dump" with some key presses after
+> > > you've used the master volume slider.
+> > 
+> > Here's a few key presses, then some master volume slider movement, then
+> > another few keypresses:
+> > 
+> > 90 2B 4A
+> > 80 2B 24
+> > 90 30 34
+> > 80 30 27
+> > 90 34 3A
+> > 80 34 3A
+> > F0 01 7F 7D
+> > F0 01 7F 7C
+> > F0 01 7F 7B
+> > F0 01 7F 7A
+> > F0 01 7F 79
+> > F0 01 7F 78
+> > F0 01 7F 77
+> > F0 01 7F 76
+> > 90 2D 29
+> > 80 2D 1D
+> > 90 30 29
+> > 80 30 24
+> > 90 34 49
+> > 80 34 34
+> 
+> All keypresses arrive correctly.
+> 
+> Looks like a bug in the keyboard's firmware.
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---Apple-Mail-9--23027451
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-
-Hi,
-
-I previously sent a similar message to webmaster@alsa-project.org, so  
-apologies if you've seen this before.
-
-We've been trying to get Launchpad (*) to watch bugs within your  
-Mantis bug tracker, but we can't get a full CSV export from your  
-installation. I'm guessing it's been disabled or restricted somehow,  
-so I want to make a case for letting Launchpad get at it.
-
-[* I work for Canonical Ltd. (http://www.canonical.com/) on the  
-Launchpad.net site, specifically on the Bug Tracker (a.k.a. Malone).  
-You can verify my signature and status as a Launchpad Developer at  
-https://launchpad.net/~allenap.]
-
-I'll explain from the beginning, so you might want to skip a few  
-paragraphs if you already know something about the Launchpad Bug  
-Tracker.
-
-One feature of Launchpad is that users can add upstream dependencies  
-to a bug report. For example, a display bug in Ubuntu could be filed  
-on Launchpad, but be related to a bug in the core X.Org server project:
-   https://bugs.launchpad.net/ubuntu/+source/xorg/+bug/38939
-
-To add a dependency, a Launchpadder clicks "Also affects: Upstream"  
-on the bug report, then enters the URL of the upstream bug report.  
-Launchpad recognises this URL and will then "watch" the bug: once a  
-day, Launchpad will fetch the status of the upstream bug and record  
-it. Any changes are sent to bug subscribers, who might be the  
-maintainers for that package in Ubuntu and who can then update the  
-package with the fix.
-
-[Note that Launchpad only tracks the status of the upstream bug. If a  
-Launchpadder wants to get involved in fixing the upstream bug then  
-Launchpad will direct them to the upstream bug tracker.]
-
-We've recently added support for Mantis BT:
-   Support Mantis as a remote bugtracker (and add ALSA's bugtracker)
-   https://bugs.launchpad.net/malone/+bug/32266
-
-There's also some info here: https://help.launchpad.net/Mantis
-
-The current approach we take is simple: the code logs in to a Mantis  
-instance as a guest and fetches a complete CSV export (via  
-csv_export.php). Many Mantis instances return a complete export of  
-all their bugs to the guest user, but the ALSA bug tracker returns  
-nothing unless the search is narrowed.
-
-This approach is not perfect (*) but it does work right now. If  
-you're happy to do so, we'd be very grateful if you could let us  
-fetch the full export while we're working on improvements. This will,  
-amongst other things, help people working on Ubuntu be more aware of  
-what's going on in the ALSA world.
-
-[* Taking a full export is crude (we get a full export even though we  
-might only be watching a single bug, we only record the status and  
-resolution anyway, and CSV has a plate-full of problems out-of-the- 
-box) so we're already planning improvements, like narrowing searches,  
-page scraping, writing extensions for Mantis, or using MantisConnect.  
-Above all, we need to play nicely with external bug trackers.]
-
-Gavin.
-
---
-Gavin Panella, Europe/Luxembourg
-Tel: +352 26687161; GSM: +352 691739359
-Skype: gavinpanella; Jabber: gavinpanella@gmail.com
+Yes, I wouldn't be completely surprised. They did seem to have some
+driver issues on Windows.
 
 
+> Please check whether the later keypresses arrive when using aseqdump.
 
---Apple-Mail-9--23027451
-content-type: application/pgp-signature; x-mac-type=70674453;
-	name=PGP.sig
-content-description: This is a digitally signed message part
-content-disposition: inline; filename=PGP.sig
-content-transfer-encoding: 7bit
+This is a few keypresses, then some slider movement, and more
+keypresses. It looks like it's got completely confused by the input:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.7 (Darwin)
 
-iD8DBQFGue2GUrNlNeDSML8RAuhMAJ0XCEQVyjkPf81nOinYi+CvHmRxLgCffThF
-LqU0fK+WZrlHJutiJLktXFw=
-=gcsJ
------END PGP SIGNATURE-----
+Waiting for data. Press Ctrl+C to end.
+Source_ Event_________________ Ch _Data__
+ 20:1   Note on                 0  41  42
+ 20:1   Note off                0  41  18
+ 20:1   Note on                 0  45  58
+ 20:1   Note off                0  45  20
+ 20:1   Note on                 0  48  58
+ 20:1   Note off                0  48  33
+ 20:1   Note on                 0  43  65
+ 20:1   Note off                0  43  32
+ 20:1   System exclusive          F0 01 7F 39 F0 01 7F 3C F0 01 7F 3D F0
+01 7F 3E F0 01 7F 41 F0 01 7F 43 F0 01 7F 46 F0 01 7F 49 F0 01 7F 4D F0
+01 7F 51 F0 01 7F 54 F0 01 7F 58 F0 01 7F 5C F0 01 7F 5F F0 01 7F 64 F0
+01 7F 67 F0 01 7F 6B F0 01 7F 6E F0 01 7F 71 F0 01 7F 72 F0 01 7F 73 F0
+01 7F 74 F0 01 7F 70 F0 01 7F 6B F0 01 7F 64 F0 01 7F 5E F0 01 7F 57 F0
+01 7F 4F F0 01 7F 47 F0 01 7F 40 F0 01 7F 3F F0 01 7F 45 F0 01 7F 4B F0
+01 7F 50 F0 01 7F 54 F0 01 7F 5A F0 01 7F 5E F0 01 7F 60 F0 01 7F 5A F0
+01 7F 52 F0 01 7F 49 F0 01 7F 40 F0 01 7F 3C F0 01 7F 32 F0 01 7F 29 F0
+01 7F 23 F0 01 7F 20 F0 01 7F 26 F0 01 7F 2E F0 01 7F 36 F0 01 7F 3D F0
+01 7F 41 F0 01 7F 49 F0 01 7F 4F F0 01 7F 53 F0 01 7F 50 F0 01 7F 48 F0
+01 7F 3F F0 01 7F 3A F0 01 7F 2E F0 01 7F 23 F0 01 7F 1C F0 01 7F 17 F0
+01 7F 19
+ 20:1   System exclusive          F0 01 7F 20 F0 01 7F 29 F0 01 7F 33 F0
+01 7F 3C F0 01 7F 3E F0 01 7F 45 F0 01 7F 48 F0 01 7F 49 90 2F 1C 80 2F
+1C 90 2F 40 80 2F 29 90 32 2F 90 30 29 80 30 0C 80 32 24 90 32 4D 80 32
+29 90 32 4A 80 32 2A 90 32 3D 80 32 32 90 32 41 80 32 37 90 32 47 80 32
+36 90 32 49 80 32 27 90 2D 35 90 35 38 80 2D 0B 90 34 26 80 35 0C 90 2D
+06 80 34 0B 90 35 4D 80 2D 11 90 34 36 90 32 3C 90 2D 44 80 35 0F 80 34
+1F 80 32 0A 90 35 4A 80 2D 1A 90 34 41 90 32 26 80 35 1D 90 2D 46 80 34
+1A 80 32 0E 90 35 54 80 2D 17 90 34 31 90 32 3C 80 35 1C 90 2D 3C 80 34
+13 80 32 17 80 2D 15 90 35 43 90 34 49 90 32 44 80 35 1C 90 2D 47 80 34
+19 80 32 1E 90 35 36 80 2D 1D 90 34 3D 90 32 4D 80 35 1C 90 2D 49 80 34
+16 80 32 1F 80 2D 1A 90 34 54 90 35 0A 90 32 4A 80 35 14 90 2D 47 80 34
+27 80 32
 
---Apple-Mail-9--23027451--
+Is it possible to workaround the problem?
 
---===============7420871495979555965==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7420871495979555965==--
+Damon
