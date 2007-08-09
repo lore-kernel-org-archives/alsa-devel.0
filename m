@@ -1,92 +1,82 @@
-From: "Grant Likely" <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 1/2] Xlinx ML403 AC97 Controller Reference device driver
-Date: Thu, 9 Aug 2007 14:07:11 -0600
-Message-ID: <fa686aa40708091307r1b00ed8duc71f10c8fa524442@mail.gmail.com>
-References: <1186655810.7420.26.camel@localhost>
-	<fa686aa40708091049m46607037jafe4b479ae52db43@mail.gmail.com>
-	<1186689700.28843.76.camel@localhost>
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
+Subject: [PATCH] isa libs Makefiles cleanup
+Date: Thu, 9 Aug 2007 22:36:29 +0200
+Message-ID: <20070809223629.dadd33e7.krzysztof.h1@wp.pl>
+References: <20070809190643.6e5a16be.krzysztof.h1@wp.pl>
+	<s5hps1wwrmf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linuxppc-embedded-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
-In-Reply-To: <1186689700.28843.76.camel@localhost>
-Content-Disposition: inline
-List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-embedded>,
-	<mailto:linuxppc-embedded-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-embedded>
-List-Post: <mailto:linuxppc-embedded@ozlabs.org>
-List-Help: <mailto:linuxppc-embedded-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-embedded>,
-	<mailto:linuxppc-embedded-request@ozlabs.org?subject=subscribe>
-Sender: linuxppc-embedded-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-embedded-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
-To: =?ISO-8859-1?Q?Joachim_F=F6rster?= <mls.JOFT@gmx.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Stephen Neuendorffer <stephen.neuendorffer@xilinx.com>, Lorenz Kolb <lorenz.kolb@lkmail.de>, "linuxppc-embedded@ozlabs.org" <linuxppc-embedded@ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E83E1037EE
+	for <alsa-devel@alsa-project.org>;
+	Thu,  9 Aug 2007 22:32:15 +0200 (CEST)
+Received: from host-87-99-61-239.lanet.net.pl (HELO krzysio.net)
+	(krzysztof.h1@[87.99.61.239]) (envelope-sender <krzysztof.h1@wp.pl>)
+	by smtp.wp.pl (WP-SMTPD) with SMTP
+	for <alsa-devel@alsa-project.org>; 9 Aug 2007 22:32:14 +0200
+In-Reply-To: <s5hps1wwrmf.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/9/07, Joachim F=F6rster <mls.JOFT@gmx.de> wrote:
-> Hi Grant,
->
-> On Thu, 2007-08-09 at 11:49 -0600, Grant Likely wrote:
-> > > diff --git a/sound/ppc/Makefile b/sound/ppc/Makefile
-> > > index eacee2d..827f2f5 100644
-> > > --- a/sound/ppc/Makefile
-> > > +++ b/sound/ppc/Makefile
-> >
-> > Couldn't this end up on MicroBlaze too?  If so, sound/ppc is the wrong =
-place.
->
-> Well, I don't know. The only arch depended calls I use (am aware of) are
-> in/out_be32(), so this _might_ work for mb, too. (I won't be able to
-> test that in the next few months ...)
->
-> On Thu, 2007-08-09 at 11:17 -0700, Stephen Neuendorffer wrote:
-> >  I second grant here... this should eventually work on microblaze, too,
-> > so putting it drivers/ and using XILINX_DRIVERS instead of XILINX_VIRTEX
-> > (based on the patch Wolfgang recently posted) would probably be prefera=
-ble.
-> >
-> > > +
-> > > +config SND_ML403_AC97CR
-> > > +       tristate "Xilinx ML403 AC97 Controller Reference"
-> > > +       depends on SND && XILINX_VIRTEX
-> >
-> > Steve
->
-> So, like Stephen Neuendorffer said, I should move it to sound/drivers,
-> right? Takashi?
->
->
-> On Thu, 2007-08-09 at 11:49 -0600, Grant Likely wrote:
-> > > +snd-ml403_ac97cr-objs :=3D ml403_ac97cr.o
-> >
-> > This line is only needed if you're compiling multiple .c files into one=
- .ko
->
-> Ah, well, then I have to rename the main .c file. But all the other ALSA
-> drivers seem to _not_ include the "snd-" in front of it (ok, except the
-> new PS3 driver and maybe other new ones?)
->
-> > I'll try adding your patches to my tree this afternoon.
->
-> I made patch against your tree, too (like a said before). Tell me, then
-> I post it ...
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-No, don't base against my tree.  You worry about mainline; I'll worry
-about my tree.  :-)
+This patch uses the Kconfig parameters SND_AD1848_LIB and
+SND_CS4231_LIB instead of mentioning each driver that requires
+ the ad1848-lib or cs4231-lib separately in the Makefiles.
 
-My tree gets rebased periodically anyway, so it's a much harder target.
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
 
->
->  Joachim
->
->
->
+This is short enough to do both libraries in one patch.
 
-
--- =
-
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
-grant.likely@secretlab.ca
-(403) 399-0195
+diff -urp linux-2.6.22.new/sound/isa/ad1848/Makefile linux-2.6.23/sound/isa/ad1848/Makefile
+--- linux-2.6.22.new/sound/isa/ad1848/Makefile	2007-07-09 01:32:17.000000000 +0200
++++ linux-2.6.23/sound/isa/ad1848/Makefile	2007-08-09 22:24:30.863357129 +0200
+@@ -7,9 +7,6 @@ snd-ad1848-lib-objs := ad1848_lib.o
+ snd-ad1848-objs := ad1848.o
+ 
+ # Toplevel Module Dependency
+-obj-$(CONFIG_SND_CMI8330) += snd-ad1848-lib.o
+-obj-$(CONFIG_SND_SGALAXY) += snd-ad1848-lib.o
+-obj-$(CONFIG_SND_AD1848) += snd-ad1848.o snd-ad1848-lib.o
+-obj-$(CONFIG_SND_OPTI92X_AD1848) += snd-ad1848-lib.o
++obj-$(CONFIG_SND_AD1848) += snd-ad1848.o
++obj-$(CONFIG_SND_AD1848_LIB) += snd-ad1848-lib.o
+ 
+-obj-m := $(sort $(obj-m))
+diff -urp linux-2.6.22.new/sound/isa/cs423x/Makefile linux-2.6.23/sound/isa/cs423x/Makefile
+--- linux-2.6.22.new/sound/isa/cs423x/Makefile	2007-07-09 01:32:17.000000000 +0200
++++ linux-2.6.23/sound/isa/cs423x/Makefile	2007-08-09 22:25:32.794886405 +0200
+@@ -10,17 +10,8 @@ snd-cs4232-objs := cs4232.o
+ snd-cs4236-objs := cs4236.o
+ 
+ # Toplevel Module Dependency
+-obj-$(CONFIG_SND_AZT2320) += snd-cs4231-lib.o
+-obj-$(CONFIG_SND_MIRO) += snd-cs4231-lib.o
+-obj-$(CONFIG_SND_OPL3SA2) += snd-cs4231-lib.o
+-obj-$(CONFIG_SND_CS4231) += snd-cs4231.o snd-cs4231-lib.o
+-obj-$(CONFIG_SND_CS4232) += snd-cs4232.o snd-cs4231-lib.o
+-obj-$(CONFIG_SND_CS4236) += snd-cs4236.o snd-cs4236-lib.o snd-cs4231-lib.o
+-obj-$(CONFIG_SND_GUSMAX) += snd-cs4231-lib.o
+-obj-$(CONFIG_SND_INTERWAVE) += snd-cs4231-lib.o
+-obj-$(CONFIG_SND_INTERWAVE_STB) += snd-cs4231-lib.o
+-obj-$(CONFIG_SND_OPTI92X_CS4231) += snd-cs4231-lib.o
+-obj-$(CONFIG_SND_WAVEFRONT) += snd-cs4231-lib.o
+-obj-$(CONFIG_SND_SSCAPE) += snd-cs4231-lib.o
++obj-$(CONFIG_SND_CS4231_LIB) += snd-cs4231-lib.o
++obj-$(CONFIG_SND_CS4231) += snd-cs4231.o
++obj-$(CONFIG_SND_CS4232) += snd-cs4232.o
++obj-$(CONFIG_SND_CS4236) += snd-cs4236.o snd-cs4236-lib.o
+ 
+-obj-m := $(sort $(obj-m))
