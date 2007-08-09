@@ -1,25 +1,18 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Problem with CME UF5 MIDI keyboard master volume
- slider
-Date: Thu, 09 Aug 2007 10:27:11 +0200
-Message-ID: <1186648031.27177.1204511703@webmail.messagingengine.com>
-References: <1186223690.3246.11.camel@localhost.localdomain>
-	<1186396868.28794.1203930879@webmail.messagingengine.com>
-	<1186503487.3160.26.camel@localhost.localdomain>
-	<1186560704.30326.1204316209@webmail.messagingengine.com>
-	<1186581239.3160.6.camel@localhost.localdomain>
-	<1186584284.2915.1204373387@webmail.messagingengine.com>
-	<1186590962.3160.10.camel@localhost.localdomain>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: Linux 2.6.22 and SB-Live! - broken microphone
+	capture?
+Date: Thu, 9 Aug 2007 02:03:05 +0100 (BST)
+Message-ID: <766049.99404.qm@web52912.mail.re2.yahoo.com>
+References: <20070809022429.Q9639-100000@xs2.xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id E928F1037FD
+Received: from web52912.mail.re2.yahoo.com (web52912.mail.re2.yahoo.com
+	[206.190.49.22]) by alsa0.perex.cz (Postfix) with SMTP id CC83B10384B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Aug 2007 10:27:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1186590962.3160.10.camel@localhost.localdomain>
+	Thu,  9 Aug 2007 03:03:06 +0200 (CEST)
+In-Reply-To: <20070809022429.Q9639-100000@xs2.xs4all.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,38 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Damon Chaplin <damon@karuna.eclipse.co.uk>
+To: Stefan de Konink <skinkie@xs4all.nl>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Damon Chaplin wrote:
-> On Wed, 2007-08-08 at 16:44 +0200, Clemens Ladisch wrote:
-> > Please check whether the later keypresses arrive when using aseqdump.
+--- Stefan de Konink <skinkie@xs4all.nl> wrote:
+> On Thu, 9 Aug 2007, Chris Rankin wrote:
 > 
-> This is a few keypresses, then some slider movement, and more
-> keypresses. It looks like it's got completely confused by the input:
+> > The microphone works, is plugged into the correct slot, and (AFAICT) all the mixer settings
+> are
+> > correct:
+> >
+> > - playback AC97 = 0
+> > - capture AC97 = 100
+> > - mic select = mic1
+> > - mic set to capture
+> > - capture volume = 100, and set to capture
 > 
-> Waiting for data. Press Ctrl+C to end.
-> Source_ Event_________________ Ch _Data__
->  20:1   Note on                 0  41  42
->  20:1   Note off                0  41  18
->  20:1   Note on                 0  45  58
->  20:1   Note off                0  45  20
->  20:1   Note on                 0  48  58
->  20:1   Note off                0  48  33
->  20:1   Note on                 0  43  65
->  20:1   Note off                0  43  32
->  20:1   System exclusive          F0 01 7F 39 F0 01 7F 3C ...
->  20:1   System exclusive          F0 01 7F 20 F0 01 7F 29 F0 01 7F 33 F0
-> 01 7F 3C F0 01 7F 3E F0 01 7F 45 F0 01 7F 48 F0 01 7F 49 90 2F 1C 80 2F
-> 1C 90 2F 40 80 2F 29 90 32 2F 90 30 29 80 30 0C 80 32 24 90 32 4D 80 ...
+> Is it possible something like 'Digital' is set muted/unmuted?
 
-This is a bug in ALSA's rawmidi -> sequencer parser.
+Thanks, but I think this is a false alarm. When I cold-booted this PC, I found that the
+snd-emu10k1 driver started refusing to load. Apparently the AC97 codec was failing to initialise
+(suddenly). Removing the card, rebooting, shutting down and replacing the card seems to have done
+the trick, for now at least.
 
-> Is it possible to workaround the problem?
+My only problem now is that I don't know what caused the problem in the first place. Could
+scanning the i2c bus for sensors do this? Considering that whatever happened couldn't be fixed by
+a cold boot alone.
 
-Only by changing the driver.  Please wait until tomorrow.
+Cheers,
+Chris
 
 
-Regards,
-Clemens
+
+      ___________________________________________________________ 
+Yahoo! Mail is the world's favourite email. Don't settle for less, sign up for
+your free account today http://uk.rd.yahoo.com/evt=44106/*http://uk.docs.yahoo.com/mail/winter07.html 
