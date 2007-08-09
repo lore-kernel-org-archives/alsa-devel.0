@@ -1,22 +1,21 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: Website to Wiki migration
-Date: Thu, 09 Aug 2007 12:58:33 +1200
-Message-ID: <200708091258.34103.linux@audioscience.com>
-References: <20070808225429.5C0401F50B1@ws1-2.us4.outblaze.com>
+From: Songmao Tian <tiansm@lemote.com>
+Subject: Re: ALSA on MIPS platform
+Date: Thu, 09 Aug 2007 09:24:45 +0800
+Message-ID: <46BA6CDD.7020907@lemote.com>
+References: <46B332AC.8020403@lemote.com>
+	<5861a7880708062253x7133659cm1ff17f451e4f82f8@mail.gmail.com>
+	<5861a7880708062317t21970c81w3f16580858bf50af@mail.gmail.com>
+	<20070807.230157.59463765.anemo@mba.ocn.ne.jp>
+	<20070807175402.GA24731@linux-mips.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id 199E410384B
+Received: from lemote.com (unknown [222.92.8.141])
+	by alsa0.perex.cz (Postfix) with SMTP id A87CC103910
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Aug 2007 02:58:33 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JMH00B5BEO3I910@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 09 Aug 2007 12:57:40 +1200 (NZST)
-In-reply-to: <20070808225429.5C0401F50B1@ws1-2.us4.outblaze.com>
-Content-disposition: inline
+	Thu,  9 Aug 2007 03:24:59 +0200 (CEST)
+In-Reply-To: <20070807175402.GA24731@linux-mips.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,77 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ash Willis <ashwillis@programmer.net>
-Cc: alsa-user@lists.sourceforge.net, ALSA Developers <alsa-devel@alsa-project.org>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, tiwai@suse.de, greg@kroah.com, Atsushi Nemoto <anemo@mba.ocn.ne.jp>, jiankemeng@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 09 August 2007 10:54:29 Ash Willis wrote:
-> The Wiki's looking great. It's obvious that you've thought about where
-> everything should be and how it should all tie in instead of blinding
-> porting the old pages. It's looking very fresh and making much more sense.
-
-Thanks for the feedback
-
+Ralf Baechle wrote:
+> On Tue, Aug 07, 2007 at 11:01:57PM +0900, Atsushi Nemoto wrote:
 >
-> Is it just me though, or is
+>   
+>> On Tue, 7 Aug 2007 10:18:04 +0400, "Dajie Tan" <jiankemeng@gmail.com> wrote:
+>>     
+>>>  static inline unsigned long virt_to_phys(volatile const void *address)
+>>>  {
+>>> -       return (unsigned long)address - PAGE_OFFSET + PHYS_OFFSET;
+>>> +       return ((unsigned long)address & 0x1fffffff) + PHYS_OFFSET;
+>>>  }
+>>>       
+>> This makes virt_to_phys() a bit slower, and more importantly, breaks
+>> 64-bit kernel.
+>>     
 >
-> "Vendor-A-trend    Vendor-ALi    Vendor-AMD"
+> It's ALSA that is doing funny things here so there is no point in fixing
+> the arch code to work for ALSA.
 >
-> much harder to read than
+>   Ralf
 >
-> "A-trend    ALi    AMD"?
 >
-> Am I OK to go ahead and remove those prefixes or do we want those kept?
-> Same with the modules, although I find the module prefixes much easier
-> to deal with visually for some odd reason.
-
-Note that there are cross links between Vendor- and Module- pages.
-
-These prefixes are used to generate the lists of vendors and modules 
-automatically.  Another way to do this might be to use categories Vendor and 
-Module.   So far I cant see a way to include category list on another page 
-see:  http://bugtrack.alsa-project.org/main/index.php/Matrix_Talk:Main
-
-Here are the standalone category pages.  These lists would be better without 
-the prefix...
-http://bugtrack.alsa-project.org/main/index.php/Category:Module
-http://bugtrack.alsa-project.org/main/index.php/Category:Vendor
-
-I'd like to hear from the architect of this part of the wiki (Jaroslav) before 
-embarking on wholesale rename of pages.
-
-> Also, two of the modules that don't have pages were written by myself.
-> I'd be glad to make the pages for those modules but I don't really know
-> what should go on those pages TBH. IMO, most of the info on the module
-> pages is outdated and pointless. At the very least, it's heavily repeated.
-> Is this something we should look at? Personally I find that it's letting
-> down the rather nice new site.
-
-This page says what should be on a Vendor- and Module- page:
-http://bugtrack.alsa-project.org/main/index.php/Matrix:Description
-
-The repeated information is generated using a template. One possibility is to 
-replace the template contents generic instructions with a link to a single 
-page with generic instructions.  The template does give the specific module 
-name in the instructions.
-
-For the module that I work on, I have put specific information at the top of 
-the page E.g.
-
-http://bugtrack.alsa-project.org/main/index.php/Matrix:Module-asihpi
-
-I suggest you do something similar E.g.
-
-Driver for cards from [[Matrix:Vendor-]]
-{| align="right"
- | __TOC__
- |}
-==Driver Specific Information==
-=== Additional Installation notes===
-....
-{{Template:Modinfo etc
+>   
+arm has made a dma_mmap_coherent, but I don't quite understand the code 
+and I am not sure the situation is the same.
 
 
-regards
-
-Eliot
+Tian
