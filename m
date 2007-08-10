@@ -1,24 +1,18 @@
-From: Rolland Dudemaine <rolland@ghs.com>
-Subject: pcm_empty.c in doxygen
-Date: Fri, 10 Aug 2007 13:15:23 +0200
-Message-ID: <46BC48CB.4070200@ghs.com>
+From: Joachim =?ISO-8859-1?Q?F=F6rster?= <mls.JOFT@gmx.de>
+Subject: Re: [PATCH 1/2] Xlinx ML403 AC97 Controller
+	Reference	device driver
+Date: Fri, 10 Aug 2007 13:50:40 +0200
+Message-ID: <1186746640.8965.21.camel@localhost>
+References: <1186655810.7420.26.camel@localhost> <s5hsl6sws0s.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp21.orange.fr (smtp21.orange.fr [80.12.242.46])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8502A103811
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id B051D243EA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Aug 2007 13:15:29 +0200 (CEST)
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf2106.orange.fr (SMTP Server) with ESMTP id AC5FD1C00095
-	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Aug 2007 13:15:28 +0200 (CEST)
-Received: from [127.0.0.1] (ASt-Lambert-152-1-70-77.w86-217.abo.wanadoo.fr
-	[86.217.64.77])
-	by mwinf2106.orange.fr (SMTP Server) with ESMTP id 7AEA51C00093
-	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Aug 2007 13:15:28 +0200 (CEST)
+	Fri, 10 Aug 2007 13:50:44 +0200 (CEST)
+In-Reply-To: <s5hsl6sws0s.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,25 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel <alsa-devel@alsa-project.org>, Lorenz Kolb <lorenz.kolb@lkmail.de>, "linuxppc-embedded@ozlabs.org" <linuxppc-embedded@ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Takashi,
 
-It looks like the doxygen-generated documentation lacks the pcm/pcm_empty.c bit.
-Since the default plugin uses empty as plugin, it's useful to have docs for it.
+again some question came up (while correcting all the other issues):
 
-Here is a diff to apply to solve this.
---- doc/doxygen.cfg.old 2007-08-10 13:14:00.000000000 +0200
-+++ doc/doxygen.cfg     2007-08-10 13:14:38.000000000 +0200
-@@ -72,6 +72,7 @@
-                    ../src/pcm/pcm_ioplug.c \
-                    ../src/pcm/pcm_misc.c \
-                    ../src/pcm/pcm_simple.c \
-+                  ../src/pcm/pcm_empty.c \
-                    ../src/rawmidi \
-                    ../src/timer \
-                    ../src/hwdep \
+On Thu, 2007-08-09 at 19:13 +0200, Takashi Iwai wrote:
+> > +static int __init
+> > +snd_ml403_ac97cr_create(struct snd_card *card, struct platform_device *pfdev,
+> > +			struct snd_ml403_ac97cr **rml403_ac97cr)
+> 
+> It's no longer __init as long as you use platform_device.
+> It should be __devinit instead.
 
-Best Regards,
---Rolland Dudemaine
+Ok, I changed that (for create(), pcm(), mixer(), etc.). Do I have to
+change it for the module_init and module_exit functions, too? I guess,
+they are not in the "scope" of platform device, right? So, they will
+keep __init / __exit ?
+
+> > --- /dev/null
+> > +++ b/sound/ppc/pcm-indirect2.h
+> (snip)
+> > +#ifdef SND_PCM_INDIRECT2_STAT
+> > +static inline void snd_pcm_indirect2_stat(struct snd_pcm_substream *substream,
+> > +					  struct snd_pcm_indirect2 *rec)
+> 
+> Remove inline from the functions in this file.  They are too lengthy.
+> 
+> sound/pcm-indirect.h contain inline functions becuase they are
+> relatively small, and I didn't want to add them in the core module
+> unconditionally.
+
+I looked at my functions again. And I think we could still go with
+inline for the *_interrupt() and *_pointer() functions since they have
+just a few lines.
+With both *_transfer() functions - I don't know. In fact they shouldn't
+be much longer than yours in pcm-indirect.h . They seem long, because
+there are lot of comments and the #ifdef SND_PCM_INDIRECT2_STAT stuff,
+which is/was a debugging feature, which _won't_ be compiled in without
+CONFIG_SND_DEBUG.
+
+[I removed inline from the _stat() and _min_periods() function - that's
+true, they are too long.]
+
+The other thing I thought about, is: Is it ok to have non-inline
+functions in a header file? Don't we need a .c file + .h ? (Are there
+any CodingStyle rules about that?)
+
+ Joachim
