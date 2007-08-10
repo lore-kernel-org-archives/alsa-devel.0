@@ -1,20 +1,26 @@
-From: chris@idlelion.net
-Subject: Re: Bug 305
-Date: Fri, 10 Aug 2007 09:50:21 -0500 (CDT)
-Message-ID: <Pine.LNX.4.64.0708100947310.16282@tick.idlelion.net>
-References: <Pine.LNX.4.64.0708091016470.10961@tick.idlelion.net>
-	<s5hmyx0wrj2.wl%tiwai@suse.de>
-	<Pine.LNX.4.64.0708100932240.16282@tick.idlelion.net>
-	<s5hfy2rcv0o.wl%tiwai@suse.de>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Problem with CME UF5 MIDI keyboard master volume
+ slider
+Date: Fri, 10 Aug 2007 16:55:23 +0200
+Message-ID: <1186757723.30437.1204736811@webmail.messagingengine.com>
+References: <1186223690.3246.11.camel@localhost.localdomain>
+	<1186396868.28794.1203930879@webmail.messagingengine.com>
+	<1186503487.3160.26.camel@localhost.localdomain>
+	<1186560704.30326.1204316209@webmail.messagingengine.com>
+	<1186581239.3160.6.camel@localhost.localdomain>
+	<1186584284.2915.1204373387@webmail.messagingengine.com>
+	<1186590962.3160.10.camel@localhost.localdomain>
+	<1186648031.27177.1204511703@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rwcrmhc15.comcast.net (rwcrmhc15.comcast.net [216.148.227.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id EAF161038A0
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 2D443103834
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Aug 2007 16:50:36 +0200 (CEST)
-In-Reply-To: <s5hfy2rcv0o.wl%tiwai@suse.de>
+	Fri, 10 Aug 2007 16:55:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1186648031.27177.1204511703@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +30,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Damon Chaplin <damon@karuna.eclipse.co.uk>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Aug 2007, Takashi Iwai wrote:
+I wrote:
+> Damon Chaplin wrote:
+> > Is it possible to workaround the problem?
+> 
+> Only by changing the driver.  Please wait until tomorrow.
 
-> At Fri, 10 Aug 2007 09:32:59 -0500 (CDT),
-> chris@idlelion.net wrote:
->>
->> On Thu, 9 Aug 2007, Takashi Iwai wrote:
->>
->>> At Thu, 9 Aug 2007 10:18:14 -0500 (CDT),
->>> chris@idlelion.net wrote:
->>>>
->>>> I tested Fedora 8 on my ThinkPad 600X. The 600X has a CS4264, and F8 uses
->>>> a 2.6.23 kernel (I forget the version at the moment). The sound does not
->>>> work after resume.
->>>
->>> I think it nevered worked after resume?
->>>
->>>> How should I check whether the fix for this issue is included in a kernel?
->>>> Version number?
->>>
->>> The fixes for cs46xx are already in 2.6.23-rc* kernel.
->>
->> OK. That's in F8T1 stock kernel, so 305 is not fixed. Can I do anything
->> else to help out?
->
-> Didn't you read my last mail?
->
-> You can build ALSA drivers externally from ALSA driver tree, at best,
-> from HG repository.  Please consult furhter on alsa-devel ML.
+Well, the driver should now continue after receiving bad data.
 
-I did read your mail.
+To be able to convert the data sent by the CME UFx to a real master
+volume message, I need to know the data format at a lower level.
+Please change line 58 of sound/usb/usbmidi.c to
+	#define DUMP_PACKETS
+and recompile the driver, then show the entries that are written to the
+(debug) system log when a master volume message is received.
 
-It is not at all clear that getting the latest build would be useful if 
-the patch that was supposed to fix this bug is already in the kernel I'm 
-using.
 
-If I missed any traffic about more changes to the cs46xx driver, my 
-apologies. I'll download the latest code as soon as my schedule allows.
-
-Chris
+Regards,
+Clemens
