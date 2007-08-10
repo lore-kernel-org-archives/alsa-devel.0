@@ -1,19 +1,19 @@
-From: "John L. Utz III" <john.utz@dmx.com>
-Subject: Re: Where is simple mixer control "Surround" defined
- for ac97 or via82xx? I cant find it anywhere in ac97....
-Date: Fri, 10 Aug 2007 10:56:26 -0700
-Message-ID: <20070810105626.2e8a7166@jutz-fc6.na.corp.dmxmusic.com>
-References: <20070808150429.45d1abef@jutz-fc6.na.corp.dmxmusic.com>
-	<1186731226.23948.1204693671@webmail.messagingengine.com>
+From: Zbigniew Baniewski <zb@ispid.com.pl>
+Subject: Re: Audigy: recording level much too low (microphone)
+Date: Fri, 10 Aug 2007 19:53:14 +0200
+Message-ID: <20070810175314.GA5250@sarge.my.own.domain.no-net>
+References: <20070810110217.GA7011@sarge.my.own.domain.no-net>
+	<1186768407.3057.10.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC1E424393
+Received: from v05705.home.net.pl (v05705.home.net.pl [212.85.118.117])
+	by alsa0.perex.cz (Postfix) with SMTP id 43BEE243AC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Aug 2007 19:52:03 +0200 (CEST)
-In-Reply-To: <1186731226.23948.1204693671@webmail.messagingengine.com>
+	Fri, 10 Aug 2007 19:53:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1186768407.3057.10.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Peter Zubaj <pzubaj@marticonet.sk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tnx Clemens!
+On Fri, Aug 10, 2007 at 07:53:27PM +0200, Peter Zubaj wrote:
 
-On Fri, 10 Aug 2007 09:33:46 +0200
-"Clemens Ladisch" <cladisch@fastmail.net> wrote:
+> Replace 0x0000 with value you want. 0x0000 is gain value - 0x0000 is
+> minimum and I think it is current default - 0 dB
+> 0x0101 is 1.5 dB
+> 0x0202 is 3 dB
+> ....
+> 0x0f0f is max - 22.5 dB
+> step is 1.5 dB
 
-> John L. Utz III wrote:
-> > amixer controls | grep Surround
-> > numid=20,iface=MIXER,name='Surround Playback Switch'
-> > numid=21,iface=MIXER,name='Surround Playback Volume'
-> > 
-> > But for the life of me, i cant find the code that implements it!
-> 
-> Around line 1350 in ac97_codec.c:
-> 
-> 	/* build surround controls */
-> 	if ((snd_ac97_try_volume_mix(ac97, AC97_SURROUND_MASTER))
-> 		&& !(ac97->flags & AC97_AD_MULTI)) {
-> 		/* Surround Master (0x38) is with stereo mutes */
-> 		if ((err = snd_ac97_cmix_new_stereo(card, "Surround
-> Playback", AC97_SURROUND_MASTER, 1, 0,
-> 						    ac97)) < 0)
-> 			return err;
-> 	}
-> 
-> HTH
+Yes! Thanks a lot! :) I realize, it's a "workaround" rather than real
+solution, but this made Audigy suitable for VOIP (I tried the highest value
+of 0x0f0f).
 
-It does, i think that i'll try to use snd_ac97_rename_vol_ctl() in
-patch_vt1618() to make Surround the Rear control.
+I've got a feeling, it could be even set in release this way for all the
+Audigy owners, until the final solution of DSP-related issues will take
+place, because it doesn't seem to spoil anything (although I didn't made
+much testing of all the available options yet). Or it could be switched on
+by some special option: like at "configuration" stage before compilation,
+or perhaps even as the additional module parameter.
+-- 
+				pozdrawiam / regards
 
-Hopefully, i'll have a usable patch to submit for vt1618 next week,
-woohoo!
-
-> Clemens
-> 
+						Zbigniew Baniewski
