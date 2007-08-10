@@ -1,19 +1,23 @@
-From: Zbigniew Baniewski <zb@ispid.com.pl>
-Subject: Re: Audigy: recording level much too low (microphone)
-Date: Fri, 10 Aug 2007 19:53:14 +0200
-Message-ID: <20070810175314.GA5250@sarge.my.own.domain.no-net>
-References: <20070810110217.GA7011@sarge.my.own.domain.no-net>
-	<1186768407.3057.10.camel@localhost.localdomain>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Where is simple mixer control "Surround" defined
+	for ac97 or via82xx? I cant find it anywhere in ac97....
+Date: Fri, 10 Aug 2007 14:04:10 -0400
+Message-ID: <75b66ecd0708101104k46b978e5ra46594d65f02a3@mail.gmail.com>
+References: <20070808150429.45d1abef@jutz-fc6.na.corp.dmxmusic.com>
+	<1186731226.23948.1204693671@webmail.messagingengine.com>
+	<20070810105626.2e8a7166@jutz-fc6.na.corp.dmxmusic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from v05705.home.net.pl (v05705.home.net.pl [212.85.118.117])
-	by alsa0.perex.cz (Postfix) with SMTP id 43BEE243AC
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D8E624337
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Aug 2007 19:53:16 +0200 (CEST)
+	Fri, 10 Aug 2007 20:04:13 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so980207wag
+	for <alsa-devel@alsa-project.org>; Fri, 10 Aug 2007 11:04:12 -0700 (PDT)
+In-Reply-To: <20070810105626.2e8a7166@jutz-fc6.na.corp.dmxmusic.com>
 Content-Disposition: inline
-In-Reply-To: <1186768407.3057.10.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +27,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Zubaj <pzubaj@marticonet.sk>
-Cc: alsa-devel@alsa-project.org
+To: "John L. Utz III" <john.utz@dmx.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 10, 2007 at 07:53:27PM +0200, Peter Zubaj wrote:
+On 8/10/07, John L. Utz III <john.utz@dmx.com> wrote:
+> It does, i think that i'll try to use snd_ac97_rename_vol_ctl() in
+> patch_vt1618() to make Surround the Rear control.
+>
+> Hopefully, i'll have a usable patch to submit for vt1618 next week,
+> woohoo!
 
-> Replace 0x0000 with value you want. 0x0000 is gain value - 0x0000 is
-> minimum and I think it is current default - 0 dB
-> 0x0101 is 1.5 dB
-> 0x0202 is 3 dB
-> ....
-> 0x0f0f is max - 22.5 dB
-> step is 1.5 dB
+Why do you want to rename Surround to Rear?  It would cause people's
+mixer settings to be lost.
 
-Yes! Thanks a lot! :) I realize, it's a "workaround" rather than real
-solution, but this made Audigy suitable for VOIP (I tried the highest value
-of 0x0f0f).
-
-I've got a feeling, it could be even set in release this way for all the
-Audigy owners, until the final solution of DSP-related issues will take
-place, because it doesn't seem to spoil anything (although I didn't made
-much testing of all the available options yet). Or it could be switched on
-by some special option: like at "configuration" stage before compilation,
-or perhaps even as the additional module parameter.
--- 
-				pozdrawiam / regards
-
-						Zbigniew Baniewski
+Lee
