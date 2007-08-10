@@ -1,18 +1,18 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: [PATCH] Add quirk for Stanton ScratchAmp v1
-Date: Fri, 10 Aug 2007 08:26:09 +0200
-Message-ID: <1186727169.14688.1204687721@webmail.messagingengine.com>
-References: <Pine.BSO.4.64.0707292305080.12870@metheny.ijneb.com>
+From: "Wei Kai" <kai.wei.cn@gmail.com>
+Subject: Why there is no SNDRV_PCM_RATE_24000 in pcm.h
+Date: Fri, 10 Aug 2007 14:35:53 +0800
+Message-ID: <579fa30a0708092335w4c2383e5se192b96e112dce81@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 657FE10386B
+Received: from qb-out-0506.google.com (qb-out-0506.google.com [72.14.204.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id B276A10386B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Aug 2007 08:26:11 +0200 (CEST)
+	Fri, 10 Aug 2007 08:35:54 +0200 (CEST)
+Received: by qb-out-0506.google.com with SMTP id f9so2131654qba
+	for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2007 23:35:53 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <Pine.BSO.4.64.0707292305080.12870@metheny.ijneb.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +22,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Hills <mark@pogo.org.uk>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Hills wrote:
-> This patch is a USB quirk to ensure the Stanton Scratchamp v1 is detected 
-> (bugtrack #2932). The interface is two USB devices in the same physical 
-> box. Note that this is the USB ScratchAmp v1 and not the later v2 
-> (firewire) model.
-
-Applied, thanks!
-
-Clemens
+hi, guys
+I checked the include/sound/pcm.h in kernel and find this problem, it
+seemed strange, so many codecs support the 24000 sample rate, why
+there is no such definition. Any special concern?
