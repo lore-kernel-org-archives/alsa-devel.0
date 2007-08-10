@@ -1,15 +1,19 @@
-From: Pekka.Panula@sofor.fi
-Subject: C-Media 8788
-Date: Fri, 10 Aug 2007 10:17:25 +0300
-Message-ID: <OF97495FB9.30DC3828-ONC2257333.0027232B-C2257333.00280C59@Sofor.fi>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Where is simple mixer control "Surround" defined
+ for ac97 or via82xx? I cant find it anywhere in ac97....
+Date: Fri, 10 Aug 2007 09:33:46 +0200
+Message-ID: <1186731226.23948.1204693671@webmail.messagingengine.com>
+References: <20070808150429.45d1abef@jutz-fc6.na.corp.dmxmusic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SofExtR4.sofor.fi (sofextr4.sofor.fi [213.250.93.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDFF010383B
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 03FAB10383B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Aug 2007 09:17:27 +0200 (CEST)
+	Fri, 10 Aug 2007 09:33:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20070808150429.45d1abef@jutz-fc6.na.corp.dmxmusic.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,21 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "John L. Utz III" <john.utz@dmx.com>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+John L. Utz III wrote:
+> amixer controls | grep Surround
+> numid=20,iface=MIXER,name='Surround Playback Switch'
+> numid=21,iface=MIXER,name='Surround Playback Volume'
+> 
+> But for the life of me, i cant find the code that implements it!
 
-Any inside info about C-Media 8788 support, i see that repository contains 
-some sort of driver for it, but what state is it, is it working as wiki 
-says its about 35% done.
-Happy to know also if its going for Linux 2.6.23 kernel? I think lot of 
-people would be happy to get it to kernel soon as possible as it seems 
-Creative has serious delays about x-fi driver (i wonder if there will be 
-any Linux support at all, not looking good) and many people are thinking 
-about Razer barracuda AC-1 or Auzentech X-Meridean which uses C-Media 8788 
-chipset. 
+Around line 1350 in ac97_codec.c:
 
-Terveisin/Regards,
-   Pekka Panula, Net Servant Oy - A Sofor company
-   pekka.panula@sofor.fi
+	/* build surround controls */
+	if ((snd_ac97_try_volume_mix(ac97, AC97_SURROUND_MASTER))
+		&& !(ac97->flags & AC97_AD_MULTI)) {
+		/* Surround Master (0x38) is with stereo mutes */
+		if ((err = snd_ac97_cmix_new_stereo(card, "Surround Playback",
+						    AC97_SURROUND_MASTER, 1, 0,
+						    ac97)) < 0)
+			return err;
+	}
+
+HTH
+Clemens
