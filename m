@@ -1,17 +1,14 @@
 From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Recent code changes for HD-audio on HG repo
-Date: Sat, 11 Aug 2007 09:30:46 -0700
-Message-ID: <1186849846.5512.36.camel@razman.gruemaster.com>
-References: <46BDB38D.9090803@free.fr>
+Subject: HDA - Add support for more Dell systems
+Date: Sat, 11 Aug 2007 15:01:45 -0700
+Message-ID: <1186869705.5512.129.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-HN8/tpaXDCu/ipULFxHr"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 678F0103832
+	by alsa0.perex.cz (Postfix) with ESMTP id C04DE10381C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Aug 2007 18:30:48 +0200 (CEST)
-In-Reply-To: <46BDB38D.9090803@free.fr>
+	Sun, 12 Aug 2007 00:01:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,62 +18,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Claude Michel <cpjm@free.fr>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Developers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-I have some spare cycles to look into this over the weekend.  Please
-send me the output from
-http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh .
-We can take this off-list and I can send you some test patches.
 
-Thanks,
+--=-HN8/tpaXDCu/ipULFxHr
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Tobin
+This patch adds more support for Dell systems with Stac9205 codecs.
+Tested against a couple of different systems (with different pin
+configs), but the others should also work.  Also cleaned up some of the
+9205 patch code.
 
-On Sat, 2007-08-11 at 15:03 +0200, Claude Michel wrote:
 
-> Hi,
-> 
-> I have done come test of the new suspend/resume capabilities.
-> However suspend failed to correctly work on my laptop (dell d630).
-> You must note that there is a few trouble issues with sound on this laptop:
-> the snd_hda_intel driver correctly detect a STAC9205 and get the default
-> pin configuration from the bios. So far, so good ... however, pin B is by
-> default configured as line out and is working as such. But, it does not
-> correctly work with an external microphone as it need a vref. So, 
-> instead of using the
-> bios settings, I use the windows default settings. This is not perfectly
-> working : I usually get some glinches that disappear after a logout/login
-> procedure. Nothing significant appears from a diff between 
-> /proc/asound/card0/codec0
-> before and after this procedure ...
-> 
-> Now let talk about the suspend failure. The suspend procedure (which was 
-> previously
-> working) produce a bug (I was not able to catch the message at this 
-> stage. This is a
-> partial and hand written report ..):
-> Bug: unable to handle kernel NULL Pointer deferred at virtual address 0000
-> ....
-> Call trace
-> ...
-> <f9546d24> hda_set_power_state+0x34/0x150 [snd_hda_intel] <f9547768> 
-> hda_call_code_suspend+0x39/0x60 [snd_hda_intel]
-> <f955477b7> snd_hda_suspend+0x27/0x50 [snd_hda_intel]<f954603c> 
-> azx_suspend+0x60/0xd0 [snd_hda_intel]
-> <c023b29ac> pci_device_suspend+0x2c/0x70 <c0f29effd> 
-> suspend_devide+0xdd/0x110
-> ....
-> 
-> By the way, I am running mandriva 2007.1 with kernel 2.6.17-14mdv.
-> cpjm
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
--- 
-Tobin Davis <tdavis@dsl-only.net>
+Signed off by Tobin Davis <tdavis@dsl-only.net>
+
+--=-HN8/tpaXDCu/ipULFxHr
+Content-Disposition: attachment; filename=Dell-Inspiron.patch
+Content-Type: text/x-patch; name=Dell-Inspiron.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+diff -r 06f49905b2d5 pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Sat Aug 11 11:06:09 2007 +0200
++++ b/pci/hda/patch_sigmatel.c	Sat Aug 11 12:05:44 2007 -0700
+@@ -44,7 +44,9 @@ enum {
+ 
+ enum {
+ 	STAC_9205_REF,
+-	STAC_M43xx,
++	STAC_9205_DELL_M43,
++	STAC_9205_DELL_M44,
++	STAC_9205_M43xx,
+ 	STAC_9205_MODELS
+ };
+ 
+@@ -788,13 +790,30 @@ static unsigned int ref9205_pin_configs[
+ 	0x90a000f0, 0x90a000f0, 0x01441030, 0x01c41030
+ };
+ 
++static unsigned int dell_m43_9205_pin_configs[12] = {
++	0x0321101f, 0x03a11020, 0x90a70330, 0x90170310,
++	0x400000fe, 0x400000ff, 0x400000fd, 0x40f000f9,
++	0x400000fa, 0x400000fc, 0x0144131f, 0x40c003f8,
++};
++
++static unsigned int dell_m44_9205_pin_configs[12] = {
++	0x0421101f, 0x04a11020, 0x400003fa, 0x90170310,
++	0x400003fb, 0x400003fc, 0x400003fd, 0x400003f9,
++	0x90a60330, 0x400003ff, 0x01441340, 0x40c003fe,
++};
++
++
+ static unsigned int *stac9205_brd_tbl[STAC_9205_MODELS] = {
+-	[STAC_REF] = ref9205_pin_configs,
+-	[STAC_M43xx] = NULL,
++	[STAC_9205_REF] = ref9205_pin_configs,
++	[STAC_9205_DELL_M43] = dell_m43_9205_pin_configs,
++	[STAC_9205_DELL_M44] = dell_m44_9205_pin_configs,
++	[STAC_9205_M43xx] = NULL,
+ };
+ 
+ static const char *stac9205_models[STAC_9205_MODELS] = {
+ 	[STAC_9205_REF] = "ref",
++	[STAC_9205_DELL_M43] = "dell-m43",
++	[STAC_9205_DELL_M44] = "dell-m44",
+ };
+ 
+ static struct snd_pci_quirk stac9205_cfg_tbl[] = {
+@@ -802,9 +821,13 @@ static struct snd_pci_quirk stac9205_cfg
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
+ 		      "DFI LanParty", STAC_9205_REF),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01f8,
+-		      "Dell Precision", STAC_M43xx),
++		      "Dell Precision", STAC_9205_M43xx),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01f9,
++		      "Dell Precision", STAC_9205_DELL_M43),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01ff,
+-		      "Dell Precision", STAC_M43xx),
++		      "Dell Precision", STAC_9205_M43xx),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01fd,
++		      "Dell Inspiron 1721", STAC_9205_DELL_M44),
+ 	{} /* terminator */
+ };
+ 
+@@ -2312,7 +2335,9 @@ static int patch_stac9205(struct hda_cod
+ 
+ 	spec->multiout.dac_nids = spec->dac_nids;
+ 	
+-	if (spec->board_config == STAC_M43xx) {
++	switch (spec->board_config){
++	case STAC_9205_M43xx:
++	case STAC_9205_DELL_M43:
+ 		/* Enable SPDIF in/out */
+ 		stac92xx_set_config_reg(codec, 0x1f, 0x01441030);
+ 		stac92xx_set_config_reg(codec, 0x20, 0x1c410030);
+@@ -2322,9 +2347,12 @@ static int patch_stac9205(struct hda_cod
+ 		 * GPIO2 High = Headphone Mute
+ 		 */
+ 		spec->gpio_data = 0x00000005;
+-	} else
+-		spec->gpio_mask = spec->gpio_data =
+-			0x00000001; /* GPIO0 High = EAPD */
++		break;
++	default:
++		/* GPIO0 High = EAPD */
++		spec->gpio_mask = spec->gpio_data = 0x00000001; 
++		break;
++	}
+ 
+ 	stac92xx_enable_gpio_mask(codec);
+ 	err = stac92xx_parse_auto_config(codec, 0x1f, 0x20);
+
+--=-HN8/tpaXDCu/ipULFxHr
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-HN8/tpaXDCu/ipULFxHr--
