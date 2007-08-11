@@ -1,14 +1,14 @@
 From: Tobin Davis <tdavis@dsl-only.net>
 Subject: HDA - Add support for more Dell systems
-Date: Sat, 11 Aug 2007 15:01:45 -0700
-Message-ID: <1186869705.5512.129.camel@razman.gruemaster.com>
+Date: Sat, 11 Aug 2007 15:46:00 -0700
+Message-ID: <1186872360.5512.134.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-HN8/tpaXDCu/ipULFxHr"
+Content-Type: multipart/mixed; boundary="=-HBJEzo23yaLFvczxCdJp"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id C04DE10381C
+	by alsa0.perex.cz (Postfix) with ESMTP id 67957103836
 	for <alsa-devel@alsa-project.org>;
-	Sun, 12 Aug 2007 00:01:47 +0200 (CEST)
+	Sun, 12 Aug 2007 00:46:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,7 +22,7 @@ To: ALSA Developers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-HN8/tpaXDCu/ipULFxHr
+--=-HBJEzo23yaLFvczxCdJp
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
@@ -31,18 +31,18 @@ Tested against a couple of different systems (with different pin
 configs), but the others should also work.  Also cleaned up some of the
 9205 patch code.
 
-
+Ignore previous email, as I missed a few vendor ID replacements.
 
 Signed off by Tobin Davis <tdavis@dsl-only.net>
 
---=-HN8/tpaXDCu/ipULFxHr
+--=-HBJEzo23yaLFvczxCdJp
 Content-Disposition: attachment; filename=Dell-Inspiron.patch
 Content-Type: text/x-patch; name=Dell-Inspiron.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 diff -r 06f49905b2d5 pci/hda/patch_sigmatel.c
 --- a/pci/hda/patch_sigmatel.c	Sat Aug 11 11:06:09 2007 +0200
-+++ b/pci/hda/patch_sigmatel.c	Sat Aug 11 12:05:44 2007 -0700
++++ b/pci/hda/patch_sigmatel.c	Sat Aug 11 15:43:37 2007 -0700
 @@ -44,7 +44,9 @@ enum {
  
  enum {
@@ -54,7 +54,7 @@ diff -r 06f49905b2d5 pci/hda/patch_sigmatel.c
  	STAC_9205_MODELS
  };
  
-@@ -788,13 +790,30 @@ static unsigned int ref9205_pin_configs[
+@@ -788,23 +790,58 @@ static unsigned int ref9205_pin_configs[
  	0x90a000f0, 0x90a000f0, 0x01441030, 0x01c41030
  };
  
@@ -87,23 +87,39 @@ diff -r 06f49905b2d5 pci/hda/patch_sigmatel.c
  };
  
  static struct snd_pci_quirk stac9205_cfg_tbl[] = {
-@@ -802,9 +821,13 @@ static struct snd_pci_quirk stac9205_cfg
+ 	/* SigmaTel reference board */
  	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
  		      "DFI LanParty", STAC_9205_REF),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01f8,
+-	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01f8,
 -		      "Dell Precision", STAC_M43xx),
+-	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01ff,
+-		      "Dell Precision", STAC_M43xx),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01f8,
 +		      "Dell Precision", STAC_9205_M43xx),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01f9,
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01f9,
 +		      "Dell Precision", STAC_9205_DELL_M43),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x01ff,
--		      "Dell Precision", STAC_M43xx),
-+		      "Dell Precision", STAC_9205_M43xx),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01fa,
++		      "Dell Precision", STAC_9205_DELL_M43),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01fe,
++		      "Dell Precision", STAC_9205_DELL_M43),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01ff,
++		      "Dell Precision", STAC_9205_DELL_M43),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0206,
++		      "Dell Precision", STAC_9205_DELL_M43),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01f1,
++		      "Dell Inspiron", STAC_9205_DELL_M44),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01f2,
++		      "Dell Inspiron", STAC_9205_DELL_M44),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01fc,
++		      "Dell Inspiron", STAC_9205_DELL_M44),
 +	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01fd,
-+		      "Dell Inspiron 1721", STAC_9205_DELL_M44),
++		      "Dell Inspiron", STAC_9205_DELL_M44),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x021f,
++		      "Dell Inspiron", STAC_9205_DELL_M44),
  	{} /* terminator */
  };
  
-@@ -2312,7 +2335,9 @@ static int patch_stac9205(struct hda_cod
+@@ -2312,7 +2349,9 @@ static int patch_stac9205(struct hda_cod
  
  	spec->multiout.dac_nids = spec->dac_nids;
  	
@@ -114,7 +130,7 @@ diff -r 06f49905b2d5 pci/hda/patch_sigmatel.c
  		/* Enable SPDIF in/out */
  		stac92xx_set_config_reg(codec, 0x1f, 0x01441030);
  		stac92xx_set_config_reg(codec, 0x20, 0x1c410030);
-@@ -2322,9 +2347,12 @@ static int patch_stac9205(struct hda_cod
+@@ -2322,9 +2361,12 @@ static int patch_stac9205(struct hda_cod
  		 * GPIO2 High = Headphone Mute
  		 */
  		spec->gpio_data = 0x00000005;
@@ -131,7 +147,7 @@ diff -r 06f49905b2d5 pci/hda/patch_sigmatel.c
  	stac92xx_enable_gpio_mask(codec);
  	err = stac92xx_parse_auto_config(codec, 0x1f, 0x20);
 
---=-HN8/tpaXDCu/ipULFxHr
+--=-HBJEzo23yaLFvczxCdJp
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -142,4 +158,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---=-HN8/tpaXDCu/ipULFxHr--
+--=-HBJEzo23yaLFvczxCdJp--
