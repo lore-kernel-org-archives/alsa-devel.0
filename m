@@ -1,26 +1,19 @@
-From: "nicfagn" <nicfagn@iol.it>
-Subject: Recent code changes for HD-audio on HG repo
-Date: Tue, 14 Aug 2007 20:41:04 +0200
-Message-ID: <JMS18G$D6593E93F61285FE8A75013EC0062E59@libero.it>
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: Re: Why is the body of my msg stripped when posted to
+	the list?
+Date: Tue, 14 Aug 2007 21:28:46 +0100
+Message-ID: <20070814202846.GA3088@localhost>
+References: <BAY133-F39DEDFFC413D24224761CDC3DD0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out1.libero.it (smtp-out1.libero.it [212.52.84.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3BAD2103874
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF7AC24469
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Aug 2007 20:41:05 +0200 (CEST)
-Received: from localhost (172.31.0.42) by smtp-out1.libero.it (7.3.120)
-	id 4688F31703B3C4CC for alsa-devel@alsa-project.org;
-	Tue, 14 Aug 2007 20:41:04 +0200
-Received: from smtp-out3.libero.it ([172.31.0.39])
-	by localhost (asav-out2.libero.it [192.168.32.30]) (amavisd-new,
-	port 10024)
-	with ESMTP id WiJfAd0qzPjN for <alsa-devel@alsa-project.org>;
-	Tue, 14 Aug 2007 20:41:04 +0200 (CEST)
-Received: from mailrelay07.libero.it (192.168.32.94) by smtp-out3.libero.it
-	(7.3.120) id 4611FDB60A8F8D4F for alsa-devel@alsa-project.org;
-	Tue, 14 Aug 2007 20:41:04 +0200
+	Tue, 14 Aug 2007 22:25:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <BAY133-F39DEDFFC413D24224761CDC3DD0@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,11 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Magdalena Iovescu <magdab@hotmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I tested the alsa-driver-hg20070814 snapshot on my system and after the power save timeout (10 secs) the sound stops working.
-I am on an iMac 24''(2006) with hda and realtek ALC885 and Ubuntu Gutsy with a 2.6.22-9 kernel.
-If I can help in some way, let me know.
+On Tue, Aug 14, 2007 at 05:40:35PM +0000, Magdalena Iovescu wrote:
+> 
 
-Thanks
+It's Hotmail. I think it's sending the message body as some kind
+of attachment that the list mail server removes. Any standards-compliant
+mail client (which Hotmail is not) should work.
+
+John
