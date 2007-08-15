@@ -1,26 +1,19 @@
-From: Akio <akioolin@gmail.com>
-Subject: Voip Application with ALSA OSS Emulation ==> voice
-	delay
-Date: Wed, 15 Aug 2007 15:08:01 +0000 (UTC)
-Message-ID: <loom.20070815T160926-869@post.gmane.org>
+From: Joachim Foerster <mls.JOFT@gmx.de>
+Subject: Re: [PATCH] [ML403-AC97CR] Fix (device/driver) name
+	registered	with platform bus
+Date: Wed, 15 Aug 2007 20:45:22 +0200
+Message-ID: <1187203522.1376.18.camel@localhost>
+References: <1186655810.7420.26.camel@localhost>
+	<s5hsl6sws0s.wl%tiwai@suse.de>  <1186849433.20835.33.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8A6C103834
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id DD72D243C2
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Aug 2007 18:35:05 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1ILLpm-00027i-K8
-	for alsa-devel@alsa-project.org; Wed, 15 Aug 2007 18:35:03 +0200
-Received: from 61-56-150-105-adsl-chu.STATIC.so-net.net.tw ([61.56.150.105])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2007 18:35:02 +0200
-Received: from akioolin by 61-56-150-105-adsl-chu.STATIC.so-net.net.tw with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2007 18:35:02 +0200
+	Wed, 15 Aug 2007 20:45:27 +0200 (CEST)
+In-Reply-To: <1186849433.20835.33.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,56 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel <alsa-devel@alsa-project.org>, Lorenz Kolb <lorenz.kolb@lkmail.de>, Stephen Neuendorffer <stephen.neuendorffer@xilinx.com>, linuxppc-embedded <linuxppc-embedded@ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Sir:
+Hi all,
 
-              Could you do me a favor?
+below, you'll find a very small patch: In the current state, platform
+bus _never_ activates (= calls probe() callback on) the driver, because
+the driver's name has a dash and the device's name has an underscore. I
+made this horrible change _after_ I tested the final patch, which I
+posted on Saturday. Sorry.
 
-              Right now, we are using a arm box with linux kernel 2.6.14 to
-              develop a voip  solution. After the rtp connection was 
-              connected at first 20 secs, there is no delay. As the timing passing
-              by, the delay will going longer and longer.  After 16 houres, the 
-              delay will up to 12 secs. Because the alsa lib application can't 
-              detect any alsa device, we have no choice but only alsa
-              oss emulation data path to using audio device. after tracing
-	      sound/core/oss/pcm_oss.c. we find some things.
+From: Joachim Foerster <JOFT@gmx.de>
 
-              1.in snd_pcm_oss_write() and in snd_pcm_oss_read(), there is a
-                little slight difference. in snd_pcm_oss_write(), before and after
-                snd_pcm_oss_write1() there are using up() and down() to protect
-                snd_pcm_oss_write1(). but in snd_pcm_oss_read(), there is no 
-                protection. why doesn't use up() and down() to protect 
-                snd_pcm_oss_read1()?
+Names inside struct platform_device and struct platform_driver seem to
+need underscores instead of dashes.
 
-              2.after using printk to tracing runtime->oss.xxx fields in
-                 snd_pcm_oss_read1(), we got the data positions seem correct. 
-                 and alignment very well. what should we have to check? where
-                 do we have to check?
+(Patch for Linus' master branch, date 2007/08/08 _including_ my patches
+sent on Saturday)
 
-              3.in snd_pcm_oss_capture_position_fixup(), why using the following
-                condition to check, 
-                if (*delay <= (snd_pcm_sframes_t)runtime->buffer_size)?
-                why not using 
-                if (*delay <= (snd_pcm_sframes_t)runtime->period_size)?
+Signed-off-by: Joachim Foerster <JOFT@gmx.de>
+---
+ arch/ppc/syslib/virtex_devices.c |    2 +-
+ sound/drivers/ml403-ac97cr.c     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-                because the following wrapping,
-                frames = (*delay - runtime->buffer_size) + runtime->period_size - 1;
-                frames /= runtime->period_size;
-                frames *= runtime->period_size;
-                using runtime->period_size, not runtime->buffer_size.
-
-              4.why using snd_pcm_oss_capture_position_fixup() in
-                 snd_pcm_oss_read3() not in snd_pcm_oss_read()?
-
-              5.the following url seem counter the same problems.          
-                 http://blackfin.uclinux.org/gf/project/uclinux-dist/forum/?
-                 action=ForumBrowse&forum_id=39&_forum_action=
-                 ForumMessageBrowse&thread_id=22524
-
-           We will check the write direction to see the runtime->oss.xxx fields will
-           act as the same read or not. Thanks in advance.
-							
-Best Regards,
-Akio
+diff --git a/arch/ppc/syslib/virtex_devices.c b/arch/ppc/syslib/virtex_devices.c
+index d0b04d6..9fa10b1 100644
+--- a/arch/ppc/syslib/virtex_devices.c
++++ b/arch/ppc/syslib/virtex_devices.c
+@@ -122,7 +122,7 @@
+ }
+ 
+ #define XPAR_AC97_CONTROLLER_REFERENCE(num) { \
+-	.name = "ml403-ac97cr", \
++	.name = "ml403_ac97cr", \
+ 	.id = num, \
+ 	.num_resources = 3, \
+ 	.resource = (struct resource[]) { \
+diff --git a/sound/drivers/ml403-ac97cr.c b/sound/drivers/ml403-ac97cr.c
+index 2222315..2636249 100644
+--- a/sound/drivers/ml403-ac97cr.c
++++ b/sound/drivers/ml403-ac97cr.c
+@@ -66,7 +66,7 @@
+ #include "pcm-indirect2.h"
+ 
+ 
+-#define SND_ML403_AC97CR_DRIVER "ml403-ac97cr"
++#define SND_ML403_AC97CR_DRIVER "ml403_ac97cr"
+ 
+ MODULE_AUTHOR("Joachim Foerster <JOFT@gmx.de>");
+ MODULE_DESCRIPTION("Xilinx ML403 AC97 Controller Reference");
+-- 
+1.5.2.4
