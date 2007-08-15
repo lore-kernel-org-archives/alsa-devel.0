@@ -1,22 +1,21 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: Noisy audio - ALSA Configuration
-Date: Thu, 16 Aug 2007 10:01:17 +1200
-Message-ID: <200708161001.17944.linux@audioscience.com>
-References: <BAY133-F32D7F625C6B67D236D68CEC3DD0@phx.gbl>
+From: "Michael Bourgeous" <sts.nitrogen@gmail.com>
+Subject: Re: Writing a new sound driver
+Date: Wed, 15 Aug 2007 16:30:15 -0600
+Message-ID: <8e4fc8270708151530g14682db6la5c23069e9041902@mail.gmail.com>
+References: <8e4fc8270708111546k328a0575h9e362ee01a2917ec@mail.gmail.com>
+	<200708121502.09106.linux@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 082E024445
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C7882446C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Aug 2007 23:59:56 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JMU00I7R53P2P10@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 16 Aug 2007 09:59:53 +1200 (NZST)
-In-reply-to: <BAY133-F32D7F625C6B67D236D68CEC3DD0@phx.gbl>
-Content-disposition: inline
+	Thu, 16 Aug 2007 00:30:17 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id f40so52482fka
+	for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2007 15:30:16 -0700 (PDT)
+In-Reply-To: <200708121502.09106.linux@audioscience.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,51 +26,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Magdalena Iovescu <magdab@hotmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> Eliot,
-> Thank you very much. Here is the message. If Hotmail is the problem I can
-> subscribe using my work e-mail; I wanted to avoid that in the first place.
-> Magdalena
+On 8/11/07, Eliot Blennerhassett <linux@audioscience.com> wrote:
+> Hi Mike,
+>
+> On Sunday 12 August 2007 10:46:07 Michael Bourgeous wrote:
+> > doesn't seem to support DMA for sound.  Is it possible to write a
+> > sound driver for ALSA that uses a polling mechanism?
+>
+> Does it support interrupts?
+> If so see
+> http://www-old.alsa-project.org/~iwai/writing-an-alsa-driver/x773.htm
 
-The Hotmail message is all HTML, with no plaintext version.  I'm not sure i=
-f =
+Yes, it supports interrupts.  However, there is one caveat, which I'll
+describe below.  I believe the Windows driver tells the card to
+trigger an interrupt when playback reaches the start of or middle of
+the audio buffer.
 
-this list accpets html mails. OR  The text of the mail is all encapsulated =
-in =
+> > Also, how would
+> > I integrate this driver with my core driver for accessing the TL880?
+> > The chip's features span four separate kernel subsystems: v4l, dvb,
+> > sound, and fb.
+>
+> What are dependencies if any between these functions on the chip?
 
-a number of HTML <DIV> blocks, maybe confused html to text converter...
+The caveat I mentioned above is that all interrupts from the card are
+stored in a single register.  If this register is read, its contents
+are cleared.  So, only one kernel module can be allowed to handle
+interrupts.  Additionally, the card has a very large register space,
+and I'd prefer to have a single interface that helps to abstract that
+register space.  My eventual goal (which may be a very long time away)
+is to have a core module that just handles PCI interaction,
+interrupts, register reads/writes, etc., with another module for each
+of video capture, MPEG capture and playback, framebuffer, and audio.
 
-Here is the original question:
 
-> Does anyone have examples or documentation on how to configure periods,
-> frames and buffers for various sample rates? I am writing a program to
-> route a mp3 decoder output to ALSA on an ARM processor, and I get noisy
-> audio. For a CD quality stream (S16_LE, 44100 kHz, Stereo, 128 bps) I am
-> using an output=A0buffer of 44100 bytes, a period of 44100/(channels*2). =
-With
-
-Be careful about the distinction between bytes and frames (i.e. a frame of =
-
-stereo S16 is 4 bytes)
-
-Start with the period =
-
-1024 frames =3D  4096 bytes
-then make your buffer at least 2x this:
-8192 bytes
-
-(I'm not an app developer, so others may jump in with a better explanation)
-
-Did you look at the code in alsa-lib/test?
-
-> a buffer this big, I do not get underruns, but I do get all short writes.=
- I
-> have not been able to find the right configuration to avoid short writes,
-> and more importantly, to get good quality audio. What do 'short writes' (I
-> am using writei) really mean? Is this a performance issue in the driver, =
-or
-> is mainly because of buffer setup? I would really appreciate any help with
-> this.
-> Magdalena
+Thanks for the info,
+Mike Bourgeous
