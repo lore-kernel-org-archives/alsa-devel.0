@@ -1,18 +1,19 @@
-From: "Michael Bourgeous" <sts.nitrogen@gmail.com>
-Subject: Tascam US-428 USB Problems
-Date: Thu, 16 Aug 2007 00:45:31 -0600
-Message-ID: <8e4fc8270708152345k450c8460la0eb17e33d50fdd7@mail.gmail.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Voip Application with ALSA OSS Emulation ==> voice
+ delay
+Date: Thu, 16 Aug 2007 08:47:36 +0200
+Message-ID: <1187246856.13434.1205658833@webmail.messagingengine.com>
+References: <loom.20070815T160926-869@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E065243BD
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 4C7E6243BD
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Aug 2007 08:45:32 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id f40so143959fka
-	for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2007 23:45:31 -0700 (PDT)
+	Thu, 16 Aug 2007 08:47:38 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <loom.20070815T160926-869@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Akio <akioolin@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Akio wrote:
+> Right now, we are using a arm box with linux kernel 2.6.14 to
+> develop a voip  solution. After the rtp connection was 
+> connected at first 20 secs, there is no delay. As the timing passing
+> by, the delay will going longer and longer.  After 16 houres, the 
+> delay will up to 12 secs.
 
-I hope this reaches the Tascam driver developer...  I have a Tascam
-US-428 which worked great with my Athlon XP, but does not work at all
-with my new system, an Athlon 64 X2.  I've tried using the regular
-alsa driver, as well as the hwdep audio, and jackd always crashes with
-a SIGSEGV, with the following message in the kernel log:
+If the sending and the receiving computers don't use the same clock,
+there will be a small difference in the sample rate.  You have to
+measure this and adjust the data accordingly (by resampling or just
+adding/dropping some samples).
 
-[ 2538.003798] ALSA
-/home/nitrogen/src/alsa-driver-1.0.14rc3/usb/usx2y/usbusx2yaudio.c:148:
-should not be here with counts=42
-[ 2538.003806] ALSA
-/home/nitrogen/src/alsa-driver-1.0.14rc3/usb/usx2y/usbusx2yaudio.c:91:
-active frame status -70. Most probably some hardware problem.
-n
+> Because the alsa lib application can't detect any alsa device,
 
-I did some searching through source code, and found that the frame
-status of -70 (ECOMM) indicates an OHCI buffer overflow error.  As
-soon as the usx2y driver receives this it bails out of whatever it's
-doing, and jackd crashes.  I've tried changing the usx2y driver to
-ignore such errors, and while there are audio glitches when such an
-error occurs, jackd no longer crashes and the audio keeps playing.
-This leads to question one: Is there any reason to bail out instead of
-trying to recover from errors?
+I'd guess that either the device nodes in /dev/snd/ or the configuration
+files in /use/share/alsa/ are missing.
 
-I've tried all the different USB ports on my motherboard, different
-USB cables, and running through a hub instead of a direct connection.
-None of these things helped.  Though the usx2y message says "Most
-probably some hardware problem", I think this is something that is
-software related, as other USB devices have no problems.  So here is
-question two: what kinds of problems, software or hardware, would lead
-to a buffer overflow error, and can I fix this in the driver code?
 
-Thanks,
-Mike Bourgeous
+HTH
+Clemens
