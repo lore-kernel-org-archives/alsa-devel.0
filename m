@@ -1,18 +1,18 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: no sound with hda-intel,
-	conexant venice chip on	hp 2836
-Date: Wed, 15 Aug 2007 18:22:31 -0700
-Message-ID: <1187227351.5512.280.camel@razman.gruemaster.com>
-References: <20070815173601.GA3227@bentham.lan>
+From: "Michael Bourgeous" <sts.nitrogen@gmail.com>
+Subject: Tascam US-428 USB Problems
+Date: Thu, 16 Aug 2007 00:45:31 -0600
+Message-ID: <8e4fc8270708152345k450c8460la0eb17e33d50fdd7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5A7FF243D7
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E065243BD
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Aug 2007 03:22:34 +0200 (CEST)
-In-Reply-To: <20070815173601.GA3227@bentham.lan>
+	Thu, 16 Aug 2007 08:45:32 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id f40so143959fka
+	for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2007 23:45:31 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,345 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pieter-Augustijn Van Malleghem <p-a@scarlet.be>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For some reason, your system is defaulting the output pin connections to
-the mixer as opposed to the pcm (Node 0x10 & 0x11 should connect to
-0x19).
+Hello,
 
-Are you dual booting to Windows?  I've had issues getting this driver
-debugged, and this is usually one of the causes.  I'll try to revisit it
-again soon. 
+I hope this reaches the Tascam driver developer...  I have a Tascam
+US-428 which worked great with my Athlon XP, but does not work at all
+with my new system, an Athlon 64 X2.  I've tried using the regular
+alsa driver, as well as the hwdep audio, and jackd always crashes with
+a SIGSEGV, with the following message in the kernel log:
 
-In the mean time, try unloading the driver, then load it with "modprobe
--i snd-hda-intel model=test" to correctly set the channels, then unload
-and reload the driver without parameters.
+[ 2538.003798] ALSA
+/home/nitrogen/src/alsa-driver-1.0.14rc3/usb/usx2y/usbusx2yaudio.c:148:
+should not be here with counts=42
+[ 2538.003806] ALSA
+/home/nitrogen/src/alsa-driver-1.0.14rc3/usb/usx2y/usbusx2yaudio.c:91:
+active frame status -70. Most probably some hardware problem.
+n
 
-Tobin
+I did some searching through source code, and found that the frame
+status of -70 (ECOMM) indicates an OHCI buffer overflow error.  As
+soon as the usx2y driver receives this it bails out of whatever it's
+doing, and jackd crashes.  I've tried changing the usx2y driver to
+ignore such errors, and while there are audio glitches when such an
+error occurs, jackd no longer crashes and the audio keeps playing.
+This leads to question one: Is there any reason to bail out instead of
+trying to recover from errors?
 
-On Wed, 2007-08-15 at 19:36 +0200, Pieter-Augustijn Van Malleghem wrote:
+I've tried all the different USB ports on my motherboard, different
+USB cables, and running through a hub instead of a direct connection.
+None of these things helped.  Though the usx2y message says "Most
+probably some hardware problem", I think this is something that is
+software related, as other USB devices have no problems.  So here is
+question two: what kinds of problems, software or hardware, would lead
+to a buffer overflow error, and can I fix this in the driver code?
 
-> hi,
-> 
-> i've just installed debian unstable on an hp 2386ea. This is the sound
-> card it uses:
-> 
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-> 	Definition Audio Controller (rev 02)
-> Subsystem: Hewlett-Packard Company Unknown device 30b2
-> 
-> The driver is snd-hda-intel and everything loads fine. Alsamixer does
-> the job equally well. However, no actual sound is produced. It uses the
-> Conexant Venice (cx20549) codec. Nothing special in dmesg. I tried
-> loading the kernel with noacpi, but no changes.
-> 
-> I attach alsa-info.txt.
-> 
-> Any clues ?
-> 
-> Thanks in advance,
-> 
-> pieter-augustijn
-> 
-> name=root&type=33&description=/tmp/alsa-info.txt&expiry=&s=Submit+Post&content=
-> !!################################
-> !!ALSA Information Script v 0.4.30
-> !!################################
-> 
-> !!Script ran on: Wed Aug 15 17:19:13 CEST 2007
-> 
-> 
-> !!Linux Distribution
-> !!------------------
-> 
-> Debian GNU/Linux lenny/sid \n \l
-> 
-> 
-> !!Kernel Information
-> !!------------------
-> 
-> Kernel release:    2.6.22-1-amd64
-> Operating System:  GNU/Linux
-> Architecture:      x86_64
-> Processor:         unknown
-> SMP Enabled:       Yes
-> 
-> 
-> !!ALSA Version
-> !!------------
-> 
-> Driver version:     1.0.14
-> Library version:    
-> Utilities version:  1.0.14
-> 
-> 
-> !!Loaded ALSA modules
-> !!-------------------
-> 
-> snd_hda_intel
-> 
-> 
-> !!Soundcards recognised by ALSA
-> !!-----------------------------
-> 
->  0 [Intel          ]: HDA-Intel - HDA Intel
->                       HDA Intel at 0xd6400000 irq 22
-> 
-> 
-> !!PCI Soundcards installed in the system
-> !!--------------------------------------
-> 
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
-> 
-> 
-> !!Advanced information - PCI Vendor/Device/Susbsystem ID's
-> !!--------------------------------------------------------
-> 
-> 00:1b.0 0403: 8086:27d8 (rev 02)
-> 	Subsystem: 103c:30b2
-> 
-> 
-> !!HDA-Intel Codec information
-> !!---------------------------
-> 
-> Codec: Conexant CX20549 (Venice)
-> Address: 0
-> Vendor Id: 0x14f15045
-> Subsystem Id: 0x103c30b2
-> Revision Id: 0x100100
-> Default PCM:
->     rates [0x140]: 48000 96000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Default Amp-In caps: N/A
-> Default Amp-Out caps: N/A
-> Node 0x10 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x2b, nsteps=0x2b, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x1e 0x1e]
->   Pincap 0x0810014: OUT EAPD Detect
->   Pin Default 0x95170110: [Fixed] Speaker at Int Top
->     Conn = Analog, Color = Unknown
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 2
->      0x19 0x17*
-> Node 0x11 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x2b, nsteps=0x2b, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x1e 0x1e]
->   Pincap 0x08113c: IN OUT HP Detect
->   Pin Default 0x0221401f: [Jack] HP Out at Ext Front
->     Conn = 1/8, Color = Green
->   Pin-ctls: 0xc0: OUT HP
->   Power: 0x0
->   Connection: 2
->      0x19 0x17*
-> Node 0x12 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x2b, nsteps=0x2b, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x14 0x14]
->   Pincap 0x08113c: IN OUT HP Detect
->   Pin Default 0x62a1902e: [N/A] Mic at Sep Front
->     Conn = 1/8, Color = Pink
->   Pin-ctls: 0x20: IN
->   Power: 0x0
->   Connection: 2
->      0x19 0x17*
-> Node 0x13 [Pin Complex] wcaps 0x400301: Stereo Digital
->   Pincap 0x0810: OUT
->   Pin Default 0x21451130: [Jack] SPDIF Out at Sep Rear
->     Conn = Optical, Color = Black
->   Pin-ctls: 0x00:
->   Connection: 1
->      0x18
-> Node 0x14 [Pin Complex] wcaps 0x400081: Stereo
->   Pincap 0x081124: IN Detect
->   Pin Default 0x97a701f0: [Fixed] Mic at Int Riser
->     Conn = Analog, Color = Unknown
->   Pin-ctls: 0x24: IN
-> Node 0x15 [Pin Complex] wcaps 0x400001: Stereo
->   Pincap 0x0820: IN
->   Pin Default 0x54330121: [N/A] CD at Int Right
->     Conn = ATAPI, Color = Unknown
->   Pin-ctls: 0x00:
-> Node 0x16 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
->   Amp-Out caps: ofs=0x07, nsteps=0x07, stepsize=0x0b, mute=1
->   Amp-Out vals:  [0x06]
-> Node 0x17 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
->   Amp-In caps: ofs=0x14, nsteps=0x2b, stepsize=0x05, mute=1
->   Amp-In vals:  [0x94 0x94] [0x94 0x94] [0x94 0x94] [0x94 0x94] [0x94 0x94]
->   Power: 0x0
->   Connection: 5
->      0x19 0x14 0x12 0x11 0x15
-> Node 0x18 [Audio Output] wcaps 0x211: Stereo Digital
->   PCM:
->     rates [0x40]: 48000
->     bits [0x6]: 16 20
->     formats [0x5]: PCM AC3
-> Node 0x19 [Audio Output] wcaps 0xc11: Stereo
->   PCM:
->     rates [0x540]: 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
->   Power: 0x0
-> Node 0x1a [Audio Input] wcaps 0x100d0b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x17, stepsize=0x05, mute=1
->   Amp-In vals:  [0x17 0x17] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Power: 0x0
->   Connection: 5
->      0x17 0x14* 0x12 0x11 0x15
-> Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-> 
-> 
-> !!ALSA Device nodes
-> !!-----------------
-> 
-> crw-rw---- 1 root audio 116,  0 2007-08-15 16:56 /dev/snd/controlC0
-> crw-rw---- 1 root audio 116, 24 2007-08-15 16:56 /dev/snd/pcmC0D0c
-> crw-rw---- 1 root audio 116, 16 2007-08-15 16:56 /dev/snd/pcmC0D0p
-> crw-rw---- 1 root audio 116, 17 2007-08-15 16:56 /dev/snd/pcmC0D1p
-> crw-rw---- 1 root audio 116, 33 2007-08-15 16:03 /dev/snd/timer
-> 
-> 
-> !!Aplay output
-> !!------------
-> 
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: Intel [HDA Intel], device 0: CONEXANT Analog [CONEXANT Analog]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> card 0: Intel [HDA Intel], device 1: Conexant Digital [Conexant Digital]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> 
-> 
-> !!Amixer output
-> !!-------------
-> 
-> !!-------Mixer controls for card 0 [Intel]
-> 
-> Simple mixer control 'Master',0
->   Capabilities: pvolume pswitch pswitch-joined
->   Playback channels: Front Left - Front Right
->   Limits: Playback 0 - 43
->   Mono:
->   Front Left: Playback 30 [70%] [on]
->   Front Right: Playback 30 [70%] [on]
-> Simple mixer control 'PCM',0
->   Capabilities: pvolume
->   Playback channels: Front Left - Front Right
->   Limits: Playback 0 - 255
->   Mono:
->   Front Left: Playback 231 [91%] [-4.80dB]
->   Front Right: Playback 231 [91%] [-4.80dB]
-> Simple mixer control 'LineIn',0
->   Capabilities: cswitch cswitch-joined cswitch-exclusive
->   Capture exclusive group: 0
->   Capture channels: Mono
->   Mono: Capture [off]
-> Simple mixer control 'IEC958',0
->   Capabilities: pswitch pswitch-joined
->   Playback channels: Mono
->   Mono: Playback [off]
-> Simple mixer control 'Ext Mic',0
->   Capabilities: volume pswitch
->   Playback channels: Front Left - Front Right
->   Capture channels: Front Left - Front Right
->   Limits: 0 - 23
->   Front Left: 9 [39%] [13.50dB] Playback [on]
->   Front Right: 9 [39%] [13.50dB] Playback [on]
-> Simple mixer control 'Int Mic',0
->   Capabilities: volume pswitch
->   Playback channels: Front Left - Front Right
->   Capture channels: Front Left - Front Right
->   Limits: 0 - 23
->   Front Left: 13 [57%] [19.50dB] Playback [on]
->   Front Right: 13 [57%] [19.50dB] Playback [on]
-> Simple mixer control 'IntMic',0
->   Capabilities: cswitch cswitch-joined cswitch-exclusive
->   Capture exclusive group: 0
->   Capture channels: Mono
->   Mono: Capture [on]
-> 
-> 
-> !!All Loaded Modules
-> !!------------------
-> 
-> Module
-> snd_hda_intel
-> snd_pcm_oss
-> snd_mixer_oss
-> snd_pcm
-> snd_timer
-> snd
-> soundcore
-> snd_page_alloc
-> arc4
-> ecb
-> blkcipher
-> ieee80211_crypt_wep
-> nvidia
-> ipv6
-> button
-> ac
-> battery
-> dm_snapshot
-> dm_mirror
-> dm_mod
-> firewire_sbp2
-> loop
-> tsdev
-> joydev
-> ipw3945
-> hci_usb
-> i2c_i801
-> sdhci
-> ieee80211
-> ieee80211_crypt
-> psmouse
-> bluetooth
-> i2c_core
-> mmc_core
-> serio_raw
-> firmware_class
-> iTCO_wdt
-> intel_agp
-> evdev
-> ext3
-> jbd
-> mbcache
-> ide_cd
-> cdrom
-> sd_mod
-> piix
-> generic
-> ide_core
-> e100
-> ata_generic
-> ahci
-> firewire_ohci
-> firewire_core
-> crc_itu_t
-> mii
-> libata
-> ehci_hcd
-> scsi_mod
-> uhci_hcd
-> thermal
-> processor
-> fan
-> 
-> 
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- 
-Tobin Davis  
-
-
-After years of research, scientists recently reported that there is,
-indeed, arroz in Spanish Harlem.
+Thanks,
+Mike Bourgeous
