@@ -1,20 +1,20 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: no sound with hda-intel,
-	conexant venice chip	on	hp 2836
-Date: Thu, 16 Aug 2007 18:16:43 -0700
-Message-ID: <1187313403.9720.48.camel@razman.gruemaster.com>
-References: <20070815173601.GA3227@bentham.lan>
-	<1187227351.5512.280.camel@razman.gruemaster.com>
-	<874pizkzgx.fsf@news.realpath.org>
+From: Karsten Wiese <fzu@wemgehoertderstaat.de>
+Subject: Re: Tascam US-428 USB Problems
+Date: Fri, 17 Aug 2007 09:19:37 +0200
+Message-ID: <200708170919.37627.fzu@wemgehoertderstaat.de>
+References: <8e4fc8270708152345k450c8460la0eb17e33d50fdd7@mail.gmail.com>
+	<200708161154.49018.fzu@wemgehoertderstaat.de>
+	<8e4fc8270708161635v8c164e7j311439c2e2f7d3bd@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F4AE103816
+Received: from mout2.freenet.de (mout2.freenet.de [195.4.92.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5C425103846
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Aug 2007 03:16:46 +0200 (CEST)
-In-Reply-To: <874pizkzgx.fsf@news.realpath.org>
+	Fri, 17 Aug 2007 09:19:03 +0200 (CEST)
+In-Reply-To: <8e4fc8270708161635v8c164e7j311439c2e2f7d3bd@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,457 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sebastian Krause <sebastian@realpath.org>
+To: Michael Bourgeous <sts.nitrogen@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Unfortunately, your problem is completely different (even though the
-symptoms are the same).  You have a Realtek ALC268 audio codec, and
-there is currently very limited support for it.
+Am Freitag, 17. August 2007 schrieb Michael Bourgeous:
+> 
+> I have some more information.  I found out that Windows users of the
+> Tascam experience system BSODs when power management is enabled.  So,
+> I disabled PowerNow and acpid, and I no longer get the USB error
+> messages in the syslog or jackd crashes.  This leads me to believe
+> that something, somewhere in the kernel, is relying upon the CPU cycle
+> count for timing, and when the CPU switches from 1GHz to 1.8GHz or
+> 2.4GHz, it triggers a buffer overrun.  Whether that's in the usx2y
+> driver or in the host controller code I don't know.
 
-The good news is that I have a reference board and more detailed specs
-coming soon.  I'll look into getting you a preliminary driver this
-weekend, and better support after that.
+Try to only disable cpu speed changes.
+You can "preselect" fixed speed by doing i.e.:
+	$ echo 1800000>/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+	$ echo 1800000>/sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+	$ echo 1800000>/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+	$ echo 1800000>/sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+Is that enough to stabilize things?
 
-Tobin
+I think the buffer overrun is caused by the cpu not "cooperating" with the
+OHCI's DMA during the frequency transitions.
 
-On Thu, 2007-08-16 at 22:15 +0200, Sebastian Krause wrote:
+> 
+> Still, performance is less than I would expect, with occasional xruns
+> and hundreds of "delay longer than estimated" messages, when running
+> at 256 samples latency (the setting I typically use in Windows).  To
+> the credit of the Linux driver, I'm able to get down to 128 samples (2
+> periods of 64 frames), but I can only play a few notes at a time in
+> ZynAddSubFX before it xruns.  Performance is slightly better with
 
-> Tobin Davis <tdavis@dsl-only.net> wrote:
-> > For some reason, your system is defaulting the output pin connections to
-> > the mixer as opposed to the pcm (Node 0x10 & 0x11 should connect to
-> > 0x19).
-> >
-> > Are you dual booting to Windows?  I've had issues getting this driver
-> > debugged, and this is usually one of the causes.  I'll try to revisit it
-> > again soon. 
-> 
-> I have a very similar problem as Pieter-Augustijn, at least
-> regarding the symptoms: Everything seems to be quite fine, I don't
-> get any error messages and neither see weird things in dmesg. But
-> using Linux my laptop has never produced any sound until now (trying
-> different distributions). Neither after a cold start.
-> 
-> I'm using an Acer Aspire 5710Z and also I'm dual-booting with
-> Windows XP. Since I couldn't find any clues about my problem yet I
-> didn't know where to start tuning my settings (currently they're
-> just still Ubuntu default).
-> 
-> I've attached the audio output of "lspci -vv" and the alsa-info.sh
-> script.
-> 
-> Thanks,
-> Sebastian
-> 
-> 
-> plain text document attachment (lspci.txt)
-> 
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
-> 	Subsystem: Acer Incorporated [ALI] Unknown device 012e
-> 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-> 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-> 	Latency: 0, Cache Line Size: 64 bytes
-> 	Interrupt: pin A routed to IRQ 22
-> 	Region 0: Memory at d0440000 (64-bit, non-prefetchable) [size=16K]
-> 	Capabilities: [50] Power Management version 2
-> 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-> 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> 	Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
-> 		Address: 0000000000000000  Data: 0000
-> 	Capabilities: [70] Express Unknown type IRQ 0
-> 		Device: Supported: MaxPayload 128 bytes, PhantFunc 0, ExtTag-
-> 		Device: Latency L0s <64ns, L1 <1us
-> 		Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
-> 		Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-> 		Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-> 		Link: Supported Speed unknown, Width x0, ASPM unknown, Port 0
-> 		Link: Latency L0s <64ns, L1 <1us
-> 		Link: ASPM Disabled CommClk- ExtSynch-
-> 		Link: Speed unknown, Width x0
-> 
-> plain text document attachment (alsa-info.txt)
-> 
-> !!################################
-> !!ALSA Information Script v 0.4.30
-> !!################################
-> 
-> !!Script ran on: Thu Aug 16 21:54:44 CEST 2007
-> 
-> 
-> !!Linux Distribution
-> !!------------------
-> 
-> Ubuntu gutsy (development branch) \n \l DISTRIB_ID=Ubuntu DISTRIB_DESCRIPTION="Ubuntu gutsy (development branch)"
-> 
-> 
-> !!Kernel Information
-> !!------------------
-> 
-> Kernel release:    2.6.22-9-generic
-> Operating System:  GNU/Linux
-> Architecture:      i686
-> Processor:         unknown
-> SMP Enabled:       Yes
-> 
-> 
-> !!ALSA Version
-> !!------------
-> 
-> Driver version:     1.0.14
-> Library version:    
-> Utilities version:  1.0.14
-> 
-> 
-> !!Loaded ALSA modules
-> !!-------------------
-> 
-> snd_hda_intel
-> 
-> 
-> !!Soundcards recognised by ALSA
-> !!-----------------------------
-> 
->  0 [Intel          ]: HDA-Intel - HDA Intel
->                       HDA Intel at 0xd0440000 irq 22
-> 
-> 
-> !!PCI Soundcards installed in the system
-> !!--------------------------------------
-> 
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
-> 
-> 
-> !!Advanced information - PCI Vendor/Device/Susbsystem ID's
-> !!--------------------------------------------------------
-> 
-> 00:1b.0 0403: 8086:27d8 (rev 02)
-> 	Subsystem: 1025:012e
-> 
-> 
-> !!HDA-Intel Codec information
-> !!---------------------------
-> 
-> Codec: Realtek ID 268
-> Address: 0
-> Vendor Id: 0x10ec0268
-> Subsystem Id: 0x1025012e
-> Revision Id: 0x100003
-> Default PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Default Amp-In caps: N/A
-> Default Amp-Out caps: N/A
-> Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
->   Amp-Out vals:  [0x40 0x40]
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
->   Amp-Out vals:  [0x30 0x30]
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
->   PCM:
->     rates [0x5e0]: 44100 48000 88200 96000 192000
->     bits [0x1e]: 16 20 24 32
->     formats [0x1]: PCM
-> Node 0x07 [Audio Input] wcaps 0x100111: Stereo
->   PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0x6]: 16 20
->     formats [0x1]: PCM
->   Connection: 1
->      0x24
-> Node 0x08 [Audio Input] wcaps 0x100111: Stereo
->   PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0x6]: 16 20
->     formats [0x1]: PCM
->   Connection: 1
->      0x23
-> Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x0b [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x0c [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x0d [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00]
->   Connection: 1
->      0x02
-> Node 0x0f [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x80 0x80]
->   Connection: 2
->      0x02 0x1d
-> Node 0x10 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80]
->   Connection: 3
->      0x03 0x1d 0x02
-> Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
->   Pincap 0x0820: IN
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x00:
-> Node 0x13 [Pin Complex] wcaps 0x400001: Stereo
->   Pincap 0x0820: IN
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x00:
-> Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   Pincap 0x081003c: IN OUT HP EAPD Detect
->   Pin Default 0x02211020: [Jack] HP Out at Ext Front
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x20: IN
->   Connection: 1
->      0x0f
-> Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x00 0x00]
->   Pincap 0x081003c: IN OUT HP EAPD Detect
->   Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
->     Conn = ATAPI, Color = Unknown
->   Pin-ctls: 0xc0: OUT HP
->   Connection: 1
->      0x10
-> Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80]
->   Pincap 0x0810: OUT
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x00:
->   Connection: 1
->      0x0e
-> Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
->   Amp-In vals:  [0x02 0x02]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   Pincap 0x083734: IN OUT Detect
->   Pin Default 0x02a19840: [Jack] Mic at Ext Front
->     Conn = 1/8, Color = Pink
->   Pin-ctls: 0x24: IN
->   Connection: 1
->      0x02
-> Node 0x19 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
->   Amp-In vals: 
->   Pincap 0x083724: IN Detect
->   Pin Default 0x99a30941: [Fixed] Mic at Int ATAPI
->     Conn = ATAPI, Color = Unknown
->   Pin-ctls: 0x20: IN
-> Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
->   Amp-In vals:  [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   Pincap 0x083734: IN OUT Detect
->   Pin Default 0x0281304e: [Jack] Line In at Ext Front
->     Conn = 1/8, Color = Blue
->   Pin-ctls: 0x20: IN
->   Connection: 1
->      0x02
-> Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
->   Pincap 0x0820: IN
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x20: IN
-> Node 0x1d [Pin Complex] wcaps 0x400000: Mono
->   Pincap 0x0820: IN
->   Pin Default 0x4017952d: [N/A] Speaker at Ext N/A
->     Conn = Analog, Color = Pink
->   Pin-ctls: 0x20: IN
-> Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
->   Pincap 0x0810: OUT
->   Pin Default 0x02451130: [Jack] SPDIF Out at Ext Front
->     Conn = Optical, Color = Black
->   Pin-ctls: 0x40: OUT
->   Connection: 1
->      0x06
-> Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-> Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x23 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x01 0x01]
->   Connection: 7
->      0x18 0x19 0x1a 0x1c 0x14 0x15* 0x12
-> Node 0x24 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
->   Amp-Out vals:  [0x14 0x14]
->   Connection: 7
->      0x18* 0x19 0x1a 0x1c 0x14 0x15 0x13
-> Codec: Conexant ID 2c06
-> Address: 1
-> Vendor Id: 0x14f12c06
-> Subsystem Id: 0x1025012e
-> Revision Id: 0x100000
-> 
-> 
-> !!ALSA Device nodes
-> !!-----------------
-> 
-> crw-rw---- 1 root audio 116, 6 2007-08-16 21:22 /dev/snd/controlC0
-> crw-rw---- 1 root audio 116, 5 2007-08-16 21:22 /dev/snd/pcmC0D0c
-> crw-rw---- 1 root audio 116, 4 2007-08-16 21:22 /dev/snd/pcmC0D0p
-> crw-rw---- 1 root audio 116, 3 2007-08-16 21:22 /dev/snd/seq
-> crw-rw---- 1 root audio 116, 2 2007-08-16 21:22 /dev/snd/timer
-> 
-> 
-> !!Aplay output
-> !!------------
-> 
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: Intel [HDA Intel], device 0: HDA Generic [HDA Generic]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> 
-> 
-> !!Amixer output
-> !!-------------
-> 
-> !!-------Mixer controls for card 0 [Intel]
-> 
-> Simple mixer control 'Master',0
->   Capabilities: pvolume
->   Playback channels: Front Left - Front Right
->   Limits: Playback 0 - 64
->   Mono:
->   Front Left: Playback 48 [75%] [-16.00dB]
->   Front Right: Playback 48 [75%] [-16.00dB]
-> Simple mixer control 'PCM',0
->   Capabilities: pvolume
->   Playback channels: Front Left - Front Right
->   Limits: Playback 0 - 255
->   Mono:
->   Front Left: Playback 218 [85%] [-7.40dB]
->   Front Right: Playback 218 [85%] [-7.40dB]
-> Simple mixer control 'Digital',0
->   Capabilities: cvolume
->   Capture channels: Front Left - Front Right
->   Limits: Capture 0 - 120
->   Front Left: Capture 60 [50%] [0.00dB]
->   Front Right: Capture 60 [50%] [0.00dB]
-> 
-> 
-> !!All Loaded Modules
-> !!------------------
-> 
-> Module
-> michael_mic
-> arc4
-> ecb
-> blkcipher
-> ieee80211_crypt_tkip
-> aes
-> ieee80211_crypt_ccmp
-> i915
-> drm
-> rfcomm
-> l2cap
-> bluetooth
-> capability
-> ipv6
-> ppdev
-> acpi_cpufreq
-> cpufreq_ondemand
-> cpufreq_userspace
-> cpufreq_stats
-> freq_table
-> cpufreq_powersave
-> cpufreq_conservative
-> container
-> button
-> sbs
-> ac
-> video
-> battery
-> dock
-> fuse
-> parport_pc
-> lp
-> parport
-> snd_hda_intel
-> snd_pcm_oss
-> snd_mixer_oss
-> snd_pcm
-> snd_seq_dummy
-> snd_seq_oss
-> snd_seq_midi
-> snd_rawmidi
-> serio_raw
-> bcm43xx
-> ieee80211softmac
-> ieee80211
-> ieee80211_crypt
-> snd_seq_midi_event
-> af_packet
-> snd_seq
-> snd_timer
-> snd_seq_device
-> sdhci
-> mmc_core
-> iTCO_wdt
-> iTCO_vendor_support
-> psmouse
-> snd
-> soundcore
-> shpchp
-> pci_hotplug
-> snd_page_alloc
-> intel_agp
-> agpgart
-> evdev
-> ext3
-> jbd
-> mbcache
-> sg
-> sr_mod
-> cdrom
-> sd_mod
-> usbhid
-> hid
-> ata_generic
-> tg3
-> ata_piix
-> ahci
-> libata
-> scsi_mod
-> ehci_hcd
-> uhci_hcd
-> usbcore
-> thermal
-> processor
-> fan
-> apparmor
-> commoncap
-> aamatch_pcre
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+USB 1.1 transfers happen at 1ms bounderies. Setting 64Frames/period period
+interrupts will happen within 1ms or 2ms distances.
+This jitter alone limits the cpu's usability for the sound app to less 
+than 50%.
+128Frames/period causes interrupts every 2 or 3 ms, so you can use <66%
+of the cpu's cycles.
+Above is for 2 periods.
+I set 128Frames/period, 3periods here.
 
--- 
-Tobin Davis  
+      Karsten
 
-
-"Success covers a multitude of blunders."
--- George Bernard Shaw
+> jackdmp, which I modified to fully disable its broken usx2y driver,
+> but its use is very inconvenient.  I also switched from jackd 102.20
+> to 103, which doesn't crash when the syslog messages happen.
+> 
+> I'm running a 2.6.20 kernel with full preemption, with the IRQ-xx
+> process for the USB port set to RT priority 90, SCHED_FIFO.  During
+> all of these tests, the maximum latency reported in
+> /proc/sys/preempt_max_latency was 33 usecs.
+> 
+> Mike Bourgeous
+> 
+> 
