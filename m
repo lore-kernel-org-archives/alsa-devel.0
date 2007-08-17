@@ -1,83 +1,136 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: Re: Tascam US-428 USB Problems
-Date: Fri, 17 Aug 2007 09:19:37 +0200
-Message-ID: <200708170919.37627.fzu@wemgehoertderstaat.de>
-References: <8e4fc8270708152345k450c8460la0eb17e33d50fdd7@mail.gmail.com>
-	<200708161154.49018.fzu@wemgehoertderstaat.de>
-	<8e4fc8270708161635v8c164e7j311439c2e2f7d3bd@mail.gmail.com>
+From: Michael Gerdau <mgerdau@tiscali.de>
+Subject: Re: Impossible to make subwoofer work on a Dell XPS
+	M1710w
+Date: Fri, 17 Aug 2007 19:09:36 +0200
+Message-ID: <200708171909.49451.mgerdau@tiscali.de>
+References: <46C4E23A.5090000@gia.usb.ve>
+	<Pine.LNX.4.64.0708162003310.22506@info.physics.ubc.ca>
+	<s5hodh6nsev.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout2.freenet.de (mout2.freenet.de [195.4.92.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C425103846
-	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Aug 2007 09:19:03 +0200 (CEST)
-In-Reply-To: <8e4fc8270708161635v8c164e7j311439c2e2f7d3bd@mail.gmail.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Bourgeous <sts.nitrogen@gmail.com>
+Content-Type: multipart/mixed; boundary="===============0176051178=="
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hodh6nsev.wl%tiwai@suse.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag, 17. August 2007 schrieb Michael Bourgeous:
-> 
-> I have some more information.  I found out that Windows users of the
-> Tascam experience system BSODs when power management is enabled.  So,
-> I disabled PowerNow and acpid, and I no longer get the USB error
-> messages in the syslog or jackd crashes.  This leads me to believe
-> that something, somewhere in the kernel, is relying upon the CPU cycle
-> count for timing, and when the CPU switches from 1GHz to 1.8GHz or
-> 2.4GHz, it triggers a buffer overrun.  Whether that's in the usx2y
-> driver or in the host controller code I don't know.
+--===============0176051178==
+Content-Type: multipart/signed; boundary="nextPart1381009.nKDXhiQFqt";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Try to only disable cpu speed changes.
-You can "preselect" fixed speed by doing i.e.:
-	$ echo 1800000>/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	$ echo 1800000>/sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
-	$ echo 1800000>/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	$ echo 1800000>/sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
-Is that enough to stabilize things?
+--nextPart1381009.nKDXhiQFqt
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I think the buffer overrun is caused by the cpu not "cooperating" with the
-OHCI's DMA during the frequency transitions.
+[crossposting to alsa-devel as adviced in ALSA-Configuration.txt]
 
-> 
-> Still, performance is less than I would expect, with occasional xruns
-> and hundreds of "delay longer than estimated" messages, when running
-> at 256 samples latency (the setting I typically use in Windows).  To
-> the credit of the Linux driver, I'm able to get down to 128 samples (2
-> periods of 64 frames), but I can only play a few notes at a time in
-> ZynAddSubFX before it xruns.  Performance is slightly better with
+> The model option is _the_ important option for HD-audio driver.
+> It overrides the configuration preset.  As default, the driver reads
+> the PCI (subsystem) IDs to identify which configuration preset to
+> use.  If not found, the driver does a guess work from the BIOS setup
+> in most cases.
+>=20
+> Now, since many laptops are shipped with broken BIOS and the guess
+> work is imperfect, you often face the famous problem -- "sound
+> doesn't work" (great words that explain everything).  Then you can
+> pass model option for the preset designed for anohter hardware
+> (e.g. model=3Dthinkpad) to make the driver probe as if it's such a=20
+> hardware.  If you are lucky, your device is similar with others, and
+> the driver works with such a preset.  If not, we'd need to hack
+> another preset for matching with your device.
+>=20
+> The list of available model option is found in
+> ALSA-Configuration.txt.
 
-USB 1.1 transfers happen at 1ms bounderies. Setting 64Frames/period period
-interrupts will happen within 1ms or 2ms distances.
-This jitter alone limits the cpu's usability for the sound app to less 
-than 50%.
-128Frames/period causes interrupts every 2 or 3 ms, so you can use <66%
-of the cpu's cycles.
-Above is for 2 periods.
-I set 128Frames/period, 3periods here.
+So it seems the Dell XPS M1710 isn't yet listed among the known models
+and also does not seem to be detected properly (as of hg20070816).
 
-      Karsten
+'lspci -v' gives:
+=2E..
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definitio=
+n Audio Controller (rev 01)
+        Subsystem: Dell Unknown device 01ce
+        Flags: bus master, fast devsel, latency 0, IRQ 21
+        Memory at efffc000 (64-bit, non-prefetchable) [size=3D16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=
+=3D0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+=2E..
 
-> jackdmp, which I modified to fully disable its broken usx2y driver,
-> but its use is very inconvenient.  I also switched from jackd 102.20
-> to 103, which doesn't crash when the syslog messages happen.
-> 
-> I'm running a 2.6.20 kernel with full preemption, with the IRQ-xx
-> process for the USB port set to RT priority 90, SCHED_FIFO.  During
-> all of these tests, the maximum latency reported in
-> /proc/sys/preempt_max_latency was 33 usecs.
-> 
-> Mike Bourgeous
-> 
-> 
+'lspci -nv' gives:
+=2E..
+00:1b.0 Class 0403: 8086:27d8 (rev 01)
+        Subsystem: 1028:01ce
+        Flags: bus master, fast devsel, latency 0, IRQ 21
+        Memory at efffc000 (64-bit, non-prefetchable) [size=3D16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=
+=3D0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+=2E..
+
+Anything else I could do to help getting it (fully) supported ?
+
+Best,
+Michael
+=2D-=20
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ !tagline
+ Michael Gerdau       email: mgerdau@tiscali.de
+ GPG-keys available on request or at public keyserver
+
+--nextPart1381009.nKDXhiQFqt
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBGxdZdUYYhyuxDQc4RApjBAKCIo0dDMsHP5aBvSQ0MHK3vZvu4EgCfQsCp
+XAZLrQgeXqUVyROjRhQTRcw=
+=Rq7j
+-----END PGP SIGNATURE-----
+
+--nextPart1381009.nKDXhiQFqt--
+
+
+--===============0176051178==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc.
+Still grepping through log files to find problems?  Stop.
+Now Search log events and configuration files using AJAX and a browser.
+Download your FREE copy of Splunk now >>  http://get.splunk.com/
+--===============0176051178==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+--===============0176051178==--
