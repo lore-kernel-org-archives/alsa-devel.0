@@ -1,28 +1,32 @@
-From: "Daniel Persch" <d.persch@qgroup.de>
-Subject: VIA82XX on MSI K78MM Front Channel Problem
-Date: Sat, 18 Aug 2007 15:33:27 +0200
-Message-ID: <0B9BC0F04D815444AB5AF4450646E01484AF7E@qgroup-s1.qgroup.de>
+From: Zig <zig@icmelectrics.com>
+Subject: Re:
+	=?utf-8?q?snd-hda-intel=2C=09AD_1988b=3A_SPDIF_outpu?=
+	=?utf-8?q?t_not_working_correctly=2C=09volume_low_for_analog_outpu?=
+	=?utf-8?q?t?=
+Date: Sat, 18 Aug 2007 14:31:35 +0000 (UTC)
+Message-ID: <loom.20070818T162601-634@post.gmane.org>
+References: <200707170832.01976.ml_alsa@mortal-soul.de>
+	<200707200829.03682.ml_alsa@mortal-soul.de>
+	<s5hd4ynnq44.wl%tiwai@suse.de>
+	<200707232258.24771.ml_alsa@mortal-soul.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qtrust.qgroup.de (mail.qgroup.de [212.96.128.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D2E0245EC
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6232A245FF
 	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Aug 2007 15:33:29 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by localhost.qgroup.de (Postfix) with ESMTP id 660472A2BE6
-	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Aug 2007 15:33:28 +0200 (CEST)
-Received: from qtrust.qgroup.de ([127.0.0.1])
-	by localhost (qtrust [127.0.0.1]) (amavisd-new, port 27304) with ESMTP
-	id 20717-11 for <alsa-devel@alsa-project.org>;
-	Sat, 18 Aug 2007 15:33:28 +0200 (CEST)
-Received: from qgroup-s1.qgroup.de (qgroup-s1.qgroup.de [212.96.144.20])
-	by qtrust.qgroup.de (Postfix) with ESMTP id D55D42A2BE5
-	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Aug 2007 15:33:27 +0200 (CEST)
-Content-class: urn:content-classes:message
+	Sat, 18 Aug 2007 16:35:06 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1IMPOI-0007Cj-Hh
+	for alsa-devel@alsa-project.org; Sat, 18 Aug 2007 16:35:02 +0200
+Received: from 203-59-197-231.dyn.iinet.net.au ([203.59.197.231])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2007 16:35:02 +0200
+Received: from zig by 203-59-197-231.dyn.iinet.net.au with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2007 16:35:02 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,33 +39,49 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Developers,
+Matthias Dahl <ml_alsa <at> mortal-soul.de> writes:
 
-I'm using the on-board AC97 in 6-channel mode with analog output.
-However everything works fine except front channels:
+> 
+> --- patch_analog.c.orig 2007-07-23 22:44:25.000000000 +0200
+> +++ patch_analog.c      2007-07-23 22:45:15.000000000 +0200
+>  <at>  <at>  -2037,12 +2037,8  <at>  <at> 
+>  static struct hda_verb ad1988_spdif_init_verbs[] = {
+>         /* SPDIF out sel */
+>         {0x02, AC_VERB_SET_CONNECT_SEL, 0x0}, /* PCM */
+> -       {0x0b, AC_VERB_SET_CONNECT_SEL, 0x0}, /* ADC1 */
+> -       {0x1d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+> -       {0x1d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
+>         /* SPDIF out pin */
+>         {0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE | 0x27}, /* 0dB */
+> -       {0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0) | 0x17}, /* 0dB */
+> 
+>         { }
+>  };
 
-- front right is playing front left
-- front left is mute
+> 
 
-In stereo mode:
+I had similar issues, however patching the file as shown above caused no audio
+output at all on the SPDIF unless it was in AC3 passthrough mode.  Instead I
+edited my patch_analog.c file as follows:
 
-- front right is playing front left
-- center is playing front right
+static struct hda_verb ad1988_spdif_init_verbs[] = {
+        /* SPDIF out sel */
+        {0x02, AC_VERB_SET_CONNECT_SEL, 0x0}, /* PCM */
+//      {0x0b, AC_VERB_SET_CONNECT_SEL, 0x0}, /* ADC1 */
+        {0x1d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+        {0x1d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
+        /* SPDIF out pin */
+        {0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE | 0x17}, /* 0dB */
+//      {0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0) | 0x17}, /* 0dB */
 
-I was wandering whether someone could tell me where in the source I can
-play with the channel-settings/slots or if there is a solution for my
-issue.
+        { }
+};
 
-Or should I create a Bug-Report?
+Once I compiled it this was, the noise on the SPDIF output was gone, and
+everything functioned correctly.
 
+It does seem my original issue was related to the PCM audio being outputted at
+48kHz instead of 44.1kHz?  Thats what my sony amplifier seemed to think anyhow.
 
-Regards in advance,
-
-
-Daniel
-
-lspci output for the sound card: 
-00:11.5 0401: 1106:3059 Multimedia audio controller: VIA Technologies,
-Inc. VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-
-Alsamodule: via82xx
+Thanks for your original patch, really I don't know what I'm doing with this
+thing, and made a lucky guess for my purposes.
