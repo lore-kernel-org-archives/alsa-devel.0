@@ -1,77 +1,139 @@
-From: Bill Unruh <unruh@physics.ubc.ca>
-Subject: floating point exception in compiling alsa 1.0.14
-Date: Fri, 17 Aug 2007 13:32:52 -0700 (PDT)
-Message-ID: <Pine.LNX.4.64.0708171326210.9350@string.physics.ubc.ca>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: [Alsa-user] Impossible to make subwoofer work
+	on	a	Dell XPS M1710w
+Date: Fri, 17 Aug 2007 18:50:02 -0700
+Message-ID: <1187401802.4189.26.camel@razman.gruemaster.com>
 References: <46C4E23A.5090000@gia.usb.ve>
 	<Pine.LNX.4.64.0708162003310.22506@info.physics.ubc.ca>
 	<s5hodh6nsev.wl%tiwai@suse.de> <200708171909.49451.mgerdau@tiscali.de>
+	<s5h7inunjnw.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <200708171909.49451.mgerdau@tiscali.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Michael Gerdau <mgerdau@tiscali.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4AE40244AF
+	for <alsa-devel@alsa-project.org>;
+	Sat, 18 Aug 2007 03:50:07 +0200 (CEST)
+In-Reply-To: <s5h7inunjnw.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, Michael Gerdau <mgerdau@tiscali.de>
 List-Id: alsa-devel@alsa-project.org
 
-Iam trying to compile alsa 1.0.14 agains Mandriva Linux kernel 2.6.17-13mdv
-And I get a floating point exception.
+I looked it up, and according to the information here (Subsystem: Dell
+Unknown device 01ce, Dell XPS M1710), your system should have a Stac9200
+in it and it has been supported (in hg) since Feb 13.  Make sure you are
+not specifying any model in the /etc/modprobe.conf or /etc/modprobe.d/*
+files.
 
-I No idea how I get a floating point exception.
+Also, if you are still having issues, run
+http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh and post the
+resulting file.  It will have most of the debugging info that we need.
 
-Anyway, here is the error
+Tobin
 
-.....
-make[2]: Leaving directory `/usr/local/src/alsa-driver-1.0.14/misc'
-make[1]: Leaving directory `/usr/local/src/alsa-driver-1.0.14'
-make -C /lib/modules/2.6.17-13mdv/source
-SUBDIRS=/usr/local/src/alsa-driver-1.0.14 O=/lib/modules/2.6.17-13mdv/build
-CPP="gcc -E" CC="gcc" modules
-make[1]: Entering directory `/usr/src/linux-2.6.17-13mdv'
+On Fri, 2007-08-17 at 19:41 +0200, Takashi Iwai wrote:
 
-   WARNING: Symbol version dump /usr/src/linux-2.6.17-13mdv/Module.symvers
-            is missing; modules will have no dependencies and modversions.
+> At Fri, 17 Aug 2007 19:09:36 +0200,
+> Michael Gerdau wrote:
+> > 
+> > [crossposting to alsa-devel as adviced in ALSA-Configuration.txt]
+> > 
+> > > The model option is _the_ important option for HD-audio driver.
+> > > It overrides the configuration preset.  As default, the driver reads
+> > > the PCI (subsystem) IDs to identify which configuration preset to
+> > > use.  If not found, the driver does a guess work from the BIOS setup
+> > > in most cases.
+> > > 
+> > > Now, since many laptops are shipped with broken BIOS and the guess
+> > > work is imperfect, you often face the famous problem -- "sound
+> > > doesn't work" (great words that explain everything).  Then you can
+> > > pass model option for the preset designed for anohter hardware
+> > > (e.g. model=thinkpad) to make the driver probe as if it's such a 
+> > > hardware.  If you are lucky, your device is similar with others, and
+> > > the driver works with such a preset.  If not, we'd need to hack
+> > > another preset for matching with your device.
+> > > 
+> > > The list of available model option is found in
+> > > ALSA-Configuration.txt.
+> > 
+> > So it seems the Dell XPS M1710 isn't yet listed among the known models
+> > and also does not seem to be detected properly (as of hg20070816).
+> 
+> The sigmatel codec support is somewhat different from other codes.
+> It tries to be as generic as possible, based only on the pin
+> configuration without pre-defined mixer definitions and init verbs.
+> 
+> Do you mean a problem with the missing LFE?  The missing LFE sounds
+> like a different problem.  AFAIK, the device itself _is_ set up
+> properly as expected.  It's likely a feature regression due to the
+> improvements on the support of other devices with STAC codec chips.
+> Or any other issue?  Maybe it's better to describe the problem again
+> here for guys who only read alsa-devel ML (I mostly do so, too).
+> And, if it's about debugging, let's discuss on alsa-devel ML and drop
+> Cc from alsa-users.
+> 
+> 
+> > 'lspci -v' gives:
+> > ...
+> > 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 01)
+> >         Subsystem: Dell Unknown device 01ce
+> >         Flags: bus master, fast devsel, latency 0, IRQ 21
+> >         Memory at efffc000 (64-bit, non-prefetchable) [size=16K]
+> >         Capabilities: [50] Power Management version 2
+> >         Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
+> >         Capabilities: [70] Express Unknown type IRQ 0
+> >         Capabilities: [100] Virtual Channel
+> >         Capabilities: [130] Unknown (5)
+> > ...
+> > 
+> > 'lspci -nv' gives:
+> > ...
+> > 00:1b.0 Class 0403: 8086:27d8 (rev 01)
+> >         Subsystem: 1028:01ce
+> >         Flags: bus master, fast devsel, latency 0, IRQ 21
+> >         Memory at efffc000 (64-bit, non-prefetchable) [size=16K]
+> >         Capabilities: [50] Power Management version 2
+> >         Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
+> >         Capabilities: [70] Express Unknown type IRQ 0
+> >         Capabilities: [100] Virtual Channel
+> >         Capabilities: [130] Unknown (5)
+> > ...
+> > 
+> > Anything else I could do to help getting it (fully) supported ?
+> 
+> Why not patch the code :)
+> 
+> ... or, we'd need more detailed information.  Which codec chip is on
+> it, and which pin widget corresponds to the actual I/O, especially the
+> pin NID of the missing feature must be identified.  It can be done
+> only by the owner (tester) of the hardware.  Developers don't have
+> your device.
+> 
+> As a hint, if it's really a regression, try to revert to the version
+> it did work.  Check /proc/asound/card0/codec#* file to see which
+> widget is changed by the LFE volume.  That's the vital information.
+> 
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-   CC [M]  /usr/local/src/alsa-driver-1.0.14/acore/hwdep.o
-/bin/sh: line 1:  9628 Floating point exception(core dumped)
-scripts/basic/fixdep /usr/local/src/alsa-driver-1.0.14/acore/.hwdep.o.d
-/usr/local/src/alsa-driver-1.0.14/acore/hwdep.o 'gcc
--Wp,-MD,/usr/local/src/alsa-driver-1.0.14/acore/.hwdep.o.d  -nostdinc
--isystem /usr/lib/gcc/i586-mandriva-linux-gnu/4.1.1/include
--I/usr/local/src/alsa-driver-1.0.14/include -D__KERNEL__ -Iinclude
--Iinclude2 -I/usr/src/linux-2.6.17-13mdv/include -include
-include/linux/autoconf.h   -I/usr/local/src/alsa-driver-1.0.14/acore
--I/usr/local/src/alsa-driver-1.0.14/include -Wall -Wundef
--Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O2
--fno-omit-frame-pointer -fno-optimize-sibling-calls -pipe -msoft-float
--mpreferred-stack-boundary=2 -march=i686 -ffreestanding
--I/usr/src/linux-2.6.17-13mdv/include/asm-i386/mach-default
--Iinclude/asm-i386/mach-default -Wdeclaration-after-statement
--Wno-pointer-sign -DALSA_BUILD -DMODULE -D"KBUILD_STR(s)=\#s"
--D"KBUILD_BASENAME=KBUILD_STR(hwdep)"
--D"KBUILD_MODNAME=KBUILD_STR(snd_hwdep)" -c -o
-/usr/local/src/alsa-driver-1.0.14/acore/hwdep.o
-/usr/local/src/alsa-driver-1.0.14/acore/hwdep.c'
->/usr/local/src/alsa-driver-1.0.14/acore/.hwdep.o.tmp
-make[4]: *** [/usr/local/src/alsa-driver-1.0.14/acore/hwdep.o] Error 136
-make[3]: *** [/usr/local/src/alsa-driver-1.0.14/acore] Error 2
-make[2]: *** [_module_/usr/local/src/alsa-driver-1.0.14] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.17-13mdv'
-make: *** [compile] Error 2
+-- 
+Tobin Davis  
 
 
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc.
-Still grepping through log files to find problems?  Stop.
-Now Search log events and configuration files using AJAX and a browser.
-Download your FREE copy of Splunk now >>  http://get.splunk.com/
+BOFH excuse #178:
+
+short leg on process table
