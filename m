@@ -1,18 +1,20 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Capturing of Samsung Q1 Ultra (ALC262) does
-	not	work
-Date: Tue, 02 Oct 2007 11:23:21 -0700
-Message-ID: <1191349401.30667.296.camel@razman.gruemaster.com>
-References: <200709292014.09195.pczou@redflag-linux.com>
+From: errordeveloper@gmail.com
+Subject: Snd problem ... ( ACCESS_TYPE )
+Date: Sun, 19 Aug 2007 07:25:39 +0000
+Message-ID: <20070819072539.GA25373__48141.7815237821$1191435201$gmane$org@00110101.errordevlopment.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3038F24449
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6911244CF
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Oct 2007 20:23:24 +0200 (CEST)
-In-Reply-To: <200709292014.09195.pczou@redflag-linux.com>
+	Wed,  3 Oct 2007 20:12:46 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id h2so183654ugf
+	for <alsa-devel@alsa-project.org>; Wed, 03 Oct 2007 11:12:46 -0700 (PDT)
+Resent-Message-ID: <20071003181501.GG6109@00110101.errordevlopment.org.uk>
+Resent-To: alsa-devel@alsa-project.org
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pengcheng Zou <pczou@redflag-linux.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, I was going to look into this but got pulled onto a different
-project.  I'll see if I can get a patch for this system this week.
+Hi list.
 
-Tobin
+I' m using alsa-lib v1.0.14rc2 on gentoo-linux (v2.6.20-gentoo-r8)
+my soundcard is RME Hammerfall HDSP9632 (snd-hdsp driver)
+i have been using it for a while - all fine
+i only run a few applications for my sound experiments.
+one of those is Snd (from CCRMA), it was okay until i have done a few
+updates lately - kernel from 2.6.17 to 2.6.20 and alsa-lib as well.
+i'm not sure about either of these but i check Snd src-tree and the
+mailing list - nothing was changed ..
 
-On Sat, 2007-09-29 at 20:14 +0800, Pengcheng Zou wrote:
+the error msg that i get is:
 
-> Hi,
-> 
-> capture function of the Samsung Q1 Ultra (using ALC262 codec) does not work. I 
-> tried the most recent ALSA build (alsa-driver-1.0.15rc3), the playback works 
-> well, however the recording does not work. 
-> 
-> Samsung Q1 (using AD1986A codec) has been supported already, wonder if there 
-> is any patches for Q1 Ultra?
-> 
-> please note Samsung released 2 types of UPMC, Q1 and Q1 Ultra. the Q1 ultra is 
-> the one I have:
->   http://computers.pricegrabber.com/tablet-pcs/m/37616779/details/
-> 
-> TIA,
->   -- Pengcheng
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+:(play)
+;status of hw:0
+hw_params status of hw:0
+ACCESS:  MMAP_NONINTERLEAVED RW_NONINTERLEAVED
+FORMAT:  S32_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 32
+FRAME_BITS: [128 384]
+CHANNELS: [4 12]
+RATE: [32000 192000]
+PERIOD_TIME: (333 256000]
+PERIOD_SIZE: [64 8192]
+PERIOD_BYTES: [2560 393216]
+PERIODS: 2
+BUFFER_TIME: (666 512000]
+BUFFER_SIZE: [128 16384]
+BUFFER_BYTES: [2560 786432]
+TICK_TIME: 1000
+sw_params status of hw:0
+start_mode: DATA
+xrun_mode: STOP
+tstamp_mode: NONE
+period_step: 0
+sleep_min: 0
+avail_min: 0
+xfer_align: 0
+silence_threshold: 0
+silence_size: 0
+boundary: 0
+;Invalid argument: hw:0: access type RW_INTERLEAVED not available
+can't play : Invalid argument: hw:0: access type RW_INTERLEAVED not
+available
+#f
+:
+
+i had tried to modify audio.c in Snd's tree to use both ACCESS types
+given above , but it didn't help - showed device is busy error instead.
+i'm only studying C, so can't be sure ..
+
+anyway here is a problem which i could not solve yet and haven't seen
+anyone helpful around #alsa, neither i could google anything out.
+
+
+for a ref.: Cmdist mailing list                                                                                                                         Cmdist@ccrma.stanford.edu                                                                                                                   http://ccrma-mail.stanford.edu/mailman/listinfo/cmdist
+and our discussion is here:
+http://ccrma-mail.stanford.edu/pipermail/cmdist/2007-July/004221.html
+
+could anyone have a look at this at somepoint, please .
 
 -- 
-Tobin Davis <tdavis@dsl-only.net>
+thank you,
+Ilya. D
+errordeveloper|*@*|gmail|*dot*|com
