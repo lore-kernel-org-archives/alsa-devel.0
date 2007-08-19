@@ -1,21 +1,21 @@
 From: Michael Gerdau <mgerdau@tiscali.de>
 Subject: Re:
-	=?iso-8859-1?q?=5BAlsa-user=5D_Impossible_to_make_su?=
-	=?iso-8859-1?q?bwoofer_work_on=09a=09Dell_XPS_M1710w?=
-Date: Sun, 19 Aug 2007 21:12:12 +0200
-Message-ID: <200708192112.28425.mgerdau@tiscali.de>
+	=?utf-8?q?=5BAlsa-user=5D_Impossible_to_make_subwoof?=
+	=?utf-8?q?er_work_on=09a=09Dell_XPS_M1710w?=
+Date: Sun, 19 Aug 2007 21:13:05 +0200
+Message-ID: <200708192113.26664.mgerdau@tiscali.de>
 References: <46C4E23A.5090000@gia.usb.ve>
 	<200708191532.11011.mgerdau@tiscali.de>
-	<1187539910.4189.127.camel@razman.gruemaster.com>
+	<1187539583.4189.123.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7588995270265030841=="
+Content-Type: multipart/mixed; boundary="===============4504474444615553226=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from server021.webpack.hosteurope.de
 	(server021.webpack.hosteurope.de [80.237.130.29])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62219103874
+	by alsa0.perex.cz (Postfix) with ESMTP id BBABC1037F2
 	for <alsa-devel@alsa-project.org>;
-	Sun, 19 Aug 2007 21:12:22 +0200 (CEST)
-In-Reply-To: <1187539910.4189.127.camel@razman.gruemaster.com>
+	Sun, 19 Aug 2007 21:13:18 +0200 (CEST)
+In-Reply-To: <1187539583.4189.123.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,34 +29,26 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
---===============7588995270265030841==
+--===============4504474444615553226==
 Content-Type: multipart/signed;
-  boundary="nextPart7523116.TrzumtWoDW";
+  boundary="nextPart1196903.ZLpZg5FUT4";
   protocol="application/pgp-signature";
   micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart7523116.TrzumtWoDW
+--nextPart1196903.ZLpZg5FUT4
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-> > I've run the current alsa-info.sh as suggested by Tobis Davis (thanks
-> > for the pointer BTW) and had it upload the result automatically.
->=20
-> Yes, but where's the link or the alsa-info.txt file?  You still need to
-> post this for us to be able to read it.
+Hi Tobin,
 
-Apparently I've been too stupid to understand it in the first place.
+> I was looking over some other Dell INF files, and found a newer pin def
+> listing for this system.  Try this patch and see if it fixes your
+> Center/LFE settings.
 
-I've rerun it after applying your patch (which provided me with a LFE
-control, thanks alot) and it ended as http://pastebin.ca/663596
-
-I have not written down the ID of the previous file but I have saved
-away a copy of it. If there is interest I would try and upload that.
-
-Best,
+It does. Thanks alot, best,
 Michael
 =2D-=20
  Vote against SPAM - see http://www.politik-digital.de/spam/
@@ -64,21 +56,21 @@ Michael
  Michael Gerdau       email: mgerdau@tiscali.de
  GPG-keys available on request or at public keyserver
 
---nextPart7523116.TrzumtWoDW
+--nextPart1196903.ZLpZg5FUT4
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.5 (GNU/Linux)
 
-iD8DBQBGyJYcUYYhyuxDQc4RApuvAJ91fq87oyLQoDCnilZVBTGO+o+/4ACghlwZ
-zi3iFww2lmf2Qrtl/R5IiJo=
-=Btol
+iD8DBQBGyJZWUYYhyuxDQc4RApwzAJ0TQRaZ4YCXf80yKNRLl0DWNJIi/gCeJMWJ
+OdI9Hr37LmE2XKy0e5ddCss=
+=MPK1
 -----END PGP SIGNATURE-----
 
---nextPart7523116.TrzumtWoDW--
+--nextPart1196903.ZLpZg5FUT4--
 
---===============7588995270265030841==
+--===============4504474444615553226==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -89,4 +81,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============7588995270265030841==--
+--===============4504474444615553226==--
