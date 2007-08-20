@@ -1,19 +1,28 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: I want to improve Sigma-Tel STAC9227 driver / How to
-	implement support for multiple ADC
-Date: Mon, 20 Aug 2007 04:48:52 +0300
-Message-ID: <200708200448.52138.maximlevitsky@gmail.com>
+From: Akio <akioolin@gmail.com>
+Subject: Re: Voip Application with ALSA OSS Emulation ==> voice
+	delay
+Date: Mon, 20 Aug 2007 07:22:43 +0000 (UTC)
+Message-ID: <loom.20070820T090944-240@post.gmane.org>
+References: <loom.20070815T160926-869@post.gmane.org>
+	<1187246856.13434.1205658833@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F649103906
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19DDF10382F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Aug 2007 03:50:57 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id f40so1123379fka
-	for <alsa-devel@alsa-project.org>; Sun, 19 Aug 2007 18:50:57 -0700 (PDT)
-Content-Disposition: inline
+	Mon, 20 Aug 2007 09:23:01 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1IN1bC-0001Zk-GS
+	for alsa-devel@alsa-project.org; Mon, 20 Aug 2007 09:22:57 +0200
+Received: from cache8000-1.itri.org.tw ([61.61.254.9])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2007 09:22:54 +0200
+Received: from akioolin by cache8000-1.itri.org.tw with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2007 09:22:54 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +35,72 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Clemens Ladisch <cladisch <at> fastmail.net> writes:
 
-I am a user of Sigma-Tel STAC9227 intel hda based chip.
-I have studied its documentation, and found that alsa driver doesn't support 
-number of its features.
+> 
+> Akio wrote:
+> > Right now, we are using a arm box with linux kernel 2.6.14 to
+> > develop a voip  solution. After the rtp connection was 
+> > connected at first 20 secs, there is no delay. As the timing passing
+> > by, the delay will going longer and longer.  After 16 hours, the 
+> > delay will up to 12 secs.
+> 
+> If the sending and the receiving computers don't use the same clock,
+> there will be a small difference in the sample rate.  You have to
+> measure this and adjust the data accordingly (by re-sampling or just
+> adding/dropping some samples).
 
+    Thank you very much. I think the CPU power is so tight, there is no room to
+do that
+    conversion.
 
-1) it has "analog loop-back" which means it can mix sound just before it 
-enters ADC0 to output of DAC0 (headphones/front).
-For me it is the most important feature, since I have a tv card with analog 
-output.
+> > Because the alsa lib application can't detect any alsa device,
+> 
+> I'd guess that either the device nodes in /dev/snd/ or the configuration
+> files in /use/share/alsa/ are missing.
 
-2) it has the ability to "swap" left/right channels, and this can be very 
-useful for LFE/center channel
+   Could you can show me how to build the right structure to make alsa lib to work?
+   May be this is the right way to void voice delay.
 
-3) It has a VolumeKnob "widget" , that allows to decrease volume of all DACs 
-_after_ their own volumes were applied, and I think I turn it to "master 
-volume"
+> HTH
+> Clemens
 
+   BTW, after many tests. I find the following combination that seems make the
+delay disappear
+   in read direction, but in write direction, there will be some extra space
+been added. Right now,
+   I find two points to suppress voice delay via the following method.
 
-Those things below aren't supported by windows driver ether, but that doesn't 
-mean we can't support that :-)
+   1. in sound/core/oss/pcm_oss.c, in snd_pcm_oss_read3(), mark the break branch
+which 
+       after snd_pcm_oss_capture_position_fixup().
+       the original code is like :
+       ret =  snd_pcm_oss_capture_position_fixup();
+       if (ret < 0)
+           break;
 
-4) this chip has 3 ADC, each capable recording from different source, but alsa 
-uses only first.
+       to the following one:
+       ret =  snd_pcm_oss_capture_position_fixup();
+       //if (ret < 0)
+       //    break;
 
-5) I have 5.1 configuration, so DAC1 is unused.
-It is possible to connect it to "front" mic, and get 7.1 sound card
-I think about a option "Use front mic as output", for 3Stack configuration
+    2.in snd_pcm_oss_capture_position_fixup(), change the delay calculation
+method. from the original
+       one:
+       if (*delay <= (snd_pcm_sframes_t)runtime->buffer_size)  break;
+       frames = (*delay - runtime->buffer_size) + runtime->period_size - 1;
+       frames /= runtime->period_size;
+       frames *= runtime->period_size;
 
+       to the following one:
+       if (*delay <= (snd_pcm_sframes_t)runtime->period_size)  break;
+       frames = (((*delay + runtime->period_size - 1) / runtime->period_size)) *
+runtime->period_size;
 
-1,2,3 are easy to implement, since those are just mixer switches.
+       Does the modification will cause other side effect or not?
+       How to solve the extra space in write space? 
 
-But I have a question about 4:
+       Thanks in advance.
 
-Now the driver has buggy support for second ADC, it record from it, but fails 
-to connect it to any input source, and unmute it.
-
-I can fix that and trivially add support for third ADC, but current driver 
-makes all ADCs a sub-streams of a single  PCM device.
-
-I think that sub-streams are meant to be used only by playback PCMs that have 
-hardware support of mixing, so I feel that is is better  to make  each ADC to 
-be a separate PCM device, with separate  mixer controls (enabled/input 
-source/gain), and I want to ask you whenever you agree with me.
-
-Also I noticed that dsnoop chokes on record streams with more that one 
-substream, it fails with error, when I try to open second arecord.
-
-
-Best regards,
-	Maxim Levitsky
+Best Regards,
+Akio
