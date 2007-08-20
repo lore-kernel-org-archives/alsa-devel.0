@@ -1,28 +1,21 @@
-From: Akio <akioolin@gmail.com>
-Subject: Re: Voip Application with ALSA OSS Emulation ==> voice
-	delay
-Date: Mon, 20 Aug 2007 07:22:43 +0000 (UTC)
-Message-ID: <loom.20070820T090944-240@post.gmane.org>
-References: <loom.20070815T160926-869@post.gmane.org>
-	<1187246856.13434.1205658833@webmail.messagingengine.com>
+From: Michael Gerdau <mgerdau@tiscali.de>
+Subject: Re:
+	=?iso-8859-1?q?=5BAlsa-user=5D_Impossible_to_make_su?=
+	=?iso-8859-1?q?bwoofer_work=09on=09a=09Dell_XPS_M1710w?=
+Date: Mon, 20 Aug 2007 09:57:28 +0200
+Message-ID: <200708200957.28575.mgerdau@tiscali.de>
+References: <46C4E23A.5090000@gia.usb.ve>
+	<200708192113.26664.mgerdau@tiscali.de>
+	<1187552642.4189.140.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2095735717568667609=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19DDF10382F
+Received: from server021.webpack.hosteurope.de
+	(server021.webpack.hosteurope.de [80.237.130.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E9E8103880
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Aug 2007 09:23:01 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1IN1bC-0001Zk-GS
-	for alsa-devel@alsa-project.org; Mon, 20 Aug 2007 09:22:57 +0200
-Received: from cache8000-1.itri.org.tw ([61.61.254.9])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2007 09:22:54 +0200
-Received: from akioolin by cache8000-1.itri.org.tw with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2007 09:22:54 +0200
+	Mon, 20 Aug 2007 10:23:43 +0200 (CEST)
+In-Reply-To: <1187552642.4189.140.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,74 +26,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <cladisch <at> fastmail.net> writes:
+--===============2095735717568667609==
+Content-Type: multipart/signed;
+  boundary="nextPart1271326.1cas6Rm2qr";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-> 
-> Akio wrote:
-> > Right now, we are using a arm box with linux kernel 2.6.14 to
-> > develop a voip  solution. After the rtp connection was 
-> > connected at first 20 secs, there is no delay. As the timing passing
-> > by, the delay will going longer and longer.  After 16 hours, the 
-> > delay will up to 12 secs.
-> 
-> If the sending and the receiving computers don't use the same clock,
-> there will be a small difference in the sample rate.  You have to
-> measure this and adjust the data accordingly (by re-sampling or just
-> adding/dropping some samples).
+--nextPart1271326.1cas6Rm2qr
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-    Thank you very much. I think the CPU power is so tight, there is no room to
-do that
-    conversion.
+> I'll go ahead and combine it with another Dell patch I'm submitting.
+> Great to hear that your sound is working now.
 
-> > Because the alsa lib application can't detect any alsa device,
-> 
-> I'd guess that either the device nodes in /dev/snd/ or the configuration
-> files in /use/share/alsa/ are missing.
+Seems my testing yesterday was flawed. When today I retried I had
+no sound. Reverting the patch brought back my sound.
 
-   Could you can show me how to build the right structure to make alsa lib to work?
-   May be this is the right way to void voice delay.
+Sorry for my poor testing,
+Michael
+=2D-=20
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ !tagline
+ Michael Gerdau       email: mgerdau@tiscali.de
+ GPG-keys available on request or at public keyserver
 
-> HTH
-> Clemens
+--nextPart1271326.1cas6Rm2qr
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-   BTW, after many tests. I find the following combination that seems make the
-delay disappear
-   in read direction, but in write direction, there will be some extra space
-been added. Right now,
-   I find two points to suppress voice delay via the following method.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-   1. in sound/core/oss/pcm_oss.c, in snd_pcm_oss_read3(), mark the break branch
-which 
-       after snd_pcm_oss_capture_position_fixup().
-       the original code is like :
-       ret =  snd_pcm_oss_capture_position_fixup();
-       if (ret < 0)
-           break;
+iD8DBQBGyUloUYYhyuxDQc4RAtx6AKCRr/0ahMQ3UwHPm+VMH0rYZUfligCgj48I
+T5ym8tgIWm3neQoCcERZHjo=
+=V6ws
+-----END PGP SIGNATURE-----
 
-       to the following one:
-       ret =  snd_pcm_oss_capture_position_fixup();
-       //if (ret < 0)
-       //    break;
+--nextPart1271326.1cas6Rm2qr--
 
-    2.in snd_pcm_oss_capture_position_fixup(), change the delay calculation
-method. from the original
-       one:
-       if (*delay <= (snd_pcm_sframes_t)runtime->buffer_size)  break;
-       frames = (*delay - runtime->buffer_size) + runtime->period_size - 1;
-       frames /= runtime->period_size;
-       frames *= runtime->period_size;
+--===============2095735717568667609==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-       to the following one:
-       if (*delay <= (snd_pcm_sframes_t)runtime->period_size)  break;
-       frames = (((*delay + runtime->period_size - 1) / runtime->period_size)) *
-runtime->period_size;
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-       Does the modification will cause other side effect or not?
-       How to solve the extra space in write space? 
-
-       Thanks in advance.
-
-Best Regards,
-Akio
+--===============2095735717568667609==--
