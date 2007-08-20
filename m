@@ -1,30 +1,21 @@
-From: "Daniel Persch" <d.persch@qgroup.de>
-Subject: Re: VIA82XX on MSI K78MM Front Channel Problem
-Date: Mon, 20 Aug 2007 18:15:31 +0200
-Message-ID: <0B9BC0F04D815444AB5AF4450646E01484AF83@qgroup-s1.qgroup.de>
-References: <0B9BC0F04D815444AB5AF4450646E01484AF7E@qgroup-s1.qgroup.de>
+From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
+Subject: Re: ESI MAYA44 PCI - ESI wants to collaborate!
+Date: Mon, 20 Aug 2007 20:25:23 +0100
+Message-ID: <92a12cdb0708201225s3985944fsc316ce77460c2dc1@mail.gmail.com>
+References: <87988a970708180028p6dc4b973w58ab65445d279b0a@mail.gmail.com>
+	<s5hsl6emsat.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qtrust.qgroup.de (mail.qgroup.de [212.96.128.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB28624482
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.232])
+	by alsa0.perex.cz (Postfix) with ESMTP id D3048244BD
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Aug 2007 18:15:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by localhost.qgroup.de (Postfix) with ESMTP id 9F1152A2C8C
-	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Aug 2007 18:15:31 +0200 (CEST)
-Received: from qtrust.qgroup.de ([127.0.0.1])
-	by localhost (qtrust [127.0.0.1]) (amavisd-new, port 27304) with ESMTP
-	id 29065-32 for <alsa-devel@alsa-project.org>;
-	Mon, 20 Aug 2007 18:15:31 +0200 (CEST)
-Received: from qgroup-s1.qgroup.de (qgroup-s1.qgroup.de [212.96.144.20])
-	by qtrust.qgroup.de (Postfix) with ESMTP id D0B9A2A2B4A
-	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Aug 2007 18:15:30 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <0B9BC0F04D815444AB5AF4450646E01484AF7E@qgroup-s1.qgroup.de>
+	Mon, 20 Aug 2007 21:25:28 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id m22so478810nzf
+	for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2007 12:25:27 -0700 (PDT)
+In-Reply-To: <s5hsl6emsat.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,69 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Piotrek <oponek@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello again,
+On 20/08/07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sat, 18 Aug 2007 09:28:34 +0200,
+> Piotrek wrote:
+> >
+> >      Referring to the lack of the official ALSA support of ESI MAYA44 PCI
+> > (in fact, the card does not work) I would like to ask I there are any plans
+> > to get this card working with ALSA? I would be thankful to be able to run my
+> > soundcard properly under Linux. There are also a lot of people that would
+> > appreciate your work and are waiting for maya44 pci drivers for linux:
+> > http://www.esiforum.com/show.asp?db=esi&t=esi1&mode=3&msg=793
+> >     I wrote a letter to the UK ESI SUPPORT asking if they were going to
+> > write drivers for their products for Linux systems as well. There is a
+> > reply:
+> >
+> > "
+> > Dear Piotr
+> >
+> > ESI do not provide and have no plans for Linux drivers for our products
+> > However
+> > ESI are happy to provide /share information to an Individual developer
+> > within the Linux community
+> > That is able and capable to develope drivers
+> > and wishes to develope drivers
+> >
+> > Regards
+> > UK Support
+> > ESI Auditechnik
+> > "
+> >
+> > It means that ESI will collaborate with developers who would like to write
+> > such driver and share the documentation.
+> >
+> > Again the question: Are there any plans to make ESI MAYA44 PCI card working
+> > with ALSA?
+>
+> AFAIK, no plan.  We don't have this hardware for developing.
+>
+>
 
-After hours and hours, well, I found the problem myself: 
+I have no idea what this card is like, but if they would be prepared
+to send me one, I'd be happy to take the project on. I've written one
+alsa driver - that will shortly be in the stable kernel - so can point
+to that.
 
-my case has an error in the front-panel connectors 
+Of course, other developers will probably be able to do the job at a
+greater speed - but I would be happy to take it on as a pro bono
+project.
 
-so the rear connector of the sound card which gets the result of the
-front pannel seems plays wrong, too. No I connected the pings with
-jumpers and the sound comes as expected...
-
-However I can't explain the center-issue but as I'm running in 5.1 mode
-there is no problem (I didn't test again - as glad as I am that it
-finally works).
-
-
-Cheers,
-
-Daniel
-
-
-
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> bounces@alsa-project.org] On Behalf Of Daniel Persch
-> Sent: Samstag, 18. August 2007 15:33
-> To: alsa-devel@alsa-project.org
-> Subject: [alsa-devel] VIA82XX on MSI K78MM Front Channel Problem
-> 
-> Dear Developers,
-> 
-> I'm using the on-board AC97 in 6-channel mode with analog output.
-> However everything works fine except front channels:
-> 
-> - front right is playing front left
-> - front left is mute
-> 
-> In stereo mode:
-> 
-> - front right is playing front left
-> - center is playing front right
-> 
-> I was wandering whether someone could tell me where in the source I
-can
-> play with the channel-settings/slots or if there is a solution for my
-> issue.
-> 
-> Or should I create a Bug-Report?
-> 
-> 
-> Regards in advance,
-> 
-> 
-> Daniel
-> 
-> lspci output for the sound card:
-> 00:11.5 0401: 1106:3059 Multimedia audio controller: VIA Technologies,
-> Inc. VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-> 
-> Alsamodule: via82xx
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+I am in the UK.
