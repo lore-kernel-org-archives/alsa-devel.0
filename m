@@ -1,16 +1,19 @@
-From: Peter Skensved <peter@jay.phy.queensu.ca>
-Subject: Intel HDA / AD1986A problems
-Date: Mon, 20 Aug 2007 22:27:40 -0400
-Message-ID: <20070821022740.GA29307@jay.phy.queensu.ca>
+From: Michael Gerdau <mgerdau@tiscali.de>
+Subject: Re: HDA - Add more support for Dell systems.
+Date: Tue, 21 Aug 2007 10:51:12 +0200
+Message-ID: <200708211051.34134.mgerdau@tiscali.de>
+References: <1187553279.4189.145.camel@razman.gruemaster.com>
+	<1187619448.4189.193.camel@razman.gruemaster.com>
+	<s5htzqul1hk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2105884902744865731=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from jay.phy.queensu.ca (jay.phy.QueensU.CA [130.15.24.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6333324514
+Received: from server021.webpack.hosteurope.de
+	(server021.webpack.hosteurope.de [80.237.130.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id D49E8103819
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Aug 2007 04:27:43 +0200 (CEST)
-Content-Disposition: inline
+	Tue, 21 Aug 2007 10:51:34 +0200 (CEST)
+In-Reply-To: <s5htzqul1hk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,386 +24,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+--===============2105884902744865731==
+Content-Type: multipart/signed;
+  boundary="nextPart2811653.aYFLq5KoYp";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
+--nextPart2811653.aYFLq5KoYp
+Content-Type: multipart/mixed;
+  boundary="Boundary-01=_BeqyGuNsnu+7AjV"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
- Configuration : Lenovo 3000 N100 laptop with Intel HDA / Anlog Devices AD1986A
-soundcard running CentOS5.0 with 2.6.18-8.1.8.el5 kernel ( uses 1.0.12rc1 based
-alsa driver ).
+--Boundary-01=_BeqyGuNsnu+7AjV
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
- The driver works with the model=laptop-eapd option except for a few things :
+> > I did.  It worked yesterday according to Michael Gerdau, but apparently=
+ it
+> > doesn't today.
+>=20
+> Well, that's what I wondered.
+>=20
+> Michael, could you check the default pincfg entries in
+> /proc/asound/card0/codec#* whether they really match with the values
+> in patch_sigmatel.c?
 
-1)  Plugging in an external headset will not mute the internal speakers ( has to be done
-manually in alsa-mixer )
+Ok, took me some more time (didn't want to test while almost asleep...)
 
-2)  The PC speaker ( bell ) appears to be permanently muted.
+/proc/asound/card0/codec#* _do_ reflect the pincfg entries as of
+patch_sigmatel.c
 
-3)  The external microphone input does not appear to be working no matter what I do.
+I also once again have my sound working with both Dell-XPS.patch (the
+one I originally tested) as well as the later version Dell.patch. I
+also have a working LFE control with both patches.
 
-4)  When recording from the internal microphone the level is very, very low and almost
-drowns in static noise.
+I have not yet a clear understanding why I did not have sound and LFE
+yesterday. However the thing that's different is that yesterday morning
+I booted into a kernel with the patched alsa and did no other alsa mod
+unload/load until I reverted the patch (when I got back my sound).
 
+When doing my initial test as well as todays test I booted into the
+pristine hg20070818 (or hg20070817 back then) driver and loaded the
+patched modules via '/etc/init.d/alsasound restart'.
 
- Any easy way to fix the above ? Number 4 in particular ?  I've tinkered with backporting
-what I thought were relevant differences between the latest patch_analog.c and the one
-used in the kernel I have (alsa-driver 1.0.12rc1 ) but I see no difference.
+I can't reboot the machine until about 16:00 today to check whether
+booting into the patched driver does make a difference or not but I
+will do so this afternoon and report my results (of course this could
+be a red hering).
 
- Any other way to tweak or reconfigure the hardware ? Enable microphone boost ??
-Looking at /proc/asound/card0/codec#0 makes me believe that the hardware has several
-unused or permanently disabled features.
+=46YI I've attached /proc/asound/card0/codec#* to this mail in case that
+is of interest.
 
- This particular laptop has a model number which differs slightly from the one listed in
-patch_analog.c ( 0768-6KU instead of 0768-4JU ).  Not sure if is relevant. 
+Best,
+Michael
+=2D-=20
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ !tagline
+ Michael Gerdau       email: mgerdau@tiscali.de
+ GPG-keys available on request or at public keyserver
 
- And finally a ( somewhat ) related question : Is it possible to get the sound card to
-work with the slmodem package to drive the built in modem ???
+--Boundary-01=_BeqyGuNsnu+7AjV
+Content-Type: application/x-tbz;
+  name="codecs.tar.bz2"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="codecs.tar.bz2"
 
+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
+CP4u5IpwoSC1ODMw
 
-============================================================================================
+--Boundary-01=_BeqyGuNsnu+7AjV--
 
- Partial output from lspci -nv is attached below together with stuff from /proc/asound :
+--nextPart2811653.aYFLq5KoYp
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-00:1b.0 0403: 8086:27d8 (rev 02)
-        Subsystem: 17aa:2066
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size: 64 bytes
-        Interrupt: pin A routed to IRQ 233
-        Region 0: Memory at b0000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0, ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown, Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+iD4DBQBGyqeWUYYhyuxDQc4RAl5XAJ9XoNCOrBjEfLgFQTjMOvajdwtODwCYibsH
+cqZi4LwODoEKpxG/MRnzlA==
+=vzOK
+-----END PGP SIGNATURE-----
 
+--nextPart2811653.aYFLq5KoYp--
 
+--===============2105884902744865731==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
- more /proc/asound/cards 
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xb0000000 irq 233
-
-
- more /proc/asound/devices 
-  2:        : timer
-  3:        : sequencer
-  4: [ 0- 0]: digital audio playback
-  5: [ 0- 0]: digital audio capture
-  6: [ 0]   : control
-
- more /proc/asound/modules 
- 0 snd_hda_intel
-
- more /proc/asound/card0/codec#0 
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x17aa2066
-Revision Id: 0x100500
-Default PCM: rates 0x07f, bits 0x0e, types 0x1
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
-  PCM: rates 0x060, bits 0x02, types 0x5
-  Connection: 2
-     0x01* 0x06
-Node 0x03 [Audio Output] wcaps 0x44d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1d 0x1d]
-  Power: 0x0
-Node 0x04 [Audio Output] wcaps 0x40d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Power: 0x0
-Node 0x05 [Audio Output] wcaps 0x40d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Power: 0x0
-Node 0x06 [Audio Input] wcaps 0x100511: Stereo
-  PCM: rates 0x07f, bits 0x06, types 0x1
-  Power: 0x0
-  Connection: 1
-     0x12
-Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 8
-     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x08 [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x07
-Node 0x09 [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80] [0x80]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 2
-     0x04 0x05
-Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x07* 0x04 0x05
-Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x07* 0x04
-Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x04* 0x07
-Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x05* 0x08
-Node 0x0e [Audio Selector] wcaps 0x300100: Mono
-  Connection: 2
-     0x08* 0x11
-Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 8
-     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
-Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x20* 0x1c 0x1f
-Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
-  Connection: 2
-     0x0f* 0x2b
-Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x8f 0x8f]
-  Connection: 8
-     0x11 0x22 0x00 0x21 0x10 0x07* 0x08 0x23
-Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1d 0x1d]
-  Connection: 1
-     0x11
-Node 0x14 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 1
-     0x23
-Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 1
-     0x22
-Node 0x16 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 1
-     0x21
-Node 0x17 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x15 0x15]
-  Connection: 1
-     0x10
-Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals:  [0x8f]
-  Connection: 2
-     0x19* 0x24
-Node 0x19 [Beep Generator Widget] wcaps 0x700000: Mono
-Node 0x1a [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x06 0x06]
-  Pincap 0x081f: OUT HP Detect
-  Pin Default 0x02214021: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x0a
-Node 0x1b [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x06 0x06]
-  Pincap 0x081001f: OUT HP EAPD Detect
-  Pin Default 0x81114011: [Fixed] Speaker at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-Node 0x1c [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0837: IN OUT Detect
-  Pin Default 0x41013012: [N/A] Line Out at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x1d [Pin Complex] wcaps 0x400985: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x081737: IN OUT Detect
-  Pin Default 0x41019015: [N/A] Line Out at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0d
-Node 0x1e [Pin Complex] wcaps 0x400104: Mono Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x0810: OUT
-  Pin Default 0x501700f0: [N/A] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN Detect
-  Pin Default 0xc2a190f0: [Both] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN Detect
-  Pin Default 0x418130f0: [N/A] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0827: IN Detect
-  Pin Default 0x509700f0: [N/A] Aux at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x22 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x903300f0: [Fixed] CD at Int N/A
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x23 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x90b70130: [Fixed] Telephony at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x24 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x90f701f0: [Fixed] Other at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x014511f0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x26 [Power Widget] wcaps 0x500500: Mono
-  Power: 0x0
-  Connection: 8
-     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x1d
-Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x20
-Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1d 0x20
-Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 3
-     0x1f 0x1d 0x20
-Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x0f
-
- more /proc/asound/card0/codec#1
-Codec: Generic 11c1 ID 1040
-Address: 1
-Vendor Id: 0x11c11040
-Subsystem Id: 0x11c10001
-Revision Id: 0x100200
-
- more /proc/asound/card0/pcm0c/info
-card: 0
-device: 0
-subdevice: 0
-stream: CAPTURE
-id: AD198x Analog
-name: AD198x Analog
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 1
-
- more /proc/asound/card0/pcm0p/info 
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: AD198x Analog
-name: AD198x Analog
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 1
-
-
- amixer scontents
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 12 [39%] [on]
-  Front Right: Playback 12 [39%] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 29 [94%] [on]
-  Front Right: Playback 29 [94%] [on]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Capture [on]
-  Front Left: Playback 29 [94%] [on]
-  Front Right: Playback 29 [94%] [on]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 15 [100%] [on]
-  Front Right: Capture 15 [100%] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Internal Mic',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Capture [off]
-  Front Left: Playback 15 [48%] [on]
-  Front Right: Playback 15 [48%] [on]
-
-=======================================================================================
-
-
-Peter Skensved                          Email : peter at SNO dot Phy dot QueensU dot CA
-Dept. of Physics,
-Queen's University,
-Kingston, Ontario,
-Canada
+--===============2105884902744865731==--
