@@ -1,20 +1,15 @@
-From: "Ash Willis" <ashwillis@programmer.net>
-Subject: Re: ESI MAYA44 PCI - ESI wants to collaborate!
-Date: Mon, 20 Aug 2007 22:17:54 -0500
-Message-ID: <20070821031754.7E0F0102EC@ws1-3.us4.outblaze.com>
+From: Peter Skensved <peter@jay.phy.queensu.ca>
+Subject: Intel HDA / AD1986A problems
+Date: Mon, 20 Aug 2007 22:27:40 -0400
+Message-ID: <20070821022740.GA29307@jay.phy.queensu.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail-outgoing.us4.outblaze.com
-	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0618D10382A
+Received: from jay.phy.queensu.ca (jay.phy.QueensU.CA [130.15.24.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6333324514
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Aug 2007 05:17:58 +0200 (CEST)
-Received: from unknown (unknown [192.168.8.90])
-	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
-	0499918001AB
-	for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2007 03:17:55 +0000 (GMT)
+	Tue, 21 Aug 2007 04:27:43 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,154 +20,387 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Piotrek <oponek@gmail.com>, Adrian McMenamin <adrianmcmenamin@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Piotrek,
-Thanks for being so active in trying to improve ALSA support.
-I've written a couple of these drivers too but someone better than me
-should do this ;) especially if ESI is only willing to discuss this
-matter with one developer. Besides, I don't fancy paying =A370 for the
-opportunity. The people at ESI will know what they need to provide:
-A full datasheet containing things like IO port layout, register
-descriptions and commands.
-Source code for current Windows drivers would be helpful but not
-essential.
-
-If the card needs firmware, then we'll need that too. It's also not
-essential that the source code for the firmware is provided but I
-think that's probably preferred as well. In either case, ESI will
-need to give permission for the firmware to be distributed for it to
-be well supported by ALSA. Otherwise, users will be responsible for
-extracting the firmware from their Windows drivers, and that's just
-not nice.
-
-Like I said, ESI will know will they need to provide: that is to say
-all the information they gave to their programmers to let them create
-the current drivers for this device.
-
-It is clear by the ESI response that they are willing to release the
-information on the provision that a good driver will be produced
-thereby making them look good. That is fair enough. I would suggest
-to ESI, however, that to truly create the maximum possibility of this
-happening, they could allow the datasheet to be held on the ALSA
-server. By doing this, the relevant information would be available to
-any developer who wanted to create the driver or make further
-improvements. You can point them to the address below if they don't
-think that sounds like something a sane company would do.
-
-http://ftp.mj2.org/pub/alsa/datasheets/
-
-Anyway, good luck and my advice would be to try and get the info
-first and find a developer later. I don't know if ESI will do that
-though. There will always be people, floating around, who will code
-this up, but there's no guaranty that the company will always be as
-happy and friendly as they were to you :)
-
-Ash
-> ----- Original Message -----
-> From: Piotrek <oponek@gmail.com>
-> To: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
-> Subject: Re: [alsa-devel] ESI MAYA44 PCI - ESI wants to collaborate!
-> Date: Mon, 20 Aug 2007 22:53:53 +0200
-> =
-
-> =
-
-> 2007/8/20, Adrian McMenamin <adrianmcmenamin@gmail.com>:
-> >
-> > On 20/08/07, Takashi Iwai <tiwai@suse.de> wrote:
-> > > At Sat, 18 Aug 2007 09:28:34 +0200,
-> > > Piotrek wrote:
-> > > >
-> > > >      Referring to the lack of the official ALSA support of ESI MAYA=
-44
-> > PCI
-> > > > (in fact, the card does not work) I would like to ask I there are a=
-ny
-> > plans
-> > > > to get this card working with ALSA? I would be thankful to be able =
-to
-> > run my
-> > > > soundcard properly under Linux. There are also a lot of people that
-> > would
-> > > > appreciate your work and are waiting for maya44 pci drivers for lin=
-ux:
-> > > > http://www.esiforum.com/show.asp?db=3Desi&t=3Desi1&mode=3D3&msg=3D7=
-93
-> > > >     I wrote a letter to the UK ESI SUPPORT asking if they were going
-> > to
-> > > > write drivers for their products for Linux systems as well. There i=
-s a
-> > > > reply:
-> > > >
-> > > > "
-> > > > Dear Piotr
-> > > >
-> > > > ESI do not provide and have no plans for Linux drivers for our
-> > products
-> > > > However
-> > > > ESI are happy to provide /share information to an Individual develo=
-per
-> > > > within the Linux community
-> > > > That is able and capable to develope drivers
-> > > > and wishes to develope drivers
-> > > >
-> > > > Regards
-> > > > UK Support
-> > > > ESI Auditechnik
-> > > > "
-> > > >
-> > > > It means that ESI will collaborate with developers who would like to
-> > write
-> > > > such driver and share the documentation.
-> > > >
-> > > > Again the question: Are there any plans to make ESI MAYA44 PCI card
-> > working
-> > > > with ALSA?
-> > >
-> > > AFAIK, no plan.  We don't have this hardware for developing.
-> > >
-> > >
-> >
-> > I have no idea what this card is like, but if they would be prepared
-> > to send me one, I'd be happy to take the project on. I've written one
-> > alsa driver - that will shortly be in the stable kernel - so can point
-> > to that.
-> >
-> > Of course, other developers will probably be able to do the job at a
-> > greater speed - but I would be happy to take it on as a pro bono
-> > project.
-> >
-> > I am in the UK.
-> >
-> =
-
->      Thank you all for your replies. I think we should wait a while for t=
-he
-> response of the rest of the ALSA dev team and then we would be able to
-> choose the best person for this quest and decide what to do with it
-> together.
->     However, we need to
-> specify what kind of information do we exactly need form ESI before we can
-> start talking with them. Please write your suggestions.
->     When we will know what we need from ESI we can start working on the
-> drivers. I will be glad to be able to test your work.
-> =
-
-> --
-> Regards,
-> Piotr Makowski
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
->
 
 
--- =
+ Configuration : Lenovo 3000 N100 laptop with Intel HDA / Anlog Devices AD1986A
+soundcard running CentOS5.0 with 2.6.18-8.1.8.el5 kernel ( uses 1.0.12rc1 based
+alsa driver ).
 
-We've Got Your Name at http://www.mail.com !
-Get a FREE E-mail Account Today - Choose From 100+ Domains
+ The driver works with the model=laptop-eapd option except for a few things :
+
+1)  Plugging in an external headset will not mute the internal speakers ( has to be done
+manually in alsa-mixer )
+
+2)  The PC speaker ( bell ) appears to be permanently muted.
+
+3)  The external microphone input does not appear to be working no matter what I do.
+
+4)  When recording from the internal microphone the level is very, very low and almost
+drowns in static noise.
+
+
+ Any easy way to fix the above ? Number 4 in particular ?  I've tinkered with backporting
+what I thought were relevant differences between the latest patch_analog.c and the one
+used in the kernel I have (alsa-driver 1.0.12rc1 ) but I see no difference.
+
+ Any other way to tweak or reconfigure the hardware ? Enable microphone boost ??
+Looking at /proc/asound/card0/codec#0 makes me believe that the hardware has several
+unused or permanently disabled features.
+
+ This particular laptop has a model number which differs slightly from the one listed in
+patch_analog.c ( 0768-6KU instead of 0768-4JU ).  Not sure if is relevant. 
+
+ And finally a ( somewhat ) related question : Is it possible to get the sound card to
+work with the slmodem package to drive the built in modem ???
+
+
+============================================================================================
+
+ Partial output from lspci -nv is attached below together with stuff from /proc/asound :
+
+
+00:1b.0 0403: 8086:27d8 (rev 02)
+        Subsystem: 17aa:2066
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size: 64 bytes
+        Interrupt: pin A routed to IRQ 233
+        Region 0: Memory at b0000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0, ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown, Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+
+
+
+
+ more /proc/asound/cards 
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xb0000000 irq 233
+
+
+ more /proc/asound/devices 
+  2:        : timer
+  3:        : sequencer
+  4: [ 0- 0]: digital audio playback
+  5: [ 0- 0]: digital audio capture
+  6: [ 0]   : control
+
+ more /proc/asound/modules 
+ 0 snd_hda_intel
+
+ more /proc/asound/card0/codec#0 
+Codec: Analog Devices AD1986A
+Address: 0
+Vendor Id: 0x11d41986
+Subsystem Id: 0x17aa2066
+Revision Id: 0x100500
+Default PCM: rates 0x07f, bits 0x0e, types 0x1
+Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
+  PCM: rates 0x060, bits 0x02, types 0x5
+  Connection: 2
+     0x01* 0x06
+Node 0x03 [Audio Output] wcaps 0x44d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1d 0x1d]
+  Power: 0x0
+Node 0x04 [Audio Output] wcaps 0x40d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Power: 0x0
+Node 0x05 [Audio Output] wcaps 0x40d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Power: 0x0
+Node 0x06 [Audio Input] wcaps 0x100511: Stereo
+  PCM: rates 0x07f, bits 0x06, types 0x1
+  Power: 0x0
+  Connection: 1
+     0x12
+Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 8
+     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
+Node 0x08 [Audio Mixer] wcaps 0x200100: Mono
+  Connection: 1
+     0x07
+Node 0x09 [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80] [0x80]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80]
+  Connection: 2
+     0x04 0x05
+Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x07* 0x04 0x05
+Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x07* 0x04
+Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x04* 0x07
+Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x05* 0x08
+Node 0x0e [Audio Selector] wcaps 0x300100: Mono
+  Connection: 2
+     0x08* 0x11
+Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 8
+     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
+Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x20* 0x1c 0x1f
+Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
+  Connection: 2
+     0x0f* 0x2b
+Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x8f 0x8f]
+  Connection: 8
+     0x11 0x22 0x00 0x21 0x10 0x07* 0x08 0x23
+Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1d 0x1d]
+  Connection: 1
+     0x11
+Node 0x14 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80]
+  Connection: 1
+     0x23
+Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Connection: 1
+     0x22
+Node 0x16 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Connection: 1
+     0x21
+Node 0x17 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x15 0x15]
+  Connection: 1
+     0x10
+Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
+  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
+  Amp-Out vals:  [0x8f]
+  Connection: 2
+     0x19* 0x24
+Node 0x19 [Beep Generator Widget] wcaps 0x700000: Mono
+Node 0x1a [Pin Complex] wcaps 0x400185: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x06 0x06]
+  Pincap 0x081f: OUT HP Detect
+  Pin Default 0x02214021: [Jack] HP Out at Ext Front
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x0a
+Node 0x1b [Pin Complex] wcaps 0x400185: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x06 0x06]
+  Pincap 0x081001f: OUT HP EAPD Detect
+  Pin Default 0x81114011: [Fixed] Speaker at Ext Rear
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0b
+Node 0x1c [Pin Complex] wcaps 0x400185: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0837: IN OUT Detect
+  Pin Default 0x41013012: [N/A] Line Out at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0c
+Node 0x1d [Pin Complex] wcaps 0x400985: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x081737: IN OUT Detect
+  Pin Default 0x41019015: [N/A] Line Out at Ext Rear
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0d
+Node 0x1e [Pin Complex] wcaps 0x400104: Mono Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80]
+  Pincap 0x0810: OUT
+  Pin Default 0x501700f0: [N/A] Speaker at Int N/A
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0e
+Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x081727: IN Detect
+  Pin Default 0xc2a190f0: [Both] Mic at Ext Front
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x081727: IN Detect
+  Pin Default 0x418130f0: [N/A] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0x20: IN
+Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x0827: IN Detect
+  Pin Default 0x509700f0: [N/A] Aux at Int N/A
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x22 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x903300f0: [Fixed] CD at Int N/A
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x23 [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x90b70130: [Fixed] Telephony at Int N/A
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x24 [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x90f701f0: [Fixed] Other at Int N/A
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x014511f0: [Jack] SPDIF Out at Ext Rear
+    Conn = Optical, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x02
+Node 0x26 [Power Widget] wcaps 0x500500: Mono
+  Power: 0x0
+  Connection: 8
+     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
+Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 2
+     0x1f 0x1d
+Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 2
+     0x1f 0x20
+Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 2
+     0x1d 0x20
+Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 3
+     0x1f 0x1d 0x20
+Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
+  Connection: 1
+     0x0f
+
+ more /proc/asound/card0/codec#1
+Codec: Generic 11c1 ID 1040
+Address: 1
+Vendor Id: 0x11c11040
+Subsystem Id: 0x11c10001
+Revision Id: 0x100200
+
+ more /proc/asound/card0/pcm0c/info
+card: 0
+device: 0
+subdevice: 0
+stream: CAPTURE
+id: AD198x Analog
+name: AD198x Analog
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+ more /proc/asound/card0/pcm0p/info 
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: AD198x Analog
+name: AD198x Analog
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+
+ amixer scontents
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 12 [39%] [on]
+  Front Right: Playback 12 [39%] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 29 [94%] [on]
+  Front Right: Playback 29 [94%] [on]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [on]
+  Front Left: Playback 29 [94%] [on]
+  Front Right: Playback 29 [94%] [on]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 15 [100%] [on]
+  Front Right: Capture 15 [100%] [on]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Mono
+  Mono: Capture [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Internal Mic',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 15 [48%] [on]
+  Front Right: Playback 15 [48%] [on]
+
+=======================================================================================
+
+
+Peter Skensved                          Email : peter at SNO dot Phy dot QueensU dot CA
+Dept. of Physics,
+Queen's University,
+Kingston, Ontario,
+Canada
