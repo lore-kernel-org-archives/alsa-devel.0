@@ -1,19 +1,18 @@
-From: Michael Gerdau <mgerdau@tiscali.de>
-Subject: Re: HDA - Add more support for Dell systems.
-Date: Tue, 21 Aug 2007 17:17:51 +0200
-Message-ID: <200708211718.03022.mgerdau@tiscali.de>
-References: <1187553279.4189.145.camel@razman.gruemaster.com>
-	<200708211051.34134.mgerdau@tiscali.de>
-	<s5h3aydkr7g.wl%tiwai@suse.de>
+From: Piotrek <oponek@gmail.com>
+Subject: ESI MAYA44 PCI datasheet request
+Date: Tue, 21 Aug 2007 19:50:27 +0200
+Message-ID: <87988a970708211050h694a1a29ucac767a856c3b9aa@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4968308788978994812=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server021.webpack.hosteurope.de
-	(server021.webpack.hosteurope.de [80.237.130.29])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B14A1038AD
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id DCAFC1038C1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Aug 2007 17:21:34 +0200 (CEST)
-In-Reply-To: <s5h3aydkr7g.wl%tiwai@suse.de>
+	Tue, 21 Aug 2007 19:50:29 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id m22so625603nzf
+	for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2007 10:50:28 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,62 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org, =?ISO-8859-2?Q?Pawe=B3_Wolniewicz?= <admin@linux-muzyka.ixion.pl>
 List-Id: alsa-devel@alsa-project.org
 
---===============4968308788978994812==
-Content-Type: multipart/signed;
-  boundary="nextPart9284947.XuLbOch0uP";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+I would like toshow you the letter that I am going to send to the ESI
+company. I am asking you to accept this letter because I am going to send it
+on behalf of the ALSA development team. Any suggestions will be welcome.
 
---nextPart9284947.XuLbOch0uP
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-> OK, I'll let people playing the individual patch for one or two days.
-> If you or no other people find similar regressions, I'll merge Tobin's
-> latest patch to HG tree after that.
+Dear Sir/Madam,
 
-I've now rebooted into the patch posted to the ML and everything works
-fine. Don't know what had happened yesterday -- can't reproduce the
-problems.
+In reply to the letter sent 14.07.2007:
 
-Best,
-Michael who happily listens to the enhanced Basssound of his XPS M1710 :-)
-=2D-=20
- Vote against SPAM - see http://www.politik-digital.de/spam/
- !tagline
- Michael Gerdau       email: mgerdau@tiscali.de
- GPG-keys available on request or at public keyserver
+2007/8/14, ESI UK Support <uksupport@esi-audio.com>:
 
---nextPart9284947.XuLbOch0uP
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+Dear Piotr
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
+ESI do not provide and have no plans for Linux drivers for our products
+However
+ESI are happy to provide /share information to an Individual developer
+within the Linux community
+That is able and capable to develope drivers
+and wishes to develope drivers
 
-iD8DBQBGywIqUYYhyuxDQc4RAjPmAKCpVt6Vu/IaudRzYkBqVYn6PY8RnACbB8mn
-ee0NxQcgGKwqxfd4Yjqsa5M=
-=xIc6
------END PGP SIGNATURE-----
+Regards
+UK Support
+ESI Auditechnik
 
---nextPart9284947.XuLbOch0uP--
 
---===============4968308788978994812==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+I would like to ask you to share the information about ESI MAYA44 PCI card
+needed to write drivers on behalf of the ALSA development team. ALSA team
+needs all the information that you give your programmers to create drivers
+for the device. We would like to ask you for:
 
---===============4968308788978994812==--
+- a full datasheet containing IO port layout, register descriptions and
+commands,
+- ESI MAYA44 PCI firmware,
+- EIS MAYA44 PCI firmware source code,
+- permission for the firmware to be distributed with ALSA,
+- source code for currnet windows drivers would be very helpful but isn't
+essential.
+
+There are many peope that are willing to write the driver for MAYA44 and
+because of the way Open-Source software and drivers are developed, in the
+interest of it's quality, it is important that the information about the
+card are accesable for all of the ALSA developers. We ask for your permision
+to place that information on the ALSA server for developers. Thanks to that
+any qualified person will have acces to it. Many other companies provided
+that kind of information to us this way before:
+http://ftp.mj2.org/pub/alsa/datasheets/
+
+I am sure that adding this card to the list of the suported cards under the
+linux operating system will cause the number of satisfied ESI card users to
+increase. Thank you for your co-operation.
+
+
+-- 
+Best Regards,
+Piotr Makowski
+ALSA Development Team
