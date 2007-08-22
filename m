@@ -1,18 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: hw_params function and OSS emulation
-Date: Wed, 22 Aug 2007 09:28:31 -0500
-Message-ID: <46CC480F.7090604@freescale.com>
-References: <46CB2BB4.9060808@freescale.com> <s5hbqd0j5c6.wl%tiwai@suse.de>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: Re: Noise at end of audio file
+Date: Wed, 22 Aug 2007 09:31:25 -0500
+Message-ID: <B082902A12CAEE4EA7FE2ED20609013B0163D225@dlee15.ent.ti.com>
+References: <s5hmywjiwr9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63AB01038A5
+Received: from soda.ext.ti.com (soda.ext.ti.com [198.47.26.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 061E91038A5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Aug 2007 16:28:36 +0200 (CEST)
-In-Reply-To: <s5hbqd0j5c6.wl%tiwai@suse.de>
+	Wed, 22 Aug 2007 16:32:33 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <s5hmywjiwr9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +26,33 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+I'm using aplay application for playback, the platform I'm working with
+is ti-omap.
 
->> 3) Can I assume that .hw_params() is never called after .prepare() is called?
+Regards,
+Misael 
+
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Wednesday, August 22, 2007 7:23 AM
+To: Lopez Cruz, Misael
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Noise at end of audio file
+
+At Mon, 20 Aug 2007 10:44:14 -0500,
+Lopez Cruz, Misael wrote:
 > 
-> The call is allowed.
+> Hi,
+>  
+> I listen some noise at the end of playback of an audio file, with some
 
-Ugh, so in other words, .hw_params() and .prepare() can be called any number 
-of times in any order?  That makes it impossible to optimize the creation of 
-the DMA buffer.  Currently, I have this code at the top of my .hwparams() 
-function:
+> debug I noticed that the noise appears in the last two period of the 
+> playback. I tried changing the minimum number of period (it was 16 and
 
-	if (substream->dma_buffer.addr) {
-		dma_free_coherent(substream->pcm->dev,
-			runtime_data->ld_buf_size, runtime_data->link,
-			runtime_data->ld_buf_phys);
-		snd_dma_free_pages(&substream->dma_buffer);
-	}
+> changed to 32) but the noise appears even before. Any idea what could 
+> be wrong?
+
+With which apps and which device does this happen?
 
 
-When I look at the AT91 ASOC driver as an example, I see it allocates a DMA 
-buffer of the maximum allowed size (currently hard-coded to 32KB) in the .new 
-function.  To me, this is cheating, but it appears to be the only way to avoid 
-doing what I'm currently doing.  Is this the recommend approach?
-
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+Takashi
