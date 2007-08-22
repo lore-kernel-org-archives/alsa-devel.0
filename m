@@ -1,20 +1,17 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: aplay giving underruns in non blocking mode
-Date: Wed, 22 Aug 2007 22:32:38 +0530
-Message-ID: <61445c750708221002v1878fbr317060f57694b5f3@mail.gmail.com>
-References: <61445c750708220926p16351ed3gbb1cc4a2df1058c1@mail.gmail.com>
+From: Pieter Palmers <pieterp@joow.be>
+Subject: Re: ESI reply!! (MAYA44 datasheet request)
+Date: Wed, 22 Aug 2007 20:02:24 +0200
+Message-ID: <46CC7A30.9020803@joow.be>
+References: <20070822152207.5959424468@alsa0.perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.232])
-	by alsa0.perex.cz (Postfix) with ESMTP id 067412447C
+Received: from guri.is.scarlet.be (guri.is.scarlet.be [193.74.71.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5561E24483
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Aug 2007 19:02:40 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id m22so150712nzf
-	for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2007 10:02:39 -0700 (PDT)
-In-Reply-To: <61445c750708220926p16351ed3gbb1cc4a2df1058c1@mail.gmail.com>
-Content-Disposition: inline
+	Wed, 22 Aug 2007 20:02:36 +0200 (CEST)
+In-Reply-To: <20070822152207.5959424468@alsa0.perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Claus Riethmueller <claus@esi-audio.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/22/07, Pharaoh . <pharaoh137@gmail.com> wrote:
->
-> Hi
-> I am tesing my alsa driver for an arm based board. aplay works well when
-> it is used in blocking mode, but I see
-> underruns when I switch to non-blocking mode. What could be the reason?
->
-> I have tried to remove all latencies in driver by using minimal locking
-> etc, but it doesn't seem to make any difference.
-> Also, the audio quality degenerates gradually in non-blocking mode.
->
-> -Pharaoh.
->
+Claus Riethmueller wrote:
 
-I am using alsa-lib and alsa-utils 1.0.13.
--pharaoh.
+...
+
+> 
+>> Now, if ESI cannot even provide this, we should highlight ESI in RED in 
+>> the sound card matrix.
+> 
+> As you can guess, it was this sentence that prompted me to reply directly to
+> the list. In my opinion, your comment is unfair and simply ignoring major
+> parts of what I wrote in my mail to Piotr. I have shown a certain level of
+> commitment and your response basically tells me that you are not even
+> interested ... if more people would share your views, ALSA would have made
+> no development at all in the last 5 years I guess.
+> 
+
+I think it is only fair to mention that for FreeBoB, ESI was the first 
+company to provide us with hardware to develop with. They provided us 
+with a QuataFire610 even before we had a single line of code. Compared 
+to the hassle we experience with other vendors, even to date, I consider 
+this a very open and constructive attitude.
+
+Greets,
+
+Pieter Palmers
+FreeBoB/FFADO developer
