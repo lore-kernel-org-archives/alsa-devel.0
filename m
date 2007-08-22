@@ -1,17 +1,19 @@
-From: Pieter Palmers <pieterp@joow.be>
+From: Rene Herman <rene.herman@gmail.com>
 Subject: Re: ESI reply!! (MAYA44 datasheet request)
-Date: Wed, 22 Aug 2007 20:02:24 +0200
-Message-ID: <46CC7A30.9020803@joow.be>
+Date: Wed, 22 Aug 2007 19:58:56 +0200
+Message-ID: <46CC7960.4050709@gmail.com>
 References: <20070822152207.5959424468@alsa0.perex.cz>
+	<92a12cdb0708220903q5104a74fx26ed2bf2cf5ed943@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from guri.is.scarlet.be (guri.is.scarlet.be [193.74.71.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5561E24483
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 762AC1038E3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Aug 2007 20:02:36 +0200 (CEST)
-In-Reply-To: <20070822152207.5959424468@alsa0.perex.cz>
+	Wed, 22 Aug 2007 20:03:51 +0200 (CEST)
+In-Reply-To: <92a12cdb0708220903q5104a74fx26ed2bf2cf5ed943@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,33 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Claus Riethmueller <claus@esi-audio.com>
-Cc: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrianmcmenamin@gmail.com>
+Cc: Claus Riethmueller <claus@esi-audio.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Claus Riethmueller wrote:
+On 08/22/2007 06:03 PM, Adrian McMenamin wrote:
 
-...
-
+> On 22/08/07, Claus Riethmueller <claus@esi-audio.com> wrote:
+>> Our engineers are all happy to answer questions and provide assistance and
+>> help if required. As I said, we are happy to be in contact with an
+>> individual developer who is actually doing the development. It is a lot less
+>> time consuming and for us a lot more simple (actually, I believe it is more
+>> simple for the developer on the ALSA end as well but I realize some people
+>> might disagree here).
+>>
 > 
->> Now, if ESI cannot even provide this, we should highlight ESI in RED in 
->> the sound card matrix.
+> Rather than have a flame war, this is what we should concentrate on!
 > 
-> As you can guess, it was this sentence that prompted me to reply directly to
-> the list. In my opinion, your comment is unfair and simply ignoring major
-> parts of what I wrote in my mail to Piotr. I have shown a certain level of
-> commitment and your response basically tells me that you are not even
-> interested ... if more people would share your views, ALSA would have made
-> no development at all in the last 5 years I guess.
+> This is an offer that shouldn't be passed over.
 > 
+> As I said before I would be happy to volunteer as developer of last
+> resort. But probably one of the core team would be better.
 
-I think it is only fair to mention that for FreeBoB, ESI was the first 
-company to provide us with hardware to develop with. They provided us 
-with a QuataFire610 even before we had a single line of code. Compared 
-to the hassle we experience with other vendors, even to date, I consider 
-this a very open and constructive attitude.
+Do any have the hardware?
 
-Greets,
-
-Pieter Palmers
-FreeBoB/FFADO developer
+Rene.
