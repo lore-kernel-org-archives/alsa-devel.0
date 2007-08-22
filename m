@@ -1,19 +1,17 @@
-From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
-Subject: Re: ESI reply!! (MAYA44 datasheet request)
-Date: Wed, 22 Aug 2007 17:03:07 +0100
-Message-ID: <92a12cdb0708220903q5104a74fx26ed2bf2cf5ed943@mail.gmail.com>
-References: <20070822152207.5959424468@alsa0.perex.cz>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: aplay giving underruns in non blocking mode
+Date: Wed, 22 Aug 2007 21:56:36 +0530
+Message-ID: <61445c750708220926p16351ed3gbb1cc4a2df1058c1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 64B1B1038C9
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id E061124469
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Aug 2007 18:03:09 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so236587wag
-	for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2007 09:03:07 -0700 (PDT)
-In-Reply-To: <20070822152207.5959424468@alsa0.perex.cz>
+	Wed, 22 Aug 2007 18:26:39 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so243453wag
+	for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2007 09:26:38 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,23 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Claus Riethmueller <claus@esi-audio.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22/08/07, Claus Riethmueller <claus@esi-audio.com> wrote:
->
-> Our engineers are all happy to answer questions and provide assistance and
-> help if required. As I said, we are happy to be in contact with an
-> individual developer who is actually doing the development. It is a lot less
-> time consuming and for us a lot more simple (actually, I believe it is more
-> simple for the developer on the ALSA end as well but I realize some people
-> might disagree here).
->
+Hi
+I am tesing my alsa driver for an arm based board. aplay works well when it
+is used in blocking mode, but I see
+underruns when I switch to non-blocking mode. What could be the reason?
 
-Rather than have a flame war, this is what we should concentrate on!
+I have tried to remove all latencies in driver by using minimal locking etc,
+but it doesn't seem to make any difference.
+Also, the audio quality degenerates gradually in non-blocking mode.
 
-This is an offer that shouldn't be passed over.
-
-As I said before I would be happy to volunteer as developer of last
-resort. But probably one of the core team would be better.
+-Pharaoh.
