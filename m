@@ -1,16 +1,17 @@
-From: Andy <hornett83@yahoo.co.uk>
-Subject: Intel-HDA ALC262 (again)
-Date: Wed, 22 Aug 2007 20:59:36 +0100 (BST)
-Message-ID: <38511.12091.qm@web27202.mail.ukl.yahoo.com>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: Audio quality issue - regular clicks are observed
+Date: Wed, 22 Aug 2007 21:16:32 +0100
+Message-ID: <1187813792.16454.39.camel@localhost.localdomain>
+References: <61445c750708220943k1c410147pa0dddf4d950eb08c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-82135028-1187812776=:12091"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web27202.mail.ukl.yahoo.com (web27202.mail.ukl.yahoo.com
-	[217.146.182.92])
-	by alsa0.perex.cz (Postfix) with SMTP id AFBB8103817
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id 070841037EE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Aug 2007 21:59:37 +0200 (CEST)
+	Wed, 22 Aug 2007 22:16:34 +0200 (CEST)
+In-Reply-To: <61445c750708220943k1c410147pa0dddf4d950eb08c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,206 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Pharaoh ." <pharaoh137@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0-82135028-1187812776=:12091
-Content-Type: text/plain; charset=iso-8859-1
-Content-Id: 
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 2007-08-22 at 22:13 +0530, Pharaoh . wrote:
+> Hi
+> While testing the audio driver using aplay in blocking mode, a periodic
+> murmur is observed, this increases with
+> the audio volume and occurs even when there are no issues like xrun etc.
+> Aplay was used in normal read/write mode
+> i.e. no mmap. The song can be heard properly i.e. with no noticable gaps aur
+> hisses but the clicks are audible.
 
-Alas, I spoke too soon. The headphone jack and
-internal speakers work as expected, until I adjust the
-main volume (labeled in alsamixer as 'front') at which
-point  both the internal speakers and headphones play!
+Clock domain mismatch issues cause periodic ticks that increase in
+frequency with increasing sample rate. It's possible your clocking the
+codec and controller in two different clock domains. i.e. I2S controller
+(bitclk and frame) clocked from CPU and codec clocked from separate
+crystal.
 
+It's best to make sure that only one clock is clocking both the codec
+and digital audio interface. 
 
-Unplugging the headphones and reconnecting them makes
-everything OK again.
-
-Any ideas? (patch against 2.6.22 that makes my chip
-mostly work is attached). I guess that=20
-alc262_hippo_automute() needs to be called somewhere
-it isn't, but I couldn't see where.
-
-Thanks again!
-Andy
-
->Yep, I'm happy to report that does indeed fix it!
->Thank-you Takashi! :)
->Andy.
-
-> At Wed, 25 Jul 2007 16:51:25 +0100 (BST),
-> Andy wrote:
-> >=20
-> > Hello again Takashi,
-> >=20
-> > I put in some printks, and indeed the function
-> does
-> > run and it correctly detects that there are no
-> > headphones present, but the speakers are not
-> unmuted.
-> >=20
-> > (the 'mute' variable both times is reported as
-> being
-> > 0x80 after it is set with snd_hda_codec_amp_read)
->=20
-> Ah, it means that this intiailization gets called
-> before restoring the
-> mixer elements.  Since sony model doesn't have the
-> mixer element for
-> the NID 0x14 that is linked with 0x15, 0x14 isn't
-> restored properly in
-> the end.
->=20
-> How about the patch below?  It's a bit too ad hoc,
-> but better than
-> buggy.
->=20
-
-
-
-      ___________________________________________________________
-Yahoo! Answers - Got a question? Someone out there knows the answer. Try =
-it
-now.
-http://uk.answers.yahoo.com/=20
---0-82135028-1187812776=:12091
-Content-Type: application/octet-stream; name=my-sound-patch
-Content-Transfer-Encoding: base64
-Content-Description: 1398466787-my-sound-patch
-Content-Disposition: attachment; filename=my-sound-patch
-
-LS0tIC9ob21lL3JldHJvL0J1aWxkL2xpbnV4LTIuNi4yMi4xL3NvdW5kL3Bj
-aS9oZGEvcGF0Y2hfcmVhbHRlay5jCTIwMDctMDctMTAgMTk6NTY6MzAuMDAw
-MDAwMDAwICswMTAwCisrKyAvdXNyL3NyYy9saW51eC9zb3VuZC9wY2kvaGRh
-L3BhdGNoX3JlYWx0ZWsuYwkyMDA3LTA3LTI1IDE4OjQ5OjMwLjAwMDAwMDAw
-MCArMDEwMApAQCAtNjgyMSw2ICs2ODIxLDE4IEBACiAJeyB9IC8qIGVuZCAq
-LwogfTsKIAorc3RhdGljIGludCBhbGMyNjJfc29ueV9zd19wdXQoc3RydWN0
-IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCisJCQkgICAgICBzdHJ1Y3Qgc25k
-X2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkKK3sKKwl1bnNpZ25lZCBsb25n
-IHByaXZhdGVfc2F2ZSA9IGtjb250cm9sLT5wcml2YXRlX3ZhbHVlOworCWlu
-dCBjaGFuZ2U7CisJa2NvbnRyb2wtPnByaXZhdGVfdmFsdWUgPSBIREFfQ09N
-UE9TRV9BTVBfVkFMKDB4MTQsIDMsIDAsIEhEQV9PVVRQVVQpOworCWNoYW5n
-ZSA9IHNuZF9oZGFfbWl4ZXJfYW1wX3N3aXRjaF9wdXQoa2NvbnRyb2wsIHVj
-b250cm9sKTsKKwlrY29udHJvbC0+cHJpdmF0ZV92YWx1ZSA9IHByaXZhdGVf
-c2F2ZTsKKwljaGFuZ2UgfD0gc25kX2hkYV9taXhlcl9hbXBfc3dpdGNoX3B1
-dChrY29udHJvbCwgdWNvbnRyb2wpOworCXJldHVybiBjaGFuZ2U7Cit9CisK
-IHN0YXRpYyBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBhbGMyNjJfSFBfQlBD
-X1dpbGRXZXN0X21peGVyW10gPSB7CiAJSERBX0NPREVDX1ZPTFVNRSgiRnJv
-bnQgUGxheWJhY2sgVm9sdW1lIiwgMHgwYywgMHgwLCBIREFfT1VUUFVUKSwK
-IAlIREFfQ09ERUNfTVVURSgiRnJvbnQgUGxheWJhY2sgU3dpdGNoIiwgMHgx
-YiwgMHgwLCBIREFfT1VUUFVUKSwKQEAgLTY4NDksNyArNjg2MSwxNCBAQAog
-CiBzdGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgYWxjMjYyX3Nvbnlf
-bWl4ZXJbXSA9IHsKIAlIREFfQ09ERUNfVk9MVU1FKCJGcm9udCBQbGF5YmFj
-ayBWb2x1bWUiLCAweDBjLCAweDAsIEhEQV9PVVRQVVQpLAotCUhEQV9DT0RF
-Q19NVVRFKCJGcm9udCBQbGF5YmFjayBTd2l0Y2giLCAweDE1LCAweDAsIEhE
-QV9PVVRQVVQpLAorCXsKKwkJLmlmYWNlID0gU05EUlZfQ1RMX0VMRU1fSUZB
-Q0VfTUlYRVIsCisJCS5uYW1lID0gIkZyb250IFBsYXliYWNrIFN3aXRjaCIs
-CisJCS5pbmZvID0gc25kX2hkYV9taXhlcl9hbXBfc3dpdGNoX2luZm8sCisJ
-CS5nZXQgPSBzbmRfaGRhX21peGVyX2FtcF9zd2l0Y2hfZ2V0LAorCQkucHV0
-ID0gYWxjMjYyX3Nvbnlfc3dfcHV0LAorCQkucHJpdmF0ZV92YWx1ZSA9IEhE
-QV9DT01QT1NFX0FNUF9WQUwoMHgxNSwgMywgMCwgSERBX09VVFBVVCksCisJ
-fSwKIAlIREFfQ09ERUNfVk9MVU1FKCJNaWMgUGxheWJhY2sgVm9sdW1lIiwg
-MHgwYiwgMHgwLCBIREFfSU5QVVQpLAogCUhEQV9DT0RFQ19NVVRFKCJNaWMg
-UGxheWJhY2sgU3dpdGNoIiwgMHgwYiwgMHgwLCBIREFfSU5QVVQpLAogCUhE
-QV9DT0RFQ19WT0xVTUUoIkFUQVBJIE1pYyBQbGF5YmFjayBWb2x1bWUiLCAw
-eDBiLCAweDAxLCBIREFfSU5QVVQpLApAQCAtNjk2NywyMCArNjk4NiwxOCBA
-QAogfTsKIAogLyogbXV0ZS91bm11dGUgaW50ZXJuYWwgc3BlYWtlciBhY2Nv
-cmRpbmcgdG8gdGhlIGhwIGphY2sgYW5kIG11dGUgc3RhdGUgKi8KLXN0YXRp
-YyB2b2lkIGFsYzI2Ml9oaXBwb19hdXRvbXV0ZShzdHJ1Y3QgaGRhX2NvZGVj
-ICpjb2RlYywgaW50IGZvcmNlKQorc3RhdGljIHZvaWQgYWxjMjYyX2hpcHBv
-X2F1dG9tdXRlKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogewogCXN0cnVj
-dCBhbGNfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOwogCXVuc2lnbmVkIGlu
-dCBtdXRlOworCXVuc2lnbmVkIGludCBwcmVzZW50OworcHJpbnRrKCJhbGMy
-NjJfaGlwcG9fYXV0b211dGUoKVxuIik7CisJLyogbmVlZCB0byBleGVjdXRl
-IGFuZCBzeW5jIGF0IGZpcnN0ICovCisJc25kX2hkYV9jb2RlY19yZWFkKGNv
-ZGVjLCAweDE1LCAwLCBBQ19WRVJCX1NFVF9QSU5fU0VOU0UsIDApOworCXBy
-ZXNlbnQgPSBzbmRfaGRhX2NvZGVjX3JlYWQoY29kZWMsIDB4MTUsIDAsCisJ
-CQkJICAgICBBQ19WRVJCX0dFVF9QSU5fU0VOU0UsIDApOworCXNwZWMtPmph
-Y2tfcHJlc2VudCA9IChwcmVzZW50ICYgMHg4MDAwMDAwMCkgIT0gMDsKIAot
-CWlmIChmb3JjZSB8fCAhc3BlYy0+c2Vuc2VfdXBkYXRlZCkgewotCQl1bnNp
-Z25lZCBpbnQgcHJlc2VudDsKLQkJLyogbmVlZCB0byBleGVjdXRlIGFuZCBz
-eW5jIGF0IGZpcnN0ICovCi0JCXNuZF9oZGFfY29kZWNfcmVhZChjb2RlYywg
-MHgxNSwgMCwgQUNfVkVSQl9TRVRfUElOX1NFTlNFLCAwKTsKLQkJcHJlc2Vu
-dCA9IHNuZF9oZGFfY29kZWNfcmVhZChjb2RlYywgMHgxNSwgMCwKLQkJCQkg
-ICAgCSBBQ19WRVJCX0dFVF9QSU5fU0VOU0UsIDApOwotCQlzcGVjLT5qYWNr
-X3ByZXNlbnQgPSAocHJlc2VudCAmIDB4ODAwMDAwMDApICE9IDA7Ci0JCXNw
-ZWMtPnNlbnNlX3VwZGF0ZWQgPSAxOwotCX0KIAlpZiAoc3BlYy0+amFja19w
-cmVzZW50KSB7CiAJCS8qIG11dGUgaW50ZXJuYWwgc3BlYWtlciAqLwogCQlz
-bmRfaGRhX2NvZGVjX2FtcF91cGRhdGUoY29kZWMsIDB4MTQsIDAsIEhEQV9P
-VVRQVVQsIDAsCkBAIC03MDA0LDI0ICs3MDIxLDIxIEBACiB7CiAJaWYgKChy
-ZXMgPj4gMjYpICE9IEFMQzg4MF9IUF9FVkVOVCkKIAkJcmV0dXJuOwotCWFs
-YzI2Ml9oaXBwb19hdXRvbXV0ZShjb2RlYywgMSk7CisJYWxjMjYyX2hpcHBv
-X2F1dG9tdXRlKGNvZGVjKTsKIH0KIAotc3RhdGljIHZvaWQgYWxjMjYyX2hp
-cHBvMV9hdXRvbXV0ZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywgaW50IGZv
-cmNlKQorc3RhdGljIHZvaWQgYWxjMjYyX2hpcHBvMV9hdXRvbXV0ZShzdHJ1
-Y3QgaGRhX2NvZGVjICpjb2RlYykKIHsKIAlzdHJ1Y3QgYWxjX3NwZWMgKnNw
-ZWMgPSBjb2RlYy0+c3BlYzsKIAl1bnNpZ25lZCBpbnQgbXV0ZTsKKwl1bnNp
-Z25lZCBpbnQgcHJlc2VudDsKKworCXNuZF9oZGFfY29kZWNfcmVhZChjb2Rl
-YywgMHgxYiwgMCwgQUNfVkVSQl9TRVRfUElOX1NFTlNFLCAwKTsKKwlwcmVz
-ZW50ID0gc25kX2hkYV9jb2RlY19yZWFkKGNvZGVjLCAweDFiLCAwLAorCQkJ
-CSAgICAgQUNfVkVSQl9HRVRfUElOX1NFTlNFLCAwKTsKKwlwcmVzZW50ID0g
-KHByZXNlbnQgJiAweDgwMDAwMDAwKSAhPSAwOworCWlmIChwcmVzZW50KSB7
-CiAKLQlpZiAoZm9yY2UgfHwgIXNwZWMtPnNlbnNlX3VwZGF0ZWQpIHsKLQkJ
-dW5zaWduZWQgaW50IHByZXNlbnQ7Ci0JCS8qIG5lZWQgdG8gZXhlY3V0ZSBh
-bmQgc3luYyBhdCBmaXJzdCAqLwotCQlzbmRfaGRhX2NvZGVjX3JlYWQoY29k
-ZWMsIDB4MWIsIDAsIEFDX1ZFUkJfU0VUX1BJTl9TRU5TRSwgMCk7Ci0JCXBy
-ZXNlbnQgPSBzbmRfaGRhX2NvZGVjX3JlYWQoY29kZWMsIDB4MWIsIDAsCi0J
-CQkJICAgIAkgQUNfVkVSQl9HRVRfUElOX1NFTlNFLCAwKTsKLQkJc3BlYy0+
-amFja19wcmVzZW50ID0gKHByZXNlbnQgJiAweDgwMDAwMDAwKSAhPSAwOwot
-CQlzcGVjLT5zZW5zZV91cGRhdGVkID0gMTsKLQl9Ci0JaWYgKHNwZWMtPmph
-Y2tfcHJlc2VudCkgewogCQkvKiBtdXRlIGludGVybmFsIHNwZWFrZXIgKi8K
-IAkJc25kX2hkYV9jb2RlY19hbXBfdXBkYXRlKGNvZGVjLCAweDE0LCAwLCBI
-REFfT1VUUFVULCAwLAogCQkJCQkgMHg4MCwgMHg4MCk7CkBAIC03MDQ0LDcg
-KzcwNTgsNyBAQAogewogCWlmICgocmVzID4+IDI2KSAhPSBBTEM4ODBfSFBf
-RVZFTlQpCiAJCXJldHVybjsKLQlhbGMyNjJfaGlwcG8xX2F1dG9tdXRlKGNv
-ZGVjLCAxKTsKKwlhbGMyNjJfaGlwcG8xX2F1dG9tdXRlKGNvZGVjKTsKIH0K
-IAogLyoKQEAgLTc2MDksNiArNzYyMyw3IEBACiAJU05EX1BDSV9RVUlSSygw
-eDEwNGQsIDB4OTAxNSwgIlNvbnkgMHg5MDE1IiwgQUxDMjYyX1NPTllfQVNT
-QU1EKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA0ZCwgMHg5MDBlLCAiU29ueSBB
-U1NBTUQiLCBBTEMyNjJfU09OWV9BU1NBTUQpLAogCVNORF9QQ0lfUVVJUkso
-MHgxMDRkLCAweDFmMDAsICJTb255IEFTU0FNRCIsIEFMQzI2Ml9TT05ZX0FT
-U0FNRCksCisJU05EX1BDSV9RVUlSSygweDEwNGQsIDB4ODIwZiwgIlNvbnkg
-QVNTQU1EIiwgQUxDMjYyX1NPTllfQVNTQU1EKSwKIAl7fQogfTsKIApAQCAt
-NzYzNCw2ICs3NjQ5LDcgQEAKIAkJLmNoYW5uZWxfbW9kZSA9IGFsYzI2Ml9t
-b2RlcywKIAkJLmlucHV0X211eCA9ICZhbGMyNjJfY2FwdHVyZV9zb3VyY2Us
-CiAJCS51bnNvbF9ldmVudCA9IGFsYzI2Ml9oaXBwb191bnNvbF9ldmVudCwK
-KwkJLmluaXRfaG9vayA9IGFsYzI2Ml9oaXBwb19hdXRvbXV0ZSwKIAl9LAog
-CVtBTEMyNjJfSElQUE9fMV0gPSB7CiAJCS5taXhlcnMgPSB7IGFsYzI2Ml9o
-aXBwbzFfbWl4ZXIgfSwKQEAgLTc2NDYsNiArNzY2Miw3IEBACiAJCS5jaGFu
-bmVsX21vZGUgPSBhbGMyNjJfbW9kZXMsCiAJCS5pbnB1dF9tdXggPSAmYWxj
-MjYyX2NhcHR1cmVfc291cmNlLAogCQkudW5zb2xfZXZlbnQgPSBhbGMyNjJf
-aGlwcG8xX3Vuc29sX2V2ZW50LAorCQkuaW5pdF9ob29rID0gYWxjMjYyX2hp
-cHBvMV9hdXRvbXV0ZSwKIAl9LAogCVtBTEMyNjJfRlVKSVRTVV0gPSB7CiAJ
-CS5taXhlcnMgPSB7IGFsYzI2Ml9mdWppdHN1X21peGVyIH0sCkBAIC03NjU4
-LDYgKzc2NzUsNyBAQAogCQkuY2hhbm5lbF9tb2RlID0gYWxjMjYyX21vZGVz
-LAogCQkuaW5wdXRfbXV4ID0gJmFsYzI2Ml9mdWppdHN1X2NhcHR1cmVfc291
-cmNlLAogCQkudW5zb2xfZXZlbnQgPSBhbGMyNjJfZnVqaXRzdV91bnNvbF9l
-dmVudCwKKwkJLmluaXRfaG9vayA9IGFsYzI2Ml9oaXBwb19hdXRvbXV0ZSwK
-IAl9LAogCVtBTEMyNjJfSFBfQlBDXSA9IHsKIAkJLm1peGVycyA9IHsgYWxj
-MjYyX0hQX0JQQ19taXhlciB9LApAQCAtNzY5OSw2ICs3NzE3LDcgQEAKIAkJ
-Lm51bV9jaGFubmVsX21vZGUgPSBBUlJBWV9TSVpFKGFsYzI2Ml9tb2Rlcyks
-CiAJCS5jaGFubmVsX21vZGUgPSBhbGMyNjJfbW9kZXMsCiAJCS5pbnB1dF9t
-dXggPSAmYWxjMjYyX2NhcHR1cmVfc291cmNlLAorCQkuaW5pdF9ob29rID0g
-YWxjMjYyX2hpcHBvX2F1dG9tdXRlLAogCX0sCiAJW0FMQzI2Ml9TT05ZX0FT
-U0FNRF0gPSB7CiAJCS5taXhlcnMgPSB7IGFsYzI2Ml9zb255X21peGVyIH0s
-CkBAIC03NzEwLDYgKzc3MjksNyBAQAogCQkuY2hhbm5lbF9tb2RlID0gYWxj
-MjYyX21vZGVzLAogCQkuaW5wdXRfbXV4ID0gJmFsYzI2Ml9jYXB0dXJlX3Nv
-dXJjZSwKIAkJLnVuc29sX2V2ZW50ID0gYWxjMjYyX2hpcHBvX3Vuc29sX2V2
-ZW50LAorCQkuaW5pdF9ob29rID0gYWxjMjYyX2hpcHBvX2F1dG9tdXRlLAog
-CX0sCQogfTsKIAo=
-
---0-82135028-1187812776=:12091
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0-82135028-1187812776=:12091--
+Liam
