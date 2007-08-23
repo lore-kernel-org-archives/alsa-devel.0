@@ -1,20 +1,20 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: Re: Tascam US-428 USB Problems
-Date: Thu, 23 Aug 2007 12:05:41 +0200
-Message-ID: <200708231205.41813.fzu@wemgehoertderstaat.de>
-References: <8e4fc8270708152345k450c8460la0eb17e33d50fdd7@mail.gmail.com>
-	<200708170919.37627.fzu@wemgehoertderstaat.de>
-	<8e4fc8270708222202j3a3098beu8faf4597530d1876@mail.gmail.com>
+From: =?ISO-8859-1?Q?Celso_Gorr=EDn?= <celso@gia.usb.ve>
+Subject: [Alsa-user] Impossible to make subwoofer work on a
+ Dell XPS M1710w
+Date: Thu, 23 Aug 2007 04:36:34 -0400
+Message-ID: <46CD4712.1050804@gia.usb.ve>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout2.freenet.de (mout2.freenet.de [195.4.92.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id CEA9C10384F
+Received: from mail.gia.usb.ve (gia.usb.ve [159.90.8.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BA4F103857
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Aug 2007 12:05:31 +0200 (CEST)
-In-Reply-To: <8e4fc8270708222202j3a3098beu8faf4597530d1876@mail.gmail.com>
-Content-Disposition: inline
+	Thu, 23 Aug 2007 10:36:44 +0200 (CEST)
+Received: from [127.0.0.1] (fergie.gia.usb.ve [159.90.8.149])
+	by mail.gia.usb.ve (Postfix) with ESMTP id 3DDB33EE9C
+	for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2007 04:30:30 -0400 (VET)
+References: 200708192112.28425.mgerdau@tiscali.de
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Bourgeous <sts.nitrogen@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > USB 1.1 transfers happen at 1ms bounderies. Setting 64Frames/period period
-> > interrupts will happen within 1ms or 2ms distances.
-> 
-> I was not aware of the 1ms granularity for USB interrupts.  Would USB
-> 2.0 or Firewire offer a better granularity?
+Hi,
 
-Technically both operate at down to 1/8ms.
+I am the ALSA user that started this thread in the alsa-users list.
 
-Linux's USB 2.0 ehci driver doesn't go there and limits isochronous
-transfer granularity at 1ms.
-I posted a patch to linux-usb-devel, which enables 1/8ms granularity
-isochronous transfer.
-There was exactly 0 answer to it.
-And I was too lazy to follow up on that ;-)
+I found that my strategy of adding the "index=3D0" option and praying was =
 
-Regarding Firewire: I guess the "new stack" can operate at
-1/8ms granularity.
+nos stable enough, and each time I updated alsa or my kernel I had to =
 
+pray again to get the subwoofer working.
 
-      Karsten
+I tried Tobin's patch and finally I got the LFE control again (which I =
+
+had lost 4 hours ago by updating alsa and the kernel).
+
+If there is anything I can do to get this problem solved, just let me =
+
+know and I'll be more than glad to help.
+
+Regards,
+- Celso Gorr=EDn.
