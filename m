@@ -1,23 +1,22 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: Unable to open plughw:0,0 from user program.
-Date: Thu, 23 Aug 2007 18:13:59 -0400
-Message-ID: <75b66ecd0708231513r2e416d09rff2bacd860761fec@mail.gmail.com>
-References: <46CDD5A8.3000006@cox.net> <s5hlkc2yrax.wl%tiwai@suse.de>
-	<46CDF600.6030509@cox.net>
-	<75b66ecd0708231429p41ede740q73d34461d00fa130@mail.gmail.com>
-	<46CE0123.2030707@cox.net>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: Re: hw_params function and OSS emulation
+Date: Thu, 23 Aug 2007 15:17:33 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0708231512130.30669@shell2.speakeasy.net>
+References: <46CB2BB4.9060808@freescale.com> <s5hbqd0j5c6.wl%tiwai@suse.de>
+	<46CC480F.7090604@freescale.com> <s5h3aybipj1.wl%tiwai@suse.de>
+	<46CC4FF3.6090607@freescale.com> <s5hy7g3h948.wl%tiwai@suse.de>
+	<46CC5ADC.4020605@freescale.com> <s5hsl6bh89y.wl%tiwai@suse.de>
+	<46CDC5AB.6080602@freescale.com> <s5htzqq5ev4.wl%tiwai@suse.de>
+	<46CDD55C.5040301@freescale.com> <s5hzm0inkgt.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7EA7810380B
+Received: from mail3.sea5.speakeasy.net (mail3.sea5.speakeasy.net
+	[69.17.117.5]) by alsa0.perex.cz (Postfix) with ESMTP id C15ED10382D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Aug 2007 00:14:00 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so75329ana
-	for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2007 15:13:59 -0700 (PDT)
-In-Reply-To: <46CE0123.2030707@cox.net>
-Content-Disposition: inline
+	Fri, 24 Aug 2007 00:17:35 +0200 (CEST)
+In-Reply-To: <s5hzm0inkgt.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,16 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: stan <stanl@cox.net>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Developers <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/23/07, stan <stanl@cox.net> wrote:
-> And it must be my problem.  It must have been started by default because
-> I didn't start it.  I'll see if I can configure it to share the sound
-> card or disable it.
+On Thu, 23 Aug 2007, Takashi Iwai wrote:
+> At Thu, 23 Aug 2007 13:43:40 -0500,
+> Timur Tabi wrote:
+> >
+> > Takashi Iwai wrote:
+> >
+> > > Err, usually, application = user-space application.  Do you mean
+> > > really this?
+> >
+> > Yes.  The application allocates a buffer, locks it down, and passes it to the
+> > kernel.  Since the buffer was allocated in user space, it is virtual
+> > contiguous but not physically contiguous, hence the need for a list of
+> > physical addresses.  To the hardware, the buffer appears as a collection of
+> > scattered buffers.  Hence, scatter/gather.
+>
+> Hm, then it must be a really special application.  I've never seen
+> linux audio apps doing such things...
 
-I would disable it, as you have seen, sound server is not necessary to
-share the soundcard anymore - alsa-lib/dmix handles it.
+v4l2 suppoorts both kinds of memory mapped dma.  Normally, the dma buffer
+is allocated by the kernel and the user space application is given an
+address to memory map.  This way DMA-able memory can be allocated.  For
+some device, e.g. zr36060, it might even need to be physically contiguous.
 
-Lee
+The other kind is called "user pointer" and in this case user space
+allocates the memory and passes a pointer to the kernel.  It's defined in
+the API, but I think few (any?) driver actually support it. One could use
+this to place the dma buffer in a shared memory segment or some other
+reason the application wants the buffer at a certain address.
