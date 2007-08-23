@@ -1,18 +1,19 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: Re: Noise at end of audio file
-Date: Wed, 22 Aug 2007 18:36:35 -0500
-Message-ID: <B082902A12CAEE4EA7FE2ED20609013B016AAA30@dlee15.ent.ti.com>
-References: <s5h1wdvipet.wl%tiwai@suse.de>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: ESI reply!! (MAYA44 datasheet request)
+Date: Wed, 22 Aug 2007 19:17:19 -0700
+Message-ID: <1187835439.4189.315.camel@razman.gruemaster.com>
+References: <20070822152207.5959424468@alsa0.perex.cz>
+	<s5h4pirnsre.wl%tiwai@suse.de> <46CCB433.1030704@gmail.com>
+	<s5h6437w5rm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F18E103817
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66BF31037F6
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Aug 2007 01:37:34 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <s5h1wdvipet.wl%tiwai@suse.de>
+	Thu, 23 Aug 2007 04:17:21 +0200 (CEST)
+In-Reply-To: <s5h6437w5rm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,67 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Claus Riethmueller <claus@esi-audio.com>, alsa-devel@alsa-project.org, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Checked with some silence data and noise still present. Using aplay with
-"-M" (mmap) no noise is listen.
+I can attest to that.  I had to port a Windows driver to Linux for an
+internal test card (the card & code never left the building).  The
+Windows code was ~50k lines long, and did the exact same thing as my
+final Linux driver of ~7500 lines.  Part of the problem was all of the
+Windows API's that needed to be included.  Another problem was the
+Windows driver was written in C++ with heavy OO code.
 
-Misael 
+Tobin
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Wednesday, August 22, 2007 10:02 AM
-To: Lopez Cruz, Misael
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Noise at end of audio file
+On Thu, 2007-08-23 at 00:42 +0200, Takashi Iwai wrote:
 
-At Wed, 22 Aug 2007 09:31:25 -0500,
-Lopez Cruz, Misael wrote:
-> 
-> I'm using aplay application for playback, the platform I'm working 
-> with is ti-omap.
-> 
-> Regards,
-> Misael
-> 
-
-Hm, then it's hard to tell...  Check whether the noise occurs after
-playing just a silence data.  This reduces the possibility of "junk
-data" in the last playback period.
-
-If this happens with silence, then the problem is likely the hardware
-parameter change.
-
-
-Takashi
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Wednesday, August 22, 2007 7:23 AM
-> To: Lopez Cruz, Misael
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] Noise at end of audio file
-> 
-> At Mon, 20 Aug 2007 10:44:14 -0500,
-> Lopez Cruz, Misael wrote:
+> At Thu, 23 Aug 2007 00:09:55 +0200,
+> Rene Herman wrote:
 > > 
-> > Hi,
-> >  
-> > I listen some noise at the end of playback of an audio file, with
-some
+> > On 08/22/2007 11:50 PM, Takashi Iwai wrote:
+> > 
+> > > As James mentioned, the datasheet is vial.  "SOME SORT OF" datasheet
+> > > is.  Yes, this can be any document.
+> > 
+> > Where existing Windows driver source would, I assume, count as "some sort".
 > 
-> > debug I noticed that the noise appears in the last two period of the
-
-> > playback. I tried changing the minimum number of period (it was 16
-and
-> 
-> > changed to 32) but the noise appears even before. Any idea what
-could 
-> > be wrong?
-> 
-> With which apps and which device does this happen?
+> Well, as my personal preference, Windows driver source code isn't
+> suitable as the primary information source.  It's good as a reference,
+> for example, for debugging a bug in your driver.
+> But, the proprietary driver code is often hard to disclose publicly
+> than the other technical documents.  And, above all, when you write a
+> driver based on windows code, it tends to result in a bad code ;)
 > 
 > 
 > Takashi
-> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- 
+Tobin Davis  
+
+
+Circumstances rule men; men do not rule circumstances.
+		-- Herodotus
