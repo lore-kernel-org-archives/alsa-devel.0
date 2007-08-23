@@ -1,24 +1,21 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re:
-	=?iso-8859-1?q?I_want_to_improve_Sigma-Tel_STAC9227_?=
-	=?iso-8859-1?q?driver_/_How_to=09implement_support_for_multiple_AD?=
-	=?iso-8859-1?q?C?=
-Date: Thu, 23 Aug 2007 17:36:49 +0300
-Message-ID: <200708231736.49383.maximlevitsky@gmail.com>
-References: <200708200448.52138.maximlevitsky@gmail.com>
-	<200708231709.04749.maximlevitsky@gmail.com>
-	<s5habsi72bn.wl%tiwai@suse.de>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: Audio quality issue - regular clicks are observed
+Date: Thu, 23 Aug 2007 20:08:33 +0530
+Message-ID: <61445c750708230738mba23b16ib213c6b337667cd1@mail.gmail.com>
+References: <61445c750708220943k1c410147pa0dddf4d950eb08c@mail.gmail.com>
+	<1187813792.16454.39.camel@localhost.localdomain>
+	<61445c750708230240r3b3501f6la7b1ef91d28e4e70@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB859243DE
+Received: from hu-out-0506.google.com (hu-out-0506.google.com [72.14.214.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B6DC243D8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Aug 2007 16:38:03 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id b21so377494nfd
-	for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2007 07:38:03 -0700 (PDT)
-In-Reply-To: <s5habsi72bn.wl%tiwai@suse.de>
+	Thu, 23 Aug 2007 16:38:36 +0200 (CEST)
+Received: by hu-out-0506.google.com with SMTP id 16so136006hue
+	for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2007 07:38:35 -0700 (PDT)
+In-Reply-To: <61445c750708230240r3b3501f6la7b1ef91d28e4e70@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,188 +26,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 23 August 2007 17:28:12 Takashi Iwai wrote:
-> At Thu, 23 Aug 2007 17:09:04 +0300,
-> Maxim Levitsky wrote:
-> > 
-> > On Wednesday 22 August 2007 17:51:47 Takashi Iwai wrote:
-> > > At Mon, 20 Aug 2007 04:48:52 +0300,
-> > > Maxim Levitsky wrote:
-> > > > 
-> > > > Hello,
-> > > > 
-> > > > I am a user of Sigma-Tel STAC9227 intel hda based chip.
-> > > > I have studied its documentation, and found that alsa driver doesn't support 
-> > > > number of its features.
-> > > > 
-> > > > 
-> > > > 1) it has "analog loop-back" which means it can mix sound just before it 
-> > > > enters ADC0 to output of DAC0 (headphones/front).
-> > > > For me it is the most important feature, since I have a tv card with analog 
-> > > > output.
-> > > 
-> > > I couldn't find it in the datasheet...  Is it just a matter of amp or
-> > > widget connection?
-> > 
-> > Well, I was looking for it for about a month :-)
-> > 
-> > Look at AGF node , DACMode verb (FEB/7EB), bit ADCMixDAC 
-> 
-> Ah, OK such a hidden one.  Thanks.
-> 
-> 
-> > > > 2) it has the ability to "swap" left/right channels, and this can be very 
-> > > > useful for LFE/center channel
-> > > 
-> > > This would be relatively easy (if we really need).
-> > > 
-> > > > 3) It has a VolumeKnob "widget" , that allows to decrease volume of all DACs 
-> > > > _after_ their own volumes were applied, and I think I turn it to "master 
-> > > > volume"
-> > > 
-> > > The problem is how to know whether this widget is really used or not.
-> > > (That is, whether the volume knob is implemented in this hardware)
-> > > 
-> > I tested it, and it works
-> 
-> Yeah, I suppose it works for you, but the question is whether we can
-> enable it unconditionally, even for machines without volume knobs.
-> 
-> 
-> > > > Those things below aren't supported by windows driver ether, but that doesn't 
-> > > > mean we can't support that :-)
-> > > > 
-> > > > 4) this chip has 3 ADC, each capable recording from different source, but alsa 
-> > > > uses only first.
-> > > 
-> > > OK, that's a bug.
-> > > 
-> > > > 5) I have 5.1 configuration, so DAC1 is unused.
-> > > > It is possible to connect it to "front" mic, and get 7.1 sound card
-> > > > I think about a option "Use front mic as output", for 3Stack configuration
-> > > 
-> > > Hm, but still too tricky to set up in that way.
-> > > You cannot imagine easily such a switch means 7.1 output.
-> > Why, we already have Mic as output/Line-in as output,
-> > so lets add Front mic as output (I already did that)
-> 
-> And, I think the current design is confusing.  I'd love to change
-> that...
-> 
-> 
-> > > For other codecs, we have "Channel Mode" enum.  The pins are set up
-> > > according to this value.  But, sigmatel code doesn't have this enum
-> > > list but rather individual switches.  It's slightly confusing, I
-> > > think.  From the easiness POV, I prefer the channel mode enum
-> > > solution.
-> > > 
-> > > > 1,2,3 are easy to implement, since those are just mixer switches.
-> > > 
-> > > Not really.  patch_sigmatel.c is written to be as generic as
-> > > possible.  Thus, if you add something special for a specific device,
-> > > you should be careful not to break others.
-> > I will read datasheets of all other Sigmatels that this driver support
-> > 
-> > as for  7.1 support I told, it shouldn't break anything:
-> > the code checks only in case we have one output (line-out) for DAC connected to mic and line in, 
-> > if it there it adds them to output pin list.
-> > Only in that case I will also check if front mic is connected to a DAC, and if so, I will add it to output list too as a side channel
-> > I already did that , and it work here.
-> 
-> Well, what I meant is that the exact same code is used for other codec
-> chips, not only STAC9227.  So, we have to be sure that it works for
-> other codecs, too.  Anyway, the code would speak better, so let's see
-> a patch :)
-> 
-> 
-> > > > But I have a question about 4:
-> > > > 
-> > > > Now the driver has buggy support for second ADC, it record from it, but fails 
-> > > > to connect it to any input source, and unmute it.
-> > > > 
-> > > > I can fix that and trivially add support for third ADC, but current driver 
-> > > > makes all ADCs a sub-streams of a single  PCM device.
-> > > > 
-> > > > I think that sub-streams are meant to be used only by playback PCMs that have 
-> > > > hardware support of mixing,
-> > > 
-> > > No, it's misunderstanding :)
-> > Great, I already fixed support for all ADCs to be a substreams of single PCM
-> > Just one question:
-> > 
-> > This chip has two-level gain on each adc,
-> > first is a four step boost in 10 db values, and it is currently used in driver,
-> > And a more fine tuned inPortnVol, that is currently unused.
-> > 
-> > I have three options:
-> > 
-> > 1) use  inPortnVol for capture volume, and forget about that crude boost,
-> 
-> Then you won't get enough high gain, I suppose?
-> 
-> 
-> > 2) impement complex control that will emulate single volume, but will change both
-> > 3) impement two controls (the easiest thing)
-> > 
-> > What shall I do?
-> 
-> Personally I prefer 2 since it's the easiest option for _users_.
-> Unless the implementation gets really complicated, let's try to
-> provide a simple interface as much as possible.
-> 
-> 
-> > > > so I feel that is is better  to make  each ADC to 
-> > > > be a separate PCM device, with separate  mixer controls (enabled/input 
-> > > > source/gain), and I want to ask you whenever you agree with me.
-> > > 
-> > > ... thus I disagree.  And, the mixer controls can be provided
-> > > separately anyway (as other codecs already do).
-> > > 
-> > > > Also I noticed that dsnoop chokes on record streams with more that one 
-> > > > substream, it fails with error, when I try to open second arecord.
-> > > 
-> > > Yes, and note that it's the intentional behavior.
-> > > 
-> > > The problem is _not_ that the secondary capture is assigned to the
-> > > secondary substream.  As long as you use the default PCM, it'll be not
-> > > accessed anyway.  The problem is rather that currently the overall
-> > > design doesn't suit for the multi-stream environment.
-> > > 
-> > > We provide "default" PCM for the generic purpose.  That's fine.  It's
-> > > a mighty ace that can be used for everything.  Now we have a second
-> > > guy.  But we have no standard symbolic name for him.  It's possible to
-> > > access via hw:0,0,1.  It's however ugly, cryptic and even bare.  We
-> > > need to provide a more understandable symbolic PCM definition with the
-> > > decoration of plugins.  This is what is missing so far.  Thus it's
-> > > basically not a driver issue but an alsa-lib issue.
-> > > 
-> > > 
-> > > thanks,
-> > > 
-> > > Takashi
-> > > 
-> > 
-> > 
-> > Hi,
-> > 
-> > 	Thanks for reply, 
-> > I already started doing the above things, it feels easy to me, soon I will send a patch series 
-> > that fixed/add features that I told here about.
-> 
-> OK, that's great.  Let's discuss further with a patch.
-> 
-> 
-> Thanks,
-> 
-> Takashi
-> 
+On 8/23/07, Pharaoh . <pharaoh137@gmail.com> wrote:
+>
+>
+>
+> On 8/23/07, Liam Girdwood <lg@opensource.wolfsonmicro.com > wrote:
+> >
+> > On Wed, 2007-08-22 at 22:13 +0530, Pharaoh . wrote:
+> > > Hi
+> > > While testing the audio driver using aplay in blocking mode, a
+> > periodic
+> > > murmur is observed, this increases with
+> > > the audio volume and occurs even when there are no issues like xrun
+> > etc.
+> > > Aplay was used in normal read/write mode
+> > > i.e. no mmap. The song can be heard properly i.e. with no noticable
+> > gaps aur
+> > > hisses but the clicks are audible.
+> >
+> > Clock domain mismatch issues cause periodic ticks that increase in
+> > frequency with increasing sample rate. It's possible your clocking the
+> > codec and controller in two different clock domains. i.e. I2S controller
+> > (bitclk and frame) clocked from CPU and codec clocked from separate
+> > crystal.
+> >
+> > It's best to make sure that only one clock is clocking both the codec
+> > and digital audio interface.
+> >
+> > Liam
+> >
+> >
+> I tried playing /dev/zero at the same sampling rate as a wav file, but
+> /dev/zero played without any clicks i.e absolutely no sound heard, but
+> while playing a wav file using same parameters clicks occur. I am thinking
+> it is not about clocks mis-match, since I have checked it several times. I
+> was thinking whether junk data is being processed at end of buffer size, but
+> since /dev/zero plays well, I am ruling out that possibility also.
+>
+> What else could explain the latencies at buffer ending as shown in the log
+> in previous mail.
+>
+> -Pharaoh.
+>
+>
+>
+>
+>
+>
+Further debug reveals that the pointer callback is called multiple times at
+the beginning of buffer . Could it be cause of latency? I am playing the
+same .wav file with using aplay with 16K buffer size and 4K period size .
 
-Hi,
-	Thanks again, I will check everything again, finish and polish all patches, and send them soon,
+Here is the log, audio_get_dma_pos is my pointer function. In period 0 it is
+called 4 times, while in period 1,2 and 3 it is called only once. Does it
+mean that first time pointer is called it is not getting  correct value and
+it keeps retrying till it gets some sensible value?
 
-Best regards,
-	Maxim Levitsky
+[ 1013.037107] current period = 0  current offset = c000
+[ 1013.044950] audio_get_dma_pos
+[ 1013.051770] audio_get_dma_pos
+[ 1013.056944] audio_get_dma_pos
+[ 1013.063780] audio_get_dma_pos
+[ 1013.135178] audio_get_dma_pos
+[ 1013.138445] current period = 1  current offset = 0
+[ 1013.236261] audio_get_dma_pos
+[ 1013.239453] current period = 2  current offset = 4000
+[ 1013.337485] audio_get_dma_pos
+[ 1013.340640] current period = 3  current offset = 8000
+[ 1013.438684] audio_get_dma_pos
+[ 1013.441886] current period = 0  current offset = c000
+[ 1013.449263] audio_get_dma_pos
+[ 1013.454452] audio_get_dma_pos
+[ 1013.461301] audio_get_dma_pos
+[ 1013.466879] audio_get_dma_pos
+[ 1013.539984] audio_get_dma_pos
+[ 1013.543208] current period = 1  current offset = 0
+[ 1013.641070] audio_get_dma_pos
+[ 1013.644283] current period = 2  current offset = 4000
+[ 1013.742383] audio_get_dma_pos
+[ 1013.745553] current period = 3  current offset = 8000
+[ 1013.843631] audio_get_dma_pos
+[ 1013.846833] current period = 0  current offset = c000
+[ 1013.854221] audio_get_dma_pos
+[ 1013.861027] audio_get_dma_pos
+[ 1013.866227] audio_get_dma_pos
+[ 1013.873090] audio_get_dma_pos
+[ 1013.944925] audio_get_dma_pos
+[ 1013.948187] current period = 1  current offset = 0
+[ 1014.045988] audio_get_dma_pos
+[ 1014.049177] current period = 2  current offset = 4000
+[ 1014.147209] audio_get_dma_pos
+[ 1014.150370] current period = 3  current offset = 8000
+
+
+-pharaoh.
