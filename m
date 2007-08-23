@@ -1,19 +1,19 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: hw_params function and OSS emulation
-Date: Thu, 23 Aug 2007 13:43:40 -0500
-Message-ID: <46CDD55C.5040301@freescale.com>
-References: <46CB2BB4.9060808@freescale.com>	<s5hbqd0j5c6.wl%tiwai@suse.de>	<46CC480F.7090604@freescale.com>	<s5h3aybipj1.wl%tiwai@suse.de>	<46CC4FF3.6090607@freescale.com>	<s5hy7g3h948.wl%tiwai@suse.de>	<46CC5ADC.4020605@freescale.com>	<s5hsl6bh89y.wl%tiwai@suse.de>	<46CDC5AB.6080602@freescale.com>
-	<s5htzqq5ev4.wl%tiwai@suse.de>
+From: stan <stanl@cox.net>
+Subject: Unable to open plughw:0,0 from user program.
+Date: Thu, 23 Aug 2007 11:44:56 -0700
+Message-ID: <46CDD5A8.3000006@cox.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 342D72434D
+Received: from fed1rmmtao104.cox.net (fed1rmmtao104.cox.net [68.230.241.42])
+	by alsa0.perex.cz (Postfix) with ESMTP id A527324357
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Aug 2007 20:43:48 +0200 (CEST)
-In-Reply-To: <s5htzqq5ev4.wl%tiwai@suse.de>
+	Thu, 23 Aug 2007 20:44:58 +0200 (CEST)
+Received: from fed1rmimpo02.cox.net ([70.169.32.72]) by fed1rmmtao104.cox.net
+	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP id
+	<20070823184457.UNEP13288.fed1rmmtao104.cox.net@fed1rmimpo02.cox.net>
+	for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2007 14:44:57 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Hi,
 
-> Err, usually, application = user-space application.  Do you mean
-> really this?
+I am unable to use plughw:0,0 as a device string while calling
+err = snd_pcm_open (&alsa_dev, hw_from_default, SND_PCM_STREAM_PLAYBACK, 0);
 
-Yes.  The application allocates a buffer, locks it down, and passes it to the 
-kernel.  Since the buffer was allocated in user space, it is virtual 
-contiguous but not physically contiguous, hence the need for a list of 
-physical addresses.  To the hardware, the buffer appears as a collection of 
-scattered buffers.  Hence, scatter/gather.
+The same call works with hw_from_default == 'default', but fails when it 
+is 'plughw:0,0'.
+The error is
+cannot open audio device "plughw:0,0" (Device or resource busy)
 
-Like I said, I haven't look at the ALSA API for S/G, so I may be talking about 
-an implementation of S/G that does not apply to ALSA.
+I am using the latest snapshot of alsa-lib, alsa-lib20070821.  I tried 
+debugging but I cannot trace through the macros.  As near as I can tell 
+there have been no changes to alsa.conf, and this worked just fine 
+before the latest upgrade alsa package alsa-lib.1.0.14-3
 
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+Is this a deliberate change in alsa that is known about, and is there a 
+way to still get the functionality?
+
+Thanks.
