@@ -1,49 +1,34 @@
-From: Thomas Meyer <thomas@m3y3r.de>
-Subject: Re: [1/4] 2.6.23-rc3: known regressions v3
-Date: Sat, 25 Aug 2007 14:34:40 +0200
-Message-ID: <46D021E0.9070003@m3y3r.de>
-References: <46CF177B.4090608@googlemail.com> <3db1ec7f0708241142g30c53633s68987379d1953455@mail.gmail.com>
+From: "Piotr Makowski" <oponek@gmail.com>
+Subject: ESI MAYA44 driver status
+Date: Sun, 26 Aug 2007 10:56:40 +0200
+Message-ID: <87988a970708260156j3bee456djedcea8c74c54991f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S933746AbXHYMfU@vger.kernel.org>
-In-Reply-To: <3db1ec7f0708241142g30c53633s68987379d1953455@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Ivan N. Zlatev" <contact@i-nz.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from qb-out-0506.google.com (qb-out-0506.google.com [72.14.204.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43CAC1038E7
+	for <alsa-devel@alsa-project.org>;
+	Sun, 26 Aug 2007 10:56:44 +0200 (CEST)
+Received: by qb-out-0506.google.com with SMTP id q12so1390075qba
+	for <alsa-devel@alsa-project.org>; Sun, 26 Aug 2007 01:56:43 -0700 (PDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ivan N. Zlatev schrieb:
-> On 8/24/07, Michal Piotrowski <michal.k.k.piotrowski@gmail.com> wrote:
->   
->> ALSA
->>
->> Subject         : Master volume control broken
->> References      : http://lkml.org/lkml/2007/8/18/46
->> Last known good : ?
->> Submitter       : Thomas Meyer <thomas@m3y3r.de>
->> Caused-By       : Ivan N. Zlatev <contact@i-nz.net>
->>                   commit 5d5d3bc3eddf2ad97b2cb090b92580e7fed6cee1
->> Handled-By      : ?
->> Status          : unknown
->>     
-> In the meanwhile if you want to use your "fancy multimedia control
-> keys" as a workaround you could try to bind your multimedia keys to
-> execute:
-> volume up: amixer -q set PCM 10%+
-> volume down: amixer -q set PCM 10%-
->
->   
-I have these key bindings in the .Xmodmap file
+Hi,
 
-keycode 174 = XF86AudioLowerVolume
-keycode 176 = XF86AudioRaiseVolume
-keycode 160 = XF86AudioMute
-keycode 204 = XF86Eject
+    I would like to know is there any progress with writing those drivers?
+Anybody contacted with ESI?
 
-Some kde component while take care of the "XF86AudioLowerVolume" and
-"XF86AudioRaiseVolume" events and change the value of the "master"
-volume control.
-
-mfg
-thomas
+Regards,
+Piotr Makowski
