@@ -1,18 +1,18 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: SIIG-USB SoundWave 7.1 Pro
-Date: Mon, 27 Aug 2007 08:38:12 +0200
-Message-ID: <1188196692.12689.1207418219@webmail.messagingengine.com>
-References: <c7cc6a8720861b912811313bde81fb6b@optonline.net>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Very elementary question regarding period size
+Date: Mon, 27 Aug 2007 15:49:30 +0530
+Message-ID: <61445c750708270319p3ca234dfx965fd5c8d98ca03f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id F3337243EB
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75A64103829
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Aug 2007 08:38:13 +0200 (CEST)
+	Mon, 27 Aug 2007 12:19:32 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id j37so2130730waf
+	for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2007 03:19:31 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <c7cc6a8720861b912811313bde81fb6b@optonline.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Dey <jsdey@optonline.net>, Alsa Dev <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-John Dey wrote:
-> I have the above referenced sound card.  It is running on the latest 
-> version of CCRMA x86.  Jack shows only stereo.  How do I configure so 
-> that I can run 5 channels.
+I am testing out my alsa driver for various period and buffer sizes, at some
+configurations it doesn't work so arises this very basic question.
 
-Most cards support only 2,4,6,8 channels.
-Please try speaker-test.
+Is every sound card/hardware supposed to work at all the period sizes?  The
+way I have written my driver, makes the DMA processing dependent on period
+size so the answer is obvious in my case, that it might not work for all
+period sizes. Does it hold true for all the cards?
 
-
-HTH
-Clemens
+-pharaoh.
