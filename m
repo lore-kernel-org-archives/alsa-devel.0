@@ -1,20 +1,18 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: ALSA sound/core/pcm_lib.c:210: Unexpected hw_pointer
-	value [1] (stream = 0, delta: -4096,
-	max jitter = 8192): wrong interrupt acknowledge?
-Date: Mon, 27 Aug 2007 22:44:38 +0530
-Message-ID: <61445c750708271014j22d50563q1f5c1ef7f7d73168@mail.gmail.com>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: Re: Noise at end of audio file
+Date: Mon, 27 Aug 2007 13:36:58 -0500
+Message-ID: <B082902A12CAEE4EA7FE2ED20609013B01729E43@dlee15.ent.ti.com>
+References: <s5h1wdvipet.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.237])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A6541038DD
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2072E10381D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Aug 2007 19:14:40 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 58so1373827wri
-	for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2007 10:14:40 -0700 (PDT)
-Content-Disposition: inline
+	Mon, 27 Aug 2007 20:37:06 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <s5h1wdvipet.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am getting this error at the start of song, I get this only once and the
-song plays quite well except some periodic minute/unnoticable clicks which
-occur often if period size is less. Is there any chance of this being the
-culprit i.e. causing clicks? I used to get the same messages after every
-buffer size previously, but after fixing my pointer callback this happens
-only once at the beginning.
+I thought that the noise could be a sync issue at the end of file, but
+after getting the time between two succesive 'period' data sendings and
+comparing it with the 'period time' given by aplay (verbose option), the
+differences is of only ~10 us, I mean the values in all others periods
+processed are in the same range, nothing special with the periods that
+are giving noise.
 
-After reading the code I think that, this might not be the reason behind
-clicks, since this is just xrun debug thing, but this doesn't correspond to
-xruns directly, does it? I got the above error message even when there were
-no xruns. How serious is this issue? After referring web I collected that,
-this might happen because the period is not processed as fast as it should
-be.
+However if the audio length is less than one buffer, no noise is listen
+at all. The problem seems to be with files that don't fit in a single
+buffer.
 
--pharaoh.
+Misael
+
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Wednesday, August 22, 2007 10:02 AM
+To: Lopez Cruz, Misael
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Noise at end of audio file
+
+At Wed, 22 Aug 2007 09:31:25 -0500,
+Lopez Cruz, Misael wrote:
+> 
+> I'm using aplay application for playback, the platform I'm working 
+> with is ti-omap.
+> 
+> Regards,
+> Misael
+> 
+
+Hm, then it's hard to tell...  Check whether the noise occurs after
+playing just a silence data.  This reduces the possibility of "junk
+data" in the last playback period.
+
+If this happens with silence, then the problem is likely the hardware
+parameter change.
+
+
+Takashi
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Wednesday, August 22, 2007 7:23 AM
+> To: Lopez Cruz, Misael
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] Noise at end of audio file
+> 
+> At Mon, 20 Aug 2007 10:44:14 -0500,
+> Lopez Cruz, Misael wrote:
+> > 
+> > Hi,
+> >  
+> > I listen some noise at the end of playback of an audio file, with
+some
+> 
+> > debug I noticed that the noise appears in the last two period of the
+
+> > playback. I tried changing the minimum number of period (it was 16
+and
+> 
+> > changed to 32) but the noise appears even before. Any idea what
+could 
+> > be wrong?
+> 
+> With which apps and which device does this happen?
+> 
+> 
+> Takashi
+> 
