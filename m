@@ -1,83 +1,100 @@
-From: "Shuduo Sang" <sangshuduo@gmail.com>
-Subject: Re: mic doesn't work with hda-intel/AD1983 driver
-Date: Wed, 29 Aug 2007 18:20:27 +0800
-Message-ID: <ee101c360708290320xb19501h54531c8cc0395810@mail.gmail.com>
-References: <ee101c360708280316r62a8a467l596aa6883f5dd077@mail.gmail.com>
-	<s5hzm0c2bgj.wl%tiwai@suse.de>
-	<ee101c360708281949s7bd4eecdn74053e9fb54b1db@mail.gmail.com>
-	<s5hsl621xk8.wl%tiwai@suse.de>
+From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Subject: Re: [2/4] 2.6.23-rc4: known regressions
+Date: Wed, 29 Aug 2007 17:27:14 +0200
+Message-ID: <46D59052.6040609@googlemail.com>
+References: <46D58CC6.4020605@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id BAA40103936
-	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Aug 2007 12:20:28 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id b21so114014nfd
-	for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2007 03:20:28 -0700 (PDT)
-In-Reply-To: <s5hsl621xk8.wl%tiwai@suse.de>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <46D58CC6.4020605@googlemail.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Len Brown <len.brown@intel.com>, linux-acpi@vger.kernel.org, Plamen Petrov <plamen.petrov@tk.ru.acad.bg>, Michael Sedkowski <sedmich@gmail.com>, Alexey Dobriyan <adobriyan@sw.ru>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, "Ivan N. Zlatev" <contact@i-nz.net>, Thomas Meyer <thomas@m3y3r.de>, dth <dth@dth.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 8/29/07, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 29 Aug 2007 10:49:43 +0800,
-> Shuduo Sang wrote:
-> >
-> > $alsactl -f sound store
-> > $ cat sound
-> >         control.10 {
-> >                 comment.access 'read write'
-> >                 comment.type BOOLEAN
-> >                 comment.count 2
-> >                 iface MIXER
-> >                 name 'Mic Playback Switch'
-> >                 value.0 true
-> >                 value.1 true
-> >         }
->
-> You should mute this.  Otherwise you'll hear the sound from mic as
-> analog-loopback.
->
-> >         control.15 {
-> >                 comment.access 'read write'
-> >                 comment.type INTEGER
-> >                 comment.count 2
-> >                 comment.range '0 - 3'
-> >                 iface MIXER
-> >                 name 'Mic Boost'
-> >                 value.0 0
-> >                 value.1 0
-> >         }
->
-> Raise this volume.
+Hi all,
 
-my mic works with raising mic boost volume. thanks.
+Here is a list of some known regressions in 2.6.23-rc4.
 
->
-> >         control.17 {
-> >                 comment.access 'read write'
-> >                 comment.type BOOLEAN
-> >                 comment.count 2
-> >                 iface MIXER
-> >                 name 'Capture Switch'
-> >                 value.0 false
-> >                 value.1 false
-> >         }
->
-> Turn on this.  Otherwise you cannot record.
->
->
-> Takashi
->
+Feel free to add new regressions/remove fixed etc.
+http://kernelnewbies.org/known_regressions
+
+List of Aces
+
+Name                    Regressions fixed since 21-Jun-2007
+Adrian Bunk                            9
+Andi Kleen                             5
+Linus Torvalds                         5
+Andrew Morton                          4
+Hugh Dickins                           4
+Al Viro                                3
+Alan Stern                             3
+Cornelia Huck                          3
+Jens Axboe                             3
+Tejun Heo                              3
+
+
+
+ACPI
+
+Subject         : 2.6.23-rc4: maxcpus still broken
+References      : http://lkml.org/lkml/2007/8/28/87
+Last known good : ?
+Submitter       : Alexey Dobriyan <adobriyan@sw.ru>
+Caused-By       : Len Brown <len.brown@intel.com>
+                  commit 61ec7567db103d537329b0db9a887db570431ff4
+Handled-By      : Len Brown <len.brown@intel.com>
+Status          : problem is being debugged
+
+Subject         : MCFG bug on hp nx6310
+References      : http://lkml.org/lkml/2007/8/8/252
+Last known good : ?
+Submitter       : Michael Sedkowski <sedmich@gmail.com>
+Caused-By       : ?
+Handled-By      : ?
+Status          : unknown
+
+Subject         : 2.6.23-rc1-git10 hangs on boot - needs "acpi=off"
+References      : http://lkml.org/lkml/2007/8/2/24
+Last known good : ?
+Submitter       : Plamen Petrov <plamen.petrov@tk.ru.acad.bg>
+Caused-By       : ?
+Handled-By      : Len Brown <len.brown@intel.com>
+Status          : problem is being debugged
+
+
+
+ALSA
+
+Subject         : Master volume control broken
+References      : http://lkml.org/lkml/2007/8/18/46
+Last known good : ?
+Submitter       : Thomas Meyer <thomas@m3y3r.de>
+Caused-By       : Ivan N. Zlatev <contact@i-nz.net>
+                  commit 5d5d3bc3eddf2ad97b2cb090b92580e7fed6cee1
+Handled-By      : Ivan N. Zlatev <contact@i-nz.net>
+Status          : problem is being debugged
+
+
+
+CPUFREQ
+
+Subject         : ide problems: 2.6.22-git17 working, 2.6.23-rc1* is not
+References      : http://lkml.org/lkml/2007/7/27/298
+                  http://lkml.org/lkml/2007/7/29/371
+Last known good : ?
+Submitter       : dth <dth@dth.net>
+Caused-By       : Len Brown <lenb@kernel.org>
+                  commit f79e3185dd0f8650022518d7624c876d8929061b
+Handled-By      : Len Brown <lenb@kernel.org>
+Status          : problem is being debugged
+
+
+
+Regards,
+Michal
+
+-- 
+LOG
+http://www.stardust.webpages.pl/log/
