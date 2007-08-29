@@ -1,24 +1,29 @@
-From: "Maxim Levitsky" <maximlevitsky@gmail.com>
-Subject: Re: [PATCH] STAC92xx : add support for missing features
-Date: Thu, 30 Aug 2007 01:17:05 +0300
-Message-ID: <6d1efe520708291517yd98559cp78852213e49c3d08@mail.gmail.com>
-References: <200708280454.29250.maximlevitsky@gmail.com>
-	<s5hy7fw2b0e.wl%tiwai@suse.de>
-	<1188309336.31933.25.camel@razman.gruemaster.com>
-	<200708282141.32222.maximlevitsky@gmail.com>
-	<s5htzqi1xot.wl%tiwai@suse.de>
+From: Romain Bossart <romain.bossart@free.fr>
+Subject: Re: Audiophile Delta 24/96 Midi Out continuously sends
+ zeroes (alsa 1.0.14)
+Date: Thu, 30 Aug 2007 00:22:26 +0200
+Message-ID: <fb4rj2$9ll$1@sea.gmane.org>
+References: <46D4A1D6.7010604@free.fr>	<1188369280.902.1207813047@webmail.messagingengine.com>
+	<1188378043.46d535bbab7f9@imp.free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id D68B610386D
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C7CA10386D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Aug 2007 00:17:06 +0200 (CEST)
-Received: by wx-out-0506.google.com with SMTP id t11so333355wxc
-	for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2007 15:17:05 -0700 (PDT)
-In-Reply-To: <s5htzqi1xot.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Thu, 30 Aug 2007 00:22:44 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1IQVvn-0001Iz-GW
+	for alsa-devel@alsa-project.org; Thu, 30 Aug 2007 00:22:35 +0200
+Received: from vpn-samois.solopso.org ([62.147.132.141])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2007 00:22:35 +0200
+Received: from romain.bossart by vpn-samois.solopso.org with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2007 00:22:35 +0200
+In-Reply-To: <1188378043.46d535bbab7f9@imp.free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,60 +33,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, mranostay@embeddedalley.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2007/8/29, Takashi Iwai <tiwai@suse.de>:
-> At Tue, 28 Aug 2007 21:41:32 +0300,
-> Maxim Levitsky wrote:
-> >
-> > > > About 3 (volume-knob), we'd need a bit more checks and tests.  Does
-> > > > the volume knob widget work always as a mater control regardless
-> > > > whetehr the real hardware component exists or not?  I.e. can we use it
-> > > > blindly?
-> > According to datasheet, it works, also driver already assumes it there, and sets it to maximum volume
-> > see hda_verb stac922x_core_init, hda_verb d965_core_init, hda_verb stac927x_core_init,hda_verb stac9205_core_init
->
-> Interesting.  So, writing to the volume knob widget actually works
-> just like a normal mixer amp?
-Yes, but volumeknob doesn't support standard verbs that amps do, thus
-I coded it as a custom control, but generally it is a amp
->
-> > > >
-> > > > Tobin, Matt, could you test these patches, especially patch 3, with
-> > > > your hardwares?  Anyone who has STAC92xx hardwares are welcome for
-> > > > testing it, too!
-> > > >
-> > > >
-> > > > Thanks,
-> > > >
-> > > > Takashi
-> > >
-> >
-> > Hi,
-> >
-> > Thanks for review, I will fix all things you pointed out, but
-> > I am coding against latest linus' kernel tree, and snd_ctl_boolean_mono_info() isn't there, and thus I didn't use it,
-> > I will download latest alsa tree, and compile against it
-> >
-> > But I have a question: can I only complile snd-hda-intel from that tree, and leave kernel's sound core modules?
->
-> If you build from alsa-driver tree, then yes, only modules.
->
-> You can get use kernel.git perex/alsa.git mm branch for the latest
-> ALSA codes, too:
->         http://git.kernel.org/?p=linux/kernel/git/perex/alsa.git;a=shortlog;h=mm
->
->
-> thanks,
->
-> Takashi
->
+Romain Bossart wrote:
+> Selon Clemens Ladisch <cladisch@fastmail.net>:
+> 
+>> Romain Bossart wrote:
+>>> My audiophile 24/96 Midi Out sends zeroes continuously,
+>>> so I can't use any instrument. I checked that with amidi
+>>> by looking at the stream output of a connected instrument
+>>> (midi out -> instrument -> midi in -> amidi). Zeroes are
+>>> sent whether or not I try to send (normal) midi messages.
+>> Would it be possible to connect the midi out directly to the
+>> midi in?
+> 
+> I also tried it, same results.
+> 
+>> Is the number of transmitted bytes in /proc/asound/cardX/midi0
+>> about correct?
+
+Yes, the number is correct. After a reboot, I prepared amidi
+to output the incoming midi stream and switched on my instrument
+for 2 seconds approx : around 10kB of zeroes were counted by
+amidi and /proc/asound/card0/midi0.
 
 
-Hi,
-  Thanks for information, I will send updated patches soon.
-
-Best regards,
-       Maxim Levitsky
+> 
+> Thank you !
+> 
+> Romain
+> 
+> 
+>> Regards,
+>> Clemens
+>>
