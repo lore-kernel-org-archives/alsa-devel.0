@@ -1,18 +1,23 @@
-From: "John Utz" <john.utz@dmx.com>
-Subject: Re: Dealing with 'siamesed' DAC sample rates
-Date: Thu, 30 Aug 2007 13:05:13 -0700
-Message-ID: <20070830130513.76072b52@jutz-gnto64>
-References: <20070830115112.02820301@jutz-gnto64>
-	<75b66ecd0708301247q6bb6112eh32caaff8bbc367d5@mail.gmail.com>
+From: Sebastian Krause <sebastian@realpath.org>
+Subject: Re: no sound with hda-intel,
+ conexant venice	chip	on hp 2836
+Date: Thu, 30 Aug 2007 23:08:36 +0200
+Message-ID: <46D731D4.4000504@realpath.org>
+References: <20070815173601.GA3227@bentham.lan>	
+	<1187227351.5512.280.camel@razman.gruemaster.com>	
+	<874pizkzgx.fsf@news.realpath.org>	
+	<1187313403.9720.48.camel@razman.gruemaster.com>	
+	<87veazq2xi.fsf@news.realpath.org>
+	<1188310959.31933.30.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 652C9103818
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id C20651037F9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Aug 2007 22:05:45 +0200 (CEST)
-In-Reply-To: <75b66ecd0708301247q6bb6112eh32caaff8bbc367d5@mail.gmail.com>
+	Thu, 30 Aug 2007 23:08:59 +0200 (CEST)
+In-Reply-To: <1188310959.31933.30.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,42 +27,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lee;
-
-On Thu, 30 Aug 2007 15:47:56 -0400
-"Lee Revell" <rlrevell@joe-job.com> wrote:
-
-> On 8/30/07, John Utz <john.utz@dmx.com> wrote:
-> > Hello All;
-> >
-> > The thrice cursed vt1618 has the DAC sample rates regs for the
-> > Surround and Center/LFE DAC's (0x2E, 0x30) set to RO and locked to
-> > whatever rate that the Front DAC is set to.
-> >
+Tobin Davis wrote:
+> My alc268 board has been commandeered for another project, but I should 
+> be able to do more testing this week.
+> Actually, Realtek posted several patches, and they are in the daily 
+> snapshot here:  ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/
 > 
-> I don't think the driver should expose separate front and rear PCMs
-> for this device as they cannot be controlled independently at the HW
-> level.
+> Try it out and see if it works better.  Your system isn't in the driver 
+> specifically, but load it with the option "model=acer" and see if it works.
 
-That's a good point.
+Thanks, that already works so far, now I have sound just normally :) I 
+couldn't get the microphone to work yet, but I'll try out more later.
 
-However, they can be controlled independently for everything *other*
-than sample rate.
-
-I'll have to ponder your point carefully and take it into consideration
-for what i decide to do when i push out a patch (hopefully one that
-will get accepted this time :-) )
-
-But for our *product platform* the independent control is a must
-have, so i am kinda stuck solving this problem somehow, someway.
-
-tnx!
-
-johnu
-
-> Lee
-> 
+Sebastian
