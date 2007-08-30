@@ -1,23 +1,21 @@
-From: Sebastian Krause <sebastian@realpath.org>
-Subject: Re: no sound with hda-intel,
- conexant venice	chip	on hp 2836
-Date: Thu, 30 Aug 2007 23:08:36 +0200
-Message-ID: <46D731D4.4000504@realpath.org>
-References: <20070815173601.GA3227@bentham.lan>	
-	<1187227351.5512.280.camel@razman.gruemaster.com>	
-	<874pizkzgx.fsf@news.realpath.org>	
-	<1187313403.9720.48.camel@razman.gruemaster.com>	
-	<87veazq2xi.fsf@news.realpath.org>
-	<1188310959.31933.30.camel@razman.gruemaster.com>
+From: "Colin Nickerson" <colin.douglas.nickerson@gmail.com>
+Subject: Re: Virtual Surround, where to start
+Date: Thu, 30 Aug 2007 18:21:56 -0300
+Message-ID: <12a75e9d0708301421r7bfbbf8akca9812b45c3ac35@mail.gmail.com>
+References: <12a75e9d0708281744k43079638h8ae6ec1db745e4b7@mail.gmail.com>
+	<s5hveay1y1d.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id C20651037F9
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id 949FB1037F9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Aug 2007 23:08:59 +0200 (CEST)
-In-Reply-To: <1188310959.31933.30.camel@razman.gruemaster.com>
+	Thu, 30 Aug 2007 23:21:57 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id d21so599381nfb
+	for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2007 14:21:56 -0700 (PDT)
+In-Reply-To: <s5hveay1y1d.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tobin Davis wrote:
-> My alc268 board has been commandeered for another project, but I should 
-> be able to do more testing this week.
-> Actually, Realtek posted several patches, and they are in the daily 
-> snapshot here:  ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/
-> 
-> Try it out and see if it works better.  Your system isn't in the driver 
-> specifically, but load it with the option "model=acer" and see if it works.
+Ok.  Is there anyway to access ASIO with alsa?
 
-Thanks, that already works so far, now I have sound just normally :) I 
-couldn't get the microphone to work yet, but I'll try out more later.
-
-Sebastian
+On 8/29/07, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> At Tue, 28 Aug 2007 21:44:10 -0300,
+> Colin Nickerson wrote:
+> >
+> > Hello everyone.
+> >
+> > I am a programmer but I do not have experience with ALSA.  I would like
+> to
+> > see if I can add software support for the SRS and other features of my
+> > M-Audio Revolution 7.1 card.  How could I best start on this task?  I am
+> > assuming that the card has some hardware acceleration for the SRS
+> algorithms
+> > that I will need to access.
+>
+> Well, I don't think that Revo 7.1 hardware has something for SRS.
+> Such an implementation is usually all on software.
+>
+>
+> Takashi
+>
