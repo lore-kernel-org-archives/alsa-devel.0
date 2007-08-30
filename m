@@ -1,23 +1,17 @@
-From: John Dey <jsdey@optonline.net>
-Subject: Re: SIIG-USB SoundWave 7.1 Pro
-Date: Thu, 30 Aug 2007 15:08:24 -0400
-Message-ID: <60ee2ff701ef550e6ff62115561cd7d3@optonline.net>
-References: <c7cc6a8720861b912811313bde81fb6b@optonline.net>
-	<1188196692.12689.1207418219@webmail.messagingengine.com>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: Re: Dealing with 'siamesed' DAC sample rates
+Date: Thu, 30 Aug 2007 12:28:10 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0708301212410.18152@shell4.speakeasy.net>
+References: <20070830115112.02820301@jutz-gnto64>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta1.srv.hcvlny.cv.net (mta1.srv.hcvlny.cv.net [167.206.4.196])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9E24103818
+Received: from mail5.sea5.speakeasy.net (mail5.sea5.speakeasy.net
+	[69.17.117.7]) by alsa0.perex.cz (Postfix) with ESMTP id 150E610388D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Aug 2007 21:08:26 +0200 (CEST)
-Received: from robo1.jsdey.com (ool-44c1fb41.dyn.optonline.net [68.193.251.65])
-	by mta1.srv.hcvlny.cv.net
-	(Sun Java System Messaging Server 6.2-8.04 (built Feb 28 2007))
-	with ESMTP id <0JNL00LCFP60S8U0@mta1.srv.hcvlny.cv.net> for
-	alsa-devel@alsa-project.org; Thu, 30 Aug 2007 15:08:25 -0400 (EDT)
-In-reply-to: <1188196692.12689.1207418219@webmail.messagingengine.com>
+	Thu, 30 Aug 2007 21:28:16 +0200 (CEST)
+In-Reply-To: <20070830115112.02820301@jutz-gnto64>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,37 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: Alsa Dev <alsa-devel@alsa-project.org>
+To: John Utz <john.utz@dmx.com>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens,
-
-Thanks for your response.  Before responding, I wanted to wait until my 
-4 speakers arrived.  I've got them and connected them to the audio 
-receiver as Front L R and Back L R.  An spdif optical cable is 
-connected from the sound card list above to the audio receiver.  At 
-your suggestion I ran the command "speaker-test -c 8".  Only Front L R 
-spoke.
-
-Any further suggestions would be greatly appreciated.
-
-John
-On Aug 27, 2007, at 2:38 AM, Clemens Ladisch wrote:
-
-> John Dey wrote:
->> I have the above referenced sound card.  It is running on the latest
->> version of CCRMA x86.  Jack shows only stereo.  How do I configure so
->> that I can run 5 channels.
+On Thu, 30 Aug 2007, John Utz wrote:
+> The thrice cursed vt1618 has the DAC sample rates regs for the Surround
+> and Center/LFE DAC's (0x2E, 0x30) set to RO and locked to whatever rate
+> that the Front DAC is set to.
 >
-> Most cards support only 2,4,6,8 channels.
-> Please try speaker-test.
->
->
-> HTH
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+> So, i *think* that i want to change my driver code to poke the value
+> for setting hw:0,1 (should be reg 0x2e) into 0x2c instead? or am i
+> barking up the wrong tree?
+
+Wouldn't that mean if you are using hw:0,0 at 48kHz and then tried to use
+hw:0,1 at 44.1kHz, that hw:0,0 would switch sample rates too, in the middle
+of playback?
+
+Of course, this would go the other way too.  If you're using hw:0,1 at 48k
+and then start hw:0,0 at 44.1k, the sample rate of hw:0,1 gets changed.
+
+It seems like the right thing to do would be to check if any other DACs are
+in use.  If any are, the sample rate is locked to whatever it is set at.
+If they aren't, then you can change all the sample rates by writing to the
+0x2e register.
+
+When the device is opened, you check if any other DACs are in use too.  If
+any are, the hw constraints are set to the current sample rate.  If none
+are, then the sample rate constraint can be any supported rate.
