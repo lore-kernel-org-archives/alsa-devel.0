@@ -1,18 +1,21 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: compilation faillure (was: Re:  ALSA 1.0.15rc1)
-Date: Fri, 31 Aug 2007 14:25:38 +0200
-Message-ID: <m2lkbrj3gd.fsf@vador.mandriva.com>
-References: <Pine.LNX.4.61.0708311112510.10136@tm8103.perex-int.cz>
+From: "paul blakeley" <pblakeley@gmail.com>
+Subject: Re: azx driver compilation query
+Date: Fri, 31 Aug 2007 13:43:50 +0100
+Message-ID: <27342b300708310543r2a7f3454u1f469355417d2259@mail.gmail.com>
+References: <27342b300708310341j7b7b0e0fic48806ecf944bf33@mail.gmail.com>
+	<s5hmyw8ez3j.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from office.mandriva.com (office-abk.mandriva.com [84.55.162.90])
-	by alsa0.perex.cz (Postfix) with ESMTP id 964FF244E5
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB1E9244E6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 31 Aug 2007 14:25:43 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.61.0708311112510.10136@tm8103.perex-int.cz> (Jaroslav
-	Kysela's message of "Fri\, 31 Aug 2007 11\:14\:20 +0200 \(CEST\)")
+	Fri, 31 Aug 2007 14:43:52 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so922619wag
+	for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2007 05:43:51 -0700 (PDT)
+In-Reply-To: <s5hmyw8ez3j.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +25,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@suse.cz> writes:
+First of all thanks for replying.  Version 1.0.15rc1 successfully
+compiled and I was able to insert the modules without any trouble.  I
+noticed that the alsamixer didnt work for some reason, although I
+navigated through the asound.state file.
 
-> 	ALSA 1.0.15rc1 packages are released. Please, check 
-> http://www.alsa-project.org for download and changelog.
+Unfortunately with version of ALSA I am experiencing the same issues
+as with the version 1.0.12rc2.  I think from memory this was when the
+ALC888 chipset was properly introduced in ALSA.  Anyway the mixer
+controls are very similar to previous versions and for the life of me
+I cant figure out how these mixer controls map onto the chipset!  The
+chipset block diagram can be found here:
 
-(...)
-Making all in simple
-make[3]: Entering directory `/home/tv/rpm/BUILD/alsa-lib-1.0.15rc1/modules/mixer/simple'
-if /bin/sh ../../../libtool --tag=CC --mode=compile gcc -DHAVE_CONFIG_H -I. -I. -I../../../include -I../../../include   -g -O
-2 -W -Wall -O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=4 -fexceptions -fomit-frame-pointer
- -march=i586 -mtune=generic -fasynchronous-unwind-tables -MT python.lo -MD -MP -MF ".deps/python.Tpo" -c -o python.lo python.
-c; \
-        then mv -f ".deps/python.Tpo" ".deps/python.Plo"; else rm -f ".deps/python.Tpo"; exit 1; fi
- gcc -DHAVE_CONFIG_H -I. -I. -I../../../include -I../../../include -g -O2 -W -Wall -O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=4 -fexceptions -fomit-frame-pointer -march=i586 -mtune=generic -fasynchronous-unwind-tables -MT python.lo -MD -MP -MF .deps/python.Tpo -c python.c  -DPIC -fPIC -DPIC -o .libs/python.o
-ICECC[32088] 14:23:50: can't send joblocalmsg to daemon
-python.c:26:27: error: python/Python.h: No such file or directory
+ftp://202.65.194.211/pc/audio/ALC888_DataSheet_1.1.pdf
 
->From where does come this header?
-Also this shows that configure.in misses some test...
+Can someone help?
+
+Also the other issues I having with this chipset is:
+
+1. Line-in signal is distorted.
+2. With a signal input and the 'front' mixer control set to zero you
+can still here the signal output, although be it very low.
+3. Capture mixer controls dont seem to do anything.
+4. Line select between mic and line doesnt seem to do anything.
+
+I would be extremely grateful if anybody could help with these.
+
+Thanks.
+            Paul.
+
+On 8/31/07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Fri, 31 Aug 2007 11:41:34 +0100,
+> paul blakeley wrote:
+> >
+> > Hi, I am trying to compile ALSA 1.0.14 and have compiled it but there
+> > are problems.  How do you find out which ALSA driver is associated
+> > with a chipset?  The chipset is ALC888, but when I run the ./configure
+> > script what do I pass in to the '--with-cards' parameter?  I have
+> > compiled with 'hda-intel' but I dont think this correct?
+>
+> It is correct.  ALC888 is a codec chip controlled by a HD-audio
+> controller, which corresponds to snd-hda-intel driver.
+>
+> Anyway, try the new ALSA 1.0.15rc1 instead of 1.0.14, especially for
+> HD-audio stuff.
+>
+>
+> Takashi
+>
