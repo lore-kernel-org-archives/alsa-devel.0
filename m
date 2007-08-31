@@ -1,18 +1,18 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA 1.0.15rc1
-Date: Fri, 31 Aug 2007 12:39:46 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0708311234180.10136@tm8103.perex-int.cz>
-References: <Pine.LNX.4.61.0708311112510.10136@tm8103.perex-int.cz>
-	<m2tzqghviz.fsf@vador.mandriva.com> <m2ps14hvcs.fsf@vador.mandriva.com>
+From: "paul blakeley" <pblakeley@gmail.com>
+Subject: azx driver compilation query
+Date: Fri, 31 Aug 2007 11:41:34 +0100
+Message-ID: <27342b300708310341j7b7b0e0fic48806ecf944bf33@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 64178103904
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id D51B02415F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 31 Aug 2007 12:39:47 +0200 (CEST)
-In-Reply-To: <m2ps14hvcs.fsf@vador.mandriva.com>
+	Fri, 31 Aug 2007 12:41:37 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so895154wag
+	for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2007 03:41:36 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Thierry Vignaud <tvignaud@mandriva.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 31 Aug 2007, Thierry Vignaud wrote:
+Hi, I am trying to compile ALSA 1.0.14 and have compiled it but there
+are problems.  How do you find out which ALSA driver is associated
+with a chipset?  The chipset is ALC888, but when I run the ./configure
+script what do I pass in to the '--with-cards' parameter?  I have
+compiled with 'hda-intel' but I dont think this correct?
 
-> Thierry Vignaud <tvignaud@mandriva.com> writes:
-> 
-> > > 	ALSA 1.0.15rc1 packages are released. Please, check 
-> > > http://www.alsa-project.org for download and changelog.
-> > > 
-> > > 						Jaroslav
-> > 
-> > Looks like you included the 1.0.14 changelog too. Eg, below shouldn't
-> > have you killed everythinkg after "release 1.0.14a"?
-> > 
-> > http://www.alsa-project.org/main/index.php/Changes_v1.0.14_v1.0.15rc1#alsa-lib
-> 
-> in fact, even "Fix plugin directory" & "Properly disable
-> -Bsymbolic-functions if ld doesn't support" looks part of 1.0.14a
-
-It's changelog between 1.0.14 and 1.0.15rc1 not 1.0.14a and 1.0.15rc1.
-I can remove 1.0.14a changes, but then the changelog name might be 
-confusing.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Can you help?
