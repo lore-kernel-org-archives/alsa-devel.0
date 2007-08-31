@@ -1,46 +1,37 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: ALSA 1.0.15rc1
-Date: Fri, 31 Aug 2007 19:49:58 +0200
-Message-ID: <20070831174958.GB28438@frodo.home.lxtec.de>
-References: <Pine.LNX.4.61.0708311112510.10136@tm8103.perex-int.cz>
-	<20070831152353.GA28438@frodo.home.lxtec.de>
+From: Len Brown <lenb@kernel.org>
+Subject: Re: [2/4] 2.6.23-rc4: known regressions
+Date: Fri, 31 Aug 2007 18:01:16 -0400
+Message-ID: <200708311801.16899.lenb@kernel.org>
+References: <46D58CC6.4020605@googlemail.com> <46D59052.6040609@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 534AB103842
-	for <alsa-devel@alsa-project.org>;
-	Fri, 31 Aug 2007 19:50:04 +0200 (CEST)
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <46D59052.6040609@googlemail.com>
 Content-Disposition: inline
-In-Reply-To: <20070831152353.GA28438@frodo.home.lxtec.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, pkg-alsa-devel@lists.alioth.debian.org
+Sender: linux-acpi-owner@vger.kernel.org
+To: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Len Brown <len.brown@intel.com>, linux-acpi@vger.kernel.org, Plamen Petrov <plamen.petrov@tk.ru.acad.bg>, Michael Sedkowski <sedmich@gmail.com>, Alexey Dobriyan <adobriyan@sw.ru>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, "Ivan N. Zlatev" <contact@i-nz.net>, Thomas Meyer <thomas@m3y3r.de>, dth <dth@dth.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 31 Aug 2007 the mental interface of
-Elimar Riesebieter told:
 
-[...]
-> Is there a tool to extract the text similar formatted as the old
-> "v1-0-14rc4--v1-0-14.txt"? Isn't it usual to package a changelog to
-> the sources?
+> ACPI
+> 
+> Subject         : 2.6.23-rc4: maxcpus still broken
+> References      : http://lkml.org/lkml/2007/8/28/87
+> Last known good : ?
+> Submitter       : Alexey Dobriyan <adobriyan@sw.ru>
+> Caused-By       : Len Brown <len.brown@intel.com>
+>                   commit 61ec7567db103d537329b0db9a887db570431ff4
+> Handled-By      : Len Brown <len.brown@intel.com>
+> Status          : problem is being debugged
+> 
 
-Well using lynx (print to file) and some vim actions are doing the
-trick, But anyway, shouldn't it be included in sources?
+Hugh debugged and fixed this one, and it is checked into 2.6.23-rc4-git3
+62e6f1e8bb7c48c02b8bdb3085c5f6365682149b 
+fix maxcpus=1 oops in show_stat()
+    
 
-Elimar
-
--- 
-     .~.
-     /V\   L   I   N   U   X
-    /( )\ >Phear the Penguin<
-    ^^-^^
+thanks,
+-Len
