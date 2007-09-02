@@ -1,20 +1,19 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: [PATCH] Update quirk for Rane SL 1 (aka. Serato
-	Scratch Live)
-Date: Sun, 2 Sep 2007 23:44:09 +0100 (BST)
-Message-ID: <alpine.BSO.0.9999.0709022314250.2845@metheny.ijneb.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: ESI MAYA44 driver status
+Date: Mon, 03 Sep 2007 01:00:39 +0200
+Message-ID: <46DB4097.9030900@gmail.com>
+References: <87988a970708260156j3bee456djedcea8c74c54991f@mail.gmail.com>	<46DAAB0B.8060500@gmail.com>	<92a12cdb0709021050w2e4791d8te54ab3c2e68e5110@mail.gmail.com>
+	<200709030042.37769.c.fertr@volny.cz>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-1725350939-1188772785=:2845"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metheny.ijneb.com (mailout.ijneb.com [212.13.201.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6EB8F243B2
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id D85C0243B2
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 00:44:10 +0200 (CEST)
-Received: from localhost ([127.0.0.1] ident=mark)
-	by metheny.ijneb.com with esmtp (Exim 4.62)
-	(envelope-from <mark@pogo.org.uk>) id 1IRyAr-0003o4-Mt
-	for alsa-devel@alsa-project.org; Sun, 02 Sep 2007 23:44:09 +0100
-Content-ID: <alpine.BSO.0.9999.0709022342400.2845@metheny.ijneb.com>
+	Mon,  3 Sep 2007 01:06:53 +0200 (CEST)
+In-Reply-To: <200709030042.37769.c.fertr@volny.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clement Guedez <klem.dev@gmail.com>
+Cc: alsa-devel@alsa-project.org, Ctirad Fertr <c.fertr@volny.cz>, Piotr Makowski <oponek@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 09/03/2007 12:42 AM, Ctirad Fertr wrote:
 
---0-1725350939-1188772785=:2845
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; FORMAT=flowed
-Content-ID: <alpine.BSO.0.9999.0709022342401.2845@metheny.ijneb.com>
+> Nice ;) However, in this case it's probalbly not needed at all. The Maya44 is 
+> based on well known Envy24HT-S with a pair of Wolfson WM8776 codecs. Thus it 
+> should be quite simple to add suport into the snd-ice1724 driver. 
 
-Update quirk for Rane SL 1 (aka. Serato Scratch Live)
+Well, that's certainly useful information. Clement, I see you recently added 
+support for the ESI Waveterminal 192M to snd-ice1724. Would you perhaps be 
+up to adding support for the ESI Maya44 as well, working with Piotr for the 
+needed information and testing?
 
-Allow the interface's mixer to be used, and give the interface its correct 
-name. Move the quirk out of the 'Novation EMS devices' section to a more 
-appropriate position next to the Stanton DJ interface.
-
-Signed-off-by: Mark Hills <mark@pogo.org.uk>
---0-1725350939-1188772785=:2845
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; NAME=rane-sl1.patch
-Content-Transfer-Encoding: BASE64
-Content-ID: <alpine.BSO.0.9999.0709022339450.2845@metheny.ijneb.com>
-Content-Description: 
-Content-Disposition: ATTACHMENT; FILENAME=rane-sl1.patch
-
-ZGlmZiAtciBlN2M5MzU1YWYzZmYgdXNiL3VzYnF1aXJrcy5oDQotLS0gYS91
-c2IvdXNicXVpcmtzLmgJRnJpIEF1ZyAzMSAxMjo1MjoxOSAyMDA3ICswMjAw
-DQorKysgYi91c2IvdXNicXVpcmtzLmgJU3VuIFNlcCAwMiAyMzoxMjo0NSAy
-MDA3ICswMTAwDQpAQCAtMTc0OCw2ICsxNzQ4LDE2IEBAIFlBTUFIQV9ERVZJ
-Q0UoMHg3MDEwLCAiVUI5OSIpLA0KIAl9DQogfSwNCiANCisvKiBSYW5lIFNM
-IDEgKGFrYS4gU2VyYXRvIFNjcmF0Y2ggTGl2ZSkgZGV2aWNlICovDQorew0K
-KwlVU0JfREVWSUNFKDB4MTNlNSwgMHgwMDAxKSwNCisJLmRyaXZlcl9pbmZv
-ID0gKHVuc2lnbmVkIGxvbmcpICYgKGNvbnN0IHN0cnVjdCBzbmRfdXNiX2F1
-ZGlvX3F1aXJrKSB7DQorCQkudmVuZG9yX25hbWUgPSAiUmFuZSIsDQorCQku
-cHJvZHVjdF9uYW1lID0gIlNMLTEiLA0KKwkJLmlmbnVtID0gUVVJUktfTk9f
-SU5URVJGQUNFDQorCX0NCit9LA0KKw0KIC8qIE5vdmF0aW9uIEVNUyBkZXZp
-Y2VzICovDQogew0KIAlVU0JfREVWSUNFX1ZFTkRPUl9TUEVDKDB4MTIzNSwg
-MHgwMDAxKSwNCkBAIC0xNzc0LDE2ICsxNzg0LDYgQEAgWUFNQUhBX0RFVklD
-RSgweDcwMTAsICJVQjk5IiksDQogCQkucHJvZHVjdF9uYW1lID0gIlJlTU9U
-RTI1IiwNCiAJCS5pZm51bSA9IDAsDQogCQkudHlwZSA9IFFVSVJLX01JRElf
-Tk9WQVRJT04NCi0JfQ0KLX0sDQotDQotew0KLQkvKiBTZXJhdG8gU2NyYXRj
-aCBMaXZlIERKIEJveCAqLw0KLQlVU0JfREVWSUNFKDB4MTNlNSwgMHgwMDAx
-KSwNCi0JLmRyaXZlcl9pbmZvID0gKHVuc2lnbmVkIGxvbmcpICYgKGNvbnN0
-IHN0cnVjdCBzbmRfdXNiX2F1ZGlvX3F1aXJrKQ0KLQl7DQotCQkuaWZudW0g
-PSBRVUlSS19BTllfSU5URVJGQUNFLA0KLQkJLnR5cGUgPSBRVUlSS19BVURJ
-T19TVEFOREFSRF9JTlRFUkZBQ0UNCiAJfQ0KIH0sDQogDQo=
-
---0-1725350939-1188772785=:2845
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0-1725350939-1188772785=:2845--
+Rene.
