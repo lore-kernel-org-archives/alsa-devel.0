@@ -1,19 +1,24 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: Re: [PATCH] Support Rane SL 1 (aka. Serato Scratch
- Live) interface
-Date: Sun, 2 Sep 2007 23:41:36 +0100 (BST)
-Message-ID: <alpine.BSO.0.9999.0709022322160.2845@metheny.ijneb.com>
-References: <alpine.BSO.0.9999.0709021447440.32425@metheny.ijneb.com>
-	<46DAD72D.7020007@gmx.net>
+From: Ctirad Fertr <c.fertr@volny.cz>
+Subject: Re: ESI MAYA44 driver status
+Date: Mon, 3 Sep 2007 00:42:37 +0200
+Message-ID: <200709030042.37769.c.fertr@volny.cz>
+References: <87988a970708260156j3bee456djedcea8c74c54991f@mail.gmail.com>
+	<46DAAB0B.8060500@gmail.com>
+	<92a12cdb0709021050w2e4791d8te54ab3c2e68e5110@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metheny.ijneb.com (mailout.ijneb.com [212.13.201.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 12246243B2
+Received: from smtp3.vol.cz (smtp3.vol.cz [195.250.128.83])
+	by alsa0.perex.cz (Postfix) with ESMTP id 93A4E243A6
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 00:41:38 +0200 (CEST)
-In-Reply-To: <46DAD72D.7020007@gmx.net>
+	Mon,  3 Sep 2007 00:42:43 +0200 (CEST)
+Received: from [10.16.3.4] (dsl-tn-6-43.static.adsl.vol.cz [83.148.7.43])
+	by smtp3.vol.cz (Postfix) with ESMTP id 36FA4593EB
+	for <alsa-devel@alsa-project.org>;
+	Mon,  3 Sep 2007 00:42:43 +0200 (CEST)
+In-Reply-To: <92a12cdb0709021050w2e4791d8te54ab3c2e68e5110@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +28,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: LCID Fire <lcid-fire@gmx.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2 Sep 2007, LCID Fire wrote:
+Dne Sunday 02 of September 2007 19:50:44 Adrian McMenamin napsal(a):
+> ESI have said quite the opposite. They've actually said they'd make
+> their engineers available to the person writing the device driver.
 
-> There should already be a quirks entry present using
-> USB_DEVICE(0x13e5, 0x0001),
-> 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk)
-> 	{
-> 		.ifnum = QUIRK_ANY_INTERFACE,
-> 		.type = QUIRK_AUDIO_STANDARD_INTERFACE
-> 	}
->
-> At least for my device this is working...
+Nice ;) However, in this case it's probalbly not needed at all. The Maya44 is 
+based on well known Envy24HT-S with a pair of Wolfson WM8776 codecs. Thus it 
+should be quite simple to add suport into the snd-ice1724 driver. 
 
-Sorry, I did not notice that, as it happened off-list.
+Regards,
 
-But the above quirk does not allow the full capability (eg. mixer) to be 
-used? I shall submit a new patch which updates it.
-
-Mark
+Ctirad 
