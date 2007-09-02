@@ -1,20 +1,20 @@
 From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH -mm] sb16: Shut up uninitialized var build
-	warning
-Date: Mon, 03 Sep 2007 00:06:08 +0200
-Message-ID: <46DB33D0.40204@gmail.com>
+Subject: Re: [PATCH -mm] es18xx: Shut up uninitialized var
+	build warning
+Date: Mon, 03 Sep 2007 00:14:34 +0200
+Message-ID: <46DB35CA.2010907@gmail.com>
 References: <alpine.LFD.0.999.0709022344550.27844@enigma.security.iitk.ac.i n>
-	<alpine.LFD.0.999.0709030143550.29617@enigma.security.iitk.ac.in>
+	<alpine.LFD.0.999.0709030150180.29617@enigma.security.iitk.ac.in>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14395243AD
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id B175C243B0
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 00:12:25 +0200 (CEST)
-In-Reply-To: <alpine.LFD.0.999.0709030143550.29617@enigma.security.iitk.ac.in>
+	Mon,  3 Sep 2007 00:20:50 +0200 (CEST)
+In-Reply-To: <alpine.LFD.0.999.0709030150180.29617@enigma.security.iitk.ac.in>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,39 +28,12 @@ To: Satyam Sharma <satyam@infradead.org>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDkvMDIvMjAwNyAxMDoxNSBQTSwgU2F0eWFtIFNoYXJtYSB3cm90ZToKCj4gc291bmQvaXNh
-L3NiMTYvc2IxNi5jOiBJbiBmdW5jdGlvbiDigJhzbmRfc2IxNl9pc2FfcHJvYmXigJk6CgpCbGFo
-LiBZb3VyIG1lc3NhZ2UgaGFzOgoKCUNvbnRlbnQtVHlwZTogVEVYVC9QTEFJTjsgY2hhcnNldD1p
-c28tMjAyMi1qcAoKVGhpcyBhcHBhcmVudGx5IGlzIGNhdXNlZCBieSBhIGNvbWJpbmF0aW9uIG9m
-IEdDQyB1c2luZyBncm9vdnkgVVRGIHRpY2ttYXJrcyAKaW4gaXRzIGVycm9yIG1lc3NhZ2VzIHdo
-ZW4gaW4gYSBVVEYgbG9jYWxlIGFuZCBhbHBpbmUgYmVsaWV2aW5nIGl0IHRvIGJlIGEgCmdyZWF0
-IGlkZWEgdG8gYXV0b21hdGljYWxseSB0cnkgZm9yIHRoZSAic2ltcGxlc3QiIGNoYXJhY3RlciBz
-ZXQgaXQgY2FuIAplbmNvZGUgdGhlIGNvbnRlbnQgaW4uIE5vIGlkZWEgd2h5IHRoYXQgbWVhbnMg
-dGhhdCBpc28tMjAyMi1qcCBpcyBwaWNrZWQsIApidXQgaXQgaXMuCgpXaGlsZSBJIGNvdWxkIGFj
-dHVhbGx5IHJlYWQgdGhlIG1lc3NhZ2UgdGhpcyB0aW1lIHlvdSBzaG91bGQgc2VlIHdoYXQgCmlz
-by0yMDIyLWpwIGRvZXMgdG8gbXkgZm9udC4gSXQncyBzY2FyeS4gQmVzdCBzb2x1dGlvbiBhcyBm
-YXIgYXMgSSdtIApjb25jZXJuZWQgaXMgc2xhcCBhIGZldyBHQ0MgZGV2ZWxvcGVycyAobm90IHRo
-YXQgaXQgd2lsIGhlbHAsIGJ1dCBpdCdsbCAKY2VydGFpbmx5IGZlZWwgZ29vZCkgYW5kIHRoZW4g
-dGVhY2ggYWxwaW5lIHRvIGdvIGZvciBVVEYtOCBkaXJlY3RseSBpZiAKVVMtQVNDSUkgd29uJ3Qg
-ZG8uCgpBcyB0byB0aGUgY29udGVudCBvZiB0aGlzIHBhdGNoIC0tIEknZCBhbG1vc3Qgc2F5IGl0
-J3MgYmV0dGVyIHRvIGxpdmUgd2l0aCAKdGhlIHdhcm5pbmcgdGhhbiB3aXRoIHRoYXQgdW5pdGlh
-bGl6ZWRfdmFyKCkgdGhpbmcuIFRoYXQgQVJSQVlfU0laRSBpcyB2ZXJ5IAptdWNoIGEgY29tcGls
-ZSB0aW1lIGNvbnN0YW50LCBzbyBleGFjdGx5IGhvdyBkdW1iIG11c3QgR0NDIGdldCBiZWZvcmUg
-d2UgZ2V0IAp0byBzYXkgdG8gaGVyZSBhbmQgbm8gZnVydGhlcj8KCj4gLS0tIGxpbnV4LTIuNi4y
-My1yYzQtbW0xL3NvdW5kL2lzYS9zYi9zYjE2LmN+Zml4CTIwMDctMDktMDIgMjE6NDE6NTEuMDAw
-MDAwMDAwICswNTMwCj4gKysrIGxpbnV4LTIuNi4yMy1yYzQtbW0xL3NvdW5kL2lzYS9zYi9zYjE2
-LmMJMjAwNy0wOS0wMiAyMTo0Mjo1Ni4wMDAwMDAwMDAgKzA1MzAKPiBAQCAtNTU2LDcgKzU1Niw2
-IEBAIHN0YXRpYyBpbnQgX19kZXZpbml0IHNuZF9zYjE2X2lzYV9tYXRjaCgKPiAgCj4gIHN0YXRp
-YyBpbnQgX19kZXZpbml0IHNuZF9zYjE2X2lzYV9wcm9iZShzdHJ1Y3QgZGV2aWNlICpwZGV2LCB1
-bnNpZ25lZCBpbnQgZGV2KQo+ICB7Cj4gLQlpbnQgZXJyOwo+ICAJc3RhdGljIGludCBwb3NzaWJs
-ZV9pcnFzW10gPSB7NSwgOSwgMTAsIDcsIC0xfTsKPiAgCXN0YXRpYyBpbnQgcG9zc2libGVfZG1h
-czhbXSA9IHsxLCAzLCAwLCAtMX07Cj4gIAlzdGF0aWMgaW50IHBvc3NpYmxlX2RtYXMxNltdID0g
-ezUsIDYsIDcsIC0xfTsKPiBAQCAtNTg1LDYgKzU4NCw4IEBAIHN0YXRpYyBpbnQgX19kZXZpbml0
-IHNuZF9zYjE2X2lzYV9wcm9iZSgKPiAgCWVsc2Ugewo+ICAJCXN0YXRpYyBpbnQgcG9zc2libGVf
-cG9ydHNbXSA9IHsweDIyMCwgMHgyNDAsIDB4MjYwLCAweDI4MH07Cj4gIAkJaW50IGk7Cj4gKwkJ
-aW50IHVuaW5pdGlhbGl6ZWRfdmFyKGVycik7Cj4gKwo+ICAJCWZvciAoaSA9IDA7IGkgPCBBUlJB
-WV9TSVpFKHBvc3NpYmxlX3BvcnRzKTsgaSsrKSB7Cj4gIAkJCXBvcnRbZGV2XSA9IHBvc3NpYmxl
-X3BvcnRzW2ldOwo+ICAJCQllcnIgPSBzbmRfc2IxNl9pc2FfcHJvYmUxKGRldiwgcGRldik7CgpS
-ZW5lLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+T24gMDkvMDIvMjAwNyAxMDoyMSBQTSwgU2F0eWFtIFNoYXJtYSB3cm90ZToKCj4gc291bmQvaXNh
+L2VzMTh4eC5jOiBJbiBmdW5jdGlvbiDigJhzbmRfZXMxOHh4X2lzYV9wcm9iZeKAmToKPiBzb3Vu
+ZC9pc2EvZXMxOHh4LmM6MjI1MTogd2FybmluZzog4oCYZXJy4oCZIG1heSBiZSB1c2VkIHVuaW5p
+dGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgo+IAo+IGdjYyBpcyBhIHNhZCwgc2FkIGNvbXBpbGVy
+LiBUaGlzIHdhcm5pbmcgaXMgYm9ndXMgc28gbGV0J3Mgc2h1dCBpdCB1cC4KClNhbWUgc2l0dWF0
+aW9uLCBzYW1lIGNvbW1lbnQgKGFuZCBzYW1lIGNoYXJzZXQgOi0oICkgYXMgdGhlIHNiMTYgb25l
+LgoKUmVuZS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
