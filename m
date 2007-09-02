@@ -1,22 +1,29 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: [PATCH 1/5] HDA : patch_sigmatel.c : cleanups
-Date: Sun, 2 Sep 2007 11:28:43 +0300
-Message-ID: <200709021128.44102.maximlevitsky@gmail.com>
-References: <200708280454.29250.maximlevitsky@gmail.com>
-	<200709011111.24865.maximlevitsky@gmail.com>
-	<s5hejhili5y.wl%tiwai@suse.de>
+From: Romain Bossart <romain.bossart@free.fr>
+Subject: Re: Audiophile Delta 24/96 Midi Out continuously sends
+ zeroes (alsa 1.0.14)
+Date: Sun, 02 Sep 2007 14:03:19 +0200
+Message-ID: <fbe8q7$hg3$1@sea.gmane.org>
+References: <46D4A1D6.7010604@free.fr>	<1188369280.902.1207813047@webmail.messagingengine.com>	<1188378043.46d535bbab7f9@imp.free.fr>
+	<fb4rj2$9ll$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id A40A11037EA
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 314D310389E
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Sep 2007 11:29:04 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id f40so1160630fka
-	for <alsa-devel@alsa-project.org>; Sun, 02 Sep 2007 02:29:04 -0700 (PDT)
-In-Reply-To: <s5hejhili5y.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Sun,  2 Sep 2007 14:03:47 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1IRoB4-0003ML-6C
+	for alsa-devel@alsa-project.org; Sun, 02 Sep 2007 14:03:42 +0200
+Received: from vpn-samois.solopso.org ([62.147.132.141])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 02 Sep 2007 14:03:42 +0200
+Received: from romain.bossart by vpn-samois.solopso.org with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 02 Sep 2007 14:03:42 +0200
+In-Reply-To: <fb4rj2$9ll$1@sea.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,93 +33,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, mranostay@embeddedalley.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 01 September 2007 14:49:29 Takashi Iwai wrote:
-> At Sat, 1 Sep 2007 11:11:24 +0300,
-> Maxim Levitsky wrote:
-> > 
-> > On Friday 31 August 2007 13:56:19 Takashi Iwai wrote:
-> > > At Tue, 28 Aug 2007 12:46:01 +0200,
-> > > I wrote:
-> > > > 
-> > > > At Tue, 28 Aug 2007 05:07:48 +0300,
-> > > > Maxim Levitsky wrote:
-> > > > > 
-> > > > > From c9392b0293f7d39e40e4a5e07e7b140d5a385079 Mon Sep 17 00:00:00 2001
-> > > > > From: Maxim Levitsky <maximlevitsky@gmail.com>
-> > > > > Date: Mon, 27 Aug 2007 22:49:49 +0300
-> > > > > Subject: [PATCH] HDA : patch_sigmatel.c : cleanups
-> > > > 
-> > > > OK, it's a nice clean-up.  Can be merged as is.
-> > > 
-> > > Now merged to ALSA HG tree.
-> > > 
-> > > If the fixes for other patches are ready, please let me know.
-> > > I'll merge them to HG tree, too.
-> > > 
-> > > 
-> > > Thanks,
-> > > 
-> > > Takashi
-> > > 
-> > 
-> > 
-> > Hi,
-> > 
-> > I run into unexpected problems:
-> > latest hg adds a power saving mode to hda codec, and while the idea is nice, it plays very bad with my patches.
-> > 
-> > 1) The analog loop-back becomes a nightmare, since power-saving code turns the codec off, but for loopback to function it has to be powered.
-> > I tried to add a snd_hda_power_up/down calls to .put function, and while it did stop the unwanted powerdown of codec, on resume from ram , analog loopback vanishes.
-> > any access to device (arecord/aplay or any mixer change make analog loop work again).
-> > Can you tell me how I properly tell the core that user _uses_ the device, and device should be powered.
-> > 
-> > 2) on resume all playback apps hang, and recording (arecord) exits with message "Resource temporary unavailable"
-> > restarting apps help.
+Romain Bossart wrote:
+> Romain Bossart wrote:
+>> Selon Clemens Ladisch <cladisch@fastmail.net>:
+>>
+>>> Romain Bossart wrote:
+>>>> My audiophile 24/96 Midi Out sends zeroes continuously,
+>>>> so I can't use any instrument. I checked that with amidi
+>>>> by looking at the stream output of a connected instrument
+>>>> (midi out -> instrument -> midi in -> amidi). Zeroes are
+>>>> sent whether or not I try to send (normal) midi messages.
+>>> Would it be possible to connect the midi out directly to the
+>>> midi in?
+>> I also tried it, same results.
+>>
+>>> Is the number of transmitted bytes in /proc/asound/cardX/midi0
+>>> about correct?
 > 
-> First, you need to use snd_hda_codec_write_cache() for values to be
-> resumed, especially in control put callbacks.  The amp values accessed
-> via snd_hda_codec_amp_update() are always cached, but
-> snd_hda_codec_write() doesn't cache.
-> 
-> The second thing is analog-loopback.  The driver should keep the power
-> when the analog-loopback is on, and enables power-saving again when
-> it's off.  So far, I thought only the amp controls, but now it's a
-> different one.
-> 
-> In this case, the put callback would need to call snd_hda_pwoer_up()
-> and snd_hda_power_down() appropriately to turn on/off power-save.
-> They should be called only at transition.  Namely, when 0->1
-> transition of spec->aloopback occurs in put callback, it calls
-> snd_hda_power_up().  When 1->0 occurs, call snd_hda_power_down().
+> Yes, the number is correct. After a reboot, I prepared amidi
+> to output the incoming midi stream and switched on my instrument
+> for 2 seconds approx : around 10kB of zeroes were counted by
+> amidi and /proc/asound/card0/midi0.
 > 
 > 
-> Takashi
-> 
+>> Thank you !
+>>
+>> Romain
+>>
+>>
+>>> Regards,
+>>> Clemens
+>>>
 
-Hi,
-	Well, did you read my email?  :-)
+Actually, the same exact number of zeroes were sent.
+I must acknowledge I used jack for connecting amidi...
+I looks like jack sends the zeroes as soon as it is
+started. Would someone have a clue ?
 
-	I did call snd_hda_power_up/down in .put callback, but as I said, on resume, driver didn't powered up the codec, and as usual any access to device
-	powers up the codec.
+Thanks
 
-	Well and I found another bug,
-	The problem is that on resume all "use mic/line-in as output' controls are disabled, and I know why:
-
-	.resume() before introduction of snd_hda_codec_write_cache() / dynamic power managment:
-		stac92xx_init() -> inits inputs/outputs of chip (sets all dynamic pins to output mode)
-
-		snd_hda_resume_ctls() > hacky, but working way of resuming mixer controls : read from memory, write to device
-		
-
-	.resume() now:
-		stac92xx_init() -> inits inputs/outputs of chip (sets all dynamic pins to output mode), and touches the command cache.
-		snd_hda_codec_resume_cache() writes (modifed) cache to codec, thus making dynamic outputs be in input mode.
-
-	I suggest skipping call to stac92xx_init()  at all, after all no initialization is nessesary, since all commands are in cache.
-
-Best regards,
-	Maxim Levitsky
+Romain
