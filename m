@@ -1,58 +1,54 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: ESI MAYA44 driver status
-Date: Sun, 02 Sep 2007 21:12:45 +0200
-Message-ID: <46DB0B2D.5090401@gmail.com>
-References: <87988a970708260156j3bee456djedcea8c74c54991f@mail.gmail.com>	
-	<s5hlkbv3mku.wl%tiwai@suse.de>	
-	<87988a970709020103h6b527835hc64d045e22e0346f@mail.gmail.com>	
-	<46DAAB0B.8060500@gmail.com>
-	<92a12cdb0709021050w2e4791d8te54ab3c2e68e5110@mail.gmail.com>
+From: Satyam Sharma <satyam@infradead.org>
+Subject: [PATCH -mm] sb16: Shut up uninitialized var build warning
+Date: Mon, 3 Sep 2007 01:45:00 +0530 (IST)
+Message-ID: <alpine.LFD.0.999.0709030143550.29617@enigma.security.iitk.ac.in>
+References: <alpine.LFD.0.999.0709022344550.27844@enigma.security.iitk.ac.i
+ n>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49FF4103863
-	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Sep 2007 21:18:59 +0200 (CEST)
-In-Reply-To: <92a12cdb0709021050w2e4791d8te54ab3c2e68e5110@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adrian McMenamin <adrianmcmenamin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Piotr Makowski <oponek@gmail.com>
+Content-Type: MULTIPART/MIXED; BOUNDARY="464262402-680809842-1188764104=:29617"
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1759405AbXIBUCI@vger.kernel.org>
+In-Reply-To: <alpine.LFD.0.999.0709022344550.27844@enigma.security.iitk.ac.in>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/02/2007 07:50 PM, Adrian McMenamin wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> They've actually said they'd make their engineers available to the person
-> writing the device driver.
+--464262402-680809842-1188764104=:29617
+Content-Type: TEXT/PLAIN; charset=iso-2022-jp
 
-If you feel you'll be okay getting a driver going starting from nothing but 
-an email address, great!
 
-Especially given that hardware would need to be supplied -- which ofcourse 
-to some degree means committing upfront -- I would want to first flaunder 
-around on my own a bit while judging whether or not I'd be capable in the 
-first place and judging what information I'd need from the contact. I also 
-expect the same holds for more subscribers so if you _are_ willing to start 
-under these conditions, I'd say go for it.
+sound/isa/sb16/sb16.c: In function ‘snd_sb16_isa_probe’:
+sound/isa/sb16/sb16.c:559: warning: ‘err’ may be used uninitialized in this function
 
-> I'm quite tempted to step up to the wicket on this one, and volunteer
-> to do it. But I think there are probably better people out there...
+is a bogus warning, so let's shut it up.
 
-I doubt it. There are only a few people on this list experienced enough to 
-be able to say they'll be able to get a good result upfront and since they 
-haven't been volunteering, I'm afraid you're as good as it gets! :-)
+Signed-off-by: Satyam Sharma <satyam@infradead.org>
 
-First thing is getting the hardware I guess. I'm quite sure that once things 
-are working at least basically, there will be help available from this list.
+---
 
-Rene.
+ sound/isa/sb/sb16.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- linux-2.6.23-rc4-mm1/sound/isa/sb/sb16.c~fix	2007-09-02 21:41:51.000000000 +0530
++++ linux-2.6.23-rc4-mm1/sound/isa/sb/sb16.c	2007-09-02 21:42:56.000000000 +0530
+@@ -556,7 +556,6 @@ static int __devinit snd_sb16_isa_match(
+ 
+ static int __devinit snd_sb16_isa_probe(struct device *pdev, unsigned int dev)
+ {
+-	int err;
+ 	static int possible_irqs[] = {5, 9, 10, 7, -1};
+ 	static int possible_dmas8[] = {1, 3, 0, -1};
+ 	static int possible_dmas16[] = {5, 6, 7, -1};
+@@ -585,6 +584,8 @@ static int __devinit snd_sb16_isa_probe(
+ 	else {
+ 		static int possible_ports[] = {0x220, 0x240, 0x260, 0x280};
+ 		int i;
++		int uninitialized_var(err);
++
+ 		for (i = 0; i < ARRAY_SIZE(possible_ports); i++) {
+ 			port[dev] = possible_ports[i];
+ 			err = snd_sb16_isa_probe1(dev, pdev);
+--464262402-680809842-1188764104=:29617--
