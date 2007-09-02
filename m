@@ -1,20 +1,21 @@
-From: "Piotr Makowski" <oponek@gmail.com>
-Subject: Re: ESI MAYA44 driver status
-Date: Sun, 2 Sep 2007 10:03:35 +0200
-Message-ID: <87988a970709020103h6b527835hc64d045e22e0346f@mail.gmail.com>
-References: <87988a970708260156j3bee456djedcea8c74c54991f@mail.gmail.com>
-	<s5hlkbv3mku.wl%tiwai@suse.de>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: [PATCH 1/5] HDA : patch_sigmatel.c : cleanups
+Date: Sun, 2 Sep 2007 11:28:43 +0300
+Message-ID: <200709021128.44102.maximlevitsky@gmail.com>
+References: <200708280454.29250.maximlevitsky@gmail.com>
+	<200709011111.24865.maximlevitsky@gmail.com>
+	<s5hejhili5y.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 744EB2442D
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id A40A11037EA
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Sep 2007 10:03:38 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so1505644wag
-	for <alsa-devel@alsa-project.org>; Sun, 02 Sep 2007 01:03:37 -0700 (PDT)
-In-Reply-To: <s5hlkbv3mku.wl%tiwai@suse.de>
+	Sun,  2 Sep 2007 11:29:04 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id f40so1160630fka
+	for <alsa-devel@alsa-project.org>; Sun, 02 Sep 2007 02:29:04 -0700 (PDT)
+In-Reply-To: <s5hejhili5y.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,37 +26,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, mranostay@embeddedalley.com
 List-Id: alsa-devel@alsa-project.org
 
-Ah, I'm so desperate that I'm even ready to pay the proper programmer.. or
-maybe we could collect some money from people who would like to run their
-maya's on linux... I have done all that I can - written the letter to esi,
-contacted ALSA development team.
-I'm really disappointed. Or... maybe someone is already
-talking with esi about writing those drivers?
-
-The card is NOT SUPPORTED! Isn't it the top priority for alsa programmers?
-
-Regards,
-Piotr Makowski
-
-2007/8/28, Takashi Iwai <tiwai@suse.de>:
->
-> At Sun, 26 Aug 2007 10:56:40 +0200,
-> Piotr Makowski wrote:
-> >
+On Saturday 01 September 2007 14:49:29 Takashi Iwai wrote:
+> At Sat, 1 Sep 2007 11:11:24 +0300,
+> Maxim Levitsky wrote:
+> > 
+> > On Friday 31 August 2007 13:56:19 Takashi Iwai wrote:
+> > > At Tue, 28 Aug 2007 12:46:01 +0200,
+> > > I wrote:
+> > > > 
+> > > > At Tue, 28 Aug 2007 05:07:48 +0300,
+> > > > Maxim Levitsky wrote:
+> > > > > 
+> > > > > From c9392b0293f7d39e40e4a5e07e7b140d5a385079 Mon Sep 17 00:00:00 2001
+> > > > > From: Maxim Levitsky <maximlevitsky@gmail.com>
+> > > > > Date: Mon, 27 Aug 2007 22:49:49 +0300
+> > > > > Subject: [PATCH] HDA : patch_sigmatel.c : cleanups
+> > > > 
+> > > > OK, it's a nice clean-up.  Can be merged as is.
+> > > 
+> > > Now merged to ALSA HG tree.
+> > > 
+> > > If the fixes for other patches are ready, please let me know.
+> > > I'll merge them to HG tree, too.
+> > > 
+> > > 
+> > > Thanks,
+> > > 
+> > > Takashi
+> > > 
+> > 
+> > 
 > > Hi,
-> >
-> >     I would like to know is there any progress with writing those
-> drivers?
-> > Anybody contacted with ESI?
->
-> Not I know of.  If someone really starts something on this, please let
-> me know, too.
->
->
-> thanks,
->
+> > 
+> > I run into unexpected problems:
+> > latest hg adds a power saving mode to hda codec, and while the idea is nice, it plays very bad with my patches.
+> > 
+> > 1) The analog loop-back becomes a nightmare, since power-saving code turns the codec off, but for loopback to function it has to be powered.
+> > I tried to add a snd_hda_power_up/down calls to .put function, and while it did stop the unwanted powerdown of codec, on resume from ram , analog loopback vanishes.
+> > any access to device (arecord/aplay or any mixer change make analog loop work again).
+> > Can you tell me how I properly tell the core that user _uses_ the device, and device should be powered.
+> > 
+> > 2) on resume all playback apps hang, and recording (arecord) exits with message "Resource temporary unavailable"
+> > restarting apps help.
+> 
+> First, you need to use snd_hda_codec_write_cache() for values to be
+> resumed, especially in control put callbacks.  The amp values accessed
+> via snd_hda_codec_amp_update() are always cached, but
+> snd_hda_codec_write() doesn't cache.
+> 
+> The second thing is analog-loopback.  The driver should keep the power
+> when the analog-loopback is on, and enables power-saving again when
+> it's off.  So far, I thought only the amp controls, but now it's a
+> different one.
+> 
+> In this case, the put callback would need to call snd_hda_pwoer_up()
+> and snd_hda_power_down() appropriately to turn on/off power-save.
+> They should be called only at transition.  Namely, when 0->1
+> transition of spec->aloopback occurs in put callback, it calls
+> snd_hda_power_up().  When 1->0 occurs, call snd_hda_power_down().
+> 
+> 
 > Takashi
->
+> 
+
+Hi,
+	Well, did you read my email?  :-)
+
+	I did call snd_hda_power_up/down in .put callback, but as I said, on resume, driver didn't powered up the codec, and as usual any access to device
+	powers up the codec.
+
+	Well and I found another bug,
+	The problem is that on resume all "use mic/line-in as output' controls are disabled, and I know why:
+
+	.resume() before introduction of snd_hda_codec_write_cache() / dynamic power managment:
+		stac92xx_init() -> inits inputs/outputs of chip (sets all dynamic pins to output mode)
+
+		snd_hda_resume_ctls() > hacky, but working way of resuming mixer controls : read from memory, write to device
+		
+
+	.resume() now:
+		stac92xx_init() -> inits inputs/outputs of chip (sets all dynamic pins to output mode), and touches the command cache.
+		snd_hda_codec_resume_cache() writes (modifed) cache to codec, thus making dynamic outputs be in input mode.
+
+	I suggest skipping call to stac92xx_init()  at all, after all no initialization is nessesary, since all commands are in cache.
+
+Best regards,
+	Maxim Levitsky
