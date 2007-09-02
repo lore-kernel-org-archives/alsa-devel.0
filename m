@@ -1,29 +1,19 @@
-From: Romain Bossart <romain.bossart@free.fr>
-Subject: Re: Audiophile Delta 24/96 Midi Out continuously sends
- zeroes (alsa 1.0.14)
-Date: Sun, 02 Sep 2007 14:03:19 +0200
-Message-ID: <fbe8q7$hg3$1@sea.gmane.org>
-References: <46D4A1D6.7010604@free.fr>	<1188369280.902.1207813047@webmail.messagingengine.com>	<1188378043.46d535bbab7f9@imp.free.fr>
-	<fb4rj2$9ll$1@sea.gmane.org>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: ESI MAYA44 driver status
+Date: Sun, 02 Sep 2007 14:22:35 +0200
+Message-ID: <46DAAB0B.8060500@gmail.com>
+References: <87988a970708260156j3bee456djedcea8c74c54991f@mail.gmail.com>	<s5hlkbv3mku.wl%tiwai@suse.de>
+	<87988a970709020103h6b527835hc64d045e22e0346f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 314D310389E
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7639D1038F1
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Sep 2007 14:03:47 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1IRoB4-0003ML-6C
-	for alsa-devel@alsa-project.org; Sun, 02 Sep 2007 14:03:42 +0200
-Received: from vpn-samois.solopso.org ([62.147.132.141])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 02 Sep 2007 14:03:42 +0200
-Received: from romain.bossart by vpn-samois.solopso.org with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 02 Sep 2007 14:03:42 +0200
-In-Reply-To: <fb4rj2$9ll$1@sea.gmane.org>
+	Sun,  2 Sep 2007 14:28:47 +0200 (CEST)
+In-Reply-To: <87988a970709020103h6b527835hc64d045e22e0346f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,46 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Piotr Makowski <oponek@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Romain Bossart wrote:
-> Romain Bossart wrote:
->> Selon Clemens Ladisch <cladisch@fastmail.net>:
->>
->>> Romain Bossart wrote:
->>>> My audiophile 24/96 Midi Out sends zeroes continuously,
->>>> so I can't use any instrument. I checked that with amidi
->>>> by looking at the stream output of a connected instrument
->>>> (midi out -> instrument -> midi in -> amidi). Zeroes are
->>>> sent whether or not I try to send (normal) midi messages.
->>> Would it be possible to connect the midi out directly to the
->>> midi in?
->> I also tried it, same results.
->>
->>> Is the number of transmitted bytes in /proc/asound/cardX/midi0
->>> about correct?
-> 
-> Yes, the number is correct. After a reboot, I prepared amidi
-> to output the incoming midi stream and switched on my instrument
-> for 2 seconds approx : around 10kB of zeroes were counted by
-> amidi and /proc/asound/card0/midi0.
-> 
-> 
->> Thank you !
->>
->> Romain
->>
->>
->>> Regards,
->>> Clemens
->>>
+On 09/02/2007 10:03 AM, Piotr Makowski wrote:
 
-Actually, the same exact number of zeroes were sent.
-I must acknowledge I used jack for connecting amidi...
-I looks like jack sends the zeroes as soon as it is
-started. Would someone have a clue ?
+> Ah, I'm so desperate that I'm even ready to pay the proper programmer.. or
+> maybe we could collect some money from people who would like to run their
+> maya's on linux... I have done all that I can - written the letter to esi,
+> contacted ALSA development team.
+> I'm really disappointed. Or... maybe someone is already
+> talking with esi about writing those drivers?
+> 
+> The card is NOT SUPPORTED! Isn't it the top priority for alsa
+> programmers?
 
-Thanks
+Well, the thing is -- "ALSA programmers", like most of the time in open 
+source, are much less of a coherent entity than they are a collection of 
+random individuals doing what they need or want done.
 
-Romain
+I very much only speak for myself and in the capacity of having done mostly 
+just some fairly peripheral ALSA stuff anyway, but the tone of the message 
+that Claus posted to the list rather annoyed me. A quote:
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-August/002666.html
+
+> Yet, I have to say that it is exactly the somewhat ignorant attitude that
+> turns us and quite a number of other vendors "off" in supporting the
+> ALSA developer community better.
+
+Heh. ESI supporting the ALSA developer community? No, the idea here is that 
+the ALSA developer community (for some useful definition of this mythical 
+entity) would be supporting ESI's customers.
+
+This offer of support even comes largely free. All the developer needs is 
+_something_ to get started, to get far enough to at least know what they 
+need to ask of the offered engineering contacts (well, that, and the 
+hardware, but a lender will generally do).
+
+Producing this "something" takes some of ESIs resources but it doesn't need 
+to be many even for a small company, and what they are getting in return is 
+Linux support for their hardware, free for evermore after that initial 
+slight cost.
+
+However, next quote:
+
+> Unless we have to do that to achieve something we want to achieve,
+> we simply can't do that.
+
+Here we have ESI saying that supporting their customers who'd like to use 
+their hardware under Linux is not something they want to achieve.
+
+Which, don't get me wrong, may be perfectly sensible. I myself hear of more 
+and more Linux in the (semi-)pro market but that's no doubt partly attention 
+skew and I ofcourse do not know about ESI's own view of their customers, 
+existing and potential.
+
+But senseability aside, what it does boil down to for me personally is that 
+ESI can go <bleep> themselves.
+
+If any of the capable developers had the hardware, things would've probably 
+been different since at that point it's also just about scratching personal 
+itches but without it's mostly about providing free support for a company 
+that just said outright they're not at all interested. Yes, well...
+
+Rene.
