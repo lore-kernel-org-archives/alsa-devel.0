@@ -1,22 +1,20 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: [PATCH 1/5] HDA : patch_sigmatel.c : cleanups
-Date: Mon, 3 Sep 2007 16:08:53 +0300
-Message-ID: <200709031608.53235.maximlevitsky@gmail.com>
-References: <200708280454.29250.maximlevitsky@gmail.com>
-	<200709021128.44102.maximlevitsky@gmail.com>
-	<s5hy7fo8afi.wl%tiwai@suse.de>
+From: Markus Korber <korbse@gmx.at>
+Subject: Re: ALSA lib troubles with xine
+Date: Mon, 03 Sep 2007 16:52:03 +0200
+Message-ID: <6zejhf94z0.fsf@odpc25.int.ondemand.co.at>
+References: <6zk5r8fdev.fsf@odpc25.int.ondemand.co.at>
+	<6zd4x0f9q3.fsf@odpc25.int.ondemand.co.at>
+	<Pine.LNX.4.61.0709031024070.14792@tm8103.perex-int.cz>
+	<6zir6sayq5.fsf@odpc25.int.ondemand.co.at>
+	<s5hbqcjew7b.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BF0C10390D
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id EADCF103916
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 16:09:26 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id f40so1493510fka
-	for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2007 07:09:26 -0700 (PDT)
-In-Reply-To: <s5hy7fo8afi.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Mon,  3 Sep 2007 16:52:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,113 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, mranostay@embeddedalley.com
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 03 September 2007 10:39:29 Takashi Iwai wrote:
-> At Sun, 2 Sep 2007 11:28:43 +0300,
-> Maxim Levitsky wrote:
-> > 
-> > On Saturday 01 September 2007 14:49:29 Takashi Iwai wrote:
-> > > At Sat, 1 Sep 2007 11:11:24 +0300,
-> > > Maxim Levitsky wrote:
-> > > > 
-> > > > On Friday 31 August 2007 13:56:19 Takashi Iwai wrote:
-> > > > > At Tue, 28 Aug 2007 12:46:01 +0200,
-> > > > > I wrote:
-> > > > > > 
-> > > > > > At Tue, 28 Aug 2007 05:07:48 +0300,
-> > > > > > Maxim Levitsky wrote:
-> > > > > > > 
-> > > > > > > From c9392b0293f7d39e40e4a5e07e7b140d5a385079 Mon Sep 17 00:00:00 2001
-> > > > > > > From: Maxim Levitsky <maximlevitsky@gmail.com>
-> > > > > > > Date: Mon, 27 Aug 2007 22:49:49 +0300
-> > > > > > > Subject: [PATCH] HDA : patch_sigmatel.c : cleanups
-> > > > > > 
-> > > > > > OK, it's a nice clean-up.  Can be merged as is.
-> > > > > 
-> > > > > Now merged to ALSA HG tree.
-> > > > > 
-> > > > > If the fixes for other patches are ready, please let me know.
-> > > > > I'll merge them to HG tree, too.
-> > > > > 
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > Takashi
-> > > > > 
-> > > > 
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > I run into unexpected problems:
-> > > > latest hg adds a power saving mode to hda codec, and while the idea is nice, it plays very bad with my patches.
-> > > > 
-> > > > 1) The analog loop-back becomes a nightmare, since power-saving code turns the codec off, but for loopback to function it has to be powered.
-> > > > I tried to add a snd_hda_power_up/down calls to .put function, and while it did stop the unwanted powerdown of codec, on resume from ram , analog loopback vanishes.
-> > > > any access to device (arecord/aplay or any mixer change make analog loop work again).
-> > > > Can you tell me how I properly tell the core that user _uses_ the device, and device should be powered.
-> > > > 
-> > > > 2) on resume all playback apps hang, and recording (arecord) exits with message "Resource temporary unavailable"
-> > > > restarting apps help.
-> > > 
-> > > First, you need to use snd_hda_codec_write_cache() for values to be
-> > > resumed, especially in control put callbacks.  The amp values accessed
-> > > via snd_hda_codec_amp_update() are always cached, but
-> > > snd_hda_codec_write() doesn't cache.
-> > > 
-> > > The second thing is analog-loopback.  The driver should keep the power
-> > > when the analog-loopback is on, and enables power-saving again when
-> > > it's off.  So far, I thought only the amp controls, but now it's a
-> > > different one.
-> > > 
-> > > In this case, the put callback would need to call snd_hda_pwoer_up()
-> > > and snd_hda_power_down() appropriately to turn on/off power-save.
-> > > They should be called only at transition.  Namely, when 0->1
-> > > transition of spec->aloopback occurs in put callback, it calls
-> > > snd_hda_power_up().  When 1->0 occurs, call snd_hda_power_down().
-> > > 
-> > > 
-> > > Takashi
-> > > 
-> > 
-> > Hi,
-> > 	Well, did you read my email?  :-)
-> 
-> Yeah, but not carefully as I was in travel.
-> 
-> > 	I did call snd_hda_power_up/down in .put callback, but as I said, on resume, driver didn't powered up the codec, and as usual any access to device
-> > 	powers up the codec.
-> 
-> Well, did you use snd_hda_codec_write_cache() there?
-> Otherwise the changed analog-loopback setup won't be called.
-> 
-> > 	Well and I found another bug,
-> > 	The problem is that on resume all "use mic/line-in as output' controls are disabled, and I know why:
-> > 
-> > 	.resume() before introduction of snd_hda_codec_write_cache() / dynamic power managment:
-> > 		stac92xx_init() -> inits inputs/outputs of chip (sets all dynamic pins to output mode)
-> > 
-> > 		snd_hda_resume_ctls() > hacky, but working way of resuming mixer controls : read from memory, write to device
-> > 		
-> > 
-> > 	.resume() now:
-> > 		stac92xx_init() -> inits inputs/outputs of chip (sets all dynamic pins to output mode), and touches the command cache.
-> > 		snd_hda_codec_resume_cache() writes (modifed) cache to codec, thus making dynamic outputs be in input mode.
-> > 
-> > 	I suggest skipping call to stac92xx_init()  at all, after all no initialization is nessesary, since all commands are in cache.
-> 
-> Some stuff in stac92xx_init() isn't cached, so we cannot remove it
-> completely.  I fixed it now on HG tree.  Give it a try.
-> 
-> 
-> Takashi
-> 
+Thus spake Takashi Iwai:
 
-Hi,
+> At Mon, 03 Sep 2007 11:24:02 +0200,
+> Markus Korber wrote:
+>
+>> However, the sound is stuttering a lot (I guess this is a xine-lib
+>> issue).
+>
+> Can you install older versions of ALSA-lib *manually* and check in
+> which version the bug doesn't appear?  Then we can pin-point the
+> change.
 
-Yes , 'Mic/Line-out as ouput' switches work fine now after suspend-resume,
-your patch works fine. Thanks.
+Ok, so I compiled alsa-lib, installed libasound.so, and recompiled the
+xine alsa output module against the appropriate alsa-lib:
 
-Best regards,
-	Maxim Levitsky
+1.0.13    : failed
+1.0.14a   : failed
+1.0.15rc1 : failed
+
+Any ideas?  
+
+Perhaps xine-lib doesn't work well if buffer_size = 2*period_size?
+
+Regards,
+Markus Korber
