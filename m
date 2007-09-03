@@ -1,18 +1,25 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA lib troubles with xine
-Date: Mon, 3 Sep 2007 10:24:48 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0709031024070.14792@tm8103.perex-int.cz>
-References: <6zk5r8fdev.fsf@odpc25.int.ondemand.co.at>
-	<6zd4x0f9q3.fsf@odpc25.int.ondemand.co.at>
+From: "Adrian McMenamin" <adrianmcmenamin@gmail.com>
+Subject: Re: ESI MAYA44 driver status
+Date: Mon, 3 Sep 2007 09:44:35 +0100
+Message-ID: <92a12cdb0709030144i26385a85mf2ef4b9ee0611c1b@mail.gmail.com>
+References: <87988a970708260156j3bee456djedcea8c74c54991f@mail.gmail.com>
+	<s5hlkbv3mku.wl%tiwai@suse.de>
+	<87988a970709020103h6b527835hc64d045e22e0346f@mail.gmail.com>
+	<46DAAB0B.8060500@gmail.com>
+	<92a12cdb0709021050w2e4791d8te54ab3c2e68e5110@mail.gmail.com>
+	<46DB0B2D.5090401@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FBEE24378
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id B90E224336
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 10:24:49 +0200 (CEST)
-In-Reply-To: <6zd4x0f9q3.fsf@odpc25.int.ondemand.co.at>
+	Mon,  3 Sep 2007 10:44:36 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so1812698wag
+	for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2007 01:44:35 -0700 (PDT)
+In-Reply-To: <46DB0B2D.5090401@gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +29,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Markus Korber <korbse@gmx.at>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Rene Herman <rene.herman@gmail.com>
+Cc: alsa-devel@alsa-project.org, Piotr Makowski <oponek@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 3 Sep 2007, Markus Korber wrote:
+On 02/09/07, Rene Herman <rene.herman@gmail.com> wrote:
+> On 09/02/2007 07:50 PM, Adrian McMenamin wrote:
+>
+> > They've actually said they'd make their engineers available to the person
+> > writing the device driver.
+>
+> If you feel you'll be okay getting a driver going starting from nothing but
+> an email address, great!
+>
+> Especially given that hardware would need to be supplied -- which ofcourse
+> to some degree means committing upfront -- I would want to first flaunder
+> around on my own a bit while judging whether or not I'd be capable in the
+> first place and judging what information I'd need from the contact. I also
+> expect the same holds for more subscribers so if you _are_ willing to start
+> under these conditions, I'd say go for it.
+>
 
-> Thus spake Markus Korber:
-> 
-> > I've got problems using ALSA (hg) and xine-lib (1.1.7).  I'm trying to
-> > use fbxine for playback but ALSA debug logging gives me:
-> > [...]
-> > So buffer and period sizes seem to be wrong and therefore I get no
-> > sound.  (audio_alsa_out logging from [1].)  Next I've tried to run
-> > speaker-test and the ouptut look good:
-> 
-> Sorry for the wrong information (Must have taken an older version of
-> libasound).  I've recompiled alsa-lib 1.0.15rc1 and alsa-utils 1.0.15rc1
-> and now speaker-test also fails:
 
-Try compile alsa-lib with '--with-versioned=no' and recompile 
-(relink) speaker-test and other apps against this library.
+If you'd bothered to talk to the company rather than spoit, you'd know
+that they are prepared to supply the hardware and make engineers' time
+available. They also say, as has been reported to the list, that a new
+driver shouldn't be too difficult as the device is very similar to
+existing supported cards.
 
-						Jaroslav
+Flame wars are easy to start and free software developers love to get
+on their high horse. But we should stick to the facts: this is a
+company that wants to work with the community. They couldn't supply a
+particular type of documentation but they were prepared to do just
+about anything else needed to get the card supported: I know this
+because I sent them an email and asked for the facts, rather than took
+what appeared in the list as gospel.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+
+> > I'm quite tempted to step up to the wicket on this one, and volunteer
+> > to do it. But I think there are probably better people out there...
+>
+> I doubt it. There are only a few people on this list experienced enough to
+> be able to say they'll be able to get a good result upfront and since they
+> haven't been volunteering, I'm afraid you're as good as it gets! :-)
+>
+> First thing is getting the hardware I guess. I'm quite sure that once things
+> are working at least basically, there will be help available from this list.
+>
+> Rene.
+>
+>
