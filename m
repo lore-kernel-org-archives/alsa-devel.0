@@ -1,19 +1,19 @@
 From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: [PATCH 2/6] Fix resume logic,
-	when dynamic power managment is on
-Date: Mon, 3 Sep 2007 15:17:06 +0300
-Message-ID: <200709031517.07008.maximlevitsky@gmail.com>
+Subject: [PATCH 3/6] add support for swapping center/LFE
+	channels
+Date: Mon, 3 Sep 2007 15:18:31 +0300
+Message-ID: <200709031518.31823.maximlevitsky@gmail.com>
 References: <200709031514.57875.maximlevitsky@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 734A510391B
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA16D10391B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 15:17:34 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id f40so1482713fka
-	for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2007 06:17:34 -0700 (PDT)
+	Mon,  3 Sep 2007 15:19:00 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id f40so1482999fka
+	for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2007 06:19:00 -0700 (PDT)
 In-Reply-To: <200709031514.57875.maximlevitsky@gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -29,99 +29,157 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, mranostay@embeddedalley.com
 List-Id: alsa-devel@alsa-project.org
 
->From 3d4f5b6dcf586277ca6ca4ea86068e01566c58c0 Mon Sep 17 00:00:00 2001
+>From 3292af8a515804fa8ad7452a3384ea523511c16f Mon Sep 17 00:00:00 2001
 From: Maxim Levitsky <maximlevitsky@gmail.com>
-Date: Mon, 3 Sep 2007 14:10:11 +0300
-Subject: [PATCH] Fix resume logic, when dynamic power managment is on
+Date: Mon, 3 Sep 2007 14:12:56 +0300
+Subject: [PATCH] add support for swapping center/LFE channels
 
-Comment in hda_intel.c states that
-"the explicit resume is needed only when POWER_SAVE isn't set", but this is not true.
-There is no code that will automaticly power up the codec on resume, but only code that
-powers it up when user accesses it. So if user leaves a sound playing, codec will not be powered
-
-To fix that I check if there are any codecs that should be powered codec->power_count,
-and if so I power them up together with main controller.
+Center\LFE channels are located on same jack, so it can be usefull to swap them
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- pci/hda/hda_codec.c |   16 +++++++++++++---
- pci/hda/hda_codec.h |    4 ++++
- pci/hda/hda_intel.c |    8 ++++----
- 3 files changed, 21 insertions(+), 7 deletions(-)
+ pci/hda/patch_sigmatel.c |   76 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 72 insertions(+), 4 deletions(-)
 
-diff --git a/pci/hda/hda_codec.c b/pci/hda/hda_codec.c
-index 08104e2..e594de0 100644
---- a/pci/hda/hda_codec.c
-+++ b/pci/hda/hda_codec.c
-@@ -2787,7 +2787,6 @@ int snd_hda_suspend(struct hda_bus *bus, pm_message_t state)
- 	return 0;
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index b4a1d73..297f740 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -146,6 +146,7 @@ struct sigmatel_spec {
+ 
+ 	/* i/o switches */
+ 	unsigned int io_switch[2];
++	unsigned int clfe_swap;
+ 
+ 	struct hda_pcm pcm_rec[2];	/* PCM information */
+ 
+@@ -1406,6 +1407,36 @@ static int stac92xx_io_switch_put(struct snd_kcontrol *kcontrol, struct snd_ctl_
+         return 1;
  }
  
--#ifndef CONFIG_SND_HDA_POWER_SAVE
- /**
-  * snd_hda_resume - resume the codecs
-  * @bus: the HDA bus
-@@ -2803,10 +2802,21 @@ int snd_hda_resume(struct hda_bus *bus)
- 	struct hda_codec *codec;
- 
- 	list_for_each_entry(codec, &bus->codec_list, list) {
--		hda_call_codec_resume(codec);
-+		if (snd_hda_codec_needs_resume(codec))
-+			hda_call_codec_resume(codec);
- 	}
- 	return 0;
- }
--#endif /* !CONFIG_SND_HDA_POWER_SAVE */
-+#ifdef CONFIG_SND_HDA_POWER_SAVE
-+int snd_hda_codecs_inuse(struct hda_bus *bus)
++#define stac92xx_clfe_switch_info snd_ctl_boolean_mono_info
++
++static int stac92xx_clfe_switch_get(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct hda_codec *codec;
- 
-+	list_for_each_entry(codec, &bus->codec_list, list) {
-+		if (snd_hda_codec_needs_resume(codec))
-+			return 1;
-+	}
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct sigmatel_spec *spec = codec->spec;
++
++	ucontrol->value.integer.value[0] = spec->clfe_swap;
 +	return 0;
 +}
-+#endif
- #endif
-diff --git a/pci/hda/hda_codec.h b/pci/hda/hda_codec.h
-index ca157e5..2bce925 100644
---- a/pci/hda/hda_codec.h
-+++ b/pci/hda/hda_codec.h
-@@ -686,9 +686,13 @@ int snd_hda_resume(struct hda_bus *bus);
- #ifdef CONFIG_SND_HDA_POWER_SAVE
- void snd_hda_power_up(struct hda_codec *codec);
- void snd_hda_power_down(struct hda_codec *codec);
-+#define snd_hda_codec_needs_resume(codec) codec->power_count
-+int snd_hda_codecs_inuse(struct hda_bus *bus);
- #else
- static inline void snd_hda_power_up(struct hda_codec *codec) {}
- static inline void snd_hda_power_down(struct hda_codec *codec) {}
-+#define snd_hda_codec_needs_resume(codec) 1
-+#define snd_hda_codecs_inuse(bus) 1
- #endif
++
++static int stac92xx_clfe_switch_put(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct sigmatel_spec *spec = codec->spec;
++	hda_nid_t nid = kcontrol->private_value & 0xff;
++
++	if (spec->clfe_swap == ucontrol->value.integer.value[0])
++		return 0;
++
++	spec->clfe_swap = ucontrol->value.integer.value[0];
++
++	snd_hda_codec_write_cache(codec, nid, 0, AC_VERB_SET_EAPD_BTLENABLE,
++		spec->clfe_swap ? 0x4 : 0x0);
++
++	return 1;
++}
++
+ #define STAC_CODEC_IO_SWITCH(xname, xpval) \
+ 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
+ 	  .name = xname, \
+@@ -1416,17 +1447,28 @@ static int stac92xx_io_switch_put(struct snd_kcontrol *kcontrol, struct snd_ctl_
+           .private_value = xpval, \
+ 	}
  
- #endif /* __SOUND_HDA_CODEC_H */
-diff --git a/pci/hda/hda_intel.c b/pci/hda/hda_intel.c
-index 3d06ecc..72fd345 100644
---- a/pci/hda/hda_intel.c
-+++ b/pci/hda/hda_intel.c
-@@ -1586,11 +1586,11 @@ static int azx_resume(struct pci_dev *pci)
- 	if (azx_acquire_irq(chip, 1) < 0)
- 		return -EIO;
- 	azx_init_pci(chip);
--#ifndef CONFIG_SND_HDA_POWER_SAVE
--	/* the explicit resume is needed only when POWER_SAVE isn't set */
--	azx_init_chip(chip);
-+
-+	if (snd_hda_codecs_inuse(chip->bus))
-+		azx_init_chip(chip);
-+
- 	snd_hda_resume(chip->bus);
--#endif
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 	return 0;
++#define STAC_CODEC_CLFE_SWITCH(xname, xpval) \
++	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	  .name = xname, \
++	  .index = 0, \
++	  .info = stac92xx_clfe_switch_info, \
++	  .get = stac92xx_clfe_switch_get, \
++	  .put = stac92xx_clfe_switch_put, \
++	  .private_value = xpval, \
++	}
+ 
+ enum {
+ 	STAC_CTL_WIDGET_VOL,
+ 	STAC_CTL_WIDGET_MUTE,
+ 	STAC_CTL_WIDGET_IO_SWITCH,
++	STAC_CTL_WIDGET_CLFE_SWITCH
+ };
+ 
+ static struct snd_kcontrol_new stac92xx_control_templates[] = {
+ 	HDA_CODEC_VOLUME(NULL, 0, 0, 0),
+ 	HDA_CODEC_MUTE(NULL, 0, 0, 0),
+ 	STAC_CODEC_IO_SWITCH(NULL, 0),
++	STAC_CODEC_CLFE_SWITCH(NULL, 0),
+ };
+ 
+ /* add dynamic controls */
+@@ -1620,7 +1662,7 @@ static int create_controls(struct sigmatel_spec *spec, const char *pfx, hda_nid_
  }
+ 
+ /* add playback controls from the parsed DAC table */
+-static int stac92xx_auto_create_multi_out_ctls(struct sigmatel_spec *spec,
++static int stac92xx_auto_create_multi_out_ctls(struct hda_codec *codec,
+ 					       const struct auto_pin_cfg *cfg)
+ {
+ 	static const char *chname[4] = {
+@@ -1629,6 +1671,10 @@ static int stac92xx_auto_create_multi_out_ctls(struct sigmatel_spec *spec,
+ 	hda_nid_t nid;
+ 	int i, err;
+ 
++	struct sigmatel_spec *spec = codec->spec;
++	unsigned int wid_caps;
++
++
+ 	for (i = 0; i < cfg->line_outs; i++) {
+ 		if (!spec->multiout.dac_nids[i])
+ 			continue;
+@@ -1643,6 +1689,18 @@ static int stac92xx_auto_create_multi_out_ctls(struct sigmatel_spec *spec,
+ 			err = create_controls(spec, "LFE", nid, 2);
+ 			if (err < 0)
+ 				return err;
++
++			wid_caps = get_wcaps(codec, nid);
++
++			if (wid_caps & AC_WCAP_LR_SWAP) {
++				err = stac92xx_add_control(spec,
++					STAC_CTL_WIDGET_CLFE_SWITCH,
++					"Swap Center/LFE Playback Switch", nid);
++
++				if (err < 0)
++					return err;
++			}
++
+ 		} else {
+ 			err = create_controls(spec, chname[i], nid, 3);
+ 			if (err < 0)
+@@ -1895,9 +1953,19 @@ static int stac92xx_parse_auto_config(struct hda_codec *codec, hda_nid_t dig_out
+ 		if ((err = stac92xx_auto_fill_dac_nids(codec, &spec->autocfg)) < 0)
+ 			return err;
+ 
+-	if ((err = stac92xx_auto_create_multi_out_ctls(spec, &spec->autocfg)) < 0 ||
+-	    (err = stac92xx_auto_create_hp_ctls(codec, &spec->autocfg)) < 0 ||
+-	    (err = stac92xx_auto_create_analog_input_ctls(codec, &spec->autocfg)) < 0)
++	err = stac92xx_auto_create_multi_out_ctls(codec, &spec->autocfg);
++
++	if (err < 0)
++		return err;
++
++	err = stac92xx_auto_create_hp_ctls(codec, &spec->autocfg);
++
++	if (err < 0)
++		return err;
++
++	err = stac92xx_auto_create_analog_input_ctls(codec, &spec->autocfg);
++
++	if (err < 0)
+ 		return err;
+ 
+ 	if (spec->num_dmics > 0)
 -- 
 1.5.2.3
