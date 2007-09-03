@@ -1,22 +1,15 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Audiophile Delta 24/96 Midi Out continuously sends
- zeroes (alsa 1.0.14)
-Date: Mon, 03 Sep 2007 08:52:23 +0200
-Message-ID: <1188802343.9390.1208579935@webmail.messagingengine.com>
-References: <46D4A1D6.7010604@free.fr>
-	<1188369280.902.1207813047@webmail.messagingengine.com>
-	<1188378043.46d535bbab7f9@imp.free.fr> <fb4rj2$9ll$1@sea.gmane.org>
-	<fbe8q7$hg3$1@sea.gmane.org>
+From: Markus Korber <korbse@gmx.at>
+Subject: ALSA lib troubles with xine
+Date: Mon, 03 Sep 2007 08:53:12 +0200
+Message-ID: <6zk5r8fdev.fsf@odpc25.int.ondemand.co.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id C3EE21038D7
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id B04C31038F1
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 08:52:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <fbe8q7$hg3$1@sea.gmane.org>
+	Mon,  3 Sep 2007 08:53:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +19,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Romain Bossart <romain.bossart@free.fr>, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Romain Bossart wrote:
-> Romain Bossart wrote:
-> > Romain Bossart wrote:
-> >> Selon Clemens Ladisch <cladisch@fastmail.net>:
-> >>> Is the number of transmitted bytes in /proc/asound/cardX/midi0
-> >>> about correct?
-> > 
-> > Yes, the number is correct. After a reboot, I prepared amidi
-> > to output the incoming midi stream and switched on my instrument
-> > for 2 seconds approx : around 10kB of zeroes were counted by
-> > amidi and /proc/asound/card0/midi0.
-> 
-> Actually, the same exact number of zeroes were sent.
-> I must acknowledge I used jack for connecting amidi...
-> I looks like jack sends the zeroes as soon as it is
-> started.
+Hi,
 
-That is, the zeroes are _not_ sent when you're not using jack?  When
-nothing is connected, or when you use aplaymidi or amidi to send
-something, everything is OK?
+I've got problems using ALSA (hg) and xine-lib (1.1.7).  I'm trying to
+use fbxine for playback but ALSA debug logging gives me:
 
+,----
+| audio_alsa_out: Audio Device name = default
+| audio_alsa_out: Number of channels = 2
+| Buffer size range from 4096 to 0            <- !!!
+| Period size range from 0 to 0               <- !!!
+| Buffer time size 44100
+| To choose buffer_size = 4096
+| To choose period_size = 512
+| was set period_size = 0
+| was set buffer_size = 4096
+| audio_alsa_out:open pause_resume=1
+| ACCESS:  RW_INTERLEAVED
+| FORMAT:  S16_LE
+| SUBFORMAT:  STD
+| SAMPLE_BITS: 16
+| FRAME_BITS: 32
+| CHANNELS: 2
+| RATE: 44100
+| PERIOD_TIME: (46439 46440)
+| PERIOD_SIZE: 2048
+| PERIOD_BYTES: 8192
+| PERIODS: 2
+| BUFFER_TIME: (92879 92880)
+| BUFFER_SIZE: 4096
+| BUFFER_BYTES: 16384
+| TICK_TIME: 10000
+| audio_alsa_out: Unable to set swparams: Invalid argument
+`----
+
+So buffer and period sizes seem to be wrong and therefore I get no
+sound.  (audio_alsa_out logging from [1].)  Next I've tried to run
+speaker-test and the ouptut look good:
+
+,----
+| [root@(none) ~]# speaker-test 
+| 
+| speaker-test 1.0.15rc1
+| 
+| Playback device is default
+| Stream parameters are 48000Hz, S16_LE, 1 channels
+| Using 16 octaves of pink noise
+| Rate set to 48000Hz (requested 48000Hz)
+| Buffer size range from 4096 to 4096
+| Period size range from 2048 to 2048
+| Using max buffer size 4096
+| Periods = 4
+| was set period_size = 2048
+| was set buffer_size = 4096
+|  0 - Front Left
+`----
+
+Both applications are linked against the same ALSA library (dynamic or
+static linkage doesn't make a difference - speaker-test always works and
+xine always fails).  And both applications use the same instructions
+(snd_pcm_hw_params_get_period_size_min/max()) AFAICS.
+
+Any ideas what I could try next?  Thanks.
+
+Toolchain: buildroot based arm gcc 4.2.1 with uclibc 0.9.29.  However,
+other applications (mplayer, aplay, alsaplayer) work as well, so I guess
+it's not toolchain related.
+
+[1] http://xine.cvs.sourceforge.net/xine/xine-lib/src/audio_out/audio_alsa_out.c
 
 Regards,
-Clemens
+Markus Korber
