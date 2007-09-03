@@ -1,19 +1,25 @@
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
-Subject: [PATCH] cs4231 header split
-Date: Mon, 3 Sep 2007 18:45:30 +0200
-Message-ID: <20070903184530.c7dc705f.krzysztof.h1@wp.pl>
+From: Romain Bossart <romain.bossart@free.fr>
+Subject: Re: Audiophile Delta 24/96 Midi Out continuously sends
+ zeroes (alsa 1.0.14)
+Date: Mon, 03 Sep 2007 18:53:08 +0200
+Message-ID: <46DC3BF4.9010204@free.fr>
+References: <46D4A1D6.7010604@free.fr>
+	<1188369280.902.1207813047@webmail.messagingengine.com>
+	<1188378043.46d535bbab7f9@imp.free.fr>
+	<fb4rj2$9ll$1@sea.gmane.org> <fbe8q7$hg3$1@sea.gmane.org>
+	<1188802343.9390.1208579935@webmail.messagingengine.com>
+	<1188826536.46dc0da8097bc@imp.free.fr>
+	<1188833385.26232.1208641995@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id BDDFE24381
+Received: from smtp.solopso.org (lns-bzn-47f-62-147-132-141.adsl.proxad.net
+	[62.147.132.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58B50103872
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 18:39:13 +0200 (CEST)
-Received: from host-87-99-61-239.lanet.net.pl (HELO krzysio.net)
-	(krzysztof.h1@[87.99.61.239]) (envelope-sender <krzysztof.h1@wp.pl>)
-	by smtp.wp.pl (WP-SMTPD) with SMTP
-	for <alsa-devel@alsa-project.org>; 3 Sep 2007 18:39:12 +0200
+	Mon,  3 Sep 2007 18:53:16 +0200 (CEST)
+In-Reply-To: <1188833385.26232.1208641995@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,557 +29,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-This patch splits the cs4231.h file into two parts:
-- cs4231-regs.h which contain register constants and macros
-- cs4231.h which includes the above and contain rest of the definitions
 
-This will allow to share register definitions between x86 ISA cs4231
-and SPARC cs4231.
+Clemens Ladisch wrote:
+> Romain Bossart wrote:
+>> Selon Clemens Ladisch <cladisch@fastmail.net>:
+>>> That is, the zeroes are _not_ sent when you're not using jack?  When
+>>> nothing is connected, or when you use aplaymidi or amidi to send
+>>> something, everything is OK?
+>> Here is a summary of the various tests I did. I have just one card: Audiophile
+>> Delta 24/96. My kernel is now 2.6.22.1 RT patched & alsa 1.0.14,
+>> Audio works perfectly. I don't think jack is the problem.
+>>
+>> Config #2 = Delta Midi Out -> (Midi In) Instrument (Midi Out/Thru) -> Delta Midi
+>> In and 'amidi -p hw:0,0 -d'. Jack being started or not.
+>>
+>> Symptoms: tons of zeroes are shown by amidi as soon as I launch it. The stream
+>> is so intense I can actually hear it in my speakers/monitors (need to switch to
+>> better MIDI cables, I know!). amidi and /proc/asound/card0/midi0 give the same number
+>> of transmitted bytes.
+> 
+> With "transmitted", you meant "received"?
+> When Jack is not running, there is no software to send anything.  If the number
+> of _transmitted_ bytes changes anyway, this would be a bug in ALSA.
+Oops, 'reveived' is correct. Thank you.
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
 
-The next step is to use the definitions into the sparc cs4231 driver.
-If it is not a good idea please reject this patch.
+>> Config #2b = Delta Midi Out -> Delta Midi In
+>> and 'amidi -p hw:0,0 -d', Jack being started or not.
+>>
+>> Symptoms: identical to config#2. Moreover, if meanwhile I send some Midi commands
+>> with amidi ('amidi -p hw:0,0 -S C01C'), I don't find this data in my dump.
+> 
+> Apparently, the output port is broken.  While it is theoretically
+> possible that the driver doesn't initialize the card correctly, I cannot
+> imagine a bug that would cause the port to presume that there is data to
+> send.
+You're right the output port seems to be broken.
 
-diff -uNrp linux-2.6.23.orig/include/sound/cs4231-regs.h linux-2.6.23/include/sound/cs4231-regs.h
---- linux-2.6.23.orig/include/sound/cs4231-regs.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.23/include/sound/cs4231-regs.h	2007-09-03 18:28:14.590542832 +0200
-@@ -0,0 +1,180 @@
-+#ifndef __SOUND_CS4231_REGS_H
-+#define __SOUND_CS4231_REGS_H
-+
-+/*
-+ *  Copyright (c) by Jaroslav Kysela <perex@suse.cz>
-+ *  Definitions for CS4231 & InterWave chips & compatible chips registers
-+ *
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+/* IO ports */
-+
-+#define CS4231P(x)		(c_d_c_CS4231##x)
-+
-+#define c_d_c_CS4231REGSEL	0
-+#define c_d_c_CS4231REG		1
-+#define c_d_c_CS4231STATUS	2
-+#define c_d_c_CS4231PIO		3
-+
-+/* codec registers */
-+
-+#define CS4231_LEFT_INPUT	0x00	/* left input control */
-+#define CS4231_RIGHT_INPUT	0x01	/* right input control */
-+#define CS4231_AUX1_LEFT_INPUT	0x02	/* left AUX1 input control */
-+#define CS4231_AUX1_RIGHT_INPUT	0x03	/* right AUX1 input control */
-+#define CS4231_AUX2_LEFT_INPUT	0x04	/* left AUX2 input control */
-+#define CS4231_AUX2_RIGHT_INPUT	0x05	/* right AUX2 input control */
-+#define CS4231_LEFT_OUTPUT	0x06	/* left output control register */
-+#define CS4231_RIGHT_OUTPUT	0x07	/* right output control register */
-+#define CS4231_PLAYBK_FORMAT	0x08	/* clock and data format - playback - bits 7-0 MCE */
-+#define CS4231_IFACE_CTRL	0x09	/* interface control - bits 7-2 MCE */
-+#define CS4231_PIN_CTRL		0x0a	/* pin control */
-+#define CS4231_TEST_INIT	0x0b	/* test and initialization */
-+#define CS4231_MISC_INFO	0x0c	/* miscellaneaous information */
-+#define CS4231_LOOPBACK		0x0d	/* loopback control */
-+#define CS4231_PLY_UPR_CNT	0x0e	/* playback upper base count */
-+#define CS4231_PLY_LWR_CNT	0x0f	/* playback lower base count */
-+#define CS4231_ALT_FEATURE_1	0x10	/* alternate #1 feature enable */
-+#define AD1845_AF1_MIC_LEFT	0x10	/* alternate #1 feature + MIC left */
-+#define CS4231_ALT_FEATURE_2	0x11	/* alternate #2 feature enable */
-+#define AD1845_AF2_MIC_RIGHT	0x11	/* alternate #2 feature + MIC right */
-+#define CS4231_LEFT_LINE_IN	0x12	/* left line input control */
-+#define CS4231_RIGHT_LINE_IN	0x13	/* right line input control */
-+#define CS4231_TIMER_LOW	0x14	/* timer low byte */
-+#define CS4231_TIMER_HIGH	0x15	/* timer high byte */
-+#define CS4231_LEFT_MIC_INPUT	0x16	/* left MIC input control register (InterWave only) */
-+#define AD1845_UPR_FREQ_SEL	0x16	/* upper byte of frequency select */
-+#define CS4231_RIGHT_MIC_INPUT	0x17	/* right MIC input control register (InterWave only) */
-+#define AD1845_LWR_FREQ_SEL	0x17	/* lower byte of frequency select */
-+#define CS4236_EXT_REG		0x17	/* extended register access */
-+#define CS4231_IRQ_STATUS	0x18	/* irq status register */
-+#define CS4231_LINE_LEFT_OUTPUT	0x19	/* left line output control register (InterWave only) */
-+#define CS4231_VERSION		0x19	/* CS4231(A) - version values */
-+#define CS4231_MONO_CTRL	0x1a	/* mono input/output control */
-+#define CS4231_LINE_RIGHT_OUTPUT 0x1b	/* right line output control register (InterWave only) */
-+#define AD1845_PWR_DOWN		0x1b	/* power down control */
-+#define CS4235_LEFT_MASTER	0x1b	/* left master output control */
-+#define CS4231_REC_FORMAT	0x1c	/* clock and data format - record - bits 7-0 MCE */
-+#define CS4231_PLY_VAR_FREQ	0x1d	/* playback variable frequency */
-+#define AD1845_CLOCK		0x1d	/* crystal clock select and total power down */
-+#define CS4235_RIGHT_MASTER	0x1d	/* right master output control */
-+#define CS4231_REC_UPR_CNT	0x1e	/* record upper count */
-+#define CS4231_REC_LWR_CNT	0x1f	/* record lower count */
-+
-+/* definitions for codec register select port - CODECP( REGSEL ) */
-+
-+#define CS4231_INIT		0x80	/* CODEC is initializing */
-+#define CS4231_MCE		0x40	/* mode change enable */
-+#define CS4231_TRD		0x20	/* transfer request disable */
-+
-+/* definitions for codec status register - CODECP( STATUS ) */
-+
-+#define CS4231_GLOBALIRQ	0x01	/* IRQ is active */
-+
-+/* definitions for codec irq status */
-+
-+#define CS4231_PLAYBACK_IRQ	0x10
-+#define CS4231_RECORD_IRQ	0x20
-+#define CS4231_TIMER_IRQ	0x40
-+#define CS4231_ALL_IRQS		0x70
-+#define CS4231_REC_UNDERRUN	0x08
-+#define CS4231_REC_OVERRUN	0x04
-+#define CS4231_PLY_OVERRUN	0x02
-+#define CS4231_PLY_UNDERRUN	0x01
-+
-+/* definitions for CS4231_LEFT_INPUT and CS4231_RIGHT_INPUT registers */
-+
-+#define CS4231_ENABLE_MIC_GAIN	0x20
-+
-+#define CS4231_MIXS_LINE	0x00
-+#define CS4231_MIXS_AUX1	0x40
-+#define CS4231_MIXS_MIC		0x80
-+#define CS4231_MIXS_ALL		0xc0
-+
-+/* definitions for clock and data format register - CS4231_PLAYBK_FORMAT */
-+
-+#define CS4231_LINEAR_8		0x00	/* 8-bit unsigned data */
-+#define CS4231_ALAW_8		0x60	/* 8-bit A-law companded */
-+#define CS4231_ULAW_8		0x20	/* 8-bit U-law companded */
-+#define CS4231_LINEAR_16	0x40	/* 16-bit twos complement data - little endian */
-+#define CS4231_LINEAR_16_BIG	0xc0	/* 16-bit twos complement data - big endian */
-+#define CS4231_ADPCM_16		0xa0	/* 16-bit ADPCM */
-+#define CS4231_STEREO		0x10	/* stereo mode */
-+/* bits 3-1 define frequency divisor */
-+#define CS4231_XTAL1		0x00	/* 24.576 crystal */
-+#define CS4231_XTAL2		0x01	/* 16.9344 crystal */
-+
-+/* definitions for interface control register - CS4231_IFACE_CTRL */
-+
-+#define CS4231_RECORD_PIO	0x80	/* record PIO enable */
-+#define CS4231_PLAYBACK_PIO	0x40	/* playback PIO enable */
-+#define CS4231_CALIB_MODE	0x18	/* calibration mode bits */
-+#define CS4231_AUTOCALIB	0x08	/* auto calibrate */
-+#define CS4231_SINGLE_DMA	0x04	/* use single DMA channel */
-+#define CS4231_RECORD_ENABLE	0x02	/* record enable */
-+#define CS4231_PLAYBACK_ENABLE	0x01	/* playback enable */
-+
-+/* definitions for pin control register - CS4231_PIN_CTRL */
-+
-+#define CS4231_IRQ_ENABLE	0x02	/* enable IRQ */
-+#define CS4231_XCTL1		0x40	/* external control #1 */
-+#define CS4231_XCTL0		0x80	/* external control #0 */
-+
-+/* definitions for test and init register - CS4231_TEST_INIT */
-+
-+#define CS4231_CALIB_IN_PROGRESS 0x20	/* auto calibrate in progress */
-+#define CS4231_DMA_REQUEST	0x10	/* DMA request in progress */
-+
-+/* definitions for misc control register - CS4231_MISC_INFO */
-+
-+#define CS4231_MODE2		0x40	/* MODE 2 */
-+#define CS4231_IW_MODE3		0x6c	/* MODE 3 - InterWave enhanced mode */
-+#define CS4231_4236_MODE3	0xe0	/* MODE 3 - CS4236+ enhanced mode */
-+
-+/* definitions for alternate feature 1 register - CS4231_ALT_FEATURE_1 */
-+
-+#define	CS4231_DACZ		0x01	/* zero DAC when underrun */
-+#define CS4231_TIMER_ENABLE	0x40	/* codec timer enable */
-+#define CS4231_OLB		0x80	/* output level bit */
-+
-+/* definitions for Extended Registers - CS4236+ */
-+
-+#define CS4236_REG(i23val)	(((i23val << 2) & 0x10) | ((i23val >> 4) & 0x0f))
-+#define CS4236_I23VAL(reg)	((((reg)&0xf) << 4) | (((reg)&0x10) >> 2) | 0x8)
-+
-+#define CS4236_LEFT_LINE	0x08	/* left LINE alternate volume */
-+#define CS4236_RIGHT_LINE	0x18	/* right LINE alternate volume */
-+#define CS4236_LEFT_MIC		0x28	/* left MIC volume */
-+#define CS4236_RIGHT_MIC	0x38	/* right MIC volume */
-+#define CS4236_LEFT_MIX_CTRL	0x48	/* synthesis and left input mixer control */
-+#define CS4236_RIGHT_MIX_CTRL	0x58	/* right input mixer control */
-+#define CS4236_LEFT_FM		0x68	/* left FM volume */
-+#define CS4236_RIGHT_FM		0x78	/* right FM volume */
-+#define CS4236_LEFT_DSP		0x88	/* left DSP serial port volume */
-+#define CS4236_RIGHT_DSP	0x98	/* right DSP serial port volume */
-+#define CS4236_RIGHT_LOOPBACK	0xa8	/* right loopback monitor volume */
-+#define CS4236_DAC_MUTE		0xb8	/* DAC mute and IFSE enable */
-+#define CS4236_ADC_RATE		0xc8	/* indenpendent ADC sample frequency */
-+#define CS4236_DAC_RATE		0xd8	/* indenpendent DAC sample frequency */
-+#define CS4236_LEFT_MASTER	0xe8	/* left master digital audio volume */
-+#define CS4236_RIGHT_MASTER	0xf8	/* right master digital audio volume */
-+#define CS4236_LEFT_WAVE	0x0c	/* left wavetable serial port volume */
-+#define CS4236_RIGHT_WAVE	0x1c	/* right wavetable serial port volume */
-+#define CS4236_VERSION		0x9c	/* chip version and ID */
-+
-+#endif /* __SOUND_CS4231_REGS_H */
-diff -uNrp linux-2.6.23.orig/include/sound/cs4231-regs.h~ linux-2.6.23/include/sound/cs4231-regs.h~
---- linux-2.6.23.orig/include/sound/cs4231-regs.h~	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.23/include/sound/cs4231-regs.h~	2007-09-03 18:27:55.321444748 +0200
-@@ -0,0 +1,184 @@
-+#ifndef __SOUND_CS4231_REGS_H
-+#define __SOUND_CS4231_REGS_H
-+
-+/*
-+ *  Copyright (c) by Jaroslav Kysela <perex@suse.cz>
-+ *  Definitions for CS4231 & InterWave chips & compatible chips
-+ *
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+#include "control.h"
-+#include "pcm.h"
-+#include "timer.h"
-+
-+/* IO ports */
-+
-+#define CS4231P(x)		(c_d_c_CS4231##x)
-+
-+#define c_d_c_CS4231REGSEL	0
-+#define c_d_c_CS4231REG		1
-+#define c_d_c_CS4231STATUS	2
-+#define c_d_c_CS4231PIO		3
-+
-+/* codec registers */
-+
-+#define CS4231_LEFT_INPUT	0x00	/* left input control */
-+#define CS4231_RIGHT_INPUT	0x01	/* right input control */
-+#define CS4231_AUX1_LEFT_INPUT	0x02	/* left AUX1 input control */
-+#define CS4231_AUX1_RIGHT_INPUT	0x03	/* right AUX1 input control */
-+#define CS4231_AUX2_LEFT_INPUT	0x04	/* left AUX2 input control */
-+#define CS4231_AUX2_RIGHT_INPUT	0x05	/* right AUX2 input control */
-+#define CS4231_LEFT_OUTPUT	0x06	/* left output control register */
-+#define CS4231_RIGHT_OUTPUT	0x07	/* right output control register */
-+#define CS4231_PLAYBK_FORMAT	0x08	/* clock and data format - playback - bits 7-0 MCE */
-+#define CS4231_IFACE_CTRL	0x09	/* interface control - bits 7-2 MCE */
-+#define CS4231_PIN_CTRL		0x0a	/* pin control */
-+#define CS4231_TEST_INIT	0x0b	/* test and initialization */
-+#define CS4231_MISC_INFO	0x0c	/* miscellaneaous information */
-+#define CS4231_LOOPBACK		0x0d	/* loopback control */
-+#define CS4231_PLY_UPR_CNT	0x0e	/* playback upper base count */
-+#define CS4231_PLY_LWR_CNT	0x0f	/* playback lower base count */
-+#define CS4231_ALT_FEATURE_1	0x10	/* alternate #1 feature enable */
-+#define AD1845_AF1_MIC_LEFT	0x10	/* alternate #1 feature + MIC left */
-+#define CS4231_ALT_FEATURE_2	0x11	/* alternate #2 feature enable */
-+#define AD1845_AF2_MIC_RIGHT	0x11	/* alternate #2 feature + MIC right */
-+#define CS4231_LEFT_LINE_IN	0x12	/* left line input control */
-+#define CS4231_RIGHT_LINE_IN	0x13	/* right line input control */
-+#define CS4231_TIMER_LOW	0x14	/* timer low byte */
-+#define CS4231_TIMER_HIGH	0x15	/* timer high byte */
-+#define CS4231_LEFT_MIC_INPUT	0x16	/* left MIC input control register (InterWave only) */
-+#define AD1845_UPR_FREQ_SEL	0x16	/* upper byte of frequency select */
-+#define CS4231_RIGHT_MIC_INPUT	0x17	/* right MIC input control register (InterWave only) */
-+#define AD1845_LWR_FREQ_SEL	0x17	/* lower byte of frequency select */
-+#define CS4236_EXT_REG		0x17	/* extended register access */
-+#define CS4231_IRQ_STATUS	0x18	/* irq status register */
-+#define CS4231_LINE_LEFT_OUTPUT	0x19	/* left line output control register (InterWave only) */
-+#define CS4231_VERSION		0x19	/* CS4231(A) - version values */
-+#define CS4231_MONO_CTRL	0x1a	/* mono input/output control */
-+#define CS4231_LINE_RIGHT_OUTPUT 0x1b	/* right line output control register (InterWave only) */
-+#define AD1845_PWR_DOWN		0x1b	/* power down control */
-+#define CS4235_LEFT_MASTER	0x1b	/* left master output control */
-+#define CS4231_REC_FORMAT	0x1c	/* clock and data format - record - bits 7-0 MCE */
-+#define CS4231_PLY_VAR_FREQ	0x1d	/* playback variable frequency */
-+#define AD1845_CLOCK		0x1d	/* crystal clock select and total power down */
-+#define CS4235_RIGHT_MASTER	0x1d	/* right master output control */
-+#define CS4231_REC_UPR_CNT	0x1e	/* record upper count */
-+#define CS4231_REC_LWR_CNT	0x1f	/* record lower count */
-+
-+/* definitions for codec register select port - CODECP( REGSEL ) */
-+
-+#define CS4231_INIT		0x80	/* CODEC is initializing */
-+#define CS4231_MCE		0x40	/* mode change enable */
-+#define CS4231_TRD		0x20	/* transfer request disable */
-+
-+/* definitions for codec status register - CODECP( STATUS ) */
-+
-+#define CS4231_GLOBALIRQ	0x01	/* IRQ is active */
-+
-+/* definitions for codec irq status */
-+
-+#define CS4231_PLAYBACK_IRQ	0x10
-+#define CS4231_RECORD_IRQ	0x20
-+#define CS4231_TIMER_IRQ	0x40
-+#define CS4231_ALL_IRQS		0x70
-+#define CS4231_REC_UNDERRUN	0x08
-+#define CS4231_REC_OVERRUN	0x04
-+#define CS4231_PLY_OVERRUN	0x02
-+#define CS4231_PLY_UNDERRUN	0x01
-+
-+/* definitions for CS4231_LEFT_INPUT and CS4231_RIGHT_INPUT registers */
-+
-+#define CS4231_ENABLE_MIC_GAIN	0x20
-+
-+#define CS4231_MIXS_LINE	0x00
-+#define CS4231_MIXS_AUX1	0x40
-+#define CS4231_MIXS_MIC		0x80
-+#define CS4231_MIXS_ALL		0xc0
-+
-+/* definitions for clock and data format register - CS4231_PLAYBK_FORMAT */
-+
-+#define CS4231_LINEAR_8		0x00	/* 8-bit unsigned data */
-+#define CS4231_ALAW_8		0x60	/* 8-bit A-law companded */
-+#define CS4231_ULAW_8		0x20	/* 8-bit U-law companded */
-+#define CS4231_LINEAR_16	0x40	/* 16-bit twos complement data - little endian */
-+#define CS4231_LINEAR_16_BIG	0xc0	/* 16-bit twos complement data - big endian */
-+#define CS4231_ADPCM_16		0xa0	/* 16-bit ADPCM */
-+#define CS4231_STEREO		0x10	/* stereo mode */
-+/* bits 3-1 define frequency divisor */
-+#define CS4231_XTAL1		0x00	/* 24.576 crystal */
-+#define CS4231_XTAL2		0x01	/* 16.9344 crystal */
-+
-+/* definitions for interface control register - CS4231_IFACE_CTRL */
-+
-+#define CS4231_RECORD_PIO	0x80	/* record PIO enable */
-+#define CS4231_PLAYBACK_PIO	0x40	/* playback PIO enable */
-+#define CS4231_CALIB_MODE	0x18	/* calibration mode bits */
-+#define CS4231_AUTOCALIB	0x08	/* auto calibrate */
-+#define CS4231_SINGLE_DMA	0x04	/* use single DMA channel */
-+#define CS4231_RECORD_ENABLE	0x02	/* record enable */
-+#define CS4231_PLAYBACK_ENABLE	0x01	/* playback enable */
-+
-+/* definitions for pin control register - CS4231_PIN_CTRL */
-+
-+#define CS4231_IRQ_ENABLE	0x02	/* enable IRQ */
-+#define CS4231_XCTL1		0x40	/* external control #1 */
-+#define CS4231_XCTL0		0x80	/* external control #0 */
-+
-+/* definitions for test and init register - CS4231_TEST_INIT */
-+
-+#define CS4231_CALIB_IN_PROGRESS 0x20	/* auto calibrate in progress */
-+#define CS4231_DMA_REQUEST	0x10	/* DMA request in progress */
-+
-+/* definitions for misc control register - CS4231_MISC_INFO */
-+
-+#define CS4231_MODE2		0x40	/* MODE 2 */
-+#define CS4231_IW_MODE3		0x6c	/* MODE 3 - InterWave enhanced mode */
-+#define CS4231_4236_MODE3	0xe0	/* MODE 3 - CS4236+ enhanced mode */
-+
-+/* definitions for alternate feature 1 register - CS4231_ALT_FEATURE_1 */
-+
-+#define	CS4231_DACZ		0x01	/* zero DAC when underrun */
-+#define CS4231_TIMER_ENABLE	0x40	/* codec timer enable */
-+#define CS4231_OLB		0x80	/* output level bit */
-+
-+/* definitions for Extended Registers - CS4236+ */
-+
-+#define CS4236_REG(i23val)	(((i23val << 2) & 0x10) | ((i23val >> 4) & 0x0f))
-+#define CS4236_I23VAL(reg)	((((reg)&0xf) << 4) | (((reg)&0x10) >> 2) | 0x8)
-+
-+#define CS4236_LEFT_LINE	0x08	/* left LINE alternate volume */
-+#define CS4236_RIGHT_LINE	0x18	/* right LINE alternate volume */
-+#define CS4236_LEFT_MIC		0x28	/* left MIC volume */
-+#define CS4236_RIGHT_MIC	0x38	/* right MIC volume */
-+#define CS4236_LEFT_MIX_CTRL	0x48	/* synthesis and left input mixer control */
-+#define CS4236_RIGHT_MIX_CTRL	0x58	/* right input mixer control */
-+#define CS4236_LEFT_FM		0x68	/* left FM volume */
-+#define CS4236_RIGHT_FM		0x78	/* right FM volume */
-+#define CS4236_LEFT_DSP		0x88	/* left DSP serial port volume */
-+#define CS4236_RIGHT_DSP	0x98	/* right DSP serial port volume */
-+#define CS4236_RIGHT_LOOPBACK	0xa8	/* right loopback monitor volume */
-+#define CS4236_DAC_MUTE		0xb8	/* DAC mute and IFSE enable */
-+#define CS4236_ADC_RATE		0xc8	/* indenpendent ADC sample frequency */
-+#define CS4236_DAC_RATE		0xd8	/* indenpendent DAC sample frequency */
-+#define CS4236_LEFT_MASTER	0xe8	/* left master digital audio volume */
-+#define CS4236_RIGHT_MASTER	0xf8	/* right master digital audio volume */
-+#define CS4236_LEFT_WAVE	0x0c	/* left wavetable serial port volume */
-+#define CS4236_RIGHT_WAVE	0x1c	/* right wavetable serial port volume */
-+#define CS4236_VERSION		0x9c	/* chip version and ID */
-+
-+#endif /* __SOUND_CS4231_REGS_H */
-diff -uNrp linux-2.6.23.orig/include/sound/cs4231.h linux-2.6.23/include/sound/cs4231.h
---- linux-2.6.23.orig/include/sound/cs4231.h	2007-07-09 01:32:17.000000000 +0200
-+++ linux-2.6.23/include/sound/cs4231.h	2007-09-03 18:27:20.211443943 +0200
-@@ -26,160 +26,7 @@
- #include "pcm.h"
- #include "timer.h"
- 
--/* IO ports */
--
--#define CS4231P(x)		(c_d_c_CS4231##x)
--
--#define c_d_c_CS4231REGSEL	0
--#define c_d_c_CS4231REG		1
--#define c_d_c_CS4231STATUS	2
--#define c_d_c_CS4231PIO		3
--
--/* codec registers */
--
--#define CS4231_LEFT_INPUT	0x00	/* left input control */
--#define CS4231_RIGHT_INPUT	0x01	/* right input control */
--#define CS4231_AUX1_LEFT_INPUT	0x02	/* left AUX1 input control */
--#define CS4231_AUX1_RIGHT_INPUT	0x03	/* right AUX1 input control */
--#define CS4231_AUX2_LEFT_INPUT	0x04	/* left AUX2 input control */
--#define CS4231_AUX2_RIGHT_INPUT	0x05	/* right AUX2 input control */
--#define CS4231_LEFT_OUTPUT	0x06	/* left output control register */
--#define CS4231_RIGHT_OUTPUT	0x07	/* right output control register */
--#define CS4231_PLAYBK_FORMAT	0x08	/* clock and data format - playback - bits 7-0 MCE */
--#define CS4231_IFACE_CTRL	0x09	/* interface control - bits 7-2 MCE */
--#define CS4231_PIN_CTRL		0x0a	/* pin control */
--#define CS4231_TEST_INIT	0x0b	/* test and initialization */
--#define CS4231_MISC_INFO	0x0c	/* miscellaneaous information */
--#define CS4231_LOOPBACK		0x0d	/* loopback control */
--#define CS4231_PLY_UPR_CNT	0x0e	/* playback upper base count */
--#define CS4231_PLY_LWR_CNT	0x0f	/* playback lower base count */
--#define CS4231_ALT_FEATURE_1	0x10	/* alternate #1 feature enable */
--#define AD1845_AF1_MIC_LEFT	0x10	/* alternate #1 feature + MIC left */
--#define CS4231_ALT_FEATURE_2	0x11	/* alternate #2 feature enable */
--#define AD1845_AF2_MIC_RIGHT	0x11	/* alternate #2 feature + MIC right */
--#define CS4231_LEFT_LINE_IN	0x12	/* left line input control */
--#define CS4231_RIGHT_LINE_IN	0x13	/* right line input control */
--#define CS4231_TIMER_LOW	0x14	/* timer low byte */
--#define CS4231_TIMER_HIGH	0x15	/* timer high byte */
--#define CS4231_LEFT_MIC_INPUT	0x16	/* left MIC input control register (InterWave only) */
--#define AD1845_UPR_FREQ_SEL	0x16	/* upper byte of frequency select */
--#define CS4231_RIGHT_MIC_INPUT	0x17	/* right MIC input control register (InterWave only) */
--#define AD1845_LWR_FREQ_SEL	0x17	/* lower byte of frequency select */
--#define CS4236_EXT_REG		0x17	/* extended register access */
--#define CS4231_IRQ_STATUS	0x18	/* irq status register */
--#define CS4231_LINE_LEFT_OUTPUT	0x19	/* left line output control register (InterWave only) */
--#define CS4231_VERSION		0x19	/* CS4231(A) - version values */
--#define CS4231_MONO_CTRL	0x1a	/* mono input/output control */
--#define CS4231_LINE_RIGHT_OUTPUT 0x1b	/* right line output control register (InterWave only) */
--#define AD1845_PWR_DOWN		0x1b	/* power down control */
--#define CS4235_LEFT_MASTER	0x1b	/* left master output control */
--#define CS4231_REC_FORMAT	0x1c	/* clock and data format - record - bits 7-0 MCE */
--#define CS4231_PLY_VAR_FREQ	0x1d	/* playback variable frequency */
--#define AD1845_CLOCK		0x1d	/* crystal clock select and total power down */
--#define CS4235_RIGHT_MASTER	0x1d	/* right master output control */
--#define CS4231_REC_UPR_CNT	0x1e	/* record upper count */
--#define CS4231_REC_LWR_CNT	0x1f	/* record lower count */
--
--/* definitions for codec register select port - CODECP( REGSEL ) */
--
--#define CS4231_INIT		0x80	/* CODEC is initializing */
--#define CS4231_MCE		0x40	/* mode change enable */
--#define CS4231_TRD		0x20	/* transfer request disable */
--
--/* definitions for codec status register - CODECP( STATUS ) */
--
--#define CS4231_GLOBALIRQ	0x01	/* IRQ is active */
--
--/* definitions for codec irq status */
--
--#define CS4231_PLAYBACK_IRQ	0x10
--#define CS4231_RECORD_IRQ	0x20
--#define CS4231_TIMER_IRQ	0x40
--#define CS4231_ALL_IRQS		0x70
--#define CS4231_REC_UNDERRUN	0x08
--#define CS4231_REC_OVERRUN	0x04
--#define CS4231_PLY_OVERRUN	0x02
--#define CS4231_PLY_UNDERRUN	0x01
--
--/* definitions for CS4231_LEFT_INPUT and CS4231_RIGHT_INPUT registers */
--
--#define CS4231_ENABLE_MIC_GAIN	0x20
--
--#define CS4231_MIXS_LINE	0x00
--#define CS4231_MIXS_AUX1	0x40
--#define CS4231_MIXS_MIC		0x80
--#define CS4231_MIXS_ALL		0xc0
--
--/* definitions for clock and data format register - CS4231_PLAYBK_FORMAT */
--
--#define CS4231_LINEAR_8		0x00	/* 8-bit unsigned data */
--#define CS4231_ALAW_8		0x60	/* 8-bit A-law companded */
--#define CS4231_ULAW_8		0x20	/* 8-bit U-law companded */
--#define CS4231_LINEAR_16	0x40	/* 16-bit twos complement data - little endian */
--#define CS4231_LINEAR_16_BIG	0xc0	/* 16-bit twos complement data - big endian */
--#define CS4231_ADPCM_16		0xa0	/* 16-bit ADPCM */
--#define CS4231_STEREO		0x10	/* stereo mode */
--/* bits 3-1 define frequency divisor */
--#define CS4231_XTAL1		0x00	/* 24.576 crystal */
--#define CS4231_XTAL2		0x01	/* 16.9344 crystal */
--
--/* definitions for interface control register - CS4231_IFACE_CTRL */
--
--#define CS4231_RECORD_PIO	0x80	/* record PIO enable */
--#define CS4231_PLAYBACK_PIO	0x40	/* playback PIO enable */
--#define CS4231_CALIB_MODE	0x18	/* calibration mode bits */
--#define CS4231_AUTOCALIB	0x08	/* auto calibrate */
--#define CS4231_SINGLE_DMA	0x04	/* use single DMA channel */
--#define CS4231_RECORD_ENABLE	0x02	/* record enable */
--#define CS4231_PLAYBACK_ENABLE	0x01	/* playback enable */
--
--/* definitions for pin control register - CS4231_PIN_CTRL */
--
--#define CS4231_IRQ_ENABLE	0x02	/* enable IRQ */
--#define CS4231_XCTL1		0x40	/* external control #1 */
--#define CS4231_XCTL0		0x80	/* external control #0 */
--
--/* definitions for test and init register - CS4231_TEST_INIT */
--
--#define CS4231_CALIB_IN_PROGRESS 0x20	/* auto calibrate in progress */
--#define CS4231_DMA_REQUEST	0x10	/* DMA request in progress */
--
--/* definitions for misc control register - CS4231_MISC_INFO */
--
--#define CS4231_MODE2		0x40	/* MODE 2 */
--#define CS4231_IW_MODE3		0x6c	/* MODE 3 - InterWave enhanced mode */
--#define CS4231_4236_MODE3	0xe0	/* MODE 3 - CS4236+ enhanced mode */
--
--/* definitions for alternate feature 1 register - CS4231_ALT_FEATURE_1 */
--
--#define	CS4231_DACZ		0x01	/* zero DAC when underrun */
--#define CS4231_TIMER_ENABLE	0x40	/* codec timer enable */
--#define CS4231_OLB		0x80	/* output level bit */
--
--/* definitions for Extended Registers - CS4236+ */
--
--#define CS4236_REG(i23val)	(((i23val << 2) & 0x10) | ((i23val >> 4) & 0x0f))
--#define CS4236_I23VAL(reg)	((((reg)&0xf) << 4) | (((reg)&0x10) >> 2) | 0x8)
--
--#define CS4236_LEFT_LINE	0x08	/* left LINE alternate volume */
--#define CS4236_RIGHT_LINE	0x18	/* right LINE alternate volume */
--#define CS4236_LEFT_MIC		0x28	/* left MIC volume */
--#define CS4236_RIGHT_MIC	0x38	/* right MIC volume */
--#define CS4236_LEFT_MIX_CTRL	0x48	/* synthesis and left input mixer control */
--#define CS4236_RIGHT_MIX_CTRL	0x58	/* right input mixer control */
--#define CS4236_LEFT_FM		0x68	/* left FM volume */
--#define CS4236_RIGHT_FM		0x78	/* right FM volume */
--#define CS4236_LEFT_DSP		0x88	/* left DSP serial port volume */
--#define CS4236_RIGHT_DSP	0x98	/* right DSP serial port volume */
--#define CS4236_RIGHT_LOOPBACK	0xa8	/* right loopback monitor volume */
--#define CS4236_DAC_MUTE		0xb8	/* DAC mute and IFSE enable */
--#define CS4236_ADC_RATE		0xc8	/* indenpendent ADC sample frequency */
--#define CS4236_DAC_RATE		0xd8	/* indenpendent DAC sample frequency */
--#define CS4236_LEFT_MASTER	0xe8	/* left master digital audio volume */
--#define CS4236_RIGHT_MASTER	0xf8	/* right master digital audio volume */
--#define CS4236_LEFT_WAVE	0x0c	/* left wavetable serial port volume */
--#define CS4236_RIGHT_WAVE	0x1c	/* right wavetable serial port volume */
--#define CS4236_VERSION		0x9c	/* chip version and ID */
-+#include "cs4231-regs.h"
- 
- /* defines for codec.mode */
+> 
+> Could you test if the port sends data even before the driver (or Linux)
+> is loaded, or in Windows?
+> 
+
+I am not sure I can try this. I will change my card.
+
+> 
+> Regards,
+> Clemens
+> 
+Thank you very much for your help.
+
+Regards,
+Romain
