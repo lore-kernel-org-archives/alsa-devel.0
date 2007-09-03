@@ -1,19 +1,19 @@
 From: Krzysztof Helt <krzysztof.h1@wp.pl>
-Subject: [PATCH] sun-cs4231: code improvements (2nd version)
-Date: Mon, 3 Sep 2007 18:41:44 +0200
-Message-ID: <20070903184144.54dcfbe4.krzysztof.h1@wp.pl>
+Subject: [PATCH] cs4231 header split
+Date: Mon, 3 Sep 2007 18:45:30 +0200
+Message-ID: <20070903184530.c7dc705f.krzysztof.h1@wp.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 615D72437C
+	by alsa0.perex.cz (Postfix) with ESMTP id BDDFE24381
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 18:35:36 +0200 (CEST)
+	Mon,  3 Sep 2007 18:39:13 +0200 (CEST)
 Received: from host-87-99-61-239.lanet.net.pl (HELO krzysio.net)
 	(krzysztof.h1@[87.99.61.239]) (envelope-sender <krzysztof.h1@wp.pl>)
 	by smtp.wp.pl (WP-SMTPD) with SMTP
-	for <alsa-devel@alsa-project.org>; 3 Sep 2007 18:35:26 +0200
+	for <alsa-devel@alsa-project.org>; 3 Sep 2007 18:39:12 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,522 +28,552 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-This patch does some code improvements to make
-driver (both code and binary) shorter.
-It also make use of card->private_data pointer to
-store chip information.
+This patch splits the cs4231.h file into two parts:
+- cs4231-regs.h which contain register constants and macros
+- cs4231.h which includes the above and contain rest of the definitions
+
+This will allow to share register definitions between x86 ISA cs4231
+and SPARC cs4231.
 
 Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 ---
 
-Do I understand correctly, that lines:
+The next step is to use the definitions into the sparc cs4231 driver.
+If it is not a good idea please reject this patch.
 
-if ((err = function()) < 0) 
-
-are passe now?
-They are so abudant in the alsa code, that I thought it is some kind of template code.
-
-I can clean up drivers according to the checkpatch.pl script if it helps (above problem, long lines, etc).
-
-diff -urp linux-2.6.23.old/sound/sparc/cs4231.c linux-2.6.23/sound/sparc/cs4231.c
---- linux-2.6.23.old/sound/sparc/cs4231.c	2007-09-02 14:02:32.000000000 +0200
-+++ linux-2.6.23/sound/sparc/cs4231.c	2007-09-03 15:56:03.000000000 +0200
-@@ -30,17 +30,11 @@
- 
- #ifdef CONFIG_SBUS
- #define SBUS_SUPPORT
--#endif
--
--#ifdef SBUS_SUPPORT
- #include <asm/sbus.h>
- #endif
- 
- #if defined(CONFIG_PCI) && defined(CONFIG_SPARC64)
- #define EBUS_SUPPORT
--#endif
--
--#ifdef EBUS_SUPPORT
- #include <linux/pci.h>
- #include <asm/ebus.h>
- #endif
-@@ -339,7 +333,7 @@ static unsigned int rates[14] = {
- };
- 
- static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
--	.count	= 14,
-+	.count	= ARRAY_SIZE(rates),
- 	.list	= rates,
- };
- 
-@@ -389,116 +383,85 @@ static unsigned char snd_cs4231_original
- static u8 __cs4231_readb(struct snd_cs4231 *cp, void __iomem *reg_addr)
- {
- #ifdef EBUS_SUPPORT
--	if (cp->flags & CS4231_FLAG_EBUS) {
-+	if (cp->flags & CS4231_FLAG_EBUS)
- 		return readb(reg_addr);
--	} else {
-+	else
- #endif
- #ifdef SBUS_SUPPORT
- 		return sbus_readb(reg_addr);
- #endif
--#ifdef EBUS_SUPPORT
--	}
--#endif
- }
- 
- static void __cs4231_writeb(struct snd_cs4231 *cp, u8 val, void __iomem *reg_addr)
- {
- #ifdef EBUS_SUPPORT
--	if (cp->flags & CS4231_FLAG_EBUS) {
-+	if (cp->flags & CS4231_FLAG_EBUS)
- 		return writeb(val, reg_addr);
--	} else {
-+	else
- #endif
- #ifdef SBUS_SUPPORT
- 		return sbus_writeb(val, reg_addr);
- #endif
--#ifdef EBUS_SUPPORT
--	}
--#endif
- }
- 
- /*
-  *  Basic I/O functions
-  */
- 
--static void snd_cs4231_outm(struct snd_cs4231 *chip, unsigned char reg,
--		     unsigned char mask, unsigned char value)
-+static void snd_cs4231_ready(struct snd_cs4231 *chip)
- {
- 	int timeout;
--	unsigned char tmp;
- 
- 	for (timeout = 250;
- 	     timeout > 0 && (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT);
- 	     timeout--)
- 	     	udelay(100);
--#ifdef CONFIG_SND_DEBUG
--	if (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT)
--		snd_printdd("outm: auto calibration time out - reg = 0x%x, value = 0x%x\n", reg, value);
--#endif
--	if (chip->calibrate_mute) {
--		chip->image[reg] &= mask;
--		chip->image[reg] |= value;
--	} else {
--		__cs4231_writeb(chip, chip->mce_bit | reg, CS4231P(chip, REGSEL));
--		mb();
--		tmp = (chip->image[reg] & mask) | value;
--		__cs4231_writeb(chip, tmp, CS4231P(chip, REG));
--		chip->image[reg] = tmp;
--		mb();
--	}
- }
- 
- static void snd_cs4231_dout(struct snd_cs4231 *chip, unsigned char reg, unsigned char value)
- {
--	int timeout;
--
--	for (timeout = 250;
--	     timeout > 0 && (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT);
--	     timeout--)
--	     	udelay(100);
-+	snd_cs4231_ready(chip);
- #ifdef CONFIG_SND_DEBUG
- 	if (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT)
--		snd_printdd("out: auto calibration time out - reg = 0x%x, value = 0x%x\n", reg, value);
-+		snd_printdd("out: auto calibration time out - reg = 0x%x, "
-+			    "value = 0x%x\n",
-+			    reg, value);
- #endif
- 	__cs4231_writeb(chip, chip->mce_bit | reg, CS4231P(chip, REGSEL));
-+	wmb();
- 	__cs4231_writeb(chip, value, CS4231P(chip, REG));
- 	mb();
- }
- 
--static void snd_cs4231_out(struct snd_cs4231 *chip, unsigned char reg, unsigned char value)
-+static inline void snd_cs4231_outm(struct snd_cs4231 *chip, unsigned char reg,
-+		     unsigned char mask, unsigned char value)
- {
--	int timeout;
-+	unsigned char tmp = (chip->image[reg] & mask) | value;
- 
--	for (timeout = 250;
--	     timeout > 0 && (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT);
--	     timeout--)
--	     	udelay(100);
--#ifdef CONFIG_SND_DEBUG
--	if (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT)
--		snd_printdd("out: auto calibration time out - reg = 0x%x, value = 0x%x\n", reg, value);
--#endif
--	__cs4231_writeb(chip, chip->mce_bit | reg, CS4231P(chip, REGSEL));
--	__cs4231_writeb(chip, value, CS4231P(chip, REG));
-+	chip->image[reg] = tmp;
-+	if (!chip->calibrate_mute)
-+		snd_cs4231_dout(chip, reg, tmp);
-+}
+diff -uNrp linux-2.6.23.orig/include/sound/cs4231-regs.h linux-2.6.23/include/sound/cs4231-regs.h
+--- linux-2.6.23.orig/include/sound/cs4231-regs.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.23/include/sound/cs4231-regs.h	2007-09-03 18:28:14.590542832 +0200
+@@ -0,0 +1,180 @@
++#ifndef __SOUND_CS4231_REGS_H
++#define __SOUND_CS4231_REGS_H
 +
-+static void snd_cs4231_out(struct snd_cs4231 *chip, unsigned char reg,
-+			   unsigned char value)
-+{
-+	snd_cs4231_dout(chip, reg, value);
- 	chip->image[reg] = value;
- 	mb();
- }
- 
- static unsigned char snd_cs4231_in(struct snd_cs4231 *chip, unsigned char reg)
- {
--	int timeout;
--	unsigned char ret;
--
--	for (timeout = 250;
--	     timeout > 0 && (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT);
--	     timeout--)
--	     	udelay(100);
-+	snd_cs4231_ready(chip);
- #ifdef CONFIG_SND_DEBUG
- 	if (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT)
--		snd_printdd("in: auto calibration time out - reg = 0x%x\n", reg);
-+		snd_printdd("in: auto calibration time out - reg = 0x%x\n",
-+			    reg);
- #endif
- 	__cs4231_writeb(chip, chip->mce_bit | reg, CS4231P(chip, REGSEL));
- 	mb();
--	ret = __cs4231_readb(chip, CS4231P(chip, REG));
--	return ret;
-+	return __cs4231_readb(chip, CS4231P(chip, REG));
- }
- 
- /*
-@@ -517,7 +480,7 @@ static void snd_cs4231_busy_wait(struct 
- 	for (timeout = 500;
- 	     timeout > 0 && (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT);
- 	     timeout--)
--	     	udelay(1000);
-+		msleep(1);
- }
- 
- static void snd_cs4231_mce_up(struct snd_cs4231 *chip)
-@@ -526,8 +489,7 @@ static void snd_cs4231_mce_up(struct snd
- 	int timeout;
- 
- 	spin_lock_irqsave(&chip->lock, flags);
--	for (timeout = 250; timeout > 0 && (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT); timeout--)
--		udelay(100);
-+	snd_cs4231_ready(chip);
- #ifdef CONFIG_SND_DEBUG
- 	if (__cs4231_readb(chip, CS4231P(chip, REGSEL)) & CS4231_INIT)
- 		snd_printdd("mce_up - auto calibration time out (0)\n");
-@@ -565,8 +527,8 @@ static void snd_cs4231_mce_down(struct s
- 
- 	/* calibration process */
- 
--	for (timeout = 500; timeout > 0 && (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) == 0; timeout--)
--		udelay(100);
-+	snd_cs4231_ready(chip);
-+	snd_cs4231_ready(chip);
- 	if ((snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) == 0) {
- 		snd_printd("cs4231_mce_down - auto calibration time out (1)\n");
- 		spin_unlock_irqrestore(&chip->lock, flags);
-@@ -1058,11 +1020,6 @@ static int snd_cs4231_playback_hw_params
- 	return 0;
- }
- 
--static int snd_cs4231_playback_hw_free(struct snd_pcm_substream *substream)
--{
--	return snd_pcm_lib_free_pages(substream);
--}
--
- static int snd_cs4231_playback_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_cs4231 *chip = snd_pcm_substream_chip(substream);
-@@ -1100,11 +1057,6 @@ static int snd_cs4231_capture_hw_params(
- 	return 0;
- }
- 
--static int snd_cs4231_capture_hw_free(struct snd_pcm_substream *substream)
--{
--	return snd_pcm_lib_free_pages(substream);
--}
--
- static int snd_cs4231_capture_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_cs4231 *chip = snd_pcm_substream_chip(substream);
-@@ -1182,10 +1134,6 @@ static snd_pcm_uframes_t snd_cs4231_capt
- 	return bytes_to_frames(substream->runtime, ptr);
- }
- 
--/*
--
-- */
--
- static int __init snd_cs4231_probe(struct snd_cs4231 *chip)
- {
- 	unsigned long flags;
-@@ -1356,7 +1304,7 @@ static struct snd_pcm_ops snd_cs4231_pla
- 	.close		=	snd_cs4231_playback_close,
- 	.ioctl		=	snd_pcm_lib_ioctl,
- 	.hw_params	=	snd_cs4231_playback_hw_params,
--	.hw_free	=	snd_cs4231_playback_hw_free,
-+	.hw_free	=	snd_pcm_lib_free_pages,
- 	.prepare	=	snd_cs4231_playback_prepare,
- 	.trigger	=	snd_cs4231_trigger,
- 	.pointer	=	snd_cs4231_playback_pointer,
-@@ -1367,18 +1315,20 @@ static struct snd_pcm_ops snd_cs4231_cap
- 	.close		=	snd_cs4231_capture_close,
- 	.ioctl		=	snd_pcm_lib_ioctl,
- 	.hw_params	=	snd_cs4231_capture_hw_params,
--	.hw_free	=	snd_cs4231_capture_hw_free,
-+	.hw_free	=	snd_pcm_lib_free_pages,
- 	.prepare	=	snd_cs4231_capture_prepare,
- 	.trigger	=	snd_cs4231_trigger,
- 	.pointer	=	snd_cs4231_capture_pointer,
- };
- 
--static int __init snd_cs4231_pcm(struct snd_cs4231 *chip)
-+static int __init snd_cs4231_pcm(struct snd_card *card)
- {
-+	struct snd_cs4231 *chip = card->private_data;
- 	struct snd_pcm *pcm;
- 	int err;
- 
--	if ((err = snd_pcm_new(chip->card, "CS4231", 0, 1, 1, &pcm)) < 0)
-+	err = snd_pcm_new(card, "CS4231", 0, 1, 1, &pcm);
-+	if (err < 0)
- 		return err;
- 
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_cs4231_playback_ops);
-@@ -1396,8 +1346,9 @@ static int __init snd_cs4231_pcm(struct 
- 	return 0;
- }
- 
--static int __init snd_cs4231_timer(struct snd_cs4231 *chip)
-+static int __init snd_cs4231_timer(struct snd_card *card)
- {
-+	struct snd_cs4231 *chip = card->private_data;
- 	struct snd_timer *timer;
- 	struct snd_timer_id tid;
- 	int err;
-@@ -1405,10 +1356,11 @@ static int __init snd_cs4231_timer(struc
- 	/* Timer initialization */
- 	tid.dev_class = SNDRV_TIMER_CLASS_CARD;
- 	tid.dev_sclass = SNDRV_TIMER_SCLASS_NONE;
--	tid.card = chip->card->number;
-+	tid.card = card->number;
- 	tid.device = 0;
- 	tid.subdevice = 0;
--	if ((err = snd_timer_new(chip->card, "CS4231", &tid, &timer)) < 0)
-+	err = snd_timer_new(card, "CS4231", &tid, &timer);
-+	if (err < 0)
- 		return err;
- 	strcpy(timer->name, "CS4231");
- 	timer->private_data = chip;
-@@ -1428,9 +1380,7 @@ static int snd_cs4231_info_mux(struct sn
- 	static char *texts[4] = {
- 		"Line", "CD", "Mic", "Mix"
- 	};
--	struct snd_cs4231 *chip = snd_kcontrol_chip(kcontrol);
- 
--	snd_assert(chip->card != NULL, return -EINVAL);
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
- 	uinfo->count = 2;
- 	uinfo->value.enumerated.items = 4;
-@@ -1670,21 +1620,19 @@ CS4231_SINGLE("Line Out Switch", 0, CS42
- CS4231_SINGLE("Headphone Out Switch", 0, CS4231_PIN_CTRL, 7, 1, 1)
- };
-                                         
--static int __init snd_cs4231_mixer(struct snd_cs4231 *chip)
-+static int __init snd_cs4231_mixer(struct snd_card *card)
- {
--	struct snd_card *card;
-+	struct snd_cs4231 *chip = card->private_data;
- 	int err, idx;
- 
- 	snd_assert(chip != NULL && chip->pcm != NULL, return -EINVAL);
- 
--	card = chip->card;
--
- 	strcpy(card->mixername, chip->pcm->name);
- 
- 	for (idx = 0; idx < ARRAY_SIZE(snd_cs4231_controls); idx++) {
--		if ((err = snd_ctl_add(card,
--				       snd_ctl_new1(&snd_cs4231_controls[idx],
--						    chip))) < 0)
-+		err = snd_ctl_add(card,
-+				 snd_ctl_new1(&snd_cs4231_controls[idx], chip));
-+		if (err < 0)
- 			return err;
- 	}
- 	return 0;
-@@ -1695,6 +1643,7 @@ static int dev;
- static int __init cs4231_attach_begin(struct snd_card **rcard)
- {
- 	struct snd_card *card;
-+	struct snd_cs4231 *chip;
- 
- 	*rcard = NULL;
- 
-@@ -1706,31 +1655,40 @@ static int __init cs4231_attach_begin(st
- 		return -ENOENT;
- 	}
- 
--	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
-+	card = snd_card_new(index[dev], id[dev], THIS_MODULE,
-+			    sizeof(struct snd_cs4231));
- 	if (card == NULL)
- 		return -ENOMEM;
- 
- 	strcpy(card->driver, "CS4231");
- 	strcpy(card->shortname, "Sun CS4231");
- 
-+	chip = card->private_data;
-+	chip->card = card;
++/*
++ *  Copyright (c) by Jaroslav Kysela <perex@suse.cz>
++ *  Definitions for CS4231 & InterWave chips & compatible chips registers
++ *
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program; if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ *
++ */
 +
- 	*rcard = card;
- 	return 0;
- }
++/* IO ports */
++
++#define CS4231P(x)		(c_d_c_CS4231##x)
++
++#define c_d_c_CS4231REGSEL	0
++#define c_d_c_CS4231REG		1
++#define c_d_c_CS4231STATUS	2
++#define c_d_c_CS4231PIO		3
++
++/* codec registers */
++
++#define CS4231_LEFT_INPUT	0x00	/* left input control */
++#define CS4231_RIGHT_INPUT	0x01	/* right input control */
++#define CS4231_AUX1_LEFT_INPUT	0x02	/* left AUX1 input control */
++#define CS4231_AUX1_RIGHT_INPUT	0x03	/* right AUX1 input control */
++#define CS4231_AUX2_LEFT_INPUT	0x04	/* left AUX2 input control */
++#define CS4231_AUX2_RIGHT_INPUT	0x05	/* right AUX2 input control */
++#define CS4231_LEFT_OUTPUT	0x06	/* left output control register */
++#define CS4231_RIGHT_OUTPUT	0x07	/* right output control register */
++#define CS4231_PLAYBK_FORMAT	0x08	/* clock and data format - playback - bits 7-0 MCE */
++#define CS4231_IFACE_CTRL	0x09	/* interface control - bits 7-2 MCE */
++#define CS4231_PIN_CTRL		0x0a	/* pin control */
++#define CS4231_TEST_INIT	0x0b	/* test and initialization */
++#define CS4231_MISC_INFO	0x0c	/* miscellaneaous information */
++#define CS4231_LOOPBACK		0x0d	/* loopback control */
++#define CS4231_PLY_UPR_CNT	0x0e	/* playback upper base count */
++#define CS4231_PLY_LWR_CNT	0x0f	/* playback lower base count */
++#define CS4231_ALT_FEATURE_1	0x10	/* alternate #1 feature enable */
++#define AD1845_AF1_MIC_LEFT	0x10	/* alternate #1 feature + MIC left */
++#define CS4231_ALT_FEATURE_2	0x11	/* alternate #2 feature enable */
++#define AD1845_AF2_MIC_RIGHT	0x11	/* alternate #2 feature + MIC right */
++#define CS4231_LEFT_LINE_IN	0x12	/* left line input control */
++#define CS4231_RIGHT_LINE_IN	0x13	/* right line input control */
++#define CS4231_TIMER_LOW	0x14	/* timer low byte */
++#define CS4231_TIMER_HIGH	0x15	/* timer high byte */
++#define CS4231_LEFT_MIC_INPUT	0x16	/* left MIC input control register (InterWave only) */
++#define AD1845_UPR_FREQ_SEL	0x16	/* upper byte of frequency select */
++#define CS4231_RIGHT_MIC_INPUT	0x17	/* right MIC input control register (InterWave only) */
++#define AD1845_LWR_FREQ_SEL	0x17	/* lower byte of frequency select */
++#define CS4236_EXT_REG		0x17	/* extended register access */
++#define CS4231_IRQ_STATUS	0x18	/* irq status register */
++#define CS4231_LINE_LEFT_OUTPUT	0x19	/* left line output control register (InterWave only) */
++#define CS4231_VERSION		0x19	/* CS4231(A) - version values */
++#define CS4231_MONO_CTRL	0x1a	/* mono input/output control */
++#define CS4231_LINE_RIGHT_OUTPUT 0x1b	/* right line output control register (InterWave only) */
++#define AD1845_PWR_DOWN		0x1b	/* power down control */
++#define CS4235_LEFT_MASTER	0x1b	/* left master output control */
++#define CS4231_REC_FORMAT	0x1c	/* clock and data format - record - bits 7-0 MCE */
++#define CS4231_PLY_VAR_FREQ	0x1d	/* playback variable frequency */
++#define AD1845_CLOCK		0x1d	/* crystal clock select and total power down */
++#define CS4235_RIGHT_MASTER	0x1d	/* right master output control */
++#define CS4231_REC_UPR_CNT	0x1e	/* record upper count */
++#define CS4231_REC_LWR_CNT	0x1f	/* record lower count */
++
++/* definitions for codec register select port - CODECP( REGSEL ) */
++
++#define CS4231_INIT		0x80	/* CODEC is initializing */
++#define CS4231_MCE		0x40	/* mode change enable */
++#define CS4231_TRD		0x20	/* transfer request disable */
++
++/* definitions for codec status register - CODECP( STATUS ) */
++
++#define CS4231_GLOBALIRQ	0x01	/* IRQ is active */
++
++/* definitions for codec irq status */
++
++#define CS4231_PLAYBACK_IRQ	0x10
++#define CS4231_RECORD_IRQ	0x20
++#define CS4231_TIMER_IRQ	0x40
++#define CS4231_ALL_IRQS		0x70
++#define CS4231_REC_UNDERRUN	0x08
++#define CS4231_REC_OVERRUN	0x04
++#define CS4231_PLY_OVERRUN	0x02
++#define CS4231_PLY_UNDERRUN	0x01
++
++/* definitions for CS4231_LEFT_INPUT and CS4231_RIGHT_INPUT registers */
++
++#define CS4231_ENABLE_MIC_GAIN	0x20
++
++#define CS4231_MIXS_LINE	0x00
++#define CS4231_MIXS_AUX1	0x40
++#define CS4231_MIXS_MIC		0x80
++#define CS4231_MIXS_ALL		0xc0
++
++/* definitions for clock and data format register - CS4231_PLAYBK_FORMAT */
++
++#define CS4231_LINEAR_8		0x00	/* 8-bit unsigned data */
++#define CS4231_ALAW_8		0x60	/* 8-bit A-law companded */
++#define CS4231_ULAW_8		0x20	/* 8-bit U-law companded */
++#define CS4231_LINEAR_16	0x40	/* 16-bit twos complement data - little endian */
++#define CS4231_LINEAR_16_BIG	0xc0	/* 16-bit twos complement data - big endian */
++#define CS4231_ADPCM_16		0xa0	/* 16-bit ADPCM */
++#define CS4231_STEREO		0x10	/* stereo mode */
++/* bits 3-1 define frequency divisor */
++#define CS4231_XTAL1		0x00	/* 24.576 crystal */
++#define CS4231_XTAL2		0x01	/* 16.9344 crystal */
++
++/* definitions for interface control register - CS4231_IFACE_CTRL */
++
++#define CS4231_RECORD_PIO	0x80	/* record PIO enable */
++#define CS4231_PLAYBACK_PIO	0x40	/* playback PIO enable */
++#define CS4231_CALIB_MODE	0x18	/* calibration mode bits */
++#define CS4231_AUTOCALIB	0x08	/* auto calibrate */
++#define CS4231_SINGLE_DMA	0x04	/* use single DMA channel */
++#define CS4231_RECORD_ENABLE	0x02	/* record enable */
++#define CS4231_PLAYBACK_ENABLE	0x01	/* playback enable */
++
++/* definitions for pin control register - CS4231_PIN_CTRL */
++
++#define CS4231_IRQ_ENABLE	0x02	/* enable IRQ */
++#define CS4231_XCTL1		0x40	/* external control #1 */
++#define CS4231_XCTL0		0x80	/* external control #0 */
++
++/* definitions for test and init register - CS4231_TEST_INIT */
++
++#define CS4231_CALIB_IN_PROGRESS 0x20	/* auto calibrate in progress */
++#define CS4231_DMA_REQUEST	0x10	/* DMA request in progress */
++
++/* definitions for misc control register - CS4231_MISC_INFO */
++
++#define CS4231_MODE2		0x40	/* MODE 2 */
++#define CS4231_IW_MODE3		0x6c	/* MODE 3 - InterWave enhanced mode */
++#define CS4231_4236_MODE3	0xe0	/* MODE 3 - CS4236+ enhanced mode */
++
++/* definitions for alternate feature 1 register - CS4231_ALT_FEATURE_1 */
++
++#define	CS4231_DACZ		0x01	/* zero DAC when underrun */
++#define CS4231_TIMER_ENABLE	0x40	/* codec timer enable */
++#define CS4231_OLB		0x80	/* output level bit */
++
++/* definitions for Extended Registers - CS4236+ */
++
++#define CS4236_REG(i23val)	(((i23val << 2) & 0x10) | ((i23val >> 4) & 0x0f))
++#define CS4236_I23VAL(reg)	((((reg)&0xf) << 4) | (((reg)&0x10) >> 2) | 0x8)
++
++#define CS4236_LEFT_LINE	0x08	/* left LINE alternate volume */
++#define CS4236_RIGHT_LINE	0x18	/* right LINE alternate volume */
++#define CS4236_LEFT_MIC		0x28	/* left MIC volume */
++#define CS4236_RIGHT_MIC	0x38	/* right MIC volume */
++#define CS4236_LEFT_MIX_CTRL	0x48	/* synthesis and left input mixer control */
++#define CS4236_RIGHT_MIX_CTRL	0x58	/* right input mixer control */
++#define CS4236_LEFT_FM		0x68	/* left FM volume */
++#define CS4236_RIGHT_FM		0x78	/* right FM volume */
++#define CS4236_LEFT_DSP		0x88	/* left DSP serial port volume */
++#define CS4236_RIGHT_DSP	0x98	/* right DSP serial port volume */
++#define CS4236_RIGHT_LOOPBACK	0xa8	/* right loopback monitor volume */
++#define CS4236_DAC_MUTE		0xb8	/* DAC mute and IFSE enable */
++#define CS4236_ADC_RATE		0xc8	/* indenpendent ADC sample frequency */
++#define CS4236_DAC_RATE		0xd8	/* indenpendent DAC sample frequency */
++#define CS4236_LEFT_MASTER	0xe8	/* left master digital audio volume */
++#define CS4236_RIGHT_MASTER	0xf8	/* right master digital audio volume */
++#define CS4236_LEFT_WAVE	0x0c	/* left wavetable serial port volume */
++#define CS4236_RIGHT_WAVE	0x1c	/* right wavetable serial port volume */
++#define CS4236_VERSION		0x9c	/* chip version and ID */
++
++#endif /* __SOUND_CS4231_REGS_H */
+diff -uNrp linux-2.6.23.orig/include/sound/cs4231-regs.h~ linux-2.6.23/include/sound/cs4231-regs.h~
+--- linux-2.6.23.orig/include/sound/cs4231-regs.h~	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.23/include/sound/cs4231-regs.h~	2007-09-03 18:27:55.321444748 +0200
+@@ -0,0 +1,184 @@
++#ifndef __SOUND_CS4231_REGS_H
++#define __SOUND_CS4231_REGS_H
++
++/*
++ *  Copyright (c) by Jaroslav Kysela <perex@suse.cz>
++ *  Definitions for CS4231 & InterWave chips & compatible chips
++ *
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *   GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program; if not, write to the Free Software
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ *
++ */
++
++#include "control.h"
++#include "pcm.h"
++#include "timer.h"
++
++/* IO ports */
++
++#define CS4231P(x)		(c_d_c_CS4231##x)
++
++#define c_d_c_CS4231REGSEL	0
++#define c_d_c_CS4231REG		1
++#define c_d_c_CS4231STATUS	2
++#define c_d_c_CS4231PIO		3
++
++/* codec registers */
++
++#define CS4231_LEFT_INPUT	0x00	/* left input control */
++#define CS4231_RIGHT_INPUT	0x01	/* right input control */
++#define CS4231_AUX1_LEFT_INPUT	0x02	/* left AUX1 input control */
++#define CS4231_AUX1_RIGHT_INPUT	0x03	/* right AUX1 input control */
++#define CS4231_AUX2_LEFT_INPUT	0x04	/* left AUX2 input control */
++#define CS4231_AUX2_RIGHT_INPUT	0x05	/* right AUX2 input control */
++#define CS4231_LEFT_OUTPUT	0x06	/* left output control register */
++#define CS4231_RIGHT_OUTPUT	0x07	/* right output control register */
++#define CS4231_PLAYBK_FORMAT	0x08	/* clock and data format - playback - bits 7-0 MCE */
++#define CS4231_IFACE_CTRL	0x09	/* interface control - bits 7-2 MCE */
++#define CS4231_PIN_CTRL		0x0a	/* pin control */
++#define CS4231_TEST_INIT	0x0b	/* test and initialization */
++#define CS4231_MISC_INFO	0x0c	/* miscellaneaous information */
++#define CS4231_LOOPBACK		0x0d	/* loopback control */
++#define CS4231_PLY_UPR_CNT	0x0e	/* playback upper base count */
++#define CS4231_PLY_LWR_CNT	0x0f	/* playback lower base count */
++#define CS4231_ALT_FEATURE_1	0x10	/* alternate #1 feature enable */
++#define AD1845_AF1_MIC_LEFT	0x10	/* alternate #1 feature + MIC left */
++#define CS4231_ALT_FEATURE_2	0x11	/* alternate #2 feature enable */
++#define AD1845_AF2_MIC_RIGHT	0x11	/* alternate #2 feature + MIC right */
++#define CS4231_LEFT_LINE_IN	0x12	/* left line input control */
++#define CS4231_RIGHT_LINE_IN	0x13	/* right line input control */
++#define CS4231_TIMER_LOW	0x14	/* timer low byte */
++#define CS4231_TIMER_HIGH	0x15	/* timer high byte */
++#define CS4231_LEFT_MIC_INPUT	0x16	/* left MIC input control register (InterWave only) */
++#define AD1845_UPR_FREQ_SEL	0x16	/* upper byte of frequency select */
++#define CS4231_RIGHT_MIC_INPUT	0x17	/* right MIC input control register (InterWave only) */
++#define AD1845_LWR_FREQ_SEL	0x17	/* lower byte of frequency select */
++#define CS4236_EXT_REG		0x17	/* extended register access */
++#define CS4231_IRQ_STATUS	0x18	/* irq status register */
++#define CS4231_LINE_LEFT_OUTPUT	0x19	/* left line output control register (InterWave only) */
++#define CS4231_VERSION		0x19	/* CS4231(A) - version values */
++#define CS4231_MONO_CTRL	0x1a	/* mono input/output control */
++#define CS4231_LINE_RIGHT_OUTPUT 0x1b	/* right line output control register (InterWave only) */
++#define AD1845_PWR_DOWN		0x1b	/* power down control */
++#define CS4235_LEFT_MASTER	0x1b	/* left master output control */
++#define CS4231_REC_FORMAT	0x1c	/* clock and data format - record - bits 7-0 MCE */
++#define CS4231_PLY_VAR_FREQ	0x1d	/* playback variable frequency */
++#define AD1845_CLOCK		0x1d	/* crystal clock select and total power down */
++#define CS4235_RIGHT_MASTER	0x1d	/* right master output control */
++#define CS4231_REC_UPR_CNT	0x1e	/* record upper count */
++#define CS4231_REC_LWR_CNT	0x1f	/* record lower count */
++
++/* definitions for codec register select port - CODECP( REGSEL ) */
++
++#define CS4231_INIT		0x80	/* CODEC is initializing */
++#define CS4231_MCE		0x40	/* mode change enable */
++#define CS4231_TRD		0x20	/* transfer request disable */
++
++/* definitions for codec status register - CODECP( STATUS ) */
++
++#define CS4231_GLOBALIRQ	0x01	/* IRQ is active */
++
++/* definitions for codec irq status */
++
++#define CS4231_PLAYBACK_IRQ	0x10
++#define CS4231_RECORD_IRQ	0x20
++#define CS4231_TIMER_IRQ	0x40
++#define CS4231_ALL_IRQS		0x70
++#define CS4231_REC_UNDERRUN	0x08
++#define CS4231_REC_OVERRUN	0x04
++#define CS4231_PLY_OVERRUN	0x02
++#define CS4231_PLY_UNDERRUN	0x01
++
++/* definitions for CS4231_LEFT_INPUT and CS4231_RIGHT_INPUT registers */
++
++#define CS4231_ENABLE_MIC_GAIN	0x20
++
++#define CS4231_MIXS_LINE	0x00
++#define CS4231_MIXS_AUX1	0x40
++#define CS4231_MIXS_MIC		0x80
++#define CS4231_MIXS_ALL		0xc0
++
++/* definitions for clock and data format register - CS4231_PLAYBK_FORMAT */
++
++#define CS4231_LINEAR_8		0x00	/* 8-bit unsigned data */
++#define CS4231_ALAW_8		0x60	/* 8-bit A-law companded */
++#define CS4231_ULAW_8		0x20	/* 8-bit U-law companded */
++#define CS4231_LINEAR_16	0x40	/* 16-bit twos complement data - little endian */
++#define CS4231_LINEAR_16_BIG	0xc0	/* 16-bit twos complement data - big endian */
++#define CS4231_ADPCM_16		0xa0	/* 16-bit ADPCM */
++#define CS4231_STEREO		0x10	/* stereo mode */
++/* bits 3-1 define frequency divisor */
++#define CS4231_XTAL1		0x00	/* 24.576 crystal */
++#define CS4231_XTAL2		0x01	/* 16.9344 crystal */
++
++/* definitions for interface control register - CS4231_IFACE_CTRL */
++
++#define CS4231_RECORD_PIO	0x80	/* record PIO enable */
++#define CS4231_PLAYBACK_PIO	0x40	/* playback PIO enable */
++#define CS4231_CALIB_MODE	0x18	/* calibration mode bits */
++#define CS4231_AUTOCALIB	0x08	/* auto calibrate */
++#define CS4231_SINGLE_DMA	0x04	/* use single DMA channel */
++#define CS4231_RECORD_ENABLE	0x02	/* record enable */
++#define CS4231_PLAYBACK_ENABLE	0x01	/* playback enable */
++
++/* definitions for pin control register - CS4231_PIN_CTRL */
++
++#define CS4231_IRQ_ENABLE	0x02	/* enable IRQ */
++#define CS4231_XCTL1		0x40	/* external control #1 */
++#define CS4231_XCTL0		0x80	/* external control #0 */
++
++/* definitions for test and init register - CS4231_TEST_INIT */
++
++#define CS4231_CALIB_IN_PROGRESS 0x20	/* auto calibrate in progress */
++#define CS4231_DMA_REQUEST	0x10	/* DMA request in progress */
++
++/* definitions for misc control register - CS4231_MISC_INFO */
++
++#define CS4231_MODE2		0x40	/* MODE 2 */
++#define CS4231_IW_MODE3		0x6c	/* MODE 3 - InterWave enhanced mode */
++#define CS4231_4236_MODE3	0xe0	/* MODE 3 - CS4236+ enhanced mode */
++
++/* definitions for alternate feature 1 register - CS4231_ALT_FEATURE_1 */
++
++#define	CS4231_DACZ		0x01	/* zero DAC when underrun */
++#define CS4231_TIMER_ENABLE	0x40	/* codec timer enable */
++#define CS4231_OLB		0x80	/* output level bit */
++
++/* definitions for Extended Registers - CS4236+ */
++
++#define CS4236_REG(i23val)	(((i23val << 2) & 0x10) | ((i23val >> 4) & 0x0f))
++#define CS4236_I23VAL(reg)	((((reg)&0xf) << 4) | (((reg)&0x10) >> 2) | 0x8)
++
++#define CS4236_LEFT_LINE	0x08	/* left LINE alternate volume */
++#define CS4236_RIGHT_LINE	0x18	/* right LINE alternate volume */
++#define CS4236_LEFT_MIC		0x28	/* left MIC volume */
++#define CS4236_RIGHT_MIC	0x38	/* right MIC volume */
++#define CS4236_LEFT_MIX_CTRL	0x48	/* synthesis and left input mixer control */
++#define CS4236_RIGHT_MIX_CTRL	0x58	/* right input mixer control */
++#define CS4236_LEFT_FM		0x68	/* left FM volume */
++#define CS4236_RIGHT_FM		0x78	/* right FM volume */
++#define CS4236_LEFT_DSP		0x88	/* left DSP serial port volume */
++#define CS4236_RIGHT_DSP	0x98	/* right DSP serial port volume */
++#define CS4236_RIGHT_LOOPBACK	0xa8	/* right loopback monitor volume */
++#define CS4236_DAC_MUTE		0xb8	/* DAC mute and IFSE enable */
++#define CS4236_ADC_RATE		0xc8	/* indenpendent ADC sample frequency */
++#define CS4236_DAC_RATE		0xd8	/* indenpendent DAC sample frequency */
++#define CS4236_LEFT_MASTER	0xe8	/* left master digital audio volume */
++#define CS4236_RIGHT_MASTER	0xf8	/* right master digital audio volume */
++#define CS4236_LEFT_WAVE	0x0c	/* left wavetable serial port volume */
++#define CS4236_RIGHT_WAVE	0x1c	/* right wavetable serial port volume */
++#define CS4236_VERSION		0x9c	/* chip version and ID */
++
++#endif /* __SOUND_CS4231_REGS_H */
+diff -uNrp linux-2.6.23.orig/include/sound/cs4231.h linux-2.6.23/include/sound/cs4231.h
+--- linux-2.6.23.orig/include/sound/cs4231.h	2007-07-09 01:32:17.000000000 +0200
++++ linux-2.6.23/include/sound/cs4231.h	2007-09-03 18:27:20.211443943 +0200
+@@ -26,160 +26,7 @@
+ #include "pcm.h"
+ #include "timer.h"
  
--static int __init cs4231_attach_finish(struct snd_card *card, struct snd_cs4231 *chip)
-+static int __init cs4231_attach_finish(struct snd_card *card)
- {
-+	struct snd_cs4231 *chip = card->private_data;
- 	int err;
- 
--	if ((err = snd_cs4231_pcm(chip)) < 0)
-+	err = snd_cs4231_pcm(card);
-+	if (err < 0)
- 		goto out_err;
- 
--	if ((err = snd_cs4231_mixer(chip)) < 0)
-+	err = snd_cs4231_mixer(card);
-+	if (err < 0)
- 		goto out_err;
- 
--	if ((err = snd_cs4231_timer(chip)) < 0)
-+	err = snd_cs4231_timer(card);
-+	if (err < 0)
- 		goto out_err;
- 
--	if ((err = snd_card_register(card)) < 0)
-+	err = snd_card_register(card);
-+	if (err < 0)
- 		goto out_err;
- 
- 	chip->next = cs4231_list;
-@@ -1925,23 +1883,16 @@ static struct snd_device_ops snd_cs4231_
- 
- static int __init snd_cs4231_sbus_create(struct snd_card *card,
- 					 struct sbus_dev *sdev,
--					 int dev,
--					 struct snd_cs4231 **rchip)
-+					 int dev)
- {
--	struct snd_cs4231 *chip;
-+	struct snd_cs4231 *chip = card->private_data;
- 	int err;
- 
--	*rchip = NULL;
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL)
--		return -ENOMEM;
+-/* IO ports */
 -
- 	spin_lock_init(&chip->lock);
- 	spin_lock_init(&chip->c_dma.sbus_info.lock);
- 	spin_lock_init(&chip->p_dma.sbus_info.lock);
- 	mutex_init(&chip->mce_mutex);
- 	mutex_init(&chip->open_mutex);
--	chip->card = card;
- 	chip->dev_u.sdev = sdev;
- 	chip->regs_size = sdev->reg_addrs[0].reg_size;
- 	memcpy(&chip->image, &snd_cs4231_original_image,
-@@ -1992,14 +1943,12 @@ static int __init snd_cs4231_sbus_create
- 		return err;
- 	}
- 
--	*rchip = chip;
- 	return 0;
- }
- 
- static int __init cs4231_sbus_attach(struct sbus_dev *sdev)
- {
- 	struct resource *rp = &sdev->resource[0];
--	struct snd_cs4231 *cp;
- 	struct snd_card *card;
- 	int err;
- 
-@@ -2013,12 +1962,13 @@ static int __init cs4231_sbus_attach(str
- 		(unsigned long long)rp->start,
- 		sdev->irqs[0]);
- 
--	if ((err = snd_cs4231_sbus_create(card, sdev, dev, &cp)) < 0) {
-+	err = snd_cs4231_sbus_create(card, sdev, dev);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 
--	return cs4231_attach_finish(card, cp);
-+	return cs4231_attach_finish(card);
- }
- #endif
- 
-@@ -2105,24 +2055,17 @@ static struct snd_device_ops snd_cs4231_
- 
- static int __init snd_cs4231_ebus_create(struct snd_card *card,
- 					 struct linux_ebus_device *edev,
--					 int dev,
--					 struct snd_cs4231 **rchip)
-+					 int dev)
- {
--	struct snd_cs4231 *chip;
-+	struct snd_cs4231 *chip = card->private_data;
- 	int err;
- 
--	*rchip = NULL;
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (chip == NULL)
--		return -ENOMEM;
+-#define CS4231P(x)		(c_d_c_CS4231##x)
 -
- 	spin_lock_init(&chip->lock);
- 	spin_lock_init(&chip->c_dma.ebus_info.lock);
- 	spin_lock_init(&chip->p_dma.ebus_info.lock);
- 	mutex_init(&chip->mce_mutex);
- 	mutex_init(&chip->open_mutex);
- 	chip->flags |= CS4231_FLAG_EBUS;
--	chip->card = card;
- 	chip->dev_u.pdev = edev->bus->self;
- 	memcpy(&chip->image, &snd_cs4231_original_image,
- 	       sizeof(snd_cs4231_original_image));
-@@ -2192,14 +2135,12 @@ static int __init snd_cs4231_ebus_create
- 		return err;
- 	}
+-#define c_d_c_CS4231REGSEL	0
+-#define c_d_c_CS4231REG		1
+-#define c_d_c_CS4231STATUS	2
+-#define c_d_c_CS4231PIO		3
+-
+-/* codec registers */
+-
+-#define CS4231_LEFT_INPUT	0x00	/* left input control */
+-#define CS4231_RIGHT_INPUT	0x01	/* right input control */
+-#define CS4231_AUX1_LEFT_INPUT	0x02	/* left AUX1 input control */
+-#define CS4231_AUX1_RIGHT_INPUT	0x03	/* right AUX1 input control */
+-#define CS4231_AUX2_LEFT_INPUT	0x04	/* left AUX2 input control */
+-#define CS4231_AUX2_RIGHT_INPUT	0x05	/* right AUX2 input control */
+-#define CS4231_LEFT_OUTPUT	0x06	/* left output control register */
+-#define CS4231_RIGHT_OUTPUT	0x07	/* right output control register */
+-#define CS4231_PLAYBK_FORMAT	0x08	/* clock and data format - playback - bits 7-0 MCE */
+-#define CS4231_IFACE_CTRL	0x09	/* interface control - bits 7-2 MCE */
+-#define CS4231_PIN_CTRL		0x0a	/* pin control */
+-#define CS4231_TEST_INIT	0x0b	/* test and initialization */
+-#define CS4231_MISC_INFO	0x0c	/* miscellaneaous information */
+-#define CS4231_LOOPBACK		0x0d	/* loopback control */
+-#define CS4231_PLY_UPR_CNT	0x0e	/* playback upper base count */
+-#define CS4231_PLY_LWR_CNT	0x0f	/* playback lower base count */
+-#define CS4231_ALT_FEATURE_1	0x10	/* alternate #1 feature enable */
+-#define AD1845_AF1_MIC_LEFT	0x10	/* alternate #1 feature + MIC left */
+-#define CS4231_ALT_FEATURE_2	0x11	/* alternate #2 feature enable */
+-#define AD1845_AF2_MIC_RIGHT	0x11	/* alternate #2 feature + MIC right */
+-#define CS4231_LEFT_LINE_IN	0x12	/* left line input control */
+-#define CS4231_RIGHT_LINE_IN	0x13	/* right line input control */
+-#define CS4231_TIMER_LOW	0x14	/* timer low byte */
+-#define CS4231_TIMER_HIGH	0x15	/* timer high byte */
+-#define CS4231_LEFT_MIC_INPUT	0x16	/* left MIC input control register (InterWave only) */
+-#define AD1845_UPR_FREQ_SEL	0x16	/* upper byte of frequency select */
+-#define CS4231_RIGHT_MIC_INPUT	0x17	/* right MIC input control register (InterWave only) */
+-#define AD1845_LWR_FREQ_SEL	0x17	/* lower byte of frequency select */
+-#define CS4236_EXT_REG		0x17	/* extended register access */
+-#define CS4231_IRQ_STATUS	0x18	/* irq status register */
+-#define CS4231_LINE_LEFT_OUTPUT	0x19	/* left line output control register (InterWave only) */
+-#define CS4231_VERSION		0x19	/* CS4231(A) - version values */
+-#define CS4231_MONO_CTRL	0x1a	/* mono input/output control */
+-#define CS4231_LINE_RIGHT_OUTPUT 0x1b	/* right line output control register (InterWave only) */
+-#define AD1845_PWR_DOWN		0x1b	/* power down control */
+-#define CS4235_LEFT_MASTER	0x1b	/* left master output control */
+-#define CS4231_REC_FORMAT	0x1c	/* clock and data format - record - bits 7-0 MCE */
+-#define CS4231_PLY_VAR_FREQ	0x1d	/* playback variable frequency */
+-#define AD1845_CLOCK		0x1d	/* crystal clock select and total power down */
+-#define CS4235_RIGHT_MASTER	0x1d	/* right master output control */
+-#define CS4231_REC_UPR_CNT	0x1e	/* record upper count */
+-#define CS4231_REC_LWR_CNT	0x1f	/* record lower count */
+-
+-/* definitions for codec register select port - CODECP( REGSEL ) */
+-
+-#define CS4231_INIT		0x80	/* CODEC is initializing */
+-#define CS4231_MCE		0x40	/* mode change enable */
+-#define CS4231_TRD		0x20	/* transfer request disable */
+-
+-/* definitions for codec status register - CODECP( STATUS ) */
+-
+-#define CS4231_GLOBALIRQ	0x01	/* IRQ is active */
+-
+-/* definitions for codec irq status */
+-
+-#define CS4231_PLAYBACK_IRQ	0x10
+-#define CS4231_RECORD_IRQ	0x20
+-#define CS4231_TIMER_IRQ	0x40
+-#define CS4231_ALL_IRQS		0x70
+-#define CS4231_REC_UNDERRUN	0x08
+-#define CS4231_REC_OVERRUN	0x04
+-#define CS4231_PLY_OVERRUN	0x02
+-#define CS4231_PLY_UNDERRUN	0x01
+-
+-/* definitions for CS4231_LEFT_INPUT and CS4231_RIGHT_INPUT registers */
+-
+-#define CS4231_ENABLE_MIC_GAIN	0x20
+-
+-#define CS4231_MIXS_LINE	0x00
+-#define CS4231_MIXS_AUX1	0x40
+-#define CS4231_MIXS_MIC		0x80
+-#define CS4231_MIXS_ALL		0xc0
+-
+-/* definitions for clock and data format register - CS4231_PLAYBK_FORMAT */
+-
+-#define CS4231_LINEAR_8		0x00	/* 8-bit unsigned data */
+-#define CS4231_ALAW_8		0x60	/* 8-bit A-law companded */
+-#define CS4231_ULAW_8		0x20	/* 8-bit U-law companded */
+-#define CS4231_LINEAR_16	0x40	/* 16-bit twos complement data - little endian */
+-#define CS4231_LINEAR_16_BIG	0xc0	/* 16-bit twos complement data - big endian */
+-#define CS4231_ADPCM_16		0xa0	/* 16-bit ADPCM */
+-#define CS4231_STEREO		0x10	/* stereo mode */
+-/* bits 3-1 define frequency divisor */
+-#define CS4231_XTAL1		0x00	/* 24.576 crystal */
+-#define CS4231_XTAL2		0x01	/* 16.9344 crystal */
+-
+-/* definitions for interface control register - CS4231_IFACE_CTRL */
+-
+-#define CS4231_RECORD_PIO	0x80	/* record PIO enable */
+-#define CS4231_PLAYBACK_PIO	0x40	/* playback PIO enable */
+-#define CS4231_CALIB_MODE	0x18	/* calibration mode bits */
+-#define CS4231_AUTOCALIB	0x08	/* auto calibrate */
+-#define CS4231_SINGLE_DMA	0x04	/* use single DMA channel */
+-#define CS4231_RECORD_ENABLE	0x02	/* record enable */
+-#define CS4231_PLAYBACK_ENABLE	0x01	/* playback enable */
+-
+-/* definitions for pin control register - CS4231_PIN_CTRL */
+-
+-#define CS4231_IRQ_ENABLE	0x02	/* enable IRQ */
+-#define CS4231_XCTL1		0x40	/* external control #1 */
+-#define CS4231_XCTL0		0x80	/* external control #0 */
+-
+-/* definitions for test and init register - CS4231_TEST_INIT */
+-
+-#define CS4231_CALIB_IN_PROGRESS 0x20	/* auto calibrate in progress */
+-#define CS4231_DMA_REQUEST	0x10	/* DMA request in progress */
+-
+-/* definitions for misc control register - CS4231_MISC_INFO */
+-
+-#define CS4231_MODE2		0x40	/* MODE 2 */
+-#define CS4231_IW_MODE3		0x6c	/* MODE 3 - InterWave enhanced mode */
+-#define CS4231_4236_MODE3	0xe0	/* MODE 3 - CS4236+ enhanced mode */
+-
+-/* definitions for alternate feature 1 register - CS4231_ALT_FEATURE_1 */
+-
+-#define	CS4231_DACZ		0x01	/* zero DAC when underrun */
+-#define CS4231_TIMER_ENABLE	0x40	/* codec timer enable */
+-#define CS4231_OLB		0x80	/* output level bit */
+-
+-/* definitions for Extended Registers - CS4236+ */
+-
+-#define CS4236_REG(i23val)	(((i23val << 2) & 0x10) | ((i23val >> 4) & 0x0f))
+-#define CS4236_I23VAL(reg)	((((reg)&0xf) << 4) | (((reg)&0x10) >> 2) | 0x8)
+-
+-#define CS4236_LEFT_LINE	0x08	/* left LINE alternate volume */
+-#define CS4236_RIGHT_LINE	0x18	/* right LINE alternate volume */
+-#define CS4236_LEFT_MIC		0x28	/* left MIC volume */
+-#define CS4236_RIGHT_MIC	0x38	/* right MIC volume */
+-#define CS4236_LEFT_MIX_CTRL	0x48	/* synthesis and left input mixer control */
+-#define CS4236_RIGHT_MIX_CTRL	0x58	/* right input mixer control */
+-#define CS4236_LEFT_FM		0x68	/* left FM volume */
+-#define CS4236_RIGHT_FM		0x78	/* right FM volume */
+-#define CS4236_LEFT_DSP		0x88	/* left DSP serial port volume */
+-#define CS4236_RIGHT_DSP	0x98	/* right DSP serial port volume */
+-#define CS4236_RIGHT_LOOPBACK	0xa8	/* right loopback monitor volume */
+-#define CS4236_DAC_MUTE		0xb8	/* DAC mute and IFSE enable */
+-#define CS4236_ADC_RATE		0xc8	/* indenpendent ADC sample frequency */
+-#define CS4236_DAC_RATE		0xd8	/* indenpendent DAC sample frequency */
+-#define CS4236_LEFT_MASTER	0xe8	/* left master digital audio volume */
+-#define CS4236_RIGHT_MASTER	0xf8	/* right master digital audio volume */
+-#define CS4236_LEFT_WAVE	0x0c	/* left wavetable serial port volume */
+-#define CS4236_RIGHT_WAVE	0x1c	/* right wavetable serial port volume */
+-#define CS4236_VERSION		0x9c	/* chip version and ID */
++#include "cs4231-regs.h"
  
--	*rchip = chip;
- 	return 0;
- }
- 
- static int __init cs4231_ebus_attach(struct linux_ebus_device *edev)
- {
- 	struct snd_card *card;
--	struct snd_cs4231 *chip;
- 	int err;
- 
- 	err = cs4231_attach_begin(&card);
-@@ -2211,12 +2152,13 @@ static int __init cs4231_ebus_attach(str
- 		edev->resource[0].start,
- 		edev->irqs[0]);
- 
--	if ((err = snd_cs4231_ebus_create(card, edev, dev, &chip)) < 0) {
-+	err = snd_cs4231_ebus_create(card, edev, dev);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 
--	return cs4231_attach_finish(card, chip);
-+	return cs4231_attach_finish(card);
- }
- #endif
+ /* defines for codec.mode */
