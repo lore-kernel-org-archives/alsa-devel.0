@@ -1,15 +1,18 @@
-From: Markus Korber <korbse@gmx.at>
-Subject: ALSA lib troubles with xine
-Date: Mon, 03 Sep 2007 08:53:12 +0200
-Message-ID: <6zk5r8fdev.fsf@odpc25.int.ondemand.co.at>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: [PATCH] Gallant SC-6000 driver
+Date: Mon, 03 Sep 2007 09:29:52 +0200
+Message-ID: <1188804592.14058.1208580205@webmail.messagingengine.com>
+References: <20070901090318.8b066a50.krzysztof.h1@wp.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id B04C31038F1
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 695AC1038D6
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 08:53:14 +0200 (CEST)
+	Mon,  3 Sep 2007 09:29:53 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20070901090318.8b066a50.krzysztof.h1@wp.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,77 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Krzysztof Helt <krzysztof.h1@wp.pl>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Krzysztof Helt wrote:
+> This is port of the Gallant SC-6000 driver from the OSS aedsp16 driver.
 
-I've got problems using ALSA (hg) and xine-lib (1.1.7).  I'm trying to
-use fbxine for playback but ALSA debug logging gives me:
+Several minor nitpicks below.  Otherwise, it looks fine.
 
-,----
-| audio_alsa_out: Audio Device name = default
-| audio_alsa_out: Number of channels = 2
-| Buffer size range from 4096 to 0            <- !!!
-| Period size range from 0 to 0               <- !!!
-| Buffer time size 44100
-| To choose buffer_size = 4096
-| To choose period_size = 512
-| was set period_size = 0
-| was set buffer_size = 4096
-| audio_alsa_out:open pause_resume=1
-| ACCESS:  RW_INTERLEAVED
-| FORMAT:  S16_LE
-| SUBFORMAT:  STD
-| SAMPLE_BITS: 16
-| FRAME_BITS: 32
-| CHANNELS: 2
-| RATE: 44100
-| PERIOD_TIME: (46439 46440)
-| PERIOD_SIZE: 2048
-| PERIOD_BYTES: 8192
-| PERIODS: 2
-| BUFFER_TIME: (92879 92880)
-| BUFFER_SIZE: 4096
-| BUFFER_BYTES: 16384
-| TICK_TIME: 10000
-| audio_alsa_out: Unable to set swparams: Invalid argument
-`----
+> +       tristate "Gallant SC-6000, Audio Excel DSP 16"
+> +       help
+> +         Say Y here to include support for Gallant SC-6000 card and
+> +         compatible soundcards: Audio Excel DSP 16 and Zoltrix AV302.
 
-So buffer and period sizes seem to be wrong and therefore I get no
-sound.  (audio_alsa_out logging from [1].)  Next I've tried to run
-speaker-test and the ouptut look good:
+It may be a good idea to mention the chip name here (CompuMedia ASC-9308
+if Google is to be believed).
 
-,----
-| [root@(none) ~]# speaker-test 
-| 
-| speaker-test 1.0.15rc1
-| 
-| Playback device is default
-| Stream parameters are 48000Hz, S16_LE, 1 channels
-| Using 16 octaves of pink noise
-| Rate set to 48000Hz (requested 48000Hz)
-| Buffer size range from 4096 to 4096
-| Period size range from 2048 to 2048
-| Using max buffer size 4096
-| Periods = 4
-| was set period_size = 2048
-| was set buffer_size = 4096
-|  0 - Front Left
-`----
+> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + *  GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write to the Free Software
+> + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
-Both applications are linked against the same ALSA library (dynamic or
-static linkage doesn't make a difference - speaker-test always works and
-xine always fails).  And both applications use the same instructions
-(snd_pcm_hw_params_get_period_size_min/max()) AFAICS.
+The indentation of the last paragraph is inconsistent.  :-)
 
-Any ideas what I could try next?  Thanks.
+> +#define COMMAND_88     0x88    /*                                      */
 
-Toolchain: buildroot based arm gcc 4.2.1 with uclibc 0.9.29.  However,
-other applications (mplayer, aplay, alsaplayer) work as well, so I guess
-it's not toolchain related.
+This command is used.  Could you document it at least a little, "unknown
+setup magic" or something like that?
 
-[1] http://xine.cvs.sourceforge.net/xine/xine-lib/src/audio_out/audio_alsa_out.c
+> +/*
+> + * sc6000_irq_to_softcfg - Decode irq number into cfg code.
+> + */
+> +static inline unsigned char sc6000_irq_to_softcfg(int irq)
+> +{
+> +       unsigned char val = 0;
+> +
+> +       switch (irq) {
+> +       ...
+> +       default:
+> +               break;
+
+I didn't find any code that checks that the user-supplied irq/port/dma
+values are corret.  What happens when the driver tries to configure the
+board with invalid values?
+
+> +       if (strcmp("SC-6000", answer))
+> +               snd_printk(KERN_ERR PFX "Warning: non SC-6000 audio card!\n");
+
+KERN_ERR for a warning?
+
+> +       snd_printk(KERN_DEBUG PFX "Initializing BASE[0x%lx] IRQ[%d] "
+
+For debug output, please use snd_printd() so that the call isn't
+compiled in in non-debug builds.
+
+> +       strcpy(card->driver, "Gallant SC-6000");
+
+If the SC-6600 could be supported by this driver and if there is the
+same number of PCM devices (so that alsa-lib can use the same
+dmix configuration for both), the driver name should be something
+generic like "SC-6x00" or something like that.
+
 
 Regards,
-Markus Korber
+Clemens
