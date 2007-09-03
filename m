@@ -1,19 +1,19 @@
 From: Krzysztof Helt <krzysztof.h1@wp.pl>
-Subject: [PATCH] dbri: more cleanups (2nd version)
-Date: Mon, 3 Sep 2007 19:54:05 +0200
-Message-ID: <20070903195405.49ff2327.krzysztof.h1@wp.pl>
+Subject: [PATCH] Gallant SC-6000 driver (2nd version)
+Date: Mon, 3 Sep 2007 22:30:00 +0200
+Message-ID: <20070903223000.65d7cf0a.krzysztof.h1@wp.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EE591038C2
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A980103862
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 19:47:50 +0200 (CEST)
+	Mon,  3 Sep 2007 22:23:49 +0200 (CEST)
 Received: from host-87-99-61-239.lanet.net.pl (HELO krzysio.net)
 	(krzysztof.h1@[87.99.61.239]) (envelope-sender <krzysztof.h1@wp.pl>)
 	by smtp.wp.pl (WP-SMTPD) with SMTP
-	for <alsa-devel@alsa-project.org>; 3 Sep 2007 19:47:47 +0200
+	for <alsa-devel@alsa-project.org>; 3 Sep 2007 22:23:42 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,277 +28,693 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-This patch:
-- removes redundant constant suffices
-- removes redundant parentheses
-- removes redundant curly brackets
-- removes check if a spinlock is locked inside method which is
-  only called with the spinlock locked
-- moves few functions to the __init section
-- removes line which appears twice after the previous patch
-- minor comments improvements
+This is port of the Gallant SC-6000 driver from the OSS aedsp16 driver.
+This card was also sold as AudioExcel DSP 16 and Zoltrix AV302 (Audio Plus True 16).
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 ---
 
-Takashi, I fixed issues you pointed out.
+I ported only SC-6000 part from the OSS driver. PCM, OPL3 and CD playback work.
+Mixer also works. I haven't tested recording and MPU-401 port.
 
-If you want more fixes of coding style, let me know and I'll prepare
-a separate patch.
+This driver does not support the SC-6600 card. If it does the names inside the driver
+will reflect it (like "Gallant SC-6x00").
 
---- linux-2.6.22/sound/sparc/dbri.c	2007-09-03 20:51:40.000000000 +0200
-+++ linux-2.6.23/sound/sparc/dbri.c	2007-09-03 20:53:27.000000000 +0200
-@@ -233,12 +233,12 @@ static struct {
- ****************************************************************************/
+If anybody has the SC-6600 card I can port this part as well, but I do not have
+hardware to test.
+
+diff -urNp linux-2.6.22.old/sound/isa/Kconfig linux-2.6.22/sound/isa/Kconfig
+--- linux-2.6.22.old/sound/isa/Kconfig	2007-08-28 23:14:08.000000000 +0200
++++ linux-2.6.22/sound/isa/Kconfig	2007-09-01 18:38:41.000000000 +0200
+@@ -191,6 +191,19 @@ config SND_ES18XX
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-es18xx.
  
- /* DBRI main registers */
--#define REG0	0x00UL		/* Status and Control */
--#define REG1	0x04UL		/* Mode and Interrupt */
--#define REG2	0x08UL		/* Parallel IO */
--#define REG3	0x0cUL		/* Test */
--#define REG8	0x20UL		/* Command Queue Pointer */
--#define REG9	0x24UL		/* Interrupt Queue Pointer */
-+#define REG0	0x00		/* Status and Control */
-+#define REG1	0x04		/* Mode and Interrupt */
-+#define REG2	0x08		/* Parallel IO */
-+#define REG3	0x0c		/* Test */
-+#define REG8	0x20		/* Command Queue Pointer */
-+#define REG9	0x24		/* Interrupt Queue Pointer */
- 
- #define DBRI_NO_CMDS	64
- #define DBRI_INT_BLK	64
-@@ -565,7 +565,7 @@ struct snd_dbri {
- /* Translate the ALSA direction into the array index */
- #define DBRI_STREAMNO(substream)				\
- 		(substream->stream ==				\
--		 SNDRV_PCM_STREAM_PLAYBACK? DBRI_PLAY: DBRI_REC)
-+		 SNDRV_PCM_STREAM_PLAYBACK ? DBRI_PLAY: DBRI_REC)
- 
- /* Return a pointer to dbri_streaminfo */
- #define DBRI_STREAM(dbri, substream)	\
-@@ -611,8 +611,8 @@ The list is terminated with a WAIT comma
- CPU interrupt to signal completion.
- 
- Since the DBRI can run in parallel with the CPU, several means of
--synchronization present themselves. The method implemented here is only
--use of the dbri_cmdwait() to wait for execution of batch of sent commands.
-+synchronization present themselves. The method implemented here uses
-+the dbri_cmdwait() to wait for execution of batch of sent commands.
- 
- A circular command buffer is used here. A new command is being added
- while another can be executed. The scheme works by adding two WAIT commands
-@@ -648,15 +648,14 @@ static void dbri_cmdwait(struct snd_dbri
- 	}
- 	spin_unlock_irqrestore(&dbri->lock, flags);
- 
--	if (maxloops == 0) {
-+	if (maxloops == 0)
- 		printk(KERN_ERR "DBRI: Chip never completed command buffer\n");
--	} else {
-+	else
- 		dprintk(D_CMD, "Chip completed command buffer (%d)\n",
- 			MAXLOOPS - maxloops - 1);
--	}
- }
- /*
-- * Lock the command queue and returns pointer to a space for len cmd words
-+ * Lock the command queue and return pointer to space for len cmd words
-  * It locks the cmdlock spinlock.
-  */
- static s32 *dbri_cmdlock(struct snd_dbri *dbri, int len)
-@@ -749,7 +748,7 @@ static void dbri_reset(struct snd_dbri *
- }
- 
- /* Lock must not be held before calling this */
--static void dbri_initialize(struct snd_dbri *dbri)
-+static void __init dbri_initialize(struct snd_dbri *dbri)
- {
- 	s32 *cmd;
- 	u32 dma_addr;
-@@ -804,7 +803,7 @@ list ordering, among other things.  The 
- here interface closely with the transmit and receive interrupt code.
- 
- */
--static int pipe_active(struct snd_dbri *dbri, int pipe)
-+static inline int pipe_active(struct snd_dbri *dbri, int pipe)
- {
- 	return ((pipe >= 0) && (dbri->pipes[pipe].desc != -1));
- }
-@@ -1148,6 +1147,7 @@ static int setup_descs(struct snd_dbri *
- 			if (!dbri->dma->desc[desc].ba)
- 				break;
- 		}
++config SND_SC6000
++	tristate "Gallant SC-6000, Audio Excel DSP 16"
++	depends on SND
++	select SND_AD1848_LIB
++	select SND_OPL3_LIB
++	select SND_MPU401_UART
++	help
++	  Say Y here to include support for Gallant SC-6000 card and clones:
++	  Audio Excel DSP 16 and Zoltrix AV302.
 +
- 		if (desc == DBRI_NO_DESCS) {
- 			printk(KERN_ERR "DBRI: setup_descs: No descriptors\n");
- 			return -1;
-@@ -1308,7 +1308,7 @@ to the DBRI via the CHI interface and fe
-  * Lock must not be held before calling it.
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-sc6000.
++
+ config SND_GUS_SYNTH
+ 	tristate
  
- */
--static void cs4215_setup_pipes(struct snd_dbri *dbri)
-+static __init void cs4215_setup_pipes(struct snd_dbri *dbri)
- {
- 	unsigned long flags;
+diff -urNp linux-2.6.22.old/sound/isa/Makefile linux-2.6.22/sound/isa/Makefile
+--- linux-2.6.22.old/sound/isa/Makefile	2007-07-09 01:32:17.000000000 +0200
++++ linux-2.6.22/sound/isa/Makefile	2007-09-03 22:09:58.000000000 +0200
+@@ -10,6 +10,7 @@ snd-cmi8330-objs := cmi8330.o
+ snd-dt019x-objs := dt019x.o
+ snd-es18xx-objs := es18xx.o
+ snd-opl3sa2-objs := opl3sa2.o
++snd-sc6000-objs := sc6000.o
+ snd-sgalaxy-objs := sgalaxy.o
+ snd-sscape-objs := sscape.o
  
-@@ -1341,7 +1341,7 @@ static void cs4215_setup_pipes(struct sn
- 	dbri_cmdwait(dbri);
- }
+@@ -21,6 +22,7 @@ obj-$(CONFIG_SND_CMI8330) += snd-cmi8330
+ obj-$(CONFIG_SND_DT019X) += snd-dt019x.o
+ obj-$(CONFIG_SND_ES18XX) += snd-es18xx.o
+ obj-$(CONFIG_SND_OPL3SA2) += snd-opl3sa2.o
++obj-$(CONFIG_SND_SC6000) += snd-sc6000.o
+ obj-$(CONFIG_SND_SGALAXY) += snd-sgalaxy.o
+ obj-$(CONFIG_SND_SSCAPE) += snd-sscape.o
  
--static int cs4215_init_data(struct cs4215 *mm)
-+static __init int cs4215_init_data(struct cs4215 *mm)
- {
- 	/*
- 	 * No action, memory resetting only.
-@@ -1633,7 +1633,7 @@ static int cs4215_prepare(struct snd_dbr
- /*
-  *
-  */
--static int cs4215_init(struct snd_dbri *dbri)
-+static __init int cs4215_init(struct snd_dbri *dbri)
- {
- 	u32 reg2 = sbus_readl(dbri->regs + REG2);
- 	dprintk(D_MM, "cs4215_init: reg2=0x%x\n", reg2);
-@@ -1771,13 +1771,10 @@ static void xmit_descs(struct snd_dbri *
- 
- static void transmission_complete_intr(struct snd_dbri *dbri, int pipe)
- {
--	struct dbri_streaminfo *info;
--	int td;
-+	struct dbri_streaminfo *info = &dbri->stream_info[DBRI_PLAY];
-+	int td = dbri->pipes[pipe].desc;
- 	int status;
- 
--	info = &dbri->stream_info[DBRI_PLAY];
--
--	td = dbri->pipes[pipe].desc;
- 	while (td >= 0) {
- 		if (td >= DBRI_NO_DESCS) {
- 			printk(KERN_ERR "DBRI: invalid td on pipe %d\n", pipe);
-@@ -1798,12 +1795,9 @@ static void transmission_complete_intr(s
- 	}
- 
- 	/* Notify ALSA */
--	if (spin_is_locked(&dbri->lock)) {
--		spin_unlock(&dbri->lock);
--		snd_pcm_period_elapsed(info->substream);
--		spin_lock(&dbri->lock);
--	} else
--		snd_pcm_period_elapsed(info->substream);
-+	spin_unlock(&dbri->lock);
-+	snd_pcm_period_elapsed(info->substream);
-+	spin_lock(&dbri->lock);
- }
- 
- static void reception_complete_intr(struct snd_dbri *dbri, int pipe)
-@@ -1830,12 +1824,9 @@ static void reception_complete_intr(stru
- 		rd, DBRI_RD_STATUS(status), DBRI_RD_CNT(status));
- 
- 	/* Notify ALSA */
--	if (spin_is_locked(&dbri->lock)) {
--		spin_unlock(&dbri->lock);
--		snd_pcm_period_elapsed(info->substream);
--		spin_lock(&dbri->lock);
--	} else
--		snd_pcm_period_elapsed(info->substream);
-+	spin_unlock(&dbri->lock);
-+	snd_pcm_period_elapsed(info->substream);
-+	spin_lock(&dbri->lock);
- }
- 
- static void dbri_process_one_interrupt(struct snd_dbri *dbri, int x)
-@@ -1986,10 +1977,10 @@ static irqreturn_t snd_dbri_interrupt(in
- 		PCM Interface
- ****************************************************************************/
- static struct snd_pcm_hardware snd_dbri_pcm_hw = {
--	.info		= (SNDRV_PCM_INFO_MMAP |
--			   SNDRV_PCM_INFO_INTERLEAVED |
--			   SNDRV_PCM_INFO_BLOCK_TRANSFER |
--			   SNDRV_PCM_INFO_MMAP_VALID),
-+	.info		= SNDRV_PCM_INFO_MMAP |
-+			  SNDRV_PCM_INFO_INTERLEAVED |
-+			  SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+			  SNDRV_PCM_INFO_MMAP_VALID,
- 	.formats	= SNDRV_PCM_FMTBIT_MU_LAW |
- 			  SNDRV_PCM_FMTBIT_A_LAW |
- 			  SNDRV_PCM_FMTBIT_U8 |
-@@ -1999,7 +1990,7 @@ static struct snd_pcm_hardware snd_dbri_
- 	.rate_max		= 48000,
- 	.channels_min		= 1,
- 	.channels_max		= 2,
--	.buffer_bytes_max	= (64 * 1024),
-+	.buffer_bytes_max	= 64 * 1024,
- 	.period_bytes_min	= 1,
- 	.period_bytes_max	= DBRI_TD_MAXCNT,
- 	.periods_min		= 1,
-@@ -2266,11 +2257,10 @@ static int snd_cs4215_info_volume(struct
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->count = 2;
- 	uinfo->value.integer.min = 0;
--	if (kcontrol->private_value == DBRI_PLAY) {
-+	if (kcontrol->private_value == DBRI_PLAY)
- 		uinfo->value.integer.max = DBRI_MAX_VOLUME;
--	} else {
-+	else
- 		uinfo->value.integer.max = DBRI_MAX_GAIN;
--	}
- 	return 0;
- }
- 
-@@ -2304,7 +2294,7 @@ static int snd_cs4215_put_volume(struct 
- 		info->right_gain = ucontrol->value.integer.value[1];
- 		changed = 1;
- 	}
--	if (changed == 1) {
-+	if (changed) {
- 		/* First mute outputs, and wait 1/8000 sec (125 us)
- 		 * to make sure this takes.  This avoids clicking noises.
- 		 */
-@@ -2443,8 +2433,9 @@ static int __init snd_dbri_mixer(struct 
- 	strcpy(card->mixername, card->shortname);
- 
- 	for (idx = 0; idx < ARRAY_SIZE(dbri_controls); idx++) {
--		if ((err = snd_ctl_add(card,
--				snd_ctl_new1(&dbri_controls[idx], dbri))) < 0)
-+		err = snd_ctl_add(card,
-+				snd_ctl_new1(&dbri_controls[idx], dbri));
+diff -urNp linux-2.6.22.old/sound/isa/sc6000.c linux-2.6.22/sound/isa/sc6000.c
+--- linux-2.6.22.old/sound/isa/sc6000.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.22/sound/isa/sc6000.c	2007-09-03 22:12:32.000000000 +0200
+@@ -0,0 +1,630 @@
++/*
++ *  Driver for Gallant SC-6000 soundcard. This card is also known as
++ *  Audio Excel DSP 16 or Zoltrix AV302.
++ *  These cards use CompuMedia ASC-9308 chip + AD1848 codec.
++ *
++ *  Copyright (C) 2007 Krzysztof Helt <krzysztof.h1@wp.pl>
++ *
++ *  I don't have documentation for this card. I used the driver
++ *  for OSS/Free included in the kernel source as reference.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ */
++
++#include <linux/module.h>
++#include <linux/isa.h>
++#include <asm/dma.h>
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/ad1848.h>
++#include <sound/opl3.h>
++#include <sound/mpu401.h>
++#include <sound/control.h>
++#define SNDRV_LEGACY_FIND_FREE_IRQ
++#define SNDRV_LEGACY_FIND_FREE_DMA
++#include <sound/initval.h>
++
++MODULE_AUTHOR("Krzysztof Helt");
++MODULE_DESCRIPTION("Gallant SC-6000");
++MODULE_LICENSE("GPL");
++MODULE_SUPPORTED_DEVICE("{{Gallant, SC-6000},"
++			"{AudioExcel, Audio Excel DSP 16},"
++			"{Zoltrix, AV302}}");
++
++static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
++static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
++static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
++static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x220, 0x240 */
++static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 5, 7, 9, 10, 11 */
++static long mss_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x530, 0xe80 */
++static long mpu_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;
++						/* 0x300, 0x310, 0x320, 0x330 */
++static int mpu_irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 5, 7, 9, 10, 0 */
++static int dma[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 0, 1, 3 */
++
++module_param_array(index, int, NULL, 0444);
++MODULE_PARM_DESC(index, "Index value for sc-6000 based soundcard.");
++module_param_array(id, charp, NULL, 0444);
++MODULE_PARM_DESC(id, "ID string for sc-6000 based soundcard.");
++module_param_array(enable, bool, NULL, 0444);
++MODULE_PARM_DESC(enable, "Enable sc-6000 based soundcard.");
++module_param_array(port, long, NULL, 0444);
++MODULE_PARM_DESC(port, "Port # for sc-6000 driver.");
++module_param_array(mss_port, long, NULL, 0444);
++MODULE_PARM_DESC(mss_port, "MSS Port # for sc-6000 driver.");
++module_param_array(mpu_port, long, NULL, 0444);
++MODULE_PARM_DESC(mpu_port, "MPU-401 port # for sc-6000 driver.");
++module_param_array(irq, int, NULL, 0444);
++MODULE_PARM_DESC(irq, "IRQ # for sc-6000 driver.");
++module_param_array(mpu_irq, int, NULL, 0444);
++MODULE_PARM_DESC(mpu_irq, "MPU-401 IRQ # for sc-6000 driver.");
++module_param_array(dma, int, NULL, 0444);
++MODULE_PARM_DESC(dma, "DMA # for sc-6000 driver.");
++
++/*
++ * Commands of SC6000's DSP (SBPRO+special).
++ * Some of them are COMMAND_xx, in the future they may change.
++ */
++#define WRITE_MDIRQ_CFG	0x50	/* Set M&I&DRQ mask (the real config)	*/
++#define COMMAND_52	0x52	/*					*/
++#define READ_HARD_CFG	0x58	/* Read Hardware Config (I/O base etc)	*/
++#define COMMAND_5C	0x5c	/*					*/
++#define COMMAND_60	0x60	/*					*/
++#define COMMAND_66	0x66	/*					*/
++#define COMMAND_6C	0x6c	/*					*/
++#define COMMAND_6E	0x6e	/*					*/
++#define COMMAND_88	0x88	/* Unknown command 			*/
++#define DSP_INIT_MSS	0x8c	/* Enable Microsoft Sound System mode	*/
++#define COMMAND_C5	0xc5	/*					*/
++#define GET_DSP_VERSION	0xe1	/* Get DSP Version			*/
++#define GET_DSP_COPYRIGHT 0xe3	/* Get DSP Copyright			*/
++
++/*
++ * Offsets of SC6000 DSP I/O ports. The offset is added to base I/O port
++ * to have the actual I/O port.
++ * Register permissions are:
++ * (wo) == Write Only
++ * (ro) == Read  Only
++ * (w-) == Write
++ * (r-) == Read
++ */
++#define DSP_RESET	0x06	/* offset of DSP RESET		(wo) */
++#define DSP_READ	0x0a	/* offset of DSP READ		(ro) */
++#define DSP_WRITE	0x0c	/* offset of DSP WRITE		(w-) */
++#define DSP_COMMAND	0x0c	/* offset of DSP COMMAND	(w-) */
++#define DSP_STATUS	0x0c	/* offset of DSP STATUS		(r-) */
++#define DSP_DATAVAIL	0x0e	/* offset of DSP DATA AVAILABLE	(ro) */
++
++#define PFX "sc6000: "
++
++/* hardware dependent functions */
++
++/*
++ * sc6000_irq_to_softcfg - Decode irq number into cfg code.
++ */
++static inline unsigned char sc6000_irq_to_softcfg(int irq)
++{
++	unsigned char val = 0;
++
++	switch (irq) {
++	case 5:
++		val = 0x28;
++		break;
++	case 7:
++		val = 0x8;
++		break;
++	case 9:
++		val = 0x10;
++		break;
++	case 10:
++		val = 0x18;
++		break;
++	case 11:
++		val = 0x20;
++		break;
++	default:
++		break;
++	}
++	return val;
++}
++
++/*
++ * sc6000_dma_to_softcfg - Decode dma number into cfg code.
++ */
++static inline unsigned char sc6000_dma_to_softcfg(int dma)
++{
++	unsigned char val = 0;
++
++	switch (dma) {
++	case 0:
++		val = 1;
++		break;
++	case 1:
++		val = 2;
++		break;
++	case 3:
++		val = 3;
++		break;
++	default:
++		break;
++	}
++	return val;
++}
++
++/*
++ * sc6000_mpu_irq_to_softcfg - Decode MPU-401 irq number into cfg code.
++ */
++static inline unsigned char sc6000_mpu_irq_to_softcfg(int mpu_irq)
++{
++	unsigned char val = 0;
++
++	switch (mpu_irq) {
++	case 5:
++		val = 4;
++		break;
++	case 7:
++		val = 0x44;
++		break;
++	case 9:
++		val = 0x84;
++		break;
++	case 10:
++		val = 0xc4;
++		break;
++	default:
++		break;
++	}
++	return val;
++}
++
++static __devinit int sc6000_wait_data(int port)
++{
++	int loop = 1000;
++	unsigned char val = 0;
++
++	do {
++		val = inb(port + DSP_DATAVAIL);
++		if (val & 0x80)
++			return 0;
++		cpu_relax();
++	} while (loop--);
++
++	return -EAGAIN;
++}
++
++static inline int sc6000_read(int port)
++{
++	if (sc6000_wait_data(port))
++		return -EBUSY;
++
++	return inb(port + DSP_READ);
++
++}
++
++static __devinit int sc6000_write(int port, int cmd)
++{
++	unsigned char val;
++	int loop = 500000;
++
++	do {
++		val = inb(port + DSP_STATUS);
++		/*
++		 * DSP ready to receive data if bit 7 of val == 0
++		 */
++		if (!(val & 0x80)) {
++			outb(cmd, port + DSP_COMMAND);
++			return 0;
++		}
++		cpu_relax();
++	} while (loop--);
++
++	snd_printk(KERN_ERR "DSP Command (0x%x) timeout.\n", cmd);
++
++	return -EAGAIN;
++}
++
++static int __devinit sc6000_dsp_get_answer(int port, int command, char *data,
++					    int data_len)
++{
++	int len = 0;
++
++	if (sc6000_write(port, command)) {
++		snd_printk(KERN_ERR "CMD 0x%x: failed!\n", command);
++		return -EFAULT;
++	}
++
++	do {
++		int val = sc6000_read(port);
++
++		if (val < 0)
++			break;
++
++		data[len++] = val;
++
++	} while (len < data_len);
++
++	/*
++	 * If no more data available, return to the caller, no error if len>0.
++	 * We have no other way to know when the string is finished.
++	 */
++	return len ? len : -EIO;
++}
++
++static int __devinit sc6000_dsp_reset(int port)
++{
++	outb(1, port + DSP_RESET);
++	udelay(10);
++	outb(0, port + DSP_RESET);
++	udelay(20);
++	if (sc6000_read(port) == 0xaa)
++		return 0;
++	return -EBUSY;
++}
++
++/* detection and initialization */
++static int __devinit sc6000_cfg_write(int port, unsigned char softcfg)
++{
++
++	if (sc6000_write(port, WRITE_MDIRQ_CFG)) {
++		snd_printk(KERN_ERR "CMD 0x%x: failed!\n", WRITE_MDIRQ_CFG);
++		return -EIO;
++	}
++	if (sc6000_write(port, softcfg)) {
++		snd_printk(KERN_ERR "sc6000_cfg_write: failed!\n");
++		return -EIO;
++	}
++	return 0;
++}
++
++static int __devinit sc6000_setup_board(int port, int config)
++{
++	int loop = 10;
++
++	do {
++		if (sc6000_write(port, COMMAND_88)) {
++			snd_printk(KERN_ERR "CMD 0x%x: failed!\n",
++				   COMMAND_88);
++			return -EIO;
++		}
++	} while ((sc6000_wait_data(port) < 0) && loop--);
++
++	if (sc6000_read(port) < 0) {
++		snd_printk(KERN_ERR "sc6000_read after CMD 0x%x: failed\n",
++			   COMMAND_88);
++		return -EIO;
++	}
++
++	if (sc6000_cfg_write(port, config))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int __devinit sc6000_init_mss(int port, int config, int mss_port,
++				     int mss_config)
++{
++	if (sc6000_write(port, DSP_INIT_MSS)) {
++		snd_printk(KERN_ERR "sc6000_init_mss [0x%x]: failed!\n",
++			   DSP_INIT_MSS);
++		return -EIO;
++	}
++
++	mdelay(10);
++
++	if (sc6000_cfg_write(port, config))
++		return -EIO;
++
++	outb(mss_config, mss_port);
++
++	return 0;
++}
++
++static int __devinit sc6000_init_board(int port, int irq, int dma,
++					int mss_port, int mpu_irq)
++{
++	char answer[15];
++	char version[2];
++	int mss_config = sc6000_irq_to_softcfg(irq) |
++			 sc6000_dma_to_softcfg(dma);
++	int config = mss_config |
++		     sc6000_mpu_irq_to_softcfg(mpu_irq);
++
++	if (sc6000_dsp_reset(port)) {
++		snd_printk(KERN_ERR "sc6000_dsp_reset: failed!\n");
++		return -EBUSY;
++	}
++
++	if (sc6000_dsp_get_answer(port, GET_DSP_COPYRIGHT, answer, 15) <= 0) {
++		snd_printk(KERN_ERR "sc6000_dsp_copyright: failed!\n");
++		return -ENODEV;
++	}
++	/*
++	 * My SC-6000 card return "SC-6000" in DSPCopyright, so
++	 * if we have something different, we have to be warned.
++	 * Mine returns SC-6000A - KH
++	 */
++	if (strncmp("SC-6000", answer, 7))
++		snd_printk(KERN_WARNING "Warning: non SC-6000 audio card!\n");
++
++	if (sc6000_dsp_get_answer(port, GET_DSP_VERSION, version, 2) < 2) {
++		snd_printk(KERN_ERR "sc6000_dsp_version: failed!\n");
++		return -ENODEV;
++	}
++	printk(KERN_INFO PFX "Detected model: %s version %d.%d\n",
++		answer, version[1], version[0]);
++
++	/*
++	 * 0x0A == (IRQ 7, DMA 1, MIRQ 0)
++	 */
++	if (sc6000_cfg_write(port, 0x0a)) {
++		snd_printk(KERN_ERR "sc6000_cfg_write: failed!\n");
++		return -EFAULT;
++	}
++
++	if (sc6000_setup_board(port, config) < 0) {
++		snd_printk(KERN_ERR "sc6000_setup_board: failed!\n");
++		return -ENODEV;
++	}
++
++	if (sc6000_init_mss(port, config, mss_port,
++			    mss_config) < 0) {
++		snd_printk(KERN_ERR "Can not initialize"
++			   "Microsoft Sound System mode.\n");
++		return -ENODEV;
++	}
++
++	return 0;
++}
++
++static int __devinit snd_sc6000_detect(int dev, int irq, int dma)
++{
++	int err = -ENODEV;
++
++	snd_printd("Initializing BASE[0x%lx] IRQ[%d] DMA[%d] MIRQ[%d]\n",
++		   port[dev], irq, dma,
++		   mpu_irq[dev] == SND_AUTO_IRQ ? 0 : mpu_irq[dev]);
++
++/*
++ * We must request the port region because these are the I/O
++ * ports to access card's control registers.
++ */
++	if (!request_region(port[dev], 0x10, "sc-6000 (base)")) {
++		snd_printk(KERN_ERR
++			   "SC-6000 port I/O port region is already in use.\n");
++		return -EBUSY;
++	}
++
++	err = sc6000_init_board(port[dev], irq, dma,
++				mss_port[dev], mpu_irq[dev]);
++
++	release_region(port[dev], 0x10);
++
++	return err;
++}
++
++static int __devinit snd_sc6000_mixer(struct snd_ad1848 *chip)
++{
++	struct snd_card *card = chip->card;
++	struct snd_ctl_elem_id id1, id2;
++	int err;
++
++	memset(&id1, 0, sizeof(id1));
++	memset(&id2, 0, sizeof(id2));
++	id1.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
++	id2.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
++	/* reassign AUX0 to FM */
++	strcpy(id1.name, "Aux Playback Switch");
++	strcpy(id2.name, "FM Playback Switch");
++	err = snd_ctl_rename_id(card, &id1, &id2);
++	if (err < 0)
++		return err;
++	strcpy(id1.name, "Aux Playback Volume");
++	strcpy(id2.name, "FM Playback Volume");
++	err = snd_ctl_rename_id(card, &id1, &id2);
++	if (err < 0)
++		return err;
++	/* reassign AUX1 to CD */
++	strcpy(id1.name, "Aux Playback Switch"); id1.index = 1;
++	strcpy(id2.name, "CD Playback Switch");
++	err = snd_ctl_rename_id(card, &id1, &id2);
++	if (err < 0)
++		return err;
++	strcpy(id1.name, "Aux Playback Volume");
++	strcpy(id2.name, "CD Playback Volume");
++	err = snd_ctl_rename_id(card, &id1, &id2);
++	if (err < 0)
++		return err;
++	return 0;
++}
++
++static int __devinit snd_sc6000_match(struct device *devptr, unsigned int dev)
++{
++	if (!enable[dev])
++		return 0;
++	if (port[dev] == SNDRV_AUTO_PORT) {
++		printk(KERN_ERR PFX "specify IO port\n");
++		return 0;
++	}
++	if (mss_port[dev] == SNDRV_AUTO_PORT) {
++		printk(KERN_ERR PFX "specify MSS port\n");
++		return 0;
++	}
++	if (port[dev] != 0x220 && port[dev] != 0x240) {
++		printk(KERN_ERR PFX "Port must be 0x220 or 0x240\n");
++		return 0;
++	}
++	if (mss_port[dev] != 0x530 && mss_port[dev] != 0xe80) {
++		printk(KERN_ERR PFX "MSS port must be 0x530 or 0xe80\n");
++		return 0;
++	}
++	if (irq[dev] != SNDRV_AUTO_IRQ && !sc6000_irq_to_softcfg(irq[dev])) {
++		printk(KERN_ERR PFX "invalid IRQ %d\n", irq[dev]);
++		return 0;
++	}
++	if (dma[dev] != SNDRV_AUTO_DMA && !sc6000_dma_to_softcfg(dma[dev])) {
++		printk(KERN_ERR PFX "invalid DMA %d\n", dma[dev]);
++		return 0;
++	}
++	if (mpu_port[dev] != SNDRV_AUTO_PORT &&
++	    (mpu_port[dev] & ~0x30l) != 0x300) {
++		printk(KERN_ERR PFX "invalid MPU-401 port %lx\n",
++			mpu_port[dev]);
++		return 0;
++	}
++	if (mpu_port[dev] != SNDRV_AUTO_PORT &&
++	    mpu_irq[dev] != SNDRV_AUTO_IRQ && mpu_irq[dev] != 0 &&
++	    !sc6000_mpu_irq_to_softcfg(mpu_irq[dev])) {
++		printk(KERN_ERR PFX "invalid MPU-401 IRQ %d\n", mpu_irq[dev]);
++		return 0;
++	}
++	return 1;
++}
++
++static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
++{
++	static int possible_irqs[] = { 7, 9, 10, 11, -1 };
++	static int possible_dmas[] = { 1, 3, 0, -1 };
++	int err;
++	int xirq = irq[dev];
++	int xdma = dma[dev];
++	struct snd_card *card;
++	struct snd_ad1848 *chip;
++	struct snd_opl3 *opl3;
++
++	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
++	if (card == NULL)
++		return -ENOMEM;
++
++	if (xirq == SNDRV_AUTO_IRQ) {
++		xirq = snd_legacy_find_free_irq(possible_irqs);
++		if (xirq < 0) {
++			snd_printk(KERN_ERR "unable to find a free IRQ\n");
++			err = -EBUSY;
++			goto _err;
++		}
++	}
++
++	if (xdma == SNDRV_AUTO_DMA) {
++		xdma = snd_legacy_find_free_dma(possible_dmas);
++		if (xdma < 0) {
++			snd_printk(KERN_ERR "unable to find a free DMA\n");
++			err = -EBUSY;
++			goto _err;
++		}
++	}
++
++	err = snd_sc6000_detect(dev, xirq, xdma);
++	if (err < 0)
++		goto _err;
++
++	err = snd_ad1848_create(card, mss_port[dev] + 4, xirq, xdma,
++				AD1848_HW_DETECT, &chip);
++	if (err < 0)
++		goto _err;
++	card->private_data = chip;
++
++	err = snd_ad1848_pcm(chip, 0, NULL);
++	if (err < 0) {
++		snd_printk(KERN_ERR
++			   "error creating new ad1848 PCM device\n");
++		goto _err;
++	}
++	err = snd_ad1848_mixer(chip);
++	if (err < 0) {
++		snd_printk(KERN_ERR "error creating new ad1848 mixer\n");
++		goto _err;
++	}
++	err = snd_sc6000_mixer(chip);
++	if (err < 0) {
++		snd_printk(KERN_ERR "the mixer rewrite failed\n");
++		goto _err;
++	}
++	if (snd_opl3_create(card,
++			    0x388, 0x388 + 2,
++			    OPL3_HW_AUTO, 0, &opl3) < 0) {
++		snd_printk(KERN_ERR "no OPL device at 0x%x-0x%x ?\n",
++			   0x388, 0x388 + 2);
++	} else {
++		err = snd_opl3_timer_new(opl3, 0, 1);
 +		if (err < 0)
- 			return err;
- 	}
- 
-@@ -2485,8 +2476,8 @@ static void dbri_debug_read(struct snd_i
- 				    "Pipe %d: %s SDP=0x%x desc=%d, "
- 				    "len=%d next %d\n",
- 				    pipe,
--				   ((pptr->sdp & D_SDP_TO_SER) ? "output" :
--								 "input"),
-+				   (pptr->sdp & D_SDP_TO_SER) ? "output" :
-+								 "input",
- 				    pptr->sdp, pptr->desc,
- 				    pptr->length, pptr->nextpipe);
- 		}
-@@ -2502,7 +2493,7 @@ void snd_dbri_proc(struct snd_dbri *dbri
- 		snd_info_set_text_ops(entry, dbri, dbri_regs_read);
- 
- #ifdef DBRI_DEBUG
--	if (! snd_card_proc_new(dbri->card, "debug", &entry)) {
-+	if (!snd_card_proc_new(dbri->card, "debug", &entry)) {
- 		snd_info_set_text_ops(entry, dbri, dbri_debug_read);
- 		entry->mode = S_IFREG | S_IRUGO;	/* Readable only. */
- 	}
-@@ -2633,11 +2624,12 @@ static int __init dbri_attach(int prom_n
- 	}
- 
- 	dbri = card->private_data;
--	if ((err = snd_dbri_pcm(dbri)) < 0)
-+	err = snd_dbri_pcm(dbri);
++			goto _err;
++
++		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
++		if (err < 0)
++			goto _err;
++	}
++
++	if (mpu_port[dev] != SNDRV_AUTO_PORT) {
++		if (mpu_irq[dev] == SNDRV_AUTO_IRQ)
++			mpu_irq[dev] = -1;
++		if (snd_mpu401_uart_new(card, 0,
++					MPU401_HW_MPU401,
++					mpu_port[dev], 0,
++					mpu_irq[dev],
++					mpu_irq[dev] >= 0 ? IRQF_DISABLED : 0,
++					NULL) < 0)
++			snd_printk(KERN_ERR "no MPU-401 device at 0x%lx ?\n",
++					mpu_port[dev]);
++	}
++
++	strcpy(card->driver, "Gallant SC-6000");
++	strcpy(card->shortname, "Gallant SC-6000");
++	sprintf(card->longname, "Gallant SC-6000 at 0x%lx, irq %d, dma %d",
++		mss_port[dev], xirq, xdma);
++
++	snd_card_set_dev(card, devptr);
++
++	err = snd_card_register(card);
 +	if (err < 0)
- 		goto _err;
- 
--	if ((err = snd_dbri_mixer(dbri)) < 0)
--	if ((err = snd_dbri_mixer(dbri)) < 0)
-+	err = snd_dbri_mixer(dbri);
-+	if (err < 0)
- 		goto _err;
- 
- 	/* /proc file handling */
++		goto _err;
++
++	dev_set_drvdata(devptr, card);
++	return 0;
++
++ _err:
++	snd_card_free(card);
++	return err;
++}
++
++static int __devexit snd_sc6000_remove(struct device *devptr, unsigned int dev)
++{
++	snd_card_free(dev_get_drvdata(devptr));
++	dev_set_drvdata(devptr, NULL);
++	return 0;
++}
++
++static struct isa_driver snd_sc6000_driver = {
++	.match		= snd_sc6000_match,
++	.probe		= snd_sc6000_probe,
++	.remove		= __devexit_p(snd_sc6000_remove),
++	/* FIXME: suspend/resume */
++	.driver		= {
++		.name	= "sc6000",
++	},
++};
++
++
++static int __init alsa_card_sc6000_init(void)
++{
++	return isa_register_driver(&snd_sc6000_driver, SNDRV_CARDS);
++}
++
++static void __exit alsa_card_sc6000_exit(void)
++{
++	isa_unregister_driver(&snd_sc6000_driver);
++}
++
++module_init(alsa_card_sc6000_init)
++module_exit(alsa_card_sc6000_exit)
