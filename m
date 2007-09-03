@@ -1,25 +1,19 @@
-From: Romain Bossart <romain.bossart@free.fr>
-Subject: Re: Audiophile Delta 24/96 Midi Out continuously sends
- zeroes (alsa 1.0.14)
-Date: Mon, 03 Sep 2007 18:53:08 +0200
-Message-ID: <46DC3BF4.9010204@free.fr>
-References: <46D4A1D6.7010604@free.fr>
-	<1188369280.902.1207813047@webmail.messagingengine.com>
-	<1188378043.46d535bbab7f9@imp.free.fr>
-	<fb4rj2$9ll$1@sea.gmane.org> <fbe8q7$hg3$1@sea.gmane.org>
-	<1188802343.9390.1208579935@webmail.messagingengine.com>
-	<1188826536.46dc0da8097bc@imp.free.fr>
-	<1188833385.26232.1208641995@webmail.messagingengine.com>
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
+Subject: [PATCH] dbri: more cleanups (2nd version)
+Date: Mon, 3 Sep 2007 19:54:05 +0200
+Message-ID: <20070903195405.49ff2327.krzysztof.h1@wp.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.solopso.org (lns-bzn-47f-62-147-132-141.adsl.proxad.net
-	[62.147.132.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58B50103872
+Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3EE591038C2
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Sep 2007 18:53:16 +0200 (CEST)
-In-Reply-To: <1188833385.26232.1208641995@webmail.messagingengine.com>
+	Mon,  3 Sep 2007 19:47:50 +0200 (CEST)
+Received: from host-87-99-61-239.lanet.net.pl (HELO krzysio.net)
+	(krzysztof.h1@[87.99.61.239]) (envelope-sender <krzysztof.h1@wp.pl>)
+	by smtp.wp.pl (WP-SMTPD) with SMTP
+	for <alsa-devel@alsa-project.org>; 3 Sep 2007 19:47:47 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,60 +23,282 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
+This patch:
+- removes redundant constant suffices
+- removes redundant parentheses
+- removes redundant curly brackets
+- removes check if a spinlock is locked inside method which is
+  only called with the spinlock locked
+- moves few functions to the __init section
+- removes line which appears twice after the previous patch
+- minor comments improvements
 
-Clemens Ladisch wrote:
-> Romain Bossart wrote:
->> Selon Clemens Ladisch <cladisch@fastmail.net>:
->>> That is, the zeroes are _not_ sent when you're not using jack?  When
->>> nothing is connected, or when you use aplaymidi or amidi to send
->>> something, everything is OK?
->> Here is a summary of the various tests I did. I have just one card: Audiophile
->> Delta 24/96. My kernel is now 2.6.22.1 RT patched & alsa 1.0.14,
->> Audio works perfectly. I don't think jack is the problem.
->>
->> Config #2 = Delta Midi Out -> (Midi In) Instrument (Midi Out/Thru) -> Delta Midi
->> In and 'amidi -p hw:0,0 -d'. Jack being started or not.
->>
->> Symptoms: tons of zeroes are shown by amidi as soon as I launch it. The stream
->> is so intense I can actually hear it in my speakers/monitors (need to switch to
->> better MIDI cables, I know!). amidi and /proc/asound/card0/midi0 give the same number
->> of transmitted bytes.
-> 
-> With "transmitted", you meant "received"?
-> When Jack is not running, there is no software to send anything.  If the number
-> of _transmitted_ bytes changes anyway, this would be a bug in ALSA.
-Oops, 'reveived' is correct. Thank you.
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
 
+Takashi, I fixed issues you pointed out.
 
->> Config #2b = Delta Midi Out -> Delta Midi In
->> and 'amidi -p hw:0,0 -d', Jack being started or not.
->>
->> Symptoms: identical to config#2. Moreover, if meanwhile I send some Midi commands
->> with amidi ('amidi -p hw:0,0 -S C01C'), I don't find this data in my dump.
-> 
-> Apparently, the output port is broken.  While it is theoretically
-> possible that the driver doesn't initialize the card correctly, I cannot
-> imagine a bug that would cause the port to presume that there is data to
-> send.
-You're right the output port seems to be broken.
+If you want more fixes of coding style, let me know and I'll prepare
+a separate patch.
 
-> 
-> Could you test if the port sends data even before the driver (or Linux)
-> is loaded, or in Windows?
-> 
-
-I am not sure I can try this. I will change my card.
-
-> 
-> Regards,
-> Clemens
-> 
-Thank you very much for your help.
-
-Regards,
-Romain
+--- linux-2.6.22/sound/sparc/dbri.c	2007-09-03 20:51:40.000000000 +0200
++++ linux-2.6.23/sound/sparc/dbri.c	2007-09-03 20:53:27.000000000 +0200
+@@ -233,12 +233,12 @@ static struct {
+ ****************************************************************************/
+ 
+ /* DBRI main registers */
+-#define REG0	0x00UL		/* Status and Control */
+-#define REG1	0x04UL		/* Mode and Interrupt */
+-#define REG2	0x08UL		/* Parallel IO */
+-#define REG3	0x0cUL		/* Test */
+-#define REG8	0x20UL		/* Command Queue Pointer */
+-#define REG9	0x24UL		/* Interrupt Queue Pointer */
++#define REG0	0x00		/* Status and Control */
++#define REG1	0x04		/* Mode and Interrupt */
++#define REG2	0x08		/* Parallel IO */
++#define REG3	0x0c		/* Test */
++#define REG8	0x20		/* Command Queue Pointer */
++#define REG9	0x24		/* Interrupt Queue Pointer */
+ 
+ #define DBRI_NO_CMDS	64
+ #define DBRI_INT_BLK	64
+@@ -565,7 +565,7 @@ struct snd_dbri {
+ /* Translate the ALSA direction into the array index */
+ #define DBRI_STREAMNO(substream)				\
+ 		(substream->stream ==				\
+-		 SNDRV_PCM_STREAM_PLAYBACK? DBRI_PLAY: DBRI_REC)
++		 SNDRV_PCM_STREAM_PLAYBACK ? DBRI_PLAY: DBRI_REC)
+ 
+ /* Return a pointer to dbri_streaminfo */
+ #define DBRI_STREAM(dbri, substream)	\
+@@ -611,8 +611,8 @@ The list is terminated with a WAIT comma
+ CPU interrupt to signal completion.
+ 
+ Since the DBRI can run in parallel with the CPU, several means of
+-synchronization present themselves. The method implemented here is only
+-use of the dbri_cmdwait() to wait for execution of batch of sent commands.
++synchronization present themselves. The method implemented here uses
++the dbri_cmdwait() to wait for execution of batch of sent commands.
+ 
+ A circular command buffer is used here. A new command is being added
+ while another can be executed. The scheme works by adding two WAIT commands
+@@ -648,15 +648,14 @@ static void dbri_cmdwait(struct snd_dbri
+ 	}
+ 	spin_unlock_irqrestore(&dbri->lock, flags);
+ 
+-	if (maxloops == 0) {
++	if (maxloops == 0)
+ 		printk(KERN_ERR "DBRI: Chip never completed command buffer\n");
+-	} else {
++	else
+ 		dprintk(D_CMD, "Chip completed command buffer (%d)\n",
+ 			MAXLOOPS - maxloops - 1);
+-	}
+ }
+ /*
+- * Lock the command queue and returns pointer to a space for len cmd words
++ * Lock the command queue and return pointer to space for len cmd words
+  * It locks the cmdlock spinlock.
+  */
+ static s32 *dbri_cmdlock(struct snd_dbri *dbri, int len)
+@@ -749,7 +748,7 @@ static void dbri_reset(struct snd_dbri *
+ }
+ 
+ /* Lock must not be held before calling this */
+-static void dbri_initialize(struct snd_dbri *dbri)
++static void __init dbri_initialize(struct snd_dbri *dbri)
+ {
+ 	s32 *cmd;
+ 	u32 dma_addr;
+@@ -804,7 +803,7 @@ list ordering, among other things.  The 
+ here interface closely with the transmit and receive interrupt code.
+ 
+ */
+-static int pipe_active(struct snd_dbri *dbri, int pipe)
++static inline int pipe_active(struct snd_dbri *dbri, int pipe)
+ {
+ 	return ((pipe >= 0) && (dbri->pipes[pipe].desc != -1));
+ }
+@@ -1148,6 +1147,7 @@ static int setup_descs(struct snd_dbri *
+ 			if (!dbri->dma->desc[desc].ba)
+ 				break;
+ 		}
++
+ 		if (desc == DBRI_NO_DESCS) {
+ 			printk(KERN_ERR "DBRI: setup_descs: No descriptors\n");
+ 			return -1;
+@@ -1308,7 +1308,7 @@ to the DBRI via the CHI interface and fe
+  * Lock must not be held before calling it.
+ 
+ */
+-static void cs4215_setup_pipes(struct snd_dbri *dbri)
++static __init void cs4215_setup_pipes(struct snd_dbri *dbri)
+ {
+ 	unsigned long flags;
+ 
+@@ -1341,7 +1341,7 @@ static void cs4215_setup_pipes(struct sn
+ 	dbri_cmdwait(dbri);
+ }
+ 
+-static int cs4215_init_data(struct cs4215 *mm)
++static __init int cs4215_init_data(struct cs4215 *mm)
+ {
+ 	/*
+ 	 * No action, memory resetting only.
+@@ -1633,7 +1633,7 @@ static int cs4215_prepare(struct snd_dbr
+ /*
+  *
+  */
+-static int cs4215_init(struct snd_dbri *dbri)
++static __init int cs4215_init(struct snd_dbri *dbri)
+ {
+ 	u32 reg2 = sbus_readl(dbri->regs + REG2);
+ 	dprintk(D_MM, "cs4215_init: reg2=0x%x\n", reg2);
+@@ -1771,13 +1771,10 @@ static void xmit_descs(struct snd_dbri *
+ 
+ static void transmission_complete_intr(struct snd_dbri *dbri, int pipe)
+ {
+-	struct dbri_streaminfo *info;
+-	int td;
++	struct dbri_streaminfo *info = &dbri->stream_info[DBRI_PLAY];
++	int td = dbri->pipes[pipe].desc;
+ 	int status;
+ 
+-	info = &dbri->stream_info[DBRI_PLAY];
+-
+-	td = dbri->pipes[pipe].desc;
+ 	while (td >= 0) {
+ 		if (td >= DBRI_NO_DESCS) {
+ 			printk(KERN_ERR "DBRI: invalid td on pipe %d\n", pipe);
+@@ -1798,12 +1795,9 @@ static void transmission_complete_intr(s
+ 	}
+ 
+ 	/* Notify ALSA */
+-	if (spin_is_locked(&dbri->lock)) {
+-		spin_unlock(&dbri->lock);
+-		snd_pcm_period_elapsed(info->substream);
+-		spin_lock(&dbri->lock);
+-	} else
+-		snd_pcm_period_elapsed(info->substream);
++	spin_unlock(&dbri->lock);
++	snd_pcm_period_elapsed(info->substream);
++	spin_lock(&dbri->lock);
+ }
+ 
+ static void reception_complete_intr(struct snd_dbri *dbri, int pipe)
+@@ -1830,12 +1824,9 @@ static void reception_complete_intr(stru
+ 		rd, DBRI_RD_STATUS(status), DBRI_RD_CNT(status));
+ 
+ 	/* Notify ALSA */
+-	if (spin_is_locked(&dbri->lock)) {
+-		spin_unlock(&dbri->lock);
+-		snd_pcm_period_elapsed(info->substream);
+-		spin_lock(&dbri->lock);
+-	} else
+-		snd_pcm_period_elapsed(info->substream);
++	spin_unlock(&dbri->lock);
++	snd_pcm_period_elapsed(info->substream);
++	spin_lock(&dbri->lock);
+ }
+ 
+ static void dbri_process_one_interrupt(struct snd_dbri *dbri, int x)
+@@ -1986,10 +1977,10 @@ static irqreturn_t snd_dbri_interrupt(in
+ 		PCM Interface
+ ****************************************************************************/
+ static struct snd_pcm_hardware snd_dbri_pcm_hw = {
+-	.info		= (SNDRV_PCM_INFO_MMAP |
+-			   SNDRV_PCM_INFO_INTERLEAVED |
+-			   SNDRV_PCM_INFO_BLOCK_TRANSFER |
+-			   SNDRV_PCM_INFO_MMAP_VALID),
++	.info		= SNDRV_PCM_INFO_MMAP |
++			  SNDRV_PCM_INFO_INTERLEAVED |
++			  SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			  SNDRV_PCM_INFO_MMAP_VALID,
+ 	.formats	= SNDRV_PCM_FMTBIT_MU_LAW |
+ 			  SNDRV_PCM_FMTBIT_A_LAW |
+ 			  SNDRV_PCM_FMTBIT_U8 |
+@@ -1999,7 +1990,7 @@ static struct snd_pcm_hardware snd_dbri_
+ 	.rate_max		= 48000,
+ 	.channels_min		= 1,
+ 	.channels_max		= 2,
+-	.buffer_bytes_max	= (64 * 1024),
++	.buffer_bytes_max	= 64 * 1024,
+ 	.period_bytes_min	= 1,
+ 	.period_bytes_max	= DBRI_TD_MAXCNT,
+ 	.periods_min		= 1,
+@@ -2266,11 +2257,10 @@ static int snd_cs4215_info_volume(struct
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = 2;
+ 	uinfo->value.integer.min = 0;
+-	if (kcontrol->private_value == DBRI_PLAY) {
++	if (kcontrol->private_value == DBRI_PLAY)
+ 		uinfo->value.integer.max = DBRI_MAX_VOLUME;
+-	} else {
++	else
+ 		uinfo->value.integer.max = DBRI_MAX_GAIN;
+-	}
+ 	return 0;
+ }
+ 
+@@ -2304,7 +2294,7 @@ static int snd_cs4215_put_volume(struct 
+ 		info->right_gain = ucontrol->value.integer.value[1];
+ 		changed = 1;
+ 	}
+-	if (changed == 1) {
++	if (changed) {
+ 		/* First mute outputs, and wait 1/8000 sec (125 us)
+ 		 * to make sure this takes.  This avoids clicking noises.
+ 		 */
+@@ -2443,8 +2433,9 @@ static int __init snd_dbri_mixer(struct 
+ 	strcpy(card->mixername, card->shortname);
+ 
+ 	for (idx = 0; idx < ARRAY_SIZE(dbri_controls); idx++) {
+-		if ((err = snd_ctl_add(card,
+-				snd_ctl_new1(&dbri_controls[idx], dbri))) < 0)
++		err = snd_ctl_add(card,
++				snd_ctl_new1(&dbri_controls[idx], dbri));
++		if (err < 0)
+ 			return err;
+ 	}
+ 
+@@ -2485,8 +2476,8 @@ static void dbri_debug_read(struct snd_i
+ 				    "Pipe %d: %s SDP=0x%x desc=%d, "
+ 				    "len=%d next %d\n",
+ 				    pipe,
+-				   ((pptr->sdp & D_SDP_TO_SER) ? "output" :
+-								 "input"),
++				   (pptr->sdp & D_SDP_TO_SER) ? "output" :
++								 "input",
+ 				    pptr->sdp, pptr->desc,
+ 				    pptr->length, pptr->nextpipe);
+ 		}
+@@ -2502,7 +2493,7 @@ void snd_dbri_proc(struct snd_dbri *dbri
+ 		snd_info_set_text_ops(entry, dbri, dbri_regs_read);
+ 
+ #ifdef DBRI_DEBUG
+-	if (! snd_card_proc_new(dbri->card, "debug", &entry)) {
++	if (!snd_card_proc_new(dbri->card, "debug", &entry)) {
+ 		snd_info_set_text_ops(entry, dbri, dbri_debug_read);
+ 		entry->mode = S_IFREG | S_IRUGO;	/* Readable only. */
+ 	}
+@@ -2633,11 +2624,12 @@ static int __init dbri_attach(int prom_n
+ 	}
+ 
+ 	dbri = card->private_data;
+-	if ((err = snd_dbri_pcm(dbri)) < 0)
++	err = snd_dbri_pcm(dbri);
++	if (err < 0)
+ 		goto _err;
+ 
+-	if ((err = snd_dbri_mixer(dbri)) < 0)
+-	if ((err = snd_dbri_mixer(dbri)) < 0)
++	err = snd_dbri_mixer(dbri);
++	if (err < 0)
+ 		goto _err;
+ 
+ 	/* /proc file handling */
