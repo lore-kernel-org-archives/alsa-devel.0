@@ -1,19 +1,24 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] ad1848_lib: replace common delay loop by
- function
-Date: Wed, 05 Sep 2007 00:41:25 +0200
-Message-ID: <46DDDF15.8040606@gmail.com>
-References: <20070904235332.ca7a3c56.krzysztof.h1@wp.pl>
+From: Timur Tabi <timur@freescale.com>
+Subject: How can I make sure the period size is a multiple of
+	16?
+Date: Tue, 04 Sep 2007 17:50:31 -0500
+Message-ID: <46DDE137.2070507@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3288B103967
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 65AEF103967
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Sep 2007 00:47:49 +0200 (CEST)
-In-Reply-To: <20070904235332.ca7a3c56.krzysztof.h1@wp.pl>
+	Wed,  5 Sep 2007 00:50:35 +0200 (CEST)
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by de01egw01.freescale.net (8.12.11/de01egw01) with ESMTP id
+	l84MoW2K028541
+	for <alsa-devel@alsa-project.org>; Tue, 4 Sep 2007 15:50:32 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id l84MoVaj020851
+	for <alsa-devel@alsa-project.org>; Tue, 4 Sep 2007 17:50:32 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +28,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@wp.pl>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/04/2007 11:53 PM, Krzysztof Helt wrote:
+To work around a hardware issue, my ASoC driver requires the period size to be 
+a multiple of 16.  What is the best way to ensure that?
 
-> +static void snd_ad1848_ready(struct snd_ad1848 *chip)
-
-Same request for a name change -- "ready" sounds boolean to me...
-
-> -#if 0
-> -	printk("codec out - reg 0x%x = 0x%x\n", chip->mce_bit | reg, value);
-> -#endif
-
-Grrrrrr.
-
-Rene.
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
