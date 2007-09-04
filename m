@@ -1,17 +1,32 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: How to control the route in smartphone
-Date: Tue, 04 Sep 2007 18:46:36 +0100
-Message-ID: <1188927997.3350.81.camel@localhost.localdomain>
-References: <24796D40B87E66409C5ABD9733F46E024235F9@mtnex1.mtn.palmsource.com>
+From: "Pablo N. Hess" <phess@linuxnewmedia.com.br>
+Subject: HDA Conexant: is mic boost possible?
+Date: Tue, 04 Sep 2007 11:14:58 -0300
+Message-ID: <46DD6862.6070400@linuxnewmedia.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06F9010395E
+Received: from mail.linuxnewmedia.com.br (mail.linuxnewmedia.com.br
+	[189.14.98.138])
+	by alsa0.perex.cz (Postfix) with ESMTP id 142F9103954
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Sep 2007 19:46:39 +0200 (CEST)
-In-Reply-To: <24796D40B87E66409C5ABD9733F46E024235F9@mtnex1.mtn.palmsource.com>
+	Tue,  4 Sep 2007 16:19:12 +0200 (CEST)
+Received: from endeavour.linuxnewmedia.com.br (c9534038.virtua.com.br
+	[201.83.64.56])
+	by mail.linuxnewmedia.com.br (Postfix) with ESMTP id E0FB23800C54
+	for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2007 11:22:44 -0300 (BRT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by endeavour.linuxnewmedia.com.br (Postfix) with ESMTP id DA33EFF2E
+	for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2007 11:18:53 -0300 (BRT)
+Received: from endeavour.linuxnewmedia.com.br ([127.0.0.1])
+	by localhost (endeavour [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id 20785-01-2 for <alsa-devel@alsa-project.org>;
+	Tue, 4 Sep 2007 11:18:50 -0300 (BRT)
+Received: from [192.168.1.176] (unknown [192.168.1.176])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client did not present a certificate)
+	by endeavour.linuxnewmedia.com.br (Postfix) with ESMTP id 21FA5FF22
+	for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2007 11:18:39 -0300 (BRT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,67 +36,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leijin Tang <Leijin.Tang@access-company.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDA3LTA5LTA0IGF0IDE1OjE0ICswODAwLCBMZWlqaW4gVGFuZyB3cm90ZToKPiBI
-aSBhbGwsCj4gCj4gICAgICBXaGVuIHRoZSBhdWRpbyBjb2RlYyBpcyB1c2VkIGluIHRoZSBzbWFy
-dHBob25lLCB3ZSBnZXQgdGhlIHByb2JsZW0gaG93IHRvIGRlZmluZSBhbmQgY29udHJvbCB0aGUg
-cm91dGUgaW4gdGhlIGFsc2EgZHJpdmVyLiBUaGUgc2NlbmFyaW8gaXMgb25seSBpbiB0aGUgcGhv
-bmUgZGV2aWNlLiBUaGUgYXBwbGljYXRpb24gbmVlZCBzd2l0Y2ggdGhlIHJvdXRlcyBiYXNlZCBv
-biB0aGUgZGlmZmVyZW50IHNjZW5lcy4gCgpUaGlzIGlzIHNvbWV0aGluZyBJJ3ZlIGJlZW4gbG9v
-a2luZyBpbnRvIGZvciB0aGUgbGFzdCB5ZWFyIGFuZCBzYWRseQpoYXZlIG5vdCBoYWQgYW55IGRl
-dmVsb3BtZW50IHRpbWUgdG8gY29tbWl0IHRvIGl0LiBJdCdzIGFsc28gc29tZXRoaW5nCnRoZSBv
-cGVubW9rbyBndXlzIGFyZSBsb29raW5nIGF0IHRvby4gQXRtIHRoZXJlIGlzIG5vIEFMU0EgQVBJ
-IG9yIGNvbmZpZwpmaWxlIGZvcm1hdCBmb3IgY2hhbmdpbmcvZGVmaW5pbmcgc2NlbmFyaW9zLgoK
-RndpdywgdGhlIE9wZW5aYXVydXMgbWFjaGluZXMgZG8gQUxTQSBzY2VuYXJpbyBhdG0gdXNpbmcg
-YW4gYWxzYWN0bCBkdW1wCmZvciBlYWNoIHNjZW5hcmlvLiBUaGlzIGlzIGNoYW5nZWQgYnkgdXNl
-ciBzcGFjZSB3aGVuIHRoZSBkZXZpY2UKc2NlbmFyaW8gaXMgY2hhbmdlZC4gKGdvb2dsZSBmb3Ig
-emF1cnVzZCBmb3IgaW5mbykgICAKCj4gCj4gRXhhbXBsZTogdGhlIGNvZWRlYyBpcyB3bTk3MTNM
-Lgo+IAo+IHRoZSBpbiBwb3J0OiBMSU5FTO+8jExJTkVS77yMTU9OT0lO77yMTUlDMe+8jE1JQzIs
-IGFjOTdfaW4gCj4gCj4gdGhlIG91dCBwb3J0OiBIRUFEU0VULCBTUEVBS0VSLCBSRUNFSVZFUiwg
-YWM5N19vdXQgCj4gCj4gV2hlbiB0aGUgcGhvbmUgaXMgY29taW5nLCB3ZSBuZWVkIGNob3NlIHRo
-ZSByb3V0ZSBMSU5FIHRvIHJlY2VpdmVyLiBBZnRlciB0aGUgY2FsbGluZyBhbmQgcGxheWluZyB0
-aGUgbXAzLCB3ZSBzaG91bGQgc3dpdGNoIHRoZSByb3V0ZSBhYzk3X2luIHRvIHNwZWFrZXIgb24u
-Cj4gCj4gVGhpcyBzY2VuYXJpbyBkb2VzbuKAmXQgYXBwZWFyIGluIHRoZSBQQy4gU28gaG93IHRv
-IGNhcnJ5IG91dCB0aGUgZnVuY3Rpb24gaW4gdGhlIGFsc2EgYXJjaGl0ZWN0dXJlIGlzIHNvIGRp
-ZmZpY3VsdHkuIFRoZSByb3V0ZXIgbmFtZXMgaG93IHRvIGRlZmluZSwgdGhlIGFsc2EtbGliIGhv
-dyB0byBkbyB0aGUgY29udHJvbC5UaGVyZSBoYXMgbm8gZGVzaWduIHRvIHRoZSBwaG9uZSBkZXZp
-Y2UgaW4gdGhlIGFsc2EgYnkgbm93LiAKPiAKPiBEb2VzIGFueWJvZHkgaGF2ZSBzb21lIGlkZWFz
-PyBXZSBjYW4gZG8gc29tZSBkaXNjdXNzaW9uIGFuZCByZXNvbHZlIHRoZSBpc3N1ZS4gCj4gCgpJ
-ZGVhbGx5LCB3ZSBzaG91bGQgYmUgYWJsZSB0byBzcGVjaWZ5IHNjZW5hcmlvcyBpbiBhIHRleHQg
-ZmlsZS4gVGhpcwpmaWxlIGNvdWxkIGVpdGhlciBsaXN0IHRoZSBzb3VyY2VzIGFuZCBzaW5rcyB3
-aXRoaW4gZWFjaCBzY2VuYXJpbyAoZm9yCmFuIGF1dG9yb3V0ZXIgdG8gc2V0IC0gKEkgaGF2ZSBz
-b21lIGF1dG9yb3V0ZXIgY29kZSkpIG9yIGxpc3QgYSBzZXJpZXMKb2Yga2NvbnRyb2wgc2V0dGlu
-Z3MgZm9yIGVhY2ggc2NlbmFyaW8gb3IgYm90aC4KCmUuZy4gKGZvciBhdXRvcm91dGVyKQoKU2Nl
-bmFyaW8gIkhlYWRwaG9uZSBQbGF5YmFjayIgewogIFNvdXJjZSAiTGVmdCBEQUMiCiAgU291cmNl
-ICJSaWdodCBEQUMiCiAgU2luayAiTGVmdCBPdXQxIgogIFNpbmsgIlJpZ2h0IE91dDEiCiAgVm9s
-dW1lICJPdXQxIFBsYXliYWNrIFZvbHVtZSIKICBNdXRlICJPdXQxIFBsYXliYWNrIFN3aXRjaCIK
-fQoKZS5nLiAoZm9yIGtjb250cm9sIHNlcmllcykKClNjZW5hcmlvICJIZWFkcGhvbmUgUGxheWJh
-Y2siIHsKICBDb250cm9sICJPdXQxIExlZnQgTWl4ZXIgUGxheWJhY2sgU3dpdGNoIiBWYWx1ZSAi
-dHJ1ZSIKICBDb250cm9sICJPdXQxIFJpZ2h0IE1peGVyIFBsYXliYWNrIFN3aXRjaCIgVmFsdWUg
-InRydWUiCiAgVm9sdW1lICJPdXQxIFBsYXliYWNrIFZvbHVtZSIKICBNdXRlICJPdXQxIFBsYXli
-YWNrIFN3aXRjaCIKfQoKCk5vdGU6IFRoZXNlIGFyZSBqdXN0IGV4YW1wbGUgZm9ybWF0cywgdGhl
-eSBuZWVkIHNvbWUgdGhvdWdodC4KClRoZSBzY2VuYXJpb3Mgc2hvdWxkIGFsc28gYmUgYWJsZSB0
-byByZSBhbGlhcyB2b2x1bWVzLCBtdXRlcyBldGMgYXMgd2VsbAphcyBhbHRlcmluZyBpbnRlcm5h
-bCBjb2RlYyByb3V0ZXMuIFRoaXMgaXMgYmVjYXVzZSB0aGUgY2hhbmdpbmcgcm91dGUKb2Z0ZW4g
-Y2hhbmdlcyB0aGUgYWxzYSBjb250cm9scyBmb3Igdm9sdW1lLCBtdXRlIGV0YyBhcyB3ZWxsLiBU
-aGlzIHdheQoibWFzdGVyIHZvbHVtZSIgd2lsbCBhbHdheXMgYmUgIm1hc3RlciB2b2x1bWUiIHRv
-IHVzZXIgYXBwcyByZWdhcmRsZXNzCm9mIHRoZSBhY3R1YWwgc2NlbmFyaW8uCgpXZSBzaG91bGQg
-cHJvYmFibHkgYWxzbyBhZGQgc29tZSBuZXcgZnVuY3Rpb24gY2FsbHMgdG8gYWxzYS1saWIgaW4g
-b3JkZXIKZ2V0L3NldCBzY2VuYXJpbyBlLmcuCgpzbmRfc2NlbmFyaW9fZ2V0KCkgIC0gZ2V0cyB0
-aGUgY3VycmVudCBzY2VuYXJpbwpzbmRfc2NlbmFyaW9fc2V0KCkgIC0gc2V0cyB0aGUgc2NlbmFy
-aW8Kc25kX3NjZW5hcmlvX2xpc3QoKSAtIGxpc3RzIGFsbCB0aGUgYXZhaWxhYmxlIHNjZW5hcmlv
-cyBzdXBwb3J0ZWQgYnkKc291bmQgY2FyZC4KCkZpbmFsbHksIEkgYWxzbyB3b3VsZCBkZWZpbmUg
-YSBzZXQgb2Ygc3RhbmRhcmQgc2NlbmFyaW9zLiBUaGlzIHdvdWxkCmFsbG93IGFwcGxpY2F0aW9u
-IHNvZnR3YXJlIHRvIGJlY29tZSBmYXIgbW9yZSBwb3J0YWJsZSBiZXR3ZWVuIGRldmljZXMuCmku
-ZS4gdGhlIGFwcCB3b3VsZCBqdXN0IG5lZWQgdG8gYXNrIGZvciAiVm9pY2UgQ2FsbCBIYW5kc2V0
-IiBpbnN0ZWFkIG9mCmtub3dpbmcgdGhlIHNjZW5hcmlvIG5hbWUgZm9yIGVhY2ggbWFjaGluZS4g
-Q3VzdG9tIHNjZW5hcmlvcyBzaG91bGQgYWxzbwpiZSBwZXJtaXR0ZWQuCgpUaGlzIGlzIGp1c3Qg
-YSBicmFpbiBkdW1wIGF0bSwgSSdsbCB0cnkgYW5kIGNsYXJpZnkgaXQgYSBiaXQgdG8gbWFrZQpt
-b3JlIHNlbnNlIGxhdGVyLiBJIGFsc28gaGF2ZSB0byBwb3N0IGEgc2ltaWxhciBtYWlsIHRvIHRo
-ZSBvaG0tZGV2ZWwKbGlzdCBzbyBJJ2xsIGNyb3NzIHBvc3QgaWYgbm8gb25lIG1pbmRzLgoKTGlh
-bQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+I have to make the sound chip of a Itautec W7635 (= FIC VA250D) work on 
+a Gentoo(-based) distro (I'm now trying Sabayon).
+It is a HDA-intel (Conexant codec).
+
+Using my earphones as a stereo mic, recording with 'arecord -f cd' has 
+always worked perfectly fine, from alsa-driver-1.0.14 on.
+
+However, when using a regular mono mic (like the ones that come in 
+common headsets), recording simply does *not* work.
+
+Here's the quick info:
+
+alsa-driver-1.0.14:
+   playback: ok
+   recording:
+     stereo mic: ok
+     mono mic: no input at all (very high volume already tried)
+
+alsa-driver-1.0.15rc1:
+   playback: ok (even better than with alsa-driver-1.0.14)
+   recording:
+     stereo mic: ok (seems better thatn with alsa-driver-1.0.14)
+     mono mic: *very* very low volume, bad quality, lots of low-volume 
+noise, too.
+
+
+Now the paragraphed info:
+
+Playback is perfectly ok since alsa-driver-1.0.14, just like recording 
+with an earphone as a stereo mic.
+
+With alsa-driver-1.0.14, definitely no mono-mic input works, no matter 
+the settings at alsamixer.
+With alsa-driver-1.0.15rc1, mono-mic input works very very bad 
+(extremely low volume, terrible quality, lots of clicks and noise).
+
+I guess that the mono mic needs a mic boost in alsa-driver-1.0.15rc1. 
+However, with a 'grep -i "mic boost" .../pci/hda/*.c' 
+(alsa-driver-1.0.15rc1 source code), it seems that only patch-realtek.c 
+and patch-analog.c support this feature.
+
+Is it even possible to add a mic boost feature to this codec?
+
+The output of alsa-info.sh with alsa-driver-1.0.15rc1 is at:
+http://pastebin.ca/681023
+
+Thanks a lot for any info, and congratulations to all of you for your 
+terrific work with ALSA.
+
+Pablo Hess
