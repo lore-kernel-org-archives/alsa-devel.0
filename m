@@ -1,20 +1,17 @@
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
-Subject: [PATCH] dbri: conversion to OpenFirmware framework
-	(2nd version)
-Date: Tue, 4 Sep 2007 18:42:32 +0200
-Message-ID: <20070904184232.a7146a5e.krzysztof.h1@wp.pl>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: How to control the route in smartphone
+Date: Tue, 04 Sep 2007 18:46:36 +0100
+Message-ID: <1188927997.3350.81.camel@localhost.localdomain>
+References: <24796D40B87E66409C5ABD9733F46E024235F9@mtnex1.mtn.palmsource.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0458103955
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id 06F9010395E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Sep 2007 18:36:27 +0200 (CEST)
-Received: from host-87-99-61-239.lanet.net.pl (HELO krzysio.net)
-	(krzysztof.h1@[87.99.61.239]) (envelope-sender <krzysztof.h1@wp.pl>)
-	by smtp.wp.pl (WP-SMTPD) with SMTP
-	for <alsa-devel@alsa-project.org>; 4 Sep 2007 18:36:18 +0200
+	Tue,  4 Sep 2007 19:46:39 +0200 (CEST)
+In-Reply-To: <24796D40B87E66409C5ABD9733F46E024235F9@mtnex1.mtn.palmsource.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,338 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: Leijin Tang <Leijin.Tang@access-company.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
-
-This patch converts the dbri driver to use OF framework.
-
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-
----
-
-This patch requires the previous dbri patch with more
-code improvements posted yesterday.
-
-diff -urp linux-2.6.23.orig/sound/sparc/dbri.c linux-2.6.23/sound/sparc/dbri.c
---- linux-2.6.23.orig/sound/sparc/dbri.c	2007-09-04 18:34:14.000000000 +0200
-+++ linux-2.6.23/sound/sparc/dbri.c	2007-09-04 18:38:20.638614486 +0200
-@@ -66,6 +66,7 @@
- #include <sound/control.h>
- #include <sound/initval.h>
- 
-+#include <asm/prom.h>
- #include <asm/sbus.h>
- #include <asm/atomic.h>
- 
-@@ -296,8 +297,6 @@ struct dbri_streaminfo {
- 
- /* This structure holds the information for both chips (DBRI & CS4215) */
- struct snd_dbri {
--	struct snd_card *card;	/* ALSA card */
--
- 	int regs_size, irq;	/* Needed for unload */
- 	struct sbus_dev *sdev;	/* SBUS device info */
- 	spinlock_t lock;
-@@ -318,8 +317,6 @@ struct snd_dbri {
- 	struct cs4215 mm;	/* mmcodec special info */
- 				/* per stream (playback/record) info */
- 	struct dbri_streaminfo stream_info[DBRI_NO_STREAMS];
--
--	struct snd_dbri *next;
- };
- 
- #define DBRI_MAX_VOLUME		63	/* Output volume */
-@@ -571,8 +568,6 @@ struct snd_dbri {
- #define DBRI_STREAM(dbri, substream)	\
- 		&dbri->stream_info[DBRI_STREAMNO(substream)]
- 
--static struct snd_dbri *dbri_list;	/* All DBRI devices */
--
- /*
-  * Short data pipes transmit LSB first. The CS4215 receives MSB first. Grrr.
-  * So we have to reverse the bits. Note: not all bit lengths are supported
-@@ -748,7 +743,7 @@ static void dbri_reset(struct snd_dbri *
- }
- 
- /* Lock must not be held before calling this */
--static void __init dbri_initialize(struct snd_dbri *dbri)
-+static void __devinit dbri_initialize(struct snd_dbri *dbri)
- {
- 	s32 *cmd;
- 	u32 dma_addr;
-@@ -1308,7 +1303,7 @@ to the DBRI via the CHI interface and fe
-  * Lock must not be held before calling it.
- 
- */
--static __init void cs4215_setup_pipes(struct snd_dbri *dbri)
-+static __devinit void cs4215_setup_pipes(struct snd_dbri *dbri)
- {
- 	unsigned long flags;
- 
-@@ -1341,7 +1336,7 @@ static __init void cs4215_setup_pipes(st
- 	dbri_cmdwait(dbri);
- }
- 
--static __init int cs4215_init_data(struct cs4215 *mm)
-+static __devinit int cs4215_init_data(struct cs4215 *mm)
- {
- 	/*
- 	 * No action, memory resetting only.
-@@ -1633,7 +1628,7 @@ static int cs4215_prepare(struct snd_dbr
- /*
-  *
-  */
--static __init int cs4215_init(struct snd_dbri *dbri)
-+static __devinit int cs4215_init(struct snd_dbri *dbri)
- {
- 	u32 reg2 = sbus_readl(dbri->regs + REG2);
- 	dprintk(D_MM, "cs4215_init: reg2=0x%x\n", reg2);
-@@ -2218,12 +2213,12 @@ static struct snd_pcm_ops snd_dbri_ops =
- 	.pointer = snd_dbri_pointer,
- };
- 
--static int __devinit snd_dbri_pcm(struct snd_dbri *dbri)
-+static int __devinit snd_dbri_pcm(struct snd_card *card)
- {
- 	struct snd_pcm *pcm;
- 	int err;
- 
--	if ((err = snd_pcm_new(dbri->card,
-+	if ((err = snd_pcm_new(card,
- 			       /* ID */		    "sun_dbri",
- 			       /* device */	    0,
- 			       /* playback count */ 1,
-@@ -2234,9 +2229,9 @@ static int __devinit snd_dbri_pcm(struct
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_dbri_ops);
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_dbri_ops);
- 
--	pcm->private_data = dbri;
-+	pcm->private_data = card->private_data;
- 	pcm->info_flags = 0;
--	strcpy(pcm->name, dbri->card->shortname);
-+	strcpy(pcm->name, card->shortname);
- 
- 	if ((err = snd_pcm_lib_preallocate_pages_for_all(pcm,
- 			SNDRV_DMA_TYPE_CONTINUOUS,
-@@ -2422,14 +2417,14 @@ static struct snd_kcontrol_new dbri_cont
- 	CS4215_SINGLE("Mic boost", 4, 4, 1, 1)
- };
- 
--static int __init snd_dbri_mixer(struct snd_dbri *dbri)
-+static int __devinit snd_dbri_mixer(struct snd_card *card)
- {
--	struct snd_card *card;
- 	int idx, err;
-+	struct snd_dbri *dbri;
- 
--	snd_assert(dbri != NULL && dbri->card != NULL, return -EINVAL);
-+	snd_assert(card != NULL && card->private_data != NULL, return -EINVAL);
-+	dbri = card->private_data;
- 
--	card = dbri->card;
- 	strcpy(card->mixername, card->shortname);
- 
- 	for (idx = 0; idx < ARRAY_SIZE(dbri_controls); idx++) {
-@@ -2485,15 +2480,16 @@ static void dbri_debug_read(struct snd_i
- }
- #endif
- 
--void snd_dbri_proc(struct snd_dbri *dbri)
-+void __devinit snd_dbri_proc(struct snd_card *card)
- {
-+	struct snd_dbri *dbri = card->private_data;
- 	struct snd_info_entry *entry;
- 
--	if (!snd_card_proc_new(dbri->card, "regs", &entry))
-+	if (!snd_card_proc_new(card, "regs", &entry))
- 		snd_info_set_text_ops(entry, dbri, dbri_regs_read);
- 
- #ifdef DBRI_DEBUG
--	if (!snd_card_proc_new(dbri->card, "debug", &entry)) {
-+	if (!snd_card_proc_new(card, "debug", &entry)) {
- 		snd_info_set_text_ops(entry, dbri, dbri_debug_read);
- 		entry->mode = S_IFREG | S_IRUGO;	/* Readable only. */
- 	}
-@@ -2507,17 +2503,16 @@ void snd_dbri_proc(struct snd_dbri *dbri
- */
- static void snd_dbri_free(struct snd_dbri *dbri);
- 
--static int __init snd_dbri_create(struct snd_card *card,
-+static int __devinit snd_dbri_create(struct snd_card *card,
- 				  struct sbus_dev *sdev,
--				  struct linux_prom_irqs *irq, int dev)
-+				  int irq, int dev)
- {
- 	struct snd_dbri *dbri = card->private_data;
- 	int err;
- 
- 	spin_lock_init(&dbri->lock);
--	dbri->card = card;
- 	dbri->sdev = sdev;
--	dbri->irq = irq->pri;
-+	dbri->irq = irq;
- 
- 	dbri->dma = sbus_alloc_consistent(sdev, sizeof(struct dbri_dma),
- 					  &dbri->dma_dvma);
-@@ -2555,9 +2550,6 @@ static int __init snd_dbri_create(struct
- 		return err;
- 	}
- 
--	dbri->next = dbri_list;
--	dbri_list = dbri;
--
- 	return 0;
- }
- 
-@@ -2577,20 +2569,19 @@ static void snd_dbri_free(struct snd_dbr
- 				     (void *)dbri->dma, dbri->dma_dvma);
- }
- 
--static int __init dbri_attach(int prom_node, struct sbus_dev *sdev)
-+static int __devinit dbri_probe(struct of_device *of_dev,
-+				const struct of_device_id *match)
- {
-+	struct sbus_dev *sdev = to_sbus_device(&of_dev->dev);
- 	struct snd_dbri *dbri;
--	struct linux_prom_irqs irq;
-+	int irq;
- 	struct resource *rp;
- 	struct snd_card *card;
- 	static int dev = 0;
- 	int err;
- 
--	if (sdev->prom_name[9] < 'e') {
--		printk(KERN_ERR "DBRI: unsupported chip version %c found.\n",
--		       sdev->prom_name[9]);
--		return -EIO;
--	}
-+	dprintk(D_GEN, "DBRI: Found %s in SBUS slot %d\n",
-+		sdev->prom_name, sdev->slot);
- 
- 	if (dev >= SNDRV_CARDS)
- 		return -ENODEV;
-@@ -2599,10 +2590,9 @@ static int __init dbri_attach(int prom_n
- 		return -ENOENT;
- 	}
- 
--	err = prom_getproperty(prom_node, "intr", (char *)&irq, sizeof(irq));
--	if (err < 0) {
--		printk(KERN_ERR "DBRI-%d: Firmware node lacks IRQ property.\n",
--			dev);
-+	irq = sdev->irqs[0];
-+	if (irq <= 0) {
-+		printk(KERN_ERR "DBRI-%d: No IRQ.\n", dev);
- 		return -ENODEV;
- 	}
- 
-@@ -2616,24 +2606,26 @@ static int __init dbri_attach(int prom_n
- 	rp = &sdev->resource[0];
- 	sprintf(card->longname, "%s at 0x%02lx:0x%016Lx, irq %d",
- 		card->shortname,
--		rp->flags & 0xffL, (unsigned long long)rp->start, irq.pri);
-+		rp->flags & 0xffL, (unsigned long long)rp->start, irq);
- 
--	if ((err = snd_dbri_create(card, sdev, &irq, dev)) < 0) {
-+	err = snd_dbri_create(card, sdev, irq, dev);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 
- 	dbri = card->private_data;
--	err = snd_dbri_pcm(dbri);
-+	err = snd_dbri_pcm(card);
- 	if (err < 0)
- 		goto _err;
- 
--	err = snd_dbri_mixer(dbri);
-+	err = snd_dbri_mixer(card);
- 	if (err < 0)
- 		goto _err;
- 
- 	/* /proc file handling */
--	snd_dbri_proc(dbri);
-+	snd_dbri_proc(card);
-+	dev_set_drvdata(&of_dev->dev, card);
- 
- 	err = snd_card_register(card);
- 	if (err < 0)
-@@ -2652,43 +2644,46 @@ _err:
- 	return err;
- }
- 
--/* Probe for the dbri chip and then attach the driver. */
--static int __init dbri_init(void)
-+static int __devexit dbri_remove(struct of_device *dev)
- {
--	struct sbus_bus *sbus;
--	struct sbus_dev *sdev;
--	int found = 0;
--
--	/* Probe each SBUS for the DBRI chip(s). */
--	for_all_sbusdev(sdev, sbus) {
--		/*
--		 * The version is coded in the last character
--		 */
--		if (!strncmp(sdev->prom_name, "SUNW,DBRI", 9)) {
--			dprintk(D_GEN, "DBRI: Found %s in SBUS slot %d\n",
--				sdev->prom_name, sdev->slot);
-+	struct snd_card *card = dev_get_drvdata(&dev->dev);
- 
--			if (dbri_attach(sdev->prom_node, sdev) == 0)
--				found++;
--		}
--	}
-+	snd_dbri_free(card->private_data);
-+	snd_card_free(card);
- 
--	return (found > 0) ? 0 : -EIO;
-+	dev_set_drvdata(&dev->dev, NULL);
-+
-+	return 0;
- }
- 
--static void __exit dbri_exit(void)
--{
--	struct snd_dbri *this = dbri_list;
-+static struct of_device_id dbri_match[] = {
-+	{
-+		.name = "SUNW,DBRIe",
-+	},
-+	{
-+		.name = "SUNW,DBRIf",
-+	},
-+	{},
-+};
- 
--	while (this != NULL) {
--		struct snd_dbri *next = this->next;
--		struct snd_card *card = this->card;
-+MODULE_DEVICE_TABLE(of, dbri_match);
- 
--		snd_dbri_free(this);
--		snd_card_free(card);
--		this = next;
--	}
--	dbri_list = NULL;
-+static struct of_platform_driver dbri_sbus_driver = {
-+	.name		= "dbri",
-+	.match_table	= dbri_match,
-+	.probe		= dbri_probe,
-+	.remove		= __devexit_p(dbri_remove),
-+};
-+
-+/* Probe for the dbri chip and then attach the driver. */
-+static int __init dbri_init(void)
-+{
-+	return of_register_driver(&dbri_sbus_driver, &sbus_bus_type);
-+}
-+
-+static void __exit dbri_exit(void)
-+{
-+	of_unregister_driver(&dbri_sbus_driver);
- }
- 
- module_init(dbri_init);
+T24gVHVlLCAyMDA3LTA5LTA0IGF0IDE1OjE0ICswODAwLCBMZWlqaW4gVGFuZyB3cm90ZToKPiBI
+aSBhbGwsCj4gCj4gICAgICBXaGVuIHRoZSBhdWRpbyBjb2RlYyBpcyB1c2VkIGluIHRoZSBzbWFy
+dHBob25lLCB3ZSBnZXQgdGhlIHByb2JsZW0gaG93IHRvIGRlZmluZSBhbmQgY29udHJvbCB0aGUg
+cm91dGUgaW4gdGhlIGFsc2EgZHJpdmVyLiBUaGUgc2NlbmFyaW8gaXMgb25seSBpbiB0aGUgcGhv
+bmUgZGV2aWNlLiBUaGUgYXBwbGljYXRpb24gbmVlZCBzd2l0Y2ggdGhlIHJvdXRlcyBiYXNlZCBv
+biB0aGUgZGlmZmVyZW50IHNjZW5lcy4gCgpUaGlzIGlzIHNvbWV0aGluZyBJJ3ZlIGJlZW4gbG9v
+a2luZyBpbnRvIGZvciB0aGUgbGFzdCB5ZWFyIGFuZCBzYWRseQpoYXZlIG5vdCBoYWQgYW55IGRl
+dmVsb3BtZW50IHRpbWUgdG8gY29tbWl0IHRvIGl0LiBJdCdzIGFsc28gc29tZXRoaW5nCnRoZSBv
+cGVubW9rbyBndXlzIGFyZSBsb29raW5nIGF0IHRvby4gQXRtIHRoZXJlIGlzIG5vIEFMU0EgQVBJ
+IG9yIGNvbmZpZwpmaWxlIGZvcm1hdCBmb3IgY2hhbmdpbmcvZGVmaW5pbmcgc2NlbmFyaW9zLgoK
+RndpdywgdGhlIE9wZW5aYXVydXMgbWFjaGluZXMgZG8gQUxTQSBzY2VuYXJpbyBhdG0gdXNpbmcg
+YW4gYWxzYWN0bCBkdW1wCmZvciBlYWNoIHNjZW5hcmlvLiBUaGlzIGlzIGNoYW5nZWQgYnkgdXNl
+ciBzcGFjZSB3aGVuIHRoZSBkZXZpY2UKc2NlbmFyaW8gaXMgY2hhbmdlZC4gKGdvb2dsZSBmb3Ig
+emF1cnVzZCBmb3IgaW5mbykgICAKCj4gCj4gRXhhbXBsZTogdGhlIGNvZWRlYyBpcyB3bTk3MTNM
+Lgo+IAo+IHRoZSBpbiBwb3J0OiBMSU5FTO+8jExJTkVS77yMTU9OT0lO77yMTUlDMe+8jE1JQzIs
+IGFjOTdfaW4gCj4gCj4gdGhlIG91dCBwb3J0OiBIRUFEU0VULCBTUEVBS0VSLCBSRUNFSVZFUiwg
+YWM5N19vdXQgCj4gCj4gV2hlbiB0aGUgcGhvbmUgaXMgY29taW5nLCB3ZSBuZWVkIGNob3NlIHRo
+ZSByb3V0ZSBMSU5FIHRvIHJlY2VpdmVyLiBBZnRlciB0aGUgY2FsbGluZyBhbmQgcGxheWluZyB0
+aGUgbXAzLCB3ZSBzaG91bGQgc3dpdGNoIHRoZSByb3V0ZSBhYzk3X2luIHRvIHNwZWFrZXIgb24u
+Cj4gCj4gVGhpcyBzY2VuYXJpbyBkb2VzbuKAmXQgYXBwZWFyIGluIHRoZSBQQy4gU28gaG93IHRv
+IGNhcnJ5IG91dCB0aGUgZnVuY3Rpb24gaW4gdGhlIGFsc2EgYXJjaGl0ZWN0dXJlIGlzIHNvIGRp
+ZmZpY3VsdHkuIFRoZSByb3V0ZXIgbmFtZXMgaG93IHRvIGRlZmluZSwgdGhlIGFsc2EtbGliIGhv
+dyB0byBkbyB0aGUgY29udHJvbC5UaGVyZSBoYXMgbm8gZGVzaWduIHRvIHRoZSBwaG9uZSBkZXZp
+Y2UgaW4gdGhlIGFsc2EgYnkgbm93LiAKPiAKPiBEb2VzIGFueWJvZHkgaGF2ZSBzb21lIGlkZWFz
+PyBXZSBjYW4gZG8gc29tZSBkaXNjdXNzaW9uIGFuZCByZXNvbHZlIHRoZSBpc3N1ZS4gCj4gCgpJ
+ZGVhbGx5LCB3ZSBzaG91bGQgYmUgYWJsZSB0byBzcGVjaWZ5IHNjZW5hcmlvcyBpbiBhIHRleHQg
+ZmlsZS4gVGhpcwpmaWxlIGNvdWxkIGVpdGhlciBsaXN0IHRoZSBzb3VyY2VzIGFuZCBzaW5rcyB3
+aXRoaW4gZWFjaCBzY2VuYXJpbyAoZm9yCmFuIGF1dG9yb3V0ZXIgdG8gc2V0IC0gKEkgaGF2ZSBz
+b21lIGF1dG9yb3V0ZXIgY29kZSkpIG9yIGxpc3QgYSBzZXJpZXMKb2Yga2NvbnRyb2wgc2V0dGlu
+Z3MgZm9yIGVhY2ggc2NlbmFyaW8gb3IgYm90aC4KCmUuZy4gKGZvciBhdXRvcm91dGVyKQoKU2Nl
+bmFyaW8gIkhlYWRwaG9uZSBQbGF5YmFjayIgewogIFNvdXJjZSAiTGVmdCBEQUMiCiAgU291cmNl
+ICJSaWdodCBEQUMiCiAgU2luayAiTGVmdCBPdXQxIgogIFNpbmsgIlJpZ2h0IE91dDEiCiAgVm9s
+dW1lICJPdXQxIFBsYXliYWNrIFZvbHVtZSIKICBNdXRlICJPdXQxIFBsYXliYWNrIFN3aXRjaCIK
+fQoKZS5nLiAoZm9yIGtjb250cm9sIHNlcmllcykKClNjZW5hcmlvICJIZWFkcGhvbmUgUGxheWJh
+Y2siIHsKICBDb250cm9sICJPdXQxIExlZnQgTWl4ZXIgUGxheWJhY2sgU3dpdGNoIiBWYWx1ZSAi
+dHJ1ZSIKICBDb250cm9sICJPdXQxIFJpZ2h0IE1peGVyIFBsYXliYWNrIFN3aXRjaCIgVmFsdWUg
+InRydWUiCiAgVm9sdW1lICJPdXQxIFBsYXliYWNrIFZvbHVtZSIKICBNdXRlICJPdXQxIFBsYXli
+YWNrIFN3aXRjaCIKfQoKCk5vdGU6IFRoZXNlIGFyZSBqdXN0IGV4YW1wbGUgZm9ybWF0cywgdGhl
+eSBuZWVkIHNvbWUgdGhvdWdodC4KClRoZSBzY2VuYXJpb3Mgc2hvdWxkIGFsc28gYmUgYWJsZSB0
+byByZSBhbGlhcyB2b2x1bWVzLCBtdXRlcyBldGMgYXMgd2VsbAphcyBhbHRlcmluZyBpbnRlcm5h
+bCBjb2RlYyByb3V0ZXMuIFRoaXMgaXMgYmVjYXVzZSB0aGUgY2hhbmdpbmcgcm91dGUKb2Z0ZW4g
+Y2hhbmdlcyB0aGUgYWxzYSBjb250cm9scyBmb3Igdm9sdW1lLCBtdXRlIGV0YyBhcyB3ZWxsLiBU
+aGlzIHdheQoibWFzdGVyIHZvbHVtZSIgd2lsbCBhbHdheXMgYmUgIm1hc3RlciB2b2x1bWUiIHRv
+IHVzZXIgYXBwcyByZWdhcmRsZXNzCm9mIHRoZSBhY3R1YWwgc2NlbmFyaW8uCgpXZSBzaG91bGQg
+cHJvYmFibHkgYWxzbyBhZGQgc29tZSBuZXcgZnVuY3Rpb24gY2FsbHMgdG8gYWxzYS1saWIgaW4g
+b3JkZXIKZ2V0L3NldCBzY2VuYXJpbyBlLmcuCgpzbmRfc2NlbmFyaW9fZ2V0KCkgIC0gZ2V0cyB0
+aGUgY3VycmVudCBzY2VuYXJpbwpzbmRfc2NlbmFyaW9fc2V0KCkgIC0gc2V0cyB0aGUgc2NlbmFy
+aW8Kc25kX3NjZW5hcmlvX2xpc3QoKSAtIGxpc3RzIGFsbCB0aGUgYXZhaWxhYmxlIHNjZW5hcmlv
+cyBzdXBwb3J0ZWQgYnkKc291bmQgY2FyZC4KCkZpbmFsbHksIEkgYWxzbyB3b3VsZCBkZWZpbmUg
+YSBzZXQgb2Ygc3RhbmRhcmQgc2NlbmFyaW9zLiBUaGlzIHdvdWxkCmFsbG93IGFwcGxpY2F0aW9u
+IHNvZnR3YXJlIHRvIGJlY29tZSBmYXIgbW9yZSBwb3J0YWJsZSBiZXR3ZWVuIGRldmljZXMuCmku
+ZS4gdGhlIGFwcCB3b3VsZCBqdXN0IG5lZWQgdG8gYXNrIGZvciAiVm9pY2UgQ2FsbCBIYW5kc2V0
+IiBpbnN0ZWFkIG9mCmtub3dpbmcgdGhlIHNjZW5hcmlvIG5hbWUgZm9yIGVhY2ggbWFjaGluZS4g
+Q3VzdG9tIHNjZW5hcmlvcyBzaG91bGQgYWxzbwpiZSBwZXJtaXR0ZWQuCgpUaGlzIGlzIGp1c3Qg
+YSBicmFpbiBkdW1wIGF0bSwgSSdsbCB0cnkgYW5kIGNsYXJpZnkgaXQgYSBiaXQgdG8gbWFrZQpt
+b3JlIHNlbnNlIGxhdGVyLiBJIGFsc28gaGF2ZSB0byBwb3N0IGEgc2ltaWxhciBtYWlsIHRvIHRo
+ZSBvaG0tZGV2ZWwKbGlzdCBzbyBJJ2xsIGNyb3NzIHBvc3QgaWYgbm8gb25lIG1pbmRzLgoKTGlh
+bQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
