@@ -1,21 +1,25 @@
-From: Markus Franke <markus.franke@s2002.tu-chemnitz.de>
-Subject: DMA buffer gets played only once
-Date: Wed, 05 Sep 2007 11:50:33 +0530
-Message-ID: <46DE4AB1.20206@hrz.tu-chemnitz.de>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
+Subject: Re: [PATCH] Improved support for different	bt87x	board
+	configurations
+Date: Wed, 05 Sep 2007 07:54:35 +0100
+Message-ID: <1188975275.6158.34.camel@areia>
+References: <Pine.LNX.4.58.0708300319210.18152@shell4.speakeasy.net>
+	<s5h3ay1i8rs.wl%tiwai@suse.de>
+	<Pine.LNX.4.58.0709021603380.18152@shell4.speakeasy.net>
+	<1188801407.6762.1208578117@webmail.messagingengine.com>
+	<Pine.LNX.4.58.0709040447220.31808@shell4.speakeasy.net>
+	<1188914079.6535.47.camel@areia> <s5hr6leyy0r.wl%tiwai@suse.de>
+	<Pine.LNX.4.58.0709041339540.31808@shell4.speakeasy.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from john.hrz.tu-chemnitz.de (john.hrz.tu-chemnitz.de
-	[134.109.132.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 326EE10387C
+Received: from pentafluge.infradead.org (pentafluge.infradead.org
+	[213.146.154.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9DEE103890
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Sep 2007 08:18:54 +0200 (CEST)
-Received: from [203.145.183.24] (helo=dexsys58.DOMAIN.dexceldesigns.com)
-	by john.hrz.tu-chemnitz.de with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.66) (envelope-from <markus.franke@s2002.tu-chemnitz.de>)
-	id 1ISoDy-0006TH-VG
-	for alsa-devel@alsa-project.org; Wed, 05 Sep 2007 08:18:51 +0200
+	Wed,  5 Sep 2007 08:54:13 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.58.0709041339540.31808@shell4.speakeasy.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,143 +29,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Trent Piepho <xyzzy@speakeasy.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Alsa Developers/Users,
-
-I am working on a SoC Alsa driver for the WM8973. Currently I am facing 
-the problem that after playing once the whole preallocated DMA buffer 
-the playback stops and Alsa returns with
-
----snip---
-ALSA sound/core/pcm_native.c:1526: playback drain error (DMA or IRQ 
-trouble?)
----snap---
-
-
-As far as I understood the callflow is like this:
-
-pcm_prepare() --> pcm_trigger(TRIGGER_START) --> 
-snd_pcm_period_elapsed() from interrupt handler or DMA callback --> 
-pcm_pointer() --> pcm_trigger(TRIGGER_STOP) --> pcm_prepare() --> .....
-
-With each call of pcm_trigger(TRIGGER_START) I am transfering one period 
-of sounddata. For some reason the playback stops once the DMA buffer (in 
-my 8 example it holds 8 periods of data) is finished and the pointer 
-should wrap around to the beginning through pcm_pointer() callback. I 
-checked return values of pcm_pointer() and tried to trace it back 
-through Alsa/SoC stack without success. It seems like that after the 8th 
-period is transferred pcm_trigger(TRIGGER_STOP) isn't getting called. 
-Instead of this I get a lot of calls to pcm_pointer() which result 
-finally in the above mentioned Alsa error message. I checked 
-pcm_pointer() return values but everything seems to be fine I think.
-
-Below you can find some verbose printk's I added to the source code:
-
----snip---
-vi1888-i2s: vi1888_i2s_startup()-->
-vi1888-pcm: vi1888_pcm_open()-->
-vi1888-i2s: vi1888_i2s_set_dai_fmt()-->
-vi1888-i2s: vi1888_i2s_set_dai_sysclk()-->
-vi1888-i2s: vi1888_i2s_hw_params()-->
-vi1888-pcm: vi1888_pcm_hw_params()-->
-hw_params: DMA for I2S PCM Stereo out initialized (dma_bytes=32768, 
-period_size=4096)
-vi1888-i2s: vi1888_i2s_set_dai_fmt()-->
-vi1888-i2s: vi1888_i2s_set_dai_sysclk()-->
-vi1888-pcm: vi1888_pcm_hw_params()-->
-hw_params: DMA for I2S PCM Stereo out initialized (dma_bytes=32768, 
-period_size=4096)
-vi1888-pcm: vi1888_pcm_prepare()-->
-vi1888-i2s: vi1888_i2s_prepare()-->
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_dma_userCallback()-->
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 1024
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_prepare()-->
-vi1888-i2s: vi1888_i2s_prepare()-->
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_dma_userCallback()-->
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 2048
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_prepare()-->
-vi1888-i2s: vi1888_i2s_prepare()-->
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_dma_userCallback()-->
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 3072
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_prepare()-->
-vi1888-i2s: vi1888_i2s_prepare()-->
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_dma_userCallback()-->
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 4096
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_prepare()-->
-vi1888-i2s: vi1888_i2s_prepare()-->
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_dma_userCallback()-->
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 5120
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_prepare()-->
-vi1888-i2s: vi1888_i2s_prepare()-->
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_dma_userCallback()-->
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 6144
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_prepare()-->
-vi1888-i2s: vi1888_i2s_prepare()-->
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_dma_userCallback()-->
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 7168
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_prepare()-->
-vi1888-i2s: vi1888_i2s_prepare()-->
-vi1888-pcm: vi1888_pcm_trigger()-->
-vi1888-pcm: vi1888_pcm_dma_userCallback()-->
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 0
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 1024
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 2048
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 3072
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 4096
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 5120
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 6144
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 7168
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 0
-vi1888-pcm: vi1888_pcm_pointer()-->
-pcm_pointer returns 1024
-
-.
-.
-.
-.
-.
-.
-.
-
-ALSA sound/core/pcm_native.c:1526: playback drain error (DMA or IRQ 
-trouble?)
----snap---
-
-I get this output when trying to play a 16-bit stereo WAV file.
-
-Thanks for any help on this,
-
-Regards,
-Markus Franke
+RW0gVGVyLCAyMDA3LTA5LTA0IMOgcyAxNDowNCAtMDcwMCwgVHJlbnQgUGllcGhvIGVzY3JldmV1
+Ogo+IE9uIFR1ZSwgNCBTZXAgMjAwNywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+ID4gQXQgVHVlLCAw
+NCBTZXAgMjAwNyAxNDo1NDozOSArMDEwMCwKPiA+IE1hdXJvIENhcnZhbGhvIENoZWhhYiB3cm90
+ZToKPiA+ID4gPiArICAgICAgIFNORF9CVDg3WF9CT0FSRF9IQVVQUEFVR0U4NzgsCj4gPiA+ID4g
+KyAgICAgICBTTkRfQlQ4N1hfQk9BUkRfT1NQUkVZMngwLAo+ID4gPiA+ICsgICAgICAgU05EX0JU
+ODdYX0JPQVJEX09TUFJFWTQ0MCwKPiA+ID4gPiArICAgICAgIFNORF9CVDg3WF9CT0FSRF9BVElf
+VFZXT05ERVIsCj4gPiA+ID4gKyAgICAgICBTTkRfQlQ4N1hfQk9BUkRfV0lORkFTVDIwMDAsCj4g
+PiA+ID4gKyAgICAgICBTTkRfQlQ4N1hfQk9BUkRfVk9PRE9PVFZfMjAwLAo+ID4gPiA+ICsgICAg
+ICAgU05EX0JUODdYX0JPQVJEX0FWUEhPTkU5OCwKPiA+ID4KPiA+ID4gSG1tLi4uIE1heWJlIGl0
+IHdvdWxkIGJlIGEgZ29vZCBpZGVhIHRvIG1vdmUgdGhlIGJvYXJkIG51bWJlcnMgZnJvbQo+ID4g
+PiBsaW51eC9kcml2ZXJzL21lZGlhL3ZpZGVvL2J0OHh4L2J0dHYuaCB0byBhIHNlcGFyYXRlIGhl
+YWRlciAobWF5YmUKPiA+ID4gc29tZXRoaW5nIGxpa2UgL2luY2x1ZGUvbWVkaWEvYnQ4eHgtY2Fy
+ZHMuaCkgYW5kIHVzZSB0aGUgc2FtZSBib2FyZCBJRHMKPiA+ID4gZm9yIGJvdGggLWFsc2EgYW5k
+IC12NGwgZHJpdmVycy4KPiA+ID4KPiA+ID4gVGhpcyB3aWxsIG1ha2UgZWFzaWVyIHRvIGFzc29j
+aWF0ZSB0aGUgYXVkaW8gYW5kIHZpZGVvIHBhcnRzIGZvcgo+ID4gPiB0cm91Ymxlc2hvb3Rpbmcg
+YW5kIG5ld2VyIGRldmVsb3BtZW50cy4KPiA+Cj4gPiBZZXMsIGl0IHNvdW5kcyBsaWtlIGEgZ29v
+ZCBpZGVhLgo+IAo+IFRoZXJlIGFyZSBmZXcgZHJhd2JhY2tzLgo+IAo+IEZpcnN0LCB0aGVyZSBh
+cmUgbGlrZSAyMHggbW9yZSBjYXJkcyBzdXBwb3J0ZWQgYnkgdGhlIGJ0dHYgZHJpdmVyIHRoYW4g
+YnkKPiB0aGUgYnQ4N3ggZHJpdmVyLiAgSXQncyBnb2luZyB0byBwcm9kdWNlIGEgdmVyeSBzcGFy
+c2UgY2FyZCBkYXRhYmFzZSBpbiB0aGUKPiBBTFNBIGRyaXZlci4gIE5vdGUgdGhhdCBmb3IgdGhl
+IG1vc3QgcGFydCwgX19pbml0ZGF0YSBkb2Vzbid0IHdvcmssIHNvIHlvdQo+IGNhbid0IHNheSAi
+aXQnbGwganVzdCBiZSBkcm9wcGVkIGFmdGVyIHRoZSBkcml2ZXIgbG9hZHMuIgoKWW91IHNob3Vs
+ZCBub3RpY2UgdGhhdCBldmVuIHRoZSB3YXkgeW91J3ZlIG1hcHBlZCBpcyBhIGEgbGl0dGxlIHNw
+YXJzZSwKc2luY2UganVzdCB0d28gYm9hcmRzIHVzZSBkaWdpdGFsX2ZtdC4KCk1heWJlIG9uZSBz
+b2x1dGlvbiBmb3IgdGhhdCBpcyB0byB1c2UgYSBkaWZmZXJlbnQgY29kZSBvciBkYXRhCnN0cnVj
+dHVyZS4gCgpGb3IgZXhhbXBsZSwgaW5zdGVhZCBvZiB1c2luZyBhIGRhdGEgc3RydWN0LCB5b3Ug
+Y291bGQgdXNlIHNvbWUgc29ydCBvZgpjb2RlIGxpa2UgKCopICgqKik6CgpzdGF0aWMgdm9pZCBm
+aWxsX2JvYXJkIChzdHJ1Y3Qgc25kX2J0ODd4X2JvYXJkICZib2FyZCwgaW50IGJvYXJkX2lkKQp7
+CiAgICAgICAgYm9hcmQtPmRpZ19yYXRlID0gMzIwMDA7CiAgICAgICAgc3dpdGNoIChib2FyZF9p
+ZCkgewogICAgICAgIGNhc2UgQlRUVl9CT0FSRF9BVlBIT05FOTg6CiAgICAgICAgICAgICAgICBi
+b2FyZC5kaWdfcmF0ZSA9IDQ4MDAwLAoJCWJyZWFrOwogICAgICAgIGNhc2UgQlRUVl9CT0FSRF9P
+U1BSRVkyeHg6CiAgICAgICAgICAgICAgICBib2FyZC0+ZGlnX3JhdGUgPTQ0MTAwOwogICAgICAg
+ICAgICAgICAgYm9hcmQtPmRpZ2l0YWxfZm10ID0gQ1RMX0RBX0xSSSB8ICgxIDw8IENUTF9EQV9M
+UkRfU0hJRlQpOwoJCWJyZWFrOwogICAgICAgIGNhc2UgQlRUVl9CT0FSRF9PU1BSRVk0NDA6CiAg
+ICAgICAgICAgICAgICBib2FyZC0+ZGlnaXRhbF9mbXQgPSBDVExfREFfTFJJIHwgKDEgPDwgQ1RM
+X0RBX0xSRF9TSElGVCk7CgkJYnJlYWs7CiAgICAgICAgfQp9CgooKikgR0NDIG9wdGltaXplciBw
+cm9iYWJseSB3aWxsIGV2ZW4gbWVyZ2UgdGhlIHR3byBkaWdpdGFsX2ZtdCBjaGFuZ2VzCmludG8g
+anVzdCBvbmUgbGluZSBvZiBvYmplY3QgY29kZSwgYW5kIGV2ZW4gdHJhbnNmb3JtIHRoaXMgaW50
+byBhbgppbmxpbmUuIEkgc3VzcGVjdCB0aGF0IHRoaXMgY29kZSB3aWxsIGJlIHNtYWxsZXIgdGhh
+biB0aGUgZGF0YSBzdHJ1Y3QuCgooKiopIEkgZGlkbid0IGZvdW5kIHdoZXJlIFNORF9CVDg3WF9C
+T0FSRF9BTkFMT0cgaXMgdXNlZC4gQW4gdXNhZ2Ugd291bGQKYmUganVzdCBhIGNhc2UgZm9yIGVh
+Y2ggYW5hbG9nIGJvYXJkLCBsaWtlOgoJY2FzZSBCVFRWX0JPQVJEX1BWX0JUODc4UF9QTFVTOgoJ
+Y2FzZSBCVFRWX0JPQVJEX1BWX0JUODc4UF85QjoKCQlib2FyZC0+bm9fZGlnaXRhbD0xOwoKPiBT
+ZWNvbmRseSwgYmVmb3JlIHRoaXMgcGF0Y2ggdGhlcmUgd2FzIHZpcnR1YWxseSBubyBkaWZmZXJl
+bmNlIGluIHRoZQo+IGNvbmZpZ3VyYXRpb24gZm9yIHRoZSBkaWZmZXJlbnQgc3VwcG9ydGVkIGNh
+cmRzLiAgQWZ0ZXIgaXQsIG1vc3Qgb2YgdGhlCj4gY2FyZHMgYXJlIHN0aWxsIGV4YWN0bHkgdGhl
+IHNhbWUuICBJdCBwb3NzaWJsZSB0byByZS11c2UgdGhlIHNhbWUgZ2VuZXJpYwo+IGNvbmZpZ3Vy
+YXRpb24gZW50cnkgZm9yIG1vc3Qgb2YgdGhlIHN1cHBvcnRlZCBjYXJkcy4gIElmIHlvdSB1c2Ug
+dGhlIGJ0dHYKPiBJRHMsIGl0J3Mgbm90LgpTZWUgYWJvdmUuCgo+IEFuZCBmaW5hbGx5LCBidDg3
+eCBpcyB1bmRlciBBTFNBIGJ1dCBidHR2IGlzIHVuZGVyIGxpbnV4dHYuICBXaGF0IHdvdWxkCj4g
+aW5jbHVkZS9tZWRpYS9idDh4eC1jYXJkcy5oIGJlIHVuZGVyLCBhbHNhIG9yIGxpbnV4dHY/ICBX
+aWxsIHBlb3BsZSBoYXZlIHRvCj4gc3VibWl0IHBhdGNoZXMgdG8gYm90aCBwcm9qZWN0cyAod2hp
+Y2ggdXNlIGRpZmZlcmVudCByZXBvc2l0b3J5IGZvcm1hdHMKPiBsb2NhbGx5LCBzbyB5b3UgY2Fu
+J3QganVzdCBDQyB0aGUgc2FtZSBwYXRjaCk/ICBJIGRpZCBvbmUgcGF0Y2ggdGhhdAo+IHRvdWNo
+ZWQgYm90aCBsaW51eHR2IGFuZCBhbHNhIGZpbGVzLCBhbmQgaXQgd2FzIGEgUElUQSwgZm9yIGEg
+dmVyeSBzaW1wbGUKPiBwYXRjaC4gIFRvb2sgYSBtb250aC4gIEVtYWlscyB0byBkaWZmZXJlbnQg
+cGVvcGxlLiAgTWVyZ2UgY29uZmxpY3RzLgoKVGhpcyBzZWVtcyBxdWl0ZSBzaW1wbGUgdG8gbWU6
+IGl0IG1ha2VzIG5vdCBtdWNoIHNlbnNlIHRvIHByb3ZpZGUgQUxTQQpzdXBwb3J0IGlmIHRoZSB2
+aWRlbyBpcyBub3Qgc3VwcG9ydGVkLiBTbywgYWRkaW5nIGEgbmV3ZXIgYm9hcmQgd2lsbAphbHdh
+eXMgYWRkIGEgbmV3IGVudHJ5IGF0IHRoZSB2aWRlbyBzdXBwb3J0LiBUaGUgb3Bwb3NpdGUgaXMg
+bm90IHRydWUsCnNpbmNlIG1vc3QgYm9hcmRzIGhhdmUganVzdCBhbiBhbmFsb2cgY2FyZCB0byBi
+ZSBjb25uZWN0ZWQgdG8gdGhlIHZpZGVvCmRldmljZS4gQWxzbywgYXMgeW91IHNhaWQsIG1vc3Qg
+Ym9hcmRzIHdpbGwganVzdCB1c2UgdGhlIGRlZmF1bHQgY29uZmlnLgoKU28sIHRoZSBmaWxlIHdp
+bGwgYmUgdG91Y2hlZCBtb3JlIGZyZXF1ZW50bHkgd2hlbiBhZGRpbmcgdGhlIHZpZGVvCmVudHJp
+ZXMuIE15IHN1Z2dlc3Rpb24gaXMgdGhhdCB0aGlzIGZpbGUgd291bGQgYmUgbWFpbnRhaW5lZCB0
+b2dldGhlcgp3aXRoIHRoZSB2aWRlbyBjb3VudGVycGFydC4gCgo+IEFuZCBpZiBib3RoIGxpbnV4
+dHYgYW5kIGFsc2EgdXNlIHRoZSBzYW1lIGhlYWRlciwgd2hhdCBoYXBwZW5zIGlmIHRoZXkKPiBk
+b24ndCBwdXNoIHRoZSBjaGFuZ2VzIHRvIEdJVCBhdCB0aGUgZXhhY3Qgc2FtZSB0aW1lPyAgWW91
+J2xsIGhhdmUgcGF0Y2hlcwo+IGluIG9uZSBzdWJzeXN0ZW0gdGhhdCBhcmUgZGVwZW5kYW50IG9u
+IHRoZSBvdGhlciBzdWJzeXN0ZW0uICBIb3cgd2lsbCB0aGV5Cj4gbWFrZSB0aGUgc2FtZSBtZXJn
+ZSB3aW5kb3c/CgpUaGlzIHNob3VsZCBiZSBjb29yZGluYXRlZCBiZXR3ZWVuIG1lIGFuZCBUYWth
+c2hpLiBJIGhhdmUgbm8gb2JqZWN0aW9ucwppZiBoZSBwdWxsIHN1Y2ggcGF0Y2gsIGlmIGhlIGlz
+IHdpbGxpbmcgdG8gc2VuZCB0aGUgcHVsbCByZXF1ZXN0IGJlZm9yZQpteXNlbGYuCgpJIGRvbid0
+IHNlZSB0aGlzIGFzIGEgYmlnIHRyb3VibGUuIFRoZXJlIGFyZSBvdGhlciBjYXNlcyBsaWtlIHRo
+aXMKYWxyZWFkeSAocGNpX2lkcy5oLCBpMmNfaWQuaCkuIEFsc28sIGN1cnJlbnRseSwgdGhlcmUg
+YXJlIG5vdCBtdWNoIGJ0dHYKYm9hcmQgYWRkaXRpb25zIGFueW1vcmUuCgpDaGVlcnMsCk1hdXJv
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
