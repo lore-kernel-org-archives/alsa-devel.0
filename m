@@ -1,115 +1,66 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: Re: [alsa-devel] [PATCH] Improved support for different	bt87x	board
- configurations
-Date: Wed, 5 Sep 2007 02:09:45 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0709050120490.31808@shell4.speakeasy.net>
-References: <Pine.LNX.4.58.0708300319210.18152@shell4.speakeasy.net>
-	<s5h3ay1i8rs.wl%tiwai@suse.de>
-	<Pine.LNX.4.58.0709021603380.18152@shell4.speakeasy.net>
-	<1188801407.6762.1208578117@webmail.messagingengine.com>
-	<Pine.LNX.4.58.0709040447220.31808@shell4.speakeasy.net>
-	<1188914079.6535.47.camel@areia> <s5hr6leyy0r.wl%tiwai@suse.de>
-	<Pine.LNX.4.58.0709041339540.31808@shell4.speakeasy.net>
-	<1188975275.6158.34.camel@areia>
+From: Markus Franke <markus.franke@s2002.tu-chemnitz.de>
+Subject: Re: DMA buffer gets played only once
+Date: Wed, 05 Sep 2007 14:47:22 +0530
+Message-ID: <46DE7422.5020900@hrz.tu-chemnitz.de>
+References: <46DE4AB1.20206@hrz.tu-chemnitz.de>
+	<1188983079.7844.1208974467@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: quoted-printable
-Return-path: <video4linux-list-bounces@redhat.com>
-In-Reply-To: <1188975275.6158.34.camel@areia>
-List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
-	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
-List-Post: <mailto:video4linux-list@redhat.com>
-List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
-List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
-	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
-Sender: video4linux-list-bounces@redhat.com
-Errors-To: video4linux-list-bounces@redhat.com
-To: Mauro Carvalho Chehab <mchehab@infradead.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux and Kernel Video <video4linux-list@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lana.hrz.tu-chemnitz.de (lana.hrz.tu-chemnitz.de
+	[134.109.132.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7ADCB103803
+	for <alsa-devel@alsa-project.org>;
+	Wed,  5 Sep 2007 11:15:41 +0200 (CEST)
+In-Reply-To: <1188983079.7844.1208974467@webmail.messagingengine.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 5 Sep 2007, Mauro Carvalho Chehab wrote:
-> Em Ter, 2007-09-04 =C3=A0s 14:04 -0700, Trent Piepho escreveu:
-> > There are few drawbacks.
-> >
-> > First, there are like 20x more cards supported by the bttv driver tha=
-n by
-> > the bt87x driver.  It's going to produce a very sparse card database =
-in the
-> > ALSA driver.  Note that for the most part, __initdata doesn't work, s=
-o you
-> > can't say "it'll just be dropped after the driver loads."
->
-> You should notice that even the way you've mapped is a a little sparse,
-> since just two boards use digital_fmt.
->
-> Maybe one solution for that is to use a different code or data
-> structure.
->
-> For example, instead of using a data struct, you could use some sort of
-> code like (*) (**):
->
-> static void fill_board (struct snd_bt87x_board &board, int board_id)
-> {
->         board->dig_rate =3D 32000;
->         switch (board_id) {
->         case BTTV_BOARD_AVPHONE98:
->                 board.dig_rate =3D 48000,
-> 		break;
+Clemens Ladisch wrote:
+> Markus Franke wrote:
+>> It seems like that after the 8th period is transferred
+>> pcm_trigger(TRIGGER_STOP) isn't getting called. 
+> 
+> Indeed.  The stop trigger is called when the entire stream is
+> to be stopped.
 
-I don't think gcc will be smart enough to a bunch of cases with random nu=
-mbers
-into a O(1) lookup, instead it will use an O(log n) branch chain.  With a=
-ll
-the explicit assignments, I doubt it will be much smaller, if any, since =
-there
-are just a couple board configurations.  Several board configurations are
-currently duplicates and I think I'll just merge them.
+Well, start and stop trigger get always called mutually. In pseudo code 
+it would look like this:
 
-But code wise I think using a switch with manual assignments is ugly.  It=
-'s a
-lot more code to write and just doesn't have the regularity and elegance =
-of a
-table.
+---snip---
+TRIGGER_START
 
-> > And if both linuxtv and alsa use the same header, what happens if the=
-y
-> > don't push the changes to GIT at the exact same time?  You'll have pa=
-tches
-> > in one subsystem that are dependant on the other subsystem.  How will=
- they
-> > make the same merge window?
->
-> This should be coordinated between me and Takashi. I have no objections
-> if he pull such patch, if he is willing to send the pull request before
-> myself.
->
-> I don't see this as a big trouble. There are other cases like this
-> already (pci_ids.h, i2c_id.h). Also, currently, there are not much bttv
-> board additions anymore.
+transfer one period via DMA
 
-And pci_ids and i2d_id are pain to deal with.  Both v4l-dvb and ALSA have=
- out
-of kernel tree build system that try to be backward compatible with older
-kernels.  When the IDs come from somewhere outside the repository, you ne=
-ed to
-have compat patches to deal with old id files that are missing ids.  Look=
- at
-all the kernel-sync patches for those id files, all the compat code in th=
-e
-various drivers for non-defined PCI ids.  There's even something I had to=
- add
-to compat.h for an i2c ID that went away in newer kernels.
+TRIGGER_STOP
 
-It's a lot of extra work, and I just don't see the point.  To reuse a cou=
-ple
-defines from a bttv header file?  They are just arbitrary numbers, it's n=
-ot
-like there is any benefit from using the same value in both drivers.
+update DMAC settings in DMA transfer finished callback and call 
+snd_pcm_period_elapsed()
 
---
-video4linux-list mailing list
-Unsubscribe mailto:video4linux-list-request@redhat.com?subject=3Dunsubscr=
-ibe
-https://www.redhat.com/mailman/listinfo/video4linux-list
+TRIGGER_START
+
+transfer one period via DMA
+
+TRIGGER_STOP
+
+update DMAC settings in DMA transfer finished callback and call 
+snd_pcm_period_elapsed()
+
+....and so on.
+---snap---
+
+At least this is the behaviour I experienced.
+
+So long,
+Markus
