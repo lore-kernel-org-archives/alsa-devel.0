@@ -1,19 +1,20 @@
-From: Markus Franke <markus.franke@s2002.tu-chemnitz.de>
-Subject: Re: DMA buffer gets played only once
-Date: Wed, 05 Sep 2007 14:47:22 +0530
-Message-ID: <46DE7422.5020900@hrz.tu-chemnitz.de>
-References: <46DE4AB1.20206@hrz.tu-chemnitz.de>
-	<1188983079.7844.1208974467@webmail.messagingengine.com>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: Re: How can I make sure the period size is a multiple
+ of 16?
+Date: Wed, 5 Sep 2007 02:55:32 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0709050254180.31808@shell4.speakeasy.net>
+References: <46DDE137.2070507@freescale.com>
+	<200709051229.54852.linux@audioscience.com>
+	<1188983283.8449.1208975085@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lana.hrz.tu-chemnitz.de (lana.hrz.tu-chemnitz.de
-	[134.109.132.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7ADCB103803
+Received: from mail3.sea5.speakeasy.net (mail3.sea5.speakeasy.net
+	[69.17.117.5]) by alsa0.perex.cz (Postfix) with ESMTP id 0C94C1037EB
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Sep 2007 11:15:41 +0200 (CEST)
-In-Reply-To: <1188983079.7844.1208974467@webmail.messagingengine.com>
+	Wed,  5 Sep 2007 11:55:34 +0200 (CEST)
+In-Reply-To: <1188983283.8449.1208975085@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,40 +28,15 @@ To: Clemens Ladisch <cladisch@fastmail.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Markus Franke wrote:
->> It seems like that after the 8th period is transferred
->> pcm_trigger(TRIGGER_STOP) isn't getting called. 
-> 
-> Indeed.  The stop trigger is called when the entire stream is
-> to be stopped.
+On Wed, 5 Sep 2007, Clemens Ladisch wrote:
+> Eliot Blennerhassett wrote:
+> > Set snd_pcm_hardware.period_bytes_min to 16 or is that 16 * samplesize?
+>
+> This value is measured in bytes.
+>
+> > snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 16);
+>
+> This parameter is measured in frames.
 
-Well, start and stop trigger get always called mutually. In pseudo code 
-it would look like this:
-
----snip---
-TRIGGER_START
-
-transfer one period via DMA
-
-TRIGGER_STOP
-
-update DMAC settings in DMA transfer finished callback and call 
-snd_pcm_period_elapsed()
-
-TRIGGER_START
-
-transfer one period via DMA
-
-TRIGGER_STOP
-
-update DMAC settings in DMA transfer finished callback and call 
-snd_pcm_period_elapsed()
-
-....and so on.
----snap---
-
-At least this is the behaviour I experienced.
-
-So long,
-Markus
+Isn't SNDRV_PCM_HW_PARAM_PERIOD_SIZE measured in frames, and
+SNDRV_PCM_HW_PARAM_PERIOD_BYTES in bytes?
