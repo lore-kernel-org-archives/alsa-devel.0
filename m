@@ -1,20 +1,20 @@
-From: James Pearson <james-p@moving-picture.com>
-Subject: Re: Problems with 32 bit apps on 64 bit OS using dmix
- and snd-ioctl32
-Date: Wed, 05 Sep 2007 17:54:35 +0100
-Message-ID: <46DEDF4B.7050108@moving-picture.com>
-References: <46DE8EB0.90208@moving-picture.com>
-	<s5hd4wx8ec0.wl%tiwai@suse.de>	<46DEBF69.6070307@moving-picture.com>	<s5hodgh6sqf.wl%tiwai@suse.de>	<46DECCEA.4060306@moving-picture.com>
-	<s5hk5r56qin.wl%tiwai@suse.de>
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
+Subject: [PATCH] ad1848_lib: replace common delay loop by
+	function
+Date: Wed, 5 Sep 2007 19:04:50 +0200
+Message-ID: <20070905190450.0806df56.krzysztof.h1@wp.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id A57D810383B
+Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 45CE910383B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Sep 2007 18:54:35 +0200 (CEST)
-In-Reply-To: <s5hk5r56qin.wl%tiwai@suse.de>
+	Wed,  5 Sep 2007 18:58:25 +0200 (CEST)
+Received: from host-87-99-61-239.lanet.net.pl (HELO krzysio.net)
+	(krzysztof.h1@[87.99.61.239]) (envelope-sender <krzysztof.h1@wp.pl>)
+	by smtp.wp.pl (WP-SMTPD) with SMTP
+	for <alsa-devel@alsa-project.org>; 5 Sep 2007 18:58:24 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,58 +24,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->>
->>OK, I'll do a bit more poking about to see if I can get 1.0.15rc1 to 
->>build ...
->>
->>Thanks
->>
->>James Pearson
->>
->>Configure output:
->>
->># ./configure --with-redhat=yes
-> 
-> 
-> The output looks OK to me.
-> Does the patch (to alsa-driver tree) fix the problem?
-> 
-> 
-> Takashi
-> 
-> diff -r adfe4179d670 misc/ac97_bus.c
-> --- a/misc/ac97_bus.c	Fri Aug 31 12:22:35 2007 +0200
-> +++ b/misc/ac97_bus.c	Wed Sep 05 18:09:42 2007 +0200
-> @@ -1,1 +1,3 @@
-> +#include <sound/driver.h>
-> +#include <sound/core.h>
->  #include "../alsa-kernel/ac97_bus.c"
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Yes ... I did something similar - copied in ../alsa-kernel/ac97_bus.c 
-and patched with alsa-driver-1.0.13/pci/ac97/ac97_bus.patch - which 
-makes it compile - it bombs out later on some of the soc/ code - but as 
-nothing similar exists in 1.0.13, I just skipped that with 'make -i' ...
+This patch replaces a common delay loop by a function.
+It also uses ARRAY_SIZE macro for the rates table.
 
-However, with these 1.0.15rc1 modules installed, and using 
-alsa-lib-1.0.15rc1, I get exactly the same problem with 32 bit apps:
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
 
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
-aplay: pcm_write:1268: write error: Invalid argument
+It has the waiting function renamed to snd_ad1848_wait().
 
-amd dmesg has:
-
-ioctl32(aplay:6228): Unknown cmd fd(3) cmd(40045402){00} arg(ffffac98) 
-on /dev/snd/timer
-ioctl32(aplay:6228): Unknown cmd fd(5) cmd(c008551a){00} arg(0806ccd0) 
-on /dev/snd/controlC0
-ioctl32(aplay:6228): Unknown cmd fd(5) cmd(c008551b){00} arg(0806ccd0) 
-on /dev/snd/controlC0
-ioctl32(aplay:6228): Unknown cmd fd(3) cmd(000054a0){00} arg(00000325) 
-on /dev/snd/timer
-
-James Pearson
+diff -urp linux-2.6.23.orig/sound/isa/ad1848/ad1848_lib.c linux-2.6.23/sound/isa/ad1848/ad1848_lib.c
+--- linux-2.6.23.orig/sound/isa/ad1848/ad1848_lib.c	2007-09-02 12:49:15.281291412 +0200
++++ linux-2.6.23/sound/isa/ad1848/ad1848_lib.c	2007-09-05 18:49:58.510592223 +0200
+@@ -70,7 +70,7 @@ static unsigned int rates[14] = {
+ };
+ 
+ static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
+-	.count = 14,
++	.count = ARRAY_SIZE(rates),
+ 	.list = rates,
+ 	.mask = 0,
+ };
+@@ -99,24 +99,32 @@ static unsigned char snd_ad1848_original
+  *  Basic I/O functions
+  */
+ 
+-void snd_ad1848_out(struct snd_ad1848 *chip,
+-			   unsigned char reg,
+-			   unsigned char value)
++static void snd_ad1848_wait(struct snd_ad1848 *chip)
+ {
+ 	int timeout;
+ 
+-	for (timeout = 250; timeout > 0 && (inb(AD1848P(chip, REGSEL)) & AD1848_INIT); timeout--)
++	for (timeout = 250; timeout > 0; timeout--) {
++		if ((inb(AD1848P(chip, REGSEL)) & AD1848_INIT) == 0)
++			break;
+ 		udelay(100);
++	}
++}
++
++void snd_ad1848_out(struct snd_ad1848 *chip,
++			   unsigned char reg,
++			   unsigned char value)
++{
++	snd_ad1848_wait(chip);
+ #ifdef CONFIG_SND_DEBUG
+ 	if (inb(AD1848P(chip, REGSEL)) & AD1848_INIT)
+-		snd_printk(KERN_WARNING "auto calibration time out - reg = 0x%x, value = 0x%x\n", reg, value);
++		snd_printk(KERN_WARNING "auto calibration time out - "
++			   "reg = 0x%x, value = 0x%x\n", reg, value);
+ #endif
+ 	outb(chip->mce_bit | reg, AD1848P(chip, REGSEL));
+ 	outb(chip->image[reg] = value, AD1848P(chip, REG));
+ 	mb();
+-#if 0
+-	printk("codec out - reg 0x%x = 0x%x\n", chip->mce_bit | reg, value);
+-#endif
++	snd_printdd("codec out - reg 0x%x = 0x%x\n",
++			chip->mce_bit | reg, value);
+ }
+ 
+ EXPORT_SYMBOL(snd_ad1848_out);
+@@ -124,10 +132,7 @@ EXPORT_SYMBOL(snd_ad1848_out);
+ static void snd_ad1848_dout(struct snd_ad1848 *chip,
+ 			    unsigned char reg, unsigned char value)
+ {
+-	int timeout;
+-
+-	for (timeout = 250; timeout > 0 && (inb(AD1848P(chip, REGSEL)) & AD1848_INIT); timeout--)
+-		udelay(100);
++	snd_ad1848_wait(chip);
+ 	outb(chip->mce_bit | reg, AD1848P(chip, REGSEL));
+ 	outb(value, AD1848P(chip, REG));
+ 	mb();
+@@ -135,13 +140,11 @@ static void snd_ad1848_dout(struct snd_a
+ 
+ static unsigned char snd_ad1848_in(struct snd_ad1848 *chip, unsigned char reg)
+ {
+-	int timeout;
+-
+-	for (timeout = 250; timeout > 0 && (inb(AD1848P(chip, REGSEL)) & AD1848_INIT); timeout--)
+-		udelay(100);
++	snd_ad1848_wait(chip);
+ #ifdef CONFIG_SND_DEBUG
+ 	if (inb(AD1848P(chip, REGSEL)) & AD1848_INIT)
+-		snd_printk(KERN_WARNING "auto calibration time out - reg = 0x%x\n", reg);
++		snd_printk(KERN_WARNING "auto calibration time out - "
++			   "reg = 0x%x\n", reg);
+ #endif
+ 	outb(chip->mce_bit | reg, AD1848P(chip, REGSEL));
+ 	mb();
+@@ -183,8 +186,7 @@ static void snd_ad1848_mce_up(struct snd
+ 	unsigned long flags;
+ 	int timeout;
+ 
+-	for (timeout = 250; timeout > 0 && (inb(AD1848P(chip, REGSEL)) & AD1848_INIT); timeout--)
+-		udelay(100);
++	snd_ad1848_wait(chip);
+ #ifdef CONFIG_SND_DEBUG
+ 	if (inb(AD1848P(chip, REGSEL)) & AD1848_INIT)
+ 		snd_printk(KERN_WARNING "mce_up - auto calibration time out (0)\n");
+@@ -319,11 +321,11 @@ static unsigned char snd_ad1848_get_rate
+ {
+ 	int i;
+ 
+-	for (i = 0; i < 14; i++)
++	for (i = 0; i < ARRAY_SIZE(rates); i++)
+ 		if (rate == rates[i])
+ 			return freq_bits[i];
+ 	snd_BUG();
+-	return freq_bits[13];
++	return freq_bits[ARRAY_SIZE(rates) - 1];
+ }
+ 
+ static int snd_ad1848_ioctl(struct snd_pcm_substream *substream,
