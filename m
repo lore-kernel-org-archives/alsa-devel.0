@@ -1,17 +1,18 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: HDA Conexant: is mic boost possible?
-Date: Tue, 04 Sep 2007 18:15:05 -0700
-Message-ID: <1188954905.4982.183.camel@razman.gruemaster.com>
-References: <46DD6862.6070400@linuxnewmedia.com.br>
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
+Subject: Re: [PATCH] Gallant SC-6000 driver (3rd version)
+Date: Wed, 5 Sep 2007 06:42:41 +0200
+Message-ID: <20070905064241.321972d5.krzysztof.h1@wp.pl>
+References: <20070904211122.dfeed6d7.krzysztof.h1@wp.pl>
+	<46DDE48E.4000508@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91D06103878
+Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D372103878
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Sep 2007 03:15:08 +0200 (CEST)
-In-Reply-To: <46DD6862.6070400@linuxnewmedia.com.br>
+	Wed,  5 Sep 2007 06:36:23 +0200 (CEST)
+In-Reply-To: <46DDE48E.4000508@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,75 +22,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pablo N. Hess" <phess@linuxnewmedia.com.br>
-Cc: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I believe mic boost is on by default.  What model are you running this
-as?  Laptop or Fujitsu?
+On Wed, 05 Sep 2007 01:04:46 +0200
+Rene Herman <rene.herman@gmail.com> wrote:
 
-Tobin
+> On 09/04/2007 09:11 PM, Krzysztof Helt wrote:
+> 
+> By the way -- something along the email path to you rejects my messages due 
+> to taking an SPF-neutral result from gmail as negative...
+> 
+I'll contact portal administrators.
 
-On Tue, 2007-09-04 at 11:14 -0300, Pablo N. Hess wrote:
+> > +#define SNDRV_LEGACY_FIND_FREE_IRQ
+> > +#define SNDRV_LEGACY_FIND_FREE_DMA
+> > +#include <sound/initval.h>
+> 
+> Personally I rather detest ISA autoprobing, so if you only included it as a 
+> "I see that the ALSA thing to do", feel free to try without as far as I'm 
+> concerned...
 
-> I have to make the sound chip of a Itautec W7635 (= FIC VA250D) work on 
-> a Gentoo(-based) distro (I'm now trying Sabayon).
-> It is a HDA-intel (Conexant codec).
-> 
-> Using my earphones as a stereo mic, recording with 'arecord -f cd' has 
-> always worked perfectly fine, from alsa-driver-1.0.14 on.
-> 
-> However, when using a regular mono mic (like the ones that come in 
-> common headsets), recording simply does *not* work.
-> 
-> Here's the quick info:
-> 
-> alsa-driver-1.0.14:
->    playback: ok
->    recording:
->      stereo mic: ok
->      mono mic: no input at all (very high volume already tried)
-> 
-> alsa-driver-1.0.15rc1:
->    playback: ok (even better than with alsa-driver-1.0.14)
->    recording:
->      stereo mic: ok (seems better thatn with alsa-driver-1.0.14)
->      mono mic: *very* very low volume, bad quality, lots of low-volume 
-> noise, too.
-> 
-> 
-> Now the paragraphed info:
-> 
-> Playback is perfectly ok since alsa-driver-1.0.14, just like recording 
-> with an earphone as a stereo mic.
-> 
-> With alsa-driver-1.0.14, definitely no mono-mic input works, no matter 
-> the settings at alsamixer.
-> With alsa-driver-1.0.15rc1, mono-mic input works very very bad 
-> (extremely low volume, terrible quality, lots of clicks and noise).
-> 
-> I guess that the mono mic needs a mic boost in alsa-driver-1.0.15rc1. 
-> However, with a 'grep -i "mic boost" .../pci/hda/*.c' 
-> (alsa-driver-1.0.15rc1 source code), it seems that only patch-realtek.c 
-> and patch-analog.c support this feature.
-> 
-> Is it even possible to add a mic boost feature to this codec?
-> 
-> The output of alsa-info.sh with alsa-driver-1.0.15rc1 is at:
-> http://pastebin.ca/681023
-> 
-> Thanks a lot for any info, and congratulations to all of you for your 
-> terrific work with ALSA.
-> 
-> Pablo Hess
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+ok.
 
--- 
-Tobin Davis  
+> > +/*
+> > + * sc6000_dma_to_softcfg - Decode dma number into cfg code.
+> > + */
+> > +static inline unsigned char sc6000_dma_to_softcfg(int dma)
+> > +{
+> > +	unsigned char val = 0;
+> > +
+> > +	switch (dma) {
+> > +	case 0:
+> > +		val = 1;
+> > +		break;
+> > +	case 1:
+> > +		val = 2;
+> > +		break;
+> > +	case 3:
+> > +		val = 3;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +	return val;
+> > +}
+> 
+> Deja vu from sgalaxy...
+> 
+> But also -- please no inlines. There's no point to them. Kernel policy is 
+> basically "no inlines other than for things that would definitely be macros 
+> if we weren't fond of the typesafety inline functions give". GCC will figure 
+> things out on its own...
+> 
 
+These things were actually macros in the 2.4 driver.
 
-What's page one, a preemptive strike?
-		-- Professor Freund, Communication, Ramapo State College
+> > +/*
+> > + * We must request the port region because these are the I/O
+> > + * ports to access card's control registers.
+> > + */
+> > +	if (!request_region(port[dev], 0x10, "sc-6000 (base)")) {
+> > +		snd_printk(KERN_ERR
+> > +			   "SC-6000 port I/O port region is already in use.\n");
+> > +		return -EBUSY;
+> > +	}
+> > +
+> > +	err = sc6000_init_board(port[dev], irq, dma,
+> > +				mss_port[dev], mpu_irq[dev]);
+> > +
+> > +	release_region(port[dev], 0x10);
+> 
+> So what happens if now someone starts poking at port[dev]? You probably want 
+> to keep these requested no?
+> 
+
+Sgalaxy dejavu.
+
+> > +	if (mpu_port[dev] != SNDRV_AUTO_PORT &&
+> > +	    (mpu_port[dev] & ~0x30l) != 0x300) {
+> 
+> Eh, what?
+> 
+
+Checking if mpu_port[dev] is one 0x3X0 where X is from 0 to 3
+
+> > +		printk(KERN_ERR PFX "invalid MPU-401 port %lx\n",
+> > +			mpu_port[dev]);
+> > +		return 0;
+> > +	}
+> > +	if (mpu_port[dev] != SNDRV_AUTO_PORT &&
+> > +	    mpu_irq[dev] != SNDRV_AUTO_IRQ && mpu_irq[dev] != 0 &&
+> > +	    !sc6000_mpu_irq_to_softcfg(mpu_irq[dev])) {
+> > +		printk(KERN_ERR PFX "invalid MPU-401 IRQ %d\n", mpu_irq[dev]);
+> > +		return 0;
+> > +	}
+> > +	return 1;
+> > +}
+> > +
+> > +static int __devinit snd_sc6000_probe(struct device *devptr, unsigned int dev)
+> > +{
+> > +	static int possible_irqs[] = { 7, 9, 10, 11, -1 };
+> 
+> In the above, IRQ 5 also seems to be allowed. This is all rather massive 
+> sgalaxy deja-vu...
+> 
+
+Do you think that this card can be handled by sgalaxy driver (with minimal changes to sgalaxy)?
+
+Regards,
+Krzysztof
