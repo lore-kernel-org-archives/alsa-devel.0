@@ -1,18 +1,23 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: DMA buffer gets played only once
-Date: Wed, 05 Sep 2007 11:04:39 +0200
-Message-ID: <1188983079.7844.1208974467@webmail.messagingengine.com>
-References: <46DE4AB1.20206@hrz.tu-chemnitz.de>
+Subject: Re: How can I make sure the period size is a multiple
+ of 16?
+Date: Wed, 05 Sep 2007 11:08:03 +0200
+Message-ID: <1188983283.8449.1208975085@webmail.messagingengine.com>
+References: <46DDE137.2070507@freescale.com>
+	<200709051229.54852.linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 2742F103803
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id C546D103803
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Sep 2007 11:04:41 +0200 (CEST)
+	Wed,  5 Sep 2007 11:08:03 +0200 (CEST)
+Received: from compute1.internal (compute1.internal [10.202.2.41])
+	by out1.messagingengine.com (Postfix) with ESMTP id 4DAC527916
+	for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2007 05:08:03 -0400 (EDT)
 Content-Disposition: inline
-In-Reply-To: <46DE4AB1.20206@hrz.tu-chemnitz.de>
+In-Reply-To: <200709051229.54852.linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +27,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Markus Franke <markus.franke@s2002.tu-chemnitz.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Markus Franke wrote:
-> It seems like that after the 8th period is transferred
-> pcm_trigger(TRIGGER_STOP) isn't getting called. 
+Eliot Blennerhassett wrote:
+> Set snd_pcm_hardware.period_bytes_min to 16 or is that 16 * samplesize?
 
-Indeed.  The stop trigger is called when the entire stream is
-to be stopped.
+This value is measured in bytes.
 
-When the start trigger has been called, the hardware (or the driver) is
-responsible for playing the ring buffer _repeatedly_.   If the hardware
-doesn't do this automatically, the driver has to reprogram it.
+> snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 16);
+
+This parameter is measured in frames.
 
 
 HTH
