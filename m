@@ -1,23 +1,17 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: How can I make sure the period size is a multiple
- of 16?
-Date: Wed, 05 Sep 2007 12:29:54 +1200
-Message-ID: <200709051229.54852.linux@audioscience.com>
-References: <46DDE137.2070507@freescale.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: HDA Conexant: is mic boost possible?
+Date: Tue, 04 Sep 2007 18:15:05 -0700
+Message-ID: <1188954905.4982.183.camel@razman.gruemaster.com>
+References: <46DD6862.6070400@linuxnewmedia.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 042A524482
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 91D06103878
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Sep 2007 02:26:43 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JNV00M3JD8F4800@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Wed, 05 Sep 2007 12:26:39 +1200 (NZST)
-In-reply-to: <46DDE137.2070507@freescale.com>
-Content-disposition: inline
+	Wed,  5 Sep 2007 03:15:08 +0200 (CEST)
+In-Reply-To: <46DD6862.6070400@linuxnewmedia.com.br>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,26 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Pablo N. Hess" <phess@linuxnewmedia.com.br>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 05 September 2007 10:50:31 Timur Tabi wrote:
-> To work around a hardware issue, my ASoC driver requires the period size to
-> be a multiple of 16.  What is the best way to ensure that?
+I believe mic boost is on by default.  What model are you running this
+as?  Laptop or Fujitsu?
 
-Well, I was going to refer you to
- http://www-old.alsa-project.org/~iwai/writing-an-alsa-driver/index.html
-but I just get a blank page today.
+Tobin
 
-Set snd_pcm_hardware.period_bytes_min to 16 or is that 16 * samplesize?
+On Tue, 2007-09-04 at 11:14 -0300, Pablo N. Hess wrote:
 
-You need to add some constraints to your driver, in the open callback.
-E.g.
-snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 16);
+> I have to make the sound chip of a Itautec W7635 (= FIC VA250D) work on 
+> a Gentoo(-based) distro (I'm now trying Sabayon).
+> It is a HDA-intel (Conexant codec).
+> 
+> Using my earphones as a stereo mic, recording with 'arecord -f cd' has 
+> always worked perfectly fine, from alsa-driver-1.0.14 on.
+> 
+> However, when using a regular mono mic (like the ones that come in 
+> common headsets), recording simply does *not* work.
+> 
+> Here's the quick info:
+> 
+> alsa-driver-1.0.14:
+>    playback: ok
+>    recording:
+>      stereo mic: ok
+>      mono mic: no input at all (very high volume already tried)
+> 
+> alsa-driver-1.0.15rc1:
+>    playback: ok (even better than with alsa-driver-1.0.14)
+>    recording:
+>      stereo mic: ok (seems better thatn with alsa-driver-1.0.14)
+>      mono mic: *very* very low volume, bad quality, lots of low-volume 
+> noise, too.
+> 
+> 
+> Now the paragraphed info:
+> 
+> Playback is perfectly ok since alsa-driver-1.0.14, just like recording 
+> with an earphone as a stereo mic.
+> 
+> With alsa-driver-1.0.14, definitely no mono-mic input works, no matter 
+> the settings at alsamixer.
+> With alsa-driver-1.0.15rc1, mono-mic input works very very bad 
+> (extremely low volume, terrible quality, lots of clicks and noise).
+> 
+> I guess that the mono mic needs a mic boost in alsa-driver-1.0.15rc1. 
+> However, with a 'grep -i "mic boost" .../pci/hda/*.c' 
+> (alsa-driver-1.0.15rc1 source code), it seems that only patch-realtek.c 
+> and patch-analog.c support this feature.
+> 
+> Is it even possible to add a mic boost feature to this codec?
+> 
+> The output of alsa-info.sh with alsa-driver-1.0.15rc1 is at:
+> http://pastebin.ca/681023
+> 
+> Thanks a lot for any info, and congratulations to all of you for your 
+> terrific work with ALSA.
+> 
+> Pablo Hess
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-List of hwparams that can be constrained is in asound.h
-List of constraint helpers in pcm.h, or grep for snd_pcm_hw_constraint to see 
-usage examples.
+-- 
+Tobin Davis  
 
---
-Eliot
+
+What's page one, a preemptive strike?
+		-- Professor Freund, Communication, Ramapo State College
