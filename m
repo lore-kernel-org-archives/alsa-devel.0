@@ -1,18 +1,20 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: Re: How to name controls
-Date: Thu, 6 Sep 2007 09:42:02 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0709060932440.31808@shell4.speakeasy.net>
-References: <Pine.LNX.4.58.0709031409580.18152@shell4.speakeasy.net>
-	<s5hwsv56xl5.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: How can I make sure the period size is a multiple
+ of 16?
+Date: Thu, 06 Sep 2007 12:07:11 -0500
+Message-ID: <46E033BF.1010104@freescale.com>
+References: <46DDE137.2070507@freescale.com>
+	<200709051229.54852.linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail4.sea5.speakeasy.net (mail4.sea5.speakeasy.net
-	[69.17.117.6]) by alsa0.perex.cz (Postfix) with ESMTP id 362BC10381B
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10BD2103811
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Sep 2007 18:42:04 +0200 (CEST)
-In-Reply-To: <s5hwsv56xl5.wl%tiwai@suse.de>
+	Thu,  6 Sep 2007 19:07:15 +0200 (CEST)
+In-Reply-To: <200709051229.54852.linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Eliot Blennerhassett <linux@audioscience.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 5 Sep 2007, Takashi Iwai wrote:
-> At Mon, 3 Sep 2007 14:46:11 -0700 (PDT),
-> Trent Piepho wrote:
-> > Basically, there is an analog input (from the TV tuner), and a line out.
-> > The analog input goes through ADC -> DAC steps and then to the line out.
-> > There are three controls, one volume and two mute switches.  One switch
-> > causes the source to be muted, the other only mutes the line out.  The
-> > volume only controls the line out.
-> >
-> > So what should I call these controls?  Do I call the volume "Playback
-> > Volume"?  The chip doesn't support playback, so that seems confusing.  It's
-> > more like "Pass-through Volume", but that's not an option.  And what do I
-> > call the source mute switch?  "Capture Switch"?  That doesn't seem quite
-> > right either, since it doesn't just mute capture, but also mutes the
-> > pass-through audio.
->
-> Basically "Capture" and "Playback" in the control element names just
-> indicate the direction rather than the functionality.  The analog-loop
-> back is handled usually "XXX Playback Volume" in many drivers/codecs.
-> Hence I think it's fine with "Playback Volume" in this case.
+Eliot Blennerhassett wrote:
 
-Ok, thanks.  The direction is clear when one has audio going to or from an
-ALSA pcm device, but in the case of a pass-through it's not obvious.  I see
-that the ca0106 driver has a control named "CAPTURE feedback Playback
-Volume" that works the same way as the cx88 volume control.  Since cx88
-only has the one control, I'll just name it "Playback Volume".
+> You need to add some constraints to your driver, in the open callback.
+> E.g.
+> snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 16);
+
+Thanks.  snd_pcm_hw_constraint_step() is not documented anywhere, and the 
+comments in the source code don't provide any clues, either.  Even the "ALSA 
+Driver API" document just lists the function, but doesn't actually tell you 
+what it does.
+
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
