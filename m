@@ -1,15 +1,18 @@
-From: Markus Korber <korbse@gmx.at>
-Subject: period_size and relation to number of samples
-Date: Thu, 06 Sep 2007 07:52:37 +0200
-Message-ID: <6zps0wwday.fsf@odpc25.int.ondemand.co.at>
+From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
+Subject: (no subject)
+Date: Thu, 06 Sep 2007 07:57:54 +0200
+Message-ID: <46df96e29fca2@wp.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="part46df96e2a23b1"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 93DE11038CE
+Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18E6E1038CE
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Sep 2007 07:52:39 +0200 (CEST)
+	Thu,  6 Sep 2007 07:59:31 +0200 (CEST)
+Received: from poczta-6.free.wp-sa.pl (HELO localhost) ([10.1.1.13])
+	(envelope-sender <krzysztof.h1@wp.pl>)
+	by smtp.wp.pl (WP-SMTPD) with SMTP
+	for <alsa-devel@alsa-project.org>; 6 Sep 2007 07:57:54 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,79 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+This is a multi-part message in MIME format.
 
-one question: If my driver announces the setting below[1], how many
-samples must an application provide in a single snd_pcm_writei() or
-snd_pcm_mmap_writei() call?
+--part46df96e2a23b1
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Shouldn't it always send 8192 bytes or 2048 left and right samples (4096
-in total) or is it free to send more or less?
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Logging data in my chip_playback_copy() function shows the following
-(S16_LE, RW_INTERLEAVED):
+The linux/of.h header should be used instead of asm/prom.h.
 
-,----[ mplayer, aplay: ]
-| chip_playback_copy (0 -> src: 0xffce1000, #bytes: 0x4000)
-| chip_playback_copy (1 -> src: 0xffce1000, #bytes: 0x2000)
-| chip_playback_copy (1 -> src: 0xffce1000, #bytes: 0x2000)
-`----
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
 
-,----[ alsaplayer: ]
-| chip_playback_copy (0 -> src: 0xffce1000, #bytes: 0x2000)
-| chip_playback_copy (0 -> src: 0xffce3000, #bytes: 0x2000)
-| chip_playback_copy (0 -> src: 0xffce3000, #bytes: 0x2000)
-| [...]
-`----
+Stephen Rothwell's post to the LKLM pointed that asm/prom.h
+is replaced by linux/of*.h headers from the new OpenFirmware=20
+framework .
 
-Thus mplayer and aplay provide 16384 bytes (4096 l/r samples) in the
-first call and 8192 bytes (2048 l/r samples) for all subsequent calls.
-However, alsaplayer provides 8192 bytes (2048 l/r samples) for all
-calls.
+In case this post got malformed, the patch is attached too.
 
-Now, what is an application allowed to send and what not?  For example,
-could an application only send 1024 l/r samples and is the driver
-responsible for buffering the data?  Or must it obey the announced
-period_size and *always* provide 2048 l/r samples?
+--- old/sound/sparc/dbri.c	2007-09-04 18:38:20.000000000 +0200
++++ new/sound/sparc/dbri.c	2007-09-06 07:24:46.188427350 +0200
+@@ -66,7 +66,7 @@
+ #include <sound/control.h>
+ #include <sound/initval.h>
+=20
+-#include <asm/prom.h>
++#include <linux/of.h>
+ #include <asm/sbus.h>
+ #include <asm/atomic.h>
+=20
 
-Thanks.
 
-,----[ 1 ]
-| stream       : PLAYBACK
-| access       : RW_INTERLEAVED
-| format       : S16_LE
-| subformat    : STD
-| channels     : 2
-| rate         : 44100
-| exact rate   : 44100 (44100/1)
-| msbits       : 16
-| buffer_size  : 4096
-| period_size  : 2048
-| period_time  : 46439
-| tick_time    : 10000
-| tstamp_mode  : NONE
-| period_step  : 1
-| sleep_min    : 0
-| avail_min    : 2048
-| xfer_align   : 1
-| start_threshold  : 2048
-| stop_threshold   : 4096
-| silence_threshold: 0
-| silence_size : 0
-| boundary     : 1073741824
-| start_mode: DATA
-| xrun_mode: STOP
-| tstamp_mode: NONE
-| period_step: 1
-| sleep_min: 0
-| avail_min: 2048
-| xfer_align: 1
-| silence_threshold: 0
-| silence_size: 0
-| boundary: 1073741824
-`----
+----------------------------------------------------
+Podr=F3=BF w przesz=B3o=B6=E6 - tysi=B1ce atrakcji w ca=B3ej Polsce,
+tylko we wrze=B6niu - Zajrzyj na stron=EA Edd.com.pl - Kliknij:
+http://klik.wp.pl/?adr=3Dwww.edd.com.pl&sid=3D9
 
-Regards,
-Markus Korber
+--part46df96e2a23b1
+Content-Type: application/octet-stream; name="dbri-include.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="dbri-include.diff"
+
+LS0tIG9sZC9zb3VuZC9zcGFyYy9kYnJpLmMJMjAwNy0wOS0wNCAxODozODoyMC4wMDAwMDAwMDAg
+KzAyMDAKKysrIG5ldy9zb3VuZC9zcGFyYy9kYnJpLmMJMjAwNy0wOS0wNiAwNzoyNDo0Ni4xODg0
+MjczNTAgKzAyMDAKQEAgLTY2LDcgKzY2LDcgQEAKICNpbmNsdWRlIDxzb3VuZC9jb250cm9sLmg+
+CiAjaW5jbHVkZSA8c291bmQvaW5pdHZhbC5oPgogCi0jaW5jbHVkZSA8YXNtL3Byb20uaD4KKyNp
+bmNsdWRlIDxsaW51eC9vZi5oPgogI2luY2x1ZGUgPGFzbS9zYnVzLmg+CiAjaW5jbHVkZSA8YXNt
+L2F0b21pYy5oPgogCg==
+
+--part46df96e2a23b1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--part46df96e2a23b1--
