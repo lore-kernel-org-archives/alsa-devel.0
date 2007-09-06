@@ -1,85 +1,63 @@
-From: Mauro Carvalho Chehab <mchehab@infradead.org>
-Subject: Re: [alsa-devel] [PATCH] Improved support for	different
-	bt87x	board configurations
-Date: Thu, 06 Sep 2007 21:17:12 +0100
-Message-ID: <1189109832.10203.30.camel@areia>
-References: <Pine.LNX.4.58.0708300319210.18152@shell4.speakeasy.net>
-	<s5h3ay1i8rs.wl%tiwai@suse.de>
-	<Pine.LNX.4.58.0709021603380.18152@shell4.speakeasy.net>
-	<1188801407.6762.1208578117@webmail.messagingengine.com>
-	<Pine.LNX.4.58.0709040447220.31808@shell4.speakeasy.net>
-	<1188914079.6535.47.camel@areia> <s5hr6leyy0r.wl%tiwai@suse.de>
-	<Pine.LNX.4.58.0709041339540.31808@shell4.speakeasy.net>
-	<1188975275.6158.34.camel@areia>
-	<Pine.LNX.4.58.0709050120490.31808@shell4.speakeasy.net>
-	<s5h3axtv30n.wl%tiwai@suse.de> <1188988371.6158.43.camel@areia>
-	<Pine.LNX.4.58.0709051523390.31808@shell4.speakeasy.net>
+From: Krzysztof Helt <krzysztof.h1@gmail.com>
+Subject: Re: [PATCH] Gallant SC-6000 driver (4th version)
+Date: Thu, 6 Sep 2007 23:12:06 +0200
+Message-ID: <20070906231206.2ba8f939.krzysztof.h1@gmail.com>
+References: <46dfa2e7d6be4@wp.pl>
+	<46DFD29A.6020601@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <video4linux-list-bounces@redhat.com>
-In-Reply-To: <Pine.LNX.4.58.0709051523390.31808@shell4.speakeasy.net>
-List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
-	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
-List-Post: <mailto:video4linux-list@redhat.com>
-List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
-List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
-	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
-Sender: video4linux-list-bounces@redhat.com
-Errors-To: video4linux-list-bounces@redhat.com
-To: Trent Piepho <xyzzy@speakeasy.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux and Kernel Video <video4linux-list@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0081C103822
+	for <alsa-devel@alsa-project.org>;
+	Thu,  6 Sep 2007 23:05:39 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id d21so320126nfb
+	for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2007 14:05:39 -0700 (PDT)
+In-Reply-To: <46DFD29A.6020601@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 06 Sep 2007 12:12:42 +0200
+Rene Herman <rene.herman@gmail.com> wrote:
 
-Em Qua, 2007-09-05 =C3=A0s 15:34 -0700, Trent Piepho escreveu:
-> On Wed, 5 Sep 2007, Mauro Carvalho Chehab wrote:
-> > > Well, at first I misunderstood that we would share the PCI SSIDs
-> > > together with enum items.  Sharing only the enum items doesn't give
-> > > much improvements.  Sharing the card database may do, though.
-> > >
-> > > So, I see Trent's point.  The merge work wouldn't pay for the benif=
-it
-> > > by sharing only the enum id, not the card database.
-> >
-> > I like the idea of sharing the database. This probably will mean that
-> > snd_bt87x would be dependent of bttv driver (or a bttv core driver).
-> > This have the advantage of helping also to fix some conflicts with dv=
-b
-> > bttv driver.
->=20
-> I see how that could be an improvement.  Now the bt87x driver has a
-> whitelist of cards with sound and a blacklist of cards with DVB, while =
-the
-> bt878 DVB driver has the exact opposite lists.  Except the two driver's
-> lists aren't in sync of course.
->=20
-> The cx88 driver keeps the database in the core module.  One drawback is
-> that the database can't be __initdata, as it has to stick around after =
-the
-> core module is loaded so the other drivers that are loaded later can ge=
-t at
-> it.  Of course, __initdata doesn't do any for most configurations and i=
-t's
-> not that big of a drawback in practice.
+> On 09/06/2007 08:49 AM, Krzysztof Helt wrote:
+> 
+> > Actually, the parport_pc driver is loaded by the udev by default, so the
+> > IRQ7 cannot be requested (I tested - IRQ7 request failed even if I had 
+> > not used the printer).
+> 
+> Not everybody uses udev. But more importantly, only if the hardware in 
+> question is discoverable. [...]
+> 
+> And _then_ there's the bit about the ISA probing being a huge gaping race by 
+> design. There's really no defending that massive junk. All ISA autoprobing 
+> is bad engineering and should be ripped out and shot, period. It's broken 
+> both by design and implementation. The solution to making things nicer is 
+> not autoprobing but not using legacy ISA -- and basically noone is other 
+> than for entertainment purposes.
+> 
 
-Trent,
+I am quite sure we won't agree on this one. My reason (to keep autodection)
+is sheer laziness of giving two numbers. Even giving them does not make
+user free of problems how to avoid irqs and dmas with installed devices 
+but not visible in the /proc/interrupts file).
 
-Could you work on such patches for 2.6.25? For 2.6.24, my suggestion is
-just to apply your already submitted one.
+I would like to ask Takashi to decide on this issue. I will done as he says.
 
-Takashi,=20
+Will this driver be included? I found a bug in probing - if something is wrong
+after the SB region is requested it won't be released. So the next version is
+needed to be done anyway (or a small patch later).
 
-If you want, you may add my ack to the already-sent Trent's patch:
-
-Reviewed-by: Mauro Carvalho Chehab <mchehab@infradead.org>
-
-Cheers,
-Mauro.
-
---
-video4linux-list mailing list
-Unsubscribe mailto:video4linux-list-request@redhat.com?subject=3Dunsubscr=
-ibe
-https://www.redhat.com/mailman/listinfo/video4linux-list
+Regards,
+Krzysztof
