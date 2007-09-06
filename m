@@ -1,20 +1,15 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: Re: DMA buffer gets played only once
-Date: Wed, 5 Sep 2007 22:14:17 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0709052207551.31808@shell4.speakeasy.net>
-References: <46DE4AB1.20206@hrz.tu-chemnitz.de>
-	<1188983079.7844.1208974467@webmail.messagingengine.com>
-	<46DE7422.5020900@hrz.tu-chemnitz.de> <s5hbqch8e5o.wl%tiwai@suse.de>
-	<46DF83C6.1090002@hrz.tu-chemnitz.de>
+From: Markus Korber <korbse@gmx.at>
+Subject: period_size and relation to number of samples
+Date: Thu, 06 Sep 2007 07:52:37 +0200
+Message-ID: <6zps0wwday.fsf@odpc25.int.ondemand.co.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail8.sea5.speakeasy.net (mail8.sea5.speakeasy.net
-	[69.17.117.10]) by alsa0.perex.cz (Postfix) with ESMTP id C38841037F4
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 93DE11038CE
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Sep 2007 07:14:20 +0200 (CEST)
-In-Reply-To: <46DF83C6.1090002@hrz.tu-chemnitz.de>
+	Thu,  6 Sep 2007 07:52:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +19,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Markus Franke <markus.franke@s2002.tu-chemnitz.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 6 Sep 2007, Markus Franke wrote:
-> Takashi Iwai wrote:
-> >> At least this is the behaviour I experienced.
-> >
-> > It's your mis-interpretation of START/STOP concenpt in the ALSA
-> > framework.  The trigger START and STOP mean the start/stop of the
-> > whole streaming operation.  It's basically called from the outside,
-> > i.e. the application starts/stops the stream.  If you need to keep
-> > some DMA start/stop operations internally, do it in the driver
-> > lowlevel side internally.
->
-> thanks for reply but as already stated this is the behaviour I
-> _experienced_. I don't know why also continuously calls trigger START,
-> play one period, trigger STOP. Here is some pseudo code:
->
->
-> vi1888_pcm_dma_userCallback() // gets called upon completion of DMA
-> transfer
-> {
->          prtd->period_ptr += prtd->period_size;
->          if (prtd->period_ptr >= prtd->dma_buffer_end) {
->                  prtd->period_ptr = prtd->dma_buffer;
->          }
+Hello,
 
-You need to make sure the buffer size is an integer multiple of the period
-size if you wrap like this.
+one question: If my driver announces the setting below[1], how many
+samples must an application provide in a single snd_pcm_writei() or
+snd_pcm_mmap_writei() call?
 
-> After each call to snd_pcm_period_elapsed() Alsa calls
-> pcm_trigger(TRIGGER_STOP).
->
-> Please tell me what I am doing wrong in these callbacks?
+Shouldn't it always send 8192 bytes or 2048 left and right samples (4096
+in total) or is it free to send more or less?
 
-I found that ALSA would call TRIGGER_STOP if it detected an overrun.
+Logging data in my chip_playback_copy() function shows the following
+(S16_LE, RW_INTERLEAVED):
 
-Check the value returned for every call of your pointer callback.  I found out
-that ALSA was calling the pointer callback before the first IRQ, which was
-something I hadn't planned on and the values confused ALSA.
+,----[ mplayer, aplay: ]
+| chip_playback_copy (0 -> src: 0xffce1000, #bytes: 0x4000)
+| chip_playback_copy (1 -> src: 0xffce1000, #bytes: 0x2000)
+| chip_playback_copy (1 -> src: 0xffce1000, #bytes: 0x2000)
+`----
+
+,----[ alsaplayer: ]
+| chip_playback_copy (0 -> src: 0xffce1000, #bytes: 0x2000)
+| chip_playback_copy (0 -> src: 0xffce3000, #bytes: 0x2000)
+| chip_playback_copy (0 -> src: 0xffce3000, #bytes: 0x2000)
+| [...]
+`----
+
+Thus mplayer and aplay provide 16384 bytes (4096 l/r samples) in the
+first call and 8192 bytes (2048 l/r samples) for all subsequent calls.
+However, alsaplayer provides 8192 bytes (2048 l/r samples) for all
+calls.
+
+Now, what is an application allowed to send and what not?  For example,
+could an application only send 1024 l/r samples and is the driver
+responsible for buffering the data?  Or must it obey the announced
+period_size and *always* provide 2048 l/r samples?
+
+Thanks.
+
+,----[ 1 ]
+| stream       : PLAYBACK
+| access       : RW_INTERLEAVED
+| format       : S16_LE
+| subformat    : STD
+| channels     : 2
+| rate         : 44100
+| exact rate   : 44100 (44100/1)
+| msbits       : 16
+| buffer_size  : 4096
+| period_size  : 2048
+| period_time  : 46439
+| tick_time    : 10000
+| tstamp_mode  : NONE
+| period_step  : 1
+| sleep_min    : 0
+| avail_min    : 2048
+| xfer_align   : 1
+| start_threshold  : 2048
+| stop_threshold   : 4096
+| silence_threshold: 0
+| silence_size : 0
+| boundary     : 1073741824
+| start_mode: DATA
+| xrun_mode: STOP
+| tstamp_mode: NONE
+| period_step: 1
+| sleep_min: 0
+| avail_min: 2048
+| xfer_align: 1
+| silence_threshold: 0
+| silence_size: 0
+| boundary: 1073741824
+`----
+
+Regards,
+Markus Korber
