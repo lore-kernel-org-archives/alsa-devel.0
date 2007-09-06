@@ -1,20 +1,18 @@
-From: "Krzysztof Helt" <krzysztof.h1@wp.pl>
-Subject: Re: [PATCH] Gallant SC-6000 driver (4th version)
-Date: Thu, 06 Sep 2007 16:03:42 +0200
-Message-ID: <46e008be72b6c@wp.pl>
-References: <46dfa2e7d6be4@wp.pl> <46DFD29A.6020601@gmail.com>
-	<46DFE268.7080404@gmail.com>
+From: Markus Korber <korbse@gmx.at>
+Subject: Re: period_size and relation to number of samples
+Date: Thu, 06 Sep 2007 16:30:17 +0200
+Message-ID: <46E00EF9.2070607@gmx.at>
+References: <6zps0wwday.fsf@odpc25.int.ondemand.co.at>
+	<s5hsl5r6gwk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 57BC710393A
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 0702110396D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Sep 2007 16:03:43 +0200 (CEST)
-In-reply-to: <46dfa2e7d6be4@wp.pl> <46DFD29A.6020601@gmail.com>
-	<46DFE268.7080404@gmail.com>
-Content-Disposition: inline
+	Thu,  6 Sep 2007 16:30:18 +0200 (CEST)
+In-Reply-To: <s5hsl5r6gwk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dnia 6-09-2007 o godz. 13:20 Rene Herman napisa=B3(a):
-> On 09/06/2007 12:12 PM, Rene Herman wrote:
-> =
+Takashi Iwai schrieb:
+> At Thu, 06 Sep 2007 07:52:37 +0200,
+> Markus Korber wrote:
+>> [...]
+>> Now, what is an application allowed to send and what not?  For example,
+>> could an application only send 1024 l/r samples and is the driver
+>> responsible for buffering the data?  Or must it obey the announced
+>> period_size and *always* provide 2048 l/r samples?
+> 
+> No, as mentioned, the app is free to send any size in general.  When
+> the period size is filled up, basically it's supposed to be playable.
+> But, the procedure "fill the whole buffer then start" is the most
+> robust way.  
+> 
+> The period size is the minimal chunk size that controls the poll
+> frequency.  So, it's natural to send in this size.  It's no
+> requirement but a common use case.
 
-> > Full duplex (simultaneous playback and capture) is something
-that =
-
-> > neither Sb Pro nor CS4231 does. I do see that SB Pro doesn't
-natively =
-
-> > support S16_LE it seems...
-> =
-
-> Sorry, incorrect -- the cs4231 is full duplex. It's only the
-cs4248 (ad1848) =
-
-> which is not. Need to figure out how to do full duplex on a
-sound galaxy; =
-
-> old driver didn't do so.
-> =
-
-
-The SG Waverider is full duplex (at least Win95 driver says so).
+Thus, is it possible to buffer the data in ALSA before sending them to 
+the driver, in such a way, that the driver always receives period_size 
+samples, regardless of what the application sends to ALSA?  And how 
+would I configure ALSA for such a setup?
 
 Regards,
-Krzysztof
-
-
-----------------------------------------------------
-Walka jakiej nie widzia=B3e=B6! KSW eliminacje, =
-
-nie wszyscy przejd=B1 ca=B3o! =
-
-Zobacz na =BFywo we Wroc=B3awiu ju=BF 15 wrze=B6nia. =
-
-Wi=EAcej -> http://klik.wp.pl/?adr=3Dhttp%3A%2F%2Fadv.reklama.wp.pl%2Fas%2F=
-ksweliminacje.html&sid=3D12
+Markus Korber
