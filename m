@@ -1,19 +1,18 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] Gallant SC-6000 driver (4th version)
-Date: Thu, 06 Sep 2007 17:18:07 +0200
-Message-ID: <46E01A2F.2080106@gmail.com>
-References: <46dfa2e7d6be4@wp.pl> <46DFD29A.6020601@gmail.com>
-	<46DFE268.7080404@gmail.com> <46e008be72b6c@wp.pl>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: Re: How to name controls
+Date: Thu, 6 Sep 2007 09:42:02 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0709060932440.31808@shell4.speakeasy.net>
+References: <Pine.LNX.4.58.0709031409580.18152@shell4.speakeasy.net>
+	<s5hwsv56xl5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AA41103901
+Received: from mail4.sea5.speakeasy.net (mail4.sea5.speakeasy.net
+	[69.17.117.6]) by alsa0.perex.cz (Postfix) with ESMTP id 362BC10381B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Sep 2007 17:24:39 +0200 (CEST)
-In-Reply-To: <46e008be72b6c@wp.pl>
+	Thu,  6 Sep 2007 18:42:04 +0200 (CEST)
+In-Reply-To: <s5hwsv56xl5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@wp.pl>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDkvMDYvMjAwNyAwNDowMyBQTSwgS3J6eXN6dG9mIEhlbHQgd3JvdGU6Cgo+IERuaWEgNi0w
-OS0yMDA3IG8gZ29kei4gMTM6MjAgUmVuZSBIZXJtYW4gbmFwaXNhxYIoYSk6Cgo+PiBTb3JyeSwg
-aW5jb3JyZWN0IC0tIHRoZSBjczQyMzEgaXMgZnVsbCBkdXBsZXguIEl0J3Mgb25seSB0aGUgY3M0
-MjQ4Cj4+IChhZDE4NDgpIHdoaWNoIGlzIG5vdC4gTmVlZCB0byBmaWd1cmUgb3V0IGhvdyB0byBk
-byBmdWxsIGR1cGxleCBvbiBhIAo+PiBzb3VuZCBnYWxheHk7IG9sZCBkcml2ZXIgZGlkbid0IGRv
-IHNvLgo+Pgo+IFRoZSBTRyBXYXZlcmlkZXIgaXMgZnVsbCBkdXBsZXggKGF0IGxlYXN0IFdpbjk1
-IGRyaXZlciBzYXlzIHNvKS4KCll1cCwgZmlndXJlZCBpdCBvdXQgLS0gaXQncyB3b3JraW5nIG5p
-Y2VseS4gU291bmQgR2FsYXhpZXMgY29tZSB3aXRoIHZhcmlvdXMgCmNvZGVjczsgYWxzbyBDUzQy
-NDggd2hpY2ggaXMgaGFsZi1kdXBsZXgsIHNvIG5vdyBvbmx5IG5lZWQgdG8gY2hlY2sgdGhhdCBu
-b3cgCl90aG9zZV8gZG9uJ3QgY3JhcCBvdXQuLi4KClJlbmUKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, 5 Sep 2007, Takashi Iwai wrote:
+> At Mon, 3 Sep 2007 14:46:11 -0700 (PDT),
+> Trent Piepho wrote:
+> > Basically, there is an analog input (from the TV tuner), and a line out.
+> > The analog input goes through ADC -> DAC steps and then to the line out.
+> > There are three controls, one volume and two mute switches.  One switch
+> > causes the source to be muted, the other only mutes the line out.  The
+> > volume only controls the line out.
+> >
+> > So what should I call these controls?  Do I call the volume "Playback
+> > Volume"?  The chip doesn't support playback, so that seems confusing.  It's
+> > more like "Pass-through Volume", but that's not an option.  And what do I
+> > call the source mute switch?  "Capture Switch"?  That doesn't seem quite
+> > right either, since it doesn't just mute capture, but also mutes the
+> > pass-through audio.
+>
+> Basically "Capture" and "Playback" in the control element names just
+> indicate the direction rather than the functionality.  The analog-loop
+> back is handled usually "XXX Playback Volume" in many drivers/codecs.
+> Hence I think it's fine with "Playback Volume" in this case.
+
+Ok, thanks.  The direction is clear when one has audio going to or from an
+ALSA pcm device, but in the case of a pass-through it's not obvious.  I see
+that the ca0106 driver has a control named "CAPTURE feedback Playback
+Volume" that works the same way as the cx88 volume control.  Since cx88
+only has the one control, I'll just name it "Playback Volume".
