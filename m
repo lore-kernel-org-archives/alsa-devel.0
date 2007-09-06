@@ -1,18 +1,20 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] Gallant SC-6000 driver (4th version)
-Date: Thu, 06 Sep 2007 12:12:42 +0200
-Message-ID: <46DFD29A.6020601@gmail.com>
-References: <46dfa2e7d6be4@wp.pl>
+From: James Pearson <james-p@moving-picture.com>
+Subject: Re: Problems with 32 bit apps on 64 bit OS using dmix
+ and snd-ioctl32
+Date: Thu, 06 Sep 2007 11:26:35 +0100
+Message-ID: <46DFD5DB.6030204@moving-picture.com>
+References: <46DE8EB0.90208@moving-picture.com>
+	<s5hd4wx8ec0.wl%tiwai@suse.de>	<46DEBF69.6070307@moving-picture.com>	<s5hodgh6sqf.wl%tiwai@suse.de>	<46DECCEA.4060306@moving-picture.com>	<s5hk5r56qin.wl%tiwai@suse.de>	<46DEDF4B.7050108@moving-picture.com>
+	<s5hbqch6nrf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4771924363
+Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2635C24424
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Sep 2007 12:19:11 +0200 (CEST)
-In-Reply-To: <46dfa2e7d6be4@wp.pl>
+	Thu,  6 Sep 2007 12:26:36 +0200 (CEST)
+In-Reply-To: <s5hbqch6nrf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@wp.pl>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/06/2007 08:49 AM, Krzysztof Helt wrote:
+Takashi Iwai wrote:
 
-> Actually, the parport_pc driver is loaded by the udev by default, so the
-> IRQ7 cannot be requested (I tested - IRQ7 request failed even if I had 
-> not used the printer).
+> Hm, maybe it's better to specify 2.6.16 or so for SND_SOC in
+> alsa-driver/kconfig-vers.  Could you check whether it works?
 
-Not everybody uses udev. But more importantly, only if the hardware in 
-question is discoverable. A parallel port will these days normally be 
-advertised using PnP (BIOS/ACPI) in fact which puts it on the same footing 
-as ISA-PnP and PCI with respect to this issue, but we are specifically 
-discussing this in the context of legacy ISA cards.
+Yes, this works - after I figured out that I needed to regenerate the 
+configure script after changing kconfig-vers ...
 
-So imagine you have another piece of legacy ISA hardware sitting on the 
-resources. Nothing will tell your driver that it is occupying the resources 
-in question so it goes ahead and grabs them after which both your hardware 
-and the other one fail, leaving this poor unaware user for whom autoprobing 
-is supposedly helpful clueless as to why nothing works.
+alsa-driver 1.0.15rc1 now builds OK on RHEL4/CentOS4 (with a patched 
+misc/ac97_bus.c and SND_SOC set to 2.6.16 in kconfig-vers)
 
-Then there's the bit about this user generally needing to know what resource 
-is going to be assigned so he can reserve it in the BIOS anyway. Without, an 
-IRQ may not even be useable from the ISA bus on some systems.
+>>However, with these 1.0.15rc1 modules installed, and using 
+>>alsa-lib-1.0.15rc1, I get exactly the same problem with 32 bit apps:
+>>
+>>Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+>>aplay: pcm_write:1268: write error: Invalid argument
+>>
+>>amd dmesg has:
+>>
+>>ioctl32(aplay:6228): Unknown cmd fd(3) cmd(40045402){00} arg(ffffac98) 
+>>on /dev/snd/timer
+>>ioctl32(aplay:6228): Unknown cmd fd(5) cmd(c008551a){00} arg(0806ccd0) 
+>>on /dev/snd/controlC0
+>>ioctl32(aplay:6228): Unknown cmd fd(5) cmd(c008551b){00} arg(0806ccd0) 
+>>on /dev/snd/controlC0
+>>ioctl32(aplay:6228): Unknown cmd fd(3) cmd(000054a0){00} arg(00000325) 
+>>on /dev/snd/timer
+> 
+> 
+> Do you use the latest alsa-lib, too?
+> The old alsa-lib tries only the old ioctl, of course...
 
-And _then_ there's the bit about the ISA probing being a huge gaping race by 
-design. There's really no defending that massive junk. All ISA autoprobing 
-is bad engineering and should be ripped out and shot, period. It's broken 
-both by design and implementation. The solution to making things nicer is 
-not autoprobing but not using legacy ISA -- and basically noone is other 
-than for entertainment purposes.
+Yes, I've installed the 32 bit and 64 bit alsa-lib-1.0.15rc1 packages - 
+and I still get the above errors ...
 
-Any system with ISA slots and running a modern kernel support ISA-PnP or 
-PnP-BIOS for onboard chips (and not to mention PCI) which solves the problem 
-nicely through being discoverable. Us entertainment-value users do not feel 
-there's anything wrong with sticking
+Do I need to build alsa-lib with any special options? I configured 
+alsa-lib using:
 
-	options snd-foo port=0x220 irq=5 dma=1
+  configure --enable-static=yes --datadir=/etc
 
-in /etc/modprobe.conf
+As this is how the 1.0.6 alsa-lib RHEL4 RPM was configured.
 
-> I don't know what is expected from WSS, but if the SB Pro mode gives
-> full duplex 16-bit stereo, there is no reason to use WSS mode.
+Does building alsa-lib depend on the alsa-driver version installed? - as 
+I built the 32 bit version on a 'stock' CentOS4/RHEL4 install that 
+didn't have the alsa-driver 1.0.15rc1 installed - would this make a 
+difference?
 
-Full duplex (simultaneous playback and capture) is something that neither Sb 
-Pro nor CS4231 does. I do see that SB Pro doesn't natively support S16_LE it 
-seems...
+Thanks
 
->> Quite sure that 5 works by the way? On a Sound Galaxy, 5 only works for
->> the SB part (and 11 only for the WSS).
-
-> It is the IRQ found most times as the first free during card tests. It
-> worked on all free IRQs from the range (the 10 or 11 is occupied by
-> USB/PS2 and I haven't bothered to make it free). It seems that ASC-9308
-> is more capable (in this respect) than SG chips.
-
-Okay, so it's at least in some respects really different. That probably 
-means a seperate driver makes sense.
-
-Rene.
+James Pearson
