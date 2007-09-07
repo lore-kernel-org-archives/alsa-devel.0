@@ -1,19 +1,17 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] Gallant SC-6000 driver (4th version)
-Date: Fri, 07 Sep 2007 14:11:20 +0200
-Message-ID: <46E13FE8.5060309@gmail.com>
-References: <46dfa2e7d6be4@wp.pl>	<46DFD29A.6020601@gmail.com>	<20070906231206.2ba8f939.krzysztof.h1@gmail.com>	<46E06E37.4090304@gmail.com>
-	<s5h4pi66886.wl%tiwai@suse.de>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Bizarre ATI SB450 behavior
+Date: Fri, 07 Sep 2007 06:48:22 -0700
+Message-ID: <1189172902.871.48.camel@razman.gruemaster.com>
+References: <Pine.LNX.4.62.0709062122080.12004@refresco.dreamhost.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id B5B5D103892
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C96F10389A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Sep 2007 14:17:54 +0200 (CEST)
-In-Reply-To: <s5h4pi66886.wl%tiwai@suse.de>
+	Fri,  7 Sep 2007 15:48:24 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.62.0709062122080.12004@refresco.dreamhost.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +21,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Krzysztof Helt <krzysztof.h1@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>
+To: Ryan Hughes <rjhughes@iheartryan.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/07/2007 01:11 PM, Takashi Iwai wrote:
+Please download alsa-1.0.15rc1 from http://alsa-project.org or a daily
+snapshot from ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/ and
+try it.  If you are still having issues, please run
+http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh and post the
+link that it creates.
 
-> The codes used for this auto-probing is relatively small and easy, so
-> as Rene expected, I don't mind about it :)
+Thanks,
+
+Tobin
+
+On Thu, 2007-09-06 at 21:43 -0700, Ryan Hughes wrote:
+
+> Hi.  I've got a little situation over here.
 > 
-> The criterion is only whether it's _really_ useful and works without
-> hitch.
+> Every time I poll any software, it totally believes that the sound-card is 
+> installed and configured correctly and working.  Nobody complains.  But 
+> when I try to play sound, none comes out.  People usually suggest the 
+> alsamixer, to make sure none of my channels are muted.  Truly, none of 
+> them are muted.
+> 
+> Here's the vital stats:
+> 
+> 
+> lspci | grep -i audio
+> 00:14.2 Audio device: ATI Technologies Inc SB450 HDA Audio (rev 01)
+> 
+> 
+> aplay -l
+> card 0: SB [HDA ATI SB], device 0: STAC92xx Analog [STAC92xx Analog]
+>    Subdevices: 1/1
+>    Subdevice #0: subdevice #0
+> 
+> 
+> lsmod | grep snd
+> snd_hda_intel         262424  1
+> snd_pcm_oss            44672  0
+> snd_mixer_oss          17792  1 snd_pcm_oss
+> snd_pcm                80900  2 snd_hda_intel,snd_pcm_oss
+> snd_seq_dummy           4996  0
+> snd_seq_oss            35072  0
+> snd_seq_midi            9728  0
+> snd_rawmidi            25984  1 snd_seq_midi
+> snd_seq_midi_event      8576  2 snd_seq_oss,snd_seq_midi
+> snd_seq                54000  6 
+> snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
+> snd_timer              24196  2 snd_pcm,snd_seq
+> snd_seq_device          9612  5 
+> snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_rawmidi,snd_seq
+> snd                    56324  12 
+> snd_hda_intel,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_seq_dummy,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
+> soundcore               8672  1 snd
+> snd_page_alloc         11272  2 snd_hda_intel,snd_pcm
+> 
+> 
+> Interesting pieces of dmesg
+> [   22.061858] ALSA 
+> /usr/src/alsa-driver-1.0.14/pci/hda/../../alsa-kernel/pci/hd
+> a/patch_si3054.c:244: si3054: cannot initialize. EXT MID = 0000
+> [   48.948578] hda-intel: Invalid position buffer, using LPIB read method 
+> instea
+> d.
+> 
+> 
+> Am I missing any useful info?
+> Kernel is 2.6.20-16
+> 
+> Alsa is a hand-compiled 1.0.14.
+> 
+> Thanks.
+> --Ryan
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Exactly. Krysztof snipped most of my objections but we are talking about 
-legacy ISA hardware here. So imagine you have _another_ piece of legacy ISA 
-hardware sitting on say IRQ 5. Unless you load your driver after the driver 
-for the other bit of hardware is loaded, your driver finds IRQ 5 free, grabs 
-it and configures the card for IRQ 5, after which your nor the other piece 
-of hardware work anymore.
-
-At this point, you've helped this poor unaware user from the docks into the 
-harbour as he has no idea what's going on, having not specified anything 
-himself.
-
-I'll repeat -- there's really no defending that massive junk :-)
-
-> We keep the old code as is just because it was worked, and we shouldn't
-> break it.  The concept is not perfect, but if it practically works, I
-> have no objection.
-
-What practically works is sticking an options line in modprobe.conf...
-
-But hey, I'm aware some people think it helps. As long as you are aware 
-you're wrong and that it _is_ massive junk, I'm halfway content :-)
-
-Rene.
+-- 
+Tobin Davis <tdavis@dsl-only.net>
