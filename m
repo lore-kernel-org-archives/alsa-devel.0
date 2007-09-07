@@ -1,21 +1,21 @@
-From: Krzysztof Helt <krzysztof.h1@gmail.com>
-Subject: Re: full duplex AD1848 (was SC-6000 driver)
-Date: Fri, 7 Sep 2007 10:34:47 +0200
-Message-ID: <20070907103447.226b5ae3.krzysztof.h1@gmail.com>
-References: <46dfa2e7d6be4@wp.pl> <46DFD29A.6020601@gmail.com>
-	<46DFE268.7080404@gmail.com> <46e008be72b6c@wp.pl>
-	<46E01A2F.2080106@gmail.com>
+From: Ryan Hughes <rjhughes@iheartryan.com>
+Subject: Bizarre ATI SB450 behavior
+Date: Thu, 6 Sep 2007 21:43:50 -0700 (PDT)
+Message-ID: <Pine.LNX.4.62.0709062122080.12004@refresco.dreamhost.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id E33001037FB
+Received: from smarty.dreamhost.com (smarty.dreamhost.com [208.113.175.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F4C4103844
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Sep 2007 10:28:19 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id d21so442861nfb
-	for <alsa-devel@alsa-project.org>; Fri, 07 Sep 2007 01:28:19 -0700 (PDT)
-In-Reply-To: <46E01A2F.2080106@gmail.com>
+	Fri,  7 Sep 2007 06:44:09 +0200 (CEST)
+Received: from refresco.dreamhost.com (refresco.dreamhost.com [208.113.171.10])
+	by smarty.dreamhost.com (Postfix) with ESMTP id F2DA5EE2B5
+	for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2007 21:43:50 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+	by refresco.dreamhost.com (Postfix) with ESMTP id 046EAA45A6
+	for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2007 21:43:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,40 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 06 Sep 2007 17:18:07 +0200
-Rene Herman <rene.herman@gmail.com> wrote:
+Hi.  I've got a little situation over here.
 
-> On 09/06/2007 04:03 PM, Krzysztof Helt wrote:
-> =
+Every time I poll any software, it totally believes that the sound-card is 
+installed and configured correctly and working.  Nobody complains.  But 
+when I try to play sound, none comes out.  People usually suggest the 
+alsamixer, to make sure none of my channels are muted.  Truly, none of 
+them are muted.
 
-> > Dnia 6-09-2007 o godz. 13:20 Rene Herman napisa=B3(a):
-> =
+Here's the vital stats:
 
-> >> Sorry, incorrect -- the cs4231 is full duplex. It's only the cs4248
-> >> (ad1848) which is not. Need to figure out how to do full duplex on a =
 
-> >> sound galaxy; old driver didn't do so.
-> >>
+lspci | grep -i audio
+00:14.2 Audio device: ATI Technologies Inc SB450 HDA Audio (rev 01)
 
-According to a datasheet, the AD1848K (which was a popular version of AD184=
-8)
-is full-duplex (can work in single-dma mode or with two dma channels).
 
-The AD1848 in my SC-6000 is not the K version (at least it is not marked on
-the chip) but I saw a photo on the net with SC-6000 and AD1848K (it had no
-YMF-262 chip but a different one).
+aplay -l
+card 0: SB [HDA ATI SB], device 0: STAC92xx Analog [STAC92xx Analog]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
 
-I am looking for the AD1848 datasheet  for the pre-K version (or list of
-differences between K and earlier versions).
 
-Also, I would like to know how you put your SG card into full-duplex mode.
+lsmod | grep snd
+snd_hda_intel         262424  1
+snd_pcm_oss            44672  0
+snd_mixer_oss          17792  1 snd_pcm_oss
+snd_pcm                80900  2 snd_hda_intel,snd_pcm_oss
+snd_seq_dummy           4996  0
+snd_seq_oss            35072  0
+snd_seq_midi            9728  0
+snd_rawmidi            25984  1 snd_seq_midi
+snd_seq_midi_event      8576  2 snd_seq_oss,snd_seq_midi
+snd_seq                54000  6 
+snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
+snd_timer              24196  2 snd_pcm,snd_seq
+snd_seq_device          9612  5 
+snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_rawmidi,snd_seq
+snd                    56324  12 
+snd_hda_intel,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_seq_dummy,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
+soundcore               8672  1 snd
+snd_page_alloc         11272  2 snd_hda_intel,snd_pcm
 
-It seems that hardware of AD1848/CS4231 was not used to its full potential
-(SB compatibility was more important).
 
-Regards,
-Krzysztof
+Interesting pieces of dmesg
+[   22.061858] ALSA 
+/usr/src/alsa-driver-1.0.14/pci/hda/../../alsa-kernel/pci/hd
+a/patch_si3054.c:244: si3054: cannot initialize. EXT MID = 0000
+[   48.948578] hda-intel: Invalid position buffer, using LPIB read method 
+instea
+d.
+
+
+Am I missing any useful info?
+Kernel is 2.6.20-16
+
+Alsa is a hand-compiled 1.0.14.
+
+Thanks.
+--Ryan
