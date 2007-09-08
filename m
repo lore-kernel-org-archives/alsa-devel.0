@@ -1,19 +1,19 @@
-From: Chris Pemberton <cjpembo@gmail.com>
-Subject: Re: Lenovo 3000 N100 Laptop quirk
-Date: Sat, 08 Sep 2007 01:06:25 -0500
-Message-ID: <46E23BE1.3030708@gmail.com>
-References: <46E0C0F1.7020008@gmail.com> <s5hmyvyhwb5.wl%tiwai@suse.de>
+From: Krzysztof Helt <krzysztof.h1@gmail.com>
+Subject: Re: [PATCH] New Aztech Sound Galaxy driver.
+Date: Sat, 8 Sep 2007 15:20:34 +0200
+Message-ID: <20070908152034.0bb316b4.krzysztof.h1@gmail.com>
+References: <46E1DD43.6060403@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61B631038D8
+Received: from hu-out-0506.google.com (hu-out-0506.google.com [72.14.214.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id C256A1038C5
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 Sep 2007 03:08:12 +0200 (CEST)
-Received: by wx-out-0506.google.com with SMTP id t11so616100wxc
-	for <alsa-devel@alsa-project.org>; Fri, 07 Sep 2007 18:08:10 -0700 (PDT)
-In-Reply-To: <s5hmyvyhwb5.wl%tiwai@suse.de>
+	Sat,  8 Sep 2007 15:13:58 +0200 (CEST)
+Received: by hu-out-0506.google.com with SMTP id 16so277787hue
+	for <alsa-devel@alsa-project.org>; Sat, 08 Sep 2007 06:13:58 -0700 (PDT)
+In-Reply-To: <46E1DD43.6060403@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,56 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Ram Kromberg <ramkromberg@mail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 06 Sep 2007 22:09:37 -0500,
-> Chris Pemberton wrote:
->   
->> To enable sound on a Lenovo 3000 N100 laptop...
->>
->> In patch_realtek.c (near line # 10882):
->>
->> Change:
->>
->> SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo", ALC861VD_LENOVO),
->>
->> to:
->>
->> SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo 3000 N100", ALC861VD_3ST),
->>     
->
-> Hm, that's bad.  ALC861VD_LENOVO is exactly for your laptop model, so
-> it has to be fixed.
->
-> What is exactly a problem?  Could you figure out which codec setting
-> may trigger the problem by comparing codec#* file between these
-> models?
->
-> And, above all, which ALSA version are you using and how did you test
-> it?  The latest version, and the output from both HP and spekaer?
->
->
-> thanks,
->
-> Takashi
->
->   
-I used the most resent alsa-driver snapshot, but I did the modification 
-I detailed above.  This has been my method of getting alsa to work for a 
-few months now.
+On Sat, 08 Sep 2007 01:22:43 +0200
+Rene Herman <rene.herman@gmail.com> wrote:
 
-My ALSA information, based on yesterday's snapshot and my modification, 
-is located at http://pastebin.ca/686568
+> Except the ones with a CS4248-KL codec, all cards experience a 
+> "cs4231_mce_down - auto calibration time out (1)" upon loading which does 
+> not seem to have any further consequences. Both this and the previous point 
+> may be cause for debugging cs4231_lib. Later...
+> 
 
-I will get those codecs that you are asking for this weekend:  one with 
-my modification and the other with whatever the latest snapshot has by 
-default.
+This is an issue I spotted in the ad1848-lib yesterday. The cs4231-lib seems little better in this respect. The driver waits for the busy bit to be set than wait until it is cleared. The
+first waiting is wrong because if you have a card set to no calibration (or fast calibration) code you may experience that bit is already cleared and it won't be set any more. Then the
+message is complete misleading. IMO, a correct solution is to wait some time. An auto-calibration takes about 348 sample periods for AD1848, so at 48KHz (fastest) it is about 7ms. Just
+wait that in the msleep then wait for bit to be cleared (it could be already). The code is shorter and does not rely on CPU speed (like the current ad1848-lib because it has no delay
+inside the loop). The 7ms may need to be changed for CS4231 (it may be faster or slower).
 
-Let me know what else you need.
+> 
+> Krzysztof -- you won't be surprised to learn that this driver doesn't do 
+> auto-probing. It needs all parameters passed in; normally:
+>
 
-Thanks,
+I think we agreed that we did not agree on this issue. It is your driver so have it your way. It is nice to have some diversity.
 
-Chris
+> You have an EEPROM if you have "X24C00" chip sitting on a spot marked "UX2" 
+> on the board, close to a crystal (silver shiny thing). If that spot is 
+> empty, you have an EEPROM-less variant.
+> 
+
+I have not received the card yet. I'll test it when I have the hardware. I am afraid it is one of cards you have already tested.
+
+Great work - new features like waiting by cpu_relax() + jiffies and ioport_map/ioport_unmap I haven't seen in the ISA drivers.
+
+The only thing I do not understand is that there are 4 possible addresses for the SB port base, but user can supply only the first 2.
+
+I got your email how to set up full-duplex but it conflicts with MPU irq settings for the SC-6000 card. Another difference.
+
+Regards,
+Krzysztof
