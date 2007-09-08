@@ -1,126 +1,96 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: Disable MIDI port creation with ICE1724
-Date: Sun, 09 Sep 2007 02:23:33 +0200
-Message-ID: <46E33D05.6080704@gmail.com>
-References: <a98f20490709071832i7491b9bdl374e36ceee396087@mail.gmail.com>
+From: "Chris Falk" <cfalk2@uic.edu>
+Subject: random static, distortion on M-audio Revolution 5.1
+Date: Sat, 8 Sep 2007 18:48:32 -0500 (CDT)
+Message-ID: <59610.75.0.152.239.1189295312.squirrel@webmail.uic.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080300030608010505010009"
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <a98f20490709071832i7491b9bdl374e36ceee396087@mail.gmail.com>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: James Roberts <jaaxxster@gmail.com>
-Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpout-2.priv.cc.uic.edu (smtpout-2.cc.uic.edu
+	[128.248.155.233])
+	by alsa0.perex.cz (Postfix) with SMTP id 0F4AD103808
+	for <alsa-devel@alsa-project.org>;
+	Sun,  9 Sep 2007 01:48:33 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080300030608010505010009
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi guys,  I've got a strange problem... Although my M-audio Revolution 5.1
+sounds great, it will randomly "lock up".  This seems to occur randomly
+regardless of what programs I am running.  It has happened while browsing,
+while listening to mp3s with audacious, or while watching tv with xine. 
+If I am running a program that has audio, it will start playing slower,
+and the frequencies seem warped to some low freq.  There is also static,
+and some popping noises.  If I am not running an audio program, I will
+hear the static and popping noises, and when I try to play an mp3, it will
+seem to be stuck at time 00:00.  Sometimes the problem will go away if I
+stop my audio programs upon hearing the static, or if I unload the alsa
+modules and wait a few minutes before loading them again.
 
-On 09/08/2007 03:32 AM, James Roberts wrote:
+The first thing that came to my mind was EM interference.  I tried
+swapping the positions of my pci cards (I have a pchdtv 5500 tuner in
+addition to the sound card), but the problem did not go away.
 
-> I need to disable the creation of the ICEnsemble ICE1724 midi device on 
-> my system.  I am using a off-brand card (see below) and accessing the 
-> midi device crashes the system hard.
-> 
-> I have explored udev rules, kernel opts, etc ad nauseum to do this.
-> 
-> To be clear I do not want to use the midi capabilities of the sound card 
-> at all, but want to keep the sound capabilities.
-> 
-> lspci:
-> 00:09.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24 
-> [Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-> 
-> amidi -l:
-> Dir Device    Name
-> IO  hw:0,0    ICEnsemble ICE1724 MIDI   <- this must be gone forever!
-> IO  hw:1,0,0  BCF2000 MIDI 1
-> IO  hw:1,0,1  BCF2000 MIDI 2
->  O  hw:1,0,2  BCF2000 MIDI 3
-> 
-> 
-> It appears to get assigned to midiC0D0
-> 
-> Am I better off going the udev route and trying to somehow assign a null 
-> value somewhere or is there a way to prevent alsa from creating it?
-> 
-> Maybe an alias?
+I thought perhaps there was some defect in the card, but I have not
+experienced any problems with it when I boot to Windows.
 
-Sounds like this may warrent a module parameter. Trivial, untested version 
-below, but this needs a module maintainer to decide if there may be better 
-ways to discriminate. Crossposted to alsa-devel...
+Here's some info on my system...
 
-(against 2.6.22.x).
+2.6.22-gentoo-r5
+Advanced Linux Sound Architecture Driver Version 1.0.14
+02:0a.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+        Subsystem: VIA Technologies Inc. M-Audio Revolution 5.1
+        Flags: bus master, medium devsel, latency 32, IRQ 18
+        I/O ports at a000 [size=32]
+        I/O ports at a400 [size=128]
+        Capabilities: [80] Power Management version 1
 
-Rene.
+If I am experiencing the problem, and I immediately try to restart alsa
+using /etc/init.d/alsasound restart, then I get these error messages in
+dmesg...
 
+ice1724: i2c busy timeout
+ice1724: i2c busy timeout
+ice1724: i2c busy timeout
+ice1724: i2c busy timeout
+ice1724: No matching model found for ID 0x12121212
+ice1724: i2c busy timeout
+ice1724: i2c busy timeout
+ice1724: Invalid EEPROM version 18
+ice1724: i2c busy timeout
+ice1724: i2c busy timeout
+ice1724: i2c busy timeout
+nvidia: module license 'NVIDIA' taints kernel.
+ice1724: i2c busy timeout
+ice1724: i2c busy timeout
+ALSA sound/pci/ice1712/ice1724.c:133: snd_vt1724_ac97_ready: timeout
+ALSA sound/pci/ice1712/ice1724.c:143: snd_vt1724_ac97_wait_bit: timeout
+ALSA sound/pci/ice1712/ice1724.c:133: snd_vt1724_ac97_ready: timeout
+ALSA sound/pci/ice1712/ice1724.c:143: snd_vt1724_ac97_wait_bit: timeout
+ALSA sound/pci/ice1712/ice1724.c:133: snd_vt1724_ac97_ready: timeout
+ALSA sound/pci/ice1712/ice1724.c:143: snd_vt1724_ac97_wait_bit: timeout
+ALSA sound/pci/ice1712/ice1724.c:133: snd_vt1724_ac97_ready: timeout
+ALSA sound/pci/ac97/ac97_codec.c:2046: AC'97 0 does not respond - RESET
+ALSA sound/pci/ice1712/ice1724.c:133: snd_vt1724_ac97_ready: timeout
+ALSA sound/pci/ice1712/ice1724.c:143: snd_vt1724_ac97_wait_bit: timeout
+ALSA sound/pci/ice1712/ice1724.c:133: snd_vt1724_ac97_ready: timeout
+ALSA sound/pci/ice1712/ice1724.c:143: snd_vt1724_ac97_wait_bit: timeout
+ALSA sound/pci/ac97/ac97_codec.c:2055: AC'97 0 access is not valid
+[0xffffffff], removing mixer.
+ice1712: cannot initialize pro ac97, skipped
 
---------------080300030608010505010009
-Content-Type: text/plain;
- name="ice1724-no_mpu401.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ice1724-no_mpu401.diff"
+This problem is driving me crazy!  I visited #alsa and googled all over
+looking for any clues, but could not find anything.  I'm extremely
+grateful for all of the work you guys do, and for any help you could
+provide me.  Thanks!!
 
-diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index ee620de..1d64dcc 100644
---- a/sound/pci/ice1712/ice1724.c
-+++ b/sound/pci/ice1712/ice1724.c
-@@ -75,6 +75,7 @@ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
- static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;		/* Enable this card */
- static char *model[SNDRV_CARDS];
-+static int no_mpu401[SNDRV_CARDS];
- 
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for ICE1724 soundcard.");
-@@ -84,6 +85,8 @@ module_param_array(enable, bool, NULL, 0444);
- MODULE_PARM_DESC(enable, "Enable ICE1724 soundcard.");
- module_param_array(model, charp, NULL, 0444);
- MODULE_PARM_DESC(model, "Use the given board model.");
-+module_param_array(no_mpu401, int, NULL, 0444);
-+MODULE_PARM_DESC(no_mpu401, "Mmf mmmff mmfmf mff mmfmmff.");
- 
- 
- /* Both VT1720 and VT1724 have the same PCI IDs */
-@@ -2398,7 +2401,7 @@ static int __devinit snd_vt1724_probe(struct pci_dev *pci,
- 		}
- 	}
- 
--	if (! c->no_mpu401) {
-+	if (! c->no_mpu401 && ! no_mpu401[dev]) {
- 		if (ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_MPU401) {
- 			if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_ICE1712,
- 						       ICEREG1724(ice, MPU_CTRL),
-
---------------080300030608010505010009
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2005.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
---------------080300030608010505010009
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
-
---------------080300030608010505010009--
+Chris
