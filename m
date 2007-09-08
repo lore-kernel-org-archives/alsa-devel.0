@@ -1,47 +1,99 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: alsaplayer configure says Build alsa 0.9.x	output
- plugin: no
-Date: Sat, 08 Sep 2007 02:09:23 +0200
-Message-ID: <46E1E833.6050206@gmail.com>
-References: <46E19133.8020208@freescale.com> <s5hodgehwff.wl%tiwai@suse.de>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
+Subject: Re: [alsa-devel] [PATCH] Improved support
+	for	different	bt87x	board configurations
+Date: Sat, 08 Sep 2007 01:33:36 +0100
+Message-ID: <1189211616.6721.90.camel@areia>
+References: <Pine.LNX.4.58.0708300319210.18152@shell4.speakeasy.net>
+	<s5h3ay1i8rs.wl%tiwai@suse.de>
+	<Pine.LNX.4.58.0709021603380.18152@shell4.speakeasy.net>
+	<1188801407.6762.1208578117@webmail.messagingengine.com>
+	<Pine.LNX.4.58.0709040447220.31808@shell4.speakeasy.net>
+	<1188914079.6535.47.camel@areia> <s5hr6leyy0r.wl%tiwai@suse.de>
+	<Pine.LNX.4.58.0709041339540.31808@shell4.speakeasy.net>
+	<1188975275.6158.34.camel@areia>
+	<Pine.LNX.4.58.0709050120490.31808@shell4.speakeasy.net>
+	<s5h3axtv30n.wl%tiwai@suse.de> <1188988371.6158.43.camel@areia>
+	<Pine.LNX.4.58.0709051523390.31808@shell4.speakeasy.net>
+	<1189109832.10203.30.camel@areia>  <s5hlkbihw6y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id B28D41038B6
-	for <alsa-devel@alsa-project.org>;
-	Sat,  8 Sep 2007 02:16:01 +0200 (CEST)
-In-Reply-To: <s5hodgehwff.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <video4linux-list-bounces@redhat.com>
+In-Reply-To: <s5hlkbihw6y.wl%tiwai@suse.de>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
+List-Post: <mailto:video4linux-list@redhat.com>
+List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
+Sender: video4linux-list-bounces@redhat.com
+Errors-To: video4linux-list-bounces@redhat.com
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+Cc: Linux and Kernel Video <video4linux-list@redhat.com>, alsa-devel@alsa-project.org, Trent Piepho <xyzzy@speakeasy.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/08/2007 01:45 AM, Takashi Iwai wrote:
-
-> At Fri, 07 Sep 2007 12:58:11 -0500,
-> Timur Tabi wrote:
-
->> What do I need to have to get alsaplayer to build ALSA output support?
+> > Reviewed-by: Mauro Carvalho Chehab <mchehab@infradead.org>
 > 
-> Works for me.  Better to ask alsaplayer maintainer?
+> Thanks, but I have already committed, and don't want to rollback now
+> :)
+No problem ;)
 
-Should we sent a (friendly) request to the revived alsaplayer folk to maybe 
-consider a name change? AlsaPlayer these days doesn't have anything more to 
-do with ALSA than any other Linux media player does it seems but its name is 
-confusing people into thinking that "alsaplayer" is the standard player for 
-ALSA or something -- I've experienced that a number of times now.
+> BTW, how is this tag supposed to use?
 
-Not that I care deeply myself or anything, but to help newbies...
+This is a new tag that were agreed to be used informally at KS/2007 :)
 
-Rene.
+The idea behind is to use the following logic:
+
+Signed-off-by: - should be used by the author(s) and the trees for what
+the patch passed. A maintainer should add this tag to confirm that he
+received a patch by its author or from a sub-subsystem tree (in fact,
+sometimes, this tag is abused);
+
+Acked-by: - this simply means that you aren't against some patch;
+
+Reviewed-by: - It means that somebody that are not at the direct
+forwarding way of a patch has reviewed and/or tested a patch.
+
+So, in this case, as Trent sent the patch directly to you (even I'm
+being C/C), I should use either acked-by (if I'm just ok with this) or
+reviewed-by. As I've reviewed the source code, reviewed-by is the better
+option.
+
+Also, subsystem maintainers are asked to require at least one
+reviewed-by by patch. The idea is to stimulate the community to review
+changesets and improve the overall quality of the kernel.
+
+>  On git or Hg, it's hard to
+>  change the already committed stuff, especially after openly
+>  published...)
+
+What I do here is: I don't change -hg tree. During my -git conversion, I
+add such tags that I receive from third parties, even for patches
+already published at kernel.org. I only stop adding tags after asking a
+git pull.
+
+Here, I'm still using stgit porcelain to allow me to review changesets,
+but this is not recommended. Probably, I'll review my procedures.
+However, git have already some way for you to edit a message for an
+already-edited changeset.
+
+On possible way would be do to this - supposing that you want to edit
+the patch that is HEAD - 3 patches from your master branch:
+
+git checkout HEAD~3
+git commit -e --amend
+	(edit the comments)
+git chckout master
+
+
+I didn't really tested the above procedure, so I would try this on an
+experimental tree first.
+.
+> 
+> Takashi
+
+--
+video4linux-list mailing list
+Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/video4linux-list
