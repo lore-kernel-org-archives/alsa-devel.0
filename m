@@ -1,103 +1,126 @@
-From: Krzysztof Helt <krzysztof.h1@gmail.com>
-Subject: [PATCH] ad1848 and cs4231 busy loop replacement
-Date: Sun, 9 Sep 2007 00:12:08 +0200
-Message-ID: <20070909001208.b2e54c13.krzysztof.h1@gmail.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: Disable MIDI port creation with ICE1724
+Date: Sun, 09 Sep 2007 02:23:33 +0200
+Message-ID: <46E33D05.6080704@gmail.com>
+References: <a98f20490709071832i7491b9bdl374e36ceee396087@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01C501037FC
-	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Sep 2007 00:05:29 +0200 (CEST)
-Received: by mu-out-0910.google.com with SMTP id w8so1166642mue
-	for <alsa-devel@alsa-project.org>; Sat, 08 Sep 2007 15:05:29 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Rene Herman <rene.herman@gmail.com>
+Content-Type: multipart/mixed; boundary="------------080300030608010505010009"
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <a98f20490709071832i7491b9bdl374e36ceee396087@mail.gmail.com>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: James Roberts <jaaxxster@gmail.com>
+Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+This is a multi-part message in MIME format.
+--------------080300030608010505010009
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This patch replaces busy loop with msleep and removes
-incorrect debug message.
+On 09/08/2007 03:32 AM, James Roberts wrote:
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
+> I need to disable the creation of the ICEnsemble ICE1724 midi device on 
+> my system.  I am using a off-brand card (see below) and accessing the 
+> midi device crashes the system hard.
+> 
+> I have explored udev rules, kernel opts, etc ad nauseum to do this.
+> 
+> To be clear I do not want to use the midi capabilities of the sound card 
+> at all, but want to keep the sound capabilities.
+> 
+> lspci:
+> 00:09.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24 
+> [Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+> 
+> amidi -l:
+> Dir Device    Name
+> IO  hw:0,0    ICEnsemble ICE1724 MIDI   <- this must be gone forever!
+> IO  hw:1,0,0  BCF2000 MIDI 1
+> IO  hw:1,0,1  BCF2000 MIDI 2
+>  O  hw:1,0,2  BCF2000 MIDI 3
+> 
+> 
+> It appears to get assigned to midiC0D0
+> 
+> Am I better off going the udev route and trying to somehow assign a null 
+> value somewhere or is there a way to prevent alsa from creating it?
+> 
+> Maybe an alias?
 
-This should fix Rene's problem with the timeout message he got in his new Aztech driver.
+Sounds like this may warrent a module parameter. Trivial, untested version 
+below, but this needs a module maintainer to decide if there may be better 
+ways to discriminate. Crossposted to alsa-devel...
 
-The problem is that the driver wait for busy bit to go high but it may not happen if the 
-auto-calibration is not set. The result is incorrect debug message (that timeout happened).
-It is also possible (in theory) to get this message in the ad1848-lib on a slow CPU.
+(against 2.6.22.x).
 
-The patch just wait a period around the period needed for the auto-calibration. If there is
-no auto-calibration set, the driver just loses few miliseconds. This may happen only
-during driver start as both drivers set auto-calibration. If the auto-calibration is set
-we give CPU more time to do something else then move to next waiting loop (for
-the auto-calibration bit to get cleared).
+Rene.
 
-The msleep delay is calculated as rounded down time of waiting number of cycles (from
-ad1848k and cs4231a specs) with the highest frequency (48kHz).
 
-Rene, please test this patch on the cs4231 codec.
+--------------080300030608010505010009
+Content-Type: text/plain;
+ name="ice1724-no_mpu401.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ice1724-no_mpu401.diff"
 
-diff -urp linux-2.6.22/sound/isa/ad1848/ad1848_lib.c linux-2.6.23/sound/isa/ad1848/ad1848_lib.c
---- linux-2.6.22/sound/isa/ad1848/ad1848_lib.c	2007-09-08 23:53:42.958067597 +0200
-+++ linux-2.6.23/sound/isa/ad1848/ad1848_lib.c	2007-09-08 23:57:31.255077502 +0200
-@@ -229,17 +229,12 @@ static void snd_ad1848_mce_down(struct s
- 		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 		return;
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index ee620de..1d64dcc 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -75,6 +75,7 @@ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
+ static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+ static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;		/* Enable this card */
+ static char *model[SNDRV_CARDS];
++static int no_mpu401[SNDRV_CARDS];
+ 
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for ICE1724 soundcard.");
+@@ -84,6 +85,8 @@ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable ICE1724 soundcard.");
+ module_param_array(model, charp, NULL, 0444);
+ MODULE_PARM_DESC(model, "Use the given board model.");
++module_param_array(no_mpu401, int, NULL, 0444);
++MODULE_PARM_DESC(no_mpu401, "Mmf mmmff mmfmf mff mmfmmff.");
+ 
+ 
+ /* Both VT1720 and VT1724 have the same PCI IDs */
+@@ -2398,7 +2401,7 @@ static int __devinit snd_vt1724_probe(struct pci_dev *pci,
+ 		}
  	}
-+
- 	/* calibration process */
-+	msleep(7);
-+
-+	snd_printd("(2) jiffies = %li\n", jiffies);
  
--	for (timeout = 500; timeout > 0 && (snd_ad1848_in(chip, AD1848_TEST_INIT) & AD1848_CALIB_IN_PROGRESS) == 0; timeout--);
--	if ((snd_ad1848_in(chip, AD1848_TEST_INIT) & AD1848_CALIB_IN_PROGRESS) == 0) {
--		snd_printd("mce_down - auto calibration time out (1)\n");
--		spin_unlock_irqrestore(&chip->reg_lock, flags);
--		return;
--	}
--#if 0
--	printk("(2) timeout = %i, jiffies = %li\n", timeout, jiffies);
--#endif
- 	time = HZ / 4;
- 	while (snd_ad1848_in(chip, AD1848_TEST_INIT) & AD1848_CALIB_IN_PROGRESS) {
- 		spin_unlock_irqrestore(&chip->reg_lock, flags);
-diff -urp linux-2.6.22/sound/isa/cs423x/cs4231_lib.c linux-2.6.23/sound/isa/cs423x/cs4231_lib.c
---- linux-2.6.22/sound/isa/cs423x/cs4231_lib.c	2007-09-08 23:53:29.005272473 +0200
-+++ linux-2.6.23/sound/isa/cs423x/cs4231_lib.c	2007-09-08 23:56:52.824887490 +0200
-@@ -334,19 +334,12 @@ void snd_cs4231_mce_down(struct snd_cs42
- 	    !(chip->hardware & (CS4231_HW_CS4231_MASK | CS4231_HW_CS4232_MASK))) {
- 		return;
- 	}
--	snd_cs4231_busy_wait(chip);
- 
- 	/* calibration process */
-+	msleep(2);
-+
-+	snd_printd("(2) jiffies = %li\n", jiffies);
- 
--	for (timeout = 500; timeout > 0 && (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) == 0; timeout--)
--		udelay(10);
--	if ((snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) == 0) {
--		snd_printd("cs4231_mce_down - auto calibration time out (1)\n");
--		return;
--	}
--#if 0
--	printk("(2) timeout = %i, jiffies = %li\n", timeout, jiffies);
--#endif
- 	/* in 10 ms increments, check condition, up to 250 ms */
- 	timeout = 25;
- 	while (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) {
+-	if (! c->no_mpu401) {
++	if (! c->no_mpu401 && ! no_mpu401[dev]) {
+ 		if (ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_MPU401) {
+ 			if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_ICE1712,
+ 						       ICEREG1724(ice, MPU_CTRL),
+
+--------------080300030608010505010009
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2005.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+--------------080300030608010505010009
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+--------------080300030608010505010009--
