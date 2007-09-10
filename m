@@ -1,18 +1,22 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Pausing an audio stream during playback using mixer
-	control interface
-Date: Mon, 10 Sep 2007 17:49:18 +0530
-Message-ID: <61445c750709100519v83f6e92w76d023f0a4c34681@mail.gmail.com>
+From: "Krzysztof Helt" <krzysztof.h1@gmail.com>
+Subject: Re: [PATCH] ad1848 and cs4231 busy loop replacement
+Date: Mon, 10 Sep 2007 14:42:43 +0200
+Message-ID: <8c74410a0709100542x6b5997d0hc893afb6f94acf4@mail.gmail.com>
+References: <20070909001208.b2e54c13.krzysztof.h1@gmail.com>
+	<46E46109.5040704@gmail.com>
+	<8c74410a0709100008v5497e870j7495b3ea054ae00b@mail.gmail.com>
+	<46E53072.2040404@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79FD2103865
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCFE8103864
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Sep 2007 14:28:22 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 58so289352wri
-	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 05:28:19 -0700 (PDT)
+	Mon, 10 Sep 2007 14:42:44 +0200 (CEST)
+Received: by rv-out-0910.google.com with SMTP id k20so989624rvb
+	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 05:42:43 -0700 (PDT)
+In-Reply-To: <46E53072.2040404@gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,19 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-I want to provide a mixer control interface which will pause the playback
-and resume it as needed. I tried to disable DMA while pausing and enable it
-while releasing, but this doesn't stop alsa upper layers from inquiring  the
-buffer position and since DMA is not on, it gives a pcm write error, which
-is quite obvious.
+On 9/10/07, Rene Herman <rene.herman@gmail.com> wrote:
+> On 09/10/2007 09:08 AM, Krzysztof Helt wrote:
+>
+> > Rene wrote:
 
-I know that, SNDRV_PCM_TRIGGER_PAUSE_PUSH can be used in trigger callback to
-pause the stream, but I want to give a mixer interface to do the same. As
-per my understanding this is not possible keeping in mind the current
-framework, can anyone think of any work around?
+> Well, no, sorry, but I consider that to be completely breaking the logic of
+> the code.
 
--pharaoh.
+No I changed the logic of this code not to wait for specifically for
+callibration "start" but into calibration "under way".
+
+> One line after this bit, we're doing the "wait for calibration to
+> finish" loop (and already schedule ourselves away while doing so, for 250ms
+> no less) meaning that at this point we should only wait long enough to be
+> guaranteed that the ACI bit reflects reality -- those 5 cycles.
+>
+> Your: wait unconditionally until calibration _nearly_ done, then go wait for
+> it for 250 ms to be really done.
+>
+> Mine: wait unconditionally until calibration has started, then go wait for
+> it for 250 ms to finish.
+>
+
+This discussion get me amused. Look at the code:
+
+Mine:
+
+msleep(7); /* or msleep(2) for CS4231 */
+
+/*waiting loop 250ms*/
+while ...
+
+Yours:
+msleep(1); /* or msleep(1) for CS4231 */
+
+/*waiting loop 250ms */
+while ...
+
+So the only difference is 6 (or 1) ms and this time will be spent in
+the loop anyway. Are we arguing 1ms (for CS4231) in 250ms waiting
+loop?
+If you really want it can be substracted from the waiting loop 250ms
+to be exactly the same as it was.
+
+> Really -- please just do the 1 ms delay for ad1848 and either no delay or
+> the same 1 ms for cs4231 if you want to keep them in sync
+
+I don't understand "keep them in sync". After the patch they behave
+the same but with different delay (they have different speed). It can
+be 2ms (as for faster one) for both but I wanted to avoid doing many
+loop iterations if possible.
+
+Regards,
+Krzysztof
