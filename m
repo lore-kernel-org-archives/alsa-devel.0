@@ -1,18 +1,20 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Unable to bypass alsa plugins and write directly to
-	hw:0, 0
-Date: Mon, 10 Sep 2007 23:05:30 +0530
-Message-ID: <61445c750709101035s2030f02fv286501050aee16fb@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@gmail.com>
+Subject: Re: [PATCH] ad1848 and cs4231 busy loop replacement
+Date: Mon, 10 Sep 2007 19:17:11 +0200
+Message-ID: <20070910191711.1a087308.krzysztof.h1@gmail.com>
+References: <20070909001208.b2e54c13.krzysztof.h1@gmail.com>
+	<46E46109.5040704@gmail.com> <46E4637C.9000809@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_12241_28544819.1189445730267"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id C9F5724432
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35FA81038AE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Sep 2007 19:35:32 +0200 (CEST)
-Received: by nz-out-0506.google.com with SMTP id m22so547584nzf
-	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 10:35:31 -0700 (PDT)
+	Mon, 10 Sep 2007 19:10:25 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id h2so531218ugf
+	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 10:10:24 -0700 (PDT)
+In-Reply-To: <46E4637C.9000809@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,215 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_12241_28544819.1189445730267
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Sun, 09 Sep 2007 23:19:56 +0200
+Rene Herman <rene.herman@gmail.com> wrote:
 
-My sound card supports hardware upsampling i.e. I do not need to use the
-software up sampling done by plugins like dmix etc. For testing hw up
-sampling, I tried to play an 8K sample rate wav file as follows, but some
-how it is being upsampled, I think I am missing something.
+> On 09/09/2007 11:09 PM, Rene Herman wrote:
+> 
+> > Given that the only difference is that I wait less, yours would've 
+> > worked as well -- thanks for looking into this! And could you viceversa 
+> > test this on AD1848 and perhaps resubmit if you agree?
+> 
+> Oh, and I forgot to say (sigh) that I use a mdelay() and not an msleep() in 
+> the ad1848 one due to the 1 ms being short enough and didn't keep the 
+> snd_printd() because if one, then all please...
+> 
 
+I tested CS4231 on 450MHz sparc with 1000Hz kernel (I don't have PC card yet).
+The waiting loop was changed as in my second patch (the 10ms blocks 
+to schedule_timeout()). I played 48kHz wav (alsa "Front_Center.wav").
 
-# aplay -Dhw:0,0 8k.wav -v
+The waiting loop was passed 340 times after mce was down with msleep(1).
+The delay between snd_printd "2 jiffies" and "8 jiffies" was 3 jiffies.
 
-Playing WAVE '8k.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Stereo
-Warning: rate is not accurate (requested = 8000Hz, got = 44100Hz)
-         please, try the plug plugin
-Hardware PCM card 0 'OMAP850 EAC' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 22052
-  period_size  : 5513
-  period_time  : 125011
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 5513
-  xfer_align   : 5513
-  start_threshold  : 22052
-  stop_threshold   : 22052
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1445199872
+The waiting loop was passed 34 times after mce was down with msleep(2).
+The delay between snd_printd "2 jiffies" and "8 jiffies" was 3 jiffies too.
 
+It took about ten times less loop passes if the driver waits 2ms.
+The 2ms seems like the optimal value for the CS4231.
 
-
-I have attached my alsa.conf.
-
--pharaoh.
-
-------=_Part_12241_28544819.1189445730267
-Content-Type: application/octet-stream; name="alsa.conf"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="alsa.conf"
-X-Attachment-Id: f_f6f97nk7
-
-IwojICBBTFNBIGxpYnJhcnkgY29uZmlndXJhdGlvbiBmaWxlCiMKCiMgcHJlLWxvYWQgdGhlIGNv
-bmZpZ3VyYXRpb24gZmlsZXMKCkBob29rcyBbCgl7CgkJZnVuYyBsb2FkCgkJZmlsZXMgWwoJCQki
-L2V0Yy9hc291bmQuY29uZiIKCQkJIn4vLmFzb3VuZHJjIgoJCV0KCQllcnJvcnMgZmFsc2UKCX0K
-XQoKIyBsb2FkIGNhcmQtc3BlY2lmaWMgY29uZmlndXJhdGlvbiBmaWxlcyAob24gcmVxdWVzdCkK
-CmNhcmRzLkBob29rcyBbCgl7CgkJZnVuYyBsb2FkCgkJZmlsZXMgWwoJCQl7CgkJCQlAZnVuYyBj
-b25jYXQKCQkJCXN0cmluZ3MgWwoJCQkJCXsgQGZ1bmMgZGF0YWRpciB9CgkJCQkJIi9jYXJkcy9h
-bGlhc2VzLmNvbmYiCgkJCQldCgkJCX0KCQldCgl9Cgl7CgkJZnVuYyBsb2FkX2Zvcl9hbGxfY2Fy
-ZHMKCQlmaWxlcyBbCgkJCXsKCQkJCUBmdW5jIGNvbmNhdAoJCQkJc3RyaW5ncyBbCgkJCQkJeyBA
-ZnVuYyBkYXRhZGlyIH0KCQkJCQkiL2NhcmRzLyIKCQkJCQl7IEBmdW5jIHByaXZhdGVfc3RyaW5n
-IH0KCQkJCQkiLmNvbmYiCgkJCQldCgkJCX0KCQldCgkJZXJyb3JzIGZhbHNlCgl9Cl0KCiMgZGVm
-YXVsdHMKCmRlZmF1bHRzLmN0bC5jYXJkIDAKZGVmYXVsdHMucGNtLmNhcmQgMApkZWZhdWx0cy5w
-Y20uZGV2aWNlIDAKZGVmYXVsdHMucGNtLnN1YmRldmljZSAtMQpkZWZhdWx0cy5wY20ubm9uYmxv
-Y2sgMQpkZWZhdWx0cy5wY20uaXBjX2tleSA1Njc4MjkzCmRlZmF1bHRzLnBjbS5pcGNfZ2lkIGF1
-ZGlvCmRlZmF1bHRzLnBjbS5pcGNfcGVybSAwNjYwCmRlZmF1bHRzLnBjbS5kbWl4X21heF9wZXJp
-b2RzIDAKZGVmYXVsdHMucGNtLmRtaXhfcmF0ZSA0ODAwMApkZWZhdWx0cy5wY20uZG1peF9mb3Jt
-YXQgUzE2X0xFCmRlZmF1bHRzLnBjbS5mcm9udC5jYXJkIGRlZmF1bHRzLnBjbS5jYXJkCmRlZmF1
-bHRzLnBjbS5mcm9udC5kZXZpY2UgZGVmYXVsdHMucGNtLmRldmljZQpkZWZhdWx0cy5wY20ucmVh
-ci5jYXJkIGRlZmF1bHRzLnBjbS5jYXJkCmRlZmF1bHRzLnBjbS5yZWFyLmRldmljZSBkZWZhdWx0
-cy5wY20uZGV2aWNlCmRlZmF1bHRzLnBjbS5jZW50ZXJfbGZlLmNhcmQgZGVmYXVsdHMucGNtLmNh
-cmQKZGVmYXVsdHMucGNtLmNlbnRlcl9sZmUuZGV2aWNlIGRlZmF1bHRzLnBjbS5kZXZpY2UKZGVm
-YXVsdHMucGNtLnNpZGUuY2FyZCBkZWZhdWx0cy5wY20uY2FyZApkZWZhdWx0cy5wY20uc2lkZS5k
-ZXZpY2UgZGVmYXVsdHMucGNtLmRldmljZQpkZWZhdWx0cy5wY20uc3Vycm91bmQ0MC5jYXJkIGRl
-ZmF1bHRzLnBjbS5jYXJkCmRlZmF1bHRzLnBjbS5zdXJyb3VuZDQwLmRldmljZSBkZWZhdWx0cy5w
-Y20uZGV2aWNlCmRlZmF1bHRzLnBjbS5zdXJyb3VuZDQxLmNhcmQgZGVmYXVsdHMucGNtLmNhcmQK
-ZGVmYXVsdHMucGNtLnN1cnJvdW5kNDEuZGV2aWNlIGRlZmF1bHRzLnBjbS5kZXZpY2UKZGVmYXVs
-dHMucGNtLnN1cnJvdW5kNTAuY2FyZCBkZWZhdWx0cy5wY20uY2FyZApkZWZhdWx0cy5wY20uc3Vy
-cm91bmQ1MC5kZXZpY2UgZGVmYXVsdHMucGNtLmRldmljZQpkZWZhdWx0cy5wY20uc3Vycm91bmQ1
-MS5jYXJkIGRlZmF1bHRzLnBjbS5jYXJkCmRlZmF1bHRzLnBjbS5zdXJyb3VuZDUxLmRldmljZSBk
-ZWZhdWx0cy5wY20uZGV2aWNlCmRlZmF1bHRzLnBjbS5zdXJyb3VuZDcxLmNhcmQgZGVmYXVsdHMu
-cGNtLmNhcmQKZGVmYXVsdHMucGNtLnN1cnJvdW5kNzEuZGV2aWNlIGRlZmF1bHRzLnBjbS5kZXZp
-Y2UKZGVmYXVsdHMucGNtLmllYzk1OC5jYXJkIGRlZmF1bHRzLnBjbS5jYXJkCmRlZmF1bHRzLnBj
-bS5pZWM5NTguZGV2aWNlIGRlZmF1bHRzLnBjbS5kZXZpY2UKZGVmYXVsdHMucGNtLm1vZGVtLmNh
-cmQgZGVmYXVsdHMucGNtLmNhcmQKZGVmYXVsdHMucGNtLm1vZGVtLmRldmljZSBkZWZhdWx0cy5w
-Y20uZGV2aWNlCmRlZmF1bHRzLnJhd21pZGkuY2FyZCAwCmRlZmF1bHRzLnJhd21pZGkuZGV2aWNl
-IDAKZGVmYXVsdHMucmF3bWlkaS5zdWJkZXZpY2UgLTEKZGVmYXVsdHMuaHdkZXAuY2FyZCAwCmRl
-ZmF1bHRzLmh3ZGVwLmRldmljZSAwCmRlZmF1bHRzLnRpbWVyLmNsYXNzIDIKZGVmYXVsdHMudGlt
-ZXIuc2NsYXNzIDAKZGVmYXVsdHMudGltZXIuY2FyZCAwCmRlZmF1bHRzLnRpbWVyLmRldmljZSAw
-CmRlZmF1bHRzLnRpbWVyLnN1YmRldmljZSAwCgojCiMgIFBDTSBpbnRlcmZhY2UKIwoKcGNtLmh3
-IHsKCUBhcmdzIFsgQ0FSRCBERVYgU1VCREVWIF0KCUBhcmdzLkNBUkQgewoJCXR5cGUgc3RyaW5n
-CgkJZGVmYXVsdCB7CgkJCUBmdW5jIGdldGVudgoJCQl2YXJzIFsKCQkJCUFMU0FfUENNX0NBUkQK
-CQkJCUFMU0FfQ0FSRAoJCQldCgkJCWRlZmF1bHQgewoJCQkJQGZ1bmMgcmVmZXIKCQkJCW5hbWUg
-ZGVmYXVsdHMucGNtLmNhcmQKCQkJfQoJCX0KCX0KCUBhcmdzLkRFViB7CgkJdHlwZSBpbnRlZ2Vy
-CgkJZGVmYXVsdCB7CgkJCUBmdW5jIGlnZXRlbnYKCQkJdmFycyBbCgkJCQlBTFNBX1BDTV9ERVZJ
-Q0UKCQkJXQoJCQlkZWZhdWx0IHsKCQkJCUBmdW5jIHJlZmVyCgkJCQluYW1lIGRlZmF1bHRzLnBj
-bS5kZXZpY2UKCQkJfQoJCX0KCX0KCUBhcmdzLlNVQkRFViB7CgkJdHlwZSBpbnRlZ2VyCgkJZGVm
-YXVsdCB7CgkJCUBmdW5jIHJlZmVyCgkJCW5hbWUgZGVmYXVsdHMucGNtLnN1YmRldmljZQoJCX0K
-CX0JCQoJdHlwZSBodwoJY2FyZCAkQ0FSRAoJZGV2aWNlICRERVYKCXN1YmRldmljZSAkU1VCREVW
-Cn0KCnBjbS5wbHVnaHcgewoJQGFyZ3MgWyBDQVJEIERFViBTVUJERVYgXQoJQGFyZ3MuQ0FSRCB7
-CgkJdHlwZSBzdHJpbmcKCQlkZWZhdWx0IHsKCQkJQGZ1bmMgZ2V0ZW52CgkJCXZhcnMgWwoJCQkJ
-QUxTQV9QQ01fQ0FSRAoJCQkJQUxTQV9DQVJECgkJCV0KCQkJZGVmYXVsdCB7CgkJCQlAZnVuYyBy
-ZWZlcgoJCQkJbmFtZSBkZWZhdWx0cy5wY20uY2FyZAoJCQl9CgkJfQoJfQoJQGFyZ3MuREVWIHsK
-CQl0eXBlIGludGVnZXIKCQlkZWZhdWx0IHsKCQkJQGZ1bmMgaWdldGVudgoJCQl2YXJzIFsKCQkJ
-CUFMU0FfUENNX0RFVklDRQoJCQldCgkJCWRlZmF1bHQgewoJCQkJQGZ1bmMgcmVmZXIKCQkJCW5h
-bWUgZGVmYXVsdHMucGNtLmRldmljZQoJCQl9CgkJfQoJfQoJQGFyZ3MuU1VCREVWIHsKCQl0eXBl
-IGludGVnZXIKCQlkZWZhdWx0IHsKCQkJQGZ1bmMgcmVmZXIKCQkJbmFtZSBkZWZhdWx0cy5wY20u
-c3ViZGV2aWNlCgkJfQoJfQkJCgl0eXBlIHBsdWcKCXNsYXZlLnBjbSB7CgkJdHlwZSBodwoJCWNh
-cmQgJENBUkQKCQlkZXZpY2UgJERFVgoJCXN1YmRldmljZSAkU1VCREVWCgl9Cn0KCnBjbS5wbHVn
-IHsKCUBhcmdzIFsgU0xBVkUgXQoJQGFyZ3MuU0xBVkUgewoJCXR5cGUgc3RyaW5nCgl9Cgl0eXBl
-IHBsdWcKCXNsYXZlLnBjbSAkU0xBVkUKfQoKcGNtLnNobSB7CglAYXJncyBbIFNPQ0tFVCBQQ00g
-XQoJQGFyZ3MuU09DS0VUIHsKCQl0eXBlIHN0cmluZwoJfQoJQGFyZ3MuUENNIHsKCQl0eXBlIHN0
-cmluZwoJfQoJdHlwZSBzaG0KCXNlcnZlciAkU09DS0VUCglwY20gJFBDTQp9CgpwY20udGVlIHsK
-CUBhcmdzIFsgU0xBVkUgRklMRSBGT1JNQVQgXQoJQGFyZ3MuU0xBVkUgewoJCXR5cGUgc3RyaW5n
-Cgl9CglAYXJncy5GSUxFIHsKCQl0eXBlIHN0cmluZwoJfQoJQGFyZ3MuRk9STUFUIHsKCQl0eXBl
-IHN0cmluZwoJCWRlZmF1bHQgcmF3Cgl9Cgl0eXBlIGZpbGUKCXNsYXZlLnBjbSAkU0xBVkUKCWZp
-bGUgJEZJTEUKCWZvcm1hdCAkRk9STUFUCn0KCnBjbS5maWxlIHsKCUBhcmdzIFsgRklMRSBGT1JN
-QVQgXQoJQGFyZ3MuRklMRSB7CgkJdHlwZSBzdHJpbmcKCX0KCUBhcmdzLkZPUk1BVCB7CgkJdHlw
-ZSBzdHJpbmcKCQlkZWZhdWx0IHJhdwoJfQoJdHlwZSBmaWxlCglzbGF2ZS5wY20gbnVsbAoJZmls
-ZSAkRklMRQoJZm9ybWF0ICRGT1JNQVQKfQoKcGNtLm51bGwgewoJdHlwZSBudWxsCn0KCiMgcmVk
-aXJlY3QgdG8gbG9hZC1vbi1kZW1hbmQgZXh0ZW5kZWQgcGNtIGRlZmluaXRpb25zCnBjbS5jYXJk
-cyBjYXJkcy5wY20KIyBzb21lIGxpbmtzIGZvciBlYXN5IHVzZQpwY20uZnJvbnQgY2FyZHMucGNt
-LmZyb250CnBjbS5yZWFyIGNhcmRzLnBjbS5yZWFyCnBjbS5jZW50ZXJfbGZlIGNhcmRzLnBjbS5j
-ZW50ZXJfbGZlCnBjbS5zaWRlIGNhcmRzLnBjbS5zaWRlCnBjbS5zdXJyb3VuZDQwIGNhcmRzLnBj
-bS5zdXJyb3VuZDQwCnBjbS5zdXJyb3VuZDQxIGNhcmRzLnBjbS5zdXJyb3VuZDQxCnBjbS5zdXJy
-b3VuZDUwIGNhcmRzLnBjbS5zdXJyb3VuZDUwCnBjbS5zdXJyb3VuZDUxIGNhcmRzLnBjbS5zdXJy
-b3VuZDUxCnBjbS5zdXJyb3VuZDcxIGNhcmRzLnBjbS5zdXJyb3VuZDcxCnBjbS5pZWM5NTggY2Fy
-ZHMucGNtLmllYzk1OApwY20uc3BkaWYgY2FyZHMucGNtLmllYzk1OApwY20ubW9kZW0gY2FyZHMu
-cGNtLm1vZGVtCnBjbS5waG9uZWxpbmUgY2FyZHMucGNtLnBob25lbGluZQoKcGNtLmRlZmF1bHQg
-Y2FyZHMucGNtLmRlZmF1bHQKcGNtLmRtaXggY2FyZHMucGNtLmRtaXgKcGNtLmRzbm9vcCBjYXJk
-cy5wY20uZHNub29wCgojCiMgIENvbnRyb2wgaW50ZXJmYWNlCiMKCQpjdGwuaHcgewoJQGFyZ3Nb
-IENBUkQgXQoJQGFyZ3MuQ0FSRCB7CgkJdHlwZSBzdHJpbmcKCQlkZWZhdWx0IHsKCQkJQGZ1bmMg
-Z2V0ZW52CgkJCXZhcnMgWwoJCQkJQUxTQV9DVExfQ0FSRAoJCQkJQUxTQV9DQVJECgkJCV0KCQkJ
-ZGVmYXVsdCB7CgkJCQlAZnVuYyByZWZlcgoJCQkJbmFtZSBkZWZhdWx0cy5jdGwuY2FyZAoJCQl9
-CgkJfQoJfQoJdHlwZSBodwoJY2FyZCAkQ0FSRAp9CgpjdGwuc2htIHsKCUBhcmdzIFsgU09DS0VU
-IENUTCBdCglAYXJncy5TT0NLRVQgewoJCXR5cGUgc3RyaW5nCgl9CglAYXJncy5DVEwgewoJCXR5
-cGUgc3RyaW5nCgl9Cgl0eXBlIHNobQoJc2VydmVyICRTT0NLRVQKCWN0bCAkQ1RMCn0KCmN0bC5k
-ZWZhdWx0IHsKCXR5cGUgaHcKCWNhcmQgewoJCUBmdW5jIGdldGVudgoJCXZhcnMgWwoJCQlBTFNB
-X0NUTF9DQVJECgkJCUFMU0FfQ0FSRAoJCV0KCQlkZWZhdWx0IHsKCQkJQGZ1bmMgcmVmZXIKCQkJ
-bmFtZSBkZWZhdWx0cy5jdGwuY2FyZAoJCX0KCX0KfQoKIwojICBSYXdNaWRpIGludGVyZmFjZQoj
-CgpyYXdtaWRpLmh3IHsKCUBhcmdzIFsgQ0FSRCBERVYgU1VCREVWIF0KCUBhcmdzLkNBUkQgewoJ
-CXR5cGUgc3RyaW5nCgkJZGVmYXVsdCB7CgkJCUBmdW5jIGdldGVudgoJCQl2YXJzIFsKCQkJCUFM
-U0FfUkFXTUlESV9DQVJECgkJCQlBTFNBX0NBUkQKCQkJXQoJCQlkZWZhdWx0IHsKCQkJCUBmdW5j
-IHJlZmVyCgkJCQluYW1lIGRlZmF1bHRzLnJhd21pZGkuY2FyZAoJCQl9CgkJfQoJfQoJQGFyZ3Mu
-REVWIHsKCQl0eXBlIGludGVnZXIKCQlkZWZhdWx0IHsKCQkJQGZ1bmMgaWdldGVudgoJCQl2YXJz
-IFsKCQkJCUFMU0FfUkFXTUlESV9ERVZJQ0UKCQkJXQoJCQlkZWZhdWx0IHsKCQkJCUBmdW5jIHJl
-ZmVyCgkJCQluYW1lIGRlZmF1bHRzLnJhd21pZGkuZGV2aWNlCgkJCX0KCQl9Cgl9CglAYXJncy5T
-VUJERVYgewoJCXR5cGUgaW50ZWdlcgoJCWRlZmF1bHQgLTEKCX0KCXR5cGUgaHcKCWNhcmQgJENB
-UkQKCWRldmljZSAkREVWCglzdWJkZXZpY2UgJFNVQkRFVgp9CgpyYXdtaWRpLmRlZmF1bHQgewoJ
-dHlwZSBodwoJY2FyZCB7CgkJQGZ1bmMgZ2V0ZW52CgkJdmFycyBbCgkJCUFMU0FfUkFXTUlESV9D
-QVJECgkJCUFMU0FfQ0FSRAoJCV0KCQlkZWZhdWx0IHsKCQkJQGZ1bmMgcmVmZXIKCQkJbmFtZSBk
-ZWZhdWx0cy5yYXdtaWRpLmNhcmQKCQl9Cgl9CglkZXZpY2UgewoJCUBmdW5jIGlnZXRlbnYKCQl2
-YXJzIFsKCQkJQUxTQV9SQVdNSURJX0RFVklDRQoJCV0KCQlkZWZhdWx0IHsKCQkJQGZ1bmMgcmVm
-ZXIKCQkJbmFtZSBkZWZhdWx0cy5yYXdtaWRpLmRldmljZQoJCX0KCX0KfQoKcmF3bWlkaS52aXJ0
-dWFsIHsKCUBhcmdzIFsgTUVSR0UgXQoJQGFyZ3MuTUVSR0UgewoJCXR5cGUgc3RyaW5nCgkJZGVm
-YXVsdCAxCgl9Cgl0eXBlIHZpcnR1YWwKCW1lcmdlICRNRVJHRQp9CgojCiMgIFNlcXVlbmNlciBp
-bnRlcmZhY2UKIwoKc2VxLmRlZmF1bHQgewoJdHlwZSBodwp9CgpzZXEuaHcgewoJdHlwZSBodwp9
-CgojCiMgIEh3RGVwIGludGVyZmFjZQojCgpod2RlcC5odyB7CglAYXJncyBbIENBUkQgREVWIF0K
-CUBhcmdzLkNBUkQgewoJCXR5cGUgc3RyaW5nCgkJZGVmYXVsdCB7CgkJCUBmdW5jIGdldGVudgoJ
-CQl2YXJzIFsKCQkJCUFMU0FfSFdERVBfQ0FSRAoJCQkJQUxTQV9DQVJECgkJCV0KCQkJZGVmYXVs
-dCB7CgkJCQlAZnVuYyByZWZlcgoJCQkJbmFtZSBkZWZhdWx0cy5od2RlcC5jYXJkCgkJCX0KCQl9
-Cgl9CglAYXJncy5ERVYgewoJCXR5cGUgaW50ZWdlcgoJCWRlZmF1bHQgewoJCQlAZnVuYyBpZ2V0
-ZW52CgkJCXZhcnMgWwoJCQkJQUxTQV9IV0RFUF9ERVZJQ0UKCQkJXQoJCQlkZWZhdWx0IHsKCQkJ
-CUBmdW5jIHJlZmVyCgkJCQluYW1lIGRlZmF1bHRzLmh3ZGVwLmRldmljZQoJCQl9CgkJfQoJfQoJ
-dHlwZSBodwoJY2FyZCAkQ0FSRAoJZGV2aWNlICRERVYKfQoKaHdkZXAuZGVmYXVsdCB7Cgl0eXBl
-IGh3CgljYXJkIHsKCQlAZnVuYyBnZXRlbnYKCQl2YXJzIFsKCQkJQUxTQV9IV0RFUF9DQVJECgkJ
-CUFMU0FfQ0FSRAoJCV0KCQlkZWZhdWx0IHsKCQkJQGZ1bmMgcmVmZXIKCQkJbmFtZSBkZWZhdWx0
-cy5od2RlcC5jYXJkCgkJfQoJfQoJZGV2aWNlIHsKCQlAZnVuYyBpZ2V0ZW52CgkJdmFycyBbCgkJ
-CUFMU0FfSFdERVBfREVWSUNFCgkJXQoJCWRlZmF1bHQgewoJCQlAZnVuYyByZWZlcgoJCQluYW1l
-IGRlZmF1bHRzLmh3ZGVwLmRldmljZQoJCX0KCX0KfQoKIwojICBUaW1lciBpbnRlcmZhY2UKIwoK
-dGltZXJfcXVlcnkuaHcgewoJdHlwZSBodwp9Cgp0aW1lcl9xdWVyeS5kZWZhdWx0IHsKCXR5cGUg
-aHcKfQoKdGltZXIuaHcgewoJQGFyZ3MgWyBDTEFTUyBTQ0xBU1MgQ0FSRCBERVYgU1VCREVWIF0K
-CUBhcmdzLkNMQVNTIHsKCQl0eXBlIGludGVnZXIKCQlkZWZhdWx0IHsKCQkJQGZ1bmMgcmVmZXIK
-CQkJbmFtZSBkZWZhdWx0cy50aW1lci5jbGFzcwoJCX0KCX0KCUBhcmdzLlNDTEFTUyB7CgkJdHlw
-ZSBpbnRlZ2VyCgkJZGVmYXVsdCB7CgkJCUBmdW5jIHJlZmVyCgkJCW5hbWUgZGVmYXVsdHMudGlt
-ZXIuc2NsYXNzCgkJfQoJfQoJQGFyZ3MuQ0FSRCB7CgkJdHlwZSBzdHJpbmcKCQlkZWZhdWx0IHsK
-CQkJQGZ1bmMgcmVmZXIKCQkJbmFtZSBkZWZhdWx0cy50aW1lci5jYXJkCgkJfQoJfQoJQGFyZ3Mu
-REVWIHsKCQl0eXBlIGludGVnZXIKCQlkZWZhdWx0IHsKCQkJQGZ1bmMgcmVmZXIKCQkJbmFtZSBk
-ZWZhdWx0cy50aW1lci5kZXZpY2UKCQl9Cgl9CglAYXJncy5TVUJERVYgewoJCXR5cGUgaW50ZWdl
-cgoJCWRlZmF1bHQgewoJCQlAZnVuYyByZWZlcgoJCQluYW1lIGRlZmF1bHRzLnRpbWVyLnN1YmRl
-dmljZQoJCX0KCX0KCXR5cGUgaHcKCWNsYXNzICRDTEFTUwoJc2NsYXNzICRTQ0xBU1MKCWNhcmQg
-JENBUkQKCWRldmljZSAkREVWCglzdWJkZXZpY2UgJFNVQkRFVgp9Cgp0aW1lci5kZWZhdWx0IHsK
-CXR5cGUgaHcKCWNsYXNzIHsKCQlAZnVuYyByZWZlcgoJCW5hbWUgZGVmYXVsdHMudGltZXIuY2xh
-c3MKCX0KCXNjbGFzcyB7CgkJQGZ1bmMgcmVmZXIKCQluYW1lIGRlZmF1bHRzLnRpbWVyLnNjbGFz
-cwoJfQoJY2FyZCB7CgkJQGZ1bmMgcmVmZXIKCQluYW1lIGRlZmF1bHRzLnRpbWVyLmNhcmQKCX0K
-CWRldmljZSB7CgkJQGZ1bmMgcmVmZXIKCQluYW1lIGRlZmF1bHRzLnRpbWVyLmRldmljZQoJfQoJ
-c3ViZGV2aWNlIHsKCQlAZnVuYyByZWZlcgoJCW5hbWUgZGVmYXVsdHMudGltZXIuc3ViZGV2aWNl
-Cgl9Cn0KCgojcGNtLiFkZWZhdWx0IHsKIyAgICAgICB0eXBlIHBsdWcKIyAgICAgICBzbGF2ZS5w
-Y20gImh3OjAsMCIKIwkKI30KCnBjbS5uYW1lIHsKICAgICAgICB0eXBlIGh3CglzbGF2ZS5wY20g
-Imh3OjAsMCIKICAgICAgICBjYXJkIDAKfQoKI3BjbS5kbWl4ZXIgewojICAgICAgICB0eXBlIGRt
-aXgKIyAgICAgICAgaXBjX2tleSAxMDI0CiMgICAgICAgIHNsYXZlIHsKIyAgICAgICAgICAgICAg
-ICBwY20gImh3OjAsMCIKIyAgICAgICAgICAgICAgICBwZXJpb2RfdGltZSAwCiMgICAgICAgICAg
-ICAgICAgcGVyaW9kX3NpemUgNDA5NgojICAgICAgICAgICAgICAgIGJ1ZmZlcl9zaXplIDE2Mzg0
-IAojICAgICAgICAgICAgICAgIHJhdGUgNDQxMDAgCiMgICAgICAgIH0KIyAgICAgICAgYmluZGlu
-Z3MgewojICAgICAgICAgICAgICAgIDAgMAojICAgICAgICAgICAgICAgIDEgMQojICAgICAgICB9
-CiN9CiNjdGwuZG1peGVyIHsKIyAgICAgICAgdHlwZSBodwojICAgICAgICBjYXJkIDAKI30K
-------=_Part_12241_28544819.1189445730267
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_12241_28544819.1189445730267--
+Regards,
+Krzysztof
