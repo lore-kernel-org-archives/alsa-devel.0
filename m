@@ -1,20 +1,19 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] ad1848 and cs4231 busy loop replacement
-Date: Mon, 10 Sep 2007 13:54:26 +0200
-Message-ID: <46E53072.2040404@gmail.com>
-References: <20070909001208.b2e54c13.krzysztof.h1@gmail.com>	
-	<46E46109.5040704@gmail.com>
-	<8c74410a0709100008v5497e870j7495b3ea054ae00b@mail.gmail.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Pausing an audio stream during playback using mixer
+	control interface
+Date: Mon, 10 Sep 2007 17:49:18 +0530
+Message-ID: <61445c750709100519v83f6e92w76d023f0a4c34681@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F027243CC
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id 79FD2103865
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Sep 2007 14:01:20 +0200 (CEST)
-In-Reply-To: <8c74410a0709100008v5497e870j7495b3ea054ae00b@mail.gmail.com>
+	Mon, 10 Sep 2007 14:28:22 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 58so289352wri
+	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 05:28:19 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/10/2007 09:08 AM, Krzysztof Helt wrote:
+Hi
+I want to provide a mixer control interface which will pause the playback
+and resume it as needed. I tried to disable DMA while pausing and enable it
+while releasing, but this doesn't stop alsa upper layers from inquiring  the
+buffer position and since DMA is not on, it gives a pcm write error, which
+is quite obvious.
 
-> Rene wrote:
+I know that, SNDRV_PCM_TRIGGER_PAUSE_PUSH can be used in trigger callback to
+pause the stream, but I want to give a mixer interface to do the same. As
+per my understanding this is not possible keeping in mind the current
+framework, can anyone think of any work around?
 
->> Which seems to be saying that we should be waiting for only 5 cycles at
->> that point. With the slowest (!) possible sampling rate of 5.5125 kHz 
->> that would mean 907 us, or sligtly under 1 ms.
->> 
-> It does not matter. If you have to wait for the start of the 
-> auto-calibration then for the end of auto-calibration you may as well 
-> wait for the end of the auto-calibration only (unless you want to follow 
-> the auto-calibration to the very single clock pulse ;-). The delay here 
-> is simple to assure that auto-calibration started (and probably is 
-> already under way). It may be longer then the start but it should not be 
-> longer than whole auto-calibration.
-> 
-> I simply tried to do as long msleep as possible to allow other tasks 
-> using CPU and decrease number of waiting loop iterations.
-
-Well, no, sorry, but I consider that to be completely breaking the logic of 
-the code. One line after this bit, we're doing the "wait for calibration to 
-finish" loop (and already schedule ourselves away while doing so, for 250ms 
-no less) meaning that at this point we should only wait long enough to be 
-guaranteed that the ACI bit reflects reality -- those 5 cycles.
-
-Your: wait unconditionally until calibration _nearly_ done, then go wait for 
-it for 250 ms to be really done.
-
-Mine: wait unconditionally until calibration has started, then go wait for 
-it for 250 ms to finish.
-
-Really -- please just do the 1 ms delay for ad1848 and either no delay or 
-the same 1 ms for cs4231 if you want to keep them in sync (and the comment 
-explaining why it's 1 ms). I don't particularly care about mdelay versus 
-msleep here (although a mere 1 ms fits mdelay better) but your setup is 
-pointlessly obscuring the code-flow.
-
-Rene.
+-pharaoh.
