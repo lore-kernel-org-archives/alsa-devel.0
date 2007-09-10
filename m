@@ -1,23 +1,22 @@
-From: "Krzysztof Helt" <krzysztof.h1@gmail.com>
+From: Rene Herman <rene.herman@gmail.com>
 Subject: Re: [PATCH] ad1848 and cs4231 busy loop replacement
-Date: Mon, 10 Sep 2007 14:42:43 +0200
-Message-ID: <8c74410a0709100542x6b5997d0hc893afb6f94acf4@mail.gmail.com>
-References: <20070909001208.b2e54c13.krzysztof.h1@gmail.com>
-	<46E46109.5040704@gmail.com>
-	<8c74410a0709100008v5497e870j7495b3ea054ae00b@mail.gmail.com>
+Date: Mon, 10 Sep 2007 15:13:24 +0200
+Message-ID: <46E542F4.7060608@gmail.com>
+References: <20070909001208.b2e54c13.krzysztof.h1@gmail.com>	
+	<46E46109.5040704@gmail.com>	
+	<8c74410a0709100008v5497e870j7495b3ea054ae00b@mail.gmail.com>	
 	<46E53072.2040404@gmail.com>
+	<8c74410a0709100542x6b5997d0hc893afb6f94acf4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCFE8103864
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6A0E243FD
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Sep 2007 14:42:44 +0200 (CEST)
-Received: by rv-out-0910.google.com with SMTP id k20so989624rvb
-	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 05:42:43 -0700 (PDT)
-In-Reply-To: <46E53072.2040404@gmail.com>
-Content-Disposition: inline
+	Mon, 10 Sep 2007 15:20:17 +0200 (CEST)
+In-Reply-To: <8c74410a0709100542x6b5997d0hc893afb6f94acf4@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,61 +26,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@gmail.com>
+To: Krzysztof Helt <krzysztof.h1@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 9/10/07, Rene Herman <rene.herman@gmail.com> wrote:
-> On 09/10/2007 09:08 AM, Krzysztof Helt wrote:
->
-> > Rene wrote:
+On 09/10/2007 02:42 PM, Krzysztof Helt wrote:
 
-> Well, no, sorry, but I consider that to be completely breaking the logic of
-> the code.
+> On 9/10/07, Rene Herman <rene.herman@gmail.com> wrote:
 
-No I changed the logic of this code not to wait for specifically for
-callibration "start" but into calibration "under way".
+>> Well, no, sorry, but I consider that to be completely breaking the logic of
+>> the code.
+> 
+> No I changed the logic of this code not to wait for specifically for
+> callibration "start" but into calibration "under way".
 
-> One line after this bit, we're doing the "wait for calibration to
-> finish" loop (and already schedule ourselves away while doing so, for 250ms
-> no less) meaning that at this point we should only wait long enough to be
-> guaranteed that the ACI bit reflects reality -- those 5 cycles.
->
-> Your: wait unconditionally until calibration _nearly_ done, then go wait for
-> it for 250 ms to be really done.
->
-> Mine: wait unconditionally until calibration has started, then go wait for
-> it for 250 ms to finish.
->
+No, waiting for calibration the be under way is what my 0/1 ms does. You are 
+waiting for it to be nearly done, which is complete nonsense. One line below 
+we are waiting for 250 ms (generally with _one_ pass through the loop -- we 
+only wake up through signals) anyway!
 
-This discussion get me amused. Look at the code:
+The no delay at all from cs4231 is the logic -- when we've dropped MCE, ACI 
+comes up (when auto-calibrating) and we only wait for it to finish. For 
+ad1848, ACI up may take 5 cycles from MCE down so we delay 1 ms so we know 
+we're testing correctly.
 
-Mine:
+>> Your: wait unconditionally until calibration _nearly_ done, then go wait for
+>> it for 250 ms to be really done.
+>>
+>> Mine: wait unconditionally until calibration has started, then go wait for
+>> it for 250 ms to finish.
 
-msleep(7); /* or msleep(2) for CS4231 */
+[ ... ]
 
-/*waiting loop 250ms*/
-while ...
+> So the only difference is 6 (or 1) ms and this time will be spent in
+> the loop anyway. Are we arguing 1ms (for CS4231) in 250ms waiting
+> loop?
 
-Yours:
-msleep(1); /* or msleep(1) for CS4231 */
+No, we are arguing maintaining code. Do not obscure the code flow for no 
+reason. Fix your logic or (for what it's worth) I am going to NAK the change.
 
-/*waiting loop 250ms */
-while ...
+> I don't understand "keep them in sync".
 
-So the only difference is 6 (or 1) ms and this time will be spent in
-the loop anyway. Are we arguing 1ms (for CS4231) in 250ms waiting
-loop?
-If you really want it can be substracted from the waiting loop 250ms
-to be exactly the same as it was.
+In sync source-code wise. While the no delay from cs4231 may be the rule, 
+ad1848 needs a small delay so if you'd wanted to keep them looking the same 
+I wouldn't care about a 1 ms delay for cs4231 as well. If you don't, fine as 
+well.
 
-> Really -- please just do the 1 ms delay for ad1848 and either no delay or
-> the same 1 ms for cs4231 if you want to keep them in sync
-
-I don't understand "keep them in sync". After the patch they behave
-the same but with different delay (they have different speed). It can
-be 2ms (as for faster one) for both but I wanted to avoid doing many
-loop iterations if possible.
-
-Regards,
-Krzysztof
+Rene.
