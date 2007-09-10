@@ -1,21 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] [ALSA] Fix CS4270 volume control and optimize
-	I2C operations
-Date: Mon, 10 Sep 2007 17:19:02 -0500
-Message-ID: <11894627422900-git-send-email-timur@freescale.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: [PATCH] cs4231-lib: improved waiting after
+ mce_down (2nd rev)
+Date: Tue, 11 Sep 2007 00:43:42 +0200
+Message-ID: <46E5C89E.4010607@gmail.com>
+References: <20070909221131.06372eb2.krzysztof.h1@gmail.com>	<s5hbqcaqkb8.wl%tiwai@suse.de>
+	<20070911004010.b9114b3e.krzysztof.h1@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C9041038E6
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18E7D103803
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Sep 2007 00:19:09 +0200 (CEST)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
-	l8AMJ5RM004936
-	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 15:19:06 -0700 (MST)
+	Tue, 11 Sep 2007 00:50:42 +0200 (CEST)
+In-Reply-To: <20070911004010.b9114b3e.krzysztof.h1@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,70 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Timur Tabi <timur@freescale.com>
+To: Krzysztof Helt <krzysztof.h1@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The volume control for the CS4270 ASoC driver was inverted - raising the
-volume level with alsamixer would decrease the actual volume.
+On 09/11/2007 12:40 AM, Krzysztof Helt wrote:
 
-This patch also improves the performance of the I2C code (used to change
-register settings) by only performing an I2C write if the new value is
-different from the value that's in the register cache.
+> This patch replaces long msleeps in waiting loops
+> with schedule_timeout() calls.
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
+Hope you'll not detest me for getting on your case so much, but...
 
-This patch applies to the 'mm' branch of perex/alsa.git.  I would like this
-patch to be part of ALSA 1.0.15.
+First, yes, attachments are good as far as I'm concerned, but could you make 
+them plain text attachments? They are now Base64 which means that at least 
+with my "casual mailer" (Thunderbird) I need to save the patch and can only 
+then look at it.
 
- sound/soc/codecs/cs4270.c |   21 +++++++++++++--------
- 1 files changed, 13 insertions(+), 8 deletions(-)
+Second -- not schedule_timeout_interruptible? A plain schedule_timeout won't 
+work, as you first need to __set_current_state or it will not schedule. That 
+is, schedule_timeout_interruptible or _uniterruptible and with the latter, 
+the loop wouldn't make much sense anymore as it's just going to sleep for 
+the full 250 ms directly.
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 43d50a4..5d601ad 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -294,19 +294,24 @@ static unsigned int cs4270_read_reg_cache(struct snd_soc_codec *codec,
- static int cs4270_i2c_write(struct snd_soc_codec *codec, unsigned int reg,
- 			    unsigned int value)
- {
-+	u8 *cache = codec->reg_cache;
-+
- 	if ((reg < CS4270_FIRSTREG) || (reg > CS4270_LASTREG))
- 		return -EIO;
- 
--	if (i2c_smbus_write_byte_data(codec->control_data, reg, value) == 0) {
-+	/* Only perform an I2C operation if the new value is different */
-+	if (cache[reg - CS4270_FIRSTREG] != value) {
-+		struct i2c_client *client = codec->control_data;
-+		if (i2c_smbus_write_byte_data(client, reg, value)) {
-+			printk(KERN_ERR "cs4270: I2C write failed\n");
-+			return -EIO;
-+		}
-+
- 		/* We've written to the hardware, so update the cache */
--		u8 *cache = codec->reg_cache;
- 		cache[reg - CS4270_FIRSTREG] = value;
--		return 0;
--	} else {
--		printk(KERN_ERR "cs4270: I2C write of register %u failed\n",
--			reg);
--		return -EIO;
- 	}
-+
-+	return 0;
- }
- 
- /*
-@@ -521,7 +526,7 @@ static int cs4270_i2c_detach(struct i2c_client *client)
- /* A list of non-DAPM controls that the CS4270 supports */
- static const struct snd_kcontrol_new cs4270_snd_controls[] = {
- 	SOC_DOUBLE_R("Master Playback Volume",
--		CS4270_VOLA, CS4270_VOLB, 0, 0xFF, 0)
-+		CS4270_VOLA, CS4270_VOLB, 0, 0xFF, 1)
- };
- 
- static struct i2c_driver cs4270_i2c_driver = {
--- 
-1.5.2.4
+Rene.
