@@ -1,22 +1,19 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] ad1848 and cs4231 busy loop replacement
-Date: Mon, 10 Sep 2007 15:13:24 +0200
-Message-ID: <46E542F4.7060608@gmail.com>
-References: <20070909001208.b2e54c13.krzysztof.h1@gmail.com>	
-	<46E46109.5040704@gmail.com>	
-	<8c74410a0709100008v5497e870j7495b3ea054ae00b@mail.gmail.com>	
-	<46E53072.2040404@gmail.com>
-	<8c74410a0709100542x6b5997d0hc893afb6f94acf4@mail.gmail.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Pausing an audio stream during playback using
+ mixer control interface
+Date: Mon, 10 Sep 2007 17:04:19 +0200
+Message-ID: <1189436659.17442.1209841383@webmail.messagingengine.com>
+References: <61445c750709100519v83f6e92w76d023f0a4c34681@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6A0E243FD
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id BE8E610386E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Sep 2007 15:20:17 +0200 (CEST)
-In-Reply-To: <8c74410a0709100542x6b5997d0hc893afb6f94acf4@mail.gmail.com>
+	Mon, 10 Sep 2007 17:04:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <61445c750709100519v83f6e92w76d023f0a4c34681@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,50 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: "Pharaoh ." <pharaoh137@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/10/2007 02:42 PM, Krzysztof Helt wrote:
+Pharaoh . wrote:
+> I know that, SNDRV_PCM_TRIGGER_PAUSE_PUSH can be used in trigger callback to
+> pause the stream, but I want to give a mixer interface to do the same.
 
-> On 9/10/07, Rene Herman <rene.herman@gmail.com> wrote:
+Why?
 
->> Well, no, sorry, but I consider that to be completely breaking the logic of
->> the code.
-> 
-> No I changed the logic of this code not to wait for specifically for
-> callibration "start" but into calibration "under way".
+> As per my understanding this is not possible keeping in mind the current
+> framework,
 
-No, waiting for calibration the be under way is what my 0/1 ms does. You are 
-waiting for it to be nearly done, which is complete nonsense. One line below 
-we are waiting for 250 ms (generally with _one_ pass through the loop -- we 
-only wake up through signals) anyway!
+Indeed.  Only one application controls the state of the stream.  When a
+stream stops without being commanded to do it, it is considered an error
+and the driver must go to the XRUN state.
 
-The no delay at all from cs4231 is the logic -- when we've dropped MCE, ACI 
-comes up (when auto-calibrating) and we only wait for it to finish. For 
-ad1848, ACI up may take 5 cycles from MCE down so we delay 1 ms so we know 
-we're testing correctly.
 
->> Your: wait unconditionally until calibration _nearly_ done, then go wait for
->> it for 250 ms to be really done.
->>
->> Mine: wait unconditionally until calibration has started, then go wait for
->> it for 250 ms to finish.
-
-[ ... ]
-
-> So the only difference is 6 (or 1) ms and this time will be spent in
-> the loop anyway. Are we arguing 1ms (for CS4231) in 250ms waiting
-> loop?
-
-No, we are arguing maintaining code. Do not obscure the code flow for no 
-reason. Fix your logic or (for what it's worth) I am going to NAK the change.
-
-> I don't understand "keep them in sync".
-
-In sync source-code wise. While the no delay from cs4231 may be the rule, 
-ad1848 needs a small delay so if you'd wanted to keep them looking the same 
-I wouldn't care about a 1 ms delay for cs4231 as well. If you don't, fine as 
-well.
-
-Rene.
+Regards,
+Clemens
