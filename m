@@ -1,26 +1,20 @@
-From: ST <st@iss.tu-darmstadt.de>
-Subject: Tascam driver on arm
-Date: Mon, 10 Sep 2007 22:56:03 +0200
-Message-ID: <200709102256.03656.st@iss.tu-darmstadt.de>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: [PATCH] ad1838/cs4231 -- fix MCE timeout upon
+	initial load
+Date: Mon, 10 Sep 2007 23:43:11 +0200
+Message-ID: <46E5BA6F.9070408@gmail.com>
+References: <46E58D01.9080809@gmail.com>
+	<20070910234034.a052c957.krzysztof.h1@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lnx131.hrz.tu-darmstadt.de (lnx131.hrz.tu-darmstadt.de
-	[130.83.174.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id A16BA103836
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEDDC1038AF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Sep 2007 22:56:19 +0200 (CEST)
-Received: from mailserver3.hrz.tu-darmstadt.de (lnx115.hrz.tu-darmstadt.de
-	[130.83.174.27])
-	by lnx131.hrz.tu-darmstadt.de (8.13.4/8.12.10) with ESMTP id
-	l8AKu5hH014176
-	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 22:56:05 +0200
-Received: from [213.157.27.16] (helo=IP-213157027016.dialin.heagmedianet.de)
-	by mailserver3.hrz.tu-darmstadt.de with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_128_CBC_SHA:16) (Exim 4.50) id 1IUqIf-0002hh-AF
-	for alsa-devel@alsa-project.org; Mon, 10 Sep 2007 22:56:05 +0200
-Content-Disposition: inline
+	Mon, 10 Sep 2007 23:50:10 +0200 (CEST)
+In-Reply-To: <20070910234034.a052c957.krzysztof.h1@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,15 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Krzysztof Helt <krzysztof.h1@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On 09/10/2007 11:40 PM, Krzysztof Helt wrote:
 
-I just tried to build the tascam sound driver SND_USB_USX2Y on arm. But this 
-is not allowed in the Kconfig of the module. 
+> On Mon, 10 Sep 2007 20:29:21 +0200
+> Rene Herman <rene.herman@gmail.com> wrote:
+>> Thanks to Krysztof Helt for pinpointing this problem.
+>>
+> 
+> Please change it to Krzysztof Helt
 
-Is there a reason for this?
+Oh, very sorry.
 
-Thanks
-ST
+>> diff --git a/sound/isa/cs423x/cs4231_lib.c b/sound/isa/cs423x/cs4231_lib.c
+>> index 914d77b..9e8e0f1 100644
+>> --- a/sound/isa/cs423x/cs4231_lib.c
+>> +++ b/sound/isa/cs423x/cs4231_lib.c
+>> @@ -346,16 +346,14 @@ void snd_cs4231_mce_down(struct snd_cs4231 *chip)
+>>  	}
+>>  	snd_cs4231_busy_wait(chip);
+>>  
+>> -	/* calibration process */
+>> -
+> 
+> The snd_cs4231_busy_wait(chip) is not needed any more here.
+
+I believe it is. I glanced over the CS4232 datasheet (note how cs4232 uses 
+snd-cs4332-lib) and it adds a point 4 (see page 53):
+
+* Wait until 80h NOT returned
+
+I didn't read closely, so feel free to point out if I'm misinterpreting that.
+
+Rene.
