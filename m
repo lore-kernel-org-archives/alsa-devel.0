@@ -1,15 +1,20 @@
-From: ricman <the_ricman@yahoo.com>
-Subject: Fwd: Re:  RME HDSPe Info/Question
-Date: Mon, 10 Sep 2007 08:16:06 -0700 (PDT)
-Message-ID: <517539.94842.qm@web62014.mail.re1.yahoo.com>
+From: Patricio Paez <pp@pp.com.mx>
+Subject: alsaseq 0.1 Python module
+Date: Mon, 10 Sep 2007 11:39:23 -0500
+Message-ID: <46E5733B.2080203@pp.com.mx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web62014.mail.re1.yahoo.com (web62014.mail.re1.yahoo.com
-	[69.147.74.237]) by alsa0.perex.cz (Postfix) with SMTP id 9546F103879
+Received: from mail1.webfaction.com (mail1.webfaction.com [67.15.2.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 296D61038AE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Sep 2007 17:16:07 +0200 (CEST)
+	Mon, 10 Sep 2007 18:39:34 +0200 (CEST)
+Received: from [192.168.1.101] (localhost.localdomain [127.0.0.1])
+	(authenticated bits=0)
+	by mail1.webfaction.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l8AGdNTL004765
+	for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2007 11:39:30 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,42 +27,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Posting reply from kind responder providing additional info...
+Hello all,
 
+This was posted in the Python announce list, but it could be of interest
+here:
 
---- Colin Stewart Campbell <colin.campbell@comhem.se> wrote:
+"The first version of alsaseq, bindings to the ALSA sequencer has been
+released.
 
-> From: Colin Stewart Campbell <colin.campbell@comhem.se>
-> Subject: Re: [alsa-devel] RME HDSPe Info/Question
-> Date: Mon, 10 Sep 2007 14:23:28 +0200
-> To: ricman <the_ricman@yahoo.com>
-> 
-> Well, except for that the new PCIe cards do all the floating-point  
-> conversion in hardware and present 32-bit float instead of 32-bit  
-> integer data on the bus.
-> If the alsa driver handles this, then ok. If not then you'll have to 
-> 
-> wait. Those running OSX on Intel machines with PCI slots already got 
-> 
-> hit by this format issue.
-> 
-> Colin
-> 
+alsaseq is a Python module that allows to interact with ALSA sequencer
+clients.   It can create an ALSA client, connect to other clients, send
+and receive ALSA events immediately or at a scheduled time using a
+sequencer queue.  It provides a subset of the ALSA sequencer
+capabilities in a simplified model.
 
+It is implemented in C language and licensed under the Gnu GPL license
+version 2 or later.
 
+Home
+http://pp.com.mx/python/alsaseq
 
+Download
+http://pp.com.mx/python/alsaseq/alsaseq-0.1.tar.gz
+"
 
+It is an early and ongoing project, suggestions and comments are welcome.
 
+Regards,
+Patricio P=E1ez <pp at pp.com.mx>
 
-
-
-
-
-
-
-
-       
-____________________________________________________________________________________
-Yahoo! oneSearch: Finally, mobile search 
-that gives answers, not web links. 
-http://mobile.yahoo.com/mobileweb/onesearch?refer=1ONXIC
+Original post:
+http://mail.python.org/pipermail/python-announce-list/2007-September/006102=
+.html
