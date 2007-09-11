@@ -1,18 +1,19 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: ALSA changes in 2.6.23-rc6 for Intel HDA
-Date: Tue, 11 Sep 2007 12:58:00 -0400
-Message-ID: <9e4733910709110958h5756a50fi7540fe9d654d1557@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@gmail.com>
+Subject: Re: [PATCH] New Aztech Sound Galaxy driver.
+Date: Tue, 11 Sep 2007 21:07:04 +0200
+Message-ID: <20070911210704.e738bd61.krzysztof.h1@gmail.com>
+References: <46E1DD43.6060403@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 536AB1037EC
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id D26A8103870
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Sep 2007 18:58:02 +0200 (CEST)
-Received: by rv-out-0910.google.com with SMTP id k20so1312068rvb
-	for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2007 09:58:00 -0700 (PDT)
-Content-Disposition: inline
+	Tue, 11 Sep 2007 21:00:18 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 58so559760wri
+	for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2007 12:00:17 -0700 (PDT)
+In-Reply-To: <46E1DD43.6060403@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Ram Kromberg <ramkromberg@mail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ALSA changes in 2.6.23-rc6 for Intel HDA made me change my volume
-from about 30% to 75% to get the same level of sound. Was this
-intentional?
+On Sat, 08 Sep 2007 01:22:43 +0200
+Rene Herman <rene.herman@gmail.com> wrote:
 
-My ALSA info is here.
-http://pastebin.ca/692226
+> 5. I38-MMSN852 = AZT2316R + CS4231A-KL, with EEPROM
+> 
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+I got this one. It has also AZT3320 chip.
+
+> All cards with a settings EEPROM have been tested with their JMPCFG jumper 
+> set to both EEPROM and SOFTWARE, and work correctly in both situations.
+> 
+
+The JMPCFG was set to software.
+ 
+I run into these problems:
+
+1. There is a problem with freeing resources in the probe function. If the probe
+ends with error, removal of the driver does not release requested regions, so the
+driver cannot be reloaded again (and cat /proc/iports crashes). It is easy to
+reproduce: give irq number which is already acquired by another driver
+then unload driver.
+
+2. After a while I found the free irq (it took quite long with this manual settings).
+ The driver loaded, the /proc/asound/* files showed GALAXY something
+but the alsamixer ended with message that there was no mixer device. 
+
+I look forward to next version of your driver to test,
+Krzysztof
