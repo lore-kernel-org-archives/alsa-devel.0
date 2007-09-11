@@ -1,113 +1,78 @@
-From: Bernhard Rosenkraenzer <bero@arklinux.org>
-Subject: [PARTIAL PATCH] snd-hda-intel on Medion WIM2160
-Date: Tue, 11 Sep 2007 14:16:24 +0200
-Message-ID: <200709111416.24299.bero@arklinux.org>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: alsa-tools -> usx2yloader
+Date: Tue, 11 Sep 2007 17:21:02 +0200
+Message-ID: <20070911152102.GA17585@frodo.home.lxtec.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S965816AbXIKM0V@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============1259665531898181509=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7029F244D2
+	for <alsa-devel@alsa-project.org>;
+	Tue, 11 Sep 2007 17:21:08 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>, Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>, 436502@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-On Medion WIM2160 notebooks (soundchip PCI ID 8086:27d8/17c0:4071), 
-snd-hda-intel loads and everything acts like it's working, but there's no 
-sound. The master volume is muted and there's no way to unmute it.
 
-The patch below fixes it, but unfortunately, Medion MD2 uses the same PCI 
-(and subvendor/subdevice) ID -- so the patch quite likely breaks Medion MD2 
-support.
+--===============1259665531898181509==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jRHKVT23PllUwdXP"
+Content-Disposition: inline
 
-WIM2160's soundchip has revision ID 02 - if MD2 uses something else, maybe 
-that can be used to identify them and do the right thing. (I don't have an 
-MD2...).
 
-ttyl
-bero
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---- linux-2.6.22/sound/pci/hda/patch_realtek.c.wim2160snd~	2007-07-09 
-01:32:17.000000000 +0200
-+++ linux-2.6.22/sound/pci/hda/patch_realtek.c	2007-09-09 20:28:55.000000000 
-+0200
-@@ -159,6 +159,7 @@
- 	ALC883_ACER,
- 	ALC883_MEDION,
- 	ALC883_MEDION_MD2,	
-+	ALC883_MEDION_WIM2160,
- 	ALC883_LAPTOP_EAPD,
- 	ALC883_LENOVO_101E_2ch,
- 	ALC883_LENOVO_NB0763,
-@@ -5995,6 +5996,32 @@
- 	{ } /* end */
- };	
- 
-+static struct snd_kcontrol_new alc883_medion_wim2160_mixer[] = {
-+	HDA_CODEC_VOLUME("Master Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE("Master Playback Switch", 0x0c, 2, HDA_INPUT),
-+	HDA_CODEC_MUTE("Headphone Playback Switch", 0x14, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
-+	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("iMic Playback Volume", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_MUTE("iMic Playback Switch", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x09, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 1, 0x09, 0x0, HDA_INPUT),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		/* .name = "Capture Source", */
-+		.name = "Input Source",
-+		.count = 2,
-+		.info = alc883_mux_enum_info,
-+		.get = alc883_mux_enum_get,
-+		.put = alc883_mux_enum_put,
-+	},
-+	{ } /* end */
-+};	
-+
- static struct snd_kcontrol_new alc883_chmode_mixer[] = {
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -6364,6 +6391,7 @@
- 	[ALC883_ACER]		= "acer",
- 	[ALC883_MEDION]		= "medion",
- 	[ALC883_MEDION_MD2]	= "medion-md2",
-+	[ALC883_MEDION_WIM2160]	= "medion-wim2160",
- 	[ALC883_LAPTOP_EAPD]	= "laptop-eapd",
- 	[ALC883_LENOVO_101E_2ch] = "lenovo-101e",
- 	[ALC883_LENOVO_NB0763]	= "lenovo-nb0763",
-@@ -6401,6 +6429,7 @@
- 	SND_PCI_QUIRK(0x17aa, 0x3bfd, "Lenovo NB0763", ALC883_LENOVO_NB0763),
- 	SND_PCI_QUIRK(0x17aa, 0x2085, "Lenovo NB0763", ALC883_LENOVO_NB0763),
--	SND_PCI_QUIRK(0x17c0, 0x4071, "MEDION MD2", ALC883_MEDION_MD2),
-+	//SND_PCI_QUIRK(0x17c0, 0x4071, "MEDION MD2", ALC883_MEDION_MD2),
-+	SND_PCI_QUIRK(0x17c0, 0x4071, "Medion WIM2160", ALC883_MEDION_WIM2160),
- 	{}
- };
- 
-@@ -6530,6 +6559,19 @@
- 		.unsol_event = alc883_medion_md2_unsol_event,
- 		.init_hook = alc883_medion_md2_automute,
- 	},	
-+	[ALC883_MEDION_WIM2160] = {
-+		.mixers = { alc883_medion_wim2160_mixer },
-+		.init_verbs = { alc883_init_verbs, alc883_lenovo_nb0763_verbs},
-+		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
-+		.dac_nids = alc883_dac_nids,
-+		.num_adc_nids = ARRAY_SIZE(alc883_adc_nids),
-+		.adc_nids = alc883_adc_nids,
-+		.num_channel_mode = ARRAY_SIZE(alc883_3ST_2ch_modes),
-+		.channel_mode = alc883_3ST_2ch_modes,
-+		.input_mux = &alc883_lenovo_nb0763_capture_source,
-+		.unsol_event = alc883_medion_md2_unsol_event,
-+		.init_hook = alc883_medion_md2_automute,
-+	},
- 	[ALC883_LAPTOP_EAPD] = {
- 		.mixers = { alc883_base_mixer,
- 			    alc883_chmode_mixer },
+Hi all,
+
+according to Debian #436502 I am asking herefore if there are plans
+to port asx2yloader from the old hotplug to udev? Debian lenny/sid
+relies on udev only, though.
+
+Thanks in advance
+
+Elimar
+
+
+--=20
+  It's a good thing we don't get all=20
+  the government we pay for.
+
+--jRHKVT23PllUwdXP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFG5rJe3Ig8bsVPf7ARAr3fAJ44ngEkc+DKDlUzbI0iN0vlJpV/egCfd9bJ
+c3OM33Is10AT57e3cZvN1dg=
+=Z4pf
+-----END PGP SIGNATURE-----
+
+--jRHKVT23PllUwdXP--
+
+--===============1259665531898181509==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1259665531898181509==--
