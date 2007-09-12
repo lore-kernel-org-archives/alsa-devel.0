@@ -1,22 +1,22 @@
 From: Daniel Mack <daniel@caiaq.org>
 Subject: [PATCH] support for Native Instrument's RigKontrol3
-Date: Wed, 12 Sep 2007 19:27:28 +0200
-Message-ID: <20070912172728.GA23338@buzzloop.caiaq.de>
+Date: Wed, 12 Sep 2007 20:30:00 +0200
+Message-ID: <20070912183000.GA24452@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="AqsLC8rIMeq19msA"
+Content-Type: multipart/mixed; boundary="FCuugMFkClbJLl1L"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B5CA4103857
+	by alsa0.perex.cz (Postfix) with ESMTP id 246CC24427
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Sep 2007 19:27:31 +0200 (CEST)
+	Wed, 12 Sep 2007 20:30:03 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id DC5747F4018
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 8E8AA7F4018
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Sep 2007 19:27:32 +0200 (CEST)
+	Wed, 12 Sep 2007 20:30:04 +0200 (CEST)
 Received: from buzzloop.caiaq.de ([127.0.0.1])
 	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ZetevrtBmGmO for <alsa-devel@alsa-project.org>;
-	Wed, 12 Sep 2007 19:27:28 +0200 (CEST)
+	with ESMTP id y8YYc8qErDl9 for <alsa-devel@alsa-project.org>;
+	Wed, 12 Sep 2007 20:30:00 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,20 +31,22 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---AqsLC8rIMeq19msA
+--FCuugMFkClbJLl1L
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
+Re-posting because of missing Signed-off-by:
+
 Hi,
 
-this patch addes support for Native Instrument's upcoming 
+This patch adds support for Native Instrument's upcoming 
 RigKontrol3 sound interface.
 
-Greets,
-Daniel
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
 
 
---AqsLC8rIMeq19msA
+
+--FCuugMFkClbJLl1L
 Content-Type: text/x-diff; charset=us-ascii
 Content-Disposition: attachment; filename="alsa-rk3.diff"
 
@@ -205,7 +207,7 @@ diff -Nur linux-2.6.22/sound/usb/Kconfig linux-2.6.22-rk3/sound/usb/Kconfig
  
  endmenu
 
---AqsLC8rIMeq19msA
+--FCuugMFkClbJLl1L
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -216,4 +218,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---AqsLC8rIMeq19msA--
+--FCuugMFkClbJLl1L--
