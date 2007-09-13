@@ -1,22 +1,18 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: How do I update the ALSA SoundCard Matrix?
-Date: Fri, 14 Sep 2007 10:20:23 +1200
-Message-ID: <46E9B7A7.9090607@audioscience.com>
-References: <46E952F4.4070906@freescale.com>
+From: "J. Scott Merritt" <alsauser@pragmasoft.com>
+Subject: SALSA: snd_pcm_avail_update
+Date: Thu, 13 Sep 2007 18:55:55 -0400
+Message-ID: <20070913185555.35445b93.alsauser@pragmasoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="Multipart=_Thu__13_Sep_2007_18_55_55_-0400_YRgUpJhNDd=RjOmG"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB82724377
+Received: from smtp6.server.rpi.edu (smtp6.server.rpi.edu [128.113.2.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 04FCD2434A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Sep 2007 00:20:29 +0200 (CEST)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JOB0072GVE2DC30@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 14 Sep 2007 10:20:27 +1200 (NZST)
-In-reply-to: <46E952F4.4070906@freescale.com>
+	Fri, 14 Sep 2007 00:50:46 +0200 (CEST)
+Received: from RPI02.localdomain (voiceflight.inc.rpi.edu [128.113.36.139])
+	by smtp6.server.rpi.edu (8.13.1/8.13.1) with SMTP id l8DMoies028457
+	for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2007 18:50:45 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,48 +22,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> I'm looking at http://bugtrack.alsa-project.org/main/index.php/Matrix:Main. 
-> I'm trying to add information on the CS4270 driver that I wrote, but I just 
-> don't get it.  I know how to edit normal Wiki pages, but this looks different. 
->   It looks like all the information is obtained from some database somewhere.
+This is a multi-part message in MIME format.
 
-The information on the main page is obtained by searching for other
-pages with certain names or categories.  So you just need to create your
-module and/or vendor pages and they will show up in the lists.
+--Multipart=_Thu__13_Sep_2007_18_55_55_-0400_YRgUpJhNDd=RjOmG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> 
-> This page
-> 
-> 	http://bugtrack.alsa-project.org/main/index.php/Help:Howto-Edit
-> 
-> supposedly tells me how to edit, but it's useless.  It doesn't really tell me 
-> *how* to edit, it just tells me that it can.
+Using salsa-lib-0.0.11, cross-compiling to ARM ...
 
-This page has a bit more info
-http://alsa-project.org/main/index.php/Matrix:Description
+Despite my best efforts, snd_pcm_avail_update is always returning
+"broken pipe".  I have checked the pcm_state of the Capture Handle
+just before snd_pcm_avail_update and it is "RUNNING'.  But immediately
+after snd_pcm_avail_update it always returns "XRUN".  Furthermore,
+this same sequence seems to work properly with the standard ALSA-Lib.
 
-For the driver, create Matrix:Module-cs4270  (assuming snd-cs4270 is the
-driver name)
+Test program is attached.  Any suggestions appreciated.
 
-Add the modinfo template as shown in the abovementioned wiki page.
-This fills much of the boilerplat text in the module page.
-My preference, if you have more interesting stuff to say about your
-driver, is to  place it BEFORE the modinfo template.
+Thanks, Scott.
 
-Example in this style,
-http://alsa-project.org/main/index.php/Matrix:Module-asihpi
+--Multipart=_Thu__13_Sep_2007_18_55_55_-0400_YRgUpJhNDd=RjOmG
+Content-Type: application/octet-stream;
+ name="salsatest.c"
+Content-Disposition: attachment;
+ filename="salsatest.c"
+Content-Transfer-Encoding: base64
 
+CSNpbmNsdWRlIDxzdGRpby5oPgoJI2luY2x1ZGUgPHN0ZGxpYi5oPgoJI2luY2x1ZGUgPGVycm5v
+Lmg+CgkjaW5jbHVkZSA8cG9sbC5oPgoKCSNpbmNsdWRlIDxhc291bmRsaWIuaD4KCnR5cGVkZWYg
+dW5zaWduZWQgbG9uZyBpbnQgV29yZDMyOwp0eXBlZGVmIHNpZ25lZCBsb25nIGludCBJbnQzMjsK
+Y29uc3QgSW50MzIgTWF4SW50MzJWYWx1ZSA9IDB4N0ZGRkZGRkY7CgoJc25kX3BjbV90ICpDYXBI
+bmRsOwoJc25kX3BjbV90ICpQYkhuZGw7CgoJc2hvcnQgYnVmWzEwMDAwMF07CgojZGVmaW5lIEFs
+c2FDb2RlYyAiaHc6MCIKCmNvbnN0IHNuZF9wY21fYWNjZXNzX3QgQWNjZXNzTW9kZSA9IFNORF9Q
+Q01fQUNDRVNTX01NQVBfSU5URVJMRUFWRUQ7CmNvbnN0IHNuZF9wY21fZm9ybWF0X3QgU2FtcGxl
+Rm9ybWF0ID0gU05EX1BDTV9GT1JNQVRfUzE2X0xFOwpjb25zdCB1bnNpZ25lZCBpbnQgU2FtcGxl
+UmF0ZSA9IDE2MDAwOyAgLy8gMTZrSHogQXVkaW8gc2FtcGxpbmcKCi8vIEEgdHJhbnNmZXIgc2l6
+ZSBvZiA2NDAgc2FtcGxlcyBwZXIgcGVyaW9kICg9IDI1IGZyYWdtZW50cyBwZXIgc2Vjb25kKQov
+LyBzZWVtcyBsaWtlIGEgZ29vZCBjb21wcm9taXNlIGJldHdlZW4gZWZmaWNpZW5jeSBhbmQgbGF0
+ZW5jeS4KY29uc3Qgc25kX3BjbV91ZnJhbWVzX3QgUGVyaW9kU2l6ZSA9IDY0MDsgIC8vIDI1IGZy
+YWdtZW50cyBwZXIgc2Vjb25kCgp2b2lkIFBhbmljIChjaGFyKiBNc2cpIHsKICAgZnByaW50ZiAo
+c3RkZXJyLCAiUGFuaWM6ICVzXG4iLCBNc2cpOwogICBleGl0ICgxKTsKfSAgLy8gZW5kIFBhbmlj
+CgovLy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KLy8gKioqIExFVkVMIDIgKioqCgp2b2lkIFNldFVwSHdQYXJh
+bXMgKHNuZF9wY21fdCogSGFuZGxlLCBXb3JkMzIgQmZyUGVyaW9kcykgewogICBzbmRfcGNtX2h3
+X3BhcmFtc190KiBId1BhcmFtczsKICAgc25kX3BjbV91ZnJhbWVzX3QgQmZyU2l6ZSA9IEJmclBl
+cmlvZHMgKiBQZXJpb2RTaXplOwogICBpZiAoc25kX3BjbV9od19wYXJhbXNfbWFsbG9jICgmSHdQ
+YXJhbXMpIDwgMCkKICAgICAgUGFuaWMgKCJTZXRVcEh3UGFyYW1zOiBVbmFibGUgdG8gYWxsb2Nh
+dGUgSHdQYXJhbSBzdHJ1Y3R1cmUiKTsKICAgaWYgKHNuZF9wY21faHdfcGFyYW1zX2FueSAoSGFu
+ZGxlLCBId1BhcmFtcykgPCAwKQogICAgICBQYW5pYyAoIlNldFVwSHdQYXJhbXM6IFVuYWJsZSB0
+byBpbml0aWFsaXplIEh3UGFyYW0gc3RydWN0dXJlIik7CiAgIGlmIChzbmRfcGNtX2h3X3BhcmFt
+c19zZXRfYWNjZXNzIChIYW5kbGUsIEh3UGFyYW1zLCBBY2Nlc3NNb2RlKSA8IDApCiAgICAgIFBh
+bmljICgiU2V0VXBId1BhcmFtczogVW5hYmxlIHRvIHNldCBhY2Nlc3MgbW9kZSIpOwogICBpZiAo
+c25kX3BjbV9od19wYXJhbXNfc2V0X2Zvcm1hdCAoSGFuZGxlLCBId1BhcmFtcywgU2FtcGxlRm9y
+bWF0KSA8IDApCiAgICAgIFBhbmljICgiU2V0VXBId1BhcmFtczogVW5hYmxlIHRvIHNldCBzYW1w
+bGUgZm9ybWF0Iik7CiAgIGlmIChzbmRfcGNtX2h3X3BhcmFtc19zZXRfY2hhbm5lbHMgKEhhbmRs
+ZSwgSHdQYXJhbXMsIDIpIDwgMCkKICAgICAgUGFuaWMgKCJTZXRVcEh3UGFyYW1zOiBVbmFibGUg
+dG8gc2V0IG51bWJlciBvZiBjaGFubmVscyIpOwogICBpZiAoc25kX3BjbV9od19wYXJhbXNfc2V0
+X3JhdGUgKEhhbmRsZSwgSHdQYXJhbXMsIFNhbXBsZVJhdGUsIDApIDwgMCkKICAgICAgUGFuaWMg
+KCJTZXRVcEh3UGFyYW1zOiBVbmFibGUgdG8gc2V0IHNhbXBsZSByYXRlIik7CiAgIGlmIChzbmRf
+cGNtX2h3X3BhcmFtc19zZXRfYnVmZmVyX3NpemUgKEhhbmRsZSwgSHdQYXJhbXMsIEJmclNpemUp
+IDwgMCkKICAgICAgUGFuaWMgKCJTZXRVcEh3UGFyYW1zOiBVbmFibGUgdG8gc2V0IGJ1ZmZlciBz
+aXplIik7CiAgIGlmIChzbmRfcGNtX2h3X3BhcmFtc19zZXRfcGVyaW9kX3NpemUgKAogICAgICAg
+ICBIYW5kbGUsIEh3UGFyYW1zLCBQZXJpb2RTaXplLCAwKSA8IDApCiAgICAgIFBhbmljICgiU2V0
+VXBId1BhcmFtczogVW5hYmxlIHRvIHNldCBwZXJpb2Qgc2l6ZSIpOwogICBpZiAoc25kX3BjbV9o
+d19wYXJhbXMgKEhhbmRsZSwgSHdQYXJhbXMpIDwgMCkKICAgICAgUGFuaWMgKCJTZXRVcEh3UGFy
+YW1zOiBVbmFibGUgdG8gd3JpdGUgSHdQYXJhbXMgdG8gZGV2aWNlIik7CiAgIHNuZF9wY21faHdf
+cGFyYW1zX2ZyZWUgKEh3UGFyYW1zKTsgIC8vIGZyZWUgSHdQYXJhbXMgc3RydWN0dXJlCn0gIC8v
+IGVuZCBTZXRVcEh3UGFyYW1zCgp2b2lkIFNldFVwU3dQYXJhbXMgKHNuZF9wY21fdCogSGFuZGxl
+KSB7CiAgIHNuZF9wY21fc3dfcGFyYW1zX3QqIFN3UGFyYW1zOwogICBpZiAoc25kX3BjbV9zd19w
+YXJhbXNfbWFsbG9jICgmU3dQYXJhbXMpIDwgMCkKICAgICAgUGFuaWMgKCJTZXRVcFN3UGFyYW1z
+OiBVbmFibGUgdG8gYWxsb2NhdGUgU3dQYXJhbSBzdHJ1Y3R1cmUiKTsKICAgaWYgKHNuZF9wY21f
+c3dfcGFyYW1zX2N1cnJlbnQgKEhhbmRsZSwgU3dQYXJhbXMpIDwgMCkKICAgICAgUGFuaWMgKCJT
+ZXRVcFN3UGFyYW1zOiBVbmFibGUgdG8gcmV0cmlldmUgY3VycmVudCBTd1BhcmFtcyIpOwogICBp
+ZiAoc25kX3BjbV9zd19wYXJhbXNfc2V0X3N0YXJ0X3RocmVzaG9sZCAoCiAgICAgICAgIEhhbmRs
+ZSwgU3dQYXJhbXMsIE1heEludDMyVmFsdWUpIDwgMCkgIC8vIHVzZSBtYW51YWwgc3RhcnQvc3Rv
+cAogICAgICBQYW5pYyAoIlNldFVwU3dQYXJhbXM6IFVuYWJsZSB0byBzZXQgKG1heGltYWwpIHN0
+YXJ0IHRocmVzaG9sZCIpOwogICBpZiAoc25kX3BjbV9zd19wYXJhbXNfc2V0X2F2YWlsX21pbiAo
+SGFuZGxlLCBTd1BhcmFtcywgUGVyaW9kU2l6ZSkgPCAwKQogICAgICBQYW5pYyAoIlNldFVwU3dQ
+YXJhbXM6IFVuYWJsZSB0byBzZXQgbm90aWZpY2F0aW9uIHRocmVzaG9sZCIpOwogICBpZiAoc25k
+X3BjbV9zd19wYXJhbXNfc2V0X3hmZXJfYWxpZ24gKEhhbmRsZSwgU3dQYXJhbXMsIFBlcmlvZFNp
+emUpIDwgMCkKICAgICAgUGFuaWMgKCJTZXRVcFN3UGFyYW1zOiBVbmFibGUgdG8gc2V0IHRyYW5z
+ZmVyIGFsaWdubWVudCIpOwogICBpZiAoc25kX3BjbV9zd19wYXJhbXMgKEhhbmRsZSwgU3dQYXJh
+bXMpIDwgMCkKICAgICAgUGFuaWMgKCJTZXRVcFN3UGFyYW1zOiBVbmFibGUgdG8gd3JpdGUgU3dQ
+YXJhbXMgdG8gZGV2aWNlIik7CiAgIHNuZF9wY21fc3dfcGFyYW1zX2ZyZWUgKFN3UGFyYW1zKTsg
+IC8vIGZyZWUgU3dQYXJhbXMgc3RydWN0dXJlCn0gIC8vIGVuZCBTZXRVcFN3UGFyYW1zCgovLyoq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKgovLyAqKiogTEVWRUwgMSAqKioKCm1haW4gKGludCBhcmdjLCBjaGFyICphcmd2W10pIHsK
+ICAgc25kX3BjbV9zZnJhbWVzX3QgRnJhbWVzQXZhaWw7CgogICBpZiAoc25kX3BjbV9vcGVuICgm
+Q2FwSG5kbCwKICAgICAgICAgQWxzYUNvZGVjLCBTTkRfUENNX1NUUkVBTV9DQVBUVVJFLCBTTkRf
+UENNX05PTkJMT0NLKSA8IDApCiAgICAgIFBhbmljICgiPz8/IFVuYWJsZSB0byBvcGVuIFBDTSBD
+YXB0dXJlIFN0cmVhbSIpOwogICBpZiAoc25kX3BjbV9vcGVuICgmUGJIbmRsLAogICAgICAgICBB
+bHNhQ29kZWMsIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLLCBTTkRfUENNX05PTkJMT0NLKSA8IDAp
+CiAgICAgIFBhbmljICgiPz8/IFVuYWJsZSB0byBvcGVuIFBDTSBQbGF5YmFjayBTdHJlYW0iKTsK
+CiAgIFNldFVwSHdQYXJhbXMgKENhcEhuZGwsIDUwKTsgIFNldFVwSHdQYXJhbXMgKFBiSG5kbCwg
+NTApOwogICBTZXRVcFN3UGFyYW1zIChDYXBIbmRsKTsgIFNldFVwU3dQYXJhbXMgKFBiSG5kbCk7
+CgogICAvLyBQcmVwYXJlIG9wZXJhdGlvbnMgbWF5IG5vdCBiZSByZXF1aXJlZCAuLi4KICAgaWYg
+KHNuZF9wY21fcHJlcGFyZSAoQ2FwSG5kbCkgPCAwKQogICAgICBQYW5pYyAoIj8/PyBVbmFibGUg
+dG8gcHJlcGFyZSBQQ00gQ2FwdHVyZSBTdHJlYW0iKTsKLy8gICBpZiAoc25kX3BjbV9wcmVwYXJl
+IChQYkhuZGwpIDwgMCkKLy8gICAgICBQYW5pYyAoIj8/PyBVbmFibGUgdG8gcHJlcGFyZSBQQ00g
+UGxheWJhY2sgU3RyZWFtIik7CgogICBpZiAoc25kX3BjbV9zdGFydChDYXBIbmRsKSA8IDApCiAg
+ICAgIFBhbmljICgiPz8/IFVuYWJsZSB0byBzdGFydCBQQ00gQ2FwdHVyZSBTdHJlYW0iKTsKCiAg
+IGlmICgoRnJhbWVzQXZhaWwgPSBzbmRfcGNtX2F2YWlsX3VwZGF0ZSAoQ2FwSG5kbCkpIDwgMCkg
+ewogICAgICBmcHJpbnRmIChzdGRlcnIsICJwY21fYXZhaWxfdXBkYXRlIGZhaWxlZCAoJXMpXG4i
+LCBzbmRfc3RyZXJyb3IgKEZyYW1lc0F2YWlsKSk7IAovLyAgICAgIFBhbmljICgiUENNIENhcHR1
+cmUgZnJhbWVzIG5vdCBhdmFpbGFibGUiKTsKICAgICAgfSAgICAgIAoKICAgZnByaW50ZiAoc3Rk
+ZXJyLCAiRnJhbWVzIEF2YWlsIGFyZSAlZFxuIiwgRnJhbWVzQXZhaWwpOwoKICAgc25kX3BjbV9j
+bG9zZSAoQ2FwSG5kbCk7ICBzbmRfcGNtX2Nsb3NlIChQYkhuZGwpOwogICBleGl0ICgwKTsKfSAg
+Ly8gZW5kIG1haW4KCg==
 
-> So what am I missing?  How do I add information on a new driver?  I'll need to 
-> add information on a new vendor soon, too.
+--Multipart=_Thu__13_Sep_2007_18_55_55_-0400_YRgUpJhNDd=RjOmG
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Probably easiest to copy an existing Vendor page.
-Give the page a name "Matrix:Vendor-Something"
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---
-Eliot
+--Multipart=_Thu__13_Sep_2007_18_55_55_-0400_YRgUpJhNDd=RjOmG--
