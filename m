@@ -1,17 +1,17 @@
 From: "Krzysztof Helt" <krzysztof.h1@gmail.com>
-Subject: [PATCH] sc6000: documentation fix
-Date: Thu, 13 Sep 2007 23:13:10 +0200
-Message-ID: <8c74410a0709131413w7f8e09caub8f58314598c8506@mail.gmail.com>
+Subject: [PATCH] sc6000: 2 minor fixes
+Date: Thu, 13 Sep 2007 23:15:07 +0200
+Message-ID: <8c74410a0709131415q130603eao784247da2329b474@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67595243BB
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id E62B4243BB
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Sep 2007 23:13:12 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so761855wag
-	for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2007 14:13:11 -0700 (PDT)
+	Thu, 13 Sep 2007 23:15:11 +0200 (CEST)
+Received: by rv-out-0910.google.com with SMTP id k20so438722rvb
+	for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2007 14:15:09 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,24 +27,31 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-This patch fixes MPU-401 irq values list in documentation.
+This patch zeroes buffer for the card name and
+fixes incorrect jump in the probe function.
 
 Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 
 ---
 
-diff -urp alsa-driver-1.0.15rc2/sound/Documentation/ALSA-Configuration.txt
-alsa-driver-new/sound/Documentation/ALSA-Configuration.txt
---- alsa-driver-1.0.15rc2/sound/Documentation/ALSA-Configuration.txt	2007-09-12
-13:33:51.000000000 +0200
-+++ alsa-driver-new/sound/Documentation/ALSA-Configuration.txt	2007-09-13
-23:12:23.920824623 +0200
-@@ -1679,7 +1679,7 @@ Prior to version 0.9.0rc4 options had a
-     port	- Port # (0x220 or 0x240)
-     mss_port	- MSS Port # (0x530 or 0xe80)
-     irq		- IRQ # (5,7,9,10,11)
--    mpu_irq	- MPU-401 IRQ # (ditto)
-+    mpu_irq	- MPU-401 IRQ # (5,7,9,10) ,0 - no MPU-401 irq
-     dma		- DMA # (1,3,0)
+diff -urp alsa-driver-1.0.15rc2/sound/isa/sc6000.c
+alsa-driver-new/sound/isa/sc6000.c
+--- alsa-driver-1.0.15rc2/sound/isa/sc6000.c	2007-09-12 13:33:51.000000000 +0200
++++ alsa-driver-new/sound/isa/sc6000.c	2007-09-13 23:14:43.288766750 +0200
+@@ -351,6 +351,7 @@ static int __devinit sc6000_init_board(c
+ 		return err;
+ 	}
 
-     This module supports multiple cards.
++	memset(answer, 0, sizeof(answer));
+ 	err = sc6000_dsp_get_answer(vport, GET_DSP_COPYRIGHT, answer, 15);
+ 	if (err <= 0) {
+ 		snd_printk(KERN_ERR "sc6000_dsp_copyright: failed!\n");
+@@ -529,7 +530,7 @@ static int __devinit snd_sc6000_probe(st
+ 		snd_printk(KERN_ERR PFX
+ 			   "SC-6000 port I/O port region is already in use.\n");
+ 		err = -EBUSY;
+-		goto err_unmap2;
++		goto err_unmap1;
+ 	}
+ 	vmss_port = devm_ioport_map(devptr, mss_port[dev], 4);
+ 	if (!vport) {
