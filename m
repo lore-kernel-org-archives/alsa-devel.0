@@ -1,14 +1,22 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: More subsystem id BIOS changes
-Date: Thu, 13 Sep 2007 17:18:41 -0400
-Message-ID: <46E9A931.1050308@embeddedalley.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: How do I update the ALSA SoundCard Matrix?
+Date: Fri, 14 Sep 2007 10:20:23 +1200
+Message-ID: <46E9B7A7.9090607@audioscience.com>
+References: <46E952F4.4070906@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070008040303060502040507"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp106.biz.mail.re2.yahoo.com (smtp106.biz.mail.re2.yahoo.com
-	[206.190.52.175]) by alsa0.perex.cz (Postfix) with SMTP id 4BEE2243BC
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB82724377
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Sep 2007 23:19:23 +0200 (CEST)
+	Fri, 14 Sep 2007 00:20:29 +0200 (CEST)
+Received: from [192.168.1.4]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JOB0072GVE2DC30@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Fri, 14 Sep 2007 10:20:27 +1200 (NZST)
+In-reply-to: <46E952F4.4070906@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,49 +26,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070008040303060502040507
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Timur Tabi wrote:
+> I'm looking at http://bugtrack.alsa-project.org/main/index.php/Matrix:Main. 
+> I'm trying to add information on the CS4270 driver that I wrote, but I just 
+> don't get it.  I know how to edit normal Wiki pages, but this looks different. 
+>   It looks like all the information is obtained from some database somewhere.
 
-More laptop BIOS changes the subsystem id for STAC9205 cards if the 
-microphone is toggled on/off in the settings.
----
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+The information on the main page is obtained by searching for other
+pages with certain names or categories.  So you just need to create your
+module and/or vendor pages and they will show up in the lists.
 
---------------070008040303060502040507
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="more_m43xx_disabled_mic.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="more_m43xx_disabled_mic.patch"
+> 
+> This page
+> 
+> 	http://bugtrack.alsa-project.org/main/index.php/Help:Howto-Edit
+> 
+> supposedly tells me how to edit, but it's useless.  It doesn't really tell me 
+> *how* to edit, it just tells me that it can.
 
-diff -r 9fe2d7b6498b pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Wed Sep 12 13:31:47 2007 +0200
-+++ b/pci/hda/patch_sigmatel.c	Thu Sep 13 17:09:17 2007 -0400
-@@ -1183,6 +1183,8 @@ static struct snd_pci_quirk stac9205_cfg
- 		      "unknown Dell", STAC_9205_DELL_M42),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01f8,
- 		      "Dell Precision", STAC_9205_M43xx),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x021c,
-+			  "Dell Precision", STAC_9205_M43xx),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x01f9,
- 		      "Dell Precision", STAC_9205_DELL_M43),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x021b,
+This page has a bit more info
+http://alsa-project.org/main/index.php/Matrix:Description
 
---------------070008040303060502040507
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+For the driver, create Matrix:Module-cs4270  (assuming snd-cs4270 is the
+driver name)
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Add the modinfo template as shown in the abovementioned wiki page.
+This fills much of the boilerplat text in the module page.
+My preference, if you have more interesting stuff to say about your
+driver, is to  place it BEFORE the modinfo template.
 
---------------070008040303060502040507--
+Example in this style,
+http://alsa-project.org/main/index.php/Matrix:Module-asihpi
+
+
+> So what am I missing?  How do I add information on a new driver?  I'll need to 
+> add information on a new vendor soon, too.
+
+Probably easiest to copy an existing Vendor page.
+Give the page a name "Matrix:Vendor-Something"
+
+--
+Eliot
