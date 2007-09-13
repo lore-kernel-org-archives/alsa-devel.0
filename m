@@ -1,21 +1,22 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] New Aztech Sound Galaxy driver.
-Date: Thu, 13 Sep 2007 19:56:19 +0200
-Message-ID: <46E979C3.6020109@gmail.com>
-References: <46E1DD43.6060403@gmail.com>	
-	<20070911210704.e738bd61.krzysztof.h1@gmail.com>	
-	<46E6EAAC.1070804@gmail.com>
-	<8c74410a0709121131x2f89c27do2dc81e24c6acdcad@mail.gmail.com>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: ALSA changes in 2.6.23-rc6 for Intel HDA
+Date: Thu, 13 Sep 2007 21:36:18 +0300
+Message-ID: <200709132136.18387.maximlevitsky@gmail.com>
+References: <9e4733910709110958h5756a50fi7540fe9d654d1557@mail.gmail.com>
+	<200709131916.47518.maximlevitsky@gmail.com>
+	<9e4733910709131015y7c1d4238ue4ee97ef5bff1e29@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0365B2412E
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id ECC062437A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Sep 2007 19:56:40 +0200 (CEST)
-In-Reply-To: <8c74410a0709121131x2f89c27do2dc81e24c6acdcad@mail.gmail.com>
+	Thu, 13 Sep 2007 20:37:46 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so88074ana
+	for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2007 11:37:45 -0700 (PDT)
+In-Reply-To: <9e4733910709131015y7c1d4238ue4ee97ef5bff1e29@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,44 +26,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@gmail.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Ram Kromberg <ramkromberg@mail.com>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/12/2007 08:31 PM, Krzysztof Helt wrote:
+On Thursday 13 September 2007 20:15:00 Jon Smirl wrote:
 
-> I fixed this as you wrote and now the driver works ok. I haven't
-> tested recording.
+those controls are fine:
+> =A0=A0=A0=A0=A0=A0=A0=A0control.2 {
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.access 'read writ=
+e'
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.type INTEGER
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.count 2
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.range '0 - 4'
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0iface MIXER
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0name 'InMux Capture Volum=
+e'
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0value.0 0
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0value.1 0
+> =A0=A0=A0=A0=A0=A0=A0=A0}
+> =A0=A0=A0=A0=A0=A0=A0=A0control.3 {
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.access 'read writ=
+e'
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.type INTEGER
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.count 2
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.range '0 - 14'
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0iface MIXER
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0name 'InVol Capture Volum=
+e'
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0value.0 0
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0value.1 0
+> =A0=A0=A0=A0=A0=A0=A0=A0}
+They control amplification of sound that enters input lines. 0 means just p=
+ass it as is
+I rarely increase them
 
-Thanks. I have been testing recording here, so that should be fine.
+this should be enabled, if you want to record from device:
+>=A0=A0=A0=A0=A0=A0=A0=A0control.4 {
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.access 'read write'
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.type BOOLEAN
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.count 2
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0iface MIXER
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0name 'ADCMux Capture Switc=
+h'
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0value.0 false
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0value.1 false
+>=A0=A0=A0=A0=A0=A0=A0=A0}
 
-> If you care the mixer controls I found that: "Line" is CD line and
-> "Aux1" is FM/wavetable.
 
-Yes, I know, and plain "Aux" is the Line In. In this case I admit it's a 
-little clumsy since you'd expect the mixer control "Line" to be that but 
-generally I don't much care.
+from my expirence (I also own STAC9227 btw), this is normal, and I even set=
+ this to 100%
+>=A0=A0=A0=A0=A0=A0=A0=A0control.5 {
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.access 'read write'
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.type INTEGER
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.count 2
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0comment.range '0 - 127'
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0iface MIXER
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0name 'Front Playback Volum=
+e'
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0value.0 75
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0value.1 75
+>=A0=A0=A0=A0=A0=A0=A0}
 
-Or better said, I do, and generally am not very fond of the control-renaming 
-in the drivers since I believe ALSA should be providing for it in userspace 
-such that the user can not only rename things to whatever the driver author 
-and/or datasheet considered applicable, but also to things like "TV", or 
-"Bedroom" or whatever.
 
-This is most applicable to generic drivers -- I for example have an ES1968 
-card sitting in this machine with an FM Tuner connected to its "Video" 
-input. I'd love to call that "Radio" instead...
+It looks like what you have now, is exactly what I always had
+Maybe hardware is capable of louder sound, although I have studied the data=
+sheet, and I havent seen that
 
-But well, sure, maybe I'll rename them in this case. Or maybe not.
+Can you tell me exact version of kernel that allowed you to set higher volu=
+me,
+and can you test whenever you actually can set louder volumes on that kerne=
+l, maybe it has a bug
 
-> This card returns DSP version 3.1 which is something better than SB Pro.
-> Maybe these AZT-1605 cards return earlier DSP version (but I do not
-> expect anything less than 3.0)
+Btw, I have sent quite a lot of patches for this driver, for example, you w=
+ill have 'Master Volume' control,
+and you will be able to record at same time from all three inputs, I added =
+support for analog loopback.
+and ADCMux is now called just 'Capture switch'
 
-They do, DSP version 2.1 and all AZT2316s I've tested are 3.1. Unfortunately 
-though, an even older Aztech chip returns 3.1 again, meaning it's at least 
-not going to help for integrating that as well.
 
-Haven't had time to look at it for a few days, but will be poking again.
 
-Rene.
+If you want to try, you can try ALSA 1.0.15rc2
+
+Best regards,
+	Maxim Levitsky
