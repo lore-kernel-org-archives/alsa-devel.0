@@ -1,23 +1,22 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: How do I update the ALSA SoundCard Matrix?
-Date: Thu, 13 Sep 2007 10:10:44 -0500
-Message-ID: <46E952F4.4070906@freescale.com>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: ALSA changes in 2.6.23-rc6 for Intel HDA
+Date: Thu, 13 Sep 2007 19:16:47 +0300
+Message-ID: <200709131916.47518.maximlevitsky@gmail.com>
+References: <9e4733910709110958h5756a50fi7540fe9d654d1557@mail.gmail.com>
+	<200709121600.42015.maximlevitsky@gmail.com>
+	<9e4733910709120730y34275a5t89c38a20938d0e7e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D35724352
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id F162524392
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Sep 2007 17:10:52 +0200 (CEST)
-Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
-	by az33egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
-	l8DFAie6002836
-	for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2007 08:10:49 -0700 (MST)
-Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
-	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id l8DFAiee010127
-	for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2007 10:10:44 -0500 (CDT)
+	Thu, 13 Sep 2007 18:18:16 +0200 (CEST)
+Received: by mu-out-0910.google.com with SMTP id w8so767407mue
+	for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2007 09:18:16 -0700 (PDT)
+In-Reply-To: <9e4733910709120730y34275a5t89c38a20938d0e7e@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,24 +26,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm looking at http://bugtrack.alsa-project.org/main/index.php/Matrix:Main. 
-I'm trying to add information on the CS4270 driver that I wrote, but I just 
-don't get it.  I know how to edit normal Wiki pages, but this looks different. 
-  It looks like all the information is obtained from some database somewhere.
+On Wednesday 12 September 2007 17:30:29 Jon Smirl wrote:
+> On 9/12/07, Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+> > On Tuesday 11 September 2007 19:58:00 Jon Smirl wrote:
+> > > The ALSA changes in 2.6.23-rc6 for Intel HDA made me change my volume
+> > > from about 30% to 75% to get the same level of sound. Was this
+> > > intentional?
+> > >
+> > > My ALSA info is here.
+> > > http://pastebin.ca/692226
+> > >
+> >
+> >
+> > Hi,
+> >
+> > First of all, what kernel do you compare to (which has  louder sound)
+> > Then if you use headphones, maybe you plugged them in 'surround output'
+> > Like center/LFE/side/surround.
+> > Those outputs give much lower levers of sound.
+> > Only Front HP and Line-out have special amp for headphones.
+> 
+> 2.6.23-rc5, I have stereo speakers plugged into the left/right output.
+> I never moved the speaker plug. The volume gets louder when I load the
+louder ?
+> new kernel.
+> 
+> It looks like the name of the main PCM channel changed from 'pcm' to
+> 'PCM" too. I had to reset my levels in alsamixer. I have a STAC9227.
+> 
+> I have everything working. It just all needed to be readjusted. Plus
+> now I have to have my amp (powered speakers) set at a much higher
+> level than before.
+> 
+> 
+> >
+> >
+> > Best regards,
+> >         Maxim Levitsky
+> >
+> 
+> 
 
-This page
+Hi,
 
-	http://bugtrack.alsa-project.org/main/index.php/Help:Howto-Edit
+It mustn't be the kernel
+Last change in hda-intel code in in pre-2.6.23-rc1
 
-supposedly tells me how to edit, but it's useless.  It doesn't really tell me 
-*how* to edit, it just tells me that it can.
+by the way, PCM control is not hardware control
+it is a softvol plug-in
 
-So what am I missing?  How do I add information on a new driver?  I'll need to 
-add information on a new vendor soon, too.
 
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+Best regards,
+	Maxim Levitsky
