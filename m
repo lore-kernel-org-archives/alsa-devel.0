@@ -1,26 +1,18 @@
-From: "j t" <mark473@gmail.com>
-Subject: Re: [Pkg-alsa-devel] Bug#436502: alsa-tools ->
-	usx2yloader
-Date: Fri, 14 Sep 2007 10:32:58 +0100
-Message-ID: <b88f52540709140232k84a2b50vf0b2efa55996d31b@mail.gmail.com>
-References: <20070911152102.GA17585@frodo.home.lxtec.de>
-	<20070912205256.GR4125@frodo.home.lxtec.de>
-	<8e4fc8270709130123x39b33a1fkd4dae9d018bb4c65@mail.gmail.com>
-	<20070913093252.GA7645@aragorn.home.lxtec.de>
-	<8e4fc8270709140145u2dc5a2cbq2f9fba4c77f2c692@mail.gmail.com>
-	<b88f52540709140229q73df2dedmf9ba464160456e5b@mail.gmail.com>
+From: James Pearson <james-p@moving-picture.com>
+Subject: alsa-driver-1.0.15rc2 build issues on RHEL4/CentOS4
+Date: Fri, 14 Sep 2007 11:15:12 +0100
+Message-ID: <46EA5F30.7000404@moving-picture.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id C28722447A
+Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB3DE24489
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Sep 2007 11:32:59 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so944470wag
-	for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2007 02:32:58 -0700 (PDT)
-In-Reply-To: <b88f52540709140229q73df2dedmf9ba464160456e5b@mail.gmail.com>
-Content-Disposition: inline
+	Fri, 14 Sep 2007 12:15:12 +0200 (CEST)
+Received: from minion.mpc.local ([172.16.11.112] helo=moving-picture.com)
+	by moving-picture.com with esmtp (Exim 4.43) id 1IW8Ce-0004gx-Ag
+	for alsa-devel@alsa-project.org; Fri, 14 Sep 2007 11:15:12 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,42 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Bourgeous <sts.nitrogen@gmail.com>
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, pkg-alsa-devel@lists.alioth.debian.org, alsa-devel <alsa-devel@alsa-project.org>, 436502@bugs.debian.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 9/14/07, j t <mark473@gmail.com> wrote:
-> On 9/14/07, Michael Bourgeous <sts.nitrogen@gmail.com> wrote:
-> > I just spent the last three hours trying to fix this problem, and I
-> > can only come to the conclusion that udev is horribly broken.  For
-> > example, my firmware load rule gets called not only when the USB
-> > device comes on, but each time ALSA adds a new device from the usx2y
-> > (i.e. control, mixer, PCM, etc.), resulting in a lot of wasted time,
-> > and many erroneous calls to usx2yloader.  Moreover, the rule gets
-> > called once for every device /removed/, even though it says
-> > ACTION="add".  Finally, it seems that every now and then, udev tries
-> > the whole process over again, even though the firmware is loaded and
-> > us428control is running.  Why do we have to keep breaking things that
-> > work?
->
-> I'm not sure whether it will help you, but I had similar problems when
-> I converted over to udev - I ended up using the following as the rule:
->
-> ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idProduct}=="8006",
-> SYSFS{idVendor}=="1604", RUN+="/lib/udev/tascam"
->
-> If I didn't do this, then udev called /lib/udev/tascam too many times
-> (more than once!).
->
-> I can't help right now, but I will have a look at this over this
-> weekend to see if it still works.
->
-> HTH, Jaime
->
+alsa-driver-1.0.15rc2 won't build cleanly on RHEL4/CentOS4 (2.6.9 based 
+kernel).
 
-Ooops, sorry - my bad... :-( I included the wrong line. Try this:
+I've included the relevant errors below after running:
 
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idProduct}=="8007",
-SYSFS{idVendor}=="1604", RUN+="/usr/bin/usx2yloader"
+configure --with-redhat
+make -i
 
-That's better :-)
+The problem with misc/ac97_bus.c, I've already reported at:
+
+<http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003119.html>
+
+James Pearson
+
+
+Build errors:
+
+   CC [M]  /tmp/alsa-driver-1.0.15rc2/misc/ac97_bus.o
+In file included from /tmp/alsa-driver-1.0.15rc2/misc/ac97_bus.c:3:
+/tmp/alsa-driver-1.0.15rc2/misc/../alsa-kernel/ac97_bus.c: In function 
+`ac97_bus_suspend':
+/tmp/alsa-driver-1.0.15rc2/misc/../alsa-kernel/ac97_bus.c:35: error: too 
+few arguments to function
+/tmp/alsa-driver-1.0.15rc2/misc/../alsa-kernel/ac97_bus.c: In function 
+`ac97_bus_resume':
+/tmp/alsa-driver-1.0.15rc2/misc/../alsa-kernel/ac97_bus.c:45: error: too 
+few arguments to function
+make[4]: [/tmp/alsa-driver-1.0.15rc2/misc/ac97_bus.o] Error 1 (ignored)
+
+
+   CC [M]  /tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/cs5535audio_pm.o
+In file included from 
+/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/cs5535audio_pm.c:2:
+/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/../../alsa-kernel/pci/cs5535audio/cs5535audio_pm.c: 
+In function `snd_cs5535audio_suspend':
+/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/../../alsa-kernel/pci/cs5535audio/cs5535audio_pm.c:77: 
+error: void value not ignored as it ought to be
+/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/../../alsa-kernel/pci/cs5535audio/cs5535audio_pm.c: 
+In function `snd_cs5535audio_resume':
+/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/../../alsa-kernel/pci/cs5535audio/cs5535audio_pm.c:95: 
+error: void value not ignored as it ought to be
+make[5]: [/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/cs5535audio_pm.o] 
+Error 1 (ignored)
+   LD [M]  /tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/snd-cs5535audio.o
+ld: /tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/cs5535audio_pm.o: No such 
+file: No such file or directory
+make[5]: [/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/snd-cs5535audio.o] 
+Error 1 (ignored)
+
+
+   Building modules, stage 2.
+   MODPOST
+*** Warning: "class_device_destroy" 
+[/tmp/alsa-driver-1.0.15rc2/pci/asihpi/snd-asihpi.ko] undefined!
+*** Warning: "ac97_bus_type" 
+[/tmp/alsa-driver-1.0.15rc2/pci/ac97/snd-ac97-codec.ko] undefined!
+*** Warning: "platform_device_alloc" 
+[/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
+*** Warning: "platform_device_add" 
+[/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
+*** Warning: "platform_device_put" 
+[/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
+*** Warning: "platform_device_alloc" 
+[/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
+*** Warning: "platform_device_add" 
+[/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
+*** Warning: "platform_device_put" 
+[/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
