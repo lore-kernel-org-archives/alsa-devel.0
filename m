@@ -1,18 +1,18 @@
 From: Rene Herman <rene.herman@gmail.com>
 Subject: Re: Ensoniq SoundScape VIVO90
-Date: Fri, 14 Sep 2007 17:51:25 +0200
-Message-ID: <46EAADFD.20304@gmail.com>
-References: <349638.52131.qm@web52904.mail.re2.yahoo.com>
+Date: Fri, 14 Sep 2007 18:21:12 +0200
+Message-ID: <46EAB4F8.8070403@gmail.com>
+References: <44760.17962.qm@web52902.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3702244F7
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 56FC824506
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Sep 2007 17:51:50 +0200 (CEST)
-In-Reply-To: <349638.52131.qm@web52904.mail.re2.yahoo.com>
+	Fri, 14 Sep 2007 18:21:37 +0200 (CEST)
+In-Reply-To: <44760.17962.qm@web52902.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,23 +26,11 @@ To: Chris Rankin <rankincj@yahoo.com>
 Cc: Krzysztof Helt <krzysztof.h1@gmail.com>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/14/2007 05:17 PM, Chris Rankin wrote:
+On 09/14/2007 06:06 PM, Chris Rankin wrote:
 
-> I naturally tested this driver with the only Ensoniq SoundScape card that
-> I owned (the PnP version), and yes, it works. All I did was convert as
-> much of the original OSS driver to ALSA as I could verify.
+> Do you have the old OSS SoundScape driver code, and did it support the VIVO? I seem to recall that
+> there were several extra code-paths in there for other SoundScape versions.
 
-Great, thanks for the answer. The 3081 is a little different resource wise 
-then. It finds the codec at "mpu_port" + 8, whereas the VIVOs (4081) has it 
-as a seperate PnP resource.
-
-3081:	Soundscape/MPU	port = pnp_port(0),	irq = pnp_irq(1)
-	Codec		port = + 8,		irq = pnp_irq(0)
-
-4081:	Soundscape/MPU	port = pnp_port(0),	irq = pnp_irq(1)
-	Codec		port = pnp_port(1),	irq = pnp_irq(0)
-
-It's possible to switch behaviour on the PnP ID (for example by setting 
-pnp_card_device_id->driver_data in the ID table).
+The code is still in the tree, yes. Krzysztof is looking into it...
 
 Rene.
