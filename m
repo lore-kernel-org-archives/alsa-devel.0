@@ -1,18 +1,17 @@
-From: James Pearson <james-p@moving-picture.com>
-Subject: alsa-driver-1.0.15rc2 build issues on RHEL4/CentOS4
-Date: Fri, 14 Sep 2007 11:15:12 +0100
-Message-ID: <46EA5F30.7000404@moving-picture.com>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: Ensoniq SoundScape VIVO90
+Date: Fri, 14 Sep 2007 16:34:30 +0200
+Message-ID: <46EA9BF6.4010603@gmail.com>
+References: <8c74410a0709140112s444692bcib146298c05fa1918@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070006040006050900070500"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB3DE24489
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 661B0244E0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Sep 2007 12:15:12 +0200 (CEST)
-Received: from minion.mpc.local ([172.16.11.112] helo=moving-picture.com)
-	by moving-picture.com with esmtp (Exim 4.43) id 1IW8Ce-0004gx-Ag
-	for alsa-devel@alsa-project.org; Fri, 14 Sep 2007 11:15:12 +0100
+	Fri, 14 Sep 2007 16:34:55 +0200 (CEST)
+In-Reply-To: <8c74410a0709140112s444692bcib146298c05fa1918@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,74 +21,262 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Krzysztof Helt <krzysztof.h1@gmail.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Chris Rankin <rankincj@yahoo.com>
 List-Id: alsa-devel@alsa-project.org
 
-alsa-driver-1.0.15rc2 won't build cleanly on RHEL4/CentOS4 (2.6.9 based 
-kernel).
+This is a multi-part message in MIME format.
+--------------070006040006050900070500
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I've included the relevant errors below after running:
+On 09/14/2007 10:12 AM, Krzysztof Helt wrote:
 
-configure --with-redhat
-make -i
+> I acquired Ensoniq VIVO90 card. I tried sscape driver but it does not 
+> work. I quickly looked at the oss driver in the kernel and it works 
+> completely different (uses different pnp resources for codec and mpu).
 
-The problem with misc/ac97_bus.c, I've already reported at:
+Also looked at that in response to a list question a while ago and posted a 
+very basic driver for the codec part only:
 
-<http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003119.html>
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-April/000716.html
 
-James Pearson
+Also attached again. Haven't looked at it anymore since then.
 
+> I want to ask if somebody tested this driver and if so what was the 
+> Ensoniq card model. If it worked only for non-pnp models I would 
+> integrate at least for VIVO cards.
 
-Build errors:
+It supposedly worked for the original author (Chris Rankin, CCed) with that 
+ENS3081 card that's listed. I suppose you also have the 4081 as both I and 
+Cody did?
 
-   CC [M]  /tmp/alsa-driver-1.0.15rc2/misc/ac97_bus.o
-In file included from /tmp/alsa-driver-1.0.15rc2/misc/ac97_bus.c:3:
-/tmp/alsa-driver-1.0.15rc2/misc/../alsa-kernel/ac97_bus.c: In function 
-`ac97_bus_suspend':
-/tmp/alsa-driver-1.0.15rc2/misc/../alsa-kernel/ac97_bus.c:35: error: too 
-few arguments to function
-/tmp/alsa-driver-1.0.15rc2/misc/../alsa-kernel/ac97_bus.c: In function 
-`ac97_bus_resume':
-/tmp/alsa-driver-1.0.15rc2/misc/../alsa-kernel/ac97_bus.c:45: error: too 
-few arguments to function
-make[4]: [/tmp/alsa-driver-1.0.15rc2/misc/ac97_bus.o] Error 1 (ignored)
+(I do also have an old non-pnp soundscape lying about, but I haven't gotten 
+around to testing that yet).
 
-
-   CC [M]  /tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/cs5535audio_pm.o
-In file included from 
-/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/cs5535audio_pm.c:2:
-/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/../../alsa-kernel/pci/cs5535audio/cs5535audio_pm.c: 
-In function `snd_cs5535audio_suspend':
-/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/../../alsa-kernel/pci/cs5535audio/cs5535audio_pm.c:77: 
-error: void value not ignored as it ought to be
-/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/../../alsa-kernel/pci/cs5535audio/cs5535audio_pm.c: 
-In function `snd_cs5535audio_resume':
-/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/../../alsa-kernel/pci/cs5535audio/cs5535audio_pm.c:95: 
-error: void value not ignored as it ought to be
-make[5]: [/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/cs5535audio_pm.o] 
-Error 1 (ignored)
-   LD [M]  /tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/snd-cs5535audio.o
-ld: /tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/cs5535audio_pm.o: No such 
-file: No such file or directory
-make[5]: [/tmp/alsa-driver-1.0.15rc2/pci/cs5535audio/snd-cs5535audio.o] 
-Error 1 (ignored)
+Rene.
 
 
-   Building modules, stage 2.
-   MODPOST
-*** Warning: "class_device_destroy" 
-[/tmp/alsa-driver-1.0.15rc2/pci/asihpi/snd-asihpi.ko] undefined!
-*** Warning: "ac97_bus_type" 
-[/tmp/alsa-driver-1.0.15rc2/pci/ac97/snd-ac97-codec.ko] undefined!
-*** Warning: "platform_device_alloc" 
-[/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
-*** Warning: "platform_device_add" 
-[/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
-*** Warning: "platform_device_put" 
-[/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
-*** Warning: "platform_device_alloc" 
-[/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
-*** Warning: "platform_device_add" 
-[/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
-*** Warning: "platform_device_put" 
-[/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
+--------------070006040006050900070500
+Content-Type: text/plain;
+ name="vivo.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="vivo.diff"
+
+commit f52cdda56fd648315fcc276d701760e9183939b3
+Author: Rene Herman <rene.herman@gmail.com>
+Date:   Tue May 8 20:25:17 2007 +0200
+
+    [ALSA] snd-vivo
+
+diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
+index cf3803c..9567090 100644
+--- a/sound/isa/Kconfig
++++ b/sound/isa/Kconfig
+@@ -397,6 +397,18 @@ config SND_SSCAPE
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-sscape.
+ 
++config SND_VIVO
++	tristate "Ensoniq Soundscape VIVO(90) Driver"
++	depends on SND
++	select SND_MPU401_UART
++	select SND_CS4231_LIB
++	help
++	  Say Y here to include support for Ensoniq Soundscape VIVO(90)
++	  soundcards.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-vivo.
++
+ config SND_WAVEFRONT
+ 	tristate "Turtle Beach Maui,Tropez,Tropez+ (Wavefront)"
+ 	depends on SND
+diff --git a/sound/isa/Makefile b/sound/isa/Makefile
+index bb317cc..8f246af 100644
+--- a/sound/isa/Makefile
++++ b/sound/isa/Makefile
+@@ -12,6 +12,7 @@ snd-es18xx-objs := es18xx.o
+ snd-opl3sa2-objs := opl3sa2.o
+ snd-sgalaxy-objs := sgalaxy.o
+ snd-sscape-objs := sscape.o
++snd-vivo-objs := vivo.o
+ 
+ # Toplevel Module Dependency
+ obj-$(CONFIG_SND_ADLIB) += snd-adlib.o
+@@ -23,6 +24,7 @@ obj-$(CONFIG_SND_ES18XX) += snd-es18xx.o
+ obj-$(CONFIG_SND_OPL3SA2) += snd-opl3sa2.o
+ obj-$(CONFIG_SND_SGALAXY) += snd-sgalaxy.o
+ obj-$(CONFIG_SND_SSCAPE) += snd-sscape.o
++obj-$(CONFIG_SND_VIVO) += snd-vivo.o
+ 
+ obj-$(CONFIG_SND) += ad1816a/ ad1848/ cs423x/ es1688/ gus/ opti9xx/ \
+ 		     sb/ wavefront/
+diff --git a/sound/isa/vivo.c b/sound/isa/vivo.c
+new file mode 100644
+index 0000000..fd2c774
+--- /dev/null
++++ b/sound/isa/vivo.c
+@@ -0,0 +1,148 @@
++/*
++ * Ensoniq Soundscape VIVO(90) Driver
++ */
++
++#include <sound/driver.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/pnp.h>
++#include <linux/delay.h>
++#include <sound/core.h>
++#include <sound/initval.h>
++#include <sound/mpu401.h>
++#include <sound/cs4231.h>
++
++#define CRD_NAME "Ensoniq Soundscape VIVO(90)"
++#define DRV_NAME "VIVO"
++#define DEV_NAME "vivo"
++
++MODULE_DESCRIPTION(CRD_NAME);
++MODULE_AUTHOR("Rene Herman");
++MODULE_LICENSE("GPL");
++
++static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
++static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
++static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;
++
++module_param_array(index, int, NULL, 0444);
++MODULE_PARM_DESC(index, "Index value for " CRD_NAME " soundcard");
++module_param_array(id, charp, NULL, 0444);
++MODULE_PARM_DESC(id, "ID string for " CRD_NAME " soundcard");
++module_param_array(enable, bool, NULL, 0444);
++MODULE_PARM_DESC(enable, "Enable " CRD_NAME " soundcard");
++
++static struct pnp_card_device_id snd_vivo_pnpids[] = {
++	{ .id = "ENS4081", .devs = { { "ENS1011" } } },
++	{ .id = "" }
++};
++
++MODULE_DEVICE_TABLE(pnp_card, snd_vivo_pnpids);
++
++static int snd_vivo_error __devinitdata = -ENODEV;
++
++static int __devinit snd_vivo_probe(struct pnp_card_link *pcard,
++				    const struct pnp_card_device_id *pid)
++{
++	static int card_num;
++
++	struct pnp_dev	  *pdev;
++	struct snd_card	  *card;
++	struct snd_cs4231 *chip;
++
++	int num, error;
++
++	if (card_num == SNDRV_CARDS)
++		return -ENODEV;
++
++	num = card_num++;
++	if (!enable[num])
++		return -ENODEV;
++
++	pdev = pnp_request_card_device(pcard, pid->devs[0].id, NULL);
++	if (!pdev || pnp_activate_dev(pdev) < 0)
++		return -ENODEV;
++
++	card = snd_card_new(index[num], id[num], THIS_MODULE, 0);
++	if (!card)
++		return -EINVAL;
++
++	snd_card_set_dev(card, &pdev->dev);
++
++	strcpy(card->driver, DRV_NAME);
++	strcpy(card->shortname, DRV_NAME);
++	strcpy(card->longname, CRD_NAME);
++
++	error = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
++				    pnp_port_start(pdev, 0), 0,
++				    pnp_irq(pdev, 1), 0, NULL);
++	if (error < 0)
++		goto out;
++
++	msleep(500);
++
++	error = snd_cs4231_create(card, pnp_port_start(pdev, 1) + 4, -1,
++				  pnp_irq(pdev, 0), pnp_dma(pdev, 0),
++				  pnp_dma(pdev, 1), CS4231_HW_DETECT,
++				  0, &chip);
++	if (error < 0)
++		goto out;
++
++	error = snd_cs4231_pcm(chip, 0, NULL);
++	if (error < 0)
++		goto out;
++
++	error = snd_cs4231_mixer(chip);
++	if (error < 0)
++		goto out;
++
++	error = snd_cs4231_timer(chip, 0, NULL);
++	if (error < 0)
++		goto out;
++
++	error = snd_card_register(card);
++	if (error < 0)
++		goto out;
++
++	pnp_set_card_drvdata(pcard, card);
++	return (snd_vivo_error = 0);
++
++out:	snd_card_free(card);
++	return error;
++}
++
++static void __devexit snd_vivo_remove(struct pnp_card_link *pcard)
++{
++	snd_card_free(pnp_get_card_drvdata(pcard));
++	pnp_set_card_drvdata(pcard, NULL);
++}
++
++static struct pnp_card_driver snd_vivo_driver = {
++	.flags		= PNP_DRIVER_RES_DISABLE,
++	.name		= DEV_NAME,
++	.id_table	= snd_vivo_pnpids,
++	.probe		= snd_vivo_probe,
++	.remove		= __devexit_p(snd_vivo_remove)
++};
++
++static int __init alsa_card_vivo_init(void)
++{
++	int error;
++
++	error = pnp_register_card_driver(&snd_vivo_driver);
++	if (error < 0)
++		goto out;
++
++	error = snd_vivo_error;
++	if (error < 0)
++		pnp_unregister_card_driver(&snd_vivo_driver);
++
++out:	return error;
++}
++
++static void __exit alsa_card_vivo_exit(void)
++{
++	pnp_unregister_card_driver(&snd_vivo_driver);
++}
++
++module_init(alsa_card_vivo_init);
++module_exit(alsa_card_vivo_exit);
+
+--------------070006040006050900070500
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070006040006050900070500--
