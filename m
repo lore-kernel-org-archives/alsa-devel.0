@@ -1,17 +1,20 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: Ensoniq SoundScape VIVO90
-Date: Fri, 14 Sep 2007 17:06:55 +0100 (BST)
-Message-ID: <44760.17962.qm@web52902.mail.re2.yahoo.com>
-References: <46EAADFD.20304@gmail.com>
+From: Krzysztof Helt <krzysztof.h1@gmail.com>
+Subject: Re: [PATCH] opti931: additional check for OPL3 device
+Date: Fri, 14 Sep 2007 18:47:05 +0200
+Message-ID: <20070914184705.9ba48d80.krzysztof.h1@gmail.com>
+References: <8c74410a0709140735j3903a11dp23f783d45bffc55c@mail.gmail.com>
+	<1189781567.3648.1210664373@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web52902.mail.re2.yahoo.com (web52902.mail.re2.yahoo.com
-	[206.190.49.12]) by alsa0.perex.cz (Postfix) with SMTP id 2F464244F8
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14632244FA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Sep 2007 18:06:57 +0200 (CEST)
-In-Reply-To: <46EAADFD.20304@gmail.com>
+	Fri, 14 Sep 2007 18:40:03 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id b21so645648nfd
+	for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2007 09:40:02 -0700 (PDT)
+In-Reply-To: <1189781567.3648.1210664373@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@gmail.com>
-Cc: Krzysztof Helt <krzysztof.h1@gmail.com>, ALSA devel <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <cladisch@fastmail.net>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---- Rene Herman <rene.herman@gmail.com> wrote:
-> On 09/14/2007 05:17 PM, Chris Rankin wrote:
-> > I naturally tested this driver with the only Ensoniq SoundScape card that
-> > I owned (the PnP version), and yes, it works. All I did was convert as
-> > much of the original OSS driver to ALSA as I could verify.
+On Fri, 14 Sep 2007 16:52:47 +0200
+"Clemens Ladisch" <cladisch@fastmail.net> wrote:
+
+> Krzysztof Helt wrote:
+> > This patch adds additional check for OPL3 device. I found that PNP
+> > region returned by the card is 0x380 - 0x38f but the OPL3 device is
+> > located at 0x388 (standard FM device address).
 > 
-> Great, thanks for the answer. The 3081 is a little different resource wise 
-> then. It finds the codec at "mpu_port" + 8, whereas the VIVOs (4081) has it 
-> as a seperate PnP resource.
+> On cards with an OPL4, it would use the entire range, where that last
+> eight bytes are the OPL3-compatible registers.
 > 
-> 3081:	Soundscape/MPU	port = pnp_port(0),	irq = pnp_irq(1)
-> 	Codec		port = + 8,		irq = pnp_irq(0)
+
+Ok. I haven't touched the size of the range or the range itself. I just added
+a fallback to check range +8 (which is 0x388) after failure to find the OPL3
+at the 0x380.
+
 > 
-> 4081:	Soundscape/MPU	port = pnp_port(0),	irq = pnp_irq(1)
-> 	Codec		port = pnp_port(1),	irq = pnp_irq(0)
+> My card doesn't have PnP, but I guess the OPL4 detection wouldn't work
+> on 92x either for the same reason.
 > 
-> It's possible to switch behaviour on the PnP ID (for example by setting 
-> pnp_card_device_id->driver_data in the ID table).
+> 
 
-Do you have the old OSS SoundScape driver code, and did it support the VIVO? I seem to recall that
-there were several extra code-paths in there for other SoundScape versions.
+Should the OPL4 detection has the same fallback or just all Opti cards
+should search the FM chip at the range + 8 address?
 
-Cheers,
-Chris
-
-
-
-      _______________________________________________________
-Try Yahoo! Mail now with Unlimited Storage and see the difference.
-http://uk.mail.yahoo.com
+Regards,
+Krzysztof
