@@ -1,39 +1,44 @@
-From: "Piotr Makowski" <oponek@gmail.com>
-Subject: MAYA44 PCI ALSA driver for 300$
-Date: Sun, 16 Sep 2007 16:35:46 +0200
-Message-ID: <87988a970709160735n372d750cnc4f4ffced3972979@mail.gmail.com>
+From: william estrada <MrUmunhum@popdial.com>
+Subject: simple ALSA source code?
+Date: Sun, 16 Sep 2007 10:15:44 -0700
+Message-ID: <46ED64C0.8030401@popdial.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 363EF24719
-	for <alsa-devel@alsa-project.org>;
-	Sun, 16 Sep 2007 16:35:50 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m33so1717827wag
-	for <alsa-devel@alsa-project.org>; Sun, 16 Sep 2007 07:35:47 -0700 (PDT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi guys,
 
-I have just created the project "ESI MAYA44 PCI ALSA Driver" on
-getacoder.com.
+   I am looking for a 'simple' C player program that uses ALSA. I found
+this link "http://www.linuxjournal.com/article/6735/print" which has sample
+code but it is old and does not work. The player produces noise from
+a file created with arecord.
 
-http://www.getacoder.com/projects/esi_maya_pci_alsa_driver_59542.html
+   I am looking for a set of simple programs for creating and playing wav files.
+Something I could modify for my needs.  I want command line interface type not
+a GUI.
 
-If anybody is interested in MAYA44 case, please bid or watch the post.
+   Thanks for your time.
 
 -- 
-Regards,
-Piotr Makowski
+William Estrada
+MrUmunhum@popdial.com
+Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
+Ymessenger: MrUmunhum
+
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2005.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
