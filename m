@@ -1,21 +1,20 @@
-From: "Giovanni Maruzzelli" <gmaruzz.lists@gmail.com>
-Subject: Re: dsnoop do not works on snd-hda-intel
-Date: Mon, 17 Sep 2007 07:53:39 +0200
-Message-ID: <7c5010d60709162253p6f44794ew11488e7f52114e7a@mail.gmail.com>
-References: <7c5010d60709162221v13d9d4e8w9b481f36cdfe7851@mail.gmail.com>
-	<200709170732.46430.maximlevitsky@gmail.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: [PATCH] opti931: additional check for OPL3 device
+Date: Mon, 17 Sep 2007 10:14:53 +0200
+Message-ID: <1190016893.19336.1210994773@webmail.messagingengine.com>
+References: <8c74410a0709140735j3903a11dp23f783d45bffc55c@mail.gmail.com>
+	<1189781567.3648.1210664373@webmail.messagingengine.com>
+	<20070914184705.9ba48d80.krzysztof.h1@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7DFD4103839
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id D78EF103825
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Sep 2007 07:53:40 +0200 (CEST)
-Received: by mu-out-0910.google.com with SMTP id w8so2074848mue
-	for <alsa-devel@alsa-project.org>; Sun, 16 Sep 2007 22:53:39 -0700 (PDT)
-In-Reply-To: <200709170732.46430.maximlevitsky@gmail.com>
+	Mon, 17 Sep 2007 10:14:54 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20070914184705.9ba48d80.krzysztof.h1@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,102 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Krzysztof Helt <krzysztof.h1@gmail.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Maxim,
+Krzysztof Helt wrote:
+> "Clemens Ladisch" <cladisch@fastmail.net> wrote:
+> > Krzysztof Helt wrote:
+> > > This patch adds additional check for OPL3 device. I found that PNP
+> > > region returned by the card is 0x380 - 0x38f but the OPL3 device is
+> > > located at 0x388 (standard FM device address).
+> > 
+> > On cards with an OPL4, it would use the entire range, where that last
+> > eight bytes are the OPL3-compatible registers.
+> 
+> Ok. I haven't touched the size of the range or the range itself. I just added
+> a fallback to check range +8 (which is 0x388) after failure to find the OPL3
+> at the 0x380.
+> 
+> > My card doesn't have PnP, but I guess the OPL4 detection wouldn't work
+> > on 92x either for the same reason.
+> 
+> Should the OPL4 detection has the same fallback or just all Opti cards
+> should search the FM chip at the range + 8 address?
 
-many many many thanks!
+It appears a fallback shoudn't be needed because the chip always returns
+a range suitable for an OPL4.
 
-Works perfectly, exactly as you wrote!
-(to put the default to -1 is a feature? ;-) )
+Since an OPL3 range is never larger than 8 bytes, and OPL4 needs 16
+bytes, we could add 8 to get the FM address _if_ the range is at least
+16 bytes; thus we are safe even if a chip publishes an OPL3-only range.
 
-Many many thanks again,
 
-Giovanni
-
-On 9/17/07, Maxim Levitsky <maximlevitsky@gmail.com> wrote:
-> On Monday 17 September 2007 07:21:03 Giovanni Maruzzelli wrote:
-> > Hi all,
-> >
-> > I hope someone can give me an hint on this problem, that is stopping me.
-> >
-> > On my new laptop (asus f5v) dsnoop do not works, neither I can record
-> > at the same moment with more than one application. The second
-> > application that want to use the dsnoop, fail to open it.
-> >
-> > I'm using Ubuntu 7.04 fully updated.
-> >
-> > lspci gives:
-> > 00:0f.0 Audio device: Silicon Integrated Systems [SiS] Azalia Audio Controller
-> >
-> > cat /proc/asound/card0/codec#* | grep Codec gives:
-> > Codec: Realtek ALC660-VD
-> > Codec: Motorola Si3054
-> >
-> > I've upgraded driver, lib, and utils to 1.0.14 but it do not helped.
-> >
-> > I've put at the end of /etc/modprobe.d/alsa-base
-> > options snd-hda-intel model=3stack-660
-> >
-> > I can always reproduce the behavior, for eg:
-> >
-> > root@ubuntu-lap:~# arecord -Ddefault ciao.wav &
-> > [1] 6923
-> > root@ubuntu-lap:~# Recording WAVE 'ciao.wav' : Unsigned 8 bit, Rate
-> > 8000 Hz, Mono
-> >
-> > root@ubuntu-lap:~# arecord -Ddefault ciao2.wav &
-> > [2] 6926
-> > root@ubuntu-lap:~# ALSA lib pcm_dsnoop.c:606:(snd_pcm_dsnoop_open)
-> > unable to open slave
-> > arecord: main:545: audio open error: Invalid argument
-> >
-> > [2]+  Exit 1                  arecord -Ddefault ciao2.wav
-> >
-> > I can give any additional info is needed.
-> >
-> > Thank you all in advance,
-> >
-> > Giovanni Maruzzelli
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->
-> Hi,
->
-> I was also hit by this problem
->
-> To fix this you need to open /usr/share/alsa/pcm/dsnoop.conf
-> and change
->
->         @args.SUBDEV {
->                 type string
->                 default -1
->
-> to
->
->         @args.SUBDEV {
->                 type string
->                 default 0
->
-> I was told that this is a feature of alsa, not bug, I don't know.
->
-> the above will make dsnoop to record from hw:0,0
->
-> Also, I bet that your hardware can record more that one stream a time.
-> So you can also try recording from hw:0,1 or hw:0,2
->
-> you can check how many streams can be recording at same time in /proc/asound/Intel/pcm0c/info
-> look at subdevices_count
->
-> Each stream can have its own input source, so check your mixer to make sure that
-> each stream records what you want, eg: records from same source, or not,
-> is enabled or not, and has enough gain.
->
-> Best regards,
->         Maxim Levisky
->
->
+Regards,
+Clemens
