@@ -1,23 +1,20 @@
-From: Ludovico Verducci <ludwigvan@alice.it>
-Subject: Re: Enabling in-kernel synch for M-Audio boards
-Date: Tue, 18 Sep 2007 10:07:05 +0200
-Message-ID: <46EF8729.3080901@alice.it>
-References: <46EE555B.9000700@alice.it> <20070917194403.GA3655@localhost>
-	<20070918065723.GA2512@localhost>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: [PATCH] ad1838/cs4231 -- fix MCE timeout upon
+ initial load
+Date: Tue, 18 Sep 2007 10:17:43 +0200
+Message-ID: <46EF89A7.9020906@gmail.com>
+References: <46E58D01.9080809@gmail.com>	<Pine.LNX.4.58.0709170325380.27377@shell4.speakeasy.net>	<46EF18FF.7070906@gmail.com>	<Pine.LNX.4.58.0709171757500.27377@shell4.speakeasy.net>
+	<20070918100246.6cd37e1b.krzysztof.h1@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mercurio1.dnshostplan.com (dns22.dnshostplan.com
-	[151.1.210.227]) by alsa0.perex.cz (Postfix) with ESMTP id 69EAA24471
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F51124475
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Sep 2007 10:07:09 +0200 (CEST)
-Received: from host9-74-static.89-82-b.business.telecomitalia.it ([82.89.74.9]
-	helo=[10.10.1.203])
-	by mercurio1.dnshostplan.com with esmtpa (Exim 4.68)
-	(envelope-from <ludwigvan@alice.it>) id 1IXY6p-0000KL-7R
-	for alsa-devel@alsa-project.org; Tue, 18 Sep 2007 10:07:03 +0200
-In-Reply-To: <20070918065723.GA2512@localhost>
+	Tue, 18 Sep 2007 10:18:41 +0200 (CEST)
+In-Reply-To: <20070918100246.6cd37e1b.krzysztof.h1@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,51 +24,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Krzysztof Helt <krzysztof.h1@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Trent Piepho <xyzzy@speakeasy.org>
 List-Id: alsa-devel@alsa-project.org
 
-John Rigg ha scritto:
-> On Mon, Sep 17, 2007 at 08:44:03PM +0100, John Rigg wrote:
->   
->> On Mon, Sep 17, 2007 at 12:22:19PM +0200, Ludovico Verducci wrote:
->>     
->>> Hello all! 
->>>  
->>> I'm developing a complex multichannel audio distribution system where 
->>> multiple linux boxes will stream audio data over ethernet and then 
->>> should play audio at sample level resolution synchronization. The boxes 
->>> clocks are synchronized over ethernet using PTP. 
->>> I need to keep in synch the audio board's clocks and I can't use an 
->>> external wordclock nor s/pdif. 
->>>       
->> Won't this cause serious clock jitter problems? I don't see how the
->> PCI bus can deliver precise enough timing, considering how much other
->> data it has to handle.
->>     
-I didn't mean to directly drive the audio board's clock over the PCI
-bus. I think this is simply not feasible. But I think that using control
-signals periodically exchanged over PCI between the audio board and the
-kernel could be possible (if the hardware could support a similar
-feature, of course) to skew the board's clock to keep it in synch with a
-software reference.
-As far as I know the delta family boards drivers support the
-synchronization of up to 4 audio boards over PCI: at the moment I'm
-reverse engineering the hardware trying to understand how this can be
-accomplished.
->
-> And I can't see any way that the clocks can be synced to sample
-> accuracy over ethernet. That's what external word clocks are for.
-> Even with a word clock I suspect that the latency of the
-> ethernet connection would be too high to allow sample accurate sync
-> of the audio.
->
-> John
->   
-The machines real time clocks are synched over ethernet using Precision
-Time Protocol. This protocol can achieve below 1 microsecond
-synchronization accuracy. This should be fine to sample level synch at
-48 KHz.
+On 09/18/2007 10:02 AM, Krzysztof Helt wrote:
 
-Regards,
+>> +	timeout = jiffies + msecs_to_jiffies(250);
+>> +	do {
+>>  		spin_unlock_irqrestore(&chip->reg_lock, flags);
+>> -		if (time_after(jiffies, end_time)) {
+>> -			snd_printk(KERN_ERR "mce_down - auto calibration time out (2)\n");
+>> -			return;
+>> -		}
+>>  		msleep(1);
+>>  		spin_lock_irqsave(&chip->reg_lock, flags);
+>> -	}
+>> -
+>> -	snd_printdd("(3) jiffies = %lu\n", jiffies);
+>> -
+>> -	end_time = jiffies + msecs_to_jiffies(100);
+>> -	while (inb(AD1848P(chip, REGSEL)) & AD1848_INIT) {
+>> -		spin_unlock_irqrestore(&chip->reg_lock, flags);
+>> -		if (time_after(jiffies, end_time)) {
+>> -			snd_printk(KERN_ERR "mce_down - auto calibration time out (3)\n");
+>> -			return;
+>> -		}
+>> -		msleep(1);
+>> -		spin_lock_irqsave(&chip->reg_lock, flags);
+>> -	}
+>> -	spin_unlock_irqrestore(&chip->reg_lock, flags);
+>> +		regsel = snd_ad1848_in(chip, AD1848_TEST_INIT);
+>> +	} while ((regsel & AD1848_CALIB_IN_PROGRESS) && time_before(jiffies, timeout));
+> 
+> Break this long line. You may calculate "regsel & AD1848_CALIB_IN_PROGRESS"
+> inside the loop and use it in the condition outside the loop too.
 
-Ludovico
+Or just break out directly with a goto:
+
+		regsel = snd_ad1848_in();
+		if (!(regsel & AD1848_CALIB_IN_PROGRESS))
+			goto out;
+	while (time_before(jiffies, timeout));
+
+	snd_printk(KERN_ERR "mce_down - auto calibration time out (2)\n")
+out:
+	spin_unlock_irqrestore()
+	snd_printd()
+	return;
+}
+
+Have grown to like those best generally -= falling off a timeout-loop means 
+you've timed out, and if not, you jump over the error handling for that.
+
+But I'm quite sure we'll be able to get religious over that. We're four 
+people patching the same little function over and over again, so we're 
+pretty daft anyway :-)
+
+Rene.
