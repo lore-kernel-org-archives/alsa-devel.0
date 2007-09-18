@@ -1,20 +1,17 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] ad1838/cs4231 -- fix MCE timeout upon
- initial load
-Date: Tue, 18 Sep 2007 10:17:43 +0200
-Message-ID: <46EF89A7.9020906@gmail.com>
-References: <46E58D01.9080809@gmail.com>	<Pine.LNX.4.58.0709170325380.27377@shell4.speakeasy.net>	<46EF18FF.7070906@gmail.com>	<Pine.LNX.4.58.0709171757500.27377@shell4.speakeasy.net>
-	<20070918100246.6cd37e1b.krzysztof.h1@gmail.com>
+From: Krzysztof Helt <krzysztof.h1@gmail.com>
+Subject: [PATCH] ad1848: remove redundant autocalibration
+Date: Tue, 18 Sep 2007 11:35:17 +0200
+Message-ID: <20070918113517.fe854a79.krzysztof.h1@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F51124475
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCF202448F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Sep 2007 10:18:41 +0200 (CEST)
-In-Reply-To: <20070918100246.6cd37e1b.krzysztof.h1@gmail.com>
+	Tue, 18 Sep 2007 11:27:58 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id b21so1208327nfd
+	for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2007 02:27:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Trent Piepho <xyzzy@speakeasy.org>
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/18/2007 10:02 AM, Krzysztof Helt wrote:
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
->> +	timeout = jiffies + msecs_to_jiffies(250);
->> +	do {
->>  		spin_unlock_irqrestore(&chip->reg_lock, flags);
->> -		if (time_after(jiffies, end_time)) {
->> -			snd_printk(KERN_ERR "mce_down - auto calibration time out (2)\n");
->> -			return;
->> -		}
->>  		msleep(1);
->>  		spin_lock_irqsave(&chip->reg_lock, flags);
->> -	}
->> -
->> -	snd_printdd("(3) jiffies = %lu\n", jiffies);
->> -
->> -	end_time = jiffies + msecs_to_jiffies(100);
->> -	while (inb(AD1848P(chip, REGSEL)) & AD1848_INIT) {
->> -		spin_unlock_irqrestore(&chip->reg_lock, flags);
->> -		if (time_after(jiffies, end_time)) {
->> -			snd_printk(KERN_ERR "mce_down - auto calibration time out (3)\n");
->> -			return;
->> -		}
->> -		msleep(1);
->> -		spin_lock_irqsave(&chip->reg_lock, flags);
->> -	}
->> -	spin_unlock_irqrestore(&chip->reg_lock, flags);
->> +		regsel = snd_ad1848_in(chip, AD1848_TEST_INIT);
->> +	} while ((regsel & AD1848_CALIB_IN_PROGRESS) && time_before(jiffies, timeout));
-> 
-> Break this long line. You may calculate "regsel & AD1848_CALIB_IN_PROGRESS"
-> inside the loop and use it in the condition outside the loop too.
+This patch removes redundant auto-calibration 
+(mce up/down sequence) from snd_ad1848_open().
 
-Or just break out directly with a goto:
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
 
-		regsel = snd_ad1848_in();
-		if (!(regsel & AD1848_CALIB_IN_PROGRESS))
-			goto out;
-	while (time_before(jiffies, timeout));
+The docs says that changing the Interface Configuration register
+and the Format/Clock register requires the MCE bit set.
+However, the docs do not say that additional auto-calibration is
+required after setting one register and before setting the other.
+Now, both registers are set at once.
 
-	snd_printk(KERN_ERR "mce_down - auto calibration time out (2)\n")
-out:
-	spin_unlock_irqrestore()
-	snd_printd()
-	return;
-}
+Tested on SC-6000.
 
-Have grown to like those best generally -= falling off a timeout-loop means 
-you've timed out, and if not, you jump over the error handling for that.
+This should reduce opening latency by one auto-calibration period.
 
-But I'm quite sure we'll be able to get religious over that. We're four 
-people patching the same little function over and over again, so we're 
-pretty daft anyway :-)
-
-Rene.
+diff -urp linux-2.6.22.old/sound/isa/ad1848/ad1848_lib.c linux-2.6.23/sound/isa/ad1848/ad1848_lib.c
+--- linux-2.6.22.old/sound/isa/ad1848/ad1848_lib.c	2007-09-12 13:33:51.000000000 +0200
++++ linux-2.6.23/sound/isa/ad1848/ad1848_lib.c	2007-09-18 00:36:33.000000000 +0200
+@@ -408,17 +408,8 @@ static int snd_ad1848_open(struct snd_ad
+ 			     AD1848_CALIB_MODE);
+ 	chip->image[AD1848_IFACE_CTRL] |= AD1848_AUTOCALIB;
+ 	snd_ad1848_out(chip, AD1848_IFACE_CTRL, chip->image[AD1848_IFACE_CTRL]);
+-	spin_unlock_irqrestore(&chip->reg_lock, flags);
+-	snd_ad1848_mce_down(chip);
+-
+-#ifdef SNDRV_DEBUG_MCE
+-	snd_printk("open: (2)\n");
+-#endif
+ 
+ 	snd_ad1848_set_data_format(chip, NULL);
+-
+-	snd_ad1848_mce_up(chip);
+-	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	snd_ad1848_out(chip, AD1848_DATA_FORMAT, chip->image[AD1848_DATA_FORMAT]);
+ 	spin_unlock_irqrestore(&chip->reg_lock, flags);
+ 	snd_ad1848_mce_down(chip);
