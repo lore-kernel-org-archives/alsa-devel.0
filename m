@@ -1,21 +1,19 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] ad1838/cs4231 -- fix MCE timeout upon
- initial load
-Date: Tue, 18 Sep 2007 13:03:42 +0200
-Message-ID: <46EFB08E.3010308@gmail.com>
-References: <46E58D01.9080809@gmail.com>
-	<Pine.LNX.4.58.0709170325380.27377@shell4.speakeasy.net>
-	<46EF18FF.7070906@gmail.com> <46EF3097.7060300@gmail.com>
-	<46EF52E4.90401@gmail.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] cs4231: remove two auto-calibrations
+ during chip initialization
+Date: Tue, 18 Sep 2007 13:08:48 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0709181305130.8148@tm8103.perex-int.cz>
+References: <20070918121758.5686aa96.krzysztof.h1@gmail.com>
+	<46EFAA91.6050305@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070505070708050904060102"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2423B2446B
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A11E244AD
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Sep 2007 13:04:41 +0200 (CEST)
-In-Reply-To: <46EF52E4.90401@gmail.com>
+	Tue, 18 Sep 2007 13:08:49 +0200 (CEST)
+In-Reply-To: <46EFAA91.6050305@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Krzysztof Helt <krzysztof.h1@gmail.com>, ALSA devel <alsa-devel@alsa-project.org>, Trent Piepho <xyzzy@speakeasy.org>
+To: Rene Herman <rene.herman@gmail.com>
+Cc: Krzysztof Helt <krzysztof.h1@gmail.com>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070505070708050904060102
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, 18 Sep 2007, Rene Herman wrote:
 
-On 09/18/2007 06:24 AM, Rene Herman wrote:
+> On 09/18/2007 12:17 PM, Krzysztof Helt wrote:
+> 
+> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> > 
+> > The initialization function did auto-calibration after each
+> > register setting. This patch merges more register changes
+> > before auto-calibration is done.
+> 
+> Seems to make sense but am a little uneasy about these -- someone very much
+> did it this way on purpose originally it seems. Jaroslav, that someone was you
+> I believe? Do you remember anything about this?
 
-> And here's the others in that changeset, against current hg. As far as
+If I remember correctly, it was workaround for some CS4231 chips to fix 
+the noise audio issue (the chip was not initialized correctly in some 
+cases). I would make a whitelist for "non-buggy" tested chips to skip 
+double calibration.
 
-One more inside isa/.
+						Jaroslav
 
-Signed-off-by: Rene Herman <rene.herman@gmail.com>
-
---------------070505070708050904060102
-Content-Type: text/plain;
- name="schedule_timeout-fixes-one-more.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="schedule_timeout-fixes-one-more.diff"
-
-diff -r 0028e39ead78 isa/sscape.c
---- a/isa/sscape.c	Tue Sep 18 00:52:38 2007 +0200
-+++ b/isa/sscape.c	Tue Sep 18 13:01:55 2007 +0200
-@@ -401,7 +401,7 @@ static int obp_startup_ack(struct sounds
- 		unsigned long flags;
- 		unsigned char x;
- 
--		schedule_timeout(1);
-+		schedule_timeout_uninterruptible(1);
- 
- 		spin_lock_irqsave(&s->lock, flags);
- 		x = inb(HOST_DATA_IO(s->io_base));
-
---------------070505070708050904060102
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------070505070708050904060102--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
