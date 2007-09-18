@@ -1,20 +1,16 @@
-From: Ludovico Verducci <ludwigvan@alice.it>
-Subject: Re: Enabling in-kernel synch for M-Audio boards
-Date: Tue, 18 Sep 2007 20:07:48 +0200
-Message-ID: <DC44C387-9F54-4CAC-B880-43139E523469@alice.it>
-References: <46EE555B.9000700@alice.it> <20070917194403.GA3655@localhost>
-	<20070918065723.GA2512@localhost> <46EF8729.3080901@alice.it>
-	<20070918104033.GA2491@localhost>
-	<1190123404.16980.1211261887@webmail.messagingengine.com>
-Mime-Version: 1.0 (Apple Message framework v752.3)
+From: Steve Strobel <steve.strobel@link-comm.com>
+Subject: OSS app works but aplay does not with
+	SNDRV_PCM_FMTBIT_U32_LE
+Date: Tue, 18 Sep 2007 12:38:24 -0600
+Message-ID: <0MKpCa-1IXhxr0egN-0007WC@mrelay.perfora.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out114.alice.it (unknown [85.37.17.114])
-	by alsa0.perex.cz (Postfix) with ESMTP id E53EA10380E
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4153124527
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Sep 2007 20:07:58 +0200 (CEST)
-In-Reply-To: <1190123404.16980.1211261887@webmail.messagingengine.com>
+	Tue, 18 Sep 2007 20:38:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>, aldev@sound-man.co.uk
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I am developing an ALSA driver for the AD1938 codec on uClinux for 
+Blackfin (I don't believe my problem is specific to that 
+platform).  When I set up the snd_pcm_hardware_t structure with
 
-Il giorno 18/set/07, alle ore 15:50, Clemens Ladisch ha scritto:
+   .formats =          SNDRV_PCM_FMTBIT_S32_LE,
 
-> John Rigg wrote:
->> On Tue, Sep 18, 2007 at 10:07:05AM +0200, Ludovico Verducci wrote:
->>> As far as I know the delta family boards drivers support the
->>> synchronization of up to 4 audio boards over PCI: at the moment I'm
->>> reverse engineering the hardware trying to understand how this  
->>> can be
->>> accomplished.
->>
->> I'm aware that some Windows users are using several Delta 1010s
->> without external sync, but I'm not sure how it is done (or how
->> good it sounds). AFAIK it would require a VCXO so that the frequency
->> of the card's clock could be varied by enough to keep it in sync
->> (ie. making the clock oscillator part of a phase locked loop).  
->> Looking
->> at the PCI card on the 1010, I can only see standard fixed-frequency
->> crystals. The only PLLs appear to be the internal PLL in the S/PDIF
->> receiver and the 4046 PLL chip for the word clock input signal.
+I can run both "aplay < /dev/urandom" and an OSS test application 
+("tone") that sends a sine wave, but the sine wave is "inside out" 
+(see <http://www.link-comm.com/temp/inside_out.gif> for a screen 
+shot) because the codec needs unsigned data.
 
-Yes, I agree. If there's a way to achieve this kind of  
-synchronization it isn't simple, at first sight. I'm trying to  
-reconstruct the board's schematics and studying components' data  
-sheets to figure out a way to make it work.
+If I set up the snd_pcm_hardware_t structure with
 
-> In theory, it should be possible to use the PCI clock (between 25 and
-> 33 MHz) as input for one of the PLLs, probably after dividing it down.
+   .formats =          SNDRV_PCM_FMTBIT_U32_LE,
 
-This could be also an option, but I really hope that the feature can  
-be implemented in software because I surely cannot synch over  
-ethernet the PCI clocks!
-Let's see...
+the OSS test application sends a nice sine wave, but aplay fails with 
+the following messages:
 
-Regards,
-Ludovico
+root:~> aplay < /dev/urandom
+ALSA sound/blackfin/ad1836.c:1050: snd_ad1836_playback_open
+Playing raw data 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
+snd_pcm_hw_refine()
+ACCESS = 00000000ffffffffffffffff -> 0000000000000008
+FORMAT = 0000000000000400 -> 0000000000000000
+snd_pcm_hw_refine()
+ACCESS = 333f8fc000a32c60c0333f8fc -> 333f8fc000a00000008
+ALSA lib ALSA sound/blackfin/ad1836.c:1172: snd_ad1836_hw_free
+../../../src/pcm/pcm_params.c:2152:(snd_pcm_hw_refine_slave) Slave 
+PCM not usable
+aplay: set_params:882: Broken configuration for this PCM: no 
+configurations available
+
+I am working my way through the ALSA source, but I have not yet 
+figured out why aplay won't work with the unsigned codec 
+configuration.  Any suggestions?
+
+Steve
+
+P.S.  A more complete log of the console output with both settings 
+for those commands and most of the info from aadebug can be found at 
+the following URLs:
+<http://www.link-comm.com/temp/SNDRV_PCM_FMTBIT_S32_LE.txt>
+<http://www.link-comm.com/temp/SNDRV_PCM_FMTBIT_U32_LE.txt>
+
+---
+Steve Strobel
+Link Communications, Inc.
+1035 Cerise Rd
+Billings, MT 59101-7378
+(406) 245-5002 ext 102
+(406) 245-4889 (fax)
+WWW: http://www.link-comm.com
+MailTo:steve.strobel@link-comm.com
