@@ -1,18 +1,19 @@
-From: Krzysztof Helt <krzysztof.h1@gmail.com>
-Subject: [PATCH] cs4231: remove two auto-calibrations during
- chip initialization
-Date: Tue, 18 Sep 2007 12:17:58 +0200
-Message-ID: <20070918121758.5686aa96.krzysztof.h1@gmail.com>
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: Re: Enabling in-kernel synch for M-Audio boards
+Date: Tue, 18 Sep 2007 11:40:33 +0100
+Message-ID: <20070918104033.GA2491@localhost>
+References: <46EE555B.9000700@alice.it> <20070917194403.GA3655@localhost>
+	<20070918065723.GA2512@localhost> <46EF8729.3080901@alice.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54D8C24497
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6186C2449E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Sep 2007 12:10:37 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id b21so1215623nfd
-	for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2007 03:10:34 -0700 (PDT)
+	Tue, 18 Sep 2007 12:35:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <46EF8729.3080901@alice.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,90 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: Ludovico Verducci <ludwigvan@alice.it>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+On Tue, Sep 18, 2007 at 10:07:05AM +0200, Ludovico Verducci wrote:
+> John Rigg ha scritto:
+> > On Mon, Sep 17, 2007 at 08:44:03PM +0100, John Rigg wrote:
+> >   
+> >> On Mon, Sep 17, 2007 at 12:22:19PM +0200, Ludovico Verducci wrote:
+> >>> I'm developing a complex multichannel audio distribution system where 
+> >>> multiple linux boxes will stream audio data over ethernet and then 
+> >>> should play audio at sample level resolution synchronization. The boxes 
+> >>> clocks are synchronized over ethernet using PTP. 
+> >>> I need to keep in synch the audio board's clocks and I can't use an 
+> >>> external wordclock nor s/pdif. 
+> >>>       
+> >> Won't this cause serious clock jitter problems? I don't see how the
+> >> PCI bus can deliver precise enough timing, considering how much other
+> >> data it has to handle.
+> >>     
+> I didn't mean to directly drive the audio board's clock over the PCI
+> bus. I think this is simply not feasible. But I think that using control
+> signals periodically exchanged over PCI between the audio board and the
+> kernel could be possible (if the hardware could support a similar
+> feature, of course) to skew the board's clock to keep it in synch with a
+> software reference.
 
-The initialization function did auto-calibration after each
-register setting. This patch merges more register changes
-before auto-calibration is done.
+Ah, I misunderstood what you meant.
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
+> As far as I know the delta family boards drivers support the
+> synchronization of up to 4 audio boards over PCI: at the moment I'm
+> reverse engineering the hardware trying to understand how this can be
+> accomplished.
 
-This is in the init() function so it is called just once.
-The patch is about cutting fat from cs4231 drivers as
-this change does not affect how they operate in any
-major way.
+I'm aware that some Windows users are using several Delta 1010s
+without external sync, but I'm not sure how it is done (or how
+good it sounds). AFAIK it would require a VCXO so that the frequency 
+of the card's clock could be varied by enough to keep it in sync 
+(ie. making the clock oscillator part of a phase locked loop). Looking
+at the PCI card on the 1010, I can only see standard fixed-frequency 
+crystals. The only PLLs appear to be the internal PLL in the S/PDIF
+receiver and the 4046 PLL chip for the word clock input signal.
 
-diff -urp alsa-driver-1.0.15rc2/sound/isa/cs423x/cs4231_lib.c linux-2.6.23/sound/isa/cs423x/cs4231_lib.c
---- alsa-driver-1.0.15rc2/sound/isa/cs423x/cs4231_lib.c	2007-09-12 13:33:51.000000000 +0200
-+++ linux-2.6.23/sound/isa/cs423x/cs4231_lib.c	2007-09-18 08:37:08.000000000 +0200
-@@ -652,15 +652,7 @@ static void snd_cs4231_init(struct snd_c
- 			     CS4231_CALIB_MODE);
- 	chip->image[CS4231_IFACE_CTRL] |= CS4231_AUTOCALIB;
- 	snd_cs4231_out(chip, CS4231_IFACE_CTRL, chip->image[CS4231_IFACE_CTRL]);
--	spin_unlock_irqrestore(&chip->reg_lock, flags);
--	snd_cs4231_mce_down(chip);
--
--#ifdef SNDRV_DEBUG_MCE
--	snd_printk("init: (2)\n");
--#endif
- 
--	snd_cs4231_mce_up(chip);
--	spin_lock_irqsave(&chip->reg_lock, flags);
- 	snd_cs4231_out(chip, CS4231_ALT_FEATURE_1, chip->image[CS4231_ALT_FEATURE_1]);
- 	spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	snd_cs4231_mce_down(chip);
-@@ -676,15 +668,6 @@ static void snd_cs4231_init(struct snd_c
- 	snd_cs4231_mce_up(chip);
- 	spin_lock_irqsave(&chip->reg_lock, flags);
- 	snd_cs4231_out(chip, CS4231_PLAYBK_FORMAT, chip->image[CS4231_PLAYBK_FORMAT]);
--	spin_unlock_irqrestore(&chip->reg_lock, flags);
--	snd_cs4231_mce_down(chip);
--
--#ifdef SNDRV_DEBUG_MCE
--	snd_printk("init: (4)\n");
--#endif
--
--	snd_cs4231_mce_up(chip);
--	spin_lock_irqsave(&chip->reg_lock, flags);
- 	snd_cs4231_out(chip, CS4231_REC_FORMAT, chip->image[CS4231_REC_FORMAT]);
- 	spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	snd_cs4231_mce_down(chip);
-diff -urp linux-2.6.23.ref/sound/sparc/cs4231.c linux-2.6.23/sound/sparc/cs4231.c
---- linux-2.6.23.ref/sound/sparc/cs4231.c	2007-09-18 09:26:12.000000000 +0200
-+++ linux-2.6.23/sound/sparc/cs4231.c	2007-09-18 09:26:54.000000000 +0200
-@@ -733,15 +733,6 @@ static void __init snd_cs4231_init(struc
- 					    CS4231_CALIB_MODE);
- 	chip->image[CS4231_IFACE_CTRL] |= CS4231_AUTOCALIB;
- 	snd_cs4231_out(chip, CS4231_IFACE_CTRL, chip->image[CS4231_IFACE_CTRL]);
--	spin_unlock_irqrestore(&chip->lock, flags);
--	snd_cs4231_mce_down(chip);
--
--#ifdef SNDRV_DEBUG_MCE
--	snd_printdd("init: (2)\n");
--#endif
--
--	snd_cs4231_mce_up(chip);
--	spin_lock_irqsave(&chip->lock, flags);
- 	snd_cs4231_out(chip, CS4231_ALT_FEATURE_1, chip->image[CS4231_ALT_FEATURE_1]);
- 	spin_unlock_irqrestore(&chip->lock, flags);
- 	snd_cs4231_mce_down(chip);
-@@ -757,15 +748,6 @@ static void __init snd_cs4231_init(struc
- 	snd_cs4231_mce_up(chip);
- 	spin_lock_irqsave(&chip->lock, flags);
- 	snd_cs4231_out(chip, CS4231_PLAYBK_FORMAT, chip->image[CS4231_PLAYBK_FORMAT]);
--	spin_unlock_irqrestore(&chip->lock, flags);
--	snd_cs4231_mce_down(chip);
--
--#ifdef SNDRV_DEBUG_MCE
--	snd_printdd("init: (4)\n");
--#endif
--
--	snd_cs4231_mce_up(chip);
--	spin_lock_irqsave(&chip->lock, flags);
- 	snd_cs4231_out(chip, CS4231_REC_FORMAT, chip->image[CS4231_REC_FORMAT]);
- 	spin_unlock_irqrestore(&chip->lock, flags);
- 	snd_cs4231_mce_down(chip);
+John
