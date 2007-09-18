@@ -1,15 +1,18 @@
-From: zhejiang <zhe.jiang@intel.com>
-Subject: AD1986A stop working if adjust the volume
-Date: Tue, 18 Sep 2007 15:34:24 +0800
-Message-ID: <1190100864.2849.6.camel@localhost.localdomain>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: E-MU 0404/0202 USB implementation
+Date: Tue, 18 Sep 2007 09:40:42 +0200
+Message-ID: <1190101242.19934.1211206975@webmail.messagingengine.com>
+References: <46EEF2F1.7030404@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B08124474
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 96A2424474
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Sep 2007 09:36:26 +0200 (CEST)
+	Tue, 18 Sep 2007 09:40:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <46EEF2F1.7030404@superbug.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,463 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: James Courtier-Dutton <James@superbug.co.uk>, ALSA development <alsa-devel@alsa-project.org>
+Cc: Aleksander <aleksander@krediidiinfo.ee>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+James Courtier-Dutton wrote:
+> I am looking to implement support for the E-Mu USB cards.
+> The card is basically following a mix of USB 1.0 and USB 2.0 descriptors.
+> 
+> The bInterfaceClass field of the standard interface descriptors for the
+> Audio Control, Audio Streaming, and MIDI Streaming interfaces are set to
+> 0xFF (vendor-specific) instead of 0x01 (USB Audio).
+> 
+> Can I put in a quirk into the snd-usb-audio driver to handle this?
 
-I have a ICH8M + AD1986A machine and run alsa-driver-1.0.15rc.
+There are no class-specific descriptors, so you cannot simply use an
+AUDIO_STANDARD_INTERFACE quirk.
 
-I found that :
-In 6 channel mode,if adjust the front or pcm volume when playing music,
-all channel will be muted,but if adjust the volume alone(don't play
-music at the same time),every thing is ok.
-I use printk to display the verb in the azx_send_cmd(),
-when adjusting the volume in either case, there are just two verb
-(0x300) sent to the nid(0x1b) [correct action].
-But in the first case, the dac widget amp-out vals are all affected.
+It would be possible to hardcode a specfifc sample format with an
+AUDIO_FIXED_ENDPOINT quirk, but this doesn't work when there is more
+than one alternate setting.
+
+I think you have to manually add several sample formats, like in the
+UA-1000 quirk, but calling add_audio_endpoint() several times.
+
+The asynchronous feedback of the output endpoints should work; it does
+with the SB Audigy 2 NX in high speed mode.
+
+Please note that the descriptors may be different in full speed mode.
+
+QUIRK_MIDI_FIXED_ENDPOINT should work for interface 3.
+
+> The card also has customised controls. Can one add those to
+> snd-usb-audio, or would it be better to add those to a totally new
+> driver?
+
+usbmixer.c currently doesn't have a mechanism to add mixer controls that
+are not listed in the descriptors, but it should be possible to create
+the data structures to describe those.
+
+A totally new driver might be a good idea if the core part of usbaudio.c
+were in a library.  I always planned to do that when I'd find some time.
 
 
-Some other interesting thing,
-If i adjust the Sur or CLFE volume when playing music, the printk show
-that correct verb is sent, but the codec status don't change.
-If I adjust them alone,every thing is ok.
-
-
-
-The card0/codec#0 before adjust volume :
-
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0xbfd60000
-Revision Id: 0x100500
-No Modem Function Group found
-Default PCM:
-    rates [0x7f]: 8000 11025 16000 22050 32000 44100 48000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
-  PCM:
-    rates [0x60]: 44100 48000
-    bits [0x2]: 16
-    formats [0x5]: PCM AC3
-  Connection: 2
-     0x01* 0x06
-Node 0x03 [Audio Output] wcaps 0x44d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x11 0x11]
-  Power: 0x0
-Node 0x04 [Audio Output] wcaps 0x40d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x11 0x11]
-  Power: 0x0
-Node 0x05 [Audio Output] wcaps 0x40d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x11 0x11]
-  Power: 0x0
-Node 0x06 [Audio Input] wcaps 0x100511: Stereo
-  PCM:
-    rates [0x7f]: 8000 11025 16000 22050 32000 44100 48000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Power: 0x0
-  Connection: 1
-     0x12
-Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 8
-     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x08 [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x07
-Node 0x09 [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80] [0x80]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 2
-     0x04 0x05
-Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x07* 0x04 0x05
-Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x07* 0x04
-Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x04* 0x07
-Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x05* 0x08
-Node 0x0e [Audio Selector] wcaps 0x300100: Mono
-  Connection: 2
-     0x08* 0x11
-Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 8
-     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
-Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x20* 0x1c 0x1f
-Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
-  Connection: 2
-     0x0f* 0x2b
-Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 8
-     0x11* 0x22 0x00 0x21 0x10 0x07 0x08 0x23
-Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 1
-     0x11
-Node 0x14 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 1
-     0x23
-Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 1
-     0x22
-Node 0x16 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 1
-     0x21
-Node 0x17 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 1
-     0x10
-Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals:  [0x8f]
-  Connection: 2
-     0x19* 0x24
-Node 0x19 [Beep Generator Widget] wcaps 0x700000: Mono
-Node 0x1a [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x081f: OUT HP Detect
-  Pin Default 0x0221401f: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x0a
-Node 0x1b [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x10 0x10]
-  Pincap 0x081001f: OUT HP EAPD Detect
-  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-Node 0x1c [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x10 0x10]
-  Pincap 0x0837: IN OUT Detect
-  Pin Default 0x01013012: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x1d [Pin Complex] wcaps 0x400985: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x0e 0x0f]
-  Pincap 0x081737: IN OUT Detect
-  Pin Default 0x01019011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0d
-Node 0x1e [Pin Complex] wcaps 0x400104: Mono Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x0810: OUT
-  Pin Default 0x901301f0: [Fixed] Speaker at Int N/A
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN Detect
-  Pin Default 0x02a19020: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN Detect
-  Pin Default 0x01813021: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0827: IN Detect
-  Pin Default 0x99930123: [Fixed] Aux at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x22 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x99330122: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x23 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x90b70130: [Fixed] Telephony at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x24 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x90f701f0: [Fixed] Other at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x014511f0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x26 [Power Widget] wcaps 0x500500: Mono
-  Power: 0x0
-  Connection: 8
-     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x1d
-Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x20
-Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1d 0x20
-Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 3
-     0x1f 0x1d 0x20
-Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x0f
-
-The card0/codec#0 after adjust "Front " volume:
-
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0xbfd60000
-Revision Id: 0x100500
-No Modem Function Group found
-Default PCM:
-    rates [0x7f]: 8000 11025 16000 22050 32000 44100 48000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
-  PCM:
-    rates [0x60]: 44100 48000
-    bits [0x2]: 16
-    formats [0x5]: PCM AC3
-  Connection: 2
-     0x01* 0x06
-Node 0x03 [Audio Output] wcaps 0x44d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Power: 0x0
-Node 0x04 [Audio Output] wcaps 0x40d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Power: 0x0
-Node 0x05 [Audio Output] wcaps 0x40d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Power: 0x0
-Node 0x06 [Audio Input] wcaps 0x100511: Stereo
-  PCM:
-    rates [0x7f]: 8000 11025 16000 22050 32000 44100 48000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Power: 0x0
-  Connection: 1
-     0x12
-Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 8
-     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x08 [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x07
-Node 0x09 [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80] [0x80]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 2
-     0x04 0x05
-Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x07* 0x04 0x05
-Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x07* 0x04
-Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x04* 0x07
-Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x05* 0x08
-Node 0x0e [Audio Selector] wcaps 0x300100: Mono
-  Connection: 2
-     0x08* 0x11
-Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 8
-     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
-Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x20* 0x1c 0x1f
-Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
-  Connection: 2
-     0x0f* 0x2b
-Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 8
-     0x11* 0x22 0x00 0x21 0x10 0x07 0x08 0x23
-Node 0x13 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x11
-Node 0x14 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97]
-  Connection: 1
-     0x23
-Node 0x15 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x22
-Node 0x16 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x21
-Node 0x17 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x10
-Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals:  [0x8f]
-  Connection: 2
-     0x19* 0x24
-Node 0x19 [Beep Generator Widget] wcaps 0x700000: Mono
-Node 0x1a [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081f: OUT HP Detect
-  Pin Default 0x0221401f: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x0a
-Node 0x1b [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081001f: OUT HP EAPD Detect
-  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-Node 0x1c [Pin Complex] wcaps 0x400185: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x0837: IN OUT Detect
-  Pin Default 0x01013012: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x1d [Pin Complex] wcaps 0x400985: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081737: IN OUT Detect
-  Pin Default 0x01019011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0d
-Node 0x1e [Pin Complex] wcaps 0x400104: Mono Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f]
-  Pincap 0x0810: OUT
-  Pin Default 0x901301f0: [Fixed] Speaker at Int N/A
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN Detect
-  Pin Default 0x02a19020: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN Detect
-  Pin Default 0x01813021: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0827: IN Detect
-  Pin Default 0x99930123: [Fixed] Aux at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x22 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x99330122: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x23 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x90b70130: [Fixed] Telephony at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x24 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x90f701f0: [Fixed] Other at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x014511f0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x26 [Power Widget] wcaps 0x500500: Mono
-  Power: 0x0
-  Connection: 8
-     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x1d
-Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x20
-Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1d 0x20
-Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 3
-     0x1f 0x1d 0x20
-Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x0f
+Regards,
+Clemens
