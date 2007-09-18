@@ -1,20 +1,21 @@
 From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] cs4231: remove two auto-calibrations
- during chip initialization
-Date: Tue, 18 Sep 2007 12:38:09 +0200
-Message-ID: <46EFAA91.6050305@gmail.com>
-References: <20070918121758.5686aa96.krzysztof.h1@gmail.com>
+Subject: Re: [PATCH] ad1838/cs4231 -- fix MCE timeout upon
+ initial load
+Date: Tue, 18 Sep 2007 13:03:42 +0200
+Message-ID: <46EFB08E.3010308@gmail.com>
+References: <46E58D01.9080809@gmail.com>
+	<Pine.LNX.4.58.0709170325380.27377@shell4.speakeasy.net>
+	<46EF18FF.7070906@gmail.com> <46EF3097.7060300@gmail.com>
+	<46EF52E4.90401@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070505070708050904060102"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id EBDF7244A0
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2423B2446B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Sep 2007 12:39:07 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id f40so1878096fka
-	for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2007 03:39:07 -0700 (PDT)
-In-Reply-To: <20070918121758.5686aa96.krzysztof.h1@gmail.com>
+	Tue, 18 Sep 2007 13:04:41 +0200 (CEST)
+In-Reply-To: <46EF52E4.90401@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,99 +25,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@gmail.com>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Krzysztof Helt <krzysztof.h1@gmail.com>, ALSA devel <alsa-devel@alsa-project.org>, Trent Piepho <xyzzy@speakeasy.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/18/2007 12:17 PM, Krzysztof Helt wrote:
+This is a multi-part message in MIME format.
+--------------070505070708050904060102
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> From: Krzysztof Helt <krzysztof.h1@wp.pl>
-> 
-> The initialization function did auto-calibration after each
-> register setting. This patch merges more register changes
-> before auto-calibration is done.
+On 09/18/2007 06:24 AM, Rene Herman wrote:
 
-Seems to make sense but am a little uneasy about these -- someone very much 
-did it this way on purpose originally it seems. Jaroslav, that someone was 
-you I believe? Do you remember anything about this?
+> And here's the others in that changeset, against current hg. As far as
 
-> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-> ---
-> 
-> This is in the init() function so it is called just once.
-> The patch is about cutting fat from cs4231 drivers as
-> this change does not affect how they operate in any
-> major way.
-> 
-> diff -urp alsa-driver-1.0.15rc2/sound/isa/cs423x/cs4231_lib.c linux-2.6.23/sound/isa/cs423x/cs4231_lib.c
-> --- alsa-driver-1.0.15rc2/sound/isa/cs423x/cs4231_lib.c	2007-09-12 13:33:51.000000000 +0200
-> +++ linux-2.6.23/sound/isa/cs423x/cs4231_lib.c	2007-09-18 08:37:08.000000000 +0200
-> @@ -652,15 +652,7 @@ static void snd_cs4231_init(struct snd_c
->  			     CS4231_CALIB_MODE);
->  	chip->image[CS4231_IFACE_CTRL] |= CS4231_AUTOCALIB;
->  	snd_cs4231_out(chip, CS4231_IFACE_CTRL, chip->image[CS4231_IFACE_CTRL]);
-> -	spin_unlock_irqrestore(&chip->reg_lock, flags);
-> -	snd_cs4231_mce_down(chip);
-> -
-> -#ifdef SNDRV_DEBUG_MCE
-> -	snd_printk("init: (2)\n");
-> -#endif
->  
-> -	snd_cs4231_mce_up(chip);
-> -	spin_lock_irqsave(&chip->reg_lock, flags);
->  	snd_cs4231_out(chip, CS4231_ALT_FEATURE_1, chip->image[CS4231_ALT_FEATURE_1]);
->  	spin_unlock_irqrestore(&chip->reg_lock, flags);
->  	snd_cs4231_mce_down(chip);
-> @@ -676,15 +668,6 @@ static void snd_cs4231_init(struct snd_c
->  	snd_cs4231_mce_up(chip);
->  	spin_lock_irqsave(&chip->reg_lock, flags);
->  	snd_cs4231_out(chip, CS4231_PLAYBK_FORMAT, chip->image[CS4231_PLAYBK_FORMAT]);
-> -	spin_unlock_irqrestore(&chip->reg_lock, flags);
-> -	snd_cs4231_mce_down(chip);
-> -
-> -#ifdef SNDRV_DEBUG_MCE
-> -	snd_printk("init: (4)\n");
-> -#endif
-> -
-> -	snd_cs4231_mce_up(chip);
-> -	spin_lock_irqsave(&chip->reg_lock, flags);
->  	snd_cs4231_out(chip, CS4231_REC_FORMAT, chip->image[CS4231_REC_FORMAT]);
->  	spin_unlock_irqrestore(&chip->reg_lock, flags);
->  	snd_cs4231_mce_down(chip);
-> diff -urp linux-2.6.23.ref/sound/sparc/cs4231.c linux-2.6.23/sound/sparc/cs4231.c
-> --- linux-2.6.23.ref/sound/sparc/cs4231.c	2007-09-18 09:26:12.000000000 +0200
-> +++ linux-2.6.23/sound/sparc/cs4231.c	2007-09-18 09:26:54.000000000 +0200
-> @@ -733,15 +733,6 @@ static void __init snd_cs4231_init(struc
->  					    CS4231_CALIB_MODE);
->  	chip->image[CS4231_IFACE_CTRL] |= CS4231_AUTOCALIB;
->  	snd_cs4231_out(chip, CS4231_IFACE_CTRL, chip->image[CS4231_IFACE_CTRL]);
-> -	spin_unlock_irqrestore(&chip->lock, flags);
-> -	snd_cs4231_mce_down(chip);
-> -
-> -#ifdef SNDRV_DEBUG_MCE
-> -	snd_printdd("init: (2)\n");
-> -#endif
-> -
-> -	snd_cs4231_mce_up(chip);
-> -	spin_lock_irqsave(&chip->lock, flags);
->  	snd_cs4231_out(chip, CS4231_ALT_FEATURE_1, chip->image[CS4231_ALT_FEATURE_1]);
->  	spin_unlock_irqrestore(&chip->lock, flags);
->  	snd_cs4231_mce_down(chip);
-> @@ -757,15 +748,6 @@ static void __init snd_cs4231_init(struc
->  	snd_cs4231_mce_up(chip);
->  	spin_lock_irqsave(&chip->lock, flags);
->  	snd_cs4231_out(chip, CS4231_PLAYBK_FORMAT, chip->image[CS4231_PLAYBK_FORMAT]);
-> -	spin_unlock_irqrestore(&chip->lock, flags);
-> -	snd_cs4231_mce_down(chip);
-> -
-> -#ifdef SNDRV_DEBUG_MCE
-> -	snd_printdd("init: (4)\n");
-> -#endif
-> -
-> -	snd_cs4231_mce_up(chip);
-> -	spin_lock_irqsave(&chip->lock, flags);
->  	snd_cs4231_out(chip, CS4231_REC_FORMAT, chip->image[CS4231_REC_FORMAT]);
->  	spin_unlock_irqrestore(&chip->lock, flags);
->  	snd_cs4231_mce_down(chip);
+One more inside isa/.
 
-Rene.
+Signed-off-by: Rene Herman <rene.herman@gmail.com>
+
+--------------070505070708050904060102
+Content-Type: text/plain;
+ name="schedule_timeout-fixes-one-more.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="schedule_timeout-fixes-one-more.diff"
+
+diff -r 0028e39ead78 isa/sscape.c
+--- a/isa/sscape.c	Tue Sep 18 00:52:38 2007 +0200
++++ b/isa/sscape.c	Tue Sep 18 13:01:55 2007 +0200
+@@ -401,7 +401,7 @@ static int obp_startup_ack(struct sounds
+ 		unsigned long flags;
+ 		unsigned char x;
+ 
+-		schedule_timeout(1);
++		schedule_timeout_uninterruptible(1);
+ 
+ 		spin_lock_irqsave(&s->lock, flags);
+ 		x = inb(HOST_DATA_IO(s->io_base));
+
+--------------070505070708050904060102
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070505070708050904060102--
