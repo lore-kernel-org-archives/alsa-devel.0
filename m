@@ -1,18 +1,15 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] ad1848 ac loop
-Date: Wed, 19 Sep 2007 09:15:34 +0200
-Message-ID: <46F0CC96.6090307@gmail.com>
-References: <Pine.LNX.4.58.0709181930050.27377@shell4.speakeasy.net>
+From: Mathis Hofer <mathis.hofer@dreamlab.net>
+Subject: Routing multiple signals to one output with ice1712
+	(Delta 66)
+Date: Wed, 19 Sep 2007 10:38:04 +0200
+Message-ID: <46F0DFEC.802@dreamlab.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0374783047247519402=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 08FFE2444A
+Received: from mailer.dreamlab.net (unknown [195.50.232.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 681152459D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 09:16:37 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.58.0709181930050.27377@shell4.speakeasy.net>
+	Wed, 19 Sep 2007 10:38:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,51 +19,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <xyzzy@speakeasy.org>
-Cc: Krzysztof Helt <krzysztof.h1@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/19/2007 07:22 AM, Trent Piepho wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============0374783047247519402==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig2B4223058530A1D72A4DFABA"
 
-> I'm not an expert on this chip by any means, but from looking at the code
-> I think there are few things that could be fixed.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig2B4223058530A1D72A4DFABA
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I'd agree, although I'd suggest to at this point keep anything (in ad1848, 
-cs4231 wants a similar setup in its mce_down) not completely trivial for 
-after 1.0.15.
+Hi folks
 
-> The reg_lock spinlock isn't acquired from the irq handler, as the handler
-> doesn't use any of the indirect registers.  I think this means that is
-> isn't necessary to use the irq disabling versions of the spin_lock
-> functions with reg_lock.
+I want to setup the following audio routing:
+pcm + input1 (mic) + input2 (mic) -> output1
+pcm + input1 (mic) + input2 (mic) -> output2
+=2E..with pcm being the audio playback and input1&2 being two microphones=
+=2E
 
-This would appear to be the case yes.
+With envy24control it is possible to select one signal for each output,
+but not multiple signals. Is this a restriction of envy24control, the
+alsa driver or is it simply not supported by the hardware?
 
-> It does look like there is a different SMP race condition wrt the irq handler.
-> From snd_ad1848_interrupt():
-> 578         if ((chip->mode & AD1848_MODE_PLAY) && chip->playback_substream &&
-> 579             (chip->mode & AD1848_MODE_RUNNING))
-> 580                 snd_pcm_period_elapsed(chip->playback_substream);
-> 
-> Another CPU could close the substream between the check and the call to
-> snd_pcm_period_elapsed().  snd_pcm_period_elapsed() could be called with
-> either NULL or a stale substream pointer depending on how the code compiled.
-> I'd think creating an irq spinlock would be an easy way to fix this.  The irq
-> handler would grab it, and the same with the open() and close() functions
-> around the code that sets the substream pointers.  Alternatively, one could
-> disabled the irq handler during open and close.
+Regards,
+Mathis
 
-Also sounds sensible, and the irq spinlock the expected method.
+--=20
+DreamLab Technologies AG
+Monbijoustrasse 36
+3011 Bern
+Switzerland
 
-> I think there might also be problem with setting mixers controls during 
-> auto-calibration . While waiting for auto-calibration to finish, the chip
-> isn't locked. If another thread tries to set the volume via the mixer 
-> interface, it won't be blocked and will try to talk to the chip during
-> AC. The datasheet just says to wait for auto-calibration to finish, it
-> doesn't say what happens if you don't. So maybe there isn't any problem
-> here.
+Tel: +41 31 398 66 66
+Fax: +41 31 398 66 69
 
-Guess we should be testing this, but generallt, "hand-off" would be the best 
-policy yes.
+PGP Key ID: 2462240B
 
-Rene.
+
+--------------enig2B4223058530A1D72A4DFABA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFG8N/9VOkwMiRiJAsRAn+TAJ9CR/+W9SWYVHD7gwQMYHYeoi84dQCfePX8
+6kllMHzmhAodaXo2Kx1iIJg=
+=3DLZ
+-----END PGP SIGNATURE-----
+
+--------------enig2B4223058530A1D72A4DFABA--
+
+--===============0374783047247519402==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0374783047247519402==--
