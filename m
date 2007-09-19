@@ -1,19 +1,19 @@
-From: Krzysztof Helt <krzysztof.h1@gmail.com>
-Subject: Re: [PATCH] ad1848 ac loop
-Date: Wed, 19 Sep 2007 11:24:13 +0200
-Message-ID: <20070919112413.70051500.krzysztof.h1@gmail.com>
-References: <Pine.LNX.4.58.0709181930050.27377@shell4.speakeasy.net>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Routing multiple signals to one output with
+	ice1712 (Delta 66)
+Date: Wed, 19 Sep 2007 10:43:59 +0100
+Message-ID: <200709191043.59764.gineera@aspect135.co.uk>
+References: <46F0DFEC.802@dreamlab.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15305245A1
+Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60F1D245AA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 11:16:44 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id b21so100205nfd
-	for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 02:16:43 -0700 (PDT)
-In-Reply-To: <Pine.LNX.4.58.0709181930050.27377@shell4.speakeasy.net>
+	Wed, 19 Sep 2007 11:31:09 +0200 (CEST)
+In-Reply-To: <46F0DFEC.802@dreamlab.net>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,65 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <xyzzy@speakeasy.org>
-Cc: alsa-devel@alsa-project.org, Rene Herman <rene.herman@gmail.com>
+To: Mathis Hofer <mathis.hofer@dreamlab.net>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 Sep 2007 22:22:42 -0700 (PDT)
-Trent Piepho <xyzzy@speakeasy.org> wrote:
+On Wednesday 19 September 2007 09:38, Mathis Hofer wrote:
+> Hi folks
+>
+> I want to setup the following audio routing:
+> pcm + input1 (mic) + input2 (mic) -> output1
+> pcm + input1 (mic) + input2 (mic) -> output2
+> ...with pcm being the audio playback and input1&2 being two microphones.
+>
+> With envy24control it is possible to select one signal for each output,
+> but not multiple signals. Is this a restriction of envy24control, the
+> alsa driver or is it simply not supported by the hardware?
 
+What you are talking about is really mixing the streams in addition to 
+routing.  Envy24control basically gives you all the hardware options of the 
+chip.  The ice1712 (=envy24 chip) includes a hardware mixer which can be 
+routed to HWOut1 and HWOut2 using envy24control, but not to other outputs.  
+This will allow any inputs and any PCM streams to be mixed.  Note that these 
+mixer settings can be controlled from an external MIDI control surface also!
 
-> I'm not an expert on this chip by any means, but from looking at the code I
-> think there are few things that could be fixed.
-> 
-> The reg_lock spinlock isn't acquired from the irq handler, as the handler
-> doesn't use any of the indirect registers.  I think this means that is isn't
-> necessary to use the irq disabling versions of the spin_lock functions with
-> reg_lock.
-> 
+I am sure there are also software options.
 
-Normally, this is not true as at least counter registers are reloaded. This is not
-a case for the ad1848. However, quick test showed that playback is stopped
- from the irq handler if there is no more data (indirect register 9 write).
-
-> It does look like there is a different SMP race condition wrt the irq handler.
-> From snd_ad1848_interrupt():
-> 578         if ((chip->mode & AD1848_MODE_PLAY) && chip->playback_substream &&
-> 579             (chip->mode & AD1848_MODE_RUNNING))
-> 580                 snd_pcm_period_elapsed(chip->playback_substream);
-> 
-> Another CPU could close the substream between the check and the call to
-> snd_pcm_period_elapsed().  snd_pcm_period_elapsed() could be called with
-> either NULL or a stale substream pointer depending on how the code compiled.
-> I'd think creating an irq spinlock would be an easy way to fix this.  The irq
-> handler would grab it, and the same with the open() and close() functions
-> around the code that sets the substream pointers.  Alternatively, one could
-> disabled the irq handler during open and close.
-
-I would not do this in the driver code. This should be handled in the alsa pcm layer
-and probably it is. At least the snd_pcm_period_elapsed() does locking and irq
-disabling. Could any alsa guru enlighten us on pcm open/close locking
-and interrupt disabling?
-
-If it is handled in the pcm layer it is fixed for all drivers in one place.
-
-> 
-> I think there might also be problem with setting mixers controls during
-> auto-calibration .  While waiting for auto-calibration to finish, the chip
-> isn't locked.  If another thread tries to set the volume via the mixer
-> interface, it won't be blocked and will try to talk to the chip during AC.
-> The datasheet just says to wait for auto-calibration to finish, it doesn't say
-> what happens if you don't.  So maybe there isn't any problem here.
-
-I would not do this until someone experience the problem. Otherwise,
-we will created the code to fix bugs which may not exist. Later, someone
-would try to simplify the code and nobody will remember why it was done.
-
-The ad1848 calibrates only DAC/ADC so no mixer values are set. In the worst case,
-I expect some noise during auto-calibration, but I experience "pops" always during
-auto-calibration on the ad1848 (sc-6000 board). The only solution is to do
-the calibration only once during initialization than switch it off. Muting outputs
-does not help.
-
-Regards,
-Krzysztof
+Alan
