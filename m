@@ -1,20 +1,21 @@
-From: william estrada <MrUmunhum@popdial.com>
-Subject: Re: resetting an audio device?
-Date: Wed, 19 Sep 2007 19:36:09 -0700
-Message-ID: <46F1DC99.20208@popdial.com>
+From: Krzysztof Helt <krzysztof.h1@gmail.com>
+Subject: Re: [PATCH] ad1848 ac loop
+Date: Wed, 19 Sep 2007 22:55:21 +0200
+Message-ID: <20070919225521.116d1787.krzysztof.h1@gmail.com>
+References: <Pine.LNX.4.58.0709181930050.27377@shell4.speakeasy.net>
+	<20070919112413.70051500.krzysztof.h1@gmail.com>
+	<Pine.LNX.4.58.0709191205330.27377@shell4.speakeasy.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from MAIL02.inside.adbasesystems.com (mail.1dial.com [64.136.164.73])
-	by alsa0.perex.cz (Postfix) with ESMTP id D109324683
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id A61CF243DE
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Sep 2007 04:34:53 +0200 (CEST)
-Received: from laptop.mt-umunhum-wireless.net (64.124.13.3.gatespeed.com
-	[64.124.13.3]) by MAIL02.inside.adbasesystems.com
-	(Vircom SMTPRS 4.4.568.54) with ESMTP id
-	<B0398171450@MAIL02.inside.adbasesystems.com> for
-	<alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 22:34:50 -0400
+	Wed, 19 Sep 2007 22:47:49 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id b21so240469nfd
+	for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 13:47:49 -0700 (PDT)
+In-Reply-To: <Pine.LNX.4.58.0709191205330.27377@shell4.speakeasy.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Trent Piepho <xyzzy@speakeasy.org>
+Cc: alsa-devel@alsa-project.org, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I don't need item one, it works now.
+On Wed, 19 Sep 2007 12:50:54 -0700 (PDT)
+Trent Piepho <xyzzy@speakeasy.org> wrote:
 
-But I would like to see the better API docs.
+> On Wed, 19 Sep 2007, Krzysztof Helt wrote:
+> >  However, quick test showed that playback is stopped
+> >  from the irq handler if there is no more data (indirect register 9 write).
+> 
+> Hmm, I don't see where that happens.  Unless snd_pcm_period_elapsed() is
+> allowed to call the trigger callback?  I know it will call the pointer
+> callback, which doesn't use any indirect registers.
+> 
+> I know that trigger, ack, and pointer are called with interrupts disabled and
+> a spinlock held.  But that is not the same as being called from interrupt
+> context.  
 
--- 
-William Estrada
-MrUmunhum@popdial.com
-Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
-Ymessenger: MrUmunhum
+I do not understand these two sentences so probably you are right.
+I can provide you backtrace how the snd_ad1848_trigger() is called:
 
-> Hi guys,
+...
+snd_ad1848_trigger
+snd_ad1848_playback_trigger
+snd_pcm_do_stop
+snd_pcm_action_single
+snd_pcm_period_elapsed
+scheduler_tick
+run_timer_softirq
+snd_ad1848_interrupt
+...
+do_IRQ
+...
+
+> > > Another CPU could close the substream between the check and the call to
+> > > snd_pcm_period_elapsed().  snd_pcm_period_elapsed() could be called with
+> > > either NULL or a stale substream pointer depending on how the code compiled.
+> > > I'd think creating an irq spinlock would be an easy way to fix this.  The irq
+> > > handler would grab it, and the same with the open() and close() functions
+> > > around the code that sets the substream pointers.  Alternatively, one could
+> > > disabled the irq handler during open and close.
+> >
+> > I would not do this in the driver code. This should be handled in the alsa pcm layer
+> > and probably it is. At least the snd_pcm_period_elapsed() does locking and irq
+> > disabling. Could any alsa guru enlighten us on pcm open/close locking
+> > and interrupt disabling?
 > 
->   I got my alsa player code to work.  Now I need to figure out how to
-> reset the audio device?  I don't want to close the device, just recycle
-> it. Any pointers?
-> 
->   Also, where are the documents for all of those helper subroutes? Like
-> snd_pcm_hw_params_get_period_time, snd_pcm_hw_params_any, etc.
-> 
->   Thanks for your time.
+> I don't see how the alsa pcm layer could lock around the interrupt handler.
+> The handler is registered directly to the kernel, not via alsa, so there's no
+> way the alsa pcm layer could know if the irq handler is running, or if one
+> even exists.
+
+The pcm layer may disable interrupts. IMO, this should be enough to stop entering 
+any interrupt handler.
+I am not expert on this but following your reasoning any core kernel code 
+(vm, scheduler) could not be interrupt-safe because most of interrupt handlers
+are in drivers and the core has no idea that drivers exist.
+
+Regards,
+Krzysztof
