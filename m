@@ -1,18 +1,30 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: ALSA C++ API
-Date: Wed, 19 Sep 2007 04:55:22 +0200
-Message-ID: <46F08F9A.4040309@gmail.com>
-References: <46F032BE.4090301@trn.iki.fi>
+From: Romain Bossart <romain.bossart@free.fr>
+Subject: Re: Audiophile Delta 24/96 Midi Out continuously sends
+ zeroes (alsa 1.0.14)
+Date: Wed, 19 Sep 2007 06:59:29 +0200
+Message-ID: <fcqabi$cj7$2@sea.gmane.org>
+References: <46D4A1D6.7010604@free.fr>	<1188369280.902.1207813047@webmail.messagingengine.com>	<1188378043.46d535bbab7f9@imp.free.fr>	<fb4rj2$9ll$1@sea.gmane.org>
+	<fbe8q7$hg3$1@sea.gmane.org>	<1188802343.9390.1208579935@webmail.messagingengine.com>	<1188826536.46dc0da8097bc@imp.free.fr>	<1188833385.26232.1208641995@webmail.messagingengine.com>
+	<46DC3BF4.9010204@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E6762456F
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id D548524579
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 04:56:25 +0200 (CEST)
-In-Reply-To: <46F032BE.4090301@trn.iki.fi>
+	Wed, 19 Sep 2007 07:00:10 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1IXrfO-00057j-1o
+	for alsa-devel@alsa-project.org; Wed, 19 Sep 2007 07:00:02 +0200
+Received: from vpn-samois.solopso.org ([81.56.140.49])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 07:00:02 +0200
+Received: from romain.bossart by vpn-samois.solopso.org with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 07:00:02 +0200
+In-Reply-To: <46DC3BF4.9010204@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +34,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-15?Q?Lasse_K=E4rkk=E4inen?= <tronic+8nhy@trn.iki.fi>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/18/2007 10:19 PM, Lasse K=E4rkk=E4inen wrote:
+Hi all, Hi Clemens,
 
-> Even though I got no replies to my original announcement, here is a new
-> version that wraps hw and sw params completely, has a macro for checking
-> ALSA C function return values (throws alsa::error) and uses different
-> naming style (similar to the C++ standard library). It is better
-> documented now, too.
-> =
+just for your information, the midi out was broken.
+I grabbed a bought an old layla and everything works now.
 
-> The code is now largely generated with macros, so it isn't very readable =
+Thank you again for your help.
 
-> anymore :/
+Cheers,
+Romain
 
-It's C++ -- what's new? :\
 
-Rene.
+Romain Bossart wrote:
+> 
+> Clemens Ladisch wrote:
+>> Romain Bossart wrote:
+>>> Selon Clemens Ladisch <cladisch@fastmail.net>:
+>>>> That is, the zeroes are _not_ sent when you're not using jack?  When
+>>>> nothing is connected, or when you use aplaymidi or amidi to send
+>>>> something, everything is OK?
+>>> Here is a summary of the various tests I did. I have just one card: Audiophile
+>>> Delta 24/96. My kernel is now 2.6.22.1 RT patched & alsa 1.0.14,
+>>> Audio works perfectly. I don't think jack is the problem.
+>>>
+>>> Config #2 = Delta Midi Out -> (Midi In) Instrument (Midi Out/Thru) -> Delta Midi
+>>> In and 'amidi -p hw:0,0 -d'. Jack being started or not.
+>>>
+>>> Symptoms: tons of zeroes are shown by amidi as soon as I launch it. The stream
+>>> is so intense I can actually hear it in my speakers/monitors (need to switch to
+>>> better MIDI cables, I know!). amidi and /proc/asound/card0/midi0 give the same number
+>>> of transmitted bytes.
+>> With "transmitted", you meant "received"?
+>> When Jack is not running, there is no software to send anything.  If the number
+>> of _transmitted_ bytes changes anyway, this would be a bug in ALSA.
+> Oops, 'reveived' is correct. Thank you.
+> 
+> 
+>>> Config #2b = Delta Midi Out -> Delta Midi In
+>>> and 'amidi -p hw:0,0 -d', Jack being started or not.
+>>>
+>>> Symptoms: identical to config#2. Moreover, if meanwhile I send some Midi commands
+>>> with amidi ('amidi -p hw:0,0 -S C01C'), I don't find this data in my dump.
+>> Apparently, the output port is broken.  While it is theoretically
+>> possible that the driver doesn't initialize the card correctly, I cannot
+>> imagine a bug that would cause the port to presume that there is data to
+>> send.
+> You're right the output port seems to be broken.
+> 
+>> Could you test if the port sends data even before the driver (or Linux)
+>> is loaded, or in Windows?
+>>
+> 
+> I am not sure I can try this. I will change my card.
+> 
+>> Regards,
+>> Clemens
+>>
+> Thank you very much for your help.
+> 
+> Regards,
+> Romain
