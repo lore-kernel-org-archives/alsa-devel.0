@@ -1,25 +1,25 @@
 From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] opti93x: opti931 + QS1000 wavetable
-Date: Wed, 19 Sep 2007 22:42:27 +0200
-Message-ID: <20070919224227.ce121de1.krzysztof.h1@poczta.fm>
+Subject: [PATCH] sun-cs4231: mce_down cleanup after ad1848
+Date: Wed, 19 Sep 2007 23:37:42 +0200
+Message-ID: <20070919233742.c09c6f1f.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp4.poczta.interia.pl (smtp35.poczta.interia.pl [80.48.65.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id D00562463D
+	by alsa0.perex.cz (Postfix) with ESMTP id CE339243CB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 22:34:52 +0200 (CEST)
-Received: from poczta.interia.pl (mi01.poczta.interia.pl [10.217.12.1])
-	by smtp4.poczta.interia.pl (INTERIA.PL) with ESMTP id 6922913EE1F
+	Wed, 19 Sep 2007 23:30:06 +0200 (CEST)
+Received: from poczta.interia.pl (mi03.poczta.interia.pl [10.217.12.3])
+	by smtp4.poczta.interia.pl (INTERIA.PL) with ESMTP id EC69F42CBE4
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 22:34:51 +0200 (CEST)
+	Wed, 19 Sep 2007 23:30:05 +0200 (CEST)
 Received: from krzysio.net (host-87-99-61-239.lanet.net.pl [87.99.61.239])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by www.poczta.fm (INTERIA.PL) with ESMTP id 5AD50769BB6
+	by www.poczta.fm (INTERIA.PL) with ESMTP id 6662E4521B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 22:34:51 +0200 (CEST)
+	Wed, 19 Sep 2007 23:30:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,54 +34,104 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-This patch adds support for a wavetable chip on 
-the BTC 1817DW board.
-The QS1000 is connected through the digital input
-to the Opti931 chip.
+This simplifies and fixes waiting loops of the mce_down()
+function after Trent Piepho's patch for AD1848.
+It also makes busy_wait() function call not atomic.
 
 Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 
 ---
 
-This is not a hot-fix and can be postponed after 1.0.15
-(before Takashi asks).
-
-A cornerstone of this patch is to set the auto-source
-selection for the FM DAC. This way it does not affects
-boards using the FM OPL synthesizers which do
-not use the digital input.
-If any other wavetable is connected to the opti chip
-through the digital input, the format setting (MC_REG(21))
-should be revised if it is correct for the new board.
-However, in the whole opti92x-ad1848 this
-register was never touched (so probably nobody
-ever used the digital input ).
-
-Regards,
-Krzysztof
-
-diff -urp linux-ref/sound/isa/opti9xx/opti92x-ad1848.c linux-2.6.23/sound/isa/opti9xx/opti92x-ad1848.c
---- linux-ref/sound/isa/opti9xx/opti92x-ad1848.c	2007-09-12 13:33:51.000000000 +0200
-+++ linux-2.6.23/sound/isa/opti9xx/opti92x-ad1848.c	2007-09-19 22:13:02.000000000 +0200
-@@ -501,6 +501,16 @@ static int __devinit snd_opti9xx_configu
- 			(chip->hardware == OPTi9XX_HW_82C930 ? 0x00 : 0x04),
- 			0x34);
- 		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(5), 0x20, 0xbf);
-+		/* 
-+		 * The BTC 1817DW has QS1000 wavetable which is connected
-+		 * to the serial digital input of the OPTI931.
-+		 */
-+		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(21), 0x82, 0xff);
-+		/* 
-+		 * This bit sets OPTI931 to automaticaly select FM
-+		 * or digital input signal.
-+		 */
-+		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(26), 0x01, 0x01);
- 		break;
- #endif	/* OPTi93X */
+diff -urp linux-ref/sound/sparc/cs4231.c linux-2.6.23/sound/sparc/cs4231.c
+--- linux-ref/sound/sparc/cs4231.c	2007-09-19 23:31:30.603838619 +0200
++++ linux-2.6.23/sound/sparc/cs4231.c	2007-09-19 23:23:24.552140109 +0200
+@@ -392,62 +392,45 @@ static void snd_cs4231_mce_up(struct snd
  
-
+ static void snd_cs4231_mce_down(struct snd_cs4231 *chip)
+ {
+-	unsigned long flags;
+-	int timeout;
++	unsigned long flags, timeout;
++	int reg;
+ 
+-	spin_lock_irqsave(&chip->lock, flags);
+ 	snd_cs4231_busy_wait(chip);
++	spin_lock_irqsave(&chip->lock, flags);
+ #ifdef CONFIG_SND_DEBUG
+ 	if (__cs4231_readb(chip, CS4231U(chip, REGSEL)) & CS4231_INIT)
+ 		snd_printdd("mce_down [%p] - auto calibration time out (0)\n",
+ 			    CS4231U(chip, REGSEL));
+ #endif
+ 	chip->mce_bit &= ~CS4231_MCE;
+-	timeout = __cs4231_readb(chip, CS4231U(chip, REGSEL));
+-	__cs4231_writeb(chip, chip->mce_bit | (timeout & 0x1f),
++	reg = __cs4231_readb(chip, CS4231U(chip, REGSEL));
++	__cs4231_writeb(chip, chip->mce_bit | (reg & 0x1f),
+ 			CS4231U(chip, REGSEL));
+-	if (timeout == 0x80)
+-		snd_printdd("mce_down [%p]: serious init problem - codec still busy\n", chip->port);
+-	if ((timeout & CS4231_MCE) == 0) {
++	if (reg == 0x80)
++		snd_printdd("mce_down [%p]: serious init problem "
++			    "- codec still busy\n", chip->port);
++	if ((reg & CS4231_MCE) == 0) {
+ 		spin_unlock_irqrestore(&chip->lock, flags);
+ 		return;
+ 	}
+-	snd_cs4231_busy_wait(chip);
+ 
+-	/* calibration process */
++	/*
++	 * Wait for auto-calibration (AC) process to finish, i.e. ACI to go low.
++	 */
+ 
+-	snd_cs4231_ready(chip);
+-	snd_cs4231_ready(chip);
+-	if ((snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) == 0) {
+-		snd_printd("cs4231_mce_down - auto calibration time out (1)\n");
++	timeout = jiffies + msecs_to_jiffies(250);
++	do {
+ 		spin_unlock_irqrestore(&chip->lock, flags);
+-		return;
+-	}
+-
+-	/* in 10ms increments, check condition, up to 250ms */
+-	timeout = 25;
+-	while (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) {
+-		spin_unlock_irqrestore(&chip->lock, flags);
+-		if (--timeout < 0) {
+-			snd_printk("mce_down - auto calibration time out (2)\n");
+-			return;
+-		}
+-		msleep(10);
+-		spin_lock_irqsave(&chip->lock, flags);
+-	}
+-
+-	/* in 10ms increments, check condition, up to 100ms */
+-	timeout = 10;
+-	while (__cs4231_readb(chip, CS4231U(chip, REGSEL)) & CS4231_INIT) {
+-		spin_unlock_irqrestore(&chip->lock, flags);
+-		if (--timeout < 0) {
+-			snd_printk("mce_down - auto calibration time out (3)\n");
+-			return;
+-		}
+-		msleep(10);
++		msleep(1);
+ 		spin_lock_irqsave(&chip->lock, flags);
+-	}
++		reg = snd_cs4231_in(chip, CS4231_TEST_INIT);
++		reg &= CS4231_CALIB_IN_PROGRESS;
++	} while (reg && time_before(jiffies, timeout));
+ 	spin_unlock_irqrestore(&chip->lock, flags);
++
++	if (reg)
++		snd_printk(KERN_ERR
++			   "mce_down - auto calibration time out (2)\n");
+ }
+ 
+ static void snd_cs4231_advance_dma(struct cs4231_dma_control *dma_cont,
 
 ----------------------------------------------------------------------
-Zaaresztuj ministra Koszmarka!
-http://link.interia.pl/f1ba6
+Bedac w toalecie korzystala z ...
+
+>>>  http://link.interia.pl/f1bd8 
