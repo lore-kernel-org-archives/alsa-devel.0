@@ -1,21 +1,20 @@
-From: Krzysztof Helt <krzysztof.h1@gmail.com>
-Subject: Re: [PATCH] ad1848 ac loop
-Date: Wed, 19 Sep 2007 22:55:21 +0200
-Message-ID: <20070919225521.116d1787.krzysztof.h1@gmail.com>
-References: <Pine.LNX.4.58.0709181930050.27377@shell4.speakeasy.net>
-	<20070919112413.70051500.krzysztof.h1@gmail.com>
-	<Pine.LNX.4.58.0709191205330.27377@shell4.speakeasy.net>
+From: "Sheng \(Sean\) Liu" <shengl@uci.edu>
+Subject: When to start the capture device?
+Date: Wed, 19 Sep 2007 16:17:55 -0700
+Message-ID: <005101c7fb13$511e5040$aea4c380@dream.eng.uci.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id A61CF243DE
+Received: from relay3.es.uci.edu (relay3.es.uci.edu [128.200.80.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 979BF245B3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 22:47:49 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id b21so240469nfd
-	for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 13:47:49 -0700 (PDT)
-In-Reply-To: <Pine.LNX.4.58.0709191205330.27377@shell4.speakeasy.net>
+	Thu, 20 Sep 2007 01:17:04 +0200 (CEST)
+Received: from agent9 (agent9.eng.uci.edu [128.195.164.174])
+	(authenticated bits=0)
+	by relay3.es.uci.edu (8.13.1/8.13.1) with ESMTP id l8JNGxh6029034
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 16:17:02 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,64 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <xyzzy@speakeasy.org>
-Cc: alsa-devel@alsa-project.org, Rene Herman <rene.herman@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 19 Sep 2007 12:50:54 -0700 (PDT)
-Trent Piepho <xyzzy@speakeasy.org> wrote:
+Hello everyone,
+ 
+I am using ALSA to capture sound from a micrphone. I need to know when the
+capture device starts. In Paul Davis' Tutorial, he mentioned two approaches.
+But, I have questions on each of them.
+  
 
-> On Wed, 19 Sep 2007, Krzysztof Helt wrote:
-> >  However, quick test showed that playback is stopped
-> >  from the irq handler if there is no more data (indirect register 9 write).
-> 
-> Hmm, I don't see where that happens.  Unless snd_pcm_period_elapsed() is
-> allowed to call the trigger callback?  I know it will call the pointer
-> callback, which doesn't use any indirect registers.
-> 
-> I know that trigger, ack, and pointer are called with interrupts disabled and
-> a spinlock held.  But that is not the same as being called from interrupt
-> context.  
+When to start the device 
 
-I do not understand these two sentences so probably you are right.
-I can provide you backtrace how the snd_ad1848_trigger() is called:
+When you open the audio interface, ALSA ensures that it is not active - no
+data is being moved to or from its external connectors. Presumably, at some
+point you want this data transfer to begin. There are several options for
+how to make this happen. 
 
-...
-snd_ad1848_trigger
-snd_ad1848_playback_trigger
-snd_pcm_do_stop
-snd_pcm_action_single
-snd_pcm_period_elapsed
-scheduler_tick
-run_timer_softirq
-snd_ad1848_interrupt
-...
-do_IRQ
-...
 
-> > > Another CPU could close the substream between the check and the call to
-> > > snd_pcm_period_elapsed().  snd_pcm_period_elapsed() could be called with
-> > > either NULL or a stale substream pointer depending on how the code compiled.
-> > > I'd think creating an irq spinlock would be an easy way to fix this.  The irq
-> > > handler would grab it, and the same with the open() and close() functions
-> > > around the code that sets the substream pointers.  Alternatively, one could
-> > > disabled the irq handler during open and close.
-> >
-> > I would not do this in the driver code. This should be handled in the alsa pcm layer
-> > and probably it is. At least the snd_pcm_period_elapsed() does locking and irq
-> > disabling. Could any alsa guru enlighten us on pcm open/close locking
-> > and interrupt disabling?
-> 
-> I don't see how the alsa pcm layer could lock around the interrupt handler.
-> The handler is registered directly to the kernel, not via alsa, so there's no
-> way the alsa pcm layer could know if the irq handler is running, or if one
-> even exists.
+1. The control point here the start threshold, which defines the number of
+frames of space/data necessary to start the device automatically. If set to
+some value other than zero for playback, it is necessary to prefill the
+playback buffer before the device will start. If set to zero, the first data
+written to the device (or first attempt to read from a capture stream) will
+start the device. 
+ 
+My question: what does he means on " If set to zero"? Does anyone know which
+parameter of which API should be set to zero?
 
-The pcm layer may disable interrupts. IMO, this should be enough to stop entering 
-any interrupt handler.
-I am not expert on this but following your reasoning any core kernel code 
-(vm, scheduler) could not be interrupt-safe because most of interrupt handlers
-are in drivers and the core has no idea that drivers exist.
-
-Regards,
-Krzysztof
+2. You can also start the device explicitly using snd_pcm_start, but this
+requires buffer prefilling in the case of the playback stream. If you
+attempt to start the stream without doing this, you will get -EPIPE as a
+return code, indicating that there is no data waiting to deliver to the
+playback hardware buffer.
+ 
+My question: Is there anything to be done before calling snd_pcm_start in
+the case of capturing stream? If there is, what are they?
+ 
+ 
+Thanks in advance,
+ 
+Sheng
