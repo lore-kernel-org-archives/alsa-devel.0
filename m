@@ -1,26 +1,24 @@
-From: =?ISO-8859-1?Q?Lasse_K=E4rkk=E4inen?= <tronic+8nhy@trn.iki.fi>
-Subject: Separate default devices for playback and capture
-Date: Wed, 19 Sep 2007 03:41:08 +0300
-Message-ID: <46F07024.5040903@trn.iki.fi>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: [PATCH] ad1838/cs4231 -- fix MCE timeout upon
+ initial load
+Date: Wed, 19 Sep 2007 04:48:28 +0200
+Message-ID: <46F08DFC.7000803@gmail.com>
+References: <46E58D01.9080809@gmail.com>
+	<Pine.LNX.4.58.0709170325380.27377@shell4.speakeasy.net>
+	<20070917234739.a674bf7b.krzysztof.h1@gmail.com>
+	<Pine.LNX.4.58.0709171522360.27377@shell4.speakeasy.net>
+	<20070918092046.f52e8877.krzysztof.h1@gmail.com>
+	<Pine.LNX.4.58.0709181634550.27377@shell4.speakeasy.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pne-smtpout4-sn1.fre.skanova.net
-	(pne-smtpout4-sn1.fre.skanova.net [81.228.11.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id 927C4243B0
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 427AE2456C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 02:41:14 +0200 (CEST)
-Received: from trn.iki.fi (84.250.48.139) by pne-smtpout4-sn1.fre.skanova.net
-	(7.2.075) id 45C775BA00A5DDCF for alsa-devel@alsa-project.org;
-	Wed, 19 Sep 2007 02:41:14 +0200
-Received: from trn.iki.fi (localhost [127.0.0.1])
-	by trn.iki.fi (Postfix) with ESMTP id 550F57A188A72
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 03:41:13 +0300 (EEST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by trn.iki.fi (Postfix) with ESMTP for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 03:41:13 +0300 (EEST)
+	Wed, 19 Sep 2007 04:49:31 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.58.0709181634550.27377@shell4.speakeasy.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,22 +28,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Trent Piepho <xyzzy@speakeasy.org>
+Cc: Krzysztof Helt <krzysztof.h1@gmail.com>, Takashi Iwai <tiwai@suse.de>, devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've been reading the library source code and from what I gather, it
-seems that it just fundamentally cannot support separate config sections
-for playback and capture.
+On 09/19/2007 03:27 AM, Trent Piepho wrote:
 
-What should the fix be? I can see three options:
+> On the other hand, cpu_relax() is totally different.  It's basically a
+> hint to the processor to lower the clock speed/power consumption or give 
+> resources to a sibling virtual processor in hyper-threading.  i.e., it's
+> ok to call cpu_relax() from an interrupt or while atomic.
+> 
+> Might be a good idea in the non-sleeping busy loops, like the one in 
+> snd_ad1848_wait(), but I bet the udelay() already does that.
 
-1. allow specifying in asound.conf whether a section is for recording or
-playback (needs major redesign of conf.c and some changes in pcm.c).
+It does (when using the TSC).
 
-2. if the name is "default", use "capture" (for example) instead, in
-snd_pcm_open_noupdate, maybe reverting to "default" if the other device
-cannot be found (dirty, but very easy to implement)
+>> The original idea was to make this first waiting longer than loop
+>> granularity. 7ms before the loop than 1ms granularity inside the loop. 
+>> Rene Herman was against it so he changed it to be the same as 1ms
+>> inside the loop.
 
-3. tell application developers to use some other device name for
-capture: "capture", instead of "default", for example (needs a little
-change in every application program that uses ALSA capture).
+Well, at that time, it still was first the 1 and then a full 250 -- or at 
+least in my 2.6.22.x schedule_timeout_interruptible() version that actually 
+scheduled...
+
+> With the delay time being dependent on sample rate, and with different 
+> chips being considerably faster than others, picking a good value for the
+> first iteration is complicated.  If one could avoid 70 ms of busy
+> looping in the kernel by doing so, then that might be worth it.  But we
+> don't busy loop, just poll once per ms (even less when HZ<1000), so it
+> seems that there is very little to gain here to justify the extra
+> complexity.
+
+Quite -- I plan on being around sound/isa/ for some time and am as such also 
+already concerned with maintainability. If there's one thing I do know, it's 
+that obviousness is an extremely important factor in that. So if the 
+datasheet and hardware say 5 sample periods are enough, so be they...
+
+>> Break this long line. You may calculate "regsel &
+>> AD1848_CALIB_IN_PROGRESS"
+> 
+> Good idea, I've done that.
+
+No goto? :-)
+
+Rene.
