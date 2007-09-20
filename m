@@ -1,16 +1,16 @@
-From: "J. Scott Merritt" <alsauser@pragmasoft.com>
+From: "J. Scott Merritt" <Scott@PragmaSoft.com>
 Subject: Re: When to start the capture device?
-Date: Thu, 20 Sep 2007 10:14:27 -0400
-Message-ID: <20070920101427.2499dd58.alsauser@pragmasoft.com>
+Date: Thu, 20 Sep 2007 10:11:30 -0400
+Message-ID: <20070920101130.39b76613.Scott@PragmaSoft.com>
 References: <005101c7fb13$511e5040$aea4c380@dream.eng.uci.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp8.server.rpi.edu (smtp8.server.rpi.edu [128.113.2.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id A88AD24440
+Received: from starfish.geekisp.com (mail.geekisp.com [216.168.135.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28F4A2443C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Sep 2007 16:09:05 +0200 (CEST)
+	Thu, 20 Sep 2007 16:06:13 +0200 (CEST)
 In-Reply-To: <005101c7fb13$511e5040$aea4c380@dream.eng.uci.edu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
