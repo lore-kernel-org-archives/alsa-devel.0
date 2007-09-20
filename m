@@ -1,20 +1,20 @@
-From: "Sheng \(Sean\) Liu" <shengl@uci.edu>
-Subject: When to start the capture device?
-Date: Wed, 19 Sep 2007 16:17:55 -0700
-Message-ID: <005101c7fb13$511e5040$aea4c380@dream.eng.uci.edu>
+From: Shane Hathaway <shane.list.alsa-devel@hathawaymix.org>
+Subject: Phoenix Audio Duet
+Date: Wed, 19 Sep 2007 23:26:18 -0600
+Message-ID: <46F2047A.2090605@hathawaymix.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay3.es.uci.edu (relay3.es.uci.edu [128.200.80.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 979BF245B3
+Received: from mail.afconnect.com (mail.afconnect.com [216.83.140.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2AB2F246B0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Sep 2007 01:17:04 +0200 (CEST)
-Received: from agent9 (agent9.eng.uci.edu [128.195.164.174])
-	(authenticated bits=0)
-	by relay3.es.uci.edu (8.13.1/8.13.1) with ESMTP id l8JNGxh6029034
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 16:17:02 -0700
+	Thu, 20 Sep 2007 07:26:26 +0200 (CEST)
+Received: from [192.168.1.10] (tiger.hathawaymix.org [192.168.1.10])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by pigeon.hathawaymix.org (Postfix) with ESMTP id E04257A4137
+	for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 23:26:20 -0600 (MDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,41 +27,43 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello everyone,
- 
-I am using ALSA to capture sound from a micrphone. I need to know when the
-capture device starts. In Paul Davis' Tutorial, he mentioned two approaches.
-But, I have questions on each of them.
-  
+Hello,
 
-When to start the device 
+I just bought a set of Phoenix Audio Duets for VOIP conferencing.  They
+are USB speakerphones with good echo cancellation.  They work fine with
+the snd_usb_audio module, with one exception: I can't control the
+microphone and speaker levels.  ALSA exposes some controls, but they
+have no effect, so I have to shout to be heard.
 
-When you open the audio interface, ALSA ensures that it is not active - no
-data is being moved to or from its external connectors. Presumably, at some
-point you want this data transfer to begin. There are several options for
-how to make this happen. 
+Rather than get a hoarse voice, I want to help enhance the snd_usb_audio
+module to correctly support the mixer controls within the Duet.  I know
+the device actually has working mixer controls because Phoenix Audio
+provides a Windows-only utility for controlling the levels, and when I
+use that utility turn up the mic, I can be heard quite well.
+Unfortunately, the levels are reset when I move the device back to a
+Linux box.
 
+I used SnoopyPro to capture USB packets as I adjusted the levels in
+Windows and I think I know what to transmit to the device in order to
+read and change the levels.  Now I just need to figure out how to
+translate that knowledge into kernel code.  I am a capable C coder
+(though rusty), I don't know much about USB, and I've dabbled in kernel
+code before.
 
-1. The control point here the start threshold, which defines the number of
-frames of space/data necessary to start the device automatically. If set to
-some value other than zero for playback, it is necessary to prefill the
-playback buffer before the device will start. If set to zero, the first data
-written to the device (or first attempt to read from a capture stream) will
-start the device. 
- 
-My question: what does he means on " If set to zero"? Does anyone know which
-parameter of which API should be set to zero?
+lsusb lists the Duet (Executive) as:
 
-2. You can also start the device explicitly using snd_pcm_start, but this
-requires buffer prefilling in the case of the playback stream. If you
-attempt to start the stream without doing this, you will get -EPIPE as a
-return code, indicating that there is no data waiting to deliver to the
-playback hardware buffer.
- 
-My question: Is there anything to be done before calling snd_pcm_start in
-the case of capturing stream? If there is, what are they?
- 
- 
-Thanks in advance,
- 
-Sheng
+Bus 001 Device 011: ID 0556:0004 Asahi Kasei Microsystems Co., Ltd
+
+Both kmix and Ekiga see it as an AK4571.  There is a data sheet for that
+chip here:
+
+http://www.datasheetcatalog.com/asahikaseimicrosystems/3/
+
+I would guess that the AK4571 has mixer controls built in, but that
+Phoenix Audio (phnxaudio.com) chose not to use those controls and
+instead enhanced the USB interface with nonstandard mixer controls.
+
+So, where should I begin?  I don't see evidence that anyone has worked
+on this yet.
+
+Shane
