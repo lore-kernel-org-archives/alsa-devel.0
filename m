@@ -1,22 +1,23 @@
-From: "J. Scott Merritt" <alsauser@pragmasoft.com>
-Subject: Re: When to start the capture device?
-Date: Thu, 20 Sep 2007 11:46:12 -0400
-Message-ID: <20070920114612.27b70757.alsauser@pragmasoft.com>
-References: <005101c7fb13$511e5040$aea4c380@dream.eng.uci.edu>
-	<20070920101427.2499dd58.alsauser@pragmasoft.com>
-	<s5h1wctquu5.wl%tiwai@suse.de>
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Subject: Re: [PATCH -mm] sb16: Shut up uninitialized var build
+	warning
+Date: Thu, 20 Sep 2007 18:52:11 +0100
+Message-ID: <200709201852.11497.vda.linux@googlemail.com>
+References: <alpine.LFD.0.999.0709022344550.27844@enigma.security.iitk.ac.i n>
+	<alpine.LFD.0.999.0709030143550.29617@enigma.security.iitk.ac.in>
+	<46DB33D0.40204@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp7.server.rpi.edu (smtp7.server.rpi.edu [128.113.2.227])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C02E24475
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C44124392
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Sep 2007 17:40:50 +0200 (CEST)
-Received: from RPI02.localdomain (voiceflight.inc.rpi.edu [128.113.36.139])
-	by smtp7.server.rpi.edu (8.13.1/8.13.1) with SMTP id l8KFemWj002894
-	for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2007 11:40:49 -0400
-In-Reply-To: <s5h1wctquu5.wl%tiwai@suse.de>
+	Thu, 20 Sep 2007 19:52:20 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id f40so562078fka
+	for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2007 10:52:19 -0700 (PDT)
+In-Reply-To: <46DB33D0.40204@gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,20 +27,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@suse.cz>, Satyam Sharma <satyam@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Sep 2007 16:23:30 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> snd_pcm_prepare() is required to recover the stream from XRUN or any
-> other errors.  But, for the recovery purpose, we have now
-> snd_pcm_recover() as a generic solution, too.
-
-It appears that (currently) the additional benefit of snd_pcm_recover
-is simply that of resuming the stream.  However, I haven't seen any
-details on when/why a stream would become suspened and require this
-type of recovery.
-
-Also, in SALSA, it appears that snd_pcm_recover can -block- even if
-the stream has been configured for non-blocking behavior.
+T24gU3VuZGF5IDAyIFNlcHRlbWJlciAyMDA3IDIzOjA2LCBSZW5lIEhlcm1hbiB3cm90ZToKPiBP
+biAwOS8wMi8yMDA3IDEwOjE1IFBNLCBTYXR5YW0gU2hhcm1hIHdyb3RlOgo+IAo+ID4gc291bmQv
+aXNhL3NiMTYvc2IxNi5jOiBJbiBmdW5jdGlvbiDigJhzbmRfc2IxNl9pc2FfcHJvYmXigJk6Cj4g
+Cj4gQmxhaC4gWW91ciBtZXNzYWdlIGhhczoKPiAKPiAJQ29udGVudC1UeXBlOiBURVhUL1BMQUlO
+OyBjaGFyc2V0PWlzby0yMDIyLWpwCj4gCj4gVGhpcyBhcHBhcmVudGx5IGlzIGNhdXNlZCBieSBh
+IGNvbWJpbmF0aW9uIG9mIEdDQyB1c2luZyBncm9vdnkgVVRGIHRpY2ttYXJrcyAKPiBpbiBpdHMg
+ZXJyb3IgbWVzc2FnZXMgd2hlbiBpbiBhIFVURiBsb2NhbGUgYW5kIGFscGluZSBiZWxpZXZpbmcg
+aXQgdG8gYmUgYSAKPiBncmVhdCBpZGVhIHRvIGF1dG9tYXRpY2FsbHkgdHJ5IGZvciB0aGUgInNp
+bXBsZXN0IiBjaGFyYWN0ZXIgc2V0IGl0IGNhbiAKPiBlbmNvZGUgdGhlIGNvbnRlbnQgaW4uIE5v
+IGlkZWEgd2h5IHRoYXQgbWVhbnMgdGhhdCBpc28tMjAyMi1qcCBpcyBwaWNrZWQsIAo+IGJ1dCBp
+dCBpcy4KPiAKPiBXaGlsZSBJIGNvdWxkIGFjdHVhbGx5IHJlYWQgdGhlIG1lc3NhZ2UgdGhpcyB0
+aW1lIHlvdSBzaG91bGQgc2VlIHdoYXQgCj4gaXNvLTIwMjItanAgZG9lcyB0byBteSBmb250LiBJ
+dCdzIHNjYXJ5LiBCZXN0IHNvbHV0aW9uIGFzIGZhciBhcyBJJ20gCj4gY29uY2VybmVkIGlzIHNs
+YXAgYSBmZXcgR0NDIGRldmVsb3BlcnMgKG5vdCB0aGF0IGl0IHdpbCBoZWxwLCBidXQgaXQnbGwg
+Cj4gY2VydGFpbmx5IGZlZWwgZ29vZCkgYW5kIHRoZW4gdGVhY2ggYWxwaW5lIHRvIGdvIGZvciBV
+VEYtOCBkaXJlY3RseSBpZiAKPiBVUy1BU0NJSSB3b24ndCBkby4KCnJvdGZsLgoKS2luZGx5IGdp
+dmUgbWUgcGVybWlzc2lvbiB0byBjb252ZXJ0IHlvdXIgZW1haWwgaW50byBnY2MgYnVncmVwb3J0
+CmFuZC9vciB0byBmb3J3YXJkIGl0IHRvIGdjYyBtYWlsaW5nIGxpc3QuCi0tCnZkYQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
