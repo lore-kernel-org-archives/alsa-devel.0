@@ -1,25 +1,20 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] sun-cs4231: mce_down cleanup after ad1848
-Date: Wed, 19 Sep 2007 23:37:42 +0200
-Message-ID: <20070919233742.c09c6f1f.krzysztof.h1@poczta.fm>
+From: william estrada <MrUmunhum@popdial.com>
+Subject: resetting an audio device?
+Date: Wed, 19 Sep 2007 17:05:22 -0700
+Message-ID: <46F1B942.8000102@popdial.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.poczta.interia.pl (smtp35.poczta.interia.pl [80.48.65.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE339243CB
+Received: from MAIL02.inside.adbasesystems.com (mail.1dial.com [64.136.164.73])
+	by alsa0.perex.cz (Postfix) with ESMTP id 63C76245DA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 23:30:06 +0200 (CEST)
-Received: from poczta.interia.pl (mi03.poczta.interia.pl [10.217.12.3])
-	by smtp4.poczta.interia.pl (INTERIA.PL) with ESMTP id EC69F42CBE4
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 23:30:05 +0200 (CEST)
-Received: from krzysio.net (host-87-99-61-239.lanet.net.pl [87.99.61.239])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.poczta.fm (INTERIA.PL) with ESMTP id 6662E4521B
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Sep 2007 23:30:05 +0200 (CEST)
+	Thu, 20 Sep 2007 02:05:13 +0200 (CEST)
+Received: from laptop.mt-umunhum-wireless.net (64.124.13.3.gatespeed.com
+	[64.124.13.3]) by MAIL02.inside.adbasesystems.com
+	(Vircom SMTPRS 4.4.568.54) with ESMTP id
+	<B0398131896@MAIL02.inside.adbasesystems.com> for
+	<alsa-devel@alsa-project.org>; Wed, 19 Sep 2007 20:05:09 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,109 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+Hi guys,
 
-This simplifies and fixes waiting loops of the mce_down()
-function after Trent Piepho's patch for AD1848.
-It also makes busy_wait() function call not atomic.
+   I got my alsa player code to work.  Now I need to figure out how to
+reset the audio device?  I don't want to close the device, just recycle
+it. Any pointers?
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+   Also, where are the documents for all of those helper subroutes? Like
+snd_pcm_hw_params_get_period_time, snd_pcm_hw_params_any, etc.
 
----
+   Thanks for your time.
 
-diff -urp linux-ref/sound/sparc/cs4231.c linux-2.6.23/sound/sparc/cs4231.c
---- linux-ref/sound/sparc/cs4231.c	2007-09-19 23:31:30.603838619 +0200
-+++ linux-2.6.23/sound/sparc/cs4231.c	2007-09-19 23:23:24.552140109 +0200
-@@ -392,62 +392,45 @@ static void snd_cs4231_mce_up(struct snd
- 
- static void snd_cs4231_mce_down(struct snd_cs4231 *chip)
- {
--	unsigned long flags;
--	int timeout;
-+	unsigned long flags, timeout;
-+	int reg;
- 
--	spin_lock_irqsave(&chip->lock, flags);
- 	snd_cs4231_busy_wait(chip);
-+	spin_lock_irqsave(&chip->lock, flags);
- #ifdef CONFIG_SND_DEBUG
- 	if (__cs4231_readb(chip, CS4231U(chip, REGSEL)) & CS4231_INIT)
- 		snd_printdd("mce_down [%p] - auto calibration time out (0)\n",
- 			    CS4231U(chip, REGSEL));
- #endif
- 	chip->mce_bit &= ~CS4231_MCE;
--	timeout = __cs4231_readb(chip, CS4231U(chip, REGSEL));
--	__cs4231_writeb(chip, chip->mce_bit | (timeout & 0x1f),
-+	reg = __cs4231_readb(chip, CS4231U(chip, REGSEL));
-+	__cs4231_writeb(chip, chip->mce_bit | (reg & 0x1f),
- 			CS4231U(chip, REGSEL));
--	if (timeout == 0x80)
--		snd_printdd("mce_down [%p]: serious init problem - codec still busy\n", chip->port);
--	if ((timeout & CS4231_MCE) == 0) {
-+	if (reg == 0x80)
-+		snd_printdd("mce_down [%p]: serious init problem "
-+			    "- codec still busy\n", chip->port);
-+	if ((reg & CS4231_MCE) == 0) {
- 		spin_unlock_irqrestore(&chip->lock, flags);
- 		return;
- 	}
--	snd_cs4231_busy_wait(chip);
- 
--	/* calibration process */
-+	/*
-+	 * Wait for auto-calibration (AC) process to finish, i.e. ACI to go low.
-+	 */
- 
--	snd_cs4231_ready(chip);
--	snd_cs4231_ready(chip);
--	if ((snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) == 0) {
--		snd_printd("cs4231_mce_down - auto calibration time out (1)\n");
-+	timeout = jiffies + msecs_to_jiffies(250);
-+	do {
- 		spin_unlock_irqrestore(&chip->lock, flags);
--		return;
--	}
--
--	/* in 10ms increments, check condition, up to 250ms */
--	timeout = 25;
--	while (snd_cs4231_in(chip, CS4231_TEST_INIT) & CS4231_CALIB_IN_PROGRESS) {
--		spin_unlock_irqrestore(&chip->lock, flags);
--		if (--timeout < 0) {
--			snd_printk("mce_down - auto calibration time out (2)\n");
--			return;
--		}
--		msleep(10);
--		spin_lock_irqsave(&chip->lock, flags);
--	}
--
--	/* in 10ms increments, check condition, up to 100ms */
--	timeout = 10;
--	while (__cs4231_readb(chip, CS4231U(chip, REGSEL)) & CS4231_INIT) {
--		spin_unlock_irqrestore(&chip->lock, flags);
--		if (--timeout < 0) {
--			snd_printk("mce_down - auto calibration time out (3)\n");
--			return;
--		}
--		msleep(10);
-+		msleep(1);
- 		spin_lock_irqsave(&chip->lock, flags);
--	}
-+		reg = snd_cs4231_in(chip, CS4231_TEST_INIT);
-+		reg &= CS4231_CALIB_IN_PROGRESS;
-+	} while (reg && time_before(jiffies, timeout));
- 	spin_unlock_irqrestore(&chip->lock, flags);
-+
-+	if (reg)
-+		snd_printk(KERN_ERR
-+			   "mce_down - auto calibration time out (2)\n");
- }
- 
- static void snd_cs4231_advance_dma(struct cs4231_dma_control *dma_cont,
-
-----------------------------------------------------------------------
-Bedac w toalecie korzystala z ...
-
->>>  http://link.interia.pl/f1bd8 
+-- 
+William Estrada
+MrUmunhum@popdial.com
+Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
+Ymessenger: MrUmunhum
