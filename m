@@ -1,20 +1,17 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: OSS app works but aplay does not with
-	SNDRV_PCM_FMTBIT_U32_LE
-Date: Thu, 20 Sep 2007 15:50:52 -0500
-Message-ID: <46F2DD2C.2080503@freescale.com>
-References: <0MKpCa-1IXhxr0egN-0007WC@mrelay.perfora.net>	<1190184377.23573.1211414421@webmail.messagingengine.com>	<0MKp8S-1IY1GZ25ZF-0008LO@mrelay.perfora.net>	<1190217792.23470.1211502657@webmail.messagingengine.com>
-	<0MKp8S-1IY3QT3Lfw-0008HE@mrelay.perfora.net>
+From: "Sheng \(Sean\) Liu" <shengl@uci.edu>
+Subject: Re: When to start the capture device?
+Date: Thu, 20 Sep 2007 15:10:12 -0700
+Message-ID: <009c01c7fbd3$049085c0$aea4c380@dream.eng.uci.edu>
+References: <s5h3ax9quyg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04D2224540
+Received: from relay3.es.uci.edu (relay3.es.uci.edu [128.200.80.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3711A24567
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Sep 2007 22:51:01 +0200 (CEST)
-In-Reply-To: <0MKp8S-1IY3QT3Lfw-0008HE@mrelay.perfora.net>
+	Fri, 21 Sep 2007 00:09:01 +0200 (CEST)
+In-Reply-To: <s5h3ax9quyg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Steve Strobel <steve.strobel@link-comm.com>
+To: 'Takashi Iwai' <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Steve Strobel wrote:
+Hi Mr. Iwai,
 
-> Does a result code of -22 mean anything significant?
+Thanks for your replies. I have another question for you.
 
--22 is EINVAL, which usually means an invalid parameter.
+After snd_pcm_start() is called, how long the first frame will be generated
+by the sound card? Does this duration vary in different nodes (support
+hardware+soundcard+OS are identical for all nodes)? If the duration is not a
+constant, do you have any idea what will be the largest jitter?
 
--- 
-Timur Tabi
-Linux Kernel Developer @ Freescale
+This jitter matters so much for my location detection application.  After
+the application starts, an user claps his/her hand. Then, the position of
+the user is calculated from the application. 
+
+I have four VIA EPIA-M+Linux2.6 machines. A global time is setup among these
+four nodes. After the stream is started, the application detects a hand-clap
+sound and counts the number of frames from the stream start to the clap
+moment in each node. If I cannot have an accurate timestamp for the stream
+start, the application cannot caculate the clap sound timestamp accurately.
+
+Thanks,
+
+Sheng
