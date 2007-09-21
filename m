@@ -1,23 +1,18 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: OSS app works but aplay does not with
- SNDRV_PCM_FMTBIT_U32_LE
-Date: Fri, 21 Sep 2007 08:43:25 +0200
-Message-ID: <1190357005.17098.1211823659@webmail.messagingengine.com>
-References: <0MKpCa-1IXhxr0egN-0007WC@mrelay.perfora.net>
-	<1190184377.23573.1211414421@webmail.messagingengine.com>
-	<0MKp8S-1IY1GZ25ZF-0008LO@mrelay.perfora.net>
-	<1190217792.23470.1211502657@webmail.messagingengine.com>
-	<0MKp8S-1IY3QT3Lfw-0008HE@mrelay.perfora.net>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [patch] snd_pcm_drain and lock-ups
+Date: Fri, 21 Sep 2007 10:15:09 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0709211009490.8148@tm8103.perex-int.cz>
+References: <Pine.LNX.4.64.0709121739280.26129@mgorse.dhs.org>
+	<Pine.LNX.4.64.0709192041310.7949@mgorse.dhs.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 4DB012412E
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDCEF2433C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Sep 2007 08:43:26 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <0MKp8S-1IY3QT3Lfw-0008HE@mrelay.perfora.net>
+	Fri, 21 Sep 2007 10:15:09 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.64.0709192041310.7949@mgorse.dhs.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,64 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Steve Strobel <steve.strobel@link-comm.com>, alsa-devel@alsa-project.org
+To: Mike Gorse <mgorse@mgorse.dhs.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Steve Strobel wrote:
-> At 10:03 AM 9/19/2007, Clemens Ladisch wrote:
-> >Steve Strobel wrote:
-> > > At 12:46 AM 9/19/2007, Clemens Ladisch wrote:
-> > > > or did you create a card-specific .conf file for your controller?
-> > >
-> > > Not intentionally, but there might be one left over from the AD1836
-> > > driver I started with (I have just been modifying that driver,
-> > > planning to rename it after I get it working).  Where would I look
-> > > for such a file?
-> >
-> >In /usr/share/alsa/cards/, with the driver name.
+On Wed, 19 Sep 2007, Mike Gorse wrote:
+
+> Hi again,
 > 
-> I don't have a file there;  that directory doesn't even exist:
-> Should I have a configuration file in one of those places?  If I 
-> don't, where do the default values come from?
-
-Well, there is an alsa.conf somewhere, otherwise the utils wouldn't run.
-
-> >Does it work when running aplay with the parameter "-D plughw"?
+> I posted last week because I am getting lockups when portaudio calls 
+> snd_pcm_drain, and snd_pcm_rate_drain calls snd_pcm_wait on its slave.
 > 
-> No.  It searches through more rules, but still says, "Sample format 
-> non available".  I put a log of the console output with and without 
-> "-D plughw" at <http://link-comm.com/temp/aplay-log.txt> to save
-> bandwidth.
-
-Now it says that access RW_INTERLEAVED doesn't work.
-I'd really like to see the source code of the driver, especially the
-snd_pcm_hardware structure.
-
-> One thing I hadn't noticed before is the message:
+> Now that I've looked at this more, I'm seeing that it involves dmix, since 
+> a dmix plugin is behind the rate plugin.
 > 
-> ALSA lib ../../../src/pcm/pcm_params.c:2152:(snd_pcm_hw_refine_slave) Slave PCM not usable
-> refine done - result = -22
+> The dmix code in alsa-lib is setting a xrun state because 
+> snd_pcm_mmap_playback_avail returns a large value.
 > 
-> Does a result code of -22 mean anything significant?
-
-Nothing that hasn't been already been told in the error message.
--EINVAL is expected in this case.
-
-> You wrote in an earlier message:> > snd_pcm_hw_refine()
->  > > ACCESS = 00000000ffffffffffffffff -> 0000000000000008
->  > > FORMAT = 0000000000000400 -> 0000000000000000
->  >
->  > aplay tries to set S32_LE, but the driver doesn't accept it.
+> snd_pcm_wait is then called on the slave of the rate pcm, which is a pcm 
+> with a type of SND_PCM_TYPE_ROUTE whose slave is the dmix, but the route 
+> pcm is returning a different value for snd_pcm_mmap_avail than the dmix 
+> pcm, so it is not triggering snd_pcm_wait to check for a xrun.
 > 
-> I think I understand how the driver uses the snd_pcm_hardware_t 
-> structure to tell ALSA what it supports, but I don't understand how 
-> ALSA tries to set things in return.  I am surprised that it would try 
-> to set it to a data type that the driver never said it could 
-> support.
+> The following patch stops snd_pcm_wait from locking up for me, although 
+> I'm not sure if it is the best way of handling things:
+> 
+> --- src/pcm/pcm.c.orig	2007-09-12 05:20:32.000000000 -0400
+> +++ src/pcm/pcm.c	2007-09-19 19:52:10.000000000 -0400
+> @@ -2255,7 +2255,7 @@
+>    */
+>   int snd_pcm_wait(snd_pcm_t *pcm, int timeout)
+>   {
+> -	if (snd_pcm_mmap_avail(pcm) >= pcm->avail_min) {
+> +	if (snd_pcm_mmap_avail(pcm) >= pcm->avail_min || pcm->type == SND_PCM_TYPE_ROUTE) {
+>   		/* check more precisely */
+>   		switch (snd_pcm_state(pcm)) {
+>   		case SND_PCM_STATE_XRUN:
 
-A configuration file can force a specific sample format.  Usually, only
-dmix does that.
+I think that better fix is to change the code in snd_pcm_rate_drain(). You 
+can set avail_min to 1 there, so condition in snd_pcm_wait() will match.
 
+Does this patch help?
 
-Regards,
-Clemens
+diff -r 68d71239d651 src/pcm/pcm_rate.c
+--- a/src/pcm/pcm_rate.c	Thu Sep 20 13:20:03 2007 +0200
++++ b/src/pcm/pcm_rate.c	Fri Sep 21 10:14:41 2007 +0200
+@@ -1076,10 +1076,10 @@ static int snd_pcm_rate_drain(snd_pcm_t 
+ 		snd_pcm_uframes_t size, ofs, saved_avail_min;
+ 		snd_pcm_sw_params_t sw_params;
+ 
+-		/* temporarily set avail_min to one period */
++		/* temporarily set avail_min to one */
+ 		sw_params = rate->sw_params;
+ 		saved_avail_min = sw_params.avail_min;
+-		sw_params.avail_min = rate->gen.slave->period_size;
++		sw_params.avail_min = 1;
+ 		snd_pcm_sw_params(rate->gen.slave, &sw_params);
+ 
+ 		size = rate->appl_ptr - rate->last_commit_ptr;
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
