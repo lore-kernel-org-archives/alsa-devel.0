@@ -1,54 +1,35 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: [PATCH] ad1848 ac loop
-Date: Thu, 20 Sep 2007 23:15:05 -0400
-Message-ID: <75b66ecd0709202015u61611827x4bf77c8ad25ccbfe@mail.gmail.com>
-References: <Pine.LNX.4.58.0709181930050.27377@shell4.speakeasy.net>
-	<20070919112413.70051500.krzysztof.h1@gmail.com>
-	<Pine.LNX.4.58.0709191205330.27377@shell4.speakeasy.net>
-	<20070919225521.116d1787.krzysztof.h1@gmail.com>
-	<Pine.LNX.4.58.0709201419350.27377@shell4.speakeasy.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 525E9245E3
-	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Sep 2007 05:15:07 +0200 (CEST)
-Received: by rv-out-0910.google.com with SMTP id k20so578484rvb
-	for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2007 20:15:05 -0700 (PDT)
-In-Reply-To: <Pine.LNX.4.58.0709201419350.27377@shell4.speakeasy.net>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <xyzzy@speakeasy.org>
-Cc: Krzysztof Helt <krzysztof.h1@gmail.com>, alsa-devel@alsa-project.org, Rene Herman <rene.herman@gmail.com>
+From: "Peer Chen" <peerchen@gmail.com>
+Subject: [PATCH] alsa: Add the MCP79 support to hda_intel driver
+Date: Fri, 21 Sep 2007 14:18:19 +0800
+Message-ID: <200709211418128243692@gmail.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756195AbXIUGSe@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, akpm <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 9/20/07, Trent Piepho <xyzzy@speakeasy.org> wrote:
-> It's also worth noting that only local interrupts are disabled, not global
-> interrupts.  Absent a spin-lock, an SMP system can still have an irq
-> handler run while another thread on another CPU has interupts disabled.
->
-> > I am not expert on this but following your reasoning any core kernel code
-> > (vm, scheduler) could not be interrupt-safe because most of interrupt handlers
-> > are in drivers and the core has no idea that drivers exist.
->
-> None of the variables used by drivers' interrupt handlers are modified by
-> the core kernel code.  In this case, chip->playback_substream and
-> chip->record_substream are the relevant variables.  They are used
-> non-atomically from the irq handler, so any code which modifies them must
-> be protected from the irq handler.
+Resend the patch for description modification and send to correct alsa maillist.
 
-Most ALSA drivers would not enable the device interrupt until trigger
-START, and disable them in trigger STOP.  So your interrupt should
-never be enabled during open()/close().
-
-Lee
+Add the MCP79 support to hda driver.
+The patch base on kernel 2.6.23-rc7
+ 
+Signed-off-by: Peer Chen <peerchen@gmail.com>
+---
+--- linux-2.6.23-rc7/sound/pci/hda/hda_intel.c.orig	2007-09-20 15:40:51.000000000 -0400
++++ linux-2.6.23-rc7/sound/pci/hda/hda_intel.c	2007-09-21 13:50:33.000000000 -0400
+@@ -1791,6 +1791,10 @@ static struct pci_device_id azx_ids[] = 
+ 	{ 0x10de, 0x0775, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA MCP77 */
+ 	{ 0x10de, 0x0776, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA MCP77 */
+ 	{ 0x10de, 0x0777, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA MCP77 */
++	{ 0x10de, 0x0ac0, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA MCP79 */
++	{ 0x10de, 0x0ac1, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA MCP79 */
++	{ 0x10de, 0x0ac2, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA MCP79 */
++	{ 0x10de, 0x0ac3, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_NVIDIA }, /* NVIDIA MCP79 */
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, azx_ids);
+-
+ 				
+--------------
+Peer Chen
+2007-09-21
