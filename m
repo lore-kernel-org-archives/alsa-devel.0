@@ -1,22 +1,19 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: Re: [PATCH] ad1848 ac loop
-Date: Fri, 21 Sep 2007 02:31:14 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0709210221150.27377@shell4.speakeasy.net>
-References: <Pine.LNX.4.58.0709181930050.27377@shell4.speakeasy.net>
-	<20070919112413.70051500.krzysztof.h1@gmail.com>
-	<Pine.LNX.4.58.0709191205330.27377@shell4.speakeasy.net>
-	<20070919225521.116d1787.krzysztof.h1@gmail.com>
-	<Pine.LNX.4.58.0709201419350.27377@shell4.speakeasy.net>
-	<75b66ecd0709202015u61611827x4bf77c8ad25ccbfe@mail.gmail.com>
+From: Mike Gorse <mgorse@mgorse.dhs.org>
+Subject: Re: [patch] snd_pcm_drain and lock-ups
+Date: Fri, 21 Sep 2007 06:38:16 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0709210637020.24213@mgorse.dhs.org>
+References: <Pine.LNX.4.64.0709121739280.26129@mgorse.dhs.org>
+	<Pine.LNX.4.64.0709192041310.7949@mgorse.dhs.org>
+	<Pine.LNX.4.61.0709211009490.8148@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail4.sea5.speakeasy.net (mail4.sea5.speakeasy.net
-	[69.17.117.6]) by alsa0.perex.cz (Postfix) with ESMTP id 398742437C
+Received: from alnrmhc12.comcast.net (alnrmhc12.comcast.net [206.18.177.52])
+	by alsa0.perex.cz (Postfix) with ESMTP id 11D05243B4
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Sep 2007 11:31:17 +0200 (CEST)
-In-Reply-To: <75b66ecd0709202015u61611827x4bf77c8ad25ccbfe@mail.gmail.com>
+	Fri, 21 Sep 2007 12:37:13 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.61.0709211009490.8148@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,33 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Krzysztof Helt <krzysztof.h1@gmail.com>, alsa-devel@alsa-project.org, Rene Herman <rene.herman@gmail.com>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Sep 2007, Lee Revell wrote:
-> On 9/20/07, Trent Piepho <xyzzy@speakeasy.org> wrote:
-> > It's also worth noting that only local interrupts are disabled, not global
-> > interrupts.  Absent a spin-lock, an SMP system can still have an irq
-> > handler run while another thread on another CPU has interupts disabled.
-> >
-> > > I am not expert on this but following your reasoning any core kernel code
-> > > (vm, scheduler) could not be interrupt-safe because most of interrupt handlers
-> > > are in drivers and the core has no idea that drivers exist.
-> >
-> > None of the variables used by drivers' interrupt handlers are modified by
-> > the core kernel code.  In this case, chip->playback_substream and
-> > chip->record_substream are the relevant variables.  They are used
-> > non-atomically from the irq handler, so any code which modifies them must
-> > be protected from the irq handler.
+On Fri, 21 Sep 2007, Jaroslav Kysela wrote:
+
+>> I posted last week because I am getting lockups when portaudio calls
+>> snd_pcm_drain, and snd_pcm_rate_drain calls snd_pcm_wait on its slave.
+>>
+>> Now that I've looked at this more, I'm seeing that it involves dmix, since
+>> a dmix plugin is behind the rate plugin.
+>>
+>> The dmix code in alsa-lib is setting a xrun state because
+>> snd_pcm_mmap_playback_avail returns a large value.
+>>
+>> snd_pcm_wait is then called on the slave of the rate pcm, which is a pcm
+>> with a type of SND_PCM_TYPE_ROUTE whose slave is the dmix, but the route
+>> pcm is returning a different value for snd_pcm_mmap_avail than the dmix
+>> pcm, so it is not triggering snd_pcm_wait to check for a xrun.
+>>
+> I think that better fix is to change the code in snd_pcm_rate_drain(). You
+> can set avail_min to 1 there, so condition in snd_pcm_wait() will match.
 >
-> Most ALSA drivers would not enable the device interrupt until trigger
-> START, and disable them in trigger STOP.  So your interrupt should
-> never be enabled during open()/close().
+> Does this patch help?
+>
+> diff -r 68d71239d651 src/pcm/pcm_rate.c
+> --- a/src/pcm/pcm_rate.c	Thu Sep 20 13:20:03 2007 +0200
+> +++ b/src/pcm/pcm_rate.c	Fri Sep 21 10:14:41 2007 +0200
+> @@ -1076,10 +1076,10 @@ static int snd_pcm_rate_drain(snd_pcm_t
+> 		snd_pcm_uframes_t size, ofs, saved_avail_min;
+> 		snd_pcm_sw_params_t sw_params;
+>
+> -		/* temporarily set avail_min to one period */
+> +		/* temporarily set avail_min to one */
+> 		sw_params = rate->sw_params;
+> 		saved_avail_min = sw_params.avail_min;
+> -		sw_params.avail_min = rate->gen.slave->period_size;
+> +		sw_params.avail_min = 1;
+> 		snd_pcm_sw_params(rate->gen.slave, &sw_params);
+>
+> 		size = rate->appl_ptr - rate->last_commit_ptr;
+>
+> 						Jaroslav
 
-Multiple substreams per device.  One could call open or close on one
-substream while another is active.
+Yes, that also works.
 
-Just because one has told the device to stop generating interrupts, doesn't
-mean there isn't a pending interrupt already being handled.  That's what
-synchronize_irq() is for.
+Thanks,
+-Mike
