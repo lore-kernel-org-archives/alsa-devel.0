@@ -1,18 +1,29 @@
-From: Rene Herman <rene.herman@gmail.com>
-Subject: Re: [PATCH] New Aztech Sound Galaxy driver
-Date: Sat, 22 Sep 2007 08:06:36 +0200
-Message-ID: <46F4B0EC.5080709@gmail.com>
-References: <46F26571.501@gmail.com> <s5habrhqz3v.wl%tiwai@suse.de>
+From: "Piotr Makowski" <oponek@gmail.com>
+Subject: Re: ESI MAYA44 driver status
+Date: Sat, 22 Sep 2007 08:19:15 +0200
+Message-ID: <87988a970709212319u61508e01ma60d06222c405590@mail.gmail.com>
+References: <87988a970708260156j3bee456djedcea8c74c54991f@mail.gmail.com>
+	<s5hlkbv3mku.wl%tiwai@suse.de>
+	<87988a970709020103h6b527835hc64d045e22e0346f@mail.gmail.com>
+	<46DAAB0B.8060500@gmail.com>
+	<92a12cdb0709021050w2e4791d8te54ab3c2e68e5110@mail.gmail.com>
+	<46DB0B2D.5090401@gmail.com>
+	<92a12cdb0709030144i26385a85mf2ef4b9ee0611c1b@mail.gmail.com>
+	<46DBE1F9.2000308@gmail.com>
+	<965c08610709210117q60a3c2fcg81c8af2cc2d4a587@mail.gmail.com>
+	<965c08610709210126x7e127d28of1ce47276bf624d7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C846246FE
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3860D24703
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Sep 2007 08:07:59 +0200 (CEST)
-In-Reply-To: <s5habrhqz3v.wl%tiwai@suse.de>
+	Sat, 22 Sep 2007 08:19:23 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so1410086wag
+	for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2007 23:19:15 -0700 (PDT)
+In-Reply-To: <965c08610709210126x7e127d28of1ce47276bf624d7@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +33,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/20/2007 02:51 PM, Takashi Iwai wrote:
+If anybody would like to help with ESI MAYA44 PCI please bid on getacoder -
+we offer up to 300$ for the driver
+http://www.getacoder.com/projects/esi_maya_pci_alsa_driver_59542.html
 
-> At Thu, 20 Sep 2007 14:20:01 +0200,
-> Rene Herman wrote:
+Please don't start working on it without bidding and before your bid is
+accepted.
 
->> lib.c was split off in preparation of having snd-azt2320 use it as well
->> and generally containing non soundgalaxy specific code that might at
->> some point make it into an isa/lib.c or something. It's tiny, so it's
->> not constructed as a helper module but simply compiled into both
->> drivers.
-> 
-> This doesn't work if both modules can be loaded at the same time in 
-> theory.  You'll get symbol crashes.  To avoid this, make all functions 
-> static and include from both, or make it a library module.
+Thank you!
 
-Hrmmpf. Yes.
-
->> Given that they are new drivers with new names, they shouldn't disturb
->> anything and can as far as I'm concerned make 1.0.15 but if you feel
->> it's too late (and/or don't want the two seperate drivers), so be it. I
->> can also submit a next patch removing the old sgalaxy driver now or
->> just wait with that one...
-> 
-> Well, I feel we can work better on this after 1.0.15.  RC standas for 
-> release-candiate, after all :)
-
-Sure. With new drivers, you can sort of by definition not be introducing 
-regressions (well, other than of the type above, that is...) but oh well, 
-hardly any magic to 1.0.15. I'll check what my older I38-MMSN803 needs and 
-get that one in as well then and also redo azt2320 using some common code.
-
-I have a question about that by the way: ALSA ISA-PnP drivers today allow to 
-manually set resource values through specifying them as module parameters 
-and I've always really disliked that as a rather major layering violation.
-
-With respect to the high-level interface, ISA-PnP isn't all that different 
-from PCI and as with PCI the expected use is not specifying parameters and 
-just having the system pick/tell you which resources it's using. Now with 
-ISA-PnP you _can_ actually change them but I very much believe that in the 
-few odd cases where someone might actually want to do that, it should be 
-done not in soundcard drivers but at the correct layer (the PnP layer allows 
-to echo values into sysfs for this). Especially in mixed legacy/pnp drivers, 
-I feel that the current setup is mostly just confusing and as said, a 
-layering violation.
-
-As such -- would you terribly mind if I not put in the pnp_resource_change() 
-stuff in rewritten and/or cleaned up ISA-PnP drivers?
-
-Rene.
+Regards,
+Piotr
