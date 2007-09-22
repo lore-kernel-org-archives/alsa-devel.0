@@ -1,25 +1,18 @@
-From: ST <st@iss.tu-darmstadt.de>
-Subject: Tascam US122 on ARM [PATCH] and error :-(
-Date: Fri, 21 Sep 2007 22:48:47 +0200
-Message-ID: <200709212248.47757.st@iss.tu-darmstadt.de>
+From: Rene Herman <rene.herman@gmail.com>
+Subject: Re: [PATCH] New Aztech Sound Galaxy driver
+Date: Sat, 22 Sep 2007 08:06:36 +0200
+Message-ID: <46F4B0EC.5080709@gmail.com>
+References: <46F26571.501@gmail.com> <s5habrhqz3v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lnx131.hrz.tu-darmstadt.de (lnx131.hrz.tu-darmstadt.de
-	[130.83.174.25]) by alsa0.perex.cz (Postfix) with ESMTP id A38B924684
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C846246FE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Sep 2007 22:49:11 +0200 (CEST)
-Received: from mailserver3.hrz.tu-darmstadt.de (lnx116.hrz.tu-darmstadt.de
-	[130.83.174.28])
-	by lnx131.hrz.tu-darmstadt.de (8.13.4/8.12.10) with ESMTP id
-	l8LKmskT011666
-	for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2007 22:48:54 +0200
-Received: from [213.157.27.41] (helo=IP-213157027041.dialin.heagmedianet.de)
-	by mailserver3.hrz.tu-darmstadt.de with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_128_CBC_SHA:16) (Exim 4.50) id 1IYpQk-0002Fv-8L
-	for alsa-devel@alsa-project.org; Fri, 21 Sep 2007 22:48:54 +0200
-Content-Disposition: inline
+	Sat, 22 Sep 2007 08:07:59 +0200 (CEST)
+In-Reply-To: <s5habrhqz3v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,43 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On 09/20/2007 02:51 PM, Takashi Iwai wrote:
 
-I managed to get the snd_usb_usx2y driver running on an Linksys NSLU2.
-The whole stuff is running under debian etch. 
+> At Thu, 20 Sep 2007 14:20:01 +0200,
+> Rene Herman wrote:
 
-Kernel Version is 2.6.18 with Debian patches. Below is a little patch 
-to be able to enable the driver. Unfortunatly the driver gives the error:
+>> lib.c was split off in preparation of having snd-azt2320 use it as well
+>> and generally containing non soundgalaxy specific code that might at
+>> some point make it into an isa/lib.c or something. It's tiny, so it's
+>> not constructed as a helper module but simply compiled into both
+>> drivers.
+> 
+> This doesn't work if both modules can be loaded at the same time in 
+> theory.  You'll get symbol crashes.  To avoid this, make all functions 
+> static and include from both, or make it a library module.
 
-Sequence Error!(hcd_frame=7 ep=8in;wait=65539,frame=3).
-Most propably some urb of usb-frame 65539 is still missing.
-Cause could be too long delays in usb-hcd interrupt handling.
+Hrmmpf. Yes.
 
-Which is the output of the function usX2Y_error_sequence. This function is 
-only called from usbusx2yaudio.c:328. Since all numbers lie just above 65535
-(They are all between 65537 and 65540) is suspect that there is some wrap 
-around error, especially because the values are anded with a 16 bit mask 
-(0xffff). But unfortunatly i don't know to much about usb right now. Any 
-hints to resolve this problem?
+>> Given that they are new drivers with new names, they shouldn't disturb
+>> anything and can as far as I'm concerned make 1.0.15 but if you feel
+>> it's too late (and/or don't want the two seperate drivers), so be it. I
+>> can also submit a next patch removing the old sgalaxy driver now or
+>> just wait with that one...
+> 
+> Well, I feel we can work better on this after 1.0.15.  RC standas for 
+> release-candiate, after all :)
 
-The cpu runs with 266Mhz, so it could be that it would be really to slow, but 
-i really suspect an wrap-around error. Any hints or ideas to solve this 
-issue?
+Sure. With new drivers, you can sort of by definition not be introducing 
+regressions (well, other than of the type above, that is...) but oh well, 
+hardly any magic to 1.0.15. I'll check what my older I38-MMSN803 needs and 
+get that one in as well then and also redo azt2320 using some common code.
 
-Thanks
-ST
- 
---- a/sound/usb/Kconfig
-+++ b/sound/usb/Kconfig
-@@ -18,7 +18,7 @@ config SND_USB_AUDIO
+I have a question about that by the way: ALSA ISA-PnP drivers today allow to 
+manually set resource values through specifying them as module parameters 
+and I've always really disliked that as a rather major layering violation.
 
- config SND_USB_USX2Y
-        tristate "Tascam US-122, US-224 and US-428 USB driver"
--       depends on SND && USB && (X86 || PPC || ALPHA)
-+       depends on SND && USB && (X86 || PPC || ALPHA ||ARM)
-        select SND_HWDEP
-        select SND_RAWMIDI
-        select SND_PCM
+With respect to the high-level interface, ISA-PnP isn't all that different 
+from PCI and as with PCI the expected use is not specifying parameters and 
+just having the system pick/tell you which resources it's using. Now with 
+ISA-PnP you _can_ actually change them but I very much believe that in the 
+few odd cases where someone might actually want to do that, it should be 
+done not in soundcard drivers but at the correct layer (the PnP layer allows 
+to echo values into sysfs for this). Especially in mixed legacy/pnp drivers, 
+I feel that the current setup is mostly just confusing and as said, a 
+layering violation.
+
+As such -- would you terribly mind if I not put in the pnp_resource_change() 
+stuff in rewritten and/or cleaned up ISA-PnP drivers?
+
+Rene.
