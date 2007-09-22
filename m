@@ -1,22 +1,18 @@
-From: Shane Hathaway <shane.list.alsa-devel@hathawaymix.org>
-Subject: Re: Phoenix Audio Duet
-Date: Sat, 22 Sep 2007 03:22:37 -0600
-Message-ID: <46F4DEDD.9070806@hathawaymix.org>
-References: <46F2047A.2090605@hathawaymix.org>
+From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
+Subject: OSS sequencer mode and SNDCTL_SEQ_CTRLRATE
+Date: Sat, 22 Sep 2007 08:28:59 -0300
+Message-ID: <5f52f6d70709220428s1645574bice44b0a5bf63d202@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.afconnect.com (mail.afconnect.com [216.83.140.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 834001037EF
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id E984A103805
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Sep 2007 11:22:56 +0200 (CEST)
-Received: from [192.168.1.10] (tiger.hathawaymix.org [192.168.1.10])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by pigeon.hathawaymix.org (Postfix) with ESMTP id 09A8D7A4A87
-	for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2007 03:22:42 -0600 (MDT)
-In-Reply-To: <46F2047A.2090605@hathawaymix.org>
+	Sat, 22 Sep 2007 13:29:00 +0200 (CEST)
+Received: by rv-out-0910.google.com with SMTP id k20so864640rvb
+	for <alsa-devel@alsa-project.org>; Sat, 22 Sep 2007 04:28:59 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,29 +25,10 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Shane Hathaway wrote:
-> I just bought a set of Phoenix Audio Duets for VOIP conferencing.  They
-> are USB speakerphones with good echo cancellation.  They work fine with
-> the snd_usb_audio module, with one exception: I can't control the
-> microphone and speaker levels.  ALSA exposes some controls, but they
-> have no effect, so I have to shout to be heard.
+Hi,
 
-Update: it turns out that the Duet mixer controls work perfectly with
-alsamixer and amixer.  So once I have the card index (3 in my case), all
-I have to do is this:
-
-amixer -c 3 sset 'PCM',0 100%
-
-Once I did that, the microphone level was very good.
-
-However, mysteriously, the microphone level control in kmix is not
-working (it does not generate any USB events at all) and neither of the
-level controls in Ekiga is working.  My system is Gentoo, I'm running
-Linux 2.6.22, and my alsa-lib is version 1.0.15_rc2.  I've seen similar
-behavior on two Ubuntu Dapper boxes.  I intend to look into these problems.
-
-So I just thought I'd let everyone know that ALSA is fully compatible
-with the Duet after all.  Both kmix and Ekiga seem to have trouble with
-the level controls, but at least you can fall back to amixer or alsamixer.
-
-Shane
+Using the OSS sequencer mode of ALSA, I noticed that a request for
+SNDCTL_SEQ_CTRLRATE always returns 100 regardless of the kernel HZ
+value. I therefore assume that the OSS sequencer mode always works at
+this rate, unlike real OSS which varies with the kernel HZ, is that
+correct?
