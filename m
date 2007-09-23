@@ -1,21 +1,19 @@
-From: Steven Young <sdyoung@miranda.org>
-Subject: Re: Sound trouble with MCP61 chipset.
-Date: Sat, 22 Sep 2007 22:05:27 -0400
-Message-ID: <20070923020526.GK30453@miranda.org>
-References: <20070918180221.GI29734@miranda.org> <s5hy7f1pfzn.wl%tiwai@suse.de>
-	<20070921164151.GE30453@miranda.org> <s5hbqbwotmy.wl%tiwai@suse.de>
-	<1190428691.9924.20.camel@razman.gruemaster.com>
-	<20070922181509.GJ30453@miranda.org>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: race conditions in alsa core
+Date: Sun, 23 Sep 2007 03:14:47 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0709221715360.22501@shell2.speakeasy.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="289735540-2009035795-1190542487=:22501"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from miranda.org (miranda.org [216.93.242.2])
-	by alsa0.perex.cz (Postfix) with SMTP id 3DECF247AD
+Received: from mail3.sea5.speakeasy.net (mail3.sea5.speakeasy.net
+	[69.17.117.5]) by alsa0.perex.cz (Postfix) with ESMTP id 9AFA8247FF
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Sep 2007 04:05:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20070922181509.GJ30453@miranda.org>
+	Sun, 23 Sep 2007 12:14:50 +0200 (CEST)
+Received: from shell2.sea5.speakeasy.net ([69.17.116.3])
+	(envelope-sender <xyzzy@speakeasy.org>)
+	by mail3.sea5.speakeasy.net (qmail-ldap-1.03) with AES256-SHA encrypted
+	SMTP for <alsa-devel@alsa-project.org>; 23 Sep 2007 10:14:47 -0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,16 +26,237 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 22, 2007 at 02:15:09PM -0400, Steven Young wrote:
->   Thanks to everyone for their help! I am listening to Bust A Move in
-> stereo at this very instant.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-  Hi,
+--289735540-2009035795-1190542487=:22501
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-  I may have spoken too soon.  While I can now use both left and right
-output channels, I can't get any input off the microphone port.  When I
-turn up mic boost in alsamixer, I can hear what's coming in the
-microphone come out my speakers, but it never shows up on /dev/audio or
-/dev/dsp.
+In the process of trying to discover that kind of locking ALSA provides to a
+driver and what the driver must take care of itself, I think I have found some
+race conditions inside the alsa core.
 
-  Steve.
+I think there are likely quite a few, but this example was one of the easiest
+to prove.
+
+ALSA uses unlocked_ioctl, which means ioctl calls aren't protected by the BKL
+and may run at the same time.
+
+Some ioctls, for instance HW_PARAMS, don't appear to have any locking done by
+ALSA.  It's entirely possible for two hw_params calls to run at the same time
+on the same substream, and the ALSA core (and probably many drivers too) can't
+handle this.
+
+The following patch helps to create a larger window for the race condition, so
+that it can be triggered consistently.
+
+--- a/sound/core/pcm_native.c   Tue Sep 04 09:02:06 2007 +0000
++++ b/sound/core/pcm_native.c   Sat Sep 22 17:12:37 2007 -0700
+@@ -411,6 +411,7 @@ static int snd_pcm_hw_params(struct snd_
+ 	runtime->channels = params_channels(params);
+ 	runtime->rate = params_rate(params);
+ 	runtime->period_size = params_period_size(params);
++	{ static unsigned long x=1; if(test_and_change_bit(0, &x)) msleep(10); }
+ 	runtime->periods = params_periods(params);
+ 	runtime->buffer_size = params_buffer_size(params);
+ 	runtime->tick_time = params_tick_time(params);
+
+This causes every other call to snd_pcm_hw_params() to have a 10ms delay
+between setting the period size and period count.  If there are two calls
+within 10ms, the period count should come from the first call (which slept),
+while the period size will be from the second call.
+
+My test program will call the HW_PARAMS ioctl twice from different threads
+running at the same time.  The first call will ask for the maximum number of
+periods with minimum size, the second call for the minimum number of periods
+of maximum size.
+
+When prepare is called, we discover that the runtime is set for the maximum
+number of periods of maximum size, which exceeds the buffer size.  Of course
+even if it didn't exceed the buffer size, the params should be from one call
+or the other, not some random combination of both.
+
+I've attaching a very simple dummy ALSA driver which shows this.  All it does
+is print timestamps and a few parameters when the various callback functions
+are invoked.  The output looks like this:
+
+as_open - 0.084 us
+as_hw_params - 552.864 us periods 128, period size 1024
+as_hw_params - 589.996 us periods 1, period size 131072
+as_prepare - 11065.307 us periods 128, period size 131072
+as_close - 11278.229 us
+
+Notice how in prepare the runtime has parameters that are a combination of the
+two hw_params calls.  This test program should trigger the same race with any
+other ALSA driver.  Just adjust the period count and size.
+
+The test program doesn't use the ALSA lib.  It does need the headers from the
+alsa lib package to compile, since this seems to be the only place where user
+space headers for the device interface are provided.
+--289735540-2009035795-1190542487=:22501
+Content-Type: TEXT/x-csrc; charset=US-ASCII; name="test_hwparams.c"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.58.0709230314470.22501@shell2.speakeasy.net>
+Content-Description: 
+Content-Disposition: attachment; filename="test_hwparams.c"
+
+LyogVXNpbmcgQUxTQSB3aXRoIHRocmVhZHMgdGVzdCBwcm9ncmFtDQogICBD
+b3B5cmlnaHQgKEMpIDIwMDcgVHJlbnQgUGllcGhvIDx4eXp6eUBzcGVha2Vh
+c3kub3JnPiAqLw0KDQovKiBUbyBjb21waWxlLCBwcm92aWRlIHRoZSBwYXRo
+IHRvIHRoZSBhbHNhLWxpYiBpbmNsdWRlIGRpcmVjdG9yeS4gZS5nLg0KICAg
+Z2NjIC1PMiAtV2FsbCAtSWFsc2EtbGliL2luY2x1ZGUgLXB0aHJlYWQgdGVz
+dF9od3BhcmFtcy5jDQogICBUaGlzIGlzIG5lY2Vzc2FyeSB0byBnZXQgdGhl
+IHR5cGVzIGFuZCBkZWZpbmVzIGZvciB1c2luZyB0aGUgQUxTQQ0KICAgZGV2
+aWNlIGRpcmVjdGx5LiAgVGhlIGFsc2Ega2VybmVsIGluY2x1ZGVzIGRvbid0
+IHdvcmsgZnJvbSB1c2Vyc3BhY2UuICovDQoNCg0KI2luY2x1ZGUgPHN0ZGlv
+Lmg+DQojaW5jbHVkZSA8c3RkbGliLmg+DQojaW5jbHVkZSA8dW5pc3RkLmg+
+DQojaW5jbHVkZSA8c2lnbmFsLmg+DQojaW5jbHVkZSA8c3lzL3R5cGVzLmg+
+DQojaW5jbHVkZSA8c3lzL3N0YXQuaD4NCiNpbmNsdWRlIDxzeXMvaW9jdGwu
+aD4NCiNpbmNsdWRlIDxzeXMvcG9sbC5oPg0KI2luY2x1ZGUgPGZjbnRsLmg+
+DQojaW5jbHVkZSA8c3RkYXJnLmg+DQojaW5jbHVkZSA8bGltaXRzLmg+DQoj
+aW5jbHVkZSA8cHRocmVhZC5oPg0KI2luY2x1ZGUgImxvY2FsLmgiDQojaW5j
+bHVkZSAic291bmQvYXNvdW5kLmgiDQojaW5jbHVkZSAiZ2xvYmFsLmgiDQoj
+aW5jbHVkZSAiaW5wdXQuaCINCiNpbmNsdWRlICJvdXRwdXQuaCINCiNpbmNs
+dWRlICJjb25mLmgiDQojaW5jbHVkZSAicGNtLmgiDQoNCnN0YXRpYyBjb25z
+dCBjaGFyICpkZXYgPSAiL2Rldi9zbmQvcGNtQzFEMHAiOw0KDQpzdHJ1Y3Qg
+aHdfcGFyYW1zX2FyZ3Mgew0KICAgIGludCBmZDsNCiAgICBpbnQgcGVyaW9k
+czsNCiAgICBpbnQgcGVyaW9kX3NpemU7DQp9Ow0KDQpzdGF0aWMgdm9pZCAq
+aHdfcGFyYW1zKHZvaWQgKmFyZykNCnsNCiAgICBzdHJ1Y3QgaHdfcGFyYW1z
+X2FyZ3MgKmFyZ3MgPSBhcmc7DQogICAgc25kX3BjbV9od19wYXJhbXNfdCBw
+YXJhbXMgPSB7LnJtYXNrID0gfjBVLCAuaW5mbyA9IH4wVX07DQogICAgc3Ry
+dWN0IF9zbmRfaW50ZXJ2YWwgKmludGVydmFsOw0KICAgIGludCByOw0KDQog
+ICAgbWVtc2V0KHBhcmFtcy5tYXNrcywgMHhmZiwgU05EUlZfTUFTS19NQVgv
+OCAqDQogICAgICAgICAgIChTTkRSVl9QQ01fSFdfUEFSQU1fTEFTVF9NQVNL
+IC0gU05EUlZfUENNX0hXX1BBUkFNX0ZJUlNUX01BU0sgKyAxKSk7DQogICAg
+Zm9yKHI9MDsgcjw9U05EUlZfUENNX0hXX1BBUkFNX0xBU1RfSU5URVJWQUwt
+U05EUlZfUENNX0hXX1BBUkFNX0ZJUlNUX0lOVEVSVkFMOyByKyspDQoJcGFy
+YW1zLmludGVydmFsc1tyXS5tYXggPSBVSU5UX01BWDsNCg0KICAgIGludGVy
+dmFsID0gcGFyYW1zLmludGVydmFscyArIChTTkRSVl9QQ01fSFdfUEFSQU1f
+UEVSSU9EX1NJWkUgLSBTTkRSVl9QQ01fSFdfUEFSQU1fRklSU1RfSU5URVJW
+QUwpOw0KICAgIGludGVydmFsLT5taW4gPSBpbnRlcnZhbC0+bWF4ID0gYXJn
+cy0+cGVyaW9kX3NpemU7DQogICAgaW50ZXJ2YWwgPSBwYXJhbXMuaW50ZXJ2
+YWxzICsgKFNORFJWX1BDTV9IV19QQVJBTV9QRVJJT0RTIC0gU05EUlZfUENN
+X0hXX1BBUkFNX0ZJUlNUX0lOVEVSVkFMKTsNCiAgICBpbnRlcnZhbC0+bWlu
+ID0gaW50ZXJ2YWwtPm1heCA9IGFyZ3MtPnBlcmlvZHM7DQogICAgciA9IGlv
+Y3RsKGFyZ3MtPmZkLCBTTkRSVl9QQ01fSU9DVExfSFdfUEFSQU1TLCAmcGFy
+YW1zKTsNCiAgICBwcmludGYoImh3X3BhcmFtcyA9ICVkXG4iLCByKTsNCiAg
+ICByZXR1cm4gTlVMTDsNCn0NCg0Kc3RhdGljIHZvaWQgKnByZXBhcmUodm9p
+ZCAqYXJnKQ0Kew0KICAgIGludCBmZCA9IChpbnQpYXJnLCByOw0KDQogICAg
+ciA9IGlvY3RsKGZkLCBTTkRSVl9QQ01fSU9DVExfUFJFUEFSRSk7DQogICAg
+cHJpbnRmKCJwcmVwYXJlID0gJWRcbiIsIHIpOw0KICAgIHJldHVybiBOVUxM
+Ow0KfQ0KDQppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQ0Kew0K
+ICAgIGludCBmZDsNCiAgICBwdGhyZWFkX3QgdGhyZWFkOw0KICAgIHN0cnVj
+dCBod19wYXJhbXNfYXJncyBhcmcxLCBhcmcyOw0KDQogICAgaWYoYXJnYz4x
+KSBkZXYgPSBhcmd2WzFdOw0KDQogICAgZmQgPSBvcGVuKGRldiwgT19SRFdS
+KTsNCiAgICBwcmludGYoImZkID0gJWRcbiIsIGZkKTsNCg0KICAgIGFyZzEu
+ZmQgPSBhcmcyLmZkID0gZmQ7DQogICAgYXJnMS5wZXJpb2Rfc2l6ZSA9IDEw
+MjQ7IGFyZzEucGVyaW9kcyA9IDEyODsNCiAgICBhcmcyLnBlcmlvZF9zaXpl
+ID0gMTI4KjEwMjQ7IGFyZzIucGVyaW9kcyA9IDE7DQogICAgcHRocmVhZF9j
+cmVhdGUoJnRocmVhZCwgTlVMTCwgaHdfcGFyYW1zLCAmYXJnMSk7DQogICAg
+aHdfcGFyYW1zKCZhcmcyKTsNCiAgICBwdGhyZWFkX2pvaW4odGhyZWFkLCBO
+VUxMKTsNCg0KICAgIHByZXBhcmUoKHZvaWQqKWZkKTsNCiAgICByZXR1cm4g
+MDsNCn0NCg==
+
+--289735540-2009035795-1190542487=:22501
+Content-Type: TEXT/x-csrc; charset=US-ASCII; name="alsa-simple.c"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.58.0709230314471.22501@shell2.speakeasy.net>
+Content-Description: 
+Content-Disposition: attachment; filename="alsa-simple.c"
+
+LyogVmVyeSBzaW1wbGUgZHVtbXkgQUxTQSBkcml2ZXIuDQogICBDb3B5cmln
+aHQgKEMpIDIwMDcgVHJlbnQgUGllcGhvIDx4eXp6eUBzcGVha2Vhc3kub3Jn
+PiAqLw0KDQojaW5jbHVkZSA8bGludXgvdmVyc2lvbi5oPg0KI2lmIExJTlVY
+X1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDIsNiwxOSkNCiNpbmNs
+dWRlIDxsaW51eC9jb25maWcuaD4NCiNlbmRpZg0KI2luY2x1ZGUgPGxpbnV4
+L21vZHVsZS5oPg0KI2luY2x1ZGUgPGxpbnV4L21vZHVsZXBhcmFtLmg+DQoj
+aW5jbHVkZSA8bGludXgvaW5pdC5oPg0KI2luY2x1ZGUgPGxpbnV4L3NjaGVk
+Lmg+DQoNCiNpbmNsdWRlIDxzb3VuZC9kcml2ZXIuaD4NCiNpbmNsdWRlIDxz
+b3VuZC9jb3JlLmg+DQojaW5jbHVkZSA8c291bmQvcGNtLmg+DQojaW5jbHVk
+ZSA8c291bmQvcGNtX3BhcmFtcy5oPg0KI2luY2x1ZGUgPHNvdW5kL2luaXR2
+YWwuaD4NCg0KTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOw0KDQojaW5jbHVkZSA8
+bGludXgvY2FsYzY0Lmg+DQojZGVmaW5lIE1IWgkxNTQ0LjQyNg0KI2RlZmlu
+ZSBJTlQJKHVuc2lnbmVkIGludCkoTUhaICogKDE8PDEyKSArIDAuNSkNCiNk
+ZWZpbmUgRlJBQwkodW5zaWduZWQgaW50KShNSFogKiAoMTw8MjEpIC8gMTAw
+MC4wICsgMC41KQ0KI2RlZmluZSB0aW1lc3RhbXAoc3RyLCBhcmdzLi4uKQl7
+IHU2NCBfdGltZTsgdTMyIF9yZW07IHJkdHNjbGwoX3RpbWUpOyBcDQoJX3Rp
+bWUgPSAoX3RpbWUgLSBjaGlwLT5zdGFydHRpbWUpPDwxMjsgXA0KCV9yZW0g
+PSBkb19kaXYoX3RpbWUsIElOVCk7IFwNCglwcmludGsoIiVzIC0gJXUuJTAz
+dSB1cyAiIHN0ciAiXG4iLCBfX0ZVTkNUSU9OX18sIFwNCgkJKHVuc2lnbmVk
+IGludClfdGltZSwgKF9yZW0gPDwgOSkgLyBGUkFDICwgIyMgYXJncyk7IH0N
+Cg0Kc3RydWN0IHNuZF9hcyB7DQoJdTY0CXN0YXJ0dGltZTsNCn07DQoNCnN0
+YXRpYyBzdHJ1Y3Qgc25kX3BjbV9oYXJkd2FyZSBhc19odyA9IHsNCgkuaW5m
+byA9IFNORFJWX1BDTV9JTkZPX01NQVAgfCBTTkRSVl9QQ01fSU5GT19NTUFQ
+X1ZBTElEIHwNCgkgICAgICAgIFNORFJWX1BDTV9JTkZPX0JMT0NLX1RSQU5T
+RkVSIHwgU05EUlZfUENNX0lORk9fSU5URVJMRUFWRUQsDQoJLmZvcm1hdHMg
+PSBTTkRSVl9QQ01fRk1UQklUX1U4LA0KCS5yYXRlcyA9IFNORFJWX1BDTV9S
+QVRFXzgwMDBfNDgwMDAsDQoJLnJhdGVfbWluID0gODAwMCwNCgkucmF0ZV9t
+YXggPSA0ODAwMCwNCgkuY2hhbm5lbHNfbWluID0gMSwNCgkuY2hhbm5lbHNf
+bWF4ID0gMSwNCgkuYnVmZmVyX2J5dGVzX21heCA9ICgxMjggKiAxMDI0KSwN
+CgkucGVyaW9kX2J5dGVzX21pbiA9IDEwMjQsDQoJLnBlcmlvZF9ieXRlc19t
+YXggPSAoMTI4ICogMTAyNCksDQoJLnBlcmlvZHNfbWluID0gMSwNCgkucGVy
+aW9kc19tYXggPSAxMjgsDQp9Ow0KDQpzdGF0aWMgaW50IGFzX29wZW4oc3Ry
+dWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pDQp7DQoJc3RydWN0
+IHNuZF9hcyAqY2hpcCA9IHNuZF9wY21fc3Vic3RyZWFtX2NoaXAoc3Vic3Ry
+ZWFtKTsNCglzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lID0gc3Vi
+c3RyZWFtLT5ydW50aW1lOw0KCWludCBlcnI7DQoNCglydW50aW1lLT5odyA9
+IGFzX2h3Ow0KCXJkdHNjbGwoY2hpcC0+c3RhcnR0aW1lKTsNCgllcnIgPSBz
+bmRfcGNtX2h3X2NvbnN0cmFpbnRfaW50ZWdlcihydW50aW1lLCBTTkRSVl9Q
+Q01fSFdfUEFSQU1fUEVSSU9EUyk7DQoJdGltZXN0YW1wKCIiKTsNCglyZXR1
+cm4gZXJyOw0KfQ0KDQpzdGF0aWMgaW50IGFzX2Nsb3NlKHN0cnVjdCBzbmRf
+cGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQ0Kew0KCXN0cnVjdCBzbmRfYXMg
+KmNoaXAgPSBzbmRfcGNtX3N1YnN0cmVhbV9jaGlwKHN1YnN0cmVhbSk7DQoN
+Cgl0aW1lc3RhbXAoIiIpOw0KCXJldHVybiAwOw0KfQ0KDQpzdGF0aWMgaW50
+IGFzX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0
+cmVhbSwgDQoJCQlzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKmh3X3BhcmFt
+cykNCnsNCglzdHJ1Y3Qgc25kX2FzICpjaGlwID0gc25kX3BjbV9zdWJzdHJl
+YW1fY2hpcChzdWJzdHJlYW0pOw0KDQoJdGltZXN0YW1wKCJwZXJpb2RzICVk
+LCBwZXJpb2Qgc2l6ZSAlZCIsIHBhcmFtc19wZXJpb2RzKGh3X3BhcmFtcyks
+IA0KCSAgICAgICAgICBwYXJhbXNfcGVyaW9kX3NpemUoaHdfcGFyYW1zKSk7
+DQoJcmV0dXJuIDA7DQp9DQoNCnN0YXRpYyBpbnQgYXNfcHJlcGFyZShzdHJ1
+Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkNCnsNCglzdHJ1Y3Qg
+c25kX2FzICpjaGlwID0gc25kX3BjbV9zdWJzdHJlYW1fY2hpcChzdWJzdHJl
+YW0pOw0KCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBzdWJz
+dHJlYW0tPnJ1bnRpbWU7DQoNCgl0aW1lc3RhbXAoInBlcmlvZHMgJWQsIHBl
+cmlvZCBzaXplICVsdSIsIHJ1bnRpbWUtPnBlcmlvZHMsIHJ1bnRpbWUtPnBl
+cmlvZF9zaXplKTsNCglyZXR1cm4gMDsNCn0NCg0Kc3RhdGljIGludCBhc190
+cmlnZ2VyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLCBp
+bnQgY21kKQ0Kew0KCXN0cnVjdCBzbmRfYXMgKmNoaXAgPSBzbmRfcGNtX3N1
+YnN0cmVhbV9jaGlwKHN1YnN0cmVhbSk7DQoNCgl0aW1lc3RhbXAoImNtZCAl
+ZCIsIGNtZCk7DQoJcmV0dXJuIDA7DQp9DQoNCnN0YXRpYyBzbmRfcGNtX3Vm
+cmFtZXNfdCBhc19wb2ludGVyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
+c3Vic3RyZWFtKQ0Kew0KCXN0cnVjdCBzbmRfYXMgKmNoaXAgPSBzbmRfcGNt
+X3N1YnN0cmVhbV9jaGlwKHN1YnN0cmVhbSk7DQoNCgl0aW1lc3RhbXAoIiIp
+Ow0KCXJldHVybiAwOw0KfQ0KDQpzdGF0aWMgc3RydWN0IHNuZF9wY21fb3Bz
+IGFzX3BjbV9vcHMgPSB7DQoJLm9wZW4gPSBhc19vcGVuLA0KCS5jbG9zZSA9
+IGFzX2Nsb3NlLA0KCS5pb2N0bCA9IHNuZF9wY21fbGliX2lvY3RsLA0KCS5o
+d19wYXJhbXMgPSBhc19od19wYXJhbXMsDQoJLnByZXBhcmUgPSBhc19wcmVw
+YXJlLA0KCS50cmlnZ2VyID0gYXNfdHJpZ2dlciwNCgkucG9pbnRlciA9IGFz
+X3BvaW50ZXIsDQp9Ow0KDQpzdGF0aWMgc3RydWN0IHNuZF9jYXJkICpjYXJk
+Ow0KDQpzdGF0aWMgaW50IF9faW5pdCBpbml0KHZvaWQpDQp7DQoJc3RydWN0
+IHNuZF9hcyAqY2hpcDsNCglzdHJ1Y3Qgc25kX3BjbSAqcGNtOw0KCWludCBl
+cnI7DQoNCgljYXJkID0gc25kX2NhcmRfbmV3KC0xLCBTTkRSVl9ERUZBVUxU
+X1NUUjEsIFRISVNfTU9EVUxFLCBzaXplb2YoKmNoaXApKTsNCgljaGlwID0g
+Y2FyZC0+cHJpdmF0ZV9kYXRhOw0KCXNuZF9wY21fbmV3KGNhcmQsICJUZXN0
+IiwgMCwgMSwgMSwgJnBjbSk7DQoJcGNtLT5wcml2YXRlX2RhdGEgPSBjaGlw
+Ow0KCXNuZF9wY21fc2V0X29wcyhwY20sIFNORFJWX1BDTV9TVFJFQU1fQ0FQ
+VFVSRSwgJmFzX3BjbV9vcHMpOw0KCXNuZF9wY21fc2V0X29wcyhwY20sIFNO
+RFJWX1BDTV9TVFJFQU1fUExBWUJBQ0ssICZhc19wY21fb3BzKTsNCg0KCWVy
+ciA9IHNuZF9jYXJkX3JlZ2lzdGVyKGNhcmQpOw0KCXJldHVybiBlcnI7DQp9
+DQptb2R1bGVfaW5pdChpbml0KTsNCg0Kc3RhdGljIHZvaWQgX19leGl0IGV4
+aXQodm9pZCkNCnsNCiAgICAgICAgc25kX2NhcmRfZnJlZShjYXJkKTsNCgly
+ZXR1cm47DQp9DQptb2R1bGVfZXhpdChleGl0KTsNCg==
+
+--289735540-2009035795-1190542487=:22501
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--289735540-2009035795-1190542487=:22501--
