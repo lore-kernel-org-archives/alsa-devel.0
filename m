@@ -1,19 +1,23 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: about sound/core/pcm_lib.c:1997: capture read
- error (DMA or IRQ trouble?)
-Date: Wed, 26 Sep 2007 08:24:20 +0200
-Message-ID: <1190787860.12924.1212641403@webmail.messagingengine.com>
-References: <loom.20070926T031709-238@post.gmane.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: 1.0.15rc3
+Date: Wed, 26 Sep 2007 08:41:59 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0709260840080.8148@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 71B7F24131
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6D7B24345
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 Sep 2007 08:24:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <loom.20070926T031709-238@post.gmane.org>
+	Wed, 26 Sep 2007 08:41:59 +0200 (CEST)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	95873149BC7 for <alsa-devel@alsa-project.org>;
+	Wed, 26 Sep 2007 08:41:59 +0200 (CEST)
+Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	89BC984269 for <alsa-devel@alsa-project.org>;
+	Wed, 26 Sep 2007 08:41:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +27,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Akio <akioolin@gmail.com>, alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Akio write:
-> after long time amr-wb codec loopback test. (above 90 hours)
-> I got the following kernel message.  it comes from snd_pcm_lib_read1()
-> function. 
-> ALSA sound/core/pcm_lib.c:1997: capture read error (DMA or IRQ trouble?)
+Hello all,
 
-This error indicates that no interrupt has been received for ten
-seconds.
+	I put 1.0.15rc3 packages (driver, library) to the ALSA FTP server. 
+Please, report any critical bugs to release 1.0.15 final.
 
-I would have guessed that some 32-bit counter has overflowed, but at
-48 kHz, a frame counter would overflow after slightly less than
-25 hours.
+					Thanks,
+						Jaroslav
 
-
-HTH
-Clemens
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
