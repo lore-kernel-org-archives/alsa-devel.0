@@ -1,29 +1,15 @@
-From: Akio <akioolin@gmail.com>
-Subject: Re:
-	=?utf-8?q?about_sound/core/pcm=5Flib=2Ec=3A1997=3A_c?=
-	=?utf-8?q?apture_read_error_=28DMA_or_IRQ_trouble=3F=29?=
-Date: Thu, 27 Sep 2007 04:31:10 +0000 (UTC)
-Message-ID: <loom.20070927T042730-792@post.gmane.org>
-References: <loom.20070926T031709-238@post.gmane.org>
-	<1190787860.12924.1212641403@webmail.messagingengine.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Creative Labs XFi drivers.
+Date: Wed, 26 Sep 2007 22:29:57 -0700
+Message-ID: <1190870997.30667.140.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2AA8A1037EB
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id D15951037F0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Sep 2007 06:31:31 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Ial20-0006Gu-Sf
-	for alsa-devel@alsa-project.org; Thu, 27 Sep 2007 04:31:28 +0000
-Received: from cache8000-1.itri.org.tw ([61.61.254.9])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2007 04:31:20 +0000
-Received: from akioolin by cache8000-1.itri.org.tw with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2007 04:31:20 +0000
+	Thu, 27 Sep 2007 07:29:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,36 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <cladisch <at> fastmail.net> writes:
+Creative Labs has released a proprietary driver base for their XFi
+cards.  I downloaded it because it claims to have compatibility with
+alsa.  In fact, it requires alsa include files to be able to compile.  I
+haven't looked at the source yet (this information is all in the
+Readme.txt in the  main download) and probably won't (especially since I
+don't own a Creative Labs XFi card).
 
-> 
-> Akio write:
-> > after long time amr-wb codec loopback test. (above 90 hours)
-> > I got the following kernel message.  it comes from snd_pcm_lib_read1()
-> > function. 
-> > ALSA sound/core/pcm_lib.c:1997: capture read error (DMA or IRQ trouble?)
-> 
-> This error indicates that no interrupt has been received for ten
-> seconds.
-> 
-> I would have guessed that some 32-bit counter has overflowed, but at
-> 48 kHz, a frame counter would overflow after slightly less than
-> 25 hours.
-> 
-> HTH
-> Clemens
-> 
+What I don't understand, is are they allowed to use our code to build
+their drivers?  They use alsa core modules to interoperate (from what I
+can tell in the Readme.txt).  Also, this line in the License.txt is
+especially troubling:
 
 
-Thanks for Clemens. Could you tell me the counter's name and which layer does it?
-in alsa driver or in alsa lib or in alsa core module?
-BTW, when this error happened, what could I do?
-snd_pcm_prepare does not work.
 
-Thank you very much.
+> In the event that the Software includes Linux code or drivers, then, unless expressly stated to the contrary, such Linux
+> code and drivers are proprietary to Creative and all rights therein are reserved.
 
-Best Regards,
-Akio
+
+
+I'm deleting all but the big tarball I downloaded.  I'll delete it
+later.
+
+-- 
+Tobin Davis <tdavis@dsl-only.net>
