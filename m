@@ -1,26 +1,19 @@
-From: Akio <akioolin@gmail.com>
-Subject: using ALSA OSS Emulation interface in long time will
-	make voice delay
-Date: Fri, 28 Sep 2007 15:47:06 +0000 (UTC)
-Message-ID: <loom.20070928T153552-339@post.gmane.org>
+From: "Ma Begaj" <derliebegott@gmail.com>
+Subject: Asus M2NPV-VM snd_hda_intel problem - also with Alsa
+	1.0.15rc3
+Date: Fri, 28 Sep 2007 21:29:54 +0200
+Message-ID: <a72d33330709281229v1144cf03r31db37581ccb9a49@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id EAE7910381D
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86F0E10381D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Sep 2007 17:47:29 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1IbI3s-0006Id-QU
-	for alsa-devel@alsa-project.org; Fri, 28 Sep 2007 15:47:28 +0000
-Received: from 219-69-46-27.idc.static.giga.net.tw ([219.69.46.27])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2007 15:47:28 +0000
-Received: from akioolin by 219-69-46-27.idc.static.giga.net.tw with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2007 15:47:28 +0000
+	Fri, 28 Sep 2007 21:29:55 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so4140506wag
+	for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2007 12:29:54 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,23 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear All:
+Hi,
 
-   Is there any futher action to this topic "BF537Stamp Linphone audio falling 
-behind".
-   the URL is http://blackfin.uclinux.org/gf/project/uclinux-dist/forum/?
-action=ForumBrowse&forum_id=39&_forum_action=ForumMessageBrowse&thread_id=22524
+for the sweet love of ... does anyone have an idea how to make this
+sound chip working...
 
 
-   we have the same problem, but if we switch to alsa lib interface. the 
-   problem seems gone.
+I have Asus M2NPV-VM with AD1986A sound chip. I tried "model=3stack
+position_fix=1", but it does not help.
+
+surround does not work and sound mutes whenever I change volume.
+
+when I use model=ultra or eapd-laptop, stereo is at stable and I can
+change volume. but surround
 
 
-   Thanks in advance.
+I tried it with vanilla kernel 2.6.21.5/26.22.6 and snd_hda_intel from
+the kernel without any success. I even compiled Alsa 1.0.15rc3, but
+situation did no change.
 
 
-Best Regards,
-Akio
+anybody ... with any idea ... I would appreciate any help. any help at all.
+
+thanks.
+
+M.
