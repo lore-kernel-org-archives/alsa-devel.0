@@ -1,19 +1,31 @@
-From: "Ma Begaj" <derliebegott@gmail.com>
-Subject: Asus M2NPV-VM (AD1986A) - Surround does work,
-	snd-hda-intel dies on volume change
-Date: Fri, 28 Sep 2007 00:09:45 +0200
-Message-ID: <a72d33330709271509r4291e18dtf7339045858b7816@mail.gmail.com>
+From: Akio <akioolin@gmail.com>
+Subject: Re:
+	=?utf-8?q?about_sound/core/pcm=5Flib=2Ec=3A1997=3A_c?=
+	=?utf-8?q?apture_read_error_=28DMA_or_IRQ_trouble=3F=29?=
+Date: Fri, 28 Sep 2007 15:23:57 +0000 (UTC)
+Message-ID: <loom.20070928T151557-644@post.gmane.org>
+References: <loom.20070926T031709-238@post.gmane.org>
+	<1190787860.12924.1212641403@webmail.messagingengine.com>
+	<loom.20070927T042730-792@post.gmane.org>
+	<1190877245.11159.1212855119@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id 38DC7243A9
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9BBF010381B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Sep 2007 00:09:47 +0200 (CEST)
-Received: by rv-out-0910.google.com with SMTP id k20so2072113rvb
-	for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2007 15:09:45 -0700 (PDT)
-Content-Disposition: inline
+	Fri, 28 Sep 2007 17:26:17 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1IbHhq-0002qQ-W6
+	for alsa-devel@alsa-project.org; Fri, 28 Sep 2007 15:24:43 +0000
+Received: from 219-69-46-27.idc.static.giga.net.tw ([219.69.46.27])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2007 15:24:42 +0000
+Received: from akioolin by 219-69-46-27.idc.static.giga.net.tw with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2007 15:24:42 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,46 +38,48 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Clemens Ladisch <cladisch <at> fastmail.net> writes:
 
-Sorry if this email is not for devel mailing list, but this sounds to
-me like a bug or development problem. If I am wrong, I will post it on
-the user list.
+> 
+> Akio wrote:
+> > Clemens Ladisch <cladisch <at> fastmail.net> writes:
+> > > Akio write:
+> > > > after long time amr-wb codec loopback test. (above 90 hours)
+> > > > I got the following kernel message.  it comes from snd_pcm_lib_read1()
+> > > > function. 
+> > > > ALSA sound/core/pcm_lib.c:1997: capture read error (DMA or IRQ 
+trouble?)
+> > > 
+> > > This error indicates that no interrupt has been received for ten
+> > > seconds.
+> > > 
+> > > I would have guessed that some 32-bit counter has overflowed, but at
+> > > 48 kHz, a frame counter would overflow after slightly less than
+> > > 25 hours.
+> > 
+> > Thanks for Clemens. Could you tell me the counter's name and which layer 
+does it?
+> > in alsa driver or in alsa lib or in alsa core module?
+> 
+> I'm not aware of any such bug in the ALSA framework.  I'd guess this is
+> some problem with your driver.
+> 
+> What sample frequency are you using?
 
-And for the long email ... I just wanted to describe everything I tried.
+  in my case, the sampling rate is 16k, and test voice codec is amr-wb
+  the period size is 64bytes and period counts is 128.
+  what is the unit of the counter? period counts or samples?
 
+> > snd_pcm_prepare does not work.
+> 
+> What error does it return?
 
-I found a lot of messages about problems with sound chip AD1986A on
-motherboard Asus M2NPV-VM. It is almost always the same problem,
-surround does not work and sound mutes (module dies) when the user
-change volume. That is my problem too.
+  I use strerr to get the error message, and it tell me "Input/Output Error"
 
-I found a lot of solutions by using "model=3stack", sometimes with
-"position_fix=1", but that does not work for all the users. I checked
-the list, I read dozens of emails, but nothing helped.
+  I have to do the test again to make sure the exactly time and make sure
+  if the time exceed, the message will come out again or not.
 
-I found a few patches on the list, but all of them were for kernels < 2.6.22.
+  BTW, is there any other test should I have to do?
 
-I used Slackware 12.0 and model=3stack caused a terrible "weeping"
-sound on the rear left speaker, but the stereo worked. I read a lot of
-success stories with this motherboard and Ubuntu and after playing
-whole week long on Slackware (kernel 2.6.21.5 and 2.6.22.6), I decided
-to try it with Ubuntu Feisty (2.6.20 and 2.6.22.9), although I did not
-believe that Ubuntu should help. It actually helped partly because the
-weeping sound disappeared, but I had only stereo.
-
-When I changed the "Channel Mode" jack in alsamixer from 2ch to 6ch,
-sound muted and module died. The only way to get the sound back was to
-stop playing file, and rmmod/modprobe snd_hda_intel again.
-
-Using model=6stack gives me surround sound by using "speaker-test -c6
-..." (nice female voice guessed right every speaker)  but module was
-still dying as soon as I changed volume.
-
-
-Does someone have an idea what to do with this chip ... I am really
-desperate and beginning to hate this great motherboard ...
-
-Thanks a lot.
-
-M.
+> Regards,
+> Clemens
