@@ -1,19 +1,19 @@
-From: sh_okada@d4.dion.ne.jp
-Subject: New alsa lowlevel driver for the SE-200PCI and SE-90PCI
-Date: Mon, 01 Oct 2007 17:57:09 +0900
-Message-ID: <D16F245.16A0.sh_okada@d4.dion.ne.jp>
+From: Pengcheng Zou <pczou@redflag-linux.com>
+Subject: Capturing of Samsung Q1 Ultra (ALC262) does not work
+Date: Sat, 29 Sep 2007 20:14:09 +0800
+Message-ID: <200709292014.09195.pczou@redflag-linux.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dsmtp8.dion.ne.jp (mail.dion.ne.jp [211.5.1.96])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6607C24373
+Received: from redflag-linux.com (mail.redflag-linux.com [219.237.229.196])
+	by alsa0.perex.cz (Postfix) with SMTP id C0154243B8
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Oct 2007 10:57:21 +0200 (CEST)
-Received: from d4.dion.ne.jp (U004017.ppp.dion.ne.jp [218.222.4.17])
-	by dsmtp8.dion.ne.jp (8.11.7p3+Sun/8.11.7/050303) with SMTP id
-	l918v6N19061
-	for <alsa-devel@alsa-project.org>; Mon, 1 Oct 2007 17:57:06 +0900 (JST)
+	Sat, 29 Sep 2007 14:16:58 +0200 (CEST)
+Received: From pczou.redflag-linux.com[124.16.138.56] by
+	smtp.redflag-linux.com with Red Flag Webmail Server id 17713
+	for alsa-devel@alsa-project.org; Sat Sep 29 20:11:17 2007 +0800
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: sh_okada@d4.dion.ne.jp
 List-Id: alsa-devel@alsa-project.org
 
-HI. I mail from Japan.
+Hi,
 
-I wrote a driver for the SE-200PCI and SE-90PCI what are salling in Japan.
-And I want to merge it to current source tree.
-How should I do?
+capture function of the Samsung Q1 Ultra (using ALC262 codec) does not work. I 
+tried the most recent ALSA build (alsa-driver-1.0.15rc3), the playback works 
+well, however the recording does not work. 
 
-Thanks.
+Samsung Q1 (using AD1986A codec) has been supported already, wonder if there 
+is any patches for Q1 Ultra?
+
+please note Samsung released 2 types of UPMC, Q1 and Q1 Ultra. the Q1 ultra is 
+the one I have:
+  http://computers.pricegrabber.com/tablet-pcs/m/37616779/details/
+
+TIA,
+  -- Pengcheng
