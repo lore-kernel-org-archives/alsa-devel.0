@@ -1,18 +1,24 @@
-From: Pengcheng Zou <pczou@redflag-linux.com>
-Subject: Capturing of Samsung Q1 Ultra (ALC262) does not work
-Date: Sat, 29 Sep 2007 20:14:09 +0800
-Message-ID: <200709292014.09195.pczou@redflag-linux.com>
+From: ST <st@iss.tu-darmstadt.de>
+Subject: Tascam US122 on Arm
+Date: Sun, 30 Sep 2007 01:16:50 +0200
+Message-ID: <200709300116.50747.st@iss.tu-darmstadt.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from redflag-linux.com (mail.redflag-linux.com [219.237.229.196])
-	by alsa0.perex.cz (Postfix) with SMTP id C0154243B8
+Received: from lnx131.hrz.tu-darmstadt.de (lnx131.hrz.tu-darmstadt.de
+	[130.83.174.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6C396244E5
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Sep 2007 14:16:58 +0200 (CEST)
-Received: From pczou.redflag-linux.com[124.16.138.56] by
-	smtp.redflag-linux.com with Red Flag Webmail Server id 17713
-	for alsa-devel@alsa-project.org; Sat Sep 29 20:11:17 2007 +0800
+	Sun, 30 Sep 2007 01:17:05 +0200 (CEST)
+Received: from mailserver3.hrz.tu-darmstadt.de (lnx116.hrz.tu-darmstadt.de
+	[130.83.174.28])
+	by lnx131.hrz.tu-darmstadt.de (8.13.4/8.12.10) with ESMTP id
+	l8TNGxlt029555
+	for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2007 01:16:59 +0200
+Received: from [213.157.9.213] (helo=IP-213157009213.dialin.heagmedianet.de)
+	by mailserver3.hrz.tu-darmstadt.de with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_128_CBC_SHA:16) (Exim 4.50) id 1IblYQ-0008DG-W0
+	for alsa-devel@alsa-project.org; Sun, 30 Sep 2007 01:16:59 +0200
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,18 +32,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi 
 
-capture function of the Samsung Q1 Ultra (using ALC262 codec) does not work. I 
-tried the most recent ALSA build (alsa-driver-1.0.15rc3), the playback works 
-well, however the recording does not work. 
+I am a little irritated that there has been no replies to my questions to this 
+list  
+(http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003387.html,
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003083.html).
 
-Samsung Q1 (using AD1986A codec) has been supported already, wonder if there 
-is any patches for Q1 Ultra?
+Am i on the wrong list? Please tell me if so.
 
-please note Samsung released 2 types of UPMC, Q1 and Q1 Ultra. the Q1 ultra is 
-the one I have:
-  http://computers.pricegrabber.com/tablet-pcs/m/37616779/details/
+Probably its also that i didn't make clear in my last post that the tascam 
+driver works on arm with my US122 sound card, for ca. 51 seconds. After that 
+i get the following error:
 
-TIA,
-  -- Pengcheng
+Sequence Error!(hcd_frame=6 ep=8in;wait=65538,frame=2).
+Most propably some urb of usb-frame 65538 is still missing.
+Cause could be too long delays in usb-hcd interrupt handling.
+
+I also tried 
+insmod ./2.6.18/kernel/sound/usb/usx2y/snd-usb-usx2y.ko nrpacks=X
+with X=[1,2,4,8]. I thought that if it is really an CPU performance problem 
+than probably a bigger buffer would eliminate the problem. However the error 
+persisted. Even commenting out /* #define USX2Y_NRPACKS_VARIABLE y */ and 
+setting #define USX2Y_NRPACKS 1 didn't help.
+
+So my question is now, is the 250Mhz ARM really to slow or is there any chance 
+that there is an error in either the usb stack or the driver exposed only on 
+the ARM architecture? Things speaking for the latter are:
+*Error allways in the 65536-65540 value.
+*Error happens most of the times after about 50secs.
+
+Since i do not know much about USB any hint is apreciated.
+ST
