@@ -1,19 +1,16 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: nforce ac97 plays too fast
-Date: Sat, 29 Sep 2007 11:52:08 +0400
-Message-ID: <46FE0428.1070501@aknet.ru>
+From: zhejiang <zhe.jiang@intel.com>
+Subject: Alsa 1.0.15rc2 and oops with Dell M1210
+Date: Sat, 29 Sep 2007 17:07:17 +0800
+Message-ID: <1191056837.4984.12.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.aknet.ru (mail.AKNET.ru [77.246.241.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E4CE2432E
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F22124371
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Sep 2007 09:52:14 +0200 (CEST)
-Received: from ppp91-76-90-196.pppoe.mtu-net.ru ([91.76.90.196])
-	by mail.aknet.ru with esmtpa (Exim 4.66 (FreeBSD))
-	(envelope-from <stsp@aknet.ru>) id 1IbX7V-0008Pn-A8
-	for alsa-devel@alsa-project.org; Sat, 29 Sep 2007 11:52:13 +0400
+	Sat, 29 Sep 2007 11:09:09 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,50 +23,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+Seems that the spec->input_mux contains no item at all.
+So system maybe crash in the snd_hda_input_mux_info() when try to copy
+the items[].label,which is null pointer.
 
-Trying to get a software amplification to
-work with NForce CK804 AC'97, I've found
-out that whatever the asound.conf I write,
-the sound starts playing much faster than
-it should.
-After some debugging, I've found out the
-following:
-- The card (or the driver) only supports
-48000KHz.
-- The program (any, because libao and artsd
-suffer from that) is trying to set some
-rate with snd_pcm_hw_params_set_rate_near(),
-and that succeeds, but the returned rate
-is 48000, while the requested is, say, 22050.
-No wonder it then plays with the wrong speed.
-Of course the program can check the returned
-rate, but it sets the "direction" parameter
-to 0, which should mean "take exactly that
-value".
-I've looked into an alsa-tutorial, and the
-examples there do not check the returned
-rate too - dir==0 should be enough.
+May you replace the function  stac92xx_mux_enum_info() in
+alsa-driver-1.0.15rc2/alsa-kernel/pci/hda/patch_sigmatel.c ?
 
-Looking into the sources, it seems the culprit
-is the snd_interval_refine_min/max(), which do
-not care about the (i->min > min && !openmin)
-case at all.
+static int stac92xx_mux_enum_info(struct snd_kcontrol *kcontrol, struct
+snd_ctl_elem_info *uinfo)
+{
+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+	struct sigmatel_spec *spec = codec->spec;
+	printk("spec->input_mux->num_items is %d
+\n",spec->input_mux->num_items);
+	if(!spec->input_mux->num_items)
+		return 0;
+	return snd_hda_input_mux_info(spec->input_mux, uinfo);
+}
 
-The question is: is setting dir=0 (or even
-NULL, since it is a pointer) enough to set
-the exact rate?
-And if so - how snd_interval_refine_min()
-should handle the (i->min > min && !openmin)
-case?
-Or if not - what does the dir==0 mean
-and why it is not adjusted to the proper
-value on return, when the rate is changed?
-(i.e. the rate parameter changes from
-22050 to 48000, but the dir parameter remains
-0, doesn't change)
+Does it still crash?
+What's the number of num_items?
 
-With the default configuration the rate is
-proper, but I find it annoying that altering
-asound.conf in pretty much any way gets the
-wrong results.
+The pin_config for M1210  didn't include any input pin.
+I wonder why.
