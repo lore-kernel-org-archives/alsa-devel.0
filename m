@@ -1,30 +1,19 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: Re: Alsa 1.0.15rc2 and oops with Dell M1210
-Date: Sat, 29 Sep 2007 18:53:29 -0300
-Message-ID: <200709291853.29592.herton@mandriva.com.br>
-References: <1191056837.4984.12.camel@localhost.localdomain>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: nforce ac97 plays too fast
+Date: Sat, 29 Sep 2007 21:51:54 -0400
+Message-ID: <75b66ecd0709291851g47007518n48035588b5ffecef@mail.gmail.com>
+References: <46FE0428.1070501@aknet.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 930D0244D4
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 527F22452A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Sep 2007 23:53:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id C0A1E17D60
-	for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2007 18:53:44 -0300 (BRT)
-Received: from perninha.conectiva.com.br ([127.0.0.1])
-	by localhost (perninha.conectiva.com.br [127.0.0.1]) (amavisd-new,
-	port 10025)
-	with LMTP id ab+mNtie3KBj for <alsa-devel@alsa-project.org>;
-	Sat, 29 Sep 2007 18:53:37 -0300 (BRT)
-Received: from [192.168.2.2] (200-103-138-174.ctame705.dsl.brasiltelecom.net.br
-	[200.103.138.174])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id 5762917D5D
-	for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2007 18:53:36 -0300 (BRT)
-In-Reply-To: <1191056837.4984.12.camel@localhost.localdomain>
+	Sun, 30 Sep 2007 03:51:56 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id m22so2162933nzf
+	for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2007 18:51:55 -0700 (PDT)
+In-Reply-To: <46FE0428.1070501@aknet.ru>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,43 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Stas Sergeev <stsp@aknet.ru>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 29 September 2007 06:07:17 zhejiang wrote:
-> Seems that the spec->input_mux contains no item at all.
-> So system maybe crash in the snd_hda_input_mux_info() when try to copy
-> the items[].label,which is null pointer.
+On 9/29/07, Stas Sergeev <stsp@aknet.ru> wrote:
+> Hello.
 >
-> May you replace the function  stac92xx_mux_enum_info() in
-> alsa-driver-1.0.15rc2/alsa-kernel/pci/hda/patch_sigmatel.c ?
->
-> static int stac92xx_mux_enum_info(struct snd_kcontrol *kcontrol, struct
-> snd_ctl_elem_info *uinfo)
-> {
-> 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-> 	struct sigmatel_spec *spec = codec->spec;
-> 	printk("spec->input_mux->num_items is %d
-> \n",spec->input_mux->num_items);
-> 	if(!spec->input_mux->num_items)
-> 		return 0;
-> 	return snd_hda_input_mux_info(spec->input_mux, uinfo);
-> }
->
-> Does it still crash?
-> What's the number of num_items?
+> Trying to get a software amplification to
+> work with NForce CK804 AC'97, I've found
+> out that whatever the asound.conf I write,
+> the sound starts playing much faster than
+> it should.
+> After some debugging, I've found out the
+> following:
+> - The card (or the driver) only supports
+> 48000KHz.
+> - The program (any, because libao and artsd
+> suffer from that) is trying to set some
+> rate with snd_pcm_hw_params_set_rate_near(),
+> and that succeeds, but the returned rate
+> is 48000, while the requested is, say, 22050.
+> No wonder it then plays with the wrong speed.
+> Of course the program can check the returned
+> rate, but it sets the "direction" parameter
+> to 0, which should mean "take exactly that
+> value".
+> I've looked into an alsa-tutorial, and the
+> examples there do not check the returned
+> rate too - dir==0 should be enough.
 
-Thanks, I will try to enter in contact with the reporter and see what's going 
-on (I don't have direct access to the hardware) and try this. And later I saw 
-too I was wrong as the problem isn't input_mux as it's set to private_imux.
+What ALSA tutorial are you looking at?  All the ones I am familiar
+with state that you must check the returned rate.  Direction is just a
+hint.
 
->
-> The pin_config for M1210  didn't include any input pin.
-> I wonder why.
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html#ga3602c3c8912acf66c4db29f96608021
 
-Probably it's the reason for the bug, as 5stack model doesn't give problems on 
-the same hardware.
+For example:
 
---
-[]'s
-Herton
+http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_8c-example.html#a18
+http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2latency_8c-example.html#a12
+http://www.suse.de/~mana/alsa090_howto.html
+
+Lee
