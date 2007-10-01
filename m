@@ -1,24 +1,19 @@
-From: ST <st@iss.tu-darmstadt.de>
-Subject: Tascam US122 on Arm
-Date: Sun, 30 Sep 2007 01:16:50 +0200
-Message-ID: <200709300116.50747.st@iss.tu-darmstadt.de>
+From: l1983@bankerinter.net
+Subject: issue with ADI A1986A
+Date: Mon, 01 Oct 2007 18:12:52 +0200
+Message-ID: <20071001181252.c0pptzolcwg40o4w@webmail.bankerinter.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lnx131.hrz.tu-darmstadt.de (lnx131.hrz.tu-darmstadt.de
-	[130.83.174.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6C396244E5
+Received: from econel1.bankerinter.net (www.bankerinter.net [212.200.108.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC1572446E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Sep 2007 01:17:05 +0200 (CEST)
-Received: from mailserver3.hrz.tu-darmstadt.de (lnx116.hrz.tu-darmstadt.de
-	[130.83.174.28])
-	by lnx131.hrz.tu-darmstadt.de (8.13.4/8.12.10) with ESMTP id
-	l8TNGxlt029555
-	for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2007 01:16:59 +0200
-Received: from [213.157.9.213] (helo=IP-213157009213.dialin.heagmedianet.de)
-	by mailserver3.hrz.tu-darmstadt.de with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_128_CBC_SHA:16) (Exim 4.50) id 1IblYQ-0008DG-W0
-	for alsa-devel@alsa-project.org; Sun, 30 Sep 2007 01:16:59 +0200
+	Mon,  1 Oct 2007 18:12:53 +0200 (CEST)
+Received: from www.bankerinter.net (localhost.bankerinter.net [127.0.0.1])
+	by econel1.bankerinter.net (8.13.8/8.13.8) with ESMTP id l91GCqb6035342
+	for <alsa-devel@alsa-project.org>; Mon, 1 Oct 2007 18:12:53 +0200 (CEST)
+	(envelope-from l1983@bankerinter.net)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,35 +27,17 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi 
-
-I am a little irritated that there has been no replies to my questions to this 
-list  
-(http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003387.html,
-http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003083.html).
-
-Am i on the wrong list? Please tell me if so.
-
-Probably its also that i didn't make clear in my last post that the tascam 
-driver works on arm with my US122 sound card, for ca. 51 seconds. After that 
-i get the following error:
-
-Sequence Error!(hcd_frame=6 ep=8in;wait=65538,frame=2).
-Most propably some urb of usb-frame 65538 is still missing.
-Cause could be too long delays in usb-hcd interrupt handling.
-
-I also tried 
-insmod ./2.6.18/kernel/sound/usb/usx2y/snd-usb-usx2y.ko nrpacks=X
-with X=[1,2,4,8]. I thought that if it is really an CPU performance problem 
-than probably a bigger buffer would eliminate the problem. However the error 
-persisted. Even commenting out /* #define USX2Y_NRPACKS_VARIABLE y */ and 
-setting #define USX2Y_NRPACKS 1 didn't help.
-
-So my question is now, is the 250Mhz ARM really to slow or is there any chance 
-that there is an error in either the usb stack or the driver exposed only on 
-the ARM architecture? Things speaking for the latter are:
-*Error allways in the 65536-65540 value.
-*Error happens most of the times after about 50secs.
-
-Since i do not know much about USB any hint is apreciated.
-ST
+Hello,
+I need some help from you guys.
+I,m a new linux user and totally unfamiliar with all this
+coding...
+I have an issue with my motherboard "ASSUS M2N-MX" and it's onboard
+sound chip :"ADI AD1986A" witch supports 6 channel CODEC , Jack-Sensing &
+Enumeration  technology , and with  S/PDIF OUT interface.
+Can you please somehow, (or somebody you know) , make for me some
+installable .deb archive that will help me to set up my sound, since i
+can't do it on my own. :(
+Or help me some how else, (either sending me some address's or by giving
+me some other advice.
+HELP ME PLEASE!!!!!!
+l1983@bankerinter.net
