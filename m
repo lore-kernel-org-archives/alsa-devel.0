@@ -1,22 +1,18 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: some alsa lib usage on arm926 platform
-Date: Mon, 01 Oct 2007 09:07:59 +0200
-Message-ID: <1191222479.12581.1213434995@webmail.messagingengine.com>
-References: <loom.20070922T073328-313@post.gmane.org>
-	<loom.20070928T152516-14@post.gmane.org>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: ASOC: Best way to get private data from
+	machine	driver to the other drivers?
+Date: Mon, 01 Oct 2007 11:53:41 +0100
+Message-ID: <1191236021.3318.41.camel@localhost.localdomain>
+References: <46FD6EAA.5050801@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8265B24346
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id 525E02441B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Oct 2007 09:08:00 +0200 (CEST)
-Received: from compute1.internal (compute1.internal [10.202.2.41])
-	by out1.messagingengine.com (Postfix) with ESMTP id 00CC02F54C
-	for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2007 03:07:59 -0400 (EDT)
-Content-Disposition: inline
-In-Reply-To: <loom.20070928T152516-14@post.gmane.org>
+	Mon,  1 Oct 2007 12:53:42 +0200 (CEST)
+In-Reply-To: <46FD6EAA.5050801@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,72 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Akio wrote:
-> 1. what is the different between "plughw:0,0", "defalut", "hw:0.0"?
+On Fri, 2007-09-28 at 16:14 -0500, Timur Tabi wrote:
+> I'm writing an ASOC driver.  When my machine driver loads, it determines some 
+> hardware information for the DMA controllers, some other hardware information 
+> for the I2S controller, and even more information for the codec.
+> 
+> I want to be able to pass all this information to each of the three other 
+> drivers.  Unfortunately, it doesn't appear that I have enough "private_data" 
+> pointers available to me.
+> 
+> The current ASOC drivers all use statically defined global structures and 
+> indexes into arrays of these structures to identify individual devices, such 
+> associating I2S controller #2 with DMA channels 3 and 4.  On PowerPC, this 
+> doesn't work.  The actual hardware configuration is determined at runtime (see 
+> arch/powerpc/boot/dts/), and so the machine driver needs to collect all the 
+> information and make all the device-to-device associations.
+> 
+> For example, the PCM driver has an open function:
+> 
+> static struct snd_pcm_ops fsl_dma_ops = {
+> 	.open           = fsl_dma_open,
+> 	...
+> 
+> static int fsl_dma_open(struct snd_pcm_substream *substream)
+> {
+> 	...
+> 
+> What I would like is for fsl_dma_open() to be able to obtain pointers to the 
+> DMA controller's registers (there are two controllers with 4 channels each) by 
+> looking inside 'substream'.  How can I do that?
+> 
 
-"hw" goes directly to the driver, without any plugins.
-"plughw" inserts sample rate and/or sample format conversion plugins if
-the format requested by the application is not supported by the driver.
-"default" does some additional things, depending on the driver.  On most
-cards, it adds the "dmix" plugin for software mixing.
+I think we have addressed this now in ASoC V2. Every component driver
+now registers as a standard Linux device driver. It would probably be
+possible to read the dts configuration at probe() and then configure the
+driver with the correct DMA pointers before calling driver_register().
 
-> a. the channel opened is just only one, but If I set the 
->    snd_pcm_hw_params_set_access as 
->    SND_PCM_ACCESS_RW_NONINTERLEAVED.
->    using snd_pcm_readn and snd_pcm_writen the code will not 
->    work. what is the wrong? 
->    but if set snd_pcm_hw_params_set_access as
->    SND_PCM_ACCESS_RW_INTERLEAVED
->    and using snd_pcm_readi and snd_pcm_writei. the code work 
->    very well. one channel also have data interleave problem?
+http://opensource.wolfsonmicro.com/cgi-bin/gitweb/gitweb.cgi?p=linux-2.6-asoc;a=shortlog;h=asoc-v2-dev
 
-INTERLEAVED is the only supported format for most stereo sound cards, so
-it is the setting to be used for mono, too.
+Could you have a look at the V2 i.mx31 SSI driver and let me know if we
+need further changes for better dts support.
 
-NONINTERLEAVED is only used for multichannel streams that are not
-interleaved.
+Thanks
 
-> b. in snd_pcm_open the block flag is set as 0. what is the mode 
->    of the operation? blocking or non-blocking? 
-
-Blocking.
-
-> After long time test. the test procedure is as the following steps:
->    1. capture voice data as PCM data.
->    2. encoded as amr-wb bit stream.
->    3. decoded as PCM data from encoded bit stream.
->    4. playback PCM data.
-> after 16 hours continue tests, there are some delay, about 800 
-> mili seconds.
-
-You did not specify between what two quantities you've measured the
-delay, but I guess you mean the relative positions of the playback and
-capture devices.
-
-The speed of the devices is determined by the hardware.  The playback
-and capture devices will run out of sync if they are not using the same
-clock.  Are the capture and playback devices on different computers?
-
-> is there any way to reduce the delay after long time test.
-
-Measure the relative speed of the capture and playback devices, then
-resample accordingly (or just insert or drop a sample when needed).
-
-> 5. If we want using salsa lib to replace the usage of alsa lib, 
->    what do we have to take care?
-
-Plugins for sample rate/format conversion of software mixing are not
-available, so your application must use a sample format support by the
-hardware, and only one application can use the device at the same time.
-
-> how about the latency and performance between salsa and alsa?
-
-This is the same as when using the "hw" device with alsa-lib.
-The purpose of salsa is to save memory.
-
-
-HTH
-Clemens
+Liam
