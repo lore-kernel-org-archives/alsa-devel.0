@@ -1,20 +1,33 @@
-From: James Pearson <james-p@moving-picture.com>
-Subject: Re: alsa-driver-1.0.15rc2 build issues on RHEL4/CentOS4
-Date: Tue, 02 Oct 2007 10:17:30 +0100
-Message-ID: <47020CAA.4030101@moving-picture.com>
-References: <46EA5F30.7000404@moving-picture.com>
+From: Akio <akioolin@gmail.com>
+Subject: Re:
+	=?utf-8?q?about_sound/core/pcm=5Flib=2Ec=3A1997=3A_c?=
+	=?utf-8?q?apture_read_error_=28DMA_or_IRQ_trouble=3F=29?=
+Date: Tue, 2 Oct 2007 10:58:55 +0000 (UTC)
+Message-ID: <loom.20071002T105039-455@post.gmane.org>
+References: <loom.20070926T031709-238@post.gmane.org>
+	<1190787860.12924.1212641403@webmail.messagingengine.com>
+	<loom.20070927T042730-792@post.gmane.org>
+	<1190877245.11159.1212855119@webmail.messagingengine.com>
+	<loom.20070928T151557-644@post.gmane.org>
+	<1191221393.9447.1213434499@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05EDF2432F
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61470243AF
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Oct 2007 11:17:30 +0200 (CEST)
-Received: from minion.mpc.local ([172.16.11.112] helo=moving-picture.com)
-	by moving-picture.com with esmtp (Exim 4.43) id 1Icdsg-0008An-Dl
-	for alsa-devel@alsa-project.org; Tue, 02 Oct 2007 10:17:30 +0100
-In-Reply-To: <46EA5F30.7000404@moving-picture.com>
+	Tue,  2 Oct 2007 12:59:30 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1IcfT8-0007IO-EJ
+	for alsa-devel@alsa-project.org; Tue, 02 Oct 2007 10:59:17 +0000
+Received: from cache8000-1.itri.org.tw ([61.61.254.9])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2007 10:59:14 +0000
+Received: from akioolin by cache8000-1.itri.org.tw with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2007 10:59:14 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +37,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James Pearson wrote:
-> alsa-driver-1.0.15rc2 won't build cleanly on RHEL4/CentOS4 (2.6.9 based 
-> kernel).
+> >   in my case, the sampling rate is 16k,
 > 
-> I've included the relevant errors below after running:
+> At 16 kHz, a 32-bit counter overflows after about 74.5 hours.
+
+so the unit is samples not frames. does snd_pcm_prepare will reset
+the counter or not?
+
+> > what is the unit of the counter? period counts or samples?
 > 
-> configure --with-redhat
-> make -i
->  
->    Building modules, stage 2.
->    MODPOST
-> *** Warning: "class_device_destroy" 
-> [/tmp/alsa-driver-1.0.15rc2/pci/asihpi/snd-asihpi.ko] undefined!
-> *** Warning: "ac97_bus_type" 
-> [/tmp/alsa-driver-1.0.15rc2/pci/ac97/snd-ac97-codec.ko] undefined!
-> *** Warning: "platform_device_alloc" 
-> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
-> *** Warning: "platform_device_add" 
-> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
-> *** Warning: "platform_device_put" 
-> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
-> *** Warning: "platform_device_alloc" 
-> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
-> *** Warning: "platform_device_add" 
-> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
-> *** Warning: "platform_device_put" 
-> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
+> I do not know what counter this could be.  I'm just guessing that _some_
+> counter overflows; this would fit the symptoms you've described.
 
-Setting/changing the following in kconfig-vers 'fixes' the above:
+   so I have to check out where is overflow occurred. which function should I
+dive into?
 
-SND_MTS64       2.6.10
-SND_ASIHPI      2.6.10
-SND_PORTMAN2X4  2.6.10
-SND_CS5535AUDIO 2.6.10
+> >   I use strerr to get the error message, and it tell me "Input/Output
+> >   Error"
+> 
+> This error code is returned by the driver.  Which driver are you using?
 
-(AC97_BUS is already set to 2.6.14 in rc3)
+my platform is Freescale i.mx27 TO1, the audio driver is come from Freescale.
+the audio codec is Freescale PC13783. the alsa core version is 1.0.13, kernel 
+version is 2.6.19.3.
 
-I don't know if all these build OK with 2.6.10 and above, but as 
-RHEL4/CentOS4 is a 2.6.9 based kernel, then this works ...
+Thank you very much.
 
-James Pearson
+Best Regards,
+Akio
