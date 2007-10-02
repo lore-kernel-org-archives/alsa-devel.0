@@ -1,21 +1,20 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: snd-hdsp & digiface
-Date: Mon, 01 Oct 2007 15:19:08 -0700
-Message-ID: <1191277148.4209.6.camel@cmn3.stanford.edu>
+From: James Pearson <james-p@moving-picture.com>
+Subject: Re: alsa-driver-1.0.15rc2 build issues on RHEL4/CentOS4
+Date: Tue, 02 Oct 2007 10:17:30 +0100
+Message-ID: <47020CAA.4030101@moving-picture.com>
+References: <46EA5F30.7000404@moving-picture.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.stanford.edu (smtp3.Stanford.EDU [171.67.20.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 23BDA243B1
+Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05EDF2432F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Oct 2007 00:19:14 +0200 (CEST)
-Received: from smtp3.stanford.edu (localhost.localdomain [127.0.0.1])
-	by localhost (Postfix) with SMTP id 2206C4C31B
-	for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2007 15:19:11 -0700 (PDT)
-Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
-	by smtp3.stanford.edu (Postfix) with ESMTP id C288C4BE2E
-	for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2007 15:19:10 -0700 (PDT)
+	Tue,  2 Oct 2007 11:17:30 +0200 (CEST)
+Received: from minion.mpc.local ([172.16.11.112] helo=moving-picture.com)
+	by moving-picture.com with esmtp (Exim 4.43) id 1Icdsg-0008An-Dl
+	for alsa-devel@alsa-project.org; Tue, 02 Oct 2007 10:17:30 +0100
+In-Reply-To: <46EA5F30.7000404@moving-picture.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: carrlane@ccrma.Stanford.EDU, nando@ccrma.Stanford.EDU, sandyg@ccrma.Stanford.EDU
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi... We are using both digiface and multiface interfaces here at ccrma
-and we have a (small) problem of consistency in the channel numbering
-because of the way they are connected. Both cards are connected
-digitally to digital mixers, but in the case of the multiface the
-digital channels (which would be the ones users use) are 9-16 while on
-the digiface the first eight are 1-8[*].
+James Pearson wrote:
+> alsa-driver-1.0.15rc2 won't build cleanly on RHEL4/CentOS4 (2.6.9 based 
+> kernel).
+> 
+> I've included the relevant errors below after running:
+> 
+> configure --with-redhat
+> make -i
+>  
+>    Building modules, stage 2.
+>    MODPOST
+> *** Warning: "class_device_destroy" 
+> [/tmp/alsa-driver-1.0.15rc2/pci/asihpi/snd-asihpi.ko] undefined!
+> *** Warning: "ac97_bus_type" 
+> [/tmp/alsa-driver-1.0.15rc2/pci/ac97/snd-ac97-codec.ko] undefined!
+> *** Warning: "platform_device_alloc" 
+> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
+> *** Warning: "platform_device_add" 
+> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
+> *** Warning: "platform_device_put" 
+> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-portman2x4.ko] undefined!
+> *** Warning: "platform_device_alloc" 
+> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
+> *** Warning: "platform_device_add" 
+> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
+> *** Warning: "platform_device_put" 
+> [/tmp/alsa-driver-1.0.15rc2/drivers/snd-mts64.ko] undefined!
 
-Is there a way to change the ordering in the multiface so that the
-digital interface is presented as ports 1-8 instead of 9-16? (even a
-hack to the driver would be welcome) - and preferably one that does not
-need the default interface to be changed from hw:0 in jack...
+Setting/changing the following in kconfig-vers 'fixes' the above:
 
--- Fernando
+SND_MTS64       2.6.10
+SND_ASIHPI      2.6.10
+SND_PORTMAN2X4  2.6.10
+SND_CS5535AUDIO 2.6.10
 
-[*] accounts are shared so any configuration you do on one machine for
-1-8 will be wrong for the other where the real outputs are 9-16. 
+(AC97_BUS is already set to 2.6.14 in rc3)
+
+I don't know if all these build OK with 2.6.10 and above, but as 
+RHEL4/CentOS4 is a 2.6.9 based kernel, then this works ...
+
+James Pearson
