@@ -1,18 +1,17 @@
-From: ST <st@iss.tu-darmstadt.de>
-Subject: Re: Tascam US122 on Arm
-Date: Thu, 4 Oct 2007 10:43:27 +0200
-Message-ID: <200710041043.28440.st@iss.tu-darmstadt.de>
-References: <200709300116.50747.st@iss.tu-darmstadt.de>
-	<8e4fc8270710031337x66778c0bn7bd3c42e93f97ddc@mail.gmail.com>
+From: "kyle cronan" <kyle@pbx.org>
+Subject: Why was the built-in software volume control removed?
+Date: Thu, 4 Oct 2007 12:22:15 -0700
+Message-ID: <f045cde30710041222v64c6f6a6vb68134fd9cd15c01@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lnx130.hrz.tu-darmstadt.de (lnx130.hrz.tu-darmstadt.de
-	[130.83.174.24]) by alsa0.perex.cz (Postfix) with ESMTP id 4AE5624542
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id 495BF2462D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Oct 2007 10:43:31 +0200 (CEST)
-In-Reply-To: <8e4fc8270710031337x66778c0bn7bd3c42e93f97ddc@mail.gmail.com>
+	Thu,  4 Oct 2007 21:22:17 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m33so348628wag
+	for <alsa-devel@alsa-project.org>; Thu, 04 Oct 2007 12:22:16 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,35 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Bourgeous <sts.nitrogen@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Micheal
-> -1 in a 16-bit integer (which would be 65535 if unsigned), and the
-> driver is putting it in a 32-bit integer without sign extension and
-> incrementing it as though it is the number of the usb frame. 
-Thats an interesting idea. I think i will take a look at the code if this is 
-the case.
-> Look 
-> through the driver code to see where that value is assigned to a
-> variable, and find out what function is doing it.  Basically, since
-> it's happening right after the limits of a 16-bit integer, I'd say
-> it's either an overflow error, or an error code is being returned in
-> the wrong kind of variable (signed vs. unsigned).  In my case, what
-> solved my USB error messages was disabling PowerNow CPU frequency
-> scaling.
-Intresting. I got a different mail 
-http://www.nslu2-linux.org/wiki/Peripherals/AudioAdapter
-Since i have an 1.0 Soundcard and EHCI ports this is probably one cause of the 
-problem.
+I think I may have posted this to the wrong list.  There wasn't any
+response yet on alsa-user, so I'm reposting here.
 
-Currently i have taken out the call usX2Y_clients_stop(usX2Y); in the function
-usX2Y_error_sequence and added an subs->completed_urb = urb; to the 
-corresponding else statement. Since them i didn't had any errors reported, 
-but i suspect i did an error somewhere, since the error occured on every 
-playback and now i don't get any usb glitches reported. I will test it a 
-little bit more and get back with some results.
+Summary: I'm seeing a lot of glitches ever since the built-in software
+volume was removed.  What was the reason for this change?  Softvol
+doesn't work nearly as well for me.
+________________
 
-Best regards
-ST
+Hi everyone,
+
+I recently updated my media center which is running Fedora devel.  It
+pulled down a new kernel with updated ALSA drivers for my HDA audio
+chip (Intel 82801H + ALC883).
+
+I use IEC958 output to a pair of studio monitors (good sound with
+minimal fuss).  The first thing I noticed about the update was that my
+software volume control was no longer saving state.  It was resetting
+to something around 80% every time an app opened the audio device, a
+level which, in my setup, is quite loud!  Then I saw that in alsamixer
+I had no master volume control, not even a PCM control!
+
+So I started experimented with my settings, and I found that after I
+selected "PCM" under "Default Mixer Tracks" in gnome-sound-properties
+I had a PCM volume control again (still no master), and apps using
+alsa output would once again remember the system volume.  Don't know
+what that gnome setting actually did, but I've not been able to get it
+back to the original state, even when I ctrl-click to deselect "PCM"
+in the list.
+
+However, apps that use legacy OSS output still blast me with nearly
+full volume every time.  I've also noticed another glitch: using the
+volume control applet to adjust my PCM volume, the audio sometimes
+skips.  If I quickly drag the slider back and forth, it always does.
+I'm pretty sure I would have noticed this if it occurred with my
+previous kernel (haven't had a chance to test that yet).
+
+Anyway, looking into this problem, I found the following note in the
+changes document at
+http://www.alsa-project.org/main/index.php/Changes_v1.0.15rc2_v1.0.15rc3
+
+Sound Core
+  ...
+  - Remove the built-in software volume control in favour of softvol.
+
+So, my (main) question is: is there a good reason that the built-in
+software volume was removed?  I didn't find anything about it in the
+archives for this list or -devel.  I'm really not in favor of this
+change, because It used to work flawlessly for me, whereas now I'm
+running into all these strange problems with my IEC958 output.
+
+Thanks,
+Kyle Cronan
+<kyle@pbx.org>
