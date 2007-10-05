@@ -1,17 +1,21 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+From: "Jon Smirl" <jonsmirl@gmail.com>
 Subject: Re: ASoC v2 on PowerPC
-Date: Fri, 05 Oct 2007 12:07:57 +0100
-Message-ID: <1191582477.12060.243.camel@localhost.localdomain>
+Date: Fri, 5 Oct 2007 08:55:47 -0400
+Message-ID: <9e4733910710050555u5189efdp424fded7fe5f16c0@mail.gmail.com>
 References: <9e4733910710041012vb8e2a25w7a3b2cc7be80426d@mail.gmail.com>
+	<1191582477.12060.243.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07978244A1
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.237])
+	by alsa0.perex.cz (Postfix) with ESMTP id 324CE2450A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Oct 2007 13:07:59 +0200 (CEST)
-In-Reply-To: <9e4733910710041012vb8e2a25w7a3b2cc7be80426d@mail.gmail.com>
+	Fri,  5 Oct 2007 14:55:49 +0200 (CEST)
+Received: by nz-out-0506.google.com with SMTP id m22so409944nzf
+	for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2007 05:55:48 -0700 (PDT)
+In-Reply-To: <1191582477.12060.243.camel@localhost.localdomain>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
+To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 Cc: ALSA-devel <alsa-devel@alsa-project.org>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-10-04 at 13:12 -0400, Jon Smirl wrote:
-> I'm looking into write a ASoC v2 driver for the Efika. Efika uses a
-> Freescale MPC5200B and a STAC9766. This is a practice driver before
-> writing one for our target hardware (which doesn't work yet, same CPU
-> but different codec).
-> 
-> I've brought the changes from wolfson/asoc-v2-dev into my powerpc tree
-> and got a couple of config errors with ARCH=powerpc.
-> 
-> sound/soc/pxa/Kconfig:23:warning: 'select' used by config symbol
-> 'SND_PXA2XX_SOC_SSP' refers to undefined symbol 'PXA_SSP'
-> sound/soc/au1x/Kconfig:35:warning: 'select' used by config symbol
-> 'SND_SOC_EXM1200_SSI' refers to undefined symbol 'SND_SOC_CS4251X'
-> 
+On 10/5/07, Liam Girdwood <lg@opensource.wolfsonmicro.com> wrote:
+> A good place to start would be looking at the other supported
+> architectures and codecs and see what fits in best with your target SoC
+> CPU. Fwiw, Timur Tabi has some working PPC code, although I'm not sure
+> if it will work on Efika.
 
-Thanks, I'll fix this.
+Efika is STAC9766, ac97 with no i2c control. I dug into the imx ac97
+driver and discovered that it isn't finished.
 
-> Suggestions on the best way to start? Target hardware also has a WM8804 on it.
-> 
+Timur, we may need to get some Bestcomm tasks written. I haven't
+explored this yet but I've been told that no one can get anything
+except the general DMA task working for audio. This mean all audio
+input has to be 32b. Isn't Bestcomm capable of expanding 16/24 bit
+data? Our target hardware is i2s, not ac97, so I need to get i2s
+running too.
 
-A good place to start would be looking at the other supported
-architectures and codecs and see what fits in best with your target SoC
-CPU. Fwiw, Timur Tabi has some working PPC code, although I'm not sure
-if it will work on Efika.
+> I usually start with the I2S driver and the codec in slave mode. Then
+> move onto the DMA when I see the I2S bits toggling correctly. After the
+> DMA is up and running I can complete the codec and I2S drivers.
 
-I usually start with the I2S driver and the codec in slave mode. Then
-move onto the DMA when I see the I2S bits toggling correctly. After the
-DMA is up and running I can complete the codec and I2S drivers.
+Sounds like a good plan. I already have a working driver for the Efika
+so this shouldn't be two bad. It just need to be rearranged.
 
-Liam
+-- 
+Jon Smirl
+jonsmirl@gmail.com
