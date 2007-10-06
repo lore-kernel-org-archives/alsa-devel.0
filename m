@@ -1,17 +1,31 @@
-From: Joachim Foerster <mls.JOFT@gmx.de>
-Subject: Re: How to enforce 32bit access?
-Date: Fri, 05 Oct 2007 19:09:53 +0200
-Message-ID: <1191604193.5762.2.camel@localhost>
-References: <1191339247.30745.23.camel@localhost>
+From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
+Subject: Use-before-initialization in alsa-oss
+Date: Sat, 06 Oct 2007 16:16:57 +0600
+Message-ID: <47076099.40609@ums.usu.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 2EC0410384E
+Received: from relay4.usu.ru (relay4.usu.ru [194.226.235.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id D261C243EB
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Oct 2007 19:09:56 +0200 (CEST)
-In-Reply-To: <1191339247.30745.23.camel@localhost>
+	Sat,  6 Oct 2007 12:16:51 +0200 (CEST)
+Received: from relay4.usu.ru (localhost [127.0.0.1])
+	by relay4.usu.ru (PostSystem) with ESMTP id 793CF17EDA
+	for <alsa-devel@alsa-project.org>;
+	Sat,  6 Oct 2007 16:20:07 +0600 (YEKST)
+Received: from usu2.usu.ru (usu2.usu.ru [194.226.237.16])
+	by relay4.usu.ru (PostSystem) with ESMTP id 1158D17EDA
+	for <alsa-devel@alsa-project.org>;
+	Sat,  6 Oct 2007 16:20:07 +0600 (YEKST)
+Received: from usu2.usu.ru (localhost.usu2.usu.ru [127.0.0.1])
+	by usu2.usu.ru (Postfix) with ESMTP id 20EECA7E95
+	for <alsa-devel@alsa-project.org>;
+	Sat,  6 Oct 2007 16:16:45 +0600 (YEKST)
+Received: from ums.usu.ru (ums.usu.ru [194.226.236.116])
+	by usu2.usu.ru (Postfix) with ESMTP id D7B0DA7A2F
+	for <alsa-devel@alsa-project.org>;
+	Sat,  6 Oct 2007 16:16:39 +0600 (YEKST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +35,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Lorenz Kolb <lorenz.kolb@lkmail.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi ALSA devs,
+dsp->oss_format was used before it was set correctly
 
-meanwhile I tried to put a constraint on SNDRV_PCM_HW_PARAM_FRAME_BITS
-by the use of snd_pcm_hw_constraint_minmax() function with min=32 and
-max=32, but still no success - the ALSA Library still makes 16bit
-accesses, when playing mono (1 channel) files.
+spotted by running "aoss flite_time 10:00"
+Signed-Off-By: Alexander E. Patrakov
 
-Any ideas?
+--- alsa-oss-1.0.14.orig/alsa/pcm.c	2007-09-29 16:12:44.000000000 +0600
++++ alsa-oss-1.0.14/alsa/pcm.c	2007-09-29 16:13:06.000000000 +0600
+@@ -215,10 +215,10 @@
+ 		unsigned int rate, periods_min;
+ 		if (!pcm)
+ 			continue;
++		dsp->format = oss_format_to_alsa(dsp->oss_format);
+ 		str->frame_bytes = snd_pcm_format_physical_width(dsp->format) * dsp->channels / 8;
+ 		snd_pcm_hw_params_alloca(&hw);
+ 		snd_pcm_hw_params_any(pcm, hw);
+-		dsp->format = oss_format_to_alsa(dsp->oss_format);
+ 
+ 		err = snd_pcm_hw_params_set_format(pcm, hw, dsp->format);
+ 		if (err < 0)
 
-On Tue, 2007-10-02 at 17:34 +0200, Joachim Foerster wrote:
-> [...]
-> 
-> Therefore my question is:
-> 
-> In my driver for the controller, how do I tell ALSA, that it is only
-> allowed to write in 32bit quantities?
-> Is this possible at all?
-> Or do I have to use a special .asoundrc file?
 
-Thanks,
- Joachim
+
+-- 
+Alexander E. Patrakov
