@@ -1,21 +1,14 @@
-From: "Piotr Makowski" <oponek@gmail.com>
-Subject: ALSA Support for Maya44 PCI?
-Date: Tue, 9 Oct 2007 19:06:35 +0200
-Message-ID: <87988a970710091006q6a557321ga8c79f808fde2808@mail.gmail.com>
-References: <11850e210710090856k154edc70u76a60efbccf946eb@mail.gmail.com>
-	<87988a970710091004x5c95f37duf26cdbcacc4f61d@mail.gmail.com>
+From: Tim Gardner <tim.gardner@canonical.com>
+Subject: Add quirk support for Dell XPS1330 and Inspiron 1420.
+Date: Tue, 09 Oct 2007 11:55:14 -0600
+Message-ID: <470BC082.1050900@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------080009030006050203010104"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id D52F62471A
+Received: from mail.tpi.com (mail.tpi.com [198.107.51.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id B8F88243B6
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Oct 2007 19:06:38 +0200 (CEST)
-Received: by rv-out-0910.google.com with SMTP id k20so909344rvb
-	for <alsa-devel@alsa-project.org>; Tue, 09 Oct 2007 10:06:37 -0700 (PDT)
-In-Reply-To: <87988a970710091004x5c95f37duf26cdbcacc4f61d@mail.gmail.com>
-Content-Disposition: inline
+	Tue,  9 Oct 2007 19:55:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,26 +21,64 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There is already a programmer working on the driver, but thanks for
-your interest! You can expect the driver for ESI MAYA44 PCI card soon.
-There will be also an official announcement on alsa-devel when the
-programmer will start his work.
+This is a multi-part message in MIME format.
+--------------080009030006050203010104
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Regards,
-Piotr Makowski
 
-2007/10/9, Nicolas Rodriguez <nicolas.rod@gmail.com>:
-> I bought a Maya44 PCI 4-channel soundcard and I'll like to use it in Linux.
-> I couldn't get it to work with Ubuntu (I don't remember the ALSA version,
-> sorry). Do you support this card? If you don't, I can create the driver for
-> it. I've read somewhere that ESI-PRO can give the card specifications to
-> developers interested in build drivers for their cards. I've sent them an
-> email asking for the card specifications for I've got no response. What do
-> you recommend?
->
-> Thanks in advance,
-> Nico.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
+Tim Gardner tim.gardner@ubuntu.com
+
+--------------080009030006050203010104
+Content-Type: message/rfc822;
+ name="alsa.eml"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa.eml"
+
+
+>From e40402cdc1ce5dfa2e8babe949a26283707930ba Mon Sep 17 00:00:00 2001
+From: Tim Gardner <tim.gardner@canonical.com>
+Date: Tue, 9 Oct 2007 11:34:10 -0600
+Subject: [PATCH] UBUNTU: Re-add quirk support for Dell XPS 1330 and Inspiron 1420.
+
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ .../alsa-kernel/pci/hda/patch_sigmatel.c           |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/updates/alsa/alsa-driver/alsa-kernel/pci/hda/patch_sigmatel.c b/updates/alsa/alsa-driver/alsa-kernel/pci/hda/patch_sigmatel.c
+index 27360d2..f714de1 100644
+--- a/updates/alsa/alsa-driver/alsa-kernel/pci/hda/patch_sigmatel.c
++++ b/updates/alsa/alsa-driver/alsa-kernel/pci/hda/patch_sigmatel.c
+@@ -1097,11 +1097,13 @@ static struct snd_pci_quirk stac927x_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2003, "Intel D965", STAC_D965_3ST),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2002, "Intel D965", STAC_D965_3ST),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2001, "Intel D965", STAC_D965_3ST),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL,  0x01f3, "Dell Inspiron 1420", STAC_D965_3ST),
+ 	/* Dell 3 stack systems */
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL,  0x01dd, "Dell Dimension E520", STAC_DELL_3ST),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL,  0x01ed, "Dell     ", STAC_DELL_3ST),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL,  0x01f4, "Dell     ", STAC_DELL_3ST),
+ 	/* 965 based 5 stack systems */
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL,  0x0209, "Dell XPS 1330", STAC_D965_5ST),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2301, "Intel D965", STAC_D965_5ST),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2302, "Intel D965", STAC_D965_5ST),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2303, "Intel D965", STAC_D965_5ST),
+-- 
+1.5.2.5
+
+
+--------------080009030006050203010104
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------080009030006050203010104--
