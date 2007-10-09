@@ -1,19 +1,18 @@
-From: Dave Dillow <dave@thedillows.org>
-Subject: Re: [PATCH] [RFC] sis7019: Initial support for
-	the	SiS	7019 Audio Accelerator
-Date: Tue, 09 Oct 2007 07:48:14 -0400
-Message-ID: <1191930494.27906.8.camel@obelisk.thedillows.org>
-References: <11915588983461-git-send-email-dave@thedillows.org>
-	<s5hzlysty91.wl%tiwai@suse.de>
+From: James Pearson <james-p@moving-picture.com>
+Subject: Re: alsa-driver-1.0.15rc2 build issues on RHEL4/CentOS4
+Date: Tue, 09 Oct 2007 12:58:09 +0100
+Message-ID: <470B6CD1.5020506@moving-picture.com>
+References: <46EA5F30.7000404@moving-picture.com>	<s5hwsutkq6o.wl%tiwai@suse.de>	<46F9353C.1040105@moving-picture.com>	<46FA47A2.3020205@moving-picture.com>
+	<s5hve9gtwis.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.knology.net (smtp.knology.net [24.214.63.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79A1A1038D9
+Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C13724682
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Oct 2007 13:48:25 +0200 (CEST)
-In-Reply-To: <s5hzlysty91.wl%tiwai@suse.de>
+	Tue,  9 Oct 2007 13:58:10 +0200 (CEST)
+In-Reply-To: <s5hve9gtwis.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,54 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2007-10-09 at 11:48 +0200, Takashi Iwai wrote:
-> At Fri,  5 Oct 2007 00:34:58 -0400,
-> Dave Dillow wrote:
-> > 
-> > Basic audio support for the SiS 7019 Audio Accelerator as found in
-> > the SiS 55x SoC. There is currently no synth or power management
-> > support at the moment, but the audio playback has been tested with
-> > several channel and rate combinations, as well as various period
-> > and buffer configurations.
-> > 
-> > Signed-off-by: David Dillow <dave@thedillows.org>
+Takashi Iwai wrote:
 > 
-> Thanks for the patch.  The code looks almost OK to me.
+> Thanks, I fixed it with #ifdef CONFIG_SND_BIT32_EMUL_MODULE.
+> These shouldn't be exported unconditionally.
 > 
-> Below is a very brief review.
-
-Great, thanks for the review! I'll fix up the issues you pointed out,
-and I hope to have hardware for testing again next week -- I've got an
-untested implementation of power management coded up. Aside from the PM
-code, this driver has been in production for almost a year. 
-
-I'll also diff this against alsa-driver, instead of the kernel proper.
-
-> > diff --git a/include/sound/sis7019.h b/include/sound/sis7019.h
+> Also, some entries in kconfig_vers are changed as you suggested on HG
+> tree.
 > 
-> Any reason to put this to include/sound?  It's basically a place for
-> headers used publicly.  If the header is for the driver-only, better
-> placed in sound/pci or a place where is private.
+> Hope now it works...
 
-I agree, I was just following several other driver's lead, specifically
-trident. I'll be happy to move it.
+Not quite - the patch at:
 
+<http://hg.alsa-project.org/alsa-driver/raw-diff/4dd14b787ef1/acore/control.patch>
 
-> > +struct sis7019 {
-> > +	long unsigned  ioport;
-> 
-> unsigned long is a more common style.
+adds EXPORT_SYMBOL(snd_ctl_elem_read) twice - but doesn't add 
+EXPORT_SYMBOL(snd_ctl_elem_write) ...
 
-Doh! It's also the style I use everywhere else in the driver.
+Thanks
 
-> You need to unlock sis->hw_lock before calling
-> snd_pcm_period_elapsed().  It may call snd_pcm_stop() at XRUN, and
-> this invokes the trigger callback, which locks hw_lock again.
-> Simply re-acquire hw_lock after calling snd_pcm_period_elapsed().
-
-Can do.
-
-Dave
+James Pearson
