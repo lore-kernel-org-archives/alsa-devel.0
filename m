@@ -1,16 +1,16 @@
 From: william estrada <MrUmunhum@popdial.com>
 Subject: Re: different user causes 'no such device'
-Date: Tue, 09 Oct 2007 09:20:49 -0700
-Message-ID: <470BAA61.1060201@popdial.com>
+Date: Tue, 09 Oct 2007 09:27:04 -0700
+Message-ID: <470BABD8.4020709@popdial.com>
 References: <4703F3AF.8000806@popdial.com> <s5h3awkve8l.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from MAIL02.inside.adbasesystems.com (mail.1dial.com [64.136.164.73])
-	by alsa0.perex.cz (Postfix) with ESMTP id B37042470D
+	by alsa0.perex.cz (Postfix) with ESMTP id 0092624710
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Oct 2007 18:20:26 +0200 (CEST)
+	Tue,  9 Oct 2007 18:26:29 +0200 (CEST)
 In-Reply-To: <s5h3awkve8l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,7 +25,11 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, I will try this.
+Thanks, I did a 'chmod -R 666 /dev/snd/' and it worked.
+
+Now how do I make the hot plugged USB sound device use these setting??
+
+Thanks for your time.
 
 William Estrada
 MrUmunhum@popdial.com
