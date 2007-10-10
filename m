@@ -1,17 +1,21 @@
-From: william estrada <MrUmunhum@popdial.com>
-Subject: Re: chmod with USB sound device?
-Date: Wed, 10 Oct 2007 10:42:23 -0700
-Message-ID: <470D0EFF.8030105@popdial.com>
-References: <470BBB03.7090400@popdial.com> <470CDA7D.1070701@redhat.com>
+From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Subject: Re: Alsa 1.0.15rc2 and oops with Dell M1210
+Date: Wed, 10 Oct 2007 15:21:20 -0300
+Message-ID: <200710101521.21897.herton@mandriva.com.br>
+References: <1191056837.4984.12.camel@localhost.localdomain>
+	<200710031658.35289.herton@mandriva.com.br>
+	<s5hwstwtxwr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from MAIL02.inside.adbasesystems.com (mail.1dial.com [64.136.164.73])
-	by alsa0.perex.cz (Postfix) with ESMTP id CEA162455B
+Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
+	[200.140.247.100])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAF641038C3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Oct 2007 19:41:56 +0200 (CEST)
-In-Reply-To: <470CDA7D.1070701@redhat.com>
+	Wed, 10 Oct 2007 20:21:31 +0200 (CEST)
+In-Reply-To: <s5hwstwtxwr.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,66 +25,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, linux-hotplug-devel@lists.sourceforge.net, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, zhejiang <zhe.jiang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Harald,
+Em Tuesday 09 October 2007 06:55:32 Takashi Iwai escreveu:
+> At Wed, 3 Oct 2007 16:58:35 -0300,
+>
+> Herton Ronaldo Krzesinski wrote:
+> > Em Saturday 29 September 2007 18:53:29 Herton Ronaldo Krzesinski escreveu:
+> > > On Saturday 29 September 2007 06:07:17 zhejiang wrote:
+> > > > Seems that the spec->input_mux contains no item at all.
+> > > > So system maybe crash in the snd_hda_input_mux_info() when try to
+> > > > copy the items[].label,which is null pointer.
+> > > >
+> > > > May you replace the function  stac92xx_mux_enum_info() in
+> > > > alsa-driver-1.0.15rc2/alsa-kernel/pci/hda/patch_sigmatel.c ?
+> > > >
+> > > > static int stac92xx_mux_enum_info(struct snd_kcontrol *kcontrol,
+> > > > struct snd_ctl_elem_info *uinfo)
+> > > > {
+> > > > 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+> > > > 	struct sigmatel_spec *spec = codec->spec;
+> > > > 	printk("spec->input_mux->num_items is %d
+> > > > \n",spec->input_mux->num_items);
+> > > > 	if(!spec->input_mux->num_items)
+> > > > 		return 0;
+> > > > 	return snd_hda_input_mux_info(spec->input_mux, uinfo);
+> > > > }
+> > > >
+> > > > Does it still crash?
+> > > > What's the number of num_items?
+> >
+> > I received feedback from the reporter:
+> > spec->input_mux->num_items is 0
+> >
+> > Also sound works fine, no more crashes.
+>
+> OK, then could you check whether the patch below fixes the problem?
+> Such a check should be done in the common routine.
 
-   I revisited /etc/security/console.perms.d/50-default.perms
-and got it to work.
-   For the list, I changed:
-     In /etc/security/console.perms.d/50-default.perms
-> # permission definitions
-.
-> <console>  0666 <sound>      0666 root
-   And
-     In /etc/udev/rules.d/50-udev.rules
-> KERNEL=="snd/*",		MODE="0666", OWNER="wre00:root"
-   Then I did the udevtrigger.
+Yes, the patch was reported to me as working fine, thanks.
 
-   Then i did the udevtrigger, plugged in my USB sound device and got this:
+>
+>
+> Thanks,
+>
+> Takashi
+>
+> diff -r a4cf3aa3dc5b pci/hda/hda_codec.c
+> --- a/pci/hda/hda_codec.c	Tue Oct 09 10:34:06 2007 +0200
+> +++ b/pci/hda/hda_codec.c	Tue Oct 09 11:53:39 2007 +0200
+> @@ -2341,6 +2341,8 @@ int snd_hda_input_mux_info(const struct
+>  	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+>  	uinfo->count = 1;
+>  	uinfo->value.enumerated.items = imux->num_items;
+> +	if (!imux->num_items)
+> +		return 0;
+>  	index = uinfo->value.enumerated.item;
+>  	if (index >= imux->num_items)
+>  		index = imux->num_items - 1;
+> @@ -2356,6 +2358,8 @@ int snd_hda_input_mux_put(struct hda_cod
+>  {
+>  	unsigned int idx;
+>
+> +	if (!imux->num_items)
+> +		return 0;
+>  	idx = ucontrol->value.enumerated.item[0];
+>  	if (idx >= imux->num_items)
+>  		idx = imux->num_items - 1;
 
-> [root@laptop wre00]# ls -lrt /dev/snd
-> total 0
-> crw-rw-rw- 1 wre00 root 116, 2 Oct 10 09:45 timer
-> crw-rw-rw- 1 wre00 root 116, 3 Oct 10 09:45 seq
-> crw-rw-rw- 1 wre00 root 116, 4 Oct 10 09:45 pcmC0D0p
-> crw-rw-rw- 1 wre00 root 116, 5 Oct 10 09:45 pcmC0D0c
-> crw-rw-rw- 1 wre00 root 116, 6 Oct 10 09:45 controlC0
-> crw-rw-rw- 1 wre00 root 116, 7 Oct 10 10:28 pcmC1D0p
-> crw-rw-rw- 1 wre00 root 116, 8 Oct 10 10:28 pcmC1D0c
-> crw-rw-rw- 1 wre00 root 116, 9 Oct 10 10:28 controlC1
-
-
-   I guess both changes are required but it now works.
-
-   Thanks for your time.
-
-
-
-William Estrada
-MrUmunhum@popdial.com
-Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
-Ymessenger: MrUmunhum
-
-
-
-Harald Hoyer wrote:
-> william estrada wrote:
->> Hi guys,
->>
->>    I'm trying to run 'chmod' on a USB sound card using 'Hot Plug' udev 
->> support.
->>  From reading, I think I need to update my 
->> '/etc/udev/rules.d/50-udev.rules'?
->> I have made these changes:
->>> # audio devices
-.
->>> KERNEL=="snd/*",        MODE="0666"
-
-
-> 
-> You may have a look in pam_console...
-> /etc/security/console.perms
-> /etc/security/console.perms.d/*
-> 
+--
+[]'s
+Herton
