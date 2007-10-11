@@ -1,21 +1,17 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: Re: How to enforce 32bit access?
-Date: Thu, 11 Oct 2007 12:29:04 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0710111153260.13556@shell4.speakeasy.net>
-References: <1191339247.30745.23.camel@localhost>
-	<1191604193.5762.2.camel@localhost>
-	<s5h8x6cveo5.wl%tiwai@suse.de> <1192022382.5545.9.camel@localhost>
-	<s5hr6k3qf3a.wl%tiwai@suse.de> <1192030808.5545.23.camel@localhost>
-	<s5hhckyqbkh.wl%tiwai@suse.de> <1192109451.25924.50.camel@localhost>
+From: Luca Tettamanti <kronos.it@gmail.com>
+Subject: snd-hda-intel: no sound on ASUS F3Sa
+Date: Thu, 11 Oct 2007 22:49:03 +0200
+Message-ID: <20071011204903.GA6428@dreamland.darkstar.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="YiEDa0DAkWCtVeE4"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail6.sea5.speakeasy.net (mail6.sea5.speakeasy.net
-	[69.17.117.8]) by alsa0.perex.cz (Postfix) with ESMTP id 01DCE24403
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA1931037F2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Oct 2007 21:29:08 +0200 (CEST)
-In-Reply-To: <1192109451.25924.50.camel@localhost>
+	Thu, 11 Oct 2007 22:48:18 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id h2so526689ugf
+	for <alsa-devel@alsa-project.org>; Thu, 11 Oct 2007 13:48:17 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,56 +21,281 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joachim Foerster <mls.JOFT@gmx.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Lorenz Kolb <lorenz.kolb@lkmail.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Oct 2007, Joachim Foerster wrote:
-> On Thu, 2007-10-11 at 10:50 +0200, Takashi Iwai wrote:
-> > The problem is that the driver still accepts the 16bit format mono
-> > stream.  That's what I pointed in my previous post.  There is no
-> > format conversion in alsa-lib at all.  It's only channel expansion
-> > >from mono to stereo.  The hardware accepts 16bit stereo.  So, there is
-> > nothing wrong from this viewpoint.
->
-> By "conversion framework" I actually meant the channel expansion - code
-> which somehow "works in the data" before sending it to the hardware.
->
-> And yes, 16 bit samples are the only sample format supported by the
-> hardware. But "by design of the hardware" the smallest write access has
-> to be 32 bit wide (2 samples, stereo only)
-[...]
-> So, do I understand you right, when I say: an ALSA driver does _not_ hav
-> ethe possibility to force alsa-lib to write 32 bit entities, only?
 
-Joachim, it sounds like your alsa driver memory maps your device's memory
-buffer?  And since this buffer is not normal system memory, it cannot be
-necessarily be accessed the same way.  In this case, it only supports 32-bit
-accesses.
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-ALSA doesn't put any requirements on a mmaped sound buffer.  I think most
-hardware has the buffer in system memory and uses DMA, so there aren't any
-requirements about how to access it.
+Hi,
+I can't enable sound on a (new) ASUS F3Sa laptop with this sound
+device:
 
-Even if alsa-lib only did 32-bit accesses, any random userspace program using
-mmap mode might do 16 or 8 or un-aligned or whatever.
+00:1b.0 Audio device: Intel Corporation 82801H (ICH8 Family) HD Audio Controller (rev 03)
+	Subsystem: ASUSTeK Computer Inc. Unknown device 1339
+	Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B-
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Interrupt: pin A routed to IRQ 22
+	Region 0: Memory at febf8000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [50] Power Management version 2
+		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+	Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
+		Address: 0000000000000000  Data: 0000
+	Capabilities: [70] Express Unknown type IRQ 0
+		Device: Supported: MaxPayload 128 bytes, PhantFunc 0, ExtTag-
+		Device: Latency L0s <64ns, L1 <1us
+		Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
+		Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+		Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+		Link: Supported Speed unknown, Width x0, ASPM unknown, Port 0
+		Link: Latency L0s <64ns, L1 <1us
+		Link: ASPM Disabled CommClk- ExtSynch-
+		Link: Speed unknown, Width x0
 
-One could add a flag to ALSA for this, SNDRV_PCM_INFO_MMAP_32BIT, that means
-the mmap area must be accessed with aligned 32-bit (or more?) operations.  But
-no software knows about this (yet), and it sounds like you've got the only
-hardware that needs it.
+Codec:
 
-You could modify your driver so that it no longer supports mmap.  You would
-need to create a bounce buffer in system memory (ALSA has code for this) and
-then your driver will copy from the bounce buffer into your device memory.  Of
-course, this is less efficient and will have more latency.
+kronos@nb:~$ cat /proc/asound/card0/codec#0 | head -n1
+Codec: Realtek ALC660-VD
+(full output attached)
 
-It sounds like when alsa-lib does mono to stereo conversion, it does two 16
-bit writes instead of one 32 bit.  Duplicating the 16-bit data in a register
-and doing one 32 bit write should be faster.  Regardless of your deivce, this
-seems like a good optimization to make.  I know modern x86 processors don't
-like combining 16 and 32 bit access to the same memory; it causes partial
-memory stalls.
+without arguments I get:
 
-Maybe you could make this optimization to alsa-lib, and then your device would
-work well enough for your needs?
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 22
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+codec_mask = 0x3
+hda_codec: model '3stack-660' is selected for config 1043:1339 (Asus G1)
+
+while with model=auto:
+
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 22
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+codec_mask = 0x3
+hda_codec: model 'auto' is selected
+autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
+   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+   hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
+   inputs: mic=0x18, fmic=0x19, line=0x0, fline=0x0, cd=0x0, aux=0x0
+
+I also tried all other possible models without success; I can't get any
+output on the built-in speakers nor on the headphones.
+
+I tried both 2.6.23-git (from a couple of days ago) and ALSA 1.0.15rc3.
+
+Luca (CC me, I'm not subscribed)
+-- 
+"Sei l'unica donna della mia vita".
+(Adamo)
+
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=codec
+
+Codec: Realtek ALC660-VD
+Address: 0
+Vendor Id: 0x10ec0660
+Subsystem Id: 0x10431339
+Revision Id: 0x100001
+No Modem Function Group found
+Default PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x34 0x34]
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x04 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x05 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x08 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x09, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x00 0x00]
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0x6]: 16 20
+    formats [0x1]: PCM
+  Connection: 1
+     0x22
+Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x80 0x80] [0x00 0x00] [0x18 0x18] [0x80 0x80] [0x19 0x19] [0x18 0x18]
+  Connection: 6
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d
+Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Connection: 2
+     0x02 0x0b
+Node 0x0d [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80]
+  Connection: 2
+     0x03 0x0b
+Node 0x0e [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80]
+  Connection: 2
+     0x04 0x0b
+Node 0x0f [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80]
+  Connection: 2
+     0x05 0x0b
+Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x081003c: IN OUT HP EAPD Detect
+  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0c
+Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0810034: IN OUT EAPD Detect
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x0d
+Node 0x16 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0834: IN OUT Detect
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x0e
+Node 0x17 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0834: IN OUT Detect
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x0f
+Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x081734: IN OUT Detect
+  Pin Default 0x01a1183f: [Jack] Mic at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x0e
+Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08173c: IN OUT HP Detect
+  Pin Default 0x99a30130: [Fixed] Mic at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x24: IN
+  Connection: 2
+     0x0c* 0x0f
+Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0834: IN OUT Detect
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x0d
+Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x08173c: IN OUT HP Detect
+  Pin Default 0x0121101f: [Jack] HP Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 2
+     0x0c* 0x0f
+Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x598301f0: [N/A] Line In at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x99430120: [Fixed] SPDIF Out at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x06
+Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 11
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+Node 0x23 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x25 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x26 [Vendor Defined Widget] wcaps 0xf00000: Mono
+
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--YiEDa0DAkWCtVeE4--
