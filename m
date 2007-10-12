@@ -1,17 +1,31 @@
-From: Luca Tettamanti <kronos.it@gmail.com>
-Subject: snd-hda-intel: no sound on ASUS F3Sa
-Date: Thu, 11 Oct 2007 22:49:03 +0200
-Message-ID: <20071011204903.GA6428@dreamland.darkstar.lan>
+From: Veli-Matti Lintu <veli-matti.lintu@opinsys.fi>
+Subject: Re: Patch for Intel-HDA ALC262 on FSC Lifebook C1410
+Date: Fri, 12 Oct 2007 15:57:16 +0300
+Message-ID: <1192193836.29174.57.camel@localhost>
+References: <32444606.17521191841076426.JavaMail.root@intra>
+	<23182792.17541191841181316.JavaMail.root@intra>
+	<s5h1wc4vdm6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="YiEDa0DAkWCtVeE4"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA1931037F2
+Received: from mail.opinsys.fi (59ec6c11.adsl.tnnet.fi [89.236.108.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8911124532
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Oct 2007 22:48:18 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id h2so526689ugf
-	for <alsa-devel@alsa-project.org>; Thu, 11 Oct 2007 13:48:17 -0700 (PDT)
-Content-Disposition: inline
+	Fri, 12 Oct 2007 14:57:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.opinsys.fi (Postfix) with ESMTP id EE84B94089
+	for <alsa-devel@alsa-project.org>;
+	Fri, 12 Oct 2007 15:55:38 +0300 (EEST)
+Received: from mail.opinsys.fi ([127.0.0.1])
+	by localhost (mail.opinsys.fi [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id wR4HGaMSU0S2 for <alsa-devel@alsa-project.org>;
+	Fri, 12 Oct 2007 15:55:38 +0300 (EEST)
+Received: from [10.246.135.50] (unknown [10.246.135.50])
+	by mail.opinsys.fi (Postfix) with ESMTP id E5FB194085
+	for <alsa-devel@alsa-project.org>;
+	Fri, 12 Oct 2007 15:55:37 +0300 (EEST)
+In-Reply-To: <s5h1wc4vdm6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,278 +38,128 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+ti, 2007-10-09 kello 11:30 +0200, Takashi Iwai kirjoitti:
+> At Mon, 8 Oct 2007 13:59:41 +0300 (EEST),
+> Veli-Matti Lintu wrote:
+> > 
+> > Hello,
+> > 
+> > After error and trial I got sound working on Fujitsu-Siemens Computers Lifebook C1410. Attached is a patch that works for me, but probably needs some cleaning.
+> > 
+> > The laptop uses an ALC262 chip that is also used on other FSC models, but the needed settings seem to be somewhat different from the existing Fujitsu-settings in patch_realtek.c. If I understand correctly, the chips use same subsystem ids, so the patch does not automatically detect the correct chipset. Maybe someone more knowledgeable can help with this? The patch names the internal mic as Int Mic and external mic that can be plugged in as Ext Mic.
+> > 
+> > There's some more background information in Ubuntu's Launchpad:
+> > https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/125790
+> > 
+> > 
+> > The patch is tested with kernel 2.6.22.9. I am not really familiar with alsa development, so I cannot say which version of the alsa drivers that kernel version uses. The environment where the testing was done is running Ubuntu 7.04 with alsa version 1.0.13. Only updated component is the kernel.
+> > -------------------------------------------------------------------
+> > lspci -nv (on C1410)
+> > 
+> > 00:1b.0 0403: 8086:27d8 (rev 02)
+> >         Subsystem: 10cf:1397
+> >         Flags: bus master, fast devsel, latency 0, IRQ 22
+> >         Memory at f0640000 (64-bit, non-prefetchable) [size=16K]
+> >         Capabilities: [50] Power Management version 2
+> >         Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
+> >         Capabilities: [70] Express Unknown type IRQ 0
+> >         Capabilities: [100] Virtual Channel
+> >         Capabilities: [130] Unknown (5)
+> > -------------------------------------------------------------------
+> > 
+> > I hope someone with more knowledge about alsa drivers could have a look at this. The patch has been in internal use for a few weeks and people seem to be happy with it, so I hope also others can get their sound working.
+> 
+> First, thanks for the patch.
+> 
+> I think we can simply extend the existing fujitsu model.  The internal
+> mic is likely a missing feature in that model, too.
+> 
+> So, could you check whether the latest ALSA driver does work for you
+> "as is" (in a certain level)?  If not, could you just add
+> alc262_EAPD_verbs to the initialization verbs for ALC262_FUTJISU?
 
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for looking at this. I tested this against kernel 2.6.22.9 from
+kernel.org and the patch seems to do the trick. Without
+alc262_EAPD_verbs sound does not work and the mic settings need to be
+added to get the mic working.
 
-Hi,
-I can't enable sound on a (new) ASUS F3Sa laptop with this sound
-device:
+I do not have any other laptops using the same chip available for
+testing, so I cannot say whether this affects other models using the
+same chip.
 
-00:1b.0 Audio device: Intel Corporation 82801H (ICH8 Family) HD Audio Controller (rev 03)
-	Subsystem: ASUSTeK Computer Inc. Unknown device 1339
-	Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-	Interrupt: pin A routed to IRQ 22
-	Region 0: Memory at febf8000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
-		Address: 0000000000000000  Data: 0000
-	Capabilities: [70] Express Unknown type IRQ 0
-		Device: Supported: MaxPayload 128 bytes, PhantFunc 0, ExtTag-
-		Device: Latency L0s <64ns, L1 <1us
-		Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
-		Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-		Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-		Link: Supported Speed unknown, Width x0, ASPM unknown, Port 0
-		Link: Latency L0s <64ns, L1 <1us
-		Link: ASPM Disabled CommClk- ExtSynch-
-		Link: Speed unknown, Width x0
+Below is the diff from the actual sources that I used to test this:
 
-Codec:
+-----------------------------------------------------------------------
+--- pci/hda/patch_realtek.c 2007-09-26 21:03:01.000000000 +0300
++++ pci/hda/patch_realtek.c 2007-10-11 21:07:30.000000000 +0300
+@@ -7064,6 +7064,7 @@
+        .num_items = 2,
+        .items = {
+                { "Mic", 0x0 },
++               { "Int Mic", 0x1 },
+                { "CD", 0x4 },
+        },
+ };
+@@ -7179,6 +7180,9 @@
+        HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
+        HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
+        HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
++       HDA_CODEC_VOLUME("Int Mic Boost", 0x19, 0, HDA_INPUT),
++       HDA_CODEC_VOLUME("Int Mic Playback Volume", 0x0b, 0x1,
+HDA_INPUT),
++       HDA_CODEC_MUTE("Int Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+        { } /* end */
+ };
 
-kronos@nb:~$ cat /proc/asound/card0/codec#0 | head -n1
-Codec: Realtek ALC660-VD
-(full output attached)
+@@ -7649,7 +7653,8 @@
+        },
+        [ALC262_FUJITSU] = {
+                .mixers = { alc262_fujitsu_mixer },
+-               .init_verbs = { alc262_init_verbs,
+alc262_fujitsu_unsol_verbs },
++               .init_verbs = { alc262_init_verbs, alc262_EAPD_verbs,
++                               alc262_fujitsu_unsol_verbs },
+                .num_dacs = ARRAY_SIZE(alc262_dac_nids),
+                .dac_nids = alc262_dac_nids,
+                .hp_nid = 0x03,
+-----------------------------------------------------------------------
 
-without arguments I get:
+Veli-Matti
 
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 22
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-codec_mask = 0x3
-hda_codec: model '3stack-660' is selected for config 1043:1339 (Asus G1)
 
-while with model=auto:
-
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 22
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-codec_mask = 0x3
-hda_codec: model 'auto' is selected
-autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
-   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-   hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
-   inputs: mic=0x18, fmic=0x19, line=0x0, fline=0x0, cd=0x0, aux=0x0
-
-I also tried all other possible models without success; I can't get any
-output on the built-in speakers nor on the headphones.
-
-I tried both 2.6.23-git (from a couple of days ago) and ALSA 1.0.15rc3.
-
-Luca (CC me, I'm not subscribed)
--- 
-"Sei l'unica donna della mia vita".
-(Adamo)
-
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=codec
-
-Codec: Realtek ALC660-VD
-Address: 0
-Vendor Id: 0x10ec0660
-Subsystem Id: 0x10431339
-Revision Id: 0x100001
-No Modem Function Group found
-Default PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x34 0x34]
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x05 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x08 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x09, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x00 0x00]
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x22
-Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x80 0x80] [0x00 0x00] [0x18 0x18] [0x80 0x80] [0x19 0x19] [0x18 0x18]
-  Connection: 6
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d
-Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Connection: 2
-     0x04 0x0b
-Node 0x0f [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80]
-  Connection: 2
-     0x05 0x0b
-Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x081003c: IN OUT HP EAPD Detect
-  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0810034: IN OUT EAPD Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x0d
-Node 0x16 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0834: IN OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x0e
-Node 0x17 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0834: IN OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x0f
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x081734: IN OUT Detect
-  Pin Default 0x01a1183f: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x0e
-Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x08173c: IN OUT HP Detect
-  Pin Default 0x99a30130: [Fixed] Mic at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x24: IN
-  Connection: 2
-     0x0c* 0x0f
-Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0834: IN OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x0d
-Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x08173c: IN OUT HP Detect
-  Pin Default 0x0121101f: [Jack] HP Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 2
-     0x0c* 0x0f
-Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x598301f0: [N/A] Line In at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x99430120: [Fixed] SPDIF Out at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x06
-Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 11
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-Node 0x23 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x25 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x26 [Vendor Defined Widget] wcaps 0xf00000: Mono
-
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---YiEDa0DAkWCtVeE4--
+> A patch I hacked quickly is below.  Try it as a reference, too.
+> 
+> 
+> Takashi
+> 
+> diff -r a4cf3aa3dc5b pci/hda/patch_realtek.c
+> --- a/pci/hda/patch_realtek.c	Tue Oct 09 10:34:06 2007 +0200
+> +++ b/pci/hda/patch_realtek.c	Tue Oct 09 11:28:26 2007 +0200
+> @@ -7810,6 +7810,7 @@ static struct hda_input_mux alc262_fujit
+>  	.num_items = 2,
+>  	.items = {
+>  		{ "Mic", 0x0 },
+> +		{ "Int Mic", 0x1 },
+>  		{ "CD", 0x4 },
+>  	},
+>  };
+> @@ -7915,6 +7916,9 @@ static struct snd_kcontrol_new alc262_fu
+>  	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
+>  	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
+>  	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
+> +	HDA_CODEC_VOLUME("Int Mic Boost", 0x19, 0, HDA_INPUT),
+> +	HDA_CODEC_VOLUME("Int Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
+> +	HDA_CODEC_MUTE("Int Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+>  	{ } /* end */
+>  };
+>  
+> @@ -8411,7 +8415,8 @@ static struct alc_config_preset alc262_p
+>  	},
+>  	[ALC262_FUJITSU] = {
+>  		.mixers = { alc262_fujitsu_mixer },
+> -		.init_verbs = { alc262_init_verbs, alc262_fujitsu_unsol_verbs },
+> +		.init_verbs = { alc262_init_verbs, alc262_EAPD_verbs,
+> +				alc262_fujitsu_unsol_verbs },
+>  		.num_dacs = ARRAY_SIZE(alc262_dac_nids),
+>  		.dac_nids = alc262_dac_nids,
+>  		.hp_nid = 0x03,
