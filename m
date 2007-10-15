@@ -1,20 +1,19 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [Alsa-user] How to get set/fixed sample rate of
- ALSA device?
-Date: Mon, 15 Oct 2007 22:20:10 +0200
-Message-ID: <4713CB7A.7070304@keyaccess.nl>
-References: <b97f4ee40710061456l5aa0764alce22c505401c7e6f@mail.gmail.com>	<4708F918.3060207@keyaccess.nl>	<b97f4ee40710071004o23ea40a1w8c8f754b47083b95@mail.gmail.com>	<470958A9.7040607@keyaccess.nl>	<b97f4ee40710081209k1ba59df3g491387b681f8bbe3@mail.gmail.com>	<Pine.LNX.4.64.0710081212360.32693@info.physics.ubc.ca>	<470A8562.50301@keyaccess.nl>
-	<470ACA07.8080407@keyaccess.nl>
+From: Peter Skensved <peter@jay.phy.queensu.ca>
+Subject: Re: 1.0.15rc3 patch_analog.s bug + fix
+Date: Mon, 15 Oct 2007 16:34:21 -0400
+Message-ID: <20071015203421.GA6047@jay.phy.queensu.ca>
+References: <20071015025303.GA17664@jay.phy.queensu.ca>
+	<s5hsl4c62fl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 08A72244E2
+Received: from jay.phy.queensu.ca (jay.phy.QueensU.CA [130.15.24.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0762324501
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Oct 2007 22:22:10 +0200 (CEST)
-In-Reply-To: <470ACA07.8080407@keyaccess.nl>
+	Mon, 15 Oct 2007 22:34:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hsl4c62fl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Peteris Krisjanis <pecisk@gmail.com>, alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>, Bill Unruh <unruh@physics.ubc.ca>, Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/09/2007 02:23 AM, Rene Herman wrote:
-
-> Not too sure about that subformat thing by the way. Jaroslav (or anyone, 
-> obviously): is the subformat intended/designed to be format-specific or 
-> snd_pcm_t global?
+On Mon, Oct 15, 2007 at 01:29:50PM +0200, Takashi Iwai wrote:
+> At Sun, 14 Oct 2007 22:53:03 -0400,
+> Peter Skensved wrote:
+> > 
+> >      Hi,
+> >   I've come across a problem with the 1.0.15rc3 alsa driver on my Lenovo 3000 N100 laptop using
+> > the auto mute feature - it appears to work backwards !  Plugging in the headphones unmutes the
+> > external speakers and unplugging the heaphones mutes them ...
+> > 
+> >   Changing the if statement in line ~600 in patch_analog.c in ad1986a_update_hp to
+> > 
+> >     if (!spec->jack_preset)
+> > 
+> > makes it work the intended way.  ( spec->jack_present changes state  _before_ the call to
+> > ad1986a_hp_automute )
 > 
-> Currently there is only ever one subformat (STD) anyway but generally, 
-> I'd expect a subformat to be specific to a given format. There's just 
-> one non format-specific SND_PCM_SUBFORMAT_LAST though, no defines (or 
-> functions) to get subformats from the format. Is the design that all 
-> formats would be supporting all subformats or something?
+> Hmm, the code logic looks correct to me.  If HP jack is present, the
+> internal speaker should be muted.  Otherwise it follows the state of
+> HP jack (muted/unmuted, that acts as a master switch).
+> 
 
-Takashi, with Jaroslav his usual blackhole self -- do you know what the idea 
-is of the subformats?
+   Well - in the default mode the jack is present and the internal speakers are permanently
+muted until I plug in a set of headphones no matter how I toggle the speaker mute in the mixer.
 
-Rene.
+  With headphones plugged in I can mute and unmute the internal speakers in alsa mixer
+
+
+  Surely the default cannot be that I have to carry a set of headphones with my
+laptop all the time ???!!???
+
+
+> Is jack_present set/reset correctly when HP jack is plugged/unplugged
+> at all?  Or, the pin NID is swapped, or any other reason?
+> 
+
+  I sprinkled some printk's in the driver :
+ On entry to ad1986a_update_hp :     plugging headphones into jack : spec->jack_present = 0
+                                     removing headphones from jack : spec->jack_present = 1
+
+
+
+> 
+> Thanks,
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
