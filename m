@@ -1,16 +1,19 @@
-From: Jan-Simon =?iso-8859-1?q?M=F6ller?= <dl9pf@gmx.de>
-Subject: fsc esprimo v5505 (snd_intel_hda) - output in
-	/var/log/messages
-Date: Mon, 15 Oct 2007 09:43:31 +0200
-Message-ID: <200710150943.31573.dl9pf@gmx.de>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: intel-hda patch for sigmatel codec volume knob
+Date: Mon, 15 Oct 2007 12:02:21 +0200
+Message-ID: <200710151202.21340.maximlevitsky@gmail.com>
+References: <1192433370.10218.9.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id E79592456C
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.244])
+	by alsa0.perex.cz (Postfix) with ESMTP id 333CC24600
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Oct 2007 09:43:34 +0200 (CEST)
+	Mon, 15 Oct 2007 12:02:45 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so72809ana
+	for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2007 03:02:44 -0700 (PDT)
+In-Reply-To: <1192433370.10218.9.camel@localhost.localdomain>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,33 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, zhejiang <zhe.jiang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Monday 15 October 2007 09:29:30 zhejiang wrote:
+> Hi,
+> 
+> I found that STAC_VOLKNOB hardwired the KNOB nid to 0x24.
+> It is okay for stac9205 and stac927x.
+> But the VolumeKnob nid of stac9220-9221 is 0x16.
+> 
+> 
+> diff -Nur a/alsa-driver-1.0.15rc3/alsa-kernel/pci/hda/patch_sigmatel.c
+> b/alsa-driver-1.0.15rc3/alsa-kernel/pci/hda/patch_sigmatel.c
+> --- a/alsa-driver-1.0.15rc3/alsa-kernel/pci/hda/patch_sigmatel.c
+> 2007-09-21 16:41:28.000000000 +0800
+> +++ b/alsa-driver-1.0.15rc3/alsa-kernel/pci/hda/patch_sigmatel.c
+> 2007-10-15 15:13:14.000000000 +0800
+> @@ -351,7 +351,7 @@
 
-What do these messages mean ?
 
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_intel.c:1185: 
-azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_codec.c:623: 
-hda_codec_setup_stream: NID=0x13, stream=0x5, channel=0, format=0x11
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_codec.c:623: 
-hda_codec_setup_stream: NID=0x19, stream=0x5, channel=0, format=0x11
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_codec.c:623: 
-hda_codec_setup_stream: NID=0x19, stream=0x0, channel=0, format=0x0
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_codec.c:623: 
-hda_codec_setup_stream: NID=0x13, stream=0x0, channel=0, format=0x0
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_intel.c:1185: 
-azx_pcm_prepare: bufsize=0x10000, fragsize=0x1000, format=0x11
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_codec.c:623: 
-hda_codec_setup_stream: NID=0x13, stream=0x5, channel=0, format=0x11
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_codec.c:623: 
-hda_codec_setup_stream: NID=0x19, stream=0x5, channel=0, format=0x11
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_codec.c:623: 
-hda_codec_setup_stream: NID=0x19, stream=0x0, channel=0, format=0x0
-Oct 15 09:26:22 legolas kernel: ALSA sound/pci/hda/hda_codec.c:623: 
-hda_codec_setup_stream: NID=0x13, stream=0x0, channel=0, format=0x0
+Hi,
 
-Thanks !
+Thank you very much, I am the author of patch that added the volume knob
+Although I checked carefully the datasheets I missed that one.
 
-Jan
+Thanks a lot.
+
+	Maxim Levitsky
