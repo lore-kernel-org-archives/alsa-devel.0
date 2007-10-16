@@ -1,30 +1,22 @@
-From: Daniel Mayer <listenmitglied@arcor.de>
-Subject: Re:
-	=?utf-8?q?New_alsa_lowlevel_driver_for_the_SE-200PCI?=
-	=?utf-8?q?_and=09SE-90PCI?=
-Date: Mon, 15 Oct 2007 15:47:06 +0000 (UTC)
-Message-ID: <loom.20071015T153844-163@post.gmane.org>
-References: <s5h7ilt9555.wl%tiwai@suse.de>
-	<D25C927.1DC0.sh_okada@d4.dion.ne.jp>
-	<s5h7ils74nx.wl%tiwai@suse.de>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: 1.0.15rc3 patch_analog.s bug + fix
+Date: Tue, 16 Oct 2007 10:58:19 +0300
+Message-ID: <200710161058.19929.anarsoul@gmail.com>
+References: <20071015025303.GA17664@jay.phy.queensu.ca>
+	<s5hsl4c62fl.wl%tiwai@suse.de>
+	<20071015203421.GA6047@jay.phy.queensu.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75160244D1
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 588C9244F7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Oct 2007 09:40:33 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1Ihh22-00060l-Jx
-	for alsa-devel@alsa-project.org; Tue, 16 Oct 2007 07:40:02 +0000
-Received: from dslb-088-072-048-088.pools.arcor-ip.net ([88.72.48.88])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2007 07:40:02 +0000
-Received: from listenmitglied by dslb-088-072-048-088.pools.arcor-ip.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2007 07:40:02 +0000
+	Tue, 16 Oct 2007 09:58:28 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id b21so1408419nfd
+	for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2007 00:58:27 -0700 (PDT)
+In-Reply-To: <20071015203421.GA6047@jay.phy.queensu.ca>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,45 +29,24 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkhCkZpcnN0IEkgd2FudCB0byB0aGFuayB5b3UgYm90aCBmb3IgeW91ciB3b3JrIG9uIHRoaXMg
-ZHJpdmVyISBJIGdvdCB0aGF0Cgpzb3VuZGNhcmQgdmlhIGltcG9ydCBmcm9tIEphcGFuIChpbnRv
-IEdlcm1hbnkpIGFuZCB3YXMgd2FpdGluZyBmb3IgZXhhY3RseSAKdGhpcyA7KQoKQnV0Oi4uLiBJ
-IGtub3cgSSdtIHN0dXBpZCwgYnV0IEkgZG9uJ3QgZ2V0IHRoaXMgZHJpdmVyIGNvbXBpbGVkLi4u
-IApJIGFkZGVkIGl0IHRvIHRoZSBhbHNhIDE1cmMzLXRyZWUKLSBjb3B5IHNlLiogdG8gLi9hbHNh
-LWtlcm5lbC9wY2kvaWNlMTcxMgotIGVkaXQgLi9hbHNhLWtlcm5lbC9wY2kvaWNlMTcxMi9NYWtl
-ZmlsZTogYWRkZWQgc2UubyAKLSBhZGRlZCBhIG5ldyBzZS5jIHRvIC4vcGNpL2ljZTE3MTIgbGlu
-a2luZyB0byB0aGUgYWxzYS1rZXJuZWwtZGlyZWN0b3J5IAogKGxpa2UgdGhlIGp1bGkuYykKCkFm
-dGVyIC4vY3ZzY29tcGlsZSBJIGdldDoKClsuLi5dCkluIGZpbGUgaW5jbHVkZWQgZnJvbSAvaG9t
-ZS9kYW5pZWwvYWxzYS1kcml2ZXItMS4wLjE1cmMzL3BjaS9pY2UxNzEyL3NlLmM6MjoKLi9hbHNh
-LWtlcm5lbC9wY2kvaWNlMTcxMi9zZS5jOjM5NjoKV2FybnVuZzogSW5pdGlhbGlzaWVydW5nIHZv
-biBpbmtvbXBhdGlibGVtIFplaWdlcnR5cAouL2Fsc2Eta2VybmVsL3BjaS9pY2UxNzEyL3NlLmM6
-NDAyOiAKV2FybnVuZzogSW5pdGlhbGlzaWVydW5nIHZvbiBpbmtvbXBhdGlibGVtIFplaWdlcnR5
-cAouL2Fsc2Eta2VybmVsL3BjaS9pY2UxNzEyL3NlLmM6IEluIEZ1bmt0aW9uIMK7c2UyMDBwY2lf
-Y29udF9nZXTCqzoKLi9hbHNhLWtlcm5lbC9wY2kvaWNlMTcxMi9zZS5jOjQ2MzogCkZlaGxlcjog
-wrt1bmlvbiA8YW5vbnltb3VzPsKrIGhhdCBrZWluIEVsZW1lbnQgbmFtZW5zIMK7c2XCqwouL2Fs
-c2Eta2VybmVsL3BjaS9pY2UxNzEyL3NlLmM6NDY0OiAKRmVobGVyOiDCu3VuaW9uIDxhbm9ueW1v
-dXM+wqsgaGF0IGtlaW4gRWxlbWVudCBuYW1lbnMgwrtzZcKrCi4vYWxzYS1rZXJuZWwvcGNpL2lj
-ZTE3MTIvc2UuYzo0Njg6IApGZWhsZXI6IMK7dW5pb24gPGFub255bW91cz7CqyBoYXQga2VpbiBF
-bGVtZW50IG5hbWVucyDCu3NlwqsKLi9hbHNhLWtlcm5lbC9wY2kvaWNlMTcxMi9zZS5jOiBJbiBG
-dW5rdGlvbiDCu3NlMjAwcGNpX2NvbnRfcHV0wqs6Ci4vYWxzYS1rZXJuZWwvcGNpL2ljZTE3MTIv
-c2UuYzo0OTE6IApGZWhsZXI6IMK7dW5pb24gPGFub255bW91cz7CqyBoYXQga2VpbiBFbGVtZW50
-IG5hbWVucyDCu3NlwqsKLi9hbHNhLWtlcm5lbC9wY2kvaWNlMTcxMi9zZS5jOjQ5MjogCkZlaGxl
-cjogwrt1bmlvbiA8YW5vbnltb3VzPsKrIGhhdCBrZWluIEVsZW1lbnQgbmFtZW5zIMK7c2XCqwou
-L2Fsc2Eta2VybmVsL3BjaS9pY2UxNzEyL3NlLmM6NDkzOiAKRmVobGVyOiDCu3VuaW9uIDxhbm9u
-eW1vdXM+wqsgaGF0IGtlaW4gRWxlbWVudCBuYW1lbnMgwrtzZcKrCi4vYWxzYS1rZXJuZWwvcGNp
-L2ljZTE3MTIvc2UuYzo0OTQ6IApGZWhsZXI6IMK7dW5pb24gPGFub255bW91cz7CqyBoYXQga2Vp
-biBFbGVtZW50IG5hbWVucyDCu3NlwqsKLi9hbHNhLWtlcm5lbC9wY2kvaWNlMTcxMi9zZS5jOjQ5
-OTogCkZlaGxlcjogwrt1bmlvbiA8YW5vbnltb3VzPsKrIGhhdCBrZWluIEVsZW1lbnQgbmFtZW5z
-IMK7c2XCqwouL2Fsc2Eta2VybmVsL3BjaS9pY2UxNzEyL3NlLmM6NTAwOiAKRmVobGVyOiDCu3Vu
-aW9uIDxhbm9ueW1vdXM+wqsgaGF0IGtlaW4gRWxlbWVudCBuYW1lbnMgwrtzZcKrCm1ha2VbNF06
-ICoqKiBbL2hvbWUvZGFuaWVsL2Fsc2EtZHJpdmVyLTEuMC4xNXJjMy9wY2kvaWNlMTcxMi9zZS5v
-XSBGZWhsZXIgMQptYWtlWzNdOiAqKiogWy9ob21lL2RhbmllbC9hbHNhLWRyaXZlci0xLjAuMTVy
-YzMvcGNpL2ljZTE3MTJdIEZlaGxlciAyCm1ha2VbMl06ICoqKiBbL2hvbWUvZGFuaWVsL2Fsc2Et
-ZHJpdmVyLTEuMC4xNXJjMy9wY2ldIEZlaGxlciAyCm1ha2VbMV06ICoqKiBbX21vZHVsZV8vaG9t
-ZS9kYW5pZWwvYWxzYS1kcml2ZXItMS4wLjE1cmMzXSBGZWhsZXIgMgptYWtlWzFdOiBWZXJsYXNz
-ZSBWZXJ6ZWljaG5pcyAnL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMjItMTQtZ2VuZXJpYycK
-bWFrZTogKioqIFtjb21waWxlXSBGZWhsZXIgMgoKV2hhdCB3ZW50IHdyb25nPwoKCgpHcmVldGlu
-Z3MsCkRhbmllbAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+> > Hmm, the code logic looks correct to me.  If HP jack is present, the
+> > internal speaker should be muted.  Otherwise it follows the state of
+> > HP jack (muted/unmuted, that acts as a master switch).
+
+Original patch:
+	present = snd_hda_codec_read(codec, 0x1a, 0,
+				     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
+ 
+Code in alsa (patch-analog.c line 614):
+
+	present = snd_hda_codec_read(codec, 0x1a, 0, AC_VERB_GET_PIN_SENSE, 0);
+	spec->jack_present = (present & 0x80000000) != 0;
+
+Seems to have quite different logic, don't it?
+
+Should be:
+
+	present = snd_hda_codec_read(codec, 0x1a, 0, AC_VERB_GET_PIN_SENSE, 0);
+	spec->jack_present = (present & 0x80000000) == 0;
+
+P.S. It's very sad that you've released 1.0.15 with that bug :(
