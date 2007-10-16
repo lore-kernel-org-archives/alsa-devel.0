@@ -1,21 +1,16 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: 1.0.15rc3 patch_analog.s bug + fix
-Date: Tue, 16 Oct 2007 21:30:50 +0300
-Message-ID: <200710162130.51168.anarsoul@gmail.com>
-References: <20071015025303.GA17664@jay.phy.queensu.ca>
-	<200710161039.55191.anarsoul@gmail.com>
-	<s5hmyuj47zf.wl%tiwai@suse.de>
+From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Subject: Asus Eeepc missing in alsa models list?
+Date: Tue, 16 Oct 2007 16:35:34 -0200
+Message-ID: <200710161635.35861.herton@mandriva.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 808A9246C3
+Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
+	[200.140.247.100])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B3F82449F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Oct 2007 20:30:28 +0200 (CEST)
-Received: by mu-out-0910.google.com with SMTP id w8so2284080mue
-	for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2007 11:30:27 -0700 (PDT)
-In-Reply-To: <s5hmyuj47zf.wl%tiwai@suse.de>
+	Tue, 16 Oct 2007 20:35:47 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,30 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBBdCBUdWUsIDE2IE9jdCAyMDA3IDEwOjM5OjU1ICswMzAwLAo+Cj4gVmFzaWx5IEtob3J1emhp
-Y2sgd3JvdGU6Cj4gPiBbMSAgPHRleHQvcGxhaW47IGlzby04ODU5LTEgKHF1b3RlZC1wcmludGFi
-bGUpPl0KPiA+Cj4gPiBPbiBNb25kYXkgMTUgT2N0b2JlciAyMDA3IDIzOjM0OjIxIFBldGVyIFNr
-ZW5zdmVkIHdyb3RlOgo+ID4gPiA+IEhtbSwgdGhlIGNvZGUgbG9naWMgbG9va3MgY29ycmVjdCB0
-byBtZS4gwqBJZiBIUCBqYWNrIGlzIHByZXNlbnQsIHRoZQo+ID4gPiA+IGludGVybmFsIHNwZWFr
-ZXIgc2hvdWxkIGJlIG11dGVkLiDCoE90aGVyd2lzZSBpdCBmb2xsb3dzIHRoZSBzdGF0ZSBvZgo+
-ID4gPiA+IEhQIGphY2sgKG11dGVkL3VubXV0ZWQsIHRoYXQgYWN0cyBhcyBhIG1hc3RlciBzd2l0
-Y2gpCj4gPgo+ID4gQ29kZSBsb2dpYyBpcyBicm9rZW4uCj4gPiBJbnRlcm5hbCBzcGVha2VycyBt
-dXRlZCB3aGlsZSBqYWNrIHVucGx1Z2dlZCBhbmQgdW5tdXRlZCB3aGlsZSBpdCdzCj4gPiBwbHVn
-Z2VkLgo+Cj4gTm8sIGl0J3MgdGhlIHdyb25nIGxvZ2ljLiAgVGhlIGludGVybmFsIHNwZWFrZXIg
-c2hvdWxkIGJlIHVubXV0ZWQgd2hlbgo+IEhQIGlzIHVucGx1Z2dlZCwgYW5kIG11dGVkIHdoZW4g
-cGx1Z2dlZC4gIFlvdSBkb24ndCB3YW50IHRvIGhlYXIgZnJvbQo+IGJvdGggYXQgdGhlIHNhbWUg
-dGltZS4KPgoKU29ycnksIGkndmUgbWFkZSBtaXN0YWtlLCBvZiBjb3Vyc2UgaW50ZXJuYWwgc3Bl
-YWtlcnMgc2hvdWxkIGJlIG11dGVkIHdoZW4gCmphY2sgcGx1Z2dlZC4gUGF0Y2ggdGhhdCBJJ3Zl
-IGF0dGFjaGVkIHRvIHByZXZpb3VzIG1lc3NhZ2UgaGFzIGV4YWN0bHkgdGhhdCAKbG9naWMuCgo+
-IFRoaXMgaW1wbGllcyByYXRoZXIgdGhhdCB0aGUgamFjayBkZXRlY3Rpb24gaXRzZWxmIGlzIHJl
-dmVyc2VkIGZyb20KPiB0aGUgc3RhbmRhcmQuIMKgQ291bGQgeW91IHRyeSB0aGUgcGF0Y2ggYmVs
-b3c/CgpZb3VyIHBhdGNoIHdvcmtzLgoKQnV0IGl0IHNlZW1zIHRoYXQgdGhlcmUncyBhbm90aGVy
-IGJ1ZyAtIGkgaGF2ZSBsb3VkIGNsaWNrIHdoZW4gaSB0byBwbGF5IApzb21ldGhpbmcgb3IgY2hh
-bmdlIG1peGVyIHNldHRpbmdzIGFmdGVyIG5vdCB1c2luZyBhdWRpbyBmb3IgfjFtaW4KClRoYW5r
-cy4KClJlZ2FyZHMKVmFzaWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+Looking at the change 291702f017efdfe556cb87b8530eb7d1ff08cbae, may be the 
+addition of the Asus Eeepc model was missed? The following patch fixes it if 
+it was not intended originally:
+
+diff --git a/Documentation/sound/alsa/ALSA-Configuration.txt 
+b/Documentation/sound/alsa/ALSA-Configuration.txt
+index 4b48c2e..e2a1985 100644
+--- a/Documentation/sound/alsa/ALSA-Configuration.txt
++++ b/Documentation/sound/alsa/ALSA-Configuration.txt
+@@ -843,6 +843,7 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. 
+This was removed.
+ 	  3stack-6ch-dig 3-stack (6-channel) with SPDIF
+ 	  6stack-dig	 6-stack with SPDIF
+ 	  lenovo-101e	 Lenovo laptop
++	  eeepc-p701	 ASUS Eeepc
+ 	  auto		auto-config reading BIOS (default)
+ 
+ 	ALC882/885
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 53b0428..2ceaf4c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -12058,6 +12058,7 @@ static const char *alc662_models[ALC662_MODEL_LAST] = 
+{
+ 	[ALC662_3ST_6ch]	= "3stack-6ch",
+ 	[ALC662_5ST_DIG]	= "6stack-dig",
+ 	[ALC662_LENOVO_101E]	= "lenovo-101e",
++	[ALC662_ASUS_EEEPC_P701]	= "eeepc-p701",
+ 	[ALC662_AUTO]		= "auto",
+ };
+ 
+-- 
+[]'s
+Herton
