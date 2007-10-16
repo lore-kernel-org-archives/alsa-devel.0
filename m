@@ -1,17 +1,17 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: Asus Eeepc missing in alsa models list?
-Date: Tue, 16 Oct 2007 16:35:34 -0200
-Message-ID: <200710161635.35861.herton@mandriva.com.br>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: About the buffer_time and period_time
+Date: Tue, 16 Oct 2007 23:47:59 +0100
+Message-ID: <1192574879.12060.697.camel@localhost.localdomain>
+References: <fb7b9d8c0710160127u569d294v45693f69f51883ad@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B3F82449F
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id B53EF244C5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Oct 2007 20:35:47 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 17 Oct 2007 00:48:01 +0200 (CEST)
+In-Reply-To: <fb7b9d8c0710160127u569d294v45693f69f51883ad@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Fengwei Yin <yfw.bsp@gmail.com>
+Cc: alsa-devel@alsa-project.org, lea.li@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
-Looking at the change 291702f017efdfe556cb87b8530eb7d1ff08cbae, may be the 
-addition of the Asus Eeepc model was missed? The following patch fixes it if 
-it was not intended originally:
+On Tue, 2007-10-16 at 16:27 +0800, Fengwei Yin wrote:
+> Hi all,
+> I met a problem about period_time/buffer_time on PXA with ASOC enabled.
+> The kernel version is 2.6.21.
+> 
+> The Audio stream is 32k which is not supported by PXA ASOC driver. Please
+> refer following
+> RATES definition for PXA2xx.
+> 
+> #define PXA2XX_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+>                 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |
+> SNDRV_PCM_RATE_44100 | \
+>                 SNDRV_PCM_RATE_48000)
+> 
 
-diff --git a/Documentation/sound/alsa/ALSA-Configuration.txt 
-b/Documentation/sound/alsa/ALSA-Configuration.txt
-index 4b48c2e..e2a1985 100644
---- a/Documentation/sound/alsa/ALSA-Configuration.txt
-+++ b/Documentation/sound/alsa/ALSA-Configuration.txt
-@@ -843,6 +843,7 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. 
-This was removed.
- 	  3stack-6ch-dig 3-stack (6-channel) with SPDIF
- 	  6stack-dig	 6-stack with SPDIF
- 	  lenovo-101e	 Lenovo laptop
-+	  eeepc-p701	 ASUS Eeepc
- 	  auto		auto-config reading BIOS (default)
- 
- 	ALC882/885
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 53b0428..2ceaf4c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -12058,6 +12058,7 @@ static const char *alc662_models[ALC662_MODEL_LAST] = 
-{
- 	[ALC662_3ST_6ch]	= "3stack-6ch",
- 	[ALC662_5ST_DIG]	= "6stack-dig",
- 	[ALC662_LENOVO_101E]	= "lenovo-101e",
-+	[ALC662_ASUS_EEEPC_P701]	= "eeepc-p701",
- 	[ALC662_AUTO]		= "auto",
- };
- 
--- 
-[]'s
-Herton
+This may be a bug in the pxa AC97 driver as most AC97 codecs can run at
+32k and hence drive the AC97 link at 32k. I assume your using the WM9713
+and this will request from the pxa AC97 controller when it needs PCM
+audio data in VRA mode. i.e. it will mark every 2 out of 3 AC97 frames
+(slot 3 & 4) as valid.
+
+Can you set SNDRV_PCM_RATE_32000 and give it a try, hopefully it should
+work and wont require any sample rate conversion.
+
+Liam 
