@@ -1,148 +1,179 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: STAC9228 DMIC Support
-Date: Wed, 17 Oct 2007 14:44:27 -0400
-Message-ID: <4716580B.3080907@embeddedalley.com>
+From: "Adrian McMenamin" <lkmladrian@gmail.com>
+Subject: [PATCH] ALSA - protect Dreamcast PCM driver (AICA) from G2 bus effects
+Date: Wed, 17 Oct 2007 21:30:28 +0100
+Message-ID: <8b67d60710171330n55b9b575k949f3d239b380165@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040509090409050904010207"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp107.biz.mail.re2.yahoo.com (smtp107.biz.mail.re2.yahoo.com
-	[206.190.52.176]) by alsa0.perex.cz (Postfix) with SMTP id 362E4247E1
-	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Oct 2007 20:44:27 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxsh-dev-bounces@lists.sourceforge.net>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linuxsh-dev>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+Sender: linuxsh-dev-bounces@lists.sourceforge.net
+Errors-To: linuxsh-dev-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org, linuxsh-dev@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040509090409050904010207
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+The G2 bus on the SEGA Dreamcast connects both the maple peripheral
+bus and the AICA sound memory. DMA requests on one can cause the other
+to timeout on memory operations.
 
-Added DMIC support for STAC9228 cards, as well as adding terminators to 
-other hda_nid DMIC arrays, and added a new Vendor ID tag.
----
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+This patch prevents maple interrupts from causing hiccoughs in the
+AICA sound (maple bus code will land in 2.6.24).
 
---------------040509090409050904010207
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="stac9228_dmic.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="stac9228_dmic.patch"
+There are other cleanups for this (AICA) code - but this is in effect
+a regression fix rather than a cleanup.
 
-diff -r e91f57f8127a pci/hda/hda_codec.c
---- a/pci/hda/hda_codec.c	Tue Oct 09 11:58:41 2007 +0200
-+++ b/pci/hda/hda_codec.c	Wed Oct 17 11:59:47 2007 -0400
-@@ -55,6 +55,7 @@ static struct hda_vendor_id hda_vendor_i
- 	{ 0x10ec, "Realtek" },
- 	{ 0x1057, "Motorola" },
- 	{ 0x1106, "VIA" },
-+	{ 0x111d, "IDT" },
- 	{ 0x11d4, "Analog Devices" },
- 	{ 0x13f6, "C-Media" },
- 	{ 0x14f1, "Conexant" },
-diff -r e91f57f8127a pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Tue Oct 09 11:58:41 2007 +0200
-+++ b/pci/hda/patch_sigmatel.c	Wed Oct 17 13:06:58 2007 -0400
-@@ -182,8 +182,9 @@ static hda_nid_t stac925x_dac_nids[1] = 
-         0x02,
- };
- 
--static hda_nid_t stac925x_dmic_nids[1] = {
--	0x15, 
-+static hda_nid_t stac925x_dmic_nids[2] = {
-+        0x15, 
-+        0x00, /* terminator */
- };
- 
- static hda_nid_t stac922x_adc_nids[2] = {
-@@ -202,6 +203,11 @@ static hda_nid_t stac927x_mux_nids[3] = 
-         0x15, 0x16, 0x17
- };
- 
-+static hda_nid_t stac927x_dmic_nids[3] = {
-+        0x13, 0x14,
-+        0x00, /* terminator */
-+};
-+
- static hda_nid_t stac9205_adc_nids[2] = {
-         0x12, 0x13
- };
-@@ -210,8 +216,9 @@ static hda_nid_t stac9205_mux_nids[2] = 
-         0x19, 0x1a
- };
- 
--static hda_nid_t stac9205_dmic_nids[2] = {
-+static hda_nid_t stac9205_dmic_nids[3] = {
-         0x17, 0x18,
-+        0x00, /* terminator */
- };
- 
- static hda_nid_t stac9200_pin_nids[8] = {
-@@ -2716,7 +2723,6 @@ static int patch_stac927x(struct hda_cod
- 		spec->mux_nids = stac927x_mux_nids;
- 		spec->num_muxes = ARRAY_SIZE(stac927x_mux_nids);
- 		spec->num_adcs = ARRAY_SIZE(stac927x_adc_nids);
--		spec->num_dmics = 0;
- 		spec->init = d965_core_init;
- 		spec->mixer = stac927x_mixer;
- 		break;
-@@ -2725,7 +2731,6 @@ static int patch_stac927x(struct hda_cod
- 		spec->mux_nids = stac927x_mux_nids;
- 		spec->num_muxes = ARRAY_SIZE(stac927x_mux_nids);
- 		spec->num_adcs = ARRAY_SIZE(stac927x_adc_nids);
--		spec->num_dmics = 0;
- 		spec->init = d965_core_init;
- 		spec->mixer = stac927x_mixer;
- 		break;
-@@ -2734,9 +2739,18 @@ static int patch_stac927x(struct hda_cod
- 		spec->mux_nids = stac927x_mux_nids;
- 		spec->num_muxes = ARRAY_SIZE(stac927x_mux_nids);
- 		spec->num_adcs = ARRAY_SIZE(stac927x_adc_nids);
--		spec->num_dmics = 0;
- 		spec->init = stac927x_core_init;
- 		spec->mixer = stac927x_mixer;
-+	}
-+
-+	switch (codec->subsystem_id) {
-+	case 0x1028020A: /* STAC 9228 */
-+	case 0x10280209: /* STAC 9228 */
-+		spec->dmic_nids = stac927x_dmic_nids;
-+		spec->num_dmics = 2;
-+		break;
-+	default:
-+		spec->num_dmics = 0;
+Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+
+diff --git a/sound/sh/aica.c b/sound/sh/aica.c
+index 7397865..407981d 100644
+--- a/sound/sh/aica.c
++++ b/sound/sh/aica.c
+@@ -106,11 +106,14 @@ static void spu_write_wait(void)
+ static void spu_memset(u32 toi, u32 what, int length)
+ {
+ 	int i;
++	unsigned long flags;
+ 	snd_assert(length % 4 == 0, return);
+ 	for (i = 0; i < length; i++) {
+ 		if (!(i % 8))
+ 			spu_write_wait();
++		local_irq_save(flags);
+ 		writel(what, toi + SPU_MEMORY_BASE);
++		local_irq_restore(flags);
+ 		toi++;
  	}
- 
- 	spec->multiout.dac_nids = spec->dac_nids;
-@@ -2798,7 +2812,7 @@ static int patch_stac9205(struct hda_cod
- 	spec->mux_nids = stac9205_mux_nids;
- 	spec->num_muxes = ARRAY_SIZE(stac9205_mux_nids);
- 	spec->dmic_nids = stac9205_dmic_nids;
--	spec->num_dmics = ARRAY_SIZE(stac9205_dmic_nids);
-+	spec->num_dmics = 2;
- 	spec->dmux_nid = 0x1d;
- 
- 	spec->init = stac9205_core_init;
+ }
+@@ -118,6 +121,7 @@ static void spu_memset(u32 toi, u32 what, int length)
+ /* spu_memload - write to SPU address space */
+ static void spu_memload(u32 toi, void *from, int length)
+ {
++	unsigned long flags;
+ 	u32 *froml = from;
+ 	u32 __iomem *to = (u32 __iomem *) (SPU_MEMORY_BASE + toi);
+ 	int i;
+@@ -128,7 +132,9 @@ static void spu_memload(u32 toi, void *from, int length)
+ 		if (!(i % 8))
+ 			spu_write_wait();
+ 		val = *froml;
++		local_irq_save(flags);
+ 		writel(val, to);
++		local_irq_restore(flags);
+ 		froml++;
+ 		to++;
+ 	}
+@@ -138,28 +144,36 @@ static void spu_memload(u32 toi, void *from, int length)
+ static void spu_disable(void)
+ {
+ 	int i;
++	unsigned long flags;
+ 	u32 regval;
+ 	spu_write_wait();
+ 	regval = readl(ARM_RESET_REGISTER);
+ 	regval |= 1;
+ 	spu_write_wait();
++	local_irq_save(flags);
+ 	writel(regval, ARM_RESET_REGISTER);
++	local_irq_restore(flags);
+ 	for (i = 0; i < 64; i++) {
+ 		spu_write_wait();
+ 		regval = readl(SPU_REGISTER_BASE + (i * 0x80));
+ 		regval = (regval & ~0x4000) | 0x8000;
+ 		spu_write_wait();
++		local_irq_save(flags);
+ 		writel(regval, SPU_REGISTER_BASE + (i * 0x80));
++		local_irq_restore(flags);
+ 	}
+ }
 
---------------040509090409050904010207
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ /* spu_enable - set spu registers to enable sound output */
+ static void spu_enable(void)
+ {
++	unsigned long flags;
+ 	u32 regval = readl(ARM_RESET_REGISTER);
+ 	regval &= ~1;
+ 	spu_write_wait();
++	local_irq_save(flags);
+ 	writel(regval, ARM_RESET_REGISTER);
++	local_irq_restore(flags);
+ }
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+ /*
+@@ -168,25 +182,34 @@ static void spu_enable(void)
+ */
+ static void spu_reset(void)
+ {
++	unsigned long flags;
+ 	spu_disable();
+ 	spu_memset(0, 0, 0x200000 / 4);
+ 	/* Put ARM7 in endless loop */
++	local_irq_save(flags);
+ 	ctrl_outl(0xea000002, SPU_MEMORY_BASE);
++	local_irq_restore(flags);
+ 	spu_enable();
+ }
 
---------------040509090409050904010207--
+ /* aica_chn_start - write to spu to start playback */
+ static void aica_chn_start(void)
+ {
++	unsigned long flags;
+ 	spu_write_wait();
++	local_irq_save(flags);
+ 	writel(AICA_CMD_KICK | AICA_CMD_START, (u32 *) AICA_CONTROL_POINT);
++	local_irq_restore(flags);
+ }
+
+ /* aica_chn_halt - write to spu to halt playback */
+ static void aica_chn_halt(void)
+ {
++	unsigned long flags;
+ 	spu_write_wait();
++	local_irq_save(flags);
+ 	writel(AICA_CMD_KICK | AICA_CMD_STOP, (u32 *) AICA_CONTROL_POINT);
++	local_irq_restore(flags);
+ }
+
+ /* ALSA code below */
+@@ -213,12 +236,13 @@ static int aica_dma_transfer(int channels, int
+buffer_size,
+ 	int q, err, period_offset;
+ 	struct snd_card_aica *dreamcastcard;
+ 	struct snd_pcm_runtime *runtime;
+-	err = 0;
++	unsigned long flags;
+ 	dreamcastcard = substream->pcm->private_data;
+ 	period_offset = dreamcastcard->clicks;
+ 	period_offset %= (AICA_PERIOD_NUMBER / channels);
+ 	runtime = substream->runtime;
+ 	for (q = 0; q < channels; q++) {
++		local_irq_save(flags);
+ 		err = dma_xfer(AICA_DMA_CHANNEL,
+ 			       (unsigned long) (runtime->dma_area +
+ 						(AICA_BUFFER_SIZE * q) /
+@@ -228,9 +252,12 @@ static int aica_dma_transfer(int channels, int buffer_size,
+ 			       AICA_CHANNEL0_OFFSET + q * CHANNEL_OFFSET +
+ 			       AICA_PERIOD_SIZE * period_offset,
+ 			       buffer_size / channels, AICA_DMA_MODE);
+-		if (unlikely(err < 0))
++		if (unlikely(err < 0)) {
++			local_irq_restore(flags);
+ 			break;
++		}
+ 		dma_wait_for_completion(AICA_DMA_CHANNEL);
++		local_irq_restore(flags);
+ 	}
+ 	return err;
+ }
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc.
+Still grepping through log files to find problems?  Stop.
+Now Search log events and configuration files using AJAX and a browser.
+Download your FREE copy of Splunk now >> http://get.splunk.com/
