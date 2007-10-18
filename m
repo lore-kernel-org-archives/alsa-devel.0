@@ -1,16 +1,22 @@
-From: Mike Gorse <mgorse@mgorse.dhs.org>
-Subject: [patch] snd_pcm_dmix_close: raise semaphore if unable
-	to discard
-Date: Wed, 17 Oct 2007 20:55:11 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.0710172049440.8705@mgorse.dhs.org>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: hda-intel: no soundcard with current linus' git
+	tree
+Date: Thu, 18 Oct 2007 03:51:50 +0200
+Message-ID: <200710180351.50618.maximlevitsky@gmail.com>
+References: <471538C2.80806@m3y3r.de> <s5h8x622kui.wl%tiwai@suse.de>
+	<471651C4.20907@m3y3r.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rwcrmhc15.comcast.net (rwcrmhc15.comcast.net [216.148.227.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D1E3244F2
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B79224521
 	for <alsa-devel@alsa-project.org>;
-	Thu, 18 Oct 2007 02:53:44 +0200 (CEST)
+	Thu, 18 Oct 2007 03:52:19 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id h2so362051ugf
+	for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2007 18:52:18 -0700 (PDT)
+In-Reply-To: <471651C4.20907@m3y3r.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Thomas Meyer <thomas@m3y3r.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch causes snd_pcm_dmix_close() to up a semaphore after downing it 
-if it is unable to discard it.  It prevents some deadlock that I am 
-getting when a couple of applications interact and one of them closes the 
-device and later re-opens it.
+Hi,
 
---
+I understand why this happens.
 
---- src/pcm/pcm_dmix.c.orig	2007-10-17 20:19:47.000000000 -0400
-+++ src/pcm/pcm_dmix.c	2007-10-17 20:50:46.000000000 -0400
-@@ -652,8 +652,11 @@
-   	if (dmix->client)
-   		snd_pcm_direct_client_discard(dmix);
-   	shm_sum_discard(dmix);
--	if (snd_pcm_direct_shm_discard(dmix))
--		snd_pcm_direct_semaphore_discard(dmix);
-+	if (snd_pcm_direct_shm_discard(dmix)) {
-+		if (snd_pcm_direct_semaphore_discard(dmix)) {
-+			snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
-+		}
-+	}
-  	else
-  		snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
-  	free(dmix->bindings);
+Your sound card has a single "headphone" output, and since it is single, it is called "Master"
+the stac you have also has a real master volume control, that controls all the DACs, not just the headphones.
+
+I added support for it, thus two controls collided.
+
+The  following patch will rename the "Master" output to "Headphone"
+Note that on the stac 9205/9204, the only one that has no master volume (the volume knob)
+but has a "Master Volume" amplifier widget, this will probably rename the "Master Volume" to
+Headphones.
+
+This chip is quite different, thus I think this should be handled in its patch function.
+I see what I can do later.
+Meanwhile the rename from "Master" to Headphones" is the only regression.
+
+Best regards,
+	Maxim Levitsky
+
+PS: I reply to this mail with the patch.
