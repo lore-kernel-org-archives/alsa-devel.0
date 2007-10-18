@@ -1,19 +1,16 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: [patch] Fix bug with bt87x driver's load_all option
-Date: Wed, 17 Oct 2007 15:55:54 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0710171553210.16052@shell4.speakeasy.net>
+From: Mike Gorse <mgorse@mgorse.dhs.org>
+Subject: [patch] snd_pcm_dmix_close: raise semaphore if unable
+	to discard
+Date: Wed, 17 Oct 2007 20:55:11 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0710172049440.8705@mgorse.dhs.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.sea5.speakeasy.net (mail3.sea5.speakeasy.net
-	[69.17.117.5]) by alsa0.perex.cz (Postfix) with ESMTP id 04F5924469
+Received: from rwcrmhc15.comcast.net (rwcrmhc15.comcast.net [216.148.227.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D1E3244F2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 18 Oct 2007 00:55:56 +0200 (CEST)
-Received: from shell4.sea5.speakeasy.net ([69.17.116.5])
-	(envelope-sender <xyzzy@speakeasy.org>)
-	by mail3.sea5.speakeasy.net (qmail-ldap-1.03) with AES256-SHA encrypted
-	SMTP for <alsa-devel@alsa-project.org>; 17 Oct 2007 22:55:54 -0000
+	Thu, 18 Oct 2007 02:53:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,26 +23,26 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-snd-bt87x: Make the load_all option work correctly
+This patch causes snd_pcm_dmix_close() to up a semaphore after downing it 
+if it is unable to discard it.  It prevents some deadlock that I am 
+getting when a couple of applications interact and one of them closes the 
+device and later re-opens it.
 
-If the load_all option was turned on all cards would be treated as unknown,
-even those which are in the database.  Of course, if the card is in the
-database there is no reason to use the load_all option.  It's there to force
-loading when the card isn't in the database.  But there are out of date wikis
-that say to do this and some distros might turn this option on by default.
+--
 
-So, we keep the load_all option from turning known cards into unknown cards.
-
-Signed-off-by: Trent Piepho <xyzzy@speakeasy.org>
-
-diff --git a/pci/bt87x.c b/pci/bt87x.c
---- a/pci/bt87x.c
-+++ b/pci/bt87x.c
-@@ -1021,7 +1021,7 @@ static int __devinit snd_bt87x_detect_ca
- 	int i;
- 	const struct pci_device_id *supported;
-
--	supported = pci_match_device(&driver, pci);
-+	supported = pci_match_id(snd_bt87x_ids, pci);
- 	if (supported && supported->driver_data > 0)
- 		return supported->driver_data;
+--- src/pcm/pcm_dmix.c.orig	2007-10-17 20:19:47.000000000 -0400
++++ src/pcm/pcm_dmix.c	2007-10-17 20:50:46.000000000 -0400
+@@ -652,8 +652,11 @@
+   	if (dmix->client)
+   		snd_pcm_direct_client_discard(dmix);
+   	shm_sum_discard(dmix);
+-	if (snd_pcm_direct_shm_discard(dmix))
+-		snd_pcm_direct_semaphore_discard(dmix);
++	if (snd_pcm_direct_shm_discard(dmix)) {
++		if (snd_pcm_direct_semaphore_discard(dmix)) {
++			snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
++		}
++	}
+  	else
+  		snd_pcm_direct_semaphore_up(dmix, DIRECT_IPC_SEM_CLIENT);
+  	free(dmix->bindings);
