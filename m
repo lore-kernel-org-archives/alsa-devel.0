@@ -1,65 +1,78 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: STAC9228 updated DMUX nid.
-Date: Fri, 19 Oct 2007 15:03:15 -0400
-Message-ID: <4718FF73.4020405@embeddedalley.com>
+From: william estrada <MrUmunhum@popdial.com>
+Subject: USB device gives wrong data?
+Date: Fri, 19 Oct 2007 14:44:08 -0700
+Message-ID: <47192528.9080403@popdial.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040603020806000504090101"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp109.biz.mail.re2.yahoo.com (smtp109.biz.mail.re2.yahoo.com
-	[206.190.53.8]) by alsa0.perex.cz (Postfix) with SMTP id 2931624682
-	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Oct 2007 21:03:18 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: linux-audio-user@lists.linuxaudio.org
+Cc: alsa-user@lists.sourceforge.net, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040603020806000504090101
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi group,
 
-Changed the dmux for STAC9228 from ADC1MUX to ADC0MUX to avoid confusion.
----
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+   I think I have found a problem with the USB sound driver?  It appears
+that the current drive returns a x'81' for silence but it should be a
+x'7f'.
 
---------------040603020806000504090101
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="stac9228_dmux_correction.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="stac9228_dmux_correction.patch"
+   When I use my laptop's sound device and record without a mic, I get
+a file full of x'7f's.  If I do the same with my cheap-o USB device
+I get a file full of x'81's.  The sound quality from the laptop is
+unacceptable, so that is way I want to use the USB device.
 
-diff -r 7cf5e23f804e pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Fri Oct 19 08:23:00 2007 +0200
-+++ b/pci/hda/patch_sigmatel.c	Fri Oct 19 13:47:35 2007 -0400
-@@ -2777,7 +2777,7 @@ static int patch_stac927x(struct hda_cod
- 	case 0x10280209: /* STAC 9228 */
- 		spec->dmic_nids = stac927x_dmic_nids;
- 		spec->num_dmics = STAC927X_NUM_DMICS;
--		spec->dmux_nid = 0x1c;
-+		spec->dmux_nid = 0x1b;
- 		break;
- 	default:
- 		spec->num_dmics = 0;	
+   I have written a recording program that I have a 'silence' filter
+that filters out segments of dead air.  It works with the laptop's
+sound device but not the USB device.  The filter works by remove
+x'7f's after allowing a selectable amount.  I get the results using
+arecord which does not have the filtering.
 
---------------040603020806000504090101
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+   The USB device is a C -Media Electronics, Inc.  I am running FC6.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> [root@laptop ~]#  lsmod |grep snd
+> snd_usb_audio          81985  0 
+> snd_usb_lib            21057  1 snd_usb_audio
+> snd_rawmidi            28481  1 snd_usb_lib
+> snd_hwdep              13637  1 snd_usb_audio
+> snd_ali5451            27853  1 
+> snd_ac97_codec         99813  1 snd_ali5451
+> snd_ac97_bus            6593  1 snd_ac97_codec
+> snd_seq_dummy           8133  0 
+> snd_seq_oss            37057  0 
+> snd_seq_midi_event     11841  1 snd_seq_oss
+> snd_seq                57009  5 snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
+> snd_seq_device         12365  4 snd_rawmidi,snd_seq_dummy,snd_seq_oss,snd_seq
+> snd_pcm_oss            46433  0 
+> snd_mixer_oss          20545  1 snd_pcm_oss
+> snd_pcm                80965  4 snd_usb_audio,snd_ali5451,snd_ac97_codec,snd_pcm_oss
+> snd_timer              26693  2 snd_seq,snd_pcm
+> snd                    58181  140 snd_usb_audio,snd_rawmidi,snd_hwdep,snd_ali5451,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+> soundcore              12193  1 snd
+> snd_page_alloc         14281  1 snd_pcm
 
---------------040603020806000504090101--
+   Where do I report this 'bug' or how do I fix it?
+
+   Thanks for your time.  Sorry for the multiple posting, not sure where is
+should have gone.
+
+-- 
+William Estrada
+MrUmunhum@popdial.com
+Mt-Umunhum-Wireless.net ( http://Mt-Umunhum-Wireless.net )
+Ymessenger: MrUmunhum
+
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc.
+Still grepping through log files to find problems?  Stop.
+Now Search log events and configuration files using AJAX and a browser.
+Download your FREE copy of Splunk now >> http://get.splunk.com/
