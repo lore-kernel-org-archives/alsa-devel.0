@@ -1,31 +1,18 @@
-From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
-Subject: snd-pcsp doesn't accept the index parameter
-Date: Sat, 20 Oct 2007 17:07:10 +0600
-Message-ID: <4719E15E.2070701@ums.usu.ru>
+From: "Larry D. Pyeatt" <pyeatt@cs.ttu.edu>
+Subject: alsa-lib not installing plugins
+Date: Sat, 20 Oct 2007 11:06:28 -0500
+Message-ID: <471A2784.6000205@cs.ttu.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay4.usu.ru (relay4.usu.ru [194.226.235.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FB3024459
+Received: from redwood.cs.ttu.edu (redwood.cs.ttu.edu [129.118.162.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16A382437F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Oct 2007 13:07:49 +0200 (CEST)
-Received: from relay4.usu.ru (localhost [127.0.0.1])
-	by relay4.usu.ru (PostSystem) with ESMTP id 890A417EFE
-	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Oct 2007 17:07:54 +0600 (YEKST)
-Received: from usu2.usu.ru (usu2.usu.ru [194.226.237.16])
-	by relay4.usu.ru (PostSystem) with ESMTP id ECB5E17EFE
-	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Oct 2007 17:07:53 +0600 (YEKST)
-Received: from usu2.usu.ru (localhost.usu2.usu.ru [127.0.0.1])
-	by usu2.usu.ru (Postfix) with ESMTP id 5215FA7E95
-	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Oct 2007 17:07:45 +0600 (YEKST)
-Received: from ums.usu.ru (ums.usu.ru [194.226.236.116])
-	by usu2.usu.ru (Postfix) with ESMTP id 346EDA7A2F
-	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Oct 2007 17:07:45 +0600 (YEKST)
+	Sat, 20 Oct 2007 18:03:19 +0200 (CEST)
+Received: from [129.118.248.102] (unknown [129.118.248.102])
+	by redwood.cs.ttu.edu (Postfix) with ESMTP id 873228738
+	for <alsa-devel@alsa-project.org>; Sat, 20 Oct 2007 11:03:17 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,23 +25,25 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It is impossible to put pcsp at a stable index without the trivial patch 
-below.
 
-Signed-Off-By: Alexander E. Patrakov <patrakov@ums.usu.ru>
+Hi,
+  I wrote a new plugin for alsa-lib.  After running make, there
+are .o and .lo files in src/pcm.  However, when I run make
+install, nothing gets put into /usr/lib/alsa-lib.
 
---- pcsp.c
-+++ pcsp.c
-@@ -27,6 +27,8 @@
- static char *id = SNDRV_DEFAULT_STR1;	/* ID for this card */
- static int enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
- 
-+module_param(index, int, 0444);
-+MODULE_PARM_DESC(index, "Index value for pcsp soundcard.");
- module_param(id, charp, 0444);
- MODULE_PARM_DESC(id, "ID string for pcsp soundcard.");
- module_param(enable, bool, 0444);
+  I first tried installing alsa-lib-1.0.15rc3. Then I tried
+alsa-lib-1.0.13rc3 and alsa-lib-1.0.14rc4.  All of them did the
+same thing.  Am I missing something obvious?
+
+  Since they are all doing the same thing, it must be either
+that I just don't know what I'm doing, or something else
+in my system is not working.  I would appreciate any suggestions
+on what could cause this behavior.
+
+Thanks,
 
 
 -- 
-Alexander E. Patrakov
+Larry D. Pyeatt, PhD.
+pyeatt@cs.ttu.edu
+http://www.cs.ttu.edu/~pyeatt
