@@ -1,25 +1,31 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: [Jackit-devel] RME HDSP driver enhancements for
-	HDSPe cards
-Date: Fri, 19 Oct 2007 22:54:00 +0100
-Message-ID: <20071019215400.GA2964@localhost>
-References: <4715D367.9080206@free.fr> <47186388.7020403@wildgooses.com>
+From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
+Subject: snd-pcsp doesn't accept the index parameter
+Date: Sat, 20 Oct 2007 17:07:10 +0600
+Message-ID: <4719E15E.2070701@ums.usu.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51B6524431
+Received: from relay4.usu.ru (relay4.usu.ru [194.226.235.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FB3024459
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Oct 2007 23:48:46 +0200 (CEST)
-Received: from localhost (unknown [78.32.150.178])
-	by mail3.uklinux.net (Postfix) with ESMTP id BDE8D1F6C97
-	for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2007 22:48:45 +0100 (BST)
-Received: from anon by localhost with local (Exim 4.63)
-	(envelope-from <john@sound-man.co.uk>) id 1Iizn7-0000m6-7Q
-	for alsa-devel@alsa-project.org; Fri, 19 Oct 2007 22:54:01 +0100
-Content-Disposition: inline
-In-Reply-To: <47186388.7020403@wildgooses.com>
+	Sat, 20 Oct 2007 13:07:49 +0200 (CEST)
+Received: from relay4.usu.ru (localhost [127.0.0.1])
+	by relay4.usu.ru (PostSystem) with ESMTP id 890A417EFE
+	for <alsa-devel@alsa-project.org>;
+	Sat, 20 Oct 2007 17:07:54 +0600 (YEKST)
+Received: from usu2.usu.ru (usu2.usu.ru [194.226.237.16])
+	by relay4.usu.ru (PostSystem) with ESMTP id ECB5E17EFE
+	for <alsa-devel@alsa-project.org>;
+	Sat, 20 Oct 2007 17:07:53 +0600 (YEKST)
+Received: from usu2.usu.ru (localhost.usu2.usu.ru [127.0.0.1])
+	by usu2.usu.ru (Postfix) with ESMTP id 5215FA7E95
+	for <alsa-devel@alsa-project.org>;
+	Sat, 20 Oct 2007 17:07:45 +0600 (YEKST)
+Received: from ums.usu.ru (ums.usu.ru [194.226.236.116])
+	by usu2.usu.ru (Postfix) with ESMTP id 346EDA7A2F
+	for <alsa-devel@alsa-project.org>;
+	Sat, 20 Oct 2007 17:07:45 +0600 (YEKST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,19 +38,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 19, 2007 at 08:58:00AM +0100, Ed W wrote:
-> RME are also helpful to the extent that you ask them specific questions 
-> and in the name of writing drivers. They should give you hardware 
-> details, etc
-> 
-> 
-> As an aside, apart from CPU load I will be suprised if turning floats 
-> into 32bit ints makes any difference to the audio, but I agree that it 
-> would be a nice feature to have!
+It is impossible to put pcsp at a stable index without the trivial patch 
+below.
 
-IIRC the new RME cards convert 24 bit integers to 32 bit floats in hardware
-(and vice versa), thus saving apps like jackd (and the CPU) the trouble.
-jackd doesn't support that yet, but AFAIK it shouldn't be too much effort
-to change that.
+Signed-Off-By: Alexander E. Patrakov <patrakov@ums.usu.ru>
 
-John
+--- pcsp.c
++++ pcsp.c
+@@ -27,6 +27,8 @@
+ static char *id = SNDRV_DEFAULT_STR1;	/* ID for this card */
+ static int enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
+ 
++module_param(index, int, 0444);
++MODULE_PARM_DESC(index, "Index value for pcsp soundcard.");
+ module_param(id, charp, 0444);
+ MODULE_PARM_DESC(id, "ID string for pcsp soundcard.");
+ module_param(enable, bool, 0444);
+
+
+-- 
+Alexander E. Patrakov
