@@ -1,49 +1,68 @@
-From: "Larry D. Pyeatt" <pyeatt@cs.ttu.edu>
-Subject: alsa-lib not installing plugins
-Date: Sat, 20 Oct 2007 11:06:28 -0500
-Message-ID: <471A2784.6000205@cs.ttu.edu>
+From: Thomas Meyer <thomas@m3y3r.de>
+Subject: Re: hda-intel: no soundcard with current linus' git tree
+Date: Sun, 21 Oct 2007 17:42:40 +0200
+Message-ID: <471B7370.7070009@m3y3r.de>
+References: <471538C2.80806@m3y3r.de>	<200710180353.08638.maximlevitsky@gmail.com>	<s5hd4vdc6d4.wl%tiwai@suse.de>	<200710181621.59795.maximlevitsky@gmail.com> <s5h4pgo1qjh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from redwood.cs.ttu.edu (redwood.cs.ttu.edu [129.118.162.1])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16A382437F
-	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Oct 2007 18:03:19 +0200 (CEST)
-Received: from [129.118.248.102] (unknown [129.118.248.102])
-	by redwood.cs.ttu.edu (Postfix) with ESMTP id 873228738
-	for <alsa-devel@alsa-project.org>; Sat, 20 Oct 2007 11:03:17 -0500 (CDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751984AbXJUPnB@vger.kernel.org>
+In-Reply-To: <s5h4pgo1qjh.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai schrieb:
+>
+> Both are handled as patch_stac925x.  That's what I meant.  With your
+> patch, there will be no master any more.
+>
+> So, how about the patch below?
+>
+>
+> Takashi
+>
+> diff -r fb9512ce24e0 pci/hda/patch_sigmatel.c
+> --- a/pci/hda/patch_sigmatel.c	Thu Oct 18 10:48:43 2007 +0200
+> +++ b/pci/hda/patch_sigmatel.c	Thu Oct 18 16:36:35 2007 +0200
+> @@ -111,6 +111,7 @@ struct sigmatel_spec {
+>  	unsigned int alt_switch: 1;
+>  	unsigned int hp_detect: 1;
+>  	unsigned int gpio_mute: 1;
+> +	unsigned int no_vol_knob :1;
+>  
+>  	unsigned int gpio_mask, gpio_data;
+>  
+> @@ -1930,7 +1931,8 @@ static int stac92xx_auto_create_hp_ctls(
+>  	}
+>  	if (spec->multiout.hp_nid) {
+>  		const char *pfx;
+> -		if (old_num_dacs == spec->multiout.num_dacs)
+> +		if (old_num_dacs == spec->multiout.num_dacs &&
+> +		    spec->no_vol_knob)
+>  			pfx = "Master";
+>  		else
+>  			pfx = "Headphone";
+> @@ -2487,6 +2489,7 @@ static int patch_stac9200(struct hda_cod
+>  	codec->spec = spec;
+>  	spec->num_pins = ARRAY_SIZE(stac9200_pin_nids);
+>  	spec->pin_nids = stac9200_pin_nids;
+> +	spec->no_vol_knob = 1;
+>  	spec->board_config = snd_hda_check_board_config(codec, STAC_9200_MODELS,
+>  							stac9200_models,
+>  							stac9200_cfg_tbl);
+> @@ -2541,6 +2544,7 @@ static int patch_stac925x(struct hda_cod
+>  	codec->spec = spec;
+>  	spec->num_pins = ARRAY_SIZE(stac925x_pin_nids);
+>  	spec->pin_nids = stac925x_pin_nids;
+> +	spec->no_vol_knob = 1;
+>  	spec->board_config = snd_hda_check_board_config(codec, STAC_925x_MODELS,
+>  							stac925x_models,
+>
+>   
+Thanks. Soundcard is back and my "multimedia" keys for configuring the
+master volume are working again with alsa 1.0.15 and above patch.
 
-Hi,
-  I wrote a new plugin for alsa-lib.  After running make, there
-are .o and .lo files in src/pcm.  However, when I run make
-install, nothing gets put into /usr/lib/alsa-lib.
-
-  I first tried installing alsa-lib-1.0.15rc3. Then I tried
-alsa-lib-1.0.13rc3 and alsa-lib-1.0.14rc4.  All of them did the
-same thing.  Am I missing something obvious?
-
-  Since they are all doing the same thing, it must be either
-that I just don't know what I'm doing, or something else
-in my system is not working.  I would appreciate any suggestions
-on what could cause this behavior.
-
-Thanks,
-
-
--- 
-Larry D. Pyeatt, PhD.
-pyeatt@cs.ttu.edu
-http://www.cs.ttu.edu/~pyeatt
+mfg
+thomas
