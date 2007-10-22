@@ -1,21 +1,18 @@
-From: Jan-Simon =?iso-8859-1?q?M=F6ller?= <dl9pf@gmx.de>
-Subject: Re:
-	=?iso-8859-1?q?hda-intel=3A_no_soundcard_with_curren?=
-	=?iso-8859-1?q?t_linus=27_git=09tree?=
-Date: Sun, 21 Oct 2007 16:57:09 +0200
-Message-ID: <200710211657.10184.dl9pf@gmx.de>
-References: <471538C2.80806@m3y3r.de> <200710191246.34401.dl9pf@gmx.de>
-	<s5htzonxw0a.wl%tiwai@suse.de>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] ALSA scenario API
+Date: Mon, 22 Oct 2007 23:11:47 +0100
+Message-ID: <1193091107.7052.193.camel@localhost.localdomain>
+References: <1192579933.12060.772.camel@localhost.localdomain>
+	<s5hhcknzcs7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 63C452415F
+Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id C97DD2467C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Oct 2007 21:57:45 +0200 (CEST)
-In-Reply-To: <s5htzonxw0a.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Tue, 23 Oct 2007 00:11:49 +0200 (CEST)
+In-Reply-To: <s5hhcknzcs7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,16 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Leijin Tang <Leijin.Tang@access-company.com>, ohm-devel <ohm-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag 19 Oktober 2007 12:02:29 schrieb Takashi Iwai:
-> Thanks.  With the patch below, the driver should work without option.
-> Give it a try.
->
+On Fri, 2007-10-19 at 11:14 +0200, Takashi Iwai wrote:
 
-Thanks, it works with both patches !
-Have to try the mic for skype next.
+> 
+> About PCM: if we implement again this kind of things in the driver, we
+> may have a virtual PCM stream for the default use and other fixed PCM
+> streams.  They can be opened exclusively, and the default stream opens
+> different H/W stream according to the current scenario.  (BTW, still a
+> question remains: when the scenario switch happens on the fly during a
+> PCM stream being used, what should be done?)
+> 
 
-Best regards
-Jan-Simon
+This probably depends on the scenario change and probably wont matter
+for most changes e.g. hifi playback then headphone insertion (same pcm)
+or hifi playback then phone call (different PCM - stop hifi then start
+voice). I suppose the PCM option was more for scenario audio type e.g.
+all system sound use pcm:0.2, all voice use pcm:0.1, etc
+
+> Or, simply alsa-lib checks the current scenario value and chooses the
+> appropriate preset setup.  This would work well (at least for
+> alsa-lib, not salsa-lib - such a complicated implementation is outside
+> the scope of salsa-lib).  
+
+This is what's working on the OpenZaurus atm. There is a daemon that
+alsactl restores a scenario based upon events. i.e. there is an
+asound.state for each anticipated use case (scenario). 
+
+This works well for routing audio (and saving power) but cant tell apps
+what scenarios are supported or the sink/source pcm.
+
+> This user-space solution (for PCM) has
+> another advantage that it's easier to handle PCM setups for multiple
+> streams.  For example, suppose we use "scenario" for speaker setup.
+> emu10k1 uses multiple PCM streams for 4.0/5.1 surrounds, and the
+> driver-side implementation wouldn't work unless it reflects to
+> alsa-lib setup.
+> 
+
+Imho, the quickest way in user space (without using alsa-lib or salsa)
+for route, alias and pcm would probably be to extend alsactl (or make a
+new lib based on alsactl). This would easily give the scenario route
+changing (already mostly done) and would need simple enough code to add
+options to get aliases and PCM's. 
+
+Liam
