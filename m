@@ -1,18 +1,23 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re:
-	=?utf-8?b?562U5aSNOiAgW1JGQ10gQUxTQQlzY2VuYXJpbyBB?= =?utf-8?q?PI?=
-Date: Tue, 23 Oct 2007 18:24:42 +0100
-Message-ID: <1193160282.7052.326.camel@localhost.localdomain>
-References: <24796D40B87E66409C5ABD9733F46E024A467D@mtnex1.mtn.palmsource.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Confused about 'default' device
+Date: Tue, 23 Oct 2007 14:40:26 -0500
+Message-ID: <471E4E2A.9090105@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (unknown [80.75.67.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id E35ED24A1D
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E04824A53
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Oct 2007 19:24:43 +0200 (CEST)
-In-Reply-To: <24796D40B87E66409C5ABD9733F46E024A467D@mtnex1.mtn.palmsource.com>
+	Tue, 23 Oct 2007 21:40:40 +0200 (CEST)
+Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
+	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
+	l9NJeQLb023103
+	for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2007 12:40:37 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id l9NJeQnK029916
+	for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2007 14:40:26 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +27,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leijin Tang <Leijin.Tang@access-company.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, ohm-devel <ohm-devel@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2007-10-22 at 18:50 +0800, Leijin Tang wrote:
-> Hi
-> 
->      Thanks for the Takashi's idea.
-> 
->      It's agreement that controlling the scenarios is needed in the
-> alsa-lib. To the mobile device, the policy about the router switch or
-> volume control is so complex that we can't resolve all issues by
-> modified the alsa-lib.
-> 
-> Whether we can develop a simple server which carries out the policy? 
-> 
-> But we still need define the control element, it's very important to
-> the server's portability. Because the definition makes BSP to write
-> driver which have the same interface. 
+I'm having a hard time understand when ALSA does sample rate and format 
+conversion, and when it doesn't.
 
-The current zaurusd (policy/scenario manager for OpenZaurus) manages the
-complete and complex audio routing atm very well without any new control
-elements. It does this by having an asound.state for each scenario and a
-driver that exposes all it's audio controls. This way it's covers all
-possible routes within the sound card.
+When I issue the following command:
 
-I'm now beginning to think it may be quick and easy to turn some of
-alsactl into a separate lib (from alsa-lib) and reuse it's file format
-and store/restore code for scenarios. A new master scenario file could
-then be added that will list the supported scenarios. e.g.
+	mplayer -ao alsa filename.mov -v
 
-scenario {
-  name = "phone call handset"  # standard name
-  file = "/path/to/phone-call-handset.state"
-  alias master playback volume = 1 # number is control id from state
-file
-}
+I get this output:
 
-(This format is up to the implementer)
+Building audio filter chain for 48000Hz/2ch/s24le -> 0Hz/0ch/s8...
+[libaf] Adding filter dummy
+[dummy] Was reinitialized: 48000Hz/2ch/s24le
+[dummy] Was reinitialized: 48000Hz/2ch/s24le
+alsa-init: requested format: 48000 Hz, 2 channels, 11
+alsa-init: using ALSA 1.0.8
+alsa-init: setup for 1/2 channel(s)
+alsa-init: using device default
+alsa-init: pcm opend in blocking mode
+alsa-init: format s24le are not supported by hardware, trying default
+alsa-lib: pcm_plug.c:729:(snd_pcm_plug_hw_refine_schange) Unable to find
+an usable access for 'default'
+alsa-init: unable to set format: Invalid argument
 
-This new file would be parsed by the scenario lib and would allow apps
-to get/set/list scenarios. It would also allow the aliases to be queried
-by any device manager daemon/application (in order to update any volume
-controls).
+Sure enough, my device can't handle s24le.  It can only handle s16be.
 
-Liam 
+I was under the impression that ALSA can do format and sample rate conversion if 
+necessary, but I guess that's not always the case.  I know ALSA has a bunch of 
+plug-ins for that, but I guess they're not used by default.
+
+What do I need to do to tell ALSA to convert s24le to s16be?
