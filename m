@@ -1,21 +1,21 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: [PATCH] asihpi checkpatch clean plus control name
-	refactor
-Date: Tue, 23 Oct 2007 17:09:43 +1300
-Message-ID: <200710231709.43741.linux@audioscience.com>
+From: Didier Villevalois <ptitjes@free.fr>
+Subject: Re: [Jackit-devel] RME HDSPe floating point question
+Date: Tue, 23 Oct 2007 11:41:14 +0200
+Message-ID: <471DC1BA.1090502@free.fr>
+References: <20070910193546.GA3202@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 915752496D
+Received: from smtp25.orange.fr (smtp25.orange.fr [193.252.22.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4CCC8249A8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Oct 2007 06:09:18 +0200 (CEST)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JQC009M1JJFZ510@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Tue, 23 Oct 2007 17:09:15 +1300 (NZDT)
-Content-disposition: inline
+	Tue, 23 Oct 2007 11:41:40 +0200 (CEST)
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf2529.orange.fr (SMTP Server) with ESMTP id 3E1DB1C00389
+	for <alsa-devel@alsa-project.org>;
+	Tue, 23 Oct 2007 11:41:22 +0200 (CEST)
+In-Reply-To: <20070910193546.GA3202@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Alsa devel <alsa-devel@alsa-project.org>, jackit-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-checkpatch.pl --no-tree now reports no errors on asihpi.c
-Redo control names to be strings only (not using control index)
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Signed-off-by: Eliot Blennerhassett <linux@audioscience.com>
+Hi all,
 
-Patch here; (70k)
+(Cross-posting my report - last time i do this)
 
-ftp://ftp.audioscience.com/internet/download/beta/asihpi_checkpatch_clean.diff
+Great news (almost for me in anyways). RME HDSPe PCI *works as is* with
+the current driver. Firmware uploads as well. I had nothing to do to
+make it work! (I think the ExpressCard should work as well...)
 
-regards
+Maybe the alsa-project wiki page can be updated.
 
-Eliot
+Little by little in the next weeks, I will delve into the driver's code
+to identify parts that needs to be enhanced in order to take profit of
+the 32bit floating point format that the HDSPe card can provide. When
+ready, I'll contact RME to request them for informations about the
+activation of this mode.
+
+Didier.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.7 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFHHcG6VE1mALQL3JsRAjeZAKCJqicClHgy1UDc1YvAywuw1FokyQCeJO2d
+BhWpkxL8xLGxKB3zmbWFQpk=
+=wpbm
+-----END PGP SIGNATURE-----
