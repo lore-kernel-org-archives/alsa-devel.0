@@ -1,23 +1,19 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Confused about 'default' device
-Date: Thu, 25 Oct 2007 10:03:21 -0500
-Message-ID: <4720B039.9000909@freescale.com>
-References: <471E4E2A.9090105@freescale.com> <s5h4pggevv8.wl%tiwai@suse.de>
-	<1193225838.26984.1217558213@webmail.messagingengine.com>
-	<471F7479.9000602@freescale.com>
-	<1193295747.4869.1217732745@webmail.messagingengine.com>
-	<4720A53E.5010801@freescale.com>
-	<1193324526.17328.1217803511@webmail.messagingengine.com>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: how to handle bt848 audio driver
+Date: Thu, 25 Oct 2007 09:31:10 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0710250407410.16052@shell4.speakeasy.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFE8424766
+Received: from mail3.sea5.speakeasy.net (mail3.sea5.speakeasy.net
+	[69.17.117.5]) by alsa0.perex.cz (Postfix) with ESMTP id 95B812432F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Oct 2007 17:03:25 +0200 (CEST)
-In-Reply-To: <1193324526.17328.1217803511@webmail.messagingengine.com>
+	Thu, 25 Oct 2007 18:31:15 +0200 (CEST)
+Received: from shell4.sea5.speakeasy.net ([69.17.116.5])
+	(envelope-sender <xyzzy@speakeasy.org>)
+	by mail3.sea5.speakeasy.net (qmail-ldap-1.03) with AES256-SHA encrypted
+	SMTP for <alsa-devel@alsa-project.org>; 25 Oct 2007 16:31:10 -0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,14 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mauro Carvalho Chehab <mchehab@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
+I've made some more patches for the ALSA bt87x audio driver to support more
+features of the Osprey 440 card.
 
-> mplayer disables ALSA's sample rate conversion and always uses its own.
+In order to support certain features, the ALSA driver needs access to the
+bt878's GPIO lines and I2C bus.  These are controlled by PCI function 0, which
+is driven by the V4L driver.  The bt878 DVB driver (which drives PCI function
+1 just like the ALSA driver) needs to do the same thing and there is already
+some code to handle it.
 
-I don't think that's true.  If it always uses its own, then how much it works on 
-some video files and not others, and how come including a .asoundrc changes the 
-behavior of mplayer?
+So, the ALSA driver (snd-bt87x) needs to use functions from the V4L driver
+(bttv).  As it is now, the two drivers are completely separate and don't share
+any code and can be loaded individually.
+
+The DVB driver in the same tree as bttv, so this isn't a problem.  But the
+snd-bt87x is in another tree, so it's somewhat harder, and I'm not sure what
+to do about it.
+
+The driver will need some header files from the bttv directory.  I guess this
+can be handled by adding a -I flag in the Makefile, though that seems a little
+ugly.
+
+The bigger problem is that changes to snd-bt87x will depend on changes to
+bttv.  How can the ALSA build system handle this?
+
+For instance, my patch to add a digital volume control to snd-bt87x requires a
+new function to be exported from bttv.  How will ALSA build snd-bt87x if the
+kernel source doesn't yet have this function?
