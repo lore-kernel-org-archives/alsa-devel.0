@@ -1,15 +1,24 @@
 From: zhejiang <zhe.jiang@intel.com>
-Subject: [PATCH] AD1986A 6-channel bugs
-Date: Thu, 25 Oct 2007 15:05:40 +0800
-Message-ID: <1193295940.3186.22.camel@localhost.localdomain>
+Subject: Re: patch for Dell 1210 which using stac9221 codec
+Date: Thu, 25 Oct 2007 15:44:42 +0800
+Message-ID: <1193298282.3459.18.camel@localhost.localdomain>
+References: <1192675756.3701.30.camel@localhost.localdomain>
+	<s5hve94zd3a.wl%tiwai@suse.de>
+	<1192773763.4306.31.camel@localhost.localdomain>
+	<s5hejfrekan.wl%tiwai@suse.de>
+	<1192779729.4628.5.camel@localhost.localdomain>
+	<s5hk5pjzefs.wl%tiwai@suse.de>
+	<1193033299.26715.34.camel@localhost.localdomain>
+	<s5hr6jmryaf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8506524681
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id D50AB24522
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Oct 2007 09:06:22 +0200 (CEST)
+	Thu, 25 Oct 2007 09:45:24 +0200 (CEST)
+In-Reply-To: <s5hr6jmryaf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,50 +28,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpJIGhhdmUgYSBJQ0g4TSArIEFEMTk4NkEgbWFjaGluZS4KCkluIDYgY2hhbm5lbCBtb2Rl
-cywgaWYgYWRqdXN0IHRoZSB2b2x1bWVzIHdoZW4gcGxheWluZyAyLWNoYW5uZWwgb3IKNC1jaGFu
-bmVsIG11c2ljLCBjb2RlYyB3aWxsIGJlIG11dGVkIGFuZCBhbGwgd2lkZ2V0J3MgQW1wLU91dCB2
-YWxzIHdpbGwKYmUgcmVzZXQuIElmIHlvdSBwbGF5IDItY2hhbm5lbCBmaWxlcyBpbiA2IGNoYW5u
-ZWwgbW9kZXMsdGhlcmUgaXMgbm9pc2UKaW4gdGhlIGphY2tzLgoKQnkgZG9pbmcgZXhwZXJpbWVu
-dHMsIEkgZm91bmQgdGhhdCB0aGUgNi1jaGFubmVsIGJ1ZyB3YXMgY2F1c2VkIGJ5CnNoYXJpbmcg
-Y2hhbm5lbHMuCgpJZiBwbGF5IDItY2hhbm5lbCBhdWRpbyBmaWxlLHRoZSByZXN0IGNoYW5uZWxz
-IHdpbGwgc2hhcmUgY2hhbm5lbHMgd2l0aAp0aGUgZmlyc3QgMi1jaGFubmVsLiAKClRoZSBIREEg
-c3BlYyBkb2VzbuKAmXQgZGVmaW5lIHRoZSBleGFjdCBiZWhhdmlvciB1bmRlciBzdWNoIGNpcmN1
-bXN0YW5jZXMuCgpNYWpvcml0eSBvZiB0aGUgY29kZWMgY2hpcHMgc3VwcG9ydCBzaGFyaW5nIGNo
-YW5uZWwsIGJ1dCBzZWVtIHRoYXQKQUQxOTg2QSBkb2VzbuKAmXQgc3VwcG9ydC4KCkkgd3JvdGUg
-YSBwYXRjaCBhbmQgdGVzdGVkIGl0IGluIG15IGhhcmR3YXJlLG5vdyBpdCB3b3JrcyB3ZWxsLgoK
-ZGlmZiAtTnVyIGEvYWxzYS1kcml2ZXItMS4wLjE1L2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2Nv
-ZGVjLmMKYi9hbHNhLWRyaXZlci0xLjAuMTUvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfY29kZWMu
-YwotLS0gYS9hbHNhLWRyaXZlci0xLjAuMTUvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfY29kZWMu
-YwkyMDA3LTEwLTI1CjEwOjAzOjI5LjAwMDAwMDAwMCAtMDQwMAorKysgYi9hbHNhLWRyaXZlci0x
-LjAuMTUvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfY29kZWMuYwkyMDA3LTEwLTI1CjEwOjAyOjQ2
-LjAwMDAwMDAwMCAtMDQwMApAQCAtMjUwNiw3ICsyNTA2LDggQEAKIAkJaWYgKGNocyA+PSAoaSAr
-IDEpICogMikgLyogaW5kZXBlbmRlbnQgb3V0ICovCiAJCQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0
-cmVhbShjb2RlYywgbmlkc1tpXSwgc3RyZWFtX3RhZywKIAkJCQkJCSAgIGkgKiAyLCBmb3JtYXQp
-OwotCQllbHNlIC8qIGNvcHkgZnJvbnQgKi8KKwkJZWxzZSBpZiAoY29kZWMtPnZlbmRvcl9pZCAh
-PSAweDExZDQxOTg2KQorCQkJLyogY29weSBmcm9udCBpZiBpdCBpcyBOT1QgQUQxOTg2QSovCiAJ
-CQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0cmVhbShjb2RlYywgbmlkc1tpXSwgc3RyZWFtX3RhZywK
-IAkJCQkJCSAgIDAsIGZvcm1hdCk7CiAJfQoKCkluIGFsc2EgYnVnemlsbGEgYW5kIG1haWxsaXN0
-LCBJIGZvdW5kIGEgbG90IG9mIGlzc3VlcyBhYm91dCBBRDE5ODZBCjYtY2hhbm5lbCAuQW55Ym9k
-eSBrbm93IHRoZSBkZXRhaWwgYWJvdXQgQUQxOTg2QSBjb2RlYyBjaGlwIGFuZCBnaXZlIGFueQpj
-b21tZW50cz8KCkhlcmUgaXMgYSBvbGQgZGVzY3JpcHRpb24gb2YgdGhlIGlzc3VlLgoKPgo+IEhp
-LAo+Cj4gSSBoYXZlIGEgSUNIOE0gKyBBRDE5ODZBIG1hY2hpbmUgYW5kIHJ1biBhbHNhLWRyaXZl
-ci0xLjAuMTVyYy4KPgo+IEkgZm91bmQgdGhhdCA6Cj4gSW4gNiBjaGFubmVsIG1vZGUsaWYgYWRq
-dXN0IHRoZSBmcm9udCBvciBwY20gdm9sdW1lIHdoZW4gcGxheWluZwptdXNpYywKPiBhbGwgY2hh
-bm5lbCB3aWxsIGJlIG11dGVkLGJ1dCBpZiBhZGp1c3QgdGhlIHZvbHVtZSBhbG9uZShkb24ndCBw
-bGF5Cj4gbXVzaWMgYXQgdGhlIHNhbWUgdGltZSksZXZlcnkgdGhpbmcgaXMgb2suCj4gSSB1c2Ug
-cHJpbnRrIHRvIGRpc3BsYXkgdGhlIHZlcmIgaW4gdGhlIGF6eF9zZW5kX2NtZCgpLAo+IHdoZW4g
-YWRqdXN0aW5nIHRoZSB2b2x1bWUgaW4gZWl0aGVyIGNhc2UsIHRoZXJlIGFyZSBqdXN0IHR3byB2
-ZXJiCj4gKDB4MzAwKSBzZW50IHRvIHRoZSBuaWQoMHgxYikgW2NvcnJlY3QgYWN0aW9uXS4KPiBC
-dXQgaW4gdGhlIGZpcnN0IGNhc2UsIHRoZSBkYWMgd2lkZ2V0IGFtcC1vdXQgdmFscyBhcmUgYWxs
-IGFmZmVjdGVkLgo+Cj4KPiBTb21lIG90aGVyIGludGVyZXN0aW5nIHRoaW5nLAo+IElmIGkgYWRq
-dXN0IHRoZSBTdXIgb3IgQ0xGRSB2b2x1bWUgd2hlbiBwbGF5aW5nIG11c2ljLCB0aGUgcHJpbnRr
-IHNob3cKPiB0aGF0IGNvcnJlY3QgdmVyYiBpcyBzZW50LCBidXQgdGhlIGNvZGVjIHN0YXR1cyBk
-b24ndCBjaGFuZ2UuCj4gSWYgSSBhZGp1c3QgdGhlbSBhbG9uZSxldmVyeSB0aGluZyBpcyBvay4K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue, 2007-10-23 at 11:11 +0200, Takashi Iwai wrote:
+> At Mon, 22 Oct 2007 14:08:19 +0800,
+> zhejiang wrote:
+
+> > > Ah, then it's basically similar like 3-stack model but with two
+> > > headphones instead of a pair of line-out and line-in.
+> > > 
+> > > Without your modification of pin config, how the driver detects?
+> > > Do you have an output of kernel message with debug option about auto
+> > > pin configs?
+> > > 
+> > I don't have the hardware.
+> > I have asked the bug reporter to do the experiment,
+> > I will post it here if i get any response.
+> 
+> Thanks.
+> 
+
+According to the response from the reporter,here is the pin config of
+the original driver.
+
+ALSA /tmp/alsa-driver-build/alsa-driver-1.0.15/pci/hda/hda_codec.c:2765:
+autoconfig: line_outs=3 (0xd/0xc/0xf/0x0/0x0)
+ALSA /tmp/alsa-driver-build/alsa-driver-1.0.15/pci/hda/hda_codec.c:2769:
+speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA /tmp/alsa-driver-build/alsa-driver-1.0.15/pci/hda/hda_codec.c:2773:
+hp_outs=1 (0xa/0x0/0x0/0x0/0x0)
+ALSA /tmp/alsa-driver-build/alsa-driver-1.0.15/pci/hda/hda_codec.c:2781:
+inputs: mic=0x0, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
+ALSA /tmp/alsa-driver-build/alsa-driver-1.0.15/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:1652: stac92xx_add_dyn_out_pins: total dac count=4
+ALSA /tmp/alsa-driver-build/alsa-driver-1.0.15/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:1775: dac_nids=3 (0x2/0x3/0x5/0x0/0x0)
+
+
+> > > Looking through the sigmatel code, we have several known use cases:
+> > > 
+> > > 1. desktop
+> > > 1a. 3stack + front panel
+> > >     front HP, front mic, rear line-out, rear line-in, rear mic
+> > > 
+> > > 1b. 6stack + front panel
+> > >     front HP, front mic, rear line-out, rear surr, rear CLFE
+> > >     rear side, rear line-in, rear mic
+> > > and variants without front panel.
+> > > 
+> > > In the case 1a, rear line-in and rear mic can be used as surround
+> > > outputs.
+> > > 
+> > > 2. laptop
+> > > 2a. minimal
+> > >     HP, speaker, mic, built-in mic
+> > > 2b. a la desktop
+> > >     HP, speaker, line-in, mic, built-in mic
+> > > 2c. dell
+> > >     HP x 2, speaker(s), mic, built-in mic
+> > > 
+> > > Now, the case 2c requires a similar hack.  But, before going more
+> > > deeply, it's better to recheck patch_sigmatel.c again.  Basically, it
+> > > has already the code to add output sharing using line-in/mic-in.  The
+> > > problem is that it checks only limited use-cases (1a) and it adds
+> > > cfg->line_outs and thus this influences on all other places.
+> > > 
+> > 
+> > The call graph of stac92xx_parse_auto_config() :
+> > 
+> > 1.snd_hda_parse_pin_def_config()
+> > 
+> > 2.stac92xx_add_dyn_out_pins()
+> > It check the cfg->line_outs and input_pins[] to add dynamic lineouts.
+> > 
+> > 3.stac92xx_auto_fill_dac_nids()
+> > It only fills the dac_nids from the cfg->line_out_pins[],
+> > 
+> > 4.stac92xx_auto_create_multi_out_ctls()
+> > It add controls according to the cfg->line_outs.
+> > 
+> > we can see that they heavily depend on the line_outs[] info.
+> > 
+> > How about this method?
+> > 
+> > In stac92xx_add_dyn_out_pins(),we check the cfg->hp_outs,IF IT IS 2,then
+> > we switch the cfg->hp_pins[] with cfg->line_out_pins[].
+> 
+> Maybe better to check cfg->line_out_type.  I guess it's
+> AUTO_PIN_SPEAKER_OUT in the case of this Dell laptop.  The driver
+> takes speaker in prior to headphone as the primary line-out.
+> 
+> > The 2,3,4 may work without change.
+> > At the end of the stac92xx_parse_auto_config(),we restore the
+> > cfg->hp_pins[] and cfg->line_out_pins[].
+> 
+> Alternatively, instead of saving/restoring informatoin, we can fix
+> snd_hda_parse_pin_def_config() itself to check cfg->hp_outs and
+> cfg->speaker_outs to determine the primary output.  If one of them is
+> greater, take it as the primary output.
+> It's less hackish but *might* cause some regression in rare cases.
+> 
+
+
+I think that we need to restore the cfg->hp_pins and cfg->line_out_pins
+for the rest code,because:
+
+1. stac92xx_auto_init_hp_out() need to use the hp_pins to enable the
+AC_PINCTL_HP_EN
+2. stac92xx_hp_detect() need to use the hp_outs to detect jack presense
+   and will disable line_out_pins and speaker_pins.
+3. stac92xx_init() use the hp_pins to enable unsolicited response.
+
+If we copy cfg->hp_outs to the line_out_pins, all these codes won't
+work. ^-^
+
+
+> > Another things to change :
+> > 1.snd_hda_parse_pin_def_config()
+> > 	Should sort the hp_pins[] by sequence.
+> 
+> Yeah, just missing right now.
+> 
+> > 2.stac92xx_auto_fill_dac_nids()
+> > 	Support the "Front Mic" switch as well.
+> > 3.stac92xx_io_switch_put()
+> > 	If Mic work as output for laptop,enable pin detect too.
+> 
+> Well, I think the better fix is to fix the "Front Mic".  If there is
+> only a front mic, it should be basically labelled as "Mic" because
+> it's the only one.  So, again, snd_hda_parse_pin_def_config(), we can
+> reassign input_pins[AUTO_PIN_FRONT_MIC] to input_pins[AUTO_PIN_MIC] if
+> there is only one mic.  Then the rest wouldn't need changes.
+> 
+
+Great.
+
+> Of course, another question is what to do when we have both rear and
+> front mic and if we still want to handle them as outputs.  Well, we
+> have no such hardware yet, though.
+> 
+> 
+> thanks,
+> 
+> Takashi
