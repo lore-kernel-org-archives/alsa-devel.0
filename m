@@ -1,19 +1,14 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: how to handle bt848 audio driver
-Date: Thu, 25 Oct 2007 09:31:10 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0710250407410.16052@shell4.speakeasy.net>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: HDA: Add support for Samsung Q1 Ultra Vista edition.
+Date: Thu, 25 Oct 2007 14:54:45 -0700
+Message-ID: <1193349285.32561.154.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-1PjWY9ZL7XpEGs9T2jR2"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.sea5.speakeasy.net (mail3.sea5.speakeasy.net
-	[69.17.117.5]) by alsa0.perex.cz (Postfix) with ESMTP id 95B812432F
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6AE50243E0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Oct 2007 18:31:15 +0200 (CEST)
-Received: from shell4.sea5.speakeasy.net ([69.17.116.5])
-	(envelope-sender <xyzzy@speakeasy.org>)
-	by mail3.sea5.speakeasy.net (qmail-ldap-1.03) with AES256-SHA encrypted
-	SMTP for <alsa-devel@alsa-project.org>; 25 Oct 2007 16:31:10 -0000
+	Thu, 25 Oct 2007 23:54:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +18,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mauro Carvalho Chehab <mchehab@infradead.org>
+To: ALSA Developers <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-I've made some more patches for the ALSA bt87x audio driver to support more
-features of the Osprey 440 card.
 
-In order to support certain features, the ALSA driver needs access to the
-bt878's GPIO lines and I2C bus.  These are controlled by PCI function 0, which
-is driven by the V4L driver.  The bt878 DVB driver (which drives PCI function
-1 just like the ALSA driver) needs to do the same thing and there is already
-some code to handle it.
+--=-1PjWY9ZL7XpEGs9T2jR2
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-So, the ALSA driver (snd-bt87x) needs to use functions from the V4L driver
-(bttv).  As it is now, the two drivers are completely separate and don't share
-any code and can be loaded individually.
+This patch adds full record and playback support for the Samsung Q1
+Ultra - Vista model (different codec than the earlier Q1 Ultra models).
 
-The DVB driver in the same tree as bttv, so this isn't a problem.  But the
-snd-bt87x is in another tree, so it's somewhat harder, and I'm not sure what
-to do about it.
 
-The driver will need some header files from the bttv directory.  I guess this
-can be handled by adding a -I flag in the Makefile, though that seems a little
-ugly.
+Signed off by Tobin Davis <tdavis@dsl-only.net>
 
-The bigger problem is that changes to snd-bt87x will depend on changes to
-bttv.  How can the ALSA build system handle this?
+--=-1PjWY9ZL7XpEGs9T2jR2
+Content-Disposition: attachment; filename=SamsungQ1Vista.patch
+Content-Type: text/x-patch; name=SamsungQ1Vista.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-For instance, my patch to add a digital volume control to snd-bt87x requires a
-new function to be exported from bttv.  How will ALSA build snd-bt87x if the
-kernel source doesn't yet have this function?
+diff -r 09088524dd7f pci/hda/patch_realtek.c
+--- a/pci/hda/patch_realtek.c	Thu Oct 25 11:46:24 2007 +0200
++++ b/pci/hda/patch_realtek.c	Thu Oct 25 13:31:53 2007 -0700
+@@ -95,6 +95,7 @@ enum {
+ 	ALC262_BENQ_ED8,
+ 	ALC262_SONY_ASSAMD,
+ 	ALC262_BENQ_T31,
++	ALC262_ULTRA,
+ 	ALC262_AUTO,
+ 	ALC262_MODEL_LAST /* last tag */
+ };
+@@ -8082,6 +8083,72 @@ static struct hda_verb alc262_benq_t31_E
+ 	{}
+ };
+ 
++/* Samsung Q1 Ultra Vista model setup */
++static struct snd_kcontrol_new alc262_ultra_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Front Playback Switch", 0x14, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x15, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x01, HDA_INPUT),
++	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x01, HDA_INPUT),
++	HDA_CODEC_VOLUME("Mic Boost", 0x19, 0, HDA_INPUT),
++	{ } /* end */
++};
++
++static struct hda_verb alc262_ultra_verbs[] = {
++	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | ALC880_HP_EVENT},
++	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
++	/* Mic is on Node 0x19 */
++	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24},
++	{0x22, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x01 << 8))},
++	{0x23, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x01 << 8))},
++	{0x24, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, (0x7000 | (0x01 << 8))},
++	{}
++};
++
++static struct hda_input_mux alc262_ultra_capture_source = {
++	.num_items = 1,
++	.items = {
++		{ "Mic", 0x1 },
++	},
++};
++
++/* mute/unmute internal speaker according to the hp jack and mute state */
++static void alc262_ultra_automute(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++	unsigned int mute;
++	unsigned int present;
++
++	/* need to execute and sync at first */
++	snd_hda_codec_read(codec, 0x15, 0, AC_VERB_SET_PIN_SENSE, 0);
++	present = snd_hda_codec_read(codec, 0x15, 0,
++				     AC_VERB_GET_PIN_SENSE, 0);
++	spec->jack_present = (present & 0x80000000) != 0;
++	if (spec->jack_present) {
++		/* mute internal speaker */
++		snd_hda_codec_amp_stereo(codec, 0x14, HDA_OUTPUT, 0,
++					 HDA_AMP_MUTE, HDA_AMP_MUTE);
++	} else {
++		/* unmute internal speaker if necessary */
++		mute = snd_hda_codec_amp_read(codec, 0x15, 0, HDA_OUTPUT, 0);
++		snd_hda_codec_amp_stereo(codec, 0x14, HDA_OUTPUT, 0,
++					 HDA_AMP_MUTE, mute);
++	}
++}
++
++/* unsolicited event for HP jack sensing */
++static void alc262_ultra_unsol_event(struct hda_codec *codec,
++				       unsigned int res)
++{
++	if ((res >> 26) != ALC880_HP_EVENT)
++		return;
++	alc262_ultra_automute(codec);
++}
++
+ /* add playback controls from the parsed DAC table */
+ static int alc262_auto_create_multi_out_ctls(struct alc_spec *spec,
+ 					     const struct auto_pin_cfg *cfg)
+@@ -8487,6 +8554,7 @@ static const char *alc262_models[ALC262_
+ 	[ALC262_BENQ_ED8]	= "benq",
+ 	[ALC262_BENQ_T31]	= "benq-t31",
+ 	[ALC262_SONY_ASSAMD]	= "sony-assamd",
++	[ALC262_ULTRA]		= "ultra",
+ 	[ALC262_AUTO]		= "auto",
+ };
+ 
+@@ -8517,6 +8585,7 @@ static struct snd_pci_quirk alc262_cfg_t
+ 	SND_PCI_QUIRK(0x104d, 0x9015, "Sony 0x9015", ALC262_SONY_ASSAMD),
+ 	SND_PCI_QUIRK(0x104d, 0x900e, "Sony ASSAMD", ALC262_SONY_ASSAMD),
+ 	SND_PCI_QUIRK(0x104d, 0x1f00, "Sony ASSAMD", ALC262_SONY_ASSAMD),
++	SND_PCI_QUIRK(0x144d, 0xc032, "Samsung Q1 Ultra", ALC262_ULTRA),
+ 	{}
+ };
+ 
+@@ -8635,6 +8704,19 @@ static struct alc_config_preset alc262_p
+ 		.unsol_event = alc262_hippo_unsol_event,
+ 		.init_hook = alc262_hippo_automute,
+ 	},	
++	[ALC262_ULTRA] = {
++		.mixers = { alc262_ultra_mixer },
++		.init_verbs = { alc262_init_verbs, alc262_ultra_verbs },
++		.num_dacs = ARRAY_SIZE(alc262_dac_nids),
++		.dac_nids = alc262_dac_nids,
++		.hp_nid = 0x03,
++		.dig_out_nid = ALC262_DIGOUT_NID,
++		.num_channel_mode = ARRAY_SIZE(alc262_modes),
++		.channel_mode = alc262_modes,
++		.input_mux = &alc262_ultra_capture_source,
++		.unsol_event = alc262_ultra_unsol_event,
++		.init_hook = alc262_ultra_automute,
++	},
+ };
+ 
+ static int patch_alc262(struct hda_codec *codec)
+
+--=-1PjWY9ZL7XpEGs9T2jR2
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-1PjWY9ZL7XpEGs9T2jR2--
