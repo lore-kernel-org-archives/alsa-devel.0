@@ -1,20 +1,15 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Confused about 'default' device
-Date: Thu, 25 Oct 2007 09:02:27 +0200
-Message-ID: <1193295747.4869.1217732745@webmail.messagingengine.com>
-References: <471E4E2A.9090105@freescale.com> <s5h4pggevv8.wl%tiwai@suse.de>
-	<1193225838.26984.1217558213@webmail.messagingengine.com>
-	<471F7479.9000602@freescale.com>
+From: zhejiang <zhe.jiang@intel.com>
+Subject: [PATCH] AD1986A 6-channel bugs
+Date: Thu, 25 Oct 2007 15:05:40 +0800
+Message-ID: <1193295940.3186.22.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 3677924680
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8506524681
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Oct 2007 09:02:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <471F7479.9000602@freescale.com>
+	Thu, 25 Oct 2007 09:06:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +19,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> Clemens Ladisch wrote:
-> > Takashi Iwai wrote:
-> >> Timur Tabi wrote:
-> > Are there any definitions in ~/.asoundrc or /etc/asound.conf?  If not,
-> > what driver is used, and does it have a file in /usr/share/alsa/cards/?
-> 
-> Ok, I made some progress.
-> 
-> According to http://alsa.opensrc.org/.asoundrc, because I'm using ALSA
-> 1.0.8, I need to have an .asoundrc.
-
-You'd need it to activate dmix, but sample rate/format conversion
-already works with earlier versions.
-
->  So I added this .asoundrc:
-> 
-> pcm.!default {
-> 	type hw
-> 	card 0
-> }
-
-This disables all automatic conversions.
-
-> And now sample rate conversion works!
-
-Well, it always worked because mplayer does it itself.
-
-Please try this:
-
-    pcm.!default = "plughw:0"
-
-And if this works, there is something wrong with you default device
-definitions.  Please tell us the driver name and whether it has a file
-in /usr/share/alsa/cards/.
-
-
-Regards,
-Clemens
+SGksCgpJIGhhdmUgYSBJQ0g4TSArIEFEMTk4NkEgbWFjaGluZS4KCkluIDYgY2hhbm5lbCBtb2Rl
+cywgaWYgYWRqdXN0IHRoZSB2b2x1bWVzIHdoZW4gcGxheWluZyAyLWNoYW5uZWwgb3IKNC1jaGFu
+bmVsIG11c2ljLCBjb2RlYyB3aWxsIGJlIG11dGVkIGFuZCBhbGwgd2lkZ2V0J3MgQW1wLU91dCB2
+YWxzIHdpbGwKYmUgcmVzZXQuIElmIHlvdSBwbGF5IDItY2hhbm5lbCBmaWxlcyBpbiA2IGNoYW5u
+ZWwgbW9kZXMsdGhlcmUgaXMgbm9pc2UKaW4gdGhlIGphY2tzLgoKQnkgZG9pbmcgZXhwZXJpbWVu
+dHMsIEkgZm91bmQgdGhhdCB0aGUgNi1jaGFubmVsIGJ1ZyB3YXMgY2F1c2VkIGJ5CnNoYXJpbmcg
+Y2hhbm5lbHMuCgpJZiBwbGF5IDItY2hhbm5lbCBhdWRpbyBmaWxlLHRoZSByZXN0IGNoYW5uZWxz
+IHdpbGwgc2hhcmUgY2hhbm5lbHMgd2l0aAp0aGUgZmlyc3QgMi1jaGFubmVsLiAKClRoZSBIREEg
+c3BlYyBkb2VzbuKAmXQgZGVmaW5lIHRoZSBleGFjdCBiZWhhdmlvciB1bmRlciBzdWNoIGNpcmN1
+bXN0YW5jZXMuCgpNYWpvcml0eSBvZiB0aGUgY29kZWMgY2hpcHMgc3VwcG9ydCBzaGFyaW5nIGNo
+YW5uZWwsIGJ1dCBzZWVtIHRoYXQKQUQxOTg2QSBkb2VzbuKAmXQgc3VwcG9ydC4KCkkgd3JvdGUg
+YSBwYXRjaCBhbmQgdGVzdGVkIGl0IGluIG15IGhhcmR3YXJlLG5vdyBpdCB3b3JrcyB3ZWxsLgoK
+ZGlmZiAtTnVyIGEvYWxzYS1kcml2ZXItMS4wLjE1L2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2Nv
+ZGVjLmMKYi9hbHNhLWRyaXZlci0xLjAuMTUvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfY29kZWMu
+YwotLS0gYS9hbHNhLWRyaXZlci0xLjAuMTUvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfY29kZWMu
+YwkyMDA3LTEwLTI1CjEwOjAzOjI5LjAwMDAwMDAwMCAtMDQwMAorKysgYi9hbHNhLWRyaXZlci0x
+LjAuMTUvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfY29kZWMuYwkyMDA3LTEwLTI1CjEwOjAyOjQ2
+LjAwMDAwMDAwMCAtMDQwMApAQCAtMjUwNiw3ICsyNTA2LDggQEAKIAkJaWYgKGNocyA+PSAoaSAr
+IDEpICogMikgLyogaW5kZXBlbmRlbnQgb3V0ICovCiAJCQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0
+cmVhbShjb2RlYywgbmlkc1tpXSwgc3RyZWFtX3RhZywKIAkJCQkJCSAgIGkgKiAyLCBmb3JtYXQp
+OwotCQllbHNlIC8qIGNvcHkgZnJvbnQgKi8KKwkJZWxzZSBpZiAoY29kZWMtPnZlbmRvcl9pZCAh
+PSAweDExZDQxOTg2KQorCQkJLyogY29weSBmcm9udCBpZiBpdCBpcyBOT1QgQUQxOTg2QSovCiAJ
+CQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0cmVhbShjb2RlYywgbmlkc1tpXSwgc3RyZWFtX3RhZywK
+IAkJCQkJCSAgIDAsIGZvcm1hdCk7CiAJfQoKCkluIGFsc2EgYnVnemlsbGEgYW5kIG1haWxsaXN0
+LCBJIGZvdW5kIGEgbG90IG9mIGlzc3VlcyBhYm91dCBBRDE5ODZBCjYtY2hhbm5lbCAuQW55Ym9k
+eSBrbm93IHRoZSBkZXRhaWwgYWJvdXQgQUQxOTg2QSBjb2RlYyBjaGlwIGFuZCBnaXZlIGFueQpj
+b21tZW50cz8KCkhlcmUgaXMgYSBvbGQgZGVzY3JpcHRpb24gb2YgdGhlIGlzc3VlLgoKPgo+IEhp
+LAo+Cj4gSSBoYXZlIGEgSUNIOE0gKyBBRDE5ODZBIG1hY2hpbmUgYW5kIHJ1biBhbHNhLWRyaXZl
+ci0xLjAuMTVyYy4KPgo+IEkgZm91bmQgdGhhdCA6Cj4gSW4gNiBjaGFubmVsIG1vZGUsaWYgYWRq
+dXN0IHRoZSBmcm9udCBvciBwY20gdm9sdW1lIHdoZW4gcGxheWluZwptdXNpYywKPiBhbGwgY2hh
+bm5lbCB3aWxsIGJlIG11dGVkLGJ1dCBpZiBhZGp1c3QgdGhlIHZvbHVtZSBhbG9uZShkb24ndCBw
+bGF5Cj4gbXVzaWMgYXQgdGhlIHNhbWUgdGltZSksZXZlcnkgdGhpbmcgaXMgb2suCj4gSSB1c2Ug
+cHJpbnRrIHRvIGRpc3BsYXkgdGhlIHZlcmIgaW4gdGhlIGF6eF9zZW5kX2NtZCgpLAo+IHdoZW4g
+YWRqdXN0aW5nIHRoZSB2b2x1bWUgaW4gZWl0aGVyIGNhc2UsIHRoZXJlIGFyZSBqdXN0IHR3byB2
+ZXJiCj4gKDB4MzAwKSBzZW50IHRvIHRoZSBuaWQoMHgxYikgW2NvcnJlY3QgYWN0aW9uXS4KPiBC
+dXQgaW4gdGhlIGZpcnN0IGNhc2UsIHRoZSBkYWMgd2lkZ2V0IGFtcC1vdXQgdmFscyBhcmUgYWxs
+IGFmZmVjdGVkLgo+Cj4KPiBTb21lIG90aGVyIGludGVyZXN0aW5nIHRoaW5nLAo+IElmIGkgYWRq
+dXN0IHRoZSBTdXIgb3IgQ0xGRSB2b2x1bWUgd2hlbiBwbGF5aW5nIG11c2ljLCB0aGUgcHJpbnRr
+IHNob3cKPiB0aGF0IGNvcnJlY3QgdmVyYiBpcyBzZW50LCBidXQgdGhlIGNvZGVjIHN0YXR1cyBk
+b24ndCBjaGFuZ2UuCj4gSWYgSSBhZGp1c3QgdGhlbSBhbG9uZSxldmVyeSB0aGluZyBpcyBvay4K
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
