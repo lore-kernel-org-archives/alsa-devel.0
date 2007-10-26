@@ -1,18 +1,19 @@
-From: zhejiang <zhe.jiang@intel.com>
-Subject: Re: [PATCH] AD1986A 6-channel bugs
-Date: Fri, 26 Oct 2007 17:19:31 +0800
-Message-ID: <1193390371.2966.1.camel@localhost.localdomain>
-References: <1193295940.3186.22.camel@localhost.localdomain>
-	<s5hr6jjbovy.wl%tiwai@suse.de>
+From: Ivan Kuten <ivan.kuten@promwad.com>
+Subject: PATCH: ln2440sbc ac97 support
+Date: Fri, 26 Oct 2007 10:54:08 -0100
+Message-ID: <20071026105408.4a4fa63b@IvanK.DOMAIN>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 153E8244FF
+Received: from secure.poehali.org (42.242.232.72.static.reverse.ltdomains.com
+	[72.232.242.42]) by alsa0.perex.cz (Postfix) with ESMTP id 926ED244FF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Oct 2007 11:20:11 +0200 (CEST)
-In-Reply-To: <s5hr6jjbovy.wl%tiwai@suse.de>
+	Fri, 26 Oct 2007 11:55:41 +0200 (CEST)
+Received: from localhost ([127.0.0.1]:59808 helo=IvanK.DOMAIN)
+	by secure.poehali.org with smtp (Exim 4.63)
+	(envelope-from <ivan.kuten@promwad.com>) id 1IlLui-0002LA-D7
+	for alsa-devel@alsa-project.org; Fri, 26 Oct 2007 12:55:36 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,75 +23,182 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyMDA3LTEwLTI1IGF0IDEwOjA1ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-QXQgVGh1LCAyNSBPY3QgMjAwNyAxNTowNTo0MCArMDgwMCwKPiB6aGVqaWFuZyB3cm90ZToKPiA+
-IAo+ID4gSGksCj4gPiAKPiA+IEkgaGF2ZSBhIElDSDhNICsgQUQxOTg2QSBtYWNoaW5lLgo+ID4g
-Cj4gPiBJbiA2IGNoYW5uZWwgbW9kZXMsIGlmIGFkanVzdCB0aGUgdm9sdW1lcyB3aGVuIHBsYXlp
-bmcgMi1jaGFubmVsIG9yCj4gPiA0LWNoYW5uZWwgbXVzaWMsIGNvZGVjIHdpbGwgYmUgbXV0ZWQg
-YW5kIGFsbCB3aWRnZXQncyBBbXAtT3V0IHZhbHMgd2lsbAo+ID4gYmUgcmVzZXQuIElmIHlvdSBw
-bGF5IDItY2hhbm5lbCBmaWxlcyBpbiA2IGNoYW5uZWwgbW9kZXMsdGhlcmUgaXMgbm9pc2UKPiA+
-IGluIHRoZSBqYWNrcy4KPiA+IAo+ID4gQnkgZG9pbmcgZXhwZXJpbWVudHMsIEkgZm91bmQgdGhh
-dCB0aGUgNi1jaGFubmVsIGJ1ZyB3YXMgY2F1c2VkIGJ5Cj4gPiBzaGFyaW5nIGNoYW5uZWxzLgo+
-ID4gCj4gPiBJZiBwbGF5IDItY2hhbm5lbCBhdWRpbyBmaWxlLHRoZSByZXN0IGNoYW5uZWxzIHdp
-bGwgc2hhcmUgY2hhbm5lbHMgd2l0aAo+ID4gdGhlIGZpcnN0IDItY2hhbm5lbC4gCj4gPiAKPiA+
-IFRoZSBIREEgc3BlYyBkb2VzbuKAmXQgZGVmaW5lIHRoZSBleGFjdCBiZWhhdmlvciB1bmRlciBz
-dWNoIGNpcmN1bXN0YW5jZXMuCj4gPiAKPiA+IE1ham9yaXR5IG9mIHRoZSBjb2RlYyBjaGlwcyBz
-dXBwb3J0IHNoYXJpbmcgY2hhbm5lbCwgYnV0IHNlZW0gdGhhdAo+ID4gQUQxOTg2QSBkb2VzbuKA
-mXQgc3VwcG9ydC4KPiA+IAo+ID4gSSB3cm90ZSBhIHBhdGNoIGFuZCB0ZXN0ZWQgaXQgaW4gbXkg
-aGFyZHdhcmUsbm93IGl0IHdvcmtzIHdlbGwuCj4gCj4gVGhhbmtzISAgSXQncyBiZWVuIGEgYnVn
-IHRoYXQgSSBoYXJkbHkgdW5kZXJzdG9vZCB3aGF0IHdhcyB3cm9uZy4KPiAKPiBJTU8sIGl0J3Mg
-YmV0dGVyIHRvIGhhdmUgYSBmbGFnIGluIGhkYV9tdWx0aV9vdXQgcmF0aGVyIHRoYW4KPiBoYXJk
-Y29kaW5nIHRoZSBjb2RlYyBpZCB0aGVyZS4KPiAKPiBDb3VsZCB5b3UgY2hlY2sgd2hldGhlciB0
-aGUgcGF0Y2ggYmVsb3cgd29ya3M/Cj4gCgpJIGhhdmUgdGVzdGVkIHRoZW0gYW5kIHRoZXkgYXJl
-IG9rYXkhIFRoYW5rcyEKPiAKPiBUYWthc2hpCj4gCj4gZGlmZiAtciA0ZjNmMmY0YmQ1ZTkgcGNp
-L2hkYS9oZGFfY29kZWMuYwo+IC0tLSBhL3BjaS9oZGEvaGRhX2NvZGVjLmMJV2VkIE9jdCAyNCAx
-ODoxODoxMSAyMDA3ICswMjAwCj4gKysrIGIvcGNpL2hkYS9oZGFfY29kZWMuYwlUaHUgT2N0IDI1
-IDExOjM5OjU1IDIwMDcgKzAyMDAKPiBAQCAtMjQ4NiwxMyArMjQ4NiwxNCBAQCBpbnQgc25kX2hk
-YV9tdWx0aV9vdXRfYW5hbG9nX3ByZXBhcmUoc3RyCj4gIAkvKiBmcm9udCAqLwo+ICAJc25kX2hk
-YV9jb2RlY19zZXR1cF9zdHJlYW0oY29kZWMsIG5pZHNbSERBX0ZST05UXSwgc3RyZWFtX3RhZywK
-PiAgCQkJCSAgIDAsIGZvcm1hdCk7Cj4gLQlpZiAobW91dC0+aHBfbmlkICYmIG1vdXQtPmhwX25p
-ZCAhPSBuaWRzW0hEQV9GUk9OVF0pCj4gKwlpZiAoIW1vdXQtPm5vX3NoYXJlX3N0cmVhbSAmJgo+
-ICsJICAgIG1vdXQtPmhwX25pZCAmJiBtb3V0LT5ocF9uaWQgIT0gbmlkc1tIREFfRlJPTlRdKQo+
-ICAJCS8qIGhlYWRwaG9uZSBvdXQgd2lsbCBqdXN0IGRlY29kZSBmcm9udCBsZWZ0L3JpZ2h0IChz
-dGVyZW8pICovCj4gIAkJc25kX2hkYV9jb2RlY19zZXR1cF9zdHJlYW0oY29kZWMsIG1vdXQtPmhw
-X25pZCwgc3RyZWFtX3RhZywKPiAgCQkJCQkgICAwLCBmb3JtYXQpOwo+ICAJLyogZXh0cmEgb3V0
-cHV0cyBjb3BpZWQgZnJvbSBmcm9udCAqLwo+ICAJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUo
-bW91dC0+ZXh0cmFfb3V0X25pZCk7IGkrKykKPiAtCQlpZiAobW91dC0+ZXh0cmFfb3V0X25pZFtp
-XSkKPiArCQlpZiAoIW1vdXQtPm5vX3NoYXJlX3N0cmVhbSAmJiBtb3V0LT5leHRyYV9vdXRfbmlk
-W2ldKQo+ICAJCQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0cmVhbShjb2RlYywKPiAgCQkJCQkJICAg
-bW91dC0+ZXh0cmFfb3V0X25pZFtpXSwKPiAgCQkJCQkJICAgc3RyZWFtX3RhZywgMCwgZm9ybWF0
-KTsKPiBAQCAtMjUwMiw3ICsyNTAzLDcgQEAgaW50IHNuZF9oZGFfbXVsdGlfb3V0X2FuYWxvZ19w
-cmVwYXJlKHN0cgo+ICAJCWlmIChjaHMgPj0gKGkgKyAxKSAqIDIpIC8qIGluZGVwZW5kZW50IG91
-dCAqLwo+ICAJCQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0cmVhbShjb2RlYywgbmlkc1tpXSwgc3Ry
-ZWFtX3RhZywKPiAgCQkJCQkJICAgaSAqIDIsIGZvcm1hdCk7Cj4gLQkJZWxzZSAvKiBjb3B5IGZy
-b250ICovCj4gKwkJZWxzZSBpZiAoIW1vdXQtPm5vX3NoYXJlX3N0cmVhbSkgLyogY29weSBmcm9u
-dCAqLwo+ICAJCQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0cmVhbShjb2RlYywgbmlkc1tpXSwgc3Ry
-ZWFtX3RhZywKPiAgCQkJCQkJICAgMCwgZm9ybWF0KTsKPiAgCX0KPiBkaWZmIC1yIDRmM2YyZjRi
-ZDVlOSBwY2kvaGRhL2hkYV9sb2NhbC5oCj4gLS0tIGEvcGNpL2hkYS9oZGFfbG9jYWwuaAlXZWQg
-T2N0IDI0IDE4OjE4OjExIDIwMDcgKzAyMDAKPiArKysgYi9wY2kvaGRhL2hkYV9sb2NhbC5oCVRo
-dSBPY3QgMjUgMTE6Mzk6NTUgMjAwNyArMDIwMAo+IEBAIC0yMjAsNiArMjIwLDcgQEAgc3RydWN0
-IGhkYV9tdWx0aV9vdXQgewo+ICAJaGRhX25pZF90IGRpZ19vdXRfbmlkOwkvKiBkaWdpdGFsIG91
-dCBhdWRpbyB3aWRnZXQgKi8KPiAgCWludCBtYXhfY2hhbm5lbHM7CS8qIGN1cnJlbnRseSBzdXBw
-b3J0ZWQgYW5hbG9nIGNoYW5uZWxzICovCj4gIAlpbnQgZGlnX291dF91c2VkOwkvKiBjdXJyZW50
-IHVzYWdlIG9mIGRpZ2l0YWwgb3V0IChIREFfRElHX1hYWCkgKi8KPiArCWludCBub19zaGFyZV9z
-dHJlYW07CS8qIGRvbid0IHNoYXJlIGEgc3RyZWFtIHdpdGggbXVsdGlwbGUgcGlucyAqLwo+ICB9
-Owo+ICAKPiAgaW50IHNuZF9oZGFfbXVsdGlfb3V0X2RpZ19vcGVuKHN0cnVjdCBoZGFfY29kZWMg
-KmNvZGVjLAo+IGRpZmYgLXIgNGYzZjJmNGJkNWU5IHBjaS9oZGEvcGF0Y2hfYW5hbG9nLmMKPiAt
-LS0gYS9wY2kvaGRhL3BhdGNoX2FuYWxvZy5jCVdlZCBPY3QgMjQgMTg6MTg6MTEgMjAwNyArMDIw
-MAo+ICsrKyBiL3BjaS9oZGEvcGF0Y2hfYW5hbG9nLmMJVGh1IE9jdCAyNSAxMTozOTo1NSAyMDA3
-ICswMjAwCj4gQEAgLTk1Niw2ICs5NTYsMTQgQEAgc3RhdGljIGludCBwYXRjaF9hZDE5ODZhKHN0
-cnVjdCBoZGFfY29kZQo+ICAJCXNwZWMtPm11bHRpb3V0LmRpZ19vdXRfbmlkID0gMDsKPiAgCQli
-cmVhazsKPiAgCX0KPiArCj4gKwkvKiBBRDE5ODZBIGhhcyBhIGhhcmR3YXJlIHByb2JsZW0gdGhh
-dCBpdCBjYW4ndCBzaGFyZSBhIHN0cmVhbQo+ICsJICogd2l0aCBtdWx0aXBsZSBvdXRwdXQgcGlu
-cy4gIFRoZSBjb3B5IG9mIGZyb250IHRvIHN1cnJvdW5kcwo+ICsJICogY2F1c2VzIG5vaXN5IG9y
-IHNpbGVudCBvdXRwdXRzIGF0IGEgY2VydGFpbiB0aW1pbmcsIGUuZy4KPiArCSAqIGNoYW5naW5n
-IHRoZSB2b2x1bWUuCj4gKwkgKiBTbywgbGV0J3MgZGlzYWJsZSB0aGUgc2hhcmVkIHN0cmVhbS4K
-PiArCSAqLwo+ICsJc3BlYy0+bXVsdGlvdXQubm9fc2hhcmVfc3RyZWFtID0gMTsKPiAgCj4gIAly
-ZXR1cm4gMDsKPiAgfQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Hello, 
+
+This patch adds ac97 support for ln2440sbc board from LittleChips.
+This board is based on s3c2440 SoC + AC97 Realtek ALC650 codec. 
+Existing s3c2443 implementation is slightly modified because s3c2440 and s3c2443
+have different AC97 interrupts.
+
+Regards,
+Ivan
+
+Signed-off-by: Ivan Kuten <ivan.kuten@promwad.com>
+
+diff -urN linux-2.6.23/sound/soc/s3c24xx/Kconfig linux-2.6.23-2440/sound/soc/s3c24xx/Kconfig
+--- linux-2.6.23/sound/soc/s3c24xx/Kconfig	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23-2440/sound/soc/s3c24xx/Kconfig	2007-10-28 01:18:23.000000000 +0200
+@@ -34,4 +34,12 @@
+ 	  Say Y if you want to add support for SoC audio on smdk2443
+ 	  with the WM9710.
+ 
++config SND_S3C24XX_SOC_LN2440SBC_ALC650
++	tristate "SoC AC97 Audio support for LN2440SBC - ALC650"
++	depends on SND_S3C24XX_SOC
++	select SND_S3C2443_SOC_AC97
++	select SND_SOC_AC97_CODEC
++	help
++	  Say Y if you want to add support for SoC audio on ln2440sbc
++	  with the ALC650.
+ 
+diff -urN linux-2.6.23/sound/soc/s3c24xx/Makefile linux-2.6.23-2440/sound/soc/s3c24xx/Makefile
+--- linux-2.6.23/sound/soc/s3c24xx/Makefile	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23-2440/sound/soc/s3c24xx/Makefile	2007-10-25 01:28:18.000000000 +0200
+@@ -10,6 +10,8 @@
+ # S3C24XX Machine Support
+ snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
+ snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
++snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
+ 
+ obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
++obj-$(CONFIG_SND_S3C24XX_SOC_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
+diff -urN linux-2.6.23/sound/soc/s3c24xx/ln2440sbc_alc650.c linux-2.6.23-2440/sound/soc/s3c24xx/ln2440sbc_alc650.c
+--- linux-2.6.23/sound/soc/s3c24xx/ln2440sbc_alc650.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.23-2440/sound/soc/s3c24xx/ln2440sbc_alc650.c	2007-10-28 00:27:41.000000000 +0200
+@@ -0,0 +1,86 @@
++/*
++ * SoC audio for ln2440sbc
++ * 
++ * Copyright 2007 KonekTel, a.s.
++ * Author: Ivan Kuten
++ *         ivan.kuten@promwad.com
++ * 
++ * Heavily based on smdk2443_wm9710.c
++ * Copyright 2007 Wolfson Microelectronics PLC.
++ * Author: Graeme Gregory
++ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/device.h>
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include "../codecs/ac97.h"
++#include "s3c24xx-pcm.h"
++#include "s3c24xx-ac97.h"
++
++static struct snd_soc_machine ln2440sbc;
++
++static struct snd_soc_dai_link ln2440sbc_dai[] = {
++{
++	.name = "AC97",
++	.stream_name = "AC97 HiFi",
++	.cpu_dai = &s3c2443_ac97_dai[0],
++	.codec_dai = &ac97_dai,
++},
++};
++
++static struct snd_soc_machine ln2440sbc = {
++	.name = "LN2440SBC",
++	.dai_link = ln2440sbc_dai,
++	.num_links = ARRAY_SIZE(ln2440sbc_dai),
++};
++
++static struct snd_soc_device ln2440sbc_snd_ac97_devdata = {
++	.machine = &ln2440sbc,
++	.platform = &s3c24xx_soc_platform,
++	.codec_dev = &soc_codec_dev_ac97,
++};
++
++static struct platform_device *ln2440sbc_snd_ac97_device;
++
++static int __init ln2440sbc_init(void)
++{
++	int ret;
++
++	ln2440sbc_snd_ac97_device = platform_device_alloc("soc-audio", -1);
++	if (!ln2440sbc_snd_ac97_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(ln2440sbc_snd_ac97_device,
++				&ln2440sbc_snd_ac97_devdata);
++	ln2440sbc_snd_ac97_devdata.dev = &ln2440sbc_snd_ac97_device->dev;
++	ret = platform_device_add(ln2440sbc_snd_ac97_device);
++
++	if (ret)
++		platform_device_put(ln2440sbc_snd_ac97_device);
++
++	return ret;
++}
++
++static void __exit ln2440sbc_exit(void)
++{
++	platform_device_unregister(ln2440sbc_snd_ac97_device);
++}
++
++module_init(ln2440sbc_init);
++module_exit(ln2440sbc_exit);
++
++/* Module information */
++MODULE_AUTHOR("Ivan Kuten");
++MODULE_DESCRIPTION("ALSA SoC ALC650 LN2440SBC");
++MODULE_LICENSE("GPL");
+diff -urN linux-2.6.23/sound/soc/s3c24xx/s3c2443-ac97.c linux-2.6.23-2440/sound/soc/s3c24xx/s3c2443-ac97.c
+--- linux-2.6.23/sound/soc/s3c24xx/s3c2443-ac97.c	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23-2440/sound/soc/s3c24xx/s3c2443-ac97.c	2007-10-28 00:55:57.000000000 +0200
+@@ -32,7 +32,7 @@
+ 
+ #include <asm/hardware.h>
+ #include <asm/io.h>
+-#include <asm/arch/regs-ac97.h>
++#include <asm/plat-s3c/regs-ac97.h>
+ #include <asm/arch/regs-gpio.h>
+ #include <asm/arch/regs-clock.h>
+ #include <asm/arch/audio.h>
+@@ -253,7 +253,7 @@
+ 	ac_glbctrl |= S3C_AC97_GLBCTRL_TRANSFERDATAENABLE;
+ 	writel(ac_glbctrl, s3c24xx_ac97.regs + S3C_AC97_GLBCTRL);
+ 
+-	ret = request_irq(IRQ_S3C2443_AC97, s3c2443_ac97_irq,
++	ret = request_irq(IRQ_S3C244x_AC97, s3c2443_ac97_irq,
+ 		IRQF_DISABLED, "AC97", NULL);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "s3c24xx-ac97: interrupt request failed.\n");
+@@ -266,7 +266,7 @@
+ 
+ static void s3c2443_ac97_remove(struct platform_device *pdev)
+ {
+-	free_irq(IRQ_S3C2443_AC97, NULL);
++	free_irq(IRQ_S3C244x_AC97, NULL);
+ 	clk_disable(s3c24xx_ac97.ac97_clk);
+ 	clk_put(s3c24xx_ac97.ac97_clk);
+ 	iounmap(s3c24xx_ac97.regs);
+diff -urN linux-2.6.23/sound/soc/s3c24xx/s3c24xx-ac97.h linux-2.6.23-2440/sound/soc/s3c24xx/s3c24xx-ac97.h
+--- linux-2.6.23/sound/soc/s3c24xx/s3c24xx-ac97.h	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23-2440/sound/soc/s3c24xx/s3c24xx-ac97.h	2007-10-28 00:32:04.000000000 +0200
+@@ -20,6 +20,12 @@
+ #define AC_CMD_ADDR(x) (x << 16)
+ #define AC_CMD_DATA(x) (x & 0xffff)
+ 
++#ifdef CONFIG_CPU_S3C2440
++#define IRQ_S3C244x_AC97 IRQ_S3C2440_AC97 
++#else
++#define IRQ_S3C244x_AC97 IRQ_S3C2443_AC97 
++#endif
++
+ extern struct snd_soc_cpu_dai s3c2443_ac97_dai[];
+ 
+ #endif /*S3C24XXAC97_H_*/
