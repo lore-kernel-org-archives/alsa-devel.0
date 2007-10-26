@@ -1,192 +1,96 @@
-From: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Subject: Re: sysfs: WARNING: at fs/sysfs/dir.c:424 sysfs_add_one() - with ALSA
-Date: Fri, 26 Oct 2007 14:47:22 +0530
-Message-ID: <20071026091722.GA21274@linux.vnet.ibm.com>
-References: <877aabc40710260014v220ab804o5de5dbc36b870bd1@mail.gmail.com>
-Reply-To: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+From: zhejiang <zhe.jiang@intel.com>
+Subject: Re: [PATCH] AD1986A 6-channel bugs
+Date: Fri, 26 Oct 2007 17:19:31 +0800
+Message-ID: <1193390371.2966.1.camel@localhost.localdomain>
+References: <1193295940.3186.22.camel@localhost.localdomain>
+	<s5hr6jjbovy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753477AbXJZJRr@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <877aabc40710260014v220ab804o5de5dbc36b870bd1@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Greg KH <greg@kroah.com>, Amit Shah <amitshah@gmx.net>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 153E8244FF
+	for <alsa-devel@alsa-project.org>;
+	Fri, 26 Oct 2007 11:20:11 +0200 (CEST)
+In-Reply-To: <s5hr6jjbovy.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 26, 2007 at 12:44:38PM +0530, Amit Shah wrote:
-> On 2.6.24-rc1, I get this for all my eth interfaces:
-> 
-> [  150.389821] sysfs: duplicate filename 'eth1_rename' can not be created
-> [  150.389824] WARNING: at fs/sysfs/dir.c:424 sysfs_add_one()
-> [  150.389826]
-> [  150.389826] Call Trace:
-> [  150.389840]  [<ffffffff802ee9cf>] sysfs_add_one+0xaf/0xf0
-> [  150.389844]  [<ffffffff802ef9fe>] sysfs_create_link+0x9e/0x150
-> [  150.389849]  [<ffffffff8038a418>] device_rename+0x1d8/0x230
-> [  150.389854]  [<ffffffff803c2626>] dev_change_name+0xb6/0x230
-> [  150.389857]  [<ffffffff803c2d5b>] dev_ioctl+0x2bb/0x5a0
-> [  150.389862]  [<ffffffff80437436>] _spin_unlock_irqrestore+0x16/0x40
-> [  150.389864]  [<ffffffff8043947a>] do_page_fault+0x24a/0x930
-> [  150.389869]  [<ffffffff803b341d>] sock_ioctl+0x7d/0x250
-> [  150.389872]  [<ffffffff802aafef>] do_ioctl+0x2f/0xa0
-> [  150.389875]  [<ffffffff802ab0d4>] vfs_ioctl+0x74/0x2d0
-> [  150.389878]  [<ffffffff802ab3c1>] sys_ioctl+0x91/0xb0
-> [  150.389881]  [<ffffffff8020c32e>] system_call+0x7e/0x83
-> [  150.389884]
-> [  150.389886] net eth1_rename: device_rename: sysfs_create_symlink failed (-17)
-> [  151.169923] sysfs: duplicate filename 'eth2' can not be created
-> [  151.169927] WARNING: at fs/sysfs/dir.c:424 sysfs_add_one()
-> [  151.169929]
-> [  151.169930] Call Trace:
-> [  151.169946]  [<ffffffff802ee9cf>] sysfs_add_one+0xaf/0xf0
-> [  151.169949]  [<ffffffff802ef9fe>] sysfs_create_link+0x9e/0x150
-> [  151.169955]  [<ffffffff8038a418>] device_rename+0x1d8/0x230
-> [  151.169960]  [<ffffffff803c2626>] dev_change_name+0xb6/0x230
-> [  151.169963]  [<ffffffff803c2d5b>] dev_ioctl+0x2bb/0x5a0
-> [  151.169967]  [<ffffffff80437436>] _spin_unlock_irqrestore+0x16/0x40
-> [  151.169970]  [<ffffffff8043947a>] do_page_fault+0x24a/0x930
-> [  151.169974]  [<ffffffff803b341d>] sock_ioctl+0x7d/0x250
-> [  151.169978]  [<ffffffff802aafef>] do_ioctl+0x2f/0xa0
-> [  151.169980]  [<ffffffff802ab0d4>] vfs_ioctl+0x74/0x2d0
-> [  151.169983]  [<ffffffff802ab3c1>] sys_ioctl+0x91/0xb0
-> [  151.169987]  [<ffffffff8020c32e>] system_call+0x7e/0x83
-> [  151.169990]
-> [  151.169992] net eth2: device_rename: sysfs_create_symlink failed (-17)
-> [  151.176762] e1000: eth2: e1000_watchdog: NIC Link is Up 100 Mbps
-> Full Duplex, Flow Control: RX/TX
-> [  151.209396] sysfs: duplicate filename 'eth0' can not be created
-> 
-Hi,
-
-I get similar warning, while loading the alsa driver
-
-[  191.933548] Advanced Linux Sound Architecture Driver Version 1.0.15
-(Tue Oct 23 06:09:18 2007 UTC).
-[  191.996323] ALSA sound/core/seq/oss/seq_oss.c:232: can't register
-device seq
-[  192.046004] sysfs: duplicate filename 'audio' can not be created
-[  192.086048] WARNING: at fs/sysfs/dir.c:424 sysfs_add_one()
-[  192.122882] 
-[  192.122883] Call Trace:
-[  192.154111]  [<ffffffff802fbe74>] sysfs_add_one+0x5c/0xc9
-[  192.190144]  [<ffffffff802fc498>] create_dir+0x58/0x93
-[  192.224571]  [<ffffffff802fc50b>] sysfs_create_dir+0x38/0x4f
-[  192.262068]  [<ffffffff813a622b>] _spin_unlock+0x26/0x2a
-[  192.297448]  [<ffffffff8048eb92>] kobject_add+0x13e/0x1f9
-[  192.333292]  [<ffffffff8065c746>] device_add+0xac/0x610
-[  192.367959]  [<ffffffff8065ccc3>] device_register+0x19/0x1d
-[  192.404621]  [<ffffffff8065cda6>] device_create+0xdf/0x110
-[  192.440760]  [<ffffffff8049301c>] sprintf+0x68/0x6a
-[  192.473288]  [<ffffffff80ff9b4a>] sound_insert_unit+0xcf/0x172
-[  192.511443]  [<ffffffff80ff9ba4>] sound_insert_unit+0x129/0x172
-[  192.549996]  [<ffffffff80ff9deb>]
-register_sound_special_device+0x14a/0x159
-[  192.594734]  [<ffffffff8101ed06>] snd_register_oss_device+0x11d/0x18f
-[  192.636281]  [<ffffffff81034470>] register_oss_dsp+0x54/0x8a
-[  192.673031]  [<ffffffff802604e6>] mark_held_locks+0x4a/0x6a
-[  192.709275]  [<ffffffff813a50f1>] mutex_lock_nested+0x2a8/0x2c3
-[  192.747533]  [<ffffffff802604e6>] mark_held_locks+0x4a/0x6a
-[  192.783587]  [<ffffffff813a4e32>] __mutex_unlock_slowpath+0x12e/0x13a
-[  192.824764]  [<ffffffff802606d0>] trace_hardirqs_on+0x11c/0x147
-[  192.862739]  [<ffffffff810378d4>]
-snd_pcm_oss_register_minor+0x35/0x16b
-[  192.904816]  [<ffffffff813a4e47>] mutex_unlock+0x9/0xb
-[  192.938016]  [<ffffffff810208de>] snd_timer_dev_register+0x125/0x12c
-[  192.978469]  [<ffffffff8101e27c>] snd_device_register+0x73/0xe0
-[  193.016307]  [<ffffffff8102e03d>] snd_pcm_timer_init+0xba/0xf5
-[  193.053660]  [<ffffffff810245bd>] snd_pcm_dev_register+0x1d7/0x211
-[  193.093096]  [<ffffffff8101e1e1>] snd_device_register_all+0x5d/0x85
-[  193.133041]  [<ffffffff810197ac>] snd_card_register+0x4e/0x2ea
-[  193.170427]  [<ffffffff8104f66d>] snd_dummy_probe+0x201/0x21a
-[  193.207240]  [<ffffffff806601b5>] platform_drv_probe+0x12/0x14
-[  193.244615]  [<ffffffff8065ea16>] driver_probe_device+0x132/0x1d2
-[  193.283580]  [<ffffffff8065eab6>] __device_attach+0x0/0xb
-[  193.318382]  [<ffffffff8065eabf>] __device_attach+0x9/0xb
-[  193.353173]  [<ffffffff8065df69>] bus_for_each_drv+0x47/0x7d
-[  193.389534]  [<ffffffff8065eb5a>] device_attach+0x75/0x8d
-[  193.424319]  [<ffffffff8065dd78>] bus_attach_device+0x2d/0x79
-[  193.461202]  [<ffffffff8065ca2d>] device_add+0x393/0x610
-[  193.495910]  [<ffffffff806605a5>] platform_device_add+0x133/0x16a
-[  193.534870]  [<ffffffff806607a8>]
-platform_device_register_simple+0x46/0x64
-[  193.579013]  [<ffffffff8208d029>] alsa_card_dummy_init+0x38/0x7e
-[  193.617437]  [<ffffffff82028678>] kernel_init+0x176/0x2ed
-[  193.652173]  [<ffffffff813a5d27>] trace_hardirqs_on_thunk+0x35/0x3a
-[  193.692147]  [<ffffffff802606d0>] trace_hardirqs_on+0x11c/0x147
-[  193.730030]  [<ffffffff8020cef8>] child_rip+0xa/0x12
-[  193.762145]  [<ffffffff8020c60f>] restore_args+0x0/0x30
-[  193.795821]  [<ffffffff8023fc7f>] release_console_sem+0x4d/0x1f5
-[  193.834171]  [<ffffffff82028502>] kernel_init+0x0/0x2ed
-[  193.867870]  [<ffffffff8020ceee>] child_rip+0x0/0x12
-[  193.899987] 
-[  193.911270] kobject_add failed for audio with -EEXIST, don't try to
-register things with the same name in the same directory.
-[  193.983989] 
-[  193.983990] Call Trace:
-[  194.012668]  [<ffffffff8048e440>] kobject_put+0x19/0x1b
-[  194.046571]  [<ffffffff8048ec17>] kobject_add+0x1c3/0x1f9
-[  194.081445]  [<ffffffff8065c746>] device_add+0xac/0x610
-[  194.115311]  [<ffffffff8065ccc3>] device_register+0x19/0x1d
-[  194.151267]  [<ffffffff8065cda6>] device_create+0xdf/0x110
-[  194.186663]  [<ffffffff8049301c>] sprintf+0x68/0x6a
-[  194.218463]  [<ffffffff80ff9b4a>] sound_insert_unit+0xcf/0x172
-[  194.255953]  [<ffffffff80ff9ba4>] sound_insert_unit+0x129/0x172
-[  194.293932]  [<ffffffff80ff9deb>]
-register_sound_special_device+0x14a/0x159
-[  194.338208]  [<ffffffff8101ed06>] snd_register_oss_device+0x11d/0x18f
-[  194.379363]  [<ffffffff81034470>] register_oss_dsp+0x54/0x8a
-[  194.415853]  [<ffffffff802604e6>] mark_held_locks+0x4a/0x6a
-[  194.451820]  [<ffffffff813a50f1>] mutex_lock_nested+0x2a8/0x2c3
-[  194.489889]  [<ffffffff802604e6>] mark_held_locks+0x4a/0x6a
-[  194.525880]  [<ffffffff813a4e32>] __mutex_unlock_slowpath+0x12e/0x13a
-[  194.567098]  [<ffffffff802606d0>] trace_hardirqs_on+0x11c/0x147
-[  194.605551]  [<ffffffff810378d4>]
-snd_pcm_oss_register_minor+0x35/0x16b
-[  194.647848]  [<ffffffff813a4e47>] mutex_unlock+0x9/0xb
-[  194.681271]  [<ffffffff810208de>] snd_timer_dev_register+0x125/0x12c
-[  194.721968]  [<ffffffff8101e27c>] snd_device_register+0x73/0xe0
-[  194.760041]  [<ffffffff8102e03d>] snd_pcm_timer_init+0xba/0xf5
-[  194.797490]  [<ffffffff810245bd>] snd_pcm_dev_register+0x1d7/0x211
-[  194.836921]  [<ffffffff8101e1e1>] snd_device_register_all+0x5d/0x85
-[  194.876879]  [<ffffffff810197ac>] snd_card_register+0x4e/0x2ea
-[  194.914262]  [<ffffffff8104f66d>] snd_dummy_probe+0x201/0x21a
-[  194.951096]  [<ffffffff806601b5>] platform_drv_probe+0x12/0x14
-[  194.988480]  [<ffffffff8065ea16>] driver_probe_device+0x132/0x1d2
-[  195.027449]  [<ffffffff8065eab6>] __device_attach+0x0/0xb
-[  195.062267]  [<ffffffff8065eabf>] __device_attach+0x9/0xb
-[  195.097053]  [<ffffffff8065df69>] bus_for_each_drv+0x47/0x7d
-[  195.133408]  [<ffffffff8065eb5a>] device_attach+0x75/0x8d
-[  195.168203]  [<ffffffff8065dd78>] bus_attach_device+0x2d/0x79
-[  195.205133]  [<ffffffff8065ca2d>] device_add+0x393/0x610
-[  195.239455]  [<ffffffff806605a5>] platform_device_add+0x133/0x16a
-[  195.278432]  [<ffffffff806607a8>]
-platform_device_register_simple+0x46/0x64
-[  195.322586]  [<ffffffff8208d029>] alsa_card_dummy_init+0x38/0x7e
-[  195.361032]  [<ffffffff82028678>] kernel_init+0x176/0x2ed
-[  195.395798]  [<ffffffff813a5d27>] trace_hardirqs_on_thunk+0x35/0x3a
-[  195.435764]  [<ffffffff802606d0>] trace_hardirqs_on+0x11c/0x147
-[  195.473657]  [<ffffffff8020cef8>] child_rip+0xa/0x12
-[  195.505771]  [<ffffffff8020c60f>] restore_args+0x0/0x30
-[  195.539459]  [<ffffffff8023fc7f>] release_console_sem+0x4d/0x1f5
-[  195.577825]  [<ffffffff82028502>] kernel_init+0x0/0x2ed
-[  195.611533]  [<ffffffff8020ceee>] child_rip+0x0/0x12
-[  195.643690] 
-[  195.659326] ALSA sound/core/rawmidi.c:1542: unable to register OSS
-rawmidi device 1:0
-[  195.712879] no UART detected at 0x1
-[  195.739880] Motu MidiTimePiece on parallel port irq: 7 ioport: 0x378
-[  195.804370] usbcore: registered new interface driver snd-usb-audio
-[  195.844370] usbcore: registered new interface driver snd-usb-usx2y
-[  195.884286] usbcore: registered new interface driver snd-usb-caiaq
-[  195.924293] ASoC version 0.13.1
-[  195.946107] ALSA device list:
-[  195.966550]   #0: Dummy 1
-[  195.984913]   #1: Virtual MIDI Card 1
-[  196.009489]   #2: MTPAV on parallel port at 0x378
-
---
-Thanks & Regards,
-Kamalesh Babulal,
-Linux Technology Center,
-IBM, ISTL.
+T24gVGh1LCAyMDA3LTEwLTI1IGF0IDEwOjA1ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+QXQgVGh1LCAyNSBPY3QgMjAwNyAxNTowNTo0MCArMDgwMCwKPiB6aGVqaWFuZyB3cm90ZToKPiA+
+IAo+ID4gSGksCj4gPiAKPiA+IEkgaGF2ZSBhIElDSDhNICsgQUQxOTg2QSBtYWNoaW5lLgo+ID4g
+Cj4gPiBJbiA2IGNoYW5uZWwgbW9kZXMsIGlmIGFkanVzdCB0aGUgdm9sdW1lcyB3aGVuIHBsYXlp
+bmcgMi1jaGFubmVsIG9yCj4gPiA0LWNoYW5uZWwgbXVzaWMsIGNvZGVjIHdpbGwgYmUgbXV0ZWQg
+YW5kIGFsbCB3aWRnZXQncyBBbXAtT3V0IHZhbHMgd2lsbAo+ID4gYmUgcmVzZXQuIElmIHlvdSBw
+bGF5IDItY2hhbm5lbCBmaWxlcyBpbiA2IGNoYW5uZWwgbW9kZXMsdGhlcmUgaXMgbm9pc2UKPiA+
+IGluIHRoZSBqYWNrcy4KPiA+IAo+ID4gQnkgZG9pbmcgZXhwZXJpbWVudHMsIEkgZm91bmQgdGhh
+dCB0aGUgNi1jaGFubmVsIGJ1ZyB3YXMgY2F1c2VkIGJ5Cj4gPiBzaGFyaW5nIGNoYW5uZWxzLgo+
+ID4gCj4gPiBJZiBwbGF5IDItY2hhbm5lbCBhdWRpbyBmaWxlLHRoZSByZXN0IGNoYW5uZWxzIHdp
+bGwgc2hhcmUgY2hhbm5lbHMgd2l0aAo+ID4gdGhlIGZpcnN0IDItY2hhbm5lbC4gCj4gPiAKPiA+
+IFRoZSBIREEgc3BlYyBkb2VzbuKAmXQgZGVmaW5lIHRoZSBleGFjdCBiZWhhdmlvciB1bmRlciBz
+dWNoIGNpcmN1bXN0YW5jZXMuCj4gPiAKPiA+IE1ham9yaXR5IG9mIHRoZSBjb2RlYyBjaGlwcyBz
+dXBwb3J0IHNoYXJpbmcgY2hhbm5lbCwgYnV0IHNlZW0gdGhhdAo+ID4gQUQxOTg2QSBkb2VzbuKA
+mXQgc3VwcG9ydC4KPiA+IAo+ID4gSSB3cm90ZSBhIHBhdGNoIGFuZCB0ZXN0ZWQgaXQgaW4gbXkg
+aGFyZHdhcmUsbm93IGl0IHdvcmtzIHdlbGwuCj4gCj4gVGhhbmtzISAgSXQncyBiZWVuIGEgYnVn
+IHRoYXQgSSBoYXJkbHkgdW5kZXJzdG9vZCB3aGF0IHdhcyB3cm9uZy4KPiAKPiBJTU8sIGl0J3Mg
+YmV0dGVyIHRvIGhhdmUgYSBmbGFnIGluIGhkYV9tdWx0aV9vdXQgcmF0aGVyIHRoYW4KPiBoYXJk
+Y29kaW5nIHRoZSBjb2RlYyBpZCB0aGVyZS4KPiAKPiBDb3VsZCB5b3UgY2hlY2sgd2hldGhlciB0
+aGUgcGF0Y2ggYmVsb3cgd29ya3M/Cj4gCgpJIGhhdmUgdGVzdGVkIHRoZW0gYW5kIHRoZXkgYXJl
+IG9rYXkhIFRoYW5rcyEKPiAKPiBUYWthc2hpCj4gCj4gZGlmZiAtciA0ZjNmMmY0YmQ1ZTkgcGNp
+L2hkYS9oZGFfY29kZWMuYwo+IC0tLSBhL3BjaS9oZGEvaGRhX2NvZGVjLmMJV2VkIE9jdCAyNCAx
+ODoxODoxMSAyMDA3ICswMjAwCj4gKysrIGIvcGNpL2hkYS9oZGFfY29kZWMuYwlUaHUgT2N0IDI1
+IDExOjM5OjU1IDIwMDcgKzAyMDAKPiBAQCAtMjQ4NiwxMyArMjQ4NiwxNCBAQCBpbnQgc25kX2hk
+YV9tdWx0aV9vdXRfYW5hbG9nX3ByZXBhcmUoc3RyCj4gIAkvKiBmcm9udCAqLwo+ICAJc25kX2hk
+YV9jb2RlY19zZXR1cF9zdHJlYW0oY29kZWMsIG5pZHNbSERBX0ZST05UXSwgc3RyZWFtX3RhZywK
+PiAgCQkJCSAgIDAsIGZvcm1hdCk7Cj4gLQlpZiAobW91dC0+aHBfbmlkICYmIG1vdXQtPmhwX25p
+ZCAhPSBuaWRzW0hEQV9GUk9OVF0pCj4gKwlpZiAoIW1vdXQtPm5vX3NoYXJlX3N0cmVhbSAmJgo+
+ICsJICAgIG1vdXQtPmhwX25pZCAmJiBtb3V0LT5ocF9uaWQgIT0gbmlkc1tIREFfRlJPTlRdKQo+
+ICAJCS8qIGhlYWRwaG9uZSBvdXQgd2lsbCBqdXN0IGRlY29kZSBmcm9udCBsZWZ0L3JpZ2h0IChz
+dGVyZW8pICovCj4gIAkJc25kX2hkYV9jb2RlY19zZXR1cF9zdHJlYW0oY29kZWMsIG1vdXQtPmhw
+X25pZCwgc3RyZWFtX3RhZywKPiAgCQkJCQkgICAwLCBmb3JtYXQpOwo+ICAJLyogZXh0cmEgb3V0
+cHV0cyBjb3BpZWQgZnJvbSBmcm9udCAqLwo+ICAJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUo
+bW91dC0+ZXh0cmFfb3V0X25pZCk7IGkrKykKPiAtCQlpZiAobW91dC0+ZXh0cmFfb3V0X25pZFtp
+XSkKPiArCQlpZiAoIW1vdXQtPm5vX3NoYXJlX3N0cmVhbSAmJiBtb3V0LT5leHRyYV9vdXRfbmlk
+W2ldKQo+ICAJCQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0cmVhbShjb2RlYywKPiAgCQkJCQkJICAg
+bW91dC0+ZXh0cmFfb3V0X25pZFtpXSwKPiAgCQkJCQkJICAgc3RyZWFtX3RhZywgMCwgZm9ybWF0
+KTsKPiBAQCAtMjUwMiw3ICsyNTAzLDcgQEAgaW50IHNuZF9oZGFfbXVsdGlfb3V0X2FuYWxvZ19w
+cmVwYXJlKHN0cgo+ICAJCWlmIChjaHMgPj0gKGkgKyAxKSAqIDIpIC8qIGluZGVwZW5kZW50IG91
+dCAqLwo+ICAJCQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0cmVhbShjb2RlYywgbmlkc1tpXSwgc3Ry
+ZWFtX3RhZywKPiAgCQkJCQkJICAgaSAqIDIsIGZvcm1hdCk7Cj4gLQkJZWxzZSAvKiBjb3B5IGZy
+b250ICovCj4gKwkJZWxzZSBpZiAoIW1vdXQtPm5vX3NoYXJlX3N0cmVhbSkgLyogY29weSBmcm9u
+dCAqLwo+ICAJCQlzbmRfaGRhX2NvZGVjX3NldHVwX3N0cmVhbShjb2RlYywgbmlkc1tpXSwgc3Ry
+ZWFtX3RhZywKPiAgCQkJCQkJICAgMCwgZm9ybWF0KTsKPiAgCX0KPiBkaWZmIC1yIDRmM2YyZjRi
+ZDVlOSBwY2kvaGRhL2hkYV9sb2NhbC5oCj4gLS0tIGEvcGNpL2hkYS9oZGFfbG9jYWwuaAlXZWQg
+T2N0IDI0IDE4OjE4OjExIDIwMDcgKzAyMDAKPiArKysgYi9wY2kvaGRhL2hkYV9sb2NhbC5oCVRo
+dSBPY3QgMjUgMTE6Mzk6NTUgMjAwNyArMDIwMAo+IEBAIC0yMjAsNiArMjIwLDcgQEAgc3RydWN0
+IGhkYV9tdWx0aV9vdXQgewo+ICAJaGRhX25pZF90IGRpZ19vdXRfbmlkOwkvKiBkaWdpdGFsIG91
+dCBhdWRpbyB3aWRnZXQgKi8KPiAgCWludCBtYXhfY2hhbm5lbHM7CS8qIGN1cnJlbnRseSBzdXBw
+b3J0ZWQgYW5hbG9nIGNoYW5uZWxzICovCj4gIAlpbnQgZGlnX291dF91c2VkOwkvKiBjdXJyZW50
+IHVzYWdlIG9mIGRpZ2l0YWwgb3V0IChIREFfRElHX1hYWCkgKi8KPiArCWludCBub19zaGFyZV9z
+dHJlYW07CS8qIGRvbid0IHNoYXJlIGEgc3RyZWFtIHdpdGggbXVsdGlwbGUgcGlucyAqLwo+ICB9
+Owo+ICAKPiAgaW50IHNuZF9oZGFfbXVsdGlfb3V0X2RpZ19vcGVuKHN0cnVjdCBoZGFfY29kZWMg
+KmNvZGVjLAo+IGRpZmYgLXIgNGYzZjJmNGJkNWU5IHBjaS9oZGEvcGF0Y2hfYW5hbG9nLmMKPiAt
+LS0gYS9wY2kvaGRhL3BhdGNoX2FuYWxvZy5jCVdlZCBPY3QgMjQgMTg6MTg6MTEgMjAwNyArMDIw
+MAo+ICsrKyBiL3BjaS9oZGEvcGF0Y2hfYW5hbG9nLmMJVGh1IE9jdCAyNSAxMTozOTo1NSAyMDA3
+ICswMjAwCj4gQEAgLTk1Niw2ICs5NTYsMTQgQEAgc3RhdGljIGludCBwYXRjaF9hZDE5ODZhKHN0
+cnVjdCBoZGFfY29kZQo+ICAJCXNwZWMtPm11bHRpb3V0LmRpZ19vdXRfbmlkID0gMDsKPiAgCQli
+cmVhazsKPiAgCX0KPiArCj4gKwkvKiBBRDE5ODZBIGhhcyBhIGhhcmR3YXJlIHByb2JsZW0gdGhh
+dCBpdCBjYW4ndCBzaGFyZSBhIHN0cmVhbQo+ICsJICogd2l0aCBtdWx0aXBsZSBvdXRwdXQgcGlu
+cy4gIFRoZSBjb3B5IG9mIGZyb250IHRvIHN1cnJvdW5kcwo+ICsJICogY2F1c2VzIG5vaXN5IG9y
+IHNpbGVudCBvdXRwdXRzIGF0IGEgY2VydGFpbiB0aW1pbmcsIGUuZy4KPiArCSAqIGNoYW5naW5n
+IHRoZSB2b2x1bWUuCj4gKwkgKiBTbywgbGV0J3MgZGlzYWJsZSB0aGUgc2hhcmVkIHN0cmVhbS4K
+PiArCSAqLwo+ICsJc3BlYy0+bXVsdGlvdXQubm9fc2hhcmVfc3RyZWFtID0gMTsKPiAgCj4gIAly
+ZXR1cm4gMDsKPiAgfQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
