@@ -1,26 +1,21 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: Confused about 'default' device
-Date: Fri, 26 Oct 2007 16:43:28 +0200
-Message-ID: <1193409808.23019.1217994535@webmail.messagingengine.com>
-References: <471E4E2A.9090105@freescale.com> <s5h4pggevv8.wl%tiwai@suse.de>
-	<1193225838.26984.1217558213@webmail.messagingengine.com>
-	<471F7479.9000602@freescale.com>
-	<1193295747.4869.1217732745@webmail.messagingengine.com>
-	<4720A53E.5010801@freescale.com>
-	<1193324526.17328.1217803511@webmail.messagingengine.com>
-	<4720B039.9000909@freescale.com>
-	<1193381135.13474.1217931843@webmail.messagingengine.com>
-	<4721F305.7010409@freescale.com>
+From: Greg KH <greg@kroah.com>
+Subject: Re: sysfs: WARNING: at fs/sysfs/dir.c:424
+	sysfs_add_one() - with	ALSA
+Date: Fri, 26 Oct 2007 08:52:02 -0700
+Message-ID: <20071026155202.GD23016@kroah.com>
+References: <877aabc40710260014v220ab804o5de5dbc36b870bd1@mail.gmail.com>
+	<20071026091722.GA21274@linux.vnet.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 36F33243BB
+Received: from pentafluge.infradead.org (pentafluge.infradead.org
+	[213.146.154.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 768F62417D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Oct 2007 16:43:29 +0200 (CEST)
+	Fri, 26 Oct 2007 17:52:52 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4721F305.7010409@freescale.com>
+In-Reply-To: <20071026091722.GA21274@linux.vnet.ibm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,24 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Cc: alsa-devel@alsa-project.org, Amit Shah <amitshah@gmx.net>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> Clemens Ladisch wrote:
-> > Timur Tabi wrote:
-> >> Clemens Ladisch wrote:
-> >>> mplayer disables ALSA's sample rate conversion and always uses its own.
-> >> I don't think that's true.
-> > 
-> > It's true if you use alsa-lib 1.0.9 or later.
-> 
-> What is different between 1.0.8 and 1.0.9 that triggers mplayer to behave 
-> differently?
+On Fri, Oct 26, 2007 at 02:47:22PM +0530, Kamalesh Babulal wrote:
+> I get similar warning, while loading the alsa driver
 
-alsa-lib 1.0.9 allows do disable its resampler.
+This is a different problem, not a rename issue like the network one
+was.
 
+> [  191.933548] Advanced Linux Sound Architecture Driver Version 1.0.15
+> (Tue Oct 23 06:09:18 2007 UTC).
+> [  191.996323] ALSA sound/core/seq/oss/seq_oss.c:232: can't register
+> device seq
+> [  192.046004] sysfs: duplicate filename 'audio' can not be created
+> [  192.086048] WARNING: at fs/sysfs/dir.c:424 sysfs_add_one()
 
-Regards,
-Clemens
+This is an error in the alsa core, perhaps the alsa developers can help
+figure out why they are registering the same file twice?
+
+thanks,
+
+greg k-h
