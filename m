@@ -1,31 +1,21 @@
-From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
-Subject: Sample format coversion bug?
-Date: Fri, 26 Oct 2007 19:18:42 +0600
-Message-ID: <4721E932.5090603@ums.usu.ru>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: sysfs: WARNING:
+	at	fs/sysfs/dir.c:424	sysfs_add_one() - with	ALSA
+Date: Sat, 27 Oct 2007 08:19:36 -0700
+Message-ID: <1193498376.32561.219.camel@razman.gruemaster.com>
+References: <877aabc40710260014v220ab804o5de5dbc36b870bd1@mail.gmail.com>
+	<20071026091722.GA21274@linux.vnet.ibm.com>
+	<20071026155202.GD23016@kroah.com> <s5hzly6nen8.wl%tiwai@suse.de>
+	<472220BA.3060201@linux.vnet.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay4.usu.ru (relay4.usu.ru [194.226.235.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4760E24475
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54FB92470F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Oct 2007 15:18:51 +0200 (CEST)
-Received: from relay4.usu.ru (localhost [127.0.0.1])
-	by relay4.usu.ru (PostSystem) with ESMTP id 60A5018116
-	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Oct 2007 19:18:53 +0600 (YEKST)
-Received: from usu2.usu.ru (usu2.usu.ru [194.226.237.16])
-	by relay4.usu.ru (PostSystem) with ESMTP id 98AE917EA9
-	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Oct 2007 19:18:52 +0600 (YEKST)
-Received: from usu2.usu.ru (localhost.usu2.usu.ru [127.0.0.1])
-	by usu2.usu.ru (Postfix) with ESMTP id 2B0F6A7E95
-	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Oct 2007 19:18:45 +0600 (YEKST)
-Received: from ums.usu.ru (ums.usu.ru [194.226.236.116])
-	by usu2.usu.ru (Postfix) with ESMTP id C9AA7A7EB0
-	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Oct 2007 19:18:44 +0600 (YEKST)
+	Sat, 27 Oct 2007 17:19:39 +0200 (CEST)
+In-Reply-To: <472220BA.3060201@linux.vnet.ibm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,46 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org, Amit Shah <amitshah@gmx.net>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+First think I noticed, why are you compiling all the drivers into the
+kernel instead of as modules?  Do you need every sound device supported
+simultaneously?
 
-I am writing an application that uses ALSA, and I don't want to write 
-code to support all possible sample formats. On IRC, I asked whether it 
-is OK to support only S24 format internally and rely on the "plug" to do 
-the required conversion. I got a positive answer, but, when testing my 
-application against my SAA7134-based tuner as a capture device, found 
-that it doesn't work.
+Tobin
 
-The problem is also reproducible with "arecord". Given that plughw:1 
-refers to a SAA7134-based tuner (which obviously doesn't support S24_LE 
-natively), running the following command
+On Fri, 2007-10-26 at 22:45 +0530, Kamalesh Babulal wrote:
 
-arecord -vvv -f S24_LE -c 2 -r 32000 -D plughw:1 /dev/null
-
-produces the following output:
-
-ALSA lib pcm_mmap.c:369:(snd_pcm_mmap) mmap failed: Invalid argument
-arecord: set_params:961: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S24_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 32
-FRAME_BITS: 64
-CHANNELS: 2
-RATE: 32000
-PERIOD_TIME: 125000
-PERIOD_SIZE: 4000
-PERIOD_BYTES: 32000
-PERIODS: 4
-BUFFER_TIME: 500000
-BUFFER_SIZE: 16000
-BUFFER_BYTES: 128000
-TICK_TIME: 4000
-
-This is on Debian, the kernel is 2.6.22-2-amd64, libasound2 is 
-1.0.14a-2. Same for S32_LE.
-
--- 
-Alexander E. Patrakov
+> Takashi Iwai wrote:
+> > At Fri, 26 Oct 2007 08:52:02 -0700,
+> > Greg KH wrote:
+> >> On Fri, Oct 26, 2007 at 02:47:22PM +0530, Kamalesh Babulal wrote:
+> >>> I get similar warning, while loading the alsa driver
+> >> This is a different problem, not a rename issue like the network one
+> >> was.
+> >>
+> >>> [  191.933548] Advanced Linux Sound Architecture Driver Version 1.0.15
+> >>> (Tue Oct 23 06:09:18 2007 UTC).
+> >>> [  191.996323] ALSA sound/core/seq/oss/seq_oss.c:232: can't register
+> >>> device seq
+> >>> [  192.046004] sysfs: duplicate filename 'audio' can not be created
+> >>> [  192.086048] WARNING: at fs/sysfs/dir.c:424 sysfs_add_one()
+> >> This is an error in the alsa core, perhaps the alsa developers can help
+> >> figure out why they are registering the same file twice?
+> > 
+> > ALSA core shouldn't do so.  Maybe a built-in OSS driver conflict with
+> > ALSA?  We'd need to check .config, then.
+> > 
+> > 
+> > Takashi
+> > -
+> Hi Takashi,
+> 
+> Attaching the .config file,
+> 
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
