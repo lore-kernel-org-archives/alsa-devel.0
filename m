@@ -1,33 +1,17 @@
-From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
-Subject: Re: Sample format coversion bug?
-Date: Mon, 29 Oct 2007 16:21:21 +0500
-Message-ID: <4725C231.8030805@ums.usu.ru>
-References: <4721E932.5090603@ums.usu.ru>	<s5hpryyny19.wl%tiwai@suse.de>	<4725BD78.6040709@ums.usu.ru>
-	<s5hk5p6nveb.wl%tiwai@suse.de>
+From: "Timofei V. Bondarenko" <tim@ipi.ac.ru>
+Subject: cmipci CM_FLINKOFF disables multinchannel playback
+Date: Mon, 29 Oct 2007 17:14:16 +0300
+Message-ID: <4725EAB8.9070804@ipi.ac.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay4.usu.ru (relay4.usu.ru [194.226.235.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75788243C0
-	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 12:21:19 +0100 (CET)
-Received: from relay4.usu.ru (localhost [127.0.0.1])
-	by relay4.usu.ru (PostSystem) with ESMTP id A1C98180A9
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Oct 2007 16:24:00 +0500 (YEKT)
-Received: from usu2.usu.ru (usu2.usu.ru [194.226.237.16])
-	by relay4.usu.ru (PostSystem) with ESMTP id E65B5180A9
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Oct 2007 16:23:58 +0500 (YEKT)
-Received: from usu2.usu.ru (localhost.usu2.usu.ru [127.0.0.1])
-	by usu2.usu.ru (Postfix) with ESMTP id B13A0A7EB0
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Oct 2007 16:21:16 +0500 (YEKT)
-Received: from ums.usu.ru (ums.usu.ru [194.226.236.116])
-	by usu2.usu.ru (Postfix) with ESMTP id 89147A7E95
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Oct 2007 16:21:16 +0500 (YEKT)
-In-Reply-To: <s5hk5p6nveb.wl%tiwai@suse.de>
+Received: from ipi.ac.ru (blackpeer.ipi.ac.ru [83.149.227.82])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6818244A0
+	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 15:14:17 +0100 (CET)
+Received: from black.ipi.ac.ru (black.ipi.ac.ru [192.168.1.44])
+	by ipi.ac.ru (8.14.1/8.14.1) with ESMTP id l9TEEG9j029677
+	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 17:14:17 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,19 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> The latter case.  Does your driver support mmap?
->   
+Hi.
 
-Unfortunately, I am at work now, writing from Windows, and cannot check 
-for sure. The driver name is "saa7134-alsa", and, according to 
-http://linuxtv.org/hg/v4l-dvb/file/6b1892ed1e74/linux/drivers/media/video/saa7134/saa7134-alsa.c, 
-it does support mmap.
+I found the latest cmipci driver cannot playback in multichannel mode 
+anymore.
 
--- 
+My hardware is 'CMI8738 model 55' attempting to play 2 or 4 channels 
+through the 2nd DAC i get no sound at all. 6 ch produces sound only at 
+center/bass while front and rear still mute.
 
-Alexander E. Patrakov
+I found the root of problem in redefinition of some bits of the 
+CM_REG_MISC_CTRL (0x18) register.
+Was: CM_FLINKON=0x40, CM_FLINKOFF=0x20
+Now it is: CM_FLINKON=0x80 CM_FLINKOFF=0x40
+
+Note the CM_FLINKOFF does collide with the CM_MUTECH1=0x40 bit.
+This bit disables playback on 2nd DAC.
+
+The CM_FLINKOFF/CM_FLINKON bits used in the 'Modem' mixer control only.
+During startup the mixer turns the modem off somewhere and this disables
+2nd DAC as well.
+
+Complete removal of this 'Modem' control fixes the problem.
+Is it an acceptable solution?
+
+I guess the snd_cmipci_control_switches could be removed too.
+
+Regards.
+	Tim.
+--- alsa-driver-hg20071027/alsa-kernel/pci/cmipci.c	2007-09-18 
+04:00:10.000000000 +0400
++++ alsa-driver/alsa-kernel/pci/cmipci.c	2007-10-29 17:09:31.000000000 +0300
+@@ -2389,7 +2389,6 @@ DEFINE_BIT_SWITCH_ARG(fourch, CM_REG_MIS
+  // DEFINE_BIT_SWITCH_ARG(line_rear, CM_REG_MIXER1, CM_REAR2LIN, 1, 0);
+  // DEFINE_BIT_SWITCH_ARG(line_bass, CM_REG_LEGACY_CTRL, 
+CM_CENTR2LIN|CM_BASE2LIN, 0, 0);
+  // DEFINE_BIT_SWITCH_ARG(joystick, CM_REG_FUNCTRL1, CM_JYSTK_EN, 0, 
+0); /* now module option */
+-DEFINE_SWITCH_ARG(modem, CM_REG_MISC_CTRL, CM_FLINKON|CM_FLINKOFF, 
+CM_FLINKON, 0, 0);
+
+  #define DEFINE_SWITCH(sname, stype, sarg) \
+  { .name = sname, \
+@@ -2597,7 +2596,7 @@ static struct snd_kcontrol_new snd_cmipc
+  /* card control switches */
+  static struct snd_kcontrol_new snd_cmipci_control_switches[] 
+__devinitdata = {
+  	// DEFINE_CARD_SWITCH("Joystick", joystick), /* now module option */
+-	DEFINE_CARD_SWITCH("Modem", modem),
++//	DEFINE_CARD_SWITCH("Modem", modem),
+  };
