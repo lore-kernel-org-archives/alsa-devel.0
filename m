@@ -1,17 +1,18 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: cmipci CM_FLINKOFF disables multinchannel playback
-Date: Mon, 29 Oct 2007 17:38:42 +0100
-Message-ID: <1193675922.7613.1218416245@webmail.messagingengine.com>
-References: <4725EAB8.9070804@ipi.ac.ru>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: Testers Wanted: OPL3 hwdep loader interface
+Date: Mon, 29 Oct 2007 17:51:23 +0100
+Message-ID: <47260F8B.5010406@keyaccess.nl>
+References: <s5hfxzyoxvf.wl%tiwai@suse.de>	<47223817.7060508@keyaccess.nl>	<472273AC.9020702@keyaccess.nl>	<1193643700.13559.1218328069@webmail.messagingengine.com>
+	<s5hir4qnvcr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 96C4E243AD
-	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 17:38:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4725EAB8.9070804@ipi.ac.ru>
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 297B824430
+	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 17:54:35 +0100 (CET)
+In-Reply-To: <s5hir4qnvcr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Timofei V. Bondarenko" <tim@ipi.ac.ru>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timofei V. Bondarenko wrote:
-> I found the latest cmipci driver cannot playback in multichannel mode 
-> anymore.
-> 
-> My hardware is 'CMI8738 model 55' attempting to play 2 or 4 channels 
-> through the 2nd DAC i get no sound at all. 6 ch produces sound only at 
-> center/bass while front and rear still mute.
-> 
-> I found the root of problem in redefinition of some bits of the 
-> CM_REG_MISC_CTRL (0x18) register.
-> Was: CM_FLINKON=0x40, CM_FLINKOFF=0x20
-> Now it is: CM_FLINKON=0x80 CM_FLINKOFF=0x40
-> 
-> Note the CM_FLINKOFF does collide with the CM_MUTECH1=0x40 bit.
-> This bit disables playback on 2nd DAC.
-> 
-> The CM_FLINKOFF/CM_FLINKON bits used in the 'Modem' mixer control only.
-> During startup the mixer turns the modem off somewhere and this disables
-> 2nd DAC as well.
-> 
-> Complete removal of this 'Modem' control fixes the problem.
+On 10/29/2007 10:06 AM, Takashi Iwai wrote:
 
-Do you have any information about the exact chip version where this
-change happened?  It appears chip versions 39 and newer don't have
-a modem.
+> At Mon, 29 Oct 2007 08:41:40 +0100,
+> Clemens Ladisch wrote:
 
+>> Several instruments aren't played at all, at least those with program
+>> number 40 and up (strings) and 64 and up (saxophones).
+> 
+> OK, how about the revised patch below to alsa-tools?
 
-Regards,
-Clemens
+Yes, I believe my OPL3 is back to its good ol' horrible self again with that 
+version.
+
+Do you by the way know of other, nicer and/or better patches than the 
+supplied std and drums? Couldn't find any, at least not in the correct 
+format it seems.
+
+[ README ]
+
+> -	sbiload --opl3 std.o3 drums.o3 
+> +	% sbiload std.o3 drums.o3
+
+Should the example indeed lose the --opl3?
+
+Rene.
