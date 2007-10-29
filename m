@@ -1,61 +1,38 @@
-From: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Subject: Re: [alsa-devel] sysfs: WARNING: at fs/sysfs/dir.c:424	sysfs_add_one()
- - with	ALSA
-Date: Mon, 29 Oct 2007 11:15:43 +0530
-Message-ID: <47257387.6010305@linux.vnet.ibm.com>
-References: <877aabc40710260014v220ab804o5de5dbc36b870bd1@mail.gmail.com> <20071026091722.GA21274@linux.vnet.ibm.com> <20071026155202.GD23016@kroah.com> <s5hzly6nen8.wl%tiwai@suse.de> <472220BA.3060201@linux.vnet.ibm.com> <1193498376.32561.219.camel@razman.gruemaster.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Testers Wanted: OPL3 hwdep loader interface
+Date: Mon, 29 Oct 2007 08:41:40 +0100
+Message-ID: <1193643700.13559.1218328069@webmail.messagingengine.com>
+References: <s5hfxzyoxvf.wl%tiwai@suse.de> <47223817.7060508@keyaccess.nl>
+	<472273AC.9020702@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756526AbXJ2Fqt@vger.kernel.org>
-In-Reply-To: <1193498376.32561.219.camel@razman.gruemaster.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: Takashi Iwai <tiwai@suse.de>, Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org, Amit Shah <amitshah@gmx.net>, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6C29B24A71
+	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 08:41:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <472273AC.9020702@keyaccess.nl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tobin Davis wrote:
-> First think I noticed, why are you compiling all the drivers into the
-> kernel instead of as modules?  Do you need every sound device supported
-> simultaneously?
-> 
-> Tobin
-> 
-> On Fri, 2007-10-26 at 22:45 +0530, Kamalesh Babulal wrote:
->> Takashi Iwai wrote:
->> > At Fri, 26 Oct 2007 08:52:02 -0700,
->> > Greg KH wrote:
->> >> On Fri, Oct 26, 2007 at 02:47:22PM +0530, Kamalesh Babulal wrote:
->> >>> I get similar warning, while loading the alsa driver
->> >> This is a different problem, not a rename issue like the network one
->> >> was.
->> >>
->> >>> [  191.933548] Advanced Linux Sound Architecture Driver Version 1.0.15
->> >>> (Tue Oct 23 06:09:18 2007 UTC).
->> >>> [  191.996323] ALSA sound/core/seq/oss/seq_oss.c:232: can't register
->> >>> device seq
->> >>> [  192.046004] sysfs: duplicate filename 'audio' can not be created
->> >>> [  192.086048] WARNING: at fs/sysfs/dir.c:424 sysfs_add_one()
->> >> This is an error in the alsa core, perhaps the alsa developers can help
->> >> figure out why they are registering the same file twice?
->> > 
->> > ALSA core shouldn't do so.  Maybe a built-in OSS driver conflict with
->> > ALSA?  We'd need to check .config, then.
->> > 
->> > 
->> > Takashi
->> > -
->> Hi Takashi,
->>
->> Attaching the .config file,
->>
-Hi Tobin,
+Rene Herman wrote:
+> However -- there is a problem after all. [...]
+> While much less annoying... something's still missing.
 
-I Tried compiling the kernel with allyesconfig and with mtd devices disabled.
-When i tried booting into the kernel, i get this warning.
+Several instruments aren't played at all, at least those with program
+number 40 and up (strings) and 64 and up (saxophones).
 
--- 
-Thanks & Regards,
-Kamalesh Babulal,
-Linux Technology Center,
-IBM, ISTL.
+
+Regards,
+Clemens
