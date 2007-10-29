@@ -1,17 +1,16 @@
 From: "Timofei V. Bondarenko" <tim@ipi.ac.ru>
-Subject: cmipci CM_FLINKOFF disables multinchannel playback
-Date: Mon, 29 Oct 2007 17:14:16 +0300
-Message-ID: <4725EAB8.9070804@ipi.ac.ru>
+Subject: [PATCH] SB Live24-External better handling
+Date: Mon, 29 Oct 2007 17:40:16 +0300
+Message-ID: <4725F0D0.4090201@ipi.ac.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070400090409010909080605"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ipi.ac.ru (blackpeer.ipi.ac.ru [83.149.227.82])
-	by alsa0.perex.cz (Postfix) with ESMTP id A6818244A0
-	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 15:14:17 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D9081243BD
+	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 15:40:16 +0100 (CET)
 Received: from black.ipi.ac.ru (black.ipi.ac.ru [192.168.1.44])
-	by ipi.ac.ru (8.14.1/8.14.1) with ESMTP id l9TEEG9j029677
-	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 17:14:17 +0300
+	by ipi.ac.ru (8.14.1/8.14.1) with ESMTP id l9TEeGAO030867
+	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 17:40:16 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +23,153 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------070400090409010909080605
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
 Hi.
 
-I found the latest cmipci driver cannot playback in multichannel mode 
-anymore.
+This patch improves support for 'SB Live 24-bit Extarnal' USB card.
 
-My hardware is 'CMI8738 model 55' attempting to play 2 or 4 channels 
-through the 2nd DAC i get no sound at all. 6 ch produces sound only at 
-center/bass while front and rear still mute.
+1) This card can go into muted state when a headphones connected or 
+disconnected. So notify mixer about changes in headphone jack.
 
-I found the root of problem in redefinition of some bits of the 
-CM_REG_MISC_CTRL (0x18) register.
-Was: CM_FLINKON=0x40, CM_FLINKOFF=0x20
-Now it is: CM_FLINKON=0x80 CM_FLINKOFF=0x40
+2) Add LED controls and procfs support just as in similar Audigy 2 NX card.
 
-Note the CM_FLINKOFF does collide with the CM_MUTECH1=0x40 bit.
-This bit disables playback on 2nd DAC.
-
-The CM_FLINKOFF/CM_FLINKON bits used in the 'Modem' mixer control only.
-During startup the mixer turns the modem off somewhere and this disables
-2nd DAC as well.
-
-Complete removal of this 'Modem' control fixes the problem.
-Is it an acceptable solution?
-
-I guess the snd_cmipci_control_switches could be removed too.
+3) Rename 'PCM Capture' conrol to 'Mic Capture' to reflect reality:
+the card may adjust microphone input level only.
 
 Regards.
 	Tim.
---- alsa-driver-hg20071027/alsa-kernel/pci/cmipci.c	2007-09-18 
-04:00:10.000000000 +0400
-+++ alsa-driver/alsa-kernel/pci/cmipci.c	2007-10-29 17:09:31.000000000 +0300
-@@ -2389,7 +2389,6 @@ DEFINE_BIT_SWITCH_ARG(fourch, CM_REG_MIS
-  // DEFINE_BIT_SWITCH_ARG(line_rear, CM_REG_MIXER1, CM_REAR2LIN, 1, 0);
-  // DEFINE_BIT_SWITCH_ARG(line_bass, CM_REG_LEGACY_CTRL, 
-CM_CENTR2LIN|CM_BASE2LIN, 0, 0);
-  // DEFINE_BIT_SWITCH_ARG(joystick, CM_REG_FUNCTRL1, CM_JYSTK_EN, 0, 
-0); /* now module option */
--DEFINE_SWITCH_ARG(modem, CM_REG_MISC_CTRL, CM_FLINKON|CM_FLINKOFF, 
-CM_FLINKON, 0, 0);
 
-  #define DEFINE_SWITCH(sname, stype, sarg) \
-  { .name = sname, \
-@@ -2597,7 +2596,7 @@ static struct snd_kcontrol_new snd_cmipc
-  /* card control switches */
-  static struct snd_kcontrol_new snd_cmipci_control_switches[] 
-__devinitdata = {
-  	// DEFINE_CARD_SWITCH("Joystick", joystick), /* now module option */
--	DEFINE_CARD_SWITCH("Modem", modem),
-+//	DEFINE_CARD_SWITCH("Modem", modem),
-  };
+
+--------------070400090409010909080605
+Content-Type: text/x-patch;
+ name="live24ext.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="live24ext.patch"
+
+diff -upr alsa-driver-1.0.15/alsa-kernel/usb/usbmixer.c alsa-driver/alsa-kernel/usb/usbmixer.c
+--- alsa-driver-1.0.15/alsa-kernel/usb/usbmixer.c	2007-10-15 12:45:06.000000000 +0400
++++ alsa-driver/alsa-kernel/usb/usbmixer.c	2007-10-27 22:34:52.000000000 +0400
+@@ -1703,6 +1703,11 @@ static void snd_usb_mixer_memory_change(
+ 	case 19: /* speaker out jacks */
+ 	case 20: /* headphones out jack */
+ 		break;
++/* live24ext: 4 = line-in jack */
++	case 3:	/* hp-out jack (may actuate Mute) */
++		if (mixer->chip->usb_id == USB_ID(0x041e, 0x3040))
++			snd_usb_mixer_notify_id(mixer, mixer->rc_cfg->mute_mixer_id);
++		break;
+ 	default:
+ 		snd_printd(KERN_DEBUG "memory change in unknown unit %d\n", unitid);
+ 		break;
+@@ -1951,6 +1956,9 @@ static int snd_audigy2nx_controls_create
+ 	int i, err;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(snd_audigy2nx_controls); ++i) {
++		if (i > 1 &&  /* Live24ext has 2 LEDs only */
++			mixer->chip->usb_id == USB_ID(0x041e, 0x3040))
++			break; 
+ 		err = snd_ctl_add(mixer->chip->card,
+ 				  snd_ctl_new1(&snd_audigy2nx_controls[i], mixer));
+ 		if (err < 0)
+@@ -1963,28 +1971,41 @@ static int snd_audigy2nx_controls_create
+ static void snd_audigy2nx_proc_read(struct snd_info_entry *entry,
+ 				    struct snd_info_buffer *buffer)
+ {
+-	static const struct {
++	static const struct sb_jack {
+ 		int unitid;
+ 		const char *name;
+-	} jacks[] = {
++	}  jacks_audigy2nx[] = {
+ 		{4,  "dig in "},
+ 		{7,  "line in"},
+ 		{19, "spk out"},
+ 		{20, "hph out"},
++		{-1, 0}
++	}, jacks_live24ext[] = {
++		{4,  "line in"}, /* &1=Line, &2=Mic*/
++		{3,  "hph out"}, /* headphones */
++		{0,  "RC     "}, /* last command, 6 bytes see rc_config above */
++		{-1, 0}
+ 	};
++	const struct sb_jack *jacks;
+ 	struct usb_mixer_interface *mixer = entry->private_data;
+ 	int i, err;
+ 	u8 buf[3];
+ 
+ 	snd_iprintf(buffer, "%s jacks\n\n", mixer->chip->card->shortname);
+-	for (i = 0; i < ARRAY_SIZE(jacks); ++i) {
++	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020))
++		jacks = jacks_audigy2nx;
++	else if (mixer->chip->usb_id == USB_ID(0x041e, 0x3040))
++		jacks = jacks_live24ext;
++	else return;
++
++	for (i = 0; jacks[i].name; ++i) {
+ 		snd_iprintf(buffer, "%s: ", jacks[i].name);
+ 		err = snd_usb_ctl_msg(mixer->chip->dev,
+ 				      usb_rcvctrlpipe(mixer->chip->dev, 0),
+ 				      GET_MEM, USB_DIR_IN | USB_TYPE_CLASS |
+ 				      USB_RECIP_INTERFACE, 0,
+ 				      jacks[i].unitid << 8, buf, 3, 100);
+-		if (err == 3 && buf[0] == 3)
++		if (err == 3 && (buf[0] == 3 || buf[0] == 6))
+ 			snd_iprintf(buffer, "%02x %02x\n", buf[1], buf[2]);
+ 		else
+ 			snd_iprintf(buffer, "?\n");
+@@ -2022,7 +2043,8 @@ int snd_usb_create_mixer(struct snd_usb_
+ 	if ((err = snd_usb_soundblaster_remote_init(mixer)) < 0)
+ 		goto _error;
+ 
+-	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020)) {
++	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020) ||
++	    mixer->chip->usb_id == USB_ID(0x041e, 0x3040)) {
+ 		struct snd_info_entry *entry;
+ 
+ 		if ((err = snd_audigy2nx_controls_create(mixer)) < 0)
+diff -upr alsa-driver-1.0.15/alsa-kernel/usb/usbmixer_maps.c alsa-driver/alsa-kernel/usb/usbmixer_maps.c
+--- alsa-driver-1.0.15/alsa-kernel/usb/usbmixer_maps.c	2007-10-15 12:45:06.000000000 +0400
++++ alsa-driver/alsa-kernel/usb/usbmixer_maps.c	2007-10-27 18:31:08.000000000 +0400
+@@ -187,6 +187,13 @@ static struct usbmix_selector_map audigy
+ 	{ 0 } /* terminator */
+ };
+ 
++/* Creative SoundBlaster Live! 24-bit External */
++static struct usbmix_name_map live24ext_map[] = {
++	/* 2: PCM Playback Volume */
++	{ 5, "Mic Capture" }, /* FU, default PCM Capture Volume */
++	{ 0 } /* terminator */
++};
++
+ /* LineX FM Transmitter entry - needed to bypass controls bug */
+ static struct usbmix_name_map linex_map[] = {
+ 	/* 1: IT pcm */
+@@ -273,6 +280,10 @@ static struct usbmix_ctl_map usbmix_ctl_
+ 		.map = audigy2nx_map,
+ 		.selector_map = audigy2nx_selectors,
+ 	},
++ 	{
++		.id = USB_ID(0x041e, 0x3040),
++		.map = live24ext_map,
++	},
+ 	{
+ 		/* Hercules DJ Console (Windows Edition) */
+ 		.id = USB_ID(0x06f8, 0xb000),
+
+--------------070400090409010909080605
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070400090409010909080605--
