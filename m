@@ -1,33 +1,18 @@
-From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
-Subject: Re: Sample format coversion bug?
-Date: Mon, 29 Oct 2007 20:04:15 +0500
-Message-ID: <4725F66F.10805@ums.usu.ru>
-References: <4721E932.5090603@ums.usu.ru>	<s5hpryyny19.wl%tiwai@suse.de>	<4725BD78.6040709@ums.usu.ru>
-	<s5hk5p6nveb.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: Testers Wanted: OPL3 hwdep loader interface
+Date: Mon, 29 Oct 2007 19:30:01 +0100
+Message-ID: <472626A9.4050509@keyaccess.nl>
+References: <s5hfxzyoxvf.wl%tiwai@suse.de>	<47223817.7060508@keyaccess.nl>	<472273AC.9020702@keyaccess.nl>	<1193643700.13559.1218328069@webmail.messagingengine.com>	<s5hir4qnvcr.wl%tiwai@suse.de>	<47260F8B.5010406@keyaccess.nl>
+	<s5hd4uylzt3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay4.usu.ru (relay4.usu.ru [194.226.235.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFE6024524
-	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 16:04:25 +0100 (CET)
-Received: from relay4.usu.ru (localhost [127.0.0.1])
-	by relay4.usu.ru (PostSystem) with ESMTP id 2541017F9D
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Oct 2007 20:07:02 +0500 (YEKT)
-Received: from usu2.usu.ru (usu2.usu.ru [194.226.237.16])
-	by relay4.usu.ru (PostSystem) with ESMTP id 424A617F9D
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Oct 2007 20:07:00 +0500 (YEKT)
-Received: from usu2.usu.ru (localhost.usu2.usu.ru [127.0.0.1])
-	by usu2.usu.ru (Postfix) with ESMTP id D3A9EA7EB0
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Oct 2007 20:04:17 +0500 (YEKT)
-Received: from ums.usu.ru (ums.usu.ru [194.226.236.116])
-	by usu2.usu.ru (Postfix) with ESMTP id 2EE51A7E95
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Oct 2007 20:04:17 +0500 (YEKT)
-In-Reply-To: <s5hk5p6nveb.wl%tiwai@suse.de>
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 84655244E5
+	for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2007 19:33:15 +0100 (CET)
+In-Reply-To: <s5hd4uylzt3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -41,48 +26,41 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Does your driver support mmap?
->   
+On 10/29/2007 04:12 PM, Takashi Iwai wrote:
 
-It looks like the hardware doesn't accept the default parameters:
+>> Do you by the way know of other, nicer and/or better patches than the 
+>> supplied std and drums? Couldn't find any, at least not in the correct 
+>> format it seems.
+> 
+> Hm, I don't know of others.  It'd be fun to play with OPL3 parameter
+> adjustment, though ;)
 
-patrakov@home:~$ arecord -M -f S16_LE -c 2 -r 32000 -D hw:1 /dev/null
-Recording WAVE '/dev/null' : Signed 16 bit Little Endian, Rate 32000 Hz, 
-Stereo
-ALSA lib pcm_mmap.c:369:(snd_pcm_mmap) mmap failed: Invalid argument
-arecord: set_params:961: Unable to install hw params:
-ACCESS:  MMAP_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 32000
-PERIOD_TIME: 125000
-PERIOD_SIZE: 4000
-PERIOD_BYTES: 16000
-PERIODS: 4
-BUFFER_TIME: 500000
-BUFFER_SIZE: 16000
-BUFFER_BYTES: 64000
-TICK_TIME: 4000
+I was thinking of whether or not the standard patches shouldn't simple be 
+builtin but anyone playing with an OPL3 these days is sort of by definition 
+going for the geekness factor I guess. From that viewpoint, external patches 
+do sound better...
 
-Even though mmap seems to be supported in the driver source (judging 
-from .info = SNDRV_PCM_INFO_MMAP | other flags), I could not figure out 
-the parameters that work. Moreover, the driver seems to accept the same 
-hardware parameters without the mmap, and I could not find parameters 
-that the driver accepts for mmap.
+>> [ README ]
+>>
+>>> -	sbiload --opl3 std.o3 drums.o3 
+>>> +	% sbiload std.o3 drums.o3
+>> Should the example indeed lose the --opl3?
+> 
+> With the patch in the previous mail, yes, it's needed.
+> But my latest version that will be committed doesn't need --opl3
+> option.  You can invoke like
+> 
+> 	% sbiload std drums
+> 
+> and the format and the extension will be chosen automatically
+> according to the hwdep iface type.
 
-Also: I have retested my original problem with the virtual ens1370 card 
-emulated by qemu. The original testcase does work, so the problem seems 
-to be specific to saa7134, due to non-working mmap access. Could you 
-please help me transform my observations into something that the v4l 
-development list will accept as a good bug report?
+Sounds great (assuming that I'll still be able to load the .sb patches into 
+my OPL3 by just specifying std.sb and drums.sb ofcourse).
 
-One more question: since plug doesn't work at all on devices without 
-mmap available, does this mean that I should scrap my original idea 
-about using plug to convert everything into S24?
+I believe that at that point you by the way might also make a simple 
+"sbiload" enough, with the names defaulting to "std" and "drums"...
 
--- 
-Alexander E. Patrakov
+(and a -2 switch to pick std.sb and drums.sb even on an OPL3)
+
+Rene.
