@@ -1,22 +1,17 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: Testers Wanted: OPL3 hwdep loader interface
-Date: Tue, 30 Oct 2007 20:17:12 +0100
-Message-ID: <47278338.4060808@keyaccess.nl>
-References: <s5hfxzyoxvf.wl%tiwai@suse.de> <47223817.7060508@keyaccess.nl>
-	<472273AC.9020702@keyaccess.nl>
-	<1193643700.13559.1218328069@webmail.messagingengine.com>
-	<s5hir4qnvcr.wl%tiwai@suse.de> <47260F8B.5010406@keyaccess.nl>
-	<s5hd4uylzt3.wl%tiwai@suse.de> <472626A9.4050509@keyaccess.nl>
-	<1193732682.30948.1218541281@webmail.messagingengine.com>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: Re: how to handle bt848 audio driver
+Date: Tue, 30 Oct 2007 12:26:21 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0710301224450.16052@shell4.speakeasy.net>
+References: <Pine.LNX.4.58.0710250407410.16052@shell4.speakeasy.net>
+	<1193381218.13564.1217931615@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D17624566
-	for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2007 20:20:29 +0100 (CET)
-In-Reply-To: <1193732682.30948.1218541281@webmail.messagingengine.com>
+Received: from mail5.sea5.speakeasy.net (mail5.sea5.speakeasy.net
+	[69.17.117.7]) by alsa0.perex.cz (Postfix) with ESMTP id 7FF0624572
+	for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2007 20:26:25 +0100 (CET)
+In-Reply-To: <1193381218.13564.1217931615@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,25 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: v4l-dvb maintainer list <v4l-dvb-maintainer@linuxtv.org>, alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/30/2007 09:24 AM, Clemens Ladisch wrote:
+On Fri, 26 Oct 2007, Clemens Ladisch wrote:
+> Trent Piepho wrote:
+> > So, the ALSA driver (snd-bt87x) needs to use functions from the V4L driver
+> > (bttv).  As it is now, the two drivers are completely separate and don't share
+> > any code and can be loaded individually.
+> >
+> > The DVB driver in the same tree as bttv, so this isn't a problem.  But the
+> > snd-bt87x is in another tree, so it's somewhat harder, and I'm not sure what
+> > to do about it.
+>
+> The part of the ALSA API used by snd-bt87x is apparently more stable
+> than the bttv functions to be used, so this seems to be a good
+> opportunity to move snd-bt87x into the V4L tree.
 
->>>> Do you by the way know of other, nicer and/or better patches than the 
->>>> supplied std and drums? Couldn't find any, at least not in the correct 
->>>> format it seems.
-> 
-> I think I could poke around in some old Yamaha driver ...
-
-Wouldn't mind that...
-
-> Trying to get General MIDI out of this chip doesn't do it justice.
-> 
-> Maybe I should put opledit into alsa-tools ...
-
-Nor that. I'm not all that familiar with the OPL (nor anything MIDI related 
-in fact) but given my depository of ISA cards most of which have one, I sure 
-do have a lot of them....
-
-Rene.
+What do you say about this Mauro?  From my perspective, it would be much
+easier if all the bt848 drivers were in the same tree.
