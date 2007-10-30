@@ -1,17 +1,21 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: External Sound Card
-Date: Tue, 30 Oct 2007 18:19:51 +0100
-Message-ID: <1193764791.29333.1218639071@webmail.messagingengine.com>
-References: <cbe89d5f922a06b0d445d95e900f3b22@optonline.net>
+Subject: Re: Testers Wanted: OPL3 hwdep loader interface
+Date: Tue, 30 Oct 2007 09:24:42 +0100
+Message-ID: <1193732682.30948.1218541281@webmail.messagingengine.com>
+References: <s5hfxzyoxvf.wl%tiwai@suse.de> <47223817.7060508@keyaccess.nl>
+	<472273AC.9020702@keyaccess.nl>
+	<1193643700.13559.1218328069@webmail.messagingengine.com>
+	<s5hir4qnvcr.wl%tiwai@suse.de> <47260F8B.5010406@keyaccess.nl>
+	<s5hd4uylzt3.wl%tiwai@suse.de> <472626A9.4050509@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 302E62433A
-	for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2007 18:19:53 +0100 (CET)
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 4CBC8246BF
+	for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2007 09:24:44 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <cbe89d5f922a06b0d445d95e900f3b22@optonline.net>
+In-Reply-To: <472626A9.4050509@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,20 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Dey <jsdey@optonline.net>, Alsa Dev <alsa-devel@alsa-project.org>, Planet ccrma <planetccrma@ccrma.stanford.edu>
+To: Rene Herman <rene.herman@keyaccess.nl>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-John Dey wrote:
-> I am looking for a external sound card that has spdif (7.1) 
-> functioning.
+Rene Herman wrote:
+> On 10/29/2007 04:12 PM, Takashi Iwai wrote:
+> >> Yes, I believe my OPL3 is back to its good ol' horrible self again with that
+> >> version.
 
-7.1 encoding is done in software, not in hardware.
-I don't know of any 7.1 encoder for Linux.
+Here too.
 
-ALSA has the a52 plugin that can do 5.1 encoding for any sound
-card that has SPDIF, but you'd have to compile it with the ffmpeg
-library to get it to work.
+> >> Do you by the way know of other, nicer and/or better patches than the 
+> >> supplied std and drums? Couldn't find any, at least not in the correct 
+> >> format it seems.
+
+I think I could poke around in some old Yamaha driver ...
+
+> > Hm, I don't know of others.  It'd be fun to play with OPL3 parameter
+> > adjustment, though ;)
+> 
+> I was thinking of whether or not the standard patches shouldn't simple be 
+> builtin but anyone playing with an OPL3 these days is sort of by definition 
+> going for the geekness factor I guess. From that viewpoint, external patches 
+> do sound better...
+
+Trying to get General MIDI out of this chip doesn't do it justice.
+
+Maybe I should put opledit into alsa-tools ...
 
 
-HTH
+Regards,
 Clemens
