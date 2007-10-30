@@ -1,17 +1,19 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
 Subject: Re: how to handle bt848 audio driver
-Date: Tue, 30 Oct 2007 12:26:21 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0710301224450.16052@shell4.speakeasy.net>
+Date: Tue, 30 Oct 2007 20:08:42 +0000 (GMT)
+Message-ID: <Pine.LNX.4.64.0710302008070.27052@pentafluge.infradead.org>
 References: <Pine.LNX.4.58.0710250407410.16052@shell4.speakeasy.net>
 	<1193381218.13564.1217931615@webmail.messagingengine.com>
+	<Pine.LNX.4.58.0710301224450.16052@shell4.speakeasy.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail5.sea5.speakeasy.net (mail5.sea5.speakeasy.net
-	[69.17.117.7]) by alsa0.perex.cz (Postfix) with ESMTP id 7FF0624572
-	for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2007 20:26:25 +0100 (CET)
-In-Reply-To: <1193381218.13564.1217931615@webmail.messagingengine.com>
+Received: from pentafluge.infradead.org (pentafluge.infradead.org
+	[213.146.154.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F9FB2457B
+	for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2007 21:08:48 +0100 (CET)
+In-Reply-To: <Pine.LNX.4.58.0710301224450.16052@shell4.speakeasy.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: v4l-dvb maintainer list <v4l-dvb-maintainer@linuxtv.org>, alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@infradead.org>
+To: Trent Piepho <xyzzy@speakeasy.org>
+Cc: v4l-dvb maintainer list <v4l-dvb-maintainer@linuxtv.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Oct 2007, Clemens Ladisch wrote:
-> Trent Piepho wrote:
-> > So, the ALSA driver (snd-bt87x) needs to use functions from the V4L driver
-> > (bttv).  As it is now, the two drivers are completely separate and don't share
-> > any code and can be loaded individually.
-> >
-> > The DVB driver in the same tree as bttv, so this isn't a problem.  But the
-> > snd-bt87x is in another tree, so it's somewhat harder, and I'm not sure what
-> > to do about it.
->
-> The part of the ALSA API used by snd-bt87x is apparently more stable
-> than the bttv functions to be used, so this seems to be a good
-> opportunity to move snd-bt87x into the V4L tree.
+On Tue, 30 Oct 2007, Trent Piepho wrote:
 
-What do you say about this Mauro?  From my perspective, it would be much
-easier if all the bt848 drivers were in the same tree.
+> On Fri, 26 Oct 2007, Clemens Ladisch wrote:
+>> Trent Piepho wrote:
+>>> So, the ALSA driver (snd-bt87x) needs to use functions from the V4L driver
+>>> (bttv).  As it is now, the two drivers are completely separate and don't share
+>>> any code and can be loaded individually.
+>>>
+>>> The DVB driver in the same tree as bttv, so this isn't a problem.  But the
+>>> snd-bt87x is in another tree, so it's somewhat harder, and I'm not sure what
+>>> to do about it.
+>>
+>> The part of the ALSA API used by snd-bt87x is apparently more stable
+>> than the bttv functions to be used, so this seems to be a good
+>> opportunity to move snd-bt87x into the V4L tree.
+>
+> What do you say about this Mauro?  From my perspective, it would be much
+> easier if all the bt848 drivers were in the same tree.
+
+>From my side, this makes sense.
+
+-- 
+Cheers,
+Mauro Carvalho Chehab
+http://linuxtv.org
+mchehab@infradead.org
