@@ -1,7 +1,7 @@
 From: zhejiang <zhe.jiang@intel.com>
 Subject: Re: patch for Dell 1210 which using stac9221 codec
-Date: Wed, 31 Oct 2007 16:43:20 +0800
-Message-ID: <1193820200.3274.9.camel@localhost.localdomain>
+Date: Wed, 31 Oct 2007 16:49:44 +0800
+Message-ID: <1193820584.3274.16.camel@localhost.localdomain>
 References: <1192675756.3701.30.camel@localhost.localdomain>
 	<s5hve94zd3a.wl%tiwai@suse.de>
 	<1192773763.4306.31.camel@localhost.localdomain>
@@ -11,15 +11,17 @@ References: <1192675756.3701.30.camel@localhost.localdomain>
 	<1193033299.26715.34.camel@localhost.localdomain>
 	<s5hr6jmryaf.wl%tiwai@suse.de>
 	<1193298282.3459.18.camel@localhost.localdomain>
-	<1193759286.32561.300.camel@razman.gruemaster.com>
+	<s5hmyu7blzv.wl%tiwai@suse.de>
+	<1193735155.4414.7.camel@localhost.localdomain>
+	<s5hir4opv2p.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F4252475E
-	for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2007 09:43:58 +0100 (CET)
-In-Reply-To: <1193759286.32561.300.camel@razman.gruemaster.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05F0A24765
+	for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2007 09:50:20 +0100 (CET)
+In-Reply-To: <s5hir4opv2p.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,29 +31,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
+On Tue, 2007-10-30 at 14:53 +0100, Takashi Iwai wrote:
+> At Tue, 30 Oct 2007 17:05:55 +0800,
+> zhejiang wrote:
+> > 
+> > The stac92xx_auto_create_multi_out_ctls() create controls according to
+> > cfg->line_outs. This patch seems to leave the cfg->line_outs unchanged.
+> > It will be 1 . So I think that we need to modify
+> > stac92xx_auto_create_multi_out_ctls(),let it to use the right line_outs.
 > 
-> Could you try this patch?  I found an updated pin config on Dell'sweb
-> site.  If this works, go ahead and check it in.
-> 
-> Summary:  Update Dell XPS 1210 Pin Config.
+> Right, then it might be actually easier to swap line_outs and hp_outs
+> before and after as you suggested...
 > 
 > 
-> 
-> Signed off by Tobin Davis <tdavis@dsl-only.net>
+> Takashi
 
-I don't have the hardware.The bug [0003427] reporter helped me to do
-experiment.
-
-The only difference is the usage of the third pin.
-That patch uses it as Line-In,but I think it should be Mic-In..
-
-Please see:
-http://www.notebookreview.com/assets/12583.jpg
-
+So,we should patch the patch_sigmatel.c like that?
 
 Thanks!
+
+diff -Nur a/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
+b/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
+--- a/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
+2007-10-23 08:00:10.000000000 +0800
++++ b/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
+2007-10-31 16:15:38.000000000 +0800
+@@ -884,8 +884,8 @@
+     102801D7 (Dell XPS M1210)
+ */
+ static unsigned int dell_922x_m82_pin_configs[10] = {
+-	0x0221121f, 0x408103ff, 0x02111212, 0x90100310, 
+-	0x408003f1, 0x02111211, 0x03451340, 0x40c003f2, 
++	0x02211211, 0x408103ff, 0x02a1123e, 0x90100310, 
++	0x408003f1, 0x0221121f, 0x03451340, 0x40c003f2, 
+ 	0x508003f3, 0x405003f4, 
+ };
+ 
+@@ -2088,6 +2088,7 @@
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+ 	int err;
++	int hp_speaker_swap = 0;
+ 
+ 	if ((err = snd_hda_parse_pin_def_config(codec,
+ 						&spec->autocfg,
+@@ -2096,6 +2097,18 @@
+ 	if (! spec->autocfg.line_outs)
+ 		return 0; /* can't find valid pin config */
+ 
++	if (spec->autocfg.line_out_type == AUTO_PIN_SPEAKER_OUT &&
++	   spec->autocfg.hp_outs > 1) {
++		/*Copy hp_outs to line_outs, backup line_outs in speaker_outs*/
++		memcpy(spec->autocfg.speaker_pins, spec->autocfg.line_out_pins,
++			       sizeof(spec->autocfg.line_out_pins));
++		spec->autocfg.speaker_outs = spec->autocfg.line_outs;
++		memcpy(spec->autocfg.line_out_pins, spec->autocfg.hp_pins,
++			       sizeof(spec->autocfg.hp_pins));
++		spec->autocfg.line_outs = spec->autocfg.hp_outs;
++		hp_speaker_swap = 1;
++	}
++
+ 	if ((err = stac92xx_add_dyn_out_pins(codec, &spec->autocfg)) < 0)
+ 		return err;
+ 	if (spec->multiout.num_dacs == 0)
+@@ -2107,6 +2120,18 @@
+ 	if (err < 0)
+ 		return err;
+ 
++	if (hp_speaker_swap == 1) {
++		/*Restore the hp_outs and line_outs*/
++		memcpy(spec->autocfg.hp_pins, spec->autocfg.line_out_pins,
++			       sizeof(spec->autocfg.line_out_pins));
++		spec->autocfg.hp_outs = spec->autocfg.line_outs;
++		memcpy(spec->autocfg.line_out_pins, spec->autocfg.speaker_pins,
++			       sizeof(spec->autocfg.speaker_pins));
++		spec->autocfg.line_outs = spec->autocfg.speaker_outs;
++		memset(spec->autocfg.speaker_pins, 0,
+sizeof(spec->autocfg.speaker_pins));
++		spec->autocfg.speaker_outs = 0;
++	}
++
+ 	err = stac92xx_auto_create_hp_ctls(codec, &spec->autocfg);
+ 
+ 	if (err < 0)
