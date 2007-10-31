@@ -1,19 +1,17 @@
-From: Mauro Carvalho Chehab <mchehab@infradead.org>
-Subject: Re: how to handle bt848 audio driver
-Date: Tue, 30 Oct 2007 20:08:42 +0000 (GMT)
-Message-ID: <Pine.LNX.4.64.0710302008070.27052@pentafluge.infradead.org>
-References: <Pine.LNX.4.58.0710250407410.16052@shell4.speakeasy.net>
-	<1193381218.13564.1217931615@webmail.messagingengine.com>
-	<Pine.LNX.4.58.0710301224450.16052@shell4.speakeasy.net>
+From: Darryl Bond <dbond@nrggos.com.au>
+Subject: Wyse Winterm CS5535 Driver
+Date: Wed, 31 Oct 2007 11:08:06 +1000
+Message-ID: <4727D576.8080907@nrggos.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pentafluge.infradead.org (pentafluge.infradead.org
-	[213.146.154.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F9FB2457B
-	for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2007 21:08:48 +0100 (CET)
-In-Reply-To: <Pine.LNX.4.58.0710301224450.16052@shell4.speakeasy.net>
+Received: from gateway.nrggos.com.au (46.37.221.203.static.comindico.com.au
+	[203.221.37.46]) by alsa0.perex.cz (Postfix) with ESMTP id 0B5112461C
+	for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2007 02:08:14 +0100 (CET)
+Received: from GPSMAIL.gps.local (gpsmail [203.4.171.27])
+	by gateway.nrggos.com.au (Postfix) with ESMTP id 1223A176B8
+	for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2007 11:08:07 +1000 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <xyzzy@speakeasy.org>
-Cc: v4l-dvb maintainer list <v4l-dvb-maintainer@linuxtv.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 30 Oct 2007, Trent Piepho wrote:
+I have a Wyse S50 terminal that I am booting diskless. I have been 
+trying to get sound working. The box has a cs5535 chipset.
 
-> On Fri, 26 Oct 2007, Clemens Ladisch wrote:
->> Trent Piepho wrote:
->>> So, the ALSA driver (snd-bt87x) needs to use functions from the V4L driver
->>> (bttv).  As it is now, the two drivers are completely separate and don't share
->>> any code and can be loaded individually.
->>>
->>> The DVB driver in the same tree as bttv, so this isn't a problem.  But the
->>> snd-bt87x is in another tree, so it's somewhat harder, and I'm not sure what
->>> to do about it.
->>
->> The part of the ALSA API used by snd-bt87x is apparently more stable
->> than the bttv functions to be used, so this seems to be a good
->> opportunity to move snd-bt87x into the V4L tree.
->
-> What do you say about this Mauro?  From my perspective, it would be much
-> easier if all the bt848 drivers were in the same tree.
+After much fiddling in the kernel source (2.6.22.5 <http://2.6.22.5> ) I 
+have been able to make it work. I'm not sure if it is a cs5535 problem 
+as the code that fixes it is in ac97_pcm.c.
 
->From my side, this makes sense.
+It would appear that the card is getting passed an unexpected rate. The 
+function sound/pci/ac97/ac97_pcm.c snd_ac97_set_rate()
+has a section:
+ case AC97_PCM_FRONT_DAC_RATE:
+ case AC97_PCM_LR_ADC_RATE:
+               
+if ((ac97->regs[AC97_EXTENDED_STATUS] & AC97_EA_VRA) == 0)      /* VRA */
+                        if (rate != 48000 && rate != 96000)
+                                 return -EINVAL;
+               break;
+If I use 'aplay wavfile' the rate passed to this function is 44100.
+I I changethe code to:
+if (rate != 48000 && rate != 96000 && rate != 44100)
 
--- 
-Cheers,
-Mauro Carvalho Chehab
-http://linuxtv.org
-mchehab@infradead.org
+it plays but at a slightly incorrect rate.
+
+If I use the Citrix ICA client (which is what I really want to work) the 
+rate passed in is 8000. If I add 8000 to the test, it works, but is far 
+too fast.
+
+Any hints as to what I should try?
+
+Regards
+Darryl Bond
+__________________________________________________________________________________
+                                DISCLAIMER
+
+The contents of this electronic message and any attachments are intended only
+for the addressee and may contain legally privileged, personal, sensitive or
+confidential information. If you are not the intended addressee, and have
+received this email, any transmission, distribution, downloading, printing or
+photocopying of the contents of this message or attachments is strictly
+prohibited. Any legal privilege or confidentiality attached to this message and
+attachments is not waived, lost or destroyed by reason of delivery to any
+person other than intended addressee. If you have received this message and
+are not the intended addressee you should notify the sender by return email and
+destroy all copies of the message and any attachments.  Unless expressly
+attributed, the views expressed in this email do not necessarily represent the
+views of the company.
