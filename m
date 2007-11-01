@@ -1,17 +1,17 @@
-From: David Hilvert <dhilvert@gmail.com>
-Subject: Output levels issue on Plantronics .Audio 510 USB
-	Headset
-Date: Thu, 1 Nov 2007 16:36:04 -0500
-Message-ID: <20071101163604.8cedd87c.dhilvert@gmail.com>
+From: "Matthew Meyer" <osarusan@gmail.com>
+Subject: STAC9228
+Date: Thu, 1 Nov 2007 23:36:57 +0900
+Message-ID: <f08e5fd10711010736j5ab19cf9q80b466df93fde182@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.174])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E12C243F0
-	for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2007 22:36:12 +0100 (CET)
-Received: by ug-out-1314.google.com with SMTP id h2so575184ugf
-	for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2007 14:36:09 -0700 (PDT)
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id F22852455E
+	for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2007 15:37:02 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so353880rvb
+	for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2007 07:36:57 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +22,187 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-The Plantronics .Audio 510 USB headset (Vendor=047f ProdID=c001) seems to have
-certain output levels issues with drivers in 2.6.23-rc2-mm2 (at least).  In
-particular, setting 
+Hi, I'm using a Fujitsu Stylistic ST5112 tablet PC with Ubuntu 7.10. It has
+the Sigma Tel STAC9228 sound card. I am having tons of trouble getting the
+sound to work; I had this problem in 7.04 too. I used both alsa 1.0.14 and
+1.0.15RC3, and no luck. I read through ALSA-Configuration.txt and found the
+model at line 924, and I tried using model=ref, model=3stack and
+model=5stack, but none of them worked.
 
-amixer -c 1 sset PCM 3
+The only time I've been able to get any sound at all was when I had a
+completely wrong bit of text entered for model=xxx, and in that case the
+system beep worked, but no sound cards were recognized or loaded at all.
+I've checked for the card being muted, and it's not... so I don't know what
+could be wrong. Maybe you have some insight, otherwise, I guess this could
+be a bug?
 
-results in no output, while
+Anyway, I hope this helps.
 
-amixer -c 1 sset PCM 4
+Matt
 
-results in levels that are somewhat loud for applications tested.  Volume
-appears to be roughly linear in the range above PCM=4, if loud for applications
-tested.
+lspci -nv output:
+00:00.0 0600: 8086:27a0 (rev 03)
+        Subsystem: 10cf:1378
+        Flags: bus master, fast devsel, latency 0
+        Capabilities: <access denied>
 
-The USB ID information (Vendor=047f ProdID=c001) doesn't seem to be noted as
-exceptional by any driver code in the 2.6.23-rc2-mm2 kernel, and web searches
-for 'plantronics' or 'audio 510' and linux or alsa seem to return little
-pertinent information.  What would be most useful to try next?
+00:02.0 0300: 8086:27a2 (rev 03) (prog-if 00 [VGA])
+        Subsystem: 10cf:137e
+        Flags: bus master, fast devsel, latency 0, IRQ 19
+        Memory at f0300000 (32-bit, non-prefetchable) [size=512K]
+        I/O ports at 1800 [size=8]
+        Memory at e0000000 (32-bit, prefetchable) [size=256M]
+        Memory at f0400000 (32-bit, non-prefetchable) [size=256K]
+        Capabilities: <access denied>
 
-Various outputs follow:
+00:02.1 0380: 8086:27a6 (rev 03)
+        Subsystem: 10cf:137e
+        Flags: bus master, fast devsel, latency 0
+        Memory at f0380000 (32-bit, non-prefetchable) [size=512K]
+        Capabilities: <access denied>
 
-$ amixer -c 1
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 151
-  Mono:
-  Front Left: Playback 6 [4%] [-27.29dB] [on]
-  Front Right: Playback 6 [4%] [-27.29dB] [on]
-Simple mixer control 'Mic',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Mono
-  Limits: Capture 0 - 16
-  Mono: Capture 14 [88%] [21.00dB] [on]
-Simple mixer control 'Auto Gain Control',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
+00:1b.0 0403: 8086:27d8 (rev 02)
+        Subsystem: 10cf:13b4
+        Flags: bus master, fast devsel, latency 0, IRQ 23
+        Memory at f0640000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: <access denied>
 
-$ cat /proc/bus/usb/devices 
+00:1c.0 0604: 8086:27d0 (rev 02) (prog-if 00 [Normal decode])
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
+        I/O behind bridge: 00002000-00002fff
+        Memory behind bridge: f0100000-f01fffff
+        Prefetchable memory behind bridge: 0000000090000000-00000000900fffff
+        Capabilities: <access denied>
 
-T:  Bus=05 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  6 Spd=12  MxCh= 0
-D:  Ver= 1.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=047f ProdID=c001 Rev= 1.00
-C:* #Ifs= 4 Cfg#= 1 Atr=a0 MxPwr=100mA
-I:* If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=snd-usb-audio
-I:* If#= 1 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=snd-usb-audio
-I:  If#= 1 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=snd-usb-audio
-E:  Ad=01(O) Atr=09(Isoc) MxPS= 200 Ivl=1ms
-I:* If#= 2 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=snd-usb-audio
-I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=snd-usb-audio
-E:  Ad=82(I) Atr=05(Isoc) MxPS= 100 Ivl=1ms
-I:* If#= 3 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
-E:  Ad=83(I) Atr=03(Int.) MxPS=   4 Ivl=32ms
+00:1c.1 0604: 8086:27d2 (rev 02) (prog-if 00 [Normal decode])
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=03, subordinate=04, sec-latency=0
+        Capabilities: <access denied>
+
+00:1c.2 0604: 8086:27d4 (rev 02) (prog-if 00 [Normal decode])
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=05, subordinate=05, sec-latency=0
+        Memory behind bridge: 90100000-901fffff
+        Capabilities: <access denied>
+
+00:1d.0 0c03: 8086:27c8 (rev 02) (prog-if 00 [UHCI])
+        Subsystem: 10cf:1389
+        Flags: bus master, medium devsel, latency 0, IRQ 20
+        I/O ports at 1820 [size=32]
+
+00:1d.1 0c03: 8086:27c9 (rev 02) (prog-if 00 [UHCI])
+        Subsystem: 10cf:1389
+        Flags: bus master, medium devsel, latency 0, IRQ 18
+        I/O ports at 1840 [size=32]
+
+00:1d.2 0c03: 8086:27ca (rev 02) (prog-if 00 [UHCI])
+        Subsystem: 10cf:1389
+        Flags: bus master, medium devsel, latency 0, IRQ 21
+        I/O ports at 1860 [size=32]
+
+00:1d.3 0c03: 8086:27cb (rev 02) (prog-if 00 [UHCI])
+        Subsystem: 10cf:1389
+        Flags: bus master, medium devsel, latency 0, IRQ 19
+        I/O ports at 1880 [size=32]
+
+00:1d.7 0c03: 8086:27cc (rev 02) (prog-if 20 [EHCI])
+        Subsystem: 10cf:138a
+        Flags: bus master, medium devsel, latency 0, IRQ 20
+        Memory at f0644000 (32-bit, non-prefetchable) [size=1K]
+        Capabilities: <access denied>
+
+00:1e.0 0604: 8086:2448 (rev e2) (prog-if 01 [Subtractive decode])
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=08, subordinate=10, sec-latency=32
+        I/O behind bridge: 00003000-00003fff
+        Memory behind bridge: f0200000-f02fffff
+        Prefetchable memory behind bridge: 0000000088000000-000000008fffffff
+        Capabilities: <access denied>
+
+00:1f.0 0601: 8086:27b9 (rev 02)
+        Subsystem: 10cf:1384
+        Flags: bus master, medium devsel, latency 0
+        Capabilities: <access denied>
+
+00:1f.1 0101: 8086:27df (rev 02) (prog-if 8a [Master SecP PriP])
+        Subsystem: 10cf:1385
+        Flags: bus master, medium devsel, latency 0, IRQ 21
+        I/O ports at 01f0 [size=8]
+        I/O ports at 03f4 [size=1]
+        I/O ports at 0170 [size=8]
+        I/O ports at 0374 [size=1]
+        I/O ports at 1810 [size=16]
+
+00:1f.2 0106: 8086:27c5 (rev 02) (prog-if 01 [AHCI 1.0])
+        Subsystem: 10cf:1387
+        Flags: bus master, 66MHz, medium devsel, latency 0, IRQ 22
+        I/O ports at 18d0 [size=8]
+        I/O ports at 18c4 [size=4]
+        I/O ports at 18c8 [size=8]
+        I/O ports at 18c0 [size=4]
+        I/O ports at 18b0 [size=16]
+        Memory at f0644400 (32-bit, non-prefetchable) [size=1K]
+        Capabilities: <access denied>
+
+00:1f.3 0c05: 8086:27da (rev 02)
+        Subsystem: 10cf:1388
+        Flags: medium devsel, IRQ 11
+        I/O ports at 18e0 [size=32]
+
+02:00.0 0200: 11ab:4363 (rev 12)
+        Subsystem: 10cf:139a
+        Flags: bus master, fast devsel, latency 0, IRQ 19
+        Memory at f0100000 (64-bit, non-prefetchable) [size=16K]
+        I/O ports at 2000 [size=256]
+        [virtual] Expansion ROM at 90000000 [disabled] [size=128K]
+        Capabilities: <access denied>
+
+05:00.0 0200: 168c:001c (rev 01)
+        Subsystem: 10cf:139c
+        Flags: bus master, fast devsel, latency 0, IRQ 21
+        Memory at 90100000 (64-bit, non-prefetchable) [size=64K]
+        Capabilities: <access denied>
+
+08:03.0 0607: 1217:7134 (rev 21)
+        Subsystem: 10cf:131e
+        Flags: bus master, stepping, slow devsel, latency 168, IRQ 19
+        Memory at f0203000 (32-bit, non-prefetchable) [size=4K]
+        Bus: primary=08, secondary=09, subordinate=0c, sec-latency=176
+        Memory window 0: 88000000-8bfff000 (prefetchable)
+        Memory window 1: 94000000-97fff000
+        I/O window 0: 00003000-000030ff
+        I/O window 1: 00003400-000034ff
+        16-bit legacy interface ports at 0001
+
+08:03.1 0607: 1217:7134 (rev 21)
+        Subsystem: 10cf:131e
+        Flags: bus master, stepping, slow devsel, latency 168, IRQ 19
+        Memory at f0204000 (32-bit, non-prefetchable) [size=4K]
+        Bus: primary=08, secondary=0d, subordinate=10, sec-latency=176
+        Memory window 0: 8c000000-8ffff000 (prefetchable)
+        Memory window 1: 98000000-9bfff000
+        I/O window 0: 00003800-000038ff
+        I/O window 1: 00003c00-00003cff
+        16-bit legacy interface ports at 0001
+
+08:03.2 0805: 1217:7120 (rev 01)
+        Subsystem: 10cf:131e
+        Flags: slow devsel, IRQ 19
+        Memory at f0202800 (32-bit, non-prefetchable) [size=256]
+        Capabilities: <access denied>
+
+08:03.3 0680: 1217:7130 (rev 01)
+        Subsystem: 10cf:131e
+        Flags: slow devsel, IRQ 11
+        Memory at f0200000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: <access denied>
+
+08:03.4 0c00: 1217:00f7 (rev 02) (prog-if 10 [OHCI])
+        Subsystem: 1217:00f7
+        Flags: bus master, medium devsel, latency 32, IRQ 19
+        Memory at f0201000 (32-bit, non-prefetchable) [size=4K]
+        Memory at f0202000 (32-bit, non-prefetchable) [size=2K]
+        Capabilities: <access denied>
