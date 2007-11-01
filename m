@@ -1,22 +1,26 @@
-From: "Eduardo" <pinedu@uol.com.br>
-Subject: Philips USB sound MCM590
-Date: Thu, 1 Nov 2007 10:47:34 -0300
-Message-ID: <000801c81c8d$c35a2350$6700a8c0@sisprof.com.br>
+From: Chuck Ebbert <cebbert@redhat.com>
+Subject: 1.0.15: volume levels drift on HDA with STAC92XX codec
+Date: Thu, 01 Nov 2007 13:47:39 -0400
+Message-ID: <472A113B.7030406@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.uol.com.br (smtps.uol.com.br [200.221.4.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id 242762453C
-	for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2007 13:47:36 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by socom3.uol.com.br (Postfix) with ESMTP id A641016D7
-	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Nov 2007 10:47:33 -0200 (BRST)
-Received: from sisdes3 (unknown [200.207.77.238])
-	by socom3.uol.com.br (Postfix) with ESMTP id 0B9E31136
-	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Nov 2007 10:47:30 -0200 (BRST)
+Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05D002438D
+	for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2007 18:47:42 +0100 (CET)
+Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+	[172.16.52.254])
+	by mx1.redhat.com (8.13.8/8.13.1) with ESMTP id lA1Hlfa9022330
+	for <alsa-devel@alsa-project.org>; Thu, 1 Nov 2007 13:47:41 -0400
+Received: from mail.boston.redhat.com (mail.boston.redhat.com [172.16.76.12])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id
+	lA1HleGJ005711
+	for <alsa-devel@alsa-project.org>; Thu, 1 Nov 2007 13:47:40 -0400
+Received: from [172.16.83.145] (dhcp83-145.boston.redhat.com [172.16.83.145])
+	by mail.boston.redhat.com (8.13.1/8.13.1) with ESMTP id
+	lA1HldV3026416
+	for <alsa-devel@alsa-project.org>; Thu, 1 Nov 2007 13:47:39 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,23 +33,10 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi peoples, excuse my poor English
+We have two reports now of unstable volume levels:
 
-I'm newbe in this community, by i have a problem.
-I've a Philips mcm590 Microsystem, this microsystem have a usb connection but only windows driver.
+https://bugzilla.redhat.com/show_bug.cgi?id=361051
+https://bugzilla.redhat.com/show_bug.cgi?id=354981
 
-I try a dump my linux kernel using messages for dmesg and i conclude, this sound need a special boot sequence in a 
-
-usbaudio.c
-
-I install a winxp in my Fedora in a VirtualBox and make a dump for USB connection using a USBNOOP
-
-also i print the "PROGRAMMING GUIDE FOR LINUX USB DEVICE" and "Universal Serial Bus device class defintion for audio devices"
-
-but i'm a newbe in a kernel devel and C devel
-
-I'm java developer 
-
-i need your help
-
-Eduardo
+This is with kernel 2.6.23 plus the two ALSA merge patches from
+2.6.23-rc1.
