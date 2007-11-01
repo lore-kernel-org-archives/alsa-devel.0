@@ -1,17 +1,17 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: hdmi sound output on abit an-m2hd
-	mainboard	(ALC888)
-Date: Thu, 01 Nov 2007 14:01:13 -0700
-Message-ID: <1193950873.32561.402.camel@razman.gruemaster.com>
-References: <200711012146.40105.pansyg@gmx.at>
+From: David Hilvert <dhilvert@gmail.com>
+Subject: Output levels issue on Plantronics .Audio 510 USB
+	Headset
+Date: Thu, 1 Nov 2007 16:36:04 -0500
+Message-ID: <20071101163604.8cedd87c.dhilvert@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0E92243F7
-	for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2007 22:01:17 +0100 (CET)
-In-Reply-To: <200711012146.40105.pansyg@gmx.at>
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E12C243F0
+	for <alsa-devel@alsa-project.org>; Thu,  1 Nov 2007 22:36:12 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id h2so575184ugf
+	for <alsa-devel@alsa-project.org>; Thu, 01 Nov 2007 14:36:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,323 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Gernot Pansy <pansyg@gmx.at>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Could you please run this script:
-http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
+The Plantronics .Audio 510 USB headset (Vendor=047f ProdID=c001) seems to have
+certain output levels issues with drivers in 2.6.23-rc2-mm2 (at least).  In
+particular, setting 
 
-Post the link it creates back to the mailing list.  It has more
-debugging info that is helpful to developers.
+amixer -c 1 sset PCM 3
 
-Thanks,
+results in no output, while
 
-Tobin
+amixer -c 1 sset PCM 4
 
-On Thu, 2007-11-01 at 21:46 +0100, Gernot Pansy wrote:
+results in levels that are somewhat loud for applications tested.  Volume
+appears to be roughly linear in the range above PCM=4, if loud for applications
+tested.
 
-> hy,
-> 
-> can some one explain me what the developers need to get hdmi sound working on 
-> this mainboard?
-> 
-> it's a nvidia nforce mcp67 with an alc888 sound chip onboard.
-> 
-> should i open a bug?
-> 
-> thx,
-> gernot
-> 
-> notz@hollywood:~$ aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: NVidia [HDA NVidia], device 0: ALC883 Analog [ALC883 Analog]
->   Subdevices: 0/1
->   Subdevice #0: subdevice #0
-> card 0: NVidia [HDA NVidia], device 1: ALC883 Digital [ALC883 Digital]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> 
-> notz@hollywood:~$ aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: NVidia [HDA NVidia], device 0: ALC883 Analog [ALC883 Analog]
->   Subdevices: 0/1
->   Subdevice #0: subdevice #0
-> card 0: NVidia [HDA NVidia], device 1: ALC883 Digital [ALC883 Digital]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> notz@hollywood:~$ aplay -L
-> default:CARD=NVidia
->     HDA NVidia, ALC883 Analog
->     Default Audio Device
-> front:CARD=NVidia,DEV=0
->     HDA NVidia, ALC883 Analog
->     Front speakers
-> surround40:CARD=NVidia,DEV=0
->     HDA NVidia, ALC883 Analog
->     4.0 Surround output to Front and Rear speakers
-> surround41:CARD=NVidia,DEV=0
->     HDA NVidia, ALC883 Analog
->     4.1 Surround output to Front, Rear and Subwoofer speakers
-> surround50:CARD=NVidia,DEV=0
->     HDA NVidia, ALC883 Analog
->     5.0 Surround output to Front, Center and Rear speakers
-> surround51:CARD=NVidia,DEV=0
->     HDA NVidia, ALC883 Analog
->     5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-> surround71:CARD=NVidia,DEV=0
->     HDA NVidia, ALC883 Analog
->     7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-> null
->     Discard all samples (playback) or generate zero samples (capture)
-> 
-> notz@hollywood:~$ cat /proc/asound/card0/codec#0
-> Codec: Realtek ALC888
-> Address: 0
-> Vendor Id: 0x10ec0888
-> Subsystem Id: 0x147ba601
-> Revision Id: 0x100001
-> Default PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Default Amp-In caps: N/A
-> Default Amp-Out caps: N/A
-> Node 0x02 [Audio Output] wcaps 0x11: Stereo
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Node 0x03 [Audio Output] wcaps 0x11: Stereo
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Node 0x04 [Audio Output] wcaps 0x11: Stereo
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Node 0x05 [Audio Output] wcaps 0x11: Stereo
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
->   PCM:
->     rates [0x5e0]: 44100 48000 88200 96000 192000
->     bits [0x1e]: 16 20 24 32
->     formats [0x1]: PCM
-> Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
->   Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
->   Amp-In vals:  [0x00 0x00]
->   PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0x6]: 16 20
->     formats [0x1]: PCM
->   Connection: 1
->      0x23
-> Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
->   Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
->   Amp-In vals:  [0x00 0x00]
->   PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0x6]: 16 20
->     formats [0x1]: PCM
->   Connection: 1
->      0x22
-> Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0x1e]: 16 20 24 32
->     formats [0x1]: PCM
->   Connection: 1
->      0x1f
-> Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
->   Amp-In vals:  [0x80 0x80] [0x00 0x00] [0x1a 0x1a] [0x00 0x00] [0x00 0x00] 
-> [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
->   Connection: 10
->      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
-> Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
->   Amp-Out vals:  [0x1a 0x1a]
->   Connection: 2
->      0x02 0x0b
-> Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x80 0x80] [0x80 0x80]
->   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
->   Amp-Out vals:  [0x00 0x00]
->   Connection: 2
->      0x03 0x0b
-> Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
->   Amp-Out vals:  [0x1a 0x1a]
->   Connection: 2
->      0x04 0x0b
-> Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
->   Amp-Out vals:  [0x1a 0x1a]
->   Connection: 2
->      0x05 0x0b
-> Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x00 0x00]
->   Pincap 0x083e: IN OUT HP Detect
->   Pin Default 0x01014010: [Jack] Line Out at Ext Rear
->     Conn = 1/8, Color = Green
->   Pin-ctls: 0x40: OUT
->   Connection: 5
->      0x0c* 0x0d 0x0e 0x0f 0x26
-> Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x00 0x00]
->   Pincap 0x083e: IN OUT HP Detect
->   Pin Default 0x01011012: [Jack] Line Out at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x40: OUT
->   Connection: 5
->      0x0c 0x0d* 0x0e 0x0f 0x26
-> Node 0x16 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x00 0x00]
->   Pincap 0x0836: IN OUT Detect
->   Pin Default 0x01016011: [Jack] Line Out at Ext Rear
->     Conn = 1/8, Color = Orange
->   Pin-ctls: 0x40: OUT
->   Connection: 5
->      0x0c 0x0d 0x0e* 0x0f 0x26
-> Node 0x17 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x00 0x00]
->   Pincap 0x0836: IN OUT Detect
->   Pin Default 0x01012014: [Jack] Line Out at Ext Rear
->     Conn = 1/8, Color = Grey
->   Pin-ctls: 0x40: OUT
->   Connection: 5
->      0x0c 0x0d 0x0e 0x0f* 0x26
-> Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   Pincap 0x08373e: IN OUT HP Detect
->   Pin Default 0x01a19830: [Jack] Mic at Ext Rear
->     Conn = 1/8, Color = Pink
->   Pin-ctls: 0x24: IN
->   Connection: 5
->      0x0c* 0x0d 0x0e 0x0f 0x26
-> Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   Pincap 0x08373e: IN OUT HP Detect
->   Pin Default 0x02a1983f: [Jack] Mic at Ext Front
->     Conn = 1/8, Color = Pink
->   Pin-ctls: 0x24: IN
->   Connection: 5
->      0x0c* 0x0d 0x0e 0x0f 0x26
-> Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   Pincap 0x08373e: IN OUT HP Detect
->   Pin Default 0x01813031: [Jack] Line In at Ext Rear
->     Conn = 1/8, Color = Blue
->   Pin-ctls: 0x20: IN
->   Connection: 5
->      0x0c* 0x0d 0x0e 0x0f 0x26
-> Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   Pincap 0x08373e: IN OUT HP Detect
->   Pin Default 0x02214c1f: [Jack] HP Out at Ext Front
->     Conn = 1/8, Color = Green
->   Pin-ctls: 0xc0: OUT HP
->   Connection: 5
->      0x0c* 0x0d 0x0e 0x0f 0x26
-> Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
->   Pincap 0x0820: IN
->   Pin Default 0x99330132: [Fixed] CD at Int ATAPI
->     Conn = ATAPI, Color = Unknown
->   Pin-ctls: 0x20: IN
-> Node 0x1d [Pin Complex] wcaps 0x400000: Mono
->   Pincap 0x0820: IN
->   Pin Default 0x99830133: [Fixed] Line In at Int ATAPI
->     Conn = ATAPI, Color = Unknown
->   Pin-ctls: 0x20: IN
-> Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
->   Pincap 0x0810: OUT
->   Pin Default 0x01451120: [Jack] SPDIF Out at Ext Rear
->     Conn = Optical, Color = Black
->   Pin-ctls: 0x40: OUT
->   Connection: 1
->      0x06
-> Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
->   Pincap 0x0820: IN
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0x20: IN
-> Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-> Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x80 0x80] [0x80 0x80] 
-> [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
->   Connection: 11
->      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-> Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] 
-> [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
->   Connection: 11
->      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-> Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
-> Node 0x25 [Audio Output] wcaps 0x11: Stereo
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
->   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-In vals:  [0x00 0x00] [0x00 0x00]
->   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
->   Amp-Out vals:  [0x00 0x00]
->   Connection: 2
->      0x25 0x0b
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+The USB ID information (Vendor=047f ProdID=c001) doesn't seem to be noted as
+exceptional by any driver code in the 2.6.23-rc2-mm2 kernel, and web searches
+for 'plantronics' or 'audio 510' and linux or alsa seem to return little
+pertinent information.  What would be most useful to try next?
 
--- 
-Tobin Davis  
+Various outputs follow:
 
+$ amixer -c 1
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 151
+  Mono:
+  Front Left: Playback 6 [4%] [-27.29dB] [on]
+  Front Right: Playback 6 [4%] [-27.29dB] [on]
+Simple mixer control 'Mic',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Mono
+  Limits: Capture 0 - 16
+  Mono: Capture 14 [88%] [21.00dB] [on]
+Simple mixer control 'Auto Gain Control',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
 
-An optimist is a guy that has never had much experience.
-		-- Don Marquis
+$ cat /proc/bus/usb/devices 
+
+T:  Bus=05 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  6 Spd=12  MxCh= 0
+D:  Ver= 1.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=047f ProdID=c001 Rev= 1.00
+C:* #Ifs= 4 Cfg#= 1 Atr=a0 MxPwr=100mA
+I:* If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=snd-usb-audio
+I:* If#= 1 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=snd-usb-audio
+I:  If#= 1 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=snd-usb-audio
+E:  Ad=01(O) Atr=09(Isoc) MxPS= 200 Ivl=1ms
+I:* If#= 2 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=snd-usb-audio
+I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=snd-usb-audio
+E:  Ad=82(I) Atr=05(Isoc) MxPS= 100 Ivl=1ms
+I:* If#= 3 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
+E:  Ad=83(I) Atr=03(Int.) MxPS=   4 Ivl=32ms
