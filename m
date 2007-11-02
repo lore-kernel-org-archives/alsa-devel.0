@@ -1,19 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Any OSS changes from kernel 2.6.21 to 2.6.23?
- Something broke.
-Date: Fri, 02 Nov 2007 13:22:24 -0500
-Message-ID: <472B6AE0.1090109@freescale.com>
-References: <472B4416.8060009@freescale.com>
-	<1194023465.19772.1219244387@webmail.messagingengine.com>
+From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
+Subject: Upgrading alsa drivers. current and hg from suse site
+Date: Fri, 2 Nov 2007 22:33:43 +0100
+Message-ID: <200711022233.43715.cave.dnb2m97pp@aliceadsl.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id E49B624396
-	for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2007 19:22:29 +0100 (CET)
-In-Reply-To: <1194023465.19772.1219244387@webmail.messagingengine.com>
+Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id D22D724479
+	for <alsa-devel@alsa-project.org>; Fri,  2 Nov 2007 22:33:51 +0100 (CET)
+Received: from [192.168.0.230] (213.36.0.13) by mail.libertysurf.net
+	(7.3.118.8) id 46943A5F00E6D239 for alsa-devel@alsa-project.org;
+	Fri, 2 Nov 2007 22:33:45 +0100
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Timur Tabi wrote:
->> I have a customer who says that mplayer (using OSS) does not work when he tries
->> a kernel based on 2.6.23-rc4, but it works when he uses a kernel based on
->> 2.6.21.  Everything else is the same (including the version of alsa-lib), so I
->> presume something broke in the OSS emulation in the kernel.
-> 
-> It could also be a change in the driver.
-> 
-> And it would be nice to know what "does not work" actually means.
+I try to help folks now and then with sound problems. I don't have an hda 
+intel card, but try to point folks in the right direction to get help.
 
-I didn't want to get into a length description of the problem without first 
-seeing if there were any obvious changes.  There are still a few things I can debug.
+Question:
+I've sorted out the upgrading of the alsa driver on Fedora, Archlinux, and 
+Debian, even though I don't need too, as my audigy2 soundblaster, and on the 
+other machine, an ensoniq (ens1371) are fine. this was from the latest 1.0.15 
+release at http://alsa-project.org.
 
-The problem I'm seeing is that when using mplayer to play a video file through 
-the OSS interface, at some point in the movie, the driver will stop telling ALSA 
-that has finished playing a period.  It's almost as if ALSA is throttling the 
-driver incorrectly.
+My question is to do with the nightly hg releases obtainable from.
+ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/
 
-If I tell mplayer to just play the file through OSS, the problem occurs almost 
-immediately.  If I tell mplayer to convert the sample rate from 44100 to 48000 
-(my driver understands 48000 but not 44100), the problem doesn't always occur, 
-but when it does (about every other time I play the file), it starts to happen 
-about 5 seconds into the file.
+Will these install using the same ./configure, make, (su to root), then make 
+install, as with upgrading to the current 1.0.15 version from. 
+http://alsa-project.org.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Sorry if this is a trivial question, but I don't want to give bad information 
+to folks looking for help.
+
+I've only recently subscribed to the alsa-devel list, and hadn't realised how 
+much effort was being put in to resolve soundcard problems, particularly hda 
+intel ones.
+
+Great work folks. I'm not clued up enough to help out, but do appreciate your 
+hard work.
+
+Nigel.
