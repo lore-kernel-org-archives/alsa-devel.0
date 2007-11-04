@@ -1,18 +1,19 @@
-From: thomas schorpp <thomas.schorpp@googlemail.com>
-Subject: [CONF] All C-Media Codecs based 5.1 Channel USB-
-	Headsets
-Date: Sun, 04 Nov 2007 08:36:56 +0100
-Message-ID: <472D7698.2080700@googlemail.com>
-Reply-To: thomas.schorpp@googlemail.com
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: Any OSS changes from kernel 2.6.21 to 2.6.23?
+ Something broke.
+Date: Sun, 04 Nov 2007 09:15:29 -0600
+Message-ID: <472DE211.3020604@freescale.com>
+References: <472B4416.8060009@freescale.com>	<1194023465.19772.1219244387@webmail.messagingengine.com>
+	<472B6AE0.1090109@freescale.com> <472CA70A.1080703@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1DD072449C
-	for <alsa-devel@alsa-project.org>; Sun,  4 Nov 2007 08:37:00 +0100 (CET)
-Received: by fk-out-0910.google.com with SMTP id f40so1256185fka
-	for <alsa-devel@alsa-project.org>; Sun, 04 Nov 2007 00:36:59 -0700 (PDT)
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A95124660
+	for <alsa-devel@alsa-project.org>; Sun,  4 Nov 2007 16:15:39 +0100 (CET)
+In-Reply-To: <472CA70A.1080703@superbug.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Report to devlist as requested from USB-Audio.conf header:
+James Courtier-Dutton wrote:
+> Why are you using OSS. mplayer supports ALSA direct.
+>   
 
-1. all this headsets with windriver inf files + manual showing c-media driver must have 
-the cm106x series 7.1 channel usb-codec in. there's no other from c-media for the design of 5.1 
-channel usb headsets available at this time, see:
-
-http://www.cmedia.com.tw/?q=en/usb_audio
-
-2. the headset interface shows up with 8 channels in lsusb -v , 1 8-ch pcm in /proc,
- and must be driven with 
-surround7.1 pcm plug instead of surround5.1 or it will not work. speaker-test program 
-works with -c6 -Dsurround7.1, test with -c8 works too, but shows that no SideL/R -speakers 
-connected/routed/downmixed ( Speedlink Medusa 5.1 Mobile USB Headset, cm106L)
-
-3. it works instantly without extra config using programs that allow specifying 
-(-D)surround7.1 like VDR and MPlayer, VLC did not so far 
-(maybe can do with special commandline) 
-and therere maybe other unconfigurable (or buggy?) players that need a missing extra cm106 
-CARD configfile showing those apps a 5.1 channel device instead a 7.1.
-
-i've done none so far, the config file language (especially routing and mappings) 
-is not well documented, sorry.
-
-y
-tom
+I'm not -- our customer is.  They're using mplayer to validate the OSS 
+support for their legacy OSS application.
