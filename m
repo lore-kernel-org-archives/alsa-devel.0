@@ -1,13 +1,18 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: HDA:  Add Asus VX1 support.
-Date: Sat, 03 Nov 2007 12:52:54 -0700
-Message-ID: <1194119574.27981.6.camel@razman.gruemaster.com>
+From: thomas schorpp <thomas.schorpp@googlemail.com>
+Subject: [CONF] All C-Media Codecs based 5.1 Channel USB-
+	Headsets
+Date: Sun, 04 Nov 2007 08:36:56 +0100
+Message-ID: <472D7698.2080700@googlemail.com>
+Reply-To: thomas.schorpp@googlemail.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-oG8QcyTR/kjAHrooWnL2"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id F1D3F243D9
-	for <alsa-devel@alsa-project.org>; Sat,  3 Nov 2007 20:52:56 +0100 (CET)
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DD072449C
+	for <alsa-devel@alsa-project.org>; Sun,  4 Nov 2007 08:37:00 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id f40so1256185fka
+	for <alsa-devel@alsa-project.org>; Sun, 04 Nov 2007 00:36:59 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,48 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developers <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Report to devlist as requested from USB-Audio.conf header:
 
---=-oG8QcyTR/kjAHrooWnL2
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+1. all this headsets with windriver inf files + manual showing c-media driver must have 
+the cm106x series 7.1 channel usb-codec in. there's no other from c-media for the design of 5.1 
+channel usb headsets available at this time, see:
 
-Simple patch to add the Asus VX1 laptop to the Analog Devices pci quirk
-list.
+http://www.cmedia.com.tw/?q=en/usb_audio
 
+2. the headset interface shows up with 8 channels in lsusb -v , 1 8-ch pcm in /proc,
+ and must be driven with 
+surround7.1 pcm plug instead of surround5.1 or it will not work. speaker-test program 
+works with -c6 -Dsurround7.1, test with -c8 works too, but shows that no SideL/R -speakers 
+connected/routed/downmixed ( Speedlink Medusa 5.1 Mobile USB Headset, cm106L)
 
+3. it works instantly without extra config using programs that allow specifying 
+(-D)surround7.1 like VDR and MPlayer, VLC did not so far 
+(maybe can do with special commandline) 
+and therere maybe other unconfigurable (or buggy?) players that need a missing extra cm106 
+CARD configfile showing those apps a 5.1 channel device instead a 7.1.
 
-Signed off by Tobin Davis <tdavis@dsl-only.net>
+i've done none so far, the config file language (especially routing and mappings) 
+is not well documented, sorry.
 
---=-oG8QcyTR/kjAHrooWnL2
-Content-Disposition: attachment; filename=Asus-VX1.patch
-Content-Type: text/x-patch; name=Asus-VX1.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-diff -r 3e1a17f8baca pci/hda/patch_analog.c
---- a/pci/hda/patch_analog.c	Wed Oct 31 17:36:20 2007 +0100
-+++ b/pci/hda/patch_analog.c	Sat Nov 03 12:47:36 2007 -0700
-@@ -841,6 +841,7 @@ static struct snd_pci_quirk ad1986a_cfg_
- 	SND_PCI_QUIRK(0x1043, 0x1297, "ASUS Z62F", AD1986A_LAPTOP_EAPD),
- 	SND_PCI_QUIRK(0x1043, 0x12b3, "ASUS V1j", AD1986A_LAPTOP_EAPD),
- 	SND_PCI_QUIRK(0x1043, 0x1302, "ASUS W3j", AD1986A_LAPTOP_EAPD),
-+	SND_PCI_QUIRK(0x1043, 0x1443, "ASUS VX1", AD1986A_LAPTOP),
- 	SND_PCI_QUIRK(0x1043, 0x1447, "ASUS A8J", AD1986A_3STACK),
- 	SND_PCI_QUIRK(0x1043, 0x817f, "ASUS P5", AD1986A_3STACK),
- 	SND_PCI_QUIRK(0x1043, 0x818f, "ASUS P5", AD1986A_LAPTOP),
-
---=-oG8QcyTR/kjAHrooWnL2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-oG8QcyTR/kjAHrooWnL2--
+y
+tom
