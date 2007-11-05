@@ -1,82 +1,50 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: [PATCH] hda: Added new IDT codec family
-Date: Mon, 5 Nov 2007 17:54:29 +0200
-Message-ID: <200711051754.29969.maximlevitsky@gmail.com>
-References: <472F3191.2040004@embeddedalley.com> <s5h3avknacw.wl%tiwai@suse.de>
+From: "Grant Likely" <grant.likely@secretlab.ca>
+Subject: Re: [alsa-devel] [PATCH] [ML403-AC97CR] Fix capture/periodic overrun
+	bug.
+Date: Mon, 5 Nov 2007 08:59:10 -0700
+Message-ID: <fa686aa40711050759v185e2d03nf6964366f6e40fa2@mail.gmail.com>
+References: <1194025939.29723.22.camel@localhost>
+	<s5h1wb4na6x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id E76F924386
-	for <alsa-devel@alsa-project.org>; Mon,  5 Nov 2007 16:55:36 +0100 (CET)
-Received: by ug-out-1314.google.com with SMTP id h2so990797ugf
-	for <alsa-devel@alsa-project.org>; Mon, 05 Nov 2007 07:55:36 -0800 (PST)
-In-Reply-To: <s5h3avknacw.wl%tiwai@suse.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linuxppc-embedded-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org>
+In-Reply-To: <s5h1wb4na6x.wl%tiwai@suse.de>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Matthew Ranostay <mranostay@embeddedalley.com>
+List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-embedded>,
+	<mailto:linuxppc-embedded-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-embedded>
+List-Post: <mailto:linuxppc-embedded@ozlabs.org>
+List-Help: <mailto:linuxppc-embedded-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-embedded>,
+	<mailto:linuxppc-embedded-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-embedded-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-embedded-bounces+glppe-linuxppc-embedded-2=m.gmane.org@ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Stephen Neuendorffer <stephen.neuendorffer@xilinx.com>, linuxppc-embedded <linuxppc-embedded@ozlabs.org>, Lorenz Kolb <lorenz.kolb@lkmail.de>, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 05 November 2007 14:30:07 Takashi Iwai wrote:
-> At Mon, 05 Nov 2007 10:06:57 -0500,
-> Matthew Ranostay wrote:
-> > =
+On 11/5/07, Takashi Iwai <tiwai@suse.de> wrote:
+> Oh, it seems that your patch was lost in the patch queue before ALSA
+> 1.0.15 release.  Sorry, I applied the last one now to ALSA HG tree
+> together with this one.
+>
+> The patch to arch/ppc/syslib/virtex_device.c isn't still applied
+> (because it's outside the ALSA HG tree).  For applying this to alsa
+> git tree, Jaroslav would need to apply manually.
+>
+> Jaroslav, could you add it please?
 
-> > diff -r 3e1a17f8baca pci/hda/hda_codec.h
-> > --- a/pci/hda/hda_codec.h	Wed Oct 31 17:36:20 2007 +0100
-> > +++ b/pci/hda/hda_codec.h	Sat Nov 03 22:55:14 2007 -0500
-> > @@ -92,6 +92,8 @@ enum {
-> >   */
-> >  #define AC_VERB_SET_STREAM_FORMAT		0x200
-> >  #define AC_VERB_SET_AMP_GAIN_MUTE		0x300
-> > +#define AC_VERB_SET_RIGHT_AMP_IN_MUTE	0x350
-> > +#define AC_VERB_SET_LEFT_AMP_IN_MUTE	0x360
-> =
+Please don't send this change in through the alsa git tree.  arch/ppc
+is semi frozen and changes should really go in via paulus' tree.
 
-> Usually we pass the values for left or right bits in the parameter
-> value (AC_AMP_SET_LEFT and AC_AMP_SET_RIGHT) instead of the verb
-> value.  So, no need to redefine them.
-> =
+I'll take another look at it and see if I can get it in.
 
-> >  #define AC_VERB_SET_PROC_COEF			0x400
-Any chance to see data-sheets of newer IDT chips?
-There seems to be nothing on the web.
-Are they available to general public?
+Cheers,
+g.
 
-For example STAC9872 has very limited support due to no datasheets.
- =
-
->+static struct snd_kcontrol_new stac92hd71bxx_mixer[] =3D {
->+=A0=A0=A0=A0=A0=A0=A0STAC_DIGITAL_INPUT_SOURCE(1),
->+=A0=A0=A0=A0=A0=A0=A0STAC_INPUT_SOURCE(2),
->+=A0=A0=A0=A0=A0=A0=A0STAC_VOLKNOB(0x28),
->+
->+=A0=A0=A0=A0=A0=A0=A0/* hardware gain controls */
->+=A0=A0=A0=A0=A0=A0=A0HDA_CODEC_VOLUME("Digital Mic 1 Volume", 0x18, 0, HD=
-A_OUTPUT),
->+=A0=A0=A0=A0=A0=A0=A0HDA_CODEC_VOLUME("Digital Mic 2 Volume", 0x19, 0, HD=
-A_OUTPUT),
->+=A0=A0=A0=A0=A0=A0=A0
->+=A0=A0=A0=A0=A0=A0=A0HDA_CODEC_VOLUME("Capture Volume", 0x1c, 0, HDA_OUTP=
-UT),
->+=A0=A0=A0=A0=A0=A0=A0HDA_CODEC_MUTE("Capture Switch", 0x1c, 0, HDA_OUTPUT=
-),
->+=A0=A0=A0=A0=A0=A0=A0HDA_CODEC_VOLUME("Capture Mux Volume", 0x1a, 0, HDA_=
-OUTPUT),
->=A0=A0=A0=A0=A0=A0=A0=A0{ } /* end */
-
-The chip has two ADCs, but why just one "Capture Volume" ?
-No analog loopback?
-
-Best regards,
-	Maxim Levitsky
+-- 
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
+grant.likely@secretlab.ca
+(403) 399-0195
