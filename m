@@ -1,22 +1,18 @@
-From: "Eduardo" <pinedu@uol.com.br>
-Subject: Mr. Takashi Iwai Help-me please
-Date: Tue, 6 Nov 2007 15:04:50 -0300
-Message-ID: <002701c8209f$8994d320$6700a8c0@sisprof.com.br>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: Re: underruns and strange code in pcm_rate.c
+	(and	patch)
+Date: Tue, 06 Nov 2007 20:14:26 +0300
+Message-ID: <4730A0F2.8070900@aknet.ru>
+References: <472E5A64.6010705@aknet.ru> <s5hy7dbvcgf.wl%tiwai@suse.de>
+	<47307E8A.9090700@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.uol.com.br (smtps.uol.com.br [200.221.4.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FFA72483B
-	for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2007 18:05:01 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by socom3.uol.com.br (Postfix) with ESMTP id DE6D3B67
-	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Nov 2007 15:04:58 -0200 (BRST)
-Received: from sisdes3 (unknown [200.207.77.238])
-	by socom3.uol.com.br (Postfix) with ESMTP id AF3DA1C0D
-	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Nov 2007 15:04:51 -0200 (BRST)
+Received: from mail.aknet.ru (mail.AKNET.ru [77.246.241.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id DADCE24808
+	for <alsa-devel@alsa-project.org>; Tue,  6 Nov 2007 18:13:08 +0100 (CET)
+In-Reply-To: <47307E8A.9090700@superbug.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,17 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mr. Takashi
+Hi.
 
-Escuse-me for my question, but i want a developer a driver for MCM590 i have a dump for USB and the manuals to develop audio driver for linux, but nothing for a manufacter documentation.
+James Courtier-Dutton wrote:
+> Are any steps being taken to change the design so that sample rate
+> conversion works better?
+Yes, you've seen it, its in my patch. :)
+Seriously though, I think that attitude
+is unfair. I dare to claim that it was
+not some random hack that just happened
+to work. But rather a correct and reliable
+fix.
 
-This is a Philips Microsystem with a USB port
-This USB periferic need a special boot sequence, i debug this sequence in the linux kernel and the default boot for "usbaudio.c" don't solve the problem.
+> 2) allow the user application to use different buffer/period sizes than
+> the hardware itself.
+That's what the rate plugin already
+allows, it seems.
 
-Do you can help-me?
-
-Eduardo
-Please answer this mail with no or yes tks!
+> 3) Try to encourage applications not to use the pcm_rate plugin at
+> all!!!  Instead force each application to do its own sample rate
+> conversion to match what the hardware can do.
+The applications have nothing to do
+with that plugin I think - it all in
+an alsa config.
