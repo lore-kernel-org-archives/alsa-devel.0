@@ -1,20 +1,16 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: Audio quality issues with dmix plugin
-Date: Wed, 7 Nov 2007 14:19:04 +0530
-Message-ID: <61445c750711070049hf2d0f10r1acaccd6b1e2a928@mail.gmail.com>
-References: <61445c750711060016y1755bd74l87cdc39718b5d226@mail.gmail.com>
-	<473106E7.9050601@keyaccess.nl>
+From: "Timofei V. Bondarenko" <tim@ipi.ac.ru>
+Subject: [PATCH] cmipci - utilize ADC48K44K bit
+Date: Wed, 07 Nov 2007 15:08:19 +0300
+Message-ID: <4731AAB3.5000209@ipi.ac.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070904050109070404060204"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6AAC24558
-	for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2007 09:49:07 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id m33so3037621wag
-	for <alsa-devel@alsa-project.org>; Wed, 07 Nov 2007 00:49:06 -0800 (PST)
-In-Reply-To: <473106E7.9050601@keyaccess.nl>
-Content-Disposition: inline
+Received: from ipi.ac.ru (blackpeer.ipi.ac.ru [83.149.227.82])
+	by alsa0.perex.cz (Postfix) with ESMTP id 59A5B2437D
+	for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2007 13:08:21 +0100 (CET)
+Received: from black.ipi.ac.ru (black.ipi.ac.ru [192.168.1.44])
+	by ipi.ac.ru (8.14.1/8.14.1) with ESMTP id lA7C8JHY013611
+	for <alsa-devel@alsa-project.org>; Wed, 7 Nov 2007 15:08:20 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,42 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/7/07, Rene Herman <rene.herman@keyaccess.nl> wrote:
-> On 06-11-07 09:16, Pharaoh . wrote:
->
-> > When I play a 44Khz file without using any ALSA plugin like
-> >
-> > #aplay -Dhw:0,0 44k.wav
-> >
-> > the sound quality is awesome but when I play the same file using dmix,
-> > clicks are introduced.
-> >
-> > #aplay -Dplug:dmix 44k.wav
-> >
-> > changing period size and buffer size doesn't help. I am testing my ALSA
-> > driver on an OMAP850
-> > based board.
->
-> dmix does 48 kHz by default. Does it sound "awesome" when you play a 48 kHz
-> file directly to hw:0,0? If that also clicks, the problem will be your
-> driver's handling of the 48 kHz rate -- if not, it'll be the resampling, and
-> I'll probably need to bow out...
->
-> Rene.
->
+This is a multi-part message in MIME format.
+--------------070904050109070404060204
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Rene,
-I changed alsa.conf so that dmix does 44.1kHz and tried, without dmix
-44.1 and 48kHz files sound 'awesome' but with dmix some clicks appear
-at both the rates. Going ahead, I recorded a 8Khz mono sound using my
-driver and played it back without dmix, it plays without any clicks,
-but use dmix and clicks appear. So basically,
-clicks appear at all the sample rates with dmix and without it I could
-play all the sample rate files well since my hw supports hw
-upsampling.
+Hi.
 
--Pharaoh.
+Setting the ADC48K44K greatly improves capture quality at 48k sampling rate.
+
+With this bit clear ADC does ZOH interpolation of every 22th sample at 48k.
+
+At frequencies higher than 48k there ADC performs a little better with 
+ADC48K44K bit set.
+At 44.1k ADC performs a little better with this bit clear.
+At frequencies below 44.1k there is no difference.
+
+
+Regards,
+	Tim.
+
+--------------070904050109070404060204
+Content-Type: text/x-patch;
+ name="cmi-adc48k.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="cmi-adc48k.patch"
+
+Signed-off-by: Timofei Bondarenko <tim@ipi.ac.ru>
+
+--- alsa-driver-hg20071107/alsa-kernel/pci/cmipci.c	2007-11-01 04:00:07.000000000 +0300
++++ alsa-driver/alsa-kernel/pci/cmipci.c	2007-11-07 14:55:05.000000000 +0300
+@@ -869,6 +869,13 @@ static int snd_cmipci_pcm_prepare(struct
+ 	snd_cmipci_write(cm, CM_REG_CHFORMAT, val);
+ 	//snd_printd("cmipci: chformat = %08x\n", val);
+ 
++	if (!rec->is_dac && cm->chip_version) {
++		if (runtime->rate > 44100)
++			snd_cmipci_set_bit(cm, CM_REG_EXT_MISC, CM_ADC48K44K);
++		else
++			snd_cmipci_clear_bit(cm, CM_REG_EXT_MISC, CM_ADC48K44K);
++	}
++
+ 	rec->running = 0;
+ 	spin_unlock_irq(&cm->reg_lock);
+ 
+
+
+--------------070904050109070404060204
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070904050109070404060204--
