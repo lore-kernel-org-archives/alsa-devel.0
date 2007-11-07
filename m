@@ -1,17 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: Audio quality issues with dmix plugin
-Date: Wed, 07 Nov 2007 01:29:27 +0100
-Message-ID: <473106E7.9050601@keyaccess.nl>
-References: <61445c750711060016y1755bd74l87cdc39718b5d226@mail.gmail.com>
+From: Ben C <bchang_2@yahoo.com>
+Subject: snd_pcm_hw_params_get_xxx question
+Date: Tue, 6 Nov 2007 18:21:01 -0800 (PST)
+Message-ID: <174059.99030.qm@web36509.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C6922436A
-	for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2007 01:33:21 +0100 (CET)
-In-Reply-To: <61445c750711060016y1755bd74l87cdc39718b5d226@mail.gmail.com>
+Received: from web36509.mail.mud.yahoo.com (web36509.mail.mud.yahoo.com
+	[209.191.85.9]) by alsa0.perex.cz (Postfix) with SMTP id A7ABE243E5
+	for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2007 03:21:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +18,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06-11-07 09:16, Pharaoh . wrote:
+Hello,
 
-> When I play a 44Khz file without using any ALSA plugin like
-> 
-> #aplay -Dhw:0,0 44k.wav
-> 
-> the sound quality is awesome but when I play the same file using dmix,
-> clicks are introduced.
-> 
-> #aplay -Dplug:dmix 44k.wav
-> 
-> changing period size and buffer size doesn't help. I am testing my ALSA
-> driver on an OMAP850
-> based board.
+I'm trying to develop an external PCM plugin. I'm calling snd_pcm_hw_params_get_xxx functions to retrieve some values. I got everything to work as expected on alsa-lib 1.0.15. However the client's setup is 1.0.13, and I don't think they want to upgrade.
 
-dmix does 48 kHz by default. Does it sound "awesome" when you play a 48 kHz 
-file directly to hw:0,0? If that also clicks, the problem will be your 
-driver's handling of the 48 kHz rate -- if not, it'll be the resampling, and 
-I'll probably need to bow out...
+For 1.0.13, everything compiled and linked fine after some minor changes. But when I called say snd_pcm_hw_params_get_rate(hw, &val, &dir), I was expecting the return value to be a status, and val to contain "44100" which was the case for 1.0.15. However for 1.0.13, val is 0, but returned status = 44100?
 
-Rene.
+I looked in the header files, and 1.0.13 seems to be the same as 1.0.15 in regards to this function. Am I accidentally using some sort of old API that was intended for backward compatibility? If so, what should I do to use the "new" API's?
+
+Thanks,
+Ben
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
