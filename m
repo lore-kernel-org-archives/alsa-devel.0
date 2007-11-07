@@ -1,19 +1,17 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
-Subject: Re: Mr. Takashi Iwai Help-me please
-Date: Tue, 6 Nov 2007 22:12:10 -0200
-Message-ID: <5f52f6d70711061612q3f3b252fjb999e4106ad60193@mail.gmail.com>
-References: <002701c8209f$8994d320$6700a8c0@sisprof.com.br>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: Audio quality issues with dmix plugin
+Date: Wed, 07 Nov 2007 01:29:27 +0100
+Message-ID: <473106E7.9050601@keyaccess.nl>
+References: <61445c750711060016y1755bd74l87cdc39718b5d226@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 38AA724341
-	for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2007 01:12:13 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so1471999rvb
-	for <alsa-devel@alsa-project.org>; Tue, 06 Nov 2007 16:12:11 -0800 (PST)
-In-Reply-To: <002701c8209f$8994d320$6700a8c0@sisprof.com.br>
-Content-Disposition: inline
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C6922436A
+	for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2007 01:33:21 +0100 (CET)
+In-Reply-To: <61445c750711060016y1755bd74l87cdc39718b5d226@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eduardo <pinedu@uol.com.br>
+To: "Pharaoh ." <pharaoh137@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/6/07, Eduardo <pinedu@uol.com.br> wrote:
+On 06-11-07 09:16, Pharaoh . wrote:
 
-> This is a Philips Microsystem with a USB port
-> This USB periferic need a special boot sequence, i debug this sequence in the linux kernel and the default boot for "usbaudio.c" don't solve the problem.
+> When I play a 44Khz file without using any ALSA plugin like
+> 
+> #aplay -Dhw:0,0 44k.wav
+> 
+> the sound quality is awesome but when I play the same file using dmix,
+> clicks are introduced.
+> 
+> #aplay -Dplug:dmix 44k.wav
+> 
+> changing period size and buffer size doesn't help. I am testing my ALSA
+> driver on an OMAP850
+> based board.
 
-If this is a reasonably regular USB Audio device, it could be a matter
-of adding a quirk handler to the driver. However, from what Philips
-says, it does much more than standard audio streaming with things like
-remote control and mp3 uploading. I have a synth that switches from
-USB storage to MIDI using a button in the panel, but I don't know if
-you system does something similar.
+dmix does 48 kHz by default. Does it sound "awesome" when you play a 48 kHz 
+file directly to hw:0,0? If that also clicks, the problem will be your 
+driver's handling of the 48 kHz rate -- if not, it'll be the resampling, and 
+I'll probably need to bow out...
+
+Rene.
