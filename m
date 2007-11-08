@@ -1,19 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: Audio quality issues with dmix plugin
-Date: Wed, 07 Nov 2007 23:03:04 +0100
-Message-ID: <47323618.7090602@keyaccess.nl>
-References: <61445c750711060016y1755bd74l87cdc39718b5d226@mail.gmail.com>	
-	<473106E7.9050601@keyaccess.nl>
-	<61445c750711070049hf2d0f10r1acaccd6b1e2a928@mail.gmail.com>
+From: Ben C <bchang_2@yahoo.com>
+Subject: Re: snd_pcm_hw_params_get_xxx question
+Date: Wed, 7 Nov 2007 16:16:48 -0800 (PST)
+Message-ID: <453252.40402.qm@web36512.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id A695F24660
-	for <alsa-devel@alsa-project.org>; Wed,  7 Nov 2007 23:07:02 +0100 (CET)
-In-Reply-To: <61445c750711070049hf2d0f10r1acaccd6b1e2a928@mail.gmail.com>
+Received: from web36512.mail.mud.yahoo.com (web36512.mail.mud.yahoo.com
+	[209.191.85.12]) by alsa0.perex.cz (Postfix) with SMTP id C2C67246E0
+	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 01:16:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +18,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07-11-07 09:49, Pharaoh . wrote:
+Takashi,
 
-> I changed alsa.conf so that dmix does 44.1kHz and tried, without dmix
-> 44.1 and 48kHz files sound 'awesome' but with dmix some clicks appear
-> at both the rates. Going ahead, I recorded a 8Khz mono sound using my
-> driver and played it back without dmix, it plays without any clicks,
-> but use dmix and clicks appear. So basically,
-> clicks appear at all the sample rates with dmix and without it I could
-> play all the sample rate files well since my hw supports hw
-> upsampling.
+You were right, it was a linking issue. I'm doing cross-compiling for a target of different processor type. I just had to make sure I'm pointing to the right location for the includes and libs.
 
-Okay -- I don't even use dmix, so will defer to someone else. If there's 
-anything special about your driver/hardware such as non-interleaved PCM 
-and/or endianness conversions this is probably the time to say so...
+Thanks,
+Ben
 
-Rene.
+----- Original Message ----
+From: Takashi Iwai <tiwai@suse.de>
+To: Ben C <bchang_2@yahoo.com>
+Cc: alsa-devel@alsa-project.org
+Sent: Wednesday, November 7, 2007 4:24:04 AM
+Subject: Re: [alsa-devel] snd_pcm_hw_params_get_xxx question
+
+
+At Tue, 6 Nov 2007 18:21:01 -0800 (PST),
+Ben C wrote:
+> 
+> Hello,
+> 
+> I'm trying to develop an external PCM plugin. I'm calling
+ snd_pcm_hw_params_get_xxx functions to retrieve some values. I got everything to
+ work as expected on alsa-lib 1.0.15. However the client's setup is
+ 1.0.13, and I don't think they want to upgrade.
+> 
+> For 1.0.13, everything compiled and linked fine after some minor
+ changes. But when I called say snd_pcm_hw_params_get_rate(hw, &val, &dir),
+ I was expecting the return value to be a status, and val to contain
+ "44100" which was the case for 1.0.15. However for 1.0.13, val is 0, but
+ returned status = 44100?
+> 
+> I looked in the header files, and 1.0.13 seems to be the same as
+ 1.0.15 in regards to this function. Am I accidentally using some sort of
+ old API that was intended for backward compatibility? If so, what should
+ I do to use the "new" API's?
+
+Yes, it sounds like you're accessing the old API.  Do you use
+libasound from a module?  If it's used from a module, the module
+itself should be built once with link to libasound.  For example,
+    $(CC) -shared -o MODULE.so -lasound
+In such a way, the properly versioned symbol is chosen.  The weak link
+results in the old API.  This is irrelveant whether it's ALSA 1.0.13
+or 1.0.15.
+
+
+Takashi
+
+
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
