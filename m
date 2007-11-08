@@ -1,15 +1,22 @@
-From: Mike Gorse <mgorse@mgorse.dhs.org>
-Subject: issues with pulse plugin
-Date: Thu, 8 Nov 2007 17:21:20 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0711081709350.19354@mgorse.dhs.org>
+From: Timur Tabi <timur@freescale.com>
+Subject: User-space OSS emulation?
+Date: Thu, 08 Nov 2007 16:33:33 -0600
+Message-ID: <47338EBD.2000206@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from QMTA05.westchester.pa.mail.comcast.net
-	(qmta05.westchester.pa.mail.comcast.net [76.96.62.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 23CBE243C8
-	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 23:22:48 +0100 (CET)
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90F36243E2
+	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 23:33:36 +0100 (CET)
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by de01egw01.freescale.net (8.12.11/de01egw01) with ESMTP id
+	lA8MXYFr000538
+	for <alsa-devel@alsa-project.org>; Thu, 8 Nov 2007 15:33:34 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id lA8MXXMQ005311
+	for <alsa-devel@alsa-project.org>; Thu, 8 Nov 2007 16:33:33 -0600 (CST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +29,10 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have run into what is basically another instance of bug 3470 
-(pulse_hw_params asserting because the stream is already initialized). 
-The application that I am working with is calling snd_pcm_hw_params each 
-time it plays a sample.  The following patch makes things work for me 
-(actually the app still doesn't work because it uses poll() in a way that 
-is incompatible with the pulse plugin, but that is a separate issue, and I 
-don't know if it should be considered a bug in the plugin.)
+Can someone tell me more about "user-space OSS emulation"?  I've read a few 
+references to it in the mailing list archives, but a google search doesn't turn 
+up anything useful.
 
---- pulse/pcm_pulse.c.orig	2007-11-08 15:13:12.000000000 -0500
-+++ pulse/pcm_pulse.c	2007-11-08 15:13:12.000000000 -0500
-@@ -497,7 +497,7 @@
-      assert(pcm->p);
-
-      //Resolving bugtrack ID 0003470
--    if(!(base && snd_pcm_state(base) == SND_PCM_STATE_PREPARED))
-+    if(!(base && (snd_pcm_state(base) == SND_PCM_STATE_PREPARED || snd_pcm_state(base) == SND_PCM_STATE_SETUP)))
-      	assert(!pcm->stream);
-
-      pa_threaded_mainloop_lock(pcm->p->mainloop);
-
---
-
-I couldn't add this to the bug because it was marked as resolved.
-
-Any comments?  Or is the app behaving in a way that is counter to the 
-specification?
-
-Also, I'm still encountering bug 2601 (a separate assert failure that 
-happens if period_size == 0) even with the patch to pcm_ioplug.c.  I think 
-that PERIOD_TIME and PERIODS need to be constrained; I added a couple of 
-comments to the bug.
-
-Thanks,
-
--- Mike Gorse / AIM:linvortex / http://mgorse.freeshell.org --
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
