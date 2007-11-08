@@ -1,19 +1,33 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: Re: [PATCH] US-122L Driver, v0
-Date: Thu, 8 Nov 2007 13:37:05 +0100
-Message-ID: <200711081337.05417.fzu@wemgehoertderstaat.de>
-References: <200711071641.28551.fzu@wemgehoertderstaat.de>
-	<200711071955.16686.fzu@wemgehoertderstaat.de>
-	<1194506689.14959.1220188671@webmail.messagingengine.com>
+From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
+Subject: Re: underruns and strange code in pcm_rate.c (and
+	patch)
+Date: Thu, 08 Nov 2007 19:10:17 +0500
+Message-ID: <473318C9.1070804@ums.usu.ru>
+References: <472E5A64.6010705@aknet.ru> <s5hy7dbvcgf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout2.freenet.de (mout2.freenet.de [195.4.92.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3B0C248A6
-	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 13:37:08 +0100 (CET)
-In-Reply-To: <1194506689.14959.1220188671@webmail.messagingengine.com>
-Content-Disposition: inline
+Received: from relay4.usu.ru (relay4.usu.ru [194.226.235.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4502B248D9
+	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 15:10:34 +0100 (CET)
+Received: from relay4.usu.ru (localhost [127.0.0.1])
+	by relay4.usu.ru (PostSystem) with ESMTP id 02A4817F2B
+	for <alsa-devel@alsa-project.org>;
+	Thu,  8 Nov 2007 19:10:37 +0500 (YEKT)
+Received: from usu2.usu.ru (usu2.usu.ru [194.226.237.16])
+	by relay4.usu.ru (PostSystem) with ESMTP id 8D76E17F2B
+	for <alsa-devel@alsa-project.org>;
+	Thu,  8 Nov 2007 19:10:36 +0500 (YEKT)
+Received: from usu2.usu.ru (localhost.usu2.usu.ru [127.0.0.1])
+	by usu2.usu.ru (Postfix) with ESMTP id 58622A7ECB
+	for <alsa-devel@alsa-project.org>;
+	Thu,  8 Nov 2007 19:10:30 +0500 (YEKT)
+Received: from ums.usu.ru (ums.usu.ru [194.226.236.116])
+	by usu2.usu.ru (Postfix) with ESMTP id 0BE3CA7EB0
+	for <alsa-devel@alsa-project.org>;
+	Thu,  8 Nov 2007 19:10:25 +0500 (YEKT)
+In-Reply-To: <s5hy7dbvcgf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +37,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Donnerstag, 8. November 2007 schrieb Clemens Ladisch:
->  
-> Why not put it together with the other QUIRK_MIDI_ symbols?
-> 
-> >  		break;
-> > +	case QUIRK_MIDI_US122L:
-> > +		umidi->usb_protocol_ops = &snd_usbmidi_122l_ops;
-> >  	case QUIRK_MIDI_FIXED_ENDPOINT:
-> >  		memcpy(&endpoints[0], quirk->data,
-> >  		       sizeof(struct snd_usb_midi_endpoint_info));
-> 
-> Aaargh!  If you really want to do it this way, at least add a
-> "/* fall through */" so that it's obvious that this is not a mistake.
+Takashi Iwai wrote:
 
-Done here, will post again.
+> The problem is that the hardware is woken up only at the period size
+> of the slave side.  Assume the slave (hardware playback) is running
+> 48kHz and the client (input) is 44.1kHz.  When dmix is used, usually
+> the period size = 1024 in the h/w side.  Then the period size of the
+> client side is supposed to be 940.
+> Here, note that 940 != 1024 * 44.1 / 48.0 exactly.  This rounding
+> causes the drift of wake-up time at each period and the delay is
+> accumulated.
 
-I'd like you to try the
-  "ehci-hcd: complete iso urbs ASAP for number_of_packets != (n * 8) also"
-  http://marc.info/?l=linux-usb-devel&m=119444869917392&w=2
-with snd-usb-audio.
+Let me propose a solution: let the "rate" plugin return a rate slightly 
+different from the requested one, adjusted based on the period size, so that the 
+mismatch and rounding error doesn't happen (i.e.: use 44062 Hz instead of 44100 
+in calculations of pointer positions in the above example, and resample the 
+client data from that rate instead of exact 44100). This would not be a 
+regression anyway, as there are cards (e.g., ens1371) that can do 48 kHz only 
+approximately.
 
-snd-usb-audio uses number_of_packets equalling multiples of 8 currently
-when transfering over USB 2.0, no?
-If so, with above patch that "multiples of 8"-thing could go away and
-snd-usb-audio could achieve up to 8 times less userspace-activation-jitter
-in low latency setups like 128 frames/period, 2 periods.
-
-thanks,
-      Karsten
+-- 
+Alexander E. Patrakov
