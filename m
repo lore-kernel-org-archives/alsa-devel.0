@@ -1,22 +1,29 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: Audio quality issues with dmix plugin
-Date: Thu, 8 Nov 2007 12:19:16 +0530
-Message-ID: <61445c750711072249k1a961cecj76cfe9edb077ade@mail.gmail.com>
-References: <61445c750711060016y1755bd74l87cdc39718b5d226@mail.gmail.com>
-	<473106E7.9050601@keyaccess.nl>
-	<61445c750711070049hf2d0f10r1acaccd6b1e2a928@mail.gmail.com>
-	<47323618.7090602@keyaccess.nl>
+From: zhejiang <zhe.jiang@intel.com>
+Subject: Re: patch for Dell 1210 which using stac9221 codec
+Date: Thu, 08 Nov 2007 15:06:22 +0800
+Message-ID: <1194505582.3953.3.camel@localhost.localdomain>
+References: <1192675756.3701.30.camel@localhost.localdomain>
+	<s5hve94zd3a.wl%tiwai@suse.de>
+	<1192773763.4306.31.camel@localhost.localdomain>
+	<s5hejfrekan.wl%tiwai@suse.de>
+	<1192779729.4628.5.camel@localhost.localdomain>
+	<s5hk5pjzefs.wl%tiwai@suse.de>
+	<1193033299.26715.34.camel@localhost.localdomain>
+	<s5hr6jmryaf.wl%tiwai@suse.de>
+	<1193298282.3459.18.camel@localhost.localdomain>
+	<s5hmyu7blzv.wl%tiwai@suse.de>
+	<1193735155.4414.7.camel@localhost.localdomain>
+	<s5hir4opv2p.wl%tiwai@suse.de>
+	<1193820584.3274.16.camel@localhost.localdomain>
+	<s5hve8noey5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 41FFF247CF
-	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 07:49:19 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id m33so104842wag
-	for <alsa-devel@alsa-project.org>; Wed, 07 Nov 2007 22:49:17 -0800 (PST)
-In-Reply-To: <47323618.7090602@keyaccess.nl>
-Content-Disposition: inline
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6D32A247C6
+	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 08:09:28 +0100 (CET)
+In-Reply-To: <s5hve8noey5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +33,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 8, 2007 3:33 AM, Rene Herman <rene.herman@keyaccess.nl> wrote:
+Hi,Takashi:
 
-> On 07-11-07 09:49, Pharaoh . wrote:
->
-> > I changed alsa.conf so that dmix does 44.1kHz and tried, without dmix
-> > 44.1 and 48kHz files sound 'awesome' but with dmix some clicks appear
-> > at both the rates. Going ahead, I recorded a 8Khz mono sound using my
-> > driver and played it back without dmix, it plays without any clicks,
-> > but use dmix and clicks appear. So basically,
-> > clicks appear at all the sample rates with dmix and without it I could
-> > play all the sample rate files well since my hw supports hw
-> > upsampling.
->
-> Okay -- I don't even use dmix, so will defer to someone else. If there's
-> anything special about your driver/hardware such as non-interleaved PCM
-> and/or endianness conversions this is probably the time to say so...
->
-> Rene.
->
-No issues as endianness or non-interleaved pcm.
+Is there any new states about this patch?
+Maybe I can ask the reporter to help to test it.
+
+Thanks!
+
+
+On Wed, 2007-10-31 at 16:39 +0800, Takashi Iwai wrote:
+> At Wed, 31 Oct 2007 16:49:44 +0800,
+> zhejiang wrote:
+> >
+> > On Tue, 2007-10-30 at 14:53 +0100, Takashi Iwai wrote:
+> > > At Tue, 30 Oct 2007 17:05:55 +0800,
+> > > zhejiang wrote:
+> > > >
+> > > > The stac92xx_auto_create_multi_out_ctls() create controls
+> according to
+> > > > cfg->line_outs. This patch seems to leave the cfg->line_outs
+> unchanged.
+> > > > It will be 1 . So I think that we need to modify
+> > > > stac92xx_auto_create_multi_out_ctls(),let it to use the right
+> line_outs.
+> > >
+> > > Right, then it might be actually easier to swap line_outs and
+> hp_outs
+> > > before and after as you suggested...
+> > >
+> > >
+> > > Takashi
+> >
+> > So,we should patch the patch_sigmatel.c like that?
+> 
+> Yes, that's what I meant (almost same change I did in my local tree :)
+> I'm going to split this to two pieces, the change of m82 pin config
+> and the hack for multi-HP outs (also my last change to autocfg
+> parser).
+> 
+> Anyway, could you give your sign-off?  Then I'll apply the patches to
+> the HG tree for better testing.
+> 
+> 
+> Thanks,
+> 
+> Takashi
+> 
+> >
+> > Thanks!
+> >
+> > diff -Nur
+> a/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
+> > b/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
+> > --- a/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
+> > 2007-10-23 08:00:10.000000000 +0800
+> > +++ b/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
+> > 2007-10-31 16:15:38.000000000 +0800
+> > @@ -884,8 +884,8 @@
+> >      102801D7 (Dell XPS M1210)
+> >  */
+> >  static unsigned int dell_922x_m82_pin_configs[10] = {
+> > -     0x0221121f, 0x408103ff, 0x02111212, 0x90100310,
+> > -     0x408003f1, 0x02111211, 0x03451340, 0x40c003f2,
+> > +     0x02211211, 0x408103ff, 0x02a1123e, 0x90100310,
+> > +     0x408003f1, 0x0221121f, 0x03451340, 0x40c003f2,
+> >       0x508003f3, 0x405003f4,
+> >  };
+> > 
+> > @@ -2088,6 +2088,7 @@
+> >  {
+> >       struct sigmatel_spec *spec = codec->spec;
+> >       int err;
+> > +     int hp_speaker_swap = 0;
+> > 
+> >       if ((err = snd_hda_parse_pin_def_config(codec,
+> >                                               &spec->autocfg,
+> > @@ -2096,6 +2097,18 @@
+> >       if (! spec->autocfg.line_outs)
+> >               return 0; /* can't find valid pin config */
+> > 
+> > +     if (spec->autocfg.line_out_type == AUTO_PIN_SPEAKER_OUT &&
+> > +        spec->autocfg.hp_outs > 1) {
+> > +             /*Copy hp_outs to line_outs, backup line_outs in
+> speaker_outs*/
+> > +             memcpy(spec->autocfg.speaker_pins,
+> spec->autocfg.line_out_pins,
+> > +                            sizeof(spec->autocfg.line_out_pins));
+> > +             spec->autocfg.speaker_outs = spec->autocfg.line_outs;
+> > +             memcpy(spec->autocfg.line_out_pins,
+> spec->autocfg.hp_pins,
+> > +                            sizeof(spec->autocfg.hp_pins));
+> > +             spec->autocfg.line_outs = spec->autocfg.hp_outs;
+> > +             hp_speaker_swap = 1;
+> > +     }
+> > +
+> >       if ((err = stac92xx_add_dyn_out_pins(codec, &spec->autocfg)) <
+> 0)
+> >               return err;
+> >       if (spec->multiout.num_dacs == 0)
+> > @@ -2107,6 +2120,18 @@
+> >       if (err < 0)
+> >               return err;
+> > 
+> > +     if (hp_speaker_swap == 1) {
+> > +             /*Restore the hp_outs and line_outs*/
+> > +             memcpy(spec->autocfg.hp_pins,
+> spec->autocfg.line_out_pins,
+> > +                            sizeof(spec->autocfg.line_out_pins));
+> > +             spec->autocfg.hp_outs = spec->autocfg.line_outs;
+> > +             memcpy(spec->autocfg.line_out_pins,
+> spec->autocfg.speaker_pins,
+> > +                            sizeof(spec->autocfg.speaker_pins));
+> > +             spec->autocfg.line_outs = spec->autocfg.speaker_outs;
+> > +             memset(spec->autocfg.speaker_pins, 0,
+> > sizeof(spec->autocfg.speaker_pins));
+> > +             spec->autocfg.speaker_outs = 0;
+> > +     }
+> > +
+> >       err = stac92xx_auto_create_hp_ctls(codec, &spec->autocfg);
+> > 
+> >       if (err < 0)
+> >
+> 
+> 
