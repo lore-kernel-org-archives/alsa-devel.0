@@ -1,18 +1,15 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: underruns and strange code in pcm_rate.c
-	(and	patch)
-Date: Thu, 08 Nov 2007 16:01:46 -0600
-Message-ID: <4733874A.6080405@freescale.com>
-References: <472E5A64.6010705@aknet.ru> <47336C37.7070801@freescale.com>
+From: Mike Gorse <mgorse@mgorse.dhs.org>
+Subject: issues with pulse plugin
+Date: Thu, 8 Nov 2007 17:21:20 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0711081709350.19354@mgorse.dhs.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id E77FD243E3
-	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 23:02:13 +0100 (CET)
-In-Reply-To: <47336C37.7070801@freescale.com>
+Received: from QMTA05.westchester.pa.mail.comcast.net
+	(qmta05.westchester.pa.mail.comcast.net [76.96.62.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 23CBE243C8
+	for <alsa-devel@alsa-project.org>; Thu,  8 Nov 2007 23:22:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stas Sergeev <stsp@aknet.ru>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
+I have run into what is basically another instance of bug 3470 
+(pulse_hw_params asserting because the stream is already initialized). 
+The application that I am working with is calling snd_pcm_hw_params each 
+time it plays a sample.  The following patch makes things work for me 
+(actually the app still doesn't work because it uses poll() in a way that 
+is incompatible with the pulse plugin, but that is a separate issue, and I 
+don't know if it should be considered a bug in the plugin.)
 
-> I think I'm seeing the same problem.  When I play certain video files with 
-> mplayer and "-ao oss", the video plays much faster than normal, the audio cuts 
-> out, and my audio driver gets called the STOP command at the end of a period.
+--- pulse/pcm_pulse.c.orig	2007-11-08 15:13:12.000000000 -0500
++++ pulse/pcm_pulse.c	2007-11-08 15:13:12.000000000 -0500
+@@ -497,7 +497,7 @@
+      assert(pcm->p);
 
-Update: when I tell mplayer to set the sample rate to 48000, the problem appears 
-to go away completely.  So it looks like sample rate conversion and OSS don't 
-work well together.
+      //Resolving bugtrack ID 0003470
+-    if(!(base && snd_pcm_state(base) == SND_PCM_STATE_PREPARED))
++    if(!(base && (snd_pcm_state(base) == SND_PCM_STATE_PREPARED || snd_pcm_state(base) == SND_PCM_STATE_SETUP)))
+      	assert(!pcm->stream);
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+      pa_threaded_mainloop_lock(pcm->p->mainloop);
+
+--
+
+I couldn't add this to the bug because it was marked as resolved.
+
+Any comments?  Or is the app behaving in a way that is counter to the 
+specification?
+
+Also, I'm still encountering bug 2601 (a separate assert failure that 
+happens if period_size == 0) even with the patch to pcm_ioplug.c.  I think 
+that PERIOD_TIME and PERIODS need to be constrained; I added a couple of 
+comments to the bug.
+
+Thanks,
+
+-- Mike Gorse / AIM:linvortex / http://mgorse.freeshell.org --
