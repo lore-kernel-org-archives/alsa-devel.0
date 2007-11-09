@@ -1,31 +1,17 @@
-From: zhejiang <zhe.jiang@intel.com>
-Subject: Re: patch for Dell 1210 which using stac9221 codec
-Date: Fri, 09 Nov 2007 12:53:50 +0800
-Message-ID: <1194584030.6623.8.camel@localhost.localdomain>
-References: <1192675756.3701.30.camel@localhost.localdomain>
-	<s5hve94zd3a.wl%tiwai@suse.de>
-	<1192773763.4306.31.camel@localhost.localdomain>
-	<s5hejfrekan.wl%tiwai@suse.de>
-	<1192779729.4628.5.camel@localhost.localdomain>
-	<s5hk5pjzefs.wl%tiwai@suse.de>
-	<1193033299.26715.34.camel@localhost.localdomain>
-	<s5hr6jmryaf.wl%tiwai@suse.de>
-	<1193298282.3459.18.camel@localhost.localdomain>
-	<s5hmyu7blzv.wl%tiwai@suse.de>
-	<1193735155.4414.7.camel@localhost.localdomain>
-	<s5hir4opv2p.wl%tiwai@suse.de>
-	<1193820584.3274.16.camel@localhost.localdomain>
-	<s5hve8noey5.wl%tiwai@suse.de>
-	<1194505582.3953.3.camel@localhost.localdomain>
-	<s5hode59wax.wl%tiwai@suse.de>
+From: Sean McNamara <smcnam@gmail.com>
+Subject: Re: User-space OSS emulation?
+Date: Fri, 09 Nov 2007 00:19:09 -0500
+Message-ID: <4733EDCD.6000205@gmail.com>
+References: <47338EBD.2000206@freescale.com>	<75b66ecd0711081436g4b43cf5dl87114fa760e7b7b3@mail.gmail.com>	<47338FF3.2030005@freescale.com>
+	<75b66ecd0711081458u556c2600o42f328c147aca714@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90C4D24652
-	for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2007 05:54:20 +0100 (CET)
-In-Reply-To: <s5hode59wax.wl%tiwai@suse.de>
+Received: from md0.mail.umd.edu (md0.mail.umd.edu [128.8.31.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1AFF24685
+	for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2007 06:19:06 +0100 (CET)
+In-Reply-To: <75b66ecd0711081458u556c2600o42f328c147aca714@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,166 +21,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-11-08 at 05:48 +0100, Takashi Iwai wrote:
-> At Thu, 08 Nov 2007 15:06:22 +0800,
-> zhejiang wrote:
-> > 
-> > Hi,Takashi:
-> > 
-> > Is there any new states about this patch?
-> > Maybe I can ask the reporter to help to test it.
-> 
-> Your patch looks almost fine, but I need your sign-off to merge to the
-> upstream (as it's no trivial fix).  Give the following explicitly to
-> agree the general patch management (see
-> $LINUX_KERNEL/Documentation/SubmittingPatches for details).
-> 
-Thanks!
-Here is my sign-off:
+Lee Revell wrote:
+> On Nov 8, 2007 5:38 PM, Timur Tabi <timur@freescale.com> wrote:
+>   
+>> Lee Revell wrote:
+>>
+>>     
+>>> Basically it uses LD_PRELOAD to redirect OSS API calls (ioctls) to the
+>>> alsa-lib equivalents.  man aoss for details on usage.
+>>>       
+>> I don't have it installed, that's why I'm asking about it.  I can't seem to find
+>> the "aoss" web page, if there is one.
+>>     
+>
+> Google "aoss alsa".
+>
+> http://alsa.opensrc.org/Aoss
+>
+> Lee
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>   
+Hi,
 
+The Linspire/Freespire team has been working on a different approach to 
+this problem. They have a kernel module called "forward-oss" (and 
+accompanying userspace daemon, "forward") which is, in certain ways, 
+less hackish (and in certain ways _more_ hackish ;)) than aoss.
 
-Signed-off-by: Jiang Zhe <zhe.jiang@intel.com>
+1. It doesn't use LD_PRELOAD. Many apps are incompatible with LD_PRELOAD 
+if, for example, they already use it themselves, or they're setuid.
+2. It's an alternative to aoss. If aoss doesn't work with an app, 
+forward-oss may be worth a try.
+3. forward-oss was written in 2006/early-to-mid 07. But last I tried, 
+forward-oss still compiles on very recent Debian kernels - 2.6.22 and 
+2.6.23 - including non-Linspire kernels. No idea about vanilla or other 
+distro-specific kernels.
+4. It exposes a "real" /dev/dsp device for each ALSA soundcard, e.g. 
+/dev/dsp1, /dev/dsp2, etc. No syscall interception is necessary.
+5. The userspace daemon calls back into your alsa-lib stack, using the 
+plugin layer for mixing or multiple channels or whatever you want. So in 
+that sense, it has the same advantage as aoss, while both forward-oss 
+and aoss differ from the standard ALSA in-kernel OSS emulation in this 
+regard (snd_pcm_oss). snd_pcm_oss interfaces directly with the kernel 
+stack, rather than looping back through the user's plugin chain (AFAIK, 
+this is impossible without using a daemon like Linspire has done). So, 
+if you have no hardware mixing, snd_pcm_oss either hogs the soundcard or 
+fails to function while other apps are using ALSA.
+6. For compatibility's sake with as many different environments as 
+possible, it seems forward-oss has an advantage over LD_PRELOAD methods 
+(i.e. it doesn't need to use LD_PRELOAD at all).
+7. It's asking a lot more of the user to have a working kernel build 
+environment, and proper privileges, to install forward-oss. So 
+installation is less flexible than aoss, in a sense.
+8. More stuff in the kernel = higher probability of 
+conflicts/panics/oopses... you know the drill.
 
-> So far, three patches are pending:
-> 
-> - fix for pincfg
-> - hack to swap hp and line-outs at probe
-> - fix for speaker-off via mic-jack plug (which I'd need a bit more
->   review, though)
-> 
-> Of course, the test of the patch with the original reporter is
-> important.
-> 
+Also, if you've ever used any sound servers, almost all of them come 
+with their own ugly duckling LD_PRELOAD hack: padsp for PulseAudio, 
+esddsp (?) for eSounD, artsdsp for aRts, etc. All of them basically work 
+with about 20% of all OSS applications ;) YMMV.
 
-I will ask the reporter to help to test the patch.
+Just thought I'd share some other ways I've found to bridge the 
+OSS<->ALSA gap, besides aoss and snd_pcm_oss...
 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
-> > 
-> > Thanks!
-> > 
-> > 
-> > On Wed, 2007-10-31 at 16:39 +0800, Takashi Iwai wrote:
-> > > At Wed, 31 Oct 2007 16:49:44 +0800,
-> > > zhejiang wrote:
-> > > >
-> > > > On Tue, 2007-10-30 at 14:53 +0100, Takashi Iwai wrote:
-> > > > > At Tue, 30 Oct 2007 17:05:55 +0800,
-> > > > > zhejiang wrote:
-> > > > > >
-> > > > > > The stac92xx_auto_create_multi_out_ctls() create controls
-> > > according to
-> > > > > > cfg->line_outs. This patch seems to leave the cfg->line_outs
-> > > unchanged.
-> > > > > > It will be 1 . So I think that we need to modify
-> > > > > > stac92xx_auto_create_multi_out_ctls(),let it to use the right
-> > > line_outs.
-> > > > >
-> > > > > Right, then it might be actually easier to swap line_outs and
-> > > hp_outs
-> > > > > before and after as you suggested...
-> > > > >
-> > > > >
-> > > > > Takashi
-> > > >
-> > > > So,we should patch the patch_sigmatel.c like that?
-> > > 
-> > > Yes, that's what I meant (almost same change I did in my local tree :)
-> > > I'm going to split this to two pieces, the change of m82 pin config
-> > > and the hack for multi-HP outs (also my last change to autocfg
-> > > parser).
-> > > 
-> > > Anyway, could you give your sign-off?  Then I'll apply the patches to
-> > > the HG tree for better testing.
-> > > 
-> > > 
-> > > Thanks,
-> > > 
-> > > Takashi
-> > > 
-> > > >
-> > > > Thanks!
-> > > >
-> > > > diff -Nur
-> > > a/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
-> > > > b/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
-> > > > --- a/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
-> > > > 2007-10-23 08:00:10.000000000 +0800
-> > > > +++ b/alsa-driver-hg20071031/alsa-kernel/pci/hda/patch_sigmatel.c
-> > > > 2007-10-31 16:15:38.000000000 +0800
-> > > > @@ -884,8 +884,8 @@
-> > > >      102801D7 (Dell XPS M1210)
-> > > >  */
-> > > >  static unsigned int dell_922x_m82_pin_configs[10] = {
-> > > > -     0x0221121f, 0x408103ff, 0x02111212, 0x90100310,
-> > > > -     0x408003f1, 0x02111211, 0x03451340, 0x40c003f2,
-> > > > +     0x02211211, 0x408103ff, 0x02a1123e, 0x90100310,
-> > > > +     0x408003f1, 0x0221121f, 0x03451340, 0x40c003f2,
-> > > >       0x508003f3, 0x405003f4,
-> > > >  };
-> > > > 
-> > > > @@ -2088,6 +2088,7 @@
-> > > >  {
-> > > >       struct sigmatel_spec *spec = codec->spec;
-> > > >       int err;
-> > > > +     int hp_speaker_swap = 0;
-> > > > 
-> > > >       if ((err = snd_hda_parse_pin_def_config(codec,
-> > > >                                               &spec->autocfg,
-> > > > @@ -2096,6 +2097,18 @@
-> > > >       if (! spec->autocfg.line_outs)
-> > > >               return 0; /* can't find valid pin config */
-> > > > 
-> > > > +     if (spec->autocfg.line_out_type == AUTO_PIN_SPEAKER_OUT &&
-> > > > +        spec->autocfg.hp_outs > 1) {
-> > > > +             /*Copy hp_outs to line_outs, backup line_outs in
-> > > speaker_outs*/
-> > > > +             memcpy(spec->autocfg.speaker_pins,
-> > > spec->autocfg.line_out_pins,
-> > > > +                            sizeof(spec->autocfg.line_out_pins));
-> > > > +             spec->autocfg.speaker_outs = spec->autocfg.line_outs;
-> > > > +             memcpy(spec->autocfg.line_out_pins,
-> > > spec->autocfg.hp_pins,
-> > > > +                            sizeof(spec->autocfg.hp_pins));
-> > > > +             spec->autocfg.line_outs = spec->autocfg.hp_outs;
-> > > > +             hp_speaker_swap = 1;
-> > > > +     }
-> > > > +
-> > > >       if ((err = stac92xx_add_dyn_out_pins(codec, &spec->autocfg)) <
-> > > 0)
-> > > >               return err;
-> > > >       if (spec->multiout.num_dacs == 0)
-> > > > @@ -2107,6 +2120,18 @@
-> > > >       if (err < 0)
-> > > >               return err;
-> > > > 
-> > > > +     if (hp_speaker_swap == 1) {
-> > > > +             /*Restore the hp_outs and line_outs*/
-> > > > +             memcpy(spec->autocfg.hp_pins,
-> > > spec->autocfg.line_out_pins,
-> > > > +                            sizeof(spec->autocfg.line_out_pins));
-> > > > +             spec->autocfg.hp_outs = spec->autocfg.line_outs;
-> > > > +             memcpy(spec->autocfg.line_out_pins,
-> > > spec->autocfg.speaker_pins,
-> > > > +                            sizeof(spec->autocfg.speaker_pins));
-> > > > +             spec->autocfg.line_outs = spec->autocfg.speaker_outs;
-> > > > +             memset(spec->autocfg.speaker_pins, 0,
-> > > > sizeof(spec->autocfg.speaker_pins));
-> > > > +             spec->autocfg.speaker_outs = 0;
-> > > > +     }
-> > > > +
-> > > >       err = stac92xx_auto_create_hp_ctls(codec, &spec->autocfg);
-> > > > 
-> > > >       if (err < 0)
-> > > >
-> > > 
-> > > 
-> > 
+-Sean
