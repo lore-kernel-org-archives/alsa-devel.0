@@ -1,21 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: underruns and strange code in pcm_rate.c
-Date: Fri, 09 Nov 2007 16:53:31 -0600
-Message-ID: <4734E4EB.90906@freescale.com>
-References: <472E5A64.6010705@aknet.ru>
-	<473488CA.7050308@freescale.com>		<4734A448.7000909@aknet.ru>
-	<4734BA93.6040900@freescale.com>		<4734BC5F.8040800@aknet.ru>
-	<4734BDD1.9080103@freescale.com>		<75b66ecd0711091211o9e1297em391d7091c5d51931@mail.gmail.com>		<4734C036.3060301@freescale.com>		<75b66ecd0711091230v64cbc822kb65c93709e1e8e81@mail.gmail.com>		<4734C402.1020004@freescale.com>	<75b66ecd0711091337m374f8b13ne4fae13818841502@mail.gmail.com>
-	<4734E4AF.3020809@aknet.ru>
+From: "Frederic Bouy" <frederic.bouy@gmail.com>
+Subject: I could maybe help for Creative Labs SB X-Fi
+	integration
+Date: Sat, 10 Nov 2007 12:24:53 +0800
+Message-ID: <8dc8ba5e0711092024j4f18267j218baa226a5b43ec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id CEC2D2432F
-	for <alsa-devel@alsa-project.org>; Fri,  9 Nov 2007 23:57:52 +0100 (CET)
-In-Reply-To: <4734E4AF.3020809@aknet.ru>
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id C2733245B1
+	for <alsa-devel@alsa-project.org>; Sat, 10 Nov 2007 05:24:54 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so515571rvb
+	for <alsa-devel@alsa-project.org>; Fri, 09 Nov 2007 20:24:53 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stas Sergeev <stsp@aknet.ru>
-Cc: alsa-devel@alsa-project.org, Lee Revell <rlrevell@joe-job.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Stas Sergeev wrote:
-> Hello.
-> 
-> Lee Revell wrote:
->>> Ok, now I'm confused.  Isn't this whole thread is about underrun problems with
->>> OSS?
->> Yes.
-> Any evidence of this?
+Hello everybody,
 
-I can only get an underrun if using OSS.
+I have just installed a distribution of Ubuntu (7.10 Gutsy Gibbon) on my
+computer. The issue is that my sound card is not working.
+According to your website, this is because my SB X-Fi is not yet supported
+by ALSA : "Card delivered to developers. Completely new architecture.
+Creative actively preventing support due to no datasheets being released to
+ALSA developers. Reverse engineering work not started due to lack of time."
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+I would like to know if there is a way for me to help you integrating this
+sound card.
+What can I do to help?
+
+Thanks.
+
+Fr=E9d=E9ric
