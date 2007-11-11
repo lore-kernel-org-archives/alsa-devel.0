@@ -1,17 +1,17 @@
-From: "Ivan N. Zlatev" <contact@i-nz.net>
-Subject: HDA Intel SigmaTel STAC9228 in Dell Vostro 1400
-	defines different pin nids
-Date: Sun, 11 Nov 2007 22:12:39 +0000
-Message-ID: <3db1ec7f0711111412k6a13154g53d7176c0d4c178c@mail.gmail.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: E-mu 1212M/1820M/1616M development
+Date: Sun, 11 Nov 2007 22:51:34 +0000
+Message-ID: <47378776.6050403@superbug.co.uk>
+References: <47376DE9.5000904@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_17322_28698336.1194819159144"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6917E24713
-	for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2007 23:12:41 +0100 (CET)
-Received: by nz-out-0506.google.com with SMTP id m22so656175nzf
-	for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2007 14:12:40 -0800 (PST)
+Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net
+	[194.217.242.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id 572CB2474C
+	for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2007 23:51:02 +0100 (CET)
+In-Reply-To: <47376DE9.5000904@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,291 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Ctirad Fertr <c.fertr@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_17322_28698336.1194819159144
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Ctirad Fertr wrote:
+> Hello,
+>
+> I just bought an 1616M PCMCIA in addition to my old 1212m v1 and want to 
+> help improve the current driver. I wrote one little patch for those 
+> cards in the past (and some bigger patches for my experiments which were 
+> never released) and now I have some time to continue.
+>
+> I'm going to add missing switches into mixer, make some changes in mixer 
+> to match the real I/O setup of each particular card model and perhaps 
+> also write some graphics patchmix like app.
+>   
+A graphics patchmix like app would be the most useful at the moment. It 
+would permit us to enable the 96kHz and 192kHz options, as for these 
+different DSP code needs to be loaded, and that is best left to userland.
 
-Hello,
+> Unfortunatelly, I'm unable to fix the most important bugs (at least from 
+> my point of view) dua to lack of documentation and knowlenge of DSP 
+> programming. These are:
+>
+> 1. non working 24bit playback. It should be on device 0,2 This device 
+> exists, but cannot be openned for playback.It is the last thing needed 
+> for serious DAW.
+>   
+I will look into this. Please raise a bug on alsa-project.org so we 
+don't forget this.
 
-I've bought a new laptop Dell Vostro 1400 with the following audio card:
-
-00:1b.0 Audio device [Class 0403]: Intel Corporation 82801H (ICH8
-Family) HD Audio Controller [8086:284b] (rev 02)
-
-and with the SigmaTel Codec:
-
-Codec: SigmaTel STAC9228
-Address: 0
-Vendor Id: 0x83847616
-Subsystem Id: 0x10280227
-Revision Id: 0x100201
-
-I was able to get sound to come out of the internal speakers by
-explicitly specifying either the 3stack or the dell-3stack models with
-alsa 1.0.14 . Unfortunately with neither of those does the internal
-microphone work.
-
-Now I am running ALSA HG and have decided to try and fix my problem by
-adding the proper pinconfig for my card (this is what I've done before
-for my Mac and it worked). I downloaded the win32 drivers which
-include all pinconfigs for all Dell machines with intel hda cards. The
-problem I am facing is that the win32 driver .ini provides a
-configuration for 13 pins which do not match the ones in
-patch_sigmatel.c . The ones in ALSA are:
-
-static hda_nid_t stac922x_pin_nids[10] = {
-	0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
-	0x0f, 0x10, 0x11, 0x15, 0x1b,
-};
-
-Where as the ones defined by the driver are [1]:
-0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x21, 0x22
-
-So I am wondering how should I approach this?
-
-I have attached my codec info and mixer output without the model to be
-specified.
-
-[1] win32 driver pinconfigs
-
-[HKR\Settings\pin]
-[HKR\Settings\Pin\0A]
-CfgDflt = dword: 0x02211210
-AltCfg = hex: 20,12,11,02
-Action = hex: 80,00,87,00,81,0D
-[HKR\Settings\Pin\0B]
-CfgDflt = dword: 0x400003FA
-[HKR\Settings\Pin\0C]
-CfgDflt = dword: 0x400003FB
-[HKR\Settings\Pin\0D]
-CfgDflt = dword: 0x90170310
-ExtAmpCtrl = hex: 02,05,02
-[HKR\Settings\Pin\0E]
-CfgDflt = dword: 0x0281103E
-Bias = hex: FF,04,02
-AltCfg = hex: 31,10,A1,02,22,10,11,02
-Action = hex: 0A,0E
-[HKR\Settings\Pin\0F]
-CfgDflt = dword: 0x0221122F
-AltCfg = hex: 21,12,11,02
-Action = hex: 80,00,87,00,81,0D
-[HKR\Settings\Pin\10]
-CfgDflt = dword: 0x400003FC
-[HKR\Settings\Pin\11]
-CfgDflt = dword: 0x400003FD
-[HKR\Settings\Pin\12]
-CfgDflt = dword: 0x400003FE
-[HKR\Settings\Pin\13]
-CfgDflt = dword: 0x90A60330
-[HKR\Settings\Pin\14]
-CfgDflt = dword: 0x400003FF
-[HKR\Settings\Pin\21]
-CfgDflt = dword: 0x04441340
-[HKR\Settings\Pin\22]
-CfgDflt = dword: 0x40C003F1
-[HKR\Settings\GPIO]
-02 					= hex: 0x82
-
-
--- 
-Ivan N. Zlatev
-
-Web: http://www.i-nZ.net
-"It's all some kind of whacked out conspiracy."
-
-------=_Part_17322_28698336.1194819159144
-Content-Type: application/octet-stream; name=codec0
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f8w3zm6x
-Content-Disposition: attachment; filename=codec0
-
-Q29kZWM6IFNpZ21hVGVsIFNUQUM5MjI4CkFkZHJlc3M6IDAKVmVuZG9yIElkOiAweDgzODQ3NjE2
-ClN1YnN5c3RlbSBJZDogMHgxMDI4MDIyNwpSZXZpc2lvbiBJZDogMHgxMDAyMDEKTm8gTW9kZW0g
-RnVuY3Rpb24gR3JvdXAgZm91bmQKRGVmYXVsdCBQQ006CiAgICByYXRlcyBbMHg3ZTBdOiA0NDEw
-MCA0ODAwMCA4ODIwMCA5NjAwMCAxNzY0MDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAy
-NAogICAgZm9ybWF0cyBbMHgxXTogUENNCkRlZmF1bHQgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBu
-c3RlcHM9MHgwZSwgc3RlcHNpemU9MHgwNSwgbXV0ZT0wCkRlZmF1bHQgQW1wLU91dCBjYXBzOiBv
-ZnM9MHg3ZiwgbnN0ZXBzPTB4N2YsIHN0ZXBzaXplPTB4MDIsIG11dGU9MQpOb2RlIDB4MDIgW0F1
-ZGlvIE91dHB1dF0gd2NhcHMgMHhkMGMwNTogU3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6
-IE4vQQogIEFtcC1PdXQgdmFsczogIFsweDdmIDB4N2ZdCiAgUG93ZXI6IDB4MApOb2RlIDB4MDMg
-W0F1ZGlvIE91dHB1dF0gd2NhcHMgMHhkMGMwNTogU3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0IGNh
-cHM6IE4vQQogIEFtcC1PdXQgdmFsczogIFsweGZmIDB4ZmZdCiAgUG93ZXI6IDB4MApOb2RlIDB4
-MDQgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHhkMGMwNTogU3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0
-IGNhcHM6IE4vQQogIEFtcC1PdXQgdmFsczogIFsweDdmIDB4N2ZdCiAgUG93ZXI6IDB4MApOb2Rl
-IDB4MDUgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHhkMGMwNTogU3RlcmVvIEFtcC1PdXQKICBBbXAt
-T3V0IGNhcHM6IE4vQQogIEFtcC1PdXQgdmFsczogIFsweDdmIDB4N2ZdCiAgUG93ZXI6IDB4MApO
-b2RlIDB4MDYgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmZDBjMDU6IFN0ZXJlbyBB
-bXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6ICBbMHhmZiAweGZmXQog
-IFBvd2VyOiAweDAKTm9kZSAweDA3IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxZDA1NDE6IFN0ZXJl
-bwogIFBvd2VyOiAweDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxYgpOb2RlIDB4MDggW0F1ZGlv
-IElucHV0XSB3Y2FwcyAweDFkMDU0MTogU3RlcmVvCiAgUG93ZXI6IDB4MAogIENvbm5lY3Rpb246
-IDEKICAgICAweDFjCk5vZGUgMHgwOSBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MWQwNTQxOiBTdGVy
-ZW8KICBQb3dlcjogMHgwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MWQKTm9kZSAweDBhIFtQaW4g
-Q29tcGxleF0gd2NhcHMgMHg0MDAxODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MTczZjogSU4gT1VU
-IEhQIERldGVjdAogIFBpbiBEZWZhdWx0IDB4MDIyMTEwMWY6IFtKYWNrXSBIUCBPdXQgYXQgRXh0
-IEZyb250CiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgRUFQRDogMHgwCiAgUGluLWN0
-bHM6IDB4YzA6IE9VVCBIUAogIENvbm5lY3Rpb246IDIKICAgICAweDAyKiAweDAzCk5vZGUgMHgw
-YiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMTgxOiBTdGVyZW8KICBQaW5jYXAgMHgwODE3M2Y6
-IElOIE9VVCBIUCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDQwZjAwMGYwOiBbTi9BXSBPdGhlciBh
-dCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6
-IDB4MDA6CiAgQ29ubmVjdGlvbjogMgogICAgIDB4MDIqIDB4MDMKTm9kZSAweDBjIFtQaW4gQ29t
-cGxleF0gd2NhcHMgMHg0MDAxODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MTczNzogSU4gT1VUIERl
-dGVjdAogIFBpbiBEZWZhdWx0IDB4NDBmMDAwZjE6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAg
-IENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICBQaW4tY3RsczogMHgwMDoKICBDb25u
-ZWN0aW9uOiAxCiAgICAgMHgwMwpOb2RlIDB4MGQgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4
-MTogU3RlcmVvCiAgUGluY2FwIDB4MDgxNzNmOiBJTiBPVVQgSFAgRGV0ZWN0CiAgUGluIERlZmF1
-bHQgMHg5MDE3MDExMDogW0ZpeGVkXSBTcGVha2VyIGF0IEludCBOL0EKICAgIENvbm4gPSBBbmFs
-b2csIENvbG9yID0gVW5rbm93bgogIEVBUEQ6IDB4MAogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBD
-b25uZWN0aW9uOiAxCiAgICAgMHgwMgpOb2RlIDB4MGUgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQw
-MDE4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgxNzM3OiBJTiBPVVQgRGV0ZWN0CiAgUGluIERlZmF1
-bHQgMHgwMjgxMTAzMDogW0phY2tdIExpbmUgSW4gYXQgRXh0IEZyb250CiAgICBDb25uID0gMS84
-LCBDb2xvciA9IEJsYWNrCiAgRUFQRDogMHgwCiAgUGluLWN0bHM6IDB4MjA6IElOCiAgQ29ubmVj
-dGlvbjogMQogICAgIDB4MDQKTm9kZSAweDBmIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxODE6
-IFN0ZXJlbwogIFBpbmNhcCAweDA4MTczNzogSU4gT1VUIERldGVjdAogIFBpbiBEZWZhdWx0IDB4
-MDIwMTEwMjA6IFtKYWNrXSBMaW5lIE91dCBhdCBFeHQgRnJvbnQKICAgIENvbm4gPSAxLzgsIENv
-bG9yID0gQmxhY2sKICBFQVBEOiAweDAKICBQaW4tY3RsczogMHg0MDogT1VUCiAgQ29ubmVjdGlv
-bjogMQogICAgIDB4MDUKTm9kZSAweDEwIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxODE6IFN0
-ZXJlbwogIFBpbmNhcCAweDA4Mzc6IElOIE9VVCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDQwZjAw
-MGYyOiBbTi9BXSBPdGhlciBhdCBFeHQgTi9BCiAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBV
-bmtub3duCiAgUGluLWN0bHM6IDB4MDA6CiAgQ29ubmVjdGlvbjogMQogICAgIDB4MDQKTm9kZSAw
-eDExIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4Mzc6
-IElOIE9VVCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDQwZjAwMGYzOiBbTi9BXSBPdGhlciBhdCBF
-eHQgTi9BCiAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgUGluLWN0bHM6IDB4
-MDA6CiAgQ29ubmVjdGlvbjogMQogICAgIDB4MDMKTm9kZSAweDEyIFtQaW4gQ29tcGxleF0gd2Nh
-cHMgMHg0MDAwMDE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MjA6IElOCiAgUGluIERlZmF1bHQgMHg0
-MGYwMDBmNDogW04vQV0gT3RoZXIgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9y
-ID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDAwOgpOb2RlIDB4MTMgW1BpbiBDb21wbGV4XSB3Y2Fw
-cyAweDQwMDAwMTogU3RlcmVvCiAgUGluY2FwIDB4MDgyMDogSU4KICBQaW4gRGVmYXVsdCAweDkw
-YTYwMDQwOiBbRml4ZWRdIE1pYyBhdCBJbnQgTi9BCiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3Ig
-PSBVbmtub3duCiAgUGluLWN0bHM6IDB4MjA6IElOCk5vZGUgMHgxNCBbUGluIENvbXBsZXhdIHdj
-YXBzIDB4NDAwMDAxOiBTdGVyZW8KICBQaW5jYXAgMHgwODIwOiBJTgogIFBpbiBEZWZhdWx0IDB4
-NDBmMDAwZjU6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBDb2xv
-ciA9IFVua25vd24KICBQaW4tY3RsczogMHgwMDoKTm9kZSAweDE1IFtBdWRpbyBTZWxlY3Rvcl0g
-d2NhcHMgMHgzMDAxMGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwg
-bnN0ZXBzPTB4MDQsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1PdXQgdmFsczogIFsweDAw
-IDB4MDBdCiAgQ29ubmVjdGlvbjogOQogICAgIDB4MGUqIDB4MTIgMHgwZiAweDBiIDB4MGMgMHgw
-ZCAweDBhIDB4MTAgMHgxMQpOb2RlIDB4MTYgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDEw
-ZDogU3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwNCwg
-c3RlcHNpemU9MHgyNywgbXV0ZT0wCiAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KICBDb25u
-ZWN0aW9uOiA5CiAgICAgMHgwZSogMHgxMiAweDBmIDB4MGIgMHgwYyAweDBkIDB4MGEgMHgxMCAw
-eDExCk5vZGUgMHgxNyBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwMTBkOiBTdGVyZW8gQW1w
-LU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDA0LCBzdGVwc2l6ZT0weDI3
-LCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHgwMCAweDAwXQogIENvbm5lY3Rpb246IDkKICAg
-ICAweDBlKiAweDEyIDB4MGYgMHgwYiAweDBjIDB4MGQgMHgwYSAweDEwIDB4MTEKTm9kZSAweDE4
-IFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMDM6IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4g
-Y2FwczogTi9BCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXQogIENvbm5lY3Rpb246IDEKICAg
-ICAweDE1Ck5vZGUgMHgxOSBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwMTAzOiBTdGVyZW8g
-QW1wLUluCiAgQW1wLUluIGNhcHM6IE4vQQogIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0KICBD
-b25uZWN0aW9uOiAxCiAgICAgMHgxNgpOb2RlIDB4MWEgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAw
-eDMwMDEwMzogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBOL0EKICBBbXAtSW4gdmFsczog
-IFsweDAwIDB4MDBdCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTcKTm9kZSAweDFiIFtBdWRpbyBT
-ZWxlY3Rvcl0gd2NhcHMgMHgzMDA5MGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBv
-ZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFs
-czogIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMwogICAgIDB4MTgqIDB4MTMgMHgxNApOb2Rl
-IDB4MWMgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDkwZDogU3RlcmVvIEFtcC1PdXQKICBB
-bXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0x
-CiAgQW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBDb25uZWN0aW9uOiAzCiAgICAgMHgxOSog
-MHgxMyAweDE0Ck5vZGUgMHgxZCBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwOTBkOiBTdGVy
-ZW8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6
-ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAweDgwXQogIENvbm5lY3Rpb246
-IDMKICAgICAweDFhKiAweDEzIDB4MTQKTm9kZSAweDFlIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4
-NDAyMTE6IFN0ZXJlbyBEaWdpdGFsCiAgUENNOgogICAgcmF0ZXMgWzB4N2UwXTogNDQxMDAgNDgw
-MDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAg
-IGZvcm1hdHMgWzB4NV06IFBDTSBBQzMKTm9kZSAweDFmIFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRd
-IHdjYXBzIDB4ZjMwMjAxOiBTdGVyZW8gRGlnaXRhbApOb2RlIDB4MjAgW0F1ZGlvIElucHV0XSB3
-Y2FwcyAweDE0MDMxMTogU3RlcmVvIERpZ2l0YWwKICBQQ006CiAgICByYXRlcyBbMHgxNjBdOiA0
-NDEwMCA0ODAwMCA5NjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4
-NV06IFBDTSBBQzMKICBDb25uZWN0aW9uOiAxCiAgICAgMHgyMgpOb2RlIDB4MjEgW1BpbiBDb21w
-bGV4XSB3Y2FwcyAweDQwMDMwMTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwODEwOiBPVVQK
-ICBQaW4gRGVmYXVsdCAweDAzNDQxMGEwOiBbSmFja10gU1BESUYgT3V0IGF0IEV4dCBMZWZ0CiAg
-ICBDb25uID0gUkNBLCBDb2xvciA9IEJsYWNrCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIENvbm5l
-Y3Rpb246IDUKICAgICAweDFlKiAweDFmIDB4MWIgMHgxYyAweDFkCk5vZGUgMHgyMiBbUGluIENv
-bXBsZXhdIHdjYXBzIDB4NDMwNjgxOiBTdGVyZW8gRGlnaXRhbAogIFBpbmNhcCAweDA4MTAwMjQ6
-IElOIEVBUEQgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MGYwMDBmNjogW04vQV0gT3RoZXIgYXQg
-RXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAw
-eDAwOgogIFBvd2VyOiAweDAKTm9kZSAweDIzIFtCZWVwIEdlbmVyYXRvciBXaWRnZXRdIHdjYXBz
-IDB4NzAwMDBjOiBNb25vIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAzLCBuc3RlcHM9
-MHgwMywgc3RlcHNpemU9MHgxNywgbXV0ZT0wCiAgQW1wLU91dCB2YWxzOiAgWzB4MDBdCk5vZGUg
-MHgyNCBbVm9sdW1lIEtub2IgV2lkZ2V0XSB3Y2FwcyAweDYwMDAwMDogTW9ubwogIFZvbHVtZS1L
-bm9iOiAweGZmCg==
-------=_Part_17322_28698336.1194819159144
-Content-Type: application/octet-stream; name=mixer
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_f8w3zw5v
-Content-Disposition: attachment; filename=mixer
-
-U2ltcGxlIG1peGVyIGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBw
-dm9sdW1lLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTGltaXRzOiBQbGF5YmFj
-ayAwIC0gMTI3CiAgTW9ubzogUGxheWJhY2sgMTI3IFsxMDAlXQpTaW1wbGUgbWl4ZXIgY29udHJv
-bCAnSGVhZHBob25lJywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5YmFj
-ayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAw
-IC0gMTI3CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAxMjcgWzEwMCVdIFswLjAwZEJd
-IFtvbl0KICBGcm9udCBSaWdodDogUGxheWJhY2sgMTI3IFsxMDAlXSBbMC4wMGRCXSBbb25dClNp
-bXBsZSBtaXhlciBjb250cm9sICdQQ00nLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUKICBQbGF5
-YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFj
-ayAwIC0gMjU1CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAw
-ZEJdCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0KU2ltcGxlIG1p
-eGVyIGNvbnRyb2wgJ0Zyb250JywwCiAgQ2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQ
-bGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5
-YmFjayAwIC0gMTI3CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAxMjcgWzEwMCVdIFsw
-LjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDogUGxheWJhY2sgMTI3IFsxMDAlXSBbMC4wMGRCXSBb
-b25dClNpbXBsZSBtaXhlciBjb250cm9sICdTdXJyb3VuZCcsMAogIENhcGFiaWxpdGllczogcHZv
-bHVtZSBwc3dpdGNoCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdo
-dAogIExpbWl0czogUGxheWJhY2sgMCAtIDEyNwogIE1vbm86CiAgRnJvbnQgTGVmdDogUGxheWJh
-Y2sgMTI3IFsxMDAlXSBbMC4wMGRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDEyNyBb
-MTAwJV0gWzAuMDBkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnTGluZSBJbiBhcyBPdXRw
-dXQnLDAKICBDYXBhYmlsaXRpZXM6IHBzd2l0Y2ggcHN3aXRjaC1qb2luZWQKICBQbGF5YmFjayBj
-aGFubmVsczogTW9ubwogIE1vbm86IFBsYXliYWNrIFtvZmZdClNpbXBsZSBtaXhlciBjb250cm9s
-ICdNaWMgYXMgT3V0cHV0JywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVk
-CiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb2ZmXQpTaW1wbGUg
-bWl4ZXIgY29udHJvbCAnSUVDOTU4JywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gt
-am9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb2ZmXQpT
-aW1wbGUgbWl4ZXIgY29udHJvbCAnQ2FwdHVyZScsMAogIENhcGFiaWxpdGllczogY3ZvbHVtZSBj
-c3dpdGNoCiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CiAgTGlt
-aXRzOiBDYXB0dXJlIDAgLSAxNAogIEZyb250IExlZnQ6IENhcHR1cmUgMCBbMCVdIFswLjAwZEJd
-IFtvZmZdCiAgRnJvbnQgUmlnaHQ6IENhcHR1cmUgMCBbMCVdIFswLjAwZEJdIFtvZmZdClNpbXBs
-ZSBtaXhlciBjb250cm9sICdDYXB0dXJlJywxCiAgQ2FwYWJpbGl0aWVzOiBjdm9sdW1lIGNzd2l0
-Y2gKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6
-IENhcHR1cmUgMCAtIDE0CiAgRnJvbnQgTGVmdDogQ2FwdHVyZSAwIFswJV0gWzAuMDBkQl0gW29m
-Zl0KICBGcm9udCBSaWdodDogQ2FwdHVyZSAwIFswJV0gWzAuMDBkQl0gW29mZl0KU2ltcGxlIG1p
-eGVyIGNvbnRyb2wgJ0NhcHR1cmUnLDIKICBDYXBhYmlsaXRpZXM6IGN2b2x1bWUgY3N3aXRjaAog
-IENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0czogQ2Fw
-dHVyZSAwIC0gMTQKICBGcm9udCBMZWZ0OiBDYXB0dXJlIDAgWzAlXSBbMC4wMGRCXSBbb2ZmXQog
-IEZyb250IFJpZ2h0OiBDYXB0dXJlIDAgWzAlXSBbMC4wMGRCXSBbb2ZmXQpTaW1wbGUgbWl4ZXIg
-Y29udHJvbCAnQW5hbG9nIExvb3BiYWNrJywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0
-Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb2Zm
-XQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnRGlnaXRhbCBJbnB1dCBTb3VyY2UnLDAKICBDYXBhYmls
-aXRpZXM6IGVudW0KICBJdGVtczoKICBJdGVtMDogJwhv/L8LGQUI9O/lt+D05bfA5tK3+G78v2NO
-4Lfg9OW37hgFCAxv/L8nClNpbXBsZSBtaXhlciBjb250cm9sICdJbnB1dCBTb3VyY2UnLDAKICBD
-YXBhYmlsaXRpZXM6IGNlbnVtCiAgSXRlbXM6ICdMaW5lJwogIEl0ZW0wOiAnTGluZScKU2ltcGxl
-IG1peGVyIGNvbnRyb2wgJ0lucHV0IFNvdXJjZScsMQogIENhcGFiaWxpdGllczogY2VudW0KICBJ
-dGVtczogJ0xpbmUnCiAgSXRlbTA6ICdMaW5lJwpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSW5wdXQg
-U291cmNlJywyCiAgQ2FwYWJpbGl0aWVzOiBjZW51bQogIEl0ZW1zOiAnTGluZScKICBJdGVtMDog
-J0xpbmUnClNpbXBsZSBtaXhlciBjb250cm9sICdNdXgnLDAKICBDYXBhYmlsaXRpZXM6IGN2b2x1
-bWUKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6
-IENhcHR1cmUgMCAtIDQKICBGcm9udCBMZWZ0OiBDYXB0dXJlIDAgWzAlXSBbMC4wMGRCXQogIEZy
-b250IFJpZ2h0OiBDYXB0dXJlIDAgWzAlXSBbMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAn
-TXV4JywxCiAgQ2FwYWJpbGl0aWVzOiBjdm9sdW1lCiAgQ2FwdHVyZSBjaGFubmVsczogRnJvbnQg
-TGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBDYXB0dXJlIDAgLSA0CiAgRnJvbnQgTGVmdDog
-Q2FwdHVyZSAwIFswJV0gWzAuMDBkQl0KICBGcm9udCBSaWdodDogQ2FwdHVyZSAwIFswJV0gWzAu
-MDBkQl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ011eCcsMgogIENhcGFiaWxpdGllczogY3ZvbHVt
-ZQogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0czog
-Q2FwdHVyZSAwIC0gNAogIEZyb250IExlZnQ6IENhcHR1cmUgMCBbMCVdIFswLjAwZEJdCiAgRnJv
-bnQgUmlnaHQ6IENhcHR1cmUgMCBbMCVdIFswLjAwZEJdCg==
-------=_Part_17322_28698336.1194819159144
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_17322_28698336.1194819159144--
+> 2. Non working S/PDIF (and probably ADAT, too) on 1616(M) microdock 
+> ports. I think tese ports uses different set of registers than PCI 1010 
+> host card. Am I right?
+>   
+Correct, they are different. I will try to update the driver with some 
+details tomorrow.
+> 3. Midi I/O works well on 1212m v1, but only when 48kHz is set. At 
+> 44.1kHz signalling is corrupted (different UART timing? How to fix it?). 
+> On 1616m microdock MIDI I/O does not work at all.
+>   
+There is no mention in the docs regarding the clock rates affecting MIDI 
+at all.
+I think this might be a trial and error fix.
+There is an extra register for midi routing config on the 1616m, so I 
+might have to get that sorted.
+> I welcome any comments, advices and patches ;)
+>
+> ----
+> Ctirad
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>   
