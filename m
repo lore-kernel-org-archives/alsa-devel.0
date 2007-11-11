@@ -1,17 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: E-mu 1212M/1820M/1616M development
-Date: Sun, 11 Nov 2007 22:51:34 +0000
-Message-ID: <47378776.6050403@superbug.co.uk>
-References: <47376DE9.5000904@gmail.com>
+From: Stanislav Brabec <utx@penguin.cz>
+Subject: [PATCH] use convenient treble scale on WM8750
+Date: Sun, 11 Nov 2007 23:52:08 +0100
+Message-ID: <1194821528.18137.5.camel@utx.utx.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net
-	[194.217.242.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 572CB2474C
-	for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2007 23:51:02 +0100 (CET)
-In-Reply-To: <47376DE9.5000904@gmail.com>
+Received: from ns.penguin.cz (ns.penguin.cz [212.47.7.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9BCF72474C
+	for <alsa-devel@alsa-project.org>; Sun, 11 Nov 2007 23:52:11 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ctirad Fertr <c.fertr@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Richard Purdie <richard@openedhand.com>, Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ctirad Fertr wrote:
-> Hello,
->
-> I just bought an 1616M PCMCIA in addition to my old 1212m v1 and want to 
-> help improve the current driver. I wrote one little patch for those 
-> cards in the past (and some bigger patches for my experiments which were 
-> never released) and now I have some time to continue.
->
-> I'm going to add missing switches into mixer, make some changes in mixer 
-> to match the real I/O setup of each particular card model and perhaps 
-> also write some graphics patchmix like app.
->   
-A graphics patchmix like app would be the most useful at the moment. It 
-would permit us to enable the 96kHz and 192kHz options, as for these 
-different DSP code needs to be loaded, and that is best left to userland.
+On Zaurus SL-C3200 (terrier/spitz) based on WM8750, treble scale is
+inconveniently reverted (increase level = decrease treble), in opposite
+to bass scale, which uses convenient scale.
 
-> Unfortunatelly, I'm unable to fix the most important bugs (at least from 
-> my point of view) dua to lack of documentation and knowlenge of DSP 
-> programming. These are:
->
-> 1. non working 24bit playback. It should be on device 0,2 This device 
-> exists, but cannot be openned for playback.It is the last thing needed 
-> for serious DAW.
->   
-I will look into this. Please raise a bug on alsa-project.org so we 
-don't forget this.
+Fix ALSA WM8750 mixer treble to use convenient treble scale (increase =
+increase treble level):
 
-> 2. Non working S/PDIF (and probably ADAT, too) on 1616(M) microdock 
-> ports. I think tese ports uses different set of registers than PCI 1010 
-> host card. Am I right?
->   
-Correct, they are different. I will try to update the driver with some 
-details tomorrow.
-> 3. Midi I/O works well on 1212m v1, but only when 48kHz is set. At 
-> 44.1kHz signalling is corrupted (different UART timing? How to fix it?). 
-> On 1616m microdock MIDI I/O does not work at all.
->   
-There is no mention in the docs regarding the clock rates affecting MIDI 
-at all.
-I think this might be a trial and error fix.
-There is an extra register for midi routing config on the 1616m, so I 
-might have to get that sorted.
-> I welcome any comments, advices and patches ;)
->
-> ----
-> Ctirad
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->   
+--- linux-2.6.23/sound/soc/codecs/wm8750.c	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23/sound/soc/codecs/wm8750.c	2007-11-02 16:47:35.000000000 +0100
+@@ -189,7 +189,7 @@
+ SOC_ENUM("Bass Filter", wm8750_enum[1]),
+ SOC_SINGLE("Bass Volume", WM8750_BASS, 0, 15, 1),
+ 
+-SOC_SINGLE("Treble Volume", WM8750_TREBLE, 0, 15, 0),
++SOC_SINGLE("Treble Volume", WM8750_TREBLE, 0, 15, 1),
+ SOC_ENUM("Treble Cut-off", wm8750_enum[2]),
+ 
+ SOC_SINGLE("3D Switch", WM8750_3D, 0, 1, 0),
+
+
+________________________________________________________________________
+Stanislav Brabec
+http://www.penguin.cz/~utx
