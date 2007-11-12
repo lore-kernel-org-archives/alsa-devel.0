@@ -1,23 +1,22 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: hardware-dependent features
-Date: Tue, 13 Nov 2007 11:28:12 +1300
-Message-ID: <4738D37C.7070304@audioscience.com>
-References: <20071112131350.GA25885@buzzloop.caiaq.de>
-	<1194888368.31578.1220875067@webmail.messagingengine.com>
-	<30B53B6F-F339-429A-9957-7B130DF0BD4F@caiaq.org>
+From: Jesse Burt <genecide@comcast.net>
+Subject: Re: No sound from usb on Motorola C350 cellphone
+Date: Mon, 12 Nov 2007 17:29:06 -0500
+Message-ID: <1194906547.12156.17.camel@headhunter>
+References: <7c5010d60711120528u16bef715ua48f440c49d962d1@mail.gmail.com>
+	<7c5010d60711120534l13376fc9gc71228ca84322ddc@mail.gmail.com>
+	<47385A14.4000301@gmail.com>
+	<7c5010d60711120555r28363e3ax8bb1efa33209cc8c@mail.gmail.com>
+	<7c5010d60711120557yed3e6cdn357553022d11788c@mail.gmail.com>
+	<47385FAE.9070408@gmail.com>  <20071112103947.0e3afc4b@jutz-gnto64>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id B4D102454A
-	for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2007 23:28:23 +0100 (CET)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JRE00GJMZR35Q00@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Tue, 13 Nov 2007 11:28:16 +1300 (NZDT)
-In-reply-to: <30B53B6F-F339-429A-9957-7B130DF0BD4F@caiaq.org>
+Received: from QMTA03.emeryville.ca.mail.comcast.net
+	(qmta03.emeryville.ca.mail.comcast.net [76.96.30.32])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D1402454A
+	for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2007 23:29:12 +0100 (CET)
+In-Reply-To: <20071112103947.0e3afc4b@jutz-gnto64>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,70 +26,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
+Cc: alsa-devel@alsa-project.org, "Alexander E. Patrakov" <patrakov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I would also advocate using controls...
+Giovanni,
 
-Daniel Mack wrote:
-> Hi Clemens,
+I agree with John, this sounds very interesting; I have been looking to
+do something at least remotely related to this, but standalone (though
+perhaps I've misunderstood the purpose of your software completely).
+I've been searching for a way to use a host PC as a
+handsfree/speakerphone for my v3/v3x via bluetooth. The closest I've
+come is the software at:
+http://wall4.soft.uni-linz.ac.at/_wiki/tiki-index.php?page=ProjectBluezHandsfree
+
+...but I only once got it to partly work with my V3 (very little audio,
+and all broken up) and no audio at all with my V3x.
+It seems the links to the tarballs are dead though so if anyone wants
+them I think I can find them somewhere on my computer.
+
+I have tried sending the 'AT+MODE=8' command to my phone and it indeed
+does trigger a change in the USB state: it disconnects and attempts to
+reconnect, but fails.
+
+Also I don't mean to flood the list with something that might be
+considered offtopic so unless someone feels any of what I've said is
+relevant this will be my first and last post.
+
+Cheers,
+Jesse Burt
+
+On Mon, 2007-11-12 at 10:39 -0800, John Utz wrote:
+> Hi All;
 > 
-> On Nov 12, 2007, at 6:26 PM, Clemens Ladisch wrote:
+> I think this is a totally fascinating thing and i hope it will be
+> possible to make it work.....
 > 
->> I've used three 'mixer' controls for the three LEDs of the SB Audigy 2
->> NX.  Whether this is a good idea depends on how many LEDs there  
->> are, and
->> how one might want to use them.  Are there LED displays, i.e.,  
->> multiple
->> LEDs in a row?
+> onto the specifics
 > 
-> Depends. There is one device which has 4 user-assignable LEDs, 
-
-4 boolean controls
-
-$ amixer cset 'Led 3' on
-
-some
-> others have up to >35 LEDs which can be dimmed in 64 steps, yet
-
-Is that 64 steps each, or all together?
-(i.e one dim control + 35 booleans, or 35 dim controls)
-
-
-> another one has 7-segment LED displays.
-
-integer or enumerated control.
-
-> What I would like to achieve is a conventient way of accessing them,
-> probably from the command line via some procfs or sysfs manner so
-> users can even use scripts to switch them on and off if they like.
+> On Mon, 12 Nov 2007 19:14:06 +0500
+> "Alexander E. Patrakov" <patrakov@gmail.com> wrote:
 > 
->> I think the displays could by controlled by mixer controls of type
->> "bytes".  Usual mixer applications can't handle those, but this is
->> quite hardware dependent anway ...
+> > Giovanni Maruzzelli wrote:
+> > > Needs more info, tests?
+> > 
+> > If you can make the audio functionality work under Windows 2000 or XP
+> > with the new (non-standard) driver, snoopy logs will be interesting.
+> > Snoopy is available from http://www.wingmanteam.com/usbsnoopy/ or
+> > (different version) http://sourceforge.net/projects/usbsnoop/
+> > 
 > 
-> But is that really where it belongs to? I would think that LEDs and
-> input functions are not related to audio and thus should be handled
-> by some other, more appropriate or maybe even proprietary subsystem.
-
-
-> There are some features which have influcence on the audio
-> behaviour since they affect the way the signal is processed, but
-> LEDs are certainly not, are they?
-
-I would think of them as "controls" on the device rather than "mixer".
-you have options of enumerated, integer, boolean, (or bytes)
-
-In addition you can specify an index as well as a name.
-
-"Led", index=23
-or "Led 23"
-
-I'm not sure if you can add controls to an "interface" other than
-"MIXER" (ie. "CARD")
-Other ALSA devs please answer...
-
-
---
-Eliot
+> i am not staring at the USB code right now (it's on a different box),
+> but i would think that one of the first things that you might need to
+> uncover is the USB device string. It may be offered up as part of the
+> device probe when it's attached (check in dmesg) or you may find it in
+> a registry or .inf file on the windows file system after you install
+> the drivers.
+> 
+> if it's a class compliant device, then it may just work once alsa get's
+> taught about it (dont hold me to that, i am not looking at code)
+> 
+> however, as one of you alluded to, there may be an AT command that
+> needs to get tickled to turn it on.
+> 
+> the other annoying thing to consider is that it may actually be probe
+> and connected, but you havent yet figured out how to turn up the
+> volume :-( (yes, that happens)
+> 
+> i'll be really curious about this, so please continue to share with
+> the list....
+> 
+> tnx!
+> 
+> johnu
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
