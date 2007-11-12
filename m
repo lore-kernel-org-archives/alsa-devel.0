@@ -1,22 +1,22 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: underruns and strange code in pcm_rate.c
-Date: Mon, 12 Nov 2007 13:12:55 +0100
-Message-ID: <1194869575.32342.1220819105@webmail.messagingengine.com>
-References: <472E5A64.6010705@aknet.ru> <s5hy7dbvcgf.wl%tiwai@suse.de>
-	<473091F4.80105@aknet.ru> <s5h8x5auxz3.wl%tiwai@suse.de>
-	<4731F2F4.2080704@aknet.ru> <s5hode6xhgp.wl%tiwai@suse.de>
-	<4732097E.3040401@aknet.ru> <s5htznx9znk.wl%tiwai@suse.de>
-	<4732C455.7040503@aknet.ru> <s5hd4ulthy3.wl%tiwai@suse.de>
-	<473488CA.7050308@freescale.com>
+From: Daniel Mack <daniel@caiaq.org>
+Subject: hardware-dependent features
+Date: Mon, 12 Nov 2007 14:13:50 +0100
+Message-ID: <20071112131350.GA25885@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 45C652455C
-	for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2007 13:12:57 +0100 (CET)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F9A124346
+	for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2007 14:13:57 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 105877F4018
+	for <alsa-devel@alsa-project.org>; Mon, 12 Nov 2007 14:13:55 +0100 (CET)
+Received: from buzzloop.caiaq.de ([127.0.0.1])
+	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id UIburcDRvjsG for <alsa-devel@alsa-project.org>;
+	Mon, 12 Nov 2007 14:13:50 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <473488CA.7050308@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> [...]
+Hi,
 
-It is likely that your problem is related to the sample rate converter
-in the OSS emulation code.
+some of the devices the caiaq driver supports have special hardware
+features such as switchable ground lift, input impedance selection or
+other, hardware-specific features. On both Windows and MacOSX there are
+special tools to set those features but the ALSA driver still lacks
+support for them which I want to change soon. However, I couldn't find a
+generic way to do that. I was thinking about a sysfs entry which is
+attached to the sound card instance but didn't find a driver which did
+similar things.
 
-Try disabling CONFIG_SND_PCM_OSS_PLUGINS in the kernel configuration,
-then mplayer will use its owner sample rate converter.
+Also, I'd like to support the LEDs and displays on the devices and was
+wondering which interface to choose for that. I've got a patch ready
+which uses the generic led subsystem, but that approach seems to be a
+bit ugly as I end up having one entry per led on each device in one
+single folder. Any idea of a better way?
 
-
-Regards,
-Clemens
+Thanks,
+Daniel
