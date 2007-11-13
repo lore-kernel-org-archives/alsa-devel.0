@@ -1,59 +1,41 @@
-From: Pete Fawcett <pete@fawcett.co.uk>
-Subject: New developer question
-Date: Tue, 13 Nov 2007 15:07:04 +0000
-Message-ID: <4739BD98.4010105@fawcett.co.uk>
+From: "Bartlomiej Zolnierkiewicz" <bzolnier@gmail.com>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Tue, 13 Nov 2007 16:21:06 +0100
+Message-ID: <58cb370e0711130721g49a28666u6d315c1412b0c855@mail.gmail.com>
+References: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com>
+	 <20071113031553.3c7b5c16.akpm@linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fhw-relay07.plus.net (fhw-relay07.plus.net [212.159.14.215])
-	by alsa0.perex.cz (Postfix) with ESMTP id 399DA244E1
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 16:08:29 +0100 (CET)
-Received: from [213.162.114.82] (helo=mail.fawcett.co.uk)
-	by fhw-relay07.plus.net with esmtp (Exim) id 1IrxNL-00021w-T6
-	for alsa-devel@alsa-project.org; Tue, 13 Nov 2007 15:08:28 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by mail.fawcett.co.uk (Postfix) with ESMTP id 53B8658023
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 15:08:07 +0000 (GMT)
-Received: from mail.fawcett.co.uk ([127.0.0.1])
-	by localhost (mail.fawcett.co.uk [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Py89z0lGuLqA for <alsa-devel@alsa-project.org>;
-	Tue, 13 Nov 2007 15:08:01 +0000 (GMT)
-Received: from [192.168.34.1] (213-162-114-81.zareno2.adsl.metronet.co.uk
-	[213.162.114.81])
-	by mail.fawcett.co.uk (Postfix) with ESMTP id BDEC658022
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 15:08:01 +0000 (GMT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20071113031553.3c7b5c16.akpm@linux-foundation.org>
+Content-Disposition: inline
+Sender: netdev-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Natalie Protasevich <protasnb@gmail.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Alsa Developers
+On Nov 13, 2007 12:15 PM, Andrew Morton <akpm@linux-foundation.org> wrote:
+> On Mon, 12 Nov 2007 22:42:32 -0800 "Natalie Protasevich" <protasnb@gmail.com> wrote:
+>
+> > This is the listing of the open bugs that are relatively new, around
+> > 2.6.22 and up. They are vaguely classified by specific area.
+> > (not a full list, there are more :)
 
-I am trying to find out how to submit some fixes to ALSA drivers.  All I 
-could find on the web site was to subscribe to this mailing list so I 
-hope this is the correct place to raise this.
+[...]
 
-I have made some changes to the driver for AD1988 device.  This is an 
-HDA device and handled by the snd_hda_intel module.  The specific 
-hardware is handled by patch_analog.c
+> > IDE/SATA=========================================================
 
-I have made some changes so that 5.1 surround sound is now output on my 
-motherboard. Previously stereo sound was output to all all three pairs 
-of speakers.
+[...]
 
-That's all fine for me, but in the spirit of open source I thought I 
-should submit these changes for wider use.
+> > DVD-RAM umount and disk free bug
+> > http://bugzilla.kernel.org/show_bug.cgi?id=9265
+> > Kernel: 2.6.15  (asked to try current kernel)
+>
+> No response from developers
 
-Please advise me how I proceed from here.
+Bug was filled under IO/Storage-Other so is it assigned to
+<other_other@kernel-bugs.osdl.org>.
 
-Thanks
-
-Pete
+Could be a FS problem as well but it is the best to wait for
+confirmation with 2.6.23 before proceeding further...
