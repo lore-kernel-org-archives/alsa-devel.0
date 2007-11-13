@@ -1,39 +1,60 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+From: Mark Lord <liml@rtr.ca>
 Subject: Re: [BUG] New Kernel Bugs
-Date: Tue, 13 Nov 2007 17:30:19 +0000
-Message-ID: <20071113173019.14480202@the-village.bc.nu>
-References: <20071113031553.3c7b5c16.akpm@linux-foundation.org>
-	<20071113.033946.114918709.davem@davemloft.net>
-	<20071113034916.2556edd7.akpm@linux-foundation.org>
-	<20071113.035824.40509981.davem@davemloft.net>
-	<20071113041259.79c9a8c5.akpm@linux-foundation.org>
-	<20071113134029.GA30978@elte.hu>
-	<4739AFE0.20705@rtr.ca>
-	<40f323d00711130752k19cab8eauc3456721274b3267@mail.gmail.com>
-	<20071113171356.GA25824@thunk.org>
+Date: Tue, 13 Nov 2007 12:47:51 -0500
+Message-ID: <4739E347.30406@rtr.ca>
+References: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com> <20071113031553.3c7b5c16.akpm@linux-foundation.org> <4739ADA2.4060604@rtr.ca> <alpine.LFD.0.9999.0711131521590.3265@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-input@atrey.karlin.mff.cuni.cz>
-In-Reply-To: <20071113171356.GA25824@thunk.org>
-Sender: owner-linux-input@atrey.karlin.mff.cuni.cz
-List-Help: <mailto:majordomo@atrey.karlin.mff.cuni.cz?body=help>
-List-Owner: <mailto:owner-linux-input@atrey.karlin.mff.cuni.cz>
-List-Post: <mailto:linux-input@atrey.karlin.mff.cuni.cz>
-List-Unsubscribe: <mailto:linux-input-request@atrey.karlin.mff.cuni.cz?body=unsubscribe>
-To: Theodore Tso <tytso@mit.edu>
-Cc: Benoit Boissinot <bboissin@gmail.com>, Mark Lord <liml@rtr.ca>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
+Return-path: <linux-ide-owner@vger.kernel.org>
+In-Reply-To: <alpine.LFD.0.9999.0711131521590.3265@localhost.localdomain>
+Sender: linux-ide-owner@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Natalie Protasevich <protasnb@gmail.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> The other an automated set of standard pre-built bisection points so
-> that testers can more easily localize a bug down to a few hundred
-> commits without needing to learn how to use "git bisect" (think Ubuntu
-> users).
+Thomas Gleixner wrote:
+> On Tue, 13 Nov 2007, Mark Lord wrote:
+..
+>> I *still* get very slow resume-from-RAM quite often here
+>> (new in 2.6.23 kernel, wasn't there in early 2.6.23-rc*).
+..
+>> Something eventually times out after a minute or so
+>> and it comes back.  Cannot make it happen reliably,
+>> unless I'm in a hurry to get something done.  :)
+>> I suspect USB here, probably the same loopy bug that
+>> we added a "loop limit failsafe" for back in 2.6.21(?).
+> 
+> Do you have a pointer to that please ?
+..
 
-Before that you want a flowchart or instruction list of boot options to
-try. A lot of errors can be localised simply by asking the reported to
-boot with things like "iommu=off", "pci=routeirq", "apci=off" etc
+The "limit" added in the code below,
+which was for messages of this form:
 
-That takes a lot less time to run through and can be very informative.
+    hub 1-1:1.0: hub_port_status failed (err = -71)
+    last message repeated 347 times
 
-Alan
+drivers/usb/hub.c:  
+> static void hub_tt_kevent (struct work_struct *work)
+> {
+>         struct usb_hub          *hub =
+>                 container_of(work, struct usb_hub, tt.kevent);
+>         unsigned long           flags;
+>         int                     limit = 100;
+> 
+>         spin_lock_irqsave (&hub->tt.lock, flags);
+>         while (--limit && !list_empty (&hub->tt.clear_list)) {
+>             ...
+
+I'm not yet sure what's happening on resume now,
+but there's this huge long pause with a dark screen
+and then suddenly the USB subsystem comes to life
+(my mouse lights up) and the system finally resumes.
+
+More when I know more.  But it doesn't happen every time,
+or even most times, so git-bisect is not possible either.
+
+This one actually requires a developer/maintainer to put
+in some effort and think about things.  Currently, that's me.
+
+-ml
