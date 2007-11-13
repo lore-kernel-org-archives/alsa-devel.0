@@ -1,167 +1,352 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: asihpi driver -> kernel
-Date: Tue, 13 Nov 2007 23:01:57 +1300
-Message-ID: <47397615.4000201@audioscience.com>
-References: <200709051300.35503.linux@audioscience.com>
-	<s5hzm01tn8w.wl%tiwai@suse.de> <47141823.4000307@audioscience.com>
-	<s5hbqaqrppa.wl%tiwai@suse.de>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Tue, 13 Nov 2007 03:15:53 -0800
+Message-ID: <20071113031553.3c7b5c16.akpm@linux-foundation.org>
+References: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id E687D2439A
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 11:02:04 +0100 (CET)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JRF00GEEVVDQT30@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Tue, 13 Nov 2007 23:02:01 +1300 (NZDT)
-In-reply-to: <s5hbqaqrppa.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org
+Return-path: <owner-linux-input@atrey.karlin.mff.cuni.cz>
+In-Reply-To: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com>
+Sender: owner-linux-input@atrey.karlin.mff.cuni.cz
+List-Help: <mailto:majordomo@atrey.karlin.mff.cuni.cz?body=help>
+List-Owner: <mailto:owner-linux-input@atrey.karlin.mff.cuni.cz>
+List-Post: <mailto:linux-input@atrey.karlin.mff.cuni.cz>
+List-Unsubscribe: <mailto:linux-input-request@atrey.karlin.mff.cuni.cz?body=unsubscribe>
+To: Natalie Protasevich <protasnb@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi Eliot,
+On Mon, 12 Nov 2007 22:42:32 -0800 "Natalie Protasevich" <protasnb@gmail.com> wrote:
+
+> This is the listing of the open bugs that are relatively new, around
+> 2.6.22 and up. They are vaguely classified by specific area.
+> (not a full list, there are more :)
 > 
-> [it seems that you Cc'ed to the old alsa-devel ML so the last one
->  seemed missing.]
+> The good part is that reporters of the bugs below are still around and
+> haven't dissipated, or disposed of their hardware, so it is a good
+> time to get the bugs.
+> Those bugzillas that have been started as regressions on Rafael's list
+> are not mentioned here so far, since they are being tracked as new
+> regressions already.
+
+Thanks.
+
+> It would be appreciated if the corresponding maintenance team could take a
+> look, close off any which are fixed and see if they can fix any which aren't.
 > 
-> At Tue, 16 Oct 2007 14:47:15 +1300,
-> Eliot Blennerhassett wrote:
->> Hi Takashi,
->>
->> still trying to move forward on this...
->>
->> Looking for "what is the first step" change to make in your opinion?
+> NOTE: when replying to this email, please add the bug number to the Subject in
+> the form [Bug 1234] so that bugzilla will capture the discussion.
+> Thanks.
+
+You're optimistic.
+
+
+
+> ACPI====================================================================
 > 
-> The first step would be to get closer to linux kernel coding style.
-> Namely,
-> - get rid of C++ style function names, variables and field names
->   (no hungarian!)
+> System does not load without acpi=off ide=nodma noapic
+> http://bugzilla.kernel.org/show_bug.cgi?id=9358
+> Kernel: 2.6.23.1
 
-This (though 'frowned on') is not *required* by kernel coding_style
-document.  I don't plan on doing such major cosmetic surgery if not
-necessary.   If I can get source to pass checkpatch.pl, I would hope it
-would be considered.
+One response from a developer
 
-> - remove API wrappers
+> ACPI Error attaching device data
+> http://bugzilla.kernel.org/show_bug.cgi?id=9354
+> Kernel: 2.6.24-rc2
 
-Working on it, will submit new patches in the next week or so.
+Zero responses from developers
 
-Spin lock wrappers can not be removed because of the way alsa midlevel
-calls driver with different IRQ disabling context for different functions.
+> /proc/acpi/battery displays Incorrect voltages
+> http://bugzilla.kernel.org/show_bug.cgi?id=9341
+> Kernel: 2.6.23.1
 
-> Eventually, we may get rid of unneeded typedefs, too.
-> 
-> Then, we can begin with simplifying the driver structure.  Currently,
-> asihpi and hpi are almost indepedent implementations.  This makes life
-> harder.
-> 
-> 
->> Takashi Iwai wrote:
->>> At Wed, 05 Sep 2007 13:00:35 +1200,
->>> Eliot Blennerhassett wrote:
->>>> Hi Takashi,
->>>>
->>>> I'd like to talk more about what you think is needed to get asihpi driver 
->>>> ready for kernel tree.
->>>>
->>>> I think for now we should put aside cosmetic coding style changes (eg. comment 
->>>> style, whitespace etc.) these are fixable with combination of automated tools 
->>>> and some monkey work.
->>>>
->>>> So, lets start with the hard part. If we can't solve that there is no point in 
->>>> cosmetics!
->>>>
->>>> A while ago you said "The specific problem I'm concerned is the "glue-code" 
->>>> style in HPI driver.  The OS-independent wrapper code is often disliked by 
->>>> kernel maintainers. "
->>>>
->>>> Can you point to specific examples.  Even better suggest how you think it 
->>>> should be done better.  Either way I need to consider how your concerns could 
->>>> be addressed without breaking our codebase for other OSes etc. 
->>>>
->>>> thanks and regards
->>> The problem is that the whole "wrapping" is superfluous when you
->>> concentrate on Linux driver.  Merging into the linux kernel tree means
->>> that the driver would be dedicated to Linux.  It's no longer your
->>> child, and it's no longer for every other OS.  Thus, "common codebase"
->>> doesn't exist per se.
->>>
->>> For example, the whole definitions in hpios_linux_kernel.h should go
->>> away.  The driver should use the native kernel API instead.
->> Even this is not so hard, as it a mechanical process to replace wrapped
->> calls with linux native calls.
-> 
-> OK, then it's fine.
-> 
->>> I know it's a very hard decision.  Supporting other OSes is very
->>> important in most cases.  OTOH, the slim-down is the best way to make
->>> the driver code maintainable for other people.  Honestly, I find it
->>> also hard to maintain/debug the current ASIHPI code.  It's too
->>> different from the normal codes, and understanding it alone takes too
->>> much energy before analyzing the problem.
+Zero responses from developers
 
-Still I cannot imagine that anyone else will be at the sharp end of
-debugging and adding extra features to the driver other than ASI
-personnel.  When I see a significant patch I'll revise my opinion.
+> PATA scan: ACPI Exception AE_AML_PACKAGE_LIMIT... is beyond end of object
+> http://bugzilla.kernel.org/show_bug.cgi?id=9320
+> Kernel: 2.6.24-rc2
+> (Tejun: calling _GTF without calling _STM first.  _GTM doesn't have any
+> prerequisite (it can't).  Can someone familiar with ACPI tell me why the method
+> is failing?  At any rate, libata should work fine regardless of ACPI failures.
+> Maybe it's time to start blacklist to skip ATA-ACPI for some boards to avoid
+> those annoying messages during boot)
 
-If porting of new features is not an automated process, it is the linux
-driver that will start to rot.
+Tejun doing stuff
 
-I stick to my position that 95% windows users finding bugs benefits the
-5% linux users when common code is used, and this is worth much more
-than how identifiers are spelled.
+> ACPI Battery Info in /sys but not /proc/acpi
+> http://bugzilla.kernel.org/show_bug.cgi?id=9183
+> Kernel: 2.6.23-rc8-mm2
 
->> This is where I need more input, because to _me_ (of course) the code is
->> understandable.
->>
->> Is it the whole source or just parts that are hard.
->> E.g toplevel asihpi.c Ok/No?
-> 
-> The code in asihpi.c is readable enough.  But, other parts are
-> different.  The difficulty is that the driver structure isn't
-> straight (apart from the coding style issues).  We have an entry point
-> for PCI driver _and_ indepdendent HPI initialization.  This is already
-> puzzling because HPI is also assigned to the corresponding PCI
-> device.
-
-HPI is still needed for e.g compressed audio play/record, profile and
-assert monitoring, existing HPI applications.
-
-It provides the ability to use HPI-only applications while at the same
-time using channels with ALSA to 'just play some sound'
-
-> Also, the message union/struct is another stuff that is pretty hard to
-> follow.  Since we use no C++, union is often bad for readability.
-> Could it be a bit simpler?
-
-Very difficult. message/response structure/unions are deeply embedded in
-the DSP code that runs on the cards. They must remain exactly as
-specified in hpi.h
+Marked as a duplicate of an already-resolved bug.
 
 > 
+> When using ACPI on a Compaq Presario V6221EU the laptop goes into
+> deadlock after a random amount of time
+> http://bugzilla.kernel.org/show_bug.cgi?id=9118
+> Kernel: 2.6.23-rc6
+
+Someone called Jike Song is trying to help out.  Regular developers awol.
+
 > 
->>> The coding-style issues are similar problems.  When C++-style codes
->>> appear in the tree of C-codes, they are strange.  Simply so.  It makes
->>> difficult to find the problematic part.  "A buggy part looks buggy" --
->>> it's the whole point of having a uniform coding style.
->> Again, a mechanical process to change comments and style etc.
+> ACPI video driver should validate brightness level before setting it via _BCM
+> http://bugzilla.kernel.org/show_bug.cgi?id=9277
+> Kernel: 2.6.23
+
+Zero responses from developers
+
+> VIDEO/DVB
 > 
-> Then it's fine with me.  Let's try and see the progress.
+> dvb driver reboot system
+> http://bugzilla.kernel.org/show_bug.cgi?id=9357
+> Kernel: 2.6.21.5
+
+Mauro thinks it might be bad hardware
+
+> 
+> PLATFORM===============================================================
+> 
+> xipImage is built so that uBoot cant run it (ARM)
+> http://bugzilla.kernel.org/show_bug.cgi?id=9356
+> Kernel: 2.6.21
+
+Zero responses from developers
+
+> 
+> Samsung R20 - ACPI: PCI Root Bridge [PCI0] (0000:00)	
+> http://bugzilla.kernel.org/show_bug.cgi?id=9339
+> Kernel: 2.6.24
+> (boot is very long
+> ..MP-BIOS bug: 8254 timer not connected to IO-APIC
+> then the boot stop at :
+> ACPI: PCI Root Bridge [PCI0] (0000:00)
+> (during 3 minutes, and boot continue)
+
+No response from developers
+
+> system_64.h: switch_to inline asm should be more robbust wrt optimizations
+> http://bugzilla.kernel.org/show_bug.cgi?id=9302
+> Kernel: 2.6.24-rc1
+
+Not really a bug.
+
+> with CONFIG_NO_HZ and/or CONFIG_HPET_TIMER set kernel 2.6.23 doesn't
+> boot (ARM, Timer)
+> http://bugzilla.kernel.org/show_bug.cgi?id=9229
+> Kernel: 2.6.23
+
+No response from developers
+
+> NETWORKING===========================================================
+> 
+> RTNLGRP_ND_USEROPT does not report ifindex (IPv6)
+> http://bugzilla.kernel.org/show_bug.cgi?id=9349
+> Kernel: 2.6.24+
+
+No response from developers
+
+> a kernel error happend in the func: __skb_dequeue when using in
+> pfifo_fast_dequeue
+> http://bugzilla.kernel.org/show_bug.cgi?id=9342
+> Kernel: 2.6.11.1 - reporter asked to try recent kernel
+
+No response from developers
+
+> e100 does not work after boot
+> http://bugzilla.kernel.org/show_bug.cgi?id=9336
+> Kernel: 2.6.23.1
+
+No response from developers
+
+> 2.6.23.1-smp kernel panic (network-related)
+> http://bugzilla.kernel.org/show_bug.cgi?id=9318
+> Kernel: 2.6.23.1
+> Infiniband panic
+
+No response from developers
+
+> sundance -> 4port D-Link System Inc DFE-580TX -> Log errors
+> http://bugzilla.kernel.org/show_bug.cgi?id=9311
+> Kernel: 2.6.22.9
+
+No response from developers
+
+> via-rhine driver stalls with: PHY status 786d, resetting...
+> http://bugzilla.kernel.org/show_bug.cgi?id=9300
+> Kernel: 2.6.23+
+
+No response from developers
+
+> 
+> Weird network problems with 2.6.23-rc2
+> http://bugzilla.kernel.org/show_bug.cgi?id=9080
+> http://lkml.org/lkml/2007/8/11/40 - description
+
+No response from developers
+
+> rt2500pci: low TCP throughput (wireless)
+> http://bugzilla.kernel.org/show_bug.cgi?id=9273
+> Kernel: 2.6.24-rc1
+> This is a regression
+
+No response from developers
+
+> Unable to build wifi network between zd1201 and b43
+> http://bugzilla.kernel.org/show_bug.cgi?id=9237
+> Kernel: 2.6.24-rc1
+
+No response from developers
+
+> Crash after module unload in b43 (wireless)
+> http://bugzilla.kernel.org/show_bug.cgi?id=9233
+> Kernel: 2.6.24-rc1
+
+No response from developers
+
+> (net typhoon) "no descs for cmd, had (needed) 0 (1) cmd, 31 (7) resp"
+> http://bugzilla.kernel.org/show_bug.cgi?id=9225
+> Kernel: 2.6.23.1
+
+No response from developers
+
+> 
+> IDE/SATA=========================================================
+> 
+> pata_pdc202xx_old excessive ATA bus errors
+> http://bugzilla.kernel.org/show_bug.cgi?id=9337
+> 2.6.24-rc2
+
+No response from developers
+
+> Drive seagate ST380011AS needs to be blacklisted
+> http://bugzilla.kernel.org/show_bug.cgi?id=9309
+> Kernel: 2.6.22.X
+
+Jeff and Tehun did some stuff.
+
+> DVD-RAM umount and disk free bug
+> http://bugzilla.kernel.org/show_bug.cgi?id=9265
+> Kernel: 2.6.15  (asked to try current kernel)
+
+No response from developers
+
+> FILE SYSTEMS=======================================================
+> 
+> ext4: delalloc space accounting problem drops data
+> http://bugzilla.kernel.org/show_bug.cgi?id=9329
+> Kernel: 2.6.24-rc1
+
+No response from developers
+
+> POSIX Access Control Lists cause bogus file system check errors
+> http://bugzilla.kernel.org/show_bug.cgi?id=9241
+> Kernel: 2.6.23.1
+
+Andreas did some work, seemed to lose interest.
+
+> MEMORY MANAGEMENT================================================
+> 
+> My system hangs when it has no more free memory to allocate via malloc()
+> http://bugzilla.kernel.org/show_bug.cgi?id=9316
+> Kernel: 2.6.23
+> User program, "My system hangs when it has no more free memory to
+> allocate via malloc()"
+
+Rafael poked Thomas a week ago, to no effect. Thomas has been travelling.
+
+> BUG: unable to handle kernel paging request at virtual address
+> 26121228/kswapd0[231] exited with preempt_count 1
+> http://bugzilla.kernel.org/show_bug.cgi?id=9305
+> EIP is at free_block+0x6d/0xe4
+> Kernel: 2.6.22.6
+
+No response from developers
+
+> POWER MANAGEMENT==================================================
+> 
+> IBM X41 looses time after Suspend2Disk
+> http://bugzilla.kernel.org/show_bug.cgi?id=9314
+> Kernel: 2.6.23
+
+Rafael poked Thomas a week ago, to no effect.  Thomas has been travelling.
+
+> Suspend to RAM resume hangs on a tickless (NO_HZ) kernel
+> http://bugzilla.kernel.org/show_bug.cgi?id=9275
+> Kernel: 2.6.23
+> This is HP notebook nc6320 T2400 945GM
+
+No response from developers
+
+> 
+> VIDEO DRIVERS========================================================
+> 
+> No text consoles with FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
+> http://bugzilla.kernel.org/show_bug.cgi?id=9310
+> Kernel: 2.6.24-rc1
+> This is a regression
+
+No response from developers
+
+> 
+> PARALLEL PORT========================================================
+> 
+> LPC IT8705 POST port making noise on parallel port
+> http://bugzilla.kernel.org/show_bug.cgi?id=9306
+> Kernel: 2.6.16+
+> 
+
+No response from developers
+
+> I/O STORAGE===========================================================
+> 
+> kernel bug from pktcdvd
+> http://bugzilla.kernel.org/show_bug.cgi?id=9294
+> Kernel: 2.6.23
+
+I think we might have fixed this.
+
+> After pci-e video card was installed, pci add-on usb card & firewire card fail
+> http://bugzilla.kernel.org/show_bug.cgi?id=9223
+> Kernel: 2.6.20 (testing of latest kernel requested)
+
+No response from developers
+
+> SCSI==================================================================
+> 
+> qla2xxx: driver initialization does not complete when booting with
+> Port connected
+> http://bugzilla.kernel.org/show_bug.cgi?id=9267
+> Kernel: 2.6.23.1
+
+No response from developers
+
+> SOUND ALSA============================================================
+> 
+> Unable to load snd-hda-intel module: Unknown symbol in module, or
+> unknown parameter
+> http://bugzilla.kernel.org/show_bug.cgi?id=9242
+> Kernel: 2.6.24-rc1
+
+Takashi has responded
+
+> usbaudio microphone: regular sound distortion on several Logitech Webcams
+> http://bugzilla.kernel.org/show_bug.cgi?id=9230
+> Kernel: 2.6.22.9
+
+Clemens responded
+
+> HID====================================================================
+> 
+> Kernel NULL pointer dereference at :usbhid:hiddev_ioctl+0x2f/0xabc
+> http://bugzilla.kernel.org/show_bug.cgi?id=9216
+> Kernel: 2.6.23.1
+> Looks like this is a regression
+
+No response from developers
 
 
-regards
+So I count around seven reports which people are doing something with and
+twenty seven which have been just ignored.
 
-Eliot
+Three of these reports have been identified as regressions.  All three
+of those remain unresponded to.
