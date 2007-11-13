@@ -1,103 +1,57 @@
-From: glv <glvals@internet.is>
-Subject: Mitac 8252D hda_intel
-Date: Tue, 13 Nov 2007 20:51:10 +0000
-Message-ID: <200711132051.10170.glvals@internet.is>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Tue, 13 Nov 2007 12:52:22 -0800
+Message-ID: <20071113125222.9eb53ac8.akpm@linux-foundation.org>
+References: <20071113034916.2556edd7.akpm@linux-foundation.org>
+	<20071113.035824.40509981.davem@davemloft.net>
+	<20071113041259.79c9a8c5.akpm@linux-foundation.org>
+	<20071113.043207.44732743.davem@davemloft.net>
+	<20071113193219.GC1356@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vxout-2.c.is (vxout-2.c.is [213.176.128.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 667BF24641
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 21:50:57 +0100 (CET)
-Received: from mail.internet.is (mail.aknet.is [193.4.194.58])
-	by vxout-2.c.is (Postfix) with ESMTP id EB2142C80F4
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 20:50:47 +0000 (GMT)
-Received: from localhost (194-144-122-157.du.xdsl.is [194.144.122.157])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mail.internet.is (Postfix) with ESMTP id BC4491754
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 20:50:47 +0000 (CUT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <owner-linux-input@atrey.karlin.mff.cuni.cz>
+In-Reply-To: <20071113193219.GC1356@flint.arm.linux.org.uk>
+Sender: owner-linux-input@atrey.karlin.mff.cuni.cz
+List-Help: <mailto:majordomo@atrey.karlin.mff.cuni.cz?body=help>
+List-Owner: <mailto:owner-linux-input@atrey.karlin.mff.cuni.cz>
+List-Post: <mailto:linux-input@atrey.karlin.mff.cuni.cz>
+List-Unsubscribe: <mailto:linux-input-request@atrey.karlin.mff.cuni.cz?body=unsubscribe>
+To: Russell King <rmk+lkml@arm.linux.org.uk>
+Cc: David Miller <davem@davemloft.net>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, protasnb@gmail.com, linux-ide@vger.kernel.org, bugme-daemon@bugzilla.kernel.org, linux-input@atrey.karlin.mff.cuni.cz
 List-Id: alsa-devel@alsa-project.org
 
-(Second attempt, hope this works)
+On Tue, 13 Nov 2007 19:32:19 +0000 Russell King <rmk+lkml@arm.linux.org.uk> wrote:
 
-Hello,
-I have a Mitac 8252D computer with hda_intel, it has 3 sockets in front: =
+> There's another issue I want to raise concerning bugzilla.  We have the
+> classic case of "not enough people reading bugzilla bugs" - which is one
+> of the biggest problems with bugzilla.  Virtually no one in the ARM
+> community looks for ARM bugs in bugzilla.
 
-microphone, audio(headphones)and S/PDIF. =
+Nor should they.
 
-When using 5.1 the manual says:
-Microphone: rear speakers
-Audio:=A0=A0front speakers
-S/PDIF:=A0center and subwoofer =A0
-Modprobing without any options gives me sound to the headphone and digital =
+> Let's not forget that it would be a waste of time for people to manually
+> check bugzilla for ARM bugs.  There's soo few people reporting ARM bugs
+> into bugzilla that a weekly manual check by every maintainer would just
+> return the same old boring results for months and months at a time.
 
-socket and =
+I screen all bugzilla reports.  100% of them.
 
-Modprobing with model=3D6stack-hp gives me sound to the speakers to but the=
-y =
+- I'll try to establish whether it is a regression
 
-stay on when headph. are pluged in
+- I'll solicit any extra information which I believe the reveloper will need
 
-Output from alsa-info.sh:
-http://pastebin.ca/772406
+- I'll ensure that an appropriate developer has seen the report
 
-Output from lspci -vv:
-00:1b.0 Audio device: Intel Corporation 82801H (ICH8 Family) HD Audio =
+And yes, the number of arm-specific reports in there is very small.
 
-Controller (rev 03)
-=A0 =A0 =A0 =A0 Subsystem: Mitac Unknown device 8253
-=A0 =A0 =A0 =A0 Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-=
- ParErr- =
+> It would be far more productive if the ARM category was deleted from
+> bugzilla and the few people who use bugzilla reported their bugs on the
+> mailing list.  We've a couple of thousand people on the ARM kernel
+> mailing list at the moment - that's 3 orders of magnitude more of eyes
+> than look at bugzilla.
 
-Stepping- SERR+ FastB2B-
-=A0 =A0 =A0 =A0 Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TA=
-bort- =
+Is that linux-arm-kernel@lists.arm.linux.org.uk?
 
-<TAbort- <MAbort- >SERR- <PERR-
-=A0 =A0 =A0 =A0 Latency: 0, Cache Line Size: 64 bytes
-=A0 =A0 =A0 =A0 Interrupt: pin A routed to IRQ 22
-=A0 =A0 =A0 =A0 Region 0: Memory at fc200000 (64-bit, non-prefetchable) [si=
-ze=3D16K]
-=A0 =A0 =A0 =A0 Capabilities: [50] Power Management version 2
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D55=
-mA =
-
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Status: D0 PME-Enable- DSel=3D0 DScale=3D0 =
-PME-
-=A0 =A0 =A0 =A0 Capabilities: [60] Message Signalled Interrupts: Mask- 64bi=
-t+ =
-
-Queue=3D0/0 Enable-
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Address: 0000000000000000 =A0Data: 0000
-=A0 =A0 =A0 =A0 Capabilities: [70] Express Unknown type IRQ 0
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Device: Supported: MaxPayload 128 bytes, Ph=
-antFunc 0, ExtTag-
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Device: Latency L0s <64ns, L1 <1us
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Device: Errors: Correctable- Non-Fatal- Fat=
-al- Unsupported-
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr-=
- NoSnoop+
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Device: MaxPayload 128 bytes, MaxReadReq 12=
-8 bytes
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Link: Supported Speed unknown, Width x0, AS=
-PM unknown, Port 0
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Link: Latency L0s <64ns, L1 <1us
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Link: ASPM Disabled CommClk- ExtSynch-
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Link: Speed unknown, Width x0
-=A0 =A0 =A0 =A0 Capabilities: [100] Virtual Channel
-=A0 =A0 =A0 =A0 Capabilities: [130] Unknown (5)
-
-thank you.
+If so, MANITAINERS claims that it is subscribers-only.  That would cause
+some bug reporters to give up and go away.
