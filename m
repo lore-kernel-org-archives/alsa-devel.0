@@ -1,46 +1,134 @@
-From: Mark Lord <liml@rtr.ca>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Tue, 13 Nov 2007 13:54:21 -0500
-Message-ID: <4739F2DD.5050802@rtr.ca>
-References: <20071113.033946.114918709.davem@davemloft.net> <20071113034916.2556edd7.akpm@linux-foundation.org> <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca> <20071113164650.GA28493@elte.hu> <4739E3D0.10201@rtr.ca> <20071113183925.GF17785@parisc-linux.org> <4739F069.6050102@rtr.ca> <20071113184902.GG17785@parisc-linux.org>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: [Pkg-alsa-devel] Bug#450805: alsa-tools-gui:
+	hdspmixer	initializes only first Hammerfall DSP card
+Date: Tue, 13 Nov 2007 19:56:00 +0100
+Message-ID: <20071113185600.GA3572@frodo.home.lxtec.de>
+References: <1194740278.31914.387158@goedel.fjf.gnu.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-input@atrey.karlin.mff.cuni.cz>
-In-Reply-To: <20071113184902.GG17785@parisc-linux.org>
-Sender: owner-linux-input@atrey.karlin.mff.cuni.cz
-List-Help: <mailto:majordomo@atrey.karlin.mff.cuni.cz?body=help>
-List-Owner: <mailto:owner-linux-input@atrey.karlin.mff.cuni.cz>
-List-Post: <mailto:linux-input@atrey.karlin.mff.cuni.cz>
-List-Unsubscribe: <mailto:linux-input-request@atrey.karlin.mff.cuni.cz?body=unsubscribe>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: Ingo Molnar <mingo@elte.hu>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, protasnb@gmail.com, linux-ide@vger.kernel.org, bugme-daemon@bugzilla.kernel.org, linux-input@atrey.karlin.mff.cuni.cz, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.98])
+	by alsa0.perex.cz (Postfix) with ESMTP id 97419245E4
+	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 19:56:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1194740278.31914.387158@goedel.fjf.gnu.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Frank Heckenbach <f.heckenbach@fh-soft.de>, 450805@bugs.debian.org
+Cc: alsa-devel@alsa-project.org, control@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-Matthew Wilcox wrote:
-> On Tue, Nov 13, 2007 at 01:43:53PM -0500, Mark Lord wrote:
->
->> mkdir t
->> cd t
->> git clone 
->> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
->> (wait half an hour)
->> /usr/bin/du -s linux-2.6
->> 522732  linux-2.6
-> 
-> You're assuming that everything in linux-2.6 was downloaded; that's
-> not true.  Everything in linux-2.6/.git was downloaded; but then you do a
-> checkout which happens to approximately double the size of the linux-2.6
-> directory. 
-..
+forwarded 450805 alsa-devel@alsa-project.org
+tags 450805 pending patch
 
-Ah, I wondered why it took only half an hour to download.
+Thanks
 
-..
-> When you compare it to the 60MB tarballs that are published, it's really
-> not that bad.
-..
+Hi ALSA developers,
 
-The tarballs I download are only 45MB.
+does it make sense to apply the patch to HEAD? I don't have a
+Hammerfall handy and can not test it.
 
-Cheers
+Thanks for cooperation.
+
+Elimar
+
+
+On Sun, 11 Nov 2007 the mental interface of
+Frank Heckenbach told:
+
+Package: alsa-tools-gui
+Version: 1.0.13-1
+Severity: normal
+Tags: patch
+
+
+We are using Hammerfall DSP cards. After booting, their audio output
+remains silent until hdspmixer is started. No interaction in the GUI
+of hdspmixer is necessary to unmute the first HDSP card; however,
+further cards are only unmuted when activating the respective GUI
+page ("2", "3"). Apparently, hdspmixer does some automatic
+initialization of the card when activating the page.
+
+Since we'd like to have a fully automatic startup, the following
+patch activates the page for each existing card on startup, thereby
+initializing them. There are surely more elegant solutions, but this
+patch is tested and solves the problem for us.
+
+--- alsa-tools-1.0.13/hdspmixer/src/HDSPMixerCardSelector.h.orig	2007-04-16 19:49:22.000000000 +0200
++++ alsa-tools-1.0.13/hdspmixer/src/HDSPMixerCardSelector.h	2007-04-16 19:50:51.000000000 +0200
+@@ -37,6 +37,7 @@
+     int card;
+     HDSPMixerWindow *basew;
+     HDSPMixerCardSelector(int x, int y, int w, int h, int card);
++    void ActivateCard (int i);
+     void draw();
+     int handle(int e);
+ };
+--- alsa-tools-1.0.13/hdspmixer/src/HDSPMixerCardSelector.cxx.orig	2007-04-16 19:49:23.000000000 +0200
++++ alsa-tools-1.0.13/hdspmixer/src/HDSPMixerCardSelector.cxx	2007-04-16 19:53:45.000000000 +0200
+@@ -45,27 +45,25 @@
+     }    
+ }
+ 
++void HDSPMixerCardSelector::ActivateCard (int i)
++{
++  card = i + 1;
++  basew->current_card = i;
++  basew->cards[i]->setMode (basew->cards[i]->getSpeed ());
++  redraw ();
++}
++
+ int HDSPMixerCardSelector::handle(int e)
+ {
+     int xpos = Fl::event_x()-x();
+     switch (e) {
+ 	case FL_PUSH:
+-	    if (xpos < 13 && card != 1) {
+-		    card = 1;
+-		    basew->current_card = 0;
+-		    basew->cards[0]->setMode(basew->cards[0]->getSpeed());
+-		    redraw();
+-	    } else if (xpos >= 24 && xpos < 37 && card != 2 && basew->cards[1] != NULL) {
+-		    card = 2;
+-		    basew->current_card = 1;
+-		    basew->cards[1]->setMode(basew->cards[1]->getSpeed());
+-		    redraw();
+-	    } else if (xpos >= 48 && card != 3 && basew->cards[2] != NULL) {
+-		    card = 3;
+-		    basew->current_card = 2;
+-		    basew->cards[2]->setMode(basew->cards[2]->getSpeed());
+-		    redraw();
+-	    }
++	    if (xpos < 13 && card != 1)
++	      ActivateCard (0);
++	    else if (xpos >= 24 && xpos < 37 && card != 2 && basew->cards[1] != NULL)
++	      ActivateCard (1);
++	    else if (xpos >= 48 && card != 3 && basew->cards[2] != NULL)
++	      ActivateCard (2);
+ 	    return 1;
+ 	default:
+ 	    return Fl_Widget::handle(e);
+--- alsa-tools-1.0.13/hdspmixer/src/HDSPMixerWindow.cxx.orig	2007-04-16 19:41:21.000000000 +0200
++++ alsa-tools-1.0.13/hdspmixer/src/HDSPMixerWindow.cxx	2007-04-16 19:55:13.000000000 +0200
+@@ -700,6 +701,9 @@
+     Fl::atclose = atclose_cb;
+     Fl::add_handler(handler_cb);
+     Fl::add_timeout(0.030, readregisters_cb, this);
++    i = 0;
++    while (cards[i] != NULL)
++      inputs->buttons->cardselector->ActivateCard (i++);
+ }
+ 
+ int HDSPMixerWindow::handle(int e) 
+
+-- 
+  Experience is something you don't get until 
+  just after you need it!
