@@ -1,74 +1,59 @@
-From: Adrian Bunk <bunk@kernel.org>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Tue, 13 Nov 2007 18:01:41 +0100
-Message-ID: <20071113170141.GD4250@stusta.de>
-References: <20071113031553.3c7b5c16.akpm@linux-foundation.org> <20071113.033946.114918709.davem@davemloft.net> <20071113034916.2556edd7.akpm@linux-foundation.org> <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca> <4739C1B0.8000803@cateee.net> <2c0942db0711130757g295add20re0ee423b84921d28@mail.gmail.com>
+From: alsa-devel.20.pris@spamgourmet.com
+Subject: HDA or AC97 for Nvidia MCP61S?
+Date: Tue, 13 Nov 2007 14:34:21 -0200
+Message-ID: <74eb4bb50711130834u5a6801daga4837be299a3f9c1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-ide-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gourmet.spamgourmet.com (gourmet.spamgourmet.com
+	[216.75.35.164]) by alsa0.perex.cz (Postfix) with ESMTP id 893642453A
+	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 18:10:32 +0100 (CET)
+Received: from gourmet.spamgourmet.com (localhost.localdomain [127.0.0.1])
+	by gourmet.spamgourmet.com (8.13.8/8.13.7) with ESMTP id lADHASk6001734
+	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 17:10:28 GMT
+Received: (from jqh1@localhost)
+	by gourmet.spamgourmet.com (8.13.8/8.13.8/Submit) id lADHAS3k001721
+	for alsa-devel@alsa-project.org; Tue, 13 Nov 2007 17:10:28 GMT
 Content-Disposition: inline
-In-Reply-To: <2c0942db0711130757g295add20re0ee423b84921d28@mail.gmail.com>
-Sender: linux-ide-owner@vger.kernel.org
-To: Ray Lee <ray-lk@madrabbit.org>
-Cc: "Giacomo A. Catenazzi" <cate@cateee.net>, Mark Lord <liml@rtr.ca>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 13, 2007 at 07:57:54AM -0800, Ray Lee wrote:
-> On Nov 13, 2007 7:24 AM, Giacomo A. Catenazzi <cate@cateee.net> wrote:
-> > As a long time kernel tester, I see some problem with the
-> > newer "new development model". In the short merge windows,
-> > after to much time, there are to many patches.
-> 
-> I think the root issue there is that it's hard to get all testers to
-> run a bisect, but easy to ask them to test snapshots. Right now the
-> snapshots are generated nightly, but I think it would make more sense
-> if they were generated every N patches, for some value of N...
->...
+Hello,
 
-I don't see a point in doing that - that would be a more manual 
-bisecting, and the result would not be one guilty commit.
+as I already reported on another email I'm having problems with my sound:
 
-Testers are not expected to be able to hack a kernel, but it's 
-reasonable to expect testers to be able to build their own kernels
-(and your proposal wouldn't change that).
+http://thread.gmane.org/gmane.linux.alsa.devel/49412
 
-The small instruction below is enough for everyone who is able to 
-build his own kernel to do a git bisect.
+My motherboard is PCCHIPS A13G+.
+The sound hardware of my Mobo is in the NVIDIA MCP61S Single chipset.
+This chipset consists of: GeForce(R) 6100 GPU and MCP nForce(R) 405
+Codec: Realtek ALC660-VD
 
-> Ray
+When looking at the soundcard matrix for Nvidia there are 2 options listed:
+http://www.alsa-project.org/main/index.php/Matrix:Vendor-Nvidia
 
-cu
-Adrian
+AC97 nForce-1 - nForce-4
+HDA nForce-430 and later
 
+Since my chipset is nForce 405 should I select the first option
+AC97? But everyone seems to advise me to use the HDA option.
 
-<--  snip  -->
+When I look at the details for HDA I see only "Intel HDA driver" and
+nothing about which particular chipsets are supported.
+On the AC97 option there is a list of chips but all are from Intel and
+none from Nvidia.
 
+So I'm confused. Which soundcard is the correct one for me? Is my
+particular chipset supported at all?
 
-# install git
-
-# clone Linus' tree:
-git clone \ 
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
-
-# start bisecting:
-cd linux-2.6
-git bisect start
-git bisect bad v2.6.21
-git bisect good v2.6.20
-cp /path/to/.config .
-
-# start a round
-make oldconfig
-make
-# install kernel, check whether it's good or bad, then:
-git bisect [bad|good]
-# start next round
-
-
-After at about 10-15 reboots you'll have found the guilty commit
-("...  is first bad commit").
-
-
-More information on git bisecting:
-  man git-bisect
-
+Thanks!
