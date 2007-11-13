@@ -1,134 +1,39 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: [Pkg-alsa-devel] Bug#450805: alsa-tools-gui:
-	hdspmixer	initializes only first Hammerfall DSP card
-Date: Tue, 13 Nov 2007 19:56:00 +0100
-Message-ID: <20071113185600.GA3572@frodo.home.lxtec.de>
-References: <1194740278.31914.387158@goedel.fjf.gnu.de>
+From: Theodore Tso <tytso@mit.edu>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Tue, 13 Nov 2007 13:55:47 -0500
+Message-ID: <20071113185547.GC25824@thunk.org>
+References: <20071113031553.3c7b5c16.akpm@linux-foundation.org> <20071113.033946.114918709.davem@davemloft.net> <20071113034916.2556edd7.akpm@linux-foundation.org> <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca> <40f323d00711130752k19cab8eauc3456721274b3267@mail.gmail.com> <20071113171356.GA25824@thunk.org> <4739DFF8.3090702@lwfinger.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.98])
-	by alsa0.perex.cz (Postfix) with ESMTP id 97419245E4
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 19:56:06 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1194740278.31914.387158@goedel.fjf.gnu.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Frank Heckenbach <f.heckenbach@fh-soft.de>, 450805@bugs.debian.org
-Cc: alsa-devel@alsa-project.org, control@bugs.debian.org
+In-Reply-To: <4739DFF8.3090702@lwfinger.net>
+Sender: netdev-owner@vger.kernel.org
+To: Larry Finger <larry.finger@lwfinger.net>
+Cc: Benoit Boissinot <bboissin@gmail.com>, Mark Lord <liml@rtr.ca>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-forwarded 450805 alsa-devel@alsa-project.org
-tags 450805 pending patch
+On Tue, Nov 13, 2007 at 11:33:44AM -0600, Larry Finger wrote:
+> I'm very encouraged to read of your expanded testing efforts. As a
+> bcm43xx developer, Ubuntu has been our problem distro, mostly
+> because your standard kernels have debugging turned off for bcm43xx.
+> When a Ubuntu user reports a problem and we ask for the relevant
+> output from dmesg, they have no information. I ask two things of all
+> distros: (1) Turn on debugging - we don't spam the logs that badly,
+> and (2) forward any bugs found by your testing to the maintainer,
+> and/or the bcm43xx mailing list.
 
-Thanks
+Heh. I hadn't enabled CONFIG_BCM43XX_DEBUG myself, but I just changed
+it for my next kernel build.  This is a slightly different issue,
+which is that sometimes _DEBUG options shouldn't be turned on by
+default (because they really trash performance and bloat log size),
+and sometimes they are painless to turn on and don't cost much.
 
-Hi ALSA developers,
+If that is the case, I'd suggest removing the option and just making
+it compiled in by default with a run-time option to enable it.
 
-does it make sense to apply the patch to HEAD? I don't have a
-Hammerfall handy and can not test it.
-
-Thanks for cooperation.
-
-Elimar
-
-
-On Sun, 11 Nov 2007 the mental interface of
-Frank Heckenbach told:
-
-Package: alsa-tools-gui
-Version: 1.0.13-1
-Severity: normal
-Tags: patch
+   	       	  	       	 	  - Ted
 
 
-We are using Hammerfall DSP cards. After booting, their audio output
-remains silent until hdspmixer is started. No interaction in the GUI
-of hdspmixer is necessary to unmute the first HDSP card; however,
-further cards are only unmuted when activating the respective GUI
-page ("2", "3"). Apparently, hdspmixer does some automatic
-initialization of the card when activating the page.
+   	      
 
-Since we'd like to have a fully automatic startup, the following
-patch activates the page for each existing card on startup, thereby
-initializing them. There are surely more elegant solutions, but this
-patch is tested and solves the problem for us.
-
---- alsa-tools-1.0.13/hdspmixer/src/HDSPMixerCardSelector.h.orig	2007-04-16 19:49:22.000000000 +0200
-+++ alsa-tools-1.0.13/hdspmixer/src/HDSPMixerCardSelector.h	2007-04-16 19:50:51.000000000 +0200
-@@ -37,6 +37,7 @@
-     int card;
-     HDSPMixerWindow *basew;
-     HDSPMixerCardSelector(int x, int y, int w, int h, int card);
-+    void ActivateCard (int i);
-     void draw();
-     int handle(int e);
- };
---- alsa-tools-1.0.13/hdspmixer/src/HDSPMixerCardSelector.cxx.orig	2007-04-16 19:49:23.000000000 +0200
-+++ alsa-tools-1.0.13/hdspmixer/src/HDSPMixerCardSelector.cxx	2007-04-16 19:53:45.000000000 +0200
-@@ -45,27 +45,25 @@
-     }    
- }
- 
-+void HDSPMixerCardSelector::ActivateCard (int i)
-+{
-+  card = i + 1;
-+  basew->current_card = i;
-+  basew->cards[i]->setMode (basew->cards[i]->getSpeed ());
-+  redraw ();
-+}
-+
- int HDSPMixerCardSelector::handle(int e)
- {
-     int xpos = Fl::event_x()-x();
-     switch (e) {
- 	case FL_PUSH:
--	    if (xpos < 13 && card != 1) {
--		    card = 1;
--		    basew->current_card = 0;
--		    basew->cards[0]->setMode(basew->cards[0]->getSpeed());
--		    redraw();
--	    } else if (xpos >= 24 && xpos < 37 && card != 2 && basew->cards[1] != NULL) {
--		    card = 2;
--		    basew->current_card = 1;
--		    basew->cards[1]->setMode(basew->cards[1]->getSpeed());
--		    redraw();
--	    } else if (xpos >= 48 && card != 3 && basew->cards[2] != NULL) {
--		    card = 3;
--		    basew->current_card = 2;
--		    basew->cards[2]->setMode(basew->cards[2]->getSpeed());
--		    redraw();
--	    }
-+	    if (xpos < 13 && card != 1)
-+	      ActivateCard (0);
-+	    else if (xpos >= 24 && xpos < 37 && card != 2 && basew->cards[1] != NULL)
-+	      ActivateCard (1);
-+	    else if (xpos >= 48 && card != 3 && basew->cards[2] != NULL)
-+	      ActivateCard (2);
- 	    return 1;
- 	default:
- 	    return Fl_Widget::handle(e);
---- alsa-tools-1.0.13/hdspmixer/src/HDSPMixerWindow.cxx.orig	2007-04-16 19:41:21.000000000 +0200
-+++ alsa-tools-1.0.13/hdspmixer/src/HDSPMixerWindow.cxx	2007-04-16 19:55:13.000000000 +0200
-@@ -700,6 +701,9 @@
-     Fl::atclose = atclose_cb;
-     Fl::add_handler(handler_cb);
-     Fl::add_timeout(0.030, readregisters_cb, this);
-+    i = 0;
-+    while (cards[i] != NULL)
-+      inputs->buttons->cardselector->ActivateCard (i++);
- }
- 
- int HDSPMixerWindow::handle(int e) 
-
--- 
-  Experience is something you don't get until 
-  just after you need it!
