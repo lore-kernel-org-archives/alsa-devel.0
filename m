@@ -1,127 +1,248 @@
-From: "" <semiyd@hotmail.com>
-Subject: aplay: xrun:1104: read/write error   ???
-Date: Tue, 13 Nov 2007 05:43:37 +0000
-Message-ID: <BAY117-W3355DED9D68AE487C460A2C0800@phx.gbl>
+From: "Natalie Protasevich" <protasnb@gmail.com>
+Subject: [BUG] New Kernel Bugs
+Date: Mon, 12 Nov 2007 22:42:32 -0800
+Message-ID: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc2-s6.bay0.hotmail.com (bay0-omc2-s6.bay0.hotmail.com
-	[65.54.246.142]) by alsa0.perex.cz (Postfix) with ESMTP id B3B952460C
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 06:43:38 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-ide-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-ide-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@
 List-Id: alsa-devel@alsa-project.org
 
+This is the listing of the open bugs that are relatively new, around
+2.6.22 and up. They are vaguely classified by specific area.
+(not a full list, there are more :)
 
-Hi All:
-     im using aplay from ALSA-1.0.15 to play music through bluetooth a2dp. im using montavista 2.6.18 on ARM9 platform.
-     I got an "aplay: xrun:1104: read/write error, state = RUNNING" error after the music has been played for one second or two.  Could someone tell me how this happened?
+The good part is that reporters of the bugs below are still around and
+haven't dissipated, or disposed of their hardware, so it is a good
+time to get the bugs.
+Those bugzillas that have been started as regressions on Rafael's list
+are not mentioned here so far, since they are being tracked as new
+regressions already.
 
-Here's the command that i use :
+It would be appreciated if the corresponding maintenance team could take a
+look, close off any which are fixed and see if they can fix any which aren't.
 
-aplay -v -D bluetooth /1.wav
+NOTE: when replying to this email, please add the bug number to the Subject in
+the form [Bug 1234] so that bugzilla will capture the discussion.
+Thanks.
 
+ACPI====================================================================
 
-And the message log is as follows:
+System does not load without acpi=off ide=nodma noapic
+http://bugzilla.kernel.org/show_bug.cgi?id=9358
+Kernel: 2.6.23.1
 
-/$ aplay -v -D bluetooth /1.wav
+ACPI Error attaching device data
+http://bugzilla.kernel.org/show_bug.cgi?id=9354
+Kernel: 2.6.24-rc2
 
-audio[842]: Accepted new client connection on unix socket (fd=8)
-audio[842]: Package PKT_TYPE_CFG_REQ:0
-audio[842]: avdtp_ref(0x3c990): ref=2
-audio[842]: a2dp_source_request_stream: selected SEP 0x3c218
-audio[842]: avdtp_ref(0x3c990): ref=3
-hcid[828]: link_key_request (sba=00:80:E1:00:AB:BA, dba=00:0D:3C:EB:53:F0)
-audio[842]: AVDTP: connected signaling channel to 00:0D:3C:EB:53:F0
-audio[842]: session_cb
-audio[842]: DISCOVER request succeeded
-audio[842]: seid 1 type 1 media 0 in use 0
-audio[842]: seid 2 type 1 media 0 in use 0
-audio[842]: session_cb
-audio[842]: GET_CAPABILITIES request succeeded
-audio[842]: seid 1 type 1 media 0
-hcid[828]: link_key_request (sba=00:80:E1:00:AB:BA, dba=00:0D:3C:EB:53:F0)
-hcid[828]: link_key_request (sba=00:80:E1:00:AB:BA, dba=00:0D:3C:EB:53:F0)
-audio[842]: session_cb
-audio[842]: GET_CAPABILITIES request succeeded
-audio[842]: seid 2 type 1 media 0
-audio[842]: Discovery complete
-audio[842]: avdtp_set_configuration(0x3c990): int_seid=1, acp_seid=1
-audio[842]: session_cb
-audio[842]: SET_CONFIGURATION request succeeded
-audio[842]: SBC Source: Set_Configuration_Cfm
-audio[842]: avdtp_ref(0x3c990): ref=4
-audio[842]: stream state changed: IDLE -> CONFIGURED
-audio[842]: session_cb
-audio[842]: OPEN request succeeded
-audio[842]: stream state changed: CONFIGURED -> OPEN
-audio[842]: AVDTP: connected transport channel to 00:0D:3C:EB:53:F0
-audio[842]: SBC Source: Open_Cfm
-audio[842]: session_cb
-audio[842]: START request succeeded
-audio[842]: SBC Source: Start_Cfm
-audio[842]: SBC Source SEP 0x3c218 locked
-audio[842]: fd=10, fd_opt=1, pkt_len=672, sample_size=2, rate=44100
-audio[842]: 34 bytes sent
-audio[842]: 1 bytes sent
-audio[842]: avdtp_unref(0x3c990): ref=3
-audio[842]: stream state changed: OPEN -> STREAMING
-Playing WAVE '/1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-Bluetooth Audio Device
-Its setup is:
-stream : PLAYBACK
-access : RW_INTERLEAVED
-format : S16_LE
-subformat : STD
-channels : 2
-rate : 44100
-exact rate : 44100 (44100/1)
-msbits : 16
-buffer_size : 6400
-period_size : 128
-period_time : 2902
-tick_time : 0
-tstamp_mode : NONE
-period_step : 1
-sleep_min : 0
-avail_min : 128
-xfer_align : 128
-start_threshold : 6400
-stop_threshold : 6400
-silence_threshold: 0
-silence_size : 0
-boundary : 1677721600
-hcid[828]: link_key_request (sba=00:80:E1:00:AB:BA, dba=00:0D:3C:EB:53:F0)
-Status(R/W):
-state : RUNNING
-trigger_time: 24.586883000
-tstamp : 0.000000
-delay : 0
-avail : 6912
-avail_max : 6912
-aplay: xrun:1104: read/write error, state = RUNNING      ---------------->>>>> this is where this error happens
-audio[842]: Unix client disconnected (fd=8)
-audio[842]: SBC Source SEP 0x3c218 unlocked
-audio[842]: avdtp_unref(0x3c990): ref=2
+/proc/acpi/battery displays Incorrect voltages
+http://bugzilla.kernel.org/show_bug.cgi?id=9341
+Kernel: 2.6.23.1
+
+PATA scan: ACPI Exception AE_AML_PACKAGE_LIMIT... is beyond end of object
+http://bugzilla.kernel.org/show_bug.cgi?id=9320
+Kernel: 2.6.24-rc2
+(Tejun: calling _GTF without calling _STM first.  _GTM doesn't have any
+prerequisite (it can't).  Can someone familiar with ACPI tell me why the method
+is failing?  At any rate, libata should work fine regardless of ACPI failures.
+Maybe it's time to start blacklist to skip ATA-ACPI for some boards to avoid
+those annoying messages during boot)
+
+ACPI Battery Info in /sys but not /proc/acpi
+http://bugzilla.kernel.org/show_bug.cgi?id=9183
+Kernel: 2.6.23-rc8-mm2
+
+When using ACPI on a Compaq Presario V6221EU the laptop goes into
+deadlock after a random amount of time
+http://bugzilla.kernel.org/show_bug.cgi?id=9118
+Kernel: 2.6.23-rc6
+
+ACPI video driver should validate brightness level before setting it via _BCM
+http://bugzilla.kernel.org/show_bug.cgi?id=9277
+Kernel: 2.6.23
+
+VIDEO/DVB
+
+dvb driver reboot system
+http://bugzilla.kernel.org/show_bug.cgi?id=9357
+Kernel: 2.6.21.5
 
 
+PLATFORM===============================================================
 
-thanks
+xipImage is built so that uBoot cant run it (ARM)
+http://bugzilla.kernel.org/show_bug.cgi?id=9356
+Kernel: 2.6.21
+
+Samsung R20 - ACPI: PCI Root Bridge [PCI0] (0000:00)	
+http://bugzilla.kernel.org/show_bug.cgi?id=9339
+Kernel: 2.6.24
+(boot is very long
+..MP-BIOS bug: 8254 timer not connected to IO-APIC
+then the boot stop at :
+ACPI: PCI Root Bridge [PCI0] (0000:00)
+(during 3 minutes, and boot continue)
+
+system_64.h: switch_to inline asm should be more robbust wrt optimizations
+http://bugzilla.kernel.org/show_bug.cgi?id=9302
+Kernel: 2.6.24-rc1
+
+with CONFIG_NO_HZ and/or CONFIG_HPET_TIMER set kernel 2.6.23 doesn't
+boot (ARM, Timer)
+http://bugzilla.kernel.org/show_bug.cgi?id=9229
+Kernel: 2.6.23
+
+NETWORKING===========================================================
+
+RTNLGRP_ND_USEROPT does not report ifindex (IPv6)
+http://bugzilla.kernel.org/show_bug.cgi?id=9349
+Kernel: 2.6.24+
+
+a kernel error happend in the func: __skb_dequeue when using in
+pfifo_fast_dequeue
+http://bugzilla.kernel.org/show_bug.cgi?id=9342
+Kernel: 2.6.11.1 - reporter asked to try recent kernel
+
+e100 does not work after boot
+http://bugzilla.kernel.org/show_bug.cgi?id=9336
+Kernel: 2.6.23.1
+
+2.6.23.1-smp kernel panic (network-related)
+http://bugzilla.kernel.org/show_bug.cgi?id=9318
+Kernel: 2.6.23.1
+Infiniband panic
+
+sundance -> 4port D-Link System Inc DFE-580TX -> Log errors
+http://bugzilla.kernel.org/show_bug.cgi?id=9311
+Kernel: 2.6.22.9
+
+via-rhine driver stalls with: PHY status 786d, resetting...
+http://bugzilla.kernel.org/show_bug.cgi?id=9300
+Kernel: 2.6.23+
 
 
-semiyd
+Weird network problems with 2.6.23-rc2
+http://bugzilla.kernel.org/show_bug.cgi?id=9080
+http://lkml.org/lkml/2007/8/11/40 - description
+
+rt2500pci: low TCP throughput (wireless)
+http://bugzilla.kernel.org/show_bug.cgi?id=9273
+Kernel: 2.6.24-rc1
+This is a regression
+
+Unable to build wifi network between zd1201 and b43
+http://bugzilla.kernel.org/show_bug.cgi?id=9237
+Kernel: 2.6.24-rc1
+
+Crash after module unload in b43 (wireless)
+http://bugzilla.kernel.org/show_bug.cgi?id=9233
+Kernel: 2.6.24-rc1
+
+(net typhoon) "no descs for cmd, had (needed) 0 (1) cmd, 31 (7) resp"
+http://bugzilla.kernel.org/show_bug.cgi?id=9225
+Kernel: 2.6.23.1
 
 
+IDE/SATA=========================================================
 
-_________________________________________________________________
-Invite your mail contacts to join your friends list with Windows Live Spaces. It's easy!
-http://spaces.live.com/spacesapi.aspx?wx_action=create&wx_url=/friends.aspx&mkt=en-us
+pata_pdc202xx_old excessive ATA bus errors
+http://bugzilla.kernel.org/show_bug.cgi?id=9337
+2.6.24-rc2
+
+Drive seagate ST380011AS needs to be blacklisted
+http://bugzilla.kernel.org/show_bug.cgi?id=9309
+Kernel: 2.6.22.X
+
+DVD-RAM umount and disk free bug
+http://bugzilla.kernel.org/show_bug.cgi?id=9265
+Kernel: 2.6.15  (asked to try current kernel)
+
+FILE SYSTEMS=======================================================
+
+ext4: delalloc space accounting problem drops data
+http://bugzilla.kernel.org/show_bug.cgi?id=9329
+Kernel: 2.6.24-rc1
+
+POSIX Access Control Lists cause bogus file system check errors
+http://bugzilla.kernel.org/show_bug.cgi?id=9241
+Kernel: 2.6.23.1
+
+MEMORY MANAGEMENT================================================
+
+My system hangs when it has no more free memory to allocate via malloc()
+http://bugzilla.kernel.org/show_bug.cgi?id=9316
+Kernel: 2.6.23
+User program, "My system hangs when it has no more free memory to
+allocate via malloc()"
+
+BUG: unable to handle kernel paging request at virtual address
+26121228/kswapd0[231] exited with preempt_count 1
+http://bugzilla.kernel.org/show_bug.cgi?id=9305
+EIP is at free_block+0x6d/0xe4
+Kernel: 2.6.22.6
+
+POWER MANAGEMENT==================================================
+
+IBM X41 looses time after Suspend2Disk
+http://bugzilla.kernel.org/show_bug.cgi?id=9314
+Kernel: 2.6.23
+
+Suspend to RAM resume hangs on a tickless (NO_HZ) kernel
+http://bugzilla.kernel.org/show_bug.cgi?id=9275
+Kernel: 2.6.23
+This is HP notebook nc6320 T2400 945GM
+
+
+VIDEO DRIVERS========================================================
+
+No text consoles with FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
+http://bugzilla.kernel.org/show_bug.cgi?id=9310
+Kernel: 2.6.24-rc1
+This is a regression
+
+
+PARALLEL PORT========================================================
+
+LPC IT8705 POST port making noise on parallel port
+http://bugzilla.kernel.org/show_bug.cgi?id=9306
+Kernel: 2.6.16+
+
+
+I/O STORAGE===========================================================
+
+kernel bug from pktcdvd
+http://bugzilla.kernel.org/show_bug.cgi?id=9294
+Kernel: 2.6.23
+
+After pci-e video card was installed, pci add-on usb card & firewire card fail
+http://bugzilla.kernel.org/show_bug.cgi?id=9223
+Kernel: 2.6.20 (testing of latest kernel requested)
+
+SCSI==================================================================
+
+qla2xxx: driver initialization does not complete when booting with
+Port connected
+http://bugzilla.kernel.org/show_bug.cgi?id=9267
+Kernel: 2.6.23.1
+
+SOUND ALSA============================================================
+
+Unable to load snd-hda-intel module: Unknown symbol in module, or
+unknown parameter
+http://bugzilla.kernel.org/show_bug.cgi?id=9242
+Kernel: 2.6.24-rc1
+
+usbaudio microphone: regular sound distortion on several Logitech Webcams
+http://bugzilla.kernel.org/show_bug.cgi?id=9230
+Kernel: 2.6.22.9
+
+HID====================================================================
+
+Kernel NULL pointer dereference at :usbhid:hiddev_ioctl+0x2f/0xabc
+http://bugzilla.kernel.org/show_bug.cgi?id=9216
+Kernel: 2.6.23.1
+Looks like this is a regression
