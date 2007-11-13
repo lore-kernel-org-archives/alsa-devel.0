@@ -1,25 +1,22 @@
-From: Larry Finger <larry.finger@lwfinger.net>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Tue, 13 Nov 2007 14:07:46 -0600
-Message-ID: <473A0412.4030005__41187.0063901462$1195004349$gmane$org@lwfinger.net>
-References: <20071113031553.3c7b5c16.akpm@linux-foundation.org>
-	<20071113.033946.114918709.davem@davemloft.net>
-	<20071113034916.2556edd7.akpm@linux-foundation.org>
-	<20071113.035824.40509981.davem@davemloft.net>
-	<20071113041259.79c9a8c5.akpm@linux-foundation.org>
-	<20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca>
-	<40f323d00711130752k19cab8eauc3456721274b3267@mail.gmail.com>
-	<20071113171356.GA25824@thunk.org> <4739DFF8.3090702@lwfinger.net>
-	<20071113185547.GC25824@thunk.org>
+From: Richard Kettlewell <rjk@greenend.org.uk>
+Subject: Re: mixer API documentation
+Date: Tue, 13 Nov 2007 20:08:45 +0000
+Message-ID: <wwvwssl3o36.fsf@rjk.greenend.org.uk>
+References: <wwvmytvjtmk.fsf@rjk.greenend.org.uk>
+	<s5hbq9yv1cu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mtiwmhc11.worldnet.att.net (mtiwmhc11.worldnet.att.net
-	[204.127.131.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id 66A25245DC
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 21:08:13 +0100 (CET)
-In-Reply-To: <20071113185547.GC25824@thunk.org>
+Received: from chiark.greenend.org.uk (chiark.greenend.org.uk [212.13.197.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5E53245DC
+	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 21:09:31 +0100 (CET)
+Received: from [172.17.207.6] (helo=sfere.anjou.terraraq.org.uk
+	ident=Debian-exim)
+	by chiark.greenend.org.uk (Debian Exim 3.36 #1) with esmtp
+	(return-path richard@sfere.greenend.org.uk) id 1Is24h-0003C0-00
+	for alsa-devel@alsa-project.org; Tue, 13 Nov 2007 20:09:31 +0000
+In-Reply-To: <s5hbq9yv1cu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,24 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Theodore Tso <tytso@mit.edu>, Larry Finger <larry.finger@lwfinger.net>, Benoit Boissinot <bboissin@gmail.com>, Mark Lord <liml@rtr.ca>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akp>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Theodore Tso wrote:
+Takashi Iwai writes:
+> At Sat, 3 Nov 2007 14:22:59 +0000,
+> Richard Kettlewell wrote:
+> > 
+> > Hello,
+> > 
+> > Where is the ALSA mixer API documentation?  I looked at
+> > http://www.alsa-project.org/alsa-doc/alsa-lib/mixer.html, but that
+> > only says "Mixer interface is designed to access the abstracted mixer
+> > controls. This is an abstraction layer over the hcontrol layer".
 > 
-> Heh. I hadn't enabled CONFIG_BCM43XX_DEBUG myself, but I just changed
-> it for my next kernel build.  This is a slightly different issue,
-> which is that sometimes _DEBUG options shouldn't be turned on by
-> default (because they really trash performance and bloat log size),
-> and sometimes they are painless to turn on and don't cost much.
+> The mixer interface isn't well documented than others, unfortunately.
+
+I'll stick with OSS emulation until someone can be bothered to
+document ALSA then.
+
+> You can find brief description of each function and data definition
+> in the module section
 > 
-> If that is the case, I'd suggest removing the option and just making
-> it compiled in by default with a run-time option to enable it.
+> 	http://www.alsa-project.org/alsa-doc/alsa-lib/group___mixer.html
+> 
+> and "Simple Mixer" section there.
 
-I am taking your suggestion and will produce the necessary patches for ssb, b43 and b43legacy. As
-bcm43xx is likely to be removed from 2.6.25, which is the earliest such a non-bug fix patch would be
-accepted, I hope that your future distribution and testing kernels will include the debug option.
-
-Thanks,
-
-Larry
+ttfn/rjk
