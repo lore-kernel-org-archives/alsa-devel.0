@@ -1,19 +1,33 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: hardware-dependent features
-Date: Tue, 13 Nov 2007 08:31:32 +0100
-Message-ID: <1194939092.7896.1220996479@webmail.messagingengine.com>
-References: <20071112131350.GA25885@buzzloop.caiaq.de>
-	<1194888368.31578.1220875067@webmail.messagingengine.com>
-	<30B53B6F-F339-429A-9957-7B130DF0BD4F@caiaq.org>
+From: "Jiang, Zhe" <zhe.jiang@intel.com>
+Subject: Re: patch for Dell 1210 which using stac9221 codec
+Date: Tue, 13 Nov 2007 17:16:51 +0800
+Message-ID: <0122C7C995D32147B66BF4F440D30163811418@pdsmsx415.ccr.corp.intel.com>
+References: <1192675756.3701.30.camel@localhost.localdomain>
+	<s5hve94zd3a.wl%tiwai@suse.de>
+	<1192773763.4306.31.camel@localhost.localdomain>
+	<s5hejfrekan.wl%tiwai@suse.de>
+	<1192779729.4628.5.camel@localhost.localdomain>
+	<s5hk5pjzefs.wl%tiwai@suse.de>
+	<1193033299.26715.34.camel@localhost.localdomain>
+	<s5hr6jmryaf.wl%tiwai@suse.de>
+	<1193298282.3459.18.camel@localhost.localdomain>
+	<s5hmyu7blzv.wl%tiwai@suse.de>
+	<1193735155.4414.7.camel@localhost.localdomain>
+	<s5hir4opv2p.wl%tiwai@suse.de>
+	<1193820584.3274.16.camel@localhost.localdomain>
+	<s5hve8noey5.wl%tiwai@suse.de>
+	<1194505582.3953.3.camel@localhost.localdomain>
+	<s5hode59wax.wl%tiwai@suse.de>
+	<1194584030.6623.8.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 1A6B42464F
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 08:31:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <30B53B6F-F339-429A-9957-7B130DF0BD4F@caiaq.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85669243DC
+	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 10:17:01 +0100 (CET)
+Content-class: urn:content-classes:message
+In-Reply-To: <1194584030.6623.8.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +37,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
-> On Nov 12, 2007, at 6:26 PM, Clemens Ladisch wrote:
-> What I would like to achieve is a conventient way of accessing them,
-> probably from the command line via some procfs or sysfs manner so
-> users can even use scripts to switch them on and off if they like.
-
-The amixer tool can access any control.
-
-> > I think the displays could by controlled by mixer controls of type
-> > "bytes".  Usual mixer applications can't handle those, but this is
-> > quite hardware dependent anway ...
-> 
-> But is that really where it belongs to? I would think that LEDs and
-> input functions are not related to audio and thus should be handled
-> by some other, more appropriate or maybe even proprietary subsystem.
-> 
-> There are some features which have influcence on the audio
-> behaviour since they affect the way the signal is processed, but
-> LEDs are certainly not, are they?
-
-The LEDs are part of the device, so it makes sense to use them in some
-manner related to audio.
-
-> Is it ok to attach own, device-specific sysfs entries to device
-> folders created by ALSA?
-
-It's possible, but so far, it hasn't been necessary.
-
-> This way, we would have those features releated to the audio device
-> but wouldn't need to abuse the mixer API.
-
-It's actually called the "control API" because it can be used to
-provide controls of all kinds, not only related to mixing.
-
-I'd stronly recommend to use the control API.  While it is possible to
-use sysfs for the same purpose, I don't see any advantage over the
-control API.
-
-
-Regards,
-Clemens
+SGksVGFrYXNoaToKCltGWUldIFRoZSByZXBvcnRlciBvZiB0aGUgMDAwMzQyNyBoZWxwZWQgdG8g
+dGVzdCB0aGUgcGF0Y2guCkhlcmUgaXMgdGhlIHJlc3VsdDoKMS4gNi1jaGFubmVsIG1vZGUgaXMg
+b2theQoyLiBNaWMgaXMgb2theQozLiBJZiBzd2l0Y2ggdGhlIG1pYyB0byBvdXRwdXQgamFjaywg
+aXQgY2FuIG11dGUgdGhlIGludGVybmFsIHNwZWFrZXIuCgpUaGFua3MhCgpKaWFuZyx6aGUKCi0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCkZyb206IEppYW5nLCBaaGUgClNlbnQ6IDIwMDfE6jEx
+1MI5yNUgMTI6NTQKVG86IFRha2FzaGkgSXdhaQpDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnClN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gcGF0Y2ggZm9yIERlbGwgMTIxMCB3aGljaCB1
+c2luZyBzdGFjOTIyMSBjb2RlYwoKT24gVGh1LCAyMDA3LTExLTA4IGF0IDA1OjQ4ICswMTAwLCBU
+YWthc2hpIEl3YWkgd3JvdGU6Cj4gQXQgVGh1LCAwOCBOb3YgMjAwNyAxNTowNjoyMiArMDgwMCwK
+PiB6aGVqaWFuZyB3cm90ZToKPiA+IAo+ID4gSGksVGFrYXNoaToKPiA+IAo+ID4gSXMgdGhlcmUg
+YW55IG5ldyBzdGF0ZXMgYWJvdXQgdGhpcyBwYXRjaD8KPiA+IE1heWJlIEkgY2FuIGFzayB0aGUg
+cmVwb3J0ZXIgdG8gaGVscCB0byB0ZXN0IGl0Lgo+IAo+IFlvdXIgcGF0Y2ggbG9va3MgYWxtb3N0
+IGZpbmUsIGJ1dCBJIG5lZWQgeW91ciBzaWduLW9mZiB0byBtZXJnZSB0byB0aGUKPiB1cHN0cmVh
+bSAoYXMgaXQncyBubyB0cml2aWFsIGZpeCkuICBHaXZlIHRoZSBmb2xsb3dpbmcgZXhwbGljaXRs
+eSB0bwo+IGFncmVlIHRoZSBnZW5lcmFsIHBhdGNoIG1hbmFnZW1lbnQgKHNlZQo+ICRMSU5VWF9L
+RVJORUwvRG9jdW1lbnRhdGlvbi9TdWJtaXR0aW5nUGF0Y2hlcyBmb3IgZGV0YWlscykuCj4gClRo
+YW5rcyEKSGVyZSBpcyBteSBzaWduLW9mZjoKCgpTaWduZWQtb2ZmLWJ5OiBKaWFuZyBaaGUgPHpo
+ZS5qaWFuZ0BpbnRlbC5jb20+Cgo+IFNvIGZhciwgdGhyZWUgcGF0Y2hlcyBhcmUgcGVuZGluZzoK
+PiAKPiAtIGZpeCBmb3IgcGluY2ZnCj4gLSBoYWNrIHRvIHN3YXAgaHAgYW5kIGxpbmUtb3V0cyBh
+dCBwcm9iZQo+IC0gZml4IGZvciBzcGVha2VyLW9mZiB2aWEgbWljLWphY2sgcGx1ZyAod2hpY2gg
+SSdkIG5lZWQgYSBiaXQgbW9yZQo+ICAgcmV2aWV3LCB0aG91Z2gpCj4gCj4gT2YgY291cnNlLCB0
+aGUgdGVzdCBvZiB0aGUgcGF0Y2ggd2l0aCB0aGUgb3JpZ2luYWwgcmVwb3J0ZXIgaXMKPiBpbXBv
+cnRhbnQuCj4gCgpJIHdpbGwgYXNrIHRoZSByZXBvcnRlciB0byBoZWxwIHRvIHRlc3QgdGhlIHBh
+dGNoLgoKPiAKPiB0aGFua3MsCj4gCj4gVGFrYXNoaQo+IAo+IAo+ID4gCj4gPiBUaGFua3MhCj4g
+PiAKPiA+IAo+ID4gT24gV2VkLCAyMDA3LTEwLTMxIGF0IDE2OjM5ICswODAwLCBUYWthc2hpIEl3
+YWkgd3JvdGU6Cj4gPiA+IEF0IFdlZCwgMzEgT2N0IDIwMDcgMTY6NDk6NDQgKzA4MDAsCj4gPiA+
+IHpoZWppYW5nIHdyb3RlOgo+ID4gPiA+Cj4gPiA+ID4gT24gVHVlLCAyMDA3LTEwLTMwIGF0IDE0
+OjUzICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+ID4gPiBBdCBUdWUsIDMwIE9jdCAy
+MDA3IDE3OjA1OjU1ICswODAwLAo+ID4gPiA+ID4gemhlamlhbmcgd3JvdGU6Cj4gPiA+ID4gPiA+
+Cj4gPiA+ID4gPiA+IFRoZSBzdGFjOTJ4eF9hdXRvX2NyZWF0ZV9tdWx0aV9vdXRfY3RscygpIGNy
+ZWF0ZSBjb250cm9scwo+ID4gPiBhY2NvcmRpbmcgdG8KPiA+ID4gPiA+ID4gY2ZnLT5saW5lX291
+dHMuIFRoaXMgcGF0Y2ggc2VlbXMgdG8gbGVhdmUgdGhlIGNmZy0+bGluZV9vdXRzCj4gPiA+IHVu
+Y2hhbmdlZC4KPiA+ID4gPiA+ID4gSXQgd2lsbCBiZSAxIC4gU28gSSB0aGluayB0aGF0IHdlIG5l
+ZWQgdG8gbW9kaWZ5Cj4gPiA+ID4gPiA+IHN0YWM5Mnh4X2F1dG9fY3JlYXRlX211bHRpX291dF9j
+dGxzKCksbGV0IGl0IHRvIHVzZSB0aGUgcmlnaHQKPiA+ID4gbGluZV9vdXRzLgo+ID4gPiA+ID4K
+PiA+ID4gPiA+IFJpZ2h0LCB0aGVuIGl0IG1pZ2h0IGJlIGFjdHVhbGx5IGVhc2llciB0byBzd2Fw
+IGxpbmVfb3V0cyBhbmQKPiA+ID4gaHBfb3V0cwo+ID4gPiA+ID4gYmVmb3JlIGFuZCBhZnRlciBh
+cyB5b3Ugc3VnZ2VzdGVkLi4uCj4gPiA+ID4gPgo+ID4gPiA+ID4KPiA+ID4gPiA+IFRha2FzaGkK
+PiA+ID4gPgo+ID4gPiA+IFNvLHdlIHNob3VsZCBwYXRjaCB0aGUgcGF0Y2hfc2lnbWF0ZWwuYyBs
+aWtlIHRoYXQ/Cj4gPiA+IAo+ID4gPiBZZXMsIHRoYXQncyB3aGF0IEkgbWVhbnQgKGFsbW9zdCBz
+YW1lIGNoYW5nZSBJIGRpZCBpbiBteSBsb2NhbCB0cmVlIDopCj4gPiA+IEknbSBnb2luZyB0byBz
+cGxpdCB0aGlzIHRvIHR3byBwaWVjZXMsIHRoZSBjaGFuZ2Ugb2YgbTgyIHBpbiBjb25maWcKPiA+
+ID4gYW5kIHRoZSBoYWNrIGZvciBtdWx0aS1IUCBvdXRzIChhbHNvIG15IGxhc3QgY2hhbmdlIHRv
+IGF1dG9jZmcKPiA+ID4gcGFyc2VyKS4KPiA+ID4gCj4gPiA+IEFueXdheSwgY291bGQgeW91IGdp
+dmUgeW91ciBzaWduLW9mZj8gIFRoZW4gSSdsbCBhcHBseSB0aGUgcGF0Y2hlcyB0bwo+ID4gPiB0
+aGUgSEcgdHJlZSBmb3IgYmV0dGVyIHRlc3RpbmcuCj4gPiA+IAo+ID4gPiAKPiA+ID4gVGhhbmtz
+LAo+ID4gPiAKPiA+ID4gVGFrYXNoaQo+ID4gPiAKPiA+ID4gPgo+ID4gPiA+IFRoYW5rcyEKPiA+
+ID4gPgo+ID4gPiA+IGRpZmYgLU51cgo+ID4gPiBhL2Fsc2EtZHJpdmVyLWhnMjAwNzEwMzEvYWxz
+YS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCj4gPiA+ID4gYi9hbHNhLWRyaXZlci1o
+ZzIwMDcxMDMxL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYwo+ID4gPiA+IC0t
+LSBhL2Fsc2EtZHJpdmVyLWhnMjAwNzEwMzEvYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9zaWdt
+YXRlbC5jCj4gPiA+ID4gMjAwNy0xMC0yMyAwODowMDoxMC4wMDAwMDAwMDAgKzA4MDAKPiA+ID4g
+PiArKysgYi9hbHNhLWRyaXZlci1oZzIwMDcxMDMxL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hf
+c2lnbWF0ZWwuYwo+ID4gPiA+IDIwMDctMTAtMzEgMTY6MTU6MzguMDAwMDAwMDAwICswODAwCj4g
+PiA+ID4gQEAgLTg4NCw4ICs4ODQsOCBAQAo+ID4gPiA+ICAgICAgMTAyODAxRDcgKERlbGwgWFBT
+IE0xMjEwKQo+ID4gPiA+ICAqLwo+ID4gPiA+ICBzdGF0aWMgdW5zaWduZWQgaW50IGRlbGxfOTIy
+eF9tODJfcGluX2NvbmZpZ3NbMTBdID0gewo+ID4gPiA+IC0gICAgIDB4MDIyMTEyMWYsIDB4NDA4
+MTAzZmYsIDB4MDIxMTEyMTIsIDB4OTAxMDAzMTAsCj4gPiA+ID4gLSAgICAgMHg0MDgwMDNmMSwg
+MHgwMjExMTIxMSwgMHgwMzQ1MTM0MCwgMHg0MGMwMDNmMiwKPiA+ID4gPiArICAgICAweDAyMjEx
+MjExLCAweDQwODEwM2ZmLCAweDAyYTExMjNlLCAweDkwMTAwMzEwLAo+ID4gPiA+ICsgICAgIDB4
+NDA4MDAzZjEsIDB4MDIyMTEyMWYsIDB4MDM0NTEzNDAsIDB4NDBjMDAzZjIsCj4gPiA+ID4gICAg
+ICAgMHg1MDgwMDNmMywgMHg0MDUwMDNmNCwKPiA+ID4gPiAgfTsKPiA+ID4gPiAKPiA+ID4gPiBA
+QCAtMjA4OCw2ICsyMDg4LDcgQEAKPiA+ID4gPiAgewo+ID4gPiA+ICAgICAgIHN0cnVjdCBzaWdt
+YXRlbF9zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7Cj4gPiA+ID4gICAgICAgaW50IGVycjsKPiA+
+ID4gPiArICAgICBpbnQgaHBfc3BlYWtlcl9zd2FwID0gMDsKPiA+ID4gPiAKPiA+ID4gPiAgICAg
+ICBpZiAoKGVyciA9IHNuZF9oZGFfcGFyc2VfcGluX2RlZl9jb25maWcoY29kZWMsCj4gPiA+ID4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZzcGVjLT5hdXRv
+Y2ZnLAo+ID4gPiA+IEBAIC0yMDk2LDYgKzIwOTcsMTggQEAKPiA+ID4gPiAgICAgICBpZiAoISBz
+cGVjLT5hdXRvY2ZnLmxpbmVfb3V0cykKPiA+ID4gPiAgICAgICAgICAgICAgIHJldHVybiAwOyAv
+KiBjYW4ndCBmaW5kIHZhbGlkIHBpbiBjb25maWcgKi8KPiA+ID4gPiAKPiA+ID4gPiArICAgICBp
+ZiAoc3BlYy0+YXV0b2NmZy5saW5lX291dF90eXBlID09IEFVVE9fUElOX1NQRUFLRVJfT1VUICYm
+Cj4gPiA+ID4gKyAgICAgICAgc3BlYy0+YXV0b2NmZy5ocF9vdXRzID4gMSkgewo+ID4gPiA+ICsg
+ICAgICAgICAgICAgLypDb3B5IGhwX291dHMgdG8gbGluZV9vdXRzLCBiYWNrdXAgbGluZV9vdXRz
+IGluCj4gPiA+IHNwZWFrZXJfb3V0cyovCj4gPiA+ID4gKyAgICAgICAgICAgICBtZW1jcHkoc3Bl
+Yy0+YXV0b2NmZy5zcGVha2VyX3BpbnMsCj4gPiA+IHNwZWMtPmF1dG9jZmcubGluZV9vdXRfcGlu
+cywKPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihzcGVjLT5hdXRv
+Y2ZnLmxpbmVfb3V0X3BpbnMpKTsKPiA+ID4gPiArICAgICAgICAgICAgIHNwZWMtPmF1dG9jZmcu
+c3BlYWtlcl9vdXRzID0gc3BlYy0+YXV0b2NmZy5saW5lX291dHM7Cj4gPiA+ID4gKyAgICAgICAg
+ICAgICBtZW1jcHkoc3BlYy0+YXV0b2NmZy5saW5lX291dF9waW5zLAo+ID4gPiBzcGVjLT5hdXRv
+Y2ZnLmhwX3BpbnMsCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplb2Yo
+c3BlYy0+YXV0b2NmZy5ocF9waW5zKSk7Cj4gPiA+ID4gKyAgICAgICAgICAgICBzcGVjLT5hdXRv
+Y2ZnLmxpbmVfb3V0cyA9IHNwZWMtPmF1dG9jZmcuaHBfb3V0czsKPiA+ID4gPiArICAgICAgICAg
+ICAgIGhwX3NwZWFrZXJfc3dhcCA9IDE7Cj4gPiA+ID4gKyAgICAgfQo+ID4gPiA+ICsKPiA+ID4g
+PiAgICAgICBpZiAoKGVyciA9IHN0YWM5Mnh4X2FkZF9keW5fb3V0X3BpbnMoY29kZWMsICZzcGVj
+LT5hdXRvY2ZnKSkgPAo+ID4gPiAwKQo+ID4gPiA+ICAgICAgICAgICAgICAgcmV0dXJuIGVycjsK
+PiA+ID4gPiAgICAgICBpZiAoc3BlYy0+bXVsdGlvdXQubnVtX2RhY3MgPT0gMCkKPiA+ID4gPiBA
+QCAtMjEwNyw2ICsyMTIwLDE4IEBACj4gPiA+ID4gICAgICAgaWYgKGVyciA8IDApCj4gPiA+ID4g
+ICAgICAgICAgICAgICByZXR1cm4gZXJyOwo+ID4gPiA+IAo+ID4gPiA+ICsgICAgIGlmIChocF9z
+cGVha2VyX3N3YXAgPT0gMSkgewo+ID4gPiA+ICsgICAgICAgICAgICAgLypSZXN0b3JlIHRoZSBo
+cF9vdXRzIGFuZCBsaW5lX291dHMqLwo+ID4gPiA+ICsgICAgICAgICAgICAgbWVtY3B5KHNwZWMt
+PmF1dG9jZmcuaHBfcGlucywKPiA+ID4gc3BlYy0+YXV0b2NmZy5saW5lX291dF9waW5zLAo+ID4g
+PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZW9mKHNwZWMtPmF1dG9jZmcubGlu
+ZV9vdXRfcGlucykpOwo+ID4gPiA+ICsgICAgICAgICAgICAgc3BlYy0+YXV0b2NmZy5ocF9vdXRz
+ID0gc3BlYy0+YXV0b2NmZy5saW5lX291dHM7Cj4gPiA+ID4gKyAgICAgICAgICAgICBtZW1jcHko
+c3BlYy0+YXV0b2NmZy5saW5lX291dF9waW5zLAo+ID4gPiBzcGVjLT5hdXRvY2ZnLnNwZWFrZXJf
+cGlucywKPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihzcGVjLT5h
+dXRvY2ZnLnNwZWFrZXJfcGlucykpOwo+ID4gPiA+ICsgICAgICAgICAgICAgc3BlYy0+YXV0b2Nm
+Zy5saW5lX291dHMgPSBzcGVjLT5hdXRvY2ZnLnNwZWFrZXJfb3V0czsKPiA+ID4gPiArICAgICAg
+ICAgICAgIG1lbXNldChzcGVjLT5hdXRvY2ZnLnNwZWFrZXJfcGlucywgMCwKPiA+ID4gPiBzaXpl
+b2Yoc3BlYy0+YXV0b2NmZy5zcGVha2VyX3BpbnMpKTsKPiA+ID4gPiArICAgICAgICAgICAgIHNw
+ZWMtPmF1dG9jZmcuc3BlYWtlcl9vdXRzID0gMDsKPiA+ID4gPiArICAgICB9Cj4gPiA+ID4gKwo+
+ID4gPiA+ICAgICAgIGVyciA9IHN0YWM5Mnh4X2F1dG9fY3JlYXRlX2hwX2N0bHMoY29kZWMsICZz
+cGVjLT5hdXRvY2ZnKTsKPiA+ID4gPiAKPiA+ID4gPiAgICAgICBpZiAoZXJyIDwgMCkKPiA+ID4g
+Pgo+ID4gPiAKPiA+ID4gCj4gPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
