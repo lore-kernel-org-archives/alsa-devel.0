@@ -1,46 +1,77 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Tue, 13 Nov 2007 17:08:38 +0100 (CET)
-Message-ID: <alpine.LFD.0.9999.0711131707480.3265@localhost.localdomain>
-References: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com> <20071113031553.3c7b5c16.akpm@linux-foundation.org> <4739ADA2.4060604@rtr.ca> <4739B245.9040305@rtr.ca>
+From: Chris Pemberton <cjpembo@gmail.com>
+Subject: Re: Intel HD Audio
+Date: Tue, 13 Nov 2007 10:43:43 -0600
+Message-ID: <4739D43F.8090205@gmail.com>
+References: <4737A76C.3080400@gmail.com> <s5hejeuv1nf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <owner-linux-input@atrey.karlin.mff.cuni.cz>
-In-Reply-To: <4739B245.9040305@rtr.ca>
-Sender: owner-linux-input@atrey.karlin.mff.cuni.cz
-List-Help: <mailto:majordomo@atrey.karlin.mff.cuni.cz?body=help>
-List-Owner: <mailto:owner-linux-input@atrey.karlin.mff.cuni.cz>
-List-Post: <mailto:linux-input@atrey.karlin.mff.cuni.cz>
-List-Unsubscribe: <mailto:linux-input-request@atrey.karlin.mff.cuni.cz?body=unsubscribe>
-To: Mark Lord <liml@rtr.ca>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Natalie Protasevich <protasnb@gmail.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.237])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4716124570
+	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 17:43:57 +0100 (CET)
+Received: by nz-out-0506.google.com with SMTP id m22so1144381nzf
+	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 08:43:56 -0800 (PST)
+In-Reply-To: <s5hejeuv1nf.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 13 Nov 2007, Mark Lord wrote:
+Takashi Iwai wrote:
+> At Sun, 11 Nov 2007 19:07:56 -0600,
+> Chris Pemberton wrote:
+>   
+>> I've been trying to fix audio on my Lenovo 3000 N100 laptop for quite 
+>> some time; on this list and via bug #0003468.  I finally got tired of 
+>> the xorg graphics woes and hacking for sound, so I am now "temporarily" 
+>> running Vista. 
+>> I'd like to get this audio fixed permanently, so if you need any details 
+>> from the working Vista drivers, let me know before I get sick of Windows 
+>> and switch back to Linux.
+>>     
+>
+> Well, an over-all experience, what is missing, would be a good input
+> (preferablly with a patch ;)
+>
+>
+> thanks,
+>
+> Takashi
+>
+>   
+The machine is a Lenovo 3000 N100.
 
-> Mark Lord wrote:
-> > Andrew Morton wrote:
-> > > On Mon, 12 Nov 2007 22:42:32 -0800 "Natalie Protasevich"
-> > > <protasnb@gmail.com> wrote:
-> > ..
-> ..
-> > > > Suspend to RAM resume hangs on a tickless (NO_HZ) kernel
-> > > > http://bugzilla.kernel.org/show_bug.cgi?id=9275
-> > > > Kernel: 2.6.23
-> > > > This is HP notebook nc6320 T2400 945GM
-> > > No response from developers
-> > ..
-> > 
-> > I *still* get very slow resume-from-RAM quite often here
-> > (new in 2.6.22 kernel, wasn't there in early 2.6.23-rc*).
-> ..
-> 
-> Typo.  That should have said:
-> 
-> > (new in 2.6.23 kernel, wasn't there in early 2.6.23-rc*).
+There are two methods I can choose to get sound working partially:
 
-Just asked that :) Is there a chance to bisect that ?
+1.  Edit patch_realtek.c (near line 10971):
+     from     SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo", ALC861VD_LENOVO)
+     to         SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo", ALC861VD_3ST)
+
+
+2.  Use modprobe snd-hda-intel model=3stack
+
+I guess both methods accomplish the same thing.  I'm not saying I know 
+the reason why this works, but I'd like to help find out why the 
+ALC861VD_LENOVO quirk is not working on my machine.
+
+Using this hack, I can hear sound from the speakers and headphones, yet 
+headphones do not mute the speakers when pluged in.  I can record from 
+either the built-in or external mic.  Is pluging in an external mic 
+supposed to mute the internal mic?  (It doesn't).
+
+Here is a pastbin using Kubuntu 7.10 with model=3stack:
+http://pastebin.ca/772177
+
+Is there any information I could get from Vista to help?  I can dual boot.
 
 Thanks,
 
-	tglx
+Chris
