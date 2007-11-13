@@ -1,77 +1,62 @@
-From: Chris Pemberton <cjpembo@gmail.com>
-Subject: Re: Intel HD Audio
-Date: Tue, 13 Nov 2007 10:43:43 -0600
-Message-ID: <4739D43F.8090205@gmail.com>
-References: <4737A76C.3080400@gmail.com> <s5hejeuv1nf.wl%tiwai@suse.de>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Tue, 13 Nov 2007 17:46:50 +0100
+Message-ID: <20071113164650.GA28493@elte.hu>
+References: <20071113031553.3c7b5c16.akpm@linux-foundation.org> <20071113.033946.114918709.davem@davemloft.net> <20071113034916.2556edd7.akpm@linux-foundation.org> <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.237])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4716124570
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 17:43:57 +0100 (CET)
-Received: by nz-out-0506.google.com with SMTP id m22so1144381nzf
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 08:43:56 -0800 (PST)
-In-Reply-To: <s5hejeuv1nf.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <owner-linux-input@atrey.karlin.mff.cuni.cz>
+Content-Disposition: inline
+In-Reply-To: <4739AFE0.20705@rtr.ca>
+Sender: owner-linux-input@atrey.karlin.mff.cuni.cz
+List-Help: <mailto:majordomo@atrey.karlin.mff.cuni.cz?body=help>
+List-Owner: <mailto:owner-linux-input@atrey.karlin.mff.cuni.cz>
+List-Post: <mailto:linux-input@atrey.karlin.mff.cuni.cz>
+List-Unsubscribe: <mailto:linux-input-request@atrey.karlin.mff.cuni.cz?body=unsubscribe>
+To: Mark Lord <liml@rtr.ca>
+Cc: Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sun, 11 Nov 2007 19:07:56 -0600,
-> Chris Pemberton wrote:
->   
->> I've been trying to fix audio on my Lenovo 3000 N100 laptop for quite 
->> some time; on this list and via bug #0003468.  I finally got tired of 
->> the xorg graphics woes and hacking for sound, so I am now "temporarily" 
->> running Vista. 
->> I'd like to get this audio fixed permanently, so if you need any details 
->> from the working Vista drivers, let me know before I get sick of Windows 
->> and switch back to Linux.
->>     
+
+* Mark Lord <liml@rtr.ca> wrote:
+
+> Ingo Molnar wrote:
+> ..
+>> This is all QA-101 that _cannot be argued against on a rational basis_, 
+>> it's just that these sorts of things have been largely ignored for years, 
+>> in favor of the all-too-easy "open source means many eyeballs and that is 
+>> our QA" answer, which is a _good_ answer but by far not the most 
+>> intelligent answer! Today "many eyeballs" is simply not good enough and 
+>> nature (and other OS projects) will route us around if we dont change.
+> ..
 >
-> Well, an over-all experience, what is missing, would be a good input
-> (preferablly with a patch ;)
->
->
-> thanks,
->
-> Takashi
->
->   
-The machine is a Lenovo 3000 N100.
+> QA-101 and "many eyeballs" are not at all in opposition.
 
-There are two methods I can choose to get sound working partially:
+yes, absolutely so - that's why i used the "good" qualifier. "Good is 
+not good enough" calls for additional efforts to make it more efficient, 
+not for the abolition of the many eyeballs concept (which would be 
+absurd). So what i wanted to say is that _sole_ reliance on the large 
+numbers of eyeballs is a fundamental mistake. It's even sometimes used 
+as an excuse to merge questionable stuff. "we'll find any bugs, many 
+eyeballs will make bugs shallow". In reality the many eyeballs are not 
+infinite, nor should they be taken for granted if they are used for 
+bogus things. We have to make sure the eyeballs stay 'many', and we also 
+have to make sure they are not wasted. It's a physical resource that 
+must be intelligently handled. Its positive effects can be easily wasted 
+and we do that today.
 
-1.  Edit patch_realtek.c (near line 10971):
-     from     SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo", ALC861VD_LENOVO)
-     to         SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo", ALC861VD_3ST)
+for example git-bisect was godsent. I remember that years ago bisection 
+of a bug was a very laborous task so that it was only used as a final, 
+last-ditch approach for really nasty bugs. Today we can autonomouly 
+bisect build bugs via a simple shell command around "git-bisect run", 
+without any human interaction! This freed up testing resources 
+enormously and made bisection one of the _first_ things that are tried 
+when bugs are met. We just need more of this (distros should offer 
+pre-built kernel rpm 'farms' for every important commit point and 
+automated tools for users to easily specify breakage points, without 
+them having to install those kernels individually) , and everyone should 
+be aware of the fact that we still suck (we merge too much crap and 
+still dont have good enough tools to de-crappify what we merge) and that 
+we are losing testers.
 
-
-2.  Use modprobe snd-hda-intel model=3stack
-
-I guess both methods accomplish the same thing.  I'm not saying I know 
-the reason why this works, but I'd like to help find out why the 
-ALC861VD_LENOVO quirk is not working on my machine.
-
-Using this hack, I can hear sound from the speakers and headphones, yet 
-headphones do not mute the speakers when pluged in.  I can record from 
-either the built-in or external mic.  Is pluging in an external mic 
-supposed to mute the internal mic?  (It doesn't).
-
-Here is a pastbin using Kubuntu 7.10 with model=3stack:
-http://pastebin.ca/772177
-
-Is there any information I could get from Vista to help?  I can dual boot.
-
-Thanks,
-
-Chris
+	Ingo
