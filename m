@@ -1,53 +1,43 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [ALSA] fix private data pointer calculation in CS4270
-	driver
-Date: Tue, 13 Nov 2007 17:23:36 -0600
-Message-ID: <11949962161100-git-send-email-timur@freescale.com>
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Tue, 13 Nov 2007 23:29:54 +0000
+Message-ID: <20071113232954.GK1356@flint.arm.linux.org.uk>
+References: <20071113034916.2556edd7.akpm@linux-foundation.org> <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113.043207.44732743.davem@davemloft.net> <20071113193219.GC1356@flint.arm.linux.org.uk> <20071113201319.GL4250@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0139E2467B
-	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 00:25:35 +0100 (CET)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
-	lADNNdeT028096
-	for <alsa-devel@alsa-project.org>; Tue, 13 Nov 2007 16:25:32 -0700 (MST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Timur Tabi <timur@freescale.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20071113201319.GL4250@stusta.de>
+Sender: netdev-owner@vger.kernel.org
+To: Adrian Bunk <bunk@kernel.org>
+Cc: David Miller <davem@davemloft.net>, akpm@linux-foundation.org, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, protasnb@gmail.com, linux-ide@vger.kernel.org, bugme-daemon@bugzilla.kernel.org, linux-input@atrey.karlin.mff.cuni.cz
 List-Id: alsa-devel@alsa-project.org
 
-Fix the calculation of the private_data pointer in the CS4270 driver.
+On Tue, Nov 13, 2007 at 09:13:19PM +0100, Adrian Bunk wrote:
+> On Tue, Nov 13, 2007 at 07:32:19PM +0000, Russell King wrote:
+> >...
+> > There's another issue I want to raise concerning bugzilla.  We have the
+> > classic case of "not enough people reading bugzilla bugs" - which is one
+> > of the biggest problems with bugzilla.  Virtually no one in the ARM
+> > community looks for ARM bugs in bugzilla.
+> > 
+> > Let's not forget that it would be a waste of time for people to manually
+> > check bugzilla for ARM bugs.  There's soo few people reporting ARM bugs
+> > into bugzilla that a weekly manual check by every maintainer would just
+> > return the same old boring results for months and months at a time.
+> >...
+> 
+> What about having all ARM bugs in Bugzilla by default assigned to 
+> linux-arm-kernel@lists.arm.linux.org.uk? [1]
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
- sound/soc/codecs/cs4270.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+That would also work, probably much better than setting up yet another
+list.
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 5d601ad..abac628 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -725,7 +725,8 @@ static int cs4270_probe(struct platform_device *pdev)
- 	codec->owner = THIS_MODULE;
- 	codec->dai = &cs4270_dai;
- 	codec->num_dai = 1;
--	codec->private_data = codec + ALIGN(sizeof(struct snd_soc_codec), 4);
-+	codec->private_data = (void *) codec +
-+		ALIGN(sizeof(struct snd_soc_codec), 4);
- 
- 	socdev->codec = codec;
- 
+My experience of trying to get mbligh to do this when I stopped looking
+after PCMCIA stuff was *extremely* painful.  Wonder if it's become any
+easier of late?
+
 -- 
-1.5.2.4
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:
