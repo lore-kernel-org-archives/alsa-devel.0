@@ -1,51 +1,70 @@
-From: "Fabio Comolli" <fabio.comolli@gmail.com>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Wed, 14 Nov 2007 15:14:46 +0100
-Message-ID: <b637ec0b0711140614s143d053ame7a3f13884c29bf4@mail.gmail.com>
-References: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com>
-	 <20071113031553.3c7b5c16.akpm@linux-foundation.org>
-	 <20071114132448.GA5183@ucw.cz>
+From: "Vladimir A. Barinov" <vbarinov@ru.mvista.com>
+Subject: Re: [PATCH] ASoC TLV320AIC3X codec driver
+Date: Wed, 14 Nov 2007 17:22:37 +0300
+Message-ID: <473B04AD.20301@ru.mvista.com>
+References: <20071113194125.GA17302@ru.mvista.com>	<s5hhcjpfecc.wl%tiwai@suse.de>	<473AF25F.5060305@ru.mvista.com>
+	<s5h6405facy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <20071114132448.GA5183@ucw.cz>
-Content-Disposition: inline
-Sender: linux-ide-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Natalie Protasevich <protasnb@gmail.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from buildserver.ru.mvista.com (unknown [85.21.88.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 94B8524775
+	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 15:22:39 +0100 (CET)
+In-Reply-To: <s5h6405facy.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-FWIW, I see the same problem with another HP notebook, DV4378EA with
-radeon X700 video card. It does not happen frequently but I can say
-that since I disabled the tickless feature I can't reproduce the
-problem anymore.
+Takashi Iwai wrote:
+> At Wed, 14 Nov 2007 16:04:31 +0300,
+> Vladimir A. Barinov wrote:
+>   
+>>>> +/*
+>>>> + * All input lines are connected when !0xf and disconnected with 0xf bit field,
+>>>>     
+>>>>         
+>>> Please keep the line within 80 chars.  Try to run checkpatch.pl in
+>>> linuxkernel/scripts for checking such minor coding-style issues.
+>>>   
+>>>       
+>> But this line is less then 80 chars :)
+>>     
+>
+> Ah, ok, maybe my editor window was too narrow.  Please disregard it.
+>
+>   
+>>>> +#define AIC3X_RATES	SNDRV_PCM_RATE_8000_96000
+>>>> +#define AIC3X_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+>>>> +			 SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+>>>>     
+>>>>         
+>>> Are you sure that it's FMTBIT_S24_LE?  It's not packed in 3 bytes but
+>>> uses lower 3 bytes of 4 bytes frame.
+>>>
+>>>   
+>>>       
+>> Aic3x supports 16/20/24/32 bits data word length and in accordance with 
+>> aic33 documentation the
+>> number of clocks per half-frame for each channel are equal to exact 
+>> number of bits of the word.
+>> Unfortunately, now I have no h/w to test 24bits mode.
+>>     
+>
+> Then it sounds like the correct data format is FMTBIT_S24_3LE instead
+> of FMTBIT_S24_LE.  The former is 3-byte format while the latter is
+> 4-byte.  Please check again.
+>
+>   
+Thanks for clarification! That's it. Will correct in the next take.
 
-On Nov 14, 2007 2:24 PM, Pavel Machek <pavel@ucw.cz> wrote:
-> Hi!
->
-> > > Suspend to RAM resume hangs on a tickless (NO_HZ) kernel
-> > > http://bugzilla.kernel.org/show_bug.cgi?id=9275
-> > > Kernel: 2.6.23
-> > > This is HP notebook nc6320 T2400 945GM
-> >
-> > No response from developers
->
-> Maybe I'm optimistic, but I expected Ingo/Thomas to look after nohz
-> problems. nohz=off highres=off fixes more than one suspend problem...
->
-> ...stuff I've seen with NOHZ even without suspend (cursor blinking
-> irregulary) make me think that nohz perhaps should not be used in
-> production just yet...
->
->                                                         Pavel
-> --
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
->
-> -
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
->
+Vladimir
