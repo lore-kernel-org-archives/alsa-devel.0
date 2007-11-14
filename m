@@ -1,70 +1,37 @@
-From: "Vladimir A. Barinov" <vbarinov@ru.mvista.com>
-Subject: Re: [PATCH] ASoC TLV320AIC3X codec driver
-Date: Wed, 14 Nov 2007 17:22:37 +0300
-Message-ID: <473B04AD.20301@ru.mvista.com>
-References: <20071113194125.GA17302@ru.mvista.com>	<s5hhcjpfecc.wl%tiwai@suse.de>	<473AF25F.5060305@ru.mvista.com>
-	<s5h6405facy.wl%tiwai@suse.de>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Wed, 14 Nov 2007 15:30:40 +0100
+Message-ID: <20071114143040.GA31025@elte.hu>
+References: <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca> <20071113164650.GA28493@elte.hu> <4739E3D0.10201@rtr.ca> <20071113183925.GF17785@parisc-linux.org> <4739F069.6050102@rtr.ca> <20071113184902.GG17785@parisc-linux.org> <4739F2DD.5050802@rtr.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buildserver.ru.mvista.com (unknown [85.21.88.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94B8524775
-	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 15:22:39 +0100 (CET)
-In-Reply-To: <s5h6405facy.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <owner-linux-input@atrey.karlin.mff.cuni.cz>
+Content-Disposition: inline
+In-Reply-To: <4739F2DD.5050802@rtr.ca>
+Sender: owner-linux-input@atrey.karlin.mff.cuni.cz
+List-Help: <mailto:majordomo@atrey.karlin.mff.cuni.cz?body=help>
+List-Owner: <mailto:owner-linux-input@atrey.karlin.mff.cuni.cz>
+List-Post: <mailto:linux-input@atrey.karlin.mff.cuni.cz>
+List-Unsubscribe: <mailto:linux-input-request@atrey.karlin.mff.cuni.cz?body=unsubscribe>
+To: Mark Lord <liml@rtr.ca>
+Cc: Matthew Wilcox <matthew@wil.cx>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, protasnb@gmail.com, linux-ide@vger.kernel.org, bugme-daemon@bugzilla.kernel.org, linux-input@atrey.karlin.mff.cuni.cz, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 14 Nov 2007 16:04:31 +0300,
-> Vladimir A. Barinov wrote:
->   
->>>> +/*
->>>> + * All input lines are connected when !0xf and disconnected with 0xf bit field,
->>>>     
->>>>         
->>> Please keep the line within 80 chars.  Try to run checkpatch.pl in
->>> linuxkernel/scripts for checking such minor coding-style issues.
->>>   
->>>       
->> But this line is less then 80 chars :)
->>     
->
-> Ah, ok, maybe my editor window was too narrow.  Please disregard it.
->
->   
->>>> +#define AIC3X_RATES	SNDRV_PCM_RATE_8000_96000
->>>> +#define AIC3X_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
->>>> +			 SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
->>>>     
->>>>         
->>> Are you sure that it's FMTBIT_S24_LE?  It's not packed in 3 bytes but
->>> uses lower 3 bytes of 4 bytes frame.
->>>
->>>   
->>>       
->> Aic3x supports 16/20/24/32 bits data word length and in accordance with 
->> aic33 documentation the
->> number of clocks per half-frame for each channel are equal to exact 
->> number of bits of the word.
->> Unfortunately, now I have no h/w to test 24bits mode.
->>     
->
-> Then it sounds like the correct data format is FMTBIT_S24_3LE instead
-> of FMTBIT_S24_LE.  The former is 3-byte format while the latter is
-> 4-byte.  Please check again.
->
->   
-Thanks for clarification! That's it. Will correct in the next take.
 
-Vladimir
+* Mark Lord <liml@rtr.ca> wrote:
+
+>> You're assuming that everything in linux-2.6 was downloaded; that's 
+>> not true.  Everything in linux-2.6/.git was downloaded; but then you 
+>> do a checkout which happens to approximately double the size of the 
+>> linux-2.6 directory.
+> ..
+>
+> Ah, I wondered why it took only half an hour to download.
+
+and you can get even lower than the 260MB by downloading a shallow clone 
+of v2.6.23 and then populating the git tree from tht point on. (see the 
+--depth parameter of git-clone) [because most of the time you want to 
+bisect back to the last stable release, not back to 2 years of git 
+history.]
+
+	Ingo
