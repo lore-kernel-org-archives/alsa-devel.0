@@ -1,34 +1,54 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Wed, 14 Nov 2007 13:05:31 -0800
-Message-ID: <20071114130531.15d352fe.rdunlap@xenotime.net>
-References: <20071113.033946.114918709.davem@davemloft.net>
-	<20071113034916.2556edd7.akpm@linux-foundation.org>
-	<20071113.035824.40509981.davem@davemloft.net>
-	<20071113041259.79c9a8c5.akpm@linux-foundation.org>
-	<20071113134029.GA30978@elte.hu>
-	<20071113085514.3414aa52.rdunlap@xenotime.net>
-	<20071114140847.GA11489@elte.hu>
-	<20071114093820.ff3ad8f9.rdunlap@xenotime.net>
-	<20071114201639.GA17182@elte.hu>
-	<20071114122932.bc3bec04.rdunlap@xenotime.net>
-	<20071114203737.GA20606@elte.hu>
+From: Timur Tabi <timur@freescale.com>
+Subject: params_buffer_size() and params_period_bytes() are
+ returning the same value
+Date: Wed, 14 Nov 2007 15:53:33 -0600
+Message-ID: <473B6E5D.3040303@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <20071114203737.GA20606@elte.hu>
-Sender: linux-ide-owner@vger.kernel.org
-To: Ingo Molnar <mingo@elte.hu>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2AE5524822
+	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 22:53:38 +0100 (CET)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw01.freescale.net (8.12.11/de01egw01) with ESMTP id
+	lAELrYxJ000651
+	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 14:53:34 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id lAELrXpc029191
+	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 15:53:33 -0600 (CST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Nov 2007 21:37:37 +0100 Ingo Molnar wrote:
+I have an ASOC v1 driver that I'm wrapping up.  I've noticed something weird in 
+my hw_params() function.  I have this code:
 
-> ok, then you conceded it by not replying to it? good ;-)
+size_t buffer_size = params_buffer_size(hw_params);
+size_t period_size = params_period_bytes(hw_params);
 
-No, I don't intend to carry on this discussion,
-but I appreciate the smiley.
+printk(KERN_INFO "%s: buffer_size=%x period_size=%x\n", __FUNCTION__, 
+buffer_size, period_size);
+printk(KERN_INFO "%s: params_periods=%u\n", __FUNCTION__, 
+params_periods(hw_params));
 
----
-~Randy
+And it produces this output:
+
+fsl_dma_hw_params: buffer_size=5dc0 period_size=5dc0
+fsl_dma_hw_params: params_periods=4
+
+Why am I getting the same value for buffer_size and period_size?  buffer_size 
+should be four times period_size.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
