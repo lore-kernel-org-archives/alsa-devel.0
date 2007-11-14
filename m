@@ -1,83 +1,50 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: Re: rate plugin issue
-Date: Wed, 14 Nov 2007 23:10:02 +0300
-Message-ID: <473B561A.1050203@aknet.ru>
-References: <s5hwssnx58j.wl%tiwai@suse.de>	<4738A89D.9060601@aknet.ru>
-	<s5hmytihlvo.wl%tiwai@suse.de>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Wed, 14 Nov 2007 14:09:14 -0600
+Message-ID: <1195070954.8364.41.camel@localhost.localdomain>
+References: <20071113134029.GA30978@elte.hu>
+	 <20071113085514.3414aa52.rdunlap@xenotime.net>
+	 <20071114140847.GA11489@elte.hu>
+	 <20071114.115601.00715073.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.aknet.ru (mail.AKNET.ru [77.246.241.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id E04B8243AA
-	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 21:08:57 +0100 (CET)
-In-Reply-To: <s5hmytihlvo.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-ide-owner@vger.kernel.org>
+In-Reply-To: <20071114.115601.00715073.davem@davemloft.net>
+Sender: linux-ide-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: mingo@elte.hu, rdunlap@xenotime.net, akpm@linux-foundation.org, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+On Wed, 2007-11-14 at 11:56 -0800, David Miller wrote:
+> From: Ingo Molnar <mingo@elte.hu>
+> Date: Wed, 14 Nov 2007 15:08:47 +0100
+> 
+> > In fact this thread is the very example: David points out that on netdev 
+> > some of those bugs were already discussed and resolved. Had it been all 
+> > on lkml we'd all be aware of it.
+> 
+> That's a rediculious argument.
+> 
+> One other reason these bugs are resolved, is that the networking
+> developers only need to subscribe to netdev and not have to listen to
+> all the noise on lkml.
+> 
+> People who want to manage bugs know what list to look on and
+> contact about problems.
+> 
+> Dumping even more crap on lkml is not the answer.
 
-Takashi Iwai wrote:
-> The problem is that the condition of poll() is indeed broken without
-> the hack.  That is, it's no problem of snd_pcm_write_areas().
-> snd_pcm_write_areas() just calls snd_pcm_wait(), which calls nothing
-> but poll().  If your program calls poll() by itself, you would see the
-> similar problem.
-Yes. But I am not sure how should
-it behave. For example, if the prog
-sets avail_min=1, then it should
-expect the snd_pcm_wait() to no longer
-work. But I think the write() should
-not be affected. Yes, snd_pcm_write_areas()
-just calls snd_pcm_wait(), but should it?
-Should write() depend on avail_min, or
-only snd_pcm_wait() should?
-If write() should depend on avail_min
-(which doesn't look logical to me), then
-this does imply mpg123 is doing the wrong
-thing by setting avail_min=1? And so,
-what would be the fix?
+I agree totally with David, and this goes for SCSI too.  If it's not
+reported on linux-scsi, there's a significant chance of us missing the
+bug report.  The fact that some people notice bugs go past on LKML and
+forward them to linux-scsi is a happy accident and not necessarily
+something to rely on.
 
-> True, it should be fixed in a better way.
-Unfortunately, I have no idea how's the
-better fix should look like.
-My patch implements exactly the logic
-I had in mind: leave snd_pcm_wait() to
-depend on avail_min, but make writei()
-to not depend on it (use period_size
-instead). Since you don't agree with that
-logic, please let me know what logic you
-prefer.
-Furthermore, as you said earlier, avail_min
-doesn't really work as expected. It gets
-"rounded" to period_size anyway, because
-that's where the interrupt arrives. Taking
-that into account, I can propose the following:
-deprecate avail_min and always set it to
-period_size, no matter what the program
-thinks. That will pretty much return the
-old behaveour (the hack), although this
-time - without the underruns.
-But I don't suppose you are going to like
-also this approach. :)
+LKML has 10-20x the traffic of linux-scsi and a much smaller signal to
+noise ratio.  Having a specialist list where all the experts in the
+field hangs out actually enhances our ability to fix bugs.
 
-> BTW, could you provide a bit more information how to reproduce the
-> bug?
-Simply play some mp3 with mpg123, run "top".
+James
+ 
 
-> (Or, a test-case code would be best, as you know  ;) 
-Well, stripping down the mpg123 code is
-not a rocket science, I can do that. But
-I am a bit busy at the moment, this will
-have to wait a few days. But I think there
-are really no problems reproducing it. :)
