@@ -1,46 +1,26 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: params_buffer_size() and params_period_bytes() are
- returning the same value
-Date: Wed, 14 Nov 2007 15:57:14 -0600
-Message-ID: <473B6F3A.1010100@freescale.com>
-References: <473B6E5D.3040303@freescale.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: Moderated list
+Date: Wed, 14 Nov 2007 15:23:15 -0800 (PST)
+Message-ID: <20071114.152315.134994547.davem@davemloft.net>
+References: <s5h8x51fd2l.wl%tiwai@suse.de>
+	<473AE84A.4050004@keyaccess.nl>
+	<s5h3av9f9ac.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 023C024822
-	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 22:57:17 +0100 (CET)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by de01egw01.freescale.net (8.12.11/de01egw01) with ESMTP id
-	lAELvFYA002236
-	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 14:57:15 -0700 (MST)
-Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
-	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id lAELvENe029862
-	for <alsa-devel@alsa-project.org>; Wed, 14 Nov 2007 15:57:14 -0600 (CST)
-In-Reply-To: <473B6E5D.3040303@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-ide-owner@vger.kernel.org>
+In-Reply-To: <s5h3av9f9ac.wl%tiwai@suse.de>
+Sender: linux-ide-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: rene.herman@keyaccess.nl, rmk+lkml@arm.linux.org.uk, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, protasnb@gmail.com, linux-ide@vger.kernel.org, bugme-daemon@bugzilla.kernel.org, linux-input@atrey.karlin.mff.cuni.cz, akpm@linux-foundation.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 14 Nov 2007 10:47:39 +0100
 
-> Why am I getting the same value for buffer_size and period_size?  buffer_size 
-> should be four times period_size.
+> I think alsa-user can stay as is.  It's no place for dragging many
+> other addresses like alsa-devel.
+> 
+> BTW, I also prefer keeping the name alsa-devel@.  It's been so.
 
-Never mind.  buffer_size is the size in frames, not bytes, and each frame is 4 
-bytes.  Duh.
-
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+That's fine with me, I've changed it alsa-devel@vger.kernel.org
