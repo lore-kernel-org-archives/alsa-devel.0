@@ -1,19 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Is there a function I can call from my ISR to tell
- ALSA to abort playback?
-Date: Thu, 15 Nov 2007 14:28:14 -0600
-Message-ID: <473CABDE.7000205@freescale.com>
-References: <473B5D83.2020408@freescale.com>	<Pine.LNX.4.61.0711150932310.19062@tm8103.perex-int.cz>	<473C5F26.2050807@freescale.com>
-	<s5hejerd96a.wl%tiwai@suse.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: Moderated list
+Date: Thu, 15 Nov 2007 13:34:04 -0800 (PST)
+Message-ID: <20071115.133404.14700546.davem@davemloft.net>
+References: <20071114.152315.134994547.davem@davemloft.net>
+	<s5h4pfodm9m.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0711151450120.19062@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 744BA246E7
-	for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2007 21:28:19 +0100 (CET)
-In-Reply-To: <s5hejerd96a.wl%tiwai@suse.de>
+Received: from sunset.davemloft.net (unknown [74.93.104.97])
+	by alsa0.perex.cz (Postfix) with ESMTP id E4CC5247EB
+	for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2007 22:34:05 +0100 (CET)
+In-Reply-To: <Pine.LNX.4.61.0711151450120.19062@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: perex@perex.cz
+Cc: tiwai@suse.de, rene.herman@keyaccess.nl, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 15 Nov 2007 09:00:54 -0600,
-> Timur Tabi wrote:
->> Jaroslav Kysela wrote:
->>
->>> Yes, call snd_pcm_stop() function. The call must be protected with 
->>> snd_pcm_stream_lock... See to i2c/other/ak4117.c for an example.
->> That code calls snd_pcm_stop() from a timer, not an ISR.  Do I need the call to 
->> wake_up() as well?
-> 
-> snd_pcm_stop() can be called from ISR, too (e.g.
-> snd_pcm_period_elapsed() may call snd_pcm_stop() when XRUN occurs).
-> You only need to protect it via snd_pcm_stream_lock*().
+From: Jaroslav Kysela <perex@perex.cz>
+Date: Thu, 15 Nov 2007 14:56:38 +0100 (CET)
 
-It doesn't seem to do much.  Here's the function I wrote:
+> David, could I send you the list of subscribers on the alsa-devel list (in 
+> a private e-mail) to move mailing list to vger without bothering all users 
+> to resubscribe again (we did it several months ago, so the subscriber list 
+> is quite clean)? I will redirect alsa-devel@alsa-project.org address then 
+> to alsa-devel@vger.kernel.org (if it does not break any vger rules or spam 
+> filtering on vger) to preserve alsa-devel list e-mail.
 
-static void fsl_dma_abort_stream(struct snd_pcm_substream *substream)
-{
-	unsigned long flags;
+We don't do this because:
 
-	snd_pcm_stream_lock_irqsave(substream, flags);
-	if (snd_pcm_running(substream)) {
-		snd_pcm_stop(substream, SNDRV_PCM_STATE_DRAINING);
-		wake_up(&substream->runtime->sleep);
-	}
-	snd_pcm_stream_unlock_irqrestore(substream, flags);
-}
+1) If the user doesn't do the subscribe, they won't know how
+   to unsubscribe.
 
-When I play a file, my DMA controller is incorrectly programmed (test case) and 
-this function gets triggered.  The application (aplay) does not terminate.
+   If you think this isn't an issue, after 10 years of co-running vger
+   I can tell you it's a huge issue as they just spam the list owner,
+   with requests to be removed.
 
-I tried it with the wake_up() call, but it didn't make a difference.
+2) Users generally get upset when you subscribe them to a
+   site they did not get asked to be subscribed to.  And yes
+   this is true even if it's the same mailing list just at
+   a new location.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+I apply this rule unilaterally to all new mailing lists hosted
+at vger, I'm not just singling out this case, believe me :-)
+
+So please ask the folks on the existing list to subscribe to
+the new one.
+
+Thank you.
