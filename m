@@ -1,40 +1,54 @@
-From: Ben C <bchang_2@yahoo.com>
-Subject: alsa-lib module path question
-Date: Thu, 15 Nov 2007 12:14:39 -0800 (PST)
-Message-ID: <674790.40730.qm@web36512.mail.mud.yahoo.com>
+From: Ben Dooks <ben@trinity.fluff.org>
+Subject: Re: [BUG] New Kernel Bugs
+Date: Thu, 15 Nov 2007 20:16:56 +0000
+Message-ID: <20071115201656.GD11305@trinity.fluff.org>
+References: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com>
+	<20071113031553.3c7b5c16.akpm@linux-foundation.org>
+	<4739ADA2.4060604@rtr.ca>
+	<alpine.LFD.0.9999.0711131521590.3265@localhost.localdomain>
+	<20071113181053.GB1356@flint.arm.linux.org.uk>
+	<20071113182516.250de873@the-village.bc.nu>
+	<20071113223437.GG1356@flint.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web36512.mail.mud.yahoo.com (web36512.mail.mud.yahoo.com
-	[209.191.85.12]) by alsa0.perex.cz (Postfix) with SMTP id 5B9DF247C6
-	for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2007 21:14:41 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-pcmcia-bounces+glkpd-linux-pcmcia=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20071113223437.GG1356@flint.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-pcmcia>,
+	<mailto:linux-pcmcia-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-pcmcia>
+List-Post: <mailto:linux-pcmcia@lists.infradead.org>
+List-Help: <mailto:linux-pcmcia-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-pcmcia>,
+	<mailto:linux-pcmcia-request@lists.infradead.org?subject=subscribe>
+Sender: linux-pcmcia-bounces@lists.infradead.org
+Errors-To: linux-pcmcia-bounces+glkpd-linux-pcmcia=m.gmane.org+glkpd-linux-pcmcia=m.gmane.org@lists.infradead.org
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Mark Lord <liml@rtr.ca>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-pcmcia@lists.infradead.o
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Tue, Nov 13, 2007 at 10:34:37PM +0000, Russell King wrote:
+> On Tue, Nov 13, 2007 at 06:25:16PM +0000, Alan Cox wrote:
+> > > Given the wide range of ARM platforms today, it is utterly idiotic to
+> > > expect a single person to be able to provide responses for all ARM bugs.
+> > > I for one wish I'd never *VOLUNTEERED* to be a part of the kernel
+> > > bugzilla, and really *WISH* I could pull out of that function.
+> > 
+> > You can. Perhaps that bugzilla needs to point to some kind of
+> > arm-maintainers@vger.kernel.org list for the various ARM platform
+> > maintainers ?
+> 
+> That might work - though it would be hard to get all the platform
+> maintainers to be signed up to yet another mailing list, I'm sure
+> sufficient would do.
 
-I've written an ALSA external PCM plugin for a client's embedded device. During the client's compilation of alsa-lib (which I have no control over), they did not specify where the module directory should be at. In fact, they're using 1.0.13 where there isn't a configure option to specify the module directory  (this was added 1.0.14?). Since this is an embedded project, due to cross compilation, alsa-lib is currently looking at some host directory that does not exist on the target to search for the libasound_module_pcm_xxx.so files. What's worse is that seems like it is dependent on where the client decides to build the RFS (say from /home/joe/project/xxx, but then later /home/bill/project/yyy) -- the alsa-lib module directory could change.
+As long as it would just be bug reports, I'm sure that most of us
+could be persuaded to subscribe. Adding another list for general
+discussions is probably not going to be read, the current list
+provides more than enough to keep us busy.
 
-For now I've manually created the non-existent host directory on the target and dropped a symbolic link there. But since that could change should they decide to rebuild the RFS, that's not even a viable bad hack solution.
-
-Is there any environment variable, configuration option or some other methods where this could be overwritten at runtime?
-
-Thank you,
+-- 
 Ben
 
-
-
-
-      ____________________________________________________________________________________
-Never miss a thing.  Make Yahoo your home page. 
-http://www.yahoo.com/r/hs
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
