@@ -1,73 +1,40 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Moderated list
-Date: Thu, 15 Nov 2007 14:56:38 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0711151450120.19062@tm8103.perex-int.cz>
-References: <s5h8x51fd2l.wl%tiwai@suse.de> <473AE84A.4050004@keyaccess.nl>
-	<s5h3av9f9ac.wl%tiwai@suse.de>
-	<20071114.152315.134994547.davem@davemloft.net>
-	<s5h4pfodm9m.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [alsa-devel] [BUG] New Kernel Bugs
+Date: Thu, 15 Nov 2007 15:29:54 +0100
+Message-ID: <473C57E2.1080306@keyaccess.nl>
+References: <20071113143201.9441c940.akpm@linux-foundation.org> <20071113.175551.131375600.davem@davemloft.net> <20071114095507.GA32595@flint.arm.linux.org.uk> <20071114.020706.219917088.davem@davemloft.net> <473AE010.4090806@keyaccess.nl> <20071115041613.GC15302@brong.net> <473BE046.8070804@keyaccess.nl> <20071115120232.GB8297@brong.net> <473C3B0B.30206@keyaccess.nl> <20071115130019.GB10165@lazybastard.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC837245C0
-	for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2007 14:56:38 +0100 (CET)
-In-Reply-To: <s5h4pfodm9m.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: rene.herman@keyaccess.nl, David Miller <davem@davemloft.net>, ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-15;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20071115130019.GB10165@lazybastard.org>
+Sender: netdev-owner@vger.kernel.org
+To: =?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>
+Cc: Bron Gondwana <brong@fastmail.fm>, David Miller <davem@davemloft.net>, rmk+lkml@arm.linux.org.uk, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, protasnb@gmail.com, linux-ide@vger.kernel.org, bugme-daemon@bugzilla.kernel.org, linux-input@atrey.karlin.mff.cuni.cz, akpm@linux-foundation.org, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 15 Nov 2007, Takashi Iwai wrote:
+On 15-11-07 14:00, J=F6rn Engel wrote:
 
-> [Unrelated lists cut from Cc]
-> 
-> At Wed, 14 Nov 2007 15:23:15 -0800 (PST),
-> David Miller wrote:
-> > 
-> > From: Takashi Iwai <tiwai@suse.de>
-> > Date: Wed, 14 Nov 2007 10:47:39 +0100
-> > 
-> > > I think alsa-user can stay as is.  It's no place for dragging many
-> > > other addresses like alsa-devel.
-> > > 
-> > > BTW, I also prefer keeping the name alsa-devel@.  It's been so.
-> > 
-> > That's fine with me, I've changed it alsa-devel@vger.kernel.org
-> 
-> Great, thanks David!
-> 
-> I believe it'd be really better to move alsa-devel to vger.
-> The spam filters on vger does obviously better (faster) job than human
-> being.  We'll be released from some labors at least.
-> 
-> Jaroslav, let us know your opinion.  alsa-devel ML is being hosted on
-> your machine right now, so it's your decision...
+> And even without mails being held hostage for weeks, every single=20
+> moderation mail is annoying.  Like the one I'm sure to receive after=20
+> sending this out.
 
-I would like to keep mailing list history in mailman, so I subscribed 
-alsa-devel-archive@alsa-project.org to alsa-devel@vger.kernel.org mailing 
-list.
+Certainly. Upto this thread I wasn't actually aware the list was doing =
+that.=20
+While it might be informative once, getting it each time quickly gets o=
+ld.=20
+Don't know if mailman can do anything like it but I'd suggest anyone ru=
+nning=20
+a non-subscriber-moderation list configure it to send such messages at =
+most=20
+once a <time-period> per address or some such. And just disable the mes=
+sage=20
+if it cannot do that.
 
-David, could I send you the list of subscribers on the alsa-devel list (in 
-a private e-mail) to move mailing list to vger without bothering all users 
-to resubscribe again (we did it several months ago, so the subscriber list 
-is quite clean)? I will redirect alsa-devel@alsa-project.org address then 
-to alsa-devel@vger.kernel.org (if it does not break any vger rules or spam 
-filtering on vger) to preserve alsa-devel list e-mail.
+=46ortunately, alsa-devel is (almost) no longer such a list anyway as i=
+t's=20
+moving to vger. Hurrah. David -- thanks.
 
-					Thanks,
-						Jaroslav
+Rene.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project
