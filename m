@@ -1,54 +1,65 @@
-From: Ben Dooks <ben@trinity.fluff.org>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Thu, 15 Nov 2007 20:16:56 +0000
-Message-ID: <20071115201656.GD11305@trinity.fluff.org>
-References: <32209efe0711122242m3a5f081asf1c11a38b24db10c@mail.gmail.com>
-	<20071113031553.3c7b5c16.akpm@linux-foundation.org>
-	<4739ADA2.4060604@rtr.ca>
-	<alpine.LFD.0.9999.0711131521590.3265@localhost.localdomain>
-	<20071113181053.GB1356@flint.arm.linux.org.uk>
-	<20071113182516.250de873@the-village.bc.nu>
-	<20071113223437.GG1356@flint.arm.linux.org.uk>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: Is there a function I can call from my ISR to tell
+ ALSA to abort playback?
+Date: Thu, 15 Nov 2007 14:28:14 -0600
+Message-ID: <473CABDE.7000205@freescale.com>
+References: <473B5D83.2020408@freescale.com>	<Pine.LNX.4.61.0711150932310.19062@tm8103.perex-int.cz>	<473C5F26.2050807@freescale.com>
+	<s5hejerd96a.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-pcmcia-bounces+glkpd-linux-pcmcia=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20071113223437.GG1356@flint.arm.linux.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-pcmcia>,
-	<mailto:linux-pcmcia-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-pcmcia>
-List-Post: <mailto:linux-pcmcia@lists.infradead.org>
-List-Help: <mailto:linux-pcmcia-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-pcmcia>,
-	<mailto:linux-pcmcia-request@lists.infradead.org?subject=subscribe>
-Sender: linux-pcmcia-bounces@lists.infradead.org
-Errors-To: linux-pcmcia-bounces+glkpd-linux-pcmcia=m.gmane.org+glkpd-linux-pcmcia=m.gmane.org@lists.infradead.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Mark Lord <liml@rtr.ca>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-pcmcia@lists.infradead.o
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 744BA246E7
+	for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2007 21:28:19 +0100 (CET)
+In-Reply-To: <s5hejerd96a.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 13, 2007 at 10:34:37PM +0000, Russell King wrote:
-> On Tue, Nov 13, 2007 at 06:25:16PM +0000, Alan Cox wrote:
-> > > Given the wide range of ARM platforms today, it is utterly idiotic to
-> > > expect a single person to be able to provide responses for all ARM bugs.
-> > > I for one wish I'd never *VOLUNTEERED* to be a part of the kernel
-> > > bugzilla, and really *WISH* I could pull out of that function.
-> > 
-> > You can. Perhaps that bugzilla needs to point to some kind of
-> > arm-maintainers@vger.kernel.org list for the various ARM platform
-> > maintainers ?
+Takashi Iwai wrote:
+> At Thu, 15 Nov 2007 09:00:54 -0600,
+> Timur Tabi wrote:
+>> Jaroslav Kysela wrote:
+>>
+>>> Yes, call snd_pcm_stop() function. The call must be protected with 
+>>> snd_pcm_stream_lock... See to i2c/other/ak4117.c for an example.
+>> That code calls snd_pcm_stop() from a timer, not an ISR.  Do I need the call to 
+>> wake_up() as well?
 > 
-> That might work - though it would be hard to get all the platform
-> maintainers to be signed up to yet another mailing list, I'm sure
-> sufficient would do.
+> snd_pcm_stop() can be called from ISR, too (e.g.
+> snd_pcm_period_elapsed() may call snd_pcm_stop() when XRUN occurs).
+> You only need to protect it via snd_pcm_stream_lock*().
 
-As long as it would just be bug reports, I'm sure that most of us
-could be persuaded to subscribe. Adding another list for general
-discussions is probably not going to be read, the current list
-provides more than enough to keep us busy.
+It doesn't seem to do much.  Here's the function I wrote:
+
+static void fsl_dma_abort_stream(struct snd_pcm_substream *substream)
+{
+	unsigned long flags;
+
+	snd_pcm_stream_lock_irqsave(substream, flags);
+	if (snd_pcm_running(substream)) {
+		snd_pcm_stop(substream, SNDRV_PCM_STATE_DRAINING);
+		wake_up(&substream->runtime->sleep);
+	}
+	snd_pcm_stream_unlock_irqrestore(substream, flags);
+}
+
+When I play a file, my DMA controller is incorrectly programmed (test case) and 
+this function gets triggered.  The application (aplay) does not terminate.
+
+I tried it with the wake_up() call, but it didn't make a difference.
 
 -- 
-Ben
-
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+Timur Tabi
+Linux kernel developer at Freescale
