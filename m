@@ -1,25 +1,16 @@
-From: Daniel Barkalow <barkalow@iabervon.org>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Thu, 15 Nov 2007 11:19:46 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0711151034340.12193__12708.1765131608$1195147382$gmane$org@iabervon.org>
-References: <20071113031553.3c7b5c16.akpm@linux-foundation.org>
-	<20071113.033946.114918709.davem@davemloft.net>
-	<20071113034916.2556edd7.akpm@linux-foundation.org>
-	<20071113.035824.40509981.davem@davemloft.net>
-	<20071113041259.79c9a8c5.akpm@linux-foundation.org>
-	<20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca>
-	<40f323d00711130752k19cab8eauc3456721274b3267@mail.gmail.com>
-	<20071113171356.GA25824@thunk.org>
-	<Pine.LNX.4.64.0711141810110.12193@iabervon.org>
-	<20071115153057.GE17180@thunk.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Removal of indirect access in control API
+Date: Thu, 15 Nov 2007 18:29:06 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0711151821160.19062@tm8103.perex-int.cz>
+References: <s5h8x4zd785.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iabervon.org (iabervon.org [66.92.72.58])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3461710383C
-	for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2007 17:19:54 +0100 (CET)
-In-Reply-To: <20071115153057.GE17180@thunk.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7CC55244EF
+	for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2007 18:29:07 +0100 (CET)
+In-Reply-To: <s5h8x4zd785.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,63 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Theodore Tso <tytso@mit.edu>
-Cc: alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>, netdev@vger.kernel.org, bugme-daemon@bugzilla.kernel.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, protasnb@gmail.com, linux-ide@vger.kernel.org, Benoit Boissinot <bboissin@gmail.com>, Mark Lord <liml@rtr.ca>, linux-input@atrey.karlin.mff.cuni.cz, Ingo Molnar <mingo@elte.hu>, David Miller <davem@davemloft.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 15 Nov 2007, Theodore Tso wrote:
+On Thu, 15 Nov 2007, Takashi Iwai wrote:
 
-> On Wed, Nov 14, 2007 at 06:23:34PM -0500, Daniel Barkalow wrote:
-> > I don't see any reason that we couldn't have a tool accessible to Ubuntu 
-> > users that does a real "git bisect". Git is really good at being scripted 
-> > by fancy GUIs. It should be easy enough to have a drop down with all of 
-> > the Ubuntu kernel package releases, where the user selects what works and 
-> > what doesn't.
+> Hi,
 > 
-> It's possible users who haven't yet downloaded a git repository have
-> to surmount some obstacles that might cause them to lose interest.
-> First, they have to download some 190 megs of git repository, and if
-> they have a slow link, that can take a while, and then they have to
-> build each kernel, which can take a while.
+> ALSA control elements have "indirect" flag, which is supposed to allow
+> the indirect access via pointer.  But, as far as I know, this feature
+> has never been used nor implemented, and unsupported via 32/64bit
+> compat layer.
+> 
+> So, I'd like to get rid of this now.  The clean-up patch is below.
+> 
+> If you have objections, please let me know.
 
-It should be possible for it to clone only the portion that they actually 
-care about based on where the known-good version is. It should also (in 
-theory, anyway) be possible to put off some amount of the download until 
-it's actually going to be relevant.
+I have objection. This layer was designed to support large mixer matrixes 
+like in the HDSPM driver (and if I remember correctly - implementation was 
+started after discussion with authors of RME drviers). HDSPM driver uses 
+hwdep interface now (probably because it was ported from the OSS code).
+I think that it would be worth to use standard ALSA control interface to 
+track changes thus to finish indirect interface.
 
-> A full kernel build with everything selected can take good 30 minutes or 
-> more, and that's on a fast dual-core machine with 4gigs of memory and 
-> 7200rpm disk drives. On a slower, memory limited laptop, doing a single 
-> kernel build can take more time than the user has patiences; multiply 
-> that by 7 or 8 build and test boots, and it starts to get tiresome.
+Which problems are with the 32/64 bit conversion layer? I suppose that it 
+is possible to write an ioctl converters.
 
-None of this is going to take as long, even on a slow link and a slow 
-computer, as waiting for a response to a mailing list post. It'd annoy 
-users who are specifically waiting for it, but if the interface is that 
-the user says "kernel package X didn't work but the current kernel does", 
-and it says "I'll let you know when I've got something to test", and the 
-user watches a DVD, and afterward finds a message saying there's something 
-to test, and tries it, and reports how it went, and the process repeats 
-until it narrows it down to a single commit after a couple of days of the 
-user getting occasional responses, it's not that different from asking for 
-help online.
+					Jaroslav
 
-> And then on top of that there are the issues about whether there is
-> enough support for dealing with hitting kernel revisions that fail due
-> to other bugs getting merged in during the -rc1 process, etc.
-
-Could have a distro-provided mask of things that aren't worth testing and 
-possibly back-ported fixes for revisions in particular ranges.
-
-> I agree that a tool that automated the bisection process and walked
-> the user through it would be helpful, but I believe it would be
-> possible for us do better.
-
-That would probably help for giving the user something to try right away. 
-I still think that the main cost to the user is the number of times that 
-the user has to stop doing stuff to reboot with a kernel to test, whether 
-the test kernels are available quickly from the distro site, slowly built 
-locally, or slowly as suggested by humans helping online.
-
-	-Daniel
-*This .sig left intentionally blank*
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project
