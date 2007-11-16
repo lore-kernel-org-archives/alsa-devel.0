@@ -1,32 +1,52 @@
-From: "J. Bruce Fields" <bfields@fieldses.org>
-Subject: Re: [BUG] New Kernel Bugs
-Date: Thu, 15 Nov 2007 19:05:39 -0500
-Message-ID: <20071116000539.GA3032@fieldses.org>
-References: <20071113.033946.114918709.davem@davemloft.net> <20071113034916.2556edd7.akpm@linux-foundation.org> <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113134029.GA30978@elte.hu> <20071113085514.3414aa52.rdunlap@xenotime.net> <20071114140847.GA11489@elte.hu> <20071114093820.ff3ad8f9.rdunlap@xenotime.net> <20071114182351.GI14254@fieldses.org> <18235.46083.293604.560507@notabene.brown>
+From: alsa-devel.20.pris@spamgourmet.com
+Subject: Re: HDA or AC97 for Nvidia MCP61S?
+Date: Fri, 16 Nov 2007 00:42:25 -0200
+Message-ID: <74eb4bb50711151842v44dd5dc6yf00d6d14e5245336@mail.gmail.com>
+References: <74eb4bb50711130834u5a6801daga4837be299a3f9c1@mail.gmail.com>
+	<s5hmythfg4k.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <netdev-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gourmet.spamgourmet.com (gourmet.spamgourmet.com
+	[216.75.35.164])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30DE610381E
+	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 03:42:40 +0100 (CET)
+Received: from gourmet.spamgourmet.com (localhost.localdomain [127.0.0.1])
+	by gourmet.spamgourmet.com (8.13.8/8.13.7) with ESMTP id lAG2gZ6a022689
+	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 02:42:35 GMT
+Received: (from jqh1@localhost)
+	by gourmet.spamgourmet.com (8.13.8/8.13.8/Submit) id lAG2gVoc022513
+	for alsa-devel@alsa-project.org; Fri, 16 Nov 2007 02:42:31 GMT
+In-Reply-To: <s5hmythfg4k.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <18235.46083.293604.560507@notabene.brown>
-Sender: netdev-owner@vger.kernel.org
-To: Neil Brown <neilb@suse.de>
-Cc: Randy Dunlap <rdunlap@xenotime.net>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 15, 2007 at 01:50:43PM +1100, Neil Brown wrote:
-> Virtual Folders.
-> 
-> I use VM mode in EMACS, but I believe some other mail readers have the
-> same functionality.
-> I have a virtual folder called "nfs" which shows me all mail in my
-> inbox which has the string 'nfs' or 'lockd' in a To, Cc, or Subject
-> field.  When I visit that folder, I see all mail about nfs, whether it
-> was sent to me personally, or to a relevant list, or to lkml.
+Hi Takashi
 
-Hm (googling around for "mutt" and "virtual folders"): looks like I can
-get most of the way there in mutt with some macros based on its "limit"
-command:
+> >
+> > http://thread.gmane.org/gmane.linux.alsa.devel/49412
+>
+> Did you try my suggestion?
 
-	http://www.tummy.com/journals/entries/jafo_20060303_044440
+Not yet. I didn't try it because I'm not yet convinced that I need to
+install a new version in order to get it going. After all sound IS
+working with the example ogg file that comes with Ubuntu. Is this
+possible for the sound to work with one file and not work with another
+and this to be a problem with the ALSA driver? I thought maybe this is
+some configuration problem.
 
-Thanks.--b.
+Again, I have no problem in recompiling the driver, I just wanted this
+to be the last step to try.
+
+Thanks for your help!
