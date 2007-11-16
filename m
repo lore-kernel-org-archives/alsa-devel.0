@@ -1,24 +1,18 @@
-From: alsa-devel.20.pris@spamgourmet.com
-Subject: Re: HDA or AC97 for Nvidia MCP61S?
-Date: Fri, 16 Nov 2007 00:42:25 -0200
-Message-ID: <74eb4bb50711151842v44dd5dc6yf00d6d14e5245336@mail.gmail.com>
-References: <74eb4bb50711130834u5a6801daga4837be299a3f9c1@mail.gmail.com>
-	<s5hmythfg4k.wl%tiwai@suse.de>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: alsa-lib module path question
+Date: Thu, 15 Nov 2007 22:30:04 -0500
+Message-ID: <75b66ecd0711151930w4992910bi617861a21eeb12c8@mail.gmail.com>
+References: <674790.40730.qm@web36512.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gourmet.spamgourmet.com (gourmet.spamgourmet.com
-	[216.75.35.164])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30DE610381E
-	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 03:42:40 +0100 (CET)
-Received: from gourmet.spamgourmet.com (localhost.localdomain [127.0.0.1])
-	by gourmet.spamgourmet.com (8.13.8/8.13.7) with ESMTP id lAG2gZ6a022689
-	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 02:42:35 GMT
-Received: (from jqh1@localhost)
-	by gourmet.spamgourmet.com (8.13.8/8.13.8/Submit) id lAG2gVoc022513
-	for alsa-devel@alsa-project.org; Fri, 16 Nov 2007 02:42:31 GMT
-In-Reply-To: <s5hmythfg4k.wl%tiwai@suse.de>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1F9F103841
+	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 04:30:06 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so1027254wag
+	for <alsa-devel@alsa-project.org>; Thu, 15 Nov 2007 19:30:04 -0800 (PST)
+In-Reply-To: <674790.40730.qm@web36512.mail.mud.yahoo.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,24 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ben C <bchang_2@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
-
-> >
-> > http://thread.gmane.org/gmane.linux.alsa.devel/49412
+On Nov 15, 2007 3:14 PM, Ben C <bchang_2@yahoo.com> wrote:
+> Hello,
 >
-> Did you try my suggestion?
+> I've written an ALSA external PCM plugin for a client's embedded device. During the client's compilation of alsa-lib (which I have no control over), they did not specify where the module directory should be at. In fact, they're using 1.0.13 where there isn't a configure option to specify the module directory  (this was added 1.0.14?). Since this is an embedded project, due to cross compilation, alsa-lib is currently looking at some host directory that does not exist on the target to search for the libasound_module_pcm_xxx.so files. What's worse is that seems like it is dependent on where the client decides to build the RFS (say from /home/joe/project/xxx, but then later /home/bill/project/yyy) -- the alsa-lib module directory could change.
 
-Not yet. I didn't try it because I'm not yet convinced that I need to
-install a new version in order to get it going. After all sound IS
-working with the example ogg file that comes with Ubuntu. Is this
-possible for the sound to work with one file and not work with another
-and this to be a problem with the ALSA driver? I thought maybe this is
-some configuration problem.
+Please search the list archives for "cross compiling" - I had the
+exact same problem last year.  Don't remember exactly how I solved it,
+but it's in there somewhere.
 
-Again, I have no problem in recompiling the driver, I just wanted this
-to be the last step to try.
-
-Thanks for your help!
+Lee
