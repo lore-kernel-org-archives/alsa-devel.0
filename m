@@ -1,23 +1,19 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re:
-	=?iso-8859-1?q?1=2E0=2E15=3A_volume_levels_drift_on_?=
-	=?iso-8859-1?q?HDA_with_STAC92XX=09codec?=
-Date: Fri, 16 Nov 2007 17:50:09 +0200
-Message-ID: <200711161750.09647.maximlevitsky@gmail.com>
-References: <472A113B.7030406@redhat.com>
-	<200711012017.30376.maximlevitsky@gmail.com>
-	<s5hk5oimdxi.wl%tiwai@suse.de>
+From: "Eric S. Raymond" <esr@thyrsus.com>
+Subject: Re: No sound on Intel DQ965GF motherboard
+Date: Fri, 16 Nov 2007 11:16:19 -0500
+Message-ID: <20071116161619.GA6292@thyrsus.com>
+References: <20071116061042.C5E9D830734@snark.thyrsus.com>
+	<1195195147.6392.15.camel@razman.gruemaster.com>
+Reply-To: esr@thyrsus.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hu-out-0506.google.com (hu-out-0506.google.com [72.14.214.237])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4974624379
-	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 16:52:14 +0100 (CET)
-Received: by hu-out-0506.google.com with SMTP id 16so322003hue
-	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 07:52:13 -0800 (PST)
-In-Reply-To: <s5hk5oimdxi.wl%tiwai@suse.de>
+Received: from snark.thyrsus.com (static-71-162-243-5.phlapa.fios.verizon.net
+	[71.162.243.5]) by alsa0.perex.cz (Postfix) with ESMTP id E0E1E24398
+	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 17:16:19 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <1195195147.6392.15.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,108 +23,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Chuck Ebbert <cebbert@redhat.com>
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: "Eric S. Raymond" <esr@snark.thyrsus.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 16 November 2007 17:02, Takashi Iwai wrote:
-> At Thu, 1 Nov 2007 20:17:30 +0200,
->
-> Maxim Levitsky wrote:
-> > On Thursday 01 November 2007 19:47:39 Chuck Ebbert wrote:
-> > > We have two reports now of unstable volume levels:
-> > >
-> > > https://bugzilla.redhat.com/show_bug.cgi?id=361051
-> > > https://bugzilla.redhat.com/show_bug.cgi?id=354981
-> > >
-> > > This is with kernel 2.6.23 plus the two ALSA merge patches from
-> > > 2.6.23-rc1.
-> > > _______________________________________________
-> > > Alsa-devel mailing list
-> > > Alsa-devel@alsa-project.org
-> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
-> > Probably this isn't a software bug.
-> > Probably this chip country to datasheet doesn't have usable "Master
-> > Volume" (volume knob) control.
->
-> I got a bug report that the same symptom appears also with STAC9221.
->
-> 	http://bugzilla.kernel.org/show_bug.cgi?id=9374
->
-> Maybe we need add whitelist / blacklist for this feature?
->
-> On which codec/machine is this feature confirmed to work?
->
->
-> thanks,
->
-> Takashi
+Tobin Davis <tdavis@dsl-only.net>:
+> Interesting that you would post a link to one of my responses on
+> linuxquestions.org.
 
-Hi,
+Ah, you must be GrueMaster, then.
+ 
+> I still have my DP965LT, and I usually update my audio driver whenever
+> there is a significant change to the tip for my specific audio codec.
+> Couple of things to check.  First, is the audio disabled in bios?
 
-Yes, it seems that volume knob has troubles.
+No.  I checked, audio is enabled.
 
-I have it with STAC9227. Obivosly it works
+>                                                      Does
+> audio work if you use the latest daily snapshot of alsa-driver from
+> ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/ ?
 
-I know a user that first complained about some problems,
-but then he found that everything works ok, probably including the volknob.
+No.  Installing these changes the problem; the "no codecs" message
+goes away, but snd_hda_intel no longer appears in the output of lsmod.
+Grepping the dmesg output yields these messages:
 
-He has STAC9274, and we had a long disscussion about new features I 
-intruduced,
-He said that everything is OK.
-I ask him explictly about that.
+[   37.951029] snd_hda_intel: disagrees about version of symbol snd_ctl_add
+[   37.951033] snd_hda_intel: Unknown symbol snd_ctl_add
+[   37.951070] snd_hda_intel: disagrees about version of symbol snd_pcm_new
+[   37.951073] snd_hda_intel: Unknown symbol snd_pcm_new
+[   37.951110] snd_hda_intel: disagrees about version of symbol snd_pcm_limit_hw_rates
+[   37.951113] snd_hda_intel: Unknown symbol snd_pcm_limit_hw_rates
+[   37.951146] snd_hda_intel: disagrees about version of symbol snd_card_register
+[   37.951148] snd_hda_intel: Unknown symbol snd_card_register
+[   37.951187] snd_hda_intel: disagrees about version of symbol snd_card_free
+[   37.951188] snd_hda_intel: Unknown symbol snd_card_free
+[   37.951209] snd_hda_intel: disagrees about version of symbol snd_pcm_lib_preallocate_pages_for_all
+[   37.951211] snd_hda_intel: Unknown symbol snd_pcm_lib_preallocate_pages_for_all
+[   37.951234] snd_hda_intel: disagrees about version of symbol snd_card_proc_new
+[   37.951235] snd_hda_intel: Unknown symbol snd_card_proc_new
+[   37.951315] snd_hda_intel: disagrees about version of symbol snd_ctl_find_id
+[   37.951317] snd_hda_intel: Unknown symbol snd_ctl_find_id
+[   37.951375] snd_hda_intel: disagrees about version of symbol snd_ctl_new1
+[   37.951376] snd_hda_intel: Unknown symbol snd_ctl_new1
+[   37.951424] snd_hda_intel: disagrees about version of symbol snd_component_add
+[   37.951426] snd_hda_intel: Unknown symbol snd_component_add
+[   37.951452] snd_hda_intel: disagrees about version of symbol snd_card_new
+[   37.951454] snd_hda_intel: Unknown symbol snd_card_new
+[   37.951500] snd_hda_intel: disagrees about version of symbol snd_pcm_lib_malloc_pages
+[   37.951502] snd_hda_intel: Unknown symbol snd_pcm_lib_malloc_pages
+[   37.951530] snd_hda_intel: disagrees about version of symbol snd_pcm_lib_ioctl
+[   37.951532] snd_hda_intel: Unknown symbol snd_pcm_lib_ioctl
+[   37.951555] snd_hda_intel: disagrees about version of symbol snd_pcm_lib_free_pages
+[   37.951557] snd_hda_intel: Unknown symbol snd_pcm_lib_free_pages
+[   37.951591] snd_hda_intel: Unknown symbol snd_ctl_elem_read
+[   37.951622] snd_hda_intel: Unknown symbol snd_ctl_elem_write
+[   37.951641] snd_hda_intel: disagrees about version of symbol snd_pcm_set_ops
+[   37.951643] snd_hda_intel: Unknown symbol snd_pcm_set_ops
+[   37.951669] snd_hda_intel: disagrees about version of symbol snd_pcm_hw_constraint_list
+[   37.951671] snd_hda_intel: Unknown symbol snd_pcm_hw_constraint_list
+[   37.951700] snd_hda_intel: disagrees about version of symbol snd_device_new
+[   37.951702] snd_hda_intel: Unknown symbol snd_device_new
+[   37.951735] snd_hda_intel: disagrees about version of symbol snd_pcm_suspend_all
+[   37.951736] snd_hda_intel: Unknown symbol snd_pcm_suspend_all
+[   37.951767] snd_hda_intel: disagrees about version of symbol snd_card_disconnect
+[   37.951769] snd_hda_intel: Unknown symbol snd_card_disconnect
+[   37.951789] snd_hda_intel: disagrees about version of symbol snd_pcm_hw_constraint_integer
+[   37.951791] snd_hda_intel: Unknown symbol snd_pcm_hw_constraint_integer
+[   37.951897] snd_hda_intel: disagrees about version of symbol snd_pcm_period_elapsed
+[   37.951898] snd_hda_intel: Unknown symbol snd_pcm_period_elapsed
+[   37.951917] snd_hda_intel: disagrees about version of symbol snd_pcm_hw_constraint_step
+[   37.951919] snd_hda_intel: Unknown symbol snd_pcm_hw_constraint_step
 
-Now remember the report about conflict between my
-'Master Volume' and already existing one?
+This may just mean I fluffed the installation, but there is nothing in the
+install file to clue me in about how.
 
-This was a STAC922x, and the autor said that now
-his mulimedia keys can again control the volume
-(Probably this indicates that volumekknob is working)
+> Also, if this doesn't fix the problem, can you send a link generated
+> from running http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
+> It has a lot of detailed information about your audio configuration.
 
+http://pastebin.ca/777163
+ 
+> I looked at the driver code, and your specific system is listed (I
+> should know - I added it 8/2006).
 
-Thus we have 4 groups of STACS:
-
-1 - STAC9250 - lot of troubles - (I would be very happpy to hear from anybody 
-here that has it)
-
-2- STAC9221/2 - I thought that it works, but not anymore
-3- STAC9227/8/9 - I have it, so I hope that it works
-4- STAC927x - very simular to above, and one user that tells that it works.
-
-
-I suggest to wait a bit more to see the scale of this bug
-(After all it isn't that big bug, it is just a feature :-) that isn't working)
-
-The datasheets mention briefly that an external volume control can be 
-connected to the chip. Maybe it affects the volumeknob.
-If this is the case, then probably we ether need to detect it, or drop the 
-whole thing.
-(Those external pins probably are just connected to the groung or somethibg 
-like that so no real external volumeknob is present, but they still mess the 
-internal VolumeKnob)
-
-
-Blacklist can help, but it is probably too much for that feature, since
-the VolumeKnob doesn't add anything very special, and can be emulated
-with SoftVol plugin, like it is done now.
-
-There are several solutions:
-
-1) Rename it to say 'VolumeKnob", so the users that have it broken won't
-notice , but still driver will expose all controls of hardware.
-2) Make a module param that will enable/disable it
-3) Remove it completly, OK, but probably the #1 is better
-
-All depends on whenever this is a specific stac model bug
-Like I thought STAC9205, or this is the 'external volume' problem.
-
-If this is just STAC9205 and STAC9221 then we can make a module param,
-and make it enabled by default  for STAC9227/8/9 STAC927x, but make it 
-disabled  for STAC9205 and STAC9221
-
-If not, then it is better  to remove it/remame to VolumeKnob
-
-
-Best regards,
-	Maxim Levitsky
+If it would help, I'd be willing to create a guest account on the machine 
+for you and work with you in real-time to resolve the problem.  You can't hear
+my speakers, of course, but I strongly suspect that if we could get the
+driver and its codecs to load properly the rest would just be a matter of
+making sure they're plugged in.
+-- 
+		<a href="http://www.catb.org/~esr/">Eric S. Raymond</a>
