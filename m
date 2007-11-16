@@ -1,18 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: Moderated list
-Date: Fri, 16 Nov 2007 06:56:43 +0100
-Message-ID: <473D311B.2080003@keyaccess.nl>
-References: <Pine.LNX.4.61.0711151450120.19062@tm8103.perex-int.cz>	<20071115.133404.14700546.davem@davemloft.net>	<1195163838.5200.68.camel@razman.gruemaster.com>
-	<20071115.142840.77343480.davem@davemloft.net>
+From: "Eric S. Raymond" <esr@snark.thyrsus.com>
+Subject: No sound on Intel DQ965GF motherboard
+Date: Fri, 16 Nov 2007 01:10:42 -0500 (EST)
+Message-ID: <20071116061042.C5E9D830734@snark.thyrsus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D5CD103808
-	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 07:01:17 +0100 (CET)
-In-Reply-To: <20071115.142840.77343480.davem@davemloft.net>
+Received: from snark.thyrsus.com (static-71-162-243-5.phlapa.fios.verizon.net
+	[71.162.243.5]) by alsa0.perex.cz (Postfix) with ESMTP id 3F20B10385B
+	for <alsa-devel@alsa-project.org>; Fri, 16 Nov 2007 07:10:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +18,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Miller <davem@davemloft.net>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 15-11-07 23:28, David Miller wrote:
+Thank you, alsa developers, for the prompt resolution of my previous
+sound issue with the Thinkpad X61.  Unfortunately, I've now turned up
+an apparently different problem on very similar hardware.
 
-> From: Tobin Davis <tdavis@dsl-only.net>
-> Date: Thu, 15 Nov 2007 13:57:18 -0800
-> 
->> Not trying to sound like a jerk or an idiot, but if you require us to
->> resubscribe, why don't you post the link in your email?  It would make
->> our lives that much easier.
-> 
-> Sure thing:
-> 
-> 	http://vger.kernel.org/majordomo-info.html#subscription
+Sound doesn't work on my DQ965GF motherboard under Ubuntu 7.10.
+Here's what I've found out about it.  I'm writing in hope that someone
+on the ALSA devel list can suggest diagnostics to pin down the problem
+exactly.
 
-That is:
+The device has PCI ID [8086:284b] (rev 02).  It is an Intel 82801H.
 
-mailto:majordomo@vger.kernel.org?body=subscribe alsa-devel
+This appears to be an Ubuntu-specific error.  At
+http://www.linuxquestions.org/questions/linux-hardware-18/intel-dq965gf-mobo-front-sound-jacks-not-working-510302/
+I found a post implying that at least the rear jacks on the mobo are
+active under Fedora Core 6.  I have therefore filed an Ubuntu bug at
+https://bugs.launchpad.net/ubuntu/+bug/162410 but seen no response.
 
-and then follow instructions in (ie, reply to) the confirmation mail you'll 
-be sent.
+This also appears to be a very hardware-configuration-specific error.
+I have an Intel HDA audio device on my X61 laptop with PCI ID
+[8086:284b] (rev 03), another 82801H, that works just fine under
+Ubuntu 7.10 (the alsa version is nominally 1.0.14 but some 1.10.15
+fixes, including the right one, were backported).  Note the 03 as
+opposed to 02 subrev.
 
-Rene.
+aplay -l, which is supposed to list sound playback devices, returns no
+listing on the DQ965GF.  As a check, on the X61 where it works it
+returns this:
+
+    card 0: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
+      Subdevices: 1/1
+      Subdevice #0: subdevice #0
+
+lsmod also returns suggestively different results.  On the laptop, its
+output includes this line.
+
+    snd_hda_intel         337192  1
+
+On the DQ965GF, here are the sound device lines:
+
+    snd_hda_intel         337192  0 
+    snd_usb_audio          96640  1 
+    snd_pcm_oss            50048  0 
+    snd_mixer_oss          20096  1 snd_pcm_oss
+    snd_pcm                94344  3 snd_hda_intel,snd_usb_audio,snd_pcm_oss
+    snd_usb_lib            20352  1 snd_usb_audio
+    snd_seq_dummy           5380  0 
+    snd_seq_oss            36864  0 
+    snd_seq_midi           11008  0 
+    snd_seq_midi_event      9984  2 snd_seq_oss,snd_seq_midi
+    snd_seq                62496  6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
+    snd_timer              27272  2 snd_pcm,snd_seq
+    snd_rawmidi            29824  2 snd_usb_lib,snd_seq_midi
+    snd_seq_device         10260  5 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
+    snd_hwdep              12168  1 snd_usb_audio
+    snd                    69288  13 snd_hda_intel,snd_usb_audio,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_seq_oss,snd_seq,snd_timer,snd_rawmidi,snd_seq_device,snd_hwdep
+    soundcore              10272  1 snd
+    snd_page_alloc         12560  2 snd_hda_intel,snd_pcm
+    usbcore               161584  8 usbhid,snd_usb_audio,snd_usb_lib,xpad,gspca,ehci_hcd,uhci_hcd
+
+Note that snd_hda_intel has no users and that snd_usb_audio has 1.
+
+On the DQ965GF, the Sound Preferences tab on my Gnome toolbar thinks
+the sound device is "USB Device 0x46d:0x8ad (ALsa mixer)".  I don't
+know what tool GNOME is running to determine this.
+
+This arch-linux thread gave me some insight:
+http://bugs.archlinux.org/task/6617
+
+It appears the snd_usb_audio driver is a red herring, or at least a
+separate bug.  I checked, and my dmesg log does indeed say "hda-intel:
+no codecs found!" on boot, which suggests that snd_hda_intel is
+loading and then failing to initialize properly, accounting for the
+usage count of 0.
+
+I tried reverting the kernel patch mentioned in the arch thread (e.g. 
+recompiling the snd_hda_intel driver with #define AZX_MAX_CODECS 4)
+but this did *not* solve the problem. 
+
+Any suggestions would be appreciated.  I need my music back!
+-- 
+		<a href="http://www.catb.org/~esr/">Eric S. Raymond</a>
+
+The common argument that crime is caused by poverty is a kind of
+slander on the poor.
+	-- H. L. Mencken
