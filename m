@@ -1,23 +1,17 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re:
-	=?iso-8859-1?q?1=2E0=2E15=3A_volume_levels_drift_on_?=
-	=?iso-8859-1?q?HDA_with_STAC92XX=09codec?=
-Date: Sat, 17 Nov 2007 12:36:32 +0200
-Message-ID: <200711171236.32749.maximlevitsky@gmail.com>
-References: <472A113B.7030406@redhat.com>
-	<200711161750.09647.maximlevitsky@gmail.com>
-	<s5h7ikh6v2o.wl%tiwai@suse.de>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: Re: rate plugin issue
+Date: Sat, 17 Nov 2007 17:59:53 +0300
+Message-ID: <473F01E9.8070907@aknet.ru>
+References: <s5hwssnx58j.wl%tiwai@suse.de>	<4738A89D.9060601@aknet.ru>	<s5hmytihlvo.wl%tiwai@suse.de>	<473B561A.1050203@aknet.ru>
+	<s5h6404dmsi.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hu-out-0506.google.com (hu-out-0506.google.com [72.14.214.229])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1094F24504
-	for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2007 11:38:41 +0100 (CET)
-Received: by hu-out-0506.google.com with SMTP id 16so417379hue
-	for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2007 02:38:40 -0800 (PST)
-In-Reply-To: <s5h7ikh6v2o.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from mail.aknet.ru (mail.AKNET.ru [77.246.241.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id AFE0C24582
+	for <alsa-devel@alsa-project.org>; Sat, 17 Nov 2007 15:58:48 +0100 (CET)
+In-Reply-To: <s5h6404dmsi.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,159 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Chuck Ebbert <cebbert@redhat.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 17 November 2007 12:10, Takashi Iwai wrote:
-> At Fri, 16 Nov 2007 17:50:09 +0200,
->
-> Maxim Levitsky wrote:
-> > On Friday 16 November 2007 17:02, Takashi Iwai wrote:
-> > > At Thu, 1 Nov 2007 20:17:30 +0200,
-> > >
-> > > Maxim Levitsky wrote:
-> > > > On Thursday 01 November 2007 19:47:39 Chuck Ebbert wrote:
-> > > > > We have two reports now of unstable volume levels:
-> > > > >
-> > > > > https://bugzilla.redhat.com/show_bug.cgi?id=361051
-> > > > > https://bugzilla.redhat.com/show_bug.cgi?id=354981
-> > > > >
-> > > > > This is with kernel 2.6.23 plus the two ALSA merge patches from
-> > > > > 2.6.23-rc1.
-> > > > > _______________________________________________
-> > > > > Alsa-devel mailing list
-> > > > > Alsa-devel@alsa-project.org
-> > > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > > >
-> > > > Probably this isn't a software bug.
-> > > > Probably this chip country to datasheet doesn't have usable "Master
-> > > > Volume" (volume knob) control.
-> > >
-> > > I got a bug report that the same symptom appears also with STAC9221.
-> > >
-> > > 	http://bugzilla.kernel.org/show_bug.cgi?id=9374
-> > >
-> > > Maybe we need add whitelist / blacklist for this feature?
-> > >
-> > > On which codec/machine is this feature confirmed to work?
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> >
-> > Hi,
-> >
-> > Yes, it seems that volume knob has troubles.
-> >
-> > I have it with STAC9227. Obivosly it works
-> >
-> > I know a user that first complained about some problems,
-> > but then he found that everything works ok, probably including the
-> > volknob.
-> >
-> > He has STAC9274, and we had a long disscussion about new features I
-> > intruduced,
-> > He said that everything is OK.
-> > I ask him explictly about that.
-> >
-> > Now remember the report about conflict between my
-> > 'Master Volume' and already existing one?
-> >
-> > This was a STAC922x, and the autor said that now
-> > his mulimedia keys can again control the volume
-> > (Probably this indicates that volumekknob is working)
-> >
-> >
-> > Thus we have 4 groups of STACS:
-> >
-> > 1 - STAC9250 - lot of troubles - (I would be very happpy to hear from
-> > anybody here that has it)
-> >
-> > 2- STAC9221/2 - I thought that it works, but not anymore
-> > 3- STAC9227/8/9 - I have it, so I hope that it works
-> > 4- STAC927x - very simular to above, and one user that tells that it
-> > works.
-> >
-> >
-> > I suggest to wait a bit more to see the scale of this bug
-> > (After all it isn't that big bug, it is just a feature :-) that isn't
-> > working)
-> >
-> > The datasheets mention briefly that an external volume control can be
-> > connected to the chip. Maybe it affects the volumeknob.
-> > If this is the case, then probably we ether need to detect it, or drop
-> > the whole thing.
-> > (Those external pins probably are just connected to the groung or
-> > somethibg like that so no real external volumeknob is present, but they
-> > still mess the internal VolumeKnob)
-> >
-> >
-> > Blacklist can help, but it is probably too much for that feature, since
-> > the VolumeKnob doesn't add anything very special, and can be emulated
-> > with SoftVol plugin, like it is done now.
-> >
-> > There are several solutions:
-> >
-> > 1) Rename it to say 'VolumeKnob", so the users that have it broken won't
-> > notice , but still driver will expose all controls of hardware.
->
-> But even a different name control may have a similar effect.
-> After all, it's exposed as a mixer element, and the mixer app may
-> choose it as well.
->
-> > 2) Make a module param that will enable/disable it
->
-> I don't like to add a codec-specific module option, so far.
->
-> > 3) Remove it completly, OK, but probably the #1 is better
->
-> I think the safest way at this moment is to revert that once.  Then
-> we'll have a stable state as on 2.6.23.
->
-> On my local tree, there is a patch to add a virtual "Master" control
-> to bind all volume controls.  It's a driver-side implementation (no
-> softvol plugin).  So, when this patch is merged, we'll have a master
-> control for STAC, anyway.
->
-> > All depends on whenever this is a specific stac model bug
-> > Like I thought STAC9205, or this is the 'external volume' problem.
->
-> Or, it might be the conflict (a kind of race) between the software
-> vol knob change and the hardware vol knob change.  If so, it can
-> explain why one STAC9221 works and another STAC9221 doesn't.
-Thats exactly what I have said, but this is only a guess, I didn't see a 
-statetment about that in datasheet.
+Hi.
 
+Takashi Iwai wrote:
+> What I don't like is the place you fix it.  This is not much better
+> than the old hack, or it's even worse because it adds a hack in the
+> common function not in the plugin.
+That depends on what logic does the
+fix imply. My logic was that the writei()
+should not depend on avail_min, and just
+always use period_size. Your logic is that
+they both should respect avail_min when it
+is >period_size, and from that point of view,
+my fix is of course wrong and at the wrong
+place.
 
->
-> > If this is just STAC9205 and STAC9221 then we can make a module param,
-> > and make it enabled by default  for STAC9227/8/9 STAC927x, but make it
-> > disabled  for STAC9205 and STAC9221
->
-> I got a bug report (from Linus himself) that once the driver with 9227
-> didn't work during 2.6.24-rc1 update.  And magically started again
-> working during bisecting.  I couldn't spot the culprit (the volknob
-> value looked OK), but my suspect is the volknob, judging from the
-> situation.
-You mean it was connected to instable volume too?
-If that is true, and due to the fact that I have STAC9227,
-probably it is a conflict with hardware volume.
->
-> > If not, then it is better  to remove it/remame to VolumeKnob
->
-> Agreed.  I'd like to take a safer way if you don't insist...
-Great, it is probably the best to have a virtual master volume.
-Just one question, it will be probably enabled for devices that don't have a 
-master volume (or have it broken like the STAC), right?,
-And when you expect it to be merged?
+> And above all, the fix would be really easy like the patch below.
+Your patch works very well.
+Actually, much better than mine, for
+the reasons I can't explain (there is
+probably another similar loop somewhere,
+otherwise they would work in the similar
+way).
+Just a few questions:
+1. Do you want to "round" avail_min only
+when it is < period_size, or maybe you
+want something like this instead:
+---
+avail_min += period_size - 1;
+avail_min -= avail_min % period_size;
+---
+so that it is always rounded up?
+2. What is it really good for? Why would
+the one want avail_min != period_size?
+Now, after you disallow avail_min<period_size,
+it makes even less sense - why would
+someone set avail_min>period_size, instead
+of increasing the period_size itself?
+So maybe something like this is also
+possible:
+---
+/* there seem to be no reason to set avail_min,
+ * period_size is enough */
+avail_min = period_size;
+---
 
-So I agree completly, revert it, and lets forget about that VolumeKnob.
-Sorry for the trouble  :-)
+> Then which version of mpg123 with which configuration?
+But I am not sure if you tried _any_
+mpg123 with any configuration. :)
+Well, mine is mpg123-0.60-1.fc5.rf,
+running on top of Fedora8.
+---
+High Performance MPEG 1.0/2.0/2.5 Audio Player for Layers 1, 2 and 3
+        version 0.60; written and copyright by Michael Hipp and others
+        free software (LGPL/GPL) without any warranty but with best wishes
+---
+But your patch works very well, so
+perhaps you don't even need to test
+it with mpg123 any more. :)
 
-
-Best regards,
-	Maxim Levitsky
->
->
-> Takashi
+Thanks!
