@@ -1,20 +1,24 @@
-From: Matt Bucknall <matt@mattbucknall.com>
-Subject: Lock free ring buffers and SMP safety
-Date: Sun, 18 Nov 2007 17:31:52 +0000
-Message-ID: <47407708.2080902@mattbucknall.com>
+From: alsa-devel.20.pris@spamgourmet.com
+Subject: Re: Can this be a driver problem? Sound works fine for
+	ogg
+Date: Sun, 18 Nov 2007 15:48:47 -0200
+Message-ID: <74eb4bb50711180948i33b7d7e6k9d222e840478f4d8@mail.gmail.com>
+References: <74eb4bb50711170840j5c7de9bk374f02f1bb02a801@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from weshsrv039.weshsrv039.co.uk (weshsrv039.weshsrv039.co.uk
-	[83.223.101.110])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82E952473D
-	for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2007 18:31:51 +0100 (CET)
-Received: from cpc3-bror4-0-0-cust854.bmly.cable.ntl.com ([86.11.83.87]
-	helo=[192.168.40.2])
-	by weshsrv039.weshsrv039.co.uk with esmtpa (Exim 4.63)
-	(envelope-from <matt@mattbucknall.com>) id 1Itnzs-0007cY-JC
-	for alsa-devel@alsa-project.org; Sun, 18 Nov 2007 17:31:52 +0000
+Received: from gourmet.spamgourmet.com (gourmet.spamgourmet.com
+	[216.75.35.164]) by alsa0.perex.cz (Postfix) with ESMTP id 8BB1A244E8
+	for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2007 18:49:00 +0100 (CET)
+Received: from gourmet.spamgourmet.com (localhost.localdomain [127.0.0.1])
+	by gourmet.spamgourmet.com (8.13.8/8.13.7) with ESMTP id lAIHmwFY023994
+	for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2007 17:48:58 GMT
+Received: (from jqh1@localhost)
+	by gourmet.spamgourmet.com (8.13.8/8.13.8/Submit) id lAIHmvCs023922
+	for alsa-devel@alsa-project.org; Sun, 18 Nov 2007 17:48:57 GMT
+In-Reply-To: <74eb4bb50711170840j5c7de9bk374f02f1bb02a801@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +31,13 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+> The thing is, on my system(Ubuntu Gutsy Gibbon) I get perfect sound
+> playing the example ogg files that come with the system. The system
+> sounds seem to work fine also. But I have problems when trying to
+> listen to avi or mp3 files. Can this still be an Alsa problem or is
+> this a problem of some incorrect configuration?
 
-Yes, this old chestnut. I've spent the best part of today trying to 
-ascertain whether or not, in practical terms, a single-producer, 
-single-consumer lock free ring-buffer can be written purely in C/C++ and 
-be SMP safe on multiple architectures without memory barriers. 
-Information I've found has been largely conflicting so I've given up 
-trying to get a conclusive answer. Instead I'll just go with the flow.
-
-What is the general consensus amongst ALSA application developers when 
-it comes to implementing this kind of buffer? Is it possible to use 
-memory barriers through some user space API call that I don't know about?
-
-Thanks in advance for any comments/suggestions.
-Matt.
+The problems I have with avi files are: sound is very low and
+distorted. Interestingly this varies with the AVI files. There are
+some files where the sound is better, others are so bad that I can
+barely understand what is being said.
