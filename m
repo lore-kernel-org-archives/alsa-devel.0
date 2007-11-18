@@ -1,40 +1,40 @@
-From: Ctirad Fertr <c.fertr@gmail.com>
-Subject: Re: E-mu 1212M ADAT channels missing ?
-Date: Sun, 18 Nov 2007 11:45:52 +0100
-Message-ID: <200711181145.53028.c.fertr@gmail.com>
-References: <745480.9857.qm@web51104.mail.re2.yahoo.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: size of git repository (was Re: [BUG] New Kernel Bugs)
+Date: Sun, 18 Nov 2007 12:44:05 +0000
+Message-ID: <20071118124404.GA4037@ucw.cz>
+References: <20071113031553.3c7b5c16.akpm@linux-foundation.org> <20071113.033946.114918709.davem@davemloft.net> <20071113034916.2556edd7.akpm@linux-foundation.org> <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca> <20071113164650.GA28493@elte.hu> <4739E3D0.10201@rtr.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.vol.cz (smtp1.vol.cz [195.250.128.78])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0FABF244E7
-	for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2007 11:45:59 +0100 (CET)
-Received: from [10.16.3.4] (dsl-tn-6-43.static.adsl.vol.cz [83.148.7.43])
-	by smtp1.vol.cz (Postfix) with ESMTP id B513886232
-	for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2007 11:45:58 +0100 (CET)
-In-Reply-To: <745480.9857.qm@web51104.mail.re2.yahoo.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <4739E3D0.10201@rtr.ca>
+Sender: netdev-owner@vger.kernel.org
+To: Mark Lord <liml@rtr.ca>
+Cc: Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne Sunday 18 of November 2007 05:54:37 Kenneth Long napsal(a):
-> I'm using qjackctl to launch jackd and before, I would
-> see the PCM channels appear under "Connect" button.
-> Alsa_pcm only shows two channels "capture_1 and
-> capture_2. Before there were 16 channels...
+On Tue 2007-11-13 12:50:08, Mark Lord wrote:
+> Ingo Molnar wrote:
+> >
+> >for example git-bisect was godsent. I remember that 
+> >years ago bisection of a bug was a very laborous task 
+> >so that it was only used as a final, last-ditch 
+> >approach for really nasty bugs. Today we can 
+> >autonomouly bisect build bugs via a simple shell 
+> >command around "git-bisect run", without any human 
+> >interaction! This freed up testing resources 
+> ..
+> 
+> It's only a godsend for the few people who happen to be 
+> kernel developers
+> and who happen to already use git.
+> 
+> It's a 540MByte download over a slow link for everyone 
+> else.
 
-Do you use correct capture device in qjackctl? The correct device for 
-multichannel capture is 0,2 (in case your card is 0). 
-
-------
-Ctirad
+Hmmm, clean-cg is 7.7G on my machine, and yes I tried
+git-prune-packed. What am I doing wrong?
+						Pavel
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
