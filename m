@@ -1,73 +1,78 @@
-From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
-Subject: Re: Can this be a driver problem? Sound works fine for
-	ogg
-Date: Sun, 18 Nov 2007 21:24:31 +0100
-Message-ID: <200711182124.31705.cave.dnb2m97pp@aliceadsl.fr>
-References: <74eb4bb50711170840j5c7de9bk374f02f1bb02a801@mail.gmail.com>
-	<74eb4bb50711180948i33b7d7e6k9d222e840478f4d8@mail.gmail.com>
+From: Willy Tarreau <w@1wt.eu>
+Subject: Re: size of git repository (was Re: [BUG] New Kernel Bugs)
+Date: Mon, 19 Nov 2007 05:43:13 +0100
+Message-ID: <20071119044313.GC15227@1wt.eu>
+References: <20071113.033946.114918709.davem@davemloft.net> <20071113034916.2556edd7.akpm@linux-foundation.org> <20071113.035824.40509981.davem@davemloft.net> <20071113041259.79c9a8c5.akpm@linux-foundation.org> <20071113134029.GA30978@elte.hu> <4739AFE0.20705@rtr.ca> <20071113164650.GA28493@elte.hu> <4739E3D0.10201@rtr.ca> <20071118124404.GA4037@ucw.cz> <20071118145611.GB22622@elte.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16A39245E8
-	for <alsa-devel@alsa-project.org>; Sun, 18 Nov 2007 21:24:35 +0100 (CET)
-Received: from [192.168.0.230] (213.36.0.193) by mail.libertysurf.net
-	(7.3.118.8) id 471E04100040E16C for alsa-devel@alsa-project.org;
-	Sun, 18 Nov 2007 22:27:48 +0100
-In-Reply-To: <74eb4bb50711180948i33b7d7e6k9d222e840478f4d8@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <20071118145611.GB22622@elte.hu>
+Sender: netdev-owner@vger.kernel.org
+To: Ingo Molnar <mingo@elte.hu>
+Cc: Pavel Machek <pavel@ucw.cz>, Mark Lord <liml@rtr.ca>, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>, protasnb@gmail.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-ide@vger.kernel.org, linux-pcmcia@lists.infradead.org, linux-input@atrey.karlin.mff.cuni.cz, bugme-daemon@bugzilla.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 18 November 2007 18:48, alsa-devel.20.pris@spamgourmet.com wrote:
-> > The thing is, on my system(Ubuntu Gutsy Gibbon) I get perfect sound
-> > playing the example ogg files that come with the system. The system
-> > sounds seem to work fine also. But I have problems when trying to
-> > listen to avi or mp3 files. Can this still be an Alsa problem or is
-> > this a problem of some incorrect configuration?
->
-> The problems I have with avi files are: sound is very low and
-> distorted. Interestingly this varies with the AVI files. There are
-> some files where the sound is better, others are so bad that I can
-> barely understand what is being said.
+On Sun, Nov 18, 2007 at 03:56:11PM +0100, Ingo Molnar wrote:
+> 
+> * Pavel Machek <pavel@ucw.cz> wrote:
+> 
+> > On Tue 2007-11-13 12:50:08, Mark Lord wrote:
+> > > Ingo Molnar wrote:
+> > > >
+> > > >for example git-bisect was godsent. I remember that 
+> > > >years ago bisection of a bug was a very laborous task 
+> > > >so that it was only used as a final, last-ditch 
+> > > >approach for really nasty bugs. Today we can 
+> > > >autonomouly bisect build bugs via a simple shell 
+> > > >command around "git-bisect run", without any human 
+> > > >interaction! This freed up testing resources 
+> > > ..
+> > > 
+> > > It's only a godsend for the few people who happen to be 
+> > > kernel developers
+> > > and who happen to already use git.
+> > > 
+> > > It's a 540MByte download over a slow link for everyone 
+> > > else.
+> > 
+> > Hmmm, clean-cg is 7.7G on my machine, and yes I tried 
+> > git-prune-packed. What am I doing wrong?
+> 
+> "git-repack -a -d" gives me ~220 MB:
+> 
+>   $ du -s .git
+>   222064  .git
+> 
+> anyone who can download a 43 MB tar.bz2 tarball for a kernel release 
+> should be able to afford a _one time_ download size of 250 MB (the size 
+> of the current kernel.org git repository). If not, burning a CD or DVD 
+> and carrying it home ought to do the trick. Git is very 
+> bandwidth-efficient after that point - lots of people behind narrow 
+> pipes are using it - it's just the initial clone that takes time. And 
+> given all the history and metadata that the git repository carries (full 
+> changelogs, annotations, etc.) it's a no-brainer that kernel developers 
+> should be using it.
+> 
+> (and you can shrink the 250 MB further down by using shallow clones, 
+> etc.)
+> 
+> yes, some people complained when distros stopped doing floppy installs. 
+> Some people complained when distros stopped doing CD installs. Yes, i've 
+> myself done a 250+ MB download over a 56 kbit modem in the past, and 
+> while it indeed took overnight to finish, it's very much doable. It's 
+> not really qualitatively different from the 1.5 hours a kernel tar.bz2 
+> took to download.
 
-Hi. I've seen a few problems with sound on Gutsy Gibbon, and unresolved. Would 
-you be kind enough to post the output of.
-cat /proc/asound/version
-and
-uname -r   (for the kernel version)
+Probably that once in a while, we should set up a complete tree in a
+tar.bz2 format on kernel.org. It would help a lot of people behind small
+pipes. I have been encountering problems with git-clone when the link is
+unstable. After the smallest error, it erases everything and you have to
+retry from start, which is quite frustrating and expensive.
 
-Also, which laptop, pc, mobo is this soundcard installed on?
+At least, downloading a tar.bz2 with FTP would be easier and a lot more
+reliable. Also, people could download it from their workplace and bring
+it home.
 
-I only ask because amongst other distros, I only have Kubuntu Dapper 
-installed, and would like to know which alsa driver comes as standard with 
-Gutsy Gibbon.
+Willy
 
-Moving on to your problems. Which app are you using to play the .avi, 
-and .mp3's?
-
-I ask because I've seen folks having problems with Mplayer.
-
-For playing .ogg, and .mp3 files I use MhWaveedit.
-https://gna.org/projects/mhwaveedit/
-
-It's a tarball . No forget that. I've just booted up Kubuntu Dapper, and see 
-that it's available from the Kubuntu repo's, and I have it installed, so 
-should pull in all the dependencies with no problems.
-
-If you want to try out a few .oggs, or mp3's, try the link below. Not my 
-stuff, but someone on the LAU list.
-
-http://www.musically.me.uk/updates.html
-
-Nigel.
