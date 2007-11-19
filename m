@@ -1,21 +1,15 @@
-From: Heikki Lindholm <holindho@cs.helsinki.fi>
-Subject: alsa timestamps
-Date: Mon, 19 Nov 2007 09:38:08 +0200
-Message-ID: <47413D60.9000404@cs.helsinki.fi>
+From: Dominique Larchey-Wendling <Dominique.Larchey-Wendling@loria.fr>
+Subject: Strange bug in .asoundrc ??
+Date: Mon, 19 Nov 2007 12:06:53 +0100
+Message-ID: <47416E4D.3050207@loria.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from emh01.mail.saunalahti.fi (emh01.mail.saunalahti.fi
-	[62.142.5.107]) by alsa0.perex.cz (Postfix) with ESMTP id 47DC2246D0
-	for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2007 08:38:10 +0100 (CET)
-Received: from saunalahti-vams (vs3-10.mail.saunalahti.fi [62.142.5.94])
-	by emh01-2.mail.saunalahti.fi (Postfix) with SMTP id B4EFE1AB17
-	for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2007 09:38:09 +0200 (EET)
-Received: from marumake.local (a88-112-236-112.elisa-laajakaista.fi
-	[88.112.236.112])
-	by emh03.mail.saunalahti.fi (Postfix) with ESMTP id A682A158C15
-	for <alsa-devel@alsa-project.org>; Mon, 19 Nov 2007 09:38:08 +0200 (EET)
+Received: from mail2-relais-roc.national.inria.fr
+	(mail2-relais-roc.national.inria.fr [192.134.164.83])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C19E24840
+	for <Alsa-devel@alsa-project.org>; Mon, 19 Nov 2007 12:06:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,17 +19,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello list,
+Dear all,
 
-I took up some old dusty code of mine that uses snd_pcm_state followed 
-by snd_pcm_status_get_tstamp when in capture mode. The code used to 
-work, but now the returned timestamps are all zeroes. Is there some API 
-change done recently or is the whole timestamping deprecated or 
-something? I've tried with different drivers on ubuntu's alsa .14 and 
-gentoo's .14. I've also tried mmap'ed and r/w modes, and I'm setting the 
-TSTAMP_MMAP sw param.
+It seems that neither the current ctl.hw function nor the following
+simplified function ctl.!hw work correctly when the argument CARD is
+given to the function. It works however when no argument is given as the
+following test examples show it. It have alsa-lib version
+1.0.14-0.4.rc3.fc7 installed on FC7.
 
--- Heikki Lindholm
+Is this a know bug of alsa-lib ? It is strange because this bug does not
+   show up with pcm.hw for example.
+
+--- .asoundrc ------------------------
+
+ctl.!hw {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+		default "0"
+	}
+	type hw
+	card $CARD
+}
+
+ctl.rha  "hw"
+ctl.tata "hw:0"
+ctl.toto "hw:1"
+
+------------------------------------------------
+
+
+rha % amixer -D rha info
+Card rha 'Intel'/'HDA Intel at 0xfebfc000 irq 16'
+    Mixer name    : 'SigmaTel STAC9200'
+    Components    : 'HDA:83847690'
+    Controls      : 6
+    Simple ctrls  : 4
+
+rha % amixer -D tata info
+ALSA lib control.c:781:(snd_ctl_open_conf) Invalid type for CTL tata
+definition
+amixer: Control device tata open error: Invalid argument
+
+rha % amixer -D toto info
+ALSA lib control.c:781:(snd_ctl_open_conf) Invalid type for CTL toto
+definition
+amixer: Control device toto open error: Invalid argument
