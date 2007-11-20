@@ -1,51 +1,64 @@
-From: Thomas Renninger <trenn@suse.de>
-Subject: Re: [PATCH 2/3] PNP cleanups - Unify the pnp macros to
-	access	resources in the pnp resource table
-Date: Tue, 20 Nov 2007 17:48:04 +0100
-Message-ID: <1195577284.23700.211.camel@queen.suse.de>
-References: <1195552283.23700.166.camel@queen.suse.de>
-	 <20071120123102.03bdaa67@the-village.bc.nu>
-	 <1195568360.23700.202.camel@queen.suse.de>  <4742EFBE.6030407@keyaccess.nl>
-Reply-To: trenn@suse.de
+From: Federico Fuga <f.fuga@people.it>
+Subject: Re: Inappropriate ioctl for device on alsalib
+ with	uclibc and arm platform
+Date: Tue, 20 Nov 2007 17:51:22 +0100
+Message-ID: <4743108A.7050409@people.it>
+References: <4741AA03.5070903@people.it> <s5hbq9pggs3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1760993AbXKTQsT@vger.kernel.org>
-In-Reply-To: <4742EFBE.6030407@keyaccess.nl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, linux-kernel <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bjorn.helgaas@hp.com>, "Li, Shaohua" <shaohua.li@intel.com>, "yakui.zhao" <yakui.zhao@intel.com>, akpm <akpm@linux-foundation.org>, ALSA devel <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpi1.ngi.it (smtpi1.ngi.it [88.149.128.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6089246A5
+	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 17:51:15 +0100 (CET)
+In-Reply-To: <s5hbq9pggs3.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2007-11-20 at 15:31 +0100, Rene Herman wrote:
-> On 20-11-07 15:19, Thomas Renninger wrote:
-> 
-> > At the end is some example code how things could get even more cleaned
-> > up. It shows how I think pnp layer and one example driver would get
-> > adjusted. There are not that much drivers making use of
-> > pnp_resource_change...
-> 
-> The ALSA ISA-PnP drivers do in what I personally consider a bad layering 
-> violation. Brought up not doing that a while ago on alsa-devel, but no 
-> discussion ensued. If the PnP maintainer(s) agree with me though, I'd be 
-> more than happy to rip all of that out of ALSA.
-> 
-> (added alsa-devel)
+Takashi Iwai ha scritto:
+> At Mon, 19 Nov 2007 16:21:39 +0100,
+> Federico Fuga wrote:
+> # alsactl restore
+> alsactl: set_control:1159: Cannot write control '2:0:0:Speaker Playback
+> Volume:0' : Inappropriate ioctl for device
+>
+> while traceing with strace I see that:
+>
+> open("/usr/lib/libasound.so.2", O_RDONLY) = 4
+> fstat(4, {st_mode=S_IFREG|0755, st_size=716844, ...}) = 0
+> close(4)                                = 0
+> open("/dev/snd/controlC0", O_RDONLY)    = 4
+> close(4)                                = 0
+> open("/dev/snd/controlC0", O_RDWR)      = 4
+> ioctl(4, USBDEVFS_CONTROL, 0xbeab09ec)  = 0
+> ioctl(4, UI_DEV_CREATE, 0xbeab0ad0)     = 0
+> ioctl(4, USBDEVFS_CONNECTINFO, 0xbeab0654) = 0
+> ioctl(4, USBDEVFS_HUB_PORTINFO, 0xbeab0768) = -1 ENOTTY (Inappropriate
+>   
+>
+> Looks like the definition of SNDRV_CTL_ICOTL_ELEM_WRITE doesn't match
+> with the user-space and the kernel, most likely the size of struct
+> snd_ctl_elem_value.  This might be a word alignment issue.
+>
+>   
 
-The pnp_resource_change is really ugly..., these are making use of it:
-sound/isa/sb/es968.c
-sound/isa/sb/sb16.c
-sound/isa/gus/interwave.c
-sound/isa/es18xx.c
-sound/isa/cs423x/cs4236.c
-sound/isa/wavefront/wavefront.c
-sound/isa/ad1816a/ad1816a.c
-sound/isa/cmi8330.c
-sound/isa/opl3sa2.c
-sound/isa/opti9xx/opti92x-ad1848.c
-sound/isa/als100.c
-sound/isa/azt2320.c
-sound/isa/dt019x.c
+Hi Takashi,
 
+thank you for your response. I have tracked the problem to the kernel
+space and found exactly what you say (structure size). I didn't think
+about word alignment, I will try by changeing the gcc options.
+Do you think I should look at the cross compiler or at the parameters
+passed to gcc while compiling the alsa library?
+Thank you very much.
 
-   Thomas
+Federico
