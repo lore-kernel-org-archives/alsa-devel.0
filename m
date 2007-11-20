@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] Add ASoC Magician machine support.
-Date: Tue, 20 Nov 2007 09:25:43 +0000
-Message-ID: <1195550746-6892-21-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] Add TLV support for UDA1380
+Date: Tue, 20 Nov 2007 09:25:44 +0000
+Message-ID: <1195550746-6892-22-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1195550746-6892-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-3-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -22,14 +22,15 @@ References: <1195550746-6892-1-git-send-email-broonie@opensource.wolfsonmicro.co
 	<1195550746-6892-18-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-19-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-20-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-21-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A166249E2
-	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 10:43:22 +0100 (CET)
-In-Reply-To: <1195550746-6892-20-git-send-email-broonie@opensource.wolfsonmicro.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id A9F72249E2
+	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 10:43:26 +0100 (CET)
+In-Reply-To: <1195550746-6892-21-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -40,603 +41,385 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: liam.girdwood@opensource.wolfsonmicro.com, Liam Girdwood <liam@localhost.localdomain>, Philipp Zabel <philipp.zabel@gmail.com>
+Cc: liam.girdwood@opensource.wolfsonmicro.com, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Liam Girdwood <liam@localhost.localdomain>
+From: Philipp Zabel <philipp.zabel@gmail.com>
 
 Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 ---
- sound/soc/pxa/Kconfig    |   11 +
- sound/soc/pxa/Makefile   |    2 +
- sound/soc/pxa/magician.c |  539 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 552 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/pxa/magician.c
+ sound/soc/codecs/uda1380.c |  255 ++++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 222 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index bcb3aa0..3682f38 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -58,6 +58,17 @@ config SND_PXA2XX_SOC_TOSA
- 	  Say Y if you want to add support for SoC audio on Sharp
- 	  Zaurus SL-C6000x models (Tosa).
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 0fa9832..71960f0 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -5,6 +5,10 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  *
++ * Copyright (c) 2007 Philipp Zabel <philipp.zabel@gmail.com>
++ * Improved support for DAPM and audio routing/mixing capabilities,
++ * added TLV support.
++ *
+  * Modified by Richard Purdie <richard@openedhand.com> to fit into SoC
+  * codec model.
+  *
+@@ -28,6 +32,7 @@
+ #include <sound/info.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
++#include <sound/tlv.h>
  
-+config SND_PXA2XX_SOC_MAGICIAN
-+	tristate "SoC Audio support for HTC Magician"
-+	depends on SND_PXA2XX_SOC
-+	select SND_PXA2XX_SOC_I2S
-+	select SND_PXA2XX_SOC_SSP
-+	select SND_SOC_UDA1380
-+	help
-+	  Say Y if you want to add support for SoC audio on the
-+	  HTC Magician.
-+
-+
- config SND_PXA2XX_SOC_AMESOM_TLV320
- 	tristate "SoC SSP Audio support for AMESOM - TLV320AIC24k"
- 	depends on SND_PXA2XX_SOC && MACH_AMESOM
-diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
-index 931bdc7..1faa751 100644
---- a/sound/soc/pxa/Makefile
-+++ b/sound/soc/pxa/Makefile
-@@ -15,9 +15,11 @@ snd-soc-poodle-objs := poodle.o
- snd-soc-tosa-objs := tosa.o
- snd-soc-spitz-objs := spitz.o
- snd-soc-amesom-tlv320-objs := amesom_tlv320.o
-+snd-soc-magician-objs := magician.o
+ #include "uda1380.h"
  
- obj-$(CONFIG_SND_PXA2XX_SOC_CORGI) += snd-soc-corgi.o
- obj-$(CONFIG_SND_PXA2XX_SOC_POODLE) += snd-soc-poodle.o
- obj-$(CONFIG_SND_PXA2XX_SOC_TOSA) += snd-soc-tosa.o
- obj-$(CONFIG_SND_PXA2XX_SOC_SPITZ) += snd-soc-spitz.o
- obj-$(CONFIG_SND_PXA2XX_SOC_AMESOM_TLV320) += snd-soc-amesom-tlv320.o
-+obj-$(CONFIG_SND_PXA2XX_SOC_MAGICIAN) += snd-soc-magician.o
-\ No newline at end of file
-diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
-new file mode 100644
-index 0000000..7eb671c
---- /dev/null
-+++ b/sound/soc/pxa/magician.c
-@@ -0,0 +1,539 @@
-+/*
-+ * SoC audio for HTC Magician
-+ *
-+ * Copyright (c) 2006 Philipp Zabel <philipp.zabel@gmail.com>
-+ *
-+ * based on spitz.c,
-+ * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-+ *          Richard Purdie <richard@openedhand.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
+@@ -111,14 +116,14 @@ static int uda1380_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	 */
+ 	if (!codec->active && (reg >= UDA1380_MVOL))
+ 		return 0;
+-	dbg("uda hw write %x val %x\n", reg, value);
++	dbg("uda hw write %x val %x", reg, value);
+ 	if (codec->hw_write(codec->control_data, data, 3) == 3) {
+ 		unsigned int val;
+ 		i2c_master_send(codec->control_data, data, 1);
+ 		i2c_master_recv(codec->control_data, data, 2);
+ 		val = (data[0]<<8) | data[1];
+ 		if (val != value) {
+-			dbg("READ BACK VAL %x\n", (data[0]<<8) | data[1]);
++			dbg("READ BACK VAL %x", (data[0]<<8) | data[1]);
+ 			return -EIO;
+ 		}
+ 		return 0;
+@@ -131,37 +136,202 @@ static int uda1380_write(struct snd_soc_codec *codec, unsigned int reg,
+ /* declarations of ALSA reg_elem_REAL controls */
+ static const char *uda1380_deemp[] = {"None", "32kHz", "44.1kHz", "48kHz",
+ 				      "96kHz"};
+-static const char *uda1380_input_sel[] = {"Line", "Mic"};
+-static const char *uda1380_output_sel[] = {"Direct", "Mixer"};
++static const char *uda1380_input_sel[] = { "Line", "Mic + Line R", "Line L", "Mic" };
++static const char *uda1380_output_sel[] = {"DAC", "Analog Mixer"};
+ static const char *uda1380_spf_mode[] = {"Flat", "Minimum1", "Minimum2",
+ 					 "Maximum"};
++static const char *uda1380_capture_sel[] = {"ADC", "Digital Mixer"};
++static const char *uda1380_sel_ns[] = { "3rd-order", "5th-order" };
++static const char *uda1380_mix_control[] = { "off", "PCM only", "before sound processing", "after sound processing" };
++static const char *uda1380_sdet_setting[] = { "3200", "4800", "9600", "19200" };
++static const char *uda1380_os_setting[] = { "single-speed", "double-speed (no mixing)", "quad-speed (no mixing)" };
 +
-+#include <linux/module.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <linux/delay.h>
-+#include <sound/driver.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <asm/hardware/scoop.h>
-+#include <asm/arch/pxa-regs.h>
-+#include <asm/arch/hardware.h>
-+#include <asm/arch/magician.h>
-+#include <asm/arch/magician_cpld.h>
-+#include <asm/mach-types.h>
-+#include "../codecs/uda1380.h"
-+#include "pxa2xx-pcm.h"
-+#include "pxa2xx-i2s.h"
-+#include "pxa2xx-ssp.h"
-+
-+#define MAGICIAN_HP_ON     0
-+#define MAGICIAN_HP_OFF    1
-+
-+#define MAGICIAN_SPK_ON    0
-+#define MAGICIAN_SPK_OFF   1
-+
-+#define MAGICIAN_MIC       0
-+#define MAGICIAN_MIC_EXT   1
-+
-+/*
-+ * SSP GPIO's
-+ */
-+#define GPIO23_SSPSCLK_MD	(23 | GPIO_ALT_FN_2_OUT)
-+#define GPIO24_SSPSFRM_MD	(24 | GPIO_ALT_FN_2_OUT)
-+#define GPIO25_SSPTXD_MD	(25 | GPIO_ALT_FN_2_OUT)
-+
-+static int magician_hp_func = MAGICIAN_HP_OFF;
-+static int magician_spk_func = MAGICIAN_SPK_ON;
-+static int magician_in_sel = MAGICIAN_MIC;
-+
-+extern struct platform_device magician_cpld;
-+
-+static void magician_ext_control(struct snd_soc_codec *codec)
-+{
-+	snd_soc_dapm_set_endpoint(codec, "Speaker",
-+			(magician_spk_func == MAGICIAN_SPK_ON));
-+
-+	snd_soc_dapm_set_endpoint(codec, "Headphone Jack",
-+			(magician_hp_func == MAGICIAN_HP_ON));
-+
-+	switch (magician_in_sel) {
-+	case MAGICIAN_MIC:
-+		snd_soc_dapm_set_endpoint(codec, "Headset Mic", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Call Mic", 1);
-+		break;
-+	case MAGICIAN_MIC_EXT:
-+		snd_soc_dapm_set_endpoint(codec, "Call Mic", 0);
-+		snd_soc_dapm_set_endpoint(codec, "Headset Mic", 1);
-+		break;
-+	}
-+	snd_soc_dapm_sync_endpoints(codec);
-+}
-+
-+static int magician_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec *codec = rtd->socdev->codec;
-+
-+	/* check the jack status at stream startup */
-+	magician_ext_control(codec);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Magician uses SSP port for playback.
-+ */
-+static int magician_playback_hw_params(struct snd_pcm_substream *substream,
-+				       struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
-+	unsigned int acps, acds, div4;
-+	int ret = 0;
-+
-+	/*
-+	 * Rate = SSPSCLK / (word size(16))
-+	 * SSPSCLK = (ACPS / ACDS) / SSPSCLKDIV(div4 or div1)
-+	 */
-+	switch (params_rate(params)) {
-+	case 8000:
-+		acps = 32842000;
-+		acds = PXA2XX_SSP_CLK_AUDIO_DIV_32;	/* wrong - 32 bits/sample */
-+		div4 = PXA2XX_SSP_CLK_SCDB_4;
-+		break;
-+	case 11025:
-+		acps = 5622000;
-+		acds = PXA2XX_SSP_CLK_AUDIO_DIV_8;	/* 16 bits/sample, 1 slot */
-+		div4 = PXA2XX_SSP_CLK_SCDB_4;
-+		break;
-+	case 22050:
-+		acps = 5622000;
-+		acds = PXA2XX_SSP_CLK_AUDIO_DIV_4;
-+		div4 = PXA2XX_SSP_CLK_SCDB_4;
-+		break;
-+	case 44100:
-+		acps = 11345000;
-+		acds = PXA2XX_SSP_CLK_AUDIO_DIV_4;
-+		div4 = PXA2XX_SSP_CLK_SCDB_4;
-+		break;
-+	case 48000:
-+		acps = 12235000;
-+		acds = PXA2XX_SSP_CLK_AUDIO_DIV_4;
-+		div4 = PXA2XX_SSP_CLK_SCDB_4;
-+		break;
-+	}
-+
-+	/* set codec DAI configuration */
-+	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_MSB |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_MSB |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set audio clock as clock source */
-+	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, PXA2XX_SSP_CLK_AUDIO, 0,
-+			SND_SOC_CLOCK_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the SSP audio system clock ACDS divider */
-+	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai,
-+			PXA2XX_SSP_AUDIO_DIV_ACDS, acds);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the SSP audio system clock SCDB divider4 */
-+	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai,
-+			PXA2XX_SSP_AUDIO_DIV_SCDB, div4);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set SSP audio pll clock */
-+	ret = cpu_dai->dai_ops.set_pll(cpu_dai, 0, 0, acps);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+/*
-+ * We have to enable the SSP port early so the UDA1380 can flush
-+ * it's register cache. The UDA1380 can only write it's interpolator and
-+ * decimator registers when the link is running.
-+ */
-+static int magician_playback_prepare(struct snd_pcm_substream *substream)
-+{
-+	/* enable SSP clock - is this needed ? */
-+	SSCR0_P(1) |= SSCR0_SSE;
-+
-+	/* FIXME: ENABLE I2S */
-+	SACR0 |= SACR0_BCKD;
-+	SACR0 |= SACR0_ENB;
-+	pxa_set_cken(CKEN8_I2S, 1);
-+
-+	return 0;
-+}
-+
-+static int magician_playback_hw_free(struct snd_pcm_substream *substream)
-+{
-+	/* FIXME: DISABLE I2S */
-+	SACR0 &= ~SACR0_ENB;
-+	SACR0 &= ~SACR0_BCKD;
-+	pxa_set_cken(CKEN8_I2S, 0);
-+	return 0;
-+}
-+
-+/*
-+ * Magician uses I2S for capture.
-+ */
-+static int magician_capture_hw_params(struct snd_pcm_substream *substream,
-+				      struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int ret = 0;
-+
-+	/* set codec DAI configuration */
-+	ret = codec_dai->dai_ops.set_fmt(codec_dai,
-+			SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = cpu_dai->dai_ops.set_fmt(cpu_dai,
-+			SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the I2S system clock as output */
-+	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
-+			SND_SOC_CLOCK_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+/*
-+ * We have to enable the I2S port early so the UDA1380 can flush
-+ * it's register cache. The UDA1380 can only write it's interpolator and
-+ * decimator registers when the link is running.
-+ */
-+static int magician_capture_prepare(struct snd_pcm_substream *substream)
-+{
-+	SACR0 |= SACR0_ENB;
-+	return 0;
-+}
-+
-+static struct snd_soc_ops magician_capture_ops = {
-+	.startup = magician_startup,
-+	.hw_params = magician_capture_hw_params,
-+	.prepare = magician_capture_prepare,
++static const struct soc_enum uda1380_deemp_enum[] = {
++	SOC_ENUM_SINGLE(UDA1380_DEEMP, 8, 5, uda1380_deemp),
++	SOC_ENUM_SINGLE(UDA1380_DEEMP, 0, 5, uda1380_deemp),
 +};
++static const struct soc_enum uda1380_input_sel_enum =
++	SOC_ENUM_SINGLE(UDA1380_ADC, 2, 4, uda1380_input_sel);		/* SEL_MIC, SEL_LNA */
++static const struct soc_enum uda1380_output_sel_enum =
++	SOC_ENUM_SINGLE(UDA1380_PM, 7, 2, uda1380_output_sel);		/* R02_EN_AVC */
++static const struct soc_enum uda1380_spf_enum =
++	SOC_ENUM_SINGLE(UDA1380_MODE, 14, 4, uda1380_spf_mode);		/* M */
++static const struct soc_enum uda1380_capture_sel_enum =
++	SOC_ENUM_SINGLE(UDA1380_IFACE, 6, 2, uda1380_capture_sel);	/* SEL_SOURCE */
++static const struct soc_enum uda1380_sel_ns_enum =
++	SOC_ENUM_SINGLE(UDA1380_MIXER, 14, 2, uda1380_sel_ns);		/* SEL_NS */
++static const struct soc_enum uda1380_mix_enum =
++	SOC_ENUM_SINGLE(UDA1380_MIXER, 12, 4, uda1380_mix_control);	/* MIX, MIX_POS */
++static const struct soc_enum uda1380_sdet_enum =
++	SOC_ENUM_SINGLE(UDA1380_MIXER, 4, 4, uda1380_sdet_setting);	/* SD_VALUE */
++static const struct soc_enum uda1380_os_enum =
++	SOC_ENUM_SINGLE(UDA1380_MIXER, 0, 3, uda1380_os_setting);	/* OS */
 +
-+static struct snd_soc_ops magician_playback_ops = {
-+	.startup = magician_startup,
-+	.hw_params = magician_playback_hw_params,
-+	.prepare = magician_playback_prepare,
-+	.hw_free = magician_playback_hw_free,
-+};
-+
-+static int magician_get_jack(struct snd_kcontrol * kcontrol,
-+			     struct snd_ctl_elem_value * ucontrol)
++/**
++ * snd_soc_info_volsw - single mixer info callback
++ * @kcontrol: mixer control
++ * @uinfo: control element information
++ *
++ * Callback to provide information about a single mixer control.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_info_volsw_s8(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_info *uinfo)
 +{
-+	ucontrol->value.integer.value[0] = magician_hp_func;
++	int max = (kcontrol->private_value >> 16) & 0xff;
++	int min = (kcontrol->private_value >> 24) & 0xff;
++
++	/* 00000000 (0) ...(-0.25 dB)... 11111000 (-78 dB), 11111100 -INF */
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 2;
++	uinfo->value.integer.min = min;
++	uinfo->value.integer.max = max;
 +	return 0;
 +}
 +
-+static int magician_set_hp(struct snd_kcontrol * kcontrol,
-+			     struct snd_ctl_elem_value * ucontrol)
++/**
++ * snd_soc_get_volsw_sgn - single mixer get callback
++ * @kcontrol: mixer control
++ * @uinfo: control element information
++ *
++ * Callback to get the value of a single mixer control.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_get_volsw_s8(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	int reg = kcontrol->private_value & 0xff;
++	int max = (kcontrol->private_value >> 16) & 0xff;
++	int min = (kcontrol->private_value >> 24) & 0xff;
 +
-+	if (magician_hp_func == ucontrol->value.integer.value[0])
-+		return 0;
++	ucontrol->value.integer.value[0] =
++		(signed char)(snd_soc_read(codec, reg) & 0xff);
++	ucontrol->value.integer.value[1] =
++		(signed char)((snd_soc_read(codec, reg) >> 8) & 0xff);
 +
-+	magician_hp_func = ucontrol->value.integer.value[0];
-+	magician_ext_control(codec);
-+	return 1;
-+}
-+
-+static int magician_get_spk(struct snd_kcontrol * kcontrol,
-+			    struct snd_ctl_elem_value * ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = magician_spk_func;
 +	return 0;
 +}
 +
-+static int magician_set_spk(struct snd_kcontrol * kcontrol,
-+			    struct snd_ctl_elem_value * ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+
-+	if (magician_spk_func == ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	magician_spk_func = ucontrol->value.integer.value[0];
-+	magician_ext_control(codec);
-+	return 1;
-+}
-+
-+static int magician_get_input(struct snd_kcontrol * kcontrol,
-+			      struct snd_ctl_elem_value * ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = magician_in_sel;
-+	return 0;
-+}
-+
-+static int magician_set_input(struct snd_kcontrol * kcontrol,
-+			      struct snd_ctl_elem_value * ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+
-+	if (magician_in_sel == ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	magician_in_sel = ucontrol->value.integer.value[0];
-+
-+	switch (magician_in_sel) {
-+	case MAGICIAN_MIC:
-+		magician_egpio_disable(&magician_cpld,
-+				       EGPIO_NR_MAGICIAN_IN_SEL0);
-+		magician_egpio_enable(&magician_cpld,
-+				      EGPIO_NR_MAGICIAN_IN_SEL1);
-+		break;
-+	case MAGICIAN_MIC_EXT:
-+		magician_egpio_disable(&magician_cpld,
-+				       EGPIO_NR_MAGICIAN_IN_SEL0);
-+		magician_egpio_disable(&magician_cpld,
-+				       EGPIO_NR_MAGICIAN_IN_SEL1);
-+	}
-+
-+	return 1;
-+}
-+
-+static int magician_spk_power(struct snd_soc_dapm_widget *w, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		magician_egpio_enable(&magician_cpld,
-+				      EGPIO_NR_MAGICIAN_SPK_POWER);
-+	else
-+		magician_egpio_disable(&magician_cpld,
-+				       EGPIO_NR_MAGICIAN_SPK_POWER);
-+	return 0;
-+}
-+
-+static int magician_hp_power(struct snd_soc_dapm_widget *w, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		magician_egpio_enable(&magician_cpld,
-+				      EGPIO_NR_MAGICIAN_EP_POWER);
-+	else
-+		magician_egpio_disable(&magician_cpld,
-+				       EGPIO_NR_MAGICIAN_EP_POWER);
-+	return 0;
-+}
-+
-+static int magician_mic_bias(struct snd_soc_dapm_widget *w, int event)
-+{
-+//	if (SND_SOC_DAPM_EVENT_ON(event))
-+//		magician_egpio_enable(&magician_cpld,
-+//			EGPIO_NR_MAGICIAN_MIC_POWER);
-+//	else
-+//		magician_egpio_disable(&magician_cpld,
-+//			EGPIO_NR_MAGICIAN_MIC_POWER);
-+	return 0;
-+}
-+
-+/* magician machine dapm widgets */
-+static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", magician_hp_power),
-+	SND_SOC_DAPM_SPK("Speaker", magician_spk_power),
-+	SND_SOC_DAPM_MIC("Call Mic", magician_mic_bias),
-+	SND_SOC_DAPM_MIC("Headset Mic", magician_mic_bias),
-+};
-+
-+/* magician machine audio_map */
-+static const char *audio_map[][3] = {
-+
-+	/* Headphone connected to VOUTL, VOUTR */
-+	{"Headphone Jack", NULL, "VOUTL"},
-+	{"Headphone Jack", NULL, "VOUTR"},
-+
-+	/* Speaker connected to VOUTL, VOUTR */
-+	{"Speaker", NULL, "VOUTL"},
-+	{"Speaker", NULL, "VOUTR"},
-+
-+	/* Mics are connected to VINM */
-+	{"VINM", NULL, "Headset Mic"},
-+	{"VINM", NULL, "Call Mic"},
-+
-+	{NULL, NULL, NULL},
-+};
-+
-+static const char *hp_function[] = { "On", "Off" };
-+static const char *spk_function[] = { "On", "Off" };
-+static const char *input_select[] = { "Call Mic", "Headset Mic" };
-+static const struct soc_enum magician_enum[] = {
-+	SOC_ENUM_SINGLE_EXT(4, hp_function),
-+	SOC_ENUM_SINGLE_EXT(2, spk_function),
-+	SOC_ENUM_SINGLE_EXT(2, input_select),
-+};
-+
-+static const struct snd_kcontrol_new uda1380_magician_controls[] = {
-+	SOC_ENUM_EXT("Headphone Switch", magician_enum[0], magician_get_jack,
-+			magician_set_hp),
-+	SOC_ENUM_EXT("Speaker Switch", magician_enum[1], magician_get_spk,
-+			magician_set_spk),
-+	SOC_ENUM_EXT("Input Select", magician_enum[2], magician_get_input,
-+			magician_set_input),
-+};
-+
-+/*
-+ * Logic for a uda1380 as connected on a HTC Magician
++/**
++ * snd_soc_put_volsw_sgn - single mixer put callback
++ * @kcontrol: mixer control
++ * @uinfo: control element information
++ *
++ * Callback to set the value of a single mixer control.
++ *
++ * Returns 0 for success.
 + */
-+static int magician_uda1380_init(struct snd_soc_codec *codec)
++int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
 +{
-+	int i, err;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	int reg = kcontrol->private_value & 0xff;
++	int max = (kcontrol->private_value >> 16) & 0xff;
++	int min = (kcontrol->private_value >> 24) & 0xff;
++	int err;
++	unsigned short val, val2, val_mask;
 +
-+	/* NC codec pins */
-+	snd_soc_dapm_set_endpoint(codec, "VOUTLHP", 0);
-+	snd_soc_dapm_set_endpoint(codec, "VOUTRHP", 0);
-+
-+	/* FIXME: is anything connected here? */
-+	snd_soc_dapm_set_endpoint(codec, "VINL", 0);
-+	snd_soc_dapm_set_endpoint(codec, "VINR", 0);
-+
-+	/* Add magician specific controls */
-+	for (i = 0; i < ARRAY_SIZE(uda1380_magician_controls); i++) {
-+		if ((err = snd_ctl_add(codec->card,
-+				snd_soc_cnew(&uda1380_magician_controls[i],
-+				codec, NULL))) < 0)
-+			return err;
-+	}
-+
-+	/* Add magician specific widgets */
-+	for (i = 0; i < ARRAY_SIZE(uda1380_dapm_widgets); i++) {
-+		snd_soc_dapm_new_control(codec, &uda1380_dapm_widgets[i]);
-+	}
-+
-+	/* Set up magician specific audio path interconnects */
-+	for (i = 0; audio_map[i][0] != NULL; i++) {
-+		snd_soc_dapm_connect_input(codec, audio_map[i][0],
-+				audio_map[i][1], audio_map[i][2]);
-+	}
-+
-+	snd_soc_dapm_sync_endpoints(codec);
-+	return 0;
++	val = (signed char)ucontrol->value.integer.value[0] & 0xff;
++	val2 = (signed char)ucontrol->value.integer.value[1] & 0xff;
++	val |= val2<<8;
++	err = snd_soc_update_bits(codec, reg, val_mask, val);
++	return err;
 +}
 +
-+/* magician digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link magician_dai[] = {
++DECLARE_TLV_DB_SCALE(amix_tlv, -4950, 150, 1);	/* from -48 dB in 1.5 dB steps (mute instead of -49.5 dB) */
++
++static const unsigned int mvol_tlv[] = {
++	TLV_DB_RANGE_HEAD(3),
++	0,15, TLV_DB_SCALE_ITEM(-8200, 100, 1),	/* from -78 dB in 1 dB steps (3 dB steps, really) */
++	16,43, TLV_DB_SCALE_ITEM(-6600, 50, 0),	/* from -66 dB in 0.5 dB steps (2 dB steps, really) */
++	44,252, TLV_DB_SCALE_ITEM(-5200, 25, 0),	/* from -52 dB in 0.25 dB steps */
++};
+ 
+-static const struct soc_enum uda1380_enum[] = {
+-	SOC_ENUM_DOUBLE(UDA1380_DEEMP, 0, 8, 5, uda1380_deemp),
+-	SOC_ENUM_SINGLE(UDA1380_ADC, 3, 2, uda1380_input_sel),
+-	SOC_ENUM_SINGLE(UDA1380_MODE, 14, 4, uda1380_spf_mode),
+-	SOC_ENUM_SINGLE(UDA1380_PM, 7, 2, uda1380_output_sel), /* R02_EN_AVC */
++static const unsigned int vc_tlv[] = {
++	TLV_DB_RANGE_HEAD(4),
++	0,7, TLV_DB_SCALE_ITEM(-7800, 150, 1),	/* from -72 dB in 1.5 dB steps (6 dB steps really) */
++	8,15, TLV_DB_SCALE_ITEM(-6600, 75, 0),	/* from -66 dB in 0.75 dB steps (3 dB steps really) */
++	16,43, TLV_DB_SCALE_ITEM(-6000, 50, 0),	/* from -60 dB in 0.5 dB steps (2 dB steps really) */
++	44,228, TLV_DB_SCALE_ITEM(-4600, 25, 0),/* from -46 dB in 0.25 dB steps */
+ };
+ 
++DECLARE_TLV_DB_SCALE(tr_tlv, 0, 200, 0);	/* from 0 dB to 6 dB in 2 dB steps, if SPF mode != flat */
++DECLARE_TLV_DB_SCALE(bb_tlv, 0, 200, 0);	/* from 0 dB to 24 dB in 2 dB steps, if SPF mode == maximum */
++						/* (SPF mode == flat cuts off at 18 dB max */
++
++static const unsigned int dec_tlv[] = {
++	TLV_DB_RANGE_HEAD(1),
++	-128,48, TLV_DB_SCALE_ITEM(-6350, 50, 1),
++	/* 0011000 (48 dB) ...(0.5 dB)... 10000001 (-63 dB) 10000000 -INF */
++};
++
++DECLARE_TLV_DB_SCALE(pga_tlv, 0, 300, 0);	/* from 0 dB to 24 dB in 3 dB steps */
++DECLARE_TLV_DB_SCALE(vga_tlv, 0, 200, 0);	/* from 0 dB to 30 dB in 2 dB steps */
++
++
++#define SOC_DOUBLE_S8_TLV(xname, reg, min, max, tlv_array) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ|SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.tlv.p = (tlv_array), \
++	.info = snd_soc_info_volsw_s8, .get = snd_soc_get_volsw_s8, \
++	.put = snd_soc_put_volsw_s8, \
++	.private_value = (reg) | (((signed char)max) << 16) | (((signed char)min) << 24) }
++
+ static const struct snd_kcontrol_new uda1380_snd_controls[] = {
+-	SOC_DOUBLE("Playback Volume", UDA1380_MVOL, 0, 8, 255, 1),
+-	SOC_DOUBLE("Mixer Volume", UDA1380_MIXVOL, 0, 8, 255, 1),
+-	SOC_ENUM("Sound Processing Filter Mode", uda1380_enum[2]),
+-	SOC_DOUBLE("Treble Volume", UDA1380_MODE, 4, 12, 3, 0),
+-	SOC_DOUBLE("Bass Volume", UDA1380_MODE, 0, 8, 15, 0),
+-	SOC_ENUM("Playback De-emphasis", uda1380_enum[0]),
+-	SOC_DOUBLE("Capture Volume", UDA1380_DEC, 0, 8, 127, 0),
+-	SOC_DOUBLE("Line Capture Volume", UDA1380_PGA, 0, 8, 15, 0),
+-	SOC_SINGLE("Mic Capture Volume", UDA1380_PGA, 8, 11, 0),
+-	SOC_DOUBLE("Playback Switch", UDA1380_DEEMP, 3, 11, 1, 1),
+-	SOC_SINGLE("Capture Switch", UDA1380_PGA, 15, 1, 0),
+-	SOC_SINGLE("AGC Timing", UDA1380_AGC, 8, 7, 0),
+-	SOC_SINGLE("AGC Target level", UDA1380_AGC, 2, 3, 1),
++	SOC_DOUBLE_TLV("Analog Mixer Volume", UDA1380_AMIX, 0, 8, 44, 1, amix_tlv),	/* AVCR, AVCL */
++	SOC_DOUBLE_TLV("Master Playback Volume", UDA1380_MVOL, 0, 8, 252, 1, mvol_tlv),	/* MVCL, MVCR */
++	SOC_SINGLE_TLV("ADC Playback Volume", UDA1380_MIXVOL, 8, 228, 1, vc_tlv),	/* VC2 */
++	SOC_SINGLE_TLV("PCM Playback Volume", UDA1380_MIXVOL, 0, 228, 1, vc_tlv),	/* VC1 */
++	SOC_ENUM("Sound Processing Filter", uda1380_spf_enum),				/* M */
++	SOC_DOUBLE_TLV("Tone Control - Treble", UDA1380_MODE, 4, 12, 3, 0, tr_tlv), 	/* TRL, TRR */
++	SOC_DOUBLE_TLV("Tone Control - Bass", UDA1380_MODE, 0, 8, 15, 0, bb_tlv),	/* BBL, BBR */
++/**/	SOC_SINGLE("Master Playback Switch", UDA1380_DEEMP, 14, 1, 1),		/* MTM */
++	SOC_SINGLE("ADC Playback Switch", UDA1380_DEEMP, 11, 1, 1),		/* MT2 from decimation filter */
++	SOC_ENUM("ADC Playback De-emphasis", uda1380_deemp_enum[0]),		/* DE2 */
++	SOC_SINGLE("PCM Playback Switch", UDA1380_DEEMP, 3, 1, 1),		/* MT1, from digital data input */
++	SOC_ENUM("PCM Playback De-emphasis", uda1380_deemp_enum[1]),		/* DE1 */
++	SOC_SINGLE("DAC Polarity inverting Switch", UDA1380_MIXER, 15, 1, 0),	/* DA_POL_INV */
++	SOC_ENUM("Noise Shaper", uda1380_sel_ns_enum),				/* SEL_NS */
++	SOC_ENUM("Digital Mixer Signal Control", uda1380_mix_enum),		/* MIX_POS, MIX */
++	SOC_SINGLE("Silence Switch", UDA1380_MIXER, 7, 1, 0),			/* SILENCE, force DAC output to silence */
++	SOC_SINGLE("Silence Detector Switch", UDA1380_MIXER, 6, 1, 0),		/* SDET_ON */
++	SOC_ENUM("Silence Detector Setting", uda1380_sdet_enum),		/* SD_VALUE */
++	SOC_ENUM("Oversampling Input", uda1380_os_enum),			/* OS */
++	SOC_DOUBLE_S8_TLV("ADC Capture Volume", UDA1380_DEC, -128, 48, dec_tlv),	/* ML_DEC, MR_DEC */
++/**/	SOC_SINGLE("ADC Capture Switch", UDA1380_PGA, 15, 1, 1),		/* MT_ADC */
++	SOC_DOUBLE_TLV("Line Capture Volume", UDA1380_PGA, 0, 8, 8, 0, pga_tlv), /* PGA_GAINCTRLL, PGA_GAINCTRLR */
++	SOC_SINGLE("ADC Polarity inverting Switch", UDA1380_ADC, 12, 1, 0),	/* ADCPOL_INV */
++	SOC_SINGLE_TLV("Mic Capture Volume", UDA1380_ADC, 8, 15, 0, vga_tlv),	/* VGA_CTRL */
++	SOC_SINGLE("DC Filter Bypass Switch", UDA1380_ADC, 1, 1, 0),		/* SKIP_DCFIL (before decimator) */
++	SOC_SINGLE("DC Filter Enable Switch", UDA1380_ADC, 0, 1, 0),		/* EN_DCFIL (at output of decimator) */
++	SOC_SINGLE("AGC Timing", UDA1380_AGC, 8, 7, 0),			/* TODO: enum, see table 62 */
++	SOC_SINGLE("AGC Target level", UDA1380_AGC, 2, 3, 1),			/* AGC_LEVEL */
++	/* -5.5, -8, -11.5, -14 dBFS */
+ 	SOC_SINGLE("AGC Switch", UDA1380_AGC, 0, 1, 0),
+-	SOC_SINGLE("Silence", UDA1380_MIXER, 7, 1, 0),
+-	SOC_SINGLE("Silence Detection", UDA1380_MIXER, 6, 1, 0),
+ };
+ 
++/**
++ * uda1380_snd_soc_cnew
++ *
++ * temporary copy of snd_soc_cnew that doesn't overwrite .access
++ */
++struct snd_kcontrol *uda1380_snd_soc_cnew(const struct snd_kcontrol_new *_template,
++	void *data, char *long_name)
 +{
-+	.name = "uda1380",
-+	.stream_name = "UDA1380 Playback",
-+	.cpu_dai = &pxa_ssp_dai[0],
-+	.codec_dai = &uda1380_dai[UDA1380_DAI_PLAYBACK],
-+	.init = magician_uda1380_init,
-+	.ops = &magician_playback_ops,
-+},
-+{
-+	.name = "uda1380",
-+	.stream_name = "UDA1380 Capture",
-+	.cpu_dai = &pxa_i2s_dai,
-+	.codec_dai = &uda1380_dai[UDA1380_DAI_CAPTURE],
-+	.ops = &magician_capture_ops,
++	struct snd_kcontrol_new template;
++
++	memcpy(&template, _template, sizeof(template));
++	if (long_name)
++		template.name = long_name;
++	template.index = 0;
++
++	return snd_ctl_new1(&template, data);
 +}
-+};
 +
-+/* magician audio machine driver */
-+static struct snd_soc_machine snd_soc_machine_magician = {
-+	.name = "Magician",
-+	.dai_link = magician_dai,
-+	.num_links = ARRAY_SIZE(magician_dai),
-+};
+ /* add non dapm controls */
+ static int uda1380_add_controls(struct snd_soc_codec *codec)
+ {
+@@ -169,7 +339,7 @@ static int uda1380_add_controls(struct snd_soc_codec *codec)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(uda1380_snd_controls); i++) {
+ 		err = snd_ctl_add(codec->card,
+-			snd_soc_cnew(&uda1380_snd_controls[i],codec, NULL));
++			uda1380_snd_soc_cnew(&uda1380_snd_controls[i],codec, NULL));
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -179,17 +349,24 @@ static int uda1380_add_controls(struct snd_soc_codec *codec)
+ 
+ /* Input mux */
+ static const struct snd_kcontrol_new uda1380_input_mux_control =
+-	SOC_DAPM_ENUM("Input Select", uda1380_enum[1]);
++	SOC_DAPM_ENUM("Route", uda1380_input_sel_enum);
+ 
+ /* Output mux */
+ static const struct snd_kcontrol_new uda1380_output_mux_control =
+-	SOC_DAPM_ENUM("Output Select", uda1380_enum[3]);
++	SOC_DAPM_ENUM("Route", uda1380_output_sel_enum);
 +
-+/* magician audio private data */
-+static struct uda1380_setup_data magician_uda1380_setup = {
-+	.i2c_address = 0x18,
-+	.dac_clk = UDA1380_DAC_CLK_WSPLL,
-+};
++/* Capture mux */
++static const struct snd_kcontrol_new uda1380_capture_mux_control =
++	SOC_DAPM_ENUM("Route", uda1380_capture_sel_enum);
 +
-+/* magician audio subsystem */
-+static struct snd_soc_device magician_snd_devdata = {
-+	.machine = &snd_soc_machine_magician,
-+	.platform = &pxa2xx_soc_platform,
-+	.codec_dev = &soc_codec_dev_uda1380,
-+	.codec_data = &magician_uda1380_setup,
-+};
+ 
+ static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
+ 		&uda1380_input_mux_control),
+ 	SND_SOC_DAPM_MUX("Output Mux", SND_SOC_NOPM, 0, 0,
+ 		&uda1380_output_mux_control),
++	SND_SOC_DAPM_MUX("Capture Mux", SND_SOC_NOPM, 0, 0,
++		&uda1380_capture_mux_control),
+ 	SND_SOC_DAPM_PGA("Left PGA", UDA1380_PM, 3, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("Right PGA", UDA1380_PM, 1, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("Mic LNA", UDA1380_PM, 4, 0, NULL, 0),
+@@ -218,8 +395,10 @@ static const char *audio_map[][3] = {
+ 	{"Analog Mixer", NULL, "VINL"},
+ 	{"Analog Mixer", NULL, "DAC"},
+ 
+-	{"Output Mux", "Direct", "DAC"},
+-	{"Output Mux", "Mixer", "Analog Mixer"},
++	{"Output Mux", "DAC", "DAC"},
++	{"Output Mux", "Analog Mixer", "Analog Mixer"},
 +
-+static struct platform_device *magician_snd_device;
-+
-+static int __init magician_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_magician())
-+		return -ENODEV;
-+
-+	magician_egpio_enable(&magician_cpld, EGPIO_NR_MAGICIAN_CODEC_POWER);
-+
-+	/* we may need to have the clock running here - pH5 */
-+	magician_egpio_enable(&magician_cpld, EGPIO_NR_MAGICIAN_CODEC_RESET);
-+	udelay(5);
-+	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_CODEC_RESET);
-+
-+	/* correct place? we'll need it to talk to the uda1380 */
-+	request_module("i2c-pxa");
-+
-+	magician_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!magician_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(magician_snd_device, &magician_snd_devdata);
-+	magician_snd_devdata.dev = &magician_snd_device->dev;
-+	ret = platform_device_add(magician_snd_device);
-+
-+	if (ret)
-+		platform_device_put(magician_snd_device);
-+
-+	pxa_gpio_mode(GPIO23_SSPSCLK_MD);
-+	pxa_gpio_mode(GPIO24_SSPSFRM_MD);
-+	pxa_gpio_mode(GPIO25_SSPTXD_MD);
-+
-+	return ret;
-+}
-+
-+static void __exit magician_exit(void)
-+{
-+	platform_device_unregister(magician_snd_device);
-+
-+	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_SPK_POWER);
-+	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_EP_POWER);
-+	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_MIC_POWER);
-+	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_CODEC_POWER);
-+}
-+
-+module_init(magician_init);
-+module_exit(magician_exit);
-+
-+MODULE_AUTHOR("Philipp Zabel");
-+MODULE_DESCRIPTION("ALSA SoC Magician");
-+MODULE_LICENSE("GPL");
++	/* {"DAC", "Digital Mixer", "I2S" } */
+ 
+ 	/* headphone driver */
+ 	{"VOUTLHP", NULL, "HeadPhone Driver"},
+@@ -228,10 +407,13 @@ static const char *audio_map[][3] = {
+ 	/* input mux */
+ 	{"Left ADC", NULL, "Input Mux"},
+ 	{"Input Mux", "Mic", "Mic LNA"},
++	{"Input Mux", "Mic + Line R", "Mic LNA"},
++	{"Input Mux", "Line L", "Left PGA"},
+ 	{"Input Mux", "Line", "Left PGA"},
+ 
+ 	/* right input */
+-	{"Right ADC", NULL, "Right PGA"},
++	{"Right ADC", "Mic + Line R", "Right PGA"},
++	{"Right ADC", "Line", "Right PGA"},
+ 
+ 	/* inputs */
+ 	{"Mic LNA", NULL, "VINM"},
+@@ -307,6 +489,13 @@ static int uda1380_pcm_prepare(struct snd_pcm_substream *substream)
+ 	} else {
+ 		reg_start = UDA1380_DEC;
+ 		reg_end = UDA1380_AGC;
++		/* FIXME - wince values */
++//		uda1380_write(codec, UDA1380_PM, uda1380_read_reg_cache (codec, UDA1380_PM) | R02_PON_LNA | R02_PON_DAC);
++		uda1380_write(codec, UDA1380_PM, 0x851f);
++//		uda1380_write_reg_cache(codec, UDA1380_DEC, 0x0000);
++//		uda1380_write_reg_cache(codec, UDA1380_PGA, uda1380_read_reg_cache (codec, UDA1380_PM) & ~R21_MT_ADC); /* unmute */
++//		uda1380_write_reg_cache(codec, UDA1380_ADC, 0x0001/*0x090d*/);
++			// ADC_POL_INV=0 VGA_CTRL=9(1001:18dB) gain SEL_LNA=1 SEL_MIC=1 EN_DCFIL=1
+ 	}
+ 
+ 	/* FIXME disable DAC_CLK */
+@@ -314,7 +503,7 @@ static int uda1380_pcm_prepare(struct snd_pcm_substream *substream)
+ 	uda1380_write(codec, UDA1380_CLK, clk & ~R00_DAC_CLK);
+ 
+ 	for (reg = reg_start; reg <= reg_end; reg++ ) {
+-		dbg("reg %x val %x\n",reg, uda1380_read_reg_cache (codec, reg));
++		dbg("flush reg %x val %x:",reg, uda1380_read_reg_cache (codec, reg));
+ 		uda1380_write(codec, reg, uda1380_read_reg_cache (codec, reg));
+ 	}
+ 
+@@ -387,7 +576,7 @@ static void uda1380_pcm_shutdown(struct snd_pcm_substream *substream)
+ static int uda1380_mute(struct snd_soc_codec_dai *codec_dai, int mute)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u16 mute_reg = uda1380_read_reg_cache(codec, UDA1380_DEEMP) & 0xbfff;
++	u16 mute_reg = uda1380_read_reg_cache(codec, UDA1380_DEEMP) & ~R13_MTM;
+ 
+ 	/* FIXME: mute(codec,0) is called when the magician clock is already
+ 	 * set to WSPLL, but for some unknown reason writing to interpolator
+@@ -395,7 +584,7 @@ static int uda1380_mute(struct snd_soc_codec_dai *codec_dai, int mute)
+ 	u16 clk = uda1380_read_reg_cache(codec, UDA1380_CLK);
+ 	uda1380_write(codec, UDA1380_CLK, ~R00_DAC_CLK & clk);
+ 	if (mute)
+-		uda1380_write(codec, UDA1380_DEEMP, mute_reg | 0x4000);
++		uda1380_write(codec, UDA1380_DEEMP, mute_reg | R13_MTM);
+ 	else
+ 		uda1380_write(codec, UDA1380_DEEMP, mute_reg);
+ 	uda1380_write(codec, UDA1380_CLK, clk);
 -- 
 1.5.3.5
