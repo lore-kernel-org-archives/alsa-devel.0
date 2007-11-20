@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] Add device level DAPM event
-Date: Tue, 20 Nov 2007 09:25:28 +0000
-Message-ID: <1195550746-6892-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] Support suspend and resume of the I2S
+	interface on s3c24xx.
+Date: Tue, 20 Nov 2007 09:25:26 +0000
+Message-ID: <1195550746-6892-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1195550746-6892-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id F251124A0E
-	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 10:45:34 +0100 (CET)
-In-Reply-To: <1195550746-6892-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 54D8424A28
+	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 10:45:41 +0100 (CET)
+In-Reply-To: <1195550746-6892-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,144 +24,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: liam.girdwood@opensource.wolfsonmicro.com, Liam Girdwood <liam@llanelli.wolfsonmicro.main>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: liam.girdwood@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, Graeme Gregory <graeme@openmoko.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Liam Girdwood <liam@llanelli.wolfsonmicro.main>
+From: Graeme Gregory <graeme@openmoko.com>
 
-Added a device level dapm event so that both the machine and codec are informed
-when dapm events occur.
-
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Signed-off-by: Graeme Gregory <graeme@openmoko.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc-dapm.h |    1 +
- include/sound/soc.h      |    3 +++
- sound/soc/soc-core.c     |   23 +++++++++++------------
- sound/soc/soc-dapm.c     |   23 +++++++++++++++++++++++
- 4 files changed, 38 insertions(+), 12 deletions(-)
+ sound/soc/s3c24xx/s3c24xx-i2s.c |   38 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 38 insertions(+), 0 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 2b1ae8e..db02159 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -199,6 +199,7 @@ void snd_soc_dapm_free(struct snd_soc_device *socdev);
- /* dapm events */
- int snd_soc_dapm_stream_event(struct snd_soc_codec *codec, char *stream,
- 	int event);
-+int snd_soc_dapm_device_event(struct snd_soc_device *socdev, int event);
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
+index cd89c41..fee7925 100644
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
+@@ -75,6 +75,10 @@ static struct s3c24xx_pcm_dma_params s3c24xx_i2s_pcm_stereo_in = {
+ struct s3c24xx_i2s_info {
+ 	void __iomem	*regs;
+ 	struct clk	*iis_clk;
++	u32		iiscon;
++	u32		iismod;
++	u32		iisfcon;
++	u32		iispsr;
+ };
+ static struct s3c24xx_i2s_info s3c24xx_i2s;
  
- /* dapm sys fs - used by the core */
- int snd_soc_dapm_sys_add(struct device *dev);
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index f47ef1f..000f3e7 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -426,6 +426,9 @@ struct snd_soc_machine {
- 	int (*resume_pre)(struct platform_device *pdev);
- 	int (*resume_post)(struct platform_device *pdev);
+@@ -405,6 +409,38 @@ static int s3c24xx_i2s_probe(struct platform_device *pdev)
+ 	return 0;
+ }
  
-+	/* callbacks */
-+	int (*dapm_event)(struct snd_soc_machine *, int event);
-+
- 	/* CPU <--> Codec DAI links  */
- 	struct snd_soc_dai_link *dai_link;
- 	int num_links;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e6a67b5..aaf141c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -289,15 +289,16 @@ static void close_delayed_work(struct work_struct *work)
- 		if (codec_dai->pop_wait == 1) {
- 
- 			codec_dai->pop_wait = 0;
--			snd_soc_dapm_stream_event(codec, codec_dai->playback.stream_name,
-+			snd_soc_dapm_stream_event(codec,
-+				codec_dai->playback.stream_name,
- 				SND_SOC_DAPM_STREAM_STOP);
- 
- 			/* power down the codec power domain if no longer active */
- 			if (codec->active == 0) {
- 				dbg("pop wq D3 %s %s\n", codec->name,
- 					codec_dai->playback.stream_name);
--		 		if (codec->dapm_event)
--					codec->dapm_event(codec, SNDRV_CTL_POWER_D3hot);
-+				snd_soc_dapm_device_event(socdev,
-+					SNDRV_CTL_POWER_D3hot);
- 			}
- 		}
- 	}
-@@ -353,12 +354,12 @@ static int soc_codec_close(struct snd_pcm_substream *substream)
- 	} else {
- 		/* capture streams can be powered down now */
- 		snd_soc_dapm_stream_event(codec,
--			codec_dai->capture.stream_name, SND_SOC_DAPM_STREAM_STOP);
-+			codec_dai->capture.stream_name,
-+			SND_SOC_DAPM_STREAM_STOP);
- 
--		if (codec->active == 0 && codec_dai->pop_wait == 0){
--			if (codec->dapm_event)
--				codec->dapm_event(codec, SNDRV_CTL_POWER_D3hot);
--		}
-+		if (codec->active == 0 && codec_dai->pop_wait == 0)
-+			snd_soc_dapm_device_event(socdev,
-+						SNDRV_CTL_POWER_D3hot);
- 	}
- 
- 	mutex_unlock(&pcm_mutex);
-@@ -433,8 +434,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 		/* no delayed work - do we need to power up codec */
- 		if (codec->dapm_state != SNDRV_CTL_POWER_D0) {
- 
--			if (codec->dapm_event)
--				codec->dapm_event(codec, SNDRV_CTL_POWER_D1);
-+			snd_soc_dapm_device_event(socdev,  SNDRV_CTL_POWER_D1);
- 
- 			if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 				snd_soc_dapm_stream_event(codec,
-@@ -445,8 +445,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 					codec_dai->capture.stream_name,
- 					SND_SOC_DAPM_STREAM_START);
- 
--			if (codec->dapm_event)
--				codec->dapm_event(codec, SNDRV_CTL_POWER_D0);
-+			snd_soc_dapm_device_event(socdev, SNDRV_CTL_POWER_D0);
- 			if (codec_dai->dai_ops.digital_mute)
- 				codec_dai->dai_ops.digital_mute(codec_dai, 0);
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 29a546f..0a9d192 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1280,6 +1280,29 @@ int snd_soc_dapm_stream_event(struct snd_soc_codec *codec,
- EXPORT_SYMBOL_GPL(snd_soc_dapm_stream_event);
- 
- /**
-+ * snd_soc_dapm_device_event - send a device event to the dapm core
-+ * @socdev: audio device
-+ * @event: device event
-+ *
-+ * Sends a device event to the dapm core. The core then makes any
-+ * necessary machine or codec power changes..
-+ *
-+ * Returns 0 for success else error.
-+ */
-+int snd_soc_dapm_device_event(struct snd_soc_device *socdev, int event)
++#ifdef CONFIG_PM
++int s3c24xx_i2s_suspend(struct platform_device *pdev,
++		struct snd_soc_cpu_dai *cpu_dai)
 +{
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct snd_soc_machine *machine = socdev->machine;
++	s3c24xx_i2s.iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
++	s3c24xx_i2s.iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
++	s3c24xx_i2s.iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
++	s3c24xx_i2s.iispsr = readl(s3c24xx_i2s.regs + S3C2410_IISPSR);
 +
-+	if (machine->dapm_event)
-+				machine->dapm_event(machine, event);
-+	if (codec->dapm_event)
-+				codec->dapm_event(codec, event);
++	clk_disable(s3c24xx_i2s.iis_clk);
++
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_device_event);
 +
-+/**
-  * snd_soc_dapm_set_endpoint - set audio endpoint status
-  * @codec: audio codec
-  * @endpoint: audio signal endpoint (or start point)
++int s3c24xx_i2s_resume(struct platform_device *pdev,
++		struct snd_soc_cpu_dai *cpu_dai)
++{
++	clk_enable(s3c24xx_i2s.iis_clk);
++
++	writel(s3c24xx_i2s.iiscon, s3c24xx_i2s.regs + S3C2410_IISCON);
++	writel(s3c24xx_i2s.iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
++	writel(s3c24xx_i2s.iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
++	writel(s3c24xx_i2s.iispsr, s3c24xx_i2s.regs + S3C2410_IISPSR);
++
++	return 0;
++}
++#else
++#define s3c24xx_i2s_suspend NULL
++#define s3c24xx_i2s_resume NULL
++#endif
++
++
+ #define S3C24XX_I2S_RATES \
+ 	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
+ 	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+@@ -415,6 +451,8 @@ struct snd_soc_cpu_dai s3c24xx_i2s_dai = {
+ 	.id = 0,
+ 	.type = SND_SOC_DAI_I2S,
+ 	.probe = s3c24xx_i2s_probe,
++	.suspend = s3c24xx_i2s_suspend,
++	.resume = s3c24xx_i2s_resume,
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
 -- 
 1.5.3.5
