@@ -1,17 +1,29 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [alsa-cvslog] alsa-lib: pcm - Limit the avail_min
-	minimum size
-Date: Tue, 20 Nov 2007 20:36:16 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0711202032280.8761@tm8103.perex-int.cz>
-References: <ALOGGER1195568961.31@alsa-project.org>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [PATCH] Add ASoC TLV320 Codec driver.
+Date: Tue, 20 Nov 2007 22:34:42 +0100
+Message-ID: <20071120223442.7e0bcead@hyperion.delvare>
+References: <1195550746-6892-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-8-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-9-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-10-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-12-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-13-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-14-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-15-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-16-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-17-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5h4pfhjihm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DEFB24A8C
-	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 20:36:17 +0100 (CET)
-In-Reply-To: <ALOGGER1195568961.31@alsa-project.org>
+Received: from kraid.nerim.net (smtp-102-tuesday.nerim.net [62.4.16.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4880E24AD4
+	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 22:34:44 +0100 (CET)
+In-Reply-To: <s5h4pfhjihm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +34,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Cc: liam.girdwood@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, i2c@lm-sensors.org, Nicola Perrino <nicola.perrino@atlab.it>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Nov 2007, Takashi Iwai wrote:
+Hi Takashi, Mark,
 
-> changeset:   2352:39d34d6a4587
-> tag:         tip
-> user:        tiwai
-> date:        Tue Nov 20 15:29:10 2007 +0100
-> files:       src/pcm/pcm.c
-> description:
-> pcm - Limit the avail_min minimum size
+On Tue, 20 Nov 2007 11:53:25 +0100, Takashi Iwai wrote:
+> At Tue, 20 Nov 2007 09:25:39 +0000,
+> Mark Brown wrote:
+> > 
+> > diff --git a/include/linux/i2c-id.h b/include/linux/i2c-id.h
+> > index 5ced329..f6a1ddf 100644
+> > --- a/include/linux/i2c-id.h
+> > +++ b/include/linux/i2c-id.h
+> > @@ -122,6 +122,7 @@
+> >  #define I2C_DRIVERID_VP27SMPX	93	/* Panasonic VP27s tuner internal MPX */
+> >  #define I2C_DRIVERID_CS4270	94	/* Cirrus Logic 4270 audio codec */
+> >  #define I2C_DRIVERID_AK4535	95	/* AK4525 audio codec */
+> > +#define I2C_DRIVERID_TLV320	97	/* TLV 320 audio codec */
 > 
-> Fix avail_min if it's less than period_size.  The too small avail_min
-> is simply useless and the cause of CPU hog with rate plugin.
-> 
-> 
-> diff -r b1d1733e52f8 -r 39d34d6a4587 src/pcm/pcm.c
-> --- a/src/pcm/pcm.c	Mon Nov 19 08:07:19 2007 +0100
-> +++ b/src/pcm/pcm.c	Tue Nov 20 15:29:10 2007 +0100
-> @@ -5577,6 +5577,12 @@ int snd_pcm_sw_params_set_avail_min(snd_
->  #endif
->  {
->  	assert(pcm && params);
-> +	/* Fix avail_min if it's below period size.  The period_size
-> +	 * defines the minimal wake-up timing accuracy, so it doesn't
-> +	 * make sense to set below that.
-> +	 */
-> +	if (val < pcm->period_size)
-> +		val = pcm->period_size;
->  	params->avail_min = val;
->  	return 0;
->  }
+> Where is 96? :-)
 
-I think that this patch is wrong. We may use system timers to increase 
-(fine-tune) "interrupt" latencies for pcm streams - see tick time in 
-driver and library.
+You don't seem to use these driver IDs anywhere? These IDs are
+optional, so if you have no need for them, it's much easier to just not
+define them.
 
-						Jaroslav
+Note that the i2c_driver.id field is planed for removal anyway.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project
+-- 
+Jean Delvare
