@@ -1,20 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] Fix inverted Bass, Treble,
-	Mono volume and Phone volume WM9712 mixer controls.
-Date: Tue, 20 Nov 2007 09:25:27 +0000
-Message-ID: <1195550746-6892-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] Ensure PCMs are suspended
+Date: Tue, 20 Nov 2007 09:25:31 +0000
+Message-ID: <1195550746-6892-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1195550746-6892-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93D1B249E3
-	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 10:42:09 +0100 (CET)
-In-Reply-To: <1195550746-6892-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id C4740249FF
+	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 10:42:32 +0100 (CET)
+In-Reply-To: <1195550746-6892-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: liam.girdwood@opensource.wolfsonmicro.com, Joe Sauer <jsauer@vernier.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: liam.girdwood@opensource.wolfsonmicro.com, Liam Girdwood <liam@localhost.localdomain>
 List-Id: alsa-devel@alsa-project.org
 
-From: Joe Sauer <jsauer@vernier.com>
+From: Liam Girdwood <liam@localhost.localdomain>
 
-Signed-off-by: Joe Sauer <jsauer@vernier.com>
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+This fixes a bug whereby PCMs were not being suspended when the rest of the
+audio subsystem was suspended.
 ---
- sound/soc/codecs/wm9712.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ include/sound/soc.h  |    3 +++
+ sound/soc/soc-core.c |    5 +++++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 986b5d5..111c266 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -102,7 +102,7 @@ SOC_SINGLE("Speaker Playback ZC Switch", AC97_MASTER, 7, 1, 0),
- SOC_SINGLE("Speaker Playback Invert Switch", AC97_MASTER, 6, 1, 0),
- SOC_SINGLE("Headphone Playback ZC Switch", AC97_HEADPHONE, 7, 1, 0),
- SOC_SINGLE("Mono Playback ZC Switch", AC97_MASTER_MONO, 7, 1, 0),
--SOC_SINGLE("Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 0),
-+SOC_SINGLE("Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 1),
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index c69b58c..e32fa2f 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -448,6 +448,9 @@ struct snd_soc_dai_link  {
  
- SOC_SINGLE("ALC Target Volume", AC97_CODEC_CLASS_REV, 12, 15, 0),
- SOC_SINGLE("ALC Hold Time", AC97_CODEC_CLASS_REV, 8, 15, 0),
-@@ -131,7 +131,7 @@ SOC_SINGLE("Aux Playback Headphone Volume", AC97_CD, 12, 7, 1),
- SOC_SINGLE("Aux Playback Speaker Volume", AC97_CD, 8, 7, 1),
- SOC_SINGLE("Aux Playback Phone Volume", AC97_CD, 4, 7, 1),
+ 	/* codec/machine specific init - e.g. add machine controls */
+ 	int (*init)(struct snd_soc_codec *codec);
++
++	/* DAI pcm */
++	struct snd_pcm *pcm;
+ };
  
--SOC_SINGLE("Phone Volume", AC97_PHONE, 0, 15, 0),
-+SOC_SINGLE("Phone Volume", AC97_PHONE, 0, 15, 1),
- SOC_DOUBLE("Line Capture Volume", AC97_LINE, 8, 0, 31, 1),
+ /* SoC machine */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f3e1b74..7c41212 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -646,6 +646,10 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
+ 			dai->dai_ops.digital_mute(dai, 1);
+ 	}
  
- SOC_SINGLE("Capture 20dB Boost Switch", AC97_REC_SEL, 14, 1, 0),
-@@ -145,8 +145,8 @@ SOC_ENUM("Bass Control", wm9712_enum[5]),
- SOC_SINGLE("Bass Cut-off Switch", AC97_MASTER_TONE, 12, 1, 1),
- SOC_SINGLE("Tone Cut-off Switch", AC97_MASTER_TONE, 4, 1, 1),
- SOC_SINGLE("Playback Attenuate (-6dB) Switch", AC97_MASTER_TONE, 6, 1, 0),
--SOC_SINGLE("Bass Volume", AC97_MASTER_TONE, 8, 15, 0),
--SOC_SINGLE("Treble Volume", AC97_MASTER_TONE, 0, 15, 0),
-+SOC_SINGLE("Bass Volume", AC97_MASTER_TONE, 8, 15, 1),
-+SOC_SINGLE("Treble Volume", AC97_MASTER_TONE, 0, 15, 1),
++	/* suspend all pcms */
++	for (i = 0; i < machine->num_links; i++)
++		snd_pcm_suspend_all(machine->dai_link[i].pcm);
++
+ 	if (machine->suspend_pre)
+ 		machine->suspend_pre(pdev, state);
  
- SOC_SINGLE("Capture ADC Switch", AC97_REC_GAIN, 15, 1, 1),
- SOC_ENUM("Capture Volume Steps", wm9712_enum[6]),
+@@ -880,6 +884,7 @@ static int soc_new_pcm(struct snd_soc_device *socdev,
+ 		return ret;
+ 	}
+ 
++	dai_link->pcm = pcm;
+ 	pcm->private_data = rtd;
+ 	soc_pcm_ops.mmap = socdev->platform->pcm_ops->mmap;
+ 	soc_pcm_ops.pointer = socdev->platform->pcm_ops->pointer;
 -- 
 1.5.3.5
