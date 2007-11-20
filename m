@@ -1,45 +1,67 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Initial WM8753 TLV support for capture
-	mixer.
-Date: Tue, 20 Nov 2007 13:45:20 +0000
-Message-ID: <20071120134520.GD21414@sirena.org.uk>
-References: <1195550746-6892-7-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-8-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-9-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-10-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-11-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-12-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-13-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-14-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-15-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5hd4u5jk99.wl%tiwai@suse.de>
+From: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Subject: [PATCH] mm snapshot broken-out-2007-11-20-01-45 build failer tumbler/snapper
+Date: Tue, 20 Nov 2007 19:32:49 +0530
+Message-ID: <20071120140249.GA4438@linux.vnet.ibm.com>
+References: <200711200953.lAK9qxjO030444@imap1.linux-foundation.org>
+Reply-To: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC94B24A25
-	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 14:45:21 +0100 (CET)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756413AbXKTODH@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hd4u5jk99.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.girdwood@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <200711200953.lAK9qxjO030444@imap1.linux-foundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: akpm@linux-foundation.org
+Cc: mm-commits@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.de, perex@perex.cz, alsa-devel@alsa-project.org, apw@shadowen.org, balbir@linux.vnet.ibm.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 20, 2007 at 11:15:14AM +0100, Takashi Iwai wrote:
+Hi Andrew,
 
-> You don't need TLV_DB_DB_RANGE_HEAD() for a single range.
-> TLV_DB_RANGE*() is for multiple ranges.
-> Simply use like below:
-> 	static const DECLARE_TLV_DB_LINEAR(rec_mix_tlv, -500, 600);
+The kernel build fails, with following error
 
-Thanks, I've fixed this for the next submission.
+  CC      sound/ppc/tumbler.o
+sound/ppc/tumbler.c: In function =E2=80=98snapper_get_capture_source=E2=
+=80=99:
+sound/ppc/tumbler.c:812: error: =E2=80=98union <anonymous>=E2=80=99 has=
+ no member named =E2=80=98value=E2=80=99
+sound/ppc/tumbler.c: In function =E2=80=98snapper_put_capture_source=E2=
+=80=99:
+sound/ppc/tumbler.c:824: error: =E2=80=98union <anonymous>=E2=80=99 has=
+ no member named =E2=80=98enuemerated=E2=80=99
+make[2]: *** [sound/ppc/tumbler.o] Error 1
+make[1]: *** [sound/ppc] Error 2
+make: *** [sound] Error 2
+
+Signed-off-by: Kamalesh Babulal <kamalesh@linx.vnet.ibm.com>
+--
+--- linux-2.6.24-rc3/sound/ppc/tumbler.c	2007-11-20 16:13:42.000000000 =
++0530
++++ linux-2.6.24-rc3/sound/ppc/~tumbler.c	2007-11-20 19:14:27.000000000=
+ +0530
+@@ -809,7 +809,7 @@ static int snapper_get_capture_source(st
+ 	struct pmac_tumbler *mix =3D chip->mixer_data;
+=20
+ 	snd_assert(mix, return -ENODEV);
+-	ucontrol->value.enumerated.value[0] =3D mix->capture_source;
++	ucontrol->value.enumerated.item[0] =3D mix->capture_source;
+ 	return 0;
+ }
+=20
+@@ -821,7 +821,7 @@ static int snapper_put_capture_source(st
+ 	int change;
+=20
+ 	snd_assert(mix, return -ENODEV);
+-	change =3D ucontrol->value.enuemerated.item[0] !=3D mix->capture_sour=
+ce;
++	change =3D ucontrol->value.enumerated.item[0] !=3D mix->capture_sourc=
+e;
+ 	if (change) {
+ 		mix->capture_source =3D !!ucontrol->value.enumerated.item[0];
+ 		snapper_set_capture_source(mix);
+
+
+--=20
+Thanks & Regards,
+Kamalesh Babulal,
+Linux Technology Center,
+IBM, ISTL.
