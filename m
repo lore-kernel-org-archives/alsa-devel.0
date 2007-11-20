@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] Add ASoC AK4535 codec driver.
-Date: Tue, 20 Nov 2007 09:25:38 +0000
-Message-ID: <1195550746-6892-16-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] Add ASoC Magician machine support.
+Date: Tue, 20 Nov 2007 09:25:43 +0000
+Message-ID: <1195550746-6892-21-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1195550746-6892-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-3-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -17,14 +17,19 @@ References: <1195550746-6892-1-git-send-email-broonie@opensource.wolfsonmicro.co
 	<1195550746-6892-13-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-14-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1195550746-6892-15-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-16-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-17-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-18-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-19-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1195550746-6892-20-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CED65249F7
-	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 10:42:39 +0100 (CET)
-In-Reply-To: <1195550746-6892-15-git-send-email-broonie@opensource.wolfsonmicro.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A166249E2
+	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 10:43:22 +0100 (CET)
+In-Reply-To: <1195550746-6892-20-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,843 +40,603 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Richard Purdie <richard@openedhand.com>, liam.girdwood@opensource.wolfsonmicro.com, Milan Plzik <milan.plzik@gmail.com>, i2c@lm-sensors.org
+Cc: liam.girdwood@opensource.wolfsonmicro.com, Liam Girdwood <liam@localhost.localdomain>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Richard Purdie <richard@openedhand.com>
+From: Liam Girdwood <liam@localhost.localdomain>
 
-Signed-off-by: Richard Purdie <richard@openedhand.com>
-Signed-off-by: Milan Plzik <milan.plzik@gmail.com>
+Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: i2c@lm-sensors.org
 ---
- include/linux/i2c-id.h    |    1 +
- sound/soc/codecs/Kconfig  |    4 +
- sound/soc/codecs/Makefile |    2 +
- sound/soc/codecs/ak4535.c |  716 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ak4535.h |   46 +++
- 5 files changed, 769 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/ak4535.c
- create mode 100644 sound/soc/codecs/ak4535.h
+ sound/soc/pxa/Kconfig    |   11 +
+ sound/soc/pxa/Makefile   |    2 +
+ sound/soc/pxa/magician.c |  539 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 552 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/pxa/magician.c
 
-diff --git a/include/linux/i2c-id.h b/include/linux/i2c-id.h
-index 88c8140..5ced329 100644
---- a/include/linux/i2c-id.h
-+++ b/include/linux/i2c-id.h
-@@ -121,6 +121,7 @@
- #define I2C_DRIVERID_LM4857 	92 	/* LM4857 Audio Amplifier */
- #define I2C_DRIVERID_VP27SMPX	93	/* Panasonic VP27s tuner internal MPX */
- #define I2C_DRIVERID_CS4270	94	/* Cirrus Logic 4270 audio codec */
-+#define I2C_DRIVERID_AK4535	95	/* AK4525 audio codec */
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index bcb3aa0..3682f38 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -58,6 +58,17 @@ config SND_PXA2XX_SOC_TOSA
+ 	  Say Y if you want to add support for SoC audio on Sharp
+ 	  Zaurus SL-C6000x models (Tosa).
  
- #define I2C_DRIVERID_I2CDEV	900
- #define I2C_DRIVERID_ARP        902    /* SMBus ARP Client              */
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e0675ef..8244107 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -2,6 +2,10 @@ config SND_SOC_AC97_CODEC
- 	tristate
- 	depends on SND_SOC
- 
-+config SND_SOC_AK4535
-+	tristate
-+	depends on SND_SOC
++config SND_PXA2XX_SOC_MAGICIAN
++	tristate "SoC Audio support for HTC Magician"
++	depends on SND_PXA2XX_SOC
++	select SND_PXA2XX_SOC_I2S
++	select SND_PXA2XX_SOC_SSP
++	select SND_SOC_UDA1380
++	help
++	  Say Y if you want to add support for SoC audio on the
++	  HTC Magician.
 +
- config SND_SOC_WM8731
- 	tristate
- 	depends on SND_SOC
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index f64eb07..6859145 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -1,4 +1,5 @@
- snd-soc-ac97-objs := ac97.o
-+snd-soc-ak4535-objs := ak4535.o
- snd-soc-wm8731-objs := wm8731.o
- snd-soc-wm8750-objs := wm8750.o
- snd-soc-wm8753-objs := wm8753.o
-@@ -7,6 +8,7 @@ snd-soc-wm9713-objs := wm9713.o
- snd-soc-cs4270-objs := cs4270.o
++
+ config SND_PXA2XX_SOC_AMESOM_TLV320
+ 	tristate "SoC SSP Audio support for AMESOM - TLV320AIC24k"
+ 	depends on SND_PXA2XX_SOC && MACH_AMESOM
+diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
+index 931bdc7..1faa751 100644
+--- a/sound/soc/pxa/Makefile
++++ b/sound/soc/pxa/Makefile
+@@ -15,9 +15,11 @@ snd-soc-poodle-objs := poodle.o
+ snd-soc-tosa-objs := tosa.o
+ snd-soc-spitz-objs := spitz.o
+ snd-soc-amesom-tlv320-objs := amesom_tlv320.o
++snd-soc-magician-objs := magician.o
  
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
-+obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
- obj-$(CONFIG_SND_SOC_WM8731)	+= snd-soc-wm8731.o
- obj-$(CONFIG_SND_SOC_WM8750)	+= snd-soc-wm8750.o
- obj-$(CONFIG_SND_SOC_WM8753)	+= snd-soc-wm8753.o
-diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+ obj-$(CONFIG_SND_PXA2XX_SOC_CORGI) += snd-soc-corgi.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_POODLE) += snd-soc-poodle.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_TOSA) += snd-soc-tosa.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_SPITZ) += snd-soc-spitz.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_AMESOM_TLV320) += snd-soc-amesom-tlv320.o
++obj-$(CONFIG_SND_PXA2XX_SOC_MAGICIAN) += snd-soc-magician.o
+\ No newline at end of file
+diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
 new file mode 100644
-index 0000000..0db47ef
+index 0000000..7eb671c
 --- /dev/null
-+++ b/sound/soc/codecs/ak4535.c
-@@ -0,0 +1,716 @@
++++ b/sound/soc/pxa/magician.c
+@@ -0,0 +1,539 @@
 +/*
-+ * ak4535.c  --  AK4535 ALSA Soc Audio driver
++ * SoC audio for HTC Magician
 + *
-+ * Copyright 2005 Openedhand Ltd.
++ * Copyright (c) 2006 Philipp Zabel <philipp.zabel@gmail.com>
 + *
-+ * Author: Richard Purdie <richard@openedhand.com>
++ * based on spitz.c,
++ * Authors: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
++ *          Richard Purdie <richard@openedhand.com>
 + *
-+ * Based on wm8753.c by Liam Girdwood
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
 + */
 +
 +#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/i2c.h>
++#include <linux/timer.h>
++#include <linux/interrupt.h>
 +#include <linux/platform_device.h>
++#include <linux/delay.h>
 +#include <sound/driver.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
 +#include <sound/soc.h>
 +#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
 +
-+#include "ak4535.h"
++#include <asm/hardware/scoop.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/hardware.h>
++#include <asm/arch/magician.h>
++#include <asm/arch/magician_cpld.h>
++#include <asm/mach-types.h>
++#include "../codecs/uda1380.h"
++#include "pxa2xx-pcm.h"
++#include "pxa2xx-i2s.h"
++#include "pxa2xx-ssp.h"
 +
-+#define AUDIO_NAME "ak4535"
-+#define AK4535_VERSION "0.3"
++#define MAGICIAN_HP_ON     0
++#define MAGICIAN_HP_OFF    1
 +
-+#define AK4535_DEBUG 0
-+#if AK4535_DEBUG
-+#else
-+#define ak4535dbg_dump(s) if (0) {}
-+#endif
++#define MAGICIAN_SPK_ON    0
++#define MAGICIAN_SPK_OFF   1
 +
-+struct snd_soc_codec_device soc_codec_dev_ak4535;
-+
-+/* codec private data */
-+struct ak4535_priv {
-+	unsigned int sysclk;
-+};
-+
-+/*
-+ * ak4535 register cache
-+ */
-+static const u16 ak4535_reg[AK4535_CACHEREGNUM] = {
-+    0x0000, 0x0080, 0x0000, 0x0003,
-+    0x0002, 0x0000, 0x0011, 0x0001,
-+    0x0000, 0x0040, 0x0036, 0x0010,
-+    0x0000, 0x0000, 0x0057, 0x0000,
-+};
++#define MAGICIAN_MIC       0
++#define MAGICIAN_MIC_EXT   1
 +
 +/*
-+ * read ak4535 register cache
++ * SSP GPIO's
 + */
-+static inline unsigned int ak4535_read_reg_cache(struct snd_soc_codec *codec,
-+	unsigned int reg)
++#define GPIO23_SSPSCLK_MD	(23 | GPIO_ALT_FN_2_OUT)
++#define GPIO24_SSPSFRM_MD	(24 | GPIO_ALT_FN_2_OUT)
++#define GPIO25_SSPTXD_MD	(25 | GPIO_ALT_FN_2_OUT)
++
++static int magician_hp_func = MAGICIAN_HP_OFF;
++static int magician_spk_func = MAGICIAN_SPK_ON;
++static int magician_in_sel = MAGICIAN_MIC;
++
++extern struct platform_device magician_cpld;
++
++static void magician_ext_control(struct snd_soc_codec *codec)
 +{
-+	u16 *cache = codec->reg_cache;
-+	if (reg >= AK4535_CACHEREGNUM)
-+		return -1;
-+	return cache[reg];
-+}
++	snd_soc_dapm_set_endpoint(codec, "Speaker",
++			(magician_spk_func == MAGICIAN_SPK_ON));
 +
-+static inline unsigned int ak4535_read(struct snd_soc_codec *codec,
-+	unsigned int reg)
-+{
-+	u8 data;
-+	data = reg;
++	snd_soc_dapm_set_endpoint(codec, "Headphone Jack",
++			(magician_hp_func == MAGICIAN_HP_ON));
 +
-+	if (codec->hw_write(codec->control_data, &data, 1) != 1)
-+		return -EIO;
-+
-+	if (codec->hw_read(codec->control_data, &data, 1) != 1)
-+		return -EIO;
-+
-+	return data;
-+};
-+
-+/*
-+ * write ak4535 register cache
-+ */
-+static inline void ak4535_write_reg_cache(struct snd_soc_codec *codec,
-+	u16 reg, unsigned int value)
-+{
-+	u16 *cache = codec->reg_cache;
-+	if (reg >= AK4535_CACHEREGNUM)
-+		return;
-+	cache[reg] = value;
-+}
-+
-+/*
-+ * write to the AK4535 register space
-+ */
-+static int ak4535_write(struct snd_soc_codec *codec, unsigned int reg,
-+	unsigned int value)
-+{
-+	u8 data[2];
-+
-+	/* data is
-+	 *   D15..D8 AK4535 register offset
-+	 *   D7...D0 register data
-+	 */
-+	data[0] = reg & 0xff;
-+	data[1] = value & 0xff;
-+
-+	ak4535_write_reg_cache (codec, reg, value);
-+	if (codec->hw_write(codec->control_data, data, 2) == 2)
-+		return 0;
-+	else
-+		return -EIO;
-+}
-+
-+static int ak4535_sync(struct snd_soc_codec *codec)
-+{
-+	u16 *cache = codec->reg_cache;
-+	int i, r=0;
-+
-+	for (i = 0; i < AK4535_CACHEREGNUM; i++)
-+		r |= ak4535_write (codec, i, cache[i]);
-+	
-+	ak4535dbg_dump (codec);
-+
-+	return r;
-+};
-+
-+static const char *ak4535_mono_gain[] = {"+6dB", "-17dB"};
-+static const char *ak4535_mono_out[] = {"(L + R)/2", "Hi-Z"};
-+static const char *ak4535_hp_out[] = {"Stereo", "Mono"};
-+static const char *ak4535_deemp[] = {"44.1kHz", "Off", "48kHz", "32kHz"};
-+static const char *ak4535_mic_select[] = {"Internal", "External"};
-+
-+static const struct soc_enum ak4535_enum[] = {
-+	SOC_ENUM_SINGLE(AK4535_SIG1, 7, 2, ak4535_mono_gain),
-+	SOC_ENUM_SINGLE(AK4535_SIG1, 6, 2, ak4535_mono_out),
-+	SOC_ENUM_SINGLE(AK4535_MODE2, 2, 2, ak4535_hp_out),
-+	SOC_ENUM_SINGLE(AK4535_DAC, 0, 4, ak4535_deemp),
-+	SOC_ENUM_SINGLE(AK4535_MIC, 1, 2, ak4535_mic_select),
-+};
-+
-+static const struct snd_kcontrol_new ak4535_snd_controls[] = {
-+	SOC_SINGLE("ALC2 Switch", AK4535_SIG1, 1, 1, 0),
-+	SOC_ENUM("Mono 1 Output", ak4535_enum[1]),
-+	SOC_ENUM("Mono 1 Gain", ak4535_enum[0]),
-+	SOC_ENUM("Headphone Output", ak4535_enum[2]),
-+	SOC_ENUM("Playback Deemphasis", ak4535_enum[3]),
-+	SOC_SINGLE("Bass Volume", AK4535_DAC, 2, 3, 0),
-+	SOC_SINGLE("Mic Boost (+20dB) Switch", AK4535_MIC, 0, 1, 0),
-+	SOC_ENUM("Mic Select", ak4535_enum[4]),
-+	SOC_SINGLE("ALC Operation Time", AK4535_TIMER, 0, 3, 0),
-+	SOC_SINGLE("ALC Recovery Time", AK4535_TIMER, 2, 3, 0),
-+	SOC_SINGLE("ALC ZC Time", AK4535_TIMER, 4, 3, 0),
-+	SOC_SINGLE("ALC 1 Switch", AK4535_ALC1, 5, 1, 0),
-+	SOC_SINGLE("ALC 2 Switch", AK4535_ALC1, 6, 1, 0),
-+	SOC_SINGLE("ALC Volume", AK4535_ALC2, 0, 127, 0),
-+	SOC_SINGLE("Capture Volume", AK4535_PGA, 0, 127, 0),
-+	SOC_SINGLE("Left Playback Volume", AK4535_LATT, 0, 127, 1),
-+	SOC_SINGLE("Right Playback Volume", AK4535_RATT, 0, 127, 1),
-+	SOC_SINGLE("AUX Bypass Volume", AK4535_VOL, 0, 15, 0),
-+	SOC_SINGLE("Mic Sidetone Volume", AK4535_VOL, 4, 7, 0),
-+};
-+
-+/* add non dapm controls */
-+static int ak4535_add_controls(struct snd_soc_codec *codec)
-+{
-+	int err, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ak4535_snd_controls); i++) {
-+		err = snd_ctl_add(codec->card,
-+			snd_soc_cnew(&ak4535_snd_controls[i],codec, NULL));
-+		if (err < 0)
-+			return err;
++	switch (magician_in_sel) {
++	case MAGICIAN_MIC:
++		snd_soc_dapm_set_endpoint(codec, "Headset Mic", 0);
++		snd_soc_dapm_set_endpoint(codec, "Call Mic", 1);
++		break;
++	case MAGICIAN_MIC_EXT:
++		snd_soc_dapm_set_endpoint(codec, "Call Mic", 0);
++		snd_soc_dapm_set_endpoint(codec, "Headset Mic", 1);
++		break;
 +	}
++	snd_soc_dapm_sync_endpoints(codec);
++}
++
++static int magician_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec *codec = rtd->socdev->codec;
++
++	/* check the jack status at stream startup */
++	magician_ext_control(codec);
 +
 +	return 0;
 +}
 +
-+/* Mono 1 Mixer */
-+static const struct snd_kcontrol_new ak4535_mono1_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("Mic Sidetone Switch", AK4535_SIG1, 4, 1, 0),
-+	SOC_DAPM_SINGLE("Mono Playback Switch", AK4535_SIG1, 5, 1, 0),
++/*
++ * Magician uses SSP port for playback.
++ */
++static int magician_playback_hw_params(struct snd_pcm_substream *substream,
++				       struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	unsigned int acps, acds, div4;
++	int ret = 0;
++
++	/*
++	 * Rate = SSPSCLK / (word size(16))
++	 * SSPSCLK = (ACPS / ACDS) / SSPSCLKDIV(div4 or div1)
++	 */
++	switch (params_rate(params)) {
++	case 8000:
++		acps = 32842000;
++		acds = PXA2XX_SSP_CLK_AUDIO_DIV_32;	/* wrong - 32 bits/sample */
++		div4 = PXA2XX_SSP_CLK_SCDB_4;
++		break;
++	case 11025:
++		acps = 5622000;
++		acds = PXA2XX_SSP_CLK_AUDIO_DIV_8;	/* 16 bits/sample, 1 slot */
++		div4 = PXA2XX_SSP_CLK_SCDB_4;
++		break;
++	case 22050:
++		acps = 5622000;
++		acds = PXA2XX_SSP_CLK_AUDIO_DIV_4;
++		div4 = PXA2XX_SSP_CLK_SCDB_4;
++		break;
++	case 44100:
++		acps = 11345000;
++		acds = PXA2XX_SSP_CLK_AUDIO_DIV_4;
++		div4 = PXA2XX_SSP_CLK_SCDB_4;
++		break;
++	case 48000:
++		acps = 12235000;
++		acds = PXA2XX_SSP_CLK_AUDIO_DIV_4;
++		div4 = PXA2XX_SSP_CLK_SCDB_4;
++		break;
++	}
++
++	/* set codec DAI configuration */
++	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_MSB |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	/* set cpu DAI configuration */
++	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_MSB |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	/* set audio clock as clock source */
++	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, PXA2XX_SSP_CLK_AUDIO, 0,
++			SND_SOC_CLOCK_OUT);
++	if (ret < 0)
++		return ret;
++
++	/* set the SSP audio system clock ACDS divider */
++	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai,
++			PXA2XX_SSP_AUDIO_DIV_ACDS, acds);
++	if (ret < 0)
++		return ret;
++
++	/* set the SSP audio system clock SCDB divider4 */
++	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai,
++			PXA2XX_SSP_AUDIO_DIV_SCDB, div4);
++	if (ret < 0)
++		return ret;
++
++	/* set SSP audio pll clock */
++	ret = cpu_dai->dai_ops.set_pll(cpu_dai, 0, 0, acps);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++/*
++ * We have to enable the SSP port early so the UDA1380 can flush
++ * it's register cache. The UDA1380 can only write it's interpolator and
++ * decimator registers when the link is running.
++ */
++static int magician_playback_prepare(struct snd_pcm_substream *substream)
++{
++	/* enable SSP clock - is this needed ? */
++	SSCR0_P(1) |= SSCR0_SSE;
++
++	/* FIXME: ENABLE I2S */
++	SACR0 |= SACR0_BCKD;
++	SACR0 |= SACR0_ENB;
++	pxa_set_cken(CKEN8_I2S, 1);
++
++	return 0;
++}
++
++static int magician_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	/* FIXME: DISABLE I2S */
++	SACR0 &= ~SACR0_ENB;
++	SACR0 &= ~SACR0_BCKD;
++	pxa_set_cken(CKEN8_I2S, 0);
++	return 0;
++}
++
++/*
++ * Magician uses I2S for capture.
++ */
++static int magician_capture_hw_params(struct snd_pcm_substream *substream,
++				      struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret = 0;
++
++	/* set codec DAI configuration */
++	ret = codec_dai->dai_ops.set_fmt(codec_dai,
++			SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	/* set cpu DAI configuration */
++	ret = cpu_dai->dai_ops.set_fmt(cpu_dai,
++			SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
++
++	/* set the I2S system clock as output */
++	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
++			SND_SOC_CLOCK_OUT);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++/*
++ * We have to enable the I2S port early so the UDA1380 can flush
++ * it's register cache. The UDA1380 can only write it's interpolator and
++ * decimator registers when the link is running.
++ */
++static int magician_capture_prepare(struct snd_pcm_substream *substream)
++{
++	SACR0 |= SACR0_ENB;
++	return 0;
++}
++
++static struct snd_soc_ops magician_capture_ops = {
++	.startup = magician_startup,
++	.hw_params = magician_capture_hw_params,
++	.prepare = magician_capture_prepare,
 +};
 +
-+/* Stereo Mixer */
-+static const struct snd_kcontrol_new ak4535_stereo_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("Mic Sidetone Switch", AK4535_SIG2, 4, 1, 0),
-+	SOC_DAPM_SINGLE("Playback Switch", AK4535_SIG2, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Aux Bypass Switch", AK4535_SIG2, 5, 1, 0),
++static struct snd_soc_ops magician_playback_ops = {
++	.startup = magician_startup,
++	.hw_params = magician_playback_hw_params,
++	.prepare = magician_playback_prepare,
++	.hw_free = magician_playback_hw_free,
 +};
 +
-+/* Input Mixer */
-+static const struct snd_kcontrol_new ak4535_input_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("Mic Capture Switch", AK4535_MIC, 2, 1, 0),
-+	SOC_DAPM_SINGLE("Aux Capture Switch", AK4535_MIC, 5, 1, 0),
++static int magician_get_jack(struct snd_kcontrol * kcontrol,
++			     struct snd_ctl_elem_value * ucontrol)
++{
++	ucontrol->value.integer.value[0] = magician_hp_func;
++	return 0;
++}
++
++static int magician_set_hp(struct snd_kcontrol * kcontrol,
++			     struct snd_ctl_elem_value * ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++
++	if (magician_hp_func == ucontrol->value.integer.value[0])
++		return 0;
++
++	magician_hp_func = ucontrol->value.integer.value[0];
++	magician_ext_control(codec);
++	return 1;
++}
++
++static int magician_get_spk(struct snd_kcontrol * kcontrol,
++			    struct snd_ctl_elem_value * ucontrol)
++{
++	ucontrol->value.integer.value[0] = magician_spk_func;
++	return 0;
++}
++
++static int magician_set_spk(struct snd_kcontrol * kcontrol,
++			    struct snd_ctl_elem_value * ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++
++	if (magician_spk_func == ucontrol->value.integer.value[0])
++		return 0;
++
++	magician_spk_func = ucontrol->value.integer.value[0];
++	magician_ext_control(codec);
++	return 1;
++}
++
++static int magician_get_input(struct snd_kcontrol * kcontrol,
++			      struct snd_ctl_elem_value * ucontrol)
++{
++	ucontrol->value.integer.value[0] = magician_in_sel;
++	return 0;
++}
++
++static int magician_set_input(struct snd_kcontrol * kcontrol,
++			      struct snd_ctl_elem_value * ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++
++	if (magician_in_sel == ucontrol->value.integer.value[0])
++		return 0;
++
++	magician_in_sel = ucontrol->value.integer.value[0];
++
++	switch (magician_in_sel) {
++	case MAGICIAN_MIC:
++		magician_egpio_disable(&magician_cpld,
++				       EGPIO_NR_MAGICIAN_IN_SEL0);
++		magician_egpio_enable(&magician_cpld,
++				      EGPIO_NR_MAGICIAN_IN_SEL1);
++		break;
++	case MAGICIAN_MIC_EXT:
++		magician_egpio_disable(&magician_cpld,
++				       EGPIO_NR_MAGICIAN_IN_SEL0);
++		magician_egpio_disable(&magician_cpld,
++				       EGPIO_NR_MAGICIAN_IN_SEL1);
++	}
++
++	return 1;
++}
++
++static int magician_spk_power(struct snd_soc_dapm_widget *w, int event)
++{
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		magician_egpio_enable(&magician_cpld,
++				      EGPIO_NR_MAGICIAN_SPK_POWER);
++	else
++		magician_egpio_disable(&magician_cpld,
++				       EGPIO_NR_MAGICIAN_SPK_POWER);
++	return 0;
++}
++
++static int magician_hp_power(struct snd_soc_dapm_widget *w, int event)
++{
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		magician_egpio_enable(&magician_cpld,
++				      EGPIO_NR_MAGICIAN_EP_POWER);
++	else
++		magician_egpio_disable(&magician_cpld,
++				       EGPIO_NR_MAGICIAN_EP_POWER);
++	return 0;
++}
++
++static int magician_mic_bias(struct snd_soc_dapm_widget *w, int event)
++{
++//	if (SND_SOC_DAPM_EVENT_ON(event))
++//		magician_egpio_enable(&magician_cpld,
++//			EGPIO_NR_MAGICIAN_MIC_POWER);
++//	else
++//		magician_egpio_disable(&magician_cpld,
++//			EGPIO_NR_MAGICIAN_MIC_POWER);
++	return 0;
++}
++
++/* magician machine dapm widgets */
++static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", magician_hp_power),
++	SND_SOC_DAPM_SPK("Speaker", magician_spk_power),
++	SND_SOC_DAPM_MIC("Call Mic", magician_mic_bias),
++	SND_SOC_DAPM_MIC("Headset Mic", magician_mic_bias),
 +};
 +
-+/* Input mux */
-+static const struct snd_kcontrol_new ak4535_input_mux_control =
-+	SOC_DAPM_ENUM("Input Select", ak4535_enum[4]);
-+
-+/* HP L switch */
-+static const struct snd_kcontrol_new ak4535_hpl_control =
-+	SOC_DAPM_SINGLE("Switch", AK4535_SIG2, 1, 1, 1);
-+
-+/* HP R switch */
-+static const struct snd_kcontrol_new ak4535_hpr_control =
-+	SOC_DAPM_SINGLE("Switch", AK4535_SIG2, 0, 1, 1);
-+
-+/* mono 2 switch */
-+static const struct snd_kcontrol_new ak4535_mono2_control =
-+	SOC_DAPM_SINGLE("Switch", AK4535_SIG1, 0, 1, 0);
-+
-+/* Line out switch */
-+static const struct snd_kcontrol_new ak4535_line_control =
-+	SOC_DAPM_SINGLE("Switch", AK4535_SIG2, 6, 1, 0);
-+
-+/* ak4535 dapm widgets */
-+static const struct snd_soc_dapm_widget ak4535_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIXER("Stereo Mixer", SND_SOC_NOPM, 0, 0,
-+		&ak4535_stereo_mixer_controls[0],
-+		ARRAY_SIZE(ak4535_stereo_mixer_controls)),
-+	SND_SOC_DAPM_MIXER("Mono1 Mixer", SND_SOC_NOPM, 0, 0,
-+		&ak4535_mono1_mixer_controls[0],
-+		ARRAY_SIZE(ak4535_mono1_mixer_controls)),
-+	SND_SOC_DAPM_MIXER("Input Mixer", SND_SOC_NOPM, 0, 0,
-+		&ak4535_input_mixer_controls[0],
-+		ARRAY_SIZE(ak4535_input_mixer_controls)),
-+	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
-+		&ak4535_input_mux_control),
-+	SND_SOC_DAPM_DAC("DAC", "Playback", AK4535_PM2, 0, 0),
-+	SND_SOC_DAPM_SWITCH("Mono 2 Enable", SND_SOC_NOPM, 0, 0,
-+		&ak4535_mono2_control),
-+	SND_SOC_DAPM_PGA("Speaker Enable", AK4535_MODE2, 0, 0, NULL, 0),	/* speaker powersave bit */
-+	SND_SOC_DAPM_SWITCH("Line Out Enable", SND_SOC_NOPM, 0, 0,
-+		&ak4535_line_control),
-+	SND_SOC_DAPM_SWITCH("Left HP Enable", SND_SOC_NOPM, 0, 0,
-+		&ak4535_hpl_control),
-+	SND_SOC_DAPM_SWITCH("Right HP Enable", SND_SOC_NOPM, 0, 0,
-+		&ak4535_hpr_control),
-+	SND_SOC_DAPM_OUTPUT("LOUT"),
-+	SND_SOC_DAPM_OUTPUT("HPL"),
-+	SND_SOC_DAPM_OUTPUT("ROUT"),
-+	SND_SOC_DAPM_OUTPUT("HPR"),
-+	SND_SOC_DAPM_OUTPUT("SPP"),
-+	SND_SOC_DAPM_OUTPUT("SPN"),
-+	SND_SOC_DAPM_OUTPUT("MOUT1"),
-+	SND_SOC_DAPM_OUTPUT("MOUT2"),
-+	SND_SOC_DAPM_OUTPUT("MICOUT"),
-+	SND_SOC_DAPM_ADC("ADC", "Capture", AK4535_PM1, 0, 0),
-+	SND_SOC_DAPM_PGA("Spk Amp", AK4535_PM2, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("HP R Amp", AK4535_PM2, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("HP L Amp", AK4535_PM2, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Mic", AK4535_PM1, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Line Out", AK4535_PM1, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Mono Out", AK4535_PM1, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("AUX In", AK4535_PM1, 2, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_MICBIAS("Mic Int Bias", AK4535_MIC, 3, 0),
-+	SND_SOC_DAPM_MICBIAS("Mic Ext Bias", AK4535_MIC, 4, 0),
-+	SND_SOC_DAPM_INPUT("MICIN"),
-+	SND_SOC_DAPM_INPUT("MICEXT"),
-+	SND_SOC_DAPM_INPUT("AUX"),
-+	SND_SOC_DAPM_INPUT("MIN"),
-+	SND_SOC_DAPM_INPUT("AIN"),
-+};
-+
++/* magician machine audio_map */
 +static const char *audio_map[][3] = {
-+	/*stereo mixer */
-+	{"Stereo Mixer", "Playback Switch", "DAC"},
-+	{"Stereo Mixer", "Mic Sidetone Switch", "Mic"},
-+	{"Stereo Mixer", "Aux Bypass Switch", "AUX In"},
 +
-+	/* mono1 mixer */
-+	{"Mono1 Mixer", "Mic Sidetone Switch", "Mic"},
-+	{"Mono1 Mixer", "Mono Playback Switch", "DAC"},
++	/* Headphone connected to VOUTL, VOUTR */
++	{"Headphone Jack", NULL, "VOUTL"},
++	{"Headphone Jack", NULL, "VOUTR"},
 +
-+	/* Mic */
-+	{"Mic", NULL, "AIN"},
-+	{"Input Mux", "Internal", "Mic Int Bias"},
-+	{"Input Mux", "External", "Mic Ext Bias"},
-+	{"Mic Int Bias", NULL, "MICIN"},
-+	{"Mic Ext Bias", NULL, "MICEXT"},
-+	{"MICOUT", NULL, "Input Mux"},
++	/* Speaker connected to VOUTL, VOUTR */
++	{"Speaker", NULL, "VOUTL"},
++	{"Speaker", NULL, "VOUTR"},
 +
-+	/* line out */
-+	{"LOUT", NULL, "Line Out Enable"},
-+	{"ROUT", NULL, "Line Out Enable"},
-+	{"Line Out Enable", "Switch", "Line Out"},
-+	{"Line Out", NULL, "Stereo Mixer"},
++	/* Mics are connected to VINM */
++	{"VINM", NULL, "Headset Mic"},
++	{"VINM", NULL, "Call Mic"},
 +
-+	/* mono1 out */
-+	{"MOUT1", NULL, "Mono Out"},
-+	{"Mono Out", NULL, "Mono1 Mixer"},
-+
-+	/* left HP */
-+	{"HPL", NULL, "Left HP Enable"},
-+	{"Left HP Enable", "Switch", "HP L Amp"},
-+	{"HP L Amp", NULL, "Stereo Mixer"},
-+
-+	/* right HP */
-+	{"HPR", NULL, "Right HP Enable"},
-+	{"Right HP Enable", "Switch", "HP R Amp"},
-+	{"HP R Amp", NULL, "Stereo Mixer"},
-+
-+	/* speaker */
-+	{"SPP", NULL, "Speaker Enable"},
-+	{"SPN", NULL, "Speaker Enable"},
-+	{"Speaker Enable", "Switch", "Spk Amp"},
-+	{"Spk Amp", NULL, "MIN"},
-+
-+	/* mono 2 */
-+	{"MOUT2", NULL, "Mono 2 Enable"},
-+	{"Mono 2 Enable", "Switch", "Stereo Mixer"},
-+
-+	/* Aux In */
-+	{"Aux In", NULL, "AUX"},
-+
-+	/* ADC */
-+	{"ADC", NULL, "Input Mixer"},
-+	{"Input Mixer", "Mic Capture Switch", "Mic"},
-+	{"Input Mixer", "Aux Capture Switch", "Aux In"},
-+
-+	/* terminator */
 +	{NULL, NULL, NULL},
 +};
 +
-+static int ak4535_add_widgets(struct snd_soc_codec *codec)
-+{
-+	int i;
-+
-+	for(i = 0; i < ARRAY_SIZE(ak4535_dapm_widgets); i++) {
-+		snd_soc_dapm_new_control(codec, &ak4535_dapm_widgets[i]);
-+	}
-+
-+	/* set up audio path audio_map interconnects */
-+	for(i = 0; audio_map[i][0] != NULL; i++) {
-+		snd_soc_dapm_connect_input(codec, audio_map[i][0],
-+			audio_map[i][1], audio_map[i][2]);
-+	}
-+
-+	snd_soc_dapm_new_widgets(codec);
-+	return 0;
-+}
-+
-+static int ak4535_set_dai_sysclk(struct snd_soc_codec_dai *codec_dai,
-+	int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct ak4535_priv *ak4535 = codec->private_data;
-+
-+	ak4535->sysclk = freq;
-+	return 0;
-+}
-+
-+static int ak4535_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct ak4535_priv *ak4535 = codec->private_data;
-+	u8 mode2 = ak4535_read_reg_cache(codec, AK4535_MODE2) & ~(0x3 << 5);
-+	int rate = params_rate(params), fs = 256;
-+
-+	if (rate)
-+		fs = ak4535->sysclk / rate;
-+
-+	/* set fs */
-+	switch (fs) {
-+	case 1024:
-+		mode2 |= (0x2 << 5);
-+		break;
-+	case 512:
-+		mode2 |= (0x1 << 5);
-+		break;
-+	case 256:
-+		break;
-+	}
-+
-+	/* set rate */
-+	ak4535_write(codec, AK4535_MODE2, mode2);
-+	return 0;
-+}
-+
-+static int ak4535_set_dai_fmt(struct snd_soc_codec_dai *codec_dai,
-+		unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u8 mode1 = 0;
-+
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		mode1 = 0x0002;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		mode1 = 0x0001;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* use 32 fs for BCLK to save power */
-+	mode1 |= 0x4;
-+
-+	ak4535_write(codec, AK4535_MODE1, mode1);
-+	return 0;
-+}
-+
-+static int ak4535_mute(struct snd_soc_codec_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	u16 mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC) & 0xffdf;
-+	if (!mute)
-+		ak4535_write(codec, AK4535_DAC, mute_reg);
-+	else
-+		ak4535_write(codec, AK4535_DAC, mute_reg | 0x20);
-+	return 0;
-+}
-+
-+static int ak4535_dapm_event(struct snd_soc_codec *codec, int event)
-+{
-+	u16 i;
-+
-+	switch (event) {
-+	case SNDRV_CTL_POWER_D0: /* full On */
-+		ak4535_mute(codec->dai, 0);
-+	/* vref/mid, clk and osc on, dac unmute, active */
-+	case SNDRV_CTL_POWER_D1: /* partial On */
-+	case SNDRV_CTL_POWER_D2: /* partial On */
-+		ak4535_mute(codec->dai, 1);
-+		break;
-+	case SNDRV_CTL_POWER_D3hot: /* Off, with power */
-+		/* everything off except vref/vmid, dac mute, inactive */
-+		i = ak4535_read_reg_cache (codec, AK4535_PM1);
-+		ak4535_write(codec, AK4535_PM1, i|0x80);
-+		i = ak4535_read_reg_cache (codec, AK4535_PM2);
-+		ak4535_write(codec, AK4535_PM2, i & (~0x80));
-+		break;
-+	case SNDRV_CTL_POWER_D3cold: /* Off, without power */
-+		/* everything off, inactive */
-+		i = ak4535_read_reg_cache (codec, AK4535_PM1);
-+		ak4535_write(codec, AK4535_PM1, i & (~0x80));
-+		break;
-+	}
-+	codec->dapm_state = event;
-+	ak4535dbg_dump (codec);
-+	return 0;
-+}
-+
-+#define AK4535_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
-+		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | \
-+		SNDRV_PCM_RATE_48000)
-+
-+struct snd_soc_codec_dai ak4535_dai = {
-+	.name = "AK4535",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = AK4535_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = AK4535_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.ops = {
-+		.hw_params = ak4535_hw_params,
-+	},
-+	.dai_ops = {
-+		.set_fmt = ak4535_set_dai_fmt,
-+		.digital_mute = ak4535_mute,
-+		.set_sysclk = ak4535_set_dai_sysclk,
-+	},
++static const char *hp_function[] = { "On", "Off" };
++static const char *spk_function[] = { "On", "Off" };
++static const char *input_select[] = { "Call Mic", "Headset Mic" };
++static const struct soc_enum magician_enum[] = {
++	SOC_ENUM_SINGLE_EXT(4, hp_function),
++	SOC_ENUM_SINGLE_EXT(2, spk_function),
++	SOC_ENUM_SINGLE_EXT(2, input_select),
 +};
-+EXPORT_SYMBOL_GPL(ak4535_dai);
 +
-+static int ak4535_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->codec;
-+
-+	ak4535_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
-+	return 0;
-+}
-+
-+static int ak4535_resume(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->codec;
-+	ak4535_sync(codec);
-+	ak4535_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
-+	ak4535_dapm_event(codec, codec->suspend_dapm_state);
-+	return 0;
-+}
++static const struct snd_kcontrol_new uda1380_magician_controls[] = {
++	SOC_ENUM_EXT("Headphone Switch", magician_enum[0], magician_get_jack,
++			magician_set_hp),
++	SOC_ENUM_EXT("Speaker Switch", magician_enum[1], magician_get_spk,
++			magician_set_spk),
++	SOC_ENUM_EXT("Input Select", magician_enum[2], magician_get_input,
++			magician_set_input),
++};
 +
 +/*
-+ * initialise the AK4535 driver
-+ * register the mixer and dsp interfaces with the kernel
++ * Logic for a uda1380 as connected on a HTC Magician
 + */
-+static int ak4535_init(struct snd_soc_device *socdev)
++static int magician_uda1380_init(struct snd_soc_codec *codec)
 +{
-+	struct snd_soc_codec *codec = socdev->codec;
-+	int ret = 0;
++	int i, err;
 +
-+	codec->name = "AK4535";
-+	codec->owner = THIS_MODULE;
-+	codec->read = ak4535_read_reg_cache;
-+	codec->write = ak4535_write;
-+	codec->dapm_event = ak4535_dapm_event;
-+	codec->dai = &ak4535_dai;
-+	codec->num_dai = 1;
-+	codec->reg_cache_size = sizeof(ak4535_reg);
-+	codec->reg_cache = kmemdup(ak4535_reg, sizeof(ak4535_reg), GFP_KERNEL);
++	/* NC codec pins */
++	snd_soc_dapm_set_endpoint(codec, "VOUTLHP", 0);
++	snd_soc_dapm_set_endpoint(codec, "VOUTRHP", 0);
 +
-+	if (codec->reg_cache == NULL)
-+		return -ENOMEM;
++	/* FIXME: is anything connected here? */
++	snd_soc_dapm_set_endpoint(codec, "VINL", 0);
++	snd_soc_dapm_set_endpoint(codec, "VINR", 0);
 +
-+	/* register pcms */
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if (ret < 0) {
-+		printk(KERN_ERR "ak4535: failed to create pcms\n");
-+		goto pcm_err;
++	/* Add magician specific controls */
++	for (i = 0; i < ARRAY_SIZE(uda1380_magician_controls); i++) {
++		if ((err = snd_ctl_add(codec->card,
++				snd_soc_cnew(&uda1380_magician_controls[i],
++				codec, NULL))) < 0)
++			return err;
 +	}
 +
-+	/* power on device */
-+	ak4535_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
-+
-+	ak4535_add_controls(codec);
-+	ak4535_add_widgets(codec);
-+	ret = snd_soc_register_card(socdev);
-+	if (ret < 0) {
-+		printk(KERN_ERR "ak4535: failed to register card\n");
-+		goto card_err;
++	/* Add magician specific widgets */
++	for (i = 0; i < ARRAY_SIZE(uda1380_dapm_widgets); i++) {
++		snd_soc_dapm_new_control(codec, &uda1380_dapm_widgets[i]);
 +	}
 +
-+	return ret;
++	/* Set up magician specific audio path interconnects */
++	for (i = 0; audio_map[i][0] != NULL; i++) {
++		snd_soc_dapm_connect_input(codec, audio_map[i][0],
++				audio_map[i][1], audio_map[i][2]);
++	}
 +
-+card_err:
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
-+pcm_err:
-+	kfree(codec->reg_cache);
-+
-+	return ret;
++	snd_soc_dapm_sync_endpoints(codec);
++	return 0;
 +}
 +
-+static struct snd_soc_device *ak4535_socdev;
-+
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+
-+static unsigned short normal_i2c[] = { 0, I2C_CLIENT_END };
-+
-+/* Magic definition of all other variables and things */
-+I2C_CLIENT_INSMOD;
-+
-+static struct i2c_driver ak4535_i2c_driver;
-+static struct i2c_client client_template;
-+
-+/* If the i2c layer weren't so broken, we could pass this kind of data
-+   around */
-+static int ak4535_codec_probe(struct i2c_adapter *adap, int addr, int kind)
++/* magician digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link magician_dai[] = {
 +{
-+	struct snd_soc_device *socdev = ak4535_socdev;
-+	struct ak4535_setup_data *setup = socdev->codec_data;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct i2c_client *i2c;
++	.name = "uda1380",
++	.stream_name = "UDA1380 Playback",
++	.cpu_dai = &pxa_ssp_dai[0],
++	.codec_dai = &uda1380_dai[UDA1380_DAI_PLAYBACK],
++	.init = magician_uda1380_init,
++	.ops = &magician_playback_ops,
++},
++{
++	.name = "uda1380",
++	.stream_name = "UDA1380 Capture",
++	.cpu_dai = &pxa_i2s_dai,
++	.codec_dai = &uda1380_dai[UDA1380_DAI_CAPTURE],
++	.ops = &magician_capture_ops,
++}
++};
++
++/* magician audio machine driver */
++static struct snd_soc_machine snd_soc_machine_magician = {
++	.name = "Magician",
++	.dai_link = magician_dai,
++	.num_links = ARRAY_SIZE(magician_dai),
++};
++
++/* magician audio private data */
++static struct uda1380_setup_data magician_uda1380_setup = {
++	.i2c_address = 0x18,
++	.dac_clk = UDA1380_DAC_CLK_WSPLL,
++};
++
++/* magician audio subsystem */
++static struct snd_soc_device magician_snd_devdata = {
++	.machine = &snd_soc_machine_magician,
++	.platform = &pxa2xx_soc_platform,
++	.codec_dev = &soc_codec_dev_uda1380,
++	.codec_data = &magician_uda1380_setup,
++};
++
++static struct platform_device *magician_snd_device;
++
++static int __init magician_init(void)
++{
 +	int ret;
 +
-+	if (addr != setup->i2c_address)
++	if (!machine_is_magician())
 +		return -ENODEV;
 +
-+	client_template.adapter = adap;
-+	client_template.addr = addr;
++	magician_egpio_enable(&magician_cpld, EGPIO_NR_MAGICIAN_CODEC_POWER);
 +
-+	i2c = kmemdup(&client_template, sizeof(client_template), GFP_KERNEL);
-+	if (i2c == NULL){
-+		kfree(codec);
++	/* we may need to have the clock running here - pH5 */
++	magician_egpio_enable(&magician_cpld, EGPIO_NR_MAGICIAN_CODEC_RESET);
++	udelay(5);
++	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_CODEC_RESET);
++
++	/* correct place? we'll need it to talk to the uda1380 */
++	request_module("i2c-pxa");
++
++	magician_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!magician_snd_device)
 +		return -ENOMEM;
-+	}
-+	i2c_set_clientdata(i2c, codec);
-+	codec->control_data = i2c;
 +
-+	ret = i2c_attach_client(i2c);
-+	if (ret < 0) {
-+		printk(KERN_ERR "failed to attach codec at addr %x\n", addr);
-+		goto err;
-+	}
++	platform_set_drvdata(magician_snd_device, &magician_snd_devdata);
++	magician_snd_devdata.dev = &magician_snd_device->dev;
++	ret = platform_device_add(magician_snd_device);
 +
-+	ret = ak4535_init(socdev);
-+	if (ret < 0) {
-+		printk(KERN_ERR "failed to initialise AK4535\n");
-+		goto err;
-+	}
-+	return ret;
++	if (ret)
++		platform_device_put(magician_snd_device);
 +
-+err:
-+	kfree(codec);
-+	kfree(i2c);
++	pxa_gpio_mode(GPIO23_SSPSCLK_MD);
++	pxa_gpio_mode(GPIO24_SSPSFRM_MD);
++	pxa_gpio_mode(GPIO25_SSPTXD_MD);
++
 +	return ret;
 +}
 +
-+static int ak4535_i2c_detach(struct i2c_client *client)
++static void __exit magician_exit(void)
 +{
-+	struct snd_soc_codec* codec = i2c_get_clientdata(client);
-+	i2c_detach_client(client);
-+	kfree(codec->reg_cache);
-+	kfree(client);
-+	return 0;
++	platform_device_unregister(magician_snd_device);
++
++	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_SPK_POWER);
++	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_EP_POWER);
++	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_MIC_POWER);
++	magician_egpio_disable(&magician_cpld, EGPIO_NR_MAGICIAN_CODEC_POWER);
 +}
 +
-+static int ak4535_i2c_attach(struct i2c_adapter *adap)
-+{
-+	return i2c_probe(adap, &addr_data, ak4535_codec_probe);
-+}
++module_init(magician_init);
++module_exit(magician_exit);
 +
-+/* corgi i2c codec control layer */
-+static struct i2c_driver ak4535_i2c_driver = {
-+	.driver = {
-+		.name = "AK4535 I2C Codec",
-+		.owner = THIS_MODULE,
-+	},
-+	.id =             I2C_DRIVERID_AK4535,
-+	.attach_adapter = ak4535_i2c_attach,
-+	.detach_client =  ak4535_i2c_detach,
-+	.command =        NULL,
-+};
-+
-+static struct i2c_client client_template = {
-+	.name =   "AK4535",
-+	.driver = &ak4535_i2c_driver,
-+};
-+#endif
-+
-+static int ak4535_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct ak4535_setup_data *setup;
-+	struct snd_soc_codec* codec;
-+	struct ak4535_priv *ak4535;
-+	int ret = 0;
-+
-+	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
-+
-+	setup = socdev->codec_data;
-+	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
-+	if (codec == NULL)
-+		return -ENOMEM;
-+
-+	ak4535 = kzalloc(sizeof(struct ak4535_priv), GFP_KERNEL);
-+	if (ak4535 == NULL) {
-+		kfree(codec);
-+		return -ENOMEM;
-+	}
-+
-+	codec->private_data = ak4535;
-+	socdev->codec = codec;
-+	mutex_init(&codec->mutex);
-+	INIT_LIST_HEAD(&codec->dapm_widgets);
-+	INIT_LIST_HEAD(&codec->dapm_paths);
-+
-+	ak4535_socdev = socdev;
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+	if (setup->i2c_address) {
-+		normal_i2c[0] = setup->i2c_address;
-+		codec->hw_write = (hw_write_t)i2c_master_send;
-+		codec->hw_read = (hw_read_t)i2c_master_recv;
-+		ret = i2c_add_driver(&ak4535_i2c_driver);
-+		if (ret != 0)
-+			printk(KERN_ERR "can't add i2c driver");
-+	}
-+#else
-+	/* Add other interfaces here */
-+#endif
-+	return ret;
-+}
-+
-+/* power down chip */
-+static int ak4535_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec* codec = socdev->codec;
-+
-+	if (codec->control_data)
-+		ak4535_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
-+
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
-+#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+	i2c_del_driver(&ak4535_i2c_driver);
-+#endif
-+	kfree(codec->private_data);
-+	kfree(codec);
-+
-+	return 0;
-+}
-+
-+struct snd_soc_codec_device soc_codec_dev_ak4535 = {
-+	.probe = 	ak4535_probe,
-+	.remove = 	ak4535_remove,
-+	.suspend = 	ak4535_suspend,
-+	.resume =	ak4535_resume,
-+};
-+
-+EXPORT_SYMBOL_GPL(soc_codec_dev_ak4535);
-+
-+MODULE_DESCRIPTION("Soc AK4535 driver");
-+MODULE_AUTHOR("Richard Purdie");
++MODULE_AUTHOR("Philipp Zabel");
++MODULE_DESCRIPTION("ALSA SoC Magician");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/ak4535.h b/sound/soc/codecs/ak4535.h
-new file mode 100644
-index 0000000..612164e
---- /dev/null
-+++ b/sound/soc/codecs/ak4535.h
-@@ -0,0 +1,46 @@
-+/*
-+ * ak4535.h  --  AK4535 Soc Audio driver
-+ *
-+ * Copyright 2005 Openedhand Ltd.
-+ *
-+ * Author: Richard Purdie <richard@openedhand.com>
-+ *
-+ * Based on wm8753.h
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _AK4535_H
-+#define _AK4535_H
-+
-+/* AK4535 register space */
-+
-+#define AK4535_PM1		0x0
-+#define AK4535_PM2		0x1
-+#define AK4535_SIG1		0x2
-+#define AK4535_SIG2		0x3
-+#define AK4535_MODE1	0x4
-+#define AK4535_MODE2	0x5
-+#define AK4535_DAC		0x6
-+#define AK4535_MIC		0x7
-+#define AK4535_TIMER	0x8
-+#define AK4535_ALC1		0x9
-+#define AK4535_ALC2		0xa
-+#define AK4535_PGA		0xb
-+#define AK4535_LATT		0xc
-+#define AK4535_RATT		0xd
-+#define AK4535_VOL		0xe
-+#define AK4535_STATUS	0xf
-+
-+#define AK4535_CACHEREGNUM 	0x10
-+
-+struct ak4535_setup_data {
-+	unsigned short i2c_address;
-+};
-+
-+extern struct snd_soc_codec_dai ak4535_dai;
-+extern struct snd_soc_codec_device soc_codec_dev_ak4535;
-+
-+#endif
 -- 
 1.5.3.5
