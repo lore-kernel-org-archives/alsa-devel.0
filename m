@@ -1,20 +1,21 @@
-From: rmgls@free.fr
-Subject: Mbox II DigiDisign
-Date: Wed, 21 Nov 2007 19:38:54 +0100
-Message-ID: <20071121173853.E8EAA1AB3D4@smtp1-g19.free.fr>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Channel mapping
+Date: Wed, 21 Nov 2007 19:37:43 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0711211922540.8325@tm8103.perex-int.cz>
+References: <20071120005151.GA25276@tango.0pointer.de>
+	<s5hr6ijhljj.wl%tiwai@suse.de>
+	<1195658261.9272.1222564051@webmail.messagingengine.com>
+	<Pine.LNX.4.61.0711211621310.8325@tm8103.perex-int.cz>
+	<1195660340.16225.1222569047@webmail.messagingengine.com>
+	<s5h8x4rwqy1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g19.free.fr (smtp1-g19.free.fr [212.27.42.27])
-	by alsa0.perex.cz (Postfix) with ESMTP id D85E924C6C
-	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 18:38:56 +0100 (CET)
-Received: from smtp1-g19.free.fr (localhost.localdomain [127.0.0.1])
-	by smtp1-g19.free.fr (Postfix) with ESMTP id 552401AB2F0
-	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 18:38:56 +0100 (CET)
-Received: from free.fr (roa76-6-82-238-235-5.fbx.proxad.net [82.238.235.5])
-	by smtp1-g19.free.fr (Postfix) with ESMTP id E8EAA1AB3D4
-	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 18:38:53 +0100 (CET)
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 484B42445F
+	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 19:37:45 +0100 (CET)
+In-Reply-To: <s5h8x4rwqy1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,77 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 21 Nov 2007, Takashi Iwai wrote:
 
-hello all,
+> > > We can also encode PCM device / subdevice numbers to data structure. 
+> > > But I think that best way is to extend channel_info PCM ioctl 
+> > > (create new version and emulate old one - it should be quite easy to 
+> > > implement).
+>
+> > The channel_info ioctl returns only information about one channel.
+>
+> OTOH, it's simple and easy to parse.  But, certainly TLV is more
+> flexible for additional metadata.
 
-Can you tell me please if the external usb audio interface
-mbox 2 from digidisign is supported by alsa?
+I also think that it's easy to iterate over all channels to get a map.
 
-Here is my config,
+> > I think we should have a more flexible ioctl that also allows us to
+> > describe the PCM device itself (such as volume controls that affect
+> > all channels, or latency information).
+> 
+> Indeed, the mixer <-> PCM mapping can be useful.  For such
+> information, the fixed size struct isn't suitable as multiple mixer
+> elements correspond to a single PCM channel.
 
-sony laptop, with an integrated alc260 chip (snd-hda).
-and the mbox on debian.
+I think that we have already such interface, but maybe not well described 
+and used. I would propose to use SNDRV_CTL_ELEM_IFACE_PCM for PCM mixer 
+related controls and device & subdevice from control_id structure. In this 
+way, we can easy group and assign all control elements to PCM substream.
 
-now the different debian messages:
+We may have only one problem - to identify which elements are mixer 
+related and which are not. Maybe, we can use one bit from access flags to 
+determine, if it's a mixer control element if interface != MIXER.
 
-    	dmesg
-...
-usb 2-1: new full speed USB device using uhci_hcd and address 3
-usb 2-1: config 1 interface 2 has no altsetting 1
-usb 2-1: config 1 interface 3 has no altsetting 1
-usb 2-1: config 1 interface 4 has no altsetting 1
-usb 2-1: config 1 interface 5 has no altsetting 1
-usb 2-1: configuration #1 chosen from 1 choice
-usbcore: registered new interface driver snd-usb-audio
-usb 2-1: USB disconnect, address 3
-usb 2-1: new full speed USB device using uhci_hcd and address 4
-usb 2-1: config 1 interface 2 has no altsetting 1
-usb 2-1: config 1 interface 3 has no altsetting 1
-usb 2-1: config 1 interface 4 has no altsetting 1
-usb 2-1: config 1 interface 5 has no altsetting 1
-usb 2-1: configuration #1 chosen from 1 choice
+						Jaroslav
 
-
-        cat /dev/sndstat
-Sound Driver:3.8.1a-980706 (ALSA v1.0.15 emulation code)
-Kernel: Linux mydomain.music 2.6.22-2-686 #1 SMP Fri Aug 31 00:24:01 UTC 2007 i686
-Config options: 0
-
-Installed drivers: 
-Type 10: ALSA emulation
-
-Card config: 
-HDA Intel at 0x80000000 irq 19
-Digidesign Mbox 2  at usb-0000:00:1d.1-1, full speed
-
-Audio devices:
-0: ALC260 Analog (DUPLEX)
-1: USB Audio (DUPLEX)
-
-Synth devices: NOT ENABLED IN CONFIG
-
-Midi devices: NOT ENABLED IN CONFIG
-
-Timers:
-7: system timer
-
-Mixers:
-0: Realtek ALC260
-1: USB Mixer
-
-aplay plays nothing and reports: (alsa-lib pcm error).
-alsamixer -c 1 reports:
-no mixer elem found.
-
-   a google search does not provide no interesting technical sheet,
-at least i did not found any.
-have you something please:
-datasheets, config?
-
-thanks in advance.
-Best regards
-
-rmgls@free.fr
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project
