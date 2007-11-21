@@ -1,29 +1,15 @@
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH] Add ASoC TLV320 Codec driver.
-Date: Tue, 20 Nov 2007 22:34:42 +0100
-Message-ID: <20071120223442.7e0bcead@hyperion.delvare>
-References: <1195550746-6892-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-7-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-8-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-9-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-10-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-11-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-12-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-13-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-14-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-15-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-16-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-17-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5h4pfhjihm.wl%tiwai@suse.de>
+From: terminator356@users.sourceforge.net
+Subject: multi pcm and mmap problem
+Date: Wed, 21 Nov 2007 01:58:41 -0500
+Message-ID: <200711210158.42108.terminator356@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kraid.nerim.net (smtp-102-tuesday.nerim.net [62.4.16.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4880E24AD4
-	for <alsa-devel@alsa-project.org>; Tue, 20 Nov 2007 22:34:44 +0100 (CET)
-In-Reply-To: <s5h4pfhjihm.wl%tiwai@suse.de>
+Received: from smtp104.rog.mail.re2.yahoo.com (smtp104.rog.mail.re2.yahoo.com
+	[206.190.36.82]) by alsa0.perex.cz (Postfix) with SMTP id C9FAE247D6
+	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 07:44:21 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,33 +19,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.girdwood@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, i2c@lm-sensors.org, Nicola Perrino <nicola.perrino@atlab.it>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi, Mark,
+After 2 years I've finally traced and fixed a problem
+ which was preventing me from using anything after 
+ ALSA 1.0.9b !
 
-On Tue, 20 Nov 2007 11:53:25 +0100, Takashi Iwai wrote:
-> At Tue, 20 Nov 2007 09:25:39 +0000,
-> Mark Brown wrote:
-> > 
-> > diff --git a/include/linux/i2c-id.h b/include/linux/i2c-id.h
-> > index 5ced329..f6a1ddf 100644
-> > --- a/include/linux/i2c-id.h
-> > +++ b/include/linux/i2c-id.h
-> > @@ -122,6 +122,7 @@
-> >  #define I2C_DRIVERID_VP27SMPX	93	/* Panasonic VP27s tuner internal MPX */
-> >  #define I2C_DRIVERID_CS4270	94	/* Cirrus Logic 4270 audio codec */
-> >  #define I2C_DRIVERID_AK4535	95	/* AK4525 audio codec */
-> > +#define I2C_DRIVERID_TLV320	97	/* TLV 320 audio codec */
-> 
-> Where is 96? :-)
+In ALSA lib 1.0.9b: 
+pcm/pcm_generic.c:
+int snd_pcm_generic_channel_info()
+{
+        snd_pcm_generic_t *generic = pcm->private_data;
+                return snd_pcm_channel_info(generic->slave, info);
+}
 
-You don't seem to use these driver IDs anywhere? These IDs are
-optional, so if you have no need for them, it's much easier to just not
-define them.
+But in ALSA lib 1.0.15: 
+pcm/pcm_generic.c:
+int snd_pcm_generic_channel_info()
+{
+        snd_pcm_generic_t *generic = pcm->private_data;
+        if (pcm->mmap_shadow) {
+                /* No own buffer is required - the plugin won't change
+                 * the data on the buffer, or do safely on-the-place
+                 * conversion
+                 */
+                return snd_pcm_channel_info(generic->slave, info);
+        } else {
+               // Tim: TESTED: This is now called instead of the other one!
+                /* Allocate own buffer */
+                return snd_pcm_channel_info_shm(pcm, info, -1);
+        }
+}
 
-Note that the i2c_driver.id field is planed for removal anyway.
+My multi PCM consists of a plughw:0,2 and a hw:1,0
+In ALSA 1.0.9b, all five PCMs ALSA creates for this arrangement
+ create their areas with mmap(). And it works.
+But in ALSA 1.0.15 my hw:1,0 and its multi PCM areas are
+ created with mmap(), and my plughw:0,2 and its PCMs areas 
+ are created with malloc(). 
+Can't hear/record any sound from the plughw:0,2 part of the multi.
 
--- 
-Jean Delvare
+I have verified that ALSA 1.0.15 is copying the plughw:0,2 HW PCM 
+ areas to its LINEAR PCM areas, but NOT finally to its multi PCM areas.
+It just copies all zeros. 
+That's the reason I hear/record no sound from the plughw:0,2 part
+ of the multi PCM.
+So I reverted the function's code back to 1.0.9b and presto!
+It works now, the same as in ALSA 1.0.9b 
+
+So please tell me, am I missing something?
+Should I add something more to my .asoundrc ?
+I see that besides {type multi ... }, there is a {type share ...} defined. 
+*** Does the 'share' have any use here? Can't find any docs on it.
+
+Also:
+Yes, I can see now, why you made this code change.
+mmap() has limits, so you switched over to malloc().
+Those limits force the user to use small buffers
+ and/or reduce the number of channels created.
+Otherwise aplay, arecord, and jack etc complain mmap() failed.
+In ALSA 1.0.9b, and after my change to ALSA 1.0.15,
+ I tried ulimit() -l, and editing /etc/security/limits.conf
+I quadrupled the available locked memory, but aplay, arecord etc
+ still won't let me increase the buffer size beyond what it
+ was BEFORE I edited limits.conf
+*** What am I doing wrong?
+
+Thanks
+Tim.
