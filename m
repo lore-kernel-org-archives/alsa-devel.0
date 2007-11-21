@@ -1,26 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Add ASoC WM9713 codec driver.
-Date: Wed, 21 Nov 2007 16:16:00 +0000
-Message-ID: <20071121161600.GB18228@sirena.org.uk>
-References: <1195550746-6892-7-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-8-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-9-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-10-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-11-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-12-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-13-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1195550746-6892-14-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5h7ikdjjee.wl%tiwai@suse.de>
-	<1195560120.10785.1222319917@webmail.messagingengine.com>
+From: "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH 1/2] caiaq/NativeInstruments: input
+	handling fixes
+Date: Wed, 21 Nov 2007 11:38:28 -0500
+Message-ID: <d120d5000711210838j6a6f2418tb4ecdceb63073f6a@mail.gmail.com>
+References: <20071120133528.GB4425@buzzloop.caiaq.de>
+	<s5hd4u3j51s.wl%tiwai@suse.de>
+	<d120d5000711210534t75887c73labdb17eea0cefb88@mail.gmail.com>
+	<s5hr6ijwxxn.wl%tiwai@suse.de> <s5habp7wrg4.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F75D24C5A
-	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 17:16:02 +0100 (CET)
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86E5124C57
+	for <Alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 17:38:29 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id b21so2027768nfd
+	for <Alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 08:38:28 -0800 (PST)
+In-Reply-To: <s5habp7wrg4.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <1195560120.10785.1222319917@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,21 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: Takashi Iwai <tiwai@suse.de>, liam.girdwood@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Marc Mulcahy <marc@levelstar.com>, Graeme Gregory <gg@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 20, 2007 at 01:02:00PM +0100, Clemens Ladisch wrote:
-> Takashi Iwai wrote:
+On Nov 21, 2007 10:26 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 21 Nov 2007 14:05:56 +0100,
+> I wrote:
+> >
+> > At Wed, 21 Nov 2007 08:34:33 -0500,
+> > Dmitry Torokhov wrote:
+> > >
+> > > On Nov 21, 2007 4:55 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> > > > At Tue, 20 Nov 2007 14:35:28 +0100,
+> > > > Daniel Mack wrote:
+> > > > >
+> > > > > Hi,
+> > > > >
+> > > > > I'm re-posting a patch from Dmitry Torokhov which cleans up some input
+> > > > > layer related things. It hasn't made its way to any repository yet but
+> > >
+> > > Yes, I am being slow lately, sorry.
+> > >
+> > > > > my subsequent patch needs it as dependency. I Cc'ed Dmitry to avoid
+> > > > > confusion.
+> > > >
+> > > > Dmitry, will this patch go to 2.6.24 from your tree?
+> > > >
+> > > > If it's a 2.6.25 material,
+> > >
+> > > Yes, it is .25 material.
+> > >
+> > > > then I'd like to put it rather to ALSA
+> > > > tree together with Daniel's another patch.
+> > >
+> > > Thet would be great. The only reason I offered to send through my tree
+> > > is that I did not see any response from you guys... I actually prefer
+> > > not to touch code outside of drivers/input.
+> >
+> > Well, I didn't apply it just because I thought you prefer pushing it
+> > to 2.6.24 :)  If it's for 25, no problem to put to ALSA tree.
+>
+> Now it's on ALSA HG tree.  I fixed two tiny coding issues
+> checkpatch.pl reported.
+>
 
-> > Is it S24_LE or S24_3LE?  I see S24_LE in other codec drivers, but am
-> > not pretty sure whether I checked it...
+Thank you.
 
-I think it's correct but I'll double check before resubmitting.
+> > > BTW, attached is a small Kconfig patchs for caiaq. Probably good for .24.
+> >
+> > OK, will add this, too.
+>
+> Applied this, too.
+>
 
-> Apparently, these are the formats that an AC'97 controller connected
-> with this codec can support.
+Great, thank you Takashi.
 
-This define is not used for the AC'97 interface of the chip - it is only
-used for the PCM interface which the chip supports in addition to its
-AC'97 interface.
+-- 
+Dmitry
