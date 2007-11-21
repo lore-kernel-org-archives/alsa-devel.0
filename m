@@ -1,17 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Disable conversions
-Date: Wed, 21 Nov 2007 16:16:21 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0711211613180.8325@tm8103.perex-int.cz>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Channel mapping
+Date: Wed, 21 Nov 2007 16:17:41 +0100
+Message-ID: <1195658261.9272.1222564051@webmail.messagingengine.com>
 References: <20071120005151.GA25276@tango.0pointer.de>
-	<s5hsl2zhlmh.wl%tiwai@suse.de> <s5hir3vwu34.wl%tiwai@suse.de>
+	<s5hr6ijhljj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A29FE24C3B
-	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 16:16:22 +0100 (CET)
-In-Reply-To: <s5hir3vwu34.wl%tiwai@suse.de>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 843A5243C6
+	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 16:17:42 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hr6ijhljj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,47 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
+To: Takashi Iwai <tiwai@suse.de>, Lennart Poettering <mznyfn@0pointer.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 Nov 2007, Takashi Iwai wrote:
+Takashi Iwai wrote:
+> Yes, querying channel mapping is another missing piece with popular
+> demand.
+> 
+> The implementation would be easy, I guess.  But we have to define the
+> way to inform this from kernel to user space: whether create a new
+> ioctl or extend the existing ones (if possible)...
 
-> At Wed, 21 Nov 2007 12:40:54 +0100,
-> I wrote:
-> > 
-> > At Tue, 20 Nov 2007 01:51:51 +0100,
-> > Lennart Poettering wrote:
-> > > 
-> > > 4) If I open an audio device with "plughw:" i can disable the software
-> > >    resampling that takes place via
-> > >    "snd_pcm_hw_params_get_rate_resample()". However, there is no
-> > >    equivalent for disabling the channel number adjustment or the
-> > >    sample format conversion. This would be very useful in PA however,
-> > >    since this would allow me to use only the parts of plughw I am
-> > >    interested in (softvol), and disable all the rest (resampling,
-> > >    conversion, channel remixing).
-> > 
-> > Hmm..  It's a bit difficult to implement in a clean way.
-> > For example, what would be the reason to disable softvol?  It's
-> > basically irrelevant with the PCM parameters.  It's added just because
-> > of lack of hardware volume controls.
-> > 
-> > One idea I have is to make an API like
-> > 
-> > 	snd_pcm_alias_plugin(src, dst);
-> > 
-> > For example,
-> > 
-> > 	snd_pcm_alias_plugin("softvol", "passthru");
+It's just metadata that describes a PCM device, so I think we should use
+TLV for this.
 
-I don't like this idea nor implementation much. It will be much better to 
-design a run-time communication with plugins to change configuration 
-parameters / behaviour (something like ioctl on opened pcm handle).
+The existing struct snd_ctl_tlv uses a single integer to identify
+control elements.  We could restrict control numid's to 31 bits and
+use the upper bit to signal that this value includes device type and
+device number in the lower bits, if we want to reuse the same TLV
+ioctls.
 
-					Jaroslav
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project
+Regards,
+Clemens
