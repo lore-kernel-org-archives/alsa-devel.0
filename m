@@ -1,18 +1,23 @@
-From: "John Utz" <john.utz@dmx.com>
-Subject: Re: alsa-devel on vger
-Date: Wed, 21 Nov 2007 14:58:41 -0800
-Message-ID: <20071121145841.56fdc5b6@jutz-gnto64>
-References: <s5hzlx7v8rm.wl%tiwai@suse.de> <47447E3B.2030109@keyaccess.nl>
-	<Pine.LNX.4.61.0711212013040.8325@tm8103.perex-int.cz>
-	<1195680205.31663.13.camel@razman.gruemaster.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Broken playback
+Date: Thu, 22 Nov 2007 09:14:26 +0100
+Message-ID: <1195719266.22048.1222696087@webmail.messagingengine.com>
+References: <BLU107-W438E9F5D7EFEF18ED543BDC1780@phx.gbl>
+	<1195644962.10939.1222529331@webmail.messagingengine.com>
+	<BLU107-W5983EEB0D75DFABAC2EC60C1780@phx.gbl>
+	<1195658907.11141.1222567701@webmail.messagingengine.com>
+	<BLU107-W413B1F3D204AF054EDB272C1780@phx.gbl>
+	<1195661375.18942.1222573455@webmail.messagingengine.com>
+	<BLU107-W25C7A8D036E93269A46276C1780@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id A89BB24C99
-	for <alsa-devel@alsa-project.org>; Wed, 21 Nov 2007 23:59:07 +0100 (CET)
-In-Reply-To: <1195680205.31663.13.camel@razman.gruemaster.com>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 39CB0243AA
+	for <alsa-devel@alsa-project.org>; Thu, 22 Nov 2007 09:14:27 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <BLU107-W25C7A8D036E93269A46276C1780@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, davem@davemloft.net, ALSA development <alsa-devel@alsa-project.org>
+To: Gabriele Melia <gabmelia84@msn.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I second Tobin's opinion. That was unpleasant
+Gabriele Melia wrote:
+> > snd_pcm_hw_params_set_buffer_size_near(), but the allowed values are
+> > hardware dependent. You might want to add your own circular buffer that
+> > is bigger than ALSA's.
+>  
+> So your suggestion is to limit my buffer_size after decode to be same of
+> ALSA's?
 
-On Wed, 21 Nov 2007 13:23:25 -0800
-"Tobin Davis" <tdavis@dsl-only.net> wrote:
+No; my suggestion is to use your own buffer which is big enough for your
+decoder, and use this buffer to fill ALSA's buffer, whenever possible.
 
-> My preference would be to do what ever it takes to keep the  lkml
-> people from whining, while simultaneously keep their flame wars off
-> our list. Seriously, I spent 6 hours weeding through that mess to see
-> if there was actually anything relevant (2 out of 200+ messages in 2
-> days).
-> 
-> Maybe the thing to do is agree if they change their bug reporting
-> email to bcc instead of cc.  That way, flame retardant is in effect.
-> 
+If one call to your decoder function needs so much time that ALSA's
+buffer can become emptied, you need another thread to re-fill the ALSA
+buffer in parallel with the decoding.
+
+
+Regards,
+Clemens
