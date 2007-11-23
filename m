@@ -1,7 +1,7 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: test 3 - please ignore
-Date: Fri, 23 Nov 2007 08:30:38 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0711230830040.8325@tm8103.perex-int.cz>
+Subject: test through vger #1 - please ignore
+Date: Fri, 23 Nov 2007 08:35:00 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0711230834350.8325@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,7 +18,8 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-test 3 - please ignore
+
+please ignore
 
 -----
 Jaroslav Kysela <perex@perex.cz>
