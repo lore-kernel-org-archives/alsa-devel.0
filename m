@@ -1,20 +1,20 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: [RFC] virtual master control (1/3)
-Date: Fri, 23 Nov 2007 22:48:02 +0200
-Message-ID: <200711232248.02739.maximlevitsky@gmail.com>
-References: <472A113B.7030406@redhat.com> <s5hlk8oswjf.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0711231927030.8325@tm8103.perex-int.cz>
+From: Heikki Lindholm <holindho@cs.helsinki.fi>
+Subject: Re: [PATCH] add number of periods constraint to
+	snd-aoa [try 3]
+Date: Fri, 23 Nov 2007 22:55:15 +0200
+Message-ID: <47473E33.1040805@cs.helsinki.fi>
+References: <Pine.LNX.4.64.0711231424280.5270@sbz-30.cs.Helsinki.FI>	
+	<1195822183.4149.118.camel@johannes.berg>
+	<s5h63ztt6uu.wl%tiwai@suse.de>
+	<1195849391.4149.154.camel@johannes.berg>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7EE22246E2
-	for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2007 21:48:25 +0100 (CET)
-Received: by nf-out-0910.google.com with SMTP id b21so2658256nfd
-	for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2007 12:48:24 -0800 (PST)
-In-Reply-To: <Pine.LNX.4.61.0711231927030.8325@tm8103.perex-int.cz>
-Content-Disposition: inline
+Received: from emh05.mail.saunalahti.fi (emh05.mail.saunalahti.fi
+	[62.142.5.111]) by alsa0.perex.cz (Postfix) with ESMTP id 11C26246E5
+	for <alsa-devel@alsa-project.org>; Fri, 23 Nov 2007 21:55:19 +0100 (CET)
+In-Reply-To: <1195849391.4149.154.camel@johannes.berg>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,62 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 23 November 2007 20:36:32 Jaroslav Kysela wrote:
-> On Fri, 23 Nov 2007, Takashi Iwai wrote:
+Johannes Berg kirjoitti:
+> On Fri, 2007-11-23 at 14:43 +0100, Takashi Iwai wrote:
+>> At Fri, 23 Nov 2007 13:49:42 +0100,
+>> Johannes Berg wrote:
+>>>> +	if (err < 0) {
+>>>> +		result = err;
+>>>> +		goto out_unlock;
+>>>> +	}
+>>>>  	list_for_each_entry(cii, &sdev->codec_list, list) {
+>>>>  		if (cii->codec->open) {
+>>>>  			err = cii->codec->open(cii, pi->substream);
+>>>
+>>> So what I'm not sure on... Why do we see the same behaviour with other
+>>> drivers? Same bug?
+>> Which driver?  It should be fixed as well, then.
 > 
-> > At Mon, 19 Nov 2007 12:13:28 +0100,
-> > I wrote:
-> > > 
-> > > > > > If not, then it is better  to remove it/remame to VolumeKnob
-> > > > >
-> > > > > Agreed.  I'd like to take a safer way if you don't insist...
-> > > > Great, it is probably the best to have a virtual master volume.
-> > > > Just one question, it will be probably enabled for devices that don't have a 
-> > > > master volume (or have it broken like the STAC), right?,
-> > > > And when you expect it to be merged?
-> > > 
-> > > Hopefully will be posted in this week after a small brush up.
-> > 
-> > OK, here is a series of the patch I promised.
-> > 
-> > The first one is the patch to add virtual master controls.
-> > 
-> > ===
-> > 
-> > [PATCH] Add virtual master control
-> > 
-> > This patch adds the routines to create virtual master controls.
-> > A virtual master control can have multiple slave controls that
-> > are supposed to be identical type.  The master volume will add the
-> > master attenuation and the master switch will add the master mute
-> > switch.
-> > 
-> > ---
-> 
-> I'm really not sure if I like to see such extensions in kernel. We have 
-> now user control elements and a small daemon written in C or python will 
-> do exactly same job and will be more flexible.
-> 
-> 						Jaroslav
+> snd-usb-audio I think. Was there any further debugging between you two
+> that I missed? with the dummy driver?
 
-Hi,
+I sent everything to everyone :) I tried the dummy driver, and it did 
+produce all kinds of funny results, but nothing unexpected, being that 
+its timing source is quite inaccurate.
 
-Well, first big thanks for those patches.
-
-Secondary I strongly disagree that the above can be implemented in userspace easily.
-Sure you can have a program that adjusts the volume of all outputs, and creates a virtual
-userspace control, but the change in volume of outputs will be visible to userspace.
-For example moving the master volume will move the front/surround/LFE/.... sliders,
-and it is no good.
-
-What this patch does, it actually modifies the code for those 'slave' amps, so the master volume is 
-taken in account.
-
-I will test it now on my system.
-
-I hope this gets merged,
-	Best regards,
-		Maxim Levitsky
+-- hl
