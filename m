@@ -1,15 +1,20 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: [PATCH] soc/wm8731: Fix stereo mixer controls
-Date: Sun, 25 Nov 2007 21:25:03 +0200
-Message-ID: <20071125192503.GA16487@sci.fi>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsa-devel on vger
+Date: Sun, 25 Nov 2007 20:46:47 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0711252022440.7688@tm8103.perex-int.cz>
+References: <s5hzlx7v8rm.wl%tiwai@suse.de> <47447E3B.2030109@keyaccess.nl>
+	<Pine.LNX.4.61.0711212013040.8325@tm8103.perex-int.cz>
+	<s5hsl2yvdep.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0711251900370.7688@tm8103.perex-int.cz>
+	<4749C7B7.4040303@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.pp.htv.fi (smtp5.pp.htv.fi [213.243.153.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id D1882245E4
-	for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2007 20:25:05 +0100 (CET)
-Content-Disposition: inline
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 005BF245FF
+	for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2007 20:46:48 +0100 (CET)
+In-Reply-To: <4749C7B7.4040303@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,45 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: richard@openedhand.com, liam.girdwood@wolfsonmicro.com
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Lee Revell <rlrevell@joe-job.com>
 List-Id: alsa-devel@alsa-project.org
 
-soc/wm8731: Fix stereo mixer controls
+On Sun, 25 Nov 2007, Rene Herman wrote:
 
-Disable the simultaneous load feature for the line in and headphone
-out volume registers. This allows left and right volume levels to
-be controlled separately.
+> > I tried to count some statistics and at the time spamassassin and 
+> > mailman filtering rules catch 92% of spam messages coming to 
+> > alsa-devel. Unfortunately remaining 8% means 20 spam messages daily 
+> > (without moderation). Could moderators confirm this value?
+> 
+> No, has too be significantly more, although it varies somewhat per day. 
+> But I alone moderate out more than that on average and I'm not alone. 
+> Are there no "discarded messages" statistic available from the 
+> moderation interface?
 
-Signed-off-by: Ville Syrjala <syrjala@sci.fi>
----
+>From mailman logs (May 04 - today):
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 7ca0b52..57fb95a 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -562,13 +562,13 @@ static int wm8731_init(struct snd_soc_device *socdev)
- =
+Total held messages: 2922 (including approved ones)
+Approved held messages: 419
 
- 	/* set the update bits */
- 	reg =3D wm8731_read_reg_cache(codec, WM8731_LOUT1V);
--	wm8731_write(codec, WM8731_LOUT1V, reg | 0x0100);
-+	wm8731_write(codec, WM8731_LOUT1V, reg & ~0x0100);
- 	reg =3D wm8731_read_reg_cache(codec, WM8731_ROUT1V);
--	wm8731_write(codec, WM8731_ROUT1V, reg | 0x0100);
-+	wm8731_write(codec, WM8731_ROUT1V, reg & ~0x0100);
- 	reg =3D wm8731_read_reg_cache(codec, WM8731_LINVOL);
--	wm8731_write(codec, WM8731_LINVOL, reg | 0x0100);
-+	wm8731_write(codec, WM8731_LINVOL, reg & ~0x0100);
- 	reg =3D wm8731_read_reg_cache(codec, WM8731_RINVOL);
--	wm8731_write(codec, WM8731_RINVOL, reg | 0x0100);
-+	wm8731_write(codec, WM8731_RINVOL, reg & ~0x0100);
- =
+Also note that ~143 held messages were approved on Nov 14 and Nov 15 (CCed 
+thread from LKML - New Kernel Bugs).
 
- 	wm8731_add_controls(codec);
- 	wm8731_add_widgets(codec);
--- =
+I hope that all moderators are receiving notification about held messages, 
+so it's no a problem to just check a list and login to mailman interface 
+only when a non-spam (or not clear) message is on the list. I just 
+configured mailman that all messages older than 4 days will be 
+automatically discarded.
 
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project
