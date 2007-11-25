@@ -1,20 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: The sense or non-sense of the device listing API
- (was: Status of ALSA "simple" mixer interface])
-Date: Sun, 25 Nov 2007 21:38:43 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0711252113580.7688@tm8103.perex-int.cz>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Disable conversions
+Date: Sun, 25 Nov 2007 21:41:32 +0100
+Message-ID: <20071125204132.GA15151@tango.0pointer.de>
 References: <20071120005151.GA25276@tango.0pointer.de>
-	<s5hy7crhmzs.wl%tiwai@suse.de>
-	<1195658628.10273.1222565901@webmail.messagingengine.com>
-	<20071125195615.GA10832@tango.0pointer.de>
+	<s5hsl2zhlmh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id B58EA24610
-	for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2007 21:38:43 +0100 (CET)
-In-Reply-To: <20071125195615.GA10832@tango.0pointer.de>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 79B2224614
+	for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2007 21:41:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hsl2zhlmh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: ALSA <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 25 Nov 2007, Lennart Poettering wrote:
+On Wed, 21.11.07 12:40, Takashi Iwai (tiwai@suse.de) wrote:
 
-> On Wed, 21.11.07 16:23, Clemens Ladisch (cladisch@fastmail.net) wrote:
-> 
-> > Takashi Iwai wrote:
-> > > Lennart Poettering wrote:
-> > > > aplay -L suggest to use "surround71:" (and *only* that) as plugin for my
-> > > > usb webcam that only has a single mono channel.  What's going wrong?
-> > > > Any idea where I should be looking?
-> > > 
-> > > Since it's a USB device, maybe Clemens has a better clue...
+> At Tue, 20 Nov 2007 01:51:51 +0100,
+> Lennart Poettering wrote:
 > > 
-> > USB-Audio.conf defines all the surround devices because there are some
-> > devices that actually use them.  I could understand if "aplay -L" shows
-> > all the default device names _including_ surround71.
-> > 
-> > I'm not sure how the device name list gets constructed; AFAICT the card-
-> > specific .conf files are not supposed to define hints.
+> > 4) If I open an audio device with "plughw:" i can disable the software
+> >    resampling that takes place via
+> >    "snd_pcm_hw_params_get_rate_resample()". However, there is no
+> >    equivalent for disabling the channel number adjustment or the
+> >    sample format conversion. This would be very useful in PA however,
+> >    since this would allow me to use only the parts of plughw I am
+> >    interested in (softvol), and disable all the rest (resampling,
+> >    conversion, channel remixing).
 > 
-> Hmm, that would would be a serious limitation.
+> Hmm..  It's a bit difficult to implement in a clean way.
+> For example, what would be the reason to disable softvol?  
 
-Card specific files can give information to device name hint functions. 
-Unfortunately, all USB cards have only one configuration file which is too 
-much generic (basically all PCM devices are described there even if they 
-do not exist in hardware). I think we need to extend our configuration 
-files here.
+Hmm, I think there's some kind of misunderstand here: softvol is the
+only part I am interested in to use. It's the resampling, the sample
+type conversion, and the channel map changing I want to disable. Right
+now, I can only disable the resampling, but the type conversion and
+channel conversion always stay enabled. Or did I miss something?
 
-Also if only surround71 device is available, it appears like a bug in the 
-device name hint function. Anyway, users can create own device name hints,
-so the result of device name hint function can be forced until a right 
-behaviour is not implemented by default.
+> It's basically irrelevant with the PCM parameters.  It's added just
+> because of lack of hardware volume controls.
+> 
+> One idea I have is to make an API like
+> 
+> 	snd_pcm_alias_plugin(src, dst);
+> 
+> For example,
+> 
+> 	snd_pcm_alias_plugin("softvol", "passthru");
+> 
+> would take passthru plugin instead of softvol plugin.
+> (Suppose passthru plugin as a simply pass-through plugin to its
+>  slave.pcm)
 
-						Jaroslav
+I am not sure if I understand what this would be useful for?
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
