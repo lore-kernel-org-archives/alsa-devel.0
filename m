@@ -1,15 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: If /dev/snd/controlCx EACCES vs. ENODEV mixup
-Date: Sun, 25 Nov 2007 22:40:07 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0711252232430.7688@tm8103.perex-int.cz>
-References: <20071125210359.GB17108@tango.0pointer.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: ALSA Leaking memory
+Date: Sun, 25 Nov 2007 22:41:11 +0100
+Message-ID: <20071125214111.GA20742@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1540448179-1196026807=:7688"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 263B724611
-	for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2007 22:40:08 +0100 (CET)
-In-Reply-To: <20071125210359.GB17108@tango.0pointer.de>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F5E624617
+	for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2007 22:41:12 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,97 +19,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi!
 
---8323584-1540448179-1196026807=:7688
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Apparently alsa-libs .15 is leaking memory when using snd_pcm_open()
+on some devices that cannot be opened. 
 
-On Sun, 25 Nov 2007, Lennart Poettering wrote:
+On my USB wecam which has only a single mono audio stream, opening it
+as "front:3" (which of course fails) leaks a bit of memory. Consider this example:
 
-> Hi!
-> 
-> If /dev/snd/controlC0 is not accessible due to a permission problem
-> (EACCES), then alsa-libs will lie and return ENODEV. This is quite a
-> bit confusing:
-> 
-> <snip>
-> $ sudo chmod 000 /dev/snd/controlC0
-> $ aplay -D hw:0
-> ALSA lib pcm_hw.c:1207:(_snd_pcm_hw_open) Invalid value for card
-> aplay: main:546: audio open error: No such device
-> </snip>
-> 
-> (and strace shows that the actual problem is EACESS, as one would
-> assume.
+<snip>
+#include <asoundlib.h>
+#include <assert.h>
 
-Could you try attached patch?
+int main(int argc, char *argv[]) {
+    snd_pcm_t *pcm;
 
-						Jaroslav
+    if (snd_pcm_open(&pcm, "front:3", SND_PCM_STREAM_CAPTURE,
+    SND_PCM_NONBLOCK) == 0) {
+        int r = snd_pcm_close(pcm);
+        assert(r == 0);
+    }
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project
---8323584-1540448179-1196026807=:7688
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="perm.patch"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.61.0711252240070.7688@tm8103.perex-int.cz>
-Content-Description: 
-Content-Disposition: attachment; filename="perm.patch"
+    snd_config_update_free_global();
+    return 0;
+}
+</snip>
 
-ZGlmZiAtciA2NzJjNTM4NzY0NWQgc3JjL2NvbnRyb2wvY2FyZHMuYw0KLS0t
-IGEvc3JjL2NvbnRyb2wvY2FyZHMuYwlGcmkgTm92IDIzIDE1OjQ2OjQ4IDIw
-MDcgKzAxMDANCisrKyBiL3NyYy9jb250cm9sL2NhcmRzLmMJU3VuIE5vdiAy
-NSAyMjozNjo1NyAyMDA3ICswMTAwDQpAQCAtMzksMTIgKzM5LDcgQEANCiAj
-ZGVmaW5lIFNORF9GSUxFX0xPQUQJCUFMT0FEX0RFVklDRV9ESVJFQ1RPUlkg
-ImFsb2FkQyVpIg0KICNlbmRpZg0KIA0KLS8qKg0KLSAqIFxicmllZiBUcnkg
-dG8gbG9hZCB0aGUgZHJpdmVyIGZvciBhIGNhcmQuDQotICogXHBhcmFtIGNh
-cmQgQ2FyZCBudW1iZXIuDQotICogXHJldHVybiAxIGlmIGRyaXZlciBpcyBw
-cmVzZW50LCB6ZXJvIGlmIGRyaXZlciBpcyBub3QgcHJlc2VudA0KLSAqLw0K
-LWludCBzbmRfY2FyZF9sb2FkKGludCBjYXJkKQ0KK3N0YXRpYyBpbnQgc25k
-X2NhcmRfbG9hZDEoaW50IGNhcmQpDQogew0KIAlpbnQgb3Blbl9kZXY7DQog
-CWNoYXIgY29udHJvbFtzaXplb2YoU05EX0ZJTEVfQ09OVFJPTCkgKyAxMF07
-DQpAQCAtNjEsOSArNTYsMjAgQEAgaW50IHNuZF9jYXJkX2xvYWQoaW50IGNh
-cmQpDQogI2VuZGlmDQogCWlmIChvcGVuX2RldiA+PSAwKSB7DQogCQljbG9z
-ZSAob3Blbl9kZXYpOw0KLQkJcmV0dXJuIDE7DQotCX0NCi0JcmV0dXJuIDA7
-DQorCQlyZXR1cm4gMDsNCisJfSBlbHNlIHsNCisJCXJldHVybiAtZXJybm87
-DQorCX0NCit9DQorDQorLyoqDQorICogXGJyaWVmIFRyeSB0byBsb2FkIHRo
-ZSBkcml2ZXIgZm9yIGEgY2FyZC4NCisgKiBccGFyYW0gY2FyZCBDYXJkIG51
-bWJlci4NCisgKiBccmV0dXJuIDEgaWYgZHJpdmVyIGlzIHByZXNlbnQsIHpl
-cm8gaWYgZHJpdmVyIGlzIG5vdCBwcmVzZW50DQorICovDQoraW50IHNuZF9j
-YXJkX2xvYWQoaW50IGNhcmQpDQorew0KKwlyZXR1cm4gISEoc25kX2NhcmRf
-bG9hZDEoY2FyZCkgPT0gMCk7DQogfQ0KIA0KIC8qKg0KQEAgLTEwNCw3ICsx
-MTAsNyBAQCBpbnQgc25kX2NhcmRfbmV4dChpbnQgKnJjYXJkKQ0KICAqLw0K
-IGludCBzbmRfY2FyZF9nZXRfaW5kZXgoY29uc3QgY2hhciAqc3RyaW5nKQ0K
-IHsNCi0JaW50IGNhcmQ7DQorCWludCBjYXJkLCBlcnI7DQogCXNuZF9jdGxf
-dCAqaGFuZGxlOw0KIAlzbmRfY3RsX2NhcmRfaW5mb190IGluZm87DQogDQpA
-QCAtMTE2LDEzICsxMjIsMTYgQEAgaW50IHNuZF9jYXJkX2dldF9pbmRleChj
-b25zdCBjaGFyICpzdHJpbg0KIAkJCXJldHVybiAtRUlOVkFMOw0KIAkJaWYg
-KGNhcmQgPCAwIHx8IGNhcmQgPiAzMSkNCiAJCQlyZXR1cm4gLUVJTlZBTDsN
-Ci0JCWlmIChzbmRfY2FyZF9sb2FkKGNhcmQpKQ0KKwkJZXJyID0gc25kX2Nh
-cmRfbG9hZDEoY2FyZCk7DQorCQlpZiAoZXJyID49IDApDQogCQkJcmV0dXJu
-IGNhcmQ7DQotCQlyZXR1cm4gLUVOT0RFVjsNCisJCXJldHVybiBlcnI7DQog
-CX0NCiAJZm9yIChjYXJkID0gMDsgY2FyZCA8IDMyOyBjYXJkKyspIHsNCisj
-aWZkZWYgU1VQUE9SVF9BTE9BRA0KIAkJaWYgKCEgc25kX2NhcmRfbG9hZChj
-YXJkKSkNCiAJCQljb250aW51ZTsNCisjZW5kaWYNCiAJCWlmIChzbmRfY3Rs
-X2h3X29wZW4oJmhhbmRsZSwgTlVMTCwgY2FyZCwgMCkgPCAwKQ0KIAkJCWNv
-bnRpbnVlOw0KIAkJaWYgKHNuZF9jdGxfY2FyZF9pbmZvKGhhbmRsZSwgJmlu
-Zm8pIDwgMCkgew0K
+And there they are gone, the 10 bytes of memory. Here's a snippet from valgrinding this program:
 
---8323584-1540448179-1196026807=:7688
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+==22198== 10 bytes in 1 blocks are definitely lost in loss record 1 of 3
+==22198==    at 0x4023765: malloc (vg_replace_malloc.c:149)
+==22198==    by 0x417C44F: strdup (strdup.c:43)
+==22198==    by 0x4071954: snd_determine_driver (in /usr/lib/libasound.so.2.0.0)
+==22198==    by 0x406E80C: snd_config_hook_load_for_all_cards (in /usr/lib/libasound.so.2.0.0)
+==22198==    by 0x406EC7C: (within /usr/lib/libasound.so.2.0.0) 
+==22198==    by 0x406F896: snd_config_searcha_hooks (in /usr/lib/libasound.so.2.0.0)
+==22198==    by 0x406FA74: snd_config_search_alias_hooks (in /usr/lib/libasound.so.2.0.0)
+==22198==    by 0x406FCD9: snd_config_search_definition (in /usr/lib/libasound.so.2.0.0)
+==22198==    by 0x40952FE: (within /usr/lib/libasound.so.2.0.0)
+==22198==    by 0x80484D7: main (in /home/lennart/alsa-test)
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+And there seem to be more. When PulseAudio starts up it probes for
+available audio devices. On my machine there are 5 sound cards, which are
+all probed with device strings like "surround51:0" and so on, and in
+the end some memory with a caller history like the one shown above is
+shown, and another one:
 
---8323584-1540448179-1196026807=:7688--
+==22229== 235 (180 direct, 55 indirect) bytes in 5 blocks are definitely lost in loss record 6 of 6
+==22229==    at 0x4023AA4: calloc (vg_replace_malloc.c:279)
+==22229==    by 0x46967B8: (within /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x4696C48: snd_config_make (in /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x4696CD0: snd_config_imake_pointer (in /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46EA573: _snd_pcm_hook_ctl_elems_install (in /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46EAC10: (within /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46EB2BC: _snd_pcm_hooks_open (in /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46C0CD4: (within /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46C1467: snd_pcm_open_slave (in /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46D232B: _snd_pcm_route_open (in /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46C0CD4: (within /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46C1467: snd_pcm_open_slave (in /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46E47CC: _snd_pcm_empty_open (in /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46C0CD4: (within /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x46C13D2: (within /usr/lib/libasound.so.2.0.0)
+==22229==    by 0x412E007: pa_alsa_open_by_device_id (alsa-util.c:529)
+==22229==    by 0x4135904: module_alsa_sink_LTX_pa__init (module-alsa-sink.c:781)
+==22229==    by 0x419CD2B: pa_module_load (module.c:115)
+==22229==    by 0x4164D33: hal_device_load_alsa (module-hal-detect.c:204)
+==22229==    by 0x4165313: hal_device_add (module-hal-detect.c:323)
+ 
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
