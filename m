@@ -1,18 +1,15 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Disable conversions
-Date: Sun, 25 Nov 2007 21:41:32 +0100
-Message-ID: <20071125204132.GA15151@tango.0pointer.de>
-References: <20071120005151.GA25276@tango.0pointer.de>
-	<s5hsl2zhlmh.wl%tiwai@suse.de>
+Subject: If /dev/snd/controlCx EACCES vs. ENODEV mixup
+Date: Sun, 25 Nov 2007 22:03:59 +0100
+Message-ID: <20071125210359.GB17108@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79B2224614
-	for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2007 21:41:35 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 6268724610
+	for <alsa-devel@alsa-project.org>; Sun, 25 Nov 2007 22:04:00 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hsl2zhlmh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +22,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21.11.07 12:40, Takashi Iwai (tiwai@suse.de) wrote:
+Hi!
 
-> At Tue, 20 Nov 2007 01:51:51 +0100,
-> Lennart Poettering wrote:
-> > 
-> > 4) If I open an audio device with "plughw:" i can disable the software
-> >    resampling that takes place via
-> >    "snd_pcm_hw_params_get_rate_resample()". However, there is no
-> >    equivalent for disabling the channel number adjustment or the
-> >    sample format conversion. This would be very useful in PA however,
-> >    since this would allow me to use only the parts of plughw I am
-> >    interested in (softvol), and disable all the rest (resampling,
-> >    conversion, channel remixing).
-> 
-> Hmm..  It's a bit difficult to implement in a clean way.
-> For example, what would be the reason to disable softvol?  
+If /dev/snd/controlC0 is not accessible due to a permission problem
+(EACCES), then alsa-libs will lie and return ENODEV. This is quite a
+bit confusing:
 
-Hmm, I think there's some kind of misunderstand here: softvol is the
-only part I am interested in to use. It's the resampling, the sample
-type conversion, and the channel map changing I want to disable. Right
-now, I can only disable the resampling, but the type conversion and
-channel conversion always stay enabled. Or did I miss something?
+<snip>
+$ sudo chmod 000 /dev/snd/controlC0
+$ aplay -D hw:0
+ALSA lib pcm_hw.c:1207:(_snd_pcm_hw_open) Invalid value for card
+aplay: main:546: audio open error: No such device
+</snip>
 
-> It's basically irrelevant with the PCM parameters.  It's added just
-> because of lack of hardware volume controls.
-> 
-> One idea I have is to make an API like
-> 
-> 	snd_pcm_alias_plugin(src, dst);
-> 
-> For example,
-> 
-> 	snd_pcm_alias_plugin("softvol", "passthru");
-> 
-> would take passthru plugin instead of softvol plugin.
-> (Suppose passthru plugin as a simply pass-through plugin to its
->  slave.pcm)
+(and strace shows that the actual problem is EACESS, as one would
+assume.
 
-I am not sure if I understand what this would be useful for?
+I also filed this as bug on the BTS:
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3600
+
+BTW, what's the status of the BTS? Takashi asked me to post all my
+issues on the ML instead of on the BTS. So why have the BTS at all?
+It's even linked on the alsa-project.org front page under "I found a
+bug!", which is a bit misleading. If this Mantis thing is not liked at
+all, would it be possible to make some replacement available? Maybe
+just use the kernel bugzilla on bugzilla.kernel.org? It's very fast,
+and certainly more fun to work with than with Mantis.
 
 Lennart
 
