@@ -1,21 +1,19 @@
-From: Heikki Lindholm <holindho@cs.helsinki.fi>
-Subject: POSIX clocks and ALSA
-Date: Mon, 26 Nov 2007 09:31:10 +0200
-Message-ID: <474A763E.7090001@cs.helsinki.fi>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: If /dev/snd/controlCx EACCES vs. ENODEV mixup
+Date: Mon, 26 Nov 2007 08:47:12 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0711260843120.7571@tm8103.perex-int.cz>
+References: <20071125210359.GB17108@tango.0pointer.de>
+	<Pine.LNX.4.61.0711252240140.7688@tm8103.perex-int.cz>
+	<20071125215300.GA22640@tango.0pointer.de>
+	<s5hir3ppkeb.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from emh06.mail.saunalahti.fi (emh06.mail.saunalahti.fi
-	[62.142.5.116]) by alsa0.perex.cz (Postfix) with ESMTP id 2EEA02476D
-	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 08:31:13 +0100 (CET)
-Received: from saunalahti-vams (vs3-10.mail.saunalahti.fi [62.142.5.94])
-	by emh06-2.mail.saunalahti.fi (Postfix) with SMTP id A2D17C8B86
-	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 09:31:12 +0200 (EET)
-Received: from marumake.local (a88-112-236-112.elisa-laajakaista.fi
-	[88.112.236.112])
-	by emh03.mail.saunalahti.fi (Postfix) with ESMTP id 82D3A158B70
-	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 09:31:09 +0200 (EET)
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0687224775
+	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 08:47:13 +0100 (CET)
+In-Reply-To: <s5hir3ppkeb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Mon, 26 Nov 2007, Takashi Iwai wrote:
 
-Some years ago there was some talk about UST support in Linux, but the 
-support never happened. With the hrtimers patch (and I'm not quite sure 
-if even earlier?) CLOCK_MONOTONIC would seem like a fairly good UST time 
-source. What I'd like to see, is a selectable clock for ALSA 
-timestamping, e.g. something like snd_sw_params_clock(..., clockid_t 
-clk). Would this seem plausible? I don't know that much about ALSA 
-internals, so, no idea whether different clocks on different 
-pcms/whatever would quickly turn into an unmanageable mess.
+> At Sun, 25 Nov 2007 22:53:00 +0100,
+> Lennart Poettering wrote:
+> > 
+> > On Sun, 25.11.07 22:42, Jaroslav Kysela (perex@perex.cz) wrote:
+> > 
+> > > 
+> > > On Sun, 25 Nov 2007, Lennart Poettering wrote:
+> > > 
+> > > > BTW, what's the status of the BTS? Takashi asked me to post all my
+> > > > issues on the ML instead of on the BTS. So why have the BTS at all?
+> > > > It's even linked on the alsa-project.org front page under "I found a
+> > > > bug!", which is a bit misleading. If this Mantis thing is not liked at
+> > > > all, would it be possible to make some replacement available? Maybe
+> > > > just use the kernel bugzilla on bugzilla.kernel.org? It's very fast,
+> > > > and certainly more fun to work with than with Mantis.
+> > > 
+> > > I prefer BTS but Takashi not. It's matter of personal preference. Mantis 
+> > > is easy maintainable and we have more projects (or packages) not only 
+> > > drivers.
+> > 
+> > The kernel bugzilla already is used for stuff like klibc and other
+> > userspace support code for the kernel. I am sure noone would oppose to
+> > move the complete bug tracking of ALSA to the kernel bz.
+> 
+> The problem is the total lack of man power for debugging.
+> You'll understand easily if you see too many open bugs.  And the bug
+> report quality isn't always good.  Many reports, e.g. about HD-audio
+> issue, are either too old, irrelevant, or simply unsupported device
+> (or all of them are mixed up).  Only a few of them are really
+> interesting.  But, even filtering them takes too much time.
+> 
+> So, I guess it won't matter whether it's bugzilla or not.  Unless
+> someone sweeps bug entries regularly, BTS can't work properly.
 
--- Heikki Lindholm
+That's true.
+
+> BTW, regarding bugzilla vs mantis.  There are a few features that are
+> missing in mantis.  For example, the below are what I'd love to have
+> vastly:
+> 
+> - properly create a mail per entry
+>   currently mantis mail notification is broken and useless
+
+Seems that mantis developers are aware of this now:
+
+http://www.mantisbt.org/wiki/doku.php/mantisbt:diff_emails_requirements
+
+> - has optional status like NEEDINFO or WAIT_FOR_TESTING
+>   so we cannot mark the entries whether a user-action is required or
+>   not, make difficult to filter
+
+I will add this status ASAP.
+
+					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project
