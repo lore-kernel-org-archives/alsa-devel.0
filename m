@@ -1,18 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Disable conversions
-Date: Mon, 26 Nov 2007 16:55:54 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0711261638320.24363@tm8103.perex-int.cz>
-References: <20071120005151.GA25276@tango.0pointer.de>
-	<s5hsl2zhlmh.wl%tiwai@suse.de>
-	<20071125204132.GA15151@tango.0pointer.de>
+From: Heikki Lindholm <holindho@cs.helsinki.fi>
+Subject: Re: POSIX clocks and ALSA
+Date: Mon, 26 Nov 2007 18:04:56 +0200
+Message-ID: <474AEEA8.6090602@cs.helsinki.fi>
+References: <474A763E.7090001@cs.helsinki.fi>
+	<Pine.LNX.4.61.0711260848180.7571@tm8103.perex-int.cz>
+	<474A9A49.1030208@cs.helsinki.fi>
+	<Pine.LNX.4.61.0711261548040.23163@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3DA1424856
-	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 16:55:55 +0100 (CET)
-In-Reply-To: <20071125204132.GA15151@tango.0pointer.de>
+Received: from emh06.mail.saunalahti.fi (emh06.mail.saunalahti.fi
+	[62.142.5.116]) by alsa0.perex.cz (Postfix) with ESMTP id 7013824822
+	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 17:05:00 +0100 (CET)
+In-Reply-To: <Pine.LNX.4.61.0711261548040.23163@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,66 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 25 Nov 2007, Lennart Poettering wrote:
-
-> On Wed, 21.11.07 12:40, Takashi Iwai (tiwai@suse.de) wrote:
+Jaroslav Kysela kirjoitti:
+> On Mon, 26 Nov 2007, Heikki Lindholm wrote:
 > 
-> > At Tue, 20 Nov 2007 01:51:51 +0100,
-> > Lennart Poettering wrote:
-> > > 
-> > > 4) If I open an audio device with "plughw:" i can disable the software
-> > >    resampling that takes place via
-> > >    "snd_pcm_hw_params_get_rate_resample()". However, there is no
-> > >    equivalent for disabling the channel number adjustment or the
-> > >    sample format conversion. This would be very useful in PA however,
-> > >    since this would allow me to use only the parts of plughw I am
-> > >    interested in (softvol), and disable all the rest (resampling,
-> > >    conversion, channel remixing).
-> > 
-> > Hmm..  It's a bit difficult to implement in a clean way.
-> > For example, what would be the reason to disable softvol?  
+>> I had a look at the proposal and the thread at
+>> http://thread.gmane.org/gmane.linux.alsa.devel/45237/focus=45573
 > 
-> Hmm, I think there's some kind of misunderstand here: softvol is the
-> only part I am interested in to use. It's the resampling, the sample
-> type conversion, and the channel map changing I want to disable. Right
-> now, I can only disable the resampling, but the type conversion and
-> channel conversion always stay enabled. Or did I miss something?
+> My initial implementation following proposal is bellow for review and 
+> comments. I also changed timestamps for ALSA timers to use monotonic 
+> clocks (can be switched back using a module parameter).
+> 
+> 					Jaroslav
+> 
+> diff -r 5e8cab953031 core/pcm_lib.c
+> --- a/core/pcm_lib.c	Mon Nov 26 09:00:56 2007 +0100
+<...>
+> diff -r 5e8cab953031 include/asound.h
+> --- a/include/asound.h	Mon Nov 26 09:00:56 2007 +0100
+> +++ b/include/asound.h	Mon Nov 26 15:02:57 2007 +0100
+> @@ -435,6 +435,13 @@ struct snd_xfern {
+>  };
+>  
+>  enum {
+> +	SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY = 0,	/* gettimeofday equivalent */
+> +	SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY1,	/* for compatibility, equal to zero */
+> +	SNDRV_PCM_TSTAMP_TYPE_MONOTONIC,	/* posix_clock_monotonic equivalent */
+> +	SNDRV_PCM_TSTAMP_TYPE_LAST = SNDRV_PCM_TSTAMP_TYPE_MONOTONIC,
+> +};
 
-I though about this idea again. Resampling is a bit exception, because we 
-have no very good implementation in alsa-lib and there are rounding 
-problems regarding period sizes due to nature of ALSA API, so it's better 
-to resample on bytestream if possible.
+Looks good otherwise, but I'd still like to argue about this 
+compatibility point: compatibility with what exactly? When was 
+PCM_TSTAMP ioctl deprecated? Before 1.0.0? Has anyone *ever* used it? 
+And so, is there any point in adding something not-so-pretty to a new 
+feature right from the start. Just declare legacy TSTAMP ioctl users 
+scr*wed! :)
 
-I think that Takashi already proposed to handle "disabling" using
-a configuration file (interface). We can even create an argument for 
-plughw device:
+The good thing is that this change has, AFAICS, nothing contradicting 
+with redesigning the timestamp API, so that could be left open and this 
+stuff still applied.
 
-1) Proposal - one argument specifying multiple disabled conversions:
-
-   plughw:CARD=0,DEV=0,DISABLECONV=cfr
-
-   c = channels
-   f = format
-   r = rate
-
-   And add 'disableconv' to pcm/pcm_plug.c configuration parser.
-
-2) Proposal - multiple arguments
-
-   plughw:CARD=0,DEV=0,DISABLECHANNELS=1,DISABLERATE=1,DISABLEFORMAT=1
-
-I prefer first proposal (I don't think that it will be widely used), but I 
-have no objections for second, too.
-
-This can be applied to plug: device as well.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project
+-- Heikki Lindholm
