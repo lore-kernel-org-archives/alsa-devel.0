@@ -1,19 +1,20 @@
-From: Tim <terminator356@users.sourceforge.net>
-Subject: Re: multi pcm and mmap problem
-Date: Mon, 26 Nov 2007 17:46:59 -0500
-Message-ID: <200711261746.59712.terminator356@users.sourceforge.net>
-References: <200711210158.42108.terminator356@users.sourceforge.net>
-	<200711251751.05205.terminator356@users.sourceforge.net>
-	<s5h4pf9s33w.wl%tiwai@suse.de>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: rme hdsp pcmcia (and probably pci) broken
+Date: Mon, 26 Nov 2007 17:45:03 -0800
+Message-ID: <1196127903.15009.34.camel@cmn3.stanford.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp102.rog.mail.re2.yahoo.com (smtp102.rog.mail.re2.yahoo.com
-	[206.190.36.80]) by alsa0.perex.cz (Postfix) with SMTP id 98F93248C3
-	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 23:32:37 +0100 (CET)
-In-Reply-To: <s5h4pf9s33w.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from smtp3.stanford.edu (smtp3.Stanford.EDU [171.67.20.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6D22247F3
+	for <alsa-devel@alsa-project.org>; Tue, 27 Nov 2007 02:45:09 +0100 (CET)
+Received: from smtp3.stanford.edu (localhost.localdomain [127.0.0.1])
+	by localhost (Postfix) with SMTP id 06B9D4C8EB
+	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 17:45:06 -0800 (PST)
+Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
+	by smtp3.stanford.edu (Postfix) with ESMTP id C93264C972
+	for <alsa-devel@alsa-project.org>; Mon, 26 Nov 2007 17:45:05 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: nando@ccrma.Stanford.EDU, planetccrma@ccrma.Stanford.EDU
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 26 November 2007 05:38:59 am you wrote:
-> > It seems to me, looking at the 'IEC958 CS8427 Error Status' results
-> > below, that envy24control should perhaps be using it, instead of
-> >  'Word Clock Status', as a 'locked' indicator.
-> Actually 'Word Clock Status' is determined from this register value.
-> So far it checks whether its zero or not.  But this seesm too strict.
-> We'll need to check only the UNLOCK bit (bit 4) for sync status.
->
-> How about the patch below (to alsa-kernel)?
->
-> diff -r 5e8cab953031 pci/ice1712/delta.c
-> --- a/pci/ice1712/delta.c	Mon Nov 26 09:00:56 2007 +0100
-> +++ b/pci/ice1712/delta.c	Mon Nov 26 11:56:18 2007 +0100
-> @@ -405,7 +405,7 @@ static int snd_ice1712_delta1010lt_wordc
->  	if (snd_i2c_sendbytes(ice->cs8427, &reg, 1) != 1)
->  		snd_printk(KERN_ERR "unable to send register 0x%x byte to CS8427\n",
-> reg); snd_i2c_readbytes(ice->cs8427, &reg, 1);
-> -	ucontrol->value.integer.value[0] = (reg ? 1 : 0);
-> +	ucontrol->value.integer.value[0] = (reg & CS8427_UNLOCK) ? 1 : 0;
->  	return 0;
->  }
+Hi, anyone has a pcmcia rme card running? And working? With a reasonably
+recent alsa? (this probably applies also for the regular pci rme cards,
+I've had reports on the Planet CCRMA list about problems that sound
+similar to this one). 
 
-Ah, there we go! 
-Tested OK connecting/disconnecting S/PDIF cable - 
- says 'locked' then 'no signal'.
-Thanks again, Takashi. 
-Tim.
+My test setup is on fc7 running:
+
+  alsa-lib 1.0.15
+  alsa-tools 1.0.15
+  alsa-firmware 1.0.15
+
+After a sequence of reboots this is what I get:
+
+2.6.22.1-1.rt5.1 + alsa driver modules from
+svn 20070702.165519
+--> OK
+
+2.6.22.5-1.rt9.2 + alsa driver modules from
+hg20070830
+--> OK
+
+2.6.22.6-1.rt9.5 + alsa driver modules from
+hg20070830
+--> OK
+
+2.6.22.10-1.rt9.1 + alsa driver modules from
+hg20071012
+--> BROKEN
+
+2.6.23.1-1.rt11.1 + alsa drive modules from
+hg20071124
+--> BROKEN
+
+BROKEN means: after starting hdspmixer I get no sound from the analog
+outputs (all previous tries play sound correctly with the default preset
+in hdspmixer). Some channels do appear (using a Digiface II). In the
+"broken" drivers I can get sound with the default preset if I send a
+signal to channels 7 and 12, all other stay muted. 
+
+Something broke drastically in the driver between 2007.08.30 and
+2007.10.12.
+
+Any help appreciated...
+
+-- Fernando
