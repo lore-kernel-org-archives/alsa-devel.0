@@ -1,21 +1,20 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: [PlanetCCRMA] Re: rme hdsp pcmcia
-	(and	probably	pci) broken
-Date: Wed, 28 Nov 2007 18:50:56 -0800
-Message-ID: <1196304656.29234.12.camel@cmn3.stanford.edu>
-References: <1196127903.15009.34.camel@cmn3.stanford.edu>
-	<s5hejebkd2g.wl%tiwai@suse.de>
-	<1196191110.22601.15.camel@cmn3.stanford.edu>
-	<1196208700.22601.59.camel@cmn3.stanford.edu>
-	<s5hhcj6iujn.wl%tiwai@suse.de>
+From: "David Hubbard" <david.c.hubbard@gmail.com>
+Subject: Re: Edirol UA-4FX
+Date: Wed, 28 Nov 2007 23:20:45 -0700
+Message-ID: <4dfa50520711282220t1443214fg6a84dd0619dfbfba@mail.gmail.com>
+References: <4dfa50520711281050v4a710af5q11644b0cf7dd10c1@mail.gmail.com>
+	<4dfa50520711281123o4ea74babra50f0a09330bb359@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.stanford.edu (smtp1.Stanford.EDU [171.67.22.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE90A24731
-	for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2007 03:51:04 +0100 (CET)
-In-Reply-To: <s5hhcj6iujn.wl%tiwai@suse.de>
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.231])
+	by alsa0.perex.cz (Postfix) with ESMTP id A29342417E
+	for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2007 07:20:47 +0100 (CET)
+Received: by nz-out-0506.google.com with SMTP id m22so1240027nzf
+	for <alsa-devel@alsa-project.org>; Wed, 28 Nov 2007 22:20:46 -0800 (PST)
+In-Reply-To: <4dfa50520711281123o4ea74babra50f0a09330bb359@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, planetccrma@ccrma.Stanford.EDU, Remy Bruno <remy.bruno@trinnov.com>
+To: Takashi Iwai <tiwai@suse.de>, Alsa Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2007-11-28 at 10:33 +0100, Takashi Iwai wrote:
-> At Tue, 27 Nov 2007 16:11:40 -0800,
-> Fernando Lopez-Lezcano wrote:
-> > 
-> > On Tue, 2007-11-27 at 11:18 -0800, Fernando Lopez-Lezcano wrote:
-> > > On Tue, 2007-11-27 at 14:55 +0100, Takashi Iwai wrote:
-> > > > At Mon, 26 Nov 2007 17:45:03 -0800,
-> > > > Fernando Lopez-Lezcano wrote:
-> > > > > 
-> > > > > Hi, anyone has a pcmcia rme card running? And working? With a reasonably
-> > > > > recent alsa? (this probably applies also for the regular pci rme cards,
-> > > > > I've had reports on the Planet CCRMA list about problems that sound
-> > > > > similar to this one). 
-> > > > > 
-> > > > > My test setup is on fc7 running:
-> > > > > 
-> > > > >   alsa-lib 1.0.15
-> > > > >   alsa-tools 1.0.15
-> > > > >   alsa-firmware 1.0.15
-> > > > > [MUNCH]
-> > > > > 2.6.22.10-1.rt9.1 + alsa driver modules from
-> > > > > hg20071012
-> > > > > --> BROKEN
-> > > > 
-> > > > The only significant change in hdsp.c during this is the patch below.
-> > > > Could you try to revert?
-> > > 
-> > > Reverting the patch makes the card play sound as before, so the patch is
-> > > definitely broken. Regretfully hdspmixer seems to no longer display the
-> > > vu meters and changing the presets does not seem to have an effect, it
-> > > probably needs something to be reverted as well to match?
-> > 
-> > Hmmm, I don't know why it was not working. I'm also building a new
-> > kernel, so, with 2.6.23.9 + rt11 + alsa kernel drivers hg20071124 it
-> > seems to work (hdspmixer displays the vu meters correctly). 
-> 
-> Possibly the hdsp-mixer setup got screwed up once due to the wrong
-> number of channels.
-> 
-> If I understand correctly, the latest driver works as is?
-> 
-> What is your hardware actually?  Could you check hdsp->io_type and
-> hdsp->firmware_rev?
+Hi Takashi and everyone,
 
-Sorry, it was a loaner. I'll get hold of it next week again. It was the
-hdsp pcmcia card and a digiface II. 
+Luis just got back to me, and he's not the right person to talk to
+about the snd_usb_audio.
+http://alsa.opensrc.org/index.php/Usb-audio#Notes suggests I contact
+Takashi Iwai. Quoted below is the message now available at
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-November/004552.html
+(you can get the patch there, or on the wiki).
 
--- Fernando
+I'm just new to alsa-devel, so I'm trying to connect with the right maintainer.
+
+Cheers,
+David
+
+On Nov 28, 2007 12:23 PM, David Hubbard <david.c.hubbard@gmail.com> wrote:
+> Hello Luis, and Alsa list,
+>
+>
+> I recently got an Edirol UA-4FX. It works just fine as a generic USB
+> Audio device. I've written up all the details at
+> http://alsa.opensrc.org/index.php/Edirol_UA-4FX (shamelessly stolen
+> from the Edirol_UA-25 page).
+>
+> The the UA-4FX needs a patch to usbaudio.c create_ua700_ua25_quirk()
+> and usbquirks.h, and then it has full support. (MIDI I/O, sample rates
+> up to 96 kHz) I've made an attempt, mostly to get it working on my
+> machine. Can you review it?
+>
+> Thanks,
+> David
+>
