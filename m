@@ -1,18 +1,17 @@
-From: Rene Herman <rene.herman@gmail.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
 Subject: Re: [PATCH] sound/isa: kill pnp_resource_change.
-Date: Thu, 29 Nov 2007 18:35:45 +0100
-Message-ID: <474EF871.7090400@gmail.com>
+Date: Thu, 29 Nov 2007 18:34:32 +0100
+Message-ID: <474EF828.7010905@keyaccess.nl>
 References: <474E1189.9030701@keyaccess.nl>
 	<200711290920.05010.bjorn.helgaas@hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E6EF2449C
-	for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2007 18:36:11 +0100 (CET)
-Received: by ug-out-1314.google.com with SMTP id q2so759025uge
-	for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2007 09:36:08 -0800 (PST)
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7EEE9244A5
+	for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2007 18:37:00 +0100 (CET)
 In-Reply-To: <200711290920.05010.bjorn.helgaas@hp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,7 +24,7 @@ Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Cc: Andrew Morton <akpm@osdl.org>, ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "yakui.zhao" <yakui.zhao@intel.com>, "Li,
-	Shaohua" <shaohua.li@intel.com>, Thomas Renninger <trenn@suse.de>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+	Shaohua" <shaohua.li@intel.com>, Thomas Renninger <trenn@suse.de>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 On 29-11-07 17:20, Bjorn Helgaas wrote:
