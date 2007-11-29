@@ -1,17 +1,19 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: ALSA API as standards
-Date: Thu, 29 Nov 2007 21:55:24 +0100
-Message-ID: <20071129205523.GA11372@tango.0pointer.de>
-References: <s5h3auzwof5.wl%tiwai@suse.de> <s5hy7cprp01.wl%tiwai@suse.de>
+From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Subject: Re: [PATCH] sound/isa: kill pnp_resource_change.
+Date: Thu, 29 Nov 2007 12:30:23 -0700
+Message-ID: <200711291230.24323.bjorn.helgaas@hp.com>
+References: <474E1189.9030701@keyaccess.nl>
+	<200711290920.05010.bjorn.helgaas@hp.com>
+	<474EF871.7090400@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC196244F8
-	for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2007 21:55:24 +0100 (CET)
+Received: from g4t0014.houston.hp.com (g4t0014.houston.hp.com [15.201.24.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id CFB672432F
+	for <alsa-devel@alsa-project.org>; Thu, 29 Nov 2007 20:30:30 +0100 (CET)
+In-Reply-To: <474EF871.7090400@gmail.com>
 Content-Disposition: inline
-In-Reply-To: <s5hy7cprp01.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Rene Herman <rene.herman@gmail.com>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "yakui.zhao" <yakui.zhao@intel.com>, "Li,
+	Shaohua" <shaohua.li@intel.com>, Thomas Renninger <trenn@suse.de>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 23.11.07 15:54, Takashi Iwai (tiwai@suse.de) wrote:
-
-Just a few random comments:
-
-> /* I/O */
+On Thursday 29 November 2007 10:35:45 am Rene Herman wrote:
+> On 29-11-07 17:20, Bjorn Helgaas wrote:
 > 
-> snd_input_stdio_open
-> snd_input_stdio_attach
-> snd_input_buffer_open
-> snd_input_close
-> snd_input_scanf
-> snd_input_gets
-> snd_input_getc
-> snd_input_ungetc
+> > On Wednesday 28 November 2007 06:10:33 pm Rene Herman wrote:
 > 
-> snd_output_stdio_open
-> snd_output_stdio_attach
-> snd_output_buffer_open
-> snd_output_buffer_string
-> snd_output_close
-> snd_output_printf
-> snd_output_vprintf
-> snd_output_puts
-> snd_output_putc
-> snd_output_flush
+> >> This removes the pnp_resource_change use from the ALSA ISAPnP drivers. In
+> >> 2.4 these were useful in providing an easy path to setting the resources,
+> >> but in 2.6 they retain function as a layering violation only.
+> >>
+> >> This makes for a nice cleanup (-550 lines) of ALSA but moreover, ALSA is the
+> >> only remaining user of pnp_init_resource_table(), pnp_resource_change() and
+> >> pnp_manual_config_dev() (and, in fact, of "struct pnp_resource_table") in
+> >> the tree outide of drivers/pnp itself meaning it makes for more cleanup
+> >> potential inside the PnP layer.
+> > 
+> > I think this is great and will certainly clean up the PNP interfaces.
+> > 
+> > But are you removing functionality that people need?  I don't know
+> > anything about ALSA, but we have to assume that some BIOSes supply
+> > incorrect resource information.  If you remove all these module
+> > parameters, is there still a way to workaround the BIOS defects?
+> 
+> Yes, sure, by just echoing resource values into sysfs files as a direct 
+> replacement (ie, doing the same thing at the PnP layer directly) and 
+> possibly by adding quirks for any definite and standing issues. We already 
+> have a few of those in fact for SB16, AWE32 and CMI8330 chips, in 
+> drivers/pnp/quirks.c.
 
-May I ask why these are exported at all? The seem to be some kind of
-STDOUT/STDIN abstraction, and have no place in a sound API I would
-say. Especially not in any "standardized" version of it.
+OK, good.
 
-> snd_config
-[...]
-> snd_config_iterator_entry
+Anyone who relies on the manual settings will have to change the
+way it's done, so maybe the changelog and documentation update
+should include some text along the lines of:
 
-Same here, why does parsing config files of ALSA need to be part of
-the audio API? I see no need for this.
+  - this removes module parameters for ISAPNP ALSA resources
+  - the drivers *should* work with no manual resource settings
+  - if you need manual resource settings (usually to work around
+    a broken BIOS),
+      - please report the problem in the Drivers/PNP component at
+        http://bugzilla.kernel.org/enter_bug.cgi and attach the
+        dmesg log, /proc/{interrupts,iomem,ioports} contents,
+        dmidecode output, and broken and working resource settings
+      - work around the problem by echoing resource settings directly
+        into the sysfs resource file, e.g.,
+          # cd /sys/devices/pnp0/00:06
+          # cat resources > /tmp/resources
+          # <edit resource settings in /tmp/resources>
+          # cat /tmp/resources > resources
+          # modprobe <driver>
 
-> snd_pcm_dump
-> snd_pcm_dump_hw_setup
-> snd_pcm_dump_sw_setup
-> snd_pcm_dump_setup
-> snd_pcm_hw_params_dump
-> snd_pcm_sw_params_dump
-> snd_pcm_status_dump
-
-And these? They are not even documented, or am I blind?
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Bjorn
