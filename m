@@ -1,24 +1,14 @@
-From: alsa-devel.20.pris@spamgourmet.com
-Subject: Re: HDA or AC97 for Nvidia MCP61S?
-Date: Fri, 30 Nov 2007 01:47:48 -0200
-Message-ID: <74eb4bb50711291947j19061286na3af8608718ae667@mail.gmail.com>
-References: <74eb4bb50711130834u5a6801daga4837be299a3f9c1@mail.gmail.com>
-	<s5hmythfg4k.wl%tiwai@suse.de>
+From: "" <semiyd@hotmail.com>
+Subject: Problems while using mplayer based on ALSA
+Date: Fri, 30 Nov 2007 06:38:15 +0000
+Message-ID: <BAY117-W107B2FDEF231255CEB7B9DC0710@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gourmet.spamgourmet.com (gourmet.spamgourmet.com
-	[216.75.35.164]) by alsa0.perex.cz (Postfix) with ESMTP id B473024454
-	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 04:48:01 +0100 (CET)
-Received: from gourmet.spamgourmet.com (localhost.localdomain [127.0.0.1])
-	by gourmet.spamgourmet.com (8.13.8/8.13.7) with ESMTP id lAU3lso5025390
-	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 03:47:55 GMT
-Received: (from jqh1@localhost)
-	by gourmet.spamgourmet.com (8.13.8/8.13.8/Submit) id lAU3lpFm025229
-	for alsa-devel@alsa-project.org; Fri, 30 Nov 2007 03:47:51 GMT
-In-Reply-To: <s5hmythfg4k.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bay0-omc2-s7.bay0.hotmail.com (bay0-omc2-s7.bay0.hotmail.com
+	[65.54.246.143]) by alsa0.perex.cz (Postfix) with ESMTP id A813B24391
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 07:38:17 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,42 +21,82 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/14/07, Takashi Iwai - tiwai@suse.de wrote:
 
-> >
-> > as I already reported on another email I'm having problems with my sound:
-> >
-> > http://thread.gmane.org/gmane.linux.alsa.devel/49412
->
-> Did you try my suggestion?
->
+Hi All:
+   Im having problems  while using mplayer 1.0 to play music based on alsa =
+1.0.15.
+  Im using an ARM9 system and montavista linux 2.6.18.
+   Here's what the problem is and what's modified in the mplayer.conf:
 
-Yes Takashi,
 
-I finally tried your suggestion.
+***************************************************************************=
+************************************
 
-To be more exact, I followed the instructions at the following
-address, using the newest driver version of course(1.0.15):
+/ $ mplayer /tmp/a.wav
+MPlayer 1.0rc2-4.2.0 (C) 2000-2007 MPlayer Team
+CPU: ARM
+115 audio & 237 video codecs
+ =
 
-https://help.ubuntu.com/community/HdaIntelSoundHowto
+Playing /tmp/a.wav.
+Audio file file format detected.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Opening audio decoder: [pcm] Uncompressed PCM audio decoder
+AUDIO: 44100 Hz, 2 ch, s16le, 1411.2 kbit/100.00% (ratio: 176400->176400)
+Selected audio codec: [pcm] afm: pcm (Uncompressed PCM)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[AO_ALSA] alsa-lib: conf.c:2699:(snd_config_hooks_call) Cannot open shared
+library (null)
+[AO_ALSA] alsa-lib: conf.c:3076:(snd_config_update_r) hooks failed,
+removing configuration
+[AO_ALSA] Playback open error: No such file or directory
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+Video: no video
+Exiting... (End of file)
+ =
 
-So, I downloaded and installed 1.0.15 of alsa-driver, alsa-lib and alsa-utils.
+ **************************************************************************=
+***************************************
+/etc/mplayer/mplayer.conf
+##################
+# audio settings #
+##################
+ =
 
-I tried the following configurations in /etc/modprobe.d/alsa-base:
+# Specify default audio driver (see -ao help for a list).
+ao=3Dalsa
+ =
 
-options snd-hda-intel model=3stack-660
-options snd-hda-intel model=3stack-660-digout
+# Use SDL audio driver with the esd subdriver by default.
+#ao =3D sdl:esd
+ =
 
-Rebooted, no luck.
+# Specify the mixer device.
+#mixer =3D /dev/mixer
+ =
 
-After that I installed the latest driver snapshot: alsa-driver-hg20071129
-Note that in this case I didn't reinstall alsa-lib and alsa-utils but
-kept the 1.0.15 version that I had just installed.
+# Resample the sound to 44100Hz with the lavcresample audio filter.
+#af=3Dlavcresample=3D44100
+***************************************************************************=
+*************************************
 
-Results: avi files play and I hear the music sound fine, but when
-people speak, it is all garbled and low volume. Again, the soundtrack
-works but not the talking.
 
-Any help is appreciated!
+Can anybody tell me what going wrong with this?
 
-Roland
+
+
+Thanks in advance!
+
+
+
+semiyd
+
+_________________________________________________________________
+Connect to the next generation of MSN Messenger=A0
+http://imagine-msn.com/messenger/launch80/default.aspx?locale=3Den-us&sourc=
+e=3Dwlmailtagline
