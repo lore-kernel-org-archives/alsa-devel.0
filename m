@@ -1,20 +1,19 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Softvol controls
-Date: Fri, 30 Nov 2007 01:08:11 +0100
-Message-ID: <20071130000810.GA20465@tango.0pointer.de>
-References: <20071120005151.GA25276@tango.0pointer.de>
-	<s5htznfhmhy.wl%tiwai@suse.de>
-	<20071129232859.GA18138@tango.0pointer.de>
-	<20071129154657.2a7a2be1@jutz-gnto64>
+Subject: Re: Some drivers don't create all necessary
+	sysfs	symlinks
+Date: Fri, 30 Nov 2007 01:24:09 +0100
+Message-ID: <20071130002409.GA21364@tango.0pointer.de>
+References: <20071125210832.GD17108@tango.0pointer.de>
+	<s5hd4txpin4.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5890524389
-	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 01:08:11 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A6C82438C
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 01:24:10 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20071129154657.2a7a2be1@jutz-gnto64>
+In-Reply-To: <s5hd4txpin4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Utz <john.utz@dmx.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29.11.07 15:46, John Utz (john.utz@dmx.com) wrote:
+On Mon, 26.11.07 08:31, Takashi Iwai (tiwai@suse.de) wrote:
 
-John,
-
-> > > Check snd_ctl_elem_info_is_user().  All softvol controls are
-> > > implemented as user elements.
+> > Hi!
 > > 
-> > Hmm, how am I supposed to get the snd_ctl_elem_info_t from a
-> > snd_mixer_elem_t or snd_mixer_selem_id_t?
-> > 
-> > I figure there is no useful documentation or even example how this is
-> > supposed to work? Hmm, is there any real documentation available which
-> > describes the relation of ctl, hctl, mixer and smixer at all? For the
-> > uninitated the whols structure looks overly complex and redundant.
+> > Apparently not all ALSA drivers set the "device" symlink
+> > properly. This creates problems with HAL which then is unable to
+> > manage permissions to those files properly. One example of such a
+> > driver is EMU10K1X.
 > 
-> Here's my take on it....HTH
-> 
-> dont hesitate to ask
+> Fixed for emu10k1x now.  I thought I had fixed all drivers but this
+> one seems forgotten.
 
-Hu? Neither "snd_ctl_elem_info_t" nor "snd_ctl_elem_info_is_user()"
-is even mentioned in your source code excerpt?
+Hmm, is it possible that sb16 has similar issues?
 
-I know how to change volumes and stuff via the ALSA mixer API. What I
-am looking for is a way to detect whether a mixer element is
-implemented in softwaer only and thus doesn't influence your ouput
-when you open a PCM device with "hw:0", "front:0", "surround51:0" and
-suchlike.
+There have been some reports that HAL doesn't discover sb16 devices
+correctly either:
+
+https://bugzilla.redhat.com/show_bug.cgi?id=389681
 
 Lennart
 
