@@ -1,20 +1,24 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [PATCH] sound/isa: kill pnp_resource_change.
-Date: Fri, 30 Nov 2007 01:49:00 +0100
-Message-ID: <474F5DFC.6040507@keyaccess.nl>
-References: <474E1189.9030701@keyaccess.nl>
-	<200711290920.05010.bjorn.helgaas@hp.com>
-	<474EF871.7090400@gmail.com>
-	<200711291230.24323.bjorn.helgaas@hp.com>
+From: alsa-devel.20.pris@spamgourmet.com
+Subject: Re: HDA or AC97 for Nvidia MCP61S?
+Date: Fri, 30 Nov 2007 01:47:48 -0200
+Message-ID: <74eb4bb50711291947j19061286na3af8608718ae667@mail.gmail.com>
+References: <74eb4bb50711130834u5a6801daga4837be299a3f9c1@mail.gmail.com>
+	<s5hmythfg4k.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8D4E2437A
-	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 01:49:35 +0100 (CET)
-In-Reply-To: <200711291230.24323.bjorn.helgaas@hp.com>
+Received: from gourmet.spamgourmet.com (gourmet.spamgourmet.com
+	[216.75.35.164]) by alsa0.perex.cz (Postfix) with ESMTP id B473024454
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 04:48:01 +0100 (CET)
+Received: from gourmet.spamgourmet.com (localhost.localdomain [127.0.0.1])
+	by gourmet.spamgourmet.com (8.13.8/8.13.7) with ESMTP id lAU3lso5025390
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 03:47:55 GMT
+Received: (from jqh1@localhost)
+	by gourmet.spamgourmet.com (8.13.8/8.13.8/Submit) id lAU3lpFm025229
+	for alsa-devel@alsa-project.org; Fri, 30 Nov 2007 03:47:51 GMT
+In-Reply-To: <s5hmythfg4k.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +28,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "yakui.zhao" <yakui.zhao@intel.com>, "Li,
-	Shaohua" <shaohua.li@intel.com>, Thomas Renninger <trenn@suse.de>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 29-11-07 20:30, Bjorn Helgaas wrote:
+On 11/14/07, Takashi Iwai - tiwai@suse.de wrote:
 
-> OK, good.
-> 
-> Anyone who relies on the manual settings will have to change the
-> way it's done, so maybe the changelog and documentation update
-> should include some text along the lines of:
-> 
->   - this removes module parameters for ISAPNP ALSA resources
->   - the drivers *should* work with no manual resource settings
->   - if you need manual resource settings (usually to work around
->     a broken BIOS),
+> >
+> > as I already reported on another email I'm having problems with my sound:
+> >
+> > http://thread.gmane.org/gmane.linux.alsa.devel/49412
+>
+> Did you try my suggestion?
+>
 
-Actually, the ALSA drivers with PnPBIOS support (snd-cs4232, snd-es18xx and 
-snd-opl3sa2) do not in fact loose any parameters and the few known trouble 
-spots there are using
+Yes Takashi,
 
-	modprobe snd-foo isapnp=0 port=...
+I finally tried your suggestion.
 
-as their workaround, bypassing all of PnP, and this still works completely 
-the same as before.
+To be more exact, I followed the instructions at the following
+address, using the newest driver version of course(1.0.15):
 
-I do not expect any trouble. A few users might have _mistakingly_ added 
-parameters to an ISAPnP only (as in, not also PnPBIOS) driver due to 
-googling up your generic bad-advice webforum that said that worked for 
-someone with a heavy sounding nickname, but we can deal with that.
+https://help.ubuntu.com/community/HdaIntelSoundHowto
 
-Moreover, as I've been experiencing on the ALSA list for a while now (where 
-I've been somewhat responsive to ISA related issues) basically anything but 
-PnPBIOS/ACPI ISA is mostly dead and as said, with an isapnp=0 in the drivers 
-there which known issues are using, there's no difference.
+So, I downloaded and installed 1.0.15 of alsa-driver, alsa-lib and alsa-utils.
 
-Advice is always good, but I'd not put in the ALSA documentation (wrong 
-place) and even in the changelog it sounds a bit overly alarming in my own 
-opinion. The expected fall-out is... <crickets>...
+I tried the following configurations in /etc/modprobe.d/alsa-base:
 
-Rene.
+options snd-hda-intel model=3stack-660
+options snd-hda-intel model=3stack-660-digout
+
+Rebooted, no luck.
+
+After that I installed the latest driver snapshot: alsa-driver-hg20071129
+Note that in this case I didn't reinstall alsa-lib and alsa-utils but
+kept the 1.0.15 version that I had just installed.
+
+Results: avi files play and I hear the music sound fine, but when
+people speak, it is all garbled and low volume. Again, the soundtrack
+works but not the talking.
+
+Any help is appreciated!
+
+Roland
