@@ -1,14 +1,21 @@
-From: "" <semiyd@hotmail.com>
-Subject: Problems while using mplayer based on ALSA
-Date: Fri, 30 Nov 2007 06:38:15 +0000
-Message-ID: <BAY117-W107B2FDEF231255CEB7B9DC0710@phx.gbl>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: ALSA API as standards
+Date: Fri, 30 Nov 2007 08:34:00 +0100
+Message-ID: <1196408040.2130.1224047259@webmail.messagingengine.com>
+References: <s5h3auzwof5.wl%tiwai@suse.de> <s5hy7cprp01.wl%tiwai@suse.de>
+	<20071129205523.GA11372@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc2-s7.bay0.hotmail.com (bay0-omc2-s7.bay0.hotmail.com
-	[65.54.246.143]) by alsa0.perex.cz (Postfix) with ESMTP id A813B24391
-	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 07:38:17 +0100 (CET)
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 26FA824549
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 08:34:02 +0100 (CET)
+Received: from compute1.internal (compute1.internal [10.202.2.41])
+	by out1.messagingengine.com (Postfix) with ESMTP id EF74050403
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 02:34:00 -0500 (EST)
+Content-Disposition: inline
+In-Reply-To: <20071129205523.GA11372@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,82 +28,61 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Lennart Poettering wrote:
+> Just a few random comments:
+> 
+> > /* I/O */
+> > 
+> > snd_input_stdio_open
+> > snd_input_stdio_attach
+> > snd_input_buffer_open
+> > snd_input_close
+> > snd_input_scanf
+> > snd_input_gets
+> > snd_input_getc
+> > snd_input_ungetc
+> > 
+> > snd_output_stdio_open
+> > snd_output_stdio_attach
+> > snd_output_buffer_open
+> > snd_output_buffer_string
+> > snd_output_close
+> > snd_output_printf
+> > snd_output_vprintf
+> > snd_output_puts
+> > snd_output_putc
+> > snd_output_flush
+> 
+> May I ask why these are exported at all? The seem to be some kind of
+> STDOUT/STDIN abstraction, and have no place in a sound API I would
+> say. Especially not in any "standardized" version of it.
 
-Hi All:
-   Im having problems  while using mplayer 1.0 to play music based on alsa =
-1.0.15.
-  Im using an ARM9 system and montavista linux 2.6.18.
-   Here's what the problem is and what's modified in the mplayer.conf:
+The configuration code uses these functions to read and write .conf
+files.
 
+It might be useful for an application to have some private ALSA config
+and to let ALSA read it from a file or from a string, but I don't think
+this is something that belongs in LSB.
 
-***************************************************************************=
-************************************
+> > snd_pcm_dump
+> > snd_pcm_dump_hw_setup
+> > snd_pcm_dump_sw_setup
+> > snd_pcm_dump_setup
+> > snd_pcm_hw_params_dump
+> > snd_pcm_sw_params_dump
+> > snd_pcm_status_dump
+> 
+> And these? They are not even documented, or am I blind?
 
-/ $ mplayer /tmp/a.wav
-MPlayer 1.0rc2-4.2.0 (C) 2000-2007 MPlayer Team
-CPU: ARM
-115 audio & 237 video codecs
- =
+Well, their documentation isn't less useful than that of most other
+functions.  ;-(
 
-Playing /tmp/a.wav.
-Audio file file format detected.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Opening audio decoder: [pcm] Uncompressed PCM audio decoder
-AUDIO: 44100 Hz, 2 ch, s16le, 1411.2 kbit/100.00% (ratio: 176400->176400)
-Selected audio codec: [pcm] afm: pcm (Uncompressed PCM)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[AO_ALSA] alsa-lib: conf.c:2699:(snd_config_hooks_call) Cannot open shared
-library (null)
-[AO_ALSA] alsa-lib: conf.c:3076:(snd_config_update_r) hooks failed,
-removing configuration
-[AO_ALSA] Playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-Video: no video
-Exiting... (End of file)
- =
+These functions are very valuable when debugging.  I wouldn't want to
+discourage anybody from using them.
 
- **************************************************************************=
-***************************************
-/etc/mplayer/mplayer.conf
-##################
-# audio settings #
-##################
- =
-
-# Specify default audio driver (see -ao help for a list).
-ao=3Dalsa
- =
-
-# Use SDL audio driver with the esd subdriver by default.
-#ao =3D sdl:esd
- =
-
-# Specify the mixer device.
-#mixer =3D /dev/mixer
- =
-
-# Resample the sound to 44100Hz with the lavcresample audio filter.
-#af=3Dlavcresample=3D44100
-***************************************************************************=
-*************************************
+If we include these functions, we'll have to include some of the
+snd_output_* functions.
 
 
-Can anybody tell me what going wrong with this?
-
-
-
-Thanks in advance!
-
-
-
-semiyd
-
-_________________________________________________________________
-Connect to the next generation of MSN Messenger=A0
-http://imagine-msn.com/messenger/launch80/default.aspx?locale=3Den-us&sourc=
-e=3Dwlmailtagline
+Regards,
+Clemens
