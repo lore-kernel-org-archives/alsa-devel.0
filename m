@@ -1,20 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] sound/isa: kill pnp_resource_change.
-Date: Fri, 30 Nov 2007 14:32:53 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0711301428241.10769@tm8103.perex-int.cz>
-References: <474E1189.9030701@keyaccess.nl> <s5hsl2pf8lf.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0711301050540.10769@tm8103.perex-int.cz>
-	<s5hy7cgdmcx.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0711301317240.10769@tm8103.perex-int.cz>
-	<s5htzn3ewmx.wl%tiwai@suse.de>
+From: rmgls@free.fr
+Subject: rme multiface I=>pccard error -12
+Date: Fri, 30 Nov 2007 15:11:08 +0100
+Message-ID: <20071130141109.2FB95322822@smtp7-g19.free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB3C524447
-	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 14:32:53 +0100 (CET)
-In-Reply-To: <s5htzn3ewmx.wl%tiwai@suse.de>
+Received: from smtp7-g19.free.fr (smtp7-g19.free.fr [212.27.42.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3EA231037F0
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 15:11:10 +0100 (CET)
+Received: from smtp7-g19.free.fr (localhost [127.0.0.1])
+	by smtp7-g19.free.fr (Postfix) with ESMTP id 62F6A32285A
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 15:11:09 +0100 (CET)
+Received: from free.fr (evr27-1-88-172-40-194.fbx.proxad.net [88.172.40.194])
+	by smtp7-g19.free.fr (Postfix) with ESMTP id 2FB95322822
+	for <alsa-devel@alsa-project.org>; Fri, 30 Nov 2007 15:11:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,80 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA devel <alsa-devel@alsa-project.org>, "yakui.zhao" <yakui.zhao@intel.com>, "Li, Shaohua" <shaohua.li@intel.com>, Rene Herman <rene.herman@gmail.com>, Thomas Renninger <trenn@suse.de>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 30 Nov 2007, Takashi Iwai wrote:
 
-> At Fri, 30 Nov 2007 13:25:22 +0100 (CET),
-> Jaroslav Kysela wrote:
-> > 
-> > On Fri, 30 Nov 2007, Takashi Iwai wrote:
-> > 
-> > > At Fri, 30 Nov 2007 10:52:26 +0100 (CET),
-> > > Jaroslav Kysela wrote:
-> > > > 
-> > > > On Thu, 29 Nov 2007, Takashi Iwai wrote:
-> > > > 
-> > > > > At Thu, 29 Nov 2007 02:10:33 +0100,
-> > > > > Rene Herman wrote:
-> > > > > > 
-> > > > > > Hi Takashi.
-> > > > > > 
-> > > > > > This removes the pnp_resource_change use from the ALSA ISAPnP drivers. In
-> > > > > > 2.4 these were useful in providing an easy path to setting the resources,
-> > > > > > but in 2.6 they retain function as a layering violation only.
-> > > > > > 
-> > > > > > This makes for a nice cleanup (-550 lines) of ALSA but moreover, ALSA is the
-> > > > > > only remaining user of pnp_init_resource_table(), pnp_resource_change() and
-> > > > > > pnp_manual_config_dev() (and, in fact, of "struct pnp_resource_table") in
-> > > > > > the tree outide of drivers/pnp itself meaning it makes for more cleanup
-> > > > > > potential inside the PnP layer.
-> > > > > > 
-> > > > > > Thomas Renninger acked their removal from that side, you did from the ALSA
-> > > > > > side (CC list just copied from that thread).
-> > > > > > 
-> > > > > > Against current alsa-kernel HG. Many more potential cleanups in there, but 
-> > > > > > this _only_ removes the pnp_resource_change code. Compile tested against 
-> > > > > > current alsa-kernel HG and compile- and use-tested against 2.6.23.x (few 
-> > > > > > offsets).
-> > > > > > 
-> > > > > > Signed-off-by: Rene Herman <rene.herman@gmail.com>
-> > > > > 
-> > > > > A good work.  I'll merge this tomorrow to ALSA tree if no one raises
-> > > > > objection now.
-> > > > 
-> > > > Do we have a nice way to manually assign ISA resources at system level? 
-> > > > Note that not all combinations work for all ISA PnP soundcards and we had bug 
-> > > > reports that automatic PnP system failed in some cases.
-> > > 
-> > > You can adjust it via sysfs.
-> > 
-> > Ok, then we need to document this way properly in our documentation before 
-> > feature removal.
-> 
-> Yes, see Bjorn's previous post.
-> 
-> > Probably using 'install' commmand in modprobe.conf. Also 
-> > note that user must probably know exact sysfs path (PnP ID) making PnP 
-> > stuff more complicated in this case. It is different from current 
-> > behaviour.
-> 
-> Such a device requring the manual configuration is basically broken.
-> It should be fixed, e.g. by adding a quirk to pnp driver.
+Hello,
 
-Note that in some cases, it's not about a device, but about motherboard 
-and device interoperability. I've seen some ISA motherboards with some 
-unusable DMA channels.
+on a laptop the old multiface I with a pccard (1) doesn't attach.
+acore returns error -12.
 
-Anyway, it's true that ISA PnP stuff is quite obsolete current days.
-If manual settings is supported and described, I've no objections to 
-reduce code, too.
+      details:
+dmesg:
+pccard: CardBus card inserted into slot 0
+ALSA /root/alsa-driver-hg20071129/acore/init.c:174: cannot find the slot for index 0 (range 0-0), error: -16
+RME Hammerfall DSP: probe of 0000:07:00.0 failed with error -12
+    	       config:
+machine: sony vaio s5
+kernel 2-6-24-rc3
+all alsa-*-hg as you seen.
+sound box: multiface I and pccard (I), the old one.
 
-						Jaroslav
+Socket 0 Bridge:   	[yenta_cardbus] 	(bus ID: 0000:06:05.0)
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project
+lspcmcia:
+Configuration:	state: on	ready: yes
+Voltage: 3.3V Vcc: 3.3V Vpp: 3.3V
+
+lspci -v
+06:05.0 CardBus bridge: Texas Instruments PCI7420 CardBus Controller
+	Subsystem: Sony Corporation Unknown device 818f
+	Flags: bus master, medium devsel, latency 168, IRQ 17
+	Memory at b0008000 (32-bit, non-prefetchable) [size=4K]
+	Bus: primary=06, secondary=07, subordinate=0a, sec-latency=176
+	Memory window 0: 50000000-53fff000 (prefetchable)
+	Memory window 1: 54000000-57fff000
+	I/O window 0: 00002400-000024ff
+	I/O window 1: 00002800-000028ff
+	16-bit legacy interface ports at 0001
+07:00.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall DSP (rev 10)
+	Flags: medium devsel, IRQ 17
+	Memory at 54000000 (32-bit, non-prefetchable) [disabled] [size=64K]
+
+cat /dev/sndstat:
+...
+0: alc-260
+
+any help would be appreciated.
+thanks.
+
+best regards
+raoul
+rmgls@free.fr
