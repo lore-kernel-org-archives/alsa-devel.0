@@ -1,16 +1,18 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: help
-Date: Sun, 02 Dec 2007 09:09:09 -0800
-Message-ID: <1196615349.10030.24.camel@razman.gruemaster.com>
-References: <864073.32009.qm@web15708.mail.cnb.yahoo.com>
+From: "Andrew Paprocki" <andrew@ishiboo.com>
+Subject: Realtek ALC883 support on Albatron KI690-AM2
+	motherboard
+Date: Sun, 2 Dec 2007 16:08:32 -0500
+Message-ID: <76366b180712021308n4d5fd0fk5906c8928795b0c3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70BC0244B2
-	for <alsa-devel@alsa-project.org>; Sun,  2 Dec 2007 18:09:12 +0100 (CET)
-In-Reply-To: <864073.32009.qm@web15708.mail.cnb.yahoo.com>
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id E768C103811
+	for <alsa-devel@alsa-project.org>; Sun,  2 Dec 2007 22:08:33 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so2142364rvb
+	for <alsa-devel@alsa-project.org>; Sun, 02 Dec 2007 13:08:32 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,68 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: YanBob <anson2416@yahoo.com.cn>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Claudio Matsuoka <cmatsuoka@gmail.com>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-SSBsb29rZWQgYXQgdGhlIG1vc3QgcmVjZW50IGFscyBhZHJpdmVyIGNvZGUsIGFuZCBhbSBub3Qg
-c2VlaW5nIGFueQpMZW5vdm8gc3lzdGVtcyBsaXN0ZWQgZm9yIHRoZSBBTEMyNjIgYXQgdGhpcyB0
-aW1lLiAgQ291bGQgeW91IHJ1bgpodHRwOi8vYnVsbGV0cHJvb2Yuc2VydmViZWVyLmNvbS9hbHNh
-L3NjcmlwdHMvYWxzYS1pbmZvLnNoIGFuZCBwb3N0IHRoZQpsaW5rIGl0IGdlbmVyYXRlcz8gIFRo
-aXMgd2lsbCBnaXZlIHVzIG1vcmUgdXNlZnVsIGluZm9ybWF0aW9uIGFib3V0IHlvdXIKc3lzdGVt
-LgoKVGhhbmtzLAoKVG9iaW4KCk9uIFN1biwgMjAwNy0xMi0wMiBhdCAxMjoyNCArMDgwMCwgWWFu
-Qm9iIHdyb3RlOgoKPiBoZWxsbywgbXkgIGxpbnV4IGlzIHVidW50dSB3aXRoIExpbnV4IGJvYi1s
-YXB0b3AgMi42LjIyLTE0LWdlbmVyaWMgIzEKPiBTTVAgU3VuIE9jdCAxNCAyMzowNToxMiBHTVQg
-MjAwNyBpNjg2IEdOVS9MaW51eC4KPiAgICAgICAgIG5vdyB0aGUgcHJvYmxlbSBpcyB0aGF0LG5v
-IHNvdW5kIGNvbWVzIG91dCB3aGVuIGkgdXNlIHVidW50dS4KPiAgICAgICAgIGkgaGF2ZSBnb29n
-bGUgc29tZSBwYWdlcywgYW5kIGZvbGxvd2VkIHRoZSBzdGVwcyBhcyB0aGV5IHNhaWQuIEJ1dCBp
-Cj4gdHVybnMgb3V0IHRoYXQgbXkgc291bmQgY2FyZCBpcyBzdGlsbCBub3Qgd29ya2luZy4gQXQg
-dGhlIGVuZCBvZiB0aGlzCj4gZW1haWwsCj4gaSBzZW5kIHlvdSAgc29tZSBpbmYuIGFib3V0IG15
-IHNvdW5kIGNhcmQuIEFuZCBteSBsYXB0b3AgbW9kZWwgaXMgTGVub3ZvCj4gRjQxLgo+ICBDb3Vs
-ZCB5b3UgcGxlYXNlIGhlbHAgbWU/ICAgdGhhbmtzIGEgbWlsbGlvbiEhCj4gCj4gYm9iQGJvYi1s
-YXB0b3A6fiQgYXBsYXkgLWwKPiAqKioqIFBMQVlCQUNL56Gs5Lu26K6+5aSH5YiX6KGoICoqKioK
-PiDljaEgMDogSW50ZWwgW0hEQSBJbnRlbF0sIOiuvuWkhyAwOiBBTEMyNjIgQW5hbG9nIFtBTEMy
-NjIgQW5hbG9nXQo+ICAg5a2Q6K6+5aSHOiAxLzEKPiAgIOWtkOiuvuWkh++8miMwOiBzdWJkZXZp
-Y2UgIzAKPiDljaEgMDogSW50ZWwgW0hEQSBJbnRlbF0sIOiuvuWkhyAxOiBBTEMyNjIgRGlnaXRh
-bCBbQUxDMjYyIERpZ2l0YWxdCj4gICDlrZDorr7lpIc6IDEvMQo+ICAg5a2Q6K6+5aSH77yaIzA6
-IHN1YmRldmljZSAjMAo+IOWNoSAwOiBJbnRlbCBbSERBIEludGVsXSwg6K6+5aSHIDY6IFNpMzA1
-NCBNb2RlbSBbU2kzMDU0IE1vZGVtXQo+ICAg5a2Q6K6+5aSHOiAxLzEKPiAgIOWtkOiuvuWkh++8
-miMwOiBzdWJkZXZpY2UgIzAKPiAKPiBib2JAYm9iLWxhcHRvcDp+JCBsc3BjaSAtdnZ8Z3JlcCBB
-dWRpbwo+IDAwOjFiLjAgQXVkaW8gZGV2aWNlOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUggKElD
-SDggRmFtaWx5KSBIRCBBdWRpbwo+IENvbnRyb2xsZXIgKHJldiAwMykKPiAKPiBib2JAYm9iLWxh
-cHRvcDp+JCBjYXQgL3Byb2MvYXNvdW5kL2NhcmRzIAo+ICAwIFtJbnRlbCAgICAgICAgICBdOiBI
-REEtSW50ZWwgLSBIREEgSW50ZWwKPiAgICAgICAgICAgICAgICAgICAgICAgSERBIEludGVsIGF0
-IDB4ZjgzMDAwMDAgaXJxIDIyCj4gCj4gYm9iQGJvYi1sYXB0b3A6fiQgbHNtb2R8Z3JlcCBzbmQK
-PiBzbmRfaGRhX2ludGVsICAgICAgICAgMjYzNzEyICAxIAo+IHNuZF9wY21fb3NzICAgICAgICAg
-ICAgNDQ2NzIgIDAgCj4gc25kX21peGVyX29zcyAgICAgICAgICAxNzY2NCAgMSBzbmRfcGNtX29z
-cwo+IHNuZF9wY20gICAgICAgICAgICAgICAgODAzODggIDIgc25kX2hkYV9pbnRlbCxzbmRfcGNt
-X29zcwo+IHNuZF9zZXFfZHVtbXkgICAgICAgICAgIDQ3NDAgIDAgCj4gc25kX3NlcV9vc3MgICAg
-ICAgICAgICAzMzE1MiAgMCAKPiBzbmRfc2VxX21pZGkgICAgICAgICAgICA5NjAwICAwIAo+IHNu
-ZF9yYXdtaWRpICAgICAgICAgICAgMjU3MjggIDEgc25kX3NlcV9taWRpCj4gc25kX3NlcV9taWRp
-X2V2ZW50ICAgICAgODQ0OCAgMiBzbmRfc2VxX29zcyxzbmRfc2VxX21pZGkKPiBzbmRfc2VxICAg
-ICAgICAgICAgICAgIDUzMjMyICA2Cj4gc25kX3NlcV9kdW1teSxzbmRfc2VxX29zcyxzbmRfc2Vx
-X21pZGksc25kX3NlcV9taWRpX2V2ZW50Cj4gc25kX3RpbWVyICAgICAgICAgICAgICAyNDMyNCAg
-MiBzbmRfcGNtLHNuZF9zZXEKPiBzbmRfc2VxX2RldmljZSAgICAgICAgICA5MjI4ICA1Cj4gc25k
-X3NlcV9kdW1teSxzbmRfc2VxX29zcyxzbmRfc2VxX21pZGksc25kX3Jhd21pZGksc25kX3NlcQo+
-IHNuZCAgICAgICAgICAgICAgICAgICAgNTQ2NjAgIDExCj4gc25kX2hkYV9pbnRlbCxzbmRfcGNt
-X29zcyxzbmRfbWl4ZXJfb3NzLHNuZF9wY20sc25kX3NlcV9vc3Msc25kX3Jhd21pZGksc25kX3Nl
-cSxzbmRfdGltZXIsc25kX3NlcV9kZXZpY2UKPiBzb3VuZGNvcmUgICAgICAgICAgICAgICA4ODAw
-ICAxIHNuZAo+IHNuZF9wYWdlX2FsbG9jICAgICAgICAgMTE0MDAgIDIgc25kX2hkYV9pbnRlbCxz
-bmRfcGNtCj4gCj4gCj4gYm9iQGJvYi1sYXB0b3A6fiQgY2F0IC9wcm9jL2Fzb3VuZC92ZXJzaW9u
-IAo+IEFkdmFuY2VkIExpbnV4IFNvdW5kIEFyY2hpdGVjdHVyZSBEcml2ZXIgVmVyc2lvbiAxLjAu
-MTQgKFRodSBNYXkgMzEKPiAwOTowMzoyNSAyMDA3IFVUQykuCj4gCj4gCj4gCj4gCj4gCj4gCj4g
-Cj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4g
-Cj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4g
-Cj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gICAgICAgX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18gCj4g6L+b5YWl6ZuF
-6JmO5ri45oiP5ZiJ5bm05Y2O77yM6LWi5Y+W5ray5pm25pi+56S65Zmo77yBIAo+IGh0dHA6Ly9j
-bi5tYWlsLnlhaG9vLmNvbS9wcm9tby9jYXJuaXZhbDA3Lwo+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKLS0gClRvYmluIERhdmlzICAKCgpMaXRl
-cmF0dXJlIGlzIG1vc3RseSBhYm91dCBoYXZpbmcgc2V4IGFuZCBub3QgbXVjaCBhYm91dCBoYXZp
-bmcgY2hpbGRyZW4uCkxpZmUgaXMgdGhlIG90aGVyIHdheSBhcm91bmQuCgkJLS0gRGF2aWQgTG9k
-Z2UsICJUaGUgQnJpdGlzaCBNdXNldW0gaXMgRmFsbGluZyBEb3duIgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello everyone,
+
+I'm currently trying to get the ALC883 on the Albatron KI690-AM2
+motherboard working under ALSA and I'm running into problems with some
+of the ports. From looking at the patch_realtek.c file inside the
+intel_hda driver, it appears there are many variants of hookups to
+this chipset which all require some manual configuration in the
+driver. I've tried what appears to be the closest match
+(ALC883_6ST_DIG or 6stack-dig), but it still does not enable all of
+the ports.
+
+The motherboard webpage is here:
+http://www.albatron.com.tw/English/product/mb/pro_detail.asp?rlink=Specification&no=239
+
+The board has two audio stacks on the back panel. Facing the jack
+inputs, the left-hand stack contains:
+    <S/PDIF output>
+    <TOSLINK w/ green cover>
+
+Next to that stack is a larger 6-stack with the following configuration:
+    <blue> <black>
+    <green> <pink>
+    <grey> <TOSLINK w/ pink cover>
+
+The box is running a stock debian 2.6.18-4-486 kernel. The kernel
+outputs this at startup if the "6stack-dig" model is not explicitly
+supplied:
+
+    hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
+    hda-intel: Invalid position buffer, using LPIB read method instead.
+
+When using the "6stack-dig" mode, ALSA sees two devices:
+
+    card 0: SB [HDA ATI SB], device 0: ALC883 Analog [ALC883 Analog]
+      Subdevices: 1/1
+      Subdevice #0: subdevice #0
+    card 0: SB [HDA ATI SB], device 2: ALC883 Digital [ALC883 Digital]
+      Subdevices: 1/1
+      Subdevice #0: subdevice #0
+
+When attempting to use ALSA to open the first device in raw mode to
+output to each stereo pair separately, 5 pairs are detected, and the
+outputs appear as follows...
+
+    Pair 1: <green> (working)
+    Pair 2: <pink> (working)
+    Pair 3: <black> (working)
+    Pair 4: (no audio)
+    Pair 5: (no audio)
+
+No sound can be heard from the blue or grey jacks in any
+configuration. I'm wondering if a special entry is needed in
+patch_realtek.c to handle this board's usage of the ALC883. I am
+willing to try changing the code and testing if someone can point me
+to what might need to be done.
+
+01:05.2 Audio device: ATI Technologies Inc Unknown device 7919
+        Subsystem: Albatron Corp. Unknown device 5000
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, Cache Line Size: 4 bytes
+        Interrupt: pin B routed to IRQ 3
+        Region 0: Memory at fdffc000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+
+Queue=0/0 Enable-
+                Address: 0000000000000000  Data: 0000
+
+Thanks,
+-Andrew
