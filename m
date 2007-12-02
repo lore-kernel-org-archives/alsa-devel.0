@@ -1,20 +1,14 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: multi pcm and mmap problem
-Date: Sun, 2 Dec 2007 13:40:11 +0000
-Message-ID: <20071202134011.GA2956@localhost>
-References: <200711210158.42108.terminator356@users.sourceforge.net>
-	<200711261746.59712.terminator356@users.sourceforge.net>
-	<s5habozkcks.wl%tiwai@suse.de>
-	<200712011833.36219.terminator356@users.sourceforge.net>
+From: YanBob <anson2416@yahoo.com.cn>
+Subject: help
+Date: Sun, 2 Dec 2007 12:24:17 +0800 (CST)
+Message-ID: <864073.32009.qm@web15708.mail.cnb.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id D3495103896
-	for <alsa-devel@alsa-project.org>; Sun,  2 Dec 2007 14:33:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <200712011833.36219.terminator356@users.sourceforge.net>
+Received: from web15708.mail.cnb.yahoo.com (web15708.mail.cnb.yahoo.com
+	[202.165.102.75]) by alsa0.perex.cz (Postfix) with SMTP id 6555124420
+	for <alsa-devel@alsa-project.org>; Sun,  2 Dec 2007 05:24:45 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +18,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tim <terminator356@users.sourceforge.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 01, 2007 at 06:33:35PM -0500, Tim wrote:
-> Takashi, after a week of testing your multi-plughw patch 
->  I'm satisfied it works fine.
-> 
-> One odd thing is that when I start Jack, sometimes I 
->  immediately get a series of ever increasing xruns,
->  sometimes hundreds of them with each display update of QJackctl.
-> Simply restarting QJackctl cures it and it runs for many hours 
->  without trouble.
-> I am not convinced it has anything to do with your patch,
->  maybe just my new .asoundrc and new altered setup.
-
-It's a known problem with pcm_multi and qjackctl. qjackctl reports
-xruns that aren't actually happening when using pcm_multi. Some
-other apps like jamin do this too. Don't worry about it unless you
-hear dropouts (in which case the alsa driver will report a real xrun).
-
-John
+aGVsbG8sIG15ICBsaW51eCBpcyB1YnVudHUgd2l0aCBMaW51eCBib2ItbGFwdG9wIDIuNi4yMi0x
+NC1nZW5lcmljICMxClNNUCBTdW4gT2N0IDE0IDIzOjA1OjEyIEdNVCAyMDA3IGk2ODYgR05VL0xp
+bnV4LgogICAgICAgIG5vdyB0aGUgcHJvYmxlbSBpcyB0aGF0LG5vIHNvdW5kIGNvbWVzIG91dCB3
+aGVuIGkgdXNlIHVidW50dS4KICAgICAgICBpIGhhdmUgZ29vZ2xlIHNvbWUgcGFnZXMsIGFuZCBm
+b2xsb3dlZCB0aGUgc3RlcHMgYXMgdGhleSBzYWlkLiBCdXQgaQp0dXJucyBvdXQgdGhhdCBteSBz
+b3VuZCBjYXJkIGlzIHN0aWxsIG5vdCB3b3JraW5nLiBBdCB0aGUgZW5kIG9mIHRoaXMKZW1haWws
+Cmkgc2VuZCB5b3UgIHNvbWUgaW5mLiBhYm91dCBteSBzb3VuZCBjYXJkLiBBbmQgbXkgbGFwdG9w
+IG1vZGVsIGlzIExlbm92bwpGNDEuCiBDb3VsZCB5b3UgcGxlYXNlIGhlbHAgbWU/ICAgdGhhbmtz
+IGEgbWlsbGlvbiEhCgpib2JAYm9iLWxhcHRvcDp+JCBhcGxheSAtbAoqKioqIFBMQVlCQUNL56Gs
+5Lu26K6+5aSH5YiX6KGoICoqKioK5Y2hIDA6IEludGVsIFtIREEgSW50ZWxdLCDorr7lpIcgMDog
+QUxDMjYyIEFuYWxvZyBbQUxDMjYyIEFuYWxvZ10KICDlrZDorr7lpIc6IDEvMQogIOWtkOiuvuWk
+h++8miMwOiBzdWJkZXZpY2UgIzAK5Y2hIDA6IEludGVsIFtIREEgSW50ZWxdLCDorr7lpIcgMTog
+QUxDMjYyIERpZ2l0YWwgW0FMQzI2MiBEaWdpdGFsXQogIOWtkOiuvuWkhzogMS8xCiAg5a2Q6K6+
+5aSH77yaIzA6IHN1YmRldmljZSAjMArljaEgMDogSW50ZWwgW0hEQSBJbnRlbF0sIOiuvuWkhyA2
+OiBTaTMwNTQgTW9kZW0gW1NpMzA1NCBNb2RlbV0KICDlrZDorr7lpIc6IDEvMQogIOWtkOiuvuWk
+h++8miMwOiBzdWJkZXZpY2UgIzAKCmJvYkBib2ItbGFwdG9wOn4kIGxzcGNpIC12dnxncmVwIEF1
+ZGlvCjAwOjFiLjAgQXVkaW8gZGV2aWNlOiBJbnRlbCBDb3Jwb3JhdGlvbiA4MjgwMUggKElDSDgg
+RmFtaWx5KSBIRCBBdWRpbwpDb250cm9sbGVyIChyZXYgMDMpCgpib2JAYm9iLWxhcHRvcDp+JCBj
+YXQgL3Byb2MvYXNvdW5kL2NhcmRzIAogMCBbSW50ZWwgICAgICAgICAgXTogSERBLUludGVsIC0g
+SERBIEludGVsCiAgICAgICAgICAgICAgICAgICAgICBIREEgSW50ZWwgYXQgMHhmODMwMDAwMCBp
+cnEgMjIKCmJvYkBib2ItbGFwdG9wOn4kIGxzbW9kfGdyZXAgc25kCnNuZF9oZGFfaW50ZWwgICAg
+ICAgICAyNjM3MTIgIDEgCnNuZF9wY21fb3NzICAgICAgICAgICAgNDQ2NzIgIDAgCnNuZF9taXhl
+cl9vc3MgICAgICAgICAgMTc2NjQgIDEgc25kX3BjbV9vc3MKc25kX3BjbSAgICAgICAgICAgICAg
+ICA4MDM4OCAgMiBzbmRfaGRhX2ludGVsLHNuZF9wY21fb3NzCnNuZF9zZXFfZHVtbXkgICAgICAg
+ICAgIDQ3NDAgIDAgCnNuZF9zZXFfb3NzICAgICAgICAgICAgMzMxNTIgIDAgCnNuZF9zZXFfbWlk
+aSAgICAgICAgICAgIDk2MDAgIDAgCnNuZF9yYXdtaWRpICAgICAgICAgICAgMjU3MjggIDEgc25k
+X3NlcV9taWRpCnNuZF9zZXFfbWlkaV9ldmVudCAgICAgIDg0NDggIDIgc25kX3NlcV9vc3Msc25k
+X3NlcV9taWRpCnNuZF9zZXEgICAgICAgICAgICAgICAgNTMyMzIgIDYKc25kX3NlcV9kdW1teSxz
+bmRfc2VxX29zcyxzbmRfc2VxX21pZGksc25kX3NlcV9taWRpX2V2ZW50CnNuZF90aW1lciAgICAg
+ICAgICAgICAgMjQzMjQgIDIgc25kX3BjbSxzbmRfc2VxCnNuZF9zZXFfZGV2aWNlICAgICAgICAg
+IDkyMjggIDUKc25kX3NlcV9kdW1teSxzbmRfc2VxX29zcyxzbmRfc2VxX21pZGksc25kX3Jhd21p
+ZGksc25kX3NlcQpzbmQgICAgICAgICAgICAgICAgICAgIDU0NjYwICAxMQpzbmRfaGRhX2ludGVs
+LHNuZF9wY21fb3NzLHNuZF9taXhlcl9vc3Msc25kX3BjbSxzbmRfc2VxX29zcyxzbmRfcmF3bWlk
+aSxzbmRfc2VxLHNuZF90aW1lcixzbmRfc2VxX2RldmljZQpzb3VuZGNvcmUgICAgICAgICAgICAg
+ICA4ODAwICAxIHNuZApzbmRfcGFnZV9hbGxvYyAgICAgICAgIDExNDAwICAyIHNuZF9oZGFfaW50
+ZWwsc25kX3BjbQoKCmJvYkBib2ItbGFwdG9wOn4kIGNhdCAvcHJvYy9hc291bmQvdmVyc2lvbiAK
+QWR2YW5jZWQgTGludXggU291bmQgQXJjaGl0ZWN0dXJlIERyaXZlciBWZXJzaW9uIDEuMC4xNCAo
+VGh1IE1heSAzMQowOTowMzoyNSAyMDA3IFVUQykuCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoK
+CgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKICAgICAgX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18gCui/m+WFpembheiZjua4uOaI
+j+WYieW5tOWNju+8jOi1ouWPlua2suaZtuaYvuekuuWZqO+8gSAKaHR0cDovL2NuLm1haWwueWFo
+b28uY29tL3Byb21vL2Nhcm5pdmFsMDcvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
