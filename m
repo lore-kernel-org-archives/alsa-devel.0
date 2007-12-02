@@ -1,17 +1,20 @@
-From: "Andrew Paprocki" <andrew@ishiboo.com>
-Subject: Realtek ALC883 support on Albatron KI690-AM2
-	motherboard
-Date: Sun, 2 Dec 2007 16:08:32 -0500
-Message-ID: <76366b180712021308n4d5fd0fk5906c8928795b0c3@mail.gmail.com>
+From: Ctirad Fertr <c.fertr@gmail.com>
+Subject: Re: [PATCH] 1616(M) cardbus improvements
+Date: Mon, 3 Dec 2007 00:33:25 +0100
+Message-ID: <200712030033.25351.c.fertr@gmail.com>
+References: <200711160007.00300.c.fertr@gmail.com>
+	<s5hwss3iqqu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id E768C103811
-	for <alsa-devel@alsa-project.org>; Sun,  2 Dec 2007 22:08:33 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so2142364rvb
-	for <alsa-devel@alsa-project.org>; Sun, 02 Dec 2007 13:08:32 -0800 (PST)
+Received: from smtp1.vol.cz (smtp1.vol.cz [195.250.128.78])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC0F81038AE
+	for <alsa-devel@alsa-project.org>; Mon,  3 Dec 2007 00:34:54 +0100 (CET)
+Received: from [10.16.3.4] (dsl-tn-6-43.static.adsl.vol.cz [83.148.7.43])
+	by smtp1.vol.cz (Postfix) with ESMTP id 8B22C888E3
+	for <alsa-devel@alsa-project.org>; Mon,  3 Dec 2007 00:34:54 +0100 (CET)
+In-Reply-To: <s5hwss3iqqu.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,81 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Claudio Matsuoka <cmatsuoka@gmail.com>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hello everyone,
+Dne Tuesday 27 of November 2007 17:43:05 jste napsal(a):
+> The changes look almost good to me.  But, if I understand correctly,
+> the input source put isn't changed properly for EMU1616.
 
-I'm currently trying to get the ALC883 on the Albatron KI690-AM2
-motherboard working under ALSA and I'm running into problems with some
-of the ports. From looking at the patch_realtek.c file inside the
-intel_hda driver, it appears there are many variants of hookups to
-this chipset which all require some manual configuration in the
-driver. I've tried what appears to be the closest match
-(ALC883_6ST_DIG or 6stack-dig), but it still does not enable all of
-the ports.
+No, it's correct, because emu1010_input_dst[] structure is generic for =
 
-The motherboard webpage is here:
-http://www.albatron.com.tw/English/product/mb/pro_detail.asp?rlink=Specification&no=239
+all EMU PCI cards.
 
-The board has two audio stacks on the back panel. Facing the jack
-inputs, the left-hand stack contains:
-    <S/PDIF output>
-    <TOSLINK w/ green cover>
+> The patch below is the revised version with bunch of coding style
+> fixes (at the next time, try scripts/checkpatch.pl in linux kernel
+> tree before submission).
 
-Next to that stack is a larger 6-stack with the following configuration:
-    <blue> <black>
-    <green> <pink>
-    <grey> <TOSLINK w/ pink cover>
+I will do that next time. Thank you. =
 
-The box is running a stock debian 2.6.18-4-486 kernel. The kernel
-outputs this at startup if the "6stack-dig" model is not explicitly
-supplied:
 
-    hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
-    hda-intel: Invalid position buffer, using LPIB read method instead.
+> Let me know if it works for you.  I'll apply to ALSA tree after your
+> confirmation.
 
-When using the "6stack-dig" mode, ALSA sees two devices:
+I works very well :)
 
-    card 0: SB [HDA ATI SB], device 0: ALC883 Analog [ALC883 Analog]
-      Subdevices: 1/1
-      Subdevice #0: subdevice #0
-    card 0: SB [HDA ATI SB], device 2: ALC883 Digital [ALC883 Digital]
-      Subdevices: 1/1
-      Subdevice #0: subdevice #0
+Unfortunatelly, now I found that driver (or host card) reload causes kernel =
 
-When attempting to use ALSA to open the first device in raw mode to
-output to each stereo pair separately, 5 pairs are detected, and the
-outputs appear as follows...
+ooops on 2.6.23 (2.6.22 is unaffected). This is NOT related to my patch.  I=
+t =
 
-    Pair 1: <green> (working)
-    Pair 2: <pink> (working)
-    Pair 3: <black> (working)
-    Pair 4: (no audio)
-    Pair 5: (no audio)
+crashes even with 1.0.15 version. This is bad :( It crashes immeditely afte=
+r =
 
-No sound can be heard from the blue or grey jacks in any
-configuration. I'm wondering if a special entry is needed in
-patch_realtek.c to handle this board's usage of the ALC883. I am
-willing to try changing the code and testing if someone can point me
-to what might need to be done.
+a firmware for the host card is loaded. Can someone confirm that? =
 
-01:05.2 Audio device: ATI Technologies Inc Unknown device 7919
-        Subsystem: Albatron Corp. Unknown device 5000
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64, Cache Line Size: 4 bytes
-        Interrupt: pin B routed to IRQ 3
-        Region 0: Memory at fdffc000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+
-Queue=0/0 Enable-
-                Address: 0000000000000000  Data: 0000
+ =
 
-Thanks,
--Andrew
+> Oh, BTW, it'd be also appreciated if you can write an additional patch
+>=A0to add enum definitions for each emu_model type instead of digits.
+> "if (emu_model =3D=3D 3)" is no good style.
+
+OK. I'll do it. =
+
+
+---
+Ctirad
