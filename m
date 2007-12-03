@@ -1,20 +1,21 @@
-From: "Andrew Paprocki" <andrew@ishiboo.com>
-Subject: Re: Realtek ALC883 support on Albatron KI690-AM2
-	motherboard
-Date: Mon, 3 Dec 2007 14:13:22 -0500
-Message-ID: <76366b180712031113y14c945aejbfbbd0d5d21c4e02@mail.gmail.com>
-References: <76366b180712021308n4d5fd0fk5906c8928795b0c3@mail.gmail.com>
-	<s5hr6i3dcch.wl%tiwai@suse.de>
+From: Ctirad Fertr <c.fertr@gmail.com>
+Subject: Re: [PATCH] 1616(M) cardbus improvements
+Date: Tue, 4 Dec 2007 00:43:25 +0100
+Message-ID: <200712040043.25400.c.fertr@gmail.com>
+References: <200711160007.00300.c.fertr@gmail.com>
+	<200712030033.25351.c.fertr@gmail.com>
+	<s5h8x4cdt31.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id E589E2434C
-	for <alsa-devel@alsa-project.org>; Mon,  3 Dec 2007 20:13:24 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so2443769rvb
-	for <alsa-devel@alsa-project.org>; Mon, 03 Dec 2007 11:13:22 -0800 (PST)
-In-Reply-To: <s5hr6i3dcch.wl%tiwai@suse.de>
+Received: from smtp2.vol.cz (smtp2.vol.cz [195.250.128.75])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5C9692444F
+	for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2007 00:43:42 +0100 (CET)
+Received: from [10.16.3.4] (dsl-tn-6-43.static.adsl.vol.cz [83.148.7.43])
+	by smtp2.vol.cz (Postfix) with ESMTP id 3B7C42A1CE
+	for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2007 00:43:42 +0100 (CET)
+In-Reply-To: <s5h8x4cdt31.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,78 +26,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Claudio Matsuoka <cmatsuoka@gmail.com>, Jaroslav Kysela <perex@suse.cz>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+Dne Monday 03 of December 2007 10:29:38 jste napsal(a):
 
-Thanks, I'll work on getting this upgraded and post results. Some
-things I noticed while looking over patch-realtek.c:
+> In my patch, I modified the input put callback to use
+> emu1616_src_regs.  Check if it's a wrong implementation.
 
-1) There is no enum defining the different NID values. The hex values
-are used all over the code and you always have to keep referring back
-to the list. Would a patch be accepted to convert the hex values to a
-proper enum? It makes the code more clear to someone who hasn't looked
-at the chipset datasheet before. I see the complete list in the ALC883
-datasheet, but I'm not sure if it is specific to the ALC883 or if it
-is defined by each HDA spec revision.
+Oh, you are right. I forgot to add 1616 related code here. Funny I didn't 
+noticed any problem in regular use, because I use just analog inputs for 
+capture (no difference between 1820 and 1616) and the internal routing worked 
+as expected :-)
+Thanks for correcting.
 
-2) There does not appear to be an ALC883 profile which sets all
-available NIDs to output. In my case, I am attempting to get as many
-stereo outputs as possible from the chipset and I do not care at all
-about capturing audio. The 6stack profile does not set the pin
-configurations for the MIC1/2 and LINE1/2 NIDs. Would a new model be
-required if I want to attempt to configure all possible NIDs for
-output? Should this be called "all-out"?
-
-3) I noticed a few discrepancies with the hda header files and the
-ALC883 documentation in regards to bits being checked for a few
-values. I'll follow up with those once I'm back in front of the code.
-
--Andrew
-
-On Dec 3, 2007 10:31 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Sun, 2 Dec 2007 16:08:32 -0500,
-> Andrew Paprocki wrote:
-> >
-> > Hello everyone,
-> >
-> > I'm currently trying to get the ALC883 on the Albatron KI690-AM2
-> > motherboard working under ALSA and I'm running into problems with some
-> > of the ports. From looking at the patch_realtek.c file inside the
-> > intel_hda driver, it appears there are many variants of hookups to
-> > this chipset which all require some manual configuration in the
-> > driver. I've tried what appears to be the closest match
-> > (ALC883_6ST_DIG or 6stack-dig), but it still does not enable all of
-> > the ports.
-> >
-> > The motherboard webpage is here:
-> > http://www.albatron.com.tw/English/product/mb/pro_detail.asp?rlink=Specification&no=239
-> >
-> > The board has two audio stacks on the back panel. Facing the jack
-> > inputs, the left-hand stack contains:
-> >     <S/PDIF output>
-> >     <TOSLINK w/ green cover>
-> >
-> > Next to that stack is a larger 6-stack with the following configuration:
-> >     <blue> <black>
-> >     <green> <pink>
-> >     <grey> <TOSLINK w/ pink cover>
-> >
-> > The box is running a stock debian 2.6.18-4-486 kernel.
+> > Unfortunatelly, now I found that driver (or host card) reload causes
+> > kernel ooops on 2.6.23 (2.6.22 is unaffected). This is NOT related to my
+> > patch.  It crashes even with 1.0.15 version. This is bad :( It crashes
+> > immeditely after a firmware for the host card is loaded. Can someone
+> > confirm that?
 >
-> First of all, try the very latest ALSA version (from HG repo) if you
-> want to debug HD-audio stuff.  It's the most actively changed part in
-> ALSA drivers.  2.6.18 is way too old as a reference.  Also you should
-> build the driver with debug option (in the case of alsa-driver tree,
-> pass --with-debug=full to configure).
->
-> If the latest version still doesn't work (with all available models),
-> then check /proc/asound/card0/codec#* files.
->
-> (Anyway, I'll be on vacation from tomorrow, so cannot work on your
->  problem.  Hopefully this will interest other guys...)
->
->
-> Takashi
+> Try HG version whether the same problem occurs.  Many bugs related
+> with emu10k1 have been done after 1.0.15.
+
+It seems it was caused by mix of latest driver/headres and older 
+alsa-lib/alsa-utils. After upgrade of all components to the latest HG it is 
+stable again. The pure 1.0.15 is stable as well with 2.6.13. It was just 
+false alarm, fortunatelly.
+
+-----
+Ctirad
