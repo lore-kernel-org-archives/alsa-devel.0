@@ -1,14 +1,17 @@
-From: rmgls@free.fr
-Subject: Re: rme multiface I=>pccard error -12
-Date: Tue, 04 Dec 2007 11:23:22 +0100
-Message-ID: <20071204102324.AA2C13227FC@smtp7-g19.free.fr>
+From: "srinivasa bp" <srinivasbp@gmail.com>
+Subject: handling x-runs
+Date: Tue, 4 Dec 2007 15:56:56 +0530
+Message-ID: <658874220712040226l4070af05w765012461e558a3a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp7-g19.free.fr (smtp7-g19.free.fr [212.27.42.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A71A243B3
-	for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2007 11:23:26 +0100 (CET)
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AE1D24568
+	for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2007 11:26:58 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so1101014ana
+	for <alsa-devel@alsa-project.org>; Tue, 04 Dec 2007 02:26:56 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,42 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-> At Fri, 30 Nov 2007 15:11:08 +0100,
-> rmgls@free.fr wrote:
->> 
->> 
->> Hello,
->> 
->> on a laptop the old multiface I with a pccard (1) doesn't attach.
->> acore returns error -12.
->> 
->>       details:
->> dmesg:
->> pccard: CardBus card inserted into slot 0
->> ALSA /root/alsa-driver-hg20071129/acore/init.c:174: cannot find the slot for index 0 (range 0-0), error: -16
-
-> Check /proc/asound/cards.  The index 0 is likely already used by
-> another device.  Since the recent distro loads the sound drivers
-> automatically via udev, you'll have to set index for all drivers
-> properly.
-
-> If it's snd-hda-intel, add the option like below:
-
-> options snd-hda-intel index=1
+I am new to ALSA. But was able to bring up two applications to play and
+record pcm. But now i am facing problems with X-Runs . I am using the API
+snd_pcm_prepare but somehow not able to recover from it. Can any one please
+guide me regarding  or please let me know if there is any doc available to
+do this .... thanks
 
 
-> Takashi
-
-Hello Takashi,
-
-thanks for this info, and sorry for the noise.
-all worlks fine now.
-
-Best regards
-
-rmgls@free.fr
+-- 
+- Regards,
+Srini
