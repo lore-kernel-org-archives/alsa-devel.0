@@ -1,19 +1,20 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Softvol controls
-Date: Tue, 4 Dec 2007 16:42:55 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0712041627310.7670@tm8103.perex-int.cz>
-References: <20071120005151.GA25276@tango.0pointer.de>
-	<s5htznfhmhy.wl%tiwai@suse.de>
-	<20071129232859.GA18138@tango.0pointer.de>
-	<s5h8x4gf6rt.wl%tiwai@suse.de>
+Subject: Re: POSIX clocks and ALSA
+Date: Tue, 4 Dec 2007 17:26:19 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0712041718060.7670@tm8103.perex-int.cz>
+References: <474A763E.7090001@cs.helsinki.fi>
+	<Pine.LNX.4.61.0711260848180.7571@tm8103.perex-int.cz>
+	<474A9A49.1030208@cs.helsinki.fi>
+	<Pine.LNX.4.61.0711261548040.23163@tm8103.perex-int.cz>
+	<474AEEA8.6090602@cs.helsinki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A1A1D24433
-	for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2007 16:42:56 +0100 (CET)
-In-Reply-To: <s5h8x4gf6rt.wl%tiwai@suse.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 6651610391A
+	for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2007 17:26:20 +0100 (CET)
+In-Reply-To: <474AEEA8.6090602@cs.helsinki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,67 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
+To: Heikki Lindholm <holindho@cs.helsinki.fi>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 30 Nov 2007, Takashi Iwai wrote:
+On Mon, 26 Nov 2007, Heikki Lindholm wrote:
 
-> At Fri, 30 Nov 2007 00:28:59 +0100,
-> Lennart Poettering wrote:
+> Jaroslav Kysela kirjoitti:
+> > On Mon, 26 Nov 2007, Heikki Lindholm wrote:
 > > 
-> > On Wed, 21.11.07 12:22, Takashi Iwai (tiwai@suse.de) wrote:
+> > > I had a look at the proposal and the thread at
+> > > http://thread.gmane.org/gmane.linux.alsa.devel/45237/focus=45573
 > > 
-> > > >    Now, is there a way I can detect for a mixer element if it is
-> > > >    "real" or if it is implemented only for the "plughw" PCM? As it
-> > > >    seems the "hw:0" mixer device does contain "virtual" tracks, isn't that a
-> > > >    bit strange? Shouldn't the virtual mixer tracks be available only
-> > > >    in a mixer device "plughw:0"? That at least would be symmetric to
-> > > >    the PCM case, wouldn't it?
-> > > 
-> > > Check snd_ctl_elem_info_is_user().  All softvol controls are
-> > > implemented as user elements.
+> > My initial implementation following proposal is bellow for review and
+> > comments. I also changed timestamps for ALSA timers to use monotonic
+> > clocks (can be switched back using a module parameter).
 > > 
-> > Hmm, how am I supposed to get the snd_ctl_elem_info_t from a
-> > snd_mixer_elem_t or snd_mixer_selem_id_t?
+> > Jaroslav
+> > 
+> > diff -r 5e8cab953031 core/pcm_lib.c
+> > --- a/core/pcm_lib.c	Mon Nov 26 09:00:56 2007 +0100
+> <...>
+> > diff -r 5e8cab953031 include/asound.h
+> > --- a/include/asound.h	Mon Nov 26 09:00:56 2007 +0100
+> > +++ b/include/asound.h	Mon Nov 26 15:02:57 2007 +0100
+> > @@ -435,6 +435,13 @@ struct snd_xfern {
+> > };
+> > 
+> > enum {
+> > +	SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY = 0,	/* gettimeofday equivalent */
+> > +	SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY1,	/* for compatibility, equal to
+> > zero */
+> > +	SNDRV_PCM_TSTAMP_TYPE_MONOTONIC,	/* posix_clock_monotonic
+> > equivalent */
+> > +	SNDRV_PCM_TSTAMP_TYPE_LAST = SNDRV_PCM_TSTAMP_TYPE_MONOTONIC,
+> > +};
 > 
-> No, there is no API to get the id mapping.
-> And I guess we can't do it because there is no 1:1 mapping between
-> ctl_elem and mixer_selem.  It's N:1.
+> Looks good otherwise, but I'd still like to argue about this 
+> compatibility point: compatibility with what exactly? When was 
+> PCM_TSTAMP ioctl deprecated? Before 1.0.0? Has anyone *ever* used it? 
 
-I don't think that application should know about this mapping.
+Looking at sources, we talking about a 0.9.0rc8 change.
 
-I think that we have to provide API giving a mixer control element for 
-opened PCM handle, otherwise applications might use hacks like 
-suggested snd_ctl_elem_info_is_user() checks.
+> And so, is there any point in adding something not-so-pretty to a new 
+> feature right from the start. Just declare legacy TSTAMP ioctl users 
+> scr*wed! :)
 
-> > I figure there is no useful documentation or even example how this is
-> > supposed to work? Hmm, is there any real documentation available which
-> > describes the relation of ctl, hctl, mixer and smixer at all? For the
-> > uninitated the whols structure looks overly complex and redundant.
-> 
-> Yes, it's overly complex.  The mixer abstracion is what I'd really
-> love to clean up, maybe better to write from scratch.
+This ioctl is used only by alsa-lib and the post 0.9.0rc8 code checks for 
+PCM API version, so we should not have any problem except with the binary 
+compatibility with 0.9.0rc libraries.
 
-I think that we might remove only 'mixer' and simplify initalization from 
-the user side, but each time I tried to think about an optimal mixer 
-interface, I ended with the current 'simple mixer API'.
+Ok, I'll remove GETTIMEOFDAY1 and commit code to HG tree.
 
-> I guess PA could use ctl API better than mixer API because it requires
-> only certain elements like Master or PCM.  You can simply take
-> "Master Playback Control" with MIXER iface for master volume and
-> "Master Playback Switch" for master mute switch.  Of course, you'll
-> take care of number of channels or value range, but it's also same for
-> mixer API, too.
-
-I don't agree here. The simple mixer layer should be used, because it 
-covers at least some abstraction. In my recent changes, we have 
-possibility to use python for fast prototyping of simple mixer backends 
-(see alsa-lib/modules/mixer/simple/python directory how fast with minimal 
-code can be backend implemented). Unfortunately, main problem will be
-probably the work to cover all cards.
-
-					Jaroslav
+						Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
