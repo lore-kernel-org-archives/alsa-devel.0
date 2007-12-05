@@ -1,16 +1,16 @@
-From: Tobin Davis <tdavis@dsl-only.net>
+From: Die Mumie <mumie_die@yahoo.de>
 Subject: Re: New Realtec ALC833 Codec in Fujitsu Siemens Xi2428
-Date: Tue, 04 Dec 2007 16:12:23 -0800
-Message-ID: <1196813543.10030.92.camel@razman.gruemaster.com>
-References: <727519.46861.qm@web26704.mail.ukl.yahoo.com>
+Date: Wed, 5 Dec 2007 01:47:07 +0100 (CET)
+Message-ID: <545048.2302.qm@web26715.mail.ukl.yahoo.com>
+References: <1196813543.10030.92.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C20A103913
-	for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2007 01:12:26 +0100 (CET)
-In-Reply-To: <727519.46861.qm@web26704.mail.ukl.yahoo.com>
+Received: from n10.bullet.re3.yahoo.com (n10.bullet.re3.yahoo.com
+	[68.142.237.123]) by alsa0.perex.cz (Postfix) with SMTP id 8050F244BC
+	for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2007 01:47:09 +0100 (CET)
+In-Reply-To: <1196813543.10030.92.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,55 +20,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Die Mumie <mumie_die@yahoo.de>
-Cc: alsa-devel@alsa-project.org
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: ALSA Developers List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Tm8sIHRoaXMgaXMgYXMgZ29vZCBhIHBsYWNlIGFzIGFueSB0byBwb3N0LiAgV2UnbGwgbmVlZCBh
-IGJpdCBtb3JlIGluZm8sCnRob3VnaC4gIFRoZSBlYXNpZXN0IHdheSB0byBnZXQgdGhlIGluZm8g
-aXMgdG8gcnVuIHRoaXMgc2NyaXB0OgpodHRwOi8vYnVsbGV0cHJvb2Yuc2VydmViZWVyLmNvbS9h
-bHNhL3NjcmlwdHMvYWxzYS1pbmZvLnNoCgpQb3N0IHRoZSBsaW5rIGl0IGdlbmVyYXRlcyBiYWNr
-IHRvIHRoaXMgbWFpbGluZyBsaXN0IGFuZCBlaXRoZXIgSSBvcgpzb21lb25lIGVsc2UgY2FuIGxv
-b2sgaW50byBpdC4gIEJlIHBhdGllbnQsIGFzIGl0IG1heSB0YWtlIGEgd2VlayBvcgp0d28uCgpB
-bHNvLCB0cnkgb25lIG9mIHRoZSBzdXBwb3J0ZWQgbW9kZWxzIGZvciB0aGUgQUxDODgzOgoKICAg
-ICAgICAgICAgICAgICAgM3N0YWNrLWRpZyAgICAzLWphY2sgd2l0aCBTUERJRiBJL08KICAgICAg
-ICAgICAgICAgICAgNnN0YWNrLWRpZyAgICA2LWphY2sgZGlnaXRhbCB3aXRoIFNQRElGIEkvTwog
-ICAgICAgICAgICAgICAgICAzc3RhY2stNmNoICAgIDMtamFjayA2LWNoYW5uZWwKICAgICAgICAg
-ICAgICAgICAgM3N0YWNrLTZjaC1kaWcgMy1qYWNrIDYtY2hhbm5lbCB3aXRoIFNQRElGIEkvTwog
-ICAgICAgICAgICAgICAgICA2c3RhY2stZGlnLWRlbW8gIDYtamFjayBkaWdpdGFsIGZvciBJbnRl
-bCBkZW1vIGJvYXJkCiAgICAgICAgICAgICAgICAgIGFjZXIgICAgICAgICAgQWNlciBsYXB0b3Bz
-IChUcmF2ZWxtYXRlIDMwMTJXVE1pLAogICAgICAgIEFzcGlyZSA1NjAwLCBldGMpCiAgICAgICAg
-ICAgICAgICAgIGFjZXItYXNwaXJlICAgQWNlciBBc3BpcmUgOTgxMAogICAgICAgICAgICAgICAg
-ICBtZWRpb24gICAgICAgIE1lZGlvbiBMYXB0b3BzCiAgICAgICAgICAgICAgICAgIG1lZGlvbi1t
-ZDIgICAgTWVkaW9uIE1EMgogICAgICAgICAgICAgICAgICB0YXJnYS1kaWcgICAgIFRhcmdhL01T
-SQogICAgICAgICAgICAgICAgICB0YXJnYS0yY2gtZGlnIFRhcmdzL01TSSB3aXRoIDItY2hhbm5l
-bAogICAgICAgICAgICAgICAgICBsYXB0b3AtZWFwZCAgIDMtamFjayB3aXRoIFNQRElGIEkvTyBh
-bmQgRUFQRCAoQ2xldm8KICAgICAgICBNNTQwSkUsIE01NTBKRSkKICAgICAgICAgICAgICAgICAg
-bGVub3ZvLTEwMWUgICBMZW5vdm8gMTAxRQogICAgICAgICAgICAgICAgICBsZW5vdm8tbmIwNzYz
-IExlbm92byBOQjA3NjMKICAgICAgICAgICAgICAgICAgbGVub3ZvLW1zNzE5NS1kaWcgTGVub3Zv
-IE1TNzE5NQogICAgICAgICAgICAgICAgICBoYWllci13NjYgICAgIEhhaWVyIFc2NgogICAgICAg
-ICAgICAgICAgICA2c3RhY2staHAgICAgIEhQIG1hY2hpbmVzIHdpdGggNnN0YWNrIChOZXR0bGUg
-Ym9hcmRzKQogICAgICAgICAgICAgICAgICAzc3RhY2staHAgICAgIEhQIG1hY2hpbmVzIHdpdGgg
-M3N0YWNrIChMdWNrbm93LCBTYW1iYQogICAgICAgIGJvYXJkcykKICAgICAgICAgICAgICAgICAg
-YXV0byAgICAgICAgICBhdXRvLWNvbmZpZyByZWFkaW5nIEJJT1MgKGRlZmF1bHQpCiAgICAgICAg
-CgpUbyB0ZXN0IHRoZXNlIGNvbmZpdWd1cmF0aW9ucywgdW5sb2FkIGFuZCByZWxvYWQgdGhlIGRy
-aXZlciB3aXRoCiJtb2Rwcm9iZSAtciBzbmQtaGRhLWludGVsICYmIG1vZHByb2JlIHNuZC1oZGEt
-aW50ZWwgbW9kZWw9PG1vZGVsCm5hbWU+IiAocmVwbGFjZSA8bW9kZWwgbmFtZT4gd2l0aCBvbmUg
-ZnJvbSBhYm92ZSAtIGkuZS4gbWVkaW9uKS4KCgoKVG9iaW4KCk9uIFR1ZSwgMjAwNy0xMi0wNCBh
-dCAyMzo0OSArMDEwMCwgRGllIE11bWllIHdyb3RlOgoKPiBIaSwKPiBJJ3ZlIGJlZW4gdG9sZCB0
-byBwb3N0IGhlcmUsIHNvIEkgZG8uCj4gCj4gSSBoYXZlIGEgTm90ZWJvb2sgd2l0aCBhIEludGVs
-IGhkYSBzb3VuZCBkZXZpY2UsIHRoZSAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMjMSByZXR1cm5z
-IFJlYWx0ZWMgQUxDODMzIGJ1dCB0aGVyZSBpcyBubyBtb2RlbCBwcm92aWRlZCBieSB0aGUgYWxz
-YSBkcml2ZXIgdGhhdCBydW5zIHRoaXMgU291bmRjYXJkIHByb3Blcmx5Lgo+IAo+IEFtIEkgd3Jv
-bmcgaGVyZT8KPiBJZiB5ZXMsIHRoZW4gSSdtIHNvcnJ5Lgo+IAo+ICAgICAgICAKPiAtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBIZXV0ZSBzY2hvbiBlaW5lbiBCbGljayBpbiBk
-aWUgWnVrdW5mdCB2b24gRS1NYWlscyB3YWdlbj8gVmVyc3VjaGVuIFNpZcK0cyBtaXQgZGVtICBu
-ZXVlbiBZYWhvbyEgTWFpbC4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCgotLSAKVG9iaW4gRGF2aXMgIAoKClRoaXMgbGFuZCBpcyBmdWxsIG9m
-IHRyb3VzZXJzIQp0aGlzIGxhbmQgaXMgZnVsbCBvZiBtYXVzZXJzIQoJQW5kIHB1c3N5Y2F0cyB0
-byBlYXQgdGhlbSB3aGVuIHRoZSBzdW4gZ29lcyBkb3duIQoJCS0tIEZpcmVzaWduIFRoZWF0ZXIK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+Ok, well,
+I already have tried all models for snd_intel_hda and none of them was sati=
+sfying me... =
+
+
+I run the script and the output is availible at http://pastebin.ca/806180 .
+Thanks for helping
+
+           No, this is as good a place as any to post.  We'll need a bit mo=
+re info, though.  The easiest way to get the info is to run this script:  h=
+ttp://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
+ =
+
+ Post the link it generates back to this mailing list and either I or someo=
+ne else can look into it.  Be patient, as it may take a week or two.
+ =
+
+ Also, try one of the supported models for the ALC883:
+                3stack-dig    3-jack with SPDIF I/O
+               6stack-dig    6-jack digital with SPDIF I/O
+               3stack-6ch    3-jack 6-channel
+               3stack-6ch-dig 3-jack 6-channel with SPDIF I/O
+               6stack-dig-demo  6-jack digital for Intel demo board
+               acer          Acer laptops (Travelmate 3012WTMi, Aspire 5600=
+, etc)
+               acer-aspire   Acer Aspire 9810
+               medion        Medion Laptops
+               medion-md2    Medion MD2
+               targa-dig     Targa/MSI
+               targa-2ch-dig Targs/MSI with 2-channel
+               laptop-eapd   3-jack with SPDIF I/O and EAPD (Clevo M540JE, =
+M550JE)
+               lenovo-101e   Lenovo 101E
+               lenovo-nb0763 Lenovo NB0763
+               lenovo-ms7195-dig Lenovo MS7195
+               haier-w66     Haier W66
+               6stack-hp     HP machines with 6stack (Nettle boards)
+               3stack-hp     HP machines with 3stack (Lucknow, Samba boards)
+               auto          auto-config reading BIOS (default)
+     =
+
+  To test these confiugurations, unload and reload the driver with "modprob=
+e -r snd-hda-intel && modprobe snd-hda-intel model=3D<model name>" (replace=
+ <model name> with one from above - i.e. medion).
+ =
+
+ =
+
+ =
+
+ Tobin
+ =
+
+ On Tue, 2007-12-04 at 23:49 +0100, Die Mumie wrote:  =
+
+Hi, I've been told to post here, so I do.  I have a Notebook with a Intel h=
+da sound device, the /proc/asound/card0/codec#1 returns Realtec ALC833 but =
+there is no model provided by the alsa driver that runs this Soundcard prop=
+erly.  Am I wrong here? If yes, then I'm sorry.          ------------------=
+--------------- Heute schon einen Blick in die Zukunft von E-Mails wagen? V=
+ersuchen Sie=B4s mit dem  neuen Yahoo! Mail.  _____________________________=
+__________________ Alsa-devel mailing list Alsa-devel@alsa-project.org http=
+://mailman.alsa-project.org/mailman/listinfo/alsa-devel =
+
+     --  Tobin Davis  =
+
+ =
+
+ =
+
+This land is full of trousers!
+this land is full of mausers!
+ And pussycats to eat them when the sun goes down!
+  -- Firesign Theater
+
+    =
+
+
+       =
+
+---------------------------------
+Ihre erste Baustelle? Wissenswertes f=FCr Bastler und Hobby Handwerker. =
