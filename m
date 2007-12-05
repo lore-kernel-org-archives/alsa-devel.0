@@ -1,16 +1,14 @@
-From: Die Mumie <mumie_die@yahoo.de>
-Subject: Re: New Realtec ALC833 Codec in Fujitsu Siemens Xi2428
-Date: Wed, 5 Dec 2007 01:47:07 +0100 (CET)
-Message-ID: <545048.2302.qm@web26715.mail.ukl.yahoo.com>
-References: <1196813543.10030.92.camel@razman.gruemaster.com>
+From: feng_tian <feng_tian@126.com>
+Subject: Alsa problems: can't use dmix
+Date: Wed, 5 Dec 2007 14:33:02 +0800 (CST)
+Message-ID: <3120525.333001196836382769.JavaMail.coremail@bj126app88.126.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from n10.bullet.re3.yahoo.com (n10.bullet.re3.yahoo.com
-	[68.142.237.123]) by alsa0.perex.cz (Postfix) with SMTP id 8050F244BC
-	for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2007 01:47:09 +0100 (CET)
-In-Reply-To: <1196813543.10030.92.camel@razman.gruemaster.com>
+Received: from m15-88.126.com (m15-88.126.com [220.181.15.88])
+	by alsa0.perex.cz (Postfix) with SMTP id B0E78103934
+	for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2007 07:33:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,90 +18,260 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: ALSA Developers List <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@alsa-project.org>, alsa-user <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi, all:
+I have a problem with dmix of alsa.
+I'm using alsa v1.0.11rc2 now. And make it running on ATMEL AT91SAM9260EK board. It runs ok without Dmix. But when I tried:
+bash> aplay -D dmixer test.wav
+The errors are:
 
-Ok, well,
-I already have tried all models for snd_intel_hda and none of them was sati=
-sfying me... =
+ALSA lib pcm_direct.c:790:(snd_pcm_direct_initialize_slave) slave plugin does not support mmap interleaved or mmap noninterleaved access
+ALSA lib pcm_dmix.c:864:(snd_pcm_dmix_open) unable to initialize slave
+aplay: main:547: audio open error: Invalid argument
 
+The configuration of my alsa in /etc/asound.con is:
 
-I run the script and the output is availible at http://pastebin.ca/806180 .
-Thanks for helping
+pcm.card0 {
+type hw
+card 0
+}
 
-           No, this is as good a place as any to post.  We'll need a bit mo=
-re info, though.  The easiest way to get the info is to run this script:  h=
-ttp://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
- =
+pcm.!default {
+type plug
+slave.pcm "dmixer"
+}
 
- Post the link it generates back to this mailing list and either I or someo=
-ne else can look into it.  Be patient, as it may take a week or two.
- =
+pcm.dmixer {
+type dmix
+ipc_key 1024
+slave {
+pcm "hw:0,0"
+format S16_LE
+period_time 0
+period_size 1024
+buffer_size 4096
 
- Also, try one of the supported models for the ALC883:
-                3stack-dig    3-jack with SPDIF I/O
-               6stack-dig    6-jack digital with SPDIF I/O
-               3stack-6ch    3-jack 6-channel
-               3stack-6ch-dig 3-jack 6-channel with SPDIF I/O
-               6stack-dig-demo  6-jack digital for Intel demo board
-               acer          Acer laptops (Travelmate 3012WTMi, Aspire 5600=
-, etc)
-               acer-aspire   Acer Aspire 9810
-               medion        Medion Laptops
-               medion-md2    Medion MD2
-               targa-dig     Targa/MSI
-               targa-2ch-dig Targs/MSI with 2-channel
-               laptop-eapd   3-jack with SPDIF I/O and EAPD (Clevo M540JE, =
-M550JE)
-               lenovo-101e   Lenovo 101E
-               lenovo-nb0763 Lenovo NB0763
-               lenovo-ms7195-dig Lenovo MS7195
-               haier-w66     Haier W66
-               6stack-hp     HP machines with 6stack (Nettle boards)
-               3stack-hp     HP machines with 3stack (Lucknow, Samba boards)
-               auto          auto-config reading BIOS (default)
-     =
-
-  To test these confiugurations, unload and reload the driver with "modprob=
-e -r snd-hda-intel && modprobe snd-hda-intel model=3D<model name>" (replace=
- <model name> with one from above - i.e. medion).
- =
-
- =
-
- =
-
- Tobin
- =
-
- On Tue, 2007-12-04 at 23:49 +0100, Die Mumie wrote:  =
-
-Hi, I've been told to post here, so I do.  I have a Notebook with a Intel h=
-da sound device, the /proc/asound/card0/codec#1 returns Realtec ALC833 but =
-there is no model provided by the alsa driver that runs this Soundcard prop=
-erly.  Am I wrong here? If yes, then I'm sorry.          ------------------=
---------------- Heute schon einen Blick in die Zukunft von E-Mails wagen? V=
-ersuchen Sie=B4s mit dem  neuen Yahoo! Mail.  _____________________________=
-__________________ Alsa-devel mailing list Alsa-devel@alsa-project.org http=
-://mailman.alsa-project.org/mailman/listinfo/alsa-devel =
-
-     --  Tobin Davis  =
-
- =
-
- =
-
-This land is full of trousers!
-this land is full of mausers!
- And pussycats to eat them when the sun goes down!
-  -- Firesign Theater
-
-    =
+rate 22050
+}
+bindings {
+0 0
+1 1
+}
+}
+ctl.dmixer {
+type hw
+card 0
+device 0
+}
+pcm.dsp {
+type plug
+slave.pcm "dmixer" #use our new PCM here
+}
+ctl.mixer{
+type hw
+card 0
+}
 
 
-       =
 
----------------------------------
-Ihre erste Baustelle? Wissenswertes f=FCr Bastler und Hobby Handwerker. =
+bash> aplay -L
+gives:
+
+PCM list:
+hw {
+@args.0 CARD
+@args.1 DEV
+@args.2 SUBDEV
+@args.CARD {
+type string
+default {
+@func getenv
+vars {
+0 ALSA_PCM_CARD
+1 ALSA_CARD
+}
+default {
+@func refer
+name 'defaults.pcm.card'
+}
+}
+}
+@args.DEV {
+type integer
+default {
+@func igetenv
+vars {
+0 ALSA_PCM_DEVICE
+}
+default {
+@func refer
+name 'defaults.pcm.device'
+}
+}
+}
+@args.SUBDEV {
+type integer
+default {
+@func refer
+name 'defaults.pcm.subdevice'
+}
+}
+type hw
+card $CARD
+device $DEV
+subdevice $SUBDEV
+}
+plughw {
+@args.0 CARD
+@args.1 DEV
+@args.2 SUBDEV
+@args.CARD {
+type string
+default {
+@func getenv
+vars {
+0 ALSA_PCM_CARD
+1 ALSA_CARD
+}
+default {
+@func refer
+name 'defaults.pcm.card'
+}
+}
+}
+@args.DEV {
+type integer
+default {
+@func igetenv
+vars {
+0 ALSA_PCM_DEVICE
+}
+default {
+@func refer
+name 'defaults.pcm.device'
+}
+}
+}
+@args.SUBDEV {
+type integer
+default {
+@func refer
+name 'defaults.pcm.subdevice'
+}
+}
+type plug
+slave.pcm {
+type hw
+card $CARD
+device $DEV
+subdevice $SUBDEV
+}
+}
+plug {
+@args.0 SLAVE
+@args.SLAVE {
+type string
+}
+type plug
+slave.pcm $SLAVE
+}
+shm {
+@args.0 SOCKET
+@args.1 PCM
+@args.SOCKET {
+type string
+}
+@args.PCM {
+type string
+}
+type shm
+server $SOCKET
+pcm $PCM
+}
+tee {
+@args.0 SLAVE
+@args.1 FILE
+@args.2 FORMAT
+@args.SLAVE {
+type string
+}
+@args.FILE {
+type string
+}
+@args.FORMAT {
+type string
+default raw
+}
+type file
+slave.pcm $SLAVE
+file $FILE
+format $FORMAT
+}
+file {
+@args.0 FILE
+@args.1 FORMAT
+@args.FILE {
+type string
+}
+@args.FORMAT {
+type string
+default raw
+}
+type file
+slave.pcm null
+file $FILE
+format $FORMAT
+}
+null {
+type null
+}
+cards 'cards.pcm'
+front 'cards.pcm.front'
+rear 'cards.pcm.rear'
+center_lfe 'cards.pcm.center_lfe'
+side 'cards.pcm.side'
+surround40 'cards.pcm.surround40'
+surround41 'cards.pcm.surround41'
+surround50 'cards.pcm.surround50'
+surround51 'cards.pcm.surround51'
+surround71 'cards.pcm.surround71'
+iec958 'cards.pcm.iec958'
+spdif 'cards.pcm.iec958'
+modem 'cards.pcm.modem'
+phoneline 'cards.pcm.phoneline'
+dmix 'cards.pcm.dmix'
+dsnoop 'cards.pcm.dsnoop'
+card0 {
+type hw
+card 0
+}
+default {
+type plug
+slave.pcm dmixer
+}
+dmixer {
+type dmix
+ipc_key 1024
+slave {
+pcm 'hw:0,0'
+format S16_LE
+period_time 0
+period_size 1024
+buffer_size 4096
+rate 22050
+}
+bindings {
+0 0
+1 1
+}
+}
+dsp {
+type plug
+slave.pcm dmixer
+}
+Any helps or advices is wecome.
+
+BR
+Feng
