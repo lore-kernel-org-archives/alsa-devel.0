@@ -1,15 +1,16 @@
-From: Die Mumie <mumie_die@yahoo.de>
-Subject: New Realtec ALC833 Codec in Fujitsu Siemens Xi2428
-Date: Tue, 4 Dec 2007 23:49:35 +0100 (CET)
-Message-ID: <727519.46861.qm@web26704.mail.ukl.yahoo.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: New Realtec ALC833 Codec in Fujitsu Siemens Xi2428
+Date: Tue, 04 Dec 2007 16:12:23 -0800
+Message-ID: <1196813543.10030.92.camel@razman.gruemaster.com>
+References: <727519.46861.qm@web26704.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web26704.mail.ukl.yahoo.com (web26704.mail.ukl.yahoo.com
-	[217.146.176.67])
-	by alsa0.perex.cz (Postfix) with SMTP id 9B131103921
-	for <alsa-devel@alsa-project.org>; Tue,  4 Dec 2007 23:49:36 +0100 (CET)
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C20A103913
+	for <alsa-devel@alsa-project.org>; Wed,  5 Dec 2007 01:12:26 +0100 (CET)
+In-Reply-To: <727519.46861.qm@web26704.mail.ukl.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,21 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Die Mumie <mumie_die@yahoo.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I've been told to post here, so I do.
-
-I have a Notebook with a Intel hda sound device, the /proc/asound/card0/cod=
-ec#1 returns Realtec ALC833 but there is no model provided by the alsa driv=
-er that runs this Soundcard properly.
-
-Am I wrong here?
-If yes, then I'm sorry.
-
-       =
-
----------------------------------
-Heute schon einen Blick in die Zukunft von E-Mails wagen? Versuchen Sie=B4s=
- mit dem  neuen Yahoo! Mail. =
+Tm8sIHRoaXMgaXMgYXMgZ29vZCBhIHBsYWNlIGFzIGFueSB0byBwb3N0LiAgV2UnbGwgbmVlZCBh
+IGJpdCBtb3JlIGluZm8sCnRob3VnaC4gIFRoZSBlYXNpZXN0IHdheSB0byBnZXQgdGhlIGluZm8g
+aXMgdG8gcnVuIHRoaXMgc2NyaXB0OgpodHRwOi8vYnVsbGV0cHJvb2Yuc2VydmViZWVyLmNvbS9h
+bHNhL3NjcmlwdHMvYWxzYS1pbmZvLnNoCgpQb3N0IHRoZSBsaW5rIGl0IGdlbmVyYXRlcyBiYWNr
+IHRvIHRoaXMgbWFpbGluZyBsaXN0IGFuZCBlaXRoZXIgSSBvcgpzb21lb25lIGVsc2UgY2FuIGxv
+b2sgaW50byBpdC4gIEJlIHBhdGllbnQsIGFzIGl0IG1heSB0YWtlIGEgd2VlayBvcgp0d28uCgpB
+bHNvLCB0cnkgb25lIG9mIHRoZSBzdXBwb3J0ZWQgbW9kZWxzIGZvciB0aGUgQUxDODgzOgoKICAg
+ICAgICAgICAgICAgICAgM3N0YWNrLWRpZyAgICAzLWphY2sgd2l0aCBTUERJRiBJL08KICAgICAg
+ICAgICAgICAgICAgNnN0YWNrLWRpZyAgICA2LWphY2sgZGlnaXRhbCB3aXRoIFNQRElGIEkvTwog
+ICAgICAgICAgICAgICAgICAzc3RhY2stNmNoICAgIDMtamFjayA2LWNoYW5uZWwKICAgICAgICAg
+ICAgICAgICAgM3N0YWNrLTZjaC1kaWcgMy1qYWNrIDYtY2hhbm5lbCB3aXRoIFNQRElGIEkvTwog
+ICAgICAgICAgICAgICAgICA2c3RhY2stZGlnLWRlbW8gIDYtamFjayBkaWdpdGFsIGZvciBJbnRl
+bCBkZW1vIGJvYXJkCiAgICAgICAgICAgICAgICAgIGFjZXIgICAgICAgICAgQWNlciBsYXB0b3Bz
+IChUcmF2ZWxtYXRlIDMwMTJXVE1pLAogICAgICAgIEFzcGlyZSA1NjAwLCBldGMpCiAgICAgICAg
+ICAgICAgICAgIGFjZXItYXNwaXJlICAgQWNlciBBc3BpcmUgOTgxMAogICAgICAgICAgICAgICAg
+ICBtZWRpb24gICAgICAgIE1lZGlvbiBMYXB0b3BzCiAgICAgICAgICAgICAgICAgIG1lZGlvbi1t
+ZDIgICAgTWVkaW9uIE1EMgogICAgICAgICAgICAgICAgICB0YXJnYS1kaWcgICAgIFRhcmdhL01T
+SQogICAgICAgICAgICAgICAgICB0YXJnYS0yY2gtZGlnIFRhcmdzL01TSSB3aXRoIDItY2hhbm5l
+bAogICAgICAgICAgICAgICAgICBsYXB0b3AtZWFwZCAgIDMtamFjayB3aXRoIFNQRElGIEkvTyBh
+bmQgRUFQRCAoQ2xldm8KICAgICAgICBNNTQwSkUsIE01NTBKRSkKICAgICAgICAgICAgICAgICAg
+bGVub3ZvLTEwMWUgICBMZW5vdm8gMTAxRQogICAgICAgICAgICAgICAgICBsZW5vdm8tbmIwNzYz
+IExlbm92byBOQjA3NjMKICAgICAgICAgICAgICAgICAgbGVub3ZvLW1zNzE5NS1kaWcgTGVub3Zv
+IE1TNzE5NQogICAgICAgICAgICAgICAgICBoYWllci13NjYgICAgIEhhaWVyIFc2NgogICAgICAg
+ICAgICAgICAgICA2c3RhY2staHAgICAgIEhQIG1hY2hpbmVzIHdpdGggNnN0YWNrIChOZXR0bGUg
+Ym9hcmRzKQogICAgICAgICAgICAgICAgICAzc3RhY2staHAgICAgIEhQIG1hY2hpbmVzIHdpdGgg
+M3N0YWNrIChMdWNrbm93LCBTYW1iYQogICAgICAgIGJvYXJkcykKICAgICAgICAgICAgICAgICAg
+YXV0byAgICAgICAgICBhdXRvLWNvbmZpZyByZWFkaW5nIEJJT1MgKGRlZmF1bHQpCiAgICAgICAg
+CgpUbyB0ZXN0IHRoZXNlIGNvbmZpdWd1cmF0aW9ucywgdW5sb2FkIGFuZCByZWxvYWQgdGhlIGRy
+aXZlciB3aXRoCiJtb2Rwcm9iZSAtciBzbmQtaGRhLWludGVsICYmIG1vZHByb2JlIHNuZC1oZGEt
+aW50ZWwgbW9kZWw9PG1vZGVsCm5hbWU+IiAocmVwbGFjZSA8bW9kZWwgbmFtZT4gd2l0aCBvbmUg
+ZnJvbSBhYm92ZSAtIGkuZS4gbWVkaW9uKS4KCgoKVG9iaW4KCk9uIFR1ZSwgMjAwNy0xMi0wNCBh
+dCAyMzo0OSArMDEwMCwgRGllIE11bWllIHdyb3RlOgoKPiBIaSwKPiBJJ3ZlIGJlZW4gdG9sZCB0
+byBwb3N0IGhlcmUsIHNvIEkgZG8uCj4gCj4gSSBoYXZlIGEgTm90ZWJvb2sgd2l0aCBhIEludGVs
+IGhkYSBzb3VuZCBkZXZpY2UsIHRoZSAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMjMSByZXR1cm5z
+IFJlYWx0ZWMgQUxDODMzIGJ1dCB0aGVyZSBpcyBubyBtb2RlbCBwcm92aWRlZCBieSB0aGUgYWxz
+YSBkcml2ZXIgdGhhdCBydW5zIHRoaXMgU291bmRjYXJkIHByb3Blcmx5Lgo+IAo+IEFtIEkgd3Jv
+bmcgaGVyZT8KPiBJZiB5ZXMsIHRoZW4gSSdtIHNvcnJ5Lgo+IAo+ICAgICAgICAKPiAtLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBIZXV0ZSBzY2hvbiBlaW5lbiBCbGljayBpbiBk
+aWUgWnVrdW5mdCB2b24gRS1NYWlscyB3YWdlbj8gVmVyc3VjaGVuIFNpZcK0cyBtaXQgZGVtICBu
+ZXVlbiBZYWhvbyEgTWFpbC4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCgotLSAKVG9iaW4gRGF2aXMgIAoKClRoaXMgbGFuZCBpcyBmdWxsIG9m
+IHRyb3VzZXJzIQp0aGlzIGxhbmQgaXMgZnVsbCBvZiBtYXVzZXJzIQoJQW5kIHB1c3N5Y2F0cyB0
+byBlYXQgdGhlbSB3aGVuIHRoZSBzdW4gZ29lcyBkb3duIQoJCS0tIEZpcmVzaWduIFRoZWF0ZXIK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
