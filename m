@@ -1,84 +1,48 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: asihpi driver -> kernel
-Date: Fri, 07 Dec 2007 12:33:23 +1300
-Message-ID: <475886C3.9070301@audioscience.com>
-References: <200709051300.35503.linux@audioscience.com>
-	<s5hzm01tn8w.wl%tiwai@suse.de> <47141823.4000307@audioscience.com>
-	<s5hbqaqrppa.wl%tiwai@suse.de> <47397615.4000201@audioscience.com>
+From: "Tim Mayberry" <mojofunk@gmail.com>
+Subject: Re: rme hdsp pcmcia (and probably pci) broken
+Date: Fri, 7 Dec 2007 09:31:06 +1000
+Message-ID: <4bb03be40712061531u7f0ef748ha833ce6a8bcd280e@mail.gmail.com>
+References: <1196127903.15009.34.camel@cmn3.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id E28BD243ED
-	for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2007 00:33:31 +0100 (CET)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JSN0084YIROUM30@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 07 Dec 2007 12:33:27 +1300 (NZDT)
-In-reply-to: <47397615.4000201@audioscience.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org
+Return-path: <planetccrma-admin@ccrma.Stanford.EDU>
+In-Reply-To: <1196127903.15009.34.camel@cmn3.stanford.edu>
+Content-Disposition: inline
+Sender: planetccrma-admin@ccrma.Stanford.EDU
+Errors-To: planetccrma-admin@ccrma.Stanford.EDU
+List-Help: <mailto:planetccrma-request@ccrma.stanford.edu?subject=help>
+List-Post: <mailto:planetccrma@ccrma.stanford.edu>
+List-Subscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
+	<mailto:planetccrma-request@ccrma.stanford.edu?subject=subscribe>
+List-Unsubscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
+	<mailto:planetccrma-request@ccrma.stanford.edu?subject=unsubscribe>
+List-Archive: <http://ccrma-mail.stanford.edu/pipermail/planetccrma/>
+To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: alsa-devel@alsa-project.org, planetccrma@ccrma.Stanford.EDU
 List-Id: alsa-devel@alsa-project.org
 
-Eliot Blennerhassett wrote:
-> Working on it, will submit new patches in the next week or so.
+On Nov 27, 2007 11:45 AM, Fernando Lopez-Lezcano
+<nando@ccrma.stanford.edu> wrote:
+> Hi, anyone has a pcmcia rme card running? And working? With a reasonably
+> recent alsa? (this probably applies also for the regular pci rme cards,
+> I've had reports on the Planet CCRMA list about problems that sound
+> similar to this one).
+>
 
-Hi Takashi,
+I have a RME Hammerfall HDSP PCI card with a Multiface unit which was
+working fine with Fedora 7. When I upgraded to Fedora 8 recently it
+stopped working properly. I discovered I could get sound out of it
+using aplay with a mono sound file as it seemed to send the mono input
+to all outputs but playing a stereo file would not play out the first
+two analog outputs like it did with Fedora 7(I couldn't tell where the
+output was going).
 
-I have been beating our code with a big stick for the last 4 weeks.
+Reverting to the stock F7 kernel returned functionality to normal so I
+downloaded the source packages for the F7 and F8 kernels and had a
+quick peek. They both seem to be using the same upstream kernel source
+but with different patch sets applied. The Fedora 8 kernel source
+contains a ~1MB alsa patch that I imagine has something to do with the
+breakage.
 
-I'd appreciate any comment you have on the progress.
-
-
-
-You can see the result here:
-http://audioscience.com/internet/download/beta/alsahg3459_asihpi30905.tar.gz
-
-The matching firmware is here:
-http://audioscience.com/internet/download/beta/dspbins30905.tar.bz2
-
-Note that dsp6413.bin is replaced by dsp6400.bin, dsp8713 by dsp8700.
-You can remove all the dsp*.txt from the repo they are not needed.  Also
-remove dsp2400, its not relevant.
-
-
-The code is copmplete files rather than diffs, there are so many diffs I
-don't think it is useful.  Apart from cosmetic changes, there are some
-added and removed files compared to curren ALSA Hg repo:
-
-* Merged all files relating to HPI4000 into hpi4000.[ch] (remove
-hpi56301.[ch], boot4ka.h, dpi56301.h
-* Removed hpicheck.h
-* add hpimsginit.[ch] (no new functions)
-
-
-Cosmetic changes
-* Code is mostly 'checkpatch clean', though still some real work to do
-around our use of volatile for structures that are updated by DMA by our
-adapters
-
-* Only 2 'sparse' warnings
-
-* Got rid of nearly all typedefs, and most thin wrappers around kernel
-functions.
-
-* hpifunc.c now has no comments.  They might return when we get around
-to grinding them all down to 80 columns...
-Extracted documentation is available here in the mean time:
-http://audioscience.com/internet/download/sdk/hpi_usermanual_html/html/index.html
-
-regards
-
-Eliot Blennerhassett
-AudioScience Inc.
+Tim.
