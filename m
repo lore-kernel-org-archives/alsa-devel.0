@@ -1,20 +1,23 @@
-From: Andy Shevchenko <andy@smile.org.ua>
-Subject: Re: [PATCH] Initial support of the Mitac 8252D
-	(based	on ALC883)
-Date: Thu, 6 Dec 2007 16:29:58 +0200
-Message-ID: <20071206142958.GC24527@serv.smile.org.ua>
-References: <20071206094612.GB24527@serv.smile.org.ua>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: asihpi driver -> kernel
+Date: Fri, 07 Dec 2007 12:33:23 +1300
+Message-ID: <475886C3.9070301@audioscience.com>
+References: <200709051300.35503.linux@audioscience.com>
+	<s5hzm01tn8w.wl%tiwai@suse.de> <47141823.4000307@audioscience.com>
+	<s5hbqaqrppa.wl%tiwai@suse.de> <47397615.4000201@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from serv.smile.org.ua (serv.smile.org.ua [193.178.237.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1EF47103854
-	for <alsa-devel@alsa-project.org>; Thu,  6 Dec 2007 15:48:37 +0100 (CET)
-Resent-Message-ID: <20071206144832.GD24527@serv.smile.org.ua>
-Resent-To: alsa-devel@alsa-project.org
-Content-Disposition: inline
-In-Reply-To: <20071206094612.GB24527@serv.smile.org.ua>
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id E28BD243ED
+	for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2007 00:33:31 +0100 (CET)
+Received: from [192.168.1.4]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JSN0084YIROUM30@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Fri, 07 Dec 2007 12:33:27 +1300 (NZDT)
+In-reply-to: <47397615.4000201@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +27,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Andy Shevchenko!
+Eliot Blennerhassett wrote:
+> Working on it, will submit new patches in the next week or so.
 
- On Thu, Dec 06, 2007 at 11:46:12AM +0200, Andy Shevchenko wrote next:
+Hi Takashi,
 
-> The attached patch adds initial support of the Mitac 8252D
-> (http://www.mitac-mtc.com.tw/English/products/8252Dspec.htm).
-> 
-> Working:
->  - Front speakers (volume + mute)
->  - Center/LFE speakers (volume + mute)
->  - HP out (with Front Volume)
->  - HP individual mute switch
->  - HP Jack sense
->  - Front Mic and its volume
-> 
-> Not tested:
->  - external mic and its volume
-> 
-> Not working while now:
->  - Mic Jack sense
-> 
-> Questionable:
->  - is Mic have Jack sense?
->  - one or two Mic volume controls?
->  - CD/Line-in: presense in the mixer
+I have been beating our code with a big stick for the last 4 weeks.
 
-Additional info here.
+I'd appreciate any comment you have on the progress.
 
-All jacks are connected to the one Jack sense input pin via different
-impedances (1:2:4 scale). However p.50 of the datasheet says 'The ALC883
-does not support hardware impedance detect.'
-Due to above the Mic and S/PDIF sense couldn't be evaluated.
 
-Also, the laptop has S/PDIF jack. And specifications are included the 5.1
-outputs.
 
--- 
-With best regards,
-Andy Shevchenko.      mailto: andy@smile.org.ua
+You can see the result here:
+http://audioscience.com/internet/download/beta/alsahg3459_asihpi30905.tar.gz
+
+The matching firmware is here:
+http://audioscience.com/internet/download/beta/dspbins30905.tar.bz2
+
+Note that dsp6413.bin is replaced by dsp6400.bin, dsp8713 by dsp8700.
+You can remove all the dsp*.txt from the repo they are not needed.  Also
+remove dsp2400, its not relevant.
+
+
+The code is copmplete files rather than diffs, there are so many diffs I
+don't think it is useful.  Apart from cosmetic changes, there are some
+added and removed files compared to curren ALSA Hg repo:
+
+* Merged all files relating to HPI4000 into hpi4000.[ch] (remove
+hpi56301.[ch], boot4ka.h, dpi56301.h
+* Removed hpicheck.h
+* add hpimsginit.[ch] (no new functions)
+
+
+Cosmetic changes
+* Code is mostly 'checkpatch clean', though still some real work to do
+around our use of volatile for structures that are updated by DMA by our
+adapters
+
+* Only 2 'sparse' warnings
+
+* Got rid of nearly all typedefs, and most thin wrappers around kernel
+functions.
+
+* hpifunc.c now has no comments.  They might return when we get around
+to grinding them all down to 80 columns...
+Extracted documentation is available here in the mean time:
+http://audioscience.com/internet/download/sdk/hpi_usermanual_html/html/index.html
+
+regards
+
+Eliot Blennerhassett
+AudioScience Inc.
