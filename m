@@ -1,48 +1,32 @@
-From: "Tim Mayberry" <mojofunk@gmail.com>
-Subject: Re: rme hdsp pcmcia (and probably pci) broken
-Date: Fri, 7 Dec 2007 09:31:06 +1000
-Message-ID: <4bb03be40712061531u7f0ef748ha833ce6a8bcd280e@mail.gmail.com>
-References: <1196127903.15009.34.camel@cmn3.stanford.edu>
+From: feng_tian <feng_tian@126.com>
+Subject: Can I control volume of each virtual device?
+Date: Fri, 7 Dec 2007 10:30:32 +0800 (CST)
+Message-ID: <4037871.125781196994632409.JavaMail.coremail@bj126app68.126.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <planetccrma-admin@ccrma.Stanford.EDU>
-In-Reply-To: <1196127903.15009.34.camel@cmn3.stanford.edu>
-Content-Disposition: inline
-Sender: planetccrma-admin@ccrma.Stanford.EDU
-Errors-To: planetccrma-admin@ccrma.Stanford.EDU
-List-Help: <mailto:planetccrma-request@ccrma.stanford.edu?subject=help>
-List-Post: <mailto:planetccrma@ccrma.stanford.edu>
-List-Subscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
-	<mailto:planetccrma-request@ccrma.stanford.edu?subject=subscribe>
-List-Unsubscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
-	<mailto:planetccrma-request@ccrma.stanford.edu?subject=unsubscribe>
-List-Archive: <http://ccrma-mail.stanford.edu/pipermail/planetccrma/>
-To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: alsa-devel@alsa-project.org, planetccrma@ccrma.Stanford.EDU
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from m15-68.126.com (m15-68.126.com [220.181.15.68])
+	by alsa0.perex.cz (Postfix) with SMTP id 0374424359
+	for <alsa-devel@alsa-project.org>; Fri,  7 Dec 2007 03:30:43 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>, alsa-user <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 27, 2007 11:45 AM, Fernando Lopez-Lezcano
-<nando@ccrma.stanford.edu> wrote:
-> Hi, anyone has a pcmcia rme card running? And working? With a reasonably
-> recent alsa? (this probably applies also for the regular pci rme cards,
-> I've had reports on the Planet CCRMA list about problems that sound
-> similar to this one).
->
+Hi, all:
+We are on a project using alsa. 
+There are three applications will use the sound card, but we only have one physical card.
+My plan is to create virtual device for each application. How I'm gonna control the volume of each device, which interface to use?
+I want this feature because when one application need to be exclusive, it can mute the other virtual devices.
+Any comments or advices is welcome.  Thanks
 
-I have a RME Hammerfall HDSP PCI card with a Multiface unit which was
-working fine with Fedora 7. When I upgraded to Fedora 8 recently it
-stopped working properly. I discovered I could get sound out of it
-using aplay with a mono sound file as it seemed to send the mono input
-to all outputs but playing a stereo file would not play out the first
-two analog outputs like it did with Fedora 7(I couldn't tell where the
-output was going).
-
-Reverting to the stock F7 kernel returned functionality to normal so I
-downloaded the source packages for the F7 and F8 kernels and had a
-quick peek. They both seem to be using the same upstream kernel source
-but with different patch sets applied. The Fedora 8 kernel source
-contains a ~1MB alsa patch that I imagine has something to do with the
-breakage.
-
-Tim.
+BR
+Feng
