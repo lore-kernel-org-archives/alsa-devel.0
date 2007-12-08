@@ -1,17 +1,13 @@
-From: feng_tian <feng_tian@126.com>
-Subject: Re: can't use dmixer
-Date: Sat, 8 Dec 2007 16:17:34 +0800 (CST)
-Message-ID: <15198768.595131197101854992.JavaMail.coremail@bj126app78.126.com>
-References: <1196840557.10030.114.camel@razman.gruemaster.com>
-	<18616081.324771196835836994.JavaMail.coremail@bj126app88.126.com>
+From: Dave Dillow <dave@thedillows.org>
+Subject: speaker-test stalls
+Date: Sat, 08 Dec 2007 15:58:40 -0500
+Message-ID: <1197147520.3588.38.camel@obelisk.thedillows.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="=-Y3NdjqNqaNbpFKcBY81e"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m15-78.126.com (m15-78.126.com [220.181.15.78])
-	by alsa0.perex.cz (Postfix) with SMTP id 82EC92467D
-	for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2007 09:17:42 +0100 (CET)
-In-Reply-To: <1196840557.10030.114.camel@razman.gruemaster.com>
+Received: from smtp.knology.net (smtp.knology.net [24.214.63.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7296A103899
+	for <alsa-devel@alsa-project.org>; Sat,  8 Dec 2007 21:58:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,104 +17,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Fernando Papa <fpapa@adinet.com.uy>
 List-Id: alsa-devel@alsa-project.org
 
-SSB1cGRhdGVkIG15IEFMU0EgZHJpdmVyLCBsaWJzIGFuZCB1dGlscyB0byAxLjAuMTUsIGJ1dCB3
-aGVuIEkgdXNlIGRtaXggb2YgYXBsYXksIGl0IHN0aWxsIGNvbXBsYWludHMgdGhlIGVycm9yOgoK
-QUxTQSBsaWIgcGNtX2RpcmVjdC5jOjc5MDooc25kX3BjbV9kaXJlY3RfaW5pdGlhbGl6ZV9zbGF2
-ZSkgc2xhdmUgcGx1Z2luIGRvZXMgbm90IHN1cHBvcnQgbW1hcCBpbnRlcmxlYXZlZCBvciBtbWFw
-IG5vbmludGVybGVhdmVkIGFjY2VzcwpBTFNBIGxpYiBwY21fZG1peC5jOjg2NDooc25kX3BjbV9k
-bWl4X29wZW4pIHVuYWJsZSB0byBpbml0aWFsaXplIHNsYXZlCmFwbGF5OiBtYWluOjU0NzogYXVk
-aW8gb3BlbiBlcnJvcjogSW52YWxpZCBhcmd1bWVudAoKSSBkb24ndCB0aGluayB0aGF0IGl0J3Mg
-c291bmQgY2FyZCBkb2Vzbid0IHN1cHBvcnQgdGhpcyBtbWFwLiBEbWl4IGlzIGEgc29mdCBtaXhl
-ciwgcmlnaHQ/IFNvIHdoZXJlIHNob3VsZCBJIHN0YXJ0IHRvIGZpeCB0aGlzIHByb2JsZW0uCkFu
-eSBjb21tZW50cyBvciBhZHZpY2VzIGFyZSB3ZWxjb21lLgoKQlIKRmVuZwoKCgoKIAogCgrU2jIw
-MDctMTItMDWjrCJUb2JpbiBEYXZpcyIgPHRkYXZpc0Bkc2wtb25seS5uZXQ+INC0tcCjugoKRmly
-c3QgYW5kIGZvcmVtb3N0LCB5b3UgYXJlIHJ1bm5pbmcgb24gYSB2ZXJzaW9uIHRoYXQgaXMgcmVh
-bGx5IG9sZCAoYnkKTGludXggc3RhbmRhcmRzKS4gIFRoZSBjdXJyZW50IHJlbGVhc2UgaXMgMS4w
-LjE1LiAgSSdkIHN1Z2dlc3QgdXBncmFkaW5nCmFuZCBzZWVpbmcgaWYgdGhhdCBzb2x2ZXMgeW91
-ciBpc3N1ZS4gIFJlcG9zdCBpZiBpdCBkb2Vzbid0LgoKVG9iaW4KCk9uIFdlZCwgMjAwNy0xMi0w
-NSBhdCAxNDoyMyArMDgwMCwgZmVuZ190aWFuIHdyb3RlOgoKPiBIaSwgYWxsOgo+IEkgaGF2ZSBh
-IHByb2JsZW0gd2l0aCBkbWl4IG9mIGFsc2EuIAo+IEknbSB1c2luZyBhbHNhIHYxLjAuMTFyYzIg
-bm93LiBBbmQgbWFrZSBpdCBydW5uaW5nIG9uIEFUTUVMIEFUOTFTQU05MjYwRUsgYm9hcmQuIEl0
-IHJ1bnMgb2sgd2l0aG91dCBEbWl4LiBCdXQgd2hlbiBJIHRyaWVkOgo+IGJhc2g+IGFwbGF5IC1E
-IGRtaXhlciB0ZXN0Lndhdgo+IFRoZSBlcnJvcnMgYXJlOgo+IAo+IEFMU0EgbGliIHBjbV9kaXJl
-Y3QuYzo3OTA6KHNuZF9wY21fZGlyZWN0X2luaXRpYWxpemVfc2xhdmUpIHNsYXZlIHBsdWdpbiBk
-b2VzIG5vdCBzdXBwb3J0IG1tYXAgaW50ZXJsZWF2ZWQgb3IgbW1hcCBub25pbnRlcmxlYXZlZCBh
-Y2Nlc3MKPiBBTFNBIGxpYiBwY21fZG1peC5jOjg2NDooc25kX3BjbV9kbWl4X29wZW4pIHVuYWJs
-ZSB0byBpbml0aWFsaXplIHNsYXZlCj4gYXBsYXk6IG1haW46NTQ3OiBhdWRpbyBvcGVuIGVycm9y
-OiBJbnZhbGlkIGFyZ3VtZW50Cj4gCj4gVGhlIGNvbmZpZ3VyYXRpb24gb2YgbXkgYWxzYSBpbiAv
-ZXRjL2Fzb3VuZC5jb24gaXM6Cj4gCj4gcGNtLmNhcmQwIHsKPiAJdHlwZSBodwo+IAljYXJkIDAK
-PiAJfQo+IAkKPiBwY20uIWRlZmF1bHQgewo+IAl0eXBlIHBsdWcKPiAJc2xhdmUucGNtICJkbWl4
-ZXIiCj4gCX0KPiAJCj4gcGNtLmRtaXhlciB7Cj4gCXR5cGUgZG1peAo+IAlpcGNfa2V5IDEwMjQK
-PiAJc2xhdmUgewo+IAkJcGNtICJodzowLDAiCj4gCQlmb3JtYXQgUzE2X0xFCj4gCQlwZXJpb2Rf
-dGltZSAwCj4gCQlwZXJpb2Rfc2l6ZSAxMDI0Cj4gCQlidWZmZXJfc2l6ZSA0MDk2Cj4gCQkKPiAJ
-CXJhdGUgMjIwNTAgCj4gCQl9Cj4gCWJpbmRpbmdzIHsKPiAJCTAgMAo+IAkJMSAxCj4gCQl9Cj4g
-CX0KPiBjdGwuZG1peGVyIHsKPiAJdHlwZSBodwo+IAljYXJkIDAKPiAJZGV2aWNlIDAKPiAJfQo+
-IHBjbS5kc3Agewo+IAl0eXBlIHBsdWcKPiAJc2xhdmUucGNtICJkbWl4ZXIiICN1c2Ugb3VyIG5l
-dyBQQ00gaGVyZQo+IAl9Cj4gY3RsLm1peGVyewo+IAl0eXBlIGh3Cj4gCWNhcmQgMAo+IAl9Cj4g
-YmFzaD4gYXBsYXkgLUwKPiBnaXZlczoKPiAKPiBQQ00gbGlzdDoKPiBodyB7Cj4gCUBhcmdzLjAg
-Q0FSRAo+IAlAYXJncy4xIERFVgo+IAlAYXJncy4yIFNVQkRFVgo+IAlAYXJncy5DQVJEIHsKPiAJ
-CXR5cGUgc3RyaW5nCj4gCQlkZWZhdWx0IHsKPiAJCQlAZnVuYyBnZXRlbnYKPiAJCQl2YXJzIHsK
-PiAJCQkJMCBBTFNBX1BDTV9DQVJECj4gCQkJCTEgQUxTQV9DQVJECj4gCQkJfQo+IAkJCWRlZmF1
-bHQgewo+IAkJCQlAZnVuYyByZWZlcgo+IAkJCQluYW1lICdkZWZhdWx0cy5wY20uY2FyZCcKPiAJ
-CQl9Cj4gCQl9Cj4gCX0KPiAJQGFyZ3MuREVWIHsKPiAJCXR5cGUgaW50ZWdlcgo+IAkJZGVmYXVs
-dCB7Cj4gCQkJQGZ1bmMgaWdldGVudgo+IAkJCXZhcnMgewo+IAkJCQkwIEFMU0FfUENNX0RFVklD
-RQo+IAkJCX0KPiAJCQlkZWZhdWx0IHsKPiAJCQkJQGZ1bmMgcmVmZXIKPiAJCQkJbmFtZSAnZGVm
-YXVsdHMucGNtLmRldmljZScKPiAJCQl9Cj4gCQl9Cj4gCX0KPiAJQGFyZ3MuU1VCREVWIHsKPiAJ
-CXR5cGUgaW50ZWdlcgo+IAkJZGVmYXVsdCB7Cj4gCQkJQGZ1bmMgcmVmZXIKPiAJCQluYW1lICdk
-ZWZhdWx0cy5wY20uc3ViZGV2aWNlJwo+IAkJfQo+IAl9Cj4gCXR5cGUgaHcKPiAJY2FyZCAkQ0FS
-RAo+IAlkZXZpY2UgJERFVgo+IAlzdWJkZXZpY2UgJFNVQkRFVgo+IH0KPiBwbHVnaHcgewo+IAlA
-YXJncy4wIENBUkQKPiAJQGFyZ3MuMSBERVYKPiAJQGFyZ3MuMiBTVUJERVYKPiAJQGFyZ3MuQ0FS
-RCB7Cj4gCQl0eXBlIHN0cmluZwo+IAkJZGVmYXVsdCB7Cj4gCQkJQGZ1bmMgZ2V0ZW52Cj4gCQkJ
-dmFycyB7Cj4gCQkJCTAgQUxTQV9QQ01fQ0FSRAo+IAkJCQkxIEFMU0FfQ0FSRAo+IAkJCX0KPiAJ
-CQlkZWZhdWx0IHsKPiAJCQkJQGZ1bmMgcmVmZXIKPiAJCQkJbmFtZSAnZGVmYXVsdHMucGNtLmNh
-cmQnCj4gCQkJfQo+IAkJfQo+IAl9Cj4gCUBhcmdzLkRFViB7Cj4gCQl0eXBlIGludGVnZXIKPiAJ
-CWRlZmF1bHQgewo+IAkJCUBmdW5jIGlnZXRlbnYKPiAJCQl2YXJzIHsKPiAJCQkJMCBBTFNBX1BD
-TV9ERVZJQ0UKPiAJCQl9Cj4gCQkJZGVmYXVsdCB7Cj4gCQkJCUBmdW5jIHJlZmVyCj4gCQkJCW5h
-bWUgJ2RlZmF1bHRzLnBjbS5kZXZpY2UnCj4gCQkJfQo+IAkJfQo+IAl9Cj4gCUBhcmdzLlNVQkRF
-ViB7Cj4gCQl0eXBlIGludGVnZXIKPiAJCWRlZmF1bHQgewo+IAkJCUBmdW5jIHJlZmVyCj4gCQkJ
-bmFtZSAnZGVmYXVsdHMucGNtLnN1YmRldmljZScKPiAJCX0KPiAJfQo+IAl0eXBlIHBsdWcKPiAJ
-c2xhdmUucGNtIHsKPiAJCXR5cGUgaHcKPiAJCWNhcmQgJENBUkQKPiAJCWRldmljZSAkREVWCj4g
-CQlzdWJkZXZpY2UgJFNVQkRFVgo+IAl9Cj4gfQo+IHBsdWcgewo+IAlAYXJncy4wIFNMQVZFCj4g
-CUBhcmdzLlNMQVZFIHsKPiAJCXR5cGUgc3RyaW5nCj4gCX0KPiAJdHlwZSBwbHVnCj4gCXNsYXZl
-LnBjbSAkU0xBVkUKPiB9Cj4gc2htIHsKPiAJQGFyZ3MuMCBTT0NLRVQKPiAJQGFyZ3MuMSBQQ00K
-PiAJQGFyZ3MuU09DS0VUIHsKPiAJCXR5cGUgc3RyaW5nCj4gCX0KPiAJQGFyZ3MuUENNIHsKPiAJ
-CXR5cGUgc3RyaW5nCj4gCX0KPiAJdHlwZSBzaG0KPiAJc2VydmVyICRTT0NLRVQKPiAJcGNtICRQ
-Q00KPiB9Cj4gdGVlIHsKPiAJQGFyZ3MuMCBTTEFWRQo+IAlAYXJncy4xIEZJTEUKPiAJQGFyZ3Mu
-MiBGT1JNQVQKPiAJQGFyZ3MuU0xBVkUgewo+IAkJdHlwZSBzdHJpbmcKPiAJfQo+IAlAYXJncy5G
-SUxFIHsKPiAJCXR5cGUgc3RyaW5nCj4gCX0KPiAJQGFyZ3MuRk9STUFUIHsKPiAJCXR5cGUgc3Ry
-aW5nCj4gCQlkZWZhdWx0IHJhdwo+IAl9Cj4gCXR5cGUgZmlsZQo+IAlzbGF2ZS5wY20gJFNMQVZF
-Cj4gCWZpbGUgJEZJTEUKPiAJZm9ybWF0ICRGT1JNQVQKPiB9Cj4gZmlsZSB7Cj4gCUBhcmdzLjAg
-RklMRQo+IAlAYXJncy4xIEZPUk1BVAo+IAlAYXJncy5GSUxFIHsKPiAJCXR5cGUgc3RyaW5nCj4g
-CX0KPiAJQGFyZ3MuRk9STUFUIHsKPiAJCXR5cGUgc3RyaW5nCj4gCQlkZWZhdWx0IHJhdwo+IAl9
-Cj4gCXR5cGUgZmlsZQo+IAlzbGF2ZS5wY20gbnVsbAo+IAlmaWxlICRGSUxFCj4gCWZvcm1hdCAk
-Rk9STUFUCj4gfQo+IG51bGwgewo+IAl0eXBlIG51bGwKPiB9Cj4gY2FyZHMgJ2NhcmRzLnBjbScK
-PiBmcm9udCAnY2FyZHMucGNtLmZyb250Jwo+IHJlYXIgJ2NhcmRzLnBjbS5yZWFyJwo+IGNlbnRl
-cl9sZmUgJ2NhcmRzLnBjbS5jZW50ZXJfbGZlJwo+IHNpZGUgJ2NhcmRzLnBjbS5zaWRlJwo+IHN1
-cnJvdW5kNDAgJ2NhcmRzLnBjbS5zdXJyb3VuZDQwJwo+IHN1cnJvdW5kNDEgJ2NhcmRzLnBjbS5z
-dXJyb3VuZDQxJwo+IHN1cnJvdW5kNTAgJ2NhcmRzLnBjbS5zdXJyb3VuZDUwJwo+IHN1cnJvdW5k
-NTEgJ2NhcmRzLnBjbS5zdXJyb3VuZDUxJwo+IHN1cnJvdW5kNzEgJ2NhcmRzLnBjbS5zdXJyb3Vu
-ZDcxJwo+IGllYzk1OCAnY2FyZHMucGNtLmllYzk1OCcKPiBzcGRpZiAnY2FyZHMucGNtLmllYzk1
-OCcKPiBtb2RlbSAnY2FyZHMucGNtLm1vZGVtJwo+IHBob25lbGluZSAnY2FyZHMucGNtLnBob25l
-bGluZScKPiBkbWl4ICdjYXJkcy5wY20uZG1peCcKPiBkc25vb3AgJ2NhcmRzLnBjbS5kc25vb3An
-Cj4gY2FyZDAgewo+IAl0eXBlIGh3Cj4gCWNhcmQgMAo+IH0KPiBkZWZhdWx0IHsKPiAJdHlwZSBw
-bHVnCj4gCXNsYXZlLnBjbSBkbWl4ZXIKPiB9Cj4gZG1peGVyIHsKPiAJdHlwZSBkbWl4Cj4gCWlw
-Y19rZXkgMTAyNAo+IAlzbGF2ZSB7Cj4gCQlwY20gJ2h3OjAsMCcKPiAJCWZvcm1hdCBTMTZfTEUK
-PiAJCXBlcmlvZF90aW1lIDAKPiAJCXBlcmlvZF9zaXplIDEwMjQKPiAJCWJ1ZmZlcl9zaXplIDQw
-OTYKPiAJCXJhdGUgMjIwNTAKPiAJfQo+IAliaW5kaW5ncyB7Cj4gCQkwIDAKPiAJCTEgMQo+IAl9
-Cj4gfQo+IGRzcCB7Cj4gCXR5cGUgcGx1Zwo+IAlzbGF2ZS5wY20gZG1peGVyCj4gfQo+IElzIHRo
-ZXJlIGFueW9uZSBleHBlcmllbmNlZCBpbiB0aGlzIGtpbmQgb2YgZXJyb3I/ICBBbnkgaGVscHMg
-b3IgYWR2aWNlcyBpcyB3ZWNvbWUuCj4gCj4gQlIKPiBGZW5nCj4gX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+
-IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgotLSAKVG9iaW4gRGF2aXMgIAoKCkkn
-bSBoYXZpbmcgYSB0YXgtZGVkdWN0aWJsZSBleHBlcmllbmNlISAgSSBuZWVkIGFuIGVuZXJneSBj
-cnVuY2ghIQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--=-Y3NdjqNqaNbpFKcBY81e
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+While working with Fernando to get the sis7019 driver working in his
+buildroot setup, we kept running into a lockup of the PCM stream when
+using speaker-test. aplay was fine, as was other I finally tracked it
+down to a combination of uclibc not doing block reads, which led to
+XRUNs, and what I thought was issue in snd_pcm_lib_write1() when trying
+to fill up the tail of the PCM buffer with a large write, when there was
+an intervening small write.
+
+As it turns out, the lockup problem may simply be in speaker-write's
+sw_params settings -- it calls snd_pcm_sw_params_set_avail_min() to set
+the minium write to the period size, and
+snd_pcm_sw_params_set_start_threshold() to start once the buffer has
+been filled. This doesn't account for odd wave file lengths and XRUNs.
+
+The problem arises when the wave data is not a multiple of the period
+size, and you get an XRUN when there is less than buffer_size samples
+remaining in the current loop. 
+
+So for example, period size is 8192, buffer is 32768, and the wave file
+has 71042 samples (Front_Left.wav for speaker-test).
+
+speaker-test will break that into 8 writes of 8192 samples, and one of
+5506.
+
+If you get a XRUN in the last 32k of the file, the PCM will be stopped,
+and prepared, and we'll start loading data into again. Because we have a
+tail of 5506 samples, we get to the point where the available space is
+less than our minimum, and then snd_pcm_lib_write1() will wait forever
+for the available space to be >= runtime->avail_min, even though the
+channel is stopped.
+
+[snip from a trace, patch to pcm_lib.c attached]
+writei size 8192 avail 32768 min 8192 xfer 1 state 2
+writei size 8192 avail 24576 min 8192 xfer 1 state 2
+writei size 5506 avail 16384 min 8192 xfer 1 state 2
+writei size 8192 avail 10878 min 8192 xfer 1 state 2
+writei size 8192 avail 2686 min 8192 xfer 1 state 2
+writei loop avail 2686 min 8192
+writei loop avail 2686 min 8192
+writei loop avail 2686 min 8192
+writei loop avail 2686 min 8192
+
+
+Assuming that this is desired behavior from the kernel side, then I see
+three options to fix this in speaker-test:
+1) snd_pcm_sw_params_set_avail_min() to 1 sample
+2) snd_pcm_sw_params_set_start_threshold() to start when (nperiods - 1)
+are ready (or be even more aggressive)
+3) call snd_pcm_drain() at the end of each loop to clear out the buffer.
+This won't help if the wave file has fewer samples than the buffer size.
+
+Options 1 or 2 seem to be best.
+
+Thoughts?
+
+Dave
+
+
+--=-Y3NdjqNqaNbpFKcBY81e
+Content-Disposition: attachment; filename=pcm_lib_debug.patch
+Content-Type: text/x-patch; name=pcm_lib_debug.patch; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL3NvdW5kL2NvcmUvcGNtX2xpYi5jIGIvc291bmQvY29yZS9wY21fbGliLmMN
+CmluZGV4IDgwNmYxZmIuLmRlYWM1ZTggMTAwNjQ0DQotLS0gYS9zb3VuZC9jb3JlL3BjbV9saWIu
+Yw0KKysrIGIvc291bmQvY29yZS9wY21fbGliLmMNCkBAIC0xNzcsNiArMTc3LDggQEAgc3RhdGlj
+IGlubGluZSBpbnQgc25kX3BjbV91cGRhdGVfaHdfcHRyX3Bvc3Qoc3RydWN0IHNuZF9wY21fc3Vi
+c3RyZWFtICpzdWJzdHJlYW0NCiAJCQl4cnVuKHN1YnN0cmVhbSk7DQogCQlyZXR1cm4gLUVQSVBF
+Ow0KIAl9DQorCXByaW50ayhLRVJOX0RFQlVHICJhdmFpbCAlbHUgbWF4ICVsdSBtaW4gJWx1XG4i
+LCBhdmFpbCwgcnVudGltZS0+YXZhaWxfbWF4LA0KKwkJCQlydW50aW1lLT5jb250cm9sLT5hdmFp
+bF9taW4pOw0KIAlpZiAoYXZhaWwgPj0gcnVudGltZS0+Y29udHJvbC0+YXZhaWxfbWluKQ0KIAkJ
+d2FrZV91cCgmcnVudGltZS0+c2xlZXApOw0KIAlyZXR1cm4gMDsNCkBAIC0xNjUxLDYgKzE2NTMs
+MTAgQEAgc3RhdGljIHNuZF9wY21fc2ZyYW1lc190IHNuZF9wY21fbGliX3dyaXRlMShzdHJ1Y3Qg
+c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCiAJCWlmIChydW50aW1lLT5zbGVlcF9taW4g
+PT0gMCAmJiBydW50aW1lLT5zdGF0dXMtPnN0YXRlID09IFNORFJWX1BDTV9TVEFURV9SVU5OSU5H
+KQ0KIAkJCXNuZF9wY21fdXBkYXRlX2h3X3B0cihzdWJzdHJlYW0pOw0KIAkJYXZhaWwgPSBzbmRf
+cGNtX3BsYXliYWNrX2F2YWlsKHJ1bnRpbWUpOw0KKwkJcHJpbnRrKEtFUk5fREVCVUcgIndyaXRl
+aSBzaXplICVsdSBhdmFpbCAlbHUgbWluICVsdSB4ZmVyICVsdSBzdGF0ZSAlZFxuIiwNCisJCQkJ
+c2l6ZSwgYXZhaWwsIHJ1bnRpbWUtPmNvbnRyb2wtPmF2YWlsX21pbiwgcnVudGltZS0+eGZlcl9h
+bGlnbiwNCisJCQkJcnVudGltZS0+c3RhdHVzLT5zdGF0ZSk7DQorDQogCQlpZiAoKChhdmFpbCA8
+IHJ1bnRpbWUtPmNvbnRyb2wtPmF2YWlsX21pbiAmJiBzaXplID4gYXZhaWwpIHx8DQogCQkgICAo
+c2l6ZSA+PSBydW50aW1lLT54ZmVyX2FsaWduICYmIGF2YWlsIDwgcnVudGltZS0+eGZlcl9hbGln
+bikpKSB7DQogCQkJd2FpdF9xdWV1ZV90IHdhaXQ7DQpAQCAtMTY5NSw2ICsxNzAxLDggQEAgc3Rh
+dGljIHNuZF9wY21fc2ZyYW1lc190IHNuZF9wY21fbGliX3dyaXRlMShzdHJ1Y3Qgc25kX3BjbV9z
+dWJzdHJlYW0gKnN1YnN0cmVhbSwNCiAJCQkJCWJyZWFrOw0KIAkJCQl9DQogCQkJCWF2YWlsID0g
+c25kX3BjbV9wbGF5YmFja19hdmFpbChydW50aW1lKTsNCisJCQkJcHJpbnRrKEtFUk5fREVCVUcg
+IndyaXRlaSBsb29wIGF2YWlsICVsdSBtaW4gJWx1XG4iLCBhdmFpbCwNCisJCQkJCQlydW50aW1l
+LT5jb250cm9sLT5hdmFpbF9taW4pOw0KIAkJCQlpZiAoYXZhaWwgPj0gcnVudGltZS0+Y29udHJv
+bC0+YXZhaWxfbWluKSB7DQogCQkJCQlzdGF0ZSA9IFJFQURZOw0KIAkJCQkJYnJlYWs7DQo=
+
+
+--=-Y3NdjqNqaNbpFKcBY81e
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-Y3NdjqNqaNbpFKcBY81e--
