@@ -1,26 +1,20 @@
-From: "SeNS" <sens_boston@yahoo.com>
-Subject: Re: cmipci: have only surround40 on 6 ch card
-Date: Mon, 10 Dec 2007 12:00:49 -0500
-Message-ID: <fjjrbk$ktj$1@ger.gmane.org>
-References: <fjcgls$55i$1@ger.gmane.org>
-	<1197284022.25582.1225725951@webmail.messagingengine.com>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: [alsa-cvslog] alsa-kernel: cmipci: disable "Modem"
+	control on version 39 or newer chips
+Date: Mon, 10 Dec 2007 18:23:56 +0100
+Message-ID: <m23aua79ar.fsf@vador.mandriva.com>
+References: <ALOGGER1197288764.96@alsa-project.org>
+	<m2ve768zyk.fsf@vador.mandriva.com>
+	<1197299427.3147.1225765285@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0227D24474
-	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 18:21:10 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1J1mDe-0000R5-Rz
-	for alsa-devel@alsa-project.org; Mon, 10 Dec 2007 17:15:02 +0000
-Received: from c-71-233-211-188.hsd1.ma.comcast.net ([71.233.211.188])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 17:15:02 +0000
-Received: from sens_boston by c-71-233-211-188.hsd1.ma.comcast.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 17:15:02 +0000
+Received: from mx1.mandriva.com (mx1.mandriva.com [212.85.150.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 80F2424474
+	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 18:24:33 +0100 (CET)
+In-Reply-To: <1197299427.3147.1225765285@webmail.messagingengine.com> (Clemens
+	Ladisch's message of "Mon\, 10 Dec 2007 16\:10\:27 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,16 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello, Clemens!
-You wrote  on Mon, 10 Dec 2007 11:53:42 +0100:
+"Clemens Ladisch" <clemens@ladisch.de> writes:
 
-Sorry for double-post.
+> > > description:
+> > > cmipci: disable "Modem" control on version 39 or newer chips
+> > > 
+> > > On version 39 or newer chips, we better remove the "Modem" control
+> > > because this register bit now mutes the front channels of the
+> > > multichannel stream.
+> > 
+> > shouldn't that deserve a comment in the code?
+> 
+> Not in my opinion.  The "if (version < 39)" makes clear in which
+> version the control is used, and both the old and new bits are
+> documented in the respective data sheets.
 
- CL> What model is this?
-
-This is exact model: http://www.dealsonic.com/cmedcmi86cha1.html
-
-WBR, SeNS
+Still a comment would prevent forcing people do double check the data
+sheets in order to understand the code...
