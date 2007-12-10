@@ -1,20 +1,19 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: [PATCH 2/2] sis7019: add support for pre-2.6
-	kernels
-Date: Mon, 10 Dec 2007 15:48:44 +0100
-Message-ID: <1197298124.31051.1225761969@webmail.messagingengine.com>
-References: <1197158043.3588.52.camel@obelisk.thedillows.org>
-	<1197273182.31526.1225705529@webmail.messagingengine.com>
-	<1197296683.3994.11.camel@obelisk.thedillows.org>
+From: "Clemens Ladisch" <clemens@ladisch.de>
+Subject: Re: [alsa-cvslog] alsa-kernel: cmipci: disable "Modem"
+ control on version 39 or newer chips
+Date: Mon, 10 Dec 2007 16:10:27 +0100
+Message-ID: <1197299427.3147.1225765285@webmail.messagingengine.com>
+References: <ALOGGER1197288764.96@alsa-project.org>
+	<m2ve768zyk.fsf@vador.mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id E93E51038E1
-	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 15:48:44 +0100 (CET)
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 6D8C71038D8
+	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 16:10:28 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1197296683.3994.11.camel@obelisk.thedillows.org>
+In-Reply-To: <m2ve768zyk.fsf@vador.mandriva.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dave Dillow <dave@thedillows.org>
+To: Thierry Vignaud <tvignaud@mandriva.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dave Dillow wrote:
-> On Mon, 2007-12-10 at 08:53 +0100, Clemens Ladisch wrote:
-> > Dave Dillow wrote:
-> > > The sis7019 driver uses __ffs(), which is available in 2.6 kernels, but
-> > > not in most earlier ones. This patches the driver to use a local version
-> > > assembly version, as the hardware is SiS 55x only (i486/Pentium-ish).
-> > > 
-> > > ++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
-> > > ++static inline unsigned long sis_ffs(unsigned long word)
-> > > ++{
-> > > ++	__asm__("bsfl %1,%0"
-> > > ++		:"=r" (word)
-> > > ++		:"rm" (word));
-> > > ++	return word;
-> > > ++}
-> > > ++#endif
+Thierry Vignaud wrote:
+> Clemens Ladisch <clemens@ladisch.de> writes:
+> > description:
+> > cmipci: disable "Modem" control on version 39 or newer chips
 > > 
-> > This should go into alsa-driver/include/adriver.h.
+> > On version 39 or newer chips, we better remove the "Modem" control
+> > because this register bit now mutes the front channels of the
+> > multichannel stream.
 > 
-> I'm not sure -- there's no other inline assembly there, and if I provide
-> an x86 _ffs() fallback, then it'll break on other architectures...
+> shouldn't that deserve a comment in the code?
 
-It won't break unless another driver actually uses __ffs(), and then we
-can still add a generic implementation.
+Not in my opinion.  The "if (version < 39)" makes clear in which version
+the control is used, and both the old and new bits are documented in the
+respective data sheets. 
 
 
 Regards,
