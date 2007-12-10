@@ -1,25 +1,19 @@
-From: =?ISO-8859-1?Q?Lasse_K=E4rkk=E4inen?= <tronic+8nhy@trn.iki.fi>
-Subject: Segfault in mix_areas3_smp with Edirol UA-25 in
-	advance-mode
-Date: Mon, 10 Dec 2007 06:35:16 +0200
-Message-ID: <475CC204.4040903@trn.iki.fi>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: Query regarding external alsa plugins
+Date: Mon, 10 Dec 2007 13:02:53 +0530
+Message-ID: <61445c750712092332sdd2368dr7788df16fb95a2ee@mail.gmail.com>
+References: <61445c750712070220s1185cea2qd4624affee80af1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pne-smtpout4-sn1.fre.skanova.net
-	(pne-smtpout4-sn1.fre.skanova.net [81.228.11.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA1882447E
-	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 05:35:37 +0100 (CET)
-Received: from trn.iki.fi (88.195.48.158) by pne-smtpout4-sn1.fre.skanova.net
-	(7.3.129) id 474FD0210006A8F3 for alsa-devel@alsa-project.org;
-	Mon, 10 Dec 2007 05:35:23 +0100
-Received: from trn.iki.fi (localhost [127.0.0.1])
-	by trn.iki.fi (Postfix) with ESMTP id 95CF345B802CE
-	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 06:35:36 +0200 (EET)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by trn.iki.fi (Postfix) with ESMTP
-	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 06:35:36 +0200 (EET)
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8DBC1038D2
+	for <alsa-devel@alsa-project.org>; Mon, 10 Dec 2007 08:32:56 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so3257145wag
+	for <alsa-devel@alsa-project.org>; Sun, 09 Dec 2007 23:32:55 -0800 (PST)
+In-Reply-To: <61445c750712070220s1185cea2qd4624affee80af1@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,56 +26,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-No asound.conf, just the default dmix configuration. Trying to play
-audio via this card randomly causes crashes. Might be a race condition
-between closing the PCM at the same time as opening a new one or
-something like that, but I didn't debug it further. I get this with both
-Xine and GStreamer, using ALSA as audio output.
+On Dec 7, 2007 3:50 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
 
-Using other sound cards or using UA-25 without advance mode=B9 there are
-no segfaults.
+> Hi
+>
+> I am writing an external IO type plugin for my board since my audio driver
+> is going to be a user space driver
+> i.e. no alsa kernel driver because of some technical reasons. My pluging
+> works okay and now I want to provide
+> a mixer control interface like volume control and playback path  selection
+> etc.
+>
+> Is there anything like mixer plugin etc which can be intergrated with my
+> existing plugin? Can I get a test code
+> somewhere?
+>
 
-Advanced Linux Sound Architecture Driver Version 1.0.14 (Fri Jul 20
-09:12:58 2007 UTC).
-alsa-lib version: 1.0.14a
+To further elaborate my question , when I do an aplay the control comes to
+my plugin and I can play the audio samples, but I want to some mechanism
+using which,
 
-GStreamer:
-#0  0x00002b54714d58dc in mix_areas3_smp () from /usr/lib/libasound.so.2
-#1  0x00002b54714d6477 in snd_pcm_dmix_sync_area () from
-/usr/lib/libasound.so.2
-#2  0x00002b54714d6a4e in snd_pcm_dmix_start () from /usr/lib/libasound.so.2
-#3  0x00002b54714bff60 in snd_pcm_rate_start () from /usr/lib/libasound.so.2
-#4  0x00002b54714ac357 in snd_pcm_write_areas () from
-/usr/lib/libasound.so.2
-#5  0x00002b54714b4ca2 in snd_pcm_mmap_writei () from
-/usr/lib/libasound.so.2
-#6  0x00002aaaaf89dc1c in gst_alsasink_write (asink=3D0x1bf1620,
-data=3D0x1a51a40, length=3D3760) at gstalsasink.c:786
-#7  0x00002aaaadf46ca0 in audioringbuffer_thread_func (buf=3D<value
-optimized out>) at gstaudiosink.c:226
-#8  0x00002b5472bf72b4 in g_thread_create_proxy () from
-/usr/lib/libglib-2.0.so.0
-#9  0x00002b547202bfe7 in start_thread () from /lib/libpthread.so.0
+#amixer -D my_control_plugin cset numid=1 100 //say volume control
 
-Xine:
-#0  0x00002b9c574d88dc in mix_areas3_smp () from /usr/lib/libasound.so.2
-#1  0x00002b9c574d9477 in snd_pcm_dmix_sync_area () from
-/usr/lib/libasound.so.2
-#2  0x00002b9c574d98fa in snd_pcm_dmix_mmap_commit () from
-/usr/lib/libasound.so.2
-#3  0x00002b9c574b96f0 in snd_pcm_plugin_write_areas () from
-/usr/lib/libasound.so.2
-#4  0x00002b9c574af29a in snd_pcm_write_areas () from
-/usr/lib/libasound.so.2
-#5  0x00002b9c574b9052 in snd_pcm_plugin_writei () from
-/usr/lib/libasound.so.2
-#6  0x00002aaaaefa8078 in ao_alsa_write () from
-/usr/lib64/xine/plugins/1.1.8/xineplug_ao_out_alsa.so
-#7  0x00002b9c542397a7 in ao_loop () from /usr/lib/libxine.so.1
-#8  0x00002b9c5802efe7 in start_thread () from /lib/libpthread.so.0
+should also come to my plugin, a control plugin may be? How do I do this, I
+dont know any way to specify the plugin path while using amixer command.
 
-=B9) There is a switch on this USB sound card for switching between modes.
-In advance mode the device is not standard USB Audio device, but it
-supports 24 bit packed samples and sample rates higher than 44.1 kHz.
-Otherwise it is a standard USB audio device, but only supports 16 bit
-44.1 kHz.
+-pharaoh
