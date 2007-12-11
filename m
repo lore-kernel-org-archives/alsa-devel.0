@@ -1,14 +1,22 @@
-From: zhejiang <zhe.jiang@intel.com>
-Subject: [patch] Device ID for MSI L745
-Date: Tue, 11 Dec 2007 15:45:31 +0800
-Message-ID: <1197359131.668.71.camel@localhost.localdomain>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: cmipci: have only surround40 on 6 ch card
+Date: Tue, 11 Dec 2007 09:43:28 +0100
+Message-ID: <1197362608.17540.1225924713@webmail.messagingengine.com>
+References: <fjcgls$55i$1@ger.gmane.org>
+	<1197284022.25582.1225725951@webmail.messagingengine.com>
+	<fjjr8a$ke9$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25F46103822
-	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 08:46:20 +0100 (CET)
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id AF46A1038DF
+	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 09:43:29 +0100 (CET)
+Received: from compute1.internal (compute1.internal [10.202.2.41])
+	by out1.messagingengine.com (Postfix) with ESMTP id 243F577CBE
+	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 03:43:28 -0500 (EST)
+Content-Disposition: inline
+In-Reply-To: <fjjr8a$ke9$1@ger.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,27 +26,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+SeNS wrote:
+> You wrote  on Mon, 10 Dec 2007 11:53:42 +0100:
+> 
+>  CL> These registers identify the chip as model 37 with four channels.
+>  CL> What model is this?
+> 
+> Chip should be this:
+> http://www.cmedia.com.tw/files/doc/PCI/CMI8738_6ch_series_spec_v18f_registers.pdf
 
-Please refer to the [0003641] on bugtracking system.
-The user found that "model=targa-2ch-dig" works and provided the ID.
+This is one of the datasheets that were used to write the driver, but
+this .pdf is for chip version 55 which is identified by one bit in the
+last byte of register 0c being set, which is not the case here:
+0c: 00 00 01 00
+             ^^
+
+> CL> In what ALSA version did it work?
+> 
+> Unfortunatelly can't remember that :-( Some like 1.0.10RC3 (latest on the
+> end of 2006).
+
+This is strange; the 6ch-detection code hasn't changed in the last five
+years.
 
 
-diff -Nur a/alsa-driver-hg20071211/alsa-kernel/pci/hda/patch_realtek.c
-b/alsa-driver-hg20071211/alsa-kernel/pci/hda/patch_realtek.c
---- a/alsa-driver-hg20071211/alsa-kernel/pci/hda/patch_realtek.c
-2007-12-04 09:00:07.000000000 +0800
-+++ b/alsa-driver-hg20071211/alsa-kernel/pci/hda/patch_realtek.c
-2007-12-11 15:30:20.000000000 +0800
-@@ -7173,6 +7173,7 @@
- 	SND_PCI_QUIRK(0x1462, 0x7327, "MSI", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x0349, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x0579, "MSI", ALC883_TARGA_2ch_DIG),
-+	SND_PCI_QUIRK(0x1462, 0x040d, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3729, "MSI S420", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3ef9, "MSI", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3b7f, "MSI", ALC883_TARGA_2ch_DIG),
+Regards,
+Clemens
