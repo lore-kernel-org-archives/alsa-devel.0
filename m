@@ -1,14 +1,23 @@
-From: Ben C <bchang_2@yahoo.com>
-Subject: ALSA external control plugin question
-Date: Tue, 11 Dec 2007 12:10:16 -0800 (PST)
-Message-ID: <426596.76239.qm@web36503.mail.mud.yahoo.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Question about pcm_formats[] array in
+	sound/core/pcm_misc.c
+Date: Tue, 11 Dec 2007 14:31:32 -0600
+Message-ID: <475EF3A4.70304@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web36503.mail.mud.yahoo.com (web36503.mail.mud.yahoo.com
-	[209.191.85.3]) by alsa0.perex.cz (Postfix) with SMTP id 60F5F244F6
-	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 21:10:22 +0100 (CET)
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 49263103822
+	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 21:31:45 +0100 (CET)
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
+	lBBKVWiT013477
+	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 13:31:38 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id lBBKVWNC020709
+	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 14:31:32 -0600 (CST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +30,39 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I have a newbie question. I'm trying to understand how the external control plugin fits into the picture.
+I'm confused about the entries for unsigned 24-bit sound in the pcm_formats[] array:
 
-I have an external PCM plugin that does some audio processing before sending it to the slave audio device. And I want to control the behavior of the processing with this control plugin. So before any playback is happening, any setting changes via the control plugin need to be stored somewhere, so when playback happens, it could be used. Also during playback, the control plugin needs to find and talk to the PCM plugin so settings could be changed during playback. Is there some sort of internal mechanism that allows this type of setting storage/retrieval and communication between control & PCM plugins to happen, or do I have to roll my own outside of ALSA?
+	[SNDRV_PCM_FORMAT_U24_BE] = {
+		.width = 24, .phys = 32, .le = 0, .signd = 0,
+		.silence = { 0x80, 0x00, 0x00 },
+	},
 
-I've tried to find examples, I've found the pulse control and maemo in the alsa-plugin tarball. But they both seem to use some sort of external server/device. What I'm looking for is ways to control an external PCM plugin that simply runs some audio processing algorithm, there's no additional server or device associated with it (well, just the slave, which would be specified in the config). Currently I have the PCM plugin working, but it can only read the settings from the alsa config file. Once playback starts it'll stick with the original settings. I also have the basics of the external control plugin working, but the controls currently don't do anything, since I don't know how to propagate the changes to the PCM plugin.
+and
 
-I've been searching on the web but haven't found much. I'm willing to buy books too, but I can't seem to find books on ALSA. I would appreciate any explanation, pointers to documents, or even just pointing me to existing source code that has done this.
+	[SNDRV_PCM_FORMAT_U24_3BE] = {
+		.width = 24, .phys = 24, .le = 0, .signd = 0,
+		.silence = { 0x80, 0x00, 0x00 },
+	},
 
-Thank you for your time and your help.
- 
+SNDRV_PCM_FORMAT_U24_BE means a 24-bit sample packed into a 32-bit word.  So I 
+presume that if the 24-bit sample is:
 
+0x123456
 
+then when that sample is written to memory, it looks like this:
 
-      ____________________________________________________________________________________
-Be a better friend, newshound, and 
-know-it-all with Yahoo! Mobile.  Try it now.  http://mobile.yahoo.com/;_ylt=Ahu06i62sR8HDtDypao8Wcj9tAcJ 
+X	X + 1	X + 2	X + 3
+0x00	0x12	0x34	0x56
+
+(where X is some address in memory).
+
+If that's so, shouldn't the entry for SNDRV_PCM_FORMAT_U24_BE look like this:
+
+	[SNDRV_PCM_FORMAT_U24_BE] = {
+		.width = 24, .phys = 32, .le = 0, .signd = 0,
+		.silence = { 0x00, 0x80, 0x00, 0x00 },
+	},                  ^^^^^^
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
