@@ -1,17 +1,23 @@
-From: Roman Haefeli <reduzierer@yahoo.de>
-Subject: Re: hdsp rpm support
-Date: Tue, 11 Dec 2007 18:01:13 +0100
-Message-ID: <1197392473.5899.4.camel@localhost.localdomain>
-References: <30226294.1197372079652.JavaMail.root@viefep27>
-Reply-To: reduzierer@yahoo.de
+From: Johannes Stezenbach <js@sig21.net>
+Subject: [PATCH] hda-intel: Enable Analog CD Input from
+	internal ATAPI	connector on Asus M2N-SLI.
+Date: Tue, 11 Dec 2007 18:46:08 +0100
+Message-ID: <20071211174608.GA10279@sig21.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4143452552636339485=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp112.plus.mail.re1.yahoo.com
-	(smtp112.plus.mail.re1.yahoo.com [69.147.102.75])
-	by alsa0.perex.cz (Postfix) with SMTP id 02CDC10382D
-	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 18:01:15 +0100 (CET)
-In-Reply-To: <30226294.1197372079652.JavaMail.root@viefep27>
+Received: from allen.werkleitz.de (allen.werkleitz.de [80.190.251.108])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E3E9244F9
+	for <alsa-devel@alsa-project.org>; Tue, 11 Dec 2007 18:46:18 +0100 (CET)
+Received: from p57a24fc3.dip.t-dialin.net ([87.162.79.195] helo=abc.local)
+	by allen.werkleitz.de with esmtpsa (TLS-1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.63) (envelope-from <js@sig21.net>) id 1J29BP-00075k-5E
+	for alsa-devel@alsa-project.org; Tue, 11 Dec 2007 18:46:17 +0100
+Received: from js by abc.local with local (Exim 4.68)
+	(envelope-from <js@sig21.net>) id 1J29BI-0002hU-Vn
+	for alsa-devel@alsa-project.org; Tue, 11 Dec 2007 18:46:08 +0100
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,53 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: kgrill@chello.at
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============4143452552636339485==
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Hi,
 
-hey k
+the internal CD connector on my Asus M2N-SLI Deluxe board doesn't
+work without the patch below, /proc/asound/card0/codec#0
+shows that the pin is disabled (Pin-ctls: 0x00).
 
-this  is great news! i am very glad to hear that. could you please
-inform us, probably announce a test-version on this list? or is there a
-better way to check the development state?
+I used kernel linux-2.6.24-rc4-190-g94545ba from Linus' git tree.
 
-are you by any chance related to thomas grill, who was/still is pretty
-involved in the puredata community?
+During my experiments I found that loading the snd-hda-intel
+driver with model=auto also enables the CD connector. It seems
+that for my board (BIOS version 1102) the BIOS configuration
+is correct and the "Asus M2N-SLI" quirk shouldn't be necessary?
+I get the following debug output:
 
-roman
+ALSA sound/pci/hda/hda_intel.c:727: codec_mask = 0x1
+ALSA sound/pci/hda/hda_codec.c:2140: hda_codec: model 'auto' is selected
+ALSA sound/pci/hda/hda_codec.c:2760: autoconfig: line_outs=4 (0x12/0x16/0x24/0x25/0x0)
+ALSA sound/pci/hda/hda_codec.c:2764:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA sound/pci/hda/hda_codec.c:2768:    hp_outs=1 (0x11/0x0/0x0/0x0/0x0)
+ALSA sound/pci/hda/hda_codec.c:2776:    inputs: mic=0x17, fmic=0x14, line=0x15, fline=0x0, cd=0x18, aux=0x0
 
-On Tue, 2007-12-11 at 12:21 +0100, kgrill@chello.at wrote:
-> I started to work on this about a year ago, but had to stop because my
-> son took the card to Istanbul where he spent a year studying. I'll get
-> back to it in the next days, and depending on how much has changed in
-> the meantime I may get something ready by the end of January. 
-> 
-> regards
-> kg
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+(which matches the board's actual connections)
+
+Anyway, if you think the patch below is correct the please apply. It
+works fine for me.
+
+There is one thing that I don't get however: If I run aplay it creates
+an additional "PCM" mixer control, which however doesn't have any
+effect. I guess this is intended for softvol, but I don't need
+it. How do I stop aplay from creating this control?
+(If it matters, I use Debian unstable, alsa-lib 1.0.15.)
 
 
-	
-		
-___________________________________________________________ 
-Der frühe Vogel fängt den Wurm. Hier gelangen Sie zum neuen Yahoo! Mail: http://mail.yahoo.de
+Thanks,
+Johannes
 
---===============4143452552636339485==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+---
+Enable Analog CD Input from internal ATAPI connector on Asus M2N-SLI.
 
---===============4143452552636339485==--
+Signed-off-by: Johannes Stezenbach <js@sig21.net>
+
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index 196ad3c..8c2aff4 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -2079,6 +2079,8 @@ static struct hda_verb ad1988_6stack_init_verbs[] = {
+ 	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
+ 	{0x3c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
+ 	{0x34, AC_VERB_SET_CONNECT_SEL, 0x0},
++	/* Analog CD Input */
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
+ 
+ 	{ }
+ };
