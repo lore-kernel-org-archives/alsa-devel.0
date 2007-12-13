@@ -1,17 +1,14 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: Alsa library for the arm-linux architecture
-Date: Thu, 13 Dec 2007 20:10:58 +0100
-Message-ID: <F186B5A9-AD39-4670-9152-254BC1B7EFB6@caiaq.de>
-References: <951b8d920712130537s2f6eacb1g53121e7e1c738b0d@mail.gmail.com>
-	<476172D3.6000602@freescale.com>
-Mime-Version: 1.0 (Apple Message framework v752.2)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Alex Garin <alex.garin@cgi.com>
+Subject: Dell-830 Intel Core2 Duo
+Date: Thu, 13 Dec 2007 13:53:29 -0500
+Message-ID: <1197572010.14856.118.camel@agarinlx>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89986245A9
-	for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2007 20:10:50 +0100 (CET)
-In-Reply-To: <476172D3.6000602@freescale.com>
+Received: from cgimta001.cgi.com (cgimta001.cgi.com [64.254.16.81])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37333103883
+	for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2007 19:53:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +18,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Faith <jfaith@freescale.com>
-Cc: alsa-devel@alsa-project.org, Felipe Uderman <felipe.uderman@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Dec 13, 2007, at 6:58 PM, John Faith wrote:
-
-> Felipe Uderman wrote:
-
-> We cross compile alsa-lib 1.0.11rc2 for ARM with:
->
-> ./configure --prefix=/usr --host=arm-linux --build=i686-pc-linux-gnu
-
-You should have a look at BR2 (http://buildroot.uclibc.org/) which  
-cross-compiles 1.0.14a for you, most probably also newer versions  
-with minor modifications to the appropriate .mk file.
-
-Daniel
+SGksCgpJIGhhdmUgdGhpcyBlcnJvciB3aGVuIEkgaW5zdGFsbGVkIFVidW50dSA3LjEwIG9uIHRo
+aXMgY29tcHV0ZXIgRGVsbC04MzAKSW50ZWwgQ29yZTIgRHVvIDogTm8gdm9sdW1lIGNvbnRyb2wg
+R1N0cmVhbWVyIHBsdWdpbnMgYW5kL29yIGRldmljZXMKZm91bmQuCgpGaW5kIHNvbWUgdGhpbmdz
+IG9uIHRoZSB3ZWIsIGFzIEkgaW5zdGFsbGVkIGFuZCBjb21waWxlZCBhbHNhLTxkcml2ZXIsCmxp
+YiwgdXRpbHM+IGJ1dCBzdGlsbCBkbyBub3Qgd29ya3MuCgpBbnkgaGVscCBwbGVhc2UgPwoKVGhh
+bmsgeW91ICEKCi0tIApBbGV4IEdhcmluIC0gQ0dJIC8gR01BCkdlc3Rpb24gSW50w6lncsOpZSBk
+ZXMgVGVjaG5vbG9naWVzIC8gSW50ZWdyYXRlZCBUZWNobm9sb2d5IE1hbmFnZW1lbnQKMTM1MCBC
+b3VsZXZhcmQgUmVuZS1MZXZlc3F1ZSBPdWVzdCwgTW9udHLDqWFsLCBRdcOpYmVjLCBIM0cgMVQ0
+Cig1MTQpIDQxNS0zMDAwIGV4dC4gNTE5NCwgKDUxNCkgNDE1LTM5NjIgZmF4Cl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
