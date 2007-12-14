@@ -1,17 +1,19 @@
-From: "Natalie Protasevich" <protasnb@gmail.com>
-Subject: [BUG] Kernel Bugzilla: ALSA bugs
-Date: Thu, 13 Dec 2007 21:24:51 -0800
-Message-ID: <32209efe0712132124v6c00c794t3267c389155e4fc7@mail.gmail.com>
+From: Anders =?iso-8859-1?Q?Bostr=F6m?= <anders@netinsight.se>
+Subject: Re: [Pkg-alsa-devel] Bug#438118: alsa-utils: aplay
+ non-blocking mode isn't working
+Date: Fri, 14 Dec 2007 11:37:36 +0100 (CET)
+Message-ID: <20071214.113736.1254634191.anders@netinsight.se>
+References: <s5hzlzkrn8r.wl%tiwai@suse.de>
+	<20070927.141629.1300548182.anders@netinsight.se>
+	<s5hsl4ktvxn.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id E650E24378
-	for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2007 06:24:52 +0100 (CET)
-Received: by nf-out-0910.google.com with SMTP id b21so720888nfd.32
-	for <alsa-devel@alsa-project.org>; Thu, 13 Dec 2007 21:24:52 -0800 (PST)
-Content-Disposition: inline
+Received: from ernst.netinsight.se (ernst.netinsight.se [212.247.11.2])
+	by alsa0.perex.cz (Postfix) with SMTP id 50E89243CE
+	for <alsa-devel@alsa-project.org>; Fri, 14 Dec 2007 11:37:44 +0100 (CET)
+In-Reply-To: <s5hsl4ktvxn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, 438118@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+>>>>> "TI" == Takashi Iwai <tiwai@suse.de> writes:
 
-There are couple of open ALSA bus on bugzilla.kernel.org, seems like
-they weren't noticed yet.
-Can someone take look at those please.
-Thanks!
+ TI> OK, thanks, I see the problem now.
+ >> 
+ TI> I don't remember whether it's a feature or a bug.  The drain ioctl
+ TI> rejects the non-block mode.
+ >> 
+ >> I can understand the idea here, that in non-blocking mode, no call
+ >> should block, ever. But on the other hand, if you call the drain
+ >> ioctl, you probably expect it to work, even in non-blocking mode. Why
+ >> would you otherwise call it?
 
+ TI> Yes, that's my opinion, too.  This particular ioctl is to block the
+ TI> operation, so it should be allowed as long as it's called.
 
-hp_only quirk needed for lifebook p7010
-http://bugzilla.kernel.org/show_bug.cgi?id=9100
-Kernel: 2.6.22.X
-on lifebook p7010 I need to add options snd-intel8x0 ac97_quirk=hp_only
-to have the master volume work properly
+ TI> But I vaguely remember that we discussed about it, and the current
+ TI> form is the result of that.  Namely, we can call
+ TI> snd_pcm_nonblock(FALSE) explicitly before calling snd_pcm_drain().
 
-snd-au8830 has strange I/O problems
-http://bugzilla.kernel.org/show_bug.cgi?id=9367
-Kernel:2.6.22
-jack only works in 'playback' mode, none 'duplex' or 'capture' works.
+ TI> Though, I prefer fixing the behavior in the core side to allow the
+ TI> blocking with this call...  Any reasonable objections in mind?
 
+Any progress in including a solotion to this bug in mainstream
+alsa & linux kernel? Has anything been done? The patch works fine for
+me...
 
-snd_hda_intel doesn't mute front speakers when headset is plugged in
-http://bugzilla.kernel.org/show_bug.cgi?id=9338
-Kernel: 2.6.23+
-Vaio VGN-FZ19VN
+/ Anders
