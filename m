@@ -1,18 +1,18 @@
-From: Paul Winkler <pw_lists@slinkp.com>
-Subject: doc update for
-	http://bugtrack.alsa-project.org/main/index.php/Matrix:Vendor-Intel
-Date: Mon, 17 Dec 2007 12:37:08 -0600
-Message-ID: <20071217123708.A6661@slinkp.com>
+From: "Dr. Alexander K. Seewald" <alex@seewald.at>
+Subject: Re: Status of Dolby Digital on-the-fly encoding? (via
+	a52	plugin)
+Date: Mon, 17 Dec 2007 22:03:38 +0100
+Message-ID: <20071217210338.GA30887@sdg.at>
+References: <20071211132249.GA12802@sdg.at> <s5hlk7t1ulb.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slinkp.com (ensim2.interlix.com [64.22.224.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB51C2454C
-	for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2007 19:37:11 +0100 (CET)
-Received: (from paul@localhost) by slinkp.com (8.11.6/8.11.6) id lBHIb8W08067
-	for alsa-devel@alsa-project.org; Mon, 17 Dec 2007 12:37:08 -0600
+Received: from seewald.at (seewald.at [213.208.134.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 360AD1038BC
+	for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2007 22:04:08 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <s5hlk7t1ulb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, Dec 17, 2007 at 11:30:56AM +0100, Takashi Iwai wrote:
+> Check first whether "ac3dec -C foo.ac3" work to send AC3 data (not on
+> the fly encoding).  Try a52 plugin after confirming this works.
+Does not work with -C, but works with --card=0 - only as a PCM audio
+signal, sadly, which already works (no digital dolby, only left and right
+speakers are active). I checked -C --card=0 and all the other
+settings of ac3dec as well - no success.
 
-The page at
-http://bugtrack.alsa-project.org/main/index.php/Matrix:Vendor-Intel
-makes it seem that cards identified as ICH7 must use the hda_intel
-driver. This is apparently not always true.  I have a dell desktop
-where snd_hda_intel refuses to load.  I fired up alsaconf and it
-suggested using the intel8x0.  I tried that and it works fine.
+> (And, I know there are still some bugs with a52 plugin but no time to
+>  play with it right now...)
+Problem seems to lie deeper...
 
-So maybe ICH7 should be added to "chipsets" in the first row on that
-page.
-
-Thanks,
-
-- Paul Winkler
-
-
-p.s. here's some system info:
-
-pw@pw ~ $ lspci | grep audio
-00:1e.2 Multimedia audio controller: Intel Corporation 82801G (ICH7 Family) AC'97 Audio Controller (rev 01)
-pw@pw ~ $ cat /proc/asound/cards 
- 0 [ICH7           ]: ICH4 - Intel ICH7
-                      Intel ICH7 with AD1981B at irq 23
-pw@pw ~ $ lsmod | grep snd
-snd_intel8x0           27176  0 
-snd_ac97_codec         90456  1 snd_intel8x0
-ac97_bus                4224  1 snd_ac97_codec
-snd_pcm                60808  2 snd_intel8x0,snd_ac97_codec
-snd_timer              18440  1 snd_pcm
-snd                    38192  4 snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-snd_page_alloc          8976  2 snd_intel8x0,snd_pcm
+Best,
+  Alex
+-- 
+Dr. Alexander K. Seewald         +43(664)1106886
+              Seewald Solutions                 
+------------------------------------------------
+         Information wants to be free;
+Information also wants to be expensive (S.Brant)
+--------------- alex.seewald.at ----------------
