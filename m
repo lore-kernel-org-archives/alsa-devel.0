@@ -1,15 +1,18 @@
-From: John Stile <john@stilen.com>
-Subject: snd-hda-intel support for SPDIF-in wiht vt1708 card?
-Date: Mon, 17 Dec 2007 10:27:27 -0800
-Message-ID: <1197916048.14752.132.camel@genx.localdomain>
+From: Paul Winkler <pw_lists@slinkp.com>
+Subject: doc update for
+	http://bugtrack.alsa-project.org/main/index.php/Matrix:Vendor-Intel
+Date: Mon, 17 Dec 2007 12:37:08 -0600
+Message-ID: <20071217123708.A6661@slinkp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mother.stilen.com (dsl027-182-089.sfo1.dsl.speakeasy.net
-	[216.27.182.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90AF610382D
-	for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2007 19:27:55 +0100 (CET)
+Received: from slinkp.com (ensim2.interlix.com [64.22.224.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB51C2454C
+	for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2007 19:37:11 +0100 (CET)
+Received: (from paul@localhost) by slinkp.com (8.11.6/8.11.6) id lBHIb8W08067
+	for alsa-devel@alsa-project.org; Mon, 17 Dec 2007 12:37:08 -0600
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +25,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am trying to use a Via VT1708 audio card ( uses the snd-hda-intel.ko
-driver) to record from SPDIF-in.
+Hi,
 
-An off-list reply to my posting to alsa-users list suggested that
-snd-hda-intel.ko might not support SPDIF-in with the VT1708 card, which
-brought me here.
+The page at
+http://bugtrack.alsa-project.org/main/index.php/Matrix:Vendor-Intel
+makes it seem that cards identified as ICH7 must use the hda_intel
+driver. This is apparently not always true.  I have a dell desktop
+where snd_hda_intel refuses to load.  I fired up alsaconf and it
+suggested using the intel8x0.  I tried that and it works fine.
 
-Can someone who works on the Intel HDA driver tell me if it supports
-SPDIF-in on the VT1708 audio card?
+So maybe ICH7 should be added to "chipsets" in the first row on that
+page.
 
-Should 'arecord -L' show "Digital Audio Input"?
+Thanks,
 
-Environment:
- Audio Card:   VT1708
- ALSA version: 1.0.15 (as gentoo packages)
- Driver:       snd-hda-intel.ko (In-kernel)
- Kernel:       2.6.23-gentoo-r3
- Distribution: Gentoo
- Systemboard:  PX10000G (VIA pico-itx)
- Case:         Serener GS-L08 case
+- Paul Winkler
+
+
+p.s. here's some system info:
+
+pw@pw ~ $ lspci | grep audio
+00:1e.2 Multimedia audio controller: Intel Corporation 82801G (ICH7 Family) AC'97 Audio Controller (rev 01)
+pw@pw ~ $ cat /proc/asound/cards 
+ 0 [ICH7           ]: ICH4 - Intel ICH7
+                      Intel ICH7 with AD1981B at irq 23
+pw@pw ~ $ lsmod | grep snd
+snd_intel8x0           27176  0 
+snd_ac97_codec         90456  1 snd_intel8x0
+ac97_bus                4224  1 snd_ac97_codec
+snd_pcm                60808  2 snd_intel8x0,snd_ac97_codec
+snd_timer              18440  1 snd_pcm
+snd                    38192  4 snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
+snd_page_alloc          8976  2 snd_intel8x0,snd_pcm
