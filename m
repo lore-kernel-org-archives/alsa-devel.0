@@ -1,21 +1,22 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: rate plugin issue
-Date: Tue, 18 Dec 2007 09:43:38 -0600
-Message-ID: <4767EAAA.5000708@freescale.com>
-References: <s5hwssnx58j.wl%tiwai@suse.de>
-	<4738A89D.9060601@aknet.ru>	<s5hmytihlvo.wl%tiwai@suse.de>
-	<473B561A.1050203@aknet.ru>	<s5h6404dmsi.wl%tiwai@suse.de>
-	<473F01E9.8070907@aknet.ru>	<s5hir3ylce1.wl%tiwai@suse.de>
-	<4741FB78.8040302@aknet.ru> <s5habp9bf7s.wl%tiwai@suse.de>
+Subject: How do I use SNDRV_PCM_INFO_JOINT_DUPLEX?
+Date: Tue, 18 Dec 2007 13:50:42 -0600
+Message-ID: <47682492.7050500@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC7402454E
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 19:23:45 +0100 (CET)
-In-Reply-To: <s5habp9bf7s.wl%tiwai@suse.de>
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE92010380F
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 20:50:52 +0100 (CET)
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
+	lBIJohsc016206
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 12:50:43 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id lBIJogcn027753
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 13:50:42 -0600 (CST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Stas Sergeev <stsp@aknet.ru>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+I'm working on an ASoC driver.  I have a limitation in my hardware that if I 
+have an active substream, I cannot re-program the hardware registers that 
+control the sample size.
 
-> Sorry, no, it's just because I've been busy for other things.
-> Will be applied today soon.
+This means, for example, if I'm playing 16-bit audio, and I want to start 
+capture, I cannot program the sample size into the hardware.  My only choice is 
+to have already programmed the capture sample size *before* I started playback.
 
-So is this patch supposed to fix the OSS sample-rate conversion plug-in?  Has 
-this patch been pushed to kernel.org yet? I had to disable 
-CONFIG_SND_PCM_OSS_PLUGINS because it was causing underruns.
+The easiest way to implement this is to make sure that the second stream has the 
+same sample size as the first.  That way, I won't need to reprogram the 
+registers, because they'll already be programmed correctly.
+
+I discovered the SNDRV_PCM_INFO_JOINT_DUPLEX option, but I can't figure out how 
+to use it.  I know it needs to be set in my snd_pcm_hardware.info, but then 
+what?  How do I tell ALSA that the "joint" part is just that the sample sizes 
+must be the same?
 
 -- 
 Timur Tabi
