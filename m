@@ -1,17 +1,25 @@
-From: "Adrian McMenamin" <lkmladrian@gmail.com>
-Subject: Firmware problem
-Date: Tue, 18 Dec 2007 20:51:17 +0000
-Message-ID: <8b67d60712181251u3356bb72l9db08abf846cae9b@mail.gmail.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: asihpi driver -> kernel
+Date: Wed, 19 Dec 2007 09:52:08 +1300
+Message-ID: <476832F8.6070001@audioscience.com>
+References: <200709051300.35503.linux@audioscience.com>
+	<s5hzm01tn8w.wl%tiwai@suse.de> <47141823.4000307@audioscience.com>
+	<s5hbqaqrppa.wl%tiwai@suse.de> <47397615.4000201@audioscience.com>
+	<475886C3.9070301@audioscience.com> <s5hve71dzqx.wl%tiwai@suse.de>
+	<47671166.2050405@audioscience.com> <s5hlk7sxisi.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0BD9B10385C
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 21:51:19 +0100 (CET)
-Received: by py-out-1112.google.com with SMTP id u77so4247713pyb.16
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 12:51:18 -0800 (PST)
-Content-Disposition: inline
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D37210385C
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 21:52:16 +0100 (CET)
+Received: from [192.168.1.4]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JT900MPHJAZK920@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Wed, 19 Dec 2007 09:52:13 +1300 (NZDT)
+In-reply-to: <s5hlk7sxisi.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,137 +29,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-My user - yes there is one - of the aica sound driver on the Dreamcast
-is having a problem with formware loading.
+Takashi Iwai wrote:
+> At Tue, 18 Dec 2007 13:16:38 +1300,
+> Eliot Blennerhassett wrote:
 
-This is what he has sent me - anyone know what is wrong?
+> Well, the doxygen comment is another issue.  Usually, the kerneldoc
+> allows you to write (semi-)javadoc style comments for each function.
+> It begins with "/**" and has standard "@parameter description" lines.
 
-When loading snd-aica it gives:
-[   55.119676] ALSA sound/sh/aica.c:641: ALSA Driver for Yamaha AICA Super Inter
+This breaks "define things in only one place" rule. I.e. my style
+doesn't require the parameter name etc to be repeated in the comment.
 
-then after like 15 or 20 seconds it will give:
-FATAL: Error inserting snd_aica
-(/lib/modules/2.6.24-rc4/kernel/sound/sh/snd-aica.ko): Unknown symbol
-in module, or unknown parameter (see dmesg)
 
-and dmesg gives this:
-[   54.632531] fill_kobj_path: path = '/module/snd_page_alloc'
-[   54.643434] kobject notes: registering. parent: snd_page_alloc, set: <NULL>
-[   54.645602] kobject_uevent_env
-[   54.646181] kobject filter function caused the event to drop!
-[   54.669703] kobject soundcore: registering. parent: <NULL>, set: module
-[   54.671737] kobject holders: registering. parent: soundcore, set: <NULL>
-[   54.673616] kobject_uevent_env
-[   54.675375] kobject filter function caused the event to drop!
-[   54.677096] kobject_uevent_env
-[   54.678780] fill_kobj_path: path = '/module/soundcore'
-[   54.690116] kobject notes: registering. parent: soundcore, set: <NULL>
-[   54.690904] kobject_uevent_env
-[   54.693891] kobject filter function caused the event to drop!
-[   54.695845] device class 'sound': registering
-[   54.697748] kobject sound: registering. parent: <NULL>, set: class
-[   54.699657] kobject_uevent_env
-[   54.701350] fill_kobj_path: path = '/class/sound'
-[   54.787597] kobject snd: registering. parent: <NULL>, set: module
-[   54.789664] kobject holders: registering. parent: snd, set: <NULL>
-[   54.791557] kobject_uevent_env
-[   54.793340] kobject filter function caused the event to drop!
-[   54.795228] kobject_uevent_env
-[   54.797010] fill_kobj_path: path = '/module/snd'
-[   54.808092] kobject notes: registering. parent: snd, set: <NULL>
-[   54.808886] kobject_uevent_env
-[   54.811852] kobject filter function caused the event to drop!
-[   54.849584] kobject snd_timer: registering. parent: <NULL>, set: module
-[   54.850378] kobject holders: registering. parent: snd_timer, set: <NULL>
-[   54.853372] kobject_uevent_env
-[   54.855118] kobject filter function caused the event to drop!
-[   54.856902] kobject_uevent_env
-[   54.858680] fill_kobj_path: path = '/module/snd_timer'
-[   54.869736] kobject notes: registering. parent: snd_timer, set: <NULL>
-[   54.871802] kobject_uevent_env
-[   54.872452] kobject filter function caused the event to drop!
-[   54.875569] DEV: registering device: ID = 'timer'
-[   54.877400] kobject sound: registering. parent: virtual, set: <NULL>
-[   54.881274] kobject_uevent_env
-[   54.883351] unset subsystem caused the event to drop!
-[   54.886599] kobject timer: registering. parent: sound, set: devices
-[   54.888593] kobject_uevent_env
-[   54.890420] fill_kobj_path: path = '/devices/virtual/sound/timer'
-[   55.000017] kobject snd_pcm: registering. parent: <NULL>, set: module
-[   55.002208] kobject holders: registering. parent: snd_pcm, set: <NULL>
-[   55.004074] kobject_uevent_env
-[   55.004636] kobject filter function caused the event to drop!
-[   55.007502] kobject_uevent_env
-[   55.009274] fill_kobj_path: path = '/module/snd_pcm'
-[   55.020295] kobject notes: registering. parent: snd_pcm, set: <NULL>
-[   55.021108] kobject_uevent_env
-[   55.024045] kobject filter function caused the event to drop!
-[   55.053022] kobject snd_aica: registering. parent: <NULL>, set: module
-[   55.055131] kobject holders: registering. parent: snd_aica, set: <NULL>
-[   55.057074] kobject_uevent_env
-[   55.057643] kobject filter function caused the event to drop!
-[   55.060587] kobject_uevent_env
-[   55.061260] fill_kobj_path: path = '/module/snd_aica'
-[   55.073491] kobject notes: registering. parent: snd_aica, set: <NULL>
-[   55.074288] kobject_uevent_env
-[   55.077295] kobject filter function caused the event to drop!
-[   55.079239] bus platform: add driver AICA
-[   55.079929] kobject AICA: registering. parent: <NULL>, set: drivers
-[   55.082948] kobject_uevent_env
-[   55.084712] fill_kobj_path: path = '/bus/platform/drivers/AICA'
-[   55.089946] Registering platform device 'AICA'. Parent at platform
-[   55.091828] DEV: registering device: ID = 'AICA'
-[   55.093558] kobject AICA: registering. parent: platform, set: devices
-[   55.093744] bus platform: add device AICA
-[   55.093849] kobject_uevent_env
-[   55.093918] fill_kobj_path: path = '/devices/platform/AICA'
-[   55.094045] platform: Matched Device AICA with Driver AICA
-[   55.094096] platform: Probing driver AICA with device AICA
-[   55.094492] DEV: registering device: ID = 'card0'
-[   55.094564] kobject sound: registering. parent: AICA, set: <NULL>
-[   55.094646] kobject_uevent_env
-[   55.094682] unset subsystem caused the event to drop!
-[   55.094739] kobject card0: registering. parent: sound, set: devices
-[   55.094888] kobject_uevent_env
-[   55.094959] fill_kobj_path: path = '/devices/platform/AICA/sound/card0'
-[   55.095133] DEV: registering device: ID = 'pcmC0D0p'
-[   55.095195] kobject pcmC0D0p: registering. parent: card0, set: devices
-[   55.095454] kobject_uevent_env
-[   55.095528] fill_kobj_path: path =
-'/devices/platform/AICA/sound/card0/pcmC0D0p'
-[   55.095745] DEV: registering device: ID = 'controlC0'
-[   55.095811] kobject controlC0: registering. parent: card0, set: devices
-[   55.095980] kobject_uevent_env
-[   55.096051] fill_kobj_path: path =
-'/devices/platform/AICA/sound/card0/controlC0'
-[   55.119676] ALSA sound/sh/aica.c:641: ALSA Driver for Yamaha AICA
-Super Intelligent Sound Processor
-[   55.128339] bound device 'AICA' to driver 'AICA'
-[   55.128394] platform: Bound Device AICA to Driver AICA
-[   57.018452] DEV: registering device: ID = 'firmware-AICA'
-[   57.019121] kobject firmware: registering. parent: AICA, set: <NULL>
-[   57.022447] kobject_uevent_env
-[   57.023025] unset subsystem caused the event to drop!
-[   57.023099] kobject firmware-AICA: registering. parent: firmware,
-set: devices
-[   57.027620] kobject_uevent_env
-[   57.029196] kobject filter function caused the event to drop!
-[   57.029842] kobject_uevent_env
-[   57.032535] fill_kobj_path: path =
-'/devices/platform/AICA/firmware/firmware-AICA'
-[  115.955604] DEV: Unregistering device. ID = 'firmware-AICA'
-[  115.955788] kobject_uevent_env
-[  115.955898] fill_kobj_path: path =
-'/devices/platform/AICA/firmware/firmware-AICA'
-[  115.956090] kobject firmware-AICA: cleaning up
-[  115.956144] kobject firmware: cleaning up
-[  115.960813] kobject holders: unregistering
-[  115.960863] kobject_uevent_env
-[  115.960900] kobject filter function caused the event to drop!
-[  115.960972] kobject holders: cleaning up
-[  115.961018] kobject snd_aica: unregistering
-[  115.961059] kobject_uevent_env
-[  115.961128] fill_kobj_path: path = '/module/snd_aica'
+> So, one thing I forgot to mention is to avoid /** for non-kerneldoc
+> comments.
+
+What! just when I think I have everything covered, another picky
+requirement pops up. When will this end!
+
+>> I think all the thin wrappers have been removed. What remain are
+>>
+>> 1) Spinlock wrappers, the comments in the code tell why
+>> /* The reason for all this evilness is that ALSA calls some of a drivers
+>>  * operators in atomic context, and some not.  But all our functions channel
+>>  * through the HPI_Message conduit, so we can't handle the different context
+>>  * per function
+>>  */
+> 
+> Then this shouldn't be expressed as a spinlock wrapper.  You cannot
+> use a single lock for that.  And the way you hack doesn't look correct
+> for schedulable contexts...
+
+AFAIK it works.  We can do away with it if you can tell me how to stop
+alsa midlevel calling HPI functions in both schedulable and
+non-schedulable contexts.
+
+>> 2) LockedMem wrappers.  These provide tracking for the DMA areas
+>> Need to keep track of all the info about the mem area so it can be freed
+>> again at the end
+> 
+> Hm, but still I don't see the reason to use kmem_cache there.
+
+Its a convenient way to allocate however many small chunks are needed.
+Otherwise we need to statically allocate or malloc enough space for
+every possible stream on every possible card. I.e. 32 streams * 16 cards.
+
+Or can do a major redesign of this part and absorb the DMA mem tracking
+into per-adapter data structures. Not gonna happen soon here.
+
+> 
+>> E.g. pci_free_consistent(pMemArea->pdev, pMemArea->size,
+>> 			pMemArea->cpu_addr, pMemArea->dma_addr);
+> 
+> Use dma_alloc_coherent() / dma_free_coherent() instead.
+> pci_*_consistent() are obsolete.
+> 
+>>> I feel the chrdev should be
+>>>   rather bound to the existing ALSA device, e.g. using hwdep instead.
+>>>   Then the whole story about registration would become more straight.
+>> ...yes I'm interested.
+>> Currently HPI userspace lib just works whether ALSA or plain HPI driver
+>> is loaded. How would this work with your scenario?
+> 
+> The independent HPI driver doesn't exist with your current version
+> (all merged to snd-asihpi).  So, this question sounds irrelevant as
+> now.
+
+It exists for those who build it themselves or get it from 3rd party
+repos.  We have a number of applications that use HPI, we still want to
+be able to use them to test the cards etc, even if ALSA driver is loaded.
+
+For our existing customers, HPI has been around much longer than ALSA,
+so we need a transitional period where both interfaces are available
+simultaneously. I'd say about 5 years from when the driver is accepted
+into the kernel should be sufficient.
+
+(For example Rivendell http://www.rivendellaudio.org/ radio automation
+uses HPI to play/record mpeg audio using our on-card processing)
+
+> If we *really* need to provide an independent HPI access, then hpi
+> should have its own device (most easily via platform device).  But, I
+> feel it's just give compliexity in the end.
+
+Another possibility is to make HPI access via optional loadable module.
+ALSA driver would only need to export HPI_Message() for this to be
+workable.  Already need to export HPI_Message to support our V4L driver.
+
+>>> - Don't use bitfields for data communication.  It's higly unportable.
+>>>   Use explit bit shift and mask instead.
+>
+> struct hpi_handle has bitfields.  I think it's used very commonly in
+> asihpi.
+
+The bitfields are all created and used by the same code module,  they
+are never referenced outside hpifunc.c (so its not "data communication"
+in my book).
+IMO it improves readability, and let the compiler figure out the bit
+shift and mask stuff.
+
+regards
+
+Eliot
