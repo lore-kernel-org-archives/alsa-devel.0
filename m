@@ -1,24 +1,17 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: asihpi driver -> kernel
-Date: Tue, 18 Dec 2007 13:16:38 +1300
-Message-ID: <47671166.2050405@audioscience.com>
-References: <200709051300.35503.linux@audioscience.com>
-	<s5hzm01tn8w.wl%tiwai@suse.de> <47141823.4000307@audioscience.com>
-	<s5hbqaqrppa.wl%tiwai@suse.de> <47397615.4000201@audioscience.com>
-	<475886C3.9070301@audioscience.com> <s5hve71dzqx.wl%tiwai@suse.de>
+From: "Daniele (Mastro)" <daniele.bilug@gmail.com>
+Subject: Notebook Toshiba satellite x200-21g with realtek
+ snd-hda-intel audio device still not supported (codec ALC268)
+Date: Tue, 18 Dec 2007 03:09:15 +0100
+Message-ID: <47672BCB.9080608@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id A7938245A2
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 01:16:56 +0100 (CET)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JT700KOCY3S6G00@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Tue, 18 Dec 2007 13:16:42 +1300 (NZDT)
-In-reply-to: <s5hve71dzqx.wl%tiwai@suse.de>
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id EC438244EB
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 03:09:20 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id f40so1816823fka.0
+	for <alsa-devel@alsa-project.org>; Mon, 17 Dec 2007 18:09:20 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,115 +21,305 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+hi all
+i'm new to this mailing list i've bought a laptop and i would like to
+help you supporting my sound card
 
-thanks for looking over our code. Some of your comments are addressed below.
+what works:
+2 speaker, low volume (it should be a 5+1 audio card)
 
-Takashi Iwai wrote:
+what doesn't
+-) low volume
+-) inoperating headphone jack
+-) not working mic
+-) no subwoofer
+-) may be some other stuff not tested ( SPDIF? hardware midi?)
 
-> One thing I noticed is the function definition/declaration style.
-> 
-> void HPI_GetErrorText(
-> 	u16 wError,
-> 	char *pszErrorText
-> )
-> {
-> 	...
-> 
-> It's uncommon.  Normally, it's in a single line, and the line starting
-> with the opening brace.  See CodingStyle as reference.
+with
 
-Yes. We find that this style leaves room for doxygen comments on each
-function parameter and keep within 80 columns. In hpifunc.c this is not
-evident because we are stripping all the comments out for now.
+speaker-test -t wav -c 6
 
-> (Besides, the hungarian style is hated by many people.  Let's avoid it
->  as much as possible.)
+only front left/right channel works
 
-> Also, in general, the removal of all HpiOs_*() is a good goal.
-> The kernel guys really hate wrappers like that.  Let's use native
-> API.
+my kernel is a debian kernel
+Linux Luffy 2.6.23-1-686-bigmem #1 SMP Wed Dec 5 02:42:05 UTC 2007 i686
+GNU/Linux
 
-I think all the thin wrappers have been removed. What remain are
+alsa 1.0.15 drivers (compiled with debian-way: module-assistant a-i
+alsa-source)
 
-1) Spinlock wrappers, the comments in the code tell why
-/* The reason for all this evilness is that ALSA calls some of a drivers
- * operators in atomic context, and some not.  But all our functions channel
- * through the HPI_Message conduit, so we can't handle the different context
- * per function
- */
+i've already tried all the option i could think about
 
-2) LockedMem wrappers.  These provide tracking for the DMA areas
-Need to keep track of all the info about the mem area so it can be freed
-again at the end
+auto (default)
+toshiba
+3stacks
+3stacks-6ch
+3stacks-6ch-dig
 
-E.g. pci_free_consistent(pMemArea->pdev, pMemArea->size,
-			pMemArea->cpu_addr, pMemArea->dma_addr);
+neither one has better/worst behavior
+
+I've checked the module has toke those option by
+cat /sys/module/snd_hda_intel/parameters/model
+
+anyway I've read the ALSA-Configuration.txt shipped with kernel and
+for Codec ALC268 it only has 4 options
+ALC268
+3stack 3-stack model
+toshiba Toshiba A205
+acer Acer laptops
+auto auto-config reading BIOS (default)
+
+I've googled a bit and i found out that the Toshiba A205 has completely
+different problem.. the sound doesn't work with it..
+reading the changelog from 1.0.14 to 1.0.15 (alsa) it say:
+Added the proper model=toshiba for Toshiba A305 with ALC268 codec.
+
+so i think my audio card is an unknown model
+the laptop is brand new and i only found this model in Italy
+anyway i think that the same audio card is shipped with the Toshiba
+Satellite x205-S7483 witch is an american laptop
+
+some info about the audio card:
+
+lspci -n
+
+00:1b.0 0403: 8086:284b (rev 03)
+
+lspci -vvv
+
+00:1b.0 Audio device: Intel Corporation 82801H (ICH8 Family) HD Audio
+Controller (rev 03)
+        Subsystem: Toshiba America Info Systems Unknown device ff00
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size: 64 bytes
+        Interrupt: pin A routed to IRQ 22
+        Region 0: Memory at f6600000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+
+Queue=0/0 Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
 
 
-> Other things I noticed:
-> 
-> - The ioctl of hpi chrdev is dangerous: it may cause Oops when
->   accessing to a non-existing adapter.  
+cat /proc/asound/card0/codec#0
 
-A bug to fix
+Codec: Realtek ALC268
+Address: 0
+Vendor Id: 0x10ec0268
+Subsystem Id: 0x1179ff0a
+Revision Id: 0x100003
+No Modem Function Group found
+Default PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x40 0x40]
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x40 0x40]
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+  PCM:
+    rates [0x5e0]: 44100 48000 88200 96000 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+Node 0x07 [Audio Input] wcaps 0x100111: Stereo
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0x6]: 16 20
+    formats [0x1]: PCM
+  Connection: 1
+     0x24
+Node 0x08 [Audio Input] wcaps 0x100111: Stereo
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0x6]: 16 20
+    formats [0x1]: PCM
+  Connection: 1
+     0x23
+Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0c [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00]
+  Connection: 1
+     0x02
+Node 0x0f [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x80 0x80]
+  Connection: 2
+     0x02 0x1d
+Node 0x10 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80]
+  Connection: 3
+     0x03 0x1d 0x02
+Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+Node 0x13 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x081003c: IN OUT HP EAPD Detect
+  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0f
+Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x081003c: IN OUT HP EAPD Detect
+  Pin Default 0x0221101f: [Jack] HP Out at Ext Front
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x10
+Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80]
+  Pincap 0x0810: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x0e
+Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x083734: IN OUT Detect
+  Pin Default 0x02a11830: [Jack] Mic at Ext Front
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x02
+Node 0x19 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals:
+  Pincap 0x083724: IN Detect
+  Pin Default 0x99a30931: [Fixed] Mic at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x24: IN
+Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x083734: IN OUT Detect
+  Pin Default 0x0281103e: [Jack] Line In at Ext Front
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x02
+Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x4016852d: [N/A] Speaker at Ext N/A
+    Conn = Digital, Color = Purple
+  Pin-ctls: 0x20: IN
+Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x02451120: [Jack] SPDIF Out at Ext Front
+    Conn = Optical, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x06
+Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x23 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Connection: 7
+     0x18* 0x19 0x1a 0x1c 0x14 0x15 0x12
+Node 0x24 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x8a 0x8a]
+  Connection: 7
+     0x18 0x19 0x1a* 0x1c 0x14 0x15 0x13
 
-> I feel the chrdev should be
->   rather bound to the existing ALSA device, e.g. using hwdep instead.
->   Then the whole story about registration would become more straight.
 
-...yes I'm interested.
-Currently HPI userspace lib just works whether ALSA or plain HPI driver
-is loaded. How would this work with your scenario?
+many of this think doesn't mean a thing to me but i will be glad to help
+you if you ask..
+i don't mind compiling some other driver/kernel/tool for this
+just ask me
 
-> - Replace semaphore with mutex as much as possible.
+one last note:
+searching the internet i've found this page:
+https://wiki.ubuntu.com/Gutsy_Intel_HD_Audio_Controller
 
-OK, will look at it. BTW is there an easy way to find out at what kernel
-version a given API was added/removed/changed?
-> 
-> - Don't use bitfields for data communication.  It's higly unportable.
->   Use explit bit shift and mask instead.
+if you go down you find that the Toshiba Satellite x205-S7483 has the
+exact same problem here. I think they have the same card
 
-Only hpi_version structure I think?  Not used by kernel driver at all,
-we can make it disappear.
+searching the Realtek web site i didn't find any 6 channel audio card
+with the ALC268 codec
+may be this mean the ALC268 is not the right codec for my audio card or
+this is a really new model/heavily Toshiba modified device
 
+i've already filed a bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3659
 
-> - The way of clean up like hpimod_cleanup() is uncommon.
->   (Above all, passing just a digit is a bad style...)
+please ask me if you need any more info or want me to do some test
 
-OK.
-So replace this with checks like this?:
+thanks you all for your work
 
-if (asihpi_class) class_device_destroy(asihpi_class...
-if (chrdev_registered) unregister_chrdev(...
-if (asihpi_pci_driver) pci_unregister_driver(...
-
-> 
-> - Remove HPI_UNUSED().  We don't check unused parameters.
-
-OK.
-
-> - Global variables should have some unique prefix.  The kernel code is
->   monolithc C, so they are really global and has no name space.
-
-Did you have a list?
-There are a few function names that don't start with HPI.
-
-> - HPI_GetErrorText() is dangerous.  It may overflow easily.
->   Don't use strcat() unless you are really sure.  Use variants with
->   the size limit.
-
-Valid point.
-
-We can get rid of it from kernel driver entirely by using just error
-number instead.
-
-regards
-
-Eliot Blennerhassett
-AudioScience Inc.
+ps: i've subscribed to vger mailing list, what's the right mailing list
+for alsa-devel?
+-- 
+Daniele Segato
