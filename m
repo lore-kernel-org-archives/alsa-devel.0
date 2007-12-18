@@ -1,18 +1,20 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: Re: snd-hda-intel: HG regression - NULL pointer
-	dereference
-Date: Tue, 18 Dec 2007 11:52:51 -0500
-Message-ID: <4767FAE3.3070004@embeddedalley.com>
-References: <3db1ec7f0712180724w58c2e043l4b4a58c8b943627c@mail.gmail.com>
-	<s5h63ywxej2.wl%tiwai@suse.de>
+From: "Ivan N. Zlatev" <contact@i-nz.net>
+Subject: Re: snd-hda-intel: HG regression - NULL
+	pointer	dereference
+Date: Tue, 18 Dec 2007 19:01:52 +0000
+Message-ID: <47681920.9090705@i-nz.net>
+References: <3db1ec7f0712180724w58c2e043l4b4a58c8b943627c@mail.gmail.com>	<s5h63ywxej2.wl%tiwai@suse.de>	<3db1ec7f0712180828r24d4115cu6557d6dcd922b913@mail.gmail.com>
+	<s5h1w9kxdcq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp106.biz.mail.mud.yahoo.com (smtp106.biz.mail.mud.yahoo.com
-	[68.142.200.254]) by alsa0.perex.cz (Postfix) with SMTP id 0E5BF24520
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 17:52:48 +0100 (CET)
-In-Reply-To: <s5h63ywxej2.wl%tiwai@suse.de>
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2726F24529
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 18:02:11 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id f40so2204695fka.0
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 09:02:10 -0800 (PST)
+In-Reply-To: <s5h1w9kxdcq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,273 +28,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> At Tue, 18 Dec 2007 15:24:45 +0000,
+> At Tue, 18 Dec 2007 16:28:59 +0000,
 > Ivan N. Zlatev wrote:
->   
->> When loading snd-hda-intel from Alsa HG I get a NULL pointer
->> dereference and the trace below. The card is with the following codec:
->>
->> Codec: SigmaTel STAC9228
->> Address: 0
->> Vendor Id: 0x83847616
->> Subsystem Id: 0x10280227
->> Revision Id: 0x100201
->>
->> The trace:
->>
->> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/hda_codec.c:2792:
->> autoconfig: line_outs=1 (0xf/0x0/0x0/0x0/0x0)
->> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/hda_codec.c:2796:
->> speaker_outs=1 (0xd/0x0/0x0/0x0/0x0)
->> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/hda_codec.c:2800:
->> hp_outs=1 (0xa/0x0/0x0/0x0/0x0)
->> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/hda_codec.c:2808:
->> inputs: mic=0x13, fmic=0x0, line=0xe, fline=0x0, cd=0x0, aux=0x0
->> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:2088:
->> dac_nids=2 (0x5/0x4/0x0/0x0/0x0)
->> BUG: unable to handle kernel NULL pointer dereference at virtual
->> address 00000000
->>  printing eip:
->> f91cfcb0
->> *pde = 00000000
->> Oops: 0000 [#1]
->> SMP
->> last sysfs file: /devices/pci0000:00/0000:00:1c.1/0000:0c:00.0/cmd
->> Modules linked in: snd_hda_intel snd_pcm snd_timer snd_page_alloc
->> snd_hwdep snd soundcore nls_iso8859_1 nls_cp437 vfat fat usb_storage
->> ide_core rndis_host cdc_ether usbnet mii aes_i586 ieee80211_crypt_ccmp
->> af_packet xt_tcpudp xt_pkttype ipt_LOG xt_limit vboxdrv ipt_REJECT
->> xt_state iptable_mangle iptable_nat nf_nat iptable_filter
->> nf_conntrack_ipv4 nf_conntrack nfnetlink ip_tables ip6_tables x_tables
->> cpufreq_conservative cpufreq_userspace cpufreq_powersave acpi_cpufreq
->> speedstep_lib microcode apparmor loop dm_mod rfcomm l2cap nvidia(P)
->> ipw3945 sdhci ohci1394 ieee1394 mmc_core ieee80211 hci_usb ac
->> ieee80211_crypt battery i2c_i801 button tg3 rtc_cmos bluetooth
->> rtc_core sr_mod rtc_lib cdrom intel_agp firmware_class i2c_core
->> agpgart sg usbhid hid ff_memless sd_mod ehci_hcd uhci_hcd usbcore edd
->> ext3 mbcache jbd fan ata_piix ahci libata scsi_mod thermal processor
->> CPU:    1
->> EIP:    0060:[<f91cfcb0>]    Tainted: P      N VLI
->> EFLAGS: 00010246   (2.6.22.13-0.3-default #1)
->> EIP is at stac92xx_dmux_enum_put+0x28/0x3c [snd_hda_intel]
->> eax: 00000000   ebx: 00000000   ecx: f54b7014   edx: d7e241ec
->> esi: d7e24014   edi: f71e6014   ebp: 00000000   esp: d9ea1ea0
->> ds: 007b   es: 007b   fs: 00d8  gs: 0033  ss: 0068
->> Process alsactl (pid: 25097, ti=d9ea0000 task=c7457030 task.ti=d9ea0000)
->> Stack: 00000000 d7e240a4 f54b7014 cbe43694 fffffff3 f911c2b3 cbe43694 c2175154
->>        df8a4c14 df8a4d60 df8a4c14 00000000 f54b7014 df8a4dc4 f911cd85 cb940b7c
->>        c03c5aec f52693c0 f52693c0 bf8ef020 c2175154 c0172331 c016e87a dfbef2c0
->> Call Trace:
->>  [<f911c2b3>] snd_ctl_elem_write+0xa6/0xe6 [snd]
->>  [<f911cd85>] snd_ctl_ioctl+0x494/0x7af [snd]
->>  [<c0172331>] chrdev_open+0x0/0x133
->>  [<c016e87a>] __dentry_open+0xe4/0x178
->>  [<c016e988>] nameidata_to_filp+0x24/0x33
->>  [<c016e9ce>] do_filp_open+0x37/0x3e
->>  [<f911c8f1>] snd_ctl_ioctl+0x0/0x7af [snd]
->>  [<c017a13d>] do_ioctl+0x21/0xa0
->>  [<c017a3f3>] vfs_ioctl+0x237/0x249
->>  [<c017a451>] sys_ioctl+0x4c/0x67
->>  [<c0104e22>] sysenter_past_esp+0x6b/0xa9
->>  [<c02c0000>] unix_bind+0x5e/0x28e
->>  =======================
->> Code: 31 c0 c3 57 89 d1 56 53 83 ec 08 8b 78 60 8b 5a 3c 2b 58 44 8b
->> 77 4c 8d 84 9e 90 00 00 00 8b 96 8c 00 00 00 89 44 24 04 8b 46 6c <0f>
->> b7 04 58 89 04 24 89 f8 e8 99 24 ff ff 5f 5a 5b 5e 5f c3 53
->> EIP: [<f91cfcb0>] stac92xx_dmux_enum_put+0x28/0x3c [snd_hda_intel]
->> SS:ESP 0068:d9ea1ea0
->>     
->
-> I suppose your device has no digital mic input?
-> If so, the patch below should fix.  Give it a try.
->
->
-> thanks,
->
-> Takashi
->
-> ---
->
-> diff -r 2d3893cf030c pci/hda/patch_sigmatel.c
-> --- a/pci/hda/patch_sigmatel.c	Tue Dec 18 15:42:53 2007 +0100
-> +++ b/pci/hda/patch_sigmatel.c	Tue Dec 18 17:04:23 2007 +0100
-> @@ -139,6 +139,7 @@ struct sigmatel_spec {
->  	hda_nid_t *dmic_nids;
->  	unsigned int num_dmics;
->  	hda_nid_t *dmux_nids;
-> +	unsigned int num_dmuxes;
->  	hda_nid_t dig_in_nid;
->  
->  	/* pin widgets */
-> @@ -244,6 +245,10 @@ static hda_nid_t stac925x_dmic_nids[STAC
->  	0x15, 0
->  };
->  
-> +static hda_nid_t stac925x_dmux_nids[1] = {
-> +	0x14,
-> +};
-> +
->  static hda_nid_t stac922x_adc_nids[2] = {
->          0x06, 0x07,
->  };
-> @@ -278,7 +283,7 @@ static hda_nid_t stac9205_mux_nids[2] = 
->  };
->  
->  static hda_nid_t stac9205_dmux_nids[1] = {
-> -		0x1d,
-> +	0x1d,
->  };
->  
->  #define STAC9205_NUM_DMICS	2
-> @@ -596,16 +601,6 @@ static struct hda_verb stac9205_core_ini
->  	{}
->  };
->  
-> -#define STAC_DIGITAL_INPUT_SOURCE(cnt) \
-> -	{ \
-> -		.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-> -		.name = "Digital Input Source", \
-> -		.count = cnt, \
-> -		.info = stac92xx_dmux_enum_info, \
-> -		.get = stac92xx_dmux_enum_get, \
-> -		.put = stac92xx_dmux_enum_put,\
-> -	}
-> -
->  #define STAC_INPUT_SOURCE(cnt) \
->  	{ \
->  		.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-> @@ -638,7 +633,6 @@ static struct snd_kcontrol_new stac9200_
->  };
->  
->  static struct snd_kcontrol_new stac92hd73xx_6ch_mixer[] = {
-> -	STAC_DIGITAL_INPUT_SOURCE(2),
->  	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 3),
->  
->  	/* hardware gain controls */
-> @@ -669,7 +663,6 @@ static struct snd_kcontrol_new stac92hd7
->  };
->  
->  static struct snd_kcontrol_new stac92hd73xx_8ch_mixer[] = {
-> -	STAC_DIGITAL_INPUT_SOURCE(2),
->  	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 4),
->  
->  	/* hardware gain controls */
-> @@ -700,7 +693,6 @@ static struct snd_kcontrol_new stac92hd7
->  };
->  
->  static struct snd_kcontrol_new stac92hd73xx_10ch_mixer[] = {
-> -	STAC_DIGITAL_INPUT_SOURCE(2),
->  	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 5),
->  
->  	/* hardware gain controls */
-> @@ -731,7 +723,6 @@ static struct snd_kcontrol_new stac92hd7
->  };
->  
->  static struct snd_kcontrol_new stac92hd71bxx_analog_mixer[] = {
-> -	STAC_DIGITAL_INPUT_SOURCE(1),
->  	STAC_INPUT_SOURCE(2),
->  
->  	/* hardware gain controls */
-> @@ -752,7 +743,6 @@ static struct snd_kcontrol_new stac92hd7
->  };
->  
->  static struct snd_kcontrol_new stac92hd71bxx_mixer[] = {
-> -	STAC_DIGITAL_INPUT_SOURCE(1),
->  	STAC_INPUT_SOURCE(2),
->  	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A0, 2),
->  
-> @@ -779,7 +769,6 @@ static struct snd_kcontrol_new stac925x_
->  };
->  
->  static struct snd_kcontrol_new stac9205_mixer[] = {
-> -	STAC_DIGITAL_INPUT_SOURCE(1),
->  	STAC_INPUT_SOURCE(2),
->  	STAC_ANALOG_LOOPBACK(0xFE0, 0x7E0, 1),
->  
-> @@ -809,7 +798,6 @@ static struct snd_kcontrol_new stac922x_
->  
->  
->  static struct snd_kcontrol_new stac927x_mixer[] = {
-> -	STAC_DIGITAL_INPUT_SOURCE(1),
->  	STAC_INPUT_SOURCE(3),
->  	STAC_ANALOG_LOOPBACK(0xFEB, 0x7EB, 1),
->  
-> @@ -827,6 +815,15 @@ static struct snd_kcontrol_new stac927x_
->  	{ } /* end */
->  };
->  
-> +static struct snd_kcontrol_new stac_dmux_mixer = {
-> +	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-> +	.name = "Digital Input Source",
-> +	/* count set later */
-> +	.info = stac92xx_dmux_enum_info,
-> +	.get = stac92xx_dmux_enum_get,
-> +	.put = stac92xx_dmux_enum_put,
-> +};
-> +
->  static int stac92xx_build_controls(struct hda_codec *codec)
->  {
->  	struct sigmatel_spec *spec = codec->spec;
-> @@ -839,6 +836,13 @@ static int stac92xx_build_controls(struc
->  
->  	for (i = 0; i < spec->num_mixers; i++) {
->  		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
-> +		if (err < 0)
-> +			return err;
-> +	}
-> +	if (spec->num_dmuxes > 0) {
-> +		stac_dmux_mixer.count = spec->num_dmuxes;
-> +		err = snd_ctl_add(codec->bus->card,
-> +				  snd_ctl_new1(&stac_dmux_mixer, codec));
->  		if (err < 0)
->  			return err;
->  	}
-> @@ -2967,6 +2971,8 @@ static int patch_stac925x(struct hda_cod
->  	case 0x83847637: /* STAC9251D */
->  		spec->num_dmics = STAC925X_NUM_DMICS;
->  		spec->dmic_nids = stac925x_dmic_nids;
-> +		spec->num_dmuxes = ARRAY_SIZE(stac925x_dmux_nids);
-> +		spec->dmux_nids = stac925x_dmux_nids;
->  		break;
->  	default:
->  		spec->num_dmics = 0;
-> @@ -3075,6 +3081,7 @@ again:
->  	spec->num_muxes = ARRAY_SIZE(stac92hd73xx_mux_nids);
->  	spec->num_adcs = ARRAY_SIZE(stac92hd73xx_adc_nids);
->  	spec->num_dmics = STAC92HD73XX_NUM_DMICS;
-> +	spec->num_dmuxes = ARRAY_SIZE(stac92hd73xx_dmux_nids);
->  	spec->dinput_mux = &stac92hd73xx_dmux;
->  	/* GPIO0 High = Enable EAPD */
->  	spec->gpio_mask = spec->gpio_data = 0x000001;
-> @@ -3160,6 +3167,7 @@ again:
->  	spec->num_muxes = ARRAY_SIZE(stac92hd71bxx_mux_nids);
->  	spec->num_adcs = ARRAY_SIZE(stac92hd71bxx_adc_nids);
->  	spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
-> +	spec->num_dmuxes = ARRAY_SIZE(stac92hd71bxx_dmux_nids);
->  
->  	spec->multiout.num_dacs = 2;
->  	spec->multiout.hp_nid = 0x11;
-> @@ -3345,6 +3353,7 @@ static int patch_stac927x(struct hda_cod
->  		spec->init = d965_core_init;
->  		spec->mixer = stac927x_mixer;
->  		spec->dmux_nids = stac927x_dmux_nids;
-> +		spec->num_dmuxes = ARRAY_SIZE(stac927x_dmux_nids);
->  		break;
->  	default:
->  		/* GPIO0 High = Enable EAPD */
-> @@ -3415,6 +3424,7 @@ static int patch_stac9205(struct hda_cod
->  	spec->dmic_nids = stac9205_dmic_nids;
->  	spec->num_dmics = STAC9205_NUM_DMICS;
->  	spec->dmux_nids = stac9205_dmux_nids;
-> +	spec->num_dmuxes = ARRAY_SIZE(stac9205_dmux_nids);
->  
->  	spec->init = stac9205_core_init;
->  	spec->mixer = stac9205_mixer;
->
->   
-Ok this patch works on my system, which doesn't have a digital 
-microphone either.
+>> On 12/18/07, Takashi Iwai <tiwai@suse.de> wrote:
+>>> At Tue, 18 Dec 2007 15:24:45 +0000,
+>>> Ivan N. Zlatev wrote:
+>>>> When loading snd-hda-intel from Alsa HG I get a NULL pointer
+>>>> dereference and the trace below. The card is with the following codec:
+>>>>
+>>>> Codec: SigmaTel STAC9228
+>>>> Address: 0
+>>>> Vendor Id: 0x83847616
+>>>> Subsystem Id: 0x10280227
+>>>> Revision Id: 0x100201
+>>>>
+>>>> The trace:
+>>>>
+>>>> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/hda_codec.c:2792:
+>>>> autoconfig: line_outs=1 (0xf/0x0/0x0/0x0/0x0)
+>>>> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/hda_codec.c:2796:
+>>>> speaker_outs=1 (0xd/0x0/0x0/0x0/0x0)
+>>>> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/hda_codec.c:2800:
+>>>> hp_outs=1 (0xa/0x0/0x0/0x0/0x0)
+>>>> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/hda_codec.c:2808:
+>>>> inputs: mic=0x13, fmic=0x0, line=0xe, fline=0x0, cd=0x0, aux=0x0
+>>>> ALSA /home/ivanz/svn/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:2088:
+>>>> dac_nids=2 (0x5/0x4/0x0/0x0/0x0)
+>>>> BUG: unable to handle kernel NULL pointer dereference at virtual
+>>>> address 00000000
+>>>>  printing eip:
+>>>> f91cfcb0
+>>>> *pde = 00000000
+>>>> Oops: 0000 [#1]
+>>>> SMP
+>>>> last sysfs file: /devices/pci0000:00/0000:00:1c.1/0000:0c:00.0/cmd
+>>>> Modules linked in: snd_hda_intel snd_pcm snd_timer snd_page_alloc
+>>>> snd_hwdep snd soundcore nls_iso8859_1 nls_cp437 vfat fat usb_storage
+>>>> ide_core rndis_host cdc_ether usbnet mii aes_i586 ieee80211_crypt_ccmp
+>>>> af_packet xt_tcpudp xt_pkttype ipt_LOG xt_limit vboxdrv ipt_REJECT
+>>>> xt_state iptable_mangle iptable_nat nf_nat iptable_filter
+>>>> nf_conntrack_ipv4 nf_conntrack nfnetlink ip_tables ip6_tables x_tables
+>>>> cpufreq_conservative cpufreq_userspace cpufreq_powersave acpi_cpufreq
+>>>> speedstep_lib microcode apparmor loop dm_mod rfcomm l2cap nvidia(P)
+>>>> ipw3945 sdhci ohci1394 ieee1394 mmc_core ieee80211 hci_usb ac
+>>>> ieee80211_crypt battery i2c_i801 button tg3 rtc_cmos bluetooth
+>>>> rtc_core sr_mod rtc_lib cdrom intel_agp firmware_class i2c_core
+>>>> agpgart sg usbhid hid ff_memless sd_mod ehci_hcd uhci_hcd usbcore edd
+>>>> ext3 mbcache jbd fan ata_piix ahci libata scsi_mod thermal processor
+>>>> CPU:    1
+>>>> EIP:    0060:[<f91cfcb0>]    Tainted: P      N VLI
+>>>> EFLAGS: 00010246   (2.6.22.13-0.3-default #1)
+>>>> EIP is at stac92xx_dmux_enum_put+0x28/0x3c [snd_hda_intel]
+>>>> eax: 00000000   ebx: 00000000   ecx: f54b7014   edx: d7e241ec
+>>>> esi: d7e24014   edi: f71e6014   ebp: 00000000   esp: d9ea1ea0
+>>>> ds: 007b   es: 007b   fs: 00d8  gs: 0033  ss: 0068
+>>>> Process alsactl (pid: 25097, ti=d9ea0000 task=c7457030 task.ti=d9ea0000)
+>>>> Stack: 00000000 d7e240a4 f54b7014 cbe43694 fffffff3 f911c2b3 cbe43694 c2175154
+>>>>        df8a4c14 df8a4d60 df8a4c14 00000000 f54b7014 df8a4dc4 f911cd85 cb940b7c
+>>>>        c03c5aec f52693c0 f52693c0 bf8ef020 c2175154 c0172331 c016e87a dfbef2c0
+>>>> Call Trace:
+>>>>  [<f911c2b3>] snd_ctl_elem_write+0xa6/0xe6 [snd]
+>>>>  [<f911cd85>] snd_ctl_ioctl+0x494/0x7af [snd]
+>>>>  [<c0172331>] chrdev_open+0x0/0x133
+>>>>  [<c016e87a>] __dentry_open+0xe4/0x178
+>>>>  [<c016e988>] nameidata_to_filp+0x24/0x33
+>>>>  [<c016e9ce>] do_filp_open+0x37/0x3e
+>>>>  [<f911c8f1>] snd_ctl_ioctl+0x0/0x7af [snd]
+>>>>  [<c017a13d>] do_ioctl+0x21/0xa0
+>>>>  [<c017a3f3>] vfs_ioctl+0x237/0x249
+>>>>  [<c017a451>] sys_ioctl+0x4c/0x67
+>>>>  [<c0104e22>] sysenter_past_esp+0x6b/0xa9
+>>>>  [<c02c0000>] unix_bind+0x5e/0x28e
+>>>>  =======================
+>>>> Code: 31 c0 c3 57 89 d1 56 53 83 ec 08 8b 78 60 8b 5a 3c 2b 58 44 8b
+>>>> 77 4c 8d 84 9e 90 00 00 00 8b 96 8c 00 00 00 89 44 24 04 8b 46 6c <0f>
+>>>> b7 04 58 89 04 24 89 f8 e8 99 24 ff ff 5f 5a 5b 5e 5f c3 53
+>>>> EIP: [<f91cfcb0>] stac92xx_dmux_enum_put+0x28/0x3c [snd_hda_intel]
+>>>> SS:ESP 0068:d9ea1ea0
+>>> I suppose your device has no digital mic input?
+>>> If so, the patch below should fix.  Give it a try.
+>>>
+>> No digital mic input, just analog as far as I am aware. I no longer
+>> get the problem with HG (this time for real), but I suppose that's
+>> because of Matthew's Patch which adds my system (DELL Vostro 1400) to
+>> the PCI quirks list where it's associated with STAC_DELL_3ST.
+> 
+> Ah, OK, then could you try the driver with my patch and pass
+> model=ref?  If the driver still works without Oops, it's fine.  Then
+> I'll apply my patch.
+> 
 
-Thanks,
-
-Matthew Ranostay
+No Oops with the patch applied for me either.
