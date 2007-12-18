@@ -1,25 +1,13 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: asihpi driver -> kernel
-Date: Wed, 19 Dec 2007 11:13:25 +1300
-Message-ID: <47684605.9050705@audioscience.com>
-References: <200709051300.35503.linux@audioscience.com>
-	<s5hzm01tn8w.wl%tiwai@suse.de> <47141823.4000307@audioscience.com>
-	<s5hbqaqrppa.wl%tiwai@suse.de> <47397615.4000201@audioscience.com>
-	<475886C3.9070301@audioscience.com> <s5hve71dzqx.wl%tiwai@suse.de>
-	<47671166.2050405@audioscience.com> <s5hlk7sxisi.wl%tiwai@suse.de>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] Dmux mixer conflict
+Date: Tue, 18 Dec 2007 17:40:05 -0500
+Message-ID: <47684C45.2080601@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------050208090300080009060402"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE96224557
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 23:13:30 +0100 (CET)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JT900AJRN2FL200@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Wed, 19 Dec 2007 11:13:29 +1300 (NZDT)
-In-reply-to: <s5hlk7sxisi.wl%tiwai@suse.de>
+Received: from smtp108.biz.mail.mud.yahoo.com (smtp108.biz.mail.mud.yahoo.com
+	[68.142.201.177]) by alsa0.perex.cz (Postfix) with SMTP id 7E4C324561
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 23:40:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,26 +17,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Tim Gardner <tim.gardner@canonical.com>, Jose_De_La_Rosa@Dell.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+This is a multi-part message in MIME format.
+--------------050208090300080009060402
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
->>> - Global variables should have some unique prefix.  The kernel code is
->>>   monolithc C, so they are really global and has no name space.
->> Did you have a list?
->> There are a few function names that don't start with HPI.
-> 
-> Err, sorry, I meant global variables *and functions*.
+DMUX mixers need to be created before input source mixers, otherwise 
+some STAC9228 codecs fail to record correctly or at all.
 
-BTW is there any way to not export functions/variables that are used
-only inside the kernel module? (but used between object files that make
-up the module so cannot be made static)
+---
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 
-I.e. if the module was compiled as one huge sourcefile, almost
-everything could be static.
+--------------050208090300080009060402
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="dmux_mixer.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="dmux_mixer.patch"
 
-regards
+diff -r fbe3540c8df4 pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Tue Dec 18 18:05:52 2007 +0100
++++ b/pci/hda/patch_sigmatel.c	Tue Dec 18 15:27:34 2007 -0700
+@@ -834,15 +834,16 @@ static int stac92xx_build_controls(struc
+ 	if (err < 0)
+ 		return err;
+ 
+-	for (i = 0; i < spec->num_mixers; i++) {
+-		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
+-		if (err < 0)
+-			return err;
+-	}
+ 	if (spec->num_dmuxes > 0) {
+ 		stac_dmux_mixer.count = spec->num_dmuxes;
+ 		err = snd_ctl_add(codec->bus->card,
+ 				  snd_ctl_new1(&stac_dmux_mixer, codec));
++		if (err < 0)
++			return err;
++	}
++
++	for (i = 0; i < spec->num_mixers; i++) {
++		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
+ 		if (err < 0)
+ 			return err;
+ 	}
 
-Eliot
+--------------050208090300080009060402
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------050208090300080009060402--
