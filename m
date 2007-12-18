@@ -1,22 +1,15 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: How do I use SNDRV_PCM_INFO_JOINT_DUPLEX?
-Date: Tue, 18 Dec 2007 13:50:42 -0600
-Message-ID: <47682492.7050500@freescale.com>
+From: Harald Welte <laforge@openmoko.org>
+Subject: [PATCH 3/12] neo1973: ASoC include pathname fix
+Date: Tue, 18 Dec 2007 12:07:00 +0100
+Message-ID: <20071218110700.GJ29882@prithivi.gnumonks.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE92010380F
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 20:50:52 +0100 (CET)
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
-	lBIJohsc016206
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 12:50:43 -0700 (MST)
-Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
-	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id lBIJogcn027753
-	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 13:50:42 -0600 (CST)
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3ED7624466
+	for <alsa-devel@alsa-project.org>; Tue, 18 Dec 2007 12:10:08 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,26 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: linux-arm-kernel@lists.arm.linux.org.uk
+Cc: alsa-devel@alsa-project.org, trivial@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm working on an ASoC driver.  I have a limitation in my hardware that if I 
-have an active substream, I cannot re-program the hardware registers that 
-control the sample size.
+[PATCH] Fix s3c24xx include file path changes in asoc driver
 
-This means, for example, if I'm playing 16-bit audio, and I want to start 
-capture, I cannot program the sample size into the hardware.  My only choice is 
-to have already programmed the capture sample size *before* I started playback.
+Signed-off-by: Harald Welte <laforge@openmoko.org>
 
-The easiest way to implement this is to make sure that the second stream has the 
-same sample size as the first.  That way, I won't need to reprogram the 
-registers, because they'll already be programmed correctly.
+---
 
-I discovered the SNDRV_PCM_INFO_JOINT_DUPLEX option, but I can't figure out how 
-to use it.  I know it needs to be set in my snd_pcm_hardware.info, but then 
-what?  How do I tell ALSA that the "joint" part is just that the sample sizes 
-must be the same?
-
+Index: linux-2.6.22/sound/soc/s3c24xx/neo1973_wm8753.c
+===================================================================
+--- linux-2.6.22.orig/sound/soc/s3c24xx/neo1973_wm8753.c
++++ linux-2.6.22/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -30,13 +30,15 @@
+ 
+ #include <asm/mach-types.h>
+ #include <asm/hardware/scoop.h>
+-#include <asm/arch/regs-iis.h>
+ #include <asm/arch/regs-clock.h>
+ #include <asm/arch/regs-gpio.h>
+ #include <asm/hardware.h>
+ #include <asm/arch/audio.h>
+ #include <asm/io.h>
+ #include <asm/arch/spi-gpio.h>
++
++#include <asm/plat-s3c24xx/regs-iis.h>
++
+ #include "../codecs/wm8753.h"
+ #include "lm4857.h"
+ #include "s3c24xx-pcm.h"
+Index: linux-2.6.22/sound/soc/s3c24xx/s3c24xx-i2s.c
+===================================================================
+--- linux-2.6.22.orig/sound/soc/s3c24xx/s3c24xx-i2s.c
++++ linux-2.6.22/sound/soc/s3c24xx/s3c24xx-i2s.c
+@@ -33,13 +33,14 @@
+ 
+ #include <asm/hardware.h>
+ #include <asm/io.h>
+-#include <asm/arch/regs-iis.h>
+ #include <asm/arch/regs-gpio.h>
+ #include <asm/arch/regs-clock.h>
+ #include <asm/arch/audio.h>
+ #include <asm/dma.h>
+ #include <asm/arch/dma.h>
+ 
++#include <asm/plat-s3c24xx/regs-iis.h>
++
+ #include "s3c24xx-pcm.h"
+ #include "s3c24xx-i2s.h"
+ 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+- Harald Welte <laforge@openmoko.org>          	        http://openmoko.org/
+============================================================================
+Software for the world's first truly open Free Software mobile phone
