@@ -1,18 +1,14 @@
-From: Harald Welte <laforge@openmoko.org>
-Subject: Re: [PATCH 3/12] neo1973: ASoC include pathname fix
-Date: Wed, 19 Dec 2007 17:49:12 +0100
-Message-ID: <20071219164912.GG29882@prithivi.gnumonks.org>
-References: <20071218110700.GJ29882@prithivi.gnumonks.org>
-	<s5h63yux31q.wl%tiwai@suse.de>
+From: Christopher Johnson <cjohnson@cswl.com>
+Subject: interesting message, but not sure where its coming from
+Date: Wed, 19 Dec 2007 12:47:50 -0500
+Message-ID: <47695946.50209@cswl.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02E9C103874
-	for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2007 17:50:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h63yux31q.wl%tiwai@suse.de>
+Received: from demoserver (204-31-79-59.icgcomm.net [204.31.79.59])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9EB0010383A
+	for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2007 18:47:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +18,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, trivial@kernel.org, linux-arm-kernel@lists.arm.linux.org.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 19, 2007 at 01:49:21PM +0100, Takashi Iwai wrote:
-> At Tue, 18 Dec 2007 12:07:00 +0100,
-> Harald Welte wrote:
-> > 
-> > [PATCH] Fix s3c24xx include file path changes in asoc driver
-> > 
-> > Signed-off-by: Harald Welte <laforge@openmoko.org>
-> 
-> Applied to ALSA tree.  Thanks.
+I'm working on a complicated program that uses the ALSA library in an 
+embedded environment.  I have things working pretty well, although 
+occasionally I get the following message printed on the console:
 
-Thanks a lot.
+buffer empty, loop_cnt 4727, loop_cnt_of_last_copy 4682, last period 
+elapsed 4700, elapsed flag 0, chip_data->prev_cnt F000
 
-> Is this intended for 2.6.24 fix?
+buffer empty, loop_cnt 4758, loop_cnt_of_last_copy 4727, last period 
+elapsed 4700, elapsed flag 0, chip_data->prev_cnt F000
 
-Since the Neo1973 core code (MACH_NEO1973_GTA01) is not yet in 2.6.24
-but will only be merged after the 2.6.24 release, it is not important to
-have this asoc fix in 2.6.24 already.
-
--- 
-- Harald Welte <laforge@openmoko.org>          	        http://openmoko.org/
-============================================================================
-Software for the world's first truly open Free Software mobile phone
+I know this isn't my code, and I can't find anything that looks like 
+this in the alsa library or the kernel.  Does anybody recognize this?
