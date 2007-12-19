@@ -1,17 +1,17 @@
 From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: How do I use SNDRV_PCM_INFO_JOINT_DUPLEX?
-Date: Wed, 19 Dec 2007 09:27:34 +0100
-Message-ID: <1198052854.5470.1227353809@webmail.messagingengine.com>
-References: <47682492.7050500@freescale.com>
+Subject: Re: Firmware problem
+Date: Wed, 19 Dec 2007 09:33:16 +0100
+Message-ID: <1198053196.6226.1227354877@webmail.messagingengine.com>
+References: <8b67d60712181251u3356bb72l9db08abf846cae9b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id CEC5D2449A
-	for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2007 09:27:36 +0100 (CET)
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id C05E2244E6
+	for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2007 09:33:16 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <47682492.7050500@freescale.com>
+In-Reply-To: <8b67d60712181251u3356bb72l9db08abf846cae9b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>, alsa-devel@alsa-project.org
+To: Adrian McMenamin <lkmladrian@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> I discovered the SNDRV_PCM_INFO_JOINT_DUPLEX option, but I can't figure out how 
-> to use it.  I know it needs to be set in my snd_pcm_hardware.info, but then 
-> what?  How do I tell ALSA that the "joint" part is just that the sample sizes 
-> must be the same?
+Adrian McMenamin wrote:
+> My user - yes there is one - of the aica sound driver on the Dreamcast
+> is having a problem with formware loading.
+> 
+> This is what he has sent me - anyone know what is wrong?
+> 
+> When loading snd-aica it gives:
+> [   55.119676] ALSA sound/sh/aica.c:641: ALSA Driver for Yamaha AICA
+> Super Inter
+> 
+> then after like 15 or 20 seconds it will give:
+> FATAL: Error inserting snd_aica
+> (/lib/modules/2.6.24-rc4/kernel/sound/sh/snd-aica.ko): Unknown symbol
+> in module, or unknown parameter (see dmesg)
 
-This flag just tells applications that this device may behave
-somewhat differently when playback and capture are used at the same
-time.
+There isn't anything related to this in dmesg, so I guess this error
+message is wrong.
 
-The actual behaviour must be implemented by the driver.  In the PCM open
-callbacks, set a constraint on the sample format if the other stream is
-already configured:
-snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_FORMAT, SNDRV_PCM_FMTBIT_xxx);
+This delay looks like the kernel timed out while waiting for userspace
+to provide the firmware.
 
-Since it is possible to open both streams at the same time without yet
-configuring them, you have to check again in the hw_params callback.
+I think the snd-aica driver should output a big error message when
+request_firmware() fails.
 
 
-HTH
+Regards,
 Clemens
