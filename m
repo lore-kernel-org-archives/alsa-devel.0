@@ -1,22 +1,19 @@
-From: John Stile <john@stilen.com>
-Subject: Re: snd-hda-intel support for
-	SPDIF-in	wiht	vt1708	card?
-Date: Wed, 19 Dec 2007 08:21:51 -0800
-Message-ID: <1198081311.32509.15.camel@genx.localdomain>
-References: <1197916048.14752.132.camel@genx.localdomain>
-	<s5hir2wxig4.wl%tiwai@suse.de>
-	<1197995286.9405.23.camel@genx.localdomain>
-	<s5hy7bsvyab.wl%tiwai@suse.de>
-	<1198039768.7926.15.camel@genx.localdomain>
-	<s5hbq8nvxo8.wl%tiwai@suse.de>
+From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Subject: Re: Fix capture mixers of ALC662 models
+Date: Wed, 19 Dec 2007 14:45:32 -0200
+Message-ID: <200712191445.33124.herton@mandriva.com.br>
+References: <200712182240.31984.herton@mandriva.com.br>
+	<s5h3atyx27o.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mother.stilen.com (dsl027-182-089.sfo1.dsl.speakeasy.net
-	[216.27.182.89]) by alsa0.perex.cz (Postfix) with ESMTP id BE1F024636
-	for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2007 17:22:18 +0100 (CET)
-In-Reply-To: <s5hbq8nvxo8.wl%tiwai@suse.de>
+Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
+	[200.140.247.100])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1BA33243D5
+	for <alsa-devel@alsa-project.org>; Wed, 19 Dec 2007 17:45:41 +0100 (CET)
+In-Reply-To: <s5h3atyx27o.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,286 +23,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Kailang Yang <kailang@realtek.com.tw>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2007-12-19 at 10:30 +0100, Takashi Iwai wrote:
-> At Tue, 18 Dec 2007 20:49:28 -0800,
-> John Stile wrote:
-> > 
-> > On Tue, 2007-12-18 at 16:05 +0100, Takashi Iwai wrote:
-> > > At Tue, 18 Dec 2007 08:28:06 -0800,
-> > > John Stile wrote:
-> > > > 
-> > > > On Tue, 2007-12-18 at 14:04 +0100, Takashi Iwai wrote:
-> > > > > At Mon, 17 Dec 2007 10:27:27 -0800,
-> > > > > John Stile wrote:
-> > > > > > 
-> > > > > > I am trying to use a Via VT1708 audio card ( uses the snd-hda-intel.ko
-> > > > > > driver) to record from SPDIF-in.
-> > > > > > 
-> > > > > > An off-list reply to my posting to alsa-users list suggested that
-> > > > > > snd-hda-intel.ko might not support SPDIF-in with the VT1708 card, which
-> > > > > > brought me here.
-> > > > > > 
-> > > > > > Can someone who works on the Intel HDA driver tell me if it supports
-> > > > > > SPDIF-in on the VT1708 audio card?
-> > > > > 
-> > > > > It should be, but not tested well, I guess.
-> > > > > 
-> > > > > The driver enables the SPDIF-in capability when BIOS sets the pin
-> > > > > information properly.  Check /proc/asound/card0/codec#* file whether
-> > > > > you have any (activated) input pin node that supports SPDIF-in.
-> > > > > 
-> > > > > 
-> > > > > Takashi
-> > > > Thank you for your reply!
-> > > > The output of your command is below.
-> > > >   spdif-out=Node 0x25
-> > > >   spdif-in=Node 0x26
-> > > > Neither labeled inactive,
-> > > > but spdif-in doesn't list a "Connection" line.
-> > > 
-> > > Just because it's only for input (thus it has no "source").
-> > > 
-> > > > I have the latest bios: 1.03 (2007/08/23) (a beta bios is available).
-> > > > Do I try the beta bios?
-> > > 
-> > > I don't think so.  Likely a driver bug.
-> > > How about the patch below (against the latest HG version)?
-> > > 
-> > > 
-> > > Takashi
-> > > 
-> > > diff -r 2d3893cf030c pci/hda/patch_via.c
-> > > --- a/pci/hda/patch_via.c	Tue Dec 18 15:42:53 2007 +0100
-> > > +++ b/pci/hda/patch_via.c	Tue Dec 18 17:48:00 2007 +0100
-> > > @@ -568,25 +568,27 @@ static int via_init(struct hda_codec *co
-> > >  		if (IS_VT1708_VENDORID(codec->vendor_id)) {
-> > >  			snd_hda_codec_write(codec, VT1708_DIGIN_PIN, 0,
-> > >  					    AC_VERB_SET_PIN_WIDGET_CONTROL,
-> > > -					    0x40);
-> > > +					    PIN_OUT);
-> > >  			snd_hda_codec_write(codec, VT1708_DIGIN_PIN, 0,
-> > >  					    AC_VERB_SET_EAPD_BTLENABLE, 0x02);
-> > >  		} else if (IS_VT1709_10CH_VENDORID(codec->vendor_id) ||
-> > >  			   IS_VT1709_6CH_VENDORID(codec->vendor_id)) {
-> > >  			snd_hda_codec_write(codec, VT1709_DIGIN_PIN, 0,
-> > >  					    AC_VERB_SET_PIN_WIDGET_CONTROL,
-> > > -					    0x40);
-> > > +					    PIN_OUT);
-> > >  			snd_hda_codec_write(codec, VT1709_DIGIN_PIN, 0,
-> > >  					    AC_VERB_SET_EAPD_BTLENABLE, 0x02);
-> > >  		} else if (IS_VT1708B_8CH_VENDORID(codec->vendor_id) ||
-> > >  			   IS_VT1708B_4CH_VENDORID(codec->vendor_id)) {
-> > >  			snd_hda_codec_write(codec, VT1708B_DIGIN_PIN, 0,
-> > >  					    AC_VERB_SET_PIN_WIDGET_CONTROL,
-> > > -					    0x40);
-> > > +					    PIN_OUT);
-> > >  			snd_hda_codec_write(codec, VT1708B_DIGIN_PIN, 0,
-> > >  					    AC_VERB_SET_EAPD_BTLENABLE, 0x02);
-> > >  		}
-> > > -	}
-> > > +	} else /* enable SPDIF-input pin */
-> > > +		snd_hda_codec_write(codec, spec->autocfg.dig_in_pin, 0,
-> > > +				    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN);
-> > >  
-> > >   	return 0;
-> > >  }
-> > 
-> > After making the changes by hand the compile failed. 
-> 
-> The problem is irrelevant with my patch.
-> The build looks broken on your system anyway.
-> 
-> > This is the output:
-> > gcc utils/mod-deps.c -o utils/mod-deps
-> > utils/mod-deps --basedir /usr/src/alsa-driver/alsa-kernel --hiddendir /usr/src/alsa-driver --versiondep /usr/src/alsa-driver/kconfig-vers --makeconf > toplevel.config.in
-> > can't handle word INPUT=y properly, supposing it's OK
-> > can't handle word INPUT=SND_USB_CAIAQ properly, supposing it's OK
-> > utils/mod-deps --basedir /usr/src/alsa-driver/alsa-kernel --hiddendir /usr/src/alsa-driver --versiondep /usr/src/alsa-driver/kconfig-vers --acinclude > acinclude.m4
-> > can't handle word INPUT=y properly, supposing it's OK
-> > can't handle word INPUT=SND_USB_CAIAQ properly, supposing it's OK
-> > utils/mod-deps --basedir /usr/src/alsa-driver/alsa-kernel --hiddendir /usr/src/alsa-driver --versiondep /usr/src/alsa-driver/kconfig-vers --include > include/config1.h.in
-> > can't handle word INPUT=y properly, supposing it's OK
-> > can't handle word INPUT=SND_USB_CAIAQ properly, supposing it's OK
-> > ./configure --with-debug=full --with-isapnp=yes --with-sequencer=yes
-> > checking for gcc... gcc
-> > checking for C compiler default output file name... a.out
-> > checking whether the C compiler works... yes
-> > checking whether we are cross compiling... no
-> > checking for suffix of executables...
-> > checking for suffix of object files... o
-> > checking whether we are using the GNU C compiler... yes
-> > checking whether gcc accepts -g... yes
-> > checking for gcc option to accept ISO C89... none needed
-> > checking for ranlib... ranlib
-> > checking for a BSD-compatible install... /usr/bin/install -c
-> > checking how to run the C preprocessor... gcc -E
-> > checking for grep that handles long lines and -e... /bin/grep
-> > checking for egrep... /bin/grep -E
-> > checking for ANSI C header files... yes
-> > checking for an ANSI C-conforming const... yes
-> > checking for inline... inline
-> > checking whether time.h and sys/time.h may both be included... yes
-> > checking whether gcc needs -traditional... no
-> > checking for current directory... /usr/src/alsa-driver
-> > checking cross compile...
-> > checking for directory with kernel source... /lib/modules/2.6.23-gentoo-r3/source
-> > checking for directory with kernel build... /lib/modules/2.6.23-gentoo-r3/build
-> > checking for kernel linux/version.h... yes
-> > checking for kernel linux/autoconf.h... yes
-> > checking for kernel version... 2.6.23-gentoo-r3
-> > checking for GCC version... Kernel compiler: gcc 4.1.2 (Gentoo 4.1.2 p1.0.2) Used compiler: gcc (GCC) 4.1.2 (Gentoo 4.1.2 p1.0.2)
-> > checking for built-in ALSA... no
-> > checking for existing ALSA module... yes
-> > checking for Red Hat kernel... auto
-> > checking for Red Hat kernel... no
-> > checking for SUSE kernel... auto
-> > checking for SUSE kernel... no
-> > checking for CONFIG_EXPERIMENTAL... yes
-> > checking for kernel linux/config.h... no
-> > Creating <linux/config.h>...
-> > checking to modify of kernel linux/kmod.h... no
-> > checking for kernel linux/utsrelease.h... yes
-> > checking for kernel linux/compiler.h... yes
-> > checking for kernel linux/pm.h... yes
-> > checking for kernel linux/spinlock.h... yes
-> > checking for kernel linux/irq.h... yes
-> > checking for kernel linux/threads.h... yes
-> > checking for kernel linux/rwsem.h... yes
-> > checking for kernel linux/gameport.h... yes
-> > checking for kernel media/v4l2-dev.h... yes
-> > checking for kernel linux/devfs_fs_kernel.h... no
-> > Creating a dummy <linux/devfs_fs_kernel.h>...
-> > checking for kernel linux/highmem.h... yes
-> > checking for kernel linux/workqueue.h... yes
-> > checking for kernel linux/dma-mapping.h... yes
-> > checking for kernel asm/hw_irq.h... yes
-> > checking for kernel linux/device.h... yes
-> > checking for kernel linux/platform_device.h... yes
-> > checking for kernel linux/isa.h... yes
-> > checking for kernel linux/jiffies.h... yes
-> > checking for kernel linux/compat.h... yes
-> > checking for kernel linux/log2.h... yes
-> > checking for kernel linux/adb.h... yes
-> > checking for kernel linux/cuda.h... yes
-> > checking for kernel linux/pmu.h... yes
-> > checking for kernel linux/moduleparam.h... yes
-> > checking for kernel linux/syscalls.h... yes
-> > checking for kernel linux/firmware.h... yes
-> > checking for kernel linux/err.h... yes
-> > checking for kernel linux/bitmap.h... yes
-> > checking for kernel linux/mutex.h... yes
-> > checking for kernel linux/latency.h... yes
-> > checking for kernel linux/kthread.h... yes
-> > checking for kernel asm/irq_regs.h... yes
-> > checking for kernel module symbol versions... yes
-> > checking for has ioport support... yes
-> > checking for PCI support in kernel... yes
-> > checking for I2C driver in kernel... module
-> > checking for I2C_POWERMAC in kernel... unknown
-> > checking for firmware loader... module
-> > checking for input subsystem in kernel... yes
-> > checking for directory to store kernel modules... /lib/modules/2.6.23-gentoo-r3/kernel/sound
-> > checking for verbose procfs... on
-> > checking for verbose printk... on
-> > checking for debug level... full
-> > checking for ISA support in kernel... yes
-> > checking for processor type... x86_32
-> > checking for ISA DMA API... yes
-> > checking for SMP... yes
-> > checking for Video device support in kernel... yes
-> > checking for ISA PnP driver in kernel... yes
-> > checking for PnP driver in kernel... yes
-> > checking for Kernel ISA-PnP support... yes
-> > checking for strlcpy... yes
-> > checking for snprintf... yes
-> > checking for vsnprintf... yes
-> > checking for scnprintf... yes
-> > checking for sscanf... yes
-> > checking for vmalloc_to_page... no
-> 
-> The configure doesn't check properly from here on.
-> Check config.log.  You must have relevant compile error messages.
+Em Wednesday 19 December 2007 11:07:23 Takashi Iwai escreveu:
+> At Tue, 18 Dec 2007 22:40:31 -0200,
+>
+> Herton Ronaldo Krzesinski wrote:
+> > The below patches fixes capture mixers of ALC662 models. The first one
+> > applies to current hg tree, the second one to Linus tree (2.6.24-rcX).
+> >
+> > The commit that added support for ASUS P701 eeepc also changed the
+> > mixers of other ALC662 models, duplicating entries for the Capture
+> > items, making them to not work anymore. This fixes it by removing
+> > duplicated entries using where possible the common alc662_capture_mixer.
+> > Also alc662_capture_mixer should use alc662* functions and not alc882
+> > (I checked /proc/asound/card0/codec* on an eepc model and it's ok).
+> >
+> > Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
+>
+> Thanks for the patch.
+> It's mostly OK, but the capture-related elements should be removed
+> from alc662_base_mixer, too.
+>
+> Could you check the patch (against HG) below works even with
+> model=6stack-dig?
 
-I kept good notes of my procedure.  
-Does any of the stuff below look wrong?
-#
-# Remove all installed alsa stuff
-#
-emerge --unmerge alsa-headers
-emerge --unmerge alsa-lib
-emerge --unmerge alsa-utils
-emerge --unmerge alsa-tools
-emerge --unmerge alsa-firmware
-emerge --unmerge alsa-oss
-emerge --unmerge alsa-plugins
-emerge --unmmerge media-sound/alsamixergui        
-eix -I alsa 
-# <empty>
+Yes, works fine here, thanks.
 
-# 
-# Remove alsa from init system
-#
-rc-update delete alsasound
-rm -rf /etc/init.d/alsasound
+>
+>
+> Takashi
+>
+> diff -r 6c70857ab613 pci/hda/patch_realtek.c
+> --- a/pci/hda/patch_realtek.c	Wed Dec 19 15:37:49 2007 +0100
+> +++ b/pci/hda/patch_realtek.c	Wed Dec 19 15:55:48 2007 +0100
+> @@ -12335,18 +12335,6 @@ static struct snd_kcontrol_new alc662_ba
+>  	HDA_CODEC_MUTE("Mic Playback Switch", 0xb, 0x0, HDA_INPUT),
+>  	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0xb, 0x01, HDA_INPUT),
+>  	HDA_CODEC_MUTE("Front Mic Playback Switch", 0xb, 0x01, HDA_INPUT),
+> -
+> -	/* Capture mixer control */
+> -	HDA_CODEC_VOLUME("Capture Volume", 0x09, 0x0, HDA_INPUT),
+> -	HDA_CODEC_MUTE("Capture Switch", 0x09, 0x0, HDA_INPUT),
+> -	{
+> -		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> -		.name = "Capture Source",
+> -		.count = 1,
+> -		.info = alc_mux_enum_info,
+> -		.get = alc_mux_enum_get,
+> -		.put = alc_mux_enum_put,
+> -	},
+>  	{ } /* end */
+>  };
+>
+> @@ -12364,17 +12352,6 @@ static struct snd_kcontrol_new alc662_3S
+>  	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+>  	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
+>  	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
+> -	HDA_CODEC_VOLUME("Capture Volume", 0x09, 0x0, HDA_INPUT),
+> -	HDA_CODEC_MUTE("Capture Switch", 0x09, 0x0, HDA_INPUT),
+> -	{
+> -		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> -		/* .name = "Capture Source", */
+> -		.name = "Input Source",
+> -		.count = 1,
+> -		.info = alc662_mux_enum_info,
+> -		.get = alc662_mux_enum_get,
+> -		.put = alc662_mux_enum_put,
+> -	},
+>  	{ } /* end */
+>  };
+>
+> @@ -12398,17 +12375,6 @@ static struct snd_kcontrol_new alc662_3S
+>  	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+>  	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
+>  	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
+> -	HDA_CODEC_VOLUME("Capture Volume", 0x09, 0x0, HDA_INPUT),
+> -	HDA_CODEC_MUTE("Capture Switch", 0x09, 0x0, HDA_INPUT),
+> -	{
+> -		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> -		/* .name = "Capture Source", */
+> -		.name = "Input Source",
+> -		.count = 1,
+> -		.info = alc662_mux_enum_info,
+> -		.get = alc662_mux_enum_get,
+> -		.put = alc662_mux_enum_put,
+> -	},
+>  	{ } /* end */
+>  };
+>
+> @@ -12422,17 +12388,6 @@ static struct snd_kcontrol_new alc662_le
+>  	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
+>  	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
+>  	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+> -	HDA_CODEC_VOLUME("Capture Volume", 0x09, 0x0, HDA_INPUT),
+> -	HDA_CODEC_MUTE("Capture Switch", 0x09, 0x0, HDA_INPUT),
+> -	{
+> -		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> -		/* .name = "Capture Source", */
+> -		.name = "Input Source",
+> -		.count = 1,
+> -		.info = alc662_mux_enum_info,
+> -		.get = alc662_mux_enum_get,
+> -		.put = alc662_mux_enum_put,
+> -	},
+>  	{ } /* end */
+>  };
+>
+> @@ -12598,9 +12553,9 @@ static struct snd_kcontrol_new alc662_ca
+>  		/* .name = "Capture Source", */
+>  		.name = "Input Source",
+>  		.count = 1,
+> -		.info = alc882_mux_enum_info,
+> -		.get = alc882_mux_enum_get,
+> -		.put = alc882_mux_enum_put,
+> +		.info = alc662_mux_enum_info,
+> +		.get = alc662_mux_enum_get,
+> +		.put = alc662_mux_enum_put,
+>  	},
+>  	{ } /* end */
+>  };
 
-#
-# Rebuild kernel with only minimal alsa support
-#
-Device Drivers  --->
- Sound  --->
-  <*> Sound card support
-  Advanced Linux Sound Architecture  --->
-   <M> Advanced Linux Sound Architecture
-   <M>   Sequencer support
-   <M>   OSS Mixer API
-   <M>   OSS PCM (digital audio) API
-   [*]     OSS PCM (digital audio) API - Include plugin system
-   [*]   OSS Sequencer API
-   <M>   RTC Timer support
-   [*]     Use RTC as default sequencer timer 
-   [*]   Support old ALSA API
-   PCI devices --->
-    <none selected>
-
-#
-# Install Hg alsa stuff here
-#
-cd /usr/src
-#
-# Download alsa-lib and alsa-utils from http://www.alsa-project.org/  
-#
-wget ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.15.tar.bz2
-wget ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.15.tar.bz2
-tar xvf alsa-lib* 
-tar xvf alsa-utils*
-
-#
-# Install mercurial
-#
-emerge --update --newuse --deep  mercurial   
-#
-# Checkout mercruial alsa repo
-#
-cd /usr/src
-hg clone http://hg-mirror.alsa-project.org/alsa-driver alsa-driver
-pushd alsa-driver
-hg clone http://hg-mirror.alsa-project.org/alsa-kernel alsa-kernel
-
-#
-# Patch
-#
-#  Apply Takashi's changes by hand (patch -p1 didn't work).
-#
-
-#
-# Build it up
-#
-cd /usr/src/alsa-driver
-./hgcompile 
-
-
-<compile failed>
+--
+[]'s
+Herton
