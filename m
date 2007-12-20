@@ -1,53 +1,45 @@
-From: Olof Johansson <olof@lixom.net>
+From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Thu, 20 Dec 2007 16:39:44 -0600
-Message-ID: <20071220223943.GA24138@lixom.net>
+Date: Thu, 20 Dec 2007 16:37:39 -0600
+Message-ID: <476AEEB3.2010403@freescale.com>
 References: <11981089894052-git-send-email-timur@freescale.com>
 	<20071220040633.GA6732@lixom.net> <476A7B23.2040905@freescale.com>
+	<20071220223943.GA24138@lixom.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
-Content-Disposition: inline
-In-Reply-To: <476A7B23.2040905@freescale.com>
-List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
-To: Timur Tabi <timur@freescale.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43D842485F
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 23:37:48 +0100 (CET)
+In-Reply-To: <20071220223943.GA24138@lixom.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Olof Johansson <olof@lixom.net>
 Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 20, 2007 at 08:24:35AM -0600, Timur Tabi wrote:
-> Olof Johansson wrote:
+Olof Johansson wrote:
+
+>> I was just following the example from another board file.  However, the 'soc' 
+>> node in the device tree does not have a compatible property, so I don't how to 
+>> change this.
 > 
-> >> +static struct of_device_id mpc8610_ids[] = {
-> >> +	{ .type = "soc", },
-> >> +	{}
-> > 
-> > Please scan based on compatible instead of device_type.
-> 
-> I was just following the example from another board file.  However, the 'soc' 
-> node in the device tree does not have a compatible property, so I don't how to 
-> change this.
+> Then add an appropriate compatible entry to it, please.
 
-Then add an appropriate compatible entry to it, please.
+None of the SOC nodes in any DTS have a "compatible" entry.  I understand the 
+issue, but you're asking me to fix a larger problem, one that is beyond the 
+scope of this patch.  You're saying that *all* SOC needs are incorrectly defined 
+and need to be probed differently.
 
-> > Do you ever anticipate having other dma users on the system, such as
-> > memcpy offload? You'll probably need allocation support for channels
-> > when that day comes (I ended up writing a simple library for dma channel
-> > management for that very reason on my platform).
-> 
-> Yes, I plan on updating this driver to work with the standard Freescale "Elo" 
-> device driver, but that will have to wait until that code is in the kernel and 
-> stabilized.  The SSI is limited in which DMA channels it can use, anyway.
-
-Ok.
-
-
--Olof
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
