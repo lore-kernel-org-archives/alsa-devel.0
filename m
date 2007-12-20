@@ -1,54 +1,53 @@
-From: Timur Tabi <timur@freescale.com>
+From: Olof Johansson <olof@lixom.net>
 Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Thu, 20 Dec 2007 16:32:39 -0600
-Message-ID: <476AED87.3090703@freescale.com>
+Date: Thu, 20 Dec 2007 16:39:44 -0600
+Message-ID: <20071220223943.GA24138@lixom.net>
 References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910712201429q5845e786yb2ecb3ce9c8b7871@mail.gmail.com>
+	<20071220040633.GA6732@lixom.net> <476A7B23.2040905@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id E457124706
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 23:32:53 +0100 (CET)
-In-Reply-To: <9e4733910712201429q5845e786yb2ecb3ce9c8b7871@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
+Content-Disposition: inline
+In-Reply-To: <476A7B23.2040905@freescale.com>
+List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
+To: Timur Tabi <timur@freescale.com>
 Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jon Smirl wrote:
+On Thu, Dec 20, 2007 at 08:24:35AM -0600, Timur Tabi wrote:
+> Olof Johansson wrote:
+> 
+> >> +static struct of_device_id mpc8610_ids[] = {
+> >> +	{ .type = "soc", },
+> >> +	{}
+> > 
+> > Please scan based on compatible instead of device_type.
+> 
+> I was just following the example from another board file.  However, the 'soc' 
+> node in the device tree does not have a compatible property, so I don't how to 
+> change this.
 
-> How is of_platform_bus_probe() supposed to be called? mpc5200/virtex
-> call it with three NULLs. Is it necessary to name all of the buses in
-> a of_device_id? If it's not necessary to list the buses the
-> of_platform_bus_probe() call could be moved to common code.
+Then add an appropriate compatible entry to it, please.
 
-I added the above code because it is the only way I could get my SSI nodes to be 
-probed.  If there's a better way to do it, I'm all ears.  I just copied that 
-code from the mpc836x_mds.c platform file.
+> > Do you ever anticipate having other dma users on the system, such as
+> > memcpy offload? You'll probably need allocation support for channels
+> > when that day comes (I ended up writing a simple library for dma channel
+> > management for that very reason on my platform).
+> 
+> Yes, I plan on updating this driver to work with the standard Freescale "Elo" 
+> device driver, but that will have to wait until that code is in the kernel and 
+> stabilized.  The SSI is limited in which DMA channels it can use, anyway.
 
-> Are these buses?
->         { .compatible = "ibm,plb4", },
->         { .compatible = "ibm,opb", },
->         { .compatible = "ibm,ebc", },
+Ok.
 
-I have no idea.
 
-> Could of_platform_bus_probe() be simplified? No one uses the first and
-> third parameters.
-
-Maybe, but that's not a discussion for this thread!
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+-Olof
