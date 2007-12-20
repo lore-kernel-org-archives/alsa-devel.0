@@ -1,17 +1,19 @@
-From: "Leigh Stewart" <leigh.stewart@elasticpath.com>
-Subject: pcm file question
-Date: Thu, 20 Dec 2007 00:20:10 -0800
-Message-ID: <f56589af0712200020o1ae8ce27h254d59c99750f0dd@mail.gmail.com>
+From: "Daniele (Mastro)" <daniele.bilug@gmail.com>
+Subject: Re: Notebook Toshiba satellite x200-21g with realtek
+ snd-hda-intel audio device still not supported (codec ALC268)
+Date: Thu, 20 Dec 2007 09:46:04 +0100
+Message-ID: <476A2BCC.4060109@gmail.com>
+References: <47672BCB.9080608@gmail.com> <476912F3.8090609@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9AFD024767
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 09:20:11 +0100 (CET)
-Received: by ug-out-1314.google.com with SMTP id q2so399611uge.50
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 00:20:10 -0800 (PST)
-Content-Disposition: inline
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9498C24774
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 09:46:11 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id f40so3209692fka.0
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 00:46:11 -0800 (PST)
+In-Reply-To: <476912F3.8090609@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +26,39 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hey all,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-im writing a little app that needs to tie into the audio in/out-put from
-another alsa application. in other words i need to take all audio produced
-by the app and do some work with it, and supply data to its audio input.
+Daniele (Mastro) ha scritto:
+> and again: i've no idea on what you could need.. i really want to help
+> you supporting my card: it's useful to me in the first place after all
+> 
+> so ask me if you need something
+> 
+> and sorry if my english isn't perfect! I'm not english and i know i
+> still have some problem with it
+> 
+> thank you all for your time
 
-im not sure but i think the pcm_file plugin will allow me to do what i need
-to do. i.e. i as i understand it i could tie the audio output to a fifo file
-using the plugin, and then read from the file.
+i don't want to be rude, i only want to ask you if is there something
+wrong with my emails? nobody is replying anymore. do you plan to reply?
 
-anyway im not sure how write a program that uses the plugin code. i wrote
-something like
+some information missing? i'll provide it, just tell me what you need
 
-...
-> #include <alsa/asoundlib.h>
-> #include <iostream>
-> #include <alsa/pcm.h>
-> #include <alsa/pcm_plugin.h>
-> ...
-> err = snd_pcm_file_open (&pcm_handle, pcm_name, (char*)0, fdo, (char*)0,
-> fdi, "raw", 777, capture_handle, 0);
-> if(err < 0) {
->   fprintf (stderr, "cannot open pcm_file device %s (%s)\n", pcm_name,
-> snd_strerror (err));
->   exit (1);
-> }
+if you plan to reply but haven't had the time yet don't be upset for
+this message... i don't know how things works here and i don't want to
+put you in a hurry, i just want to know if you will do something for
+this problem or not?
 
+thanks again
 
-but there are no method signatures in pcm_plugin.h. i've tried building alsa
-from source 1.0.15. i see method signatures for copy and dmix, and even
-jack, but not for file.
+- --
+Daniele
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-how can i compile the plugin in? can i even use pcm_file programmatically?
-can anyone refer me to any examples?
-
-thanks,
-
-lstewart
+iD8DBQFHaivLgSF24OYDe4YRAhuWAJ9eK7EekIIbPOnHe/U9AAXDmv26SwCfRrOO
+eeDdOgLh/0G5UK7IXu4p3Gk=
+=Otqw
+-----END PGP SIGNATURE-----
