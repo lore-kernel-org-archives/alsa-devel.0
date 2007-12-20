@@ -1,18 +1,16 @@
-From: John Stile <john@stilen.com>
-Subject: Re: snd-hda-intel support for SPDIF-in
-	wiht	vt1708	card?
-Date: Thu, 20 Dec 2007 12:13:54 -0800
-Message-ID: <1198181634.8838.46.camel@genx.localdomain>
-References: <122020070037.26835.4769B95A000149C6000068D3220702293305029A06039A9D0100@comcast.net>
-	<s5hhcidvd0e.wl%tiwai@suse.de>
+From: "John Utz" <john.utz@dmx.com>
+Subject: Re: [RFC] alsa-kernel clean-ups
+Date: Thu, 20 Dec 2007 12:33:49 -0800
+Message-ID: <20071220123349.16bdd211@jutz-gnto64>
+References: <s5hy7bp2z5v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mother.stilen.com (dsl027-182-089.sfo1.dsl.speakeasy.net
-	[216.27.182.89]) by alsa0.perex.cz (Postfix) with ESMTP id F12E124832
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 21:13:56 +0100 (CET)
-In-Reply-To: <s5hhcidvd0e.wl%tiwai@suse.de>
+Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9290124840
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 21:34:07 +0100 (CET)
+In-Reply-To: <s5hy7bp2z5v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,52 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: forumjunk@comcast.net, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2007-12-20 at 12:09 +0100, Takashi Iwai wrote:
-> At Thu, 20 Dec 2007 00:37:46 +0000,
-> forumjunk@comcast.net wrote:
-> > 
-> > 
-> > For VIA platforms, to avoid the driver compile error in pci.h, reconfigure your kernel to remove SMP support, and set the architecture type to PC-compatible.
-> > 
-> > (you already know this, I'm sure):
-> > Recompile the kernel (as a paranoid, I always trash /lib/modules/<kernel_version> before making modules_install). Install the kernel, of course, and reconfigure your boot loader and/or initrd and reboot.
-> > 
-> > There are still several fixes that need to be made to get all of this to compile cleanly, but I haven't got the permanent fixes nailed down yet. I'm almost positive that these are alsa-driver configure errors or omissions. I can't (yet) find a kernel config that will avoid them. The fixes below are harmless, and they will allow you to get the driver compiled.
+Please Do!
+
+On Thu, 20 Dec 2007 15:55:56 +0100
+"Takashi Iwai" <tiwai@suse.de> wrote:
+
+> Hi,
 > 
-> My guess is that the error of configure script is the only point we
-> need to fix.
+> ALSA kernel tree has lots of unused and rotten codes.  I'd like to
+> clean up this.  Here we go...
 > 
-> > Add this definition to the top section of acore/memory_wrapper.c after the line that reads #include <linux/version.h>
-> > 
-> > #define VMALLOC_VMADDR(x)   ((unsigned long)(x))
-> > 
-> > Change these lines (45 and 46 or close to that) of acore/memory_wrapper.c from:
-> > 
-> >         pmd = pmd_offset(pgd, lpage);
-> >         pte = pte_offset(pmd, lpage);
-> > 
-> > to
-> > 
-> >         pmd = pmd_offset((pud_t *)pgd, lpage);
-> >         pte = pte_offset_kernel(pmd, lpage);
-> > 
-> > The driver will then compile cleanly (at least with no errors or warnings relating to any of these changes)
+> 1. Indirect control element access
 > 
-> Don't do this.  This part shouldn't be compiled at all for recent
-> kernels.  This is, again, the problem of configure script that
-> detected the codes wrongly.
+>   This is what I already suggested.  This hasn't been used (we have no
+>   proper API in alsa-lib), and 32/64bit wrapper doesn't work at all.
+> 
+>   Also, the idea to copy such a big data area via ioctl is bad.  If we
+>   need a big matrix mixer, let make each matrix element accessible
+>   individually.  Copying the whole matrix at each time isn't
+>   efficient.
+> 
+> 2. PCM xfer_align parameter
+> 
+>   This sw_params parameter has never been used in a sane manner, and
+>   no one understands what this does exactly.  The current
+>   implementation looks also buggy because it allows write of shorter
+>   size than xfer_align.  So, if you do partial writes, the write isn't
+>   actually aligned at all.
+> 
+>   Removing this parameter will make some pcm_lib_* code more readable
+>   (and less buggy).
+> 
+> 3. PCM sleep_min and tick
+> 
+>   The "tick" in PCM is set (again) via sw_params.  And, nobody uses
+>   this feature at all except for a command line option of aplay.
+>   (This is literally "nobody", as I checked alsa-lib API calls in all
+>   programs in some major distros.)
+> 
+>   Above all, if we need finer wake-ups for the position update, it's
+>   basically an issue that the driver should solve, not tuned by each
+>   application.
+> 
+> 4. sound/driver.h
+> 
+>   This header file exists only for some hacks to adapt alsa-driver
+>   tree.  It's useless for building in the kernel.  Let's move a few
+>   lines in it to sound/core.h and remove it.
+> 
+>   For building the modules on alsa-driver external tree, we can simply
+>   add
+>     #include "adriver.h"
+>   to each build stub (alsa-driver/*/*.c) before inclusion of
+>   alsa-kernel codes.
 > 
 > 
-> So, could you guys show config.log?  Otherwise it's hard to know
-> what's really wrong.
+> I'll post some patches to clean the above thing up in the following
+> posts.  Please speak up if you have objections.
 > 
-I recompiled the kernel without SMP support, and as PC-compatible (per
-forumjunk@comcast.net).  In config.log, vmalloc_to_page shows a warning
-starting at line 540.  "function cpuid_count causes a warning: pointer
-targets in passing argument 4 of 'native_cpuid' differ in signedness". 
-Since config.long is so long... I posted it here:
-http://pastebin.ca/825772
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
