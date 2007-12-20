@@ -1,16 +1,18 @@
-From: "Andrew Paprocki" <andrew@ishiboo.com>
-Subject: Userspace control of HDA port connections
-Date: Thu, 20 Dec 2007 16:45:09 -0500
-Message-ID: <76366b180712201345q2169cec2q40cbf5a40226a918@mail.gmail.com>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Thu, 20 Dec 2007 17:29:23 -0500
+Message-ID: <9e4733910712201429q5845e786yb2ecb3ce9c8b7871@mail.gmail.com>
+References: <11981089894052-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50CF42484A
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 22:45:11 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so28848rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 13:45:09 -0800 (PST)
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC41B243B8
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 23:29:24 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so87186wag.8
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 14:29:23 -0800 (PST)
+In-Reply-To: <11981089894052-git-send-email-timur@freescale.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,35 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Timur Tabi <timur@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+On 12/19/07, Timur Tabi <timur@freescale.com> wrote:
 
-I'm wondering if there is any interest in providing a userspace way of
-modifying the HDA port/mixer input/output mappings? The driver
-currently uses hard-coded models to define the standard configuration
-for a given piece of hardware, but this doesn't allow a user to
-redefine a line-in port as an output port if the chipset has an
-available unmapped mixer. I'm bringing this up because from what I
-understand of the ALC883 is that it has 4 mixers, yet on my
-motherboard there are only 3 ports configured as output by default
-(6stack-dig). Correct me if I'm wrong, but I should be able to map all
-of the physical jacks as outputs and then assign each of the mixers to
-a jack or more than one jack. That would require adding a new model to
-the driver and/or unloading/reloading the module with a new model
-string. In a system which has the driver built-in and isn't using
-modules, this requires a reboot. If there was a userspace way of
-reconfiguring the jacks (via /proc/asound?) then perhaps even all of
-the hardware -> model mappings could be moved into a little tool run
-at boot time which doesn't require a kernel change every time new
-hardware is introduced. A nice little ncurses tool could even be made
-to modify port mappings. What do you think? If I'm misunderstanding
-the capabilities of the chips please let me know.
+> +static struct of_device_id mpc8610_ids[] = {
+> +       { .type = "soc", },
+> +       {}
+> +};
+> +
+> +static int __init mpc8610_declare_of_platform_devices(void)
+> +{
+> +       if (!machine_is(mpc86xx_hpcd))
+> +               return 0;
+> +
+> +       /* Without this call, the SSI device driver won't get probed. */
+> +       of_platform_bus_probe(NULL, mpc8610_ids, NULL);
+> +
+> +       return 0;
+> +}
+> +device_initcall(mpc8610_declare_of_platform_devices);
 
-Thanks,
--Andrew
+How is of_platform_bus_probe() supposed to be called? mpc5200/virtex
+call it with three NULLs. Is it necessary to name all of the buses in
+a of_device_id? If it's not necessary to list the buses the
+of_platform_bus_probe() call could be moved to common code.
 
-p.s. I still have yet to test out the multi-card patch. I'll reply to
-that once I have more info.
+Are these buses?
+        { .compatible = "ibm,plb4", },
+        { .compatible = "ibm,opb", },
+        { .compatible = "ibm,ebc", },
+
+Could of_platform_bus_probe() be simplified? No one uses the first and
+third parameters.
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
