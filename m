@@ -1,16 +1,16 @@
-From: "John Utz" <john.utz@dmx.com>
-Subject: Re: [RFC] alsa-kernel clean-ups
-Date: Thu, 20 Dec 2007 12:33:49 -0800
-Message-ID: <20071220123349.16bdd211@jutz-gnto64>
-References: <s5hy7bp2z5v.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] fix entries for U24_BE and U24_LE in
+	pcm_formats[] array
+Date: Thu, 20 Dec 2007 14:43:14 -0600
+Message-ID: <11981833941205-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9290124840
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 21:34:07 +0100 (CET)
-In-Reply-To: <s5hy7bp2z5v.wl%tiwai@suse.de>
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37A43103889
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 21:43:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,71 +20,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, perex@perex.cz
+Cc: Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Please Do!
+SNDRV_PCM_FORMAT_U24_BE and SNDRV_PCM_FORMAT_U24_LE represent 24-bit samples
+that are aligned into a 4-byte word, so the most significant byte is always
+zero.  The entries for these two sample formats in the pcm_formats[] array
+only specified 3 bytes.  For SNDRV_PCM_FORMAT_U24_LE, the compiler
+automatically adds the 4th byte, but for SNDRV_PCM_FORMAT_U24_BE the entry
+was just wrong.  This patch fixes both entries.
 
-On Thu, 20 Dec 2007 15:55:56 +0100
-"Takashi Iwai" <tiwai@suse.de> wrote:
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
 
-> Hi,
-> 
-> ALSA kernel tree has lots of unused and rotten codes.  I'd like to
-> clean up this.  Here we go...
-> 
-> 1. Indirect control element access
-> 
->   This is what I already suggested.  This hasn't been used (we have no
->   proper API in alsa-lib), and 32/64bit wrapper doesn't work at all.
-> 
->   Also, the idea to copy such a big data area via ioctl is bad.  If we
->   need a big matrix mixer, let make each matrix element accessible
->   individually.  Copying the whole matrix at each time isn't
->   efficient.
-> 
-> 2. PCM xfer_align parameter
-> 
->   This sw_params parameter has never been used in a sane manner, and
->   no one understands what this does exactly.  The current
->   implementation looks also buggy because it allows write of shorter
->   size than xfer_align.  So, if you do partial writes, the write isn't
->   actually aligned at all.
-> 
->   Removing this parameter will make some pcm_lib_* code more readable
->   (and less buggy).
-> 
-> 3. PCM sleep_min and tick
-> 
->   The "tick" in PCM is set (again) via sw_params.  And, nobody uses
->   this feature at all except for a command line option of aplay.
->   (This is literally "nobody", as I checked alsa-lib API calls in all
->   programs in some major distros.)
-> 
->   Above all, if we need finer wake-ups for the position update, it's
->   basically an issue that the driver should solve, not tuned by each
->   application.
-> 
-> 4. sound/driver.h
-> 
->   This header file exists only for some hacks to adapt alsa-driver
->   tree.  It's useless for building in the kernel.  Let's move a few
->   lines in it to sound/core.h and remove it.
-> 
->   For building the modules on alsa-driver external tree, we can simply
->   add
->     #include "adriver.h"
->   to each build stub (alsa-driver/*/*.c) before inclusion of
->   alsa-kernel codes.
-> 
-> 
-> I'll post some patches to clean the above thing up in the following
-> posts.  Please speak up if you have objections.
-> 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+I do not have hardware that supports U24_BE, so I can't test this change.
+
+ sound/core/pcm_misc.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+index dd9aa51..077fc0b 100644
+--- a/sound/core/pcm_misc.c
++++ b/sound/core/pcm_misc.c
+@@ -71,11 +71,11 @@ static struct pcm_format_data pcm_formats[SNDRV_PCM_FORMAT_LAST+1] = {
+ 	},
+ 	[SNDRV_PCM_FORMAT_U24_LE] = {
+ 		.width = 24, .phys = 32, .le = 1, .signd = 0,
+-		.silence = { 0x00, 0x00, 0x80 },
++		.silence = { 0x00, 0x00, 0x80, 0x00 },
+ 	},
+ 	[SNDRV_PCM_FORMAT_U24_BE] = {
+ 		.width = 24, .phys = 32, .le = 0, .signd = 0,
+-		.silence = { 0x80, 0x00, 0x00 },
++		.silence = { 0x00, 0x80, 0x00, 0x00 },
+ 	},
+ 	[SNDRV_PCM_FORMAT_S32_LE] = {
+ 		.width = 32, .phys = 32, .le = 1, .signd = 1,
+-- 
+1.5.2.4
