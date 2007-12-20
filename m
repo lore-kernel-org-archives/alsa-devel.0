@@ -1,16 +1,14 @@
-From: forumjunk@comcast.net
-Subject: Re: snd-hda-intel support for SPDIF-in wiht vt1708
-	card?
-Date: Thu, 20 Dec 2007 00:37:46 +0000
-Message-ID: <122020070037.26835.4769B95A000149C6000068D3220702293305029A06039A9D0100@comcast.net>
+From: Jiang zhe <zhe.jiang@intel.com>
+Subject: [PATCH]Device ID for Toshiba laptop which uses AD1986A
+Date: Thu, 20 Dec 2007 09:44:14 +0800
+Message-ID: <1198115054.22122.8.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from QMTA01.emeryville.ca.mail.comcast.net
-	(qmta01.emeryville.ca.mail.comcast.net [76.96.30.16])
-	by alsa0.perex.cz (Postfix) with ESMTP id 97175246A8
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 01:37:50 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5AD624692
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 02:48:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +19,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-For VIA platforms, to avoid the driver compile error in pci.h, reconfigure your kernel to remove SMP support, and set the architecture type to PC-compatible.
+Please refer to the [0003662].
+The model laptop-eapd get rid of the high-pitched noise.
 
-(you already know this, I'm sure):
-Recompile the kernel (as a paranoid, I always trash /lib/modules/<kernel_version> before making modules_install). Install the kernel, of course, and reconfigure your boot loader and/or initrd and reboot.
-
-There are still several fixes that need to be made to get all of this to compile cleanly, but I haven't got the permanent fixes nailed down yet. I'm almost positive that these are alsa-driver configure errors or omissions. I can't (yet) find a kernel config that will avoid them. The fixes below are harmless, and they will allow you to get the driver compiled.
-
-Add this definition to the top section of acore/memory_wrapper.c after the line that reads #include <linux/version.h>
-
-#define VMALLOC_VMADDR(x)   ((unsigned long)(x))
-
-Change these lines (45 and 46 or close to that) of acore/memory_wrapper.c from:
-
-        pmd = pmd_offset(pgd, lpage);
-        pte = pte_offset(pmd, lpage);
-
-to
-
-        pmd = pmd_offset((pud_t *)pgd, lpage);
-        pte = pte_offset_kernel(pmd, lpage);
-
-The driver will then compile cleanly (at least with no errors or warnings relating to any of these changes)
-
-I will work more as time allows to find or create configure tests to make sure that the correct versions of these functions get included or patched.
+Signed-Off-by: Jiang Zhe <zhe.jiang@intel.com>
+--- alsa-driver-hg20071219/alsa-kernel/pci/hda/patch_analog.c	2007-12-20
+09:40:37.000000000 +0800
++++ b/alsa-kernel/pci/hda/patch_analog.c	2007-12-20 09:23:05.000000000
++0800
+@@ -859,6 +859,7 @@ static struct snd_pci_quirk ad1986a_cfg_
+ 	SND_PCI_QUIRK(0x17aa, 0x1017, "Lenovo A60", AD1986A_3STACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo N100", AD1986A_LAPTOP_AUTOMUTE),
+ 	SND_PCI_QUIRK(0x17c0, 0x2017, "Samsung M50", AD1986A_LAPTOP),
++	SND_PCI_QUIRK(0x1179, 0xff40, "Toshiba", AD1986A_LAPTOP_EAPD),
+ 	{}
+ };
