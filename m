@@ -1,20 +1,21 @@
 From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Fri, 21 Dec 2007 00:28:40 -0500
-Message-ID: <75b66ecd0712202128n2f13adf2ie9a344e0c19d69ad@mail.gmail.com>
-References: <11981089894052-git-send-email-timur@freescale.com>
-	<20071220040633.GA6732@lixom.net> <476A7B23.2040905@freescale.com>
-	<s5h4ped4gl3.wl%tiwai@suse.de>
+Subject: Re: Using dmix/dsnoop/dshare to access individual
+	channels
+Date: Fri, 21 Dec 2007 01:53:09 -0500
+Message-ID: <75b66ecd0712202253r3bbabaaek9d44bfeced32aad9@mail.gmail.com>
+References: <0MKp8S-1J2adg1age-0007la@mrelay.perfora.net>
+	<s5hfxy0xi5h.wl%tiwai@suse.de>
+	<0MKp8S-1J56n908qn-0006u1@mrelay.perfora.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A9322437E
-	for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2007 06:28:42 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so118484rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 21:28:40 -0800 (PST)
-In-Reply-To: <s5h4ped4gl3.wl%tiwai@suse.de>
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB37A243BF
+	for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2007 07:53:10 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so133854rvb.32
+	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 22:53:09 -0800 (PST)
+In-Reply-To: <0MKp8S-1J56n908qn-0006u1@mrelay.perfora.net>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,38 +26,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Olof Johansson <olof@lixom.net>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+To: Steve Strobel <steve.strobel@link-comm.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 20, 2007 8:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 20 Dec 2007 08:24:35 -0600,
-> Timur Tabi wrote:
-> >
-> > >> +static int fsl_dma_new(struct snd_card *card, struct snd_soc_codec_dai *dai,
-> > >> +  struct snd_pcm *pcm)
-> > >> +{
-> > >> +  static u64 fsl_dma_dmamask = 0xffffffff;
-> > >> +  int ret;
-> > >> +
-> > >> +  if (!card->dev->dma_mask)
-> > >> +          card->dev->dma_mask = &fsl_dma_dmamask;
-> > >
-> > > I haven't read how your channel allocation works, but providing a
-> > > pointer to a local static variable is a bit fishy no matter what.
-> >
-> > I just copied this code from another module.  All the ALSA drivers do this,
+On Dec 19, 2007 4:49 PM, Steve Strobel <steve.strobel@link-comm.com> wrote:
+> Thanks for the reply.  I think I understand at least the basics of
+> how Jack works, and I can see how it would work well in
+> general.  Unfortunately, I am working on an embedded Blackfin system
+> running uClinux and I don't find any evidence that Jack has been
+> ported to that platform.  Also, all of the (simple command-line)
+> utilities that I hoped to use like aplay/record, mp3play, etc. are
+> set up for ALSA;  I suppose there might be Jack equivalents or a way
+> of using an adapter of some sort.  That sounds rather involved, and
+> defeats at least some of the advantages of native Jack apps.
 >
-> All?  No, only a few...
-> For PCI, usually pci_set_dma_mask() and pci_set_consistent_dma_mask()
-> are used, of course.
+> Would it be a reasonable design to make small executables to do jobs
+> similar to dmix/dsnoop/dshare that do their I/O on named pipes
+> (fifos), then run aplay/arecord... on those pipes?
 
-Timur,
+Once you do this you'll have re-implemented 90% of JACK.
 
-Nicely commented driver!  I wish they were all like this ;-)
+JACK should work on your platform - it uses the same POSIX APIs
+(shared memory and FIFOs) as ALSA to mix and route audio.  Actually
+dmix/dsnoop/dshare have more requirements (SysV IPC).  You should at
+least try it.
 
-Please use DMA_32BIT_MASK (see include/linux/dma-mapping.h) instead of
-0xffffffff.  I've personally fixed a heisenbug in an ALSA driver
-caused by incorrectly typed DMA mask...
+There are JACKified equivalents to all the apps you mention.  aplay
+and arecord aren't designed for everyday use anyway; they're really
+just for demonstrating ALSA features and testing drivers.
+
+An added bonus is that you'll be using a system that's already been
+proven in the field, with VERY demanding professional audio apps, on
+everything from embedded systems to top of the line workstations.
+
+Trust me, I've done Linux audio development for embedded systems, and
+once you go JACK you'll never go back ;-)
 
 Lee
