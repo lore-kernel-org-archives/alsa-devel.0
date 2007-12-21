@@ -1,22 +1,22 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: Using dmix/dsnoop/dshare to access individual
-	channels
-Date: Fri, 21 Dec 2007 01:53:09 -0500
-Message-ID: <75b66ecd0712202253r3bbabaaek9d44bfeced32aad9@mail.gmail.com>
-References: <0MKp8S-1J2adg1age-0007la@mrelay.perfora.net>
-	<s5hfxy0xi5h.wl%tiwai@suse.de>
-	<0MKp8S-1J56n908qn-0006u1@mrelay.perfora.net>
+From: "Daniele (Mastro)" <daniele.bilug@gmail.com>
+Subject: Re: Notebook Toshiba satellite x200-21g with realtek
+ snd-hda-intel audio device still not supported (codec ALC268)
+Date: Fri, 21 Dec 2007 11:14:31 +0100
+Message-ID: <476B9207.3010007@gmail.com>
+References: <47672BCB.9080608@gmail.com>	<476912F3.8090609@gmail.com>	
+	<476A2BCC.4060109@gmail.com> <s5h1w9h4g5d.wl%tiwai@suse.de>	
+	<476B031C.1070304@gmail.com>
+	<1198199454.26685.109.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB37A243BF
-	for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2007 07:53:10 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so133854rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 20 Dec 2007 22:53:09 -0800 (PST)
-In-Reply-To: <0MKp8S-1J56n908qn-0006u1@mrelay.perfora.net>
-Content-Disposition: inline
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9A0C2446A
+	for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2007 11:14:36 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id f40so367640fka.0
+	for <alsa-devel@alsa-project.org>; Fri, 21 Dec 2007 02:14:36 -0800 (PST)
+In-Reply-To: <1198199454.26685.109.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,41 +26,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Steve Strobel <steve.strobel@link-comm.com>
+To: Tobin Davis <tdavis@dsl-only.net>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 19, 2007 4:49 PM, Steve Strobel <steve.strobel@link-comm.com> wrote:
-> Thanks for the reply.  I think I understand at least the basics of
-> how Jack works, and I can see how it would work well in
-> general.  Unfortunately, I am working on an embedded Blackfin system
-> running uClinux and I don't find any evidence that Jack has been
-> ported to that platform.  Also, all of the (simple command-line)
-> utilities that I hoped to use like aplay/record, mp3play, etc. are
-> set up for ALSA;  I suppose there might be Jack equivalents or a way
-> of using an adapter of some sort.  That sounds rather involved, and
-> defeats at least some of the advantages of native Jack apps.
->
-> Would it be a reasonable design to make small executables to do jobs
-> similar to dmix/dsnoop/dshare that do their I/O on named pipes
-> (fifos), then run aplay/arecord... on those pipes?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Once you do this you'll have re-implemented 90% of JACK.
+Tobin Davis ha scritto:
+> Daniele, 
+> 
+> Normally I would have jumped in earlier to help, but I am swamped,
+> between my real job (non-alsa related), school (BS IT degree program),
+> and recent flooding activity in Oregon a couple of weeks ago.
 
-JACK should work on your platform - it uses the same POSIX APIs
-(shared memory and FIFOs) as ALSA to mix and route audio.  Actually
-dmix/dsnoop/dshare have more requirements (SysV IPC).  You should at
-least try it.
+i'm swamped too for many reason and haven't much time...
+anyway i don't have hurry.. i just would like my audio card to work one
+day :)
 
-There are JACKified equivalents to all the apps you mention.  aplay
-and arecord aren't designed for everyday use anyway; they're really
-just for demonstrating ALSA features and testing drivers.
+> What I can do, is ask you to download and run
+> http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh .
+> 
+> Also, rebuild the modules with "./configure --with-cards=snd-hda-intel
+> --with-debug=detect" and load them with "model=auto".  This will leave
+> output in dmesg as to what the driver finds in bios.  It's not always
+> reliable, but it helps.
 
-An added bonus is that you'll be using a system that's already been
-proven in the field, with VERY demanding professional audio apps, on
-everything from embedded systems to top of the line workstations.
+i'll do this and keep you informed, thanks for the advice (i forgot to
+mention my card has a build in MIDI support... should i compile it with
+the option sequencer? and why don't you put inside the "oss" too?
 
-Trust me, I've done Linux audio development for embedded systems, and
-once you go JACK you'll never go back ;-)
+> As to 5.1 surround, the only way to get 6 channel output would be
+> through the SPDIF port, as it acts as a digial passthrough.  If your
+> system has a subwoofer, it is very likely tied into the main speaker
+> out, just like the 2.1 speakers you can get at most stores.
 
-Lee
+i still didn't search for this.. i'll do!
+i can tell you i've 4 speaker on the front of my notebook (may be they
+are only 2 channel)
+and a subwoofer on the bottom of it
+
+i'll bring here as much info i can find on my audio system and will
+start to try what you said... but i'll do this in spare time so may be
+it will take some time
+
+thank you again!
+
+- --
+Daniele
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFHa5IHgSF24OYDe4YRAh0OAJ91OvLARvQpFfA9ecpNsImDIumX9wCcDkAR
+bpqKYeVyNf3k+O5kYUkyd3w=
+=Bi0E
+-----END PGP SIGNATURE-----
