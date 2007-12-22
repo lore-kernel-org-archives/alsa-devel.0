@@ -1,19 +1,20 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [PATCH] PulseAudio plugin: report XRUN state
-	back	to application
-Date: Sat, 22 Dec 2007 23:34:00 +0100
-Message-ID: <20071222223359.GA13486@tango.0pointer.de>
-References: <20071125211226.GF17108@tango.0pointer.de>
-	<s5hd4txs49u.wl%tiwai@suse.de>
+Subject: Re: Disable conversions
+Date: Sat, 22 Dec 2007 23:37:01 +0100
+Message-ID: <20071222223701.GB13486@tango.0pointer.de>
+References: <20071120005151.GA25276@tango.0pointer.de>
+	<s5hsl2zhlmh.wl%tiwai@suse.de>
+	<20071125204132.GA15151@tango.0pointer.de>
+	<Pine.LNX.4.61.0711261638320.24363@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8ADD61038C4
-	for <alsa-devel@alsa-project.org>; Sat, 22 Dec 2007 23:34:01 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id DFFCB1038C5
+	for <alsa-devel@alsa-project.org>; Sat, 22 Dec 2007 23:37:01 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hd4txs49u.wl%tiwai@suse.de>
+In-Reply-To: <Pine.LNX.4.61.0711261638320.24363@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 26.11.07 11:13, Takashi Iwai (tiwai@suse.de) wrote:
+On Mon, 26.11.07 16:55, Jaroslav Kysela (perex@perex.cz) wrote:
 
-> > Alternatively, ioplug could be beefed up to properly handle XRUNs, but
-> > I thought this fix is simpler.
+> 1) Proposal - one argument specifying multiple disabled conversions:
 > 
-> But it's a layer violation :)
+>    plughw:CARD=0,DEV=0,DISABLECONV=cfr
 > 
-> We need a proper state-notification function.  It'd be simply setting
-> the state in the end, but at least, it's clear and the ioplug can do
-> any action or sanity-check if once needed.
+>    c = channels
+>    f = format
+>    r = rate
 > 
-> A proposed patch is below.  Comments?
+>    And add 'disableconv' to pcm/pcm_plug.c configuration parser.
 
-Looks good to me. 
+Works for me. However, abbreviating things too brutally doesn't seem
+like a good idea, I'd thus vote for your proposal #2:
+
+> 2) Proposal - multiple arguments
+> 
+>    plughw:CARD=0,DEV=0,DISABLECHANNELS=1,DISABLERATE=1,DISABLEFORMAT=1
+> 
+> I prefer first proposal (I don't think that it will be widely used), but I 
+> have no objections for second, too.
+> 
+> This can be applied to plug: device as well.
+
+It would be great if something like this would be available. I am
+happy with either, as long as I can make use of it!
 
 Lennart
 
