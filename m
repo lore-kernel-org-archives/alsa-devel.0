@@ -1,18 +1,21 @@
-From: Paul Winkler <pw_lists@slinkp.com>
-Subject: Re: doc update
-	for	http://bugtrack.alsa-project.org/main/index.php/Matrix:Vendor-Intel
-Date: Sun, 23 Dec 2007 00:12:34 -0500
-Message-ID: <20071223051234.GA5079@slinkp.com>
-References: <20071217123708.A6661@slinkp.com> <s5hhcigxico.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Softvol controls
+Date: Sun, 23 Dec 2007 11:21:56 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0712231116460.8567@tm8103.perex-int.cz>
+References: <20071120005151.GA25276@tango.0pointer.de>
+	<s5htznfhmhy.wl%tiwai@suse.de>
+	<20071129232859.GA18138@tango.0pointer.de>
+	<s5h8x4gf6rt.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0712041627310.7670@tm8103.perex-int.cz>
+	<20071222225453.GD13486@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ensim2.interlix.com (ensim2.interlix.com [64.22.224.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 48E7124350
-	for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2007 06:12:45 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hhcigxico.wl%tiwai@suse.de>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4796D245ED
+	for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2007 11:21:57 +0100 (CET)
+In-Reply-To: <20071222225453.GD13486@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +25,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Lennart Poettering <mznyfn@0pointer.de>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 18, 2007 at 02:06:31PM +0100, Takashi Iwai wrote:
-> At Mon, 17 Dec 2007 12:37:08 -0600,
-> Paul Winkler wrote:
-> > 
-> > Hi,
-> > 
-> > The page at
-> > http://bugtrack.alsa-project.org/main/index.php/Matrix:Vendor-Intel
-> > makes it seem that cards identified as ICH7 must use the hda_intel
-> > driver. This is apparently not always true.  I have a dell desktop
-> > where snd_hda_intel refuses to load.  I fired up alsaconf and it
-> > suggested using the intel8x0.  I tried that and it works fine.
-> > 
-> > So maybe ICH7 should be added to "chipsets" in the first row on that
-> > page.
+On Sat, 22 Dec 2007, Lennart Poettering wrote:
+
+> On Tue, 04.12.07 16:42, Jaroslav Kysela (perex@perex.cz) wrote:
 > 
-> Right, up to ICH7 it supports both HD-audio and AC97.
+> > > No, there is no API to get the id mapping.
+> > > And I guess we can't do it because there is no 1:1 mapping between
+> > > ctl_elem and mixer_selem.  It's N:1.
+> > 
+> > I don't think that application should know about this mapping.
+> > 
+> > I think that we have to provide API giving a mixer control element for 
+> > opened PCM handle, otherwise applications might use hacks like 
+> > suggested snd_ctl_elem_info_is_user() checks.
 > 
-> Feel free to correct it.  It's a Wiki page ;)
+> Wouldn't it be possible to just provide a snd_mixer_elem_is_user()
+> function? Would be fine to solve my task, too...
 
-I would have, but it was locked.
-Someone has since unlocked it.  Edit done.
+User elements can be used for other purposes, too. So 
+snd_mixer_elem_is_user() is not sufficient to give you enough information.
 
-Thanks,
+> > > > I figure there is no useful documentation or even example how this is
+> > > > supposed to work? Hmm, is there any real documentation available which
+> > > > describes the relation of ctl, hctl, mixer and smixer at all? For the
+> > > > uninitated the whols structure looks overly complex and redundant.
+> > > 
+> > > Yes, it's overly complex.  The mixer abstracion is what I'd really
+> > > love to clean up, maybe better to write from scratch.
+> > 
+> > I think that we might remove only 'mixer' and simplify initalization from 
+> > the user side, but each time I tried to think about an optimal mixer 
+> > interface, I ended with the current 'simple mixer API'.
+> 
+> Quite frankly, the whole structure of ctl, hctl, mixer and smixer is
+> one of the weakest points in the ALSA API. While it might make sense
+> to have these internally, I belive that exposing them all in the API was a
+> bad idea. (But actually, I only understand ALSA in parts, so maybe I
+> just am blind)
 
--- 
+I'm not sure. I always recommended to use smixer API for standard 
+applications, because it contains abstraction (at least some, but it will 
+improve). hctl is just a cache for ctl (probably might be integrated to 
+ctl layer) and I'm thinking to remove mixer layer (but I need some time to 
+create a good proposal).
 
-Paul Winkler
-http://www.slinkp.com
+> > > I guess PA could use ctl API better than mixer API because it requires
+> > > only certain elements like Master or PCM.  You can simply take
+> > > "Master Playback Control" with MIXER iface for master volume and
+> > > "Master Playback Switch" for master mute switch.  Of course, you'll
+> > > take care of number of channels or value range, but it's also same for
+> > > mixer API, too.
+> > 
+> > I don't agree here. The simple mixer layer should be used, because it 
+> > covers at least some abstraction. In my recent changes, we have 
+> > possibility to use python for fast prototyping of simple mixer backends 
+> > (see alsa-lib/modules/mixer/simple/python directory how fast with minimal 
+> > code can be backend implemented). Unfortunately, main problem will be
+> > probably the work to cover all cards.
+> 
+> So, what does this mean for me? As long as I have some way to detect
+> whether a mixer element is software-only I am happy. 
+> 
+> Should I now be following yours, or Takashi's advice? Should I wait
+> for a new interface to be added to the ALSA API?
+
+Please, wait. I suggested to add new function to PCM API to detect
+which mixer element is related to a PCM stream.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project
