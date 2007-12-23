@@ -1,21 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Softvol controls
-Date: Sun, 23 Dec 2007 11:21:56 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0712231116460.8567@tm8103.perex-int.cz>
-References: <20071120005151.GA25276@tango.0pointer.de>
-	<s5htznfhmhy.wl%tiwai@suse.de>
-	<20071129232859.GA18138@tango.0pointer.de>
-	<s5h8x4gf6rt.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0712041627310.7670@tm8103.perex-int.cz>
-	<20071222225453.GD13486@tango.0pointer.de>
+From: "Mike Mazarick" <mazarick@bellsouth.net>
+Subject: Gadget Labs Linux Alsa driver is coming!! (and you are
+	invited)
+Date: Sun, 23 Dec 2007 13:32:30 -0500
+Message-ID: <00ce01c84592$2ded5750$89c805f0$@net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4796D245ED
-	for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2007 11:21:57 +0100 (CET)
-In-Reply-To: <20071222225453.GD13486@tango.0pointer.de>
+Received: from fmailhost03.isp.att.net (fmailhost03.isp.att.net
+	[207.115.11.53]) by alsa0.perex.cz (Postfix) with ESMTP id C8E952453E
+	for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2007 19:32:35 +0100 (CET)
+Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,80 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: wavepro-driver-developers@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 22 Dec 2007, Lennart Poettering wrote:
+There is a recently revitalized project to create an alsa linux driver for
+the Gadget Labs series of cards.  
 
-> On Tue, 04.12.07 16:42, Jaroslav Kysela (perex@perex.cz) wrote:
-> 
-> > > No, there is no API to get the id mapping.
-> > > And I guess we can't do it because there is no 1:1 mapping between
-> > > ctl_elem and mixer_selem.  It's N:1.
-> > 
-> > I don't think that application should know about this mapping.
-> > 
-> > I think that we have to provide API giving a mixer control element for 
-> > opened PCM handle, otherwise applications might use hacks like 
-> > suggested snd_ctl_elem_info_is_user() checks.
-> 
-> Wouldn't it be possible to just provide a snd_mixer_elem_is_user()
-> function? Would be fine to solve my task, too...
+ 
 
-User elements can be used for other purposes, too. So 
-snd_mixer_elem_is_user() is not sufficient to give you enough information.
+http://sourceforge.net/projects/wavepro-driver/
 
-> > > > I figure there is no useful documentation or even example how this is
-> > > > supposed to work? Hmm, is there any real documentation available which
-> > > > describes the relation of ctl, hctl, mixer and smixer at all? For the
-> > > > uninitated the whols structure looks overly complex and redundant.
-> > > 
-> > > Yes, it's overly complex.  The mixer abstracion is what I'd really
-> > > love to clean up, maybe better to write from scratch.
-> > 
-> > I think that we might remove only 'mixer' and simplify initalization from 
-> > the user side, but each time I tried to think about an optimal mixer 
-> > interface, I ended with the current 'simple mixer API'.
-> 
-> Quite frankly, the whole structure of ctl, hctl, mixer and smixer is
-> one of the weakest points in the ALSA API. While it might make sense
-> to have these internally, I belive that exposing them all in the API was a
-> bad idea. (But actually, I only understand ALSA in parts, so maybe I
-> just am blind)
+ 
 
-I'm not sure. I always recommended to use smixer API for standard 
-applications, because it contains abstraction (at least some, but it will 
-improve). hctl is just a cache for ctl (probably might be integrated to 
-ctl layer) and I'm thinking to remove mixer layer (but I need some time to 
-create a good proposal).
+There is an active mailing list of the developers, testers, and interested
+parties who are helping located here:
 
-> > > I guess PA could use ctl API better than mixer API because it requires
-> > > only certain elements like Master or PCM.  You can simply take
-> > > "Master Playback Control" with MIXER iface for master volume and
-> > > "Master Playback Switch" for master mute switch.  Of course, you'll
-> > > take care of number of channels or value range, but it's also same for
-> > > mixer API, too.
-> > 
-> > I don't agree here. The simple mixer layer should be used, because it 
-> > covers at least some abstraction. In my recent changes, we have 
-> > possibility to use python for fast prototyping of simple mixer backends 
-> > (see alsa-lib/modules/mixer/simple/python directory how fast with minimal 
-> > code can be backend implemented). Unfortunately, main problem will be
-> > probably the work to cover all cards.
-> 
-> So, what does this mean for me? As long as I have some way to detect
-> whether a mixer element is software-only I am happy. 
-> 
-> Should I now be following yours, or Takashi's advice? Should I wait
-> for a new interface to be added to the ALSA API?
+ 
 
-Please, wait. I suggested to add new function to PCM API to detect
-which mixer element is related to a PCM stream.
+wavepro-driver-developers@lists.sourceforge.net
 
-						Jaroslav
+ 
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project
+It is recommended that if you are interested in reading the progress of this
+effort, that you subscribe soon because the mailing list will go 'private'
+around the middle of January (to keep out spam and other unwanted
+intrusions).
+
+ 
+
+The end goal of this project is to have the driver included in the alsa
+distribution and eventually into the linux distributions so that owners of
+this card can simply have the card installed in their system and all the
+necessary steps will be done automatically by the installation, as is the
+case with SoundBlasters, onboard sound cards, Delta 1010s, RME 9652s, etc. 
+
+ 
+
+Having a working driver is several months away from now, and the developers
+who are helping write this are quite good, however, we are all inexperienced
+at creating drivers for linux and are unsure of the needed steps to get it
+included in the Alsa tree.   We are also very receptive to any advice or
+help with the creation of this driver; feel free to sign up and be a part of
+this project.   We have a major advantage because there is already a Windows
+driver available with source (including new FPGA firmware), which was
+developed after the Gadget Labs company went under.
+
+ 
+
+Best wishes (and happy holidays!!)
+
+ 
+
+Mike Mazarick
