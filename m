@@ -1,17 +1,22 @@
-From: "Veli-Matti Valtonen" <maligor@gmail.com>
-Subject: [PATCH] Another EMU0404 Board ID
-Date: Sun, 23 Dec 2007 23:36:32 +0200
-Message-ID: <b0edb78a0712231336x469a30eeha122a86d255e7f64@mail.gmail.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: Gadget Labs Linux Alsa driver is coming!! (and you
+ are invited)
+Date: Mon, 24 Dec 2007 14:40:15 +1300
+Message-ID: <200712241440.15269.linux@audioscience.com>
+References: <00ce01c84592$2ded5750$89c805f0$@net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA0D824554
-	for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2007 22:36:33 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id l27so763844fgb.44
-	for <alsa-devel@alsa-project.org>; Sun, 23 Dec 2007 13:36:32 -0800 (PST)
-Content-Disposition: inline
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9A44103843
+	for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2007 02:41:12 +0100 (CET)
+Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JTJ00JDV5YX6Z20@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Mon, 24 Dec 2007 14:40:10 +1300 (NZDT)
+In-reply-to: <00ce01c84592$2ded5750$89c805f0$@net>
+Content-disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: wavepro-driver-developers@lists.sourceforge.net, Mike Mazarick <mazarick@bellsouth.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hey,
+On Monday 24 December 2007 07:32:30 Mike Mazarick wrote:
+> There is a recently revitalized project to create an alsa linux driver for
+> the Gadget Labs series of cards.
+>
+> http://sourceforge.net/projects/wavepro-driver/
+>
+> There is an active mailing list of the developers, testers, and interested
+> parties who are helping located here:
+>
+> wavepro-driver-developers@lists.sourceforge.net
 
-This is based on pseudo-random playing around with the capabilities.
-With ca0102 this card gives no output atall, ca0108 appears to work
-fine, so it rather looks similar to the EMU1010b/EMU1010 changes.
+You might also consider creating a page or pages on the alsa wiki
 
-Some other people seem to have succeeded in using this aswell:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3496
+Ah OK, there is already 
+http://alsa-project.org/main/index.php/Matrix:Vendor-Gadget_Labs
 
-diff -u -r alsa-driver-hg20071222/alsa-kernel/pci/emu10k1/emu10k1_main.c
-alsa-driver-hg20071222-0404b/alsa-kernel/pci/emu10k1/emu10k1_main.c
---- alsa-driver-hg20071222/alsa-kernel/pci/emu10k1/emu10k1_main.c	2007-12-22
-03:00:09.000000000 +0200
-+++ alsa-driver-hg20071222-0404b/alsa-kernel/pci/emu10k1/emu10k1_main.c	2007-12-23
-23:01:12.807047391 +0200
-@@ -1419,6 +1419,14 @@
- 	 .ca0102_chip = 1,
- 	 .spk71 = 1,
- 	 .emu_model = EMU_MODEL_EMU1010}, /* Emu 1010 */
-+	/* EMU0404b */
-+	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x40021102,
-+	 .driver = "Audigy2", .name = "E-mu 0404b [4002]",
-+	 .id = "EMU0404",
-+	 .emu10k2_chip = 1,
-+	 .ca0108_chip = 1,
-+	 .spk71 = 1,
-+	 .emu_model = EMU_MODEL_EMU0404}, /* EMU 0404 */
- 	/* Tested by James@superbug.co.uk 20-3-2007. */
- 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x40021102,
- 	 .driver = "Audigy2", .name = "E-mu 0404 [4002]",
+Either add info here, or create pages linked from here.
+
+regards
+
+Eliot 
