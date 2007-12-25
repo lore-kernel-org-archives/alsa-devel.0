@@ -1,19 +1,21 @@
-From: =?ISO-8859-1?Q?Michael_K=FChn?= <breiteseite1337@googlemail.com>
-Subject: Re: Intel Corporation 82801H (ICH8 Family) HD Audio
- Controller (rev 03)
-Date: Mon, 24 Dec 2007 22:58:42 +0100
-Message-ID: <47702B92.4010402@googlemail.com>
-References: <477028EE.9040404@googlemail.com> <47702A83.5080300@gmail.com>
+From: "Salatiel Filho" <salatiel.filho@gmail.com>
+Subject: Re: function snd_mixer_load failed: Inappropriate
+	ioctl for device
+Date: Mon, 24 Dec 2007 23:29:52 -0300
+Message-ID: <beb91d720712241829y8878ffby7cfb6a18d9103edd@mail.gmail.com>
+References: <beb91d720712121645p62acfc10r99135a15dd5ee47e@mail.gmail.com>
+	<s5hmys91uu2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 802A8103820
-	for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2007 22:59:26 +0100 (CET)
-Received: by fk-out-0910.google.com with SMTP id f40so2146554fka.0
-	for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2007 13:59:26 -0800 (PST)
-In-Reply-To: <47702A83.5080300@gmail.com>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6699D247B9
+	for <alsa-devel@alsa-project.org>; Tue, 25 Dec 2007 03:29:54 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so2867069wag.8
+	for <alsa-devel@alsa-project.org>; Mon, 24 Dec 2007 18:29:52 -0800 (PST)
+In-Reply-To: <s5hmys91uu2.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +25,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Daniele (Mastro)" <daniele.bilug@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm too new to this maillist to read the other topic, sorry ;)
+On 12/17/07, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 12 Dec 2007 21:45:26 -0300,
+> Salatiel Filho wrote:
+> >
+> > ***  please let me in the to or cc fields. I am not on the list ***
+> >
+> > I am having a big trouble to make sound work on my ARM machine. I am
+> > running debian 4.
+> >
+> >
+> >
+> > #  uname -a
+> > Linux LS-GL7D6 2.6.16.57-arm2 #7 Wed Dec 12 18:14:51 BRT 2007
+> > armv5tejl GNU/Linux
+> >
+> > # cat /proc/asound/version
+> > Advanced Linux Sound Architecture Driver Version 1.0.15.
+> > Compiled on Dec 12 2007 for kernel 2.6.16.57-arm2.
+> >
+> >
+> > Modules load successfully
+> >
+> > # lsmod
+> > Module                  Size  Used by
+> > snd_pcm_oss            47680  0
+> > snd_mixer_oss          15040  1 snd_pcm_oss
+> > snd_usb_audio          79904  0
+> > snd_pcm                75877  2 snd_pcm_oss,snd_usb_audio
+> > snd_timer              20164  1 snd_pcm
+> > snd_page_alloc          8264  1 snd_pcm
+> > snd_usb_lib            15808  1 snd_usb_audio
+> > snd_rawmidi            21376  1 snd_usb_lib
+> > snd_seq_device          7116  1 snd_rawmidi
+> > snd_hwdep               7460  1 snd_usb_audio
+> > snd                    54368  9
+> > snd_pcm_oss,snd_mixer_oss,snd_usb_audio,snd_pcm,snd_timer,snd_usb_lib,s=
+nd_rawmidi,snd_seq_device,snd_hwdep
+> > soundcore               7684  1 snd
+> > nfs                   102044  0
+> > lockd                  61780  1 nfs
+> > sunrpc                142808  3 nfs,lockd
+> > dm_mod                 48176  0
+> > usbhid                 38628  0
+> >
+> >
+> >
+> > # cat /proc/asound/cards
+> >  0 [default        ]: USB-Audio - C-Media USB Headphone Set
+> >                      C-Media USB Headphone Set   at
+> > usb-ehci_platform.4523-1, full speed
+> >
+> >
+> > # cat /proc/asound/version
+> > Advanced Linux Sound Architecture Driver Version 1.0.15.
+> > Compiled on Dec 12 2007 for kernel 2.6.16.57-arm2.
+> >
+> > but everytime i try to use alsamixer i get:
+> >
+> >
+> > # alsamixer
+> > alsamixer: function snd_mixer_load failed: Inappropriate ioctl for devi=
+ce
+> >
+> > # aplay test.wav
+> > Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+> > aplay: xrun:1090: read/write error, state =3D PREPARED
+> >
+> >
+> > # strace alsamixer
+> > ...
+> > stat64("/usr//share/alsa/alsa.conf", {st_mode=3DS_IFREG|0644,
+> > st_size=3D8611, ...}) =3D 0
+> > open("/usr//share/alsa/alsa.conf", O_RDONLY) =3D 3
+> > fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D8611, ...}) =3D 0
+> > mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =3D 0x40017000
+> > read(3, "#\n#  ALSA library configuration "..., 4096) =3D 4096
+> > read(3, "r\n\t\t\t\tname defaults.pcm.device\n\t"..., 4096) =3D 4096
+> > read(3, "{\n\t\t\t@func refer\n\t\t\tname default"..., 4096) =3D 419
+> > read(3, "", 4096)                       =3D 0
+> > read(3, "", 4096)                       =3D 0
+> > close(3)                                =3D 0
+> > munmap(0x40017000, 4096)                =3D 0
+> > access("/etc/asound.conf", R_OK)        =3D -1 ENOENT (No such file or =
+directory)
+> > access("/root/.asoundrc", R_OK)         =3D -1 ENOENT (No such file or =
+directory)
+> > open("/dev/snd/controlC0", O_RDONLY)    =3D 3
+> > close(3)                                =3D 0
+> > open("/dev/snd/controlC0", O_RDWR)      =3D 3
+> > ioctl(3, USBDEVFS_CONTROL, 0xbec2da64)  =3D 0
+> > ioctl(3, UI_DEV_CREATE, 0xbec2db2c)     =3D 0
+> > close(3)                                =3D 0
+> > stat64("/usr//share/alsa/alsa.conf", {st_mode=3DS_IFREG|0644,
+> > st_size=3D8611, ...}) =3D 0
+> > open("/dev/snd/controlC0", O_RDONLY)    =3D 3
+> > close(3)                                =3D 0
+> > open("/dev/snd/controlC0", O_RDWR)      =3D 3
+> > ioctl(3, USBDEVFS_CONTROL, 0xbec2da44)  =3D 0
+> > fcntl64(3, F_GETFL)                     =3D 0x2 (flags O_RDWR)
+> > fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  =3D 0
+> > ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbec2dac0) =3D 0
+> > ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbec2dac0) =3D 0
+> > ioctl(3, USBDEVFS_CONNECTINFO, 0xbec2d86c) =3D 0
+> > ioctl(3, USBDEVFS_IOCTL, 0xbec2d42c)    =3D -1 ENOTTY (Inappropriate
+> > ioctl for device)
+> > fstat64(1, {st_mode=3DS_IFCHR|0620, st_rdev=3Dmakedev(136, 2), ...}) =
+=3D 0
+> > mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> > 0) =3D 0x40017000
+> > write(1, "\n", 1
+> > )                       =3D 1
+> > write(2, "alsamixer: function snd_mixer_lo"..., 74alsamixer: function
+> > snd_mixer_load failed: Inappropriate ioctl for device
+> > ) =3D 74
+> > munmap(0x40017000, 4096)                =3D 0
+> > io_submit(0x2, 0, 0x8 <unfinished ... exit status 2>
+> >
+> >
+> > any help?
+> >
+> >
+> >
+> > The same card works ok on my x86 machine using . So the problem is not
+> > the card but something else.
+>
+> Likely the difference of struct size due to different compiler or
+> compiler options.
+>
+>
+> Takashi
+>
 
-My Problems are:
-
-- under the stable version of alsa-driver at gentoo there isn't any
-sound to output :(
-- at unstable version of alsa-driver there is just very very crap sound
-(sounds like C64) :P
-
-on both, alsaconf found hda_intel. Kernel includet driver are same
-unfunctional as stable version of the package in gentoo.
+I have compiled kernel/alsa drivers/alsa mixer using the same compiler
+on the same machine.
 
 
-ah.. i want add: i use amd64.
-Daniele (Mastro) schrieb:
-> Michael K=FChn ha scritto:
->> i'm the owner of a Acer 6492 Notebook. Details of this soundchip are at
->> the bottom of this e-mail.
-> =
+-- =
 
->> P.S.: Details of the audiochip can found here:
->> http://nopaste.com/p/aS3FUn5pqb
-> =
+[]'s
+Salatiel
 
-> this seems to be very similar to mine... (Toshiba Satellite x200-21g)
-> =
-
-> theres another topic i've opened here "Notebook Toshiba satellite
-> x200-21g with realtek snd-hda-intel audio device still not supported
-> (codec ALC268)" with details
-> =
-
-> what are your problems?
-> =
+"O maior prazer do inteligente =E9 bancar o  idiota
+   diante de um  idiota que banca o inteligente".
