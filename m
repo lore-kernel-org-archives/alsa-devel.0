@@ -1,20 +1,19 @@
-From: "Daniele (Mastro)" <daniele.bilug@gmail.com>
-Subject: Re: Notebook Toshiba satellite x200-21g with realtek
- snd-hda-intel audio device still not supported (codec ALC268)
-Date: Wed, 26 Dec 2007 17:08:12 +0100
-Message-ID: <47727C6C.6080401@gmail.com>
-References: <47672BCB.9080608@gmail.com>	<476912F3.8090609@gmail.com>	<476A2BCC.4060109@gmail.com>
-	<s5h1w9h4g5d.wl%tiwai@suse.de>
+From: Marco Schuster <marco@harddisk.is-a-geek.org>
+Subject: ALC268 "test" model
+Date: Wed, 26 Dec 2007 19:05:42 +0100
+Message-ID: <477297F6.6040607@harddisk.is-a-geek.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1507897121077026517=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id A59C5103889
-	for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2007 17:08:17 +0100 (CET)
-Received: by mu-out-0910.google.com with SMTP id i10so1775850mue.3
-	for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2007 08:08:16 -0800 (PST)
-In-Reply-To: <s5h1w9h4g5d.wl%tiwai@suse.de>
+Received: from www.velirat.de (velirat.de [85.25.68.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id A29ED1038A3
+	for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2007 19:05:48 +0100 (CET)
+Received: from dslb-084-056-055-011.pools.arcor-ip.net ([84.56.55.11]
+	helo=[192.168.0.102])
+	by www.velirat.de with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.68) (envelope-from <marco@harddisk.is-a-geek.org>)
+	id 1J7adW-0007t1-78
+	for alsa-devel@alsa-project.org; Wed, 26 Dec 2007 19:05:46 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai ha scritto:
-> I recommend you to hack the driver code by yourself.
-> The coding itself isn't too difficult.  The problem is the guess work,
-> which PIN really corresponds to which I/O, and what control is missing
-> (EAPD, GPIO, etc).
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============1507897121077026517==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigFE12098F5C3C35860953654F"
 
-hum..
-i guess the file i should edit is patch_realtek.c
-but i really have no idea on what to change/add and how to understand
-what i have to change...
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigFE12098F5C3C35860953654F
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-in my other message there are the debug info you requested and i don't
-know how to use them
+Hi all,
 
-i'm really want to do something to help you but i keep reading the code
-without knowing what to do or understanding it very much... i never
-developed kernel drivers and I've no idea on what to do
+I try to use a patch from J. Woithe to put a test model into the
+ALC268 driver [1] (enabling all pins etc.); unfortunately it gives a
+lot of compiling errors ([2]) which I am unable to understand as I
+don't have sufficient knowledge of the internal API of HDA codec.
 
-I'm putting here my good will but think i miss the knowledge to do what
-you suggested and i don't know where to achieve it either
+Can someone please look over it and correct the mistakes?
 
-> What I'm wondering is how to support 5.1 output.  The ALC268 codec is
-> at most for 4 channels (2 + 2).  Are you sure that you can get 5.1
-> distinct outputs?
+Marco Schuster
 
-probably this isn't a 5.1 as i said in the other message
+[1]: http://harddisk.is-a-geek.org/patch.txt
+[2]: http://harddisk.is-a-geek.org/compiling-errors.txt
 
-thanks for any reply you will give me
-i'm sorry i'm so annoying
 
--- 
-Daniele
+--------------enigFE12098F5C3C35860953654F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFHcpf6W6S2GapJUuQRAn6NAJ45mfHbNEcbMAFJ+8YAqM3cik9LLwCdFPQ8
+W2XlWCaS7/xwKcc3yhfyD40=
+=Fe4B
+-----END PGP SIGNATURE-----
+
+--------------enigFE12098F5C3C35860953654F--
+
+--===============1507897121077026517==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1507897121077026517==--
