@@ -1,22 +1,17 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: es18xx: Enable wavetable input from ESS chips
-Date: Wed, 26 Dec 2007 23:48:37 +0100
-Message-ID: <20071226234837.6dc3484a.krzysztof.h1@poczta.fm>
+From: De Fuuss <fuuss@hotmail.com>
+Subject: Re: intel-hd on an intel G33 motherboard
+Date: Thu, 27 Dec 2007 00:33:54 +0000
+Message-ID: <BAY109-W373CBC57EE1663E94F98D8A9540@phx.gbl>
+References: <BAY109-W10EC413FC1F19625739A28A95B0@phx.gbl>
+	<1198697428.3732.176.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.poczta.interia.pl (smtp35.poczta.interia.pl [80.48.65.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2DE2524929
-	for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2007 23:46:20 +0100 (CET)
-Received: from poczta.interia.pl (mi02.poczta.interia.pl [10.217.12.2])
-	by smtp4.poczta.interia.pl (INTERIA.PL) with ESMTP id 031AF507382
-	for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2007 23:46:15 +0100 (CET)
-Received: from krzysio.net (host-87-99-61-239.lanet.net.pl [87.99.61.239])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.poczta.fm (INTERIA.PL) with ESMTP id 875202BF722
-	for <alsa-devel@alsa-project.org>; Wed, 26 Dec 2007 23:46:15 +0100 (CET)
+Received: from bay0-omc2-s36.bay0.hotmail.com (bay0-omc2-s36.bay0.hotmail.com
+	[65.54.246.172]) by alsa0.perex.cz (Postfix) with ESMTP id E73E424340
+	for <alsa-devel@alsa-project.org>; Thu, 27 Dec 2007 01:33:56 +0100 (CET)
+In-Reply-To: <1198697428.3732.176.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,64 +21,363 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-This patch enables wavetable chips ES689/ES69X connected to
-ESS ES18xx chips. The wavetable chip uses FM DAC if the clock signal
-from the wavetable is active.
-It has no effect if there is no ESS wavetable chip present.
+Hi Tobin,
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+Thanks for you quick reply.
 
----
+I tried both 3stack-6ch and 3stack-6ch-dig (the card has a spdif out). I found out that when putting on headphones on a separate headphone jack I get some sound with both settings. Hoever, the front out l/r, center/bass sourround back l/r and side sourround l/r port remain silent.
 
-This patch has a gotcha. In theory, the OPL synthesis or wavetable input should
-use FM DAC depending on the active clock signal from the wavetable chip.
-Unfortunately, the default state of the wavetable chip from ESS (ES689/ES690/ES692)
-is to send clock signal all the time. This blocks OPL3 signal if the wavetable chip is 
-present.
+I set all channels to 80-100% in alsamixer.
 
-This problem can be solved with sysex command 4 send to the wavetable chip.
-It sets the wavetable chip to auto-deactivate mode which switches the wavetable off
- if there are 5 seconds without midi input (according to the es1879 datasheet).
+A few more details from my  setup:
+Shuttle XPC SG33G5M
+Intel G33 Express + ICH9DH
 
-I tested this patch on the es1868 chip without the wavetable. The OPL3 synthesis
-worked (no clock signal from the wavetable).
+Interestingly, when I run alsamixer, it identifies the Chip as "Generic 1095 ID 1392", in other words in points to codec#1. I thought it should point to codec#0, e.g. RealTek ALC888
 
-I tested it on the card with es1868 chip and es690 wavetable. The OPL3 synthesis
-did not work, the wavetable worked. Both the OPL3 and wavetable worked if the
- sysex command 4 was sent to the wavetable chip (e.g. by amidi tool).
+I have the strong impression that the channels are not truly set by alsamixer as they point to the wrong codec. I'm only a layman in ALSA, and I have no idea how to tell alsamixer to consider codec#0 instead codec#1.
 
-Is it ok to add this sysex command sending to the driver? How?
-The wavetable clock signal can be detected (there is status bit which says if wavetable is
-active).
+Do you have any idea on how to crack this nut?
 
-Another question is about ES938 chip (bass, treble and 3D control) on the card.
-This chip is controlled by sysex midi commands. It can be detected (by reading
-settings with sysex commands). Is it possible to add this to the alsamixer or external tool
-for setting these controls is recommended?
+Below is the output of both codecs:
 
-Regards,
-Krzysztof
+Thank you.
 
-diff -urp linux-2.6.24/sound/isa/es18xx.c linux-new/sound/isa/es18xx.c
---- linux-2.6.24/sound/isa/es18xx.c	2007-12-25 23:23:03.000000000 +0100
-+++ linux-new/sound/isa/es18xx.c	2007-12-26 16:30:08.000000000 +0100
-@@ -1442,6 +1442,8 @@ static int __devinit snd_es18xx_initiali
- 		snd_es18xx_write(chip, 0xB2, 0x50);
- 		/* Enable MPU and hardware volume interrupt */
- 		snd_es18xx_mixer_write(chip, 0x64, 0x42);
-+		/* Enable ESS wavetable input */
-+		snd_es18xx_mixer_bits(chip, 0x48, 0x10, 0x10);
- 	}
- 	else {
- 		int irqmask, dma1mask, dma2mask;
+Best regards,
+
+Patrick
+
+____________________
+#cat /proc/asound/cards
+
+0 [Intel          ]: HDA-Intel - HDA Intel
+HDA Intel at 0xfdff8000 irq 22
+
+# cat /proc/asound/Intel/codec#0
+Codec: Realtek ALC888
+Address: 0
+Vendor Id: 0x10ec0888
+Subsystem Id: 0x12970888
+Revision Id: 0x100001
+No Modem Function Group found
+Default PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x02 [Audio Output] wcaps 0x11: Stereo
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x03 [Audio Output] wcaps 0x11: Stereo
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x04 [Audio Output] wcaps 0x11: Stereo
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x05 [Audio Output] wcaps 0x11: Stereo
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+  PCM:
+    rates [0x5e0]: 44100 48000 88200 96000 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x9f 0x9f]
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0x6]: 16 20
+    formats [0x1]: PCM
+  Connection: 1
+     0x23
+Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x9f 0x9f]
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0x6]: 16 20
+    formats [0x1]: PCM
+  Connection: 1
+     0x22
+Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+  Connection: 1
+     0x1f
+Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x9d 0x9d] [0x80 0x80] [0x9f 0x9f] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 10
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
+Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x1d 0x1d]
+  Connection: 2
+     0x02 0x0b
+Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x1f 0x1f]
+  Connection: 2
+     0x03 0x0b
+Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x1f 0x1f]
+  Connection: 2
+     0x04 0x0b
+Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 2
+     0x05 0x0b
+Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x083e: IN OUT HP Detect
+  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x083e: IN OUT HP Detect
+  Pin Default 0x01011012: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d* 0x0e 0x0f 0x26
+Node 0x16 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0836: IN OUT Detect
+  Pin Default 0x01016011: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = Orange
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d 0x0e* 0x0f 0x26
+Node 0x17 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0836: IN OUT Detect
+  Pin Default 0x01012014: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = Grey
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d 0x0e 0x0f* 0x26
+Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x08373e: IN OUT HP Detect
+  Pin Default 0x01813040: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d 0x0e* 0x0f 0x26
+Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08373e: IN OUT HP Detect
+  Pin Default 0x02a19850: [Jack] Mic at Ext Front
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x08373e: IN OUT HP Detect
+  Pin Default 0x9993014f: [Fixed] Aux at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d* 0x0e 0x0f 0x26
+Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x08373e: IN OUT HP Detect
+  Pin Default 0x02214020: [Jack] HP Out at Ext Front
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x4005a603: [N/A] Line Out at Ext N/A
+    Conn = Optical, Color = UNKNOWN
+  Pin-ctls: 0x20: IN
+Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01451130: [Jack] SPDIF Out at Ext Rear
+    Conn = Optical, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x06
+Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
+  Pincap 0x0820: IN
+  Pin Default 0x01c59160: [Jack] SPDIF In at Ext Rear
+    Conn = Optical, Color = Pink
+  Pin-ctls: 0x20: IN
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 11
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 11
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x25 [Audio Output] wcaps 0x11: Stereo
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x80 0x80]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 2
+     0x25 0x0b
+
+A second codec sits at /proc/asound/Intel/codec#0. A cat results in:
+
+Codec: Generic 1095 ID 1392
+Address: 1
+Vendor Id: 0x10951392
+Subsystem Id: 0xffffffff
+Revision Id: 0x100000
+No Modem Function Group found
+Default PCM:
+    rates [0x0]:
+    bits [0x0]:
+    formats [0x0]:
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x02 [Audio Output] wcaps 0x6211: Stereo Digital
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+Node 0x03 [Pin Complex] wcaps 0x40738d: Stereo Digital Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0894: OUT Detect
+  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x02
 
 
-----------------------------------------------------------------------
-Rozdajemy nagrody! Wygraj samochod!
+> From: tdavis@dsl-only.net
+> To: fuuss@hotmail.com
+> Date: Wed, 26 Dec 2007 11:30:28 -0800
+> CC: alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+>
+> Try "model=3stack-6ch". Also, if you look in the
+> alsa-driver-1.0.15/alsa-kernel/Documentation/Alsa-Configuration.txt
+> file, there are other models you can select for the alc883/888 codec.
+>
+> Let me know if this works and I'll add your system to the driver.
+>
+> Tobin
+>
+> On Wed, 2007-12-26 at 18:42 +0000, De Fuuss wrote:
+>
+>> Hi,
+>>
+>> Maybe I'm missing something, but I've failed to get even the slightest
+>> noise out of the onboard sound card from a Intel G33 motherboard. I
+>> tried the alsa drivers from the alsa-driver-1.0.15 package as well as
+>> the the alsa drivers provided by kernel 2.6.23 (built as modules), to
+>> no avail.
+>>
+>> The sound chip is identified as a Intel HDA / Realtek ALC888 on the Intel G33 ICH9 motherboard.
+>>
+>> After reading some of the documentation from the ALSA site and googling through half the internet I haven't found out yet if this specific sound card is supported by ALSA and if some module options must be passed (such as options snd-intel-hda model=.....).
+>>
+>> Could somebody be so kind as to point me into the right direction?
+>>
+>> Thank you.
+>>
+>> Best regards,
+>>
+>> Patrick
+>>
+>> _________________________________________________________________
+>> Express yourself instantly with MSN Messenger! Download today it's FREE!
+>> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+> --
+> Tobin Davis
+>
+>
+> TONY RANDALL! Is YOUR life a PATIO of FUN??
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Sprawdz >> http://link.interia.pl/f1cb8
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today it's FREE!
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
