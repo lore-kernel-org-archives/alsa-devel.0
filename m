@@ -1,7 +1,7 @@
-From: Tobin Davis <tdavis@dsl-only.net>
+From: Jiang zhe <zhe.jiang@intel.com>
 Subject: Re: intel-hd on an intel G33 motherboard
-Date: Thu, 27 Dec 2007 18:41:26 -0800
-Message-ID: <1198809686.3732.222.camel@razman.gruemaster.com>
+Date: Fri, 28 Dec 2007 10:42:37 +0800
+Message-ID: <1198809757.3910.11.camel@localhost.localdomain>
 References: <BAY109-W10EC413FC1F19625739A28A95B0@phx.gbl>
 	<1198697428.3732.176.camel@razman.gruemaster.com>
 	<BAY109-W373CBC57EE1663E94F98D8A9540@phx.gbl>
@@ -14,9 +14,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 167C924497
-	for <alsa-devel@alsa-project.org>; Fri, 28 Dec 2007 03:41:30 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D5402452E
+	for <alsa-devel@alsa-project.org>; Fri, 28 Dec 2007 03:41:59 +0100 (CET)
 In-Reply-To: <BAY109-W26A10E12EBD66E23EA9FA7A9550@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,11 +28,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: De Fuuss <fuuss@hotmail.com>
-Cc: Jiang zhe <zhe.jiang@intel.com>, Lee Revell <rlrevell@joe-job.com>, ALSA Developers <alsa-devel@alsa-project.org>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>, Lee Revell <rlrevell@joe-job.com>
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, 2007-12-28 at 01:53 +0000, De Fuuss wrote:
-
 > Hi,
 > 
 > I tried with the corrected syntax (alsamixer -D hw:1,0), to no avail. I get the following:
@@ -54,17 +53,64 @@ On Fri, 2007-12-28 at 01:53 +0000, De Fuuss wrote:
 > 1 line in
 > 
 > + an spdif out
+
+The model=3stack-dig or 3stack-6ch-dig won't be okay for the SG33G5M,
+because it's 5 jacks + spdif.
+
+There should be a model "5stack-dig" for your motherboard.
+but the 888 driver doesn't provide a 5stack-dig model now.
+
 > 
 > All the jacks are directly soldered on the motherboard. The XPC motherboard is promoted as 7.1 capable.
 > 
 > The motherboard also exists in a SG33G5M "Deluxe" version with a supplementary spdif in + bluetooth + ...
-
-In that case, try "model=6stack-dig" for your system.   Also, try
-"model=6stack-hp".
-
--- 
-Tobin Davis  
+> 
+Sorry, your motherboard just use G33 chipset, it's not DG33BU desktop
+board manufactured by intel. I mixed them up.
 
 
-Set the cart before the horse.
-		-- John Heywood
+> Regards,
+> 
+> Patrick
+> 
+> > Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> > From: zhe.jiang@intel.com
+> > To: rlrevell@joe-job.com
+> > CC: fuuss@hotmail.com; alsa-devel@alsa-project.org
+> > Date: Fri, 28 Dec 2007 09:25:06 +0800
+> >
+> > On Thu, 2007-12-27 at 12:42 -0500, Lee Revell wrote:
+> >> On Dec 27, 2007 5:38 AM, De Fuuss  wrote:
+> >>>
+> >>> Thank you for taking interest in my problem.
+> >>>
+> >>> I tried alsamixer -D hw:1.0 and similar combinations, but the card doesn't speak to me:
+> >>>
+> >>> #alsamixer -D hw:1.0
+> >>> alsamixer: function snd_ctl_open failed for hw:1.0: No such device
+> >>>
+> >>
+> >> Wrong syntax. Try alsamixer -D hw:1,0
+> >>
+> >> Lee
+> >> _______________________________________________
+> >> Alsa-devel mailing list
+> >> Alsa-devel@alsa-project.org
+> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+> > Hi,
+> >
+> > I googled some document about the G33 motherboard and the "Shuttle XPC
+> > SG33G5M".
+> >
+> > The G33 have 3 jacks on the back panel, while the "XPC SG33G5M" have 5
+> > jacks on the back panel.
+> >
+> > Does it mean that the XPC extend the jacks?
+> >
+> >
+> >
+> 
+> _________________________________________________________________
+> Express yourself instantly with MSN Messenger! Download today it's FREE!
+> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
