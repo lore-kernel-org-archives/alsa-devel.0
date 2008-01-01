@@ -1,181 +1,87 @@
-From: Erik Slagter <erik@slagter.name>
-Subject: Re: [alsa-devel] Hotplug plugin
-Date: Tue, 01 Jan 2008 19:26:13 +0100
-Message-ID: <477A85C5.8010104@slagter.name>
-References: <4778FA23.8090409@slagter.name>
-	<20071231144225.GB4414@tango.0pointer.de>
+From: Timo Jantunen <jeti@iki.fi>
+Subject: ALSA HDA problem with 64-bit kernels
+Date: Tue, 1 Jan 2008 22:21:16 +0200 (EET)
+Message-ID: <Pine.LNX.4.64.0801012144180.5646@limbo>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1530960651=="
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <20071231144225.GB4414@tango.0pointer.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org., alsa-user@lists.sourceforge.net, Lennart Poettering <mznyfn@0pointer.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756429AbYAAUV2@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a cryptographically signed message in MIME format.
-
---===============1530960651==
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=sha1; boundary="------------ms080009030204060109040108"
-
-This is a cryptographically signed message in MIME format.
-
---------------ms080009030204060109040108
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Lennart Poettering wrote:
-
->>  - pulseaudio, using hal-detection and "combined" device: doesn't work
->> because a removed device is never reinserted into the combined
->> device;
-> 
-> Of course it is. Just install PA 0.9.7 or newer.
-
-Nope, really.
-
-The relevant config file sections (using pa 0.9.7):
-
-***
-
-load-module module-hal-detect
-load-module module-combine sink_name=all
--> master=alsa_output.pci_8086_27d8_alsa_playback_0
--> slaves=alsa_output.usb_device_8bb_2704_noserial_if0_alsa_playback_0
--> adjust_time=5 resample_method=src-sinc-best-quality
-
- - or -
-
-load-module module-detect
-load-module module-combine sink_name=all master=alsa_output.hw_0
--> slaves=alsa_output.hw_1 adjust_time=10
--> resample_method=src-sinc-best-quality
-
- - or -
-
-load-module module-alsa-sink device=hw:0 format=s16 rate=44100
--> channels=2 sink_name=alc883 channel_map=left,right
-load-module module-alsa-sink device=hw:1 format=s16 rate=44100
--> channels=2 sink_name=jvc channel_map=left,right
-load-module module-combine sink_name=all master=alc883 slaves=jvc
--> adjust_time=10 resample_method=src-sinc-best-quality
-
-***
-
--> is line continuation
-
-These combinations all yield the same result: at startup I have an "all"
-sink that combines both devices, and does that pretty well, I must say.
-But as soon as the USB device is removed, it is removed from the
-combined "all" sink. Then when the USB device is reinserted, it gets
-detected (module-hal-detect) or not (module-detect, static config).
-Using module-hal-detect the reinserted just sits there, it isn't added
-to the combined sink. Using the other methods, it's not even detected
-that the USB device is back...
-
-The only solution I can think of, is a udev script that casts some magic
-spells towards pulse when the USB device is inserted or removed... But
-then I could skip pulse altogether, because mpd has an option to
-activate and deactivate selected outputs at runtime, as well.
-
---------------ms080009030204060109040108
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJUTCC
-AwMwggJsoAMCAQICEDGJsD9UPajwBl+GeyaBWA0wDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
-BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMT
-I1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA3MDkxNzEwMzAwM1oX
-DTA4MDkxNjEwMzAwM1owajEQMA4GA1UEBBMHU2xhZ3RlcjEVMBMGA1UEKhMMRXJpayBNYXJ0
-aWpuMR0wGwYDVQQDExRFcmlrIE1hcnRpam4gU2xhZ3RlcjEgMB4GCSqGSIb3DQEJARYRZXJp
-a0BzbGFndGVyLm5hbWUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4bkf+nXAx
-akUjjwscSMjaKSUFQiJPxTgOUEh+uKVsBVGvY7CB8XcCmU7+oO1s9NaTL7BVy7Lwpj5SJV/B
-v8gZWrHwsR3D7U2rcKUW81v7dkTu9GTAUt5Qc8b7+GehjZuZKZPjMdH6vJK9G7YnZu1gG9b0
-CoEC4jOdIR4+4di2ZUN9M5JLlVKofOP4fo8MKFny88ThmxHLGzzQGsshfs7wuYB2hivouPCf
-kmc+tnTI90mLrV748Yc6M9gq1brUajcy+tL0wdTS0NOJ2FVa/0HFlxaMrt88nko2J7wA+yPM
-RY1L+ziU+Qr45JxoCE6pI/6lZNlMtHeYvdveQZs/3n5HAgMBAAGjLjAsMBwGA1UdEQQVMBOB
-EWVyaWtAc2xhZ3Rlci5uYW1lMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEFBQADgYEAZrik
-whMvx+aaj7gXQDVuy+zs7eqq1zJilrNS1130Hrq0JeLC6Rnl6a1gE52gap2O6uLyfpdGBmXu
-loCzA9OPYKcZT6EtcZKF3+TCP0m9L3G1scQPPrxZt/oA4uZ4MDTvLElPJH2ONOvCoRPrp5aD
-YHD5NlsDjs+kG6559873oTwwggMDMIICbKADAgECAhAxibA/VD2o8AZfhnsmgVgNMA0GCSqG
-SIb3DQEBBQUAMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAo
-UHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBD
-QTAeFw0wNzA5MTcxMDMwMDNaFw0wODA5MTYxMDMwMDNaMGoxEDAOBgNVBAQTB1NsYWd0ZXIx
-FTATBgNVBCoTDEVyaWsgTWFydGlqbjEdMBsGA1UEAxMURXJpayBNYXJ0aWpuIFNsYWd0ZXIx
-IDAeBgkqhkiG9w0BCQEWEWVyaWtAc2xhZ3Rlci5uYW1lMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEAuG5H/p1wMWpFI48LHEjI2iklBUIiT8U4DlBIfrilbAVRr2OwgfF3AplO
-/qDtbPTWky+wVcuy8KY+UiVfwb/IGVqx8LEdw+1Nq3ClFvNb+3ZE7vRkwFLeUHPG+/hnoY2b
-mSmT4zHR+rySvRu2J2btYBvW9AqBAuIznSEePuHYtmVDfTOSS5VSqHzj+H6PDChZ8vPE4ZsR
-yxs80BrLIX7O8LmAdoYr6Ljwn5JnPrZ0yPdJi61e+PGHOjPYKtW61Go3MvrS9MHU0tDTidhV
-Wv9BxZcWjK7fPJ5KNie8APsjzEWNS/s4lPkK+OScaAhOqSP+pWTZTLR3mL3b3kGbP95+RwID
-AQABoy4wLDAcBgNVHREEFTATgRFlcmlrQHNsYWd0ZXIubmFtZTAMBgNVHRMBAf8EAjAAMA0G
-CSqGSIb3DQEBBQUAA4GBAGa4pMITL8fmmo+4F0A1bsvs7O3qqtcyYpazUtdd9B66tCXiwukZ
-5emtYBOdoGqdjuri8n6XRgZl7paAswPTj2CnGU+hLXGShd/kwj9JvS9xtbHEDz68Wbf6AOLm
-eDA07yxJTyR9jjTrwqET66eWg2Bw+TZbA47PpBuueffO96E8MIIDPzCCAqigAwIBAgIBDTAN
-BgkqhkiG9w0BAQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTES
-MBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UE
-CxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBl
-cnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0
-aGF3dGUuY29tMB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVowYjELMAkGA1UEBhMC
-WkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1Ro
-YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GN
-ADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU5VAK
-MNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTX
-p6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIGA1UdEwEB/wQIMAYB
-Af8CAQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUuY29tL1RoYXd0ZVBl
-cnNvbmFsRnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYD
-VQQDExFQcml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBIjNFQg+oLLswNo2as
-Zw9/r6y+whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZfoSxmRsAxRoLgnSe
-JVCUYsfbJ3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4gtwhGTXeJLHT
-HUb/XV9lTzGCA2QwggNgAgEBMHYwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBD
-b25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFp
-bCBJc3N1aW5nIENBAhAxibA/VD2o8AZfhnsmgVgNMAkGBSsOAwIaBQCgggHDMBgGCSqGSIb3
-DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA4MDEwMTE4MjYxM1owIwYJKoZI
-hvcNAQkEMRYEFKICUO0OLY/dX5Onyn+QeKr1ODA6MFIGCSqGSIb3DQEJDzFFMEMwCgYIKoZI
-hvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3
-DQMCAgEoMIGFBgkrBgEEAYI3EAQxeDB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3
-dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJl
-ZW1haWwgSXNzdWluZyBDQQIQMYmwP1Q9qPAGX4Z7JoFYDTCBhwYLKoZIhvcNAQkQAgsxeKB2
-MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQu
-MSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIQMYmwP1Q9
-qPAGX4Z7JoFYDTANBgkqhkiG9w0BAQEFAASCAQABmSfh3Q8xsIaD4wax5fp+0Omm3IHUttZG
-rjrheAmbBt4ow56dQqieaBtQkw/jDz3EynmQGE/pHA4Tjrl+MPYusT5YkI3tUe8GCvymyM/v
-mUk5iLnLGMnf3dZXxsH2XVKK6F7JNekgUwKj9RwyYwGqlOj+Rt7aglBhdTKaxch/q076v/8s
-+534s7cyqk0cyJSoGWpU1oYOW62GtVDxu73h8/pilvZMohCLlYMA47MFr/Uu9nGRd3AM2A8D
-LouJUUS8dElHsi4kynmnG8GCYSDlbcEVxUL51YM5Ptmk8RDT7pc0asDCsCRBM2hQW+bdXXGv
-l+sLlOqQL5HmCyqMGK/CAAAAAAAA
---------------ms080009030204060109040108--
+Heip!
 
 
---===============1530960651==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I recently moved to 64-bit kernel, but mixed sounds (ie. mpegs played with 
+a media player) don't work with optical S/PDIF connection. AC3/DTS 
+passthrough still works, and I can hear the mixed sounds on analog 
+connector. And yes, I have unmuted the IEC958 mixer setting.
 
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2005.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
---===============1530960651==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Tested kernels:
 
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
+ALSA 1.0.14:
+2.6.23.1 32bit: works
+2.6.23.1 64bit: broken
+2.6.23.12 64bit: broken
+2.6.23.12 64bit kernel, 32bit userspace: broken
 
---===============1530960651==--
+ALSA 1.0.15:
+2.6.24-rc6 64bit: broken (and half of the mixer settings are missing)
+
+
+The soundcard is integrated to the motherboard (Abit IP35 Pro) and I can't 
+find any more information on it than it is "7.1 CH HD Audio CODEC".
+
+
+Relevant part of dmesg (it is the same for 32/64 bit versions, expect that 
+the interrput goes to IRQ 18):
+
+===cut dmesg
+Advanced Linux Sound Architecture Driver Version 1.0.14 (Fri Jul 20 09:12:58 2007 UTC).
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 22
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
+usbcore: registered new interface driver snd-usb-audio
+ALSA device list:
+  #0: HDA Intel at 0xfdff4000 irq 22
+===cut lspci
+00:1b.0 Audio device [0403]: Intel Corporation 82801I (ICH9 Family) HD Audio Controller [8086:293e] (rev 02)
+	Subsystem: ABIT Computer Corp. Unknown device [147b:1083]
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0, Cache Line Size: 64 bytes
+	Interrupt: pin A routed to IRQ 22
+	Region 0: Memory at fdff4000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [50] Power Management version 2
+		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+	Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
+		Address: 0000000000000000  Data: 0000
+	Capabilities: [70] Express (v1) Root Complex Integrated Endpoint, MSI 00
+		DevCap:	MaxPayload 128 bytes, PhantFunc 0, Latency L0s <64ns, L1 <1us
+			ExtTag- RBE- FLReset+
+		DevCtl:	Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+			RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+			MaxPayload 128 bytes, MaxReadReq 128 bytes
+		DevSta:	CorrErr- UncorrErr- FatalErr- UnsuppReq- AuxPwr+ TransPend-
+		LnkCap:	Port #0, Speed unknown, Width x0, ASPM unknown, Latency L0 <64ns, L1 <1us
+			ClockPM- Suprise- LLActRep- BwNot-
+		LnkCtl:	ASPM Disabled; Disabled- Retrain- CommClk-
+			ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+		LnkSta:	Speed unknown, Width x0, TrErr- Train- SlotClk- DLActive- BWMgmt- ABWMgmt-
+	Capabilities: [100] Virtual Channel
+	Capabilities: [130] Root Complex Link
+===cut asound/cards
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xfdff4000 irq 22
+===cut
+
+There are no differences in /proc/asound directory entries expect the cards 
+file (different IRQ).
+
+
+Any ideas how to fix this?
+
+
+//T
+
