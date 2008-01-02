@@ -1,87 +1,60 @@
-From: Timo Jantunen <jeti@iki.fi>
-Subject: ALSA HDA problem with 64-bit kernels
-Date: Tue, 1 Jan 2008 22:21:16 +0200 (EET)
-Message-ID: <Pine.LNX.4.64.0801012144180.5646@limbo>
+From: David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Wed, 2 Jan 2008 11:26:52 +1100
+Message-ID: <20080102002652.GA4655@localhost.localdomain>
+References: <11981089894052-git-send-email-timur@freescale.com>
+	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756429AbYAAUV2@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id 04392103820
+	for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2008 01:38:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Heip!
+On Tue, Jan 01, 2008 at 12:25:32PM -0500, Jon Smirl wrote:
+> On 12/19/07, Timur Tabi <timur@freescale.com> wrote:
+> > +               ssi@16000 {
+> > +                       compatible = "fsl,ssi";
+> > +                       cell-index = <0>;
+> > +                       reg = <16000 100>;
+> > +                       interrupt-parent = <&mpic>;
+> > +                       interrupts = <3e 2>;
+> > +                       fsl,mode = "i2s-slave";
+> > +                       codec {
+> > +                               compatible = "cirrus,cs4270";
+> > +                               /* MCLK source is a stand-alone oscillator */
+> > +                               bus-frequency = <bb8000>;
+> > +                       };
+> > +               };
+> 
+> Does this need to be bus-frequency? It's always called MCLK in all of
+> the literature.
+> 
+> In my case the MCLK comes from a chip on the i2c bus that is
+> programmable How would that be encoded?.
 
+Grah!  If there's one obvious frequency for a node, it should always
+be "clock-frequency".  This bus-frequency nonsense seems to be a
+disease that started as a secondary frequency in Freescale CPU nodes,
+and has escaped to all sorts of other places.
 
-I recently moved to 64-bit kernel, but mixed sounds (ie. mpegs played with 
-a media player) don't work with optical S/PDIF connection. AC3/DTS 
-passthrough still works, and I can hear the mixed sounds on analog 
-connector. And yes, I have unmuted the IEC958 mixer setting.
-
-Tested kernels:
-
-ALSA 1.0.14:
-2.6.23.1 32bit: works
-2.6.23.1 64bit: broken
-2.6.23.12 64bit: broken
-2.6.23.12 64bit kernel, 32bit userspace: broken
-
-ALSA 1.0.15:
-2.6.24-rc6 64bit: broken (and half of the mixer settings are missing)
-
-
-The soundcard is integrated to the motherboard (Abit IP35 Pro) and I can't 
-find any more information on it than it is "7.1 CH HD Audio CODEC".
-
-
-Relevant part of dmesg (it is the same for 32/64 bit versions, expect that 
-the interrput goes to IRQ 18):
-
-===cut dmesg
-Advanced Linux Sound Architecture Driver Version 1.0.14 (Fri Jul 20 09:12:58 2007 UTC).
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 22
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
-usbcore: registered new interface driver snd-usb-audio
-ALSA device list:
-  #0: HDA Intel at 0xfdff4000 irq 22
-===cut lspci
-00:1b.0 Audio device [0403]: Intel Corporation 82801I (ICH9 Family) HD Audio Controller [8086:293e] (rev 02)
-	Subsystem: ABIT Computer Corp. Unknown device [147b:1083]
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 0, Cache Line Size: 64 bytes
-	Interrupt: pin A routed to IRQ 22
-	Region 0: Memory at fdff4000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ Queue=0/0 Enable-
-		Address: 0000000000000000  Data: 0000
-	Capabilities: [70] Express (v1) Root Complex Integrated Endpoint, MSI 00
-		DevCap:	MaxPayload 128 bytes, PhantFunc 0, Latency L0s <64ns, L1 <1us
-			ExtTag- RBE- FLReset+
-		DevCtl:	Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
-			RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-			MaxPayload 128 bytes, MaxReadReq 128 bytes
-		DevSta:	CorrErr- UncorrErr- FatalErr- UnsuppReq- AuxPwr+ TransPend-
-		LnkCap:	Port #0, Speed unknown, Width x0, ASPM unknown, Latency L0 <64ns, L1 <1us
-			ClockPM- Suprise- LLActRep- BwNot-
-		LnkCtl:	ASPM Disabled; Disabled- Retrain- CommClk-
-			ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-		LnkSta:	Speed unknown, Width x0, TrErr- Train- SlotClk- DLActive- BWMgmt- ABWMgmt-
-	Capabilities: [100] Virtual Channel
-	Capabilities: [130] Root Complex Link
-===cut asound/cards
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xfdff4000 irq 22
-===cut
-
-There are no differences in /proc/asound directory entries expect the cards 
-file (different IRQ).
-
-
-Any ideas how to fix this?
-
-
-//T
-
+-- 
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
