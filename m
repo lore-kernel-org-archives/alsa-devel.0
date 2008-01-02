@@ -1,19 +1,15 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Tue, 1 Jan 2008 23:27:06 -0500
-Message-ID: <9e4733910801012027p4be16b92r43af773f4e5ae531@mail.gmail.com>
-References: <11981089894052-git-send-email-timur@freescale.com>
+From: cailinhua <xcahua@hotmail.com>
+Subject: dmix without mmap support in soundcard driver
+Date: Wed, 2 Jan 2008 06:26:00 +0000
+Message-ID: <BAY110-W2718CB754898850E2E81F3C9520@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id C69B110389B
-	for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2008 05:27:07 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id m33so8328968wag.8
-	for <alsa-devel@alsa-project.org>; Tue, 01 Jan 2008 20:27:06 -0800 (PST)
-In-Reply-To: <11981089894052-git-send-email-timur@freescale.com>
-Content-Disposition: inline
+Received: from bay0-omc2-s21.bay0.hotmail.com (bay0-omc2-s21.bay0.hotmail.com
+	[65.54.246.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id D9D7F1037E3
+	for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2008 07:26:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,73 +19,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/19/07, Timur Tabi <timur@freescale.com> wrote:
->  sound/soc/fsl/fsl_ssi.c                      |  614 +++++++++++++++++++
->  sound/soc/fsl/fsl_ssi.h                      |  224 +++++++
-
-I'm confused about this part. You built a driver for the mpc8610 ssi
-port.  This port has a device tree entry.
-
-+		ssi@16000 {
-+			compatible = "fsl,ssi";
-+			cell-index = <0>;
-+			reg = <16000 100>;
-+			interrupt-parent = <&mpic>;
-+			interrupts = <3e 2>;
-+			fsl,mode = "i2s-slave";
-+			codec {
-+				compatible = "cirrus,cs4270";
-+				/* MCLK source is a stand-alone oscillator */
-+				bus-frequency = <bb8000>;
-+			};
-+		};
-
-But then you don't create an of_platform_driver for this device.
-Instead you create one for the fabric driver, struct
-of_platform_driver mpc8610_hpcd_of_driver, and directly link the SSI
-driver into it.
-
-+static struct of_device_id mpc8610_hpcd_match[] = {
-+	{
-+		.compatible = "fsl,ssi",
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, mpc8610_hpcd_match);
-+
-+static struct of_platform_driver mpc8610_hpcd_of_driver = {
-+	.owner  	= THIS_MODULE,
-+	.name   	= "mpc8610_hpcd",
-+	.match_table    = mpc8610_hpcd_match,
-+	.probe  	= mpc8610_hpcd_probe,
-+	.remove 	= mpc8610_hpcd_remove,
-+};
-
-static int mpc8610_hpcd_probe(struct of_device *ofdev,
-	const struct of_device_id *match)
-{
-.....
-	machine_data->dai.cpu_dai = fsl_ssi_create_dai(&ssi_info);
-
-Isn't this two separate drivers that have been combined into one
-driver? Or does the fsl_ssi channel only work on the mpc8610_hpcd?
-
-This is the problem of knowing how to load the fabric driver that I
-was talking about in the other threads. A device that can occur on
-more than one chip ".compatible = "fsl,ssi"," is being used to pull in
-a platform specific fabric driver, "mpc8610_hpcd". You can use the
-kernel config system to select the right driver for ".compatible =
-"fsl,ssi"," that matches you hardware and compile it in.
-
-But that doesn't work in my environment. My generic channel is
-"fsl,i2s". I have four different systems booting off from a shared
-network drive. Each of these systems needs the common "fsl,i2s" driver
-but they all four need different fabric drivers.
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+CkhpLGFsbDoKIApJIHdhbnQgdG8gZW5hYmxlIGRtaXggZm9yIG91ciBzb3VuZCBjYXJkLlVuZm9y
+dHVuYXRlbHkgZm9yIHNvbWUgcmVhc29uIHRoZSBzb3VuZCBjYXJkIGRyaXZlciBkb24ndCBzdXBw
+b3J0IAonbW1hcCcgd2F5LGl0IG9ubHkgc3VwcG9ydCAnY29weScgY2FsbGJhY2sgdG8gY29weSBk
+YXRhIGZyb20gdXBwZXIgbGV2ZWwgdG8gRE1BLlNvICxJIHRoaW5rIG1heWJlIEkgY2FuIG1vZGlm
+eSAKdGhlIGFsc2EtbGliIGRtaXggc291cmNlIGNvZGUgdG8gbGV0IGl0IHVzZSAnY29weScgd2F5
+IHRvIHNlbmQgZGF0YSB0byB0aGUgZHJpdmVyLiBJcyBpdCBwb3NzaWJsZaO/CkNvdWxkIHlvdSBw
+bGVhc2UgZ2l2ZSBtZSBzb21lIGlkZWFzPwogClRoYW5rcyBhIGxvdCBpbiBhZHZhbmNlLgogCkNs
+aWZmCiAKIAogICAgCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCldpbmRvd3MgTGl2ZSBQaG90byBnYWxsZXJ5IMr9wuvP4Lv6
+tcSzrLy2sOnCwqOsx+HLybncwO26zbHgvK3V1caso6y7ucTc1sbX98irvrDDwM28o6EKaHR0cDov
+L2dldC5saXZlLmNuL3Byb2R1Y3QvcGhvdG8uaHRtbApfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
