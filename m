@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Scott Wood <scottwood@freescale.com>
 Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Wed, 2 Jan 2008 17:23:40 +0000
-Message-ID: <20080102172340.GA2007@sirena.org.uk>
+Date: Wed, 2 Jan 2008 12:08:30 -0600
+Message-ID: <20080102180830.GC4398@loki.buserror.net>
 References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<477BA974.8010308@freescale.com>
+	<20071220040633.GA6732@lixom.net> <476A7B23.2040905@freescale.com>
+	<20071220223943.GA24138@lixom.net> <476AEEB3.2010403@freescale.com>
+	<476AF015.5040600@freescale.com> <476DCECD.6040008@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE79324647
-	for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2008 18:23:49 +0100 (CET)
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 27A7E243CD
+	for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2008 19:08:50 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <477BA974.8010308@freescale.com>
+In-Reply-To: <476DCECD.6040008@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+Cc: Olof Johansson <olof@lixom.net>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 02, 2008 at 09:10:44AM -0600, Timur Tabi wrote:
-> Jon Smirl wrote:
+On Sat, Dec 22, 2007 at 08:58:21PM -0600, Timur Tabi wrote:
+> Scott Wood wrote:
+>
+>>> None of the SOC nodes in any DTS have a "compatible" entry.
+>>
+>> Not quite true; ep88xc, mpc8272ads, and pq2fads have them.
+>
+> Ah ok.  So what should the compatible entry for 8641 be?
+>
+> 	compatible = "fsl,mpc8641"
 
-> > Does this need to be bus-frequency? It's always called MCLK in all of
-> > the literature.
+Yes.
 
-> I'm trying to make this node as generic as possible.  The fabric driver 
-> is the one that will parse this node and pass the data to the codec 
-> driver, so I can't use any codec-specific terms.
+> That looks a lot like what a compatible entry for the CPU should be.
 
-> The API from the fabric driver for passing clock information includes a 
-> clock ID, a direction, and a frequency.  I can do something like this:
+I guess technically the cpu should list something like fsl,e600 (or
+whatever suffix is relevant).
 
-> clock1 = <0, bb8000>
-
-> Would that be better?
-
-To cover everything you'd need to be able to specify all the clocking
-parameters, especially a PLL configuration, and also specify more than
-one of each item.  Even then you'd still have problems like...
-
-> > In my case the MCLK comes from a chip on the i2c bus that is
-> > programmable How would that be encoded?.
-
-> I'm going under the assumption that MCLK does not change once the board 
-> is up and running.  In your case, you'd need to do something quite 
-> different, because you're not reading the clock info from the device 
-> tree and passing it to the codec at initialization once.  If you want to 
-> define an extension to the 'codec' child node that handles that, I'll 
-> add it to the documentation.
-
-According to the documentation in your patch the bus frequency should
-already be optional (though I don't immediately see that in the code,
-but then I'm entirely unfamiliar with OpenFirmware device trees).
-Boards that reconfigure the clocking at run time can then provide
-code to set the clocking up at the appropriate times, which is probably
-what they want anyway.
+-Scott
