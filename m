@@ -1,21 +1,20 @@
 From: "Jon Smirl" <jonsmirl@gmail.com>
 Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Wed, 2 Jan 2008 10:34:13 -0500
-Message-ID: <9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
+Date: Wed, 2 Jan 2008 10:56:47 -0500
+Message-ID: <9e4733910801020756p18e12ce8o618b8eae5e7c5a53@mail.gmail.com>
 References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
-	<477BAB67.4080003@freescale.com>
+	<9e4733910801012027p4be16b92r43af773f4e5ae531@mail.gmail.com>
+	<477BADF5.9060003@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71C192436D
-	for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2008 16:34:18 +0100 (CET)
-Received: by nz-out-0506.google.com with SMTP id m22so829883nzf.2
-	for <alsa-devel@alsa-project.org>; Wed, 02 Jan 2008 07:34:14 -0800 (PST)
-In-Reply-To: <477BAB67.4080003@freescale.com>
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id D4B372462A
+	for <alsa-devel@alsa-project.org>; Wed,  2 Jan 2008 16:56:49 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so3437730rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 02 Jan 2008 07:56:47 -0800 (PST)
+In-Reply-To: <477BADF5.9060003@freescale.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,87 +25,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>, Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+To: Timur Tabi <timur@freescale.com>
 Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 On 1/2/08, Timur Tabi <timur@freescale.com> wrote:
-> Jon Smirl wrote:
-> > On 1/1/08, Jon Smirl <jonsmirl@gmail.com> wrote:
-> >> On 12/19/07, Timur Tabi <timur@freescale.com> wrote:
-> >>> +               ssi@16000 {
-> >>> +                       compatible = "fsl,ssi";
-> >>> +                       cell-index = <0>;
-> >>> +                       reg = <16000 100>;
-> >>> +                       interrupt-parent = <&mpic>;
-> >>> +                       interrupts = <3e 2>;
-> >>> +                       fsl,mode = "i2s-slave";
-> >>> +                       codec {
-> >>> +                               compatible = "cirrus,cs4270";
-> >>> +                               /* MCLK source is a stand-alone oscillator */
-> >>> +                               bus-frequency = <bb8000>;
-> >>> +                       };
-> >>> +               };
-> >> Does this need to be bus-frequency? It's always called MCLK in all of
-> >> the literature.
-> >>
-> >> In my case the MCLK comes from a chip on the i2c bus that is
-> >> programmable How would that be encoded?.
-> >
-> > Looking at the cs4270 codec driver it is controlled by i2c (supports
-> > SPI too).  What happened to the conversation about putting codecs on
-> > the controlling bus and then linking them to the data bus?
->
-> The current CS4270 driver doesn't support device trees.  When I wrote
-> it, the idea of putting I2C info in the device tree was not finalized,
-> and since the driver is supposed to be cross-platform, I decided to do
-> it the old-fashioned way.  Before I update the code, however, I'm
-> waiting for:
->
-> 1) The current code to be accepted into the tree
-> 2) ASoC is updated to V2
-> 3) The current drivers are updated to support ASoC V2.
+> Are you saying that you want to use the same kernel on four different
+> systems?  If so, then you need to find a way to compile all fabric
+> drivers together, and at boot time each fabric driver will decide
+> whether it will do anything.
 
-I've been trying to get the i2c code in for two months. Hopefully it
-will go in soon, no one had made any comments on it recently. Have you
-tried your code with it?
+Yes, I have four different but similar systems. They only differer in
+the codec chips used. I want to make a single kernel image and then
+use the device tree to dynamically load the correct codec driver from
+initrd. That will let me ship a single kernel image that services all
+four machines. The codecs implement different sound systems from low
+end to high end.
 
-There is nothing stopping your from putting a node for the CS4270 on
-the i2c bus today. It just won't trigger the loading of the driver.
+The correct solution for this is to use kernel modules and trigger
+their loading based on the device tree. This is the same mechanism
+used by USB and PCI.
 
-Don't we want to follow the device tree policy of putting the device
-on the controlling bus and then link it to the data bus?
+For this model to work you need to split your driver. fsl-ssi and
+mpc8610_hpcd need to be in  two separate drivers. fsl-ssi  is easy
+enough to load since it has a device tree entry.
 
-> I think ASoC V2 will make it easier to support device trees, but I'm not
-> ready yet for that.
+mpc8610_hpcd is the harder one to load since it doesn't have a device
+tree entry. What you want to do it match on the compatible field of
+the root node.
 
-It makes it a little easier but it doesn't fix everything. We need to
-start looking at it since none of the example driver for it are device
-tree based. It still has problems with wanting 'struct
-platform_device' when we have 'struct of_platform_device' pointers. It
-also doesn't know how to dynamically load codecs based on device
-trees.
+static struct of_device_id fabric_of_match[] = {
+	{
+		.compatible	= "fsl,MPC8610HPCD",
+	},
+	{},
+};
 
-Liam messed up all of my code when he refactored it in late December.
-I've switched over to the current SOC code for the moment. The big
-thing that v2 fixes is that SOC is changed to being a subsystem
-instead of platform driver. Being a subsystem is the correct model.
+But this doesn't work since the root is the device tree isn't passed
+down into the device probe code. (Could this be fixed?)
 
-It would be good if more pieces of v2 get push forward. Then we can
-sort out the device tree issues in it.
+Instead we could make the separated mpc8610_hpcd fabric driver attach
+to fsl,ssi.
 
+static struct of_device_id fabric_of_match[] = {
+	{
+		.compatible	= "fsl,ssi",
+	},
+	{},
+};
 
->
-> > If that's the case the cs4270 should be in the i2c bus node (missing
-> > currently) and then a link from the SSI bus would point to it.
->
-> The CS4270 is a child of both the I2C bus *and* the SSI bus.  It needs
-> to have two nodes, one under each.  Your're right in that there needs to
-> be a link, but until the code is updated to ASoC V2, I think it's
-> premature to add that support.
+Then in it's probe code check for the right platform.
 
-Adding the second device tree node doesn't have anything to do with
-ASOC v2. It's specific to powerpc and device trees.
+unsigned long node = of_get_flat_dt_root();
+if (!of_flat_dt_is_compatible(node, "fsl,MPC8610HPCD"))
+	return 0;
+.. activate the code ...
+
+You also need a static flag to make sure you don't active the driver
+more than once.
+
+This isn't the best solution since my four fabric drivers will still
+load and check what platform they are on before exiting but at least
+it works.
 
 -- 
 Jon Smirl
