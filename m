@@ -1,13 +1,22 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: HDA:  Enable chipset gcap usage
-Date: Thu, 03 Jan 2008 15:34:05 -0800
-Message-ID: <1199403245.3732.450.camel@razman.gruemaster.com>
+From: David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Fri, 4 Jan 2008 10:51:56 +1100
+Message-ID: <20080103235156.GE12883@localhost.localdomain>
+References: <11981089894052-git-send-email-timur@freescale.com>
+	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
+	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
+	<477BAB67.4080003@freescale.com>
+	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
+	<477D2150.4020506@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-vbu4mgurU1V43e2AtBVE"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5EDF32467F
-	for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2008 00:34:09 +0100 (CET)
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id A0EFC246B7
+	for <alsa-devel@alsa-project.org>; Fri,  4 Jan 2008 03:39:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <477D2150.4020506@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,84 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jan 03, 2008 at 11:54:24AM -0600, Timur Tabi wrote:
+> Jon Smirl wrote:
+> > On 1/2/08, Timur Tabi <timur@freescale.com> wrote:
+> >> Jon Smirl wrote:
+> >>> On 1/1/08, Jon Smirl <jonsmirl@gmail.com> wrote:
+> >>>> On 12/19/07, Timur Tabi <timur@freescale.com> wrote:
+[snip]
+> > Don't we want to follow the device tree policy of putting the device
+> > on the controlling bus and then link it to the data bus?
+> 
+> Normally, that sounds like a good idea, but the cs4270 is an I2S
+> device first, and an I2C device second.  I need to be able to find
+> that codec from the I2S node.  My I2S driver would not know to scan
+> all I2C devices to find the codec.
 
---=-vbu4mgurU1V43e2AtBVE
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+And what distinction are you drawing between "first" and "second"
+here?  For the device tree, the primary bus should the the one by
+which it's addressable - i.e. where the control registers are, not
+the data path.
 
-Summary:  hda_intel.c use gcap register to determine number of streams
-supported by southbridge.
+Why would the I2S need to scan for codecs?  Wouldn't it be up to the
+codec driver to register with I2S?
 
-This patch removes hardcoded values for the number of streams supported
-by the southbridge in most chipsets, and reads these values from the
-chipset directly.  Most systems are hardwired for 4 streams in each
-direction, but newer chipsets change that capability.
-
-
-
-Signed off by Tobin Davis <tdavis@dsl-only.net>
-
---=-vbu4mgurU1V43e2AtBVE
-Content-Disposition: attachment; filename=hda-gcap.patch
-Content-Type: text/x-patch; name=hda-gcap.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-diff -r 1227a1c12325 pci/hda/hda_intel.c
---- a/pci/hda/hda_intel.c	Mon Dec 24 14:40:56 2007 +0100
-+++ b/pci/hda/hda_intel.c	Thu Jan 03 15:27:10 2008 -0800
-@@ -1709,12 +1709,13 @@ static int __devinit azx_create(struct s
- {
- 	struct azx *chip;
- 	int err;
-+	unsigned short gcap;
- 	static struct snd_device_ops ops = {
- 		.dev_free = azx_dev_free,
- 	};
- 
- 	*rchip = NULL;
--	
-+
- 	err = pci_enable_device(pci);
- 	if (err < 0)
- 		return err;
-@@ -1790,10 +1791,19 @@ static int __devinit azx_create(struct s
- 		chip->capture_index_offset = ATIHDMI_CAPTURE_INDEX;
- 		break;
- 	default:
--		chip->playback_streams = ICH6_NUM_PLAYBACK;
--		chip->capture_streams = ICH6_NUM_CAPTURE;
--		chip->playback_index_offset = ICH6_PLAYBACK_INDEX;
--		chip->capture_index_offset = ICH6_CAPTURE_INDEX;
-+		/* read number of streams from GCAP register instead of using
-+		 * hardcoded value
-+		 */
-+		gcap = azx_readw(chip, GCAP);
-+		if(!gcap) {
-+			snd_printk(KERN_ERR "Device has no streams \n");
-+			goto errout;
-+		};
-+		chip->playback_streams = (gcap&(0xF<<12))>>12;
-+		chip->capture_streams = (gcap&(0xF<<8))>>8;
-+		chip->playback_index_offset = (gcap&(0xF<<12))>>12;
-+		chip->capture_index_offset = 0;
-+
- 		break;
- 	}
- 	chip->num_streams = chip->playback_streams + chip->capture_streams;
-
---=-vbu4mgurU1V43e2AtBVE
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-vbu4mgurU1V43e2AtBVE--
+-- 
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
