@@ -1,24 +1,23 @@
-From: "Grant Likely" <grant.likely@secretlab.ca>
+From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Thu, 3 Jan 2008 11:17:00 -0700
-Message-ID: <fa686aa40801031017n42f6fbf1nb2da5097ef13cf3c@mail.gmail.com>
-References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
-	<477BAB67.4080003@freescale.com>
-	<fa686aa40801020812o471e18e6u9fe20676d320e958@mail.gmail.com>
-	<477D24AA.4050804@freescale.com>
+Date: Thu, 03 Jan 2008 12:20:27 -0600
+Message-ID: <477D276B.2060300@freescale.com>
+References: <11981089894052-git-send-email-timur@freescale.com>	
+	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>	
+	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>	
+	<477BAB67.4080003@freescale.com>	
+	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>	
+	<477D2150.4020506@freescale.com>
+	<fa686aa40801031013w54b15286u8e6e2561219422f2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07F7910383B
-	for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2008 19:17:01 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id c36so1452967ana.80
-	for <alsa-devel@alsa-project.org>; Thu, 03 Jan 2008 10:17:01 -0800 (PST)
-In-Reply-To: <477D24AA.4050804@freescale.com>
-Content-Disposition: inline
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5131010383B
+	for <alsa-devel@alsa-project.org>; Thu,  3 Jan 2008 19:19:19 +0100 (CET)
+In-Reply-To: <fa686aa40801031013w54b15286u8e6e2561219422f2@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,27 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 1/3/08, Timur Tabi <timur@freescale.com> wrote:
-> Grant Likely wrote:
->
-> > Why not be a child of the i2c bus with a phandle to the ssi bus?
->
-> Because when I probe the SSI node, I want to know what the attached codec is.
->   So if anything, I would need a pointer from the SSI bus *to* the respective
-> child on the I2C bus.
+Grant Likely wrote:
 
-That's fine too (it's what is done with Ethernet PHYs).  My preference
-is the other way around, but it's not a big issue in this case.
+> The device tree is a description of the hardware; not software.  It's
+> not a good idea to break with convention due to current driver
+> architecture.
 
-Cheers,
-g.
+I believe that with ASoC V1, I'm stuck between a rock and a hard place, and so 
+the only way to make this code work is to bend some rules.  Right now, the 
+CS4270 driver does not support platform drivers or the device tree, so there's 
+no point in putting a child I2C node for it.  As I mentioned in other posts, I 
+will be more than happy to update the CS4270 driver to support this new 
+paradigm (which was invented after the CS4270 driver was written) *after* this 
+current patchset is applied.
+
 
 -- 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
-grant.likely@secretlab.ca
-(403) 399-0195
+Timur Tabi
+Linux Kernel Developer @ Freescale
