@@ -1,15 +1,21 @@
-From: Steve Thornley <stevencomerthornley@yahoo.com>
-Subject: 5.1 surround--no front center speaker sound--[NVidia
-	CK804]
-Date: Fri, 4 Jan 2008 19:57:13 -0800 (PST)
-Message-ID: <144010.62790.qm@web56905.mail.re3.yahoo.com>
+From: David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Fri, 4 Jan 2008 16:01:13 +1100
+Message-ID: <20080104050113.GE4326@localhost.localdomain>
+References: <11981089894052-git-send-email-timur@freescale.com>
+	<9e4733910801012027p4be16b92r43af773f4e5ae531@mail.gmail.com>
+	<477BADF5.9060003@freescale.com>
+	<20080103044432.GB25357@localhost.localdomain>
+	<9e4733910801030654i7409e383n6b7f844aa543f234@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web56905.mail.re3.yahoo.com (web56905.mail.re3.yahoo.com
-	[66.196.97.94]) by alsa0.perex.cz (Postfix) with SMTP id 84E42244ED
-	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 04:57:19 +0100 (CET)
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8932F245D5
+	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 12:21:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <9e4733910801030654i7409e383n6b7f844aa543f234@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,200 +25,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Nforce 4 MSI motherboard integrated sound----since my Creative X-Fi isn't supported, YET
+On Thu, Jan 03, 2008 at 09:54:45AM -0500, Jon Smirl wrote:
+> On 1/2/08, David Gibson <david@gibson.dropbear.id.au> wrote:
+[snip]
+> > Instantiating the fabric driver off any node is wrong, precisely
+> > because it is an abstraction.  The fabric driver should be
+> > instantiated by the platform code.
+> 
+> Instantiating it from the platform code forces me to put it either the
+> of_platform_bus or the platform_bus since there aren't any other buses
+> around when the platform code runs. Platform bus doesn't implement
+> dynamic module loading. So that means it has to go onto the
+> of_platform_bus. That implies that is it a pseudo-device without a
+> pseudo-device entry in the device tree which is fine with me. I'll
+> need to poke around in the of_bus code and see if the driver will load
+> without a device tree entry.
 
-can not get the front center speaker to work.
+You're letting implementation warts influence basic design decisions.
+This is not sensible.  Step back and think for a moment, work out a
+sane organization *then* think how you might need to fix or workaround
+limitations of existing infrastructure.
 
+> A simple fix to this would be to let me instantiate the driver off
+> from the root node of the tree. That's the conceptually correct place
+> for instantiating a driver that extends the platform code. Should I
+> try adjusting the of probing code to pass the node in, or are there
+> major objections?
 
+The current probing system can't instantiate a device for the root
+node in any sane way, since it takes a list of suitable busses.
 
+The constructor based approach we're looking at implementing could do
+it.  It should, in any case, be constructing a platform_device - so
+the platform bus code would still need to be extended to handle the
+module loading.  Creating it as an of_platform device bound to the
+root node might be a workable interim solution though.
 
-jlt:/home/steven# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: CK804 [NVidia CK804], device 0: Intel ICH [NVidia CK804]
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 0: CK804 [NVidia CK804], device 2: Intel ICH - IEC958 [NVidia CK804 - IEC958]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+of_platform_device simply does not *ever* make sense conceptually: the
+type of struct device wrapper in use depends on the bus the device is
+attached to, not on how we figured out the device was there.  OF can
+potentially give information about any sort of device be it
+simple-bus, i2c, PCI or whatever connected.
 
+> Also, as others have pointed out, this driver is not an abstraction.
+> It represents the mess of wires hooking the codec up to the jacks on
+> the back panel and possibly GPIO pins that control the wiring. You
+> need this because the pins on HD audio codecs are completely
+> reconfigurable and the same chip can be wired in a thousand different
+> ways. It lets you have a generic codec driver and the move the
+> platform specific code out of the driver.
 
+Well, "abstraction" is maybe not the right word.  But the point is
+that the fabric driver doesn't represent a neatly isolated device with
+well defined bus connections.  Instead it represents the tangle of
+essentially every link between audio devices in the platform.  About
+the clearest possible example of a true "platform device" (as opposed
+to a device on some bus that just doesn't have any bus-specific
+logic).
 
-Here is my present asound.conf file that I created in /etc for my Debian etch 4.0----amd64 system
-X2-4200-cpu
-
-
-
-
-# Set default sound card
-# Useful so that all settings can be changed to a different card here.
-pcm.snd_card {
-type hw
-card 0
-}
-
-pcm.dmix6 {
-type dmix
-ipc_key 1024
-ipc_key_add_uid false # let multiple users share
-ipc_perm 0660 # IPC permissions (octal, default 0600)
-slave {
-pcm snd_card # see below
-rate 48000
-channels 6
-period_time 0
-period_size 1024
-buffer_time 0
-buffer_size 4096
-}
-}
-
-#route for stereo only
-pcm.dmix20 {
-type route
-slave.pcm "dmix6"
-slave.channels 6
-ttable.0.0 1
-ttable.1.1 1
-}
-
-#route for stereo sound+center+subwoofer
-pcm.ch31dup {
-type route
-slave.pcm "dmix6"
-slave.channels 6
-ttable.0.0 1
-ttable.1.1 1
-ttable.0.4 0.5
-ttable.1.4 0.5
-ttable.0.5 0.5
-ttable.1.5 0.5
-}
-
-
-pcm.ch51dup {
-type route
-slave.pcm dmix6
-slave.channels 6
-ttable.0.0 1
-ttable.1.1 1
-ttable.0.2 1
-ttable.1.3 1
-ttable.0.4 0.5
-ttable.1.4 0.5
-ttable.0.5 0.5
-ttable.1.5 0.5
-}
-
-
-pcm.duplex {
-type asym
-playback.pcm "ch51dup"
-# playback.pcm "dmix2"
-# capture.pcm "mydsnoop"
-capture.pcm "snd_card"
-}
-
-###################
-# CONVERSION PLUG #
-###################
-# Setting the default pcm device allows the conversion
-# rate to be selected on the fly.
-# duplex mode allows any alsa enabled app to read/write
-# to the dmix plug (Fixes a problem with wine).
-pcm.!default {
-type plug
-slave.pcm "duplex"
-}
-
-pcm.dsp "duplex"
-
-pcm.dsp1 "duplex"
-
-pcm.fr {
-type route
-slave.pcm "dmix6"
-slave.channels 6
-ttable.0.0 1
-ttable.1.1 1
-}
-
-pcm.rr {
-type route
-slave.pcm "dmix6"
-slave.channels 6
-ttable.0.2 1
-ttable.1.3 1
-}
-
-pcm.lfe {
-type route
-slave.pcm "dmix6"
-slave.channels 6
-ttable.0.4 1
-ttable.1.5 1
-}
-
-
-
-
-Here is my back up with other configurations for the file that created the same 4 speakers and subwoofer sounds but no front center speaker sounds
-
-
-
-pcm.ch51dup {
-type route
-slave.pcm dmix6
-slave.channels 6
-ttable.0.0 1
-ttable.1.1 1
-ttable.0.2 1
-ttable.1.3 1
-ttable.0.4 1
-ttable.1.4 1
-ttable.0.5 1
-ttable.1.5 1
-}
-########Old Setup
-# pcm.51to40
-#       {
-#        type route
-#        slave.pcm surround51
-#        slave.channels 6
-#
-#         # Front and rear, at 75% of original signal strength
-#        ttable.0.0 0.75
-#        ttable.1.1 0.75
-#        ttable.2.2 0.75
-#        ttable.3.3 0.75
-#
-          # Center channel routing (routed to front-left and front-right),
-          # 6dB gaindrop (gain half of main channels) per channel
- #         ttable.4.0 0.375
- #         ttable.4.1 0.375
-
-           # LFE channel routing (routed to front-left and front-right),
-          # 6dB gaindrop (gain half of main channels) per channel
-  #        ttable.5.0 0.375
-  #        ttable.5.1 0.375
-  #      }
-
-
-
-When I changed a setting from Autodetect to ALSA I could not get any sound--so I compiled everything from source with the latests tars and still nothing, and once I turned the Autodetect in Multimedia Systems Selector<Preferences<Desktop for the Default output plugin, I still had no sound in my center front speaker.
-
-
-
-Whew.
-
-I'd love it for my Creative X-Fi card to be supported, but right now, I really like my front center speaker back.
-I'm at the end of my list of possible fixes, maybe someone who understands can take a look at this an have a go
-
-
-
-
-      ____________________________________________________________________________________
-Never miss a thing.  Make Yahoo your home page. 
-http://www.yahoo.com/r/hs
+-- 
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
