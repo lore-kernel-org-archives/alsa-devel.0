@@ -1,13 +1,28 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: STAC927x VREF fix
-Date: Fri, 04 Jan 2008 21:58:38 -0500
-Message-ID: <477EF25E.2040207@embeddedalley.com>
+From: "Grant Likely" <grant.likely@secretlab.ca>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Fri, 4 Jan 2008 20:28:04 -0700
+Message-ID: <fa686aa40801041928r78907778t1c44af93079bcdd4@mail.gmail.com>
+References: <11981089894052-git-send-email-timur@freescale.com>
+	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
+	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
+	<477BAB67.4080003@freescale.com>
+	<fa686aa40801020812o471e18e6u9fe20676d320e958@mail.gmail.com>
+	<477D24AA.4050804@freescale.com>
+	<fa686aa40801031017n42f6fbf1nb2da5097ef13cf3c@mail.gmail.com>
+	<477D2F52.7090306@freescale.com>
+	<fa686aa40801031113od68e2a3m6cb60b8fa6f26c17@mail.gmail.com>
+	<477EED00.8070207@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040706010304040008030001"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp106.biz.mail.re2.yahoo.com (smtp106.biz.mail.re2.yahoo.com
-	[206.190.52.175]) by alsa0.perex.cz (Postfix) with SMTP id 7BA76244A1
-	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 03:58:40 +0100 (CET)
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05AEA24492
+	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 04:28:05 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so1588559ana.80
+	for <alsa-devel@alsa-project.org>; Fri, 04 Jan 2008 19:28:04 -0800 (PST)
+In-Reply-To: <477EED00.8070207@freescale.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,50 +32,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "Tellman, Steven" <Steven.Tellman@idt.com>, Jose_De_La_Rosa@Dell.com, Tim Gardner <tim.gardner@canonical.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: Scott Wood <scottwood@freescale.com>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040706010304040008030001
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On 1/4/08, Timur Tabi <timur@freescale.com> wrote:
+> Grant Likely wrote:
+> > Don't put
+> > that burden on the dts author.
+>
+> As the DTS author in question, I hereby declare that such a requirement is not
+> a burden in the slightest.  Thank you.
 
-Some laptops incorrectly assume the front input jack as a line in 
-instead of a microphone in. Which in turn disables the voltage 
-reference, in which non-amplified input is not possible.  This patch 
-enables VREF80 for the input jack.
----
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+Dude, you work for *Freescale*.  The set of dts authors affected
+include every engineer writing a device tree for a board that uses
+this part.  :-)
 
---------------040706010304040008030001
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="stac927x_vref.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="stac927x_vref.patch"
+Cheers,
+g.
 
-diff -r eeed28ed6b7d pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Fri Jan 04 09:22:20 2008 +0100
-+++ b/pci/hda/patch_sigmatel.c	Fri Jan 04 19:41:06 2008 -0700
-@@ -3344,6 +3344,7 @@ static int patch_stac927x(struct hda_cod
- 		spec->mixer = stac927x_mixer;
- 		break;
- 	case STAC_DELL_BIOS:
-+		stac92xx_set_config_reg(codec, 0x0e, 0x02a79130);
- 	case STAC_DELL_3ST:
- 		/* GPIO2 High = Enable EAPD */
- 		spec->gpio_mask = spec->gpio_data = 0x00000004;
-
---------------040706010304040008030001
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------040706010304040008030001--
+-- 
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
+grant.likely@secretlab.ca
+(403) 399-0195
