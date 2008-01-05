@@ -1,17 +1,13 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: fujitsu siemens amilo la 1703 vt1807 hda
-	intel	card problem
-Date: Fri, 04 Jan 2008 18:56:24 -0800
-Message-ID: <1199501784.3732.527.camel@razman.gruemaster.com>
-References: <f5976be10801041748j5271c4eas8a6b2d2851b4a838@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: STAC927x VREF fix
+Date: Fri, 04 Jan 2008 21:58:38 -0500
+Message-ID: <477EF25E.2040207@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------040706010304040008030001"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E8D724492
-	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 03:56:26 +0100 (CET)
-In-Reply-To: <f5976be10801041748j5271c4eas8a6b2d2851b4a838@mail.gmail.com>
+Received: from smtp106.biz.mail.re2.yahoo.com (smtp106.biz.mail.re2.yahoo.com
+	[206.190.52.175]) by alsa0.perex.cz (Postfix) with SMTP id 7BA76244A1
+	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 03:58:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,57 +17,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Norayr Chilingaryan <gnorayr@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "Tellman, Steven" <Steven.Tellman@idt.com>, Jose_De_La_Rosa@Dell.com, Tim Gardner <tim.gardner@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Could you download and run
-http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
+This is a multi-part message in MIME format.
+--------------040706010304040008030001
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This script will provide a lot of useful information.  After running it,
-please reply to this email with the link that the script generates, so
-we can retrieve the data, thanks.
+Some laptops incorrectly assume the front input jack as a line in 
+instead of a microphone in. Which in turn disables the voltage 
+reference, in which non-amplified input is not possible.  This patch 
+enables VREF80 for the input jack.
+---
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 
-Tobin
+--------------040706010304040008030001
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="stac927x_vref.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="stac927x_vref.patch"
 
-On Sat, 2008-01-05 at 02:48 +0100, Norayr Chilingaryan wrote:
+diff -r eeed28ed6b7d pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Fri Jan 04 09:22:20 2008 +0100
++++ b/pci/hda/patch_sigmatel.c	Fri Jan 04 19:41:06 2008 -0700
+@@ -3344,6 +3344,7 @@ static int patch_stac927x(struct hda_cod
+ 		spec->mixer = stac927x_mixer;
+ 		break;
+ 	case STAC_DELL_BIOS:
++		stac92xx_set_config_reg(codec, 0x0e, 0x02a79130);
+ 	case STAC_DELL_3ST:
+ 		/* GPIO2 High = Enable EAPD */
+ 		spec->gpio_mask = spec->gpio_data = 0x00000004;
 
-> Hello
-> I decided to write here, firtly, because my messages in aksa-user have been
-> ingored, and secondly, because I understood that my card most probably just
-> unsupported and I must contact developers.
-> 
-> I have tried to pass options model=fujitsu, because I have a fujitsu
-> siements notebook etc
-> I have also tried to pass amny other options in /etc/modules.d/alsa but
-> withnot effect
-> I use gentoo, and the only thing I noticed with latest kernels and alsa
-> drivers 1.0.15 is that I can hear sound through  the headphones, but with
-> low volume.
-> It is not possible to get volume higher or speaker to make sounds now.
-> 
-> So, please, this is information about the card
-> 
-> 04:01.0 Audio device: VIA Technologies, Inc. VIA High Definition Audio
-> Controller (rev 10)
-> 
-> kakraphoon ~ # cat /proc/asound/card0/codec#* | grep Codec
-> Codec: VIA VIA VT1708
-> Codec: Motorola Si3054
-> 
-> 
-> Thank you very much
-> 
-> Norayr
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+--------------040706010304040008030001
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- 
-Tobin Davis  
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
-Hain't we got all the fools in town on our side?  And hain't that a big
-enough majority in any town?
-		-- Mark Twain, "Huckleberry Finn"
+--------------040706010304040008030001--
