@@ -1,18 +1,18 @@
-From: "Norayr Chilingaryan" <gnorayr@gmail.com>
-Subject: fujitsu siemens amilo la 1703 vt1807 hda intel card
-	problem
-Date: Sat, 5 Jan 2008 02:48:14 +0100
-Message-ID: <f5976be10801041748j5271c4eas8a6b2d2851b4a838@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Fri, 04 Jan 2008 20:35:44 -0600
+Message-ID: <477EED00.8070207@freescale.com>
+References: <11981089894052-git-send-email-timur@freescale.com>	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>	<477BAB67.4080003@freescale.com>	<fa686aa40801020812o471e18e6u9fe20676d320e958@mail.gmail.com>	<477D24AA.4050804@freescale.com>	<fa686aa40801031017n42f6fbf1nb2da5097ef13cf3c@mail.gmail.com>	<477D2F52.7090306@freescale.com>
+	<fa686aa40801031113od68e2a3m6cb60b8fa6f26c17@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-2122.google.com (hs-out-0708.google.com [64.233.178.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C78C2447F
-	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 02:48:16 +0100 (CET)
-Received: by hs-out-2122.google.com with SMTP id l65so4851052hsc.0
-	for <alsa-devel@alsa-project.org>; Fri, 04 Jan 2008 17:48:15 -0800 (PST)
-Content-Disposition: inline
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EE0A244A2
+	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 03:35:10 +0100 (CET)
+In-Reply-To: <fa686aa40801031113od68e2a3m6cb60b8fa6f26c17@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Scott Wood <scottwood@freescale.com>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello
-I decided to write here, firtly, because my messages in aksa-user have been
-ingored, and secondly, because I understood that my card most probably just
-unsupported and I must contact developers.
+Grant Likely wrote:
+> On 1/3/08, Scott Wood <scottwood@freescale.com> wrote:
+>> Grant Likely wrote:
+>>> On 1/3/08, Timur Tabi <timur@freescale.com> wrote:
+>>>> Grant Likely wrote:
+>>>>
+>>>>> Why not be a child of the i2c bus with a phandle to the ssi bus?
+>>>> Because when I probe the SSI node, I want to know what the attached codec is.
+>>>>   So if anything, I would need a pointer from the SSI bus *to* the respective
+>>>> child on the I2C bus.
+>>> That's fine too (it's what is done with Ethernet PHYs).  My preference
+>>> is the other way around, but it's not a big issue in this case.
+>> I'd just link in both directions, and let software follow it in
+>> whichever direction it prefers.
+> 
+> Gah!  Don't do that!  Then you need to maintain both directions in the
+> dts file. 
 
-I have tried to pass options model=fujitsu, because I have a fujitsu
-siements notebook etc
-I have also tried to pass amny other options in /etc/modules.d/alsa but
-withnot effect
-I use gentoo, and the only thing I noticed with latest kernels and alsa
-drivers 1.0.15 is that I can hear sound through  the headphones, but with
-low volume.
-It is not possible to get volume higher or speaker to make sounds now.
+So?  What's wrong with that?
 
-So, please, this is information about the card
+> Software is good at generating reverse mappings. 
 
-04:01.0 Audio device: VIA Technologies, Inc. VIA High Definition Audio
-Controller (rev 10)
+What software would that be?  Currently, there is no software that will do 
+that?  Or are you saying that you want my driver to search the entire device 
+tree until it finds the reverse mapping?  I don't think *that* is a good idea.
 
-kakraphoon ~ # cat /proc/asound/card0/codec#* | grep Codec
-Codec: VIA VIA VT1708
-Codec: Motorola Si3054
+> Don't put
+> that burden on the dts author. 
+
+As the DTS author in question, I hereby declare that such a requirement is not 
+a burden in the slightest.  Thank you.
 
 
-Thank you very much
-
-Norayr
+-- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
