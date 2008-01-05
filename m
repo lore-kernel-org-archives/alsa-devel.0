@@ -1,28 +1,15 @@
-From: "Grant Likely" <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Fri, 4 Jan 2008 20:28:04 -0700
-Message-ID: <fa686aa40801041928r78907778t1c44af93079bcdd4@mail.gmail.com>
-References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
-	<477BAB67.4080003@freescale.com>
-	<fa686aa40801020812o471e18e6u9fe20676d320e958@mail.gmail.com>
-	<477D24AA.4050804@freescale.com>
-	<fa686aa40801031017n42f6fbf1nb2da5097ef13cf3c@mail.gmail.com>
-	<477D2F52.7090306@freescale.com>
-	<fa686aa40801031113od68e2a3m6cb60b8fa6f26c17@mail.gmail.com>
-	<477EED00.8070207@freescale.com>
+From: Steve Thornley <stevencomerthornley@yahoo.com>
+Subject: 5.1 surround--no front center speaker sound--[NVidia
+	CK804]
+Date: Fri, 4 Jan 2008 19:57:13 -0800 (PST)
+Message-ID: <144010.62790.qm@web56905.mail.re3.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05AEA24492
-	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 04:28:05 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id c36so1588559ana.80
-	for <alsa-devel@alsa-project.org>; Fri, 04 Jan 2008 19:28:04 -0800 (PST)
-In-Reply-To: <477EED00.8070207@freescale.com>
-Content-Disposition: inline
+Received: from web56905.mail.re3.yahoo.com (web56905.mail.re3.yahoo.com
+	[66.196.97.94]) by alsa0.perex.cz (Postfix) with SMTP id 84E42244ED
+	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 04:57:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,27 +19,200 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Scott Wood <scottwood@freescale.com>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 1/4/08, Timur Tabi <timur@freescale.com> wrote:
-> Grant Likely wrote:
-> > Don't put
-> > that burden on the dts author.
->
-> As the DTS author in question, I hereby declare that such a requirement is not
-> a burden in the slightest.  Thank you.
+Nforce 4 MSI motherboard integrated sound----since my Creative X-Fi isn't supported, YET
 
-Dude, you work for *Freescale*.  The set of dts authors affected
-include every engineer writing a device tree for a board that uses
-this part.  :-)
+can not get the front center speaker to work.
 
-Cheers,
-g.
 
--- 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
-grant.likely@secretlab.ca
-(403) 399-0195
+
+
+jlt:/home/steven# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: CK804 [NVidia CK804], device 0: Intel ICH [NVidia CK804]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 0: CK804 [NVidia CK804], device 2: Intel ICH - IEC958 [NVidia CK804 - IEC958]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+
+
+Here is my present asound.conf file that I created in /etc for my Debian etch 4.0----amd64 system
+X2-4200-cpu
+
+
+
+
+# Set default sound card
+# Useful so that all settings can be changed to a different card here.
+pcm.snd_card {
+type hw
+card 0
+}
+
+pcm.dmix6 {
+type dmix
+ipc_key 1024
+ipc_key_add_uid false # let multiple users share
+ipc_perm 0660 # IPC permissions (octal, default 0600)
+slave {
+pcm snd_card # see below
+rate 48000
+channels 6
+period_time 0
+period_size 1024
+buffer_time 0
+buffer_size 4096
+}
+}
+
+#route for stereo only
+pcm.dmix20 {
+type route
+slave.pcm "dmix6"
+slave.channels 6
+ttable.0.0 1
+ttable.1.1 1
+}
+
+#route for stereo sound+center+subwoofer
+pcm.ch31dup {
+type route
+slave.pcm "dmix6"
+slave.channels 6
+ttable.0.0 1
+ttable.1.1 1
+ttable.0.4 0.5
+ttable.1.4 0.5
+ttable.0.5 0.5
+ttable.1.5 0.5
+}
+
+
+pcm.ch51dup {
+type route
+slave.pcm dmix6
+slave.channels 6
+ttable.0.0 1
+ttable.1.1 1
+ttable.0.2 1
+ttable.1.3 1
+ttable.0.4 0.5
+ttable.1.4 0.5
+ttable.0.5 0.5
+ttable.1.5 0.5
+}
+
+
+pcm.duplex {
+type asym
+playback.pcm "ch51dup"
+# playback.pcm "dmix2"
+# capture.pcm "mydsnoop"
+capture.pcm "snd_card"
+}
+
+###################
+# CONVERSION PLUG #
+###################
+# Setting the default pcm device allows the conversion
+# rate to be selected on the fly.
+# duplex mode allows any alsa enabled app to read/write
+# to the dmix plug (Fixes a problem with wine).
+pcm.!default {
+type plug
+slave.pcm "duplex"
+}
+
+pcm.dsp "duplex"
+
+pcm.dsp1 "duplex"
+
+pcm.fr {
+type route
+slave.pcm "dmix6"
+slave.channels 6
+ttable.0.0 1
+ttable.1.1 1
+}
+
+pcm.rr {
+type route
+slave.pcm "dmix6"
+slave.channels 6
+ttable.0.2 1
+ttable.1.3 1
+}
+
+pcm.lfe {
+type route
+slave.pcm "dmix6"
+slave.channels 6
+ttable.0.4 1
+ttable.1.5 1
+}
+
+
+
+
+Here is my back up with other configurations for the file that created the same 4 speakers and subwoofer sounds but no front center speaker sounds
+
+
+
+pcm.ch51dup {
+type route
+slave.pcm dmix6
+slave.channels 6
+ttable.0.0 1
+ttable.1.1 1
+ttable.0.2 1
+ttable.1.3 1
+ttable.0.4 1
+ttable.1.4 1
+ttable.0.5 1
+ttable.1.5 1
+}
+########Old Setup
+# pcm.51to40
+#       {
+#        type route
+#        slave.pcm surround51
+#        slave.channels 6
+#
+#         # Front and rear, at 75% of original signal strength
+#        ttable.0.0 0.75
+#        ttable.1.1 0.75
+#        ttable.2.2 0.75
+#        ttable.3.3 0.75
+#
+          # Center channel routing (routed to front-left and front-right),
+          # 6dB gaindrop (gain half of main channels) per channel
+ #         ttable.4.0 0.375
+ #         ttable.4.1 0.375
+
+           # LFE channel routing (routed to front-left and front-right),
+          # 6dB gaindrop (gain half of main channels) per channel
+  #        ttable.5.0 0.375
+  #        ttable.5.1 0.375
+  #      }
+
+
+
+When I changed a setting from Autodetect to ALSA I could not get any sound--so I compiled everything from source with the latests tars and still nothing, and once I turned the Autodetect in Multimedia Systems Selector<Preferences<Desktop for the Default output plugin, I still had no sound in my center front speaker.
+
+
+
+Whew.
+
+I'd love it for my Creative X-Fi card to be supported, but right now, I really like my front center speaker back.
+I'm at the end of my list of possible fixes, maybe someone who understands can take a look at this an have a go
+
+
+
+
+      ____________________________________________________________________________________
+Never miss a thing.  Make Yahoo your home page. 
+http://www.yahoo.com/r/hs
