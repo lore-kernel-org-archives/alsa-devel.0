@@ -1,21 +1,14 @@
-From: David Gibson <david@gibson.dropbear.id.au>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Fri, 4 Jan 2008 16:01:13 +1100
-Message-ID: <20080104050113.GE4326@localhost.localdomain>
-References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801012027p4be16b92r43af773f4e5ae531@mail.gmail.com>
-	<477BADF5.9060003@freescale.com>
-	<20080103044432.GB25357@localhost.localdomain>
-	<9e4733910801030654i7409e383n6b7f844aa543f234@mail.gmail.com>
+From: Tim Jackson <lists@timj.co.uk>
+Subject: alsa-firmware licensing
+Date: Sat, 05 Jan 2008 14:15:31 +0000
+Message-ID: <477F9103.9010304@timj.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ozlabs.org (ozlabs.org [203.10.76.45])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8932F245D5
-	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 12:21:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <9e4733910801030654i7409e383n6b7f844aa543f234@mail.gmail.com>
+Received: from mx1.firecluster.net (blixt.firecluster.net [89.16.161.116])
+	by alsa0.perex.cz (Postfix) with ESMTP id CEC9B103854
+	for <alsa-devel@alsa-project.org>; Sat,  5 Jan 2008 15:15:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,70 +18,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 03, 2008 at 09:54:45AM -0500, Jon Smirl wrote:
-> On 1/2/08, David Gibson <david@gibson.dropbear.id.au> wrote:
-[snip]
-> > Instantiating the fabric driver off any node is wrong, precisely
-> > because it is an abstraction.  The fabric driver should be
-> > instantiated by the platform code.
-> 
-> Instantiating it from the platform code forces me to put it either the
-> of_platform_bus or the platform_bus since there aren't any other buses
-> around when the platform code runs. Platform bus doesn't implement
-> dynamic module loading. So that means it has to go onto the
-> of_platform_bus. That implies that is it a pseudo-device without a
-> pseudo-device entry in the device tree which is fine with me. I'll
-> need to poke around in the of_bus code and see if the driver will load
-> without a device tree entry.
+As part of the Fedora Project [1], I'm trying to package [2] the ALSA 
+firmware up for easy distribution to Fedora users.
 
-You're letting implementation warts influence basic design decisions.
-This is not sensible.  Step back and think for a moment, work out a
-sane organization *then* think how you might need to fix or workaround
-limitations of existing infrastructure.
+The trouble is that the licensing seems unclear. Specifically:
 
-> A simple fix to this would be to let me instantiate the driver off
-> from the root node of the tree. That's the conceptually correct place
-> for instantiating a driver that extends the platform code. Should I
-> try adjusting the of probing code to pass the node in, or are there
-> major objections?
+a) Several firmwares claim to be under the GPL but don't specify a 
+version and don't include source - see 
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3411
 
-The current probing system can't instantiate a device for the root
-node in any sane way, since it takes a list of suitable busses.
+b) More worryingly, the Emagic EMI 2|6 firmware appears to be under a 
+"license" which prohibits ANY redistribution. Quoting from 
+emi_26_62/license.txt (my emphasis):
 
-The constructor based approach we're looking at implementing could do
-it.  It should, in any case, be constructing a platform_device - so
-the platform bus code would still need to be extended to handle the
-module loading.  Creating it as an of_platform device bound to the
-root node might be a workable interim solution though.
+"The firmware contained herein is Copyright (c) 1999-2002 Emagic
+as an unpublished work. This notice does not imply unrestricted
+or public access to this firmware which is a trade secret of Emagic,
+and which ***may not be reproduced, used, sold or transferred to
+any third party without Emagic's written consent.***"
 
-of_platform_device simply does not *ever* make sense conceptually: the
-type of struct device wrapper in use depends on the bus the device is
-attached to, not on how we figured out the device was there.  OF can
-potentially give information about any sort of device be it
-simple-bus, i2c, PCI or whatever connected.
+Does the ALSA project have special authorisation ("written consent") to 
+distribute this? Who within the ALSA project is responsible for the 
+-firmware package and might be able to help resolve some of these 
+queries? Does anyone have a contact at Emagic (which seems to have been 
+bought by Apple) to discuss relaxing the firmware conditions slightly?
 
-> Also, as others have pointed out, this driver is not an abstraction.
-> It represents the mess of wires hooking the codec up to the jacks on
-> the back panel and possibly GPIO pins that control the wiring. You
-> need this because the pins on HD audio codecs are completely
-> reconfigurable and the same chip can be wired in a thousand different
-> ways. It lets you have a generic codec driver and the move the
-> platform specific code out of the driver.
 
-Well, "abstraction" is maybe not the right word.  But the point is
-that the fabric driver doesn't represent a neatly isolated device with
-well defined bus connections.  Instead it represents the tangle of
-essentially every link between audio devices in the platform.  About
-the clearest possible example of a true "platform device" (as opposed
-to a device on some bus that just doesn't have any bus-specific
-logic).
+Any information most welcome. We'd really like to get the firmware in 
+Fedora.
 
--- 
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+Thanks,
+
+Tim
+
+[1] http://www.fedoraproject.org/
+[2] https://bugzilla.redhat.com/show_bug.cgi?id=217259
