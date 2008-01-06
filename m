@@ -1,24 +1,16 @@
-From: David Gibson <david@gibson.dropbear.id.au>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Sun, 6 Jan 2008 11:46:37 +1100
-Message-ID: <20080106004637.GJ4326@localhost.localdomain>
-References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
-	<477BAB67.4080003@freescale.com>
-	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
-	<477D2150.4020506@freescale.com>
-	<20080103235156.GE12883@localhost.localdomain>
-	<477EEDFA.9010205@freescale.com>
+From: Joachim Foerster <mls.JOFT@gmx.de>
+Subject: Re: dmix without mmap support in soundcard driver
+Date: Sun, 06 Jan 2008 11:15:35 +0100
+Message-ID: <1199614535.5983.13.camel@md40100b.ft>
+References: <BAY110-W2718CB754898850E2E81F3C9520@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ozlabs.org (ozlabs.org [203.10.76.45])
-	by alsa0.perex.cz (Postfix) with ESMTP id 12F4A2469D
-	for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2008 04:39:46 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <477EEDFA.9010205@freescale.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id A27E824703
+	for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2008 11:15:37 +0100 (CET)
+In-Reply-To: <BAY110-W2718CB754898850E2E81F3C9520@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,33 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
+To: cailinhua <xcahua@hotmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 04, 2008 at 08:39:54PM -0600, Timur Tabi wrote:
-> David Gibson wrote:
-> 
-> > And what distinction are you drawing between "first" and "second"
-> > here? 
-> 
-> Oh, that's an easy one:  The CS4270 can work without an I2C or SPI connection, 
-> but it will never work without an I2S connection.
-> 
-> > Why would the I2S need to scan for codecs?  Wouldn't it be up to the
-> > codec driver to register with I2S?
-> 
-> Not in ASoC V1.  The codec driver registers with ASoC, but the actual 
-> connection to other devices (e.g. the I2S driver) is done either in the I2S 
-> driver or in the fabric driver, depending on your mood.  And that connection 
-> is done via a pointer to a structure in the codec driver.
-
-Ok, but couldn't you strucutre your I2S or fabric driver so that it
-only becomes fully operational once the codec driver has registered
-with it?
-
--- 
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+SGkgQ2xpZmYsIAoKT24gV2VkLCAyMDA4LTAxLTAyIGF0IDA2OjI2ICswMDAwLCBjYWlsaW5odWEg
+d3JvdGU6Cj4gSSB3YW50IHRvIGVuYWJsZSBkbWl4IGZvciBvdXIgc291bmQgY2FyZC5VbmZvcnR1
+bmF0ZWx5IGZvciBzb21lIHJlYXNvbiB0aGUgc291bmQgY2FyZCBkcml2ZXIgZG9uJ3Qgc3VwcG9y
+dCAKPiAnbW1hcCcgd2F5LGl0IG9ubHkgc3VwcG9ydCAnY29weScgY2FsbGJhY2sgdG8gY29weSBk
+YXRhIGZyb20gdXBwZXIgbGV2ZWwgdG8gRE1BLlNvICxJIHRoaW5rIG1heWJlIEkgY2FuIG1vZGlm
+eSAKPiB0aGUgYWxzYS1saWIgZG1peCBzb3VyY2UgY29kZSB0byBsZXQgaXQgdXNlICdjb3B5JyB3
+YXkgdG8gc2VuZCBkYXRhIHRvIHRoZSBkcml2ZXIuIElzIGl0IHBvc3NpYmxl77yfCj4gQ291bGQg
+eW91IHBsZWFzZSBnaXZlIG1lIHNvbWUgaWRlYXM/CgpJIGRvbid0IGtub3cgaG93IGRpZmZpY3Vs
+dCBpdCB3b3VsZCBiZSB0byBjaGFuZ2UgYWxzYS1saWIncyBkbWl4CnNvdXJjZXMsIGJ1dCBteSBz
+dWdnZXN0aW9uIC0gaW4gZ2VuZXJhbCAtIHdvdWxkIGJlIHRvIGFsdGVyIHRoZSBkcml2ZXIKb2Yg
+eW91ciBzb3VuZCBjYXJkIHRvIHVzZSB0aGUgImludGVybWVkaWF0ZSBidWZmZXIiIHRlY2huaXF1
+ZSAodXNpbmcKcGNtLWluZGlyZWN0LmgpOiBTZXR1cCBhIGJ1ZmZlciBpbiBSQU0sIHdoaWNoIGNh
+biBiZSBtbWFwJ2VkIGJ5CmFwcGxpY2F0aW9ucyBhbmQgY29weSB0aGUgY29udGVudHMgb2YgdGhp
+cyBidWZmZXIgdG8gdGhlIGhhcmR3YXJlIGluIGEKYmFja2dyb3VuZCBwcm9jZXNzIGZvciBleGFt
+cGxlLgooU2VlIFRha2FzaGkncyAiV3JpdGluZyBhbiBBTFNBIERyaXZlciIgZ3VpZGUuKQoKSSBr
+bm93LCBwZXJoYXBzIHRoaXMgaXMgbm90IHRoZSBlYXNpZXN0IHNvbHV0aW9uIC4uLiBhbmQgaXQn
+cyBub3QgYQoiZGlyZWN0IiBhbnN3ZXIgdG8geW91ciBxdWVzdGlvbiAtIGp1c3QgYSB0aG91Z2h0
+LgogSm9hY2hpbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
