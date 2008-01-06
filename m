@@ -1,17 +1,18 @@
-From: "Adrian McMenamin" <lkmladrian@gmail.com>
-Subject: Cross compiling alsa-lib (again)
-Date: Sun, 6 Jan 2008 23:42:40 +0000
-Message-ID: <8b67d60801061542o2673384oad87e11bd56012d4@mail.gmail.com>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: ALC268 "test" model
+Date: Mon, 7 Jan 2008 10:21:10 +1030 (CST)
+Message-ID: <200801062351.m06NpAJg005062@turbo.physics.adelaide.edu.au>
+References: <mailman.1.1198839601.19653.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBC36103810
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 00:42:42 +0100 (CET)
-Received: by mu-out-0910.google.com with SMTP id i10so5551183mue.3
-	for <alsa-devel@alsa-project.org>; Sun, 06 Jan 2008 15:42:42 -0800 (PST)
-Content-Disposition: inline
+Received: from adelphi.physics.adelaide.edu.au
+	(adelphi.physics.adelaide.edu.au [129.127.102.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id 64A6D247D5
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 00:51:14 +0100 (CET)
+In-Reply-To: <mailman.1.1198839601.19653.alsa-devel@alsa-project.org> from
+	"alsa-devel-request@alsa-project.org" at Dec 28, 2007 12:00:01 PM
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: marco@harddisk.is-a-geek.org
 List-Id: alsa-devel@alsa-project.org
 
-Well, I searched through 96 weeks of archived alsa-devel postings to
-get to this one:
+Hi Tobin
 
-http://article.gmane.org/gmane.linux.alsa.devel/37120
+> > I try to use a patch from J. Woithe to put a test model into the
+> > ALC268 driver [1] (enabling all pins etc.); unfortunately it gives a
+> > lot of compiling errors ([2]) which I am unable to understand as I
+> > don't have sufficient knowledge of the internal API of HDA codec.
+> >
+> > Can someone please look over it and correct the mistakes?
+> > 
+> > Marco Schuster
+> > 
+> > [1]: http://harddisk.is-a-geek.org/patch.txt
+> > [2]: http://harddisk.is-a-geek.org/compiling-errors.txt
+>
+> Hi, and thanks for the effort.  I'll fix this up a bit and send out an
+> updated patch this weekend.  I have an ALC268 test board to work with
+> now, so I should be able to get it figured out.
 
-(Which shows I am doing the right thing in any case.)
+I'm not entirely sure what's going on here with this patch.  As is indicated
+by the patch itself it's against ALSA in the 2.6.24-rc6 kernel and it
+applies and compiles fine for me.  The last few error messages at the
+second URL seems to suggest that the patch was in some way corrupted
+because I'm seeing non-ASCII characters in the error messages.
 
-This post recommends this:
+I should note that the patch as referenced by Marco was not believed by me
+to be ready for release yet - that is why I haven't forwarded it on to the
+list for consideration yet.  I sent it to Marco privately and I had hoped to
+utilise Marco's system to verify basic functionality of the patch before
+posting it for consideration.  It was prepared in a hurry at the end of last
+year just before I went on leave and have not had a chance to revisit the
+patch or the issues that Marco saw until now.
 
-CFLAGS="-Os -m4 -ml" ./configure --prefix=/usr
---host=sh4-unknown-linux-gnu --target=sh4-unknown-linux-gnu
---build=i686-pc-linux-gnu
+Since you have an ALC268 board it's probably sensible for you to take over
+the patch at this point - I don't have an ALC268 system.  However,
+understand that by making this initial patch available to Marco privately it
+was not my intention to create a lot of extra work for yourself (or any
+other developer for that matter).  I had intended to see it through to
+operational status before bothering the list with it.
 
-I admit to not using the additional cflags stuff before, but even if I use this:
+Are you happy to take over management of this patch or would you like me to
+resume dialog with Marco?
 
-CFLAGS="-Os -m4 -ml" ./configure --host=sh4-linux --prefix=/usr
-CC=/home/adrian/dreamy-linux/buildroot/build_sh4/staging_dir/bin/sh4-linux-gcc
---disable-python --disable-rawmidi --enable-static
---with-confdir=/home/adrian/dreamy-linux/buildroot/project_build_sh4/dreamcast/root/usr/share/alsa
- --disable-mixer --enable-static=yes --enable-shared=no
---target=sh4-linux --build=i686-linux
+If the patch at the above URL is in some way corrupted drop me a line and
+I'll forward you the original.
 
-Followed by:
-
-make and
-make DESTDIR=/home/adrian/dreamy-linux/buildroot/project_build_sh4/dreamcast/root
-install
-
-I still get this:
-
-$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: AICA [AICA], device 0: AICA PCM [AICA PCM]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Followed by:
-
-$ aplay -L
-null
-    Discard all samples (playback) or generate zero samples (capture)
-
-$ aplay /aine-email.wav
-Playing WAVE '/aine-email.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to
-find an usable access for '(null)'
-aplay: set_params:895: Access type not available
-
-$ aplay -D hw:0,0 /aine-email.wav
-Playing WAVE '/aine-email.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-aplay: set_params:895: Access type not available
-
-Just as before. Any clues?
+Regards
+  jonathan
