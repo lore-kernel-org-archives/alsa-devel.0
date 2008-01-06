@@ -1,16 +1,16 @@
 From: Joachim Foerster <mls.JOFT@gmx.de>
-Subject: Re: dmix without mmap support in soundcard driver
-Date: Sun, 06 Jan 2008 11:15:35 +0100
-Message-ID: <1199614535.5983.13.camel@md40100b.ft>
-References: <BAY110-W2718CB754898850E2E81F3C9520@phx.gbl>
+Subject: Re: can not access the alsa driver
+Date: Sun, 06 Jan 2008 11:29:44 +0100
+Message-ID: <1199615384.5983.24.camel@md40100b.ft>
+References: <48a1cba90801050642s47db1bcbj6c6624536eda5949@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id A27E824703
-	for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2008 11:15:37 +0100 (CET)
-In-Reply-To: <BAY110-W2718CB754898850E2E81F3C9520@phx.gbl>
+	by alsa0.perex.cz (Postfix) with SMTP id 7ACF324705
+	for <alsa-devel@alsa-project.org>; Sun,  6 Jan 2008 11:29:47 +0100 (CET)
+In-Reply-To: <48a1cba90801050642s47db1bcbj6c6624536eda5949@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,28 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: cailinhua <xcahua@hotmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Ning Zhang <ning.zhang06@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQ2xpZmYsIAoKT24gV2VkLCAyMDA4LTAxLTAyIGF0IDA2OjI2ICswMDAwLCBjYWlsaW5odWEg
-d3JvdGU6Cj4gSSB3YW50IHRvIGVuYWJsZSBkbWl4IGZvciBvdXIgc291bmQgY2FyZC5VbmZvcnR1
-bmF0ZWx5IGZvciBzb21lIHJlYXNvbiB0aGUgc291bmQgY2FyZCBkcml2ZXIgZG9uJ3Qgc3VwcG9y
-dCAKPiAnbW1hcCcgd2F5LGl0IG9ubHkgc3VwcG9ydCAnY29weScgY2FsbGJhY2sgdG8gY29weSBk
-YXRhIGZyb20gdXBwZXIgbGV2ZWwgdG8gRE1BLlNvICxJIHRoaW5rIG1heWJlIEkgY2FuIG1vZGlm
-eSAKPiB0aGUgYWxzYS1saWIgZG1peCBzb3VyY2UgY29kZSB0byBsZXQgaXQgdXNlICdjb3B5JyB3
-YXkgdG8gc2VuZCBkYXRhIHRvIHRoZSBkcml2ZXIuIElzIGl0IHBvc3NpYmxl77yfCj4gQ291bGQg
-eW91IHBsZWFzZSBnaXZlIG1lIHNvbWUgaWRlYXM/CgpJIGRvbid0IGtub3cgaG93IGRpZmZpY3Vs
-dCBpdCB3b3VsZCBiZSB0byBjaGFuZ2UgYWxzYS1saWIncyBkbWl4CnNvdXJjZXMsIGJ1dCBteSBz
-dWdnZXN0aW9uIC0gaW4gZ2VuZXJhbCAtIHdvdWxkIGJlIHRvIGFsdGVyIHRoZSBkcml2ZXIKb2Yg
-eW91ciBzb3VuZCBjYXJkIHRvIHVzZSB0aGUgImludGVybWVkaWF0ZSBidWZmZXIiIHRlY2huaXF1
-ZSAodXNpbmcKcGNtLWluZGlyZWN0LmgpOiBTZXR1cCBhIGJ1ZmZlciBpbiBSQU0sIHdoaWNoIGNh
-biBiZSBtbWFwJ2VkIGJ5CmFwcGxpY2F0aW9ucyBhbmQgY29weSB0aGUgY29udGVudHMgb2YgdGhp
-cyBidWZmZXIgdG8gdGhlIGhhcmR3YXJlIGluIGEKYmFja2dyb3VuZCBwcm9jZXNzIGZvciBleGFt
-cGxlLgooU2VlIFRha2FzaGkncyAiV3JpdGluZyBhbiBBTFNBIERyaXZlciIgZ3VpZGUuKQoKSSBr
-bm93LCBwZXJoYXBzIHRoaXMgaXMgbm90IHRoZSBlYXNpZXN0IHNvbHV0aW9uIC4uLiBhbmQgaXQn
-cyBub3QgYQoiZGlyZWN0IiBhbnN3ZXIgdG8geW91ciBxdWVzdGlvbiAtIGp1c3QgYSB0aG91Z2h0
-LgogSm9hY2hpbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+Hi,
+
+On Sat, 2008-01-05 at 22:42 +0800, Ning Zhang wrote:
+> ( I did not found /dev/snd  or /dev/dsp )
+> 
+> But when I run the application, I got these errors:
+> # /tmp/pcm_play_arm_s default
+> ALSA lib pcm.c:2145:(snd_pcm_open_noupdate) Unknown PCM default
+> Playback open error: No such file or directory
+
+Well, I think, the /dev/snd/* devices files have to exist. Do you use
+udevd? If not, I guess you have to create these files manually - or by
+using the snddevices script in alsa-driver package.
+If you use udevd, then - perhaps - your are missing some rules files
+(/etc/udev/rules.d). Have a look at your Linux distributions rules files
+of your host PC.
+
+> Here are my questions:
+> 1, When we install the alsa-lib, we can get some libs, besides those, do we
+> also get some config files according to the local linux environment and
+> alsa-lib will use these config files to access the real driver? If that, how
+> can I install the alsa-lib to a embedded platform directly or what config
+> files should I port to embedded platform?
+> 
+> 2, Must I edit ~/.asoundrc and /etc/alsa/alsa.conf ? In my situation, what
+> should I do ? Is somebody so kind can give me a simple template?
+
+I cannot really say something about your questions - I hadn't to create
+any special config. files, when I started using my own driver (for a
+PPC405 based board (ML403)). I just cross-compiled and installed
+alsa-lib and alsa-tools (to have aplay and arecord).
+
+ Joachim
