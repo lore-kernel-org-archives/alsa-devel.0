@@ -1,22 +1,22 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: conversion of opti93x driver to use cs4231-lib
-Date: Mon, 7 Jan 2008 20:08:01 +0100
-Message-ID: <20080107200801.008a3cc1.krzysztof.h1@poczta.fm>
+From: "Adrian McMenamin" <lkmladrian@gmail.com>
+Subject: Re: Cross compiling alsa-lib (again)
+Date: Mon, 7 Jan 2008 19:54:01 +0000
+Message-ID: <8b67d60801071154n1d9b46d0qcb681b19dc37a295@mail.gmail.com>
+References: <8b67d60801061542o2673384oad87e11bd56012d4@mail.gmail.com>
+	<1199702857.17059.1229845735@webmail.messagingengine.com>
+	<8b67d60801070805x5755db9cva66b2187f1f236a0@mail.gmail.com>
+	<75b66ecd0801070829v7d138304l74d4d47a13a1b424@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.poczta.interia.pl (smtp35.poczta.interia.pl [80.48.65.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07F31249A6
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 20:04:52 +0100 (CET)
-Received: from poczta.interia.pl (mi01.poczta.interia.pl [10.217.12.1])
-	by smtp4.poczta.interia.pl (INTERIA.PL) with ESMTP id 668D8298124
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 20:04:47 +0100 (CET)
-Received: from krzysio.net (host-87-99-61-239.lanet.net.pl [87.99.61.239])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.poczta.fm (INTERIA.PL) with ESMTP id E059F769D8E
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 20:04:42 +0100 (CET)
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 96989249C4
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 20:54:03 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so4921594rvb.32
+	for <alsa-devel@alsa-project.org>; Mon, 07 Jan 2008 11:54:01 -0800 (PST)
+In-Reply-To: <75b66ecd0801070829v7d138304l74d4d47a13a1b424@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,33 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 07/01/2008, Lee Revell <rlrevell@joe-job.com> wrote:
+> On Jan 7, 2008 11:05 AM, Adrian McMenamin <lkmladrian@gmail.com> wrote:
+> > Well this is from the driver:
+> >
+> >  .info = (SNDRV_PCM_INFO_NONINTERLEAVED),
+> >
+> > Is it required to set SNDRV_PCM_INFO_INTERLEAVED ? Even if the
+> > hardware doesn't support it? Surely alsa-lib is supposed to handle the
+> > conversion in any case?
+>
+> It should if you use aplay -D plughw:0,0 file.wav.
+>
+> Lee
+>
 
-I posted some time ago two patches which converts opti93x driver to use cs4231-lib library. 
-
-The opti93x chips are almost compatible with the cs4231 differing mostly by mixer.
-
-This change greatly reduces the source of the opti drivers.
-
-Here are patches:
-[addition of opti93x details to the cs4231-lib]
-http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003395.html
-
-and 
-[conversion of opti93x driver to use cs4231-lib]
-http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003396.html
-
-I will rediff the second patch as there were some changes to opti93x driver after sending the patch.
-
-If it is not a good idea to do such conversion, please reply and drop patches.
-
-Regards,
-Krzysztof
+Well, get this now:
 
 
-------------------------------------------------------------
-Walcz w kosmicznej wojnie w nowej grze!
-Kliknij >>> http://link.interia.pl/f1cc1
+$ aplay -D plughw:0,0 /aine-email.wav
+Playing WAVE '/aine-email.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to
+find an usable access for 'plughw:0,0'
+aplay: set_params:895: Access type not available
