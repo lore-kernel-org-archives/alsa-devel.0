@@ -1,20 +1,18 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Disabling buffer fill level preprocessing by ALSA
-Date: Mon, 7 Jan 2008 23:38:50 +0100
-Message-ID: <20080107223850.GA12262@tango.0pointer.de>
-References: <20071231171226.GA17953@tango.0pointer.de>
-	<s5hfxx9ao8b.wl%tiwai@suse.de>
-	<20080107160706.GE14386@tango.0pointer.de>
-	<Pine.LNX.4.61.0801071916450.22730@tm8103.perex-int.cz>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: ALC268 "test" model
+Date: Tue, 8 Jan 2008 10:23:35 +1030 (CST)
+Message-ID: <200801072353.m07NrZ2q024795@turbo.physics.adelaide.edu.au>
+References: <s5h7iilan34.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3BF724A1A
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 23:38:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0801071916450.22730@tm8103.perex-int.cz>
+Received: from adelphi.physics.adelaide.edu.au
+	(adelphi.physics.adelaide.edu.au [129.127.102.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id 278122438C
+	for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2008 00:53:38 +0100 (CET)
+In-Reply-To: <s5h7iilan34.wl%tiwai@suse.de> from "Takashi Iwai" at Jan 07,
+	2008 12:31:43 PM
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,126 +22,458 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: marco@harddisk.is-a-geek.org, alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 07.01.08 19:33, Jaroslav Kysela (perex@perex.cz) wrote:
+Hi
 
-> > > > I assume that I can enable a mode like that with one of the SW
-> > > > params. But quite frankly the docs for it are not enlighening at all.
-> > > 
-> > > Set the stop_threshould sw_params to the boundary size.
-> > > 
-> > > 	snd_pcm_sw_params_get_boundary(sw_params, &boundary);
-> > > 	snd_pcm_sw_params_set_stop_threshold(pcm, sw_params, boundary);
-> > > 
-> > > then the driver behaves in the "freewheel" mode.  The dmix plugin uses
-> > > this technique.
-> > 
-> > That's not what I was looking for. This will only disable automatic
-> > stopping on buffer underrun. I am using that already in PA (however I
-> > pass -1 as stop threshold, which should work, too, shouldn't it?)
-> > 
-> > What I am really looking for is a way to disable that ALSA reports via
-> > poll() the buffer fill level, but instead only reports whether an
-> > interrupt happened.
+> > +	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
+> > +	HDA_CODEC_VOLUME("Internal Mic Boost", 0x19, 0, HDA_INPUT),
+> > +	HDA_CODEC_VOLUME("Line In Boost", 0x1a, 0, HDA_INPUT),
+> > +	{ }
+> > +};
+> > +#endif
 > 
-> Note that you can control fill level using snd_pcm_forward/rewind 
-> without any R/W calls (of course if supported in whole chain).
-> ALSA supports only "controlled" I/O not dumb I/O as OSS driver for mmap.
-> 
-> If you look for timing source, use timer API - you may try 
-> alsa-lib/test/timer.c:
-> 
-> ./timer class=3 card=0 device=0 subdevice=0
+> What's this chunk? ;)
 
-How does this timer depend on the PCM clock? Is its wakeup granularity
-dependant on the period parameters of the matching PCM device? Or am I
-supposed to first initialize PCM, and chose some period parameters the
-hw likes and than pass that on to the timer subsystem?
+Another brain fade.  I really must get out of holiday mode.
 
-I assume I don't have any guarantee that all alsa devices have such a
-timer attached? So I'd need some major non-trivial fallback code if I
-make use of these timers? 
+Find attached two revised patches against alsa-driver hg snapshot from
+20080107:
 
-> > The background why I want this is this: As mentioned I am now
-> > scheduling audio in PA mostly based on system timers. To be able to do
-> > that I need to be able to translate timespans from the sound card
-> > clock to the system clock. Which requires me to get the sample time
-> > from the sound card from time to time and filter it through some code
-> > that estimates how the sound card clock and the system clock
-> > deviates. I'd prefer to do that only once or maybe twice everytime the
-> > playback buffer is fully played, and only shortly after an IRQ
-> > happened, under the assumption that this is the best time to get the
-> > most accurate timing information from the sound card.
-> 
-> It's not really necessary. You can use only one timing source (system 
-> timer) and use position timestamps to do corrections.
+ * alc260-test-eapd-0.2.diff
 
-Position timestamps? You mean status->tstamp, right? I'd like to use
-that.  But this still has two problems:
+   This implements a switch control for the EAPD signal output by the ALC26x
+   chips.  Since some laptops may utilise this to activate useful things it
+   is handy to have a control for this in the ALC26x test models.  The patch
+   includes the control in the ALC260 test model.
 
-1) As mentioned, CLOCK_MONOTONIC support is still missing in ALSA(-lib)
+   Signed-off-by: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 
-2) I'd like to correct my estimations as quickly as possible, i.e. as
-   soon as a new update is available, and not only when I ask for
-   it. So basically, I want to be able to sleep in a poll() for timing
-   updates.
 
-> But your example does not explain, why you don't move r/w pointer in the 
-> ring buffer (use mmap_commit), thus why you don't fullfill the avail_min 
-> requirement for poll wakeup. It seems to me that you're trying to do some 
-> crazy things with the ring buffer which are not allowed.
+ * alc268-test-0.4.diff
 
-As mentioned, when PA starts up it configures the audio hw buffer to
-2s or so with the minimal number of periods (2 on my sound
-cards). Then, clients come and go. Depending on the what the minimal latency
-constraints of the clients are, I however will only fill up part of
-the buffer.
+   This implements a test model for the ALC268.  It depends on the feature
+   added by alc260-test-eapd-0.2.diff.  This patch also adds a mention of
+   the ALC260 test model to ALSA-Configuration.txt since this seems to have
+   been missed.
 
-Scenario #1: 
+   Signed-off-by: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 
-Only one simple MP3 playing music application is connected. It doesn't
-have any real latency constraints. We always fill up the whole 2s
-buffer, then sleep for 1990 ms, and then fill it up again, and so
-on. If the MP3 player pauses or seeks, we rewrite the audio buffer
-with _rewind(). Thus alsthough we buffer two full seconds the user
-interfaces still reacts snappy.
 
-Now, because the user starts and stops applications all the time, we
-dynamically change into scenario #2:
+Regards
+  jonathan
 
-The MP3 playing application is still running. However, now a VoIP
-application is running too. It wants a worst case latency of let's say
-20ms. When this applications starts up we don't want to interrupt
-playback of the MP3 application. So from now on we only use 20ms of
-the previously configured 2s hw buffer. And as soon as we wrote 20ms,
-we sleep for 10ms, and then fill it up again, and so on.
+=== alc260-test-eapd-0.2.diff ===
 
-Now, after a while the VoIP call is over, we enter scenario #3:
+diff -ru alsa-driver-hg20080107/alsa-kernel/pci/hda/patch_realtek.c alsa-driver-hg20080107+alc_eapd/alsa-kernel/pci/hda/patch_realtek.c
+--- alsa-driver-hg20080107/alsa-kernel/pci/hda/patch_realtek.c	2007-12-21 11:30:06.000000000 +1030
++++ alsa-driver-hg20080107+alc_eapd/alsa-kernel/pci/hda/patch_realtek.c	2008-01-08 10:05:10.000000000 +1030
+@@ -608,6 +608,57 @@
+ 	  .private_value = nid | (mask<<16) }
+ #endif   /* CONFIG_SND_DEBUG */
+ 
++/* A switch control to allow the enabling EAPD digital outputs on the ALC26x.
++ * Again, this is only used in the ALC26x test models to help identify when
++ * the EAPD line must be asserted for features to work.
++ */
++#ifdef CONFIG_SND_DEBUG
++#define alc_eapd_ctrl_info	snd_ctl_boolean_mono_info
++
++static int alc_eapd_ctrl_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value & 0xffff;
++	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
++	long *valp = ucontrol->value.integer.value;
++	unsigned int val = snd_hda_codec_read(codec, nid, 0,
++					      AC_VERB_GET_EAPD_BTLENABLE, 0x00);
++
++	*valp = (val & mask) != 0;
++	return 0;
++}
++static int alc_eapd_ctrl_put(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	signed int change;
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value & 0xffff;
++	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
++	long val = *ucontrol->value.integer.value;
++	unsigned int ctrl_data = snd_hda_codec_read(codec, nid, 0,
++						    AC_VERB_GET_EAPD_BTLENABLE,
++						    0x00);
++
++	/* Set/unset the masked control bit(s) as needed */
++	change = (val == 0 ? 0 : mask) != (ctrl_data & mask);
++	if (val==0)
++		ctrl_data &= ~mask;
++	else
++		ctrl_data |= mask;
++	snd_hda_codec_write_cache(codec, nid, 0, AC_VERB_SET_EAPD_BTLENABLE,
++				  ctrl_data);
++
++	return change;
++}
++#define ALC_EAPD_CTRL_SWITCH(xname, nid, mask) \
++	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = 0,  \
++	  .info = alc_eapd_ctrl_info, \
++	  .get = alc_eapd_ctrl_get, \
++	  .put = alc_eapd_ctrl_put, \
++	  .private_value = nid | (mask<<16) }
++#endif   /* CONFIG_SND_DEBUG */
++
+ /*
+  * set up from the preset table
+  */
+@@ -4332,6 +4383,12 @@
+ 	ALC_SPDIF_CTRL_SWITCH("SPDIF Playback Switch", 0x03, 0x01),
+ 	ALC_SPDIF_CTRL_SWITCH("SPDIF Capture Switch", 0x06, 0x01),
+ 
++	/* A switch allowing EAPD to be enabled.  Some laptops seem to use
++	 * this output to turn on an external amplifier.
++	 */
++	ALC_EAPD_CTRL_SWITCH("LINE-OUT EAPD Enable Switch", 0x0f, 0x02),
++	ALC_EAPD_CTRL_SWITCH("HP-OUT EAPD Enable Switch", 0x10, 0x02),
++
+ 	{ } /* end */
+ };
+ static struct hda_verb alc260_test_init_verbs[] = {
+diff -ru alsa-driver-hg20080107/sound/pci/hda/patch_realtek.c alsa-driver-hg20080107+alc_eapd/sound/pci/hda/patch_realtek.c
+--- alsa-driver-hg20080107/sound/pci/hda/patch_realtek.c	2007-12-21 11:30:06.000000000 +1030
++++ alsa-driver-hg20080107+alc_eapd/sound/pci/hda/patch_realtek.c	2008-01-08 10:05:10.000000000 +1030
+@@ -608,6 +608,57 @@
+ 	  .private_value = nid | (mask<<16) }
+ #endif   /* CONFIG_SND_DEBUG */
+ 
++/* A switch control to allow the enabling EAPD digital outputs on the ALC26x.
++ * Again, this is only used in the ALC26x test models to help identify when
++ * the EAPD line must be asserted for features to work.
++ */
++#ifdef CONFIG_SND_DEBUG
++#define alc_eapd_ctrl_info	snd_ctl_boolean_mono_info
++
++static int alc_eapd_ctrl_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value & 0xffff;
++	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
++	long *valp = ucontrol->value.integer.value;
++	unsigned int val = snd_hda_codec_read(codec, nid, 0,
++					      AC_VERB_GET_EAPD_BTLENABLE, 0x00);
++
++	*valp = (val & mask) != 0;
++	return 0;
++}
++static int alc_eapd_ctrl_put(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	signed int change;
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value & 0xffff;
++	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
++	long val = *ucontrol->value.integer.value;
++	unsigned int ctrl_data = snd_hda_codec_read(codec, nid, 0,
++						    AC_VERB_GET_EAPD_BTLENABLE,
++						    0x00);
++
++	/* Set/unset the masked control bit(s) as needed */
++	change = (val == 0 ? 0 : mask) != (ctrl_data & mask);
++	if (val==0)
++		ctrl_data &= ~mask;
++	else
++		ctrl_data |= mask;
++	snd_hda_codec_write_cache(codec, nid, 0, AC_VERB_SET_EAPD_BTLENABLE,
++				  ctrl_data);
++
++	return change;
++}
++#define ALC_EAPD_CTRL_SWITCH(xname, nid, mask) \
++	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = 0,  \
++	  .info = alc_eapd_ctrl_info, \
++	  .get = alc_eapd_ctrl_get, \
++	  .put = alc_eapd_ctrl_put, \
++	  .private_value = nid | (mask<<16) }
++#endif   /* CONFIG_SND_DEBUG */
++
+ /*
+  * set up from the preset table
+  */
+@@ -4332,6 +4383,12 @@
+ 	ALC_SPDIF_CTRL_SWITCH("SPDIF Playback Switch", 0x03, 0x01),
+ 	ALC_SPDIF_CTRL_SWITCH("SPDIF Capture Switch", 0x06, 0x01),
+ 
++	/* A switch allowing EAPD to be enabled.  Some laptops seem to use
++	 * this output to turn on an external amplifier.
++	 */
++	ALC_EAPD_CTRL_SWITCH("LINE-OUT EAPD Enable Switch", 0x0f, 0x02),
++	ALC_EAPD_CTRL_SWITCH("HP-OUT EAPD Enable Switch", 0x10, 0x02),
++
+ 	{ } /* end */
+ };
+ static struct hda_verb alc260_test_init_verbs[] = {
 
-This is identical to #1, we again use the full 2s hw buffer, and sleep
-for 1990ms.
 
-So, depending on what clients are connected, we dynamically change the
-wakeups. Now, on ALSA (and with a lot of sound hw, as I understood
-Takashi) you cannot reconfigure the period sizes dynamically without
-interruptions of audio output. That's why I want to disable the whole
-period/buffer fill level management of ALSA, and do all myself with
-system timers, which I thankfully now can due to the advent of
-hrtimers (at least on Linux/x86). System timers nowadays are a lot
-more flexibe than the PCM timer, because they can be reconfigured all
-the time without any drawbacks. They are not dependant on period sizes
-or other stuff which may only be reconfigured by resetting the audio
-devices. The only drawback is that we need to determinine how the
-sound card clock and the system clock deviate.
+=== alc268-test-0.4.diff ===
 
-Does that make sense to you?
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+diff -ru alsa-driver-hg20080107+alc_eapd/alsa-kernel/Documentation/ALSA-Configuration.txt alsa-driver-hg20080107+alc268test/alsa-kernel/Documentation/ALSA-Configuration.txt
+--- alsa-driver-hg20080107+alc_eapd/alsa-kernel/Documentation/ALSA-Configuration.txt	2007-12-14 11:30:08.000000000 +1030
++++ alsa-driver-hg20080107+alc268test/alsa-kernel/Documentation/ALSA-Configuration.txt	2008-01-08 10:14:14.000000000 +1030
+@@ -798,6 +798,9 @@
+ 	  will		Will laptops (PB V7900)
+ 	  replacer	Replacer 672V
+ 	  basic		fixed pin assignment (old default model)
++	  test		for testing/debugging purpose, almost all controls can
++			adjusted.  Appearing only when compiled with
++			$CONFIG_SND_DEBUG=y
+ 	  auto		auto-config reading BIOS (default)
+ 
+ 	ALC262
+@@ -818,6 +821,9 @@
+ 	  3stack	3-stack model
+ 	  toshiba	Toshiba A205
+ 	  acer		Acer laptops
++	  test		for testing/debugging purpose, almost all controls can
++			adjusted.  Appearing only when compiled with
++			$CONFIG_SND_DEBUG=y
+ 	  auto		auto-config reading BIOS (default)
+ 
+ 	ALC662
+diff -ru alsa-driver-hg20080107+alc_eapd/alsa-kernel/pci/hda/patch_realtek.c alsa-driver-hg20080107+alc268test/alsa-kernel/pci/hda/patch_realtek.c
+--- alsa-driver-hg20080107+alc_eapd/alsa-kernel/pci/hda/patch_realtek.c	2008-01-08 10:05:10.000000000 +1030
++++ alsa-driver-hg20080107+alc268test/alsa-kernel/pci/hda/patch_realtek.c	2008-01-08 10:06:36.000000000 +1030
+@@ -106,6 +106,9 @@
+ 	ALC268_3ST,
+ 	ALC268_TOSHIBA,
+ 	ALC268_ACER,
++#ifdef CONFIG_SND_DEBUG
++	ALC268_TEST,
++#endif
+ 	ALC268_AUTO,
+ 	ALC268_MODEL_LAST /* last tag */
+ };
+@@ -9364,6 +9367,60 @@
+ 	},
+ };
+ 
++#ifdef CONFIG_SND_DEBUG
++static struct snd_kcontrol_new alc268_test_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x2, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Front Playback Switch", 0x14, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x3, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x15, 0x0, HDA_OUTPUT),
++
++	/* Volume widgets */
++	HDA_CODEC_VOLUME("LOUT1 Playback Volume", 0x02, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("LOUT2 Playback Volume", 0x03, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE_MONO("Mono sum Playback Switch", 0x0e, 1, 2, HDA_INPUT),
++	HDA_BIND_MUTE("LINE-OUT sum Playback Switch", 0x0f, 2, HDA_INPUT),
++	HDA_BIND_MUTE("HP-OUT sum Playback Switch", 0x10, 2, HDA_INPUT),
++	HDA_BIND_MUTE("LINE-OUT Playback Switch", 0x14, 2, HDA_OUTPUT),
++	HDA_BIND_MUTE("HP-OUT Playback Switch", 0x15, 2, HDA_OUTPUT),
++	HDA_BIND_MUTE("Mono Playback Switch", 0x16, 2, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("MIC1 Capture Volume", 0x18, 0x0, HDA_INPUT),
++	HDA_BIND_MUTE("MIC1 Capture Switch", 0x18, 2, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("MIC2 Capture Volume", 0x19, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("LINE1 Capture Volume", 0x1a, 0x0, HDA_INPUT),
++	HDA_BIND_MUTE("LINE1 Capture Switch", 0x1a, 2, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("PCBEEP Playback Volume", 0x1d, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("PCM-IN1 Capture Volume", 0x23, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("PCM-IN1 Capture Switch", 0x23, 2, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("PCM-IN2 Capture Volume", 0x24, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("PCM-IN2 Capture Switch", 0x24, 2, HDA_OUTPUT),
++	
++	/* Modes for retasking pin widgets */
++	ALC_PIN_MODE("LINE-OUT pin mode", 0x14, ALC_PIN_DIR_INOUT),
++	ALC_PIN_MODE("HP-OUT pin mode", 0x15, ALC_PIN_DIR_INOUT),
++	ALC_PIN_MODE("MIC1 pin mode", 0x18, ALC_PIN_DIR_INOUT),
++	ALC_PIN_MODE("LINE1 pin mode", 0x1a, ALC_PIN_DIR_INOUT),
++
++	/* Controls for GPIO pins, assuming they are configured as outputs */
++	ALC_GPIO_DATA_SWITCH("GPIO pin 0", 0x01, 0x01),
++	ALC_GPIO_DATA_SWITCH("GPIO pin 1", 0x01, 0x02),
++	ALC_GPIO_DATA_SWITCH("GPIO pin 2", 0x01, 0x04),
++	ALC_GPIO_DATA_SWITCH("GPIO pin 3", 0x01, 0x08),
++
++	/* Switches to allow the digital SPDIF output pin to be enabled.
++	 * The ALC268 does not have an SPDIF input.
++	 */
++	ALC_SPDIF_CTRL_SWITCH("SPDIF Playback Switch", 0x06, 0x01),
++
++	/* A switch allowing EAPD to be enabled.  Some laptops seem to use
++	 * this output to turn on an external amplifier.
++	 */
++	ALC_EAPD_CTRL_SWITCH("LINE-OUT EAPD Enable Switch", 0x0f, 0x02),
++	ALC_EAPD_CTRL_SWITCH("HP-OUT EAPD Enable Switch", 0x10, 0x02),
++
++	{ } /* end */
++};
++#endif
++
+ /* create input playback/capture controls for the given pin */
+ static int alc268_new_analog_output(struct alc_spec *spec, hda_nid_t nid,
+ 				    const char *ctlname, int idx)
+@@ -9576,6 +9633,9 @@
+ 	[ALC268_3ST]		= "3stack",
+ 	[ALC268_TOSHIBA]	= "toshiba",
+ 	[ALC268_ACER]		= "acer",
++#ifdef CONFIG_SND_DEBUG
++	[ALC268_TEST]		= "test",
++#endif
+ 	[ALC268_AUTO]		= "auto",
+ };
+ 
+@@ -9634,6 +9694,21 @@
+ 		.unsol_event = alc268_acer_unsol_event,
+ 		.init_hook = alc268_acer_init_hook,
+ 	},
++#ifdef CONFIG_SND_DEBUG
++	[ALC268_TEST] = {
++		.mixers = { alc268_test_mixer, alc268_capture_mixer },
++		.init_verbs = { alc268_base_init_verbs, alc268_eapd_verbs, alc268_volume_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc268_dac_nids),
++		.dac_nids = alc268_dac_nids,
++                .num_adc_nids = ARRAY_SIZE(alc268_adc_nids_alt),
++                .adc_nids = alc268_adc_nids_alt,
++		.hp_nid = 0x03,
++		.dig_out_nid = ALC268_DIGOUT_NID,
++		.num_channel_mode = ARRAY_SIZE(alc268_modes),
++		.channel_mode = alc268_modes,
++		.input_mux = &alc268_capture_source,
++	},
++#endif
+ };
+ 
+ static int patch_alc268(struct hda_codec *codec)
+diff -ru alsa-driver-hg20080107+alc_eapd/sound/Documentation/ALSA-Configuration.txt alsa-driver-hg20080107+alc268test/sound/Documentation/ALSA-Configuration.txt
+--- alsa-driver-hg20080107+alc_eapd/sound/Documentation/ALSA-Configuration.txt	2007-12-14 11:30:08.000000000 +1030
++++ alsa-driver-hg20080107+alc268test/sound/Documentation/ALSA-Configuration.txt	2008-01-08 10:14:14.000000000 +1030
+@@ -798,6 +798,9 @@
+ 	  will		Will laptops (PB V7900)
+ 	  replacer	Replacer 672V
+ 	  basic		fixed pin assignment (old default model)
++	  test		for testing/debugging purpose, almost all controls can
++			adjusted.  Appearing only when compiled with
++			$CONFIG_SND_DEBUG=y
+ 	  auto		auto-config reading BIOS (default)
+ 
+ 	ALC262
+@@ -818,6 +821,9 @@
+ 	  3stack	3-stack model
+ 	  toshiba	Toshiba A205
+ 	  acer		Acer laptops
++	  test		for testing/debugging purpose, almost all controls can
++			adjusted.  Appearing only when compiled with
++			$CONFIG_SND_DEBUG=y
+ 	  auto		auto-config reading BIOS (default)
+ 
+ 	ALC662
+diff -ru alsa-driver-hg20080107+alc_eapd/sound/pci/hda/patch_realtek.c alsa-driver-hg20080107+alc268test/sound/pci/hda/patch_realtek.c
+--- alsa-driver-hg20080107+alc_eapd/sound/pci/hda/patch_realtek.c	2008-01-08 10:05:10.000000000 +1030
++++ alsa-driver-hg20080107+alc268test/sound/pci/hda/patch_realtek.c	2008-01-08 10:06:36.000000000 +1030
+@@ -106,6 +106,9 @@
+ 	ALC268_3ST,
+ 	ALC268_TOSHIBA,
+ 	ALC268_ACER,
++#ifdef CONFIG_SND_DEBUG
++	ALC268_TEST,
++#endif
+ 	ALC268_AUTO,
+ 	ALC268_MODEL_LAST /* last tag */
+ };
+@@ -9364,6 +9367,60 @@
+ 	},
+ };
+ 
++#ifdef CONFIG_SND_DEBUG
++static struct snd_kcontrol_new alc268_test_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x2, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Front Playback Switch", 0x14, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x3, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x15, 0x0, HDA_OUTPUT),
++
++	/* Volume widgets */
++	HDA_CODEC_VOLUME("LOUT1 Playback Volume", 0x02, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("LOUT2 Playback Volume", 0x03, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE_MONO("Mono sum Playback Switch", 0x0e, 1, 2, HDA_INPUT),
++	HDA_BIND_MUTE("LINE-OUT sum Playback Switch", 0x0f, 2, HDA_INPUT),
++	HDA_BIND_MUTE("HP-OUT sum Playback Switch", 0x10, 2, HDA_INPUT),
++	HDA_BIND_MUTE("LINE-OUT Playback Switch", 0x14, 2, HDA_OUTPUT),
++	HDA_BIND_MUTE("HP-OUT Playback Switch", 0x15, 2, HDA_OUTPUT),
++	HDA_BIND_MUTE("Mono Playback Switch", 0x16, 2, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("MIC1 Capture Volume", 0x18, 0x0, HDA_INPUT),
++	HDA_BIND_MUTE("MIC1 Capture Switch", 0x18, 2, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("MIC2 Capture Volume", 0x19, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("LINE1 Capture Volume", 0x1a, 0x0, HDA_INPUT),
++	HDA_BIND_MUTE("LINE1 Capture Switch", 0x1a, 2, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("PCBEEP Playback Volume", 0x1d, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("PCM-IN1 Capture Volume", 0x23, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("PCM-IN1 Capture Switch", 0x23, 2, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("PCM-IN2 Capture Volume", 0x24, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("PCM-IN2 Capture Switch", 0x24, 2, HDA_OUTPUT),
++	
++	/* Modes for retasking pin widgets */
++	ALC_PIN_MODE("LINE-OUT pin mode", 0x14, ALC_PIN_DIR_INOUT),
++	ALC_PIN_MODE("HP-OUT pin mode", 0x15, ALC_PIN_DIR_INOUT),
++	ALC_PIN_MODE("MIC1 pin mode", 0x18, ALC_PIN_DIR_INOUT),
++	ALC_PIN_MODE("LINE1 pin mode", 0x1a, ALC_PIN_DIR_INOUT),
++
++	/* Controls for GPIO pins, assuming they are configured as outputs */
++	ALC_GPIO_DATA_SWITCH("GPIO pin 0", 0x01, 0x01),
++	ALC_GPIO_DATA_SWITCH("GPIO pin 1", 0x01, 0x02),
++	ALC_GPIO_DATA_SWITCH("GPIO pin 2", 0x01, 0x04),
++	ALC_GPIO_DATA_SWITCH("GPIO pin 3", 0x01, 0x08),
++
++	/* Switches to allow the digital SPDIF output pin to be enabled.
++	 * The ALC268 does not have an SPDIF input.
++	 */
++	ALC_SPDIF_CTRL_SWITCH("SPDIF Playback Switch", 0x06, 0x01),
++
++	/* A switch allowing EAPD to be enabled.  Some laptops seem to use
++	 * this output to turn on an external amplifier.
++	 */
++	ALC_EAPD_CTRL_SWITCH("LINE-OUT EAPD Enable Switch", 0x0f, 0x02),
++	ALC_EAPD_CTRL_SWITCH("HP-OUT EAPD Enable Switch", 0x10, 0x02),
++
++	{ } /* end */
++};
++#endif
++
+ /* create input playback/capture controls for the given pin */
+ static int alc268_new_analog_output(struct alc_spec *spec, hda_nid_t nid,
+ 				    const char *ctlname, int idx)
+@@ -9576,6 +9633,9 @@
+ 	[ALC268_3ST]		= "3stack",
+ 	[ALC268_TOSHIBA]	= "toshiba",
+ 	[ALC268_ACER]		= "acer",
++#ifdef CONFIG_SND_DEBUG
++	[ALC268_TEST]		= "test",
++#endif
+ 	[ALC268_AUTO]		= "auto",
+ };
+ 
+@@ -9634,6 +9694,21 @@
+ 		.unsol_event = alc268_acer_unsol_event,
+ 		.init_hook = alc268_acer_init_hook,
+ 	},
++#ifdef CONFIG_SND_DEBUG
++	[ALC268_TEST] = {
++		.mixers = { alc268_test_mixer, alc268_capture_mixer },
++		.init_verbs = { alc268_base_init_verbs, alc268_eapd_verbs, alc268_volume_init_verbs },
++		.num_dacs = ARRAY_SIZE(alc268_dac_nids),
++		.dac_nids = alc268_dac_nids,
++                .num_adc_nids = ARRAY_SIZE(alc268_adc_nids_alt),
++                .adc_nids = alc268_adc_nids_alt,
++		.hp_nid = 0x03,
++		.dig_out_nid = ALC268_DIGOUT_NID,
++		.num_channel_mode = ARRAY_SIZE(alc268_modes),
++		.channel_mode = alc268_modes,
++		.input_mux = &alc268_capture_source,
++	},
++#endif
+ };
+ 
+ static int patch_alc268(struct hda_codec *codec)
