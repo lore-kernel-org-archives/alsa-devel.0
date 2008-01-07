@@ -1,26 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Mon, 7 Jan 2008 18:28:54 +0000
-Message-ID: <20080107182853.GA17312@sirena.org.uk>
-References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
-	<477BAB67.4080003@freescale.com>
-	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
-	<477D2150.4020506@freescale.com>
-	<20080103235156.GE12883@localhost.localdomain>
-	<477EEDFA.9010205@freescale.com>
-	<20080106004637.GJ4326@localhost.localdomain>
-	<47824AA3.5070808@freescale.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Disabling buffer fill level preprocessing by ALSA
+Date: Mon, 7 Jan 2008 19:33:15 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0801071916450.22730@tm8103.perex-int.cz>
+References: <20071231171226.GA17953@tango.0pointer.de>
+	<s5hfxx9ao8b.wl%tiwai@suse.de>
+	<20080107160706.GE14386@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4158324977
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 19:29:00 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <47824AA3.5070808@freescale.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B59F2497C
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 19:33:16 +0100 (CET)
+In-Reply-To: <20080107160706.GE14386@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,33 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
+To: Lennart Poettering <mznyfn@0pointer.de>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 07, 2008 at 09:52:03AM -0600, Timur Tabi wrote:
-> David Gibson wrote:
+On Mon, 7 Jan 2008, Lennart Poettering wrote:
 
-> > Ok, but couldn't you strucutre your I2S or fabric driver so that it
-> > only becomes fully operational once the codec driver has registered
-> > with it?
+> On Mon, 07.01.08 12:07, Takashi Iwai (tiwai@suse.de) wrote:
+> 
+> > > In PulseAudio I want to schedule on my own when I need to write audio
+> > > data into the device and when not. To achieve that I want to be
+> > > notified via poll() whenever a period boundary is passed (i.e. when an
+> > > IRQ happens), but only then. That's different from the usual mode
+> > > where you are notified via poll() whether there is space in the
+> > > playback buffer that needs to be filled up. 
+> > > 
+> > > On OSS the mmap() mode enables a mode like I described above. After
+> > > enabling mmap() the application can decide by itself what it considers
+> > > full and what empty in the dma buffer, and use GETOPTR to query the
+> > > playback position. poll() on the OSS fd will directly reflect the
+> > > sound card IRQs and is not influenced if you ever wrote data to device
+> > > or not.
+> > > 
+> > > I assume that I can enable a mode like that with one of the SW
+> > > params. But quite frankly the docs for it are not enlighening at all.
+> > 
+> > Set the stop_threshould sw_params to the boundary size.
+> > 
+> > 	snd_pcm_sw_params_get_boundary(sw_params, &boundary);
+> > 	snd_pcm_sw_params_set_stop_threshold(pcm, sw_params, boundary);
+> > 
+> > then the driver behaves in the "freewheel" mode.  The dmix plugin uses
+> > this technique.
+> 
+> That's not what I was looking for. This will only disable automatic
+> stopping on buffer underrun. I am using that already in PA (however I
+> pass -1 as stop threshold, which should work, too, shouldn't it?)
+> 
+> What I am really looking for is a way to disable that ALSA reports via
+> poll() the buffer fill level, but instead only reports whether an
+> interrupt happened.
 
-> Not in ASoC V1.  You have to understand, ASoC V1 was designed without any 
-> consideration for runtime-bindings and other OF goodies.  All connections 
-> between the drivers are static, literally.  In fact, I wouldn't be surprised if 
-> some ASoC drivers cannot be compiled as modules.
+Note that you can control fill level using snd_pcm_forward/rewind 
+without any R/W calls (of course if supported in whole chain).
+ALSA supports only "controlled" I/O not dumb I/O as OSS driver for mmap.
 
-I'd just like to emphasise this point - ASoC v1 really doesn't
-understand the idea that the components of the sound subsystem might be
-probed separately.  It's set up to handle bare hardware with everything
-being probed from code in the machine/fabric driver.  This makes life
-very messy for platforms with something like the device tree.
+If you look for timing source, use timer API - you may try 
+alsa-lib/test/timer.c:
 
-As has been said, handling this properly is one of the major motivations
-behind ASoC v2.
+./timer class=3 card=0 device=0 subdevice=0
 
-> So all I'm trying to do now is get my driver, with warts and all, into the tree 
-> so that I can focus with Liam et al to get a real ASoC V2 up and running.
+> The background why I want this is this: As mentioned I am now
+> scheduling audio in PA mostly based on system timers. To be able to do
+> that I need to be able to translate timespans from the sound card
+> clock to the system clock. Which requires me to get the sample time
+> from the sound card from time to time and filter it through some code
+> that estimates how the sound card clock and the system clock
+> deviates. I'd prefer to do that only once or maybe twice everytime the
+> playback buffer is fully played, and only shortly after an IRQ
+> happened, under the assumption that this is the best time to get the
+> most accurate timing information from the sound card.
 
-This is certainly the approach we want to take from an ASoC point of
-view.
+It's not really necessary. You can use only one timing source (system 
+timer) and use position timestamps to do corrections.
+
+But your example does not explain, why you don't move r/w pointer in the 
+ring buffer (use mmap_commit), thus why you don't fullfill the avail_min 
+requirement for poll wakeup. It seems to me that you're trying to do some 
+crazy things with the ring buffer which are not allowed.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
