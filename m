@@ -1,22 +1,13 @@
-From: "Adrian McMenamin" <lkmladrian@gmail.com>
-Subject: Re: Cross compiling alsa-lib (again)
-Date: Mon, 7 Jan 2008 19:54:01 +0000
-Message-ID: <8b67d60801071154n1d9b46d0qcb681b19dc37a295@mail.gmail.com>
-References: <8b67d60801061542o2673384oad87e11bd56012d4@mail.gmail.com>
-	<1199702857.17059.1229845735@webmail.messagingengine.com>
-	<8b67d60801070805x5755db9cva66b2187f1f236a0@mail.gmail.com>
-	<75b66ecd0801070829v7d138304l74d4d47a13a1b424@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Dynamically create digital gain mixers
+Date: Mon, 07 Jan 2008 15:18:38 -0500
+Message-ID: <4782891E.9090407@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------090607000301040300050802"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96989249C4
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 20:54:03 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so4921594rvb.32
-	for <alsa-devel@alsa-project.org>; Mon, 07 Jan 2008 11:54:01 -0800 (PST)
-In-Reply-To: <75b66ecd0801070829v7d138304l74d4d47a13a1b424@mail.gmail.com>
-Content-Disposition: inline
+Received: from smtp107.biz.mail.mud.yahoo.com (smtp107.biz.mail.mud.yahoo.com
+	[68.142.200.255]) by alsa0.perex.cz (Postfix) with SMTP id C7BCF249D4
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 21:18:43 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +17,180 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/01/2008, Lee Revell <rlrevell@joe-job.com> wrote:
-> On Jan 7, 2008 11:05 AM, Adrian McMenamin <lkmladrian@gmail.com> wrote:
-> > Well this is from the driver:
-> >
-> >  .info = (SNDRV_PCM_INFO_NONINTERLEAVED),
-> >
-> > Is it required to set SNDRV_PCM_INFO_INTERLEAVED ? Even if the
-> > hardware doesn't support it? Surely alsa-lib is supposed to handle the
-> > conversion in any case?
->
-> It should if you use aplay -D plughw:0,0 file.wav.
->
-> Lee
->
+This is a multi-part message in MIME format.
+--------------090607000301040300050802
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Well, get this now:
+Dynamically create digital gain mixers for dmics that have out-amp 
+support. Also some 92HD73xx's codecs don't have DMIC gains, so this also 
+prevents creating dead mixers.
+---
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 
+--------------090607000301040300050802
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="stac_dmic_mixers.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="stac_dmic_mixers.patch"
 
-$ aplay -D plughw:0,0 /aine-email.wav
-Playing WAVE '/aine-email.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to
-find an usable access for 'plughw:0,0'
-aplay: set_params:895: Access type not available
+diff -r 37956a45462d pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Mon Jan 07 15:16:37 2008 +0100
++++ b/pci/hda/patch_sigmatel.c	Mon Jan 07 15:04:42 2008 -0500
+@@ -463,9 +463,6 @@ static struct hda_verb stac92hd73xx_6ch_
+ 	/* setup adcs to point to mixer */
+ 	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x0b},
+ 	{ 0x21, AC_VERB_SET_CONNECT_SEL, 0x0b},
+-	{ 0x0b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Front Mic */
+-	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Mic */
+-	{ 0x0e, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Line In */
+ 	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{ 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{ 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+@@ -490,9 +487,6 @@ static struct hda_verb stac92hd73xx_8ch_
+ 	/* setup adcs to point to mixer */
+ 	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x0b},
+ 	{ 0x21, AC_VERB_SET_CONNECT_SEL, 0x0b},
+-	{ 0x0b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Front Mic */
+-	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Mic */
+-	{ 0x0e, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Line In */
+ 	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{ 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{ 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+@@ -519,9 +513,6 @@ static struct hda_verb stac92hd73xx_10ch
+ 	/* setup adcs to point to mixer */
+ 	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x0b},
+ 	{ 0x21, AC_VERB_SET_CONNECT_SEL, 0x0b},
+-	{ 0x0b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Front Mic */
+-	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Mic */
+-	{ 0x0e, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* Line In */
+ 	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{ 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{ 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+@@ -635,10 +626,6 @@ static struct snd_kcontrol_new stac92hd7
+ static struct snd_kcontrol_new stac92hd73xx_6ch_mixer[] = {
+ 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 3),
+ 
+-	/* hardware gain controls */
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x0, 0x13, 0x0, HDA_INPUT),
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x1, 0x14, 0x0, HDA_INPUT),
+-
+ 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x20, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x20, 0x0, HDA_OUTPUT),
+ 
+@@ -665,10 +652,6 @@ static struct snd_kcontrol_new stac92hd7
+ static struct snd_kcontrol_new stac92hd73xx_8ch_mixer[] = {
+ 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 4),
+ 
+-	/* hardware gain controls */
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x0, 0x13, 0x0, HDA_INPUT),
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x1, 0x14, 0x0, HDA_INPUT),
+-
+ 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x20, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x20, 0x0, HDA_OUTPUT),
+ 
+@@ -695,10 +678,6 @@ static struct snd_kcontrol_new stac92hd7
+ static struct snd_kcontrol_new stac92hd73xx_10ch_mixer[] = {
+ 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 5),
+ 
+-	/* hardware gain controls */
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x0, 0x13, 0x0, HDA_INPUT),
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x1, 0x14, 0x0, HDA_INPUT),
+-
+ 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x20, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x20, 0x0, HDA_OUTPUT),
+ 
+@@ -725,10 +704,6 @@ static struct snd_kcontrol_new stac92hd7
+ static struct snd_kcontrol_new stac92hd71bxx_analog_mixer[] = {
+ 	STAC_INPUT_SOURCE(2),
+ 
+-	/* hardware gain controls */
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x0, 0x18, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x1, 0x19, 0x0, HDA_OUTPUT),
+-
+ 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x1c, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1c, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME_IDX("Capture Mux Volume", 0x0, 0x1a, 0x0, HDA_OUTPUT),
+@@ -745,10 +720,6 @@ static struct snd_kcontrol_new stac92hd7
+ static struct snd_kcontrol_new stac92hd71bxx_mixer[] = {
+ 	STAC_INPUT_SOURCE(2),
+ 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A0, 2),
+-
+-	/* hardware gain controls */
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x0, 0x18, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_VOLUME_IDX("Digital Mic Volume", 0x1, 0x19, 0x0, HDA_OUTPUT),
+ 
+ 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x1c, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1c, 0x0, HDA_OUTPUT),
+@@ -2313,15 +2284,18 @@ static int stac92xx_auto_create_dmic_inp
+ 	struct sigmatel_spec *spec = codec->spec;
+ 	struct hda_input_mux *dimux = &spec->private_dimux;
+ 	hda_nid_t con_lst[HDA_MAX_NUM_INPUTS];
+-	int i, j;
++	int err, i, j;
++	char name[32];
+ 
+ 	dimux->items[dimux->num_items].label = stac92xx_dmic_labels[0];
+ 	dimux->items[dimux->num_items].index = 0;
+ 	dimux->num_items++;
+ 
+ 	for (i = 0; i < spec->num_dmics; i++) {
++		hda_nid_t nid;
+ 		int index;
+ 		int num_cons;
++		unsigned int wcaps;
+ 		unsigned int def_conf;
+ 
+ 		def_conf = snd_hda_codec_read(codec,
+@@ -2332,17 +2306,32 @@ static int stac92xx_auto_create_dmic_inp
+ 		if (get_defcfg_connect(def_conf) == AC_JACK_PORT_NONE)
+ 			continue;
+ 
++		nid = spec->dmic_nids[i];
+ 		num_cons = snd_hda_get_connections(codec,
+ 				spec->dmux_nids[0],
+ 				con_lst,
+ 				HDA_MAX_NUM_INPUTS);
+ 		for (j = 0; j < num_cons; j++)
+-			if (con_lst[j] == spec->dmic_nids[i]) {
++			if (con_lst[j] == nid) {
+ 				index = j;
+ 				goto found;
+ 			}
+ 		continue;
+ found:
++		wcaps = get_wcaps(codec, nid);
++
++		if (wcaps & AC_WCAP_OUT_AMP) {
++			sprintf(name, "%s Capture Volume",
++					stac92xx_dmic_labels[dimux->num_items]);
++
++			err = stac92xx_add_control(spec,
++				STAC_CTL_WIDGET_VOL,
++				name,
++				HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_OUTPUT));
++			if (err < 0)
++				return err;
++		}
++
+ 		dimux->items[dimux->num_items].label =
+ 			stac92xx_dmic_labels[dimux->num_items];
+ 		dimux->items[dimux->num_items].index = index;
+
+--------------090607000301040300050802
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------090607000301040300050802--
