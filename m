@@ -1,25 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Mon, 7 Jan 2008 14:24:30 +0000
-Message-ID: <20080107142429.GB6497@sirena.org.uk>
-References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
-	<477BAB67.4080003@freescale.com>
-	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
-	<477D2150.4020506@freescale.com>
-	<20080103235156.GE12883@localhost.localdomain>
-	<477EEDFA.9010205@freescale.com>
-	<20080106004637.GJ4326@localhost.localdomain>
+From: "M-.-n" <nostromo@arkaos.net>
+Subject: Hello and providing ALSA support to sdl
+Date: Mon, 07 Jan 2008 15:38:55 +0100
+Message-ID: <4782397F.1030608@arkaos.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A83AB2490D
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 15:24:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20080106004637.GJ4326@localhost.localdomain>
+Received: from mailrelay010.isp.belgacom.be (mailrelay010.isp.belgacom.be
+	[195.238.6.177]) by alsa0.perex.cz (Postfix) with ESMTP id BA42E248F0
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 15:37:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,16 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Gibson <david@gibson.dropbear.id.au>
-Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>, linuxppc-dev@ozlabs.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 06, 2008 at 11:46:37AM +1100, David Gibson wrote:
 
-> Ok, but couldn't you strucutre your I2S or fabric driver so that it
-> only becomes fully operational once the codec driver has registered
-> with it?
+Hi there,
 
-That's what ASoC v2 is doing, more or less (the core brings things on
-line rather than drivers doing it).  For v1 so long as it doesn't cause
-any problems in practice I'm not sure I'd worry about it too much.
+My name is Marc and I'm writing a tracker software originally geared 
+towards gameconsole (first GP32 but now GP2X, PC, Mac) and since I got 
+this lovely eee, I'm planning on porting it to debian-derived platforms. 
+Actually it works already but the SDL version I have uses oss and it 
+seems to hickup sometimes although the cpu power consumption seems fine.
+
+Other programs (vlc/audacity) seems no to reflect this problem so I 
+guess it's due to the fact they use ALSA while the SDL I got doesn't.
+
+When configuring SDL, it seems not to include ALSA (by not finding 
+alsa/soundlib.h) and I'd like to add it but I'm a little confused on the 
+step to follow. ALSA seems to be installed but I guess I miss the 
+includes and compiling libs. Does it mean I need to configure/compile 
+alsa-lib ? Do I risk corrupting my system if the installed libraries are 
+not compatible ?
+
+Sorry for the rambling, but I'm only a beginner in terms of developping 
+audio apps under linux.
+
+Regards,
+Marc.
