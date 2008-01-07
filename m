@@ -1,19 +1,20 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Lennart Poettering <mznyfn@0pointer.de>
 Subject: Re: Disabling buffer fill level preprocessing by ALSA
-Date: Mon, 07 Jan 2008 22:34:32 +0000
-Message-ID: <4782A8F8.8080609@superbug.co.uk>
+Date: Mon, 7 Jan 2008 23:38:50 +0100
+Message-ID: <20080107223850.GA12262@tango.0pointer.de>
 References: <20071231171226.GA17953@tango.0pointer.de>
-	<4782759B.5000208@superbug.co.uk>
-	<20080107202104.GB31128@tango.0pointer.de>
+	<s5hfxx9ao8b.wl%tiwai@suse.de>
+	<20080107160706.GE14386@tango.0pointer.de>
+	<Pine.LNX.4.61.0801071916450.22730@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-37.mail.demon.net (anchor-post-37.mail.demon.net
-	[194.217.242.87])
-	by alsa0.perex.cz (Postfix) with ESMTP id C10A424A19
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 23:34:24 +0100 (CET)
-In-Reply-To: <20080107202104.GB31128@tango.0pointer.de>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id A3BF724A1A
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 23:38:50 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0801071916450.22730@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,78 +24,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <James@superbug.co.uk>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lennart Poettering wrote:
-> On Mon, 07.01.08 18:55, James Courtier-Dutton (James@superbug.co.uk) wrote:
->
->   
->> Lennart Poettering wrote:
->>     
->>> Hi!
->>>
->>> In PulseAudio I want to schedule on my own when I need to write audio
->>> data into the device and when not. To achieve that I want to be
->>> notified via poll() whenever a period boundary is passed (i.e. when an
->>> IRQ happens), but only then. That's different from the usual mode
->>> where you are notified via poll() whether there is space in the
->>> playback buffer that needs to be filled up. 
->>>
->>> On OSS the mmap() mode enables a mode like I described above. After
->>> enabling mmap() the application can decide by itself what it considers
->>> full and what empty in the dma buffer, and use GETOPTR to query the
->>> playback position. poll() on the OSS fd will directly reflect the
->>> sound card IRQs and is not influenced if you ever wrote data to device
->>> or not.
->>>
->>> I assume that I can enable a mode like that with one of the SW
->>> params. But quite frankly the docs for it are not enlighening at all.
->>>
->>> Lennart
->>>
->>>       
->> What would you want to do that for? Surely you just want to be told "I
->> need X samples now please", and that is what the current alsa
->> poll/callback method does.
->>     
->
-> Not so "surely". In PA I want to schedule the wakeup frequency
-> dynamically, based on the strongest requirement of all conncteded
-> clients. To achieve that configure ALSA to use a large (2s) hw
-> playback buffer, and then want to disable sound cards interrupts
-> (except for time keeping), and schedule everything with system
-> timers. Because those I can reconfigure without having to fully reset
-> the audio device, and thus without getting any drop outs.
->
-> In effect, as long as the user just plays an MP3 or so, the system
-> will wakeup only every 2s or so and I will make use of the full hw
-> playback buffer I previously configured, and thus save power. However
-> as soon as a VoIP application connects which has stronger latency
-> requirements I set my wakeups (with system timers) more often and only
-> use a smaller part of the large hw audio buffer.
->
-> Since ALSA doesn't allow me to reconfigure the the audio interrupt
-> frequency dynamically during playback without having to reset the
-> device I use those system timers. And because I do use those, I don't
-> have much use for the buffer fill level management of ALSA -- because
-> it is almost always wrong, because it doesn't know anything about my
-> current latency constraints. 
->
-> Now, with setting snd_pcm_sw_params_set_avail_min() to something
-> perversly huge I can make sure that ALSA never wakes me up. However,
-> that also has the effect that I can no longer user the sound card IRQ
-> for getting the most accurate timing information from the sound card.
->
-> Which sucks.
->
-> I only want to use notification via poll() for keeping time, I don't
-> want ALSA's buffer management. 
->
-> Lennart
->
->   
+On Mon, 07.01.08 19:33, Jaroslav Kysela (perex@perex.cz) wrote:
 
-Are you going to be at FOMS. It might be easier to explain to you there.
-You are making assumptions about sound cards that might be wrong. E.g. 
-2secs hw buffer for instance.
+> > > > I assume that I can enable a mode like that with one of the SW
+> > > > params. But quite frankly the docs for it are not enlighening at all.
+> > > 
+> > > Set the stop_threshould sw_params to the boundary size.
+> > > 
+> > > 	snd_pcm_sw_params_get_boundary(sw_params, &boundary);
+> > > 	snd_pcm_sw_params_set_stop_threshold(pcm, sw_params, boundary);
+> > > 
+> > > then the driver behaves in the "freewheel" mode.  The dmix plugin uses
+> > > this technique.
+> > 
+> > That's not what I was looking for. This will only disable automatic
+> > stopping on buffer underrun. I am using that already in PA (however I
+> > pass -1 as stop threshold, which should work, too, shouldn't it?)
+> > 
+> > What I am really looking for is a way to disable that ALSA reports via
+> > poll() the buffer fill level, but instead only reports whether an
+> > interrupt happened.
+> 
+> Note that you can control fill level using snd_pcm_forward/rewind 
+> without any R/W calls (of course if supported in whole chain).
+> ALSA supports only "controlled" I/O not dumb I/O as OSS driver for mmap.
+> 
+> If you look for timing source, use timer API - you may try 
+> alsa-lib/test/timer.c:
+> 
+> ./timer class=3 card=0 device=0 subdevice=0
+
+How does this timer depend on the PCM clock? Is its wakeup granularity
+dependant on the period parameters of the matching PCM device? Or am I
+supposed to first initialize PCM, and chose some period parameters the
+hw likes and than pass that on to the timer subsystem?
+
+I assume I don't have any guarantee that all alsa devices have such a
+timer attached? So I'd need some major non-trivial fallback code if I
+make use of these timers? 
+
+> > The background why I want this is this: As mentioned I am now
+> > scheduling audio in PA mostly based on system timers. To be able to do
+> > that I need to be able to translate timespans from the sound card
+> > clock to the system clock. Which requires me to get the sample time
+> > from the sound card from time to time and filter it through some code
+> > that estimates how the sound card clock and the system clock
+> > deviates. I'd prefer to do that only once or maybe twice everytime the
+> > playback buffer is fully played, and only shortly after an IRQ
+> > happened, under the assumption that this is the best time to get the
+> > most accurate timing information from the sound card.
+> 
+> It's not really necessary. You can use only one timing source (system 
+> timer) and use position timestamps to do corrections.
+
+Position timestamps? You mean status->tstamp, right? I'd like to use
+that.  But this still has two problems:
+
+1) As mentioned, CLOCK_MONOTONIC support is still missing in ALSA(-lib)
+
+2) I'd like to correct my estimations as quickly as possible, i.e. as
+   soon as a new update is available, and not only when I ask for
+   it. So basically, I want to be able to sleep in a poll() for timing
+   updates.
+
+> But your example does not explain, why you don't move r/w pointer in the 
+> ring buffer (use mmap_commit), thus why you don't fullfill the avail_min 
+> requirement for poll wakeup. It seems to me that you're trying to do some 
+> crazy things with the ring buffer which are not allowed.
+
+As mentioned, when PA starts up it configures the audio hw buffer to
+2s or so with the minimal number of periods (2 on my sound
+cards). Then, clients come and go. Depending on the what the minimal latency
+constraints of the clients are, I however will only fill up part of
+the buffer.
+
+Scenario #1: 
+
+Only one simple MP3 playing music application is connected. It doesn't
+have any real latency constraints. We always fill up the whole 2s
+buffer, then sleep for 1990 ms, and then fill it up again, and so
+on. If the MP3 player pauses or seeks, we rewrite the audio buffer
+with _rewind(). Thus alsthough we buffer two full seconds the user
+interfaces still reacts snappy.
+
+Now, because the user starts and stops applications all the time, we
+dynamically change into scenario #2:
+
+The MP3 playing application is still running. However, now a VoIP
+application is running too. It wants a worst case latency of let's say
+20ms. When this applications starts up we don't want to interrupt
+playback of the MP3 application. So from now on we only use 20ms of
+the previously configured 2s hw buffer. And as soon as we wrote 20ms,
+we sleep for 10ms, and then fill it up again, and so on.
+
+Now, after a while the VoIP call is over, we enter scenario #3:
+
+This is identical to #1, we again use the full 2s hw buffer, and sleep
+for 1990ms.
+
+So, depending on what clients are connected, we dynamically change the
+wakeups. Now, on ALSA (and with a lot of sound hw, as I understood
+Takashi) you cannot reconfigure the period sizes dynamically without
+interruptions of audio output. That's why I want to disable the whole
+period/buffer fill level management of ALSA, and do all myself with
+system timers, which I thankfully now can due to the advent of
+hrtimers (at least on Linux/x86). System timers nowadays are a lot
+more flexibe than the PCM timer, because they can be reconfigured all
+the time without any drawbacks. They are not dependant on period sizes
+or other stuff which may only be reconfigured by resetting the audio
+devices. The only drawback is that we need to determinine how the
+sound card clock and the system clock deviate.
+
+Does that make sense to you?
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
