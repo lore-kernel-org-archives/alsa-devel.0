@@ -1,16 +1,29 @@
-From: forumjunk@comcast.net (Darryl House)
-Subject: Re:
-	snd-hda-intel	support	for	SPDIF-in	wiht	vt1708	card?
-Date: Mon, 07 Jan 2008 18:40:33 +0000
-Message-ID: <010720081840.4095.47827221000A2BAB00000FFF220702455305029A06039A9D0100@comcast.net>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Mon, 07 Jan 2008 18:44:47 +0000
+Message-ID: <1199731487.19903.56.camel@localhost.localdomain>
+References: <11981089894052-git-send-email-timur@freescale.com>
+	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
+	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
+	<477BAB67.4080003@freescale.com>
+	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
+	<477D2150.4020506@freescale.com>
+	<20080103235156.GE12883@localhost.localdomain>
+	<477EEDFA.9010205@freescale.com>
+	<20080106004637.GJ4326@localhost.localdomain>
+	<47824AA3.5070808@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from QMTA08.westchester.pa.mail.comcast.net
-	(qmta08.westchester.pa.mail.comcast.net [76.96.62.80])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB68024991
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 19:40:35 +0100 (CET)
+Received: from mimesweeper.wolfsonmicro.main (lumison.wolfsonmicro.com
+	[87.246.78.27]) by alsa0.perex.cz (Postfix) with ESMTP id 19CB524988
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 19:44:52 +0100 (CET)
+Received: from orlando.wolfsonmicro.main (orlando.wolfsonmicro.main) by
+	mimesweeper.wolfsonmicro.main (Clearswift SMTPRS 5.2.3) with ESMTP id
+	<T8461fa7947ac140805e30@mimesweeper.wolfsonmicro.main> for
+	<alsa-devel@alsa-project.org>; Mon, 7 Jan 2008 18:44:48 +0000
+In-Reply-To: <47824AA3.5070808@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,67 +33,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, john@stilen.com
+To: Timur Tabi <timur@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ok, here's the current state of affairs... both the compilation and driver seem to work well now, though I haven't tested SPDIF yet. I don't know why both John Stile and I were getting ioctl errors, perhaps if it is still happening to him he can elucidate, but it isn't happening to me any more with the latest build.
-
-I obtained and built a clean mercurial clone this morning (07 Jan 08):
-
-%> cd /usr/src
-%> rm -rf alsa-driver
-%> hg clone http://hg-mirror.alsa-project.org/alsa-driver alsa-driver
-%> cd alsa-driver
-%> hg clone http://hg-mirror.alsa-project.org/alsa-kernel alsa-kernel
-%> hgcompile
-
-[...] compilation proceeds cleanly...
-
-%> make install
-
-%> alsaconf
-[...] select card and configure it via alsamixer
-
-Lo and belold, it all worked! I have a clean compilation and good response from aplay and other user space tools.
-
-I haven't applied any patches, and I haven't been able to test SPDIF input yet but I'm betting John Stile should be able to report that faster than I can get to it...
-
-Thank you very much for your help with this and for all of the work you and the ALSA team do!
-
--- Darryl
-
- -------------- Original message ----------------------
-From: Takashi Iwai <tiwai@suse.de>
-> At Wed, 02 Jan 2008 22:31:19 +0000,
-> Darryl House wrote:
-> > 
-> > 
-> >  -------------- Original message ----------------------
-> > [...]
-> > > > I'd like to get this card's spdif working.  What else can I do to help?
-> > > > Although the driver loads, the user space tools can't use the card any
-> > > > more.  Thank you.
-> > > > 
-> > > Should I assume at this point no more work will be done on the
-> > > snd-hda-intel driver to fixing SPDIF-in for the vt1708 sound card?
-> > > Thank you for all your work so far.
-> > > 
-> > 
-> > I think it is a bit early to make that assumption. There isn't a lot
-> > of demand for this particular card, but it doesn't seem that it
-> > will take too much work to get it going again... after all, it did
-> > basically work before the last patch, and I am hoping that Takashi
-> > will find some time soon to address the issues.
+On Mon, 2008-01-07 at 09:52 -0600, Timur Tabi wrote:
 > 
-> Hm, I see no obvious error in the patch.  Are you sure that the latest
-> HG driver works properly if you don't apply the patch?
+> So all I'm trying to do now is get my driver, with warts and all, into the tree 
+> so that I can focus with Liam et al to get a real ASoC V2 up and running.
 > 
-> Let's begin with that.
-> 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+I'll commit the MPC8610 into the ASoC (v1) dev tree soon (hopefully
+tonight). This will allow folks to use it in the meantime whilst we sort
+out any changes.
+
+I'll then port (what I can) to V2, although I may need some assistance
+with some of the PPC sections.
+
+Fwiw we are looking at submitting V2 in March/April time. 
+
+
+Liam
+
+PS. Sorry for the silence lately. We've just moved to a new opensource
+server over the holidays and have been without some services i.e. mail.
+
+
+
+Privacy & Confidentiality Notice
+-------------------------------------------------
+This message and any attachments contain privileged and confidential information that is intended solely for the person(s) to whom it is addressed. If you are not an intended recipient you must not: read; copy; distribute; discuss; take any action in or make any reliance upon the contents of this message; nor open or read any attachment. If you have received this message in error, please notify us as soon as possible on the following telephone number and destroy this message including any attachments. Thank you.
+-------------------------------------------------
+Wolfson Microelectronics plc
+Tel: +44 (0)131 272 7000
+Fax: +44 (0)131 272 7001
+Web: www.wolfsonmicro.com
+
+Registered in Scotland
+
+Company number SC089839
+
+Registered office: 
+
+Westfield House, 26 Westfield Road, Edinburgh, EH11 2QB, UK
