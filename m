@@ -1,27 +1,21 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Mon, 07 Jan 2008 12:45:52 -0600
-Message-ID: <47827360.9090106@freescale.com>
-References: <11981089894052-git-send-email-timur@freescale.com>
-	<9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
-	<477BAB67.4080003@freescale.com>
-	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
-	<477D2150.4020506@freescale.com>
-	<20080103235156.GE12883@localhost.localdomain>
-	<477EEDFA.9010205@freescale.com>
-	<20080106004637.GJ4326@localhost.localdomain>
-	<47824AA3.5070808@freescale.com>
-	<1199731487.19903.56.camel@localhost.localdomain>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Disabling buffer fill level preprocessing by ALSA
+Date: Mon, 07 Jan 2008 18:55:23 +0000
+Message-ID: <4782759B.5000208@superbug.co.uk>
+References: <20071231171226.GA17953@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5518024989
-	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 19:45:56 +0100 (CET)
-In-Reply-To: <1199731487.19903.56.camel@localhost.localdomain>
+Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net
+	[194.217.242.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id B54282497E
+	for <alsa-devel@alsa-project.org>; Mon,  7 Jan 2008 19:55:24 +0100 (CET)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.0.10])
+	by anchor-post-34.mail.demon.net with esmtp (Exim 4.67)
+	id 1JBx88-000Khz-Dm
+	for alsa-devel@alsa-project.org; Mon, 07 Jan 2008 18:55:24 +0000
+In-Reply-To: <20071231171226.GA17953@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,28 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
-> On Mon, 2008-01-07 at 09:52 -0600, Timur Tabi wrote:
->> So all I'm trying to do now is get my driver, with warts and all, into the tree 
->> so that I can focus with Liam et al to get a real ASoC V2 up and running.
->>
+Lennart Poettering wrote:
+> Hi!
 > 
-> I'll commit the MPC8610 into the ASoC (v1) dev tree soon (hopefully
-> tonight). This will allow folks to use it in the meantime whilst we sort
-> out any changes.
+> In PulseAudio I want to schedule on my own when I need to write audio
+> data into the device and when not. To achieve that I want to be
+> notified via poll() whenever a period boundary is passed (i.e. when an
+> IRQ happens), but only then. That's different from the usual mode
+> where you are notified via poll() whether there is space in the
+> playback buffer that needs to be filled up. 
+> 
+> On OSS the mmap() mode enables a mode like I described above. After
+> enabling mmap() the application can decide by itself what it considers
+> full and what empty in the dma buffer, and use GETOPTR to query the
+> playback position. poll() on the OSS fd will directly reflect the
+> sound card IRQs and is not influenced if you ever wrote data to device
+> or not.
+> 
+> I assume that I can enable a mode like that with one of the SW
+> params. But quite frankly the docs for it are not enlighening at all.
+> 
+> Lennart
+> 
 
-I'm working on some minor updates, so hold off for now.  I'll post a new patch 
-later this afternoon.
+What would you want to do that for? Surely you just want to be told "I
+need X samples now please", and that is what the current alsa
+poll/callback method does.
 
-> I'll then port (what I can) to V2, although I may need some assistance
-> with some of the PPC sections.
-
-I'll be 100% available for that.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+James
