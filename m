@@ -1,75 +1,98 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Disabling buffer fill level preprocessing by ALSA
-Date: Tue, 8 Jan 2008 01:03:02 +0100
-Message-ID: <20080108000302.GA19547@tango.0pointer.de>
-References: <20071231171226.GA17953@tango.0pointer.de>
-	<4782759B.5000208@superbug.co.uk>
-	<20080107202104.GB31128@tango.0pointer.de>
-	<4782A8F8.8080609@superbug.co.uk>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH v2] [POWERPC] Update MPC8610 HPCD to support audio drivers
+Date: Tue, 8 Jan 2008 11:56:54 +1100
+Message-ID: <20080108115654.d0ac909b.sfr@canb.auug.org.au>
+References: <1199732204949-git-send-email-timur@freescale.com>
+	<1199732204578-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id A72B624A40
-	for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2008 01:03:05 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4782A8F8.8080609@superbug.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============1119939838=="
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
+In-Reply-To: <1199732204578-git-send-email-timur@freescale.com>
+List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Mime-version: 1.0
+Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
+To: Timur Tabi <timur@freescale.com>
+Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 07.01.08 22:34, James Courtier-Dutton (James@superbug.co.uk) wrote:
+--===============1119939838==
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Tue__8_Jan_2008_11_56_54_+1100_heGnggeRpHB3xyv5"
 
-> Are you going to be at FOMS. It might be easier to explain to you there.
-> You are making assumptions about sound cards that might be wrong. E.g. 
-> 2secs hw buffer for instance.
+--Signature=_Tue__8_Jan_2008_11_56_54_+1100_heGnggeRpHB3xyv5
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I will be at FOMS.
+Hi Timur,
 
-I ask for 2s of hw buffer, I take whatever ALSA gives me. If ALSA
-cannot fulfil this request I am happy and take whatever I get. 
+On Mon,  7 Jan 2008 12:56:43 -0600 Timur Tabi <timur@freescale.com> wrote:
+>
+> +++ b/arch/powerpc/platforms/86xx/mpc8610_hpcd.c
+> @@ -34,9 +34,27 @@
+> =20
+>  #include <asm/mpic.h>
+> =20
+> +#include <linux/of_platform.h>
+>  #include <sysdev/fsl_pci.h>
+>  #include <sysdev/fsl_soc.h>
+> =20
+> +static struct of_device_id mpc8610_ids[] =3D {
 
-Also, if clock_getres() tells me that hrtimers are not available, or
-when I cannot enable mmap mode for a device, I don't do
-system-timer-based scheduling at all, instead I fall back to use a fixed
-period size, the way ALSA suggests it.
+__initdata
 
-I am not aware that I make any assumptions of the ALSA API that are not documented, besides:
+> +	{ .compatible =3D "fsl,mpc8610", },
+> +	{}
+> +};
+> +
+> +static int __init mpc8610_declare_of_platform_devices(void)
+> +{
+> +	if (!machine_is(mpc86xx_hpcd))
+> +		return 0;
+> +
+> +	/* Without this call, the SSI device driver won't get probed. */
+> +	of_platform_bus_probe(NULL, mpc8610_ids, NULL);
+> +
+> +	return 0;
+> +}
+> +device_initcall(mpc8610_declare_of_platform_devices);
 
-- That I can fully (as in "what is in the hw buf and still unplayed")
-  rewind a playback buffer from the front:0,
-  surround40:, surround50:, surround41:, surround51: and surround71:
-  devices when I managed to open them in mmap mode.
+We have machine_device_initcall for this now.
 
-- That snd_pcm_sw_params_set_stop_threshold(.. , (snd_pcm_uframes_t) -1))
-  disables automatic starting of the device.
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
 
-- That snd_pcm_sw_params_set_start_threshold(.. , (snd_pcm_uframes_t) -1))
-  disables automatic stopping on underrun.
+--Signature=_Tue__8_Jan_2008_11_56_54_+1100_heGnggeRpHB3xyv5
+Content-Type: application/pgp-signature
 
-- That snd_pcm_sw_params_set_avail_min(.. , INT_MAX) will never mark
-  the PCM fd as ready in poll().
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
 
-- That the mixer device for a device surround51:0 is called hw:0 
+iD8DBQFHgspiTgG2atn1QN8RAmsHAJ9D1TDq1jyQQQuMJ9nM/pYYWAZxaQCfdEeZ
+m1WSdEY6ixVcax7dV6nQczw=
+=xiB3
+-----END PGP SIGNATURE-----
 
-Which seem all pretty reasonable to me, and based on comments from
-Takashi or Jaroslav on the ML, or by looking into the source code.
+--Signature=_Tue__8_Jan_2008_11_56_54_+1100_heGnggeRpHB3xyv5--
 
-What other assumptions do you believe I am making that might be invalid?
+--===============1119939838==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+_______________________________________________
+Linuxppc-dev mailing list
+Linuxppc-dev@ozlabs.org
+https://ozlabs.org/mailman/listinfo/linuxppc-dev
+--===============1119939838==--
