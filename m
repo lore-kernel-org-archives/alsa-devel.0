@@ -1,19 +1,18 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] [POWERPC] Update MPC8610 HPCD to
-	support audio	drivers
-Date: Tue, 08 Jan 2008 12:39:14 +0000
-Message-ID: <1199795954.19903.76.camel@localhost.localdomain>
-References: <1199732204949-git-send-email-timur@freescale.com>
-	<1199732204578-git-send-email-timur@freescale.com>
-	<20080108115654.d0ac909b.sfr@canb.auug.org.au>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: conversion of opti93x driver to use cs4231-lib
+Date: Tue, 08 Jan 2008 15:16:57 +0100
+Message-ID: <478385D9.1000402@keyaccess.nl>
+References: <20080107200801.008a3cc1.krzysztof.h1@poczta.fm>
+	<s5hlk707dj7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (unknown [80.75.67.52])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B51B24488
-	for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2008 13:39:16 +0100 (CET)
-In-Reply-To: <20080108115654.d0ac909b.sfr@canb.auug.org.au>
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58C7C24AF4
+	for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2008 15:19:46 +0100 (CET)
+In-Reply-To: <s5hlk707dj7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,47 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2008-01-08 at 11:56 +1100, Stephen Rothwell wrote:
-> Hi Timur,
-> 
-> On Mon,  7 Jan 2008 12:56:43 -0600 Timur Tabi <timur@freescale.com> wrote:
-> >
-> > +++ b/arch/powerpc/platforms/86xx/mpc8610_hpcd.c
-> > @@ -34,9 +34,27 @@
-> >  
-> >  #include <asm/mpic.h>
-> >  
-> > +#include <linux/of_platform.h>
-> >  #include <sysdev/fsl_pci.h>
-> >  #include <sysdev/fsl_soc.h>
-> >  
-> > +static struct of_device_id mpc8610_ids[] = {
-> 
-> __initdata
-> 
-> > +	{ .compatible = "fsl,mpc8610", },
-> > +	{}
-> > +};
-> > +
-> > +static int __init mpc8610_declare_of_platform_devices(void)
-> > +{
-> > +	if (!machine_is(mpc86xx_hpcd))
-> > +		return 0;
-> > +
-> > +	/* Without this call, the SSI device driver won't get probed. */
-> > +	of_platform_bus_probe(NULL, mpc8610_ids, NULL);
-> > +
-> > +	return 0;
-> > +}
-> > +device_initcall(mpc8610_declare_of_platform_devices);
-> 
-> We have machine_device_initcall for this now.
-> 
+On 08-01-08 12:38, Takashi Iwai wrote:
 
-Now changed in ASoC dev branch.
+Jaroslav -- do you know/remember why opti93x didn't use cs4231-lib?
 
-Liam
+> At Mon, 7 Jan 2008 20:08:01 +0100,
+> Krzysztof Helt wrote:
+>> Hi,
+>>
+>> I posted some time ago two patches which converts opti93x driver to use cs4231-lib library. 
+>>
+>> The opti93x chips are almost compatible with the cs4231 differing mostly by mixer.
+>>
+>> This change greatly reduces the source of the opti drivers.
+>>
+>> Here are patches:
+>> [addition of opti93x details to the cs4231-lib]
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003395.html
+>>
+>> and 
+>> [conversion of opti93x driver to use cs4231-lib]
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003396.html
+>>
+>> I will rediff the second patch as there were some changes to opti93x driver after sending the patch.
+>>
+>> If it is not a good idea to do such conversion, please reply and drop patches.
+> 
+> The only concern is whether this breaks the workign opti9xx stuff.
+> If someone can confirm it's OK, then I'm 100% for these patches.
+> 
+> Added Rene to Cc to hear his opinion.
+
+Missed this one originally. I'll look into this in some detail but will need 
+a few days. Obviously, if it works, it's desirable. Maybe Jaroslav knows why 
+it's not that way now?
+
+Rene.
