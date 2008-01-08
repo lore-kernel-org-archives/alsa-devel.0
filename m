@@ -1,16 +1,16 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC] Remove sound/driver.h
-Date: Tue, 8 Jan 2008 17:37:21 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0801081736480.22730@tm8103.perex-int.cz>
-References: <s5hy7bp2z5v.wl%tiwai@suse.de> <s5hr6hh2xee.wl%tiwai@suse.de>
+Subject: Re: [RFC] Remove PCM sleep_min and tick
+Date: Tue, 8 Jan 2008 17:38:30 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0801081737270.22730@tm8103.perex-int.cz>
+References: <s5hy7bp2z5v.wl%tiwai@suse.de> <s5hsl1x2xka.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A1DD24B37
-	for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2008 17:37:22 +0100 (CET)
-In-Reply-To: <s5hr6hh2xee.wl%tiwai@suse.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 4763C24B37
+	for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2008 17:38:32 +0100 (CET)
+In-Reply-To: <s5hsl1x2xka.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +26,12 @@ List-Id: alsa-devel@alsa-project.org
 
 On Thu, 20 Dec 2007, Takashi Iwai wrote:
 
-> This is no concrete patch, but just shows you an essence.
-> 
-> In many places, simply the inclusion of sound/driver.h is removed:
-> 
-> diff -r 1f5b3ddb6636 isa/als100.c
-> --- a/isa/als100.c	Thu Dec 20 12:57:48 2007 +0100
-> +++ b/isa/als100.c	Thu Dec 20 14:12:20 2007 +0100
-> @@ -20,7 +20,6 @@
->      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
->  */
->  
-> -#include <sound/driver.h>
+> This patch removes sleep_min and tick stuff from PCM core.
+> It reduces LOC pretty well.
 
-Ack. How you would like to solve the alsa-driver internal build?
+Ack.
 
-						Jaroslav
+					Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
