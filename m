@@ -1,17 +1,17 @@
-From: "conn intel" <connintel@gmail.com>
-Subject: Problem using arecord and aplay
-Date: Tue, 8 Jan 2008 20:18:09 +0530
-Message-ID: <e842129b0801080648n5068a377na707b6b5b2a56054@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: conversion of opti93x driver to use cs4231-lib
+Date: Tue, 8 Jan 2008 16:15:28 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0801081613320.22730@tm8103.perex-int.cz>
+References: <20080107200801.008a3cc1.krzysztof.h1@poczta.fm>
+	<s5hlk707dj7.wl%tiwai@suse.de> <478385D9.1000402@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 825D124B16
-	for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2008 15:48:10 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so5166184rvb.32
-	for <alsa-devel@alsa-project.org>; Tue, 08 Jan 2008 06:48:09 -0800 (PST)
-Content-Disposition: inline
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66E1424B14
+	for <alsa-devel@alsa-project.org>; Tue,  8 Jan 2008 16:15:29 +0100 (CET)
+In-Reply-To: <478385D9.1000402@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Friends,
+On Tue, 8 Jan 2008, Rene Herman wrote:
 
-I am using kernel 2.6.22.2, and  following alsa library and utilities :
-alsa-lib-1.0.14a & alsa-utils-1.0.14. I am having problem executing arecord
-and aplay alsa utilities. After executing below command it returns
-immeaditely to command prompt with following messages. The command and
-output::
+> On 08-01-08 12:38, Takashi Iwai wrote:
+> 
+> Jaroslav -- do you know/remember why opti93x didn't use cs4231-lib?
+> 
+> > At Mon, 7 Jan 2008 20:08:01 +0100,
+> > Krzysztof Helt wrote:
+> >> Hi,
+> >>
+> >> I posted some time ago two patches which converts opti93x driver to use cs4231-lib library. 
+> >>
+> >> The opti93x chips are almost compatible with the cs4231 differing mostly by mixer.
+> >>
+> >> This change greatly reduces the source of the opti drivers.
+> >>
+> >> Here are patches:
+> >> [addition of opti93x details to the cs4231-lib]
+> >> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003395.html
+> >>
+> >> and 
+> >> [conversion of opti93x driver to use cs4231-lib]
+> >> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-September/003396.html
+> >>
+> >> I will rediff the second patch as there were some changes to opti93x driver after sending the patch.
+> >>
+> >> If it is not a good idea to do such conversion, please reply and drop patches.
+> > 
+> > The only concern is whether this breaks the workign opti9xx stuff.
+> > If someone can confirm it's OK, then I'm 100% for these patches.
+> > 
+> > Added Rene to Cc to hear his opinion.
+> 
+> Missed this one originally. I'll look into this in some detail but will 
+> need a few days. Obviously, if it works, it's desirable. Maybe Jaroslav 
+> knows why it's not that way now?
 
-# arecord -c 2 -d 10 -f S16_LE -r 44100 -t wav /home/test.wav
-Recording WAVE '/home/test.wav' : Signed 16 bit Little Endian, Rate 44100
-Hz, St
-ereo
-ALSA sound/arm/as352x-audio.c:1153: len:15888
-arecord: set_params:1012: unable to install sw params:
-start_mode: DATA
-xrun_mode: STOP
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 0
-xfer_align: 10
-silence_threshold: 0
-silence_size: 0
-boundary: 1445068800
-#
+I think that it was opti driver author decision, but I also don't see any 
+problem to use common code (if verified to be working, of course).
 
-waiting for any comments or suggestions.
+						Jaroslav
 
-Thank you,
-
-Ankur.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
