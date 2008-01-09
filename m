@@ -1,16 +1,20 @@
-From: mazarick@bellsouth.net
-Subject: [w/ formating this time] Any alsa cards with PLD/FPGA?
-	(similar to Gadget Labs)
-Date: Wed, 09 Jan 2008 19:47:28 +0000
-Message-ID: <010920081947.9223.478524D000037ACA0000240722228869349B0A02D2089B9A019C04040A0DBF050C079D0E960E03@att.net>
+From: "Adrian McMenamin" <lkmladrian@gmail.com>
+Subject: Re: can not access the alsa driver
+Date: Wed, 9 Jan 2008 21:35:25 +0000
+Message-ID: <8b67d60801091335o67f7381dlb10648a4f15f4cbf@mail.gmail.com>
+References: <48a1cba90801050642s47db1bcbj6c6624536eda5949@mail.gmail.com>
+	<1199615384.5983.24.camel@md40100b.ft>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmailhost01.isp.att.net (fmailhost01.isp.att.net
-	[204.127.217.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id A1C722433C
-	for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2008 20:47:31 +0100 (CET)
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B8D92439B
+	for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2008 22:35:28 +0100 (CET)
+Received: by py-out-1112.google.com with SMTP id w49so676011pyg.36
+	for <alsa-devel@alsa-project.org>; Wed, 09 Jan 2008 13:35:26 -0800 (PST)
+In-Reply-To: <1199615384.5983.24.camel@md40100b.ft>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,41 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Joachim Foerster <mls.JOFT@gmx.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Ning Zhang <ning.zhang06@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-[that's what I get for sending mail from a lame webmail browser]
-
-First, I wanted to report that there is good progress being made on developing an alsa linux driver for the 
- Gadget Labs card.   It's not 'done yet' but there is steady progress being made.  As was mentioned earlier,
- any interested developers, testers, or other parties are welcomed to join in the discussions or coding,
- however the mailing list will go 'private' in the next week (to eliminate the fear of spam and email address
- havesting).   The archive is busted right now; not sure if/when it will be fixed.   We're using the mailing list
- for any interested parties, and are making project members of people who would like to contribute to the
- effort.
-
-http://sourceforge.net/projects/wavepro-driver/
-
-Since the small team has a variety of experience and familiarity with writing drivers, an experimental
- 'branch' of the SVN repo has been set up to place reference material (like existing, known good alsa
- drivers, known good windows code, etc) and eventually, the skeleton of what is to be done next.   The
- 'good stuff' lives in the trunk and there will be a merge at an appropriate time in the future (when 'soups
- done').
-
-The heart of the Gadget Labs card is an Altera PLD, and it has a bus interface chip PLX9052 (and some
- on-board memory, DAC/ADC, etc).   We are planning on putting the alsa code for the Delta 1010 in the
- branch because it is the most similar from a user perspective.   However, it uses a vlsi ICE chip to do the
- job, and it doesn't have to have the PLD/FPGA code downloaded each time it is initialized.
-
-If there is a known good driver that can/should have it's code used as a reference, please let us know via
- this list.  A good technical reference to us would be cards that have to download PLD/FPGA as part of
- initialization and/or cards that use the PLX9052.    There are a couple of wireless modem cards, etc with
- linux drivers that fit the description, but it is unknown if there is already an alsa driver for an existing card
- that would be good reference code.
-
-As you are aware, this effort is not what repos are normally used for, but it was felt that having this would
- allow people at a variety of different skill levels to quickly pick up on what is trying to be accomplished
- without having to hunt all over the net, read a bunch of different emails, etc in order to make a
- contribution.
-
--Mike Mazarick
+On 06/01/2008, Joachim Foerster <mls.JOFT@gmx.de> wrote:
+> Hi,
+>
+> On Sat, 2008-01-05 at 22:42 +0800, Ning Zhang wrote:
+> > ( I did not found /dev/snd  or /dev/dsp )
+> >
+> > But when I run the application, I got these errors:
+> > # /tmp/pcm_play_arm_s default
+> > ALSA lib pcm.c:2145:(snd_pcm_open_noupdate) Unknown PCM default
+> > Playback open error: No such file or directory
+>
+> Well, I think, the /dev/snd/* devices files have to exist. Do you use
+> udevd? If not, I guess you have to create these files manually - or by
+> using the snddevices script in alsa-driver package.
+> If you use udevd, then - perhaps - your are missing some rules files
+> (/etc/udev/rules.d). Have a look at your Linux distributions rules files
+> of your host PC.
+>
+> > Here are my questions:
+> > 1, When we install the alsa-lib, we can get some libs, besides those, do we
+> > also get some config files according to the local linux environment and
+> > alsa-lib will use these config files to access the real driver? If that, how
+> > can I install the alsa-lib to a embedded platform directly or what config
+> > files should I port to embedded platform?
+> >
+> > 2, Must I edit ~/.asoundrc and /etc/alsa/alsa.conf ? In my situation, what
+> > should I do ? Is somebody so kind can give me a simple template?
+>
+> I cannot really say something about your questions - I hadn't to create
+> any special config. files, when I started using my own driver (for a
+> PPC405 based board (ML403)). I just cross-compiled and installed
+> alsa-lib and alsa-tools (to have aplay and arecord).
+>
+Any chance you could publish your configuration here?
