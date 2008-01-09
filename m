@@ -1,13 +1,18 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: 92HD71BXX Mono Mute Support
-Date: Tue, 08 Jan 2008 18:02:04 -0500
-Message-ID: <478400EC.8090001@embeddedalley.com>
+From: Robin Getz <rgetz@blackfin.uclinux.org>
+Subject: Re: dmix without mmap support in soundcard driver
+Date: Tue, 8 Jan 2008 22:58:14 -0500
+Message-ID: <200801082258.15166.rgetz@blackfin.uclinux.org>
+References: <BAY110-W2718CB754898850E2E81F3C9520@phx.gbl>
+	<1199614535.5983.13.camel@md40100b.ft>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050409000803090901080206"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp103.biz.mail.mud.yahoo.com (smtp103.biz.mail.mud.yahoo.com
-	[68.142.200.238]) by alsa0.perex.cz (Postfix) with SMTP id 2C2EC24408
-	for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2008 00:02:11 +0100 (CET)
+Received: from nwd2mail10.analog.com (unknown [137.71.25.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E7EF2448B
+	for <alsa-devel@alsa-project.org>; Wed,  9 Jan 2008 04:57:22 +0100 (CET)
+In-Reply-To: <1199614535.5983.13.camel@md40100b.ft>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,76 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tawai@suse.de
+Cc: Joachim Foerster <mls.JOFT@gmx.de>, cailinhua <xcahua@hotmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050409000803090901080206
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Added a mono output mute mixer for the 92hd71bxx family of codecs, this 
-also removes the need for the mono out node to explicitly unmuted in the 
-core init.
----
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
-
---------------050409000803090901080206
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="92hd71bxx_mono_mute.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="92hd71bxx_mono_mute.patch"
-
-diff -r b3915b3a8a22 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Tue Jan 08 12:33:19 2008 +0100
-+++ b/pci/hda/patch_sigmatel.c	Tue Jan 08 17:58:12 2008 -0500
-@@ -534,8 +534,6 @@ static struct hda_verb stac92hd71bxx_cor
- 	{ 0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- 	{ 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- 	{ 0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--	/* unmute mono out node */
--	{ 0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- };
- 
- static struct hda_verb stac92hd71bxx_analog_core_init[] = {
-@@ -553,8 +551,6 @@ static struct hda_verb stac92hd71bxx_ana
- 	{ 0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- 	{ 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- 	{ 0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--	/* unmute mono out node */
--	{ 0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- 	{}
- };
- 
-@@ -714,6 +710,8 @@ static struct snd_kcontrol_new stac92hd7
- 
- 	HDA_CODEC_MUTE("Analog Loopback 1", 0x17, 0x3, HDA_INPUT),
- 	HDA_CODEC_MUTE("Analog Loopback 2", 0x17, 0x4, HDA_INPUT),
-+
-+	HDA_CODEC_MUTE_MONO("Mono Playback Switch", 0x14, 0x1, 0, HDA_INPUT),
- 	{ } /* end */
- };
- 
-@@ -728,6 +726,8 @@ static struct snd_kcontrol_new stac92hd7
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x1, 0x1d, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x1d, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_VOLUME_IDX("Capture Mux Volume", 0x1, 0x1b, 0x0, HDA_OUTPUT),
-+
-+	HDA_CODEC_MUTE_MONO("Mono Playback Switch", 0x14, 0x1, 0, HDA_INPUT),
- 	{ } /* end */
- };
- 
-
---------------050409000803090901080206
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------050409000803090901080206--
+T24gU3VuIDYgSmFuIDIwMDggMDU6MTUsIEpvYWNoaW0gRm9lcnN0ZXIgcG9uZGVyZWQ6Cj4gSGkg
+Q2xpZmYsIAo+IAo+IE9uIFdlZCwgMjAwOC0wMS0wMiBhdCAwNjoyNiArMDAwMCwgY2FpbGluaHVh
+IHdyb3RlOgo+ID4gSSB3YW50IHRvIGVuYWJsZSBkbWl4IGZvciBvdXIgc291bmQgY2FyZC4gVW5m
+b3J0dW5hdGVseSBmb3Igc29tZSByZWFzb24KPiA+IHRoZSBzb3VuZCBjYXJkIGRyaXZlciBkb24n
+dCBzdXBwb3J0ICdtbWFwJyB3YXksaXQgb25seSBzdXBwb3J0ICdjb3B5Jwo+ID4gY2FsbGJhY2sg
+dG8gY29weSBkYXRhIGZyb20gdXBwZXIgbGV2ZWwgdG8gRE1BLiAKCkEgbGl0dGxlIGJhY2tncm91
+bmQgLSB0aGUgZHJpdmVyIGluIHF1ZXN0aW9uIGlzIGFjdHVhbGx5IGRvaW5nIGZvcm1hdCAKY29u
+dmVyc2lvbi4gV2UgdGFrZSBhIFBDTSBzdHJlYW0gZnJvbSB1c2Vyc3BhY2UsIGFuZCByZS1mb3Jt
+YXQgaXQgc28gd2UgY2FuIAp0YWxrIHRvIGFuIEFDJzk3IChsaWtlKSBjb2RlYyB2aWEgYSBzdGFu
+ZGFyZCBURE0gYnVzLiAKClRoaXMgaXMgd2h5IHdlIGRvbid0IGFsbG93IHVzZXJzcGFjZSB0byB0
+YWxrIHRvIHRoZSBoYXJkd2FyZSBkaXJlY3RseSB2aWEgCm1tYXAuCgo+ID4gU28gLEkgdGhpbmsg
+bWF5YmUgSSBjYW4gCj4gPiBtb2RpZnkgdGhlIGFsc2EtbGliIGRtaXggc291cmNlIGNvZGUgdG8g
+bGV0IGl0IHVzZSAnY29weScgd2F5IHRvIHNlbmQKPiA+IGRhdGEgdG8gdGhlIGRyaXZlci4gSXMg
+aXQgcG9zc2libGXvvJ8gQ291bGQgeW91IHBsZWFzZSBnaXZlIG1lIHNvbWUgCj4gPiBpZGVhcz8g
+Cj4gCj4gSSBkb24ndCBrbm93IGhvdyBkaWZmaWN1bHQgaXQgd291bGQgYmUgdG8gY2hhbmdlIGFs
+c2EtbGliJ3MgZG1peAo+IHNvdXJjZXMsIGJ1dCBteSBzdWdnZXN0aW9uIC0gaW4gZ2VuZXJhbCAt
+IHdvdWxkIGJlIHRvIGFsdGVyIHRoZSBkcml2ZXIKPiBvZiB5b3VyIHNvdW5kIGNhcmQgdG8gdXNl
+IHRoZSAiaW50ZXJtZWRpYXRlIGJ1ZmZlciIgdGVjaG5pcXVlICh1c2luZwo+IHBjbS1pbmRpcmVj
+dC5oKTogU2V0dXAgYSBidWZmZXIgaW4gUkFNLCB3aGljaCBjYW4gYmUgbW1hcCdlZCBieQo+IGFw
+cGxpY2F0aW9ucyBhbmQgY29weSB0aGUgY29udGVudHMgb2YgdGhpcyBidWZmZXIgdG8gdGhlIGhh
+cmR3YXJlIGluIGEKPiBiYWNrZ3JvdW5kIHByb2Nlc3MgZm9yIGV4YW1wbGUuCj4gKFNlZSBUYWth
+c2hpJ3MgIldyaXRpbmcgYW4gQUxTQSBEcml2ZXIiIGd1aWRlLikKCk9LIC0gSSBzZWUgaW46Cgpo
+dHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvfnRpd2FpL3dyaXRpbmctYW4tYWxzYS1kcml2ZXIv
+eDE0MDUuaHRtCgotLS0tLS0tLS0tLS0tClNvbWUgY2hpcHMgaGF2ZSB0aGVpciBvd24gaGFyZHdh
+cmUgYnVmZmVycyBhbmQgdGhlIERNQSB0cmFuc2ZlciBmcm9tIHRoZSBob3N0IAptZW1vcnkgaXMg
+bm90IGF2YWlsYWJsZS4gSW4gc3VjaCBhIGNhc2UsIHlvdSBuZWVkIHRvIGVpdGhlciAxKSBjb3B5
+L3NldCB0aGUgCmF1ZGlvIGRhdGEgZGlyZWN0bHkgdG8gdGhlIGV4dGVybmFsIGhhcmR3YXJlIGJ1
+ZmZlciwgb3IgMikgbWFrZSBhbiAKaW50ZXJtZWRpYXRlIGJ1ZmZlciBhbmQgY29weS9zZXQgdGhl
+IGRhdGEgZnJvbSBpdCB0byB0aGUgZXh0ZXJuYWwgaGFyZHdhcmUgCmJ1ZmZlciBpbiBpbnRlcnJ1
+cHRzIChvciBpbiB0YXNrbGV0cywgcHJlZmVyYWJseSkuCgpUaGUgc2Vjb25kIGNhc2UgYWxsb3dz
+IHRoZSBtbWFwIG9mIHRoZSBidWZmZXIsIGFsdGhvdWdoIHlvdSBoYXZlIHRvIGhhbmRsZSBhbiAK
+aW50ZXJydXB0IG9yIGEgdGFza2xldCBmb3IgdHJhbnNmZXJyaW5nIHRoZSBkYXRhIGZyb20gdGhl
+IGludGVybWVkaWF0ZSBidWZmZXIgCnRvIHRoZSBoYXJkd2FyZSBidWZmZXIuIFlvdSBjYW4gZmlu
+ZCBhbiBleGFtcGxlIGluIHZ4cG9ja2V0IGRyaXZlci4KLS0tLS0tLS0tLS0tLQoKSSBhc3N1bWUg
+dGhhdCBpcyB3aGF0IHlvdSBtZWFuPwoKSWYgc28sIEknbSBzdGlsbCBjb25mdXNlZCAtIHNpbmNl
+IHRoZSBwY21jaWEvdnggKHZ4cG9ja2V0IGRyaXZlcikgZG9lc24ndCBzZWVtIAp0byBkbyB0aGF0
+Li4uID8/CgpJIGRvIHNlZSB0aGUgZHJpdmVyIGluIHBjaS9ybWUzMi5jIC0gaXQgaXMgdXNpbmcg
+cGNtLWluZGlyZWN0LmggYW5kIHRoZSAKc25kX3BjbV9pbmRpcmVjdF94eHggZnVuY3Rpb25zIC0g
+aWYgdGhhdCBpcyB0aGUgb25lIHdlIHNob3VsZCBiZSBsb29raW5nIGF0PwoKTXkgb25seSBxdWVz
+dGlvbiBpcyAtIGlmIHlvdSBhbGxvdyBhIG1tYXBlZCBpbnRlcm1lZGlhdGUgYnVmZmVyLCBob3cg
+ZG9lcyB0aGUgCmRyaXZlciBub3RpY2Ugd2hlbiBBTFNBIHdyaXRlcyBpbnRvIHRoaXMgYnVmZmVy
+PwoKVGhhbmtzCi1Sb2JpbgoKVGhhbmtzCi1Sb2JpbgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
