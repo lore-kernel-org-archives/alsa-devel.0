@@ -1,17 +1,21 @@
-From: De Fuuss <fuuss@hotmail.com>
-Subject: Re: intel-hd on an intel G33 motherboard
-Date: Thu, 10 Jan 2008 16:15:04 +0000
-Message-ID: <BAY109-W334F77C34E9FB2DF1D966BA94A0@phx.gbl>
-References: <BAY109-W10EC413FC1F19625739A28A95B0@phx.gbl>
-	<5f52f6d70801100417h1382c2c1r3ecc9afb1b095e2b@mail.gmail.com>
+From: "Grant Likely" <grant.likely@secretlab.ca>
+Subject: Re: [PATCH v2] [POWERPC] Update MPC8610 HPCD to
+	support audio drivers
+Date: Thu, 10 Jan 2008 09:35:46 -0700
+Message-ID: <fa686aa40801100835u256e4be2s484ec6546bcd2fc0@mail.gmail.com>
+References: <1199732204949-git-send-email-timur@freescale.com>
+	<1199732204578-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc3-s36.bay0.hotmail.com (bay0-omc3-s36.bay0.hotmail.com
-	[65.54.246.236]) by alsa0.perex.cz (Postfix) with ESMTP id CD62724611
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 17:15:05 +0100 (CET)
-In-Reply-To: <5f52f6d70801100417h1382c2c1r3ecc9afb1b095e2b@mail.gmail.com>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03FAE2461F
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 17:35:47 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so177764ana.80
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 08:35:46 -0800 (PST)
+In-Reply-To: <1199732204578-git-send-email-timur@freescale.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,40 +25,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Claudio Matsuoka <cmatsuoka@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi,
-
-What do you mean by "isn't quite good"? I only get sound via the headphone jacks, all other jacks are silent. I'm asking because maybe DELL did something right and you are slightly more lucky than me? I have a SG33G5M Shuttle XPC barebone, and maybe something was soldiered differently.
-
-Regards,
-
-Patrick
-
-> Date: Thu, 10 Jan 2008 10:17:39 -0200
-> From: cmatsuoka@gmail.com
-> To: fuuss@hotmail.com
-> CC: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+On 1/7/08, Timur Tabi <timur@freescale.com> wrote:
+> Update the MPC8610 HPCD files to support the audio driver.  Update
+> booting-without-of.txt with information on the SSI device.
 >
-> On Dec 26, 2007 4:42 PM, De Fuuss  wrote:
+> Signed-off-by: Timur Tabi <timur@freescale.com>
+> ---
 >
->> Maybe I'm missing something, but I've failed to get even the slightest noise out of the onboard sound card from a Intel G33 motherboard. I tried the alsa drivers from the alsa-driver-1.0.15 package as well as the the alsa drivers provided by kernel 2.6.23 (built as modules), to no avail.
->>
->> The sound chip is identified as a Intel HDA / Realtek ALC888 on the Intel G33 ICH9 motherboard.
+> Updated based on comments from mailing lists.  Split the patch into two parts.
 >
-> I'm using a Dell Inspiron 530 with a G33 chipset, and I can confirm
-> that the sound output isn't quite good. The Inspiron possibly needs a
-> specific quirk to get the 5.1 output right, and even in 2ch mode the
-> pin assignment is strange.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> This patch applies on top of
+> git://git.kernel.org/pub/scm/linux/kernel/git/perex/alsa.git.
+>
+>  Documentation/powerpc/booting-without-of.txt |   40 ++++++
+>  arch/powerpc/boot/dts/mpc8610_hpcd.dts       |  110 ++++++++++++++++-
+>  arch/powerpc/configs/mpc8610_hpcd_defconfig  |  171 +++++++++++++++++++++++++-
+>  arch/powerpc/platforms/86xx/mpc8610_hpcd.c   |   18 +++
+>  4 files changed, 335 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/powerpc/booting-without-of.txt b/Documentation/powerpc/booting-without-of.txt
+> index e9a3cb1..826af91 100644
+> --- a/Documentation/powerpc/booting-without-of.txt
+> +++ b/Documentation/powerpc/booting-without-of.txt
+> @@ -53,6 +53,7 @@ Table of Contents
+>        j) CFI or JEDEC memory-mapped NOR flash
+>        k) Global Utilities Block
+>        l) Xilinx IP cores
+> +      p) Freescale Synchronous Serial Interface
+>
+>    VII - Specifying interrupt information for devices
+>      1) interrupts property
+> @@ -2514,6 +2515,45 @@ platforms are moved over to use the flattened-device-tree model.
+>        Requred properties:
+>         - current-speed : Baud rate of uartlite
+>
+> +    p) Freescale Synchronous Serial Interface
+> +
+> +       The SSI is a serial device that communicates with audio codecs.  It can
+> +       be programmed in AC97, I2S, left-justified, or right-justified modes.
+> +
+> +       Required properties:
+> +       - compatible      : compatible list, containing "fsl,ssi"
+> +       - cell-index      : the SSI, <0> = SSI1, <1> = SSI2, and so on
+> +       - reg             : offset and length of the register set for the device
+> +       - interrupts      : <a b> where a is the interrupt number and b is a
+> +                            field that represents an encoding of the sense and
+> +                           level information for the interrupt.  This should be
+> +                           encoded based on the information in section 2)
+> +                           depending on the type of interrupt controller you
+> +                           have.
+> +       - interrupt-parent : the phandle for the interrupt controller that
+> +                            services interrupts for this device.
+> +       - fsl,mode        : the operating mode for the SSI interface
+> +                           "i2s-slave" - I2S mode, SSI is clock slave
+> +                           "i2s-master" - I2S mode, SSI is clock master
+> +                           "lj-slave" - left-justified mode, SSI is clock slave
+> +                           "lj-master" - l.j. mode, SSI is clock master
+> +                           "rj-slave" - right-justified mode, SSI is clock slave
+> +                           "rj-master" - r.j., SSI is clock master
+> +                           "ac97-slave" - AC97 mode, SSI is clock slave
+> +                           "ac97-master" - AC97 mode, SSI is clock master
+> +
+> +       Optional properties:
+> +       - codec           : child node that defines an audio codec connected
+> +                           to this SSI
+> +
+> +       Child 'codec' node required properties:
+> +       - compatible      : compatible list, contains the name of the codec
+> +
+> +       Child 'codec' node optional properties:
+> +       - bus-frequency   : The frequency of the input clock, which typically
+> +                            comes from an on-board dedicated oscillator.
+> +
+> +
+>     More devices will be defined as this spec matures.
+>
+>  VII - Specifying interrupt information for devices
+> diff --git a/arch/powerpc/boot/dts/mpc8610_hpcd.dts b/arch/powerpc/boot/dts/mpc8610_hpcd.dts
+> index 966edf1..fda0ace 100644
+> --- a/arch/powerpc/boot/dts/mpc8610_hpcd.dts
+> +++ b/arch/powerpc/boot/dts/mpc8610_hpcd.dts
+> @@ -1,7 +1,7 @@
+>  /*
+>   * MPC8610 HPCD Device Tree Source
+>   *
+> - * Copyright 2007 Freescale Semiconductor Inc.
+> + * Copyright 2007-2008 Freescale Semiconductor Inc.
+>   *
+>   * This program is free software; you can redistribute  it and/or modify it
+>   * under the terms of the GNU General Public License Version 2 as published
+> @@ -42,6 +42,7 @@
+>                 #size-cells = <1>;
+>                 #interrupt-cells = <2>;
+>                 device_type = "soc";
+> +               compatible = "fsl,mpc8610";
 
-_________________________________________________________________
-Express yourself instantly with MSN Messenger! Download today it's FREE!
-http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+Something like "fsl,mpc8610-immr" might be a better choice here.  This
+node doesn't actually describe the entire chip (for example, the PPC
+cores are in the cpus node); but it does describe the internally
+memory mapped registers.
+
+Cheers,
+g.
+
+-- 
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
