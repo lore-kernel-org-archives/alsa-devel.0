@@ -1,15 +1,28 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: Re: [PATCH] hda: 92HD7XXX power management support
-Date: Thu, 10 Jan 2008 10:33:26 -0500
-Message-ID: <47863AC6.9060900@embeddedalley.com>
-References: <4784F91C.9000504@embeddedalley.com> <s5hejcr3pbb.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Thu, 10 Jan 2008 09:39:29 -0600
+Message-ID: <47863C31.50309@freescale.com>
+References: <9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>	
+	<477BAB67.4080003@freescale.com>	
+	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>	
+	<477D2150.4020506@freescale.com>	
+	<20080103235156.GE12883@localhost.localdomain>	
+	<477EEDFA.9010205@freescale.com>	
+	<20080106004637.GJ4326@localhost.localdomain>	
+	<47824AA3.5070808@freescale.com>
+	<20080107182853.GA17312@sirena.org.uk>	
+	<20080110034919.GI17816@localhost.localdomain>	
+	<9e4733910801092141m5d4476d0l1c081307fd5c1969@mail.gmail.com>
+	<1199961015.19903.270.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050504040705000800030504"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp108.biz.mail.mud.yahoo.com (smtp108.biz.mail.mud.yahoo.com
-	[68.142.201.177]) by alsa0.perex.cz (Postfix) with SMTP id 8D7FB245B1
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 16:33:29 +0100 (CET)
-In-Reply-To: <s5hejcr3pbb.wl%tiwai@suse.de>
+Received: from az33egw01.freescale.net (az33egw01.freescale.net
+	[192.88.158.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B81F245E3
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 16:40:42 +0100 (CET)
+In-Reply-To: <1199961015.19903.270.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,343 +32,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>, david@gibson.dropbear.id.au, Grant Likely <grant.likely@secretlab.ca>, Olof Johansson <olof@lixom.net>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050504040705000800030504
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Liam Girdwood wrote:
 
-Takashi Iwai wrote:
-> At Wed, 09 Jan 2008 11:41:00 -0500,
-> Matthew Ranostay wrote:
->   
->> @@ -714,6 +728,8 @@ static struct snd_kcontrol_new stac92hd7
->>  
->>  	HDA_CODEC_MUTE("Analog Loopback 1", 0x17, 0x3, HDA_INPUT),
->>  	HDA_CODEC_MUTE("Analog Loopback 2", 0x17, 0x4, HDA_INPUT),
->> +
->> +	HDA_CODEC_MUTE_MONO("Mono Switch", 0x14, 0x1, 0, HDA_INPUT),
->>  	{ } /* end */
->>  };
->>  
->> @@ -728,6 +744,8 @@ static struct snd_kcontrol_new stac92hd7
->>  	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x1, 0x1d, 0x0, HDA_OUTPUT),
->>  	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x1d, 0x0, HDA_OUTPUT),
->>  	HDA_CODEC_VOLUME_IDX("Capture Mux Volume", 0x1, 0x1b, 0x0, HDA_OUTPUT),
->> +
->> +	HDA_CODEC_MUTE_MONO("Mono Switch", 0x14, 0x1, 0, HDA_INPUT),
->>  	{ } /* end */
->>  };
->>     
->
-> These have been already applied to HG tree.  Please update your repo
-> (maybe better from hg.alsa-project.org).
->
->
->   
-D'oh, forgot to do 'hg update' again :/
->> @@ -2651,11 +2669,26 @@ static void enable_pin_detect(struct hda
->>  static void enable_pin_detect(struct hda_codec *codec, hda_nid_t nid,
->>  			      unsigned int event)
->>  {
->> +	int pinctl = snd_hda_codec_read(codec, nid, 0,
->> +					AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
->> +	if (pinctl & AC_PINCTL_IN_EN)
->> +		return;
->> +
->>     
->
->   
-Moved this block is a more reasonable spot.
-> Hm, what about the multi-directional pins (such as line-in/surround
-> shared pin)?  Maybe it's not for 92HDxxx codecs, but...
->
->   
-Comments in the patch should explain this.
->   
->> @@ -2696,6 +2729,14 @@ static int stac92xx_init(struct hda_code
->>  		for (i = 0; i < spec->num_dmics; i++)
->>  			stac92xx_auto_set_pinctl(codec, spec->dmic_nids[i],
->>  						 AC_PINCTL_IN_EN);
->> +	if (spec->num_pwrs > 0) {
->>     
->
-> This if is unnecessary.
->
->   
-Cleaned this up, and removed the unneeded DMIC block check above it.
->> @@ -3076,6 +3144,9 @@ again:
->>  	spec->gpio_mask = spec->gpio_data = 0x000001;
->>  	stac92xx_enable_gpio_mask(codec);
->>  
->> +	spec->num_pwrs = 8;
->>     
-> Better to use ARRAY_SIZE().
->
->   
-Done.
->> +	spec->pwr_nids = stac92hd73xx_pwr_nids;
->> +
->>  	err = stac92xx_parse_auto_config(codec, 0x22, 0x24);
->>  
->>  	if (!err) {
->> @@ -3157,6 +3228,9 @@ again:
->>  	spec->num_adcs = ARRAY_SIZE(stac92hd71bxx_adc_nids);
->>  	spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
->>  	spec->num_dmuxes = ARRAY_SIZE(stac92hd71bxx_dmux_nids);
->> +
->> +	spec->num_pwrs = 3;
->>     
->
->   
-Done.
-> Ditto.
->
->
-> Thanks,
->
-> Takashi
->
->   
+> I think we are probably looking at submission in the next 8 - 10 weeks.
+> Currently most of the core code is complete, however some platforms and
+> codecs still need porting.
 
+With that in mind, can I get some kind of consensus from the PPC side as to 
+whether this ASoC V1 driver is okay?  I want to get it into 2.6.25.
 
---------------050504040705000800030504
-Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
- name="92hd7xxx_power_management.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="92hd7xxx_power_management.patch"
+Keep in mind:
 
-diff -r a5d234856191 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Wed Jan 09 17:56:07 2008 +0100
-+++ b/pci/hda/patch_sigmatel.c	Thu Jan 10 10:20:04 2008 -0500
-@@ -34,7 +34,8 @@
- #include "hda_local.h"
- 
- #define NUM_CONTROL_ALLOC	32
--#define STAC_HP_EVENT		0x37
-+#define STAC_PWR_EVENT		0x20
-+#define STAC_HP_EVENT		0x30
- 
- enum {
- 	STAC_REF,
-@@ -126,6 +127,10 @@ struct sigmatel_spec {
- 	unsigned char aloopback_mask;
- 	unsigned char aloopback_shift;
- 
-+	/* power management */
-+	unsigned int num_pwrs;
-+	hda_nid_t *pwr_nids;
-+
- 	/* playback */
- 	struct hda_multi_out multiout;
- 	hda_nid_t dac_nids[5];
-@@ -184,6 +189,11 @@ static hda_nid_t stac9200_dac_nids[1] = 
-         0x02,
- };
- 
-+static hda_nid_t stac92hd73xx_pwr_nids[8] = {
-+	0x0a, 0x0b, 0x0c, 0xd, 0x0e,
-+	0x0f, 0x10, 0x11
-+};
-+
- static hda_nid_t stac92hd73xx_adc_nids[2] = {
- 	0x1a, 0x1b
- };
-@@ -204,6 +214,10 @@ static hda_nid_t stac92hd73xx_mux_nids[4
- 
- static hda_nid_t stac92hd73xx_dmux_nids[2] = {
- 	0x20, 0x21,
-+};
-+
-+static hda_nid_t stac92hd71bxx_pwr_nids[3] = {
-+	0x0a, 0x0d, 0x0f
- };
- 
- static hda_nid_t stac92hd71bxx_adc_nids[2] = {
-@@ -543,7 +557,7 @@ static struct hda_verb stac92hd71bxx_ana
- 	/* connect ports 0d and 0f to audio mixer */
- 	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x2},
- 	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x2},
--	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT}, /* Speaker */
- 	/* unmute dac0 input in audio mixer */
- 	{ 0x17, AC_VERB_SET_AMP_GAIN_MUTE, 0x701f},
- 	/* unmute right and left channels for nodes 0x0a, 0xd, 0x0f */
-@@ -2656,6 +2670,16 @@ static void enable_pin_detect(struct hda
- 					  (AC_USRSP_EN | event));
- }
- 
-+static int is_nid_hp_pin(struct auto_pin_cfg *cfg, hda_nid_t nid)
-+{
-+	int i;
-+	for (i = 0; i < cfg->hp_outs; i++)
-+		if (cfg->hp_pins[i] == nid)
-+			return 1; /* nid is a HP-Out */
-+
-+	return 0; /* nid is not a HP-Out */
-+};
-+
- static int stac92xx_init(struct hda_codec *codec)
- {
- 	struct sigmatel_spec *spec = codec->spec;
-@@ -2691,10 +2715,23 @@ static int stac92xx_init(struct hda_code
- 			stac92xx_auto_set_pinctl(codec, nid, pinctl);
- 		}
- 	}
--	if (spec->num_dmics > 0)
--		for (i = 0; i < spec->num_dmics; i++)
--			stac92xx_auto_set_pinctl(codec, spec->dmic_nids[i],
--						 AC_PINCTL_IN_EN);
-+	for (i = 0; i < spec->num_dmics; i++)
-+		stac92xx_auto_set_pinctl(codec, spec->dmic_nids[i],
-+					AC_PINCTL_IN_EN);
-+	for (i = 0; i < spec->num_pwrs; i++)  {
-+		int event = is_nid_hp_pin(cfg, spec->pwr_nids[i])
-+					? STAC_HP_EVENT : STAC_PWR_EVENT;
-+		int pinctl = snd_hda_codec_read(codec, spec->pwr_nids[i],
-+					0, AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+		/* outputs are only ports capable of power management
-+		 * any attempts on powering down a input port cause the
-+		 * referenced VREF to act quirky.
-+		 */
-+		if (pinctl & AC_PINCTL_IN_EN)
-+			continue;
-+		enable_pin_detect(codec, spec->pwr_nids[i], event | i);
-+		codec->patch_ops.unsol_event(codec, (event | i) << 26);
-+	}
- 
- 	if (cfg->dig_out_pin)
- 		stac92xx_auto_set_pinctl(codec, cfg->dig_out_pin,
-@@ -2821,12 +2858,37 @@ static void stac92xx_hp_detect(struct hd
- 	}
- } 
- 
-+static void stac92xx_pin_sense(struct hda_codec *codec, int idx)
-+{
-+	struct sigmatel_spec *spec = codec->spec;
-+	hda_nid_t nid = spec->pwr_nids[idx];
-+	int presence, val;
-+	val = snd_hda_codec_read(codec, codec->afg, 0, 0x0fec, 0x0)
-+							& 0x000000ff;
-+	presence = get_hp_pin_presence(codec, nid);
-+	idx = 1 << idx;
-+
-+	if (presence)
-+		val &= ~idx;
-+	else
-+		val |= idx;
-+
-+	/* power down unused output ports */
-+	snd_hda_codec_write(codec, codec->afg, 0, 0x7ec, val);
-+};
-+
- static void stac92xx_unsol_event(struct hda_codec *codec, unsigned int res)
- {
--	switch (res >> 26) {
-+	struct sigmatel_spec *spec = codec->spec;
-+	int idx = res >> 26 & 0x0f;
-+
-+	switch ((res >> 26) & 0x30) {
- 	case STAC_HP_EVENT:
- 		stac92xx_hp_detect(codec, res);
--		break;
-+		/* fallthru */
-+	case STAC_PWR_EVENT:
-+		if (spec->num_pwrs > 0)
-+			stac92xx_pin_sense(codec, idx);
- 	}
- }
- 
-@@ -2897,6 +2959,7 @@ static int patch_stac9200(struct hda_cod
- 	spec->num_muxes = 1;
- 	spec->num_dmics = 0;
- 	spec->num_adcs = 1;
-+	spec->num_pwrs = 0;
- 
- 	if (spec->board_config == STAC_9200_GATEWAY)
- 		spec->init = stac9200_eapd_init;
-@@ -2952,6 +3015,7 @@ static int patch_stac925x(struct hda_cod
- 	spec->mux_nids = stac925x_mux_nids;
- 	spec->num_muxes = 1;
- 	spec->num_adcs = 1;
-+	spec->num_pwrs = 0;
- 	switch (codec->vendor_id) {
- 	case 0x83847632: /* STAC9202  */
- 	case 0x83847633: /* STAC9202D */
-@@ -3075,6 +3139,9 @@ again:
- 	spec->gpio_mask = spec->gpio_data = 0x000001;
- 	stac92xx_enable_gpio_mask(codec);
- 
-+	spec->num_pwrs = ARRAY_SIZE(stac92hd73xx_pwr_nids);
-+	spec->pwr_nids = stac92hd73xx_pwr_nids;
-+
- 	err = stac92xx_parse_auto_config(codec, 0x22, 0x24);
- 
- 	if (!err) {
-@@ -3156,6 +3223,9 @@ again:
- 	spec->num_adcs = ARRAY_SIZE(stac92hd71bxx_adc_nids);
- 	spec->num_dmics = STAC92HD71BXX_NUM_DMICS;
- 	spec->num_dmuxes = ARRAY_SIZE(stac92hd71bxx_dmux_nids);
-+
-+	spec->num_pwrs = ARRAY_SIZE(stac92hd71bxx_pwr_nids);
-+	spec->pwr_nids = stac92hd71bxx_pwr_nids;
- 
- 	spec->multiout.num_dacs = 2;
- 	spec->multiout.hp_nid = 0x11;
-@@ -3251,6 +3321,7 @@ static int patch_stac922x(struct hda_cod
- 	spec->num_muxes = ARRAY_SIZE(stac922x_mux_nids);
- 	spec->num_adcs = ARRAY_SIZE(stac922x_adc_nids);
- 	spec->num_dmics = 0;
-+	spec->num_pwrs = 0;
- 
- 	spec->init = stac922x_core_init;
- 	spec->mixer = stac922x_mixer;
-@@ -3355,6 +3426,7 @@ static int patch_stac927x(struct hda_cod
- 		spec->mixer = stac927x_mixer;
- 	}
- 
-+	spec->num_pwrs = 0;
- 	spec->aloopback_mask = 0x40;
- 	spec->aloopback_shift = 0;
- 
-@@ -3416,6 +3488,7 @@ static int patch_stac9205(struct hda_cod
- 	spec->num_dmics = STAC9205_NUM_DMICS;
- 	spec->dmux_nids = stac9205_dmux_nids;
- 	spec->num_dmuxes = ARRAY_SIZE(stac9205_dmux_nids);
-+	spec->num_pwrs = 0;
- 
- 	spec->init = stac9205_core_init;
- 	spec->mixer = stac9205_mixer;
-@@ -3678,6 +3751,7 @@ static int patch_stac9872(struct hda_cod
- 		spec->multiout.hp_nid = VAIO_HP_DAC;
- 		spec->num_adcs = ARRAY_SIZE(vaio_adcs);
- 		spec->adc_nids = vaio_adcs;
-+		spec->num_pwrs = 0;
- 		spec->input_mux = &vaio_mux;
- 		spec->mux_nids = vaio_mux_nids;
- 		codec->patch_ops = stac9872_vaio_patch_ops;
-@@ -3691,6 +3765,7 @@ static int patch_stac9872(struct hda_cod
- 		spec->multiout.dac_nids = vaio_dacs;
- 		spec->multiout.hp_nid = VAIO_HP_DAC;
- 		spec->num_adcs = ARRAY_SIZE(vaio_adcs);
-+		spec->num_pwrs = 0;
- 		spec->adc_nids = vaio_adcs;
- 		spec->input_mux = &vaio_mux;
- 		spec->mux_nids = vaio_mux_nids;
+1) ASoC V1 is not PowerPC-friendly, so it's impossible to make an ASoC V1 
+PowerPC driver "100% correct".
 
---------------050504040705000800030504
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2) The CS4270 driver does not support I2C nodes in the device tree, so there's 
+not point in adding any to the 8610 DTS.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+3) Liam and I are working on porting this driver to ASoC V2 and resolving all 
+open PPC issue, but that won't be done in time for 2.6.25.
 
---------------050504040705000800030504--
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
