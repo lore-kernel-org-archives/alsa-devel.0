@@ -1,18 +1,26 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: PNP_DRIVER_RES_DISABLE breaks swsusp at least with
- snd_cs4236
-Date: Thu, 10 Jan 2008 02:53:06 +0100
-Message-ID: <47857A82.4050005@keyaccess.nl>
-References: <200801092343.48726.linux@rainbow-software.org>
+From: David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
+Date: Thu, 10 Jan 2008 14:49:19 +1100
+Message-ID: <20080110034919.GI17816@localhost.localdomain>
+References: <9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
+	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
+	<477BAB67.4080003@freescale.com>
+	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
+	<477D2150.4020506@freescale.com>
+	<20080103235156.GE12883@localhost.localdomain>
+	<477EEDFA.9010205@freescale.com>
+	<20080106004637.GJ4326@localhost.localdomain>
+	<47824AA3.5070808@freescale.com>
+	<20080107182853.GA17312@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id C40952446E
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 02:56:01 +0100 (CET)
-In-Reply-To: <200801092343.48726.linux@rainbow-software.org>
+Received: from ozlabs.org (ozlabs.org [203.10.76.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id B3BD724476
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 04:50:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20080107182853.GA17312@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +30,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@suse.cz>, Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: Timur Tabi <timur@freescale.com>, Jon Smirl <jonsmirl@gmail.com>, Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09-01-08 23:43, Ondrej Zary wrote:
-
-Jaroslav -- in your role as ISA-PnP maintainer and Bjorn, in yours as having 
-been foollish enough to touch PnP recently:
-
-> as hibernation (swsusp) started to work with my CPU, I found that my Turtle 
-> Beach Malibu stops working after resume from hibernation. It's caused by fact 
-> that the card is not enabled on the pnp layer during resume - and thus card 
-> registers are inaccessible (reads return FFs, writes go nowhere).
+On Mon, Jan 07, 2008 at 06:28:54PM +0000, Mark Brown wrote:
+> On Mon, Jan 07, 2008 at 09:52:03AM -0600, Timur Tabi wrote:
+> > David Gibson wrote:
 > 
-> During resume, pnp_bus_resume() in drivers/pnp/driver.c is called for each pnp 
-> device. This function calls pnp_start_dev() only when the 
-> PNP_DRIVER_RES_DO_NOT_CHANGE bit is NOT seting pnp_drv->flags. But the cs4236 
-> driver in sound/isa/cs423x/cs4236.c explicitly sets the .flags to 
-> PNP_DRIVER_RES_DISABLE - it's value is 3 and that includes 
-> PNP_DRIVER_RES_DO_NOT_CHANGE bit.
-
-Ehm. Isn't that a bit unexpected:
-
-#define PNP_DRIVER_RES_DO_NOT_CHANGE    0x0001  /* do not change the state 
-of the device */
-#define PNP_DRIVER_RES_DISABLE          0x0003  /* ensure the device is 
-disabled */
-
-I'd say that disabling is changing, so isn't this just a braino where 
-someone meant to write 2 instead of 3?
-
-> The same .flags value is present in many of the ALSA ISA sound drivers.
+> > > Ok, but couldn't you strucutre your I2S or fabric driver so that it
+> > > only becomes fully operational once the codec driver has registered
+> > > with it?
 > 
-> Removing that .flags line caused this to appear inlog when loading snd_cs4236 
-> module:
-> CS4236+ WSS PnP manual resources are invalid, using auto config
-> CS4236+ CTRL PnP manual resources are invalid, using auto config
-> CS4236+ MPU401 PnP manual resources are invalid, using auto config
+> > Not in ASoC V1.  You have to understand, ASoC V1 was designed without any 
+> > consideration for runtime-bindings and other OF goodies.  All connections 
+> > between the drivers are static, literally.  In fact, I wouldn't be surprised if 
+> > some ASoC drivers cannot be compiled as modules.
 > 
-> and the sound now works after resume!
+> I'd just like to emphasise this point - ASoC v1 really doesn't
+> understand the idea that the components of the sound subsystem might be
+> probed separately.  It's set up to handle bare hardware with everything
+> being probed from code in the machine/fabric driver.  This makes life
+> very messy for platforms with something like the device tree.
 > 
-> So the question is: why is this line present?
-> 
-> Is this a bug? What's the correct fix?
+> As has been said, handling this properly is one of the major motivations
+> behind ASoC v2.
 
-Rene.
+Ick.  Ok.
+
+Nonetheless, messing up the device tree to workaround ASoC V1's silly
+limitations is not a good idea.  The device tree must represent the
+hardware as much as possible.  If that means we have to have a bunch
+of platform-specific hacks to instatiate the drivers in the correct
+order / combination, that's unfortunate, but there you go.
+
+-- 
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
