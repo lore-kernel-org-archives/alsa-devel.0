@@ -1,20 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 06/17] Ensure PCMs are suspended
-Date: Thu, 10 Jan 2008 13:17:04 +0000
-Message-ID: <1199971035-13553-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 12/17] Initial WM8753 TLV support for capture
+	mixer.
+Date: Thu, 10 Jan 2008 13:17:10 +0000
+Message-ID: <1199971035-13553-12-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1199971035-13553-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1199971035-13553-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1199971035-13553-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1199971035-13553-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1199971035-13553-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-8-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-9-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-10-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-11-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (unknown [80.75.67.52])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC0B72457F
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 14:17:18 +0100 (CET)
-In-Reply-To: <1199971035-13553-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 65CCA24588
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 14:17:19 +0100 (CET)
+In-Reply-To: <1199971035-13553-11-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,56 +32,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 
-This fixes a bug whereby PCMs were not being suspended when the rest of the
-audio subsystem was suspended.
-
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |    3 +++
- sound/soc/soc-core.c |    5 +++++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+ sound/soc/codecs/wm8753.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index c69b58c..e32fa2f 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -448,6 +448,9 @@ struct snd_soc_dai_link  {
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index efced93..ba16375 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -48,6 +48,7 @@
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+ #include <sound/initval.h>
++#include <sound/tlv.h>
+ #include <asm/div64.h>
  
- 	/* codec/machine specific init - e.g. add machine controls */
- 	int (*init)(struct snd_soc_codec *codec);
+ #include "wm8753.h"
+@@ -258,6 +259,8 @@ static int wm8753_set_dai(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
++static const DECLARE_TLV_DB_LINEAR(rec_mix_tlv, -1500, 600);
 +
-+	/* DAI pcm */
-+	struct snd_pcm *pcm;
- };
+ static const struct snd_kcontrol_new wm8753_snd_controls[] = {
+ SOC_DOUBLE_R("PCM Volume", WM8753_LDAC, WM8753_RDAC, 0, 255, 0),
  
- /* SoC machine */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b159734..680dea9 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -646,6 +646,10 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
- 			dai->dai_ops.digital_mute(dai, 1);
- 	}
+@@ -287,8 +290,8 @@ SOC_SINGLE("Bass Volume", WM8753_BASS, 0, 15, 1),
+ SOC_SINGLE("Treble Volume", WM8753_TREBLE, 0, 15, 1),
+ SOC_ENUM("Treble Cut-off", wm8753_enum[2]),
  
-+	/* suspend all pcms */
-+	for (i = 0; i < machine->num_links; i++)
-+		snd_pcm_suspend_all(machine->dai_link[i].pcm);
-+
- 	if (machine->suspend_pre)
- 		machine->suspend_pre(pdev, state);
+-SOC_DOUBLE("Sidetone Capture Volume", WM8753_RECMIX1, 0, 4, 7, 1),
+-SOC_SINGLE("Voice Sidetone Capture Volume", WM8753_RECMIX2, 0, 7, 1),
++SOC_DOUBLE_TLV("Sidetone Capture Volume", WM8753_RECMIX1, 0, 4, 7, 1, rec_mix_tlv),
++SOC_SINGLE_TLV("Voice Sidetone Capture Volume", WM8753_RECMIX2, 0, 7, 1, rec_mix_tlv),
  
-@@ -880,6 +884,7 @@ static int soc_new_pcm(struct snd_soc_device *socdev,
- 		return ret;
- 	}
- 
-+	dai_link->pcm = pcm;
- 	pcm->private_data = rtd;
- 	soc_pcm_ops.mmap = socdev->platform->pcm_ops->mmap;
- 	soc_pcm_ops.pointer = socdev->platform->pcm_ops->pointer;
+ SOC_DOUBLE_R("Capture Volume", WM8753_LINVOL, WM8753_RINVOL, 0, 63, 0),
+ SOC_DOUBLE_R("Capture ZC Switch", WM8753_LINVOL, WM8753_RINVOL, 6, 1, 0),
 -- 
 1.5.3.8
