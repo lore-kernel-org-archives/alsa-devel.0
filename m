@@ -1,24 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 09/17] Add support for passing kcontrols with
-	events.
-Date: Thu, 10 Jan 2008 13:17:07 +0000
-Message-ID: <1199971035-13553-9-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 06/17] Ensure PCMs are suspended
+Date: Thu, 10 Jan 2008 13:17:04 +0000
+Message-ID: <1199971035-13553-6-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1199971035-13553-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1199971035-13553-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1199971035-13553-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1199971035-13553-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1199971035-13553-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-7-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (unknown [80.75.67.52])
-	by alsa0.perex.cz (Postfix) with ESMTP id C145124581
+	by alsa0.perex.cz (Postfix) with ESMTP id AC0B72457F
 	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 14:17:18 +0100 (CET)
-In-Reply-To: <1199971035-13553-8-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1199971035-13553-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,134 +30,51 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 
-Signed-off-by: Laim Girdwood <lg@opensource.wolfsonmicro.com>
----
- include/sound/soc-dapm.h |    2 +-
- sound/soc/soc-dapm.c     |   40 +++++++++++++++++++++++++++-------------
- 2 files changed, 28 insertions(+), 14 deletions(-)
+This fixes a bug whereby PCMs were not being suspended when the rest of the
+audio subsystem was suspended.
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 335d73c..0df89bb 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -289,7 +289,7 @@ struct snd_soc_dapm_widget {
+Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+---
+ include/sound/soc.h  |    3 +++
+ sound/soc/soc-core.c |    5 +++++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index c69b58c..e32fa2f 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -448,6 +448,9 @@ struct snd_soc_dai_link  {
  
- 	/* external events */
- 	unsigned short event_flags;		/* flags to specify event types */
--	int (*event)(struct snd_soc_dapm_widget*, int);
-+	int (*event)(struct snd_soc_dapm_widget*, struct snd_kcontrol *, int);
+ 	/* codec/machine specific init - e.g. add machine controls */
+ 	int (*init)(struct snd_soc_codec *codec);
++
++	/* DAI pcm */
++	struct snd_pcm *pcm;
+ };
  
- 	/* kcontrols that relate to this widget */
- 	int num_kcontrols;
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 4a5bd85..a4ce882 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -524,11 +524,13 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 					continue;
+ /* SoC machine */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b159734..680dea9 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -646,6 +646,10 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
+ 			dai->dai_ops.digital_mute(dai, 1);
+ 	}
  
- 				if (event == SND_SOC_DAPM_STREAM_START) {
--					ret = w->event(w, SND_SOC_DAPM_PRE_PMU);
-+					ret = w->event(w,
-+						NULL, SND_SOC_DAPM_PRE_PMU);
- 					if (ret < 0)
- 						return ret;
- 				} else if (event == SND_SOC_DAPM_STREAM_STOP) {
--					ret = w->event(w, SND_SOC_DAPM_PRE_PMD);
-+					ret = w->event(w,
-+						NULL, SND_SOC_DAPM_PRE_PMD);
- 					if (ret < 0)
- 						return ret;
- 				}
-@@ -539,11 +541,13 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 					continue;
++	/* suspend all pcms */
++	for (i = 0; i < machine->num_links; i++)
++		snd_pcm_suspend_all(machine->dai_link[i].pcm);
++
+ 	if (machine->suspend_pre)
+ 		machine->suspend_pre(pdev, state);
  
- 				if (event == SND_SOC_DAPM_STREAM_START) {
--					ret = w->event(w, SND_SOC_DAPM_POST_PMU);
-+					ret = w->event(w,
-+						NULL, SND_SOC_DAPM_POST_PMU);
- 					if (ret < 0)
- 						return ret;
- 				} else if (event == SND_SOC_DAPM_STREAM_STOP) {
--					ret = w->event(w, SND_SOC_DAPM_POST_PMD);
-+					ret = w->event(w,
-+						NULL, SND_SOC_DAPM_POST_PMD);
- 					if (ret < 0)
- 						return ret;
- 				}
-@@ -567,26 +571,30 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 					if (power) {
- 						/* power up event */
- 						if (w->event_flags & SND_SOC_DAPM_PRE_PMU) {
--							ret = w->event(w, SND_SOC_DAPM_PRE_PMU);
-+							ret = w->event(w,
-+								NULL, SND_SOC_DAPM_PRE_PMU);
- 							if (ret < 0)
- 								return ret;
- 						}
- 						dapm_update_bits(w);
- 						if (w->event_flags & SND_SOC_DAPM_POST_PMU){
--							ret = w->event(w, SND_SOC_DAPM_POST_PMU);
-+							ret = w->event(w,
-+								NULL, SND_SOC_DAPM_POST_PMU);
- 							if (ret < 0)
- 								return ret;
- 						}
- 					} else {
- 						/* power down event */
- 						if (w->event_flags & SND_SOC_DAPM_PRE_PMD) {
--							ret = w->event(w, SND_SOC_DAPM_PRE_PMD);
-+							ret = w->event(w,
-+								NULL, SND_SOC_DAPM_PRE_PMD);
- 							if (ret < 0)
- 								return ret;
- 						}
- 						dapm_update_bits(w);
- 						if (w->event_flags & SND_SOC_DAPM_POST_PMD) {
--							ret = w->event(w, SND_SOC_DAPM_POST_PMD);
-+							ret = w->event(w,
-+								NULL, SND_SOC_DAPM_POST_PMD);
- 							if (ret < 0)
- 								return ret;
- 						}
-@@ -1096,13 +1104,17 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
- 	dapm_mixer_update_power(widget, kcontrol, reg, val_mask, val, invert);
- 	if (widget->event) {
- 		if (widget->event_flags & SND_SOC_DAPM_PRE_REG) {
--			ret = widget->event(widget, SND_SOC_DAPM_PRE_REG);
--			if (ret < 0)
-+			ret = widget->event(widget, kcontrol,
-+						SND_SOC_DAPM_PRE_REG);
-+			if (ret < 0) {
-+				ret = 1;
- 				goto out;
-+			}
- 		}
- 		ret = snd_soc_update_bits(widget->codec, reg, val_mask, val);
- 		if (widget->event_flags & SND_SOC_DAPM_POST_REG)
--			ret = widget->event(widget, SND_SOC_DAPM_POST_REG);
-+			ret = widget->event(widget, kcontrol,
-+						SND_SOC_DAPM_POST_REG);
- 	} else
- 		ret = snd_soc_update_bits(widget->codec, reg, val_mask, val);
+@@ -880,6 +884,7 @@ static int soc_new_pcm(struct snd_soc_device *socdev,
+ 		return ret;
+ 	}
  
-@@ -1177,13 +1189,15 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 	dapm_mux_update_power(widget, kcontrol, mask, mux, e);
- 	if (widget->event) {
- 		if (widget->event_flags & SND_SOC_DAPM_PRE_REG) {
--			ret = widget->event(widget, SND_SOC_DAPM_PRE_REG);
-+			ret = widget->event(widget,
-+				kcontrol, SND_SOC_DAPM_PRE_REG);
- 			if (ret < 0)
- 				goto out;
- 		}
- 		ret = snd_soc_update_bits(widget->codec, e->reg, mask, val);
- 		if (widget->event_flags & SND_SOC_DAPM_POST_REG)
--			ret = widget->event(widget, SND_SOC_DAPM_POST_REG);
-+			ret = widget->event(widget,
-+				kcontrol, SND_SOC_DAPM_POST_REG);
- 	} else
- 		ret = snd_soc_update_bits(widget->codec, e->reg, mask, val);
- 
++	dai_link->pcm = pcm;
+ 	pcm->private_data = rtd;
+ 	soc_pcm_ops.mmap = socdev->platform->pcm_ops->mmap;
+ 	soc_pcm_ops.pointer = socdev->platform->pcm_ops->pointer;
 -- 
 1.5.3.8
