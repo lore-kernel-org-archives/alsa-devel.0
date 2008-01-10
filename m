@@ -1,17 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 02/17] Fix inverted Bass, Treble,
-	Mono volume and Phone volume WM9712 mixer controls.
-Date: Thu, 10 Jan 2008 13:17:00 +0000
-Message-ID: <1199971035-13553-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 13/17] Reinitialise DMA on every resume
+Date: Thu, 10 Jan 2008 13:17:11 +0000
+Message-ID: <1199971035-13553-13-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1199971035-13553-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-8-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-9-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-10-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-12-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (unknown [80.75.67.52])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9F7D2458B
+	by alsa0.perex.cz (Postfix) with ESMTP id 970622458A
 	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 14:17:19 +0100 (CET)
-In-Reply-To: <1199971035-13553-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1199971035-13553-12-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +32,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Joe Sauer <jsauer@vernier.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Graeme Gregory <graeme@openmoko.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Joe Sauer <jsauer@vernier.com>
+From: Graeme Gregory <graeme@openmoko.com>
 
-Signed-off-by: Joe Sauer <jsauer@vernier.com>
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+This one changes the DMA initialisation as it turns out the DMA driver
+in s3c24xx doesnt store registers between suspend/resume so you have
+to re-initialise the channels on every resume.
+
+Signed-off-by: Graeme Gregory <graeme@openmoko.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm9712.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/s3c24xx/s3c24xx-pcm.c |   48 ++++++++++++++++++++------------------
+ 1 files changed, 25 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 986b5d5..111c266 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -102,7 +102,7 @@ SOC_SINGLE("Speaker Playback ZC Switch", AC97_MASTER, 7, 1, 0),
- SOC_SINGLE("Speaker Playback Invert Switch", AC97_MASTER, 6, 1, 0),
- SOC_SINGLE("Headphone Playback ZC Switch", AC97_HEADPHONE, 7, 1, 0),
- SOC_SINGLE("Mono Playback ZC Switch", AC97_MASTER_MONO, 7, 1, 0),
--SOC_SINGLE("Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 0),
-+SOC_SINGLE("Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 1),
+diff --git a/sound/soc/s3c24xx/s3c24xx-pcm.c b/sound/soc/s3c24xx/s3c24xx-pcm.c
+index 4107a87..e9f3b60 100644
+--- a/sound/soc/s3c24xx/s3c24xx-pcm.c
++++ b/sound/soc/s3c24xx/s3c24xx-pcm.c
+@@ -49,7 +49,9 @@ static const struct snd_pcm_hardware s3c24xx_pcm_hardware = {
+ 	.info			= SNDRV_PCM_INFO_INTERLEAVED |
+ 				    SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				    SNDRV_PCM_INFO_MMAP |
+-				    SNDRV_PCM_INFO_MMAP_VALID,
++				    SNDRV_PCM_INFO_MMAP_VALID |
++				    SNDRV_PCM_INFO_PAUSE |
++				    SNDRV_PCM_INFO_RESUME,
+ 	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
+ 				    SNDRV_PCM_FMTBIT_U16_LE |
+ 				    SNDRV_PCM_FMTBIT_U8 |
+@@ -176,28 +178,6 @@ static int s3c24xx_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
  
- SOC_SINGLE("ALC Target Volume", AC97_CODEC_CLASS_REV, 12, 15, 0),
- SOC_SINGLE("ALC Hold Time", AC97_CODEC_CLASS_REV, 8, 15, 0),
-@@ -131,7 +131,7 @@ SOC_SINGLE("Aux Playback Headphone Volume", AC97_CD, 12, 7, 1),
- SOC_SINGLE("Aux Playback Speaker Volume", AC97_CD, 8, 7, 1),
- SOC_SINGLE("Aux Playback Phone Volume", AC97_CD, 4, 7, 1),
+-	/* channel needs configuring for mem=>device, increment memory addr,
+-	 * sync to pclk, half-word transfers to the IIS-FIFO. */
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		s3c2410_dma_devconfig(prtd->params->channel,
+-				S3C2410_DMASRC_MEM, S3C2410_DISRCC_INC |
+-				S3C2410_DISRCC_APB, prtd->params->dma_addr);
+-
+-		s3c2410_dma_config(prtd->params->channel,
+-				prtd->params->dma_size,
+-				S3C2410_DCON_SYNC_PCLK | 
+-				S3C2410_DCON_HANDSHAKE);
+-	} else {
+-		s3c2410_dma_config(prtd->params->channel,
+-				prtd->params->dma_size,
+-				S3C2410_DCON_HANDSHAKE | 
+-				S3C2410_DCON_SYNC_PCLK);
+-
+-		s3c2410_dma_devconfig(prtd->params->channel,
+-					S3C2410_DMASRC_HW, 0x3,
+-					prtd->params->dma_addr);
+-	}
+-
+ 	s3c2410_dma_set_buffdone_fn(prtd->params->channel,
+ 				    s3c24xx_audio_buffdone);
  
--SOC_SINGLE("Phone Volume", AC97_PHONE, 0, 15, 0),
-+SOC_SINGLE("Phone Volume", AC97_PHONE, 0, 15, 1),
- SOC_DOUBLE("Line Capture Volume", AC97_LINE, 8, 0, 31, 1),
+@@ -246,6 +226,28 @@ static int s3c24xx_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (!prtd->params)
+ 	 	return 0;
  
- SOC_SINGLE("Capture 20dB Boost Switch", AC97_REC_SEL, 14, 1, 0),
-@@ -145,8 +145,8 @@ SOC_ENUM("Bass Control", wm9712_enum[5]),
- SOC_SINGLE("Bass Cut-off Switch", AC97_MASTER_TONE, 12, 1, 1),
- SOC_SINGLE("Tone Cut-off Switch", AC97_MASTER_TONE, 4, 1, 1),
- SOC_SINGLE("Playback Attenuate (-6dB) Switch", AC97_MASTER_TONE, 6, 1, 0),
--SOC_SINGLE("Bass Volume", AC97_MASTER_TONE, 8, 15, 0),
--SOC_SINGLE("Treble Volume", AC97_MASTER_TONE, 0, 15, 0),
-+SOC_SINGLE("Bass Volume", AC97_MASTER_TONE, 8, 15, 1),
-+SOC_SINGLE("Treble Volume", AC97_MASTER_TONE, 0, 15, 1),
- 
- SOC_SINGLE("Capture ADC Switch", AC97_REC_GAIN, 15, 1, 1),
- SOC_ENUM("Capture Volume Steps", wm9712_enum[6]),
++	/* channel needs configuring for mem=>device, increment memory addr,
++	 * sync to pclk, half-word transfers to the IIS-FIFO. */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		s3c2410_dma_devconfig(prtd->params->channel,
++				S3C2410_DMASRC_MEM, S3C2410_DISRCC_INC |
++				S3C2410_DISRCC_APB, prtd->params->dma_addr);
++
++		s3c2410_dma_config(prtd->params->channel,
++				prtd->params->dma_size,
++				S3C2410_DCON_SYNC_PCLK |
++				S3C2410_DCON_HANDSHAKE);
++	} else {
++		s3c2410_dma_config(prtd->params->channel,
++				prtd->params->dma_size,
++				S3C2410_DCON_HANDSHAKE |
++				S3C2410_DCON_SYNC_PCLK);
++
++		s3c2410_dma_devconfig(prtd->params->channel,
++					S3C2410_DMASRC_HW, 0x3,
++					prtd->params->dma_addr);
++	}
++
+ 	/* flush the DMA channel */
+ 	s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_FLUSH);
+ 	prtd->dma_loaded = 0;
 -- 
 1.5.3.8
