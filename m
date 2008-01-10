@@ -1,9 +1,8 @@
-From: David Gibson <david@gibson.dropbear.id.au>
+From: "Jon Smirl" <jonsmirl@gmail.com>
 Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Thu, 10 Jan 2008 14:49:19 +1100
-Message-ID: <20080110034919.GI17816@localhost.localdomain>
+Date: Thu, 10 Jan 2008 00:41:18 -0500
+Message-ID: <9e4733910801092141m5d4476d0l1c081307fd5c1969@mail.gmail.com>
 References: <9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
-	<9e4733910801010942y47e4cdbfge5e0d3e44ab96760@mail.gmail.com>
 	<477BAB67.4080003@freescale.com>
 	<9e4733910801020734n115888cbt86351f67f2311629@mail.gmail.com>
 	<477D2150.4020506@freescale.com>
@@ -12,15 +11,18 @@ References: <9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>
 	<20080106004637.GJ4326@localhost.localdomain>
 	<47824AA3.5070808@freescale.com>
 	<20080107182853.GA17312@sirena.org.uk>
+	<20080110034919.GI17816@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ozlabs.org (ozlabs.org [203.10.76.45])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3BD724476
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 04:50:33 +0100 (CET)
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C34D244AF
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 06:41:19 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so929843wag.8
+	for <alsa-devel@alsa-project.org>; Wed, 09 Jan 2008 21:41:18 -0800 (PST)
+In-Reply-To: <20080110034919.GI17816@localhost.localdomain>
 Content-Disposition: inline
-In-Reply-To: <20080107182853.GA17312@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,38 +35,50 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Timur Tabi <timur@freescale.com>, Jon Smirl <jonsmirl@gmail.com>, Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 07, 2008 at 06:28:54PM +0000, Mark Brown wrote:
-> On Mon, Jan 07, 2008 at 09:52:03AM -0600, Timur Tabi wrote:
-> > David Gibson wrote:
-> 
-> > > Ok, but couldn't you strucutre your I2S or fabric driver so that it
-> > > only becomes fully operational once the codec driver has registered
-> > > with it?
-> 
-> > Not in ASoC V1.  You have to understand, ASoC V1 was designed without any 
-> > consideration for runtime-bindings and other OF goodies.  All connections 
-> > between the drivers are static, literally.  In fact, I wouldn't be surprised if 
-> > some ASoC drivers cannot be compiled as modules.
-> 
-> I'd just like to emphasise this point - ASoC v1 really doesn't
-> understand the idea that the components of the sound subsystem might be
-> probed separately.  It's set up to handle bare hardware with everything
-> being probed from code in the machine/fabric driver.  This makes life
-> very messy for platforms with something like the device tree.
-> 
-> As has been said, handling this properly is one of the major motivations
-> behind ASoC v2.
+On 1/9/08, David Gibson <david@gibson.dropbear.id.au> wrote:
+> On Mon, Jan 07, 2008 at 06:28:54PM +0000, Mark Brown wrote:
+> > On Mon, Jan 07, 2008 at 09:52:03AM -0600, Timur Tabi wrote:
+> > > David Gibson wrote:
+> >
+> > > > Ok, but couldn't you strucutre your I2S or fabric driver so that it
+> > > > only becomes fully operational once the codec driver has registered
+> > > > with it?
+> >
+> > > Not in ASoC V1.  You have to understand, ASoC V1 was designed without any
+> > > consideration for runtime-bindings and other OF goodies.  All connections
+> > > between the drivers are static, literally.  In fact, I wouldn't be surprised if
+> > > some ASoC drivers cannot be compiled as modules.
+> >
+> > I'd just like to emphasise this point - ASoC v1 really doesn't
+> > understand the idea that the components of the sound subsystem might be
+> > probed separately.  It's set up to handle bare hardware with everything
+> > being probed from code in the machine/fabric driver.  This makes life
+> > very messy for platforms with something like the device tree.
+> >
+> > As has been said, handling this properly is one of the major motivations
+> > behind ASoC v2.
+>
+> Ick.  Ok.
+>
+> Nonetheless, messing up the device tree to workaround ASoC V1's silly
+> limitations is not a good idea.  The device tree must represent the
+> hardware as much as possible.  If that means we have to have a bunch
+> of platform-specific hacks to instatiate the drivers in the correct
+> order / combination, that's unfortunate, but there you go.
 
-Ick.  Ok.
+ASOC v2 is sitting on a Wolfson server out of tree. I have been using
+it for several months without problem. The pace of it being merged
+could probably be sped up.
 
-Nonetheless, messing up the device tree to workaround ASoC V1's silly
-limitations is not a good idea.  The device tree must represent the
-hardware as much as possible.  If that means we have to have a bunch
-of platform-specific hacks to instatiate the drivers in the correct
-order / combination, that's unfortunate, but there you go.
+>
+> --
+> David Gibson                    | I'll have my music baroque, and my code
+> david AT gibson.dropbear.id.au  | minimalist, thank you.  NOT _the_ _other_
+>                                 | _way_ _around_!
+> http://www.ozlabs.org/~dgibson
+>
+
 
 -- 
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+Jon Smirl
+jonsmirl@gmail.com
