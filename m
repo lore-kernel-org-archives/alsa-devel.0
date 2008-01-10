@@ -1,19 +1,25 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
-Subject: Re: intel-hd on an intel G33 motherboard
-Date: Thu, 10 Jan 2008 10:17:39 -0200
-Message-ID: <5f52f6d70801100417h1382c2c1r3ecc9afb1b095e2b@mail.gmail.com>
-References: <BAY109-W10EC413FC1F19625739A28A95B0@phx.gbl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 10/17] Don't lock the codec list in
+	snd_soc_dapm_new_widgets()
+Date: Thu, 10 Jan 2008 13:17:08 +0000
+Message-ID: <1199971035-13553-10-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1199971035-13553-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-8-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1199971035-13553-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id DECFA24550
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 13:17:41 +0100 (CET)
-Received: by py-out-1112.google.com with SMTP id w49so1030894pyg.36
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 04:17:40 -0800 (PST)
-In-Reply-To: <BAY109-W10EC413FC1F19625739A28A95B0@phx.gbl>
-Content-Disposition: inline
+Received: from opensource2.wolfsonmicro.com (unknown [80.75.67.52])
+	by alsa0.perex.cz (Postfix) with ESMTP id 016AE2456E
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 14:17:18 +0100 (CET)
+In-Reply-To: <1199971035-13553-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +29,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: De Fuuss <fuuss@hotmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Dec 26, 2007 4:42 PM, De Fuuss <fuuss@hotmail.com> wrote:
+snd_soc_dapm_new_widgets() takes the codec lock when adding new widgets,
+causing lockdep warnings when applications later call down through ALSA
+to adjust controls.  Since widgets are only added during probe this lock
+should be unneeded so don't take it.
 
-> Maybe I'm missing something, but I've failed to get even the slightest noise out of the onboard sound card from a Intel G33 motherboard. I tried the alsa drivers from the alsa-driver-1.0.15 package as well as the the alsa drivers provided by kernel 2.6.23 (built as modules), to no avail.
->
-> The sound chip is identified as a Intel HDA / Realtek ALC888 on the Intel G33 ICH9 motherboard.
+Thanks to Dmitry Baryshkov <dbaryshkov@gmail.com> for reporting this issue.
 
-I'm using a Dell Inspiron 530 with a G33 chipset, and I can confirm
-that the sound output isn't quite good. The Inspiron possibly needs a
-specific quirk to get the 5.1 output right, and even in 2ch mode the
-pin assignment is strange.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ sound/soc/soc-dapm.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index a4ce882..f99cac1 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -972,7 +972,6 @@ int snd_soc_dapm_new_widgets(struct snd_soc_codec *codec)
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 
+-	mutex_lock(&codec->mutex);
+ 	list_for_each_entry(w, &codec->dapm_widgets, list)
+ 	{
+ 		if (w->new)
+@@ -1007,7 +1006,6 @@ int snd_soc_dapm_new_widgets(struct snd_soc_codec *codec)
+ 	}
+ 
+ 	dapm_power_widgets(codec, SND_SOC_DAPM_STREAM_NOP);
+-	mutex_unlock(&codec->mutex);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_new_widgets);
+-- 
+1.5.3.8
