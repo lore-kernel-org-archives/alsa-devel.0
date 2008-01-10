@@ -1,27 +1,13 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ASoC drivers for the Freescale MPC8610 SoC
-Date: Thu, 10 Jan 2008 14:44:39 -0600
-Message-ID: <478683B7.20306@freescale.com>
-References: <9e4733910801010925j67192427o4e0e824b9d7e0ad0@mail.gmail.com>	
-	<20080107182853.GA17312@sirena.org.uk>	
-	<20080110034919.GI17816@localhost.localdomain>	
-	<9e4733910801092141m5d4476d0l1c081307fd5c1969@mail.gmail.com>	
-	<1199961015.19903.270.camel@localhost.localdomain>	
-	<47863C31.50309@freescale.com>	
-	<fa686aa40801100801p3da98eecn44401b17fe652da8@mail.gmail.com>	
-	<478641E3.5070404@freescale.com>	
-	<9e4733910801101210w5846bb4ds38a603a489ef0522@mail.gmail.com>	
-	<47867C80.4050408@freescale.com>
-	<9e4733910801101239n539507a8sb23d1a2177e69bd9@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Add new STAC9205 PCI_QUIRK
+Date: Thu, 10 Jan 2008 17:05:51 -0500
+Message-ID: <478696BF.2040705@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------020903050201090109030808"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25E2324711
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 21:44:58 +0100 (CET)
-In-Reply-To: <9e4733910801101239n539507a8sb23d1a2177e69bd9@mail.gmail.com>
+Received: from smtp110.biz.mail.mud.yahoo.com (smtp110.biz.mail.mud.yahoo.com
+	[68.142.201.179]) by alsa0.perex.cz (Postfix) with SMTP id CCD4124745
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jan 2008 23:05:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,20 +17,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel@alsa-project.org, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, Olof Johansson <olof@lixom.net>, david@gibson.dropbear.id.au
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Jon Smirl wrote:
+This is a multi-part message in MIME format.
+--------------020903050201090109030808
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> So the codec is controlled from the i2c bus and SSI is used to supply
-> it with data. Based on what has been said on this list, the device
-> tree node for the codec should be on the i2c bus with a link from the
-> ssi bus to it.
+Added a new STAC 9205 quirk for Vostro 1500.
+---
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 
-I'm working on that now.  I'll have a new patch with this exact change this 
-afternoon.
+--------------020903050201090109030808
+Content-Type: text/plain; x-mac-type="0"; x-mac-creator="0";
+ name="stac9205_new_quirk.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="stac9205_new_quirk.patch"
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+diff -r 1e968b2c8617 pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Thu Jan 10 14:50:34 2008 +0100
++++ b/pci/hda/patch_sigmatel.c	Thu Jan 10 15:55:23 2008 -0500
+@@ -1468,6 +1468,7 @@ static unsigned int ref9205_pin_configs[
+     102801FD
+     10280204
+     1028021F
++    10280228 (Dell Vostro 1500)
+ */
+ static unsigned int dell_9205_m42_pin_configs[12] = {
+ 	0x0321101F, 0x03A11020, 0x400003FA, 0x90170310,
+@@ -1551,6 +1552,8 @@ static struct snd_pci_quirk stac9205_cfg
+ 		      "unknown Dell", STAC_9205_DELL_M42),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x021f,
+ 		      "Dell Inspiron", STAC_9205_DELL_M44),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0228,
++		      "Dell Vostro 1500", STAC_9205_DELL_M42),
+ 	{} /* terminator */
+ };
+ 
+
+--------------020903050201090109030808
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------020903050201090109030808--
