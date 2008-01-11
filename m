@@ -1,18 +1,19 @@
-From: Robin Getz <rgetz@blackfin.uclinux.org>
-Subject: Re: dmix without mmap support in soundcard driver
-Date: Fri, 11 Jan 2008 13:53:31 -0500
-Message-ID: <200801111353.31815.rgetz@blackfin.uclinux.org>
-References: <BAY110-W2718CB754898850E2E81F3C9520@phx.gbl>
-	<200801082258.15166.rgetz@blackfin.uclinux.org>
-	<1200063696.7074.18.camel@md40100b.ft>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: PNP_DRIVER_RES_DISABLE breaks swsusp at least with
+	snd_cs4236
+Date: Fri, 11 Jan 2008 19:40:18 +0100
+Message-ID: <200801111940.22023.linux@rainbow-software.org>
+References: <200801092343.48726.linux@rainbow-software.org>
+	<20080111080141.75aaad5f@poseidon.drzeus.cx>
+	<47877B83.5040604@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49E432462C
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 19:53:09 +0100 (CET)
-In-Reply-To: <1200063696.7074.18.camel@md40100b.ft>
+Received: from www.gsystems.sk (ns.gsystems.sk [62.176.172.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id 461CF24629
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 20:07:30 +0100 (CET)
+In-Reply-To: <47877B83.5040604@keyaccess.nl>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,25 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joachim Foerster <mls.JOFT@gmx.de>
-Cc: cailinhua <xcahua@hotmail.com>, alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Pierre Ossman <drzeus@drzeus.cx>, Bjorn Helgaas <bjorn.helgaas@hp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri 11 Jan 2008 10:01, Joachim Foerster pondered:
-> > My only question is - if you allow a mmaped intermediate buffer, how
-> > does the  driver notice when ALSA writes into this buffer?
-> 
-> It's the ack() callback. ALSA writes/reads something into/from the
-> intermediate buffer and calls the driver's ack() callback - if there is
-> any. In the ack() callback the driver should call one of the
-> snd_pcm_indirect_*_transfer() functions. There, the difference between
-> current and last seen appl_ptr gives the "new position" of the PCM Layer
-> in your intermediate buffer (where it will write/read next time).
+On Friday 11 January 2008 15:21:55 Rene Herman wrote:
+> On 11-01-08 08:01, Pierre Ossman wrote:
+> > On Fri, 11 Jan 2008 02:19:07 +0100
+> >
+> > Rene Herman <rene.herman@keyaccess.nl> wrote:
+> >> I see a PnP resume _consists_ of setting the resources so I can see the
+> >> test implementation wise, but yes, conceptually it seems this test
+> >> shouldn't be present. So just like the attached then?
+> >>
+> >> Pierre, what was the idea here? Added the other SOBs to the CC as
+> >> well...
+> >
+> > You assume there was an idea? ;)
+> >
+> > I don't remember why things were done the way they were. And I can't find
+> > any clues in the correspondence around the issue. So your guess is as
+> > good as mine.
+>
+> Hrmpf. Well, okay. Ondrej -- I assume this patch fixes things?
 
-OK - thanks.
+Yes, it works fine.
+3c509 card still does not work after resume, but that looks like another 
+problem.
 
->From just thinking about it - won't this will cause problems for things that 
-need to understand where the audio device is in the PCM stream (like AEC, and 
-lip-sync)? Since now everything from userspace is in reference to the 
-position in the intermediate buffer - rather than what is actually coming out 
-the DACs?
+-- 
+Ondrej Zary
