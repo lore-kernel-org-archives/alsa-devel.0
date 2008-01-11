@@ -1,19 +1,19 @@
-From: "Alexandre BOUIN" <a.bouin@kerlink.fr>
-Subject: Re: ALSA : Can't open capture device
-Date: Fri, 11 Jan 2008 14:26:42 +0100
-Message-ID: <15264.6636510783$1200058039@news.gmane.org>
-References: <000801c85440$8ec2f280$ac48d780$@bouin@kerlink.fr>
-	<1200057414.30917.1230696923@webmail.messagingengine.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: PNP_DRIVER_RES_DISABLE breaks swsusp at least with
+ snd_cs4236
+Date: Fri, 11 Jan 2008 15:21:55 +0100
+Message-ID: <47877B83.5040604@keyaccess.nl>
+References: <200801092343.48726.linux@rainbow-software.org>	<47857A82.4050005@keyaccess.nl>	<Pine.LNX.4.61.0801100849290.30240@tm8103.perex-int.cz>	<4786C40B.8050005@keyaccess.nl>
+	<20080111080141.75aaad5f@poseidon.drzeus.cx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from scanner-relay-corvus2.pulsation.fr
-	(scanner-relay-corvus2.pulsation.fr [80.74.64.70])
-	by alsa0.perex.cz (Postfix) with SMTP id D0E4C24502
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 14:26:43 +0100 (CET)
-In-Reply-To: <1200057414.30917.1230696923@webmail.messagingengine.com>
-Content-Language: fr
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD86124556
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 15:24:59 +0100 (CET)
+In-Reply-To: <20080111080141.75aaad5f@poseidon.drzeus.cx>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,78 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Clemens Ladisch' <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: Pierre Ossman <drzeus@drzeus.cx>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Ondrej Zary <linux@rainbow-software.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bjorn.helgaas@hp.com>
 List-Id: alsa-devel@alsa-project.org
 
-arecord answer me this : =
+On 11-01-08 08:01, Pierre Ossman wrote:
 
-arecord -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: codec [xxxxxxx audio codec], device 0: xxxxxx xxxxxx-I2S-0 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+> On Fri, 11 Jan 2008 02:19:07 +0100
+> Rene Herman <rene.herman@keyaccess.nl> wrote:
+> 
+>> I see a PnP resume _consists_ of setting the resources so I can see the test 
+>> implementation wise, but yes, conceptually it seems this test shouldn't be 
+>> present. So just like the attached then?
+>>
+>> Pierre, what was the idea here? Added the other SOBs to the CC as well...
+>>
+> 
+> You assume there was an idea? ;)
+> 
+> I don't remember why things were done the way they were. And I can't find
+> any clues in the correspondence around the issue. So your guess is as
+> good as mine.
 
-After looking for traces in pcm.c and sound.c, I've found this : =
+Hrmpf. Well, okay. Ondrej -- I assume this patch fixes things?
 
-soc_new_pcm playback 1, capture 1
-snd_pcm_dev_register str pcmC0D0p
-snd_register_device_for_dev minor 16
-snd_pcm_dev_register str pcmC0D0c
-snd_register_device_for_dev minor 24
-snd_register_device_for_dev minor 0
-
-My pcmC0D0x minor devices were wrong :'( i've remade them and now it works.
-
-Thanks a lot.
-
-Regards,
-Alex.
-
------Message d'origine-----
-De=A0: Clemens Ladisch [mailto:cladisch@fastmail.net] =
-
-Envoy=E9=A0: vendredi 11 janvier 2008 14:17
-=C0=A0: Alexandre BOUIN; alsa-devel@alsa-project.org
-Objet=A0: Re: [alsa-devel] ALSA : Can't open capture device
-
-Alexandre BOUIN wrote:
-> I'm working on an intern project, using an AT91SAM9260EK-based board,
-> embedded system.
-> Our kernel contains a full ALSA 1.14 with ASoC layer.
-> Our ASoC driver works well in capture and playback, if we are using OSS
-> layer or directly /dev/dsp.
-> So I need some tips on ALSA layer side :
-> =
-
-> here you can see that my device is created : =
-
-> ll /dev/snd/
-> crwxrwxrwx    1 root     root     116,   0 Dec 26  2007 controlC0
-> crwxrwxrwx    1 root     root     116,   4 Dec 26  2007 hwC0D0
-> crwxrwxrwx    1 root     root     116,  14 Dec 26  2007 pcmC0D0c
-> crwxrwxrwx    1 root     root     116,  16 Dec 26  2007 pcmC0D0p
-> ll /dev/dsp
-> crwxrwxrwx    1 root     root      14,   3 Dec 26  2007 /dev/dsp
-> =
-
-> A cat on playback device works (I added some traces in kernel) : =
-
-> cat < /dev/snd/pcmC0D0p
-> snd_pcm_open : enter
-> snd_pcm_open_file : before snd_pcm_open_substream
-> snd_pcm_open_file : after snd_pcm_open_substream
-> cat: read error: Invalid argument
-> =
-
-> But a cat on capture device does not work : =
-
-> cat < /dev/snd/pcmC0D0c
-> -sh: cannot open /dev/snd/pcmC0D0c: No such device
-
-Does the capture device appear in /proc/asound/devices or in the output
-of "arecord -l"?
-
-
-Regards,
-Clemens
+Rene.
