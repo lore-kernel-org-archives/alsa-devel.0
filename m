@@ -1,19 +1,17 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: PNP_DRIVER_RES_DISABLE breaks swsusp at least with
- snd_cs4236
-Date: Fri, 11 Jan 2008 15:21:55 +0100
-Message-ID: <47877B83.5040604@keyaccess.nl>
-References: <200801092343.48726.linux@rainbow-software.org>	<47857A82.4050005@keyaccess.nl>	<Pine.LNX.4.61.0801100849290.30240@tm8103.perex-int.cz>	<4786C40B.8050005@keyaccess.nl>
-	<20080111080141.75aaad5f@poseidon.drzeus.cx>
+From: "Markus Rechberger" <mrechberger@gmail.com>
+Subject: ATI Technologies Inc SBx00 Azalia
+Date: Fri, 11 Jan 2008 15:47:56 +0100
+Message-ID: <d9def9db0801110647s2f9005bbi977e1f5a981b4fdf@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD86124556
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 15:24:59 +0100 (CET)
-In-Reply-To: <20080111080141.75aaad5f@poseidon.drzeus.cx>
+Received: from nz-out-0506.google.com (nz-out-0506.google.com [64.233.162.236])
+	by alsa0.perex.cz (Postfix) with ESMTP id 561AB2458F
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 15:47:58 +0100 (CET)
+Received: by nz-out-0506.google.com with SMTP id m22so610041nzf.2
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 06:47:57 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +21,165 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre Ossman <drzeus@drzeus.cx>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Ondrej Zary <linux@rainbow-software.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11-01-08 08:01, Pierre Ossman wrote:
+Hi,
 
-> On Fri, 11 Jan 2008 02:19:07 +0100
-> Rene Herman <rene.herman@keyaccess.nl> wrote:
-> 
->> I see a PnP resume _consists_ of setting the resources so I can see the test 
->> implementation wise, but yes, conceptually it seems this test shouldn't be 
->> present. So just like the attached then?
->>
->> Pierre, what was the idea here? Added the other SOBs to the CC as well...
->>
-> 
-> You assume there was an idea? ;)
-> 
-> I don't remember why things were done the way they were. And I can't find
-> any clues in the correspondence around the issue. So your guess is as
-> good as mine.
+there seems to be an issue with this ATI SBx00 Azalia driver.
 
-Hrmpf. Well, okay. Ondrej -- I assume this patch fixes things?
+nmixer (which uses the oss emulated interface shows up 4 controls)
+Vol (volume which seems to control the whole output volume)
+PCM2 (maybe not routed on that notebook, it practically has no effect)
+IGain (guess for the microphone which I haven't tested yet)
+Digital1 (don't know)
 
-Rene.
+if I try to start alsamixer, it doesn't seem to work and I get an
+entry in dmesg whenever I try to run it:
+$ alsamixer
+alsamixer: function snd_mixer_load failed: Invalid argument
+
+$ dmesg
+...
+[ 1269.997724] hda_codec: num_steps = 0 for NID=0x12
+
+$ lspci
+00:14.2 Audio device: ATI Technologies Inc SBx00 Azalia
+
+$ lspci -vvvn
+00:14.2 0403: 1002:4383
+        Subsystem: 1002:4383
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, Cache Line Size: 32 bytes
+        Interrupt: pin ? routed to IRQ 16
+        Region 0: Memory at f0300000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+
+----
+
+$ arecord -l
+ **** List of CAPTURE Hardware Devices ****
+card 0: SB [HDA ATI SB], device 0: ALC262 Analog [ALC262 Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+card 0: SB [HDA ATI SB], device 2: ALC262 Analog [ALC262 Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+
+----
+$ arecord -L
+default:CARD=SB
+    HDA ATI SB, ALC262 Analog
+    Default Audio Device
+front:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    Front speakers
+surround40:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+iec958:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Digital
+    IEC958 (S/PDIF) Digital Audio Output
+null
+    Discard all samples (playback) or generate zero samples (capture)
+
+
+----
+
+$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: SB [HDA ATI SB], device 0: ALC262 Analog [ALC262 Analog]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 0: SB [HDA ATI SB], device 1: ALC262 Digital [ALC262 Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+----
+
+$ aplay -L
+**** List of PLAYBACK Hardware Devices ****
+card 0: SB [HDA ATI SB], device 0: ALC262 Analog [ALC262 Analog]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 0: SB [HDA ATI SB], device 1: ALC262 Digital [ALC262 Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+root@osrc-laptop:/devel/alsa/alsa-driver# aplay -L
+default:CARD=SB
+    HDA ATI SB, ALC262 Analog
+    Default Audio Device
+front:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    Front speakers
+surround40:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=SB,DEV=0
+    HDA ATI SB, ALC262 Analog
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+null
+    Discard all samples (playback) or generate zero samples (capture)
+
+----
+
+root@laptop:/proc/asound# cat cards
+ 0 [SB             ]: HDA-Intel - HDA ATI SB
+                      HDA ATI SB at 0xf0300000 irq 16
+root@laptop:/proc/asound# cat devices
+  0: [ 0]   : control
+  1:        : sequencer
+  7: [ 0- 3]: hardware dependent
+ 16: [ 0- 0]: digital audio playback
+ 17: [ 0- 1]: digital audio playback
+ 24: [ 0- 0]: digital audio capture
+ 26: [ 0- 2]: digital audio capture
+ 33:        : timer
+root@laptop:/proc/asound# cat hwdep
+00-03: HDA Codec 3
+root@laptop:/proc/asound# cat meminfo
+kmalloc: 53165 bytes
+root@osrc-laptop:/proc/asound# cat modules
+ 0 snd_hda_intel
+root@laptop:/proc/asound# cat pcm
+00-02: ALC262 Analog : ALC262 Analog : capture 2
+00-01: ALC262 Digital : ALC262 Digital : playback 1
+00-00: ALC262 Analog : ALC262 Analog : playback 1 : capture 2
+root@laptop:/proc/asound# cat version
+Advanced Linux Sound Architecture Driver Version 1.0.15.
+Compiled on Jan 11 2008 for kernel 2.6.23-rc6 (SMP).
+
+maybe someone has more insight in that intel-hda driver.
+
+thanks & best regards,
+Markus
