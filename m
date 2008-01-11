@@ -1,21 +1,17 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
-Subject: Re: intel-hd on an intel G33 motherboard
-Date: Fri, 11 Jan 2008 09:01:31 -0200
-Message-ID: <5f52f6d70801110301o2c3f4b56t6e64c75a41fd2a3a@mail.gmail.com>
-References: <BAY109-W10EC413FC1F19625739A28A95B0@phx.gbl>
-	<5f52f6d70801100417h1382c2c1r3ecc9afb1b095e2b@mail.gmail.com>
-	<BAY109-W334F77C34E9FB2DF1D966BA94A0@phx.gbl>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: ALSA : Can't open capture device
+Date: Fri, 11 Jan 2008 14:16:54 +0100
+Message-ID: <1200057414.30917.1230696923@webmail.messagingengine.com>
+References: <000801c85440$8ec2f280$ac48d780$@bouin@kerlink.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id D25D2244BD
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 12:01:33 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so763216rvb.32
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 03:01:31 -0800 (PST)
-In-Reply-To: <BAY109-W334F77C34E9FB2DF1D966BA94A0@phx.gbl>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id C097E2454D
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jan 2008 14:16:57 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <000801c85440$8ec2f280$ac48d780$@bouin@kerlink.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,16 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: De Fuuss <fuuss@hotmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Alexandre BOUIN <a.bouin@kerlink.fr>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 10, 2008 2:15 PM, De Fuuss <fuuss@hotmail.com> wrote:
+Alexandre BOUIN wrote:
+> I'm working on an intern project, using an AT91SAM9260EK-based board,
+> embedded system.
+> Our kernel contains a full ALSA 1.14 with ASoC layer.
+> Our ASoC driver works well in capture and playback, if we are using OSS
+> layer or directly /dev/dsp.
+> So I need some tips on ALSA layer side :
+> 
+> here you can see that my device is created : 
+> ll /dev/snd/
+> crwxrwxrwx    1 root     root     116,   0 Dec 26  2007 controlC0
+> crwxrwxrwx    1 root     root     116,   4 Dec 26  2007 hwC0D0
+> crwxrwxrwx    1 root     root     116,  14 Dec 26  2007 pcmC0D0c
+> crwxrwxrwx    1 root     root     116,  16 Dec 26  2007 pcmC0D0p
+> ll /dev/dsp
+> crwxrwxrwx    1 root     root      14,   3 Dec 26  2007 /dev/dsp
+> 
+> A cat on playback device works (I added some traces in kernel) : 
+> cat < /dev/snd/pcmC0D0p
+> snd_pcm_open : enter
+> snd_pcm_open_file : before snd_pcm_open_substream
+> snd_pcm_open_file : after snd_pcm_open_substream
+> cat: read error: Invalid argument
+> 
+> But a cat on capture device does not work : 
+> cat < /dev/snd/pcmC0D0c
+> -sh: cannot open /dev/snd/pcmC0D0c: No such device
 
-> What do you mean by "isn't quite good"? I only get sound via the headphone jacks, all other jacks are silent. I'm asking because maybe DELL did something right and you are slightly more lucky than me? I have a SG33G5M Shuttle XPC barebone, and maybe something was soldiered differently.
+Does the capture device appear in /proc/asound/devices or in the output
+of "arecord -l"?
 
-The sound quality seems poor compared to other systems using the same
-speaker set (it seems that I only have a headphone output available
-and I'm using it as line out). I'll make some tests this weekend to
-correctly route the outputs in the Inspiron and compare it to the XPC
-codec data you posted.
+
+Regards,
+Clemens
