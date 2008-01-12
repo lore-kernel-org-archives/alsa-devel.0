@@ -1,63 +1,72 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Disabling buffer fill level preprocessing by ALSA
-Date: Sat, 12 Jan 2008 19:06:31 +0100
-Message-ID: <20080112180631.GA5994@tango.0pointer.de>
-References: <20071231171226.GA17953@tango.0pointer.de>
-	<s5hfxx9ao8b.wl%tiwai@suse.de>
-	<20080107160706.GE14386@tango.0pointer.de>
-	<Pine.LNX.4.61.0801071916450.22730@tm8103.perex-int.cz>
-	<20080107223850.GA12262@tango.0pointer.de>
-	<Pine.LNX.4.61.0801080833090.22730@tm8103.perex-int.cz>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: [alsa-devel] PNP_DRIVER_RES_DISABLE breaks swsusp at least with snd_cs4236
+Date: Sat, 12 Jan 2008 20:01:58 +0100
+Message-ID: <200801122001.59174.rjw@sisk.pl>
+References: <200801092343.48726.linux@rainbow-software.org> <20080112121256.0f2e96ad@poseidon.drzeus.cx> <4788C323.6090206@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4384B247DA
-	for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2008 19:06:32 +0100 (CET)
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1760663AbYALS7l@vger.kernel.org>
+In-Reply-To: <4788C323.6090206@keyaccess.nl>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0801080833090.22730@tm8103.perex-int.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Pierre Ossman <drzeus@drzeus.cx>, Pavel Machek <pavel@suse.cz>, Ondrej Zary <linux@rainbow-software.org>, Jaroslav Kysela <perex@perex.cz>, ALSA development <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bjorn.helgaas@hp.com>, Andrew Morton <akpm@osdl.org>, Takashi Iwai <tiwai@suse.de>, linux-pm@lists.linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 08.01.08 09:00, Jaroslav Kysela (perex@perex.cz) wrote:
-
-> > So, depending on what clients are connected, we dynamically change the
-> > wakeups. Now, on ALSA (and with a lot of sound hw, as I understood
-> > Takashi) you cannot reconfigure the period sizes dynamically without
-> > interruptions of audio output. That's why I want to disable the whole
-> > period/buffer fill level management of ALSA, and do all myself with
-> > system timers, which I thankfully now can due to the advent of
-> > hrtimers (at least on Linux/x86). System timers nowadays are a lot
-> > more flexibe than the PCM timer, because they can be reconfigured all
-> > the time without any drawbacks. They are not dependant on period sizes
-> > or other stuff which may only be reconfigured by resetting the audio
-> > devices. The only drawback is that we need to determinine how the
-> > sound card clock and the system clock deviate.
-> > 
-> > Does that make sense to you?
+On Saturday, 12 of January 2008, Rene Herman wrote:
+> On 12-01-08 12:12, Pierre Ossman wrote:
 > 
-> Yes, but I don't see any problem to change avail_min dynamically 
-> (sw_params can be changed at any time), so each interrupt can be catched 
-> via poll(). But I really think that one timing source (system timers) is 
-> enough.
+> > On Sat, 12 Jan 2008 02:23:27 +0100
+> > Rene Herman <rene.herman@keyaccess.nl> wrote:
+> > 
+> >> Pavel, Rafael -- the attached fixes snd-cs4236 not coming back to life for 
+> >> Ondrej after hibernation due to the PNP_DRIVER_RES_DO_NOT_CHANGE test 
+> >> triggering in pnp_bus_resume() and keeping the card in a suspended state.
+> >>
+> > 
+> > I'm a bit confused here. Bjorn Helgaas wanted to remove the pnp_start/stop_dev() calls completely, and you want them called all the time. :)
+> 
+> Wanted where? Haven't seen a coment from Bjorn? But -- while removing them 
+> both looks (as) sensible from a mirror-image viewpoint, this wouldn't fix 
+> the problem.
+> 
+> As fas as I understand things, "hibernation" is basically "save state, shut 
+> down machine" where the latter step is going to disable the card inevitably.
 
-OK. I wasn't really aware that you could change sw params
-dynamically. I will do this now. This should be sufficient for my needs.
+Not exactly.  In the ACPI (aka platform) mode it's:
+- pretend we're suspending and put everything into low power states
+- snapshot memory
+- power everything up
+- save image
+- suspend (ie. enter S4, suspending devices before).
+ 
+> On resume, you're going to need to restore the resources (that were saved in 
+> pnp_dev->res) that it was using to the card, which is what pnp_start_dev() 
+> does -- it not being called is the current problem of the card not coming 
+> back to life.
 
-Lennart
+First of all, the card need not be initialized at all before .resume() is called.
 
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+> pnp_stop_dev() could go in this specific situation. Not much point in first 
+> disabling the thing it seems if a subsequent shutdown is going to take care 
+> of that anyway. However, suspend/resume isn't just called in the case of 
+> complete hibernation I guess and I know nothing about it all -- hence my 
+> request to the hiberhation people for how this is designed to be.
+
+.suspend()/.resume() are used during suspend to RAM too.  As far as hibernation
+is concerned, .resume() is used for two different purposes:
+(a) to bring the device up after it's been put into a low power state for
+    snapshotting memory
+(b) to bring the device up (or reconfigure it if brought up already) after the
+    hibernation image has been loaded and we're restoring the previous
+    system state.
+
+> But we certainly need the pnp_start_dev() in the current flow of things. It 
+> not being called is the problem this fixes...
+
+Yes, pnp_start_dev() is generally needed in .resume().
+
+Thanks,
+Rafael
