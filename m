@@ -1,20 +1,20 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
+From: Pierre Ossman <drzeus@drzeus.cx>
 Subject: Re: PNP_DRIVER_RES_DISABLE breaks swsusp at least with
  snd_cs4236
-Date: Sat, 12 Jan 2008 02:23:27 +0100
-Message-ID: <4788168F.8070403@keyaccess.nl>
+Date: Sat, 12 Jan 2008 12:12:56 +0100
+Message-ID: <20080112121256.0f2e96ad@poseidon.drzeus.cx>
 References: <200801092343.48726.linux@rainbow-software.org>
 	<20080111080141.75aaad5f@poseidon.drzeus.cx>
 	<47877B83.5040604@keyaccess.nl>
 	<200801111940.22023.linux@rainbow-software.org>
+	<4788168F.8070403@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010602020600060407080608"
+Content-Type: multipart/mixed; boundary="===============0800380284305682377=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4744246C4
-	for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2008 02:26:38 +0100 (CET)
-In-Reply-To: <200801111940.22023.linux@rainbow-software.org>
+Received: from smtp.drzeus.cx (gateway.drzeus.cx [85.8.24.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A64824762
+	for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2008 12:13:05 +0100 (CET)
+In-Reply-To: <4788168F.8070403@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,118 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Machek <pavel@suse.cz>, "Rafael J. Wysocki" <rjw@sisk.pl>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Ondrej Zary <linux@rainbow-software.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Pierre Ossman <drzeus@drzeus.cx>, linux-pm@lists.linux-foundation.org, Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Ondrej Zary <linux@rainbow-software.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Pavel Machek <pavel@suse.cz>, linux-pm@lists.linux-foundation.org, Bjorn Helgaas <bjorn.helgaas@hp.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010602020600060407080608
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
+
+--===============0800380284305682377==
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=PGP-SHA1; boundary="=_hera.drzeus.cx-2038-1200136380-0001-2"
+
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
+
+--=_hera.drzeus.cx-2038-1200136380-0001-2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, 12 Jan 2008 02:23:27 +0100
+Rene Herman <rene.herman@keyaccess.nl> wrote:
+
+>=20
+> Pavel, Rafael -- the attached fixes snd-cs4236 not coming back to life fo=
+r=20
+> Ondrej after hibernation due to the PNP_DRIVER_RES_DO_NOT_CHANGE test=20
+> triggering in pnp_bus_resume() and keeping the card in a suspended state.
+>=20
+
+I'm a bit confused here. Bjorn Helgaas wanted to remove the pnp_start/stop_=
+dev() calls completely, and you want them called all the time. :)
+
+Rgds
+Pierre
+
+--=_hera.drzeus.cx-2038-1200136380-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=signature.asc
 
-On 11-01-08 19:40, Ondrej Zary wrote:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.8 (GNU/Linux)
 
-> On Friday 11 January 2008 15:21:55 Rene Herman wrote:
+iEYEARECAAYFAkeIoLgACgkQ7b8eESbyJLj/VgCfSrl42/rrBKsA/+nRBO1yzxVE
+A3kAn3pJcADnfR1Py/DHdfz825zIOdqe
+=UYs2
+-----END PGP SIGNATURE-----
 
->> Hrmpf. Well, okay. Ondrej -- I assume this patch fixes things?
-> 
-> Yes, it works fine. 3c509 card still does not work after resume, but that
-> looks like another problem.
+--=_hera.drzeus.cx-2038-1200136380-0001-2--
 
-Okay. Would now only still like to know why the test in resume() means 
-trouble for you while it seems the same test in suspend() should've 
-triggered as well and not have stopped the device in the first place.
-
-Know absolutely nothing about hibernation so added the listed maintainers to 
-the CC.
-
-Pavel, Rafael -- the attached fixes snd-cs4236 not coming back to life for 
-Ondrej after hibernation due to the PNP_DRIVER_RES_DO_NOT_CHANGE test 
-triggering in pnp_bus_resume() and keeping the card in a suspended state.
-
-There's issues on wether or not the flag _should_ be set (that is, be part 
-of PNP_DRIVER_RES_DISABLE) and that it shouldn't be tested by these code 
-patchs in the first place, but is it in fact expected that this would be 
-neccessary?
-
-That is, is it expected/designed that the same test in pnp_bus_suspend() 
-didn't cause the device to not be disabled in the first place?
-
-Rene.
-
---------------010602020600060407080608
-Content-Type: text/plain;
- name="pnp_driver_res_do_not_test.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="pnp_driver_res_do_not_test.diff"
-
-commit 7d16e8b3e7739599d32c8006f9e84fadb86b8296
-Author: Rene Herman <rene.herman@gmail.com>
-Date:   Sat Jan 12 00:00:35 2008 +0100
-
-    PNP: do not test PNP_DRIVER_RES_DO_NOT_CHANGE on suspend/resume
-    
-    The PNP_DRIVER_RES_DO_NOT_CHANGE flag is meant to signify that
-    the PNP core should not change resources for the device -- not
-    that it shouldn't disable/enable the device on suspend/resume.
-    
-    ALSA ISAPnP drivers set PNP_DRIVER_RES_DO_NOT_CHANAGE (0x0001)
-    through setting PNP_DRIVER_RES_DISABLE (0x0003). The latter
-    including the former may in itself be considered rather
-    unexpected but doesn't change that suspend/resume wouldn't seem
-    to have any business testing the flag.
-    
-    As reported by Ondrej Zary for snd-cs4236, ALSA driven ISAPnP
-    cards don't survive swsusp hibernation with the resume skipping
-    setting the resources due to testing the flag -- the same test
-    in the suspend path isn't enough to keep hibernation from
-    disabling the card it seems.
-    
-    These tests were added (in 2005) by Piere Ossman in commit
-    68094e3251a664ee1389fcf179497237cbf78331, "alsa: Improved PnP
-    suspend support" who doesn't remember why. This deletes them.
-    
-    Signed-off-by: Rene Herman <rene.herman@gmail.com>
-    Tested-by: Ondrej Zary <linux@rainbow-software.org>
-
-diff --git a/drivers/pnp/driver.c b/drivers/pnp/driver.c
-index a262762..12a1645 100644
---- a/drivers/pnp/driver.c
-+++ b/drivers/pnp/driver.c
-@@ -161,8 +161,7 @@ static int pnp_bus_suspend(struct device *dev, pm_message_t state)
- 			return error;
- 	}
- 
--	if (!(pnp_drv->flags & PNP_DRIVER_RES_DO_NOT_CHANGE) &&
--	    pnp_can_disable(pnp_dev)) {
-+	if (pnp_can_disable(pnp_dev)) {
- 		error = pnp_stop_dev(pnp_dev);
- 		if (error)
- 			return error;
-@@ -185,14 +184,17 @@ static int pnp_bus_resume(struct device *dev)
- 	if (pnp_dev->protocol && pnp_dev->protocol->resume)
- 		pnp_dev->protocol->resume(pnp_dev);
- 
--	if (!(pnp_drv->flags & PNP_DRIVER_RES_DO_NOT_CHANGE)) {
-+	if (pnp_can_write(pnp_dev)) {
- 		error = pnp_start_dev(pnp_dev);
- 		if (error)
- 			return error;
- 	}
- 
--	if (pnp_drv->resume)
--		return pnp_drv->resume(pnp_dev);
-+	if (pnp_drv->resume) {
-+		error = pnp_drv->resume(pnp_dev);
-+		if (error)
-+			return error;
-+	}
- 
- 	return 0;
- }
-
---------------010602020600060407080608
+--===============0800380284305682377==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -146,4 +83,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------010602020600060407080608--
+--===============0800380284305682377==--
