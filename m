@@ -1,18 +1,18 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
 Subject: Re: Si3054 and Lenovo3000 n100
-Date: Sun, 13 Jan 2008 18:29:20 +0200
-Message-ID: <200801131829.20619.anarsoul@gmail.com>
+Date: Sun, 13 Jan 2008 19:10:44 +0200
+Message-ID: <200801131910.44911.anarsoul@gmail.com>
 References: <200801131649.46091.anarsoul@gmail.com>
 	<20080113161506.GD2097@serv.smile.org.ua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD742249D0
-	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 17:29:42 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id l27so1835422fgb.44
-	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 08:29:42 -0800 (PST)
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id 91C542498D
+	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 18:11:05 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id l27so1848598fgb.44
+	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 09:11:05 -0800 (PST)
 In-Reply-To: <20080113161506.GD2097@serv.smile.org.ua>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -40,17 +40,8 @@ On 13 January 2008 18:15:06 Andy Shevchenko wrote:
 >
 > P.S. IIRC the n200 has unsupported modem codec. I guess your model too.
 
-Yep,
-
-Codec: Generic 11c1 Si3054
-Address: 1
-Vendor Id: 0x11c11040
-Subsystem Id: 0x11c10001
-Revision Id: 0x100200
-Modem Function Group: 0x1
-
-Is there any chance that this codec will be supported in future?
-Is there any patches to make it work? :)
+Btw, if it isn't compatible with Si3054, why its id added to patch_si3054.c 
+file?
 
 Regards
 Vasily
