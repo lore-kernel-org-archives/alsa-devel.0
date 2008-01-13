@@ -1,19 +1,16 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Hotplug plugin
-Date: Sun, 13 Jan 2008 00:57:49 +0100
-Message-ID: <20080112235749.GB2900@tango.0pointer.de>
-References: <4778FA23.8090409@slagter.name>
-	<20071231144225.GB4414@tango.0pointer.de>
-	<477A85C5.8010104@slagter.name>
+From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
+Subject: [PATCH] hda: Fix 5.1 sound in Dell 6stack ALC888 HDA
+Date: Sun, 13 Jan 2008 00:36:16 -0200
+Message-ID: <5f52f6d70801121836v24b3ece9g5c662cabaad7ce19@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_1078_13505712.1200191776060"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 677BF248A6
-	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 00:57:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <477A85C5.8010104@slagter.name>
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8CBFE248DF
+	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 03:36:17 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so1158896rvb.32
+	for <alsa-devel@alsa-project.org>; Sat, 12 Jan 2008 18:36:16 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +20,167 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Erik Slagter <erik@slagter.name>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: ALSA Developers <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 01.01.08 19:26, Erik Slagter (erik@slagter.name) wrote:
+------=_Part_1078_13505712.1200191776060
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> load-module module-alsa-sink device=hw:0 format=s16 rate=44100
-> -> channels=2 sink_name=alc883 channel_map=left,right
-> load-module module-alsa-sink device=hw:1 format=s16 rate=44100
-> -> channels=2 sink_name=jvc channel_map=left,right
-> load-module module-combine sink_name=all master=alc883 slaves=jvc
-> -> adjust_time=10 resample_method=src-sinc-best-quality
-> 
-> ***
-> 
-> -> is line continuation
-> 
-> These combinations all yield the same result: at startup I have an "all"
-> sink that combines both devices, and does that pretty well, I must say.
-> But as soon as the USB device is removed, it is removed from the
-> combined "all" sink. Then when the USB device is reinserted, it gets
-> detected (module-hal-detect) or not (module-detect, static config).
-> Using module-hal-detect the reinserted just sits there, it isn't added
-> to the combined sink. Using the other methods, it's not even detected
-> that the USB device is back...
+This patch fixes 5.1 surround output and headphone detection in the
+Dell Inspiron 530 and possibly other Dell systems using the ALC888
+codec (mode 6stack-dell).
 
-Hmm, if that doesn't work with module-hal-detect, then please provide
-me with a full output of pulseaudio -vv when this happens. However,
-the ALSA ML is probably not the right place to discuss this. Please
-post this in the PA ML.
+This configuration is very similar to 6stack-hp, which also has
+rear/clfe channels swapped if compared to the standard ALC883 6stack
+configuration.
 
-> The only solution I can think of, is a udev script that casts some magic
-> spells towards pulse when the USB device is inserted or removed... But
-> then I could skip pulse altogether, because mpd has an option to
-> activate and deactivate selected outputs at runtime, as well.
+(This is my first mercurial-generated patch, I added the signed-off
+line by hand and the user name in the header is an internal address,
+please correct that if needed.)
 
-No. If module-hal-detect finds the device, but module-combine doesn't
-then this is some real problem we need to debug. 
+------=_Part_1078_13505712.1200191776060
+Content-Type: text/x-diff;
+ name=0001-Fix-5.1-sound-in-Dell-6stack-ALC888-HDA.patch
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fbcz15xp0
+Content-Disposition: attachment;
+ filename=0001-Fix-5.1-sound-in-Dell-6stack-ALC888-HDA.patch
 
-Lennart
+IyBIRyBjaGFuZ2VzZXQgcGF0Y2gKIyBVc2VyIGNsYXVkaW9AdHJlbGFuZS5oZWxsbGFicwojIERh
+dGUgMTIwMDE5MDI4MCA3MjAwCiMgTm9kZSBJRCBkZGNmNDE1YzM3OWM1ZmQxZDliOTc4YjlhMzE5
+YWViZmIwM2MyNjI5CiMgUGFyZW50ICBhY2RjOTgzNjM3ODZiZjI2ZjVhY2Y3ZTU0NGZhMjUxOTky
+ODg0MzkzCkZpeCA1LjEgc291bmQgaW4gRGVsbCA2c3RhY2sgQUxDODg4IEhEQQoKVGhpcyBwYXRj
+aCBmaXhlcyA1LjEgc3Vycm91bmQgb3V0cHV0IGFuZCBoZWFkcGhvbmUgZGV0ZWN0aW9uIGluIHRo
+ZQpEZWxsIEluc3Bpcm9uIDUzMCBhbmQgcG9zc2libHkgb3RoZXIgRGVsbCBzeXN0ZW1zIHVzaW5n
+IHRoZSBBTEM4ODgKY29kZWMgKG1vZGUgNnN0YWNrLWRlbGwpLgoKU2lnbmVkLW9mZi1ieTogQ2xh
+dWRpbyBNYXRzdW9rYSA8Y21hdHN1b2thQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9Eb2N1bWVu
+dGF0aW9uL0FMU0EtQ29uZmlndXJhdGlvbi50eHQgYi9Eb2N1bWVudGF0aW9uL0FMU0EtQ29uZmln
+dXJhdGlvbi50eHQKLS0tIGEvRG9jdW1lbnRhdGlvbi9BTFNBLUNvbmZpZ3VyYXRpb24udHh0Cisr
+KyBiL0RvY3VtZW50YXRpb24vQUxTQS1Db25maWd1cmF0aW9uLnR4dApAQCAtODcyLDYgKzg3Miw3
+IEBAIFByaW9yIHRvIHZlcnNpb24gMC45LjByYzQgb3B0aW9ucyBoYWQgYSAKIAkgIGhhaWVyLXc2
+NglIYWllciBXNjYKIAkgIDZzdGFjay1ocAlIUCBtYWNoaW5lcyB3aXRoIDZzdGFjayAoTmV0dGxl
+IGJvYXJkcykKIAkgIDNzdGFjay1ocAlIUCBtYWNoaW5lcyB3aXRoIDNzdGFjayAoTHVja25vdywg
+U2FtYmEgYm9hcmRzKQorCSAgNnN0YWNrLWRlbGwJRGVsbCBtYWNoaW5lcyB3aXRoIDZzdGFjayAo
+SW5zcGlyb24gNTMwKQogCSAgbWl0YWMJCU1pdGFjIDgyNTJECiAJICBhdXRvCQlhdXRvLWNvbmZp
+ZyByZWFkaW5nIEJJT1MgKGRlZmF1bHQpCiAKZGlmZiAtLWdpdCBhL3BjaS9oZGEvcGF0Y2hfcmVh
+bHRlay5jIGIvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKLS0tIGEvcGNpL2hkYS9wYXRjaF9yZWFs
+dGVrLmMKKysrIGIvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTE5Niw2ICsxOTYsNyBAQCBl
+bnVtIHsKIAlBTEM4ODNfSEFJRVJfVzY2LAkJCiAJQUxDODg4XzZTVF9IUCwKIAlBTEM4ODhfM1NU
+X0hQLAorCUFMQzg4OF82U1RfREVMTCwKIAlBTEM4ODNfTUlUQUMsCiAJQUxDODgzX0FVVE8sCiAJ
+QUxDODgzX01PREVMX0xBU1QsCkBAIC02ODEyLDYgKzY4MTMsNDYgQEAgc3RhdGljIHN0cnVjdCBz
+bmRfa2NvbnRyb2xfbmV3IGFsYzg4OF8zcwogCXsgfSAvKiBlbmQgKi8KIH07CiAKK3N0YXRpYyBz
+dHJ1Y3Qgc25kX2tjb250cm9sX25ldyBhbGM4ODhfNnN0X2RlbGxfbWl4ZXJbXSA9IHsKKwlIREFf
+Q09ERUNfVk9MVU1FKCJGcm9udCBQbGF5YmFjayBWb2x1bWUiLCAweDBjLCAweDAsIEhEQV9PVVRQ
+VVQpLAorCUhEQV9CSU5EX01VVEUoIkZyb250IFBsYXliYWNrIFN3aXRjaCIsIDB4MGMsIDIsIEhE
+QV9JTlBVVCksCisJSERBX0NPREVDX1ZPTFVNRSgiU3Vycm91bmQgUGxheWJhY2sgVm9sdW1lIiwg
+MHgwZSwgMHgwLCBIREFfT1VUUFVUKSwKKwlIREFfQklORF9NVVRFKCJTdXJyb3VuZCBQbGF5YmFj
+ayBTd2l0Y2giLCAweDBlLCAyLCBIREFfSU5QVVQpLAorCUhEQV9DT0RFQ19WT0xVTUVfTU9OTygi
+Q2VudGVyIFBsYXliYWNrIFZvbHVtZSIsIDB4MGQsIDEsIDB4MCwgSERBX09VVFBVVCksCisJSERB
+X0NPREVDX1ZPTFVNRV9NT05PKCJMRkUgUGxheWJhY2sgVm9sdW1lIiwgMHgwZCwgMiwgMHgwLCBI
+REFfT1VUUFVUKSwKKwlIREFfQklORF9NVVRFX01PTk8oIkNlbnRlciBQbGF5YmFjayBTd2l0Y2gi
+LCAweDBkLCAxLCAyLCBIREFfSU5QVVQpLAorCUhEQV9CSU5EX01VVEVfTU9OTygiTEZFIFBsYXli
+YWNrIFN3aXRjaCIsIDB4MGQsIDIsIDIsIEhEQV9JTlBVVCksCisJSERBX0NPREVDX1ZPTFVNRSgi
+U2lkZSBQbGF5YmFjayBWb2x1bWUiLCAweDBmLCAweDAsIEhEQV9PVVRQVVQpLAorCUhEQV9CSU5E
+X01VVEUoIlNpZGUgUGxheWJhY2sgU3dpdGNoIiwgMHgwZiwgMiwgSERBX0lOUFVUKSwKKwlIREFf
+Q09ERUNfTVVURSgiSGVhZHBob25lIFBsYXliYWNrIFN3aXRjaCIsIDB4MWIsIDB4MCwgSERBX09V
+VFBVVCksCisJSERBX0NPREVDX1ZPTFVNRSgiQ0QgUGxheWJhY2sgVm9sdW1lIiwgMHgwYiwgMHgw
+NCwgSERBX0lOUFVUKSwKKwlIREFfQ09ERUNfTVVURSgiQ0QgUGxheWJhY2sgU3dpdGNoIiwgMHgw
+YiwgMHgwNCwgSERBX0lOUFVUKSwKKwlIREFfQ09ERUNfVk9MVU1FKCJMaW5lIFBsYXliYWNrIFZv
+bHVtZSIsIDB4MGIsIDB4MDIsIEhEQV9JTlBVVCksCisJSERBX0NPREVDX01VVEUoIkxpbmUgUGxh
+eWJhY2sgU3dpdGNoIiwgMHgwYiwgMHgwMiwgSERBX0lOUFVUKSwKKwlIREFfQ09ERUNfVk9MVU1F
+KCJNaWMgUGxheWJhY2sgVm9sdW1lIiwgMHgwYiwgMHgwLCBIREFfSU5QVVQpLAorCUhEQV9DT0RF
+Q19WT0xVTUUoIk1pYyBCb29zdCIsIDB4MTgsIDAsIEhEQV9JTlBVVCksCisJSERBX0NPREVDX01V
+VEUoIk1pYyBQbGF5YmFjayBTd2l0Y2giLCAweDBiLCAweDAsIEhEQV9JTlBVVCksCisJSERBX0NP
+REVDX1ZPTFVNRSgiRnJvbnQgTWljIFBsYXliYWNrIFZvbHVtZSIsIDB4MGIsIDB4MSwgSERBX0lO
+UFVUKSwKKwlIREFfQ09ERUNfVk9MVU1FKCJGcm9udCBNaWMgQm9vc3QiLCAweDE5LCAwLCBIREFf
+SU5QVVQpLAorCUhEQV9DT0RFQ19NVVRFKCJGcm9udCBNaWMgUGxheWJhY2sgU3dpdGNoIiwgMHgw
+YiwgMHgxLCBIREFfSU5QVVQpLAorCUhEQV9DT0RFQ19WT0xVTUUoIlBDIFNwZWFrZXIgUGxheWJh
+Y2sgVm9sdW1lIiwgMHgwYiwgMHgwNSwgSERBX0lOUFVUKSwKKwlIREFfQ09ERUNfTVVURSgiUEMg
+U3BlYWtlciBQbGF5YmFjayBTd2l0Y2giLCAweDBiLCAweDA1LCBIREFfSU5QVVQpLAorCUhEQV9D
+T0RFQ19WT0xVTUUoIkNhcHR1cmUgVm9sdW1lIiwgMHgwOCwgMHgwLCBIREFfSU5QVVQpLAorCUhE
+QV9DT0RFQ19NVVRFKCJDYXB0dXJlIFN3aXRjaCIsIDB4MDgsIDB4MCwgSERBX0lOUFVUKSwKKwlI
+REFfQ09ERUNfVk9MVU1FX0lEWCgiQ2FwdHVyZSBWb2x1bWUiLCAxLCAweDA5LCAweDAsIEhEQV9J
+TlBVVCksCisJSERBX0NPREVDX01VVEVfSURYKCJDYXB0dXJlIFN3aXRjaCIsIDEsIDB4MDksIDB4
+MCwgSERBX0lOUFVUKSwKKwl7CisJCS5pZmFjZSA9IFNORFJWX0NUTF9FTEVNX0lGQUNFX01JWEVS
+LAorCQkvKiAubmFtZSA9ICJDYXB0dXJlIFNvdXJjZSIsICovCisJCS5uYW1lID0gIklucHV0IFNv
+dXJjZSIsCisJCS5jb3VudCA9IDIsCisJCS5pbmZvID0gYWxjODgzX211eF9lbnVtX2luZm8sCisJ
+CS5nZXQgPSBhbGM4ODNfbXV4X2VudW1fZ2V0LAorCQkucHV0ID0gYWxjODgzX211eF9lbnVtX3B1
+dCwKKwl9LAorCXsgfSAvKiBlbmQgKi8KK307CisKIHN0YXRpYyBzdHJ1Y3Qgc25kX2tjb250cm9s
+X25ldyBhbGM4ODNfYWNlcl9hc3BpcmVfbWl4ZXJbXSA9IHsKIAlIREFfQ09ERUNfVk9MVU1FKCJG
+cm9udCBQbGF5YmFjayBWb2x1bWUiLCAweDBjLCAweDAsIEhEQV9PVVRQVVQpLAogCUhEQV9CSU5E
+X01VVEUoIkZyb250IFBsYXliYWNrIFN3aXRjaCIsIDB4MGMsIDIsIEhEQV9JTlBVVCksCkBAIC03
+MDU4LDYgKzcwOTksMTUgQEAgc3RhdGljIHN0cnVjdCBoZGFfdmVyYiBhbGM4ODhfM3N0X2hwX3Zl
+cgogCXsgfQogfTsKIAorc3RhdGljIHN0cnVjdCBoZGFfdmVyYiBhbGM4ODhfNnN0X2RlbGxfdmVy
+YnNbXSA9IHsKKwl7MHgxNCwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAkvKiBGcm9u
+dDogb3V0cHV0IDAgKDB4MGMpICovCisJezB4MTUsIEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAw
+eDAyfSwJLyogUmVhciA6IG91dHB1dCAxICgweDBlKSAqLworCXsweDE2LCBBQ19WRVJCX1NFVF9D
+T05ORUNUX1NFTCwgMHgwMX0sCS8qIENMRkUgOiBvdXRwdXQgMiAoMHgwZCkgKi8KKwl7MHgxNywg
+QUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDN9LAkvKiBTaWRlIDogb3V0cHV0IDMgKDB4MGYp
+ICovCisJezB4MWIsIEFDX1ZFUkJfU0VUX1VOU09MSUNJVEVEX0VOQUJMRSwgQUxDODgwX0hQX0VW
+RU5UIHwgQUNfVVNSU1BfRU59LAorCXsgfQorfTsKKwogc3RhdGljIHN0cnVjdCBoZGFfdmVyYiBh
+bGM4ODhfM3N0X2hwXzJjaF9pbml0W10gPSB7CiAJeyAweDE4LCBBQ19WRVJCX1NFVF9QSU5fV0lE
+R0VUX0NPTlRST0wsIFBJTl9WUkVGODAgfSwKIAl7IDB4MTgsIEFDX1ZFUkJfU0VUX0FNUF9HQUlO
+X01VVEUsIEFNUF9PVVRfTVVURSB9LApAQCAtNzI1Miw2ICs3MzAyLDMzIEBAIHN0YXRpYyBzdHJ1
+Y3QgaGRhX3ZlcmIgYWxjODgzX2FjZXJfZWFwZF8KIAl7MHgxNCwgQUNfVkVSQl9TRVRfVU5TT0xJ
+Q0lURURfRU5BQkxFLCBBTEM4ODBfSFBfRVZFTlQgfCBBQ19VU1JTUF9FTn0sCiAJeyB9CiB9Owor
+CitzdGF0aWMgdm9pZCBhbGM4ODhfNnN0X2RlbGxfZnJvbnRfYXV0b211dGUoc3RydWN0IGhkYV9j
+b2RlYyAqY29kZWMpCit7CisgCXVuc2lnbmVkIGludCBwcmVzZW50OworIAorIAlwcmVzZW50ID0g
+c25kX2hkYV9jb2RlY19yZWFkKGNvZGVjLCAweDFiLCAwLAorCQkJCUFDX1ZFUkJfR0VUX1BJTl9T
+RU5TRSwgMCkgJiAweDgwMDAwMDAwOworCXNuZF9oZGFfY29kZWNfYW1wX3N0ZXJlbyhjb2RlYywg
+MHgxNCwgSERBX09VVFBVVCwgMCwKKwkJCQlIREFfQU1QX01VVEUsIHByZXNlbnQgPyBIREFfQU1Q
+X01VVEUgOiAwKTsKKwlzbmRfaGRhX2NvZGVjX2FtcF9zdGVyZW8oY29kZWMsIDB4MTUsIEhEQV9P
+VVRQVVQsIDAsCisJCQkJSERBX0FNUF9NVVRFLCBwcmVzZW50ID8gSERBX0FNUF9NVVRFIDogMCk7
+CisJc25kX2hkYV9jb2RlY19hbXBfc3RlcmVvKGNvZGVjLCAweDE2LCBIREFfT1VUUFVULCAwLAor
+CQkJCUhEQV9BTVBfTVVURSwgcHJlc2VudCA/IEhEQV9BTVBfTVVURSA6IDApOworCXNuZF9oZGFf
+Y29kZWNfYW1wX3N0ZXJlbyhjb2RlYywgMHgxNywgSERBX09VVFBVVCwgMCwKKwkJCQlIREFfQU1Q
+X01VVEUsIHByZXNlbnQgPyBIREFfQU1QX01VVEUgOiAwKTsKK30KKworc3RhdGljIHZvaWQgYWxj
+ODg4XzZzdF9kZWxsX3Vuc29sX2V2ZW50KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAorCQkJCQkg
+ICAgIHVuc2lnbmVkIGludCByZXMpCit7CisJc3dpdGNoIChyZXMgPj4gMjYpIHsKKwljYXNlIEFM
+Qzg4MF9IUF9FVkVOVDoKKwkJcHJpbnRrKCJocF9ldmVudFxuIik7CisJCWFsYzg4OF82c3RfZGVs
+bF9mcm9udF9hdXRvbXV0ZShjb2RlYyk7CisJCWJyZWFrOworCX0KK30KIAogLyoKICAqIGdlbmVy
+aWMgaW5pdGlhbGl6YXRpb24gb2YgQURDLCBpbnB1dCBtaXhlcnMgYW5kIG91dHB1dCBtaXhlcnMK
+QEAgLTczNjksNiArNzQ0Niw3IEBAIHN0YXRpYyBjb25zdCBjaGFyICphbGM4ODNfbW9kZWxzW0FM
+Qzg4M18KIAlbQUxDODgzX0hBSUVSX1c2Nl0gCT0gImhhaWVyLXc2NiIsCiAJW0FMQzg4OF82U1Rf
+SFBdCQk9ICI2c3RhY2staHAiLAogCVtBTEM4ODhfM1NUX0hQXQkJPSAiM3N0YWNrLWhwIiwKKwlb
+QUxDODg4XzZTVF9ERUxMXQk9ICI2c3RhY2stZGVsbCIsCiAJW0FMQzg4M19NSVRBQ10JCT0gIm1p
+dGFjIiwKIAlbQUxDODgzX0FVVE9dCQk9ICJhdXRvIiwKIH07CkBAIC03Mzc5LDYgKzc0NTcsNyBA
+QCBzdGF0aWMgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjODgzX2NmZ190CiAJU05EX1BDSV9RVUlS
+SygweDEwMjUsIDB4MDExMCwgIkFjZXIgQXNwaXJlIiwgQUxDODgzX0FDRVJfQVNQSVJFKSwKIAlT
+TkRfUENJX1FVSVJLKDB4MTAyNSwgMHgwMTEyLCAiQWNlciBBc3BpcmUgOTMwMyIsIEFMQzg4M19B
+Q0VSX0FTUElSRSksCiAJU05EX1BDSV9RVUlSSygweDEwMjUsIDAsICJBY2VyIGxhcHRvcCIsIEFM
+Qzg4M19BQ0VSKSwgLyogZGVmYXVsdCBBY2VyICovCisJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4
+MDIwZCwgIkRlbGwgSW5zcGlyb24gNTMwIiwgQUxDODg4XzZTVF9ERUxMKSwKIAlTTkRfUENJX1FV
+SVJLKDB4MTAzYywgMHgyYTNkLCAiSFAgUGF2aWxsaW9uIiwgQUxDODgzXzZTVF9ESUcpLAogCVNO
+RF9QQ0lfUVVJUksoMHgxMDNjLCAweDJhNGYsICJIUCBTYW1iYSIsIEFMQzg4OF8zU1RfSFApLAog
+CVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDJhNjAsICJIUCBMdWNrbm93IiwgQUxDODg4XzNTVF9I
+UCksCkBAIC03NjUzLDYgKzc3MzIsMjEgQEAgc3RhdGljIHN0cnVjdCBhbGNfY29uZmlnX3ByZXNl
+dCBhbGM4ODNfcAogCQkubmVlZF9kYWNfZml4ID0gMSwKIAkJLmlucHV0X211eCA9ICZhbGM4ODNf
+Y2FwdHVyZV9zb3VyY2UsCiAJfSwKKwlbQUxDODg4XzZTVF9ERUxMXSA9IHsKKwkJLm1peGVycyA9
+IHsgYWxjODg4XzZzdF9kZWxsX21peGVyLCBhbGM4ODNfY2htb2RlX21peGVyIH0sCisJCS5pbml0
+X3ZlcmJzID0geyBhbGM4ODNfaW5pdF92ZXJicywgYWxjODg4XzZzdF9kZWxsX3ZlcmJzIH0sCisJ
+CS5udW1fZGFjcyA9IEFSUkFZX1NJWkUoYWxjODgzX2RhY19uaWRzKSwKKwkJLmRhY19uaWRzID0g
+YWxjODgzX2RhY19uaWRzLAorCQkuZGlnX291dF9uaWQgPSBBTEM4ODNfRElHT1VUX05JRCwKKwkJ
+Lm51bV9hZGNfbmlkcyA9IEFSUkFZX1NJWkUoYWxjODgzX2FkY19uaWRzKSwKKwkJLmFkY19uaWRz
+ID0gYWxjODgzX2FkY19uaWRzLAorCQkuZGlnX2luX25pZCA9IEFMQzg4M19ESUdJTl9OSUQsCisJ
+CS5udW1fY2hhbm5lbF9tb2RlID0gQVJSQVlfU0laRShhbGM4ODNfc2l4c3RhY2tfbW9kZXMpLAor
+CQkuY2hhbm5lbF9tb2RlID0gYWxjODgzX3NpeHN0YWNrX21vZGVzLAorCQkuaW5wdXRfbXV4ID0g
+JmFsYzg4M19jYXB0dXJlX3NvdXJjZSwKKwkJLnVuc29sX2V2ZW50ID0gYWxjODg4XzZzdF9kZWxs
+X3Vuc29sX2V2ZW50LAorCQkuaW5pdF9ob29rID0gYWxjODg4XzZzdF9kZWxsX2Zyb250X2F1dG9t
+dXRlLAorCX0sCiAJW0FMQzg4M19NSVRBQ10gPSB7CiAJCS5taXhlcnMgPSB7IGFsYzg4M19taXRh
+Y19taXhlciB9LAogCQkuaW5pdF92ZXJicyA9IHsgYWxjODgzX2luaXRfdmVyYnMsIGFsYzg4M19t
+aXRhY192ZXJicyB9LAo=
+------=_Part_1078_13505712.1200191776060
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_Part_1078_13505712.1200191776060--
