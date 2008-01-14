@@ -1,22 +1,13 @@
-From: Marco Schuster <marco@harddisk.is-a-geek.org>
-Subject: Re: ALC268 test model not working
-Date: Mon, 14 Jan 2008 18:30:01 +0100
-Message-ID: <478B9C19.4070709@harddisk.is-a-geek.org>
-References: <478B8ECE.4020707@harddisk.is-a-geek.org>
-	<s5hr6gkibw3.wl%tiwai@suse.de>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: HDA:  Enable chipset gcap usage
+Date: Mon, 14 Jan 2008 11:44:27 -0800
+Message-ID: <1200339867.27806.25.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6683299226902918746=="
+Content-Type: multipart/mixed; boundary="=-F+3e4Gh9nxAIQnmHFOVK"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.velirat.de (velirat.de [85.25.68.44])
-	by alsa0.perex.cz (Postfix) with ESMTP id CEECA2460A
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 18:29:56 +0100 (CET)
-Received: from dslb-084-056-058-006.pools.arcor-ip.net ([84.56.58.6]
-	helo=[192.168.0.102])
-	by www.velirat.de with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.68) (envelope-from <marco@harddisk.is-a-geek.org>)
-	id 1JET8G-0000s5-EZ
-	for alsa-devel@alsa-project.org; Mon, 14 Jan 2008 18:29:56 +0100
-In-Reply-To: <s5hr6gkibw3.wl%tiwai@suse.de>
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F3D12462B
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 20:44:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,84 +17,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============6683299226902918746==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig348FAA97E5AA10B188770623"
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig348FAA97E5AA10B188770623
-Content-Type: multipart/mixed;
- boundary="------------010806020904040302020005"
+--=-F+3e4Gh9nxAIQnmHFOVK
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-This is a multi-part message in MIME format.
---------------010806020904040302020005
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+I tweaked this as promised, and ran it through the checkpatch.pl utility
+from kernel git tree.  I have tested it on my Asus Z62F laptop as well
+as a few systems in my work environment without issue.
 
-Takashi Iwai schrieb:
-> At Mon, 14 Jan 2008 17:33:18 +0100,
-> Marco Schuster wrote:
->> Hi all,
->>
->> finally I got the patch applied to kernel src :)
->=20
-> Any reason you don't use simply alsa-driver tree to build the external
-> modules?  You missed many features that will be added after 2.6.24
-> kernel.
->=20
-I use the make-kpkg debian way of building kernels, and so I always
-get a warning "current directory is kernel src directory" :(
->> But it doesn't work correctly, because when running alsamixer, dmesg
->> tells "hda_codec: num_steps =3D 0 for NID=3D0x1d", and alsamixer fails=
- with
->> alsamixer: function snd_mixer_load failed: Invalid argument.
->=20
-> 0x1d is the PCBEEP.  Maybe it's disabled somehow although it's listed
-> in the datasheet.  The patch below should fix.
-Strange, I don't get any sound thou' all channels are unmuted.
+Summary:  hda_intel.c use gcap register to determine number of streams
+supported by southbridge.
 
-Marco
-
-PS: Do you live in Germany or speak German?
+This patch quieries the southbridge for the number of streams supported
+by the southbridge in most chipsets, and reads these values from the
+chipset directly.  Most systems are hardwired for 4 streams in each
+direction, but newer chipsets change that capability.  As a fallback,
+the old hardcoded method is still available.
 
 
 
---------------010806020904040302020005
-Content-Type: application/pgp-signature;
- name="signature.asc"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="signature.asc"
+Signed off by Tobin Davis <tdavis@dsl-only.net>
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjEuNC42IChH
-TlUvTGludXgpCkNvbW1lbnQ6IFVzaW5nIEdudVBHIHdpdGggTW96aWxsYSAtIGh0dHA6Ly9l
-bmlnbWFpbC5tb3pkZXYub3JnCgppRDhEQlFGSGk1bFNXNlMyR2FwSlV1UVJBam1KQUo5cHJq
-eVBiaVNxYXdKZC9BZUFSWFc3U0ZOcFZnQ2ZSalYwCndnaVgrMEhNSXU5d1p5bGd4ZTlDd3ZR
-PQo9M2pTdwotLS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KCg==
---------------010806020904040302020005--
 
---------------enig348FAA97E5AA10B188770623
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQFHi5wZW6S2GapJUuQRAouqAJ9OPFB5aO8CjBNLXSL2EGHOS76TjwCfQx7i
-9Unw8giuKj4bAfVlEztlEFA=
-=Kaed
------END PGP SIGNATURE-----
+--=-F+3e4Gh9nxAIQnmHFOVK
+Content-Disposition: attachment; filename=hda-gcap.patch
+Content-Type: text/x-patch; name=hda-gcap.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---------------enig348FAA97E5AA10B188770623--
+diff -r 1f9fd3d3cb12 pci/hda/hda_intel.c
+--- a/pci/hda/hda_intel.c	Mon Jan 14 12:07:53 2008 +0100
++++ b/pci/hda/hda_intel.c	Mon Jan 14 10:30:21 2008 -0800
+@@ -1708,12 +1708,13 @@ static int __devinit azx_create(struct s
+ {
+ 	struct azx *chip;
+ 	int err;
++	unsigned short gcap;
+ 	static struct snd_device_ops ops = {
+ 		.dev_free = azx_dev_free,
+ 	};
+ 
+ 	*rchip = NULL;
+-	
++
+ 	err = pci_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+@@ -1775,25 +1776,40 @@ static int __devinit azx_create(struct s
+ 	pci_set_master(pci);
+ 	synchronize_irq(chip->irq);
+ 
+-	switch (chip->driver_type) {
+-	case AZX_DRIVER_ULI:
++	gcap = azx_readw(chip, ICH6_REG_GCAP);
++	snd_printdd("chipset global capabilities = 0x%x\n", gcap);
++
++	if (gcap) {
++	    /* read number of streams from GCAP register instead of using
++	       hardcoded value */
++
++	    chip->playback_streams = (gcap & (0xF << 12)) >> 12;
++	    chip->capture_streams = (gcap & (0xF << 8)) >> 8;
++	    chip->playback_index_offset = (gcap & (0xF << 12)) >> 12;
++	    chip->capture_index_offset = 0;
++	} else {
++	    /* gcap didn't give any info, switching to old method */
++
++	    switch (chip->driver_type) {
++	    case AZX_DRIVER_ULI:
+ 		chip->playback_streams = ULI_NUM_PLAYBACK;
+ 		chip->capture_streams = ULI_NUM_CAPTURE;
+ 		chip->playback_index_offset = ULI_PLAYBACK_INDEX;
+ 		chip->capture_index_offset = ULI_CAPTURE_INDEX;
+ 		break;
+-	case AZX_DRIVER_ATIHDMI:
++	    case AZX_DRIVER_ATIHDMI:
+ 		chip->playback_streams = ATIHDMI_NUM_PLAYBACK;
+ 		chip->capture_streams = ATIHDMI_NUM_CAPTURE;
+ 		chip->playback_index_offset = ATIHDMI_PLAYBACK_INDEX;
+ 		chip->capture_index_offset = ATIHDMI_CAPTURE_INDEX;
+ 		break;
+-	default:
++	    default:
+ 		chip->playback_streams = ICH6_NUM_PLAYBACK;
+ 		chip->capture_streams = ICH6_NUM_CAPTURE;
+ 		chip->playback_index_offset = ICH6_PLAYBACK_INDEX;
+ 		chip->capture_index_offset = ICH6_CAPTURE_INDEX;
+ 		break;
++	    }
+ 	}
+ 	chip->num_streams = chip->playback_streams + chip->capture_streams;
+ 	chip->azx_dev = kcalloc(chip->num_streams, sizeof(*chip->azx_dev),
 
---===============6683299226902918746==
+--=-F+3e4Gh9nxAIQnmHFOVK
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -114,4 +126,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============6683299226902918746==--
+--=-F+3e4Gh9nxAIQnmHFOVK--
