@@ -1,19 +1,18 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: [Alsa-user] Intel HDMI Audio Output
-Date: Sun, 13 Jan 2008 21:55:34 -0500
-Message-ID: <75b66ecd0801131855o4ec39e52k476982d0a9108786@mail.gmail.com>
-References: <b4892f8e0801130246g1815b5e7m90f0beaf791b9ba0@mail.gmail.com>
+From: Jiang zhe <zhe.jiang@intel.com>
+Subject: Re: intel-hd on an intel G33 motherboard
+Date: Mon, 14 Jan 2008 16:43:00 +0800
+Message-ID: <1200300180.5810.3.camel@localhost.localdomain>
+References: <BAY109-W329D5BB94B8FE49792D1C4A9440@phx.gbl>
+	<5f52f6d70801121901p739c8ab2rd3755c8d21047db2@mail.gmail.com>
+	<BAY109-W299C00A390D5FBCF60AF6BA9450@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1181E2442F
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 03:55:35 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so1404888rvb.32
-	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 18:55:34 -0800 (PST)
-In-Reply-To: <b4892f8e0801130246g1815b5e7m90f0beaf791b9ba0@mail.gmail.com>
-Content-Disposition: inline
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6D1E524337
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 09:44:37 +0100 (CET)
+In-Reply-To: <BAY109-W299C00A390D5FBCF60AF6BA9450@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@alsa-project.org>
+To: De Fuuss <fuuss@hotmail.com>
+Cc: Claudio Matsuoka <cmatsuoka@gmail.com>, ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 13, 2008 5:46 AM, Paul McEnery <pmcenery@gmail.com> wrote:
-> Following an email to the manufacturers European support representatives, I
-> was asked to try the following custom version of ALSA:
->
->
-> http://www.realtek.com.tw/downloads/downloadsView.aspx?Langid=1&PFid=24&Level=4&Conn=3&DownTypeID=3
->
->
-> I am working on building and trying these drivers, but have a couple of
-> questions in the meantime:
->
-> 1. Does anyone know what the status of HDMI audio support is (in particular
-> Intel)?
->
-> 2. Any idea why Realtek are maintaining their own version of drivers? Is
-> this a legal/licensing issue?
+On Mon, 2008-01-14 at 02:06 +0800, De Fuuss wrote:
+> 
+> Following your advice, I tested per channel output. Using either
+> 6stack-dig or 6stack-hp, I get noise from Front Left and Right jacks,
+> using speaker-test (X=1 and 2) but not on any other channels.
 
-Jaroslav and Takashi-san,
+Hi,
+Did you mean that after you changed the 'Jumper',
+you could get the sound from the Front jack on the back channel?
 
-Any idea why Realtek is still maintaining their forked ALSA?  I
-thought you guys raised the issue with them a while back and they
-agreed to submit their changes through the standard process.
-
-Lee
+> Patrick
+> 
+> > Date: Sun, 13 Jan 2008 01:01:50 -0200
+> > From: cmatsuoka@gmail.com
+> > To: fuuss@hotmail.com
+> > CC: zhe.jiang@intel.com; alsa-devel@alsa-project.org
+> > Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> >
+> > 2008/1/12 De Fuuss :
+> >
+> >> I get the uneasy feeling that something is messed up with this
+> board. Anyway, for completeness' sake, I attached the results of
+> amixer contents, cat /proc/asound/card0/codec#0 and dmesg for the
+> module loaded as 6stack-dig. I have to try 6stack-hp again to confirm
+> if I get something there.
+> >
+> > I fixed the Inspiron output, and I'm adding the SG33G5M codec to the
+> > codecgraph codecs collection (git repository at
+> > http://helllabs.org/git/codecgraph.git). If nodes 0x14, 0x15, 0x16
+> and
+> > 0x17 are the front, rear, clfe and side connectors in the back
+> panel,
+> > 6stack-hp should work (at least for the outputs). You can test the
+> > outputs using "speaker-test -Dplug:surround71 -c8 -sX" (where X
+> varies
+> > from 1 to 8) and a pair of headphones.
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> _________________________________________________________________
+> Express yourself instantly with MSN Messenger! Download today it's
+> FREE!
+> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> 
