@@ -1,17 +1,18 @@
-From: De Fuuss <fuuss@hotmail.com>
-Subject: Re: intel-hd on an intel G33 motherboard
-Date: Sun, 13 Jan 2008 18:06:29 +0000
-Message-ID: <BAY109-W299C00A390D5FBCF60AF6BA9450@phx.gbl>
-References: <BAY109-W329D5BB94B8FE49792D1C4A9440@phx.gbl>
-	<5f52f6d70801121901p739c8ab2rd3755c8d21047db2@mail.gmail.com>
+From: maximilian attems <max@stro.at>
+Subject: Re: Bug#436723: Playing sound hands on powerbook3,
+	5 with 2.6.21-2 kernel
+Date: Mon, 14 Jan 2008 01:06:41 +0100
+Message-ID: <20080114000640.GO9040@baikonur.stro.at>
+References: <20080114002111.2ef21467@phineus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc3-s15.bay0.hotmail.com (bay0-omc3-s15.bay0.hotmail.com
-	[65.54.246.215]) by alsa0.perex.cz (Postfix) with ESMTP id 71EB224A06
-	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 19:06:30 +0100 (CET)
-In-Reply-To: <5f52f6d70801121901p739c8ab2rd3755c8d21047db2@mail.gmail.com>
+Received: from baikonur.stro.at (baikonur.stro.at [213.239.196.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id 24AA124407
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 01:35:09 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20080114002111.2ef21467@phineus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Claudio Matsuoka <cmatsuoka@gmail.com>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: th.huth@googlemail.com, 436723@bugs.debian.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+[ adding alsa upstream on cc ]
 
-Following your advice, I tested per channel output. Using either 6stack-dig or 6stack-hp, I get noise from Front Left and Right jacks, using speaker-test (X=1 and 2) but not on any other channels.
+On Mon, Jan 14, 2008 at 12:21:11AM +0100, th.huth@googlemail.com wrote:
+> 
+> Please have a look at
+> https://bugs.launchpad.net/ubuntu/+source/linux-source-2.6.20/+bug/87652/comments/48
+> and the corresponding patch to see wether this patch solves this sound
+> issue.
 
-Patrick
+woow, i thought to fire up "try newer kernel", but your patch still
+applies to current linus git:
+ ~/src/linux-2.6$ patch -p0 --dry-run < ~/pmac.c.diff 
+ patching file sound/ppc/pmac.c
+ Hunk #5 succeeded at 868 (offset -24 lines).
+ Hunk #6 succeeded at 1207 (offset -47 lines).
 
-> Date: Sun, 13 Jan 2008 01:01:50 -0200
-> From: cmatsuoka@gmail.com
-> To: fuuss@hotmail.com
-> CC: zhe.jiang@intel.com; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
->
-> 2008/1/12 De Fuuss :
->
->> I get the uneasy feeling that something is messed up with this board. Anyway, for completeness' sake, I attached the results of amixer contents, cat /proc/asound/card0/codec#0 and dmesg for the module loaded as 6stack-dig. I have to try 6stack-hp again to confirm if I get something there.
->
-> I fixed the Inspiron output, and I'm adding the SG33G5M codec to the
-> codecgraph codecs collection (git repository at
-> http://helllabs.org/git/codecgraph.git). If nodes 0x14, 0x15, 0x16 and
-> 0x17 are the front, rear, clfe and side connectors in the back panel,
-> 6stack-hp should work (at least for the outputs). You can test the
-> outputs using "speaker-test -Dplug:surround71 -c8 -sX" (where X varies
-> from 1 to 8) and a pair of headphones.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+so bringing that to upstream alsa radar.
 
-_________________________________________________________________
-Express yourself instantly with MSN Messenger! Download today it's FREE!
-http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+-- 
+maks
