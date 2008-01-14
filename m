@@ -1,21 +1,13 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
-Subject: Re: intel-hd on an intel G33 motherboard
-Date: Mon, 14 Jan 2008 12:53:02 -0200
-Message-ID: <5f52f6d70801140653o6e52984fq653bfacfa0ef5033@mail.gmail.com>
-References: <BAY109-W329D5BB94B8FE49792D1C4A9440@phx.gbl>
-	<5f52f6d70801121901p739c8ab2rd3755c8d21047db2@mail.gmail.com>
-	<BAY109-W299C00A390D5FBCF60AF6BA9450@phx.gbl>
+From: Marco Schuster <marco@harddisk.is-a-geek.org>
+Subject: ALC268 test model not working
+Date: Mon, 14 Jan 2008 17:33:18 +0100
+Message-ID: <478B8ECE.4020707@harddisk.is-a-geek.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2873127694743973813=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ro-out-1112.google.com (ro-out-1112.google.com [72.14.202.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD55424518
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 15:53:04 +0100 (CET)
-Received: by ro-out-1112.google.com with SMTP id h4so2803062roe.10
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 06:53:03 -0800 (PST)
-In-Reply-To: <BAY109-W299C00A390D5FBCF60AF6BA9450@phx.gbl>
-Content-Disposition: inline
+Received: from www.velirat.de (velirat.de [85.25.68.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB9E124548
+	for <Alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 17:33:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,13 +17,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: De Fuuss <fuuss@hotmail.com>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 13, 2008 4:06 PM, De Fuuss <fuuss@hotmail.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============2873127694743973813==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig13DE2CC98CC467645337CFED"
 
-> Following your advice, I tested per channel output. Using either 6stack-dig or 6stack-hp, I get noise from Front Left and Right jacks, using speaker-test (X=1 and 2) but not on any other channels.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig13DE2CC98CC467645337CFED
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, that's strange. Make sure the rear, side and clfe channels are
-unmuted in the mixer.
+Hi all,
+
+finally I got the patch applied to kernel src :)
+But it doesn't work correctly, because when running alsamixer, dmesg
+tells "hda_codec: num_steps =3D 0 for NID=3D0x1d", and alsamixer fails wi=
+th
+alsamixer: function snd_mixer_load failed: Invalid argument.
+
+Is this some obscure bug in the notebook hardware or some driver bug?
+
+Marco
+
+(note, I apply against .24-rc6 still)
+
+
+--------------enig13DE2CC98CC467645337CFED
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFHi47OW6S2GapJUuQRAjknAJwJ1k2aKcUElFnwj2nBQRIx+V6wgwCfQSEM
+fn8neG1v1T4aPrLmWPKIF0w=
+=dwBe
+-----END PGP SIGNATURE-----
+
+--------------enig13DE2CC98CC467645337CFED--
+
+--===============2873127694743973813==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2873127694743973813==--
