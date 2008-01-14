@@ -1,18 +1,14 @@
-From: maximilian attems <max@stro.at>
-Subject: Re: Bug#436723: Playing sound hands on powerbook3,
-	5 with 2.6.21-2 kernel
-Date: Mon, 14 Jan 2008 01:06:41 +0100
-Message-ID: <20080114000640.GO9040@baikonur.stro.at>
-References: <20080114002111.2ef21467@phineus>
+From: Andreas Degert <ad@papyrus-gmbh.de>
+Subject: hdsp driver broken for Multiface II Rev 35
+Date: Mon, 14 Jan 2008 02:21:42 +0100
+Message-ID: <20080114022142.51d6ae44@pluto.noname>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from baikonur.stro.at (baikonur.stro.at [213.239.196.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id 24AA124407
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 01:35:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20080114002111.2ef21467@phineus>
+Received: from papyrus-gmbh.de (fw.papyrus-gmbh.de [62.153.85.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id D699E2440C
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 02:21:43 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +18,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: th.huth@googlemail.com, 436723@bugs.debian.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-[ adding alsa upstream on cc ]
+Hi folks,
 
-On Mon, Jan 14, 2008 at 12:21:11AM +0100, th.huth@googlemail.com wrote:
-> 
-> Please have a look at
-> https://bugs.launchpad.net/ubuntu/+source/linux-source-2.6.20/+bug/87652/comments/48
-> and the corresponding patch to see wether this patch solves this sound
-> issue.
+changeset 5326 from 2007/08/31 broke the driver for this card revision.
+There was an older thread about this problem which didn't seem to come
+to a conclusion.
 
-woow, i thought to fire up "try newer kernel", but your patch still
-applies to current linus git:
- ~/src/linux-2.6$ patch -p0 --dry-run < ~/pmac.c.diff 
- patching file sound/ppc/pmac.c
- Hunk #5 succeeded at 868 (offset -24 lines).
- Hunk #6 succeeded at 1207 (offset -47 lines).
+ioctl SNDRV_HDSP_IOCTL_GET_VERSION returns
 
-so bringing that to upstream alsa radar.
+io_type = 1 (Multiface)
+firmware_rev = 0x35
 
--- 
-maks
+which is correct. The old code for hdsp_playback_to_output_key looks
+like this:
+
+static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
+{
+        switch (hdsp->firmware_rev) {
+        case 0xa:
+                return (64 * out) + (32 + (in));
+        case 0x96:
+        case 0x97:
+                return (32 * out) + (16 + (in));
+        default:
+                return (52 * out) + (26 + (in));
+        }
+}
+
+For my card the result is "(52 * out) + (26 + (in))". The new code
+looks like this:
+
+static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
+{
+        switch (hdsp->io_type) {
+        case Multiface:
+        case Digiface:
+        default:
+                return (64 * out) + (32 + (in));
+        case H9632:
+                return (32 * out) + (16 + (in));
+        case H9652:
+                return (52 * out) + (26 + (in));
+        }
+}
+
+which gives the wrong result "(64 * out) + (32 + (in))". The old code
+returns this when firmware_rev == 0xa, which might be the revision of
+the older Multiface (not Multiface II). I changed the code to
+
+static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
+{
+        switch (hdsp->io_type) {
+        case Multiface:
+        case Digiface:
+        default:
+                if (hdsp->firmware_rev == 0xa)
+                        return (64 * out) + (32 + (in));
+                else
+                        return (52 * out) + (26 + (in));
+        case H9632:
+                return (32 * out) + (16 + (in));
+        case H9652:
+                return (52 * out) + (26 + (in));
+        }
+}
+
+Another possibility would be to go back to the old version of the code
+and only make changes for io_type H9632/H9652 with new firmware
+revisions:
+
+static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
+{
+        switch (hdsp->firmware_rev) {
+        case 0xa:
+                return (64 * out) + (32 + (in));
+        case 0x96:
+        case 0x97:
+                return (32 * out) + (16 + (in));
+        }
+        switch (hdsp->io_type) {
+        case H9632:
+                return (32 * out) + (16 + (in));
+        case Multiface:
+        case H9652:
+                return (52 * out) + (26 + (in));
+        case Digiface:
+		??? is there a Digiface with revision != 0xa ???
+        default:
+		??? HDSP_IO_Type Undefined ???
+        }
+}
+
+Similar changes must be made to hdsp_input_to_output_key. Does anyone
+know which firmware revision exist for which card (io_type) ?
+
+thank you
+Andreas Degert
