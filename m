@@ -1,14 +1,19 @@
-From: Andreas Degert <ad@papyrus-gmbh.de>
-Subject: hdsp driver broken for Multiface II Rev 35
-Date: Mon, 14 Jan 2008 02:21:42 +0100
-Message-ID: <20080114022142.51d6ae44@pluto.noname>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: [Alsa-user] Intel HDMI Audio Output
+Date: Sun, 13 Jan 2008 21:55:34 -0500
+Message-ID: <75b66ecd0801131855o4ec39e52k476982d0a9108786@mail.gmail.com>
+References: <b4892f8e0801130246g1815b5e7m90f0beaf791b9ba0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from papyrus-gmbh.de (fw.papyrus-gmbh.de [62.153.85.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id D699E2440C
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 02:21:43 +0100 (CET)
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1181E2442F
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jan 2008 03:55:35 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so1404888rvb.32
+	for <alsa-devel@alsa-project.org>; Sun, 13 Jan 2008 18:55:34 -0800 (PST)
+In-Reply-To: <b4892f8e0801130246g1815b5e7m90f0beaf791b9ba0@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,103 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
+On Jan 13, 2008 5:46 AM, Paul McEnery <pmcenery@gmail.com> wrote:
+> Following an email to the manufacturers European support representatives, I
+> was asked to try the following custom version of ALSA:
+>
+>
+> http://www.realtek.com.tw/downloads/downloadsView.aspx?Langid=1&PFid=24&Level=4&Conn=3&DownTypeID=3
+>
+>
+> I am working on building and trying these drivers, but have a couple of
+> questions in the meantime:
+>
+> 1. Does anyone know what the status of HDMI audio support is (in particular
+> Intel)?
+>
+> 2. Any idea why Realtek are maintaining their own version of drivers? Is
+> this a legal/licensing issue?
 
-changeset 5326 from 2007/08/31 broke the driver for this card revision.
-There was an older thread about this problem which didn't seem to come
-to a conclusion.
+Jaroslav and Takashi-san,
 
-ioctl SNDRV_HDSP_IOCTL_GET_VERSION returns
+Any idea why Realtek is still maintaining their forked ALSA?  I
+thought you guys raised the issue with them a while back and they
+agreed to submit their changes through the standard process.
 
-io_type = 1 (Multiface)
-firmware_rev = 0x35
-
-which is correct. The old code for hdsp_playback_to_output_key looks
-like this:
-
-static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
-{
-        switch (hdsp->firmware_rev) {
-        case 0xa:
-                return (64 * out) + (32 + (in));
-        case 0x96:
-        case 0x97:
-                return (32 * out) + (16 + (in));
-        default:
-                return (52 * out) + (26 + (in));
-        }
-}
-
-For my card the result is "(52 * out) + (26 + (in))". The new code
-looks like this:
-
-static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
-{
-        switch (hdsp->io_type) {
-        case Multiface:
-        case Digiface:
-        default:
-                return (64 * out) + (32 + (in));
-        case H9632:
-                return (32 * out) + (16 + (in));
-        case H9652:
-                return (52 * out) + (26 + (in));
-        }
-}
-
-which gives the wrong result "(64 * out) + (32 + (in))". The old code
-returns this when firmware_rev == 0xa, which might be the revision of
-the older Multiface (not Multiface II). I changed the code to
-
-static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
-{
-        switch (hdsp->io_type) {
-        case Multiface:
-        case Digiface:
-        default:
-                if (hdsp->firmware_rev == 0xa)
-                        return (64 * out) + (32 + (in));
-                else
-                        return (52 * out) + (26 + (in));
-        case H9632:
-                return (32 * out) + (16 + (in));
-        case H9652:
-                return (52 * out) + (26 + (in));
-        }
-}
-
-Another possibility would be to go back to the old version of the code
-and only make changes for io_type H9632/H9652 with new firmware
-revisions:
-
-static int hdsp_playback_to_output_key (struct hdsp *hdsp, int in, int out)
-{
-        switch (hdsp->firmware_rev) {
-        case 0xa:
-                return (64 * out) + (32 + (in));
-        case 0x96:
-        case 0x97:
-                return (32 * out) + (16 + (in));
-        }
-        switch (hdsp->io_type) {
-        case H9632:
-                return (32 * out) + (16 + (in));
-        case Multiface:
-        case H9652:
-                return (52 * out) + (26 + (in));
-        case Digiface:
-		??? is there a Digiface with revision != 0xa ???
-        default:
-		??? HDSP_IO_Type Undefined ???
-        }
-}
-
-Similar changes must be made to hdsp_input_to_output_key. Does anyone
-know which firmware revision exist for which card (io_type) ?
-
-thank you
-Andreas Degert
+Lee
