@@ -1,21 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: -mm:
- pnp-do-not-stop-start-devices-in-suspend-resume-path.patch breaks resuming
- isapnp cards
-Date: Tue, 15 Jan 2008 08:51:35 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0801150842480.7446@tm8103.perex-int.cz>
-References: <200801092343.48726.linux@rainbow-software.org>
-	<200801122250.44220.bjorn.helgaas@hp.com>
-	<4789AC0F.9030007@keyaccess.nl>
-	<200801141526.57744.bjorn.helgaas@hp.com>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: Fwd: surround51 lfe/center/front channel
+ cross-talk with intel8x0 board
+Date: Tue, 15 Jan 2008 10:13:47 +0100
+Message-ID: <1200388427.20323.1231298919@webmail.messagingengine.com>
+References: <975d09800801042220v5efde614g8ccc18a5f59b0e82@mail.gmail.com>
+	<975d09800801141311v14debf13g79e83e6aa2d0c95@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE70E24720
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 08:51:35 +0100 (CET)
-In-Reply-To: <200801141526.57744.bjorn.helgaas@hp.com>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id EE1352474F
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 10:13:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <975d09800801141311v14debf13g79e83e6aa2d0c95@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Ondrej Zary <linux@rainbow-software.org>, Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, Linux Kernel <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Pavel Machek <pavel@suse.cz>, Pierre Ossman <drzeus@drzeus.cx>, linux-pm@lists.linux-foundation.org
+To: Matt Hirsch <matthew.hirsch@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Jan 2008, Bjorn Helgaas wrote:
+Matt Hirsch wrote:
+> I have an AC'97 based onboard sound card in my system (snd_intel8x0
+> driver). I'm using it in 6ch mode to drive two front speakers, two
+> rear speakers and a subwoofer and center channel. Using speaker-test
+> with the surround51 plug (or any other alsa program with that plug) to
+> send audio to channel 5 (center in alsamixer) produces an attenuated
+> signal on channel 2 (right front in alsamixer) and likewise, sending
+> audio to channel 6 (lfe in alsamixer) produces an attenuated signal on
+> channel 1 (left front in alsamixer).
 
-> On Saturday 12 January 2008 11:13:35 pm Rene Herman wrote:
-> > ... And, now that I have your attention, while it's 
-> > not important to the issue anymore with the tests removed as the submitted 
-> > patch did, do you have an opinion on (include/linux/pnp.h):
-> > 
-> > /* pnp driver flags */
-> > #define PNP_DRIVER_RES_DO_NOT_CHANGE    0x0001  /* do not change the state 
-> > of the device */
-> > #define PNP_DRIVER_RES_DISABLE          0x0003  /* ensure the device is 
-> > disabled */
-> > 
-> > I find DISABLE including DO_NOT_CHANGE rather unexpected...
-> 
-> I don't know the history of those flags, but I wish they didn't exist.
+This looks like a flaw in your hardware.
 
-Ok, something to explain. These flags exists to allow drivers to 
-manually configure (override) PnP resources at init time - we know - for 
-example in ALSA - that some combinations simply does not work for all 
-soundcards.
+What codec are you using? (see /proc/asound/cards)
 
-The DISABLE flags simply tells core PnP layer - driver will handle 
-resource allocation itself, don't do anything, just disable hw physically 
-and do not change (allocate) any resources. Value 0x03 is valid in this 
-semantics.
 
-Unfortunately, suspend / resume complicates things a bit, but PnP core can 
-handle DO_NOT_CHANGE flag. But it will just mean - _preserve_ resource 
-allocation from last suspend state for this device and enable hw 
-physically before calling resume() callback.
-
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Regards,
+Clemens
