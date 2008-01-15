@@ -1,22 +1,20 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: -mm:
- pnp-do-not-stop-start-devices-in-suspend-resume-path.patch breaks resuming
- isapnp cards
-Date: Tue, 15 Jan 2008 00:46:17 +0100
-Message-ID: <478BF449.2050307@keyaccess.nl>
-References: <200801092343.48726.linux@rainbow-software.org>
-	<200801122250.44220.bjorn.helgaas@hp.com>
-	<4789AC0F.9030007@keyaccess.nl>
-	<200801141526.57744.bjorn.helgaas@hp.com>
+From: Jiang zhe <zhe.jiang@intel.com>
+Subject: Re: intel-hd on an intel G33 motherboard
+Date: Tue, 15 Jan 2008 09:32:35 +0800
+Message-ID: <1200360755.8621.11.camel@localhost.localdomain>
+References: <BAY109-W329D5BB94B8FE49792D1C4A9440@phx.gbl>
+	<5f52f6d70801121901p739c8ab2rd3755c8d21047db2@mail.gmail.com>
+	<BAY109-W299C00A390D5FBCF60AF6BA9450@phx.gbl>
+	<1200300180.5810.3.camel@localhost.localdomain>
+	<BAY109-W6979DE1AD600539B3906BA9460@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2A7D24682
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 00:49:42 +0100 (CET)
-In-Reply-To: <200801141526.57744.bjorn.helgaas@hp.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9BEDC2440A
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 02:33:36 +0100 (CET)
+In-Reply-To: <BAY109-W6979DE1AD600539B3906BA9460@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,43 +24,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Ondrej Zary <linux@rainbow-software.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Pavel Machek <pavel@suse.cz>, Pierre Ossman <drzeus@drzeus.cx>, linux-pm@lists.linux-foundation.org
+To: De Fuuss <fuuss@hotmail.com>
+Cc: Claudio Matsuoka <cmatsuoka@gmail.com>, ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 14-01-08 23:26, Bjorn Helgaas wrote:
-
-> On Saturday 12 January 2008 11:13:35 pm Rene Herman wrote:
-
->> I find DISABLE including DO_NOT_CHANGE rather unexpected...
+On Mon, 2008-01-14 at 17:11 +0000, De Fuuss wrote:
+> The jumper is now set to enable onboard (Intel HDA) audio.
+> At the back of the barebone there are 5 jacks (4 channels for 7.1 and 1 line in channel) + 1 spdif out.
+> From these, using 6stack-hp, only the "Front L/R" jack works, none of the others
+> On the front, there are 2 jacks (1 headphones and 1 microphone). The headphone jack works.
 > 
-> I don't know the history of those flags, but I wish they didn't exist.
-> They really look like warts in the PNP core code.  They're used so
-> infrequently and without obvious rationale, that it seems like it'd
-> be better if there were a way to deal with them inside the driver.
+Can you tell us how you did the testing?
+>From the driver code, it's not likely that all other jacks don't work.
 
-I see, thanks for the comment. PNP_DRIVER_RES_DISABLE is used by ALSA only 
-and used by _all_ ALSA ISA-PnP drivers (snd-sscape uses RES_DO_NOT_CHANGE 
-instead but we should consider that one a consistency bug).
+Because the driver support up-mixing, you can play a 2-channel music and
+get sound from 4 jacks on the back panel.
 
-RES_DO_NOT_CHANGE is used by drivers/pnp/system.c and rtc-cmos.c as well. 
-I'll look at this. Getting rid of DISABLE as a first step should not be 
-overly problematic. This might again be a left-over from days where no easy 
-to use interface to PnP existed which it now does in echoing things into sysfs.
+I read the dmesg output that you sent to me.
+But there is no alsa debug info in it.
+Did you really configure the driver with the option
+"--with-debug=detect"?
+If not, please try it and paste the dmesg info, it is helpful to trace
+the issue. 
 
-Takashi: which reminds me -- crap, I promised to document more of that for 
-ALSA use following up the recent pnp driver-side resource setting removal. 
-Sorry, forgot, will do.
-
-> This had to do with the excessive warnings about exceeding the maximum
-> number of resources for a PNP device.  This should be resolved by Len's
-> patch here:
+Best regards!
+Jiang,zhe
+> All the channels have been set to 100% in alsamixer.
 > 
->   http://bugzilla.kernel.org/show_bug.cgi?id=9535#c10
+> Considering that a week ago I had 0.0 and today I'm at 2.0, it's already a improvement. ;-)
 > 
-> We all agree this is a stop-gap, and for 2.6.25, we need the real
-> solution of making PNP resources fully dynamic.
-
-Thank you. Just pulled and see that's now indeed in. Wasn't in -rc7 yet...
-
-Rene.
+> Patrick
+> 
+> > Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> > From: zhe.jiang@intel.com
+> > To: fuuss@hotmail.com
+> > CC: cmatsuoka@gmail.com; alsa-devel@alsa-project.org
+> > Date: Mon, 14 Jan 2008 16:43:00 +0800
+> >
+> > On Mon, 2008-01-14 at 02:06 +0800, De Fuuss wrote:
+> >>
+> >> Following your advice, I tested per channel output. Using either
+> >> 6stack-dig or 6stack-hp, I get noise from Front Left and Right jacks,
+> >> using speaker-test (X=1 and 2) but not on any other channels.
+> >
+> > Hi,
+> > Did you mean that after you changed the 'Jumper',
+> > you could get the sound from the Front jack on the back channel?
+> >
+> >> Patrick
+> >>
+> >>> Date: Sun, 13 Jan 2008 01:01:50 -0200
+> >>> From: cmatsuoka@gmail.com
+> >>> To: fuuss@hotmail.com
+> >>> CC: zhe.jiang@intel.com; alsa-devel@alsa-project.org
+> >>> Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> >>>
+> >>> 2008/1/12 De Fuuss :
+> >>>
+> >>>> I get the uneasy feeling that something is messed up with this
+> >> board. Anyway, for completeness' sake, I attached the results of
+> >> amixer contents, cat /proc/asound/card0/codec#0 and dmesg for the
+> >> module loaded as 6stack-dig. I have to try 6stack-hp again to confirm
+> >> if I get something there.
+> >>>
+> >>> I fixed the Inspiron output, and I'm adding the SG33G5M codec to the
+> >>> codecgraph codecs collection (git repository at
+> >>> http://helllabs.org/git/codecgraph.git). If nodes 0x14, 0x15, 0x16
+> >> and
+> >>> 0x17 are the front, rear, clfe and side connectors in the back
+> >> panel,
+> >>> 6stack-hp should work (at least for the outputs). You can test the
+> >>> outputs using "speaker-test -Dplug:surround71 -c8 -sX" (where X
+> >> varies
+> >>> from 1 to 8) and a pair of headphones.
+> >>> _______________________________________________
+> >>> Alsa-devel mailing list
+> >>> Alsa-devel@alsa-project.org
+> >>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >>
+> >> _________________________________________________________________
+> >> Express yourself instantly with MSN Messenger! Download today it's
+> >> FREE!
+> >> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> >> _______________________________________________
+> >> Alsa-devel mailing list
+> >> Alsa-devel@alsa-project.org
+> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >>
+> >>
+> >
+> 
+> _________________________________________________________________
+> Express yourself instantly with MSN Messenger! Download today it's FREE!
+> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
