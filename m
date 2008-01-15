@@ -1,17 +1,16 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: HDA:  Enable chipset gcap usage
-Date: Tue, 15 Jan 2008 06:56:30 -0800
-Message-ID: <1200408990.27806.78.camel@razman.gruemaster.com>
-References: <1200339867.27806.25.camel@razman.gruemaster.com>
-	<s5hprw32xnl.wl%tiwai@suse.de>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH] remove 11c1:1040 from patch_si3054.c id list
+Date: Tue, 15 Jan 2008 20:04:19 +0200
+Message-ID: <200801152004.20141.anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_kWPjHFS6IBVhCq4"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 269472417E
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 15:56:36 +0100 (CET)
-In-Reply-To: <s5hprw32xnl.wl%tiwai@suse.de>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7657A2435C
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 19:04:36 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id l27so2696682fgb.44
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 10:04:35 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,46 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yea, I had fixed the GCAP oops in line 63 of the patch (1776 in
-hda_intel.c), but apparently sent the wrong patch version.  My bad.
+--Boundary-00=_kWPjHFS6IBVhCq4
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Thanks for the catch.
+Codec with id 11c1:1040 sitting on hda bus isn't si3054-compatible.
+It should be removed from patch_si3054.c id list
 
-Tobin
+--Boundary-00=_kWPjHFS6IBVhCq4
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="remove_11c1_1040_from_si3054.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="remove_11c1_1040_from_si3054.patch"
 
-On Tue, 2008-01-15 at 11:25 +0100, Takashi Iwai wrote:
+--- patch_si3054.c.old	2008-01-13 16:17:54.000000000 +0200
++++ patch_si3054.c	2008-01-15 20:00:40.000000000 +0200
+@@ -286,7 +286,6 @@
+ struct hda_codec_preset snd_hda_preset_si3054[] = {
+  	{ .id = 0x163c3055, .name = "Si3054", .patch = patch_si3054 },
+  	{ .id = 0x163c3155, .name = "Si3054", .patch = patch_si3054 },
+- 	{ .id = 0x11c11040, .name = "Si3054", .patch = patch_si3054 },
+  	{ .id = 0x11c13026, .name = "Si3054", .patch = patch_si3054 },
+  	{ .id = 0x11c13055, .name = "Si3054", .patch = patch_si3054 },
+  	{ .id = 0x11c13155, .name = "Si3054", .patch = patch_si3054 },
 
-> At Mon, 14 Jan 2008 11:44:27 -0800,
-> Tobin Davis wrote:
-> > 
-> > I tweaked this as promised, and ran it through the checkpatch.pl utility from
-> > kernel git tree.  I have tested it on my Asus Z62F laptop as well as a few
-> > systems in my work environment without issue.
-> > 
-> > Summary:  hda_intel.c use gcap register to determine number of streams supported
-> > by southbridge.
-> > 
-> > This patch quieries the southbridge for the number of streams supported by the
-> > southbridge in most chipsets, and reads these values from the chipset directly. 
-> > Most systems are hardwired for 4 streams in each direction, but newer chipsets
-> > change that capability.  As a fallback, the old hardcoded method is still
-> > available.
-> > 
-> > Signed off by Tobin Davis <tdavis@dsl-only.net>                                 
-> 
-> Thanks.  I applied the patch after fixing some issues.
-> (It didn't even compile :)
-> 
-> 
-> Takashi
+--Boundary-00=_kWPjHFS6IBVhCq4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- 
-Tobin Davis  
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
-Criticism comes easier than craftsmanship.
-		-- Zeuxis
+--Boundary-00=_kWPjHFS6IBVhCq4--
