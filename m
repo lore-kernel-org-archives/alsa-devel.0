@@ -1,18 +1,17 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Splitting up the HDA-INTEL modules
-Date: Wed, 16 Jan 2008 09:26:39 +1030 (CST)
-Message-ID: <200801152256.m0FMud1b032184@turbo.physics.adelaide.edu.au>
-References: <mailman.344.1200429836.2119.alsa-devel@alsa-project.org>
+From: "Andrew Paprocki" <andrew@ishiboo.com>
+Subject: HDA NIDs 0x25 & 0x26 on ALC883
+Date: Tue, 15 Jan 2008 18:14:52 -0500
+Message-ID: <76366b180801151514n60248020tdac0e37bef67494@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelphi.physics.adelaide.edu.au
-	(adelphi.physics.adelaide.edu.au [129.127.102.1])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0DDD624446
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 23:56:43 +0100 (CET)
-In-Reply-To: <mailman.344.1200429836.2119.alsa-devel@alsa-project.org> from
-	"alsa-devel-request@alsa-project.org" at Jan 15, 2008 09:43:56 PM
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D9D124467
+	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 00:14:56 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so21942rvb.32
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 15:14:52 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,54 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: marco@harddisk.is-a-geek.org, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Marco Schuster wrote:
-> when I looked today through the files of the snd-hda-intel module, I
-> was a bit shocked by this complex amount of code (patch_realtek.c for
-> example). I would think about splitting up the code in a way each
-> chipset gets its own .c file - which will make debugging, patching or
-> editing a lot easier IMO, and for second people can then comment on
-> just their specific chipset in config.
+Takashi,
 
-The problem with such a split is, as Tobin went on to say, that there are a
-lot of interdependencies and shared code within each chipset's family:
+Do you know anything about NIDs 0x25 and 0x26 on the ALC883 chip? 0x25
+is an Audio Output and 0x26 is an Audio Mixer. They appear completely
+separate from the 0x0c-0x0f mixers, but when I map one of my pins to
+use the 0x26 mixer, I hear audio over the jack whenever I play to the
+standard 'Green' 0x0c mixer. The 0x26 mixer seems unused in the
+current driver, so I'm not sure if there is something special about
+it. I'm basically trying to use it as a 5th output.
 
-> I don't think that it would be very easy, as there are several instances
-> where code relies on other codec definitions.
+Also, when I play audio, the 0x0c mixer has a nice full sound (the
+"expected" sound). The 0x0d & 0x0e mixers have much less bass and
+sound like someone turned up the treble. The 0x0f and 0x26 mixers have
+an even more "tinny" sound. I've verified that all the mixers/pins are
+configured the same exact way and all have full volume (0x1f). Do you
+know of any reason why the audio output over the pins would differ?
+I'm not sure what I could be missing here to get them to all sound the
+same.
 
-One could argue that therefore we have toplevel realtek/sigmatek/etc
-"librarys" which are used by each chipset-specific driver but IMHO that is
-hardly going to count as a simplification.
+I appreciate any info you could provide.
+Thanks,
+-Andrew
 
-Tobin then said:
-> In all actuality, what is needed is a more generic driver that is driven
-> by userspace tools. ... Maybe we can get a core group together and
-> actually define and implement an API for this.
+This is my 0x26 / 0x25 config, mapped to pin 0x1a which I've
+reconfigured as an output jack:
 
-I think this idea has merit and may be worth pursuing.  I would be
-interested in assisting and providing input to the process although I
-haven't time at present to take a lead role.
-
-> My idea is a driver that takes settings from a config file that are
-> either 32bit register values (aka Sigmatel), or individual Node
-> parameters (Realtek, Conexant, etc).  This way we can define model
-> config files, and associate their PCI Quirk in a central config file
-> that can be edited in userspace.  This would be much easier to support,
-> for users, distro vendors, hardware vendors, and us.
-
-Agreed, at least in theory.  There may be complications due to the varying
-topography of the chips; the userspace API may have to be relatively
-complex to support things like record source switch options (which are
-vastly different for diffenent chips).  Even so, if we can get this to work
-the ongoing support effort for HDA will be much reduced so it's probably
-worth the effort.
-
-> I'll try to write up a proposal in the next few weeks, if we can get
-> others on board to work on this.
-
-I think this would be worth looking at.
-
-Regards
-  jonathan
+Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x08173e: IN OUT HP Detect
+  Pin Default 0x0181344f: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  EAPD: 0x0
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c 0x0d 0x0e 0x0f 0x26*
+Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x1f 0x1f]
+  Connection: 2
+     0x25 0x0b
+Node 0x25 [Audio Output] wcaps 0x11: Stereo
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
