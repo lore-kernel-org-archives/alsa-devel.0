@@ -1,19 +1,38 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Splitting up the HDA-INTEL modules
-Date: Tue, 15 Jan 2008 13:23:52 -0800
-Message-ID: <1200432232.27806.120.camel@razman.gruemaster.com>
-References: <478CFD32.50405@harddisk.is-a-geek.org>
-	<5f52f6d70801151120y76407dd4s4c876643ddc8ba95@mail.gmail.com>
-	<76366b180801151206v74232379ufd318580feba8fb9@mail.gmail.com>
-	<478D12D1.8030808@harddisk.is-a-geek.org>
+From: Christian Schumann <schumann@physik.uni-kl.de>
+Subject: Re: hdsp driver broken for Multiface II Rev 35
+Date: Tue, 15 Jan 2008 22:28:53 +0100
+Message-ID: <20080115212853.GA13172@diller-5.physik.uni-kl.de>
+References: <20080114022142.51d6ae44@pluto.noname>
+	<s5hbq7ollj9.wl%tiwai@suse.de>
+	<20080115204215.2dfb6544@pluto.noname>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id E1D05243CB
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:24:24 +0100 (CET)
-In-Reply-To: <478D12D1.8030808@harddisk.is-a-geek.org>
+Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id A643E24403
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:28:56 +0100 (CET)
+Received: from cartman.physik.uni-kl.de (cartman.physik.uni-kl.de
+	[131.246.236.200])
+	by mailgw1.uni-kl.de (8.13.8/8.13.8/Debian-3) with ESMTP id
+	m0FLSsM0002593
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:28:55 +0100
+Received: from diller-5.physik.uni-kl.de (diller-5.physik.uni-kl.de
+	[131.246.236.224])
+	by cartman.physik.uni-kl.de (8.13.8/8.13.8/Debian-3) with ESMTP id
+	m0FLJbfl009396
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:19:38 +0100
+Received: from diller-5.physik.uni-kl.de (localhost.localdomain [127.0.0.1])
+	by diller-5.physik.uni-kl.de (8.13.8/8.13.8/Debian-3) with ESMTP id
+	m0FLSrSC013189
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:28:53 +0100
+Received: (from schumann@localhost)
+	by diller-5.physik.uni-kl.de (8.13.8/8.13.8/Submit) id m0FLSrMc013187
+	for alsa-devel@alsa-project.org; Tue, 15 Jan 2008 22:28:53 +0100
+Content-Disposition: inline
+In-Reply-To: <20080115204215.2dfb6544@pluto.noname>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,40 +42,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marco Schuster <marco@harddisk.is-a-geek.org>
-Cc: alsa-devel@alsa-project.org, Andrew Paprocki <andrew@ishiboo.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Actually, if this were done correctly, it would use the /sys file system
-for configuration changes.  /proc should be read only space.
+Hi Andreas,
 
-As it sits now, you should be able to change the model configuration by
-typing "echo <model> /sys/module/snd_hda_intel/parameters/model", but I
-don't think it's setup to dynamic changing yet.
-The /proc/asound/card0/codec# file contains all of the connection
-configurations for each codec NID.  With that and the model diagram from
-most vendors, it would be easy to reconfigure on the fly.
-
-
-
-On Tue, 2008-01-15 at 21:08 +0100, Marco Schuster wrote:
-
-> Andrew Paprocki schrieb:
-> > Could this all be done through a /proc interface? For example, a
-> > /proc/asound/hda directory which contained files representing the
-> > different connections in the chipset?
-> /proc isn't constant, right?
-> Marco
+On Tue, Jan 15, 2008 at 08:42:15PM +0100, Andreas Degert wrote:
+> ok, here it is:
 > 
-> PS: Is it usual here to CC all people on the thread?
+> hdsp: make Multiface II work again
 > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> This device has io_type == 1 (Multiface) and firmware_rev > 0xa
+> (fixes regression from changeset 5326)
+> 
+> Signed-off-by: Andreas Degert <ad@papyrus-gmbh.de>
+> 
+[..]
+
+I was one of the Digiface users with problems with the new driver
+revisions. Although I don't know to which tree to apply your patch, I
+edited alsa-drver-1.0.15 by hand, and so far after a quick test I can
+confirm that it's working with my Digiface. Thank you very much.
+
+Best regards
+Christian
+
+
 
 -- 
-Tobin Davis  
-
-
-Memory should be the starting point of the present.
+------------------------------------------------------------------------
+Dipl.-Phys. Christian Schumann   |Technische Universitaet Kaiserslautern
+Mail: schumann@physik.uni-kl.de  |           Fachbereich Physik
+Tel.: 0631/205-4842 (Office)     |     http://www.physik.uni-kl.de 
+Tel.: 0631/205-4843 (Lab)        |
+Fax.: 0631/205-3902              |    
+Post: Erwin-Schroedinger-Strasse, D-67663 Kaiserslautern
+-------------------------------------------------------------------------
