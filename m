@@ -1,38 +1,18 @@
-From: Christian Schumann <schumann@physik.uni-kl.de>
-Subject: Re: hdsp driver broken for Multiface II Rev 35
-Date: Tue, 15 Jan 2008 22:28:53 +0100
-Message-ID: <20080115212853.GA13172@diller-5.physik.uni-kl.de>
-References: <20080114022142.51d6ae44@pluto.noname>
-	<s5hbq7ollj9.wl%tiwai@suse.de>
-	<20080115204215.2dfb6544@pluto.noname>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: Splitting up the HDA-INTEL modules
+Date: Wed, 16 Jan 2008 09:26:39 +1030 (CST)
+Message-ID: <200801152256.m0FMud1b032184@turbo.physics.adelaide.edu.au>
+References: <mailman.344.1200429836.2119.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw1.uni-kl.de (mailgw1.uni-kl.de [131.246.120.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id A643E24403
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:28:56 +0100 (CET)
-Received: from cartman.physik.uni-kl.de (cartman.physik.uni-kl.de
-	[131.246.236.200])
-	by mailgw1.uni-kl.de (8.13.8/8.13.8/Debian-3) with ESMTP id
-	m0FLSsM0002593
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:28:55 +0100
-Received: from diller-5.physik.uni-kl.de (diller-5.physik.uni-kl.de
-	[131.246.236.224])
-	by cartman.physik.uni-kl.de (8.13.8/8.13.8/Debian-3) with ESMTP id
-	m0FLJbfl009396
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:19:38 +0100
-Received: from diller-5.physik.uni-kl.de (localhost.localdomain [127.0.0.1])
-	by diller-5.physik.uni-kl.de (8.13.8/8.13.8/Debian-3) with ESMTP id
-	m0FLSrSC013189
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 22:28:53 +0100
-Received: (from schumann@localhost)
-	by diller-5.physik.uni-kl.de (8.13.8/8.13.8/Submit) id m0FLSrMc013187
-	for alsa-devel@alsa-project.org; Tue, 15 Jan 2008 22:28:53 +0100
-Content-Disposition: inline
-In-Reply-To: <20080115204215.2dfb6544@pluto.noname>
+Received: from adelphi.physics.adelaide.edu.au
+	(adelphi.physics.adelaide.edu.au [129.127.102.1])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0DDD624446
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jan 2008 23:56:43 +0100 (CET)
+In-Reply-To: <mailman.344.1200429836.2119.alsa-devel@alsa-project.org> from
+	"alsa-devel-request@alsa-project.org" at Jan 15, 2008 09:43:56 PM
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -43,38 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: marco@harddisk.is-a-geek.org, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Andreas,
+Marco Schuster wrote:
+> when I looked today through the files of the snd-hda-intel module, I
+> was a bit shocked by this complex amount of code (patch_realtek.c for
+> example). I would think about splitting up the code in a way each
+> chipset gets its own .c file - which will make debugging, patching or
+> editing a lot easier IMO, and for second people can then comment on
+> just their specific chipset in config.
 
-On Tue, Jan 15, 2008 at 08:42:15PM +0100, Andreas Degert wrote:
-> ok, here it is:
-> 
-> hdsp: make Multiface II work again
-> 
-> This device has io_type == 1 (Multiface) and firmware_rev > 0xa
-> (fixes regression from changeset 5326)
-> 
-> Signed-off-by: Andreas Degert <ad@papyrus-gmbh.de>
-> 
-[..]
+The problem with such a split is, as Tobin went on to say, that there are a
+lot of interdependencies and shared code within each chipset's family:
 
-I was one of the Digiface users with problems with the new driver
-revisions. Although I don't know to which tree to apply your patch, I
-edited alsa-drver-1.0.15 by hand, and so far after a quick test I can
-confirm that it's working with my Digiface. Thank you very much.
+> I don't think that it would be very easy, as there are several instances
+> where code relies on other codec definitions.
 
-Best regards
-Christian
+One could argue that therefore we have toplevel realtek/sigmatek/etc
+"librarys" which are used by each chipset-specific driver but IMHO that is
+hardly going to count as a simplification.
 
+Tobin then said:
+> In all actuality, what is needed is a more generic driver that is driven
+> by userspace tools. ... Maybe we can get a core group together and
+> actually define and implement an API for this.
 
+I think this idea has merit and may be worth pursuing.  I would be
+interested in assisting and providing input to the process although I
+haven't time at present to take a lead role.
 
--- 
-------------------------------------------------------------------------
-Dipl.-Phys. Christian Schumann   |Technische Universitaet Kaiserslautern
-Mail: schumann@physik.uni-kl.de  |           Fachbereich Physik
-Tel.: 0631/205-4842 (Office)     |     http://www.physik.uni-kl.de 
-Tel.: 0631/205-4843 (Lab)        |
-Fax.: 0631/205-3902              |    
-Post: Erwin-Schroedinger-Strasse, D-67663 Kaiserslautern
--------------------------------------------------------------------------
+> My idea is a driver that takes settings from a config file that are
+> either 32bit register values (aka Sigmatel), or individual Node
+> parameters (Realtek, Conexant, etc).  This way we can define model
+> config files, and associate their PCI Quirk in a central config file
+> that can be edited in userspace.  This would be much easier to support,
+> for users, distro vendors, hardware vendors, and us.
+
+Agreed, at least in theory.  There may be complications due to the varying
+topography of the chips; the userspace API may have to be relatively
+complex to support things like record source switch options (which are
+vastly different for diffenent chips).  Even so, if we can get this to work
+the ongoing support effort for HDA will be much reduced so it's probably
+worth the effort.
+
+> I'll try to write up a proposal in the next few weeks, if we can get
+> others on board to work on this.
+
+I think this would be worth looking at.
+
+Regards
+  jonathan
