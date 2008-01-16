@@ -1,16 +1,17 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: ALC268 auto-parsing
-Date: Wed, 16 Jan 2008 10:26:41 -0800
-Message-ID: <1200508001.27806.183.camel@razman.gruemaster.com>
-References: <478E4367.6040107@harddisk.is-a-geek.org>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: SNDRV_PCM_INFO_MMAP - what do I need for it?
+Date: Wed, 16 Jan 2008 13:06:00 -0600
+Message-ID: <478E5598.9060306@freescale.com>
+References: <478E2025.8010509@freescale.com> <s5hy7apr7s0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB0532450C
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 19:26:44 +0100 (CET)
-In-Reply-To: <478E4367.6040107@harddisk.is-a-geek.org>
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28BB42450C
+	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 20:06:06 +0100 (CET)
+In-Reply-To: <s5hy7apr7s0.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,59 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marco Schuster <marco@harddisk.is-a-geek.org>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It really depends on the OEM platform.  Some are good about putting the
-correct config in bios, others not so good.  If your system is listed
-specifically in one of the inf files for the windows driver, you are in
-this second category (look for the pci subdevice ID or the codec
-subsystem ID).
-
-Now, the problem with the Windows INF files is that they use the Windows
-GUID method for programming registers.  This is essentially a text
-encryption method that makes it user unreadable.  Sigmatel is the only
-vendor I know of that supplies the register settings in human readable
-format, but even it has limits to what is usable to make a Linux driver.
-
-The bios configuration is the Microsoft portion of the HDA standard.
-This way, basic audio functionality works out of the box.  Most codec
-vendors want to give the user better control, hence the need for
-specific drivers and utilities.  We try to give the user some level of
-flexibility based on what makes sense (i.e. green plug for front
-speakers, etc), but it is technically feasable to have any plug support
-multiple functions (using the front Mic jack as a second headphone plug
-for example), so long as the codec can handle the desired configuration.
-
-Most of the audio codec vendors for HD Audio have their codec reference
-guides online.  Realtek in particular are good to work with.
-
-Hope this is helpful.
-
-Tobin
-
-On Wed, 2008-01-16 at 18:48 +0100, Marco Schuster wrote:
-
-> Hi all,
+Takashi Iwai wrote:
+> At Wed, 16 Jan 2008 09:17:57 -0600,
+> Timur Tabi wrote:
+>> My 8610 ASoC driver has this:
+>>
+>> static const struct snd_pcm_hardware fsl_dma_hardware = {
+>>
+>> 	.info   		= SNDRV_PCM_INFO_INTERLEAVED,
+>>
+>> This means that MMAP is not enabled.
+>>
+>> I understand what MMAP is, but not from an ALSA driver perspective.  If I change 
+>> the above line to this:
+>>
+>> 	.info   		= SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_MMAP | 
+>> SNDRV_PCM_INFO_MMAP_VALID,
+>>
+>> what does ALSA do differently?  Do I need to define any new functions?  From an 
+>> application perspective, what is different?
 > 
-> I am a bit interested in how the Realtek Windows driver gets its pin
-> config. There IMO are two options:
-> a) it uses the bios autoconfig - as parsing this doesn't work in alsa
-> here, there must be something special in it
-> b) it uses a config file - it should be easy to get out the pin config.
+> It means that the driver supports mmap access to the PCM buffer.
 > 
-> Any opinions what is correct way?
+> In some cases, you need to implement a proper mmap callback.  For
+> example, when the coheret (dma) pages are allocated via
+> dma_alloc_coherent and used for the PCM buffer, you need mmap callback
+> for ARM, at least because the default mmap handler in the PCM core
+> doesn't work for ARM.  In this case, prepare your own mmap callback
+> and pass it to pcm ops.  It should call simply dma_mmap_coherent()
+> appropriately.
+
+The default mmap handler in the PCM core is snd_pcm_default_mmap()?
+
+How can I know whether this function works?  Can I just add those two flags to 
+my .info line, and then .... ?  Is there an ALSA mmap test utility?
+
+>> Also, does DMIX need MMAP support?
 > 
-> Marco
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Yes, mandatory.
+
+So just to be clear: the fact that I do *not* have "SNDRV_PCM_INFO_MMAP | 
+SNDRV_PCM_INFO_MMAP_VALID" defined in snd_pcm_hardware.info is the reason why I 
+get this error message:
+
+root@MPC8610HPCD:/home/demo_files/mp3# alsaplayer -o alsa -q -F 48000
+-d plug:dmix ./527182737.mp3 &
+[1] 3224
+root@MPC8610HPCD:/home/demo_files/mp3# ALSA lib
+pcm_direct.c:874:(snd_pcm_direct_initialize_slave) slave plugin does not
+support mmap interleaved or mmap noninterleaved access
+ALSA lib pcm_dmix.c:878:(snd_pcm_dmix_open) unable to initialize slave
+snd_pcm_open: Invalid argument (plug:dmix)
+Failed to initialize plugin!
+...
 
 -- 
-Tobin Davis  
-
-
-How much of their influence on you is a result of your influence on them?
+Timur Tabi
+Linux kernel developer at Freescale
