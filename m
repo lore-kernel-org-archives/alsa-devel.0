@@ -1,22 +1,16 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: -mm:
- pnp-do-not-stop-start-devices-in-suspend-resume-path.patch breaks resuming
- isapnp cards
-Date: Wed, 16 Jan 2008 19:16:39 +0100
-Message-ID: <478E4A07.1050803@keyaccess.nl>
-References: <200801092343.48726.linux@rainbow-software.org>
-	<200801141526.57744.bjorn.helgaas@hp.com>
-	<Pine.LNX.4.61.0801150842480.7446@tm8103.perex-int.cz>
-	<200801161046.05174.bjorn.helgaas@hp.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: ALC268 auto-parsing
+Date: Wed, 16 Jan 2008 10:26:41 -0800
+Message-ID: <1200508001.27806.183.camel@razman.gruemaster.com>
+References: <478E4367.6040107@harddisk.is-a-geek.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9F5224526
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 19:20:32 +0100 (CET)
-In-Reply-To: <200801161046.05174.bjorn.helgaas@hp.com>
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB0532450C
+	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 19:26:44 +0100 (CET)
+In-Reply-To: <478E4367.6040107@harddisk.is-a-geek.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Ondrej Zary <linux@rainbow-software.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Pavel Machek <pavel@suse.cz>, Pierre Ossman <drzeus@drzeus.cx>, linux-pm@lists.linux-foundation.org
+To: Marco Schuster <marco@harddisk.is-a-geek.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 16-01-08 18:46, Bjorn Helgaas wrote:
+It really depends on the OEM platform.  Some are good about putting the
+correct config in bios, others not so good.  If your system is listed
+specifically in one of the inf files for the windows driver, you are in
+this second category (look for the pci subdevice ID or the codec
+subsystem ID).
 
-> On Tuesday 15 January 2008 12:51:35 am Jaroslav Kysela wrote:
+Now, the problem with the Windows INF files is that they use the Windows
+GUID method for programming registers.  This is essentially a text
+encryption method that makes it user unreadable.  Sigmatel is the only
+vendor I know of that supplies the register settings in human readable
+format, but even it has limits to what is usable to make a Linux driver.
 
->> Ok, something to explain. These flags exists to allow drivers to 
->> manually configure (override) PnP resources at init time - we know - for 
->> example in ALSA - that some combinations simply does not work for all 
->> soundcards.
->>
->> The DISABLE flags simply tells core PnP layer - driver will handle 
->> resource allocation itself, don't do anything, just disable hw physically 
->> and do not change (allocate) any resources. Value 0x03 is valid in this 
->> semantics.
+The bios configuration is the Microsoft portion of the HDA standard.
+This way, basic audio functionality works out of the box.  Most codec
+vendors want to give the user better control, hence the need for
+specific drivers and utilities.  We try to give the user some level of
+flexibility based on what makes sense (i.e. green plug for front
+speakers, etc), but it is technically feasable to have any plug support
+multiple functions (using the front Mic jack as a second headphone plug
+for example), so long as the codec can handle the desired configuration.
+
+Most of the audio codec vendors for HD Audio have their codec reference
+guides online.  Realtek in particular are good to work with.
+
+Hope this is helpful.
+
+Tobin
+
+On Wed, 2008-01-16 at 18:48 +0100, Marco Schuster wrote:
+
+> Hi all,
 > 
-> It looks like sound drivers use PNP_DRIVER_RES_DISABLE to say "ignore
-> what PNP tells us about resource usage and we'll just use the compiled-
-> in or command-line-specified resources".
+> I am a bit interested in how the Realtek Windows driver gets its pin
+> config. There IMO are two options:
+> a) it uses the bios autoconfig - as parsing this doesn't work in alsa
+> here, there must be something special in it
+> b) it uses a config file - it should be easy to get out the pin config.
 > 
-> The main reason to do that would be to work around BIOS defects or
-> to work around deficiencies in the Linux PNP infrastructure (e.g.,
-> maybe we erroneously place another device on top of the sound card
-> or something).
+> Any opinions what is correct way?
 > 
-> I'm just suspicious because PNP_DRIVER_RES_DISABLE is only used in
-> sound drivers.  If it's to work around BIOS defects, why wouldn't
-> other PNP drivers need it sometimes, too?  And wouldn't it be better
-> to use PNP quirks for BIOS workarounds?
-
-Yes. The manual resource setting was recently removed from the ALSA drivers 
-and I'd expect this can now go as a package-deal.
-
->> Unfortunately, suspend / resume complicates things a bit, but PnP core can 
->> handle DO_NOT_CHANGE flag. But it will just mean - _preserve_ resource 
->> allocation from last suspend state for this device and enable hw 
->> physically before calling resume() callback.
+> Marco
 > 
-> When resuming, wouldn't we *always* want to preserve the resource
-> allocation from the last suspend, regardless of whether
-> PNP_DRIVER_RES_DO_NOT_CHANGE is specified?
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Yes.
+-- 
+Tobin Davis  
 
-> Linux PNP definitely has issues with suspend/resume, and I suspect
-> this is one of them.
 
-Rene.
+How much of their influence on you is a result of your influence on them?
