@@ -1,80 +1,99 @@
-From: Marco Schuster <marco@harddisk.is-a-geek.org>
-Subject: ALC268 auto-parsing
-Date: Wed, 16 Jan 2008 18:48:23 +0100
-Message-ID: <478E4367.6040107@harddisk.is-a-geek.org>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: -mm:
+	pnp-do-not-stop-start-devices-in-suspend-resume-path.patch
+	breaks resuming isapnp cards
+Date: Wed, 16 Jan 2008 19:03:23 +0100
+Message-ID: <200801161903.28813.linux@rainbow-software.org>
+References: <200801092343.48726.linux@rainbow-software.org>
+	<Pine.LNX.4.61.0801150842480.7446@tm8103.perex-int.cz>
+	<200801161046.05174.bjorn.helgaas@hp.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0849010228437468250=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.velirat.de (velirat.de [85.25.68.44])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E0522451C
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 18:48:30 +0100 (CET)
-Received: from dslb-088-064-088-191.pools.arcor-ip.net ([88.64.88.191]
-	helo=[192.168.0.102])
-	by www.velirat.de with esmtpsa (TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.68) (envelope-from <marco@harddisk.is-a-geek.org>)
-	id 1JFCNH-0002W0-S1
-	for alsa-devel@alsa-project.org; Wed, 16 Jan 2008 18:48:28 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-pm-bounces@lists.linux-foundation.org>
+In-Reply-To: <200801161046.05174.bjorn.helgaas@hp.com>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/linux-pm>,
+	<mailto:linux-pm-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linux-foundation.org/pipermail/linux-pm>
+List-Post: <mailto:linux-pm@lists.linux-foundation.org>
+List-Help: <mailto:linux-pm-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/linux-pm>,
+	<mailto:linux-pm-request@lists.linux-foundation.org?subject=subscribe>
+Sender: linux-pm-bounces@lists.linux-foundation.org
+Errors-To: linux-pm-bounces@lists.linux-foundation.org
+To: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Cc: Andrew Morton <akpm@osdl.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, Linux Kernel <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, Pavel Machek <pavel@suse.cz>, Pierre Ossman <drzeus@drzeus.cx>, linux-pm@lists.linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============0849010228437468250==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig9193DD9CFA5E251CBF5A73E5"
+On Wednesday 16 January 2008 18:46:03 Bjorn Helgaas wrote:
+> On Tuesday 15 January 2008 12:51:35 am Jaroslav Kysela wrote:
+> > On Mon, 14 Jan 2008, Bjorn Helgaas wrote:
+> > > On Saturday 12 January 2008 11:13:35 pm Rene Herman wrote:
+> > > > ... And, now that I have your attention, while it's
+> > > > not important to the issue anymore with the tests removed as the
+> > > > submitted patch did, do you have an opinion on (include/linux/pnp.h):
+> > > >
+> > > > /* pnp driver flags */
+> > > > #define PNP_DRIVER_RES_DO_NOT_CHANGE    0x0001  /* do not change the
+> > > > state of the device */
+> > > > #define PNP_DRIVER_RES_DISABLE          0x0003  /* ensure the device
+> > > > is disabled */
+> > > >
+> > > > I find DISABLE including DO_NOT_CHANGE rather unexpected...
+> > >
+> > > I don't know the history of those flags, but I wish they didn't exist.
+> >
+> > Ok, something to explain. These flags exists to allow drivers to
+> > manually configure (override) PnP resources at init time - we know - for
+> > example in ALSA - that some combinations simply does not work for all
+> > soundcards.
+> >
+> > The DISABLE flags simply tells core PnP layer - driver will handle
+> > resource allocation itself, don't do anything, just disable hw physically
+> > and do not change (allocate) any resources. Value 0x03 is valid in this
+> > semantics.
+>
+> It looks like sound drivers use PNP_DRIVER_RES_DISABLE to say "ignore
+> what PNP tells us about resource usage and we'll just use the compiled-
+> in or command-line-specified resources".
+>
+> The main reason to do that would be to work around BIOS defects or
+> to work around deficiencies in the Linux PNP infrastructure (e.g.,
+> maybe we erroneously place another device on top of the sound card
+> or something).
+>
+> I'm just suspicious because PNP_DRIVER_RES_DISABLE is only used in
+> sound drivers.  If it's to work around BIOS defects, why wouldn't
+> other PNP drivers need it sometimes, too?  And wouldn't it be better
+> to use PNP quirks for BIOS workarounds?
+>
+> > Unfortunately, suspend / resume complicates things a bit, but PnP core
+> > can handle DO_NOT_CHANGE flag. But it will just mean - _preserve_
+> > resource allocation from last suspend state for this device and enable hw
+> > physically before calling resume() callback.
+>
+> When resuming, wouldn't we *always* want to preserve the resource
+> allocation from the last suspend, regardless of whether
+> PNP_DRIVER_RES_DO_NOT_CHANGE is specified?
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig9193DD9CFA5E251CBF5A73E5
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+I'd say yes. If base address of a card changes, driver will break.
 
-Hi all,
+I grepped drivers for these flags too - to find out what they do (or should 
+do?) - but failed to find out anything useful.
 
-I am a bit interested in how the Realtek Windows driver gets its pin
-config. There IMO are two options:
-a) it uses the bios autoconfig - as parsing this doesn't work in alsa
-here, there must be something special in it
-b) it uses a config file - it should be easy to get out the pin config.
-
-Any opinions what is correct way?
-
-Marco
+> Linux PNP definitely has issues with suspend/resume, and I suspect
+> this is one of them.
+>
+> Bjorn
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
 
 
---------------enig9193DD9CFA5E251CBF5A73E5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFHjkNrW6S2GapJUuQRAsO7AJ0a5IX4Y0ROUcUrQT/XWbNjvLYRHgCfT+5N
-WzEjJCPQwaVxVDUshpq9K0U=
-=9ddJ
------END PGP SIGNATURE-----
-
---------------enig9193DD9CFA5E251CBF5A73E5--
-
---===============0849010228437468250==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0849010228437468250==--
+-- 
+Ondrej Zary
