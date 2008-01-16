@@ -1,19 +1,21 @@
-From: Robert Jarzmik <rjarzmik@free.fr>
-Subject: [PATCH] Change of cold reset and ac97 register cache
-Date: 16 Jan 2008 23:24:56 +0100
-Message-ID: <87k5m91k93.fsf@polgara.paysbobval>
+From: Jean Batrel <jean.batrel@voila.fr>
+Subject: Re: hdsp driver broken for Multiface II Rev 35
+Date: Wed, 16 Jan 2008 23:43:44 +0100 (CET)
+Message-ID: <14066785.203301200523424187.JavaMail.www@wwinf4612>
+Reply-To: jean.batrel@voila.fr
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g19.free.fr (smtp6-g19.free.fr [212.27.42.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7F7424464
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 23:24:57 +0100 (CET)
-Received: from smtp6-g19.free.fr (localhost.localdomain [127.0.0.1])
-	by smtp6-g19.free.fr (Postfix) with ESMTP id 52A1D5FE47
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 23:24:57 +0100 (CET)
-Received: from polgara (mur31-2-82-243-122-54.fbx.proxad.net [82.243.122.54])
-	by smtp6-g19.free.fr (Postfix) with ESMTP id 1687D5FD81
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 23:24:56 +0100 (CET)
+Received: from smtp1.voila.fr (smtp1.voila.fr [193.252.22.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0620B24567
+	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 23:43:45 +0100 (CET)
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf4006.voila.fr (SMTP Server) with ESMTP id 3473A1C013DB
+	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 23:43:44 +0100 (CET)
+Received: from wwinf4612 (wwinf4612 [10.232.13.55])
+	by mwinf4006.voila.fr (SMTP Server) with ESMTP id 2F3AA1C013A1
+	for <alsa-devel@alsa-project.org>; Wed, 16 Jan 2008 23:43:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,67 +28,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
+> Date: Mon, 14 Jan 2008 02:21:42 +0100
+> From: Andreas Degert <ad@papyrus-gmbh.de>
+> Subject: [alsa-devel] hdsp driver broken for Multiface II Rev 35
+> To: alsa-devel@alsa-project.org
+> Cc: tiwai@suse.de
+> Message-ID: <20080114022142.51d6ae44@pluto.noname>
+> Content-Type: text/plain; charset=US-ASCII
+> 
+> Hi folks,
+> 
+> changeset 5326 from 2007/08/31 broke the driver for this card revision.
+> There was an older thread about this problem which didn't seem to come
+> to a conclusion.
+> (...) 
+> Similar changes must be made to hdsp_input_to_output_key. Does anyone
+> know which firmware revision exist for which card (io_type) ?
+> 
+> thank you
+> Andreas Degert
+> ------------------------------
+Bonjour !
 
-This patch synchronizes wm9713 AC97 register cache and hardware registers 
-upon reset.
+You are asking for firmware revision and (RME) cards :
+I use a HDSP9632 RME card with issues : my card is Rev. 1.53 and only the 1.51 version is working with Linux, AFAIK...
+The card is detected, there is some activity in the middle of HDSPmixer, but I can hear no sound...
+A lspci says :
+02:01.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall DSP (rev 99)
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 255
+        Interrupt: pin A routed to IRQ 20
+        Region 0: Memory at feaf0000 (32-bit, non-prefetchable) [size=64K]
+I have no very skills with Linux yet, but I very hope getting this card working with Linux.
+Can you help me please ? I very apologize if this mail is not relevant in this list.
+But I very thank you in advance (I use Fedora 8 and the latest CCRMA kernel) !
 
-The actual implementation of the wm9713 codec provides a cache of AC97
-registers. After cold reset, the cache and hardware are not in sync. When
-using wm9713 logic, oring a GPIO triggers many other GPIOS.
-
-The solution of this patch reads from hardware to cache upon cold reset.
-Another one would be to write the cache to hardware upon init. If decided so,
-I would gladly change my patch.
-
---
-Robert Jarzmik
-
-
---=-=-=
-Content-Type: text/x-diff
-Content-Disposition: attachment; filename=wm9713.diff
-Content-Description: Cold reset of wm9713
-
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 6e3c6af..62c6c02 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1014,6 +1014,9 @@ EXPORT_SYMBOL_GPL(wm9713_dai);
- 
- int wm9713_reset(struct snd_soc_codec *codec, int try_warm)
- {
-+	int i;
-+	u16 *cache = codec->reg_cache;
-+
- 	if (try_warm && soc_ac97_ops.warm_reset) {
- 		soc_ac97_ops.warm_reset(codec->ac97);
- 		if (!(ac97_read(codec, 0) & 0x8000))
-@@ -1023,6 +1026,14 @@ int wm9713_reset(struct snd_soc_codec *codec, int try_warm)
- 	soc_ac97_ops.reset(codec->ac97);
- 	if (ac97_read(codec, 0) & 0x8000)
- 		return -EIO;
-+
-+	for (i = 2; i < ARRAY_SIZE(wm9713_reg) << 1; i+=2) {
-+		if (i == AC97_POWERDOWN || i == AC97_EXTENDED_MID ||
-+		    i == AC97_EXTENDED_MSTATUS || i > 0x66)
-+			continue;
-+		cache[i>>1] = ac97_read(codec, i);
-+	}
-+	
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(wm9713_reset);
-
---=-=-=
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-=-=--
+Jean Batrel - jean.batrel@voila.fr
