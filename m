@@ -1,24 +1,20 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: S16_LE + softvol = bad
-Date: Thu, 17 Jan 2008 18:40:27 +0500
-Message-ID: <fmnlt1$g5m$1@ger.gmane.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Change of cold reset and ac97
+	register	cache
+Date: Thu, 17 Jan 2008 13:28:27 +0000
+Message-ID: <20080117132827.GA1248@rakim.wolfsonmicro.main>
+References: <87k5m91k93.fsf@polgara.paysbobval>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id D01A124378
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 14:41:00 +0100 (CET)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1JFUzG-0002Zo-K3
-	for alsa-devel@alsa-project.org; Thu, 17 Jan 2008 13:40:54 +0000
-Received: from 90.151.107.193 ([90.151.107.193])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 13:40:54 +0000
-Received: from patrakov by 90.151.107.193 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 13:40:54 +0000
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 310102437C
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 14:47:16 +0100 (CET)
+Resent-Message-ID: <20080117134715.GB22123@opensource.wolfsonmicro.com>
+Resent-To: alsa-devel@alsa-project.org
+Content-Disposition: inline
+In-Reply-To: <87k5m91k93.fsf@polgara.paysbobval>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,24 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Robert Jarzmik <rjarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello developers,
+On Wed, Jan 16, 2008 at 11:24:56PM +0100, Robert Jarzmik wrote:
 
-some cards (most notably, Intel HD audio) have the PCM control as softvol, and 
-default to S16_LE as a format for dmix. Since softvol is configured to attenuate 
-signal, and not many people set this control to 100% (especially those who have 
-no other volume controls), this effectively leaves less than 16 bits per sample.
+> The actual implementation of the wm9713 codec provides a cache of AC97
+> registers. After cold reset, the cache and hardware are not in sync. When
+> using wm9713 logic, oring a GPIO triggers many other GPIOS.
 
-The card can surely produce sound of better quality in most cases, if one 
-changes defaults.pcm.dmix.format in ~/.asoundrc. However, one should now search 
-a lot of forums in order to know about this setting. Not everyone does this, and 
-not everyone is even able to diagnose the "noisy sound in Linux" problem 
-properly as "too few bits per sample in the default configuration". A much 
-better situation would be if ALSA defaulted to good quality (i.e.: S24_LE or 
-S32_LE on all cards that require softvol and support this sample format). Could 
-you please change the files in /usr/share/alsa/cards accordingly?
+> The solution of this patch reads from hardware to cache upon cold reset.
+> Another one would be to write the cache to hardware upon init. If decided so,
+> I would gladly change my patch.
 
--- 
-Alexander E. Patrakov
+Neither option is entirely safe - something more involved like the code
+in wm9713_soc_resume() would be required to bring the chip back safely.
+Writing the current cache values is unsafe due to ordering requirements
+and in any case the information required to configure the PLL can't be
+recovered from the cache alone.  Reading the values currently set in the
+chip for the cache is safer will leave the chip without basic
+initialisation and the driver out of sync with the state of the chip.
+
+Could you outline why you need to reset the codec?  I'd like to
+understand the use case here.
