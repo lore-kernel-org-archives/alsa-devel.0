@@ -1,19 +1,19 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] [ALSA] mpc8610: Add mmap support
-Date: Thu, 17 Jan 2008 15:41:40 -0600
-Message-ID: <478FCB94.9020506@freescale.com>
-References: <12005823754197-git-send-email-timur@freescale.com>
-	<478F8129.5030408@gmail.com> <478F82E9.1050809@freescale.com>
-	<Pine.LNX.4.58.0801171316070.16628@shell2.speakeasy.net>
+Subject: Re: alsa-1.0.16
+Date: Thu, 17 Jan 2008 17:26:21 -0600
+Message-ID: <478FE41D.5040703@freescale.com>
+References: <m2sl0y101t.fsf@vador.mandriva.com>	<Pine.LNX.4.61.0801161248410.7446@tm8103.perex-int.cz>	<s5hr6giug3b.wl%tiwai@suse.de>
+	<m2d4s1252z.fsf@vador.mandriva.com>
+	<1200595969.5011.104.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id D4E0C246BC
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 22:42:10 +0100 (CET)
-In-Reply-To: <Pine.LNX.4.58.0801171316070.16628@shell2.speakeasy.net>
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id ED34524733
+	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 00:26:26 +0100 (CET)
+In-Reply-To: <1200595969.5011.104.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <xyzzy@speakeasy.org>
-Cc: alsa-devel@alsa-project.org, "Alexander E. Patrakov" <patrakov@gmail.com>
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Thierry Vignaud <tvignaud@mandriva.com>
 List-Id: alsa-devel@alsa-project.org
 
-Trent Piepho wrote:
+Tobin Davis wrote:
+> What is the cutoff for getting a patch in for new hardware?  I'm working
+> on a project that I think we want support in 2.6.24, if alsa 1.0.16 is
+> going in it.
 
-> The key thing to know is that you will not get an error message if your
-> page callback is wrong!  Everything will appear to work.  You just won't
-> hear any sound.
-
-When I said playback works fine, I was wearing my headphones. :-)
+2.6.24 is almost finished.  It's too late for any major additions.  The next 
+target is 2.6.25, and the window for that will be open soon (once 2.6.24 is 
+officially announced).  You better hurry up!
 
 -- 
 Timur Tabi
