@@ -1,17 +1,24 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
-Subject: HDA codec graphing
-Date: Thu, 17 Jan 2008 10:24:00 -0200
-Message-ID: <5f52f6d70801170424o4682381fhc12416125a1b66a8@mail.gmail.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: S16_LE + softvol = bad
+Date: Thu, 17 Jan 2008 18:40:27 +0500
+Message-ID: <fmnlt1$g5m$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9BF7A246F0
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 13:24:03 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so440169rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 04:24:00 -0800 (PST)
-Content-Disposition: inline
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id D01A124378
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 14:41:00 +0100 (CET)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1JFUzG-0002Zo-K3
+	for alsa-devel@alsa-project.org; Thu, 17 Jan 2008 13:40:54 +0000
+Received: from 90.151.107.193 ([90.151.107.193])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 13:40:54 +0000
+Received: from patrakov by 90.151.107.193 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 13:40:54 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,12 +28,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developers <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-After a lot of time published only as a git repository, I created a
-page and tarball for Eduardo Habkost's codecgraph tool to graph the
-layout of HDA codecs. It may be useful for those tweaking or
-troubleshooting existing drivers. The page has also examples of
-different codec layouts rendered in SVG. See details at
-http://helllabs.org/codecgraph/.
+Hello developers,
+
+some cards (most notably, Intel HD audio) have the PCM control as softvol, and 
+default to S16_LE as a format for dmix. Since softvol is configured to attenuate 
+signal, and not many people set this control to 100% (especially those who have 
+no other volume controls), this effectively leaves less than 16 bits per sample.
+
+The card can surely produce sound of better quality in most cases, if one 
+changes defaults.pcm.dmix.format in ~/.asoundrc. However, one should now search 
+a lot of forums in order to know about this setting. Not everyone does this, and 
+not everyone is even able to diagnose the "noisy sound in Linux" problem 
+properly as "too few bits per sample in the default configuration". A much 
+better situation would be if ALSA defaulted to good quality (i.e.: S24_LE or 
+S32_LE on all cards that require softvol and support this sample format). Could 
+you please change the files in /usr/share/alsa/cards accordingly?
+
+-- 
+Alexander E. Patrakov
