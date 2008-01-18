@@ -1,19 +1,16 @@
-From: forwind <forward@forwind.net>
-Subject: problems with Intel Corporation 82801H (ICH8 Family)
-	HD Audio	Controller (rev 03)
-Date: Thu, 17 Jan 2008 23:30:37 +0000
-Message-ID: <1200612637.5741.29.camel@localhost>
-Reply-To: forward@forwind.net
+From: Jiang zhe <zhe.jiang@intel.com>
+Subject: Re: intel-hd on an intel G33 motherboard
+Date: Fri, 18 Jan 2008 10:26:25 +0800
+Message-ID: <1200623185.2028.42.camel@localhost.localdomain>
+References: <BAY109-W142AC68EEEFBE84915C87CA9410@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from harwood.textdrive.com (harwood.textdrive.com [207.7.108.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDDEE24736
-	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 00:30:44 +0100 (CET)
-Received: from [192.168.1.101] (i-83-67-85-6.freedom2surf.net [83.67.85.6])
-	by harwood.textdrive.com (Postfix) with ESMTP id 050B234279
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jan 2008 23:30:38 +0000 (GMT)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 291BD2477E
+	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 03:25:20 +0100 (CET)
+In-Reply-To: <BAY109-W142AC68EEEFBE84915C87CA9410@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,125 +20,235 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: De Fuuss <fuuss@hotmail.com>
+Cc: Claudio Matsuoka <cmatsuoka@gmail.com>, ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
+On Thu, 2008-01-17 at 19:31 +0000, De Fuuss wrote:
+> Hi,
+> 
+> Indeed it works. As you mght have noticed I'm new to ALSA ;-) and I hadn't noticed that some of the channels could be muted. I thought they were muted only when at 0%. I also get "hda_codec_setup_stream:NID=" lines in dmesg now. I'm really sorry about that, it's really a beginner's mistake.
+> 
+> At least one good thing came out of it: I can confirm that hda_intel works with model=6stack-hp on the XPC Shuttle SG33G5M . I will continue to carry out tests to see if there are any issues with Mic, line out, spdifs etc..
+> 
+Since there are only five jacks on the back panel, 
+It's better to implement a 5stack-hp model for it.
+I will do it.
 
-I am having difficulty getting a friends on-board speakers working on
-her laptop. After some reading of forums I'm not sure whether there is a
-solution for this or not ?
+Best regards!
 
-The setup and details can be read below. The headphones work fine but
-the speakers are mute even though nothing is muted. I installed from
-source alsa version 1.0.15rc3 but to no avail.
-
-
-ALSA Audio Debug v0.1.0 - Thu Jan 17 23:21:23 GMT 2008
-http://alsa.opensrc.org/aadebug
-http://www.gnu.org/licenses/gpl.txt
-
-Kernel ----------------------------------------------------
-Linux laura-laptop 2.6.22-14-rt #1 SMP PREEMPT RT Tue Dec 18 10:01:34
-UTC
-2007 i686 GNU/Linux
-
-Loaded Modules --------------------------------------------
-snd_rtctimer            4384  1
-snd_hda_intel         291616  1
-snd_pcm_oss            43264  0
-snd_mixer_oss          17664  1 snd_pcm_oss
-snd_pcm                80132  2 snd_hda_intel,snd_pcm_oss
-snd_page_alloc         11400  2 snd_hda_intel,snd_pcm
-snd_hwdep              10500  1 snd_hda_intel
-snd_seq_dummy           4740  0
-snd_seq_oss            33792  0
-snd_seq_midi            9600  0
-snd_rawmidi            25728  1 snd_seq_midi
-snd_seq_midi_event      8576  2 snd_seq_oss,snd_seq_midi
-snd_seq                54128  7
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_timer              24324  3 snd_rtctimer,snd_pcm,snd_seq
-snd_seq_device          9228  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_rawmidi,snd_seq
-snd                    55428  13
-snd_hda_intel,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_hwdep,snd_seq_oss,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
-
-Modprobe Conf ---------------------------------------------
-Warning: module config file does not exist
-This means any kernel modules will not be auto loaded
-See your linux distro docs on how to create this file
-
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.15rc3.
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xfc200000 irq 22
-  2:        : timer
-  3:        : sequencer
-  4: [ 0- 2]: digital audio capture
-  5: [ 0- 1]: digital audio playback
-  6: [ 0- 0]: digital audio playback
-  7: [ 0- 0]: digital audio capture
-  8: [ 0- 1]: hardware dependent
-  9: [ 0- 0]: hardware dependent
- 10: [ 0]   : control
-00-01: HDA Codec 1
-00-00: HDA Codec 0
-00-02: ALC883 Analog : ALC883 Analog : capture 2
-00-01: ALC883 Digital : ALC883 Digital : playback 1
-00-00: ALC883 Analog : ALC883 Analog : playback 1 : capture 2
-Client info
-  cur  clients : 4
-  peak clients : 4
-  max  clients : 192
-
-Client   0 : "System" [Kernel]
-  Port   0 : "Timer" (Rwe-)
-  Port   1 : "Announce" (R-e-)
-    Connecting To: 15:0
-Client  14 : "Midi Through" [Kernel]
-  Port   0 : "Midi Through Port-0" (RWe-)
-Client  15 : "OSS sequencer" [Kernel]
-  Port   0 : "Receiver" (-we-)
-    Connected From: 0:1
-Client 128 : "TiMidity" [User]
-  Port   0 : "TiMidity port 0" (-We-)
-  Port   1 : "TiMidity port 1" (-We-)
-  Port   2 : "TiMidity port 2" (-We-)
-  Port   3 : "TiMidity port 3" (-We-)
-  Output pool :
-    Pool size          : 500
-    Cells in use       : 0
-    Peak cells in use  : 0
-    Alloc success      : 0
-    Alloc failures     : 0
-  Input pool :
-    Pool size          : 1000
-    Cells in use       : 0
-    Peak cells in use  : 0
-    Alloc success      : 0
-    Alloc failures     : 0
-
-Dev Snd ---------------------------------------------------
-controlC0  hwC0D0  hwC0D1  pcmC0D0c  pcmC0D0p  pcmC0D1p  pcmC0D2c  seq 
-timer
-
-CPU -------------------------------------------------------
-model name      : Intel(R) Core(TM)2 Duo CPU     T7300  @ 2.00GHz
-cpu MHz         : 2001.000
-model name      : Intel(R) Core(TM)2 Duo CPU     T7300  @ 2.00GHz
-cpu MHz         : 2001.000
-
-RAM -------------------------------------------------------
-MemTotal:      1028132 kB
-SwapTotal:     3028212 kB
-
-Hardware --------------------------------------------------
-00:00.0 Host bridge: Intel Corporation Mobile PM965/GM965/GL960 Memory
-Controller Hub (rev 03)
-
-does this sound familiar or is everybody blue in the face from hearing
-about this 'bug' :)?
-
-Best regards,
-Conor
+> I'd like to thank all those that helped me for their continued patience and understanding. ALSA rocks because of you!
+> 
+> Regards,
+> 
+> Patrick
+> 
+> > From: zhe.jiang@intel.com
+> > To: fuuss@hotmail.com
+> > Date: Thu, 17 Jan 2008 11:36:32 +0800
+> > CC: cmatsuoka@gmail.com; alsa-devel@alsa-project.org
+> > Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> >
+> > On Wed, 2008-01-16 at 23:06 +0000, De Fuuss wrote:
+> >> Ups my bad, somehow the model number got commented out by an update script I ran yesterday. The drivers were recompiled with the "with-debug=detect" option set. I've attached the dmesg, codec#0 output and amixer contents.
+> >> Dmesg is not very talkative, it did not show "hda_codec_setup_stream:NID=", however I get something of the type "hda_generic: no proper output path found".
+> >> About the testing, I performed speaker-test every time I changed something (still only output on "Front L/R channels").
+> >>
+> >
+> > I guess that the "hda_generic: no proper output" is caused during
+> > detect another codec.
+> >
+> > It's strange that there is no messages like
+> > "hda_codec_setup_stream:NID=" when you run speaker-test.
+> >
+> >>From you amixer1.txt, I found that you muted the Surround,C/LFE and
+> > Side.Please unmute them.
+> >
+> > Did you just run the "speaker-test -Dplug:surround71 -c8 -sX" with the
+> > X=0 and X=1?
+> > If it is true, you should change the X from 0 to 8.
+> >
+> > Best regards!
+> >
+> >
+> >> Patrick
+> >>
+> >>> From: zhe.jiang@intel.com
+> >>> To: fuuss@hotmail.com
+> >>> Date: Wed, 16 Jan 2008 13:49:43 +0800
+> >>> CC: cmatsuoka@gmail.com; alsa-devel@alsa-project.org
+> >>> Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> >>>
+> >>> On Wed, 2008-01-16 at 02:22 +0800, De Fuuss wrote:
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> I have recompiled the driver with --with-debug=detect. Dmesg output is
+> >>>> attached to this mail. ALSA specificities seem to be present this
+> >>>> time.
+> >>> Hi,
+> >>>
+> >>>>From the dmesg, there is "hda_codec: Unknown model for ALC883, trying
+> >>> auto-probe from BIOS"
+> >>> It looks like that no "model=" is assigned.
+> >>> Did you assign model for the driver?
+> >>>
+> >>> Can you play some music?
+> >>> Then there will be some info in the dmesg like
+> >>> "hda_codec_setup_stream:NID= ".
+> >>> Please paste such info and give the result of
+> >>> "cat /proc/asound/card0/codec#0".
+> >>>
+> >>> BTW, how did you do the testing?
+> >>> You run speaker-test or by other way?
+> >>>
+> >>>>From the codec info, it seems that there are paths from DAC to Jack.
+> >>> So it's a little weird that all other jacks are silent.
+> >>>
+> >>> Thanks!
+> >>>
+> >>>> Hope this helps.
+> >>>>
+> >>>> Best regards,
+> >>>>
+> >>>> Patrick
+> >>>>
+> >>>>> From: zhe.jiang@intel.com
+> >>>>> To: fuuss@hotmail.com
+> >>>>> Date: Tue, 15 Jan 2008 09:32:35 +0800
+> >>>>> CC: cmatsuoka@gmail.com; alsa-devel@alsa-project.org
+> >>>>> Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> >>>>>
+> >>>>> On Mon, 2008-01-14 at 17:11 +0000, De Fuuss wrote:
+> >>>>>> The jumper is now set to enable onboard (Intel HDA) audio.
+> >>>>>> At the back of the barebone there are 5 jacks (4 channels for 7.1
+> >>>> and 1 line in channel) + 1 spdif out.
+> >>>>>> From these, using 6stack-hp, only the "Front L/R" jack works, none
+> >>>> of the others
+> >>>>>> On the front, there are 2 jacks (1 headphones and 1 microphone).
+> >>>> The headphone jack works.
+> >>>>>>
+> >>>>> Can you tell us how you did the testing?
+> >>>>>>From the driver code, it's not likely that all other jacks don't
+> >>>> work.
+> >>>>>
+> >>>>> Because the driver support up-mixing, you can play a 2-channel music
+> >>>> and
+> >>>>> get sound from 4 jacks on the back panel.
+> >>>>>
+> >>>>> I read the dmesg output that you sent to me.
+> >>>>> But there is no alsa debug info in it.
+> >>>>> Did you really configure the driver with the option
+> >>>>> "--with-debug=detect"?
+> >>>>> If not, please try it and paste the dmesg info, it is helpful to
+> >>>> trace
+> >>>>> the issue.
+> >>>>>
+> >>>>> Best regards!
+> >>>>> Jiang,zhe
+> >>>>>> All the channels have been set to 100% in alsamixer.
+> >>>>>>
+> >>>>>> Considering that a week ago I had 0.0 and today I'm at 2.0, it's
+> >>>> already a improvement. ;-)
+> >>>>>>
+> >>>>>> Patrick
+> >>>>>>
+> >>>>>>> Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> >>>>>>> From: zhe.jiang@intel.com
+> >>>>>>> To: fuuss@hotmail.com
+> >>>>>>> CC: cmatsuoka@gmail.com; alsa-devel@alsa-project.org
+> >>>>>>> Date: Mon, 14 Jan 2008 16:43:00 +0800
+> >>>>>>>
+> >>>>>>> On Mon, 2008-01-14 at 02:06 +0800, De Fuuss wrote:
+> >>>>>>>>
+> >>>>>>>> Following your advice, I tested per channel output. Using either
+> >>>>>>>> 6stack-dig or 6stack-hp, I get noise from Front Left and Right
+> >>>> jacks,
+> >>>>>>>> using speaker-test (X=1 and 2) but not on any other channels.
+> >>>>>>>
+> >>>>>>> Hi,
+> >>>>>>> Did you mean that after you changed the 'Jumper',
+> >>>>>>> you could get the sound from the Front jack on the back channel?
+> >>>>>>>
+> >>>>>>>> Patrick
+> >>>>>>>>
+> >>>>>>>>> Date: Sun, 13 Jan 2008 01:01:50 -0200
+> >>>>>>>>> From: cmatsuoka@gmail.com
+> >>>>>>>>> To: fuuss@hotmail.com
+> >>>>>>>>> CC: zhe.jiang@intel.com; alsa-devel@alsa-project.org
+> >>>>>>>>> Subject: Re: [alsa-devel] intel-hd on an intel G33 motherboard
+> >>>>>>>>>
+> >>>>>>>>> 2008/1/12 De Fuuss :
+> >>>>>>>>>
+> >>>>>>>>>> I get the uneasy feeling that something is messed up with this
+> >>>>>>>> board. Anyway, for completeness' sake, I attached the results of
+> >>>>>>>> amixer contents, cat /proc/asound/card0/codec#0 and dmesg for the
+> >>>>>>>> module loaded as 6stack-dig. I have to try 6stack-hp again to
+> >>>> confirm
+> >>>>>>>> if I get something there.
+> >>>>>>>>>
+> >>>>>>>>> I fixed the Inspiron output, and I'm adding the SG33G5M codec to
+> >>>> the
+> >>>>>>>>> codecgraph codecs collection (git repository at
+> >>>>>>>>> http://helllabs.org/git/codecgraph.git). If nodes 0x14, 0x15,
+> >>>> 0x16
+> >>>>>>>> and
+> >>>>>>>>> 0x17 are the front, rear, clfe and side connectors in the back
+> >>>>>>>> panel,
+> >>>>>>>>> 6stack-hp should work (at least for the outputs). You can test
+> >>>> the
+> >>>>>>>>> outputs using "speaker-test -Dplug:surround71 -c8 -sX" (where X
+> >>>>>>>> varies
+> >>>>>>>>> from 1 to 8) and a pair of headphones.
+> >>>>>>>>> _______________________________________________
+> >>>>>>>>> Alsa-devel mailing list
+> >>>>>>>>> Alsa-devel@alsa-project.org
+> >>>>>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >>>>>>>>
+> >>>>>>>> _________________________________________________________________
+> >>>>>>>> Express yourself instantly with MSN Messenger! Download today
+> >>>> it's
+> >>>>>>>> FREE!
+> >>>>>>>> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> >>>>>>>> _______________________________________________
+> >>>>>>>> Alsa-devel mailing list
+> >>>>>>>> Alsa-devel@alsa-project.org
+> >>>>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >>>>>>>>
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>
+> >>>>>> _________________________________________________________________
+> >>>>>> Express yourself instantly with MSN Messenger! Download today it's
+> >>>> FREE!
+> >>>>>> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> >>>>>
+> >>>>> _______________________________________________
+> >>>>> Alsa-devel mailing list
+> >>>>> Alsa-devel@alsa-project.org
+> >>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >>>>
+> >>>> _________________________________________________________________
+> >>>> Express yourself instantly with MSN Messenger! Download today it's
+> >>>> FREE!
+> >>>> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> >>>>
+> >>>>
+> >>>
+> >>> _______________________________________________
+> >>> Alsa-devel mailing list
+> >>> Alsa-devel@alsa-project.org
+> >>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >>
+> >> _________________________________________________________________
+> >> Express yourself instantly with MSN Messenger! Download today it's FREE!
+> >> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> >
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> _________________________________________________________________
+> Express yourself instantly with MSN Messenger! Download today it's FREE!
+> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
