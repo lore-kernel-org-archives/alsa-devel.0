@@ -1,27 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 10/17] Don't lock the codec list
-	in	snd_soc_dapm_new_widgets()
-Date: Fri, 18 Jan 2008 10:18:16 +0000
-Message-ID: <20080118101816.GA19291@rakim.wolfsonmicro.main>
-References: <1199971035-13553-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-7-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-8-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-9-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1199971035-13553-10-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<bc64b4640801151540n4cb66f99u68ba0d42c91b5ff6@mail.gmail.com>
+From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
+Subject: Re: HDA codec graphing
+Date: Fri, 18 Jan 2008 08:39:07 -0200
+Message-ID: <5f52f6d70801180239x4be6c132s55d222e1c3d391cf@mail.gmail.com>
+References: <5f52f6d70801170424o4682381fhc12416125a1b66a8@mail.gmail.com>
+	<s5hwsq8ecgt.wl%tiwai@suse.de>
+	<5f52f6d70801171018g334caca6k6d7bd49b9b1ef2@mail.gmail.com>
+	<1200630493.5011.141.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A8C262483E
-	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 11:18:17 +0100 (CET)
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 465BE24851
+	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 11:39:09 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so695964rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 02:39:07 -0800 (PST)
+In-Reply-To: <1200630493.5011.141.camel@razman.gruemaster.com>
 Content-Disposition: inline
-In-Reply-To: <bc64b4640801151540n4cb66f99u68ba0d42c91b5ff6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,53 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry <dbaryshkov@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 16, 2008 at 02:40:55AM +0300, Dmitry wrote:
+On Jan 18, 2008 2:28 AM, Tobin Davis <tdavis@dsl-only.net> wrote:
 
-> I'm sorry, but I tested this patch only now. And I just got another
-> message from lockdep:
+>  I ran this on my home system (Intel DP965LT - STAC9227).  Attached is the
+> graph to add to your samples.
 
-Could you give this patch a try, please?
+Could you send me the subdevice ID and the codec file? We store the
+samples in codec file format (instead of the generated ps/svg/png
+files).
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f5fe7c6..283a0ba 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1131,7 +1131,6 @@ int snd_soc_register_card(struct snd_soc_device *socdev)
- 	struct snd_soc_machine *machine = socdev->machine;
- 	int ret = 0, i, ac97 = 0, err = 0;
- 
--	mutex_lock(&codec->mutex);
- 	for(i = 0; i < machine->num_links; i++) {
- 		if (socdev->machine->dai_link[i].init) {
- 			err = socdev->machine->dai_link[i].init(codec);
-@@ -1157,12 +1156,14 @@ int snd_soc_register_card(struct snd_soc_device *socdev)
- 		goto out;
- 	}
- 
-+	mutex_lock(&codec->mutex);
- #ifdef CONFIG_SND_SOC_AC97_BUS
- 	if (ac97) {
- 		ret = soc_ac97_dev_register(codec);
- 		if (ret < 0) {
- 			printk(KERN_ERR "asoc: AC97 device register failed\n");
- 			snd_card_free(codec->card);
-+			mutex_unlock(&codec->mutex);
- 			goto out;
- 		}
- 	}
-@@ -1175,8 +1176,10 @@ int snd_soc_register_card(struct snd_soc_device *socdev)
- 	err = device_create_file(socdev->dev, &dev_attr_codec_reg);
- 	if (err < 0)
- 		printk(KERN_WARNING "asoc: failed to add codec sysfs entries\n");
--out:
-+
- 	mutex_unlock(&codec->mutex);
-+
-+out:
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_register_card);
+
+>  I also am submitting the first (of possibly many) patches.  This one will
+> also look in the $PWD for the codecgraph.py file, so users who don't wish to
+> install this can just download and run it in place.
+>
+>  I noticed a few output errors as well:
+>
+>  6: Unknown item: No Modem Function Group found
+>  10: Unknown item: Default PCM:
+>  But as I am not yet familiar with python, I'd like to just report these for
+> now.
+
+Thanks. In fact the tool is Eduardo's, I added the wrapper shell
+instead of building that functionality into the Python script exactly
+because I'm not familiar with Python as well, but I though this script
+was a good excuse to learn it ;) So eventually (soon, I hope) I'll
+change the main script to pipe the output directly into graphviz and
+get rid of the wrapper.
