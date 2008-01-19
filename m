@@ -1,14 +1,20 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda_codec: Added power management for ADC/DAC's
-Date: Fri, 18 Jan 2008 17:15:52 -0500
-Message-ID: <47912518.5030405@embeddedalley.com>
+From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
+Subject: Re: HDA codec graphing
+Date: Fri, 18 Jan 2008 23:39:10 -0200
+Message-ID: <5f52f6d70801181739h4aa176dcwa4dc3ac80e1c332c@mail.gmail.com>
+References: <5f52f6d70801170424o4682381fhc12416125a1b66a8@mail.gmail.com>
+	<fmql6r$vh6$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp106.biz.mail.mud.yahoo.com (smtp106.biz.mail.mud.yahoo.com
-	[68.142.200.254]) by alsa0.perex.cz (Postfix) with SMTP id 93D9024624
-	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 23:15:57 +0100 (CET)
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA86A246FB
+	for <alsa-devel@alsa-project.org>; Sat, 19 Jan 2008 02:39:12 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so865082rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 17:39:10 -0800 (PST)
+In-Reply-To: <fmql6r$vh6$1@ger.gmane.org>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,159 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Added power management support to muted DACs and ADCs. They are set into D3 state when both channels are muted, and D0 when unmuted. We specify the ADC in the HDA_CODEC_MUTE_IDX instead of the ADC mux, so that we can easily know which node to power manage, and we use the connection list to get the needed mux node.
+2008/1/18 Alexander E. Patrakov <patrakov@gmail.com>:
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
-diff -r 1cb5fe1b2443 pci/hda/hda_codec.c
---- a/pci/hda/hda_codec.c	Thu Jan 17 17:44:49 2008 +0100
-+++ b/pci/hda/hda_codec.c	Fri Jan 18 11:16:36 2008 -0500
-@@ -1091,11 +1091,19 @@ int snd_hda_mixer_amp_switch_get(struct 
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	hda_nid_t nid = get_amp_nid(kcontrol);
-+	hda_nid_t conn_list[1];
- 	int chs = get_amp_channels(kcontrol);
- 	int dir = get_amp_direction(kcontrol);
- 	int idx = get_amp_index(kcontrol);
-+	int wcaps = get_wcaps(codec, nid);
-+	int wtype = (wcaps & AC_WCAP_TYPE) >> AC_WCAP_TYPE_SHIFT;
- 	long *valp = ucontrol->value.integer.value;
- 
-+	/* if pin is a adc get the mux connection */
-+	if (wtype == AC_WID_AUD_IN) {
-+		snd_hda_get_connections(codec, nid, conn_list, 1);
-+		nid = conn_list[0];
-+	}
- 	if (chs & 1)
- 		*valp++ = (snd_hda_codec_amp_read(codec, nid, 0, dir, idx) &
- 			   HDA_AMP_MUTE) ? 0 : 1;
-@@ -1109,24 +1117,52 @@ int snd_hda_mixer_amp_switch_put(struct 
- 				 struct snd_ctl_elem_value *ucontrol)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	hda_nid_t ctl_nid = get_amp_nid(kcontrol);
- 	hda_nid_t nid = get_amp_nid(kcontrol);
-+	hda_nid_t conn_list[1];
- 	int chs = get_amp_channels(kcontrol);
- 	int dir = get_amp_direction(kcontrol);
- 	int idx = get_amp_index(kcontrol);
-+	int wcaps = get_wcaps(codec, nid);
-+	int wtype = (wcaps & AC_WCAP_TYPE) >> AC_WCAP_TYPE_SHIFT;
- 	long *valp = ucontrol->value.integer.value;
--	int change = 0;
-+	int change = 0, val = 0;
- 
- 	snd_hda_power_up(codec);
-+	/* if pin is a adc get the mux connection */
-+	if (wtype == AC_WID_AUD_IN) {
-+		snd_hda_get_connections(codec, nid, conn_list, 1);
-+		nid = conn_list[0];
-+	}
- 	if (chs & 1) {
- 		change = snd_hda_codec_amp_update(codec, nid, 0, dir, idx,
- 						  HDA_AMP_MUTE,
- 						  *valp ? 0 : HDA_AMP_MUTE);
-+		val = !*valp;
- 		valp++;
- 	}
--	if (chs & 2)
-+	if (chs & 2) {
- 		change |= snd_hda_codec_amp_update(codec, nid, 1, dir, idx,
- 						   HDA_AMP_MUTE,
- 						   *valp ? 0 : HDA_AMP_MUTE);
-+		val &= !*valp;
-+	}
-+
-+	/* check for power management support */
-+	if ((wcaps & AC_WCAP_POWER) && (wcaps != AC_WID_AUD_MIX)) {
-+		if ((chs != 3) && (wcaps & AC_WCAP_STEREO)) {
-+			struct hda_amp_info *info;
-+			info = get_alloc_amp_hash(codec,
-+						HDA_HASH_KEY(nid, dir, idx));
-+			/* get the other channel value */
-+			val &= !(get_vol_mute(codec, info, nid,
-+					~chs & 3, dir, idx) & HDA_AMP_MUTE);
-+		}
-+		/* power down adc/dac if both channels are muted */
-+		snd_hda_codec_write(codec, ctl_nid, 0, AC_VERB_SET_POWER_STATE,
-+							val ? AC_PWRST_D3 : 0);
-+	}
-+
- #ifdef CONFIG_SND_HDA_POWER_SAVE
- 	if (codec->patch_ops.check_power_status)
- 		codec->patch_ops.check_power_status(codec, nid);
-diff -r 1cb5fe1b2443 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Thu Jan 17 17:44:49 2008 +0100
-+++ b/pci/hda/patch_sigmatel.c	Thu Jan 17 20:17:50 2008 -0500
-@@ -638,10 +638,10 @@ static struct snd_kcontrol_new stac92hd7
- 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 3),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x20, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x20, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1a, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x1, 0x21, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x21, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x1b, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_VOLUME("Front Mic Mixer Capture Volume", 0x1d, 0, HDA_INPUT),
- 	HDA_CODEC_MUTE("Front Mic Mixer Capture Switch", 0x1d, 0, HDA_INPUT),
-@@ -664,10 +664,10 @@ static struct snd_kcontrol_new stac92hd7
- 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 4),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x20, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x20, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1a, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x1, 0x21, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x21, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x1b, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_VOLUME("Front Mic Mixer Capture Volume", 0x1d, 0, HDA_INPUT),
- 	HDA_CODEC_MUTE("Front Mic Mixer Capture Switch", 0x1d, 0, HDA_INPUT),
-@@ -690,10 +690,10 @@ static struct snd_kcontrol_new stac92hd7
- 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A1, 5),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x20, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x20, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1a, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x1, 0x21, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x21, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x1b, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_VOLUME("Front Mic Mixer Capture Volume", 0x1d, 0, HDA_INPUT),
- 	HDA_CODEC_MUTE("Front Mic Mixer Capture Switch", 0x1d, 0, HDA_INPUT),
-@@ -716,11 +716,11 @@ static struct snd_kcontrol_new stac92hd7
- 	STAC_INPUT_SOURCE(2),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x1c, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1c, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x12, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_VOLUME_IDX("Capture Mux Volume", 0x0, 0x1a, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x1, 0x1d, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x1d, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x13, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_VOLUME_IDX("Capture Mux Volume", 0x1, 0x1b, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_MUTE("Analog Loopback 1", 0x17, 0x3, HDA_INPUT),
-@@ -735,11 +735,11 @@ static struct snd_kcontrol_new stac92hd7
- 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A0, 2),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x1c, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1c, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x12, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_VOLUME_IDX("Capture Mux Volume", 0x0, 0x1a, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x1, 0x1d, 0x0, HDA_OUTPUT),
--	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x1d, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 0x1, 0x13, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_VOLUME_IDX("Capture Mux Volume", 0x1, 0x1b, 0x0, HDA_OUTPUT),
- 
- 	HDA_CODEC_MUTE_MONO("Mono Playback Switch", 0x14, 0x1, 0, HDA_INPUT),
+> Please find attached a codec file for SigmaTel STAC9227, for addition to the
+> samples on your web page.
+
+Thanks, is that an Intel DG965SS board?
