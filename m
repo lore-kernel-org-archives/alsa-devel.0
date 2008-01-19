@@ -1,17 +1,16 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Support for Compaq Presario F700 - model 755US
-	-	NVidia MCP67 Audio - Codec Conexant 5051
-Date: Sat, 19 Jan 2008 03:56:58 -0800
-Message-ID: <1200743818.5011.247.camel@razman.gruemaster.com>
-References: <200801181655.05217.philippe@paravicini.com>
+From: "Mike Mazarick" <mazarick@bellsouth.net>
+Subject: Last call - get on the linux dev Gadget Labs card
+	mailing list if you want to be notified
+Date: Sat, 19 Jan 2008 08:46:16 -0500
+Message-ID: <000801c85aa1$aa610a60$ff231f20$@net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0FF3124740
-	for <alsa-devel@alsa-project.org>; Sat, 19 Jan 2008 12:57:00 +0100 (CET)
-In-Reply-To: <200801181655.05217.philippe@paravicini.com>
+Received: from fmailhost04.isp.att.net (fmailhost04.isp.att.net
+	[207.115.11.54]) by alsa0.perex.cz (Postfix) with ESMTP id 304F8245A3
+	for <Alsa-devel@alsa-project.org>; Sat, 19 Jan 2008 14:46:13 +0100 (CET)
+Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,205 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Philippe Paravicini <philippe@paravicini.com>
-Cc: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have already requested documentation and a development board from
-Conexant, so I should be able to get a fully functional driver going
-soon.  In the meantime, I'll try to get a test patch out to you as soon
-as possible.
+There is a project to develop a Gadget Labs Alsa driver for Linux audio.
 
-Tobin
+ 
 
-On Fri, 2008-01-18 at 16:55 -0800, Philippe Paravicini wrote:
+A mailing list has been established for this project so people could track
+the progress and release to the public of the linux driver for the GL card. 
 
-> I recently purchased the laptop listed above and installed kubuntu-7.10-desktop-amd64 Feisty on it.
-> 
-> The sound card works, but, much to my chagrin, plugging in the headphone jack does not mute the speaker.  
-> 
-> <wining>
-> This is less than ideal for me because I use Skype quite a bit, and work in a no-walls small office with other people.  Having the ability to use my headset for talking on the phone and drowning out ambient noise is important.
-> </wining><deepbreath/>
-> 
-> I have googled high and low and have tried various suggested solutions, including changing:
-> 
-> 	options snd-hda-intel model=laptop
-> 
-> in /etc/modprobe.d/alsa-base to various settings (laptop-hp, laptop-eahd, test).
-> 
-> I have also downloaded, compiled and installed the 1.0.15 driver and utils according to the instructions at:
-> 
->   https://help.ubuntu.com/community/HdaIntelSoundHowto
-> 
-> without success.
-> 
-> I consulted the page at:
-> 
-> http://www.mjmwired.net/kernel/Documentation/sound/alsa/ALSA-Configuration.txt
-> 
-> dated 2007-10-11 and could note see support for the Conexant 5051 Codec or NVidia MCP67 Audio.
-> 
-> Has anyone had experience with this soundcard/codec  and gotten the headphones jack to mute the speakers correctly ?
-> 
-> Any help would be greatly appreciated. I  am a java programmer with very high reverence for linux C-programmers and would be happy to help test a patch for this device (I may need a little help to get going), or trade for java programming/consulting.
-> Please let me know if you additional information other than the one listed below.
-> 
-> Thank you kindly for any help.
-> 
-> Sincerely, 
-> 
-> Philippe Paravicini
-> 
-> lspci -v outputs:
-> ...
-> 00:07.0 Audio device: nVidia Corporation MCP67 High Definition Audio (rev a1)
->   Subsystem: Hewlett-Packard Company Unknown device 30ea
-> ...
-> 
-> lspci -vn
-> ...
-> 00:07.0 0403: 10de:055c (rev a1)
->   Subsystem: 103c:30ea
->   Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 21
->   Memory at f6480000 (32-bit, non-prefetchable) [size=16K]
->   Capabilities: [44] Power Management version 2
->   Capabilities: [50] Message Signalled Interrupts: Mask+ 64bit+ Queue=0/0 Enable-
->   Capabilities: [6c] HyperTransport: MSI Mapping
-> ...
-> 
-> cat /proc/asound/card0/codec#0
-> 
-> Codec: Conexant ID 5051
-> Address: 0
-> Vendor Id: 0x14f15051
-> Subsystem Id: 0x103c30ea
-> Revision Id: 0x100000
-> Modem Function Group: 0x2
-> Default PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
-> Default Amp-In caps: N/A
-> Default Amp-Out caps: N/A
-> Node 0x10 [Audio Output] wcaps 0xc1d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=0
->   Amp-Out vals:  [0x3a 0x3a]
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
->   Power: 0x0
-> Node 0x11 [Audio Output] wcaps 0xc1d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=0
->   Amp-Out vals:  [0x4a 0x4a]
->   PCM:
->     rates [0x560]: 44100 48000 96000 192000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
->   Power: 0x0
-> Node 0x12 [Audio Output] wcaps 0x211: Stereo Digital
->   PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0xe]: 16 20 24
->     formats [0x5]: PCM AC3
-> Node 0x13 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
->   Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=0
->   Amp-Out vals:  [0x00]
-> Node 0x14 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
->   Amp-In caps: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=0
->   Amp-In vals:  [0x06 0x06] [0x35 0x35]
->   PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
->   Power: 0x0
->   Connection: 2
->      0x1d 0x17*
-> Node 0x15 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
->   Amp-In caps: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=0
->   Amp-In vals:  [0x4a 0x4a]
->   PCM:
->     rates [0x160]: 44100 48000 96000
->     bits [0xe]: 16 20 24
->     formats [0x1]: PCM
->   Power: 0x0
->   Connection: 1
->      0x18
-> Node 0x16 [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x081c: OUT HP Detect
->   Pin Default 0x02211030: [Jack] HP Out at Ext Front
->     Conn = 1/8, Color = Black
->   Pin-ctls: 0xc0: OUT HP
->   Power: 0x0
->   Connection: 2
->      0x10* 0x11
-> Node 0x17 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
->   Amp-In vals:
->   Pincap 0x081224: IN Detect
->   Pin Default 0x02a19020: [Jack] Mic at Ext Front
->     Conn = 1/8, Color = Pink
->   Pin-ctls: 0x24: IN
->   Power: 0x0
-> Node 0x18 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
->   Amp-In vals:
->   Pincap 0x081224: IN Detect
->   Pin Default 0x400001f0: [N/A] Line Out at Ext N/A
->     Conn = Unknown, Color = Unknown
->   Pin-ctls: 0x00:
->   Power: 0x0
-> Node 0x19 [Pin Complex] wcaps 0x400581: Stereo
->   Pincap 0x0814: OUT Detect
->   Pin Default 0x400001f0: [N/A] Line Out at Ext N/A
->     Conn = Unknown, Color = Unknown
->   Pin-ctls: 0x00:
->   Power: 0x0
->   Connection: 2
->      0x10 0x11*
-> Node 0x1a [Pin Complex] wcaps 0x400501: Stereo
->   Pincap 0x0810010: OUT EAPD
->   Pin Default 0x95170110: [Fixed] Speaker at Int Top
->     Conn = Analog, Color = Unknown
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 2
->      0x10* 0x11
-> Node 0x1b [Pin Complex] wcaps 0x400500: Mono
->   Pincap 0x0810010: OUT EAPD
->   Pin Default 0x400001f0: [N/A] Line Out at Ext N/A
->     Conn = Unknown, Color = Unknown
->   Pin-ctls: 0x40: OUT
->   Power: 0x0
->   Connection: 2
->      0x10* 0x11
-> Node 0x1c [Pin Complex] wcaps 0x400701: Stereo Digital
->   Pincap 0x0810: OUT
->   Pin Default 0x224511f0: [Jack] SPDIF Out at Sep Front
->     Conn = Optical, Color = Black
->   Pin-ctls: 0x00:
->   Power: 0x0
->   Connection: 1
->      0x12
-> Node 0x1d [Pin Complex] wcaps 0x40040b: Stereo Amp-In
->   Amp-In caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
->   Amp-In vals:
->   Pincap 0x0820: IN
->   Pin Default 0x400001f0: [N/A] Line Out at Ext N/A
->     Conn = Unknown, Color = Unknown
->   Pin-ctls: 0x00:
->   Power: 0x0
-> Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+There are currently ~10 people subscribed (it's a very small list).   If you
+have any interest in knowing when a linux driver is available for this card,
+I'd highly recommend following the progress by subscribing to the mailing
+list.    This will be significant to you primarily if you have a Gadget Labs
+card and want to use it with Mac OS X, because it will start to be feasible
+(and relatively easy) to have a Mac OS X driver when a linux driver is
+complete.   It is also significant to you if you want an inexpensive way to
+get 8 channels of  analog in/out from your computer with a high quality
+audio using linux audio tools.  The Gadget Labs card was 'state of the art'
+8 years ago, and is currently the least expensive way to get more than 4
+channels of studio quality input/output  to/from your computer (however, the
+other cards available are also excellent and close in price).   Of course,
+we are always interested in anyone that can help with this effort by
+providing beta testing of the software, assistance with coding the driver,
+assistance with documentation, general 'cheering us on' and encouragement,
+etc.
 
--- 
-Tobin Davis  
+ 
 
+The list is scheduled to go 'private' and available for subscribers only in
+5 days or less.  If you are interested in this, please subscribe before the
+list goes 'private'.   
 
-BOFH excuse #206:
+ 
 
-Police are examining all internet packets in the search for a narco-net-trafficker
+You will be able to subscribe after the list goes private, but won't be able
+to see postings with the latest information until after you have subscribed
+and been approved by the mailing list moderator.
+
+ 
+
+The way to subscribe to the mailing list is here:
+
+https://lists.sourceforge.net/lists/listinfo/wavepro-driver-developers
+
+ 
+
+The project summary page is here:
+
+http://sourceforge.net/projects/wavepro-driver/
+
+ 
+
+The project web page is here:
+
+http://wavepro-driver.sourceforge.net/
+
+ 
+
+-Mike Mazarick
