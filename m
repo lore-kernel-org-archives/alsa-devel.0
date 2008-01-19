@@ -1,23 +1,20 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
 Subject: Re: HDA codec graphing
-Date: Sat, 19 Jan 2008 00:04:46 -0200
-Message-ID: <5f52f6d70801181804oca5f060q6bd7eae716e8da7b@mail.gmail.com>
+Date: Sat, 19 Jan 2008 11:20:29 +0500
+Message-ID: <c072ca310801182220o3b49c0c6y3a63b7f93d87c2ae@mail.gmail.com>
 References: <5f52f6d70801170424o4682381fhc12416125a1b66a8@mail.gmail.com>
-	<s5hwsq8ecgt.wl%tiwai@suse.de>
-	<5f52f6d70801171018g334caca6k6d7bd49b9b1ef2@mail.gmail.com>
-	<1200630493.5011.141.camel@razman.gruemaster.com>
-	<5f52f6d70801180239x4be6c132s55d222e1c3d391cf@mail.gmail.com>
-	<1200667939.5011.170.camel@razman.gruemaster.com>
+	<fmql6r$vh6$1@ger.gmane.org>
+	<5f52f6d70801181739h4aa176dcwa4dc3ac80e1c332c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E42E24710
-	for <alsa-devel@alsa-project.org>; Sat, 19 Jan 2008 03:04:49 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so869220rvb.32
-	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 18:04:46 -0800 (PST)
-In-Reply-To: <1200667939.5011.170.camel@razman.gruemaster.com>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id B3D6C24738
+	for <alsa-devel@alsa-project.org>; Sat, 19 Jan 2008 07:20:30 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so2167935wag.8
+	for <alsa-devel@alsa-project.org>; Fri, 18 Jan 2008 22:20:29 -0800 (PST)
+In-Reply-To: <5f52f6d70801181739h4aa176dcwa4dc3ac80e1c332c@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,19 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Developers <alsa-devel@alsa-project.org>
+To: Claudio Matsuoka <cmatsuoka@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 18, 2008 12:52 PM, Tobin Davis <tdavis@dsl-only.net> wrote:
-
->  On Fri, 2008-01-18 at 08:39 -0200, Claudio Matsuoka wrote:
+2008/1/19, Claudio Matsuoka <cmatsuoka@gmail.com>:
+> 2008/1/18 Alexander E. Patrakov <patrakov@gmail.com>:
 >
-> Could you send me the subdevice ID and the codec file? We store the
-> samples in codec file format (instead of the generated ps/svg/png
-> files).
+> > Please find attached a codec file for SigmaTel STAC9227, for addition to the
+> > samples on your web page.
 >
->  Ok, attached.
+> Thanks, is that an Intel DG965SS board?
 
-Added, thanks. I also changed the way it finds the python script so
-you'll be able to run it from the same path as the wrapper script.
+Yes.
+
+-- 
+Alexander E. Patrakov
