@@ -1,19 +1,15 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: conversion of opti93x driver to use cs4231-lib
-Date: Sun, 20 Jan 2008 17:13:54 +0100
-Message-ID: <47937342.8070100@keyaccess.nl>
-References: <20080107200801.008a3cc1.krzysztof.h1@poczta.fm>
-	<s5hlk707dj7.wl%tiwai@suse.de> <478385D9.1000402@keyaccess.nl>
-	<47838A75.9090003@keyaccess.nl>
+From: Brian Hinz <bphinz@hotmail.com>
+Subject: Re: Si3054 and Lenovo3000 n100
+Date: Sun, 20 Jan 2008 12:44:49 -0500
+Message-ID: <BLU123-W30BF40CB7043E67B7B553AC83C0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2ABB624858
-	for <alsa-devel@alsa-project.org>; Sun, 20 Jan 2008 17:17:36 +0100 (CET)
-In-Reply-To: <47838A75.9090003@keyaccess.nl>
+Received: from blu139-omc3-s21.blu139.hotmail.com
+	(blu139-omc3-s21.blu139.hotmail.com [65.55.175.221])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FFDE248C0
+	for <alsa-devel@alsa-project.org>; Sun, 20 Jan 2008 18:44:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +19,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@suse.cz>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08-01-08 15:36, Rene Herman wrote:
 
->> Missed this one originally. I'll look into this in some detail but 
->> will need a few days. Obviously, if it works, it's desirable. Maybe 
->> Jaroslav knows why it's not that way now?
+11c1:1040 is not an SiLabs chip, it's an agere - see alsa bug #0003316:
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3316
+
+and agere still has not released a driver or documentation yet:
+
+http://linmodems.technion.ac.il/archive-seventh/msg03029.html
+
+it probably should be removed from patch_si3054.c though...
+
+-brian
+
+------------------------------
+ 
+Message: 3
+Date: Mon, 14 Jan 2008 12:07:15 +0100
+From: Takashi Iwai 
+Subject: Re: [alsa-devel] Si3054 and Lenovo3000 n100
+To: Vasily Khoruzhick 
+Cc: Andy Shevchenko , alsa-devel@alsa-project.org
+Message-ID: 
+Content-Type: text/plain; charset=US-ASCII
+ 
+At Sun, 13 Jan 2008 19:10:44 +0200,
+Vasily Khoruzhick wrote:
 > 
-> Oh, and by the way, I suppose it'll be trivial but a rediff would be 
-> good for testing.
-
-Just now found time but could you provide an updated one? Mucho reject on 
-cs4231_lib (which I didn't actually look at). Against some mainline tree 
-(2.6.23.x or 2.6.24-rc) is preferred. The test box is not my main box and 
-recompiling stuff on it is failry painful.
-
-(I have 930, 931 and 933 to test with by the way...)
-
-Rene.
+> On 13 January 2008 18:15:06 Andy Shevchenko wrote:
+>> Hi Vasily Khoruzhick!
+>>
+>>  On Sun, Jan 13, 2008 at 04:49:45PM +0200, Vasily Khoruzhick wrote next:
+>>> Hi, I have problems with setting up internal modem (regular si3054
+>>> sitting on hda bus) with subj notebook.
+>>
+>> Do you belive that the Si3054 clone? What is ids of your modem codec?
+>> If you get 11c1:1040 you lose this game.
+>>
+>> P.S. IIRC the n200 has unsupported modem codec. I guess your model too.
+> 
+> Btw, if it isn't compatible with Si3054, why its id added to patch_si3054.c 
+> file?
+ 
+Possibly mistakenly :)
+ 
+ 
+Takashi
