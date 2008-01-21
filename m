@@ -1,22 +1,17 @@
-From: Philippe Paravicini <philippe@paravicini.com>
-Subject: Re:
-	=?iso-8859-1?q?Support_for_Compaq_Presario_F700_-_mo?=
-	=?iso-8859-1?q?del_755US=09-=09NVidia_MCP67_Audio_-_Codec_Conexant?=
-	=?iso-8859-1?q?_5051?=
-Date: Mon, 21 Jan 2008 13:42:42 -0800
-Message-ID: <200801211342.43148.philippe@paravicini.com>
-References: <200801181655.05217.philippe@paravicini.com>
-	<200801211343.33892.herton@mandriva.com.br>
-	<1200931888.30379.36.camel@razman.gruemaster.com>
-Mime-Version: 1.0
+From: Marc Boucher <marc@linuxant.com>
+Subject: Re: [Fwd: Re: Code relsease to alsa.]
+Date: Mon, 21 Jan 2008 13:48:20 -0500
+Message-ID: <3FCB0D64-6192-4E16-B4DC-4EFC6734AB4C@linuxant.com>
+References: <1200932071.30379.41.camel@razman.gruemaster.com>
+	<s5h63xn9jjr.wl%tiwai@suse.de>
+Mime-Version: 1.0 (Apple Message framework v915)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp116.sbc.mail.sp1.yahoo.com (smtp116.sbc.mail.sp1.yahoo.com
-	[69.147.64.89]) by alsa0.perex.cz (Postfix) with SMTP id 8B89F248BB
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 22:42:48 +0100 (CET)
-In-Reply-To: <1200931888.30379.36.camel@razman.gruemaster.com>
-Content-Disposition: inline
+Received: from oasis.linuxant.com (oasis.linuxant.com [63.246.136.80])
+	by alsa0.perex.cz (Postfix) with ESMTP id B1759246CF
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 19:48:24 +0100 (CET)
+In-Reply-To: <s5h63xn9jjr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,145 +21,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Claudio Matsuoka <cmatsuoka@gmail.com>, alsa-user@alsa-project.org, Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>, "Linuxant support (Jonathan)" <support@linuxant.com>
 List-Id: alsa-devel@alsa-project.org
 
-Good news ! I installed the patch at:
 
-> http://www.linuxant.com/alsa-hg-20080120.patch
+Hi Takashi,
 
-and was able to get the jack to mute the speakers. I also tested w/ skype and 
-the mic appears to work properly. I understand from the email from the 
-linuxant people that there may still be a couple of issues with the driver, 
-but from my perspective it solved my short-term problem (jack not muting the 
-speakers).  I also see that the alsa-mixer and kmixer have more settings.
+Here's the sign-off:
 
-Thank you very much for your help,
-let me know if I can help you test the patch further.
+Signed-off-by: Marc Boucher <marc@linuxant.com>
 
-Open Source rocks !
+Do you have any specific comments about the code itself?
 
-Philippe Paravicini
+Kind regards,
 
+Marc
 
-For the sake of posterity, I describe below the steps that I took to install 
-the patched driver.
+--
+Marc Boucher
+Linuxant inc.
+http://www.linuxant.com
 
-The patch above, as stated in the email forwarded by the linuxant folks is 
-relative to the current source in the mercurial source repository as of 
-around 2008-11-20.  It will not work against the current 1.0.15 source 
-distribution, or prior sources.
+On 21-Jan-08, at 12:26 PM, Takashi Iwai wrote:
 
-Hence, one needs to download the source from the source repository.
-
-I followed these steps:
-
-1. 'apt-get install mercurial'  (for debian/ubuntu folks) to install the 
-mercurial source repository client
-
-2. download the 'alsa-driver' and 'alsa-kernel' sources as indicated at:
-
-	http://www.alsa-project.org/main/index.php/SourceCodeRepository
-	
- I installed these in /usr/src/alsa
-
-3. download the patch:
-
-	http://www.linuxant.com/alsa-hg-20080120.patch
-
-4. patch the alsa-kernel/pci/hda folder:
-
-	cp alsa-hg-20080120.pach alsa-kernel/pci/hda
-	cd alsa-kernel/pci/hda
-	patch -i alsa-hg-20080120.patch    (should run w/o errors)
-
-5. consult the alsa-driver/INSTALL file, section 'Compiling from HG Sources' 
-6. cd alsa-driver
-7. ./hgcompile
-8. make install
-9. reboot (there is probably a shorter way to reload the driver)
-
-
-Note that before taking the steps above, I attempted to fix the problem by 
-installing from source the  latest 1.0.15 version of the alsa-driver, 
-alsa-libs and alsa-utils projects, as described in:
-
-  https://help.ubuntu.com/community/HdaIntelSoundHowto
-
-Hence, I do not know whether the patched drive above will work when used with 
-versions 1.0.14 and prior of the alsa-libs and alsa-utils projects.
-
-
-
-----  Original Message  ----
-
-Subject: Re: [alsa-devel] Support for Compaq Presario F700 - model 755US	-	
-NVidia MCP67 Audio - Codec Conexant 5051
-Date: Monday 21 January 2008
-From: Tobin Davis <tdavis@dsl-only.net>
-To: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-
-> I already did.  They said they'd submit a patch sometime soon.  As a
-> matter of fact, I just got a message in my inbox from them, that I'll
-> forward.
+> At Mon, 21 Jan 2008 08:14:31 -0800,
+> Tobin Davis wrote:
+>>
+>> Forwarded from the good people at Linuxant.
+>>
+>> Tobin
+>> -------- Forwarded Message --------
+>> From: Marc Boucher <marc@linuxant.com>
+>> To: Tobin Davis <tdavis@dsl-only.net>
+>> Cc: Linuxant support (Jonathan) <support@linuxant.com>
+>> Subject: Re: Code relsease to alsa.
+>> Date: Mon, 21 Jan 2008 10:33:03 -0500
+>>
+>> Tobin,
+>>
+>> As promised here is our current tentative patch (relative to the
+>> current ALSA development tree in hg) for merging with ALSA.
+>>
+>> It is also available from:
+>>
+>> http://www.linuxant.com/alsa-hg-20080120.patch
+>>
+>> Naturally the changes are released under the GPL, so feel free to
+>> integrate them.
+>>
+>> Comments and improvements are welcome.
+>>
+>> Kind regards,
+>>
+>> Marc
+>>
+>> --
+>> Marc Boucher
+>> Linuxant inc.
+>> http://www.linuxant.com
 >
-> Tobin
+> First of all, thanks for the patch.
+> Now just taking a quick look, I'd like to ask you about the following
+> items:
 >
-> On Mon, 2008-01-21 at 13:43 -0200, Herton Ronaldo Krzesinski wrote:
-> > Em Monday 21 January 2008 09:03:30 Takashi Iwai escreveu:
-> > > At Sat, 19 Jan 2008 21:23:29 -0200,
-> > >
-> > > Herton Ronaldo Krzesinski wrote:
-> > > > Em Saturday 19 January 2008 12:45:52 Claudio Matsuoka escreveu:
-> > > > > On Jan 19, 2008 9:56 AM, Tobin Davis <tdavis@dsl-only.net> wrote:
-> > > > > > I have already requested documentation and a development board
-> > > > > > from Conexant, so I should be able to get a fully functional
-> > > > > > driver going soon.  In the meantime, I'll try to get a test patch
-> > > > > > out to you as soon as possible.
-> > > > >
-> > > > > If this is the Hermosa codec (see
-> > > > > http://helllabs.org/codecgraph/out/hp-spartan-ng.svg), Herton has
-> > > > > just finished fully functional support to it, based on the HP
-> > > > > "Spartan 1.1"
-> > > >
-> > > > Yes, it was working, but there were some things to sort out, like the
-> > > > Spartan 1.1 doesn't have to switch between capture source as each mic
-> > > > (int, ext) has its own adc, and I hacked it without removing the
-> > > > capture source from mixer.
-> > > >
-> > > > Also I worked on the same code provided by hsfmodem, that already has
-> > > > support for 5051, but I don't know why it wasn't sent upstream yet by
-> > > > Conexant/hsfmodem people.
-> > > >
-> > > > > laptop (subdevice ID is 14f1:5051).
-> > > > >
-> > > > > Herton, did you submit the patches for Hermosa support to the list?
-> > > >
-> > > > No, as I didn't fixed the patches for proper submission, and the part
-> > > > of hsfmodem probably Conexant/Linuxant people should send with proper
-> > > > Signed-offs etc. But anyway I'll attach here the patches for
-> > > > reference, that are not ready for inclusion and will not apply to
-> > > > current alsa tree.
-> > >
-> > > Thanks.  Do you happen to know how linuxant guys think of the patch
-> > > submission?  Of couse, the HSF modem part can be never merged to the
-> > > upstream, but the sane GPL'ed part could be good to merge.
-> >
-> > Hi, don't know too, I'll try to contact Linuxant and ask about submission
-> > for Hermosa support.
-> >
-> > > Takashi
-> >
-> > --
-> > []'s
-> > Herton
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> - Split the HSF modem part and other part.  The HSF modem part is
+>  hardly to be merged (as you know why), but the other parts could be
+>  merged easily if needed.
 >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> - Split the rest, misc fixes.  If the fix is reasonable, it should be
+>  applied immediately.
+>
+> These will make both of our lives much easier.
+>
+> And, one more thing:
+>
+> - Give your sign-off to be merged to the upstream
+>
+> This is mandatory for untrivial changes.  This clarifies the copyright
+> and avoids the possible legal issues in future.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>>
+>> On 19-Jan-08, at 6:40 PM, Marc Boucher wrote:
+>>
+>>>
+>>> Hi Tobin,
+>>>
+>>> We have isolated the modifications in patch form and are currently
+>>> working to merge them with the latest ALSA tree / submit them back
+>>> upstream.
+>>>
+>>> By the way, all changes and code under the modules/GPL/ directory
+>>> (including the hda subdirectory) of our modem driver are released
+>>> under the GPL, so you would be free to take these fixes if you'd  
+>>> like.
+>>>
+>>> However you would be also welcome to reviewing the patches that we
+>>> are about to submit. I will arrange to send you a copy asap (should
+>>> be next week).
+>>>
+>>> Kind regards, (and many thanks for your great contributions to ALSA)
+>>>
+>>> Marc
+>>>
+>>> PS: We could also try to help you getting any missing info on the
+>>> CX20561 or other things from Conexant...
+>>>
+>>> --
+>>> Marc Boucher
+>>> Linuxant inc.
+>>> http://www.linuxant.com
+>>>
+>>> On 19-Jan-08, at 1:07 PM, Tobin Davis wrote:
+>>>
+>>>> Hello,
+>>>>
+>>>> I'm the developer that put the current audio support for the
+>>>> Conexant HD Audio codecs in alsa.  I worked many hours on this,
+>>>> with testers around the world sending me feedback.  Most of the
+>>>> work was done prior to Conexant offering me any documentation.  I
+>>>> have since received documentation for both CX20549 (Venice), and
+>>>> CX20551 (Waikiki), but am waiting for the latest info on the new
+>>>> CX20561, which you apparently already have.
+>>>>
+>>>> I have also seen in your mailing list that you are providing
+>>>> several fixes to the audio portion of my code, but only making them
+>>>> available to users of your code, which requires a license agreement
+>>>> that I believe is incompatible with the GPL.  At the least, it
+>>>> prohibits someone like me taking any of these fixes and putting
+>>>> them in the mainstream alsa, where more users would benefit from
+>>>> them.
+>>>>
+>>>> What I'm asking, is if you could at least provide the audio
+>>>> modifications back upstream to alsa?  It would help out far more
+>>>> users (modem usage is on the decline - sorry), and you would have
+>>>> some benefit in that your name would be in the source as well.
+>>>>
+>>>>
+>>>> -- 
+>>>> Tobin Davis <tdavis@dsl-only.net>
+>>>
+>>
+>> -- Tobin  
+>> Davis 
+>>                                                                   
+>>
+>> no maintenance:
+>>        Impossible to fix.
+>>
+>>
+>
