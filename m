@@ -1,16 +1,16 @@
 From: Matthew Ranostay <mranostay@embeddedalley.com>
 Subject: Re: [PATCH 2/2] hda: Mono mux mixer support
-Date: Mon, 21 Jan 2008 13:33:42 -0500
-Message-ID: <4794E586.20506@embeddedalley.com>
-References: <4794D286.8050906@embeddedalley.com>
+Date: Mon, 21 Jan 2008 13:50:45 -0500
+Message-ID: <4794E985.70803@embeddedalley.com>
+References: <4794D286.8050906@embeddedalley.com> <s5h7ii39jy4.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp107.biz.mail.mud.yahoo.com (smtp107.biz.mail.mud.yahoo.com
-	[68.142.200.255]) by alsa0.perex.cz (Postfix) with SMTP id 3060924734
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 19:33:41 +0100 (CET)
-In-Reply-To: <4794D286.8050906@embeddedalley.com>
+Received: from smtp105.biz.mail.mud.yahoo.com (smtp105.biz.mail.mud.yahoo.com
+	[68.142.200.253]) by alsa0.perex.cz (Postfix) with SMTP id 7E64F2479D
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 19:50:49 +0100 (CET)
+In-Reply-To: <s5h7ii39jy4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,12 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Added check to be sure that input connections does not equal more than 3(or an overflow will occur), may be possible for future codecs to have more than 3 mono mux connections.
----
+Takashi Iwai wrote:
+> At Mon, 21 Jan 2008 12:12:38 -0500,
+> Matthew Ranostay wrote:
+>> @@ -2318,6 +2362,35 @@ static int stac92xx_auto_create_hp_ctls(
+>>  	return 0;
+>>  }
+>>  
+>> +/* labels for mono mux outputs */
+>> +static const char *stac92xx_mono_labels[3] = {
+>> +	"DAC0", "DAC1", "Mixer"
+>> +};
+>> +
+>> +/* create mono mux for mono out on capable codecs */
+>> +static int stac92xx_auto_create_mono_output_ctls(struct hda_codec *codec)
+>> +{
+>> +	struct sigmatel_spec *spec = codec->spec;
+>> +	struct hda_input_mux *mono_mux = &spec->private_mono_mux;
+>> +	int i, num_cons;
+>> +	hda_nid_t con_lst[HDA_MAX_NUM_INPUTS];
+> 
+> Make this con_lst[ARRAY_SIZE(stac92xx_mono_labsl)] and
+Done.
+
+> 
+>> +
+>> +	num_cons = snd_hda_get_connections(codec,
+>> +				spec->mono_nid,
+>> +				con_lst,
+>> +				HDA_MAX_NUM_INPUTS);
+> 
+> Pass ARRAY_SIZE(con_lst) here.  So that it won't be over the size of
+> the label array.
+> 
+Done. Maybe someday I'll remember of the 'ARRAY_SIZE' function without being reminded :)
+> 
+> thanks,
+> 
+> Takashi
+> 
+
 
 Add support for the mono mux on several 92HD7xxx codecs. Creates a dynamic mixer for the mux selection.
 
@@ -151,13 +189,13 @@ diff -r a035d5e4801c pci/hda/patch_sigmatel.c
 +	struct sigmatel_spec *spec = codec->spec;
 +	struct hda_input_mux *mono_mux = &spec->private_mono_mux;
 +	int i, num_cons;
-+	hda_nid_t con_lst[HDA_MAX_NUM_INPUTS];
++	hda_nid_t con_lst[ARRAY_SIZE(stac92xx_mono_labels)];
 +
 +	num_cons = snd_hda_get_connections(codec,
 +				spec->mono_nid,
 +				con_lst,
 +				HDA_MAX_NUM_INPUTS);
-+	if (!num_cons || num_cons > 3)
++	if (!num_cons || num_cons > ARRAY_SIZE(stac92xx_mono_labels))
 +		return -EINVAL;
 +
 +	for (i = 0; i < num_cons; i++) {
