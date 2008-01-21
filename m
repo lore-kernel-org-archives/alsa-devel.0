@@ -1,15 +1,22 @@
-From: mazarick@bellsouth.net
-Subject: Re: how do you people debug ALSA?
-Date: Mon, 21 Jan 2008 20:25:37 +0000
-Message-ID: <012120082025.22241.4794FFC1000089D6000056E122243651029B0A02D2089B9A019C04040A0DBF050C079D0E960E03@att.net>
+From: Philippe Paravicini <philippe@paravicini.com>
+Subject: Re:
+	=?iso-8859-1?q?Support_for_Compaq_Presario_F700_-_mo?=
+	=?iso-8859-1?q?del_755US=09-=09NVidia_MCP67_Audio_-_Codec_Conexant?=
+	=?iso-8859-1?q?_5051?=
+Date: Mon, 21 Jan 2008 13:42:42 -0800
+Message-ID: <200801211342.43148.philippe@paravicini.com>
+References: <200801181655.05217.philippe@paravicini.com>
+	<200801211343.33892.herton@mandriva.com.br>
+	<1200931888.30379.36.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmailhost06.isp.att.net (fmailhost06.isp.att.net
-	[204.127.217.106])
-	by alsa0.perex.cz (Postfix) with ESMTP id 628B82482E
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 21:25:40 +0100 (CET)
+Received: from smtp116.sbc.mail.sp1.yahoo.com (smtp116.sbc.mail.sp1.yahoo.com
+	[69.147.64.89]) by alsa0.perex.cz (Postfix) with SMTP id 8B89F248BB
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 22:42:48 +0100 (CET)
+In-Reply-To: <1200931888.30379.36.camel@razman.gruemaster.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,61 +27,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: wavepro-driver-developers@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, Claudio Matsuoka <cmatsuoka@gmail.com>, alsa-user@alsa-project.org, Herton Ronaldo Krzesinski <herton@mandriva.com.br>
 List-Id: alsa-devel@alsa-project.org
 
-"Mihaela Vitalariu" <admiralwolverine@gmail.com> wrote:
+Good news ! I installed the patch at:
 
-> I meant what tools do you use, what Debuggers?
-> In my post i wasn't complaining about ALSA, i was just curios about the
-> debugging tools that you use, from a developer's standpoint...
+> http://www.linuxant.com/alsa-hg-20080120.patch
 
-The group that I'm working with (to develop an alsa driver for the Gadget Labs soundcard) would
-be very interested in any input on this subject.   The team is made up of skilled C/C++ coders, but
-there is very little to no experience with writing a linux hardware driver.
+and was able to get the jack to mute the speakers. I also tested w/ skype and 
+the mic appears to work properly. I understand from the email from the 
+linuxant people that there may still be a couple of issues with the driver, 
+but from my perspective it solved my short-term problem (jack not muting the 
+speakers).  I also see that the alsa-mixer and kmixer have more settings.
 
-It would be fine to say "vi is the development environment, and we sprinkle the code with printk statements and take them out when the soup's done".   It would save us a lot of overhead in figuring out the best way to get on the same page with each other since it's a pretty new team.  Any other words of wisdom 
-from those who've been there would be very welcomed and appreciated.  If you use KDE, Eclipse, or 
-something else, that's fine too.
+Thank you very much for your help,
+let me know if I can help you test the patch further.
 
-Some particular questions (in no particular order):
-1.   Do you regularly use the "alsasound" kernel function during development so you can take the driver
-in and out of the kernel?   If it's used, is is used from the beginning or in the last stages of development?
-(I'm not sure if it's alsasound, sndconfig, etc).
+Open Source rocks !
 
-2.  Are the process statements given in the 'How-To' (snd_printk, snd_assert, snd_BUG) the main ones
-or are there others that are 'pre-built' and widely useful?
-http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/c1696.htm
+Philippe Paravicini
 
-3.   Are there tools that are almost always used when writing a sound card driver like gdb, ddd, etc?
 
-4.   Since it's easy to do, is an interface into the proc file system useful from the start?
-http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/c1493.htm
+For the sake of posterity, I describe below the steps that I took to install 
+the patched driver.
 
-5.   Is the alsa wiki on debugging the sum total of what's needed or is there more we don't know about?
-(and we don't know that much!!)
-http://www.alsa-project.org/main/index.php/Driver_Compilation
+The patch above, as stated in the email forwarded by the linuxant folks is 
+relative to the current source in the mercurial source repository as of 
+around 2008-11-20.  It will not work against the current 1.0.15 source 
+distribution, or prior sources.
 
-Of course, I could bring up the current Hot and Burning question we have (they are more important now):
+Hence, one needs to download the source from the source repository.
 
-http://wavepro-driver.svn.sourceforge.net/viewvc/wavepro-driver/
+I followed these steps:
 
-1.  We've having difficulty getting the Altera PLD to load. Any suggestions on how to do this, how people
-without cards can help, an easy way to know when you are successful, or an incremental approach
-to the problem?  
+1. 'apt-get install mercurial'  (for debian/ubuntu folks) to install the 
+mercurial source repository client
 
-2.  The GL card is powered from an Altera PLD (FPGA) (it has similar function as the Envy ICE chip once it's loaded).   For the card to function at all, the Altera PLD has to be loaded when power is applied 
-to the computer.   Should the 'load the Altera' function be part of the alsa driver, part of alsa firmware, or 
-should we just load it up when the computer boots (not in alsa)?
+2. download the 'alsa-driver' and 'alsa-kernel' sources as indicated at:
 
-3.   We're planning on using FC8/PlanetCCRMA as a 'beta test' environment.   I've just noticed the 
-new FC8 specific instructions on how to overcome my many bad habits when fooling around with the
-kernel.  I'm putting it here for reference so I don't forget it (like I just did when trying to figure out if it was
-alsasound, procsound, or whatever to unload the driver).
-http://fedoraproject.org/wiki/Docs/CustomKernel
+	http://www.alsa-project.org/main/index.php/SourceCodeRepository
+	
+ I installed these in /usr/src/alsa
 
-If you would like to just put your two cents worth in to the very small mailing list (for the next 5 days), send a note to:
- wavepro-driver-developers@lists.sourceforge.net
-(in 5 days, you'll have to be subscribed to send a note)
+3. download the patch:
 
--Mike Mazarick
+	http://www.linuxant.com/alsa-hg-20080120.patch
+
+4. patch the alsa-kernel/pci/hda folder:
+
+	cp alsa-hg-20080120.pach alsa-kernel/pci/hda
+	cd alsa-kernel/pci/hda
+	patch -i alsa-hg-20080120.patch    (should run w/o errors)
+
+5. consult the alsa-driver/INSTALL file, section 'Compiling from HG Sources' 
+6. cd alsa-driver
+7. ./hgcompile
+8. make install
+9. reboot (there is probably a shorter way to reload the driver)
+
+
+Note that before taking the steps above, I attempted to fix the problem by 
+installing from source the  latest 1.0.15 version of the alsa-driver, 
+alsa-libs and alsa-utils projects, as described in:
+
+  https://help.ubuntu.com/community/HdaIntelSoundHowto
+
+Hence, I do not know whether the patched drive above will work when used with 
+versions 1.0.14 and prior of the alsa-libs and alsa-utils projects.
+
+
+
+----  Original Message  ----
+
+Subject: Re: [alsa-devel] Support for Compaq Presario F700 - model 755US	-	
+NVidia MCP67 Audio - Codec Conexant 5051
+Date: Monday 21 January 2008
+From: Tobin Davis <tdavis@dsl-only.net>
+To: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+
+> I already did.  They said they'd submit a patch sometime soon.  As a
+> matter of fact, I just got a message in my inbox from them, that I'll
+> forward.
+>
+> Tobin
+>
+> On Mon, 2008-01-21 at 13:43 -0200, Herton Ronaldo Krzesinski wrote:
+> > Em Monday 21 January 2008 09:03:30 Takashi Iwai escreveu:
+> > > At Sat, 19 Jan 2008 21:23:29 -0200,
+> > >
+> > > Herton Ronaldo Krzesinski wrote:
+> > > > Em Saturday 19 January 2008 12:45:52 Claudio Matsuoka escreveu:
+> > > > > On Jan 19, 2008 9:56 AM, Tobin Davis <tdavis@dsl-only.net> wrote:
+> > > > > > I have already requested documentation and a development board
+> > > > > > from Conexant, so I should be able to get a fully functional
+> > > > > > driver going soon.  In the meantime, I'll try to get a test patch
+> > > > > > out to you as soon as possible.
+> > > > >
+> > > > > If this is the Hermosa codec (see
+> > > > > http://helllabs.org/codecgraph/out/hp-spartan-ng.svg), Herton has
+> > > > > just finished fully functional support to it, based on the HP
+> > > > > "Spartan 1.1"
+> > > >
+> > > > Yes, it was working, but there were some things to sort out, like the
+> > > > Spartan 1.1 doesn't have to switch between capture source as each mic
+> > > > (int, ext) has its own adc, and I hacked it without removing the
+> > > > capture source from mixer.
+> > > >
+> > > > Also I worked on the same code provided by hsfmodem, that already has
+> > > > support for 5051, but I don't know why it wasn't sent upstream yet by
+> > > > Conexant/hsfmodem people.
+> > > >
+> > > > > laptop (subdevice ID is 14f1:5051).
+> > > > >
+> > > > > Herton, did you submit the patches for Hermosa support to the list?
+> > > >
+> > > > No, as I didn't fixed the patches for proper submission, and the part
+> > > > of hsfmodem probably Conexant/Linuxant people should send with proper
+> > > > Signed-offs etc. But anyway I'll attach here the patches for
+> > > > reference, that are not ready for inclusion and will not apply to
+> > > > current alsa tree.
+> > >
+> > > Thanks.  Do you happen to know how linuxant guys think of the patch
+> > > submission?  Of couse, the HSF modem part can be never merged to the
+> > > upstream, but the sane GPL'ed part could be good to merge.
+> >
+> > Hi, don't know too, I'll try to contact Linuxant and ask about submission
+> > for Hermosa support.
+> >
+> > > Takashi
+> >
+> > --
+> > []'s
+> > Herton
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
