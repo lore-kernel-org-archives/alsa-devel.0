@@ -1,22 +1,19 @@
-From: marcus hall <marcus@tuells.org>
-Subject: Building for 2.4 kernel..
-Date: Sun, 20 Jan 2008 17:28:45 -0700
-Message-ID: <20080121002845.GA6526@bagatelle.tuells.org>
+From: Kip Warner <kip@thevertigo.com>
+Subject: Re: Patch for ALC882
+Date: Sun, 20 Jan 2008 18:04:07 -0800
+Message-ID: <1200881047.6980.25.camel@kip-laptop>
+References: <1200361715.6964.12.camel@kip-laptop>
+	<s5hsl0z2ybq.wl%tiwai@suse.de> <1200434828.8884.1.camel@kip-laptop>
+	<s5htzleug4z.wl%tiwai@suse.de> <1200625227.7715.20.camel@kip-laptop>
+	<s5hk5m78w2y.wl%tiwai@suse.de> <1200639924.7715.31.camel@kip-laptop>
+	<s5hprvzcv2m.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1289376153560340518=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastille.tuells.org (unknown [204.188.108.206])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A827243FD
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 01:28:47 +0100 (CET)
-Received: from bagatelle.tuells.org ([192.168.42.20])
-	by bastille.tuells.org with esmtps (TLSv1:AES256-SHA:256) (Exim 4.68)
-	(envelope-from <marcus@tuells.org>) id 1JGkWr-0008Nf-Gk
-	for alsa-devel@alsa-project.org; Sun, 20 Jan 2008 17:28:46 -0700
-Received: from marcus by bagatelle.tuells.org with local (Exim 4.68)
-	(envelope-from <marcus@bagatelle.tuells.org>) id 1JGkWr-0001j2-GB
-	for alsa-devel@alsa-project.org; Sun, 20 Jan 2008 17:28:45 -0700
-Content-Disposition: inline
+Received: from defout.telus.net (defout.telus.net [199.185.220.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9C88244D3
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 03:04:11 +0100 (CET)
+In-Reply-To: <s5hprvzcv2m.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,132 +23,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: pshou@realtek.com.tw, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I support a product that is running the 2.4.18 linux kernel, and was trying
-to install alsa-driver-1.0.15, and ran into a problem.
 
-The alsa-kernel/pci/cs5535audio/cs5535audio_pm.c contains:
+--===============1289376153560340518==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-xIUN5Qe+48eNcQbCV88t"
 
-	if (pci_save_state(pci)) {
-		...
 
-and a similar line for pci_restore_state().
+--=-xIUN5Qe+48eNcQbCV88t
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-But, in include/adriver.h, pci_save_state is #defined to
-snd_pci_compat_save_state, which is declared to return void, so the
-compiler complains that the void return isn't being ignored.
+On Fri, 2008-01-18 at 11:00 +0100, Takashi Iwai wrote:
 
-Now, pci_save_state() appears to be supposed to return status, although
-in the 2.4 kernel at least, it returns a constant 0.
+> The necessary changes are likely only what's in the below.
+> Could you try it with the latest HG version, or the latest daily
+> snapshot tarball?
+>=20
+>=20
+> Takashi
+>=20
+> diff -r 1cb5fe1b2443 pci/hda/patch_realtek.c
+> --- a/pci/hda/patch_realtek.c	Thu Jan 17 17:44:49 2008 +0100
+> +++ b/pci/hda/patch_realtek.c	Fri Jan 18 08:28:15 2008 +0100
+> @@ -5645,7 +5645,9 @@ static struct hda_verb alc882_asus_a7j_v
+> =20
+>  	{0x18, AC_VERB_SET_CONNECT_SEL, 0x02}, /* mic/clfe */
+>  	{0x1a, AC_VERB_SET_CONNECT_SEL, 0x01}, /* line/surround */
+> -	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x00}, /* HP */
+> +	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x00}, /* line */
+> +	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
+> +	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
+>  	{ } /* end */
+>  };
+> =20
+> @@ -5969,7 +5971,8 @@ static struct alc_config_preset alc882_p
+>  	[ALC882_ASUS_A7J] =3D {
+>  		.mixers =3D { alc882_asus_a7j_mixer, alc882_chmode_mixer,
+>  			    alc882_capture_mixer },
+> -		.init_verbs =3D { alc882_init_verbs, alc882_asus_a7j_verbs},
+> +		.init_verbs =3D { alc882_init_verbs, alc882_asus_a7j_verbs,
+> +				alc880_gpio1_init_verbs },
+>  		.num_dacs =3D ARRAY_SIZE(alc882_dac_nids),
+>  		.dac_nids =3D alc882_dac_nids,
+>  		.dig_out_nid =3D ALC882_DIGOUT_NID,
 
-Nevertheless, to get things to work, I changed snd_pci_compat_save_state(),
-snd_pci_orig_save_state(), and the corresponding restore functions to return
-an int with the following patch.  (The other obvious solution would be to
-remove the test in cs5535audio_pm.c, but pci_save_state() is *supposed*
-to return an int...)
+I just applied your patch against the latest alsa-driver-hg20080120
+bzip'd tarball. I tried it both with and without the patch and both ways
+produce proper four speaker sound. Please let me know if I can be of any
+further assistance.
 
---
-Marcus Hall
-marcus@tuells.org
+--=20
+Kip Warner -- Software Engineer
+OpenPGP encrypted/signed mail preferred
+http://www.thevertigo.com
 
----------
+--=-xIUN5Qe+48eNcQbCV88t
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Index: alsa-driver/acore/misc_driver.c
-===================================================================
-RCS file: /usr/local/cvs_repos/almond/alsa/alsa-driver/acore/misc_driver.c,v
-retrieving revision 1.1
-retrieving revision 1.2
-diff -u -r1.1 -r1.2
---- alsa-driver/acore/misc_driver.c	20 Jan 2008 16:52:35 -0000	1.1
-+++ alsa-driver/acore/misc_driver.c	20 Jan 2008 17:14:23 -0000	1.2
-@@ -105,14 +105,14 @@
- #ifdef CONFIG_PCI
- #ifndef CONFIG_HAVE_NEW_PCI_SAVE_STATE
- #ifdef CONFIG_HAVE_PCI_SAVED_CONFIG
--void snd_pci_compat_save_state(struct pci_dev *pci)
-+int snd_pci_compat_save_state(struct pci_dev *pci)
- {
--	snd_pci_orig_save_state(pci, pci->saved_config_space);
-+	return snd_pci_orig_save_state(pci, pci->saved_config_space);
- }
- EXPORT_SYMBOL(snd_pci_compat_save_state);
--void snd_pci_compat_restore_state(struct pci_dev *pci)
-+int snd_pci_compat_restore_state(struct pci_dev *pci)
- {
--	snd_pci_orig_restore_state(pci, pci->saved_config_space);
-+	return snd_pci_orig_restore_state(pci, pci->saved_config_space);
- }
- EXPORT_SYMBOL(snd_pci_compat_restore_state);
- #else /* !CONFIG_HAVE_PCI_SAVED_CONFIG */
-@@ -122,7 +122,7 @@
- };
- static struct saved_config_tbl saved_tbl[16];
- 
--void snd_pci_compat_save_state(struct pci_dev *pci)
-+int snd_pci_compat_save_state(struct pci_dev *pci)
- {
- 	int i;
- 	/* FIXME: mutex needed for race? */
-@@ -130,14 +130,15 @@
- 		if (! saved_tbl[i].pci) {
- 			saved_tbl[i].pci = pci;
- 			snd_pci_orig_save_state(pci, saved_tbl[i].config);
--			return;
-+			return 0;
- 		}
- 	}
- 	printk(KERN_DEBUG "snd: no pci config space found!\n");
-+	return 1;
- }
- EXPORT_SYMBOL(snd_pci_compat_save_state);
- 
--void snd_pci_compat_restore_state(struct pci_dev *pci)
-+int snd_pci_compat_restore_state(struct pci_dev *pci)
- {
- 	int i;
- 	/* FIXME: mutex needed for race? */
-@@ -145,10 +146,11 @@
- 		if (saved_tbl[i].pci == pci) {
- 			saved_tbl[i].pci = NULL;
- 			snd_pci_orig_restore_state(pci, saved_tbl[i].config);
--			return;
-+			return 0;
- 		}
- 	}
- 	printk(KERN_DEBUG "snd: no saved pci config!\n");
-+	return 1;
- }
- EXPORT_SYMBOL(snd_pci_compat_restore_state);
- #endif /* CONFIG_HAVE_PCI_SAVED_CONFIG */
-Index: alsa-driver/include/adriver.h
-===================================================================
-RCS file: /usr/local/cvs_repos/almond/alsa/alsa-driver/include/adriver.h,v
-retrieving revision 1.1
-retrieving revision 1.2
-diff -u -r1.1 -r1.2
---- alsa-driver/include/adriver.h	20 Jan 2008 16:52:37 -0000	1.1
-+++ alsa-driver/include/adriver.h	20 Jan 2008 17:14:23 -0000	1.2
-@@ -1165,15 +1165,15 @@
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 0)
- #ifdef CONFIG_PCI
- #ifndef CONFIG_HAVE_NEW_PCI_SAVE_STATE
--void snd_pci_compat_save_state(struct pci_dev *pci);
--void snd_pci_compat_restore_state(struct pci_dev *pci);
--static inline void snd_pci_orig_save_state(struct pci_dev *pci, u32 *buffer)
-+int snd_pci_compat_save_state(struct pci_dev *pci);
-+int snd_pci_compat_restore_state(struct pci_dev *pci);
-+static inline int snd_pci_orig_save_state(struct pci_dev *pci, u32 *buffer)
- {
--	pci_save_state(pci, buffer);
-+	return pci_save_state(pci, buffer);
- }
--static inline void snd_pci_orig_restore_state(struct pci_dev *pci, u32 *buffer)
-+static inline int snd_pci_orig_restore_state(struct pci_dev *pci, u32 *buffer)
- {
--	pci_restore_state(pci, buffer);
-+	return pci_restore_state(pci, buffer);
- }
- 
- #undef pci_save_state
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBHk/2XC5QMQlLfBOsRArONAJ4ovP3hOZCg+vJWaGpMftxrfhEIkQCdE31S
+ngmgm6SnUStdeEGbiLMWncI=
+=9DqQ
+-----END PGP SIGNATURE-----
+
+--=-xIUN5Qe+48eNcQbCV88t--
+
+
+--===============1289376153560340518==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1289376153560340518==--
