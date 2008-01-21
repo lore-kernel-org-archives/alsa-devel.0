@@ -1,16 +1,20 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: Re: [PATCH 2/2] hda: Mono mux mixer support
-Date: Mon, 21 Jan 2008 13:50:45 -0500
-Message-ID: <4794E985.70803@embeddedalley.com>
-References: <4794D286.8050906@embeddedalley.com> <s5h7ii39jy4.wl%tiwai@suse.de>
+From: Kip Warner <kip@thevertigo.com>
+Subject: Re: Patch for ALC882
+Date: Mon, 21 Jan 2008 11:51:13 -0800
+Message-ID: <1200945073.9440.3.camel@kip-laptop>
+References: <1200361715.6964.12.camel@kip-laptop>
+	<s5hsl0z2ybq.wl%tiwai@suse.de> <1200434828.8884.1.camel@kip-laptop>
+	<s5htzleug4z.wl%tiwai@suse.de> <1200625227.7715.20.camel@kip-laptop>
+	<s5hk5m78w2y.wl%tiwai@suse.de> <1200639924.7715.31.camel@kip-laptop>
+	<s5hprvzcv2m.wl%tiwai@suse.de> <1200881047.6980.25.camel@kip-laptop>
+	<s5hve5ne849.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3639652923747626677=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp105.biz.mail.mud.yahoo.com (smtp105.biz.mail.mud.yahoo.com
-	[68.142.200.253]) by alsa0.perex.cz (Postfix) with SMTP id 7E64F2479D
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 19:50:49 +0100 (CET)
-In-Reply-To: <s5h7ii39jy4.wl%tiwai@suse.de>
+Received: from defout.telus.net (defout.telus.net [199.185.220.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id B32F82480B
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 20:51:19 +0100 (CET)
+In-Reply-To: <s5hve5ne849.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,221 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: pshou@realtek.com.tw, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 21 Jan 2008 12:12:38 -0500,
-> Matthew Ranostay wrote:
->> @@ -2318,6 +2362,35 @@ static int stac92xx_auto_create_hp_ctls(
->>  	return 0;
->>  }
->>  
->> +/* labels for mono mux outputs */
->> +static const char *stac92xx_mono_labels[3] = {
->> +	"DAC0", "DAC1", "Mixer"
->> +};
->> +
->> +/* create mono mux for mono out on capable codecs */
->> +static int stac92xx_auto_create_mono_output_ctls(struct hda_codec *codec)
->> +{
->> +	struct sigmatel_spec *spec = codec->spec;
->> +	struct hda_input_mux *mono_mux = &spec->private_mono_mux;
->> +	int i, num_cons;
->> +	hda_nid_t con_lst[HDA_MAX_NUM_INPUTS];
-> 
-> Make this con_lst[ARRAY_SIZE(stac92xx_mono_labsl)] and
-Done.
 
-> 
->> +
->> +	num_cons = snd_hda_get_connections(codec,
->> +				spec->mono_nid,
->> +				con_lst,
->> +				HDA_MAX_NUM_INPUTS);
-> 
-> Pass ARRAY_SIZE(con_lst) here.  So that it won't be over the size of
-> the label array.
-> 
-Done. Maybe someday I'll remember of the 'ARRAY_SIZE' function without being reminded :)
-> 
-> thanks,
-> 
+--===============3639652923747626677==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-uKHrsdRTOJbJJVVWDaKD"
+
+
+--=-uKHrsdRTOJbJJVVWDaKD
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2008-01-21 at 12:22 +0100, Takashi Iwai wrote:
+> Hm, so do you mean that the HG version works as is even without the
+> patch above?  To be sure, try to reboot in both cases.
+>=20
+>=20
 > Takashi
-> 
+
+Granted I didn't reboot, but I am pretty confident that I had rmmod'd
+the old driver, /etc/init.d/alsasound stop, sudo make install, cp module
+to new ubuntu modules location (not sure why they have their modules in
+a different location - but they do).
+
+--=20
+Kip Warner -- Software Engineer
+OpenPGP encrypted/signed mail preferred
+http://www.thevertigo.com
+
+--=-uKHrsdRTOJbJJVVWDaKD
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBHlPexC5QMQlLfBOsRAreiAJ9tCV60tHs6lHRH9u/aq2bpGJ+DIwCeOhZo
+pAM3xqF/3Rrzw17/hVaMiPI=
+=C070
+-----END PGP SIGNATURE-----
+
+--=-uKHrsdRTOJbJJVVWDaKD--
 
 
-Add support for the mono mux on several 92HD7xxx codecs. Creates a dynamic mixer for the mux selection.
+--===============3639652923747626677==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
-diff -r a035d5e4801c pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Fri Jan 18 15:32:32 2008 +0100
-+++ b/pci/hda/patch_sigmatel.c	Mon Jan 21 11:58:25 2008 -0500
-@@ -131,6 +131,8 @@ struct sigmatel_spec {
- 	hda_nid_t *pwr_nids;
- 
- 	/* playback */
-+	struct hda_input_mux *mono_mux;
-+	unsigned int cur_mmux;
- 	struct hda_multi_out multiout;
- 	hda_nid_t dac_nids[5];
- 
-@@ -144,6 +146,7 @@ struct sigmatel_spec {
- 	hda_nid_t *dmux_nids;
- 	unsigned int num_dmuxes;
- 	hda_nid_t dig_in_nid;
-+	hda_nid_t mono_nid;
- 
- 	/* pin widgets */
- 	hda_nid_t *pin_nids;
-@@ -174,6 +177,7 @@ struct sigmatel_spec {
- 	struct snd_kcontrol_new *kctl_alloc;
- 	struct hda_input_mux private_dimux;
- 	struct hda_input_mux private_imux;
-+	struct hda_input_mux private_mono_mux;
- 
- 	/* virtual master */
- 	unsigned int vmaster_tlv[4];
-@@ -399,6 +403,34 @@ static int stac92xx_mux_enum_put(struct 
- 
- 	return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
- 				     spec->mux_nids[adc_idx], &spec->cur_mux[adc_idx]);
-+}
-+
-+static int stac92xx_mono_mux_enum_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct sigmatel_spec *spec = codec->spec;
-+	return snd_hda_input_mux_info(spec->mono_mux, uinfo);
-+}
-+
-+static int stac92xx_mono_mux_enum_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct sigmatel_spec *spec = codec->spec;
-+
-+	ucontrol->value.enumerated.item[0] = spec->cur_mmux;
-+	return 0;
-+}
-+
-+static int stac92xx_mono_mux_enum_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct sigmatel_spec *spec = codec->spec;
-+
-+	return snd_hda_input_mux_put(codec, spec->mono_mux, ucontrol,
-+				     spec->mono_nid, &spec->cur_mmux);
- }
- 
- #define stac92xx_aloopback_info snd_ctl_boolean_mono_info
-@@ -603,6 +635,16 @@ static struct hda_verb stac9205_core_ini
- 	{}
- };
- 
-+#define STAC_MONO_MUX \
-+	{ \
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-+		.name = "Mono Mux", \
-+		.count = 1, \
-+		.info = stac92xx_mono_mux_enum_info, \
-+		.get = stac92xx_mono_mux_enum_get, \
-+		.put = stac92xx_mono_mux_enum_put, \
-+	}
-+
- #define STAC_INPUT_SOURCE(cnt) \
- 	{ \
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-@@ -714,6 +756,7 @@ static struct snd_kcontrol_new stac92hd7
- 
- static struct snd_kcontrol_new stac92hd71bxx_analog_mixer[] = {
- 	STAC_INPUT_SOURCE(2),
-+	STAC_MONO_MUX,
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x1c, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1c, 0x0, HDA_OUTPUT),
-@@ -733,6 +776,7 @@ static struct snd_kcontrol_new stac92hd7
- static struct snd_kcontrol_new stac92hd71bxx_mixer[] = {
- 	STAC_INPUT_SOURCE(2),
- 	STAC_ANALOG_LOOPBACK(0xFA0, 0x7A0, 2),
-+	STAC_MONO_MUX,
- 
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 0x0, 0x1c, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_MUTE_IDX("Capture Switch", 0x0, 0x1c, 0x0, HDA_OUTPUT),
-@@ -1180,7 +1224,7 @@ static struct snd_pci_quirk stac92hd73xx
- 
- static unsigned int ref92hd71bxx_pin_configs[10] = {
- 	0x02214030, 0x02a19040, 0x01a19020, 0x01014010,
--	0x0181302e, 0x01114010, 0x01a19020, 0x90a000f0,
-+	0x0181302e, 0x01114010, 0x01019020, 0x90a000f0,
- 	0x90a000f0, 0x01452050,
- };
- 
-@@ -2318,6 +2362,35 @@ static int stac92xx_auto_create_hp_ctls(
- 	return 0;
- }
- 
-+/* labels for mono mux outputs */
-+static const char *stac92xx_mono_labels[3] = {
-+	"DAC0", "DAC1", "Mixer"
-+};
-+
-+/* create mono mux for mono out on capable codecs */
-+static int stac92xx_auto_create_mono_output_ctls(struct hda_codec *codec)
-+{
-+	struct sigmatel_spec *spec = codec->spec;
-+	struct hda_input_mux *mono_mux = &spec->private_mono_mux;
-+	int i, num_cons;
-+	hda_nid_t con_lst[ARRAY_SIZE(stac92xx_mono_labels)];
-+
-+	num_cons = snd_hda_get_connections(codec,
-+				spec->mono_nid,
-+				con_lst,
-+				HDA_MAX_NUM_INPUTS);
-+	if (!num_cons || num_cons > ARRAY_SIZE(stac92xx_mono_labels))
-+		return -EINVAL;
-+
-+	for (i = 0; i < num_cons; i++) {
-+		mono_mux->items[mono_mux->num_items].label =
-+					stac92xx_mono_labels[i];
-+		mono_mux->items[mono_mux->num_items].index = i;
-+		mono_mux->num_items++;
-+	}
-+	return 0;
-+}
-+
- /* labels for dmic mux inputs */
- static const char *stac92xx_dmic_labels[5] = {
- 	"Analog Inputs", "Digital Mic 1", "Digital Mic 2",
-@@ -2532,6 +2605,12 @@ static int stac92xx_parse_auto_config(st
- 	if (err < 0)
- 		return err;
- 
-+	if (spec->mono_nid > 0) {
-+		err = stac92xx_auto_create_mono_output_ctls(codec);
-+		if (err < 0)
-+			return err;
-+	}
-+
- 	if (spec->num_dmics > 0)
- 		if ((err = stac92xx_auto_create_dmic_input_ctls(codec,
- 						&spec->autocfg)) < 0)
-@@ -2552,6 +2631,7 @@ static int stac92xx_parse_auto_config(st
- 	spec->input_mux = &spec->private_imux;
- 	if (!spec->dinput_mux)
- 		spec->dinput_mux = &spec->private_dimux;
-+	spec->mono_mux = &spec->private_mono_mux;
- 
- 	return 1;
- }
-@@ -3237,6 +3317,7 @@ again:
- 
- 	spec->gpio_mask = spec->gpio_data = 0x00000001; /* GPIO0 High = EAPD */
- 
-+	spec->mono_nid = 0x15;
- 	spec->mux_nids = stac92hd71bxx_mux_nids;
- 	spec->adc_nids = stac92hd71bxx_adc_nids;
- 	spec->dmic_nids = stac92hd71bxx_dmic_nids;
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3639652923747626677==--
