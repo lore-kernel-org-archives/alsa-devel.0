@@ -1,17 +1,20 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Juli - function of specific GPIOs?
-Date: Mon, 21 Jan 2008 17:05:23 +0100
-Message-ID: <4794C2C3.2050800@insite.cz>
-References: <1199971035-13553-2-git-send-email-broonie@opensource.wolfsonmicro.com>	<1199971035-13553-3-git-send-email-broonie@opensource.wolfsonmicro.com>	<1199971035-13553-4-git-send-email-broonie@opensource.wolfsonmicro.com>	<1199971035-13553-5-git-send-email-broonie@opensource.wolfsonmicro.com>	<1199971035-13553-6-git-send-email-broonie@opensource.wolfsonmicro.com>	<1199971035-13553-7-git-send-email-broonie@opensource.wolfsonmicro.com>	<1199971035-13553-8-git-send-email-broonie@opensource.wolfsonmicro.com>	<1199971035-13553-9-git-send-email-broonie@opensource.wolfsonmicro.com>	<1199971035-13553-10-git-send-email-broonie@opensource.wolfsonmicro.com>	<bc64b4640801151540n4cb66f99u68ba0d42c91b5ff6@mail.gmail.com>	<20080118101816.GA19291@rakim.wolfsonmicro.main>	<47911D1F.8030006@insite.cz>
-	<s5h63xncgxe.wl%tiwai@suse.de>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Support for Compaq Presario F700 - model
+	755US	-	NVidia MCP67 Audio - Codec Conexant 5051
+Date: Mon, 21 Jan 2008 08:11:28 -0800
+Message-ID: <1200931888.30379.36.camel@razman.gruemaster.com>
+References: <200801181655.05217.philippe@paravicini.com>
+	<200801192123.29589.herton@mandriva.com.br>
+	<s5h1w8bfnjx.wl%tiwai@suse.de>
+	<200801211343.33892.herton@mandriva.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8EFF424548
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 17:05:59 +0100 (CET)
-In-Reply-To: <s5h63xncgxe.wl%tiwai@suse.de>
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8813F2455C
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 17:11:31 +0100 (CET)
+In-Reply-To: <200801211343.33892.herton@mandriva.com.br>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,70 +24,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Claudio Matsuoka <cmatsuoka@gmail.com>, alsa-user@alsa-project.org, Philippe Paravicini <philippe@paravicini.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 18 Jan 2008 22:41:51 +0100,
-> Pavel Hofman wrote:
-> =
+I already did.  They said they'd submit a patch sometime soon.  As a
+matter of fact, I just got a message in my inbox from them, that I'll
+forward.
 
->>Hi Takashi,
->>
->>Sorry for distracting you from the constant struggle with HDA.
->>
->>I would like to provide complete support for the ESI Juli@ card.
->>Informing the ADC (AK5385) about current sample rate via the dedicated
->>GPIOs is fairly simple, as well as the monitoring features (DIGOUT, =
+Tobin
 
->>DIGIN, ANAIN, MUTE + volume control of the remaining DACs).
->>
->>However, I do not understand functions of the GPIO_FREQ_XXKHZ and
->>GPIO_MULTI_XX GPIOs. The card's user manual says the card can detect
->>incoming SPDIF rate. AK4114 can either read the rate from the input data
->>in professional format only, or detect it by comparing external clock =
+On Mon, 2008-01-21 at 13:43 -0200, Herton Ronaldo Krzesinski wrote:
 
->>with the input rate. The AK4114 external clock pin does go to the Xilinx =
-
->>CPLD. The GPIOs lead to the CPLD too. Do they in some way control the =
-
->>CPLD to provide AK4114 with external clock so that AK4114 can provide =
-
->>correct input rate data through its registers?
-> =
-
-> =
-
-> Sorry, I have little idea about Juli (and all ESI boards).  The
-> datasheet was given only to Jaroslav (cc'ed) at that time.
-> =
-
-> =
-
-> Takashi
-
-Takashi,
-
-Thanks a lot for the info and sorry for overlooking the initial =
-
-changetset author.
-
-Perhaps Jaroslav will find a few minutes to recall the old story, p=ECkn=EC =
-
-pros=EDm :)
-
-Regards,
-
-Pavel.
-
--- =
-
------------------
-
-inSITE, s.r.o.
-
-Rubesova 29, 326 00 Plzen
-Tel., fax: +420 - 37 - 74 493 58
-GSM: +420 - 603 - 163 973
-Email: pavel.hofman@insite.cz
+> Em Monday 21 January 2008 09:03:30 Takashi Iwai escreveu:
+> > At Sat, 19 Jan 2008 21:23:29 -0200,
+> >
+> > Herton Ronaldo Krzesinski wrote:
+> > > Em Saturday 19 January 2008 12:45:52 Claudio Matsuoka escreveu:
+> > > > On Jan 19, 2008 9:56 AM, Tobin Davis <tdavis@dsl-only.net> wrote:
+> > > > > I have already requested documentation and a development board from
+> > > > > Conexant, so I should be able to get a fully functional driver going
+> > > > > soon.  In the meantime, I'll try to get a test patch out to you as
+> > > > > soon as possible.
+> > > >
+> > > > If this is the Hermosa codec (see
+> > > > http://helllabs.org/codecgraph/out/hp-spartan-ng.svg), Herton has just
+> > > > finished fully functional support to it, based on the HP "Spartan 1.1"
+> > >
+> > > Yes, it was working, but there were some things to sort out, like the
+> > > Spartan 1.1 doesn't have to switch between capture source as each mic
+> > > (int, ext) has its own adc, and I hacked it without removing the capture
+> > > source from mixer.
+> > >
+> > > Also I worked on the same code provided by hsfmodem, that already has
+> > > support for 5051, but I don't know why it wasn't sent upstream yet by
+> > > Conexant/hsfmodem people.
+> > >
+> > > > laptop (subdevice ID is 14f1:5051).
+> > > >
+> > > > Herton, did you submit the patches for Hermosa support to the list?
+> > >
+> > > No, as I didn't fixed the patches for proper submission, and the part of
+> > > hsfmodem probably Conexant/Linuxant people should send with proper
+> > > Signed-offs etc. But anyway I'll attach here the patches for reference,
+> > > that are not ready for inclusion and will not apply to current alsa tree.
+> >
+> > Thanks.  Do you happen to know how linuxant guys think of the patch
+> > submission?  Of couse, the HSF modem part can be never merged to the
+> > upstream, but the sane GPL'ed part could be good to merge.
+> 
+> Hi, don't know too, I'll try to contact Linuxant and ask about submission for 
+> Hermosa support.
+> 
+> >
+> >
+> > Takashi
+> 
+> --
+> []'s
+> Herton
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
