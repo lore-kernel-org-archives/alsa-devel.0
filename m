@@ -1,17 +1,17 @@
-From: Marc Boucher <marc@linuxant.com>
-Subject: Re: [Fwd: Re: Code relsease to alsa.]
-Date: Mon, 21 Jan 2008 13:48:20 -0500
-Message-ID: <3FCB0D64-6192-4E16-B4DC-4EFC6734AB4C@linuxant.com>
-References: <1200932071.30379.41.camel@razman.gruemaster.com>
-	<s5h63xn9jjr.wl%tiwai@suse.de>
-Mime-Version: 1.0 (Apple Message framework v915)
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: how do you people debug ALSA?
+Date: Tue, 22 Jan 2008 09:45:29 +0100
+Message-ID: <1200991529.25807.1232559973@webmail.messagingengine.com>
+References: <012120082025.22241.4794FFC1000089D6000056E122243651029B0A02D2089B9A019C04040A0DBF050C079D0E960E03@att.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oasis.linuxant.com (oasis.linuxant.com [63.246.136.80])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1759246CF
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jan 2008 19:48:24 +0100 (CET)
-In-Reply-To: <s5h63xn9jjr.wl%tiwai@suse.de>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 04FA424A8A
+	for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2008 10:08:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <012120082025.22241.4794FFC1000089D6000056E122243651029B0A02D2089B9A019C04040A0DBF050C079D0E960E03@att.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,158 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>, "Linuxant support (Jonathan)" <support@linuxant.com>
+To: mazarick@bellsouth.net, alsa-devel@alsa-project.org
+Cc: wavepro-driver-developers@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+mazarick@bellsouth.net wrote:
+> It would be fine to say "vi is the development environment,
 
-Hi Takashi,
+Actually, I'm using vim.
 
-Here's the sign-off:
+> and we sprinkle the code with printk statements and take them out when
+> the soup's done".
 
-Signed-off-by: Marc Boucher <marc@linuxant.com>
+When using snd_printd() or snd_printdd(), one doesn't need to take them
+out afterwards. :)
 
-Do you have any specific comments about the code itself?
+> 1.   Do you regularly use the "alsasound" kernel function during
+> development so you can take the driver in and out of the kernel?
 
-Kind regards,
+I regularly (un)load the modules that I'm changing.  In most cases I
+don't use the script that came with my distribution because I don't want
+to (un)load all the other sound drivers, too.
 
-Marc
+> 3.   Are there tools that are almost always used when writing a sound
+> card driver like gdb, ddd, etc?
 
---
-Marc Boucher
-Linuxant inc.
-http://www.linuxant.com
+These debuggers don't work with kernel code.
 
-On 21-Jan-08, at 12:26 PM, Takashi Iwai wrote:
+> 4.   Since it's easy to do, is an interface into the proc file system
+> useful from the start?
 
-> At Mon, 21 Jan 2008 08:14:31 -0800,
-> Tobin Davis wrote:
->>
->> Forwarded from the good people at Linuxant.
->>
->> Tobin
->> -------- Forwarded Message --------
->> From: Marc Boucher <marc@linuxant.com>
->> To: Tobin Davis <tdavis@dsl-only.net>
->> Cc: Linuxant support (Jonathan) <support@linuxant.com>
->> Subject: Re: Code relsease to alsa.
->> Date: Mon, 21 Jan 2008 10:33:03 -0500
->>
->> Tobin,
->>
->> As promised here is our current tentative patch (relative to the
->> current ALSA development tree in hg) for merging with ALSA.
->>
->> It is also available from:
->>
->> http://www.linuxant.com/alsa-hg-20080120.patch
->>
->> Naturally the changes are released under the GPL, so feel free to
->> integrate them.
->>
->> Comments and improvements are welcome.
->>
->> Kind regards,
->>
->> Marc
->>
->> --
->> Marc Boucher
->> Linuxant inc.
->> http://www.linuxant.com
->
-> First of all, thanks for the patch.
-> Now just taking a quick look, I'd like to ask you about the following
-> items:
->
-> - Split the HSF modem part and other part.  The HSF modem part is
->  hardly to be merged (as you know why), but the other parts could be
->  merged easily if needed.
->
-> - Split the rest, misc fixes.  If the fix is reasonable, it should be
->  applied immediately.
->
-> These will make both of our lives much easier.
->
-> And, one more thing:
->
-> - Give your sign-off to be merged to the upstream
->
-> This is mandatory for untrivial changes.  This clarifies the copyright
-> and avoids the possible legal issues in future.
->
->
-> thanks,
->
-> Takashi
->
->>
->> On 19-Jan-08, at 6:40 PM, Marc Boucher wrote:
->>
->>>
->>> Hi Tobin,
->>>
->>> We have isolated the modifications in patch form and are currently
->>> working to merge them with the latest ALSA tree / submit them back
->>> upstream.
->>>
->>> By the way, all changes and code under the modules/GPL/ directory
->>> (including the hda subdirectory) of our modem driver are released
->>> under the GPL, so you would be free to take these fixes if you'd  
->>> like.
->>>
->>> However you would be also welcome to reviewing the patches that we
->>> are about to submit. I will arrange to send you a copy asap (should
->>> be next week).
->>>
->>> Kind regards, (and many thanks for your great contributions to ALSA)
->>>
->>> Marc
->>>
->>> PS: We could also try to help you getting any missing info on the
->>> CX20561 or other things from Conexant...
->>>
->>> --
->>> Marc Boucher
->>> Linuxant inc.
->>> http://www.linuxant.com
->>>
->>> On 19-Jan-08, at 1:07 PM, Tobin Davis wrote:
->>>
->>>> Hello,
->>>>
->>>> I'm the developer that put the current audio support for the
->>>> Conexant HD Audio codecs in alsa.  I worked many hours on this,
->>>> with testers around the world sending me feedback.  Most of the
->>>> work was done prior to Conexant offering me any documentation.  I
->>>> have since received documentation for both CX20549 (Venice), and
->>>> CX20551 (Waikiki), but am waiting for the latest info on the new
->>>> CX20561, which you apparently already have.
->>>>
->>>> I have also seen in your mailing list that you are providing
->>>> several fixes to the audio portion of my code, but only making them
->>>> available to users of your code, which requires a license agreement
->>>> that I believe is incompatible with the GPL.  At the least, it
->>>> prohibits someone like me taking any of these fixes and putting
->>>> them in the mainstream alsa, where more users would benefit from
->>>> them.
->>>>
->>>> What I'm asking, is if you could at least provide the audio
->>>> modifications back upstream to alsa?  It would help out far more
->>>> users (modem usage is on the decline - sorry), and you would have
->>>> some benefit in that your name would be in the source as well.
->>>>
->>>>
->>>> -- 
->>>> Tobin Davis <tdavis@dsl-only.net>
->>>
->>
->> -- Tobin  
->> Davis 
->>                                                                   
->>
->> no maintenance:
->>        Impossible to fix.
->>
->>
->
+Yes.  Most drivers have some proc file that dumps the current register
+contents.  It's always helpful to be able to check what your code did to
+the chip.
+
+> 1.  We've having difficulty getting the Altera PLD to load.
+
+This code in uart_gl824_program_pld looks very suspicious:
+
+        //YUCK: This stops us from actually doing it.
+        if( uart_io_port != NULL ){
+                return(0);
+        }
+
+> 2.  Should the 'load the Altera' function be part of the alsa driver,
+> part of alsa firmware, or should we just load it up when the computer
+> boots (not in alsa)?
+
+Doing it in the driver is easiest (otherwise you would have to write
+another kernel module) and ensures that it's actually done before using
+the driver.
+
+
+HTH
+Clemens
