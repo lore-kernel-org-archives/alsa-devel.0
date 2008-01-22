@@ -1,14 +1,20 @@
-From: Martin Egge <mailinglists@martin.egge.info>
-Subject: Digital-Out (Toslink) on HDA-Intal (AD1986A)?
-Date: Tue, 22 Jan 2008 21:20:49 +0100
-Message-ID: <200801222121.05757.mailinglists@martin.egge.info>
+From: forwind <forward@forwind.net>
+Subject: Re: problems with Intel Corporation 82801H
+	(ICH8	Family)	HD Audio	Controller (rev 03)
+Date: Tue, 22 Jan 2008 22:55:13 +0000
+Message-ID: <1201042513.5507.3.camel@localhost>
+References: <s5h8x2je1pl.wl%tiwai@suse.de>
+	<f53DlUKZ.1200934140.0582890.forward@harwood.textdrive.com>
+	<s5hd4rv9kqb.wl%tiwai@suse.de>
+Reply-To: forward@forwind.net
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0817811298964213940=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id EBAFB103826
-	for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2008 21:21:08 +0100 (CET)
+Received: from harwood.textdrive.com (harwood.textdrive.com [207.7.108.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 622E424C19
+	for <alsa-devel@alsa-project.org>; Tue, 22 Jan 2008 23:55:19 +0100 (CET)
+In-Reply-To: <s5hd4rv9kqb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,68 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============0817811298964213940==
-Content-Type: multipart/signed;
-  boundary="nextPart5517390.FGI8WqKmSo";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Takashi wrote:
+> Good to hear.  Could you show the output of "lspci -nv" for the audio
+> device?  We can add the entry for your device so that the driver works
+> without an extra model option.
 
---nextPart5517390.FGI8WqKmSo
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+I think this is what you are after:
 
-Hi,
+00:1b.0 0403: 8086:284b (rev 03)
+        Subsystem: 1071:8253
+        Flags: bus master, fast devsel, latency 0, IRQ 22
+        Memory at fc300000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+
+Queue=0/0 Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
 
-is there any way to use the digital output via toslink on my Samsung P50=20
-notebook?
+hope this helps.
 
-It has an integrated Intel Corporation 82801G (ICH7 Family) High Definition=
-=20
-Audio Controller. The soundchip is supported via HDA-Intel and the codec is=
-=20
-Analog Devices AD1986A.
+Conor
 
-If the digital output is not supported at the moment, I'd like to help the=
-=20
-developers with information, testing an even coding.
-
-You can find all alsa related information about my system at [1]
-
-
-Regards
-Martin
-
-[1] http://pastebin.ca/852506
-
---nextPart5517390.FGI8WqKmSo
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBHllAxVG/GfU56d2wRAjo3AJ4k1tdL+KC0wMUVmjDcQKojorP6XwCeIFvt
-JMQsxMfMYg1xiL3LMZSphWY=
-=LxA0
------END PGP SIGNATURE-----
-
---nextPart5517390.FGI8WqKmSo--
-
---===============0817811298964213940==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0817811298964213940==--
+On Mon, 2008-01-21 at 18:01 +0100, Takashi Iwai wrote:
+> At Mon, 21 Jan 2008 16:49:00 +0000,
+> Forwinder wrote:
+> > 
+> > Takashi wrote:
+> > 
+> > >It's a VERY old version.  Try to install the latest ALSA HG version or
+> > >the daily snapshot tarball.  If it still doesn't work, check the codec
+> > >from /proc/asound/card0/codec#* file, and try to pass model option
+> > >values listed in ALSA-Configuration.txt.
+> > 
+> > I installed 1.0.15 from the website and had to add 'acer-aspire' as an
+> > option inorder to get it to work. With 'acer' as the option the
+> > speakers worked but the headphones didn't but 'acer-aspire' as the
+> > option the speakers and headphones worked but the speakers did not mute
+> > when headphones were plugged into the socket.
+> > 
+> > now it's working pretty okay.
+> 
+> Good to hear.  Could you show the output of "lspci -nv" for the audio
+> device?  We can add the entry for your device so that the driver works
+> without an extra model option.
+> 
+> 
+> thanks,
+> 
+> Takashi
