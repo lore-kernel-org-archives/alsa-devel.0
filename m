@@ -1,253 +1,76 @@
-From: "Adrian McMenamin" <lkmladrian@gmail.com>
-Subject: Re: [alsa-devel] Fixing my sound driver
-Date: Wed, 23 Jan 2008 22:11:34 +0000
-Message-ID: <8b67d60801231411n27024a6ei1b1cd3da6c5025ea@mail.gmail.com>
-References: <8b67d60801201331h338e932fxb856d5fac94ba5f0@mail.gmail.com>
-	 <s5habmze1t7.wl%tiwai@suse.de>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Specific question about ICE1724 + AK4114
+Date: Thu, 24 Jan 2008 00:09:35 +0100
+Message-ID: <4797C92F.2050106@insite.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <s5habmze1t7.wl%tiwai@suse.de>
-Content-Disposition: inline
-Sender: linux-sh-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-sh <linux-sh@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4250110386F
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 00:09:44 +0100 (CET)
+Received: from [192.168.105.213] (ap-dustin.bobrnet.cz [10.109.8.38])
+	by mailserver.bobrnet.net (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	m0NNE8rc011049
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 00:14:12 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21/01/2008, Takashi Iwai <tiwai@suse.de> wrote:
-> At Sun, 20 Jan 2008 21:31:33 +0000,
-> Adrian McMenamin wrote:
-> >
-> > I am still trying to find out what is wrong with my sound driver - for
-> > the Sega Dreamcast (sound/sh/aica.c). This works perfectly with the
-> > OSS emulation layer but will not work with the ALSA layer per se.
-> >
-> > As this shows - there is something wrong with how it interacts with
-> > the PCM layer of alsa-lib:
-> >
-> > $ aplay -l
-> > **** List of PLAYBACK Hardware Devices ****
-> > card 0: AICA [AICA], device 0: AICA PCM [AICA PCM]
-> >   Subdevices: 1/1
-> >   Subdevice #0: subdevice #0
-> > $
-> > $
-> > $ aplay -L
-> > null
-> >     Discard all samples (playback) or generate zero samples (capture)
-> >
-> >
-> > I have no reason to think that my build of alsa-lib is wrong - both
-> > the automagic buildroot build and my own by-hand build behave the same
-> > way.
-> >
-> > So therefore I assume it must be something in the driver?!
->
-> I don't think so.  Try to load snd-dummy.
->
+Hello,
 
-OK, I went one better than that. I switched to a Debian based
-distribution and installed alsa via apt-get (something of a struggle
-with just 16MB to play with, but it can be done).
+I would like to add support for automatic detection of incoming SPDIF
+sample rate for ICE cards with AK4114 DIR, specifically ESI Juli and
+Prodigy192 with MI/IODI/O card.
 
-But while it seems better, it is still not fully functioning:
+Juli windows drivers support the detection, Prodigy drivers don't 
+(broken in some other way too), but the hardware is basically identical.
 
-supercat:/usr/share/sounds/alsa# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: AICA [AICA], device 0: AICA PCM [AICA PCM]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+AK4114 support detection by comparing the recovered clock from SPDIF 
+with another clock of 11, 12 or 24MHz, supplied by a crystal, or externally.
 
-supercat:/usr/share/sounds/alsa# aplay -L
-PCM list:
-hw {
-        @args.0 CARD
-        @args.1 DEV
-        @args.2 SUBDEV
-        @args.CARD {
-                type string
-                default {
-                        @func getenv
-                        vars {
-                                0 ALSA_PCM_CARD
-                                1 ALSA_CARD
-                        }
-                        default {
-                                @func refer
-                                name 'defaults.pcm.card'
-                        }
-                }
-        }
-        @args.DEV {
-                type integer
-                default {
-                        @func igetenv
-                        vars {
-                                0 ALSA_PCM_DEVICE
-                        }
-                        default {
-                                @func refer
-                                name 'defaults.pcm.device'
-                        }
-                }
-        }
-        @args.SUBDEV {
-                type integer
-                default {
-                        @func refer
-                        name 'defaults.pcm.subdevice'
-                }
-        }
-        type hw
-        card $CARD
-        device $DEV
-        subdevice $SUBDEV
-}
-plughw {
-        @args.0 CARD
-        @args.1 DEV
-        @args.2 SUBDEV
-        @args.CARD {
-                type string
-                default {
-                        @func getenv
-                        vars {
-                                0 ALSA_PCM_CARD
-                                1 ALSA_CARD
-                        }
-                        default {
-                                @func refer
-                                name 'defaults.pcm.card'
-                        }
-                }
-        }
-        @args.DEV {
-                type integer
-                default {
-                        @func igetenv
-                        vars {
-                                0 ALSA_PCM_DEVICE
-                        }
-                        default {
-                                @func refer
-                                name 'defaults.pcm.device'
-                        }
-                }
-        }
-        @args.SUBDEV {
-                type integer
-                default {
-                        @func refer
-                        name 'defaults.pcm.subdevice'
-                }
-        }
-        type plug
-        slave.pcm {
-                type hw
-                card $CARD
-                device $DEV
-                subdevice $SUBDEV
-        }
-}
-plug {
-        @args.0 SLAVE
-        @args.SLAVE {
-                type string
-        }
-        type plug
-        slave.pcm $SLAVE
-}
-shm {
-        @args.0 SOCKET
-        @args.1 PCM
-        @args.SOCKET {
-                type string
-        }
-        @args.PCM {
-                type string
-        }
-        type shm
-        server $SOCKET
-        pcm $PCM
-}
-tee {
-        @args.0 SLAVE
-        @args.1 FILE
-        @args.2 FORMAT
-        @args.SLAVE {
-                type string
-        }
-        @args.FILE {
-                type string
-        }
-        @args.FORMAT {
-                type string
-                default raw
-        }
-        type file
-        slave.pcm $SLAVE
-        file $FILE
-        format $FORMAT
-}
-file {
-        @args.0 FILE
-        @args.1 FORMAT
-        @args.FILE {
-                type string
-        }
-        @args.FORMAT {
-                type string
-                default raw
-        }
-        type file
-        slave.pcm null
-        file $FILE
-        format $FORMAT
-}
-null {
-        type null
-}
-cards 'cards.pcm'
-front 'cards.pcm.front'
-rear 'cards.pcm.rear'
-center_lfe 'cards.pcm.center_lfe'
-side 'cards.pcm.side'
-surround40 'cards.pcm.surround40'
-surround41 'cards.pcm.surround41'
-surround50 'cards.pcm.surround50'
-surround51 'cards.pcm.surround51'
-surround71 'cards.pcm.surround71'
-iec958 'cards.pcm.iec958'
-spdif 'cards.pcm.iec958'
-modem 'cards.pcm.modem'
-phoneline 'cards.pcm.phoneline'
-default 'cards.pcm.default'
-dmix 'cards.pcm.dmix'
-dsnoop 'cards.pcm.dsnoop'
+In both cards this functionality seems to be provided by Xilinx XC9536 
+CPLD, together with PLL frequency multiplier MK73-1. It all fits 
+together, the CPLD provides the freqency division for PLL feedback of 
+the multiplier. External reference clock input of AK4114 is connected to 
+CPLD, as well as setup pins XTL0/1. Output frequency of MK73-1 specified 
+in datasheet is in the range of 10-50MHz
 
+Here is my question: For the PLL multiplier to work, its datasheet says 
+it must be fed with input pulses of 20-50kHz. This frequency could be 
+easily provided by ICE1724, BUT in master mode only. When in slave mode 
+(which is the case for active SPDIF input - clock provided by AK4114), 
+all the clocks are derived from the external clock. This signal 
+obviously cannot be used as reference for the sample rate detection in 
+AK4114 - i.e. basically of itself.
 
-Below seems fair enough...
+According to the ICE1724 datasheet, only I2C and MIDI clocks are derived 
+from the 48kHz mode crystal in slave mode. The datasheed says I2C clock 
+is output only during I2C read/write activity, MIDI clock is not 
+directly output at all.
 
-supercat:/usr/share/sounds/alsa# aplay Noise.wav
-Playing WAVE 'Noise.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
-ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to
-find an usable access for 'default'
-aplay: set_params:899: Access type not available
+The cards have no other visible crystals/clock modules apart of those 
+two connected directly to ICE1724. I could not trace any connections 
+from the actual crystals to CPLD.
 
-But this isn't...
+Now here I am, absolutely wondering where the CPLD gets its low 
+frequency stable signal for the PLL multiplier, to provide reference 
+clock for SPDIF rate detection. I am afraid without this knowledge I 
+cannot make the detection work in the alsa driver.
 
-supercat:/usr/share/sounds/alsa# aplay -D plughw:0,0 Noise.wav
-Playing WAVE 'Noise.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
-ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to
-find an usable access for 'plughw:0,0'
-aplay: set_params:899: Access type not available
+Hopefully someone experienced in this area will throw a ray of light 
+upon this mystery.
 
-Any clues?
+Thanks in advance for any ideas, information, suggestions.
 
-(Just to be clear:
+Best regards,
 
-supercat:/usr/share/sounds/alsa# modprobe snd-pcm-oss
-supercat:/usr/share/sounds/alsa# cat Noise.wav > /dev/dsp
-
-works as one would expect)
+Pavel Hofman.
