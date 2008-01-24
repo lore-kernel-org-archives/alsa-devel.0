@@ -1,18 +1,19 @@
-From: Daniel Mack <daniel@caiaq.org>
-Subject: Re: [PATCH] usb/caiaq: decrease period_bytes_min
-Date: Thu, 24 Jan 2008 19:00:09 +0100
-Message-ID: <20080124180009.GB12888@buzzloop.caiaq.de>
-References: <20080124174407.GA12888@buzzloop.caiaq.de>
-	<s5habmv2k1t.wl%tiwai@suse.de>
+From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Subject: Re: [Fwd: Re: Code relsease to alsa.]
+Date: Thu, 24 Jan 2008 16:09:15 -0200
+Message-ID: <200801241609.16670.herton@mandriva.com.br>
+References: <1200932071.30379.41.camel@razman.gruemaster.com>
+	<s5htzl32pep.wl%tiwai@suse.de> <s5hprvr2nq0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93666243BC
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 19:00:13 +0100 (CET)
+Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
+	[200.140.247.100])
+	by alsa0.perex.cz (Postfix) with ESMTP id E0773243BC
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 19:09:23 +0100 (CET)
+In-Reply-To: <s5hprvr2nq0.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <s5habmv2k1t.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Claudio Matsuoka <cmatsuoka@gmail.com>, "Linuxant support (Jonathan)" <support@linuxant.com>, Marc Boucher <marc@linuxant.com>, Philippe Paravicini <philippe@paravicini.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 24, 2008 at 06:46:38PM +0100, Takashi Iwai wrote:
-> > This patch increases the snd_pcm_hardware->period_bytes_min field in the
-> 
-> decrease, right? :)
+Em Thursday 24 January 2008 14:27:19 Takashi Iwai escreveu:
+> At Thu, 24 Jan 2008 16:50:54 +0100,
+>
+> I wrote:
+> > Good to hear.  I'll try to clean up more a bit before merging.
+>
+> I did more rewrite than expected in the end...  The revised patch is
+> below.  Now it has model=hp for your machine.  Give it a try.
 
-On closer examination, 128 is actually less than 4096, yes. Except for
-very large values of 128. ;)
+Works ok as previously, and the mixer matches it fine, just had to add
+this on top of your patch:
 
-Daniel
+--- linux-2.6.24-rc8.2mdv/sound/pci/hda/patch_conexant.c.orig	2008-01-24 16:08:26.000000000 -0200
++++ linux-2.6.24-0.rc8.2mdv/sound/pci/hda/patch_conexant.c	2008-01-24 16:50:54.000000000 -0200
+@@ -1623,11 +1623,14 @@
+ 
+ static const char *cxt5051_models[CXT5051_MODELS] = {
+ 	[CXT5051_LAPTOP]	= "laptop",
++	[CXT5051_HP]		= "hp",
+ };
+ 
+ static struct snd_pci_quirk cxt5051_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x14f1, 0x0101, "Conexant Reference board",
+ 		      CXT5051_LAPTOP),
++	SND_PCI_QUIRK(0x14f1, 0x5051, "HP Spartan 1.1",
++		      CXT5051_HP),
+ 	{}
+ };
+ 
+If you look at the quirk, it's strange here that this HP laptop has the
+same vendor/device ids of Conexant instead of using an HP specific one,
+this can cause problems I think, or may be its something like just a
+unmodified Conexant reference implementation.
+
+I also tested the laptop model and it's ok as before. I just
+noticed that with model=hp I don't get anymore the PCM slider in
+alsamixer, I'm just reporting as I don't know about it and if it's ok
+this way then fine :)
+
+>
+> Takashi
+>
+
+-- 
+[]'s
+Herton
