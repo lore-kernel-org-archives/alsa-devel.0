@@ -1,19 +1,15 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: Re: [Fwd: Re: Code relsease to alsa.]
-Date: Thu, 24 Jan 2008 13:07:31 -0200
-Message-ID: <200801241307.32699.herton@mandriva.com.br>
-References: <1200932071.30379.41.camel@razman.gruemaster.com>
-	<3FCB0D64-6192-4E16-B4DC-4EFC6734AB4C@linuxant.com>
-	<s5hir1l9aga.wl%tiwai@suse.de>
+From: Andy Shevchenko <andy@smile.org.ua>
+Subject: [PATCH] Add mute support to FM-only card with FM801
+	PCI to tuner	bridge
+Date: Thu, 24 Jan 2008 17:13:42 +0200
+Message-ID: <20080124151342.GG1177@serv.smile.org.ua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65C4524362
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 16:07:43 +0100 (CET)
-In-Reply-To: <s5hir1l9aga.wl%tiwai@suse.de>
+Received: from serv.smile.org.ua (serv.smile.org.ua [193.178.237.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 33DA62433C
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 16:13:45 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,80 +21,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Claudio Matsuoka <cmatsuoka@gmail.com>, "Linuxant support (Jonathan)" <support@linuxant.com>, Marc Boucher <marc@linuxant.com>, Philippe Paravicini <philippe@paravicini.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Tuesday 22 January 2008 12:55:17 Takashi Iwai escreveu:
-> At Mon, 21 Jan 2008 13:48:20 -0500,
->
-> Marc Boucher wrote:
-> > Hi Takashi,
-> >
-> > Here's the sign-off:
-> >
-> > Signed-off-by: Marc Boucher <marc@linuxant.com>
->
-> Thanks!
->
-> > Do you have any specific comments about the code itself?
->
-> I have now applied some parts of your patch to HG tree, namely,
->
-> - laptop model fixes for Cxt5045
-> - clean up of Cxt5047 verbs
-> - add missing input elements for cxt5047 test model
-> - a workaround in power-state change
-> - afg and mfg fields in codec preset
-> - ratelimit to timeout messages
->
-> I modified the above a bit, mainly for fixing coding issues.
-> So, be careful to rebase your patch again.
->
-> The rest, the addition of cxt5051 and the HSF modem are pending.
->
-> I checked the patch and found some problems in cxt5051 code:
->
-> - the ADC stream may be unswitched even if you plug/unplug the docking
->   station when the PCM is being opened
-> - basically the capture switch has no role
-> - judging the difference of capture prepare/cleanup via the number of
->   adc
->
-> The patch below is my revised version with some cleanups.
-> Can someone test with the top of the very latest HG tree (at least
-> changeset 5753)?
+Hi!
 
-Hi, I tested in the HP laptop model we have here. The patch works very well, I 
-only noticed two things:
+This is improvement of the early support of the FM-only cards where the
+fm801 chip represents the PCI to tuner bridge.
 
-- The PCM slider in alsamixer doesn't have any effect on volume, Master slide 
-does.
-- In HP laptop model here Docking Mic binds to the external mic and Internal 
-Mic to the builtin mic (it's the only two items in this laptop, External Mic 
-doesn't really exist, I can create another model only for the laptop here to 
-omit External Mic and rename Docking Mic to External Mic, but it's not 
-something important anyway). I noticed just something strange in the automute 
-of the mic inputs: if the volume is not zero for Docking Mic, it doesn't 
-automute Internal Mic, I can capture from both inputs, but if I mute Docking 
-Mic (=0), and plug the mic in Docking Mic, it mutes Internal Mic.
+The tuner initialization isn't included the mute on as well as mute support
+via V4L request. Proposed patch should fix this at least for 64-PCR model.
 
-I tested other things like Headphone automute and it's ok. Thanks to all.
+Signed-off-by: Andy Shevchenko <andy@smile.org.ua>
 
->
-> About HSF modem, let me clarify.  The HSF modem patch can't be applied
-> as is to the kernel tree.  The purpose of this patch is exactly to
-> bind with a binary-only object.  And, as everybody knows, binary-only
-> objects are refused in the kernel upstream in general, so there is
-> no reason to apply it.
->
-> Oh, I also didn't apply the addition of wallclock and lpos.  These are
-> basically fine to add but there is no user except for HSF.  The lpos
-> callback can be replaced with the normal PCM position read, I guess.
->
-> The exit callback is also not applied.  Why is this needed?  Doesn't
-> it work if you call from free callback?
->
+--- alsa-driver-hg20080124/alsa-kernel/i2c/other/tea575x-tuner.c.mute-fix	2008-01-09 03:00:14.000000000 +0200
++++ alsa-driver-hg20080124/alsa-kernel/i2c/other/tea575x-tuner.c	2008-01-24 16:58:25.000000000 +0200
+@@ -53,6 +53,9 @@ MODULE_LICENSE("GPL");
+ #define TEA575X_BIT_DUMMY	(1<<15)		/* buffer */
+ #define TEA575X_BIT_FREQ_MASK	0x7fff
+ 
++#define TEA575X_UNMUTE		0		/* just FALSE */
++#define TEA575X_MUTE		1		/* just TRUE */
++
+ /*
+  * lowlevel part
+  */
+@@ -158,6 +161,10 @@ static int snd_tea575x_ioctl(struct inod
+ 			struct video_audio v;
+ 			if(copy_from_user(&v, arg, sizeof(v))) 
+ 				return -EFAULT;	
++                    	if (v.flags & VIDEO_AUDIO_MUTE)
++                    		tea->ops->mute(tea, TEA575X_MUTE);
++                    	else
++                    		tea->ops->mute(tea, TEA575X_UNMUTE);
+ 			if(v.audio) 
+ 				return -EINVAL;
+ 			return 0;
+@@ -205,6 +212,9 @@ void snd_tea575x_init(struct snd_tea575x
+ 	tea->freq = 90500 * 16;		/* 90.5Mhz default */
+ 
+ 	snd_tea575x_set_freq(tea);
++
++	/* mute on init */
++	tea->ops->mute(tea, TEA575X_MUTE);
+ }
+ 
+ void snd_tea575x_exit(struct snd_tea575x *tea)
+--- alsa-driver-hg20080124/alsa-kernel/pci/fm801.c.mute-fix	2008-01-09 03:00:15.000000000 +0200
++++ alsa-driver-hg20080124/alsa-kernel/pci/fm801.c	2008-01-24 17:02:17.000000000 +0200
+@@ -802,6 +802,11 @@ static unsigned int snd_fm801_tea575x_25
+ 	return val;
+ }
+ 
++static void snd_fm801_tea575x_256pcs_mute(struct snd_tea575x *tea, unsigned int mute)
++{
++	/* TODO: Should be implemented */
++}
++
+ /* 256PCPR GPIO numbers */
+ #define TEA_256PCPR_BUS_CLOCK		0
+ #define TEA_256PCPR_DATA		1
+@@ -890,6 +895,11 @@ static unsigned int snd_fm801_tea575x_25
+ 	return val;
+ }
+ 
++static void snd_fm801_tea575x_256pcpr_mute(struct snd_tea575x *tea, unsigned int mute)
++{
++	/* TODO: Should be implemented */
++}
++
+ /* 64PCR GPIO numbers */
+ #define TEA_64PCR_BUS_CLOCK		0
+ #define TEA_64PCR_WRITE_ENABLE		1	/* inverted */
+@@ -978,21 +988,42 @@ static unsigned int snd_fm801_tea575x_64
+ 	return val;
+ }
+ 
++static void snd_fm801_tea575x_64pcr_mute(struct snd_tea575x *tea, unsigned int mute)
++{
++	struct fm801 *chip = tea->private_data;
++	unsigned short reg;
++
++	spin_lock_irq(&chip->reg_lock);
++
++	reg = inw(FM801_REG(chip, GPIO_CTRL));
++	if (mute)
++		reg &= ~FM801_GPIO_GP(TEA_64PCR_WRITE_ENABLE);  // 0xf800 (mute)
++	else
++		reg |= FM801_GPIO_GP(TEA_64PCR_WRITE_ENABLE);   // 0xf802 (unmute)
++	outw(reg, FM801_REG(chip, GPIO_CTRL));
++	udelay(1);
++
++	spin_unlock_irq(&chip->reg_lock);
++}
++
+ static struct snd_tea575x_ops snd_fm801_tea_ops[3] = {
+ 	{
+ 		/* 1 = MediaForte 256-PCS */
+ 		.write = snd_fm801_tea575x_256pcs_write,
+ 		.read = snd_fm801_tea575x_256pcs_read,
++		.mute = snd_fm801_tea575x_256pcs_mute,
+ 	},
+ 	{
+ 		/* 2 = MediaForte 256-PCPR */
+ 		.write = snd_fm801_tea575x_256pcpr_write,
+ 		.read = snd_fm801_tea575x_256pcpr_read,
++		.mute = snd_fm801_tea575x_256pcpr_mute,
+ 	},
+ 	{
+ 		/* 3 = MediaForte 64-PCR */
+ 		.write = snd_fm801_tea575x_64pcr_write,
+ 		.read = snd_fm801_tea575x_64pcr_read,
++		.mute = snd_fm801_tea575x_64pcr_mute,
+ 	}
+ };
+ #endif
+--- alsa-driver-hg20080124/alsa-kernel/include/tea575x-tuner.h.mute-fix	2007-10-16 03:00:12.000000000 +0300
++++ alsa-driver-hg20080124/alsa-kernel/include/tea575x-tuner.h	2008-01-24 16:58:25.000000000 +0200
+@@ -30,6 +30,7 @@ struct snd_tea575x;
+ struct snd_tea575x_ops {
+ 	void (*write)(struct snd_tea575x *tea, unsigned int val);
+ 	unsigned int (*read)(struct snd_tea575x *tea);
++	void (*mute)(struct snd_tea575x *tea, unsigned int mute);
+ };
+ 
+ struct snd_tea575x {
 
 -- 
-[]'s
-Herton
+With best regards,
+Andy Shevchenko.      mailto: andy@smile.org.ua
