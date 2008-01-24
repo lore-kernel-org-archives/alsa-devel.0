@@ -1,25 +1,14 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
-Subject: Re: Splitting up the HDA-INTEL modules
-Date: Thu, 24 Jan 2008 14:12:35 -0200
-Message-ID: <5f52f6d70801240812kf432c74n7de6a960c906f186@mail.gmail.com>
-References: <478CFD32.50405@harddisk.is-a-geek.org>
-	<5f52f6d70801151120y76407dd4s4c876643ddc8ba95@mail.gmail.com>
-	<s5h1w8ivvd4.wl%tiwai@suse.de>
-	<5f52f6d70801160451p37a8c94ofbbbd2018f88531b@mail.gmail.com>
-	<s5hejchvn0e.wl%tiwai@suse.de>
-	<5f52f6d70801191119m27f20a6bn3183c44ddb3635bd@mail.gmail.com>
-	<s5hfxwre22v.wl%tiwai@suse.de>
-	<5f52f6d70801231146m2b668f6yd02df8422d78490d@mail.gmail.com>
+From: Andy Shevchenko <andy@smile.org.ua>
+Subject: [PATCH] Simplify to use Acer Aspire 5315
+Date: Thu, 24 Jan 2008 18:21:47 +0200
+Message-ID: <20080124162147.GH1177@serv.smile.org.ua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id A69DA24369
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 17:12:38 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so210023rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 08:12:35 -0800 (PST)
-In-Reply-To: <5f52f6d70801231146m2b668f6yd02df8422d78490d@mail.gmail.com>
+Received: from serv.smile.org.ua (serv.smile.org.ua [193.178.237.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CF112433C
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 17:21:49 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,13 +19,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Marco Schuster <marco@harddisk.is-a-geek.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Jan 23, 2008 5:46 PM, Claudio Matsuoka <cmatsuoka@gmail.com> wrote:
+Hi!
 
-> However, hda-config still complains about ioctl
-> PVERSION error (ioctl() with HDA_IOCTL_PVERSION returns -1).
+Simplify usage of the Acer Aspire 5315 laptop with the ALC268 based codec
+sound card via add correct PCI SSID.
 
-Uhm, what device maj/min is hda-config supposed to use?
+Signed-off-by: Andy Shevchenko <andy@smile.org.ua>
+
+--- alsa-driver-hg20080124/alsa-kernel/pci/hda/patch_realtek.c.acer	2008-01-16 03:00:07.000000000 +0200
++++ alsa-driver-hg20080124/alsa-kernel/pci/hda/patch_realtek.c	2008-01-24 18:34:11.000000000 +0200
+@@ -9896,6 +9896,7 @@ static const char *alc268_models[ALC268_
+ static struct snd_pci_quirk alc268_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x0126, "Acer", ALC268_ACER),
+ 	SND_PCI_QUIRK(0x1025, 0x0130, "Acer Extensa 5210", ALC268_ACER),
++	SND_PCI_QUIRK(0x1025, 0x0136, "Acer Aspire 5315", ALC268_ACER),
+ 	SND_PCI_QUIRK(0x1028, 0x0253, "Dell OEM", ALC268_DELL),
+ 	SND_PCI_QUIRK(0x103c, 0x30cc, "TOSHIBA", ALC268_TOSHIBA),
+ 	SND_PCI_QUIRK(0x1043, 0x1205, "ASUS W7J", ALC268_3ST),
+
+-- 
+With best regards,
+Andy Shevchenko.      mailto: andy@smile.org.ua
