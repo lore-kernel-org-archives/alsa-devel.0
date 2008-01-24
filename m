@@ -1,17 +1,14 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] pyalsa sequencer binding - 1/3
-Date: Thu, 24 Jan 2008 17:50:35 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0801241741380.9698@tm8103.perex-int.cz>
-References: <17eedd8a0801080940i14edaef0l2f95e0eb6171cdaf@mail.gmail.com>
-	<17eedd8a0801240027u7afa8fecn965957608467c87d@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: In-Amp support for 92HD7xxx codecs.
+Date: Thu, 24 Jan 2008 11:54:02 -0500
+Message-ID: <4798C2AA.8070306@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id E5FF11038B8
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 17:50:35 +0100 (CET)
-In-Reply-To: <17eedd8a0801240027u7afa8fecn965957608467c87d@mail.gmail.com>
+Received: from smtp103.biz.mail.mud.yahoo.com (smtp103.biz.mail.mud.yahoo.com
+	[68.142.200.238]) by alsa0.perex.cz (Postfix) with SMTP id 2773F24399
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 17:54:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,38 +18,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Aldrin Martoq <amartoq@dcc.uchile.cl>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 24 Jan 2008, Aldrin Martoq wrote:
+Some 92HD7xxx codecs have amps on the ports to volume control and/or mute certain ports.
+Also this makes stac92hd71bxx unmute amps lines in the init not needed.
 
-> Hi hackers again,
-> 
-> I'm sending second PATCH for pyalsa sequencer binding. Major new features:
-> - documentation of all python API
-> - more info on subscription listing
-> - subscribe/unsubscribe
-> - events (SeqEvent class)
-> - send/receive/modify events
-> - creating and managing queues
-> 
-> I've already ported some existing applications to python versions:
-> - aconnect.py
-> - aplaymidi.py
-> - aseqdump.py
-> 
-> There are also 3 samples of code seqtest[1-3].py included in the patch.
-
-Thanks again. I applied your patch to HG, so it will be in 1.0.16rc2:
-
-http://hg.alsa-project.org/alsa-python/rev/111a3ae58cce
-
-Please, sync with this tree. I removed some compiler warnings.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
+diff -r 5bf4c5d02f4b pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Thu Jan 24 15:32:15 2008 +0100
++++ b/pci/hda/patch_sigmatel.c	Thu Jan 24 11:25:36 2008 -0500
+@@ -577,10 +577,6 @@ static struct hda_verb stac92hd71bxx_cor
+ 	/* connect headphone jack to dac1 */
+ 	{ 0x0a, AC_VERB_SET_CONNECT_SEL, 0x01},
+ 	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT}, /* Speaker */
+-	/* unmute right and left channels for nodes 0x0a, 0xd, 0x0f */
+-	{ 0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{ 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{ 0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+ };
+ 
+ static struct hda_verb stac92hd71bxx_analog_core_init[] = {
+@@ -594,11 +590,6 @@ static struct hda_verb stac92hd71bxx_ana
+ 	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT}, /* Speaker */
+ 	/* unmute dac0 input in audio mixer */
+ 	{ 0x17, AC_VERB_SET_AMP_GAIN_MUTE, 0x701f},
+-	/* unmute right and left channels for nodes 0x0a, 0xd, 0x0f */
+-	{ 0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{ 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{ 0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{}
+ };
+ 
+ static struct hda_verb stac925x_core_init[] = {
+@@ -2215,6 +2206,37 @@ static int create_controls(struct sigmat
+ 	return 0;
+ }
+ 
++/* add playback controls for ports that have amps */
++static int stac92xx_create_amp_ctls(struct hda_codec *codec,
++					hda_nid_t nid, char *pfx, int idx)
++{
++	struct sigmatel_spec *spec = codec->spec;
++	int err;
++	char name[48];
++	u32 caps = query_amp_caps(codec, nid, HDA_INPUT);
++	if (idx)
++		sprintf(name, "%s %d", pfx, idx);
++	else
++		strcpy(name, pfx);
++
++	if ((caps & AC_AMPCAP_NUM_STEPS) >> AC_AMPCAP_NUM_STEPS_SHIFT) {
++		sprintf(name, "%s Playback Volume", name);
++		err = stac92xx_add_control(spec, STAC_CTL_WIDGET_VOL, name,
++				HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT));
++		if (err < 0)
++			return err;
++	}
++
++	if ((caps & AC_AMPCAP_MUTE) >> AC_AMPCAP_MUTE_SHIFT) {
++		sprintf(name, "%s Playback Switch", name);
++		err = stac92xx_add_control(spec, STAC_CTL_WIDGET_MUTE, name,
++				HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT));
++		if (err < 0)
++			return err;
++	}
++	return 0;
++}
++
+ /* add playback controls from the parsed DAC table */
+ static int stac92xx_auto_create_multi_out_ctls(struct hda_codec *codec,
+ 					       const struct auto_pin_cfg *cfg)
+@@ -2262,13 +2284,39 @@ static int stac92xx_auto_create_multi_ou
+ 		}
+ 	}
+ 
+-	if (spec->line_switch)
+-		if ((err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH, "Line In as Output Switch", cfg->input_pins[AUTO_PIN_LINE] << 8)) < 0)
++	if (spec->line_switch) {
++		int val = cfg->input_pins[AUTO_PIN_LINE] << 8;
++		wid_caps = get_wcaps(codec, val >> 8);
++
++		err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH,
++				"Line In as Output Switch", val);
++		if (err < 0)
+ 			return err;
+ 
+-	if (spec->mic_switch)
+-		if ((err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH, "Mic as Output Switch", (cfg->input_pins[AUTO_PIN_MIC] << 8) | 1)) < 0)
++		if (wid_caps & AC_WCAP_IN_AMP) {
++			err = stac92xx_create_amp_ctls(codec, val >> 8,
++				"Line In as Output Gain", 0);
++			if (err < 0)
++				return err;
++		}
++	}
++
++	if (spec->mic_switch) {
++		int val = cfg->input_pins[AUTO_PIN_MIC] << 8;
++		wid_caps = get_wcaps(codec, val >> 8);
++
++		err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH,
++				"Mic as Output Switch", val | 1);
++		if (err < 0)
+ 			return err;
++
++		if (wid_caps & AC_WCAP_IN_AMP) {
++			err = stac92xx_create_amp_ctls(codec, val >> 8,
++				"Mic as Output Gain", 0);
++			if (err < 0)
++				return err;
++		}
++	}
+ 
+ 	return 0;
+ }
+@@ -2311,6 +2359,13 @@ static int stac92xx_auto_create_hp_ctls(
+ 			spec->hp_detect = 1;
+ 		nid = snd_hda_codec_read(codec, cfg->hp_pins[i], 0,
+ 					 AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
++		if (wid_caps & AC_WCAP_IN_AMP) {
++			err = stac92xx_create_amp_ctls(codec,
++					cfg->hp_pins[i],
++					"Headphone Gain", i);
++			if (err < 0)
++				return err;
++		}
+ 		if (check_in_dac_nids(spec, nid))
+ 			nid = 0;
+ 		if (! nid)
+@@ -2320,6 +2375,14 @@ static int stac92xx_auto_create_hp_ctls(
+ 	for (i = 0; i < cfg->speaker_outs; i++) {
+ 		nid = snd_hda_codec_read(codec, cfg->speaker_pins[i], 0,
+ 					 AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
++		if (get_wcaps(codec, cfg->speaker_pins[i]) & AC_WCAP_IN_AMP) {
++			err = stac92xx_create_amp_ctls(codec,
++					cfg->speaker_pins[i],
++					"Speaker Gain", i);
++			if (err < 0)
++				return err;
++		}
++
+ 		if (check_in_dac_nids(spec, nid))
+ 			nid = 0;
+ 		if (! nid)
+@@ -2329,6 +2392,13 @@ static int stac92xx_auto_create_hp_ctls(
+ 	for (i = 0; i < cfg->line_outs; i++) {
+ 		nid = snd_hda_codec_read(codec, cfg->line_out_pins[i], 0,
+ 					AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
++		if (get_wcaps(codec, cfg->line_out_pins[i]) & AC_WCAP_IN_AMP) {
++			err = stac92xx_create_amp_ctls(codec,
++					cfg->line_out_pins[i],
++					"Line Out Gain", i);
++			if (err < 0)
++				return err;
++		}
+ 		if (check_in_dac_nids(spec, nid))
+ 			nid = 0;
+ 		if (! nid)
