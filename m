@@ -1,22 +1,16 @@
-From: Hermann Lauer <Hermann.Lauer@iwr.uni-heidelberg.de>
-Subject: Re: es1938 - patch trying to improve capture hw
-	pointer	reads
-Date: Fri, 25 Jan 2008 01:25:14 +0100
-Message-ID: <20080125002514.GA9015@lemon.iwr.uni-heidelberg.de>
-References: <20080123003512.GA6828@lemon.iwr.uni-heidelberg.de>
-	<s5hr6g74f8d.wl%tiwai@suse.de>
-	<20080124152102.GE8290@lemon.iwr.uni-heidelberg.de>
-	<s5hwspz2pwd.wl%tiwai@suse.de>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: Re: [PATCH] hda: In-Amp support for 92HD7xxx codecs.
+Date: Thu, 24 Jan 2008 23:06:46 -0500
+Message-ID: <47996056.3070001@embeddedalley.com>
+References: <4798C2AA.8070306@embeddedalley.com> <s5hk5lz2lsw.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.uni-heidelberg.de (relay.uni-heidelberg.de
-	[129.206.100.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 98C9C2441E
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 01:25:18 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hwspz2pwd.wl%tiwai@suse.de>
+Received: from smtp106.biz.mail.re2.yahoo.com (smtp106.biz.mail.re2.yahoo.com
+	[206.190.52.175]) by alsa0.perex.cz (Postfix) with SMTP id 94CAD2453E
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 05:06:46 +0100 (CET)
+In-Reply-To: <s5hk5lz2lsw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,85 +24,188 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 24, 2008 at 04:40:18PM +0100, Takashi Iwai wrote:
-> At Thu, 24 Jan 2008 16:21:02 +0100,
-> Hermann Lauer wrote:
-> > 
-> > On Thu, Jan 24, 2008 at 12:47:46PM +0100, Takashi Iwai wrote:
-> > ...
-> > > Thanks for the patch.
-> > > The change look OK to me.  Another idea would be to use DMAADDR only
-> > > when DMACOUNT goes mad.
-> > 
-> > The problem is to decide when you have read garbage from DMACOUNT.
-> > DMAADDR is better in the first place, because you know the range
-> > in 24 bit which is valid (DMACOUNT is 16bit only). But my patch tries
-> > to make the failure probability much more lower by reading and comparing
-> > both, so from which one you calculate the pointer at the end is only 
-> > a cosmetic issue.
+Takashi Iwai wrote:
+> At Thu, 24 Jan 2008 11:54:02 -0500,
+> Matthew Ranostay wrote:
+>> Some 92HD7xxx codecs have amps on the ports to volume control and/or mute certain ports.
+>> Also this makes stac92hd71bxx unmute amps lines in the init not needed.
+>>
+>> Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 > 
-> Then a question arises - why DMAADDR isn't used as the primary source
-> at all?  Is it less stable than DMACOUNT in some cases?
-
-I don't know and the current implementation contains only a "don't ask why - AB"
-comment.
-
-To reiterate: My proposed patch is about minimising the chance that a
-wrong hw pointer value is given back due to garbage read from the chip. If
-you are interested, I can send you debugging output which shows
-that both DMAADDR and DMACOUNT are read out as bogus values
-from time to time - one or the another, or both. I tried some
-status flags on the chip, but alway found cases where it's
-not clear if and which one of the two is correct.
-
-So reading both of them and comparing them seems to be the
-best way for me to detect that there has been a readout error.
-Which one to give back is without having more information
-about the chip internals in my opinion only a matter of taste.
-The proposed patch allows a jitter of one byte there, but that
-could be set to zero at the cost of a slightly increased
-failure rate.
-
-> > > But the back-off to the last pointer is
-> > > propbably a safer solution.
-> > 
-> > I'm glad to hear the alsa design allow's this trick - or is
-> > that even the recommeded way to deal with when the hardware pointer
-> > could be temporarily not determined ?
+> The patch will create more controls such as "Headphone Gain Playback
+> Control".  What would be a benifit to have both "Headphone" and
+> "Headphone Gain" controls?  I'd like to avoid redundancy if both
+> provide a similar functionality.
 > 
-> Well, not really.  In theory, it works even if the driver doesn't
-> provide the accurate position.  But, the driver must provide the
-> position in the current period, i.e. the accuracy (latency) must be
-> smaller than the period size.  Thus, it's more safer to keep tracking
-> the current period index (e.g. incrementing at each period-update irq)
-> and check whether the last ptr is over it.
+Well as in the 92HD71Bxxx case it would be useless, but for 92HD73xx series where we have
+two headphone outs which share the same DAC, you could control the gains/mutes for each HP port.
+Same with the line-outs and speaker outs.
 
-Fortunately I have not seen any signs of read errors during the interrupt
-processing. Probably this would change if the interrupt processing latency
-is high.
+> Also, "Line In As Output Gain Playback Volume" is hard to understand.
+> Let's make it simple.
+> 
+Ok I can see your point here, "Line In As Output Gain Switch" is kinda no not needed now that
+I think about it(since if you switch a port to output it powers down the in-amp).
+As for "Line In As Output Gain Playback Volume" it could be changed to "Line In as Output Volume"
+so that would be part of "Line In as Output" mixer, I think that would be more clear.
 
-> For example, suppose the buffer = 256 x 4 periods.  The last ptr is
-> recorded at 256.  Now, at the real position 512, an irq is issued.
-> The irq handler calls snd_pcm_period_elapsed(), which calls the
-> pointer callback in the PCM core.  If the read error occurs at this
-> moment, we can't back up to the last position 256.  We are supposed to
-> be at position 512 or more.
-
-Just to make that clear to me: If the irq handler calls
-snd_pcm_period_elapsed() in your example, the alsa middle layer will treat
-the first 256 byte as written completely by the chip even
-if the pointer callback will say there is still one frame not stored
-for that period.
-(I see the name of the function answering my qestion, but are
-curious how the middle layer implementation behaves in this situation)
-
-That can play a role with the handling of the off-by-one bug of the chip.
-
-Hermann 
-
-
--- 
-Netzwerkadministration/Zentrale Dienste, Interdiziplinaeres 
-Zentrum fuer wissenschaftliches Rechnen der Universitaet Heidelberg
-IWR; INF 368; 69120 Heidelberg; Tel: (06221)54-8236 Fax: -5224
-Email: Hermann.Lauer@iwr.uni-heidelberg.de
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
+>> ---
+>> diff -r 5bf4c5d02f4b pci/hda/patch_sigmatel.c
+>> --- a/pci/hda/patch_sigmatel.c	Thu Jan 24 15:32:15 2008 +0100
+>> +++ b/pci/hda/patch_sigmatel.c	Thu Jan 24 11:25:36 2008 -0500
+>> @@ -577,10 +577,6 @@ static struct hda_verb stac92hd71bxx_cor
+>>  	/* connect headphone jack to dac1 */
+>>  	{ 0x0a, AC_VERB_SET_CONNECT_SEL, 0x01},
+>>  	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT}, /* Speaker */
+>> -	/* unmute right and left channels for nodes 0x0a, 0xd, 0x0f */
+>> -	{ 0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+>> -	{ 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+>> -	{ 0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+>>  };
+>>  
+>>  static struct hda_verb stac92hd71bxx_analog_core_init[] = {
+>> @@ -594,11 +590,6 @@ static struct hda_verb stac92hd71bxx_ana
+>>  	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT}, /* Speaker */
+>>  	/* unmute dac0 input in audio mixer */
+>>  	{ 0x17, AC_VERB_SET_AMP_GAIN_MUTE, 0x701f},
+>> -	/* unmute right and left channels for nodes 0x0a, 0xd, 0x0f */
+>> -	{ 0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+>> -	{ 0x0d, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+>> -	{ 0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+>> -	{}
+>>  };
+>>  
+>>  static struct hda_verb stac925x_core_init[] = {
+>> @@ -2215,6 +2206,37 @@ static int create_controls(struct sigmat
+>>  	return 0;
+>>  }
+>>  
+>> +/* add playback controls for ports that have amps */
+>> +static int stac92xx_create_amp_ctls(struct hda_codec *codec,
+>> +					hda_nid_t nid, char *pfx, int idx)
+>> +{
+>> +	struct sigmatel_spec *spec = codec->spec;
+>> +	int err;
+>> +	char name[48];
+>> +	u32 caps = query_amp_caps(codec, nid, HDA_INPUT);
+>> +	if (idx)
+>> +		sprintf(name, "%s %d", pfx, idx);
+>> +	else
+>> +		strcpy(name, pfx);
+>> +
+>> +	if ((caps & AC_AMPCAP_NUM_STEPS) >> AC_AMPCAP_NUM_STEPS_SHIFT) {
+>> +		sprintf(name, "%s Playback Volume", name);
+>> +		err = stac92xx_add_control(spec, STAC_CTL_WIDGET_VOL, name,
+>> +				HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT));
+>> +		if (err < 0)
+>> +			return err;
+>> +	}
+>> +
+>> +	if ((caps & AC_AMPCAP_MUTE) >> AC_AMPCAP_MUTE_SHIFT) {
+>> +		sprintf(name, "%s Playback Switch", name);
+>> +		err = stac92xx_add_control(spec, STAC_CTL_WIDGET_MUTE, name,
+>> +				HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT));
+>> +		if (err < 0)
+>> +			return err;
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>>  /* add playback controls from the parsed DAC table */
+>>  static int stac92xx_auto_create_multi_out_ctls(struct hda_codec *codec,
+>>  					       const struct auto_pin_cfg *cfg)
+>> @@ -2262,13 +2284,39 @@ static int stac92xx_auto_create_multi_ou
+>>  		}
+>>  	}
+>>  
+>> -	if (spec->line_switch)
+>> -		if ((err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH, "Line In as Output Switch", cfg->input_pins[AUTO_PIN_LINE] << 8)) < 0)
+>> +	if (spec->line_switch) {
+>> +		int val = cfg->input_pins[AUTO_PIN_LINE] << 8;
+>> +		wid_caps = get_wcaps(codec, val >> 8);
+>> +
+>> +		err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH,
+>> +				"Line In as Output Switch", val);
+>> +		if (err < 0)
+>>  			return err;
+>>  
+>> -	if (spec->mic_switch)
+>> -		if ((err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH, "Mic as Output Switch", (cfg->input_pins[AUTO_PIN_MIC] << 8) | 1)) < 0)
+>> +		if (wid_caps & AC_WCAP_IN_AMP) {
+>> +			err = stac92xx_create_amp_ctls(codec, val >> 8,
+>> +				"Line In as Output Gain", 0);
+>> +			if (err < 0)
+>> +				return err;
+>> +		}
+>> +	}
+>> +
+>> +	if (spec->mic_switch) {
+>> +		int val = cfg->input_pins[AUTO_PIN_MIC] << 8;
+>> +		wid_caps = get_wcaps(codec, val >> 8);
+>> +
+>> +		err = stac92xx_add_control(spec, STAC_CTL_WIDGET_IO_SWITCH,
+>> +				"Mic as Output Switch", val | 1);
+>> +		if (err < 0)
+>>  			return err;
+>> +
+>> +		if (wid_caps & AC_WCAP_IN_AMP) {
+>> +			err = stac92xx_create_amp_ctls(codec, val >> 8,
+>> +				"Mic as Output Gain", 0);
+>> +			if (err < 0)
+>> +				return err;
+>> +		}
+>> +	}
+>>  
+>>  	return 0;
+>>  }
+>> @@ -2311,6 +2359,13 @@ static int stac92xx_auto_create_hp_ctls(
+>>  			spec->hp_detect = 1;
+>>  		nid = snd_hda_codec_read(codec, cfg->hp_pins[i], 0,
+>>  					 AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
+>> +		if (wid_caps & AC_WCAP_IN_AMP) {
+>> +			err = stac92xx_create_amp_ctls(codec,
+>> +					cfg->hp_pins[i],
+>> +					"Headphone Gain", i);
+>> +			if (err < 0)
+>> +				return err;
+>> +		}
+>>  		if (check_in_dac_nids(spec, nid))
+>>  			nid = 0;
+>>  		if (! nid)
+>> @@ -2320,6 +2375,14 @@ static int stac92xx_auto_create_hp_ctls(
+>>  	for (i = 0; i < cfg->speaker_outs; i++) {
+>>  		nid = snd_hda_codec_read(codec, cfg->speaker_pins[i], 0,
+>>  					 AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
+>> +		if (get_wcaps(codec, cfg->speaker_pins[i]) & AC_WCAP_IN_AMP) {
+>> +			err = stac92xx_create_amp_ctls(codec,
+>> +					cfg->speaker_pins[i],
+>> +					"Speaker Gain", i);
+>> +			if (err < 0)
+>> +				return err;
+>> +		}
+>> +
+>>  		if (check_in_dac_nids(spec, nid))
+>>  			nid = 0;
+>>  		if (! nid)
+>> @@ -2329,6 +2392,13 @@ static int stac92xx_auto_create_hp_ctls(
+>>  	for (i = 0; i < cfg->line_outs; i++) {
+>>  		nid = snd_hda_codec_read(codec, cfg->line_out_pins[i], 0,
+>>  					AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
+>> +		if (get_wcaps(codec, cfg->line_out_pins[i]) & AC_WCAP_IN_AMP) {
+>> +			err = stac92xx_create_amp_ctls(codec,
+>> +					cfg->line_out_pins[i],
+>> +					"Line Out Gain", i);
+>> +			if (err < 0)
+>> +				return err;
+>> +		}
+>>  		if (check_in_dac_nids(spec, nid))
+>>  			nid = 0;
+>>  		if (! nid)
+>>
+> 
