@@ -1,18 +1,18 @@
-From: Martin Egge <mailinglists@martin.egge.info>
-Subject: Re: Digital-Out (Toslink) on HDA-Intal (AD1986A)?
-Date: Fri, 25 Jan 2008 20:05:29 +0100
-Message-ID: <200801252005.42391.mailinglists@martin.egge.info>
-References: <200801222121.05757.mailinglists@martin.egge.info>
-	<200801251644.52626.mailinglists@martin.egge.info>
-	<s5hwspxj2ir.wl%tiwai@suse.de>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: Error when compiling from HG on Ubuntu 7.10
+Date: Fri, 25 Jan 2008 20:17:54 +0100
+Message-ID: <479A35E2.2070003@insite.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2442151872574567634=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id E26732474A
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 20:05:45 +0100 (CET)
-In-Reply-To: <s5hwspxj2ir.wl%tiwai@suse.de>
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7D8C247B6
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 20:17:44 +0100 (CET)
+Received: from [192.168.105.171] (ap-dustin.bobrnet.cz [10.109.8.38])
+	by mailserver.bobrnet.net (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	m0PJMGpn024548
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 20:22:17 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,69 +25,19 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============2442151872574567634==
-Content-Type: multipart/signed;
-  boundary="nextPart2092794.JK4qn4u0BG";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2092794.JK4qn4u0BG
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Hi,
-
-Am Freitag, 25. Januar 2008 schrieb Takashi Iwai:
-> Thanks.  I couldn't find any missing setup for the SPDIF.
-> I thought the similar setup worked well on other machines with
-> AD1986A, but I'm not sure whether it's still OK with the recent
-> version...
-
-Is there anything I can do, to help you to get it working?
-
-> Anyay, the patch below is to change the mic input behavior.
-> With the patch, the mic input is toggled automatically via jack plug.
-
-The external mic input is toggled via jack plug now. But the internal mic=20
-still is not working.
-
-> It assumes that you didn't change the model preset
-> (i.e. model=3Dlaptop-eapd).
-
-What does this mean? Do I have to insert
-options snd_hda_intel model=3Dlaptop-eapd
-in my /etc/modprobe.d/alsa-base or not?
-
-
-Regards,
-Martin
-
---nextPart2092794.JK4qn4u0BG
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBHmjMFVG/GfU56d2wRApRGAJ9chM1K/RxbHYilu0iMN+8x6XlAWwCfZex9
-KCUyG/1iTC7g7iHz948PIXY=
-=Qs/z
------END PGP SIGNATURE-----
-
---nextPart2092794.JK4qn4u0BG--
-
---===============2442151872574567634==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2442151872574567634==--
+SSBhbSBzb3JyeSBmb3IgdGhlIGZhbHNlIGFsYXJtLiBDbGVhbiBoZyBjbG9uZSBhbmQgaGdjb21w
+aWxlIHdvcmtzIApmbGF3bGVzc2x5LgoKUGF2ZWwgSG9mbWFuLgoKPiBIZWxsbywKPiAKPiBXaGls
+ZSB0cnlpbmcgdG8gY29tcGlsZSB0aGUgbGF0ZXN0IGFsc2Eta2VybmVsICsgYWxzYS1kcml2ZXJz
+IGZyb20gSEcgCj4gdXNpbmcgLi9oZ2NvbXBpbGUsIEkgYW0gaGl0dGluZyB0aGUgZm9sbG93aW5n
+IGVycm9yOgo+IAo+ICAgIENDIFtNXSAgL2hvbWUvcGF2ZWwvcHJvamVjdHMvYWxzYS9hbHNhLWRy
+aXZlci9pMmMvb3RoZXIvdGVhNTc1eC10dW5lci5vCj4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIAo+
+IC9ob21lL3BhdmVsL3Byb2plY3RzL2Fsc2EvYWxzYS1kcml2ZXIvaTJjL290aGVyL3RlYTU3NXgt
+dHVuZXIuYzoyMzoKPiAvaG9tZS9wYXZlbC9wcm9qZWN0cy9hbHNhL2Fsc2EtZHJpdmVyL2luY2x1
+ZGUvc291bmQvZHJpdmVyLmg6MToyOiAKPiB3YXJuaW5nOiAjd2FybmluZyAiVGhpcyBmaWxlIGlz
+IGRlcHJlY2F0ZWQiCj4gL2hvbWUvcGF2ZWwvcHJvamVjdHMvYWxzYS9hbHNhLWRyaXZlci9pMmMv
+b3RoZXIvdGVhNTc1eC10dW5lci5jOjYwOiAKPiBlcnJvcjogcmVkZWZpbml0aW9uIG9mIOKAmHZp
+ZGVvX2dldF9kcnZkYXRh4oCZCj4gaW5jbHVkZS9tZWRpYS92NGwyLWRldi5oOjM4MzogZXJyb3I6
+IHByZXZpb3VzIGRlZmluaXRpb24gb2YgCj4g4oCYdmlkZW9fZ2V0X2RydmRhdGHigJkgd2FzIGhl
+cmUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
