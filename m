@@ -1,18 +1,22 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Error when compiling from HG on Ubuntu 7.10
-Date: Thu, 24 Jan 2008 23:13:08 +0100
-Message-ID: <47990D74.2030606@insite.cz>
+From: Hermann Lauer <Hermann.Lauer@iwr.uni-heidelberg.de>
+Subject: Re: es1938 - patch trying to improve capture hw
+	pointer	reads
+Date: Fri, 25 Jan 2008 01:25:14 +0100
+Message-ID: <20080125002514.GA9015@lemon.iwr.uni-heidelberg.de>
+References: <20080123003512.GA6828@lemon.iwr.uni-heidelberg.de>
+	<s5hr6g74f8d.wl%tiwai@suse.de>
+	<20080124152102.GE8290@lemon.iwr.uni-heidelberg.de>
+	<s5hwspz2pwd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9571324371
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 23:13:14 +0100 (CET)
-Received: from [192.168.105.213] (ap-dustin.bobrnet.cz [10.109.8.38])
-	by mailserver.bobrnet.net (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	m0OMHiWe017085
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jan 2008 23:17:44 +0100
+Received: from relay.uni-heidelberg.de (relay.uni-heidelberg.de
+	[129.206.100.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 98C9C2441E
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 01:25:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hwspz2pwd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,122 +26,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Thu, Jan 24, 2008 at 04:40:18PM +0100, Takashi Iwai wrote:
+> At Thu, 24 Jan 2008 16:21:02 +0100,
+> Hermann Lauer wrote:
+> > 
+> > On Thu, Jan 24, 2008 at 12:47:46PM +0100, Takashi Iwai wrote:
+> > ...
+> > > Thanks for the patch.
+> > > The change look OK to me.  Another idea would be to use DMAADDR only
+> > > when DMACOUNT goes mad.
+> > 
+> > The problem is to decide when you have read garbage from DMACOUNT.
+> > DMAADDR is better in the first place, because you know the range
+> > in 24 bit which is valid (DMACOUNT is 16bit only). But my patch tries
+> > to make the failure probability much more lower by reading and comparing
+> > both, so from which one you calculate the pointer at the end is only 
+> > a cosmetic issue.
+> 
+> Then a question arises - why DMAADDR isn't used as the primary source
+> at all?  Is it less stable than DMACOUNT in some cases?
 
-While trying to compile the latest alsa-kernel + alsa-drivers from HG =
+I don't know and the current implementation contains only a "don't ask why - AB"
+comment.
 
-using ./hgcompile, I am hitting the following error:
+To reiterate: My proposed patch is about minimising the chance that a
+wrong hw pointer value is given back due to garbage read from the chip. If
+you are interested, I can send you debugging output which shows
+that both DMAADDR and DMACOUNT are read out as bogus values
+from time to time - one or the another, or both. I tried some
+status flags on the chip, but alway found cases where it's
+not clear if and which one of the two is correct.
 
-   CC [M]  /home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.o
-In file included from =
+So reading both of them and comparing them seems to be the
+best way for me to detect that there has been a readout error.
+Which one to give back is without having more information
+about the chip internals in my opinion only a matter of taste.
+The proposed patch allows a jitter of one byte there, but that
+could be set to zero at the cost of a slightly increased
+failure rate.
 
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:23:
-/home/pavel/projects/alsa/alsa-driver/include/sound/driver.h:1:2: =
+> > > But the back-off to the last pointer is
+> > > propbably a safer solution.
+> > 
+> > I'm glad to hear the alsa design allow's this trick - or is
+> > that even the recommeded way to deal with when the hardware pointer
+> > could be temporarily not determined ?
+> 
+> Well, not really.  In theory, it works even if the driver doesn't
+> provide the accurate position.  But, the driver must provide the
+> position in the current period, i.e. the accuracy (latency) must be
+> smaller than the period size.  Thus, it's more safer to keep tracking
+> the current period index (e.g. incrementing at each period-update irq)
+> and check whether the last ptr is over it.
 
-warning: #warning "This file is deprecated"
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:60: =
+Fortunately I have not seen any signs of read errors during the interrupt
+processing. Probably this would change if the interrupt processing latency
+is high.
 
-error: redefinition of =91video_get_drvdata=92
-include/media/v4l2-dev.h:383: error: previous definition of =
+> For example, suppose the buffer = 256 x 4 periods.  The last ptr is
+> recorded at 256.  Now, at the real position 512, an irq is issued.
+> The irq handler calls snd_pcm_period_elapsed(), which calls the
+> pointer callback in the PCM core.  If the read error occurs at this
+> moment, we can't back up to the last position 256.  We are supposed to
+> be at position 512 or more.
 
-=91video_get_drvdata=92 was here
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:65: =
+Just to make that clear to me: If the irq handler calls
+snd_pcm_period_elapsed() in your example, the alsa middle layer will treat
+the first 256 byte as written completely by the chip even
+if the pointer callback will say there is still one frame not stored
+for that period.
+(I see the name of the function answering my qestion, but are
+curious how the middle layer implementation behaves in this situation)
 
-error: redefinition of =91video_set_drvdata=92
-include/media/v4l2-dev.h:388: error: previous definition of =
+That can play a role with the handling of the off-by-one bug of the chip.
 
-=91video_set_drvdata=92 was here
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:101:5: =
+Hermann 
 
-warning: "LINUX_VERSION_CODE" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:101:26: =
 
-warning: "KERNEL_VERSION" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:101:40: =
-
-error: missing binary operator before token "("
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:112:5: =
-
-warning: "LINUX_VERSION_CODE" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:112:27: =
-
-warning: "KERNEL_VERSION" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:112:41: =
-
-error: missing binary operator before token "("
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:120:5: =
-
-warning: "LINUX_VERSION_CODE" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:120:27: =
-
-warning: "KERNEL_VERSION" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:120:41: =
-
-error: missing binary operator before token "("
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:124:5: =
-
-warning: "LINUX_VERSION_CODE" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:124:27: =
-
-warning: "KERNEL_VERSION" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:124:41: =
-
-error: missing binary operator before token "("
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:204:5: =
-
-warning: "LINUX_VERSION_CODE" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:204:27: =
-
-warning: "KERNEL_VERSION" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:204:41: =
-
-error: missing binary operator before token "("
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:227:5: =
-
-warning: "LINUX_VERSION_CODE" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:227:26: =
-
-warning: "KERNEL_VERSION" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:227:40: =
-
-error: missing binary operator before token "("
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:230:5: =
-
-warning: "LINUX_VERSION_CODE" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:230:27: =
-
-warning: "KERNEL_VERSION" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:230:41: =
-
-error: missing binary operator before token "("
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:234:5: =
-
-warning: "LINUX_VERSION_CODE" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:234:26: =
-
-warning: "KERNEL_VERSION" is not defined
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:234:40: =
-
-error: missing binary operator before token "("
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c: In =
-
-function =91snd_tea575x_init=92:
-/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.c:243: =
-
-warning: assignment from incompatible pointer type
-make[4]: *** =
-
-[/home/pavel/projects/alsa/alsa-driver/i2c/other/tea575x-tuner.o] Error 1
-
-The system runs on 2.6.22-14-rt kernel, corresponding package with =
-
-headers installed correctly. Perhaps I am doing something wrong.
-
-Thanks a lot for any help.
-
-Regards,
-
-Pavel Hofman.
+-- 
+Netzwerkadministration/Zentrale Dienste, Interdiziplinaeres 
+Zentrum fuer wissenschaftliches Rechnen der Universitaet Heidelberg
+IWR; INF 368; 69120 Heidelberg; Tel: (06221)54-8236 Fax: -5224
+Email: Hermann.Lauer@iwr.uni-heidelberg.de
