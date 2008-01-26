@@ -1,18 +1,18 @@
-From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
+From: Nigel Henry <cave.dnb@tiscali.fr>
 Subject: Re: Broken seq
-Date: Sat, 26 Jan 2008 18:08:47 +0100
-Message-ID: <200801261808.47613.cave.dnb2m97pp@aliceadsl.fr>
+Date: Sat, 26 Jan 2008 18:07:35 +0100
+Message-ID: <200801261807.35265.cave.dnb@tiscali.fr>
 References: <200801261250.58032.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B55E103908
-	for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2008 18:08:50 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 902AC103908
+	for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2008 18:07:38 +0100 (CET)
 Received: from [192.168.0.230] (213.36.166.86) by mail.libertysurf.net
-	(7.3.118.8) id 4794AD62001600A0 for alsa-devel@alsa-project.org;
-	Sat, 26 Jan 2008 19:14:07 +0100
+	(7.3.118.8) id 478BC985003545A2 for alsa-devel@alsa-project.org;
+	Sat, 26 Jan 2008 19:07:07 +0100
 In-Reply-To: <200801261250.58032.gineera@aspect135.co.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
