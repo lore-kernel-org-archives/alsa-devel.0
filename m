@@ -1,14 +1,16 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Broken seq
-Date: Sat, 26 Jan 2008 12:50:58 +0000
-Message-ID: <200801261250.58032.gineera@aspect135.co.uk>
+From: "Marcin Floryan" <marcin.floryan@gmail.com>
+Subject: ACER Aspier 5630 (snd-hda-intel ALC883)
+Date: Sat, 26 Jan 2008 12:47:50 +0000
+Message-ID: <14cea40a0801260447h5582a1cflc05670c7d0077a45@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91AD6243DC
-	for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2008 13:32:23 +0100 (CET)
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35B452458B
+	for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2008 13:47:54 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so1693719wag.8
+	for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2008 04:47:50 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,18 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Can someone help with this...
+Hello!
 
-During repeated testing of MIDI, something has broken the seq system, so when 
-loading previously working sound drivers, I get a message:
+I have had some problems using alsa sound on openSuse 10.3 wit the
+above hardware: sound output OK but mic not working. Have seen many
+relevant bugs and with the new driver the microphone is now working OK
+so thanks for all the effort.
 
-	/proc/asound/seq/clients   File not found
+I was wondering now if there is anything I could do to help with
+driver development to fine-tune for this particular hardware setup. I
+can provide some further details or do some tests if guided a bit (I
+am fairly comfortable modifying source code and compiling the driver)
 
-(or similar) and sure enough it is not there.
+Kind regards,
+-- 
+Marcin Floryan
+http://marcin.floryan.pl/
 
-Why has it gone and how can I get it back?
-
-Thanks  Alan
+Please consider the environment before printing this email.
