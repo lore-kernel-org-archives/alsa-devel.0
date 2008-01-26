@@ -1,18 +1,25 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Error when compiling from HG on Ubuntu 7.10
-Date: Fri, 25 Jan 2008 20:17:54 +0100
-Message-ID: <479A35E2.2070003@insite.cz>
+From: "Jerone Young" <jerone@gmail.com>
+Subject: Re: [PATCH] Remove psuedo master from
+	pci/hda/analog_patch.c . It does not function well!
+Date: Fri, 25 Jan 2008 18:42:04 -0600
+Message-ID: <9f50a7a00801251642r7187f623q78479a3dd3924689@mail.gmail.com>
+References: <9f50a7a00801242311i3fe64fecw70ee75c4b6070359@mail.gmail.com>
+	<s5hejc6cp85.wl%tiwai@suse.de>
+	<9f50a7a00801250541h78f55d92v3e17d77c7f4b3c1@mail.gmail.com>
+	<s5hk5lyj8vl.wl%tiwai@suse.de>
+	<9f50a7a00801250637v7e6025d7pcdb179bdc323296@mail.gmail.com>
+	<s5hd4rqj6d0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7D8C247B6
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 20:17:44 +0100 (CET)
-Received: from [192.168.105.171] (ap-dustin.bobrnet.cz [10.109.8.38])
-	by mailserver.bobrnet.net (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	m0PJMGpn024548
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 20:22:17 +0100
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.159])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FAB424CB8
+	for <alsa-devel@alsa-project.org>; Sat, 26 Jan 2008 01:42:06 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id l27so755900fgb.44
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jan 2008 16:42:05 -0800 (PST)
+In-Reply-To: <s5hd4rqj6d0.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +29,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBhbSBzb3JyeSBmb3IgdGhlIGZhbHNlIGFsYXJtLiBDbGVhbiBoZyBjbG9uZSBhbmQgaGdjb21w
-aWxlIHdvcmtzIApmbGF3bGVzc2x5LgoKUGF2ZWwgSG9mbWFuLgoKPiBIZWxsbywKPiAKPiBXaGls
-ZSB0cnlpbmcgdG8gY29tcGlsZSB0aGUgbGF0ZXN0IGFsc2Eta2VybmVsICsgYWxzYS1kcml2ZXJz
-IGZyb20gSEcgCj4gdXNpbmcgLi9oZ2NvbXBpbGUsIEkgYW0gaGl0dGluZyB0aGUgZm9sbG93aW5n
-IGVycm9yOgo+IAo+ICAgIENDIFtNXSAgL2hvbWUvcGF2ZWwvcHJvamVjdHMvYWxzYS9hbHNhLWRy
-aXZlci9pMmMvb3RoZXIvdGVhNTc1eC10dW5lci5vCj4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIAo+
-IC9ob21lL3BhdmVsL3Byb2plY3RzL2Fsc2EvYWxzYS1kcml2ZXIvaTJjL290aGVyL3RlYTU3NXgt
-dHVuZXIuYzoyMzoKPiAvaG9tZS9wYXZlbC9wcm9qZWN0cy9hbHNhL2Fsc2EtZHJpdmVyL2luY2x1
-ZGUvc291bmQvZHJpdmVyLmg6MToyOiAKPiB3YXJuaW5nOiAjd2FybmluZyAiVGhpcyBmaWxlIGlz
-IGRlcHJlY2F0ZWQiCj4gL2hvbWUvcGF2ZWwvcHJvamVjdHMvYWxzYS9hbHNhLWRyaXZlci9pMmMv
-b3RoZXIvdGVhNTc1eC10dW5lci5jOjYwOiAKPiBlcnJvcjogcmVkZWZpbml0aW9uIG9mIOKAmHZp
-ZGVvX2dldF9kcnZkYXRh4oCZCj4gaW5jbHVkZS9tZWRpYS92NGwyLWRldi5oOjM4MzogZXJyb3I6
-IHByZXZpb3VzIGRlZmluaXRpb24gb2YgCj4g4oCYdmlkZW9fZ2V0X2RydmRhdGHigJkgd2FzIGhl
-cmUKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Jan 25, 2008 9:02 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Fri, 25 Jan 2008 08:37:35 -0600,
+> Jerone Young wrote:
+> >
+> > I tested both patches. They work and master volume works for both
+> > Speakers & IEC958. It can controll up and down volume.
+> >
+> >  Speakers now mute.
+> >
+> > One issue though when you mute the Master it does not mute IEC958.  It
+> > will mute the speakers but not the IEC958 PCM stream. I am not sure if
+> > this desired behavior?
+>
+> No, it should be also controlled by the master switch.
+>
+> Could you check the below
+>
+>     % amixer cget name="IEC958 Playback Switch"
+>
+It does exists
+
+> whether this element exists.  Then,
+>
+>     % amixer cset name="IEC958 Playback Switch" off
+>
+> to turn the SPDIF off.
+
+Yeap that worked. Using the command muted  the IEC958.
+
+So we see the it can be muted. But it's not cutting the stream when
+the virtual master mutes.
+Only the PCM stream gets cut, IEC958 stays unmuted.
+
+>
+> > Oh also AC3 passthrough still works fine (you really can't manipulate
+> > this audio). I streamed some Doubly 5.1 streams over and they worked
+> > fine.
+>
+> That's great.  Then the things become really eaiser :)
+>
+> > Besides that one issue you should put those 2 patches upstream.
+>
+> The first patch is already on HG tree.  The second patch will be
+> pushed soon.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>
+>
+> > On Jan 25, 2008 8:08 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> > > At Fri, 25 Jan 2008 07:41:48 -0600,
+> > > Jerone Young wrote:
+> > > >
+> > > > Ok less explication this time ;-) .. it was a late night. I have found
+> > > > something interesting though.
+> > >
+> > > Thanks ;)
+> > >
+> > > > I took some time and actually evaluated the behavior of the Windows
+> > > > Vista Driver by Analog Devices was done for the AD1984. They do not
+> > > > have a PCM mixer, instead each indivdual application has there own
+> > > > mixer (this is a windows feature), and when you manipulate the
+> > > > individual mixer it manipulates the audio of that application. But
+> > > > there is not a PCM mixer for all apps. Just a Master. Also they have
+> > > > IEC958 (SDPIF) seen as a second sound device. It appears that they
+> > > > made what we call PCM the Master.
+> > >
+> > > Maybe Windows driver doesn't use the analog loopback feature inside
+> > > the codec, but does everything on software.
+> > >
+> > > > Now looking at our driver, it appears we should be doing the same. I
+> > > > actually have a good example why. If I am running playback through
+> > > > IEC958 (SDPIF) and I do anything to the PCM mixer it has no effect on
+> > > > PCM audio coming from applications that are running through IEC958.
+> > > > Only when I go to the application (assuming the application has it's
+> > > > own mixer code .. we will say VLC is a good example), does the actual
+> > > > PCM for that application get effected. So if I mute the PCM mixer, PCM
+> > > > audio runs over IEC958 without being muted, it only mutes it for
+> > > > speaker and the headphones.
+> > >
+> > > OK now I see the problem.  IEC958 isn't assigned to the master
+> > > volume/switch list indeed.
+> > >
+> > > > What I see here is what we label as PCM is actually just the Master
+> > > > volume for Speaker & Headphones. But does not actually manipulate the
+> > > > PCM audio.
+> > >
+> > > Correct.  It's because the SPDIF has an individual (a sort of) DAC.
+> > > So, we need to adjust this as well.
+> > >
+> > > > So really PCM really should be made Master Playback as it really does
+> > > > not manipulate PCM audio but just the  how it is played back through
+> > > > Speaker & Headphones.
+> > >
+> > > A fix is easy, but this might cause another problem when a non-audio
+> > > signal is sent.
+> > >
+> > > Could you try the patch below with the latest HG tree?  (Or, you can
+> > > apply this after my previous patch to 1.0.16-rc1.)
+> > > If the SPDIF volume/switch are changed together with the master
+> > > successfully, then please test AC3 or DTS output if possible.  I'd
+> > > like to know whether it breaks now.
+> > > If it still works, I'll happily apply the patch to the upstream tree.
+> > >
+> > >
+> > > Thanks,
+> > >
+> > > Takashi
+> > >
+> > > ---
+> > >
+> > > diff -r 19029da61288 pci/hda/patch_analog.c
+> > > --- a/pci/hda/patch_analog.c    Fri Jan 25 11:56:57 2008 +0100
+> > > +++ b/pci/hda/patch_analog.c    Fri Jan 25 15:04:01 2008 +0100
+> > > @@ -139,6 +139,7 @@ static const char *ad_slave_vols[] = {
+> > >         "Headphone Playback Volume",
+> > >         "Mono Playback Volume",
+> > >         "Speaker Playback Volume",
+> > > +       "IEC958 Playback Volume",
+> > >         NULL
+> > >  };
+> > >
+> > > @@ -151,6 +152,7 @@ static const char *ad_slave_sws[] = {
+> > >         "Headphone Playback Switch",
+> > >         "Mono Playback Switch",
+> > >         "Speaker Playback Switch",
+> > > +       "IEC958 Playback Volume",
+> > >         NULL
+> > >  };
+> > >
+> > > @@ -3078,6 +3080,7 @@ static const char *ad1884_slave_vols[] =
+> > >         "Internal Mic Playback Volume",
+> > >         "Docking Mic Playback Volume"
+> > >         "Beep Playback Volume",
+> > > +       "IEC958 Playback Volume",
+> > >         NULL
+> > >  };
+> > >
+> > >
+> >
+>
