@@ -1,17 +1,14 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: ASOC v2 driver structure
-Date: Sun, 27 Jan 2008 11:45:25 -0500
-Message-ID: <9e4733910801270845i58b41269s708cb1ee58e7eba8@mail.gmail.com>
+From: LCID Fire <lcid-fire@gmx.net>
+Subject: Usb driver correction
+Date: Sun, 27 Jan 2008 18:14:16 +0100
+Message-ID: <479CBBE8.3090306@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB5AA103894
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 17:45:26 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id m33so2414672wag.8
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 08:45:25 -0800 (PST)
-Content-Disposition: inline
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 153D71037F9
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 18:14:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,48 +18,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA-devel <alsa-devel@alsa-project.org>, Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to write an asoc v2 driver for my powerpc based SOC
-(mpc5200) hardware. We have two audio devices on the board, a WM8580
-and a TAS5504.  How do you do this with asoc v2? The card is created
-in snd_soc_machine_create(); there seems to be an assumption of a
-single card per machine.
+Hi.
+I hope you guys can help me with 3 problems I have.
+I have a usb device which has 3 streams - which all work fine (that's
+not the problem yet ;)).
+Aside from this there is also a mixer created. Alsa cannot retrieve any
+information from the mixer - not the minimum, nor the maximum or current
+value. Basicly alsa leaves the mixer in a state where it cannot be used
+- which leads to a question why not omnit the mixer?
+What I am ending up with are these 2 volumes:
+[4] FU [PCM Capture Volume] ch = 1, val = 0/1/1
+[9] FU [PCM Capture Volume] ch = 1, val = 0/1/1
 
-Or are you supposed to mix the different devices into a single pcm
-driver? What would happen in pxa2xx-pcm.c if more than one of these
-were defined?
+What would I have to do to disable these?
+Is it enough to define a usbmix_name_map in usbmixer_maps.c with {4,
+NULL} and {9, NULL}?
 
-static int pxa2xx_pcm_probe(struct device *dev)
-{
-	struct snd_soc_platform *platform = to_snd_soc_platform(dev);
-	int ret;
-	
-	platform->pcm_ops = &pxa2xx_pcm_ops;
-	platform->pcm_new = pxa2xx_pcm_new,
-	platform->pcm_free = pxa2xx_pcm_free_dma_buffers,
-#if defined(CONFIG_SND_PXA2XX_SOC_I2S)	
-	ret = snd_soc_platform_add_dai(platform, &pxa2xx_i2s, 1);
-	if (ret < 0)
-		return ret;
-#endif
-#if defined(CONFIG_SND_PXA2XX_SOC_AC97)	
-	ret = snd_soc_platform_add_dai(platform, pxa2xx_ac97, 3);
-	if (ret < 0)
-		return ret;
-#endif
-#if defined(CONFIG_SND_PXA2XX_SOC_SSP)	
-	ret = snd_soc_platform_add_dai(platform, pxa2xx_ssp, 3);
-	if (ret < 0)
-		return ret;
-#endif	
-	ret = snd_soc_register_platform(platform);
-	return ret;
-}
+Also, the usb device has a switch - from line input to phono input. I
+know what control message I have to send to change the switch - but
+where has such an additional switch to be implemented?
+Is it similar to snd_audigy2nx_led_get in usbmixer.c?
 
-
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+Would be great if someone could explain these mysteries to me ;)
