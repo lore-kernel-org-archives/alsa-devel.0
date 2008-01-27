@@ -1,17 +1,18 @@
 From: Martin Egge <mailinglists@martin.egge.info>
 Subject: Re: Digital-Out (Toslink) on HDA-Intal (AD1986A)?
-Date: Sun, 27 Jan 2008 23:03:20 +0100
-Message-ID: <200801272303.20917.mailinglists@martin.egge.info>
+Date: Sun, 27 Jan 2008 23:15:03 +0100
+Message-ID: <200801272315.03890.mailinglists@martin.egge.info>
 References: <200801222121.05757.mailinglists@martin.egge.info>
-	<s5hr6g87qfu.wl%tiwai@suse.de>
+	<s5hwspxj2ir.wl%tiwai@suse.de>
+	<200801252005.42391.mailinglists@martin.egge.info>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5250121052221992385=="
+Content-Type: multipart/mixed; boundary="===============8381325655465585881=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2088103829
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 23:03:34 +0100 (CET)
-In-Reply-To: <s5hr6g87qfu.wl%tiwai@suse.de>
+	[212.227.126.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B8D710382D
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 23:15:16 +0100 (CET)
+In-Reply-To: <200801252005.42391.mailinglists@martin.egge.info>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,63 +25,53 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============5250121052221992385==
+--===============8381325655465585881==
 Content-Type: multipart/signed;
-  boundary="nextPart5674093.9VYP8IGoFu";
+  boundary="nextPart48065660.4xbr7h41se";
   protocol="application/pgp-signature";
   micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart5674093.9VYP8IGoFu
+--nextPart48065660.4xbr7h41se
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-Hi Takashi,
+Hi,
 
-Am Mittwoch, 23. Januar 2008 schrieb Takashi Iwai:
-> The SPDIF is disabled intentionally for your model because no one
-> could test it.  Does the patch below work?
+Am Freitag, 25. Januar 2008 schrieb Martin Egge:
+> Am Freitag, 25. Januar 2008 schrieb Takashi Iwai:
+> > Anyay, the patch below is to change the mic input behavior.
+> > With the patch, the mic input is toggled automatically via jack plug.
+>
+> The external mic input is toggled via jack plug now. But the internal mic
+> still is not working.
 
-As I already have written: this patch does not work with the code from hg. =
-But=20
-I've applied it successfully on 1.0.15. The digital output is working and c=
-an=20
-be disabled with the IEC958 switch.
-
-Using the code from hg the digital output is not working as well when I set=
+I've got some information that might help you. If I set model=3D3stack the=
 =20
-model=3D3stack. This has has been working with the original code from 1.0.1=
-5=20
-and 1.0.14. So there must be a general problem with IEC958 in the hg code.
+internal and external mic are working in parallel. There is no jack-sense=20
+which disables the internal mic when an external mic is connected.
 
-I've another question regarding the digital output. Is there a way to contr=
-ol=20
-the volume of the digital output? Neither the Master nor the PCM control ha=
-ve=20
-any effect on the volume of the digital output. In addition the output can'=
-t=20
-be switched off by muting PCM or Master.
 
-Regards,
+HTH
 Martin
 
---nextPart5674093.9VYP8IGoFu
+--nextPart48065660.4xbr7h41se
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.6 (GNU/Linux)
 
-iD8DBQBHnP+oVG/GfU56d2wRAk3nAJ9xtuz6p7h/bPJjA2g0ZxlOot9E8QCfVrDC
-8vduNi2yd6PuggZr1XSZ9kc=
-=H4gR
+iD8DBQBHnQJnVG/GfU56d2wRAtbdAJ99BkS1o9H24LC9j7FMlEWZt+53yQCfQbAR
+GvsvierBXqZU39WuQn6MnvU=
+=Tbng
 -----END PGP SIGNATURE-----
 
---nextPart5674093.9VYP8IGoFu--
+--nextPart48065660.4xbr7h41se--
 
---===============5250121052221992385==
+--===============8381325655465585881==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -91,4 +82,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============5250121052221992385==--
+--===============8381325655465585881==--
