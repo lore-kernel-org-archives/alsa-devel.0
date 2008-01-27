@@ -1,47 +1,77 @@
-From: Xavier garabedian <xgarabedian@gmail.com>
-Subject: installation steps for us-122l tascam driver
-Date: Sun, 27 Jan 2008 14:38:08 +0000 (UTC)
-Message-ID: <loom.20080127T142724-428@post.gmane.org>
+From: Robert Hancock <hancockr@shaw.ca>
+Subject: Re: a7839e96 (PNP: increase max resources) breaks my ALSA intel8x0
+ sound card
+Date: Sun, 27 Jan 2008 12:17:17 -0600
+Message-ID: <479CCAAD.4080706@shaw.ca>
+References: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8E701037EA
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 19:00:04 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1JJBnW-0000q6-T6
-	for alsa-devel@alsa-project.org; Sun, 27 Jan 2008 18:00:03 +0000
-Received: from bro29-1-82-245-183-242.fbx.proxad.net ([82.245.183.242])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 18:00:02 +0000
-Received: from xgarabedian by bro29-1-82-245-183-242.fbx.proxad.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 18:00:02 +0000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1758968AbYA0SPp@vger.kernel.org>
+In-reply-to: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Avuton Olrich <avuton@gmail.com>
+Cc: Zhao Yakui <yakui.zhao@intel.com>, Li Shaohua <shaohua.li@intel.com>, Bjorn Helgaas <bjorn.helgaas@hp.com>, Thomas Renninger <trenn@suse.de>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, "Linux-Kernel," <linux-kernel@vger.kernel.org>, Alsa-Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Avuton Olrich wrote:
+> With v2.6.24 my second ALSA sound device stopped working.
+> 
+> After bisection it says this was the offending commit.
+> 
+> a7839e960675b549f06209d18283d5cee2ce9261 is first bad commit
+> commit a7839e960675b549f06209d18283d5cee2ce9261
+> Author: Zhao Yakui <yakui.zhao@intel.com>
+> Date:   Wed Nov 28 16:21:21 2007 -0800
+> 
+>     PNP: increase the maximum number of resources
+> 
+>     On some systems the number of resources(IO,MEM) returnedy by PNP device is
+>     greater than the PNP constant, for example motherboard devices.  It brings
+>     that some resources can't be reserved and resource confilicts.  This will
+>     cause PCI resources are assigned wrongly in some systems, and cause hang.
+>     This is a regression since we deleted ACPI motherboard driver and use PNP
+>     system driver.
+> 
+>     [akpm@linux-foundation.org: fix text and coding-style a bit]
+>     Signed-off-by: Li Shaohua <shaohua.li@intel.com>
+>     Signed-off-by: Zhao Yakui <yakui.zhao@intel.com>
+>     Cc: Bjorn Helgaas <bjorn.helgaas@hp.com>
+>     Cc: Thomas Renninger <trenn@suse.de>
+>     Cc: <stable@kernel.org>
+>     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> 
+> The audio device is 00:1b.0 (see my lspci -vvv output), the other
+> audio device works fine.
+> 
+> http://avuton.googlepages.com/v2.6-before (dmesg revision before)
+> http://avuton.googlepages.com/v2.6-after (dmesg broken revision)
+> http://avuton.googlepages.com/lspci-vvv
+> http://avuton.googlepages.com/config (from the broken revision)
+> http://avuton.googlepages.com/iomem
+> http://avuton.googlepages.com/ioports
 
-hello
+Here's why the driver fails to load:
 
-i'm a linux beginner and i'm trying to make the us 122l work on ubuntu.
-i have seen the patches that you published, but i don't know the steps to
-install them and make the tascam work.
+[   31.133060] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, 
+low) -> IRQ 22
+[   31.133141] PCI: Unable to reserve mem region #1:4000@febf8000 for 
+device 0000:00:1b.0
+[   31.133197] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+[   31.133244] HDA Intel: probe of 0000:00:1b.0 failed with error -16
 
-is there anyone who can discribe me the process, step by step ?
+The iomem location of the HDA controller conflicts with this reservation 
+by the BIOS:
 
-thank you very much in advance
+[   22.906654] system 00:08: iomem range 0xfebfa000-0xfebfac00 has been 
+reserved
 
-best regards
+There was a patch floating around to ignore PnPACPI reservations which 
+conflict with PCI BARs, which appears to be what's happening in this 
+case. That patch originally worked for any board, but was later made 
+specific to a certain Supermicro motherboard which had the sata_nv 
+controller MMIO regions marked as reserved, preventing the driver from 
+loading. We may need a more general solution. See:
 
-xavier garabedian
+https://bugzilla.redhat.com/show_bug.cgi?id=313491
