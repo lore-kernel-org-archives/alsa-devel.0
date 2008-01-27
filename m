@@ -1,18 +1,17 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: ASOC v2 driver structure
-Date: Sun, 27 Jan 2008 14:15:45 -0500
-Message-ID: <9e4733910801271115w576fcd61pec8a5586138744c5@mail.gmail.com>
-References: <9e4733910801270845i58b41269s708cb1ee58e7eba8@mail.gmail.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Broken seq
+Date: Sun, 27 Jan 2008 20:36:30 +0000
+Message-ID: <200801272036.30629.gineera@aspect135.co.uk>
+References: <200801261250.58032.gineera@aspect135.co.uk>
+	<200801261808.47613.cave.dnb2m97pp@aliceadsl.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0DD3244FC
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 20:15:46 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id m33so2477926wag.8
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 11:15:45 -0800 (PST)
-In-Reply-To: <9e4733910801270845i58b41269s708cb1ee58e7eba8@mail.gmail.com>
+Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE62F1037FD
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 21:17:36 +0100 (CET)
+In-Reply-To: <200801261808.47613.cave.dnb2m97pp@aliceadsl.fr>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,23 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA-devel <alsa-devel@alsa-project.org>, Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+To: ALSA devel <alsa-devel@alsa-project.org>
+Cc: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
 List-Id: alsa-devel@alsa-project.org
 
-On 1/27/08, Jon Smirl <jonsmirl@gmail.com> wrote:
-> I'm trying to write an asoc v2 driver for my powerpc based SOC
-> (mpc5200) hardware. We have two audio devices on the board, a WM8580
-> and a TAS5504.  How do you do this with asoc v2? The card is created
-> in snd_soc_machine_create(); there seems to be an assumption of a
-> single card per machine.
+On Saturday 26 January 2008 17:08, Nigel Henry wrote:
+> On Saturday 26 January 2008 13:50, Alan Horstmann wrote:
+> > During repeated testing of MIDI, something has broken the seq system, so
+> > when loading previously working sound drivers, I get a message:
+> >
+> >  /proc/asound/seq/clients   File not found
+> >
+> > Why has it gone and how can I get it back?
+> >
+> > Thanks  Alan
 >
-> Or are you supposed to mix the different devices into a single pcm
-> driver? What would happen in pxa2xx-pcm.c if more than one of these
-> were defined?
+> Hi Alan. I don't know too much, but try doing a:
+> modprobe snd-seq  (as root obviously)
 
-I guess I'm supposed to have multiple platform drivers - one per
-I2C/AC97/SSC channel?
+Thanks for that.  A combination, in several attempts, of your suggestion, 
+restoring my previous modules configuration and rebooting (snd module would 
+not unload) has got back a fully operational system.
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+Now to continue the MIDI testing -will be posting those results some time 
+soon!
+
+Alan
