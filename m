@@ -1,18 +1,18 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: Re: installation steps for us-122l tascam driver
-Date: Sun, 27 Jan 2008 20:04:14 +0100
-Message-ID: <200801272004.14287.fzu@wemgehoertderstaat.de>
-References: <loom.20080127T142724-428@post.gmane.org>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: ASOC v2 driver structure
+Date: Sun, 27 Jan 2008 14:15:45 -0500
+Message-ID: <9e4733910801271115w576fcd61pec8a5586138744c5@mail.gmail.com>
+References: <9e4733910801270845i58b41269s708cb1ee58e7eba8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E2711037EA
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 20:04:19 +0100 (CET)
-Received: by ug-out-1314.google.com with SMTP id q2so863820uge.50
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 11:04:18 -0800 (PST)
-In-Reply-To: <loom.20080127T142724-428@post.gmane.org>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id F0DD3244FC
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 20:15:46 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so2477926wag.8
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jan 2008 11:15:45 -0800 (PST)
+In-Reply-To: <9e4733910801270845i58b41269s708cb1ee58e7eba8@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,21 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Xavier garabedian <xgarabedian@gmail.com>
+To: ALSA-devel <alsa-devel@alsa-project.org>, Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am Sonntag, 27. Januar 2008 schrieb Xavier garabedian:
-> 
-> i'm a linux beginner and i'm trying to make the us 122l work on ubuntu.
-> i have seen the patches that you published, but i don't know the steps to
-> install them and make the tascam work.
+On 1/27/08, Jon Smirl <jonsmirl@gmail.com> wrote:
+> I'm trying to write an asoc v2 driver for my powerpc based SOC
+> (mpc5200) hardware. We have two audio devices on the board, a WM8580
+> and a TAS5504.  How do you do this with asoc v2? The card is created
+> in snd_soc_machine_create(); there seems to be an assumption of a
+> single card per machine.
+>
+> Or are you supposed to mix the different devices into a single pcm
+> driver? What would happen in pxa2xx-pcm.c if more than one of these
+> were defined?
 
-Um erm, blush..., I think the us122l patch is not yet "beginner digestible".
-Put differently, please be patient some more weeks, I hope to put the patch
-in a better shape then.
-You might start learning alsa patch/build cycle with a stable driver, that's
-already in linux kernel; then proceed learning the same for the jackd as
-there isn't any alsa-pcm interface yet.
+I guess I'm supposed to have multiple platform drivers - one per
+I2C/AC97/SSC channel?
 
-      Karsten
+-- 
+Jon Smirl
+jonsmirl@gmail.com
