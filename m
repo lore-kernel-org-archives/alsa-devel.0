@@ -1,14 +1,21 @@
-From: CAG <cag@fsk-hh.org>
-Subject: M-Delta Audiophile 192 (ice1724) Recording
-Date: Mon, 28 Jan 2008 13:29:00 +0100
-Message-ID: <479DCA8C.7070209@fsk-hh.org>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: ASOC v2 driver structure
+Date: Mon, 28 Jan 2008 13:06:10 +0000
+Message-ID: <1201525570.3551.47.camel@localhost.localdomain>
+References: <9e4733910801270845i58b41269s708cb1ee58e7eba8@mail.gmail.com>
+	<9e4733910801271115w576fcd61pec8a5586138744c5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.nadir.org (mail.nadir.org [217.114.68.227])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A3DB103843
-	for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2008 13:30:24 +0100 (CET)
+Received: from mimesweeper.wolfsonmicro.main (lumison.wolfsonmicro.com
+	[87.246.78.27]) by alsa0.perex.cz (Postfix) with ESMTP id 47D742439A
+	for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2008 14:06:11 +0100 (CET)
+Received: from orlando.wolfsonmicro.main (orlando.wolfsonmicro.main) by
+	mimesweeper.wolfsonmicro.main (Clearswift SMTPRS 5.2.3) with ESMTP id
+	<T84ccea0071ac1408057dc@mimesweeper.wolfsonmicro.main> for
+	<alsa-devel@alsa-project.org>; Mon, 28 Jan 2008 13:06:10 +0000
+In-Reply-To: <9e4733910801271115w576fcd61pec8a5586138744c5@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,31 +25,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: CAG <cag@fsk-hh.org>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, 2008-01-27 at 14:15 -0500, Jon Smirl wrote:
+> On 1/27/08, Jon Smirl <jonsmirl@gmail.com> wrote:
+> > I'm trying to write an asoc v2 driver for my powerpc based SOC
+> > (mpc5200) hardware. We have two audio devices on the board, a WM8580
+> > and a TAS5504.  How do you do this with asoc v2? The card is created
+> > in snd_soc_machine_create(); there seems to be an assumption of a
+> > single card per machine.
 
-we use the M-Delta Audiophile 192 with alsa-driver-1.0.15 and the 
-ice1724 module. Playback works but we cannot record anything.
+This was the initial assumption in v1. To be honest we were only
+catering for single codec devices. In v2 we are allowing multiple cards
+- struct machine is being refactored atm to make this more obvious.
 
-I noticed that this maybe a bug according to the Alsa Changelog:
+> >
+> > Or are you supposed to mix the different devices into a single pcm
+> > driver? What would happen in pxa2xx-pcm.c if more than one of these
+> > were defined?
+> 
+> I guess I'm supposed to have multiple platform drivers - one per
+> I2C/AC97/SSC channel?
+> 
 
- From Changes v1.0.13 v1.0.14:
- >
- >  - ice1724 - Add support of M-Audio Audiophile 192
- >
- >     Added the (experimental) support of M-Audio Audiophile 192 board.
- >     Currently, the analog and the digital playbacks seem working fine.
- >     The inputs seem not working as far as I've tested yet.
+You could do this or create two cards (machines). I've kept platform as
+the DMA + all the interfaces (as some devices have more than one
+interface in operation e.g. AC97 for HiFi and I2S/PCM for voice).
 
-How is the status for that card ? Is someone working on this ? I heard 
-Recording with OSS works but actually we don't want to switch to OSS...
-Is it worth waiting for a new release ?
+Liam
 
-We desperately need recording!
 
-Cheers from a free radio station,
+Privacy & Confidentiality Notice
+-------------------------------------------------
+This message and any attachments contain privileged and confidential information that is intended solely for the person(s) to whom it is addressed. If you are not an intended recipient you must not: read; copy; distribute; discuss; take any action in or make any reliance upon the contents of this message; nor open or read any attachment. If you have received this message in error, please notify us as soon as possible on the following telephone number and destroy this message including any attachments. Thank you.
+-------------------------------------------------
+Wolfson Microelectronics plc
+Tel: +44 (0)131 272 7000
+Fax: +44 (0)131 272 7001
+Web: www.wolfsonmicro.com
 
-Toast
+Registered in Scotland
+
+Company number SC089839
+
+Registered office: 
+
+Westfield House, 26 Westfield Road, Edinburgh, EH11 2QB, UK
