@@ -1,18 +1,17 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Archive alsa versions
-Date: Mon, 28 Jan 2008 19:52:05 +0000
-Message-ID: <200801281952.05942.gineera@aspect135.co.uk>
-References: <200801281652.10786.gineera@aspect135.co.uk>
-	<348022A7-10F4-4F4B-8F81-F25352136113@caiaq.org>
-	<1201540166.23892.26.camel@razman.gruemaster.com>
+From: "Shaun Shirey" <diginosis@gmail.com>
+Subject: Migrating old application using ALSA v0.5.0 to use
+	current ALSA v1.0.15
+Date: Mon, 28 Jan 2008 16:25:02 -0500
+Message-ID: <63ae0f660801281325t6e303191xd7eb5fb7f0235983@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
-	by alsa0.perex.cz (Postfix) with ESMTP id 76F3C244CE
-	for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2008 20:32:56 +0100 (CET)
-In-Reply-To: <1201540166.23892.26.camel@razman.gruemaster.com>
+Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id F36AA103854
+	for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2008 22:25:06 +0100 (CET)
+Received: by rv-out-0910.google.com with SMTP id k20so1326203rvb.32
+	for <alsa-devel@alsa-project.org>; Mon, 28 Jan 2008 13:25:03 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,32 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > On Jan 28, 2008, at 16:52, Alan Horstmann wrote:
-> > > Are historic versions of ALSA available anywhere?  I have been
-> > > unable to locate any.
-> > > It might be useful for me tracking down a bug to see the source
-> > > code for alsa-driver-1.0.1 !!
+Good Afternoon,
 
-> On Mon, 2008-01-28 at 17:45 +0100, Daniel Mack wrote:
-> > It's possible to check out this version from the Mercurial repository.
-> > Have a look at http://hg.alsa-project.org/alsa-driver/tags
-> > and http://alsa-project.org/main/index.php/SourceCodeRepository
+I am currently working on migrating an old application using an older
+version of ALSA v0.5.0 to a newer version v1.0.15. I have noticed that many
+functions have been removed entirely and the library itself has been
+completely re-structured.
 
-On Monday 28 January 2008 17:09, Tobin Davis wrote:
-> Yes, use the mercurial source repository.  You can do a binary search if
-> you know where the bug is.  What driver are you tracing?
-
-On Monday 28 January 2008 18:23, Rene Herman wrote:
-> That, or you could just grab whatever you want from
->
-> ftp://ftp.alsa-project.org/pub/driver
-
-Daniel, Tobin, Rene,
-
-Thanks very much guys!  I had assumed Hg would only have more recent stuff.  
-That gives me several ways...
-
-Alan
+The problem is that I can't seem to find any documentation on the older
+library (the program also has little to no comments). I was wondering if
+anyone has any links to documentation or advice on porting ? Any help would
+be greatly appreciated.
