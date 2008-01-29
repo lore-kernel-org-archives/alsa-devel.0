@@ -1,17 +1,18 @@
-From: Tim Jackson <lists@timj.co.uk>
-Subject: Re: alsa-firmware licensing
-Date: Tue, 29 Jan 2008 18:11:35 +0000
-Message-ID: <479F6C57.4030309@timj.co.uk>
-References: <477F9103.9010304@timj.co.uk>
-	<1199702481.16243.1229842463@webmail.messagingengine.com>
+From: Martin Egge <mailinglists@martin.egge.info>
+Subject: Re: Digital-Out (Toslink) on HDA-Intal (AD1986A)?
+Date: Tue, 29 Jan 2008 19:19:48 +0100
+Message-ID: <200801291919.48792.mailinglists@martin.egge.info>
+References: <200801222121.05757.mailinglists@martin.egge.info>
+	<200801291105.43407.mailinglists@martin.egge.info>
+	<s5hmyqo4qde.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9093534633012353118=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.firecluster.net (blixt.firecluster.net [89.16.161.116])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14516103896
-	for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2008 19:11:51 +0100 (CET)
-In-Reply-To: <1199702481.16243.1229842463@webmail.messagingengine.com>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05B5D1037FC
+	for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2008 19:19:50 +0100 (CET)
+In-Reply-To: <s5hmyqo4qde.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,55 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
+--===============9093534633012353118==
+Content-Type: multipart/signed;
+  boundary="nextPart2086291.xR7Teqc7yK";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Thanks for all your help Clemens and apologies for the slow reply.
+--nextPart2086291.xR7Teqc7yK
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
- > Tim Jackson wrote:
+Hi,
 
-[... emi firmware licensing]
-> The emi firmware files are copies of linux/drivers/usb/misc/emi26_fw.h
-> and emi62_fw_*.h.  emi26_fw.h contains three copies of this "license",
-> but only the first one contains this paragraph which is missing in
-> license.txt:
-> 
-> | Permission is hereby granted for the distribution of this firmware 
-> | image as part of a Linux or other Open Source operating system kernel 
-> | in text or binary form as required. 
-> 
-> I've added this paragraph to license.txt.
+Am Dienstag, 29. Januar 2008 schrieb Takashi Iwai:
+> Thanks.  It's weird that there is really no significant difference in
+> these proc files.  So it should be something else.
+>
+> Could you try HG bisect?  It'd be greatly helpful.
 
-Thanks.
+What does HG bisect mean?
 
->> Does the ALSA project have special authorisation ("written consent") to 
->> distribute this?
-> 
-> Well, I'd guess the alsa-firmware package is part of Linux.
+Martin
 
-Unfortunately I don't think that's a "guess" that some distributors such 
-as Fedora can risk to take. Although ALSA is of course part of a "Linux 
-... kernel", the wording "as part of" is ambiguous and there's certainly 
-an argument that a standalone ALSA firmware package (i.e. not 
-distributed along with the rest of the kernel) is not "distribution...as 
-part of" a kernel.
+--nextPart2086291.xR7Teqc7yK
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-Much though I'd *like* these firmwares to be distributable, unless those 
-licensing terms get changed, I think we'll have to drop those particular 
-firmwares in Fedora.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
 
-> Please note that the emi26 and emi62 drivers still use the in-kernel
-> copies of their firmware images; the files in alsa-firmware are as yet
-> unused.
+iD8DBQBHn25EVG/GfU56d2wRAoO0AJwLXudsDbBCxqW2plS4Qqg16pAuxACdFnM6
+Ubw7mghlf1GrSMYDOqMEQ1M=
+=41hp
+-----END PGP SIGNATURE-----
 
-That's useful, thanks. Is the plan to drop the in-kernel ones at some 
-point then? At least this means if we do drop the firmware it won't have 
-any negative effect, at least at the moment.
+--nextPart2086291.xR7Teqc7yK--
 
+--===============9093534633012353118==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Thanks
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Tim
+--===============9093534633012353118==--
