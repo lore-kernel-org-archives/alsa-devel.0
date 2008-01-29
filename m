@@ -1,17 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
+From: krzysztof.h1@poczta.fm
 Subject: Re: [REPOST] opti93x: conversion to use cs4231 library
-Date: Tue, 29 Jan 2008 02:24:30 +0100
-Message-ID: <479E804E.7070500@keyaccess.nl>
-References: <20080126104411.50c2035f.krzysztof.h1@poczta.fm>
-	<s5hd4rl6f4h.wl%tiwai@suse.de>
+Date: 29 Jan 2008 08:09:45 +0100
+Message-ID: <20080129070945.EA72C860C89@f35.poczta.interia.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080003000900050704050408"
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6C1110382A
-	for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2008 02:24:09 +0100 (CET)
-In-Reply-To: <s5hd4rl6f4h.wl%tiwai@suse.de>
+Received: from smtp4.poczta.interia.pl (smtp35.poczta.interia.pl [80.48.65.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6B93245C1
+	for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2008 08:09:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,55 +18,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>
+To: Takashi Iwai <tiwai@suse.de>, Krzysztof Helt <krzysztof.h1@poczta.fm>, Rene Herman <rene.herman@keyaccess.nl>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080003000900050704050408
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Takashi Iwai napisa=B3(a):
+> At Sat, 26 Jan 2008 10:44:11 +0100,
+> Krzysztof Helt wrote:
+> > =
 
-On 28-01-08 18:20, Takashi Iwai wrote:
+> > From: Krzysztof Helt >krzysztof.h1@wp.pl>
+> > =
+
+> > This patch converts the Opti93x driver to use
+> > the cs4231 library instead of just duplicating the code.
+> > =
+
+> > Signed-off-by: Krzysztof Helt >krzysztof.h1@wp.pl>
+> =
+
+> This causes a compile error for snd-opti92x-cs4231.  Also has some
+> coding style issues.
+> =
+
+I am sorry for compilation error. I was sure I have tested compilation
+of all opti versions but obviously not.
 
 > The fixed patch is below.  Please let me know this and previous
 > patches work so that I can push them to the upstream.
+> =
 
-Needs this additionally to compile (against 2.6.24 at least, but this is 
-normally always required). Will test tomorrow.
 
-Rene
+I don't have previous patches but I have few patches which =
 
---------------080003000900050704050408
-Content-Type: text/plain;
- name="alsa-opti92x-ad1848.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-opti92x-ad1848.diff"
+depends on these two I posted (e.g. 3d control for opti 933, more
+coding style fixes).
 
-diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-index 719b197..c01d2b2 100644
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -22,7 +22,7 @@
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- */
- 
--
-+#include <sound/driver.h>
- #include <linux/init.h>
- #include <linux/err.h>
- #include <linux/isa.h>
+I will post them after these two are merged to have stable reference
+for diffs.
 
---------------080003000900050704050408
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards,
+Krzysztof
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------080003000900050704050408--
+
+----------------------------------------------------------------------
+Sprawdz, ktore komorki sa najmodniejsze!
+Kliknij >>> http://link.interia.pl/f1cd4
