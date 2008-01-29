@@ -1,13 +1,15 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: HDA-Intel - Add support for Intel SCH
-Date: Tue, 29 Jan 2008 13:55:12 -0800
-Message-ID: <1201643712.23892.106.camel@razman.gruemaster.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Mic in as output changes
+Date: Tue, 29 Jan 2008 17:41:18 -0500
+Message-ID: <479FAB8E.7090602@embeddedalley.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-VghL8G3T3g18Wyocr79f"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F0602467D
-	for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2008 22:55:16 +0100 (CET)
+Received: from smtp109.biz.mail.mud.yahoo.com (smtp109.biz.mail.mud.yahoo.com
+	[68.142.201.178])
+	by alsa0.perex.cz (Postfix) with SMTP id 31B8810393D
+	for <alsa-devel@alsa-project.org>; Tue, 29 Jan 2008 23:41:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,69 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developers <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Some laptop has an internal analog microphone that is 'fixed'. This patch prevents creating a 'Mic In as Output' switch for
+ports that can't be outputs.
 
---=-VghL8G3T3g18Wyocr79f
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-This patch adds support for Intel's SCH mobile chipset.
-
-
-Signed off by Tobin Davis <tdavis@dsl-only.net>
-
---=-VghL8G3T3g18Wyocr79f
-Content-Disposition: attachment; filename=hda-sch.patch
-Content-Type: text/x-patch; name=hda-sch.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
---- a/pci/hda/hda_intel.c	2008-01-29 13:33:41.000000000 -0800
-+++ b/pci/hda/hda_intel.c	2008-01-29 13:50:05.000000000 -0800
-@@ -97,6 +97,7 @@
- 			 "{Intel, ICH8},"
- 			 "{Intel, ICH9},"
- 			 "{Intel, ICH10},"
-+ 			 "{Intel, SCH},"
- 			 "{ATI, SB450},"
- 			 "{ATI, SB600},"
- 			 "{ATI, RS600},"
-@@ -375,6 +376,7 @@
- /* driver types */
- enum {
- 	AZX_DRIVER_ICH,
-+	AZX_DRIVER_SCH,
- 	AZX_DRIVER_ATI,
- 	AZX_DRIVER_ATIHDMI,
- 	AZX_DRIVER_VIA,
-@@ -385,6 +387,7 @@
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
+diff -r ec0316a4d108 pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Tue Jan 29 15:28:44 2008 +0100
++++ b/pci/hda/patch_sigmatel.c	Tue Jan 29 17:33:58 2008 -0500
+@@ -288,6 +288,10 @@ static hda_nid_t stac927x_adc_nids[3] = 
  
- static char *driver_short_names[] __devinitdata = {
- 	[AZX_DRIVER_ICH] = "HDA Intel",
-+	[AZX_DRIVER_SCH] = "HDA Intel MID",
- 	[AZX_DRIVER_ATI] = "HDA ATI SB",
- 	[AZX_DRIVER_ATIHDMI] = "HDA ATI HDMI",
- 	[AZX_DRIVER_VIA] = "HDA VIA VT82xx",
-@@ -1978,6 +1981,7 @@
- 	{ 0x8086, 0x293f, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ICH }, /* ICH9 */
- 	{ 0x8086, 0x3a3e, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ICH }, /* ICH10 */
- 	{ 0x8086, 0x3a6e, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ICH }, /* ICH10 */
-+ 	{ 0x8086, 0x811b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_SCH }, /* SCH*/
- 	{ 0x1002, 0x437b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATI }, /* ATI SB450 */
- 	{ 0x1002, 0x4383, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATI }, /* ATI SB600 */
- 	{ 0x1002, 0x793b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATIHDMI }, /* ATI RS600 HDMI */
-
---=-VghL8G3T3g18Wyocr79f
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-VghL8G3T3g18Wyocr79f--
+ static hda_nid_t stac927x_mux_nids[3] = {
+         0x15, 0x16, 0x17
++};
++
++static hda_nid_t stac927x_dac_nids[5] = {
++	0x02, 0x03, 0x04, 0x05, 0x06
+ };
+ 
+ static hda_nid_t stac927x_dmux_nids[1] = {
+@@ -2283,15 +2287,23 @@ static int stac92xx_auto_create_multi_ou
+ 	}
+ 
+ 	if (spec->mic_switch) {
++		unsigned int def_conf;
+ 		nid = cfg->input_pins[AUTO_PIN_MIC];
+-		pincap = snd_hda_param_read(codec, nid,
+-						AC_PAR_PIN_CAP);
+-		if (pincap & AC_PINCAP_OUT) {
+-			err = stac92xx_add_control(spec,
+-				STAC_CTL_WIDGET_IO_SWITCH,
+-				"Mic as Output Switch", (nid << 8) | 1);
+-			if (err < 0)
+-				return err;
++		def_conf = snd_hda_codec_read(codec, nid, 0,
++						AC_VERB_GET_CONFIG_DEFAULT, 0);
++
++		/* some laptops have an internal analog microphone
++ 		 * which can't be used as a output */
++		if (get_defcfg_connect(def_conf) != AC_JACK_PORT_FIXED) {
++			pincap = snd_hda_param_read(codec, nid,
++							AC_PAR_PIN_CAP);
++			if (pincap & AC_PINCAP_OUT) {
++				err = stac92xx_add_control(spec,
++					STAC_CTL_WIDGET_IO_SWITCH,
++					"Mic as Output Switch", (nid << 8) | 1);
++				if (err < 0)
++					return err;
++			}
+ 		}
+ 	}
