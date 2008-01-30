@@ -1,19 +1,23 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: 1.0.16rc2 -build issues
-Date: Wed, 30 Jan 2008 21:03:45 +0000
-Message-ID: <200801302103.45969.gineera@aspect135.co.uk>
-References: <Pine.LNX.4.61.0801291553220.11819@tm8103.perex-int.cz>
-	<200801301241.46610.gineera@aspect135.co.uk>
-	<s5h3asf4gai.wl%tiwai@suse.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Hg update problems
+Date: Thu, 31 Jan 2008 11:33:26 +1300
+Message-ID: <200801311133.27010.linux@audioscience.com>
+References: <mailman.479441.1201678517.26582.alsa-cvslog@lists.sourceforge.net>
+	<200801302110.17979.linux@audioscience.com>
+	<s5hir1bloa4.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9854B247B7
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2008 21:44:10 +0100 (CET)
-In-Reply-To: <s5h3asf4gai.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 555A1247C5
+	for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2008 23:31:46 +0100 (CET)
+Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JVH00M64AJVKY40@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 31 Jan 2008 11:31:07 +1300 (NZDT)
+In-reply-to: <s5hir1bloa4.wl%tiwai@suse.de>
+Content-disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +28,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 30 January 2008 13:03, you wrote:
-> At Wed, 30 Jan 2008 12:41:46 +0000,
->
-> Alan Horstmann wrote:
-> > On Wednesday 30 January 2008 11:21, Takashi wrote:
-> > >
-> > > Could you apply the patch below and use ./hgcompile to configure?
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> >
-> > Patch applied OK.  Unfortunately, hgcompile complains that the Autoconf
-> > version is too old on this system -needs >2.59 (looks like I have 1.4o).
-> > What is the difference using that rather than straight configure?
->
-> You need to regenerate the configure script itself.
->
-> >  Is there a
-> > way to work round it?
->
-> Remove the line "AC_PREREQ(2.59)" in configure.in.
+Hi Takashi,
 
-Thanks.  However, I could not get (the old) autoconf to produce a working configure script due to 'AS_HELP_STRING', so I added
-	#define CONFIG_HAVE_FFS
-to the patched adriver.h and used the original configure script, to proceed for now (which it did).
+Wierd, I can see your checkin in a browser at 
+http://hg.alsa-project.org/alsa-driver/  
 
-Unfortunately make didn't get much further, having more ??historic kernel?? trouble in memalloc:
+14 hours ago:  	asihpi version 3.09.09
+changeset 3506: 	e600ecb8fbd7
+tag:	tip
+author: 	tiwai
 
-memalloc.c: In function `snd_mem_proc_open':
-memalloc.c:611: warning: implicit declaration of function `single_open'
-memalloc.c: At top level:
-memalloc.c:715: error: `single_release' undeclared here (not in a function)
-memalloc.c:715: error: initializer element is not constant
-memalloc.c:715: error: (near initialization for `snd_mem_proc_fops.release')
-memalloc.c: In function `snd_mem_init':
-memalloc.c:731: warning: assignment discards qualifiers from pointer target type
+Also I see it in a clean clone of the repo.
 
-Sorry if this is causing a lot of extra trouble.
+but hg pull on my original repo still gets nothing same as before, head is out 
+of date - details:
+eliot@zaphod:~/src/alsahg/alsa-driver$ hg -v --debug heads
+changeset:   3507:86adcd0d6d849d5f8d41448d3cd4d1a8660d6214
+tag:         tip
+description:
+Added tag v1.0.16rc2 for changeset 1dc44ca35555
 
-Regards  Alan
+
+Tracing (strace) further I see that Hg queries the repository like this
+http://hg.alsa-project.org/alsa-driver/?cmd=heads
+and gets back
+86adcd0d6d849d5f8d41448d3cd4d1a8660d6214
+So the remote repo is telling me that my local is up to date, even though the 
+web interface shows more recent tip.
+
+Very wierd...
+
+Anyone else see this or shed any light on it?
+--
+Eliot
