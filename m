@@ -1,19 +1,17 @@
-From: "Clemens Ladisch" <cladisch@fastmail.net>
-Subject: Re: alsa-firmware licensing
-Date: Wed, 30 Jan 2008 09:13:21 +0100
-Message-ID: <1201680801.28261.1234062281@webmail.messagingengine.com>
-References: <477F9103.9010304@timj.co.uk>
-	<1199702481.16243.1229842463@webmail.messagingengine.com>
-	<479F6C57.4030309@timj.co.uk>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: 1.0.16rc2
+Date: Wed, 30 Jan 2008 10:09:15 +0000
+Message-ID: <200801301009.15630.gineera@aspect135.co.uk>
+References: <Pine.LNX.4.61.0801291553220.11819@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id E66EB103965
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2008 09:13:22 +0100 (CET)
+Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26EC8246D1
+	for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2008 10:49:41 +0100 (CET)
+In-Reply-To: <Pine.LNX.4.61.0801291553220.11819@tm8103.perex-int.cz>
 Content-Disposition: inline
-In-Reply-To: <479F6C57.4030309@timj.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tim Jackson <lists@timj.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: ALSA devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Tim Jackson wrote:
-> Clemens Ladisch wrote:
-> > Please note that the emi26 and emi62 drivers still use the in-kernel
-> > copies of their firmware images; the files in alsa-firmware are as yet
-> > unused.
-> 
-> That's useful, thanks. Is the plan to drop the in-kernel ones at some 
-> point then?
+Hi,
 
-Yes; as soon as we find somebody with such a device to test the changes.
-(It's possible that this will never happen ...)
+I get the following compile error:
 
+make[1]: Entering directory `/usr/share/alsa1.0.16rc2/alsa-driver-1.0.16rc2/acore'
+gcc -D__KERNEL__ -DMODULE=1 -I/usr/share/alsa1.0.16rc2/alsa-driver-1.0.16rc2/include  -I/lib/modules/2.4.21-99-athlon/build/include -O2 -mpreferred-stack-boundary=2 -march=athlon -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include /lib/modules/2.4.21-99-athlon/build/include/linux/modversions.h   -DEXPORT_SYMTAB -c hwdep.c
+In file included from hwdep.c:1:
+/usr/share/alsa1.0.16rc2/alsa-driver-1.0.16rc2/include/adriver.h:1461: error: redefinition of `__ffs'
+/lib/modules/2.4.21-99-athlon/build/include/asm/bitops.h:410: error: `__ffs' previously defined here
+make[1]: *** [hwdep.o] Error 1
+make[1]: Leaving directory `/usr/share/alsa1.0.16rc2/alsa-driver-1.0.16rc2/acore'
+make: *** [compile] Error 1
 
-Regards,
-Clemens
+I have pasted several lines so you can see the context.  This wasn't a problem in 1.0.14; I haven't compiled since then.
+
+Alan
