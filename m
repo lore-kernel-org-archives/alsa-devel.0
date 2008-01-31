@@ -1,28 +1,17 @@
-From: Matthew Hurne <matt.hurne@versatile.com>
-Subject: Re: Intel ICH7/Realtek ALC262 on MSI MS-7290 (Crystal
- 945)
-Date: Wed, 30 Jan 2008 20:45:52 -0500 (EST)
-Message-ID: <15336174.1015561201743952422.JavaMail.root@mustang.versatile.com>
-References: <4797835E.8080908@versatile.com>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: Re: Intel ICH7/Realtek ALC262 on MSI MS-7290
+	(Crystal	945)
+Date: Wed, 30 Jan 2008 23:08:39 -0800
+Message-ID: <1201763319.23369.61.camel@razman.gruemaster.com>
+References: <479770D5.6000501@versatile.com> <47977134.4000700@versatile.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mustang.versatile.com (mustang.versatile.com [206.61.179.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id A99B924818
-	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 02:45:54 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mustang.versatile.com (Postfix) with ESMTP id 7FD5614C8003
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2008 20:45:54 -0500 (EST)
-Received: from mustang.versatile.com ([127.0.0.1])
-	by localhost (mustang.versatile.com [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id UBoUVFAZpf+e for <alsa-devel@alsa-project.org>;
-	Wed, 30 Jan 2008 20:45:52 -0500 (EST)
-Received: from mustang.versatile.com (localhost.localdomain [127.0.0.1])
-	by mustang.versatile.com (Postfix) with ESMTP id 9003314C8001
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jan 2008 20:45:52 -0500 (EST)
-In-Reply-To: <4797835E.8080908@versatile.com>
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BBBC103808
+	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 08:08:45 +0100 (CET)
+In-Reply-To: <47977134.4000700@versatile.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,82 +21,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Matthew R. Hurne" <matt.hurne@versatile.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The company I work for has informed me that they will gladly provide funding to someone who will tackle this issue and get ALSA working properly on this unit. We have no interest in owning any code; we just need to get audio working on the unit - so you would be paid for your time, not your code - that would, of course, belong to the ALSA community.
+Sorry for not getting back sooner.   Could you try alsa-1.0.16rc2 with
+the following configuration:
 
------ Original Message -----
-From: "Matthew R. Hurne" <matt.hurne@versatile.com>
-To: alsa-devel@alsa-project.org
-Sent: Wednesday, January 23, 2008 1:11:42 PM (GMT-0500) America/New_York
-Subject: Re: [alsa-devel] Intel ICH7/Realtek ALC262 on MSI MS-7290 (Crystal 945)
+        ./configure --with-cards=hda-intel --with-debug=detect && make
+        && sudo make install
 
-Matthew R. Hurne wrote:
-> Greetings,
-> 
-> I am running Linux on an MSI Crystal 945, which has a highly-integrated
-> MS-7290 mainboard.  This board includes an Intel ICH7 southbridge and a
-> Realtek ALC262 codec.  The board has integrated microphone, line-in and
-> line-out jacks (labeled AUDIO-JK1 on the board).  In addition, the unit
-> has internal speakers.  The speakers are connected to an MSI MS-4088; a
-> small board which also hosts the unit's power button.  The MS-4088 is
-> connected to the MS-7290 mainboard with some bundled wires.
-> 
-> ALSA appears to accurately determine that the unit has an ICH7 and
-> ALC262, and I am able to use alsamixer to adjust levels.  I am also able
-> to use aplay without any reported errors.  However, no audio is heard
-> from the units internal speakers.  I have passed every possible model
-> (as listed in ALSA-Configuration.txt) to the ALSA driver
-> (snd-hda-intel), to no avail.  For some of the models (or perhaps all; I
-> unfortunately did not pay close attention to this detail), audio IS
-> heard through headphones plugged in to the unit's line-out jack.
-> However, the audio heard is at an extremely low volume, even if all the
-> mixer levels are unmuted and set to 100%.  Note that if the driver is
-> loaded without specifying a model, or when specifying "model=auto", I
-> see the following from dmesg:
-> 
-> hda_codec: Unknown model for ALC262, trying auto-probe from BIOS...
-> 
-> 
-> I have tried the following versions of ALSA: 1.0.14, 1.0.15, 1.0.16rc1.
-> The unit is running Linux kernel version 2.6.15.7-kiosk-1; it is vanilla
-> 2.6.15.7 patched for unionfs, squashfs and bootsplash.
-> 
-> I am attaching the contents of /proc/asound/card0/codec#0 and lspci -vv.
->  I also have a graph generated by codecgraph, but won't attach it now
-> since it will cause my message to be large enough to await moderator
-> approval.
-> 
-> 
-> The version of GCC used to compile ALSA is 3.3.5:
-> 
-> root@kiosk:~# gcc -v
-> Reading specs from /usr/lib/gcc-lib/i486-slackware-linux/3.3.5/specs
-> Configured with: ../gcc-3.3.5/configure --prefix=/usr --enable-shared
-> --enable-threads=posix --enable-__cxa_atexit --disable-checking
-> --with-gnu-ld --verbose --target=i486-slackware-linux
-> --host=i486-slackware-linux
-> Thread model: posix
-> gcc version 3.3.5
-> 
-> 
-> I would not be surprised if this is a board configuration the ALSA team
-> has not yet dealt with.  As far as I can tell, the MS-7290 was designed
-> specifically for the Crystal 945 barebones unit, so its probably not in
-> widespread use.  Is there someone who would be willing to work with me
-> to get this working?  Just let me know what you need, and I'll do my
-> best to provide it.
-> 
-> BTW, I did have to "hack" the alsa-driver 1.0.16rc1 source to get the
-> various ALSA kernel modules to load (removed unresolved references to
-> do_posix_clock_monotonic_gettime; I think tiwai's fix in
-> include/adriver.h could be applied elsewhere, but I just removed the
-> references altogether).
+After it is installed, type "dmesg" and look for the alsa output
+(line-outs, speakers, etc).  Copy that into an email and send it to me,
+please.
 
-Bug reported:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3725
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Tobin
+
+
+On Wed, 2008-01-23 at 11:54 -0500, Matthew R. Hurne wrote:
+
+> Matthew R. Hurne wrote:
+> > Greetings,
+> > 
+> > I am running Linux on an MSI Crystal 945, which has a highly-integrated
+> > MS-7290 mainboard.  This board includes an Intel ICH7 southbridge and a
+> > Realtek ALC262 codec.  The board has integrated microphone, line-in and
+> > line-out jacks (labeled AUDIO-JK1 on the board).  In addition, the unit
+> > has internal speakers.  The speakers are connected to an MSI MS-4088; a
+> > small board which also hosts the unit's power button.  The MS-4088 is
+> > connected to the MS-7290 mainboard with some bundled wires.
+> > 
+> > ALSA appears to accurately determine that the unit has an ICH7 and
+> > ALC262, and I am able to use alsamixer to adjust levels.  I am also able
+> > to use aplay without any reported errors.  However, no audio is heard
+> > from the units internal speakers.  I have passed every possible model
+> > (as listed in ALSA-Configuration.txt) to the ALSA driver
+> > (snd-hda-intel), to no avail.  For some of the models (or perhaps all; I
+> > unfortunately did not pay close attention to this detail), audio IS
+> > heard through headphones plugged in to the unit's line-out jack.
+> > However, the audio heard is at an extremely low volume, even if all the
+> > mixer levels are unmuted and set to 100%.  Note that if the driver is
+> > loaded without specifying a model, or when specifying "model=auto", I
+> > see the following from dmesg:
+> > 
+> > hda_codec: Unknown model for ALC262, trying auto-probe from BIOS...
+> > 
+> > 
+> > I have tried the following versions of ALSA: 1.0.14, 1.0.15, 1.0.16rc1.
+> > The unit is running Linux kernel version 2.6.15.7-kiosk-1; it is vanilla
+> > 2.6.15.7 patched for unionfs, squashfs and bootsplash.
+> > 
+> > I am attaching the contents of /proc/asound/card0/codec#0 and lspci -vv.
+> >  I also have a graph generated by codecgraph, but won't attach it now
+> > since it will cause my message to be large enough to await moderator
+> > approval.
+> > 
+> 
+> Graph attached...
+> 
+> > 
+> > The version of GCC used to compile ALSA is 3.3.5:
+> > 
+> > root@kiosk:~# gcc -v
+> > Reading specs from /usr/lib/gcc-lib/i486-slackware-linux/3.3.5/specs
+> > Configured with: ../gcc-3.3.5/configure --prefix=/usr --enable-shared
+> > --enable-threads=posix --enable-__cxa_atexit --disable-checking
+> > --with-gnu-ld --verbose --target=i486-slackware-linux
+> > --host=i486-slackware-linux
+> > Thread model: posix
+> > gcc version 3.3.5
+> > 
+> > 
+> > I would not be surprised if this is a board configuration the ALSA team
+> > has not yet dealt with.  As far as I can tell, the MS-7290 was designed
+> > specifically for the Crystal 945 barebones unit, so its probably not in
+> > widespread use.  Is there someone who would be willing to work with me
+> > to get this working?  Just let me know what you need, and I'll do my
+> > best to provide it.
+> > 
+> > BTW, I did have to "hack" the alsa-driver 1.0.16rc1 source to get the
+> > various ALSA kernel modules to load (removed unresolved references to
+> > do_posix_clock_monotonic_gettime; I think tiwai's fix in
+> > include/adriver.h could be applied elsewhere, but I just removed the
+> > references altogether).
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- 
+Tobin Davis 
+
+
+No problem is insoluble in all conceivable circumstances.
