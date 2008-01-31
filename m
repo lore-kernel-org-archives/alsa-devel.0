@@ -1,23 +1,13 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: underruns and strange code in pcm_rate.c
-Date: Thu, 31 Jan 2008 14:49:45 -0600
-Message-ID: <47A23469.1010905@freescale.com>
-References: <472E5A64.6010705@aknet.ru> <s5hy7dbvcgf.wl%tiwai@suse.de>
-	<473091F4.80105@aknet.ru> <s5h8x5auxz3.wl%tiwai@suse.de>
-	<4731F2F4.2080704@aknet.ru> <s5hode6xhgp.wl%tiwai@suse.de>
-	<4732097E.3040401@aknet.ru> <s5htznx9znk.wl%tiwai@suse.de>
-	<4732C455.7040503@aknet.ru> <s5hd4ulthy3.wl%tiwai@suse.de>
-	<473488CA.7050308@freescale.com>
-	<1194869575.32342.1220819105@webmail.messagingengine.com>
+From: Marco Schuster <marco@harddisk.is-a-geek.org>
+Subject: ALC268 (no sound)
+Date: Thu, 31 Jan 2008 22:05:04 +0100
+Message-ID: <47A23800.6050305@harddisk.is-a-geek.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3963684424358324969=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04EAE2447A
-	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 21:49:50 +0100 (CET)
-In-Reply-To: <1194869575.32342.1220819105@webmail.messagingengine.com>
+Received: from www.velirat.de (velirat.de [85.25.68.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5ECD51038E4
+	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 22:05:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,27 +17,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <cladisch@fastmail.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Timur Tabi wrote:
->> [...]
-> 
-> It is likely that your problem is related to the sample rate converter
-> in the OSS emulation code.
-> 
-> Try disabling CONFIG_SND_PCM_OSS_PLUGINS in the kernel configuration,
-> then mplayer will use its owner sample rate converter.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============3963684424358324969==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigC6C8F544D82D035F130BDCB6"
 
-Has there been any progress made on this issue since November?  I have a 
-customer that is affected by it, and I was wondering if the problem is fixed in 
-the latest ALSA.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigC6C8F544D82D035F130BDCB6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-If not, is there a bug entry in https://bugtrack.alsa-project.org for it? I need 
-to make a formal write-up of this bug, but I don't really understand it that well.
+Hi all,
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+maybe this topic is a bit outdated, but still, when using the current
+hg code of the kernel module together with 2.6.24 (stable), I can't
+get any sound :(
+Do I have also to upgrade the ALSA libs and programs?
+
+Marco
+
+
+--------------enigC6C8F544D82D035F130BDCB6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFHojgBW6S2GapJUuQRAn7oAJwPmGXBIBIF8TthMoj8SGXCnEZv5QCfaRHj
+Tkd4l31E3wunwq3GCbcIKKE=
+=4qU/
+-----END PGP SIGNATURE-----
+
+--------------enigC6C8F544D82D035F130BDCB6--
+
+--===============3963684424358324969==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3963684424358324969==--
