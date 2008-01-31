@@ -1,19 +1,16 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: 1.0.16rc2 -build issues
-Date: Thu, 31 Jan 2008 15:41:56 +0000
-Message-ID: <200801311541.56880.gineera@aspect135.co.uk>
-References: <Pine.LNX.4.61.0801291553220.11819@tm8103.perex-int.cz>
-	<200801302103.45969.gineera@aspect135.co.uk>
-	<s5hzlum1ayw.wl%tiwai@suse.de>
+From: CAG <cag@fsk-hh.org>
+Subject: Re: M-Delta Audiophile 192 (ice1724) Recording
+Date: Thu, 31 Jan 2008 16:44:06 +0100
+Message-ID: <47A1ECC6.6040608@fsk-hh.org>
+References: <479DCA8C.7070209@fsk-hh.org> <s5h7ihr4ivs.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04C452415F
-	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 16:22:04 +0100 (CET)
-In-Reply-To: <s5hzlum1ayw.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from mail.nadir.org (mail.nadir.org [217.114.68.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id 568E224419
+	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 16:45:57 +0100 (CET)
+In-Reply-To: <s5h7ihr4ivs.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,74 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 31 January 2008 11:38, you wrote:
-> At Wed, 30 Jan 2008 21:03:45 +0000,
->
-> Alan Horstmann wrote:
-> > Unfortunately make didn't get much further, having more ??historic
-> > kernel?? trouble in memalloc:
-> >
-> > memalloc.c: In function `snd_mem_proc_open':
-> > memalloc.c:611: warning: implicit declaration of function `single_open'
-> > memalloc.c: At top level:
-> > memalloc.c:715: error: `single_release' undeclared here (not in a
-> > function) memalloc.c:715: error: initializer element is not constant
-> > memalloc.c:715: error: (near initialization for
-> > `snd_mem_proc_fops.release') memalloc.c: In function `snd_mem_init':
-> > memalloc.c:731: warning: assignment discards qualifiers from pointer
-> > target type
->
-> Then the patch below should work.  Give it a try.
+Hi,
 
-Yup, that nailed it!  Make completes OK now, thanks.
+we ran the alsa-info.sh script to provide more information on our setup:
+http://pastebin.ca/886260
 
-I applied the memalloc.patch patch by hand.  If this is to be applied, notice 
-that Line 200 #endif text string also presumably needs changing.
+The output of /proc/asound/card0/ice1724 is at
+http://pastebin.ca/884589
 
-Alsa-lib was OK, but the configure was slightly messy in reporting 
-'python-config' Command not found  before a more reasonable message and 
-disabling python from the build.
+Greetings,
 
-If both the patches are to be applied, would you like me to retest the nightly 
-build at some stage(which presumably won't need hgcompile)?  If so can you 
-give the link again.
+Toast / FSK
 
-Thanks 
 
-Alan
-
-> ---
->
-> diff -r e600ecb8fbd7 acore/memalloc.patch
-> --- a/acore/memalloc.patch	Wed Jan 30 08:36:00 2008 +0100
-> +++ b/acore/memalloc.patch	Thu Jan 31 12:39:11 2008 +0100
-> @@ -189,7 +189,7 @@
->
->
->   #ifdef CONFIG_PROC_FS
-> -+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 0)
-> ++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
->   /*
->    * proc file interface
->    */
-> @@ -205,7 +205,7 @@
->   static int __init snd_mem_init(void)
->   {
->   #ifdef CONFIG_PROC_FS
-> -+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 0)
-> ++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
->   	snd_mem_proc = create_proc_entry(SND_MEM_PROC_FILE, 0644, NULL);
->   	if (snd_mem_proc)
->   		snd_mem_proc->proc_fops = &snd_mem_proc_fops;
-> @@ -216,7 +216,7 @@
->
->   static void __exit snd_mem_exit(void)
->   {
-> -+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 0)
-> ++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
->   	remove_proc_entry(SND_MEM_PROC_FILE, NULL);
->  +#endif
->   	free_all_reserved_pages();
+Takashi Iwai schrieb:
+> At Mon, 28 Jan 2008 13:29:00 +0100,
+> CAG wrote:
+>> Hi,
+>>
+>> we use the M-Delta Audiophile 192 with alsa-driver-1.0.15 and the 
+>> ice1724 module. Playback works but we cannot record anything.
+>>
+>> I noticed that this maybe a bug according to the Alsa Changelog:
+>>
+>>  From Changes v1.0.13 v1.0.14:
+>>  >
+>>  >  - ice1724 - Add support of M-Audio Audiophile 192
+>>  >
+>>  >     Added the (experimental) support of M-Audio Audiophile 192 board.
+>>  >     Currently, the analog and the digital playbacks seem working fine.
+>>  >     The inputs seem not working as far as I've tested yet.
+>>
+>> How is the status for that card ? Is someone working on this ? I heard 
+>> Recording with OSS works but actually we don't want to switch to OSS...
+>> Is it worth waiting for a new release ?
+> 
+> No one is working on this board, AFAIK.  I made it a patch from some
+> floating information.  But, since I have no hardware, I forgot this
+> after pushing it to the upstream.
+> 
+> Basically, the analog input doesn't need so much initialization
+> because the codec chip AK5385A has no software control.  Maybe the
+> EEPROM setup isn't correct for the actual board configuration.
+> (It means, BTW, that you have no input volume control, too.)
+> 
+> Show /proc/asound/card*/ice1724, and let's check the values there.
+> 
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
