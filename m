@@ -1,22 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: alsa-info.sh
-Date: Thu, 31 Jan 2008 17:22:27 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0801311721120.6131@tm8103.perex-int.cz>
-References: <1201754941.7685.4.camel@localhost>
-	<1201763039.23369.56.camel@razman.gruemaster.com>
-	<Pine.LNX.4.61.0801311134590.6131@tm8103.perex-int.cz>
-	<1201789531.23369.74.camel@razman.gruemaster.com>
-	<s5hodb2131w.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0801311707020.6131@tm8103.perex-int.cz>
-	<s5hejby0y08.wl%tiwai@suse.de>
+From: Richard Kennedy <richard@rsk.demon.co.uk>
+Subject: Intel ICH Modem init fails for laptop built-in SiS
+	modem
+Date: Thu, 31 Jan 2008 16:45:31 +0000
+Message-ID: <1201797931.2968.16.camel@castor.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 332ED103871
-	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 17:22:28 +0100 (CET)
-In-Reply-To: <s5hejby0y08.wl%tiwai@suse.de>
+Received: from anchor-post-33.mail.demon.net (anchor-post-33.mail.demon.net
+	[194.217.242.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5DDE24367
+	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 17:45:36 +0100 (CET)
+Received: from rsk.demon.co.uk ([80.176.90.227] helo=[192.168.0.6])
+	by anchor-post-33.mail.demon.net with esmtp (Exim 4.67)
+	id 1JKcXg-000AHe-AG
+	for alsa-devel@alsa-project.org; Thu, 31 Jan 2008 16:45:36 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,39 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 31 Jan 2008, Takashi Iwai wrote:
+My JVC mininote laptop has an inbuilt SiS modem
 
-> At Thu, 31 Jan 2008 17:12:31 +0100 (CET),
-> Jaroslav Kysela wrote:
-> > 
-> > On Thu, 31 Jan 2008, Takashi Iwai wrote:
-> > 
-> > > At Thu, 31 Jan 2008 06:25:31 -0800,
-> > > Tobin Davis wrote:
-> > > > 
-> > > > I'll get in tough with the script writer and find out.  His name is
-> > > > wishie on #alsa at irc.freenode.net.
-> > > 
-> > > Maybe we can add just a link?
-> > 
-> > I though about this, but I'd like to have such script at official server 
-> > somewhere. The /alsa HG repo is exactly created for this purpose, and we 
-> > can eventually track changes in this script also from the security 
-> > perspective.
-> 
-> In that case, we must make it clear what is the license of that
-> script.  Preferably under GPL.
+00:01.6 Modem [0703]: Silicon Integrated Systems [SiS] AC'97 Modem Controller [1039:7013] (rev a0)
 
-It's already under GPL (comment in this script says that), but having 
-ack from the original author would be good, of course.
+which is detected by the snd-intel8x0m driver but it always fails to
+initialise and spams the log file :- 
 
-						Jaroslav
+kernel: codec_semaphore: semaphore is not ready [0x1][0x1300]
+kernel:last message repeated 2 times
+kernel: codec_semaphore: semaphore is not ready [0x1][0x300]
+kernel:last message repeated 431 times
+kernel: AC'97 1 does not respond - RESET
+kernel: codec_semaphore: semaphore is not ready [0x1][0x300]
+kernel: codec_semaphore: semaphore is not ready [0x1][0x300]
+kernel: AC'97 1 access is not valid [0xffffffff], removing mixer.
+kernel: Unable to initialize codec #1
+kernel: ACPI: PCI interrupt for device 0000:00:01.6 disabled
+kernel: Intel ICH Modem: probe of 0000:00:01.6 failed with error -5
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+I never use the modem so I blacklisted the snd-intel8x0m module in
+modprobe.conf just to make the messages go away.
+
+I'm currently running the fedora 2.6.23 kernel but it has been broken
+for a long time.
+
+Is this fixable?
+or shall I just go on ignoring it ;) ?
+cheers
+Richard
