@@ -1,19 +1,17 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Hg update problems
-Date: Thu, 31 Jan 2008 08:34:10 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0801310833150.11819@tm8103.perex-int.cz>
-References: <mailman.479441.1201678517.26582.alsa-cvslog@lists.sourceforge.net>
-	<200801302110.17979.linux@audioscience.com>
-	<s5hir1bloa4.wl%tiwai@suse.de>
-	<200801311133.27010.linux@audioscience.com>
+Subject: alsa-info.sh
+Date: Thu, 31 Jan 2008 11:43:45 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0801311134590.6131@tm8103.perex-int.cz>
+References: <1201754941.7685.4.camel@localhost>
+	<1201763039.23369.56.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id E12DA1037F6
-	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 08:34:10 +0100 (CET)
-In-Reply-To: <200801311133.27010.linux@audioscience.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 86F30243A6
+	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 11:43:46 +0100 (CET)
+In-Reply-To: <1201763039.23369.56.camel@razman.gruemaster.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 31 Jan 2008, Eliot Blennerhassett wrote:
+On Wed, 30 Jan 2008, Tobin Davis wrote:
 
-> Hi Takashi,
+> Try downloading alsa-driver-1.0.16rc2.  It has some new patches in it.
 > 
-> Wierd, I can see your checkin in a browser at 
-> http://hg.alsa-project.org/alsa-driver/  
-> 
-> 14 hours ago:  	asihpi version 3.09.09
-> changeset 3506: 	e600ecb8fbd7
-> tag:	tip
-> author: 	tiwai
-> 
-> Also I see it in a clean clone of the repo.
-> 
-> but hg pull on my original repo still gets nothing same as before, head is out 
-> of date - details:
-> eliot@zaphod:~/src/alsahg/alsa-driver$ hg -v --debug heads
-> changeset:   3507:86adcd0d6d849d5f8d41448d3cd4d1a8660d6214
-> tag:         tip
-> description:
-> Added tag v1.0.16rc2 for changeset 1dc44ca35555
-> 
-> 
-> Tracing (strace) further I see that Hg queries the repository like this
-> http://hg.alsa-project.org/alsa-driver/?cmd=heads
-> and gets back
-> 86adcd0d6d849d5f8d41448d3cd4d1a8660d6214
-> So the remote repo is telling me that my local is up to date, even though the 
-> web interface shows more recent tip.
+> If that doesn't work, please report back with the link generated from
+> running http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
 
-I get e600ecb8fbd75433610a8c5cdc6335c939940302 here.
-Do you have a HTTP cache or proxy server between our server and your side?
+Hey this script is exactly something I'd like to show users in 
+http://www.alsa-project.org/main/index.php/Help_To_Debug .
+
+Can I put this script to our HG tree in alsa/ repo and point users to it 
+in mentioned page?
+
+Thanks.
 
 						Jaroslav
 
