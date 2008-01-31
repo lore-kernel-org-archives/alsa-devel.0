@@ -1,18 +1,23 @@
-From: "Matthew R. Hurne" <matt.hurne@versatile.com>
-Subject: Re: Intel ICH7/Realtek ALC262 on MSI MS-7290 (Crystal
- 945)
-Date: Thu, 31 Jan 2008 13:59:57 -0500
-Message-ID: <47A21AAD.6000203@versatile.com>
-References: <479770D5.6000501@versatile.com>	 <47977134.4000700@versatile.com>
-	<1201763319.23369.61.camel@razman.gruemaster.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: underruns and strange code in pcm_rate.c
+Date: Thu, 31 Jan 2008 14:49:45 -0600
+Message-ID: <47A23469.1010905@freescale.com>
+References: <472E5A64.6010705@aknet.ru> <s5hy7dbvcgf.wl%tiwai@suse.de>
+	<473091F4.80105@aknet.ru> <s5h8x5auxz3.wl%tiwai@suse.de>
+	<4731F2F4.2080704@aknet.ru> <s5hode6xhgp.wl%tiwai@suse.de>
+	<4732097E.3040401@aknet.ru> <s5htznx9znk.wl%tiwai@suse.de>
+	<4732C455.7040503@aknet.ru> <s5hd4ulthy3.wl%tiwai@suse.de>
+	<473488CA.7050308@freescale.com>
+	<1194869575.32342.1220819105@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mustang.versatile.com (mustang.versatile.com [206.61.179.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBEBC1038DC
-	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 19:59:58 +0100 (CET)
-In-Reply-To: <1201763319.23369.61.camel@razman.gruemaster.com>
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 04EAE2447A
+	for <alsa-devel@alsa-project.org>; Thu, 31 Jan 2008 21:49:50 +0100 (CET)
+In-Reply-To: <1194869575.32342.1220819105@webmail.messagingengine.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +27,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
+To: Clemens Ladisch <cladisch@fastmail.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tobin Davis wrote:
-> Sorry for not getting back sooner.   Could you try alsa-1.0.16rc2 with
-> the following configuration:
+Clemens Ladisch wrote:
+> Timur Tabi wrote:
+>> [...]
 > 
->     ./configure --with-cards=hda-intel --with-debug=detect && make &&
->     sudo make install
+> It is likely that your problem is related to the sample rate converter
+> in the OSS emulation code.
 > 
-> After it is installed, type "dmesg" and look for the alsa output
-> (line-outs, speakers, etc).  Copy that into an email and send it to me,
-> please.
-> 
-> Tobin
-> 
+> Try disabling CONFIG_SND_PCM_OSS_PLUGINS in the kernel configuration,
+> then mplayer will use its owner sample rate converter.
 
+Has there been any progress made on this issue since November?  I have a 
+customer that is affected by it, and I was wondering if the problem is fixed in 
+the latest ALSA.
 
-No worries about not getting back sooner - I appreciate you getting back at all!
+If not, is there a bug entry in https://bugtrack.alsa-project.org for it? I need 
+to make a formal write-up of this bug, but I don't really understand it that well.
 
-I've done as you requested, and here is the output of dmesg:
-
-ALSA /root/alsa-driver-1.0.16rc2/alsa-kernel/pci/hda/hda_intel.c:1788: chipset global capabilities = 0x4401
-ALSA /root/alsa-driver-1.0.16rc2/alsa-kernel/pci/hda/hda_intel.c:740: codec_mask = 0x1
-hda_codec: Unknown model for ALC262, trying auto-probe from BIOS...
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:2863: autoconfig: line_outs=1 (0x15/0x0/0x0/0x0/0x0)
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:2867:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:2871:    hp_outs=0 (0x0/0x0/0x0/0x0/0x0)
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:2872:    mono: mono_out=0x0
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:2880:    inputs: mic=0x18, fmic=0x0, line=0x1a, fline=0x0, cd=0x0, aux=0x0
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Surround Playback Volume, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Center Playback Volume, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave LFE Playback Volume, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Side Playback Volume, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Headphone Playback Volume, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Speaker Playback Volume, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Mono Playback Volume, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Line-Out Playback Volume, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Surround Playback Switch, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Center Playback Switch, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave LFE Playback Switch, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Side Playback Switch, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Headphone Playback Switch, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Speaker Playback Switch, skipped
-ALSA /root/alsa-driver-1.0.16rc2/pci/hda/hda_codec.c:1079: Cannot find slave Mono Playback Switch, skipped
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
