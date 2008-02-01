@@ -1,19 +1,18 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: HDA - Add support for the OQO Model 2
-Date: Fri, 01 Feb 2008 08:19:58 -0800
-Message-ID: <1201882798.24072.31.camel@razman.gruemaster.com>
-References: <1201822394.23369.108.camel@razman.gruemaster.com>
-	<s5hejbw3mc8.wl%tiwai@suse.de>
-	<1201878104.24072.22.camel@razman.gruemaster.com>
-	<s5hmyqk1zh0.wl%tiwai@suse.de>
+From: Martin Egge <mailinglists@martin.egge.info>
+Subject: Re: Digital-Out (Toslink) on HDA-Intal (AD1986A)?
+Date: Fri, 1 Feb 2008 22:02:51 +0100
+Message-ID: <200802012202.59047.mailinglists@martin.egge.info>
+References: <200801222121.05757.mailinglists@martin.egge.info>
+	<200801291105.43407.mailinglists@martin.egge.info>
+	<s5hmyqo4qde.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3422179656256637137=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFF28244C5
-	for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2008 17:20:00 +0100 (CET)
-In-Reply-To: <s5hmyqk1zh0.wl%tiwai@suse.de>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 181EC245F4
+	for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2008 22:03:02 +0100 (CET)
+In-Reply-To: <s5hmyqo4qde.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,53 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============3422179656256637137==
+Content-Type: multipart/signed;
+  boundary="nextPart2485571.7lKnkvU7IG";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2008-02-01 at 16:13 +0100, Takashi Iwai wrote:
+--nextPart2485571.7lKnkvU7IG
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> Also, I had some very strange audio garbage with the tip on an HD
-> Audio platform
-> > that normally works ok.  I'm going to be tracking it down this
-> morning, once I
-> > get to work (1 hour).  I'm not sure if it is related to the AD1986a
-> or the SCH
-> > (gcap patch).
-> 
-> AD1986A has a known problem when you assign the single stream to
-> multiple DACs.  But, we should have fixed this already in 1.0.16rc2.
+Hi,
 
-If that's the case, then it isn't fixed as of yesterday's snapshot.  I
-have brought in an ALC268 test board to replace the AD1986a.  I will
-know real soon if this is the issue.
+Am Dienstag, 29. Januar 2008 schrieb Takashi Iwai:
+> Could you try HG bisect?  It'd be greatly helpful.
 
+I've tried HG bisect this evening. It took me some time to discover that th=
+e=20
+problem is not within alsa-driver or alsa-kernel but within alsa-lib. This =
+is=20
+the result of HG bisect:
 
-
-> 
-> >  I do know that GCAP returns 2200 on this system, whereas a normal
-> > ICH returns 4401.  The last bit may be significant (64bit vs 32bit
-> stream).  I
-> > need to reverify the SCH value, but this may be causing the issue.
-> This is
-> > critical for a launch coming up.
-> 
-> Hm, this bit hasn't been tested.  OK, we need a fix for that.
-> (But I think OQO has no more than 4GB RAM, no?)
-> 
-
-This isn't for the OQO, this is for a new Intel platform.  And it will
-market with 256M-1G memory.  If that bit is only for 64bit memory
-addressing, then I'm not worried about it.  Sorry my earlier mail was
-confusing.  I was getting ready for work and wanted to toss a quick
-head's up.
+The first bad revision is:
+changeset:   2397:d1e9a2f92e7b
+user:        tiwai
+date:        Fri Jan 18 13:42:51 2008 +0100
+summary:     dmix - Enable auto format detection as default
 
 
+Regards,
+Martin
 
+--nextPart2485571.7lKnkvU7IG
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
--- 
-Tobin Davis 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
 
+iD8DBQBHo4kCVG/GfU56d2wRAqhVAJ4wiScFhp4vawyfI0CHupxuLd6klwCgidVS
+qK3IvIAhecSc5TjtW1jWTY8=
+=1S2h
+-----END PGP SIGNATURE-----
 
-Most people feel that everyone is entitled to their opinion.
+--nextPart2485571.7lKnkvU7IG--
+
+--===============3422179656256637137==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3422179656256637137==--
