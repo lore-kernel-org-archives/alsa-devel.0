@@ -1,16 +1,24 @@
-From: Victor Roetman <victory747@gmail.com>
-Subject: Roland UA-30 works
-Date: Fri, 01 Feb 2008 15:45:57 +0700
-Message-ID: <47A2DC45.8030805@gmail.com>
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: =?utf-8?q?Salsa-lib_add_snd=5Fpcm=5Fget=5Fparams?=
+Date: Fri, 1 Feb 2008 09:03:59 +0000 (UTC)
+Message-ID: <loom.20080201T085922-521@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82191243D1
-	for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2008 09:46:15 +0100 (CET)
-Received: by fk-out-0910.google.com with SMTP id f40so1002062fka.0
-	for <alsa-devel@alsa-project.org>; Fri, 01 Feb 2008 00:46:14 -0800 (PST)
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEEC62441C
+	for <alsa-devel@alsa-project.org>; Fri,  1 Feb 2008 10:04:15 +0100 (CET)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1JKrod-00030C-Hn
+	for alsa-devel@alsa-project.org; Fri, 01 Feb 2008 09:04:07 +0000
+Received: from 6.177.115-78.rev.gaoland.net ([6.177.115-78.rev.gaoland.net])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 01 Feb 2008 09:04:07 +0000
+Received: from matthieu.castet by 6.177.115-78.rev.gaoland.net with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 01 Feb 2008 09:04:07 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +31,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I just tested a Roland UA-30 USB sound card, and it seems to work fine. 
-  I wanted to add it to the sound card matrix on 
-http://www.alsa-project.org/main/index.php/Matrix:Vendor-Roland_Edirol 
-but when I click edit, it says "This page has been locked to prevent 
-editing."
+Hi,
 
-Can someone add this for me?  Or tell me how to add it?
+in 0.0.14, snd_pcm_get_params is missing.
+Is is not even in the stub form in pcm_macros.h.
 
-On Ubuntu 7.10 it seems to work fine with playback and with recording, 
-and when the 44.1/48 kHz switch is changed, the device seems to be 
-removed and added again with the correct frequency shown in 
-/proc/asound/cards.
+Why this function is missing ?
+
+As it is quite trivial, could it be added in pcm_macros.h or pcm_params.c.
+
+
+Thanks
+
+Matthieu
