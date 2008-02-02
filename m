@@ -1,17 +1,17 @@
 From: Travis Place <wishie@wishie.net>
-Subject: alsa-info.sh debugging script
-Date: Sat, 2 Feb 2008 23:34:42 +1000
-Message-ID: <200802022334.42705.wishie@wishie.net>
+Subject: Fwd: Re:  alsa-info.sh debugging script
+Date: Sun, 3 Feb 2008 01:09:29 +1000
+Message-ID: <200802030109.29488.wishie@wishie.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from wishie.net (202-137-101-003.auto.usertools.net [202.137.101.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id D4AF210383B
-	for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2008 14:37:10 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A4BE24665
+	for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2008 16:11:58 +0100 (CET)
 Received: from [192.168.0.2] (unknown [192.168.0.200])
-	by wishie.net (Postfix) with ESMTP id F31134052
-	for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2008 13:59:03 +1000 (EST)
+	by wishie.net (Postfix) with ESMTP id DE63A4052
+	for <alsa-devel@alsa-project.org>; Sat,  2 Feb 2008 15:33:50 +1000 (EST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,24 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
 
-I am new to this list, so be nice please :P
+----------  Forwarded Message  ----------
 
-I am the author of the alsa-info.sh debugging script, and heard you may want 
-to use it within ALSA.. I have been speaking to Tobin, and he mentioned that 
-a few things may need to be added (like alsactl output).
+Subject: Re: [alsa-devel] alsa-info.sh debugging script
+Date: Sun, 3 Feb 2008
+From: Andy Shevchenko <andy@smile.org.ua>
+To: Travis Place <wishie@wishie.net>
 
-I just want to get some ideas of things i can add, and if they should be 
-included automatically, or require a --with-alsactl (for example).
+Hi Travis Place!
 
-I have added the alsactl output to the script now, its included by default.. 
-Any other ideas/changes that need to be made ?
+ On Sat, Feb 02, 2008 at 11:34:42PM +1000, Travis Place wrote next:
 
-Travis Place (wishie)
+> Any other ideas/changes that need to be made ?
+I don't remember, but if possible to use fileout instead of pastebin site
+that will be good.
+
+-- 
+With best regards,
+Andy Shevchenko.      mailto: andy@smile.org.ua
+
+
+
+-------------------------------------------------------
 
 -- 
 Happiness is like peeing your pants. Everyone can see it, but only you can 
