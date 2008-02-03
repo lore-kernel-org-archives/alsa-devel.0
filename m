@@ -1,25 +1,21 @@
-From: Richard Marzan <richardmarzan@optonline.net>
-Subject: Sound jack isolations
-Date: Sun, 03 Feb 2008 00:09:13 -0500
-Message-ID: <1202015353.7069.5.camel@localhost>
-References: <1201754941.7685.4.camel@localhost>
-	<1201763039.23369.56.camel@razman.gruemaster.com>
-	<1201829593.32241.1.camel@localhost>
-	<1202014992.7069.3.camel@localhost>
-Reply-To: richardmarzan@optonline.net
+From: Richard Kennedy <richard@rsk.demon.co.uk>
+Subject: Re: Intel ICH Modem init fails for laptop	built-in	SiS
+	modem
+Date: Sun, 03 Feb 2008 14:30:21 +0000
+Message-ID: <1202049021.2986.11.camel@castor.localdomain>
+References: <1201797931.2968.16.camel@castor.localdomain>
+	<s5h7iho3lge.wl%tiwai@suse.de>
+	<1201870843.2956.14.camel@castor.localdomain>
+	<s5h3asc3ikc.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta4.srv.hcvlny.cv.net (mta4.srv.hcvlny.cv.net [167.206.4.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32B4024638
-	for <alsa-devel@alsa-project.org>; Sun,  3 Feb 2008 06:03:36 +0100 (CET)
-Received: from [192.168.1.100] (ool-182c9ffc.dyn.optonline.net [24.44.159.252])
-	by mta4.srv.hcvlny.cv.net
-	(Sun Java System Messaging Server 6.2-8.04 (built Feb 28 2007))
-	with ESMTP id <0JVN00G07CPYWC01@mta4.srv.hcvlny.cv.net> for
-	alsa-devel@alsa-project.org; Sun, 03 Feb 2008 00:03:34 -0500 (EST)
-In-reply-to: <1202014992.7069.3.camel@localhost>
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net
+	[194.217.242.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7DAD24647
+	for <alsa-devel@alsa-project.org>; Sun,  3 Feb 2008 15:30:24 +0100 (CET)
+In-Reply-To: <s5h3asc3ikc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,37 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2008-01-31 at 20:33 -0500, Richard Marzan wrote:
-> > On Wed, 2008-01-30 at 23:03 -0800, Tobin Davis wrote:
-> > > Try downloading alsa-driver-1.0.16rc2.  It has some new patches in it.
-> > > 
-> > > If that doesn't work, please report back with the link generated from
-> > > running http://bulletproof.servebeer.com/alsa/scripts/alsa-info.sh
-> > > 
-> > > Tobin
-> > > 
-> > > 
-> > > On Wed, 2008-01-30 at 23:49 -0500, Richard Marzan wrote: 
-> > > > I tried googling around but no helpful content so far. I have a laptop
-> > > > with built-in sound. It uses the HDA_intel kernel module. My problem is
-> > > > that I can't silence the onboard/built-in speakers when I plug in the
-> > > > headphones to the machine. Muting sound would lead to all jacks and
-> > > > audio ports to be silenced -- not just the built-in speakers, which I
-> > > > intend to mute solely leaving sound alive on the headphone jacks. There
-> > > > are no channels readily observable to differentiate where sound goes and
-> > > > to which port with alsa-mixer. The behavior I would like to achieve is
-> > > > one that will allow me to mute onboard speakers while continuing to have
-> > > > the headphones receive audio signals. Has anyone ever done this? Any
-> > > > pointers to documentation will be appreciated.
+
+> > > Richard Kennedy wrote:
 > > > > 
-> > > > My board has the Conexant CX20549 Codec. I think is uses the ALC268
-> > > > module. I checked gmane and saw that a fellow user got snd-hda-intel
-> > > > working with the NVidia MCP67 chipset with a patch received from
-> > > > linuxant.com. I tried the method and when patching i had encountered
-> > > > errors. 
+> > > > My JVC mininote laptop has an inbuilt SiS modem
+> > > >  00:01.6 Modem [0703]: Silicon Integrated Systems [SiS] AC'97 Modem Controller [1039:7013] (rev a0)
+> > ...
+> > > > kernel: Intel ICH Modem: probe of 0000:00:01.6 failed with error -5
+> > > > 
+> > > > I never use the modem so I blacklisted the snd-intel8x0m module in
+> > > > modprobe.conf just to make the messages go away.
+> > > > 
+> > > > I'm currently running the fedora 2.6.23 kernel but it has been broken
+> > > > for a long time.
+> > > > 
+> > > > Is this fixable?
+> > > > or shall I just go on ignoring it ;) ?
+> > > 
+> > > The latter unless you really need the support of it ;)
+> > > We have no datasheet for this SIS chipset, so it's hard to fix,
+> > > unfortuantely.
+> > > 
+> > > 
+> > > Takashi
+> > 
+> > Right, thanks.
+> > 
+> > In that case should we remove it from then supported devices list ?
+> 
+> Maybe.  But it might work on other machines with the same chipset.
+> It can't be confirmed easily...
+> 
+> 
+> Takashi
+> 
+OK. But spamming the log with 400+ messages just because it _might_ work
+somewhere seems wrong to me, when we know it doesn't work on this
+particular chip.
 
+> kernel: codec_semaphore: semaphore is not ready [0x1][0x300]
+> kernel:last message repeated 431 times
 
-Thanks for the reply. Here is the link http://pastebin.ca/886945
+isn't there any way to blacklist this particular variant of the chip in
+the driver ?
+OTOH maybe just rate limiting the output from code_semaphore would be
+good enough ?
+
+Richard
