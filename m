@@ -1,21 +1,16 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: a7839e96 (PNP: increase max resources) breaks my
- ALSA intel8x0 sound card
-Date: Mon, 4 Feb 2008 13:16:52 -0800 (PST)
-Message-ID: <alpine.LFD.1.00.0802041300170.3034@hp.linux-foundation.org>
-References: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no>
-	<200802041039.36100.bjorn.helgaas@hp.com>
-	<alpine.LFD.1.00.0802041014410.3034@hp.linux-foundation.org>
-	<200802041341.37313.bjorn.helgaas@hp.com>
+From: William Pitcock <nenolod@sacredspiral.co.uk>
+Subject: OSS4 X-Fi driver port to ALSA
+Date: Mon, 04 Feb 2008 15:25:50 -0600
+Message-ID: <1202160350.3719.76.camel@petrie.sacredspiral.co.uk.sacredspiral.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7192443860486014442=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.linux-foundation.org (smtp2.linux-foundation.org
-	[207.189.120.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC321244C1
-	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 22:16:58 +0100 (CET)
-In-Reply-To: <200802041341.37313.bjorn.helgaas@hp.com>
+Received: from carpathia.dereferenced.org (unknown [64.71.161.129])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55D5A244CA
+	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 22:24:41 +0100 (CET)
+Received: from [1.1.0.94] (ip70-189-74-69.ok.ok.cox.net [70.189.74.69])
+	by carpathia.dereferenced.org (Postfix) with ESMTP id 51A39A0A506
+	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 15:24:41 -0600 (CST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,77 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Cc: Robert Hancock <hancockr@shaw.ca>, alsa-devel@alsa-project.org, avuton@gmail.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, yakui.zhao@intel.com, shaohua.li@intel.com, Andrew Morton <akpm@linux-foundation.org>, trenn@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============7192443860486014442==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-039ByK53rF1NOfnHYA+P"
 
-On Mon, 4 Feb 2008, Bjorn Helgaas wrote:
-> 
-> I'm sure you're right, but I don't understand why yet.  Here's what
-> I think is happening; please correct me where I'm going wrong:
-> 
->   1) enumerate PNP & ACPI devices
->   2) initialize PNP & ACPI drivers
->      2a) register ACPI PCI root bridge driver, which enumerates PCI
->          devices behind the bridge
->      2b) register PNP system driver and reserve resources (this is
->          where the current quirk skips some reservations)
->   3) initialize PCI drivers
->      3a) register intel8x0 sound driver and reserve conflicting
->          resources
 
-So where in this would you put the
+--=-039ByK53rF1NOfnHYA+P
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-	pcibios_init() -> pcibios_resource_survey()
+Hi,
 
-call (it's a subsys_initcall)?
+On Feburary 1, 4Front released their XFi driver to the public. Is anyone
+looking into porting this? If not, I will give it a try soon enough.
 
-THAT is the thing that actually registers the PCI resurces we've found 
-into the resource tree!
+It seems to not require any firmware at all too.
 
-It's very inconveniently placed as-is, since it literally depends on the 
-whole initcall ordering (and the link order within that subsys_initcall 
-thing), and all of this is architecture-driven rather than driven from 
-some central place.
+William
 
-So this is the thing that I think should happen before any PnP or ACPI 
-drivers actually start registerign themselves (but obviously needs to 
-happen after the PCI buses have been enumerated).
+--=-039ByK53rF1NOfnHYA+P
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-The ACPI/PnP tables shouldn't be able to break the enumeration of the 
-actual hardware devices, now should it?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
 
-> I think you're suggesting that we should do 2a first, to enumerate all
-> PCI devices, and only later do 2b.  But I don't know how to accomplish
-> that cleanly.
+iD8DBQBHp4LeoB+26npOQg4RAr8aAJ922JRn0JjWuGNFDbZz8TSSl1aALwCgvguH
+SKx5o90Py2M/RmAJ1yN3feU=
+=Ji2L
+-----END PGP SIGNATURE-----
 
-We should enumerate the PCI devices, then register their resources (and 
-no, I'm not at *all* convinced it should happen as a separate 
-subsys_initcall), and then register the PnP resources. 
+--=-039ByK53rF1NOfnHYA+P--
 
-So I think we should have roughly something like:
 
- - arch_initcall: this could enumerate the ACPI/PnP devices (but not 
-   register anything). Alternatively, do it as subsys_initcall, and just
-   make sure it happens early with link-order.
+--===============7192443860486014442==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
- - subsys_initcall: this should do that pcibios_init() thing that surveys 
-   the resources (and the PCI enumeration needs to have happened before, 
-   probably in the same initcall thanks to link order)
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
- - PnP/ACPI resource allocation *after* it, but before driver loading 
-   (which wll cause new resources to be allocated). This could be 
-   fs_initcall, or whatever (that's what things like "acpi_event_init" 
-   already do).
-
- - regular drivers will come along much later, as part of 
-   driver_initcall, and by the time this happens, we've now reserved all 
-   resources we know about.
-
-Basically, we just want to register the most trust-worthy resources before 
-we register anything less trust-worthy. And actual device probing simply 
-tends to be more trust-worthy than any randomly broken ACPI/PnP tables.
-
-		Linus
+--===============7192443860486014442==--
