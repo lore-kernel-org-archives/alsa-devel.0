@@ -1,20 +1,15 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Subject: Re: a7839e96 (PNP: increase max resources) breaks my
-	ALSA intel8x0 sound card
-Date: Mon, 4 Feb 2008 13:41:36 -0700
-Message-ID: <200802041341.37313.bjorn.helgaas@hp.com>
-References: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no>
-	<200802041039.36100.bjorn.helgaas@hp.com>
-	<alpine.LFD.1.00.0802041014410.3034@hp.linux-foundation.org>
+From: Roel Kluin <12o3l@tiscali.nl>
+Subject: [PATCH][sound/soc/fsl/mpc8610_hpcd.c] duplicate
+ strcasecmp test for "rj-master" in mpc8610_hpcd_probe()
+Date: Mon, 04 Feb 2008 22:08:02 +0100
+Message-ID: <47A77EB2.6070703@tiscali.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from g1t0029.austin.hp.com (g1t0029.austin.hp.com [15.216.28.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85E08243BD
-	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 21:40:27 +0100 (CET)
-In-Reply-To: <alpine.LFD.1.00.0802041014410.3034@hp.linux-foundation.org>
-Content-Disposition: inline
+Received: from smtp-out3.tiscali.nl (smtp-out3.tiscali.nl [195.241.79.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10F5C244C0
+	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 22:08:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Robert Hancock <hancockr@shaw.ca>, alsa-devel@alsa-project.org, avuton@gmail.com, linux-kernel@vger.kernel.org, yakui.zhao@intel.com, shaohua.li@intel.com, Andrew Morton <akpm@linux-foundation.org>, trenn@suse.de
+To: liam.girdwood@wolfsonmicro.com, broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 04 February 2008 11:18:09 am Linus Torvalds wrote:
-> On Mon, 4 Feb 2008, Bjorn Helgaas wrote:
-> > 
-> > I think the problem here is that the PCI BAR is bigger and spans the
-> > region reported by ACPI:
-> 
-> Ok, then it doesn't help that it's not busy.
-> 
-> In that case, the only real fix is to simply do the ACPI reservations 
-> *after* PCI probing. Which is what it should have done to begin with.
+In linus' git tree I found this problem. Is it also in the alsa tree?
+please confirm it's the right fix. The patch was not yet tested.
+--
+duplicate test for "rj-master"
 
-I'm sure you're right, but I don't understand why yet.  Here's what
-I think is happening; please correct me where I'm going wrong:
-
-  1) enumerate PNP & ACPI devices
-  2) initialize PNP & ACPI drivers
-     2a) register ACPI PCI root bridge driver, which enumerates PCI
-         devices behind the bridge
-     2b) register PNP system driver and reserve resources (this is
-         where the current quirk skips some reservations)
-  3) initialize PCI drivers
-     3a) register intel8x0 sound driver and reserve conflicting
-         resources
-
-> > I really don't want to use the earlier quirk that scanned PCI devices
-> > from a PNP quirk.  I think that's just wrong because PNP (which
-> > conceptually includes ACPI) is what tells us about PCI root bridges.
-> 
-> So? Do the bridge listing separately from resource marking. Why tie the 
-> two together? They have absolutely *nothing* to do with each other.
-> 
-> The fact is, scanning devices should happen first. And AFTER the device 
-> tree is scanned, we can then safely add all the special resources that 
-> don't show up as normal devices.
-
-I think you're suggesting that we should do 2a first, to enumerate all
-PCI devices, and only later do 2b.  But I don't know how to accomplish
-that cleanly.
-
-It does happen in that order today, but only because the ACPI drivers
-are registered before the PNP drivers.  I think that's an artificial
-distinction, so I don't want to rely on it.  If the PCI bridge driver
-became a PNP driver, we could use link ordering to make sure it still
-came first, although that seems a little fragile to me.
-
-Bjorn
+Signed-off-by: Roel Kluin <12o3l@tiscali.nl>
+---
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index f26c4b2..a00aac7 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -314,9 +314,9 @@ static int mpc8610_hpcd_probe(struct of_device *ofdev,
+ 	} else if (strcasecmp(sprop, "lj-master") == 0) {
+ 		machine_data->dai_format = SND_SOC_DAIFMT_LEFT_J;
+ 		machine_data->codec_clk_direction = SND_SOC_CLOCK_IN;
+ 		machine_data->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+-	} else if (strcasecmp(sprop, "rj-master") == 0) {
++	} else if (strcasecmp(sprop, "rj-slave") == 0) {
+ 		machine_data->dai_format = SND_SOC_DAIFMT_RIGHT_J;
+ 		machine_data->codec_clk_direction = SND_SOC_CLOCK_OUT;
+ 		machine_data->cpu_clk_direction = SND_SOC_CLOCK_IN;
+ 	} else if (strcasecmp(sprop, "rj-master") == 0) {
