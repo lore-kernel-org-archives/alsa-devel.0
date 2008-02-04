@@ -1,19 +1,16 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: HDA - Add support for the OQO Model 2
-Date: Sun, 03 Feb 2008 12:53:09 -0800
-Message-ID: <1202071989.24072.154.camel@razman.gruemaster.com>
-References: <1201822394.23369.108.camel@razman.gruemaster.com>
-	<s5hejbw3mc8.wl%tiwai@suse.de>
-	<1201878104.24072.22.camel@razman.gruemaster.com>
-	<s5hmyqk1zh0.wl%tiwai@suse.de>  <s5h7ihlu98n.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsa-info.sh debugging script
+Date: Mon, 4 Feb 2008 13:01:04 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0802041257040.8166@tm8103.perex-int.cz>
+References: <200802022334.42705.wishie@wishie.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id E042D103889
-	for <alsa-devel@alsa-project.org>; Sun,  3 Feb 2008 21:53:11 +0100 (CET)
-In-Reply-To: <s5h7ihlu98n.wl%tiwai@suse.de>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id CFBA7243AE
+	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 13:01:05 +0100 (CET)
+In-Reply-To: <200802022334.42705.wishie@wishie.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: Travis Place <wishie@wishie.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, boss.
+On Sat, 2 Feb 2008, Travis Place wrote:
 
+> Hi everyone,
+> 
+> I am new to this list, so be nice please :P
+> 
+> I am the author of the alsa-info.sh debugging script, and heard you may want 
+> to use it within ALSA.. I have been speaking to Tobin, and he mentioned that 
+> a few things may need to be added (like alsactl output).
+> 
+> I just want to get some ideas of things i can add, and if they should be 
+> included automatically, or require a --with-alsactl (for example).
+> 
+> I have added the alsactl output to the script now, its included by default.. 
+> Any other ideas/changes that need to be made ?
 
-On Sun, 2008-02-03 at 20:32 +0100, Takashi Iwai wrote:
+Hi,
 
-> At Fri, 01 Feb 2008 16:13:47 +0100,
-> I wrote:
-> > 
-> > At Fri, 01 Feb 2008 07:01:44 -0800,
-> > Tobin Davis wrote:
-> > > 
-> > > On Fri, 2008-02-01 at 13:14 +0100, Takashi Iwai wrote:
-> > > 
-> > >     At Thu, 31 Jan 2008 15:33:14 -0800,
-> > >     Tobin Davis wrote:
-> > >     > 
-> > >     > This patch adds support for the OQO Model 2 Ultra Mobile PC.
-> > >     > 
-> > >     > 
-> > >     > Signed off by Tobin Davis <tdavis@dsl-only.net>
-> > >     
-> > >     Thanks.  I'll apply it after 1.0.16 release.
-> > > 
-> > > When's the next release window?  My contact at IDT (Sigmatel) was hoping to get
-> > > it in this release, he just didn't get back to me with the test results until
-> > > yesterday.
-> > 
-> > 1.0.16 will be released in the next week.
-> > As Jaroslav already announced, we want to avoid patches except for bug
-> > fixes until the release.
-> 
-> On the second thought, it's easier to integrate this patch right now
-> because it's very local and cannot break others.  So, I applied OQO
-> patch to HG tree to be merged to 1.0.16.
-> 
-> 
-> thanks,
-> 
-> Takashi
+	First, thank you for your contribution. I just played with script 
+and added alsactl functionality, too. (Sorry for duplicate work.) Also, I 
+made few other changes to show --help, --about, --update without 
+/tmp/alsa-info.txt file processing.
+	The alsa-info.sh is hosted in HG repository now available at:
+
+http://hg.alsa-project.org/alsa/raw-file/tip/alsa-info.sh
+http://hg.alsa-project.org/alsa/log/tip/alsa-info.sh
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
