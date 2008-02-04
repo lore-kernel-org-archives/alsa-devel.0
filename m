@@ -1,21 +1,17 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Re: alsa-info.sh debugging script
-Date: Tue, 5 Feb 2008 00:23:19 +1000
-Message-ID: <200802050023.19822.wishie@wishie.net>
-References: <200802022334.42705.wishie@wishie.net>
-	<Pine.LNX.4.61.0802041257040.8166@tm8103.perex-int.cz>
+From: CAG <cag@fsk-hh.org>
+Subject: Re: M-Delta Audiophile 192 (ice1724) Recording
+Date: Mon, 04 Feb 2008 15:31:10 +0100
+Message-ID: <47A721AE.6090205@fsk-hh.org>
+References: <47A24665.80402@fsk-hh.org>	<47A250E7.8040005@fsk-hh.org>
+	<s5hd4rg3m7x.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wishie.net (202-137-101-003.auto.usertools.net [202.137.101.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B69D24433
-	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 15:26:00 +0100 (CET)
-Received: from [192.168.0.2] (unknown [192.168.0.200])
-	by wishie.net (Postfix) with ESMTP id 8F04C2E2F9
-	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 14:47:57 +1000 (EST)
-In-Reply-To: <Pine.LNX.4.61.0802041257040.8166@tm8103.perex-int.cz>
-Content-Disposition: inline
+Received: from mail.nadir.org (mail.nadir.org [217.114.68.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id AAAF224406
+	for <alsa-devel@alsa-project.org>; Mon,  4 Feb 2008 15:33:38 +0100 (CET)
+In-Reply-To: <s5hd4rg3m7x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,58 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 4 Feb 2008 10:01:04 pm Jaroslav Kysela wrote:
-> On Sat, 2 Feb 2008, Travis Place wrote:
-> > Hi everyone,
-> >
-> > I am new to this list, so be nice please :P
-> >
-> > I am the author of the alsa-info.sh debugging script, and heard you may
-> > want to use it within ALSA.. I have been speaking to Tobin, and he
-> > mentioned that a few things may need to be added (like alsactl output).
-> >
-> > I just want to get some ideas of things i can add, and if they should be
-> > included automatically, or require a --with-alsactl (for example).
-> >
-> > I have added the alsactl output to the script now, its included by
-> > default.. Any other ideas/changes that need to be made ?
->
-> Hi,
->
-> 	First, thank you for your contribution. I just played with script
-> and added alsactl functionality, too. (Sorry for duplicate work.) Also, I
-> made few other changes to show --help, --about, --update without
-> /tmp/alsa-info.txt file processing.
-> 	The alsa-info.sh is hosted in HG repository now available at:
->
-> http://hg.alsa-project.org/alsa/raw-file/tip/alsa-info.sh
-> http://hg.alsa-project.org/alsa/log/tip/alsa-info.sh
->
-> 						Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, Red Hat, Inc.
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+hi,
 
-Also note, the --update code is fairly flawed, and prone to errors, but it was 
-ok, since i was manually controlling the version numbers, and knew what to 
-avoid.. basically, if the version number on the server is different at all 
-(higher OR lower) it will download the copy from the server.. perhaps someone 
-can help implement a better mechanism..
+Takashi Iwai schrieb:
+> At Thu, 31 Jan 2008 23:51:19 +0100,
+> Computer AG im FSK wrote:
+>> Hi,
+>>
+>> I  forget to mention that we patched
+>> /usr/local/src/alsa-driver-1.0.16rc2/alsa-kernel/pci/ice1712/revo.c
+>> instead of
+>> /usr/local/src/alsa-driver-1.0.16rc2/pci/ice1712/revo.c
+>>
+>> because /usr/local/src/alsa-driver-1.0.16rc2/pci/ice1712/revo.c is just
+>> 3 lines long or so and looks like including
+>> /usr/local/src/alsa-driver-1.0.16rc2/alsa-kernel/pci/ice1712/revo.c.
+>>
+>> Does this matter ?
+> 
+> No, it's the right place to apply.
+> 
+> So far, I have no further idea what could be wrong.  It's really hard
+> to debug remotely without hardware and without any datasheet... >
+> 
+> Takashi
 
-To be honest, this script was my first real bash script.. I was (and still am) 
-a bash newbie, so to speak.
+We get this card working with O.S.S., recording works now. Anyway, OSS 
+is not our preferred sound system...
 
-Travis Place
+We would like to know if there will be future development for this card. 
+We bought 4 cards for our studio, it really would help us out.
 
--- 
-Happiness is like peeing your pants. Everyone can see it, but only you can 
-feel its warmth 
+Is there any way to support the alsa project to fix this issue ? What 
+about our offer to lend a card for development ? Our finances aren't 
+very well but  we could also think about a small donation for hardware 
+i.e.
+
+Our alternative is to sell our 4 cards on Ebay buy 4 other ones...
+
+Thanks anyway for your effort,
+
+Toast
