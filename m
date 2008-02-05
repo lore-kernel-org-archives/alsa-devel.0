@@ -1,23 +1,16 @@
-From: "Avuton Olrich" <avuton@gmail.com>
-Subject: Re: a7839e96 (PNP: increase max resources) breaks my
-	ALSA intel8x0 sound card
-Date: Tue, 5 Feb 2008 08:46:08 -0800
-Message-ID: <3aa654a40802050846n6491b2c6kb2af34f54262273f@mail.gmail.com>
-References: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no>
-	<200802041341.37313.bjorn.helgaas@hp.com>
-	<alpine.LFD.1.00.0802041300170.3034@hp.linux-foundation.org>
-	<200802050003.32591.bjorn.helgaas@hp.com>
+From: Marco Schuster <marco@harddisk.is-a-geek.org>
+Subject: Re: ALC268 (no sound)
+Date: Tue, 05 Feb 2008 18:29:12 +0100
+Message-ID: <47A89CE8.3010902@harddisk.is-a-geek.org>
+References: <47A23800.6050305@harddisk.is-a-geek.org>
+	<s5hbq703lv4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8274025293716521415=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id A935C244D2
-	for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2008 17:46:11 +0100 (CET)
-Received: by py-out-1112.google.com with SMTP id w49so3700935pyg.36
-	for <alsa-devel@alsa-project.org>; Tue, 05 Feb 2008 08:46:10 -0800 (PST)
-In-Reply-To: <200802050003.32591.bjorn.helgaas@hp.com>
-Content-Disposition: inline
+Received: from www.velirat.de (velirat.de [85.25.68.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BF70243A8
+	for <alsa-devel@alsa-project.org>; Tue,  5 Feb 2008 18:29:35 +0100 (CET)
+In-Reply-To: <s5hbq703lv4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +20,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Cc: Robert Hancock <hancockr@shaw.ca>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, yakui.zhao@intel.com, shaohua.li@intel.com, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, trenn@suse.de
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 4, 2008 11:03 PM, Bjorn Helgaas <bjorn.helgaas@hp.com> wrote:
-> Does anybody with this motherboard (or the Supermicro board with
-> similar SATA problems) also have Windows on it?  I'm curious to
-> see how Windows deals with this conflict, e.g., what shows up in
-> the device manager?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============8274025293716521415==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig83F991ED28A685A8BC513009"
 
-Sorry, I don't own Windows.
--- 
-avuton
---
- Anyone who quotes me in their sig is an idiot. -- Rusty Russell.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig83F991ED28A685A8BC513009
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Takashi Iwai schrieb:
+> At Fri, 1 Feb 2008 18:12:32 +1030 (CST),
+> Jonathan Woithe wrote:
+>> Hi Marco
+>>
+>>> maybe this topic is a bit outdated, but still, when using the current=
+
+>>> hg code of the kernel module together with 2.6.24 (stable), I can't
+>>> get any sound :(
+>> Interesting.  I've had another user report getting sound out of the la=
+test
+>> hg tree with an ALC268 both with test mode and the "auto" mode.  Our
+>> continued failure to get anything out of your laptop over the last few=
+
+>> months makes me suspect that there's some other non-standard thing (ex=
+ternal
+>> to the ALC268 codec) linked to the sound system in your laptop which
+>> prevents audio unless activated.  Takashi, what's your take on this?
+>=20
+> Hard to say...  I still think it's either GPIO or EAPD except for very
+> stupid things like the hardware-volume control via laptop keys
+> (e.g. Thinkpad has independent volume controls and you have to unmute
+> it via a button properly).  Marco, did you test all combinations of
+> GPIO and EAPD?
+Well, there are softkeys on the machine, but they don't have any
+effect (for example the LED for mute doesn't change when pressing the
+button). What's that stuff with GPIO/EAPD?
+>=20
+> On other earlier ALC codecs, some device require COEF setups.  This
+> might be worth to try for ALC268 if the above is all checked.
+Another thing I don't understand :(
+
+Marco
+
+PS: If you want, I can upload the Windoze drivers somewhere so that
+you can take a look at them and find out what is going on here...
+
+
+--------------enig83F991ED28A685A8BC513009
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFHqJzsW6S2GapJUuQRAodoAJwJXRYjXTE79/pk4ixixOaMdr6iswCfXV+Z
+Dj5aTSg+1wyFqrqk2Rffrpg=
+=Ri4N
+-----END PGP SIGNATURE-----
+
+--------------enig83F991ED28A685A8BC513009--
+
+--===============8274025293716521415==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8274025293716521415==--
