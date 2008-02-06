@@ -1,18 +1,19 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: ALC268 (no sound)
-Date: Wed, 6 Feb 2008 16:47:36 +1030 (CST)
-Message-ID: <200802060617.m166HaYL003540@turbo.physics.adelaide.edu.au>
-References: <47A8E672.9080202@harddisk.is-a-geek.org>
+From: "Piotr Zaryk" <oponek@gmail.com>
+Subject: Re: ESI Maya44 initial patch
+Date: Wed, 6 Feb 2008 07:28:23 +0100
+Message-ID: <87988a970802052228qe6d8b6s90393f1797560ae4@mail.gmail.com>
+References: <47A8A2AC.4000901@lightshed.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelphi.physics.adelaide.edu.au
-	(adelphi.physics.adelaide.edu.au [129.127.102.1])
-	by alsa0.perex.cz (Postfix) with ESMTP id 767E624481
-	for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2008 07:17:40 +0100 (CET)
-In-Reply-To: <47A8E672.9080202@harddisk.is-a-geek.org> from "Marco Schuster"
-	at Feb 05, 2008 11:42:58 PM
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id A1E6A103829
+	for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2008 07:28:25 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so294608wag.8
+	for <alsa-devel@alsa-project.org>; Tue, 05 Feb 2008 22:28:24 -0800 (PST)
+In-Reply-To: <47A8A2AC.4000901@lightshed.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,40 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marco Schuster <marco@harddisk.is-a-geek.org>
-Cc: alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Marco
+Hi,
 
-> > Having said that I don't think this is the *general* case with the
-> > ALC268 because as I have mentioned a user has reported success with the
-> > ALC268 under Linux and a recent hg snapshot with both the "test" and
-> > "auto" models.
-> Strange.
+Would be the ESI Maya44 support added to the 1.0.16 alsa version? It would
+be nice to get it working with upcoming Ubuntu 8.04 .
 
-Not really.  There's very strong evidence that the silicon may be different
-and this sort of thing occurs from time to time.  While you may have an
-actual ALC-268 chip on your mainboard, someone else may have an ALC268 core
-integrated into some other chip vendor's jungle chip.  The other issue is
-that different vendors choose to integrate the codec chips in different ways
-- different pin-to-jack mappings, use of GPIOs etc etc.  With this sort of
-thing going on it's really no surprise to me that one ALC268-based system
-works while another does not.
+2008/2/5, Rainer Zimmermann <mail@lightshed.de>:
+>
+>
+> Hello,
+>
+> this is the first testing version of the driver for the ESI Maya44 card,
+> which I
+> developed on the initiative of Piotr Makowski.
+>
+> The driver is actually an addition to the existing ice1724 code.
+>
+> More information can be found in doc/README.maya44 .
+>
+> We would appreciate your testing and feedback.
+>
+> Also, since I am new to ALSA driver development, I would appreciate
+> feedback on
+> whether the way I integrated this into the ALSA tree is correct.
+>
+>
+> Thanks for your feedback and best regards,
+> Rainer Zimmermann
+>
+>
+> --
+> Lightshed IT Services
+> L=F6fflerstr. 27, 22765 Hamburg, Germany * mail@lightshed.de *
+> www.lightshed.de
+>
+>
 
-> I have uploaded the driver to
-> http://rapidshare.com/files/89478591/ALC268_Compal.rar (but I left out the
-> Vista stuff). Do you think it's possible to find out _what_ makes the
-> problem with this?
 
-I've had a quick look at the contents and nothing jumps out at me.  Others
-with more experience with the windoze driver structure and knowledge of how
-various files are used may have more success.
+-- =
 
-My past experience has shown that in cases like this the best approach is to
-poke at the hardware until you find something that works.  Admittedly that's
-becoming less feasible as time goes on and the hardware gets more complex
-and the fragility of hardware increases the likelihood of permanent damage.
 
-Regards
-  jonathan
+Regards,
+Piotr Makowski
