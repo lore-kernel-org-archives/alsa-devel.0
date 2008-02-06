@@ -1,21 +1,19 @@
-From: "M G" <lists.mg@googlemail.com>
-Subject: Re: snd-hda-intel: Fix volume-wheel and microphone on
-	Fujitsu-Siemens Amilo M3438G
-Date: Thu, 7 Feb 2008 00:02:21 +0100
-Message-ID: <74d457500802061502m31d412dap15009aad087b1b75@mail.gmail.com>
-References: <74d457500802060814j64532e95v8c689cbb491c6b46@mail.gmail.com>
-	<s5hir12kpne.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [REPOST] opti93x: conversion to use cs4231 library
+Date: Thu, 07 Feb 2008 00:58:35 +0100
+Message-ID: <47AA49AB.4060802@keyaccess.nl>
+References: <20080126104411.50c2035f.krzysztof.h1@poczta.fm>
+	<s5hd4rl6f4h.wl%tiwai@suse.de> <479E804E.7070500@keyaccess.nl>
+	<479FC816.5060405@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72EA824425
-	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 00:02:23 +0100 (CET)
-Received: by py-out-1112.google.com with SMTP id w49so4379475pyg.36
-	for <alsa-devel@alsa-project.org>; Wed, 06 Feb 2008 15:02:22 -0800 (PST)
-In-Reply-To: <s5hir12kpne.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 698AF2443B
+	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 00:57:26 +0100 (CET)
+In-Reply-To: <479FC816.5060405@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,104 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>, Massimo Piccioni <alsa@piccio.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 6, 2008 5:36 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 6 Feb 2008 17:14:37 +0100,
->
-> M G wrote:
-> >
-> > Currently the default model that gets selected on this hardware is "F1734".
-> > Using this model neither the volume-wheel nor microphone (internal or
-> > external) work.
->
-> Thanks for your patch.
->
->
-> > The first part of my patch changes the default model to "fujitsu", this
-> > enables the volume wheel on the left side of the laptop.
->
-> The concern is whether you lose any functionality by this rename.
-> The support of the volume knob control with the existing F1734 model
-> would be easy.  You'd need to add a proper verb to enable the
-> unsolicited event and register the handler, such as, uniwill_p53 one.
->
->
-> > The second part changes the capture settings and thus makes it possible to
-> > record from microphones. Now when capturing from the external microphone I
-> > can hear myself talking but its quite quiet. I can improve this a little by
-> > raising the capture volume, but if I raise it above 40 I can no longer
-> > record anything.
->
-> Using 6stack_capture_source looks wrong to me.  It is actually for
-> desktops.  But yours isn't, I guess.
->
-> The recording quality might be improved by setting the proper pin VREF
-> level.
->
-> Anyway, it'd be more helpful if you can show the detailed information,
-> e.g. the output of alsa-info.sh script.
->
->
-> Takashi
+On 30-01-08 01:43, Rene Herman wrote:
 
+> 931 and 933 work and 930 (a non-PnP chip) is being a royal pain in the 
+> ass again. With the new code, I haven't yet been able to get it to work 
+> -- no IRQ is firing. However, I also experienced this _once_ with the 
+> old driver so I'm not sure what's going on. When I now try to reproduce 
+> with the old one, I can't. Maybe a timing difference.
+> 
+> Will need further testing -- I have no time in the next few days.
 
-No, it's a Laptop. The standard capture source has front mic at 0x3
-while the 6stack capture source has front mic at 0x1; this is the only
-difference but this seems to be what makes it work, I don't know why.
-(Btw: It is always front mic, no matter what microphone I use. As soon
-as I plug the external mic the internal one gets muted and the
-external one takes over it's channel)
+Hate it but will need to confirm that this is definitely a regression. OPTi
+82C930A does not work with the cs4231-lib using driver, does work with the
+current driver. It loads, but gets no interrupts.
 
-About the technical stuff: I don't know what an unsolicited event or a
-VREF is, I'm not a programmer. I just fiddled around with stuff until
-it was working but don't understand it :)
+However, relevant -- "does work with the old driver" is conditional on one 
+accepting a definition of "does work" which includes "does not produce any 
+sound". OPTi 930 is a Non-PnP chip, and it seems it might need the same kind 
+of internal switching that the Non-PnP sound galaxies need before the output 
+circuitry is actually connected to the WSS part and not the SB part.
 
-I have uploaded the output of alsa-info.sh twice. First with normal
-alsa und then with my patch (don't know is this is important)
-http://pastebin.com/f22f73445
-http://pastebin.com/f4a7b49d7
+Given that for most people sound cards have producing sound as one of their 
+more important characteristics it not in fact doing such no doubt means that 
+this chip isn't used at _all_ by anyone. I have one, but I can't say I've 
+ever found another one either. Could've sworn I tested it before and got it 
+to work but not able to say with certainty either.
 
+Massimo, do you remember if the driver was ever tested on a 930?
 
+In any case, it works on 931 and 933, not 930. 931/3 are the chips actually 
+used. No opinion on just integrating this anyway. Debugging 930 is going to 
+require some work and time.
 
-
->
->
->
->
-> > Questions:
-> > Is this patch any good or is there a better way to fix my problems?
-> > Why is the recording so quiet and why can't I record with capture value
-> > above 40?
-> >
-> >
-> >
-> > Patch:
-> > diff -r c4c5e6ced12f pci/hda/patch_realtek.c
-> > --- a/pci/hda/patch_realtek.c    Wed Feb 06 15:48:06 2008 +0100
-> > +++ b/pci/hda/patch_realtek.c    Wed Feb 06 15:59:28 2008 +0100
-> > @@ -2917,7 +2917,7 @@ static struct snd_pci_quirk alc880_cfg_t
-> >      SND_PCI_QUIRK(0x161f, 0x203d, "W810", ALC880_W810),
-> >      SND_PCI_QUIRK(0x1695, 0x400d, "EPoX", ALC880_5ST_DIG),
-> >      SND_PCI_QUIRK(0x1695, 0x4012, "EPox EP-5LDA", ALC880_5ST_DIG),
-> > -    SND_PCI_QUIRK(0x1734, 0x107c, "FSC F1734", ALC880_F1734),
-> > +    SND_PCI_QUIRK(0x1734, 0x107c, "FSC F1734", ALC880_FUJITSU),
-> >      SND_PCI_QUIRK(0x1734, 0x10ac, "FSC", ALC880_UNIWILL),
-> >      SND_PCI_QUIRK(0x1734, 0x10b0, "Fujitsu", ALC880_FUJITSU),
-> >      SND_PCI_QUIRK(0x1854, 0x0018, "LG LW20", ALC880_LG_LW),
-> > @@ -3161,7 +3161,7 @@ static struct alc_config_preset alc880_p
-> >          .dig_out_nid = ALC880_DIGOUT_NID,
-> >          .num_channel_mode = ARRAY_SIZE(alc880_2_jack_modes),
-> >          .channel_mode = alc880_2_jack_modes,
-> > -        .input_mux = &alc880_capture_source,
-> > +        .input_mux = &alc880_6stack_capture_source,
-> >          .unsol_event = alc880_uniwill_p53_unsol_event,
-> >          .init_hook = alc880_uniwill_p53_hp_automute,
-> >      },
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->
+Rene.
