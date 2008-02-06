@@ -1,20 +1,16 @@
-From: Michael Gerdau <mgerdau@tiscali.de>
-Subject: Re: [PATCH] aplay/arecord - Add support for IEEE float
-	32-bit WAV files
-Date: Wed, 6 Feb 2008 15:03:28 +0100
-Message-ID: <200802061503.47269.mgerdau@tiscali.de>
-References: <711f7227eb13715f8a4b.1201991392@am2>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: HG branches
+Date: Wed, 6 Feb 2008 15:04:12 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0802061437190.8113@tm8103.perex-int.cz>
+References: <s5hwspjzbt0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5585518974938069137=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp11.unit.tiscali.de (smtp11.unit.tiscali.de [213.205.33.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id C101F24468
-	for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2008 15:04:14 +0100 (CET)
-Received: from noname (91.3.100.117) by smtp11.unit.tiscali.de (7.3.122)
-	(authenticated as mgerdau@tiscali.de)
-	id 47975B550036869F for alsa-devel@alsa-project.org;
-	Wed, 6 Feb 2008 15:03:58 +0100
-In-Reply-To: <711f7227eb13715f8a4b.1201991392@am2>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9340724449
+	for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2008 15:04:13 +0100 (CET)
+In-Reply-To: <s5hwspjzbt0.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +20,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============5585518974938069137==
-Content-Type: multipart/signed;
-  boundary="nextPart13984420.Za01R8f4Vj";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Tue, 5 Feb 2008, Takashi Iwai wrote:
 
---nextPart13984420.Za01R8f4Vj
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+> Hi,
+> 
+> how about creating branches for HG trees for some stable trees?  This
+> will make the maintenance much easier.
 
-> +/* WAVE fmt block constants from Microsoft mmreg.h header */
-> +#define WAV_FMT_PCM             0x0001
-> +#define WAV_FMT_IEEE_FLOAT      0x0003
-> +#define WAV_FMT_DOLBY_AC3_SPDIF 0x0092
+I agree.
 
-Does this mean "copy and paste" from M$ copyrighted work ?
-And if yes, wouldn't that imply a copyright violation committed by ALSA ?
+> What I have in my mind are branches for:
+> 
+> - Kernel stable tree (2.6.xx.y)
+> - Kernel head tree for push
+> - ALSA stable releases
+> 
+> We'd need to define a naming rule if we have branches.  So far, v*.*.*
+> tag is used for ALSA versions, and it can be used for the branch, too.
+> But having the same name between the tag and the branch may be
+> confusing.  We can name the branch as "v1.0.16.x" or "v1.0.16-branch",
+> for example.
 
-Just asking, best,
-Michael
-=2D-=20
- Michael Gerdau       email: mgerdau@tiscali.de
- GPG-keys available on request or at public keyserver
+I would like to add word branch to all branches. Just for sure.
 
---nextPart13984420.Za01R8f4Vj
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+> Also, for the kernel version to track, we'd need a different prefix,
+> too, such as "kernel-2.6.25".
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.4-svn0 (GNU/Linux)
+Or "kernel-2.6.25-branch".
 
-iD8DBQBHqb5DUYYhyuxDQc4RAgYqAJ4tWBVtbH76yVEnKNAkaScCeCcQ0QCff7/1
-9MXtF1dVwvM0HoPmkELB1z8=
-=FUH5
------END PGP SIGNATURE-----
+> The workflow with branches is pretty simple.
+> 
+> 	% hg branch
+> 	default
+> 	% hg up -rv1.0.16
+> 	% hg branch v1.0.16-branch
+> 	% some patch work
+> 	% hg commit
+> 	% hg branches
+> 	v1.0.16-branch	5828:71ddf13b7a2e
+> 	default		5829:950e43bff743
+> 
+> The resultant multiple heads can be pushed via "push -f".
 
---nextPart13984420.Za01R8f4Vj--
+You can also change back to default (main) branch with:
 
---===============5585518974938069137==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	hg up -C default
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+						Jaroslav
 
---===============5585518974938069137==--
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
