@@ -1,16 +1,20 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: ESI Maya44 initial patch
-Date: Wed, 06 Feb 2008 15:03:09 +0100
-Message-ID: <47A9BE1D.3000601@insite.cz>
-References: <47A8A2AC.4000901@lightshed.de>
+From: Michael Gerdau <mgerdau@tiscali.de>
+Subject: Re: [PATCH] aplay/arecord - Add support for IEEE float
+	32-bit WAV files
+Date: Wed, 6 Feb 2008 15:03:28 +0100
+Message-ID: <200802061503.47269.mgerdau@tiscali.de>
+References: <711f7227eb13715f8a4b.1201991392@am2>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5585518974938069137=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD7CD24449
-	for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2008 15:03:20 +0100 (CET)
-In-Reply-To: <47A8A2AC.4000901@lightshed.de>
+Received: from smtp11.unit.tiscali.de (smtp11.unit.tiscali.de [213.205.33.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id C101F24468
+	for <alsa-devel@alsa-project.org>; Wed,  6 Feb 2008 15:04:14 +0100 (CET)
+Received: from noname (91.3.100.117) by smtp11.unit.tiscali.de (7.3.122)
+	(authenticated as mgerdau@tiscali.de)
+	id 47975B550036869F for alsa-devel@alsa-project.org;
+	Wed, 6 Feb 2008 15:03:58 +0100
+In-Reply-To: <711f7227eb13715f8a4b.1201991392@am2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,78 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rainer Zimmermann <mail@lightshed.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Piotr Makowski <oponek@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--===============5585518974938069137==
+Content-Type: multipart/signed;
+  boundary="nextPart13984420.Za01R8f4Vj";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Thanks for the reverse engineering.
+--nextPart13984420.Za01R8f4Vj
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-MI/ODI/O is partially supported in prodigy192.c.
+> +/* WAVE fmt block constants from Microsoft mmreg.h header */
+> +#define WAV_FMT_PCM             0x0001
+> +#define WAV_FMT_IEEE_FLOAT      0x0003
+> +#define WAV_FMT_DOLBY_AC3_SPDIF 0x0092
 
-Combination Prodigy192 + MI/ODI/O:
+Does this mean "copy and paste" from M$ copyrighted work ?
+And if yes, wouldn't that imply a copyright violation committed by ALSA ?
 
-SPDIF-out works automatically (basically kind of a parallel connection 
-to the on-board SPDIF-out). The SPDIF input via AK4114 works, I have not 
-tested MIDI yet.
+Just asking, best,
+Michael
+=2D-=20
+ Michael Gerdau       email: mgerdau@tiscali.de
+ GPG-keys available on request or at public keyserver
 
-Theoretically, the Xilinx array should supply AK4114 with external clock 
-for SPDIF rate detection - using the MK73-1 frequency multiplier. I have 
-yet to hook up my oscilloscope to analyze the actual functionality. As 
-of now the automatic rate detection does not work.
+--nextPart13984420.Za01R8f4Vj
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-I guess MI/ODI/O support for Maya44 would be fairly similar.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.4-svn0 (GNU/Linux)
 
-Good luck and best regards,
+iD8DBQBHqb5DUYYhyuxDQc4RAgYqAJ4tWBVtbH76yVEnKNAkaScCeCcQ0QCff7/1
+9MXtF1dVwvM0HoPmkELB1z8=
+=FUH5
+-----END PGP SIGNATURE-----
 
-Pavel Hofman.
+--nextPart13984420.Za01R8f4Vj--
 
+--===============5585518974938069137==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Rainer Zimmermann wrote:
-> 
-> Hello,
-> 
-> this is the first testing version of the driver for the ESI Maya44 card, 
-> which I developed on the initiative of Piotr Makowski.
-> 
-> The driver is actually an addition to the existing ice1724 code.
-> 
-> More information can be found in doc/README.maya44 .
-> 
-> We would appreciate your testing and feedback.
-> 
-> Also, since I am new to ALSA driver development, I would appreciate 
-> feedback on whether the way I integrated this into the ALSA tree is 
-> correct.
-> 
-> 
-> Thanks for your feedback and best regards,
-> Rainer Zimmermann
-> 
-> 
-> 
-> ------------------------------------------------------------------------
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
--- 
------------------
-
-inSITE, s.r.o.
-
-Rubesova 29, 326 00 Plzen
-Tel., fax: +420 - 37 - 74 493 58
-GSM: +420 - 603 - 163 973
-Email: pavel.hofman@insite.cz
-
-www.educity.cz, www.insite.cz
-www.meetings.cz, www.hrzive.cz
-www.comben.cz, www.hr-online.cz
--------------------------------
-Navstivte www.educity.cz, server
-s nejvetsi nabidkou profesniho
-vzdelavani na ceskem internetu.
+--===============5585518974938069137==--
