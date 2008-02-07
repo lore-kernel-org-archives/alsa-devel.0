@@ -1,25 +1,21 @@
-From: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Subject: Re: PXA27x and AC97 reset bug
-Date: Thu, 7 Feb 2008 01:10:55 +0000 (UTC)
-Message-ID: <fodlqv$iet$1@ger.gmane.org>
-References: <87ejbpheqk.fsf@polgara.paysbobval>
+From: Seth Forshee <seth.forshee@gmail.com>
+Subject: Re: HG branches
+Date: Wed, 6 Feb 2008 19:59:24 -0600
+Message-ID: <20080207015923.GA14226@ubuntu-workstation>
+References: <s5hwspjzbt0.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0802061437190.8113@tm8103.perex-int.cz>
+	<Pine.LNX.4.61.0802061505470.8113@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F866244AB
-	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 02:35:09 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1JMvfK-0007Gz-PU
-	for alsa-devel@alsa-project.org; Thu, 07 Feb 2008 01:35:02 +0000
-Received: from ppp78-37-180-171.pppoe.avangarddsl.ru ([78.37.180.171])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 07 Feb 2008 01:35:02 +0000
-Received: from dbaryshkov by ppp78-37-180-171.pppoe.avangarddsl.ru with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 07 Feb 2008 01:35:02 +0000
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C78F24429
+	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 03:00:02 +0100 (CET)
+Received: by py-out-1112.google.com with SMTP id w49so4463933pyg.36
+	for <alsa-devel@alsa-project.org>; Wed, 06 Feb 2008 18:00:00 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0802061505470.8113@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,32 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, Feb 06, 2008 at 03:06:44PM +0100, Jaroslav Kysela wrote:
+> BTW: Does anyone know if it's possible to just pick a patch from a HG 
+> branch to another? STG (Stacked GIT) has nice 'stg pick <branch>@<patch>' 
+> command for this.
 
-Robert Jarzmik wrote:
+  hg update -C dest-branch
+  hg transplant -b source-branch revision
 
-> I hope this subject wasn't previously discussed, as I couldn't find a
-> trace ...
-> 
-> The basic question is : why can't the PXA27x reset the AC97 bus in front
-> of an wm9713 ?
+But I must say that using branches in hg is rather painful.  We tried
+it for a while at my workplace and switched to using cloned repos for
+branches (mostly).  We had several instances of bad things happening
+because of the way hg handled branches, and when those things got
+pushed it was often very difficult to get the repo back to a decent
+state.  In my opinion git handles branches much better than hg does.
 
-I have nearly the same problem here: pxa255, wm9712, sharp SL-6000 (tosa).
-However resetting the codec in a loop sometime helps.
-
-Any info would be appreciated.
-
-> And more precisely, I'd like to know :
->  - are there any references to this bug (Intel note, mailing list ref,
->  ...) - is it a hardware bug on PXA27x side ? - is it a hardware bug on
->  wm9713 side ? - is there a known generic workaround (assuming GPIO113
->  is connected to wm9713
-> reset line is not generic for me) ?
->  - is there a known platform where this bug does not happen ?
-
--- 
-With best wishes
-Dmitry
+Cheers,
+Seth
