@@ -1,21 +1,18 @@
-From: Wolfgang Woehl <tito@rumford.de>
-Subject: Re: [Jackit-devel] position_fix issue snd-hda-intel
-	(was jack issue)
-Date: Thu, 7 Feb 2008 21:46:20 +0100
-Message-ID: <200802072146.20691.tito@rumford.de>
-References: <26670.62.212.109.253.1202065817.squirrel@webmail.nerim.net>
-	<200802042339.21846.tito@rumford.de>
-	<20080207182521.7363c38a@hypofiz.lan>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: GIT submodules
+Date: Thu, 07 Feb 2008 22:10:47 +0100
+Message-ID: <47AB73D7.7060707@keyaccess.nl>
+References: <s5hwspjzbt0.wl%tiwai@suse.de>	<Pine.LNX.4.61.0802061437190.8113@tm8103.perex-int.cz>	<Pine.LNX.4.61.0802061505470.8113@tm8103.perex-int.cz>	<47AA1361.7070201@keyaccess.nl>
+	<s5h7ihhknez.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id E85E62464F
-	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 21:46:25 +0100 (CET)
-In-Reply-To: <20080207182521.7363c38a@hypofiz.lan>
-Content-Disposition: inline
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id BDD5C24621
+	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 22:09:31 +0100 (CET)
+In-Reply-To: <s5h7ihhknez.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jackit-devel@lists.sourceforge.net
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, git-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Donnerstag, 7. Februar 2008 Stephane THOMAS:
+On 07-02-08 12:37, Takashi Iwai wrote:
 
-> I found position_fix=3 works for the chip I have (ALC888).
->
-> I confirm that with this parameter passed to the module, jack works
-> fine. But using ALSA directly produce (? samplerate mismatch).
+>> I believe the git submodule stuff would also nicely allow all of ALSA to be 
+>> one giant repo basically, with kernel, lib, ..., as submodules.
+> 
+> Just out of curiosity, what could be a merit of submodules in the case
+> of ALSA?
 
-Just to sum it up:
+Given that they're used for larger projects, I can't say I've used them but 
+I read about them when Linus mentioned them in the context of KDE maybe 
+switching:
 
-For, at least, our two snd-hda-intel devices (ALC888 and 82801I (ICH9 
-Family)) both position_fix values (POSBUF and FIFO, 0 and 3 
-respectively) produce ok sound, only that
+http://lwn.net/Articles/246381/
 
-position_fix=0 makes alsa fine and jack crackle/sizzle
-position_fix=3 makes alsa crackle/sizzle and jack fine
+Basically, submodules are the  actual git repositories with one organizing 
+superproject. This seems to be a fairly nice description of the submodule 
+support:
 
-"alsa" meaning direct use of alsa and "jack" meaning (at least in my 
-case) jack with the alsa backend.
+http://www.ishlif.org/blog/linux/git-submodules/
 
-Here I have alsa-1.0.14-31.2 and jack-0.109.2-0.pm.1 (0.pm.1 stems 
-from the packman repository, I guess)
+What they provide is stitching the parts together nicely into one coherent 
+release. In this case, you'd have alsa-driver, alsa-lib, alsa-utils and so 
+on repos, and an "alsa-project" superproject tying them together, where you 
+could do checkouts of a complete coherent release off all the modules for 
+example.
 
-Wolfgang
+As said, I haven't actually used them, so I've added the git list (*) to see 
+if anyone has something to add, correct or explain (please do!). Submodules 
+seem to be intended exactly for the kind of setup that ALSA is using with 
+the many semi-independent parts...
+
+(*) git-devel: alsa-devel is moderated for non-subscribers but you'll be 
+whitelisted after landing in the queue once if you're not a subscriber
+
+Rene.
