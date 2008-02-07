@@ -1,19 +1,22 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: HG branches
-Date: Thu, 7 Feb 2008 09:18:04 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0802070916040.8113@tm8103.perex-int.cz>
-References: <s5hwspjzbt0.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0802061437190.8113@tm8103.perex-int.cz>
-	<Pine.LNX.4.61.0802061505470.8113@tm8103.perex-int.cz>
-	<20080207015923.GA14226@ubuntu-workstation>
+Subject: HG vs GIT
+Date: Thu, 7 Feb 2008 10:37:29 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0802071024530.8113@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53846103919
-	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 09:18:05 +0100 (CET)
-In-Reply-To: <20080207015923.GA14226@ubuntu-workstation>
+	by alsa0.perex.cz (Postfix) with ESMTP id 27BF624577
+	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 10:37:30 +0100 (CET)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	1ADCF149DF3
+	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 10:37:30 +0100 (CET)
+Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	089714E4B
+	for <alsa-devel@alsa-project.org>; Thu,  7 Feb 2008 10:37:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seth Forshee <seth.forshee@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 6 Feb 2008, Seth Forshee wrote:
+Hi,
 
-> On Wed, Feb 06, 2008 at 03:06:44PM +0100, Jaroslav Kysela wrote:
-> > BTW: Does anyone know if it's possible to just pick a patch from a HG 
-> > branch to another? STG (Stacked GIT) has nice 'stg pick <branch>@<patch>' 
-> > command for this.
-> 
->   hg update -C dest-branch
->   hg transplant -b source-branch revision
-> 
-> But I must say that using branches in hg is rather painful.  We tried
-> it for a while at my workplace and switched to using cloned repos for
-> branches (mostly).  We had several instances of bad things happening
-> because of the way hg handled branches, and when those things got
-> pushed it was often very difficult to get the repo back to a decent
-> state.  In my opinion git handles branches much better than hg does.
+	it seems that GIT matured somewhat. git-push has been implemneted. 
+It was main reason to not use GIT when we made decision between HG and 
+GIT.
+	As we could have potential problems with branches in HG 
+repository, I would like to consider a switch to GIT althought it means 
+some changes in my scripts on ALSA server and my ksync tool.
+	I just successfully tried (a bit modified hg-to-git.py script) and 
+it seems to be working properly.
+	Any objections?
 
-Thanks for these notes.
-
-					Jaroslav
+						Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
