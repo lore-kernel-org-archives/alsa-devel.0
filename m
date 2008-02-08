@@ -1,17 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: New Guy Here...
-Date: Fri, 08 Feb 2008 08:59:29 +0100
-Message-ID: <47AC0BE1.2070909@ladisch.de>
-References: <47ABC502.3080808@gmail.com>	<1202439768.3719.404.camel@petrie.sacredspiral.co.uk.sacredspiral.co.uk>
-	<47ABC93D.3020009@gmail.com>
+From: "Serge A. Suchkov" <Serge.A.S@tochka.ru>
+Subject: [PATCH] Fix race condition in generic bound
+	volume/swtich controls
+Date: Fri, 8 Feb 2008 11:34:15 +0300
+Message-ID: <200802081134.15632.Serge.A.S@tochka.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_HQBrHeZ1U0SIhzQ"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id D34D2103803
-	for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2008 08:57:38 +0100 (CET)
-In-Reply-To: <47ABC93D.3020009@gmail.com>
+Received: from umail.ru (fe01.tochka.ru [62.5.255.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12640244CF
+	for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2008 09:38:04 +0100 (CET)
+Received: from [91.76.32.64] (account serge.a.s@stream.ru HELO [192.168.2.101])
+	by fe01-umail.umail.ru (CommuniGate Pro SMTP 5.1.14)
+	with ESMTPSA id 325176037 for alsa-devel@alsa-project.org;
+	Fri, 08 Feb 2008 11:38:04 +0300
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +24,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Minko Minkov <msm028@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Minko Minkov wrote:
-> Well, for playback it works great. This thing has awesome sound. It
-> would only accept S24_3LE format and 96000KHz rate. I thought you get
-> that rate only with the advanced switch on. Mine is off.
+--Boundary-00=_HQBrHeZ1U0SIhzQ
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-AFAIK these switches only have effect after you've re-plugged the
-device.
+Hi all,
 
-> Also acrecord -l does not list the device as recording device.
+Attached patch fix race condition in hd_codec generic bound volume/swtich 
+controls
 
-This device does not support full duplex at 96 kHz.  The switches and
-their valid combinations should be documented in the manual.
+oops on this bug can be easy reproduced by two mixer apps on SMP system with  
+PREEMPT kernel
 
+dmesg:
 
+ALSA /home/ss/ALSA/alsa-driver-1.0.16/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:596: 
+hda_intel: azx_get_response timeout, switching to polling mode: las
+t cmd=0x014f0900
+BUG: unable to handle kernel paging request at virtual address 00070006
+printing eip: f8f43e95 *pde = 00000000
+Oops: 0000 [#1] PREEMPT SMP
+Modules linked in: i915 drm snd_seq_dummy snd_seq_oss snd_seq_midi_event 
+snd_seq snd_seq_device snd_pcm_oss snd_mixer_oss bnep rfcomm hidp l2cap 
+bluetooth w
+lan_wep acpi_cpufreq coretemp hwmon mmc_block pcspkr psmouse wlan_scan_sta 
+ath_rate_sample snd_hda_intel ath_pci serio_raw wlan tg3 sdhci snd_pcm 
+firewire_o
+hci mmc_core i2c_i801 snd_timer firewire_core snd_page_alloc ath_hal(P) 
+snd_hwdep snd iTCO_wdt crc_itu_t iTCO_vendor_support shpchp video output 
+acer_acpi b
+acklight led_class wmi_acer
+
+Pid: 3969, comm: gkrellm Tainted: P        (2.6.24-jm #4)
+EIP: 0060:[<f8f43e95>] EFLAGS: 00010292 CPU: 0
+EIP is at snd_hda_mixer_bind_ctls_info+0x20/0x43 [snd_hda_intel]
+EAX: 00000000 EBX: f7478e00 ECX: f763e000 EDX: f764f788
+ESI: 00070002 EDI: edce5e00 EBP: edc3fe64 ESP: edc3fe54
+ DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068
+Process gkrellm (pid: 3969, ti=edc3e000 task=f1e4e000 task.ti=edc3e000)
+Stack: f764f77c f7478e00 edce5e00 f6dd6000 edc3fe84 f8e590e8 edc7a239 f6d14034
+       f764f34c f6c0f7e0 edc3ff30 f6d14034 edc3fea8 f8e591b7 edc3ff30 edc3ff2c
+       00000000 f70aa668 f6d14034 f8e59165 bfbfadb0 edc3ff40 f8e587aa edc3ff2c
+Call Trace:
+ [<c0104fbb>] show_trace_log_lvl+0x1a/0x2f
+ [<c010506d>] show_stack_log_lvl+0x9d/0xa5
+ [<c0105119>] show_registers+0xa4/0x1bd
+ [<c0105354>] die+0x122/0x206
+ [<c03daccc>] do_page_fault+0x535/0x623
+ [<c03d940a>] error_code+0x72/0x78
+ [<f8e590e8>] snd_mixer_oss_get_volume1_vol+0x74/0xf1 [snd_mixer_oss]
+ [<f8e591b7>] snd_mixer_oss_get_volume1+0x52/0xa5 [snd_mixer_oss]
+ [<f8e587aa>] snd_mixer_oss_ioctl1+0x673/0x71e [snd_mixer_oss]
+ [<f8e588af>] snd_mixer_oss_ioctl+0xb/0xd [snd_mixer_oss]
+ [<c017af0a>] do_ioctl+0x22/0x67
+ [<c017b186>] vfs_ioctl+0x237/0x24a
+ [<c017b1ca>] sys_ioctl+0x31/0x4b
+ [<c010402e>] syscall_call+0x7/0xb
+ =======================
+Code: 3f 49 c7 89 f8 59 5b 5e 5f 5d c3 55 89 e5 57 89 d7 56 53 89 c3 83 ec 04 
+8b 70 5c 8b 40 60 05 7c 01 00 00 89 45 f0 e8 c0 3f 49 c7 <8b> 46 04 89 fa 89 
+4
+3 5c 89 d8 8b 0e ff 11 89 73 5c 89 c7 8b 45
+EIP: [<f8f43e95>] snd_hda_mixer_bind_ctls_info+0x20/0x43 [snd_hda_intel] 
+SS:ESP 0068:edc3fe54
+---[ end trace 0a20bc209e9397cc ]---
+
+similar issue report present in ALSA bugtracking system
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3652
+
+-- 
 Regards,
-Clemens
+Serge A. Suchkov
+--
+Democracy is a form of government that substitutes election by the
+incompetent many for appointment by the corrupt few.
+		-- G. B. Shaw
+
+--Boundary-00=_HQBrHeZ1U0SIhzQ
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="hda_codec_fix_race.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="hda_codec_fix_race.patch"
+
+Signed-off-by: Serge A. Suchkov <Serge.A.S@tochka.ru>
+
+diff -uNr alsa-driver-1.0.16-orig/alsa-kernel/pci/hda/hda_codec.c alsa-driver-1.0.16/alsa-kernel/pci/hda/hda_codec.c
+--- alsa-driver-1.0.16-orig/alsa-kernel/pci/hda/hda_codec.c	2008-02-08 09:35:40.000000000 +0300
++++ alsa-driver-1.0.16/alsa-kernel/pci/hda/hda_codec.c	2008-02-08 10:35:01.000000000 +0300
+@@ -1205,8 +1205,8 @@
+ 	struct hda_bind_ctls *c;
+ 	int err;
+ 
+-	c = (struct hda_bind_ctls *)kcontrol->private_value;
+ 	mutex_lock(&codec->spdif_mutex); /* reuse spdif_mutex */
++	c = (struct hda_bind_ctls *)kcontrol->private_value;
+ 	kcontrol->private_value = *c->values;
+ 	err = c->ops->info(kcontrol, uinfo);
+ 	kcontrol->private_value = (long)c;
+@@ -1221,8 +1221,8 @@
+ 	struct hda_bind_ctls *c;
+ 	int err;
+ 
+-	c = (struct hda_bind_ctls *)kcontrol->private_value;
+ 	mutex_lock(&codec->spdif_mutex); /* reuse spdif_mutex */
++	c = (struct hda_bind_ctls *)kcontrol->private_value;
+ 	kcontrol->private_value = *c->values;
+ 	err = c->ops->get(kcontrol, ucontrol);
+ 	kcontrol->private_value = (long)c;
+@@ -1238,8 +1238,8 @@
+ 	unsigned long *vals;
+ 	int err = 0, change = 0;
+ 
+-	c = (struct hda_bind_ctls *)kcontrol->private_value;
+ 	mutex_lock(&codec->spdif_mutex); /* reuse spdif_mutex */
++	c = (struct hda_bind_ctls *)kcontrol->private_value;
+ 	for (vals = c->values; *vals; vals++) {
+ 		kcontrol->private_value = *vals;
+ 		err = c->ops->put(kcontrol, ucontrol);
+@@ -1259,8 +1259,8 @@
+ 	struct hda_bind_ctls *c;
+ 	int err;
+ 
+-	c = (struct hda_bind_ctls *)kcontrol->private_value;
+ 	mutex_lock(&codec->spdif_mutex); /* reuse spdif_mutex */
++	c = (struct hda_bind_ctls *)kcontrol->private_value;
+ 	kcontrol->private_value = *c->values;
+ 	err = c->ops->tlv(kcontrol, op_flag, size, tlv);
+ 	kcontrol->private_value = (long)c;
+
+--Boundary-00=_HQBrHeZ1U0SIhzQ
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--Boundary-00=_HQBrHeZ1U0SIhzQ--
