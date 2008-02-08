@@ -1,19 +1,16 @@
-From: "Serge A. Suchkov" <Serge.A.S@tochka.ru>
-Subject: [PATCH] Fix race condition in generic bound
-	volume/swtich controls
-Date: Fri, 8 Feb 2008 11:34:15 +0300
-Message-ID: <200802081134.15632.Serge.A.S@tochka.ru>
+From: "William Juul" <william@juul.no>
+Subject: new driver - some initial problems
+Date: Fri, 8 Feb 2008 09:43:37 +0100
+Message-ID: <2563ac9e0802080043g13e48d42pcc7311eb81ea9124@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_HQBrHeZ1U0SIhzQ"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from umail.ru (fe01.tochka.ru [62.5.255.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 12640244CF
-	for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2008 09:38:04 +0100 (CET)
-Received: from [91.76.32.64] (account serge.a.s@stream.ru HELO [192.168.2.101])
-	by fe01-umail.umail.ru (CommuniGate Pro SMTP 5.1.14)
-	with ESMTPSA id 325176037 for alsa-devel@alsa-project.org;
-	Fri, 08 Feb 2008 11:38:04 +0300
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 495CC244CF
+	for <alsa-devel@alsa-project.org>; Fri,  8 Feb 2008 09:43:39 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so288453wag.8
+	for <alsa-devel@alsa-project.org>; Fri, 08 Feb 2008 00:43:37 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,147 +24,205 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_HQBrHeZ1U0SIhzQ
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I am new to alsa development, but I am trying to write a alsa capture
+driver for a DAC. The driver is based on at73c213 since it will be
+running on AVR32 and using the SSC bus.
+The driver is running on a NGW100 card and I am using buildroot
+provided by Atmel. The alsa version is 1.0.14a and the kernel is
+2.6.23.
 
-Hi all,
+The DAC is not using any configuration bus so I have switched to using
+platform_* functions instead of dev/spi (grabbed from snd-dummy). I
+have also been taking some capture pieces from the snd-dummy driver.
 
-Attached patch fix race condition in hd_codec generic bound volume/swtich 
-controls
+I am now stuck with two problems:
+1) When using arecord -L, I only get the "null" device
+2) When I try to use arecord to do a recording I get "arecord:
+set_params:1039: unable to install sw params:". I get the same message
+when trying to use the snd-dummy driver, even though this driver also
+has PCM device.
 
-oops on this bug can be easy reproduced by two mixer apps on SMP system with  
-PREEMPT kernel
+Any hints on how to proceed?
 
-dmesg:
+I can post the driver source if that is interesting.
 
-ALSA /home/ss/ALSA/alsa-driver-1.0.16/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:596: 
-hda_intel: azx_get_response timeout, switching to polling mode: las
-t cmd=0x014f0900
-BUG: unable to handle kernel paging request at virtual address 00070006
-printing eip: f8f43e95 *pde = 00000000
-Oops: 0000 [#1] PREEMPT SMP
-Modules linked in: i915 drm snd_seq_dummy snd_seq_oss snd_seq_midi_event 
-snd_seq snd_seq_device snd_pcm_oss snd_mixer_oss bnep rfcomm hidp l2cap 
-bluetooth w
-lan_wep acpi_cpufreq coretemp hwmon mmc_block pcspkr psmouse wlan_scan_sta 
-ath_rate_sample snd_hda_intel ath_pci serio_raw wlan tg3 sdhci snd_pcm 
-firewire_o
-hci mmc_core i2c_i801 snd_timer firewire_core snd_page_alloc ath_hal(P) 
-snd_hwdep snd iTCO_wdt crc_itu_t iTCO_vendor_support shpchp video output 
-acer_acpi b
-acklight led_class wmi_acer
+Best regards
+William Juul
 
-Pid: 3969, comm: gkrellm Tainted: P        (2.6.24-jm #4)
-EIP: 0060:[<f8f43e95>] EFLAGS: 00010292 CPU: 0
-EIP is at snd_hda_mixer_bind_ctls_info+0x20/0x43 [snd_hda_intel]
-EAX: 00000000 EBX: f7478e00 ECX: f763e000 EDX: f764f788
-ESI: 00070002 EDI: edce5e00 EBP: edc3fe64 ESP: edc3fe54
- DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068
-Process gkrellm (pid: 3969, ti=edc3e000 task=f1e4e000 task.ti=edc3e000)
-Stack: f764f77c f7478e00 edce5e00 f6dd6000 edc3fe84 f8e590e8 edc7a239 f6d14034
-       f764f34c f6c0f7e0 edc3ff30 f6d14034 edc3fea8 f8e591b7 edc3ff30 edc3ff2c
-       00000000 f70aa668 f6d14034 f8e59165 bfbfadb0 edc3ff40 f8e587aa edc3ff2c
-Call Trace:
- [<c0104fbb>] show_trace_log_lvl+0x1a/0x2f
- [<c010506d>] show_stack_log_lvl+0x9d/0xa5
- [<c0105119>] show_registers+0xa4/0x1bd
- [<c0105354>] die+0x122/0x206
- [<c03daccc>] do_page_fault+0x535/0x623
- [<c03d940a>] error_code+0x72/0x78
- [<f8e590e8>] snd_mixer_oss_get_volume1_vol+0x74/0xf1 [snd_mixer_oss]
- [<f8e591b7>] snd_mixer_oss_get_volume1+0x52/0xa5 [snd_mixer_oss]
- [<f8e587aa>] snd_mixer_oss_ioctl1+0x673/0x71e [snd_mixer_oss]
- [<f8e588af>] snd_mixer_oss_ioctl+0xb/0xd [snd_mixer_oss]
- [<c017af0a>] do_ioctl+0x22/0x67
- [<c017b186>] vfs_ioctl+0x237/0x24a
- [<c017b1ca>] sys_ioctl+0x31/0x4b
- [<c010402e>] syscall_call+0x7/0xb
- =======================
-Code: 3f 49 c7 89 f8 59 5b 5e 5f 5d c3 55 89 e5 57 89 d7 56 53 89 c3 83 ec 04 
-8b 70 5c 8b 40 60 05 7c 01 00 00 89 45 f0 e8 c0 3f 49 c7 <8b> 46 04 89 fa 89 
-4
-3 5c 89 d8 8b 0e ff 11 89 73 5c 89 c7 8b 45
-EIP: [<f8f43e95>] snd_hda_mixer_bind_ctls_info+0x20/0x43 [snd_hda_intel] 
-SS:ESP 0068:edc3fe54
----[ end trace 0a20bc209e9397cc ]---
+Listings (annotated):
 
-similar issue report present in ALSA bugtracking system
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3652
+# modprobe -v snd-dummy
+Loading module snd-page-alloc
+Loading module soundcore
+Loading module snd
+Loading module snd-timer
+Loading module snd-pcm
+Loading module snd-dummy
+#
+#
+# arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: Dummy [Dummy], device 0: Dummy PCM [Dummy PCM]
+  Subdevices: 8/8
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+  Subdevice #4: subdevice #4
+  Subdevice #5: subdevice #5
+  Subdevice #6: subdevice #6
+  Subdevice #7: subdevice #7
+#
+# arecord -L
+default:CARD=Dummy
+    Dummy, Dummy PCM
+    Default Audio Device
+null
+    Discard all samples (playback) or generate zero samples (capture)
+#
+#
+#
+# arecord > dummy.wav
+Recording WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
+pcm->setup: 1
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 8
+  buffer_size  : 355
+  period_size  : 355
+  period_time  : 44375
+  tick_time    : 4000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 355
+  xfer_align   : 355
+  start_threshold  : 1
+  stop_threshold   : 355
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1488977920
+arecord: set_params:1039: unable to install sw params:
+start_mode: DATA
+xrun_mode: STOP
+tstamp_mode: NONE
+period_step: 1
+sleep_min: 0
+avail_min: 0
+xfer_align: 0
+silence_threshold: 0
+silence_size: 0
+boundary: 1488977920
+#
+#
+# arecord  -r  22786 -c 1 -f U8 -s 1 -A 100 -v > dummy.wav
+# (This works OK)
+#
+# reboot
+...
+#
+#
+# modprobe -v snd-ads127x
+Loading module soundcore
+Loading module snd
+Loading module snd-page-alloc
+Loading module snd-timer
+Loading module snd-pcm
+Loading module snd-ads127x
+snd_ads127x_probe OK
+#
+#
+# arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: ads127x_0 [AVR32 NGW100 external DAC], device 0: ads127x [ads127x]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+# arecord -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+#
+#
+#
+#
+# arecord  -r  22786 -c 1 -f S24_LE -s 1 -A 100  > ads127x.wav
+ALSA /home/williaj/src/ads127x/src/ads127x.c:141: snd_ads127x_pcm_open
+Recording WAVE 'stdin' : Signed 24 bit Little Endian, Rate 22786 Hz, Mono
+pcm->setup: 1
+  stream       : CAPTURE
+  accessALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos =
+0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+       : RW_INTERLEAVED
+  format       : S24_LEALSA sound/core/pcm_lib.c:155: BUG: stream = 1,
+pos = 0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
 
--- 
-Regards,
-Serge A. Suchkov
---
-Democracy is a form of government that substitutes election by the
-incompetent many for appointment by the corrupt few.
-		-- G. B. Shaw
+  subformat    : STD
+  channels     : 1
+  raALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos = 0x3b5f034,
+buffer size = 0xfcc, period size = 0x3f3
+te         : 22786
+  exact rate   : 22786 (22786/1)
+  msbits       : 32
+  buffer_size  : 4044
+  period_size  : 1011
+  period_time  : 44369
+  tick_time ALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos =
+0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+   : 4000
+  tstamp_mode  : NONE
+  period_step ALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos =
+0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+ : 1
+  sleep_min    : 0
+ALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos = 0x3b5f034,
+buffer size = 0xfcc, period size = 0x3f3
 
---Boundary-00=_HQBrHeZ1U0SIhzQ
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="hda_codec_fix_race.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="hda_codec_fix_race.patch"
-
-Signed-off-by: Serge A. Suchkov <Serge.A.S@tochka.ru>
-
-diff -uNr alsa-driver-1.0.16-orig/alsa-kernel/pci/hda/hda_codec.c alsa-driver-1.0.16/alsa-kernel/pci/hda/hda_codec.c
---- alsa-driver-1.0.16-orig/alsa-kernel/pci/hda/hda_codec.c	2008-02-08 09:35:40.000000000 +0300
-+++ alsa-driver-1.0.16/alsa-kernel/pci/hda/hda_codec.c	2008-02-08 10:35:01.000000000 +0300
-@@ -1205,8 +1205,8 @@
- 	struct hda_bind_ctls *c;
- 	int err;
- 
--	c = (struct hda_bind_ctls *)kcontrol->private_value;
- 	mutex_lock(&codec->spdif_mutex); /* reuse spdif_mutex */
-+	c = (struct hda_bind_ctls *)kcontrol->private_value;
- 	kcontrol->private_value = *c->values;
- 	err = c->ops->info(kcontrol, uinfo);
- 	kcontrol->private_value = (long)c;
-@@ -1221,8 +1221,8 @@
- 	struct hda_bind_ctls *c;
- 	int err;
- 
--	c = (struct hda_bind_ctls *)kcontrol->private_value;
- 	mutex_lock(&codec->spdif_mutex); /* reuse spdif_mutex */
-+	c = (struct hda_bind_ctls *)kcontrol->private_value;
- 	kcontrol->private_value = *c->values;
- 	err = c->ops->get(kcontrol, ucontrol);
- 	kcontrol->private_value = (long)c;
-@@ -1238,8 +1238,8 @@
- 	unsigned long *vals;
- 	int err = 0, change = 0;
- 
--	c = (struct hda_bind_ctls *)kcontrol->private_value;
- 	mutex_lock(&codec->spdif_mutex); /* reuse spdif_mutex */
-+	c = (struct hda_bind_ctls *)kcontrol->private_value;
- 	for (vals = c->values; *vals; vals++) {
- 		kcontrol->private_value = *vals;
- 		err = c->ops->put(kcontrol, ucontrol);
-@@ -1259,8 +1259,8 @@
- 	struct hda_bind_ctls *c;
- 	int err;
- 
--	c = (struct hda_bind_ctls *)kcontrol->private_value;
- 	mutex_lock(&codec->spdif_mutex); /* reuse spdif_mutex */
-+	c = (struct hda_bind_ctls *)kcontrol->private_value;
- 	kcontrol->private_value = *c->values;
- 	err = c->ops->tlv(kcontrol, op_flag, size, tlv);
- 	kcontrol->private_value = (long)c;
-
---Boundary-00=_HQBrHeZ1U0SIhzQ
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_HQBrHeZ1U0SIhzQ--
+  xfer_align   : 1011
+  start_threshold  : 1
+ALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos = 0x3b5f034,
+buffer size = 0xfcc, period size = 0x3f3
+  stop_threshold   : 4044
+  silence_threshold: ALSA sound/core/pcm_lib.c:155: BUG: stream = 1,
+pos = 0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+0
+  silence_size : 0
+  boundary     : 21202206ALSA sound/core/pcm_lib.c:155: BUG: stream =
+1, pos = 0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+72
+overrun!!! (at least 1.074 ms long)
+overrun!!! (at least 0.151 ms long)
+overrun!!! (at least 0.139 ms long)
+overrun!!! (at least 0.141 ms long)
+overrALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos = 0x3b5f034,
+buffer size = 0xfcc, period size = 0x3f3
+un!!! (at least 0.142 ms long)
+overrun!!! (at lALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos =
+0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+east 0.139 ms long)
+overrun!!! (at least 0.137 ALSA sound/core/pcm_lib.c:155: BUG: stream
+= 1, pos = 0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+ms long)
+overrun!!! (at least 0.139 ms long)
+oALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos = 0x3b5f034,
+buffer size = 0xfcc, period size = 0x3f3
+verrun!!! (at least 0.138 ms long)
+overrun!!! (ALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos =
+0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+at least 0.149 ms long)
+overrun!!! (at least 0.ALSA sound/core/pcm_lib.c:155: BUG: stream = 1,
+pos = 0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+145 ms long)
+overrun!!! (at least 0.154 ms long)
+overrun!!! (at least 0.146 ms long)
+overrun!!! (at least 0.146 ms long)
+overrun!!! (at least 0.724 ms loALSA sound/core/pcm_lib.c:155: BUG:
+stream = 1, pos = 0x3b5f034, buffer size = 0xfcc, period size = 0x3f3
+ng)
+overrun!!! (at least 0.152 ms long)
+ALSA sound/core/pcm_lib.c:155: BUG: stream = 1, pos = 0x3b5f034,
+buffer size = 0xfcc, period size = 0x3f3
+overrun!!! (at least 0.125 ms long)
