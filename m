@@ -1,17 +1,23 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: Some questions about devices supported by alsa
-Date: Sun, 10 Feb 2008 10:21:30 +0000
-Message-ID: <20080210102130.GA2421@localhost>
-References: <47ADFFF2.4050803@gmail.com>
+From: "M G" <lists.mg@googlemail.com>
+Subject: Re: snd-hda-intel: Fix volume-wheel and microphone on
+	Fujitsu-Siemens Amilo M3438G
+Date: Sun, 10 Feb 2008 19:48:34 +0100
+Message-ID: <74d457500802101048t2b92cb98qe6290a0186a00585@mail.gmail.com>
+References: <74d457500802060814j64532e95v8c689cbb491c6b46@mail.gmail.com>
+	<s5hir12kpne.wl%tiwai@suse.de>
+	<74d457500802061502m31d412dap15009aad087b1b75@mail.gmail.com>
+	<s5h8x1vy87l.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 782D324647
-	for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2008 11:13:40 +0100 (CET)
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BED7103820
+	for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2008 19:48:36 +0100 (CET)
+Received: by py-out-1112.google.com with SMTP id w49so6145580pyg.36
+	for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2008 10:48:34 -0800 (PST)
+In-Reply-To: <s5h8x1vy87l.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <47ADFFF2.4050803@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,20 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sergio Atzori <sergioatzori@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 09, 2008 at 08:33:06PM +0100, Sergio Atzori wrote:
-> 3) RME AES32 (and AES32express) & Lynx AES16: this driver could be
-> important for professional studios..if we want to put linux distros on
-> the professional side. I've none of them, but some people ask me to
-> build a professional multichannel live machine, I'd like to build a
-> linux based machine...there are not alternatives to these cards, because
-> I can build a system with more than one of them (really powerful
-> multichannel environment).
+Connecting a headphone automatically mutes the speakers; it has always
+been this way.
 
-The RME HDSP MADI (PCI and PCIe versions) work on Linux. I'm
-surprised their AES32 cards don't though. Are you sure about this?
+The effects of your patch are the same as with mine, i.e. good.
 
-John
+I think this might also need to be changed then?
+--- a/pci/hda/patch_realtek.c	Fri Feb 08 12:45:40 2008 +0100
++++ b/pci/hda/patch_realtek.c	Sun Feb 10 18:49:57 2008 +0100
+@@ -1320,8 +1320,8 @@ static struct snd_kcontrol_new alc880_f1
+ 	HDA_BIND_MUTE("Speaker Playback Switch", 0x0d, 2, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
+ 	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
+-	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+ 	{ } /* end */
+ };
