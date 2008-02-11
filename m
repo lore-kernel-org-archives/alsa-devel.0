@@ -1,19 +1,19 @@
 From: Martin Egge <mailinglists@martin.egge.info>
 Subject: Re: Digital-Out (Toslink) on HDA-Intal (AD1986A)?
-Date: Mon, 11 Feb 2008 19:13:06 +0100
-Message-ID: <200802111913.13404.mailinglists@martin.egge.info>
+Date: Mon, 11 Feb 2008 19:22:19 +0100
+Message-ID: <200802111922.19562.mailinglists@martin.egge.info>
 References: <200801222121.05757.mailinglists@martin.egge.info>
-	<200802091301.25360.mailinglists@martin.egge.info>
-	<s5hwspbv74j.wl%tiwai@suse.de>
-	(sfid-20080211_180331_856671_47C53BF4)
+	<200802072304.01096.mailinglists@martin.egge.info>
+	<s5hfxw3ya8g.wl%tiwai@suse.de>
+	(sfid-20080208_121323_322371_3FB65A08)
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8910422467436319390=="
+Content-Type: multipart/mixed; boundary="===============8549062262712766446=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73928244A5
-	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 19:13:23 +0100 (CET)
-In-Reply-To: <s5hwspbv74j.wl%tiwai@suse.de>
+	[212.227.126.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A6411037F1
+	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 19:22:21 +0100 (CET)
+In-Reply-To: <s5hfxw3ya8g.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,14 +27,14 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============8910422467436319390==
+--===============8549062262712766446==
 Content-Type: multipart/signed;
-  boundary="nextPart2884178.7Ju7ES1MDx";
+  boundary="nextPart1440334.9Eb94ruJ8I";
   protocol="application/pgp-signature";
   micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart2884178.7Ju7ES1MDx
+--nextPart1440334.9Eb94ruJ8I
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -42,32 +42,51 @@ Content-Disposition: inline
 
 Hi,
 
-Am Montag, 11. Februar 2008 schrieb Takashi Iwai:
-> How about the patch below?  If it still doesn't work, please show the
-> whole codec#* proc file again.
+Am Freitag, 8. Februar 2008 schrieb Takashi Iwai:
+> At Thu, 7 Feb 2008 23:04:00 +0100,
+> Martin Egge wrote:
+> > Am Donnerstag, 7. Februar 2008 schrieb Takashi Iwai:
+> > > If my guess is correct, you can propbably get SPDIF output via "spdif"
+> > > output.  What happens with the below?
+> > >
+> > > 	% aplay -Dplug:spdif foo.wav
+> >
+> > You are right. Choosing plug:spdif plays the sound cia the SDIF-Out. Of
+> > course this does not play the sound via the internal speakers when no
+> > SPDIF is connected.
+> >
+> > But I'd prefer the old behavior from 1.0.15 where the default device was
+> > playing sound via SPDIF when connected and via internal speakers when
+> > SDIF is not connected.
+>
+> Try the patch below.  This adds the mixer switch "Analog To SPDIF".
+> If this is on, the supported format is more limited so that the
+> default PCM can route to SPDIF.  If this switch is off, dmix will
+> choose 32bit automatically.
 
-Hey, after some hard work you've solved the problem: Internal, external mic=
-=20
-and jack sensing are working perfectly.
+The patch works perfectly for me. I like this new switch. Perhaps you shoul=
+d=20
+rename it to "Analog to IEC958 Output". I've seen this name on some other=20
+cards with ALSA.
 
-Thanks a lot!
+Regards,
 Martin
 
---nextPart2884178.7Ju7ES1MDx
+--nextPart1440334.9Eb94ruJ8I
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.6 (GNU/Linux)
 
-iD8DBQBHsJA4VG/GfU56d2wRAiHQAJ9/AJbH8HGa9Z+q/EqR53oGzPEg8wCfcS94
-dUEfhreuGRBsGq+z5S5zw7Q=
-=kiPM
+iD8DBQBHsJJbVG/GfU56d2wRArFhAKCDd81nyjZw9ecdzMS7wvhjrsmGlgCfcrc9
+Nk4T67KW1Uis2L8UE+Q4WxU=
+=OHqE
 -----END PGP SIGNATURE-----
 
---nextPart2884178.7Ju7ES1MDx--
+--nextPart1440334.9Eb94ruJ8I--
 
---===============8910422467436319390==
+--===============8549062262712766446==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -78,4 +97,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============8910422467436319390==--
+--===============8549062262712766446==--
