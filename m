@@ -1,40 +1,18 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: 1.0.16 snd-aoa driver
-Date: Mon, 11 Feb 2008 21:35:17 +0100
-Message-ID: <20080211203517.GA3546@aragorn.home.lxtec.de>
-References: <20080210232728.GA10710@aragorn.home.lxtec.de>
-	<s5h1w7jwn3b.wl%tiwai@suse.de>
+From: Matej Laitl <strohel@gmail.com>
+Subject: [ALSA] HDA: no sound in headphone-out caused by commit
+	f889fa91ad47e (2.6.25-rc1 regression)
+Date: Mon, 11 Feb 2008 21:58:41 +0100
+Message-ID: <200802112158.41989.strohel@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout.hostsharing.net (smtpout.hostsharing.net [83.223.95.98])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19D881038EE
-	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 21:35:32 +0100 (CET)
-Received: from h01.hostsharing.net (h01.hostsharing.net [212.42.230.152])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by smtpout.hostsharing.net (Postfix) with ESMTP id 33A4B2000065
-	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 21:35:27 +0100 (CET)
-Received: from mail.home.lxtec.de (p5B14522D.dip.t-dialin.net [91.20.82.45])
-	(using TLSv1 with cipher AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by h01.hostsharing.net (Postfix) with ESMTP id 03B2418119D9D
-	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 21:35:27 +0100 (CET)
-Received: from localhost ([127.0.0.1])
-	by mail.home.lxtec.de with esmtp (Exim 4.69 1 (LXTEC))
-	id 1JOfN7-000186-VV
-	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 21:35:25 +0100
-Received: from mail.home.lxtec.de ([127.0.0.1])
-	by localhost (mail.home.lxtec.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id E1zkpIS04lsF for <alsa-devel@alsa-project.org>;
-	Mon, 11 Feb 2008 21:35:23 +0100 (CET)
-Received: from aragorn.home.lxtec.de ([192.168.200.203] ident=Debian-exim)
-	by mail.home.lxtec.de with esmtps (Exim 4.69 1 (LXTEC))
-	id 1JOfN5-00017v-DL
-	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 21:35:23 +0100
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34E7624652
+	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 21:58:47 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id q2so550629uge.50
+	for <alsa-devel@alsa-project.org>; Mon, 11 Feb 2008 12:58:46 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <s5h1w7jwn3b.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -44,20 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Feb 2008 the mental interface of
-Takashi Iwai told:
+Hi,
+after upgrading from 2.6.24 to 2.6.25-rc1, I lost headphone-out sound output 
+of my Intel HDA card - it is quiet no matter what the mixer settings are.
 
-[...]
-> Is this a regression after the version update?  If yes, try to set the
-> environment variable LIBASOUND_DEBUG=1.  This will give you more
-> verbose debug messages regarding parameter setting.
+After playing wit git bisect a bit, I narrowed it down to commit 
+f889fa91ad47e "[ALSA] hda-codec - Improve the auto-configuration". [1]
+It works okay with tree as of previous commit 69b1f1e8337fc9. 
 
-Found a miss configured compile option. Sorry for the noise :)
+First lines from /proc/asound/Intel/codec#0:
+Codec: Realtek ALC262
+Address: 0
+Vendor Id: 0x10ec0262
+Subsystem Id: 0x17340000
+Revision Id: 0x100202
+No Modem Function Group found
+Default PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=4, o=0, i=0, unsolicited=1, wake=0
+  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0
 
-Elimar
+The box is Fujitsu-Siemens Esprimo Mobile M9400 laptop.
 
--- 
-  Do you smell something burning or ist it me?
+[1] 
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=f889fa91ad47e6fcb530abf1184ca9f1473d3c72
+
+Regards,
+	Matej Laitl
