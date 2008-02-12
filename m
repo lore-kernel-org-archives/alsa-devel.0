@@ -1,23 +1,20 @@
-From: "Ustun ERGENOGLU" <ustun.ergenoglu@gmail.com>
-Subject: Re: No recording on hda-intel (AD1981HD)
-Date: Tue, 12 Feb 2008 16:36:16 +0200
-Message-ID: <681812960802120636h3c1df920je4ed3d163e5e73be@mail.gmail.com>
-References: <200802032017.38614.grzegorz.chwesewicz@chilan.com>
-	<s5h3as3y6sr.wl%tiwai@suse.de> <s5hodarwidq.wl%tiwai@suse.de>
-	<200802081951.40111.grzegorz.chwesewicz@chilan.com>
-	<s5h8x1qv49k.wl%tiwai@suse.de>
-	<681812960802120600p68c4d8f5s16971db6654038b1@mail.gmail.com>
-	<s5hve4utgms.wl%tiwai@suse.de>
+From: Matej Laitl <strohel@gmail.com>
+Subject: Re: [ALSA] HDA: no sound in headphone-out caused by
+	commit f889fa91ad47e (2.6.25-rc1 regression)
+Date: Tue, 12 Feb 2008 16:27:44 +0100
+Message-ID: <200802121627.44422.strohel@gmail.com>
+References: <200802112158.41989.strohel@gmail.com>
+	<s5hwspatgri.wl%tiwai@suse.de> <s5htzketg7v.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 243D7103825
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 15:36:19 +0100 (CET)
-Received: by el-out-1112.google.com with SMTP id z25so1989108ele.8
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 06:36:18 -0800 (PST)
-In-Reply-To: <s5hve4utgms.wl%tiwai@suse.de>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A0B124480
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 16:27:49 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id b21so1318724nfd.32
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 07:27:48 -0800 (PST)
+In-Reply-To: <s5htzketg7v.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,68 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiBJdCBsb29rcyBsaWtlIHRoaXMgaXMgYSBnZW5lcmljIHByb2JsZW0gb2YgQVRJIFNCIGNoaXBz
-ZXQuICBXaGljaAo+IG1vZGVsIGlzIGl0PyAgU0I0NTAsIFNCNDYwIG9yIFNCNjAwPwoKaXQgaXMg
-U0I0NTAKCj4KPgo+IFRha2FzaGkKPgo+Cj4gPiAyMDA4LzIvMTIsIFRha2FzaGkgSXdhaSA8dGl3
-YWlAc3VzZS5kZT46Cj4gPiA+IEF0IEZyaSwgOCBGZWIgMjAwOCAxOTo1MTozOSArMDEwMCwKPiA+
-ID4gR3J6ZWdvcnogQ2h3ZXNld2ljeiB3cm90ZToKPiA+ID4gPgo+ID4gPiA+IEZyaWRheSAwOCBv
-ZiBGZWJydWFyeSAyMDA4IDE2OjU3OjM3IFRha2FzaGkgSXdhaSBuYXBpc2HFgihhKToKPiA+ID4g
-PiA+IEF0IEZyaSwgMDggRmViIDIwMDggMTM6MjQ6NTIgKzAxMDAsCj4gPiA+ID4gPgo+ID4gPiA+
-ID4gSSB3cm90ZToKPiA+ID4gPiA+ID4gQlRXLCBkbyB5b3UgaGF2ZSBwcm9ibGVtcyBmb3VuZCBp
-biBiZWxvdz8KPiA+ID4gPiA+ID4gICBodHRwczovL2J1Z3ppbGxhLm5vdmVsbC5jb20vc2hvd19i
-dWcuY2dpP2lkPTI5NzcwMwo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiBBY2NvcmRpbmcgdG8gdGhl
-IHJlcG9ydGVyLCBuYzY0MDAgd2l0aCBBRDE5ODEgaGFzIGEgcHJvYmxlbSB3aXRoCj4gPiA+ID4g
-PiA+IGhlYWRwaG9uZSBqYWNrIGF1dG8tbXV0aW5nIGFuZCB3aXRoIHRoZSBub24tbGluZWFyIG1h
-c3RlciB2b2x1bWUuCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IEkgc3VwcGxpZWQgdHdvIHRlc3Qg
-cGF0Y2hlcyB0aGVyZS4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBGb3IgY29udmVuaWVuY2UsIEkgYXR0
-YWNoIHBhdGNoZXMgaGVyZS4KPiA+ID4gPgo+ID4gPiA+IEhpLCBJIGhhZCBubyB0aW1lIHRvIHRl
-c3QgeW91ciBmaXJzdCBwYXRjaCAodGhpcyBvbmUgd2hpY2ggY2hlY2sgaWYgaXJxCj4gPiA+ID4g
-aGFuZGxlciBpcyBjYWxsZWQpLCBJJ3ZlIG9ubHkgdGVzdGVkIGl0IGZvciBhIHdoaWxlICh3b3Jr
-aW5nIG9uIE1TSSB0dXJuZWQKPiA+ID4gPiBvbiwgc29tZXRpbWVzIGhhcmQgbG9ja3MgbXkgbGFw
-dG9wKS4KPiA+ID4gPgo+ID4gPiA+IEkgYWxzbyBoYXZlIHNpbWlsaWFyIHByb2JsZW1zIHdpdGgg
-YXV0b211dGUsIGFuZCBub24tbGluZWFyIG1hc3RlciB2b2x1bWUKPiA+ID4gPiBjb250cm9sLgo+
-ID4gPiA+Cj4gPiA+ID4gV2l0aG91dCBhdXRvbXV0ZSBwYXRjaCwgYXV0b211dGUgd29ya3MgZnJv
-bSB0aW1lIHRvIHRpbWUuIFdpdGggeW91ciBwYXRjaAo+ID4gPiA+IGFwcGxpZWQgdG8gbGF0ZXN0
-IGdpdCBpdCB3b3JrcyBhbGwgdGhlIHRpbWUsIHVudGlsIHRoZSByZWNvcmRpbmcgYnJlYWtzLiBX
-aGVuCj4gPiA+ID4gaXQgaGFwcGVucyBJIGhhdmUgc291bmQgb25seSBpbiBoZWFkcGhvbmVzLCBi
-dXQgbm90IGluIGludGVybmFsIHNwZWFrZXIuCj4gPiA+ID4gUGx1Z2luZyBhbmQgdW5wbHVnaW5n
-IEhQIGRvZXNuJ3QgaGVscCwgb25seSByZWxvYWRpbmcgaGRhLWludGVsIGZpeGVzCj4gPiA+ID4g
-cHJvYmxlbS4KPiA+ID4gPiBBc3N1bWluZywgeW91ciBhdXRvbXV0ZSBwYXRjaCBpcyBvaywgYnV0
-IGl0IGhlbHBzIG1lIG9ubHkgdW50aWwgbWljIGJyZWFrcy4KPiA+ID4KPiA+ID4gT0ssIHRoaXMg
-cGF0Y2ggaXMgbm93IG9uIEhHIHRyZWUuCj4gPiA+Cj4gPiA+ID4gV2l0aG91dCBhZDE5ODEtaHAt
-bWFzdGVyLWFtcC1maXggbXV0aW5nIChtdXRpbmc9ZGlzYWJsaW5nIGl0LCBub3QgbWFraW5nIGl0
-J3MKPiA+ID4gPiB2YWx1ZSBlcXVhbCAwKSAiTWFzdGVyIiBhbmQgIlBDTSIgY29udHJvbCB3b3Jr
-cyBvay4gRGVjcmVtZW50aW5nIE1hc3RlciBhbmQKPiA+ID4gPiBQQ00gY29udHJvbHMgdG8gMCBp
-cyBwb3NzaWJsZSwgYnV0IGFmdGVyIHRoYXQgSSBjYW4gaGVhciB2ZXJ5IHF1aWV0IG91dHB1dAo+
-ID4gPiA+IGZyb20gaW50ZXJuYWwgc3BlYWtlcnMuCj4gPiA+ID4gV2l0aCB5b3VyIHBhdGNoIChh
-ZDE5ODEtaHAtbWFzdGVyLWFtcC1maXgpIGFwcGxpZWQgdG8gbGF0ZXN0IGdpdCBJIGNhbid0Cj4g
-PiA+ID4gZGVjcmVtZW50IE1hc3RlciBjb250cm9sIHRvIDAgKEkgY2FuIGRvIHRoYXQgd2l0aCBQ
-Q00sIGJ1dCBiZWhhdmlvciBpcyBzYW1lCj4gPiA+ID4gYXMgZGVzY3JpYmVkIHVwcGVyKS4gSSBj
-YW4gb25seSBkZWNyZW1lbnQgaXQgdG8gdmFsdWUgMywgYW5kIHdoZW4gSSBwcmVzcwo+ID4gPiA+
-IGRvd24ga2V5IChpbiBhbHNhbWl4ZXIpIHRvIHN0ZXAgdG8gbG93ZXIgbGV2ZWwgb2YgbG91ZG5l
-c3MsIGl0J3Mgc3dpdGNoaW5nIHRvCj4gPiA+ID4gdmFsdWUgMTAzLiBXaGVuIE1hc3RlciBoYXMg
-MTAzIHZhbHVlIEkgY2FuIGhlYXIgdmVyeSBxdWlldCBvdXRwdXQgZnJvbQo+ID4gPiA+IGludGVy
-bmFsIHNwZWFrZXJzIGFuZCBIUCAoaWYgcGx1Z2dlZCkuCj4gPiA+Cj4gPiA+IFRoZSBwYXRjaCB3
-aWxsIGNoYW5nZSBvbmx5IHRoZSBiZWhhdmlvciBvZiBNYXN0ZXIgY29udHJvbC4gIFBDTSBzaG91
-bGQKPiA+ID4gYmUgYXMgc2FtZSBhcyBiZWZvcmUuCj4gPiA+Cj4gPiA+IFdoYXQgInZhbHVlIiBh
-cmUgeW91IHJlZmVycmluZyBpbiB0aGUgYWJvdmUgY29udGV4dD8gIElzIGl0IGEgcmF3Cj4gPiA+
-IG1peGVyIHZhbHVlLCBwZXJjZW50IG9yIGRCLCBvciB0aGUgY29kZWMgYW1wIHZhbHVlPwo+ID4g
-Pgo+ID4gPiBNYXliZSB3ZSBuZWVkIHRvIG1ha2UgY2xlYXIgaG93IHRoZSBtYXN0ZXIgdm9sdW1l
-IGNvbnRyb2wgYmVoYXZlcy4KPiA+ID4gQWNjb3JkaW5nIHRvIHRoZSBvcmlnaW5hbCBidWcgcmVw
-b3J0ZXIsIHRoZSBtYXN0ZXIgdm9sdW1lIGJlaGF2ZXMgbGlrZQo+ID4gPiBiZWxvdzoKPiA+ID4K
-PiA+ID4gLSBmcm9tIDAlIHRvIDQ5JQo+ID4gPiAgIHNvdW5kcyBhcmUgc3RpbGwgYXVkaWJsZSwg
-YW5kIHRoZSB2b2x1bWUgZG9lc24ndCBjaGFuZ2UgYXQgYWxsCj4gPiA+IC0gZnJvbSA1MCUgdG8g
-MTAwJQo+ID4gPiAgIHNvdW5kcyBnZXQgbG91ZGVyIG5vcm1hbGx5Cj4gPiA+Cj4gPiA+IEhvdyBh
-Ym91dCB5b3Vycz8KPiA+ID4KPiA+ID4KPiA+ID4gVGFrYXNoaQo+ID4gPiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gPiBBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdAo+ID4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+ID4gaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPiA+ID4K
-PiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiBB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4g
-PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Takashi Iwai wrote:
+> Takashi Iwai wrote:
+> > Matej Laitl wrote:
+> > > With your patch, the sound in headphone-out is working again, but
+> > > surprisingly the integrated loudspeakers stopped working! ;)
+> > >
+> > > Also, new on/of control appeared in alsamixer - "Speaker", but unmuti=
+ng
+> > > it (and unmuting all playback controls, plugging-out headphones) didn=
+'t
+> > > have an effect on non-working integrated loudspeakers.
+> > >
+> > > Some kernel mesgs with your patch:
+> > > hda_codec: Unknown model for ALC262, trying auto-probe from BIOS...
+> > > autoconfig: line_outs=3D1 (0x1b/0x0/0x0/0x0/0x0)
+> > > =A0 =A0speaker_outs=3D1 (0x14/0x0/0x0/0x0/0x0)
+> > > =A0 =A0hp_outs=3D1 (0x15/0x1b/0x0/0x0/0x0)
+> > > =A0 =A0mono: mono_out=3D0x0
+> > > =A0 =A0inputs: mic=3D0x18, fmic=3D0x19, line=3D0x0, fline=3D0x0, cd=
+=3D0x0, aux=3D0x0
+> > >
+> > > alsa-info.sh output:
+> > > http://pastebin.ca/901089
+> >
+> > Thanks. =A0There seems a couple of bugs in this auto-configuration
+> > code. =A0Try the additional patch below. =A0This will unmute the
+> > speaker-pin.
+>
+> This version might be slightly better...
+
+Yes, this "slightly better" patch applied on top of your first patch agains=
+t =
+
+hda_codec.c did the trick, but with some side-effects:
+* the "Speaker" switch now mutes/unmutes speakers
+* muting/unmuting "Front" channel now has zero effect (in 2.6.24 it had the =
+
+same effect as the "Speaker" switch now has)
+* changing volume on "Front" channel now affects volume in headphones (was =
+not =
+
+so in 2.6.24)
+
+So there are now 3 vol controls that affect both speakers and headphones:
+* Master (which appeared somewhere between 2.6.24 and .25-rc1), when set to =
+
+zero, the sound is still audible in speakers and headphones
+* PCM, working as expected (0 volume =3D no sound)
+* Front (0 volume =3D still audible sound)
+
+So it is usable now (and those Speaker and Headphones on/off switches make =
+
+sense), but kinda suboptimal. (is it my BIOS who is to blame?)
+
+Thanks, Matej
