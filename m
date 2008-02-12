@@ -1,20 +1,21 @@
-From: Matej Laitl <strohel@gmail.com>
-Subject: Re: [ALSA] HDA: no sound in headphone-out caused by
-	commit f889fa91ad47e (2.6.25-rc1 regression)
-Date: Tue, 12 Feb 2008 13:06:08 +0100
-Message-ID: <200802121306.08848.strohel@gmail.com>
-References: <200802112158.41989.strohel@gmail.com>
-	<s5h7ihav3nr.wl%tiwai@suse.de> <s5hzlu6tnl0.wl%tiwai@suse.de>
+From: "Ustun ERGENOGLU" <ustun.ergenoglu@gmail.com>
+Subject: Re: No recording on hda-intel (AD1981HD)
+Date: Tue, 12 Feb 2008 16:00:51 +0200
+Message-ID: <681812960802120600p68c4d8f5s16971db6654038b1@mail.gmail.com>
+References: <200802032017.38614.grzegorz.chwesewicz@chilan.com>
+	<s5h3as3y6sr.wl%tiwai@suse.de> <s5hodarwidq.wl%tiwai@suse.de>
+	<200802081951.40111.grzegorz.chwesewicz@chilan.com>
+	<s5h8x1qv49k.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E332103901
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 13:06:15 +0100 (CET)
-Received: by nf-out-0910.google.com with SMTP id b21so1277408nfd.32
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 04:06:14 -0800 (PST)
-In-Reply-To: <s5hzlu6tnl0.wl%tiwai@suse.de>
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id E441224448
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 15:00:53 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id q2so779476uge.50
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 06:00:53 -0800 (PST)
+In-Reply-To: <s5h8x1qv49k.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,42 +26,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> I wrote:
-> > Thanks. =A0It seems that your device has two headphone jacks according
-> > to the BIOS setup, and this seems to be the problem.
-> >
-> > Could you show the kernel messages like "autoconfig: line_outs..." for
-> > both cases? =A0This appears when build with CONFIG_SND_DEBUG=3Dy.
->
-> And the patch below may fix your problem. =A0Give it a try.
-
-With your patch, the sound in headphone-out is working again, but surprisin=
-gly =
-
-the integrated loudspeakers stopped working! ;)
-
-Also, new on/of control appeared in alsamixer - "Speaker", but unmuting it =
-
-(and unmuting all playback controls, plugging-out headphones) didn't have a=
-n =
-
-effect on non-working integrated loudspeakers.
-
-Some kernel mesgs with your patch:
-hda_codec: Unknown model for ALC262, trying auto-probe from BIOS...
-autoconfig: line_outs=3D1 (0x1b/0x0/0x0/0x0/0x0)
-   speaker_outs=3D1 (0x14/0x0/0x0/0x0/0x0)
-   hp_outs=3D1 (0x15/0x1b/0x0/0x0/0x0)
-   mono: mono_out=3D0x0
-   inputs: mic=3D0x18, fmic=3D0x19, line=3D0x0, fline=3D0x0, cd=3D0x0, aux=
-=3D0x0
-
-alsa-info.sh output:
-http://pastebin.ca/901089
-
-Matej
+SSBoYXZlIHJlYWQgdGhlIHdob2xlIHRocmVhZCBhbmQgSSBoYXZlIHRoZSBzYW1lIGV4YWN0IHBy
+b2JsZW0gb2YKcmVjb3JkaW5nIHdpdGggYSByZWFsdGVrIEFMQzg2MSBjb2RlYyBvbiBhIEFUSSBj
+aGlwc2V0IGJvYXJkLiBNeQpoYXJkZGlzayBjb250cm9sbGVyIGlzIGFsc28gdXNpbmcgc2F0YV9z
+aWwgbW9kdWxlLiBJIGhhdmUgdGhpcyBwcm9ibGVtCmZvciBhIGxvbmcgdGltZSB0b28uIFdvdWxk
+IHRoZSBzYW1lIHBhdGNoIHNvbHZlIHRoZSBwcm9ibGVtIGZvciBtZSBhcwp3ZWxsPwoKMjAwOC8y
+LzEyLCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ogo+IEF0IEZyaSwgOCBGZWIgMjAwOCAx
+OTo1MTozOSArMDEwMCwKPiBHcnplZ29yeiBDaHdlc2V3aWN6IHdyb3RlOgo+ID4KPiA+IEZyaWRh
+eSAwOCBvZiBGZWJydWFyeSAyMDA4IDE2OjU3OjM3IFRha2FzaGkgSXdhaSBuYXBpc2HFgihhKToK
+PiA+ID4gQXQgRnJpLCAwOCBGZWIgMjAwOCAxMzoyNDo1MiArMDEwMCwKPiA+ID4KPiA+ID4gSSB3
+cm90ZToKPiA+ID4gPiBCVFcsIGRvIHlvdSBoYXZlIHByb2JsZW1zIGZvdW5kIGluIGJlbG93Pwo+
+ID4gPiA+ICAgaHR0cHM6Ly9idWd6aWxsYS5ub3ZlbGwuY29tL3Nob3dfYnVnLmNnaT9pZD0yOTc3
+MDMKPiA+ID4gPgo+ID4gPiA+IEFjY29yZGluZyB0byB0aGUgcmVwb3J0ZXIsIG5jNjQwMCB3aXRo
+IEFEMTk4MSBoYXMgYSBwcm9ibGVtIHdpdGgKPiA+ID4gPiBoZWFkcGhvbmUgamFjayBhdXRvLW11
+dGluZyBhbmQgd2l0aCB0aGUgbm9uLWxpbmVhciBtYXN0ZXIgdm9sdW1lLgo+ID4gPiA+Cj4gPiA+
+ID4gSSBzdXBwbGllZCB0d28gdGVzdCBwYXRjaGVzIHRoZXJlLgo+ID4gPgo+ID4gPiBGb3IgY29u
+dmVuaWVuY2UsIEkgYXR0YWNoIHBhdGNoZXMgaGVyZS4KPiA+Cj4gPiBIaSwgSSBoYWQgbm8gdGlt
+ZSB0byB0ZXN0IHlvdXIgZmlyc3QgcGF0Y2ggKHRoaXMgb25lIHdoaWNoIGNoZWNrIGlmIGlycQo+
+ID4gaGFuZGxlciBpcyBjYWxsZWQpLCBJJ3ZlIG9ubHkgdGVzdGVkIGl0IGZvciBhIHdoaWxlICh3
+b3JraW5nIG9uIE1TSSB0dXJuZWQKPiA+IG9uLCBzb21ldGltZXMgaGFyZCBsb2NrcyBteSBsYXB0
+b3ApLgo+ID4KPiA+IEkgYWxzbyBoYXZlIHNpbWlsaWFyIHByb2JsZW1zIHdpdGggYXV0b211dGUs
+IGFuZCBub24tbGluZWFyIG1hc3RlciB2b2x1bWUKPiA+IGNvbnRyb2wuCj4gPgo+ID4gV2l0aG91
+dCBhdXRvbXV0ZSBwYXRjaCwgYXV0b211dGUgd29ya3MgZnJvbSB0aW1lIHRvIHRpbWUuIFdpdGgg
+eW91ciBwYXRjaAo+ID4gYXBwbGllZCB0byBsYXRlc3QgZ2l0IGl0IHdvcmtzIGFsbCB0aGUgdGlt
+ZSwgdW50aWwgdGhlIHJlY29yZGluZyBicmVha3MuIFdoZW4KPiA+IGl0IGhhcHBlbnMgSSBoYXZl
+IHNvdW5kIG9ubHkgaW4gaGVhZHBob25lcywgYnV0IG5vdCBpbiBpbnRlcm5hbCBzcGVha2VyLgo+
+ID4gUGx1Z2luZyBhbmQgdW5wbHVnaW5nIEhQIGRvZXNuJ3QgaGVscCwgb25seSByZWxvYWRpbmcg
+aGRhLWludGVsIGZpeGVzCj4gPiBwcm9ibGVtLgo+ID4gQXNzdW1pbmcsIHlvdXIgYXV0b211dGUg
+cGF0Y2ggaXMgb2ssIGJ1dCBpdCBoZWxwcyBtZSBvbmx5IHVudGlsIG1pYyBicmVha3MuCj4KPiBP
+SywgdGhpcyBwYXRjaCBpcyBub3cgb24gSEcgdHJlZS4KPgo+ID4gV2l0aG91dCBhZDE5ODEtaHAt
+bWFzdGVyLWFtcC1maXggbXV0aW5nIChtdXRpbmc9ZGlzYWJsaW5nIGl0LCBub3QgbWFraW5nIGl0
+J3MKPiA+IHZhbHVlIGVxdWFsIDApICJNYXN0ZXIiIGFuZCAiUENNIiBjb250cm9sIHdvcmtzIG9r
+LiBEZWNyZW1lbnRpbmcgTWFzdGVyIGFuZAo+ID4gUENNIGNvbnRyb2xzIHRvIDAgaXMgcG9zc2li
+bGUsIGJ1dCBhZnRlciB0aGF0IEkgY2FuIGhlYXIgdmVyeSBxdWlldCBvdXRwdXQKPiA+IGZyb20g
+aW50ZXJuYWwgc3BlYWtlcnMuCj4gPiBXaXRoIHlvdXIgcGF0Y2ggKGFkMTk4MS1ocC1tYXN0ZXIt
+YW1wLWZpeCkgYXBwbGllZCB0byBsYXRlc3QgZ2l0IEkgY2FuJ3QKPiA+IGRlY3JlbWVudCBNYXN0
+ZXIgY29udHJvbCB0byAwIChJIGNhbiBkbyB0aGF0IHdpdGggUENNLCBidXQgYmVoYXZpb3IgaXMg
+c2FtZQo+ID4gYXMgZGVzY3JpYmVkIHVwcGVyKS4gSSBjYW4gb25seSBkZWNyZW1lbnQgaXQgdG8g
+dmFsdWUgMywgYW5kIHdoZW4gSSBwcmVzcwo+ID4gZG93biBrZXkgKGluIGFsc2FtaXhlcikgdG8g
+c3RlcCB0byBsb3dlciBsZXZlbCBvZiBsb3VkbmVzcywgaXQncyBzd2l0Y2hpbmcgdG8KPiA+IHZh
+bHVlIDEwMy4gV2hlbiBNYXN0ZXIgaGFzIDEwMyB2YWx1ZSBJIGNhbiBoZWFyIHZlcnkgcXVpZXQg
+b3V0cHV0IGZyb20KPiA+IGludGVybmFsIHNwZWFrZXJzIGFuZCBIUCAoaWYgcGx1Z2dlZCkuCj4K
+PiBUaGUgcGF0Y2ggd2lsbCBjaGFuZ2Ugb25seSB0aGUgYmVoYXZpb3Igb2YgTWFzdGVyIGNvbnRy
+b2wuICBQQ00gc2hvdWxkCj4gYmUgYXMgc2FtZSBhcyBiZWZvcmUuCj4KPiBXaGF0ICJ2YWx1ZSIg
+YXJlIHlvdSByZWZlcnJpbmcgaW4gdGhlIGFib3ZlIGNvbnRleHQ/ICBJcyBpdCBhIHJhdwo+IG1p
+eGVyIHZhbHVlLCBwZXJjZW50IG9yIGRCLCBvciB0aGUgY29kZWMgYW1wIHZhbHVlPwo+Cj4gTWF5
+YmUgd2UgbmVlZCB0byBtYWtlIGNsZWFyIGhvdyB0aGUgbWFzdGVyIHZvbHVtZSBjb250cm9sIGJl
+aGF2ZXMuCj4gQWNjb3JkaW5nIHRvIHRoZSBvcmlnaW5hbCBidWcgcmVwb3J0ZXIsIHRoZSBtYXN0
+ZXIgdm9sdW1lIGJlaGF2ZXMgbGlrZQo+IGJlbG93Ogo+Cj4gLSBmcm9tIDAlIHRvIDQ5JQo+ICAg
+c291bmRzIGFyZSBzdGlsbCBhdWRpYmxlLCBhbmQgdGhlIHZvbHVtZSBkb2Vzbid0IGNoYW5nZSBh
+dCBhbGwKPiAtIGZyb20gNTAlIHRvIDEwMCUKPiAgIHNvdW5kcyBnZXQgbG91ZGVyIG5vcm1hbGx5
+Cj4KPiBIb3cgYWJvdXQgeW91cnM/Cj4KPgo+IFRha2FzaGkKPiBfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4g
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
