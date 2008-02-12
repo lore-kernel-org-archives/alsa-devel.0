@@ -1,16 +1,19 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: Re: Open bugs
-Date: Tue, 12 Feb 2008 11:57:02 -0600
-Message-ID: <1202839022.3137.63.camel@localhost.localdomain>
-References: <32209efe0802120018r17c38835ud931085e44aafefb@mail.gmail.com>
+From: Grzegorz Chwesewicz <grzegorz.chwesewicz@chilan.com>
+Subject: Re: No recording on hda-intel (AD1981HD)
+Date: Tue, 12 Feb 2008 18:59:44 +0100
+Message-ID: <200802121859.44416.grzegorz.chwesewicz@chilan.com>
+References: <200802032017.38614.grzegorz.chwesewicz@chilan.com>
+	<681812960802120600p68c4d8f5s16971db6654038b1@mail.gmail.com>
+	<s5hve4utgms.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from accolon.hansenpartnership.com (accolon.hansenpartnership.com
-	[76.243.235.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9D7FA244AA
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 18:57:09 +0100 (CET)
-In-Reply-To: <32209efe0802120018r17c38835ud931085e44aafefb@mail.gmail.com>
+Received: from mail.chilan.com (mail.chilan.com [82.160.213.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C369244AA
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 18:59:55 +0100 (CET)
+In-Reply-To: <s5hve4utgms.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,62 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Natalie Protasevich <protasnb@gmail.com>
-Cc: alsa-devel@alsa-project.org, bugme-daemon@kernel-bugs.osdl.org, linux-scsi <linux-scsi@vger.kernel.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, akpm@linux-foundation.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, chilek@chilan.com
 List-Id: alsa-devel@alsa-project.org
 
-Added linux-scsi for the SCSI ones
+Tuesday 12 of February 2008 15:04:59 Takashi Iwai napisa=B3(a):
+> At Tue, 12 Feb 2008 16:00:51 +0200,
+>
+> Ustun ERGENOGLU wrote:
+> > I have read the whole thread and I have the same exact problem of
+> > recording with a realtek ALC861 codec on a ATI chipset board. My
+> > harddisk controller is also using sata_sil module. I have this problem
+> > for a long time too. Would the same patch solve the problem for me as
+> > well?
+>
+> Well, the patch does have effect only when you enable MSI.  And, MSI
+> is disabled on many ATI chipsets as default unless you patch the
+> kernel.  I suggest it just to check whether any unknown IRQs are
+> issued or the hardware is just screwed up.
+>
+> It looks like this is a generic problem of ATI SB chipset.  Which
+> model is it?  SB450, SB460 or SB600?
 
-On Tue, 2008-02-12 at 00:18 -0800, Natalie Protasevich wrote:
-> Hello,
-> 
-> The bugs listed are over a month old, and haven't been addressed yet.
-> It would be appreciated if corresponding maintainers identify whether
-> the bugs have been fixed, or need to be worked on, and take
-> appropriate action.
-> 
-> In most cases, reporters are standing by and ready to provide
-> information and necessary testing.
-> Thanks!
-> 
-> SCSI======================================================
-> 
-> Problems on booting
-> http://bugzilla.kernel.org/show_bug.cgi?id=9621
-> Date: 12/22/2007
-> Regression
-> Summary: The boot stops / hangs on hardware detection of SCSI.  I have
-> an InitioINI-9X00U/UW
-> When I have an usb key sticked in /dev/sba, and run lilo then, then it
-> dont boot but give L99 99 99 99 ... error
+Below are results of my tests with patch from Takashi (and MSI enabled). =
 
-I think this was fixed by commit
-e2d435ea4084022ab88efa74214accb45b1f9e92
 
-Apparently bugzilla email is on the fritz again because this bug report
-didn't come across linux-scsi.
+Using arecord everytime ends in freezing machine. My laptop freezes exactly =
 
-> Resetting RAID attached to a FC Switch causes kernel panic and crash
-> http://bugzilla.kernel.org/show_bug.cgi?id=9598
-> 12/18/2007
-> Hardware Environment:SunFire X4200 - 2 x dual core AMD Opteron CPUs,
-> 8GB Ram, Qlogic FC adapter.
-> Summary: Resetting the RAID box causes the X4200 to crash.
+when recording stops working. My test procedure looks like this:
 
-This one looks like the usual problem of remove re-add with the SCSI
-device model.
+1) on one console run arecord and see the output (You should see some garba=
+ge)
+2) on another console run cat /etc/*
+3) wait for freeze ;)
 
-> 3ware 9650SE -8LPML not recognized by 3w-9xxx driver
-> http://bugzilla.kernel.org/show_bug.cgi?id=8908
-> 08/19/2007
-> Problem Description: The 3w-9xxx kernel driver for 3ware 9xxx SATA
-> RAID Controller series did not recognize the 3ware 9650SE-8LPML SATA
-> RAID Controller.
+Here is section from /var/log/messages (text in <> can be seen only on =
 
-Since this one never apparently worked it's not a regression but an
-enhancement request, isn't it?
+console, syslog doesn't catch to save it to disk, and machine freezes):
 
-However, adding this PCI ID to the driver should be fairly
-straightforward.  Does anyone know what the actual PCI IDs are?
+1232171 Feb 12 18:38:15 ensima-hp [   63.888029] ALSA =
 
-James
+sound/pci/hda/hda_intel.c:1258: azx_pcm_prepare: bufsize=3D0x10000, =
+
+fragsize=3D0x2000, format=3D0x21
+1232172 Feb 12 18:38:15 ensima-hp [   63.888081] ALSA =
+
+sound/pci/hda/hda_codec.c:682: hda_codec_setup_stream: NID=3D0x4, stream=3D=
+0x1, =
+
+channel=3D0, format=3D0x21
+1232173 Feb 12 18:38:22 ensima-hp [   70.913893] ALSA =
+
+sound/pci/hda/hda_codec.c:682: hda_codec_setup_stream: NID=3D0x4, stream=3D=
+0x0, =
+
+channel=3D0, format=3D0x0
+1232174 Feb 12 18:38:27 ensima-hp [   75.885448] ALSA =
+
+sound/pci/hda/hda_intel.c:1258: azx_pcm_prepare: bufsize=3D0x10000, =
+
+fragsize=3D0x2000, format=3D0x21
+1232175 Feb 12 18:38:27 ensima-hp [   75.885490] ALSA =
+
+sound/pci/hda/hda_codec.c:682: hda_codec_setup_stream: NID=3D0x4, stream=3D=
+0x1, =
+
+channel=3D0, format=3D0x21
+####### Recording stops to work and machine freezes #######
+<XXX hda-intel: status=3D0>
+<XXX hda-intel: status=3D0>
+<XXX hda-intel: status=3D0>
+<XXX hda-intel: status=3D0>
+
+-- =
+
+Greetings
+Grzegorz Chwesewicz, Chilan =
+
+mailto:grzegorz.chwesewicz@chilan.com
