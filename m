@@ -1,79 +1,44 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: [PATCH] sound: opl3: Fix up opl3_synth build.
-Date: Tue, 12 Feb 2008 16:06:16 +0900
-Message-ID: <20080212070616.GA18373@linux-sh.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsa-info.sh script
+Date: Tue, 12 Feb 2008 09:09:33 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0802120905590.19448@server.perex.cz>
+References: <200802121350.38373.wishie@wishie.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1761547AbYBLHHn@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0398A2432E
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 09:09:36 +0100 (CET)
+In-Reply-To: <200802121350.38373.wishie@wishie.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Travis Place <wishie@wishie.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-opl3 breaks allmodconfig in current git:
+On Tue, 12 Feb 2008, Travis Place wrote:
 
-sound/drivers/opl3/opl3_synth.c: In function `snd_opl3_find_patch':
-sound/drivers/opl3/opl3_synth.c:308: error: `OPL3_PATCH_HASH_SIZE' undeclared (first use in this function)
-sound/drivers/opl3/opl3_synth.c:308: error: (Each undeclared identifier is reported only once
-sound/drivers/opl3/opl3_synth.c:308: error: for each function it appears in.)
-sound/drivers/opl3/opl3_synth.c:311: error: structure has no member named `patch_table'
-sound/drivers/opl3/opl3_synth.c:323: error: structure has no member named `patch_table'
-sound/drivers/opl3/opl3_synth.c:324: error: structure has no member named `patch_table'
-sound/drivers/opl3/opl3_synth.c: In function `snd_opl3_clear_patches':
-sound/drivers/opl3/opl3_synth.c:335: error: `OPL3_PATCH_HASH_SIZE' undeclared (first use in this function)
-sound/drivers/opl3/opl3_synth.c:337: error: structure has no member named `patch_table'
-sound/drivers/opl3/opl3_synth.c:342: error: structure has no member named `patch_table'
-sound/drivers/opl3/opl3_synth.c:342: error: structure has no member named `patch_table'
-make[3]: *** [sound/drivers/opl3/opl3_synth.o] Error 1
-make[2]: *** [sound/drivers/opl3] Error 2
-make[1]: *** [sound/drivers] Error 2
+> Is there any chance that i will be able to push updates for my script 
+> back to ALSA?
+> 
+> Or is this to be a no-go ?
 
-Relevant .config options:
+Please, send unified diff (diff -u <oldfile> <newfile>, or use hg diff if 
+you work with hg repo, to this mailing list. I or other developer with 
+write access to HG repository will review and commit your changes and will 
+notify you.
 
-CONFIG_SND=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-CONFIG_SND_HWDEP=m
-CONFIG_SND_RAWMIDI=m
-# CONFIG_SND_SEQUENCER is not set
-# CONFIG_SND_MIXER_OSS is not set
-# CONFIG_SND_PCM_OSS is not set
-# CONFIG_SND_DYNAMIC_MINORS is not set
-CONFIG_SND_MPU401_UART=m
-CONFIG_SND_OPL3_LIB=m
-CONFIG_SND_AC97_CODEC=m
-CONFIG_SND_YMFPCI=m
-CONFIG_SND_YMFPCI_FIRMWARE_IN_KERNEL=y
+					Jaroslav
 
-Signed-off-by: Paul Mundt <lethal@linux-sh.org>
-
----
-
- include/sound/opl3.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/sound/opl3.h b/include/sound/opl3.h
-index a0c5feb..17b93d2 100644
---- a/include/sound/opl3.h
-+++ b/include/sound/opl3.h
-@@ -334,9 +334,6 @@ struct snd_opl3 {
- 	struct snd_seq_device *oss_seq_dev;	/* OSS sequencer device */
- 	struct snd_midi_channel_set * oss_chset;
- #endif
-- 
--#define OPL3_PATCH_HASH_SIZE	32
--	struct fm_patch *patch_table[OPL3_PATCH_HASH_SIZE];
- 
- 	struct snd_opl3_voice voices[MAX_OPL3_VOICES]; /* Voices (OPL3 'channel') */
- 	int use_time;			/* allocation counter */
-@@ -350,6 +347,9 @@ struct snd_opl3 {
- 	int sys_timer_status;		/* system timer run status */
- 	spinlock_t sys_timer_lock;	/* Lock for system timer access */
- #endif
-+
-+#define OPL3_PATCH_HASH_SIZE	32
-+	struct fm_patch *patch_table[OPL3_PATCH_HASH_SIZE];
- };
- 
- /* opl3.c */
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
