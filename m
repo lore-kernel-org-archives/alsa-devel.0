@@ -1,18 +1,18 @@
-From: Wolfgang Woehl <tito@rumford.de>
-Subject: Re: position_fix issue / snd-hda-intel / alsa <-> jack
-Date: Tue, 12 Feb 2008 17:06:37 +0100
-Message-ID: <200802121706.37334.tito@rumford.de>
-References: <26670.62.212.109.253.1202065817.squirrel@webmail.nerim.net>
-	<200802112222.27634.tito@rumford.de> <s5hbq6mv4yt.wl%tiwai@suse.de>
+From: Grzegorz Chwesewicz <grzegorz.chwesewicz@chilan.com>
+Subject: Re: No recording on hda-intel (AD1981HD)
+Date: Tue, 12 Feb 2008 17:41:12 +0100
+Message-ID: <200802121741.12799.grzegorz.chwesewicz@chilan.com>
+References: <200802032017.38614.grzegorz.chwesewicz@chilan.com>
+	<200802081951.40111.grzegorz.chwesewicz@chilan.com>
+	<s5h8x1qv49k.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81B051038D0
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 17:06:39 +0100 (CET)
-In-Reply-To: <s5hbq6mv4yt.wl%tiwai@suse.de>
+Received: from mail.chilan.com (mail.chilan.com [82.160.213.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CB74244A2
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 17:41:30 +0100 (CET)
+In-Reply-To: <s5h8x1qv49k.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,30 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: chilek@chilan.com
 List-Id: alsa-devel@alsa-project.org
 
-Dienstag, 12. Februar 2008 Takashi Iwai:
+> The patch will change only the behavior of Master control.  PCM should
+> be as same as before.
 
-> JACK does nothing special but do a very basic full-duplex
-> operation. The difference is that you use short period size and
-> likely two periods.  So, the position calculation isn't accurate on
-> your hardware.  Maybe the positions of playback and capture streams
-> differe.  An often used workaround for this kind of problems is to
-> use three periods instead.
+That's correct, PCM behaves always the same way (with or without patch).
 
-Takashi, thanks for your explanation. The position_fix=0/jackd problem 
-occurs with bigger period sizes too, -p[16..1024] -n2. But: With 
-position_fix=0 and -p[16..512] _-n3_ jackd is fine.
+> What "value" are you referring in the above context?  Is it a raw
+> mixer value, percent or dB, or the codec amp value?
 
-Not that I'd understand why but I'm happy there is a workaround. If 
-someone knows the how and why of this workaround I'd much appreciate 
-to learn it.
+I mean value which is under Master control bar in alsamixer program.
 
-> (BTW, this problem really depends on the hardware.  That's why
-> there are such a strange module option.  So, don't argue this as if
-> it's a general problem.)
+> Maybe we need to make clear how the master volume control behaves.
+> According to the original bug reporter, the master volume behaves like
+> below:
 
-Like I said, the jack-devel thread was about 2 specific devices and I 
-promise we won't make a big fuss about it :)
+> - from 0% to 49% sounds are still audible, and the volume doesn't change at 
+> all
+> - from 50% to 100% sounds get louder normally
+>
+> How about yours?
 
-Wolfgang
+I have exactly the same behavior of volume control as you described, but after 
+applying ad1981-hp-master-amp-fix master behaves as described in previous 
+letter and below (as reminder).
+
+"I can only decrement it (master) to value (I've described what do I mean 
+saying "value" in the begining of the letter) 3, and when I press 
+down key (in alsamixer) to step to lower level of loudness, it's switching to 
+value 103. When Master has 103 value I can hear very quiet output from 
+internal speakers and HP (if plugged)."
+
+-- 
+Greetings
+Grzegorz Chwesewicz, Chilan 
+mailto:grzegorz.chwesewicz@chilan.com
