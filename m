@@ -1,95 +1,79 @@
-From: Nitin Mahajan <nitinm76@yahoo.com>
-Subject: Re: Ac97 on Au1200- No Sound
-Date: Tue, 12 Feb 2008 04:00:14 +0000 (GMT)
-Message-ID: <758809.88322.qm@web50106.mail.re2.yahoo.com>
-References: <1202749787.3466.55.camel@localhost.localdomain>
-Reply-To: nitinm76@yahoo.com
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: [PATCH] sound: opl3: Fix up opl3_synth build.
+Date: Tue, 12 Feb 2008 16:06:16 +0900
+Message-ID: <20080212070616.GA18373@linux-sh.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web50106.mail.re2.yahoo.com (web50106.mail.re2.yahoo.com
-	[206.190.38.34]) by alsa0.perex.cz (Postfix) with SMTP id 5D9B6243D7
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 05:00:16 +0100 (CET)
-In-Reply-To: <1202749787.3466.55.camel@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1761547AbYBLHHn@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-HI!
---- Liam Girdwood <lg@opensource.wolfsonmicro.com>
-wrote:
+opl3 breaks allmodconfig in current git:
 
-> On Fri, 2008-02-08 at 12:00 +0000, Nitin Mahajan
-> wrote:
-> > HI!
-> > 
-> > I am working with a Au1200 based board and trying
-> to
-> > make the audio(AC97 + STAC9752) work after
-> applying
-> > the ASoC patch at
-> > http://opensource.wolfsonmicro.com/~git/asoc/.
-> > 
-> > After writing the machine driver for my board
-> based on
-> > the exmmb-ac97.c as a template, my codec is being
-> > detected, which is on PSC1.
-> > 
-> > But when I play some .wav file using aplay, I get
-> to
-> > hear the sound with a very low volume, which is
-> almost
-> > not recognizable.
-> 
-> It sounds like the AC97 link is up and running and
-> your DMA is sending
-> PCM data to the codec.
-> 
-> > 
-> > I unmuted the codec with these two commands
-> > 
-> > #amixer set "Master" 255 unmute
-> > #amixer set "PCM" 255 unmute
-> > 
-> > I also tried to watch /proc/interrupts but I am
-> not
-> > able to see any interrupts coming on IRQ 11 that
-> is
-> > for PSC1.
-> > 
-> > Could some one provide more insight into what
-> might be
-> > going wrong?
-> > 
-> 
-> Can you try using alsamixer. It's possible you are
-> not unmuting the
-> correct kcontrols.
-> 
-> Liam
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
->
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-Using alsamixer, I unmuted every possible control
-there , but it did not work. Only when I used amixer
-to unmute the controls, they really got unmuted.
+sound/drivers/opl3/opl3_synth.c: In function `snd_opl3_find_patch':
+sound/drivers/opl3/opl3_synth.c:308: error: `OPL3_PATCH_HASH_SIZE' undeclared (first use in this function)
+sound/drivers/opl3/opl3_synth.c:308: error: (Each undeclared identifier is reported only once
+sound/drivers/opl3/opl3_synth.c:308: error: for each function it appears in.)
+sound/drivers/opl3/opl3_synth.c:311: error: structure has no member named `patch_table'
+sound/drivers/opl3/opl3_synth.c:323: error: structure has no member named `patch_table'
+sound/drivers/opl3/opl3_synth.c:324: error: structure has no member named `patch_table'
+sound/drivers/opl3/opl3_synth.c: In function `snd_opl3_clear_patches':
+sound/drivers/opl3/opl3_synth.c:335: error: `OPL3_PATCH_HASH_SIZE' undeclared (first use in this function)
+sound/drivers/opl3/opl3_synth.c:337: error: structure has no member named `patch_table'
+sound/drivers/opl3/opl3_synth.c:342: error: structure has no member named `patch_table'
+sound/drivers/opl3/opl3_synth.c:342: error: structure has no member named `patch_table'
+make[3]: *** [sound/drivers/opl3/opl3_synth.o] Error 1
+make[2]: *** [sound/drivers/opl3] Error 2
+make[1]: *** [sound/drivers] Error 2
 
-regards
+Relevant .config options:
 
--Nitin
+CONFIG_SND=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
+CONFIG_SND_HWDEP=m
+CONFIG_SND_RAWMIDI=m
+# CONFIG_SND_SEQUENCER is not set
+# CONFIG_SND_MIXER_OSS is not set
+# CONFIG_SND_PCM_OSS is not set
+# CONFIG_SND_DYNAMIC_MINORS is not set
+CONFIG_SND_MPU401_UART=m
+CONFIG_SND_OPL3_LIB=m
+CONFIG_SND_AC97_CODEC=m
+CONFIG_SND_YMFPCI=m
+CONFIG_SND_YMFPCI_FIRMWARE_IN_KERNEL=y
 
-Send instant messages to your online friends http://uk.messenger.yahoo.com 
+Signed-off-by: Paul Mundt <lethal@linux-sh.org>
+
+---
+
+ include/sound/opl3.h |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/sound/opl3.h b/include/sound/opl3.h
+index a0c5feb..17b93d2 100644
+--- a/include/sound/opl3.h
++++ b/include/sound/opl3.h
+@@ -334,9 +334,6 @@ struct snd_opl3 {
+ 	struct snd_seq_device *oss_seq_dev;	/* OSS sequencer device */
+ 	struct snd_midi_channel_set * oss_chset;
+ #endif
+- 
+-#define OPL3_PATCH_HASH_SIZE	32
+-	struct fm_patch *patch_table[OPL3_PATCH_HASH_SIZE];
+ 
+ 	struct snd_opl3_voice voices[MAX_OPL3_VOICES]; /* Voices (OPL3 'channel') */
+ 	int use_time;			/* allocation counter */
+@@ -350,6 +347,9 @@ struct snd_opl3 {
+ 	int sys_timer_status;		/* system timer run status */
+ 	spinlock_t sys_timer_lock;	/* Lock for system timer access */
+ #endif
++
++#define OPL3_PATCH_HASH_SIZE	32
++	struct fm_patch *patch_table[OPL3_PATCH_HASH_SIZE];
+ };
+ 
+ /* opl3.c */
