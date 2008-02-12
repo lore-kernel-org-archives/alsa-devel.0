@@ -1,16 +1,16 @@
 From: Nitin Mahajan <nitinm76@yahoo.com>
 Subject: Re: Ac97 on Au1200- No Sound
-Date: Tue, 12 Feb 2008 03:57:07 +0000 (GMT)
-Message-ID: <871630.5638.qm@web50102.mail.re2.yahoo.com>
+Date: Tue, 12 Feb 2008 04:00:14 +0000 (GMT)
+Message-ID: <758809.88322.qm@web50106.mail.re2.yahoo.com>
 References: <1202749787.3466.55.camel@localhost.localdomain>
 Reply-To: nitinm76@yahoo.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web50102.mail.re2.yahoo.com (web50102.mail.re2.yahoo.com
-	[206.190.38.30]) by alsa0.perex.cz (Postfix) with SMTP id 32300243D3
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 04:57:59 +0100 (CET)
+Received: from web50106.mail.re2.yahoo.com (web50106.mail.re2.yahoo.com
+	[206.190.38.34]) by alsa0.perex.cz (Postfix) with SMTP id 5D9B6243D7
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 05:00:16 +0100 (CET)
 In-Reply-To: <1202749787.3466.55.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,7 +24,6 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
-
 
 HI!
 --- Liam Girdwood <lg@opensource.wolfsonmicro.com>
@@ -79,10 +78,15 @@ wrote:
 > 
 > Liam
 > 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+>
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 > 
-Thanks for your inputs, I was not unmuting
-"Headphone".
-Now its working for me. 
+Using alsamixer, I unmuted every possible control
+there , but it did not work. Only when I used amixer
+to unmute the controls, they really got unmuted.
 
 regards
 
