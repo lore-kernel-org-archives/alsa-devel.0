@@ -1,18 +1,21 @@
-From: Grzegorz Chwesewicz <grzegorz.chwesewicz@chilan.com>
-Subject: Re: No recording on hda-intel (AD1981HD)
-Date: Tue, 12 Feb 2008 18:59:44 +0100
-Message-ID: <200802121859.44416.grzegorz.chwesewicz@chilan.com>
-References: <200802032017.38614.grzegorz.chwesewicz@chilan.com>
-	<681812960802120600p68c4d8f5s16971db6654038b1@mail.gmail.com>
-	<s5hve4utgms.wl%tiwai@suse.de>
+From: Matej Laitl <strohel@gmail.com>
+Subject: Re: [ALSA] HDA: no sound in headphone-out caused by
+	commit f889fa91ad47e (2.6.25-rc1 regression)
+Date: Tue, 12 Feb 2008 19:24:35 +0100
+Message-ID: <200802121924.35232.strohel@gmail.com>
+References: <200802112158.41989.strohel@gmail.com>
+	<200802121627.44422.strohel@gmail.com>
+	<s5hmyq6t7u5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.chilan.com (mail.chilan.com [82.160.213.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2C369244AA
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 18:59:55 +0100 (CET)
-In-Reply-To: <s5hve4utgms.wl%tiwai@suse.de>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDFC8244A2
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 19:24:43 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id b21so1356255nfd.32
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2008 10:24:40 -0800 (PST)
+In-Reply-To: <s5hmyq6t7u5.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,81 +26,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, chilek@chilan.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Tuesday 12 of February 2008 15:04:59 Takashi Iwai napisa=B3(a):
-> At Tue, 12 Feb 2008 16:00:51 +0200,
+Takashi Iwai wrote:
+> Matej Laitl wrote:
+> > Yes, this "slightly better" patch applied on top of your first patch
+> > against hda_codec.c did the trick, but with some side-effects:
+> > * the "Speaker" switch now mutes/unmutes speakers
+> > * muting/unmuting "Front" channel now has zero effect (in 2.6.24 it had
+> > the same effect as the "Speaker" switch now has)
+> > * changing volume on "Front" channel now affects volume in headphones
+> > (was not so in 2.6.24)
 >
-> Ustun ERGENOGLU wrote:
-> > I have read the whole thread and I have the same exact problem of
-> > recording with a realtek ALC861 codec on a ATI chipset board. My
-> > harddisk controller is also using sata_sil module. I have this problem
-> > for a long time too. Would the same patch solve the problem for me as
-> > well?
+> This is what your BIOS sets up.  The main output is connected to the
+> docking station.  That's why "Front" (a silly name for ALC262; it
+> should read "Line Out", maybe will be renamed in later versions)
+> switch doesn't work.
+> OTOH, all outputs (speaker, headphone and line-outs) use the same DAC,
+> and this is controlled via line-out volume, i.e. "Front" volume.
+
+I was actually wrong when saying the "Front" channel did not influence HP-out 
+in 2.6.24 - it did, so no regressions here.
+
+> > So there are now 3 vol controls that affect both speakers and headphones:
+> > * Master (which appeared somewhere between 2.6.24 and .25-rc1), when set
+> > to zero, the sound is still audible in speakers and headphones
 >
-> Well, the patch does have effect only when you enable MSI.  And, MSI
-> is disabled on many ATI chipsets as default unless you patch the
-> kernel.  I suggest it just to check whether any unknown IRQs are
-> issued or the hardware is just screwed up.
+> This must be the behavior of the codec chip...  Did "Front" volume 0
+> mute in the earlier version?  If not, it actually doesn't mute with
+> the lowest volume.  Use the master switch to mute.
 >
-> It looks like this is a generic problem of ATI SB chipset.  Which
-> model is it?  SB450, SB460 or SB600?
+> Anyway, attach the alsa-info.sh output at the moment Master volume is
+> zero.
 
-Below are results of my tests with patch from Takashi (and MSI enabled). =
+No, setting Master and/or Front channel to 0% did not mute audio in any 
+version I used.
 
+I'm now listening to music with Master=0% and Front=0%, the sound is at well 
+audible volume. Pastebin for this configuraion is here:
+http://pastebin.ca/901459
 
-Using arecord everytime ends in freezing machine. My laptop freezes exactly =
+However I don't consider it a problem, it's mutable by PCM and HP/Speaker 
+switches. Funny thing is that resulting volume of those 3 setting is equal:
+* Master=0, Front=0
+* Master=100%, Front=0
+* Master=0, Front=100%
+But when both set to let's say 50, changing one of these audibly affects 
+resulting volume.
 
-when recording stops working. My test procedure looks like this:
+> > * PCM, working as expected (0 volume = no sound)
+> > * Front (0 volume = still audible sound)
+> >
+> > So it is usable now (and those Speaker and Headphones on/off switches
+> > make sense), but kinda suboptimal. (is it my BIOS who is to blame?)
+>
+> Yep.  For the perfect solution, you'd need to create a static "patch"
+> for this particular model instead of auto-configuration.  Then you can
+> adjust everything as you like.
 
-1) on one console run arecord and see the output (You should see some garba=
-ge)
-2) on another console run cat /etc/*
-3) wait for freeze ;)
+Would it be easy to do this in a robust way? If not, it's not worth it.
 
-Here is section from /var/log/messages (text in <> can be seen only on =
+On a side note, I experience increased noise when not playing anything during 
+2.6.24 -> .25-rc1 upgrade, but this is probably completly unrelated to 
+today's problem.
 
-console, syslog doesn't catch to save it to disk, and machine freezes):
+Anyways, thanks for your effort and patches, Takashi.
 
-1232171 Feb 12 18:38:15 ensima-hp [   63.888029] ALSA =
-
-sound/pci/hda/hda_intel.c:1258: azx_pcm_prepare: bufsize=3D0x10000, =
-
-fragsize=3D0x2000, format=3D0x21
-1232172 Feb 12 18:38:15 ensima-hp [   63.888081] ALSA =
-
-sound/pci/hda/hda_codec.c:682: hda_codec_setup_stream: NID=3D0x4, stream=3D=
-0x1, =
-
-channel=3D0, format=3D0x21
-1232173 Feb 12 18:38:22 ensima-hp [   70.913893] ALSA =
-
-sound/pci/hda/hda_codec.c:682: hda_codec_setup_stream: NID=3D0x4, stream=3D=
-0x0, =
-
-channel=3D0, format=3D0x0
-1232174 Feb 12 18:38:27 ensima-hp [   75.885448] ALSA =
-
-sound/pci/hda/hda_intel.c:1258: azx_pcm_prepare: bufsize=3D0x10000, =
-
-fragsize=3D0x2000, format=3D0x21
-1232175 Feb 12 18:38:27 ensima-hp [   75.885490] ALSA =
-
-sound/pci/hda/hda_codec.c:682: hda_codec_setup_stream: NID=3D0x4, stream=3D=
-0x1, =
-
-channel=3D0, format=3D0x21
-####### Recording stops to work and machine freezes #######
-<XXX hda-intel: status=3D0>
-<XXX hda-intel: status=3D0>
-<XXX hda-intel: status=3D0>
-<XXX hda-intel: status=3D0>
-
--- =
-
-Greetings
-Grzegorz Chwesewicz, Chilan =
-
-mailto:grzegorz.chwesewicz@chilan.com
+Matej Laitl
