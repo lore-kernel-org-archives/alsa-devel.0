@@ -1,20 +1,21 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: a7839e96 (PNP: increase max resources) breaks my
-	ALSA intel8x0 sound card
-Date: Thu, 14 Feb 2008 15:28:52 -0700
-Message-ID: <200802141528.53446.bjorn.helgaas@hp.com>
+ ALSA intel8x0 sound card
+Date: Thu, 14 Feb 2008 14:57:15 -0800 (PST)
+Message-ID: <alpine.LFD.1.00.0802141456370.6110@woody.linux-foundation.org>
 References: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no>
 	<200802141401.24723.bjorn.helgaas@hp.com>
 	<alpine.LFD.1.00.0802141323130.6110@woody.linux-foundation.org>
+	<200802141528.53446.bjorn.helgaas@hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from g1t0027.austin.hp.com (g1t0027.austin.hp.com [15.216.28.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5AC6724673
-	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 23:27:16 +0100 (CET)
-In-Reply-To: <alpine.LFD.1.00.0802141323130.6110@woody.linux-foundation.org>
-Content-Disposition: inline
+Received: from smtp2.linux-foundation.org (smtp2.linux-foundation.org
+	[207.189.120.14])
+	by alsa0.perex.cz (Postfix) with ESMTP id 573EC24668
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 23:57:50 +0100 (CET)
+In-Reply-To: <200802141528.53446.bjorn.helgaas@hp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,75 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
+To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Cc: Robert Hancock <hancockr@shaw.ca>, alsa-devel@alsa-project.org, avuton@gmail.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, yakui.zhao@intel.com, shaohua.li@intel.com, Andrew Morton <akpm@linux-foundation.org>, trenn@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 14 February 2008 02:37:15 pm Linus Torvalds wrote:
-> 
-> On Thu, 14 Feb 2008, Bjorn Helgaas wrote:
+
+
+On Thu, 14 Feb 2008, Bjorn Helgaas wrote:
 > > 
-> > That means the PNP system driver has to be registered after the PCI
-> > driver.
+> > [   22.906610] system 00:08: iomem range 0xfebfe000-0xfebfec00 has been reserved
+> > [   22.906654] system 00:08: iomem range 0xfebfa000-0xfebfac00 has been reserved
 > 
-> After the PCI *subsystem*
-> 
-> Here's the actual problem:
-> 
-> [   31.133141] PCI: Unable to reserve mem region #1:4000@febf8000 for device 0000:00:1b.0
-> 
-> and here is what the resource tree *should* look like:
-> 
-> 	febf8000-febfbfff : 0000:00:1b.0
-> 	  febf8000-febfbfff : ICH HD audio
-> 
-> that's with a working sound driver.
-> 
-> Notice how there is *two* resources there: there's the PCI bus resource 
-> itself, the one called 0000:00:1b.0 (which was active at boot), and there 
-> is the "driver resource" that nests inside of it ("ICH HD audio").
-> 
-> The PCI bus resource is created and inserted into the resource when the 
-> PCI bus discovery happens - long before the driver comes along at all.
-> 
-> And the problem is this ABSOLUTE CRAP that happened much earlier:
-> 
-> [   22.906610] system 00:08: iomem range 0xfebfe000-0xfebfec00 has been reserved
-> [   22.906654] system 00:08: iomem range 0xfebfa000-0xfebfac00 has been reserved
-> 
-> which happens
->  (a) before the PCI bus probing
+> The PNP resource fits entirely inside the PCI bus resource, so the PNP
+> insertion will only fail if the sound driver has already been loaded.
 
-I don't think so.  pci_scan_bus_parented() happened earlier, here:
+Ok, it does indeed fit entirely in (and the discussion about "clashing" 
+misled me - the PCI resource doesn't actually clash, it's just a subset). 
+And the problem then ends up that the PnP thing adds resources to inside 
+the PCI resource. It shouldn't. It's crap.
 
-[   22.875359] ACPI: PCI Root Bridge [PCI0] (0000:00)
+It should insert the resource to the root resource (or a bridge resource), 
+or not at all. If somebody else has already inserted a real device 
+resource, we already know about it, and the PnP information is going to be 
+just making things worse.
 
-and pcibios_init() is a subsys_initcall() that happens before the PNP
-system driver registers via fs_initcall() (I had this order wrong in a
-previous email).
+The *really* basic issue is that PnP and ACPI generally report utter crap. 
+We should always totally ignore them EXCEPT AS A WAY TO AVOID _NEW_ 
+ALLOCATIONS.
 
-> This has everything to do with the fact that the PnP layer is  a piece of 
-> crap and overrides/messes with the *correct* resources that we found 
-> during PCI bus probing.
+That's the only valid reason to believe in ACPI: we don't know what the 
+hell it's talking about, but we _do_ know that we shouldn't be allocating 
+new resources over it (because if it actually happens to be correct, it is 
+some random scary stuff that we obviously didn't find out about).
 
-There are clearly problems with PNP.  I'm trying to help improve the
-situation.
+But the moment we have better information (where "we actually scanned the 
+hardware" is the very definition of better information), we should always 
+totally discard any ACPI crud. It's guaranteed to be worse than what we 
+already know about.
 
-> So here is (for the *fifth* time) what PnP should do:
-> 
->  - only try to insert its resources *after* the PCI bus probing has 
->    happened
+That's all I ever wanted. To have ACPI realize that it should never ever 
+mess with something we know better about.
 
-That already happens.
-
->  - and if that fails, LET THE CRAP FAIL instead of making the *good* code 
->    fail!
-
-The PNP resource fits entirely inside the PCI bus resource, so the PNP
-insertion will only fail if the sound driver has already been loaded.
-
-It seems like we're talking past each other.  Would anybody else like
-to step in and help explain this to me?  Maybe a fresh viewpoint will
-help me find a clue.
-
-Bjorn
+			Linus
