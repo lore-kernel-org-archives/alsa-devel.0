@@ -1,15 +1,17 @@
-From: "Yang, Libin" <Libin.Yang@amd.com>
-Subject: HDA-Intel -  Patch to support RV7xx HDMI Audio
-Date: Thu, 14 Feb 2008 14:55:02 +0800
-Message-ID: <206C6845C72CAE439DC3D9D413C571A496598E@ssuzexmb3.amd.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: ALSA MIDI interface - plugin
+Date: Thu, 14 Feb 2008 20:54:28 +0530
+Message-ID: <61445c750802140724h1585b495pcc546e2b082e086a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from outbound8-sin-R.bigfish.com (outbound-sin.frontbridge.com
-	[207.46.51.80]) by alsa0.perex.cz (Postfix) with ESMTP id 59607243E5
-	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 07:56:08 +0100 (CET)
-Content-class: urn:content-classes:message
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D64724543
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 16:24:30 +0100 (CET)
+Received: by wr-out-0506.google.com with SMTP id 60so692819wri.8
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 07:24:29 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,42 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, "Huang, Shane" <Shane.Huang@amd.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi
 
-This patch is to add R7xx HDMI audio support. Would you please accept
-it? Thanks a lot!
+I am writing an user space ALSA i/o type PCM plugin for my board. I chose
+this
+rather unconventional approach for supporting ALSA apps since the the the
+driver
+which communicates with DSP using shared memory is in userspace and for some
+constraints the driver communication driver will always be in userspace. My
+audio
+plugin uses calls of the coomunication driver and talks to DSP. I already
+have
+a working plugin in place. I use it like following,
 
-Signed-off-by: Libin Yang <Libin.yang@amd.com>
+#aplay -D my_plugin test.wav
 
+and it works.
 
---- alsa-driver-1.0.16/alsa-kernel/pci/hda/hda_intel.c.orig
-2008-02-13 11:57:11.000000000 -0500
-+++ alsa-driver-1.0.16/alsa-kernel/pci/hda/hda_intel.c	2008-02-13
-12:02:39.000000000 -0500
-@@ -2015,6 +2015,9 @@
- 	{ 0x1002, 0xaa20, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RV635 HDMI */
- 	{ 0x1002, 0xaa28, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RV620 HDMI */
- 	{ 0x1002, 0xaa30, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RV770 HDMI */
-+	{ 0x1002, 0xaa38, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RV730 HDMI */
-+	{ 0x1002, 0xaa40, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RV710 HDMI */
-+	{ 0x1002, 0xaa48, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-AZX_DRIVER_ATIHDMI }, /* ATI RV740 HDMI */
- 	{ 0x1106, 0x3288, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_VIA
-}, /* VIA VT8251/VT8237A */
- 	{ 0x1039, 0x7502, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_SIS
-}, /* SIS966 */
- 	{ 0x10b9, 0x5461, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ULI
-}, /* ULI M5461 */
+Now, I have to support rawmidi interface also. Is it possible to write a
+userspace
+plugin for making MIDI work? Where can I get sample code etc?
 
-
-Thanks & Regards,
-Libin
+-pharaoh.
