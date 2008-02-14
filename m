@@ -1,16 +1,20 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Maya44 revised patch - vu meters
-Date: Thu, 14 Feb 2008 09:25:58 +0100
-Message-ID: <47B3FB16.6090906@insite.cz>
-References: <47B37EE7.5000905@lightshed.de>
+From: rmgls@free.fr
+Subject: midi problem
+Date: Thu, 14 Feb 2008 12:24:54 +0100
+Message-ID: <20080214102507.AF98832280E@smtp7-g19.free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AFE72443C
-	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 09:26:09 +0100 (CET)
-In-Reply-To: <47B37EE7.5000905@lightshed.de>
+Received: from smtp7-g19.free.fr (smtp7-g19.free.fr [212.27.42.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8131124473
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 11:25:08 +0100 (CET)
+Received: from smtp7-g19.free.fr (localhost [127.0.0.1])
+	by smtp7-g19.free.fr (Postfix) with ESMTP id D0E73322829
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 11:25:07 +0100 (CET)
+Received: from free.fr (evr27-1-88-172-40-194.fbx.proxad.net [88.172.40.194])
+	by smtp7-g19.free.fr (Postfix) with ESMTP id AF98832280E
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2008 11:25:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,85 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rainer Zimmermann <mail@lightshed.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-The vu-meters in alsamixer are not changing, because alsamixer does not 
-  refresh regularly their values. They reflect status of ice1724 
-vu-meters at the moment of alsamixer start.
+Hello,
 
-I have already raised the issue and I got a fair answer - alsamixer is a 
-console mixer and should thus consume as little network bandwidth as 
-possible.
+upgrading to kernel 2.6.24.1 and alsa-hg-20080213, (libs in sync),
+on debian: trying to play some midi files, with aplaymidi to:
+ timidity/mpu/rme midi port,
+i receive the following message:
 
-Since the meaning of these read-only controls is clear only upon 
-detailed study of the driver and Envy24 datasheet plus I encounter a lot 
-of questins/complaints about them, I suggest to change their type from 
-MIXER to PCM. They would still be readily accessible from amixer or API.
+rtc: lost some interrupt at 1024hz
 
-Here is my little vu-meter script I use for testing ice1724 cards:
+perhaps, it's not alsa related but!
+Do you think it is related to the config?
+the symptom appeared since 2.6.24 kernel.
+in case, can you tell me what config options can influence this behaviour,
+(i have read and applied the low_latency doc),
+and if this is missing in the doc, to avoid such questions, can you
+add some words somewhere please?
 
-while true; do amixer cget name="Multi Track Peak" | grep ": values";
-sleep 0.5; done
+Thanks in advance for reply.
 
-Thanks for considering this minor change which would simplify life of a 
-lot of users/admins.
+rmgls@free.fr
 
-Regards,
-
-Pavel Hofman.
-
-
-Rainer Zimmermann wrote:
-> 
-> This is the revised version of the ESI Maya44 patch.
-> changes are mainly coding style, some cleanups and using a patch file 
-> for ice1724.c .
-> 
-> The added code now (mostly) passes checkpatch.pl, except for some "#if 
-> 0"'s which I'd leave in for the development phase.
-> 
-> Also, I changed the rate setting logic, which (for now) allows all rates 
-> up to 192kHz even for capturing. As capturing actually only supports 96 
-> kHz, while capturing & playback rates are linked, this is not really ok. 
-> I'd appreciate suggestions about how this could be handled properly, 
-> while still supporting playback up to 192 kHz...
-> 
-> 
-> Again, feedback & testing is appreciated.
-> 
-> For more information, see doc/README.maya44 .
-> 
-> 
-> -Rainer
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- 
------------------
-
-inSITE, s.r.o.
-
-Rubesova 29, 326 00 Plzen
-Tel., fax: +420 - 37 - 74 493 58
-GSM: +420 - 603 - 163 973
-Email: pavel.hofman@insite.cz
-
-www.educity.cz, www.insite.cz
-www.meetings.cz, www.hrzive.cz
-www.comben.cz, www.hr-online.cz
--------------------------------
-Navstivte www.educity.cz, server
-s nejvetsi nabidkou profesniho
-vzdelavani na ceskem internetu.
+rmgls@free.fr
