@@ -1,20 +1,21 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: a7839e96 (PNP: increase max resources) breaks my
-	ALSA intel8x0 sound card
-Date: Thu, 14 Feb 2008 17:13:22 -0700
-Message-ID: <200802141713.23461.bjorn.helgaas@hp.com>
+ ALSA intel8x0 sound card
+Date: Thu, 14 Feb 2008 16:40:36 -0800 (PST)
+Message-ID: <alpine.LFD.1.00.0802141620380.6110@woody.linux-foundation.org>
 References: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no>
 	<alpine.LFD.1.00.0802141456370.6110@woody.linux-foundation.org>
 	<alpine.LFD.1.00.0802141503470.6110@woody.linux-foundation.org>
+	<200802141713.23461.bjorn.helgaas@hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from g1t0026.austin.hp.com (g1t0026.austin.hp.com [15.216.28.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD9ED24653
-	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2008 01:11:46 +0100 (CET)
-In-Reply-To: <alpine.LFD.1.00.0802141503470.6110@woody.linux-foundation.org>
-Content-Disposition: inline
+Received: from smtp2.linux-foundation.org (smtp2.linux-foundation.org
+	[207.189.120.14])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40813244C3
+	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2008 01:40:43 +0100 (CET)
+In-Reply-To: <200802141713.23461.bjorn.helgaas@hp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,51 +25,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
+To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Cc: Robert Hancock <hancockr@shaw.ca>, alsa-devel@alsa-project.org, avuton@gmail.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, yakui.zhao@intel.com, shaohua.li@intel.com, Andrew Morton <akpm@linux-foundation.org>, trenn@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 14 February 2008 04:14:45 pm Linus Torvalds wrote:
+
+
+On Thu, 14 Feb 2008, Bjorn Helgaas wrote:
+>
+> That makes sense, but ...  there are BIOSes that actually list nested
+> resources, e.g., http://bugzilla.kernel.org/show_bug.cgi?id=9514#c29 :
 > 
-> On Thu, 14 Feb 2008, Linus Torvalds wrote:
-> > 
-> > It should insert the resource to the root resource (or a bridge resource), 
-> > or not at all. If somebody else has already inserted a real device 
-> > resource, we already know about it, and the PnP information is going to be 
-> > just making things worse.
-> 
-> Hmm. The approach I'd take is to always insert the thing into the root 
-> resource. If we do want to let PnP insert it into some lower-level bus, 
-> we'd need to have some way to distinguish "bus" from "device", and we 
-> don't.
-> 
-> So right now, how about just making PnP/ACPI just use
-> 
-> 	root = (flags & IORESOURCE_MEM) ? iomem_resource : ioport_resource;
-> 	request_resource(root, newresource);
-> 
-> which is what we do for the e820 map and the other special resources we 
-> know about (ie the magic resources we make up ourselves like video ram and 
-> our standard PCI/ISA resource lists like the <0x100 DMA/PIC/FPU IO ports 
-> etc)
+>   [000000290 - 000000294]  Motherboard resources
+>   [000000290 - 00000029F]  Motherboard resources
 
-That makes sense, but ...  there are BIOSes that actually list nested
-resources, e.g., http://bugzilla.kernel.org/show_bug.cgi?id=9514#c29 :
+Heh. 
 
-  [000000290 - 000000294]  Motherboard resources
-  [000000290 - 00000029F]  Motherboard resources
+Not that I can really see us ever being confused by this in practice. 
+Sure, we'd skip the second resource (because it's busy), but that's what 
+we used to do before anyway, wasn't it? And even if we do, there's very 
+little reason we'd ever actually try to reserve that 294-29f range.
 
-We'd have to make sure we don't start with the 0x290-0x294 resource,
-because then we'll fail when we try to reserve 0x290-0x29f, and we
-really should avoid using the 0x295-0x2f9 piece as well.
+In practice, the only resources we actually tend to end up really 
+allocating tends to be things like Cardbus (or a whole PCI bus either due 
+to hotplug or due to the BIOS not bothering), which tend want a big window 
+for the bus window, so the "off-by-one" kinds of things wouldn't really 
+worry me. Very seldom do we actually have small resources to worry about 
+on a PC platform, since they all tend to be pre-allocated by the BIOS 
+anyway.
 
-And even if we do figure out the "outermost" resources, I'd worry
-that some BIOS will have separate ACPI devices that have overlapping
-resources.  Then Murphy's Law says that we'll find the device with
-the smaller resource first, reserve it, then find a device with an
-enclosing resource, and leave something unreserved.
+That said, if we really want to handle this, we could certainly add a 
+whole new ioresource flag bit that says "allow inserting resources into 
+this", and we could set that bit not just for the PnP reservations 
+themselves, but in PCI bus resources too.
 
-Maybe that's still better than a quirk; I don't know.  I guess it's
-pretty ugly either way.
+Basically, there are two different ways of inserting a resource:
 
-Bjorn
+ - the "register this subresource" thing that "request_resource()" does, 
+   which just works on the one given resource and honors the BUSY bit.
+
+ - the "insert this resource into the tree" (insert_resource()) that 
+   starts from the root and tries to find the right location. It honors 
+   the BUSY bit too, but we could extend it to _only_ extend into 
+   resources that allow it.
+
+Here's the trivial patch to add the infrastructure for this, but I did 
+*not* do the required "mark PCI bus resources as IORESOURCE_INSERT" etc 
+(nor obviously the markers to make PnP resources themselves be marked as 
+"insert").
+
+But if you want to play around with it, I think this is at least 
+*conceptually* a sane idea. Another way to see it is that a resource with 
+the IORESOURCE_INSERT bit is "subdivisible", and then it's very obvious 
+that a normal PCI device resource should not have it set: it is a "leaf" 
+resources that can not be split up.
+
+So the only way to populate "leaf" resources is by explicitly specifying 
+them and doing a "request_resource()" on the resource, while the non-leaf 
+IORESOURCE_INSERT resources can be populated from below with 
+ioresrouce_insert().
+
+Is this over-designed? I dunno. The _implementation_ on a resource level 
+is certainly trivial.
+
+Oh, and if it wasn't obvious: the patch is untested. It compiles. That's 
+all I'm going to say about it, especially since without marking any 
+resources with the new IORESOURCE_INSERT bit, the only thing you can do 
+with "insert_resource()" is to insert into the root level (because we 
+don't check the level we are passing into)
+
+		Linus
+
+---
+ include/linux/ioport.h |    1 +
+ kernel/resource.c      |    2 ++
+ 2 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index 605d237..0a56410 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -45,6 +45,7 @@ struct resource_list {
+ #define IORESOURCE_RANGELENGTH	0x00008000
+ #define IORESOURCE_SHADOWABLE	0x00010000
+ #define IORESOURCE_BUS_HAS_VGA	0x00080000
++#define IORESOURCE_INSERT	0x00100000	/* Allow insert_resource() */
+ 
+ #define IORESOURCE_DISABLED	0x10000000
+ #define IORESOURCE_UNSET	0x20000000
+diff --git a/kernel/resource.c b/kernel/resource.c
+index 82aea81..d6da786 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -397,6 +397,8 @@ int insert_resource(struct resource *parent, struct resource *new)
+ 		result = -EBUSY;
+ 		if (first == parent)
+ 			goto out;
++		if (!(first->flags & IORESOURCE_INSERT))
++			goto out;
+ 
+ 		if ((first->start > new->start) || (first->end < new->end))
+ 			break;
