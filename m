@@ -1,14 +1,16 @@
-From: =?utf-8?q?C=C3=A9dric_Br=C3=A9gardis?= <cedric.bregardis@free.fr>
-Subject: [PATCH] Driver for Emagic Audiowerk 2
-Date: Sat, 16 Feb 2008 00:30:55 +0100
-Message-ID: <200802160030.56147.cedric.bregardis@free.fr>
+From: Vladimir Barinov <vova.barinov@gmail.com>
+Subject: [PATCH] Davinci ASoC support
+Date: Sat, 16 Feb 2008 16:22:53 -0500
+Message-ID: <200802161622.53790.vova.barinov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g19.free.fr (smtp6-g19.free.fr [212.27.42.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF52A246A9
-	for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2008 00:30:58 +0100 (CET)
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id C813B103830
+	for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2008 14:23:03 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id f40so1069098fka.0
+	for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2008 05:23:02 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,1894 +21,1152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: jhassler@free.fr
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, khilman@mvista.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Add ASoC support for the TI Davinci SoC and the Davicni-EVM reference board.
+It includes:
+- ASoC Davinci DMA driver
+- ASoC Davinci I2S (Davinci McBSP module based) driver
+- ASoC Davinci-EVM reference board
 
-We managed to write ALSA driver for Emagic Audiowerk 2 PCI sound card (based 
-on Philips SAA7146 chip). You can find more information on  
-https://gna.org/projects/aw2-alsa/.
+Signed-off-by: Vladimir Barinov <vbarinov@ru.mvista.com>
 
-We think it's time to integrate the sources into the alsa/kernel tree. So, 
-here is the patch for this driver. We hope this patch is usable. 
-
-Regards,
-
-Jean-Christian Hassler and Cedric Bregardis
-
-
-Signed-off-by: Cedric Bregardis <cedric.bregardis@free.fr>
-Signed-off-by: Jean-Christian Hassler <jhassler@free.fr>
----
- sound/pci/Kconfig           |   15 +
- sound/pci/Makefile          |    1 +
- sound/pci/aw2/Makefile      |    3 +
- sound/pci/aw2/SAA7146.h     |  168 ++++++++++
- sound/pci/aw2/aw2-alsa.c    |  753 +++++++++++++++++++++++++++++++++++++++++++
- sound/pci/aw2/aw2-saa7146.c |  613 +++++++++++++++++++++++++++++++++++
- sound/pci/aw2/aw2-saa7146.h |  125 +++++++
- sound/pci/aw2/aw2_tsl.h     |  116 +++++++
- 8 files changed, 1794 insertions(+), 0 deletions(-)
- create mode 100644 sound/pci/aw2/Makefile
- create mode 100644 sound/pci/aw2/SAA7146.h
- create mode 100644 sound/pci/aw2/aw2-alsa.c
- create mode 100644 sound/pci/aw2/aw2-saa7146.c
- create mode 100644 sound/pci/aw2/aw2-saa7146.h
- create mode 100644 sound/pci/aw2/aw2_tsl.h
-
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 812085d..194394b 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -122,6 +122,21 @@ config SND_AU8830
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-au8830.
- 
-+config SND_AW2
-+	tristate "Emagic Audiowerk 2"
-+	depends on SND
-+	help
-+	  Say Y here to include support for Emagic Audiowerk 2 soundcards.
-+
-+	  Supported features: Analog and SPDIF output. Analog or SPDIF input.
-+	  Note: Switch between analog and digital input does not always work.
-+	  It can produce continuous noise. The workaround is to switch again
-+	  (and again) between digital and analog input until it works.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-aw2.
-+
-+
- config SND_AZT3328
- 	tristate "Aztech AZF3328 / PCI168 (EXPERIMENTAL)"
- 	depends on SND && EXPERIMENTAL
-diff --git a/sound/pci/Makefile b/sound/pci/Makefile
-index 2d42fd2..85ef14b 100644
---- a/sound/pci/Makefile
-+++ b/sound/pci/Makefile
-@@ -58,6 +58,7 @@ obj-$(CONFIG_SND) += \
- 	ac97/ \
- 	ali5451/ \
- 	au88x0/ \
-+	aw2/ \
- 	ca0106/ \
- 	cs46xx/ \
- 	cs5535audio/ \
-diff --git a/sound/pci/aw2/Makefile b/sound/pci/aw2/Makefile
-new file mode 100644
-index 0000000..842335d
+Index: linux-2.6.25-rc1/sound/soc/davinci/Makefile
+===================================================================
 --- /dev/null
-+++ b/sound/pci/aw2/Makefile
-@@ -0,0 +1,3 @@
-+snd-aw2-objs := aw2-alsa.o aw2-saa7146.o
++++ linux-2.6.25-rc1/sound/soc/davinci/Makefile
+@@ -0,0 +1,11 @@
++# DAVINCI Platform Support
++snd-soc-davinci-objs := davinci-pcm.o
++snd-soc-davinci-i2s-objs := davinci-i2s.o
 +
-+obj-$(CONFIG_SND_AW2) += snd-aw2.o
-diff --git a/sound/pci/aw2/SAA7146.h b/sound/pci/aw2/SAA7146.h
-new file mode 100644
-index 0000000..1fbc66e
++obj-$(CONFIG_SND_DAVINCI_SOC) += snd-soc-davinci.o
++obj-$(CONFIG_SND_DAVINCI_SOC_I2S) += snd-soc-davinci-i2s.o
++
++# DAVINCI Machine Support
++snd-soc-evm-objs := davinci-evm.o
++
++obj-$(CONFIG_SND_DAVINCI_SOC_EVM) += snd-soc-evm.o
+Index: linux-2.6.25-rc1/sound/soc/davinci/davinci-evm.c
+===================================================================
 --- /dev/null
-+++ b/sound/pci/aw2/SAA7146.h
-@@ -0,0 +1,168 @@
-+/*****************************************************************************
++++ linux-2.6.25-rc1/sound/soc/davinci/davinci-evm.c
+@@ -0,0 +1,208 @@
++/*
++ * ASoC driver for TI DAVINCI EVM platform
 + *
-+ * Copyright (C) 2007 Cedric Bregardis <cedric.bregardis AT free.fr> and
-+ * Jean-Christian Hassler <jhassler AT free.fr>
++ * Author:      Vladimir Barinov, <vbarinov@ru.mvista.com>
++ * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
 + *
-+ * This file is part of the Audiowerk2 ALSA driver
-+ *
-+ * The Audiowerk2 ALSA driver is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2.
-+ *
-+ * The Audiowerk2 ALSA driver is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with the Audiowerk2 ALSA driver; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
-+ * USA.
-+ *
-+ *****************************************************************************/
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +
-+/* SAA7146 registers */
-+#define PCI_BT_A	0x4C
-+#define IICTFR		0x8C
-+#define IICSTA		0x90
-+#define BaseA1_in	0x94
-+#define ProtA1_in	0x98
-+#define PageA1_in	0x9C
-+#define BaseA1_out	0xA0
-+#define ProtA1_out	0xA4
-+#define PageA1_out	0xA8
-+#define BaseA2_in	0xAC
-+#define ProtA2_in	0xB0
-+#define PageA2_in	0xB4
-+#define BaseA2_out	0xB8
-+#define ProtA2_out	0xBC
-+#define PageA2_out	0xC0
-+#define IER		0xDC
-+#define GPIO_CTRL	0xE0
-+#define ACON1		0xF4
-+#define ACON2		0xF8
-+#define MC1		0xFC
-+#define MC2		0x100
-+#define ISR		0x10C
-+#define PSR		0x110
-+#define SSR		0x114
-+#define PCI_ADP1	0x12C
-+#define PCI_ADP2	0x130
-+#define PCI_ADP3	0x134
-+#define PCI_ADP4	0x138
-+#define LEVEL_REP	0x140
-+#define FB_BUFFER1	0x144
-+#define FB_BUFFER2	0x148
-+#define TSL1		0x180
-+#define TSL2		0x1C0
-+
-+#define ME	(1UL << 11)
-+#define LIMIT	(1UL << 4)
-+#define PV	(1UL << 3)
-+
-+/* PSR/ISR/IER */
-+#define PPEF		(1UL << 31)
-+#define PABO		(1UL << 30)
-+#define IIC_S		(1UL << 17)
-+#define IIC_E		(1UL << 16)
-+#define A2_in		(1UL << 15)
-+#define A2_out		(1UL << 14)
-+#define A1_in		(1UL << 13)
-+#define A1_out		(1UL << 12)
-+#define AFOU		(1UL << 11)
-+#define PIN3		(1UL << 6)
-+#define PIN2		(1UL << 5)
-+#define PIN1		(1UL << 4)
-+#define PIN0		(1UL << 3)
-+#define ECS		(1UL << 2)
-+#define EC3S		(1UL << 1)
-+#define EC0S		(1UL << 0)
-+
-+/* SSR */
-+#define PRQ		(1UL << 31)
-+#define PMA		(1UL << 30)
-+#define IIC_EA		(1UL << 21)
-+#define IIC_EW		(1UL << 20)
-+#define IIC_ER		(1UL << 19)
-+#define IIC_EL		(1UL << 18)
-+#define IIC_EF		(1UL << 17)
-+#define AF2_in		(1UL << 10)
-+#define AF2_out		(1UL << 9)
-+#define AF1_in		(1UL << 8)
-+#define AF1_out		(1UL << 7)
-+#define EC5S		(1UL << 3)
-+#define EC4S		(1UL << 2)
-+#define EC2S		(1UL << 1)
-+#define EC1S		(1UL << 0)
-+
-+/* PCI_BT_A */
-+#define BurstA1_in	(1UL << 26)
-+#define ThreshA1_in	(1UL << 24)
-+#define BurstA1_out	(1UL << 18)
-+#define ThreshA1_out	(1UL << 16)
-+#define BurstA2_in	(1UL << 10)
-+#define ThreshA2_in	(1UL << 8)
-+#define BurstA2_out	(1UL << 2)
-+#define ThreshA2_out	(1UL << 0)
-+
-+/* MC1 */
-+#define MRST_N		(1UL << 15)
-+#define EAP		(1UL << 9)
-+#define EI2C		(1UL << 8)
-+#define TR_E_A2_OUT	(1UL << 3)
-+#define TR_E_A2_IN	(1UL << 2)
-+#define TR_E_A1_OUT	(1UL << 1)
-+#define TR_E_A1_IN	(1UL << 0)
-+
-+/* MC2 */
-+#define UPLD_IIC	(1UL << 0)
-+
-+/* ACON1 */
-+#define AUDIO_MODE	(1UL << 29)
-+#define MAXLEVEL	(1UL << 22)
-+#define A1_SWAP		(1UL << 21)
-+#define A2_SWAP		(1UL << 20)
-+#define WS0_CTRL	(1UL << 18)
-+#define WS0_SYNC	(1UL << 16)
-+#define WS1_CTRL	(1UL << 14)
-+#define WS1_SYNC	(1UL << 12)
-+#define WS2_CTRL	(1UL << 10)
-+#define WS2_SYNC	(1UL << 8)
-+#define WS3_CTRL	(1UL << 6)
-+#define WS3_SYNC	(1UL << 4)
-+#define WS4_CTRL	(1UL << 2)
-+#define WS4_SYNC	(1UL << 0)
-+
-+/* ACON2 */
-+#define A1_CLKSRC	(1UL << 27)
-+#define A2_CLKSRC	(1UL << 22)
-+#define INVERT_BCLK1	(1UL << 21)
-+#define INVERT_BCLK2	(1UL << 20)
-+#define BCLK1_OEN	(1UL << 19)
-+#define BCLK2_OEN	(1UL << 18)
-+
-+/* IICSTA */
-+#define IICCC		(1UL << 8)
-+#define ABORT		(1UL << 7)
-+#define SPERR		(1UL << 6)
-+#define APERR		(1UL << 5)
-+#define DTERR		(1UL << 4)
-+#define DRERR		(1UL << 3)
-+#define AL		(1UL << 2)
-+#define ERR		(1UL << 1)
-+#define BUSY		(1UL << 0)
-+
-+/* IICTFR */
-+#define BYTE2		(1UL << 24)
-+#define BYTE1		(1UL << 16)
-+#define BYTE0		(1UL << 8)
-+#define ATRR2		(1UL << 6)
-+#define ATRR1		(1UL << 4)
-+#define ATRR0		(1UL << 2)
-+#define ERR		(1UL << 1)
-+#define BUSY		(1UL << 0)
-+
-+#define START	3
-+#define CONT	2
-+#define STOP	1
-+#define NOP	0
-diff --git a/sound/pci/aw2/aw2-alsa.c b/sound/pci/aw2/aw2-alsa.c
-new file mode 100644
-index 0000000..f954b0b
---- /dev/null
-+++ b/sound/pci/aw2/aw2-alsa.c
-@@ -0,0 +1,753 @@
-+/*****************************************************************************
-+ *
-+ * Copyright (C) 2007 Cedric Bregardis <cedric.bregardis AT free.fr> and
-+ * Jean-Christian Hassler <jhassler AT free.fr>
-+ *
-+ * This file is part of the Audiowerk2 ALSA driver
-+ *
-+ * The Audiowerk2 ALSA driver is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2.
-+ *
-+ * The Audiowerk2 ALSA driver is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with the Audiowerk2 ALSA driver; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
-+ * USA.
-+ *
-+ *****************************************************************************/
-+
-+#include <sound/driver.h>
-+#include <linux/init.h>
-+#include <linux/pci.h>
-+#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/timer.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
 +#include <sound/core.h>
-+#include <sound/initval.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include <asm/mach-types.h>
++#include <asm/dma.h>
++#include <asm/arch/hardware.h>
++
++#include "../codecs/tlv320aic3x.h"
++#include "davinci-pcm.h"
++#include "davinci-i2s.h"
++
++#define EVM_CODEC_CLOCK 22579200
++
++static int evm_hw_params(struct snd_pcm_substream *substream,
++			 struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret = 0;
++
++	/* set codec DAI configuration */
++	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++					 SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	/* set cpu DAI configuration */
++	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_CBM_CFM |
++				       SND_SOC_DAIFMT_IB_NF);
++	if (ret < 0)
++		return ret;
++
++	/* set the codec system clock */
++	ret = codec_dai->dai_ops.set_sysclk(codec_dai, 0, EVM_CODEC_CLOCK,
++					    SND_SOC_CLOCK_OUT);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static struct snd_soc_ops evm_ops = {
++	.hw_params = evm_hw_params,
++};
++
++/* davinci-evm machine dapm widgets */
++static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_LINE("Line Out", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_LINE("Line In", NULL),
++};
++
++/* davinci-evm machine audio_mapnections to the codec pins */
++static const char *audio_map[][3] = {
++	/* Headphone connected to HPLOUT, HPROUT */
++	{"Headphone Jack", NULL, "HPLOUT"},
++	{"Headphone Jack", NULL, "HPROUT"},
++
++	/* Line Out connected to LLOUT, RLOUT */
++	{"Line Out", NULL, "LLOUT"},
++	{"Line Out", NULL, "RLOUT"},
++
++	/* Mic connected to (MIC3L | MIC3R) */
++	{"MIC3L", NULL, "Mic Bias 2V"},
++	{"MIC3R", NULL, "Mic Bias 2V"},
++	{"Mic Bias 2V", NULL, "Mic Jack"},
++
++	/* Line In connected to (LINE1L | LINE2L), (LINE1R | LINE2R) */
++	{"LINE1L", NULL, "Line In"},
++	{"LINE2L", NULL, "Line In"},
++	{"LINE1R", NULL, "Line In"},
++	{"LINE2R", NULL, "Line In"},
++
++	{NULL, NULL, NULL},
++};
++
++/* Logic for a aic3x as connected on a davinci-evm */
++static int evm_aic3x_init(struct snd_soc_codec *codec)
++{
++	int i;
++
++	/* Add davinci-evm specific widgets */
++	for (i = 0; i < ARRAY_SIZE(aic3x_dapm_widgets); i++)
++		snd_soc_dapm_new_control(codec, &aic3x_dapm_widgets[i]);
++
++	/* Set up davinci-evm specific audio path audio_map */
++	for (i = 0; audio_map[i][0] != NULL; i++)
++		snd_soc_dapm_connect_input(codec, audio_map[i][0],
++					   audio_map[i][1], audio_map[i][2]);
++
++	/* not connected */
++	snd_soc_dapm_set_endpoint(codec, "MONO_LOUT", 0);
++	snd_soc_dapm_set_endpoint(codec, "HPLCOM", 0);
++	snd_soc_dapm_set_endpoint(codec, "HPRCOM", 0);
++
++	/* always connected */
++	snd_soc_dapm_set_endpoint(codec, "Headphone Jack", 1);
++	snd_soc_dapm_set_endpoint(codec, "Line Out", 1);
++	snd_soc_dapm_set_endpoint(codec, "Mic Jack", 1);
++	snd_soc_dapm_set_endpoint(codec, "Line In", 1);
++
++	snd_soc_dapm_sync_endpoints(codec);
++
++	return 0;
++}
++
++/* davinci-evm digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link evm_dai = {
++	.name = "TLV320AIC3X",
++	.stream_name = "AIC3X",
++	.cpu_dai = &davinci_i2s_dai,
++	.codec_dai = &aic3x_dai,
++	.init = evm_aic3x_init,
++	.ops = &evm_ops,
++};
++
++/* davinci-evm audio machine driver */
++static struct snd_soc_machine snd_soc_machine_evm = {
++	.name = "DaVinci EVM",
++	.dai_link = &evm_dai,
++	.num_links = 1,
++};
++
++/* evm audio private data */
++static struct aic3x_setup_data evm_aic3x_setup = {
++	.i2c_address = 0x1b,
++};
++
++/* evm audio subsystem */
++static struct snd_soc_device evm_snd_devdata = {
++	.machine = &snd_soc_machine_evm,
++	.platform = &davinci_soc_platform,
++	.codec_dev = &soc_codec_dev_aic3x,
++	.codec_data = &evm_aic3x_setup,
++};
++
++static struct resource evm_snd_resources[] = {
++	{
++		.start = DAVINCI_MCBSP_BASE,
++		.end = DAVINCI_MCBSP_BASE + SZ_8K - 1,
++		.flags = IORESOURCE_MEM,
++	},
++};
++
++static struct evm_snd_platform_data evm_snd_data = {
++	.tx_dma_ch	= DM644X_DMACH_MCBSP_TX,
++	.rx_dma_ch	= DM644X_DMACH_MCBSP_RX,
++};
++
++static struct platform_device *evm_snd_device;
++
++static int __init evm_init(void)
++{
++	int ret;
++
++	evm_snd_device = platform_device_alloc("soc-audio", 0);
++	if (!evm_snd_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(evm_snd_device, &evm_snd_devdata);
++	evm_snd_devdata.dev = &evm_snd_device->dev;
++	evm_snd_device->dev.platform_data = &evm_snd_data;
++
++	ret = platform_device_add_resources(evm_snd_device, evm_snd_resources,
++					    ARRAY_SIZE(evm_snd_resources));
++	if (ret) {
++		platform_device_put(evm_snd_device);
++		return ret;
++	}
++
++	ret = platform_device_add(evm_snd_device);
++	if (ret)
++		platform_device_put(evm_snd_device);
++
++	return ret;
++}
++
++static void __exit evm_exit(void)
++{
++	platform_device_unregister(evm_snd_device);
++}
++
++module_init(evm_init);
++module_exit(evm_exit);
++
++MODULE_AUTHOR("Vladimir Barinov");
++MODULE_DESCRIPTION("TI DAVINCI EVM ASoC driver");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.25-rc1/sound/soc/davinci/davinci-i2s.c
+===================================================================
+--- /dev/null
++++ linux-2.6.25-rc1/sound/soc/davinci/davinci-i2s.c
+@@ -0,0 +1,407 @@
++/*
++ * ALSA SoC I2S (McBSP) Audio Layer for TI DAVINCI processor
++ *
++ * Author:      Vladimir Barinov, <vbarinov@ru.mvista.com>
++ * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/io.h>
++#include <linux/clk.h>
++
++#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
-+#include <sound/control.h>
-+#include <linux/interrupt.h>
-+#include <asm/io.h>
-+#include "SAA7146.h"
++#include <sound/initval.h>
++#include <sound/soc.h>
 +
-+#include <linux/delay.h>
++#include "davinci-pcm.h"
 +
-+#include "aw2-saa7146.h"
++#define DAVINCI_MCBSP_DRR_REG	0x00
++#define DAVINCI_MCBSP_DXR_REG	0x04
++#define DAVINCI_MCBSP_SPCR_REG	0x08
++#define DAVINCI_MCBSP_RCR_REG	0x0c
++#define DAVINCI_MCBSP_XCR_REG	0x10
++#define DAVINCI_MCBSP_SRGR_REG	0x14
++#define DAVINCI_MCBSP_PCR_REG	0x24
 +
-+MODULE_LICENSE("GPL");
-+/*********************************
-+ * DEFINES
-+ ********************************/
-+#define PCI_VENDOR_ID_SAA7146		  0x1131
-+#define PCI_DEVICE_ID_SAA7146		  0x7146
++#define DAVINCI_MCBSP_SPCR_RRST		(1 << 0)
++#define DAVINCI_MCBSP_SPCR_RINTM(v)	((v) << 4)
++#define DAVINCI_MCBSP_SPCR_XRST		(1 << 16)
++#define DAVINCI_MCBSP_SPCR_XINTM(v)	((v) << 20)
++#define DAVINCI_MCBSP_SPCR_GRST		(1 << 22)
++#define DAVINCI_MCBSP_SPCR_FRST		(1 << 23)
++#define DAVINCI_MCBSP_SPCR_FREE		(1 << 25)
 +
-+#define CTL_ROUTE_ANALOG 0
-+#define CTL_ROUTE_DIGITAL 1
++#define DAVINCI_MCBSP_RCR_RWDLEN1(v)	((v) << 5)
++#define DAVINCI_MCBSP_RCR_RFRLEN1(v)	((v) << 8)
++#define DAVINCI_MCBSP_RCR_RDATDLY(v)	((v) << 16)
++#define DAVINCI_MCBSP_RCR_RWDLEN2(v)	((v) << 21)
 +
-+/*********************************
-+ * TYPEDEFS
-+ ********************************/
-+  /* hardware definition */
-+static struct snd_pcm_hardware snd_aw2_playback_hw = {
-+	.info = (SNDRV_PCM_INFO_MMAP |
-+		 SNDRV_PCM_INFO_INTERLEAVED |
-+		 SNDRV_PCM_INFO_BLOCK_TRANSFER | SNDRV_PCM_INFO_MMAP_VALID),
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	.rates = SNDRV_PCM_RATE_44100,
-+	.rate_min = 44100,
-+	.rate_max = 44100,
-+	.channels_min = 2,
-+	.channels_max = 4,
-+	.buffer_bytes_max = 32768,
-+	.period_bytes_min = 4096,
-+	.period_bytes_max = 32768,
-+	.periods_min = 1,
-+	.periods_max = 1024,
++#define DAVINCI_MCBSP_XCR_XWDLEN1(v)	((v) << 5)
++#define DAVINCI_MCBSP_XCR_XFRLEN1(v)	((v) << 8)
++#define DAVINCI_MCBSP_XCR_XDATDLY(v)	((v) << 16)
++#define DAVINCI_MCBSP_XCR_XFIG		(1 << 18)
++#define DAVINCI_MCBSP_XCR_XWDLEN2(v)	((v) << 21)
++
++#define DAVINCI_MCBSP_SRGR_FWID(v)	((v) << 8)
++#define DAVINCI_MCBSP_SRGR_FPER(v)	((v) << 16)
++#define DAVINCI_MCBSP_SRGR_FSGM		(1 << 28)
++
++#define DAVINCI_MCBSP_PCR_CLKRP		(1 << 0)
++#define DAVINCI_MCBSP_PCR_CLKXP		(1 << 1)
++#define DAVINCI_MCBSP_PCR_FSRP		(1 << 2)
++#define DAVINCI_MCBSP_PCR_FSXP		(1 << 3)
++#define DAVINCI_MCBSP_PCR_CLKRM		(1 << 8)
++#define DAVINCI_MCBSP_PCR_CLKXM		(1 << 9)
++#define DAVINCI_MCBSP_PCR_FSRM		(1 << 10)
++#define DAVINCI_MCBSP_PCR_FSXM		(1 << 11)
++
++#define MOD_REG_BIT(val, mask, set) do { \
++	if (set) { \
++		val |= mask; \
++	} else { \
++		val &= ~mask; \
++	} \
++} while (0)
++
++enum {
++	DAVINCI_MCBSP_WORD_8 = 0,
++	DAVINCI_MCBSP_WORD_12,
++	DAVINCI_MCBSP_WORD_16,
++	DAVINCI_MCBSP_WORD_20,
++	DAVINCI_MCBSP_WORD_24,
++	DAVINCI_MCBSP_WORD_32,
 +};
 +
-+static struct snd_pcm_hardware snd_aw2_capture_hw = {
-+	.info = (SNDRV_PCM_INFO_MMAP |
-+		 SNDRV_PCM_INFO_INTERLEAVED |
-+		 SNDRV_PCM_INFO_BLOCK_TRANSFER | SNDRV_PCM_INFO_MMAP_VALID),
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	.rates = SNDRV_PCM_RATE_44100,
-+	.rate_min = 44100,
-+	.rate_max = 44100,
-+	.channels_min = 2,
-+	.channels_max = 2,
-+	.buffer_bytes_max = 32768,
-+	.period_bytes_min = 4096,
-+	.period_bytes_max = 32768,
-+	.periods_min = 1,
-+	.periods_max = 1024,
++static struct davinci_pcm_dma_params davinci_i2s_pcm_out = {
++	.name = "I2S PCM Stereo out",
 +};
 +
-+struct aw2_pcm_device_t {
-+	struct snd_pcm *pcm;
-+	unsigned int stream_number;
-+	struct aw2_t *chip;
++static struct davinci_pcm_dma_params davinci_i2s_pcm_in = {
++	.name = "I2S PCM Stereo in",
 +};
 +
-+struct aw2_t {
-+	struct snd_aw2_saa7146_t saa7146;
-+
-+	struct snd_card *card;
-+
-+	struct aw2_pcm_device_t device_playback[NB_STREAM_PLAYBACK];
-+	struct aw2_pcm_device_t device_capture[NB_STREAM_CAPTURE];
++struct davinci_mcbsp_dev {
++	void __iomem			*base;
++	struct clk			*clk;
++	struct davinci_pcm_dma_params	*dma_params[2];
 +};
 +
-+/*********************************
-+ * FUNCTION DECLARATIONS
-+ ********************************/
-+static int __init alsa_card_aw2_init(void);
-+static void __exit alsa_card_aw2_exit(void);
-+static int snd_aw2_dev_free(struct snd_device *device);
-+static int __devinit snd_aw2_create(struct snd_card *card,
-+				    struct pci_dev *pci, struct aw2_t **rchip);
-+static int __devinit snd_aw2_probe(struct pci_dev *pci,
-+				   const struct pci_device_id *pci_id);
-+static void __devexit snd_aw2_remove(struct pci_dev *pci);
-+static int snd_aw2_pcm_playback_open(struct snd_pcm_substream *substream);
-+static int snd_aw2_pcm_playback_close(struct snd_pcm_substream *substream);
-+static int snd_aw2_pcm_capture_open(struct snd_pcm_substream *substream);
-+static int snd_aw2_pcm_capture_close(struct snd_pcm_substream *substream);
-+static int snd_aw2_pcm_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *hw_params);
-+static int snd_aw2_pcm_hw_free(struct snd_pcm_substream *substream);
-+static int snd_aw2_pcm_prepare_playback(struct snd_pcm_substream *substream);
-+static int snd_aw2_pcm_prepare_capture(struct snd_pcm_substream *substream);
-+static int snd_aw2_pcm_trigger_playback(struct snd_pcm_substream *substream,
-+					int cmd);
-+static int snd_aw2_pcm_trigger_capture(struct snd_pcm_substream *substream,
-+				       int cmd);
-+static snd_pcm_uframes_t snd_aw2_pcm_pointer_playback(struct snd_pcm_substream
-+						      *substream);
-+static snd_pcm_uframes_t snd_aw2_pcm_pointer_capture(struct snd_pcm_substream
-+						     *substream);
-+static int __devinit snd_aw2_new_pcm(struct aw2_t *chip);
-+
-+static int snd_aw2_control_switch_capture_info(struct snd_kcontrol *kcontrol,
-+					       struct snd_ctl_elem_info *uinfo);
-+static int snd_aw2_control_switch_capture_get(struct snd_kcontrol *kcontrol,
-+					      struct snd_ctl_elem_value
-+					      *ucontrol);
-+static int snd_aw2_control_switch_capture_put(struct snd_kcontrol *kcontrol,
-+					      struct snd_ctl_elem_value
-+					      *ucontrol);
-+
-+/*********************************
-+ * VARIABLES
-+ ********************************/
-+/* module parameters (see "Module Parameters") */
-+static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
-+static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
-+static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
-+
-+static struct pci_device_id snd_aw2_ids[] = {
-+	{PCI_VENDOR_ID_SAA7146, PCI_DEVICE_ID_SAA7146, PCI_ANY_ID, PCI_ANY_ID,
-+	 0, 0, 0},
-+	{0}
-+};
-+
-+MODULE_DEVICE_TABLE(pci, snd_aw2_ids);
-+
-+/* pci_driver definition */
-+static struct pci_driver driver = {
-+	.name = "My Own Chip",
-+	.id_table = snd_aw2_ids,
-+	.probe = snd_aw2_probe,
-+	.remove = __devexit_p(snd_aw2_remove),
-+};
-+
-+/* operators for playback PCM alsa interface */
-+static struct snd_pcm_ops snd_aw2_playback_ops = {
-+	.open = snd_aw2_pcm_playback_open,
-+	.close = snd_aw2_pcm_playback_close,
-+	.ioctl = snd_pcm_lib_ioctl,
-+	.hw_params = snd_aw2_pcm_hw_params,
-+	.hw_free = snd_aw2_pcm_hw_free,
-+	.prepare = snd_aw2_pcm_prepare_playback,
-+	.trigger = snd_aw2_pcm_trigger_playback,
-+	.pointer = snd_aw2_pcm_pointer_playback,
-+};
-+
-+/* operators for capture PCM alsa interface */
-+static struct snd_pcm_ops snd_aw2_capture_ops = {
-+	.open = snd_aw2_pcm_capture_open,
-+	.close = snd_aw2_pcm_capture_close,
-+	.ioctl = snd_pcm_lib_ioctl,
-+	.hw_params = snd_aw2_pcm_hw_params,
-+	.hw_free = snd_aw2_pcm_hw_free,
-+	.prepare = snd_aw2_pcm_prepare_capture,
-+	.trigger = snd_aw2_pcm_trigger_capture,
-+	.pointer = snd_aw2_pcm_pointer_capture,
-+};
-+
-+static struct snd_kcontrol_new aw2_control __devinitdata = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "PCM Capture Route",
-+	.index = 0,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.private_value = 0xffff,
-+	.info = snd_aw2_control_switch_capture_info,
-+	.get = snd_aw2_control_switch_capture_get,
-+	.put = snd_aw2_control_switch_capture_put
-+};
-+
-+/*********************************
-+ * FUNCTION IMPLEMENTATIONS
-+ ********************************/
-+
-+/* initialization of the module */
-+static int __init alsa_card_aw2_init(void)
++static inline void davinci_mcbsp_write_reg(struct davinci_mcbsp_dev *dev,
++					   int reg, u32 val)
 +{
-+	printk(KERN_DEBUG "Load aw2 module\n");
-+	return pci_register_driver(&driver);
++	__raw_writel(val, dev->base + reg);
 +}
 +
-+/* clean up the module */
-+static void __exit alsa_card_aw2_exit(void)
++static inline u32 davinci_mcbsp_read_reg(struct davinci_mcbsp_dev *dev, int reg)
 +{
-+	printk(KERN_DEBUG "Unload aw2 module\n");
-+	pci_unregister_driver(&driver);
++	return __raw_readl(dev->base + reg);
 +}
 +
-+module_init(alsa_card_aw2_init);
-+module_exit(alsa_card_aw2_exit);
-+
-+/* component-destructor
-+ * (see "Management of Cards and Components")
-+ */
-+static int snd_aw2_dev_free(struct snd_device *device)
++static void davinci_mcbsp_start(struct snd_pcm_substream *substream)
 +{
-+	struct aw2_t *chip = device->device_data;
-+	return snd_aw2_saa7146_free(&chip->saa7146);
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
++	u32 w;
++
++	/* Start the sample generator and enable transmitter/receiver */
++	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
++	MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_GRST, 1);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_XRST, 1);
++	else
++		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_RRST, 1);
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
++
++	/* Start frame sync */
++	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
++	MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_FRST, 1);
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
 +}
 +
-+/* chip-specific constructor
-+ * (see "Management of Cards and Components")
-+ */
-+static int __devinit snd_aw2_create(struct snd_card *card,
-+				    struct pci_dev *pci, struct aw2_t **rchip)
++static void davinci_mcbsp_stop(struct snd_pcm_substream *substream)
 +{
-+	struct aw2_t *chip;
-+	int err;
-+	static struct snd_device_ops ops = {
-+		.dev_free = snd_aw2_dev_free,
-+	};
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
++	u32 w;
 +
-+	*rchip = NULL;
++	/* Reset transmitter/receiver and sample rate/frame sync generators */
++	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
++	MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_GRST |
++		       DAVINCI_MCBSP_SPCR_FRST, 0);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_XRST, 0);
++	else
++		MOD_REG_BIT(w, DAVINCI_MCBSP_SPCR_RRST, 0);
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, w);
++}
 +
-+	/* initialize the PCI entry */
-+	err = pci_enable_device(pci);
-+	if (err < 0)
-+		return err;
-+	pci_set_master(pci);
++static int davinci_i2s_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
 +
-+	/* check PCI availability (32bit DMA) */
-+	if ((pci_set_dma_mask(pci, DMA_32BIT_MASK) < 0) ||
-+	    (pci_set_consistent_dma_mask(pci, DMA_32BIT_MASK) < 0)) {
-+		printk(KERN_ERR "Impossible to set 32bit mask DMA\n");
-+		pci_disable_device(pci);
-+		return -ENXIO;
++	cpu_dai->dma_data = dev->dma_params[substream->stream];
++
++	return 0;
++}
++
++static int davinci_i2s_set_dai_fmt(struct snd_soc_cpu_dai *cpu_dai,
++				   unsigned int fmt)
++{
++	struct davinci_mcbsp_dev *dev = cpu_dai->private_data;
++	u32 w;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG,
++					DAVINCI_MCBSP_PCR_FSXM |
++					DAVINCI_MCBSP_PCR_FSRM |
++					DAVINCI_MCBSP_PCR_CLKXM |
++					DAVINCI_MCBSP_PCR_CLKRM);
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG,
++					DAVINCI_MCBSP_SRGR_FSGM);
++		break;
++	case SND_SOC_DAIFMT_CBM_CFM:
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, 0);
++		break;
++	default:
++		return -EINVAL;
 +	}
-+	chip = kcalloc(1, sizeof(*chip), GFP_KERNEL);
-+	if (chip == NULL) {
-+		pci_disable_device(pci);
-+		return -ENOMEM;
++
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_NF:
++		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_PCR_REG);
++		MOD_REG_BIT(w, DAVINCI_MCBSP_PCR_CLKXP |
++			       DAVINCI_MCBSP_PCR_CLKRP, 1);
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, w);
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_PCR_REG);
++		MOD_REG_BIT(w, DAVINCI_MCBSP_PCR_FSXP |
++			       DAVINCI_MCBSP_PCR_FSRP, 1);
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, w);
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_PCR_REG);
++		MOD_REG_BIT(w, DAVINCI_MCBSP_PCR_CLKXP |
++			       DAVINCI_MCBSP_PCR_CLKRP |
++			       DAVINCI_MCBSP_PCR_FSXP |
++			       DAVINCI_MCBSP_PCR_FSRP, 1);
++		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_PCR_REG, w);
++		break;
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
-+	/* initialize the stuff */
-+	chip->card = card;
-+	chip->saa7146.pci = pci;
-+	chip->saa7146.irq = -1;
++	return 0;
++}
 +
-+	/* (1) PCI resource allocation */
-+	err = pci_request_regions(pci, "Audiowerk2");
-+	if (err < 0) {
-+		kfree(chip);
-+		return err;
++static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct davinci_pcm_dma_params *dma_params = rtd->dai->cpu_dai->dma_data;
++	struct davinci_mcbsp_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct snd_interval *i = NULL;
++	int mcbsp_word_length;
++	u32 w;
++
++	/* general line settings */
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG,
++				DAVINCI_MCBSP_SPCR_RINTM(3) |
++				DAVINCI_MCBSP_SPCR_XINTM(3) |
++				DAVINCI_MCBSP_SPCR_FREE);
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG,
++				DAVINCI_MCBSP_RCR_RFRLEN1(1) |
++				DAVINCI_MCBSP_RCR_RDATDLY(1));
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG,
++				DAVINCI_MCBSP_XCR_XFRLEN1(1) |
++				DAVINCI_MCBSP_XCR_XDATDLY(1) |
++				DAVINCI_MCBSP_XCR_XFIG);
++
++	i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
++	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SRGR_REG);
++	MOD_REG_BIT(w, DAVINCI_MCBSP_SRGR_FWID(snd_interval_value(i) - 1), 1);
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG, w);
++
++	i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_FRAME_BITS);
++	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SRGR_REG);
++	MOD_REG_BIT(w, DAVINCI_MCBSP_SRGR_FPER(snd_interval_value(i) - 1), 1);
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG, w);
++
++	/* Determine xfer data type */
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		dma_params->data_type = 1;
++		mcbsp_word_length = DAVINCI_MCBSP_WORD_8;
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		dma_params->data_type = 2;
++		mcbsp_word_length = DAVINCI_MCBSP_WORD_16;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		dma_params->data_type = 4;
++		mcbsp_word_length = DAVINCI_MCBSP_WORD_32;
++		break;
++	default:
++		printk(KERN_WARNING "davinci-i2s: unsupported PCM format");
++		return -EINVAL;
 +	}
-+	chip->saa7146.iobase_phys = pci_resource_start(pci, 0);
-+	chip->saa7146.iobase_virt =
-+	    ioremap_nocache(chip->saa7146.iobase_phys,
-+			    pci_resource_len(pci, 0));
 +
-+	if (request_irq(pci->irq, snd_aw2_saa7146_interrupt,
-+			IRQF_SHARED, "Audiowerk2", (void *)chip)) {
-+		printk(KERN_ERR "Cannot grab irq %d\n", pci->irq);
-+		snd_aw2_saa7146_free(&chip->saa7146);
++	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_RCR_REG);
++	MOD_REG_BIT(w, DAVINCI_MCBSP_RCR_RWDLEN1(mcbsp_word_length) |
++		       DAVINCI_MCBSP_RCR_RWDLEN2(mcbsp_word_length), 1);
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG, w);
++
++	w = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_XCR_REG);
++	MOD_REG_BIT(w, DAVINCI_MCBSP_XCR_XWDLEN1(mcbsp_word_length) |
++		       DAVINCI_MCBSP_XCR_XWDLEN2(mcbsp_word_length), 1);
++	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG, w);
++
++	return 0;
++}
++
++static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		davinci_mcbsp_start(substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		davinci_mcbsp_stop(substream);
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static int davinci_i2s_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_machine *machine = socdev->machine;
++	struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[pdev->id].cpu_dai;
++	struct davinci_mcbsp_dev *dev;
++	struct resource *mem, *ioarea;
++	struct evm_snd_platform_data *pdata;
++	int ret;
++
++	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!mem) {
++		dev_err(&pdev->dev, "no mem resource?\n");
++		return -ENODEV;
++	}
++
++	ioarea = request_mem_region(mem->start, (mem->end - mem->start) + 1,
++				    pdev->name);
++	if (!ioarea) {
++		dev_err(&pdev->dev, "McBSP region already claimed\n");
 +		return -EBUSY;
 +	}
-+	chip->saa7146.irq = pci->irq;
 +
-+	/* (2) initialization of the chip hardware */
-+	snd_aw2_saa7146_setup(&chip->saa7146);
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
-+		snd_aw2_saa7146_free(&chip->saa7146);
-+		return err;
++	dev = kzalloc(sizeof(struct davinci_mcbsp_dev), GFP_KERNEL);
++	if (!dev) {
++		ret = -ENOMEM;
++		goto err_release_region;
 +	}
 +
-+	snd_card_set_dev(card, &pci->dev);
-+	*rchip = chip;
++	cpu_dai->private_data = dev;
 +
-+	/* Activate this portion to dump all the saa7146 registers : */
-+#if 0
-+	snd_aw2_saa7146_dump_registers(&chip->saa7146);
++	dev->clk = clk_get(&pdev->dev, "McBSPCLK");
++	if (IS_ERR(dev->clk)) {
++		ret = -ENODEV;
++		goto err_free_mem;
++	}
++	clk_enable(dev->clk);
++
++	dev->base = (void __iomem *)IO_ADDRESS(mem->start);
++	pdata = pdev->dev.platform_data;
++
++	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK] = &davinci_i2s_pcm_out;
++	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->channel = pdata->tx_dma_ch;
++	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK]->dma_addr =
++	    (dma_addr_t)(io_v2p(dev->base) + DAVINCI_MCBSP_DXR_REG);
++
++	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE] = &davinci_i2s_pcm_in;
++	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE]->channel = pdata->rx_dma_ch;
++	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE]->dma_addr =
++	    (dma_addr_t)(io_v2p(dev->base) + DAVINCI_MCBSP_DRR_REG);
++
++	return 0;
++
++err_free_mem:
++	kfree(dev);
++err_release_region:
++	release_mem_region(mem->start, (mem->end - mem->start) + 1);
++
++	return ret;
++}
++
++static void davinci_i2s_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_machine *machine = socdev->machine;
++	struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[pdev->id].cpu_dai;
++	struct davinci_mcbsp_dev *dev = cpu_dai->private_data;
++	struct resource *mem;
++
++	clk_disable(dev->clk);
++	clk_put(dev->clk);
++	dev->clk = NULL;
++
++	kfree(dev);
++
++	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	release_mem_region(mem->start, (mem->end - mem->start) + 1);
++}
++
++#define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
++
++struct snd_soc_cpu_dai davinci_i2s_dai = {
++	.name = "davinci-i2s",
++	.id = 0,
++	.type = SND_SOC_DAI_I2S,
++	.probe = davinci_i2s_probe,
++	.remove = davinci_i2s_remove,
++	.playback = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = DAVINCI_I2S_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
++	.capture = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = DAVINCI_I2S_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
++	.ops = {
++		.startup = davinci_i2s_startup,
++		.trigger = davinci_i2s_trigger,
++		.hw_params = davinci_i2s_hw_params,},
++	.dai_ops = {
++		.set_fmt = davinci_i2s_set_dai_fmt,
++	},
++};
++EXPORT_SYMBOL_GPL(davinci_i2s_dai);
++
++MODULE_AUTHOR("Vladimir Barinov");
++MODULE_DESCRIPTION("TI DAVINCI I2S (McBSP) SoC Interface");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.25-rc1/sound/soc/davinci/davinci-i2s.h
+===================================================================
+--- /dev/null
++++ linux-2.6.25-rc1/sound/soc/davinci/davinci-i2s.h
+@@ -0,0 +1,17 @@
++/*
++ * ALSA SoC I2S (McBSP) Audio Layer for TI DAVINCI processor
++ *
++ * Author:      Vladimir Barinov, <vbarinov@ru.mvista.com>
++ * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _DAVINCI_I2S_H
++#define _DAVINCI_I2S_H
++
++extern struct snd_soc_cpu_dai davinci_i2s_dai;
++
++#endif
+Index: linux-2.6.25-rc1/sound/soc/davinci/davinci-pcm.c
+===================================================================
+--- /dev/null
++++ linux-2.6.25-rc1/sound/soc/davinci/davinci-pcm.c
+@@ -0,0 +1,389 @@
++/*
++ * ALSA PCM interface for the TI DAVINCI processor
++ *
++ * Author:      Vladimir Barinov, <vbarinov@ru.mvista.com>
++ * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/dma-mapping.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#include <asm/dma.h>
++
++#include "davinci-pcm.h"
++
++#define DAVINCI_PCM_DEBUG 0
++#if DAVINCI_PCM_DEBUG
++#define DPRINTK(x...) printk(KERN_DEBUG x)
++#else
++#define DPRINTK(x...)
 +#endif
 +
-+	printk(KERN_INFO
-+	       "Audiowerk 2 sound card (saa7146 chipset) detected and "
-+	       "managed\n");
++static struct snd_pcm_hardware davinci_pcm_hardware = {
++	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
++		 SNDRV_PCM_INFO_PAUSE),
++	.formats = (SNDRV_PCM_FMTBIT_S16_LE),
++	.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
++		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
++		  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
++		  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
++		  SNDRV_PCM_RATE_KNOT),
++	.rate_min = 8000,
++	.rate_max = 96000,
++	.channels_min = 2,
++	.channels_max = 2,
++	.buffer_bytes_max = 128 * 1024,
++	.period_bytes_min = 32,
++	.period_bytes_max = 8 * 1024,
++	.periods_min = 16,
++	.periods_max = 255,
++	.fifo_size = 0,
++};
++
++struct davinci_runtime_data {
++	spinlock_t lock;
++	int period;		/* current DMA period */
++	int master_lch;		/* Master DMA channel */
++	int slave_lch;		/* Slave DMA channel */
++	struct davinci_pcm_dma_params *params;	/* DMA params */
++};
++
++static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
++{
++	struct davinci_runtime_data *prtd = substream->runtime->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int lch = prtd->slave_lch;
++	unsigned int period_size;
++	unsigned int dma_offset;
++	dma_addr_t dma_pos;
++	dma_addr_t src, dst;
++	unsigned short src_bidx, dst_bidx;
++	unsigned int data_type;
++	unsigned int count;
++
++	period_size = snd_pcm_lib_period_bytes(substream);
++	dma_offset = prtd->period * period_size;
++	dma_pos = runtime->dma_addr + dma_offset;
++
++	DPRINTK("audio_set_dma_params_play channel = %d dma_ptr = %x "
++		"period_size=%x\n", lch, dma_pos, period_size);
++
++	data_type = prtd->params->data_type;
++	count = period_size / data_type;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		src = dma_pos;
++		dst = prtd->params->dma_addr;
++		src_bidx = data_type;
++		dst_bidx = 0;
++	} else {
++		src = prtd->params->dma_addr;
++		dst = dma_pos;
++		src_bidx = 0;
++		dst_bidx = data_type;
++	}
++
++	davinci_set_dma_src_params(lch, src, INCR, W8BIT);
++	davinci_set_dma_dest_params(lch, dst, INCR, W8BIT);
++	davinci_set_dma_src_index(lch, src_bidx, 0);
++	davinci_set_dma_dest_index(lch, dst_bidx, 0);
++	davinci_set_dma_transfer_params(lch, data_type, count, 1, 0, ASYNC);
++
++	prtd->period++;
++	if (unlikely(prtd->period >= runtime->periods))
++		prtd->period = 0;
++}
++
++static void davinci_pcm_dma_irq(int lch, u16 ch_status, void *data)
++{
++	struct snd_pcm_substream *substream = data;
++	struct davinci_runtime_data *prtd = substream->runtime->private_data;
++
++	DPRINTK("lch=%d, status=0x%x\n", lch, ch_status);
++
++	if (unlikely(ch_status != DMA_COMPLETE))
++		return;
++
++	if (snd_pcm_running(substream)) {
++		snd_pcm_period_elapsed(substream);
++
++		spin_lock(&prtd->lock);
++		davinci_pcm_enqueue_dma(substream);
++		spin_unlock(&prtd->lock);
++	}
++}
++
++static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
++{
++	struct davinci_runtime_data *prtd = substream->runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct davinci_pcm_dma_params *dma_data = rtd->dai->cpu_dai->dma_data;
++	int tcc = TCC_ANY;
++	int ret;
++
++	if (!dma_data)
++		return -ENODEV;
++
++	prtd->params = dma_data;
++
++	/* Request master DMA channel */
++	ret = davinci_request_dma(prtd->params->channel, prtd->params->name,
++				  davinci_pcm_dma_irq, substream,
++				  &prtd->master_lch, &tcc, EVENTQ_0);
++	if (ret)
++		return ret;
++
++	/* Request slave DMA channel */
++	ret = davinci_request_dma(PARAM_ANY, "Link",
++				  NULL, NULL, &prtd->slave_lch, &tcc, EVENTQ_0);
++	if (ret) {
++		davinci_free_dma(prtd->master_lch);
++		return ret;
++	}
++
++	/* Link slave DMA channel in loopback */
++	davinci_dma_link_lch(prtd->slave_lch, prtd->slave_lch);
++
 +	return 0;
 +}
 +
-+/* constructor -- see "Constructor" sub-section */
-+static int __devinit snd_aw2_probe(struct pci_dev *pci,
-+				   const struct pci_device_id *pci_id)
++static int davinci_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 +{
-+	static int dev;
-+	struct snd_card *card;
-+	struct aw2_t *chip;
-+	int err;
++	struct davinci_runtime_data *prtd = substream->runtime->private_data;
++	int ret = 0;
 +
-+	/* (1) Continue if device is not enabled, else inc dev */
-+	if (dev >= SNDRV_CARDS)
-+		return -ENODEV;
-+	if (!enable[dev]) {
-+		dev++;
-+		return -ENOENT;
++	spin_lock(&prtd->lock);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		davinci_start_dma(prtd->master_lch);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		davinci_stop_dma(prtd->master_lch);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
 +	}
 +
-+	/* (2) Create card instance */
-+	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
-+	if (card == NULL)
++	spin_unlock(&prtd->lock);
++
++	return ret;
++}
++
++static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct davinci_runtime_data *prtd = substream->runtime->private_data;
++	struct paramentry_descriptor temp;
++
++	prtd->period = 0;
++	davinci_pcm_enqueue_dma(substream);
++
++	/* Get slave channel dma params for master channel startup */
++	davinci_get_dma_params(prtd->slave_lch, &temp);
++	davinci_set_dma_params(prtd->master_lch, &temp);
++
++	return 0;
++}
++
++static snd_pcm_uframes_t
++davinci_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct davinci_runtime_data *prtd = runtime->private_data;
++	unsigned int offset;
++	dma_addr_t count;
++	dma_addr_t src, dst;
++
++	spin_lock(&prtd->lock);
++
++	davinci_dma_getposition(prtd->master_lch, &src, &dst);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		count = src - runtime->dma_addr;
++	else
++		count = dst - runtime->dma_addr;;
++
++	spin_unlock(&prtd->lock);
++
++	offset = bytes_to_frames(runtime, count);
++	if (offset >= runtime->buffer_size)
++		offset = 0;
++
++	return offset;
++}
++
++static int davinci_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct davinci_runtime_data *prtd;
++	int ret = 0;
++
++	snd_soc_set_runtime_hwparams(substream, &davinci_pcm_hardware);
++
++	prtd = kzalloc(sizeof(struct davinci_runtime_data), GFP_KERNEL);
++	if (prtd == NULL)
 +		return -ENOMEM;
 +
-+	/* (3) Create main component */
-+	err = snd_aw2_create(card, pci, &chip);
-+	if (err < 0) {
-+		snd_card_free(card);
-+		return err;
++	spin_lock_init(&prtd->lock);
++
++	runtime->private_data = prtd;
++
++	ret = davinci_pcm_dma_request(substream);
++	if (ret) {
++		printk(KERN_ERR "davinci_pcm: Failed to get dma channels\n");
++		kfree(prtd);
 +	}
 +
-+	/* initialize semaphore */
-+	init_MUTEX(&(chip->saa7146.sem));
-+	/* init spinlock */
-+	spin_lock_init(&chip->saa7146.reg_lock);
-+	/* initialize wait queue */
-+	init_waitqueue_head(&chip->saa7146.wait_iic);
-+	/* (4) Define driver ID and name string */
-+	strcpy(card->driver, "aw2");
-+	strcpy(card->shortname, "Audiowerk2");
-+
-+	sprintf(card->longname, "%s with SAA7146 at 0x%lx irq %i",
-+		card->shortname, chip->saa7146.port, chip->saa7146.irq);
-+
-+	/* (5) Create other components */
-+	snd_aw2_new_pcm(chip);
-+
-+	/* (6) Register card instance */
-+	err = snd_card_register(card);
-+	if (err < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+
-+	/* (7) Set PCI driver data */
-+	pci_set_drvdata(pci, card);
-+
-+	dev++;
-+	return 0;
++	return ret;
 +}
 +
-+/* destructor -- see "Destructor" sub-section */
-+static void __devexit snd_aw2_remove(struct pci_dev *pci)
-+{
-+	snd_card_free(pci_get_drvdata(pci));
-+	pci_set_drvdata(pci, NULL);
-+}
-+
-+/* open callback */
-+static int snd_aw2_pcm_playback_open(struct snd_pcm_substream *substream)
++static int davinci_pcm_close(struct snd_pcm_substream *substream)
 +{
 +	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct davinci_runtime_data *prtd = runtime->private_data;
 +
-+	printk(KERN_DEBUG "Playback_open \n");
-+	runtime->hw = snd_aw2_playback_hw;
++	davinci_dma_unlink_lch(prtd->slave_lch, prtd->slave_lch);
++
++	davinci_free_dma(prtd->slave_lch);
++	davinci_free_dma(prtd->master_lch);
++
++	kfree(prtd);
++
 +	return 0;
 +}
 +
-+/* close callback */
-+static int snd_aw2_pcm_playback_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+
-+}
-+
-+static int snd_aw2_pcm_capture_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	printk(KERN_DEBUG "Capture_open \n");
-+	runtime->hw = snd_aw2_capture_hw;
-+	return 0;
-+}
-+
-+/* close callback */
-+static int snd_aw2_pcm_capture_close(struct snd_pcm_substream *substream)
-+{
-+	/* TODO: something to do ? */
-+	return 0;
-+}
-+
-+ /* hw_params callback */
-+static int snd_aw2_pcm_hw_params(struct snd_pcm_substream *substream,
++static int davinci_pcm_hw_params(struct snd_pcm_substream *substream,
 +				 struct snd_pcm_hw_params *hw_params)
 +{
 +	return snd_pcm_lib_malloc_pages(substream,
 +					params_buffer_bytes(hw_params));
 +}
 +
-+/* hw_free callback */
-+static int snd_aw2_pcm_hw_free(struct snd_pcm_substream *substream)
++static int davinci_pcm_hw_free(struct snd_pcm_substream *substream)
 +{
 +	return snd_pcm_lib_free_pages(substream);
 +}
 +
-+/* prepare callback for playback */
-+static int snd_aw2_pcm_prepare_playback(struct snd_pcm_substream *substream)
++static int davinci_pcm_mmap(struct snd_pcm_substream *substream,
++			    struct vm_area_struct *vma)
 +{
-+	struct aw2_pcm_device_t *pcm_device = snd_pcm_substream_chip(substream);
-+	struct aw2_t *chip = pcm_device->chip;
 +	struct snd_pcm_runtime *runtime = substream->runtime;
-+	unsigned long period_size, buffer_size;
 +
-+	down(&chip->saa7146.sem);
++	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
++				     runtime->dma_area,
++				     runtime->dma_addr,
++				     runtime->dma_bytes);
++}
 +
-+	period_size = snd_pcm_lib_period_bytes(substream);
-+	buffer_size = snd_pcm_lib_buffer_bytes(substream);
++struct snd_pcm_ops davinci_pcm_ops = {
++	.open = 	davinci_pcm_open,
++	.close = 	davinci_pcm_close,
++	.ioctl = 	snd_pcm_lib_ioctl,
++	.hw_params = 	davinci_pcm_hw_params,
++	.hw_free = 	davinci_pcm_hw_free,
++	.prepare = 	davinci_pcm_prepare,
++	.trigger = 	davinci_pcm_trigger,
++	.pointer = 	davinci_pcm_pointer,
++	.mmap = 	davinci_pcm_mmap,
++};
 +
-+	snd_aw2_saa7146_pcm_init_playback(&chip->saa7146,
-+					  pcm_device->stream_number,
-+					  runtime->dma_addr, period_size,
-+					  buffer_size);
++static int davinci_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
++{
++	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++	size_t size = davinci_pcm_hardware.buffer_bytes_max;
 +
-+	/* Define Interrupt callback */
-+	snd_aw2_saa7146_define_it_playback_callback(pcm_device->stream_number,
-+						    (snd_aw2_saa7146_it_cb)
-+						    snd_pcm_period_elapsed,
-+						    (void *)substream);
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = pcm->card->dev;
++	buf->private_data = NULL;
++	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
++					   &buf->addr, GFP_KERNEL);
 +
-+	up(&chip->saa7146.sem);
++	DPRINTK("preallocate_dma_buffer: area=%p, addr=%p, size=%d\n",
++		(void *) buf->area, (void *) buf->addr, size);
++
++	if (!buf->area)
++		return -ENOMEM;
++
++	buf->bytes = size;
++	return 0;
++}
++
++static void davinci_pcm_free(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream;
++	struct snd_dma_buffer *buf;
++	int stream;
++
++	for (stream = 0; stream < 2; stream++) {
++		substream = pcm->streams[stream].substream;
++		if (!substream)
++			continue;
++
++		buf = &substream->dma_buffer;
++		if (!buf->area)
++			continue;
++
++		dma_free_writecombine(pcm->card->dev, buf->bytes,
++				      buf->area, buf->addr);
++		buf->area = NULL;
++	}
++}
++
++static u64 davinci_pcm_dmamask = 0xffffffff;
++
++static int davinci_pcm_new(struct snd_card *card,
++			   struct snd_soc_codec_dai *dai, struct snd_pcm *pcm)
++{
++	int ret;
++
++	if (!card->dev->dma_mask)
++		card->dev->dma_mask = &davinci_pcm_dmamask;
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = 0xffffffff;
++
++	if (dai->playback.channels_min) {
++		ret = davinci_pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_PLAYBACK);
++		if (ret)
++			return ret;
++	}
++
++	if (dai->capture.channels_min) {
++		ret = davinci_pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_CAPTURE);
++		if (ret)
++			return ret;
++	}
 +
 +	return 0;
 +}
 +
-+/* prepare callback for capture */
-+static int snd_aw2_pcm_prepare_capture(struct snd_pcm_substream *substream)
-+{
-+	struct aw2_pcm_device_t *pcm_device = snd_pcm_substream_chip(substream);
-+	struct aw2_t *chip = pcm_device->chip;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	unsigned long period_size, buffer_size;
++struct snd_soc_platform davinci_soc_platform = {
++	.name = 	"davinci-audio",
++	.pcm_ops = 	&davinci_pcm_ops,
++	.pcm_new = 	davinci_pcm_new,
++	.pcm_free = 	davinci_pcm_free,
++};
++EXPORT_SYMBOL_GPL(davinci_soc_platform);
 +
-+	down(&chip->saa7146.sem);
-+
-+	period_size = snd_pcm_lib_period_bytes(substream);
-+	buffer_size = snd_pcm_lib_buffer_bytes(substream);
-+
-+	snd_aw2_saa7146_pcm_init_capture(&chip->saa7146,
-+					 pcm_device->stream_number,
-+					 runtime->dma_addr, period_size,
-+					 buffer_size);
-+
-+	/* Define Interrupt callback */
-+	snd_aw2_saa7146_define_it_capture_callback(pcm_device->stream_number,
-+						   (snd_aw2_saa7146_it_cb)
-+						   snd_pcm_period_elapsed,
-+						   (void *)substream);
-+
-+	up(&chip->saa7146.sem);
-+
-+	return 0;
-+}
-+
-+/* playback trigger callback */
-+static int snd_aw2_pcm_trigger_playback(struct snd_pcm_substream *substream,
-+					int cmd)
-+{
-+	int status = 0;
-+	struct aw2_pcm_device_t *pcm_device = snd_pcm_substream_chip(substream);
-+	struct aw2_t *chip = pcm_device->chip;
-+	spin_lock(&chip->saa7146.reg_lock);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		snd_aw2_saa7146_pcm_trigger_start_playback(&chip->saa7146,
-+							   pcm_device->
-+							   stream_number);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		snd_aw2_saa7146_pcm_trigger_stop_playback(&chip->saa7146,
-+							  pcm_device->
-+							  stream_number);
-+		break;
-+	default:
-+		status = -EINVAL;
-+	}
-+	spin_unlock(&chip->saa7146.reg_lock);
-+	return status;
-+}
-+
-+/* capture trigger callback */
-+static int snd_aw2_pcm_trigger_capture(struct snd_pcm_substream *substream,
-+				       int cmd)
-+{
-+	int status = 0;
-+	struct aw2_pcm_device_t *pcm_device = snd_pcm_substream_chip(substream);
-+	struct aw2_t *chip = pcm_device->chip;
-+	spin_lock(&chip->saa7146.reg_lock);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		snd_aw2_saa7146_pcm_trigger_start_capture(&chip->saa7146,
-+							  pcm_device->
-+							  stream_number);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		snd_aw2_saa7146_pcm_trigger_stop_capture(&chip->saa7146,
-+							 pcm_device->
-+							 stream_number);
-+		break;
-+	default:
-+		status = -EINVAL;
-+	}
-+	spin_unlock(&chip->saa7146.reg_lock);
-+	return status;
-+}
-+
-+/* playback pointer callback */
-+static snd_pcm_uframes_t snd_aw2_pcm_pointer_playback(struct snd_pcm_substream
-+						      *substream)
-+{
-+	struct aw2_pcm_device_t *pcm_device = snd_pcm_substream_chip(substream);
-+	struct aw2_t *chip = pcm_device->chip;
-+	unsigned int current_ptr;
-+
-+	/* get the current hardware pointer */
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	current_ptr =
-+	    snd_aw2_saa7146_get_hw_pointer_playback(&chip->saa7146,
-+						    pcm_device->stream_number,
-+						    runtime->dma_area,
-+						    runtime->buffer_size);
-+
-+	return bytes_to_frames(substream->runtime, current_ptr);
-+}
-+
-+/* capture pointer callback */
-+static snd_pcm_uframes_t snd_aw2_pcm_pointer_capture(struct snd_pcm_substream
-+						     *substream)
-+{
-+	struct aw2_pcm_device_t *pcm_device = snd_pcm_substream_chip(substream);
-+	struct aw2_t *chip = pcm_device->chip;
-+	unsigned int current_ptr;
-+
-+	/* get the current hardware pointer */
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	current_ptr =
-+	    snd_aw2_saa7146_get_hw_pointer_capture(&chip->saa7146,
-+						   pcm_device->stream_number,
-+						   runtime->dma_area,
-+						   runtime->buffer_size);
-+
-+	return bytes_to_frames(substream->runtime, current_ptr);
-+}
-+
-+/* create a pcm device */
-+static int __devinit snd_aw2_new_pcm(struct aw2_t *chip)
-+{
-+	struct snd_pcm *pcm_playback_ana;
-+	struct snd_pcm *pcm_playback_num;
-+	struct snd_pcm *pcm_capture;
-+	int err = 0;
-+
-+	/* Create new Alsa PCM device */
-+
-+	err =
-+	    snd_pcm_new(chip->card, "Audiowerk2 analog playback", 0, 1, 0,
-+			&pcm_playback_ana);
-+	if (err >= 0) {
-+		/* Creation ok */
-+		struct aw2_pcm_device_t *pcm_device =
-+		    &chip->device_playback[NUM_STREAM_PLAYBACK_ANA];
-+
-+		/* Set PCM device name */
-+		strcpy(pcm_playback_ana->name, "Analog playback");
-+		/* Associate private data to PCM device */
-+		pcm_playback_ana->private_data = pcm_device;
-+		/* set operators of PCM device */
-+		snd_pcm_set_ops(pcm_playback_ana, SNDRV_PCM_STREAM_PLAYBACK,
-+				&snd_aw2_playback_ops);
-+		/* store PCM device */
-+		pcm_device->pcm = pcm_playback_ana;
-+		/* give base chip pointer to our internal pcm device
-+		   structure */
-+		pcm_device->chip = chip;
-+		/* Give stream number to PCM device */
-+		pcm_device->stream_number = NUM_STREAM_PLAYBACK_ANA;
-+
-+		/* pre-allocation of buffers */
-+		/* Preallocate continuous pages. */
-+		err =
-+		    snd_pcm_lib_preallocate_pages_for_all(pcm_playback_ana,
-+							  SNDRV_DMA_TYPE_DEV,
-+							  snd_dma_pci_data
-+							  (chip->saa7146.pci),
-+							  64 * 1024, 64 * 1024);
-+		if (err) {
-+			printk(KERN_ERR
-+			       "snd_pcm_lib_preallocate_pages_for_all error "
-+			       "(0x%X)\n", err);
-+		}
-+	}
-+
-+	err =
-+	    snd_pcm_new(chip->card, "Audiowerk2 digital playback", 1, 1, 0,
-+			&pcm_playback_num);
-+
-+	if (err >= 0) {
-+		/* Creation ok */
-+		struct aw2_pcm_device_t *pcm_device =
-+		    &chip->device_playback[NUM_STREAM_PLAYBACK_DIG];
-+
-+		/* Set PCM device name */
-+		strcpy(pcm_playback_num->name, "Digital playback");
-+		/* Associate private data to PCM device */
-+		pcm_playback_num->private_data = pcm_device;
-+		/* set operators of PCM device */
-+		snd_pcm_set_ops(pcm_playback_num, SNDRV_PCM_STREAM_PLAYBACK,
-+				&snd_aw2_playback_ops);
-+		/* store PCM device */
-+		pcm_device->pcm = pcm_playback_num;
-+		/* give base chip pointer to our internal pcm device
-+		   structure */
-+		pcm_device->chip = chip;
-+		/* Give stream number to PCM device */
-+		pcm_device->stream_number = NUM_STREAM_PLAYBACK_DIG;
-+
-+		/* pre-allocation of buffers */
-+		/* Preallocate continuous pages. */
-+		err =
-+		    snd_pcm_lib_preallocate_pages_for_all(pcm_playback_num,
-+							  SNDRV_DMA_TYPE_DEV,
-+							  snd_dma_pci_data
-+							  (chip->saa7146.pci),
-+							  64 * 1024, 64 * 1024);
-+		if (err) {
-+			printk(KERN_ERR
-+			       "snd_pcm_lib_preallocate_pages_for_all error "
-+			       "(0x%X)\n", err);
-+		}
-+	}
-+
-+	err = snd_pcm_new(chip->card, "Audiowerk2 capture", 2, 0, 1,
-+			  &pcm_capture);
-+
-+	if (err >= 0) {
-+		/* Creation ok */
-+		struct aw2_pcm_device_t *pcm_device =
-+		    &chip->device_capture[NUM_STREAM_CAPTURE_ANA];
-+
-+		/* Set PCM device name */
-+		strcpy(pcm_capture->name, "Capture");
-+		/* Associate private data to PCM device */
-+		pcm_capture->private_data = pcm_device;
-+		/* set operators of PCM device */
-+		snd_pcm_set_ops(pcm_capture, SNDRV_PCM_STREAM_CAPTURE,
-+				&snd_aw2_capture_ops);
-+		/* store PCM device */
-+		pcm_device->pcm = pcm_capture;
-+		/* give base chip pointer to our internal pcm device
-+		   structure */
-+		pcm_device->chip = chip;
-+		/* Give stream number to PCM device */
-+		pcm_device->stream_number = NUM_STREAM_CAPTURE_ANA;
-+
-+		/* pre-allocation of buffers */
-+		/* Preallocate continuous pages. */
-+		err =
-+		    snd_pcm_lib_preallocate_pages_for_all(pcm_capture,
-+							  SNDRV_DMA_TYPE_DEV,
-+							  snd_dma_pci_data
-+							  (chip->saa7146.pci),
-+							  64 * 1024, 64 * 1024);
-+		if (err) {
-+			printk(KERN_ERR
-+			       "snd_pcm_lib_preallocate_pages_for_all error "
-+			       "(0x%X)\n", err);
-+		}
-+	}
-+
-+	/* Create control */
-+	err = snd_ctl_add(chip->card, snd_ctl_new1(&aw2_control, chip));
-+	if (err < 0) {
-+		printk(KERN_ERR "snd_ctl_add error (0x%X)\n", err);
-+	}
-+	return 0;
-+}
-+
-+static int snd_aw2_control_switch_capture_info(struct snd_kcontrol *kcontrol,
-+					       struct snd_ctl_elem_info *uinfo)
-+{
-+	static char *texts[2] = {
-+		"Analog", "Digital"
-+	};
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = 2;
-+	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items) {
-+		uinfo->value.enumerated.item =
-+		    uinfo->value.enumerated.items - 1;
-+	}
-+	strcpy(uinfo->value.enumerated.name,
-+	       texts[uinfo->value.enumerated.item]);
-+	return 0;
-+}
-+
-+static int snd_aw2_control_switch_capture_get(struct snd_kcontrol *kcontrol,
-+					      struct snd_ctl_elem_value
-+					      *ucontrol)
-+{
-+	struct aw2_t *chip = snd_kcontrol_chip(kcontrol);
-+	if (snd_aw2_saa7146_is_using_digital_input(&chip->saa7146)) {
-+		ucontrol->value.enumerated.item[0] = CTL_ROUTE_DIGITAL;
-+	} else {
-+		ucontrol->value.enumerated.item[0] = CTL_ROUTE_ANALOG;
-+	}
-+	return 0;
-+}
-+
-+static int snd_aw2_control_switch_capture_put(struct snd_kcontrol *kcontrol,
-+					      struct snd_ctl_elem_value
-+					      *ucontrol)
-+{
-+	struct aw2_t *chip = snd_kcontrol_chip(kcontrol);
-+	int changed = 0;
-+	int is_disgital =
-+	    snd_aw2_saa7146_is_using_digital_input(&chip->saa7146);
-+
-+	if (((ucontrol->value.integer.value[0] == CTL_ROUTE_DIGITAL)
-+	     && !is_disgital)
-+	    || ((ucontrol->value.integer.value[0] == CTL_ROUTE_ANALOG)
-+		&& is_disgital)) {
-+		snd_aw2_saa7146_use_digital_input(&chip->saa7146, !is_disgital);
-+		changed = 1;
-+	}
-+	return changed;
-+}
-diff --git a/sound/pci/aw2/aw2-saa7146.c b/sound/pci/aw2/aw2-saa7146.c
-new file mode 100644
-index 0000000..f3e180f
++MODULE_AUTHOR("Vladimir Barinov");
++MODULE_DESCRIPTION("TI DAVINCI PCM DMA module");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.25-rc1/sound/soc/davinci/davinci-pcm.h
+===================================================================
 --- /dev/null
-+++ b/sound/pci/aw2/aw2-saa7146.c
-@@ -0,0 +1,613 @@
-+/*****************************************************************************
++++ linux-2.6.25-rc1/sound/soc/davinci/davinci-pcm.h
+@@ -0,0 +1,29 @@
++/*
++ * ALSA PCM interface for the TI DAVINCI processor
 + *
-+ * Copyright (C) 2007 Cedric Bregardis <cedric.bregardis AT free.fr> and
-+ * Jean-Christian Hassler <jhassler AT free.fr>
++ * Author:      Vladimir Barinov, <vbarinov@ru.mvista.com>
++ * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
 + *
-+ * This file is part of the Audiowerk2 ALSA driver
-+ *
-+ * The Audiowerk2 ALSA driver is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2.
-+ *
-+ * The Audiowerk2 ALSA driver is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with the Audiowerk2 ALSA driver; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
-+ * USA.
-+ *
-+ *****************************************************************************/
-+
-+#define AW2_SAA7146_M
-+
-+#include <sound/driver.h>
-+#include <linux/init.h>
-+#include <linux/pci.h>
-+#include <linux/slab.h>
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+
-+#include <linux/interrupt.h>
-+#include <asm/io.h>
-+#include "aw2_tsl.h"
-+#include "SAA7146.h"
-+
-+#include <linux/delay.h>
-+
-+#include <asm/system.h>
-+
-+#include "aw2-saa7146.h"
-+
-+#define WRITEREG(value, addr) do { writel((value), chip->iobase_virt + (addr));\
-+				   mb(); } while (0)
-+#define READREG(addr) readl(chip->iobase_virt + (addr))
-+
-+static struct snd_aw2_saa7146_cb_param
-+ arr_substream_it_playback_cb[NB_STREAM_PLAYBACK];
-+static struct snd_aw2_saa7146_cb_param
-+ arr_substream_it_capture_cb[NB_STREAM_CAPTURE];
-+
-+static int snd_aw2_saa7146_i2c_write(struct snd_aw2_saa7146_t *chip,
-+				     unsigned char address, const void *buf,
-+				     size_t count);
-+static int snd_aw2_saa7146_get_limit(int size);
-+
-+void snd_aw2_saa7146_dump_registers(struct snd_aw2_saa7146_t *chip)
-+{
-+	int i = 0;
-+	for (i = 0; i <= 0x148; i += 4) {
-+		printk(KERN_DEBUG "###DUMP 0x%03x: 0x%08x\n", i, READREG(i));
-+	}
-+}
-+
-+/* chip-specific destructor
-+ * (see "PCI Resource Managements")
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
-+int snd_aw2_saa7146_free(struct snd_aw2_saa7146_t *chip)
-+{
-+	/* disable all irqs */
-+	WRITEREG(0, IER);
 +
-+	/* reset saa7146 */
-+	WRITEREG((MRST_N << 16), MC1);
++#ifndef _DAVINCI_PCM_H
++#define _DAVINCI_PCM_H
 +
-+	/* release the irq */
-+	if (chip->irq >= 0) {
-+		free_irq(chip->irq, (void *)chip);
-+	}
-+	/* release the i/o ports & memory */
-+	if (chip->iobase_virt) {
-+		iounmap(chip->iobase_virt);
-+	}
-+	pci_release_regions(chip->pci);
-+	/* disable the PCI entry */
-+	pci_disable_device(chip->pci);
-+	/* release the data */
-+	kfree(chip);
-+	return 0;
-+}
++struct davinci_pcm_dma_params {
++	char *name;		/* stream identifier */
++	int channel;		/* sync dma channel ID */
++	dma_addr_t dma_addr;	/* device physical address for DMA */
++	unsigned int data_type;	/* xfer data type */
++};
 +
-+void snd_aw2_saa7146_setup(struct snd_aw2_saa7146_t *chip)
-+{
-+	/* set PCI burst/threshold
++struct evm_snd_platform_data {
++	int tx_dma_ch;
++	int rx_dma_ch;
++};
 +
-+	   Burst length definition
-+	   VALUE    BURST LENGTH
-+	   000      1 Dword
-+	   001      2 Dwords
-+	   010      4 Dwords
-+	   011      8 Dwords
-+	   100      16 Dwords
-+	   101      32 Dwords
-+	   110      64 Dwords
-+	   111      128 Dwords
++extern struct snd_soc_platform davinci_soc_platform;
 +
-+	   Threshold definition
-+	   VALUE    WRITE MODE              READ MODE
-+	   00       1 Dword of valid data   1 empty Dword
-+	   01       4 Dwords of valid data  4 empty Dwords
-+	   10       8 Dwords of valid data  8 empty Dwords
-+	   11       16 Dwords of valid data 16 empty Dwords */
-+
-+	unsigned int acon2;
-+	unsigned int acon1 = 0;
-+	int i;
-+
-+	/* disable all irqs */
-+	WRITEREG(0, IER);
-+
-+	/* reset saa7146 */
-+	WRITEREG((MRST_N << 16), MC1);
-+
-+	/* enable audio interface */
-+#ifdef __BIG_ENDIAN
-+	acon1 |= A1_SWAP;
-+	acon1 |= A2_SWAP;
 +#endif
-+	/* WS0_CTRL, WS0_SYNC: input TSL1, I2S */
-+
-+	/* At initialization WS1 and WS2 are disbaled (configured as input */
-+	acon1 |= 0 * WS1_CTRL;
-+	acon1 |= 0 * WS2_CTRL;
-+
-+	/* WS4 is not used. So it must not restart A2.
-+	   This is why it is configured as output (force to low) */
-+	acon1 |= 3 * WS4_CTRL;
-+
-+	/* WS3_CTRL, WS3_SYNC: output TSL2, I2S */
-+	acon1 |= 2 * WS3_CTRL;
-+
-+	/* A1 and A2 are active and asynchronous */
-+	acon1 |= 3 * AUDIO_MODE;
-+	WRITEREG(acon1, ACON1);
-+
-+	/* The following comes from original windows driver.
-+	   It is needed to have a correct behavior of input and output
-+	   simultenously, but I don't know why ! */
-+	WRITEREG(3 * (BurstA1_in) + 3 * (ThreshA1_in) +
-+		 3 * (BurstA1_out) + 3 * (ThreshA1_out) +
-+		 3 * (BurstA2_out) + 3 * (ThreshA2_out), PCI_BT_A);
-+
-+	/* enable audio port pins */
-+	WRITEREG((EAP << 16) | EAP, MC1);
-+
-+	/* enable I2C */
-+	WRITEREG((EI2C << 16) | EI2C, MC1);
-+	/* enable interrupts */
-+	WRITEREG(A1_out | A2_out | A1_in | IIC_S | IIC_E, IER);
-+
-+	/* audio configuration */
-+	acon2 = A2_CLKSRC | BCLK1_OEN;
-+	WRITEREG(acon2, ACON2);
-+
-+	/* By default use analog input */
-+	snd_aw2_saa7146_use_digital_input(chip, 0);
-+
-+	/* TSL setup */
-+	for (i = 0; i < 8; ++i) {
-+		WRITEREG(tsl1[i], TSL1 + (i * 4));
-+		WRITEREG(tsl2[i], TSL2 + (i * 4));
-+	}
-+
-+}
-+
-+void snd_aw2_saa7146_pcm_init_playback(struct snd_aw2_saa7146_t *chip,
-+				       int stream_number,
-+				       unsigned long dma_addr,
-+				       unsigned long period_size,
-+				       unsigned long buffer_size)
-+{
-+	unsigned long dw_page, dw_limit;
-+
-+	/* Configure DMA for substream
-+	   Configuration informations: ALSA has allocated continuous memory
-+	   pages. So we don't need to use MMU of saa7146.
-+	 */
-+
-+	/* No MMU -> nothing to do with PageA1, we only configure the limit of
-+	   PageAx_out register */
-+	/* Disable MMU */
-+	dw_page = (0L << 11);
-+
-+	/* Configure Limit for DMA access.
-+	   The limit register defines an address limit, which generates
-+	   an interrupt if passed by the actual PCI address pointer.
-+	   '0001' means an interrupt will be generated if the lower
-+	   6 bits (64 bytes) of the PCI address are zero. '0010'
-+	   defines a limit of 128 bytes, '0011' one of 256 bytes, and
-+	   so on up to 1 Mbyte defined by '1111'. This interrupt range
-+	   can be calculated as follows:
-+	   Range = 2^(5 + Limit) bytes.
-+	 */
-+	dw_limit = snd_aw2_saa7146_get_limit(period_size);
-+	dw_page |= (dw_limit << 4);
-+
-+	if (stream_number == 0) {
-+		WRITEREG(dw_page, PageA2_out);
-+
-+		/* Base address for DMA transfert. */
-+		/* This address has been reserved by ALSA. */
-+		/* This is a physical address */
-+		WRITEREG(dma_addr, BaseA2_out);
-+
-+		/* Define upper limit for DMA access */
-+		WRITEREG(dma_addr + buffer_size, ProtA2_out);
-+
-+	} else if (stream_number == 1) {
-+		WRITEREG(dw_page, PageA1_out);
-+
-+		/* Base address for DMA transfert. */
-+		/* This address has been reserved by ALSA. */
-+		/* This is a physical address */
-+		WRITEREG(dma_addr, BaseA1_out);
-+
-+		/* Define upper limit for DMA access */
-+		WRITEREG(dma_addr + buffer_size, ProtA1_out);
-+	} else {
-+		printk(KERN_ERR
-+		       "snd_aw2_saa7146_pcm_init_playback: Substream number is "
-+		       "not 0 or 1 -> not managed\n");
-+	}
-+}
-+
-+void snd_aw2_saa7146_pcm_init_capture(struct snd_aw2_saa7146_t *chip,
-+				      int stream_number, unsigned long dma_addr,
-+				      unsigned long period_size,
-+				      unsigned long buffer_size)
-+{
-+	unsigned long dw_page, dw_limit;
-+
-+	/* Configure DMA for substream
-+	   Configuration informations: ALSA has allocated continuous memory
-+	   pages. So we don't need to use MMU of saa7146.
-+	 */
-+
-+	/* No MMU -> nothing to do with PageA1, we only configure the limit of
-+	   PageAx_out register */
-+	/* Disable MMU */
-+	dw_page = (0L << 11);
-+
-+	/* Configure Limit for DMA access.
-+	   The limit register defines an address limit, which generates
-+	   an interrupt if passed by the actual PCI address pointer.
-+	   '0001' means an interrupt will be generated if the lower
-+	   6 bits (64 bytes) of the PCI address are zero. '0010'
-+	   defines a limit of 128 bytes, '0011' one of 256 bytes, and
-+	   so on up to 1 Mbyte defined by '1111'. This interrupt range
-+	   can be calculated as follows:
-+	   Range = 2^(5 + Limit) bytes.
-+	 */
-+	dw_limit = snd_aw2_saa7146_get_limit(period_size);
-+	dw_page |= (dw_limit << 4);
-+
-+	if (stream_number == 0) {
-+		WRITEREG(dw_page, PageA1_in);
-+
-+		/* Base address for DMA transfert. */
-+		/* This address has been reserved by ALSA. */
-+		/* This is a physical address */
-+		WRITEREG(dma_addr, BaseA1_in);
-+
-+		/* Define upper limit for DMA access  */
-+		WRITEREG(dma_addr + buffer_size, ProtA1_in);
-+	} else {
-+		printk(KERN_ERR
-+		       "snd_aw2_saa7146_pcm_init_capture: Substream number is "
-+		       "not 0 -> not managed\n");
-+	}
-+}
-+
-+void snd_aw2_saa7146_define_it_playback_callback(unsigned int stream_number,
-+						 snd_aw2_saa7146_it_cb
-+						 p_it_callback,
-+						 void *p_callback_param)
-+{
-+	if (stream_number < NB_STREAM_PLAYBACK) {
-+		arr_substream_it_playback_cb[stream_number].p_it_callback =
-+		    (snd_aw2_saa7146_it_cb) p_it_callback;
-+		arr_substream_it_playback_cb[stream_number].p_callback_param =
-+		    (void *)p_callback_param;
-+	}
-+}
-+
-+void snd_aw2_saa7146_define_it_capture_callback(unsigned int stream_number,
-+						snd_aw2_saa7146_it_cb
-+						p_it_callback,
-+						void *p_callback_param)
-+{
-+	if (stream_number < NB_STREAM_CAPTURE) {
-+		arr_substream_it_capture_cb[stream_number].p_it_callback =
-+		    (snd_aw2_saa7146_it_cb) p_it_callback;
-+		arr_substream_it_capture_cb[stream_number].p_callback_param =
-+		    (void *)p_callback_param;
-+	}
-+}
-+
-+void snd_aw2_saa7146_pcm_trigger_start_playback(struct snd_aw2_saa7146_t *chip,
-+						int stream_number)
-+{
-+	unsigned int acon1 = 0;
-+	/* In aw8 driver, dma transfert is always active. It is
-+	   started and stopped in a larger "space" */
-+	acon1 = READREG(ACON1);
-+	if (stream_number == 0) {
-+		WRITEREG((TR_E_A2_OUT << 16) | TR_E_A2_OUT, MC1);
-+
-+		/* WS2_CTRL, WS2_SYNC: output TSL2, I2S */
-+		acon1 |= 2 * WS2_CTRL;
-+		WRITEREG(acon1, ACON1);
-+
-+	} else if (stream_number == 1) {
-+		WRITEREG((TR_E_A1_OUT << 16) | TR_E_A1_OUT, MC1);
-+
-+		/* WS1_CTRL, WS1_SYNC: output TSL1, I2S */
-+		acon1 |= 1 * WS1_CTRL;
-+		WRITEREG(acon1, ACON1);
-+	} else {
-+	}
-+
-+}
-+
-+void snd_aw2_saa7146_pcm_trigger_stop_playback(struct snd_aw2_saa7146_t *chip,
-+					       int stream_number)
-+{
-+	unsigned int acon1 = 0;
-+	acon1 = READREG(ACON1);
-+	if (stream_number == 0) {
-+		/* WS2_CTRL, WS2_SYNC: output TSL2, I2S */
-+		acon1 &= ~(3 * WS2_CTRL);
-+		WRITEREG(acon1, ACON1);
-+
-+		WRITEREG((TR_E_A2_OUT << 16), MC1);
-+	} else if (stream_number == 1) {
-+		/* WS1_CTRL, WS1_SYNC: output TSL1, I2S */
-+		acon1 &= ~(3 * WS1_CTRL);
-+		WRITEREG(acon1, ACON1);
-+
-+		WRITEREG((TR_E_A1_OUT << 16), MC1);
-+	} else {
-+	}
-+}
-+
-+void snd_aw2_saa7146_pcm_trigger_start_capture(struct snd_aw2_saa7146_t *chip,
-+					       int stream_number)
-+{
-+	/* In aw8 driver, dma transfert is always active. It is
-+	   started and stopped in a larger "space" */
-+	if (stream_number == 0) {
-+		WRITEREG((TR_E_A1_IN << 16) | TR_E_A1_IN, MC1);
-+	} else {
-+	}
-+}
-+
-+void snd_aw2_saa7146_pcm_trigger_stop_capture(struct snd_aw2_saa7146_t *chip,
-+					      int stream_number)
-+{
-+	if (stream_number == 0) {
-+		WRITEREG((TR_E_A1_IN << 16), MC1);
-+	} else {
-+	}
-+
-+}
-+
-+irqreturn_t snd_aw2_saa7146_interrupt(int irq, void *dev_id)
-+{
-+	unsigned int isr;
-+	unsigned int iicsta;
-+	struct snd_aw2_saa7146_t *chip = dev_id;
-+
-+	isr = READREG(ISR);
-+	if (!isr)
-+		return IRQ_NONE;
-+
-+	WRITEREG(isr, ISR);
-+
-+	if (isr & (IIC_S | IIC_E)) {
-+		iicsta = READREG(IICSTA);
-+		WRITEREG(0x100, IICSTA);
-+		wake_up(&chip->wait_iic);
-+	} else if (isr) {
-+	}
-+
-+	if (isr & A1_out) {
-+		if (arr_substream_it_playback_cb[1].p_it_callback != NULL) {
-+			arr_substream_it_playback_cb[1].
-+			    p_it_callback(arr_substream_it_playback_cb[1].
-+					  p_callback_param);
-+		}
-+	}
-+	if (isr & A2_out) {
-+		if (arr_substream_it_playback_cb[0].p_it_callback != NULL) {
-+			arr_substream_it_playback_cb[0].
-+			    p_it_callback(arr_substream_it_playback_cb[0].
-+					  p_callback_param);
-+		}
-+
-+	}
-+	if (isr & A1_in) {
-+		if (arr_substream_it_capture_cb[0].p_it_callback != NULL) {
-+			arr_substream_it_capture_cb[0].
-+			    p_it_callback(arr_substream_it_capture_cb[0].
-+					  p_callback_param);
-+		}
-+	}
-+	return IRQ_HANDLED;
-+}
-+
-+unsigned int snd_aw2_saa7146_get_hw_pointer_playback(struct snd_aw2_saa7146_t
-+						     *chip, int stream_number,
-+						     unsigned char *start_addr,
-+						     unsigned int buffer_size)
-+{
-+	long pci_adp = 0;
-+	size_t ptr = 0;
-+
-+	if (stream_number == 0) {
-+		pci_adp = READREG(PCI_ADP3);
-+		ptr = pci_adp - (long)start_addr;
-+
-+		if (ptr == buffer_size) {
-+			ptr = 0;
-+		}
-+	}
-+	if (stream_number == 1) {
-+		pci_adp = READREG(PCI_ADP1);
-+		ptr = pci_adp - (size_t) start_addr;
-+
-+		if (ptr == buffer_size) {
-+			ptr = 0;
-+		}
-+	} else {
-+	}
-+	return ptr;
-+}
-+
-+unsigned int snd_aw2_saa7146_get_hw_pointer_capture(struct snd_aw2_saa7146_t
-+						    *chip, int stream_number,
-+						    unsigned char *start_addr,
-+						    unsigned int buffer_size)
-+{
-+	size_t pci_adp = 0;
-+	size_t ptr = 0;
-+	if (stream_number == 0) {
-+		pci_adp = READREG(PCI_ADP2);
-+		ptr = pci_adp - (size_t) start_addr;
-+
-+		if (ptr == buffer_size) {
-+			ptr = 0;
-+		}
-+	} else {
-+	}
-+	return ptr;
-+}
-+
-+int snd_aw2_saa7146_set_sample_rate(struct snd_aw2_saa7146_t *chip, int srate)
-+{
-+	unsigned int S;
-+	unsigned char DB[4];
-+	unsigned int iicsta = 0;
-+	int err = 0;
-+	/* check srate range */
-+	if ((srate < 30000) || (srate > 50000))
-+		return -EINVAL;
-+
-+	/* PLL output is 256*fs, reference 1kHz */
-+	S = srate * 256 / 1000;
-+
-+	/* LSB is at S2 */
-+	S <<= 2;
-+
-+	DB[0] = (S << 1) & 0xff;
-+	DB[1] = (S >> 7) & 0xff;
-+	DB[2] = ((S >> 15) & 0xff) | 0x18;
-+	DB[3] = 0;
-+
-+	if (chip->iic)
-+		return -EBUSY;
-+	chip->iic = 1;
-+	iicsta = READREG(IICSTA);
-+	up(&chip->sem);
-+	err = snd_aw2_saa7146_i2c_write(chip, 0xc4, DB, sizeof(DB));
-+	down(&chip->sem);
-+	chip->iic = 0;
-+	return err;
-+
-+}
-+
-+void snd_aw2_saa7146_use_digital_input(struct snd_aw2_saa7146_t *chip,
-+				       int use_digital)
-+{
-+	/* FIXME: switch between analog and digital input does not always work.
-+	   It can produce a kind of white noise. It seams that received data
-+	   are inverted sometime (endian inversion). Why ? I don't know, maybe
-+	   a problem of synchronization... However for the time being I have
-+	   not found the problem. Workaround: switch again (and again) between
-+	   digital and analog input until it works. */
-+	if (use_digital) {
-+		WRITEREG(0x40, GPIO_CTRL);
-+	} else {
-+		WRITEREG(0x50, GPIO_CTRL);
-+	}
-+}
-+
-+int snd_aw2_saa7146_is_using_digital_input(struct snd_aw2_saa7146_t *chip)
-+{
-+	unsigned int reg_val = READREG(GPIO_CTRL);
-+	if ((reg_val & 0xFF) == 0x40) {
-+		return 1;
-+	} else {
-+		return 0;
-+	}
-+}
-+
-+static int snd_aw2_saa7146_i2c_write(struct snd_aw2_saa7146_t *chip,
-+				     unsigned char address, const void *buf,
-+				     size_t count)
-+{
-+	unsigned int iicsta = 0;
-+	unsigned int iictfr = 0;
-+	int i, b;
-+
-+	/* We only keep low significant bits i.e. without clock setting */
-+	iicsta = (READREG(IICSTA) & 0xFF);
-+
-+	/* Clock setting */
-+	iicsta = 1 * IICCC;
-+	WRITEREG(iicsta, IICSTA);
-+	WRITEREG((UPLD_IIC << 16) | UPLD_IIC, MC2);
-+	WRITEREG(iicsta, IICSTA);
-+	WRITEREG((UPLD_IIC << 16) | UPLD_IIC, MC2);
-+	if ((iicsta & BUSY) || (iicsta & ERR)) {	/* error or busy */
-+		WRITEREG(iicsta | ABORT, IICSTA);
-+		WRITEREG((UPLD_IIC << 16) | UPLD_IIC, MC2);
-+		/* clear error bits (2x) */
-+		WRITEREG(iicsta, IICSTA);
-+		WRITEREG((UPLD_IIC << 16) | UPLD_IIC, MC2);
-+		WRITEREG(iicsta, IICSTA);
-+		WRITEREG((UPLD_IIC << 16) | UPLD_IIC, MC2);
-+	}
-+
-+	iictfr = address * BYTE2;
-+	iictfr |= START * ATRR2;
-+
-+	for (i = 0; i <= count; ++i) {
-+		b = i % 3;
-+		if ((b == 0) || (i == count)) {
-+			wait_queue_t wait;
-+			init_waitqueue_entry(&wait, current);
-+
-+			add_wait_queue(&chip->wait_iic, &wait);
-+			set_current_state(TASK_INTERRUPTIBLE);
-+
-+			WRITEREG(iictfr, IICTFR);
-+			WRITEREG((UPLD_IIC << 16) | UPLD_IIC, MC2);
-+
-+			schedule();
-+			set_current_state(TASK_RUNNING);
-+			remove_wait_queue(&chip->wait_iic, &wait);
-+
-+			if (signal_pending(current)) {
-+				return -ERESTARTSYS;
-+			}
-+
-+			iicsta = READREG(IICSTA);
-+			if (iicsta & ERR) {
-+				return -EIO;
-+			}
-+			if (i == count)
-+				break;
-+			iictfr = 0;
-+		}
-+		switch (b) {
-+		case 0:
-+			iictfr |= BYTE2 * ((char *)buf)[i];
-+			iictfr |= ATRR2 * ((count - i == 1) ? STOP : CONT);
-+			break;
-+		case 1:
-+			iictfr |= BYTE1 * ((char *)buf)[i];
-+			iictfr |= ATRR1 * ((count - i == 1) ? STOP : CONT);
-+			break;
-+		case 2:
-+			iictfr |= BYTE0 * ((char *)buf)[i];
-+			iictfr |= ATRR0 * ((count - i == 1) ? STOP : CONT);
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int snd_aw2_saa7146_get_limit(int size)
-+{
-+	int limitsize = 32;
-+	int limit = 0;
-+	while (limitsize < size) {
-+		limitsize *= 2;
-+		limit++;
-+	}
-+	return limit;
-+}
-diff --git a/sound/pci/aw2/aw2-saa7146.h b/sound/pci/aw2/aw2-saa7146.h
-new file mode 100644
-index 0000000..93e4883
+Index: linux-2.6.25-rc1/sound/soc/Kconfig
+===================================================================
+--- linux-2.6.25-rc1.orig/sound/soc/Kconfig
++++ linux-2.6.25-rc1/sound/soc/Kconfig
+@@ -29,6 +29,7 @@ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/s3c24xx/Kconfig"
+ source "sound/soc/sh/Kconfig"
+ source "sound/soc/fsl/Kconfig"
++source "sound/soc/davinci/Kconfig"
+ 
+ # Supported codecs
+ source "sound/soc/codecs/Kconfig"
+Index: linux-2.6.25-rc1/sound/soc/Makefile
+===================================================================
+--- linux-2.6.25-rc1.orig/sound/soc/Makefile
++++ linux-2.6.25-rc1/sound/soc/Makefile
+@@ -1,4 +1,4 @@
+ snd-soc-core-objs := soc-core.o soc-dapm.o
+ 
+ obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
+-obj-$(CONFIG_SND_SOC)	+= codecs/ at91/ pxa/ s3c24xx/ sh/ fsl/
++obj-$(CONFIG_SND_SOC)	+= codecs/ at91/ pxa/ s3c24xx/ sh/ fsl/ davinci/
+Index: linux-2.6.25-rc1/sound/soc/davinci/Kconfig
+===================================================================
 --- /dev/null
-+++ b/sound/pci/aw2/aw2-saa7146.h
-@@ -0,0 +1,125 @@
-+/*****************************************************************************
-+ *
-+ * Copyright (C) 2007 Cedric Bregardis <cedric.bregardis AT free.fr> and
-+ * Jean-Christian Hassler <jhassler AT free.fr>
-+ *
-+ * This file is part of the Audiowerk2 ALSA driver
-+ *
-+ * The Audiowerk2 ALSA driver is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2.
-+ *
-+ * The Audiowerk2 ALSA driver is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with the Audiowerk2 ALSA driver; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
-+ * USA.
-+ *
-+ *****************************************************************************/
++++ linux-2.6.25-rc1/sound/soc/davinci/Kconfig
+@@ -0,0 +1,19 @@
++config SND_DAVINCI_SOC
++	tristate "SoC Audio for the TI DAVINCI chip"
++	depends on ARCH_DAVINCI && SND_SOC
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the DAVINCI AC97 or I2S interface. You will also need
++	  to select the audio interfaces to support below.
 +
-+#ifndef AW2_SAA7146
-+#define AW2_SAA7146
++config SND_DAVINCI_SOC_I2S
++	tristate
 +
-+#ifdef AW2_SAA7146_M
-+#define PUBLIC
-+#else
-+#define PUBLIC extern
-+#endif
-+
-+#define NB_STREAM_PLAYBACK 2
-+#define NB_STREAM_CAPTURE 1
-+
-+#define NUM_STREAM_PLAYBACK_ANA 0
-+#define NUM_STREAM_PLAYBACK_DIG 1
-+
-+#define NUM_STREAM_CAPTURE_ANA 0
-+
-+typedef void (*snd_aw2_saa7146_it_cb) (void *);
-+
-+struct snd_aw2_saa7146_cb_param {
-+	snd_aw2_saa7146_it_cb p_it_callback;
-+	void *p_callback_param;
-+};
-+
-+/* definition of the chip-specific record */
-+
-+struct snd_aw2_saa7146_t {
-+	struct pci_dev *pci;
-+
-+	unsigned long iobase_phys;
-+	void __iomem *iobase_virt;
-+	unsigned long port;
-+	int irq;
-+
-+	struct semaphore sem;
-+	spinlock_t reg_lock;
-+	int iic;
-+	wait_queue_head_t wait_iic;
-+};
-+
-+PUBLIC void snd_aw2_saa7146_dump_registers(struct snd_aw2_saa7146_t *chip);
-+
-+PUBLIC int snd_aw2_saa7146_free(struct snd_aw2_saa7146_t *chip);
-+PUBLIC void snd_aw2_saa7146_setup(struct snd_aw2_saa7146_t *chip);
-+PUBLIC void snd_aw2_saa7146_pcm_init_playback(struct snd_aw2_saa7146_t *chip,
-+					      int stream_number,
-+					      unsigned long dma_addr,
-+					      unsigned long period_size,
-+					      unsigned long buffer_size);
-+PUBLIC void snd_aw2_saa7146_pcm_init_capture(struct snd_aw2_saa7146_t *chip,
-+					     int stream_number,
-+					     unsigned long dma_addr,
-+					     unsigned long period_size,
-+					     unsigned long buffer_size);
-+PUBLIC void snd_aw2_saa7146_define_it_playback_callback(unsigned int
-+							stream_number,
-+							snd_aw2_saa7146_it_cb
-+							p_it_callback,
-+							void *p_callback_param);
-+PUBLIC void snd_aw2_saa7146_define_it_capture_callback(unsigned int
-+						       stream_number,
-+						       snd_aw2_saa7146_it_cb
-+						       p_it_callback,
-+						       void *p_callback_param);
-+PUBLIC void snd_aw2_saa7146_pcm_trigger_start_capture(struct snd_aw2_saa7146_t
-+						      *chip, int stream_number);
-+PUBLIC void snd_aw2_saa7146_pcm_trigger_stop_capture(struct snd_aw2_saa7146_t
-+						     *chip, int stream_number);
-+
-+PUBLIC void snd_aw2_saa7146_pcm_trigger_start_playback(struct snd_aw2_saa7146_t
-+						       *chip,
-+						       int stream_number);
-+PUBLIC void snd_aw2_saa7146_pcm_trigger_stop_playback(struct snd_aw2_saa7146_t
-+						      *chip, int stream_number);
-+
-+PUBLIC irqreturn_t snd_aw2_saa7146_interrupt(int irq, void *dev_id);
-+PUBLIC unsigned int snd_aw2_saa7146_get_hw_pointer_playback(struct
-+							    snd_aw2_saa7146_t
-+							    *chip,
-+							    int stream_number,
-+							    unsigned char
-+							    *start_addr,
-+							    unsigned int
-+							    buffer_size);
-+PUBLIC unsigned int snd_aw2_saa7146_get_hw_pointer_capture(struct
-+							   snd_aw2_saa7146_t
-+							   *chip,
-+							   int stream_number,
-+							   unsigned char
-+							   *start_addr,
-+							   unsigned int
-+							   buffer_size);
-+PUBLIC int snd_aw2_saa7146_set_sample_rate(struct snd_aw2_saa7146_t *chip,
-+					   int srate);
-+
-+PUBLIC void snd_aw2_saa7146_use_digital_input(struct snd_aw2_saa7146_t *chip,
-+					      int use_digital);
-+
-+PUBLIC int snd_aw2_saa7146_is_using_digital_input(struct snd_aw2_saa7146_t
-+						  *chip);
-+
-+#endif
-diff --git a/sound/pci/aw2/aw2_tsl.h b/sound/pci/aw2/aw2_tsl.h
-new file mode 100644
-index 0000000..af2edbf
---- /dev/null
-+++ b/sound/pci/aw2/aw2_tsl.h
-@@ -0,0 +1,116 @@
-+/*****************************************************************************
-+ *
-+ * Copyright 1998 Emagic Soft- und Hardware GmbH
-+ * Copyright 2002 Martijn Sipkema
-+ * Copyright (C) 2007 Cedric Bregardis <cedric.bregardis AT free.fr> and
-+ * Jean-Christian Hassler <jhassler AT free.fr>
-+ *
-+ * This file is part of the Audiowerk2 ALSA driver
-+ *
-+ * The Audiowerk2 ALSA driver is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2.
-+ *
-+ * The Audiowerk2 ALSA driver is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with the Audiowerk2 ALSA driver; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
-+ * USA.
-+ *
-+ *****************************************************************************/
-+
-+#define TSL_WS0		(1UL << 31)
-+#define	TSL_WS1		(1UL << 30)
-+#define	TSL_WS2		(1UL << 29)
-+#define TSL_WS3		(1UL << 28)
-+#define TSL_WS4		(1UL << 27)
-+#define	TSL_DIS_A1	(1UL << 24)
-+#define TSL_SDW_A1	(1UL << 23)
-+#define TSL_SIB_A1	(1UL << 22)
-+#define TSL_SF_A1	(1UL << 21)
-+#define	TSL_LF_A1	(1UL << 20)
-+#define TSL_BSEL_A1	(1UL << 17)
-+#define TSL_DOD_A1	(1UL << 15)
-+#define TSL_LOW_A1	(1UL << 14)
-+#define TSL_DIS_A2	(1UL << 11)
-+#define TSL_SDW_A2	(1UL << 10)
-+#define TSL_SIB_A2	(1UL << 9)
-+#define TSL_SF_A2	(1UL << 8)
-+#define TSL_LF_A2	(1UL << 7)
-+#define TSL_BSEL_A2	(1UL << 4)
-+#define TSL_DOD_A2	(1UL << 2)
-+#define TSL_LOW_A2	(1UL << 1)
-+#define TSL_EOS		(1UL << 0)
-+
-+    /* Audiowerk8 hardware setup: */
-+    /*      WS0, SD4, TSL1  - Analog/ digital in */
-+    /*      WS1, SD0, TSL1  - Analog out #1, digital out */
-+    /*      WS2, SD2, TSL1  - Analog out #2 */
-+    /*      WS3, SD1, TSL2  - Analog out #3 */
-+    /*      WS4, SD3, TSL2  - Analog out #4 */
-+
-+    /* Audiowerk8 timing: */
-+    /*      Timeslot:     | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | ... */
-+
-+    /*      A1_INPUT: */
-+    /*      SD4:          <_ADC-L_>-------<_ADC-R_>-------< */
-+    /*      WS0:          _______________/---------------\_ */
-+
-+    /*      A1_OUTPUT: */
-+    /*      SD0:          <_1-L___>-------<_1-R___>-------< */
-+    /*      WS1:          _______________/---------------\_ */
-+    /*      SD2:          >-------<_2-L___>-------<_2-R___> */
-+    /*      WS2:          -------\_______________/--------- */
-+
-+    /*      A2_OUTPUT: */
-+    /*      SD1:          <_3-L___>-------<_3-R___>-------< */
-+    /*      WS3:          _______________/---------------\_ */
-+    /*      SD3:          >-------<_4-L___>-------<_4-R___> */
-+    /*      WS4:          -------\_______________/--------- */
-+
-+#ifdef __BIG_ENDIAN
-+    /* TODO: not yet implemented */
-+#else /*  */
-+
-+static int tsl1[8] = {
-+	1 * TSL_SDW_A1 | 3 * TSL_BSEL_A1 |
-+	0 * TSL_DIS_A1 | 0 * TSL_DOD_A1 | TSL_LF_A1,
-+
-+	1 * TSL_SDW_A1 | 2 * TSL_BSEL_A1 |
-+	0 * TSL_DIS_A1 | 0 * TSL_DOD_A1,
-+
-+	0 * TSL_SDW_A1 | 3 * TSL_BSEL_A1 |
-+	0 * TSL_DIS_A1 | 0 * TSL_DOD_A1,
-+
-+	0 * TSL_SDW_A1 | 2 * TSL_BSEL_A1 |
-+	0 * TSL_DIS_A1 | 0 * TSL_DOD_A1,
-+
-+	1 * TSL_SDW_A1 | 1 * TSL_BSEL_A1 |
-+	0 * TSL_DIS_A1 | 0 * TSL_DOD_A1 | TSL_WS1 | TSL_WS0,
-+
-+	1 * TSL_SDW_A1 | 0 * TSL_BSEL_A1 |
-+	0 * TSL_DIS_A1 | 0 * TSL_DOD_A1 | TSL_WS1 | TSL_WS0,
-+
-+	0 * TSL_SDW_A1 | 1 * TSL_BSEL_A1 |
-+	0 * TSL_DIS_A1 | 0 * TSL_DOD_A1 | TSL_WS1 | TSL_WS0,
-+
-+	0 * TSL_SDW_A1 | 0 * TSL_BSEL_A1 | 0 * TSL_DIS_A1 |
-+	0 * TSL_DOD_A1 | TSL_WS1 | TSL_WS0 | TSL_SF_A1 | TSL_EOS,
-+};
-+
-+static int tsl2[8] = {
-+	0 * TSL_SDW_A2 | 3 * TSL_BSEL_A2 | 2 * TSL_DOD_A2 | TSL_LF_A2,
-+	0 * TSL_SDW_A2 | 2 * TSL_BSEL_A2 | 2 * TSL_DOD_A2,
-+	0 * TSL_SDW_A2 | 3 * TSL_BSEL_A2 | 2 * TSL_DOD_A2,
-+	0 * TSL_SDW_A2 | 2 * TSL_BSEL_A2 | 2 * TSL_DOD_A2,
-+	0 * TSL_SDW_A2 | 1 * TSL_BSEL_A2 | 2 * TSL_DOD_A2 | TSL_WS2,
-+	0 * TSL_SDW_A2 | 0 * TSL_BSEL_A2 | 2 * TSL_DOD_A2 | TSL_WS2,
-+	0 * TSL_SDW_A2 | 1 * TSL_BSEL_A2 | 2 * TSL_DOD_A2 | TSL_WS2,
-+	0 * TSL_SDW_A2 | 0 * TSL_BSEL_A2 | 2 * TSL_DOD_A2 | TSL_WS2 | TSL_EOS
-+};
-+
-+#endif /*  */
--- 
-1.5.2.5
++config SND_DAVINCI_SOC_EVM
++	tristate "SoC Audio support for DaVinci EVM"
++	depends on SND_DAVINCI_SOC && MACH_DAVINCI_EVM
++	select SND_DAVINCI_SOC_I2S
++	select SND_SOC_TLV320AIC3X
++	help
++	  Say Y if you want to add support for SoC audio on TI
++	  DaVinci EVM platform.
