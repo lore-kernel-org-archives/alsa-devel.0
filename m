@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Cirrus Logic CS42L52 Low power codec
-Date: Mon, 18 Feb 2008 14:36:55 +0000
-Message-ID: <20080218143655.GE21314@rakim.wolfsonmicro.main>
-References: <1203344273.4063.6.camel@localhost.localdomain>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: ALSA MIDI interface - plugin
+Date: Mon, 18 Feb 2008 20:17:17 +0530
+Message-ID: <61445c750802180647l3604fd9fk43426018d9a80e4b@mail.gmail.com>
+References: <61445c750802140724h1585b495pcc546e2b082e086a@mail.gmail.com>
+	<s5hfxvuw483.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D0B911038F9
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 15:36:56 +0100 (CET)
+Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75AE710387B
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 15:47:20 +0100 (CET)
+Received: by wx-out-0506.google.com with SMTP id t11so1807356wxc.23
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 06:47:18 -0800 (PST)
+In-Reply-To: <s5hfxvuw483.wl%tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <1203344273.4063.6.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,21 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 18, 2008 at 08:17:53AM -0600, Brian Austin wrote:
+On Feb 15, 2008 10:23 PM, Takashi Iwai <tiwai@suse.de> wrote:
 
-> I have a codec I would like to submit.  The Cirrus Logic CS42L52 Low
-> Power codec.  I have the codec code as well as the machine code for the
-> Cirrus Logic EP9407A, but cannot submit that yet.  Is it OK to just
-> submit the codec code for now?  This does not use the new API, so a hint
-> as to which tree to make the diff from would help.
+> At Thu, 14 Feb 2008 20:54:28 +0530,
+> Pharaoh . wrote:
+> >
+> > Now, I have to support rawmidi interface also. Is it possible to write a
+> > userspace
+> > plugin for making MIDI work? Where can I get sample code etc?
+>
+> It's possible, but so far, no external plugin framework is implemented
+> for rawmidi.  The external plugins are available only for PCM and
+> control APIs.  I guess it'd be relatively easy to add the external
+> rawmidi plugins, though.
+>
+> Another possibility is to write an ALSA sequencer client, and load
+> snd-virmidi driver.  Then you can connect to a rawmidi device as you
+> like.
+>
+> Thanks Takashi, I am not sure I understood this fully..Can you point me to
+some sample
+code or relevant documentation.
 
-Assuming that this is an ASoC codec driver please go ahead and submit
-the codec by itself - there's no requirement for an in-tree machine
-driver.  For ASoC v1 a patch against any of current alsa-driver hg,
-Linus' current kernel or the dev branch of the ASoC repository at
-git://opensource.wolfsonmicro.com/linux-2.6-asoc should be fine -
-whichever you find most convenient.
+-Pharaoh.
+
+
+> Takashi
+>
