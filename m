@@ -1,7 +1,7 @@
-From: Ben Dooks <ben-alsa@fluff.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Cirrus Logic CS42L52 Low power codec
-Date: Mon, 18 Feb 2008 17:35:09 +0000
-Message-ID: <20080218173509.GF26936@trinity.fluff.org>
+Date: Mon, 18 Feb 2008 17:58:22 +0000
+Message-ID: <20080218175822.GA20259@rakim.wolfsonmicro.main>
 References: <1203344273.4063.6.camel@localhost.localdomain>
 	<20080218143655.GE21314@rakim.wolfsonmicro.main>
 	<1203345949.4063.8.camel@localhost.localdomain>
@@ -11,9 +11,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from trinity.fluff.org (trinity.fluff.org [89.145.97.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D75924512
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 18:35:10 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A167424515
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 18:58:23 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <1203352473.4063.22.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -30,29 +30,33 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 On Mon, Feb 18, 2008 at 10:34:33AM -0600, Brian Austin wrote:
-> On Mon, Feb 18, 2008 at 08:45:49AM -0600, Brian Austin wrote:
-> > I was under the impression that the ASoc v1 ties the codec to a specific
-> > machine, and that v2 eliminates that need.  Is that a correct
-> > assumption?
-> 
-> No, codec drivers shouldn't be tied to a specific platform in either
-> version - the main new feature in v2 from the point of view of codec
-> support is that it allows a machine to have more than one codec at once,
-> but that's not a change that affects the codec driver.
-> 
-> Since the codecs are not tied to the machine, the user must then add to the Kconfig of the 
-> ARCH to select which codec they want to use?
-> 
-> Using s3c2410_defconfig will only let you select the devices that are added in the Kconfig for the s3c24xx.
+[Reflowed to fit into 80 columns.]
 
-Yes, whilst the codecs are not locked to the machine, they do require
-the machine<>codec bindings to be present, otherwise there is no setup
-information about how the codec is connected, clock sources for the
-codec and what devices are connected to the codec. Supplying that all
-via the commandline would have an mass of extra complexity to the system.
+> Since the codecs are not tied to the machine, the user must then add
+> to the Kconfig of the ARCH to select which codec they want to use?
 
--- 
-Ben
+No - ASoC codec drivers shouldn't be directly visible in the kernel
+configuration user interface.
 
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+> If the codec isn't tied to the machine, why can't we select from a
+> list of supported codecs?  Just trying to get a better understanding
+> of how this works.
+
+The dependency is from machine to codec rather than from codec to
+machine.  Using a codec in ASoC always requires explicit configuration
+through a machine driver in order to specify how the codec is connected
+to the rest of the system but the same codec driver can be used by many
+machines.
+
+Given that this is the embedded space and only a small proportion of the
+machine drivers that get written ever get merged it's useful to have
+codec drivers merged even if there are no currently merged machine
+drivers which need them.  Having the codec driver merged makes it easier
+for people to get the driver and if they do want to contribute their
+machine driver then having the codec driver already there makes that
+easier.
+
+This pattern of merging codec drivers before machine support is fairly
+common for reference platforms like you're talking about - often the
+codec driver will be ready first.  For example, the recently merged
+mpc8610_hpcd and DaVinci platforms both did this.
