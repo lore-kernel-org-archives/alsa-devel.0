@@ -1,20 +1,21 @@
-From: Aldrin Martoq <amartoq@dcc.uchile.cl>
-Subject: Re: ALSA MIDI interface - plugin
-Date: Mon, 18 Feb 2008 14:58:56 -0300
-Message-ID: <1203357536.6312.13.camel@localhost>
-References: <61445c750802140724h1585b495pcc546e2b082e086a@mail.gmail.com>
-	<s5hfxvuw483.wl%tiwai@suse.de>
-	<61445c750802180647l3604fd9fk43426018d9a80e4b@mail.gmail.com>
+From: Travis Place <wishie@wishie.net>
+Subject: Re: Problem with DELL XPS M1530
+Date: Tue, 19 Feb 2008 04:02:20 +1000
+Message-ID: <200802190402.20973.wishie@wishie.net>
+References: <200802190242.07423.wishie@wishie.net>
+	<s5hpruuus61.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id 004F31038FB
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 18:59:01 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id c36so385926ana.80
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 09:59:00 -0800 (PST)
-In-Reply-To: <61445c750802180647l3604fd9fk43426018d9a80e4b@mail.gmail.com>
+Received: from wishie.net (202-137-101-003.auto.usertools.net [202.137.101.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id F234B24420
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 19:02:47 +0100 (CET)
+Received: from [192.168.0.2] (unknown [192.168.0.200])
+	by wishie.net (Postfix) with ESMTP id ACC635AB1D
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 18:23:44 +1000 (EST)
+In-Reply-To: <s5hpruuus61.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +25,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 19 Feb 2008 2:48:38 am Takashi Iwai wrote:
+> At Tue, 19 Feb 2008 02:42:07 +1000,
+>
+> Travis Place wrote:
+> > Hi all,
+> >
+> > Been helping a user on #alsa for a day or two now, with issues regarding
+> > recording from Mic on his Dell XPS M1530 laptop. He originally had
+> > alsa-driver 1.0.14, so i had him upgrade to 1.0.16. Now, his Mic works
+> > for recording, but he has lost playback on one of his HP jacks (the right
+> > one), and Internal laptop speakers. I had a brief look at the code in
+> > patch_sigmatel.c, to see what was going on.. But since im no code guru, i
+> > wasnt much help..
+> >
+> > The output of alsa-info.sh is located at http://pastebin.ca/908579
+> >
+> > I did notice some comments in the code about correcting HP and Mic jacks
+> > for certain models (atleast thats what I read it as).
+> >
+> > Any ideas would be appreciated.
+>
+> First of all, how about the latest HG version?  For lazy people who
+> don't want to install mercurial, try the daily snapshot tarball.
+>
+> Let's start debugging after confirming that the bug still exists with
+> the very latest code.
+>
+>
+> thanks,
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-On Mon, 2008-02-18 at 20:17 +0530, Pharaoh . wrote:
-> On Feb 15, 2008 10:23 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> > At Thu, 14 Feb 2008 20:54:28 +0530,
-> > Pharaoh . wrote:
-> > > Now, I have to support rawmidi interface also. Is it possible to write a
-> > > userspace
-> > > plugin for making MIDI work? Where can I get sample code etc?
-> > Another possibility is to write an ALSA sequencer client, and load
-> > snd-virmidi driver.  Then you can connect to a rawmidi device as you
-> > like.
-> Thanks Takashi, I am not sure I understood this fully..Can you point me to
-> some sample
-> code or relevant documentation.
+User has installed the HG daily snapshot from the 17th, still has the same 
+issues.
 
-Look the code of aseqdump from alsa-utils project. You don't need
-anything related to kernel, just a normal client that creates a port and
-listens for events. Once you receive a MIDI event, process it and do the
-magic in your card.
+Just incase, their new alsa-info.sh output is at http://pastebin.ca/908695
 
-$ aseqdump 
-Waiting for data at port 129:0. Press Ctrl+C to end.
-Source_ Event_________________ Ch _Data__
-
-$ aconnect -iol
-
-$ aplaymidi -p 129:0 /usr/share/denemo/manual/4for2new.midi
-
-Please note that with the alsaseq API you receive processed MIDI data...
-This could be a plus for your development (you don't have to implement
-the low-level midi parser). Timidity is a software synth that follow
-this approach.
-
-
-About snd-virmidi, is almost the same, but the port is a 'kernel port'
-and it represents a virtual card. I'm not sure what advantages has it.
+Thanks in advance.
 
 
 -- 
-Aldrin Martoq <amartoq@dcc.uchile.cl>
+Happiness is like peeing your pants. Everyone can see it, but only you can 
+feel its warmth 
