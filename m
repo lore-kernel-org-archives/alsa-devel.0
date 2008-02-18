@@ -1,20 +1,38 @@
-From: Richard Lyons <richard@the-place.net>
-Subject: Re: unable to get alsa configured on Acer Aspire 1640Z
-Date: Mon, 18 Feb 2008 16:38:59 +0100
-Message-ID: <20080218153854.GA3607@mulinocarletti.com>
-References: <20080217171832.GI7750@mulinocarletti.com>
-	<1203299465.3308.4.camel@localhost.localdomain>
-	<20080218152156.GA3471@mulinocarletti.com>
-	<s5hskzqthgh.wl%tiwai@suse.de>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: Cirrus Logic CS42L52 Low power codec
+Date: Mon, 18 Feb 2008 10:34:33 -0600
+Message-ID: <1203352473.4063.22.camel@localhost.localdomain>
+References: <1203344273.4063.6.camel@localhost.localdomain>
+	<20080218143655.GE21314@rakim.wolfsonmicro.main>
+	<1203345949.4063.8.camel@localhost.localdomain>
+	<20080218152259.GA7939@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tallyho.bytemark.co.uk (tallyho.bytemark.co.uk [80.68.81.166])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7FDE1038CA
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 16:38:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hskzqthgh.wl%tiwai@suse.de>
+Received: from outbound6-dub-R.bigfish.com (outbound-dub.frontbridge.com
+	[213.199.154.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id C295C2443B
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 17:36:28 +0100 (CET)
+Received: from outbound6-dub.bigfish.com (localhost.localdomain [127.0.0.1])
+	by outbound6-dub-R.bigfish.com (Postfix) with ESMTP id ACB324680C8
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 16:36:27 +0000 (UTC)
+Received: from mail185-dub-R.bigfish.com (unknown [10.5.252.3])
+	by outbound6-dub.bigfish.com (Postfix) with ESMTP id A1A59D5804E
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 16:36:27 +0000 (UTC)
+Received: from mail185-dub (localhost.localdomain [127.0.0.1])
+	by mail185-dub-R.bigfish.com (Postfix) with ESMTP id 4F89419F0370
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 16:36:27 +0000 (UTC)
+Received: from mail1.cirrus.com (mail1.cirrus.com [141.131.3.20])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mail185-dub.bigfish.com (Postfix) with ESMTP id 06EF691806A
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 16:36:25 +0000 (UTC)
+Received: from CLMSG-01.ad.cirrus.com ([198.61.95.37])
+	by mail1.cirrus.com (8.12.11.20060308/8.12.11) with ESMTP id
+	m1IGSbw2032198
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 10:28:37 -0600
+In-Reply-To: <20080218152259.GA7939@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +42,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jiang zhe <zhe.jiang@intel.com>, alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 18, 2008 at 04:25:18PM +0100, Takashi Iwai wrote:
+On Mon, Feb 18, 2008 at 08:45:49AM -0600, Brian Austin wrote:
+> I was under the impression that the ASoc v1 ties the codec to a specific
+> machine, and that v2 eliminates that need.  Is that a correct
+> assumption?
 
-> At Mon, 18 Feb 2008 16:22:01 +0100,
-> Richard Lyons wrote:
-> > 
-> > On Mon, Feb 18, 2008 at 09:51:05AM +0800, Jiang zhe wrote:
-> > 
-[...]
-> > > Your kernel is 2.6.17. Its alsa driver is too older.
-[...]
-> > 
-> > It looks as though I have to wait to try kernel 2.6.24 as in debian
-> > unstable.  When I have a fast internet connection one day, I shall try
-> > this. It is not practical or affordable to upgrade over GPRS.
-> 
-> You can build alsa-driver modules externally.  It's more standard
-> procedure for debugging sound problems.  Just configure and
-> install as usual.  See alsa-driver/INSTALL for details.
-> 
-> In your case, maybe better to try alsa-driver daily snapshot tarball
-> than 1.0.16.  See alsa-driver.project web page.
+No, codec drivers shouldn't be tied to a specific platform in either
+version - the main new feature in v2 from the point of view of codec
+support is that it allows a machine to have more than one codec at once,
+but that's not a change that affects the codec driver.
 
-Oh, thanks.  Sounds intimidating, but I'll see if I can manage that.
+Since the codecs are not tied to the machine, the user must then add to the Kconfig of the 
+ARCH to select which codec they want to use?
 
-ll it matter if I do it with the 2.6.17 rather than 2.6.18 kernel, as
-the .18 flavour breaks ACPI on my box?
+Using s3c2410_defconfig will only let you select the devices that are added in the Kconfig for the s3c24xx.
 
--- 
-richard
+If the codec isn't tied to the machine, why can't we select from a list of supported codecs?
+Just trying to get a better understanding of how this works.
+
+
+Thanks,
+
+Brian
