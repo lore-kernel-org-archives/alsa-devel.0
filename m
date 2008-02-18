@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Cirrus Logic CS42L52 Low power codec
-Date: Mon, 18 Feb 2008 17:58:22 +0000
-Message-ID: <20080218175822.GA20259@rakim.wolfsonmicro.main>
-References: <1203344273.4063.6.camel@localhost.localdomain>
-	<20080218143655.GE21314@rakim.wolfsonmicro.main>
-	<1203345949.4063.8.camel@localhost.localdomain>
-	<20080218152259.GA7939@rakim.wolfsonmicro.main>
-	<1203352473.4063.22.camel@localhost.localdomain>
+From: Aldrin Martoq <amartoq@dcc.uchile.cl>
+Subject: Re: ALSA MIDI interface - plugin
+Date: Mon, 18 Feb 2008 14:58:56 -0300
+Message-ID: <1203357536.6312.13.camel@localhost>
+References: <61445c750802140724h1585b495pcc546e2b082e086a@mail.gmail.com>
+	<s5hfxvuw483.wl%tiwai@suse.de>
+	<61445c750802180647l3604fd9fk43426018d9a80e4b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A167424515
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 18:58:23 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1203352473.4063.22.camel@localhost.localdomain>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 004F31038FB
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 18:59:01 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so385926ana.80
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 09:59:00 -0800 (PST)
+In-Reply-To: <61445c750802180647l3604fd9fk43426018d9a80e4b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,38 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Pharaoh ." <pharaoh137@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 18, 2008 at 10:34:33AM -0600, Brian Austin wrote:
-[Reflowed to fit into 80 columns.]
 
-> Since the codecs are not tied to the machine, the user must then add
-> to the Kconfig of the ARCH to select which codec they want to use?
+On Mon, 2008-02-18 at 20:17 +0530, Pharaoh . wrote:
+> On Feb 15, 2008 10:23 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> > At Thu, 14 Feb 2008 20:54:28 +0530,
+> > Pharaoh . wrote:
+> > > Now, I have to support rawmidi interface also. Is it possible to write a
+> > > userspace
+> > > plugin for making MIDI work? Where can I get sample code etc?
+> > Another possibility is to write an ALSA sequencer client, and load
+> > snd-virmidi driver.  Then you can connect to a rawmidi device as you
+> > like.
+> Thanks Takashi, I am not sure I understood this fully..Can you point me to
+> some sample
+> code or relevant documentation.
 
-No - ASoC codec drivers shouldn't be directly visible in the kernel
-configuration user interface.
+Look the code of aseqdump from alsa-utils project. You don't need
+anything related to kernel, just a normal client that creates a port and
+listens for events. Once you receive a MIDI event, process it and do the
+magic in your card.
 
-> If the codec isn't tied to the machine, why can't we select from a
-> list of supported codecs?  Just trying to get a better understanding
-> of how this works.
+$ aseqdump 
+Waiting for data at port 129:0. Press Ctrl+C to end.
+Source_ Event_________________ Ch _Data__
 
-The dependency is from machine to codec rather than from codec to
-machine.  Using a codec in ASoC always requires explicit configuration
-through a machine driver in order to specify how the codec is connected
-to the rest of the system but the same codec driver can be used by many
-machines.
+$ aconnect -iol
 
-Given that this is the embedded space and only a small proportion of the
-machine drivers that get written ever get merged it's useful to have
-codec drivers merged even if there are no currently merged machine
-drivers which need them.  Having the codec driver merged makes it easier
-for people to get the driver and if they do want to contribute their
-machine driver then having the codec driver already there makes that
-easier.
+$ aplaymidi -p 129:0 /usr/share/denemo/manual/4for2new.midi
 
-This pattern of merging codec drivers before machine support is fairly
-common for reference platforms like you're talking about - often the
-codec driver will be ready first.  For example, the recently merged
-mpc8610_hpcd and DaVinci platforms both did this.
+Please note that with the alsaseq API you receive processed MIDI data...
+This could be a plus for your development (you don't have to implement
+the low-level midi parser). Timidity is a software synth that follow
+this approach.
+
+
+About snd-virmidi, is almost the same, but the port is a 'kernel port'
+and it represents a virtual card. I'm not sure what advantages has it.
+
+
+-- 
+Aldrin Martoq <amartoq@dcc.uchile.cl>
