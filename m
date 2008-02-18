@@ -1,23 +1,35 @@
-From: "Andrew Boettcher" <a.boettcher@gmail.com>
-Subject: Re: Intel8x0 8 channel sound
-Date: Mon, 18 Feb 2008 08:21:54 -0500
-Message-ID: <6a316a6e0802180521p69008b21w4597e426fe09b404@mail.gmail.com>
-References: <6a316a6e0802141202y6fe22539o8705ffdc1ac9d1cc@mail.gmail.com>
-	<s5hodaiw6nf.wl%tiwai@suse.de>
-	<6a316a6e0802171053n6bc2ed03q10b4baba30283479@mail.gmail.com>
-	<6a316a6e0802171131w799c34acoc92d6bb1c80ac7cb@mail.gmail.com>
-	<s5hmypyvjga.wl%tiwai@suse.de>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Cirrus Logic CS42L52 Low power codec
+Date: Mon, 18 Feb 2008 08:17:53 -0600
+Message-ID: <1203344273.4063.6.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 780741038DA
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 14:21:55 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id l27so1502124fgb.44
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 05:21:55 -0800 (PST)
-In-Reply-To: <s5hmypyvjga.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from outbound3-va3-R.bigfish.com (outbound-va3.frontbridge.com
+	[216.32.180.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id EC10B1038F1
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 15:22:27 +0100 (CET)
+Received: from outbound3-va3.bigfish.com (localhost.localdomain [127.0.0.1])
+	by outbound3-va3-R.bigfish.com (Postfix) with ESMTP id 49F1D6E8894
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 14:19:24 +0000 (UTC)
+Received: from mail114-va3-R.bigfish.com (si1-va3 [10.7.14.5])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by outbound3-va3.bigfish.com (Postfix) with ESMTP id 484321380064
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 14:19:24 +0000 (UTC)
+Received: from mail114-va3 (localhost.localdomain [127.0.0.1])
+	by mail114-va3-R.bigfish.com (Postfix) with ESMTP id 31114ED047F
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 14:19:24 +0000 (UTC)
+Received: from mail1.cirrus.com (mail1.cirrus.com [141.131.3.20])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mail114-va3.bigfish.com (Postfix) with ESMTP id 06C707F007E
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 14:19:23 +0000 (UTC)
+Received: from CLMSG-01.ad.cirrus.com ([198.61.95.37])
+	by mail1.cirrus.com (8.12.11.20060308/8.12.11) with ESMTP id
+	m1IEBwvu027602
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 08:11:58 -0600
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,377 +39,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 18, 2008 1:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
+Hello,
 
-> At Sun, 17 Feb 2008 14:31:11 -0500,
-> Andrew Boettcher wrote:
-> >
-> > [1  <multipart/alternative (7bit)>]
-> > [1.1  <text/plain; ISO-8859-1 (7bit)>]
-> >
-> > [1.2  <text/html; ISO-8859-1 (7bit)>]
-> > On Feb 17, 2008 1:53 PM, Andrew Boettcher <a.boettcher@gmail.com> wrote:
-> >
-> >     On Feb 15, 2008 11:01 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> >         At Thu, 14 Feb 2008 15:02:04 -0500,
-> >         Andrew Boettcher wrote:
-> >         >
-> >         > For some intel 8x0 cards there is 8 channel sound (such as the
-> >         ALC850 chip
-> >         > on NFORCE 4 boards), and this has not been patched yet though
-> the
-> >         patch has
-> >         > been on the bug tracker.  Here it is again updated for 1.0.16.
-> >          There is
-> >         > also a patch for the configuration in alsa-lib for cards/
-> >         NFORCE.conf.  I
-> >         > have been patching my sources every time I update my kernel, I
-> >         figured it
-> >         > was time for someone to actually submit this somewhere else.
->  The
-> >         patch was
-> >         > written by Martin Ellis.
-> >
-> >         Thanks for submitting this.  I haven't checked that issue.
-> >
-> >         The change is almost OK.  One thing to be fixed is the
-> enablement of
-> >         chip->multi8.  It's unconditionally enabled together with
-> multi6.
-> >
-> >         I think we should add a new bitflag in ac97_codec->flags to
-> indicate
-> >         that the codec supports 8 channels.  Also,
-> ac97_channel_mode_info()
-> >         shouldn't be unconditionally 8-channels, too.  It should check
-> the
-> >         8-channel capability as well.
-> >
-> >         Do you know which audio controller model supports 7.1 output?
->  We may
-> >         need to check the chip model eventualy for 7.1-enablement.
-> >         Certainly the earlier version of controllers don't support 7.1output.
-> >         Well, but these are very unlikely with ALC850 chip, so maybe it
-> >         doesn't matter... :)
-> >
-> >         The below is a quick-fixed patch.  Could you try it?
-> >
-> >         Takashi
-> >
-> >         ---
-> >
-> >         diff -r 362cee3efa84 include/ac97_codec.h
-> >         --- a/include/ac97_codec.h      Fri Feb 15 16:43:11 2008 +0100
-> >         +++ b/include/ac97_codec.h      Fri Feb 15 16:59:51 2008 +0100
-> >         @@ -397,6 +397,7 @@
-> >          #define AC97_HAS_NO_TONE       (1<<16) /* no Tone volume */
-> >          #define AC97_HAS_NO_STD_PCM    (1<<17) /* no standard AC97 PCM
-> volume
-> >         and mute */
-> >          #define AC97_HAS_NO_AUX                (1<<18) /* no standard
-> AC97
-> >         AUX volume and mute */
-> >         +#define AC97_HAS_8CH           (1<<19) /* supports 8-channel
-> output *
-> >         /
-> >
-> >          /* rates indexes */
-> >          #define AC97_RATES_FRONT_DAC   0
-> >         diff -r 362cee3efa84 pci/ac97/ac97_patch.c
-> >         --- a/pci/ac97/ac97_patch.c     Fri Feb 15 16:43:11 2008 +0100
-> >         +++ b/pci/ac97/ac97_patch.c     Fri Feb 15 16:59:51 2008 +0100
-> >         @@ -114,10 +114,9 @@ static int ac97_surround_jack_mode_put(s
-> >
-> >          static int ac97_channel_mode_info(struct snd_kcontrol
-> *kcontrol,
-> >         struct snd_ctl_elem_info *uinfo)
-> >          {
-> >         -       static const char *texts[] = { "2ch", "4ch", "6ch" };
-> >         -       if (kcontrol->private_value)
-> >         -               return ac97_enum_text_info(kcontrol, uinfo,
-> texts, 2);
-> >         /* 4ch only */
-> >         -       return ac97_enum_text_info(kcontrol, uinfo, texts, 3);
-> >         +       static const char *texts[] = { "2ch", "4ch", "6ch",
-> "8ch" };
-> >         +       return ac97_enum_text_info(kcontrol, uinfo, texts,
-> >         +                                  kcontrol->private_value);
-> >          }
-> >
-> >          static int ac97_channel_mode_get(struct snd_kcontrol *kcontrol,
-> >         struct snd_ctl_elem_value *ucontrol)
-> >         @@ -133,13 +132,8 @@ static int ac97_channel_mode_put(struct
-> >                struct snd_ac97 *ac97 = snd_kcontrol_chip(kcontrol);
-> >                unsigned char mode = ucontrol->value.enumerated.item[0];
-> >
-> >         -       if (kcontrol->private_value) {
-> >         -               if (mode >= 2)
-> >         -                       return -EINVAL;
-> >         -       } else {
-> >         -               if (mode >= 3)
-> >         -                       return -EINVAL;
-> >         -       }
-> >         +       if (mode >= kcontrol->private_value)
-> >         +               return -EINVAL;
-> >
-> >                if (mode != ac97->channel_mode) {
-> >                        ac97->channel_mode = mode;
-> >         @@ -158,6 +152,7 @@ static int ac97_channel_mode_put(struct
-> >                        .get = ac97_surround_jack_mode_get, \
-> >                        .put = ac97_surround_jack_mode_put, \
-> >                }
-> >         +/* 6ch */
-> >          #define AC97_CHANNEL_MODE_CTL \
-> >                { \
-> >                        .iface  = SNDRV_CTL_ELEM_IFACE_MIXER, \
-> >         @@ -165,7 +160,9 @@ static int ac97_channel_mode_put(struct
-> >                        .info = ac97_channel_mode_info, \
-> >                        .get = ac97_channel_mode_get, \
-> >                        .put = ac97_channel_mode_put, \
-> >         +               .private_value = 3, \
-> >                }
-> >         +/* 4ch */
-> >          #define AC97_CHANNEL_MODE_4CH_CTL \
-> >                { \
-> >                        .iface  = SNDRV_CTL_ELEM_IFACE_MIXER, \
-> >         @@ -173,7 +170,17 @@ static int ac97_channel_mode_put(struct
-> >                        .info = ac97_channel_mode_info, \
-> >                        .get = ac97_channel_mode_get, \
-> >                        .put = ac97_channel_mode_put, \
-> >         -               .private_value = 1, \
-> >         +               .private_value = 2, \
-> >         +       }
-> >         +/* 8ch */
-> >         +#define AC97_CHANNEL_MODE_8CH_CTL \
-> >         +       { \
-> >         +               .iface  = SNDRV_CTL_ELEM_IFACE_MIXER, \
-> >         +               .name   = "Channel Mode", \
-> >         +               .info = ac97_channel_mode_info, \
-> >         +               .get = ac97_channel_mode_get, \
-> >         +               .put = ac97_channel_mode_put, \
-> >         +               .private_value = 4, \
-> >                }
-> >
-> >          static inline int is_surround_on(struct snd_ac97 *ac97)
-> >         @@ -208,6 +215,11 @@ static inline int is_shared_micin(struct
-> >          static inline int is_shared_micin(struct snd_ac97 *ac97)
-> >          {
-> >                return !ac97->indep_surround && !is_clfe_on(ac97);
-> >         +}
-> >         +
-> >         +static inline int alc850_is_aux_back_surround(struct snd_ac97
-> *ac97)
-> >         +{
-> >         +       return is_surround_on(ac97);
-> >          }
-> >
-> >         @@ -2816,10 +2828,12 @@ static int patch_alc655(struct snd_ac97
-> >
-> >          #define AC97_ALC850_JACK_SELECT        0x76
-> >          #define AC97_ALC850_MISC1      0x7a
-> >         +#define AC97_ALC850_MULTICH    0x6a
-> >
-> >          static void alc850_update_jacks(struct snd_ac97 *ac97)
-> >          {
-> >                int shared;
-> >         +       int aux_is_back_surround;
-> >
-> >                /* shared Line-In / Surround Out */
-> >                shared = is_shared_surrout(ac97);
-> >         @@ -2837,13 +2851,18 @@ static void alc850_update_jacks(struct s
-> >                /* MIC-IN = 1, CENTER-LFE = 5 */
-> >                snd_ac97_update_bits(ac97, AC97_ALC850_JACK_SELECT, 7 <<
-> 4,
-> >                                     shared ? (5<<4) : (1<<4));
-> >         +
-> >         +       aux_is_back_surround =
-> alc850_is_aux_back_surround(ac97);
-> >         +       /* Aux is Back Surround */
-> >         +       snd_ac97_update_bits(ac97, AC97_ALC850_MULTICH, 1 << 10,
-> >         +                            aux_is_back_surround ? (1<<10) : (0
-> >         <<10));
-> >          }
-> >
-> >          static const struct snd_kcontrol_new snd_ac97_controls_alc850[]
-> = {
-> >                AC97_PAGE_SINGLE("Duplicate Front", AC97_ALC650_MULTICH,
-> 0, 1,
-> >         0, 0),
-> >                AC97_SINGLE("Mic Front Input Switch",
-> AC97_ALC850_JACK_SELECT,
-> >         15, 1, 1),
-> >                AC97_SURROUND_JACK_MODE_CTL,
-> >         -       AC97_CHANNEL_MODE_CTL,
-> >         +       AC97_CHANNEL_MODE_8CH_CTL,
-> >          };
-> >
-> >          static int patch_alc850_specific(struct snd_ac97 *ac97)
-> >         @@ -2878,6 +2897,7 @@ static int patch_alc850(struct snd_ac97
-> >                   spdif-in monitor off, spdif-in PCM off
-> >                   center on mic off, surround on line-in off
-> >                   duplicate front off
-> >         +          NB default bit 10=0 = Aux is Capture, not Back
-> Surround
-> >                */
-> >                snd_ac97_write_cache(ac97, AC97_ALC650_MULTICH, 1<<15);
-> >                /* SURR_OUT: on, Surr 1kOhm: on, Surr Amp: off, Front
-> 1kOhm:
-> >         off
-> >         diff -r 362cee3efa84 pci/intel8x0.c
-> >         --- a/pci/intel8x0.c    Fri Feb 15 16:43:11 2008 +0100
-> >         +++ b/pci/intel8x0.c    Fri Feb 15 16:59:51 2008 +0100
-> >         @@ -155,7 +155,8 @@ DEFINE_REGSET(SP, 0x60);    /* SPDIF out */
-> >          #define   ICH_PCM_SPDIF_69     0x80000000      /* s/pdif pcm on
-> slots
-> >         6&9 */
-> >          #define   ICH_PCM_SPDIF_1011   0xc0000000      /* s/pdif pcm on
-> slots
-> >         10&11 */
-> >          #define   ICH_PCM_20BIT                0x00400000      /*
-> 20-bit
-> >         samples (ICH4) */
-> >         -#define   ICH_PCM_246_MASK     0x00300000      /* 6 channels
-> (not all
-> >         chips) */
-> >         +#define   ICH_PCM_246_MASK     0x00300000      /* channels (not
-> all
-> >         chips) */
-> >         +#define   ICH_PCM_8            0x00300000      /* 8 channels
-> (not all
-> >         chips) */
-> >          #define   ICH_PCM_6            0x00200000      /* 6 channels
-> (not all
-> >         chips) */
-> >          #define   ICH_PCM_4            0x00100000      /* 4 channels
-> (not all
-> >         chips) */
-> >          #define   ICH_PCM_2            0x00000000      /* 2 channels
-> (stereo)
-> >         */
-> >         @@ -382,6 +383,7 @@ struct intel8x0 {
-> >
-> >                unsigned multi4: 1,
-> >                         multi6: 1,
-> >         +                multi8 :1,
-> >                         dra: 1,
-> >                         smp20bit: 1;
-> >                unsigned in_ac97_init: 1,
-> >         @@ -995,6 +997,8 @@ static void snd_intel8x0_setup_pcm_out(s
-> >                                cnt |= ICH_PCM_4;
-> >                        else if (runtime->channels == 6)
-> >                                cnt |= ICH_PCM_6;
-> >         +               else if (runtime->channels == 8)
-> >         +                       cnt |= ICH_PCM_8;
-> >                        if (chip->device_type == DEVICE_NFORCE) {
-> >                                /* reset to 2ch once to keep the 6
-> channel data
-> >         in alignment,
-> >                                 * to start from Front Left always
-> >         @@ -1104,6 +1108,16 @@ static struct snd_pcm_hw_constraint_list
-> >                .mask = 0,
-> >          };
-> >
-> >         +static unsigned int channels8[] = {
-> >         +       2, 4, 6, 8,
-> >         +};
-> >         +
-> >         +static struct snd_pcm_hw_constraint_list
-> hw_constraints_channels8 = {
-> >         +       .count = ARRAY_SIZE(channels8),
-> >         +       .list = channels8,
-> >         +       .mask = 0,
-> >         +};
-> >         +
-> >          static int snd_intel8x0_pcm_open(struct snd_pcm_substream
-> *substream,
-> >         struct ichdev *ichdev)
-> >          {
-> >                struct intel8x0 *chip =
-> snd_pcm_substream_chip(substream);
-> >         @@ -1134,7 +1148,12 @@ static int snd_intel8x0_playback_open(st
-> >                if (err < 0)
-> >                        return err;
-> >
-> >         -       if (chip->multi6) {
-> >         +       if (chip->multi8) {
-> >         +               runtime->hw.channels_max = 8;
-> >         +               snd_pcm_hw_constraint_list(runtime, 0,
-> >         +
-> >          SNDRV_PCM_HW_PARAM_CHANNELS,
-> >         +
->  &hw_constraints_channels8);
-> >         +       } else if (chip->multi6) {
-> >                        runtime->hw.channels_max = 6;
-> >                        snd_pcm_hw_constraint_list(runtime, 0,
-> >         SNDRV_PCM_HW_PARAM_CHANNELS,
-> >
-> &hw_constraints_channels6);
-> >         @@ -2195,8 +2214,11 @@ static int __devinit snd_intel8x0_mixer(
-> >                }
-> >                if (pbus->pcms[0].r[0].slots & (1 <<
-> AC97_SLOT_PCM_SLEFT)) {
-> >                        chip->multi4 = 1;
-> >         -               if (pbus->pcms[0].r[0].slots & (1 <<
-> AC97_SLOT_LFE))
-> >         +               if (pbus->pcms[0].r[0].slots & (1 <<
-> AC97_SLOT_LFE)) {
-> >                                chip->multi6 = 1;
-> >         +                       if (chip->ac97[0]->flags & AC97_HAS_8CH)
-> >         +                               chip->multi8 = 1;
-> >         +               }
-> >                }
-> >                if (pbus->pcms[0].r[1].rslots[0]) {
-> >                        chip->dra = 1;
-> >
-> >     It does not work 8 channel.  I found the problem though.  in line
-> 2219 of
-> >     the patched pci/intel8x0.c it checks for the flag AC97_HAS_8CH
-> >     This flag is never set anywhere.  where would be the appropriate
-> place?
-> >
-> >                 if (chip->ac97[0]->flags & AC97_HAS_8CH)
-> >                     chip->multi8 = 1;
-> >
-> >     Andrew Boettcher
-> >
-> > I went ahead and  made a new patch, attached.  I put the flag in
-> patch_alc850
-> > () in pci/ac97/ac97_patch.c
->
-> Yes, that's the right place.
->
-> > The only issue I see now is the imbalanced volumes, nothing a .asoundrc
-> can't
-> > fix.  I wonder if the DAC volumes are maxed for the side and rear DACs?
->  In
-> > the code it only maxes 2 of them.  I don't have a data sheet to see how
-> to max
-> > the others if they are maxed, or what the deal is.
->
-> Hm, could you elaborate?  Which DAC volume doesn't get the maximum
-> volume and which volume can be in the max level (supposed 0dB) via
-> which AC97 register / ALSA mixer control right now?
->
->
-> Takashi
->
+I have a codec I would like to submit.  The Cirrus Logic CS42L52 Low
+Power codec.  I have the codec code as well as the machine code for the
+Cirrus Logic EP9407A, but cannot submit that yet.  Is it OK to just
+submit the codec code for now?  This does not use the new API, so a hint
+as to which tree to make the diff from would help.
 
+Thanks,
 
-After reading the datasheet AC97_PCM is _only_ the front DAC volume.  The
-center/LFE and Surround DAC volumes are forced to 0x0808 (+0dB gain).  The
-rear surround DAC has no method of controlling the DAC volume, it only has
-its normal volume control that it shares with aux in.  I am going to change
-my own source to remove the PCM volume control and just force it to 0x0808,
-but not all people want balanced sound so I guess I will keep that patch to
-myself.  I would however recommend setting the AC97_PCM register to 0x0808
-by default to match the other DAC volumes.  Normally volumes are all muted
-at first by default, so I don't know how this would be done.  The DACs go up
-to +12dB gain, so max PCM volume is what made my front speakers much louder
-than the center/LFE side and rear.
-
-Andrew
+Brian Austin
