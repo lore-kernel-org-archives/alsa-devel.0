@@ -1,24 +1,16 @@
-From: belibem <n.tsagkas@gmail.com>
-Subject: Re: installation steps for us-122l tascam driver
-Date: Mon, 18 Feb 2008 19:32:00 +0000 (UTC)
-Message-ID: <loom.20080218T192738-907@post.gmane.org>
+From: Robert Gonciarz <ruppertus@gmail.com>
+Subject: snd-hda-intel AD1981 - Sound volume low level
+Date: Mon, 18 Feb 2008 20:50:00 +0100
+Message-ID: <47B9E168.8050504@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5732243EA
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 20:35:06 +0100 (CET)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1JRBlW-0003Uz-NW
-	for alsa-devel@alsa-project.org; Mon, 18 Feb 2008 19:35:02 +0000
-Received: from athedsl-28885.home.otenet.gr ([87.202.113.183])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 19:35:02 +0000
-Received: from n.tsagkas by athedsl-28885.home.otenet.gr with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 19:35:02 +0000
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.168])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9B484244DB
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 20:51:51 +0100 (CET)
+Received: by ug-out-1314.google.com with SMTP id q2so829971uge.50
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2008 11:51:50 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,8 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Are there any news on the subject? What does it take to apply the patch? A
-packet for any major distribution would be greatly appreciated.
+Hi, I just want to ask you if you have heard about the problem with low 
+sound volume level even though you set the alsamixer on the (almost) 
+maximum volume level. The sound card: snd-hda-intel / AD1981 / ICH7 )
+
+It's a big problem for me especially when I watch a movie with
+ac3 (DVD quality) decoded sound. The volume level is extrimly low in
+such situation (I mean the level you hear the sound). I have to connect 
+my loudspeakers to a ampilifier and set it in very high level.
+
+I don't have such problem when I work with Windows XP. They are loud enough.
+
+That's alsa-info.sh result: http://pastebin.ca/908831
+
+It is said that there are some preferences in the totem package (hidden 
+in alsamixer) that can fix it and make alsa to remember higher sound level.
+
+I've noticed that problem with all kernels I tested (I've checked about 
+15-20 kernels from that range 2.6.13.x - 2.6.24.x) (I usually
+use vanillia kernel (from www.kernel.org) /with build alsa/). But I've 
+tested the newest alsa-drivers: 1.0.16 with 2.6.24.2 kernel also and the 
+result was the same.
+
+Could you chack that problem, please?
+
+Robert
