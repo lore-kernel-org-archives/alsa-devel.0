@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] Support AC97CLK on PXA3xx via the clock API
-Date: Tue, 19 Feb 2008 16:04:16 +0000
-Message-ID: <1203437058-7288-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] Convert non-SoC PXA2xx AC97 driver to clock API
+Date: Tue, 19 Feb 2008 16:04:18 +0000
+Message-ID: <1203437058-7288-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20080219160341.GA6387@rakim.wolfsonmicro.main>
 	<1203437058-7288-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1203437058-7288-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1203437058-7288-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E445103939
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A403410393A
 	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2008 17:04:20 +0100 (CET)
-In-Reply-To: <1203437058-7288-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1203437058-7288-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,72 +23,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: eric miao <eric.miao@marvell.com>, Russell King <rmk@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.arm.linux.org.uk
+To: eric miao <eric.miao@marvell.com>, Russell King <rmk@arm.linux.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-The AC97 clock rate on PXA3xx is generated with a configurable divider
-from sys_pll.
-
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 ---
- arch/arm/mach-pxa/pxa3xx.c |   30 ++++++++++++++++++++++++++++--
- 1 files changed, 28 insertions(+), 2 deletions(-)
+ sound/arm/pxa2xx-ac97.c |   49 +++++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 41 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/pxa3xx.c b/arch/arm/mach-pxa/pxa3xx.c
-index 696f606..df568e5 100644
---- a/arch/arm/mach-pxa/pxa3xx.c
-+++ b/arch/arm/mach-pxa/pxa3xx.c
-@@ -110,6 +110,25 @@ unsigned int pxa3xx_get_memclk_frequency_10khz(void)
- }
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index 5d86e68..db08143 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -16,6 +16,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/interrupt.h>
+ #include <linux/wait.h>
++#include <linux/clk.h>
+ #include <linux/delay.h>
+ 
+ #include <sound/core.h>
+@@ -35,6 +36,10 @@
+ static DEFINE_MUTEX(car_mutex);
+ static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
+ static volatile long gsr_bits;
++static struct clk *ac97_clk;
++#ifdef CONFIG_PXA27x
++static struct clk *ac97conf_clk;
++#endif
  
  /*
-+ * Return the current AC97 clock frequency.
-+ */
-+static unsigned long clk_pxa3xx_ac97_getrate(struct clk *clk)
-+{
-+	unsigned long rate = 312000000;
-+	unsigned long ac97_div;
-+
-+	ac97_div = AC97_DIV;
-+
-+	/* This may loose precision for some rates but won't for the 
-+	 * standard 24.576MHz.
-+	 */
-+	rate /= (ac97_div >> 12) & 0x7fff;
-+	rate *= (ac97_div & 0xfff);
-+
-+	return rate;
-+}
-+
-+/*
-  * Return the current HSIO bus clock frequency
-  */
- static unsigned long clk_pxa3xx_hsio_getrate(struct clk *clk)
-@@ -164,6 +183,12 @@ static const struct clkops clk_pxa3xx_hsio_ops = {
- 	.getrate	= clk_pxa3xx_hsio_getrate,
- };
+  * Beware PXA27x bugs:
+@@ -112,9 +117,9 @@ static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
+ 	gsr_bits = 0;
+ #ifdef CONFIG_PXA27x
+ 	/* PXA27x Developers Manual section 13.5.2.2.1 */
+-	pxa_set_cken(CKEN_AC97CONF, 1);
++	clk_enable(ac97conf_clk);
+ 	udelay(5);
+-	pxa_set_cken(CKEN_AC97CONF, 0);
++	clk_disable(ac97conf_clk);
+ 	GCR = GCR_COLD_RST;
+ 	udelay(50);
+ #else
+@@ -259,7 +264,7 @@ static int pxa2xx_ac97_do_suspend(struct snd_card *card, pm_message_t state)
+ 	if (platform_ops && platform_ops->suspend)
+ 		platform_ops->suspend(platform_ops->priv);
+ 	GCR |= GCR_ACLINK_OFF;
+-	pxa_set_cken(CKEN_AC97, 0);
++	clk_disable(ac97_clk);
  
-+static const struct clkops clk_pxa3xx_ac97_ops = {
-+	.enable		= clk_pxa3xx_cken_enable,
-+	.disable	= clk_pxa3xx_cken_disable,
-+	.getrate	= clk_pxa3xx_ac97_getrate,
-+};
-+
- static void clk_pout_enable(struct clk *clk)
+ 	return 0;
+ }
+@@ -268,7 +273,7 @@ static int pxa2xx_ac97_do_resume(struct snd_card *card)
  {
- 	OSCC |= OSCC_PEN;
-@@ -205,8 +230,9 @@ static struct clk pxa3xx_clks[] = {
- 		.delay          = 70,
- 	},
+ 	pxa2xx_audio_ops_t *platform_ops = card->dev->platform_data;
  
--	PXA3xx_CK("LCDCLK", LCD,    &clk_pxa3xx_hsio_ops, &pxa_device_fb.dev),
--	PXA3xx_CK("CAMCLK", CAMERA, &clk_pxa3xx_hsio_ops, NULL),
-+	PXA3xx_CK("LCDCLK",  LCD,    &clk_pxa3xx_hsio_ops, &pxa_device_fb.dev),
-+	PXA3xx_CK("CAMCLK",  CAMERA, &clk_pxa3xx_hsio_ops, NULL),
-+	PXA3xx_CK("AC97CLK", AC97,   &clk_pxa3xx_ac97_ops, NULL),
+-	pxa_set_cken(CKEN_AC97, 1);
++	clk_enable(ac97_clk);
+ 	if (platform_ops && platform_ops->resume)
+ 		platform_ops->resume(platform_ops->priv);
+ 	snd_ac97_resume(pxa2xx_ac97_ac97);
+@@ -335,8 +340,21 @@ static int __devinit pxa2xx_ac97_probe(struct platform_device *dev)
+ #ifdef CONFIG_PXA27x
+ 	/* Use GPIO 113 as AC97 Reset on Bulverde */
+ 	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
++	ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
++	if (IS_ERR(ac97conf_clk)) {
++		ac97conf_clk = NULL;
++		ret = -ENODEV;
++		goto err;
++	}
+ #endif
+-	pxa_set_cken(CKEN_AC97, 1);
++
++	ac97_clk = clk_get(&dev->dev, "AC97CLK");
++	if (IS_ERR(ac97_clk)) {
++		ac97_clk = NULL;
++		ret = -ENODEV;
++		goto err;
++	}
++	clk_enable(ac97_clk);
  
- 	PXA3xx_CKEN("UARTCLK", FFUART, 14857000, 1, &pxa_device_ffuart.dev),
- 	PXA3xx_CKEN("UARTCLK", BTUART, 14857000, 1, &pxa_device_btuart.dev),
+ 	ret = snd_ac97_bus(card, 0, &pxa2xx_ac97_ops, NULL, &ac97_bus);
+ 	if (ret)
+@@ -361,11 +379,20 @@ static int __devinit pxa2xx_ac97_probe(struct platform_device *dev)
+  err:
+ 	if (card)
+ 		snd_card_free(card);
+-	if (CKEN & (1 << CKEN_AC97)) {
++	if (ac97_clk) {
+ 		GCR |= GCR_ACLINK_OFF;
+ 		free_irq(IRQ_AC97, NULL);
+-		pxa_set_cken(CKEN_AC97, 0);
++		clk_disable(ac97_clk);
++		clk_put(ac97_clk);
++		ac97_clk = NULL;
++	}
++#ifdef CONFIG_PXA27x
++	if (ac97conf_clk) {
++		clk_disable(ac97conf_clk);
++		clk_put(ac97conf_clk);
++		ac97conf_clk = NULL;
+ 	}
++#endif
+ 	return ret;
+ }
+ 
+@@ -378,7 +405,13 @@ static int __devexit pxa2xx_ac97_remove(struct platform_device *dev)
+ 		platform_set_drvdata(dev, NULL);
+ 		GCR |= GCR_ACLINK_OFF;
+ 		free_irq(IRQ_AC97, NULL);
+-		pxa_set_cken(CKEN_AC97, 0);
++		clk_disable(ac97_clk);
++		clk_put(ac97_clk);
++		ac97_clk = NULL;
++#ifdef CONFIG_PXA27x
++		clk_put(ac97conf_clk);
++		ac97conf_clk = NULL;
++#endif
+ 	}
+ 
+ 	return 0;
 -- 
 1.5.4.2
