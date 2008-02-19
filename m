@@ -1,31 +1,24 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Notebook Toshiba satellite x200-21g with
-	realtek	snd-hda-intel audio device still not supported (codec
-	ALC268)
-Date: Tue, 19 Feb 2008 11:01:34 -0800
-Message-ID: <1203447694.1677.25.camel@razman.gruemaster.com>
-References: <47672BCB.9080608@gmail.com>	<476912F3.8090609@gmail.com>
-	<476A2BCC.4060109@gmail.com>	<s5h1w9h4g5d.wl%tiwai@suse.de>
-	<47727C6C.6080401@gmail.com>
-	<1198815321.3732.229.camel@razman.gruemaster.com>
-	<47B06DEF.4070609@gmail.com>	<s5htzkfv5jp.wl%tiwai@suse.de>
-	<47B0D319.2000702@gmail.com>	<s5hd4r2v5g1.wl%tiwai@suse.de>
-	<47B23AB8.6000301@gmail.com>	<47B5D230.4050402@gmail.com>
-	<47B9C909.9010100@gmail.com>	<s5h3arpujri.wl%tiwai@suse.de>
-	<47BAE549.2080009@gmail.com>	<s5hzltxt3oy.wl%tiwai@suse.de>
-	<47BAEFB6.8040209@gmail.com>	<s5hprutt22f.wl%tiwai@suse.de>
-	<47BAFBD6.8050903@gmail.com> <s5hir0kudkz.wl%tiwai@suse.de>
-	<47BB1204.5010801@gmail.com>
-	<1203444980.1677.20.camel@razman.gruemaster.com>
-	<47BB257A.1080800@gmail.com>
+From: "Ignacy Kasperowicz" <fikufik@gmail.com>
+Subject: Re: Problem with setting period time and buffer time.
+Date: Tue, 19 Feb 2008 21:19:40 +0100
+Message-ID: <9673d3ac0802191219v52a4ddb8p6742760c06292c60@mail.gmail.com>
+References: <9673d3ac0802181557m6bd35f28w7680c9a9a979ab67@mail.gmail.com>
+	<47BA908B.7040700@ladisch.de>
+	<9673d3ac0802190320gab8bb7ara92a27b7f602d28b@mail.gmail.com>
+	<47BACED0.9090709@ladisch.de>
+	<9673d3ac0802190449x7130357cg6518402f7e9862d0@mail.gmail.com>
+	<47BAEB9E.4050202@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-13"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 151F310392F
-	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2008 20:01:36 +0100 (CET)
-In-Reply-To: <47BB257A.1080800@gmail.com>
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4873103933
+	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2008 21:19:42 +0100 (CET)
+Received: by ti-out-0910.google.com with SMTP id u3so1114309tia.8
+	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2008 12:19:40 -0800 (PST)
+In-Reply-To: <47BAEB9E.4050202@ladisch.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,28 +28,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Daniele (Mastro)" <daniele.bilug@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+2008/2/19, Clemens Ladisch <clemens@ladisch.de>:
+> Ignacy Kasperowicz wrote:
+> >> Just write the data to the device.
+> >
+> > Ok, but when I just write data to the device I don't really know how
+> > long it'll be playing.
+>
+> But you know how many sample you are writing, and you know the sample
+> rate.
+>
+> > There is no problem when I've infinite loop with writei inside. but I
+> > need to change freq of my sound signal with exact 843 us period time.
+>
+> Assuming a sample rate of 48 kHz, 1/1200 s corresponds to exactly
+> 40 samples.  At 44.1 kHz, this would be 36.75 samples, so you'd have to
+> use groups of 37+37+37+36 samples with appropriate phase shifting.
+>
+> BTW: 1 / 1200 Hz =3D 833.33... =B5s
+>
+>
+> HTH
+> Clemens
+>
 
-On Tue, 2008-02-19 at 19:52 +0100, Daniele (Mastro) wrote:
+Thanks for correction, I was trying to make this too complicated :P
+I dunno why I even thought about just setting how many samples to
+write in writei() :P
 
-> i'm 130% sure there's a subwoofer anyway..
+Although, when from calculations indeed I should set 40 samples to get
+sine played for 1/1200Hz, in my code I need to set frames size value
+for 400. Do You know why? I have 48kHz rate, one channel and 16 bit
+PCM.
+>From what I've read there:
+https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=3DFramesPeriods ,
+"A frame is equivalent of one sample being played" so why I need
+multiply calculation result by 10 ?
+I think this is a last rookie question :)
+
+Thanks for answers :)
+ignacy
+
+PS. Yeah I know its 833.33...us, I've just rounded it up for experimenting =
+;)
 
 
-That's possible, but it would be hooked up to the main speakers the same
-way most older stereo's had tweeters and subwoofers in the same cabinets
-with only two wires going to the receiver.  The subwoofer just works
-with the lower frequency mudulation.
+-- =
 
-
--- 
-Tobin Davis 
-
-
-"Think of it this way: threads are like salt, not like
- pasta. You like salt, I like salt, we all like salt. But we
- eat more pasta."
-
-	- Larry McVoy
+################################################
+gry =FAwietlicowe drog=E0 do wy=FDszej fazy przemian.
+gg:681548 jid: fik@jabbim.pl usecide.net
+################################################
