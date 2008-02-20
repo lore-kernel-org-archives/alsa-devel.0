@@ -1,14 +1,18 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: 92HDxxxx PCI Quirks
-Date: Wed, 20 Feb 2008 17:47:02 -0500
-Message-ID: <47BCADE6.9010904@embeddedalley.com>
+From: Ctirad Fertr <c.fertr@gmail.com>
+Subject: emu10k1, how to setup DMA for 24bit playback?
+Date: Thu, 21 Feb 2008 00:09:33 +0100
+Message-ID: <200802210009.33259.c.fertr@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp109.biz.mail.mud.yahoo.com (smtp109.biz.mail.mud.yahoo.com
-	[68.142.201.178]) by alsa0.perex.cz (Postfix) with SMTP id 9DF932455B
-	for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2008 23:47:05 +0100 (CET)
+Received: from smtp2.vol.cz (smtp2.vol.cz [195.250.128.75])
+	by alsa0.perex.cz (Postfix) with ESMTP id A111B24568
+	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2008 00:10:46 +0100 (CET)
+Received: from [10.16.3.4] (dsl-tn-6-43.static.adsl.vol.cz [83.148.7.43])
+	by smtp2.vol.cz (Postfix) with ESMTP id 43AF629956
+	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2008 00:10:46 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,190 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Added PCI_QUIRKS for laptop that have the 92HDxxx family of codecs.
+Hello, 
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
-diff -r 6b53fa114faa pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Tue Feb 19 15:03:57 2008 +0100
-+++ b/pci/hda/patch_sigmatel.c	Wed Feb 20 17:18:15 2008 -0500
-@@ -64,11 +64,14 @@ enum {
- 
- enum {
- 	STAC_92HD73XX_REF,
-+	STAC_DELL_M6_5ST,
- 	STAC_92HD73XX_MODELS
- };
- 
- enum {
- 	STAC_92HD71BXX_REF,
-+	STAC_DELL_M4_5ST,
-+	STAC_DELL_M4_6ST,
- 	STAC_92HD71BXX_MODELS
- };
- 
-@@ -334,10 +337,10 @@ static hda_nid_t stac922x_pin_nids[10] =
- 	0x0f, 0x10, 0x11, 0x15, 0x1b,
- };
- 
--static hda_nid_t stac92hd73xx_pin_nids[12] = {
-+static hda_nid_t stac92hd73xx_pin_nids[13] = {
- 	0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
- 	0x0f, 0x10, 0x11, 0x12, 0x13,
--	0x14, 0x22
-+	0x14, 0x1e, 0x22
- };
- 
- static hda_nid_t stac92hd71bxx_pin_nids[10] = {
-@@ -1220,24 +1223,48 @@ static struct snd_pci_quirk stac925x_cfg
- 	{} /* terminator */
- };
- 
--static unsigned int ref92hd73xx_pin_configs[12] = {
-+static unsigned int ref92hd73xx_pin_configs[13] = {
- 	0x02214030, 0x02a19040, 0x01a19020, 0x02214030,
- 	0x0181302e, 0x01014010, 0x01014020, 0x01014030,
- 	0x02319040, 0x90a000f0, 0x90a000f0, 0x01452050,
-+	0x01452050,
-+};
-+
-+static unsigned int dell_m6_5st_pin_configs[13] = {
-+	0x0321101f, 0x4f00000f, 0x4f0000f0, 0x90170110,
-+	0x03a11020, 0x03011050, 0x4f0000f0, 0x4f0000f0,
-+	0x4f0000f0, 0x90a60160, 0x4f0000f0, 0x4f0000f0,
-+	0x4f0000f0,
- };
- 
- static unsigned int *stac92hd73xx_brd_tbl[STAC_92HD73XX_MODELS] = {
--	[STAC_92HD73XX_REF] = ref92hd73xx_pin_configs,
-+	[STAC_92HD73XX_REF]	= ref92hd73xx_pin_configs,
-+	[STAC_DELL_M6_5ST]	= dell_m6_5st_pin_configs,
- };
- 
- static const char *stac92hd73xx_models[STAC_92HD73XX_MODELS] = {
- 	[STAC_92HD73XX_REF] = "ref",
-+	[STAC_DELL_M6_5ST] = "dell-m6-5stack",
- };
- 
- static struct snd_pci_quirk stac92hd73xx_cfg_tbl[] = {
- 	/* SigmaTel reference board */
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
--		      "DFI LanParty", STAC_92HD73XX_REF),
-+				"DFI LanParty", STAC_92HD73XX_REF),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0254,
-+				"unknown Dell", STAC_DELL_M6_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0255,
-+				"unknown Dell", STAC_DELL_M6_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0256,
-+				"unknown Dell", STAC_DELL_M6_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0257,
-+				"unknown Dell", STAC_DELL_M6_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x025e,
-+				"unknown Dell", STAC_DELL_M6_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x025f,
-+				"unknown Dell", STAC_DELL_M6_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0271,
-+				"unknown Dell", STAC_DELL_M6_5ST),
- 	{} /* terminator */
- };
- 
-@@ -1247,18 +1274,56 @@ static unsigned int ref92hd71bxx_pin_con
- 	0x90a000f0, 0x01452050,
- };
- 
-+static unsigned int dell_m4_5st_pin_configs[13] = {
-+	0x0421101f, 0x04a11221, 0x40f000f0, 0x90170110,
-+	0x23a1902e, 0x23014250, 0x40f000f0, 0x4f0000f0,
-+	0x40f000f0, 0x4f0000f0,
-+};
-+
-+static unsigned int dell_m4_6st_pin_configs[13] = {
-+	0x0421101f, 0x04a11221, 0x90a70330, 0x90170110,
-+	0x23a1902e, 0x23014250, 0x40f000f0, 0x40f000f0,
-+	0x40f000f0, 0x044413b0,
-+};
-+
- static unsigned int *stac92hd71bxx_brd_tbl[STAC_92HD71BXX_MODELS] = {
- 	[STAC_92HD71BXX_REF] = ref92hd71bxx_pin_configs,
-+	[STAC_DELL_M4_5ST]	= dell_m4_5st_pin_configs,
-+	[STAC_DELL_M4_6ST]	= dell_m4_6st_pin_configs,
- };
- 
- static const char *stac92hd71bxx_models[STAC_92HD71BXX_MODELS] = {
- 	[STAC_92HD71BXX_REF] = "ref",
-+	[STAC_DELL_M4_5ST] = "dell-m4-5stack",
-+	[STAC_DELL_M4_6ST] = "dell-m4-6stack",
- };
- 
- static struct snd_pci_quirk stac92hd71bxx_cfg_tbl[] = {
- 	/* SigmaTel reference board */
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x2668,
- 		      "DFI LanParty", STAC_92HD71BXX_REF),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0233,
-+				"unknown Dell", STAC_DELL_M4_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0234,
-+				"unknown Dell", STAC_DELL_M4_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0250,
-+				"unknown Dell", STAC_DELL_M4_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x024f,
-+				"unknown Dell", STAC_DELL_M4_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x024d,
-+				"unknown Dell", STAC_DELL_M4_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0251,
-+				"unknown Dell", STAC_DELL_M4_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0277,
-+				"unknown Dell", STAC_DELL_M4_5ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0263,
-+				"unknown Dell", STAC_DELL_M4_6ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0265,
-+				"unknown Dell", STAC_DELL_M4_6ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0262,
-+				"unknown Dell", STAC_DELL_M4_6ST),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0264,
-+				"unknown Dell", STAC_DELL_M4_6ST),
- 	{} /* terminator */
- };
- 
-@@ -3355,12 +3420,38 @@ again:
- 
- 	spec->num_muxes = ARRAY_SIZE(stac92hd73xx_mux_nids);
- 	spec->num_adcs = ARRAY_SIZE(stac92hd73xx_adc_nids);
--	spec->num_dmics = STAC92HD73XX_NUM_DMICS;
- 	spec->num_dmuxes = ARRAY_SIZE(stac92hd73xx_dmux_nids);
- 	spec->dinput_mux = &stac92hd73xx_dmux;
- 	/* GPIO0 High = Enable EAPD */
- 	spec->gpio_mask = spec->gpio_dir = 0x1;
- 	spec->gpio_data = 0x01;
-+
-+	switch (spec->board_config) {
-+	case STAC_DELL_M6_5ST:
-+		switch (codec->subsystem_id) {
-+		case 0x1028025e: /* Analog Mics */
-+		case 0x1028025f:
-+			stac92xx_set_config_reg(codec, 0x0b, 0x90A70170);
-+			spec->num_dmics = 0;
-+			break;
-+		case 0x10280254: /* Digital Mics */
-+		case 0x10280255:
-+		case 0x10280271:
-+		case 0x10280272:
-+			stac92xx_set_config_reg(codec, 0x13, 0x90A60160);
-+			spec->num_dmics = 1;
-+			break;
-+		case 0x10280256: /* Both */
-+		case 0x10280057:
-+			stac92xx_set_config_reg(codec, 0x0b, 0x90A70170);
-+			stac92xx_set_config_reg(codec, 0x13, 0x90A60160);
-+			spec->num_dmics = 1;
-+			break;
-+		}
-+		break;
-+	default:
-+		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
-+	}
- 
- 	spec->num_pwrs = ARRAY_SIZE(stac92hd73xx_pwr_nids);
- 	spec->pwr_nids = stac92hd73xx_pwr_nids;
+I'm trying to add 24bit playback for E-mu cards into emu10k driver. These 
+cards use an FPGA, which is 32bit internally and it is feeded via 10k2 EMU32 
+BUSes.  Unfortunatelly, the emu10k DMA cannot handle more than 16bit samples, 
+so kind of tricky stuff is needed. The already working 24bit multichannel 
+capture uses an DSP code, which splits an 32 bit sample into two halfs, sent 
+it over two DMA channels and then alsa lib (???) joins it back into S32_LE 
+sample. 
+
+I'm trying to use same technique in reverse way using a pair of A_FXBUSes for 
+one playback chanel, but I'm not able to set the DMA the way I need. Can 
+someone with emu10k knowledge help me?   
+
+----
+Ctirad    
