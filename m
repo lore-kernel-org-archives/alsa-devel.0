@@ -1,24 +1,19 @@
-From: "Ignacy Kasperowicz" <fikufik@gmail.com>
-Subject: Re: Problem with setting period time and buffer time.
-Date: Wed, 20 Feb 2008 01:35:58 +0100
-Message-ID: <9673d3ac0802191635x593a4f73g38fd87ddcf9ad8ab@mail.gmail.com>
-References: <9673d3ac0802181557m6bd35f28w7680c9a9a979ab67@mail.gmail.com>
-	<47BA908B.7040700@ladisch.de>
-	<9673d3ac0802190320gab8bb7ara92a27b7f602d28b@mail.gmail.com>
-	<47BACED0.9090709@ladisch.de>
-	<9673d3ac0802190449x7130357cg6518402f7e9862d0@mail.gmail.com>
-	<47BAEB9E.4050202@ladisch.de>
-	<9673d3ac0802191219v52a4ddb8p6742760c06292c60@mail.gmail.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: ALSA MIDI interface - plugin
+Date: Wed, 20 Feb 2008 06:09:21 +0530
+Message-ID: <61445c750802191639g6ddc1097n13f9cbf88d5153b@mail.gmail.com>
+References: <61445c750802140724h1585b495pcc546e2b082e086a@mail.gmail.com>
+	<s5hfxvuw483.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0001B2458D
-	for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2008 01:36:00 +0100 (CET)
-Received: by wr-out-0506.google.com with SMTP id 60so2486203wri.8
-	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2008 16:35:59 -0800 (PST)
-In-Reply-To: <9673d3ac0802191219v52a4ddb8p6742760c06292c60@mail.gmail.com>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 707532462C
+	for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2008 01:39:23 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so3974029wag.8
+	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2008 16:39:21 -0800 (PST)
+In-Reply-To: <s5hfxvuw483.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,20 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Everything works, just ignore post above :)
+>
+> It's possible, but so far, no external plugin framework is implemented
+> for rawmidi.  The external plugins are available only for PCM and
+> control APIs.  I guess it'd be relatively easy to add the external
+> rawmidi plugins, though.
+>
 
-Thanks for help :)
+How can I start adding an external rawmidi plugin? As you said, there is no
+framework ready yet. So, first a framework has to be created so that
+external plugins can be added the same way one would add PCM or control type
+plugins. It might sound a little naive but I am not familiar with the
+framework part of it, but it looks interesting.
 
-Best regards.
-Ignacy
+1. I think for finding out what the plugin framework would consists of I
+need to have a look at alsa-lib and modify it too, is it correct?. If such a
+framework is created then
+will the control flow look like this:
 
--- =
+amidi/aplaymidi ->alsa-lib with midi plugin framework->my_midi_plugin
 
-################################################
-gry =B6wietlicowe drog=B1 do wy=BFszej fazy przemian.
-gg:681548 jid: fik@jabbim.pl usecide.net
-################################################
+Can you point me to some code/doc etc which might serve as start point,
+basically how do I go about adding such a framework and finally, how user is
+going to use
+it with newly added plugin? (i.e. for pcm io type plugin we use #aplay -D
+my_plugin test.wav, will it be similar for midi plugin also?)
+
+-Pharaoh.
