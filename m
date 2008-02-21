@@ -1,19 +1,19 @@
 From: Jiang zhe <zhe.jiang@intel.com>
 Subject: Re: Problem with DELL XPS M1530
-Date: Thu, 21 Feb 2008 10:58:48 +0800
-Message-ID: <1203562728.27014.12.camel@localhost.localdomain>
-References: <mailman.1.1203505202.15472.alsa-devel@alsa-project.org>
-	<194b8d500802200430j2be27899vf5ae8a2ddaca7389@mail.gmail.com>
-	<s5hablvsque.wl%tiwai@suse.de> <47BC43E3.5010501@gmail.com>
-	<s5h4pc3pqq7.wl%tiwai@suse.de>
+Date: Thu, 21 Feb 2008 11:06:15 +0800
+Message-ID: <1203563175.27014.19.camel@localhost.localdomain>
+References: <47BB02A4.8080907@gmail.com> <s5hfxvouckf.wl%tiwai@suse.de>
+	<47BB1F14.4050804@gmail.com>
+	<1203500940.3006.4.camel@localhost.localdomain>
+	<s5hy79fsxyz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id A47301037F9
-	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2008 03:58:34 +0100 (CET)
-In-Reply-To: <s5h4pc3pqq7.wl%tiwai@suse.de>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F69A1038CB
+	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2008 04:04:59 +0100 (CET)
+In-Reply-To: <s5hy79fsxyz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,71 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Anders =?ISO-8859-1?Q?R=F8nningen?= <andersronningen@gmail.com>, anders.ronningen@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi, Takashi:
 
-> >
-> > http://pastebin.ca/911147
-> >
-> > Now the odd thing is that after the last compile of alsa-driver
-> 1.0.16
-> > ... stuff works! Both HP jacks, the internal speakers and the mic
-> work
-> > just fine. I don't really know what to make of it, since all I have
-> done
-> > is compile like I did earlier and reboot...
-> 
-> Thanks.  It's not that odd.  As I mentioned, the fix after 1.0.16
-> might break the dual headphone configuration of Dell laptops.
-> 
-> Need to investigate a bit further...
-> 
-Hi,
+Maybe we can try handling the ALC268 laptop HP issue in the
+patch_realtek.c.
+The patch for the hda_codec.c seems to conflict with the code of
+patch_sigmatel.c.
 
-The reason should be the following code of hda_codec.c :
-	/* FIX-UP:
-	 * If no line-out is defined but multiple HPs are found,
-	 * some of them might be the real line-outs.
+The patch_sigmatel.c depends on  line_out_type == AUTO_PIN_SPEAKER_OUT
+and hp_outs > 1 in order to handle the 2 HP jacks issue.
+
+/* If we have no real line-out pin and multiple hp-outs, HPs should
+	 * be set up as multi-channel outputs.
 	 */
-	if (!cfg->line_outs && cfg->hp_outs > 1) {
-		int i = 0;
-		while (i < cfg->hp_outs) {
-			/* The real HPs should have the sequence 0x0f */
-			if ((sequences_hp[i] & 0x0f) == 0x0f) {
-				i++;
-				continue;
-			}
-			/* Move it to the line-out table */
-			cfg->line_out_pins[cfg->line_outs] = cfg->hp_pins[i];
-			sequences_line_out[cfg->line_outs] = sequences_hp[i];
-			cfg->line_outs++;
-			cfg->hp_outs--;
-			memmove(cfg->hp_pins + i, cfg->hp_pins + i + 1,
-				sizeof(cfg->hp_pins[0]) * (cfg->hp_outs - i));
-			memmove(sequences_hp + i - 1, sequences_hp + i,
-				sizeof(sequences_hp[0]) * (cfg->hp_outs - i));
-		}
+	if (spec->autocfg.line_out_type == AUTO_PIN_SPEAKER_OUT &&
+	    spec->autocfg.hp_outs > 1) {
+		/* Copy hp_outs to line_outs, backup line_outs in
+		 * speaker_outs so that the following routines can handle
+		 * HP pins as primary outputs.
+		 */
+		memcpy(spec->autocfg.speaker_pins, spec->autocfg.line_out_pins,
+		       sizeof(spec->autocfg.line_out_pins));
+		spec->autocfg.speaker_outs = spec->autocfg.line_outs;
+		memcpy(spec->autocfg.line_out_pins, spec->autocfg.hp_pins,
+		       sizeof(spec->autocfg.hp_pins));
+		spec->autocfg.line_outs = spec->autocfg.hp_outs;
+		hp_speaker_swap = 1;
 	}
-
-
-For dell machine which has two HP jacks, it will do some special process
-in stac***_parse_auto_config().Please refer to the code of
-patch_sigmatel.c, search the "hp_speaker_swap".
-But the code in the hda_codec.c break the logic. So it failed.
-
-Anders:
-May you try latest alsa-driver and get rid of the above code from
-snd_hda_parse_pin_def_config() in hda_codec.c?
-I think that it will work.
-
-
+ 
 Thanks!
+
+> > It's weird that 0xf is in both the line_outs and hp_outs.
+> > And the hp_outs=1 when there are two items.
+> 
+> It's due to a fix for an ALC268 laptop that has also two HPs but one
+> is actually a line-out.  Note that hp_outs=1 in the print above.  The
+> 0x0f in hp_outs is simply a garbage.  Maybe that patch broke the
+> double HPs with STAC9228...
+> 
 > 
 > Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-> 
