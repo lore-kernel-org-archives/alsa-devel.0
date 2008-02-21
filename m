@@ -1,16 +1,18 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: Re: [PATCH] hda: STAC927x analog mic
-Date: Thu, 21 Feb 2008 07:42:55 -0500
-Message-ID: <0626BD7E-1419-4FD8-A353-6969A69DDC8D@embeddedalley.com>
-References: <47BCE6D7.7000205@embeddedalley.com> <s5hd4qqss3g.wl%tiwai@suse.de>
-Mime-Version: 1.0 (Apple Message framework v753)
+From: =?ISO-8859-1?Q?Anders_R=F8nningen?= <andersronningen@gmail.com>
+Subject: Re: [PATCH] hda: STAC927x invalid association value
+Date: Thu, 21 Feb 2008 16:17:53 +0100
+Message-ID: <47BD9621.5040101@gmail.com>
+References: <47BCA495.5050201@embeddedalley.com> <s5hfxvmss9c.wl%tiwai@suse.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp100.biz.mail.re2.yahoo.com (smtp100.biz.mail.re2.yahoo.com
-	[206.190.52.46]) by alsa0.perex.cz (Postfix) with SMTP id A80652440A
-	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2008 13:42:58 +0100 (CET)
-In-Reply-To: <s5hd4qqss3g.wl%tiwai@suse.de>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 066582434B
+	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2008 16:17:57 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id b21so36784nfd.32
+	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2008 07:17:56 -0800 (PST)
+In-Reply-To: <s5hfxvmss9c.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,52 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Jiang zhe <zhe.jiang@intel.com>, alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
 List-Id: alsa-devel@alsa-project.org
 
+I tried with "alsa-driver-hg20080221", and now left HP and internal 
+speakers are gone again.
 
-On Feb 21, 2008, at 2:09 AM, Takashi Iwai wrote:
+dmesg:
+[   15.444000] ALSA 
+/mnt/storage/source/alsa/alsa-driver-hg20080221/pci/hda/hda_codec.c:2994: 
+autoconfig: line_outs=1 (0xf/0x0/0x0/0x0/0x0)
+[   15.444000] ALSA 
+/mnt/storage/source/alsa/alsa-driver-hg20080221/pci/hda/hda_codec.c:2998:    
+speaker_outs=1 (0xd/0x0/0x0/0x0/0x0)
+[   15.444000] ALSA 
+/mnt/storage/source/alsa/alsa-driver-hg20080221/pci/hda/hda_codec.c:3002:    
+hp_outs=1 (0xa/0xf/0x0/0x0/0x0)
+[   15.444000] ALSA 
+/mnt/storage/source/alsa/alsa-driver-hg20080221/pci/hda/hda_codec.c:3003:    
+mono: mono_out=0x0
+[   15.444000] ALSA 
+/mnt/storage/source/alsa/alsa-driver-hg20080221/pci/hda/hda_codec.c:3011:    
+inputs: mic=0xe, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
+[   15.448000] ALSA 
+/mnt/storage/source/alsa/alsa-driver-hg20080221/pci/hda/../../alsa-kernel/pci/hda/patch_sigmatel.c:2222: 
+dac_nids=2 (0x5/0x4/0x0/0x0/0x0)
 
-> At Wed, 20 Feb 2008 21:49:59 -0500,
+alsa-info.sh
+http://pastebin.ca/912640
+
+Was this sw with the fix?
+
+- Anders
+
+Takashi Iwai wrote:
+> At Wed, 20 Feb 2008 17:07:17 -0500,
 > Matthew Ranostay wrote:
->>
->> Some laptops have a internal analog microphone that is not setup  
->> by the BIOS.
+>   
+>> STAC_DELL_BIOS quirks were setting the association value wrong for port 0x0f, which prevented it from
+>> being included in hp_outs[].
 >>
 >> Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+>>     
 >
 > Applied to HG tree.
+> Hopefully this fixes the problem with Dell XP M1530...
 >
-> BTW, are there boards / machines that have both analog and digital
-> mics?
-Yep there are several boards that have both analog and digital mics.
-
-> Currently, we have "Digital Capture Volume".  It was introduced
-> as an alternative volume control for digital mics.  But, this seems
-> confusing people a lot because this volume works correctly at 50%,
-> corresponding to 0dB.  For systems that have only analog mics, this
-> control doesn't make much sense.
->
-> Thus, I would love to make this control depending on the presence of
-> digital mic if possible...
->
->
-> thanks,
+> Thanks,
 >
 > Takashi
 >
+>   
 >> ---
->> diff -r 6b53fa114faa pci/hda/patch_sigmatel.c
->> --- a/pci/hda/patch_sigmatel.c	Tue Feb 19 15:03:57 2008 +0100
->> +++ b/pci/hda/patch_sigmatel.c	Wed Feb 20 17:11:51 2008 -0500
->> @@ -3629,6 +3629,8 @@ static int patch_stac927x(struct hda_cod
->>  		spec->mixer = stac927x_mixer;
+>> diff -r 30701aaf404c pci/hda/patch_sigmatel.c
+>> --- a/pci/hda/patch_sigmatel.c	Wed Feb 20 12:13:29 2008 +0100
+>> +++ b/pci/hda/patch_sigmatel.c	Wed Feb 20 15:01:35 2008 -0700
+>> @@ -3630,7 +3630,7 @@ static int patch_stac927x(struct hda_cod
 >>  		break;
 >>  	case STAC_DELL_BIOS:
->> +		/* configure the analog microphone on some laptops */
->> +		stac92xx_set_config_reg(codec, 0x0c, 0x90a79130);
 >>  		/* correct the front output jack as a hp out */
->>  		stac92xx_set_config_reg(codec, 0x0f, 0x02270110);
+>> -		stac92xx_set_config_reg(codec, 0x0f, 0x02270110);
+>> +		stac92xx_set_config_reg(codec, 0x0f, 0x0227011f);
 >>  		/* correct the front input jack as a mic */
+>>  		stac92xx_set_config_reg(codec, 0x0e, 0x02a79130);
+>>  		/* fallthru */
 >>
->
+>>     
