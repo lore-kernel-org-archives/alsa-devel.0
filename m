@@ -1,19 +1,18 @@
 From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: asihpi: Need help converting volatile to memory
-	barriers
-Date: Fri, 22 Feb 2008 12:18:18 +1300
-Message-ID: <200802221218.18249.linux@audioscience.com>
+Subject: asihpi - how much further?
+Date: Fri, 22 Feb 2008 12:26:59 +1300
+Message-ID: <200802221226.59326.linux@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5D3D243CF
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 00:14:52 +0100 (CET)
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71D3F244DB
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 00:23:32 +0100 (CET)
 Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JWM00JZ038N9E00@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 22 Feb 2008 12:14:48 +1300 (NZDT)
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JWM000GL3N4LG30@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Fri, 22 Feb 2008 12:23:30 +1300 (NZDT)
 Content-disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,84 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, greg@kroah.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: greg@kroah.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
-
-first, the meta-help request:
-Is there another place that I should be making this request? (lkml, kernel 
-newbies, linux driver project etc)?
-
-Theres quite a bit written about barriers, but most seems to be assuming SMP 
-situation or memory mapped devices. Not much about devices doing DMA.
-I.e I have read Documentation/memory-barriers.txt
-
-Now the actual question:
-Currently I have a driver that uses "volatile" - heres the relevant source.
-http://hg.alsa-project.org/alsa-driver/file/89222d702376/pci/asihpi/hpi6205.c
-
-The "volatile" is applied to structures that are either read or written by 
-device DMA.  Certainly the driver in its current state doesn't work without 
-volatile qualifier. (BTW the device doesn't use host interrupts)
-
-Structures ("interface") used for dma are allocated with dma_alloc_coherent()
-
-In the following, am I using the barriers correctly?
-
-1) Reading something updated by DMA
-
-volatile struct bus_master_interface *interface;
-while (interface->ack != OK) { 
-	sleep(a while)  	
-	[ device changes interface->ack by dma ]
-};
-=== after conversion
-struct bus_master_interface *interface;
-while (interface->ack != OK) { 
-	sleep(a while);
-	rmb(); 
-};
-
-Here the volatile or rmb is needed or the loop gets optimised away.
-
-2) Writing to memory, interrupt device
-
-volatile struct bus_master_interface *interface;
-interface->cmd = command;
-iowrite(device_interrupt, 1);
-
-=== after conversion ===
-struct bus_master_interface *interface;
-interface->cmd = command;
-wmb();
-iowrite(device_interrupt, 1);
-[device reads interface->cmd by dma]
-
-Is the wmb() a guarantee that the command will be in memory visible to the 
-device when the driver informs it of a new command?
-
-
-3) 
-
-One assumption I am making is that the compiler is not going to optimise 
-across functions 
-E.g. in the following scenario, is the compiler going to optimise the loop 
-away without a rmb()?  If not, is this because of something inherent in the C 
-standard, or just because the optimiser isn't yet smart enough to see it? 
-I.e. it might work now, but when whole-file-optimisation is introduced, it 
-will fail?
-
-int get_ack(interface) { return interface->ack }
-...
-while (get_ack(interface) != OK) {
-	sleep(a while);
-}
-
-
-regards
-
---
-Eliot Blennerhassett
-www.audioscience.com
+SGkgVGFrYXNoaSwKCk15IGJvc3MgaGFzIHN0YXJ0ZWQgYXNraW5nIGhvdyBsb25nIGlzIGl0IGdv
+aW5nIHRvIHRha2UgdG8gZ2V0IG91ciBkcml2ZXIgaW50byAKbWFpbmxpbmUuICBJLmUuIGEgbGlz
+dCBvZiB0aGluZ3Mgd2UgbmVlZCB0byBkbywgdGhhdCB3aGVuIGFsbCB0aG9zZSBpdGVtcyAKaGF2
+ZSBiZWVuIGRlYWx0IHdpdGgsIHRoZW4gdGhlIGRyaXZlciBpcyBhY2NlcHRlZC4KSXMgaXQgcG9z
+c2libGUgdG8gbWFrZSBzdWNoIGEgbGlzdD8KCnRoYW5rcyBhbmQgcmVnYXJkcwoKRWxpb3QgQmxl
+bm5lcmhhc3NldHQKd3d3LmF1ZGlvc2NpZW5jZS5jb20KCgpQLlMuIEhlcmVzIGEgcXVvdGUgdGhh
+dCBJIGZlZWwgaGFzIHNvbWUgcmVsZXZhbmNlOgoKaHR0cDovL2xpbnV4LWZvdW5kYXRpb24ub3Jn
+L3dlYmxvZ3Mvb3BlbnZvaWNlcy9saW51cy10b3J2YWxkcy1wYXJ0LWlpLwoKSmltIFplbWxpbjog
+QnV0IGluIGEgc2Vuc2UsIG92ZXIgdGltZSwgeW91IHdpbiBiZWNhdXNlIHlvdSBzZXQgdGhlIGJh
+ciBoaWdoIAphbmQgeW91IGVuY291cmFnZSBwZW9wbGUgdG8gZ2V0IGl0IGludG8gdGhlIG1haW4g
+bGluZS4KCkxpbnVzIFRvcnZhbGRzOiBPbmUgb2YgdGhlIHByb2JsZW1zIGlzIHdlIGhhdmUgcGVv
+cGxlIHdobyBoYXZlIHNvIGhpZ2ggCmNyaXRlcmlhIGZvciB3aGF0IGlzIGFjY2VwdGFibGUgb3Ig
+bm90IHRoYXQgaXQgc2NhcmVzIGF3YXkgcGVvcGxlIHdobyB3YW50IHRvIApkbyBuZXcgY29kZSBh
+bmQgZG8gbmV3IGV4cGVyaW1lbnRzLgoKV2UgbXVzdG7igJl0IHNldCB0aGUgYmFyIHRoYXQgaGln
+aC4gTmV3IGNvZGUsIG5ldyBkcml2ZXJzLCB0aGVyZSB3aWxsIGJlIApwcm9ibGVtcyBhbmQgSeKA
+mWQgcmF0aGVyIHRha2UgdGhlbSBhbmQgdGhlbiBpbXByb3ZlIHRoZW0gdGhhbiBleHBlY3QgZHJp
+dmVyIAphdXRob3JzLCBlc3BlY2lhbGx5IHdoZW4gdGhleSBzdGFuZCBvdXRzaWRlIHRoZSBtYWlu
+IHRyZWUgYW5kIGZlZWwga2luZCBvZiAKbGlrZSBvdXRzaWRlcnMgZXZlbiB0aG91Z2ggbWF5YmUg
+dGhleSByZWFsbHkgYXJlIHBhcnQgb2YgdGhlIHNhbWUgd2hvbGUgCmRldmVsb3BtZW50IGNvbW11
+bml0eSwgYnV0IHRoZXkgZmVlbCBsaWtlIG91dHNpZGVycyBiZWNhdXNlIHRoZWlyIGRyaXZlciAK
+aGFzbuKAmXQgbWFkZSBpdCBpbnRvIHRoZSB0cmVlIHlldC4KCkFuZCB0aGVuIGFza2luZyB0aGVt
+IHRvIGp1bXAgdGhyb3VnaCBob29wcyBhbmQgbWFrZSB0aGVpciBkcml2ZXIgcGVyZmVjdCB3aGVu
+IAp0aGV54oCZcmUgc3RhbmRpbmcgdGhlcmUgYWxvbmUgYW5kIGRvbuKAmXQgaGF2ZSBoZWxwOyBJ
+IHRoaW5rIHRoYXTigJlzIHVuZmFpci4gQW5kIAp0aGVyZSBhcmUgcGVvcGxlIGluIHRoZSBrZXJu
+ZWwgY29tbXVuaXR5IHRoYXQgZmVlbCB0aGF0IHdheSB0aGF0IHRoaW5ncyBoYXZlIAp0byBiZSBq
+dXN0IHJpZ2h0IGJlZm9yZSB5b3UgY2FuIGFjY2VwdCB0aGVtIGFuZCBJ4oCZbSBtdWNoIG1vcmUg
+b2YgYSAKbGFpc3Nlei1mYWlyZSBraW5kIG9mIHBlcnNvbi4gV2UgZG9u4oCZdCB3YW50IHRvIGFj
+Y2VwdCBiYWQgdGhpbmdzLCBidXQgb24gdGhlIApvdGhlciBoYW5kLCBoZXksIGV2ZXJ5dGhpbmcg
+c3RhcnRzIGZyb20gbGVzcy10aGFuLXBlcmZlY3Qgcm9vdHMgYW5kIGl04oCZcyBtdWNoIApiZXR0
+ZXIgdG8gYWNjZXB0IHRoaW5ncyB0aGF0IHdvcmsgYnV0IG1heSBub3QgYmUgcGVyZmVjdCBhbmQg
+dGhlbiBpbXByb3ZlIG9uIAp0aGVtIHdoZW4gd2UgY2FuIGFsbCBpbXByb3ZlIG9uIHRoZW0gYW5k
+IGFsbCB0aGUgZGlmZmVyZW50IHZlbmRvcnMgY2FuIGZpeCAKdGhlIHNtYWxsIG5hZ2dpbmcgaXNz
+dWVzIHRoZXkgaGF2ZSBpbnN0ZWFkIG9mIGtlZXBpbmcgdGhlbSBhdCBhcm3igJlzIGxlbmd0aCAK
+dW50aWwgdGhleeKAmXJlIHBlcmZlY3QgYmVjYXVzZSBtYXliZSB0aGV54oCZbGwgbmV2ZXIgYmUg
+cGVyZmVjdCB3aXRob3V0IGhlbHAuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
