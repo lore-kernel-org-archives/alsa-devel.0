@@ -1,19 +1,24 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: asihpi: Need help converting volatile to memory
-	barriers
-Date: Fri, 22 Feb 2008 09:37:56 -0800
-Message-ID: <20080222173756.GA29271@kroah.com>
-References: <200802221218.18249.linux@audioscience.com>
+From: Ahmet =?utf-8?B?xLBuYW4=?= <ainan@mathematik.uni-freiburg.de>
+Subject: Re: [PATCH] improved snd-aloop quality when
+	using	certain samplerates and kernel HZ
+Date: Fri, 22 Feb 2008 19:05:28 +0100
+Message-ID: <20080222180528.GD6860@mathematik.uni-freiburg.de>
+References: <20080219030144.GA12698@mathematik.uni-freiburg.de>
+	<20080219125046.GA6455@mathematik.uni-freiburg.de>
+	<s5hhcg3svd4.wl%tiwai@suse.de>
+	<20080220141906.GA15096@mathematik.uni-freiburg.de>
+	<s5h3arnpq4i.wl%tiwai@suse.de>
+	<20080221000601.GA4829@mathematik.uni-freiburg.de>
+	<s5hmypusssj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/mixed; boundary="ReaqsoxgOBHFXBhH"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pentafluge.infradead.org (pentafluge.infradead.org
-	[213.146.154.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 589792445E
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 18:38:13 +0100 (CET)
+Received: from mx01.qsc.de (mx01.qsc.de [213.148.129.14])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A42F243F7
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 19:05:31 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <200802221218.18249.linux@audioscience.com>
+In-Reply-To: <s5hmypusssj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +28,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 22, 2008 at 12:18:18PM +1300, Eliot Blennerhassett wrote:
-> Greetings,
-> 
-> first, the meta-help request:
-> Is there another place that I should be making this request? (lkml, kernel 
-> newbies, linux driver project etc)?
 
-lkml is best for this.
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Theres quite a bit written about barriers, but most seems to be assuming SMP 
-> situation or memory mapped devices. Not much about devices doing DMA.
-> I.e I have read Documentation/memory-barriers.txt
-> 
-> Now the actual question:
-> Currently I have a driver that uses "volatile" - heres the relevant source.
-> http://hg.alsa-project.org/alsa-driver/file/89222d702376/pci/asihpi/hpi6205.c
-> 
-> The "volatile" is applied to structures that are either read or written by 
-> device DMA.  Certainly the driver in its current state doesn't work without 
-> volatile qualifier. (BTW the device doesn't use host interrupts)
-> 
-> Structures ("interface") used for dma are allocated with dma_alloc_coherent()
-> 
-> In the following, am I using the barriers correctly?
-> 
-> 1) Reading something updated by DMA
-> 
-> volatile struct bus_master_interface *interface;
-> while (interface->ack != OK) { 
-> 	sleep(a while)  	
-> 	[ device changes interface->ack by dma ]
-> };
-> === after conversion
-> struct bus_master_interface *interface;
-> while (interface->ack != OK) { 
-> 	sleep(a while);
-> 	rmb(); 
-> };
-> 
-> Here the volatile or rmb is needed or the loop gets optimised away.
+when the time interval for a period is smaller than kernel HZ, then
+snd-aloop and snd-dummy cannot call snd_pcm_period_elapsed as fast enough
+annymore. this happens for example with games. but the app still needs to
+see, that the buffer actually did go further, which is provided by these
+patches.
 
-Using rmb() is correct, not volatile, as volatile might not really do
-what you are expecting it to do on all versions of gcc and
-architectures.
+[snd-aloop - better realtime app support]
+http://www.mathematik.uni-freiburg.de/IAM/homepages/ainan/alsa-driver-hg-=
+aloop-ainan-patch2.diff
+[Signed-off-by: Ahmet =C4=B0nan <ainan <at> mathematik.uni-freiburg.de>]
 
-So please remove all instances of volatile, it is not correct to use it
-within kernel code.
+[snd-dummy - better realtime app support]
+http://www.mathematik.uni-freiburg.de/IAM/homepages/ainan/alsa-kernel-hg-=
+dummy-ainan-patch1.diff
+[Signed-off-by: Ahmet =C4=B0nan <ainan <at> mathematik.uni-freiburg.de>]
 
-thanks,
+patches are relative to current hg-tree.
 
-greg k-h
+finally even realtime apps like games work smooth.
+only one thing left for perfection :)
+
+ahmet
+
+--
+admin der abteilung f=C3=BCr angewandte mathematik, tel. 0761-203-5626
+
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="alsa-driver-hg-aloop-ainan-patch2.diff"
+
+diff -r 89222d702376 drivers/aloop-kernel.c
+--- a/drivers/aloop-kernel.c	Thu Feb 21 07:54:16 2008 +0100
++++ b/drivers/aloop-kernel.c	Fri Feb 22 18:16:56 2008 +0100
+@@ -198,10 +198,10 @@ static void snd_card_loopback_timer_func
+ 	spin_lock_irq(&dpcm->lock);
+ 
+ 	dpcm->pcm_irq_pos += dpcm->pcm_bps;
++	dpcm->pcm_buf_pos += dpcm->pcm_bps;
++	dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size * dpcm->pcm_hz;
+ 	if (dpcm->pcm_irq_pos >= dpcm->pcm_period_size * dpcm->pcm_hz) {
+ 		dpcm->pcm_irq_pos %= dpcm->pcm_period_size * dpcm->pcm_hz;
+-		dpcm->pcm_buf_pos += dpcm->pcm_period_size;
+-		dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size;
+ 		spin_unlock_irq(&dpcm->lock);	
+ 		snd_pcm_period_elapsed(dpcm->substream);
+ 	} else {
+@@ -213,7 +213,7 @@ static snd_pcm_uframes_t snd_card_loopba
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
+-	return bytes_to_frames(runtime, dpcm->pcm_buf_pos);
++	return bytes_to_frames(runtime, dpcm->pcm_buf_pos / dpcm->pcm_hz);
+ }
+ 
+ static struct snd_pcm_hardware snd_card_loopback_info =
+
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="alsa-kernel-hg-dummy-ainan-patch1.diff"
+
+diff -r 1d499d7e155e drivers/dummy.c
+--- a/drivers/dummy.c	Thu Feb 21 12:40:00 2008 +0100
++++ b/drivers/dummy.c	Fri Feb 22 18:25:20 2008 +0100
+@@ -259,10 +259,10 @@ static void snd_card_dummy_pcm_timer_fun
+ 	dpcm->timer.expires = 1 + jiffies;
+ 	add_timer(&dpcm->timer);
+ 	dpcm->pcm_irq_pos += dpcm->pcm_bps;
++	dpcm->pcm_buf_pos += dpcm->pcm_bps;
++	dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size * dpcm->pcm_hz;
+ 	if (dpcm->pcm_irq_pos >= dpcm->pcm_period_size * dpcm->pcm_hz) {
+ 		dpcm->pcm_irq_pos %= dpcm->pcm_period_size * dpcm->pcm_hz;
+-		dpcm->pcm_buf_pos += dpcm->pcm_period_size;
+-		dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size;
+ 		spin_unlock_irqrestore(&dpcm->lock, flags);
+ 		snd_pcm_period_elapsed(dpcm->substream);
+ 	} else
+@@ -274,7 +274,7 @@ static snd_pcm_uframes_t snd_card_dummy_
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_dummy_pcm *dpcm = runtime->private_data;
+ 
+-	return bytes_to_frames(runtime, dpcm->pcm_buf_pos);
++	return bytes_to_frames(runtime, dpcm->pcm_buf_pos / dpcm->pcm_hz);
+ }
+ 
+ static struct snd_pcm_hardware snd_card_dummy_playback =
+
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--ReaqsoxgOBHFXBhH--
