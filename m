@@ -1,21 +1,13 @@
-From: "Adrian Stancu" <adrian.stancu.82@gmail.com>
-Subject: Re: snd-usb-audio syncronisation problem
-Date: Fri, 22 Feb 2008 16:19:28 +0200
-Message-ID: <43e8c7320802220619x4dfc049cv1f38a6fb8b1cb7a8@mail.gmail.com>
-References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>
-	<47BEC97A.3030507@ladisch.de>
-	<43e8c7320802220545m6ccf8c7fr13a9390563d7df7@mail.gmail.com>
-	<47BED4C2.4020501@ladisch.de>
+From: Remy Bruno <remy.bruno@trinnov.com>
+Subject: [PATCH] RME 9632 fix at 192kHz
+Date: Fri, 22 Feb 2008 15:25:44 +0100
+Message-ID: <20080222142544.GA27805@trinnov.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="45Z9DzgjV8m4Oswq"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id A15C4245F7
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 15:19:33 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id c6so280258gvd.24
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 06:19:30 -0800 (PST)
-In-Reply-To: <47BED4C2.4020501@ladisch.de>
+Received: from mail.trinnov.com (mail.trinnov.com [82.228.38.100])
+	by alsa0.perex.cz (Postfix) with SMTP id 5CA7D103812
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 15:25:45 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,246 +18,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-It seems that retire_playback_sync_urb_hs gets called, but 'subs->feqm
-= f;' never gets called
 
-Here is the content of /proc/asound/card1/stream0 during playback:
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
 
-vader:~# cat /proc/asound/card1/stream0
-E-MU Systems, Inc. E-MU 0404 | USB at usb-0000:00:1d.7-6, high speed : USB Audio
+Hello,
 
-Playback:
-  Status: Running
-    Interface = 1
-    Altset = 3
-    URBs = 4 [ 8 8 8 5 ]
-    Packet Size = 298
-    Momentary freq = 48000 Hz (0x6.0000)
-  Interface 1
-    Altset 1
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 44100
-  Interface 1
-    Altset 2
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 44100
-  Interface 1
-    Altset 3
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 4
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 5
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 88200
-  Interface 1
-    Altset 6
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 88200
-  Interface 1
-    Altset 7
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 96000
-  Interface 1
-    Altset 8
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 96000
-  Interface 1
-    Altset 9
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 176400
-  Interface 1
-    Altset 10
-    Format: 0x20
-    Channels: 2
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 192000
-  Interface 1
-    Altset 11
-    Format: 0x20
-    Channels: 4
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 44100
-  Interface 1
-    Altset 12
-    Format: 0x20
-    Channels: 4
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 44100
-  Interface 1
-    Altset 13
-    Format: 0x20
-    Channels: 4
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 14
-    Format: 0x20
-    Channels: 4
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 48000
-  Interface 1
-    Altset 15
-    Format: 0x20
-    Channels: 4
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 88200
-  Interface 1
-    Altset 16
-    Format: 0x20
-    Channels: 4
-    Endpoint: 1 OUT (ASYNC)
-    Rates: 96000
+I realized that one of my hdsp patches was not included in the hg tree, so I
+guess I forgot to submit it, sorry for submitting only now.
 
-Capture:
-  Status: Stop
-  Interface 2
-    Altset 1
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 44100
-  Interface 2
-    Altset 2
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 44100
-  Interface 2
-    Altset 3
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 48000
-  Interface 2
-    Altset 4
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 48000
-  Interface 2
-    Altset 5
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 88200
-  Interface 2
-    Altset 6
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 88200
-  Interface 2
-    Altset 7
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 96000
-  Interface 2
-    Altset 8
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 96000
-  Interface 2
-    Altset 9
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 176400
-  Interface 2
-    Altset 10
-    Format: 0x20
-    Channels: 2
-    Endpoint: 2 IN (ASYNC)
-    Rates: 192000
-  Interface 2
-    Altset 11
-    Format: 0x20
-    Channels: 4
-    Endpoint: 2 IN (ASYNC)
-    Rates: 44100
-  Interface 2
-    Altset 12
-    Format: 0x20
-    Channels: 4
-    Endpoint: 2 IN (ASYNC)
-    Rates: 44100
-  Interface 2
-    Altset 13
-    Format: 0x20
-    Channels: 4
-    Endpoint: 2 IN (ASYNC)
-    Rates: 48000
-  Interface 2
-    Altset 14
-    Format: 0x20
-    Channels: 4
-    Endpoint: 2 IN (ASYNC)
-    Rates: 48000
-  Interface 2
-    Altset 15
-    Format: 0x20
-    Channels: 4
-    Endpoint: 2 IN (ASYNC)
-    Rates: 88200
-  Interface 2
-    Altset 16
-    Format: 0x20
-    Channels: 4
-    Endpoint: 2 IN (ASYNC)
-    Rates: 96000
+Description:
+
+The bits indicating SPDIF frequency in the status register are not the same for
+the 9632 than for the other cards, because it also supports 192kHz. A specific
+bitmask has thus been added (used in hdsp_spdif_sample_rate()).
+The 9632 does not seem to report external sample rates greater than 96kHz. In
+this case, the best seems to report spdif rate when autosync reference is
+spdif. This also required to move function hdsp_spdif_sample_rate().
+
+Signed-off-by: Remy Bruno <remy.bruno@trinnov.com>
 
 
-On Fri, Feb 22, 2008 at 3:57 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Adrian Stancu wrote:
->  > Using the original module, the momentary frequency is always stalled
->  > at 48000Hz during playback:
->  > vader:~# while sleep 0.3; do grep "Momentary freq"
->  > /proc/asound/card1/stream0; done
->  >     Momentary freq = 48000 Hz (0x6.0000)
->  >     Momentary freq = 48000 Hz (0x6.0000)
->  >     Momentary freq = 48000 Hz (0x6.0000)
->  >     Momentary freq = 48000 Hz (0x6.0000)
->  >     Momentary freq = 48000 Hz (0x6.0000)
->  >
->  >  note: I started playback after issuing the command.
->  > So maybe this particular type of interface does not report back
->  > correctly, thus confusing the driver?
->
->  This is possible.  Please try to put printk's into
->  retire_playback_sync_urb(_hs) to see whether these functions ever get
->  called, and whether the line "subs->freqm = f;" is reached.
->
->  Please show the entire contents of /proc/asound/card1/stream0 while the
->  device is playing.
->
->
->  Regards,
->  Clemens
->
+Regards,
+Remy
+
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: attachment; filename=patch_alsa_080222
+
+diff -r b87cbcc974d1 -r bf8d84bb62bc pci/rme9652/hdsp.c
+--- a/pci/rme9652/hdsp.c	Tue Feb 19 13:16:41 2008 +0100
++++ b/pci/rme9652/hdsp.c	Tue Feb 19 16:13:03 2008 +0100
+@@ -318,6 +318,7 @@ MODULE_FIRMWARE("digiface_firmware_rev11
+ #define HDSP_midi1IRQPending    (1<<31)
+ 
+ #define HDSP_spdifFrequencyMask    (HDSP_spdifFrequency0|HDSP_spdifFrequency1|HDSP_spdifFrequency2)
++#define HDSP_spdifFrequencyMask_9632 (HDSP_spdifFrequency0|HDSP_spdifFrequency1|HDSP_spdifFrequency2|HDSP_spdifFrequency3)
+ 
+ #define HDSP_spdifFrequency32KHz   (HDSP_spdifFrequency0)
+ #define HDSP_spdifFrequency44_1KHz (HDSP_spdifFrequency1)
+@@ -328,7 +329,7 @@ MODULE_FIRMWARE("digiface_firmware_rev11
+ #define HDSP_spdifFrequency96KHz   (HDSP_spdifFrequency2|HDSP_spdifFrequency1)
+ 
+ /* This is for H9632 cards */
+-#define HDSP_spdifFrequency128KHz   HDSP_spdifFrequencyMask
++#define HDSP_spdifFrequency128KHz   (HDSP_spdifFrequency0|HDSP_spdifFrequency1|HDSP_spdifFrequency2)
+ #define HDSP_spdifFrequency176_4KHz HDSP_spdifFrequency3
+ #define HDSP_spdifFrequency192KHz   (HDSP_spdifFrequency3|HDSP_spdifFrequency0)
+ 
+@@ -885,10 +886,53 @@ static int snd_hdsp_use_is_exclusive(str
+ 	return ret;
+ }
+ 
++static int hdsp_spdif_sample_rate(struct hdsp *hdsp)
++{
++	unsigned int status = hdsp_read(hdsp, HDSP_statusRegister);
++	unsigned int rate_bits = (status & HDSP_spdifFrequencyMask);
++
++	/* For the 9632, the mask is different */
++	if (hdsp->io_type == H9632)
++		 rate_bits = (status & HDSP_spdifFrequencyMask_9632);
++
++	if (status & HDSP_SPDIFErrorFlag)
++		return 0;
++	
++	switch (rate_bits) {
++	case HDSP_spdifFrequency32KHz: return 32000;
++	case HDSP_spdifFrequency44_1KHz: return 44100;
++	case HDSP_spdifFrequency48KHz: return 48000;
++	case HDSP_spdifFrequency64KHz: return 64000;
++	case HDSP_spdifFrequency88_2KHz: return 88200;
++	case HDSP_spdifFrequency96KHz: return 96000;
++	case HDSP_spdifFrequency128KHz: 
++		if (hdsp->io_type == H9632) return 128000;
++		break;
++	case HDSP_spdifFrequency176_4KHz: 
++		if (hdsp->io_type == H9632) return 176400;
++		break;
++	case HDSP_spdifFrequency192KHz: 
++		if (hdsp->io_type == H9632) return 192000;
++		break;
++	default:
++		break;
++	}
++	snd_printk ("Hammerfall-DSP: unknown spdif frequency status; bits = 0x%x, status = 0x%x\n", rate_bits, status);
++	return 0;
++}
++
+ static int hdsp_external_sample_rate (struct hdsp *hdsp)
+ {
+ 	unsigned int status2 = hdsp_read(hdsp, HDSP_status2Register);
+ 	unsigned int rate_bits = status2 & HDSP_systemFrequencyMask;
++
++	/* For the 9632 card, there seems to be no bit for indicating external
++	 * sample rate greater than 96kHz. The card reports the corresponding
++	 * single speed. So the best means seems to get spdif rate when
++	 * autosync reference is spdif */
++	if (hdsp->io_type == H9632 &&
++	    hdsp_autosync_ref(hdsp) == HDSP_AUTOSYNC_FROM_SPDIF)
++		 return hdsp_spdif_sample_rate(hdsp);
+ 
+ 	switch (rate_bits) {
+ 	case HDSP_systemFrequency32:   return 32000;
+@@ -900,37 +944,6 @@ static int hdsp_external_sample_rate (st
+ 	default:
+ 		return 0;
+ 	}
+-}
+-
+-static int hdsp_spdif_sample_rate(struct hdsp *hdsp)
+-{
+-	unsigned int status = hdsp_read(hdsp, HDSP_statusRegister);
+-	unsigned int rate_bits = (status & HDSP_spdifFrequencyMask);
+-
+-	if (status & HDSP_SPDIFErrorFlag)
+-		return 0;
+-	
+-	switch (rate_bits) {
+-	case HDSP_spdifFrequency32KHz: return 32000;
+-	case HDSP_spdifFrequency44_1KHz: return 44100;
+-	case HDSP_spdifFrequency48KHz: return 48000;
+-	case HDSP_spdifFrequency64KHz: return 64000;
+-	case HDSP_spdifFrequency88_2KHz: return 88200;
+-	case HDSP_spdifFrequency96KHz: return 96000;
+-	case HDSP_spdifFrequency128KHz: 
+-		if (hdsp->io_type == H9632) return 128000;
+-		break;
+-	case HDSP_spdifFrequency176_4KHz: 
+-		if (hdsp->io_type == H9632) return 176400;
+-		break;
+-	case HDSP_spdifFrequency192KHz: 
+-		if (hdsp->io_type == H9632) return 192000;
+-		break;
+-	default:
+-		break;
+-	}
+-	snd_printk ("Hammerfall-DSP: unknown spdif frequency status; bits = 0x%x, status = 0x%x\n", rate_bits, status);
+-	return 0;
+ }
+ 
+ static void hdsp_compute_period_size(struct hdsp *hdsp)
+
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--45Z9DzgjV8m4Oswq--
