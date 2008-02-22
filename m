@@ -1,24 +1,22 @@
-From: Ahmet =?utf-8?B?xLBuYW4=?= <ainan@mathematik.uni-freiburg.de>
-Subject: Re: [PATCH] improved snd-aloop quality when
-	using	certain samplerates and kernel HZ
-Date: Fri, 22 Feb 2008 19:05:28 +0100
-Message-ID: <20080222180528.GD6860@mathematik.uni-freiburg.de>
-References: <20080219030144.GA12698@mathematik.uni-freiburg.de>
-	<20080219125046.GA6455@mathematik.uni-freiburg.de>
-	<s5hhcg3svd4.wl%tiwai@suse.de>
-	<20080220141906.GA15096@mathematik.uni-freiburg.de>
-	<s5h3arnpq4i.wl%tiwai@suse.de>
-	<20080221000601.GA4829@mathematik.uni-freiburg.de>
-	<s5hmypusssj.wl%tiwai@suse.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: asihpi - how much further?
+Date: Sat, 23 Feb 2008 10:10:59 +1300
+Message-ID: <200802231010.59448.linux@audioscience.com>
+References: <200802221226.59326.linux@audioscience.com>
+	<s5hskzkykuh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="ReaqsoxgOBHFXBhH"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx01.qsc.de (mx01.qsc.de [213.148.129.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A42F243F7
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 19:05:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hmypusssj.wl%tiwai@suse.de>
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FC7924542
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 22:07:28 +0100 (CET)
+Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0JWN00H0WS0BG830@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Sat, 23 Feb 2008 10:07:25 +1300 (NZDT)
+In-reply-to: <s5hskzkykuh.wl%tiwai@suse.de>
+Content-disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,110 +27,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: greg@kroah.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Thanks Takashi,
 
---ReaqsoxgOBHFXBhH
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+is that the light at the end of the tunnel, or a train coming towards me ;)
 
-when the time interval for a period is smaller than kernel HZ, then
-snd-aloop and snd-dummy cannot call snd_pcm_period_elapsed as fast enough
-annymore. this happens for example with games. but the app still needs to
-see, that the buffer actually did go further, which is provided by these
-patches.
+On Saturday 23 February 2008 06:14:30 Takashi Iwai wrote:
+> At Fri, 22 Feb 2008 12:26:59 +1300,
+>
+> Eliot Blennerhassett wrote:
+> > Hi Takashi,
+> >
+> > My boss has started asking how long is it going to take to get our driver
+> > into mainline.  I.e. a list of things we need to do, that when all those
+> > items have been dealt with, then the driver is accepted.
+> > Is it possible to make such a list?
+>
+> I think the all coding style issues have been already listed in out
+> previous mails, even about pretty picky ones.  
 
-[snd-aloop - better realtime app support]
-http://www.mathematik.uni-freiburg.de/IAM/homepages/ainan/alsa-driver-hg-=
-aloop-ainan-patch2.diff
-[Signed-off-by: Ahmet =C4=B0nan <ainan <at> mathematik.uni-freiburg.de>]
+OK. I shall carry on chipping at the rock...
 
-[snd-dummy - better realtime app support]
-http://www.mathematik.uni-freiburg.de/IAM/homepages/ainan/alsa-kernel-hg-=
-dummy-ainan-patch1.diff
-[Signed-off-by: Ahmet =C4=B0nan <ainan <at> mathematik.uni-freiburg.de>]
 
-patches are relative to current hg-tree.
+> What I personally still 
+> don't think good is the infrastructure of the driver - the separate
+> mangament of asihpi and hpimod.  This makes it hard to understand the
+> code flow.  But, if it's your inevitable requirement, we can keep this
+> as is.  
 
-finally even realtime apps like games work smooth.
-only one thing left for perfection :)
+The 'inevitable' requirement is that HPI ioctl remains. (at least as an 
+option, perhaps disabled by default, enabled by module option).
 
-ahmet
 
+I'm open to merging all or part hpimod code into (alsa) asihpi.c, and 
+restructuring so that the asihpi.c code is 'master'.
+
+You also mentioned handling the ioctl via alsa hwdep.   I'm interested in 
+hearing more about this.  Can it be made so that applications using HPI_IOCTL 
+and using /dev/asihpi still work?  I just don't know enough about how to 
+start on hwdep implementation.
+
+> So, try to clean up the code as much as you can do now, and 
+> then let's check and move to alsa-kernel tree.
+
+OK.  As you saw, I'm working on replacing the volatile with memory barriers, 
+which is the remaining major style issue that checkpatch complains about.
+(There are some other complaints about macros without parentheses, but I think 
+these are spurious)
+
+> My remaining concern is the further maintenance.  If I understand
+> correctly, you would like to maintain your driver code from the common
+> code-base among difference OSes and convert to the linux native one
+> via a script.  
+
+This is how the patches I send to you are currently generated: I put our 
+generated files into Hg sandbox, then Hg diff.  At this point I backport 
+changes in Hg that came from outside.  (E.g. the various changes that Clemens 
+has made - thanks) Then regenerate the files, make a patch.
+
+I live in hope that the patches will get smaller over time ;)
+
+> This would be difficult to pick up the upstream 
+> changes.  But, again, it's your choice.  I'd just need to be careful
+> about the further merge from you in order not to break the upstream
+> changes...
+
+The alternative (completely separate codebases) means that "mythical somebody" 
+has to track AudioScience source releases, figure out how translate changes 
+into ALSA codebase, and do it.
+
+> > P.S. Heres a quote that I feel has some relevance:
+>
+> Well, the merge is easy but the maintenance is not... :)
+
+I guess we just differ on whether any other way of doing things will make the 
+maintenance any easier...
+
+
+regards
+
+-- 
 --
-admin der abteilung f=C3=BCr angewandte mathematik, tel. 0761-203-5626
-
---ReaqsoxgOBHFXBhH
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="alsa-driver-hg-aloop-ainan-patch2.diff"
-
-diff -r 89222d702376 drivers/aloop-kernel.c
---- a/drivers/aloop-kernel.c	Thu Feb 21 07:54:16 2008 +0100
-+++ b/drivers/aloop-kernel.c	Fri Feb 22 18:16:56 2008 +0100
-@@ -198,10 +198,10 @@ static void snd_card_loopback_timer_func
- 	spin_lock_irq(&dpcm->lock);
- 
- 	dpcm->pcm_irq_pos += dpcm->pcm_bps;
-+	dpcm->pcm_buf_pos += dpcm->pcm_bps;
-+	dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size * dpcm->pcm_hz;
- 	if (dpcm->pcm_irq_pos >= dpcm->pcm_period_size * dpcm->pcm_hz) {
- 		dpcm->pcm_irq_pos %= dpcm->pcm_period_size * dpcm->pcm_hz;
--		dpcm->pcm_buf_pos += dpcm->pcm_period_size;
--		dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size;
- 		spin_unlock_irq(&dpcm->lock);	
- 		snd_pcm_period_elapsed(dpcm->substream);
- 	} else {
-@@ -213,7 +213,7 @@ static snd_pcm_uframes_t snd_card_loopba
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
--	return bytes_to_frames(runtime, dpcm->pcm_buf_pos);
-+	return bytes_to_frames(runtime, dpcm->pcm_buf_pos / dpcm->pcm_hz);
- }
- 
- static struct snd_pcm_hardware snd_card_loopback_info =
-
---ReaqsoxgOBHFXBhH
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="alsa-kernel-hg-dummy-ainan-patch1.diff"
-
-diff -r 1d499d7e155e drivers/dummy.c
---- a/drivers/dummy.c	Thu Feb 21 12:40:00 2008 +0100
-+++ b/drivers/dummy.c	Fri Feb 22 18:25:20 2008 +0100
-@@ -259,10 +259,10 @@ static void snd_card_dummy_pcm_timer_fun
- 	dpcm->timer.expires = 1 + jiffies;
- 	add_timer(&dpcm->timer);
- 	dpcm->pcm_irq_pos += dpcm->pcm_bps;
-+	dpcm->pcm_buf_pos += dpcm->pcm_bps;
-+	dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size * dpcm->pcm_hz;
- 	if (dpcm->pcm_irq_pos >= dpcm->pcm_period_size * dpcm->pcm_hz) {
- 		dpcm->pcm_irq_pos %= dpcm->pcm_period_size * dpcm->pcm_hz;
--		dpcm->pcm_buf_pos += dpcm->pcm_period_size;
--		dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size;
- 		spin_unlock_irqrestore(&dpcm->lock, flags);
- 		snd_pcm_period_elapsed(dpcm->substream);
- 	} else
-@@ -274,7 +274,7 @@ static snd_pcm_uframes_t snd_card_dummy_
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_dummy_pcm *dpcm = runtime->private_data;
- 
--	return bytes_to_frames(runtime, dpcm->pcm_buf_pos);
-+	return bytes_to_frames(runtime, dpcm->pcm_buf_pos / dpcm->pcm_hz);
- }
- 
- static struct snd_pcm_hardware snd_card_dummy_playback =
-
---ReaqsoxgOBHFXBhH
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---ReaqsoxgOBHFXBhH--
+Eliot Blennerhassett
+www.audioscience.com
