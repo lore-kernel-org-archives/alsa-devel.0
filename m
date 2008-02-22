@@ -1,19 +1,15 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: asihpi - how much further?
-Date: Fri, 22 Feb 2008 12:26:59 +1300
-Message-ID: <200802221226.59326.linux@audioscience.com>
+From: Benson Dong <dongas86.dev@hotmail.com>
+Subject: Alsa Driver Puzzlement
+Date: Fri, 22 Feb 2008 10:39:41 +0800
+Message-ID: <BLU117-W3194D10D3048BCD026C41F881D0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71D3F244DB
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 00:23:32 +0100 (CET)
-Received: from zaphod (121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JWM000GL3N4LG30@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 22 Feb 2008 12:23:30 +1300 (NZDT)
-Content-disposition: inline
+Received: from blu139-omc3-s12.blu139.hotmail.com
+	(blu139-omc3-s12.blu139.hotmail.com [65.55.175.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6924F24547
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 03:39:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,45 +19,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: greg@kroah.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwKCk15IGJvc3MgaGFzIHN0YXJ0ZWQgYXNraW5nIGhvdyBsb25nIGlzIGl0IGdv
-aW5nIHRvIHRha2UgdG8gZ2V0IG91ciBkcml2ZXIgaW50byAKbWFpbmxpbmUuICBJLmUuIGEgbGlz
-dCBvZiB0aGluZ3Mgd2UgbmVlZCB0byBkbywgdGhhdCB3aGVuIGFsbCB0aG9zZSBpdGVtcyAKaGF2
-ZSBiZWVuIGRlYWx0IHdpdGgsIHRoZW4gdGhlIGRyaXZlciBpcyBhY2NlcHRlZC4KSXMgaXQgcG9z
-c2libGUgdG8gbWFrZSBzdWNoIGEgbGlzdD8KCnRoYW5rcyBhbmQgcmVnYXJkcwoKRWxpb3QgQmxl
-bm5lcmhhc3NldHQKd3d3LmF1ZGlvc2NpZW5jZS5jb20KCgpQLlMuIEhlcmVzIGEgcXVvdGUgdGhh
-dCBJIGZlZWwgaGFzIHNvbWUgcmVsZXZhbmNlOgoKaHR0cDovL2xpbnV4LWZvdW5kYXRpb24ub3Jn
-L3dlYmxvZ3Mvb3BlbnZvaWNlcy9saW51cy10b3J2YWxkcy1wYXJ0LWlpLwoKSmltIFplbWxpbjog
-QnV0IGluIGEgc2Vuc2UsIG92ZXIgdGltZSwgeW91IHdpbiBiZWNhdXNlIHlvdSBzZXQgdGhlIGJh
-ciBoaWdoIAphbmQgeW91IGVuY291cmFnZSBwZW9wbGUgdG8gZ2V0IGl0IGludG8gdGhlIG1haW4g
-bGluZS4KCkxpbnVzIFRvcnZhbGRzOiBPbmUgb2YgdGhlIHByb2JsZW1zIGlzIHdlIGhhdmUgcGVv
-cGxlIHdobyBoYXZlIHNvIGhpZ2ggCmNyaXRlcmlhIGZvciB3aGF0IGlzIGFjY2VwdGFibGUgb3Ig
-bm90IHRoYXQgaXQgc2NhcmVzIGF3YXkgcGVvcGxlIHdobyB3YW50IHRvIApkbyBuZXcgY29kZSBh
-bmQgZG8gbmV3IGV4cGVyaW1lbnRzLgoKV2UgbXVzdG7igJl0IHNldCB0aGUgYmFyIHRoYXQgaGln
-aC4gTmV3IGNvZGUsIG5ldyBkcml2ZXJzLCB0aGVyZSB3aWxsIGJlIApwcm9ibGVtcyBhbmQgSeKA
-mWQgcmF0aGVyIHRha2UgdGhlbSBhbmQgdGhlbiBpbXByb3ZlIHRoZW0gdGhhbiBleHBlY3QgZHJp
-dmVyIAphdXRob3JzLCBlc3BlY2lhbGx5IHdoZW4gdGhleSBzdGFuZCBvdXRzaWRlIHRoZSBtYWlu
-IHRyZWUgYW5kIGZlZWwga2luZCBvZiAKbGlrZSBvdXRzaWRlcnMgZXZlbiB0aG91Z2ggbWF5YmUg
-dGhleSByZWFsbHkgYXJlIHBhcnQgb2YgdGhlIHNhbWUgd2hvbGUgCmRldmVsb3BtZW50IGNvbW11
-bml0eSwgYnV0IHRoZXkgZmVlbCBsaWtlIG91dHNpZGVycyBiZWNhdXNlIHRoZWlyIGRyaXZlciAK
-aGFzbuKAmXQgbWFkZSBpdCBpbnRvIHRoZSB0cmVlIHlldC4KCkFuZCB0aGVuIGFza2luZyB0aGVt
-IHRvIGp1bXAgdGhyb3VnaCBob29wcyBhbmQgbWFrZSB0aGVpciBkcml2ZXIgcGVyZmVjdCB3aGVu
-IAp0aGV54oCZcmUgc3RhbmRpbmcgdGhlcmUgYWxvbmUgYW5kIGRvbuKAmXQgaGF2ZSBoZWxwOyBJ
-IHRoaW5rIHRoYXTigJlzIHVuZmFpci4gQW5kIAp0aGVyZSBhcmUgcGVvcGxlIGluIHRoZSBrZXJu
-ZWwgY29tbXVuaXR5IHRoYXQgZmVlbCB0aGF0IHdheSB0aGF0IHRoaW5ncyBoYXZlIAp0byBiZSBq
-dXN0IHJpZ2h0IGJlZm9yZSB5b3UgY2FuIGFjY2VwdCB0aGVtIGFuZCBJ4oCZbSBtdWNoIG1vcmUg
-b2YgYSAKbGFpc3Nlei1mYWlyZSBraW5kIG9mIHBlcnNvbi4gV2UgZG9u4oCZdCB3YW50IHRvIGFj
-Y2VwdCBiYWQgdGhpbmdzLCBidXQgb24gdGhlIApvdGhlciBoYW5kLCBoZXksIGV2ZXJ5dGhpbmcg
-c3RhcnRzIGZyb20gbGVzcy10aGFuLXBlcmZlY3Qgcm9vdHMgYW5kIGl04oCZcyBtdWNoIApiZXR0
-ZXIgdG8gYWNjZXB0IHRoaW5ncyB0aGF0IHdvcmsgYnV0IG1heSBub3QgYmUgcGVyZmVjdCBhbmQg
-dGhlbiBpbXByb3ZlIG9uIAp0aGVtIHdoZW4gd2UgY2FuIGFsbCBpbXByb3ZlIG9uIHRoZW0gYW5k
-IGFsbCB0aGUgZGlmZmVyZW50IHZlbmRvcnMgY2FuIGZpeCAKdGhlIHNtYWxsIG5hZ2dpbmcgaXNz
-dWVzIHRoZXkgaGF2ZSBpbnN0ZWFkIG9mIGtlZXBpbmcgdGhlbSBhdCBhcm3igJlzIGxlbmd0aCAK
-dW50aWwgdGhleeKAmXJlIHBlcmZlY3QgYmVjYXVzZSBtYXliZSB0aGV54oCZbGwgbmV2ZXIgYmUg
-cGVyZmVjdCB3aXRob3V0IGhlbHAuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+
+Hi all,
+ 
+What's the relationship between alsa driver and low-level audio hardware driver such as uda1341 driver?Is Alsa driver a individual module or cooperating with uda1341 dirver?If they co-work ,what's the interface between them?
+ 
+Anyone who knows please tell me?
+Thank in advance!
+ 
+Best,
+ 
+Benson
+ 
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today it's FREE!
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
