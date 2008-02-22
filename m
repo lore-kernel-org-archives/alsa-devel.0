@@ -1,25 +1,13 @@
-From: "Adrian Stancu" <adrian.stancu.82@gmail.com>
-Subject: Re: snd-usb-audio syncronisation problem
-Date: Fri, 22 Feb 2008 18:15:33 +0200
-Message-ID: <43e8c7320802220815y332a82f4kac19999cc15fd276@mail.gmail.com>
-References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>
-	<47BEC97A.3030507@ladisch.de>
-	<43e8c7320802220545m6ccf8c7fr13a9390563d7df7@mail.gmail.com>
-	<47BED4C2.4020501@ladisch.de>
-	<43e8c7320802220619x4dfc049cv1f38a6fb8b1cb7a8@mail.gmail.com>
-	<47BEDF9E.3000907@ladisch.de>
-	<43e8c7320802220651r25ac78d7pecca63f3e1d48249@mail.gmail.com>
-	<47BEEF4D.4050507@ladisch.de>
+From: Remy Bruno <remy.bruno@trinnov.com>
+Subject: Strange (HW?) bug with RME9632 + AO4S + Mobo DG33BU
+Date: Fri, 22 Feb 2008 17:23:40 +0100
+Message-ID: <20080222162340.GA30803@trinnov.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="W/nzBZO5zC0uMSeA"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 444AF2439D
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 17:15:37 +0100 (CET)
-Received: by ti-out-0910.google.com with SMTP id u3so334976tia.8
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 08:15:36 -0800 (PST)
-In-Reply-To: <47BEEF4D.4050507@ladisch.de>
+Received: from mail.trinnov.com (mail.trinnov.com [82.228.38.100])
+	by alsa0.perex.cz (Postfix) with SMTP id 009A724412
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 17:23:40 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,1118 +18,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-According to dmesg, the device is running at high speed:
 
-usb 1-6: new high speed USB device using ehci_hcd and address 20
-usb 1-6: configuration #1 chosen from 1 choice
-usbcore: registered new interface driver snd-usb-audio
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
 
-So, if I convert the freq using the high speed formula, I get a value
-within the acceptable range, that would actually have an effect.
+Hi,
 
-regarding the 'invalid freq' message, it seems to appear about 30
-times per second:
-vader:~# dmesg -c
-[...play about 10 sec of audio]
-vader:~# dmesg | wc -l
-331
-(during those 10 seconds, there were only 'invalid freq' messages generated)
+I came across a quite strange bug using the RME 9632 with an intel motherboard
+DG33BU, whose symptom is random xruns.
+Conditions:
+- Sound card = RME 9632. I tried several ones (recent and older ones), so this
+  is not due to a defective card
+- AI4S/AO4S (daughter boards) pluged. The bug does not happen without these. I
+  also tried several ones.
+- Sample rate does not matter (48kHz or 96kHz for example)
+- Last alsa driver/lib (from HG tree)
+- Linux kernel 2.6.23.9
+- DG33BU motherboard. For example, on an Asus M2NPV-VM with the same
+  cards/alsa/kernel, the bug does not happen.
+- And the most strange condition: send non-null samples to channels 1&3 or
+  channels 2&4 of the daughter board (ie channels 13&15 or 14&16 at 48kHz). The
+  bug does not happen if you send sound on channels 1&2 only, or 1 only, or 3
+  only for example, but it happens if you send on both 1&3.
 
+By analyzing what happens, I found the reason for the xrun. In the conditions
+of the bug, from time to time (say about 1 time over 1000), the memory space of
+the card (called "iobase" in the hdsp driver) is incorrectly read. The value
+0xFFFFFFFF is read for any register instead of the correct values. I confirmed
+this behavior with the following experiment:
+- I wrote a programm permanently reading the memory space of the card, in an
+  active loop, by mmap()ing /sys/bus/pci/devices/<my_card>/resource0, reading
+  the first word, and reporting when 0xFFFFFFFF is read (BTW, this first
+  register corresponds to the card status, and the value 0xFFFFFFFF is not a
+  possible status value of the card from what I saw --- or at least this value
+  is highly unlikely)
+  This program effectively reports some 0xff-reads when the above conditions
+  are met (ie when non-null samples are sent to channel 1&3 of AO4S). As I said
+  before, not all reads give 0xFF, only some of them (but of course, this is
+  enough to get problems!). As soon as the above conditions are not met (for
+  example, outputing true silence on the AO4S), the program stops reporting
+  problems.
+- To make sure the bug is not due to an alsa driver/library or program bug, I
+  wanted to write non-null samples directly to the shared memory region without
+  using snd_pcm_writeX(). In order to do so, I modified the code displaying
+  /proc/asound/card0/hdsp in order to get the physical address of the playback
+  buffer in addition to the virtual address already given. And then, by
+  mmap()ing /dev/mem at the right offset, I got the possibility to write
+  non-null values while the card is running. The effect is the same: while the
+  alsa driver writes zeros, if I "overload" the buffer with non-null values at
+  offset corresponding to channels 1&3 of the AO4S, I get several bad reads
+  with my watching program (of course, the bad reads stop quickly because the
+  alsa drivers continue to write zeros thus overwriting my non-null values and
+  thus the bug conditions are not met any longer)
 
-vader:~# lsusb -s 1:20 -v
+I don't know exactly who is to be blamed here, because the card with the same
+driver/kernel on another motherboard works perfectly, and, indeed, no
+0xFFFFFFFF reads are detected in this case. Needless to say, I tried several
+DG33BU mobos, several slots, several re-plugs of the PCI card, with the same
+behaviour. Maybe this can be due to some kind of PCI conflict? Anyway, the RME
+card is the only PCI/PCI-express card on the mobo.
 
-Bus 001 Device 020: ID 041e:3f04 Creative Technology, Ltd
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2 ?
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  idVendor           0x041e Creative Technology, Ltd
-  idProduct          0x3f04
-  bcdDevice            1.00
-  iManufacturer           1 E-MU Systems, Inc.
-  iProduct                2 E-MU 0404 | USB
-  iSerial                 3 E-MU-B0-3F04-07D70C0C-07E7D-STATION02
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength         1832
-    bNumInterfaces          4
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower                2mA
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         0
-      bInterfaceCount         4
-      bFunctionClass        255 Vendor Specific Class
-      bFunctionSubClass     255 Vendor Specific Subclass
-      bFunctionProtocol     255 Vendor Specific Protocol
-      iFunction               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      1
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  0b 24 01 00 01 bf 00 03 01 02 03
-      ** UNRECOGNIZED:  0c 24 02 01 01 01 00 04 33 00 00 00
-      ** UNRECOGNIZED:  11 24 06 04 01 02 01 00 02 00 02 00 02 00 02 00 00
-      ** UNRECOGNIZED:  0c 24 02 02 01 06 00 02 03 00 00 00
-      ** UNRECOGNIZED:  0c 24 02 03 02 06 00 02 03 00 00 00
-      ** UNRECOGNIZED:  0f 24 08 0e 03 e3 01 03 04 33 00 00 01 1f 00
-      ** UNRECOGNIZED:  0e 24 04 0b 02 04 0e 04 33 00 00 00 00 00
-      ** UNRECOGNIZED:  11 24 04 05 03 04 02 0e 04 33 00 00 00 00 00 00 00
-      ** UNRECOGNIZED:  0f 24 08 0c 01 e3 01 05 04 33 00 00 01 07 00
-      ** UNRECOGNIZED:  0f 24 08 0d 02 e3 01 0c 04 33 00 00 01 03 00
-      ** UNRECOGNIZED:  0f 24 08 0f 04 e3 01 0d 04 33 00 00 01 07 00
-      ** UNRECOGNIZED:  09 24 03 08 01 03 00 0f 00
-      ** UNRECOGNIZED:  09 24 03 07 02 03 00 0f 00
-      ** UNRECOGNIZED:  09 24 03 09 02 06 00 0f 00
-      ** UNRECOGNIZED:  09 24 03 0a 01 01 00 0b 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0002  1x 2 bytes
-        bInterval              10
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0112  1x 274 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       2
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x008e  1x 142 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       3
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x012a  1x 298 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       4
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x009a  1x 154 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       5
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 88 58 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x021a  1x 538 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       6
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 88 58 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0112  1x 274 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       7
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 00 77 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x024a  1x 586 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       8
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 00 77 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x012a  1x 298 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       9
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 10 b1 02
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x021a  1x 538 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      10
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 00 ee 02
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x024a  1x 586 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      11
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0220  1x 544 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      12
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0118  1x 280 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      13
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0250  1x 592 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      14
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0130  1x 304 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      15
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 88 58 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0220  1x 544 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      16
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 00 77 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0250  1x 592 bytes
-        bInterval               3
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      17
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 20
-      ** UNRECOGNIZED:  0b 24 02 03 02 02 10 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x00b8  1x 184 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting      18
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 20
-      ** UNRECOGNIZED:  0b 24 02 03 02 02 10 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x01  EP 1 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x00c8  1x 200 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes           17
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Feedback
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0112  1x 274 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       2
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x008e  1x 142 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x012a  1x 298 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x009a  1x 154 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       5
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 88 58 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x021a  1x 538 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       6
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 88 58 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0112  1x 274 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       7
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 00 77 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x024a  1x 586 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       8
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 00 77 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x012a  1x 298 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       9
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 10 b1 02
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x021a  1x 538 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting      10
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 03 18 01 00 ee 02
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x024a  1x 586 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting      11
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0220  1x 544 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting      12
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0118  1x 280 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting      13
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0250  1x 592 bytes
-        bInterval               4
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting      14
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 80 bb 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0130  1x 304 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting      15
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 88 58 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0220  1x 544 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting      16
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 0a 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 04 03 18 01 00 77 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0250  1x 592 bytes
-        bInterval               3
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      3
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 00 01 25 00
-      ** UNRECOGNIZED:  06 24 02 01 01 00
-      ** UNRECOGNIZED:  06 24 02 02 02 00
-      ** UNRECOGNIZED:  09 24 03 01 03 01 02 01 00
-      ** UNRECOGNIZED:  09 24 03 02 04 01 01 01 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x05  EP 5 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               1
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2 ?
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  bNumConfigurations      1
-Device Status:     0x0001
-  Self Powered
+For now, the fix is truly wonderful: in hdsp_read(), keep on reading while
+0xFFFFFFFF is read... With a maximum of times of course (I set 10). If the
+"true" value is not 0xFFFFFFFF, then the true value will be read at least once
+and so returned (I never got 10 consecutive times 0xFFFFFFFF, even not 2), and
+if the "true" value is 0xFFFFFFFF, then the only side effect of the patch is 
+that the register will be read 10 times instead of 1. I don't think this can do
+any harm in any case. Anyway, there should be a competition for the most awful
+bugfix, I'm sure this one could win :-)
 
+So this hack fixes the software-visible part of the problem, but the
+punctual disparition of the IO space of the card is still there. For example, I
+don't know what happens as far as writing is concerned! Maybe some writes to
+registers of the card are ignored? I did not really investigate this, but I
+checked that there are no glitches in the sound (by checking that a sine is
+never distorted during a whole night), contrary to what happened without the
+fix.
 
+I join the patch corresponding to this hack, I'm not sure if it should be
+included in the main tree!... However, it may be usefull (it is for me anyway),
+because you can't use the AO4S card without it. I would be interested to know
+if other people had the same problem with this motherboard, or another one. Of
+course, I would also be interested if someone has got an idea about the reason
+for this strange behaviour. I will send an email to RME about this problem.
 
-On Fri, Feb 22, 2008 at 5:50 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Adrian Stancu wrote:
->  > I got these results:
->  >
->  > invalid freq 3145728
->
->  How often does this message appear?
->
->  To convert to Hz, multiply by 1000/65536 (full speed)
->  or 8000/65536 (high speed).
->
->  3145728 * 1000/65536 = 48000
->
->  > freqn=393216, freqmax=401408
->
->  These values would be correct for high speed.
->
->  Is this device running at full speed or high speed?
->  Please show the output of "lsusb -v" for this device.
->
->
->  Regards,
->  Clemens
->
+Best regards,
+Remy Bruno
+
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: attachment; filename=patch_hdsp_pci_bug
+
+diff -r bf8d84bb62bc pci/rme9652/hdsp.c
+--- a/pci/rme9652/hdsp.c	Tue Feb 19 16:13:03 2008 +0100
++++ b/pci/rme9652/hdsp.c	Wed Feb 20 19:33:57 2008 +0100
+@@ -643,6 +643,35 @@ static void hdsp_write(struct hdsp *hdsp
+ 
+ static unsigned int hdsp_read(struct hdsp *hdsp, int reg)
+ {
++	/* Big dirty hack.
++	 * On some archs (Intel DG33BU), when 9632 has got AI4S and(?) AO4S and
++	 * some non-null signal is sent to channels 1&3 or channels 2&4 of AO4S
++	 * (yes, strange conditions!), for some mysterious reason, the whole
++	 * card io space is from time to time read as 0xffffffff. This bad read
++	 * happens only once (from my experience), and next bad reading is
++	 * "several" reads after. Allowing 10 bad reads is more than enough. By
++	 * chance, 0xffffffff is not possible as a status and status2 read (the
++	 * most sensitive registers for PCM) and RME 9632.
++	 * This behavior has been checked by writing samples directly to mmaped
++	 * memory (at playback buffer address) and reading io space the same
++	 * way, so bypassing all alsa stuff.
++	 * Anyay, in all cases, we can wait reading something else than
++	 * 0xffffffff, and if we read 10 consecutive times 0xffffffff, we
++	 * consider this is the true value
++	 */
++	if (hdsp->io_type == H9632)
++	{
++		unsigned int val;
++		int count = 10;
++		
++		while (count-- > 0)
++		{
++			val = readl(hdsp->iobase + reg);
++			if (val != 0xffffffff)
++				break;
++		}
++		return val;
++	}
+ 	return readl (hdsp->iobase + reg);
+ }
+ 
+@@ -3298,8 +3327,10 @@ snd_hdsp_proc_read(struct snd_info_entry
+ 	status2 = hdsp_read(hdsp, HDSP_status2Register);
+ 
+ 	snd_iprintf(buffer, "%s (Card #%d)\n", hdsp->card_name, hdsp->card->number + 1);
+-	snd_iprintf(buffer, "Buffers: capture %p playback %p\n",
+-		    hdsp->capture_buffer, hdsp->playback_buffer);
++	snd_iprintf(buffer, "Buffers: capture %p playback %p (physical %p %p)\n",
++		    hdsp->capture_buffer, hdsp->playback_buffer,
++		ALIGN(hdsp->capture_dma_buf.addr, 0x10000ul),
++		ALIGN(hdsp->playback_dma_buf.addr, 0x10000ul));
+ 	snd_iprintf(buffer, "IRQ: %d Registers bus: 0x%lx VM: 0x%lx\n",
+ 		    hdsp->irq, hdsp->port, (unsigned long)hdsp->iobase);
+ 	snd_iprintf(buffer, "Control register: 0x%x\n", hdsp->control_register);
+
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--W/nzBZO5zC0uMSeA--
