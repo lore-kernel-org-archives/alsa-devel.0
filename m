@@ -1,20 +1,17 @@
-From: "Adrian Stancu" <adrian.stancu.82@gmail.com>
-Subject: Re: snd-usb-audio syncronisation problem
-Date: Fri, 22 Feb 2008 15:45:07 +0200
-Message-ID: <43e8c7320802220545m6ccf8c7fr13a9390563d7df7@mail.gmail.com>
-References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>
-	<47BEC97A.3030507@ladisch.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: handling of dmix and non-dmix in the same
+ configuration file
+Date: Fri, 22 Feb 2008 14:50:18 +0100
+Message-ID: <47BED31A.606@ladisch.de>
+References: <200802211804.39684.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 155D2245DC
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 14:45:11 +0100 (CET)
-Received: by ti-out-0910.google.com with SMTP id u3so281987tia.8
-	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 05:45:09 -0800 (PST)
-In-Reply-To: <47BEC97A.3030507@ladisch.de>
-Content-Disposition: inline
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id B5A4D245DC
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 14:48:31 +0100 (CET)
+In-Reply-To: <200802211804.39684.vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +21,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Mike Frysinger wrote:
+> [...]
+> but now we want to support dmix/dsnoop.  the overhead for dmix vs non-dmix is
+> such that we make it optional.  if the user does not need software mixing,
+> they can disable this overhead.  this leads to two (incompatible) alsa config
+> files (in this case, for the AD1980 codec).  we're wondering if it's possible
+> to have the right settings selected on the fly some how during runtime rather
+> than having to select one file or the other.
 
-Thank you very much for helping me!
+Let's assume we have the following definitions:
 
-Using the original module, the momentary frequency is always stalled
-at 48000Hz during playback:
-vader:~# while sleep 0.3; do grep "Momentary freq"
-/proc/asound/card1/stream0; done
-    Momentary freq = 48000 Hz (0x6.0000)
-    Momentary freq = 48000 Hz (0x6.0000)
-    Momentary freq = 48000 Hz (0x6.0000)
-    Momentary freq = 48000 Hz (0x6.0000)
-    Momentary freq = 48000 Hz (0x6.0000)
+AD1980.pcm.default_dmix_yes {
+    ...
+}
+AD1980.pcm.default_dmix_no {
+    ...
+}
 
- note: I started playback after issuing the command.
-So maybe this particular type of interface does not report back
-correctly, thus confusing the driver?
+Then we can select one of them based on a setting in some configuration
+file:
 
-After playing with subs->freqm in init_substream_urbs(,,,), the
-situation improved dramatically for me, but this is no general fix...
-In this case, I get:
-Momentary freq = 48001 Hz (0x6.0007) and I get a single little pop
-once about 90 seconds, but this is nothing compared to the horrible
-sound I normally get when the buffer gets empty.
+AD1980.pcm.default {
+    @args [ CARD ]
+    @args.CARD { type string }
+    @func refer
+    name {
+        @func concat
+        strings [
+            "cards.AD1980.pcm.default_dmix_"
+            {
+                @func refer
+                name defaults.use_AD1980_dmix
+                default yes
+            }
+            ":CARD="
+            $CARD
+        ]
+    }
+}
+
+To disable dmix, put the line
+    defaults.use_AD1980_dmix no
+into /etc/asound.conf or the user's ~/.asoundrc.
+
+It is also possible to use the value of an environment variable:
+
+AD1980.pcm.default {
+    @args [ CARD ]
+    @args.CARD { type string }
+    @func refer
+    name {
+        @func concat
+        strings [
+            "cards.AD1980.pcm.default_dmix_"
+            {
+                @func getenv
+                vars [ USE_AD1980_DMIX ]
+                default yes
+            }
+            ":CARD="
+            $CARD
+        ]
+    }
+}
+
+This environment variable must be set to "no" before starting the
+respective application.
+
+It is also possible to use the value of an environment variable but to
+fall back to some configuration setting if the env var does not exist:
+
+AD1980.pcm.default {
+    @args [ CARD ]
+    @args.CARD { type string }
+    @func refer
+    name {
+        @func concat
+        strings [
+            "cards.AD1980.pcm.default_dmix_"
+            {
+                @func getenv
+                vars [ USE_AD1980_DMIX ]
+                default {
+                    @func refer
+                    name defaults.use_AD1980_dmix
+                    default yes
+                }
+            }
+            ":CARD="
+            $CARD
+        ]
+    }
+}
 
 
-On Fri, Feb 22, 2008 at 3:09 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Adrian Stancu wrote:
->  > I'm using an E-MU 0404 USB interface with the snd-usb-audio module
->  > from alsa 1.0.16, operating in isochronous asynchronous mode. This
->  > interface was producing very annoying click/pop sounds at regular
->  > intervals during playback. Eventually I discovered that the
->  > syncronisation mechanism telling the driver to send audio data faster
->  > or slower to match the interface's consumption speed does not work as
->  > expected, for some reason.
->
->  The momentary frequency as requested by the device is shown in
->  /proc/asound/card?/stream? (if CONFIG_SND_VERBOSE_PROCFS is enabled).
->
->  Try something like:
->
->  while sleep 0.3; do grep "Momentary freq" /proc/asound/card0/stream0; done
->
->  In theory, once the device has determined its own speed relative to
->  the computer, this value should be nearly constant.  (When a stream has
->  just been started, the requested frequency usually is higher because the
->  device's buffer is empty.)
->
->
->  Regards,
->  Clemens
->
+HTH
+Clemens
