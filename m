@@ -1,17 +1,17 @@
-From: "Matthew R. Hurne" <matt.hurne@versatile.com>
-Subject: Re: no front speaker sound with ALC262
-Date: Fri, 22 Feb 2008 21:29:20 -0500
-Message-ID: <47BF8500.1050802@versatile.com>
-References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>
-	<47BF84BF.702@versatile.com>
+From: Matt Whitlock <matt@whitlock.name>
+Subject: How to set idle S/PDIF sample rate?
+Date: Fri, 22 Feb 2008 22:34:22 -0500
+Message-ID: <200802222234.22975.matt@whitlock.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mustang.versatile.com (mustang.versatile.com [206.61.179.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42304103834
-	for <alsa-devel@alsa-project.org>; Sat, 23 Feb 2008 03:29:19 +0100 (CET)
-In-Reply-To: <47BF84BF.702@versatile.com>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id AAB09245D3
+	for <alsa-devel@alsa-project.org>; Sat, 23 Feb 2008 04:34:26 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so132266ana.80
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2008 19:34:25 -0800 (PST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,54 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Dohmen <acidjunk@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Matthew R. Hurne wrote:
-> Rene Dohmen wrote:
->> Dear List,
->>
->> I have a problem with an Intel HDA soundcard
->> lspci output:
->> -----
->> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition
->> Audio Controller (rev 01)
->>
->> The sound volume is very very low when i use the headphone output. The
->> device has integrated speakers but i don't hear any sound coming out of them
->> (maybe because the volume is so low...). I've put all the mixer channels to
->> the maximum values. When booted in Win XP the soundcard works correctly.
->>
->> Is see one line in my logs that indicate that something is wrong: hda_codec:
->> Unknown model for ALC262, trying auto-probe from BIOS...
->>
->> I didn't have it working with other versions of ALSA.  Tested with
->> 1.0.14(provided with ubunty gutsy), then started reading, lots of
->> suggestions
->> stated that the problem would be solved in 1.0.15, so i compiled 1.0.16 from
->> src and replaced the default alsa modules with the new ones.
->>
->> De device i 'm using is supplied by tangent (
->> http://www.tangent.com/t_all_in_one_LCDPC/vita_8000s.htm) its an all in one
->> solution with touchscreen and speakers integrated in one small cabinet.
->>
->> I runned the alsa-info.sh script output and uploaded it:
->> http://pastebin.ca/913865
->>
->> I don't know if this is the correct place for getting help but all help is
->> appreciated,
-> 
-> I have the exact same issue, Rene.  So far not much progress has been made - unfortunately I'm an ALSA user, not an ALSA developer.  I did create a bug here:
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3725 (that's bug ID 0003725)
-> 
-> I suspect the issue boils down to the driver not recognizing the way things are "wired" together.  See the bug report for more details about what I've done thus far, which is essentially collection of as much information as possible for the ALSA developers to use in troubleshooting the issue.
-> 
-> Regards,
-> Matt Hurne
+When no programs have the sound hardware open, ALSA drives my Intel HDA's S/PDIF output with silence at 48000 Hz.  How would I change this default so that the idle sample rate is 44100 Hz?  The reason I ask is that my stereo receiver misses the first second or so of each song that I play as it switches from 48000 Hz to 44100 Hz.  I understand that by switching the idle sample rate to 44100 Hz, I would have the same problem whenever playing a DVD, but I can much more happily accept the switching delay when starting DVDs than I can when starting music playback.
 
-I added your message to the mailing list as a note on the bug report as well, Rene.
+I've tried everything, including replacing /usr/share/alsa/alsa.conf with a single PCM definition that outputs straight to hardware with "rate 44100", but still, whenever nothing is accessing the sound hardware, ALSA reverts to 48000-Hz silence.  There must be a way to influence that, right?
 
-Thanks,
-Matt
+Alternatively, if ALSA would simply not output anything over S/PDIF when idle, my receiver could just stay at 44100 Hz, albeit unlocked since there would be no data stream at all.  So this is also an acceptable solution to me, but I cannot find any way to make ALSA totally shut up when idle.  It always wants to output silence.  Interestingly, if I mute the IEC958 playback channel and then unmute it, my receiver reports no signal at all until I play a sound, and then after the sound finishes, my receiver reports that it is locked onto PCM at 48000 Hz.  Seems kind of like a bug, doesn't it?
+
+Thanks to anyone who can lend some assistance.
