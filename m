@@ -1,116 +1,121 @@
-From: =?ISO-8859-1?Q?Anders_R=F8nningen?= <andersronningen@gmail.com>
-Subject: Re: [PATCH] hda: STAC927x invalid association value
-Date: Sun, 24 Feb 2008 11:44:01 +0100
-Message-ID: <47C14A71.4020603@gmail.com>
-References: <47BCA495.5050201@embeddedalley.com>	<s5hfxvmss9c.wl%tiwai@suse.de>	<47BD9621.5040101@gmail.com>	<s5hpruqs4th.wl%tiwai@suse.de>	<47C09E64.9060503@gmail.com>
-	<s5hbq6666x9.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: ESS 1688
+Date: Sun, 24 Feb 2008 14:23:38 +0100
+Message-ID: <47C16FDA.4030708@keyaccess.nl>
+References: <mailman.0.1203805307.22796.alsa-user@lists.sourceforge.net>	<20080223232022.GA7656@amin>
+	<47C13E03.8000903@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id A01F61037EB
-	for <alsa-devel@alsa-project.org>; Sun, 24 Feb 2008 11:44:07 +0100 (CET)
-Received: by py-out-1112.google.com with SMTP id w49so7813151pyg.36
-	for <alsa-devel@alsa-project.org>; Sun, 24 Feb 2008 02:44:05 -0800 (PST)
-In-Reply-To: <s5hbq6666x9.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jiang zhe <zhe.jiang@intel.com>, alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
+Content-Type: multipart/mixed; boundary="------------020004060207070108060804"
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <47C13E03.8000903@keyaccess.nl>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Hans Ekbrand <hans@sociologi.cjb.net>
+Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-HG:
-http://pastebin.ca/916114
+This is a multi-part message in MIME format.
+--------------020004060207070108060804
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-1.0.16:
-http://pastebin.ca/916117
+On 24-02-08 10:50, Rene Herman wrote:
 
-This is a regression from 1.0.16. In 1.0.16 everything works nice, =
+> Not yet, but I confirm the bug. I'll try and see of I can locate
+> anything. No ETA available.
 
-except that the volume changes almost seem exponential. With PCM and =
+Can you try if applying the attached makes things work as you'd expect with 
+respect to the recording levels? Over here it seems to, although I get the 
+feeling we might as well rename the control "Distortion Levels" as keeping 
+it at 0 is the only sensible thing.
 
-Front set to max, I can increase the Master slider from 0% up to about =
+Even if this works, it's not a final fix, just to confirm. Given that you 
+posted to alsa-user... if you're not setup to apply this patch (to any semi 
+recent source) and recompile the driver I hope someone can help.
 
-50% almost without hearing any change (or sound). From ~70% and up, the =
+With respect to the duplex issue -- there seem to be no docs for 688 and 
+1688 which is a bit of a problem.
 
-volume increases _very_ much with each step. Don't know if it's supposed =
+Rene.
 
-to work that way.
+--------------020004060207070108060804
+Content-Type: text/plain;
+ name="es1688_lib-reclev_dev.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="es1688_lib-reclev_dev.diff"
 
---
-Anders
+diff --git a/sound/isa/es1688/es1688_lib.c b/sound/isa/es1688/es1688_lib.c
+index 5c26d49..eb35267 100644
+--- a/sound/isa/es1688/es1688_lib.c
++++ b/sound/isa/es1688/es1688_lib.c
+@@ -368,9 +368,11 @@ static int snd_es1688_playback_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	unsigned int size = snd_pcm_lib_buffer_bytes(substream);
+ 	unsigned int count = snd_pcm_lib_period_bytes(substream);
++	int tmp;
+ 
+ 	chip->dma_size = size;
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
++	tmp = snd_es1688_read(chip, 0xb4);
+ 	snd_es1688_reset(chip);
+ 	snd_es1688_set_rate(chip, substream);
+ 	snd_es1688_write(chip, 0xb8, 4);	/* auto init DMA mode */
+@@ -403,6 +405,7 @@ static int snd_es1688_playback_prepare(struct snd_pcm_substream *substream)
+ 	}
+ 	snd_es1688_write(chip, 0xb1, (snd_es1688_read(chip, 0xb1) & 0x0f) | 0x50);
+ 	snd_es1688_write(chip, 0xb2, (snd_es1688_read(chip, 0xb2) & 0x0f) | 0x50);
++	snd_es1688_write(chip, 0xb4, tmp);
+ 	snd_es1688_dsp_command(chip, ES1688_DSP_CMD_SPKON);
+ 	spin_unlock_irqrestore(&chip->reg_lock, flags);
+ 	/* --- */
+@@ -429,9 +432,11 @@ static int snd_es1688_capture_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	unsigned int size = snd_pcm_lib_buffer_bytes(substream);
+ 	unsigned int count = snd_pcm_lib_period_bytes(substream);
++	int tmp;
+ 
+ 	chip->dma_size = size;
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
++	tmp = snd_es1688_read(chip, 0xb4);
+ 	snd_es1688_reset(chip);
+ 	snd_es1688_set_rate(chip, substream);
+ 	snd_es1688_dsp_command(chip, ES1688_DSP_CMD_SPKOFF);
+@@ -461,6 +466,7 @@ static int snd_es1688_capture_prepare(struct snd_pcm_substream *substream)
+ 	}
+ 	snd_es1688_write(chip, 0xb1, (snd_es1688_read(chip, 0xb1) & 0x0f) | 0x50);
+ 	snd_es1688_write(chip, 0xb2, (snd_es1688_read(chip, 0xb2) & 0x0f) | 0x50);
++	snd_es1688_write(chip, 0xb4, tmp);
+ 	spin_unlock_irqrestore(&chip->reg_lock, flags);
+ 	/* --- */
+ 	count = -count;
 
-Takashi Iwai wrote:
-> At Sat, 23 Feb 2008 23:29:56 +0100,
-> Anders R=F8nningen wrote:
->   =
+--------------020004060207070108060804
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->> I finally got around to compiling the latest source.
->>
->> [   14.160000] ALSA =
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+--------------020004060207070108060804
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->> /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:2994: =
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
 
->> autoconfig: line_outs=3D1 (0xd/0x0/0x0/0x0/0x0)
->> [   14.160000] ALSA =
-
->> /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:2998:=
-    =
-
->> speaker_outs=3D0 (0x0/0x0/0x0/0x0/0x0)
->> [   14.160000] ALSA =
-
->> /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:3002:=
-    =
-
->> hp_outs=3D2 (0xa/0xf/0x0/0x0/0x0)
->> [   14.160000] ALSA =
-
->> /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:3003:=
-    =
-
->> mono: mono_out=3D0x0
->> [   14.160000] ALSA =
-
->> /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:3011:=
-    =
-
->> inputs: mic=3D0xc, fmic=3D0xe, line=3D0x0, fline=3D0x0, cd=3D0x0, aux=3D=
-0x0
->> [   14.160000] ALSA =
-
->> /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/../../alsa-kernel=
-/pci/hda/patch_sigmatel.c:2287: =
-
->> dac_nids=3D3 (0x2/0x5/0x3/0x0/0x0)
->>
->> Now I have sound on both HP and Internal speakers, but levelcontrol is =
-
->> not ok.
->>
->> Internal Speakers: PCM and Front adjust the level, Master does nothing
->> Left HP Jack: PCM and Front adjust the level, Master does nothing
->> Right HP Jack: PCM adjusts level, Master and Front does nothing.
->>     =
-
->
-> I guess this is also same on 1.0.16?  Or is it a regression after
-> 1.0.16?
->
-> Could you take alsa-info.sh snapshot for each mixer state?  Then we
-> can check the inconsistent mapping between mixer elements and the
-> actual I/Os.
->
->
-> thanks,
->
-> Takashi
->   =
+--------------020004060207070108060804--
