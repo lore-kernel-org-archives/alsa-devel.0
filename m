@@ -1,16 +1,19 @@
-From: "Federico Briata" <federicobriata@tiscali.it>
+From: "Federico Briata" <federicobriata@gmail.com>
 Subject: Re: installation steps for us-122l tascam driver
-Date: Mon, 25 Feb 2008 01:43:09 +0100
-Message-ID: <b35229e90802241643y317e5cb4o39b5c6f2da254f81@mail.gmail.com>
+Date: Mon, 25 Feb 2008 01:47:45 +0100
+Message-ID: <b35229e90802241647v108bc4e0o52923154035de2c8@mail.gmail.com>
+References: <b35229e90802241643y317e5cb4o39b5c6f2da254f81@mail.gmail.com>
+Reply-To: federicobriata@tiscali.it
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86E45103896
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 01:43:11 +0100 (CET)
-Received: by fk-out-0910.google.com with SMTP id f40so3428317fka.0
-	for <alsa-devel@alsa-project.org>; Sun, 24 Feb 2008 16:43:10 -0800 (PST)
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id 216C51038A0
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 01:47:47 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id f40so3431567fka.0
+	for <alsa-devel@alsa-project.org>; Sun, 24 Feb 2008 16:47:46 -0800 (PST)
+In-Reply-To: <b35229e90802241643y317e5cb4o39b5c6f2da254f81@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,8 +27,8 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-follow step-by-step instruction to compile everything.
-I'm using debian lenny, for ubuntu should be the same
+follow step-by-step instruction which i used compile everything.
+I'm using debian lenny, for ubuntu should be the same...
 
 ------- download patch for us-122l---------
 mkdir /usr/src/us-122l
@@ -112,7 +115,7 @@ usbcore: registered new interface driver snd-usb-us122l
 usb 5-4: USB disconnect, address 5
 usb 5-4: new high speed USB device using ehci_hcd and address 6
 usb 5-4: configuration #1 chosen from 1 choice
-snd_us122l_probe:380:ffff810023435800:0
+snd_us122l_probe:380:ffff810023 435800:0
 snd-usb-us122l: probe of 5-4:1.0 failed with error -5
 snd_us122l_probe:380:ffff81002a9a3000:1
 us122l_create_card:302
