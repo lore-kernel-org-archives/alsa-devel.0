@@ -1,20 +1,26 @@
-From: Matt Whitlock <matt@whitlock.name>
-Subject: Re: How to set idle S/PDIF sample rate?
-Date: Mon, 25 Feb 2008 14:03:21 -0500
-Message-ID: <200802251403.21651.matt@whitlock.name>
-References: <200802222234.22975.matt@whitlock.name>
-	<s5h63wduw04.wl%tiwai@suse.de>
+From: Dustin Kerstein <dustobub@gmail.com>
+Subject: Re: HDA-Intel -  Patch to support RV7xx HDMI Audio
+Date: Mon, 25 Feb 2008 19:28:12 +0000 (UTC)
+Message-ID: <loom.20080225T192638-904@post.gmane.org>
+References: <206C6845C72CAE439DC3D9D413C571A496598E@ssuzexmb3.amd.com>
+	<s5hr6ffycp2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17667244C0
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 20:03:24 +0100 (CET)
-Received: by hs-out-0708.google.com with SMTP id l65so2817855hsc.0
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 11:03:23 -0800 (PST)
-In-Reply-To: <s5h63wduw04.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 64521244BD
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 20:35:08 +0100 (CET)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1JTj6M-0007pP-Nk
+	for alsa-devel@alsa-project.org; Mon, 25 Feb 2008 19:35:02 +0000
+Received: from cpe-72-231-166-180.nycap.res.rr.com ([72.231.166.180])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 19:35:02 +0000
+Received: from dustobub by cpe-72-231-166-180.nycap.res.rr.com with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 19:35:02 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,82 +30,9 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday, 25 February 2008 6:16:11 am Takashi Iwai wrote:
-> At Fri, 22 Feb 2008 22:34:22 -0500,
-> Matt Whitlock wrote:
-> > 
-> > When no programs have the sound hardware open, ALSA drives my Intel HDA's S/PDIF output with silence at 48000 Hz.  How would I change this default so that the idle sample rate is 44100 Hz?
-> 
-> You can use iecset utility to set the default SPDIF setting.
-> But, in the case of HD-audio, the sample rate isn't included in the
-> status bits verb but rather set dynamically via the normal PCM rate
-> stting.  So, I don't think this would fix your problem.
+Will this patch allow for 8-Channel LPCM audio over HDMI? Thanks.
 
-Correct.  Executing 'iecset rate 44100' while the sound card is idle prints a text block that says "Rate: 44100 Hz", but my receiver still shows that it is receiving PCM at 48000 Hz.  If I then play a 44100-Hz stream, the receiver switches to 44100 Hz (takes a moment, during which audio is dropped), and then when I stop the playback, the receiver switches back to 48000 Hz (takes another moment, although it's imperceptible because there's no audio to drop at this point).  Interestingly, running 'iecset' with no arguments at this point still shows "Rate: 44100 Hz" even though the card is outputting 48000-Hz silence.
-
-> > I've tried everything, including replacing /usr/share/alsa/alsa.conf with a single PCM definition that outputs straight to hardware with "rate 44100", but still, whenever nothing is accessing the sound hardware, ALSA reverts to 48000-Hz silence.  There must be a way to influence that, right?
-> > 
-> > Alternatively, if ALSA would simply not output anything over S/PDIF when idle, my receiver could just stay at 44100 Hz, albeit unlocked since there would be no data stream at all.  So this is also an acceptable solution to me, but I cannot find any way to make ALSA totally shut up when idle.  It always wants to output silence.  Interestingly, if I mute the IEC958 playback channel and then unmute it, my receiver reports no signal at all until I play a sound, and then after the sound finishes, my receiver reports that it is locked onto PCM at 48000 Hz.  Seems kind of like a bug, doesn't it?
-> 
-> Hm, what happens if you mute IEC958 playback switch before the end of
-> the playback stream?
-
-There are some interesting and complex behaviors going on here.  I will record my steps and results exactly.
-
-Precondition: iec958 channel muted; iecset shows "Rate: 48000 Hz"; no signal at receiver
-1. begin playback of 44100-Hz stream with 'aplay' (default device)
-Result: no change at receiver (no signal)
-2. interrupt aplay
-Result: no change
-3. begin playback of 44100-Hz stream with 'aplay -D spdif'
-Result: iec958 channel becomes unmuted; receiver shows PCM at 44100 Hz; sound audible after momentary delay
-4. interrupt aplay
-Result: iec958 channel becomes muted again; receiver shows no signal after ~2-second delay
-5. unmute iec958 channel in alsamixer
-Result: receiver display blips momentarily but goes back to no signal
-6. mute iec958 channel in alsamixer
-Result: no change (no signal)
-7. unmute iec958 channel in alsamixer again
-Result: no change (no signal; no blip on receiver display this time)
-8. begin playback of 44100-Hz stream with 'aplay' (default device)
-Result: receiver shows PCM at 48000 Hz; sound audible immediately
-9. interrupt aplay
-Result: no change (receiver still shows PCM at 48000 Hz; no blip on receiver display)
-10. begin playback of 44100-Hz stream with 'aplay -D spdif'
-Result: receiver switches to 44100-Hz PCM; sound becomes audible after momentary switching delay
-11. interrupt aplay
-Result: receiver switches back to 48000-Hz PCM
-12. begin playback of 44100-Hz stream with 'aplay' (default device)
-Result: no change on receiver display (still shows PCM at 48000 Hz); sound audible immediately
-13. attempt to mute iec958 channel in alsamixer
-Result: iec958 channel becomes muted; receiver shows no signal after ~2-second delay
-14. attempt to unmute iec958 channel in alsamixer
-Result: iec958 channel becomes unmuted; receiver shows PCM at 48000 Hz; sound audible again
-15. interrupt aplay
-Result: no change at receiver (still shows PCM at 48000 Hz)
-16. begin playback of 44100-Hz stream with 'aplay -D spdif'
-Result: receiver switches to 44100-Hz PCM; sound becomes audible after momentary switching delay
-17. attempt to mute iec958 channel in alsamixer
-Result: no change (iec958 does not become muted; receiver still shows PCM at 44100 Hz; sound still audible)
-
-I just ran through this list of steps a second time to be sure they are completely correct, and they are.
-
-To sum up what I'm seeing:
-
-iec958 channel muted
---------------------
-playback to default device: no signal
-playback to spdif device: PCM at 44100 Hz
-idle: no signal
-
-iec958 channel unmuted
-----------------------
-playback to default device: PCM at 48000 Hz
-playback to spdif device: PCM at 44100 Hz
-idle: no signal immediately after unmute; PCM at 48000 Hz after any audio stream
-
-If I could just get that last state (iec958 unmuted; idle after any audio stream) to be 44100 Hz instead of 48000 Hz, I would be happy.
+Dustin
