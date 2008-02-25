@@ -1,17 +1,22 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Patch for alsa-info.sh
-Date: Mon, 25 Feb 2008 15:18:10 +1000
-Message-ID: <200802251518.10693.wishie@wishie.net>
+From: "=?ISO-8859-1?Q?Anders_R=F8nningen?=" <andersronningen@gmail.com>
+Subject: Re: [PATCH] hda: STAC927x invalid association value
+Date: Mon, 25 Feb 2008 07:15:42 +0100
+Message-ID: <194b8d500802242215s69aaf49ejf68cd1035da98798@mail.gmail.com>
+References: <47BCA495.5050201@embeddedalley.com> <s5hfxvmss9c.wl%tiwai@suse.de>
+	<47BD9621.5040101@gmail.com> <s5hpruqs4th.wl%tiwai@suse.de>
+	<47C09E64.9060503@gmail.com>
+	<1203916311.3853.5.camel@localhost.localdomain>
+Reply-To: anders.ronningen@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wishie.net (202-137-101-003.auto.usertools.net [202.137.101.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 27C6524519
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 06:18:18 +0100 (CET)
-Received: from [192.168.0.2] (unknown [192.168.0.200])
-	by wishie.net (Postfix) with ESMTP id 9E1AE4B89C
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 05:39:34 +1000 (EST)
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2442F2454E
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 07:15:43 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so1495412wag.8
+	for <alsa-devel@alsa-project.org>; Sun, 24 Feb 2008 22:15:42 -0800 (PST)
+In-Reply-To: <1203916311.3853.5.camel@localhost.localdomain>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,39 +27,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jiang zhe <zhe.jiang@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
 List-Id: alsa-devel@alsa-project.org
 
-The below patch should stop alsa-info.sh from running amixer on cards that 
-dont exist (ie, if the user has no card0, but has a card1)
-I realise its a generally a rare case, and cards are _usually_ consecutive, 
-but we might aswell cover all bases if we can.
+Yes. In 1.0.16, Master and PCM adjust Left HP, while Master, Front and PCM
+adjust Right HP. This means that with Front at 100%, I can adjust Master and
+PCM and have equal level in Left/Right HP
+
+--
+Anders
+
+On Mon, Feb 25, 2008 at 6:11 AM, Jiang zhe <zhe.jiang@intel.com> wrote:
+
+> On Sun, 2008-02-24 at 06:29 +0800, Anders R=F8nningen wrote:
+> > I finally got around to compiling the latest source.
+> >
+> > [   14.160000] ALSA
+> > /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:2994:
+> > autoconfig: line_outs=3D1 (0xd/0x0/0x0/0x0/0x0)
+> > [   14.160000] ALSA
+> > /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:2998:
+> > speaker_outs=3D0 (0x0/0x0/0x0/0x0/0x0)
+> > [   14.160000] ALSA
+> > /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:3002:
+> > hp_outs=3D2 (0xa/0xf/0x0/0x0/0x0)
+> > [   14.160000] ALSA
+> > /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:3003:
+> > mono: mono_out=3D0x0
+> > [   14.160000] ALSA
+> > /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/hda_codec.c:3011:
+> > inputs: mic=3D0xc, fmic=3D0xe, line=3D0x0, fline=3D0x0, cd=3D0x0, aux=
+=3D0x0
+> > [   14.160000] ALSA
+> >
+> /mnt/storage/source/alsa/mercurial/alsa-driver/pci/hda/../../alsa-kernel/=
+pci/hda/patch_sigmatel.c:2287:
+> > dac_nids=3D3 (0x2/0x5/0x3/0x0/0x0)
+> >
+> > Now I have sound on both HP and Internal speakers, but levelcontrol is
+> > not ok.
+> >
+> > Internal Speakers: PCM and Front adjust the level, Master does nothing
+> > Left HP Jack: PCM and Front adjust the level, Master does nothing
+> > Right HP Jack: PCM adjusts level, Master and Front does nothing.
+> >
+> The Right HP Jack should be adjusted by "Surround".
+> Because there are three jacks on the front panel,
+> they can work on 6-channel model.
+>
+> Were you able to adjust "Right HP Jack" through "Front" in alsa-1.0.16?
+>
+> Thanks!
+>
+> > - Anders
+>
+>
+>
+>
 
 
-diff -r 7907cfbab11c alsa-info.sh
---- a/alsa-info.sh	Mon Feb 18 12:13:23 2008 +0100
-+++ b/alsa-info.sh	Mon Feb 25 15:16:16 2008 +1000
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
--SCRIPT_VERSION=0.4.37
-+SCRIPT_VERSION=0.4.38
- CHANGELOG="http://hg.alsa-project.org/alsa/log/tip/alsa-info.sh"
- 
- 
-#################################################################################
-@@ -98,7 +98,7 @@ withamixer() {
-         echo "!!Amixer output" >> $FILE
-         echo "!!-------------" >> $FILE
-         echo "" >> $FILE
--        for i in `seq 0 $LAST_CARD`;do
-+	for i in `grep "]: " /proc/asound/cards | awk -F ' ' '{ print $1} '` ; do
- 	CARD_NAME=`grep "^ $i" /tmp/alsainfo/alsacards.tmp|awk {'print $2'}`
- 	echo "!!-------Mixer controls for card $i $CARD_NAME]" >> $FILE
- 	echo "" >>$FILE
+-- =
 
-
-
--- 
-Happiness is like peeing your pants. Everyone can see it, but only you can 
-feel its warmth 
+Mvh,
+Anders
