@@ -1,18 +1,17 @@
-From: Roman Haefeli <reduzierer@yahoo.de>
-Subject: Re: hdsp rpm support
-Date: Mon, 25 Feb 2008 16:50:47 +0100
-Message-ID: <1203954648.5278.46.camel@localhost.localdomain>
-References: <30226294.1197372079652.JavaMail.root@viefep27>
-	<1197392473.5899.4.camel@localhost.localdomain>
-	<47C2720C.6000807@chello.at>
-Reply-To: reduzierer@yahoo.de
+From: Travis Place <wishie@wishie.net>
+Subject: Patch for alsa-info.sh - AC97 including regs
+Date: Tue, 26 Feb 2008 02:05:50 +1000
+Message-ID: <200802260205.50530.wishie@wishie.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4832952148295928524=="
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_eduwHMvOKAjfbRs"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from n6.bullet.re3.yahoo.com (n6.bullet.re3.yahoo.com
-	[68.142.237.91]) by alsa0.perex.cz (Postfix) with SMTP id 3197D24379
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 16:53:29 +0100 (CET)
-In-Reply-To: <47C2720C.6000807@chello.at>
+Received: from wishie.net (202-137-101-003.auto.usertools.net [202.137.101.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F3E9243EA
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 17:05:58 +0100 (CET)
+Received: from [192.168.0.2] (unknown [192.168.0.200])
+	by wishie.net (Postfix) with ESMTP id 86ADC4B89C
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 16:27:18 +1000 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,45 +21,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Karl Grill <kgrill@chello.at>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============4832952148295928524==
-Content-Type: text/plain
+--Boundary-00=_eduwHMvOKAjfbRs
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-On Mon, 2008-02-25 at 08:45 +0100, Karl Grill wrote:
-> Dear Roman and all,
-> I'm sorry i promised a little too much - in fact I was too busy with 
-> other things to get back to the rpm stuff in time; last night, I started 
-> to check the current state of affairs, and it looks quite promising; in 
-> the next three weeks, I won't have too much time to devote to this 
-> project, but then there's the University's easter break which I hope 
-> will give me the time to get things done, so, if all goes well, at least 
-> an experimental version should be ready by the end of March.
+Ok, ive added the +regs file aswell, but decided to store its output in a 
+seperate tmp file (before being added to the complete output).
 
-no need to be sorry at all. actually i am very glad to hear, that you
-(someone) is still focusing on it.
-and i am looking forward to see professional audio hardware supported by
-linux/alsa as well, which will hopefully be a benefit not only for me.
+This way, we can change how its output if we'd like, with less stuffing around 
+(and all tmp files are cleaned up after each run, anyway).
 
-thank you for your efforts!
-roman
 
+-- 
+Happiness is like peeing your pants. Everyone can see it, but only you can 
+feel its warmth 
+
+--Boundary-00=_eduwHMvOKAjfbRs
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="alsa-info-ac97+regs.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="alsa-info-ac97+regs.diff"
+
+diff -r 93cc5f0a20f1 alsa-info.sh
+--- a/alsa-info.sh	Mon Feb 25 13:07:07 2008 +0100
++++ b/alsa-info.sh	Tue Feb 26 02:04:28 2008 +1000
+@@ -1,6 +1,6 @@
+ #!/bin/bash
  
+-SCRIPT_VERSION=0.4.38
++SCRIPT_VERSION=0.4.39
+ CHANGELOG="http://hg.alsa-project.org/alsa/log/tip/alsa-info.sh"
+ 
+ #################################################################################
+@@ -270,6 +270,10 @@ lspci |grep -i "multi\|audio">/tmp/alsai
+ #Check for HDA-Intel cards codec#*
+ cat /proc/asound/card*/codec\#* > /tmp/alsainfo/alsa-hda-intel.tmp 2> /dev/null
+ 
++#Check for AC97 cards codec
++cat /proc/asound/card*/codec97\#0/ac97\#0-0 > /tmp/alsainfo/alsa-ac97.tmp 2> /dev/null
++cat /proc/asound/card*/codec97\#0/ac97\#0-0+regs > /tmp/alsainfo/alsa-ac97-regs.tmp 2> /dev/null
++
+ #Fetch the info, and put it in $FILE in a nice readable format.
+ echo "name=$USER&type=33&description=/tmp/alsa-info.txt&expiry=&s=Submit+Post&content=" > $FILE
+ echo "!!################################" >> $FILE
+@@ -362,6 +366,21 @@ then
+ 	echo "" >> $FILE
+ 	echo "" >> $FILE
+ fi
++
++if [ -s "/tmp/alsainfo/alsa-ac97.tmp" ]
++then
++        echo "!!AC97 Codec information" >> $FILE
++        echo "!!---------------------------" >> $FILE
++        echo "--startcollapse--" >> $FILE
++        echo "" >> $FILE
++        cat /tmp/alsainfo/alsa-ac97.tmp >> $FILE
++        echo "" >> $FILE
++        cat /tmp/alsainfo/alsa-ac97-regs.tmp >> $FILE
++        echo "--endcollapse--" >> $FILE
++	echo "" >> $FILE
++	echo "" >> $FILE
++fi
++
+ 
+ #If no command line options are specified, then run as though --with-all was specified
+ if [[ -z "$1" ]]
 
-
-
-
-
-	
-		
-___________________________________________________________ 
-Der frühe Vogel fängt den Wurm. Hier gelangen Sie zum neuen Yahoo! Mail: http://mail.yahoo.de
-
-
---===============4832952148295928524==
+--Boundary-00=_eduwHMvOKAjfbRs
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -71,4 +105,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============4832952148295928524==--
+--Boundary-00=_eduwHMvOKAjfbRs--
