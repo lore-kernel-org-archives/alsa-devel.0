@@ -1,20 +1,27 @@
-From: "Harsha priya gupta" <harshapriya@gmail.com>
-Subject: Fwd:  HW decoding abstracted in ALSA
-Date: Mon, 25 Feb 2008 23:20:28 +0530
-Message-ID: <827ad74d0802250950h7d3d4f01rf6d72e1efe80c0ab@mail.gmail.com>
-References: <827ad74d0802242257u604e47d7sb844a29e2bcd1c3b@mail.gmail.com>
-	<s5hzltptf9k.wl%tiwai@suse.de>
-	<827ad74d0802250409j757042b1vf898282293f8ff79@mail.gmail.com>
+From: "Adrian Stancu" <adrian.stancu.82@gmail.com>
+Subject: Re: snd-usb-audio syncronisation problem
+Date: Mon, 25 Feb 2008 20:32:38 +0200
+Message-ID: <43e8c7320802251032j7541ac02t1459ef83d95dfd4e@mail.gmail.com>
+References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>
+	<47BEDF9E.3000907@ladisch.de>
+	<43e8c7320802220651r25ac78d7pecca63f3e1d48249@mail.gmail.com>
+	<47BEEF4D.4050507@ladisch.de>
+	<43e8c7320802220815y332a82f4kac19999cc15fd276@mail.gmail.com>
+	<47BEF8FE.4030408@ladisch.de>
+	<43e8c7320802220846g7d7c8b61jb29e8ca3028d2c24@mail.gmail.com>
+	<47BEFFFC.8030301@ladisch.de>
+	<43e8c7320802220902j3a4ff3a1wdae77ec25f2d3785@mail.gmail.com>
+	<47C2B822.7000507@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89C7C243F2
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 18:50:31 +0100 (CET)
-Received: by el-out-1112.google.com with SMTP id z25so1351024ele.8
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 09:50:30 -0800 (PST)
-In-Reply-To: <827ad74d0802250409j757042b1vf898282293f8ff79@mail.gmail.com>
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 983971037FE
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 19:32:42 +0100 (CET)
+Received: by ti-out-0910.google.com with SMTP id u3so975731tia.8
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 10:32:40 -0800 (PST)
+In-Reply-To: <47C2B822.7000507@ladisch.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,59 +32,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
-Thanks for your immediate reply.
 
-My hardware supports MP3 decoding in HW (in addition to few others). I am
-looking to write a driver such that when an MP3 file is played, the file is
-decoded using the HW decoder and played. Is there a possibility in current
-ALSA framework to do so?
+Thanks for the update.
+I tested your patch and 44.1kHz, 48kHz and 96kHz seem to work
+correctly. Unfortunately, I am not able to test any rate higher than
+96kHz, because I cannot modify this interface's sampling rate under
+Linux (and if I modify it on another computer [a virtual machine], the
+interface will reset to 44.1kHz whenever I "unplug the USB cable" AND
+it is set to a rate higher than 96kHz).
 
-Thanks,
-Harsha.
+I don't know if there's any way around this, but I currently don't see
+any way of using this interface at >96kHz in Linux.
 
+Best regards,
+Adi
 
-On Mon, Feb 25, 2008 at 5:33 PM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Mon, 25 Feb 2008 12:27:00 +0530,
-> Harsha priya gupta wrote:
-> >
-> > Hi,
-> >
-> > I am new to ALSA and audio stack in Linux. I have a sound card that can
-> do
-> > HW decoding as well. I am looking at writing an ALSA driver such that
-> > whatever may be the player or MMF above, it should use the HW decoder
-> and
-> > not the inherit SW decoder that is available with the player.
-> >
-> > Can someone help me with some pointers or existing like-drivers?
+On Mon, Feb 25, 2008 at 2:44 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Adrian Stancu wrote:
+>  > I *think* the 0202 USB is also in the same situation.
 >
-> Which format is in mind?  In theoery, you can implement the h/w
-> decoder on the ALSA framework, but there are some restrictions:
+>  OK, I made a quirk for both:
+>  <http://hg.alsa-project.org/alsa-kernel/rev/247195dfda43>
 >
-> - ALSA PCM assumes the constant bitrate
-> - The format bit must be defined
-> - The specific app recognizes and supports that format
->
-> In the case of AC3 or DTS, it's embedded in SPDIF frames so the PCM
-> core stuff doesn't take care of the above.  But, in the case of native
-> (non-PCM) formats, the support can be difficult as is.
+>  Please also test with a sample format where packets are sent every four
+>  microframes, i.e., > 96 kHz.
 >
 >
-> Takashi
+>  Regards,
+>  Clemens
 >
-
-
-
--- 
--Harsha
-
-
-
--- 
--Harsha
