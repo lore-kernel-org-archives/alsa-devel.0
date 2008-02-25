@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC - Output widgets
-Date: Mon, 25 Feb 2008 13:34:33 +0000
-Message-ID: <20080225133430.GB9038@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] hdsp: Remove all eol tabs/spaces and space
+ stuffing
+Date: Mon, 25 Feb 2008 15:37:49 +0100
+Message-ID: <47C2D2BD.3050902@ladisch.de>
+References: <87b21007d0f9bcd3e481.1203793456@am2>	<s5h7igtuwbl.wl%tiwai@suse.de>
+	<47C2B14D.9070000@ladisch.de> <s5hve4dtc09.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E3F510383F
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 14:34:34 +0100 (CET)
-Content-Disposition: inline
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id AD2CD245B9
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 15:36:06 +0100 (CET)
+In-Reply-To: <s5hve4dtc09.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,19 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexandre BOUIN <a.bouin@kerlink.fr>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Andrew Paprocki <andrew@ishiboo.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 25, 2008 at 10:39:15AM +0100, Alexandre BOUIN wrote:
+Takashi Iwai wrote:
+> Clemens Ladisch wrote:
+> > Takashi Iwai wrote:
+> > > I guess this simple conversion will give lots of checkpatch errors.
+> >
+> > But it doesn't introduce any errors; it removes some of them.
+>
+> It does, unfortunately.  The output of checkpatch is
+>
+> 	total: 3 errors, 7 warnings, 1696 lines checked
 
->  - 1 SND_SOC_DAPM_MIXER is connected to 2 SND_SOC_DAPM_PGA with power
-> control.
->  - each PGA is connected to an SND_SOC_DAPM_OUTPUT
->  - according to tosa example : 
->     - first OUTPUT is connected to a SND_SOC_DAPM_HP defined as endpoint
->     - second OUTPUT is connected to a SND_SOC_DAPM_SPK defined as endpoint
-> this SPK is set disconnected in my tosa_ac97_init -like function
+These aren't errors introduced by the patch; all of them were present in
+the original file.
 
-Could you please post dmesg output with DAPM_DEBUG turned on which shows
-this happening?
+
+Regards,
+Clemens
