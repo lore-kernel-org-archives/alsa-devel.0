@@ -1,18 +1,17 @@
-From: William Pitcock <nenolod@sacredspiral.co.uk>
-Subject: Re: OSS4 X-Fi driver port to ALSA
-Date: Tue, 26 Feb 2008 08:12:37 -0600
-Message-ID: <1204035157.9659.657.camel@petrie>
-References: <1202160350.3719.76.camel@petrie.sacredspiral.co.uk.sacredspiral.co.uk>
-	<s5h8x1ytuku.wl%tiwai@suse.de> <47A99513.1040906@superbug.co.uk>
-	<47C40F55.3060609@superbug.co.uk>  <s5hve4bua14.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd-usb-audio syncronisation problem
+Date: Tue, 26 Feb 2008 15:21:45 +0100
+Message-ID: <47C42079.2030102@ladisch.de>
+References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>	<47C2B822.7000507@ladisch.de>	<43e8c7320802251032j7541ac02t1459ef83d95dfd4e@mail.gmail.com>	<47C3C07B.2040104@ladisch.de>	<43e8c7320802252353p2798488at87163c75a4511c4f@mail.gmail.com>	<47C3CA77.5070104@ladisch.de>	<43e8c7320802260038x17c2c350wade07dcd4f32cb3e@mail.gmail.com>	<47C3D29B.9070708@ladisch.de>	<43e8c7320802260120u241d2c83r97d7e00d4896992c@mail.gmail.com>	<47C3F9BF.3080600@ladisch.de>
+	<43e8c7320802260453m45c55ba5gb1756e288bf90808@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6465883937975155705=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from carpathia.dereferenced.org (carpathia.dereferenced.org
-	[64.71.161.129])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1360C103860
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 15:08:09 +0100 (CET)
-In-Reply-To: <s5hve4bua14.wl%tiwai@suse.de>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 3AEBA24357
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 15:20:04 +0100 (CET)
+In-Reply-To: <43e8c7320802260453m45c55ba5gb1756e288bf90808@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Adrian Stancu <adrian.stancu.82@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adrian Stancu wrote:
+> I see, you say that the device knows what sample rate it is supposed
+> to use, and that this rate should be automatically used.
 
---===============6465883937975155705==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ctFI0XC6dkZzA+ndeEef"
+Not automatically, the driver sets an alternate setting in set_format()
+by calling usb_set_interface().
 
+> ...
+> 2) I logically connect the device to the virtual machine, set the
+> sampling rate to 96k through the creative supplied drivers,
 
---=-ctFI0XC6dkZzA+ndeEef
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, 2008-02-26 at 14:23 +0100, Takashi Iwai wrote:
-> Will anyone start porting from OSS?  It doesn't look like so much
-> amount of codes...
->=20
-
-I intend to port from OSS soon. I just need to learn more about the
-driver's internals.
-
-William
+Apparently, that driver uses some vendor-specific request to configure
+the device.  To find out what exactly that driver does, you'd have to
+use a tool like usbsnoop to record the USB requests.
 
 
---=-ctFI0XC6dkZzA+ndeEef
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBHxB5UoB+26npOQg4RAlDLAJ9j5diagSwtw44s8Rm2MFRMEGtQbACdF2IE
-wzc0dwIZx2P7hpXg03toSJM=
-=zyB5
------END PGP SIGNATURE-----
-
---=-ctFI0XC6dkZzA+ndeEef--
-
-
---===============6465883937975155705==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============6465883937975155705==--
+Regards,
+Clemens
