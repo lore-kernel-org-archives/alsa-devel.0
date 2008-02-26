@@ -1,27 +1,19 @@
-From: "Adrian Stancu" <adrian.stancu.82@gmail.com>
-Subject: Re: snd-usb-audio syncronisation problem
-Date: Tue, 26 Feb 2008 14:53:45 +0200
-Message-ID: <43e8c7320802260453m45c55ba5gb1756e288bf90808@mail.gmail.com>
-References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>
-	<47C2B822.7000507@ladisch.de>
-	<43e8c7320802251032j7541ac02t1459ef83d95dfd4e@mail.gmail.com>
-	<47C3C07B.2040104@ladisch.de>
-	<43e8c7320802252353p2798488at87163c75a4511c4f@mail.gmail.com>
-	<47C3CA77.5070104@ladisch.de>
-	<43e8c7320802260038x17c2c350wade07dcd4f32cb3e@mail.gmail.com>
-	<47C3D29B.9070708@ladisch.de>
-	<43e8c7320802260120u241d2c83r97d7e00d4896992c@mail.gmail.com>
-	<47C3F9BF.3080600@ladisch.de>
+From: "William Juul" <william@juul.no>
+Subject: Re: new driver: 30mS interval problem
+Date: Tue, 26 Feb 2008 13:56:51 +0100
+Message-ID: <2563ac9e0802260456j315c0eb1i7690cf03f4ee2d7f@mail.gmail.com>
+References: <2563ac9e0802250646t419bdc41v3b6b10d7566fec3d@mail.gmail.com>
+	<s5hejb1t52u.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 313F324630
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 13:53:48 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id c6so1406858gvd.24
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 04:53:47 -0800 (PST)
-In-Reply-To: <47C3F9BF.3080600@ladisch.de>
+Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D30924630
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 13:56:56 +0100 (CET)
+Received: by el-out-1112.google.com with SMTP id z25so1722596ele.8
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 04:56:54 -0800 (PST)
+In-Reply-To: <s5hejb1t52u.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,61 +24,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I see, you say that the device knows what sample rate it is supposed
-to use, and that this rate should be automatically used. However, in
-practice, I guess this does not happen for some reason. For the
-recording part, the things stay exactly like for playback, i.e. the
-recorded sound is correct as long as the device is (manually, through
-another OS) set to the sampling rate at which the recording is made.
+On Mon, Feb 25, 2008 at 4:43 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Mon, 25 Feb 2008 15:46:28 +0100,
+>
+> William Juul wrote:
+>  >
+>  > Hello
+>  >
+>  > I am new to ALSA and trying to write a new driver for a DAC connected
+>  > with PCM to an AVR32 on a NGW100 reference card provided by Atmel.
+>  >
+>  > The sampling rate I am currently using is 11047and the DAC is
+>  > providing 4 channels of 24bit. The HW interface is using DMA to copy
+>  > data to RAM.
+>  > By studying the audio data in hexdump or in Audacity I can verify that
+>  > the sound looks good in intervals of about 30mS, then all channels are
+>  > garbled for 30mS. This pattern repeat itself throughout the audio
+>  > capture.
+>  >
+>  > I am not confident I have configured all ALSA parameters properly.
+>  > How can I go about fixing/debugging this 30mS intverval problem?
+>
+>  Maybe the period size has to be aligned to some value?
+>
+>
+>  >
+>  > Below is the command I am using.
+>  >
+>  >
+>  > Best regards
+>  > William Juul
+>  >
+>  > # arecord -r 11047 -c 4 -f S24_LE -s 1 -A 100 -d 5 --buffer-size 16384
+>  > -F 21333 -v > test.wav
+>
+>  Try to change the period size as well.
+>
+>
+>  Takashi
+>
+I tried changing the period size in both directions but it would never
+change to anything but 490.
+Then I tried changing the number of channels. -c 1 gave me lots of
+"overrun", but -c 2 made everything work. The WAV file would still
+contain data from all 4 channels. I do not understand the correlation
+between the different parameters and why it behaves like this. Thus I
+do not know what to adjust to remedy this.
 
-Let me give a few examples:
-1) I power on the device, and it automatically picks 48k. If i try
-playing back something at any other rate (44.1k, 96k etc), the sound
-is very distorted.
-2) I logically connect the device to the virtual machine, set the
-sampling rate to 96k through the creative supplied drivers, disconnect
-(WITHOUT powering it off), reload the snd-usb-audio module in Linux.
-Now, I can achieve correct playback only at 96k. Anything else is
-distorted.
-Of course, I can resample anything on-the-fly (through additional
-device in ~/.asoundrc) to match the sampling rate of the device and
-get normal sound.
+The command I used to make everything work was:
+arecord -r 11047 -c 2 -f S24_LE -s 100 -A 10000 -d 5 > test.wav
 
-As an additional note, recording at 192k seems *completely* broken. I
-mean, If I record at 96k while the device was just powered on (i.e.
-set to 48k), there is still a connection between the original and the
-recorded sounds. However, at 192k, it looks just like pure noise, at
-maximum amplitude.
-Details:
-http://img147.imageshack.us/my.php?image=recat96kdeviceat48kkt3.jpg
--- recorded at 96kHz
-http://img81.imageshack.us/my.php?image=recat192kdeviceat48kii7.jpg
--- recorded at 192kHz
-In both cases, the sound fed to the input was a simple 41.2Hz tone.
+It turned out that --buffer-size and -F did not actually change anything.
 
+The problem that is still bothering me is that the different channels
+from the PCM stream comes in different positions in the WAV file. For
+example when I disable all but the first PCM channel, the data from
+this channel can occur in any of the 4 channels in the WAV file (there
+is still four channels with data in the WAV file but the WAV header
+says it contains 2 channels when captured with -c 2).
 
-On Tue, Feb 26, 2008 at 1:36 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Adrian Stancu wrote:
->  > I wanted to mention that (from what I noticed until now), it is not
->  > possible to get correct playback on this device unless the sampling
->  > frequency it is set to (it defaults to 48k when powered on) matches
->  > the sampling frequency of the audio stream you send to it. So how is
->  > this supposed to work, if the device is set to 48k and my stream has
->  > 192k (and I cannot set the device to 192k)?
->
->  The alternate setting of the interface is supposed to set the sampling
->  frequency, and this is exactly what the driver does.
->
->  The returned frequency value is correct, so it seems the device knows
->  that it is supposed to run at 192 kHz.
->
->  Does recording work with all sample rates?
+How can I make sure that the data from one particular channel always
+occur in a fixed position in the WAV file?
+
+Best regards
+William
 >
 >
->  Regards,
->  Clemens
+>
+>  > Recording WAVE 'stdin' : Signed 24 bit Little Endian, Rate 11047 Hz, Channels 4
+>  > Plug PCM: Hardware PCM card 0 'AVR32 NGW100 external DAC' device 0 subdevice 0
+>  > pcm->setup: 1
+>  >   stream       : CAPTURE
+>  >   access       : RW_INTERLEAVED
+>  >   format       : S24_LE
+>  >   subformat    : STD
+>  >   channels     : 4
+>  >   rate         : 11047
+>  >   exact rate   : 11047 (11047/1)
+>  >   msbits       : 32
+>  >   buffer_size  : 16384
+>  >   period_size  : 490
+>  >   period_time  : 44355
+>  >   tick_time    : 4000
+>  >   tstamp_mode  : NONE
+>  >   period_step  : 1
+>  >   sleep_min    : 0
+>  >   avail_min    : 490
+>  >   xfer_align   : 490
+>  >   start_threshold  : 1
+>  >   stop_threshold   : 16384
+>  >   silence_threshold: 0
+>  >   silence_size : 0
+>  >   boundary     : 1073741824
+>  > _______________________________________________
+>  > Alsa-devel mailing list
+>  > Alsa-devel@alsa-project.org
+>  > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>  >
+>  _______________________________________________
+>  Alsa-devel mailing list
+>  Alsa-devel@alsa-project.org
+>  http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
