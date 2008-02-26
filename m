@@ -1,20 +1,22 @@
-From: Matt Whitlock <matt@whitlock.name>
-Subject: Re: How to set idle S/PDIF sample rate?
-Date: Tue, 26 Feb 2008 17:25:35 -0500
-Message-ID: <200802261725.35575.matt@whitlock.name>
-References: <200802222234.22975.matt@whitlock.name>
-	<200802251403.21651.matt@whitlock.name>
-	<s5hskzfu89e.wl%tiwai@suse.de>
+From: "Rene Dohmen" <acidjunk@gmail.com>
+Subject: Re: no front speaker sound with ALC262
+Date: Wed, 27 Feb 2008 00:19:58 +0100
+Message-ID: <165af2360802261519y6cdf878avf0af06c7b08db2a9@mail.gmail.com>
+References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>
+	<47BF84BF.702@versatile.com> <47BF8500.1050802@versatile.com>
+	<7D68F908-875D-4EDE-B25D-CCBDD4E4A339@gmail.com>
+	<s5h1w6zvrz4.wl%tiwai@suse.de>
+	<E0172064-A6C6-4874-81A2-B275A0954BD4@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 203872433D
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 23:25:38 +0100 (CET)
-Received: by hs-out-0708.google.com with SMTP id l65so3898694hsc.0
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 14:25:37 -0800 (PST)
-In-Reply-To: <s5hskzfu89e.wl%tiwai@suse.de>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 281BB24684
+	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 00:19:59 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id l27so1726971fgb.44
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 15:19:58 -0800 (PST)
+In-Reply-To: <E0172064-A6C6-4874-81A2-B275A0954BD4@gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,16 +27,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, 26 February 2008 9:01:17 am Takashi Iwai wrote:
-> There is a clear difference between "default" and "spdif" PCMs.
-> The default uses dmix plugin with the fixed 48kHz rate.  The spdif is
-> a direct access and can use all rates the codec chip supports (but no
-> soft-mixing).
+Hi,
 
-Well yes, I knew that.  I was trying to show you the inconsistencies of state in ALSA's handling of the S/PDIF output under various sequences of actions.
+I compiled the HG version. The driver behaves in the exact same way as the
+1.0.16 version. Very very low volume on the headphone output, like hearing
+sound form another channel on a mixer because of crosstalk (i don't know is
+this is the correct translation).
 
-Can I assume at this point that there is no way to set the idle S/PDIF output sample rate to 44100 Hz?  That is my original question.
+I also compiled hda_verb and used it to twiddle around with some of the
+connections. So far no luck.
+
+Can I do something to boost the volume level? Or is this also caused by the
+incorrect pin wiring of the device? Maybe the speakers do output some sound
+but because of the the low soundlevel i can't hear it.
+
+Thanks,
+
+Rene
+
+
+On Tue, Feb 26, 2008 at 1:21 PM, Rene Dohmen <acidjunk@gmail.com> wrote:
+
+> Thnx for your answer.
+> The preset models ( i tested the ones in 1.0.16 didn't work so i'll
+> have a try with the latest HG version)
+>
+> Having fun,
+>
+>        Rene
+>
+> Op Feb 26, 2008, om 1:10 PM heeft Takashi Iwai het volgende geschreven:
+>
+> > At Mon, 25 Feb 2008 13:49:43 +0100,
+> > Rene Dohmen wrote:
+> >>
+> >> Hi List,
+> >>
+> >> Is there any chance that this bug will be fixed soon?
+> >
+> > Well, it's up to you.
+> >
+> > One of the problems is that BIOS on your machine doesn't give the
+> > useful information for auto-probing at all.  A typical workaround in
+> > such a case is to try the existing preset models.  Pass model=basic or
+> > model=benq to snd-hda-intel module, for example.  The available model
+> > values can be found in ALSA-Configuration.txt.  Don't forget to
+> > check and adjust the mixer status again after changing the model
+> > because the mixers appear completly differently depending on the
+> > model.
+> >
+> > If none of the existing models doesn't match with your device, we have
+> > to figure out the exact codec configuration.  For some codecs like
+> > ALC880 or ALC260, you have model=test option that allows you to test
+> > all codec configurations via mixer interface.  Unfortunately, ALC262
+> > has no model=test support, so you have to do check it literally
+> > manually.  Below is a brief instruction how to explore the mysterious
+> > world of HD-audio codecs.
+> >
+> > First of all, install the very latest ALSA HG version.  Don't stick
+> > with 1.0.16 release.  You can use the daily snapshot tarball instead,
+> > too.
+> >
+> > Then, get hda-verb program found on
+> >       ftp://ftp.suse.com/pub/people/tiwai/misc/
+> > Extract the tarball, run make.  Install it or invoke it locally.  This
+> > program can be usable only as root.
+> >
+> > The next step is to get ALC262 datasheet from Realtek web site.  Take
+> > a look at the block diagram page.  There are pins in the right side
+> > and two DACs in the left side.  We have to set up the correct pins and
+> > connect to the DAC properly.
+> >
+> > Now, assume the port-D (NID 0x14) is the speaker output.  Check
+> > /proc/asound/card0/codec#0 and look for Node 0x14.  It may have the
+> > entry like the following:
+> >
+> >       Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+> >         Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+> >         Amp-In vals:  [0x00 0x00] [0x00 0x00]
+> >         Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+> >         Amp-Out vals:  [0x80 0x80]
+> >         Pincap 0x083e: IN OUT HP Detect Trigger
+> >         Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+> >           Conn = 1/8, Color = Black
+> >           DefAssociation = 0xf, Sequence = 0x0
+> >           Misc = NO_PRESENCE
+> >         Pin-ctls: 0x20: IN
+> >         Unsolicited: tag=00, enabled=0
+> >         Connection: 2
+> >            0x0c* 0x0d
+> >
+> > For this widget, we have a couple of things to do: fix the pin type,
+> > adjust the amp and check the connection.  First, change the pin type
+> > to the correct one, the output type.  Usually, it's either 0x40 or
+> > 0xc0.  The latter type is with a headphone amplifier.  Let's take
+> > 0xc0 as an example.  Call hda-verb like below (as root user):
+> >
+> >       # hda-verb /dev/snd/hwC0D0 0x14 SET_PIN_WID 0xc0
+> >
+> > Check /proc/asound/card0/codec#0 again whether the pin-ctls is changed
+> > properly.  Similarly, unmute the output volume of this widget with
+> > hda-verb.  For this, pass 0xb000 to SET_AMP verb:
+> >
+> >       # hda-verb /dev/snd/hwC0D0 0x14 SET_AMP 0xb000
+> >
+> > 0xb000 means to set the AMP-output to 0x00.  The mute bit is 0x80, so
+> > 0x00 means to unmute and set the volume 0.  (The volume 0 doesn't
+> > matter because this widget has no volume but only mute control.)
+> >
+> > In the example above, this pin is connected from the NID 0x0c, which
+> > is a mixer amp.  That's fine and let's keep as is.
+> > Check this widget 0x0c whether the first Amp-In vals is unmuted
+> > (i.e. has *no* 0x80 bit mask).  The first element of 0x0c is connected
+> > to the DAC, 0x02, directly.  If it's muted, call like below
+> >
+> >       # hda-verb /dev/snd/hwC0D0 0x0c SET_AMP 0x7000
+> >
+> > 0x7000 means to set the AMP-input of the first element (index 0) to
+> > 0x00.  For the second element, it'd be 0x7100.
+> >
+> > OK, all set ready.  Try aplay and pray.  If this doesn't work, try
+> > other ports as well until you find a gold mine.
+> >
+> > You could check the inputs similarly if anything doesn't work.
+> > Once after you figure out all pin configurations, we can create a new
+> > model (or fix the existing model) to adapt your device.
+> >
+> > Have fun,
+> >
+> >
+> > Takashi
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
