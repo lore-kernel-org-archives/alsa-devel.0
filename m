@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-usb-audio syncronisation problem
-Date: Tue, 26 Feb 2008 15:21:45 +0100
-Message-ID: <47C42079.2030102@ladisch.de>
-References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>	<47C2B822.7000507@ladisch.de>	<43e8c7320802251032j7541ac02t1459ef83d95dfd4e@mail.gmail.com>	<47C3C07B.2040104@ladisch.de>	<43e8c7320802252353p2798488at87163c75a4511c4f@mail.gmail.com>	<47C3CA77.5070104@ladisch.de>	<43e8c7320802260038x17c2c350wade07dcd4f32cb3e@mail.gmail.com>	<47C3D29B.9070708@ladisch.de>	<43e8c7320802260120u241d2c83r97d7e00d4896992c@mail.gmail.com>	<47C3F9BF.3080600@ladisch.de>
-	<43e8c7320802260453m45c55ba5gb1756e288bf90808@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] Report errors from
+	snd_soc_dapm_set_endpoint()
+Date: Tue, 26 Feb 2008 14:26:05 +0000
+Message-ID: <20080226142604.GA8321@rakim.wolfsonmicro.main>
+References: <1204026175-13316-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hpruju854.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 3AEBA24357
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 15:20:04 +0100 (CET)
-In-Reply-To: <43e8c7320802260453m45c55ba5gb1756e288bf90808@mail.gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4710824357
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 15:26:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hpruju854.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,25 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adrian Stancu <adrian.stancu.82@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Adrian Stancu wrote:
-> I see, you say that the device knows what sample rate it is supposed
-> to use, and that this rate should be automatically used.
+On Tue, Feb 26, 2008 at 03:03:51PM +0100, Takashi Iwai wrote:
 
-Not automatically, the driver sets an alternate setting in set_format()
-by calling usb_set_interface().
+> Applied to HG tree.  Thanks.
+> Other two patches were alredy on HG tree.
+> Should these be pushed to 2.6.25?
 
-> ...
-> 2) I logically connect the device to the virtual machine, set the
-> sampling rate to 96k through the creative supplied drivers,
+At least
 
-Apparently, that driver uses some vendor-specific request to configure
-the device.  To find out what exactly that driver does, you'd have to
-use a tool like usbsnoop to record the USB requests.
+   ASoC: Fix TLV320AIC3X PLL divider table for 64 kHz rate
 
-
-Regards,
-Clemens
+ought to go upstream since it's a bug fix.  The other two should be safe
+and worthwhile but it depends on your approach to -rc.
