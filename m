@@ -1,19 +1,16 @@
-From: Matt Whitlock <matt@whitlock.name>
-Subject: Re: How to set idle S/PDIF sample rate?
-Date: Mon, 25 Feb 2008 15:40:10 -0500
-Message-ID: <200802251540.10193.matt@whitlock.name>
-References: <200802222234.22975.matt@whitlock.name>
-	<200802251403.21651.matt@whitlock.name> <47C31C5E.40606@insite.cz>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: POLLIN and POLLOUT event in pcm io plugins
+Date: Mon, 25 Feb 2008 18:22:16 -0800
+Message-ID: <61445c750802251822o552217em4acd3684d671559b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.241])
-	by alsa0.perex.cz (Postfix) with ESMTP id A578810383F
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 21:40:13 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id c36so350063ana.80
-	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 12:40:12 -0800 (PST)
-In-Reply-To: <47C31C5E.40606@insite.cz>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id CAAAF103839
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 03:22:18 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so1936394wag.8
+	for <alsa-devel@alsa-project.org>; Mon, 25 Feb 2008 18:22:17 -0800 (PST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,13 +21,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@insite.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday, 25 February 2008 2:51:58 pm Pavel Hofman wrote:
-> Most likely the receiver does not read the sample rate from SPDIF 
-> headers, but analyses the actual incoming frequency. At least that is 
-> what well-behaved SPDIF receivers do.
+Hi,
 
-This is an Onkyo 5.1-channel receiver.  A pretty well-respected brand in the audio world.  Not quite a Denon, but close.
+The structure  snd_pcm_ioplug has following members:
+
+int poll_fd; /**< poll file descriptor */
+unsigned int poll_events; /**< poll events */
+
+and the associated events are POLLIN and POLLOUT, I suppose. I am
+unable to understand how
+these fields are getting used. There are many other plugins which dont
+use this. What is the
+significance of these fields?
+
+-pharaoh.
