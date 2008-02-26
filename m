@@ -1,20 +1,28 @@
-From: Rene Dohmen <acidjunk@gmail.com>
-Subject: Re: no front speaker sound with ALC262
-Date: Tue, 26 Feb 2008 13:21:53 +0100
-Message-ID: <E0172064-A6C6-4874-81A2-B275A0954BD4@gmail.com>
-References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>
-	<47BF84BF.702@versatile.com> <47BF8500.1050802@versatile.com>
-	<7D68F908-875D-4EDE-B25D-CCBDD4E4A339@gmail.com>
-	<s5h1w6zvrz4.wl%tiwai@suse.de>
-Mime-Version: 1.0 (Apple Message framework v752.3)
+From: "Adrian Stancu" <adrian.stancu.82@gmail.com>
+Subject: Re: snd-usb-audio syncronisation problem
+Date: Tue, 26 Feb 2008 14:53:45 +0200
+Message-ID: <43e8c7320802260453m45c55ba5gb1756e288bf90808@mail.gmail.com>
+References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>
+	<47C2B822.7000507@ladisch.de>
+	<43e8c7320802251032j7541ac02t1459ef83d95dfd4e@mail.gmail.com>
+	<47C3C07B.2040104@ladisch.de>
+	<43e8c7320802252353p2798488at87163c75a4511c4f@mail.gmail.com>
+	<47C3CA77.5070104@ladisch.de>
+	<43e8c7320802260038x17c2c350wade07dcd4f32cb3e@mail.gmail.com>
+	<47C3D29B.9070708@ladisch.de>
+	<43e8c7320802260120u241d2c83r97d7e00d4896992c@mail.gmail.com>
+	<47C3F9BF.3080600@ladisch.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC1332463A
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 13:21:56 +0100 (CET)
-In-Reply-To: <s5h1w6zvrz4.wl%tiwai@suse.de>
+Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id 313F324630
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 13:53:48 +0100 (CET)
+Received: by gv-out-0910.google.com with SMTP id c6so1406858gvd.24
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 04:53:47 -0800 (PST)
+In-Reply-To: <47C3F9BF.3080600@ladisch.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,116 +32,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thnx for your answer.
-The preset models ( i tested the ones in 1.0.16 didn't work so i'll  
-have a try with the latest HG version)
+I see, you say that the device knows what sample rate it is supposed
+to use, and that this rate should be automatically used. However, in
+practice, I guess this does not happen for some reason. For the
+recording part, the things stay exactly like for playback, i.e. the
+recorded sound is correct as long as the device is (manually, through
+another OS) set to the sampling rate at which the recording is made.
 
-Having fun,
+Let me give a few examples:
+1) I power on the device, and it automatically picks 48k. If i try
+playing back something at any other rate (44.1k, 96k etc), the sound
+is very distorted.
+2) I logically connect the device to the virtual machine, set the
+sampling rate to 96k through the creative supplied drivers, disconnect
+(WITHOUT powering it off), reload the snd-usb-audio module in Linux.
+Now, I can achieve correct playback only at 96k. Anything else is
+distorted.
+Of course, I can resample anything on-the-fly (through additional
+device in ~/.asoundrc) to match the sampling rate of the device and
+get normal sound.
 
-	Rene
+As an additional note, recording at 192k seems *completely* broken. I
+mean, If I record at 96k while the device was just powered on (i.e.
+set to 48k), there is still a connection between the original and the
+recorded sounds. However, at 192k, it looks just like pure noise, at
+maximum amplitude.
+Details:
+http://img147.imageshack.us/my.php?image=recat96kdeviceat48kkt3.jpg
+-- recorded at 96kHz
+http://img81.imageshack.us/my.php?image=recat192kdeviceat48kii7.jpg
+-- recorded at 192kHz
+In both cases, the sound fed to the input was a simple 41.2Hz tone.
 
-Op Feb 26, 2008, om 1:10 PM heeft Takashi Iwai het volgende geschreven:
 
-> At Mon, 25 Feb 2008 13:49:43 +0100,
-> Rene Dohmen wrote:
->>
->> Hi List,
->>
->> Is there any chance that this bug will be fixed soon?
+On Tue, Feb 26, 2008 at 1:36 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Adrian Stancu wrote:
+>  > I wanted to mention that (from what I noticed until now), it is not
+>  > possible to get correct playback on this device unless the sampling
+>  > frequency it is set to (it defaults to 48k when powered on) matches
+>  > the sampling frequency of the audio stream you send to it. So how is
+>  > this supposed to work, if the device is set to 48k and my stream has
+>  > 192k (and I cannot set the device to 192k)?
 >
-> Well, it's up to you.
+>  The alternate setting of the interface is supposed to set the sampling
+>  frequency, and this is exactly what the driver does.
 >
-> One of the problems is that BIOS on your machine doesn't give the
-> useful information for auto-probing at all.  A typical workaround in
-> such a case is to try the existing preset models.  Pass model=basic or
-> model=benq to snd-hda-intel module, for example.  The available model
-> values can be found in ALSA-Configuration.txt.  Don't forget to
-> check and adjust the mixer status again after changing the model
-> because the mixers appear completly differently depending on the
-> model.
+>  The returned frequency value is correct, so it seems the device knows
+>  that it is supposed to run at 192 kHz.
 >
-> If none of the existing models doesn't match with your device, we have
-> to figure out the exact codec configuration.  For some codecs like
-> ALC880 or ALC260, you have model=test option that allows you to test
-> all codec configurations via mixer interface.  Unfortunately, ALC262
-> has no model=test support, so you have to do check it literally
-> manually.  Below is a brief instruction how to explore the mysterious
-> world of HD-audio codecs.
->
-> First of all, install the very latest ALSA HG version.  Don't stick
-> with 1.0.16 release.  You can use the daily snapshot tarball instead,
-> too.
->
-> Then, get hda-verb program found on
-> 	ftp://ftp.suse.com/pub/people/tiwai/misc/
-> Extract the tarball, run make.  Install it or invoke it locally.  This
-> program can be usable only as root.
->
-> The next step is to get ALC262 datasheet from Realtek web site.  Take
-> a look at the block diagram page.  There are pins in the right side
-> and two DACs in the left side.  We have to set up the correct pins and
-> connect to the DAC properly.
->
-> Now, assume the port-D (NID 0x14) is the speaker output.  Check
-> /proc/asound/card0/codec#0 and look for Node 0x14.  It may have the
-> entry like the following:
->
-> 	Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-> 	  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-> 	  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-> 	  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-> 	  Amp-Out vals:  [0x80 0x80]
-> 	  Pincap 0x083e: IN OUT HP Detect Trigger
-> 	  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-> 	    Conn = 1/8, Color = Black
-> 	    DefAssociation = 0xf, Sequence = 0x0
-> 	    Misc = NO_PRESENCE
-> 	  Pin-ctls: 0x20: IN
-> 	  Unsolicited: tag=00, enabled=0
-> 	  Connection: 2
-> 	     0x0c* 0x0d
->
-> For this widget, we have a couple of things to do: fix the pin type,
-> adjust the amp and check the connection.  First, change the pin type
-> to the correct one, the output type.  Usually, it's either 0x40 or
-> 0xc0.  The latter type is with a headphone amplifier.  Let's take
-> 0xc0 as an example.  Call hda-verb like below (as root user):
->
-> 	# hda-verb /dev/snd/hwC0D0 0x14 SET_PIN_WID 0xc0
->
-> Check /proc/asound/card0/codec#0 again whether the pin-ctls is changed
-> properly.  Similarly, unmute the output volume of this widget with
-> hda-verb.  For this, pass 0xb000 to SET_AMP verb:
->
-> 	# hda-verb /dev/snd/hwC0D0 0x14 SET_AMP 0xb000
->
-> 0xb000 means to set the AMP-output to 0x00.  The mute bit is 0x80, so
-> 0x00 means to unmute and set the volume 0.  (The volume 0 doesn't
-> matter because this widget has no volume but only mute control.)
->
-> In the example above, this pin is connected from the NID 0x0c, which
-> is a mixer amp.  That's fine and let's keep as is.
-> Check this widget 0x0c whether the first Amp-In vals is unmuted
-> (i.e. has *no* 0x80 bit mask).  The first element of 0x0c is connected
-> to the DAC, 0x02, directly.  If it's muted, call like below
->
-> 	# hda-verb /dev/snd/hwC0D0 0x0c SET_AMP 0x7000
->
-> 0x7000 means to set the AMP-input of the first element (index 0) to
-> 0x00.  For the second element, it'd be 0x7100.
->
-> OK, all set ready.  Try aplay and pray.  If this doesn't work, try
-> other ports as well until you find a gold mine.
->
-> You could check the inputs similarly if anything doesn't work.
-> Once after you figure out all pin configurations, we can create a new
-> model (or fix the existing model) to adapt your device.
->
-> Have fun,
+>  Does recording work with all sample rates?
 >
 >
-> Takashi
+>  Regards,
+>  Clemens
+>
