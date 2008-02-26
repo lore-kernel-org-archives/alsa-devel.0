@@ -1,28 +1,16 @@
-From: "Adrian Stancu" <adrian.stancu.82@gmail.com>
-Subject: Re: snd-usb-audio syncronisation problem
-Date: Tue, 26 Feb 2008 11:20:48 +0200
-Message-ID: <43e8c7320802260120u241d2c83r97d7e00d4896992c@mail.gmail.com>
-References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>
-	<47BEFFFC.8030301@ladisch.de>
-	<43e8c7320802220902j3a4ff3a1wdae77ec25f2d3785@mail.gmail.com>
-	<47C2B822.7000507@ladisch.de>
-	<43e8c7320802251032j7541ac02t1459ef83d95dfd4e@mail.gmail.com>
-	<47C3C07B.2040104@ladisch.de>
-	<43e8c7320802252353p2798488at87163c75a4511c4f@mail.gmail.com>
-	<47C3CA77.5070104@ladisch.de>
-	<43e8c7320802260038x17c2c350wade07dcd4f32cb3e@mail.gmail.com>
-	<47C3D29B.9070708@ladisch.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA C++ API updated for 1.0.16
+Date: Tue, 26 Feb 2008 11:01:43 +0100
+Message-ID: <47C3E387.20800@ladisch.de>
+References: <47C30EDE.8000400@trn.iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71F3224422
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 10:20:50 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id c6so1251826gvd.24
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 01:20:49 -0800 (PST)
-In-Reply-To: <47C3D29B.9070708@ladisch.de>
-Content-Disposition: inline
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 815F0243BA
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 11:00:01 +0100 (CET)
+In-Reply-To: <47C30EDE.8000400@trn.iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,64 +20,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: =?UTF-8?B?TGFzc2UgS8Okcmtrw6RpbmVu?= <tronic@trn.iki.fi>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This time, the driver does not consider the feedback frequencies
-invalid. What I did was:
-                f = combine_quad((u8*)urb->transfer_buffer) & 0x0fffffff;
-                printk("freqn=%u, freqmax=%u, f=%u, dataint=%u\n",
-subs->freqn, subs->freqmax, f, subs->datainterval);
-                f >>= subs->datainterval;
-                if (f >= subs->freqn - subs->freqn / 8 && f <= subs->freqmax) {
-                        spin_lock_irqsave(&subs->lock, flags);
-                        subs->freqm = f;
-                        printk("f=%u assigned!", f);
-                        spin_unlock_irqrestore(&subs->lock, flags);
-
-And what I got:
-f=1572864 assigned!freqn=1572864, freqmax=1589248, f=6291456, dataint=2
-f=1572864 assigned!freqn=1572864, freqmax=1589248, f=6291456, dataint=2
-f=1572864 assigned!freqn=1572864, freqmax=1589248, f=6291456, dataint=2
-
-However, the feedback value does not seem to ever change.
-
-I wanted to mention that (from what I noticed until now), it is not
-possible to get correct playback on this device unless the sampling
-frequency it is set to (it defaults to 48k when powered on) matches
-the sampling frequency of the audio stream you send to it. So how is
-this supposed to work, if the device is set to 48k and my stream has
-192k (and I cannot set the device to 192k)?
-
-
-On Tue, Feb 26, 2008 at 10:49 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Adrian Stancu wrote:
->  > OK, I tried playing the stereo file but still getting the same error:
->  > deathu@vader:~/Desktop$ aplay -D hw:1 testtone192.wav
->  > Playing WAVE 'testtone192.wav' : Signed 16 bit Little Endian, Rate 192000 Hz, Stereo
->  > aplay: set_params:918: Sample format non available
->
->  Oops, the device supports only 24-bit samples, and this isn't supported
->  by .wav files, so using hw:1 won't ever work with aply.
->
->
->  > Well, my test file contained a single constant frequency tone; it is
->  > still there while I play the 192k file through plughw:1,0, but burried
->  > under:
->  > - periodic series of clicks
->  > - other high frequency tones
->  >
->  > Here is  /proc/asound/card1/stream0 while playing through plughw:1,0:
->  > ...
->
-> >     Momentary freq = 192000 Hz (0x18.0000)
->
->  Does this value ever change?
->  Could you again try inserting a printk to see whether the driver thinks
->  it gets invalid frequency values?
->
->
->  Regards,
->  Clemens
->
+TGFzc2UgS8Okcmtrw6RpbmVuIHdyb3RlOgo+IEhlcmUncyBhbiB1cGRhdGVkIHZlcnNpb24gb2Yg
+dGhlIEMrKyB3cmFwcGVyIHRoYXQgSSBwb3N0ZWQgZWFybGllciBpbgo+IFNlcHRlbWJlciAyMDA3
+LiBJIHdvdWxkIGxpa2UgdGhpcyB0byBiZSBpbmNsdWRlZCBpbiB0aGUgQUxTQQo+IGRpc3RyaWJ1
+dGlvbiBhZnRlciBzb21lIHBlZXIgcmV2aWV3LgoKWWVzLCBhbiBBTFNBIEMrKyB3cmFwcGVyIGlz
+IGEgZ29vZCBpZGVhLgoKPiBlcnJvcihzdGQ6OnN0cmluZyBjb25zdCYgZnVuY3Rpb24sIGludCBl
+cnIpOiBzdGQ6OnJ1bnRpbWVfZXJyb3IoIkFMU0EgIiArIGZ1bmN0aW9uICsgIiBmYWlsZWQ6ICIg
+KyBzdGQ6OnN0cmluZyhzbmRfc3RyZXJyb3IoZXJyKSkpLCBlcnIoZXJyKSB7fQoKSSdtIG5vdCBz
+dXJlIHRoYXQgaW5jbHVkaW5nIHRoZSBmdW5jdGlvbiBuYW1lIGFuZCBhbGwgcGFyYW1ldGVycyBh
+cyB0aGV5CmFwcGVhciBpbiB0aGUgc291cmNlIGZpbGUgaW4gdGhlIGVycm9yIG1lc3NhZ2UgaXMg
+YSBnb29kIGlkZWE7IEkKd291bGRuJ3Qgd2FudCB0byBpbXBvc2UgdGhpcyBwb2xpY3kgb24gYWxs
+IGFwcGxpY2F0aW9ucyB1c2luZyB0aGlzCmhlYWRlci4KCj4gcGNtKGNoYXIgY29uc3QqIGRldmlj
+ZSA9ICJkZWZhdWx0Iiwgc25kX3BjbV9zdHJlYW1fdCBzdHJlYW0gPSBTTkRfUENNX1NUUkVBTV9Q
+TEFZQkFDSywgaW50IG1vZGUgPSAwKSB7CgpUaGlzIGxvb2tzIHRvbyBtdWNoIGxpa2UgYSBkZWZh
+dWx0IGNvbnN0cnVjdG9yLiAgSSB0aGluayBuZWl0aGVyIGRldmljZQpub3Igc3RyZWFtIHNob3Vs
+ZCBoYXZlIGEgZGVmYXVsdCB2YWx1ZS4KCj4gQUxTQV9IUFBfQ0xBU1MmIHNldF8jI25hbWUoLi4u
+KSB7IC4uLjsgcmV0dXJuICp0aGlzOyB9XAoKSXMgdGhlcmUgYSByZWFzb24gd2h5IHlvdSByZXR1
+cm4gdGhlIG9iamVjdCBpdHNlbGY/ICBVc3VhbGx5LCByZXR1cm5pbmcKYW4gb2JqZWN0IGltcGxp
+ZXMgdGhhdCB0aGF0IG9iamVjdCBpcyBhIF9kaWZmZXJlbnRfIG9iamVjdCB3aXRoIHRoZQpzZXR0
+aW5nIGFwcGxpZWQsIHdoaWNoIHdvdWxkIG1lYW4gdGhhdCB0aGUgb3JpZ2luYWwgb2JqZWN0IHdh
+cyBfbm90XwpjaGFuZ2VkLCBidXQgdGhhdCBpc24ndCB0cnVlIGhlcmUuCgo+IGNsYXNzIGh3X2Nv
+bmZpZzogaW50ZXJuYWw6Om5vbmNvcHlhYmxlIHsKCldoeSBzaG91bGQgdGhpcyBvYmplY3Qgbm90
+IGJlIGNvcHlhYmxlPwoKQW5kIHdoeSBkbyB5b3UgaGF2ZSB0d28gZGlmZmVyZW50IG9iamVjdHMg
+KCp3X3BhcmFtcyBhbmQgKndfY29uZmlnKSBmb3IKd3JhcHBpbmcgdGhlIGhhcmR3YXJlL3NvZnR3
+YXJlIHBhcmFtZXRlcnM/Cgo+IGh3X2NvbmZpZyhzbmRfcGNtX3QqIHBjbSk6IHBjbShwY20pIHsK
+PiAJdHJ5IHsgY3VycmVudCgpOyB9IGNhdGNoIChzdGQ6OnJ1bnRpbWVfZXJyb3ImKSB7IGFueSgp
+OyB9CgpJIGRvbid0IGxpa2UgdXNpbmcgZXhjZXB0aW9ucyB3aGVuIHRoZXJlJ3Mgbm90aGluZyB3
+cm9uZy4gIEJlc2lkZXMsCmdldHRpbmcgdGhlIGN1cnJlbnQgcGFyYW1ldGVycyBtYXkgZmFpbCBk
+dWUgdG8gb3RoZXIgZXJyb3JzIChsaWtlIGRldmljZQp1bnBsdWdnZWQpLgoKSSB0aGluayBpdCB3
+b3VsZCBiZSBiZXR0ZXIgaWYgdGhpcyBvYmplY3QgZG9lc24ndCBoYXZlIGEgcHVibGljCmNvbnN0
+cnVjdG9yLCBhbmQgeW91IHdvdWxkIGJlIGFibGUgdG8gY3JlYXRlIG9uZSBvbmx5IHRocm91Z2gg
+YSBwY20Kb2JqZWN0LCBsaWtlICJod19jb25maWcgYyA9IHBjbS5hbnlfaHdfcGFyYW1zKCk7Ii4K
+Cj4gfm1tYXAoKSB7Cj4gCS8vIFdlIGp1c3QgYXNzdW1lIHRoYXQgdGhpcyB3b3JrcyAoY2FuJ3Qg
+ZG8gYW55dGhpbmcgc2Vuc2libGUgaWYgaXQgZmFpbHMpLgo+IAlzbmRfcGNtX21tYXBfY29tbWl0
+KHBjbSwgb2Zmc2V0LCBmcmFtZXMpOwoKVGhpcyBpcyB0aGUgcGxhY2Ugd2hlcmUgYWxsIHRoZSB1
+c3VhbCB3cml0ZSBlcnJvcnMgbXVzdCBiZSBjaGVja2VkLgpUaGlzIGNhbm5vdCBiZSBkb25lIGlu
+IGEgZGVzdHJ1Y3Rvci4gIEkgdGhpbmsgdXNpbmcgUkFJSSBmb3IgdGhlIG5vbi0KZXJyb3IgY29t
+bWl0IGp1c3QgaXNuJ3QgcG9zc2libGUuCgoKUmVnYXJkcywKQ2xlbWVucwpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
