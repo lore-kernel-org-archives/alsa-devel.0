@@ -1,17 +1,17 @@
-From: "Matthew R. Hurne" <matt.hurne@versatile.com>
-Subject: Re: no front speaker sound with ALC262
-Date: Tue, 26 Feb 2008 11:59:18 -0500
-Message-ID: <47C44566.1030409@versatile.com>
-References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>	<47BF84BF.702@versatile.com>	<47BF8500.1050802@versatile.com>	<7D68F908-875D-4EDE-B25D-CCBDD4E4A339@gmail.com>
-	<s5h1w6zvrz4.wl%tiwai@suse.de>
+From: =?UTF-8?B?TGFzc2UgS8Okcmtrw6RpbmVu?= <tronic@trn.iki.fi>
+Subject: Re: ALSA C++ API updated for 1.0.16
+Date: Tue, 26 Feb 2008 18:59:05 +0200
+Message-ID: <47C44559.6090404@trn.iki.fi>
+References: <47C30EDE.8000400@trn.iki.fi> <47C3E387.20800@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mustang.versatile.com (mustang.versatile.com [206.61.179.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id 824732464B
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 17:59:20 +0100 (CET)
-In-Reply-To: <s5h1w6zvrz4.wl%tiwai@suse.de>
+Received: from pne-smtpout3-sn1.fre.skanova.net
+	(pne-smtpout3-sn1.fre.skanova.net [81.228.11.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E41C103874
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 18:03:06 +0100 (CET)
+In-Reply-To: <47C3E387.20800@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,115 +21,188 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Rene Dohmen <acidjunk@gmail.com>, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 25 Feb 2008 13:49:43 +0100,
-> Rene Dohmen wrote:
->> Hi List,
->>
->> Is there any chance that this bug will be fixed soon?
-> 
-> Well, it's up to you.
-> 
-> One of the problems is that BIOS on your machine doesn't give the
-> useful information for auto-probing at all.  A typical workaround in
-> such a case is to try the existing preset models.  Pass model=basic or
-> model=benq to snd-hda-intel module, for example.  The available model
-> values can be found in ALSA-Configuration.txt.  Don't forget to
-> check and adjust the mixer status again after changing the model
-> because the mixers appear completly differently depending on the
-> model.
-> 
-> If none of the existing models doesn't match with your device, we have
-> to figure out the exact codec configuration.  For some codecs like
-> ALC880 or ALC260, you have model=test option that allows you to test
-> all codec configurations via mixer interface.  Unfortunately, ALC262
-> has no model=test support, so you have to do check it literally
-> manually.  Below is a brief instruction how to explore the mysterious
-> world of HD-audio codecs.
-> 
-> First of all, install the very latest ALSA HG version.  Don't stick
-> with 1.0.16 release.  You can use the daily snapshot tarball instead,
-> too.
-> 
-> Then, get hda-verb program found on
-> 	ftp://ftp.suse.com/pub/people/tiwai/misc/
-> Extract the tarball, run make.  Install it or invoke it locally.  This
-> program can be usable only as root.
-> 
-> The next step is to get ALC262 datasheet from Realtek web site.  Take
-> a look at the block diagram page.  There are pins in the right side
-> and two DACs in the left side.  We have to set up the correct pins and
-> connect to the DAC properly.
-> 
-> Now, assume the port-D (NID 0x14) is the speaker output.  Check
-> /proc/asound/card0/codec#0 and look for Node 0x14.  It may have the
-> entry like the following:
-> 
-> 	Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-> 	  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-> 	  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-> 	  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-> 	  Amp-Out vals:  [0x80 0x80]
-> 	  Pincap 0x083e: IN OUT HP Detect Trigger
-> 	  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-> 	    Conn = 1/8, Color = Black
-> 	    DefAssociation = 0xf, Sequence = 0x0
-> 	    Misc = NO_PRESENCE
-> 	  Pin-ctls: 0x20: IN
-> 	  Unsolicited: tag=00, enabled=0
-> 	  Connection: 2
-> 	     0x0c* 0x0d
-> 
-> For this widget, we have a couple of things to do: fix the pin type,
-> adjust the amp and check the connection.  First, change the pin type
-> to the correct one, the output type.  Usually, it's either 0x40 or
-> 0xc0.  The latter type is with a headphone amplifier.  Let's take
-> 0xc0 as an example.  Call hda-verb like below (as root user):
-> 
-> 	# hda-verb /dev/snd/hwC0D0 0x14 SET_PIN_WID 0xc0
-> 
-> Check /proc/asound/card0/codec#0 again whether the pin-ctls is changed
-> properly.  Similarly, unmute the output volume of this widget with
-> hda-verb.  For this, pass 0xb000 to SET_AMP verb:
-> 
-> 	# hda-verb /dev/snd/hwC0D0 0x14 SET_AMP 0xb000
-> 
-> 0xb000 means to set the AMP-output to 0x00.  The mute bit is 0x80, so
-> 0x00 means to unmute and set the volume 0.  (The volume 0 doesn't
-> matter because this widget has no volume but only mute control.)
-> 
-> In the example above, this pin is connected from the NID 0x0c, which
-> is a mixer amp.  That's fine and let's keep as is.
-> Check this widget 0x0c whether the first Amp-In vals is unmuted
-> (i.e. has *no* 0x80 bit mask).  The first element of 0x0c is connected
-> to the DAC, 0x02, directly.  If it's muted, call like below 
-> 
-> 	# hda-verb /dev/snd/hwC0D0 0x0c SET_AMP 0x7000
-> 
-> 0x7000 means to set the AMP-input of the first element (index 0) to
-> 0x00.  For the second element, it'd be 0x7100.
-> 
-> OK, all set ready.  Try aplay and pray.  If this doesn't work, try
-> other ports as well until you find a gold mine.
-> 
-> You could check the inputs similarly if anything doesn't work.
-> Once after you figure out all pin configurations, we can create a new
-> model (or fix the existing model) to adapt your device.
-> 
-> Have fun,
-> 
-> 
-> Takashi
+Thank you for your input, which is quite valuable.
 
-Thanks, Takashi!  If it so happens I have the time, I will try to play with this in tandem to Rene.
+>> error(std::string const& function, int err): std::runtime_error("ALSA " + function + " failed: " + std::string(snd_strerror(err))), err(err) {}
+> 
+> I'm not sure that including the function name and all parameters as they
+> appear in the source file in the error message is a good idea; I
+> wouldn't want to impose this policy on all applications using this
+> header.
 
-Regards,
--- 
-Matthew Hurne
-Versatile Systems, Inc.
-717.919.9102
-matthew.hurne@versatile.com
+It is just an exception thrown, the program may catch it and display
+another error message. The original ALSA error code is also included
+within it.
+
+E.g.
+
+try {
+    // Some code that causes error
+} catch (alsa::error& e) {
+    std::cerr << "ALSA error: " << snd_strerror(e.code()) << std::endl;
+}
+
+Prints only the error, not the function that caused it, while
+
+try {
+    // ...
+} catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+}
+
+would print the formatted message, containing the function name, too.
+
+In practice the function name seems to be quite essential for debugging,
+as EPIPE or some other of the standard error codes will tell little or
+nothing.
+
+For completeness, I think that it might be desirable to also store the
+function name separately (like the code is stored), but can anyone see
+any actual use for this?
+
+>> pcm(char const* device = "default", snd_pcm_stream_t stream = SND_PCM_STREAM_PLAYBACK, int mode = 0) {
+> 
+> This looks too much like a default constructor.  I think neither device
+> nor stream should have a default value.
+
+Well, it is a default constructor. One design goal was to make this
+wrapper as easy to use as possible, and choosing sensible defaults for
+that is helpful.
+
+If you are expecting alsa::pcm pcmobject; to produce an object that is
+not constructed, we are talking of two-stage construction, which is
+considered harmful by many C++ coders nowadays. A constructor should
+always construct the object fully and throw an exception (and thus
+prevent the object being created) if that is not possible. Design &
+Evolution of C++, by Bjarne Stroustrup, and other books discuss this
+matter thoroughly. (surprisingly enough, fstreams of the standard
+library still allow two-stage construction)
+
+Thus, I see the expected behavior of creating pcmobject that way as
+being to actually construct a new PCM, with the default parameters
+(where "default" and playback are the most common choices; and also far
+better than people hardcoding their applications to use "plughw:0" or
+whatever happens to work for them).
+
+>> ALSA_HPP_CLASS& set_##name(...) { ...; return *this; }\
+> 
+> Is there a reason why you return the object itself?  Usually, returning
+> an object implies that that object is a _different_ object with the
+> setting applied, which would mean that the original object was _not_
+> changed, but that isn't true here.
+
+This is for function call chaining. It is a common idiom used by the
+standard library and others. In this particular case, it is the very
+thing that allows syntax like
+
+alsa::hw_config(alsa_pcm)  // Temporary object
+  .set(SND_PCM_ACCESS_RW_INTERLEAVED)
+  .set(SND_PCM_FORMAT_S16_LE)
+  .rate_near(rate)
+  .channels(1)
+  .period_size_first(period)
+  .commit();  // The object is disposed here
+
+Instead of
+
+{
+	alsa::hw_config config(alsa_pcm);
+	config.set(SND_PCM_ACCESS_RW_INTERLEAVED);
+	config.set(SND_PCM_FORMAT_S16_LE);
+	config.rate_near(rate);
+	config.channels(1);
+	config.period_size_first(period);
+	config.commit();
+}
+
+(braces are needed for limiting the config variable lifetime)
+
+>> class hw_config: internal::noncopyable {
+> 
+> Why should this object not be copyable?
+
+Because it contains the PCM pointer, whose copy semantics are somewhat
+hairy. E.g. the following code would break silently:
+
+alsa::hw_config f() {
+	alsa::pcm pcm;
+	return alsa::hw_config(pcm);
+}
+
+Please note that you can still make copies of alsa::hw_params.
+
+> And why do you have two different objects (*w_params and *w_config) for
+> wrapping the hardware/software parameters?
+
+The alsa::hw_config wrapper is meant to be used only temporarily, for
+easily setting the parameters. It differs from alsa::hw_params by also
+tying a PCM to it.
+
+>> hw_config(snd_pcm_t* pcm): pcm(pcm) {
+>> 	try { current(); } catch (std::runtime_error&) { any(); }
+> 
+> I don't like using exceptions when there's nothing wrong.  Besides,
+> getting the current parameters may fail due to other errors (like device
+> unplugged).
+
+It seems like a sensible fallback, anyway. The other option would be to
+load any() settings always and have the user call current(), if he wants
+those instead. Would you find this preferable?
+
+Some settings need to be loaded by the constructor in order to ensure
+that the structure is in a consistent state at all times.
+
+> I think it would be better if this object doesn't have a public
+> constructor, and you would be able to create one only through a pcm
+> object, like "hw_config c = pcm.any_hw_params();".
+
+That seems to require unwanted hackery (friend classes, helper objects,
+etc).
+
+Rather, if such selection is needed, I would add a second argument to
+the constructor (with a suitable default value), allowing one to choose
+between the two (e.g. bool useCurrent = false). However, just loading
+the any settings in the constructor and loading the current settings on
+top of them as required seems easier to use (theoretically slightly
+slower due to the extra initialization if the current parameters are
+preferred, but performance cannot be an issue in configuring a PCM).
+
+>> ~mmap() {
+>> 	// We just assume that this works (can't do anything sensible if it fails).
+>> 	snd_pcm_mmap_commit(pcm, offset, frames);
+> 
+> This is the place where all the usual write errors must be checked.
+> This cannot be done in a destructor.  I think using RAII for the non-
+> error commit just isn't possible.
+
+Ouch. This is a big problem.
+
+I see three options
+
+1. Drop the MMAP wrapper entirely
+    * Easily leads to leaks when exceptions are thrown
+
+2. Add a separate commit function
+    * Use exceptions to signal errors from this function
+    * Set pcm and areas to NULL after commit
+    * Possibly throw exceptions if the object is accessed after this
+      (either by operator overloading or by getter functions instead of
+      public members)
+    * Still commit in destructor if commit was not called
+
+3. Throw in destructor only if std::uncaught_exception() returns false
+    * Ignore all errors if stack unwinding is in progress
+    * Weird semantics, not commonly used
+
+Option 2 is hairy, as it leaves the object in unusable state after
+commit is called, but it still seems highly preferable to option 1,
+which would require great care from the user for avoiding resource leaks.
+
+Option 3 is pretty much out of the question because programmers don't
+expect destructors to ever throw anything.
+
+What do you think?
