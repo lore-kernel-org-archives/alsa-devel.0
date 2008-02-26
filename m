@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: Fix TLV320AIC3X PLL divider table
-	for 64 kHz rate
-Date: Tue, 26 Feb 2008 11:42:53 +0000
-Message-ID: <1204026175-13316-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] Report errors from
+	snd_soc_dapm_set_endpoint()
+Date: Tue, 26 Feb 2008 11:42:55 +0000
+Message-ID: <1204026175-13316-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <>
+	<1204026175-13316-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1204026175-13316-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0FC7924465
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C9252463A
 	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 12:42:56 +0100 (CET)
-In-Reply-To: <>
-References: <>
+In-Reply-To: <1204026175-13316-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/tlv320aic3x.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-dapm.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 710e028..569ecac 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -681,8 +681,8 @@ static const struct aic3x_rate_divs aic3x_divs[] = {
- 	{22579200, 48000, 48000, 0x0, 8, 7075},
- 	{33868800, 48000, 48000, 0x0, 5, 8049},
- 	/* 64k */
--	{22579200, 96000, 96000, 0x1, 8, 7075},
--	{33868800, 96000, 96000, 0x1, 5, 8049},
-+	{22579200, 64000, 96000, 0x1, 8, 7075},
-+	{33868800, 64000, 96000, 0x1, 5, 8049},
- 	/* 88.2k */
- 	{22579200, 88200, 88200, 0x0, 8, 0},
- 	{33868800, 88200, 88200, 0x0, 5, 3333},
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 620d7ea..abac684 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1334,10 +1334,11 @@ int snd_soc_dapm_set_endpoint(struct snd_soc_codec *codec,
+ 	list_for_each_entry(w, &codec->dapm_widgets, list) {
+ 		if (!strcmp(w->name, endpoint)) {
+ 			w->connected = status;
++			return 0;
+ 		}
+ 	}
+ 
+-	return 0;
++	return -ENODEV;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_set_endpoint);
+ 
 -- 
 1.5.4.3
