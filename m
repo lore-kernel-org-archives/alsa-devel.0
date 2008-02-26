@@ -1,17 +1,18 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: Via VT82xx VT1708 ICE1724HT and higher
-Date: Tue, 26 Feb 2008 21:47:52 +0100
-Message-ID: <47C47AF8.1070005@insite.cz>
-References: <mailman.2073.1204045163.2095.alsa-devel@alsa-project.org>
-	<004401c878a2$6cade570$d450a8c0@PDSMain2>
+From: Karl Grill <kgrill@chello.at>
+Subject: hdsp firmware
+Date: Tue, 26 Feb 2008 21:58:44 +0100
+Message-ID: <47C47D84.3000804@chello.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id E74E4244C1
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 21:48:01 +0100 (CET)
-In-Reply-To: <004401c878a2$6cade570$d450a8c0@PDSMain2>
+Received: from viefep32-int.chello.at (viefep32-int.chello.at [62.179.121.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id B17E61037F5
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 21:52:50 +0100 (CET)
+Received: from [84.112.6.110] by viefep32-int.chello.at
+	(InterMail vM.7.08.02.02 201-2186-121-104-20070414) with ESMTP
+	id <20080226205249.HYHL5396.viefep32-int.chello.at@[84.112.6.110]>
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 21:52:49 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Demian Martin <demianm@attglobal.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Demian Martin wrote:
-> Pavel:
-> Thanks for the insight. I thought I was doing something wrong since no one
-> else has noticed.
+Hi all,
+as a first step towards implementing support for the hdsp rpm, I've
+uploaded a patch to the alsa-firmware branch as bug report #3810. 
+Besides the patch, I've put up the firmware binaries in .tar.gz format.
+This contains replacements for the rev.11 firmware for the 
+digiface/multiface and also for the rpm. The latter is of little use 
+right now, but I'd be very happy if anybody could try those for the 
+digiface/multiface and report if it works, so I know if my assumptions 
+on the drivers are correct.
 
-I was surprised too I could not google any complaints.
+best regards
+kg
 
-> I tried your suggestion to use plughw:0,1  and the verbose output looks
-> fine, the data rate shifts fine (I'm watching the L/R clock on the input to
-> the DAC on an external DAC)  but no audible sound comes out the converter
-> unless it's a 16 bit 44.1 file. The 24 bit stuff is not getting converted
-> into something useful to the DAC. Should I check to see if the data clock is
-> 48X the LR clock? 
- >
- > What info do you need from me to look deeper?
-
-Which card are you using? Juli driver in alsa is not really functional. 
-E.g. Prodigy 192 (standard clock arrangement) has no problem with 24bit 
-SPDIF-OUT.
-
-> 
-> I looked at the Plug plugin but have not been able to figure out how to
-> configure it for my needs. There is way too much marginal information on the
-> web and little that directs me to an optimum setting.
->                            -Demian
-> 
-
-I do not think the plug plugin needs any configuration. It compares 
-input stream parameters with the card capabilities supplied by the 
-driver and does appropriate conversions.
-
-Pavel.
+PS. sorry I didn't file this report in the firmware section, but the web 
+form there doesn't give me any usable choice for Category yet insists 
+that I supply one.
