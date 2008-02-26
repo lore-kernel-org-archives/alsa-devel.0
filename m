@@ -1,15 +1,28 @@
-From: Michael Gerdau <mgerdau@tiscali.de>
-Subject: Re: ALSA C++ API updated for 1.0.16
-Date: Tue, 26 Feb 2008 15:49:50 +0100
-Message-ID: <200802261550.03657.mgerdau@tiscali.de>
-References: <47C30EDE.8000400@trn.iki.fi> <47C3E387.20800@ladisch.de>
+From: "Adrian Stancu" <adrian.stancu.82@gmail.com>
+Subject: Re: snd-usb-audio syncronisation problem
+Date: Tue, 26 Feb 2008 17:08:23 +0200
+Message-ID: <43e8c7320802260708k7ad13632w83add5dfd76a31ac@mail.gmail.com>
+References: <43e8c7320802220151p177d2c73y2c9724a4cb4743ef@mail.gmail.com>
+	<47C3C07B.2040104@ladisch.de>
+	<43e8c7320802252353p2798488at87163c75a4511c4f@mail.gmail.com>
+	<47C3CA77.5070104@ladisch.de>
+	<43e8c7320802260038x17c2c350wade07dcd4f32cb3e@mail.gmail.com>
+	<47C3D29B.9070708@ladisch.de>
+	<43e8c7320802260120u241d2c83r97d7e00d4896992c@mail.gmail.com>
+	<47C3F9BF.3080600@ladisch.de>
+	<43e8c7320802260453m45c55ba5gb1756e288bf90808@mail.gmail.com>
+	<47C42079.2030102@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1030456468007386928=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp10.unit.tiscali.de (smtp10.unit.tiscali.de [213.205.33.46])
-	by alsa0.perex.cz (Postfix) with ESMTP id 599B21038D3
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 15:50:06 +0100 (CET)
-In-Reply-To: <47C3E387.20800@ladisch.de>
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 99B591038D7
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 16:08:28 +0100 (CET)
+Received: by ti-out-0910.google.com with SMTP id u3so1345146tia.8
+	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2008 07:08:26 -0800 (PST)
+In-Reply-To: <47C42079.2030102@ladisch.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,68 +32,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>, Lasse =?iso-8859-1?q?K=E4rkk=E4inen?= <tronic@trn.iki.fi>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1030456468007386928==
-Content-Type: multipart/signed;
-  boundary="nextPart1291658.2QvxUc2zag";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+OK, I undertand
 
---nextPart1291658.2QvxUc2zag
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+First of all, I am very happy with the patch you wrote, that just
+solved the most annoying issue for me, that was the synchronization
+problem.
 
-> > ALSA_HPP_CLASS& set_##name(...) { ...; return *this; }\
->=20
-> Is there a reason why you return the object itself?  Usually, returning
-> an object implies that that object is a _different_ object with the
-> setting applied, which would mean that the original object was _not_
-> changed, but that isn't true here.
+Second, I did as you instructed with the USB sniffer. I opened the emu
+control panel (the interface was set to 48kHz), saved the current log
+file (as log1), set the rate to 96kHz, again saved the current log
+file (as log2). I diff'ed the 2 files, resulting in a third section,
+170 lines.
+If you are interested in debugging the rate control, I can attach the
+diff file (or the original logs, if necessary). Will this list allow
+mail attachments? Of course, I am willing to test anything you like,
+if you are willing to further debug this.
 
-I'm not an OO design guru, but at least IOC (IBM OpenClass; it used to
-be a rather powerful multiplatform GUI framework - before they made it
-AIX only) used this very paradigma all over the place.
+Thanks,
+Adi
 
-You were supposed to write statements like:
-  obj.method1().method2().method3().___.method_n();
-
-At least that's what all their example code looked like.
-
-Best,
-Michael
-=2D-=20
- Michael Gerdau       email: mgerdau@tiscali.de
- GPG-keys available on request or at public keyserver
-
---nextPart1291658.2QvxUc2zag
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.4-svn0 (GNU/Linux)
-
-iD8DBQBHxCcbUYYhyuxDQc4RAmSqAJ9jD2VDXaG93I4TwqaMYyZNEDYY0wCePRut
-oa7MQKKb3KVtlN3MG3PLDSQ=
-=Qrwq
------END PGP SIGNATURE-----
-
---nextPart1291658.2QvxUc2zag--
-
---===============1030456468007386928==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1030456468007386928==--
+On Tue, Feb 26, 2008 at 4:21 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Adrian Stancu wrote:
+>  > I see, you say that the device knows what sample rate it is supposed
+>  > to use, and that this rate should be automatically used.
+>
+>  Not automatically, the driver sets an alternate setting in set_format()
+>  by calling usb_set_interface().
+>
+>  > ...
+>
+> > 2) I logically connect the device to the virtual machine, set the
+>  > sampling rate to 96k through the creative supplied drivers,
+>
+>  Apparently, that driver uses some vendor-specific request to configure
+>  the device.  To find out what exactly that driver does, you'd have to
+>  use a tool like usbsnoop to record the USB requests.
+>
+>
+>  Regards,
+>  Clemens
+>
