@@ -1,178 +1,47 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Subject: Re: a7839e96 (PNP: increase max resources) breaks my ALSA intel8x0 sound card
-Date: Wed, 27 Feb 2008 10:43:47 -0700
-Message-ID: <200802271043.47763.bjorn.helgaas@hp.com>
-References: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no> <200802141713.23461.bjorn.helgaas@hp.com> <alpine.LFD.1.00.0802141620380.6110@woody.linux-foundation.org>
+From: "Rene Dohmen" <acidjunk@gmail.com>
+Subject: Re: no front speaker sound with ALC262
+Date: Wed, 27 Feb 2008 19:16:23 +0100
+Message-ID: <165af2360802271016u211854b7yb5158f2dd3e718a@mail.gmail.com>
+References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>
+	<47BF84BF.702@versatile.com> <47BF8500.1050802@versatile.com>
+	<7D68F908-875D-4EDE-B25D-CCBDD4E4A339@gmail.com>
+	<s5h1w6zvrz4.wl%tiwai@suse.de>
+	<E0172064-A6C6-4874-81A2-B275A0954BD4@gmail.com>
+	<165af2360802261519y6cdf878avf0af06c7b08db2a9@mail.gmail.com>
+	<s5hfxveu1cf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754728AbYB0Rmg@vger.kernel.org>
-In-Reply-To: <alpine.LFD.1.00.0802141620380.6110@woody.linux-foundation.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id 27554243BB
+	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 19:16:24 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id l27so2036796fgb.44
+	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 10:16:23 -0800 (PST)
+In-Reply-To: <s5hfxveu1cf.wl%tiwai@suse.de>
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Robert Hancock <hancockr@shaw.ca>, Andrew Morton <akpm@linux-foundation.org>, avuton@gmail.com, yakui.zhao@intel.com, shaohua.li@intel.com, trenn@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 14 February 2008 05:40:36 pm Linus Torvalds wrote:
-> 
-> That said, if we really want to handle this, we could certainly add a 
-> whole new ioresource flag bit that says "allow inserting resources into 
-> this", and we could set that bit not just for the PnP reservations 
-> themselves, but in PCI bus resources too.
-> 
-> Basically, there are two different ways of inserting a resource:
-> 
->  - the "register this subresource" thing that "request_resource()" does, 
->    which just works on the one given resource and honors the BUSY bit.
-> 
->  - the "insert this resource into the tree" (insert_resource()) that 
->    starts from the root and tries to find the right location. It honors 
->    the BUSY bit too, but we could extend it to _only_ extend into 
->    resources that allow it.
+I tried it with all avalialable NIDS:
 
-I guess it's time to get back to this problem.
+sudo ./hda-verb /dev/snd/hwC0D0  0x14 SET_EAPD 0x02
+Is this correct?
 
-I don't want to make PNP insert resources only at the root.  That
-would avoid the ALSA problem because the enclosing PCI resource is
-allocated first, but it also precludes us from dealing with lots of
-valid ACPI information.  ACPI can describe layers of bridges and
-devices behind them.  It don't think we should throw away that
-information just to solve this problem.
+And is it so with all module options?
+>
 
-And I don't really want to add IORESOURCE_INSERT.  It's probably a
-useful idea, but I don't think it helps solve *this* problem.  We'd
-have to mark both the PCI and the PNP regions as "insert", and I
-think we'd end up with the exact same situation we have today:
+Yes with all tested codecs: are there any more options that i can use?
 
-  febf8000-febfbfff : 0000:00:1b.0 -- from pcibios_resource_survey (!busy)
-  febfa000-febfac00 : pnp 00:08    -- from PNP system driver (!busy)
-  febf8000-febfbfff : ICH HD audio -- fails; spans part of PNP region
-
-I'm back to the quirk idea, which is still ugly but seems the most
-straightforward to me.  Here's my current patch (this won't apply
-directly because we'd have to revert the Supermicro-specific quirk
-first).
-
-Excuse me a minute while I put on my asbestos underwear.
-
-Bjorn
-
-
-PNP: disable PNP motherboard resources that overlap PCI BARs
-
-Some BIOSes have PNP motherboard devices with resources that
-partially overlap PCI BARs.  The PNP system driver claims these
-motherboard resources, which prevents the normal PCI driver from
-requesting them later.
-
-This patch disables the PNP resources that conflict with PCI BARs
-so they won't be claimed by the PNP system driver.
-
-Of course, this only works if PCI devices have already been enumerated.
-Currently, PCI devices are discovered before any PNP init via this path:
-
-    acpi_pci_root_init() -> acpi_pci_root_add() -> pci_acpi_scan_root() ->
-	pci_scan_bus_parented() -> pci_scan_child_bus() -> ...
-
-References:
-    https://bugzilla.redhat.com/show_bug.cgi?id=280641
-    https://bugzilla.redhat.com/show_bug.cgi?id=313491
-    http://lkml.org/lkml/2008/1/9/449
-    http://thread.gmane.org/gmane.linux.acpi.devel/27312
-    http://lkml.org/lkml/2008/1/27/168
-
-Signed-off-by: Bjorn Helgaas <bjorn.helgaas@hp.com>
-
-Index: work7/drivers/pnp/quirks.c
-===================================================================
---- work7.orig/drivers/pnp/quirks.c	2008-02-27 10:17:40.000000000 -0700
-+++ work7/drivers/pnp/quirks.c	2008-02-27 10:19:35.000000000 -0700
-@@ -108,6 +108,77 @@
- 		       "pnp: SB audio device quirk - increasing port range\n");
- }
- 
-+
-+#include <linux/pci.h>
-+
-+static void quirk_system_pci_resources(struct pnp_dev *dev)
-+{
-+	struct pci_dev *pdev = NULL;
-+	resource_size_t pnp_start, pnp_end, pci_start, pci_end;
-+	int i, j;
-+
-+	/*
-+	 * Some BIOSes have PNP motherboard devices with resources that
-+	 * partially overlap PCI BARs.  The PNP system driver claims these
-+	 * motherboard resources, which prevents the normal PCI driver from
-+	 * requesting them later.
-+	 *
-+	 * This patch disables the PNP resources that conflict with PCI BARs
-+	 * so they won't be claimed by the PNP system driver.
-+	 */
-+	for_each_pci_dev(pdev) {
-+		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
-+			if (!(pci_resource_flags(pdev, i) & IORESOURCE_MEM) ||
-+			    pci_resource_len(pdev, i) == 0)
-+				continue;
-+
-+			pci_start = pci_resource_start(pdev, i);
-+			pci_end = pci_resource_end(pdev, i);
-+			for (j = 0; j < PNP_MAX_MEM; j++) {
-+				if (!pnp_mem_valid(dev, j) ||
-+				    pnp_mem_len(dev, j) == 0)
-+					continue;
-+
-+				pnp_start = pnp_mem_start(dev, j);
-+				pnp_end = pnp_mem_end(dev, j);
-+
-+				/*
-+				 * If the PNP region doesn't overlap the PCI
-+				 * region at all, there's no problem.
-+				 */
-+				if (pnp_end < pci_start || pnp_start > pci_end)
-+					continue;
-+
-+				/*
-+				 * If the PNP region completely encloses (or is
-+				 * at least as large as) the PCI region, that's
-+				 * also OK.  For example, this happens when the
-+				 * PNP device describes a bridge with PCI
-+				 * behind it.
-+				 */
-+				if (pnp_start <= pci_start &&
-+				    pnp_end >= pci_end)
-+					continue;
-+
-+				/*
-+				 * Otherwise, the PNP region overlaps *part* of
-+				 * the PCI region, and that might prevent a PCI
-+				 * driver from requesting its resources.
-+				 */
-+				dev_warn(&dev->dev, "mem resource "
-+					"(0x%llx-0x%llx) overlaps %s BAR %d "
-+					"(0x%llx-0x%llx), disabling\n",
-+					(unsigned long long) pnp_start,
-+					(unsigned long long) pnp_end,
-+					pci_name(pdev), i,
-+					(unsigned long long) pci_start,
-+					(unsigned long long) pci_end);
-+				pnp_mem_flags(dev, j) = 0;
-+			}
-+		}
-+	}
-+}
-+
- /*
-  *  PnP Quirks
-  *  Cards or devices that need some tweaking due to incomplete resource info
-@@ -128,6 +199,8 @@
- 	{"CTL0043", quirk_sb16audio_resources},
- 	{"CTL0044", quirk_sb16audio_resources},
- 	{"CTL0045", quirk_sb16audio_resources},
-+	{"PNP0c01", quirk_system_pci_resources},
-+	{"PNP0c02", quirk_system_pci_resources},
- 	{""}
- };
- 
+Thanks,
+ Rene
