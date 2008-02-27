@@ -1,17 +1,22 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA C++ API updated for 1.0.16
-Date: Wed, 27 Feb 2008 12:50:13 +0100
-Message-ID: <47C54E75.7050705@ladisch.de>
-References: <47C30EDE.8000400@trn.iki.fi> <47C3E387.20800@ladisch.de>
-	<47C44559.6090404@trn.iki.fi>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Using ARRAY_SIZE macro when setting up ASoC audio map?
+Date: Wed, 27 Feb 2008 13:49:23 +0200
+Message-ID: <20080227134923.aa37870c.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 866DD1037F6
-	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 12:48:33 +0100 (CET)
-In-Reply-To: <47C44559.6090404@trn.iki.fi>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8031F103800
+	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 12:49:54 +0100 (CET)
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-mx09.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m1RBpKGT026970
+	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 05:51:28 -0600
+Received: from kikka3 (esdhcp04136.research.nokia.com [172.21.41.36])
+	by mgw-int01.ntc.nokia.com (Switch-3.2.5/Switch-3.2.5) with SMTP id
+	m1RBn4Z9019493
+	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 13:49:04 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,105 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TGFzc2UgS8Okcmtrw6RpbmVu?= <tronic@trn.iki.fi>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TGFzc2UgS8Okcmtrw6RpbmVuIHdyb3RlOgo+IFRoYW5rIHlvdSBmb3IgeW91ciBpbnB1dCwgd2hp
-Y2ggaXMgcXVpdGUgdmFsdWFibGUuCj4KPiA+ID4gZXJyb3Ioc3RkOjpzdHJpbmcgY29uc3QmIGZ1
-bmN0aW9uLCBpbnQgZXJyKTogc3RkOjpydW50aW1lX2Vycm9yKCJBTFNBICIgKyBmdW5jdGlvbiAr
-ICIgZmFpbGVkOiAiICsgc3RkOjpzdHJpbmcoc25kX3N0cmVycm9yKGVycikpKSwgZXJyKGVycikg
-e30KPiA+Cj4gPiBJJ20gbm90IHN1cmUgdGhhdCBpbmNsdWRpbmcgdGhlIGZ1bmN0aW9uIG5hbWUg
-YW5kIGFsbCBwYXJhbWV0ZXJzIGFzIHRoZXkKPiA+IGFwcGVhciBpbiB0aGUgc291cmNlIGZpbGUg
-aW4gdGhlIGVycm9yIG1lc3NhZ2UgaXMgYSBnb29kIGlkZWE7IEkKPiA+IHdvdWxkbid0IHdhbnQg
-dG8gaW1wb3NlIHRoaXMgcG9saWN5IG9uIGFsbCBhcHBsaWNhdGlvbnMgdXNpbmcgdGhpcwo+ID4g
-aGVhZGVyLgo+Cj4gSXQgaXMganVzdCBhbiBleGNlcHRpb24gdGhyb3duLCB0aGUgcHJvZ3JhbSBt
-YXkgY2F0Y2ggaXQgYW5kIGRpc3BsYXkKPiBhbm90aGVyIGVycm9yIG1lc3NhZ2UuIFRoZSBvcmln
-aW5hbCBBTFNBIGVycm9yIGNvZGUgaXMgYWxzbyBpbmNsdWRlZAo+IHdpdGhpbiBpdC4KCkknbSBq
-dXN0IG9iamVjdGluZyB0byB0aGUgZmFjdCB0aGF0IHRoZSBmdW5jdGlvbiBuYW1lIGFuZCBBTFNB
-J3MgZXJyb3IKc3RyaW5nIGFyZSBjb21iaW5lZCBpbnRvIGEgc3RyaW5nIHRoYXQgY2Fubm90IGVh
-c2lseSBiZSBwYXJzZWQgbGF0ZXIuCgo+IEluIHByYWN0aWNlIHRoZSBmdW5jdGlvbiBuYW1lIHNl
-ZW1zIHRvIGJlIHF1aXRlIGVzc2VudGlhbCBmb3IgZGVidWdnaW5nLAo+IGFzIEVQSVBFIG9yIHNv
-bWUgb3RoZXIgb2YgdGhlIHN0YW5kYXJkIGVycm9yIGNvZGVzIHdpbGwgdGVsbCBsaXR0bGUgb3IK
-PiBub3RoaW5nLgoKQWdyZWVkLgoKPiBGb3IgY29tcGxldGVuZXNzLCBJIHRoaW5rIHRoYXQgaXQg
-bWlnaHQgYmUgZGVzaXJhYmxlIHRvIGFsc28gc3RvcmUgdGhlCj4gZnVuY3Rpb24gbmFtZSBzZXBh
-cmF0ZWx5IChsaWtlIHRoZSBjb2RlIGlzIHN0b3JlZCksIGJ1dCBjYW4gYW55b25lIHNlZQo+IGFu
-eSBhY3R1YWwgdXNlIGZvciB0aGlzPwoKSSdkIGxpa2UgdG8gaGF2ZSBvbmx5IHRoZSBzbmRfc3Ry
-ZXJyb3IoKSByZXN1bHQgYXMgdGhlIG1lc3NhZ2UuICBJbiB0aGlzCmNhc2UsIHRoZSBmdW5jdGlv
-biBuYW1lIGhhcyB0byBiZSBzdG9yZWQgc2VwYXJhdGVseSBpZiBpdCBpcyBuZWVkZWQuCgo+ID4g
-PiBwY20oY2hhciBjb25zdCogZGV2aWNlID0gImRlZmF1bHQiLCBzbmRfcGNtX3N0cmVhbV90IHN0
-cmVhbSA9IFNORF9QQ01fU1RSRUFNX1BMQVlCQUNLLCBpbnQgbW9kZSA9IDApIHsKPiA+Cj4gPiBU
-aGlzIGxvb2tzIHRvbyBtdWNoIGxpa2UgYSBkZWZhdWx0IGNvbnN0cnVjdG9yLiAgSSB0aGluayBu
-ZWl0aGVyIGRldmljZQo+ID4gbm9yIHN0cmVhbSBzaG91bGQgaGF2ZSBhIGRlZmF1bHQgdmFsdWUu
-Cj4KPiBXZWxsLCBpdCBpcyBhIGRlZmF1bHQgY29uc3RydWN0b3IuIE9uZSBkZXNpZ24gZ29hbCB3
-YXMgdG8gbWFrZSB0aGlzCj4gd3JhcHBlciBhcyBlYXN5IHRvIHVzZSBhcyBwb3NzaWJsZSwgYW5k
-IGNob29zaW5nIHNlbnNpYmxlIGRlZmF1bHRzIGZvcgo+IHRoYXQgaXMgaGVscGZ1bC4KCldoaWxl
-IHBsYXliYWNrIHdpbGwgYmUgdXNlZCBtb3JlIG9mdGVuLCBJIHRoaW5rIHRoZSBkaWZmZXJlbmNl
-IGJldHdlZW4KcGxheWJhY2sgYW5kIGNhcHR1cmUgaXMgc28gYmlnIHRoYXQgd2UgY2Fubm90IG1h
-a2Ugb25lIG9mIHRoZW0gdGhlCmRlZmF1bHQuCgo+ICh3aGVyZSAiZGVmYXVsdCIgYW5kIHBsYXli
-YWNrIGFyZSB0aGUgbW9zdCBjb21tb24gY2hvaWNlczsgYW5kIGFsc28gZmFyCj4gYmV0dGVyIHRo
-YW4gcGVvcGxlIGhhcmRjb2RpbmcgdGhlaXIgYXBwbGljYXRpb25zIHRvIHVzZSAicGx1Z2h3OjAi
-IG9yCj4gd2hhdGV2ZXIgaGFwcGVucyB0byB3b3JrIGZvciB0aGVtKS4KCkluIHByYWN0aWNlLCBt
-b3N0IGFwcGxpY2F0aW9ucyBhbGxvdyB0aGUgdXNlciB0byBzcGVjaWZ5IHRoZSBkZXZpY2UKbmFt
-ZSwgc28gdGhlIGRlZmF1bHQgdmFsdWUgd29uJ3QgYmUgdXNlZCBhbnl3YXkuCgo+IElmIHlvdSBh
-cmUgZXhwZWN0aW5nIGFsc2E6OnBjbSBwY21vYmplY3Q7IHRvIHByb2R1Y2UgYW4gb2JqZWN0IHRo
-YXQgaXMKPiBub3QgY29uc3RydWN0ZWQsIC4uLgoKTm8sIEknbSBub3QuCgo+ID4gPiBBTFNBX0hQ
-UF9DTEFTUyYgc2V0XyMjbmFtZSguLi4pIHsgLi4uOyByZXR1cm4gKnRoaXM7IH1cCj4gPgo+ID4g
-SXMgdGhlcmUgYSByZWFzb24gd2h5IHlvdSByZXR1cm4gdGhlIG9iamVjdCBpdHNlbGY/ICBVc3Vh
-bGx5LCByZXR1cm5pbmcKPiA+IGFuIG9iamVjdCBpbXBsaWVzIHRoYXQgdGhhdCBvYmplY3QgaXMg
-YSBfZGlmZmVyZW50XyBvYmplY3Qgd2l0aCB0aGUKPiA+IHNldHRpbmcgYXBwbGllZCwgd2hpY2gg
-d291bGQgbWVhbiB0aGF0IHRoZSBvcmlnaW5hbCBvYmplY3Qgd2FzIF9ub3RfCj4gPiBjaGFuZ2Vk
-LCBidXQgdGhhdCBpc24ndCB0cnVlIGhlcmUuCj4KPiBUaGlzIGlzIGZvciBmdW5jdGlvbiBjYWxs
-IGNoYWluaW5nLiBJdCBpcyBhIGNvbW1vbiBpZGlvbSB1c2VkIGJ5IHRoZQo+IHN0YW5kYXJkIGxp
-YnJhcnkgYW5kIG90aGVycy4KClRoZSBTVEwgc3RyZWFtcyB1c2UgdGhpcyB0byBhbGxvdyB1c2lu
-ZyB0aGUgY29udmVydC10by1ib29sIG9wZXJhdG9yIHRvCmNoZWNrIHRoZSBlcnJvciBzdGF0dXMg
-b2YgdGhlIHN0cmVhbSAoYmVjYXVzZSBtb3N0IGVycm9ycyBhcmVuJ3QKcmVwb3J0ZWQgYnkgZXhj
-ZXB0aW9ucykuICBUaGF0IHRoaXMgYWxzbyBhbGxvd3MgY2hhaW5pbmcgaXMganVzdCBhIHNpZGUK
-ZWZmZWN0LgoKPiA+ID4gaHdfY29uZmlnKHNuZF9wY21fdCogcGNtKTogcGNtKHBjbSkgewo+ID4g
-PiAJdHJ5IHsgY3VycmVudCgpOyB9IGNhdGNoIChzdGQ6OnJ1bnRpbWVfZXJyb3ImKSB7IGFueSgp
-OyB9Cj4gPgo+ID4gSSBkb24ndCBsaWtlIHVzaW5nIGV4Y2VwdGlvbnMgd2hlbiB0aGVyZSdzIG5v
-dGhpbmcgd3JvbmcuICBCZXNpZGVzLAo+ID4gZ2V0dGluZyB0aGUgY3VycmVudCBwYXJhbWV0ZXJz
-IG1heSBmYWlsIGR1ZSB0byBvdGhlciBlcnJvcnMgKGxpa2UgZGV2aWNlCj4gPiB1bnBsdWdnZWQp
-Lgo+Cj4gSXQgc2VlbXMgbGlrZSBhIHNlbnNpYmxlIGZhbGxiYWNrLCBhbnl3YXkuIFRoZSBvdGhl
-ciBvcHRpb24gd291bGQgYmUgdG8KPiBsb2FkIGFueSgpIHNldHRpbmdzIGFsd2F5cyBhbmQgaGF2
-ZSB0aGUgdXNlciBjYWxsIGN1cnJlbnQoKSwgaWYgaGUgd2FudHMKPiB0aG9zZSBpbnN0ZWFkLiBX
-b3VsZCB5b3UgZmluZCB0aGlzIHByZWZlcmFibGU/CgpNeSBwcmVmZXJlbmNlIHdvdWxkIGJlIHRo
-YXQgdGhlIHVzZXIgaGFzIHRvIGluZGljYXRlIHdoZXRoZXIgaGUgd2FudHMKdG8gcmVhZCB0aGUg
-Y3VycmVudCBzZXR0aW5nIG9yIHRvIGJlZ2luIGNob29zaW5nIG5ldyBzZXR0aW5ncy4gIEl0IGlz
-Cm5vdCBwb3NzaWJsZSBmb3IgdGhpcyBjb25zdHJ1Y3RvciB0byBndWVzcyB3aGF0IHRoZSB1c2Vy
-IHdhbnRzLgoKPiBTb21lIHNldHRpbmdzIG5lZWQgdG8gYmUgbG9hZGVkIGJ5IHRoZSBjb25zdHJ1
-Y3RvciBpbiBvcmRlciB0byBlbnN1cmUKPiB0aGF0IHRoZSBzdHJ1Y3R1cmUgaXMgaW4gYSBjb25z
-aXN0ZW50IHN0YXRlIGF0IGFsbCB0aW1lcy4KCkFMU0EncyBzbmRfcGNtX2h3X3BhcmFtc190IGlz
-IGluIGEgY29uc2lzdGVudCBzdGF0ZSBldmVuIGJlZm9yZSBpbml0aWFsCm9yIGN1cnJlbnQgc2V0
-dGluZ3MgYXJlIGxvYWRlZCBmcm9tIGEgUENNIGRldmljZS4gIEJ1dCB0aGVuIHRoZQpod19jb25m
-aWcgb2JqZWN0IGlzbid0IHRoZSBkaXJlY3Qgd3JhcHBlciBmb3Igc25kX3BjbV9od19wYXJhbXNf
-dCAuLi4KCj4gPiA+IH5tbWFwKCkgewo+ID4gPiAJLy8gV2UganVzdCBhc3N1bWUgdGhhdCB0aGlz
-IHdvcmtzIChjYW4ndCBkbyBhbnl0aGluZyBzZW5zaWJsZSBpZiBpdCBmYWlscykuCj4gPiA+IAlz
-bmRfcGNtX21tYXBfY29tbWl0KHBjbSwgb2Zmc2V0LCBmcmFtZXMpOwo+ID4KPiA+IFRoaXMgaXMg
-dGhlIHBsYWNlIHdoZXJlIGFsbCB0aGUgdXN1YWwgd3JpdGUgZXJyb3JzIG11c3QgYmUgY2hlY2tl
-ZC4KPiA+IFRoaXMgY2Fubm90IGJlIGRvbmUgaW4gYSBkZXN0cnVjdG9yLiAgSSB0aGluayB1c2lu
-ZyBSQUlJIGZvciB0aGUgbm9uLQo+ID4gZXJyb3IgY29tbWl0IGp1c3QgaXNuJ3QgcG9zc2libGUu
-Cj4KPiBPdWNoLiBUaGlzIGlzIGEgYmlnIHByb2JsZW0uCgpUaGlzIGlzIHZlcnkgc2ltaWxhciB0
-byBkYXRhYmFzZSB0cmFuc2FjdGlvbiB0aGF0IG11c3QgYmUgZWl0aGVyCmNvbW1pdHRlZCBvciBy
-b2xsZWQgYmFjay4gIFRoZSB1c3VhbCBpZGlvbSBzZWVtcyB0byBiZSBhIFJBSUkgY2xhc3MKd2hv
-c2UgZGVzdHJ1Y3RvciByb2xscyBiYWNrIGlmIGEgY29tbWl0IG9yIHJvbGxiYWNrIGhhc24ndCBh
-bHJlYWR5CmhhcHBlbmRlZC4KCkluIG91ciBjYXNlLCBhIHJvbGxiYWNrIGlzIGVxdWl2YWxlbnQg
-dG8gY2FsbGluZyBzbmRfcGNtX21tYXBfY29tbWl0CndpdGggZnJhbWVzPT0wLgoKSG1tLCBpdCBz
-aG91bGQgYmUgcG9zc2libGUgdG8gY29tbWl0IGFueSBudW1iZXIgb2YgZnJhbWVzIGFzIGxvbmcg
-YXMgaXQKaXNuJ3QgbW9yZSB0aGFuIG9yaWdpbmFsbHkgcmVxdWVzdGVkLgoKPiAyLiBBZGQgYSBz
-ZXBhcmF0ZSBjb21taXQgZnVuY3Rpb24KPiAuLi4KPiBPcHRpb24gMiBpcyBoYWlyeSwgYXMgaXQg
-bGVhdmVzIHRoZSBvYmplY3QgaW4gdW51c2FibGUgc3RhdGUgYWZ0ZXIKPiBjb21taXQgaXMgY2Fs
-bGVkLAoKQWZ0ZXIgY29tbWl0dGluZywgaXQgaXMgaW5kZWVkIG5vdCBhbGxvd2VkIHRvIGFjY2Vz
-cyB0aGUgbW1hcCBidWZmZXIsCnNvIHRoaXMgaXNuJ3QgdG9vIHVuZXhwZWN0ZWQuCgpJbiBwcmFj
-dGljZSwgdGhlIGNvbW1pdCB3aWxsIGJlIHRoZSBsYXN0IGFjdGlvbiBiZWZvcmUgdGhlIGRlc3Ry
-dWN0b3IuCgpCVFc6IFRoZSBvYmplY3Qgc2hvdWxkIGJlIGNhbGxlZCBtbWFwX2FjY2VzcyBvciBz
-b21ldGhpbmcgbGlrZSB0aGF0LgoKCkFzIGZhciBhcyBJIGNhbiBzZWUsIHlvdXIgaGVhZGVyIHRy
-aWVzIHRvIGRvIHR3byB0aGluZ3M6IHdyYXBwaW5nIHRoZQpBTFNBIEFQSSwgYW5kIG9mZmVyaW5n
-IGFuIGVhc2llci10by11c2UgQVBJIHRoYXQgaXMgbm90IGFzIGxvdy1sZXZlbAphcyB0aGUgQUxT
-QSBBUEkgaXRzZWxmLiAgSSB0aGluayB0aGVzZSB0d28gc2hvdWxkIGJlIHB1dCBpbiBzZXBhcmF0
-ZQpoZWFkZXIgZmlsZXMuCgpBbnl3YXksIHdlIG5lZWQgbW9yZSB3cmFwcGVycyBmb3IgYWxsIHRo
-b3NlIGRhdGEgc3RydWN0dXJlcy4gIEknbGwgc2VlCndoYXQgSSBjYW4gY29tZSB1cCB3aXRoLgoK
-ClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+Does an example patch to spitz below make any sense? Yep, noticed when forgot to add array terminator to own code :-)
+
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index d56709e..1cffcd3 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -268,8 +268,6 @@ static const char *audio_map[][3] = {
+ 
+ 	/* line is connected to input 1 - no bias */
+ 	{"LINPUT1", NULL, "Line Jack"},
+-
+-	{NULL, NULL, NULL},
+ };
+ 
+ static const char *jack_function[] = {"Headphone", "Mic", "Line", "Headset",
+@@ -317,7 +315,7 @@ static int spitz_wm8750_init(struct snd_soc_codec *codec)
+ 	}
+ 
+ 	/* Set up spitz specific audio path audio_map */
+-	for (i = 0; audio_map[i][0] != NULL; i++) {
++	for (i = 0; i < ARRAY_SIZE(audio_map); i++) {
+ 		snd_soc_dapm_connect_input(codec, audio_map[i][0],
+ 			audio_map[i][1], audio_map[i][2]);
+ 	}
