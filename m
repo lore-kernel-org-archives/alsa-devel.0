@@ -1,65 +1,178 @@
-From: "Dustin Kerstein" <dustobub@gmail.com>
-Subject: Re: HDMI Multichannel LPCM/RAW Support/Status
-Date: Wed, 27 Feb 2008 12:13:45 -0500
-Message-ID: <001701c87964$1ee14770$5ca3d650$@com>
-References: <001201c878e6$0a8245a0$1f86d0e0$@com>
-	<s5hwsoqs79i.wl%tiwai@suse.de>
+From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Subject: Re: a7839e96 (PNP: increase max resources) breaks my ALSA intel8x0 sound card
+Date: Wed, 27 Feb 2008 10:43:47 -0700
+Message-ID: <200802271043.47763.bjorn.helgaas@hp.com>
+References: <fa.Kmpf0B4W44W1VefIME7+BnfUouY@ifi.uio.no> <200802141713.23461.bjorn.helgaas@hp.com> <alpine.LFD.1.00.0802141620380.6110@woody.linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75A482415D
-	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 18:13:52 +0100 (CET)
-Received: by wf-out-1314.google.com with SMTP id 25so3123071wfa.23
-	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2008 09:13:50 -0800 (PST)
-In-Reply-To: <s5hwsoqs79i.wl%tiwai@suse.de>
-Content-Language: en-us
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754728AbYB0Rmg@vger.kernel.org>
+In-Reply-To: <alpine.LFD.1.00.0802141620380.6110@woody.linux-foundation.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Robert Hancock <hancockr@shaw.ca>, Andrew Morton <akpm@linux-foundation.org>, avuton@gmail.com, yakui.zhao@intel.com, shaohua.li@intel.com, trenn@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'd possibly be willing to temporarily donate hardware for you to play with.
-If I sent you a Asus P5E-VM that has the G35 chipset would you have the
-other necessary hardware to test it with, ie. receiver with HDMI audio
-input, cpu, ram, etc? Otherwise, what kind of technical details would you be
-looking for, I could help test, but I am not a programmer. Thanks.
+On Thursday 14 February 2008 05:40:36 pm Linus Torvalds wrote:
+> 
+> That said, if we really want to handle this, we could certainly add a 
+> whole new ioresource flag bit that says "allow inserting resources into 
+> this", and we could set that bit not just for the PnP reservations 
+> themselves, but in PCI bus resources too.
+> 
+> Basically, there are two different ways of inserting a resource:
+> 
+>  - the "register this subresource" thing that "request_resource()" does, 
+>    which just works on the one given resource and honors the BUSY bit.
+> 
+>  - the "insert this resource into the tree" (insert_resource()) that 
+>    starts from the root and tries to find the right location. It honors 
+>    the BUSY bit too, but we could extend it to _only_ extend into 
+>    resources that allow it.
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Wednesday, February 27, 2008 11:18 AM
-To: Dustin Kerstein
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] HDMI Multichannel LPCM/RAW Support/Status
+I guess it's time to get back to this problem.
 
-At Tue, 26 Feb 2008 21:11:17 -0500,
-Dustin Kerstein wrote:
->
-> I was just curious if there is any planned support for multichannel
-LPCM/Raw
-> audio for newer HDMI based chipsets. There are several matx boards with
-HDMI
-> 1.1 and above compliance, which means they should be able to pass
-8-channel
-> LPCM audio. Also, in HDMI 1.3 and above, Bit Stream passing is supported,
-> which actually should be easier, bandwidth wise, than LPCM. Multichannel
-PCM
-> (above 2 channels) was never an issue because SPDIF lacked the bandwidth.
-> After talking with some people in irc it seems as though the # of channels
-> setting in Alsa is only one bit. Thanks.
+I don't want to make PNP insert resources only at the root.  That
+would avoid the ALSA problem because the enclosing PCI resource is
+allocated first, but it also precludes us from dealing with lots of
+valid ACPI information.  ACPI can describe layers of bridges and
+devices behind them.  It don't think we should throw away that
+information just to solve this problem.
 
-Well, I have no plan yet because I have no such a hardware...
+And I don't really want to add IORESOURCE_INSERT.  It's probably a
+useful idea, but I don't think it helps solve *this* problem.  We'd
+have to mark both the PCI and the PNP regions as "insert", and I
+think we'd end up with the exact same situation we have today:
 
-I'm willing to help implementation if you can give any pointers for
-technical details.
+  febf8000-febfbfff : 0000:00:1b.0 -- from pcibios_resource_survey (!busy)
+  febfa000-febfac00 : pnp 00:08    -- from PNP system driver (!busy)
+  febf8000-febfbfff : ICH HD audio -- fails; spans part of PNP region
+
+I'm back to the quirk idea, which is still ugly but seems the most
+straightforward to me.  Here's my current patch (this won't apply
+directly because we'd have to revert the Supermicro-specific quirk
+first).
+
+Excuse me a minute while I put on my asbestos underwear.
+
+Bjorn
 
 
-Takashi
+PNP: disable PNP motherboard resources that overlap PCI BARs
+
+Some BIOSes have PNP motherboard devices with resources that
+partially overlap PCI BARs.  The PNP system driver claims these
+motherboard resources, which prevents the normal PCI driver from
+requesting them later.
+
+This patch disables the PNP resources that conflict with PCI BARs
+so they won't be claimed by the PNP system driver.
+
+Of course, this only works if PCI devices have already been enumerated.
+Currently, PCI devices are discovered before any PNP init via this path:
+
+    acpi_pci_root_init() -> acpi_pci_root_add() -> pci_acpi_scan_root() ->
+	pci_scan_bus_parented() -> pci_scan_child_bus() -> ...
+
+References:
+    https://bugzilla.redhat.com/show_bug.cgi?id=280641
+    https://bugzilla.redhat.com/show_bug.cgi?id=313491
+    http://lkml.org/lkml/2008/1/9/449
+    http://thread.gmane.org/gmane.linux.acpi.devel/27312
+    http://lkml.org/lkml/2008/1/27/168
+
+Signed-off-by: Bjorn Helgaas <bjorn.helgaas@hp.com>
+
+Index: work7/drivers/pnp/quirks.c
+===================================================================
+--- work7.orig/drivers/pnp/quirks.c	2008-02-27 10:17:40.000000000 -0700
++++ work7/drivers/pnp/quirks.c	2008-02-27 10:19:35.000000000 -0700
+@@ -108,6 +108,77 @@
+ 		       "pnp: SB audio device quirk - increasing port range\n");
+ }
+ 
++
++#include <linux/pci.h>
++
++static void quirk_system_pci_resources(struct pnp_dev *dev)
++{
++	struct pci_dev *pdev = NULL;
++	resource_size_t pnp_start, pnp_end, pci_start, pci_end;
++	int i, j;
++
++	/*
++	 * Some BIOSes have PNP motherboard devices with resources that
++	 * partially overlap PCI BARs.  The PNP system driver claims these
++	 * motherboard resources, which prevents the normal PCI driver from
++	 * requesting them later.
++	 *
++	 * This patch disables the PNP resources that conflict with PCI BARs
++	 * so they won't be claimed by the PNP system driver.
++	 */
++	for_each_pci_dev(pdev) {
++		for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
++			if (!(pci_resource_flags(pdev, i) & IORESOURCE_MEM) ||
++			    pci_resource_len(pdev, i) == 0)
++				continue;
++
++			pci_start = pci_resource_start(pdev, i);
++			pci_end = pci_resource_end(pdev, i);
++			for (j = 0; j < PNP_MAX_MEM; j++) {
++				if (!pnp_mem_valid(dev, j) ||
++				    pnp_mem_len(dev, j) == 0)
++					continue;
++
++				pnp_start = pnp_mem_start(dev, j);
++				pnp_end = pnp_mem_end(dev, j);
++
++				/*
++				 * If the PNP region doesn't overlap the PCI
++				 * region at all, there's no problem.
++				 */
++				if (pnp_end < pci_start || pnp_start > pci_end)
++					continue;
++
++				/*
++				 * If the PNP region completely encloses (or is
++				 * at least as large as) the PCI region, that's
++				 * also OK.  For example, this happens when the
++				 * PNP device describes a bridge with PCI
++				 * behind it.
++				 */
++				if (pnp_start <= pci_start &&
++				    pnp_end >= pci_end)
++					continue;
++
++				/*
++				 * Otherwise, the PNP region overlaps *part* of
++				 * the PCI region, and that might prevent a PCI
++				 * driver from requesting its resources.
++				 */
++				dev_warn(&dev->dev, "mem resource "
++					"(0x%llx-0x%llx) overlaps %s BAR %d "
++					"(0x%llx-0x%llx), disabling\n",
++					(unsigned long long) pnp_start,
++					(unsigned long long) pnp_end,
++					pci_name(pdev), i,
++					(unsigned long long) pci_start,
++					(unsigned long long) pci_end);
++				pnp_mem_flags(dev, j) = 0;
++			}
++		}
++	}
++}
++
+ /*
+  *  PnP Quirks
+  *  Cards or devices that need some tweaking due to incomplete resource info
+@@ -128,6 +199,8 @@
+ 	{"CTL0043", quirk_sb16audio_resources},
+ 	{"CTL0044", quirk_sb16audio_resources},
+ 	{"CTL0045", quirk_sb16audio_resources},
++	{"PNP0c01", quirk_system_pci_resources},
++	{"PNP0c02", quirk_system_pci_resources},
+ 	{""}
+ };
+ 
