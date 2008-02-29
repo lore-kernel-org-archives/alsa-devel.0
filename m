@@ -1,14 +1,15 @@
 From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: disable power management on fixed ports.
-Date: Thu, 28 Feb 2008 20:49:42 -0500
-Message-ID: <47C764B6.4080501@embeddedalley.com>
+Subject: [PATCH] hda: 92HD
+Date: Thu, 28 Feb 2008 21:30:24 -0500
+Message-ID: <47C76E40.10003@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp110.biz.mail.mud.yahoo.com (smtp110.biz.mail.mud.yahoo.com
-	[68.142.201.179]) by alsa0.perex.cz (Postfix) with SMTP id 6799424434
-	for <alsa-devel@alsa-project.org>; Fri, 29 Feb 2008 02:49:40 +0100 (CET)
+Received: from smtp109.biz.mail.mud.yahoo.com (smtp109.biz.mail.mud.yahoo.com
+	[68.142.201.178])
+	by alsa0.perex.cz (Postfix) with SMTP id AEE85103822
+	for <alsa-devel@alsa-project.org>; Fri, 29 Feb 2008 03:30:22 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +23,43 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>, Jose_De_La_Rosa@Dell.com, Mario_Limonciello@Dell.com
 List-Id: alsa-devel@alsa-project.org
 
-Power management can't be enabled on fixed ports, since the presence will always return false
-and prevent output.
+Added core_init[] for several 92hd73xxx laptops.
 
 Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 ---
 diff -r 54a51b975975 pci/hda/patch_sigmatel.c
 --- a/pci/hda/patch_sigmatel.c	Thu Feb 28 12:46:32 2008 +0100
-+++ b/pci/hda/patch_sigmatel.c	Thu Feb 28 20:39:28 2008 -0500
-@@ -3015,11 +3015,15 @@ static int stac92xx_init(struct hda_code
- 					? STAC_HP_EVENT : STAC_PWR_EVENT;
- 		int pinctl = snd_hda_codec_read(codec, spec->pwr_nids[i],
- 					0, AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+		int def_conf = snd_hda_codec_read(codec, spec->pwr_nids[i],
-+					0, AC_VERB_GET_CONFIG_DEFAULT, 0);
- 		/* outputs are only ports capable of power management
- 		 * any attempts on powering down a input port cause the
- 		 * referenced VREF to act quirky.
- 		 */
- 		if (pinctl & AC_PINCTL_IN_EN)
-+			continue;
-+		if (get_defcfg_connect(def_conf) != AC_JACK_PORT_FIXED)
- 			continue;
- 		enable_pin_detect(codec, spec->pwr_nids[i], event | i);
- 		codec->patch_ops.unsol_event(codec, (event | i) << 26);
++++ b/pci/hda/patch_sigmatel.c	Thu Feb 28 21:14:39 2008 -0500
+@@ -525,6 +525,24 @@ static struct hda_verb stac92hd73xx_6ch_
+ 	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{ 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{ 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	/* setup import muxs */
++	{ 0x28, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{ 0x29, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{ 0x2a, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{ 0x2b, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{}
++};
++
++static struct hda_verb dell_m6_core_init[] = {
++	/* set master volume and direct control */
++	{ 0x1f, AC_VERB_SET_VOLUME_KNOB_CONTROL, 0xff},
++	/* setup audio connections */
++	{ 0x0a, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x02},
++	/* setup adcs to point to mixer */
++	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x0b},
++	{ 0x21, AC_VERB_SET_CONNECT_SEL, 0x0b},
+ 	/* setup import muxs */
+ 	{ 0x28, AC_VERB_SET_CONNECT_SEL, 0x01},
+ 	{ 0x29, AC_VERB_SET_CONNECT_SEL, 0x01},
+@@ -3437,6 +3455,7 @@ again:
+ 
+ 	switch (spec->board_config) {
+ 	case STAC_DELL_M6:
++		spec->init = dell_m6_core_init;
+ 		switch (codec->subsystem_id) {
+ 		case 0x1028025e: /* Analog Mics */
+ 		case 0x1028025f:
