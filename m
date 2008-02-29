@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: [PATCH 4/4] Convert non-SoC PXA2xx AC97 driver to
 	clock API
-Date: Fri, 29 Feb 2008 15:55:55 +0000
-Message-ID: <1204300555-7490-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20080229154826.GA4756@rakim.wolfsonmicro.main>
-	<1204300555-7490-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1204300555-7490-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1204300555-7490-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Fri, 29 Feb 2008 16:56:41 +0000
+Message-ID: <1204304201-18414-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E44D4103885
-	for <alsa-devel@alsa-project.org>; Fri, 29 Feb 2008 16:55:57 +0100 (CET)
-In-Reply-To: <1204300555-7490-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 79D99103848
+	for <alsa-devel@alsa-project.org>; Fri, 29 Feb 2008 17:56:43 +0100 (CET)
+In-Reply-To: <>
+References: <>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
