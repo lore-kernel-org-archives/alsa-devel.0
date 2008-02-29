@@ -1,18 +1,20 @@
-From: "Tellman, Steven" <Steven.Tellman@idt.com>
-Subject: Re: HDMI v. ICH8 on Dell XPS M1330
-Date: Fri, 29 Feb 2008 07:04:24 -0800
-Message-ID: <16A430A423D62246A24C9A892622FE66048C11@CORPEXCH1.na.ads.idt.com>
-References: <1204152070.12914.18.camel@localhost><s5hablls40f.wl%tiwai@suse.de><16A430A423D62246A24C9A892622FE66048B88@CORPEXCH1.na.ads.idt.com><1204248546.12914.86.camel@localhost><s5h63w8q8lt.wl%tiwai@suse.de><16A430A423D62246A24C9A892622FE66048C09@CORPEXCH1.na.ads.idt.com>
-	<s5htzjrq0a4.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] Convert non-SoC PXA2xx AC97 driver to
+	clock API
+Date: Fri, 29 Feb 2008 15:55:55 +0000
+Message-ID: <1204300555-7490-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20080229154826.GA4756@rakim.wolfsonmicro.main>
+	<1204300555-7490-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1204300555-7490-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1204300555-7490-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxout2.mainstreet.net (mxout2.mainstreet.net [204.69.220.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB7C110387B
-	for <alsa-devel@alsa-project.org>; Fri, 29 Feb 2008 16:04:59 +0100 (CET)
-Content-class: urn:content-classes:message
-In-Reply-To: <s5htzjrq0a4.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E44D4103885
+	for <alsa-devel@alsa-project.org>; Fri, 29 Feb 2008 16:55:57 +0100 (CET)
+In-Reply-To: <1204300555-7490-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,96 +24,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Armando Di Cianno <armando@goodship.net>, alsa-devel@alsa-project.org
+To: eric miao <eric.miao@marvell.com>, Russell King <rmk@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-I remember there being some work that the graphics guys had to do on the
-Windows side to get HDMI audio working for us. We have no control over
-the HDMI, we just enable our SPDIF pin and pump the bits.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Acked-by: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/arm/pxa2xx-ac97.c |   48 +++++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 40 insertions(+), 8 deletions(-)
 
-I can see if I can get a contact over at NVidia/ATI to help us out a bit
-if you want.
-
-IDT PC Audio Demo/Linux/Test
-(512) 330-3127
-
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Friday, February 29, 2008 8:56 AM
-To: Tellman, Steven
-Cc: Armando Di Cianno; alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] HDMI v. ICH8 on Dell XPS M1330
-
-At Fri, 29 Feb 2008 06:48:12 -0800,
-Tellman, Steven wrote:
-> 
-> Takashi,
-> 
-> 	On the XPS M1330 (and XPS M1530) the SPDIF pin of the 9228 is
-> hooked to the HDMI as these laptops were made before the HDMI portion
-> had their own audio codec portion of the transceiver. So technically,
-it
-> should be pretty simple ;) 
-
-Thanks, that's good to know.
-
-Do you know any other issues that stop HDMI audio working?  IIRC, ATI
-board has a h/w switch in the video side to enable/disable its
-graphic-board HDMI, for example...
-
-Also, does STAC9228 codec support verbs for controlling HDMI,
-e.g. converter channel count (F2Dh, 72Dh) ?
-
-
-Takashi
-
-> 
-> IDT PC Audio Demo/Linux/Test
-> 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Friday, February 29, 2008 5:57 AM
-> To: Armando Di Cianno
-> Cc: Tellman, Steven; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] HDMI v. ICH8 on Dell XPS M1330
-> 
-> At Thu, 28 Feb 2008 20:29:06 -0500,
-> Armando Di Cianno wrote:
-> > 
-> > 
-> > On Thu, 2008-02-28 at 12:55 -0800, Tellman, Steven wrote:
-> > > Notice we use the "Other Digital" as the jack. Is that possibly
-> > > causing
-> > > a problem? IEC958 shows up, but doesn't provide output to HDMI
-> devices
-> > > (that I've tested).
-> > 
-> > At a user level, this is definitely what I've experienced.
-> > 
-> > Are there any suggestions for testing if my current ALSA
-> > install /should/ work, or how to find out if something is
-> misconfigured,
-> > or will simply not work?
-> > 
-> > I will gladly try any suggestions, thoroughly.  Thanks.
-> 
-> It's a bit hard to judge right now.  So far, many HDMI devices seem
-> not working even though it appears set up properly.  I've heard that
-> ATI HDMI devices are working, but others are not well, e.g. on some
-> devices only left channel is output and on others silent.
-> 
-> Moreover, I'm not pretty sure whether HDMI is connected from the
-> digital out of STAC codec.  On many devices (e.g. ASUS ones), there is
-> a dedicated codec for the HDMI transmitter.
-> 
-> So, right now, it's total lack of (hardware) information,
-> unfortuantely.
-> 
-> We may try some verbs for HDMI that are not used in the current ALSA
-> code, at least.  These verbs were extended later...
-> 
-> 
-> Takashi
-> 
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index 5d86e68..fd7bc86 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -16,6 +16,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/interrupt.h>
+ #include <linux/wait.h>
++#include <linux/clk.h>
+ #include <linux/delay.h>
+ 
+ #include <sound/core.h>
+@@ -35,6 +36,10 @@
+ static DEFINE_MUTEX(car_mutex);
+ static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
+ static volatile long gsr_bits;
++static struct clk *ac97_clk;
++#ifdef CONFIG_PXA27x
++static struct clk *ac97conf_clk;
++#endif
+ 
+ /*
+  * Beware PXA27x bugs:
+@@ -112,9 +117,9 @@ static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
+ 	gsr_bits = 0;
+ #ifdef CONFIG_PXA27x
+ 	/* PXA27x Developers Manual section 13.5.2.2.1 */
+-	pxa_set_cken(CKEN_AC97CONF, 1);
++	clk_enable(ac97conf_clk);
+ 	udelay(5);
+-	pxa_set_cken(CKEN_AC97CONF, 0);
++	clk_disable(ac97conf_clk);
+ 	GCR = GCR_COLD_RST;
+ 	udelay(50);
+ #else
+@@ -259,7 +264,7 @@ static int pxa2xx_ac97_do_suspend(struct snd_card *card, pm_message_t state)
+ 	if (platform_ops && platform_ops->suspend)
+ 		platform_ops->suspend(platform_ops->priv);
+ 	GCR |= GCR_ACLINK_OFF;
+-	pxa_set_cken(CKEN_AC97, 0);
++	clk_disable(ac97_clk);
+ 
+ 	return 0;
+ }
+@@ -268,7 +273,7 @@ static int pxa2xx_ac97_do_resume(struct snd_card *card)
+ {
+ 	pxa2xx_audio_ops_t *platform_ops = card->dev->platform_data;
+ 
+-	pxa_set_cken(CKEN_AC97, 1);
++	clk_enable(ac97_clk);
+ 	if (platform_ops && platform_ops->resume)
+ 		platform_ops->resume(platform_ops->priv);
+ 	snd_ac97_resume(pxa2xx_ac97_ac97);
+@@ -335,8 +340,21 @@ static int __devinit pxa2xx_ac97_probe(struct platform_device *dev)
+ #ifdef CONFIG_PXA27x
+ 	/* Use GPIO 113 as AC97 Reset on Bulverde */
+ 	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
++	ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
++	if (IS_ERR(ac97conf_clk)) {
++		ret = PTR_ERR(ac97conf_clk);
++		ac97conf_clk = NULL;
++		goto err;
++	}
+ #endif
+-	pxa_set_cken(CKEN_AC97, 1);
++
++	ac97_clk = clk_get(&dev->dev, "AC97CLK");
++	if (IS_ERR(ac97_clk)) {
++		ret = PTR_ERR(ac97_clk);
++		ac97_clk = NULL;
++		goto err;
++	}
++	clk_enable(ac97_clk);
+ 
+ 	ret = snd_ac97_bus(card, 0, &pxa2xx_ac97_ops, NULL, &ac97_bus);
+ 	if (ret)
+@@ -361,11 +379,19 @@ static int __devinit pxa2xx_ac97_probe(struct platform_device *dev)
+  err:
+ 	if (card)
+ 		snd_card_free(card);
+-	if (CKEN & (1 << CKEN_AC97)) {
++	if (ac97_clk) {
+ 		GCR |= GCR_ACLINK_OFF;
+ 		free_irq(IRQ_AC97, NULL);
+-		pxa_set_cken(CKEN_AC97, 0);
++		clk_disable(ac97_clk);
++		clk_put(ac97_clk);
++		ac97_clk = NULL;
++	}
++#ifdef CONFIG_PXA27x
++	if (ac97conf_clk) {
++		clk_put(ac97conf_clk);
++		ac97conf_clk = NULL;
+ 	}
++#endif
+ 	return ret;
+ }
+ 
+@@ -378,7 +404,13 @@ static int __devexit pxa2xx_ac97_remove(struct platform_device *dev)
+ 		platform_set_drvdata(dev, NULL);
+ 		GCR |= GCR_ACLINK_OFF;
+ 		free_irq(IRQ_AC97, NULL);
+-		pxa_set_cken(CKEN_AC97, 0);
++		clk_disable(ac97_clk);
++		clk_put(ac97_clk);
++		ac97_clk = NULL;
++#ifdef CONFIG_PXA27x
++		clk_put(ac97conf_clk);
++		ac97conf_clk = NULL;
++#endif
+ 	}
+ 
+ 	return 0;
+-- 
+1.5.4.3
