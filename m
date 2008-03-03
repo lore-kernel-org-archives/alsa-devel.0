@@ -1,23 +1,22 @@
-From: Pascal Terjan <pterjan@mandriva.com>
-Subject: [PATCH] ALC288 - Add NEC S970 to the quirk table
-Date: Mon, 03 Mar 2008 20:30:25 +0100
-Message-ID: <1204572625.24326.21.camel@plop>
+From: Timur Tabi <timur@freescale.com>
+Subject: Question about snd_pcm_update_hw_ptr_post()
+Date: Mon, 03 Mar 2008 14:42:45 -0600
+Message-ID: <47CC62C5.5010308@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-U0KY4+nvx8TNRbhy+w7n"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ryu.zarb.org (ryu.zarb.org [212.85.153.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id B33BB2435A
-	for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2008 20:30:29 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by ryu.zarb.org (Postfix) with ESMTP id E64DD3F5FA
-	for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2008 20:30:28 +0100 (CET)
-Received: from ryu.zarb.org ([127.0.0.1])
-	by localhost (ryu.zarb.org [127.0.0.1]) (amavisd-new, port 10025)
-	with ESMTP id QDWeomSj92Ho for <alsa-devel@alsa-project.org>;
-	Mon,  3 Mar 2008 20:30:27 +0100 (CET)
-Received: from [192.168.100.212] (office-abk.mandriva.com [84.55.162.90])
-	by ryu.zarb.org (Postfix) with ESMTP id D6C143F5E9
-	for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2008 20:30:26 +0100 (CET)
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4845024390
+	for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2008 21:42:50 +0100 (CET)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
+	m23KgkeN025959
+	for <alsa-devel@alsa-project.org>; Mon, 3 Mar 2008 13:42:47 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m23KgkCm001880
+	for <alsa-devel@alsa-project.org>; Mon, 3 Mar 2008 14:42:46 -0600 (CST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,45 +29,25 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Can someone explain to me this snippet from snd_pcm_update_hw_ptr_post():
 
---=-U0KY4+nvx8TNRbhy+w7n
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+if (avail >= runtime->stop_threshold) {
+	if (substream->runtime->status->state == SNDRV_PCM_STATE_DRAINING)
+		snd_pcm_drain_done(substream);
+	else
+		xrun(substream);
+	return -EPIPE;
+}
 
-Hi,
+During playback, avail = snd_pcm_playback_avail().  Does this mean that avail is
+number of frames available in the playback DMA buffer for new data?
 
-NEC S970 has no sound in the internal speakers when autodetection is
-used. 
-With targa-dig model, there is sound in the speakers and it gets
-correctly muted when pluging headphones.
+If so, why is avail >= runtime->stop_threshold considered an underrun condition?
+ Does ALSA try to keep the amount of available data to a minimum?
 
+If so, how can I adjust runtime->stop_threshold?  I'd like to see what happens
+if I make stop_threshold equal to the size of my DMA buffer.
 
-
---=-U0KY4+nvx8TNRbhy+w7n
-Content-Disposition: attachment; filename=ALC288-Add-NEC-S970-to-the-quirk-table.patch
-Content-Type: text/x-patch; name=ALC288-Add-NEC-S970-to-the-quirk-table.patch; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
---- pci/hda/patch_realtek.c	2008-03-03 19:45:07.000000000 +0100
-+++ pci/hda/patch_realtek.c.new	2008-03-03 19:44:54.000000000 +0100
-@@ -7622,6 +7622,7 @@
- 	SND_PCI_QUIRK(0x1462, 0x040d, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x0579, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3729, "MSI S420", ALC883_TARGA_DIG),
-+	SND_PCI_QUIRK(0x1462, 0x3783, "NEC S970", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3b7f, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3ef9, "MSI", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3fc1, "MSI", ALC883_TARGA_DIG),
-
---=-U0KY4+nvx8TNRbhy+w7n
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-U0KY4+nvx8TNRbhy+w7n--
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
