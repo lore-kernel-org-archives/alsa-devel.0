@@ -1,21 +1,17 @@
-From: Tobin Davis <tdavis@dsl-only.net>
+From: "Tellman, Steven" <Steven.Tellman@idt.com>
 Subject: Re: HDMI v. ICH8 on Dell XPS M1330
-Date: Sun, 02 Mar 2008 14:59:01 -0800
-Message-ID: <1204498741.10206.26.camel@razman.gruemaster.com>
-References: <1204152070.12914.18.camel@localhost>
-	<s5hablls40f.wl%tiwai@suse.de>
-	<16A430A423D62246A24C9A892622FE66048B88@CORPEXCH1.na.ads.idt.com>
-	<1204248546.12914.86.camel@localhost>
-	<75b66ecd0803011903t535c8ecbv8f910077484035ff@mail.gmail.com>
-	<16A430A423D62246A24C9A892622FE660550CF@CORPEXCH1.na.ads.idt.com>
+Date: Mon, 3 Mar 2008 06:50:41 -0800
+Message-ID: <16A430A423D62246A24C9A892622FE660550D0@CORPEXCH1.na.ads.idt.com>
+References: <1204152070.12914.18.camel@localhost><s5hablls40f.wl%tiwai@suse.de><16A430A423D62246A24C9A892622FE66048B88@CORPEXCH1.na.ads.idt.com><1204248546.12914.86.camel@localhost><75b66ecd0803011903t535c8ecbv8f910077484035ff@mail.gmail.com><16A430A423D62246A24C9A892622FE660550CF@CORPEXCH1.na.ads.idt.com>
+	<1204498741.10206.26.camel@razman.gruemaster.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id E04F324434
-	for <alsa-devel@alsa-project.org>; Sun,  2 Mar 2008 23:59:03 +0100 (CET)
-In-Reply-To: <16A430A423D62246A24C9A892622FE660550CF@CORPEXCH1.na.ads.idt.com>
+Received: from mxout2.mainstreet.net (mxout2.mainstreet.net [204.69.220.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 816E72456B
+	for <alsa-devel@alsa-project.org>; Mon,  3 Mar 2008 16:06:28 +0100 (CET)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,10 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Tellman, Steven" <Steven.Tellman@idt.com>
+To: Tobin Davis <tdavis@dsl-only.net>
 Cc: Armando Di Cianno <armando@goodship.net>, Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Found it:
+
+http://www.nvnews.net/vbulletin/showthread.php?t=97993&highlight=hdmi+audio
+
+There's also an Ubuntu bug open for this as well on Launchpad. I'll see what else I can find out, but at the moment it looks like we're stuck. Sucks too, as Linux tends to make excellent HTPCs...
+
+Here's the Launchpad link, it's actually for a Realtek device but with nvidia video on the motherboard.
+
+https://bugs.launchpad.net/ubuntu/+source/linux-source-2.6.22/+bug/148097
+
+- Steven
+
+
+-----Original Message-----
+From: Tobin Davis [mailto:tdavis@dsl-only.net]
+Sent: Sun 3/2/2008 4:59 PM
+To: Tellman, Steven
+Cc: Lee Revell; Armando Di Cianno; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] HDMI v. ICH8 on Dell XPS M1330
+ 
 It is possible that HDMI audio is pulled from an unknown i2c bus on the
 video chip.  3dfx did that a long time ago with their 3500 card for
 their tv tuner portion.
