@@ -1,20 +1,15 @@
-From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
-Subject: Re: [PATCH] model for alc883 to support M720R
-Date: Tue, 4 Mar 2008 08:55:40 -0300
-Message-ID: <5f52f6d70803040355y63031fc0q5b4876a1c69bff8e@mail.gmail.com>
-References: <1204622185.13743.14.camel@localhost.localdomain>
-	<s5hd4qa6anc.wl%tiwai@suse.de>
+From: "Imanol Trapote" <i.trapote@ziv.es>
+Subject: Problems with ALSA in embedded device
+Date: Tue, 04 Mar 2008 14:29:20 +0100
+Message-ID: <1204637360.6017.14.camel@debian.ziv.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0910.google.com (rv-out-0910.google.com [209.85.198.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53E0624498
-	for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2008 12:55:48 +0100 (CET)
-Received: by rv-out-0910.google.com with SMTP id k20so554473rvb.32
-	for <alsa-devel@alsa-project.org>; Tue, 04 Mar 2008 03:55:41 -0800 (PST)
-In-Reply-To: <s5hd4qa6anc.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from correo.ziv.es (correo.ziv.es [212.55.31.237])
+	by alsa0.perex.cz (Postfix) with ESMTP id A90FA1038A1
+	for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2008 14:29:40 +0100 (CET)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jiang zhe <zhe.jiang@intel.com>, alsa-devel@alsa-project.org, miura@mandriva.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 4, 2008 at 7:33 AM, Takashi Iwai <tiwai@suse.de> wrote:
+Hi all,
 
-> At Tue, 04 Mar 2008 17:16:25 +0800, Jiang zhe wrote:
->
->  > Please refer to [0003781] on the alsa mantis.
->  > There is no suitable model for M720R.
->  > This patch is to support HP jack-sensing and mixer.
->
->  Applied to HG tree (with minor modifications).  Thanks.
+I am developing a product in an embedded system that uses ALSA library.
+This system can't use the dynamic linker, I am using flat binaries.
 
-Interesting, I tested a Clevo M720R yesterday with a recent ALSA
-snapshot and it worked correctly (HP detection and all) prior to
-applying this patch. I'll recheck this, but I believe this patch might
-be not entirely necessary.
+I use this configuration options:
 
+	--without-libdl \
+	--with-pthread \
+	--with-softload \
+	--disable-alisp \
+	--disable-hwdep \
+	--disable-seq \
+	--disable-resmgr \
+	--disable-rawmidi \
+	--disable-old-symbols \
+	--disable-python \
+	--disable-mixer
 
->  > The reporter complained that there was a constant noise when
->  > he recorded from Mic, It existed even after he muted the input.
->  > I checked the codec info carefully, the input widget was muted
->  > indeed.
->  >
->  > It's strange, Is there anything special for this codec?
->
->  I don't know of such a problem.  We had a noisy *output* on AD1986A,
->  but the input isn't a problem.
+I try to use the same configuration options in a PC for debugging, and I
+get the same problem, when I try to list devices with aplay, I get this:
 
-I didn't test recording extensively. Miura, did you notice any
-problems in mic input?
+aplay -L
+ALSA lib conf.c:2699:(snd_config_hooks_call) Cannot open shared library
+(null)
+ALSA lib conf.c:3076:(snd_config_update_r) hooks failed, removing
+configuration
+
+It's possible use ALSA without dynamic libraries, with this
+configuration
+
+Thanks in advance.
+Imanol Trapote =
+
+ =
+
+----------------------------------------- PLEASE NOTE ---------------------=
+----------------------
+This message, along with any attachments, may be confidential or legally pr=
+ivileged. =
+
+It is intended only for the named person(s), who is/are the only authorized=
+ recipients.
+If this message has reached you in error, kindly destroy it without review =
+and notify the sender immediately.
+Thank you for your help.
+ZIV uses virus scanning software but excludes any liability for viruses con=
+tained in any attachment.
+ =
+
+------------------------------------ ROGAMOS LEA ESTE TEXTO ---------------=
+----------------
+Este mensaje y sus anexos pueden contener informaci=F3n confidencial y/o co=
+n derecho legal. =
+
+Est=E1 dirigido =FAnicamente a la/s persona/s o entidad/es rese=F1adas como=
+ =FAnico destinatario autorizado.
+Si este mensaje le hubiera llegado por error, por favor elim=EDnelo sin rev=
+isarlo ni reenviarlo y notif=EDquelo inmediatamente al remitente. Gracias p=
+or su colaboraci=F3n.  =
+
+ZIV utiliza software antivirus, pero no se hace responsable de los virus co=
+ntenidos en los ficheros anexos.
