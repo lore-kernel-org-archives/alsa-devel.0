@@ -1,15 +1,27 @@
-From: "Imanol Trapote" <i.trapote@ziv.es>
-Subject: Problems with ALSA in embedded device
-Date: Tue, 04 Mar 2008 14:29:20 +0100
-Message-ID: <1204637360.6017.14.camel@debian.ziv.es>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From: Rene Dohmen <acidjunk@gmail.com>
+Subject: Re: no front speaker sound with ALC262
+Date: Tue, 4 Mar 2008 14:37:39 +0100
+Message-ID: <F7C8EBEB-D77A-43A9-8C96-58D9C4B047E0@gmail.com>
+References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>
+	<47BF84BF.702@versatile.com> <47BF8500.1050802@versatile.com>
+	<7D68F908-875D-4EDE-B25D-CCBDD4E4A339@gmail.com>
+	<s5h1w6zvrz4.wl%tiwai@suse.de>
+	<E0172064-A6C6-4874-81A2-B275A0954BD4@gmail.com>
+	<165af2360802261519y6cdf878avf0af06c7b08db2a9@mail.gmail.com>
+	<s5hfxveu1cf.wl%tiwai@suse.de>
+	<165af2360802271016u211854b7yb5158f2dd3e718a@mail.gmail.com>
+	<s5hfxvds579.wl%tiwai@suse.de> <s5hejaxs4xa.wl%tiwai@suse.de>
+	<01CED47B-533E-4913-BED5-4DD6E9E86414@gmail.com>
+	<s5hprufpuok.wl%tiwai@suse.de>
+Mime-Version: 1.0 (Apple Message framework v752.3)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from correo.ziv.es (correo.ziv.es [212.55.31.237])
-	by alsa0.perex.cz (Postfix) with ESMTP id A90FA1038A1
-	for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2008 14:29:40 +0100 (CET)
-Content-class: urn:content-classes:message
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E733244A7
+	for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2008 14:37:46 +0100 (CET)
+In-Reply-To: <s5hprufpuok.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,69 +31,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi List,
 
-I am developing a product in an embedded system that uses ALSA library.
-This system can't use the dynamic linker, I am using flat binaries.
+I tried it with the NID's i think are connected to headphone and  
+speaker but so far no luck.
 
-I use this configuration options:
+I'll have more time next friday but i was just wondering:
+Is there a way to be 100% sure that this model is a new, not  
+supported model yet?
 
-	--without-libdl \
-	--with-pthread \
-	--with-softload \
-	--disable-alisp \
-	--disable-hwdep \
-	--disable-seq \
-	--disable-resmgr \
-	--disable-rawmidi \
-	--disable-old-symbols \
-	--disable-python \
-	--disable-mixer
+Can you explain what numbers i can use instead of the 0x3060?
 
-I try to use the same configuration options in a PC for debugging, and I
-get the same problem, when I try to list devices with aplay, I get this:
+I am trying to get the datasheets of the soundsystem used, i think  
+some custom board is used tot wire up the soundcard tot the internal  
+speakers.
 
-aplay -L
-ALSA lib conf.c:2699:(snd_config_hooks_call) Cannot open shared library
-(null)
-ALSA lib conf.c:3076:(snd_config_update_r) hooks failed, removing
-configuration
+Thanks
 
-It's possible use ALSA without dynamic libraries, with this
-configuration
+Grz Rene
 
-Thanks in advance.
-Imanol Trapote =
 
- =
+Op Feb 29, 2008, om 5:57 PM heeft Takashi Iwai het volgende geschreven:
 
------------------------------------------ PLEASE NOTE ---------------------=
-----------------------
-This message, along with any attachments, may be confidential or legally pr=
-ivileged. =
-
-It is intended only for the named person(s), who is/are the only authorized=
- recipients.
-If this message has reached you in error, kindly destroy it without review =
-and notify the sender immediately.
-Thank you for your help.
-ZIV uses virus scanning software but excludes any liability for viruses con=
-tained in any attachment.
- =
-
------------------------------------- ROGAMOS LEA ESTE TEXTO ---------------=
-----------------
-Este mensaje y sus anexos pueden contener informaci=F3n confidencial y/o co=
-n derecho legal. =
-
-Est=E1 dirigido =FAnicamente a la/s persona/s o entidad/es rese=F1adas como=
- =FAnico destinatario autorizado.
-Si este mensaje le hubiera llegado por error, por favor elim=EDnelo sin rev=
-isarlo ni reenviarlo y notif=EDquelo inmediatamente al remitente. Gracias p=
-or su colaboraci=F3n.  =
-
-ZIV utiliza software antivirus, pero no se hace responsable de los virus co=
-ntenidos en los ficheros anexos.
+> Instead, ALC262 (and other Realtek codecs) has a special sequence with
+> coefficients to the vendor-defined widget.  Yes, it's a black magic.
+>
+> Try the following sequence:
+>
+> 	0x20 SET_COEF_INDEX 0x07
+> 	0x20 SET_PROC_COEF 0x3060
+>
+> 0x3060 can be different numbers like 0x3070 or 0x3050.
+> If you set a different number, reset the coef index again (i.e. always
+> call as a pair).
