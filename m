@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Question about snd_pcm_update_hw_ptr_post()
-Date: Tue, 04 Mar 2008 08:27:32 +0100
-Message-ID: <47CCF9E4.60601@ladisch.de>
-References: <47CC62C5.5010308@freescale.com>
+Subject: Re: mm functions vs. normal IO
+Date: Tue, 04 Mar 2008 08:58:47 +0100
+Message-ID: <47CD0137.9000608@ladisch.de>
+References: <47CC7E6D.4030704@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 6D7AE103828
-	for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2008 08:26:00 +0100 (CET)
-In-Reply-To: <47CC62C5.5010308@freescale.com>
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 1098C24334
+	for <alsa-devel@alsa-project.org>; Tue,  4 Mar 2008 08:57:13 +0100 (CET)
+In-Reply-To: <47CC7E6D.4030704@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
+To: Reiner <reiner1210@googlemail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Timur Tabi wrote:
-> During playback, avail = snd_pcm_playback_avail().  Does this mean that avail is
-> number of frames available in the playback DMA buffer for new data?
+Reiner wrote:
+> I was astonished that a simple wav playback example does not exist.
 
-Yes, it's the number of free frames that the application can write.
+The alsa-lib package has test/pcm_min.c.
 
-> If so, why is avail >= runtime->stop_threshold considered an underrun condition?
+> What should be used:
+>
+> snd_pcm_mmap_commit
+> (I think snd_pcm_mmap_writei is the same with an additional copy behind ?)
 
-When too many frames in the buffer are free, there are not enough frames
-available for the hardware to play.
+snd_pcm_mmap_writei is the same as calling snd_pcm_mmap_begin, copying
+into the buffer, and calling snd_pcm_mmap_commit.
 
-The default value of the stop threshold is the size of the buffer, so an
-underrun happens when the buffer has been completely emptied.
+> or snd_pcm_writei
 
-> how can I adjust runtime->stop_threshold?
+If you have to ask, use snd_pcm_writei.
 
-snd_pcm_sw_params_current()
-snd_pcm_sw_params_set_stop_threshold()
-snd_pcm_sw_params()
+> I think mmap will have better performance,
+
+Only if the program generates samples on the fly and can write them
+directly to the buffer in a format supported by the hardware.
+
+If you already have the data in some buffer, copying it into the
+device's buffer with snd_pcm_writei or snd_pcm_mmap_writei is just as
+fast as when you copy it into the device's buffer by yourself.
+
+> but will it work with all soundcards?
+
+Not directly.  ALSA has mmap emulation for cards that don't support it.
+And there are devices where only support mmap access is
+SND_PCM_ACCESS_MMAP_COMPLEX.
+
+> I'am also looking for a function to get the number of played frames.
+
+ALSA doesn't count them.  This is nothing that a program couldn't do
+trivially by itself.
 
 
 HTH
