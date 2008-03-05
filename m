@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Alsa MMAP emulation
-Date: Wed, 05 Mar 2008 16:51:15 +0100
-Message-ID: <47CEC173.2060005@ladisch.de>
-References: <47CE7A47.80009@xwaves.net>
+Subject: Re: How to do pause/resume in ALSA application
+Date: Wed, 05 Mar 2008 16:53:27 +0100
+Message-ID: <47CEC1F7.3040709@ladisch.de>
+References: <010C7BAE6783F34D9AC336EE5A01A0880575F767@dbde01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 7F3F024418
-	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 16:49:45 +0100 (CET)
-In-Reply-To: <47CE7A47.80009@xwaves.net>
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id CA4E5103802
+	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 16:51:53 +0100 (CET)
+In-Reply-To: <010C7BAE6783F34D9AC336EE5A01A0880575F767@dbde01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,22 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mathieu Monney <zittix_all@xwaves.net>
-Cc: alsa-devel@alsa-project.org
+To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Cc: alsa-devel@alsa-project.org, suresh.raj@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Mathieu Monney wrote:
-> I'm trying to get working Alsa with the PortAudio library on an embedded
-> device (Nokia N810). The problem is that the sound driver is not an
-> hardware driver for Alsa but a plugin which deals with the internal DSP
-> of the device. This plugin doesn't support mmap'ing at all. So I was
-> wondering if it is possible to configure Alsa a way such PortAudio can
-> use mmap'ing on my DSP plugin ? I saw there is a mmap_emulation flag but
-> the problem is that it seems to be only available on HW driver and not
-> on alsa plugins.
+Aggarwal, Anuj wrote:
+> I am using the snd_pcm_pause API in my application but it is returning
+> error: Invalid argument.
 
-In alsa-lib 1.0.15, this function was moved into the mmap_emul plugin.
+This indicates that the driver (or some PCM plugin) does not support
+pausing.
+
+> I checked whether the pause functionality is supported, using
+> snd_pcm_hw_params_can_pause() and it returned me success.
+
+This is a bug.  What device name did you use when opening the device,
+and which driver are you using?
 
 
-HTH
+Regards,
 Clemens
