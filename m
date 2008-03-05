@@ -1,15 +1,24 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: How to do pause/resume in ALSA application
-Date: Wed, 5 Mar 2008 14:50:03 +0530
-Message-ID: <010C7BAE6783F34D9AC336EE5A01A0880575F767@dbde01.ent.ti.com>
+From: Mathieu Monney <zittix_all@xwaves.net>
+Subject: Alsa MMAP emulation
+Date: Wed, 05 Mar 2008 11:47:35 +0100
+Message-ID: <47CE7A47.80009@xwaves.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from soda.ext.ti.com (soda.ext.ti.com [198.47.26.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F7FE243B3
-	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 10:20:22 +0100 (CET)
-Content-class: urn:content-classes:message
+Received: from pimpette.xwaves.net (pimpette.xwaves.net [193.58.255.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7265C243D4
+	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 11:47:41 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by pimpette.xwaves.net (Postfix) with ESMTP id 759007AF85
+	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 11:50:01 +0100 (CET)
+Received: from pimpette.xwaves.net ([127.0.0.1])
+	by localhost (pimpette.xwaves.net [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id f5xHYo3t2FFa for <alsa-devel@alsa-project.org>;
+	Wed,  5 Mar 2008 11:49:56 +0100 (CET)
+Received: from [192.168.0.151] (84-74-74-46.dclient.hispeed.ch [84.74.74.46])
+	by pimpette.xwaves.net (Postfix) with ESMTP id F16517AF61
+	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 11:49:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,26 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: suresh.raj@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
+Hi,
 
- 
+I'm trying to get working Alsa with the PortAudio library on an embedded 
+device (Nokia N810). The problem is that the sound driver is not an 
+hardware driver for Alsa but a plugin which deals with the internal DSP 
+of the device. This plugin doesn't support mmap'ing at all. So I was 
+wondering if it is possible to configure Alsa a way such PortAudio can 
+use mmap'ing on my DSP plugin ? I saw there is a mmap_emulation flag but 
+the problem is that it seems to be only available on HW driver and not 
+on alsa plugins.
 
-I am using the snd_pcm_pause API in my application but it is returning
-error: Invalid argument. I am passing the PCM handle of the playback
-stream which I opened earlier and using to play a WAV file. Although I
-am able to hear the WAV file correctly, I am not able to pause. I
-checked whether the pause functionality is supported, using
-snd_pcm_hw_params_can_pause() and it returned me success.
+Any clues ?
 
- 
+Thank you in advance
 
-Any help is welcome.
-
- 
-
-Thanks & Regards,
-
-Anuj Aggarwal
+Mathieu
