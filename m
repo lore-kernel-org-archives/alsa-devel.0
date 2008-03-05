@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Alsa MMAP emulation
-Date: Wed, 05 Mar 2008 18:36:19 +0100
-Message-ID: <47CEDA13.6060401@ladisch.de>
-References: <47CE7A47.80009@xwaves.net> <47CEC173.2060005@ladisch.de>
-	<61445c750803050930j188415e0x3b7fb5cb7a7957b7@mail.gmail.com>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: How to do pause/resume in ALSA application
+Date: Thu, 6 Mar 2008 00:44:13 +0530
+Message-ID: <010C7BAE6783F34D9AC336EE5A01A0880575FA06@dbde01.ent.ti.com>
+References: <010C7BAE6783F34D9AC336EE5A01A0880575F767@dbde01.ent.ti.com>
+	<47CEC1F7.3040709@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id C867E1038E3
-	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 18:34:45 +0100 (CET)
-In-Reply-To: <61445c750803050930j188415e0x3b7fb5cb7a7957b7@mail.gmail.com>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id EED0210387A
+	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 20:15:27 +0100 (CET)
+Content-class: urn:content-classes:message
+In-Reply-To: <47CEC1F7.3040709@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,24 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mathieu Monney <zittix_all@xwaves.net>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, suresh.raj@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Pharaoh . wrote:
-> On Wed, Mar 5, 2008 at 7:51 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> > Mathieu Monney wrote:
-> > > use mmap'ing on my DSP plugin ? I saw there is a mmap_emulation flag but
-> > > the problem is that it seems to be only available on HW driver and not
-> > > on alsa plugins.
-> >
-> > In alsa-lib 1.0.15, this function was moved into the mmap_emul plugin.
->
-> So, the original plugin need not be modified? mmap_emul plugin has to
-> be used on top of it?
+Clemens,
 
-Yes.
+Are you suggesting a bug in the driver or in the library? 
+
+I passed "plughw:0,0" as the device name. We have our own driver for the
+audio codec, written as per the ALSA framework.  
+
+Thanks & Regards,
+Anuj Aggarwal
+ 
+ 
+
+-----Original Message-----
+From: alsa-devel-bounces@alsa-project.org
+[mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Clemens
+Ladisch
+Sent: Wednesday, March 05, 2008 9:23 PM
+To: Aggarwal, Anuj
+Cc: alsa-devel@alsa-project.org; suresh.raj@gmail.com
+Subject: Re: [alsa-devel] How to do pause/resume in ALSA application
+
+Aggarwal, Anuj wrote:
+> I am using the snd_pcm_pause API in my application but it is returning
+> error: Invalid argument.
+
+This indicates that the driver (or some PCM plugin) does not support
+pausing.
+
+> I checked whether the pause functionality is supported, using
+> snd_pcm_hw_params_can_pause() and it returned me success.
+
+This is a bug.  What device name did you use when opening the device,
+and which driver are you using?
 
 
-HTH
+Regards,
 Clemens
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
