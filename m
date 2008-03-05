@@ -1,24 +1,24 @@
-From: Mathieu Monney <zittix_all@xwaves.net>
-Subject: Alsa MMAP emulation
-Date: Wed, 05 Mar 2008 11:47:35 +0100
-Message-ID: <47CE7A47.80009@xwaves.net>
+From: Armando Di Cianno <armando@goodship.net>
+Subject: Re: HDMI v. ICH8 on Dell XPS M1330
+Date: Wed, 05 Mar 2008 10:15:04 -0500
+Message-ID: <1204730104.6310.40.camel@localhost>
+References: <1204152070.12914.18.camel@localhost>
+	<s5hablls40f.wl%tiwai@suse.de>
+	<16A430A423D62246A24C9A892622FE66048B88@CORPEXCH1.na.ads.idt.com>
+	<1204248546.12914.86.camel@localhost>
+	<75b66ecd0803011903t535c8ecbv8f910077484035ff@mail.gmail.com>
+	<16A430A423D62246A24C9A892622FE660550CF@CORPEXCH1.na.ads.idt.com>
+	<1204498741.10206.26.camel@razman.gruemaster.com>
+	<1204623862.13915.10.camel@localhost.localdomain>
+	<75b66ecd0803041654x2733bf35pbce849e7bef2ea85@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pimpette.xwaves.net (pimpette.xwaves.net [193.58.255.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7265C243D4
-	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 11:47:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by pimpette.xwaves.net (Postfix) with ESMTP id 759007AF85
-	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 11:50:01 +0100 (CET)
-Received: from pimpette.xwaves.net ([127.0.0.1])
-	by localhost (pimpette.xwaves.net [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id f5xHYo3t2FFa for <alsa-devel@alsa-project.org>;
-	Wed,  5 Mar 2008 11:49:56 +0100 (CET)
-Received: from [192.168.0.151] (84-74-74-46.dclient.hispeed.ch [84.74.74.46])
-	by pimpette.xwaves.net (Postfix) with ESMTP id F16517AF61
-	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 11:49:55 +0100 (CET)
+Received: from squid9.laughingsquid.net (squid9.laughingsquid.net
+	[72.32.92.32]) by alsa0.perex.cz (Postfix) with ESMTP id 40362243FA
+	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2008 16:16:43 +0100 (CET)
+In-Reply-To: <75b66ecd0803041654x2733bf35pbce849e7bef2ea85@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,22 +28,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I'm trying to get working Alsa with the PortAudio library on an embedded 
-device (Nokia N810). The problem is that the sound driver is not an 
-hardware driver for Alsa but a plugin which deals with the internal DSP 
-of the device. This plugin doesn't support mmap'ing at all. So I was 
-wondering if it is possible to configure Alsa a way such PortAudio can 
-use mmap'ing on my DSP plugin ? I saw there is a mmap_emulation flag but 
-the problem is that it seems to be only available on HW driver and not 
-on alsa plugins.
+On Tue, 2008-03-04 at 19:54 -0500, Lee Revell wrote:
+> In addition to anecdotal evidence, I can confirm that on my work
+> machine the ATI video driver does seem to touch the audio.
+> Interestingly it's the userspace X driver, not the in-kernel FGLRX
+> module.
+> 
+> rlrevell@chronopolis:~$ strings
+> /usr/lib/xorg/modules/drivers/fglrx_drv.so | grep -i hdmi | grep -i
+> audio
+> ex_aHDMIAudioParameters
+> 
+> Isn't DRM fun? ;-)
 
-Any clues ?
+A similar test with nvidia-drivers 169.12 proved fruitless (as
+expected).
 
-Thank you in advance
-
-Mathieu
+-- 
+Armando Di Cianno
+http://dicianno.org/blog
+armando@dicianno.org
+armando@goodship.net
