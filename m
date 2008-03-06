@@ -1,19 +1,13 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] add a "private" field to the ac97 struct
-Date: Thu, 6 Mar 2008 20:53:09 +0000
-Message-ID: <20080306205309.GB3993@opensource.wolfsonmicro.com>
-References: <20080306164211.GA8205@Chamillionaire.breakpoint.cc>
-	<1204823557.2939.5.camel@petrie.sacredspiral.co.uk>
-	<20080306172225.GA8492@Chamillionaire.breakpoint.cc>
+From: Tobin Davis <tdavis@dsl-only.net>
+Subject: HDA Codecs: add support for Toshiba Equium L30
+Date: Thu, 06 Mar 2008 13:19:48 -0800
+Message-ID: <1204838388.19690.121.camel@razman.gruemaster.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-zyxkXjk8Z3lRQ/eKxiS7"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 848E1103876
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2008 21:53:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20080306172225.GA8492@Chamillionaire.breakpoint.cc>
+Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22B5E244DA
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2008 22:19:51 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +17,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sebastian Siewior <al+sa@ml.breakpoint.cc>
-Cc: alsa-devel@alsa-project.org, Nicolas Pitre <nico@cam.org>, William Pitcock <nenolod@sacredspiral.co.uk>
+To: ALSA Developers <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 06, 2008 at 06:22:25PM +0100, Sebastian Siewior wrote:
 
-> The problem is more or less that I can't pass the value to the other
-> probe function and the global variable doesn't look all that pretty. Am
-> I missing something here?
+--=-zyxkXjk8Z3lRQ/eKxiS7
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-This is also a problem for the wm97xx touchscreen drivers.  They have a
-similar issue with wanting to get platform configuration into a device
-probed off the AC97 bus with the additional issue that features like
-syncing with screen redraw will often require code to interface with
-other hardware in the system.  If something is added to the AC97 data
-it'd be helpful if it were a void * so the wm97xx touch driver could use
-it to pass a struct with more data.
+This patch adds support for the Toshiba Equium L30 laptop and renames
+the mixer controls to match Laptop usages.
 
-This is not really an AC97-specific issue - any device discoverd via a
-bus is going to have a similar thing if it needs to obtain platform
-data.  I don't know how OpenFirmware normally handles these things?
-It's going to be an issue for other buses like PCI too in many systems,
-MAC addresses for NICs being the example I've run into myself in a
-previous life.
 
-In the case of the wm97xx touchscreen we've avoided the problem by
-having the touch driver register platform devices; this isn't ideal but
-works well in the systems which are the typical targets for these
-devices.  I had been intending to revisit this issue at some point but
-it's quite a way down my TODO list.
+Signed off by Tobin Davis <tdavis@dsl-only.net>
 
-The wm97xx drivers touch aren't in mainline yet - if you want to have a
-look the most current upstream submission versions can be found in the
-upstream branch of:
+--=-zyxkXjk8Z3lRQ/eKxiS7
+Content-Disposition: attachment; filename=Toshiba-Equium-4.patch
+Content-Type: text/x-patch; name=Toshiba-Equium-4.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-	git://opensource.wolfsonmicro.com/linux-2.6-touch
+diff -r 72360e8993f7 pci/hda/patch_realtek.c
+--- a/pci/hda/patch_realtek.c	Thu Mar 06 16:58:35 2008 +0100
++++ b/pci/hda/patch_realtek.c	Thu Mar 06 13:14:19 2008 -0800
+@@ -12054,11 +12054,10 @@ static struct hda_input_mux alc861vd_cap
+ };
+ 
+ static struct hda_input_mux alc861vd_dallas_capture_source = {
+-	.num_items = 3,
++	.num_items = 2,
+ 	.items = {
+-		{ "Front Mic", 0x0 },
+-		{ "ATAPI Mic", 0x1 },
+-		{ "Line In", 0x5 },
++		{ "Ext Mic", 0x0 },
++		{ "Int Mic", 0x1 },
+ 	},
+ };
+ 
+@@ -12228,20 +12227,22 @@ static struct snd_kcontrol_new alc861vd_
+ 	{ } /* end */
+ };
+ 
+-/* Pin assignment: Front=0x14, HP = 0x15,
+- *                 Front Mic=0x18, ATAPI Mic = 0x19, Line In = 0x1d
++/* Pin assignment: Speaker=0x14, HP = 0x15,
++ *                 Ext Mic=0x18, Int Mic = 0x19, CD = 0x1c, PC Beep = 0x1d
+  */
+ static struct snd_kcontrol_new alc861vd_dallas_mixer[] = {
+-	HDA_CODEC_VOLUME("Front Playback Volume", 0x02, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
++	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x02, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Speaker Playback Switch", 0x0c, 2, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x03, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("Headphone Playback Switch", 0x0d, 2, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
+-	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
+-	HDA_CODEC_VOLUME("ATAPI Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
+-	HDA_CODEC_MUTE("ATAPI Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x05, HDA_INPUT),
+-	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x05, HDA_INPUT),
++	HDA_CODEC_VOLUME("Ext Mic Boost", 0x18, 0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Ext Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Ext Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Int Mic Boost", 0x19, 0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Int Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_MUTE("Int Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_VOLUME("PC Beep Volume", 0x0b, 0x05, HDA_INPUT),
++	HDA_CODEC_MUTE("PC Beep Switch", 0x0b, 0x05, HDA_INPUT),
+ 	{ } /* end */
+ };
+ 
+@@ -12542,6 +12543,7 @@ static struct snd_pci_quirk alc861vd_cfg
+ 	/*SND_PCI_QUIRK(0x1179, 0xff00, "DALLAS", ALC861VD_DALLAS),*/ /*lenovo*/
+ 	SND_PCI_QUIRK(0x1179, 0xff01, "DALLAS", ALC861VD_DALLAS),
+ 	SND_PCI_QUIRK(0x1179, 0xff03, "Toshiba P205", ALC861VD_LENOVO),
++	SND_PCI_QUIRK(0x1179, 0xff31, "Toshiba L30-149", ALC861VD_DALLAS),
+ 	SND_PCI_QUIRK(0x1565, 0x820d, "Biostar NF61S SE", ALC861VD_6ST_DIG),
+ 	SND_PCI_QUIRK(0x17aa, 0x2066, "Lenovo", ALC861VD_LENOVO),
+ 	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo 3000 C200", ALC861VD_LENOVO),
 
-gitweb:
+--=-zyxkXjk8Z3lRQ/eKxiS7
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-	http://opensource.wolfsonmicro.com/cgi-bin/gitweb.cgi?p=linux-2.6-touch.git;a=summary
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-zyxkXjk8Z3lRQ/eKxiS7--
