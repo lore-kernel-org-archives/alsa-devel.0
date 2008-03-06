@@ -1,25 +1,19 @@
-From: "M G" <lists.mg@googlemail.com>
-Subject: Re: snd-hda-intel: Fix volume-wheel and microphone on
-	Fujitsu-Siemens Amilo M3438G
-Date: Thu, 6 Mar 2008 18:15:32 +0100
-Message-ID: <74d457500803060915y682558fancca3691d5abd340d@mail.gmail.com>
-References: <74d457500802060814j64532e95v8c689cbb491c6b46@mail.gmail.com>
-	<s5hir12kpne.wl%tiwai@suse.de>
-	<74d457500802061502m31d412dap15009aad087b1b75@mail.gmail.com>
-	<s5h8x1vy87l.wl%tiwai@suse.de>
-	<74d457500802101048t2b92cb98qe6290a0186a00585@mail.gmail.com>
-	<s5h8x1rwqh7.wl%tiwai@suse.de>
+From: Sebastian Siewior <al+sa@ml.breakpoint.cc>
+Subject: Re: [RFC] add a "private" field to the ac97 struct
+Date: Thu, 6 Mar 2008 18:22:25 +0100
+Message-ID: <20080306172225.GA8492@Chamillionaire.breakpoint.cc>
+References: <20080306164211.GA8205@Chamillionaire.breakpoint.cc>
+	<1204823557.2939.5.camel@petrie.sacredspiral.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA4BF24453
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2008 18:15:35 +0100 (CET)
-Received: by wr-out-0506.google.com with SMTP id 58so4181201wri.8
-	for <alsa-devel@alsa-project.org>; Thu, 06 Mar 2008 09:15:34 -0800 (PST)
-In-Reply-To: <s5h8x1rwqh7.wl%tiwai@suse.de>
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc
+	[85.10.199.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6498F103904
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2008 18:22:26 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <1204823557.2939.5.camel@petrie.sacredspiral.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,52 +23,160 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: William Pitcock <nenolod@sacredspiral.co.uk>
+Cc: alsa-devel@alsa-project.org, Nicolas Pitre <nico@cam.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 11, 2008 at 2:51 PM, Takashi Iwai <tiwai@suse.de> wrote:
->
->  OK, now applied to HG tree.  Thanks.
->
->
->  Takashi
->
+* William Pitcock | 2008-03-06 11:12:37 [-0600]:
 
+>Hi,
+Hi,
 
+>Why not modify ucb1400_detect_irq() to get an openfirmware handle on
+>PowerPC and read the resource tree at that time? This seems like a
+>better approach.
 
-It has already been a great improvement but I encountered 2 more problems:
+That was my first approach:
 
-On first use (i.e. when loading the module for the first time after
-compiling it) the mixer displayed Mic as capture source but I couldn't
-capture anything. When I switch to CD and then back to Mic it starts
-working. It seems that the value is initialized to 0x00 but there is
-no corresponding capture device on this model since the mic is 0x01 so
-it needs to be initialized to 0x01.
+---
+ drivers/input/touchscreen/Kconfig      |    7 ++++
+ drivers/input/touchscreen/ucb1400_ts.c |   57 +++++++++++++++++++++++++++++++-
+ 2 files changed, 63 insertions(+), 1 deletions(-)
 
-Another thing: I can set the capture volume to a maximum of 14dB.
-Above that the quality starts to degrade rapidly and at about 17dB it
-goes completely dead. With VREF50 I can raise the capture all the way
-up to 35dB.
+diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+index 90e8e92..8f4d752 100644
+--- a/drivers/input/touchscreen/Kconfig
++++ b/drivers/input/touchscreen/Kconfig
+@@ -185,6 +185,13 @@ config TOUCHSCREEN_UCB1400
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called ucb1400_ts.
+ 
++config TOUCHSCREEN_UCB1400_OF
++	bool "Get device informations via the device tree"
++	depends on TOUCHSCREEN_UCB1400 && OF
++	help
++	  Select this option if you want to obtain interrupt information from
++	  the device tree instead of auto probing.
++
+ config TOUCHSCREEN_USB_COMPOSITE
+ 	tristate "USB Touchscreen Driver"
+ 	depends on USB_ARCH_HAS_HCD
+diff --git a/drivers/input/touchscreen/ucb1400_ts.c b/drivers/input/touchscreen/ucb1400_ts.c
+index 607f993..9337352 100644
+--- a/drivers/input/touchscreen/ucb1400_ts.c
++++ b/drivers/input/touchscreen/ucb1400_ts.c
+@@ -26,6 +26,11 @@
+ #include <linux/kthread.h>
+ #include <linux/freezer.h>
+ 
++#ifdef CONFIG_TOUCHSCREEN_UCB1400_OF
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#endif
++
+ #include <sound/core.h>
+ #include <sound/ac97_codec.h>
+ 
+@@ -418,6 +423,9 @@ static int ucb1400_ts_resume(struct device *dev)
+ #define NO_IRQ	0
+ #endif
+ 
++#ifdef CONFIG_TOUCHSCREEN_UCB1400_OF
++static int ucb1400_irq;
++#else
+ /*
+  * Try to probe our interrupt, rather than relying on lots of
+  * hard-coded machine dependencies.
+@@ -467,6 +475,7 @@ static int ucb1400_detect_irq(struct ucb1400 *ucb)
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static int ucb1400_ts_probe(struct device *dev)
+ {
+@@ -491,12 +500,15 @@ static int ucb1400_ts_probe(struct device *dev)
+ 		error = -ENODEV;
+ 		goto err_free_devs;
+ 	}
+-
++#ifdef CONFIG_TOUCHSCREEN_UCB1400_OF
++	ucb->irq = ucb1400_irq;
++#else
+ 	error = ucb1400_detect_irq(ucb);
+ 	if (error) {
+ 		printk(KERN_ERR "UCB1400: IRQ probe failed\n");
+ 		goto err_free_devs;
+ 	}
++#endif
+ 
+ 	error = request_irq(ucb->irq, ucb1400_hard_irq, IRQF_TRIGGER_RISING,
+ 				"UCB1400", ucb);
+@@ -562,14 +574,57 @@ static struct device_driver ucb1400_ts_driver = {
+ 	.resume		= ucb1400_ts_resume,
+ };
+ 
++#ifdef CONFIG_TOUCHSCREEN_UCB1400_OF
++static int __devinit of_ucb_probe(struct of_device *dev,
++		const struct of_device_id *match)
++{
++	struct device_node *dp = dev->node;
++
++	ucb1400_irq = irq_of_parse_and_map(dp, 0);
++	if (ucb1400_irq == IRQ_NONE)
++		return -ENODEV;
++
++	return driver_register(&ucb1400_ts_driver);
++}
++
++static int of_ucb_remove(struct of_device *dev)
++{
++	driver_unregister(&ucb1400_ts_driver);
++	return 0;
++}
++
++static struct of_device_id of_ucb_match[] = {
++	{
++		.compatible = "Phillips-ucb1400_ts",
++	},
++	{ },
++};
++MODULE_DEVICE_TABLE(of, of_ucb_match);
++
++static struct of_platform_driver of_ucb1400_ts_driver = {
++	.name           = "of-ucb1400_ts",
++	.match_table    = of_ucb_match,
++	.probe          = of_ucb_probe,
++	.remove         = of_ucb_remove,
++};
++#endif
++
+ static int __init ucb1400_ts_init(void)
+ {
++#ifdef CONFIG_TOUCHSCREEN_UCB1400_OF
++	return of_register_platform_driver(&of_ucb1400_ts_driver);
++#else
+ 	return driver_register(&ucb1400_ts_driver);
++#endif
+ }
+ 
+ static void __exit ucb1400_ts_exit(void)
+ {
++#ifdef CONFIG_TOUCHSCREEN_UCB1400_OF
++	of_unregister_platform_driver(&of_ucb1400_ts_driver);
++#else
+ 	driver_unregister(&ucb1400_ts_driver);
++#endif
+ }
+ 
+ module_param(adcsync, bool, 0444);
+-- 
+1.5.3.5
 
+The problem is more or less that I can't pass the value to the other
+probe function and the global variable doesn't look all that pretty. Am
+I missing something here?
 
+>William
 
-diff -r 72360e8993f7 pci/hda/patch_realtek.c
---- a/pci/hda/patch_realtek.c	Thu Mar 06 16:58:35 2008 +0100
-+++ b/pci/hda/patch_realtek.c	Thu Mar 06 17:37:22 2008 +0100
-@@ -1927,6 +1927,7 @@ static void alc880_uniwill_p53_unsol_eve
-  * HP = 0x14, speaker-out = 0x15, mic = 0x18
-  */
- static struct hda_verb alc880_pin_f1734_init_verbs[] = {
-+	{0x07, AC_VERB_SET_CONNECT_SEL, 0x01},
- 	{0x10, AC_VERB_SET_CONNECT_SEL, 0x02},
- 	{0x11, AC_VERB_SET_CONNECT_SEL, 0x00},
- 	{0x12, AC_VERB_SET_CONNECT_SEL, 0x01},
-@@ -1939,7 +1940,7 @@ static struct hda_verb alc880_pin_f1734_
-
- 	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
- 	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
--	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
-+	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF50},
- 	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
- 	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
- 	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+Sebastian
