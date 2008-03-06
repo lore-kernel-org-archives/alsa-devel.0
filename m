@@ -1,14 +1,14 @@
 From: Jiang zhe <zhe.jiang@intel.com>
-Subject: [PATCH] model for alc883 to support FUJITSU Pi2515
-Date: Thu, 06 Mar 2008 15:31:30 +0800
-Message-ID: <1204788690.30569.6.camel@localhost.localdomain>
+Subject: [PATCH] model for cx20549 to support laptop HP530
+Date: Thu, 06 Mar 2008 16:30:35 +0800
+Message-ID: <1204792235.30569.22.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id D676B103803
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2008 08:30:49 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id F12A61038AF
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2008 09:29:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,157 +22,115 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, cmatsuoka@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi, 
 
-Please refer to [0003800] on the alsa mantis.
-There is no suitable model for Pi2515.
-This model is to support it. 
+Please refer to [0003821].
+Currently the model laptop-hpsense use the 0x12 as ExtMic,
+and use 0x14 as Internal IntMic.
+But the hp530 only have one ExtMic, the Pin widget is 0x14.
 
-Thanks!
+In this patch, I changed the mixer item for them.
+I still reserved the IntMic item, it will be helpful if 
+other machine may use this model.
+
 Best regards!
-Jiang,zhe
 
 Signed-off-by: Jiang zhe <zhe.jiang@intel.com>
---- alsa-driver-hg20080306/alsa-kernel/pci/hda/patch_realtek.c
-2008-03-05 09:00:08.000000000 +0800
-+++ b/alsa-kernel/pci/hda/patch_realtek.c	2008-03-06 15:20:46.000000000
+--- alsa-driver-hg20080306/alsa-kernel/pci/hda/patch_conexant.c
+2008-03-01 09:00:07.000000000 +0800
++++ b/alsa-kernel/pci/hda/patch_conexant.c	2008-03-06 16:12:23.000000000
 +0800
-@@ -202,6 +202,7 @@ enum {
- 	ALC888_6ST_DELL,
- 	ALC883_MITAC,
- 	ALC883_CLEVO_M720R,
-+	ALC883_FUJITSU_PI2515,
- 	ALC883_AUTO,
- 	ALC883_MODEL_LAST,
- };
-@@ -6484,6 +6485,14 @@ static struct hda_input_mux alc883_lenov
- 	},
+@@ -519,6 +519,14 @@ static struct hda_input_mux cxt5045_capt
+ 	}
  };
  
-+static struct hda_input_mux alc883_fujitsu_pi2515_capture_source = {
++static struct hda_input_mux cxt5045_capture_source_hp530 = {
 +	.num_items = 2,
 +	.items = {
-+		{ "Mic", 0x0 },
-+		{ "Int Mic", 0x1 },
-+	},
++		{ "ExtMic", 0x1 },
++		{ "IntMic", 0x2 },
++	}
 +};
 +
- #define alc883_mux_enum_info alc_mux_enum_info
- #define alc883_mux_enum_get alc_mux_enum_get
- /* ALC883 has the ALC882-type input selection */
-@@ -6673,6 +6682,33 @@ static struct snd_kcontrol_new alc883_cl
- 	{ } /* end */
+ /* turn on/off EAPD (+ mute HP) as a master switch */
+ static int cxt5045_hp_master_sw_put(struct snd_kcontrol *kcontrol,
+ 				    struct snd_ctl_elem_value *ucontrol)
+@@ -647,6 +655,37 @@ static struct snd_kcontrol_new cxt5045_b
+ 	{}
  };
  
-+static struct snd_kcontrol_new alc883_2ch_fujitsu_pi2515_mixer[] = {
-+	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE("Headphone Playback Switch", 0x0c, 2, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE("Speaker Playback Switch", 0x0d, 2, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Int Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Int Mic Boost", 0x19, 0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Int Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x09, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 1, 0x09, 0x0, HDA_INPUT),
++static struct snd_kcontrol_new cxt5045_mixers_hp530[] = {
 +	{
 +		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		/* .name = "Capture Source", */
-+		.name = "Input Source",
-+		.count = 2,
-+		.info = alc883_mux_enum_info,
-+		.get = alc883_mux_enum_get,
-+		.put = alc883_mux_enum_put,
++		.name = "Capture Source",
++		.info = conexant_mux_enum_info,
++		.get = conexant_mux_enum_get,
++		.put = conexant_mux_enum_put
 +	},
-+	{ } /* end */
++	HDA_CODEC_VOLUME("Int Mic Capture Volume", 0x1a, 0x02, HDA_INPUT),
++	HDA_CODEC_MUTE("Int Mic Capture Switch", 0x1a, 0x02, HDA_INPUT),
++	HDA_CODEC_VOLUME("Ext Mic Capture Volume", 0x1a, 0x01, HDA_INPUT),
++	HDA_CODEC_MUTE("Ext Mic Capture Switch", 0x1a, 0x01, HDA_INPUT),
++	HDA_CODEC_VOLUME("PCM Playback Volume", 0x17, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("PCM Playback Switch", 0x17, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Int Mic Playback Volume", 0x17, 0x2, HDA_INPUT),
++	HDA_CODEC_MUTE("Int Mic Playback Switch", 0x17, 0x2, HDA_INPUT),
++	HDA_CODEC_VOLUME("Ext Mic Playback Volume", 0x17, 0x1, HDA_INPUT),
++	HDA_CODEC_MUTE("Ext Mic Playback Switch", 0x17, 0x1, HDA_INPUT),
++	HDA_BIND_VOL("Master Playback Volume", &cxt5045_hp_bind_master_vol),
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Master Playback Switch",
++		.info = cxt_eapd_info,
++		.get = cxt_eapd_get,
++		.put = cxt5045_hp_master_sw_put,
++		.private_value = 0x10,
++	},
++
++	{}
 +};
 +
- static struct snd_kcontrol_new alc883_3ST_2ch_mixer[] = {
- 	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
- 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
-@@ -7220,6 +7256,20 @@ static struct hda_verb alc883_clevo_m720
- 	{ } /* end */
- };
- 
-+static struct hda_verb alc883_2ch_fujitsu_pi2515_verbs[] = {
-+	/* HP */
-+	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
-+	/* Subwoofer */
-+	{0x15, AC_VERB_SET_CONNECT_SEL, 0x01},
-+	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+
-+	/* enable unsolicited event */
-+	{0x14, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
-+
-+	{ } /* end */
-+};
-+
- static struct hda_verb alc883_tagra_verbs[] = {
- 	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- 	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-@@ -7423,6 +7473,25 @@ static void alc883_clevo_m720r_unsol_eve
- 		alc883_clevo_m720r_automute(codec);
- }
- 
-+/* toggle speaker-output according to the hp-jack state */
-+static void alc883_2ch_fujitsu_pi2515_automute(struct hda_codec *codec)
-+{
-+ 	unsigned int present;
-+	unsigned char bits;
-+
-+ 	present = snd_hda_codec_read(codec, 0x14, 0,
-+				     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
-+	bits = present ? HDA_AMP_MUTE : 0;
-+	snd_hda_codec_amp_stereo(codec, 0x15, HDA_OUTPUT, 0,
-+				 HDA_AMP_MUTE, bits);
-+}
-+
-+static void alc883_2ch_fujitsu_pi2515_unsol_event(struct hda_codec
-*codec, unsigned int res)
-+{
-+	if ((res >> 26) == ALC880_HP_EVENT)
-+		alc883_2ch_fujitsu_pi2515_automute(codec);
-+}
-+
- static void alc883_haier_w66_automute(struct hda_codec *codec)
- {
- 	unsigned int present;
-@@ -7661,6 +7730,7 @@ static const char *alc883_models[ALC883_
- 	[ALC888_6ST_DELL]	= "6stack-dell",
- 	[ALC883_MITAC]		= "mitac",
- 	[ALC883_CLEVO_M720R]	= "clevo-m720r",
-+	[ALC883_FUJITSU_PI2515] = "fujitsu-pi2515",
- 	[ALC883_AUTO]		= "auto",
- };
- 
-@@ -7706,6 +7776,7 @@ static struct snd_pci_quirk alc883_cfg_t
- 	SND_PCI_QUIRK(0x1558, 0, "Clevo laptop", ALC883_LAPTOP_EAPD),
- 	SND_PCI_QUIRK(0x15d9, 0x8780, "Supermicro PDSBA", ALC883_3ST_6ch),
- 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_MEDION),
-+	SND_PCI_QUIRK(0x1734, 0x1108, "Fujitsu AMILO Pi2515",
-ALC883_FUJITSU_PI2515),
- 	SND_PCI_QUIRK(0x17aa, 0x101e, "Lenovo 101e", ALC883_LENOVO_101E_2ch),
- 	SND_PCI_QUIRK(0x17aa, 0x2085, "Lenovo NB0763", ALC883_LENOVO_NB0763),
- 	SND_PCI_QUIRK(0x17aa, 0x3bfc, "Lenovo NB0763", ALC883_LENOVO_NB0763),
-@@ -7950,6 +8021,18 @@ static struct alc_config_preset alc883_p
- 		.unsol_event = alc883_mitac_unsol_event,
- 		.init_hook = alc883_mitac_automute,
- 	},
-+	[ALC883_FUJITSU_PI2515] = {
-+		.mixers = { alc883_2ch_fujitsu_pi2515_mixer },
-+		.init_verbs = { alc883_init_verbs, alc883_2ch_fujitsu_pi2515_verbs},
-+		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
-+		.dac_nids = alc883_dac_nids,
-+		.dig_out_nid = ALC883_DIGOUT_NID,
-+		.num_channel_mode = ARRAY_SIZE(alc883_3ST_2ch_modes),
-+		.channel_mode = alc883_3ST_2ch_modes,
-+		.input_mux = &alc883_fujitsu_pi2515_capture_source,
-+		.unsol_event = alc883_2ch_fujitsu_pi2515_unsol_event,
-+		.init_hook = alc883_2ch_fujitsu_pi2515_automute,
-+	},
- };
+ static struct hda_verb cxt5045_init_verbs[] = {
+ 	/* Line in, Mic */
+ 	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
+@@ -841,6 +880,7 @@ enum {
+ 	CXT5045_LAPTOP_MICSENSE,
+ 	CXT5045_LAPTOP_HPMICSENSE,
+ 	CXT5045_BENQ,
++	CXT5045_LAPTOP_HP530,
+ #ifdef CONFIG_SND_DEBUG
+ 	CXT5045_TEST,
+ #endif
+@@ -852,6 +892,7 @@ static const char *cxt5045_models[CXT504
+ 	[CXT5045_LAPTOP_MICSENSE]	= "laptop-micsense",
+ 	[CXT5045_LAPTOP_HPMICSENSE]	= "laptop-hpmicsense",
+ 	[CXT5045_BENQ]			= "benq",
++	[CXT5045_LAPTOP_HP530]		= "laptop-hp530",
+ #ifdef CONFIG_SND_DEBUG
+ 	[CXT5045_TEST]		= "test",
+ #endif
+@@ -865,7 +906,7 @@ static struct snd_pci_quirk cxt5045_cfg_
+ 	SND_PCI_QUIRK(0x103c, 0x30bb, "HP DV8000", CXT5045_LAPTOP_HPSENSE),
+ 	SND_PCI_QUIRK(0x103c, 0x30cd, "HP DV Series", CXT5045_LAPTOP_HPSENSE),
+ 	SND_PCI_QUIRK(0x103c, 0x30cf, "HP DV9533EG", CXT5045_LAPTOP_HPSENSE),
+-	SND_PCI_QUIRK(0x103c, 0x30d5, "HP 530", CXT5045_LAPTOP_HPSENSE),
++	SND_PCI_QUIRK(0x103c, 0x30d5, "HP 530", CXT5045_LAPTOP_HP530),
+ 	SND_PCI_QUIRK(0x103c, 0x30d9, "HP Spartan", CXT5045_LAPTOP_HPSENSE),
+ 	SND_PCI_QUIRK(0x152d, 0x0753, "Benq R55E", CXT5045_BENQ),
+ 	SND_PCI_QUIRK(0x1734, 0x10ad, "Fujitsu Si1520",
+CXT5045_LAPTOP_MICSENSE),
+@@ -949,6 +990,14 @@ static int patch_cxt5045(struct hda_code
+ 		spec->num_mixers = 2;
+ 		codec->patch_ops.init = cxt5045_init;
+ 		break;
++	case CXT5045_LAPTOP_HP530:
++		codec->patch_ops.unsol_event = cxt5045_hp_unsol_event;
++		spec->input_mux = &cxt5045_capture_source_hp530;
++		spec->num_init_verbs = 2;
++		spec->init_verbs[1] = cxt5045_hp_sense_init_verbs;
++		spec->mixers[0] = cxt5045_mixers_hp530;
++		codec->patch_ops.init = cxt5045_init;
++		break;
+ #ifdef CONFIG_SND_DEBUG
+ 	case CXT5045_TEST:
+ 		spec->input_mux = &cxt5045_test_capture_source;
