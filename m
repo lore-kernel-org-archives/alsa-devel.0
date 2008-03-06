@@ -1,27 +1,19 @@
-From: Ahmet =?utf-8?B?xLBuYW4=?= <ainan@mathematik.uni-freiburg.de>
-Subject: Re: [PATCH] improved snd-aloop quality when
-	using	certain samplerates and kernel HZ
-Date: Thu, 6 Mar 2008 21:51:24 +0100
-Message-ID: <20080306205124.GC32692@mathematik.uni-freiburg.de>
-References: <20080220141906.GA15096@mathematik.uni-freiburg.de>
-	<s5h3arnpq4i.wl%tiwai@suse.de>
-	<20080221000601.GA4829@mathematik.uni-freiburg.de>
-	<s5hmypusssj.wl%tiwai@suse.de>
-	<20080222180528.GD6860@mathematik.uni-freiburg.de>
-	<s5h7igps3nv.wl%tiwai@suse.de>
-	<20080301115506.GA7175@mathematik.uni-freiburg.de>
-	<s5hve468o55.wl%tiwai@suse.de>
-	<20080301233503.GA6175@mathematik.uni-freiburg.de>
-	<s5h7igf3l71.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] add a "private" field to the ac97 struct
+Date: Thu, 6 Mar 2008 20:53:09 +0000
+Message-ID: <20080306205309.GB3993@opensource.wolfsonmicro.com>
+References: <20080306164211.GA8205@Chamillionaire.breakpoint.cc>
+	<1204823557.2939.5.camel@petrie.sacredspiral.co.uk>
+	<20080306172225.GA8492@Chamillionaire.breakpoint.cc>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="EeQfGwPcQSOJBaQU"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx01.qsc.de (mx01.qsc.de [213.148.129.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72EEF244CF
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2008 21:51:26 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 848E1103876
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2008 21:53:10 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5h7igf3l71.wl%tiwai@suse.de>
+In-Reply-To: <20080306172225.GA8492@Chamillionaire.breakpoint.cc>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,129 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Sebastian Siewior <al+sa@ml.breakpoint.cc>
+Cc: alsa-devel@alsa-project.org, Nicolas Pitre <nico@cam.org>, William Pitcock <nenolod@sacredspiral.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Mar 06, 2008 at 06:22:25PM +0100, Sebastian Siewior wrote:
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The problem is more or less that I can't pass the value to the other
+> probe function and the global variable doesn't look all that pretty. Am
+> I missing something here?
 
-> Also, it'd be appreciated if you follow the standard rule for
-thank you for pointing this out. will try my best.
-patch is relative to current hg-tree.
+This is also a problem for the wm97xx touchscreen drivers.  They have a
+similar issue with wanting to get platform configuration into a device
+probed off the AC97 bus with the additional issue that features like
+syncing with screen redraw will often require code to interface with
+other hardware in the system.  If something is added to the AC97 data
+it'd be helpful if it were a void * so the wm97xx touch driver could use
+it to pass a struct with more data.
 
-ahmet
+This is not really an AC97-specific issue - any device discoverd via a
+bus is going to have a similar thing if it needs to obtain platform
+data.  I don't know how OpenFirmware normally handles these things?
+It's going to be an issue for other buses like PCI too in many systems,
+MAC addresses for NICs being the example I've run into myself in a
+previous life.
 
-snd-aloop - more cleanups
+In the case of the wm97xx touchscreen we've avoided the problem by
+having the touch driver register platform devices; this isn't ideal but
+works well in the systems which are the typical targets for these
+devices.  I had been intending to revisit this issue at some point but
+it's quite a way down my TODO list.
 
-moved module parameter pcm_substreams range check code around, to prevent=
- catastrophe.
-removed bogus module parameter pcm_devs code - aloop creates only one pai=
-r of devices.
-allowed float_le, too.
-removed obsolete code.
+The wm97xx drivers touch aren't in mainline yet - if you want to have a
+look the most current upstream submission versions can be found in the
+upstream branch of:
 
-Signed-off-by: Ahmet =C4=B0nan <ainan <at> mathematik.uni-freiburg.de>
+	git://opensource.wolfsonmicro.com/linux-2.6-touch
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="alsa-driver-hg-aloop-ainan-patch5.diff"
+gitweb:
 
-diff -r 6def4892d3f5 drivers/aloop-kernel.c
---- a/drivers/aloop-kernel.c	Mon Mar 03 11:05:48 2008 +0100
-+++ b/drivers/aloop-kernel.c	Thu Mar 06 21:24:24 2008 +0100
-@@ -39,9 +39,7 @@ static int index[SNDRV_CARDS] = SNDRV_DE
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
- static int enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
--static int pcm_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
- static int pcm_substreams[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8};
--/* static int midi_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2}; */
- 
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for loopback soundcard.");
-@@ -49,12 +47,8 @@ MODULE_PARM_DESC(id, "ID string for loop
- MODULE_PARM_DESC(id, "ID string for loopback soundcard.");
- module_param_array(enable, bool, NULL, 0444);
- MODULE_PARM_DESC(enable, "Enable this loopback soundcard.");
--module_param_array(pcm_devs, int, NULL, 0444);
--MODULE_PARM_DESC(pcm_devs, "PCM devices # (0-4) for loopback driver.");
- module_param_array(pcm_substreams, int, NULL, 0444);
- MODULE_PARM_DESC(pcm_substreams, "PCM substreams # (1-8) for loopback driver.");
--/* module_param_array(midi_devs, int, NULL, 0444);
-- * MODULE_PARM_DESC(midi_devs, "MIDI devices # (0-2) for loopback driver."); */
- 
- typedef struct snd_card_loopback_cable {
- 	struct snd_pcm_substream *playback;
-@@ -220,7 +214,8 @@ static struct snd_pcm_hardware snd_card_
- {
- 	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
- 				 SNDRV_PCM_INFO_MMAP_VALID),
--	.formats =		(SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE),
-+	.formats =		(SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE |
-+				 SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT_LE),
- 	.rates =		(SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_192000),
- 	.rate_min =		8000,
- 	.rate_max =		192000,
-@@ -395,17 +390,11 @@ static int __init snd_card_loopback_pcm(
- 	struct snd_pcm *pcm;
- 	int err;
- 
--	if (0 == device) {
--		if ((err = snd_pcm_new(loopback->card, "Loopback PCM", device, substreams, substreams, &pcm)) < 0)
--			return err;
--		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_loopback_playback_ops);
--		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_loopback_capture_ops);
--	} else {
--		if ((err = snd_pcm_new(loopback->card, "Loopback PCM", device, substreams, substreams, &pcm)) < 0)
--			return err;
--		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_loopback_playback_ops);
--		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_loopback_capture_ops);
--	}
-+	if ((err = snd_pcm_new(loopback->card, "Loopback PCM", device, substreams, substreams, &pcm)) < 0)
-+		return err;
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_loopback_playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_loopback_capture_ops);
-+
- 	pcm->private_data = loopback;
- 	pcm->info_flags = 0;
- 	strcpy(pcm->name, "Loopback PCM");
-@@ -435,6 +424,11 @@ static int __init snd_card_loopback_prob
- 		return -ENOMEM;
- 	loopback = (struct snd_card_loopback *)card->private_data;
- 
-+	if (pcm_substreams[dev] < 1)
-+		pcm_substreams[dev] = 1;
-+	if (pcm_substreams[dev] > MAX_PCM_SUBSTREAMS)
-+		pcm_substreams[dev] = MAX_PCM_SUBSTREAMS;
-+
- 	for (subdev = 0; subdev < pcm_substreams[dev]; subdev++) {
- 		for (half = 0; half < 2; half++) {
- 			loopback->cables[subdev][half].playback = NULL;
-@@ -450,10 +444,6 @@ static int __init snd_card_loopback_prob
- 	}
- 	
- 	loopback->card = card;
--	if (pcm_substreams[dev] < 1)
--		pcm_substreams[dev] = 1;
--	if (pcm_substreams[dev] > MAX_PCM_SUBSTREAMS)
--		pcm_substreams[dev] = MAX_PCM_SUBSTREAMS;
- 	if ((err = snd_card_loopback_pcm(loopback, 0, pcm_substreams[dev])) < 0)
- 		goto __nodev;
- 	if ((err = snd_card_loopback_pcm(loopback, 1, pcm_substreams[dev])) < 0)
-
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---EeQfGwPcQSOJBaQU--
+	http://opensource.wolfsonmicro.com/cgi-bin/gitweb.cgi?p=linux-2.6-touch.git;a=summary
