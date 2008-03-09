@@ -1,19 +1,14 @@
-From: Ben Firshman <ben@firshman.co.uk>
-Subject: Hda-intel: AC_VERB_SET_PIN_WIDGET_CONTROL appears to
-	do nothing for HDMI device
-Date: Sun, 9 Mar 2008 00:10:32 +0000
-Message-ID: <0617DD65-FC77-47C7-922E-FD9202375816@firshman.co.uk>
-Mime-Version: 1.0 (Apple Message framework v919.2)
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Reorganized DAC outputs.
+Date: Sat, 08 Mar 2008 20:41:58 -0500
+Message-ID: <47D34066.6020809@embeddedalley.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.firshman.co.uk (unknown [81.2.121.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id 297782444D
-	for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2008 01:10:35 +0100 (CET)
-Received: from macbook.intra ([192.168.211.179])
-	by mail.firshman.co.uk with esmtpsa (TLS-1.0:RSA_AES_128_CBC_SHA1:16)
-	(Exim 4.63) (envelope-from <ben@firshman.co.uk>) id 1JY97Z-00045a-5t
-	for alsa-devel@alsa-project.org; Sun, 09 Mar 2008 00:10:34 +0000
+Received: from smtp105.biz.mail.mud.yahoo.com (smtp105.biz.mail.mud.yahoo.com
+	[68.142.200.253]) by alsa0.perex.cz (Postfix) with SMTP id F242E24474
+	for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2008 02:42:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,77 +19,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is on 1.0.16. Forgive me if I appear clueless, I have only been  
-working on this for the past few hours.
+Changed so that internal speakers point to the Front mixer instead of Surround.
 
-In an attempt to get HDMI audio working on the AppleTV, I have added  
-this line to the presets in patch_atihdmi.c:
-
-{ .id = 0x10951390, .name = "SI1390 HDMI", .patch = patch_atihdmi },
-
-The device is detected fine:
-
-ben@mythfrontend:~$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC882 Analog [ALC882 Analog]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 1: ALC882 Digital [ALC882 Digital]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 3: ATI HDMI [ATI HDMI]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-ben@mythfrontend:~$
-
-and I can send audio to the device, but it doesn't work. I presume  
-this because this is doing nothing:
-
-static struct hda_verb atihdmi_basic_init[] = {
-	/* enable digital output on pin widget */
-	{ 0x03, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-	{} /* terminator */
-};
-
-ben@mythfrontend:~$ cat /proc/asound/card0/codec#1
-Codec: Generic 1095 SI1390 HDMI
-Address: 1
-Vendor Id: 0x10951390
-Subsystem Id: 0xffffffff
-Revision Id: 0x100000
-No Modem Function Group found
-Default PCM:
-     rates [0x0]:
-     bits [0x0]:
-     formats [0x0]:
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
-Node 0x02 [Audio Output] wcaps 0x6211: Stereo Digital
-   Converter: stream=0, channel=0
-   Digital:
-   Digital category: 0x0
-   PCM:
-     rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-     bits [0x1e]: 16 20 24 32
-     formats [0x5]: PCM AC3
-Node 0x03 [Pin Complex] wcaps 0x40738d: Stereo Digital Amp-Out
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x80 0x80]
-   Pincap 0x0894: OUT Detect R/L
-   Pin Default 0x98460010: [Fixed] SPDIF Out at Int HDMI
-     Conn = Digital, Color = Unknown
-     DefAssociation = 0x1, Sequence = 0x0
-   Pin-ctls: 0x00:
-   Unsolicited: tag=00, enabled=0
-   Connection: 1
-      0x02
-
-"Pin-ctls: 0x00:" should be reading "Pin-ctls: 0x40: OUT" should it  
-not? What is wrong?
-
-Thanks
-
-Ben
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
+diff -r 3f01993fbc3d pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Sat Mar 08 11:08:32 2008 +0100
++++ b/pci/hda/patch_sigmatel.c	Sat Mar 08 20:37:27 2008 -0500
+@@ -538,8 +538,8 @@ static struct hda_verb dell_m6_core_init
+ 	/* set master volume and direct control */
+ 	{ 0x1f, AC_VERB_SET_VOLUME_KNOB_CONTROL, 0xff},
+ 	/* setup audio connections */
+-	{ 0x0a, AC_VERB_SET_CONNECT_SEL, 0x00},
+-	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{ 0x0a, AC_VERB_SET_CONNECT_SEL, 0x01},
+ 	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x02},
+ 	/* setup adcs to point to mixer */
+ 	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x0b},
