@@ -1,26 +1,21 @@
-From: "M G" <lists.mg@googlemail.com>
-Subject: Re: snd-hda-intel: Fix volume-wheel and microphone on
-	Fujitsu-Siemens Amilo M3438G
-Date: Sun, 9 Mar 2008 11:37:09 +0100
-Message-ID: <74d457500803090337x79863188rba196911588acbeb@mail.gmail.com>
-References: <74d457500802060814j64532e95v8c689cbb491c6b46@mail.gmail.com>
-	<s5hir12kpne.wl%tiwai@suse.de>
-	<74d457500802061502m31d412dap15009aad087b1b75@mail.gmail.com>
-	<s5h8x1vy87l.wl%tiwai@suse.de>
-	<74d457500802101048t2b92cb98qe6290a0186a00585@mail.gmail.com>
-	<s5h8x1rwqh7.wl%tiwai@suse.de>
-	<74d457500803060915y682558fancca3691d5abd340d@mail.gmail.com>
-	<s5hiqzy20nc.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_10840_21465528.1205059029926"
+From: Ben Firshman <ben@firshman.co.uk>
+Subject: Re: Hda-intel: AC_VERB_SET_PIN_WIDGET_CONTROL appears
+	to do nothing for HDMI device
+Date: Sun, 9 Mar 2008 13:05:39 +0000
+Message-ID: <0E87486E-FCE3-49CB-AB88-343FB6FB468E@firshman.co.uk>
+References: <0617DD65-FC77-47C7-922E-FD9202375816@firshman.co.uk>
+Mime-Version: 1.0 (Apple Message framework v919.2)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A417243D6
-	for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2008 11:37:11 +0100 (CET)
-Received: by py-out-1112.google.com with SMTP id w49so2577090pyg.36
-	for <alsa-devel@alsa-project.org>; Sun, 09 Mar 2008 03:37:10 -0700 (PDT)
-In-Reply-To: <s5hiqzy20nc.wl%tiwai@suse.de>
+Received: from mail.firshman.co.uk (unknown [81.2.121.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C3D224629
+	for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2008 14:05:42 +0100 (CET)
+Received: from macbook.intra ([192.168.211.179])
+	by mail.firshman.co.uk with esmtpsa (TLS-1.0:RSA_AES_128_CBC_SHA1:16)
+	(Exim 4.63) (envelope-from <ben@firshman.co.uk>) id 1JYLDf-0005O7-NM
+	for alsa-devel@alsa-project.org; Sun, 09 Mar 2008 13:05:41 +0000
+In-Reply-To: <0617DD65-FC77-47C7-922E-FD9202375816@firshman.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,62 +28,129 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_10840_21465528.1205059029926
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+It appears that on boot, nothing gets set, but if I reload the module  
+it works:
 
-On Fri, Mar 7, 2008 at 1:12 PM, Takashi Iwai <tiwai@suse.de> wrote:
+ben@mythfrontend:~$ cat /proc/asound/card0/codec#1
+Codec: Generic 1095 SI1390 HDMI
+Address: 1
+Vendor Id: 0x10951390
+Subsystem Id: 0xffffffff
+Revision Id: 0x100000
+No Modem Function Group found
+Default PCM:
+     rates [0x0]:
+     bits [0x0]:
+     formats [0x0]:
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x02 [Audio Output] wcaps 0x6211: Stereo Digital
+   Converter: stream=0, channel=0
+   Digital: Enabled Copyright GenLevel
+   Digital category: 0x0
+   PCM:
+     rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+     bits [0x1e]: 16 20 24 32
+     formats [0x5]: PCM AC3
+Node 0x03 [Pin Complex] wcaps 0x40738d: Stereo Digital Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x0894: OUT Detect R/L
+   Pin Default 0x98460010: [Fixed] SPDIF Out at Int HDMI
+     Conn = Digital, Color = Unknown
+     DefAssociation = 0x1, Sequence = 0x0
+   Pin-ctls: 0x40: OUT
+   Unsolicited: tag=00, enabled=0
+   Connection: 1
+      0x02
+ben@mythfrontend:~$
+
+The unmuting looks like it's working too (Amp-Out vals:  [0x00 0x00]).  
+I'm still not getting any sound though - my amp just says  
+"Detecting...".
+
+Is the GPIO line significant? As far as I can tell from the docs, that  
+just means there are no GPIOs.
+
+Ben
+
+On 9 Mar 2008, at 00:10, Ben Firshman wrote:
+
+> This is on 1.0.16. Forgive me if I appear clueless, I have only been
+> working on this for the past few hours.
 >
->  Thanks for the patch.  Could you give your sign-off together with a
->  proper changelog to commit to the upstream?
+> In an attempt to get HDMI audio working on the AppleTV, I have added
+> this line to the presets in patch_atihdmi.c:
 >
+> { .id = 0x10951390, .name = "SI1390 HDMI", .patch = patch_atihdmi },
 >
->  Takashi
+> The device is detected fine:
 >
+> ben@mythfrontend:~$ aplay -l
+> **** List of PLAYBACK Hardware Devices ****
+> card 0: Intel [HDA Intel], device 0: ALC882 Analog [ALC882 Analog]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+> card 0: Intel [HDA Intel], device 1: ALC882 Digital [ALC882 Digital]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+> card 0: Intel [HDA Intel], device 3: ATI HDMI [ATI HDMI]
+>   Subdevices: 1/1
+>   Subdevice #0: subdevice #0
+> ben@mythfrontend:~$
 >
-
-
-
-Here you go.
-
-------=_Part_10840_21465528.1205059029926
-Content-Type: text/x-diff; name=F1734-microphone.patch
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fdlgyy4p0
-Content-Disposition: attachment; filename=F1734-microphone.patch
-
-aGRhLWludGVsIC0gRml4IG1pY3JvcGhvbmUgY2FwdHVyZSB3aXRoIEFMQzg4MCBGMTczNCBtb2Rl
-bAoKVGhlIGRlZmF1bHQgY2FwdHVyZSBzb3VyY2Ugc2hvdWxkIGJlIHRoZSBtaWMgd2hpY2ggaXMg
-MHgwMSBvbiB0aGlzIG1vZGVsLgpJbiBhZGRpdGlvbiB0byB0aGF0IHRoZSBjaGFuZ2UgdG8gVlJF
-RjUwIGFsbG93cyBmb3IgaGlnaGVyIGNhcHR1cmUgdm9sdW1lLgoKU2lnbmVkLW9mZi1ieTogTWlj
-aGFlbCBHcnViZXIgPGxpc3RzLm1nQGdvb2dsZW1haWwuY29tPgoKCgpkaWZmIC1yIDNmMDE5OTNm
-YmMzZCBwY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwotLS0gYS9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
-YwlTYXQgTWFyIDA4IDExOjA4OjMyIDIwMDggKzAxMDAKKysrIGIvcGNpL2hkYS9wYXRjaF9yZWFs
-dGVrLmMJU3VuIE1hciAwOSAxMDo1NjoxOCAyMDA4ICswMTAwCkBAIC0xOTI3LDYgKzE5MjcsNyBA
-QCBzdGF0aWMgdm9pZCBhbGM4ODBfdW5pd2lsbF9wNTNfdW5zb2xfZXZlCiAgKiBIUCA9IDB4MTQs
-IHNwZWFrZXItb3V0ID0gMHgxNSwgbWljID0gMHgxOAogICovCiBzdGF0aWMgc3RydWN0IGhkYV92
-ZXJiIGFsYzg4MF9waW5fZjE3MzRfaW5pdF92ZXJic1tdID0geworCXsweDA3LCBBQ19WRVJCX1NF
-VF9DT05ORUNUX1NFTCwgMHgwMX0sCiAJezB4MTAsIEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAw
-eDAyfSwKIAl7MHgxMSwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAogCXsweDEyLCBB
-Q19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgwMX0sCkBAIC0xOTM5LDcgKzE5NDAsNyBAQCBzdGF0
-aWMgc3RydWN0IGhkYV92ZXJiIGFsYzg4MF9waW5fZjE3MzRfCiAKIAl7MHgxOCwgQUNfVkVSQl9T
-RVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5fVlJFRjgwfSwKIAl7MHgxOCwgQUNfVkVSQl9TRVRf
-QU1QX0dBSU5fTVVURSwgQU1QX09VVF9NVVRFfSwKLQl7MHgxOSwgQUNfVkVSQl9TRVRfUElOX1dJ
-REdFVF9DT05UUk9MLCBQSU5fVlJFRjgwfSwKKwl7MHgxOSwgQUNfVkVSQl9TRVRfUElOX1dJREdF
-VF9DT05UUk9MLCBQSU5fVlJFRjUwfSwKIAl7MHgxOSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVU
-RSwgQU1QX09VVF9NVVRFfSwKIAl7MHgxYSwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9M
-LCBQSU5fT1VUfSwKIAl7MHgxYSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9V
-Tk1VVEV9LAo=
-------=_Part_10840_21465528.1205059029926
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_10840_21465528.1205059029926--
+> and I can send audio to the device, but it doesn't work. I presume
+> this because this is doing nothing:
+>
+> static struct hda_verb atihdmi_basic_init[] = {
+> 	/* enable digital output on pin widget */
+> 	{ 0x03, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
+> 	{} /* terminator */
+> };
+>
+> ben@mythfrontend:~$ cat /proc/asound/card0/codec#1
+> Codec: Generic 1095 SI1390 HDMI
+> Address: 1
+> Vendor Id: 0x10951390
+> Subsystem Id: 0xffffffff
+> Revision Id: 0x100000
+> No Modem Function Group found
+> Default PCM:
+>     rates [0x0]:
+>     bits [0x0]:
+>     formats [0x0]:
+> Default Amp-In caps: N/A
+> Default Amp-Out caps: N/A
+> GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+> Node 0x02 [Audio Output] wcaps 0x6211: Stereo Digital
+>   Converter: stream=0, channel=0
+>   Digital:
+>   Digital category: 0x0
+>   PCM:
+>     rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+>     bits [0x1e]: 16 20 24 32
+>     formats [0x5]: PCM AC3
+> Node 0x03 [Pin Complex] wcaps 0x40738d: Stereo Digital Amp-Out
+>   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>   Amp-Out vals:  [0x80 0x80]
+>   Pincap 0x0894: OUT Detect R/L
+>   Pin Default 0x98460010: [Fixed] SPDIF Out at Int HDMI
+>     Conn = Digital, Color = Unknown
+>     DefAssociation = 0x1, Sequence = 0x0
+>   Pin-ctls: 0x00:
+>   Unsolicited: tag=00, enabled=0
+>   Connection: 1
+>      0x02
+>
+> "Pin-ctls: 0x00:" should be reading "Pin-ctls: 0x40: OUT" should it
+> not? What is wrong?
+>
+> Thanks
+>
+> Ben
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
