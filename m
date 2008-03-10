@@ -1,33 +1,54 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Mon, 10 Mar 2008 20:29:35 +0100
-Message-ID: <47D58C1F.7020805@keyaccess.nl>
-References: <20080310162130.AFFD3DBA2@gherkin.frus.com>	<47D56851.2000509@keyaccess.nl> <s5h3aqywlf0.wl%tiwai@suse.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: X-Fi support in ALSA.
+Date: Mon, 10 Mar 2008 20:20:48 +0000
+Message-ID: <47D59820.9020106@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <s5h3aqywlf0.wl%tiwai@suse.de>
-Sender: linux-alpha-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Bob Tracy <rct@frus.com>, ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net
+	[194.217.242.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id C793A10381E
+	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 21:20:52 +0100 (CET)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.0.10])
+	by anchor-post-35.mail.demon.net with esmtp (Exim 4.67)
+	id 1JYoUO-000Dwg-H1
+	for alsa-devel@alsa-project.org; Mon, 10 Mar 2008 20:20:52 +0000
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10-03-08 18:14, Takashi Iwai wrote:
+Hi,
 
->> Takashi? Wasn't there an OSS emulation on Alpha thing a while ago?
-> 
-> No, I don't know of.  OSS emulation code is written fairly independently
-> from architectures.  Maybe just a missing CONFIG_SND_PCM_PLUGINS kconfig?
+I have now had a chance to read some of the specs of the X-Fi cards. 
+aka. emu20k1.
+It turns out that some of the X-Fi cards have a compatibility mode.
+By default, they boot up in compatibility mode.
+The interesting point is that this "compatibility mode" is in fact the 
+intel-HD standard so could use the intel-hda driver.
+For one X-Fi card with IDs:
+Device 1102:0009 Subsystem: 1102:0010
+works a bit with the ALSA hda-intel driver.
+So far, the off the shelf hda-intel driver, with simple PCIs adjustment, 
+works for the above card, but only sound capture works so far, so 
+probably some quirk would be needed.
+This compatibility mode works with the Windows Vista UAA drivers.
 
-Could've sworn...
+Not all X-Fi cards support with compatibility mode. For example, any 
+card with (after a cold boot into Linux)
+Device 1102:0005 Subsystem: xxxx:xxxx
+will be X-Fi only.
 
-The bug seems not present on x86. I'm testing with a ES1968 and ES1898 (his 
-is a 18888) and playback through ALSA native nor OSS emulation is giving me 
-trouble up to now.
+With regard to actual full X-Fi support, I am still in the progress of 
+creating a GPL emu20k1.h file, that is the first step towards an 
+snd-emu20k1 native ALSA driver.
 
-Bob? How short are "short" wav files by the way?
-
-Rene.
-
-
+James
