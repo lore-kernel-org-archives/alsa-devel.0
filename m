@@ -1,48 +1,33 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Problems with nonblocking capture every 20ms
-Date: Mon, 10 Mar 2008 19:38:50 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0803101937360.7942@tm8103.perex-int.cz>
-References: <47D55396.3080705@web.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Mon, 10 Mar 2008 20:29:35 +0100
+Message-ID: <47D58C1F.7020805@keyaccess.nl>
+References: <20080310162130.AFFD3DBA2@gherkin.frus.com>	<47D56851.2000509@keyaccess.nl> <s5h3aqywlf0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94B0D245AD
-	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 19:38:50 +0100 (CET)
-In-Reply-To: <47D55396.3080705@web.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Johannes Dohmen <johannes.dohmen@web.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <s5h3aqywlf0.wl%tiwai@suse.de>
+Sender: linux-alpha-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Bob Tracy <rct@frus.com>, ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 10 Mar 2008, Johannes Dohmen wrote:
+On 10-03-08 18:14, Takashi Iwai wrote:
 
-> Hi there,
+>> Takashi? Wasn't there an OSS emulation on Alpha thing a while ago?
 > 
-> With a sampling rate of 8000 I want to capture every 20ms a chunk (160 
-> frames) of data from the soundcard. That works ok, but every ~5 seconds 
-> I get a EGAIN from snd_pcm_readi().
-> I understand that this is not an error but a notification that the sound
-> card is not ready and should be asked again for data later on.
-> 
-> Probably the easiest way to get rid of the EGAINs would be to use
-> blocking IO, which I would prefer, but I have timing restrictions and
-> snd_pcm_readi() has no sort of timeout (which I could see at least).
+> No, I don't know of.  OSS emulation code is written fairly independently
+> from architectures.  Maybe just a missing CONFIG_SND_PCM_PLUGINS kconfig?
 
-Just use poll() - it's standard unix interface to wait for an event.
+Could've sworn...
 
-						Jaroslav
+The bug seems not present on x86. I'm testing with a ES1968 and ES1898 (his 
+is a 18888) and playback through ALSA native nor OSS emulation is giving me 
+trouble up to now.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Bob? How short are "short" wav files by the way?
+
+Rene.
+
+
