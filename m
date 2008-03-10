@@ -1,15 +1,21 @@
-From: J Brumbagh <brumbach_j@yahoo.com>
-Subject: edirol m100fx
-Date: Mon, 10 Mar 2008 09:04:26 -0700 (PDT)
-Message-ID: <369792.20649.qm@web39613.mail.mud.yahoo.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: aplay: can't resolve symbol 'snd_dlsym_start
+Date: Mon, 10 Mar 2008 16:41:03 -0700
+Message-ID: <61445c750803101641w6d70f210l2a02731e1eb16ccf@mail.gmail.com>
+References: <61445c750803101341m30db6b1oa518c32cdd7fc437@mail.gmail.com>
+	<20080310135843.57b0777e@jutz-gnto64>
+	<61445c750803101503h68e69e22yff709a3cc45d6d08@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web39613.mail.mud.yahoo.com (web39613.mail.mud.yahoo.com
-	[209.191.106.44])
-	by alsa0.perex.cz (Postfix) with SMTP id DF14C103812
-	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 17:04:32 +0100 (CET)
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA1A210388C
+	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 00:41:04 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so2231022wag.8
+	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 16:41:03 -0700 (PDT)
+In-Reply-To: <61445c750803101503h68e69e22yff709a3cc45d6d08@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,29 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: John Utz <john.utz@dmx.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I saw a post on the soundcard list to contact you if I
-have a Roland/Edirol M-100fx 10 channel mixer.  I do
-have one and I would like to help out in anyway I can.
- The post seems to have been from Clemens Ladisch but
-I'm not sure if that matters.  Please let me know how
-I can be of assistance.  On another note I also have
-an internal sound card lspci lists as an ALi
-Corporation M5451 PCI AC-Link Controller Audio Device
-(rev 02)"  This card has a headphone jack that seconds
-as a MiniTOSlink fiber optic jack.  The sound card
-works fine however the fiber optic doesn't work.  I
-think I do have windows drivers for this device on the
-OEM XP installation cd I have.  I would greatly like
-to have this working properly and am also willing to
-help with the development.
+On Mon, Mar 10, 2008 at 3:03 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
+>
+> On Mon, Mar 10, 2008 at 1:58 PM, John Utz <john.utz@dmx.com> wrote:
+>  > here's some places to start:
+>  >
+>  >  did you compile the lib as static but the app as shared or vice versa?
+>  >
+>  >  also, do an ldd on our libasound.so and see if it wants libdl:
+>  >
+>  >  utz-gnto64 NewProD # ldd /usr/lib/libasound.so
+>  >         libm.so.6 => /lib/libm.so.6 (0x00002acc4444d000)
+>  >         libdl.so.2 => /lib/libdl.so.2 (0x00002acc446ce000)
+>  >         libpthread.so.0 => /lib/libpthread.so.0 (0x00002acc448d2000)
+>  >         libc.so.6 => /lib/libc.so.6 (0x00002acc44aee000)
+>  >         /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
+>  >  jutz-gnto64 NewProD #
+>  >
+>  >
+>  >
+>  >
+>  >  On Mon, 10 Mar 2008 13:41:10 -0700
+>  >  "Pharaoh ." <pharaoh137@gmail.com> wrote:
+>  >
+>  >  > Hi,
+>  >  >
+>  >  > I have written an user space plugin and the plugin shared library is
+>  >  > copied on board
+>  >  > appropriately, libasound.so is also copied.
+>  >  >
+>  >  >
+>  >  > When I try:
+>  >  >
+>  >  > #aplay -D omx    test.wav  //omx is my plugin
+>  >  >
+>  >  > I get following error:
+>  >  >
+>  >  > aplay: can't resolve symbol 'snd_dlsym_start
+>  >  >
+>  >  >
+>  >  > Any idea what is the problem?
+>  >  >
+>  >  > -pharaoh
+>  >  > _______________________________________________
+>  >  > Alsa-devel mailing list
+>  >  > Alsa-devel@alsa-project.org
+>  >  > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>  >  >
+>  >
+>  >
+>
+>  I have compiled both alsa-lib and alsa-utils as shared libraries.
+>  After doing ldd, I can see that it needs libdl.so and it is present on
+>  the board. Let me try with a clean build again.
+>
 
-Thanks,
-Justin
-
-
-      ____________________________________________________________________________________
-Looking for last minute shopping deals?  
-Find them fast with Yahoo! Search.  http://tools.search.yahoo.com/newsearch/category.php?category=shopping
+Still no luck, I get the same error. Is there any way by which I can
+find out list of unresolved sumbols in a shared library?
