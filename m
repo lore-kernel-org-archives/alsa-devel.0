@@ -1,21 +1,14 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: aplay: can't resolve symbol 'snd_dlsym_start
-Date: Mon, 10 Mar 2008 16:41:03 -0700
-Message-ID: <61445c750803101641w6d70f210l2a02731e1eb16ccf@mail.gmail.com>
-References: <61445c750803101341m30db6b1oa518c32cdd7fc437@mail.gmail.com>
-	<20080310135843.57b0777e@jutz-gnto64>
-	<61445c750803101503h68e69e22yff709a3cc45d6d08@mail.gmail.com>
+From: Spike <spike@spykes.net>
+Subject: Re: X-Fi support in ALSA.
+Date: Mon, 10 Mar 2008 19:49:07 -0400
+Message-ID: <20080310194907.2bb71ebf@darius>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA1A210388C
-	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 00:41:04 +0100 (CET)
-Received: by wa-out-1112.google.com with SMTP id m33so2231022wag.8
-	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 16:41:03 -0700 (PDT)
-In-Reply-To: <61445c750803101503h68e69e22yff709a3cc45d6d08@mail.gmail.com>
-Content-Disposition: inline
+Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 76DC710385E
+	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 00:49:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,64 +18,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Utz <john.utz@dmx.com>
+To: James@superbug.co.uk
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 10, 2008 at 3:03 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
->
-> On Mon, Mar 10, 2008 at 1:58 PM, John Utz <john.utz@dmx.com> wrote:
->  > here's some places to start:
->  >
->  >  did you compile the lib as static but the app as shared or vice versa?
->  >
->  >  also, do an ldd on our libasound.so and see if it wants libdl:
->  >
->  >  utz-gnto64 NewProD # ldd /usr/lib/libasound.so
->  >         libm.so.6 => /lib/libm.so.6 (0x00002acc4444d000)
->  >         libdl.so.2 => /lib/libdl.so.2 (0x00002acc446ce000)
->  >         libpthread.so.0 => /lib/libpthread.so.0 (0x00002acc448d2000)
->  >         libc.so.6 => /lib/libc.so.6 (0x00002acc44aee000)
->  >         /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
->  >  jutz-gnto64 NewProD #
->  >
->  >
->  >
->  >
->  >  On Mon, 10 Mar 2008 13:41:10 -0700
->  >  "Pharaoh ." <pharaoh137@gmail.com> wrote:
->  >
->  >  > Hi,
->  >  >
->  >  > I have written an user space plugin and the plugin shared library is
->  >  > copied on board
->  >  > appropriately, libasound.so is also copied.
->  >  >
->  >  >
->  >  > When I try:
->  >  >
->  >  > #aplay -D omx    test.wav  //omx is my plugin
->  >  >
->  >  > I get following error:
->  >  >
->  >  > aplay: can't resolve symbol 'snd_dlsym_start
->  >  >
->  >  >
->  >  > Any idea what is the problem?
->  >  >
->  >  > -pharaoh
->  >  > _______________________________________________
->  >  > Alsa-devel mailing list
->  >  > Alsa-devel@alsa-project.org
->  >  > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->  >  >
->  >
->  >
->
->  I have compiled both alsa-lib and alsa-utils as shared libraries.
->  After doing ldd, I can see that it needs libdl.so and it is present on
->  the board. Let me try with a clean build again.
->
 
-Still no luck, I get the same error. Is there any way by which I can
-find out list of unresolved sumbols in a shared library?
+
+> Hi,
+>
+> I have now had a chance to read some of the specs of the X-Fi cards. 
+> aka. emu20k1.
+> It turns out that some of the X-Fi cards have a compatibility mode.
+> By default, they boot up in compatibility mode.
+> The interesting point is that this "compatibility mode" is in fact
+> the intel-HD standard so could use the intel-hda driver.
+> For one X-Fi card with IDs:
+> Device 1102:0009 Subsystem: 1102:0010
+> works a bit with the ALSA hda-intel driver.
+> So far, the off the shelf hda-intel driver, with simple PCIs
+> adjustment, works for the above card, but only sound capture works so
+> far, so probably some quirk would be needed.
+> This compatibility mode works with the Windows Vista UAA drivers.
+>
+> Not all X-Fi cards support with compatibility mode. For example, any 
+> card with (after a cold boot into Linux)
+> Device 1102:0005 Subsystem: xxxx:xxxx
+> will be X-Fi only.
+>
+> With regard to actual full X-Fi support, I am still in the progress of 
+> creating a GPL emu20k1.h file, that is the first step towards an 
+> snd-emu20k1 native ALSA driver.
+>
+> James
+
+Hello,
+
+That first ID is an X-Fi Xtreme Audio PCIe (CA0110-IBG) is it not? Not a
+real EMU20K1 based X-Fi, fully software driven, and from what I read its
+just a PCIe variation of the old CA0106. This thing will probably work
+with snd-ca0106 if creative kept to their old tactics regarding their
+low end X-Fi products.
+
+As for supporting the real X-Fi's, this is great news, its been a very
+longtime coming. One just has to question Creative's motives behind
+finally releasing the datasheets out of the blue like that after more
+than 2 years of trying to get them. Are these sheets under an NDA?
+Full support of an X-Fi will probably also need a firmware loader.
+
+If the PCIe CA0110-IBG doesn't share any common traits with a full
+blown EMU20K1, then I think the real X-Fi's should be focused on first
+as many more people are going to have these real X-Fi's that are
+useless to them at the moment, (about 3 years remember).
+
+I'll be around to help test code and can try anything you will require
+to help out supporting a real X-Fi card.
+
+02:08.0 Multimedia audio controller: Creative Labs SB X-Fi [1102:0005]
+        Subsystem: Unknown device 415a:0034
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at a400 [size=32]
+        Memory at efc00000 (64-bit, non-prefetchable) [size=2M]
+        Memory at e8000000 (64-bit, non-prefetchable) [size=64M]
+
+Bren
