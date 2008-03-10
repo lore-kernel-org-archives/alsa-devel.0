@@ -1,61 +1,56 @@
-From: Johannes Dohmen <johannes.dohmen@web.de>
-Subject: Problems with nonblocking capture every 20ms
-Date: Mon, 10 Mar 2008 16:28:22 +0100
-Message-ID: <47D55396.3080705@web.de>
+From: rct@frus.com (Bob Tracy)
+Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Mon, 10 Mar 2008 11:21:30 -0500 (CDT)
+Message-ID: <20080310162130.AFFD3DBA2@gherkin.frus.com>
+References: <47D55115.3010708@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate01.web.de (fmmailgate01.web.de [217.72.192.221])
-	by alsa0.perex.cz (Postfix) with ESMTP id 526B224530
-	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 16:28:21 +0100 (CET)
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate01.web.de (Postfix) with ESMTP id BD023D659CA8
-	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 16:28:20 +0100 (CET)
-Received: from [80.137.211.132] (helo=[192.168.1.21])
-	by smtp05.web.de with asmtp (WEB.DE 4.109 #226) id 1JYjvH-0008D9-00
-	for alsa-devel@alsa-project.org; Mon, 10 Mar 2008 16:28:19 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <47D55115.3010708@keyaccess.nl> "from Rene Herman at Mar 10, 2008
+ 04:17:41 pm"
+Sender: linux-alpha-owner@vger.kernel.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Michael Cree <mcree@orcon.net.nz>, Bob Tracy <rct@frus.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+Rene Herman wrote:
+> > Bob Tracy wrote:
+> 
+> >> Supposedly with the ES1888, dma1 is for capture, dma2 is for playback. 
+> >> dma2 == 5 is a 16-bit channel, yes?  That could explain much...
+> 
+> It is, but what would it explain? You're only having playback problems, right?
 
-With a sampling rate of 8000 I want to capture every 20ms a chunk (160 
-frames) of data from the soundcard. That works ok, but every ~5 seconds 
-I get a EGAIN from snd_pcm_readi().
-I understand that this is not an error but a notification that the sound
-card is not ready and should be asked again for data later on.
+dma2 is for playback, I'm having playback problems, dma2 == 5 is a
+a 16-bit channel, and 16-bit DMA is an issue with the es18xx driver
+(according to the comment near the top of the file).
 
-Probably the easiest way to get rid of the EGAINs would be to use
-blocking IO, which I would prefer, but I have timing restrictions and
-snd_pcm_readi() has no sort of timeout (which I could see at least).
+> Can it be forced to use dma2=0 (an 8-bit channel, and the usual capture 
+> channel on es18xx)? However, that might not be the issue anyway:
 
-Additional Information:
-The reason for me the read from the sound card every 20ms is, that I
-need to do so for my voip-app (rtp&sip) which needs to send 160 frames
-every 20ms. The calculation is:
-PacketsPerSecond=50
-SampleRate=8000
-FramesPerPacket=8000/50=160
-Wait=1000ms/50=20ms
+I'll try a few things like dma2 == dma1, and setting dma2 to an 8-bit
+channel, but I think the various configuration parameters are hard-wired
+on the Alpha (not PnP).
 
-I know that EAGAINs might occur and I'm confident that I
-handle them ok on the RTP-Level (which is to notify the other side which 
-then plays empty samples). Still I would guess, that I could
-receive much less EGAINs if I would setup the sound card better.
-If played around with the period time and size and buffer time and size,
-but honestly I did not really get the point of them and try&error has
-not helped me either.
+> This sounds very suspiciously like a difference with playing through the 
+> native ALSA interface and the OSS emulaion. Could you and/or Bob confirm 
+> that sox is using the OSS emulation and not ALSA natively?
+> 
+> I could very well imagine the ALSA OSS emulation being broken on Alpha. I 
+> doubt any of teh developers has an Alpha. And if aplay works correctly this 
+> seems very likely.
 
-Thanks in advance & greetings from Germany
+I'll see if I can verify whether it's a native ALSA vs. OSS emulation
+issue.
 
-Johannes
+The local version of sox (Debian 12.7.9-1) contains a library dependency
+on libasound.so.2, and a "strings" on the binary yields "ALSA_0.9.0rc4"
+as well as several ALSA error message strings.  However, output by
+default goes to /dev/dsp (major 14, minor 3), which is definitely OSS.
+
+-- 
+------------------------------------------------------------------------
+Bob Tracy          |  "I was a beta tester for dirt.  They never did
+rct@frus.com       |   get all the bugs out." - Steve McGrew on /.
+------------------------------------------------------------------------
