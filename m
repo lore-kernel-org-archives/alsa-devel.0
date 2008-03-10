@@ -1,19 +1,17 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: X-Fi support in ALSA.
-Date: Mon, 10 Mar 2008 20:20:48 +0000
-Message-ID: <47D59820.9020106@superbug.co.uk>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: aplay: can't resolve symbol 'snd_dlsym_start
+Date: Mon, 10 Mar 2008 13:41:10 -0700
+Message-ID: <61445c750803101341m30db6b1oa518c32cdd7fc437@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net
-	[194.217.242.85])
-	by alsa0.perex.cz (Postfix) with ESMTP id C793A10381E
-	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 21:20:52 +0100 (CET)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.0.10])
-	by anchor-post-35.mail.demon.net with esmtp (Exim 4.67)
-	id 1JYoUO-000Dwg-H1
-	for alsa-devel@alsa-project.org; Mon, 10 Mar 2008 20:20:52 +0000
+Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id E4D932449E
+	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 21:41:13 +0100 (CET)
+Received: by gv-out-0910.google.com with SMTP id c6so670293gvd.24
+	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2008 13:41:13 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,27 +26,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I have now had a chance to read some of the specs of the X-Fi cards. 
-aka. emu20k1.
-It turns out that some of the X-Fi cards have a compatibility mode.
-By default, they boot up in compatibility mode.
-The interesting point is that this "compatibility mode" is in fact the 
-intel-HD standard so could use the intel-hda driver.
-For one X-Fi card with IDs:
-Device 1102:0009 Subsystem: 1102:0010
-works a bit with the ALSA hda-intel driver.
-So far, the off the shelf hda-intel driver, with simple PCIs adjustment, 
-works for the above card, but only sound capture works so far, so 
-probably some quirk would be needed.
-This compatibility mode works with the Windows Vista UAA drivers.
+I have written an user space plugin and the plugin shared library is
+copied on board
+appropriately, libasound.so is also copied.
 
-Not all X-Fi cards support with compatibility mode. For example, any 
-card with (after a cold boot into Linux)
-Device 1102:0005 Subsystem: xxxx:xxxx
-will be X-Fi only.
 
-With regard to actual full X-Fi support, I am still in the progress of 
-creating a GPL emu20k1.h file, that is the first step towards an 
-snd-emu20k1 native ALSA driver.
+When I try:
 
-James
+#aplay -D omx    test.wav  //omx is my plugin
+
+I get following error:
+
+aplay: can't resolve symbol 'snd_dlsym_start
+
+
+Any idea what is the problem?
+
+-pharaoh
