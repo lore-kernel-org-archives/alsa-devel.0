@@ -1,104 +1,91 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Tue, 11 Mar 2008 16:17:32 +0100
-Message-ID: <47D6A28C.4060804@keyaccess.nl>
-References: <20080311140718.8B3ABDBA2@gherkin.frus.com>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: ICE1724 - File descriptor in bad state
+	when	capturing
+Date: Tue, 11 Mar 2008 16:21:58 +0100
+Message-ID: <47D6A396.9000902@insite.cz>
+References: <47D46B01.8020009@insite.cz>
+	<s5hk5kax2dn.wl%tiwai@suse.de>	<47D5AA82.4080009@insite.cz>
+	<47D63632.60808@ladisch.de>	<47D63D6A.10503@insite.cz>
+	<47D6A111.8010608@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020605050705070702050506"
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20080311140718.8B3ABDBA2@gherkin.frus.com>
-Sender: linux-alpha-owner@vger.kernel.org
-To: Bob Tracy <rct@frus.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from prague.insite.cz (r3g29.net.upc.cz [213.220.198.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3A8624402
+	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 16:22:03 +0100 (CET)
+In-Reply-To: <47D6A111.8010608@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020605050705070702050506
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 11-03-08 15:07, Bob Tracy wrote:
-
-> Both native ALSA and emulated OSS playback are broken based on last 
-> night's testing.  Just to rule out sound hardware issues, this morning I
-> built a 2.6.25-rc4 kernel with OSS (sb driver), and that seems to be 
-> working fine.
-
-Okay... From your testing report:
-
->> $ sox foo.wav -t alsa default
+Clemens Ladisch napsal(a):
+> Pavel Hofman wrote:
+>> Clemens Ladisch wrote:
+>>> Pavel Hofman wrote:
+>>>> Whereas for the broken analog input, the sequence is
+>>>>
+>>>> 1. snd_pcm_lib_read1 with SNDRV_PCM_STATE_PREPARED - returns 0
+>>>> 2. snd_pcm_lib_read1 with SNDRV_PCM_STATE_SETUP - returns -EBADFD
+>>> I'd guess that your trigger callback fails somehow, bit this is
+>>> hard to determine without the source code.
+>> Thanks, I will do more testing in the evening. Just in case, I am
+>> including the relevant files. I moved all rate-relevant stuff to
+>> card-specific routines, redefined in juli.c. The trigger code was not
+>> changed at all.
+>>
+>> Perhaps those new snd_pcm_hardware structs in juli.c (I do not know the
+>> exact meaning of the _bytes_ ones)?
 > 
-> Playback results in infinite loop over the first quarter second or so
-> of audio.  Using "aplay" results in same looping behavior over a longer
-> segment of audio -- maybe a half second.
-
-This is behaviour consistent with the IRQ being dead ...
-
->> > $ sox foo.wav -t ossdsp /dev/dsp
+> These values are in bytes (and not in frames).
 > 
-> Identical results to using "play" (as expected): for the 50K ".wav"
-> file, I hear the entire file approx. 1.8 times.
+> It's possible that the AK4114 code stops the stream because it thinks
+> that the input sample rate has changed.  Try uncommenting the printk
+> in i2c/other/ak4114.c.
 
-... and this isn't. Worse yet, we have a conflicting report from Michael 
-where things are fine while using aplay and I'm seeing nothing particularly 
-suspicious recently. I suppose it used to work and I suppose the behaviour 
-you are describing above is 100% repeatable?
+Thanks, I will try that. I can even check with the whole AK4114 creation 
+code commented out.
 
-Given that you can use aplay -- probably no difference with "aplay -M" ?
+Would the SPDIF receiver code stop the analog capture stream too? The 
+digital capture stream works fine.
 
-To get to the bottom of this we might need to get a specific failed version 
-(for readers, it's not been verified that this is a regression since 2.6.24) 
-but we can try to get lucky first.
+Thanks,
 
-The most recent change to sound/isa/es18xx.c that's not utterly impossible 
-to have made a difference is 1bc9eed379399484d3f5d5a0834674983969bc1, 
-"es18xx: Enable wavetable input from ESS chips". I don't know if you're a 
-GIT user. If you are, you can revert it simply with
-
-$ git revert 1bc9eed3
-
-If you're not a GIT user, applying the attached should work. Unlikely, but 
-as said, we can try.
-
-> I tried a few rmmod/insmod cycles with different values for dma2.
-> Results as follows:
+Pavel.
 > 
-> (a) dma2=1 (== dma1): no change
-> (b) dma2 option omitted : no change
-> (c) dma2=-1 : probe failed
+> 
+> Regards,
+> Clemens
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Okay. A and B seem to at least confirm it's not the 16-bit DMA.
+-- 
+-----------------
 
-Rene.
+inSITE, s.r.o.
 
---------------020605050705070702050506
-Content-Type: text/plain;
- name="es18xx_revert_wavetable_input.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="es18xx_revert_wavetable_input.diff"
+Kafkova 16, 160 00 Praha 6
+Rubesova 29, 326 00 Plzen
 
-commit 8fa1de6349913b63d8ebfb27003b7045eeb9f12a
-Author: Rene Herman <rene.herman@gmail.com>
-Date:   Tue Mar 11 15:52:36 2008 +0100
+Tel., fax: +420 - 37 - 74 493 58
+GSM: +420 - 603 - 163 973
+Email: pavel.hofman@insite.cz
 
-    Revert "[ALSA] es18xx: Enable wavetable input from ESS chips"
-    
-    This reverts commit 1bc9eed379399484d3f5d5a0834674983969bc1e.
-
-diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
-index 90498e4..865ab1d 100644
---- a/sound/isa/es18xx.c
-+++ b/sound/isa/es18xx.c
-@@ -1441,8 +1441,6 @@ static int __devinit snd_es18xx_initialize(struct snd_es18xx *chip)
- 		snd_es18xx_write(chip, 0xB2, 0x50);
- 		/* Enable MPU and hardware volume interrupt */
- 		snd_es18xx_mixer_write(chip, 0x64, 0x42);
--		/* Enable ESS wavetable input */
--		snd_es18xx_mixer_bits(chip, 0x48, 0x10, 0x10);
- 	}
- 	else {
- 		int irqmask, dma1mask, dma2mask;
-
---------------020605050705070702050506--
+www.educity.cz, www.insite.cz
+www.meetings.cz, www.hrzive.cz
+www.comben.cz, www.hr-online.cz
+-------------------------------
+Navstivte www.educity.cz, server
+s nejvetsi nabidkou profesniho
+vzdelavani na ceskem internetu.
