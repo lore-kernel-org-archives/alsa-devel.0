@@ -1,23 +1,16 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: aplay: can't resolve symbol 'snd_dlsym_start
-Date: Tue, 11 Mar 2008 13:43:35 -0700
-Message-ID: <61445c750803111343h42572808u193029b5495a8716@mail.gmail.com>
-References: <61445c750803101341m30db6b1oa518c32cdd7fc437@mail.gmail.com>
-	<20080310135843.57b0777e@jutz-gnto64>
-	<61445c750803101503h68e69e22yff709a3cc45d6d08@mail.gmail.com>
-	<61445c750803101641w6d70f210l2a02731e1eb16ccf@mail.gmail.com>
-	<20080311103228.1897ad98@jutz-gnto64>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: X-Fi support in ALSA.
+Date: Tue, 11 Mar 2008 21:24:15 +0000
+Message-ID: <47D6F87F.6080809@superbug.co.uk>
+References: <47D59820.9020106@superbug.co.uk> <s5hlk4pb2qf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------040902050307020601020507"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6341D103890
-	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 21:43:38 +0100 (CET)
-Received: by rn-out-0910.google.com with SMTP id j40so1701175rnf.12
-	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 13:43:36 -0700 (PDT)
-In-Reply-To: <20080311103228.1897ad98@jutz-gnto64>
-Content-Disposition: inline
+Received: from anchor-post-36.mail.demon.net (anchor-post-36.mail.demon.net
+	[194.217.242.86])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3851C243AC
+	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 22:24:17 +0100 (CET)
+In-Reply-To: <s5hlk4pb2qf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,360 +20,220 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Utz <john.utz@dmx.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 11, 2008 at 10:32 AM, John Utz <john.utz@dmx.com> wrote:
+This is a multi-part message in MIME format.
+--------------040902050307020601020507
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> On Mon, 10 Mar 2008 16:41:03 -0700
-> "Pharaoh ." <pharaoh137@gmail.com> wrote:
->
-> > On Mon, Mar 10, 2008 at 3:03 PM, Pharaoh . <pharaoh137@gmail.com>
-> > wrote:
-> > >
-> > > On Mon, Mar 10, 2008 at 1:58 PM, John Utz <john.utz@dmx.com> wrote:
-> > >  > here's some places to start:
-> > >  >
-> > >  >  did you compile the lib as static but the app as shared or vice
-> > >  > versa?
-> > >  >
-> > >  >  also, do an ldd on our libasound.so and see if it wants libdl:
-> > >  >
-> > >  >  utz-gnto64 NewProD # ldd /usr/lib/libasound.so
-> > >  >         libm.so.6 => /lib/libm.so.6 (0x00002acc4444d000)
-> > >  >         libdl.so.2 => /lib/libdl.so.2 (0x00002acc446ce000)
-> > >  >         libpthread.so.0 => /lib/libpthread.so.0
-> > >  > (0x00002acc448d2000) libc.so.6 => /lib/libc.so.6
-> > >  > (0x00002acc44aee000) /lib64/ld-linux-x86-64.so.2
-> > >  > (0x0000555555554000) jutz-gnto64 NewProD #
-> > >  >
-> > >  >
-> > >  >
-> > >  >
-> > >  >  On Mon, 10 Mar 2008 13:41:10 -0700
-> > >  >  "Pharaoh ." <pharaoh137@gmail.com> wrote:
-> > >  >
-> > >  >  > Hi,
-> > >  >  >
-> > >  >  > I have written an user space plugin and the plugin shared
-> > >  >  > library is copied on board
-> > >  >  > appropriately, libasound.so is also copied.
-> > >  >  >
-> > >  >  >
-> > >  >  > When I try:
-> > >  >  >
-> > >  >  > #aplay -D omx    test.wav  //omx is my plugin
-> > >  >  >
-> > >  >  > I get following error:
-> > >  >  >
-> > >  >  > aplay: can't resolve symbol 'snd_dlsym_start
-> > >  >  >
-> > >  >  >
-> > >  >  > Any idea what is the problem?
-> > >  >  >
-> > >  >  > -pharaoh
-> > >  >  > _______________________________________________
-> > >  >  > Alsa-devel mailing list
-> > >  >  > Alsa-devel@alsa-project.org
-> > >  >  > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > >  >  >
-> > >  >
-> > >  >
-> > >
-> > >  I have compiled both alsa-lib and alsa-utils as shared libraries.
-> > >  After doing ldd, I can see that it needs libdl.so and it is
-> > > present on the board. Let me try with a clean build again.
-> > >
-> >
-> > Still no luck, I get the same error. Is there any way by which I can
-> > find out list of unresolved sumbols in a shared library?
-> >
->
-> nm -D /usr/lib/libasound.so | grep U
->
->
-I get this, when I run nm on my alsa-lib which is used on board.
-         U __addsf3
-         U __assert
-         U __ctype_b
-         U __ctype_tolower
-         U __eqsf2
-         U __errno_location
-         U __fgetc_unlocked
-         U __fixdfsi
-         U __fixsfsi
-         U __floatsisf
-         U __fputc_unlocked
-         U __gesf2
-         U __gtsf2
-         U __lesf2
-         U __ltsf2
-         U __nesf2
-         U _exit
-         U accept
-         U access
-         U atof
-         U atoi
-         U atol
-         U bind
-         U bsearch
-         U calloc
-         U ceil
-         U chmod
-         U chown
-         U close
-         U closedir
-         U connect
-         U dladdr
-         U dlclose
-         U dlopen
-         U dlsym
-         U exit
-         U exp
-         U fclose
-         U fcntl
-         U fflush
-         U ffs
-         U fgetc
-         U fgets
-         U floor
-         U fmod
-         U fopen
-         U fork
-         U fprintf
-         U fputc
-         U fputs
-         U free
-         U fwrite
-         U getenv
-         U getgrnam
-         U gethostbyname
-         U getpid
-         U gettimeofday
-         U getuid
-         U ioctl
-         U listen
-         U localeconv
-         U log
-         U log10
-         U lseek
-         U malloc
-         U memcmp
-         U memcpy
-         U memmove
-         U memset
-         U mlock
-         U mmap
-         U munmap
-         U nanosleep
-         U open
-         U opendir
-         U pipe
-         U poll
-         U pow
-         U pthread_cond_destroy
-         U pthread_cond_init
-         U pthread_cond_signal
-         U pthread_cond_wait
-         U pthread_create
-         U pthread_join
-         U pthread_mutex_destroy
-         U pthread_mutex_init
-         U pthread_mutex_lock
-         U pthread_mutex_trylock
-         U pthread_mutex_unlock
-         U qsort
-         U raise
-         U read
-         U readdir
-         U realloc
-         U recvmsg
-         U rintf
-         U sched_yield
-         U semctl
-         U semget
-         U semop
-         U sendmsg
-         U setlocale
-         U setsid
-         U setsockopt
-         U shmat
-         U shmctl
-         U shmdt
-         U shmget
-         U sigaction
-         U sigemptyset
-         U signal
-         U snprintf
-         U socket
-         U socketpair
-         U sprintf
-         U sqrt
-         U sqrtf
-         U sscanf
-         U stat
-         U stderr
-         U stdout
-         U strcasecmp
-         U strcat
-         U strchr
-         U strcmp
-         U strcpy
-         U strcspn
-         U strdup
-         U strerror
-         U strlen
-         U strncmp
-         U strncpy
-         U strpbrk
-         U strrchr
-         U strtod
-         U strtol
-         U sysconf
-         U ungetc
-         U unlink
-         U usleep
-         U vfprintf
-         U vfscanf
-         U vsnprintf
-         U vsscanf
-         U waitpid
-         U wordexp
-         U wordfree
-         U write
+Takashi Iwai wrote:
+> At Mon, 10 Mar 2008 20:20:48 +0000,
+> James Courtier-Dutton wrote:
+>> Hi,
+>>
+>> I have now had a chance to read some of the specs of the X-Fi cards. 
+>> aka. emu20k1.
+>> It turns out that some of the X-Fi cards have a compatibility mode.
+>> By default, they boot up in compatibility mode.
+>> The interesting point is that this "compatibility mode" is in fact the 
+>> intel-HD standard so could use the intel-hda driver.
+>> For one X-Fi card with IDs:
+>> Device 1102:0009 Subsystem: 1102:0010
+>> works a bit with the ALSA hda-intel driver.
+>> So far, the off the shelf hda-intel driver, with simple PCIs adjustment, 
+>> works for the above card, but only sound capture works so far, so 
+>> probably some quirk would be needed.
+>> This compatibility mode works with the Windows Vista UAA drivers.
+> 
+> Could you show /proc/asound/card*/codec#* contents for HD-audio mode?
+> 
+> 
+> Takashi
+
+See attached
 
 
-But, I get almost same thing when I do nm on my laptop's alsa-lib, this
-alsa-lib works.
+--------------040902050307020601020507
+Content-Type: text/plain;
+ name="ca0110-codec.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ca0110-codec.txt"
 
-         U _IO_getc
-         U _IO_putc
-         U __assert_fail
-         U __ctype_b_loc
-         U __ctype_tolower_loc
-         U __errno_location
-         U __stack_chk_fail
-         U __strdup
-         U __strtod_internal
-         U __strtol_internal
-         U __xstat
-         U _exit
-         U accept
-         U access
-         U bind
-         U bsearch
-         U calloc
-         U chmod
-         U chown
-         U close
-         U closedir
-         U connect
-         U dladdr
-         U dlclose
-         U dlopen
-         U dlsym
-         U exit
-         U exp
-         U fclose
-         U fcntl
-         U feof
-         U fflush
-         U fgets
-         U floor
-         U fmod
-         U fopen
-         U fork
-         U fprintf
-         U fputs
-         U free
-         U fwrite
-         U getenv
-         U getgrnam
-         U gethostbyname
-         U getpid
-         U gettimeofday
-         U getuid
-         U ioctl
-         U listen
-         U localeconv
-         U log
-         U log10
-         U lseek
-         U malloc
-         U memcpy
-         U memmove
-         U memset
-         U mlock
-         U mmap
-         U munmap
-         U nanosleep
-         U open
-         U opendir
-         U pipe
-         U poll
-         U pow
-         U pthread_cond_destroy
-         U pthread_cond_init
-         U pthread_cond_signal
-         U pthread_cond_wait
-         U pthread_create
-         U pthread_join
-         U pthread_mutex_destroy
-         U pthread_mutex_init
-         U pthread_mutex_lock
-         U pthread_mutex_trylock
-         U pthread_mutex_unlock
-         U qsort
-         U read
-         U readdir
-         U realloc
-         U recvmsg
-         U rintf
-         U sched_yield
-         U semctl
-         U semget
-         U semop
-         U sendmsg
-         U setlocale
-         U setsid
-         U setsockopt
-         U shmat
-         U shmctl
-         U shmdt
-         U shmget
-         U sigaction
-         U sigemptyset
-         U signal
-         U snprintf
-         U socket
-         U socketpair
-         U sprintf
-         U sqrtf
-         U sscanf
-         U stderr
-         U stdout
-         U strcasecmp
-         U strcat
-         U strchr
-         U strcmp
-         U strcpy
-         U strcspn
-         U strerror
-         U strlen
-         U strncmp
-         U strncpy
-         U strpbrk
-         U strrchr
-         U strstr
-         U sysconf
-         U ungetc
-         U unlink
-         U usleep
-         U vfprintf
-         U vfscanf
-         U vsnprintf
-         U waitpid
-         U wordexp
-         U wordfree
-         U write
+# Codec: Generic 1102 ID a
+# Address: 1
+# Vendor Id: 0x1102000a
+# Subsystem Id: 0x1462c320
+# Revision Id: 0x100000
+# No Modem Function Group found
+# Default PCM:
+#    rates [0x160]: 44100 48000 96000
+#    bits [0xa]: 16 24
+#    formats [0x1]: PCM
+# Default Amp-In caps: ofs=0x67, nsteps=0x73, stepsize=0x01, mute=0
+# Default Amp-Out caps: ofs=0x67, nsteps=0x67, stepsize=0x01, mute=0
+# GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+# Node 0x02 [Audio Output] wcaps 0x5: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-Out vals:  [0x53 0x53]
+#  Converter: stream=0, channel=0
+# Node 0x03 [Audio Output] wcaps 0x5: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-Out vals:  [0x67 0x67]
+#  Converter: stream=0, channel=0
+# Node 0x04 [Audio Output] wcaps 0x5: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-Out vals:  [0x67 0x67]
+#  Converter: stream=0, channel=0
+# Node 0x05 [Audio Output] wcaps 0x5: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-Out vals:  [0x67 0x67]
+#  Converter: stream=0, channel=0
+# Node 0x06 [Audio Output] wcaps 0x5: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-Out vals:  [0x67 0x67]
+#  Converter: stream=0, channel=0
+# Node 0x07 [Audio Output] wcaps 0x205: Stereo Digital Amp-Out
+#  Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-Out vals:  [0x67 0x67]
+#  Converter: stream=0, channel=0
+#  Digital:
+#  Digital category: 0x0
+# Node 0x08 [Audio Input] wcaps 0x100103: Stereo Amp-In
+#  Amp-In caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-In vals:  [0x0c 0x0c]
+#  Converter: stream=0, channel=0
+#  SDI-Select: 1
+#  Connection: 1
+#     0x10
+# Node 0x09 [Audio Input] wcaps 0x10010b: Stereo Amp-In
+#  Amp-In caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-In vals:  [0x67 0x67]
+#  Converter: stream=0, channel=0
+#  SDI-Select: 1
+#  Connection: 1
+#     0x11
+# Node 0x0a [Audio Input] wcaps 0x100303: Stereo Digital Amp-In
+#  Amp-In caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+#  Amp-In vals:  [0x67 0x67]
+#  Converter: stream=0, channel=0
+#  SDI-Select: 1
+#  Digital: Non-Audio Pro GenLevel
+#  Digital category: 0x60
+#  Connection: 1
+#     0x13
+# Node 0x0b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-Out vals:  [0x00 0x00]
+#  Pincap 0x0814: OUT Detect
+#  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
+#    Conn = 1/8, Color = Green
+#    DefAssociation = 0x1, Sequence = 0x0
+#  Pin-ctls: 0x40: OUT
+#  Unsolicited: tag=00, enabled=0
+#  Connection: 1
+#     0x02
+# Node 0x0c [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-Out vals:  [0x00 0x00]
+#  Pincap 0x0814: OUT Detect
+#  Pin Default 0x01016011: [Jack] Line Out at Ext Rear
+#    Conn = 1/8, Color = Orange
+#    DefAssociation = 0x1, Sequence = 0x1
+#  Pin-ctls: 0xc0: OUT HP
+#  Unsolicited: tag=00, enabled=0
+#  Connection: 1
+#     0x03
+# Node 0x0d [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-Out vals:  [0x00 0x00]
+#  Pincap 0x0814: OUT Detect
+#  Pin Default 0x01011012: [Jack] Line Out at Ext Rear
+#    Conn = 1/8, Color = Black
+#    DefAssociation = 0x1, Sequence = 0x2
+#  Pin-ctls: 0xc0: OUT HP
+#  Unsolicited: tag=00, enabled=0
+#  Connection: 1
+#     0x04
+# Node 0x0e [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-Out vals:  [0x00 0x00]
+#  Pincap 0x0814: OUT Detect
+#  Pin Default 0x01012014: [Jack] Line Out at Ext Rear
+#    Conn = 1/8, Color = Grey
+#    DefAssociation = 0x1, Sequence = 0x4
+#  Pin-ctls: 0xc0: OUT HP
+#  Unsolicited: tag=00, enabled=0
+#  Connection: 1
+#     0x05
+# Node 0x0f [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+#  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-Out vals:  [0x00 0x00]
+#  Pincap 0x081c: OUT HP Detect
+#  Pin Default 0x02214020: [Jack] HP Out at Ext Front
+#    Conn = 1/8, Color = Green
+#    DefAssociation = 0x2, Sequence = 0x0
+#  Pin-ctls: 0xc0: OUT HP
+#  Unsolicited: tag=00, enabled=0
+#  Connection: 1
+#     0x06
+# Node 0x10 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
+#  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-In vals:
+#  Pincap 0x0824: IN Detect
+#  Pin Default 0x01813030: [Jack] Line In at Ext Rear
+#    Conn = 1/8, Color = Blue
+#    DefAssociation = 0x3, Sequence = 0x0
+#  Pin-ctls: 0x20: IN
+#  Unsolicited: tag=00, enabled=0
+# Node 0x11 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
+#  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-In vals:
+#  Pincap 0x0824: IN Detect
+#  Pin Default 0x02a19040: [Jack] Mic at Ext Front
+#    Conn = 1/8, Color = Pink
+#    DefAssociation = 0x4, Sequence = 0x0
+#  Pin-ctls: 0xa0: IN HP
+#  Unsolicited: tag=00, enabled=0
+# Node 0x12 [Pin Complex] wcaps 0x40038d: Stereo Digital Amp-Out
+#  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-Out vals:  [0x00 0x00]
+#  Pincap 0x0810: OUT
+#  Pin Default 0x01452150: [Jack] SPDIF Out at Ext Rear
+#    Conn = Optical, Color = Grey
+#    DefAssociation = 0x5, Sequence = 0x0
+#    Misc = NO_PRESENCE
+#  Pin-ctls: 0xc0: OUT HP
+#  Unsolicited: tag=00, enabled=0
+#  Connection: 1
+#     0x07
+# Node 0x13 [Pin Complex] wcaps 0x40028b: Stereo Digital Amp-In
+#  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+#  Amp-In vals:
+#  Pincap 0x0820: IN
+#  Pin Default 0x01c51160: [Jack] SPDIF In at Ext Rear
+#    Conn = Optical, Color = Black
+#    DefAssociation = 0x6, Sequence = 0x0
+#    Misc = NO_PRESENCE
+#  Pin-ctls: 0xa0: IN HP
+#  Unsolicited: tag=00, enabled=0
+# Node 0x14 [Vendor Defined Widget] wcaps 0xf00080: Mono
+#  Unsolicited: tag=00, enabled=0
+
+
+
+--------------040902050307020601020507
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------040902050307020601020507--
