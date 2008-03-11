@@ -1,41 +1,386 @@
-From: rct@frus.com (Bob Tracy)
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Tue, 11 Mar 2008 15:34:21 -0500 (CDT)
-Message-ID: <20080311203421.BBEFDDBA2@gherkin.frus.com>
-References: <ED0F0070-B876-4D8B-8F88-879E01AB4326@orcon.net.nz>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: aplay: can't resolve symbol 'snd_dlsym_start
+Date: Tue, 11 Mar 2008 13:43:35 -0700
+Message-ID: <61445c750803111343h42572808u193029b5495a8716@mail.gmail.com>
+References: <61445c750803101341m30db6b1oa518c32cdd7fc437@mail.gmail.com>
+	<20080310135843.57b0777e@jutz-gnto64>
+	<61445c750803101503h68e69e22yff709a3cc45d6d08@mail.gmail.com>
+	<61445c750803101641w6d70f210l2a02731e1eb16ccf@mail.gmail.com>
+	<20080311103228.1897ad98@jutz-gnto64>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <ED0F0070-B876-4D8B-8F88-879E01AB4326@orcon.net.nz>
- "from Michael Cree at Mar 12, 2008 09:00:13 am"
-Sender: linux-alpha-owner@vger.kernel.org
-To: Michael Cree <mcree@orcon.net.nz>
-Cc: Bob Tracy <rct@frus.com>, Rene Herman <rene.herman@keyaccess.nl>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6341D103890
+	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 21:43:38 +0100 (CET)
+Received: by rn-out-0910.google.com with SMTP id j40so1701175rnf.12
+	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 13:43:36 -0700 (PDT)
+In-Reply-To: <20080311103228.1897ad98@jutz-gnto64>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: John Utz <john.utz@dmx.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Michael Cree wrote:
-> Yes, the ESS1888 driver failed to work on Alpha about the 2.6.14 to  
-> 2.6.16 kernel.   It came right with alsa release 1.0.13 (IIRC) and I  
-> have been running the ESS1888 driver on an Alpha XP1000 without  
-> problems for about a year.
+On Tue, Mar 11, 2008 at 10:32 AM, John Utz <john.utz@dmx.com> wrote:
 
-Nod.  I take it things were working for you at least as recently as
-2.6.22, then.  I can try that version and see if it works for me.  My
-situation is that I can't swear I've tried anything involving ALSA on
-the Alpha since 2.6.16 until recently, so I'm not sure this is really a
-regression in my case.
+> On Mon, 10 Mar 2008 16:41:03 -0700
+> "Pharaoh ." <pharaoh137@gmail.com> wrote:
+>
+> > On Mon, Mar 10, 2008 at 3:03 PM, Pharaoh . <pharaoh137@gmail.com>
+> > wrote:
+> > >
+> > > On Mon, Mar 10, 2008 at 1:58 PM, John Utz <john.utz@dmx.com> wrote:
+> > >  > here's some places to start:
+> > >  >
+> > >  >  did you compile the lib as static but the app as shared or vice
+> > >  > versa?
+> > >  >
+> > >  >  also, do an ldd on our libasound.so and see if it wants libdl:
+> > >  >
+> > >  >  utz-gnto64 NewProD # ldd /usr/lib/libasound.so
+> > >  >         libm.so.6 => /lib/libm.so.6 (0x00002acc4444d000)
+> > >  >         libdl.so.2 => /lib/libdl.so.2 (0x00002acc446ce000)
+> > >  >         libpthread.so.0 => /lib/libpthread.so.0
+> > >  > (0x00002acc448d2000) libc.so.6 => /lib/libc.so.6
+> > >  > (0x00002acc44aee000) /lib64/ld-linux-x86-64.so.2
+> > >  > (0x0000555555554000) jutz-gnto64 NewProD #
+> > >  >
+> > >  >
+> > >  >
+> > >  >
+> > >  >  On Mon, 10 Mar 2008 13:41:10 -0700
+> > >  >  "Pharaoh ." <pharaoh137@gmail.com> wrote:
+> > >  >
+> > >  >  > Hi,
+> > >  >  >
+> > >  >  > I have written an user space plugin and the plugin shared
+> > >  >  > library is copied on board
+> > >  >  > appropriately, libasound.so is also copied.
+> > >  >  >
+> > >  >  >
+> > >  >  > When I try:
+> > >  >  >
+> > >  >  > #aplay -D omx    test.wav  //omx is my plugin
+> > >  >  >
+> > >  >  > I get following error:
+> > >  >  >
+> > >  >  > aplay: can't resolve symbol 'snd_dlsym_start
+> > >  >  >
+> > >  >  >
+> > >  >  > Any idea what is the problem?
+> > >  >  >
+> > >  >  > -pharaoh
+> > >  >  > _______________________________________________
+> > >  >  > Alsa-devel mailing list
+> > >  >  > Alsa-devel@alsa-project.org
+> > >  >  > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > >  >  >
+> > >  >
+> > >  >
+> > >
+> > >  I have compiled both alsa-lib and alsa-utils as shared libraries.
+> > >  After doing ldd, I can see that it needs libdl.so and it is
+> > > present on the board. Let me try with a clean build again.
+> > >
+> >
+> > Still no luck, I get the same error. Is there any way by which I can
+> > find out list of unresolved sumbols in a shared library?
+> >
+>
+> nm -D /usr/lib/libasound.so | grep U
+>
+>
+I get this, when I run nm on my alsa-lib which is used on board.
+         U __addsf3
+         U __assert
+         U __ctype_b
+         U __ctype_tolower
+         U __eqsf2
+         U __errno_location
+         U __fgetc_unlocked
+         U __fixdfsi
+         U __fixsfsi
+         U __floatsisf
+         U __fputc_unlocked
+         U __gesf2
+         U __gtsf2
+         U __lesf2
+         U __ltsf2
+         U __nesf2
+         U _exit
+         U accept
+         U access
+         U atof
+         U atoi
+         U atol
+         U bind
+         U bsearch
+         U calloc
+         U ceil
+         U chmod
+         U chown
+         U close
+         U closedir
+         U connect
+         U dladdr
+         U dlclose
+         U dlopen
+         U dlsym
+         U exit
+         U exp
+         U fclose
+         U fcntl
+         U fflush
+         U ffs
+         U fgetc
+         U fgets
+         U floor
+         U fmod
+         U fopen
+         U fork
+         U fprintf
+         U fputc
+         U fputs
+         U free
+         U fwrite
+         U getenv
+         U getgrnam
+         U gethostbyname
+         U getpid
+         U gettimeofday
+         U getuid
+         U ioctl
+         U listen
+         U localeconv
+         U log
+         U log10
+         U lseek
+         U malloc
+         U memcmp
+         U memcpy
+         U memmove
+         U memset
+         U mlock
+         U mmap
+         U munmap
+         U nanosleep
+         U open
+         U opendir
+         U pipe
+         U poll
+         U pow
+         U pthread_cond_destroy
+         U pthread_cond_init
+         U pthread_cond_signal
+         U pthread_cond_wait
+         U pthread_create
+         U pthread_join
+         U pthread_mutex_destroy
+         U pthread_mutex_init
+         U pthread_mutex_lock
+         U pthread_mutex_trylock
+         U pthread_mutex_unlock
+         U qsort
+         U raise
+         U read
+         U readdir
+         U realloc
+         U recvmsg
+         U rintf
+         U sched_yield
+         U semctl
+         U semget
+         U semop
+         U sendmsg
+         U setlocale
+         U setsid
+         U setsockopt
+         U shmat
+         U shmctl
+         U shmdt
+         U shmget
+         U sigaction
+         U sigemptyset
+         U signal
+         U snprintf
+         U socket
+         U socketpair
+         U sprintf
+         U sqrt
+         U sqrtf
+         U sscanf
+         U stat
+         U stderr
+         U stdout
+         U strcasecmp
+         U strcat
+         U strchr
+         U strcmp
+         U strcpy
+         U strcspn
+         U strdup
+         U strerror
+         U strlen
+         U strncmp
+         U strncpy
+         U strpbrk
+         U strrchr
+         U strtod
+         U strtol
+         U sysconf
+         U ungetc
+         U unlink
+         U usleep
+         U vfprintf
+         U vfscanf
+         U vsnprintf
+         U vsscanf
+         U waitpid
+         U wordexp
+         U wordfree
+         U write
 
-Because I threatened to do it :-), I built a 2.6.25-rc4+iommu_patch
-kernel with both the snd-es18xx and snd-sb8 modules available.  As
-hoped (expected?), the snd-sb8 driver works fine.  This would imply
-the problem is at least somewhat specific to the es18xx driver, and
-that the underlying ALSA infrastructure is reasonably healthy (notice
-that I intentionally avoided saying it was "sound" -- sorry, I never
-could pass on low-hanging fruit).
 
--- 
-------------------------------------------------------------------------
-Bob Tracy          |  "I was a beta tester for dirt.  They never did
-rct@frus.com       |   get all the bugs out." - Steve McGrew on /.
-------------------------------------------------------------------------
+But, I get almost same thing when I do nm on my laptop's alsa-lib, this
+alsa-lib works.
+
+         U _IO_getc
+         U _IO_putc
+         U __assert_fail
+         U __ctype_b_loc
+         U __ctype_tolower_loc
+         U __errno_location
+         U __stack_chk_fail
+         U __strdup
+         U __strtod_internal
+         U __strtol_internal
+         U __xstat
+         U _exit
+         U accept
+         U access
+         U bind
+         U bsearch
+         U calloc
+         U chmod
+         U chown
+         U close
+         U closedir
+         U connect
+         U dladdr
+         U dlclose
+         U dlopen
+         U dlsym
+         U exit
+         U exp
+         U fclose
+         U fcntl
+         U feof
+         U fflush
+         U fgets
+         U floor
+         U fmod
+         U fopen
+         U fork
+         U fprintf
+         U fputs
+         U free
+         U fwrite
+         U getenv
+         U getgrnam
+         U gethostbyname
+         U getpid
+         U gettimeofday
+         U getuid
+         U ioctl
+         U listen
+         U localeconv
+         U log
+         U log10
+         U lseek
+         U malloc
+         U memcpy
+         U memmove
+         U memset
+         U mlock
+         U mmap
+         U munmap
+         U nanosleep
+         U open
+         U opendir
+         U pipe
+         U poll
+         U pow
+         U pthread_cond_destroy
+         U pthread_cond_init
+         U pthread_cond_signal
+         U pthread_cond_wait
+         U pthread_create
+         U pthread_join
+         U pthread_mutex_destroy
+         U pthread_mutex_init
+         U pthread_mutex_lock
+         U pthread_mutex_trylock
+         U pthread_mutex_unlock
+         U qsort
+         U read
+         U readdir
+         U realloc
+         U recvmsg
+         U rintf
+         U sched_yield
+         U semctl
+         U semget
+         U semop
+         U sendmsg
+         U setlocale
+         U setsid
+         U setsockopt
+         U shmat
+         U shmctl
+         U shmdt
+         U shmget
+         U sigaction
+         U sigemptyset
+         U signal
+         U snprintf
+         U socket
+         U socketpair
+         U sprintf
+         U sqrtf
+         U sscanf
+         U stderr
+         U stdout
+         U strcasecmp
+         U strcat
+         U strchr
+         U strcmp
+         U strcpy
+         U strcspn
+         U strerror
+         U strlen
+         U strncmp
+         U strncpy
+         U strpbrk
+         U strrchr
+         U strstr
+         U sysconf
+         U ungetc
+         U unlink
+         U usleep
+         U vfprintf
+         U vfscanf
+         U vsnprintf
+         U waitpid
+         U wordexp
+         U wordfree
+         U write
