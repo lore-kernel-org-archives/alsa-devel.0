@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ALSA Version change
-Date: Tue, 11 Mar 2008 19:22:46 +0000
-Message-ID: <20080311192244.GA19355@sirena.org.uk>
-References: <370c08350803111130i2d4147f2q9a7345d11ccbc6c7@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: ICE1724 - File descriptor in bad state when
+	capturing
+Date: Tue, 11 Mar 2008 20:46:08 +0100
+Message-ID: <47D6E180.6070808@insite.cz>
+References: <47D46B01.8020009@insite.cz> <s5hk5kax2dn.wl%tiwai@suse.de>
+	<47D5AA82.4080009@insite.cz> <47D63632.60808@ladisch.de>
+	<47D63D6A.10503@insite.cz> <47D6A111.8010608@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67A0A24396
-	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 20:22:49 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <370c08350803111130i2d4147f2q9a7345d11ccbc6c7@mail.gmail.com>
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 392DA1037F7
+	for <alsa-devel@alsa-project.org>; Tue, 11 Mar 2008 20:46:23 +0100 (CET)
+In-Reply-To: <47D6A111.8010608@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chris Healy <cphealy@gmail.com>
-Cc: alsa-devel@alsa-project.org, cphealy@rockwellcollins.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 11, 2008 at 11:30:11AM -0700, Chris Healy wrote:
 
-> Currently, I am using a 2.6.19.2 kernel with ALSA version 1.0.13.  This is
-> on an i.MX31 ARM11 platform.  (This is what it came with.)  We want to use a
-> codec that currently has and ASoC supported driver so it seems best that we
-> move forward to a newer version of ALSA.  (1.0.14 or later has ASoC.)
 
-If you're using i.MX31 you might want to take a look at the work going
-on in the imx31 branch of:
+Clemens Ladisch wrote:
+> Pavel Hofman wrote:
+>> Clemens Ladisch wrote:
+>>> Pavel Hofman wrote:
+>>>> Whereas for the broken analog input, the sequence is
+>>>>
+>>>> 1. snd_pcm_lib_read1 with SNDRV_PCM_STATE_PREPARED - returns 0
+>>>> 2. snd_pcm_lib_read1 with SNDRV_PCM_STATE_SETUP - returns -EBADFD
+>>> I'd guess that your trigger callback fails somehow, bit this is
+>>> hard to determine without the source code.
+>> Thanks, I will do more testing in the evening. Just in case, I am
+>> including the relevant files. I moved all rate-relevant stuff to
+>> card-specific routines, redefined in juli.c. The trigger code was not
+>> changed at all.
+>>
+>> Perhaps those new snd_pcm_hardware structs in juli.c (I do not know the
+>> exact meaning of the _bytes_ ones)?
+> 
+> These values are in bytes (and not in frames).
+> 
+> It's possible that the AK4114 code stops the stream because it thinks
+> that the input sample rate has changed.  Try uncommenting the printk
+> in i2c/other/ak4114.c.
+> 
 
-	git://opensource.wolfsonmicro.com/linux-2.6-audioplus
+Clemens, you are ingenious! AK4114 was wrongly hooked to the analogue 
+"ice->pcm_pro" stream instead of the digital "ice->pcm" stream. It works 
+now fine, thanks a lot.
 
-This contains ASoC-v2 based support for i.MX31 systems (using the
-Freescale kernel), though if you're only interested in the codec drivers
-it may better to stick with mainline.
+Pavel.
