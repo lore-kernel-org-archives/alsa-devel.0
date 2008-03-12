@@ -1,52 +1,48 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Wed, 12 Mar 2008 20:34:36 +0100
-Message-ID: <47D8304C.3090005@keyaccess.nl>
-References: <20080312144021.3FE57DBA2@gherkin.frus.com>
+From: rct@frus.com (Bob Tracy)
+Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Wed, 12 Mar 2008 15:31:50 -0500 (CDT)
+Message-ID: <20080312203150.80E01DBA2@gherkin.frus.com>
+References: <47D8304C.3090005@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9704010387E
-	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2008 20:34:03 +0100 (CET)
-In-Reply-To: <20080312144021.3FE57DBA2@gherkin.frus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bob Tracy <rct@frus.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <47D8304C.3090005@keyaccess.nl> "from Rene Herman at Mar 12, 2008
+ 08:34:36 pm"
+Sender: linux-alpha-owner@vger.kernel.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Bob Tracy <rct@frus.com>, Michael Cree <mcree@orcon.net.nz>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
 List-Id: alsa-devel@alsa-project.org
 
-On 12-03-08 15:40, Bob Tracy wrote:
+Rene Herman wrote:
+> (Re: interrupts not being seen by es18xx)
+> That is indeed what it soundeed like, or the first bit at least.
+> 
+> What does cat /proc/config.gz | grep CONFIG_ALPHA_ say? Miuchael, and for 
+> you? For some Alpha configs, arch/alpha/kernel/es1888.c is compiled and for 
+> some not. I expect for you (Bob) it's compiled in? And Michael?
 
-> Well, I built a 2.6.22 kernel last night, and in tests this morning
-> there's no difference relative to the ALSA behavior seen in 2.6.25-rc4.
+Here is the requested list of CONFIG_ALPHA_* items for the
+2.6.25-rc4+iommu_patch kernel with support for snd-es18xx and snd-sb8:
 
-Okay. If someone is tracking this as a 2.6.25 regresion, it can be stricken 
-of that list.
+CONFIG_ALPHA=y
+CONFIG_ALPHA_MIATA=y
+CONFIG_ALPHA_EV5=y
+CONFIG_ALPHA_CIA=y
+CONFIG_ALPHA_EV56=y
+CONFIG_ALPHA_PYXIS=y
+CONFIG_ALPHA_SRM=y
+CONFIG_ALPHA_LEGACY_START_ADDRESS=y
 
-> Since the question came up (or was strongly implied), I took the time to
-> check the status of IRQ 5 in /proc/interrupts, and while it shows up as
-> assigned to the sound card, no interrupts are being seen/processed by
-> the es18xx driver.
+>From arch/alpha/kernel/Makefile, obj-${CONFIG_ALPHA_MIATA} adds es1888.o
+as a built-in object, so yes, it's built-in.
 
-That is indeed what it soundeed like, or the first bit at least.
+I never noticed the init support for the ES1888 chip before...  The code
+appears to set up DMA channel 1, but does not mention anything about the
+second 16-bit DMA channel.
 
-> When I remove the snd-es18xx module and install the snd-sb8 module with
-> the same parameters (other than there's no second DMA channel), the
-> /proc/interrupts counter for IRQ 5 increments as expected when playing
-> sound files.
-
-What does cat /proc/config.gz | grep CONFIG_ALPHA_ say? Miuchael, and for 
-you? For some Alpha configs, arch/alpha/kernel/es1888.c is compiled and for 
-some not. I expect for you (Bob) it's compiled in? And Michael?
-
-Rene.
+-- 
+------------------------------------------------------------------------
+Bob Tracy          |  "I was a beta tester for dirt.  They never did
+rct@frus.com       |   get all the bugs out." - Steve McGrew on /.
+------------------------------------------------------------------------
