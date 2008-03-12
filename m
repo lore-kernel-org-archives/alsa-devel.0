@@ -1,20 +1,17 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: aplay doesnt work - new problem`
-Date: Wed, 12 Mar 2008 11:49:45 -0700
-Message-ID: <61445c750803121149t45f1db2m69cce8d76fca213f@mail.gmail.com>
-References: <61445c750803111605u1c9b8f5ascdee2289c992488a@mail.gmail.com>
-	<47D7957D.2050505@ladisch.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Wed, 12 Mar 2008 20:34:36 +0100
+Message-ID: <47D8304C.3090005@keyaccess.nl>
+References: <20080312144021.3FE57DBA2@gherkin.frus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 087572432F
-	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2008 19:49:49 +0100 (CET)
-Received: by el-out-1112.google.com with SMTP id r23so1917377elf.21
-	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2008 11:49:46 -0700 (PDT)
-In-Reply-To: <47D7957D.2050505@ladisch.de>
-Content-Disposition: inline
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9704010387E
+	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2008 20:34:03 +0100 (CET)
+In-Reply-To: <20080312144021.3FE57DBA2@gherkin.frus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Bob Tracy <rct@frus.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 12, 2008 at 1:34 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+On 12-03-08 15:40, Bob Tracy wrote:
 
-> Pharaoh . wrote:
-> > I am trying to run my pcm external io type plugin on an arm based board.
-> I
-> > have no kernel alsa driver
-> > and the user space plugin is supposed to take care of talking to DSP
-> using
-> > shared memorty and send sound data.
-> >
-> > Since, I dont have kernel space ALSA driver, do I need to enable kernel
-> ALSA
-> > support in .config?
->
-> No.
->
-> > ALSA lib conf.c:2852:(snd_config_hook_load) cannot access file
-> > /home/pharaoh/alsa/cards/aliases.conf
->
-> What --*prefix options did you use when configuring alsa-lib?
-> What did you use as DESTDIR when installing alsa-lib?
->
->
-> Regards,
-> Clemens
->
+> Well, I built a 2.6.22 kernel last night, and in tests this morning
+> there's no difference relative to the ALSA behavior seen in 2.6.25-rc4.
 
-I configure alsa lib as :
+Okay. If someone is tracking this as a 2.6.25 regresion, it can be stricken 
+of that list.
 
-./configure --host=$(ARCH_TOOLCHAIN_PREFIX)-linux --prefix=$(BUILD_OUTPUT)
---exec-prefix=$(ROOTFS) --datadir=$(ROOTFS)/share --sysconfdir=$(ROOTFS)/etc
---with-versioned=no --enable-static=yes
+> Since the question came up (or was strongly implied), I took the time to
+> check the status of IRQ 5 in /proc/interrupts, and while it shows up as
+> assigned to the sound card, no interrupts are being seen/processed by
+> the es18xx driver.
 
-Ignore $(ARCH_TOOLCHAIN_PREFIX)-linux.
-ROOTFS in / on board.
-DESTDIR is is /lib in rootfs, this is where libasound.so falls.
+That is indeed what it soundeed like, or the first bit at least.
 
-But when I do file on resulting libasound.so it is shown as shared lib and
-not a static one.
+> When I remove the snd-es18xx module and install the snd-sb8 module with
+> the same parameters (other than there's no second DMA channel), the
+> /proc/interrupts counter for IRQ 5 increments as expected when playing
+> sound files.
 
-Same way I configure the alsa-utils.
+What does cat /proc/config.gz | grep CONFIG_ALPHA_ say? Miuchael, and for 
+you? For some Alpha configs, arch/alpha/kernel/es1888.c is compiled and for 
+some not. I expect for you (Bob) it's compiled in? And Michael?
 
--pharaoh.
+Rene.
