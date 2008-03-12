@@ -1,17 +1,24 @@
-From: "Mike Mazarick" <mazarick@bellsouth.net>
-Subject: It's time to discuss how to get a Gadget Labs driver
-	into the Alsa tree...
-Date: Wed, 12 Mar 2008 07:09:42 -0400
-Message-ID: <000101c88431$92f087c0$b8d19740$@net>
+From: Mathieu Monney <zittix_all@xwaves.net>
+Subject: ioctl(arg) - uninitialised byte(s) in alsa lib
+Date: Wed, 12 Mar 2008 12:49:44 +0100
+Message-ID: <47D7C358.6050401@xwaves.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmailhost04.isp.att.net (fmailhost04.isp.att.net
-	[207.115.11.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A513103841
-	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2008 12:09:47 +0100 (CET)
-Content-Language: en-us
+Received: from pimpette.xwaves.net (pimpette.xwaves.net [193.58.255.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id C2EB7243E5
+	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2008 12:49:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by pimpette.xwaves.net (Postfix) with ESMTP id 807B87AB31
+	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2008 12:52:05 +0100 (CET)
+Received: from pimpette.xwaves.net ([127.0.0.1])
+	by localhost (pimpette.xwaves.net [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Bpe2mCnPjRDF for <alsa-devel@alsa-project.org>;
+	Wed, 12 Mar 2008 12:52:03 +0100 (CET)
+Received: from [192.168.0.151] (84-74-74-177.dclient.hispeed.ch [84.74.74.177])
+	by pimpette.xwaves.net (Postfix) with ESMTP id 11BAD7AAF7
+	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2008 12:52:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,138 +29,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: wavepro-driver-developers@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-As discussed and posted to the Alsa Devel and Planet CCRMA lists back in
-December (when this was 'a dream' ), we currently have a working Gadget Labs
-Alsa driver.   There are a few more 'features' that are being considered for
-development (multi card support, a control panel, etc) and more extensive
-testing and verification by novice users is desired.    The main idea is
-that we intend to ask the main Alsa developers for information twice;  first
-when we have a functional driver and second when we have one that is 'user
-tested' and is ready to go (ie. when there is a high degree of certainty
-that all the features are finished and it's use won't cause any major
-problems).   We are now at the first crossroads.   
+Hi all,
 
- 
+I'm currently working on a small audio stack on top of alsa and I'm 
+getting some "Syscall param ioctl(arg) contains uninitialized byte(s)" 
+errors when I run my program using valgrind. I don't know if it is a bug 
+in my program or in alsa lib. What I'm sure is that my program is 
+working even though these errors appear.
 
-There is a small team of developers, Dave Marion and Rick Macri, with some
-assistance from Pete Mander on SVN setup (Dave and Rick finished before Pete
-got a chance to 'play').   We have set up a sourceforge page to centralize
-our effort.  The developers and I believe the code currently in the SVN
-trunk (gl824) is suitable for identifying the appropriate steps to get it
-from the project SVN repository into the Alsa Hg tree.
+The dump:
 
- 
+==14279== Syscall param ioctl(arg) contains uninitialised byte(s)
+==14279==    at 0x40007F2: (within /lib/ld-2.6.1.so)
+==14279==    by 0x40DE911: snd_pcm_prepare (in /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40F2552: (within /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40DE911: snd_pcm_prepare (in /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4F0C: snd_pcm_hw_params (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x80A6599: AlsaConfigureDevice (in 
+/home/mathieu/BProject/WiFi-VoIP/pjsip/pjsip_host_x86/pjsip-apps/bin/pjsua-i686-pc-linux-gnu)
+==14279==    by 0x80A6DE3: pjmedia_snd_open (in 
+/home/mathieu/BProject/WiFi-VoIP/pjsip/pjsip_host_x86/pjsip-apps/bin/pjsua-i686-pc-linux-gnu)
+==14279==    by 0x809EC85: start_sound_device (in 
+/home/mathieu/BProject/WiFi-VoIP/pjsip/pjsip_host_x86/pjsip-apps/bin/pjsua-i686-pc-linux-gnu)
+==14279==    by 0x805EE1E: pjsua_set_snd_dev (in 
+/home/mathieu/BProject/WiFi-VoIP/pjsip/pjsip_host_x86/pjsip-apps/bin/pjsua-i686-pc-linux-gnu)
+==14279==    by 0x80615AA: pjsua_media_subsys_start (in 
+/home/mathieu/BProject/WiFi-VoIP/pjsip/pjsip_host_x86/pjsip-apps/bin/pjsua-i686-pc-linux-gnu)
+==14279==    by 0x805AAC5: pjsua_start (in 
+/home/mathieu/BProject/WiFi-VoIP/pjsip/pjsip_host_x86/pjsip-apps/bin/pjsua-i686-pc-linux-gnu)
+==14279==    by 0x805001B: app_main (in 
+/home/mathieu/BProject/WiFi-VoIP/pjsip/pjsip_host_x86/pjsip-apps/bin/pjsua-i686-pc-linux-gnu)
+==14279==
+==14279== Syscall param ioctl(arg) contains uninitialised byte(s)
+==14279==    at 0x40007F2: (within /lib/ld-2.6.1.so)
+==14279==    by 0x40DE911: snd_pcm_prepare (in /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4F0C: snd_pcm_hw_params (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x411C213: snd_pcm_direct_initialize_slave (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x4115DFB: snd_pcm_dmix_open (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x4116286: _snd_pcm_dmix_open (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4384: (within /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4A82: (within /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4AF2: snd_pcm_open_slave (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x4100CEF: _snd_pcm_plug_open (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4384: (within /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4A82: (within /usr/lib/libasound.so.2.0.0)
+==14279==
+==14279== Syscall param ioctl(arg) contains uninitialised byte(s)
+==14279==    at 0x40007F2: (within /lib/ld-2.6.1.so)
+==14279==    by 0x40DE7D1: snd_pcm_start (in /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x411C5DF: snd_pcm_direct_initialize_slave (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x4115DFB: snd_pcm_dmix_open (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x4116286: _snd_pcm_dmix_open (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4384: (within /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4A82: (within /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4AF2: snd_pcm_open_slave (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x4100CEF: _snd_pcm_plug_open (in 
+/usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4384: (within /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x40E4A82: (within /usr/lib/libasound.so.2.0.0)
+==14279==    by 0x80A6E1B: pjmedia_snd_open (in 
+/home/mathieu/BProject/WiFi-VoIP/pjsip/pjsip_host_x86/pjsip-apps/bin/pjsua-i686-pc-linux-gnu)
 
-The project main page is here:
+Thank you,
 
-https://sourceforge.net/projects/wavepro-driver/
-
- 
-
-The source code is in an SVN repository here:
-
-http://wavepro-driver.svn.sourceforge.net/viewvc/wavepro-driver/
-
- 
-
-There is a very short web page listed for development:
-
-http://wavepro-driver.sourceforge.net/
-
- 
-
-There is a private mailing list of about 16 people that is tracking what is
-going on.   
-
-The group email address is:  wavepro-driver-developers@lists.sourceforge.net
-(however,  you may have to be subscribed to mail something to the list;
-I'm not sure).     
-
-If you are subscribed, there is an archive available here:  
-
-https://sourceforge.net/mailarchive/forum.php?forum_name=wavepro-driver-deve
-lopers
-
- 
-
-Our goal is to have this driver included in Alsa so that an end user could
-have this type of card in their system, and everything would automagically
-work like all other cards.  The only way this can happen is if the driver
-was included as part of Alsa.   The key 'next' questions are:
-
- 
-
-1.        When are the next couple of releases of Alsa planned?   How much
-time before the release date should all drivers be 'in the Hg tree'?
-
-2.       Does the code that is currently in the Gadget Labs SVN repository
-meet the coding and syntax standards of Alsa?   We've tried to make it meet
-the standards, and it is fairly easy to change at this stage if you happen
-to spot something that is inconsistent with what you'd recommend.
-
-3.       We have not modified Alsa to make this driver automatically;  there
-is a 'Makefile' included currently.   We currently 'modprobe snd_rawmidi'
-and 'modproble snd_pcm' and then 'insmod gl824.ko' to get it installed.  The
-required changes to Alsa are fairly trivial and would be the same for every
-other sound card.    Please let us know if there is something that should
-happen besides what is in the GL repository.
-
-4.       One of the key reasons that this driver was able to be developed
-and tested in 2-3 months of part time effort is because there is already
-complete source available for a Windows driver, complete with new firmware
-and vhdl source (see 'External' in the repository).   The Windows developer
-is a member of our mailing list and has been encouraging/helping our effort.
-However, he didn't bother with GPL licensing (it's a 'Mostek/Waldemar'
-license instead, but the source is readily available).   There may be a few
-header files that he wrote and the PLD firmware is definitely from his
-development.   Will everything (including the firmware) need to be GPLv2
-before it can be included in the alsa tree?    
-
-5.       What is needed for support?  What would you like us to be available
-to do going forward?
-
-6.       How can we make your life a little easier by modifying our
-software?   What would you like to see that you don't see?
-
- 
-
-Although we will diligently try to get a broader base of testing to happen,
-we will tell you realistically that there are probably very few users who
-are likely to test this out.   I don't know of the exact number of Gadget
-Labs cards that were produced, but the best guess is ~5,000 cards before the
-manufacturer went bankrupt in 2001.  We feel the effort of creating a linux
-driver has been advertised in most of the appropriate places, but the
-mailing list that is tracking this is only 16 people, with 4 main
-participants.   In other words, I don't think this will be a 'SoundBlaster'
-or 'Audigy' with thousands of people giving feedback on how it works.
-However, I do believe that this will be a very viable and cost effective
-solution for some people who want an 8 channel in/out, 24 bit, 48 khz,
-semi-professional soundcard solution with midi.   Although the soundcard
-does not support DMA directly (a limitation of the PLX9052 interface chip),
-Rick has developed an innovative scheme of using a user buffer and dumping
-the result into a kernel ring buffer that provides as little as 2ms latency.
-You may also find the method/architecture for development of interest to you
-(see web page and SVN listings).
-
- 
-
-Please provide some of the key information you need so that we can work
-together most effectively.   Answering some the questions above would be a
-good way to start.   We would welcome your feedback so that we can
-incorporate into the GL project codebase.   After your feedback has been
-incorporated in the code and testing is completed, we will be pinging you
-again (the second time) to let you know we are ready to put the code in the
-alsa tree.
-
- 
-
-Regards,
-
- 
-
-Mike Mazarick
-
-mazarick@bellsouth.net
+Mathieu Monney
