@@ -1,21 +1,17 @@
-From: "Aldrin Martoq" <amartoq@dcc.uchile.cl>
-Subject: Re: problems howto send simple 'noteon' event with
-	pyalsa...
-Date: Thu, 13 Mar 2008 15:07:17 -0300
-Message-ID: <17eedd8a0803131107n5721d467r3a73e0d3d688e0c8@mail.gmail.com>
-References: <95e4e4ce0803130458g7339fd65g7342f8a934db4a52@mail.gmail.com>
-	<Pine.LNX.4.61.0803131333560.7942@tm8103.perex-int.cz>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: AK4114 - capturing spdif input stops the stream
+Date: Thu, 13 Mar 2008 20:18:34 +0100
+Message-ID: <47D97E0A.1080400@insite.cz>
+References: <47D85E20.7060109@insite.cz>	<s5hr6efdpv1.wl%tiwai@suse.de>	<47D922D0.8060006@insite.cz>
+	<s5hfxuuvi9l.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7E09224482
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 19:07:20 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id c6so935970gvd.24
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 11:07:19 -0700 (PDT)
-In-Reply-To: <Pine.LNX.4.61.0803131333560.7942@tm8103.perex-int.cz>
-Content-Disposition: inline
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7DF224511
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 20:18:40 +0100 (CET)
+In-Reply-To: <s5hfxuuvi9l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,120 +21,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>, "ki.ber.kom.uni.st" <ki.ber@kom.uni.st>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-On Thu, Mar 13, 2008 at 9:34 AM, Jaroslav Kysela <perex@perex.cz> wrote:
-> On Thu, 13 Mar 2008, ki.ber.kom.uni.st wrote:
->  > i was happy user of PySeq [1] and it was easy to send directly
->  > 'noteon' event.. more or less in python interactoin session:
->  > import pyseq
->  >
->  > seq = pyseq.PySeq()
->  > seq.createOutPort()
->  > event = snd_seq_event()
->  > event.setSource(0)
->  > event.setSubscribers()
->  > event.setNoteOn(ch, note, velocity)
->  > event.sendAsIs(seq)
->  >
->  > it seems that pyalsa will go along alsa development so i tried pyalsa.. but....
-
-You can send NOTEON events without a queue, but you cannot send NOTE
-events without a queue. (subtle difference: note_ON_)
-
-The following code will work; 14:0 is "midi-through" in my system... I
-run aseqdump -p 14:0 on another window:
-
-seq = alsaseq.Sequencer()
-event = alsaseq.SeqEvent(alsaseq.SEQ_EVENT_NOTEON)
-event.set_data({'note.note' : 0x40, 'note.velocity' : 64})
-event.dest = (14, 0)
-seq.output_event(event)
-seq.drain_output()
 
 
->  > i tried this:
->  > from pyalsa import alsaseq
->  > seq = alsaseq.Sequencer()
->  > seq.create_simple_port("myPort", alsaseq.SEQ_PORT_TYPE_APPLICATION,
->  > alsaseq.SEQ_PORT_CAP_SUBS_READ | alsaseq.SEQ_PORT_CAP_READ |
->  > alsaseq.SEQ_PORT_CAP_WRITE | alsaseq.SEQ_PORT_CAP_SUBS_WRITE)
+Takashi Iwai wrote:
+> At Thu, 13 Mar 2008 13:49:20 +0100,
+> Pavel Hofman wrote:
+>> Takashi Iwai napsal(a):
+>>> At Wed, 12 Mar 2008 23:50:08 +0100,
+>>> Pavel Hofman wrote:
+>>>> Hi,
+>>>>
+>>>> here is my scenario:
+>>>>
+>>>> ICE1724 card, trying to record from SPDIF input via AK4114, ICE1724 
+>>>> slaved to SPDIF clock from the receiver.
+>>>>
+>>>> The card detects SPDIF input rate correctly (in my case ESI Juli where 
+>>>> AK4114 is provided with independent clock signal to enable the rate 
+>>>> detection). Let's say it is 192000.
+>>>>
+>>>> Now I want to arecord the input stream, let's say in CD quality, using 
+>>>> the plug plugin. The command fails, because of the check in ak4114.c:
+>>>>
+>>>> res = external_rate(rcs1);
+>>>> 	if (!(flags & AK4114_CHECK_NO_RATE) && runtime && runtime->rate != res) {
+>>>> 		snd_pcm_stream_lock_irqsave(ak4114->capture_substream, _flags);
+>>>> 		if (snd_pcm_running(ak4114->capture_substream)) {
+>>>> 			printk(KERN_DEBUG "rate changed (%i <- %i)\n", runtime->rate, res);
+>>>> 			snd_pcm_stop(ak4114->capture_substream, SNDRV_PCM_STATE_DRAINING);
+>>>> 			res = 1;
+>>>> 		}
+>>>> 		snd_pcm_stream_unlock_irqrestore(ak4114->capture_substream, _flags);
+>>>> 	}
+>>>>
+>>>> The stream gets stopped because res = 192000 and runtime->rate = 44100.
+>>>>
+>>>> The problem is that the capture device still offers all the available 
+>>>> rates, instead of the single SPDIF input one. Thus, the plug plugin is 
+>>>> not forced to convert from 192000 to 44100 and runtime->rate is 44100 
+>>>> instead of 192000.
+>>>>
+>>>> Of course recording at 192000 works fine.
+>>>>
+>>>> What would be the best way to force the SPDIF capture device to offer 
+>>>> (advertise) only the current rate? This functionality would have to be 
+>>>> applicable only to the few cards correctly detecting incoming rate 
+>>>> (unlike most ice1724 cards without independent clock in slave mode).
+>>> What about to call snd_ak4114_check_rate_and_errors() at PCM open?
+>>> You can pass AK4114_CHECK_NO_RATE to flags argument to skip the check
+>>> there, at least.
+>>>
+>>>
+>> Well, I would not want to skip the check for cards with functioning rate 
+>> detection. Plus snd_ak4114_check_rate_and_errors gets called 
+>> periodically afterwards.
+> 
+> Yes, but the check there is simply useless at open.  It's only for
+> running states.  snd_ak4114_external_rate() would be simler, then.
+> 
+>> It would be great if the driver in slaved-clock mode cut its list of 
+>> native sample rates to the only one currently fed to SPDIF input and 
+>> detected by AK4114. A routine doing this would be called when switching 
+>> clock to the slaved-clock mode and called again in 
+>> snd_ak4114_check_rate_and_errors() when any change in input rate is 
+>> detected (and the stream is not running). Going back to master-clock 
+>> mode would restore the existing list of all the rates.
+>>
+>> In case of input sample rate change when the PCM stream is running, the 
+>> stream would be stopped. This is already implemented in the current 
+>> version of snd_ak4114_check_rate_and_errors()
+>>
+>> Unfortunately, I do not know how to change the rates list properly not 
+>> to break something. If it is only about changing the HW params struct, 
+>> that would be trivial.
+> 
+> Suppose that the slave <-> master mode change doesn't happen during
+> the stream is opened, it's relatively easy.  So far, ice1724.c doesn't
+> call spdif.ops.open/close callbacks.  Call them in *_spdif_open/close
+> functions with NULL check. Then add open hook in juli.c so that you
+> can change rates_min and rates_max to the currently detected rate at
+> open...
+> 
+> Well, it's faster to write a patch than texts.
+> 
+> 
 
-AFAIK, You don't need a port if you are sending events directly.
-Now, if you subscribe and connect ports, you don't need to assign them
-into the event, because a new event is created with
-snd_seq_ev_set_subs called..
 
-You can check this and other stuff with the following code:
+.......
 
--ini-------------
-def _find_attributes(typelist):
-        l = []
-        for t in typelist:
-                d = t.__dict__.items()
-                for k, v in d:
-                        v = "%s" % v
-                        if v.startswith("<attribute"):
-                                l.append(k)
-        l.sort()
-        return l
+Takashi, thanks for the patch, it works flawlessly.
 
-def dump_event(port, name = 'seqevent'):
-        print "Dumping Event ---------->"
-        print "%s" % port
-        l = _find_attributes([alsaseq.SeqEvent])
-        for k in l:
-                print "%-30.30s %s" % (name + "." + k, port.__getattribute__(k))
-        return
+Another issue - when the external clock changes rate and the stream is 
+running (typically when starting the source playback which switches the 
+source card (and its SPDIF-OUT) to a different frequency), the target 
+card detects the change and the capture stream is stopped in 
+snd_ak4114_check_rate_and_errors() by
 
-seq = alsaseq.Sequencer()
-event = alsaseq.SeqEvent(alsaseq.SEQ_EVENT_NOTEON)
-event.set_data({'note.note' : 0x40, 'note.velocity' : 64})
-dump_event(event)
-seq.output_event(event)
-seq.drain_output()
--------------end--
+snd_pcm_stop(ak4114->capture_substream, SNDRV_PCM_STATE_DRAINING);
 
+How should recording applications behave with stream in this mode? I 
+would expect arecord to close, but it does nothing. Is this correct 
+behaviour?
 
->  > event = alsaseq.SeqEvent(alsaseq.SEQ_EVENT_NOTE)
->  > event.set_data({'note.note' : 0x40, 'note.velocity' : 127,
->  > 'note.duration' : 1, 'note.off_velocity' : 0})
+Thanks,
 
-note.duration and note.off_velocity make sense only for
-SEQ_EVENT_NOTE, but you need a queue... so, use SEQ_EVENT_NOTEON and
-SEQ_EVENT_NOTEOFF instead....
-
-I'm planning to move event.set_data() to attributes, like
-event.note_note, event.note_velocity ... Tell me what you think!
-
->  > event.dest = (20, 0)
->  > seq.output_event(event)
->  > seq.drain_output()
->  >
->  > after drain it says:
->  > "SequencerError: Failed to drain output: Invalid argument"
-
-Well, that's what asoundlib says... weird, don't you think?
-
-Alsa hackers: This is a good proof that alsa-lib message errors
-really, really sucks... Is there any chance to change this? I mean, if
-I volunteer to improve this could be accepted? Any hints for doing
-this?
-
-[...]
->  > any ideas? do i have to use queues to be able to send 'noteon'.. for
->  > my purposes it seems to me that that's overkill....
-
-Remember: python is far away of real-time so if you get weirds timings
-you may reconsider using a queue anyway!
-
-
-HTH,
-
--- 
-Aldrin Martoq
-http://aldrinvideopodcast.podshow.com/
+Pavel.
