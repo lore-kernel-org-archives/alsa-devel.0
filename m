@@ -1,17 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: problems howto send simple 'noteon' event with
- pyalsa...
-Date: Thu, 13 Mar 2008 13:34:48 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0803131333560.7942@tm8103.perex-int.cz>
-References: <95e4e4ce0803130458g7339fd65g7342f8a934db4a52@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: AK4114 - capturing spdif input stops the stream
+Date: Thu, 13 Mar 2008 13:49:20 +0100
+Message-ID: <47D922D0.8060006@insite.cz>
+References: <47D85E20.7060109@insite.cz> <s5hr6efdpv1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2BCC32446A
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 13:34:49 +0100 (CET)
-In-Reply-To: <95e4e4ce0803130458g7339fd65g7342f8a934db4a52@mail.gmail.com>
+Received: from prague.insite.cz (r3g29.net.upc.cz [213.220.198.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id B0D231038EE
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 13:49:22 +0100 (CET)
+In-Reply-To: <s5hr6efdpv1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,57 +20,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ki.ber.kom.uni.st" <ki.ber@kom.uni.st>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 Mar 2008, ki.ber.kom.uni.st wrote:
+Takashi Iwai napsal(a):
+> At Wed, 12 Mar 2008 23:50:08 +0100,
+> Pavel Hofman wrote:
+>> Hi,
+>>
+>> here is my scenario:
+>>
+>> ICE1724 card, trying to record from SPDIF input via AK4114, ICE1724 
+>> slaved to SPDIF clock from the receiver.
+>>
+>> The card detects SPDIF input rate correctly (in my case ESI Juli where 
+>> AK4114 is provided with independent clock signal to enable the rate 
+>> detection). Let's say it is 192000.
+>>
+>> Now I want to arecord the input stream, let's say in CD quality, using 
+>> the plug plugin. The command fails, because of the check in ak4114.c:
+>>
+>> res = external_rate(rcs1);
+>> 	if (!(flags & AK4114_CHECK_NO_RATE) && runtime && runtime->rate != res) {
+>> 		snd_pcm_stream_lock_irqsave(ak4114->capture_substream, _flags);
+>> 		if (snd_pcm_running(ak4114->capture_substream)) {
+>> 			printk(KERN_DEBUG "rate changed (%i <- %i)\n", runtime->rate, res);
+>> 			snd_pcm_stop(ak4114->capture_substream, SNDRV_PCM_STATE_DRAINING);
+>> 			res = 1;
+>> 		}
+>> 		snd_pcm_stream_unlock_irqrestore(ak4114->capture_substream, _flags);
+>> 	}
+>>
+>> The stream gets stopped because res = 192000 and runtime->rate = 44100.
+>>
+>> The problem is that the capture device still offers all the available 
+>> rates, instead of the single SPDIF input one. Thus, the plug plugin is 
+>> not forced to convert from 192000 to 44100 and runtime->rate is 44100 
+>> instead of 192000.
+>>
+>> Of course recording at 192000 works fine.
+>>
+>> What would be the best way to force the SPDIF capture device to offer 
+>> (advertise) only the current rate? This functionality would have to be 
+>> applicable only to the few cards correctly detecting incoming rate 
+>> (unlike most ice1724 cards without independent clock in slave mode).
+> 
+> What about to call snd_ak4114_check_rate_and_errors() at PCM open?
+> You can pass AK4114_CHECK_NO_RATE to flags argument to skip the check
+> there, at least.
+> 
+> 
 
-> e,
-> i was happy user of PySeq [1] and it was easy to send directly
-> 'noteon' event.. more or less in python interactoin session:
-> import pyseq
-> 
-> seq = pyseq.PySeq()
-> seq.createOutPort()
-> event = snd_seq_event()
-> event.setSource(0)
-> event.setSubscribers()
-> event.setNoteOn(ch, note, velocity)
-> event.sendAsIs(seq)
-> 
-> it seems that pyalsa will go along alsa development so i tried pyalsa.. but....
-> 
-> i tried this:
-> 
-> from pyalsa import alsaseq
-> 
-> seq = alsaseq.Sequencer()
-> seq.create_simple_port("myPort", alsaseq.SEQ_PORT_TYPE_APPLICATION,
-> alsaseq.SEQ_PORT_CAP_SUBS_READ | alsaseq.SEQ_PORT_CAP_READ |
-> alsaseq.SEQ_PORT_CAP_WRITE | alsaseq.SEQ_PORT_CAP_SUBS_WRITE)
-> 
-> event = alsaseq.SeqEvent(alsaseq.SEQ_EVENT_NOTE)
-> event.set_data({'note.note' : 0x40, 'note.velocity' : 127,
-> 'note.duration' : 1, 'note.off_velocity' : 0})
-> event.dest = (20, 0)
-> seq.output_event(event)
-> seq.drain_output()
-> 
-> after drain it says:
-> "SequencerError: Failed to drain output: Invalid argument"
-> i can connect and disconnect ports around and (20,0) is functional
-> port where i send events with no problems from PySeq...
-> 
-> any ideas? do i have to use queues to be able to send 'noteon'.. for
-> my purposes it seems to me that that's overkill....
+Well, I would not want to skip the check for cards with functioning rate 
+detection. Plus snd_ak4114_check_rate_and_errors gets called 
+periodically afterwards.
 
-I think that you need to create also queue. Look to pyalsa source code to 
-test/seqtest3.py .
+It would be great if the driver in slaved-clock mode cut its list of 
+native sample rates to the only one currently fed to SPDIF input and 
+detected by AK4114. A routine doing this would be called when switching 
+clock to the slaved-clock mode and called again in 
+snd_ak4114_check_rate_and_errors() when any change in input rate is 
+detected (and the stream is not running). Going back to master-clock 
+mode would restore the existing list of all the rates.
 
-					Jaroslav
+In case of input sample rate change when the PCM stream is running, the 
+stream would be stopped. This is already implemented in the current 
+version of snd_ak4114_check_rate_and_errors()
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Unfortunately, I do not know how to change the rates list properly not 
+to break something. If it is only about changing the HW params struct, 
+that would be trivial.
+
+Thanks for suggestions,
+
+Pavel.
