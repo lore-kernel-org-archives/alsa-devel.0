@@ -1,23 +1,22 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: [PATCH 3/5] asihpi: Remove HPI4000
-Date: Fri, 14 Mar 2008 09:46:02 +1300
-Message-ID: <47D9928A.30000@audioscience.com>
-References: <200803061449.18512.linux@audioscience.com>
-	<200803071232.52272.linux@audioscience.com>
-	<s5h1w6eaov1.wl%tiwai@suse.de>
+From: ki.ber.kom.uni.st <ki.ber@kom.uni.st>
+Subject: Re: problems howto send simple 'noteon' event with
+	pyalsa...
+Date: Fri, 14 Mar 2008 00:24:36 +0100
+Message-ID: <95e4e4ce0803131624u811b22cs6f957919d3ade26@mail.gmail.com>
+References: <95e4e4ce0803130458g7339fd65g7342f8a934db4a52@mail.gmail.com>
+	<Pine.LNX.4.61.0803131333560.7942@tm8103.perex-int.cz>
+	<17eedd8a0803131107n5721d467r3a73e0d3d688e0c8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id F12C41038B6
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 21:46:09 +0100 (CET)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0JXO00KQWSCRP030@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 14 Mar 2008 09:46:04 +1300 (NZDT)
-In-reply-to: <s5h1w6eaov1.wl%tiwai@suse.de>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id E56EA2452F
+	for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2008 00:24:40 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so1121739ana.80
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 16:24:37 -0700 (PDT)
+In-Reply-To: <17eedd8a0803131107n5721d467r3a73e0d3d688e0c8@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,60 +26,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 07 Mar 2008 12:32:52 +1300,
-> Eliot Blennerhassett wrote:
->> On Thursday 06 March 2008 14:49:18 Eliot Blennerhassett wrote:
->>> Remove HPI4000
->> This also requires update to alsa-firmware/asihpi with files from 
->> http://audioscience.com/internet/download/firmware/dspbins30914.tar.gz
->>
->> dsp4*.bin are no longer required.
-> 
-> Oops, forgot to update this -- committed to HG tree now.
+i'm happy that gnu world exists ;) aldrin thanx to remind me on that
+once again...
 
-Thanks.
+On 3/13/08, Aldrin Martoq <amartoq@dcc.uchile.cl> wrote:
+> You can send NOTEON events without a queue, but you cannot send NOTE
+>  events without a queue. (subtle difference: note_ON_)
 
+clear enough...
 
->> Also alsa-driver/pci/asihpi/hpi4000.* are no longer required.
->> AudioScience next stable driver release (3.10.0) will not include support for 
->> ASI4xxx cards.
->>
->> AudioScience will continue to maintain our version 3.08.xx with bugfixes for 
->> these cards and  ALSA 1.0.16 will be the last alsa release with support for 
->> ASI4xxx.
+>  The following code will work;
 
-> OK.  BTW, what if the newer firmware is loaded onto the old driver?
+worked as charm... many thanx...
 
-Within limits (how far apart driver and firmware are) this will work. 
-Mostly we are adding functions to the firmware, so old driver will work 
-with new firmware but a new driver won't work with old firmware.
-Sometimes old functions are deprecated, but we don't remove them 
-straight away.
+> AFAIK, You don't need a port if you are sending events directly.
 
+you are right.. i can send events directly... in my particular case i
+like to have ports so i can connect them with other midi ports through
+qjackctl or some other graphical app...
 
-In the windows world our "driver" install includes driver, firmware, 
-userspace dll, python bindings, and mixer application all matching.
+>  Now, if you subscribe and connect ports, you don't need to assign them
+>  into the event, because a new event is created with
+>  snd_seq_ev_set_subs called..
 
+i don't get this one.. what i tried till know is to create in/out
+ports (it works...) and then connect them with some existing ones
+using seq.connect_ports.. then if i use seq.output_event(event)
+drain_output() works fine... i don't get what 'ports assigning into
+the event' would be?
 
-> Would it be safer to rename the firmware file for each incompatible
-> version?  If yes, we can change the asihpi driver code together with
-> the firmware renames to couple tightly.
+>  You can check this and other stuff with the following code:
 
-The firmware images contain the HPI version encoded in the header.  I 
-will at least log a warning that the driver and firmware version do not 
-match.
+once more many thanx.. this was very helpful for me.. i'll keep using
+pyalsa and i start to call myself happy user of pyalsa from now on ;)
 
-I guess its possible to use versioned file names. Did you have something 
-in mind? Currently the filename is generated from an adapter ID:
+>  I'm planning to move event.set_data() to attributes, like
+>  event.note_note, event.note_velocity ... Tell me what you think!
 
-sprintf(fw_name, "asihpi/dsp%04x.bin", nAdapter);
+that seems to me more clear and more consistent with event.dest and
+probably some other stuff... also it looks more pythonic i would
+say... even set_data() is easy to use too..
 
-regards
+i use a lot ipython interactive shell so attributes are shown as
+result of auto completion + if you would put """documentation
+strings""" it will also come out with basic documentation of what is
+it for and how to use it...
 
---
-Eliot
+> Well, that's what asoundlib says... weird, don't you think?
+
+i was pissed but as usually being the lamest in programming i had no
+one but myself to blame ;)
+
+> Remember: python is far away of real-time so if you get weirds timings
+>  you may reconsider using a queue anyway!
+
+my pyalsa piece of code is part of handling gamepad events in pyqt4
+loop so i thought to send events as soon as i get them from
+/dev/input/js0 should be handled without any queue and trying to send
+them directly.. am i right in this particular set up?
+
+i'll try to get into queues in the later phase of my development...
