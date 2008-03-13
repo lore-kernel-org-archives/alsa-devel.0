@@ -1,187 +1,250 @@
-From: "Gadi Oron" <gadior@gmail.com>
-Subject: Re: [alsa-devel] Metallic recording in cs46xx on
-	Thinkpad T22
-Date: Thu, 13 Mar 2008 14:11:30 +0200
-Message-ID: <3948f0730803130511x62d1802dxdfe2f408ad2120db@mail.gmail.com>
-References: <3948f0730803110024k1e7b90ecr31b745e333913c1d@mail.gmail.com>
-	<47D70143.3010705@keyaccess.nl> <s5hk5k89f52.wl%tiwai@suse.de>
-	<47D80754.1020400@keyaccess.nl> <s5h8x0nanew.wl%tiwai@suse.de>
-	<47D81037.7030901@keyaccess.nl> <s5hwso699y3.wl%tiwai@suse.de>
+From: Ben Stanley <Ben.Stanley@exemail.com.au>
+Subject: ca0106 Digital Output at 44.1kHz
+Date: Thu, 13 Mar 2008 23:15:24 +1100
+Message-ID: <1205410524.8486.274.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0616414278=="
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hwso699y3.wl%tiwai@suse.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, Rene Herman <rene.herman@keyaccess.nl>, ALSA devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="=-K3YQbAZAZwOuwwuWZyMr"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id A2B81103917
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 13:15:29 +0100 (CET)
+Received: from 168.78.233.220.exetel.com.au ([220.233.78.168]
+	helo=[192.168.1.2]) by smtp.po.exetel.com.au with esmtp (Exim 4.68)
+	(envelope-from <Ben.Stanley@exemail.com.au>) id 1JZmLF-0003Dj-LO
+	for alsa-devel@alsa-project.org; Thu, 13 Mar 2008 23:15:26 +1100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0616414278==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_8138_30196855.1205410291000"
 
-------=_Part_8138_30196855.1205410291000
-Content-Type: text/plain; charset=ISO-8859-1
+--=-K3YQbAZAZwOuwwuWZyMr
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-Hopefully it is full now.
+Dear List,
 
-http://pastebin.ca/940929
+Hello. I'm new here. This is my first attempt to hack an alsa driver.
 
-On Thu, Mar 13, 2008 at 12:48 PM, Takashi Iwai <tiwai@suse.de> wrote:
+I recently purchased a "Sound Blaster Audigy Value!" card for use in a
+MythTV box. As I have a digital receiver, I was mainly concerned with
+getting a working S/PDIF output (coax or optical) and not too much more.
 
-> At Wed, 12 Mar 2008 18:17:43 +0100,
-> Rene Herman wrote:
-> >
-> > On 12-03-08 17:59, Takashi Iwai wrote:
-> >
-> > > At Wed, 12 Mar 2008 17:39:48 +0100,
-> > > Rene Herman wrote:
-> > >> On 12-03-08 15:43, Takashi Iwai wrote:
-> > >>
-> > >>> At Tue, 11 Mar 2008 23:01:39 +0100,
-> > >>> Rene Herman wrote:
-> > >>>> On 11-03-08 08:24, Gadi Oron wrote:
-> > >>>>
-> > >>>>> I am trying to record sound on an old Thinkpad T22 that uses the
-> cs46xx
-> > >>>>> sound driver.
-> > >>>>>
-> > >>>>> Each time you start to record you have a 10% chance of having the
-> > >>>>> recording completely distorted and having a metallic sound. When
-> you
-> > >>>>> look at the waveform it looks as though there are small segments
-> with
-> > >>>>> sharp transitions between them, a little like if these segments
-> were
-> > >>>>> moved a little from their correct place.
-> > >>>> No insights, but I confirm the bug with a TerraTec DMX XFire 1024
-> (CS4624).
-> > >>> Hm, cs46xx driver hasn't been much changes since long time ago
-> (around
-> > >>> year 2005).  The only big change was about some PM fixes, and I
-> don't
-> > >>> think it's relevant...  Could you run als-info.sh to get the status?
-> > >> At:
-> > >>
-> > >> http://pastebin.ca/939784
-> > >
-> > > The output seems truncated.  Could you give the generated file via
-> > > "alsactl -f somefile store", just to be sure ?
-> >
-> > Hmm, alsa-info.sh freshly downloaded from current hg.
->
-> Is the original data also truncated at the middle or is it a paste.bin
-> problem?
->
-> >       control.26 {
-> >               comment.access 'read write'
-> >               comment.type INTEGER
-> >               comment.count 2
-> >               comment.range '0 - 32767'
-> >               iface MIXER
-> >               name 'ADC Volume'
-> >               value.0 29492
-> >               value.1 29492
-> >       }
->
-> Try to put this to full once.
->
->
-> Takashi
->
+Summary: I can make 44.1kHz digital output work, but I think that the
+driver model of the card having 3 or 4 digital output channels is
+incorrect. I believe the card only has 1 digital output channel.
 
-------=_Part_8138_30196855.1205410291000
-Content-Type: text/html; charset=ISO-8859-1
+Details:
+
+The card I have is characterised by the following:
+http://www.soundblaster.com/products/product.asp?category=1&subcategory=205&product=14189
+Model: SB0570
+serial: 100a1102
+Also known as: Sound Blaster Audigy SE
+
+During initial testing, I noticed that 44.1kHz playback was not
+implemented. Subsequent testing shows that speaker-test works fine with
+48kHz, 96kHz and 192kHz. (I only tested 16bit output so far.)
+
+I noticed in the source code that 44.1k was explicitly disabled. I added
+code in snd_ca0106_pcm_prepare_playback to set up this rate for S/PDIF
+output as per the comments in ca0106.h . Initial tests using hw:0,0 at
+44.1kHz produced recognisable signals with some noisy corruption. Later
+I accidentally discovered that serially opening hw:0,2 , hw:0,1 and
+hw:0,0  at 44.1kHz then produces perfectly good 44.1kHz sampled digital
+audio output. Removing hw:0,1 or hw:0,2 from this sequence causes noisy
+corruption. It seems that channels 0-2 in reg40 must all be set to the
+same sampling frequency for S/PDIF to work where 44.1kHz is concerned.
+Conversely, to sucessfully output 48kHz again, I have to open hw:0,2 ,
+hw:0,1 and hw:0,0 at 48kHz to restore proper output. I do not have such
+troubles with 96kHz and 192kHz, for which it suffices to just open
+hw:0,0 at the relevant sampling rate.
+
+Using these tricks, I can successfully output 44.1kHz encoded Dolby
+Digital and DTS signals (found at
+http://www.sr.se/cgi-bin/mall/index.asp?programid=2445 , as mentioned at
+http://alsa.opensrc.org/DigitalOut . )
+
+Later, I examined the product manual (from a Windows compressed helpfile
+on the CD), and noticed that Creative instruct you to connect to the
+blue socket in only two ways:
+1) with a mono 3.5mm jack plug to RCA plug -> S/PDIF input to external
+device, and
+2) a proprietary digital I/O module (see
+http://www.soundblaster.com/products/product.asp?category=1&subcategory=16&product=1780 )
+The digital I/O module only has one input and one output (the
+optical/coaxial pairs are duplicates of each other). 
+
+The manual does not say how to connect a S/PDIF input signal other than
+through the digital I/O module.
+
+This suggests to me that the following comment near the top of
+ca0106_main.c is incorrect for the SB0570:
+
+ *    ( In theory one could output 3 different AC3 streams at once, to 3
+different SPDIF outputs. )
+
+I think you can only output one AC3 stream, and that there is only one
+S/PDIF output.
+
+Given this knowledge of the digital I/O module, I suggest that the
+pinout *may* possibly be:
+1 (tip): S/PDIF output
+2      : S/PDIF input
+3      : power to digital I/O module
+4      : gnd
+I have not been able to get any S/PDIF signal out of pin 2 (I only have
+a stereo cable to test with at the moment). I will attempt to test pin 2
+as an input at some point.
+
+I think that this card can only output one S/PDIF channel, given the
+discovery of the required clock settings above, and that Creative's own
+hardware only gives you access to one output.
+
+Anyway, I don't have access to documentation. From reading around, I
+believe James has the docs under NDA from Creative Labs. Perhaps James
+could confirm these suspicions?
+
+Anyway, this is speculation. I'd love to have the docs. I haven't tried
+to get them. Is it likely/unlikely that I would get them?
+
+I'm currently working on kernel 2.6.22 from Ubuntu. They don't seem to
+have changed the ca0106 driver, and not much has happened there (for
+output) in the newer kernels.
+
+Please find attached my current patch, which is only suitable for the
+purposes of discussion. I need to clarify some things about channel
+arrangements with those who have the documentation before I begin to try
+to fix things up. This patch was written with a faulty understanding of
+the interaction between the channel model and the spdif_enable. I don't
+know how any of this affects other models in the ca0106 range.
+
+So, I think that before I go any further here, I need some feedback, and
+access to some documentation would be useful.
+
+Ben Stanley.
+
+
+--=-K3YQbAZAZwOuwwuWZyMr
+Content-Disposition: attachment; filename=ca0106_44.1kHz_v0.1.patch
+Content-Type: text/x-patch; name=ca0106_44.1kHz_v0.1.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-Hopefully it is full now.<br><br><a href="http://pastebin.ca/940929">http://pastebin.ca/940929</a><br><br><div class="gmail_quote">On Thu, Mar 13, 2008 at 12:48 PM, Takashi Iwai &lt;<a href="mailto:tiwai@suse.de">tiwai@suse.de</a>&gt; wrote:<br>
-<blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">At Wed, 12 Mar 2008 18:17:43 +0100,<br>
-<div><div></div><div class="Wj3C7c">Rene Herman wrote:<br>
-&gt;<br>
-&gt; On 12-03-08 17:59, Takashi Iwai wrote:<br>
-&gt;<br>
-&gt; &gt; At Wed, 12 Mar 2008 17:39:48 +0100,<br>
-&gt; &gt; Rene Herman wrote:<br>
-&gt; &gt;&gt; On 12-03-08 15:43, Takashi Iwai wrote:<br>
-&gt; &gt;&gt;<br>
-&gt; &gt;&gt;&gt; At Tue, 11 Mar 2008 23:01:39 +0100,<br>
-&gt; &gt;&gt;&gt; Rene Herman wrote:<br>
-&gt; &gt;&gt;&gt;&gt; On 11-03-08 08:24, Gadi Oron wrote:<br>
-&gt; &gt;&gt;&gt;&gt;<br>
-&gt; &gt;&gt;&gt;&gt;&gt; I am trying to record sound on an old Thinkpad T22 that uses the cs46xx<br>
-&gt; &gt;&gt;&gt;&gt;&gt; sound driver.<br>
-&gt; &gt;&gt;&gt;&gt;&gt;<br>
-&gt; &gt;&gt;&gt;&gt;&gt; Each time you start to record you have a 10% chance of having the<br>
-&gt; &gt;&gt;&gt;&gt;&gt; recording completely distorted and having a metallic sound. When you<br>
-&gt; &gt;&gt;&gt;&gt;&gt; look at the waveform it looks as though there are small segments with<br>
-&gt; &gt;&gt;&gt;&gt;&gt; sharp transitions between them, a little like if these segments were<br>
-&gt; &gt;&gt;&gt;&gt;&gt; moved a little from their correct place.<br>
-&gt; &gt;&gt;&gt;&gt; No insights, but I confirm the bug with a TerraTec DMX XFire 1024 (CS4624).<br>
-&gt; &gt;&gt;&gt; Hm, cs46xx driver hasn&#39;t been much changes since long time ago (around<br>
-&gt; &gt;&gt;&gt; year 2005). &nbsp;The only big change was about some PM fixes, and I don&#39;t<br>
-&gt; &gt;&gt;&gt; think it&#39;s relevant... &nbsp;Could you run als-info.sh to get the status?<br>
-&gt; &gt;&gt; At:<br>
-&gt; &gt;&gt;<br>
-&gt; &gt;&gt; <a href="http://pastebin.ca/939784" target="_blank">http://pastebin.ca/939784</a><br>
-&gt; &gt;<br>
-&gt; &gt; The output seems truncated. &nbsp;Could you give the generated file via<br>
-&gt; &gt; &quot;alsactl -f somefile store&quot;, just to be sure ?<br>
-&gt;<br>
-&gt; Hmm, alsa-info.sh freshly downloaded from current hg.<br>
-<br>
-</div></div>Is the original data also truncated at the middle or is it a paste.bin<br>
-problem?<br>
-<br>
-&gt; &nbsp; &nbsp; &nbsp; control.26 {<br>
-&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; comment.access &#39;read write&#39;<br>
-&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; comment.type INTEGER<br>
-&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; comment.count 2<br>
-&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; comment.range &#39;0 - 32767&#39;<br>
-&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; iface MIXER<br>
-&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; name &#39;ADC Volume&#39;<br>
-&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; value.0 29492<br>
-&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; value.1 29492<br>
-&gt; &nbsp; &nbsp; &nbsp; }<br>
-<br>
-Try to put this to full once.<br>
-<font color="#888888"><br>
-<br>
-Takashi<br>
-</font></blockquote></div><br>
+diff -u -r linux-source-2.6.22-2.6.22/sound/pci/ca0106/ca0106_main.c linux-source-2.6.22-2.6.22-ben/sound/pci/ca0106/ca0106_main.c
+--- linux-source-2.6.22-2.6.22/sound/pci/ca0106/ca0106_main.c	2007-07-09 09:32:17.000000000 +1000
++++ linux-source-2.6.22-2.6.22-ben/sound/pci/ca0106/ca0106_main.c	2008-03-10 23:37:05.000000000 +1100
+@@ -247,9 +247,9 @@
+ 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				 SNDRV_PCM_INFO_MMAP_VALID),
+ 	.formats =		SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+-	.rates =		(SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
+-				 SNDRV_PCM_RATE_192000),
+-	.rate_min =		48000,
++	.rates =		(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
++				 SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000),
++	.rate_min =		44100,
+ 	.rate_max =		192000,
+ 	.channels_min =		2,  //1,
+ 	.channels_max =		2,  //6,
+@@ -610,12 +610,20 @@
+ 	u32 reg40_set = 0;
+ 	u32 reg40;
+ 	/* FIXME: Depending on mixer selection of SPDIF out or not, select the spdif rate or the DAC rate. */
+-	u32 reg71_mask = 0x03030000 ; /* Global. Set SPDIF rate. We only support 44100 to spdif, not to DAC. */
++	/*u32 reg71_mask = 0x03030000 ; /* Global. Set SPDIF rate. We only support 44100 to spdif, not to DAC. */
++	u32 reg71_mask;
++	u32 reg71_shift;
+ 	u32 reg71_set = 0;
+ 	u32 reg71;
+ 	int i;
++	if (emu->spdif_enable) {
++		reg71_shift = 24; /* SPDIF Output Rate */
++	} else {
++		reg71_shift = 16; /* I2S Output Rate */
++	}
++	reg71_mask = 0x3 << reg71_shift;
+ 	
+-        //snd_printk("prepare:channel_number=%d, rate=%d, format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, periods=%u, frames_to_bytes=%d\n",channel, runtime->rate, runtime->format, runtime->channels, runtime->buffer_size, runtime->period_size, runtime->periods, frames_to_bytes(runtime, 1));
++        snd_printk("prepare:channel_number=%d, rate=%d, format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, periods=%u, frames_to_bytes=%d\n",channel, runtime->rate, runtime->format, runtime->channels, runtime->buffer_size, runtime->period_size, runtime->periods, frames_to_bytes(runtime, 1));
+         //snd_printk("dma_addr=%x, dma_area=%p, table_base=%p\n",runtime->dma_addr, runtime->dma_area, table_base);
+ 	//snd_printk("dma_addr=%x, dma_area=%p, dma_bytes(size)=%x\n",emu->buffer.addr, emu->buffer.area, emu->buffer.bytes);
+ 	/* Rate can be set per channel. */
+@@ -623,24 +631,27 @@
+ 	/* reg71 controls DAC rate. */
+ 	switch (runtime->rate) {
+ 	case 44100:
+-		reg40_set = 0x10000 << (channel<<1);
+-		reg71_set = 0x01010000; 
+-		break;
++		/* We only support 44100 to spdif, not to DAC. (FIXME WHY?)*/
++		if (emu->spdif_enable) {
++			reg40_set = 0x10000 << (channel<<1);
++			reg71_set = 0x1 << reg71_shift;
++			break;
++		}
+         case 48000:
+ 		reg40_set = 0;
+-		reg71_set = 0; 
++		reg71_set = 0;
+ 		break;
+ 	case 96000:
+ 		reg40_set = 0x20000 << (channel<<1);
+-		reg71_set = 0x02020000; 
++		reg71_set = 0x2 << reg71_shift;
+ 		break;
+ 	case 192000:
+ 		reg40_set = 0x30000 << (channel<<1);
+-		reg71_set = 0x03030000; 
++		reg71_set = 0x3 << reg71_shift;
+ 		break;
+ 	default:
+ 		reg40_set = 0;
+-		reg71_set = 0; 
++		reg71_set = 0;
+ 		break;
+ 	}
+ 	/* Format is a global setting */
+@@ -660,11 +671,15 @@
+ 	hcfg = (hcfg & ~hcfg_mask) | hcfg_set;
+ 	outl(hcfg, emu->port + HCFG);
+ 	reg40 = snd_ca0106_ptr_read(emu, 0x40, 0);
++        snd_printk("ca0106: old reg40=%x\n", reg40);
+ 	reg40 = (reg40 & ~reg40_mask) | reg40_set;
+ 	snd_ca0106_ptr_write(emu, 0x40, 0, reg40);
++        snd_printk("ca0106: new reg40=%x\n", reg40);
+ 	reg71 = snd_ca0106_ptr_read(emu, 0x71, 0);
++        snd_printk("ca0106: old reg71=%x\n", reg71);
+ 	reg71 = (reg71 & ~reg71_mask) | reg71_set;
+ 	snd_ca0106_ptr_write(emu, 0x71, 0, reg71);
++        snd_printk("ca0106: new reg71=%x\n", reg71);
+ 
+ 	/* FIXME: Check emu->buffer.size before actually writing to it. */
+         for(i=0; i < runtime->periods; i++) {
+@@ -1300,6 +1315,7 @@
+ #if 1
+ 	printk(KERN_INFO "snd-ca0106: Model %04x Rev %08x Serial %08x\n", chip->model,
+ 	       chip->revision, chip->serial);
++	printk(KERN_INFO "snd-ca0106: 44100Hz capable Ben Stanley " __DATE__ ".\n" );
+ #endif
+ 	strcpy(card->driver, "CA0106");
+ 	strcpy(card->shortname, "CA0106");
 
-------=_Part_8138_30196855.1205410291000--
-
-
---===============0616414278==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2008.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
---===============0616414278==
+--=-K3YQbAZAZwOuwwuWZyMr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 _______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============0616414278==--
+--=-K3YQbAZAZwOuwwuWZyMr--
