@@ -1,17 +1,16 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: AK4114 - capturing spdif input stops the stream
-Date: Thu, 13 Mar 2008 20:18:34 +0100
-Message-ID: <47D97E0A.1080400@insite.cz>
-References: <47D85E20.7060109@insite.cz>	<s5hr6efdpv1.wl%tiwai@suse.de>	<47D922D0.8060006@insite.cz>
-	<s5hfxuuvi9l.wl%tiwai@suse.de>
+From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Subject: [PATCH] Fix ALC662 DAC mixer mutes
+Date: Thu, 13 Mar 2008 16:19:54 -0300
+Message-ID: <200803131619.55113.herton@mandriva.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7DF224511
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 20:18:40 +0100 (CET)
-In-Reply-To: <s5hfxuuvi9l.wl%tiwai@suse.de>
+Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
+	[200.140.247.100])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DD48103874
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 20:19:58 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,112 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Claudio Matsuoka <cmatsuoka@gmail.com>, Ferry Toth <ftoth@exalondelft.nl>
 List-Id: alsa-devel@alsa-project.org
 
+Currently ALC662 doesn't suport amp mute for AmpOut in nids 0x02, 0x03,
+0x04 (see block diagram in ALC662 datasheet page 3, does M correspond to
+mute?). The result is that currently mute for "Front Playback Switch",
+"Surround Playback Switch", "Center Playback Switch" and "LFE Playback
+Switch" mixer items doesn't work (tested on Asus P5GC-MX motherboard
+with 3stack-6ch model).
+
+The solution I found for this is to mute the proper inputs in 0x0c,
+0x0d, 0x0e audio mixers.
+
+Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
+
+diff -p -up linux-2.6.24/sound/pci/hda/patch_realtek.c.orig linux-2.6.24/sound/pci/hda/patch_realtek.c
+--- linux-2.6.24/sound/pci/hda/patch_realtek.c.orig	2008-03-11 13:45:07.000000000 -0300
++++ linux-2.6.24/sound/pci/hda/patch_realtek.c	2008-03-11 14:01:57.000000000 -0300
+@@ -13004,13 +13004,13 @@ static struct hda_channel_mode alc662_5s
+ static struct snd_kcontrol_new alc662_base_mixer[] = {
+ 	/* output mixer control */
+ 	HDA_CODEC_VOLUME("Front Playback Volume", 0x2, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_MUTE("Front Playback Switch", 0x02, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Front Playback Switch", 0x0c, 0x0, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Surround Playback Volume", 0x3, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_MUTE("Surround Playback Switch", 0x03, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Surround Playback Switch", 0x0d, 0x0, HDA_INPUT),
+ 	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x04, 1, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x04, 2, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x04, 1, 2, HDA_INPUT),
+-	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x04, 2, 2, HDA_INPUT),
++	HDA_CODEC_MUTE_MONO("Center Playback Switch", 0x0e, 1, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE_MONO("LFE Playback Switch", 0x0e, 2, 0x0, HDA_INPUT),
+ 	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
+ 
+ 	/*Input mixer control */
+@@ -13027,7 +13027,7 @@ static struct snd_kcontrol_new alc662_ba
+ 
+ static struct snd_kcontrol_new alc662_3ST_2ch_mixer[] = {
+ 	HDA_CODEC_VOLUME("Front Playback Volume", 0x02, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Front Playback Switch", 0x02, 2, HDA_INPUT),
++	HDA_CODEC_MUTE("Front Playback Switch", 0x0c, 0x0, HDA_INPUT),
+ 	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
+ 	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
+@@ -13044,13 +13044,13 @@ static struct snd_kcontrol_new alc662_3S
+ 
+ static struct snd_kcontrol_new alc662_3ST_6ch_mixer[] = {
+ 	HDA_CODEC_VOLUME("Front Playback Volume", 0x02, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Front Playback Switch", 0x02, 2, HDA_INPUT),
++	HDA_CODEC_MUTE("Front Playback Switch", 0x0c, 0x0, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Surround Playback Volume", 0x03, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Surround Playback Switch", 0x03, 2, HDA_INPUT),
++	HDA_CODEC_MUTE("Surround Playback Switch", 0x0d, 0x0, HDA_INPUT),
+ 	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x04, 1, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x04, 2, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x04, 1, 2, HDA_INPUT),
+-	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x04, 2, 2, HDA_INPUT),
++	HDA_CODEC_MUTE_MONO("Center Playback Switch", 0x0e, 1, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE_MONO("LFE Playback Switch", 0x0e, 2, 0x0, HDA_INPUT),
+ 	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
+ 	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
 
 
-Takashi Iwai wrote:
-> At Thu, 13 Mar 2008 13:49:20 +0100,
-> Pavel Hofman wrote:
->> Takashi Iwai napsal(a):
->>> At Wed, 12 Mar 2008 23:50:08 +0100,
->>> Pavel Hofman wrote:
->>>> Hi,
->>>>
->>>> here is my scenario:
->>>>
->>>> ICE1724 card, trying to record from SPDIF input via AK4114, ICE1724 
->>>> slaved to SPDIF clock from the receiver.
->>>>
->>>> The card detects SPDIF input rate correctly (in my case ESI Juli where 
->>>> AK4114 is provided with independent clock signal to enable the rate 
->>>> detection). Let's say it is 192000.
->>>>
->>>> Now I want to arecord the input stream, let's say in CD quality, using 
->>>> the plug plugin. The command fails, because of the check in ak4114.c:
->>>>
->>>> res = external_rate(rcs1);
->>>> 	if (!(flags & AK4114_CHECK_NO_RATE) && runtime && runtime->rate != res) {
->>>> 		snd_pcm_stream_lock_irqsave(ak4114->capture_substream, _flags);
->>>> 		if (snd_pcm_running(ak4114->capture_substream)) {
->>>> 			printk(KERN_DEBUG "rate changed (%i <- %i)\n", runtime->rate, res);
->>>> 			snd_pcm_stop(ak4114->capture_substream, SNDRV_PCM_STATE_DRAINING);
->>>> 			res = 1;
->>>> 		}
->>>> 		snd_pcm_stream_unlock_irqrestore(ak4114->capture_substream, _flags);
->>>> 	}
->>>>
->>>> The stream gets stopped because res = 192000 and runtime->rate = 44100.
->>>>
->>>> The problem is that the capture device still offers all the available 
->>>> rates, instead of the single SPDIF input one. Thus, the plug plugin is 
->>>> not forced to convert from 192000 to 44100 and runtime->rate is 44100 
->>>> instead of 192000.
->>>>
->>>> Of course recording at 192000 works fine.
->>>>
->>>> What would be the best way to force the SPDIF capture device to offer 
->>>> (advertise) only the current rate? This functionality would have to be 
->>>> applicable only to the few cards correctly detecting incoming rate 
->>>> (unlike most ice1724 cards without independent clock in slave mode).
->>> What about to call snd_ak4114_check_rate_and_errors() at PCM open?
->>> You can pass AK4114_CHECK_NO_RATE to flags argument to skip the check
->>> there, at least.
->>>
->>>
->> Well, I would not want to skip the check for cards with functioning rate 
->> detection. Plus snd_ak4114_check_rate_and_errors gets called 
->> periodically afterwards.
-> 
-> Yes, but the check there is simply useless at open.  It's only for
-> running states.  snd_ak4114_external_rate() would be simler, then.
-> 
->> It would be great if the driver in slaved-clock mode cut its list of 
->> native sample rates to the only one currently fed to SPDIF input and 
->> detected by AK4114. A routine doing this would be called when switching 
->> clock to the slaved-clock mode and called again in 
->> snd_ak4114_check_rate_and_errors() when any change in input rate is 
->> detected (and the stream is not running). Going back to master-clock 
->> mode would restore the existing list of all the rates.
->>
->> In case of input sample rate change when the PCM stream is running, the 
->> stream would be stopped. This is already implemented in the current 
->> version of snd_ak4114_check_rate_and_errors()
->>
->> Unfortunately, I do not know how to change the rates list properly not 
->> to break something. If it is only about changing the HW params struct, 
->> that would be trivial.
-> 
-> Suppose that the slave <-> master mode change doesn't happen during
-> the stream is opened, it's relatively easy.  So far, ice1724.c doesn't
-> call spdif.ops.open/close callbacks.  Call them in *_spdif_open/close
-> functions with NULL check. Then add open hook in juli.c so that you
-> can change rates_min and rates_max to the currently detected rate at
-> open...
-> 
-> Well, it's faster to write a patch than texts.
-> 
-> 
-
-
-.......
-
-Takashi, thanks for the patch, it works flawlessly.
-
-Another issue - when the external clock changes rate and the stream is 
-running (typically when starting the source playback which switches the 
-source card (and its SPDIF-OUT) to a different frequency), the target 
-card detects the change and the capture stream is stopped in 
-snd_ak4114_check_rate_and_errors() by
-
-snd_pcm_stop(ak4114->capture_substream, SNDRV_PCM_STATE_DRAINING);
-
-How should recording applications behave with stream in this mode? I 
-would expect arecord to close, but it does nothing. Is this correct 
-behaviour?
-
-Thanks,
-
-Pavel.
+-- 
+[]'s
+Herton
