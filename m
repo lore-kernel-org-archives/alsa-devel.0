@@ -1,16 +1,19 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: AK4114 - capturing spdif input stops the stream
-Date: Thu, 13 Mar 2008 13:49:20 +0100
-Message-ID: <47D922D0.8060006@insite.cz>
-References: <47D85E20.7060109@insite.cz> <s5hr6efdpv1.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [Alsa-user] Metallic recording in cs46xx
+ on	Thinkpad T22
+Date: Thu, 13 Mar 2008 13:56:04 +0100
+Message-ID: <47D92464.9070107@keyaccess.nl>
+References: <3948f0730803110024k1e7b90ecr31b745e333913c1d@mail.gmail.com>	<47D70143.3010705@keyaccess.nl>	<s5hk5k89f52.wl%tiwai@suse.de>	<47D80754.1020400@keyaccess.nl>	<s5h8x0nanew.wl%tiwai@suse.de>	<47D81037.7030901@keyaccess.nl>
+	<s5hwso699y3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from prague.insite.cz (r3g29.net.upc.cz [213.220.198.29])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0D231038EE
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 13:49:22 +0100 (CET)
-In-Reply-To: <s5hr6efdpv1.wl%tiwai@suse.de>
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8BB324443
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 13:55:23 +0100 (CET)
+In-Reply-To: <s5hwso699y3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,77 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>, Gadi Oron <gadior@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai napsal(a):
-> At Wed, 12 Mar 2008 23:50:08 +0100,
-> Pavel Hofman wrote:
->> Hi,
->>
->> here is my scenario:
->>
->> ICE1724 card, trying to record from SPDIF input via AK4114, ICE1724 
->> slaved to SPDIF clock from the receiver.
->>
->> The card detects SPDIF input rate correctly (in my case ESI Juli where 
->> AK4114 is provided with independent clock signal to enable the rate 
->> detection). Let's say it is 192000.
->>
->> Now I want to arecord the input stream, let's say in CD quality, using 
->> the plug plugin. The command fails, because of the check in ak4114.c:
->>
->> res = external_rate(rcs1);
->> 	if (!(flags & AK4114_CHECK_NO_RATE) && runtime && runtime->rate != res) {
->> 		snd_pcm_stream_lock_irqsave(ak4114->capture_substream, _flags);
->> 		if (snd_pcm_running(ak4114->capture_substream)) {
->> 			printk(KERN_DEBUG "rate changed (%i <- %i)\n", runtime->rate, res);
->> 			snd_pcm_stop(ak4114->capture_substream, SNDRV_PCM_STATE_DRAINING);
->> 			res = 1;
->> 		}
->> 		snd_pcm_stream_unlock_irqrestore(ak4114->capture_substream, _flags);
+On 13-03-08 11:48, Takashi Iwai wrote:
+
+>> Hmm, alsa-info.sh freshly downloaded from current hg.
+> 
+> Is the original data also truncated at the middle or is it a paste.bin
+> problem?
+
+The script only uploaded it. When I intervene and look at /tmp/alsa-info.txt 
+manually it's complete but when I just now retried the output on pastebin.ca 
+is again truncated:
+
+http://pastebin.ca/940954
+
+>> 	control.26 {
+>> 		comment.access 'read write'
+>> 		comment.type INTEGER
+>> 		comment.count 2
+>> 		comment.range '0 - 32767'
+>> 		iface MIXER
+>> 		name 'ADC Volume'
+>> 		value.0 29492
+>> 		value.1 29492
 >> 	}
->>
->> The stream gets stopped because res = 192000 and runtime->rate = 44100.
->>
->> The problem is that the capture device still offers all the available 
->> rates, instead of the single SPDIF input one. Thus, the plug plugin is 
->> not forced to convert from 192000 to 44100 and runtime->rate is 44100 
->> instead of 192000.
->>
->> Of course recording at 192000 works fine.
->>
->> What would be the best way to force the SPDIF capture device to offer 
->> (advertise) only the current rate? This functionality would have to be 
->> applicable only to the few cards correctly detecting incoming rate 
->> (unlike most ice1724 cards without independent clock in slave mode).
 > 
-> What about to call snd_ak4114_check_rate_and_errors() at PCM open?
-> You can pass AK4114_CHECK_NO_RATE to flags argument to skip the check
-> there, at least.
-> 
-> 
+> Try to put this to full once.
 
-Well, I would not want to skip the check for cards with functioning rate 
-detection. Plus snd_ak4114_check_rate_and_errors gets called 
-periodically afterwards.
+No change. Also no change with capturing at 48000/16/2 (previous 44100/16/2) 
+nor 44100/8/2, nor 44100/16/1.
 
-It would be great if the driver in slaved-clock mode cut its list of 
-native sample rates to the only one currently fed to SPDIF input and 
-detected by AK4114. A routine doing this would be called when switching 
-clock to the slaved-clock mode and called again in 
-snd_ak4114_check_rate_and_errors() when any change in input rate is 
-detected (and the stream is not running). Going back to master-clock 
-mode would restore the existing list of all the rates.
-
-In case of input sample rate change when the PCM stream is running, the 
-stream would be stopped. This is already implemented in the current 
-version of snd_ak4114_check_rate_and_errors()
-
-Unfortunately, I do not know how to change the rates list properly not 
-to break something. If it is only about changing the HW params struct, 
-that would be trivial.
-
-Thanks for suggestions,
-
-Pavel.
+Rene.
