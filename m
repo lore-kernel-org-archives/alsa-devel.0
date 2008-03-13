@@ -1,19 +1,24 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [Alsa-user] Metallic recording in cs46xx
- on	Thinkpad T22
-Date: Thu, 13 Mar 2008 13:56:04 +0100
-Message-ID: <47D92464.9070107@keyaccess.nl>
-References: <3948f0730803110024k1e7b90ecr31b745e333913c1d@mail.gmail.com>	<47D70143.3010705@keyaccess.nl>	<s5hk5k89f52.wl%tiwai@suse.de>	<47D80754.1020400@keyaccess.nl>	<s5h8x0nanew.wl%tiwai@suse.de>	<47D81037.7030901@keyaccess.nl>
-	<s5hwso699y3.wl%tiwai@suse.de>
+From: Mathieu Monney <zittix_all@xwaves.net>
+Subject: Hardware and software period size
+Date: Thu, 13 Mar 2008 14:26:14 +0100
+Message-ID: <47D92B76.8080806@xwaves.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8BB324443
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 13:55:23 +0100 (CET)
-In-Reply-To: <s5hwso699y3.wl%tiwai@suse.de>
+Received: from pimpette.xwaves.net (pimpette.xwaves.net [193.58.255.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 741D22448F
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 14:26:18 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by pimpette.xwaves.net (Postfix) with ESMTP id D984E7B8F8
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 14:28:37 +0100 (CET)
+Received: from pimpette.xwaves.net ([127.0.0.1])
+	by localhost (pimpette.xwaves.net [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 4jKHGZH+RF0U for <alsa-devel@alsa-project.org>;
+	Thu, 13 Mar 2008 14:28:35 +0100 (CET)
+Received: from [192.168.0.151] (84-74-74-177.dclient.hispeed.ch [84.74.74.177])
+	by pimpette.xwaves.net (Postfix) with ESMTP id DE6AD7BA7C
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2008 14:28:34 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +28,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>, Gadi Oron <gadior@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 13-03-08 11:48, Takashi Iwai wrote:
+Hi all,
 
->> Hmm, alsa-info.sh freshly downloaded from current hg.
-> 
-> Is the original data also truncated at the middle or is it a paste.bin
-> problem?
+I'm currently developping a layer between ALSA and a VoIP library for an 
+embedded device.  The device cannot have a different period size than 
+1024 for playback and 8 for capture (I don't know why :-( ). So my 
+problem is that the VoIP library ask me to have a period size different 
+of the hardware period size. So I decided to read/write to the sound 
+device using the provided software period size rather than the hardware 
+period size.. Is it a good idea? It seems to work but I have some sound 
+quality issues :-( !
 
-The script only uploaded it. When I intervene and look at /tmp/alsa-info.txt 
-manually it's complete but when I just now retried the output on pastebin.ca 
-is again truncated:
+Thank you
 
-http://pastebin.ca/940954
-
->> 	control.26 {
->> 		comment.access 'read write'
->> 		comment.type INTEGER
->> 		comment.count 2
->> 		comment.range '0 - 32767'
->> 		iface MIXER
->> 		name 'ADC Volume'
->> 		value.0 29492
->> 		value.1 29492
->> 	}
-> 
-> Try to put this to full once.
-
-No change. Also no change with capturing at 48000/16/2 (previous 44100/16/2) 
-nor 44100/8/2, nor 44100/16/1.
-
-Rene.
+Mathieu
