@@ -1,16 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: aplay: playback:2021: read error
-Date: Fri, 14 Mar 2008 08:30:46 +0100
-Message-ID: <47DA29A6.1060805@ladisch.de>
-References: <61445c750803131704k2188ffdfp800f757078574fcd@mail.gmail.com>
+Subject: Re: alsa conf file
+Date: Fri, 14 Mar 2008 08:33:20 +0100
+Message-ID: <47DA2A40.7060703@ladisch.de>
+References: <mailman.3111.1205405872.2095.alsa-devel@alsa-project.org>
+	<1205460106.9834.23.camel@tomars-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id C17722451F
-	for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2008 08:31:15 +0100 (CET)
-In-Reply-To: <61445c750803131704k2188ffdfp800f757078574fcd@mail.gmail.com>
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 8CC3824522
+	for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2008 08:33:37 +0100 (CET)
+In-Reply-To: <1205460106.9834.23.camel@tomars-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,14 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pharaoh ." <pharaoh137@gmail.com>
+To: leijin.tang@access-company.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pharaoh . wrote:
-> aplay: playback:2021: read error
+tomars wrote:
+> pcm.hardware{
+>         type hw:0
 
-This means that aplay cannot read from the file you're trying to play.
+          type hw
 
 
 HTH
