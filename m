@@ -1,39 +1,65 @@
-From: rct@frus.com (Bob Tracy)
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Fri, 14 Mar 2008 08:13:44 -0500 (CDT)
-Message-ID: <20080314131344.62A59DBA2@gherkin.frus.com>
-References: <47D8473A.3060806@keyaccess.nl>
+From: ListsAccount <lists@s201431494.online.de>
+Subject: bugfix for RME HDSPM alsa driver
+Date: Fri, 14 Mar 2008 14:33:02 +0100
+Message-ID: <47DA7E8E.6000008@s201431494.online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <47D8473A.3060806@keyaccess.nl> "from Rene Herman at Mar 12, 2008
- 10:12:26 pm"
-Sender: linux-alpha-owner@vger.kernel.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Bob Tracy <rct@frus.com>, Michael Cree <mcree@orcon.net.nz>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>, twhitehe@uwo.ca
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2EF7924661
+	for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2008 14:33:07 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman wrote:
-> Okay, and applying the attached just makes your sound completely dead in the 
-> water?
-> (patch to remove es1888_init from a Miata build omitted)
+Hi,
 
-A quick followup...  Since we're in agreement this isn't a regression,
-I've updated my working source tree to 2.6.25-rc5.  Built the new
-kernel with the patch to omit es1888_init(), and as near as I can tell,
-that function does nothing useful on the Miata platform.  At the very
-least, not having it makes no difference to any of the ALSA drivers I've
-tried: snd-sb8 still works great, and snd-es18xx is still broken in the
-same way originally described at the beginning of this long thread.
+I have had the following problem with the RME HDSPM alsa driver:
 
-I'll try a build with the old OSS "sb" driver, and if that works ok, we
-may be able to do away with es1888_init() on the Miata.  Tyson -- I
-think you have a Miata if I'm remembering correctly: can you confirm
-these observations?
+settings of card:
+Preferred Sync Reference = Word
+Sample Clock Source = AutoSync
+and no input plugged in (neither madi nor optical)
+playing a file (important!)
 
--- 
-------------------------------------------------------------------------
-Bob Tracy          |  "I was a beta tester for dirt.  They never did
-rct@frus.com       |   get all the bugs out." - Steve McGrew on /.
-------------------------------------------------------------------------
+Monitoring the external rate with amixer, the value was jumping between
+"None" and "48000 kHz".
+
+The proc output showed that the sample rate on word clock was still
+right at 48000 kHz
+while the external rate was jumping here, too. External rate seems to
+jump between
+word clock and madi input select.
+
+When "Preferred Sync Reference = Word" is selected, just the word clock
+rate should be
+displayed!
+
+
+
+I fixed the problem with following patch in
+alsa-driver-1.0.16/alsa-kernel/pci/rme9652/hdspm.c
+in function hdspm_external_sample_rate() line 668:
+
+There was a typo: instead of status2, status was used.
+
+668c668
+<                               (status & HDSPM_SelSyncRef0) == 0) {
+---
+>                               (status2 & HDSPM_SelSyncRef0) == 0) {
+
+
+(same way as in snd_hdspm_proc_read_madi function line 3123)
+
+
+greetings
