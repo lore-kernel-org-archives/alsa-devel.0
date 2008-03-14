@@ -1,17 +1,20 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: AK4114 - capturing spdif input stops the stream
-Date: Fri, 14 Mar 2008 18:15:00 +0100
-Message-ID: <47DAB294.3090502@insite.cz>
-References: <47D85E20.7060109@insite.cz>	<s5hr6efdpv1.wl%tiwai@suse.de>	<47D922D0.8060006@insite.cz>	<s5hfxuuvi9l.wl%tiwai@suse.de>	<47D97E0A.1080400@insite.cz>
-	<s5hfxuts2i6.wl%tiwai@suse.de>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: aplay: playback:2021: read error
+Date: Fri, 14 Mar 2008 12:05:48 -0700
+Message-ID: <61445c750803141205i6d96a5b2o9b8b419050d12a68@mail.gmail.com>
+References: <61445c750803131704k2188ffdfp800f757078574fcd@mail.gmail.com>
+	<47DA29A6.1060805@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 69C4E24497
-	for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2008 18:15:14 +0100 (CET)
-In-Reply-To: <s5hfxuts2i6.wl%tiwai@suse.de>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id E17EC1037F5
+	for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2008 20:05:50 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so4128084wag.8
+	for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2008 12:05:48 -0700 (PDT)
+In-Reply-To: <47DA29A6.1060805@ladisch.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->> Takashi, thanks for the patch, it works flawlessly.
-> 
-> OK, now committed to HG tree.
+On Fri, Mar 14, 2008 at 12:30 AM, Clemens Ladisch <clemens@ladisch.de>
+wrote:
 
-Thanks a lot. I will just resolve the conflicts now :)
+> Pharaoh . wrote:
+> > aplay: playback:2021: read error
+>
+> This means that aplay cannot read from the file you're trying to play.
+>
+>
+> HTH
+> Clemens
+>
 
 
->> Another issue - when the external clock changes rate and the stream is 
->> running (typically when starting the source playback which switches the 
->> source card (and its SPDIF-OUT) to a different frequency), the target 
->> card detects the change and the capture stream is stopped in 
->> snd_ak4114_check_rate_and_errors() by
->>
->> snd_pcm_stop(ak4114->capture_substream, SNDRV_PCM_STATE_DRAINING);
->>
->> How should recording applications behave with stream in this mode? I 
->> would expect arecord to close, but it does nothing. Is this correct 
->> behaviour?
-> 
-> It's supposed to be drained then stopped.  Maybe something wrong in
-> the handling of DRAINING state in the capture direction.
-> 
-> Anyway, it's a bit strange situation as is.  Since the sample rate is
-> changed, you can't call simply prepare again like normal errors...
+It might sound dumb, but I am trying to play a plain raw file, 8 bit mono,
+and the file is there on the mounted FS, what could be the reason to fail? I
+dont think it is because I am using CRAMFS which is read only.
 
-I would expect arecord to quit with some relevant message. In larger 
-recording apps, e.g. Audacity, it should probably stop recording and 
-display a warning message. No idea if the controlled stop with an 
-appropriate error message is feasible with the existing API and code.
-
-Thanks,
-
-Pavel Hofman.
+-pharaoh.
