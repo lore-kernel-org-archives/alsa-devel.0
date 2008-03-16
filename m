@@ -1,24 +1,15 @@
-From: =?ISO-8859-1?Q?D=E2niel?= Fraga <fragabr@gmail.com>
-Subject: AD1988B: ALSA doesn't use dmix automatically
-Date: Sat, 15 Mar 2008 23:48:52 -0300
-Message-ID: <20080315234852.25288ff8@tux.abusar.org.br>
+From: "van der Linden" <ejvanderlinden@hetnet.nl>
+Subject: arecord | aplay expected delay
+Date: Sun, 16 Mar 2008 11:05:52 +0100
+Message-ID: <00d301c8874d$51773ea0$0202a8c0@uw4b58d8528225>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F0352450B
-	for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2008 03:50:10 +0100 (CET)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Jaiwp-0004M4-AO
-	for alsa-devel@alsa-project.org; Sun, 16 Mar 2008 02:50:07 +0000
-Received: from 200-207-206-233.dsl.telesp.net.br ([200.207.206.233])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2008 02:50:07 +0000
-Received: from fragabr by 200-207-206-233.dsl.telesp.net.br with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2008 02:50:07 +0000
+Received: from hpsmtp-eml17.kpnxchange.com (hpsmtp-eml17.kpnxchange.com
+	[213.75.38.117])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26BDD103832
+	for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2008 11:05:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,23 +22,14 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA 1.0.15
+Hi,
 
-http://alsa.opensrc.org/index.php/Dmix
+I'm running arecord and aplay under uCLinux on a Blackfin DSP.
 
-NOTE: For ALSA 1.0.9rc2 and higher you don't need to setup dmix. Dmix
-is enabled as default for soundcards which don't support hw mixing.
+In this way I loopback my audio.
 
-	So why if I try to play 2 sounds at the same time, the second
-one complains the "resource is busy"? Shouldn't it detect that AD1988B
-can't do hardware mixing and use dmix automatically? 
+Does anyone know what delay I can expect between audio input and audio output?
 
-	Obs.: I don't have any ~/.asoundrc or /etc/asound.conf lying
-around.
+I measure at my test board 50ms. I want to have about 1ms!
 
-	Thanks!
-
--- 
-Linux 2.6.24: Arr Matey! A Hairy Bilge Rat!
-http://u-br.net http://www.abusar.org/FELIZ_2008.html
-Napalm Death - "Circle Of Hypocrisy" (Harmony Corruption - 1990)
+E-J
