@@ -1,18 +1,13 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: Buffer size/periods (Layla3G)
-Date: Sun, 16 Mar 2008 12:02:58 +0000 (GMT)
-Message-ID: <alpine.BSO.1.00.0803161126500.28063@metheny.ijneb.com>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: PATCH - some fixes and cleanup for ICE1724 cards
+Date: Sun, 16 Mar 2008 13:22:17 +0100
+Message-ID: <47DD10F9.5080907@insite.cz>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-459525358-1205668740=:28063"
+Content-Type: multipart/mixed; boundary="------------090703050905020601050103"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metheny.ijneb.com (mailout.ijneb.com [212.13.201.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 512052469E
-	for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2008 13:03:01 +0100 (CET)
-Received: from localhost ([127.0.0.1] ident=mark)
-	by metheny.ijneb.com with esmtp (Exim 4.69)
-	(envelope-from <mark@pogo.org.uk>) id 1JarZq-0003Cj-HB
-	for alsa-devel@alsa-project.org; Sun, 16 Mar 2008 12:02:58 +0000
-Content-ID: <alpine.BSO.1.00.0803161159040.28063@metheny.ijneb.com>
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 21412246A8
+	for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2008 13:22:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,113 +17,225 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This is a multi-part message in MIME format.
+--------------090703050905020601050103
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
---0-459525358-1205668740=:28063
-Content-Type: TEXT/PLAIN; FORMAT=flowed; CHARSET=US-ASCII
-Content-ID: <alpine.BSO.1.00.0803161159041.28063@metheny.ijneb.com>
+Hi Takashi,
 
-Hello,
+here is a small patch with minor fixes and cleanup.
 
-I am investigating problems I'm having with recording over long periods. 
-I'm using a Layla3G and tested various ALSA versions including 1.0.14 and 
-1.0.16 on different machines.
 
-I've noticed that when I open the first pair of subdevices, my request for 
-1000ms buffer size is handled differently to other devices:
+* removing the hack with NON_AKM ak4xxx type
+* support for card-specific flags in ak4114_stats
+* definition of the flags for corresponding cards
 
-   $ ./test_buffers "hw:Layla3G,0,0" 1000
-   buffer_size=16384 period_size=128
+Signed-by: Pavel Hofman <dustin@seznam.cz>
 
-   $ ./test_buffers "hw:Layla3G,0,2" 1000
-   buffer_size=32768 period_size=256
-
-   $ ./test_buffers "hw:Layla3G,0,4" 1000
-   buffer_size=32768 period_size=256
-
-   $ ./test_buffers "hw:Layla3G,0,6" 1000
-   buffer_size=32768 period_size=256
-
-If I try other buffer sizes, I can see is a limit to buffer size of 16384 
-samples on the ,0 subdevice, which is also affecting the chosen period 
-size. But only on the first subdevice. Is there a reason, or is this a 
-bug?
-
-Also, there seem to be failures at certain buffer sizes:
-
-   $ ./test_buffers "hw:Layla3G,0,2" 429
-   buffer_size=18912 period_size=96
-
-   $ ./test_buffers "hw:Layla3G,0,2" 430
-   set_buffer_time_near: Invalid argument
-
-   $ ./test_buffers "hw:Layla3G,0,2" 431
-   buffer_size=19008 period_size=96
-
-Can anyone explain to me what's going on here, or is this also a bug?
-
-The overall problem I'm investigating is snd_pcm_readi() returning 
-incomplete buffers after running for long periods until another 
-snd_pcm_prepare(). It seems possible that this is related.
-
-Any help is greatly appreciated.
 
 Thanks,
 
-Mark
---0-459525358-1205668740=:28063
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; NAME=test_buffers.c
-Content-Transfer-Encoding: BASE64
-Content-ID: <alpine.BSO.1.00.0803161159000.28063@metheny.ijneb.com>
-Content-Description: 
-Content-Disposition: ATTACHMENT; FILENAME=test_buffers.c
+Pavel
 
-I2luY2x1ZGUgPHN0ZGlvLmg+DQojaW5jbHVkZSA8YWxzYS9hc291bmRsaWIu
-aD4NCg0KI2RlZmluZSBSQVRFIDQ0MTAwDQojZGVmaW5lIENIQU5ORUxTIDIN
-Cg0KI2RlZmluZSBDSEsobXNnLCByKSBcDQp7IFwNCglpZiAoKHIpIDwgMCkg
-eyBcDQoJCWZwcmludGYoc3RkZXJyLCAiJXM6ICVzXG4iLCBtc2csIHNuZF9z
-dHJlcnJvcihyKSk7IFwNCgkJcmV0dXJuIC0xOyBcDQoJfSBcDQp9DQoNCmlu
-dCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQp7DQoJaW50IHIsIGRp
-cjsNCgl1bnNpZ25lZCBpbnQgcDsNCglzbmRfcGNtX3QgKnBjbTsNCglzbmRf
-cGNtX2h3X3BhcmFtc190ICpod19wYXJhbXM7DQoJc25kX3BjbV91ZnJhbWVz
-X3QgYnVmZmVyX3NpemUsIHBlcmlvZF9zaXplOw0KDQoJciA9IHNuZF9wY21f
-b3BlbigmcGNtLCBhcmd2WzFdLCBTTkRfUENNX1NUUkVBTV9DQVBUVVJFLCAw
-KTsNCglDSEsoIm9wZW4iLCByKTsNCg0KCXIgPSBzbmRfcGNtX2h3X3BhcmFt
-c19tYWxsb2MoJmh3X3BhcmFtcyk7DQoJQ0hLKCJwYXJhbXNfbWFsbG9jIiwg
-cik7DQoNCglyID0gc25kX3BjbV9od19wYXJhbXNfYW55KHBjbSwgaHdfcGFy
-YW1zKTsNCglDSEsoInBhcmFtc19hbnkiLCByKTsNCg0KCXIgPSBzbmRfcGNt
-X2h3X3BhcmFtc19zZXRfYWNjZXNzKHBjbSwgaHdfcGFyYW1zLA0KCQkJCQkg
-U05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQpOw0KCUNISygicGFyYW1z
-X3NldF9hY2Nlc3MiLCByKTsNCg0KCXIgPSBzbmRfcGNtX2h3X3BhcmFtc19z
-ZXRfZm9ybWF0KHBjbSwgaHdfcGFyYW1zLCBTTkRfUENNX0ZPUk1BVF9TMzIp
-Ow0KCUNISygic2V0X2Zvcm1hdCIsIHIpOw0KDQoJciA9IHNuZF9wY21faHdf
-cGFyYW1zX3NldF9yYXRlKHBjbSwgaHdfcGFyYW1zLCBSQVRFLCAwKTsNCglD
-SEsoInNldF9yYXRlIiwgcik7DQoNCglyID0gc25kX3BjbV9od19wYXJhbXNf
-c2V0X2NoYW5uZWxzKHBjbSwgaHdfcGFyYW1zLCBDSEFOTkVMUyk7DQoJQ0hL
-KCJzZXRfY2hhbm5lbHMiLHIpOw0KDQoJaWYgKGFyZ2MgPiAyKSB7DQoJICAg
-ICAgICBwID0gYXRvaShhcmd2WzJdKSAqIDEwMDA7DQoJCXIgPSBzbmRfcGNt
-X2h3X3BhcmFtc19zZXRfYnVmZmVyX3RpbWVfbmVhcihwY20sIGh3X3BhcmFt
-cywNCgkJCQkJCQkgICAmcCwgJmRpcik7DQoJCUNISygic2V0X2J1ZmZlcl90
-aW1lX25lYXIiLCByKTsNCgl9DQoNCglpZiAoYXJnYyA+IDMpIHsNCgkJcCA9
-IGF0b2koYXJndlszXSkgKiAxMDAwOw0KCQlyID0gc25kX3BjbV9od19wYXJh
-bXNfc2V0X3BlcmlvZF90aW1lX25lYXIocGNtLCBod19wYXJhbXMsDQoJCQkJ
-CQkJICAgJnAsICZkaXIpOw0KCQlDSEsoInNldF9wZXJpb2RfdGltZV9uZWFy
-Iiwgcik7DQoJfQ0KDQoJciA9IHNuZF9wY21faHdfcGFyYW1zKHBjbSwgaHdf
-cGFyYW1zKTsNCglDSEsoImh3X3BhcmFtcyIsIHIpOw0KDQoJciA9IHNuZF9w
-Y21faHdfcGFyYW1zX2dldF9idWZmZXJfc2l6ZShod19wYXJhbXMsICZidWZm
-ZXJfc2l6ZSk7DQoJQ0hLKCJnZXRfYnVmZmVyX3NpemUiLCByKTsNCg0KCXIg
-PSBzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kX3NpemUoaHdfcGFyYW1z
-LCAmcGVyaW9kX3NpemUsICZkaXIpOw0KCUNISygiZ2V0X3BlcmlvZF9zaXpl
-Iiwgcik7DQoNCglwcmludGYoImJ1ZmZlcl9zaXplPSVkIHBlcmlvZF9zaXpl
-PSVkXG4iLA0KCSAgICAgICAoaW50KWJ1ZmZlcl9zaXplLCAoaW50KXBlcmlv
-ZF9zaXplKTsNCg0KCXIgPSBzbmRfcGNtX2Nsb3NlKHBjbSk7DQoJQ0hLKCJw
-Y21fY2xvc2UiLCByKTsNCg0KCXJldHVybiAwOw0KfQ0K
+--------------090703050905020601050103
+Content-Type: text/x-patch;
+ name="patch-fixes.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="patch-fixes.diff"
 
---0-459525358-1205668740=:28063
+diff -r 52ca5f7c772e i2c/other/ak4114.c
+--- a/i2c/other/ak4114.c	Fri Mar 14 17:17:09 2008 +0100
++++ b/i2c/other/ak4114.c	Sun Mar 16 13:01:29 2008 +0100
+@@ -612,7 +612,7 @@ static void ak4114_stats(struct work_str
+ 	struct ak4114 *chip = container_of(work, struct ak4114, work.work);
+ 
+ 	if (!chip->init)
+-		snd_ak4114_check_rate_and_errors(chip, 0);
++		snd_ak4114_check_rate_and_errors(chip, chip->check_flags);
+ 
+ 	schedule_delayed_work(&chip->work, HZ / 10);
+ }
+diff -r 52ca5f7c772e i2c/other/ak4xxx-adda.c
+--- a/i2c/other/ak4xxx-adda.c	Fri Mar 14 17:17:09 2008 +0100
++++ b/i2c/other/ak4xxx-adda.c	Sun Mar 16 13:01:29 2008 +0100
+@@ -70,7 +70,8 @@ static void ak4524_reset(struct snd_akm4
+ }
+ 
+ /* reset procedure for AK4355 and AK4358 */
+-static void ak4355_reset(struct snd_akm4xxx *ak, int state)
++static void ak435X_reset(struct snd_akm4xxx *ak, int state,
++		unsigned char total_regs)
+ {
+ 	unsigned char reg;
+ 
+@@ -78,7 +79,7 @@ static void ak4355_reset(struct snd_akm4
+ 		snd_akm4xxx_write(ak, 0, 0x01, 0x02); /* reset and soft-mute */
+ 		return;
+ 	}
+-	for (reg = 0x00; reg < 0x0b; reg++)
++	for (reg = 0x00; reg < total_regs; reg++)
+ 		if (reg != 0x01)
+ 			snd_akm4xxx_write(ak, 0, reg,
+ 					  snd_akm4xxx_get(ak, 0, reg));
+@@ -118,8 +119,10 @@ void snd_akm4xxx_reset(struct snd_akm4xx
+ 		/* FIXME: needed for ak4529? */
+ 		break;
+ 	case SND_AK4355:
++		ak435X_reset(ak, state, 0x0b);
++		break;
+ 	case SND_AK4358:
+-		ak4355_reset(ak, state);
++		ak435X_reset(ak, state, 0x10);
+ 		break;
+ 	case SND_AK4381:
+ 		ak4381_reset(ak, state);
+@@ -292,11 +295,6 @@ void snd_akm4xxx_init(struct snd_akm4xxx
+ 	case SND_AK5365:
+ 		/* FIXME: any init sequence? */
+ 		return;
+-	case NON_AKM:
+-		/* fake value for non-akm codecs using akm infrastructure
+-		 * (e.g. of ice1724) - certainly FIXME
+-		 */
+-		return;
+ 	default:
+ 		snd_BUG();
+ 		return;
+@@ -374,6 +372,8 @@ static int put_ak_reg(struct snd_kcontro
+ 		nval = mask - nval;
+ 	if (AK_GET_NEEDSMSB(kcontrol->private_value))
+ 		nval |= 0x80;
++	/* printk(KERN_DEBUG "DEBUG - AK writing reg: chip %x addr %x,
++	   nval %x\n", chip, addr, nval); */
+ 	snd_akm4xxx_write(ak, chip, addr, nval);
+ 	return 1;
+ }
+diff -r 52ca5f7c772e include/ak4114.h
+--- a/include/ak4114.h	Fri Mar 14 17:17:09 2008 +0100
++++ b/include/ak4114.h	Sun Mar 16 13:01:29 2008 +0100
+@@ -182,6 +182,7 @@ struct ak4114 {
+ 	unsigned char rcs0;
+ 	unsigned char rcs1;
+ 	struct delayed_work work;
++	unsigned int check_flags;
+ 	void *change_callback_private;
+ 	void (*change_callback)(struct ak4114 *ak4114, unsigned char c0, unsigned char c1);
+ };
+diff -r 52ca5f7c772e include/ak4xxx-adda.h
+--- a/include/ak4xxx-adda.h	Fri Mar 14 17:17:09 2008 +0100
++++ b/include/ak4xxx-adda.h	Sun Mar 16 13:01:29 2008 +0100
+@@ -68,7 +68,7 @@ struct snd_akm4xxx {
+ 	enum {
+ 		SND_AK4524, SND_AK4528, SND_AK4529,
+ 		SND_AK4355, SND_AK4358, SND_AK4381,
+-		SND_AK5365, NON_AKM
++		SND_AK5365
+ 	} type;
+ 
+ 	/* (array) information of combined codecs */
+diff -r 52ca5f7c772e pci/ice1712/prodigy192.c
+--- a/pci/ice1712/prodigy192.c	Fri Mar 14 17:17:09 2008 +0100
++++ b/pci/ice1712/prodigy192.c	Sun Mar 16 13:01:29 2008 +0100
+@@ -319,12 +319,11 @@ static int stac9460_mic_sw_put(struct sn
+ /*
+  * Handler for setting correct codec rate - called when rate change is detected
+  */
+-static void stac9460_set_rate_val(struct snd_akm4xxx *ak, unsigned int rate)
++static void stac9460_set_rate_val(struct snd_ice1712 *ice, unsigned int rate)
+ {
+ 	unsigned char old, new;
+ 	int idx;
+ 	unsigned char changed[7];
+-	struct snd_ice1712 *ice = ak->private_data[0];
+ 	struct prodigy192_spec *spec = ice->spec;
+ 
+ 	if (rate == 0)  /* no hint - S/PDIF input is master, simply return */
+@@ -357,16 +356,6 @@ static void stac9460_set_rate_val(struct
+ 	mutex_unlock(&spec->mute_mutex);
+ }
+ 
+-/* using akm infrastructure for setting rate of the codec */
+-static struct snd_akm4xxx akmlike_stac9460 __devinitdata = {
+-	.type = NON_AKM,	/* special value */
+-	.num_adcs = 6,		/* not used in any way, just for completeness */
+-	.num_dacs = 2,
+-	.ops = {
+-		.set_rate_val = stac9460_set_rate_val
+-	}
+-};
+-
+ 
+ static const DECLARE_TLV_DB_SCALE(db_scale_dac, -19125, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(db_scale_adc, 0, 150, 0);
+@@ -642,12 +631,19 @@ static int prodigy192_ak4114_init(struct
+ 		0x41, 0x02, 0x2c, 0x00, 0x00
+ 	};
+ 	struct prodigy192_spec *spec = ice->spec;
+-
+-	return snd_ak4114_create(ice->card,
++	int err;
++
++	err = snd_ak4114_create(ice->card,
+ 				 prodigy192_ak4114_read,
+ 				 prodigy192_ak4114_write,
+ 				 ak4114_init_vals, ak4114_init_txcsb,
+ 				 ice, &spec->ak4114);
++	if (err < 0)
++		return err;
++	/* AK4114 in Prodigy192 cannot detect external rate correctly.
++	 * No reason to stop capture stream due to incorrect checks */
++	spec->ak4114->check_flags = AK4114_CHECK_NO_RATE;
++	return 0;
+ }
+ 
+ static void stac9460_proc_regs_read(struct snd_info_entry *entry,
+@@ -743,7 +739,6 @@ static int __devinit prodigy192_init(str
+ 	};
+ 	const unsigned short *p;
+ 	int err = 0;
+-	struct snd_akm4xxx *ak;
+ 	struct prodigy192_spec *spec;
+ 
+ 	/* prodigy 192 */
+@@ -761,15 +756,7 @@ static int __devinit prodigy192_init(str
+ 	p = stac_inits_prodigy;
+ 	for (; *p != (unsigned short)-1; p += 2)
+ 		stac9460_put(ice, p[0], p[1]);
+-	/* reusing the akm codecs infrastructure,
+-	 * for setting rate on stac9460 */
+-	ak = ice->akm = kmalloc(sizeof(struct snd_akm4xxx), GFP_KERNEL);
+-	if (!ak)
+-		return -ENOMEM;
+-	ice->akm_codecs = 1;
+-	err = snd_ice1712_akm4xxx_init(ak, &akmlike_stac9460, NULL, ice);
+-	if (err < 0)
+-		return err;
++	ice->gpio.set_pro_rate = stac9460_set_rate_val;
+ 
+ 	/* MI/ODI/O add on card with AK4114 */
+ 	if (prodigy192_miodio_exists(ice)) {
+diff -r 52ca5f7c772e pci/ice1712/revo.c
+--- a/pci/ice1712/revo.c	Fri Mar 14 17:17:09 2008 +0100
++++ b/pci/ice1712/revo.c	Sun Mar 16 13:01:29 2008 +0100
+@@ -488,6 +488,10 @@ static int __devinit ap192_ak4114_init(s
+ 				 ap192_ak4114_write,
+ 				 ak4114_init_vals, ak4114_init_txcsb,
+ 				 ice, &ak);
++	/* AK4114 in Revo cannot detect external rate correctly.
++	 * No reason to stop capture stream due to incorrect checks */
++	ak->check_flags = AK4114_CHECK_NO_RATE;
++
+ 	return 0; /* error ignored; it's no fatal error */
+ }
+ 
+
+--------------090703050905020601050103
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -139,4 +246,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---0-459525358-1205668740=:28063--
+--------------090703050905020601050103--
