@@ -1,18 +1,18 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: ALSA and SALSA install
-Date: Mon, 17 Mar 2008 22:43:18 +0000
-Message-ID: <200803172243.18609.gineera@aspect135.co.uk>
-References: <200803061641.33445.gineera@aspect135.co.uk>
-	<47D01FCB.2010509@ladisch.de>
-	<200803072031.27878.gineera@aspect135.co.uk>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Re: query about snd_pcm_hw_refine
+Date: Mon, 17 Mar 2008 15:58:55 -0700
+Message-ID: <61445c750803171558m43a94d04m29b933d708344f10@mail.gmail.com>
+References: <61445c750803171515n38748127l6becaca008f46bb1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (wmsmtp.opaltelecom.net [62.24.128.253])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6D4F24558
-	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 23:41:39 +0100 (CET)
-In-Reply-To: <200803072031.27878.gineera@aspect135.co.uk>
+Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4289124557
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 23:58:57 +0100 (CET)
+Received: by rn-out-0910.google.com with SMTP id j40so3228099rnf.12
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 15:58:56 -0700 (PDT)
+In-Reply-To: <61445c750803171515n38748127l6becaca008f46bb1@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,51 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 07 March 2008 20:31, I wrote:
-> On Thursday 06 March 2008 16:46, Clemens Ladisch wrote:
-> > Alan Horstmann wrote:
-> > > Is there a way to install both at the same time, so on a PC code can be
-> > > compiled and experimented with first -lasound and then -lsalsa without
-> > > alternately re-installing the libraries with make install?
-> >
-> > It should be possible to install salsa-lib into another directory (by
-> > using the *prefix configure options) and then to change the include
-> > and library paths when compiling the program that uses it.
+On Mon, Mar 17, 2008 at 3:15 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
+
+> Hi
 >
-> Thanks, that is the sort of thing I had hoped was possible; will try that
-> at the next opportunity.
+> I get following error when trying to run  aplay with my plugin:
+>
+> #aplay -D myplug test.wav
+>
+> Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, St
+> ereo
+> aplay: set_params:882: Broken configuration for this PCM: no
+> configurations available.
+>
+> After looking at the code, I figured out that its snd_pcm_hw_refine which
+> is causing problem.
+> It looks like following in pcm_params.c in alsa lib 1.0.13,
+>
+>
+> int snd_pcm_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
+> {
+>     int res;
+>
+> #ifdef REFINE_DEBUG
+>     snd_output_t *log;
+>     snd_output_stdio_attach(&log, stderr, 0);
+>
+> #endif
+>     printf("#####%s \n", __FUNCTION__);
+>     assert(pcm && params);
+> #ifdef REFINE_DEBUG
+>     snd_output_printf(log, "REFINE called:\n");
+>     snd_pcm_hw_params_dump(params, log);
+> #endif
+>     printf("#####%s calling hw_refine\n", __FUNCTION__);
+>     res = pcm->ops->hw_refine(pcm->op_arg, params);
+>     printf("#####% return val of hw_refine = %d\n", res);
+> #ifdef REFINE_DEBUG
+>     snd_output_printf(log, "refine done - result = %i\n", res);
+>     snd_pcm_hw_params_dump(params, log);
+>     snd_output_close(log);
+> #endif
+>     return res;
+> }
+>
+> I have modified the alsa.conf for my plugin by adding following in it at
+> the end,
+>
+> pcm.myplug {
+>         type myplug
+>         card 0
+> }
+>
+> What could be the problem?
+> -pharaoh.
+>
+>
+Problem solved, I modified my alsa.conf to look like this:
 
-Just to tidy off this thread, here's what I have done to achieve this.  (I 
-know it's not rocket science!)  The problem is actually with the headers, not 
-the library, as both libs exist in /usr/lib.
+pcm.myplug {
+        @args [ FORMAT ]
+           type myplug
+           card 0
+           rate 44100
+           bitrate 128
+           channels 2
+        format $FORMAT
+}
 
-First I manually created the salsa headers seperately in /usr/include/salsa.  
-Then in the code put:
-	#ifdef SALSA
-	#include <salsa/asoundlib.h>
-	#else
-	#include <alsa/asoundlib.h>
-	#endif
 
-Then on the gcc command line  
-	... -D SALSA -lsalsa
-builds with salsa, or
-	... -lasound
-with standard Alsa.  Is this all OK?
-
-The salsa standard install prefixes etc seemed to always put the headers under 
-a alsa/ subdirectory.  By editing salsa-lib..../src/Makefile.in
-	L244    alsaincludedir = $(includedir)/salsa
-the headers are put in usr/include/salsa.
-
-I think the option of automatically installing salsa headers as above (ie /
-usr/include/salsa/asoundlib.h, etc) would be useful but it doesn't seem that 
-the value of 'alsaincludedir' can be set as a configure option.  Might it be 
-worth adding it so
-	./configure --alsaincludedir=...
-is available?
-
-Alan
+-pharaoh.
