@@ -1,48 +1,69 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [alsa-devel] /usr/share/alsa/alsa.conf :and file
-	extention
-Date: Mon, 17 Mar 2008 17:01:37 +0100
-Message-ID: <47DE95E1.6010404@keyaccess.nl>
-References: <cab05a880803161957j7a82e04cma094afda62d5cdab@mail.gmail.com>	<47DDE2F7.7000904@keyaccess.nl>	<s5hmyoxu66g.wl%tiwai@suse.de>	<47DE6543.9000909@keyaccess.nl>
-	<s5heja9pexc.wl%tiwai@suse.de>
+From: Udo van den Heuvel <udovdh@xs4all.nl>
+Subject: Emvy24control s/pidf input issue
+Date: Mon, 17 Mar 2008 17:32:18 +0100
+Message-ID: <47DE9D12.9030900@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <s5heja9pexc.wl%tiwai@suse.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-vbr9.xs4all.nl (smtp-vbr9.xs4all.nl [194.109.24.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50DE51038B0
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 17:32:25 +0100 (CET)
+Received: from surfplank2.hierzo (pindarots.xs4all.nl [82.92.197.115])
+	(authenticated bits=0)
+	by smtp-vbr9.xs4all.nl (8.13.8/8.13.8) with ESMTP id m2HGWIFf087068
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 17:32:24 +0100 (CET)
+	(envelope-from udovdh@xs4all.nl)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 17-03-08 16:07, Takashi Iwai wrote:
+Hello,
 
->>> Recently I added a new option "truncate" to file plugin.  As default,
->>> it's set to true (for compatibility reason), and the plugin overwrite
->>> the existing file if reopened.  When it's set to false, a new file is
->>> created with a different suffix (up to 1000 files) at each time.
-> 
-> And I added another new feature to the file plugin to write WAV files
-> instead of raw files now to HG tree.  You can specify the format "wav"
-> instead of "raw" (the default one).
-> 
-> It's a so dumb implmenetation and has no check for over 2GB files.
-> But it might be more useful in many cases than raw outputs.
+I just noticed that S/PDIF input on my Audiophile 2496 does not work.
+I see:
 
-Yes. I've used the file plugin occasionally if only for some testing and 
-appreciate this. Many thanks.
+[udo@wda ~]$ envy24control
+using    --- input_channels: 0
+         --- output_channels: 4
+         --- pcm_output_channels: 8
+         --- spdif in/out channels: 2
+Unable to read S/PDIF input switch: No such file or directory
 
-Rene.
+Changing the Digital Input from coax to optical or vice versa
+gives:
+Unable to write S/PDIF on/off switch: No such file or directory
+Unable to write S/PDIF input switch: No such file or directory
 
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2008.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+This is on Fedora 8 x86_64 with alsa-tools 1.0.12-4 from Fedora Core 7,
+envycontrol 0.6.0.
+S/PDIF output works without a problem. Did not have S/PDIF input working
+before, as far as I remember.
+
+Using -v I do not see signal in the meters.
+
+In the source I see in spdif_input_update:
+
+        if ((card_eeprom.subvendor != ICE1712_SUBDEVICE_DELTADIO2496) &&
+            ! card_is_dmx6fire)
+                return;
+        if ((err = snd_ctl_elem_read(ctl, spdif_input)) < 0)
+                g_print("Unable to read S/PDIF input switch: %s\n",
+snd_strerror(err));
+(etc)
+
+Why does snd_ctl_elem_read fail?
+How could I make S/PDIF input work again?
+
+Tips are very welcome!
+
+Kind regards,
+Udo
