@@ -1,64 +1,65 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [alsa-devel] /usr/share/alsa/alsa.conf :and file
-	extention
-Date: Mon, 17 Mar 2008 13:34:11 +0100
-Message-ID: <47DE6543.9000909@keyaccess.nl>
-References: <cab05a880803161957j7a82e04cma094afda62d5cdab@mail.gmail.com>	<47DDE2F7.7000904@keyaccess.nl>
-	<s5hmyoxu66g.wl%tiwai@suse.de>
+From: Karsten Wiese <fzu@wemgehoertderstaat.de>
+Subject: Re: [PATCH] snd-usb-us122l v0.2 for US-122L
+Date: Mon, 17 Mar 2008 13:45:14 +0100
+Message-ID: <200803171345.14768.fzu@wemgehoertderstaat.de>
+References: <200803161956.42461.fzu@wemgehoertderstaat.de>
+	<s5hskypr9a9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hmyoxu66g.wl%tiwai@suse.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86725103850
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 13:45:20 +0100 (CET)
+Received: by nf-out-0910.google.com with SMTP id b21so2336197nfd.32
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 05:45:19 -0700 (PDT)
+In-Reply-To: <s5hskypr9a9.wl%tiwai@suse.de>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Samuel Mimram <samuel.mimram@ens-lyon.org>, Federico Briata <federicobriata@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 17-03-08 09:05, Takashi Iwai wrote:
-> At Mon, 17 Mar 2008 04:18:15 +0100,
-> Rene Herman wrote:
+Am Montag, 17. M=E4rz 2008 schrieb Takashi Iwai:
+> At Sun, 16 Mar 2008 19:56:41 +0100,
+> Karsten Wiese wrote:
+> > =
 
->> Don't do it there. Use /etc/asound.conf or $HOME/.asoundrc ...
-> 
-> Or /etc/asound.conf.  It's the additional place for the system-wide
-> definitions.
+> > Hi,
+> > =
 
-That's what I said. What happened? Alexander also completely missed that...
+> > attached is a fresh US-122L linux(test-)driver.
+> =
 
->> Exactly why you need that slave definition I'm not sure either, but it seems 
->> you do.
-> 
-> The file plugin requires the slave for its configuration and as the
-> timing source.  Using "null" is just to accept any config and feed the
-> data as fast as possible.  If you need to save the data as if it's
-> being played, use the kernel dummy driver as the slave.
+> Karsten, is this supposed to be merged to ALSA (and upstream) tree?
 
-I see, thanks.
+Yes.
+> =
 
->> Also note that /tmp/pcm.out will be headerless PCM and is recreated 
->> for individual opens. I don't believe there's an append mode or anything 
->> (and you'd need to make sure that everyone plays the same format) so not 
->> toot sure if this is what you need to have a catch all audio-sink...
-> 
-> Recently I added a new option "truncate" to file plugin.  As default,
-> it's set to true (for compatibility reason), and the plugin overwrite
-> the existing file if reopened.  When it's set to false, a new file is
-> created with a different suffix (up to 1000 files) at each time.
+> If it's highly experimental and you are still unsure to push to the
+> linux kernel tree, we can keep it in alsa-driver tree.  If it's in a
+> form that can be in the kernel tree but still you feel unsafe, you can
+> add the dependnecy to CONFIG_EXPERIMENTAL, too.
 
-That sounds useful...
+Hm, as I wrote it needs a patch for ehci-hcd or it will only work when
+connected to uhci-hcd. (ohci-hcd should be ok too, but I have no such.)
+The needed ehci patch is in David Brownell's review queue, he wrote.
+I hope he'll review it in time to go into 2.6.26 kernel.
 
-Rene.
+I'd prefer inclusion into alsa-kernel with dependency to CONFIG_EXPERIMENTA=
+L,
+as long as the ehci-patch isn't accepted.
 
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2008.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+We can also wait a little for David's review of the ehci-patch and decide l=
+ater.
+
+
+      Karsten
