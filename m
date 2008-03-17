@@ -1,20 +1,17 @@
-From: "A. C. Censi" <accensi@gmail.com>
-Subject: Re: AD1988B: ALSA doesn't use dmix automatically
-Date: Mon, 17 Mar 2008 11:08:48 -0300
-Message-ID: <643ea2b10803170708i13b5e6dfia0db71499e3d2712@mail.gmail.com>
-References: <20080315234852.25288ff8@tux.abusar.org.br>
-	<s5hzlsxpoa7.wl%tiwai@suse.de>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: PATCH - ESI Juli driver
+Date: Mon, 17 Mar 2008 15:08:48 +0100
+Message-ID: <47DE7B70.2040407@insite.cz>
+References: <47DD1934.3000003@insite.cz>	<s5hod9du6gb.wl%tiwai@suse.de>	<47DE328D.1080009@insite.cz>	<s5htzj5r9d6.wl%tiwai@suse.de>	<47DE3BD2.5090007@insite.cz>
+	<s5hwso1pkms.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3ECCA10386E
-	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 15:08:50 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id c6so1034068gvd.24
-	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 07:08:49 -0700 (PDT)
-In-Reply-To: <s5hzlsxpoa7.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id C9EDB103897
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 15:08:58 +0100 (CET)
+In-Reply-To: <s5hwso1pkms.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +22,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: ALSA development <alsa-devel@alsa-project.org>, Rainer Zimmermann <mail@lightshed.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXIgMTcsIDIwMDggYXQgODo0NSBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
-LmRlPiB3cm90ZToKPiBBdCBTYXQsIDE1IE1hciAyMDA4IDIzOjQ4OjUyIC0wMzAwLAo+Cj4gRMOi
-bmllbCBGcmFnYSB3cm90ZToKPiA+Cj4gPiBBTFNBIDEuMC4xNQo+ID4KPiA+IGh0dHA6Ly9hbHNh
-Lm9wZW5zcmMub3JnL2luZGV4LnBocC9EbWl4Cj4gPgo+ID4gTk9URTogRm9yIEFMU0EgMS4wLjly
-YzIgYW5kIGhpZ2hlciB5b3UgZG9uJ3QgbmVlZCB0byBzZXR1cCBkbWl4LiBEbWl4Cj4gPiBpcyBl
-bmFibGVkIGFzIGRlZmF1bHQgZm9yIHNvdW5kY2FyZHMgd2hpY2ggZG9uJ3Qgc3VwcG9ydCBodyBt
-aXhpbmcuCj4gPgo+ID4gICAgICAgU28gd2h5IGlmIEkgdHJ5IHRvIHBsYXkgMiBzb3VuZHMgYXQg
-dGhlIHNhbWUgdGltZSwgdGhlIHNlY29uZAo+ID4gb25lIGNvbXBsYWlucyB0aGUgInJlc291cmNl
-IGlzIGJ1c3kiPyBTaG91bGRuJ3QgaXQgZGV0ZWN0IHRoYXQgQUQxOTg4Qgo+ID4gY2FuJ3QgZG8g
-aGFyZHdhcmUgbWl4aW5nIGFuZCB1c2UgZG1peCBhdXRvbWF0aWNhbGx5Pwo+Cj4gSXQgZG9lcyBh
-cyBsb25nIGFzIHRoZSBhcHAgdXNlcyB0aGUgImRlZmF1bHQiIFBDTS4gIFRoZSBkbWl4IGlzbid0
-Cj4gZm9yY2VkIHRvIGJlIGFwcGxpZWQuICBUaGUgZXhjbHVzaXZlIGhhcmR3YXJlIGFjY2VzcyBp
-cyBzdGlsbAo+IGF2YWlsYWJsZSBieSBvcGVuaW5nIHRoZSBQQ00gYXMgImh3IiwgInBsdWdodyIg
-YW5kIGV0Yy4gIFNvLCBpZiBhbnkKPiBhcHBzIGFjY2VzcyBleGNsdXNpdmVseSwgb3RoZXJzIHdp
-bGwgc3VmZmVyLgo+CgpBcHBsaWNhdGlvbnMgbm9ybWFsbHkgb2ZmZXIgdGhlIHJlYWwgZGV2aWNl
-cyBhcyBmaXJzdCBjaG9pY2VzIGFuZCBub3QKdGhlICJkZWZhdWx0IiBQQ00uIFBlcmhhcHMgdGhp
-cyBzaG91bGQgYmUgZXhwbGFpbmVkIGJldHRlciBpbiB0aGUKZG9jdW1lbnRhdGlvbiBvciB0aGUg
-d2lraSwgbm90IG9ubHkgZm9yIHRoZSBlbmQgdXNlcnMsIGJ1dCBhbHNvIGZvcgphcHBsaWNhdGlv
-biBkZXZlbG9wZXJzLgoKLS0gCkEuIEMuIENlbnNpCmFjY2Vuc2kgW2VtXSBnbWFpbCBbcG9udG9d
-IGNvbQphY2NlbnNpIFtlbV0gbW9udHJlYWwgW3BvbnRvXSBjb20gW3BvbnRvXSBicgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+
+Takashi Iwai wrote:
+> At Mon, 17 Mar 2008 10:37:22 +0100,
+> Pavel Hofman wrote:
+
+>>
+>> What would you recommend?
+> 
+> IMO, rate_code can be avoided.  Instead of exposing the encoded value,
+> better to use the raw rate value as parameters.
+
+No problem. I just wanted to avoid the repeated conversion from the 
+numerical rate to the card specific representation which is input 
+information for all the rate-related code. ice1724 cards utilize 
+MT_RATE, juli makes use of GPIO.
+
+If you are OK with the repeated conversion, I will remove this. I tried 
+to keep the methods inline if possible.
+
+> And, the texts inf rates_info can be generated dynamically.
+
+For obvious reasons I tried changing ice1724 as little as possible. That 
+is why I kept the original code, only rearranged it.
+
+I can change the way texts in rates_info are generated. Still there will 
+have to be some callback as juli has a different list of rates.
+
+> 
+> So, what we need primarily are callbacks to get and set the current
+> rate setting.  Suppose rate=0 as SPDIF-in, we can pass the raw rate
+> value.  Then snd_vt1724_pro_internal_clock_get() would just a function
+> to get the current rate and compares it with the given rate_info[]
+> value, returns the index.
+
+I am afraid I do not understand what to change in 
+snd_vt1724_pro_internal_clock_get(). It seems fairly logical, I made 
+only minor changes - is_spdif_master used in other parts of the code, 
+get_rate_index with a simple meaning.
+
+> 
+> How to set stream-specific hw_params is another question.  But surely
+> we can cut off a bit more.
+
+We probably can, by rewriting portions of the original well-tested 
+ice1724 code. I really wanted to avoid that and changed by callbacks 
+only the card-specific portions.
+
+OK, I will remove the rate_code conversions, the new overhead will be 
+low and one abstraction will be removed.
+
+For the rest, please state you objectives. Either cutting a few of the 
+callbacks by non-trivial rewrite of the original ice1724 code, or 
+keeping the remaining callbacks and the well-tested code.
+
+Thanks a lot,
+
+Pavel.
+
+
+
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+
+-- 
+-----------------
+
+inSITE, s.r.o.
+
+Rubesova 29, 326 00 Plzen
+Tel., fax: +420 - 37 - 74 493 58
+GSM: +420 - 603 - 163 973
+Email: pavel.hofman@insite.cz
+
+www.educity.cz, www.insite.cz
+www.meetings.cz, www.hrzive.cz
+www.comben.cz, www.hr-online.cz
+-------------------------------
+Navstivte www.educity.cz, server
+s nejvetsi nabidkou profesniho
+vzdelavani na ceskem internetu.
