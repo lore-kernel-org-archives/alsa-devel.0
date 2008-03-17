@@ -1,19 +1,21 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: PATCH - ESI Juli driver
-Date: Mon, 17 Mar 2008 10:37:22 +0100
-Message-ID: <47DE3BD2.5090007@insite.cz>
-References: <47DD1934.3000003@insite.cz>
-	<s5hod9du6gb.wl%tiwai@suse.de>	<47DE328D.1080009@insite.cz>
-	<s5htzj5r9d6.wl%tiwai@suse.de>
+From: "Alexandre BOUIN" <a.bouin@kerlink.fr>
+Subject: Re: ALSACTL wrong restore on ARM9
+Date: Mon, 17 Mar 2008 12:37:15 +0100
+Message-ID: <23125.8101798177$1205753919@news.gmane.org>
+References: <002201c88065$972cb180$c5861480$@bouin@kerlink.fr>	
+	<1204903153.6429.38.camel@localhost.localdomain>	
+	<002301c88067$e031b540$a0951fc0$@bouin@kerlink.fr>
+	<1204904766.6429.50.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz
-	(171-43-207-85.zapcechy.adsl-llu.static.bluetone.cz [85.207.43.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B7B9243F2
-	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 10:37:30 +0100 (CET)
-In-Reply-To: <s5htzj5r9d6.wl%tiwai@suse.de>
+Received: from scanner-relay-corvus2.pulsation.fr
+	(scanner-relay-corvus2.pulsation.fr [80.74.64.70])
+	by alsa0.perex.cz (Postfix) with SMTP id 7188224476
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 12:37:30 +0100 (CET)
+In-Reply-To: <1204904766.6429.50.camel@localhost.localdomain>
+Content-Language: fr
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,66 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Rainer Zimmermann <mail@lightshed.de>
+To: 'Liam Girdwood' <lg@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->>
->> I did not want to copy/paste any algorithmical code from ice1724.c to 
->> juli.c as it complicates future maintenance. Now, the vt1724 code in 
->> ice1724.c is pretty much about general algorhitms, specific routines are 
->> in stdclock_... I tested the original clock with Prodigy192 which 
->> provided testing analog/SPDIF signals. There are no functional changes.
+> It's possible that your codec drivers register caching is borked. This
+> can be easily confirmed with debug in your driver kcontrol code.
 > 
-> I see the point that you want to make it generic.  But, too many
-> callbacks, in other words, too many tuning parameters make the code
-> difficult to follow.  It's a question of balance.
-
-Takashi, I understand your concern. On the other hand, if the callbacks 
-are well documented, it actually makes the code easier to follow, as it 
-separates general algorithms from detailed HW implementation. I can 
-certainly add more comments to the callback functions.
-
-Honestly, I do not know which callbacks to remove (apart of those two 
-not redefined in Juli). Otherwise I will have to copy/paste serious 
-portions of code to juli.c which I would really want to avoid.
-
-As I see it, the clocking code in ice1724 was written for one specific 
-implementation. There was no need to do so in a general way and I 
-completely understand that. Nevertheless, juli uses a different clock 
-implementation and I believe the time has come to make the code in 
-ice1724 more general. Unfortunately, I do not know of any other 
-technology but callbacks.
-
-What would you recommend?
-
-Thanks,
-
-Pavel.
-
-
+> If your driver looks ok, then I'd suggest looking into your alsa-lib
+> cross build. There have been some problems with it being incorrectly
+> cross compiled for ARM in the past (pls search the list for details).
+> Fwiw, I use OpenEmbedded to build ALSA for ARM and I've never ran into
+> this issue.
 > 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Liam
 
--- 
------------------
+Thanks Liam, I've find the issue. 
+After having learned many things about kcontrols, I've detected that one of
+my controls rewrites other ones but should not do it with alsactl.
+As this control aim is for debug, and all my other controls are ok, I can
+remove it.
 
-inSITE, s.r.o.
+alsactl (re)store works fine now ;)
 
-Rubesova 29, 326 00 Plzen
-Tel., fax: +420 - 37 - 74 493 58
-GSM: +420 - 603 - 163 973
-Email: pavel.hofman@insite.cz
-
-www.educity.cz, www.insite.cz
-www.meetings.cz, www.hrzive.cz
-www.comben.cz, www.hr-online.cz
--------------------------------
-Navstivte www.educity.cz, server
-s nejvetsi nabidkou profesniho
-vzdelavani na ceskem internetu.
+Thanks again.
+Alex.
