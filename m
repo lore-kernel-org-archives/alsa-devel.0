@@ -1,52 +1,74 @@
-From: Lukasz Pawelczyk <havner@pld-linux.org>
-Subject: Re: How to stop playback on alsa synth?
-Date: Sun, 16 Mar 2008 22:48:25 +0100
-Message-ID: <47DD95A9.30606@pld-linux.org>
-References: <47DD5093.6070702@pld-linux.org>
+From: "Alexander Indenbaum" <alexander.indenbaum@gmail.com>
+Subject: Grab PCM stream into file
+Date: Mon, 17 Mar 2008 02:13:47 +0200
+Message-ID: <cab05a880803161713p1ebda87cu19ee0896e481c97f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vega.livecd.pl (vega.livecd.pl [217.149.246.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id 017D8246E2
-	for <alsa-devel@alsa-project.org>; Sun, 16 Mar 2008 22:48:14 +0100 (CET)
-Received: from host-109-22.derby.waw.pl ([83.243.109.22])
-	by vega.livecd.pl with esmtpsa (TLSv1:AES256-SHA:256) (Exim 4.67)
-	(envelope-from <havner@vega.livecd.pl>) id 1Jb0cZ-0006Mc-WD
-	for alsa-devel@alsa-project.org; Sun, 16 Mar 2008 22:42:24 +0100
-In-Reply-To: <47DD5093.6070702@pld-linux.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0653565838=="
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I think I've done it, just don't know how correct my solution is
+--===============0653565838==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_6077_497190.1205712827112"
 
-I've added snd_seq_drain_output() after snd_seq_event_output() in thread 
-function so the events are processed more "real time" as I understand 
-it. I've also moved queue creation to the beginning of thread function 
-(because stop function deletes the queue).
+------=_Part_6077_497190.1205712827112
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Then the stop function calls:
-sets a bool to break the thread loop.
-snd_seq_free_queue()
-snd_seq_drop_output()
+Hello,
 
-This seems to work. Any comments?
+I'm playing with embedded system without any hardware sound device.
+Strategically we'd like to forward PCM stream from ALSA clients on user
+level to proprietary application. As initial proof of concept stage I'd like
+to grab sound from ALSA application, for instance Firefox displaying YouTube
+clip inside flash plugin and to store  output PCM stream into file on local
+disk.
 
-One problem I got with it though is that sometimes when I stop one music 
-and play another one some note(s) from the old one are played 
-indefinitely during the new music. I suppose some 'clear' event should 
-be sent to remove it. I've tried MIDI_CTL_ALL_SOUNDS_OFF control one (as 
-pmidi does on exit) but no luck.
+Please advice how I could achieve this goal.
 
--- 
-Regards    Havner                     {jid,mail}:havner(at)pld-linux.org
-                    "Quis custodiet ipsos custodes?"
+Alexander Indenbaum
+
+------=_Part_6077_497190.1205712827112
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Hello,<br><br>I&#39;m playing with embedded system without any hardware sound device. Strategically we&#39;d like to forward PCM stream from ALSA clients on user level to proprietary application. As initial proof of concept stage I&#39;d like to grab sound from ALSA application, for instance Firefox displaying YouTube clip inside flash plugin and to store&nbsp; output PCM stream into file on local disk. <br>
+<br>Please advice how I could achieve this goal.<br><br>Alexander Indenbaum<br><br>
+
+------=_Part_6077_497190.1205712827112--
+
+
+--===============0653565838==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+--===============0653565838==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+--===============0653565838==--
