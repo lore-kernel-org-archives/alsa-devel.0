@@ -1,56 +1,64 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: /usr/share/alsa/alsa.conf :and file extention
-Date: Mon, 17 Mar 2008 13:31:08 +0100
-Message-ID: <47DE648C.4070401@keyaccess.nl>
-References: <cab05a880803161957j7a82e04cma094afda62d5cdab@mail.gmail.com>	
-	<47DDE2F7.7000904@keyaccess.nl>
-	<cab05a880803162035o1c4d077erf289dcae4371969f@mail.gmail.com>
+Subject: Re: [alsa-devel] /usr/share/alsa/alsa.conf :and file
+	extention
+Date: Mon, 17 Mar 2008 13:34:11 +0100
+Message-ID: <47DE6543.9000909@keyaccess.nl>
+References: <cab05a880803161957j7a82e04cma094afda62d5cdab@mail.gmail.com>	<47DDE2F7.7000904@keyaccess.nl>
+	<s5hmyoxu66g.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id A69E924484
-	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 13:30:15 +0100 (CET)
-In-Reply-To: <cab05a880803162035o1c4d077erf289dcae4371969f@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander Indenbaum <alexander.indenbaum@gmail.com>
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hmyoxu66g.wl%tiwai@suse.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-user <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 17-03-08 04:35, Alexander Indenbaum wrote:
+On 17-03-08 09:05, Takashi Iwai wrote:
+> At Mon, 17 Mar 2008 04:18:15 +0100,
+> Rene Herman wrote:
 
-> On Mon, Mar 17, 2008 at 5:18 AM, Rene Herman <rene.herman@keyaccess.nl 
-
->     Don't do it there. Use /etc/asound.conf or $HOME/.asoundrc ...
+>> Don't do it there. Use /etc/asound.conf or $HOME/.asoundrc ...
 > 
+> Or /etc/asound.conf.  It's the additional place for the system-wide
+> definitions.
+
+That's what I said. What happened? Alexander also completely missed that...
+
+>> Exactly why you need that slave definition I'm not sure either, but it seems 
+>> you do.
 > 
-> Generally I'd agree with you that $HOME/.asoundrc is way to go if it was 
-> my desktop workstation. But this is an embedded system, so I'd like to 
-> force it on system level.
+> The file plugin requires the slave for its configuration and as the
+> timing source.  Using "null" is just to accept any config and feed the
+> data as fast as possible.  If you need to save the data as if it's
+> being played, use the kernel dummy driver as the slave.
 
-As I said, use /etc/asound.conf
+I see, thanks.
 
-> Still it does not  work ( I still use system alsa.conf though ).
+>> Also note that /tmp/pcm.out will be headerless PCM and is recreated 
+>> for individual opens. I don't believe there's an append mode or anything 
+>> (and you'd need to make sure that everyone plays the same format) so not 
+>> toot sure if this is what you need to have a catch all audio-sink...
+> 
+> Recently I added a new option "truncate" to file plugin.  As default,
+> it's set to true (for compatibility reason), and the plugin overwrite
+> the existing file if reopened.  When it's set to false, a new file is
+> created with a different suffix (up to 1000 files) at each time.
 
-That's the reason.
-
-> You touching here an interesting point. How  indeed I could get an PCM 
-> header?
-
-You don't really need one if you know the format. Ie, with aplay (and 
-foo.wav being CD format):
-
-aplay foo.wav
-aplay -D hw:0 -f cd /tmp/pcm.out
+That sounds useful...
 
 Rene.
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
