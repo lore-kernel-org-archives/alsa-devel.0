@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Same pci id for different ASUS machine
-Date: Tue, 18 Mar 2008 18:57:41 +0000
-Message-ID: <20080318185740.GA30373@sirena.org.uk>
-References: <1205376529.15217.8.camel@localhost.localdomain>
-	<s5hskyvdqgu.wl%tiwai@suse.de>
-	<20080317201955.GB10926@serv.smile.org.ua>
-	<s5hlk4gufbl.wl%tiwai@suse.de>
+From: "sandeep lahane" <sandeep.lahane@gmail.com>
+Subject: Re: Issues with alsa-lib-1.0.13 built using arm gcc
+	4.1.1
+Date: Tue, 18 Mar 2008 12:10:46 -0700
+Message-ID: <2d51cbf80803181210j226e3686lebf7cb1264c875df@mail.gmail.com>
+References: <2d51cbf80803172006g368e54c0n93b014a4b71da506@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0142410387D
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 19:57:43 +0100 (CET)
+Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 844DC103894
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 20:10:49 +0100 (CET)
+Received: by ik-out-1112.google.com with SMTP id b32so50458ika.0
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 12:10:48 -0700 (PDT)
+In-Reply-To: <2d51cbf80803172006g368e54c0n93b014a4b71da506@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <s5hlk4gufbl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +24,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andy Shevchenko <andy@smile.org.ua>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 18, 2008 at 06:12:14PM +0100, Takashi Iwai wrote:
-> Andy Shevchenko wrote:
+On Mon, Mar 17, 2008 at 8:06 PM, sandeep lahane <sandeep.lahane@gmail.com>
+wrote:
 
-> > example? Could we make more flex configuration in the ALSA instead of
-> > hardcoded model= in the modprobe.conf?
+>
+>
+> Hello,
+>
+> I have written an external io type plugin for an arm based board.
+> While debugging the plugin, I encountered unexpected errors
+> which I doubt are because of gcc optimizations, and after looking up on
+> web it seems that arm-gcc 4.1.1 which we are using has some known bugs
+> due to which alsa-library functions behave unexpectedly.
+> E.g. snd_mask_refine() reportedly behaves differently when it is
+> compiled using different optimization levels, I am facing the same issue
+> where snd_mask_refine() returns unexpected (-EINVAL) and after I modify
+> the
+> code as in src/pcm/mask_inline.h
+>
+>  MASK_INLINE void snd_mask_copy(snd_mask_t *mask, const snd_mask_t *v)
+>  {
+> -  *mask = *v;
+> +    memcpy(mask->bits, v->bits, MASK_SIZE * 4);
+>  }
+>
+> snd_mask_refine() returns 0 which is valid but I get segfaults just after
+> returning from snd_pcm_ioplug_hw_refine().
+>
+> Is this a known bug and if yes/no then is there any list of known
+> bugs/quirks when using alsa-lib with arm gcc 4.1.1?
+>
+>
+> I am attaching a log below, pardon for non-alsa flavour of debug messages
+> in the log.
+>
+>
+Pruning the log in previous email.
 
-> Windows have *.INI files so that they can ignore broken BIOS.  Or in
-> other way round - due to this, the hardware vendors never ship the
-> correct BIOS!
+It looks like the issue has been resolved by building alsa-lib and
+alsa-utils at optimization level 0. The snd_hw_refine() returns wrong values
+at other optimiztion levels so it has to be either patched/modified to
+nullify  -O settings  or  optimization level 0 has to be used. I had tried
+out patching the function
+and then it returns correct value, but alsa-lib segfaults after successfully
+returning
+from it. So currently I am going ahead with building them at -O0.
 
-Worse, fixing the BIOS would probably break driver level workarounds :/
+-- 
 
-> I have patches to make some stuff dynamically re-configurable,
-> e.g. overriding the default pin-config or additional verbs together
-> with some hints to the parser, which can be set up via udev etc.
-
-I guess the kernel could do the quirking for most cases by using DMI
-information to identify the broken BIOSes, though there are obvious
-advantages to user space workarounds so it may not be worth it for
-something like sound which is unlikely to be needed to boot.
+Regards,
+Sandeep.
