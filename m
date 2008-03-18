@@ -1,14 +1,20 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: 92hd71bxxx DMIC nid
-Date: Tue, 18 Mar 2008 14:20:59 -0400
-Message-ID: <47E0080B.2050302@embeddedalley.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Same pci id for different ASUS machine
+Date: Tue, 18 Mar 2008 18:57:41 +0000
+Message-ID: <20080318185740.GA30373@sirena.org.uk>
+References: <1205376529.15217.8.camel@localhost.localdomain>
+	<s5hskyvdqgu.wl%tiwai@suse.de>
+	<20080317201955.GB10926@serv.smile.org.ua>
+	<s5hlk4gufbl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp108.biz.mail.mud.yahoo.com (smtp108.biz.mail.mud.yahoo.com
-	[68.142.201.177]) by alsa0.perex.cz (Postfix) with SMTP id 531EB244D1
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 19:21:18 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0142410387D
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 19:57:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hlk4gufbl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,22 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andy Shevchenko <andy@smile.org.ua>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Added missing DMIC verb to dell_4_1_pin_configs[].
+On Tue, Mar 18, 2008 at 06:12:14PM +0100, Takashi Iwai wrote:
+> Andy Shevchenko wrote:
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
-diff -r 6ffc943c3b39 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Tue Mar 18 17:18:18 2008 +0100
-+++ b/pci/hda/patch_sigmatel.c	Tue Mar 18 14:09:17 2008 -0400
-@@ -1317,7 +1317,7 @@ static unsigned int ref92hd71bxx_pin_con
- 
- static unsigned int dell_m4_1_pin_configs[13] = {
- 	0x0421101f, 0x04a11221, 0x40f000f0, 0x90170110,
--	0x23a1902e, 0x23014250, 0x40f000f0, 0x4f0000f0,
-+	0x23a1902e, 0x23014250, 0x40f000f0, 0x90a000f0,
- 	0x40f000f0, 0x4f0000f0,
- };
+> > example? Could we make more flex configuration in the ALSA instead of
+> > hardcoded model= in the modprobe.conf?
+
+> Windows have *.INI files so that they can ignore broken BIOS.  Or in
+> other way round - due to this, the hardware vendors never ship the
+> correct BIOS!
+
+Worse, fixing the BIOS would probably break driver level workarounds :/
+
+> I have patches to make some stuff dynamically re-configurable,
+> e.g. overriding the default pin-config or additional verbs together
+> with some hints to the parser, which can be set up via udev etc.
+
+I guess the kernel could do the quirking for most cases by using DMI
+information to identify the broken BIOSes, though there are obvious
+advantages to user space workarounds so it may not be worth it for
+something like sound which is unlikely to be needed to boot.
