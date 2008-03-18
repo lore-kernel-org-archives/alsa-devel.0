@@ -1,125 +1,133 @@
-From: "Pharaoh ." <pharaoh137@gmail.com>
-Subject: Re: query about snd_pcm_hw_refine
-Date: Mon, 17 Mar 2008 16:38:01 -0700
-Message-ID: <61445c750803171638k6485eeabg7dc43bee08c10656@mail.gmail.com>
-References: <61445c750803171515n38748127l6becaca008f46bb1@mail.gmail.com>
-	<61445c750803171558m43a94d04m29b933d708344f10@mail.gmail.com>
-	<61445c750803171608k355b69d5i1da99a946538b6f@mail.gmail.com>
+From: "Alexander Indenbaum" <alexander.indenbaum@gmail.com>
+Subject: Re: [alsa-devel] /usr/share/alsa/alsa.conf :and file
+	extention
+Date: Tue, 18 Mar 2008 02:27:46 +0200
+Message-ID: <cab05a880803171727u6df4897an677d197eec4c28e6@mail.gmail.com>
+References: <cab05a880803161957j7a82e04cma094afda62d5cdab@mail.gmail.com>
+	<47DDE2F7.7000904@keyaccess.nl> <s5hmyoxu66g.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 630C624540
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 00:38:04 +0100 (CET)
-Received: by rn-out-0910.google.com with SMTP id j40so3245594rnf.12
-	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2008 16:38:03 -0700 (PDT)
-In-Reply-To: <61445c750803171608k355b69d5i1da99a946538b6f@mail.gmail.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0962938447=="
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <s5hmyoxu66g.wl%tiwai@suse.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>
+Cc: alsa-user <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 17, 2008 at 4:08 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
+--===============0962938447==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_10941_30542036.1205800066552"
+
+------=_Part_10941_30542036.1205800066552
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 >
->
-> On Mon, Mar 17, 2008 at 3:58 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
->
-> >
-> >
-> > On Mon, Mar 17, 2008 at 3:15 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
-> >
-> > > Hi
-> > >
-> > > I get following error when trying to run  aplay with my plugin:
-> > >
-> > > #aplay -D myplug test.wav
-> > >
-> > > Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-> > > St
-> > > ereo
-> > > aplay: set_params:882: Broken configuration for this PCM: no
-> > > configurations available.
-> > >
-> > > After looking at the code, I figured out that its snd_pcm_hw_refine
-> > > which is causing problem.
-> > > It looks like following in pcm_params.c in alsa lib 1.0.13,
-> > >
-> > >
-> > > int snd_pcm_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
-> > > {
-> > >     int res;
-> > >
-> > > #ifdef REFINE_DEBUG
-> > >     snd_output_t *log;
-> > >     snd_output_stdio_attach(&log, stderr, 0);
-> > >
-> > > #endif
-> > >     printf("#####%s \n", __FUNCTION__);
-> > >     assert(pcm && params);
-> > > #ifdef REFINE_DEBUG
-> > >     snd_output_printf(log, "REFINE called:\n");
-> > >     snd_pcm_hw_params_dump(params, log);
-> > > #endif
-> > >     printf("#####%s calling hw_refine\n", __FUNCTION__);
-> > >     res = pcm->ops->hw_refine(pcm->op_arg, params);
-> > >     printf("#####% return val of hw_refine = %d\n", res);
-> > > #ifdef REFINE_DEBUG
-> > >     snd_output_printf(log, "refine done - result = %i\n", res);
-> > >     snd_pcm_hw_params_dump(params, log);
-> > >     snd_output_close(log);
-> > > #endif
-> > >     return res;
-> > > }
-> > >
-> > > I have modified the alsa.conf for my plugin by adding following in it
-> > > at the end,
-> > >
-> > > pcm.myplug {
-> > >         type myplug
-> > >         card 0
-> > > }
-> > >
-> > > What could be the problem?
-> > > -pharaoh.
-> > >
-> > >
-> > Problem solved, I modified my alsa.conf to look like this:
-> >
-> > pcm.myplug {
-> >         @args [ FORMAT ]
-> >            type myplug
-> >            card 0
-> >            rate 44100
-> >            bitrate 128
-> >            channels 2
-> >         format $FORMAT
+> > pcm.!default {
+> >          type    file
+> >          slave   {
+> >                  pcm     null
+> >          }
+> >          file    "/tmp/pcm.out"
 > > }
-> >
-> >
-> > -pharaoh.
->
->
->
-> No the error is still there, I still get, what should I do now?
->
->
-> #aplay -D myplug startup.wav
->
->
-> aplay: set_params:882: Broken configuration for this PCM: no
-> configurations available.
 >
 
-Some debugging revealed that, snd_pcm_ioplug_hw_refine is returning 0,
-more precisely snd_mask_refine is returning -EINVAL since mask is empty, how
-can I go about fixing this?
+OK  - this goes to /etc/alsa.conf
+
+
+>
+> >
+> > Exactly why you need that slave definition I'm not sure either, but it
+> seems
+> > you do.
+>
+> The file plugin requires the slave for its configuration and as the
+> timing source.  Using "null" is just to accept any config and feed the
+> data as fast as possible.  If you need to save the data as if it's
+> being played, use the kernel dummy driver as the slave.
+
+
+OK, I compiled alsa-drivers with Dummy as one and only card and loaded it
+into the kernel:
+# cat /proc/asound/card0/id
+Dummy
+
+Still no PCM in /tmp/pcm.out. I get following error messages though:
+"(snd_determine_driver) could not open control for card 0"
+"(_snd_config_evaluate) function snd_func_concat returned error: No such
+file or directory"
+"(snd_func_concat) error evaluating strings"
+"(_snd_config_evaluate) function snd_func_concat returned error: No such
+file or directory"
+"(snd_func_refer) error evaluating name"
+"(_snd_config_evaluate) function snd_func_refer returned error: No such file
+or directory"
+"(snd_config_expand) Evaluate error: No such file or directory"
+"(snd_pcm_open_noupdate) Unknown PCM default"
+"(_snd_pcm_plug_open) Unknown field hint"
+
+Any clues?
+
+Alexander Indenbaum
+
+------=_Part_10941_30542036.1205800066552
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<div class="gmail_quote"><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;"><div class="Ih2E3d">&gt; pcm.!default {<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;type &nbsp; &nbsp;file<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;slave &nbsp; {<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;pcm &nbsp; &nbsp; null<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;file &nbsp; &nbsp;&quot;/tmp/pcm.out&quot;<br>
+&gt; }</div></blockquote><div><br>OK&nbsp; - this goes to /etc/alsa.conf<br>&nbsp;<br></div><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;"><div class="Ih2E3d">
+<br>
+&gt;<br>
+&gt; Exactly why you need that slave definition I&#39;m not sure either, but it seems<br>
+&gt; you do.<br>
+<br>
+</div>The file plugin requires the slave for its configuration and as the<br>
+timing source. &nbsp;Using &quot;null&quot; is just to accept any config and feed the<br>
+data as fast as possible. &nbsp;If you need to save the data as if it&#39;s<br>
+being played, use the kernel dummy driver as the slave.</blockquote><div><br>OK, I compiled alsa-drivers with Dummy as one and only card and loaded it into the kernel:<br># cat /proc/asound/card0/id <br>Dummy<br><br>Still no PCM in /tmp/pcm.out. I get following error messages though:<br>
+&quot;(snd_determine_driver) could not open control for card 0&quot;<br>&quot;(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory&quot;<br>&quot;(snd_func_concat) error evaluating strings&quot;<br>
+&quot;(_snd_config_evaluate) function  snd_func_concat returned error: No such file or directory&quot;<br>&quot;(snd_func_refer) error evaluating name&quot;<br>
+&quot;(_snd_config_evaluate) function  snd_func_refer returned error: No such file or directory&quot;<br>
+&quot;(snd_config_expand) Evaluate error: No such file or directory&quot;<br>&quot;(snd_pcm_open_noupdate) Unknown PCM default&quot;<br>
+&quot;(_snd_pcm_plug_open) Unknown field hint&quot;<br><br>Any clues?&nbsp;</div></div><br>Alexander Indenbaum
+
+------=_Part_10941_30542036.1205800066552--
+
+
+--===============0962938447==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+--===============0962938447==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+--===============0962938447==--
