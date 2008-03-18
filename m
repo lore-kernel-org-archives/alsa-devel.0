@@ -1,20 +1,17 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] Removed deprecated sound/driver.h from
-	Freescale MPC8610 drivers
-Date: Tue, 18 Mar 2008 10:36:17 -0500
-Message-ID: <1205854577-19829-1-git-send-email-timur@freescale.com>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: PATCH - ESI Juli driver - removed debugs
+Date: Tue, 18 Mar 2008 16:59:04 +0100
+Message-ID: <47DFE6C8.7040306@insite.cz>
+References: <47DD1934.3000003@insite.cz>	<s5hod9du6gb.wl%tiwai@suse.de>	<47DE328D.1080009@insite.cz>	<s5htzj5r9d6.wl%tiwai@suse.de>	<47DE3BD2.5090007@insite.cz>	<s5hwso1pkms.wl%tiwai@suse.de>	<47DE7B70.2040407@insite.cz>	<s5hd4ptpefs.wl%tiwai@suse.de>	<47DE934F.3060308@insite.cz>	<s5hy78hnxy7.wl%tiwai@suse.de>	<47DF678B.3000605@insite.cz>
+	<s5h7ig0w01l.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B0FB103883
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 16:36:21 +0100 (CET)
-Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
-	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
-	m2IFaI25016406
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 08:36:19 -0700 (MST)
+Received: from prague.insite.cz (r3g29.net.upc.cz [213.220.198.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id 613DB2447E
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 16:59:10 +0100 (CET)
+In-Reply-To: <s5h7ig0w01l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,42 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Timur Tabi <timur@freescale.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-With commit 9004acc70e8c49c50c4c7b652f906f1e0ed5709d, include/sound/driver.h
-is deprecated.  This patch removes the #include from fsl_ssi.c and fsl_dma.c.
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
- sound/soc/fsl/fsl_dma.c |    1 -
- sound/soc/fsl/fsl_ssi.c |    1 -
- 2 files changed, 0 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index 652514f..78de716 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -20,7 +20,6 @@
- #include <linux/interrupt.h>
- #include <linux/delay.h>
- 
--#include <sound/driver.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 145ad13..b2a11b0 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -15,7 +15,6 @@
- #include <linux/device.h>
- #include <linux/delay.h>
- 
--#include <sound/driver.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
--- 
-1.5.4
+Takashi Iwai napsal(a):
+> At Tue, 18 Mar 2008 07:56:11 +0100,
+> Pavel Hofman wrote:
+>> Takashi Iwai wrote:
+>>> At Mon, 17 Mar 2008 16:50:39 +0100,
+>>> Pavel Hofman wrote:
+>>>
+>>> Well, then we'll need to find some point to compromise.  Could you
+>>> repost the patch after reducing the callbacks again?
+>>>
+>>> I'll have also no time from the next week at all -- will be on
+>>> vacation for three weeks.  So, let's kick it out soonish :)
+>>>
+>> Hi,
+>>
+>> I am sorry, the previous patch had some debugs enabled. Here is a fixed 
+>> patch.
+>>
+>> Thanks a lot.
+>>
+>> Pavel.
+>>
+>>
+>> Signed-off-by: Pavel Hofman <dustin at seznam.cz>
+>>
+>> * moving most of clock-specific code to card-specific routines
+>> * support for ESI Juli
+>> * to-be-researched - monitoring of analog/digital inputs
+> 
+> Thanks.  Now I checked the patch and found it much better now.
+> However, I still think the get_rate_index can be omitted by checking
+> the index from the rate list dynamically.  This looks inefficent but
+> improves the readability and reduces the code size better.  Moreover,
+> the snd_pcm_hw's aren't needed to be prepared for each type.
+> 
+> Below is my revised patch.  With this patch, ice->hw_rates must be
+> non-NULL and this is referred in many places.  It cleans up
+> *_internal_clock*() nicely.
+> 
+
+Takashi, thanks a lot. I will test the patch tonight and let you know.
+
+Pavel.
