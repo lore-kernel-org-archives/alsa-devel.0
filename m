@@ -1,20 +1,22 @@
-From: "sandeep lahane" <sandeep.lahane@gmail.com>
-Subject: Re: Issues with alsa-lib-1.0.13 built using arm gcc
-	4.1.1
-Date: Tue, 18 Mar 2008 12:10:46 -0700
-Message-ID: <2d51cbf80803181210j226e3686lebf7cb1264c875df@mail.gmail.com>
-References: <2d51cbf80803172006g368e54c0n93b014a4b71da506@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: PATCH - ESI Juli driver - works OK
+Date: Tue, 18 Mar 2008 20:24:40 +0100
+Message-ID: <47E016F8.6030504@insite.cz>
+References: <47DD1934.3000003@insite.cz>
+	<s5hod9du6gb.wl%tiwai@suse.de>	<47DE328D.1080009@insite.cz>
+	<s5htzj5r9d6.wl%tiwai@suse.de>	<47DE3BD2.5090007@insite.cz>
+	<s5hwso1pkms.wl%tiwai@suse.de>	<47DE7B70.2040407@insite.cz>
+	<s5hd4ptpefs.wl%tiwai@suse.de>	<47DE934F.3060308@insite.cz>
+	<s5hy78hnxy7.wl%tiwai@suse.de>	<47DF678B.3000605@insite.cz>
+	<s5h7ig0w01l.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ik-out-1112.google.com (ik-out-1112.google.com [66.249.90.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 844DC103894
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 20:10:49 +0100 (CET)
-Received: by ik-out-1112.google.com with SMTP id b32so50458ika.0
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 12:10:48 -0700 (PDT)
-In-Reply-To: <2d51cbf80803172006g368e54c0n93b014a4b71da506@mail.gmail.com>
-Content-Disposition: inline
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id DF9B9244E3
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 20:24:50 +0100 (CET)
+In-Reply-To: <s5h7ig0w01l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,56 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 17, 2008 at 8:06 PM, sandeep lahane <sandeep.lahane@gmail.com>
-wrote:
+Takashi Iwai wrote:
+> At Tue, 18 Mar 2008 07:56:11 +0100,
+> Pavel Hofman wrote:
+>> Takashi Iwai wrote:
+>>> At Mon, 17 Mar 2008 16:50:39 +0100,
+>>> Pavel Hofman wrote:
+>>>
+>>> Well, then we'll need to find some point to compromise.  Could you
+>>> repost the patch after reducing the callbacks again?
+>>>
+>>> I'll have also no time from the next week at all -- will be on
+>>> vacation for three weeks.  So, let's kick it out soonish :)
+>>>
+>> Hi,
+>>
+>> I am sorry, the previous patch had some debugs enabled. Here is a fixed 
+>> patch.
+>>
+>> Thanks a lot.
+>>
+>> Pavel.
+>>
+>>
+>> Signed-off-by: Pavel Hofman <dustin at seznam.cz>
+>>
+>> * moving most of clock-specific code to card-specific routines
+>> * support for ESI Juli
+>> * to-be-researched - monitoring of analog/digital inputs
+> 
+> Thanks.  Now I checked the patch and found it much better now.
+> However, I still think the get_rate_index can be omitted by checking
+> the index from the rate list dynamically.  This looks inefficent but
+> improves the readability and reduces the code size better.  Moreover,
+> the snd_pcm_hw's aren't needed to be prepared for each type.
+> 
+> Below is my revised patch.  With this patch, ice->hw_rates must be
+> non-NULL and this is referred in many places.  It cleans up
+> *_internal_clock*() nicely.
+> 
 
->
->
-> Hello,
->
-> I have written an external io type plugin for an arm based board.
-> While debugging the plugin, I encountered unexpected errors
-> which I doubt are because of gcc optimizations, and after looking up on
-> web it seems that arm-gcc 4.1.1 which we are using has some known bugs
-> due to which alsa-library functions behave unexpectedly.
-> E.g. snd_mask_refine() reportedly behaves differently when it is
-> compiled using different optimization levels, I am facing the same issue
-> where snd_mask_refine() returns unexpected (-EINVAL) and after I modify
-> the
-> code as in src/pcm/mask_inline.h
->
->  MASK_INLINE void snd_mask_copy(snd_mask_t *mask, const snd_mask_t *v)
->  {
-> -  *mask = *v;
-> +    memcpy(mask->bits, v->bits, MASK_SIZE * 4);
->  }
->
-> snd_mask_refine() returns 0 which is valid but I get segfaults just after
-> returning from snd_pcm_ioplug_hw_refine().
->
-> Is this a known bug and if yes/no then is there any list of known
-> bugs/quirks when using alsa-lib with arm gcc 4.1.1?
->
->
-> I am attaching a log below, pardon for non-alsa flavour of debug messages
-> in the log.
->
->
-Pruning the log in previous email.
+Well Takashi, you are the real master here, your patch tells. I 
+especially like the smart way you replaced the ugly switch/case 
+structures in juli.c
 
-It looks like the issue has been resolved by building alsa-lib and
-alsa-utils at optimization level 0. The snd_hw_refine() returns wrong values
-at other optimiztion levels so it has to be either patched/modified to
-nullify  -O settings  or  optimization level 0 has to be used. I had tried
-out patching the function
-and then it returns correct value, but alsa-lib segfaults after successfully
-returning
-from it. So currently I am going ahead with building them at -O0.
+The patch works fine, both standard clock as well as Juli.
 
--- 
+Thanks a lot for your major help. Now time to move on to another audiobeast.
 
-Regards,
-Sandeep.
+Pavel.
