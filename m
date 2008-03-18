@@ -1,22 +1,30 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: PATCH - ESI Juli driver - works OK
-Date: Tue, 18 Mar 2008 20:24:40 +0100
-Message-ID: <47E016F8.6030504@insite.cz>
-References: <47DD1934.3000003@insite.cz>
-	<s5hod9du6gb.wl%tiwai@suse.de>	<47DE328D.1080009@insite.cz>
-	<s5htzj5r9d6.wl%tiwai@suse.de>	<47DE3BD2.5090007@insite.cz>
-	<s5hwso1pkms.wl%tiwai@suse.de>	<47DE7B70.2040407@insite.cz>
-	<s5hd4ptpefs.wl%tiwai@suse.de>	<47DE934F.3060308@insite.cz>
-	<s5hy78hnxy7.wl%tiwai@suse.de>	<47DF678B.3000605@insite.cz>
-	<s5h7ig0w01l.wl%tiwai@suse.de>
+From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Subject: [PATCH] Remove now uneeded 6stack-hp model from ALC883
+Date: Tue, 18 Mar 2008 18:15:32 -0300
+Message-ID: <200803181815.32917.herton@mandriva.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF9B9244E3
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 20:24:50 +0100 (CET)
-In-Reply-To: <s5h7ig0w01l.wl%tiwai@suse.de>
+Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
+	[200.140.247.100])
+	by alsa0.perex.cz (Postfix) with ESMTP id 77E7E2452F
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 22:15:36 +0100 (CET)
+Received: from localhost (perninha.conectiva.com.br [127.0.0.1])
+	by perninha.conectiva.com.br (Postfix) with ESMTP id CD69E3DCC9
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 18:15:34 -0300 (BRT)
+Received: from perninha.conectiva.com.br ([127.0.0.1])
+	by localhost (perninha.conectiva.com.br [127.0.0.1]) (amavisd-new,
+	port 10025)
+	with LMTP id d0OHigT6KkRv for <alsa-devel@alsa-project.org>;
+	Tue, 18 Mar 2008 18:15:34 -0300 (BRT)
+Received: from fox.conectiva (fox.conectiva [10.0.2.195])
+	by perninha.conectiva.com.br (Postfix) with ESMTP id 2360B3DCC5
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 18:15:33 -0300 (BRT)
+Received: from gotham.conectiva (gotham.conectiva [10.0.2.23])
+	by fox.conectiva (Postfix) with ESMTP id 76AB52F20B
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 18:15:33 -0300 (BRT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,56 +34,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 18 Mar 2008 07:56:11 +0100,
-> Pavel Hofman wrote:
->> Takashi Iwai wrote:
->>> At Mon, 17 Mar 2008 16:50:39 +0100,
->>> Pavel Hofman wrote:
->>>
->>> Well, then we'll need to find some point to compromise.  Could you
->>> repost the patch after reducing the callbacks again?
->>>
->>> I'll have also no time from the next week at all -- will be on
->>> vacation for three weeks.  So, let's kick it out soonish :)
->>>
->> Hi,
->>
->> I am sorry, the previous patch had some debugs enabled. Here is a fixed 
->> patch.
->>
->> Thanks a lot.
->>
->> Pavel.
->>
->>
->> Signed-off-by: Pavel Hofman <dustin at seznam.cz>
->>
->> * moving most of clock-specific code to card-specific routines
->> * support for ESI Juli
->> * to-be-researched - monitoring of analog/digital inputs
-> 
-> Thanks.  Now I checked the patch and found it much better now.
-> However, I still think the get_rate_index can be omitted by checking
-> the index from the rate list dynamically.  This looks inefficent but
-> improves the readability and reduces the code size better.  Moreover,
-> the snd_pcm_hw's aren't needed to be prepared for each type.
-> 
-> Below is my revised patch.  With this patch, ice->hw_rates must be
-> non-NULL and this is referred in many places.  It cleans up
-> *_internal_clock*() nicely.
-> 
+After DAC assignment fix in ALC883, the 6stack-hp model is now the same
+as 6stack-dig. So just remove 6stack-hp model and replace its use with
+6stack-dig.
 
-Well Takashi, you are the real master here, your patch tells. I 
-especially like the smart way you replaced the ugly switch/case 
-structures in juli.c
+Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
 
-The patch works fine, both standard clock as well as Juli.
+diff -p -up alsa-kernel/Documentation/ALSA-Configuration.txt.orig alsa-kernel/Documentation/ALSA-Configuration.txt
+--- alsa-kernel/Documentation/ALSA-Configuration.txt.orig	2008-03-18 17:41:33.000000000 -0300
++++ alsa-kernel/Documentation/ALSA-Configuration.txt	2008-03-18 17:43:06.000000000 -0300
+@@ -879,7 +879,6 @@ Prior to version 0.9.0rc4 options had a 
+ 	  lenovo-nb0763	Lenovo NB0763
+ 	  lenovo-ms7195-dig Lenovo MS7195
+ 	  haier-w66	Haier W66
+-	  6stack-hp	HP machines with 6stack (Nettle boards)
+ 	  3stack-hp	HP machines with 3stack (Lucknow, Samba boards)
+ 	  6stack-dell	Dell machines with 6stack (Inspiron 530)
+ 	  mitac		Mitac 8252D
+diff -p -up alsa-kernel/pci/hda/patch_realtek.c.orig alsa-kernel/pci/hda/patch_realtek.c
+--- alsa-kernel/pci/hda/patch_realtek.c.orig	2008-03-18 17:30:24.000000000 -0300
++++ alsa-kernel/pci/hda/patch_realtek.c	2008-03-18 17:41:13.000000000 -0300
+@@ -197,7 +197,6 @@ enum {
+ 	ALC883_LENOVO_NB0763,
+ 	ALC888_LENOVO_MS7195_DIG,
+ 	ALC883_HAIER_W66,		
+-	ALC888_6ST_HP,
+ 	ALC888_3ST_HP,
+ 	ALC888_6ST_DELL,
+ 	ALC883_MITAC,
+@@ -6955,46 +6954,6 @@ static struct snd_kcontrol_new alc883_me
+ 	{ } /* end */
+ };	
+ 
+-static struct snd_kcontrol_new alc888_6st_hp_mixer[] = {
+-	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Surround Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Surround Playback Switch", 0x0d, 2, HDA_INPUT),
+-	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x0e, 1, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x0e, 2, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0e, 1, 2, HDA_INPUT),
+-	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0e, 2, 2, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Side Playback Volume", 0x0f, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Side Playback Switch", 0x0f, 2, HDA_INPUT),
+-	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
+-	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
+-	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
+-	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Front Mic Boost", 0x19, 0, HDA_INPUT),
+-	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+-	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
+-	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),
+-	HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),
+-	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x09, 0x0, HDA_INPUT),
+-	HDA_CODEC_MUTE_IDX("Capture Switch", 1, 0x09, 0x0, HDA_INPUT),
+-	{
+-		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-		/* .name = "Capture Source", */
+-		.name = "Input Source",
+-		.count = 2,
+-		.info = alc883_mux_enum_info,
+-		.get = alc883_mux_enum_get,
+-		.put = alc883_mux_enum_put,
+-	},
+-	{ } /* end */
+-};
+-
+ static struct snd_kcontrol_new alc888_3st_hp_mixer[] = {
+ 	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
+@@ -7720,7 +7679,6 @@ static const char *alc883_models[ALC883_
+ 	[ALC883_LENOVO_NB0763]	= "lenovo-nb0763",
+ 	[ALC888_LENOVO_MS7195_DIG] = "lenovo-ms7195-dig",
+ 	[ALC883_HAIER_W66] 	= "haier-w66",
+-	[ALC888_6ST_HP]		= "6stack-hp",
+ 	[ALC888_3ST_HP]		= "3stack-hp",
+ 	[ALC888_6ST_DELL]	= "6stack-dell",
+ 	[ALC883_MITAC]		= "mitac",
+@@ -7739,7 +7697,7 @@ static struct snd_pci_quirk alc883_cfg_t
+ 	SND_PCI_QUIRK(0x103c, 0x2a3d, "HP Pavillion", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x103c, 0x2a4f, "HP Samba", ALC888_3ST_HP),
+ 	SND_PCI_QUIRK(0x103c, 0x2a60, "HP Lucknow", ALC888_3ST_HP),
+-	SND_PCI_QUIRK(0x103c, 0x2a61, "HP Nettle", ALC888_6ST_HP),
++	SND_PCI_QUIRK(0x103c, 0x2a61, "HP Nettle", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1043, 0x8249, "Asus M2A-VM HDMI", ALC883_3ST_6ch_DIG),
+ 	SND_PCI_QUIRK(0x105b, 0x6668, "Foxconn", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1071, 0x8253, "Mitac 8252d", ALC883_MITAC),
+@@ -7972,17 +7930,6 @@ static struct alc_config_preset alc883_p
+ 		.unsol_event = alc883_haier_w66_unsol_event,
+ 		.init_hook = alc883_haier_w66_automute,
+ 	},	
+-	[ALC888_6ST_HP] = {
+-		.mixers = { alc888_6st_hp_mixer, alc883_chmode_mixer },
+-		.init_verbs = { alc883_init_verbs },
+-		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
+-		.dac_nids = alc883_dac_nids,
+-		.dig_out_nid = ALC883_DIGOUT_NID,
+-		.dig_in_nid = ALC883_DIGIN_NID,
+-		.num_channel_mode = ARRAY_SIZE(alc883_sixstack_modes),
+-		.channel_mode = alc883_sixstack_modes,
+-		.input_mux = &alc883_capture_source,
+-	},
+ 	[ALC888_3ST_HP] = {
+ 		.mixers = { alc888_3st_hp_mixer, alc883_chmode_mixer },
+ 		.init_verbs = { alc883_init_verbs, alc888_3st_hp_verbs },
 
-Thanks a lot for your major help. Now time to move on to another audiobeast.
-
-Pavel.
+-- 
+[]'s
+Herton
