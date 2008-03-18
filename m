@@ -1,57 +1,61 @@
-From: Tyson Whitehead <twhitehe@uwo.ca>
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Tue, 18 Mar 2008 09:55:50 -0400
-Message-ID: <47DFC9E6.5050304@uwo.ca>
-References: <20080314131344.62A59DBA2@gherkin.frus.com>
- <200803142118.31974.twhitehe@uwo.ca> <47DEEB07.7010504@keyaccess.nl>
+From: Karsten Wiese <fzu@wemgehoertderstaat.de>
+Subject: [PATCH] usbmidi.c: Call usb_autopm functions from
+	rawmidi open/close callbacks
+Date: Tue, 18 Mar 2008 15:05:46 +0100
+Message-ID: <200803181505.46464.fzu@wemgehoertderstaat.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Boundary_(ID_98liMu7+TuUKDPKBB+/fRw)"
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-reply-to: <47DEEB07.7010504@keyaccess.nl>
-Sender: linux-alpha-owner@vger.kernel.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Bob Tracy <rct@frus.com>, Michael Cree <mcree@orcon.net.nz>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3622424477
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 15:05:53 +0100 (CET)
+Received: by fk-out-0910.google.com with SMTP id f40so8395917fka.0
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 07:05:52 -0700 (PDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---Boundary_(ID_98liMu7+TuUKDPKBB+/fRw)
-Content-type: text/plain; charset=ISO-8859-15; format=flowed
-Content-transfer-encoding: 7BIT
+Lets "usb auto suspend" work for devices that set their
+usb_driver::supports_autosuspend to 1.
+Has no effect for other devices.
 
-Rene Herman wrote:
-> On 15-03-08 02:18, Tyson Whitehead wrote:
-> 
-> Could you attach that patch? Links I'm finding are to
-> 
-> http://whitehead.apmaths.uwo.ca/~tyson/
-> 
-> which seems to be dead.
+Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
+---
+ sound/usb/usbmidi.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-Sorry about that.  I finally graduated.  : )
+diff --git a/sound/usb/usbmidi.c b/sound/usb/usbmidi.c
+index 6c616c7..842486f 100644
+--- a/sound/usb/usbmidi.c
++++ b/sound/usb/usbmidi.c
+@@ -860,11 +860,14 @@ static int snd_usbmidi_output_open(struct snd_rawmidi_substream *substream)
+ 	}
+ 	substream->runtime->private_data = port;
+ 	port->state = STATE_UNKNOWN;
++	usb_autopm_get_interface(umidi->iface);
+ 	return 0;
+ }
+ 
+ static int snd_usbmidi_output_close(struct snd_rawmidi_substream *substream)
+ {
++	struct snd_usb_midi* umidi = substream->rmidi->private_data;
++	usb_autopm_put_interface(umidi->iface);
+ 	return 0;
+ }
+ 
+-- 
+1.5.3.3
 
-Cheers!  -Tyson
 
---Boundary_(ID_98liMu7+TuUKDPKBB+/fRw)
-Content-type: text/x-diff; name=alpha-alsa.patch
-Content-transfer-encoding: 7BIT
-Content-disposition: inline; filename=alpha-alsa.patch
-
---- sound/isa/es18xx.c~	2003-04-23 06:01:33.000000000 -0400
-+++ sound/isa/es18xx.c	2003-06-24 15:14:25.000000000 -0400
-@@ -736,10 +736,10 @@
- 		/* Read Interrupt status */
- 		status = inb(chip->ctrl_port + 6);
-+#if 0
- 	} else {
- 		/* Read Interrupt status */
- 		status = snd_es18xx_mixer_read(chip, 0x7f) >> 4;
--	}
--#if 0
--	else {
-+#else
-+	} else {
- 		status = 0;
- 		if (inb(chip->port + 0x0C) & 0x01)
-
---Boundary_(ID_98liMu7+TuUKDPKBB+/fRw)--
+-------------------------------------------------------
