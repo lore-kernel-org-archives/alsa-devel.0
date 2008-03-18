@@ -1,71 +1,50 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: ~ALSA Audio coordinator/manager
-Date: Tue, 18 Mar 2008 13:55:20 +0100
-Message-ID: <47DFBBB8.8020301@insite.cz>
-References: <827ad74d0803180538m6554e7acp9fcbb5d1f7faf58c@mail.gmail.com>
+From: Sergei Steshenko <steshenko_sergei@list.ru>
+Subject: Re: [alsa-devel] /usr/share/alsa/alsa.conf :and file
+ extention
+Date: Tue, 18 Mar 2008 15:02:35 +0200
+Message-ID: <20080318150235.3566c9bd@amdam2.home.net>
+References: <cab05a880803161957j7a82e04cma094afda62d5cdab@mail.gmail.com>
+	<47DDE2F7.7000904@keyaccess.nl> <s5hmyoxu66g.wl%tiwai@suse.de>
+	<cab05a880803171727u6df4897an677d197eec4c28e6@mail.gmail.com>
+	<47DF1E20.6040706@keyaccess.nl>
+	<cab05a880803171906y4c9f87bbtd0bd59a8376f9c77@mail.gmail.com>
+	<cab05a880803172128m1a422272ua7168d872a9fc46a@mail.gmail.com>
+	<47DFB94B.5050706@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from prague.insite.cz (r3g29.net.upc.cz [213.220.198.29])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3DEE224420
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 13:55:26 +0100 (CET)
-In-Reply-To: <827ad74d0803180538m6554e7acp9fcbb5d1f7faf58c@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Harsha priya gupta <harshapriya@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-reply-to: <47DFB94B.5050706@keyaccess.nl>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-user <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Pulseaudio?
+On Tue, 18 Mar 2008 13:44:59 +0100
+Rene Herman <rene.herman@keyaccess.nl> wrote:
 
-http://www.pulseaudio.org
-
-Harsha priya gupta napsal(a):
-> Hi all,
+> On 18-03-08 05:28, Alexander Indenbaum wrote:
 > 
-> I am looking to see if anyone is working on an Audio manager kind of
-> solution as a part of ALSA.
+> > OK, it works on Linux 2.6 but silently fails on Linux 2.4.
+> > Unfortunately, I need it to work on  Linux 2.4 :)
+> > So what can be done?
 > 
->    'By Audio manager, I mean a coordinator of all audio input and output
-> streams. A coordinator which is application and devices aware . Example
-> functionality of an audio manager would to direct different steams to
-> different devices like (voice output to headset and music output to
-> speakers). Or to pause an media player when a voice recording starts.'
-> 
-> If anyone is doing any work on these lines, please let me know about the
-> work and its integration into ALSA as well.
-> 
-> Thanks in Advance,
-> Harsha.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Sorry, but I just don't care about 2.4. It's obsolete. 
 
--- 
------------------
+It's a very nice way to say that finally Linux kernel has stable ABI.
 
-inSITE, s.r.o.
+Regards,
+  Sergei.
 
-Kafkova 16, 160 00 Praha 6
-Rubesova 29, 326 00 Plzen
-
-Tel., fax: +420 - 37 - 74 493 58
-GSM: +420 - 603 - 163 973
-Email: pavel.hofman@insite.cz
-
-www.educity.cz, www.insite.cz
-www.meetings.cz, www.hrzive.cz
-www.comben.cz, www.hr-online.cz
--------------------------------
-Navstivte www.educity.cz, server
-s nejvetsi nabidkou profesniho
-vzdelavani na ceskem internetu.
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
