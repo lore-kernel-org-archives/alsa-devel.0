@@ -1,17 +1,27 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Buffer size/periods (Layla3G)
-Date: Wed, 19 Mar 2008 00:15:20 +0000
-Message-ID: <20080319001520.033708d1.pochini@shiny.it>
-References: <alpine.BSO.1.00.0803161126500.28063@metheny.ijneb.com>
-	<20080316221239.ae934fe4.pochini@shiny.it>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Buffer management in ALSA
+Date: Wed, 19 Mar 2008 08:36:06 +0530
+Message-ID: <010C7BAE6783F34D9AC336EE5A01A088058D4D70@dbde01.ent.ti.com>
+References: <mailman.3514.1205879646.2095.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out113.alice.it (smtp-out113.alice.it [85.37.17.113])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA1EA1038A3
-	for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2008 00:13:09 +0100 (CET)
-In-Reply-To: <20080316221239.ae934fe4.pochini@shiny.it>
+Received: from soda.ext.ti.com (soda.ext.ti.com [198.47.26.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id D444B24560
+	for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2008 04:09:16 +0100 (CET)
+Received: from dlep35.itg.ti.com ([157.170.170.118])
+	by soda.ext.ti.com (8.13.7/8.13.7) with ESMTP id m2J39Ajt027862
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 22:09:15 -0500
+Received: from dlep20.itg.ti.com (localhost [127.0.0.1])
+	by dlep35.itg.ti.com (8.13.7/8.13.7) with ESMTP id m2J3996I013499
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 22:09:09 -0500 (CDT)
+Received: from dbde01.ent.ti.com (localhost [127.0.0.1])
+	by dlep20.itg.ti.com (8.12.11/8.12.11) with ESMTP id m2J396jM016918
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2008 22:09:08 -0500 (CDT)
+Content-class: urn:content-classes:message
+In-Reply-To: <mailman.3514.1205879646.2095.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +31,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel@alsa-project.org, Mark Hills <mark@pogo.org.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 16 Mar 2008 22:12:39 +0000
-Giuliano Pochini <pochini@shiny.it> wrote:
+Hi All,
 
-> > Also, there seem to be failures at certain buffer sizes:
-> >
-> >    $ ./test_buffers "hw:Layla3G,0,2" 429
-> >    buffer_size=18912 period_size=96
-> >
-> >    $ ./test_buffers "hw:Layla3G,0,2" 430
-> >    set_buffer_time_near: Invalid argument
-> >
-> >    $ ./test_buffers "hw:Layla3G,0,2" 431
-> >    buffer_size=19008 period_size=96
-> 
-> This shouldn't happen. I'll give it a look.
+Can anyone throw some light on the buffer management part in the ALSA
+framework? How and where it is implemented? And what is expected from
+the driver, which is hooking its code to the framework?
 
-Still no luck on this issue. ioctl() called from pmc_hw.c::hw_refine_call()
-fails. I'll look at the kernel part tomorrow.
-
-
---
-Giuliano.
+Thanks in advance,
+Anuj Aggarwal
