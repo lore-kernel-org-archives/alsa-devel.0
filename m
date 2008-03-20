@@ -1,21 +1,29 @@
-From: "Avuton Olrich" <avuton@gmail.com>
-Subject: Re: USB sound card fails to resume from hibernation
-	due to duplicate filename card1/WARNING: sysfs_add_ons,
-	emits symbols
-Date: Thu, 20 Mar 2008 07:47:33 -0700
-Message-ID: <3aa654a40803200747j50570aa1y1f9690b7348cc3a0@mail.gmail.com>
-References: <3aa654a40803192339i4a663729k205a462740464f76@mail.gmail.com>
-	<s5htzj1tyib.wl%tiwai@suse.de>
+From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Subject: [PATCH] Map clevo-m720r ALC883 model for Clevo M720SR
+Date: Thu, 20 Mar 2008 17:08:06 -0300
+Message-ID: <200803201708.06900.herton@mandriva.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 055A624766
-	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 15:47:35 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id c6so290251gvd.24
-	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 07:47:34 -0700 (PDT)
-In-Reply-To: <s5htzj1tyib.wl%tiwai@suse.de>
+Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
+	[200.140.247.100])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F31E245C6
+	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 21:08:11 +0100 (CET)
+Received: from localhost (perninha.conectiva.com.br [127.0.0.1])
+	by perninha.conectiva.com.br (Postfix) with ESMTP id 8DBBC3EA5
+	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 17:08:08 -0300 (BRT)
+Received: from perninha.conectiva.com.br ([127.0.0.1])
+	by localhost (perninha.conectiva.com.br [127.0.0.1]) (amavisd-new,
+	port 10025)
+	with LMTP id ADuH1twqmsXG for <alsa-devel@alsa-project.org>;
+	Thu, 20 Mar 2008 17:08:08 -0300 (BRT)
+Received: from fox.conectiva (fox.conectiva [10.0.2.195])
+	by perninha.conectiva.com.br (Postfix) with ESMTP id 411E43E7FE
+	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 17:08:07 -0300 (BRT)
+Received: from gotham.conectiva (gotham.conectiva [10.0.2.23])
+	by fox.conectiva (Postfix) with ESMTP id 526552F283
+	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 17:08:07 -0300 (BRT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,40 +34,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-Devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 20, 2008 at 4:39 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 19 Mar 2008 23:39:28 -0700,
->
-> Avuton Olrich wrote:
->  >
->  > After suspending, the usbdisk sound card alsa driver breaks and does
->  > not play any further. I believe this is might be due to the trace
->  > below from the dmesg.
->  >
->  > This definitely begins to occur between v2.6.23 and v2.6.23-rc2. I
+Map clevo-m720r ALC883 model for Clevo M720SR.
 
-BTW- honest mistake, it was v2.6.24-rc2.
+Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
 
->  > couldn't bisect it down to a single commit.
->  >
->  > This fails with with all kernels up to at least today's git.
->
->  Could you try my git tree and check whether the same problem happens?
->         git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable-2.6.git
+diff -p -up alsa-kernel/pci/hda/patch_realtek.c.orig alsa-kernel/pci/hda/patch_realtek.c
+--- alsa-kernel/pci/hda/patch_realtek.c.orig	2008-03-20 16:32:34.000000000 -0300
++++ alsa-kernel/pci/hda/patch_realtek.c	2008-03-20 16:43:55.000000000 -0300
+@@ -7650,6 +7650,7 @@ static struct snd_pci_quirk alc883_cfg_t
+ 	SND_PCI_QUIRK(0x1462, 0xa422, "MSI", ALC883_TARGA_2ch_DIG),
+ 	SND_PCI_QUIRK(0x147b, 0x1083, "Abit IP35-PRO", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1558, 0x0721, "Clevo laptop M720R", ALC883_CLEVO_M720R),
++	SND_PCI_QUIRK(0x1558, 0x0722, "Clevo laptop M720SR", ALC883_CLEVO_M720R),
+ 	SND_PCI_QUIRK(0x1558, 0, "Clevo laptop", ALC883_LAPTOP_EAPD),
+ 	SND_PCI_QUIRK(0x15d9, 0x8780, "Supermicro PDSBA", ALC883_3ST_6ch),
+ 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_MEDION),
 
-Yes, it now works, but now something is causing Pulseaudio to crash. I
-believe it's due to the fact that the alsa output name is changing now
-after hibernate.
-
-When the computer initally starts the ALSA device name for this usbdisk is:
-usb_device_d8c_c_noserial_if0_sound_card_0_alsa_playback_0
-
-Then it turns into this after hibernation:
-usb_device_ffffffff_ffffffff_noserial_0_sound_card_0_alsa_playback_0
 -- 
-avuton
---
- Anyone who quotes me in their sig is an idiot. -- Rusty Russell.
+[]'s
+Herton
