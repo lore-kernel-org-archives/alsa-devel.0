@@ -1,17 +1,22 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: PATCH - ESI Juli driver - removed debugs
-Date: Thu, 20 Mar 2008 15:20:24 +0100
-Message-ID: <47E272A8.3070306@insite.cz>
-References: <47DD1934.3000003@insite.cz>	<s5hod9du6gb.wl%tiwai@suse.de>	<47DE328D.1080009@insite.cz>	<s5htzj5r9d6.wl%tiwai@suse.de>	<47DE3BD2.5090007@insite.cz>	<s5hwso1pkms.wl%tiwai@suse.de>	<47DE7B70.2040407@insite.cz>	<s5hd4ptpefs.wl%tiwai@suse.de>	<47DE934F.3060308@insite.cz>	<s5hy78hnxy7.wl%tiwai@suse.de>	<47DF678B.3000605@insite.cz>	<s5h7ig0w01l.wl%tiwai@suse.de>
-	<47DFE6C8.7040306@insite.cz>
+From: "Avuton Olrich" <avuton@gmail.com>
+Subject: Re: USB sound card fails to resume from hibernation
+	due to duplicate filename card1/WARNING: sysfs_add_ons,
+	emits symbols
+Date: Thu, 20 Mar 2008 07:47:33 -0700
+Message-ID: <3aa654a40803200747j50570aa1y1f9690b7348cc3a0@mail.gmail.com>
+References: <3aa654a40803192339i4a663729k205a462740464f76@mail.gmail.com>
+	<s5htzj1tyib.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id B258524755
-	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 15:20:36 +0100 (CET)
-In-Reply-To: <47DFE6C8.7040306@insite.cz>
+Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 055A624766
+	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 15:47:35 +0100 (CET)
+Received: by gv-out-0910.google.com with SMTP id c6so290251gvd.24
+	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 07:47:34 -0700 (PDT)
+In-Reply-To: <s5htzj1tyib.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +27,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Cc: Alsa-Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> 
-> Takashi Iwai napsal(a):
->> At Tue, 18 Mar 2008 07:56:11 +0100,
->> Pavel Hofman wrote:
->>> Takashi Iwai wrote:
->>>> At Mon, 17 Mar 2008 16:50:39 +0100,
->>>> Pavel Hofman wrote:
->>>>
->>>> Well, then we'll need to find some point to compromise.  Could you
->>>> repost the patch after reducing the callbacks again?
->>>>
->>>> I'll have also no time from the next week at all -- will be on
->>>> vacation for three weeks.  So, let's kick it out soonish :)
->>>>
->>> Hi,
->>>
->>> I am sorry, the previous patch had some debugs enabled. Here is a fixed 
->>> patch.
->>>
->>> Thanks a lot.
->>>
->>> Pavel.
->>>
->>>
->>> Signed-off-by: Pavel Hofman <dustin at seznam.cz>
->>>
->>> * moving most of clock-specific code to card-specific routines
->>> * support for ESI Juli
->>> * to-be-researched - monitoring of analog/digital inputs
->> Thanks.  Now I checked the patch and found it much better now.
->> However, I still think the get_rate_index can be omitted by checking
->> the index from the rate list dynamically.  This looks inefficent but
->> improves the readability and reduces the code size better.  Moreover,
->> the snd_pcm_hw's aren't needed to be prepared for each type.
->>
->> Below is my revised patch.  With this patch, ice->hw_rates must be
->> non-NULL and this is referred in many places.  It cleans up
->> *_internal_clock*() nicely.
->>
-> 
+On Thu, Mar 20, 2008 at 4:39 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 19 Mar 2008 23:39:28 -0700,
+>
+> Avuton Olrich wrote:
+>  >
+>  > After suspending, the usbdisk sound card alsa driver breaks and does
+>  > not play any further. I believe this is might be due to the trace
+>  > below from the dmesg.
+>  >
+>  > This definitely begins to occur between v2.6.23 and v2.6.23-rc2. I
 
-Takashi, thanks for commiting the patch. I just noticed the final patch 
-does not change the native rates flags in snd_vt1724_playback_pro for 
-juli, keeping the unsupported values 8000 - 12000 in the flags. I guess 
-if 8kHz rate is played via plughw, plughw will not resample and juli 
-will switch to gpios = 0, corresponding to 32kHz.
+BTW- honest mistake, it was v2.6.24-rc2.
 
-I can test in the evening, but this is very likely.
+>  > couldn't bisect it down to a single commit.
+>  >
+>  > This fails with with all kernels up to at least today's git.
+>
+>  Could you try my git tree and check whether the same problem happens?
+>         git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable-2.6.git
 
-Pavel.
+Yes, it now works, but now something is causing Pulseaudio to crash. I
+believe it's due to the fact that the alsa output name is changing now
+after hibernate.
+
+When the computer initally starts the ALSA device name for this usbdisk is:
+usb_device_d8c_c_noserial_if0_sound_card_0_alsa_playback_0
+
+Then it turns into this after hibernation:
+usb_device_ffffffff_ffffffff_noserial_0_sound_card_0_alsa_playback_0
+-- 
+avuton
+--
+ Anyone who quotes me in their sig is an idiot. -- Rusty Russell.
