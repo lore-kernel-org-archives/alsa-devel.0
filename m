@@ -1,13 +1,18 @@
-From: Jiang zhe <zhe.jiang@intel.com>
-Subject: [PATCH]model for alc262 to support Lenovo 3000
-Date: Thu, 20 Mar 2008 09:44:54 +0800
-Message-ID: <1205977494.20080.4.camel@localhost.localdomain>
+From: "Avuton Olrich" <avuton@gmail.com>
+Subject: USB sound card fails to resume from hibernation due to
+	duplicate filename card1/WARNING: sysfs_add_ons, emits symbols
+Date: Wed, 19 Mar 2008 23:39:28 -0700
+Message-ID: <3aa654a40803192339i4a663729k205a462740464f76@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-b7+tBBsWxfG++aFutF13"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81FCC246F9
-	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 02:43:55 +0100 (CET)
+Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.235])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDABE24708
+	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 07:39:30 +0100 (CET)
+Received: by wx-out-0506.google.com with SMTP id t11so1080382wxc.23
+	for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2008 23:39:29 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,191 +22,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, zhe.jiang@intel.com
+To: Alsa-Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+After suspending, the usbdisk sound card alsa driver breaks and does
+not play any further. I believe this is might be due to the trace
+below from the dmesg.
 
---=-b7+tBBsWxfG++aFutF13
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+This definitely begins to occur between v2.6.23 and v2.6.23-rc2. I
+couldn't bisect it down to a single commit.
 
-Hi,
+This fails with with all kernels up to at least today's git.
 
-Please refer to [0003856] on the alsa mantis.
-This model is to support the Lenovo 3000 y410.
+Full links at the bottom.
 
-Thanks!
+Linux tulip 2.6.25-rc6 #6 PREEMPT Wed Mar 19 22:16:23 PDT 2008 i686
+AMD Athlon(tm) XP 2700+ AuthenticAMD GNU/Linux
 
-Signed-off-by: Jiang zhe <zhe.jiang@intel.com>
+Gnu C                  4.2.3
+Gnu make               3.81
+binutils               2.18
+util-linux             2.13.1
+mount                  2.13.1
+module-init-tools      3.4
+e2fsprogs              1.40.8
+xfsprogs               2.9.7
+PPP                    2.4.4
+Linux C Library        2.7
+Dynamic linker (ldd)   2.7
+Procps                 3.2.7
+Net-tools              1.60
+Kbd                    1.13
+Sh-utils               6.9
+udev                   119
+Modules Loaded         netconsole configfs snd_pcm_oss snd_mixer_oss
 
+Relevant looking parts of the dmesg (full dmesg link below):
+[ 3895.879517] usb 1-4: New USB device found, idVendor=2001, idProduct=f103
+[ 3895.879517] usb 1-4: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+[ 3895.879517] usb 3-1: USB disconnect, address 2
+[ 3896.252863] usb 3-1: new full speed USB device using ohci_hcd and address 3
+[ 3896.452987] usb 3-1: configuration #1 chosen from 1 choice
+[ 3896.458877] ALSA /usr/src/linux-2.6/sound/usb/usbaudio.c:2798:
+3:1:1: add audio endpoint 0x1
+[ 3896.470877] ALSA /usr/src/linux-2.6/sound/usb/usbaudio.c:2798:
+3:2:1: add audio endpoint 0x82
+[ 3896.482878] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:988: [13]
+FU [Mic Playback Switch] ch = 1, val = 0/1/1
+[ 3896.521857] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:405:
+cannot set ctl value: req = 0x4, wValue = 0x200, wIndex = 0xd00, type
+= 4, data = 0x18/0x0
+[ 3896.554854] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:988: [13]
+FU [Mic Playback Volume] ch = 1, val = 0/12240/384
+[ 3896.554870] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:988: [9]
+FU [Speaker Playback Switch] ch = 1, val = 0/1/1
+[ 3896.593850] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:405:
+cannot set ctl value: req = 0x4, wValue = 0x201, wIndex = 0x900, type
+= 4, data = 0x18/0x0
+[ 3896.608842] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:988: [9]
+FU [Speaker Playback Volume] ch = 2, val = -7264/-16/48
+[ 3896.608859] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:988: [10]
+FU [Mic Capture Switch] ch = 1, val = 0/1/1
+[ 3896.647835] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:405:
+cannot set ctl value: req = 0x4, wValue = 0x200, wIndex = 0xa00, type
+= 4, data = 0x18/0x0
+[ 3896.680836] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:988: [10]
+FU [Mic Capture Volume] ch = 1, val = 0/6096/384
+[ 3896.680849] ALSA /usr/src/linux-2.6/sound/usb/usbmixer.c:988: [10]
+FU [Auto Gain Control] ch = 1, val = 0/1/1
+[ 3896.680880] sysfs: duplicate filename 'card1' can not be created
+[ 3896.680891] ------------[ cut here ]------------
+[ 3896.680893] WARNING: at /usr/src/linux-2.6/fs/sysfs/dir.c:424
+sysfs_add_one+0x82/0xa0()
+[ 3896.680896] Modules linked in: netconsole configfs snd_pcm_oss snd_mixer_oss
+[ 3896.680903] Pid: 174, comm: khubd Not tainted 2.6.25-rc6 #6
+[ 3896.680906]  [<c011b0ef>] warn_on_slowpath+0x5f/0x90
+[ 3896.680914]  [<c0115fde>] __wake_up_common+0x3e/0x70
+[ 3896.680918]  [<c011b85b>] wake_up_klogd+0x3b/0x40
+[ 3896.680922]  [<c017d591>] find_inode+0x31/0x60
+[ 3896.680927]  [<c01a8c40>] sysfs_ilookup_test+0x0/0x10
+[ 3896.680930]  [<c011c0cb>] printk+0x1b/0x20
+[ 3896.680933]  [<c01a9012>] sysfs_add_one+0x82/0xa0
+[ 3896.680937]  [<c01a9dfc>] sysfs_create_link+0x8c/0x100
+[ 3896.680940]  [<c02f2cb4>] device_add+0x254/0x460
+[ 3896.680946]  [<c02f2f58>] device_create+0x88/0xc0
+[ 3896.680949]  [<c038aa06>] snd_card_register+0x276/0x380
+[ 3896.680954]  [<c03b2ae9>] usb_audio_probe+0x459/0xa00
+[ 3896.680959]  [<c01a8c40>] sysfs_ilookup_test+0x0/0x10
+[ 3896.680963]  [<c0342c66>] usb_probe_interface+0xb6/0x140
+[ 3896.680969]  [<c02f4ca0>] __device_attach+0x0/0x10
+[ 3896.680973]  [<c02f4ba1>] driver_probe_device+0x81/0x180
+[ 3896.680976]  [<c043ecc9>] klist_next+0x69/0xd0
+[ 3896.680981]  [<c02f4ca0>] __device_attach+0x0/0x10
+[ 3896.680984]  [<c02f3e76>] bus_for_each_drv+0x46/0x70
+[ 3896.680988]  [<c02f4d5b>] device_attach+0x7b/0x80
+[ 3896.680991]  [<c02f4ca0>] __device_attach+0x0/0x10
+[ 3896.680994]  [<c02f3e07>] bus_attach_device+0x47/0x70
+[ 3896.680997]  [<c02f2dfb>] device_add+0x39b/0x460
+[ 3896.681000]  [<c0340b4d>] usb_set_configuration+0x30d/0x5d0
+[ 3896.681004]  [<c02f4ca0>] __device_attach+0x0/0x10
+[ 3896.681007]  [<c0349186>] generic_probe+0x76/0xb0
+[ 3896.681012]  [<c02f4ca0>] __device_attach+0x0/0x10
+[ 3896.681015]  [<c0342a20>] usb_probe_device+0x30/0x40
+[ 3896.681018]  [<c02f4ba1>] driver_probe_device+0x81/0x180
+[ 3896.681021]  [<c043ecc9>] klist_next+0x69/0xd0
+[ 3896.681024]  [<c02f4ca0>] __device_attach+0x0/0x10
+[ 3896.681027]  [<c02f3e76>] bus_for_each_drv+0x46/0x70
+[ 3896.681030]  [<c02f4d5b>] device_attach+0x7b/0x80
+[ 3896.681033]  [<c02f4ca0>] __device_attach+0x0/0x10
+[ 3896.681036]  [<c02f3e07>] bus_attach_device+0x47/0x70
+[ 3896.681039]  [<c02f2dfb>] device_add+0x39b/0x460
+[ 3896.681042]  [<c033b07b>] usb_configure_device+0x5b/0x100
+[ 3896.681045]  [<c033b33b>] usb_new_device+0x5b/0x180
+[ 3896.681048]  [<c033c957>] hub_thread+0x637/0xd10
+[ 3896.681051]  [<c012ddb0>] autoremove_wake_function+0x0/0x40
+[ 3896.681058]  [<c033c320>] hub_thread+0x0/0xd10
+[ 3896.681060]  [<c012da82>] kthread+0x42/0x70
+[ 3896.681063]  [<c012da40>] kthread+0x0/0x70
+[ 3896.681066]  [<c0104b9f>] kernel_thread_helper+0x7/0x18
+[ 3896.681071]  =======================
+[ 3896.681073] ---[ end trace 87ceb0cbe974168a ]---
+[ 3896.689903] input: C-Media USB Headphone Set   as
+/devices/pci0000:00/0000:00:02.1/usb3/3-1/3-1:1.3/input/input9
+[ 3896.763158] input: USB HID v1.00 Device [C-Media USB Headphone Set
+] on usb-0000:00:02.1-1
+[ 3896.763218] usb 3-1: New USB device found, idVendor=0d8c, idProduct=000c
+[ 3896.763221] usb 3-1: New USB device strings: Mfr=0, Product=1, SerialNumber=0
+[ 3896.763224] usb 3-1: Product: C-Media USB Headphone Set
 
---=-b7+tBBsWxfG++aFutF13
-Content-Disposition: attachment; filename=lenovo_3000_y410_alc262.patch
-Content-Type: text/x-patch; name=lenovo_3000_y410_alc262.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+/proc/modules
+netconsole 8064 0 - Live 0xf88eb000
+configfs 21396 2 netconsole, Live 0xf88f3000
+snd_pcm_oss 45280 0 - Live 0xf88fa000
+snd_mixer_oss 14784 1 snd_pcm_oss, Live 0xf88e6000
 
---- alsa-driver-hg20080319/alsa-kernel/pci/hda/patch_realtek.c	2008-03-19 09:00:09.000000000 +0800
-+++ b/alsa-kernel/pci/hda/patch_realtek.c	2008-03-20 09:33:33.000000000 +0800
-@@ -98,6 +98,7 @@ enum {
- 	ALC262_SONY_ASSAMD,
- 	ALC262_BENQ_T31,
- 	ALC262_ULTRA,
-+	ALC262_LENOVO_3000,
- 	ALC262_AUTO,
- 	ALC262_MODEL_LAST /* last tag */
- };
-@@ -8728,6 +8729,12 @@ static struct hda_verb alc262_fujitsu_un
- 	{}
- };
- 
-+static struct hda_verb alc262_lenovo_3000_unsol_verbs[] = {
-+	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | ALC_HP_EVENT},
-+	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
-+	{}
-+};
-+
- static struct hda_input_mux alc262_fujitsu_capture_source = {
- 	.num_items = 3,
- 	.items = {
-@@ -8808,6 +8815,46 @@ static struct hda_bind_ctls alc262_fujit
- 	},
- };
- 
-+/* mute/unmute internal speaker according to the hp jack and mute state */
-+static void alc262_lenovo_3000_automute(struct hda_codec *codec, int force)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	unsigned int mute;
-+
-+	if (force || !spec->sense_updated) {
-+		unsigned int present_int_hp;
-+		/* need to execute and sync at first */
-+		snd_hda_codec_read(codec, 0x1b, 0, AC_VERB_SET_PIN_SENSE, 0);
-+		present_int_hp = snd_hda_codec_read(codec, 0x1b, 0,
-+					AC_VERB_GET_PIN_SENSE, 0);
-+		spec->jack_present = (present_int_hp & 0x80000000) != 0;
-+		spec->sense_updated = 1;
-+	}
-+	if (spec->jack_present) {
-+		/* mute internal speaker */
-+		snd_hda_codec_amp_stereo(codec, 0x14, HDA_OUTPUT, 0,
-+					 HDA_AMP_MUTE, HDA_AMP_MUTE);
-+		snd_hda_codec_amp_stereo(codec, 0x16, HDA_OUTPUT, 0,
-+					 HDA_AMP_MUTE, HDA_AMP_MUTE);
-+	} else {
-+		/* unmute internal speaker if necessary */
-+		mute = snd_hda_codec_amp_read(codec, 0x1b, 0, HDA_OUTPUT, 0);
-+		snd_hda_codec_amp_stereo(codec, 0x14, HDA_OUTPUT, 0,
-+					 HDA_AMP_MUTE, mute);
-+		snd_hda_codec_amp_stereo(codec, 0x16, HDA_OUTPUT, 0,
-+					 HDA_AMP_MUTE, mute);
-+	}
-+}
-+
-+/* unsolicited event for HP jack sensing */
-+static void alc262_lenovo_3000_unsol_event(struct hda_codec *codec,
-+				       unsigned int res)
-+{
-+	if ((res >> 26) != ALC_HP_EVENT)
-+		return;
-+	alc262_lenovo_3000_automute(codec, 1);
-+}
-+
- /* bind hp and internal speaker mute (with plug check) */
- static int alc262_fujitsu_master_sw_put(struct snd_kcontrol *kcontrol,
- 					 struct snd_ctl_elem_value *ucontrol)
-@@ -8849,6 +8896,44 @@ static struct snd_kcontrol_new alc262_fu
- 	{ } /* end */
- };
- 
-+/* bind hp and internal speaker mute (with plug check) */
-+static int alc262_lenovo_3000_master_sw_put(struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	long *valp = ucontrol->value.integer.value;
-+	int change;
-+
-+	change = snd_hda_codec_amp_stereo(codec, 0x1b, HDA_OUTPUT, 0,
-+						 HDA_AMP_MUTE,
-+						 valp ? 0 : HDA_AMP_MUTE);
-+
-+	if (change)
-+		alc262_lenovo_3000_automute(codec, 0);
-+	return change;
-+}
-+
-+static struct snd_kcontrol_new alc262_lenovo_3000_mixer[] = {
-+	HDA_BIND_VOL("Master Playback Volume", &alc262_fujitsu_bind_master_vol),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Master Playback Switch",
-+		.info = snd_hda_mixer_amp_switch_info,
-+		.get = snd_hda_mixer_amp_switch_get,
-+		.put = alc262_lenovo_3000_master_sw_put,
-+		.private_value = HDA_COMPOSE_AMP_VAL(0x1b, 3, 0, HDA_OUTPUT),
-+	},
-+	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
-+	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Int Mic Boost", 0x19, 0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Int Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_MUTE("Int Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
-+	{ } /* end */
-+};
-+
- /* additional init verbs for Benq laptops */
- static struct hda_verb alc262_EAPD_verbs[] = {
- 	{0x20, AC_VERB_SET_COEF_INDEX, 0x07},
-@@ -9398,6 +9483,7 @@ static const char *alc262_models[ALC262_
- 	[ALC262_BENQ_T31]	= "benq-t31",
- 	[ALC262_SONY_ASSAMD]	= "sony-assamd",
- 	[ALC262_ULTRA]		= "ultra",
-+	[ALC262_LENOVO_3000]	= "lenovo-3000",
- 	[ALC262_AUTO]		= "auto",
- };
- 
-@@ -9434,6 +9520,7 @@ static struct snd_pci_quirk alc262_cfg_t
- 	SND_PCI_QUIRK(0x10cf, 0x142d, "Fujitsu Lifebook E8410", ALC262_FUJITSU),
- 	SND_PCI_QUIRK(0x144d, 0xc032, "Samsung Q1 Ultra", ALC262_ULTRA),
- 	SND_PCI_QUIRK(0x144d, 0xc039, "Samsung Q1U EL", ALC262_ULTRA),
-+	SND_PCI_QUIRK(0x17aa, 0x384e, "Lenovo 3000 y410", ALC262_LENOVO_3000),
- 	SND_PCI_QUIRK(0x17ff, 0x0560, "Benq ED8", ALC262_BENQ_ED8),
- 	SND_PCI_QUIRK(0x17ff, 0x058d, "Benq T31-16", ALC262_BENQ_T31),
- 	SND_PCI_QUIRK(0x17ff, 0x058f, "Benq Hippo", ALC262_HIPPO_1),
-@@ -9596,6 +9683,19 @@ static struct alc_config_preset alc262_p
- 		.unsol_event = alc262_ultra_unsol_event,
- 		.init_hook = alc262_ultra_automute,
- 	},
-+	[ALC262_LENOVO_3000] = {
-+		.mixers = { alc262_lenovo_3000_mixer },
-+		.init_verbs = { alc262_init_verbs, alc262_EAPD_verbs,
-+				alc262_lenovo_3000_unsol_verbs },
-+		.num_dacs = ARRAY_SIZE(alc262_dac_nids),
-+		.dac_nids = alc262_dac_nids,
-+		.hp_nid = 0x03,
-+		.dig_out_nid = ALC262_DIGOUT_NID,
-+		.num_channel_mode = ARRAY_SIZE(alc262_modes),
-+		.channel_mode = alc262_modes,
-+		.input_mux = &alc262_fujitsu_capture_source,
-+		.unsol_event = alc262_lenovo_3000_unsol_event,
-+	},
- };
- 
- static int patch_alc262(struct hda_codec *codec)
-
---=-b7+tBBsWxfG++aFutF13
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-b7+tBBsWxfG++aFutF13--
+http://avuton.googlepages.com/dmesg-2.6.25-rc6-032008
+http://avuton.googlepages.com/iomem-032008
+http://avuton.googlepages.com/ioports-032008
+http://avuton.googlepages.com/lspci-vvv-032008
+http://avuton.googlepages.com/tulip-config
+-- 
+avuton
+--
+ Anyone who quotes me in their sig is an idiot. -- Rusty Russell.
