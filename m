@@ -1,17 +1,18 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Buffer management in ALSA
-Date: Fri, 21 Mar 2008 00:51:31 +0000
-Message-ID: <20080321005131.8169cda4.pochini@shiny.it>
-References: <mailman.3514.1205879646.2095.alsa-devel@alsa-project.org>
-	<010C7BAE6783F34D9AC336EE5A01A088058D4D70@dbde01.ent.ti.com>
+From: "Pharaoh ." <pharaoh137@gmail.com>
+Subject: Accessing pcm samples from snd_pcm_channel_area_t in
+	an io type plugin
+Date: Thu, 20 Mar 2008 18:46:54 -0700
+Message-ID: <61445c750803201846y1aad7b18m776ccbf3e76dd8f7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out28.alice.it (smtp-out28.alice.it [85.33.2.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id 87B6124420
-	for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2008 00:49:12 +0100 (CET)
-In-Reply-To: <010C7BAE6783F34D9AC336EE5A01A088058D4D70@dbde01.ent.ti.com>
+Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E15C24455
+	for <alsa-devel@alsa-project.org>; Fri, 21 Mar 2008 02:46:56 +0100 (CET)
+Received: by wx-out-0506.google.com with SMTP id t11so1646648wxc.23
+	for <alsa-devel@alsa-project.org>; Thu, 20 Mar 2008 18:46:55 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 19 Mar 2008 08:36:06 +0530
-"Aggarwal, Anuj" <anuj.aggarwal@ti.com> wrote:
+Hi,
 
-> Hi All,
-> 
-> Can anyone throw some light on the buffer management part in the ALSA
-> framework? How and where it is implemented? And what is expected from
-> the driver, which is hooking its code to the framework?
+I am writing an external io type plugin for an ARM based board. In the
+transfer function
+of the plugin, I try to grab the audio samples in a temp buffer and send it
+to the DSP in
+chunks of period sizes. Somehow the the alsa buffer's audio samples are not
+copied to the
+temp buffer which I want to send further.
 
-Since each card has different requirements the driver has to manage its
-buffers. Usually the driver has just to set up the buffer and the
-scatter-gather list and then ALSA accesses it with no other support from
-the driver. The buffer is supposed di be a "ring", ie. when the card
-reaches the end of the buffer, it restarts automatically from the
-beginning. If the cards needs the CPU to copy or process the data (e.g. it
-doesn't support DMA), then the driver has to provide a callback function
-which will be called at the end of each period.
+What I do to copy the buffers,
+static snd_pcm_sframes_t my_transfer(snd_pcm_ioplug_t *io,
+                   const snd_pcm_channel_area_t *areas,
+                   snd_pcm_uframes_t offset,
+                   snd_pcm_uframes_t size)
+{
 
+    char *temp = NULL;
+    temp = malloc(io->period_size * frame_size);  //For malloc,
 
---
-Giuliano.
+    //I tried all the three approaches here one by one, including the
+malloc/memcpy one
+    1. memcpy(temp,areas->addr+ offset*io->channels*2, io->period_size *
+frame_size);
+    2. memcpy(temp, (char *)areas->addr + (areas->first + areas->step *
+offset) /8, io->period_size * frame_size);
+    //This should work straight off....
+    3. temp = (char *)areas->addr + (areas->first + areas->step * offset) /
+8;
+
+    //write temp to DSP here
+    .........
+}
+
+Somehow the empty buffers are being sent to DSP, when I try to send some
+data from a static array then it goes
+to DSP and is played well. Any idea what I am missing?
+
+-phraoh.
