@@ -1,26 +1,23 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: no front speaker sound with ALC262
-Date: Sat, 22 Mar 2008 12:09:14 -0700
-Message-ID: <1206212954.6591.17.camel@razman>
-References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>
-	<47BF84BF.702@versatile.com> <47BF8500.1050802@versatile.com>
-	<7D68F908-875D-4EDE-B25D-CCBDD4E4A339@gmail.com>
-	<s5h1w6zvrz4.wl%tiwai@suse.de> <47DEA53B.4030207@versatile.com>
-	<1205778900.27317.160.camel@razman.gruemaster.com>
-	<47DEC0BD.5090403@versatile.com>
-	<1205781169.27317.165.camel@razman.gruemaster.com>
-	<47DECB8E.7060007@versatile.com>
-	<1205792180.27317.188.camel@razman.gruemaster.com>
-	<47DFBF93.6060308@versatile.com> <s5hd4psw4fj.wl%tiwai@suse.de>
-	<DDEF195D-07DA-480C-816E-DDF3BF0C7C90@gmail.com>
+From: Daniel Jacobowitz <drow@false.org>
+Subject: Re: [RFC] [Patch 1/2] Add virtual master control
+Date: Sat, 22 Mar 2008 15:15:51 -0400
+Message-ID: <20080322191551.GA16147@caradoc.them.org>
+References: <s5hprx12x6x.wl%tiwai@suse.de> <s5hlk7p2wvm.wl%tiwai@suse.de>
+	<20080130151909.GA11068@caradoc.them.org>
+	<s5hprvj2v1w.wl%tiwai@suse.de>
+	<20080321190855.GA24510@caradoc.them.org>
+	<s5hiqzf15x8.wl%tiwai@suse.de>
+	<20080322153046.GA4439@caradoc.them.org>
+	<s5hzlsqzpnq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 76F5F1037EC
-	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2008 20:09:17 +0100 (CET)
-In-Reply-To: <DDEF195D-07DA-480C-816E-DDF3BF0C7C90@gmail.com>
+Received: from nan.false.org (NaN.false.org [208.75.86.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22736103859
+	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2008 20:15:54 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hzlsqzpnq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,55 +27,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Dohmen <acidjunk@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rene, don't bother bugging Tangent.  I have a demo unit on the way.  My
-first priority is getting the driver working.
-
-Tangent really won't help much - their a distributor, not the OEM.  This
-is an MSI Crystal 945 in a Tangent shell.
-
-If you want to try something, see if the bios can be reflashed with the
-Crystal 945 firmware.
-
-As to the speaker board, where on the main board is it mounted?  Is the
-header labeled?  How many pins?  It sounds like the speakers may be on
-the front panel header, which would make them function like headphones.
-Or this board is custom build for this application and I don't know what
-I'm talking about.
-
-Tobin
-
-
-On Sat, 2008-03-22 at 18:59 +0100, Rene Dohmen wrote:
-
-> Hi Guys,
+On Sat, Mar 22, 2008 at 05:31:21PM +0100, Takashi Iwai wrote:
+> Thanks.  This kind of change is basically good to apply, I think, but
+> a couple of things related are in my mind:
 > 
-> I'm glad t o read that there are other people with the same problem  
-> on the same system.
-> I just opened my Tangent 8000S and it has indeed a MSI mainboard:  
-> MS7290. The speakers are connected to a small custom board: MS-4088
-> There's no extra chip on this customboard and the board is directly  
-> connected to the mainboard. So probably the signal leaving the  
-> mainboard in amplified already. (or there's a amplifier builtin the  
-> speakers)
+> - other AC97 codecs need similar hacks, so it could be done
+>   cleaner (in a more generic way) than in each patch_*()?
+> - headphone and line-out have the similar issue - it's handled as a
+>   bind-control right now, though
+> - what about if the device actually uses only two channels although
+>   codec supports more than two?  Then the additional master control
+>   makes little sense.  But, we have no way to know it from the codec
+>   itself.  Another quirk table?  That's to be avoided...
 > 
-> Next week i'll have some time to put tangent under some more pressure  
-> for info, so maybe that will speed up things a little bit.
-> 
-> Grz Rene
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Since this is a non-urgent fix and I'll be on vacation for three weeks
+> from tomorrow, I'd like to keep this pending unless other developers
+> want to put this in.  Is it OK?
+
+Fine with me.  I don't think I can make broader changes than this
+kind, because I don't know much about AC97; maybe there can be a flag
+on recognized codecs saying which channels the front volume really
+controls?
+
+I noticed that the PCM mixer also only affected my front speakers.
 
 -- 
-Tobin Davis 
-
-
-love, n.:
-	When you don't want someone too close--because you're very sensitive
-	to pleasure.
+Daniel Jacobowitz
+CodeSourcery
