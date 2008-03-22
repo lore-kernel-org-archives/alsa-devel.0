@@ -1,17 +1,21 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: ca0106 Digital Output at 44.1kHz
-Date: Sat, 22 Mar 2008 10:31:40 +0000
-Message-ID: <47E4E00C.2010108@superbug.co.uk>
-References: <1205410524.8486.274.camel@localhost>
+From: Daniel Jacobowitz <drow@false.org>
+Subject: Re: [RFC] [Patch 1/2] Add virtual master control
+Date: Sat, 22 Mar 2008 11:30:46 -0400
+Message-ID: <20080322153046.GA4439@caradoc.them.org>
+References: <s5hprx12x6x.wl%tiwai@suse.de> <s5hlk7p2wvm.wl%tiwai@suse.de>
+	<20080130151909.GA11068@caradoc.them.org>
+	<s5hprvj2v1w.wl%tiwai@suse.de>
+	<20080321190855.GA24510@caradoc.them.org>
+	<s5hiqzf15x8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net
-	[194.217.242.90])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9CF5C2441B
-	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2008 11:31:41 +0100 (CET)
-In-Reply-To: <1205410524.8486.274.camel@localhost>
+Received: from nan.false.org (NaN.false.org [208.75.86.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47D5110382F
+	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2008 16:30:51 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hiqzf15x8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,70 +25,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Stanley <Ben.Stanley@exemail.com.au>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ben Stanley wrote:
-> Dear List,
->
-> Hello. I'm new here. This is my first attempt to hack an alsa driver.
->
-> I recently purchased a "Sound Blaster Audigy Value!" card for use in a
-> MythTV box. As I have a digital receiver, I was mainly concerned with
-> getting a working S/PDIF output (coax or optical) and not too much more.
->
-> Summary: I can make 44.1kHz digital output work, but I think that the
-> driver model of the card having 3 or 4 digital output channels is
-> incorrect. I believe the card only has 1 digital output channel.
->   
-The ca0106 chip has 3 or 4 digital outputs. These outputs may or may not 
-be present on the output connectors of the card.
-I know that one of the SB cards does in fact work with 3 digital outputs 
-using the 4 pin jacks because I have tested it myself.
-I GPIO is programmed to switch it between 3 digital outputs and 1 in, 1 out.
-> Details:
->
-> The card I have is characterised by the following:
-> http://www.soundblaster.com/products/product.asp?category=1&subcategory=205&product=14189
-> Model: SB0570
-> serial: 100a1102
-> Also known as: Sound Blaster Audigy SE
->
-> During initial testing, I noticed that 44.1kHz playback was not
-> implemented. Subsequent testing shows that speaker-test works fine with
-> 48kHz, 96kHz and 192kHz. (I only tested 16bit output so far.)
->
-> I noticed in the source code that 44.1k was explicitly disabled. I added
-> code in snd_ca0106_pcm_prepare_playback to set up this rate for S/PDIF
-> output as per the comments in ca0106.h . Initial tests using hw:0,0 at
-> 44.1kHz produced recognisable signals with some noisy corruption. Later
-> I accidentally discovered that serially opening hw:0,2 , hw:0,1 and
-> hw:0,0  at 44.1kHz then produces perfectly good 44.1kHz sampled digital
-> audio output. Removing hw:0,1 or hw:0,2 from this sequence causes noisy
-> corruption. It seems that channels 0-2 in reg40 must all be set to the
-> same sampling frequency for S/PDIF to work where 44.1kHz is concerned.
-> Conversely, to sucessfully output 48kHz again, I have to open hw:0,2 ,
-> hw:0,1 and hw:0,0 at 48kHz to restore proper output. I do not have such
-> troubles with 96kHz and 192kHz, for which it suffices to just open
-> hw:0,0 at the relevant sampling rate.
->   
-The ca0106 can do 44.1kHz for digital output ONLY.
-The ca0106 cannot output 44.1kHz to the DACs so it will only work in 
-Digital mode.
-It is a hardware restriction. You are correct, all the inputs and 
-outputs have to be at the same rate.
+On Sat, Mar 22, 2008 at 10:09:23AM +0100, Takashi Iwai wrote:
+> At Fri, 21 Mar 2008 15:08:55 -0400,
+> Daniel Jacobowitz wrote:
+> > 
+> > On Wed, Jan 30, 2008 at 04:27:07PM +0100, Takashi Iwai wrote:
+> > > Because HD-audio is the only user, so far.  I don't want to expand the
+> > > core stuff (and kconfig) unless really needed.
+> > 
+> > I said I'd want this for ice1724 / vt1616, and I finally got time to
+> > do it.  What do you think of this patch?  I'm happily using it.
+> 
+> Well, don't forget to check HG version before you submit a patch :)
 
+Whoops!  This version works with the hg tree.  The new
+snd_ac97_add_vmaster is mostly similar to the hda version so it might
+make sense to put that in vmaster.c instead.
 
-> Anyway, this is speculation. I'd love to have the docs. I haven't tried
-> to get them. Is it likely/unlikely that I would get them?
->
->   
+From: Daniel Jacobowitz <dan@codesourcery.com>
 
-You can sign an open-source NDA and get the datasheets.
-It lets me write drivers like the current ca0106 and E-Mu drivers.
-If you are interested in a NDA, priv-email me.
+Enable VMASTER for VT1616 / VT1617A.
 
-Kind Regards
+Signed-off-by: Daniel Jacobowitz <dan@codesourcery.com>
 
-James
+diff -r 0d5f43585ca7 drivers/Kconfig
+--- a/drivers/Kconfig	Sat Mar 22 10:26:05 2008 +0100
++++ b/drivers/Kconfig	Sat Mar 22 11:02:16 2008 -0400
+@@ -44,6 +44,7 @@ config SND_AC97_CODEC
+ 	tristate
+ 	select SND_PCM
+ 	select AC97_BUS
++	select SND_VMASTER
+ 
+ config SND_DUMMY
+ 	tristate "Dummy (/dev/null) soundcard"
+diff -r 0d5f43585ca7 pci/ac97/ac97_patch.c
+--- a/pci/ac97/ac97_patch.c	Sat Mar 22 10:26:05 2008 +0100
++++ b/pci/ac97/ac97_patch.c	Sat Mar 22 11:02:16 2008 -0400
+@@ -3332,8 +3332,66 @@ AC97_SINGLE("Downmix Surround to Front",
+ AC97_SINGLE("Downmix Surround to Front", 0x5a, 11, 1, 0),
+ };
+ 
++static const char *slave_vols_vt1616[] = {
++	"Front Playback Volume",
++	"Surround Playback Volume",
++	"Center Playback Volume",
++	"LFE Playback Volume",
++	NULL
++};
++
++static const char *slave_sws_vt1616[] = {
++	"Front Playback Switch",
++	"Surround Playback Switch",
++	"Center Playback Switch",
++	"LFE Playback Switch",
++	NULL
++};
++
++/* find a mixer control element with the given name */
++static struct snd_kcontrol *snd_ac97_find_mixer_ctl(struct snd_ac97 *ac97,
++						    const char *name)
++{
++	struct snd_ctl_elem_id id;
++	memset(&id, 0, sizeof(id));
++	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
++	strcpy(id.name, name);
++	return snd_ctl_find_id(ac97->bus->card, &id);
++}
++
++/* create a virtual master control and add slaves */
++int snd_ac97_add_vmaster(struct snd_ac97 *ac97, char *name,
++			 const unsigned int *tlv, const char **slaves)
++{
++	struct snd_kcontrol *kctl;
++	const char **s;
++	int err;
++
++	kctl = snd_ctl_make_virtual_master(name, tlv);
++	if (!kctl)
++		return -ENOMEM;
++	err = snd_ctl_add(ac97->bus->card, kctl);
++	if (err < 0)
++		return err;
++	
++	for (s = slaves; *s; s++) {
++		struct snd_kcontrol *sctl;
++
++		sctl = snd_ac97_find_mixer_ctl(ac97, *s);
++		if (!sctl) {
++			snd_printdd("Cannot find slave %s, skipped\n", *s);
++			continue;
++		}
++		err = snd_ctl_add_slave(kctl, sctl);
++		if (err < 0)
++			return err;
++	}
++	return 0;
++}
++
+ static int patch_vt1616_specific(struct snd_ac97 * ac97)
+ {
++	struct snd_kcontrol *kctl;
+ 	int err;
+ 
+ 	if (snd_ac97_try_bit(ac97, 0x5a, 9))
+@@ -3341,6 +3399,24 @@ static int patch_vt1616_specific(struct 
+ 			return err;
+ 	if ((err = patch_build_controls(ac97, &snd_ac97_controls_vt1616[1], ARRAY_SIZE(snd_ac97_controls_vt1616) - 1)) < 0)
+ 		return err;
++
++	/* There is already a misnamed master switch.  Rename it.  */
++	kctl = snd_ac97_find_mixer_ctl(ac97, "Master Playback Volume");
++	if (!kctl)
++		return -EINVAL;
++
++	snd_ac97_rename_vol_ctl(ac97, "Master Playback", "Front Playback");
++
++	err = snd_ac97_add_vmaster(ac97, "Master Playback Volume",
++				   kctl->tlv.p, slave_vols_vt1616);
++	if (err < 0)
++		return err;
++
++	err = snd_ac97_add_vmaster(ac97, "Master Playback Switch",
++				   NULL, slave_sws_vt1616);
++	if (err < 0)
++		return err;
++
+ 	return 0;
+ }
+ 
+
+-- 
+Daniel Jacobowitz
+CodeSourcery
