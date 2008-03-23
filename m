@@ -1,69 +1,36 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Buffer size/periods (Layla3G)
-Date: Sat, 22 Mar 2008 22:17:18 +0000
-Message-ID: <20080322221718.0b24de11.pochini@shiny.it>
-References: <alpine.BSO.1.00.0803161126500.28063@metheny.ijneb.com>
-	<20080316221239.ae934fe4.pochini@shiny.it>
+From: Michael Cree <mcree@orcon.net.nz>
+Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Sun, 23 Mar 2008 22:48:38 +1300
+Message-ID: <47E62776.9000107@orcon.net.nz>
+References: <20080311180831.8CE90DBA3@gherkin.frus.com> <ED0F0070-B876-4D8B-8F88-879E01AB4326@orcon.net.nz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-OUT05A.alice.it (smtp-OUT05A.alice.it [85.33.3.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93690103879
-	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2008 22:14:51 +0100 (CET)
-In-Reply-To: <20080316221239.ae934fe4.pochini@shiny.it>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Hills <mark@pogo.org.uk>
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <ED0F0070-B876-4D8B-8F88-879E01AB4326@orcon.net.nz>
+Sender: linux-alpha-owner@vger.kernel.org
+To: Bob Tracy <rct@frus.com>
+Cc: Rene Herman <rene.herman@keyaccess.nl>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 16 Mar 2008 22:12:39 +0000
-Giuliano Pochini <pochini@shiny.it> wrote:
-
-> > Also, there seem to be failures at certain buffer sizes:
-> >
-> >    $ ./test_buffers "hw:Layla3G,0,2" 429
-> >    buffer_size=18912 period_size=96
-> >
-> >    $ ./test_buffers "hw:Layla3G,0,2" 430
-> >    set_buffer_time_near: Invalid argument
-> >
-> >    $ ./test_buffers "hw:Layla3G,0,2" 431
-> >    buffer_size=19008 period_size=96
+Michael Cree wrote:
+>> I can't tell you exactly *when* it used to work, or even *if* it did
+>> with 2.6 kernels.  I'll try to explain...
+>>
+>> Sometime back in the 2.6.14 to 2.6.16 timeframe there was an issue with
+>> the ALSA driver not recognizing interrupts (causing looping)
 > 
-> This shouldn't happen. I'll give it a look.
+> Yes, the ESS1888 driver failed to work on Alpha about the 2.6.14 to 
+> 2.6.16 kernel.   It came right with alsa release 1.0.13 (IIRC) and I 
+> have been running the ESS1888 driver on an Alpha XP1000 without problems 
+> for about a year.
 
-It seems that ALSA can't manage to find a working hwparams combo. The card
-has the following constraints:
+After thinking about this more, I am wondering if the appearance of the 
+ESS1888 not working then coming right at about the 1.0.13 alsa release 
+is an artefact of when I shifted from mainly using the PWS600au to 
+mainly using  the XP1000, and then trying out the es18xx driver at some 
+stage, finding it works on the XP1000, but forgetting that it was on the 
+PWS600au that it didn't work.  It's in the distant past now and memory 
+is getting hazy...
 
-buffer size:	64-32768 frames
-period size:	multiple of 32 frames
-periods:	2-220
-
-It happens that ALSA restricts the allowable buffer size range to
-18976-18976 which is very close to the requested 430ms. This is bad because
-the biggest multiple of 32 divisor of 18976 is 32. 18976/32 = 593 > maximum
-number of periods. return -EINVAL.
-
-BUFFER_TIME = (430294 430295) -> (430294 430295)
-Rule 8 [e20b3944]: RATE = [44100 44100] -> [44100 44100]
-Rule 15 [e20b38d0]: BUFFER_SIZE = [18976 32768] -> [18976 18976]
-Rule 17 [e20b38d0]: BUFFER_BYTES = [151808 262144] -> [151808 151808]
-Rule 19 [e20b3944]: BUFFER_TIME = (430294 430295) -> (430294 430295)
-
-Note that if you change the order of the hw_params_*() calls the problem
-goes away. It might show up again for some other values though.
-
-I don't know how to fix it. Any clue ??
-
-
---
-Giuliano.
+Michael.
