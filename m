@@ -1,16 +1,20 @@
-From: Daniel Mack <daniel@caiaq.org>
-Subject: Re: ALSA driver for Native Instruments sound hardware
-Date: Sun, 23 Mar 2008 21:23:48 +0100
-Message-ID: <E5A721F8-6846-4F11-B36A-DF8B74295150@caiaq.org>
-References: 20070326161003.GB20122@ipxXXXXX <47E3B2F4.502@freemail.gr>
-Mime-Version: 1.0 (Apple Message framework v919.2)
+From: "Vinod Koul" <vinod.koul@gmail.com>
+Subject: Re: ALSA Debugging
+Date: Mon, 24 Mar 2008 08:52:15 +0530
+Message-ID: <b29ed9aa0803232022j12422d05h3cab9d6fe9734e9f@mail.gmail.com>
+References: <b29ed9aa0803210815g43bd5741i81ee7e5d0a04e612@mail.gmail.com>
+	<1206116141.4863.127.camel@razman.gruemaster.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F6E3103868
-	for <alsa-devel@alsa-project.org>; Sun, 23 Mar 2008 21:23:52 +0100 (CET)
-In-Reply-To: <47E3B2F4.502@freemail.gr>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C4642474B
+	for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2008 04:22:23 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so668723ana.80
+	for <alsa-devel@alsa-project.org>; Sun, 23 Mar 2008 20:22:15 -0700 (PDT)
+In-Reply-To: <1206116141.4863.127.camel@razman.gruemaster.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,21 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: kyr <corali@freemail.gr>
+To: Tobin Davis <tdavis@dsl-only.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Thanks Tobin,
+Checked snd-intel8x0 is loaded.
 
-On Mar 21, 2008, at 2:07 PM, kyr wrote:
-> I'd like to know if this driver support all of the 8 inputs/outputs
-> channels,
-> and if someone test it with xwax (xwax.co.uk).
+Did rmmod and tried to insert with my compiled driver from my sources gives
+an error: "error inserting 'snd-intel8x0.ko' : -1 Invalid module format"
 
-All inputs and outputs are supported, and the developer of xwax wanted  
-to test his software with this interface. However, I don't know about  
-his results or if he ever really did it. Maybe ask on their mailing  
-list?
+Checked from Yast, my sound card is 82801G AC'97, driver snd-intel8x0
 
-Best regards,
-Daniel
+-Vinod
+
+On Fri, Mar 21, 2008 at 9:45 PM, Tobin Davis <tdavis@dsl-only.net> wrote:
+
+>  First, verify that you are working with the correct driver.  lsmod will
+> tell you which sound drivers are loaded.  If this is a newer system, you're
+> probably using the snd-hda-intel driver, which is a whole lot different.
+>
+> Tobin
+>
+> On Fri, 2008-03-21 at 20:45 +0530, Vinod Koul wrote:
+>
+> Hello,I am new to ALSA and Linux. I was trying to understand the ALSAarchitecture.
+> I have Linux Box with Intel sound card. with Suse 10.1 on it.I launched the audio player (Real player) and audio plays fine.
+> Then, I built the kernel and installed it. I put some printk's in intel8x0.candcontrol.c. (could see the my code was complied)Even though I changed volume muted etc couldn't see any of my printk indmesg. One default printk in intel8x0.c was there, so I have put my printbefore that line as well, but couldn't see anything.
+> Apologies If my problem is very basic. I read on forums that best way tolearn is to put printk's.
+> Can anyone help me with where I am doing incorrectly, Am I supposed to do itthis way or some other way?
+> Thanks in advance-Vinod
+> _______________________________________________Alsa-devel mailing listAlsa-devel@alsa-project.orghttp://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>   -- Tobin Davis
+>
+> The man on tops walks a lonely street; the "chain" of command is often a noose.
+>
+>
