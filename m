@@ -1,13 +1,17 @@
-From: Jiang zhe <zhe.jiang@intel.com>
-Subject: [PATCH]PCI quirk for MSI laptop
-Date: Mon, 24 Mar 2008 13:45:43 +0800
-Message-ID: <1206337543.4680.4.camel@localhost.localdomain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: PXA2xx/3xx AC97 Driver(s)
+Date: Mon, 24 Mar 2008 13:42:32 +0000
+Message-ID: <20080324134231.GA30281@sirena.org.uk>
+References: <47E7A0A8.3010200@oliford.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-l9EXUcm/iFMut8rjXLBu"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id C36F31037F8
-	for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2008 06:47:35 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E1C5243BA
+	for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2008 14:42:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <47E7A0A8.3010200@oliford.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,59 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, zhe.jiang@intel.com
+To: Oliver Ford <ipaqlinux@oliford.co.uk>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk, alex.meakins@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Mar 24, 2008 at 12:38:00PM +0000, Oliver Ford wrote:
 
---=-l9EXUcm/iFMut8rjXLBu
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> Is there any work currently under way on an AC97 driver for the PXA3xx?
 
-Hi,
+There is PXA3xx AC97 support present in the ASoC tree:
 
-Please refer to [0003848] on the alsa mantis.
-This patch adds the pci quirk and Mic-Int controller.
+   git://opensource.wolfsonmicro.com/linux-2.6-asoc
 
-Thanks!
+It's under the asoc-v2-dev branch at the minute and is probably only
+done for the ASoC AC97 driver, I'd need to check.  The main reason it's
+only there is that it depends on the ARM architecture changes that you
+identified (which are also applied on the asoc-v2-dev branch) and it
+makes life easier to manage the cross-tree changes in only one tree.
 
-Signed-off-by: Jiang zhe <zhe.jiang@intel.com>
+All the ARM architecture changes have been submitted and marked as
+applied in the patch system so should hopefully appear in Linus' kernel
+early in the 2.6.26 cycle.  Once this has happened I will submit the
+AC97 driver PXA3xx support.
 
---=-l9EXUcm/iFMut8rjXLBu
-Content-Disposition: attachment; filename=3848-alc888-msi.patch
-Content-Type: text/x-patch; name=3848-alc888-msi.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+> I want to get the touch screen working on my iPAQ 214, which uses the 
+> PXA310. It's a WM97xx chip on the AC97 interface. I'm not really too 
 
---- alsa-driver-hg20080318/alsa-kernel/pci/hda/patch_realtek.c	2008-03-15 09:00:07.000000000 +0800
-+++ b/alsa-kernel/pci/hda/patch_realtek.c	2008-03-19 15:59:05.000000000 +0800
-@@ -6864,6 +6864,9 @@ static struct snd_kcontrol_new alc883_ta
- 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
- 	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
- 	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Int Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Int Mic Boost", 0x19, 0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Int Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
- 	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),
- 	HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x09, 0x0, HDA_INPUT),
-@@ -7761,6 +7764,7 @@ static struct snd_pci_quirk alc883_cfg_t
- 	SND_PCI_QUIRK(0x1462, 0x0349, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x040d, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x0579, "MSI", ALC883_TARGA_2ch_DIG),
-+	SND_PCI_QUIRK(0x1462, 0x2fb3, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3729, "MSI S420", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3783, "NEC S970", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x3b7f, "MSI", ALC883_TARGA_2ch_DIG),
+I know that there are a number of users currently using the tree for
+that use case so the asoc-v2-dev branch should hopefully work for you.
+If you run into trouble please let me know.
 
---=-l9EXUcm/iFMut8rjXLBu
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> include/asm-arm/arch-pxa/pxa3xx-regs.h). Does the pxa310 require
+> anything special like this or should just setting the cold-reset in
+> the AC97 GCR work?
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+It also doesn't support the use of interrupts during reset operations,
+requiring another special case, but I think that's about it.
 
---=-l9EXUcm/iFMut8rjXLBu--
+> The Wolfson Microelectronics open-source page indicates that work is on 
+> going with the 3xx driver but there doesn't seem to be anything more 
+> than the pxa2xx driver in their source tree. Does anyone know how active 
+> / close to producing anything this is?
+
+Like I say, it's there.  The changes are fairly straightforward and
+should be easy to backport to whatever kernel you need - if you need
+help identifying what needs merging over please just ask.
+
+> More generally, I'm a little confused as to why there is both the 
+> standard (sound/arm/pxa2xx-ac97.c) and SoC (sound/soc/pxa/pxa2xx-ac97) 
+> driver. Is one of these obsolete now or are they both still in 
+> development? If guessing, I'd say the SoC driver is now the one to use 
+
+The SoC driver is generally preferable, though it requires a bit more
+work to use (since you have to write a platform driver to use it).  Both
+are still maintained.  SoC offers better power management and support
+for a wider range of board configurations, especially those that also
+have non-AC97 interfaces (such as the I2S interface on the WM97xx
+parts).
+
+> but am not sure. Compiling either gives the warning "'pxa_set_cken' is 
+> deprecated". I suspect calling this won't work for the pxa310 since it's 
+
+This is also fixed in the patches currently queued in the ARM tree -
+the drivers have been converted to use the clk_() API.
+
+> clocks are different, but given that I'm booting linux from windows 
+> (which will leave the clock on) and don't particularly care about 
+> suspend/resume, should not being able to switch it off be a problem?
+
+The cken calls should actually work fine.
