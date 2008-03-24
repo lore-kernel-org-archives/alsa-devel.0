@@ -1,20 +1,13 @@
-From: "Vinod Koul" <vinod.koul@gmail.com>
-Subject: Re: ALSA Debugging
-Date: Mon, 24 Mar 2008 08:52:15 +0530
-Message-ID: <b29ed9aa0803232022j12422d05h3cab9d6fe9734e9f@mail.gmail.com>
-References: <b29ed9aa0803210815g43bd5741i81ee7e5d0a04e612@mail.gmail.com>
-	<1206116141.4863.127.camel@razman.gruemaster.com>
+From: Jiang zhe <zhe.jiang@intel.com>
+Subject: [PATCH]PCI quirk for MSI laptop
+Date: Mon, 24 Mar 2008 13:45:43 +0800
+Message-ID: <1206337543.4680.4.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-l9EXUcm/iFMut8rjXLBu"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C4642474B
-	for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2008 04:22:23 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id c36so668723ana.80
-	for <alsa-devel@alsa-project.org>; Sun, 23 Mar 2008 20:22:15 -0700 (PDT)
-In-Reply-To: <1206116141.4863.127.camel@razman.gruemaster.com>
-Content-Disposition: inline
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id C36F31037F8
+	for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2008 06:47:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,40 +17,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, zhe.jiang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Tobin,
-Checked snd-intel8x0 is loaded.
 
-Did rmmod and tried to insert with my compiled driver from my sources gives
-an error: "error inserting 'snd-intel8x0.ko' : -1 Invalid module format"
+--=-l9EXUcm/iFMut8rjXLBu
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Checked from Yast, my sound card is 82801G AC'97, driver snd-intel8x0
+Hi,
 
--Vinod
+Please refer to [0003848] on the alsa mantis.
+This patch adds the pci quirk and Mic-Int controller.
 
-On Fri, Mar 21, 2008 at 9:45 PM, Tobin Davis <tdavis@dsl-only.net> wrote:
+Thanks!
 
->  First, verify that you are working with the correct driver.  lsmod will
-> tell you which sound drivers are loaded.  If this is a newer system, you're
-> probably using the snd-hda-intel driver, which is a whole lot different.
->
-> Tobin
->
-> On Fri, 2008-03-21 at 20:45 +0530, Vinod Koul wrote:
->
-> Hello,I am new to ALSA and Linux. I was trying to understand the ALSAarchitecture.
-> I have Linux Box with Intel sound card. with Suse 10.1 on it.I launched the audio player (Real player) and audio plays fine.
-> Then, I built the kernel and installed it. I put some printk's in intel8x0.candcontrol.c. (could see the my code was complied)Even though I changed volume muted etc couldn't see any of my printk indmesg. One default printk in intel8x0.c was there, so I have put my printbefore that line as well, but couldn't see anything.
-> Apologies If my problem is very basic. I read on forums that best way tolearn is to put printk's.
-> Can anyone help me with where I am doing incorrectly, Am I supposed to do itthis way or some other way?
-> Thanks in advance-Vinod
-> _______________________________________________Alsa-devel mailing listAlsa-devel@alsa-project.orghttp://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->   -- Tobin Davis
->
-> The man on tops walks a lonely street; the "chain" of command is often a noose.
->
->
+Signed-off-by: Jiang zhe <zhe.jiang@intel.com>
+
+--=-l9EXUcm/iFMut8rjXLBu
+Content-Disposition: attachment; filename=3848-alc888-msi.patch
+Content-Type: text/x-patch; name=3848-alc888-msi.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+--- alsa-driver-hg20080318/alsa-kernel/pci/hda/patch_realtek.c	2008-03-15 09:00:07.000000000 +0800
++++ b/alsa-kernel/pci/hda/patch_realtek.c	2008-03-19 15:59:05.000000000 +0800
+@@ -6864,6 +6864,9 @@ static struct snd_kcontrol_new alc883_ta
+ 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Mic Boost", 0x18, 0, HDA_INPUT),
+ 	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME("Int Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
++	HDA_CODEC_VOLUME("Int Mic Boost", 0x19, 0, HDA_INPUT),
++	HDA_CODEC_MUTE("Int Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),
+ 	HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),
+ 	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x09, 0x0, HDA_INPUT),
+@@ -7761,6 +7764,7 @@ static struct snd_pci_quirk alc883_cfg_t
+ 	SND_PCI_QUIRK(0x1462, 0x0349, "MSI", ALC883_TARGA_2ch_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x040d, "MSI", ALC883_TARGA_2ch_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x0579, "MSI", ALC883_TARGA_2ch_DIG),
++	SND_PCI_QUIRK(0x1462, 0x2fb3, "MSI", ALC883_TARGA_2ch_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x3729, "MSI S420", ALC883_TARGA_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x3783, "NEC S970", ALC883_TARGA_DIG),
+ 	SND_PCI_QUIRK(0x1462, 0x3b7f, "MSI", ALC883_TARGA_2ch_DIG),
+
+--=-l9EXUcm/iFMut8rjXLBu
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-l9EXUcm/iFMut8rjXLBu--
