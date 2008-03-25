@@ -1,29 +1,31 @@
 From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: [PATCH] hda-intel: Add Quanta IL1 ALC267 model
-Date: Tue, 25 Mar 2008 17:31:28 -0300
-Message-ID: <200803251731.28856.herton@mandriva.com.br>
+Subject: Re: [PATCH] hda-intel: Add Quanta IL1 ALC267 model
+Date: Tue, 25 Mar 2008 17:34:51 -0300
+Message-ID: <200803251734.51459.herton@mandriva.com.br>
+References: <200803251731.28856.herton@mandriva.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
 	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF6CB103818
-	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 21:31:36 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 2DB55103825
+	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 21:34:54 +0100 (CET)
 Received: from localhost (perninha.conectiva.com.br [127.0.0.1])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id 9B4AD3EB7
-	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 17:31:32 -0300 (BRT)
+	by perninha.conectiva.com.br (Postfix) with ESMTP id 1DEF13EB6
+	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 17:34:54 -0300 (BRT)
 Received: from perninha.conectiva.com.br ([127.0.0.1])
 	by localhost (perninha.conectiva.com.br [127.0.0.1]) (amavisd-new,
 	port 10025)
-	with LMTP id MxD2GKipQBBN for <alsa-devel@alsa-project.org>;
-	Tue, 25 Mar 2008 17:31:32 -0300 (BRT)
+	with LMTP id RRB2ixaga0l9 for <alsa-devel@alsa-project.org>;
+	Tue, 25 Mar 2008 17:34:53 -0300 (BRT)
 Received: from fox.conectiva (fox.conectiva [10.0.2.195])
-	by perninha.conectiva.com.br (Postfix) with ESMTP id 0F1BE3EB6
-	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 17:31:31 -0300 (BRT)
+	by perninha.conectiva.com.br (Postfix) with ESMTP id 4DF273EB7
+	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 17:34:53 -0300 (BRT)
 Received: from gotham.conectiva (gotham.conectiva [10.0.2.23])
-	by fox.conectiva (Postfix) with ESMTP id 48CCE2F666
-	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 17:31:30 -0300 (BRT)
+	by fox.conectiva (Postfix) with ESMTP id 3089B2F64D
+	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 17:34:52 -0300 (BRT)
+In-Reply-To: <200803251731.28856.herton@mandriva.com.br>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,143 +39,227 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This adds support for Quanta IL1 mini-notebook to alsa, defining a new model for
-it. It comes with an ALC267 codec chip. Some notes about this model:
+Em Tuesday 25 March 2008 17:31:28 Herton Ronaldo Krzesinski escreveu:
+> This adds support for Quanta IL1 mini-notebook to alsa, defining a new model for
+> it. It comes with an ALC267 codec chip. Some notes about this model:
+> 
+> * In headphone automute, I use AC_VERB_SET_PIN_WIDGET_CONTROL instead of common
+>   amp mute, to avoid conflict with mixer switch (mixer and automute use the same
+>   nid).
+> * The only connected capture sources in the hardware are the internal mic and
+>   external mic jack. So instead of using an input source selector like on other
+>   ALC268 models, the mic automute automatically switch between captures.
+> 
+> Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
 
-* In headphone automute, I use AC_VERB_SET_PIN_WIDGET_CONTROL instead of common
-  amp mute, to avoid conflict with mixer switch (mixer and automute use the same
-  nid).
-* The only connected capture sources in the hardware are the internal mic and
-  external mic jack. So instead of using an input source selector like on other
-  ALC268 models, the mic automute automatically switch between captures.
+codec info for reference:
 
-Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
-
-diff -p -up alsa-kernel/Documentation/ALSA-Configuration.txt.orig alsa-kernel/Documentation/ALSA-Configuration.txt
---- alsa-kernel/Documentation/ALSA-Configuration.txt.orig	2008-03-25 16:30:07.000000000 -0300
-+++ alsa-kernel/Documentation/ALSA-Configuration.txt	2008-03-25 16:33:52.000000000 -0300
-@@ -829,7 +829,8 @@ Prior to version 0.9.0rc4 options had a 
- 	  basic		fixed pin assignment w/o SPDIF
- 	  auto		auto-config reading BIOS (default)
- 
--	ALC268
-+	ALC267/268
-+	  quanta-il1	Quanta IL1 mini-notebook
- 	  3stack	3-stack model
- 	  toshiba	Toshiba A205
- 	  acer		Acer laptops
-diff -p -up alsa-kernel/pci/hda/patch_realtek.c.orig alsa-kernel/pci/hda/patch_realtek.c
---- alsa-kernel/pci/hda/patch_realtek.c.orig	2008-03-25 16:30:07.000000000 -0300
-+++ alsa-kernel/pci/hda/patch_realtek.c	2008-03-25 16:33:52.000000000 -0300
-@@ -105,6 +105,7 @@ enum {
- 
- /* ALC268 models */
- enum {
-+	ALC267_QUANTA_IL1,
- 	ALC268_3ST,
- 	ALC268_TOSHIBA,
- 	ALC268_ACER,
-@@ -9896,6 +9897,64 @@ static void alc268_dell_unsol_event(stru
- 
- #define alc268_dell_init_hook	alc268_dell_automute
- 
-+static struct snd_kcontrol_new alc267_quanta_il1_mixer[] = {
-+	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x2, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Speaker Playback Switch", 0x14, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x3, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_MUTE("Headphone Playback Switch", 0x15, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Mic Capture Volume", 0x23, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE("Mic Capture Switch", 0x23, 2, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("Ext Mic Boost", 0x18, 0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Int Mic Boost", 0x19, 0, HDA_INPUT),
-+	{ }
-+};
-+
-+static struct hda_verb alc267_quanta_il1_verbs[] = {
-+	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
-+	{0x18, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_MIC_EVENT | AC_USRSP_EN},
-+	{ }
-+};
-+
-+static void alc267_quanta_il1_hp_automute(struct hda_codec *codec)
-+{
-+	unsigned int present;
-+
-+	present = snd_hda_codec_read(codec, 0x15, 0, AC_VERB_GET_PIN_SENSE, 0)
-+		& AC_PINSENSE_PRESENCE;
-+	snd_hda_codec_write(codec, 0x14, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
-+			    present ? 0 : PIN_OUT);
-+}
-+
-+static void alc267_quanta_il1_mic_automute(struct hda_codec *codec)
-+{
-+	unsigned int present;
-+
-+	present = snd_hda_codec_read(codec, 0x18, 0,
-+				     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
-+	snd_hda_codec_write(codec, 0x23, 0,
-+			    AC_VERB_SET_CONNECT_SEL,
-+			    present ? 0x00 : 0x01);
-+}
-+
-+static void alc267_quanta_il1_automute(struct hda_codec *codec)
-+{
-+	alc267_quanta_il1_hp_automute(codec);
-+	alc267_quanta_il1_mic_automute(codec);
-+}
-+
-+static void alc267_quanta_il1_unsol_event(struct hda_codec *codec,
-+					   unsigned int res)
-+{
-+	switch (res >> 26) {
-+	case ALC880_HP_EVENT:
-+		alc267_quanta_il1_hp_automute(codec);
-+		break;
-+	case ALC880_MIC_EVENT:
-+		alc267_quanta_il1_mic_automute(codec);
-+		break;
-+	}
-+}
-+
- /*
-  * generic initialization of ADC, input mixers and output mixers
-  */
-@@ -10318,6 +10377,7 @@ static void alc268_auto_init(struct hda_
-  * configuration and preset
-  */
- static const char *alc268_models[ALC268_MODEL_LAST] = {
-+	[ALC267_QUANTA_IL1]	= "quanta-il1",
- 	[ALC268_3ST]		= "3stack",
- 	[ALC268_TOSHIBA]	= "toshiba",
- 	[ALC268_ACER]		= "acer",
-@@ -10340,11 +10400,27 @@ static struct snd_pci_quirk alc268_cfg_t
- 	SND_PCI_QUIRK(0x1179, 0xff10, "TOSHIBA A205", ALC268_TOSHIBA),
- 	SND_PCI_QUIRK(0x1179, 0xff50, "TOSHIBA A305", ALC268_TOSHIBA),
- 	SND_PCI_QUIRK(0x152d, 0x0763, "Diverse (CPR2000)", ALC268_ACER),
-+	SND_PCI_QUIRK(0x152d, 0x0771, "Quanta IL1", ALC267_QUANTA_IL1),
- 	SND_PCI_QUIRK(0x1170, 0x0040, "ZEPTO", ALC268_ZEPTO),
- 	{}
- };
- 
- static struct alc_config_preset alc268_presets[] = {
-+	[ALC267_QUANTA_IL1] = {
-+		.mixers = { alc267_quanta_il1_mixer },
-+		.init_verbs = { alc268_base_init_verbs, alc268_eapd_verbs,
-+				alc267_quanta_il1_verbs },
-+		.num_dacs = ARRAY_SIZE(alc268_dac_nids),
-+		.dac_nids = alc268_dac_nids,
-+		.num_adc_nids = ARRAY_SIZE(alc268_adc_nids_alt),
-+		.adc_nids = alc268_adc_nids_alt,
-+		.hp_nid = 0x03,
-+		.num_channel_mode = ARRAY_SIZE(alc268_modes),
-+		.channel_mode = alc268_modes,
-+		.input_mux = &alc268_capture_source,
-+		.unsol_event = alc267_quanta_il1_unsol_event,
-+		.init_hook = alc267_quanta_il1_automute,
-+	},
- 	[ALC268_3ST] = {
- 		.mixers = { alc268_base_mixer, alc268_capture_alt_mixer,
- 			    alc268_beep_mixer },
+Codec: Realtek ALC267
+Address: 0
+Vendor Id: 0x10ec0267
+Subsystem Id: 0x152d0771
+Revision Id: 0x100002
+No Modem Function Group found
+Default PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=2, o=0, i=0, unsolicited=1, wake=0
+  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0
+Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x40 0x40]
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x40 0x40]
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x5e0]: 44100 48000 88200 96000 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+Node 0x07 [Audio Input] wcaps 0x100111: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Connection: 1
+     0x24
+Node 0x08 [Audio Input] wcaps 0x100111: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Connection: 1
+     0x23
+Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0c [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00]
+  Connection: 1
+     0x02
+Node 0x0f [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Connection: 2
+     0x02 0x1d
+Node 0x10 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x80 0x80]
+  Connection: 3
+     0x03 0x1d 0x02
+Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x081003c: IN OUT HP EAPD Detect
+  EAPD 0x2: EAPD
+  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x0f
+Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x081003c: IN OUT HP EAPD Detect
+  EAPD 0x2: EAPD
+  Pin Default 0x0121401f: [Jack] HP Out at Ext Rear
+    Conn = 1/8, Color = Green
+    DefAssociation = 0x1, Sequence = 0xf
+  Pin-ctls: 0xc0: OUT HP
+  Unsolicited: tag=04, enabled=1
+  Connection: 1
+     0x10
+Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80]
+  Pincap 0x0810: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x0e
+Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals:  [0x01 0x01]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x083734: IN OUT Detect
+    Vref caps: HIZ 50 GRD 80 100
+  Pin Default 0x01a19820: [Jack] Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+    DefAssociation = 0x2, Sequence = 0x0
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x02
+Node 0x19 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals: 
+  Pincap 0x083724: IN Detect
+    Vref caps: HIZ 50 GRD 80 100
+  Pin Default 0x99a3092e: [Fixed] Mic at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+    DefAssociation = 0x2, Sequence = 0xe
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=00, enabled=0
+Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x083734: IN OUT Detect
+    Vref caps: HIZ 50 GRD 80 100
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x02
+Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x4016862d: [N/A] Speaker at Ext N/A
+    Conn = Digital, Color = Purple
+    DefAssociation = 0x2, Sequence = 0xd
+  Pin-ctls: 0x20: IN
+Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x06
+Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+  Processing caps: benign=0, ncoeff=10
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x23 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x98 0x98]
+  Connection: 7
+     0x18 0x19* 0x1a 0x1c 0x14 0x15 0x12
+Node 0x24 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x80 0x80]
+  Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x98 0x98]
+  Connection: 6
+     0x18 0x19 0x1a 0x1c 0x14 0x15
 
 -- 
 []'s
