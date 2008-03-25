@@ -1,15 +1,28 @@
-From: "Demian Martin" <demianm_1@yahoo.com>
-Subject: Re: PATCH - ESI Juli driver
-Date: Mon, 24 Mar 2008 23:30:38 -0700
-Message-ID: <73201819FF904335B39B466AB4A900F4@DemianM1330>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1250"
-Content-Transfer-Encoding: base64
+From: Rene Dohmen <acidjunk@gmail.com>
+Subject: Re: no front speaker sound with ALC262
+Date: Tue, 25 Mar 2008 11:40:26 +0100
+Message-ID: <D62EAF04-BD99-4844-8F07-A49991A5ECDD@gmail.com>
+References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>
+	<47BF84BF.702@versatile.com> <47BF8500.1050802@versatile.com>
+	<7D68F908-875D-4EDE-B25D-CCBDD4E4A339@gmail.com>
+	<s5h1w6zvrz4.wl%tiwai@suse.de> <47DEA53B.4030207@versatile.com>
+	<1205778900.27317.160.camel@razman.gruemaster.com>
+	<47DEC0BD.5090403@versatile.com>
+	<1205781169.27317.165.camel@razman.gruemaster.com>
+	<47DECB8E.7060007@versatile.com>
+	<1205792180.27317.188.camel@razman.gruemaster.com>
+	<47DFBF93.6060308@versatile.com> <s5hd4psw4fj.wl%tiwai@suse.de>
+	<DDEF195D-07DA-480C-816E-DDF3BF0C7C90@gmail.com>
+	<1206212954.6591.17.camel@razman>
+Mime-Version: 1.0 (Apple Message framework v752.3)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp110.prem.mail.sp1.yahoo.com
-	(smtp110.prem.mail.sp1.yahoo.com [98.136.44.55])
-	by alsa0.perex.cz (Postfix) with SMTP id A39EE24858
-	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 07:30:42 +0100 (CET)
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07248243A6
+	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 11:40:38 +0100 (CET)
+In-Reply-To: <1206212954.6591.17.camel@razman>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,27 +32,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pavel.hofman@insite.cz
+To: Tobin Davis <tdavis@dsl-only.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-UGF2ZWw6CgpJIHdhbnQgdG8gdGhhbmsgeW91IGZvciBnZXR0aW5nIHRoZSBKdWxpQCBkcml2ZXIg
-c29ydGVkIG91dC4gSXRzIGFsbCB3b3JraW5nCnJpZ2h0IGFuZCBJIGNhbiBwbGF5IHRoZSAxNzYu
-NCBLSHogMjQgYml0IGZpbGVzIG5vdyBwcm9wZXJseS4gQWxvbmcgd2l0aAo5NkssIDg4LjJLIDQ4
-SyBhbmQgNDQuMUsuICBJIGhhZCB0byBib3Jyb3cgYW4gQXBvZ2VlIDE5MksgbWluaS1kYWMgdG8g
-dGVzdAp0aGUgc3lzdGVtLiBUaGUgaW5leHBlbnNpdmUgREFDIEkgZ290IG9mZiBlQmF5IGZyb20g
-Q2hpbmEgd2FzIG5ldmVyIHRlc3RlZApwcm9wZXJseSBmb3IgaGlnaCBiaXQgcmF0ZSBmaWxlcyBh
-bmQgbGV0IG1lIG9mZiB0cmFjayB1bnRpbCBJIGdvdCBhIGtub3duCkRBQyB0byB0ZXN0IHdpdGgu
-IAoKVGhlIHVuaXF1ZSBjbG9ja2luZyBzY2hlbWUgb2YgdGhlIEp1bGlAIGNhcmQgc2hvdWxkIGdp
-dmUgbG93ZXIgaml0dGVyIGFuZApiZXR0ZXIgYXVkaW8gdGhhbiB0aGUgb3RoZXIgc29sdXRpb25z
-IHNpbmNlIHRoZSBjbG9jayBpc26SdCBnZW5lcmF0ZWQgZnJvbSBhClBMTC4gSXSScyBhIHJlbGF0
-aXZlIGJhcmdhaW4gY29tcGFyZWQgdG8gYSBIYW1tZXJmYWxsIG9yIGEgTHlueCBjYXJkLiBBbmQK
-bm93IHdpdGggYSBnb29kIExpbnV4IGRyaXZlciB2ZXJ5IHVzZWFibGUuCgogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgLURlbWlhbgoKIAoKRGVtaWFuIE1hcnRpbgoKUHJvZHVjdCBEZXNpZ24g
-U2VydmljZQoKNzg0IENhcnkgRHJpdmUKClNhbiBMZWFuZHJvLCBDQSA5NDU3NwoKMjA5IDYxMyA2
-OTkwCgogCgoKTm8gdmlydXMgZm91bmQgaW4gdGhpcyBvdXRnb2luZyBtZXNzYWdlLgpDaGVja2Vk
-IGJ5IEFWRy4gClZlcnNpb246IDcuNS41MTkgLyBWaXJ1cyBEYXRhYmFzZTogMjY5LjIxLjgvMTM0
-MCAtIFJlbGVhc2UgRGF0ZTogMy8yMy8yMDA4CjY6NTAgUE0KIApfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+Op Mar 22, 2008, om 8:09 PM heeft Tobin Davis het volgende geschreven:
+
+> Rene, don't bother bugging Tangent.  I have a demo unit on the  
+> way.  My first priority is getting the driver working.
+>
+> Tangent really won't help much - their a distributor, not the OEM.   
+> This is an MSI Crystal 945 in a Tangent shell.
+>
+
+I know that the system is actually a Crystal 945. I got the  
+touchscreen working via a dev driver from salt (so not tangent)
+On the mainboard there is a conenctor: JFP1that goes to the ms4088  
+board. The mainboard connects to:
+- power led
+- hdd led
+- speakers
+- main power switch
+
+I can provide you with some photoos if you like.
+
+As stated earlier: the sound is working by with very low volume levels
+
+
+> If you want to try something, see if the bios can be reflashed with  
+> the Crystal 945 firmware.
+>
+
+I sound working with the original crystal? I don't think tangent has  
+flshed their BIOS to another version.
+In the crystal 945 specs I found that the're using a Realtek ALC262  
+with azalia codec, maybe this helps.
+
+Rene
+
+
+> As to the speaker board, where on the main board is it mounted?  Is  
+> the header labeled?  How many pins?  It sounds like the speakers  
+> may be on the front panel header, which would make them function  
+> like headphones.  Or this board is custom build for this  
+> application and I don't know what I'm talking about.
+>
+> Tobin
+>
+>
+> On Sat, 2008-03-22 at 18:59 +0100, Rene Dohmen wrote:
+>>
+>> Hi Guys,
+>>
+>> I'm glad t o read that there are other people with the same problem
+>> on the same system.
+>> I just opened my Tangent 8000S and it has indeed a MSI mainboard:
+>> MS7290. The speakers are connected to a small custom board: MS-4088
+>> There's no extra chip on this customboard and the board is directly
+>> connected to the mainboard. So probably the signal leaving the
+>> mainboard in amplified already. (or there's a amplifier builtin the
+>> speakers)
+>>
+>> Next week i'll have some time to put tangent under some more pressure
+>> for info, so maybe that will speed up things a little bit.
+>>
+>> Grz Rene
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> -- Tobin Davis 
+>
+> love, n.:
+> 	When you don't want someone too close--because you're very sensitive
+> 	to pleasure.
