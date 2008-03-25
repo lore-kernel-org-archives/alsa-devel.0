@@ -1,76 +1,94 @@
-From: Michael Cree <mcree@orcon.net.nz>
-Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Tue, 25 Mar 2008 12:56:04 +1300
-Message-ID: <47E83F94.8010409@orcon.net.nz>
-References: <20080318032427.298BCDBA2@gherkin.frus.com>
-	<546A47FE-F98E-49E2-A250-41F65C2D482B@orcon.net.nz>
-	<47E6338E.8030001@orcon.net.nz> <47E7EFDF.2070706@keyaccess.nl>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Tue, 25 Mar 2008 01:29:18 +0100
+Message-ID: <47E8475E.4080705@keyaccess.nl>
+References: <20080318032427.298BCDBA2@gherkin.frus.com> <546A47FE-F98E-49E2-A250-41F65C2D482B@orcon.net.nz> <47E6338E.8030001@orcon.net.nz> <47E7EFDF.2070706@keyaccess.nl> <47E83F94.8010409@orcon.net.nz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx4.orcon.net.nz (mx4.orcon.net.nz [219.88.242.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80A9B24549
-	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 00:56:10 +0100 (CET)
-Received: from Debian-exim by mx4.orcon.net.nz with local (Exim 4.68)
-	(envelope-from <mcree@orcon.net.nz>) id 1JdwWM-0007DP-Jf
-	for alsa-devel@alsa-project.org; Tue, 25 Mar 2008 12:56:06 +1300
-In-Reply-To: <47E7EFDF.2070706@keyaccess.nl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Bob Tracy <rct@frus.com>
+Content-Type: multipart/mixed;
+ boundary="------------040105040203000403010201"
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <47E83F94.8010409@orcon.net.nz>
+Sender: linux-alpha-owner@vger.kernel.org
+To: Michael Cree <mcree@orcon.net.nz>
+Cc: Bob Tracy <rct@frus.com>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman wrote:
-> On 23-03-08 11:40, Michael Cree wrote:
+This is a multi-part message in MIME format.
+--------------040105040203000403010201
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 25-03-08 00:56, Michael Cree wrote:
+
+> I have applied the patch to the PWS600au.  Sound now works.  I can play 
+> 8bit and 16bit sound files through the es1887 and the C-Media CM8738. 
+> They are both working fine.
+
+Thanks much for the quick reply. That's good to hear. As indicated, Bob 
+seemed to be experiencing something else but this is pretty fundamental so 
+I'll not try to comment on his case any further until he's had a chance to 
+test this as well.
+
+Takashi -- over to you for Michael's issue? His PWS600AU (MIATA) system 
+soils itself badly when using SNDRV_PCM_INFO_MMAP. His XP1000 works fine and 
+I haven't the faintest clue if switching on CONFIG_ALPHA_MIATA is the proper 
+switch, nor if outright disabling mmap is the correct approach. The patch 
+that works for him is attached again for reference.
+
+The way this does the disabling also implies disabling SNDRV_PCM_INFO_IOMEM 
+by the way...
+
+> I managed to get a 32bit sound file to play through the M-Audio
+> Revolution too. (Though another 32bit sound file just produces silence
+> through the M-Audio Rev. Haven't been able to establish why - the file
+> looks fine to me.)  Repeated playing of files doesn't cause any problems.
 > 
->> I have been able to run some tests.
->>
->> The es18xx and cmipci drivers work fine on the XP1000.  I base that 
->> observation on using a variety of software, such as mplayer and mocp, 
->> through both sound cards, mainly through oss, but also have tried 
->> alsa, over the last year for es18xx and for the last three or four 
->> months for cmipci.  (I have noted that the M-Audio Revolution 7.1 
->> sound card with the ice1724 driver fails to work and causes system 
->> crashes on the XP1000,
->> but that's a different discussion).
-> 
-> Was there ever a follow-up in that thread? :
-> 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006513.html
+> I can't get sox's play to work (reports no mmap support, which is, of 
+> course, quite true).  I don't know how to tell sox to use the equivalent
+> of alsa's hw device.  So I can't do the test on short files that Bob was
+> performing.
 
-Takashi replied with a suggestion to disable MMAP in the ice1724 driver. 
-  I have been preoccupied with other things for the last couple of weeks 
-so haven't had a chance to try it out.
+$ sox foo.wav -t alsa hw
 
-> There's a patch attached that disables mmap on MIATA. You and Bob seem 
-> to be experiencing problems of a different nature (or severity at the 
-> least) but for both of you it would be good to hear what applying this 
-> and then playing using "aplay -D hw foo.wav" (on the miata systems, 
-> ofcourse) brings.
+should do it. Here's a file Bob passed me as a problematic one. 8-bit, 
+11025, mono:
 
-I have applied the patch to the PWS600au.  Sound now works.  I can play 
-8bit and 16bit sound files through the es1887 and the C-Media CM8738. 
-They are both working fine.  I managed to get a 32bit sound file to play 
-through the M-Audio Revolution too. (Though another 32bit sound file 
-just produces silence through the M-Audio Rev. Haven't been able to 
-establish why - the file looks fine to me.)  Repeated playing of files 
-doesn't cause any problems.
+http://members.home.nl/rene.herman/asskickd.wav
 
-I can't get sox's play to work (reports no mmap support, which is, of 
-course, quite true).  I don't know how to tell sox to use the equivalent 
-of alsa's hw device.  So I can't do the test on short files that Bob was 
-  performing.
+> At this stage I've run out of time to test the M-Audio Rev in the XP1000 
+> and see if the MMAP disable patch help there.
 
-At this stage I've run out of time to test the M-Audio Rev in the XP1000 
-and see if the MMAP disable patch help there.
+Given that it fixes es18xx and cmipci on the PWS600au and that those worked 
+without trouble on the XP1000, you'd _expect_ not, but the OOPs you posted 
+before seemed to indicate that it stands a fair chance afer all.
 
-Michael.
+Rene.
+
+--------------040105040203000403010201
+Content-Type: text/plain;
+ name="miata_no_mmap.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="miata_no_mmap.diff"
+
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 3eaf155..e3b9c2d 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -241,8 +241,14 @@ typedef int __bitwise snd_pcm_subformat_t;
+ #define	SNDRV_PCM_SUBFORMAT_STD		((__force snd_pcm_subformat_t) 0)
+ #define	SNDRV_PCM_SUBFORMAT_LAST	SNDRV_PCM_SUBFORMAT_STD
+ 
++#ifdef CONFIG_ALPHA_MIATA
++#define SNDRV_PCM_INFO_MMAP		0		/* the useful comment goes here */
++#define SNDRV_PCM_INFO_MMAP_VALID	0
++#else
+ #define SNDRV_PCM_INFO_MMAP		0x00000001	/* hardware supports mmap */
+ #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
++#endif
++
+ #define SNDRV_PCM_INFO_DOUBLE		0x00000004	/* Double buffering needed for PCM start/stop */
+ #define SNDRV_PCM_INFO_BATCH		0x00000010	/* double buffering */
+ #define SNDRV_PCM_INFO_INTERLEAVED	0x00000100	/* channels are interleaved */
+
+--------------040105040203000403010201--
