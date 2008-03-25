@@ -1,94 +1,111 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Tue, 25 Mar 2008 01:29:18 +0100
-Message-ID: <47E8475E.4080705@keyaccess.nl>
-References: <20080318032427.298BCDBA2@gherkin.frus.com> <546A47FE-F98E-49E2-A250-41F65C2D482B@orcon.net.nz> <47E6338E.8030001@orcon.net.nz> <47E7EFDF.2070706@keyaccess.nl> <47E83F94.8010409@orcon.net.nz>
+From: "sandeep lahane" <sandeep.lahane@gmail.com>
+Subject: Re: Accessing alsa user space buffer from external io
+	type plugin
+Date: Mon, 24 Mar 2008 18:41:03 -0700
+Message-ID: <2d51cbf80803241841j2582c582k8a333ff2a3157323@mail.gmail.com>
+References: <2d51cbf80803241613n3782b150x4c7ee6ea16e2db81@mail.gmail.com>
+	<61445c750803241617j251daf91ie69e23e49b6b401b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040105040203000403010201"
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <47E83F94.8010409@orcon.net.nz>
-Sender: linux-alpha-owner@vger.kernel.org
-To: Michael Cree <mcree@orcon.net.nz>
-Cc: Bob Tracy <rct@frus.com>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 536E724853
+	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 02:41:04 +0100 (CET)
+Received: by el-out-1112.google.com with SMTP id r23so1508386elf.21
+	for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2008 18:41:03 -0700 (PDT)
+In-Reply-To: <61445c750803241617j251daf91ie69e23e49b6b401b@mail.gmail.com>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Pharaoh ." <pharaoh137@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040105040203000403010201
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+On Mon, Mar 24, 2008 at 4:17 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
 
-On 25-03-08 00:56, Michael Cree wrote:
+>
+>
+> On Mon, Mar 24, 2008 at 4:13 PM, sandeep lahane <sandeep.lahane@gmail.com>
+> wrote:
+>
+> > Hello,
+> >
+> > I am debugging an userspace external io type plugin, written for an ARM
+> > based board where the plugin
+> > interacts with DSP directly using shared memory.
+> >
+> > Every time I have to send period_size data to the DSP, I have my own
+> > write/read methods to do so.
+> >
+> > I am having a problem accessing the alsa ring buffer, my transfer
+> > function
+> > looks like following.
+> >
+> >
+> > static   char * temp;
+> > static snd_pcm_sframes_t alsa_transfer(snd_pcm_ioplug_t *io,
+> >                   const snd_pcm_channel_area_t *areas,
+> >                   snd_pcm_uframes_t offset,
+> >                   snd_pcm_uframes_t size)
+> > {
+> >
+> >           ......
+> >
+> >         temp = malloc(period_size);
+> >         memcpy(temp,  unsigned char *)areas->addr + (areas->first +
+> > areas->step * offset) / 8, period_size);
+> >          write_to_dsp(temp, period_size);
+> >          .......
+> > }
+> >
+> > All the book keeping is done properly, the first chunk of data is sent
+> > properly to DSP and pointer() returns correct value,
+> > next time when transfer is called, the memcpy gives segfault. ALSA
+> > buffer is
+> > an interleaved buffer and I am not using mmap
+> > mode. Any idea what might be wrong?
+> >
+> > When I do something like this:
+> >        memcpy(temp,  "test data test data", period_size);
+> > the data is sent properly to DSP, but alsa buffer data is not getting
+> > accessed properly.
+> >
+> >
+> >
+> >
+> >
+> >
+> > Regards,
+> > Sandeep.
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+>
+>
+>
+> temp is actually malloc'd in hw_params and freed properly, so please
+> ignore the details like whether it is freed etc or not.
+>
 
-> I have applied the patch to the PWS600au.  Sound now works.  I can play 
-> 8bit and 16bit sound files through the es1887 and the C-Media CM8738. 
-> They are both working fine.
 
-Thanks much for the quick reply. That's good to hear. As indicated, Bob 
-seemed to be experiencing something else but this is pretty fundamental so 
-I'll not try to comment on his case any further until he's had a chance to 
-test this as well.
 
-Takashi -- over to you for Michael's issue? His PWS600AU (MIATA) system 
-soils itself badly when using SNDRV_PCM_INFO_MMAP. His XP1000 works fine and 
-I haven't the faintest clue if switching on CONFIG_ALPHA_MIATA is the proper 
-switch, nor if outright disabling mmap is the correct approach. The patch 
-that works for him is attached again for reference.
+If I change the optimization level to O3, all the values passed from alsa
+upper layer to my plugin are wrong. The reason I tried changing optimization
+levels is that I have faced problems with ARM gcc 4.1.1. before when
+compiled at O levels more than zero.  Are there any known problems with ARM
+gcc 4.1.1 and alsa-lib 1.0.13?
 
-The way this does the disabling also implies disabling SNDRV_PCM_INFO_IOMEM 
-by the way...
+-- 
 
-> I managed to get a 32bit sound file to play through the M-Audio
-> Revolution too. (Though another 32bit sound file just produces silence
-> through the M-Audio Rev. Haven't been able to establish why - the file
-> looks fine to me.)  Repeated playing of files doesn't cause any problems.
-> 
-> I can't get sox's play to work (reports no mmap support, which is, of 
-> course, quite true).  I don't know how to tell sox to use the equivalent
-> of alsa's hw device.  So I can't do the test on short files that Bob was
-> performing.
-
-$ sox foo.wav -t alsa hw
-
-should do it. Here's a file Bob passed me as a problematic one. 8-bit, 
-11025, mono:
-
-http://members.home.nl/rene.herman/asskickd.wav
-
-> At this stage I've run out of time to test the M-Audio Rev in the XP1000 
-> and see if the MMAP disable patch help there.
-
-Given that it fixes es18xx and cmipci on the PWS600au and that those worked 
-without trouble on the XP1000, you'd _expect_ not, but the OOPs you posted 
-before seemed to indicate that it stands a fair chance afer all.
-
-Rene.
-
---------------040105040203000403010201
-Content-Type: text/plain;
- name="miata_no_mmap.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="miata_no_mmap.diff"
-
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 3eaf155..e3b9c2d 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -241,8 +241,14 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define	SNDRV_PCM_SUBFORMAT_STD		((__force snd_pcm_subformat_t) 0)
- #define	SNDRV_PCM_SUBFORMAT_LAST	SNDRV_PCM_SUBFORMAT_STD
- 
-+#ifdef CONFIG_ALPHA_MIATA
-+#define SNDRV_PCM_INFO_MMAP		0		/* the useful comment goes here */
-+#define SNDRV_PCM_INFO_MMAP_VALID	0
-+#else
- #define SNDRV_PCM_INFO_MMAP		0x00000001	/* hardware supports mmap */
- #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
-+#endif
-+
- #define SNDRV_PCM_INFO_DOUBLE		0x00000004	/* Double buffering needed for PCM start/stop */
- #define SNDRV_PCM_INFO_BATCH		0x00000010	/* double buffering */
- #define SNDRV_PCM_INFO_INTERLEAVED	0x00000100	/* channels are interleaved */
-
---------------040105040203000403010201--
+Regards,
+Sandeep.
