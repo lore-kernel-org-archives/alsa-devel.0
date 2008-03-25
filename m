@@ -1,17 +1,14 @@
-From: Ben Stanley <Ben.Stanley@exemail.com.au>
-Subject: Re: ca0106 Digital Output at 44.1kHz
-Date: Tue, 25 Mar 2008 22:48:41 +1100
-Message-ID: <1206445721.3683.45.camel@localhost>
-References: <1205410524.8486.274.camel@localhost>
-	<47E4E00C.2010108@superbug.co.uk>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Add 5.1 support for second headphone jack
+Date: Tue, 25 Mar 2008 13:57:29 -0400
+Message-ID: <47E93D09.6000904@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id C42DF243EC
-	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 12:48:47 +0100 (CET)
-In-Reply-To: <47E4E00C.2010108@superbug.co.uk>
+Received: from smtp105.biz.mail.mud.yahoo.com (smtp105.biz.mail.mud.yahoo.com
+	[68.142.200.253]) by alsa0.perex.cz (Postfix) with SMTP id 2174E2445C
+	for <alsa-devel@alsa-project.org>; Tue, 25 Mar 2008 18:57:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,120 +18,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Jose_De_La_Rosa@Dell.com, Mario_Limonciello@Dell.com
 List-Id: alsa-devel@alsa-project.org
 
-James,
+Several 92hd7xxx and STAC9228 laptops have multiple headphone jacks, the second headphone jack should
+be used for the 5.1 surround sound. Add support for 'Headphone as Line Out' switch, which allows it be used
+in 5.1 surround sound.
 
-Thanks for taking the time to read through my long and perhaps slightly
-prickly email.
-
-On Sat, 2008-03-22 at 10:31 +0000, James Courtier-Dutton wrote:
-> Ben Stanley wrote:
-> > Dear List,
-> >
-> > Hello. I'm new here. This is my first attempt to hack an alsa driver.
-> >
-> > I recently purchased a "Sound Blaster Audigy Value!" card for use in a
-> > MythTV box. As I have a digital receiver, I was mainly concerned with
-> > getting a working S/PDIF output (coax or optical) and not too much more.
-> >
-> > Summary: I can make 44.1kHz digital output work, but I think that the
-> > driver model of the card having 3 or 4 digital output channels is
-> > incorrect. I believe the card only has 1 digital output channel.
-> >   
-> The ca0106 chip has 3 or 4 digital outputs. These outputs may or may not 
-> be present on the output connectors of the card.
-> I know that one of the SB cards does in fact work with 3 digital outputs 
-> using the 4 pin jacks because I have tested it myself.
-> I GPIO is programmed to switch it between 3 digital outputs and 1 in, 1 out.
-
-So, could we then change the number of channels available depending upon
-which card is detected? It doesn't seem to make sense to make things
-available to the user via the driver that they can't plug something into
-on their particular model card. I guess that to do this I would have to
-know how many digital output channels are supported by each card. I
-downloaded the user manuals for a few of the cards; I only got the
-impression that each card supported one digital output. Do you know
-which card you tested for multiple outputs?
-
-(I appreciate that you still have very low version numbers on this
-driver, and that therefore it remains a work in progress.)
-
-Now, the Creative Labs user documentation gives me the impression that I
-can use the analog output channels at the same time as the digital
-output channel. That also doesn't appear to agree with how the driver is
-written. I am currently under the impression that the driver is written
-to allow 4 stereo analog channels or 4 digital channels. At least that
-is how things look when configuring things using alsamixer. Perhaps I am
-confused and should go and look at the GPIO that you mentioned above.
-
-> > Details:
-> >
-> > The card I have is characterised by the following:
-> > http://www.soundblaster.com/products/product.asp?category=1&subcategory=205&product=14189
-> > Model: SB0570
-> > serial: 100a1102
-> > Also known as: Sound Blaster Audigy SE
-> >
-> > During initial testing, I noticed that 44.1kHz playback was not
-> > implemented. Subsequent testing shows that speaker-test works fine with
-> > 48kHz, 96kHz and 192kHz. (I only tested 16bit output so far.)
-> >
-> > I noticed in the source code that 44.1k was explicitly disabled. I added
-> > code in snd_ca0106_pcm_prepare_playback to set up this rate for S/PDIF
-> > output as per the comments in ca0106.h . Initial tests using hw:0,0 at
-> > 44.1kHz produced recognisable signals with some noisy corruption. Later
-> > I accidentally discovered that serially opening hw:0,2 , hw:0,1 and
-> > hw:0,0  at 44.1kHz then produces perfectly good 44.1kHz sampled digital
-> > audio output. Removing hw:0,1 or hw:0,2 from this sequence causes noisy
-> > corruption. It seems that channels 0-2 in reg40 must all be set to the
-> > same sampling frequency for S/PDIF to work where 44.1kHz is concerned.
-> > Conversely, to sucessfully output 48kHz again, I have to open hw:0,2 ,
-> > hw:0,1 and hw:0,0 at 48kHz to restore proper output. I do not have such
-> > troubles with 96kHz and 192kHz, for which it suffices to just open
-> > hw:0,0 at the relevant sampling rate.
-> >   
-> The ca0106 can do 44.1kHz for digital output ONLY.
-> The ca0106 cannot output 44.1kHz to the DACs so it will only work in 
-> Digital mode.
-> It is a hardware restriction. You are correct, all the inputs and 
-> outputs have to be at the same rate.
-
-So far I haven't considered 'inputs', although I do now have the digital
-I/O module so that I can get digital signals into the card. I suspect I
-can only generate 44.1kHz and 48kHz sampled input signals to test with.
-
-So for my card where only one output channel appears to be available
-(can you tell from the doc if this is true?), then I would just slave
-the other hardware channels to hw:0,0 settings. However, on other cards
-where the other channels are in fact available, how do you enforce the
-restriction that all the channels must have the same sampling frequency
-within the ALSA model?
-
-I'm just trying to plan how I would fix this properly within the driver.
-
-> 
-> 
-> > Anyway, this is speculation. I'd love to have the docs. I haven't tried
-> > to get them. Is it likely/unlikely that I would get them?
-> >
-> >   
-> 
-> You can sign an open-source NDA and get the datasheets.
-> It lets me write drivers like the current ca0106 and E-Mu drivers.
-> If you are interested in a NDA, priv-email me.
-
-I have applied to Creative's 'Partnership' program and faxed off the
-forms last week. I've written user-space drivers for custom wire-wrapped
-logic + PAL glued hardware before, but not for modern chips, or coded
-for kernel space. Anyway, there's a first time for everything :-)
-
-> 
-> Kind Regards
-> 
-> James
-
-Thanks for your help,
-Ben.
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
+---
+diff -r 547e051a88b5 pci/hda/patch_sigmatel.c
+--- a/pci/hda/patch_sigmatel.c	Wed Mar 12 13:12:15 2008 +0100
++++ b/pci/hda/patch_sigmatel.c	Tue Mar 18 10:45:08 2008 -0400
+@@ -179,6 +179,7 @@ struct sigmatel_spec {
+ 	/* i/o switches */
+ 	unsigned int io_switch[2];
+ 	unsigned int clfe_swap;
++	unsigned int hp_switch;
+ 	unsigned int aloopback;
+ 
+ 	struct hda_pcm pcm_rec[2];	/* PCM information */
+@@ -1251,7 +1252,7 @@ static unsigned int ref92hd73xx_pin_conf
+ 
+ static unsigned int dell_m6_pin_configs[13] = {
+ 	0x0321101f, 0x4f00000f, 0x4f0000f0, 0x90170110,
+-	0x03a11020, 0x03011050, 0x4f0000f0, 0x4f0000f0,
++	0x03a11020, 0x0321101f, 0x4f0000f0, 0x4f0000f0,
+ 	0x4f0000f0, 0x90a60160, 0x4f0000f0, 0x4f0000f0,
+ 	0x4f0000f0,
+ };
+@@ -2029,6 +2030,33 @@ static void stac92xx_auto_set_pinctl(str
+ 				  AC_VERB_SET_PIN_WIDGET_CONTROL, pin_type);
+ }
+ 
++#define stac92xx_hp_switch_info		snd_ctl_boolean_mono_info
++
++static int stac92xx_hp_switch_get(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct sigmatel_spec *spec = codec->spec;
++
++	ucontrol->value.integer.value[0] = spec->hp_switch;
++	return 0;
++}
++
++static int stac92xx_hp_switch_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct sigmatel_spec *spec = codec->spec;
++
++	spec->hp_switch = ucontrol->value.integer.value[0];
++
++	/* check to be sure that the ports are upto date with
++ 	 * switch changes */
++	codec->patch_ops.unsol_event(codec, STAC_HP_EVENT << 26);
++
++	return 1;
++}
++
+ #define stac92xx_io_switch_info		snd_ctl_boolean_mono_info
+ 
+ static int stac92xx_io_switch_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+@@ -2099,6 +2127,15 @@ static int stac92xx_clfe_switch_put(stru
+ 
+ 	return 1;
+ }
++
++#define STAC_CODEC_HP_SWITCH(xname) \
++	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	  .name = xname, \
++	  .index = 0, \
++          .info = stac92xx_hp_switch_info, \
++          .get = stac92xx_hp_switch_get, \
++          .put = stac92xx_hp_switch_put, \
++	}
+ 
+ #define STAC_CODEC_IO_SWITCH(xname, xpval) \
+ 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
+@@ -2124,6 +2161,7 @@ enum {
+ 	STAC_CTL_WIDGET_VOL,
+ 	STAC_CTL_WIDGET_MUTE,
+ 	STAC_CTL_WIDGET_MONO_MUX,
++	STAC_CTL_WIDGET_HP_SWITCH,
+ 	STAC_CTL_WIDGET_IO_SWITCH,
+ 	STAC_CTL_WIDGET_CLFE_SWITCH
+ };
+@@ -2132,6 +2170,7 @@ static struct snd_kcontrol_new stac92xx_
+ 	HDA_CODEC_VOLUME(NULL, 0, 0, 0),
+ 	HDA_CODEC_MUTE(NULL, 0, 0, 0),
+ 	STAC_MONO_MUX,
++	STAC_CODEC_HP_SWITCH(NULL),
+ 	STAC_CODEC_IO_SWITCH(NULL, 0),
+ 	STAC_CODEC_CLFE_SWITCH(NULL, 0),
+ };
+@@ -2396,6 +2435,14 @@ static int stac92xx_auto_create_multi_ou
+ 		}
+ 	}
+ 
++	if (cfg->hp_outs > 1) {
++		err = stac92xx_add_control(spec,
++			STAC_CTL_WIDGET_HP_SWITCH,
++			"Headphone as Line Out Switch", 0);
++		if (err < 0)
++			return err;
++	}
++
+ 	if (spec->line_switch) {
+ 		nid = cfg->input_pins[AUTO_PIN_LINE];
+ 		pincap = snd_hda_param_read(codec, nid,
+@@ -3144,6 +3191,7 @@ static void stac92xx_hp_detect(struct hd
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+ 	struct auto_pin_cfg *cfg = &spec->autocfg;
++	int nid = cfg->hp_pins[cfg->hp_outs - 1];
+ 	int i, presence;
+ 
+ 	presence = 0;
+@@ -3154,11 +3202,15 @@ static void stac92xx_hp_detect(struct hd
+ 	for (i = 0; i < cfg->hp_outs; i++) {
+ 		if (presence)
+ 			break;
++		if (spec->hp_switch && cfg->hp_pins[i] == nid)
++			break;
+ 		presence = get_hp_pin_presence(codec, cfg->hp_pins[i]);
+ 	}
+ 
+ 	if (presence) {
+ 		/* disable lineouts, enable hp */
++		if (spec->hp_switch)
++			stac92xx_reset_pinctl(codec, nid, AC_PINCTL_OUT_EN);
+ 		for (i = 0; i < cfg->line_outs; i++)
+ 			stac92xx_reset_pinctl(codec, cfg->line_out_pins[i],
+ 						AC_PINCTL_OUT_EN);
+@@ -3167,6 +3219,8 @@ static void stac92xx_hp_detect(struct hd
+ 						AC_PINCTL_OUT_EN);
+ 	} else {
+ 		/* enable lineouts, disable hp */
++		if (spec->hp_switch)
++			stac92xx_set_pinctl(codec, nid, AC_PINCTL_OUT_EN);
+ 		for (i = 0; i < cfg->line_outs; i++)
+ 			stac92xx_set_pinctl(codec, cfg->line_out_pins[i],
+ 						AC_PINCTL_OUT_EN);
+@@ -3174,6 +3228,8 @@ static void stac92xx_hp_detect(struct hd
+ 			stac92xx_set_pinctl(codec, cfg->speaker_pins[i],
+ 						AC_PINCTL_OUT_EN);
+ 	}
++	if (!spec->hp_switch && cfg->hp_outs > 1 && presence)
++		stac92xx_set_pinctl(codec, nid, AC_PINCTL_OUT_EN);
+ } 
+ 
+ static void stac92xx_pin_sense(struct hda_codec *codec, int idx)
+@@ -3427,6 +3483,7 @@ again:
+ 
+ 	switch (spec->multiout.num_dacs) {
+ 	case 0x3: /* 6 Channel */
++		spec->multiout.hp_nid = 0x17;
+ 		spec->mixer = stac92hd73xx_6ch_mixer;
+ 		spec->init = stac92hd73xx_6ch_core_init;
+ 		break;
