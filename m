@@ -1,48 +1,72 @@
-From: Emmanuel Milou <emmanuel.milou@savoirfairelinux.com>
-Subject: Plugin default and sw_params
-Date: Wed, 26 Mar 2008 09:38:49 -0400
-Message-ID: <47EA51E9.6070007@savoirfairelinux.com>
+From: Oliver Ford <ipaqlinux@oliford.co.uk>
+Subject: Re: PXA2xx/3xx AC97 Driver(s)
+Date: Wed, 26 Mar 2008 13:52:39 +0000
+Message-ID: <47EA5527.9050201@oliford.co.uk>
+References: <47E7A0A8.3010200@oliford.co.uk>
+	<20080324134231.GA30281@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from xenon.savoirfairelinux.net (unknown [199.243.85.90])
-	by alsa0.perex.cz (Postfix) with ESMTP id F03C224474
-	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 14:38:17 +0100 (CET)
-Received: from [192.168.1.216] (dyn216.inside.savoirfairelinux.net
-	[192.168.1.216])
-	by xenon.savoirfairelinux.net (Postfix) with ESMTP id 557D4F68CC
-	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 09:38:16 -0400 (EDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk>
+In-Reply-To: <20080324134231.GA30281@sirena.org.uk>
+List-Unsubscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=unsubscribe>
+List-Archive: <http://lists.arm.linux.org.uk/lurker/list/linux-arm-kernel.html>
+List-Post: <mailto:linux-arm-kernel@lists.arm.linux.org.uk>
+List-Help: <mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=help>
+List-Subscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.arm.linux.org.uk
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk
+To: Oliver Ford <ipaqlinux@oliford.co.uk>, linux-arm-kernel@lists.arm.linux.org.uk, alsa-devel@alsa-project.org
+Cc: alex.meakins@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Mark Brown wrote:
+> There is PXA3xx AC97 support present in the ASoC tree:
+>
+>    git://opensource.wolfsonmicro.com/linux-2.6-asoc
+>
+> It's under the asoc-v2-dev branch at the minute
+>
+After a few hours of learning what git is and how to find and fetch that
+branch I've got it.
+I'm now using the whole kernel from there and have applied my patches
+for the Ipaq214 to it. The Pxa2xx driver (with 3xx support) happily
+talks down the AC97 bus now. The sound isn't working yet as I've still
+got to set up the platform definition file properly.
 
-I have some questions about the /default/ plugin. I am developping a 
-softphone based on ALSA on Ubuntu 7.10.
-I use read/write IO. When I open a device with the /plughw /plugin, 
-quite everything works fine, the quality sound is good. But with the 
-/default/ plugin or the /dmix/ plugin ( the user can choose one of them 
-), I can't set my own hw parameters or sw parameters. Actually  I set my 
-own value of period size, buffer size, start threshold, stop threshold, 
-but when I check in /proc/asound/cardx/pcm0p/sub0/sw_params or 
-/proc/asound/cardx/pcm0p/sub0/hw_params, the values are totally 
-different. For instance, the start threshold is set to 1 even if I set 
-it to period_size. As a result, I get crackling sound. I suspect this is 
-due to buffer underrun. Maybe if I could change the start threshold or 
-the period size, the sound would be better. So my question: is it 
-possible to modify this values for /default/ plugin without changing the 
-alsa config file ( asoundrc ) ?
+> All the ARM architecture changes have been submitted and marked as
+> applied in the patch system so should hopefully appear in Linus' kernel
+> early in the 2.6.26 cycle.  Once this has happened I will submit the
+> AC97 driver PXA3xx support.
+>   
+The machine no longer reboots out of linux though. I assume there were
+some changes in 2.6.25-rc4 mainline that aren't in the asoc-v2-dev yet.
+I will wait for the pxa3xx stuff to be merged into the mainline for
+this. What version of the mainline kernel is the latest asoc-v2-dev
+branch based on. (I'm still a little hazy on the git stuff I'm afraid).
+>> I want to get the touch screen working on my iPAQ 214, which uses the 
+>> PXA310. It's a WM97xx chip on the AC97 interface. I'm not really too 
+>>     
+>
+> I know that there are a number of users currently using the tree for
+> that use case so the asoc-v2-dev branch should hopefully work for you.
+> If you run into trouble please let me know.
+>   
+The WM97xx touchscreen driver only appears to be in the linux-2.6-touch
+repository (dev branch, iirc), rather than  linux-2.6-asoc where the
+pxa3xx support is. Since I want both the wm97xx touchscreen and pxa3xx
+support, is there a simple way I can get the necessary changes in one
+applied to the other?
 
-Thank you very much
+Thanks,
 
-Manu
+Oliver
+
+
+
+-------------------------------------------------------------------
+List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
+FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
+Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
