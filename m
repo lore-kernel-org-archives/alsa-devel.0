@@ -1,17 +1,17 @@
-From: kyr <corali@freemail.gr>
-Subject: Re: ALSA driver for Native Instruments sound hardware
-Date: Wed, 26 Mar 2008 19:53:01 +0200
-Message-ID: <47EA8D7D.8090807@freemail.gr>
-References: 20070326161003.GB20122@ipxXXXXX <47E3B2F4.502@freemail.gr>
-	<B0A4798E-638E-450B-A810-A966271FCD25@caiaq.de>
+From: "Martin van Es" <mrvanes@gmail.com>
+Subject: Vostro 1400 patch
+Date: Wed, 26 Mar 2008 20:54:01 +0100
+Message-ID: <eccab77d0803261254v60632b15m612efb6cd437979f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kane.otenet.gr (kane.otenet.gr [195.170.0.77])
-	by alsa0.perex.cz (Postfix) with ESMTP id F160A103802
-	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 18:56:26 +0100 (CET)
-In-Reply-To: <B0A4798E-638E-450B-A810-A966271FCD25@caiaq.de>
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id C44BE24355
+	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 20:54:04 +0100 (CET)
+Received: by mu-out-0910.google.com with SMTP id i10so6086478mue.3
+	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 12:54:01 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-O/H Daniel Mack ??????:
-> Hi,
->
-> On Mar 21, 2008, at 2:07 PM, kyr wrote:
->> I'd like to know if this driver support all of the 8 inputs/outputs
->> channels,
->> and if someone test it with xwax (xwax.co.uk).
->
-> All inputs and outputs are supported, and the developer of xwax wanted 
-> to test his software with this interface. However, I don't know about 
-> his results or if he ever really did it. Maybe ask on their mailing list?
->
-> Best regards,
-> Daniel
->
->
-Daniel hi,
-There is a xwax user with the audio8dj interface but he has some trouble 
-to get it work well with xwax.
-The device is working almost well with plughw:1,0,0 for the first 
-channel and plughw:1,0,1 for the second one.
-But with very high latency.
-Also refers that the alsamixer does not have any adjustments for in/outs.
-How can you adjust the input/output levels? and the frequency? 44100, 
-48000 or 96000Hz?
+Hi,
 
-Thanks in advance,
-Kyriakos
+I recently bought a Dell Vostro 1400 and thought I'd let you know my
+experiences with Alsa:
+
+I use Kubuntu Gutsy distribution as a base, but follow kernel at a
+close pace so I use compiled 2.6.24. This didn't support the hda-intel
+as I expected (don't remember exactly, but master/front/pcm/surround
+were all in the game but not as expected and I couldn't get built-in
+mic to work, but this may be due to too little testing).
+
+So I decided to google around and found the model=3stack, dell-3stack
+options and tried those. Still no luck.
+
+Next I dl'ed alsa 1.0.16 and noticed a mail describing a vostro 1400
+PCI quirck patch (model dell-bios). So I tried that, but no luck.
+After that I experimented with all 3stack variants I could find in the
+code and concluded that dell-3stack is the best. I now have sound,
+master/front/pcm volume sliders that work but above all: built-in mic
+(Digital 1) recording (and skype) works!
+
+I don't know if it's of any value: I immediately flashed the standard
+A06 Bios to A07 when I found the update on the Dell site and can not
+tell if the dell-bios model worked for the preloaded A06 version bios.
+
+Hope this helps. If there's anything else I can provide I'd be more
+than happy to collect the data.
+
+Regards,
+Martin
+-- 
+if but was of any use, it would be a logic operator
