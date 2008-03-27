@@ -1,16 +1,19 @@
 From: "Mark Trompell" <mark@foresightlinux.org>
-Subject: ESI Juli@/Ice1724
-Date: Thu, 27 Mar 2008 07:47:47 +0100
-Message-ID: <dbfa5dfc0803262347y71a7a22p27ea2a2b133c9946@mail.gmail.com>
+Subject: Re: ESI Juli@/Ice1724
+Date: Thu, 27 Mar 2008 09:05:03 +0100
+Message-ID: <dbfa5dfc0803270105j4691bc68rcb74e11d3ccf21a0@mail.gmail.com>
+References: <dbfa5dfc0803262347y71a7a22p27ea2a2b133c9946@mail.gmail.com>
+	<47EB491C.3050506@insite.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 029D3103801
-	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 07:48:00 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id c36so90765ana.80
-	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 23:47:47 -0700 (PDT)
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A9E02442F
+	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 09:05:05 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so97454ana.80
+	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 01:05:03 -0700 (PDT)
+In-Reply-To: <47EB491C.3050506@insite.cz>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,20 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, pavel.hofman@insite.cz
+To: Pavel Hofman <pavel.hofman@insite.cz>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-when, trying to use audacity for recording, my system completly hangs.
-I wonder if this is the problem descriped in
-http://mailman.alsa-project.org/pipermail/alsa-devel/2007-April/000563.html
-http://mailman.alsa-project.org/pipermail/alsa-devel/2008-February/005987.html
-and maybe
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1860
+On Thu, Mar 27, 2008 at 8:13 AM, Pavel Hofman <pavel.hofman at insite.cz> wrote:
+> Hi Mark,
+>
+>
+>  The discussed problems were about opening the MIDI device. It seems
+>  unlikely audacity would be touching midi.
 
-Is it already fixed or is this bug still there?
-Regards
+I have to look a bit deeper into that, but it's hard to investigate,
+when your System locks and you have to turn the machine off and boot
+again.
+
+>  Did you use the new driver in HG repository? I tested recording with
+>  arecord.
+
+Not yet, will try, asap.
+
+>  Pavel.
+>
+
 Mark
-
-P.S I'm not subcribed to the list, so please cc me.
