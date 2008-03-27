@@ -1,17 +1,17 @@
-From: Tzachi Perelstein <tzachi@marvell.com>
-Subject: asoc driver for ad1888 available?
-Date: Thu, 27 Mar 2008 17:22:32 +0200
-Message-ID: <47EBBBB8.1010607@marvell.com>
+From: "Mark Trompell" <mark@foresightlinux.org>
+Subject: ESI Juli@/Ice1724
+Date: Thu, 27 Mar 2008 07:47:47 +0100
+Message-ID: <dbfa5dfc0803262347y71a7a22p27ea2a2b133c9946@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from il.marvell.com (shoshil.marvell.com [199.203.130.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C1DE2449E
-	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 17:10:03 +0100 (CET)
-Received: from msil-owa01.marvell.com ([10.4.5.100])
-	by il.marvell.com (8.13.1/8.13.1) with ESMTP id m2RGA0nL007768
-	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 18:10:01 +0200 (IST)
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id 029D3103801
+	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 07:48:00 +0100 (CET)
+Received: by an-out-0708.google.com with SMTP id c36so90765ana.80
+	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 23:47:47 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, pavel.hofman@insite.cz
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
+when, trying to use audacity for recording, my system completly hangs.
+I wonder if this is the problem descriped in
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-April/000563.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-February/005987.html
+and maybe
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1860
 
-I'm looking for an asoc ad1888 codec driver. Does anyone know if 
-such driver available somewhere? I couldn't find one with google
-nor on linux-2.6-asoc.git.
+Is it already fixed or is this bug still there?
+Regards
+Mark
 
-Can anyone suggest an alternative AC97 2.3 codec device with AC97-
-Link which has an available asoc driver?
-
-Thanks.	
-
-- Tzachi
+P.S I'm not subcribed to the list, so please cc me.
