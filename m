@@ -1,17 +1,18 @@
-From: "Leonidas ." <leonidas137@gmail.com>
-Subject: Getting wrong offset and size value alsa library
-Date: Wed, 26 Mar 2008 15:26:19 -0700
-Message-ID: <f22d86810803261526p536f8937o8022257b822685e6@mail.gmail.com>
-Mime-Version: 1.0
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: ALSA driver for Native Instruments sound hardware
+Date: Thu, 27 Mar 2008 08:43:46 +0800
+Message-ID: <6129CBC3-C9C2-4635-A71E-200C73CB0964@caiaq.de>
+References: 20070326161003.GB20122@ipxXXXXX <47E3B2F4.502@freemail.gr>
+	<B0A4798E-638E-450B-A810-A966271FCD25@caiaq.de>
+	<47EA8D7D.8090807@freemail.gr>
+Mime-Version: 1.0 (Apple Message framework v919.2)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id 48DB3243C0
-	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 23:26:21 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id c36so45284ana.80
-	for <alsa-devel@alsa-project.org>; Wed, 26 Mar 2008 15:26:20 -0700 (PDT)
-Content-Disposition: inline
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85D8F2417E
+	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 01:43:57 +0100 (CET)
+In-Reply-To: <47EA8D7D.8090807@freemail.gr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,21 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: kyr <corali@freemail.gr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I am trying to make my user space audio driver work, in my drivers transfer
-function, I get wrong values of
-offset and size and because of this the alsa buffer is not accessible to me
-and I get a segfault in transfer.
+On Mar 27, 2008, at 1:53 AM, kyr wrote:
+> There is a xwax user with the audio8dj interface but he has some  
+> trouble to get it work well with xwax.
+> The device is working almost well with plughw:1,0,0 for the first  
+> channel and plughw:1,0,1 for the second one.
+> But with very high latency.
 
-The offset should range from 0 to n-1 where n is the buffer size, is this
-correct? I can transfer the first chunk
-of data and first time the offset as well as size are correct, but when the
-transfer function is called again for
-second period, offset values and size values are wrong, they are some
-astronomical numbers.
+There was an update to the driver some weeks ago which allows setting  
+a lot smaller buffers for the driver. Please install kernel version  
+2.6.24 or manually cherry-pick commit 09189ac79dd7f and report again.
 
--leo
+Thanks and best regards,
+Daniel
