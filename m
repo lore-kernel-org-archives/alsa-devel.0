@@ -1,19 +1,22 @@
-From: "Mark Trompell" <mark@foresightlinux.org>
-Subject: Re: ESI Juli@/Ice1724
-Date: Thu, 27 Mar 2008 09:05:03 +0100
-Message-ID: <dbfa5dfc0803270105j4691bc68rcb74e11d3ccf21a0@mail.gmail.com>
-References: <dbfa5dfc0803262347y71a7a22p27ea2a2b133c9946@mail.gmail.com>
-	<47EB491C.3050506@insite.cz>
+From: "sandeep lahane" <sandeep.lahane@gmail.com>
+Subject: Re: Accessing alsa user space buffer from external io
+	type plugin
+Date: Thu, 27 Mar 2008 14:52:28 -0700
+Message-ID: <2d51cbf80803271452s2372185co4b378edbab7348fe@mail.gmail.com>
+References: <2d51cbf80803241613n3782b150x4c7ee6ea16e2db81@mail.gmail.com>
+	<61445c750803241617j251daf91ie69e23e49b6b401b@mail.gmail.com>
+	<2d51cbf80803241841j2582c582k8a333ff2a3157323@mail.gmail.com>
+	<2d51cbf80803241843o53c74889i5cf198c47c3782e6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.241])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A9E02442F
-	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 09:05:05 +0100 (CET)
-Received: by an-out-0708.google.com with SMTP id c36so97454ana.80
-	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 01:05:03 -0700 (PDT)
-In-Reply-To: <47EB491C.3050506@insite.cz>
+Received: from qb-out-0506.google.com (qb-out-0506.google.com [72.14.204.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22B042463A
+	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 22:52:30 +0100 (CET)
+Received: by qb-out-0506.google.com with SMTP id q12so4690255qba.12
+	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 14:52:29 -0700 (PDT)
+In-Reply-To: <2d51cbf80803241843o53c74889i5cf198c47c3782e6@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,27 +27,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@insite.cz>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: "Pharaoh ." <pharaoh137@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 27, 2008 at 8:13 AM, Pavel Hofman <pavel.hofman at insite.cz> wrote:
-> Hi Mark,
+On Mon, Mar 24, 2008 at 6:43 PM, sandeep lahane <sandeep.lahane@gmail.com>
+wrote:
+
 >
 >
->  The discussed problems were about opening the MIDI device. It seems
->  unlikely audacity would be touching midi.
-
-I have to look a bit deeper into that, but it's hard to investigate,
-when your System locks and you have to turn the machine off and boot
-again.
-
->  Did you use the new driver in HG repository? I tested recording with
->  arecord.
-
-Not yet, will try, asap.
-
->  Pavel.
+> On Mon, Mar 24, 2008 at 6:41 PM, sandeep lahane <sandeep.lahane@gmail.com>
+> wrote:
 >
+> >
+> >
+> > On Mon, Mar 24, 2008 at 4:17 PM, Pharaoh . <pharaoh137@gmail.com> wrote:
+> >
+> > >
+> > >
+> > > On Mon, Mar 24, 2008 at 4:13 PM, sandeep lahane <
+> > > sandeep.lahane@gmail.com> wrote:
+> > >
+> > > > Hello,
+> > > >
+> > > > I am debugging an userspace external io type plugin, written for an
+> > > > ARM
+> > > > based board where the plugin
+> > > > interacts with DSP directly using shared memory.
+> > > >
+> > > > Every time I have to send period_size data to the DSP, I have my own
+> > > > write/read methods to do so.
+> > > >
+> > > > I am having a problem accessing the alsa ring buffer, my transfer
+> > > > function
+> > > > looks like following.
+> > > >
+> > > >
+> > > > static   char * temp;
+> > > > static snd_pcm_sframes_t alsa_transfer(snd_pcm_ioplug_t *io,
+> > > >                   const snd_pcm_channel_area_t *areas,
+> > > >                   snd_pcm_uframes_t offset,
+> > > >                   snd_pcm_uframes_t size)
+> > > > {
+> > > >
+> > > >           ......
+> > > >
+> > > >         temp = malloc(period_size);
+> > > >         memcpy(temp,  unsigned char *)areas->addr + (areas->first +
+> > > > areas->step * offset) / 8, period_size);
+> > > >          write_to_dsp(temp, period_size);
+> > > >          .......
+> > > > }
+> > > >
+> > > > All the book keeping is done properly, the first chunk of data is
+> > > > sent
+> > > > properly to DSP and pointer() returns correct value,
+> > > > next time when transfer is called, the memcpy gives segfault. ALSA
+> > > > buffer is
+> > > > an interleaved buffer and I am not using mmap
+> > > > mode. Any idea what might be wrong?
+> > > >
+> > > > When I do something like this:
+> > > >        memcpy(temp,  "test data test data", period_size);
+> > > > the data is sent properly to DSP, but alsa buffer data is not
+> > > > getting
+> > > > accessed properly.
+> > > >
+> > > >
+> > > >
+> > > >
+> > > >
+> > > >
+> > > > Regards,
+> > > > Sandeep.
+> > > > _______________________________________________
+> > > > Alsa-devel mailing list
+> > > > Alsa-devel@alsa-project.org
+> > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > >
+> > >
+> > >
+> > >
+> > > temp is actually malloc'd in hw_params and freed properly, so please
+> > > ignore the details like whether it is freed etc or not.
+> > >
+> >
+> >
+> >
+> > If I change the optimization level to O3, all the values passed from
+> > alsa upper layer to my plugin are wrong. The reason I tried changing
+> > optimization levels is that I have faced problems with ARM gcc 4.1.1.
+> > before when compiled at O levels more than zero.  Are there any known
+> > problems with ARM gcc 4.1.1 and alsa-lib 1.0.13?
+> >
+> > --
+> >
+> > Regards,
+> > Sandeep.
+>
+>
+> Following values are wrong in transfer callback,
+>                   const snd_pcm_channel_area_t *areas,
+>                   snd_pcm_uframes_t offset,
+>                   snd_pcm_uframes_t size
+>
+>
+> --
+>
+> Regards,
+> Sandeep.
 
-Mark
+
+
+Sorted out. Return value of transfer was wrong. Thanks.
+-- 
+
+Regards,
+Sandeep.
