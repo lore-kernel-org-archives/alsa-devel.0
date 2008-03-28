@@ -1,17 +1,16 @@
-From: "Natalie Protasevich" <protasnb@gmail.com>
-Subject: [BUG] USB sounds card doesn't work - Device
-	0x4fa:0x4201
-Date: Thu, 27 Mar 2008 16:50:25 -0700
-Message-ID: <32209efe0803271650m2951ba2dq8530dd93eaad9d42@mail.gmail.com>
+From: "=?ISO-8859-1?Q?Guillaume_Dupr=E9?=" <gui.dupre@gmail.com>
+Subject: Loop sequencer
+Date: Fri, 28 Mar 2008 08:26:01 +0100
+Message-ID: <c60df1300803280026p18a09024v6164d616bea1b5c1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91B5C103810
-	for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2008 00:50:26 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id l27so4056341fgb.44
-	for <alsa-devel@alsa-project.org>; Thu, 27 Mar 2008 16:50:26 -0700 (PDT)
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3499F2470F
+	for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2008 08:26:03 +0100 (CET)
+Received: by wa-out-1112.google.com with SMTP id m33so140490wag.8
+	for <alsa-devel@alsa-project.org>; Fri, 28 Mar 2008 00:26:01 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,44 +24,63 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello ALSA developers,
+Hello
 
-This problem with the USB sounds card has been reported a while ago,
-and just been confirmed with latest kernel.
-====================================================================
-$ cat /proc/asound/cards
- 0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                      Intel 82801DB-ICH4 with AD1981B at 0xc0000c00, irq 11
- 1 [U0x4fa0x4201   ]: USB-Audio - USB Device 0x4fa:0x4201
-                      USB Device 0x4fa:0x4201 at usb-0000:00:1d.1-2, full speed
+I try to program a loop midi sequencer with libasound .
 
-If I attempt to play a song using mpg123 or xmms, I get nothing, only maybe
-click at beggining. I'm using in-kernel OSS emulation.
+For the moment, I have this :
 
-pavel@amd:/mnt/mp3.ptacek/Tanita_Tikaram$ cat /proc/asound/card1/pcm0p/info
-card: 1
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: USB Audio
-name: USB Audio
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 1
-pavel@amd:/mnt/mp3.ptacek/Tanita_Tikaram$
+#include <alsa/asoundlib.h>
+#include <unistd.h>
 
-I tried unmuting everything using aumix.
+using namespace std;
+int main()
+{
+    int aa;
+        snd_seq_t* seq;
+        int port,port2, queue;
+        snd_seq_queue_tempo_t* tempo;
+        snd_seq_event_t ev;
+        snd_seq_open(&seq, "default", SND_SEQ_OPEN_DUPLEX, 0);
+    snd_seq_set_client_name(seq, "monprog");
+        port =3D snd_seq_create_simple_port(seq, "port1",SND_SEQ_PORT_CAP_R=
+EAD
+| SND_SEQ_PORT_CAP_SUBS_READ,SND_SEQ_PORT_TYPE_APPLICATION);
+        queue =3D snd_seq_alloc_queue(seq);
+    //TEMPO
+        snd_seq_queue_tempo_alloca(&tempo);
+        snd_seq_queue_tempo_set_tempo(tempo, 60000000 / 120);
+        snd_seq_queue_tempo_set_ppq(tempo, 4);
+        snd_seq_set_queue_tempo(seq, queue, tempo);
 
-cat /bin/bash > /dev/dsp1
+       snd_seq_connect_to(seq, port, 130, 0);
 
-fails to produce any sound, too.
-===================================================================
+       snd_seq_start_queue(seq, queue, NULL);
+  // write 2 notes
+        snd_seq_ev_clear(&ev);
+        snd_seq_ev_set_subs(&ev);
+        snd_seq_ev_set_source(&ev, port);
 
+        snd_seq_ev_schedule_tick(&ev, queue, 0, 0);
+        snd_seq_ev_set_note(&ev, 0, 60, 127, 3);
 
-Full bug report is here : http://bugzilla.kernel.org/show_bug.cgi?id=6576
-It sure needs some helping hand, maybe someone can take a look into this.
+        snd_seq_event_output(seq, &ev);
 
-Thanks,
---Natalie
+        ev.time.tick =3D 4;
+        ev.data.note.note =3D 67;
+       snd_seq_event_output(seq, &ev);
+
+        snd_seq_drain_output(seq);
+
+sleep(4) ;
+
+        return 0;
+}
+
+It works, no problem .
+But now, I want to do a loop with my two notes .
+I searched on the Internet but I didn't find .
+
+Thanks
+
+Guillaume Dupr=E9
