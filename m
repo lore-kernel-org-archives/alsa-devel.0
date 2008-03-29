@@ -1,16 +1,17 @@
-From: cklein@mpi-sb.mpg.de
-Subject: Re: Cannot change volume on Plantronics Audio 910 USB
-	Headset
-Date: Sat, 29 Mar 2008 01:42:21 +0100
-Message-ID: <20080329004220.GB21910@mpi-inf.mpg.de>
-References: <20080318151117.GA11027@mpi-inf.mpg.de>
+From: rct@frus.com (Bob Tracy)
+Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Sat, 29 Mar 2008 01:42:27 -0500 (CDT)
+Message-ID: <20080329064227.58074DBA2@gherkin.frus.com>
+References: <47DFCEDA.2020307@uwo.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5663543873051414939=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from francois.mpi-sb.mpg.de (mx2.mpi-sb.mpg.de [139.19.1.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5AE6C2479A
-	for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2008 01:42:25 +0100 (CET)
-In-Reply-To: <20080318151117.GA11027@mpi-inf.mpg.de>
+Received: from gherkin.frus.com (gherkin.frus.com [192.158.254.49])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4909624368
+	for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2008 07:42:39 +0100 (CET)
+In-Reply-To: <47DFCEDA.2020307@uwo.ca> "from Tyson Whitehead at Mar 18, 2008
+	10:16:58 am"
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,114 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+To: Tyson Whitehead <twhitehe@uwo.ca>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Ok...  I'm back.  Replies to the long queue of messages will be sent as
+I have time to try the various patches.
 
---===============5663543873051414939==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pd0ReVV5GZGQvF3a"
-Content-Disposition: inline
+Tyson Whitehead wrote:
+> Takashi Iwai wrote:
+> > ---
+> > 
+> > diff -r 82e6201fc907 sound/isa/es18xx.c
+> > --- a/sound/isa/es18xx.c	Mon Mar 17 14:36:24 2008 +0100
+> > +++ b/sound/isa/es18xx.c	Mon Mar 17 17:32:59 2008 +0100
+> > @@ -765,9 +765,10 @@ static irqreturn_t snd_es18xx_interrupt(
+> >  		/* Read Interrupt status */
+> >  		status = snd_es18xx_mixer_read(chip, 0x7f) >> 4;
+> >  	}
+> > -#if 0
+> > -	else {
+> > -		status = 0;
+> > +
+> > +#ifdef CONFIG_ALPHA
+> > +	if (!(status & (AUDIO1_IRQ | AUDIO2_IRQ))) {
+> > +		/* status = 0; */
+> >  		if (inb(chip->port + 0x0C) & 0x01)
+> >  			status |= AUDIO1_IRQ;
+> >  		if (snd_es18xx_mixer_read(chip, 0x7A) & 0x80)
+> > @@ -777,7 +778,6 @@ static irqreturn_t snd_es18xx_interrupt(
+> >  			status |= HWV_IRQ;
+> >  	}
+> >  #endif
+> > -
+> >  	/* Audio 1 & Audio 2 */
+> >          if (status & AUDIO2_IRQ) {
+> >                  if (chip->active & DAC2)
+> 
+> This looks like it should accomplish the same thing (assuming not bits 
+> get set in status on the initial attempt to read it), without affecting 
+> other platforms and possible the alpha if anyone has a card that just 
+> works for whatever reason.  A better patch all around.  : )
 
+Unfortunately, this does nothing to fix the ES1888 on my system.  Same
+broken behavior as described previously.  I'll try something else in
+the queue later today after I get some sleep...
 
---Pd0ReVV5GZGQvF3a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Mar 18, 2008 at 04:11:17PM +0100, cklein@mpi-sb.mpg.de wrote:
-> Hi,
->=20
-> I recently got a Plantronics .audio 910 USB headset.
-> It is correctly detected by snd-usb-audio and works, but I cannot change =
-the
-> volume of the PCM output or the MIC input. When executing alsamixer -c 1,
-> the volumes seem to be locked and cannot be changed as usual. Unfortunate=
-ly
-> the microphone volume is at 0, leading to very poor quality of the record=
-ed
-> voice (especially in Skype, which seems to try to compensate the low volu=
-me
-> and fails miserably).
-> Does anyone know how to fix this?
-> I found similar reports on the internet for various usb headsets, but no
-> real fix for the situation.
-> I already asked on alsa-users some weeks ago, but did not get any respons=
-e.
->=20
-> I tried the headset on three different PCs, all with the same result.
-> A desktop at work running Fedora 7, a Thinkpad R50p running debian/testing
-> and the 2.6.22 kernel provided in debian/testing. The third one is a Dell
-> precision M65 with debian/unstable.
-> There, I used a vanilla 2.6.24.2 kernel and latest alsa drivers from the
-> mercurial repository when I asked on alsa-users, but in the meantime I
-> upgraded to 2.6.24.3 and hg snapshots from 2008-03-13 06:41
-> (alsa-driver) and 2008:03:17 05:23 (alsa-kernel), but still got the same
-> behaviour.
-> On all I get some message about "no or invalid class specific endpoint
-> descriptor" in the kernel log (see below).
-> When loading the snd-usb-audio module, dmesg shows the following kernel
-> output (on the M65):
->=20
-> usb 2-2: new full speed USB device using uhci_hcd and address 5
-> usb 2-2: configuration #1 chosen from 1 choice
-> input: Plantronics Plantronics BT Adapter as /devices/pci0000:00/0000:00:=
-1d.1/usb2/2-2/2-2:1.3/input/input10
-> input: USB HID v1.11 Device [Plantronics Plantronics BT Adapter] on usb-0=
-000:00:1d.1-2
-> usbcore: registered new interface driver usbhid
-> drivers/hid/usbhid/hid-core.c: v2.6:USB HID core driver
-> ALSA /usr/src/kernel-modules/alsa-driver-d20080313_0641-k20080317_0523/us=
-b/usbaudio.c:2787: 5:1:1 : no or invalid class specific endpoint descriptor
-> ALSA /usr/src/kernel-modules/alsa-driver-d20080313_0641-k20080317_0523/us=
-b/usbaudio.c:2787: 5:2:1 : no or invalid class specific endpoint descriptor
-> usbcore: registered new interface driver snd-usb-audio
->=20
-> I posted the output of alsa-info.sh and lsusb -v on pastebin (both taken =
-on
-> the M65).
->=20
-> alsa-info.sh:
-> http://pastebin.ca/915715
-> lsusb -v:
-> http://pastebin.ca/915723
-
-Does no one have a clue what could be the cause for this behaviour?
-If I boot windows, the headset works flawlessly.
-Unfortunately I have no clue what could be wrong or where else to find
-information about this problem.
-
---=20
-CU, Christian Klein
-
-http://www.garfield.com/comics/comics_archives_strip.html?2003-ga031023
-
-Homepage:       http://www.mpi-sb.mpg.de/~cklein
-
---Pd0ReVV5GZGQvF3a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFH7ZBssuy/KwFz75MRAqunAKCZV+ddPaellRcGDe5AmJHXcDcW6QCgyQut
-vJdgCRGw+O69v5DZDtcyDrE=
-=zdXP
------END PGP SIGNATURE-----
-
---Pd0ReVV5GZGQvF3a--
-
---===============5663543873051414939==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5663543873051414939==--
+-- 
+------------------------------------------------------------------------
+Bob Tracy          |  "I was a beta tester for dirt.  They never did
+rct@frus.com       |   get all the bugs out." - Steve McGrew on /.
+------------------------------------------------------------------------
