@@ -1,44 +1,70 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Sat, 29 Mar 2008 13:09:34 +0100
-Message-ID: <47EE317E.9030807@keyaccess.nl>
-References: <20080329064227.58074DBA2@gherkin.frus.com>
+From: "Risto Suominen" <risto.suominen@gmail.com>
+Subject: snd-powermac
+Date: Sat, 29 Mar 2008 17:05:53 +0200
+Message-ID: <46e1c7760803290805i9f56637uce18036db7a6756d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <20080329064227.58074DBA2@gherkin.frus.com>
-Sender: linux-alpha-owner@vger.kernel.org
-To: Bob Tracy <rct@frus.com>
-Cc: Tyson Whitehead <twhitehe@uwo.ca>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6949924487
+	for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2008 16:05:56 +0100 (CET)
+Received: by hs-out-0708.google.com with SMTP id x43so1037149hsb.0
+	for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2008 08:05:55 -0700 (PDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 29-03-08 07:42, Bob Tracy wrote:
+I'm about to send the following to alsa-user mailing list:
 
->>> +#ifdef CONFIG_ALPHA
->>> +	if (!(status & (AUDIO1_IRQ | AUDIO2_IRQ))) {
->>> +		/* status = 0; */
+I've been trying to fix ALSA support for older PowerMacs. Anyone
+experiencing problems - like missing or inoperative or wrongly
+directed controls in alsamixer - could you, please, test my patch and
+write the results into this list or directly to me?
 
-> Unfortunately, this does nothing to fix the ES1888 on my system.  Same
-> broken behavior as described previously.  I'll try something else in
-> the queue later today after I get some sleep...
+If you are still with me, check first with lsmod that you are using
+snd-powermac:
+$ lsmod | grep ^snd.powermac
+snd_powermac           56576  0
+$
 
-Okay. The thing that "fixed" Tyson was disabling mmap from the driver:
+Then you will need to install make, C-compiler and kernel headers
+corresponding to your running kernel, f.ex (Ubuntu Dapper 6.06.1):
+$ sudo aptitude install make gcc linux-headers-2.6.15-26-powerpc
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006911.html
+and fetch the ALSA driver source code and my patch:
+$ wget ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.16.tar.bz2
+$ wget http://ristosu.wippiespace.com/pub/alsa-driver-1.0.16-p4.diff
 
-It landed him in the same situation as you though, where that "asskickd.wav" 
-mono, 8-bit 11025 file you sent me shows the same behaviour you reported. 
-This might imply you weren't using mmap to begin with. You have no horribly 
-obsolete alsa userland, nor an /etc/asound.conf or ~/.asoundrc?
+Unpack the source and apply the patch:
+$ tar xjf alsa-driver-1.0.16.tar.bz2
+$ cd alsa-driver-1.0.16
+$ patch -p0 < ../alsa-driver-1.0.16-p4.diff
 
-No change with "aplay -M"? If there is a change, you'd expect it to be 
-Tyson's old behaviour which means blowing up the machine on subsequent 
-plays, so be a bit careful...
+Finally configure:
+$ ./configure --disable-verbose-printk
+--with-kernel=/usr/src/linux-headers-2.6.15-26-powerpc
+--with-build=/usr/src/linux-headers-2.6.15-26-powerpc
+--with-moddir=/lib/modules/2.6.15-26-powerpc/updates/sound
+--with-isapnp=no --with-oss=yes --with-pcm-oss-plugins=yes
+--with-cards=powermac
 
-This one needs answer so as to possibly pin things down to format:
+make and install:
+$ make
+$ sudo make install-modules
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006914.html
+To load the new modules without rebooting:
+$ sudo modprobe -r snd-powermac
+$ sudo modprobe -r snd-pcm-oss
+$ sudo modprobe snd-powermac
 
-Rene.
-
+Risto
