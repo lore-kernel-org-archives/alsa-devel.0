@@ -1,101 +1,110 @@
-From: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Sun, 30 Mar 2008 20:14:00 +0400
-Message-ID: <20080330161400.GA24443@jurassic.park.msu.ru>
-References: <20080329064227.58074DBA2@gherkin.frus.com> <47EE317E.9030807@keyaccess.nl>
+From: mikp <mikpolniak@roadrunner.com>
+Subject: ATI HDMI with 780/sb700 chipset: no audio
+Date: Sun, 30 Mar 2008 14:27:50 -0400
+Message-ID: <20080330142750.092062f5.mikpolniak@roadrunner.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-alpha-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <47EE317E.9030807@keyaccess.nl>
-Sender: linux-alpha-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, Rene Herman <rene.herman@keyaccess.nl>
-Cc: Bob Tracy <rct@frus.com>, Tyson Whitehead <twhitehe@uwo.ca>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mta10.adelphia.net (mta10.adelphia.net [68.168.78.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5CC6424479
+	for <alsa-devel@alsa-project.org>;
+	Sun, 30 Mar 2008 20:27:52 +0200 (CEST)
+Received: from slack7.homefree.net ([76.180.122.198]) by mta10.adelphia.net
+	(InterMail vM.6.01.05.02 201-2131-123-102-20050715) with ESMTP
+	id <20080330182808.ERN10451.mta10.adelphia.net@slack7.homefree.net>
+	for <alsa-devel@alsa-project.org>; Sun, 30 Mar 2008 14:28:08 -0400
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 29, 2008 at 01:09:34PM +0100, Rene Herman wrote:
-> Okay. The thing that "fixed" Tyson was disabling mmap from the driver:
->
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006911.html
+I am trying to get HDMI audio from a ECS 780G mainboard with sb700 and built-in graphics Chipset: "ATI Radeon HD 3200 Graphics" (ChipID = 0x9610). The HDMI video is working with the xf86-video-ati driver.
 
-Weird - I was sure the mmap problem has been fixed, but obviously
-the patch didn't go in...
+aplay -l
 
-Andrew, could you please queue this up for 2.6.26?
+**** List of PLAYBACK Hardware Devices ****
+card 0: HDMI [HDA ATI HDMI], device 0: HDA Generic [HDA Generic]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: HDMI_1 [HDA ATI HDMI], device 3: ATI HDMI [ATI HDMI]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-Ivan.
+and from hwinfo:
 
---
-alpha: fix ALSA DMA mmap crash
+31: PCI 14.2: 0403 Audio device
+  [Created at pci.301]
+  UDI: /org/freedesktop/Hal/devices/pci_1002_4383
+  Unique ID: 5Dex.2J+_taPgpb9
+  SysFS ID: /devices/pci0000:00/0000:00:14.2
+  SysFS BusID: 0000:00:14.2
+  Hardware Class: sound
+  Model: "Elitegroup SBx00 Azalia"
+  Vendor: pci 0x1002 "ATI Technologies Inc"
+  Device: pci 0x4383 "SBx00 Azalia"
+  SubVendor: pci 0x1019 "Elitegroup Computer Systems"
+  SubDevice: pci 0x2816
+  Driver: "HDA Intel"
+  Driver Modules: "snd_hda_intel"
+  Memory Range: 0xfe7f4000-0xfe7f7fff (rw,non-prefetchable)
+  IRQ: 16 (13305 events)
+  Module Alias: "pci:v00001002d00004383sv00001019sd00002816bc04sc03i00"
+  Driver Info #0:
+    Driver Status: snd_hda_intel is active
+    Driver Activation Cmd: "modprobe snd_hda_intel"
+  Config Status: cfg=new, avail=yes, need=no, active=unknown
 
-Make dma_alloc_coherent respect gfp flags (__GFP_COMP is one that
-matters).
+cat /proc/asound/card1/codec\#0
 
-Signed-off-by: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
----
- arch/alpha/kernel/pci_iommu.c   |    8 +++++---
- include/asm-alpha/dma-mapping.h |    2 +-
- include/asm-alpha/pci.h         |    8 +++++++-
- 3 files changed, 13 insertions(+), 5 deletions(-)
+Codec: ATI ATI RS690/780 HDMI
+Address: 0
+Vendor Id: 0x1002791a
+Subsystem Id: 0x791a00
+Revision Id: 0x100000
+No Modem Function Group found
+Default PCM:
+    rates [0x40]: 48000
+    bits [0x2]: 16
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x02 [Audio Output] wcaps 0x201: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital: Enabled
+  Digital category: 0x0
+Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
+  Pincap 0x0894: OUT Detect R/L
+  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x02
 
-diff --git a/arch/alpha/kernel/pci_iommu.c b/arch/alpha/kernel/pci_iommu.c
-index 4e1c086..dd6e334 100644
---- a/arch/alpha/kernel/pci_iommu.c
-+++ b/arch/alpha/kernel/pci_iommu.c
-@@ -424,11 +424,13 @@ EXPORT_SYMBOL(pci_unmap_page);
-    else DMA_ADDRP is undefined.  */
- 
- void *
--pci_alloc_consistent(struct pci_dev *pdev, size_t size, dma_addr_t *dma_addrp)
-+__pci_alloc_consistent(struct pci_dev *pdev, size_t size,
-+		       dma_addr_t *dma_addrp, gfp_t gfp)
- {
- 	void *cpu_addr;
- 	long order = get_order(size);
--	gfp_t gfp = GFP_ATOMIC;
-+
-+	gfp &= ~GFP_DMA;
- 
- try_again:
- 	cpu_addr = (void *)__get_free_pages(gfp, order);
-@@ -458,7 +460,7 @@ try_again:
- 
- 	return cpu_addr;
- }
--EXPORT_SYMBOL(pci_alloc_consistent);
-+EXPORT_SYMBOL(__pci_alloc_consistent);
- 
- /* Free and unmap a consistent DMA buffer.  CPU_ADDR and DMA_ADDR must
-    be values that were returned from pci_alloc_consistent.  SIZE must
-diff --git a/include/asm-alpha/dma-mapping.h b/include/asm-alpha/dma-mapping.h
-index 75a1aff..db351d1 100644
---- a/include/asm-alpha/dma-mapping.h
-+++ b/include/asm-alpha/dma-mapping.h
-@@ -11,7 +11,7 @@
- #define dma_unmap_single(dev, addr, size, dir)		\
- 		pci_unmap_single(alpha_gendev_to_pci(dev), addr, size, dir)
- #define dma_alloc_coherent(dev, size, addr, gfp)	\
--		pci_alloc_consistent(alpha_gendev_to_pci(dev), size, addr)
-+	      __pci_alloc_consistent(alpha_gendev_to_pci(dev), size, addr, gfp)
- #define dma_free_coherent(dev, size, va, addr)		\
- 		pci_free_consistent(alpha_gendev_to_pci(dev), size, va, addr)
- #define dma_map_page(dev, page, off, size, dir)		\
-diff --git a/include/asm-alpha/pci.h b/include/asm-alpha/pci.h
-index d5b10ef..d31fd49 100644
---- a/include/asm-alpha/pci.h
-+++ b/include/asm-alpha/pci.h
-@@ -76,7 +76,13 @@ extern inline void pcibios_penalize_isa_irq(int irq, int active)
-    successful and sets *DMA_ADDRP to the pci side dma address as well,
-    else DMA_ADDRP is undefined.  */
- 
--extern void *pci_alloc_consistent(struct pci_dev *, size_t, dma_addr_t *);
-+extern void *__pci_alloc_consistent(struct pci_dev *, size_t,
-+				    dma_addr_t *, gfp_t);
-+static inline void *
-+pci_alloc_consistent(struct pci_dev *dev, size_t size, dma_addr_t *dma)
-+{
-+	return __pci_alloc_consistent(dev, size, dma, GFP_ATOMIC);
-+}
- 
- /* Free and unmap a consistent DMA buffer.  CPU_ADDR and DMA_ADDR must
-    be values that were returned from pci_alloc_consistent.  SIZE must
+running alsamixer -c1  i can unmute the IEC958, but i get no HDMI audio.
+Note the "...Digital Out at Int HDMI"  _not_ SPDIF Out at Int HDMI.
+
+In order to get the 'card1 with IEC958' to show up i had to add my pci-id to  alsa-driver-hg20080323/sound/pci/hda/hda_intel.c
+
+  /* ATI HDMI */
+    { PCI_DEVICE(0x1002, 0x4383), .driver_data = AZX_DRIVER_ATIHDMI },
+        
+
+
+The original hda_intel.c has
+
+ { 0x1002, 0x4383, PCI_ANY_ID, PCI_ANY_ID, 0, 0, AZX_DRIVER_ATI },
+
+
+Any help getting this working appreciated.  
+Thanks.
