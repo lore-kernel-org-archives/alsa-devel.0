@@ -1,18 +1,18 @@
 From: rct@frus.com (Bob Tracy)
 Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Sat, 29 Mar 2008 23:24:13 -0500 (CDT)
-Message-ID: <20080330042413.BB1A3DBA2@gherkin.frus.com>
-References: <47E7EFDF.2070706@keyaccess.nl>
+Date: Sun, 30 Mar 2008 00:18:14 -0500 (CDT)
+Message-ID: <20080330051814.5D9CCDBA2@gherkin.frus.com>
+References: <47E86203.5090805@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from gherkin.frus.com (gherkin.frus.com [192.158.254.49])
-	by alsa0.perex.cz (Postfix) with ESMTP id E050C24561
+	by alsa0.perex.cz (Postfix) with ESMTP id E814A24560
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Mar 2008 06:24:21 +0200 (CEST)
-In-Reply-To: <47E7EFDF.2070706@keyaccess.nl> "from Rene Herman at Mar 24, 2008
-	07:15:59 pm"
+	Sun, 30 Mar 2008 07:18:19 +0200 (CEST)
+In-Reply-To: <47E86203.5090805@keyaccess.nl> "from Rene Herman at Mar 25, 2008
+	03:22:59 am"
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,43 +27,29 @@ Cc: ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>,
 List-Id: alsa-devel@alsa-project.org
 
 Rene Herman wrote:
-> There's a patch attached that disables mmap on MIATA. You and Bob seem to be 
-> experiencing problems of a different nature (or severity at the least) but 
-> for both of you it would be good to hear what applying this and then playing 
-> using "aplay -D hw foo.wav" (on the miata systems, ofcourse) brings.
+> Lovely, so different problem between you and Bob. When you (either of you) 
+> have some time for it again, could you try:
 > 
-> (...)
-> 
-> The mmap thing is sort of the last hickup to be expected from me -- having 
-> no Alpha machines and with trouble not isolated to a specific driver nor 
-> Alpha model, this would at that point ideally want someone with some more 
-> specific Alpha insights to step in.
-> 
-> (...)
-> 
-> diff --git a/include/sound/asound.h b/include/sound/asound.h
-> index 3eaf155..e3b9c2d 100644
-> --- a/include/sound/asound.h
-> +++ b/include/sound/asound.h
-> @@ -241,8 +241,14 @@ typedef int __bitwise snd_pcm_subformat_t;
->  #define	SNDRV_PCM_SUBFORMAT_STD		((__force snd_pcm_subformat_t) 0)
->  #define	SNDRV_PCM_SUBFORMAT_LAST	SNDRV_PCM_SUBFORMAT_STD
->  
-> +#ifdef CONFIG_ALPHA_MIATA
-> +#define SNDRV_PCM_INFO_MMAP		0		/* the useful comment goes here */
-> +#define SNDRV_PCM_INFO_MMAP_VALID	0
-> +#else
->  #define SNDRV_PCM_INFO_MMAP		0x00000001	/* hardware supports mmap */
->  #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
-> +#endif
-> +
->  #define SNDRV_PCM_INFO_DOUBLE		0x00000004	/* Double buffering needed for PCM start/stop */
->  #define SNDRV_PCM_INFO_BATCH		0x00000010	/* double buffering */
->  #define SNDRV_PCM_INFO_INTERLEAVED	0x00000100	/* channels are interleaved */
+> $ sox asskickd.wav -w -t alsa hw
 
-Late this evening I starting building a kernel with the above patch
-applied.  It should be ready for testing sometime tomorrow.  Sorry for
-the delay.
+Tight loop at the beginning of the file: rapid continuous repeat of approx.
+the first couple tenths of a second.  Hitting <ctrl>C caused playback to
+advance to the next small section of the soundfile.  Further <ctrl>C's did
+nothing I noticed: had to type <ctrl>\ to kill sox.
+
+> $ sox asskickd.wav -w -r 44100 -t alsa hw
+
+Several seconds of silence, followed by what sounded like continuous pitched
+machine-gun fire.  Each <ctrl>C advanced through the file (the pitch of the
+machine-gun fire changed slightly).  Still had to type <ctrl>\ to kill sox.
+
+> $ sox asskickd.wav -w -r 44100 -c 2 -t alsa hw
+
+Silence for longer than I had patience to wait :-).  Hitting <ctrl>C several
+times finally got me to an even more rapid machine-gun fire than the previous
+test.  As in the previous test, each <ctrl>C advanced further through the file,
+although the perceived increment was smaller.  Still had to type <ctrl>\ to
+kill sox.
 
 -- 
 ------------------------------------------------------------------------
