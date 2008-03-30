@@ -1,17 +1,18 @@
-From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: snd-powermac
-Date: Sat, 29 Mar 2008 17:05:53 +0200
-Message-ID: <46e1c7760803290805i9f56637uce18036db7a6756d@mail.gmail.com>
+From: rct@frus.com (Bob Tracy)
+Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Sat, 29 Mar 2008 23:24:13 -0500 (CDT)
+Message-ID: <20080330042413.BB1A3DBA2@gherkin.frus.com>
+References: <47E7EFDF.2070706@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6949924487
-	for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2008 16:05:56 +0100 (CET)
-Received: by hs-out-0708.google.com with SMTP id x43so1037149hsb.0
-	for <alsa-devel@alsa-project.org>; Sat, 29 Mar 2008 08:05:55 -0700 (PDT)
-Content-Disposition: inline
+Received: from gherkin.frus.com (gherkin.frus.com [192.158.254.49])
+	by alsa0.perex.cz (Postfix) with ESMTP id E050C24561
+	for <alsa-devel@alsa-project.org>;
+	Sun, 30 Mar 2008 06:24:21 +0200 (CEST)
+In-Reply-To: <47E7EFDF.2070706@keyaccess.nl> "from Rene Herman at Mar 24, 2008
+	07:15:59 pm"
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,50 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Bob Tracy <rct@frus.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'm about to send the following to alsa-user mailing list:
+Rene Herman wrote:
+> There's a patch attached that disables mmap on MIATA. You and Bob seem to be 
+> experiencing problems of a different nature (or severity at the least) but 
+> for both of you it would be good to hear what applying this and then playing 
+> using "aplay -D hw foo.wav" (on the miata systems, ofcourse) brings.
+> 
+> (...)
+> 
+> The mmap thing is sort of the last hickup to be expected from me -- having 
+> no Alpha machines and with trouble not isolated to a specific driver nor 
+> Alpha model, this would at that point ideally want someone with some more 
+> specific Alpha insights to step in.
+> 
+> (...)
+> 
+> diff --git a/include/sound/asound.h b/include/sound/asound.h
+> index 3eaf155..e3b9c2d 100644
+> --- a/include/sound/asound.h
+> +++ b/include/sound/asound.h
+> @@ -241,8 +241,14 @@ typedef int __bitwise snd_pcm_subformat_t;
+>  #define	SNDRV_PCM_SUBFORMAT_STD		((__force snd_pcm_subformat_t) 0)
+>  #define	SNDRV_PCM_SUBFORMAT_LAST	SNDRV_PCM_SUBFORMAT_STD
+>  
+> +#ifdef CONFIG_ALPHA_MIATA
+> +#define SNDRV_PCM_INFO_MMAP		0		/* the useful comment goes here */
+> +#define SNDRV_PCM_INFO_MMAP_VALID	0
+> +#else
+>  #define SNDRV_PCM_INFO_MMAP		0x00000001	/* hardware supports mmap */
+>  #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
+> +#endif
+> +
+>  #define SNDRV_PCM_INFO_DOUBLE		0x00000004	/* Double buffering needed for PCM start/stop */
+>  #define SNDRV_PCM_INFO_BATCH		0x00000010	/* double buffering */
+>  #define SNDRV_PCM_INFO_INTERLEAVED	0x00000100	/* channels are interleaved */
 
-I've been trying to fix ALSA support for older PowerMacs. Anyone
-experiencing problems - like missing or inoperative or wrongly
-directed controls in alsamixer - could you, please, test my patch and
-write the results into this list or directly to me?
+Late this evening I starting building a kernel with the above patch
+applied.  It should be ready for testing sometime tomorrow.  Sorry for
+the delay.
 
-If you are still with me, check first with lsmod that you are using
-snd-powermac:
-$ lsmod | grep ^snd.powermac
-snd_powermac           56576  0
-$
-
-Then you will need to install make, C-compiler and kernel headers
-corresponding to your running kernel, f.ex (Ubuntu Dapper 6.06.1):
-$ sudo aptitude install make gcc linux-headers-2.6.15-26-powerpc
-
-and fetch the ALSA driver source code and my patch:
-$ wget ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.16.tar.bz2
-$ wget http://ristosu.wippiespace.com/pub/alsa-driver-1.0.16-p4.diff
-
-Unpack the source and apply the patch:
-$ tar xjf alsa-driver-1.0.16.tar.bz2
-$ cd alsa-driver-1.0.16
-$ patch -p0 < ../alsa-driver-1.0.16-p4.diff
-
-Finally configure:
-$ ./configure --disable-verbose-printk
---with-kernel=/usr/src/linux-headers-2.6.15-26-powerpc
---with-build=/usr/src/linux-headers-2.6.15-26-powerpc
---with-moddir=/lib/modules/2.6.15-26-powerpc/updates/sound
---with-isapnp=no --with-oss=yes --with-pcm-oss-plugins=yes
---with-cards=powermac
-
-make and install:
-$ make
-$ sudo make install-modules
-
-To load the new modules without rebooting:
-$ sudo modprobe -r snd-powermac
-$ sudo modprobe -r snd-pcm-oss
-$ sudo modprobe snd-powermac
-
-Risto
+-- 
+------------------------------------------------------------------------
+Bob Tracy          |  "I was a beta tester for dirt.  They never did
+rct@frus.com       |   get all the bugs out." - Steve McGrew on /.
+------------------------------------------------------------------------
