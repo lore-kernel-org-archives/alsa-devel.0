@@ -1,51 +1,45 @@
 From: rct@frus.com (Bob Tracy)
-Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Sun, 30 Mar 2008 16:18:48 -0500 (CDT)
-Message-ID: <20080330211848.60C94DBA2@gherkin.frus.com>
-References: <2C0A0DF6-7FD6-4444-A485-C0828E40F427@orcon.net.nz>
+Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Sun, 30 Mar 2008 17:09:56 -0500 (CDT)
+Message-ID: <20080330220956.1E9C6DBA2@gherkin.frus.com>
+References: <47DEEA09.9000108@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gherkin.frus.com (gherkin.frus.com [192.158.254.49])
-	by alsa0.perex.cz (Postfix) with ESMTP id 649EF2467C
-	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Mar 2008 23:18:50 +0200 (CEST)
-In-Reply-To: <2C0A0DF6-7FD6-4444-A485-C0828E40F427@orcon.net.nz>
-	"from Michael Cree at Mar 31, 2008 10:11:38 am"
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Cree <mcree@orcon.net.nz>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Bob Tracy <rct@frus.com>
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <47DEEA09.9000108@keyaccess.nl> "from Rene Herman at Mar 17, 2008
+ 11:00:41 pm"
+Sender: linux-alpha-owner@vger.kernel.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Bob Tracy <rct@frus.com>, Michael Cree <mcree@orcon.net.nz>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
 List-Id: alsa-devel@alsa-project.org
 
-Michael Cree wrote:
-> Bob
-> >> (miata_no_mmap.diff patch)
-> >
-> > Made no difference for any of the "sox" tests, and "play" is still
-> > broken in the way it always has been.  However, "aplay" generated an
-> > interesting error I haven't seen before:
-> >
-> > $ aplay asskickd.wav
-> > Playing WAVE 'asskickd.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
-> > ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to  
-> > find an usable access for 'default'
-> > aplay: aplay.c:919: set_params: Assertion `err >= 0' failed.
+Rene Herman wrote:
+> Okay, thought I'd stare at this thing a bit -- there's no specific 1888 
+> documentation available it seems but I did notice something in the 1878 
+> datasheet which might mean something. The docs says that bits 0-1 are don't 
+> care for DMA but don't for IRQ, so could it possibly be as simple as the 
+> attached?
 > 
-> Add in the "-D hw" option to the aplay command when using the mmap  
-> disabled alsa sound.
+> 1878 sheet doesn't document register 0x7f, it seems...
+> 
+> Assuming it's not just this, this thing is going to require quite a bit of 
+> trial and error and without the hardware this will be troublesome. I expect 
+> this is not it, since the arch init code also doesn't care about bit 0 when 
+> setting that same register for IRQ 5.
+> 
+> If this is not it -- I'd try s/0x50/0x10/ in that line, even completely 
+> commenting out the IRQ setting line (with the arch code built in) and just 
+> generally frolic around 'till something blows up...
+>
+> (es18xx_trial_and_error)
 
-Thanks!  I now get "Maybe yo<>Maybe yo<>Maybe yo<>Maybe yo..." in an
-endlessly repeating loop.  <ctrl>C is sufficient to stop playback,
-however.  Still no activity on IRQ 5 seen by the ES18xx driver.
+As distributed, no change: still not seeing any activity on IRQ 5.  I'll
+play around with it some over the next day or so.
+
+Observed: the alsa "snd-sb8" driver works fine.  Question: how does IRQ
+setup differ between the sb8 and the es18xx drivers?  If I can find some
+time, I'll try to figure that out...
 
 -- 
 ------------------------------------------------------------------------
