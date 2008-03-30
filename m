@@ -1,89 +1,44 @@
 From: rct@frus.com (Bob Tracy)
 Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Sun, 30 Mar 2008 15:24:04 -0500 (CDT)
-Message-ID: <20080330202404.AB288DBA2@gherkin.frus.com>
-References: <47EE317E.9030807@keyaccess.nl>
+Date: Sun, 30 Mar 2008 16:07:59 -0500 (CDT)
+Message-ID: <20080330210759.6B20DDBA2@gherkin.frus.com>
+References: <47E8475E.4080705@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-alpha-owner@vger.kernel.org>
-In-Reply-To: <47EE317E.9030807@keyaccess.nl> "from Rene Herman at Mar 29, 2008
- 01:09:34 pm"
+In-Reply-To: <47E8475E.4080705@keyaccess.nl> "from Rene Herman at Mar 25, 2008
+ 01:29:18 am"
 Sender: linux-alpha-owner@vger.kernel.org
 To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Bob Tracy <rct@frus.com>, Tyson Whitehead <twhitehe@uwo.ca>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
+Cc: Michael Cree <mcree@orcon.net.nz>, Bob Tracy <rct@frus.com>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
 List-Id: alsa-devel@alsa-project.org
 
 Rene Herman wrote:
-> Okay. The thing that "fixed" Tyson was disabling mmap from the driver:
+> (...) Bob 
+> seemed to be experiencing something else but this is pretty fundamental so 
+> I'll not try to comment on his case any further until he's had a chance to 
+> test this as well.
 > 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006911.html
+> (...)
 
-I'll be trying that just a little later today, as in, sometime in the
-next half hour or so.
+> (miata_no_mmap.diff patch)
 
-> It landed him in the same situation as you though, where that "asskickd.wav" 
-> mono, 8-bit 11025 file you sent me shows the same behaviour you reported. 
-> This might imply you weren't using mmap to begin with. You have no horribly 
-> obsolete alsa userland, nor an /etc/asound.conf or ~/.asoundrc?
+Made no difference for any of the "sox" tests, and "play" is still
+broken in the way it always has been.  However, "aplay" generated an
+interesting error I haven't seen before:
 
-I don't have either of the two files mentioned above.  As far as the alsa
-userland, I would think it's all "reasonably" current.  I'm running Debian
-"Etch" fully patched/updated.  I'll normally refrain from running things
-in the "unstable" or "experimental" categories unless something is broken
-in the "stable" tree that isn't getting fixed (e.g., a libc problem).
-Beyond that, I also tend to run the latest kernels to make sure we (the
-community) get an early warning if there are problems with kernel
-updates/changes on the Alpha architecture.  Because it's a reasonably
-small list, here is the relevant "dpkg -l" output for alsa packages:
+$ aplay asskickd.wav
+Playing WAVE 'asskickd.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
+ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to find an usable access for 'default'
+aplay: aplay.c:919: set_params: Assertion `err >= 0' failed.
+Aborted by signal Aborted...
 
-Desired=Unknown/Install/Remove/Purge/Hold
-| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
-|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
-||/ Name                               Version                              Description
-+++-==================================-====================================-================================================================
-ii  alsa-base                          1.0.13-5etch1                        ALSA driver configuration files
-ii  alsa-oss                           1.0.12-1                             ALSA wrapper for OSS applications
-ii  alsa-utils                         1.0.13-2                             ALSA utilities
-ii  alsaplayer-alsa                    0.99.76-9                            PCM player designed for ALSA (ALSA output module)
-ii  alsaplayer-common                  0.99.76-9                            PCM player designed for ALSA (common files)
-ii  alsaplayer-esd                     0.99.76-9                            PCM player designed for ALSA (EsounD output module)
-ii  alsaplayer-gtk                     0.99.76-9                            PCM player designed for ALSA (GTK version)
-ii  gstreamer0.10-alsa                 0.10.10-4                            GStreamer plugin for ALSA
-ii  libasound2                         1.0.13-2                             ALSA library
-ii  linux-sound-base                   1.0.13-5etch1                        base package for ALSA and OSS sound systems
+The ES18xx IRQ (5) is still not seeing any interrupt activity.
 
-> No change with "aplay -M"?
-> (and)
-> This one needs answer so as to possibly pin things down to format:
-> 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006914.html
-
-Reported on the results of the various "sox" tests in that article last
-night.
-
-For all of the above, I need to mention I am/was running an unpatched
-2.6.25-rc7 kernel.  "cat /proc/interrupts" shows absolutely no interrupt
-activity for the ES1888.  Here's the current and complete output for an
-uptime of 1 day, 14:14:
-
-  1:      10718          XT-PIC   i8042
-  2:          0          XT-PIC   cascade
-  4:          1          XT-PIC   serial
-  5:          0          XT-PIC  +ES18xx
-  8:  140919958             RTC  +timer
- 12:      13965          XT-PIC   i8042
- 14:    1231903          XT-PIC   ide0
- 18:          0           PYXIS   halt-switch
- 22:          0           PYXIS   timer-cascade
- 23:          0           PYXIS   isa-cascade
- 24:     116344           PYXIS   eth0
- 32:   14938196           PYXIS   radeon@pci:0000:00:0c.0
- 40:     417084           PYXIS   qla1280
-ERR:          0
-
-Ok.  Let me boot on the kernel with the "miata_no_mmap" patch and give
-that a spin.  I'll report back shortly.
+I *think* the only thing I haven't tried is Rene's patch that plays
+around with the irqmask (es18xx_trial_and_error).  I'll give that a
+shot and report back as soon as possible.
 
 -- 
 ------------------------------------------------------------------------
