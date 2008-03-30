@@ -1,46 +1,101 @@
-From: Michael Cree <mcree@orcon.net.nz>
-Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Sun, 30 Mar 2008 23:02:40 +1300
-Message-ID: <47EF6540.1020808@orcon.net.nz>
-References: <20080330051814.5D9CCDBA2@gherkin.frus.com>
+From: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Sun, 30 Mar 2008 20:14:00 +0400
+Message-ID: <20080330161400.GA24443@jurassic.park.msu.ru>
+References: <20080329064227.58074DBA2@gherkin.frus.com> <47EE317E.9030807@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx4.orcon.net.nz (mx4.orcon.net.nz [219.88.242.54])
-	by alsa0.perex.cz (Postfix) with ESMTP id A909E245C9
-	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Mar 2008 12:02:44 +0200 (CEST)
-Received: from Debian-exim by mx4.orcon.net.nz with local (Exim 4.68)
-	(envelope-from <mcree@orcon.net.nz>) id 1JfuN9-0001Sg-Bo
-	for alsa-devel@alsa-project.org; Sun, 30 Mar 2008 23:02:43 +1300
-In-Reply-To: <20080330051814.5D9CCDBA2@gherkin.frus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bob Tracy <rct@frus.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-alpha-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <47EE317E.9030807@keyaccess.nl>
+Sender: linux-alpha-owner@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Rene Herman <rene.herman@keyaccess.nl>
+Cc: Bob Tracy <rct@frus.com>, Tyson Whitehead <twhitehe@uwo.ca>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Bob Tracy wrote:
-> Rene Herman wrote:
->> $ sox asskickd.wav -w -r 44100 -t alsa hw
-> 
-> Several seconds of silence, followed by what sounded like continuous pitched
-> machine-gun fire.  Each <ctrl>C advanced through the file (the pitch of the
-> machine-gun fire changed slightly).  Still had to type <ctrl>\ to kill sox.
+On Sat, Mar 29, 2008 at 01:09:34PM +0100, Rene Herman wrote:
+> Okay. The thing that "fixed" Tyson was disabling mmap from the driver:
+>
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006911.html
 
-Right, that sounds just like the older PWS600au I have - the one with 
-the ESS1888 - except that what Bob describes as machine gun fire, I 
-thought was, ahem, flatulence.
+Weird - I was sure the mmap problem has been fixed, but obviously
+the patch didn't go in...
 
-The newer PWS600au (with the ESS1887) plays the sound files correctly, 
-except for the repeated bits at the end.
+Andrew, could you please queue this up for 2.6.26?
 
-Michael.
+Ivan.
+
+--
+alpha: fix ALSA DMA mmap crash
+
+Make dma_alloc_coherent respect gfp flags (__GFP_COMP is one that
+matters).
+
+Signed-off-by: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+---
+ arch/alpha/kernel/pci_iommu.c   |    8 +++++---
+ include/asm-alpha/dma-mapping.h |    2 +-
+ include/asm-alpha/pci.h         |    8 +++++++-
+ 3 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/arch/alpha/kernel/pci_iommu.c b/arch/alpha/kernel/pci_iommu.c
+index 4e1c086..dd6e334 100644
+--- a/arch/alpha/kernel/pci_iommu.c
++++ b/arch/alpha/kernel/pci_iommu.c
+@@ -424,11 +424,13 @@ EXPORT_SYMBOL(pci_unmap_page);
+    else DMA_ADDRP is undefined.  */
+ 
+ void *
+-pci_alloc_consistent(struct pci_dev *pdev, size_t size, dma_addr_t *dma_addrp)
++__pci_alloc_consistent(struct pci_dev *pdev, size_t size,
++		       dma_addr_t *dma_addrp, gfp_t gfp)
+ {
+ 	void *cpu_addr;
+ 	long order = get_order(size);
+-	gfp_t gfp = GFP_ATOMIC;
++
++	gfp &= ~GFP_DMA;
+ 
+ try_again:
+ 	cpu_addr = (void *)__get_free_pages(gfp, order);
+@@ -458,7 +460,7 @@ try_again:
+ 
+ 	return cpu_addr;
+ }
+-EXPORT_SYMBOL(pci_alloc_consistent);
++EXPORT_SYMBOL(__pci_alloc_consistent);
+ 
+ /* Free and unmap a consistent DMA buffer.  CPU_ADDR and DMA_ADDR must
+    be values that were returned from pci_alloc_consistent.  SIZE must
+diff --git a/include/asm-alpha/dma-mapping.h b/include/asm-alpha/dma-mapping.h
+index 75a1aff..db351d1 100644
+--- a/include/asm-alpha/dma-mapping.h
++++ b/include/asm-alpha/dma-mapping.h
+@@ -11,7 +11,7 @@
+ #define dma_unmap_single(dev, addr, size, dir)		\
+ 		pci_unmap_single(alpha_gendev_to_pci(dev), addr, size, dir)
+ #define dma_alloc_coherent(dev, size, addr, gfp)	\
+-		pci_alloc_consistent(alpha_gendev_to_pci(dev), size, addr)
++	      __pci_alloc_consistent(alpha_gendev_to_pci(dev), size, addr, gfp)
+ #define dma_free_coherent(dev, size, va, addr)		\
+ 		pci_free_consistent(alpha_gendev_to_pci(dev), size, va, addr)
+ #define dma_map_page(dev, page, off, size, dir)		\
+diff --git a/include/asm-alpha/pci.h b/include/asm-alpha/pci.h
+index d5b10ef..d31fd49 100644
+--- a/include/asm-alpha/pci.h
++++ b/include/asm-alpha/pci.h
+@@ -76,7 +76,13 @@ extern inline void pcibios_penalize_isa_irq(int irq, int active)
+    successful and sets *DMA_ADDRP to the pci side dma address as well,
+    else DMA_ADDRP is undefined.  */
+ 
+-extern void *pci_alloc_consistent(struct pci_dev *, size_t, dma_addr_t *);
++extern void *__pci_alloc_consistent(struct pci_dev *, size_t,
++				    dma_addr_t *, gfp_t);
++static inline void *
++pci_alloc_consistent(struct pci_dev *dev, size_t size, dma_addr_t *dma)
++{
++	return __pci_alloc_consistent(dev, size, dma, GFP_ATOMIC);
++}
+ 
+ /* Free and unmap a consistent DMA buffer.  CPU_ADDR and DMA_ADDR must
+    be values that were returned from pci_alloc_consistent.  SIZE must
