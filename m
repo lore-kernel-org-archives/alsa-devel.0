@@ -1,19 +1,16 @@
-From: "Alexandre BOUIN" <a.bouin@kerlink.fr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Any wigets for ADC to DAC ?
-Date: Mon, 31 Mar 2008 12:32:21 +0200
-Message-ID: <34139.9691570134$1206959630@news.gmane.org>
-References: <20080331102431.GB21135@rakim.wolfsonmicro.main>
+Date: Mon, 31 Mar 2008 11:41:04 +0100
+Message-ID: <20080331104103.GB11461@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from scanner-relay-corvus2.pulsation.fr
-	(scanner-relay-corvus2.pulsation.fr [80.74.64.70])
-	by alsa0.perex.cz (Postfix) with SMTP id 8E47C24767
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 808B32471D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Mar 2008 12:32:54 +0200 (CEST)
-In-Reply-To: <20080331102431.GB21135@rakim.wolfsonmicro.main>
-Content-Language: fr
+	Mon, 31 Mar 2008 12:41:05 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +20,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+To: Alexandre BOUIN <a.bouin@kerlink.fr>
 Cc: 'ALSA-devel' <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > In intern, we're still using WM8900 codec. We'd like to know in ASoC
-> layer,
-> > there is a widget to declare a possible audio path between ADC and
-> DAC.
-> 
-> If there were a direct connection the appropriate thing would just be
-> to
-> declare it (in that particular chip there is actually a digitial mixer
-> in there).  Using such a path is not particularly supported by ASoC v1
-> since it treats ADCs and DACs as sinks and sources only.
+On Mon, Mar 31, 2008 at 12:32:21PM +0200, Alexandre BOUIN wrote:
 
-Thanks for this answer Mark.
+> Will be there a support for a such feature in ASoC v2  ?
 
-Will be there a support for a such feature in ASoC v2  ?
+Given that more and more codecs support this sort of thing it's likely
+that support for digital paths will get implemented at some point.  No
+specific ETA for it, though.
+
+Note that if there is no specific reason to use a digital bypass path
+(such as filtering that is only supported on the digital path or a
+lack of a suitable analogue path) then it is normally more power
+efficient to use an analogue bypass path than a digital one.
