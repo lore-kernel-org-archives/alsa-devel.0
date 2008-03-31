@@ -1,25 +1,17 @@
-From: "R. Dresens" <chromisx@nedlinux.nl>
-Subject: Detecting new alsa sequencer clients (with some event
- loop) so that i can subscribe them
-Date: Tue, 1 Apr 2008 03:48:01 +0200
-Message-ID: <20080401034801.7ad2696d.chromisx@nedlinux.nl>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [PATCH] es1968: fix jitter on some maestro cards
+Date: Tue, 01 Apr 2008 00:24:43 +0200
+Message-ID: <47F164AB.5040009@keyaccess.nl>
+References: <20080329234943.GA2899@slappy>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------010102030003060405030903"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51CF724822
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF9F524846
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Mar 2008 21:52:44 +0200 (CEST)
-Received: from [213.51.146.188] (port=51656 helo=smtp3.tilbu1.nb.home.nl)
-	by smtpq2.tilbu1.nb.home.nl with esmtp (Exim 4.60)
-	(envelope-from <chromisx@nedlinux.nl>) id 1JgQ3f-0004JQ-GE
-	for alsa-devel@alsa-project.org; Mon, 31 Mar 2008 21:52:43 +0200
-Received: from cp20649-a.schoo1.lb.home.nl ([84.30.149.137]:62660 helo=julido)
-	by smtp3.tilbu1.nb.home.nl with smtp (Exim 4.60)
-	(envelope-from <chromisx@nedlinux.nl>) id 1JgQ3b-0005aE-Oz
-	for alsa-devel@alsa-project.org; Mon, 31 Mar 2008 21:52:43 +0200
+	Tue,  1 Apr 2008 00:22:57 +0200 (CEST)
+In-Reply-To: <20080329234943.GA2899@slappy>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,41 +21,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Andreas Mueller <andreas@stapelspeicher.org>
+Cc: tiwai@suse.de, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, MatzeBraun@gmx.de
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------010102030003060405030903
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 30-03-08 00:49, Andreas Mueller wrote:
 
-I'm currently writing an application that will be able to 'auto
-subscribe' itself to a certain sequencer client when that client
-becomes available to the system. I want (for example) to be able to 
-plug in a USB MIDI interface, and when I do that then my application
-detects this and does a subscription on it, just like aconnect would
-do.
+> This patch suppresses jitter on several Maestro cards in stereo mode
+> (ALSA of course).
+> 
+> The patch is also incorporated in the *BSD drivers where I "ported" it from.
+> I am barely used to driver-development so please take a look (esp. the channel
+> parameters), nevertheless it completely works for me.
+> 
+> Without this patch most of the stereo audio gets out of sync and really
+> distorted (oss-emulation with mplayer at 48000khz worked somehow).
+> 
+> CCed to those listed in the .c file.
 
-A possible solution is polling; every second or so, i could generate a
-list of clients with snd_seq_query_next_client and look for a certain
-client name (libpcre comes to mind here;), but I was wondering if there
-is a better solution? ..in other words, is it possible to get such
-events from the system in a similar way like one would receive regular
-MIDI events?
+Added the alsa-devel list (and re-attached the patch). My TerraTec DMX (ESS 
+Canyon3D, ES1970MS-3D) doesn't need this but doesn't seem to suffer from it 
+either. Otherwise no idea about this.
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/structsnd__seq__event.html
-list all the events; an interesting one could be snd_seq_connect_t
-for monitoring connections on my own ports, but that's not what I'm
-looking for. I can't seem to find an event related to this
-functionality. Is there something what I'm currently overlooking?
+Rene.
 
-Such functionality may be usefull for GUI versions of aconnect. I
-looked in the source of qjackctl (it has an alsa patchbay), but I
-haven't found nothing usefull yet since it seems to me that this
-software also does polling/refresh on a certain interval.
+--------------010102030003060405030903
+Content-Type: text/plain;
+ name="es1968_jitter.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="es1968_jitter.patch"
 
-Has anyone a usefull tip for me?
+--- sound/pci/es1968.c.old	2008-03-29 19:17:16.771116317 +0100
++++ sound/pci/es1968.c	2008-03-30 00:14:35.363057160 +0100
+@@ -1816,7 +1816,24 @@
+ 
+ 	return 0;
+ }
++/*
++ * suppress jitter on some maestros when playing stereo
++ */
++static void snd_es1968_suppress_jitter(struct es1968 *chip, struct esschan *es)
++{
++	unsigned int cp1;
++	unsigned int cp2;
++	unsigned int diff;
+ 
++	cp1 = __apu_get_register(chip, 0, 5);
++	cp2 = __apu_get_register(chip, 1, 5);
++	diff = (cp1 > cp2 ? cp1 - cp2 : cp2 - cp1);
++	
++	if (diff > 1) {
++		__maestro_write(chip, IDR0_DATA_PORT, cp1);
++	}
++}
++	
+ /*
+  * update pointer
+  */
+@@ -1937,8 +1954,11 @@
+ 		struct esschan *es;
+ 		spin_lock(&chip->substream_lock);
+ 		list_for_each_entry(es, &chip->substream_list, list) {
+-			if (es->running)
++			if (es->running) {
+ 				snd_es1968_update_pcm(chip, es);
++				if (es->fmt & ESS_FMT_STEREO)
++					snd_es1968_suppress_jitter(chip, es);
++			}
+ 		}
+ 		spin_unlock(&chip->substream_lock);
+ 		if (chip->in_measurement) {
 
-Thanks in advance,
+--------------010102030003060405030903
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Greetings,
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Raymond Dresens.
+--------------010102030003060405030903--
