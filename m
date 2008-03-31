@@ -1,14 +1,16 @@
-From: Jiang zhe <zhe.jiang@intel.com>
-Subject: [PATCH]PCI quirk for laptop LG which use CMI9880
-Date: Mon, 31 Mar 2008 15:44:23 +0800
-Message-ID: <1206949463.13847.14.camel@localhost.localdomain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Any wigets for ADC to DAC ?
+Date: Mon, 31 Mar 2008 11:24:32 +0100
+Message-ID: <20080331102431.GB21135@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-6EJYngHwkDU3yATMQGrj"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 175BB24727
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D854B24760
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Mar 2008 09:42:25 +0200 (CEST)
+	Mon, 31 Mar 2008 12:24:35 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,49 +20,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, zhe.jiang@intel.com
+To: Alexandre BOUIN <a.bouin@kerlink.fr>
+Cc: 'ALSA-devel' <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Mar 28, 2008 at 04:39:48PM +0100, Alexandre BOUIN wrote:
 
---=-6EJYngHwkDU3yATMQGrj
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> In intern, we're still using WM8900 codec. We'd like to know in ASoC layer,
+> there is a widget to declare a possible audio path between ADC and DAC.
 
-Hi,
-
-Please refer to [0003874] on the alsa mantis.
-This patch added the pci quirk.
-
-Thanks!
-
-Signed-off-by: Jiang zhe <zhe.jiang@intel.com>
-
---=-6EJYngHwkDU3yATMQGrj
-Content-Disposition: attachment; filename=pci_quirk_for_LG_laptop_CMI9880.patch
-Content-Type: text/x-patch; name=pci_quirk_for_LG_laptop_CMI9880.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
---- alsa-driver-hg20080323/alsa-kernel/pci/hda/patch_cmedia.c	2008-03-19 09:00:09.000000000 +0800
-+++ b/alsa-kernel/pci/hda/patch_cmedia.c	2008-03-31 15:37:43.000000000 +0800
-@@ -611,6 +611,7 @@ static const char *cmi9880_models[CMI_MO
- 
- static struct snd_pci_quirk cmi9880_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", CMI_FULL_DIG),
-+	SND_PCI_QUIRK(0x1854, 0x0032, "LG", CMI_FULL_DIG),
- 	{} /* terminator */
- };
- 
-
---=-6EJYngHwkDU3yATMQGrj
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-6EJYngHwkDU3yATMQGrj--
+If there were a direct connection the appropriate thing would just be to
+declare it (in that particular chip there is actually a digitial mixer
+in there).  Using such a path is not particularly supported by ASoC v1
+since it treats ADCs and DACs as sinks and sources only.
