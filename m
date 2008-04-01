@@ -1,18 +1,21 @@
-From: rct@frus.com (Bob Tracy)
-Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Tue, 1 Apr 2008 15:32:01 -0500 (CDT)
-Message-ID: <20080401203201.12B1EDBA2@gherkin.frus.com>
-References: <47F28805.8030502@gmail.com>
+From: "Risto Suominen" <risto.suominen@gmail.com>
+Subject: Re: snd-powermac
+Date: Tue, 1 Apr 2008 23:55:00 +0300
+Message-ID: <46e1c7760804011355ta958cffhca81ef893fdf4132@mail.gmail.com>
+References: <46e1c7760803290805i9f56637uce18036db7a6756d@mail.gmail.com>
+	<46e1c7760804011101w41e613c5k5d84f31da692445a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gherkin.frus.com (gherkin.frus.com [192.158.254.49])
-	by alsa0.perex.cz (Postfix) with ESMTP id D535324A32
+Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A8A8103836
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Apr 2008 22:32:02 +0200 (CEST)
-In-Reply-To: <47F28805.8030502@gmail.com> "from Rene Herman at Apr 1,
-	2008 09:07:49 pm"
+	Tue,  1 Apr 2008 22:55:01 +0200 (CEST)
+Received: by hs-out-0708.google.com with SMTP id x43so945987hsb.0
+	for <alsa-devel@alsa-project.org>; Tue, 01 Apr 2008 13:55:00 -0700 (PDT)
+In-Reply-To: <46e1c7760804011101w41e613c5k5d84f31da692445a@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +25,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@gmail.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Bob Tracy <rct@frus.com>, Tyson Whitehead <twhitehe@uwo.ca>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman wrote:
-> On 01-04-08 20:34, Rene Herman wrote:
-> 
-> > On 01-04-08 20:07, Tyson Whitehead wrote:
-> > 
-> >> Hope this helps.
-> > 
-> > Not really no.
-> 
-> Sorry for the multiple copies; my ISP is crashing again.
-> 
-> Rene.
+2008/4/1, Risto Suominen <risto.suominen@gmail.com>:
+>  They are allocated and freed in the same order and manner
+>  in alsa-kernel/ppc/pmac.c.
+>
 
-And here I was, thinking you were giving us a *really* strong hint that
-you would like one of us to ship you an Alpha to play with :-).
+Actually, in this case, the file in question is ppc/pmac_old.c, and
+they are allocated in function snd_pmac_new and freed in
+snd_pmac_free.
 
--- 
-------------------------------------------------------------------------
-Bob Tracy          |  "I was a beta tester for dirt.  They never did
-rct@frus.com       |   get all the bugs out." - Steve McGrew on /.
-------------------------------------------------------------------------
+Risto
