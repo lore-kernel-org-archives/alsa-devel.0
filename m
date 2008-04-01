@@ -1,81 +1,46 @@
 From: rct@frus.com (Bob Tracy)
-Subject: Re: [alsa-devel] [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
-Date: Tue, 1 Apr 2008 15:26:05 -0500 (CDT)
-Message-ID: <20080401202605.70554DBA2@gherkin.frus.com>
-References: <47F279E7.60801@uwo.ca>
+Subject: Re: [regression] 2.6.25-rc4 snd-es18xx broken on Alpha
+Date: Tue, 1 Apr 2008 15:32:01 -0500 (CDT)
+Message-ID: <20080401203201.12B1EDBA2@gherkin.frus.com>
+References: <47F28805.8030502@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1760240AbYDAU0W@vger.kernel.org>
-In-Reply-To: <47F279E7.60801@uwo.ca> "from Tyson Whitehead at Apr 1, 2008 02:07:35
- pm"
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tyson Whitehead <twhitehe@uwo.ca>
-Cc: Bob Tracy <rct@frus.com>, Rene Herman <rene.herman@keyaccess.nl>, Michael Cree <mcree@orcon.net.nz>, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Krzysztof Helt <krzysztof.h1@wp.pl>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gherkin.frus.com (gherkin.frus.com [192.158.254.49])
+	by alsa0.perex.cz (Postfix) with ESMTP id D535324A32
+	for <alsa-devel@alsa-project.org>;
+	Tue,  1 Apr 2008 22:32:02 +0200 (CEST)
+In-Reply-To: <47F28805.8030502@gmail.com> "from Rene Herman at Apr 1,
+	2008 09:07:49 pm"
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Rene Herman <rene.herman@gmail.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Michael Cree <mcree@orcon.net.nz>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org, Bob Tracy <rct@frus.com>, Tyson Whitehead <twhitehe@uwo.ca>
 List-Id: alsa-devel@alsa-project.org
 
-Tyson Whitehead wrote:
-> Okay.  I finally got everything tested on my Miata.  Unless I missed 
-> something, the es1888_init routine only gets compiled in with 
-> CONFIG_ALPHA_MIATA.
-
-The current arch/alpha/kernel/Makefile build logic shows es1888.o built
-as part of CONFIG_ALPHA_GENERIC, but if that option isn't enabled, then
-enabling any of the following configuration options will cause es1888.o
-to be built:
-
-CONFIG_ALPHA_DP264
-CONFIG_ALPHA_SHARK
-CONFIG_ALPHA_MIATA
-
-> As I've been using the debian generic kernel (i.e., 
-> CONFIG_ALPHA_GENERIC), I have never relied on this routine for anything.
+Rene Herman wrote:
+> On 01-04-08 20:34, Rene Herman wrote:
 > 
-> I did discover, however, when I compiled my own kernel (2.6.25-rc5) with 
-> CONFIG_ALPHA_MIATA, things stopped working.  Specifically, I no longer 
-> got any interupts (with or without the es1888_init patch and with or 
-> without the alternative es188xx interupt patch) associated with either 
-> the builtin sound card (es1888) or the IDE controller (CMD646).
+> > On 01-04-08 20:07, Tyson Whitehead wrote:
+> > 
+> >> Hope this helps.
+> > 
+> > Not really no.
+> 
+> Sorry for the multiple copies; my ISP is crashing again.
+> 
+> Rene.
 
-Interesting.  I *seldom* use the Debian generic kernel.  It's available,
-and I install updated versions when they are released, but all of my
-testing has been with kernels built from the standard kernel.org sources
-with CONFIG_ALPHA_MIATA enabled.
-
-> With CONFIG_ALPHA_GENERIC I only get one interupt with the es18xx driver 
-> unless I applied to "alternative interupt" handling code.  Further, 
-> sometime between 2.6.14 and 2.6.16, mpg321 (using the alsa driver) 
-> started generating "Bad page state in process 'mpg321' ... Trying to fix 
-> it up, but a reboot is needed" kernel messages.
-
-This is consistent with what I remember you reporting when we were
-looking at this back in the 2.6.14 timeframe.  I was reporting the "bad
-page state" problems with 2.6.22-rc6 and -rc7.  In my case, the trigger
-was a different application, but only happened when snd_es18xx was
-loaded.  Hugh Dickins suggested it was a regression introduced in
-2.6.15 that I had managed to successfully avoid tripping on :-).  The
-analysis went something like this:
-
-sound/isa/es18xx.c:
-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV, ...
-led us to sound/core/memalloc.c:
-	res = dma_alloc_coherent(dev, PAGE_SIZE << pg, dma, gfp_flags);
-where __GFP_COMP was carefully included in gfp_flags to avoid the
-kinds of problems I was seeing (replacing the pre-2.6.15 use of
-PageReserved).
-
-Hugh said we could blame him or Nick for removing the special
-PageReserved usage, or the Alpha for ignoring gfp_flags in the
-following:
-
-  #define dma_alloc_coherent(dev, size, addr, gfp)      \
-                pci_alloc_consistent(alpha_gendev_to_pci(dev), size, addr)
-
-The workaround (until the official patch was issued) was a small patch
-against arch/alpha/kernel/pci_iommu.c:pci_alloc_consistent() that
-replaced "gfp_t gfp = GFP_ATOMIC;" with "gfp_t gfp = GFP_ATOMIC|__GFP_COMP;".
-That eliminated the "bad page state" errors for me, and I don't recall
-what the official patch was.
+And here I was, thinking you were giving us a *really* strong hint that
+you would like one of us to ship you an Alpha to play with :-).
 
 -- 
 ------------------------------------------------------------------------
