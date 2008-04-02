@@ -1,22 +1,19 @@
-From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: Re: snd-powermac
-Date: Wed, 2 Apr 2008 14:43:49 +0300
-Message-ID: <46e1c7760804020443k1445be38ve18055967ba10e1f@mail.gmail.com>
-References: <46e1c7760803290805i9f56637uce18036db7a6756d@mail.gmail.com>
-	<46e1c7760804011101w41e613c5k5d84f31da692445a@mail.gmail.com>
-	<46e1c7760804011355ta958cffhca81ef893fdf4132@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC for TI OMAP - Multiformat ASoC DAI
+	link	driver?
+Date: Wed, 2 Apr 2008 12:48:20 +0100
+Message-ID: <20080402114820.GB7977@rakim.wolfsonmicro.main>
+References: <20080402134538.67d67d6e.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 588F6243E9
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D2F842442E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Apr 2008 13:43:50 +0200 (CEST)
-Received: by hs-out-0708.google.com with SMTP id x43so1353579hsb.0
-	for <alsa-devel@alsa-project.org>; Wed, 02 Apr 2008 04:43:49 -0700 (PDT)
-In-Reply-To: <46e1c7760804011355ta958cffhca81ef893fdf4132@mail.gmail.com>
+	Wed,  2 Apr 2008 13:48:21 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20080402134538.67d67d6e.jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,16 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Found a solution for the interrupt problem with kernel 2.6.15:
-manually edited in include/config.h from:
+On Wed, Apr 02, 2008 at 01:45:38PM +0300, Jarkko Nikula wrote:
 
-/* #undef CONFIG_SND_NEW_IRQ_HANDLER */
+> Currently in ASoC v1 we have one DAI driver per one format? E.g.
+> separate drivers for I2S, AC97, etc and type field in cpu_dai
+> structure is not a bit field or at least not used such way in
+> soc-core.c and DAI link drivers.
 
-to:
+Yes, though it's mostly just used to special case AC97 and for display
+purposes so you may find that your use case already works if you fill in
+something non-AC97.  I've not looked closely or made any effort to test
+this, though.
 
-#define CONFIG_SND_NEW_IRQ_HANDLER 1
+> I looked shortly asoc-v2-dev branch and now this type field is gone.
+> Does it mean that there you can have DAI link driver which supports
+> multiple formats in set_fmt callback?
 
-Maybe I should submit a bug report in ALSA 1.0.16...
+I don't know if anyone has ever actually done that but there should be
+nothing in the core which has a problem with doing it - if there is we
+should fix it up since this is a perfectly reasonable use case and
+affects a number of other modern processors too.
