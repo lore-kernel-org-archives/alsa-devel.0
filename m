@@ -1,16 +1,24 @@
-From: Wolfgang Woehl <tito@rumford.de>
-Subject: Is there a list of alsa error codes?
-Date: Sun, 6 Apr 2008 16:10:04 +0200
-Message-ID: <200804061610.04835.tito@rumford.de>
+From: Dsant <liste@votreservice.com>
+Subject: which fonction ?
+Date: Sun, 6 Apr 2008 16:32:41 -0400
+Message-ID: <200804061632.41955.liste@votreservice.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id C775124548
+Received: from smtp1-g19.free.fr (smtp1-g19.free.fr [212.27.42.27])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8815124585
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Apr 2008 16:10:06 +0200 (CEST)
+	Sun,  6 Apr 2008 22:32:41 +0200 (CEST)
+Received: from smtp1-g19.free.fr (localhost.localdomain [127.0.0.1])
+	by smtp1-g19.free.fr (Postfix) with ESMTP id BE2D11AB33C
+	for <alsa-devel@alsa-project.org>;
+	Sun,  6 Apr 2008 22:32:40 +0200 (CEST)
+Received: from vai69-1-82-67-46-45.fbx.proxad.net
+	(vai69-1-82-67-46-45.fbx.proxad.net [82.67.46.45])
+	by smtp1-g19.free.fr (Postfix) with ESMTP id A85451AB2BE
+	for <alsa-devel@alsa-project.org>;
+	Sun,  6 Apr 2008 22:32:40 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,11 +32,10 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-For the life of me I can't find a list of alsa error codes in order to 
-understand what, in this case,
-	"sound/usb/usbaudio.c:352: frame 0 active: -18"
-means. A hint, anyone?
-
-Wolfgang
+I would like to implement this, but I don't know which fonction to use :
+LOOP START
+	   begin acquire
+	   some long stuf... (about 1-2 seconds)
+	   copy buffer to ram or into file
+LOOP END
+Dsant
