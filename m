@@ -1,19 +1,16 @@
-From: "Aldrin Martoq" <amartoq@dcc.uchile.cl>
-Subject: Re: Loop sequencer
-Date: Sun, 6 Apr 2008 08:52:50 -0400
-Message-ID: <17eedd8a0804060552jd434f28ha2bdd01519f6cbb2@mail.gmail.com>
-References: <c60df1300803280026p18a09024v6164d616bea1b5c1@mail.gmail.com>
+From: Wolfgang Woehl <tito@rumford.de>
+Subject: Is there a list of alsa error codes?
+Date: Sun, 6 Apr 2008 16:10:04 +0200
+Message-ID: <200804061610.04835.tito@rumford.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3011024518
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id C775124548
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Apr 2008 14:52:52 +0200 (CEST)
-Received: by el-out-1112.google.com with SMTP id m34so536172ele.21
-	for <alsa-devel@alsa-project.org>; Sun, 06 Apr 2008 05:52:50 -0700 (PDT)
-In-Reply-To: <c60df1300803280026p18a09024v6164d616bea1b5c1@mail.gmail.com>
+	Sun,  6 Apr 2008 16:10:06 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,41 +21,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Guillaume_Dupr=E9?= <gui.dupre@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 28, 2008 at 3:26 AM, Guillaume Dupr=E9 <gui.dupre@gmail.com> wr=
-ote:
-> Hello
->  I try to program a loop midi sequencer with libasound .
->  For the moment, I have this :
+Hi,
 
-Hi!
+For the life of me I can't find a list of alsa error codes in order to 
+understand what, in this case,
+	"sound/usb/usbaudio.c:352: frame 0 active: -18"
+means. A hint, anyone?
 
-[...]
->  sleep(4) ;
-
-use snd_seq_sync_output_queue() instead.
-
->  It works, no problem .
->  But now, I want to do a loop with my two notes .
->  I searched on the Internet but I didn't find .
-
-I guess there is no loop helpers in alsa-lib. You must make your own.
-
-Check how other looping software is doing. I think you could do
-something like a function that receives a loop sequence (array of
-events sorted by time), a time (or tick) and a max time or max events.
-
-int dump_loop(events[], base_time, max_time);
-
-This function should put the appropiate event from the events[] based
-on the time frame and up to the max_time or max_events.
-
-HTH,
--- =
-
-Aldrin Martoq
-Episodio 002 (Lunes 24 Marzo)!
-http://aldrinvideopodcast.podshow.com/
+Wolfgang
