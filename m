@@ -1,27 +1,19 @@
-From: Mathieu Monney <zittix_all@xwaves.net>
-Subject: Detecting when user is calling himself
-Date: Mon, 7 Apr 2008 09:26:12 +0200
-Message-ID: <881578CB-8246-4BA3-ACE3-3B495D4421EA@xwaves.net>
-Mime-Version: 1.0 (iPod Mail 4A102)
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: support for hardware encode/decode of compressed
+ formats
+Date: Mon, 07 Apr 2008 10:37:59 +0200
+Message-ID: <47F9DD67.6060807@insite.cz>
+References: <1207330707.1496.199.camel@razman>
+	<47F6C740.4020108@audioscience.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pimpette.xwaves.net (pimpette.xwaves.net [193.58.255.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E553243D6
+Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id BAD1F2440A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Apr 2008 09:26:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by pimpette.xwaves.net (Postfix) with ESMTP id 675BC7C8CA
-	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Apr 2008 09:26:21 +0200 (CEST)
-Received: from pimpette.xwaves.net ([127.0.0.1])
-	by localhost (pimpette.xwaves.net [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id PXqj1A-SdrNz for <alsa-devel@alsa-project.org>;
-	Mon,  7 Apr 2008 09:26:17 +0200 (CEST)
-Received: from [128.178.83.112] (vpn-epfl-a092.epfl.ch [128.178.83.112])
-	by pimpette.xwaves.net (Postfix) with ESMTP id 0E6AA7C989
-	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Apr 2008 09:26:17 +0200 (CEST)
+	Mon,  7 Apr 2008 10:38:10 +0200 (CEST)
+In-Reply-To: <47F6C740.4020108@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,17 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Eliot Blennerhassett <linux@audioscience.com>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all
+Eliot Blennerhassett wrote:
+> Tobin Davis wrote:
+>> Are there any alsa supported sound cards that do hardware audio decoding
+>> for MP3/WMA and otehr formats?  I'd like to look at the mechanism used
+>> to connect the cards to the data stream.
+> 
+> This has come up a couple of times recently.
+> 
+> Todays answer is that ALSA has no support for getting the encoded data 
+> through to the cards.
+> 
+> We are interested in this and would like to see it happen because our 
+> cards do support MP2 and MP3 decode and encode in DSP on the cards.
+> 
+> Applications wanting to use this capability currently must use our HPI 
+> driver directly (the primary example on Linux is Rivendell radio 
+> automation software http://www.rivendellaudio.org)
+> 
+> One assumption that alsa makes is that a "period" equates to a fixed 
+> amount of time, and a fixed amount of audio data.  This is not the case 
+> for Variable bitrate mpeg etc.  And even with fixed bitrate, the bits 
+> per sample is fractional E.g. 128kbps/44.1k = 2.90249... bits per sample 
+> frame.
+> 
+> One of the two assumptions about the period would have to be relaxed to 
+> allow alsa to maybe work with compressed data. Probably the time one.
+> I.e. a period means the decoder has consumed X bytes, but this doesn't 
+> correspond to any particular amount of time.
+> 
 
-I'm trying to figure out how to detect if the user is trying to call  
-himself because it is making some weird unwanted things on my UI when  
-user do this. Any idea?
+Hi, you probably know the workarounds of spdif-passthrough in 
+alsa-enabled applications. Perhpaps these techniques could be of some help.
 
-Thank you.
+E.g. mplayer padds the missing data with zeroes for AC3/DTS passthrough. 
+My AVR decoder does not seem to mind.
+
+http://www.mplayerhq.hu/DOCS/tech/hwac3.txt
+
+http://svn.mplayerhq.hu/mplayer/trunk/libmpcodecs/ad_hwac3.c?view=markup
+
+Though I guess the zeroes would probably corrupt the MP3 stream.
 
 Regards,
 
-Mathieu Monney
+Pavel.
