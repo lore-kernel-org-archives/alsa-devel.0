@@ -1,17 +1,17 @@
-From: Florian Faber <faber@faberman.de>
-Subject: HDSP maintainer
-Date: Mon, 7 Apr 2008 18:02:06 +0200
-Message-ID: <200804071802.06894.faber@faberman.de>
+From: Cameron Barfield <cbarfield.cd@gmail.com>
+Subject: Softvol for Independent Volume Control
+Date: Mon, 07 Apr 2008 13:16:24 -0700
+Message-ID: <47FA8118.7010001@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de
-	(static-ip-85-25-152-101.inaddr.intergenia.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id A01FF244B2
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id 308B324535
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Apr 2008 18:02:20 +0200 (CEST)
-Content-Disposition: inline
+	Mon,  7 Apr 2008 22:16:29 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so419124ana.80
+	for <alsa-devel@alsa-project.org>; Mon, 07 Apr 2008 13:16:28 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,17 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+Hi --
 
-is there a current maintainer for the RME drivers? I have several 
-patches and additions for the hdsp driver and the user space 
-applications, and there will be much more coming.
+I've got an application that receives multiple network audio streams. Using DMIX, I am 
+able to play back all the streams through my sound card.
 
+The problem is that I would like to be able to independently adjust the volume of each 
+audio stream. Would Softvol work for this? All the examples I've found only show Softvol 
+working as a replacement for a master volume control (and that's all I've been able to get 
+it to do).
 
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key 6C002249          x-hkp://wwwkeys.eu.pgp.net
+If Softvol won't work for independent volume controls, is there any other ALSA plugin or 
+API call that I'm missing? Switching to something like Pulseaudio would probably not be an 
+option since I'm running in an embedded environment.
+
+Regards,
+Cameron
