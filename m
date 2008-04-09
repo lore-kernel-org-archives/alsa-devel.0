@@ -1,28 +1,23 @@
-From: Rong-Jhe <r93922118@ntu.edu.tw>
-Subject: Re: XRUN happens too often.
-Date: Wed, 9 Apr 2008 12:06:51 +0000 (UTC)
-Message-ID: <loom.20080409T051547-963@post.gmane.org>
-References: <loom.20080408T090019-595@post.gmane.org>
-	<loom.20080408T113541-885@post.gmane.org>
-	<47FB8D57.8030904@cox.net>
+From: Daniel Mack <daniel@caiaq.org>
+Subject: [PATCH] snd_usb_caiaq: correct input channel order
+Date: Wed, 9 Apr 2008 16:44:22 +0200
+Message-ID: <20080409144422.GA16484@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5686A2444E
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 100411037F1
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Apr 2008 14:07:07 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1JjZ4t-00044y-Gx
-	for alsa-devel@alsa-project.org; Wed, 09 Apr 2008 12:07:02 +0000
-Received: from 220.128.79.26 ([220.128.79.26])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 09 Apr 2008 12:06:59 +0000
-Received: from r93922118 by 220.128.79.26 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 09 Apr 2008 12:06:59 +0000
+	Wed,  9 Apr 2008 16:44:26 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 72B3E7F4036
+	for <alsa-devel@alsa-project.org>;
+	Wed,  9 Apr 2008 16:44:25 +0200 (CEST)
+Received: from buzzloop.caiaq.de ([127.0.0.1])
+	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id lJxofksSEpSn for <alsa-devel@alsa-project.org>;
+	Wed,  9 Apr 2008 16:44:22 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,44 +30,58 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> I don't have a direct answer for you, but I have an application that seems
-> to be able to write data using writei with no problems at rates up to
-> 192 KHz.  You can download it from sourceforge and look at the source.
-> 
-> http://sourceforge.net/projects/discord/ 
-> 
-> I copied and adapted from other examples on the web.  Do a search for 
-> alsa in
-> the source code and it should take you to the initialization function 
-> and the
-> playing function.
-> 
 
-Thanks for your help.
-I think that XRUN may happen because the time of using snd_pcm_writei().
-I have a problem about snd_pcm_write().
-If the pcm is block, when does snd_pcm_writei() return?
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I try to write the audio data into the dsp file directly without ALSA library.
-The data will be written into DMA of the soundcard.
-This action of writting is asynchronous, and the write() returns after 
-queueing the data intto the DMA.
+This patch corrects the input channel order of hardware supported by
+snd_usb_caiaq.
 
-I guess the problem may be caused by the late time which the second 
-snd_pcm_writei() is called.
-The time between two snd_pcm_writei() may be too long, so the pcm enters XRUN 
-state.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
 
-The period time in this pcm is 21333 us, and the buffer time is 213330 us 
-because there are 10 periods in a buffer.
 
-I recorded the time timeA that snd_pcm_writei() is called, and the time timeB 
-that snd_pcm_writei() returns.
-I calculate the duration between timeA and timeB, and the duration is not 
-regular.
 
-If snd_pcm_writei() is synchronous, the duration may be equal to the buffer 
-time( 10xperiod time).
-According to the measurement, snd_pcm_writei() seems not to be synchronous.
-Can anyone tell me the basic theory of snd_pcm_writei(), especially in dmix 
-mode.
+--17pEHd4RhPHOinZp
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="snd-caiaq-1.3.5.diff"
+
+diff --git a/sound/usb/caiaq/caiaq-audio.c b/sound/usb/caiaq/caiaq-audio.c
+index 1aa9279..ebf3281 100644
+--- a/sound/usb/caiaq/caiaq-audio.c
++++ b/sound/usb/caiaq/caiaq-audio.c
+@@ -202,7 +202,7 @@ static int snd_usb_caiaq_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		dev->audio_out_buf_pos[index] = BYTES_PER_SAMPLE + 1;
+ 	else
+-		dev->audio_in_buf_pos[index] = 0;
++		dev->audio_in_buf_pos[index] = BYTES_PER_SAMPLE;
+ 	
+ 	if (dev->streaming)
+ 		return 0;
+diff --git a/sound/usb/caiaq/caiaq-device.c b/sound/usb/caiaq/caiaq-device.c
+index 73c08b4..379e608 100644
+--- a/sound/usb/caiaq/caiaq-device.c
++++ b/sound/usb/caiaq/caiaq-device.c
+@@ -42,7 +42,7 @@
+ #endif
+ 
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("caiaq USB audio, version 1.3.4");
++MODULE_DESCRIPTION("caiaq USB audio, version 1.3.5");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ 			 "{Native Instruments, RigKontrol3},"
+
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--17pEHd4RhPHOinZp--
