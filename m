@@ -1,22 +1,15 @@
-From: Daniel Mack <daniel@caiaq.org>
-Subject: [PATCH] snd_usb_caiaq: correct input channel order
-Date: Wed, 9 Apr 2008 16:44:22 +0200
-Message-ID: <20080409144422.GA16484@buzzloop.caiaq.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Monotonic timestamps
+Date: Wed, 9 Apr 2008 23:36:02 +0200
+Message-ID: <20080409213602.GA2589@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 100411037F1
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E0D324589
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Apr 2008 16:44:26 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id 72B3E7F4036
-	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Apr 2008 16:44:25 +0200 (CEST)
-Received: from buzzloop.caiaq.de ([127.0.0.1])
-	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id lJxofksSEpSn for <alsa-devel@alsa-project.org>;
-	Wed,  9 Apr 2008 16:44:22 +0200 (CEST)
+	Wed,  9 Apr 2008 23:36:03 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,61 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hey!
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I saw that ALSA 1.0.16 claims to support monotonic timestamps. I
+couldn't figure out however, how they are supposed to work. From the
+sources I only could figure out that they are enabled if a) the libc
+knows CLOCK_MONOTONIC a) the kernel supports CLOCK_MONOTONIC, b) the
+ALSA kernel code support timestamps this way. That's at least how I
+read this code from pcm_hw.c:
 
-This patch corrects the input channel order of hardware supported by
-snd_usb_caiaq.
+<snip>
+#if defined(HAVE_CLOCK_GETTIME) && defined(CLOCK_MONOTONIC)
+        if (SNDRV_PROTOCOL_VERSION(2, 0, 9) <= ver) {
+                struct timespec timespec;
+                if (clock_gettime(CLOCK_MONOTONIC, &timespec) == 0) {
+                        int on = SNDRV_PCM_TSTAMP_TYPE_MONOTONIC;
+                        if (ioctl(fd, SNDRV_PCM_IOCTL_TTSTAMP, &on) <
+                        0) {
+                                ret = -errno;
+                                SNDMSG("TTSTAMP failed\n");
+                                return ret;
+                        }
+                        monotonic = 1;
+                }
+        }
+#endif
+          else if (SNDRV_PROTOCOL_VERSION(2, 0, 5) <= ver) {
+                int on = 1;
+                if (ioctl(fd, SNDRV_PCM_IOCTL_TSTAMP, &on) < 0) {
+                        ret = -errno;
+                        SNDMSG("TSTAMP failed\n");
+                        return ret;
+                }
+        }
+</snip>
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
+The problem with this is that there seems to be no way to determine
+from an application if monotonic timestamps are enabled in an
+snd_pcm_t or not, ALSA just switches over to them, making the
+timestamps relatively useless, because we cannot reliable relate them
+to timestamps we query from the kernel ourselves -- because we just
+don't know if we need to use CLOCK_MONOTONIC or CLOCK_REALTIME.
 
+I find it very strange that ALSA just switches to monotonic timestamps
+just like that, anyway. Programs written for wallclack timestamps will
+break if they run on a system where ALSA uses monotonic timestamps!
 
+There's a function missing that enables monotonic timestamps
+explicitly, or at least one that can be used to query if they are
+monotonic or not.
 
---17pEHd4RhPHOinZp
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="snd-caiaq-1.3.5.diff"
+Could anybody please explain the difference between status->tstamp and
+status->trigger_tstamp for me, please? The doxygen docs are bit too
+terse on this, I fear.
 
-diff --git a/sound/usb/caiaq/caiaq-audio.c b/sound/usb/caiaq/caiaq-audio.c
-index 1aa9279..ebf3281 100644
---- a/sound/usb/caiaq/caiaq-audio.c
-+++ b/sound/usb/caiaq/caiaq-audio.c
-@@ -202,7 +202,7 @@ static int snd_usb_caiaq_pcm_prepare(struct snd_pcm_substream *substream)
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		dev->audio_out_buf_pos[index] = BYTES_PER_SAMPLE + 1;
- 	else
--		dev->audio_in_buf_pos[index] = 0;
-+		dev->audio_in_buf_pos[index] = BYTES_PER_SAMPLE;
- 	
- 	if (dev->streaming)
- 		return 0;
-diff --git a/sound/usb/caiaq/caiaq-device.c b/sound/usb/caiaq/caiaq-device.c
-index 73c08b4..379e608 100644
---- a/sound/usb/caiaq/caiaq-device.c
-+++ b/sound/usb/caiaq/caiaq-device.c
-@@ -42,7 +42,7 @@
- #endif
- 
- MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
--MODULE_DESCRIPTION("caiaq USB audio, version 1.3.4");
-+MODULE_DESCRIPTION("caiaq USB audio, version 1.3.5");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
- 			 "{Native Instruments, RigKontrol3},"
+Oh, and the code I pasted above will not compile if the #ifdef check
+fails, because of the "else". The "else" should be moved inside of
+#ifddef block.
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Lennart
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---17pEHd4RhPHOinZp--
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
