@@ -1,24 +1,19 @@
-From: Daniel Mack <daniel@caiaq.org>
-Subject: [PATCH] snd_usb_caiaq: make high sample rates work
-	with A8DJ
-Date: Thu, 10 Apr 2008 14:20:04 +0200
-Message-ID: <20080410122004.GA24215@buzzloop.caiaq.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Monotonic timestamps
+Date: Thu, 10 Apr 2008 16:15:13 +0200
+Message-ID: <20080410141513.GA5852@tango.0pointer.de>
+References: <20080409213602.GA2589@tango.0pointer.de>
+	<47FDBBC1.1030500@joow.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="dDRMvlgZJXvWKvBx"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F8F0244CC
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30E29244BA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Apr 2008 14:20:12 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id 087CC7F4037
-	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Apr 2008 14:20:12 +0200 (CEST)
-Received: from buzzloop.caiaq.de ([127.0.0.1])
-	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Lg2-vVNXbEhd for <alsa-devel@alsa-project.org>;
-	Thu, 10 Apr 2008 14:20:04 +0200 (CEST)
+	Thu, 10 Apr 2008 16:15:15 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <47FDBBC1.1030500@joow.be>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,73 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Pieter Palmers <pieterp@joow.be>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 10.04.08 09:03, Pieter Palmers (pieterp@joow.be) wrote:
 
---dDRMvlgZJXvWKvBx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > I find it very strange that ALSA just switches to monotonic timestamps
+> > just like that, anyway. Programs written for wallclack timestamps will
+> > break if they run on a system where ALSA uses monotonic timestamps!
+> > 
+> > There's a function missing that enables monotonic timestamps
+> > explicitly, or at least one that can be used to query if they are
+> > monotonic or not.
+> The clean solution would (IMHO) be to have ALSA provide a function to 
+> obtain 'current time', thereby making the timestamp system 
+> self-contained. Maybe it already does...
 
-This patch for snd_usb_caiaq makes sample rates higher dann 48KHz work
-with devices which have more than 2 stereo input/output pairs.
+This wouldn't help much since timestamps might also come from other
+libraries. i.e. being able to relate timestamps from ALSA with
+timestamps from the application itself is not enough. They also need
+to be relatable to timestamps from other code, which might not
+necessarily be linked against ALSA.
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
+i.e. think of gstreamer that uses timestamps attached to each video
+frame. Do you really expect gst to move their timestamp source over to
+ALSA just because one of the plugins for gst supports ALSA?
 
+Lennart
 
---dDRMvlgZJXvWKvBx
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="snd-caiaq-1.3.6.diff"
-
-diff --git a/sound/usb/caiaq/caiaq-audio.c b/sound/usb/caiaq/caiaq-audio.c
-index ebf3281..24970a5 100644
---- a/sound/usb/caiaq/caiaq-audio.c
-+++ b/sound/usb/caiaq/caiaq-audio.c
-@@ -39,7 +39,8 @@
- #define BYTES_PER_SAMPLE	3
- #define BYTES_PER_SAMPLE_USB	4
- #define MAX_BUFFER_SIZE		(128*1024)
--				 
-+#define MAX_ENDPOINT_SIZE	512
-+
- #define ENDPOINT_CAPTURE	2
- #define ENDPOINT_PLAYBACK	6
- 
-@@ -221,7 +222,10 @@ static int snd_usb_caiaq_pcm_prepare(struct snd_pcm_substream *substream)
- 	
- 	bpp = ((runtime->rate / 8000) + CLOCK_DRIFT_TOLERANCE)
- 		* bytes_per_sample * CHANNELS_PER_STREAM * dev->n_streams;
--	
-+
-+	if (bpp > MAX_ENDPOINT_SIZE)
-+		bpp = MAX_ENDPOINT_SIZE;
-+
- 	ret = snd_usb_caiaq_set_audio_params(dev, runtime->rate,
- 					     runtime->sample_bits, bpp);
- 	if (ret)
-diff --git a/sound/usb/caiaq/caiaq-device.c b/sound/usb/caiaq/caiaq-device.c
-index 379e608..e97d8b2 100644
---- a/sound/usb/caiaq/caiaq-device.c
-+++ b/sound/usb/caiaq/caiaq-device.c
-@@ -42,7 +42,7 @@
- #endif
- 
- MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
--MODULE_DESCRIPTION("caiaq USB audio, version 1.3.5");
-+MODULE_DESCRIPTION("caiaq USB audio, version 1.3.6");
- MODULE_LICENSE("GPL");
- MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
- 			 "{Native Instruments, RigKontrol3},"
-
---dDRMvlgZJXvWKvBx
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---dDRMvlgZJXvWKvBx--
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
