@@ -1,19 +1,19 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Monotonic timestamps
-Date: Thu, 10 Apr 2008 16:26:45 +0200
-Message-ID: <20080410142645.GB5852@tango.0pointer.de>
-References: <20080409213602.GA2589@tango.0pointer.de>
-	<Pine.LNX.4.61.0804100929390.13990@tm8103.perex-int.cz>
+Subject: Re: My issues with the ALSA API
+Date: Thu, 10 Apr 2008 17:20:38 +0200
+Message-ID: <20080410152038.GD5852@tango.0pointer.de>
+References: <20080409221512.GA4466@tango.0pointer.de>
+	<Pine.LNX.4.61.0804100951180.13990@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 97A1A243B2
+	by alsa0.perex.cz (Postfix) with ESMTP id 4824E24442
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Apr 2008 16:26:45 +0200 (CEST)
+	Thu, 10 Apr 2008 17:20:39 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0804100929390.13990@tm8103.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.61.0804100951180.13990@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,77 +27,118 @@ To: Jaroslav Kysela <perex@perex.cz>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 10.04.08 09:48, Jaroslav Kysela (perex@perex.cz) wrote:
+On Thu, 10.04.08 10:16, Jaroslav Kysela (perex@perex.cz) wrote:
 
-Hi,
-
-> > The problem with this is that there seems to be no way to determine
-> > from an application if monotonic timestamps are enabled in an
-> > snd_pcm_t or not, ALSA just switches over to them, making the
-> > timestamps relatively useless, because we cannot reliable relate them
-> > to timestamps we query from the kernel ourselves -- because we just
-> > don't know if we need to use CLOCK_MONOTONIC or CLOCK_REALTIME.
+> Mixer
+> =====
 > 
-> Application can just do a simple comparsion between ALSA timestamp and 
-> gettimeofday() output. The gettimeofday() returns value since the Epoch, 
-> but CLOCK_MONOTONIC returns time since start of system. Thus, it's really 
-> easy to see if time matches or not (difference will be very big) to 
-> detect the time source. Value from gettimeofday() does not make much sense 
-> in audio (real time) environment.
-
-Uh, this is a really ugly heuristic and is not compatible with the
-CLOCK_MONOTONIC docs. Quoting from http://www.opengroup.org/onlinepubs/000095399/functions/clock_getres.html:
-
-<snip>
-If the Monotonic Clock option is supported, all implementations shall
-support a clock_id of CLOCK_MONOTONIC defined in <time.h>. This clock
-represents the monotonic clock for the system. For this clock, the
-value returned by clock_gettime() represents the amount of time (in
-seconds and nanoseconds) since an unspecified point in the past (for
-example, system start-up time, or the Epoch). This point does not
-change after system start-up time.
-</snip>
-
-i.e. it is not mandated by the standard that CLOCK_MONOTONIC is
-measured from system bootup. Even more: it is suggested that it might
-be relative to the epoch! In that case, distuingishing values returned
-by CLOCK_MONOTONIC from CLOCK_REALTIME just by looking on them is
-simply not possible.
-
-Yes, I do fully agree that gettimeofday()/CLOCK_REALTIME is not a good
-choice for audio programming. But still, the same way as the ALSA libs
-fall back to CLOCK_REALTIME when CLOCK_MONOTONIC is not available I
-need to do the same in PA. And I have to do it in the exact same
-cases. However, I currently can't, since the decision is hidden
-inside of ALSA, and the conditions (like the alsa kernel version) are
-not really accessible from outside.
-
-> > I find it very strange that ALSA just switches to monotonic timestamps
-> > just like that, anyway. Programs written for wallclack timestamps will
-> > break if they run on a system where ALSA uses monotonic timestamps!
+> Please explain this question (why you need the dB <-> value conversion, 
+> we assumed that application works in dB or integer range not both):
 > 
-> It's true, but so far - I don't know about any program using timestamps in 
-> serious way. Also, timestamps from gettimeofday() are not reliable (for 
-> example when NTP time synchronization is used in system).
+> 'It is possible to query the dB range of a smixer element. And it is 
+> possible to query and set the current dB level. However, it is not 
+> possible to have a dB value converted to an integer level or vice versa, 
+> without touching the actual setting. i.e. a question like "What is the 
+> integer level 0 dB corresponds to?" can not be answered by ALSA. Which 
+> happens to be a serious limitation.'
 
-PA would use them in a serious way (to implement timer-based sched).
+I can think of many reasons, they all have to do with the fact that
+the dB scale is not integral, i.e. in contrast for the normal integer
+scale you won't always get what you are asking for, because the
+hardware only supports a value below or above what you asked for: a) a
+volume control tool might want to show a slider that is linear to the
+dB scale, but also shows which dB values are actually selectable from
+it via small black lines on the side (or suchlike) b) PA doesn't make
+use of positive dB values -- it limits itself to attenuation via the
+mixer. However, right now there is no way to find out which actually
+supported dB value is the nearest one to 0dB. c) Several different dB
+values may refer to the same actual hw setting. It would be good if a
+specific dB value actually maps to the same integer hw setting as some
+other value, to surpress redundant "volume change" events.
 
-> > Could anybody please explain the difference between status->tstamp and
-> > status->trigger_tstamp for me, please? The doxygen docs are bit too
-> > terse on this, I fear.
+And I am pretty sure people could think of more cases.
+
+> PCM
+> ===
 > 
-> I added just these words to trigger tstamp:
-> 
-> + * Trigger means a PCM state transition (from stopped to running or
-> + * versa vice). It applies also to pause and suspend. In other words,
-> + * timestamp contains time when stream started or when it was stopped.
+> Timestamps - since 1.0.16 monotonic clocks are usable
 
-Awesome, thanks a lot! This helped!
+Hmm, not really, as I hope I made clear in my other posting.
 
-> The "now" tstamp is obvious, or not? It's just timestamp related to 
-> current stream position reported in other ALSA functions.
+> plughw: issue - since 1.0.16 you can pass SND_PCM_NO_AUTO flags to open 
+> function to disable specific conversions
 
-Yes, that was clear to me.
+Awesome, thank you very much! This is exactly what I need. I updated
+the page accordingly.
+
+> buffer mananagement - I think we already discussed this - use sw_params or 
+> PCM timer to be updated when buffer position changes (interrupt was
+> processed), you can use poll() as well
+
+I am doing this now. I'd still love to see an API for naked
+interrupts, though.
+
+> What do you mean with 'There is no API to query the granularity of 
+> snd_pcm_delay()' ? Application should not know details about bottom 
+> implementation.
+
+As far as I understood there are a few soundcards around where
+the playback sample index is only known each time the hw changes to
+the next fragment. It would be good to know about this, to tweak the
+time interpolation in timer-based scheduling.
+
+> Documentantion - if you ask specific questions, we try to update 
+> documentantion for other developers.. unfortunately, saying that whole 
+> documentantion is bad is not productive
+
+Sorry. I'll make sure I'll ask for clarifications more clearly on
+alsa-devel from now on.
+
+Here's my first batch of questions:
+
+I am not sure I get what the "transfer align" is about.
+
+It is not clear how snd_pcm_update_avail() and snd_pcm_hwsync()
+actually play together, why they exist at all, and how exactly the
+optimization they are apparently useful for should  be used.
+
+It would be good to have an explanation what a "card", what an "id",
+what a "name", what a "device" and what a "subdevice" actually refers
+to, with examples.
+
+regarding hw params: What exactly is "double buffering",
+"sample-resolution mmap", "block transfer", "batch", "sync_start" ,
+"fifo_size", "subformat", "export buffer", "min align"; why there is a
+need for a seperate can_pause() and can_resume()? When and how should
+all these options be used?
+
+BTW: the doc for is_batch is copied 1:1 from the double_buffer text.
+
+The docs speak of "blocked" and "non-blocked" open. It should be
+"blocking", I believe.
+
+regarding sw params: What exactly is a "boundary"? Difference between
+tstamp modes? how do silence_size and silence_threshold relate?
+
+What is snd_pcm_xrun_t useful for? (I think it is obsolete, should
+also be removed from docs, then)
+
+Why is snd_pcm_scope included in the normal PCM docs?
+
+> stderr output - you can redirect all outputs via 
+> snd_lib_error_set_handler().
+
+Ah, awesome, didn't find that one. Thanks.
+
+> My plans for near future are to implement a better PCM device enumeration 
+> and try to simplify mixer and add the mixer <-> PCM relationship.
+
+That would be great.
+
+> Also, could you explain why current device enumeration is not useful to 
+> hotplug? There is information which card will be used (CARD=).
+
+It's an API that returns a static list. That's all. 
 
 Thanks,
 
