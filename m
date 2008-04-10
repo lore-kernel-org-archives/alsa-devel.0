@@ -1,17 +1,32 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Monotonic timestamps
-Date: Thu, 10 Apr 2008 09:48:19 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0804100929390.13990@tm8103.perex-int.cz>
-References: <20080409213602.GA2589@tango.0pointer.de>
+From: Rong-Jhe <r93922118@ntu.edu.tw>
+Subject: Re: XRUN happens too often.
+Date: Thu, 10 Apr 2008 07:59:06 +0000 (UTC)
+Message-ID: <loom.20080410T074326-321@post.gmane.org>
+References: <loom.20080408T090019-595@post.gmane.org>
+	<loom.20080408T113541-885@post.gmane.org>
+	<47FB8D57.8030904@cox.net>
+	<loom.20080409T051547-963@post.gmane.org> <47FD42F2.70903@cox.net>
+	<75b66ecd0804091801q1cf2d7fdq34a1b81048eb78d6@mail.gmail.com>
+	<loom.20080410T030522-213@post.gmane.org>
+	<75b66ecd0804092154m47902330yd2772fef567554bc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 533EC10381F
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 46776103827
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Apr 2008 09:48:20 +0200 (CEST)
-In-Reply-To: <20080409213602.GA2589@tango.0pointer.de>
+	Thu, 10 Apr 2008 09:59:16 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Jjrgg-0001Wo-Do
+	for alsa-devel@alsa-project.org; Thu, 10 Apr 2008 07:59:15 +0000
+Received: from 220.128.79.26 ([220.128.79.26])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2008 07:59:14 +0000
+Received: from r93922118 by 220.128.79.26 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2008 07:59:14 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,60 +36,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 9 Apr 2008, Lennart Poettering wrote:
 
-> Hey!
+> 
+> ALSA does not generate threads for you like this.  I was referring to
+> your application's audio thread, assuming that your app is indeed
+> multithreaded.
+> 
+> The duration probably varies because the call to snd_pcm_writei() will
+> block until there is enough space in the ALSA ringbuffer to receive
+> your data.
+> 
+> Lee
+> 
 
-Hi,
+I found that there will be a thread generated after calling snd_pcm_open().
+I use command 'ps' to check it.
+Due to this I guess snd_pcm_writei() only put the data into the buffer of the 
+thread 'pcm'.
 
-> The problem with this is that there seems to be no way to determine
-> from an application if monotonic timestamps are enabled in an
-> snd_pcm_t or not, ALSA just switches over to them, making the
-> timestamps relatively useless, because we cannot reliable relate them
-> to timestamps we query from the kernel ourselves -- because we just
-> don't know if we need to use CLOCK_MONOTONIC or CLOCK_REALTIME.
-
-Application can just do a simple comparsion between ALSA timestamp and 
-gettimeofday() output. The gettimeofday() returns value since the Epoch, 
-but CLOCK_MONOTONIC returns time since start of system. Thus, it's really 
-easy to see if time matches or not (difference will be very big) to 
-detect the time source. Value from gettimeofday() does not make much sense 
-in audio (real time) environment.
-
-> I find it very strange that ALSA just switches to monotonic timestamps
-> just like that, anyway. Programs written for wallclack timestamps will
-> break if they run on a system where ALSA uses monotonic timestamps!
-
-It's true, but so far - I don't know about any program using timestamps in 
-serious way. Also, timestamps from gettimeofday() are not reliable (for 
-example when NTP time synchronization is used in system).
-
-> Could anybody please explain the difference between status->tstamp and
-> status->trigger_tstamp for me, please? The doxygen docs are bit too
-> terse on this, I fear.
-
-I added just these words to trigger tstamp:
-
-+ * Trigger means a PCM state transition (from stopped to running or
-+ * versa vice). It applies also to pause and suspend. In other words,
-+ * timestamp contains time when stream started or when it was stopped.
-
-The "now" tstamp is obvious, or not? It's just timestamp related to 
-current stream position reported in other ALSA functions.
-
-> Oh, and the code I pasted above will not compile if the #ifdef check
-> fails, because of the "else". The "else" should be moved inside of
-> #ifddef block.
-
-Thanks. Fixed in our repo.
-
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+This thread then schedules of mixes the audio data, and put it into the buffer 
+of ALSA driver.
+ALSA ringbuffer only belongs to ALSA library, and ALSA driver uses anoother 
+buffer in kernel.
+Thus, there must be a thread that can put the data in ALSA ringbuffer into the 
+buffer of ALSA driver.
