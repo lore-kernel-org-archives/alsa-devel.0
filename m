@@ -1,33 +1,16 @@
-From: Rong-Jhe <r93922118@ntu.edu.tw>
-Subject: Re: XRUN happens too often.
-Date: Thu, 10 Apr 2008 08:24:51 +0000 (UTC)
-Message-ID: <loom.20080410T082046-684@post.gmane.org>
-References: <loom.20080408T090019-595@post.gmane.org>
-	<loom.20080408T113541-885@post.gmane.org>
-	<47FB8D57.8030904@cox.net>
-	<loom.20080409T051547-963@post.gmane.org> <47FD42F2.70903@cox.net>
-	<75b66ecd0804091801q1cf2d7fdq34a1b81048eb78d6@mail.gmail.com>
-	<loom.20080410T030522-213@post.gmane.org>
-	<75b66ecd0804092154m47902330yd2772fef567554bc@mail.gmail.com>
-	<loom.20080410T074326-321@post.gmane.org>
+From: Tony Vroon <tony@linx.net>
+Subject: [ALC262 patch_realtek.c] Fujitsu Lifebook PC speaker
+	signal
+Date: Thu, 10 Apr 2008 12:10:41 +0100
+Message-ID: <1207825841.5651.20.camel@localhost>
+Reply-To: tony@linx.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5278760266479011310=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF936103827
+Received: from bronze.linx.net (bronze.linx.net [195.66.232.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 730D62447F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Apr 2008 10:25:09 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Jjs5f-0002a8-Fs
-	for alsa-devel@alsa-project.org; Thu, 10 Apr 2008 08:25:04 +0000
-Received: from 220.128.79.26 ([220.128.79.26])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2008 08:25:03 +0000
-Received: from r93922118 by 220.128.79.26 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2008 08:25:03 +0000
+	Thu, 10 Apr 2008 13:13:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,27 +21,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
-> 
-> I found that there will be a thread generated after calling snd_pcm_open().
-> I use command 'ps' to check it.
-> Due to this I guess snd_pcm_writei() only put the data into the buffer of 
-the 
-> thread 'pcm'.
-> 
-> This thread then schedules of mixes the audio data, and put it into the 
-buffer 
-> of ALSA driver.
-> ALSA ringbuffer only belongs to ALSA library, and ALSA driver uses anoother 
-> buffer in kernel.
-> Thus, there must be a thread that can put the data in ALSA ringbuffer into 
-the 
-> buffer of ALSA driver.
-> 
+--===============5278760266479011310==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-MQ6mXDHOhkb5iX/Xo41t"
 
-I found that snd_pcm_direct_server_create() in ALSA library will create a 
-thread.
-This resolves my problem that why ALSA library needn't use a daemon to mixing 
-audio like other mixing server.
+
+--=-MQ6mXDHOhkb5iX/Xo41t
+Content-Type: multipart/mixed; boundary="=-czqnxqTkrVtDPU5TOrLY"
+
+
+--=-czqnxqTkrVtDPU5TOrLY
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Good afternoon,
+
+Could you please consider the following patch for the 2.6.26 merge window.
+The legacy PC speaker signal was not routed to outputs. The codec is not=20
+prevented from powering down in this patch, although I suppose one could=20
+argue that perhaps it should be. Let me know if anyone feels strongly one=20
+way or the other.
+
+Signed-Off-By: Tony Vroon <tony@linx.net>
+
+Regards,
+Tony V.
+LINX sysadmin
+
+--=-czqnxqTkrVtDPU5TOrLY
+Content-Disposition: attachment; filename=alc262-fujitsu-pcspk.patch
+Content-Type: text/x-patch; name=alc262-fujitsu-pcspk.patch; charset=utf-8
+Content-Transfer-Encoding: base64
+
+LS0tIHNvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jLk9MRAkyMDA4LTA0LTEwIDExOjUyOjIz
+LjAwMDAwMDAwMCArMDEwMA0KKysrIHNvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCTIwMDgt
+MDQtMTAgMTE6NTA6MjkuMDAwMDAwMDAwICswMTAwDQpAQCAtODA2NSw2ICs4MDY1LDggQEANCiAJ
+fSwNCiAJSERBX0NPREVDX1ZPTFVNRSgiQ0QgUGxheWJhY2sgVm9sdW1lIiwgMHgwYiwgMHgwNCwg
+SERBX0lOUFVUKSwNCiAJSERBX0NPREVDX01VVEUoIkNEIFBsYXliYWNrIFN3aXRjaCIsIDB4MGIs
+IDB4MDQsIEhEQV9JTlBVVCksDQorCUhEQV9DT0RFQ19WT0xVTUUoIlBDIFNwZWFrZXIgVm9sdW1l
+IiwgMHgwYiwgMHgwNSwgSERBX0lOUFVUKSwNCisJSERBX0NPREVDX01VVEUoIlBDIFNwZWFrZXIg
+U3dpdGNoIiwgMHgwYiwgMHgwNSwgSERBX0lOUFVUKSwNCiAJSERBX0NPREVDX1ZPTFVNRSgiTWlj
+IEJvb3N0IiwgMHgxOCwgMCwgSERBX0lOUFVUKSwNCiAJSERBX0NPREVDX1ZPTFVNRSgiTWljIFBs
+YXliYWNrIFZvbHVtZSIsIDB4MGIsIDB4MCwgSERBX0lOUFVUKSwNCiAJSERBX0NPREVDX01VVEUo
+Ik1pYyBQbGF5YmFjayBTd2l0Y2giLCAweDBiLCAweDAsIEhEQV9JTlBVVCksDQo=
+
+
+--=-czqnxqTkrVtDPU5TOrLY--
+
+--=-MQ6mXDHOhkb5iX/Xo41t
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEABECAAYFAkf99bEACgkQp5vW4rUFj5rlkgCfTfbZLzRvaYN3uqYCfbXlOoLu
+VhkAnRb8he65ESafJiF6hQGyOEScVEAE
+=k0QN
+-----END PGP SIGNATURE-----
+
+--=-MQ6mXDHOhkb5iX/Xo41t--
+
+
+--===============5278760266479011310==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5278760266479011310==--
