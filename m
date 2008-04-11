@@ -1,15 +1,16 @@
-From: Matthew Ranostay <mranostay@embeddedalley.com>
-Subject: [PATCH] hda: Correct SPDIF out default config
-Date: Fri, 11 Apr 2008 16:16:08 -0400
-Message-ID: <47FFC708.1050908@embeddedalley.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: What does 0dB refer to? (Logitech USB Speakers)
+Date: Fri, 11 Apr 2008 22:46:11 +0200
+Message-ID: <20080411204610.GA32413@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp101.biz.mail.re2.yahoo.com (smtp101.biz.mail.re2.yahoo.com
-	[68.142.229.215]) by alsa0.perex.cz (Postfix) with SMTP id 53F692453E
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id AAE9C2453D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Apr 2008 22:16:18 +0200 (CEST)
+	Fri, 11 Apr 2008 22:46:11 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,29 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>, Mario_Limonciello@Dell.com
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Several laptops have have the SPDIF out defined as 'Digital other out'
-when it should be 'SPDIF out' in the default config.
+Heya!
 
-Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
----
-diff -r 0dd2b6cb1506 pci/hda/patch_sigmatel.c
---- a/pci/hda/patch_sigmatel.c	Wed Apr 09 08:16:33 2008 +0200
-+++ b/pci/hda/patch_sigmatel.c	Fri Apr 11 16:02:57 2008 -0400
-@@ -3778,6 +3778,13 @@ static int patch_stac927x(struct hda_cod
- 		spec->mixer = stac927x_mixer;
- 		break;
- 	case STAC_DELL_BIOS:
-+		switch (codec->subsystem_id) {
-+		case 0x10280209:
-+		case 0x1028022e:
-+			/* correct the device field to SPDIF out */
-+			stac92xx_set_config_reg(codec, 0x21, 0x01442070);
-+			break;
-+		};
- 		/* configure the analog microphone on some laptops */
- 		stac92xx_set_config_reg(codec, 0x0c, 0x90a79130);
- 		/* correct the front output jack as a hp out */
+I think I discussed this with both James and Takashi a while back: it
+would be great if we could initialize the sound card mixers in a
+better way by default and not everything set to 0. i.e. for output
+only PCM should be active, at a sensible volume, no bass/treble/3d
+enabled or whatever. All other sources should be muted. And that for
+input the mic jack should be active and nothing else, again. Right now
+people too often have to invest a lot of time to find the right
+controls to toggle/change in the mixer to get something sensible out
+of the speakers.
+
+Some distributions have started to ship special scripts that try to
+initialize the volumes properly. I know for the Fedora case that this
+tool is very very simple, and just initializes PCM and Master to 70%
+and that's basically it. It would be highly preferable if we had a
+sane tool like this from alsa upstream, which would set the default
+values to 0dB, possibly as an extension to "alsactl".
+
+I started to hack something similar to this as part of PulseAudio: if
+PA finds that the PCM slider is not really useful for volume control
+(no attenuation to at least -60dB, too few steps, no seperate controls
+for all channels, ...) it falls back to software volume control,
+however tries to initialize the the slider to 0dB first.
+
+Now the thing is, this mostly works fine, however on one of my
+devices, a pair of external Logitech USB speakers (ID 046d:0a04
+Logitech, Inc. V20 portable speakers), the dB scale seems to be
+totally bogus. According to ALSA volume ranges from -41 dB to
++3dB. However, Every setting > -41 dB makes audio awfully
+loud. Really, really fucking loud that is. Disco loud. As loud that
+the speakers start jump around centimeters due to the massive
+vibrations. Setting the volume to 0dB with those speakers really makes
+you fear you are trashing them.
+
+I somehow expected that the magic "0dB" setting in ALSA would refer to
+some sane default, where the final output would have a sensible
+volume. In this case this is not so. I am thus wondering how ALSA
+actually defines 0dB? Is this a bug in the hardware that should be
+worked around in ALSA? Is this an ALSA bug?
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
