@@ -1,20 +1,18 @@
-From: Adrian Bunk <bunk@kernel.org>
-Subject: Re: [PATCH] snd_usb_caiaq: use likely()/unlikely()
-Date: Sun, 13 Apr 2008 00:38:08 +0300
-Message-ID: <20080412213808.GC8849@cs181133002.pp.htv.fi>
-References: <20080412201331.GA13041@buzzloop.caiaq.de>
-	<20080412202127.GB8849@cs181133002.pp.htv.fi>
-	<20080412210119.GB13041@buzzloop.caiaq.de>
+From: stan <ghjeold_i_mwee@cox.net>
+Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
+Date: Sat, 12 Apr 2008 14:54:19 -0700
+Message-ID: <48012F8B.5010805@cox.net>
+References: <20080411204610.GA32413@tango.0pointer.de>	<480099C6.3040708@superbug.co.uk>	<20080412133536.GC32491@tango.0pointer.de>	<4800FC14.3060804@superbug.co.uk>
+	<20080412211456.GA2828@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6.pp.htv.fi (smtp6.pp.htv.fi [213.243.153.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4130224492
+Received: from fed1rmmtao105.cox.net (fed1rmmtao105.cox.net [68.230.241.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25A9B244C6
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Apr 2008 23:39:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080412210119.GB13041@buzzloop.caiaq.de>
+	Sat, 12 Apr 2008 23:54:21 +0200 (CEST)
+In-Reply-To: <20080412211456.GA2828@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+To: John Rigg <aldev@sound-man.co.uk>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 12, 2008 at 11:01:19PM +0200, Daniel Mack wrote:
-> Hi,
-> 
-> On Sat, Apr 12, 2008 at 11:21:27PM +0300, Adrian Bunk wrote:
-> > Does it bring any measurable advantage?
-> > 
-> > Otherwise it's usually better to let the compiler decide how to optimize 
-> > the code.
-> 
-> I didn't really measure, but how should the compiler know how likely a
-> certain condition in hardware state is? I thought, in such cases it's
-> generally a good idea to give the compiler some hints.
+John Rigg wrote:
+> On Sat, Apr 12, 2008 at 07:14:44PM +0100, James Courtier-Dutton wrote:
+>   
+>> That sounds reasonable for now. Professional sound card users will maybe 
+>> just have to remember to mute the master control before connecting their 
+>> speakers.
+>>     
+>
+> A better solution IMO would be to make the default behaviour of the
+> pro/semi-pro sound cards default to minimum gain with everything muted,
+> and do what you're suggesting with other cards. 
+>
+> If non-pro users want to use pro cards (which are fairly specialised
+> after all), they can unmute things. The idea of, say, starting up the
+> hdsp mixer for an RME HDSP MADI card and having all 64 channels come up
+> at 0dB is pretty frightening. Anything which can start in such a
+> potentially dangerous state is unusable in a professional context.
+>
+> John
+>   
 
-gcc's heuristics often tends to guess better than programmers on how to 
-optimize code since most people who think they know better how code 
-should get optimized than the compiler do not actually know better...
+I haven't got any skin in this game as either way is fine for me.  But 
+to contribute I thought I would ask a couple of questions.
 
-And what you call "some hints" _forces_ the compiler to optimize for a 
-certain condition (even if this e.g. results in bigger code or 
-omitting some optimization).
+Is there a way to identify whether a card is pro or casual?  Number of 
+channels?  DACs?  Chipsets?
 
-Considering the lines of code and the number of contributors to the 
-Linux kernel some annotations are always wrong and might cause more
-harm than the correct ones gain.
-
-If it's some hotpath and a current gcc does generate measurably faster 
-code with a likely/unlikely it's justified, but otherwise it's better to 
-leave gcc all freedom on how to optimize it.
-
-> Daniel
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+How is this handled on other OSs?  Windows, Mac, Sun?
