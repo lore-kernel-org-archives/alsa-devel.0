@@ -1,22 +1,20 @@
-From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Sat, 12 Apr 2008 22:41:43 +0100
-Message-ID: <20080412214143.GB2828@localhost>
-References: <20080411204610.GA32413@tango.0pointer.de>
-	<20080412133536.GC32491@tango.0pointer.de>
-	<4800FC14.3060804@superbug.co.uk>
-	<200804122025.57165.faber@faberman.de>
-	<48010CF9.4000600@superbug.co.uk>
+From: Adrian Bunk <bunk@kernel.org>
+Subject: Re: [PATCH] snd_usb_caiaq: use likely()/unlikely()
+Date: Sun, 13 Apr 2008 00:38:08 +0300
+Message-ID: <20080412213808.GC8849@cs181133002.pp.htv.fi>
+References: <20080412201331.GA13041@buzzloop.caiaq.de>
+	<20080412202127.GB8849@cs181133002.pp.htv.fi>
+	<20080412210119.GB13041@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2CF3024478
+Received: from smtp6.pp.htv.fi (smtp6.pp.htv.fi [213.243.153.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4130224492
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Apr 2008 23:32:21 +0200 (CEST)
+	Sat, 12 Apr 2008 23:39:05 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <48010CF9.4000600@superbug.co.uk>
+In-Reply-To: <20080412210119.GB13041@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Florian Faber <faber@faberman.de>, alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 12, 2008 at 08:26:49PM +0100, James Courtier-Dutton wrote:
-> Florian Faber wrote:
-> > On Saturday 12 April 2008 20:14:44 James Courtier-Dutton wrote:
-> >   
-> >> That sounds reasonable for now. Professional sound card users will
-> >> maybe just have to remember to mute the master control before
-> >> connecting their speakers.
-> >>     
-> >
-> > This is very, very dangerous - not only can it harm the equipment, it 
-> > can also harm the user. 0dBFS equals >121dB at a distance 2m away from 
-> > my head, and I have a *small* setup.
-> >
-> > To be honest, I think I would then insert a switch in the RME driver 
-> > that will enable the outputs only after the RME mixer application has 
-> > been started.
-> >
-> >
-> > Flo
-> >   
+On Sat, Apr 12, 2008 at 11:01:19PM +0200, Daniel Mack wrote:
+> Hi,
 > 
-> Thats not very helpful really.
-> What value should we set it to then?
-
-Minimum gain. On the aforementioned RME mixer, setting all the channels
-to anything other than that would make it unusable.
-Pro cards with high channel counts are very different from consumer
-cards, and their users have totally different requirements. Is it
-really a problem to accomodate both classes of card/user?
-
-> Another alternative could be to leave everything at 0dB except the master.
-
-With 64 channels, that is likely to cause massive clipping
-even if damage is prevented by keeping the master down.
-The usual use case here would be to just turn up the required
-channels. Having to turn all the rest down manually would seriously
-disrupt work flow. No studio client would be happy about this.
-
-> For the master we could select say minimum dB + 12.
-> So, if the Master ranged from -70 to 0 dB, we would set Master to -70 + 
-> 12 = -58dB.
+> On Sat, Apr 12, 2008 at 11:21:27PM +0300, Adrian Bunk wrote:
+> > Does it bring any measurable advantage?
+> > 
+> > Otherwise it's usually better to let the compiler decide how to optimize 
+> > the code.
 > 
-> Would that suit everyone better.
+> I didn't really measure, but how should the compiler know how likely a
+> certain condition in hardware state is? I thought, in such cases it's
+> generally a good idea to give the compiler some hints.
 
-That would be reasonable for consumer cards. Pro sound cards should
-never initialise themselves to anything other than minimum gain.
+gcc's heuristics often tends to guess better than programmers on how to 
+optimize code since most people who think they know better how code 
+should get optimized than the compiler do not actually know better...
 
-John
+And what you call "some hints" _forces_ the compiler to optimize for a 
+certain condition (even if this e.g. results in bigger code or 
+omitting some optimization).
+
+Considering the lines of code and the number of contributors to the 
+Linux kernel some annotations are always wrong and might cause more
+harm than the correct ones gain.
+
+If it's some hotpath and a current gcc does generate measurably faster 
+code with a likely/unlikely it's justified, but otherwise it's better to 
+leave gcc all freedom on how to optimize it.
+
+> Daniel
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
