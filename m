@@ -1,16 +1,17 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: What does 0dB refer to? (Logitech USB Speakers)
-Date: Fri, 11 Apr 2008 22:46:11 +0200
-Message-ID: <20080411204610.GA32413@tango.0pointer.de>
-Mime-Version: 1.0
+From: Taek Joo Kim <taicki@gmail.com>
+Subject: External IO plugin question
+Date: Fri, 11 Apr 2008 20:06:18 -0400
+Message-ID: <12E68E34-BB10-4E42-B05D-657092C305E1@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v919.2)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id AAE9C2453D
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id D167F2459A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Apr 2008 22:46:11 +0200 (CEST)
-Content-Disposition: inline
+	Sat, 12 Apr 2008 02:06:22 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so185934ana.80
+	for <alsa-devel@alsa-project.org>; Fri, 11 Apr 2008 17:06:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,53 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
+Hi. I am working on ALSA external IO plugin now. Its function is  
+similar to the pulse plugin. A server sends sound to multiple clients.
 
-I think I discussed this with both James and Takashi a while back: it
-would be great if we could initialize the sound card mixers in a
-better way by default and not everything set to 0. i.e. for output
-only PCM should be active, at a sensible volume, no bass/treble/3d
-enabled or whatever. All other sources should be muted. And that for
-input the mic jack should be active and nothing else, again. Right now
-people too often have to invest a lot of time to find the right
-controls to toggle/change in the mixer to get something sensible out
-of the speakers.
+When I play sound with my plugin, the sound is played really fast. It  
+means that it is like playing with x5 or x10 speed. I did not write  
+any code for synchronization between server and client. To try to fix  
+it, I saw the pulse plugin. I guess that it uses some synchronization  
+code (poll_descriptors), but I am not sure.
 
-Some distributions have started to ship special scripts that try to
-initialize the volumes properly. I know for the Fedora case that this
-tool is very very simple, and just initializes PCM and Master to 70%
-and that's basically it. It would be highly preferable if we had a
-sane tool like this from alsa upstream, which would set the default
-values to 0dB, possibly as an extension to "alsactl".
+My questions are:
+1. Which part should take care of playing sound properly in this  
+architecture, server or client?
+2. Do I need to deal with synchronization between server and client?
+3. If 2 is yes, is there any hints to do this with multiple clients?
 
-I started to hack something similar to this as part of PulseAudio: if
-PA finds that the PCM slider is not really useful for volume control
-(no attenuation to at least -60dB, too few steps, no seperate controls
-for all channels, ...) it falls back to software volume control,
-however tries to initialize the the slider to 0dB first.
-
-Now the thing is, this mostly works fine, however on one of my
-devices, a pair of external Logitech USB speakers (ID 046d:0a04
-Logitech, Inc. V20 portable speakers), the dB scale seems to be
-totally bogus. According to ALSA volume ranges from -41 dB to
-+3dB. However, Every setting > -41 dB makes audio awfully
-loud. Really, really fucking loud that is. Disco loud. As loud that
-the speakers start jump around centimeters due to the massive
-vibrations. Setting the volume to 0dB with those speakers really makes
-you fear you are trashing them.
-
-I somehow expected that the magic "0dB" setting in ALSA would refer to
-some sane default, where the final output would have a sensible
-volume. In this case this is not so. I am thus wondering how ALSA
-actually defines 0dB? Is this a bug in the hardware that should be
-worked around in ALSA? Is this an ALSA bug?
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Thank you in advance.
