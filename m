@@ -1,26 +1,21 @@
-From: Rong-Jhe <r93922118@ntu.edu.tw>
-Subject: =?utf-8?q?How_to_kill_thread_server=5Fjob=28=29_in_s?=
-	=?utf-8?b?bmRfcGNtX29wZW4oKQ==?=
-Date: Sun, 13 Apr 2008 08:05:53 +0000 (UTC)
-Message-ID: <loom.20080413T080045-322@post.gmane.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
+Date: Sun, 13 Apr 2008 11:51:54 +0100
+Message-ID: <4801E5CA.7010408@superbug.co.uk>
+References: <20080411204610.GA32413@tango.0pointer.de>	<480099C6.3040708@superbug.co.uk>	<20080412133536.GC32491@tango.0pointer.de>	<4800FC14.3060804@superbug.co.uk>
+	<20080412211456.GA2828@localhost>	<48012F8B.5010805@cox.net>
+	<20080412230014.GA3016@localhost>
+	<75b66ecd0804121624m308977dy752d7e7c41dd7ea3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8AE924602
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net
+	[194.217.242.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id BEB4424638
 	for <alsa-devel@alsa-project.org>;
-	Sun, 13 Apr 2008 10:06:03 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1JkxDt-0005e2-Hg
-	for alsa-devel@alsa-project.org; Sun, 13 Apr 2008 08:06:02 +0000
-Received: from 220.128.79.26 ([220.128.79.26])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 13 Apr 2008 08:06:01 +0000
-Received: from r93922118 by 220.128.79.26 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 13 Apr 2008 08:06:01 +0000
+	Sun, 13 Apr 2008 12:51:56 +0200 (CEST)
+In-Reply-To: <75b66ecd0804121624m308977dy752d7e7c41dd7ea3@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,12 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, stan <ghjeold_i_mwee@cox.net>
 List-Id: alsa-devel@alsa-project.org
 
-I found that the thread server_job() can not be killed by using snd_pcm_close
-().
-The code in snd_pcm_direct_server_discard() is disabled, and then it can not 
-send signal to kill the thread.
-Why the code is disabled?
-Is there any bugs if I enable the code?
+Lee Revell wrote:
+> On Sat, Apr 12, 2008 at 7:00 PM, John Rigg <aldev@sound-man.co.uk> wrote:
+>   
+>> On Sat, Apr 12, 2008 at 02:54:19PM -0700, stan wrote:
+>>  > Is there a way to identify whether a card is pro or casual?  Number of
+>>  > channels?  DACs?  Chipsets?
+>>
+>>  Good question. RME cards would usually fall in the "pro" category.
+>>  With others, eg. some of the ice1712 cards, the same chip is used
+>>  in cards with 2 to 8 analogue in/outs, so it's harder to categorise
+>>  them. On reflection, it's probably easier for those of us who need
+>>  everything muted every time to just disable or remove the init.d script.
+>>  That's what I've done on my system.
+>>     
+>
+> Same with the emu10k1 driver, it supports the consumer SBLive/Audigy
+> series as well as the pro/semi-pro EMU stuff.
+>
+> Lee
+>   
+Are the output levels from the line out/speaker out connectors really 
+any different between pro and cheap sound card?
+For unbalanced outputs, the full scale should be the same for both types 
+of sound card.
+I think the main difference is the power amp that is normally outside 
+the computer.
+So, I would say that the loudness of the sound actually output to the 
+speakers is not related to which sound card is being used. So, how can 
+we set what the default volume will be when we have no idea which amp 
+the user is using?
+It seems to me that whatever way you look at this, A default value of 
+"MUTE" is really the only safe level for all sound card types.
+
+
+James
