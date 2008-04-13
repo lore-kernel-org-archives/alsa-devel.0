@@ -1,21 +1,21 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Florian Faber <faber@faberman.de>
 Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Sun, 13 Apr 2008 11:51:54 +0100
-Message-ID: <4801E5CA.7010408@superbug.co.uk>
-References: <20080411204610.GA32413@tango.0pointer.de>	<480099C6.3040708@superbug.co.uk>	<20080412133536.GC32491@tango.0pointer.de>	<4800FC14.3060804@superbug.co.uk>
-	<20080412211456.GA2828@localhost>	<48012F8B.5010805@cox.net>
-	<20080412230014.GA3016@localhost>
+Date: Sun, 13 Apr 2008 13:26:31 +0200
+Message-ID: <200804131326.31800.faber@faberman.de>
+References: <20080411204610.GA32413@tango.0pointer.de>
 	<75b66ecd0804121624m308977dy752d7e7c41dd7ea3@mail.gmail.com>
+	<4801E5CA.7010408@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net
-	[194.217.242.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id BEB4424638
+Received: from india820.server4you.de
+	(static-ip-85-25-152-101.inaddr.intergenia.de [85.25.152.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id 261012465C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 13 Apr 2008 12:51:56 +0200 (CEST)
-In-Reply-To: <75b66ecd0804121624m308977dy752d7e7c41dd7ea3@mail.gmail.com>
+	Sun, 13 Apr 2008 13:26:51 +0200 (CEST)
+In-Reply-To: <4801E5CA.7010408@superbug.co.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, stan <ghjeold_i_mwee@cox.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Sat, Apr 12, 2008 at 7:00 PM, John Rigg <aldev@sound-man.co.uk> wrote:
->   
->> On Sat, Apr 12, 2008 at 02:54:19PM -0700, stan wrote:
->>  > Is there a way to identify whether a card is pro or casual?  Number of
->>  > channels?  DACs?  Chipsets?
->>
->>  Good question. RME cards would usually fall in the "pro" category.
->>  With others, eg. some of the ice1712 cards, the same chip is used
->>  in cards with 2 to 8 analogue in/outs, so it's harder to categorise
->>  them. On reflection, it's probably easier for those of us who need
->>  everything muted every time to just disable or remove the init.d script.
->>  That's what I've done on my system.
->>     
->
-> Same with the emu10k1 driver, it supports the consumer SBLive/Audigy
-> series as well as the pro/semi-pro EMU stuff.
->
-> Lee
->   
-Are the output levels from the line out/speaker out connectors really 
-any different between pro and cheap sound card?
-For unbalanced outputs, the full scale should be the same for both types 
-of sound card.
-I think the main difference is the power amp that is normally outside 
-the computer.
-So, I would say that the loudness of the sound actually output to the 
-speakers is not related to which sound card is being used. So, how can 
-we set what the default volume will be when we have no idea which amp 
-the user is using?
-It seems to me that whatever way you look at this, A default value of 
-"MUTE" is really the only safe level for all sound card types.
+On Sunday 13 April 2008 12:51:54 James Courtier-Dutton wrote:
+
+> Are the output levels from the line out/speaker out connectors really
+> any different between pro and cheap sound card?
+
+The electric levels do differ. But that's not the point. The point is 
+that you usually have active speakers and 0dB means full throttle. You 
+don't have anything to alter the volume between the sound card and the 
+speakers.
+
+To give you an impression: My main out is -40..-36dB for work. If I want 
+to talk to another person in the same room, I have to dim to -46dB max. 
+If I throw a party, it might go up to -20..-15dB. 0dB will just pop out 
+the ear drums.
+
+> It seems to me that whatever way you look at this, A default value of
+> "MUTE" is really the only safe level for all sound card types.
+
+Yes. 
 
 
-James
+Flo
+-- 
+Machines can do the work, so people have time to think.
+public key 6C002249          x-hkp://wwwkeys.eu.pgp.net
