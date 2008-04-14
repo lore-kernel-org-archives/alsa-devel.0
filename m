@@ -1,17 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: via82xx: how to get microphone working?
-Date: Mon, 14 Apr 2008 12:56:26 +0200
-Message-ID: <4803385A.4020509@ladisch.de>
-References: <4802FFD0.1000302@freemail.hu>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] soc - Fix s3c24xx-i2s LR sync while timer
+	ticks are disabled
+Date: Mon, 14 Apr 2008 12:01:42 +0100
+Message-ID: <1208170903-27159-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 02D9324483
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C302244E6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Apr 2008 12:56:31 +0200 (CEST)
-In-Reply-To: <4802FFD0.1000302@freemail.hu>
+	Mon, 14 Apr 2008 13:01:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-2?Q?N=E9meth_M=E1rton?= <nm127@freemail.hu>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Werner Almesberger <werner@openmoko.org>
 List-Id: alsa-devel@alsa-project.org
 
-N=E9meth M=E1rton wrote:
-> I enabled the microphone input, increased the microphone record level
-> to maximum, and enabled "Mic Boost". I can hear my voice through the
-> speakers, but I cannot record sound.
+From: Werner Almesberger <werner@openmoko.org>
 
-This looks as if you've set the playback level and not the record level
-of the microphone.  In alsamixer, use F3/F4 to switch between playback
-and record controls.
+When timer ticks are disabled when calling
+sound/soc/s3c24xx/s3c24xx-i2s.c:s3c24xx_snd_lrsync
+and the LR signal never happens, we loop forever.
 
+This has been observed in the following call chain:
+snd_pcm_common_ioctl1 -> snd_pcm_action_lock_irq ->
+snd_pcm_action_single
+  -> snd_pcm_do_resume -> soc_pcm_trigger -> s3c24xx_i2s_trigger
 
-HTH
-Clemens
+The patch below changes the timeout mechanism to use udelay, which
+doesn't need timer ticks.
+
+Signed-off-by: Werner Almesberger <werner@openmoko.org>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/s3c24xx-i2s.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
+index 0a3c630..6b3cbbf 100644
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
+@@ -180,7 +180,7 @@ static void s3c24xx_snd_rxctrl(int on)
+ static int s3c24xx_snd_lrsync(void)
+ {
+ 	u32 iiscon;
+-	unsigned long timeout = jiffies + msecs_to_jiffies(5);
++	int timeout = 50; /* 5ms */
+ 
+ 	DBG("Entered %s\n", __FUNCTION__);
+ 
+@@ -189,8 +189,9 @@ static int s3c24xx_snd_lrsync(void)
+ 		if (iiscon & S3C2410_IISCON_LRINDEX)
+ 			break;
+ 
+-		if (time_after(jiffies, timeout))
++		if (!timeout--)
+ 			return -ETIMEDOUT;
++		udelay(100);
+ 	}
+ 
+ 	return 0;
+-- 
+1.5.5
