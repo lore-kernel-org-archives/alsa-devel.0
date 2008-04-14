@@ -1,20 +1,30 @@
-From: Jaroslav Kysela <perex@perex.cz>
+From: Rong-Jhe <r93922118@ntu.edu.tw>
 Subject: Re:
- =?utf-8?q?How_to_kill_thread_server=5Fjob=28=29_in_s?=
- =?utf-8?b?bmRfcGNtX29wZW4oKQ==?=
-Date: Mon, 14 Apr 2008 08:57:54 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0804140855460.13990@tm8103.perex-int.cz>
+	=?utf-8?q?How_to_kill_thread_server=5Fjob=28=29_in_s?=
+	=?utf-8?b?bmRfcGNtX29wZW4oKQ==?=
+Date: Mon, 14 Apr 2008 07:47:02 +0000 (UTC)
+Message-ID: <loom.20080414T072152-818@post.gmane.org>
 References: <loom.20080413T080045-322@post.gmane.org>
 	<loom.20080414T020651-351@post.gmane.org>
+	<Pine.LNX.4.61.0804140855460.13990@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4788724471
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id A949D24494
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Apr 2008 08:57:55 +0200 (CEST)
-In-Reply-To: <loom.20080414T020651-351@post.gmane.org>
+	Mon, 14 Apr 2008 09:47:16 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1JlJPD-0005LS-GB
+	for alsa-devel@alsa-project.org; Mon, 14 Apr 2008 07:47:12 +0000
+Received: from 220.128.79.26 ([220.128.79.26])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2008 07:47:11 +0000
+Received: from r93922118 by 220.128.79.26 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2008 07:47:11 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +34,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rong-Jhe <r93922118@ntu.edu.tw>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Apr 2008, Rong-Jhe wrote:
-
-> Rong-Jhe <r93922118 <at> ntu.edu.tw> writes:
+> What you're trying to do? The server process will timeout (ends) 
+> itself when dmix clients are inactive.
 > 
-> > 
-> > I found that the thread server_job() can not be killed by using snd_pcm_close
-> > ().
-> > The code in snd_pcm_direct_server_discard() is disabled, and then it can not 
-> > send signal to kill the thread.
-> > Why the code is disabled?
-> > Is there any bugs if I enable the code?
-> > 
+> 						Jaroslav
 > 
-> I have enabled the code in snd_pcm_direct_server_discard(), but it can not 
-> kill the thread of server_job(). The dmix->server_pid is wrong.
-> In snd_pcm_direct_server_create(), the main thread uses fork() to establish a 
-> child thread and the child uses fork() to establish another child thread again.
-> The main thread only keeps the pid of the first child thread, and the second 
-> child thread executes server_job(). Do to this, the main thread kills wrong 
-> pid.
-> Further, the main thread uses waitpid() before keeping the pid of the first 
-> child thread, and the first child thread dies after establishing the second 
-> child thread. In this way, the pid kept in dmix->server_pid is useless.
-> Why does the program need to use fork() two times?
 
-What you're trying to do? The server process will timeout (ends) 
-itself when dmix clients are inactive.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Thanks for your response.
+My application uses two ways to play audio.
+One is using pcm interface in ALSA library, and another is using dsp file.
+My goal is to change the ways to play audio dynamically.
+The pcm in ALSA library also uses the audio device.
+There is only process can open the audio device at a time, so the audio device 
+must be closed before changing the way.
+For example, if I open dsp file first and use write() to play audio, I need to 
+close the dsp file and then open pcm to use snd_pcm_writei().
+Similarly, if I open pcm first and use snd_pcm_writei(), I need to close the 
+pcm and then open the dsp file immediately.
+Sometimes, when I change the way from using pcm to using dsp file, opening dsp 
+file will get errors.
+I think it may be caused by the busy audio device.
+Is there any methods that can indicate whether the audio device used by pcm is 
+free?
