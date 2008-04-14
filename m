@@ -1,29 +1,26 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
 Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Mon, 14 Apr 2008 19:54:53 -0400
-Message-ID: <75b66ecd0804141654u4c9ca4e5jcbc9d42ac8addca@mail.gmail.com>
+Date: Tue, 15 Apr 2008 01:57:45 +0200
+Message-ID: <20080414235742.GB19108@tango.0pointer.de>
 References: <20080411204610.GA32413@tango.0pointer.de>
-	<480099C6.3040708@superbug.co.uk>
 	<20080412133536.GC32491@tango.0pointer.de>
-	<48010E62.2020404@keyaccess.nl>
-	<20080414170022.GH22115@tango.0pointer.de>
-	<480392F3.9030701@keyaccess.nl>
-	<20080414172839.GA26513@tango.0pointer.de>
-	<4803C78A.3020109@superbug.co.uk>
-	<17eedd8a0804141508s67c815bfw969e0c21b2b1298c@mail.gmail.com>
-	<20080414234358.GA19108@tango.0pointer.de>
+	<4800FC14.3060804@superbug.co.uk>
+	<200804122025.57165.faber@faberman.de>
+	<48010CF9.4000600@superbug.co.uk> <48010F76.1070209@keyaccess.nl>
+	<20080414164843.GD22115@tango.0pointer.de>
+	<48038DB3.8060301@keyaccess.nl>
+	<20080414172447.GA25050@tango.0pointer.de>
+	<4803DF09.3000000@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.236])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCF932463E
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAAA22463E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 01:54:54 +0200 (CEST)
-Received: by rv-out-0506.google.com with SMTP id g37so836177rvb.32
-	for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2008 16:54:53 -0700 (PDT)
-In-Reply-To: <20080414234358.GA19108@tango.0pointer.de>
+	Tue, 15 Apr 2008 01:57:45 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <4803DF09.3000000@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,18 +30,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Aldrin Martoq <amartoq@dcc.uchile.cl>, alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 14, 2008 at 7:43 PM, Lennart Poettering <mznyfn@0pointer.de> wrote:
->  Dude, it's pretty easy to define a common refernce of the dB
->  values. In fact, James (who afaik did the dB scale work initially)
->  already agreed to this and even suggested measuring the voltage on the
->  output jack.
+On Tue, 15.04.08 00:47, Rene Herman (rene.herman@keyaccess.nl) wrote:
 
-With onboard HDA intel devices we'd have to do this on every single
-piece of hardware we support - every make and model of laptop and mobo
-from every vendor.  Does Red Hat have the resources to make that
-happen?
+> > The dB scale is a _relative_ scale. To make any sense there needs to be
+> 
+> No, it is not. 
 
-Lee
+Oh, really? It's not a relative scale anymore? Ouch, what a mess. Now
+I went to university and stuff, and now it turns out that they were
+totally wrong and dB ain't no relative scale anymore. I want my money back!
+
+Dude, hush, hush, fix Wikipedia! It still says: "The decibel (dB) is a
+logarithmic unit of measurement that expresses the magnitude of a
+physical quantity _relative_ _to_ a specified or implied _reference_
+_level_".
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
