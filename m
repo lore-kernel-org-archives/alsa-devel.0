@@ -1,23 +1,21 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
 Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Mon, 14 Apr 2008 18:58:11 +0200
-Message-ID: <20080414165811.GG22115@tango.0pointer.de>
+Date: Mon, 14 Apr 2008 19:00:24 +0200
+Message-ID: <20080414170022.GH22115@tango.0pointer.de>
 References: <20080411204610.GA32413@tango.0pointer.de>
+	<480099C6.3040708@superbug.co.uk>
 	<20080412133536.GC32491@tango.0pointer.de>
-	<4800FC14.3060804@superbug.co.uk>
-	<200804122025.57165.faber@faberman.de>
-	<48010CF9.4000600@superbug.co.uk> <20080412214143.GB2828@localhost>
-	<48012FD7.6050904@superbug.co.uk> <48013316.80806@keyaccess.nl>
+	<48010E62.2020404@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E626245B7
+	by alsa0.perex.cz (Postfix) with ESMTP id BDFB4244FB
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Apr 2008 18:58:12 +0200 (CEST)
+	Mon, 14 Apr 2008 19:00:24 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <48013316.80806@keyaccess.nl>
+In-Reply-To: <48010E62.2020404@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,26 +26,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Florian Faber <faber@faberman.de>, alsa-devel@alsa-project.org
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 13.04.08 00:09, Rene Herman (rene.herman@keyaccess.nl) wrote:
+On Sat, 12.04.08 21:32, Rene Herman (rene.herman@keyaccess.nl) wrote:
 
 > 
-> On 12-04-08 23:55, James Courtier-Dutton wrote:
+> On 12-04-08 15:35, Lennart Poettering wrote:
 > 
-> > Most consumer distos do not agree with me and want the volume turned up 
-> > already by default. The problem is deciding on a generally good level for
-> > these distros.
+> > On Sat, 12.04.08 12:15, James Courtier-Dutton (James@superbug.co.uk) wrote:
+> > 
+> > My I thus assume that we can say that for all but the last element in
+> > the series 0db means avg input power equals avg output power, and for
+> > the last one 0db means max? That would fit on what you are saying but
+> > also match my usb speakers, not depending on the existance of a
+> > "Master".
 > 
-> I believe it can be concluded that there is no "generally good level". ALSA 
-> should ship /usr/share/alsa/cards/<card>.state files which at least lets a 
-> driver author decide on a sensible set of default mixer settings.
+> If we add in ISA cards, it's not a very generic assumption at least. For 
+> example on my cs4236, "master" is -94,5 to +12 dB with 0dB at "87" in the 
+> integer scale.
+> 
+> It's a "Master Digital Gain" -- not sure what that "digital" implies as it 
+> very much seems to be positioend in the post output mixer analog path...
 
-Yet another file that needs to be maintained.
-
-Why not export this data like all the other data from the kernel? That
-way other apps (not just alsactl) could make use of this information. 
+Maybe the driver should add an internal offset to the dB scale, to
+guarantee that 0dB is max, instead of just copying the hw specs?
 
 Lennart
 
