@@ -1,30 +1,15 @@
-From: Rong-Jhe <r93922118@ntu.edu.tw>
-Subject: Re:
-	=?utf-8?q?How_to_kill_thread_server=5Fjob=28=29_in_s?=
-	=?utf-8?b?bmRfcGNtX29wZW4oKQ==?=
-Date: Mon, 14 Apr 2008 07:47:02 +0000 (UTC)
-Message-ID: <loom.20080414T072152-818@post.gmane.org>
-References: <loom.20080413T080045-322@post.gmane.org>
-	<loom.20080414T020651-351@post.gmane.org>
-	<Pine.LNX.4.61.0804140855460.13990@tm8103.perex-int.cz>
+From: =?ISO-8859-2?Q?N=E9meth_M=E1rton?= <nm127@freemail.hu>
+Subject: via82xx: how to get microphone working?
+Date: Mon, 14 Apr 2008 08:55:12 +0200
+Message-ID: <4802FFD0.1000302@freemail.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id A949D24494
+Received: from mail00d.mail.t-online.hu (mail00d.mail.t-online.hu [84.2.42.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7754424470
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Apr 2008 09:47:16 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1JlJPD-0005LS-GB
-	for alsa-devel@alsa-project.org; Mon, 14 Apr 2008 07:47:12 +0000
-Received: from 220.128.79.26 ([220.128.79.26])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2008 07:47:11 +0000
-Received: from r93922118 by 220.128.79.26 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2008 07:47:11 +0000
+	Mon, 14 Apr 2008 08:55:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,25 +22,65 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> What you're trying to do? The server process will timeout (ends) 
-> itself when dmix clients are inactive.
-> 
-> 						Jaroslav
-> 
+Hi,
 
-Thanks for your response.
-My application uses two ways to play audio.
-One is using pcm interface in ALSA library, and another is using dsp file.
-My goal is to change the ways to play audio dynamically.
-The pcm in ALSA library also uses the audio device.
-There is only process can open the audio device at a time, so the audio device 
-must be closed before changing the way.
-For example, if I open dsp file first and use write() to play audio, I need to 
-close the dsp file and then open pcm to use snd_pcm_writei().
-Similarly, if I open pcm first and use snd_pcm_writei(), I need to close the 
-pcm and then open the dsp file immediately.
-Sometimes, when I change the way from using pcm to using dsp file, opening dsp 
-file will get errors.
-I think it may be caused by the busy audio device.
-Is there any methods that can indicate whether the audio device used by pcm is 
-free?
+I have a Clevo D410J laptop with the following integrated sound card:
+
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235/8=
+237 AC97 Audio Controller (rev 50)
+        Subsystem: CLEVO/KAPOK Computer Unknown device 4702
+        Flags: medium devsel, IRQ 20
+        I/O ports at 1400 [size=3D256]
+        Capabilities: [c0] Power Management version 2
+        Kernel driver in use: VIA 82xx Audio
+        Kernel modules: snd-via82xx
+
+There is also an integrated modem which also appears in kmix/alsamixer:
+
+00:11.6 Communication controller: VIA Technologies, Inc. AC'97 Modem Contro=
+ller (rev 80)
+        Subsystem: CLEVO/KAPOK Computer Unknown device 4702
+        Flags: medium devsel, IRQ 20
+        I/O ports at 1800 [size=3D256]
+        Capabilities: [d0] Power Management version 2
+        Kernel driver in use: VIA 82xx Modem
+        Kernel modules: snd-via82xx-modem
+
+I am using Linux 2.6.23. I enabled the microphone input, increased the micr=
+ophone
+record level to maximum, and enabled "Mic Boost". I can hear my voice throu=
+gh the
+speakers, but I cannot record sound (for example Skype cannot record my sou=
+nd). The
+playback is working fine without any problem.
+
+Is there any setting I miss?
+
+
+$ lsmod |grep snd
+snd_via82xx            22572  1
+snd_mpu401_uart         7064  1 snd_via82xx
+snd_seq_oss            29328  0
+snd_seq_midi            6432  0
+snd_seq_midi_event      6536  2 snd_seq_oss,snd_seq_midi
+snd_via82xx_modem      11408  1
+snd_ac97_codec         95676  2 snd_via82xx,snd_via82xx_modem
+ac97_bus                2432  1 snd_ac97_codec
+snd_pcm_oss            38208  0
+snd_mixer_oss          14216  1 snd_pcm_oss
+snd_seq                45752  5 snd_seq_oss,snd_seq_midi,snd_seq_midi_event
+snd_pcm                69420  4 snd_via82xx,snd_via82xx_modem,snd_ac97_code=
+c,snd_pcm_oss
+snd_timer              19356  2 snd_seq,snd_pcm
+snd_rawmidi            19136  2 snd_mpu401_uart,snd_seq_midi
+snd_seq_device          6932  4 snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
+snd                    45476  16
+snd_via82xx,snd_mpu401_uart,snd_seq_oss,snd_via82xx_modem,snd_ac97_codec,sn=
+d_pcm_oss,snd_mixer_oss,snd_seq,snd_pcm,snd_timer,snd_rawmidi,snd_seq_device
+snd_page_alloc          8072  3 snd_via82xx,snd_via82xx_modem,snd_pcm
+soundcore               6496  1 snd
+
+
+Regards,
+
+	M=E1rton N=E9meth
