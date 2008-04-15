@@ -1,20 +1,20 @@
 From: Florian Faber <faber@faberman.de>
 Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Tue, 15 Apr 2008 05:52:13 +0200
-Message-ID: <200804150552.13578.faber@faberman.de>
+Date: Tue, 15 Apr 2008 06:09:00 +0200
+Message-ID: <200804150609.00533.faber@faberman.de>
 References: <20080411204610.GA32413@tango.0pointer.de>
-	<20080414172839.GA26513@tango.0pointer.de>
-	<4803C78A.3020109@superbug.co.uk>
+	<4803DF09.3000000@keyaccess.nl>
+	<20080414235742.GB19108@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from india820.server4you.de
 	(static-ip-85-25-152-101.inaddr.intergenia.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id D59AF24681
+	by alsa0.perex.cz (Postfix) with ESMTP id C1A0424677
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 05:52:26 +0200 (CEST)
-In-Reply-To: <4803C78A.3020109@superbug.co.uk>
+	Tue, 15 Apr 2008 06:09:11 +0200 (CEST)
+In-Reply-To: <20080414235742.GB19108@tango.0pointer.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,24 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 14 April 2008 23:07:22 James Courtier-Dutton wrote:
-> The aim of the dB values in the ALSA mixer is this.
->
-> For Playback:
-> Set all the mixer controls to 0dB.
-> Send a sample digital signal from the CPU to the sound card.
-> The measured analog signal on the line-out should be the same for ALL
-> sound cards.
+On Tuesday 15 April 2008 01:57:45 Lennart Poettering wrote:
 
-Consumer levels are -10dBV while pro audio levels are +4dBu. And you 
-have to be more specific what to measure.
+> Dude, hush, hush, fix Wikipedia! It still says: "The decibel (dB) is
+> a logarithmic unit of measurement that expresses the magnitude of a
+> physical quantity _relative_ _to_ a specified or implied _reference_
+> _level_".
 
-How about this: You do what you want with the consumer boards, and leave 
-the pro guys alone. Pro drivers are not 'broken' if they don't 
-implement such a 'feature', they are pro drivers.
+The reference level is well defined (depending on the consumer/pro audio 
+context) and so is dBFS, dBu(RMS) and dBV(RMS). I don't see any problem 
+with that except that some people don't seem to know about this or 
+don't care. Especially crappy sound card manufacturers.
+
+Oh boy, and we didn't even start bringing in head room into the debate..
 
 
 Flo
