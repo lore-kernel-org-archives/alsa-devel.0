@@ -1,19 +1,20 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [PATCH] ASoC: Add support for 19.2 MHz MCLK in
- TLV320AIC3X
-Date: Tue, 15 Apr 2008 09:41:39 +0300
-Message-ID: <20080415094139.0838e508.jarkko.nikula@nokia.com>
-References: <1207902735-6660-1-git-send-email-jarkko.nikula@nokia.com>
-	<20080414135046.GA25508@rakim.wolfsonmicro.main>
+From: "Camilo Polymeris" <cpolymeris@gmx.net>
+Subject: Patchmix-style application for EMU cards
+Date: Tue, 15 Apr 2008 03:46:01 -0400
+Message-ID: <c812bae60804150046u75824246o115c96a2c34190ec@mail.gmail.com>
+References: <c812bae60804150043t4ec98eaembf133381f5395b0c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03A41246AB
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40032246B5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 08:41:34 +0200 (CEST)
-In-Reply-To: <20080414135046.GA25508@rakim.wolfsonmicro.main>
+	Tue, 15 Apr 2008 09:46:07 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id b21so644468nfd.32
+	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 00:46:06 -0700 (PDT)
+In-Reply-To: <c812bae60804150043t4ec98eaembf133381f5395b0c@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Developers Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Apr 2008 14:50:46 +0100
-"ext Mark Brown" <broonie@opensource.wolfsonmicro.com> wrote:
+Hello
+I am working on a graphical mixing/routing application for the Emu10k series
+of semi-pro soundcards, but I am having trouble figuring out the routing
+mechanism of the driver, specially the "Multichannel PCM" part. Is there any
+technical documentation on this card I could read (I haven't found any), or
+maybe the driver developer can help me out?
 
-> On Fri, Apr 11, 2008 at 11:32:15AM +0300, Jarkko Nikula wrote:
-> > Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-> 
-> Thanks - I've added this to the ASoC tree and upstream queue.
-> 
-> Rather than maintaining this table it might be worth looking at adding
-> code to allow the driver to calculate a suitable configuration at run
-> time.  The WM8753 and WM9713 drivers do this for the PLL
-> configuration, for example.
->
-Agree, I was also thinking this some time ago but went for simple
-solution first since OMAP's seems to be happy with either 12 or 19.2
-MHz :-)
-
-
-Jarkko
+Thanks,
+Camilo.
