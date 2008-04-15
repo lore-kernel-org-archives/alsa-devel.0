@@ -1,24 +1,19 @@
-From: "eric miao" <eric.y.miao@gmail.com>
-Subject: Re: [PATCH 1/3] soc - pxa2xx-ac97: Add missing
-	clk_enable()
-Date: Tue, 15 Apr 2008 22:11:34 +0800
-Message-ID: <f17812d70804150711i5f3dbda4xc7cbff889567d46f@mail.gmail.com>
-References: <20080414151128.GA23694@rakim.wolfsonmicro.main>
-	<1208185942-27637-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<f17812d70804150432t1fd0e20cpedaba34b47eb807d@mail.gmail.com>
-	<20080415122906.GC24498@rakim.wolfsonmicro.main>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
+Date: Tue, 15 Apr 2008 16:33:28 +0200
+Message-ID: <4804BCB8.9060707@keyaccess.nl>
+References: <20080411204610.GA32413@tango.0pointer.de>	<20080414172839.GA26513@tango.0pointer.de>	<4803C78A.3020109@superbug.co.uk>	<200804150552.13578.faber@faberman.de>
+	<20080415131203.GA2818@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F4C0246E8
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 84C962471D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 16:11:45 +0200 (CEST)
-Received: by el-out-1112.google.com with SMTP id s27so239764ele.7
-	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 07:11:35 -0700 (PDT)
-In-Reply-To: <20080415122906.GC24498@rakim.wolfsonmicro.main>
-Content-Disposition: inline
+	Tue, 15 Apr 2008 16:30:33 +0200 (CEST)
+In-Reply-To: <20080415131203.GA2818@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,25 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: eric miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.arm.linux.org.uk, alsa-devel@alsa-project.org
+To: John Rigg <aldev@sound-man.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 15, 2008 at 8:29 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Tue, Apr 15, 2008 at 07:32:39PM +0800, eric miao wrote:
->
->  > It looks a bit confused between the commit message and the actual change.
->  > My understanding would be the pxa{25x,27x} requires this change (adding
->  > clk_enable), but pxa3xx does not require this. So actually the change is
->  > addressing some issue on pxa{25x,27x}?
->
->  For correctness WRT the clock API it's required on all variants - the
->  note about PXA3xx is just to indicate how it got through testing.
->
+On 15-04-08 15:12, John Rigg wrote:
 
-I'm OK with this then, and it would be better the commit message been
-modified to a more consistent version :)
+> The dB setting in a mixer refers to gain, not level. Expecting the same
+> absolute level from pro and consumer sound cards at the same gain setting
+> is a little ridiculous. If I set a control at 0dB I want just that: 0dB
+> gain.
 
--- 
-Cheers
-- eric
+Quite right.
+
+There is still the issue that we probably don't so much want a distribution 
+to have to decide if it's speaking to a pro or consumer card and that there 
+are differences between (cheap consumer only I gather?) cards as well, which 
+might be classified hardware bugs but which exist nonetheless.
+
+Attempt to summarize:
+
+1. ALSA mutes everything by default which as discussed is the only possibly 
+sane thing to do especially in a pro environment (although I myself think 
+that headphone using consumers and expensive gear using pros have a very 
+similar need here: to avoid heart attacks).
+
+2. Distributions have been set up to save and restore the levels over driver 
+uses but since they obviously can't expect those poor, poor consumer users 
+to be able to find a volume slider upon not hearing sound come out they want 
+to unmute/init first time even -- which seems a somewhat flimsy motivation 
+for having this discussion, but oh well.
+
+3. Other than muted, 0 dB is the other potentially sane default value with 
+it being defined as the no gain point. At least one (USB) driver has been 
+identified as not producing 0 dB gain at the 0 dB ALSA slider setting; it 
+gets the scale information from the hardware and the hardware is evidently 
+buggy. Fixing this in the driver through model specific quirks would be the 
+most sensible here as then the "0 dB" actually could start to mean what it 
+should mean again.
+
+4. Personally, I'd actually like to have a complete set of "unmuted default" 
+controls on a per card basis. ALSA could distribute state files for those 
+cards that like to be inited to anything other than all mute/minimal. Bit of 
+a maintenance chore, and the usefulness depends on how much level variation 
+there actually is generally. Are we in essence only talking about Lennart's 
+buggy USB crap or is this more involved?
+
+Rene.
