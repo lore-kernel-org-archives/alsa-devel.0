@@ -1,20 +1,21 @@
 From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: Re: Releasing IRQs in older kernels
-Date: Tue, 15 Apr 2008 20:36:04 +0300
-Message-ID: <46e1c7760804151036l439fd36ayba074118690e212e@mail.gmail.com>
-References: <46e1c7760804141348g11097cfcte0c06c204d7d28cd@mail.gmail.com>
-	<s5h4pa3483i.wl%tiwai@suse.de>
+Subject: Re: [PATCH 002/003] snd-powermac: AWACS and Screamer
+	mixers for PM7500, Beige, and iMac SL
+Date: Tue, 15 Apr 2008 20:56:00 +0300
+Message-ID: <46e1c7760804151056x7b0e35e5pdf02b2330c1ebc3b@mail.gmail.com>
+References: <46e1c7760804141012v3ab4d9a2g160ec8bced54291d@mail.gmail.com>
+	<s5h1w5747p0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70D402473F
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03A4810383C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 19:36:06 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so588412ana.80
-	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 10:36:04 -0700 (PDT)
-In-Reply-To: <s5h4pa3483i.wl%tiwai@suse.de>
+	Tue, 15 Apr 2008 19:56:03 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so590258ana.80
+	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 10:56:01 -0700 (PDT)
+In-Reply-To: <s5h1w5747p0.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,43 +32,64 @@ List-Id: alsa-devel@alsa-project.org
 
 2008/4/15, Takashi Iwai <tiwai@suse.de>:
 >
-> Does the patch below work?
+> The embedded patch seems broken.  Could you check your MUA?
 >
+Hmm, looks like copying from the other list changed tabs to spaces.
 
-That was fast. And so simple. Thank you. It works :)
+>
+>
+> The coding style fixes should be in a dedicated patch.
+>  Otherwise it makes hard to follow the logical changes.
+>
+I'll split it in 2.
+
+>
+>  > @@ -493,14 +500,14 @@ static struct snd_kcontrol_new snd_pmac_
+>  >         .private_value = AMP_CH_HD,
+>  >       },
+>  >       { .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+>  > -       .name = "Tone Control - Bass",
+>  > +       .name = "Tone Control - Bass Playback Volume",
+>
+>
+> This shouldn't be changed.  "Tone Control - Bass" is the correct
+>  standard control name.
+>
+>
+>  >         .info = snd_pmac_awacs_info_tone_amp,
+>  >         .get = snd_pmac_awacs_get_tone_amp,
+>  >         .put = snd_pmac_awacs_put_tone_amp,
+>  >         .private_value = 0,
+>  >       },
+>  >       { .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+>  > -       .name = "Tone Control - Treble",
+>  > +       .name = "Tone Control - Treble Playback Volume",
+>
+>
+> Ditto.
+>
+The reason for this was that the tone controls appeared on Capture
+page, too, even though they don't actually belong there.
+
+>
+>  > -static int build_mixers(struct snd_pmac *chip, int nums, struct
+>  > snd_kcontrol_new *mixers)
+>  > +static int build_mixers(struct snd_pmac *chip, int nums,
+>  > +                     struct snd_kcontrol_new *mixers)
+>  >  {
+>  >       int i, err;
+>  >
+>  >       for (i = 0; i < nums; i++) {
+>  > -             if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&mixers[i], chip))) < 0)
+>  > +             if ((err = snd_ctl_add(chip->card,
+>  > +                                    snd_ctl_new1(&mixers[i], chip))) < 0)
+>  >                       return err;
+>
+>
+> This "if ((err = ..." doesn't comply the standard coding style.
+>  Try once checkpatch.pl script included in $LINUX/scripts.
+>
+Actually, I did, and it complained, but I think it made an error. It
+somehow didn't see the 'less than' comparison.
 
 Risto
-
-ps. There are still warnings about 2nd argument's types in
-ppc/pmac_old.c lines 1248, 1256 , and 1263. Maybe this is the right
-way to get rid of them:
-
---- ppc/pmac_old.c.orig	2008-02-05 11:23:23.000000000 +0200
-+++ ppc/pmac_old.c	2008-04-15 20:05:56.000000000 +0300
-@@ -725,7 +725,7 @@ void snd_pmac_beep_dma_stop(struct snd_p
-  * interrupt handlers
-  */
- static irqreturn_t
--snd_pmac_tx_intr(int irq, void *devid, struct pt_regs *regs)
-+snd_pmac_tx_intr(int irq, void *devid)
- {
- 	struct snd_pmac *chip = devid;
- 	snd_pmac_pcm_update(chip, &chip->playback);
-@@ -734,7 +734,7 @@ snd_pmac_tx_intr(int irq, void *devid, s
-
-
- static irqreturn_t
--snd_pmac_rx_intr(int irq, void *devid, struct pt_regs *regs)
-+snd_pmac_rx_intr(int irq, void *devid)
- {
- 	struct snd_pmac *chip = devid;
- 	snd_pmac_pcm_update(chip, &chip->capture);
-@@ -743,7 +743,7 @@ snd_pmac_rx_intr(int irq, void *devid, s
-
-
- static irqreturn_t
--snd_pmac_ctrl_intr(int irq, void *devid, struct pt_regs *regs)
-+snd_pmac_ctrl_intr(int irq, void *devid)
- {
- 	struct snd_pmac *chip = devid;
- 	int ctrl = in_le32(&chip->awacs->control);
