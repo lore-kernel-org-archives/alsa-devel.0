@@ -1,18 +1,20 @@
-From: "Vitaly V. Ch" <vitaly.v.ch@gmail.com>
-Subject: ac97_bus: exports duplicate symbol ac97_bus_type
-	(owned by kernel)
-Date: Tue, 15 Apr 2008 15:31:10 +0000
-Message-ID: <6efe08af0804150831u68bc6104h9aa24f97624618ff@mail.gmail.com>
+From: Wolfgang Woehl <tito@rumford.de>
+Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
+Date: Tue, 15 Apr 2008 17:42:47 +0200
+Message-ID: <200804151742.47968.tito@rumford.de>
+References: <20080411204610.GA32413@tango.0pointer.de>
+	<4803C78A.3020109@superbug.co.uk>
+	<200804150552.13578.faber@faberman.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 133F9103806
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 94ED710380B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 17:31:22 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 5so1062563ywr.2
-	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 08:31:10 -0700 (PDT)
+	Tue, 15 Apr 2008 17:42:51 +0200 (CEST)
+In-Reply-To: <200804150552.13578.faber@faberman.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,21 +28,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-#modprobe snd_via82xx
-#dmesg|tail
-ac97_bus: exports duplicate symbol ac97_bus_type (owned by kernel)
-snd_ac97_codec: disagrees about version of symbol ac97_bus_type
-snd_ac97_codec: Unknown symbol ac97_bus_type
-snd_via82xx: Unknown symbol snd_ac97_resume
-snd_via82xx: Unknown symbol snd_ac97_set_rate
-snd_via82xx: Unknown symbol snd_ac97_update_bits
-snd_via82xx: Unknown symbol snd_ac97_mixer
-snd_via82xx: Unknown symbol snd_ac97_bus
-snd_via82xx: Unknown symbol snd_ac97_update_power
-snd_via82xx: Unknown symbol snd_ac97_suspend
-snd_via82xx: Unknown symbol snd_ac97_get_short_name
-snd_via82xx: Unknown symbol snd_ac97_tune_hardware
+Florian Faber:
 
-any ideas?
+> How about this: You do what you want with the consumer boards, and
+> leave the pro guys alone. Pro drivers are not 'broken' if they
+> don't implement such a 'feature', they are pro drivers.
 
-\\wbr Vitaly
+Would you take a minute and reconsider this old distinction 
+between "consumer" and "professional"?
+
+In the end it's not the card, it's not the freaking driver. It's the 
+person, of course.
+
+If I would have to make a living from handling expensive audio gear 
+responsibly I'd reach for the right hardware fader *before* I ran 
+anything that could come up rolling and screaming.
+
+Wolfgang
