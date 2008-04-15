@@ -1,33 +1,22 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: no front speaker sound with ALC262
-Date: Tue, 15 Apr 2008 06:31:08 -0700
-Message-ID: <1208266268.1115.155.camel@razman>
-References: <165af2360802221645p9fa6bb0y3a5573caa7bcdbd7@mail.gmail.com>
-	<47BF84BF.702@versatile.com> <47BF8500.1050802@versatile.com>
-	<7D68F908-875D-4EDE-B25D-CCBDD4E4A339@gmail.com>
-	<s5h1w6zvrz4.wl%tiwai@suse.de> <47DEA53B.4030207@versatile.com>
-	<1205778900.27317.160.camel@razman.gruemaster.com>
-	<47DEC0BD.5090403@versatile.com>
-	<1205781169.27317.165.camel@razman.gruemaster.com>
-	<47DECB8E.7060007@versatile.com>
-	<1205792180.27317.188.camel@razman.gruemaster.com>
-	<47DFBF93.6060308@versatile.com> <s5hd4psw4fj.wl%tiwai@suse.de>
-	<DDEF195D-07DA-480C-816E-DDF3BF0C7C90@gmail.com>
-	<1206212954.6591.17.camel@razman>
-	<D62EAF04-BD99-4844-8F07-A49991A5ECDD@gmail.com>
-	<1206728921.756.512.camel@razman>
-	<69D07E29-4C67-45C7-B980-BBF6B553C070@gmail.com>
-	<1206970216.756.648.camel@razman>
-	<0B0C00D1-11B5-48D7-9E8C-A898D49FE904@gmail.com>
+From: "eric miao" <eric.y.miao@gmail.com>
+Subject: Re: [PATCH 2/3] pxa2xx-ac97: Support PXA3xx AC97
+Date: Tue, 15 Apr 2008 22:08:22 +0800
+Message-ID: <f17812d70804150708q6822327amb2967429b928e90b@mail.gmail.com>
+References: <20080414151128.GA23694@rakim.wolfsonmicro.main>
+	<1208185942-27637-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1208185942-27637-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90C2C103801
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F286103805
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 15:31:11 +0200 (CEST)
-In-Reply-To: <0B0C00D1-11B5-48D7-9E8C-A898D49FE904@gmail.com>
+	Tue, 15 Apr 2008 16:08:24 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 50so1185256wri.2
+	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 07:08:23 -0700 (PDT)
+In-Reply-To: <1208185942-27637-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,168 +26,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Dohmen <acidjunk@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-I'm still waiting for them to send it to me.  Last I heard it was held
-up due to some resistor modifications, but that was two weeks ago.
+I'm a bit upset about the #ifdef .. #endif, though the original code
+has the similar issues already.
 
-Tobin
+On Mon, Apr 14, 2008 at 11:12 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>  ---
+>   sound/arm/pxa2xx-ac97.c |   24 ++++++++++++++++++++++++
+>   1 files changed, 24 insertions(+), 0 deletions(-)
+>
+>  diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+>  index 8704e28..bf02e5f 100644
+>  --- a/sound/arm/pxa2xx-ac97.c
+>  +++ b/sound/arm/pxa2xx-ac97.c
+>  @@ -112,6 +112,16 @@ static void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigne
+>   static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
+>   {
+>         /* First, try cold reset */
+>  +#ifdef CONFIG_PXA3xx
+>  +       int timeout;
+>  +
+>  +       /* Hold CLKBPB for 100us */
+>  +       GCR = 0;
+>  +       GCR = GCR_CLKBPB;
+>  +       udelay(100);
+>  +       GCR = 0;
+>  +#endif
+>  +
+>         GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
+>         GCR &= ~GCR_COLD_RST;  /* then assert nCRST */
+>
+>  @@ -123,6 +133,14 @@ static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
+>         clk_disable(ac97conf_clk);
+>         GCR = GCR_COLD_RST;
+>         udelay(50);
+>  +#elif defined(CONFIG_PXA3xx)
+>  +       timeout = 1000;
+>  +       /* Can't use interrupts on PXA3xx */
+>  +       GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
+>  +
+>  +       GCR = GCR_WARM_RST | GCR_COLD_RST;
+>  +       while (!(GSR & (GSR_PCR | GSR_SCR)) && timeout--)
+>  +               mdelay(10);
+>   #else
+>         GCR = GCR_COLD_RST;
+>         GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
+>  @@ -143,6 +161,12 @@ static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
+>                 GCR |= GCR_WARM_RST;
+>                 pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
+>                 udelay(500);
+>  +#elif defined(CONFIG_PXA3xx)
+>  +               timeout = 100;
+>  +               /* Can't use interrupts */
+>  +               GCR |= GCR_WARM_RST;
+>  +               while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
+>  +                       mdelay(1);
+>   #else
+>                 GCR |= GCR_WARM_RST|GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
+>                 wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
+>  --
+>  1.5.5
+>
+>
 
-On Tue, 2008-04-15 at 12:02 +0200, Rene Dohmen wrote:
 
-> Tobin,
-> 
-> 
-> Did you receive the unit?
-> I'm wondering if you had some progress already.
-> 
-> Greets,
-> Rene
-> 
-> 
-> Op Mar 31, 2008, om 3:30 PM heeft Tobin Davis het volgende geschreven:
-> 
-> > Yes, it would.  Hmmm
-> >
-> > Well, I hope they send the unit today.
-> >
-> > Tobin
-> >
-> > On Mon, 2008-03-31 at 13:57 +0200, Rene Dohmen wrote:
-> >>
-> >> with the preinstalled win XP the sound is working OK.
-> >> So that would rule out hardware problems with the soundcard.
-> >>
-> >>
-> >> Rene
-> >>
-> >>
-> >>
-> >>
-> >>
-> >>
-> >> Op Mar 28, 2008, om 7:28 PM heeft Tobin Davis het volgende  
-> >> geschreven:
-> >>
-> >>> I'm still waiting for my demo unit from Tangent.  Latest update  
-> >>> is they think it may be a hardware issue (missing a resistor).  I  
-> >>> should know more Monday.  If this is the case, then the driver  
-> >>> should work with very minor modifications (subsystem ID addition).
-> >>>
-> >>> Tobin
-> >>>
-> >>>
-> >>> On Tue, 2008-03-25 at 11:40 +0100, Rene Dohmen wrote:
-> >>>>
-> >>>> Op Mar 22, 2008, om 8:09 PM heeft Tobin Davis het volgende  
-> >>>> geschreven:
-> >>>>
-> >>>>> Rene, don't bother bugging Tangent.  I have a demo unit on the  
-> >>>>> way.  My first priority is getting the driver working.
-> >>>>>
-> >>>>> Tangent really won't help much - their a distributor, not the  
-> >>>>> OEM.  This is an MSI Crystal 945 in a Tangent shell.
-> >>>>>
-> >>>>
-> >>>>
-> >>>> I know that the system is actually a Crystal 945. I got the  
-> >>>> touchscreen working via a dev driver from salt (so not tangent)
-> >>>> On the mainboard there is a conenctor: JFP1that goes to the  
-> >>>> ms4088 board. The mainboard connects to:
-> >>>> - power led
-> >>>> - hdd led
-> >>>> - speakers
-> >>>> - main power switch
-> >>>>
-> >>>>
-> >>>> I can provide you with some photoos if you like.
-> >>>>
-> >>>>
-> >>>> As stated earlier: the sound is working by with very low volume  
-> >>>> levels
-> >>>>
-> >>>>
-> >>>>
-> >>>>
-> >>>>> If you want to try something, see if the bios can be reflashed  
-> >>>>> with the Crystal 945 firmware.
-> >>>>>
-> >>>>
-> >>>>
-> >>>> I sound working with the original crystal? I don't think tangent  
-> >>>> has flshed their BIOS to another version.
-> >>>> In the crystal 945 specs I found that the're using a Realtek  
-> >>>> ALC262 with azalia codec, maybe this helps.
-> >>>>
-> >>>>
-> >>>> Rene
-> >>>>
-> >>>>
-> >>>>
-> >>>>> As to the speaker board, where on the main board is it  
-> >>>>> mounted?  Is the header labeled?  How many pins?  It sounds  
-> >>>>> like the speakers may be on the front panel header, which would  
-> >>>>> make them function like headphones.  Or this board is custom  
-> >>>>> build for this application and I don't know what I'm talking  
-> >>>>> about.
-> >>>>>
-> >>>>> Tobin
-> >>>>>
-> >>>>>
-> >>>>> On Sat, 2008-03-22 at 18:59 +0100, Rene Dohmen wrote:
-> >>>>>>
-> >>>>>> Hi Guys,
-> >>>>>>
-> >>>>>> I'm glad t o read that there are other people with the same  
-> >>>>>> problem
-> >>>>>> on the same system.
-> >>>>>> I just opened my Tangent 8000S and it has indeed a MSI mainboard:
-> >>>>>> MS7290. The speakers are connected to a small custom board:  
-> >>>>>> MS-4088
-> >>>>>> There's no extra chip on this customboard and the board is  
-> >>>>>> directly
-> >>>>>> connected to the mainboard. So probably the signal leaving the
-> >>>>>> mainboard in amplified already. (or there's a amplifier  
-> >>>>>> builtin the
-> >>>>>> speakers)
-> >>>>>>
-> >>>>>> Next week i'll have some time to put tangent under some more  
-> >>>>>> pressure
-> >>>>>> for info, so maybe that will speed up things a little bit.
-> >>>>>>
-> >>>>>> Grz Rene
-> >>>>>>
-> >>>>>> _______________________________________________
-> >>>>>> Alsa-devel mailing list
-> >>>>>> Alsa-devel@alsa-project.org
-> >>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >>>>> -- Tobin Davis 
-> >>>>>
-> >>>>> love, n.:
-> >>>>> 	When you don't want someone too close--because you're very  
-> >>>>> sensitive
-> >>>>> 	to pleasure.
-> >>>>
-> >>> -- Tobin Davis 
-> >>>
-> >>> I can hire one half of the working class to kill the other half.
-> >>> 		-- Jay Gould
-> >>
-> >>
-> > -- Tobin Davis 
-> >
-> > He is no lawyer who cannot take two sides.
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 -- 
-Tobin Davis 
-
-
-"Life is a garment we continuously alter, but which never seems to fit."
--- David McCord
+Cheers
+- eric
