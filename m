@@ -1,25 +1,27 @@
 From: John Rigg <aldev@sound-man.co.uk>
-Subject: Re: dB, dB and more dB....
-Date: Tue, 15 Apr 2008 14:01:29 +0100
-Message-ID: <20080415130129.GB2732@localhost>
-References: <mailman.5548.1208217467.2095.alsa-devel@alsa-project.org>
-	<241094.54658.qm@web65506.mail.ac4.yahoo.com>
+Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
+Date: Tue, 15 Apr 2008 14:12:03 +0100
+Message-ID: <20080415131203.GA2818@localhost>
+References: <20080411204610.GA32413@tango.0pointer.de>
+	<20080414172839.GA26513@tango.0pointer.de>
+	<4803C78A.3020109@superbug.co.uk>
+	<200804150552.13578.faber@faberman.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CB901037F0
+	by alsa0.perex.cz (Postfix) with ESMTP id 5273E10381A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 14:52:03 +0200 (CEST)
+	Tue, 15 Apr 2008 15:02:36 +0200 (CEST)
 Received: from localhost (78-32-150-178.no-dns-yet.enta.net [78.32.150.178])
-	by mail3.uklinux.net (Postfix) with ESMTP id 86BF21F662A
-	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 13:52:02 +0100 (BST)
+	by mail3.uklinux.net (Postfix) with ESMTP id 460611F669A
+	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 14:02:36 +0100 (BST)
 Received: from anon by localhost with local (Exim 4.63)
-	(envelope-from <john@sound-man.co.uk>) id 1Jlkmv-0000is-Cf
-	for alsa-devel@alsa-project.org; Tue, 15 Apr 2008 14:01:29 +0100
+	(envelope-from <john@sound-man.co.uk>) id 1Jlkx9-0000jt-38
+	for alsa-devel@alsa-project.org; Tue, 15 Apr 2008 14:12:03 +0100
 Content-Disposition: inline
-In-Reply-To: <241094.54658.qm@web65506.mail.ac4.yahoo.com>
+In-Reply-To: <200804150552.13578.faber@faberman.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,45 +34,18 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 14, 2008 at 05:50:33PM -0700, Tom Watson wrote:
-> I find all of this an interesting discussion, and it looks like:
-> 1)  People want to hear some output.
-> 2)  "Pro" people don't want to blow up speakers.
+> On Monday 14 April 2008 23:07:22 James Courtier-Dutton wrote:
+> > The aim of the dB values in the ALSA mixer is this.
+> >
+> > For Playback:
+> > Set all the mixer controls to 0dB.
+> > Send a sample digital signal from the CPU to the sound card.
+> > The measured analog signal on the line-out should be the same for ALL
+> > sound cards.
 
-Yes. I'd add to number 2: "pro" people don't want to hear any
-output until they set the relevant control to give output.
-
-> It seems that all of us have differing ideas on "what to expect" when it comes
-> to audio interfaces.  Twenty years ago, these problems really didn't exist,
-> since computer audio was in its infancy, but now audio is everywhere, and it
-> muct be accounted for.  Alsa's implementation of having audio MUTED on
-> initialization (startup) is a good one, and many distributions have init
-> scripts that take over from there, restoring old values.  While not ideal (just
-> set the audio to where I want it!), it is about the best we can do.
-> 
-
-Doing it any other way would in fact render "pro" hardware unusable.
-
-> The "pro" guy who doesn't want to blow up his speakers, I can only offer a
-> suggestion.  What do you do when plugging in and out "normal" audio equipment. 
-> Most of the time I turn down the level control since my big fat fingers will
-> end up touching the tip/ring of the audio connector and LOTS of hum results. 
-> If you don't do this, you may have a PEBKAC problem which I (or any other
-> developer) can solve.
-
-If a software mixer starts up unmuted it's too late. With hardware you have
-the option of pressing a mute button or turning down a gain control before
-turning power on. A software mixer needs to be running before you
-can alter the default values.
-
-> 
-> I think we are all chasing a problem that really doesn't exist.
-> 
-> As for dB, some people refer to 0dB as "full scale".  Some refer to it as 0 VU.
->  Some make it out to be 1-v p-p.  Go figure.  The biggest problem is that crazy
-> people think "louder" is better.  It isn't!
-
-The main misunderstanding appears to be the fact
-that dB settings in a mixer refer to gain, not level.
+The dB setting in a mixer refers to gain, not level.
+Expecting the same absolute level from pro and consumer
+sound cards at the same gain setting is a little ridiculous.
+If I set a control at 0dB I want just that: 0dB gain.
 
 John
