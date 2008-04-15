@@ -1,43 +1,63 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] soc - pxa2xx-ac97: Add missing clk_enable()
-Date: Tue, 15 Apr 2008 15:36:44 +0100
-Message-ID: <20080415143644.GA7144@rakim.wolfsonmicro.main>
-References: <20080414151128.GA23694@rakim.wolfsonmicro.main>
-	<1208185942-27637-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<f17812d70804150432t1fd0e20cpedaba34b47eb807d@mail.gmail.com>
-	<20080415122906.GC24498@rakim.wolfsonmicro.main>
-	<f17812d70804150711i5f3dbda4xc7cbff889567d46f@mail.gmail.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
+Date: Tue, 15 Apr 2008 15:43:30 +0100
+Message-ID: <4804BF12.9050100@superbug.co.uk>
+References: <20080411204610.GA32413@tango.0pointer.de>	<20080414172839.GA26513@tango.0pointer.de>	<4803C78A.3020109@superbug.co.uk>	<200804150552.13578.faber@faberman.de>
+	<20080415131203.GA2818@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk>
-Content-Disposition: inline
-In-Reply-To: <f17812d70804150711i5f3dbda4xc7cbff889567d46f@mail.gmail.com>
-List-Unsubscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=unsubscribe>
-List-Archive: <http://lists.arm.linux.org.uk/lurker/list/linux-arm-kernel.html>
-List-Post: <mailto:linux-arm-kernel@lists.arm.linux.org.uk>
-List-Help: <mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=help>
-List-Subscribe: <http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.arm.linux.org.uk?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.arm.linux.org.uk
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org+linux-arm-kernel=m.gmane.org@lists.arm.linux.org.uk
-To: eric miao <eric.y.miao@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.arm.linux.org.uk
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net
+	[194.217.242.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC624103800
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 Apr 2008 16:43:32 +0200 (CEST)
+In-Reply-To: <20080415131203.GA2818@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: John Rigg <aldev@sound-man.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 15, 2008 at 10:11:34PM +0800, eric miao wrote:
-> On Tue, Apr 15, 2008 at 8:29 PM, Mark Brown
+John Rigg wrote:
+>> On Monday 14 April 2008 23:07:22 James Courtier-Dutton wrote:
+>>     
+>>> The aim of the dB values in the ALSA mixer is this.
+>>>
+>>> For Playback:
+>>> Set all the mixer controls to 0dB.
+>>> Send a sample digital signal from the CPU to the sound card.
+>>> The measured analog signal on the line-out should be the same for ALL
+>>> sound cards.
+>>>       
+>
+> The dB setting in a mixer refers to gain, not level.
+> Expecting the same absolute level from pro and consumer
+> sound cards at the same gain setting is a little ridiculous.
+> If I set a control at 0dB I want just that: 0dB gain.
+>
+> John
+>   
+But surely it is a bit more than that.
+If I work with Pro gear and I capture some sound via line-in.
+I then send the digital sound file produced to another person who also 
+has pro gear.
+When they output that digital sound file to their line-out, it should be 
+identical, level wise, to the captured line-in was so long as both 
+people have the same dB gain levels set.
+In this case, we would need some way to convert Volts from the line-in 
+to specific digital samples in the sound file.
+I have not been able to find out what this conversion should be.
+E.g. a 16bit signed digital sample with value +5000 equals X Volts 
+output from line-out.
+What is that X value?
 
-> >  For correctness WRT the clock API it's required on all variants - the
-> >  note about PXA3xx is just to indicate how it got through testing.
-
-> I'm OK with this then, and it would be better the commit message been
-> modified to a more consistent version :)
-
-It's probably easier to just not mention that it ever worked at all :/
-
--------------------------------------------------------------------
-List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
-FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
-Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
+James
