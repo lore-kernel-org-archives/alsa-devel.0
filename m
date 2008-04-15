@@ -1,19 +1,17 @@
 From: "Camilo Polymeris" <cpolymeris@gmx.net>
 Subject: Patchmix-style application for EMU cards
-Date: Tue, 15 Apr 2008 03:46:01 -0400
-Message-ID: <c812bae60804150046u75824246o115c96a2c34190ec@mail.gmail.com>
-References: <c812bae60804150043t4ec98eaembf133381f5395b0c@mail.gmail.com>
+Date: Tue, 15 Apr 2008 04:26:06 -0400
+Message-ID: <c812bae60804150126j5258843em44849b3c5f367f8f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40032246B5
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 967CF246C1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Apr 2008 09:46:07 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id b21so644468nfd.32
-	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 00:46:06 -0700 (PDT)
-In-Reply-To: <c812bae60804150043t4ec98eaembf133381f5395b0c@mail.gmail.com>
+	Tue, 15 Apr 2008 10:26:09 +0200 (CEST)
+Received: by mu-out-0910.google.com with SMTP id i2so1439738mue.2
+	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2008 01:26:06 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
