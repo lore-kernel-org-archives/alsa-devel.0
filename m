@@ -1,19 +1,24 @@
 From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: Re: [PATCH 003b/003] snd-powermac: style burgundy.c
-Date: Wed, 16 Apr 2008 13:40:31 +0300
-Message-ID: <46e1c7760804160340k406eff90oe1463658e3489314@mail.gmail.com>
-References: <46e1c7760804160003q80ecf23r74af7fdcddc8eee@mail.gmail.com>
+Subject: Re: [PATCH 002b/003] snd-powermac: style awacs.s and
+	awacs.h
+Date: Wed, 16 Apr 2008 13:53:31 +0300
+Message-ID: <46e1c7760804160353g30fddca3icea6d6fe5635b856@mail.gmail.com>
+References: <46e1c7760804160002j6d24d074qbb2192280ab23d4d@mail.gmail.com>
+	<s5hk5iyf672.wl%tiwai@suse.de>
+	<46e1c7760804160335uc272440n179c2dec9622d348@mail.gmail.com>
+	<s5hfxtmf5hc.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_8479_9648708.1208342431912"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FC40247DB
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA51A247C7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Apr 2008 12:40:32 +0200 (CEST)
-Received: by mu-out-0910.google.com with SMTP id i2so2233825mue.2
-	for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2008 03:40:32 -0700 (PDT)
-In-Reply-To: <46e1c7760804160003q80ecf23r74af7fdcddc8eee@mail.gmail.com>
+	Wed, 16 Apr 2008 12:53:31 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id f40so5004903fka.0
+	for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2008 03:53:31 -0700 (PDT)
+In-Reply-To: <s5hfxtmf5hc.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,70 +32,35 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_8479_9648708.1208342431912
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2008/4/16, Takashi Iwai <tiwai@suse.de>:
+>
+> Thanks, that works.  But, I get checkpatch errors:
+>
+>  ERROR: do not use assignment in if condition
+>  #116: FILE: ppc/awacs.c:704:
+>
+> +               if ((err = snd_ctl_add(chip->card,
+>
+>
+> ERROR: do not use assignment in if condition
+>  #171: FILE: ppc/awacs.c:982:
+>
+> +               if ((err = build_mixers(chip,
+>
+>
+> ERROR: do not use assignment in if condition
+>  #191: FILE: ppc/awacs.c:999:
+>
+> +               if ((err = build_mixers(chip,
+>
+>
+>
+> Please fix?
+>
 
-Resending as attachment.
+I can do that but it will make the code much clumsier. Actually, I
+think this is checkpatch misunderstanding something. There is a '< 0'
+at the end of those conditions. Is it really this kind of assingment
+they want to forbid? This is the style there has been all the time.
 
 Risto
-
-------=_Part_8479_9648708.1208342431912
-Content-Type: text/plain; name=alsa-burgundy-1.0.16-style.diff
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ff3rv1o4
-Content-Disposition: attachment; filename=alsa-burgundy-1.0.16-style.diff
-
-RnJvbTogUmlzdG8gU3VvbWluZW4gPFJpc3RvLlN1b21pbmVuQGdtYWlsLmNvbT4KCkNvZGluZyBz
-dHlsZSBjb3JyZWN0aW9ucyBmb3IgYnVyZ3VuZHkuYy4KClNpZ25lZC1vZmYtYnk6IFJpc3RvIFN1
-b21pbmVuIDxSaXN0by5TdW9taW5lbkBnbWFpbC5jb20+Ci0tLQpLZXJuZWwgdmVyc2lvbiAyLjYu
-MjUtcmM4IChwcm9iYWJseSBhbnkgMi42KQoKLS0tIHNvdW5kL3BwYy9idXJndW5keS5jLm9yaWcJ
-MjAwOC0wNC0wNSAxNzo0NTowOC4wMDAwMDAwMDAgKzAzMDAKKysrIHNvdW5kL3BwYy9idXJndW5k
-eS5jCTIwMDgtMDQtMDcgMTI6MDA6MjAuODkzMzA3NTY4ICswMzAwCkBAIC0xMDIsNyArMTAyLDgg
-QEAgc25kX3BtYWNfYnVyZ3VuZHlfcmN3KHN0cnVjdCBzbmRfcG1hYyAqYwogfQoKIHN0YXRpYyB2
-b2lkCi1zbmRfcG1hY19idXJndW5keV93Y2Ioc3RydWN0IHNuZF9wbWFjICpjaGlwLCB1bnNpZ25l
-ZCBpbnQgYWRkciwgdW5zaWduZWQgaW50IHZhbCkKK3NuZF9wbWFjX2J1cmd1bmR5X3djYihzdHJ1
-Y3Qgc25kX3BtYWMgKmNoaXAsIHVuc2lnbmVkIGludCBhZGRyLAorCQkgICAgICB1bnNpZ25lZCBp
-bnQgdmFsKQogewogCW91dF9sZTMyKCZjaGlwLT5hd2Fjcy0+Y29kZWNfY3RybCwgYWRkciArIDB4
-MzAwMDAwICsgKHZhbCAmIDB4ZmYpKTsKIAlzbmRfcG1hY19idXJndW5keV9idXN5X3dhaXQoY2hp
-cCk7CkBAIC0xMjYsOCArMTI3LDExIEBAIHNuZF9wbWFjX2J1cmd1bmR5X3JjYihzdHJ1Y3Qgc25k
-X3BtYWMgKmMKIAlyZXR1cm4gdmFsOwogfQoKKyNkZWZpbmUgQkFTRTJBRERSKGJhc2UpCSgoYmFz
-ZSkgPDwgMTIpCisjZGVmaW5lIEFERFIyQkFTRShhZGRyKQkoKGFkZHIpID4+IDEyKQorCiAvKgot
-ICogQnVyZ3VuZHkgdm9sdW1lOiAwIC0gMTAwLCBzdGVyZW8KKyAqIEJ1cmd1bmR5IHZvbHVtZTog
-MCAtIDEwMCwgc3RlcmVvLCB3b3JkIHJlZwogICovCiBzdGF0aWMgdm9pZAogc25kX3BtYWNfYnVy
-Z3VuZHlfd3JpdGVfdm9sdW1lKHN0cnVjdCBzbmRfcG1hYyAqY2hpcCwgdW5zaWduZWQgaW50IGFk
-ZHJlc3MsCkBAIC0xNjgsMTMgKzE3Miw2IEBAIHNuZF9wbWFjX2J1cmd1bmR5X3JlYWRfdm9sdW1l
-KHN0cnVjdCBzbmQKIAkJdm9sdW1lWzFdID0gMDsKIH0KCi0KLS8qCi0gKi8KLQotI2RlZmluZSBC
-QVNFMkFERFIoYmFzZSkJKChiYXNlKSA8PCAxMikKLSNkZWZpbmUgQUREUjJCQVNFKGFkZHIpCSgo
-YWRkcikgPj4gMTIpCi0KIHN0YXRpYyBpbnQgc25kX3BtYWNfYnVyZ3VuZHlfaW5mb192b2x1bWUo
-c3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCiAJCQkJCSBzdHJ1Y3Qgc25kX2N0bF9lbGVt
-X2luZm8gKnVpbmZvKQogewpAQCAtMTkxLDggKzE4OCw4IEBAIHN0YXRpYyBpbnQgc25kX3BtYWNf
-YnVyZ3VuZHlfZ2V0X3ZvbHVtZSgKIAlzdHJ1Y3Qgc25kX3BtYWMgKmNoaXAgPSBzbmRfa2NvbnRy
-b2xfY2hpcChrY29udHJvbCk7CiAJdW5zaWduZWQgaW50IGFkZHIgPSBCQVNFMkFERFIoa2NvbnRy
-b2wtPnByaXZhdGVfdmFsdWUgJiAweGZmKTsKIAlpbnQgc2hpZnQgPSAoa2NvbnRyb2wtPnByaXZh
-dGVfdmFsdWUgPj4gOCkgJiAweGZmOwotCXNuZF9wbWFjX2J1cmd1bmR5X3JlYWRfdm9sdW1lKGNo
-aXAsIGFkZHIsIHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlLAotCQkJCSAgICAgIHNoaWZ0
-KTsKKwlzbmRfcG1hY19idXJndW5keV9yZWFkX3ZvbHVtZShjaGlwLCBhZGRyLAorCQkJCSAgICAg
-IHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlLCBzaGlmdCk7CiAJcmV0dXJuIDA7CiB9CgpA
-QCAtMjA0LDggKzIwMSw4IEBAIHN0YXRpYyBpbnQgc25kX3BtYWNfYnVyZ3VuZHlfcHV0X3ZvbHVt
-ZSgKIAlpbnQgc2hpZnQgPSAoa2NvbnRyb2wtPnByaXZhdGVfdmFsdWUgPj4gOCkgJiAweGZmOwog
-CWxvbmcgbnZvaWNlc1syXTsKCi0Jc25kX3BtYWNfYnVyZ3VuZHlfd3JpdGVfdm9sdW1lKGNoaXAs
-IGFkZHIsIHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlLAotCQkJCSAgICAgICBzaGlmdCk7
-CisJc25kX3BtYWNfYnVyZ3VuZHlfd3JpdGVfdm9sdW1lKGNoaXAsIGFkZHIsCisJCQkJICAgICAg
-IHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlLCBzaGlmdCk7CiAJc25kX3BtYWNfYnVyZ3Vu
-ZHlfcmVhZF92b2x1bWUoY2hpcCwgYWRkciwgbnZvaWNlcywgc2hpZnQpOwogCXJldHVybiAobnZv
-aWNlc1swXSAhPSB1Y29udHJvbC0+dmFsdWUuaW50ZWdlci52YWx1ZVswXSB8fAogCQludm9pY2Vz
-WzFdICE9IHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlWzFdKTsK
-------=_Part_8479_9648708.1208342431912
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_8479_9648708.1208342431912--
