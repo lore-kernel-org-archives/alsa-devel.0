@@ -1,20 +1,18 @@
 From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: Re: [PATCH 003b/003] snd-powermac: style burgundy.c
-Date: Wed, 16 Apr 2008 19:42:07 +0300
-Message-ID: <46e1c7760804160942h3c694b50m47510be2babfef7b@mail.gmail.com>
-References: <46e1c7760804160003q80ecf23r74af7fdcddc8eee@mail.gmail.com>
-	<46e1c7760804160340k406eff90oe1463658e3489314@mail.gmail.com>
+Subject: [PATCH 001a/001] snd-powermac: enable headphone
+	detection on older kernels
+Date: Wed, 16 Apr 2008 19:47:09 +0300
+Message-ID: <46e1c7760804160947l1b087082k3ebc6f95588490b8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----=_Part_1084_2380300.1208364127599"
+	boundary="----=_Part_1118_16735482.1208364429104"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5941510382C
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 459B710382F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Apr 2008 18:42:09 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so713024ana.80
-	for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2008 09:42:07 -0700 (PDT)
-In-Reply-To: <46e1c7760804160340k406eff90oe1463658e3489314@mail.gmail.com>
+	Wed, 16 Apr 2008 18:47:12 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so713512ana.80
+	for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2008 09:47:10 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,83 +26,36 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_1084_2380300.1208364127599
+------=_Part_1118_16735482.1208364429104
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-checkpatch-clean version.
+So this is not for kernel tree, but alsa-driver.
 
 Risto
 
-ps. The next two patches belong to a different set, old kernel support
-for alsa-driver.
-
-------=_Part_1084_2380300.1208364127599
-Content-Type: text/plain; name=alsa-burgundy-1.0.16-style.diff
+------=_Part_1118_16735482.1208364429104
+Content-Type: text/plain; name=alsa-pmac_old-hp-1.0.16-p5.diff
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ff44nxtp
-Content-Disposition: attachment; filename=alsa-burgundy-1.0.16-style.diff
+X-Attachment-Id: f_ff44wxuf
+Content-Disposition: attachment; filename=alsa-pmac_old-hp-1.0.16-p5.diff
 
-RnJvbTogUmlzdG8gU3VvbWluZW4gPFJpc3RvLlN1b21pbmVuQGdtYWlsLmNvbT4KCkNvZGluZyBz
-dHlsZSBjb3JyZWN0aW9ucyBmb3IgYnVyZ3VuZHkuYy4KClNpZ25lZC1vZmYtYnk6IFJpc3RvIFN1
-b21pbmVuIDxSaXN0by5TdW9taW5lbkBnbWFpbC5jb20+Ci0tLQpLZXJuZWwgdmVyc2lvbiAyLjYu
-MjUtcmM4IChwcm9iYWJseSBhbnkgMi42KQoKLS0tIGFsc2Eta2VybmVsL3BwYy9idXJndW5keS5j
-Lm9yaWcJMjAwOC0wNC0xNiAxODowMzozOC4wMDAwMDAwMDAgKzAzMDAKKysrIGFsc2Eta2VybmVs
-L3BwYy9idXJndW5keS5jCTIwMDgtMDQtMTYgMTg6MTI6MDkuMDAwMDAwMDAwICswMzAwCkBAIC0x
-MDIsNyArMTAyLDggQEAgc25kX3BtYWNfYnVyZ3VuZHlfcmN3KHN0cnVjdCBzbmRfcG1hYyAqYwog
-fQogCiBzdGF0aWMgdm9pZAotc25kX3BtYWNfYnVyZ3VuZHlfd2NiKHN0cnVjdCBzbmRfcG1hYyAq
-Y2hpcCwgdW5zaWduZWQgaW50IGFkZHIsIHVuc2lnbmVkIGludCB2YWwpCitzbmRfcG1hY19idXJn
-dW5keV93Y2Ioc3RydWN0IHNuZF9wbWFjICpjaGlwLCB1bnNpZ25lZCBpbnQgYWRkciwKKwkJICAg
-ICAgdW5zaWduZWQgaW50IHZhbCkKIHsKIAlvdXRfbGUzMigmY2hpcC0+YXdhY3MtPmNvZGVjX2N0
-cmwsIGFkZHIgKyAweDMwMDAwMCArICh2YWwgJiAweGZmKSk7CiAJc25kX3BtYWNfYnVyZ3VuZHlf
-YnVzeV93YWl0KGNoaXApOwpAQCAtMTI2LDggKzEyNywxMSBAQCBzbmRfcG1hY19idXJndW5keV9y
-Y2Ioc3RydWN0IHNuZF9wbWFjICpjCiAJcmV0dXJuIHZhbDsKIH0KIAorI2RlZmluZSBCQVNFMkFE
-RFIoYmFzZSkJKChiYXNlKSA8PCAxMikKKyNkZWZpbmUgQUREUjJCQVNFKGFkZHIpCSgoYWRkcikg
-Pj4gMTIpCisKIC8qCi0gKiBCdXJndW5keSB2b2x1bWU6IDAgLSAxMDAsIHN0ZXJlbworICogQnVy
-Z3VuZHkgdm9sdW1lOiAwIC0gMTAwLCBzdGVyZW8sIHdvcmQgcmVnCiAgKi8KIHN0YXRpYyB2b2lk
-CiBzbmRfcG1hY19idXJndW5keV93cml0ZV92b2x1bWUoc3RydWN0IHNuZF9wbWFjICpjaGlwLCB1
-bnNpZ25lZCBpbnQgYWRkcmVzcywKQEAgLTE2OCwxMyArMTcyLDYgQEAgc25kX3BtYWNfYnVyZ3Vu
-ZHlfcmVhZF92b2x1bWUoc3RydWN0IHNuZAogCQl2b2x1bWVbMV0gPSAwOwogfQogCi0KLS8qCi0g
-Ki8KLQotI2RlZmluZSBCQVNFMkFERFIoYmFzZSkJKChiYXNlKSA8PCAxMikKLSNkZWZpbmUgQURE
-UjJCQVNFKGFkZHIpCSgoYWRkcikgPj4gMTIpCi0KIHN0YXRpYyBpbnQgc25kX3BtYWNfYnVyZ3Vu
-ZHlfaW5mb192b2x1bWUoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCiAJCQkJCSBzdHJ1
-Y3Qgc25kX2N0bF9lbGVtX2luZm8gKnVpbmZvKQogewpAQCAtMTkxLDggKzE4OCw4IEBAIHN0YXRp
-YyBpbnQgc25kX3BtYWNfYnVyZ3VuZHlfZ2V0X3ZvbHVtZSgKIAlzdHJ1Y3Qgc25kX3BtYWMgKmNo
-aXAgPSBzbmRfa2NvbnRyb2xfY2hpcChrY29udHJvbCk7CiAJdW5zaWduZWQgaW50IGFkZHIgPSBC
-QVNFMkFERFIoa2NvbnRyb2wtPnByaXZhdGVfdmFsdWUgJiAweGZmKTsKIAlpbnQgc2hpZnQgPSAo
-a2NvbnRyb2wtPnByaXZhdGVfdmFsdWUgPj4gOCkgJiAweGZmOwotCXNuZF9wbWFjX2J1cmd1bmR5
-X3JlYWRfdm9sdW1lKGNoaXAsIGFkZHIsIHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlLAot
-CQkJCSAgICAgIHNoaWZ0KTsKKwlzbmRfcG1hY19idXJndW5keV9yZWFkX3ZvbHVtZShjaGlwLCBh
-ZGRyLAorCQkJCSAgICAgIHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlLCBzaGlmdCk7CiAJ
-cmV0dXJuIDA7CiB9CiAKQEAgLTIwNCw4ICsyMDEsOCBAQCBzdGF0aWMgaW50IHNuZF9wbWFjX2J1
-cmd1bmR5X3B1dF92b2x1bWUoCiAJaW50IHNoaWZ0ID0gKGtjb250cm9sLT5wcml2YXRlX3ZhbHVl
-ID4+IDgpICYgMHhmZjsKIAlsb25nIG52b2ljZXNbMl07CiAKLQlzbmRfcG1hY19idXJndW5keV93
-cml0ZV92b2x1bWUoY2hpcCwgYWRkciwgdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWUsCi0J
-CQkJICAgICAgIHNoaWZ0KTsKKwlzbmRfcG1hY19idXJndW5keV93cml0ZV92b2x1bWUoY2hpcCwg
-YWRkciwKKwkJCQkgICAgICAgdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWUsIHNoaWZ0KTsK
-IAlzbmRfcG1hY19idXJndW5keV9yZWFkX3ZvbHVtZShjaGlwLCBhZGRyLCBudm9pY2VzLCBzaGlm
-dCk7CiAJcmV0dXJuIChudm9pY2VzWzBdICE9IHVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVl
-WzBdIHx8CiAJCW52b2ljZXNbMV0gIT0gdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWVbMV0p
-OwpAQCAtNzAwLDcgKzY5Nyw4IEBAIGludCBfX2luaXQgc25kX3BtYWNfYnVyZ3VuZHlfaW5pdChz
-dHJ1Y3QKIAljaGlwLT5tYXN0ZXJfc3dfY3RsID0gc25kX2N0bF9uZXcxKGltYWMKIAkJCT8gJnNu
-ZF9wbWFjX2J1cmd1bmR5X21hc3Rlcl9zd19pbWFjCiAJCQk6ICZzbmRfcG1hY19idXJndW5keV9t
-YXN0ZXJfc3dfcG1hYywgY2hpcCk7Ci0JaWYgKChlcnIgPSBzbmRfY3RsX2FkZChjaGlwLT5jYXJk
-LCBjaGlwLT5tYXN0ZXJfc3dfY3RsKSkgPCAwKQorCWVyciA9IHNuZF9jdGxfYWRkKGNoaXAtPmNh
-cmQsIGNoaXAtPm1hc3Rlcl9zd19jdGwpOworCWlmIChlcnIgPCAwKQogCQlyZXR1cm4gZXJyOwog
-CWNoaXAtPm1hc3Rlcl9zd19jdGwgPSBzbmRfY3RsX25ldzEoaW1hYwogCQkJPyAmc25kX3BtYWNf
-YnVyZ3VuZHlfbGluZV9zd19pbWFjCkBAIC03MTgsMTAgKzcxNiwxMiBAQCBpbnQgX19pbml0IHNu
-ZF9wbWFjX2J1cmd1bmR5X2luaXQoc3RydWN0CiAJY2hpcC0+c3BlYWtlcl9zd19jdGwgPSBzbmRf
-Y3RsX25ldzEoaW1hYwogCQkJPyAmc25kX3BtYWNfYnVyZ3VuZHlfc3BlYWtlcl9zd19pbWFjCiAJ
-CQk6ICZzbmRfcG1hY19idXJndW5keV9zcGVha2VyX3N3X3BtYWMsIGNoaXApOwotCWlmICgoZXJy
-ID0gc25kX2N0bF9hZGQoY2hpcC0+Y2FyZCwgY2hpcC0+c3BlYWtlcl9zd19jdGwpKSA8IDApCisJ
-ZXJyID0gc25kX2N0bF9hZGQoY2hpcC0+Y2FyZCwgY2hpcC0+c3BlYWtlcl9zd19jdGwpOworCWlm
-IChlcnIgPCAwKQogCQlyZXR1cm4gZXJyOwogI2lmZGVmIFBNQUNfU1VQUE9SVF9BVVRPTVVURQot
-CWlmICgoZXJyID0gc25kX3BtYWNfYWRkX2F1dG9tdXRlKGNoaXApKSA8IDApCisJZXJyID0gc25k
-X3BtYWNfYWRkX2F1dG9tdXRlKGNoaXApOworCWlmIChlcnIgPCAwKQogCQlyZXR1cm4gZXJyOwog
-CiAJY2hpcC0+ZGV0ZWN0X2hlYWRwaG9uZSA9IHNuZF9wbWFjX2J1cmd1bmR5X2RldGVjdF9oZWFk
-cGhvbmU7Cg==
-------=_Part_1084_2380300.1208364127599
+RnJvbTogUmlzdG8gU3VvbWluZW4gPFJpc3RvLlN1b21pbmVuQGdtYWlsLmNvbT4KCkVuYWJsZSBw
+b3J0IGNoYW5nZSBpbnRlcnJ1cHQgd2hpbGUgaW5pdGlhbGlzaW5nIEFXQUNTLCBTY3JlYW1lciwg
+YW5kCkJ1cmd1bmR5IGNoaXBzZXRzLiBPbGRlciBrZXJuZWxzLgoKU2lnbmVkLW9mZi1ieTogUmlz
+dG8gU3VvbWluZW4gPFJpc3RvLlN1b21pbmVuQGdtYWlsLmNvbT4KLS0tCktlcm5lbCB2ZXJzaW9u
+IDwgMi42LjE2CgotLS0gcHBjL3BtYWNfb2xkLmMub3JpZwkyMDA4LTAyLTA1IDExOjIzOjIzLjAw
+MDAwMDAwMCArMDIwMAorKysgcHBjL3BtYWNfb2xkLmMJMjAwOC0wNC0xNSAyMDowNTo1Ni4wMDAw
+MDAwMDAgKzAzMDAKQEAgLTEyNTgsOSArMTI1OCw5IEBAIGludCBfX2luaXQgc25kX3BtYWNfbmV3
+KHN0cnVjdCBzbmRfY2FyZCAKIAogCXNuZF9wbWFjX3NvdW5kX2ZlYXR1cmUoY2hpcCwgMSk7CiAK
+LQkvKiByZXNldCAqLwotCWlmIChjaGlwLT5tb2RlbCA9PSBQTUFDX0FXQUNTKQotCQlvdXRfbGUz
+MigmY2hpcC0+YXdhY3MtPmNvbnRyb2wsIDB4MTEpOworCS8qIHJlc2V0ICYgZW5hYmxlIGludGVy
+cnVwdHMgKi8KKwlpZiAoY2hpcC0+bW9kZWwgPD0gUE1BQ19CVVJHVU5EWSkKKwkJb3V0X2xlMzIo
+JmNoaXAtPmF3YWNzLT5jb250cm9sLCBjaGlwLT5jb250cm9sX21hc2spOwogCiAJLyogUG93ZXJi
+b29rcyBoYXZlIG9kZCB3YXlzIG9mIGVuYWJsaW5nIGlucHV0cyBzdWNoIGFzCiAJICAgYW4gZXhw
+YW5zaW9uLWJheSBDRCBvciBzb3VuZCBmcm9tIGFuIGludGVybmFsIG1vZGVtCg==
+------=_Part_1118_16735482.1208364429104
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -115,4 +66,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-------=_Part_1084_2380300.1208364127599--
+------=_Part_1118_16735482.1208364429104--
