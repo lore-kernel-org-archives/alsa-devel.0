@@ -1,18 +1,18 @@
 From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: [PATCH 002b/003] snd-powermac: style awacs.s and
-	awacs.h
-Date: Wed, 16 Apr 2008 10:02:38 +0300
-Message-ID: <46e1c7760804160002j6d24d074qbb2192280ab23d4d@mail.gmail.com>
+Subject: [PATCH 003a/003] snd-powermac: Burgundy mixers for B&W
+	and iMac
+Date: Wed, 16 Apr 2008 10:03:09 +0300
+Message-ID: <46e1c7760804160003x6c903a6cy4a084e56f512e02a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 24F6E1037F9
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B4581037F9
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Apr 2008 09:02:39 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so662171ana.80
-	for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2008 00:02:38 -0700 (PDT)
+	Wed, 16 Apr 2008 09:03:16 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so662269ana.80
+	for <alsa-devel@alsa-project.org>; Wed, 16 Apr 2008 00:03:09 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,233 +29,652 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Risto Suominen <Risto.Suominen@gmail.com>
 
-Coding style corrections for awacs.c and awacs.h.
+Add mixer controls and correct headphone detection bits for PowerMac
+G3 B&W and iMac G3 Tray-loading, both having Burgundy chipset.
 
 Signed-off-by: Risto Suominen <Risto.Suominen@gmail.com>
 ---
 Kernel version 2.6.25-rc8 (probably any 2.6)
 
---- sound/ppc/awacs.c.orig	2008-04-05 17:45:08.000000000 +0300
-+++ sound/ppc/awacs.c	2008-04-07 11:24:08.108621048 +0300
-@@ -141,7 +141,7 @@ static int snd_pmac_awacs_info_volume(st
- 	uinfo->value.integer.max = 15;
+--- sound/ppc/burgundy.c.orig	2008-04-05 17:45:08.000000000 +0300
++++ sound/ppc/burgundy.c	2008-04-07 12:00:20.893307568 +0300
+@@ -211,17 +208,156 @@ static int snd_pmac_burgundy_put_volume(
+ 		nvoices[1] != ucontrol->value.integer.value[1]);
+ }
+
+-#define BURGUNDY_VOLUME(xname, xindex, addr, shift) \
++#define BURGUNDY_VOLUME_W(xname, xindex, addr, shift) \
+ { .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex,\
+   .info = snd_pmac_burgundy_info_volume,\
+   .get = snd_pmac_burgundy_get_volume,\
+   .put = snd_pmac_burgundy_put_volume,\
+   .private_value = ((ADDR2BASE(addr) & 0xff) | ((shift) << 8)) }
+
+-/* lineout/speaker */
++/*
++ * Burgundy volume: 0 - 100, stereo, 2-byte reg
++ */
++static void
++snd_pmac_burgundy_write_volume_2b(struct snd_pmac *chip, unsigned int address,
++				  long *volume, int off)
++{
++	int lvolume, rvolume;
++
++	off |= off << 2;
++	lvolume = volume[0] ? volume[0] + BURGUNDY_VOLUME_OFFSET : 0;
++	rvolume = volume[1] ? volume[1] + BURGUNDY_VOLUME_OFFSET : 0;
++
++	snd_pmac_burgundy_wcb(chip, address + off, lvolume);
++	snd_pmac_burgundy_wcb(chip, address + off + 0x500, rvolume);
++}
++
++static void
++snd_pmac_burgundy_read_volume_2b(struct snd_pmac *chip, unsigned int address,
++				 long *volume, int off)
++{
++	volume[0] = snd_pmac_burgundy_rcb(chip, address + off);
++	if (volume[0] >= BURGUNDY_VOLUME_OFFSET)
++		volume[0] -= BURGUNDY_VOLUME_OFFSET;
++	else
++		volume[0] = 0;
++	volume[1] = snd_pmac_burgundy_rcb(chip, address + off + 0x100);
++	if (volume[1] >= BURGUNDY_VOLUME_OFFSET)
++		volume[1] -= BURGUNDY_VOLUME_OFFSET;
++	else
++		volume[1] = 0;
++}
++
++static int snd_pmac_burgundy_info_volume_2b(struct snd_kcontrol *kcontrol,
++					    struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 2;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 100;
++	return 0;
++}
++
++static int snd_pmac_burgundy_get_volume_2b(struct snd_kcontrol *kcontrol,
++					   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
++	unsigned int addr = BASE2ADDR(kcontrol->private_value & 0xff);
++	int off = kcontrol->private_value & 0x300;
++	snd_pmac_burgundy_read_volume_2b(chip, addr,
++			ucontrol->value.integer.value, off);
++	return 0;
++}
++
++static int snd_pmac_burgundy_put_volume_2b(struct snd_kcontrol *kcontrol,
++					   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
++	unsigned int addr = BASE2ADDR(kcontrol->private_value & 0xff);
++	int off = kcontrol->private_value & 0x300;
++	long nvoices[2];
++
++	snd_pmac_burgundy_write_volume_2b(chip, addr,
++			ucontrol->value.integer.value, off);
++	snd_pmac_burgundy_read_volume_2b(chip, addr, nvoices, off);
++	return (nvoices[0] != ucontrol->value.integer.value[0] ||
++		nvoices[1] != ucontrol->value.integer.value[1]);
++}
++
++#define BURGUNDY_VOLUME_2B(xname, xindex, addr, off) \
++{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex,\
++  .info = snd_pmac_burgundy_info_volume_2b,\
++  .get = snd_pmac_burgundy_get_volume_2b,\
++  .put = snd_pmac_burgundy_put_volume_2b,\
++  .private_value = ((ADDR2BASE(addr) & 0xff) | ((off) << 8)) }
++
++/*
++ * Burgundy gain/attenuation: 0 - 15, mono/stereo, byte reg
++ */
++static int snd_pmac_burgundy_info_gain(struct snd_kcontrol *kcontrol,
++				       struct snd_ctl_elem_info *uinfo)
++{
++	int stereo = (kcontrol->private_value >> 24) & 1;
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = stereo + 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 15;
++	return 0;
++}
++
++static int snd_pmac_burgundy_get_gain(struct snd_kcontrol *kcontrol,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
++	unsigned int addr = BASE2ADDR(kcontrol->private_value & 0xff);
++	int stereo = (kcontrol->private_value >> 24) & 1;
++	int atten = (kcontrol->private_value >> 25) & 1;
++	int oval;
++
++	oval = snd_pmac_burgundy_rcb(chip, addr);
++	if (atten)
++		oval = ~oval & 0xff;
++	ucontrol->value.integer.value[0] = oval & 0xf;
++	if (stereo)
++		ucontrol->value.integer.value[1] = (oval >> 4) & 0xf;
++	return 0;
++}
+
+-static int snd_pmac_burgundy_info_switch_out(struct snd_kcontrol *kcontrol,
+-					     struct snd_ctl_elem_info *uinfo)
++static int snd_pmac_burgundy_put_gain(struct snd_kcontrol *kcontrol,
++				      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
++	unsigned int addr = BASE2ADDR(kcontrol->private_value & 0xff);
++	int stereo = (kcontrol->private_value >> 24) & 1;
++	int atten = (kcontrol->private_value >> 25) & 1;
++	int oval, val;
++
++	oval = snd_pmac_burgundy_rcb(chip, addr);
++	if (atten)
++		oval = ~oval & 0xff;
++	val = ucontrol->value.integer.value[0];
++	if (stereo)
++		val |= ucontrol->value.integer.value[1] << 4;
++	else
++		val |= ucontrol->value.integer.value[0] << 4;
++	if (atten)
++		val = ~val & 0xff;
++	snd_pmac_burgundy_wcb(chip, addr, val);
++	return val != oval;
++}
++
++#define BURGUNDY_VOLUME_B(xname, xindex, addr, stereo, atten) \
++{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex,\
++  .info = snd_pmac_burgundy_info_gain,\
++  .get = snd_pmac_burgundy_get_gain,\
++  .put = snd_pmac_burgundy_put_gain,\
++  .private_value = (ADDR2BASE(addr) | ((stereo) << 24) | ((atten) << 25)) }
++
++/*
++ * Burgundy switch: 0/1, mono/stereo, word reg
++ */
++static int snd_pmac_burgundy_info_switch_w(struct snd_kcontrol *kcontrol,
++					   struct snd_ctl_elem_info *uinfo)
+ {
+ 	int stereo = (kcontrol->private_value >> 24) & 1;
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+@@ -231,111 +367,207 @@ static int snd_pmac_burgundy_info_switch
  	return 0;
  }
--
-+
- static int snd_pmac_awacs_get_volume(struct snd_kcontrol *kcontrol,
- 				     struct snd_ctl_elem_value *ucontrol)
+
+-static int snd_pmac_burgundy_get_switch_out(struct snd_kcontrol *kcontrol,
+-					    struct snd_ctl_elem_value *ucontrol)
++static int snd_pmac_burgundy_get_switch_w(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
  {
-@@ -267,7 +267,8 @@ static int snd_pmac_awacs_put_switch(str
- static void awacs_set_cuda(int reg, int val)
- {
- 	struct adb_request req;
--	cuda_request(&req, NULL, 5, CUDA_PACKET, CUDA_GET_SET_IIC, 0x8a, reg, val);
-+	cuda_request(&req, NULL, 5, CUDA_PACKET, CUDA_GET_SET_IIC, 0x8a,
-+			reg, val);
- 	while (! req.complete)
- 		cuda_poll();
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+-	int lmask = kcontrol->private_value & 0xff;
+-	int rmask = (kcontrol->private_value >> 8) & 0xff;
++	unsigned int addr = BASE2ADDR((kcontrol->private_value >> 16) & 0xff);
++	int lmask = 1 << (kcontrol->private_value & 0xff);
++	int rmask = 1 << ((kcontrol->private_value >> 8) & 0xff);
+ 	int stereo = (kcontrol->private_value >> 24) & 1;
+-	int val = snd_pmac_burgundy_rcb(chip, MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES);
++	int val = snd_pmac_burgundy_rcw(chip, addr);
+ 	ucontrol->value.integer.value[0] = (val & lmask) ? 1 : 0;
+ 	if (stereo)
+ 		ucontrol->value.integer.value[1] = (val & rmask) ? 1 : 0;
+ 	return 0;
  }
-@@ -289,11 +290,11 @@ static void awacs_amp_set_tone(struct aw
- /*
-  * vol = 0 - 31 (attenuation), 32 = mute bit, stereo
+
+-static int snd_pmac_burgundy_put_switch_out(struct snd_kcontrol *kcontrol,
+-					    struct snd_ctl_elem_value *ucontrol)
++static int snd_pmac_burgundy_put_switch_w(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+-	int lmask = kcontrol->private_value & 0xff;
+-	int rmask = (kcontrol->private_value >> 8) & 0xff;
++	unsigned int addr = BASE2ADDR((kcontrol->private_value >> 16) & 0xff);
++	int lmask = 1 << (kcontrol->private_value & 0xff);
++	int rmask = 1 << ((kcontrol->private_value >> 8) & 0xff);
+ 	int stereo = (kcontrol->private_value >> 24) & 1;
+ 	int val, oval;
+-	oval = snd_pmac_burgundy_rcb(chip, MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES);
+-	val = oval & ~(lmask | rmask);
++	oval = snd_pmac_burgundy_rcw(chip, addr);
++	val = oval & ~(lmask | (stereo ? rmask : 0));
+ 	if (ucontrol->value.integer.value[0])
+ 		val |= lmask;
+ 	if (stereo && ucontrol->value.integer.value[1])
+ 		val |= rmask;
+-	snd_pmac_burgundy_wcb(chip, MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES, val);
++	snd_pmac_burgundy_wcw(chip, addr, val);
+ 	return val != oval;
+ }
+
+-#define BURGUNDY_OUTPUT_SWITCH(xname, xindex, lmask, rmask, stereo) \
++#define BURGUNDY_SWITCH_W(xname, xindex, addr, lbit, rbit, stereo) \
+ { .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex,\
+-  .info = snd_pmac_burgundy_info_switch_out,\
+-  .get = snd_pmac_burgundy_get_switch_out,\
+-  .put = snd_pmac_burgundy_put_switch_out,\
+-  .private_value = ((lmask) | ((rmask) << 8) | ((stereo) << 24)) }
+-
+-/* line/speaker output volume */
+-static int snd_pmac_burgundy_info_volume_out(struct snd_kcontrol *kcontrol,
+-					     struct snd_ctl_elem_info *uinfo)
++  .info = snd_pmac_burgundy_info_switch_w,\
++  .get = snd_pmac_burgundy_get_switch_w,\
++  .put = snd_pmac_burgundy_put_switch_w,\
++  .private_value = ((lbit) | ((rbit) << 8)\
++		| (ADDR2BASE(addr) << 16) | ((stereo) << 24)) }
++
++/*
++ * Burgundy switch: 0/1, mono/stereo, byte reg, bit mask
++ */
++static int snd_pmac_burgundy_info_switch_b(struct snd_kcontrol *kcontrol,
++					   struct snd_ctl_elem_info *uinfo)
+ {
+ 	int stereo = (kcontrol->private_value >> 24) & 1;
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+ 	uinfo->count = stereo + 1;
+ 	uinfo->value.integer.min = 0;
+-	uinfo->value.integer.max = 15;
++	uinfo->value.integer.max = 1;
+ 	return 0;
+ }
+
+-static int snd_pmac_burgundy_get_volume_out(struct snd_kcontrol *kcontrol,
+-					    struct snd_ctl_elem_value *ucontrol)
++static int snd_pmac_burgundy_get_switch_b(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+-	unsigned int addr = BASE2ADDR(kcontrol->private_value & 0xff);
++	unsigned int addr = BASE2ADDR((kcontrol->private_value >> 16) & 0xff);
++	int lmask = kcontrol->private_value & 0xff;
++	int rmask = (kcontrol->private_value >> 8) & 0xff;
+ 	int stereo = (kcontrol->private_value >> 24) & 1;
+-	int oval;
+-
+-	oval = ~snd_pmac_burgundy_rcb(chip, addr) & 0xff;
+-	ucontrol->value.integer.value[0] = oval & 0xf;
++	int val = snd_pmac_burgundy_rcb(chip, addr);
++	ucontrol->value.integer.value[0] = (val & lmask) ? 1 : 0;
+ 	if (stereo)
+-		ucontrol->value.integer.value[1] = (oval >> 4) & 0xf;
++		ucontrol->value.integer.value[1] = (val & rmask) ? 1 : 0;
+ 	return 0;
+ }
+
+-static int snd_pmac_burgundy_put_volume_out(struct snd_kcontrol *kcontrol,
+-					    struct snd_ctl_elem_value *ucontrol)
++static int snd_pmac_burgundy_put_switch_b(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_pmac *chip = snd_kcontrol_chip(kcontrol);
+-	unsigned int addr = BASE2ADDR(kcontrol->private_value & 0xff);
++	unsigned int addr = BASE2ADDR((kcontrol->private_value >> 16) & 0xff);
++	int lmask = kcontrol->private_value & 0xff;
++	int rmask = (kcontrol->private_value >> 8) & 0xff;
+ 	int stereo = (kcontrol->private_value >> 24) & 1;
+-	unsigned int oval, val;
+-
+-	oval = ~snd_pmac_burgundy_rcb(chip, addr) & 0xff;
+-	val = ucontrol->value.integer.value[0] & 15;
+-	if (stereo)
+-		val |= (ucontrol->value.integer.value[1] & 15) << 4;
+-	else
+-		val |= val << 4;
+-	val = ~val & 0xff;
++	int val, oval;
++	oval = snd_pmac_burgundy_rcb(chip, addr);
++	val = oval & ~(lmask | rmask);
++	if (ucontrol->value.integer.value[0])
++		val |= lmask;
++	if (stereo && ucontrol->value.integer.value[1])
++		val |= rmask;
+ 	snd_pmac_burgundy_wcb(chip, addr, val);
+ 	return val != oval;
+ }
+
+-#define BURGUNDY_OUTPUT_VOLUME(xname, xindex, addr, stereo) \
++#define BURGUNDY_SWITCH_B(xname, xindex, addr, lmask, rmask, stereo) \
+ { .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex,\
+-  .info = snd_pmac_burgundy_info_volume_out,\
+-  .get = snd_pmac_burgundy_get_volume_out,\
+-  .put = snd_pmac_burgundy_put_volume_out,\
+-  .private_value = (ADDR2BASE(addr) | ((stereo) << 24)) }
++  .info = snd_pmac_burgundy_info_switch_b,\
++  .get = snd_pmac_burgundy_get_switch_b,\
++  .put = snd_pmac_burgundy_put_switch_b,\
++  .private_value = ((lmask) | ((rmask) << 8)\
++		| (ADDR2BASE(addr) << 16) | ((stereo) << 24)) }
+
++/*
++ * Burgundy mixers
++ */
+ static struct snd_kcontrol_new snd_pmac_burgundy_mixers[] __initdata = {
+-	BURGUNDY_VOLUME("Master Playback Volume", 0,
+MASK_ADDR_BURGUNDY_MASTER_VOLUME, 8),
+-	BURGUNDY_VOLUME("Line Playback Volume", 0, MASK_ADDR_BURGUNDY_VOLLINE, 16),
+-	BURGUNDY_VOLUME("CD Playback Volume", 0, MASK_ADDR_BURGUNDY_VOLCD, 16),
+-	BURGUNDY_VOLUME("Mic Playback Volume", 0, MASK_ADDR_BURGUNDY_VOLMIC, 16),
+-	BURGUNDY_OUTPUT_VOLUME("PC Speaker Playback Volume", 0,
+MASK_ADDR_BURGUNDY_ATTENHP, 0),
+-	/*BURGUNDY_OUTPUT_VOLUME("PCM Playback Volume", 0,
+MASK_ADDR_BURGUNDY_ATTENLINEOUT, 1),*/
+-	BURGUNDY_OUTPUT_VOLUME("Headphone Playback Volume", 0,
+MASK_ADDR_BURGUNDY_ATTENSPEAKER, 1),
+-};	
+-static struct snd_kcontrol_new snd_pmac_burgundy_master_sw __initdata =
+-BURGUNDY_OUTPUT_SWITCH("Headphone Playback Switch", 0,
+BURGUNDY_OUTPUT_LEFT, BURGUNDY_OUTPUT_RIGHT, 1);
+-static struct snd_kcontrol_new snd_pmac_burgundy_speaker_sw __initdata =
+-BURGUNDY_OUTPUT_SWITCH("PC Speaker Playback Switch", 0,
+BURGUNDY_OUTPUT_INTERN, 0, 0);
++	BURGUNDY_VOLUME_W("Master Playback Volume", 0,
++			MASK_ADDR_BURGUNDY_MASTER_VOLUME, 8),
++	BURGUNDY_VOLUME_W("CD Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_VOLCD, 16),
++	BURGUNDY_VOLUME_2B("Input Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_VOLMIX01, 2),
++	BURGUNDY_VOLUME_2B("Mixer Playback Volume", 0,
++			MASK_ADDR_BURGUNDY_VOLMIX23, 0),
++	BURGUNDY_VOLUME_B("CD Gain Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_GAINCD, 1, 0),
++	BURGUNDY_SWITCH_W("Master Capture Switch", 0,
++			MASK_ADDR_BURGUNDY_OUTPUTENABLES, 24, 0, 0),
++	BURGUNDY_SWITCH_W("CD Capture Switch", 0,
++			MASK_ADDR_BURGUNDY_CAPTURESELECTS, 0, 16, 1),
++	BURGUNDY_SWITCH_W("CD Playback Switch", 0,
++			MASK_ADDR_BURGUNDY_OUTPUTSELECTS, 0, 16, 1),
++/*	BURGUNDY_SWITCH_W("Loop Capture Switch", 0,
++ *		MASK_ADDR_BURGUNDY_CAPTURESELECTS, 8, 24, 1),
++ *	BURGUNDY_SWITCH_B("Mixer out Capture Switch", 0,
++ *		MASK_ADDR_BURGUNDY_HOSTIFAD, 0x02, 0, 0),
++ *	BURGUNDY_SWITCH_B("Mixer Capture Switch", 0,
++ *		MASK_ADDR_BURGUNDY_HOSTIFAD, 0x01, 0, 0),
++ *	BURGUNDY_SWITCH_B("PCM out Capture Switch", 0,
++ *		MASK_ADDR_BURGUNDY_HOSTIFEH, 0x02, 0, 0),
++ */	BURGUNDY_SWITCH_B("PCM Capture Switch", 0,
++			MASK_ADDR_BURGUNDY_HOSTIFEH, 0x01, 0, 0)
++};
++static struct snd_kcontrol_new snd_pmac_burgundy_mixers_imac[] __initdata = {
++	BURGUNDY_VOLUME_W("Line in Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_VOLLINE, 16),
++	BURGUNDY_VOLUME_W("Mic Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_VOLMIC, 16),
++	BURGUNDY_VOLUME_B("Line in Gain Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_GAINLINE, 1, 0),
++	BURGUNDY_VOLUME_B("Mic Gain Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_GAINMIC, 1, 0),
++	BURGUNDY_VOLUME_B("PC Speaker Playback Volume", 0,
++			MASK_ADDR_BURGUNDY_ATTENSPEAKER, 1, 1),
++	BURGUNDY_VOLUME_B("Line out Playback Volume", 0,
++			MASK_ADDR_BURGUNDY_ATTENLINEOUT, 1, 1),
++	BURGUNDY_VOLUME_B("Headphone Playback Volume", 0,
++			MASK_ADDR_BURGUNDY_ATTENHP, 1, 1),
++	BURGUNDY_SWITCH_W("Line in Capture Switch", 0,
++			MASK_ADDR_BURGUNDY_CAPTURESELECTS, 1, 17, 1),
++	BURGUNDY_SWITCH_W("Mic Capture Switch", 0,
++			MASK_ADDR_BURGUNDY_CAPTURESELECTS, 2, 18, 1),
++	BURGUNDY_SWITCH_W("Line in Playback Switch", 0,
++			MASK_ADDR_BURGUNDY_OUTPUTSELECTS, 1, 17, 1),
++	BURGUNDY_SWITCH_W("Mic Playback Switch", 0,
++			MASK_ADDR_BURGUNDY_OUTPUTSELECTS, 2, 18, 1),
++	BURGUNDY_SWITCH_B("Mic Boost Capture Switch", 0,
++			MASK_ADDR_BURGUNDY_INPBOOST, 0x40, 0x80, 1)
++};
++static struct snd_kcontrol_new snd_pmac_burgundy_mixers_pmac[] __initdata = {
++	BURGUNDY_VOLUME_W("Line in Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_VOLMIC, 16),
++	BURGUNDY_VOLUME_B("Line in Gain Capture Volume", 0,
++			MASK_ADDR_BURGUNDY_GAINMIC, 1, 0),
++	BURGUNDY_VOLUME_B("PC Speaker Playback Volume", 0,
++			MASK_ADDR_BURGUNDY_ATTENMONO, 0, 1),
++	BURGUNDY_VOLUME_B("Line out Playback Volume", 0,
++			MASK_ADDR_BURGUNDY_ATTENSPEAKER, 1, 1),
++	BURGUNDY_SWITCH_W("Line in Capture Switch", 0,
++			MASK_ADDR_BURGUNDY_CAPTURESELECTS, 2, 18, 1),
++	BURGUNDY_SWITCH_W("Line in Playback Switch", 0,
++			MASK_ADDR_BURGUNDY_OUTPUTSELECTS, 2, 18, 1),
++/*	BURGUNDY_SWITCH_B("Line in Boost Capture Switch", 0,
++ *		MASK_ADDR_BURGUNDY_INPBOOST, 0x40, 0x80, 1) */
++};
++static struct snd_kcontrol_new snd_pmac_burgundy_master_sw_imac __initdata =
++BURGUNDY_SWITCH_B("Master Playback Switch", 0,
++	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
++	BURGUNDY_OUTPUT_LEFT | BURGUNDY_LINEOUT_LEFT | BURGUNDY_HP_LEFT,
++	BURGUNDY_OUTPUT_RIGHT | BURGUNDY_LINEOUT_RIGHT | BURGUNDY_HP_RIGHT, 1);
++static struct snd_kcontrol_new snd_pmac_burgundy_master_sw_pmac __initdata =
++BURGUNDY_SWITCH_B("Master Playback Switch", 0,
++	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
++	BURGUNDY_OUTPUT_INTERN
++	| BURGUNDY_OUTPUT_LEFT, BURGUNDY_OUTPUT_RIGHT, 1);
++static struct snd_kcontrol_new snd_pmac_burgundy_speaker_sw_imac __initdata =
++BURGUNDY_SWITCH_B("PC Speaker Playback Switch", 0,
++	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
++	BURGUNDY_OUTPUT_LEFT, BURGUNDY_OUTPUT_RIGHT, 1);
++static struct snd_kcontrol_new snd_pmac_burgundy_speaker_sw_pmac __initdata =
++BURGUNDY_SWITCH_B("PC Speaker Playback Switch", 0,
++	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
++	BURGUNDY_OUTPUT_INTERN, 0, 0);
++static struct snd_kcontrol_new snd_pmac_burgundy_line_sw_imac __initdata =
++BURGUNDY_SWITCH_B("Line out Playback Switch", 0,
++	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
++	BURGUNDY_LINEOUT_LEFT, BURGUNDY_LINEOUT_RIGHT, 1);
++static struct snd_kcontrol_new snd_pmac_burgundy_line_sw_pmac __initdata =
++BURGUNDY_SWITCH_B("Line out Playback Switch", 0,
++	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
++	BURGUNDY_OUTPUT_LEFT, BURGUNDY_OUTPUT_RIGHT, 1);
++static struct snd_kcontrol_new snd_pmac_burgundy_hp_sw_imac __initdata =
++BURGUNDY_SWITCH_B("Headphone Playback Switch", 0,
++	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
++	BURGUNDY_HP_LEFT, BURGUNDY_HP_RIGHT, 1);
+
+
+ #ifdef PMAC_SUPPORT_AUTOMUTE
+@@ -350,16 +583,26 @@ static int snd_pmac_burgundy_detect_head
+ static void snd_pmac_burgundy_update_automute(struct snd_pmac *chip,
+int do_notify)
+ {
+ 	if (chip->auto_mute) {
++		int imac = machine_is_compatible("iMac");
+ 		int reg, oreg;
+-		reg = oreg = snd_pmac_burgundy_rcb(chip,
+MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES);
+-		reg &= ~(BURGUNDY_OUTPUT_LEFT | BURGUNDY_OUTPUT_RIGHT |
+BURGUNDY_OUTPUT_INTERN);
++		reg = oreg = snd_pmac_burgundy_rcb(chip,
++				MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES);
++		reg &= imac ? ~(BURGUNDY_OUTPUT_LEFT | BURGUNDY_OUTPUT_RIGHT
++				| BURGUNDY_HP_LEFT | BURGUNDY_HP_RIGHT)
++			: ~(BURGUNDY_OUTPUT_LEFT | BURGUNDY_OUTPUT_RIGHT
++				| BURGUNDY_OUTPUT_INTERN);
+ 		if (snd_pmac_burgundy_detect_headphone(chip))
+-			reg |= BURGUNDY_OUTPUT_LEFT | BURGUNDY_OUTPUT_RIGHT;
++			reg |= imac ? (BURGUNDY_HP_LEFT | BURGUNDY_HP_RIGHT)
++				: (BURGUNDY_OUTPUT_LEFT
++					| BURGUNDY_OUTPUT_RIGHT);
+ 		else
+-			reg |= BURGUNDY_OUTPUT_INTERN;
++			reg |= imac ? (BURGUNDY_OUTPUT_LEFT
++					| BURGUNDY_OUTPUT_RIGHT)
++				: (BURGUNDY_OUTPUT_INTERN);
+ 		if (do_notify && reg == oreg)
+ 			return;
+-		snd_pmac_burgundy_wcb(chip, MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES, reg);
++		snd_pmac_burgundy_wcb(chip,
++				MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES, reg);
+ 		if (do_notify) {
+ 			snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
+ 				       &chip->master_sw_ctl->id);
+@@ -378,6 +621,7 @@ static void snd_pmac_burgundy_update_aut
   */
--static int awacs_amp_set_vol(struct awacs_amp *amp, int index, int
-lvol, int rvol,
--			     int do_check)
-+static int awacs_amp_set_vol(struct awacs_amp *amp, int index,
-+			     int lvol, int rvol, int do_check)
+ int __init snd_pmac_burgundy_init(struct snd_pmac *chip)
  {
- 	if (do_check && amp->amp_vol[index][0] == lvol &&
--	    amp->amp_vol[index][1] == rvol)
-+			amp->amp_vol[index][1] == rvol)
- 		return 0;
- 	awacs_set_cuda(3 + index, lvol);
- 	awacs_set_cuda(5 + index, rvol);
-@@ -337,7 +338,7 @@ static int snd_pmac_awacs_info_volume_am
- 	uinfo->value.integer.max = 31;
- 	return 0;
- }
--
-+
- static int snd_pmac_awacs_get_volume_amp(struct snd_kcontrol *kcontrol,
- 					 struct snd_ctl_elem_value *ucontrol)
- {
-@@ -361,8 +362,10 @@ static int snd_pmac_awacs_put_volume_amp
- 	snd_assert(amp, return -EINVAL);
- 	snd_assert(index >= 0 && index <= 1, return -EINVAL);
-
--	vol[0] = (31 - (ucontrol->value.integer.value[0] & 31)) |
-(amp->amp_vol[index][0] & 32);
--	vol[1] = (31 - (ucontrol->value.integer.value[1] & 31)) |
-(amp->amp_vol[index][1] & 32);
-+	vol[0] = (31 - (ucontrol->value.integer.value[0] & 31))
-+		| (amp->amp_vol[index][0] & 32);
-+	vol[1] = (31 - (ucontrol->value.integer.value[1] & 31))
-+		| (amp->amp_vol[index][1] & 32);
- 	return awacs_amp_set_vol(amp, index, vol[0], vol[1], 1);
- }
-
-@@ -374,8 +377,10 @@ static int snd_pmac_awacs_get_switch_amp
- 	struct awacs_amp *amp = chip->mixer_data;
- 	snd_assert(amp, return -EINVAL);
- 	snd_assert(index >= 0 && index <= 1, return -EINVAL);
--	ucontrol->value.integer.value[0] = (amp->amp_vol[index][0] & 32) ? 0 : 1;
--	ucontrol->value.integer.value[1] = (amp->amp_vol[index][1] & 32) ? 0 : 1;
-+	ucontrol->value.integer.value[0] = (amp->amp_vol[index][0] & 32)
-+					? 0 : 1;
-+	ucontrol->value.integer.value[1] = (amp->amp_vol[index][1] & 32)
-+					? 0 : 1;
- 	return 0;
- }
-
-@@ -389,8 +394,10 @@ static int snd_pmac_awacs_put_switch_amp
- 	snd_assert(amp, return -EINVAL);
- 	snd_assert(index >= 0 && index <= 1, return -EINVAL);
-
--	vol[0] = (ucontrol->value.integer.value[0] ? 0 : 32) |
-(amp->amp_vol[index][0] & 31);
--	vol[1] = (ucontrol->value.integer.value[1] ? 0 : 32) |
-(amp->amp_vol[index][1] & 31);
-+	vol[0] = (ucontrol->value.integer.value[0] ? 0 : 32)
-+		| (amp->amp_vol[index][0] & 31);
-+	vol[1] = (ucontrol->value.integer.value[1] ? 0 : 32)
-+		| (amp->amp_vol[index][1] & 31);
- 	return awacs_amp_set_vol(amp, index, vol[0], vol[1], 1);
- }
-
-@@ -403,7 +410,7 @@ static int snd_pmac_awacs_info_tone_amp(
- 	uinfo->value.integer.max = 14;
- 	return 0;
- }
--
-+
- static int snd_pmac_awacs_get_tone_amp(struct snd_kcontrol *kcontrol,
- 				       struct snd_ctl_elem_value *ucontrol)
- {
-@@ -445,7 +452,7 @@ static int snd_pmac_awacs_info_master_am
- 	uinfo->value.integer.max = 99;
- 	return 0;
- }
--
-+
- static int snd_pmac_awacs_get_master_amp(struct snd_kcontrol *kcontrol,
- 					 struct snd_ctl_elem_value *ucontrol)
- {
-@@ -688,12 +694,14 @@ static struct snd_kcontrol_new snd_pmac_
- /*
-  * add new mixer elements to the card
-  */
--static int build_mixers(struct snd_pmac *chip, int nums, struct
-snd_kcontrol_new *mixers)
-+static int build_mixers(struct snd_pmac *chip, int nums,
-+			struct snd_kcontrol_new *mixers)
- {
++	int imac = machine_is_compatible("iMac");
  	int i, err;
 
- 	for (i = 0; i < nums; i++) {
--		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&mixers[i], chip))) < 0)
+ 	/* Checks to see the chip is alive and kicking */
+@@ -386,7 +630,7 @@ int __init snd_pmac_burgundy_init(struct
+ 		return 1;
+ 	}
+
+-	snd_pmac_burgundy_wcb(chip, MASK_ADDR_BURGUNDY_OUTPUTENABLES,
++	snd_pmac_burgundy_wcw(chip, MASK_ADDR_BURGUNDY_OUTPUTENABLES,
+ 			   DEF_BURGUNDY_OUTPUTENABLES);
+ 	snd_pmac_burgundy_wcb(chip, MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
+ 			   DEF_BURGUNDY_MORE_OUTPUTENABLES);
+@@ -396,7 +640,8 @@ int __init snd_pmac_burgundy_init(struct
+ 	snd_pmac_burgundy_wcb(chip, MASK_ADDR_BURGUNDY_INPSEL21,
+ 			   DEF_BURGUNDY_INPSEL21);
+ 	snd_pmac_burgundy_wcb(chip, MASK_ADDR_BURGUNDY_INPSEL3,
+-			   DEF_BURGUNDY_INPSEL3);
++			   imac ? DEF_BURGUNDY_INPSEL3_IMAC
++			   : DEF_BURGUNDY_INPSEL3_PMAC);
+ 	snd_pmac_burgundy_wcb(chip, MASK_ADDR_BURGUNDY_GAINCD,
+ 			   DEF_BURGUNDY_GAINCD);
+ 	snd_pmac_burgundy_wcb(chip, MASK_ADDR_BURGUNDY_GAINLINE,
+@@ -422,23 +667,51 @@ int __init snd_pmac_burgundy_init(struct
+ 	snd_pmac_burgundy_wcw(chip, MASK_ADDR_BURGUNDY_VOLMIC,
+ 			   DEF_BURGUNDY_VOLMIC);
+
+-	if (chip->hp_stat_mask == 0)
++	if (chip->hp_stat_mask == 0) {
+ 		/* set headphone-jack detection bit */
+-		chip->hp_stat_mask = 0x04;
+-
++		if (imac)
++			chip->hp_stat_mask = BURGUNDY_HPDETECT_IMAC_UPPER
++				| BURGUNDY_HPDETECT_IMAC_LOWER
++				| BURGUNDY_HPDETECT_IMAC_SIDE;
++		else
++			chip->hp_stat_mask = BURGUNDY_HPDETECT_PMAC_BACK;
++	}
+ 	/*
+ 	 * build burgundy mixers
+ 	 */
+ 	strcpy(chip->card->mixername, "PowerMac Burgundy");
+
+ 	for (i = 0; i < ARRAY_SIZE(snd_pmac_burgundy_mixers); i++) {
+-		if ((err = snd_ctl_add(chip->card,
+snd_ctl_new1(&snd_pmac_burgundy_mixers[i], chip))) < 0)
 +		if ((err = snd_ctl_add(chip->card,
-+				       snd_ctl_new1(&mixers[i], chip))) < 0)
++		    snd_ctl_new1(&snd_pmac_burgundy_mixers[i], chip))) < 0)
++			return err;
++	}
++	for (i = 0; i < (imac ? ARRAY_SIZE(snd_pmac_burgundy_mixers_imac)
++			: ARRAY_SIZE(snd_pmac_burgundy_mixers_pmac)); i++) {
++		if ((err = snd_ctl_add(chip->card,
++		    snd_ctl_new1(imac ? &snd_pmac_burgundy_mixers_imac[i]
++		    : &snd_pmac_burgundy_mixers_pmac[i], chip))) < 0)
  			return err;
  	}
- 	return 0;
-@@ -743,8 +752,10 @@ static void snd_pmac_awacs_resume(struct
- #ifdef PMAC_AMP_AVAIL
- 	if (chip->mixer_data) {
- 		struct awacs_amp *amp = chip->mixer_data;
--		awacs_amp_set_vol(amp, 0, amp->amp_vol[0][0], amp->amp_vol[0][1], 0);
--		awacs_amp_set_vol(amp, 1, amp->amp_vol[1][0], amp->amp_vol[1][1], 0);
-+		awacs_amp_set_vol(amp, 0,
-+				  amp->amp_vol[0][0], amp->amp_vol[0][1], 0);
-+		awacs_amp_set_vol(amp, 1,
-+				  amp->amp_vol[1][0], amp->amp_vol[1][1], 0);
- 		awacs_amp_set_tone(amp, amp->amp_tone[0], amp->amp_tone[1]);
- 		awacs_amp_set_master(amp, amp->amp_master);
- 	}
-@@ -849,7 +860,7 @@ snd_pmac_awacs_init(struct snd_pmac *chi
- 	chip->awacs_reg[1] = MASK_CMUTE | MASK_AMUTE;
- 	/* FIXME: Only machines with external SRS module need MASK_PAROUT */
- 	if (chip->has_iic || chip->device_id == 0x5 ||
--	    /*chip->_device_id == 0x8 || */
-+	    /* chip->_device_id == 0x8 || */
- 	    chip->device_id == 0xb)
- 		chip->awacs_reg[1] |= MASK_PAROUT;
- 	/* get default volume from nvram */
-@@ -860,8 +871,10 @@ snd_pmac_awacs_init(struct snd_pmac *chi
- 	chip->awacs_reg[2] = vol;
- 	chip->awacs_reg[4] = vol;
- 	if (chip->model == PMAC_SCREAMER) {
--		chip->awacs_reg[5] = vol; /* FIXME: screamer has loopthru vol control */
--		chip->awacs_reg[6] = MASK_MIC_BOOST; /* FIXME: maybe should be vol
-<< 3 for PCMCIA speaker */
-+		/* FIXME: screamer has loopthru vol control */
-+		chip->awacs_reg[5] = vol;
-+		/* FIXME: maybe should be vol << 3 for PCMCIA speaker */
-+		chip->awacs_reg[6] = MASK_MIC_BOOST;
- 		chip->awacs_reg[7] = 0;
- 	}
+-	chip->master_sw_ctl = snd_ctl_new1(&snd_pmac_burgundy_master_sw, chip);
++	chip->master_sw_ctl = snd_ctl_new1(imac
++			? &snd_pmac_burgundy_master_sw_imac
++			: &snd_pmac_burgundy_master_sw_pmac, chip);
+ 	if ((err = snd_ctl_add(chip->card, chip->master_sw_ctl)) < 0)
+ 		return err;
+-	chip->speaker_sw_ctl = snd_ctl_new1(&snd_pmac_burgundy_speaker_sw, chip);
++	chip->master_sw_ctl = snd_ctl_new1(imac
++			? &snd_pmac_burgundy_line_sw_imac
++			: &snd_pmac_burgundy_line_sw_pmac, chip);
++	if ((err = snd_ctl_add(chip->card, chip->master_sw_ctl)) < 0)
++		return err;
++	if (imac) {
++		chip->master_sw_ctl = snd_ctl_new1(
++				&snd_pmac_burgundy_hp_sw_imac, chip);
++		if ((err = snd_ctl_add(chip->card, chip->master_sw_ctl)) < 0)
++			return err;
++	}
++	chip->speaker_sw_ctl = snd_ctl_new1(imac
++			? &snd_pmac_burgundy_speaker_sw_imac
++			: &snd_pmac_burgundy_speaker_sw_pmac, chip);
+ 	if ((err = snd_ctl_add(chip->card, chip->speaker_sw_ctl)) < 0)
+ 		return err;
+ #ifdef PMAC_SUPPORT_AUTOMUTE
+--- sound/ppc/burgundy.h.orig	2008-04-05 17:45:08.000000000 +0300
++++ sound/ppc/burgundy.h	2008-04-05 22:02:44.000000000 +0300
+@@ -22,6 +22,7 @@
+ #ifndef __BURGUNDY_H
+ #define __BURGUNDY_H
 
-@@ -877,7 +890,8 @@ snd_pmac_awacs_init(struct snd_pmac *chi
- 			return -ENOMEM;
- 		chip->mixer_data = amp;
- 		chip->mixer_free = awacs_amp_free;
--		awacs_amp_set_vol(amp, 0, 63, 63, 0); /* mute and zero vol */
-+		/* mute and zero vol */
-+		awacs_amp_set_vol(amp, 0, 63, 63, 0);
- 		awacs_amp_set_vol(amp, 1, 63, 63, 0);
- 		awacs_amp_set_tone(amp, 7, 7); /* 0 dB */
- 		awacs_amp_set_master(amp, 79); /* 0 dB */
-@@ -965,21 +979,25 @@ snd_pmac_awacs_init(struct snd_pmac *chi
- 		 * screamer registers.
- 		 * in this case, it seems the route C is not used.
- 		 */
--		if ((err = build_mixers(chip, ARRAY_SIZE(snd_pmac_awacs_amp_vol),
-+		if ((err = build_mixers(chip,
-+					ARRAY_SIZE(snd_pmac_awacs_amp_vol),
- 					snd_pmac_awacs_amp_vol)) < 0)
- 			return err;
- 		/* overwrite */
--		chip->master_sw_ctl = snd_ctl_new1(&snd_pmac_awacs_amp_hp_sw, chip);
-+		chip->master_sw_ctl = snd_ctl_new1(&snd_pmac_awacs_amp_hp_sw,
-+						   chip);
- 		if ((err = snd_ctl_add(chip->card, chip->master_sw_ctl)) < 0)
- 			return err;
--		chip->speaker_sw_ctl = snd_ctl_new1(&snd_pmac_awacs_amp_spk_sw, chip);
-+		chip->speaker_sw_ctl = snd_ctl_new1(&snd_pmac_awacs_amp_spk_sw,
-+						    chip);
- 		if ((err = snd_ctl_add(chip->card, chip->speaker_sw_ctl)) < 0)
- 			return err;
- 	} else
- #endif /* PMAC_AMP_AVAIL */
- 	{
- 		/* route A = headphone, route C = speaker */
--		if ((err = build_mixers(chip, ARRAY_SIZE(snd_pmac_awacs_speaker_vol),
-+		if ((err = build_mixers(chip,
-+					ARRAY_SIZE(snd_pmac_awacs_speaker_vol),
- 					snd_pmac_awacs_speaker_vol)) < 0)
- 			return err;
- 		chip->speaker_sw_ctl = snd_ctl_new1(imac
-@@ -1010,8 +1028,9 @@ snd_pmac_awacs_init(struct snd_pmac *chi
- 				snd_pmac_awacs_mic_boost_pmac7500)) < 0)
- 			return err;
- 	} else {
--		if ((err = build_mixers(chip, ARRAY_SIZE(snd_pmac_awacs_mic_boost),
--					snd_pmac_awacs_mic_boost)) < 0)
-+		if ((err = build_mixers(chip,
-+				ARRAY_SIZE(snd_pmac_awacs_mic_boost),
-+				snd_pmac_awacs_mic_boost)) < 0)
- 			return err;
- 	}
++#define MASK_ADDR_BURGUNDY_INPBOOST (0x10 << 12)
+ #define MASK_ADDR_BURGUNDY_INPSEL21 (0x11 << 12)
+ #define MASK_ADDR_BURGUNDY_INPSEL3 (0x12 << 12)
 
---- sound/ppc/awacs.h.orig	2008-04-05 17:45:08.000000000 +0300
-+++ sound/ppc/awacs.h	2008-04-07 11:26:58.198763416 +0300
-@@ -175,7 +175,8 @@ struct awacs_regs {
- /* DBDMA ChannelStatus Bit Masks */
- /* ----- ------------- --- ----- */
- #define MASK_CSERR	(0x1 << 7)	/* Error */
--#define MASK_EOI	(0x1 << 6)	/* End of Input -- only for Input Channel */
-+#define MASK_EOI	(0x1 << 6)	/* End of Input --
-+					   only for Input Channel */
- #define MASK_CSUNUSED	(0x1f << 1)	/* bits 1-5 not used */
- #define MASK_WAIT	(0x1)		/* Wait */
+@@ -35,7 +36,10 @@
+ #define MASK_ADDR_BURGUNDY_VOLCH3 (0x22 << 12)
+ #define MASK_ADDR_BURGUNDY_VOLCH4 (0x23 << 12)
+
++#define MASK_ADDR_BURGUNDY_CAPTURESELECTS (0x2A << 12)
+ #define MASK_ADDR_BURGUNDY_OUTPUTSELECTS (0x2B << 12)
++#define MASK_ADDR_BURGUNDY_VOLMIX01 (0x2D << 12)
++#define MASK_ADDR_BURGUNDY_VOLMIX23 (0x2E << 12)
+ #define MASK_ADDR_BURGUNDY_OUTPUTENABLES (0x2F << 12)
+
+ #define MASK_ADDR_BURGUNDY_MASTER_VOLUME (0x30 << 12)
+@@ -45,6 +49,10 @@
+ #define MASK_ADDR_BURGUNDY_ATTENSPEAKER (0x62 << 12)
+ #define MASK_ADDR_BURGUNDY_ATTENLINEOUT (0x63 << 12)
+ #define MASK_ADDR_BURGUNDY_ATTENHP (0x64 << 12)
++#define MASK_ADDR_BURGUNDY_ATTENMONO (0x65 << 12)
++
++#define MASK_ADDR_BURGUNDY_HOSTIFAD (0x78 << 12)
++#define MASK_ADDR_BURGUNDY_HOSTIFEH (0x79 << 12)
+
+ #define MASK_ADDR_BURGUNDY_VOLCD (MASK_ADDR_BURGUNDY_VOLCH1)
+ #define MASK_ADDR_BURGUNDY_VOLLINE (MASK_ADDR_BURGUNDY_VOLCH2)
+@@ -59,21 +67,22 @@
+
+ /* These are all default values for the burgundy */
+ #define DEF_BURGUNDY_INPSEL21 (0xAA)
+-#define DEF_BURGUNDY_INPSEL3 (0x0A)
++#define DEF_BURGUNDY_INPSEL3_IMAC (0x0A)
++#define DEF_BURGUNDY_INPSEL3_PMAC (0x05)
+
+ #define DEF_BURGUNDY_GAINCD (0x33)
+ #define DEF_BURGUNDY_GAINLINE (0x44)
+ #define DEF_BURGUNDY_GAINMIC (0x44)
+ #define DEF_BURGUNDY_GAINMODEM (0x06)
+
+-/* Remember: lowest volume here is 0x9b */
++/* Remember: lowest volume here is 0x9B (155) */
+ #define DEF_BURGUNDY_VOLCD (0xCCCCCCCC)
+ #define DEF_BURGUNDY_VOLLINE (0x00000000)
+ #define DEF_BURGUNDY_VOLMIC (0x00000000)
+ #define DEF_BURGUNDY_VOLMODEM (0xCCCCCCCC)
+
+-#define DEF_BURGUNDY_OUTPUTSELECTS (0x010f010f)
+-#define DEF_BURGUNDY_OUTPUTENABLES (0x0A)
++#define DEF_BURGUNDY_OUTPUTSELECTS (0x010F010F)
++#define DEF_BURGUNDY_OUTPUTENABLES (0x0100000A)
+
+ /* #define DEF_BURGUNDY_MASTER_VOLUME (0xFFFFFFFF) */ /* too loud */
+ #define DEF_BURGUNDY_MASTER_VOLUME (0xDDDDDDDD)
+@@ -84,12 +93,22 @@
+ #define DEF_BURGUNDY_ATTENLINEOUT (0xCC)
+ #define DEF_BURGUNDY_ATTENHP (0xCC)
+
+-/* OUTPUTENABLES bits */
++/* MORE_OUTPUTENABLES bits */
+ #define BURGUNDY_OUTPUT_LEFT	0x02
+ #define BURGUNDY_OUTPUT_RIGHT	0x04
++#define BURGUNDY_LINEOUT_LEFT	0x08
++#define BURGUNDY_LINEOUT_RIGHT	0x10
++#define BURGUNDY_HP_LEFT	0x20
++#define BURGUNDY_HP_RIGHT	0x40
+ #define BURGUNDY_OUTPUT_INTERN	0x80
+
+-/* volume offset */
++/* Headphone detection bits */
++#define BURGUNDY_HPDETECT_PMAC_BACK	0x04
++#define BURGUNDY_HPDETECT_IMAC_SIDE	0x04
++#define BURGUNDY_HPDETECT_IMAC_UPPER	0x08
++#define BURGUNDY_HPDETECT_IMAC_LOWER	0x01
++
++/* Volume offset */
+ #define BURGUNDY_VOLUME_OFFSET	155
+
+ #endif /* __BURGUNDY_H */
