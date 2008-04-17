@@ -1,21 +1,17 @@
-From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: Re: [PATCH 001b/001] snd-powermac: older kernel
-	compatibility
-Date: Thu, 17 Apr 2008 10:10:06 +0300
-Message-ID: <46e1c7760804170010i69be78e6o4820ec6d95e35fb8@mail.gmail.com>
-References: <46e1c7760804160953x66dd5e6amd1627957060f8169@mail.gmail.com>
-	<s5hbq49eo0t.wl%tiwai@suse.de>
+From: "Vitaly V. Ch" <vitaly.v.ch@gmail.com>
+Subject: alsa 1.0.16 on kernel 2.6.23.9
+Date: Thu, 17 Apr 2008 07:26:25 +0000
+Message-ID: <6efe08af0804170026v739201b7r2b2a9f21408f2f81@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C3EB249D0
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 77AFB249DB
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Apr 2008 09:10:13 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so791632ana.80
-	for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2008 00:10:06 -0700 (PDT)
-In-Reply-To: <s5hbq49eo0t.wl%tiwai@suse.de>
+	Thu, 17 Apr 2008 09:26:30 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 5so1574089ywr.2
+	for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2008 00:26:25 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,34 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2008/4/16, Takashi Iwai <tiwai@suse.de>:
->
->  OK, applied both patches to alsa-driver HG tree.
+Have anyone successfully run alsa 1.0.16 on kernel 2.6.23.9?
 
-Thanks.
+after success configure and make with one warning:
 
-But it looks like the hunk below was not accepted. Is this because
-it's in alsa-kernel? And it uses LINUX_VERSION_CODE? Anyway, these
-seem to be needed by others than snd-powermac, too. Maybe they would
-belong to include directory, maybe another compat.h file. I must
-confess that I'm not sure about the exact kernel versions where the
-names were changed.
+WARNING: /tmp/alsa-driver-1.0.16/misc/ac97_bus: 'ac97_bus_type'
+exported twice. Previous export was in vmlinux
 
---- alsa-kernel/ppc/pmac.h.orig	2008-02-05 11:23:24.000000000 +0200
-+++ alsa-kernel/ppc/pmac.h	2008-03-31 23:45:36.000000000 +0300
-@@ -207,4 +207,11 @@
+I receive non-working installation of alsa
 
- int snd_pmac_add_automute(struct snd_pmac *chip);
+Any ideas?
 
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
-+#define of_device_is_compatible(dev, s) device_is_compatible(dev, s)
-+#define input_get_drvdata(dev) (dev->private)
-+#define i2c_smbus_write_i2c_block_data(client, cmd, len, vals) \
-+	i2c_smbus_write_block_data(client, cmd, len, vals)
-+#endif
-+
- #endif /* __PMAC_H */
+\\wbr Vitaly Chernookiy
