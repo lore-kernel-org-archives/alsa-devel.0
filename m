@@ -1,18 +1,21 @@
-From: Daniel Mack <daniel@caiaq.org>
-Subject: Re: [PATCH] asoc tlv320aic33: skip usage of PLL
-	in	some cases
-Date: Thu, 17 Apr 2008 21:25:52 +0200
-Message-ID: <20080417192552.GC17039@buzzloop.caiaq.de>
-References: <20080417191245.GA17039@buzzloop.caiaq.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
+Date: Thu, 17 Apr 2008 21:39:05 +0100
+Message-ID: <4807B569.6000008@superbug.co.uk>
+References: <20080411204610.GA32413@tango.0pointer.de>	<20080414172839.GA26513@tango.0pointer.de>	<4803C78A.3020109@superbug.co.uk>	<200804150552.13578.faber@faberman.de>
+	<20080415131203.GA2818@localhost>
+	<4804BCB8.9060707@keyaccess.nl> <48060D2F.2000701@keyaccess.nl>
+	<480618F3.40707@keyaccess.nl> <48061D1F.6060809@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="5/uDoXvLw7AC5HRs"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2008210383E
+Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net
+	[194.217.242.90])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8F57F2447F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Apr 2008 21:26:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080417191245.GA17039@buzzloop.caiaq.de>
+	Thu, 17 Apr 2008 22:39:07 +0200 (CEST)
+In-Reply-To: <48061D1F.6060809@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,151 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vladimir Barinov <vbarinov@ru.mvista.com>
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Rene Herman wrote:
+> On 16-04-08 17:19, Rene Herman wrote:
+> 
+> For now last time that I reply to myself (promise):
+> 
+>> On 16-04-08 16:29, Rene Herman wrote:
+>>
+>>> On 15-04-08 16:33, Rene Herman wrote:
+> 
+>>> On that note, I just acquired an Audigy 2 (SB0240) that I'm testing 
+>>> with and now that I'm paying attention to it due to this thread -- 
+>>> its 0 dB setting is very significantly louder (with everything behind 
+>>> the line-out constant ofcourse) than the 0 dB setting on my TerraTec 
+>>> DMX.
+>>>
+>>> James, I believe you are the emu10k1 person? Data:
+>>>
+>>> TerraTec DMX = ESS Canyon3D (ES1970MS-3D) + Sigmatel STAC9704T
+>>>
+>>> Creative Audigy 2 (SB0240) = Creative CA0102-ICT + Sigmatel STAC9721T 
+>>> (+ Crystal CS4382-KQ which seems to provide digital attenuation as well)
+>>>
+>>> At 0 dB master the Audigy 2 is much louder than the DMX is and 
+>>> audibly distorts. Judging by hearing, keeping the master at -16 dB 
+>>> (60 in the integer scale) gets things about the same. Was that scale 
+>>> provided by datasheet or just guessed? Especially the distortion 
+>>> would seem to indicate that something is actually doing analogue 
+>>> amplification at the 0 dB ALSA setting...
+>>
+>> Expanding, with the 'Line' control at 0 dB (74 integer) and 'Analog 
+>> Mix' at 0 dB (100 integer) everything does sound right with both 
+>> 'Master Capture' and 'Master' at  full, and too faint with 'Master' at 
+>> -16 dB. I guess this indicates that it's something at the DSP side 
+>> only? (sort of loosing my way in this bewildering array of controls so 
+>> if I need to be guided to possibly say sensible things -- please do)
+> 
+> When I do actually capture, -16 dB master is again the correct setting 
+> when playing back (with everything else still set to 0 dB as described 
+> above). It's then equally load as when directly monitored during 
+> recording. I expect then the Master dB scale needs to be adjusted down? 
+> If yes, I'll try to make very, very sure that -16 dB now is the correct 
+> new 0 dB.
+> 
+> Rene.
 
---5/uDoXvLw7AC5HRs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Can we narrow this down a bit please.
+Run speaker-test -c2 -twav
+Do the test to each sound card with alsamixer set to 0dB for most 
+controls accept the master, and leave the master at a sensible setting 
+for your setup so that you can hear sound at a sensible level
+With the same dB values on the Andigy 2 and DMX, do you get the same 
+loudness of sound output to the speakers?
 
-On Thu, Apr 17, 2008 at 09:12:45PM +0200, Daniel Mack wrote:
-> This patch makes the tlv320aic33 driver skip the initialisation of the
-> PLL in case the sysclk is 256 * samplerate. Had to do some minor
-> refactoring too - the check whether a sysclk set by set_sysclk() is
-> valid is now done in set_hw_params().
-
-Sorry, there was a small typo in the patch I just submitted.
-Use this one instead.
-
-Daniel
+I would like to find out if the problem is in the playback path, or the 
+capture path.
 
 
---5/uDoXvLw7AC5HRs
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-tlv320aic33-skip-pll.diff"
-
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 630684f..7d3f109 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -720,7 +720,7 @@ static inline int aic3x_get_divs(int mclk, int rate)
- 			return i;
- 	}
- 
--	return 0;
-+	return -1;
- }
- 
- static int aic3x_hw_params(struct snd_pcm_substream *substream,
-@@ -730,11 +730,40 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_device *socdev = rtd->socdev;
- 	struct snd_soc_codec *codec = socdev->codec;
- 	struct aic3x_priv *aic3x = codec->private_data;
--	int i;
-+	int i, skip_pll;
- 	u8 data, pll_p, pll_r, pll_j;
- 	u16 pll_d;
- 
--	i = aic3x_get_divs(aic3x->sysclk, params_rate(params));
-+	/* select data word length */
-+	data =
-+	    aic3x_read_reg_cache(codec, AIC3X_ASD_INTF_CTRLB) & (~(0x3 << 4));
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		break;
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+		data |= (0x01 << 4);
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		data |= (0x02 << 4);
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		data |= (0x03 << 4);
-+		break;
-+	}
-+	aic3x_write(codec, AIC3X_ASD_INTF_CTRLB, data);
-+
-+	/* Do not use the PLL in case our sysclk is 256 * sample rate.
-+	 * In this case, use a fake entry in the dividers table to get
-+	 * the reference freq */
-+	skip_pll = (aic3x->sysclk == 256 * params_rate(params));
-+
-+	if (skip_pll)
-+		i = aic3x_get_divs(aic3x_divs[0].mclk, params_rate(params));
-+	else
-+		i = aic3x_get_divs(aic3x->sysclk, params_rate(params));
-+
-+	if (i < 0)
-+		return -EINVAL;
- 
- 	/* Route Left DAC to left channel input and
- 	 * right DAC to right channel input */
-@@ -755,6 +784,9 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	aic3x_write(codec, AIC3X_CODEC_DATAPATH_REG, data);
- 
-+	if (skip_pll)
-+		return 0;
-+
- 	/* codec sample rate select */
- 	data = aic3x_divs[i].sr_reg;
- 	data |= (data << 4);
-@@ -782,24 +814,6 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	aic3x_write(codec, AIC3X_PLL_PROGD_REG,
- 		    (pll_d & 0x3F) << PLLD_LSB_SHIFT);
- 
--	/* select data word length */
--	data =
--	    aic3x_read_reg_cache(codec, AIC3X_ASD_INTF_CTRLB) & (~(0x3 << 4));
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S16_LE:
--		break;
--	case SNDRV_PCM_FORMAT_S20_3LE:
--		data |= (0x01 << 4);
--		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
--		data |= (0x02 << 4);
--		break;
--	case SNDRV_PCM_FORMAT_S32_LE:
--		data |= (0x03 << 4);
--		break;
--	}
--	aic3x_write(codec, AIC3X_ASD_INTF_CTRLB, data);
--
- 	return 0;
- }
- 
-@@ -826,16 +840,8 @@ static int aic3x_set_dai_sysclk(struct snd_soc_codec_dai *codec_dai,
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct aic3x_priv *aic3x = codec->private_data;
- 
--	switch (freq) {
--	case 12000000:
--	case 19200000:
--	case 22579200:
--	case 33868800:
--		aic3x->sysclk = freq;
--		return 0;
--	}
--
--	return -EINVAL;
-+	aic3x->sysclk = freq;
-+	return 0;
- }
- 
- static int aic3x_set_dai_fmt(struct snd_soc_codec_dai *codec_dai,
-
---5/uDoXvLw7AC5HRs
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---5/uDoXvLw7AC5HRs--
+James
