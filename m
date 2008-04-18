@@ -1,24 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] asoc tlv320aic33: skip usage of PLL
-	in	some cases
-Date: Fri, 18 Apr 2008 11:08:59 +0100
-Message-ID: <20080418100858.GA19457@rakim.wolfsonmicro.main>
-References: <20080417191245.GA17039@buzzloop.caiaq.de>
-	<20080417192552.GC17039@buzzloop.caiaq.de>
-	<bd7b27490804180059h67a481b0md6fb1a5648338513@mail.gmail.com>
-	<20080418081315.GA23555@buzzloop.caiaq.de>
-	<bd7b27490804180158j6607dbefyddbb48cbde51fc55@mail.gmail.com>
-	<20080418093821.GA23651@buzzloop.caiaq.de>
+From: "Simon Dunn" <sdunn@mpc-data.co.uk>
+Subject: Alsa Driver on Coldfire
+Date: Fri, 18 Apr 2008 11:02:56 +0100
+Message-ID: <op.t9swu605hpbl6d@derby>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9599F24AEF
+Received: from molson.mpc-data.co.uk (cvs.mpc-ogw.co.uk [81.2.99.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7DFCD24813
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Apr 2008 12:09:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080418093821.GA23651@buzzloop.caiaq.de>
+	Fri, 18 Apr 2008 12:02:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,23 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 18, 2008 at 11:38:21AM +0200, Daniel Mack wrote:
-> On Fri, Apr 18, 2008 at 11:58:49AM +0300, Jarkko Nikula wrote:
+Hi
 
-> > > AIC3X_SAMPLE_RATE_SEL_REG defaults to 0 which is what I want in this
-> > > case. Thus, I don't have to write it.
+I've been given the job of writing a sound card driver using the alsa  
+architecture for a
+development platform that uses a coldfire chip.
 
-> > Are you sure this is a general case?
+The first thing I came across was a chunky 'if !M68K' in sound/Kconfig,  
+which excludes all
+the alsa components.  I can't find any reason for this in the mailing list  
+archives or
+on the web in general, so I'm wondering if anybody knows why the M68K  
+architecture is
+excluded?
 
-> Well, the reset default is 0 (as stated on page 44) and set_hw_params()
-> is the only location where this value is written. So if it's never 
-> written with a different value, it should always be set to its default,
-> no?
+Cheers
+Simon
 
-Not all systems use a static SYSCLK rate - sometimes systems will select
-the rate based on their current usage.  If the system has previously had
-to configure it then the register won't be at the default value any more.
+-- 
+
+Simon Dunn, Software Engineer
+MPC Data Limited
+e-mail: sdunn@mpc-data.co.uk
+web: www.mpc-data.co.uk
+tel: +44 (0) 1225 710600
+fax: +44 (0) 1225 710601
+ddi: +44 (0) 1225 710631
+
+MPC Data Limited is a company registered in England and Wales with company  
+number 05507446
+Registered Address: County Gate, County Way, Trowbridge, Wiltshire, BA14  
+7FJ
+VAT no: 850625238
+
+The information in this email and in the attached documents is  
+confidential and may be legally privileged. Any unauthorized review,  
+copying, disclosure or distribution is prohibited and may be unlawful. It  
+is intended solely for the addressee. Access to this email by anyone else  
+is unauthorized. If you are not the intended recipient, please contact the  
+sender by reply email and destroy all copies of the original message. When  
+addressed to our clients any opinions or advice contained in this email is  
+subject to the terms and conditions expressed in the governing contract.
