@@ -1,29 +1,22 @@
-From: "Jarkko Nikula" <jhnikula@gmail.com>
-Subject: Re: [PATCH] asoc tlv320aic33: skip usage of PLL in
-	some cases
-Date: Fri, 18 Apr 2008 22:37:36 +0300
-Message-ID: <bd7b27490804181237i7dfe0038hf9920ecaa4d28444@mail.gmail.com>
-References: <20080417191245.GA17039@buzzloop.caiaq.de>
-	<20080417192552.GC17039@buzzloop.caiaq.de>
-	<bd7b27490804180059h67a481b0md6fb1a5648338513@mail.gmail.com>
-	<20080418081315.GA23555@buzzloop.caiaq.de>
-	<bd7b27490804180158j6607dbefyddbb48cbde51fc55@mail.gmail.com>
-	<20080418093821.GA23651@buzzloop.caiaq.de>
-	<bd7b27490804180347u30a3c456yed3438925d0fa4ae@mail.gmail.com>
-	<20080418114113.GC23651@buzzloop.caiaq.de>
-	<bd7b27490804180647n7c44da87l7a7d25080360f4f4@mail.gmail.com>
-	<20080418140307.GA26197@buzzloop.caiaq.de>
+From: Daniel Mack <daniel@caiaq.org>
+Subject: [PATCH] asoc tlv320aic3x: add GPIO support
+Date: Fri, 18 Apr 2008 20:12:14 +0200
+Message-ID: <20080418181214.GB26197@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9307224C36
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF4AB24BC4
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Apr 2008 21:37:37 +0200 (CEST)
-Received: by hs-out-0708.google.com with SMTP id x43so493400hsb.0
-	for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2008 12:37:36 -0700 (PDT)
-In-Reply-To: <20080418140307.GA26197@buzzloop.caiaq.de>
+	Fri, 18 Apr 2008 20:12:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 2B54C7F4039
+	for <alsa-devel@alsa-project.org>;
+	Fri, 18 Apr 2008 20:12:23 +0200 (CEST)
+Received: from buzzloop.caiaq.de ([127.0.0.1])
+	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 0rO+zFC0ubSh for <alsa-devel@alsa-project.org>;
+	Fri, 18 Apr 2008 20:12:15 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,80 +27,206 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org, vbarinov@ru.mvista.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 18, 2008 at 5:03 PM, Daniel Mack <daniel@caiaq.org> wrote:
 
-> On Fri, Apr 18, 2008 at 04:47:16PM +0300, Jarkko Nikula wrote:
-> > if (params_rate(params) =3D=3D aic3x->sysclk / (128 * pll_q))
->
-> Hmm? Why do you think so? I'm afraid I don't get your point here.
->
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'm might be completely wrong here since I've used this codec only in
-configuration where the interface rate or FSref equals to audio sampling
-rate , but as far as I've interpreted the spec correctly we can have e.g.
-the case where MCLK is 22.5792 MHz, FSref 44.1 kHz (i.e. PLL can be
-disabled) but audio sampling rate is 11.025 kHz (=3D=3D params_rate(params)=
-).
+This patch adds support for AIC3x GPIO lines. They can be configured for
+many possible functions as well as be driven manually. I also introduced
+i2c read functionality since the GPIO state register has to be read from
+hardware every time and can not be served from cache.
 
-And I think here equation "Fsref =3D CLKDIV_IN / (128 =D7 Q)" Fsref refers =
-to
-44.1 or 48 kHz not the audio sampling rate?
-
-But I don't want to speculate or do my own interpretation here. I'll ask
-this from TI next week from my jarkko.nikula@nokia.com and can put you as a
-cc as well.
-
-Or do the driver author have any better knowledge here?
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
 
 
-> > Probably you forgot to move bypass case in this version after writing
-> the
-> > AIC3X_SAMPLE_RATE_SEL_REG?
->
-> No, actually not.
->
+--LQksG6bCIzRHxTLp
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="alsa-tlv320aic33-gpio.diff"
 
-
-Your latest patch has:
-
-+    if (bypass_pll)
-+        return 0;
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index dd6d495..2c86283 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -138,6 +138,42 @@ static int aic3x_write(struct snd_soc_codec *codec, unsigned int reg,
+ 		return -EIO;
+ }
+ 
++/*
++ * read from the aic3x register space
++ */
++static int aic3x_read(struct snd_soc_codec *codec, unsigned int reg,
++		      u8 *value)
++{
++	*value = reg & 0xff;
++	if (codec->hw_read(codec->control_data, value, 1) != 1)
++		return -EIO;
 +
-     /* codec sample rate select */
-     data =3D aic3x_divs[i].sr_reg;
-     data |=3D (data << 4);
++	aic3x_write_reg_cache(codec, reg, *value);
++	return 0;
++}
++
++#define SOC_SINGLE_AIC3X_GPIO(xname, reg, shift, mask, invert) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.info = snd_soc_info_volsw, \
++	.get = snd_soc_get_gpio_aic3x, .put = snd_soc_put_volsw, \
++	.private_value =  SOC_SINGLE_VALUE(reg, shift, mask, invert) }
++
++static int snd_soc_get_gpio_aic3x(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	int reg = kcontrol->private_value & 0xff;
++	u8 val = 0;
++
++	aic3x_read(codec, reg, &val);
++	if (reg == AIC3X_GPIO1_REG)
++		ucontrol->value.integer.value[0] = (val >> 1) & 1;
++	else
++		ucontrol->value.integer.value[0] = (val >> 2) & 1;
++
++	return 0;
++}
++
+ #define SOC_DAPM_SINGLE_AIC3X(xname, reg, shift, mask, invert) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+ 	.info = snd_soc_info_volsw, \
+@@ -210,6 +246,25 @@ static const char *aic3x_right_hpcom_mux[] =
+       "differential of HPLCOM", "external feedback" };
+ static const char *aic3x_linein_mode_mux[] = { "single-ended", "differential" };
+ 
++static const char *aic3x_gpio1_modes[] = {
++	"Disabled", "Audio word clock",	"Clock mux/1",	"Clock mux/2",
++	"Clock mux/4", "Clock mux/8", "Short circuit IRQ", "AGC noise IRQ",
++	"Input", "Output", "Digital microphone modulator clock",
++	"Audio word clock", "Button press IRQ", "Headset detect IRQ",
++	"Button press or headset detect IRQ", "All IRQ"
++};
++
++static const char *aic3x_gpio2_modes[] = {
++	"Disabled", "Invalid", "Headset detect IRQ", "Input",
++	"Output", "Digital microphone input", "Audio bitclock",
++	"Audio bitclock", "Audio bitclock",
++	"Button press or headset detect IRQ",
++	"All IRQ", "Short-circuit detect or AGC noise IRQ",
++	"Headset detect or button press or short-circuit IRQ",
++	"Short-circuit detect IRQ", "AGC noise detect IRQ",
++	"Button press IRQ"
++};
++
+ #define LDAC_ENUM	0
+ #define RDAC_ENUM	1
+ #define LHPCOM_ENUM	2
+@@ -218,6 +273,8 @@ static const char *aic3x_linein_mode_mux[] = { "single-ended", "differential" };
+ #define LINE1R_ENUM	5
+ #define LINE2L_ENUM	6
+ #define LINE2R_ENUM	7
++#define GPIO1_ENUM	8
++#define GPIO2_ENUM	9
+ 
+ static const struct soc_enum aic3x_enum[] = {
+ 	SOC_ENUM_SINGLE(DAC_LINE_MUX, 6, 3, aic3x_left_dac_mux),
+@@ -228,6 +285,8 @@ static const struct soc_enum aic3x_enum[] = {
+ 	SOC_ENUM_SINGLE(LINE1R_2_RADC_CTRL, 7, 2, aic3x_linein_mode_mux),
+ 	SOC_ENUM_SINGLE(LINE2L_2_LADC_CTRL, 7, 2, aic3x_linein_mode_mux),
+ 	SOC_ENUM_SINGLE(LINE2R_2_RADC_CTRL, 7, 2, aic3x_linein_mode_mux),
++	SOC_ENUM_SINGLE(AIC3X_GPIO1_REG, 4, 16, aic3x_gpio1_modes),
++	SOC_ENUM_SINGLE(AIC3X_GPIO2_REG, 4, 16, aic3x_gpio2_modes),
+ };
+ 
+ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+@@ -278,6 +337,10 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 	/* Input */
+ 	SOC_DOUBLE_R("PGA Capture Volume", LADC_VOL, RADC_VOL, 0, 0x7f, 0),
+ 	SOC_DOUBLE_R("PGA Capture Switch", LADC_VOL, RADC_VOL, 7, 0x01, 1),
++
++	/* GPIOs */
++	SOC_SINGLE_AIC3X_GPIO("GPIO1 value", AIC3X_GPIO1_REG, 0, 0x01, 0),
++	SOC_SINGLE_AIC3X_GPIO("GPIO2 value", AIC3X_GPIO2_REG, 3, 0x01, 0),
+ };
+ 
+ /* add non dapm controls */
+@@ -358,6 +421,14 @@ SOC_DAPM_ENUM("Route", aic3x_enum[LINE2L_ENUM]);
+ static const struct snd_kcontrol_new aic3x_right_line2_mux_controls =
+ SOC_DAPM_ENUM("Route", aic3x_enum[LINE2R_ENUM]);
+ 
++/* GPIO1 mode */
++static const struct snd_kcontrol_new aic3x_gpio1_controls =
++SOC_DAPM_ENUM("GPIO1", aic3x_enum[GPIO1_ENUM]);
++
++/* GPIO2 mode */
++static const struct snd_kcontrol_new aic3x_gpio2_controls =
++SOC_DAPM_ENUM("GPIO2", aic3x_enum[GPIO2_ENUM]);
++
+ /* Left PGA Bypass Mixer */
+ static const struct snd_kcontrol_new aic3x_left_pga_bp_mixer_controls[] = {
+ 	SOC_DAPM_SINGLE("Line Switch", PGAL_2_LLOPM_VOL, 7, 1, 0),
+@@ -481,6 +552,11 @@ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("LINE1R"),
+ 	SND_SOC_DAPM_INPUT("LINE2L"),
+ 	SND_SOC_DAPM_INPUT("LINE2R"),
++
++	SND_SOC_DAPM_MUX("GPIO1 mode", SND_SOC_NOPM, 0, 0,
++			 &aic3x_gpio1_controls),
++	SND_SOC_DAPM_MUX("GPIO2 mode", SND_SOC_NOPM, 0, 0,
++			 &aic3x_gpio2_controls),
+ };
+ 
+ static const char *intercon[][3] = {
+@@ -1235,6 +1311,12 @@ static struct i2c_client client_template = {
+ 	.name = "AIC3X",
+ 	.driver = &aic3x_i2c_driver,
+ };
++
++static int aic3x_i2c_read(struct i2c_client *client, u8 *value, int len)
++{
++	value[0] = i2c_smbus_read_byte_data(client, value[0]);
++	return (len == 1);
++}
+ #endif
+ 
+ static int aic3x_probe(struct platform_device *pdev)
+@@ -1269,6 +1351,7 @@ static int aic3x_probe(struct platform_device *pdev)
+ 	if (setup->i2c_address) {
+ 		normal_i2c[0] = setup->i2c_address;
+ 		codec->hw_write = (hw_write_t) i2c_master_send;
++		codec->hw_read = (hw_read_t) aic3x_i2c_read;
+ 		ret = i2c_add_driver(&aic3x_i2c_driver);
+ 		if (ret != 0)
+ 			printk(KERN_ERR "can't add i2c driver");
+diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
+index d49d001..dc05964 100644
+--- a/sound/soc/codecs/tlv320aic3x.h
++++ b/sound/soc/codecs/tlv320aic3x.h
+@@ -108,8 +108,14 @@
+ #define DACR1_2_RLOPM_VOL		92
+ #define LLOPM_CTRL			86
+ #define RLOPM_CTRL			93
+-/* Clock generation control register */
++/* GPIO/IRQ registers */
++#define AIC3X_STICKY_IRQ_FLAGS_REG	96
++#define AIC3X_REALTIME_IRQ_FLAGS_REG	97
++#define AIC3X_GPIO1_REG			98
++#define AIC3X_GPIO2_REG			99
++#define AIC3X_GPIOA_REG			100
+ #define AIC3X_GPIOB_REG			101
++/* Clock generation control register */
+ #define AIC3X_CLKGEN_CTRL_REG		102
+ 
+ /* Page select register bits */
 
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->
-> > Spec is also saying that when NDAC is 1.5, 2.5, ... 5.5, then odd values
-> of
-> > Q are not allowed.
->
-> NDAC and NADC are both hard-coded to 0 (divider of 1) at the moment.
-> Support for more flexible settings could be done in another step.
-> Also, the PLL setup could be done by calculation of values rather
-> that by a lookup table.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
-Again, I'm might be wrong but I NDAC and NADC refers to register
-AIC3X_SAMPLE_RATE_SEL_REG which driver already takes into account properly.
-
-
-> I'd like to see this patch applied now as base for further refinements.
-> Do you agree?
->
->
-I cannot prevent it to be applied, that's the driver author or maintainers
-task to justify. I can only throw some discussion here if I see something to
-be unclear (to me).
-
-And don't take my comments as a nitpicking. Definitely patch like this is
-worth to get in but we have to make sure that no possible bugs are
-introduced. -EINVAL is much better alternative for some new configurations.
-
-
-Jarkko
+--LQksG6bCIzRHxTLp--
