@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Alsa Driver on Coldfire
-Date: Fri, 18 Apr 2008 12:23:41 +0100
-Message-ID: <20080418112340.GB19457@rakim.wolfsonmicro.main>
-References: <op.t9swu605hpbl6d@derby> <s5hwsmvea38.wl%tiwai@suse.de>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: [PATCH] asoc tlv320aic33: skip usage of PLL in
+	some cases
+Date: Fri, 18 Apr 2008 13:47:33 +0300
+Message-ID: <bd7b27490804180347u30a3c456yed3438925d0fa4ae@mail.gmail.com>
+References: <20080417191245.GA17039@buzzloop.caiaq.de>
+	<20080417192552.GC17039@buzzloop.caiaq.de>
+	<bd7b27490804180059h67a481b0md6fb1a5648338513@mail.gmail.com>
+	<20080418081315.GA23555@buzzloop.caiaq.de>
+	<bd7b27490804180158j6607dbefyddbb48cbde51fc55@mail.gmail.com>
+	<20080418093821.GA23651@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 133A624ACC
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 958E8245E0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Apr 2008 13:23:42 +0200 (CEST)
+	Fri, 18 Apr 2008 12:47:41 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so136312ana.80
+	for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2008 03:47:33 -0700 (PDT)
+In-Reply-To: <20080418093821.GA23651@buzzloop.caiaq.de>
 Content-Disposition: inline
-In-Reply-To: <s5hwsmvea38.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +30,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Simon Dunn <sdunn@mpc-data.co.uk>
+To: Daniel Mack <daniel@caiaq.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 18, 2008 at 12:22:35PM +0200, Takashi Iwai wrote:
-> Simon Dunn wrote:
+On Fri, Apr 18, 2008 at 12:38 PM, Daniel Mack <daniel@caiaq.org> wrote:
 
-> > I've been given the job of writing a sound card driver using the alsa  
-> > architecture for a
-> > development platform that uses a coldfire chip.
+> On Fri, Apr 18, 2008 at 11:58:49AM +0300, Jarkko Nikula wrote:
+> > Ok, now I see. Probably you should refer it as, at least in comment,
+> 128*Q
+> > instead of 256 eventhough the driver is not currently touching the Q
+> value
+> > in AIC3X_PLL_PROGA_REG.
+>
+> Well, the constraint for that condition is that MCLK = 256*WCLK, and the
+> reason why that works for the chip without PLL is that Q=2. I stated
+> that a little better in the attached patch.
+>
 
-> > on the web in general, so I'm wondering if anybody knows why the M68K  
-> > architecture is
-> > excluded?
+I would rather refer there just "Fsref = CLKDIV_IN / (128*Q)" as the
+condition where PLL can be disabled (or is mandatory where it must be
+disabled?).
 
-> I don't remember exact reason, too.  It was so when ALSA was merged,
-> IIRC.
+Referring to data sheet page 27 is not good as it's correct only for certain
+version of AIC33 spec and driver supports other AIC3x chips as well :-)
 
-I think I'd formed the impression from somewhere or other (probably
-related to Debian m68k) that it was that there were no relevant drivers
-for m68k that had been ported to ALSA so there wasn't much point
-building it.  I could be misremembering, though.
 
-With regard to ColdFire I'm guessing that this is an embedded system?
-If so you might want to have a look at working with the ASoC framework
-(see sound/soc and Documentation/sound/alsa/soc).
+> > >
+> > Are you sure this is a general case?
+>
+> Well, the reset default is 0 (as stated on page 44) and set_hw_params()
+> is the only location where this value is written. So if it's never
+> written with a different value, it should always be set to its default,
+> no?
+>
+>
+I mean even if the I2S interface Fs meets the MCLK/256 condition, the audio
+sample rate may be lower and it may be still required to set ADC and DAC
+rates.
+
+
+Jarkko
