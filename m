@@ -1,18 +1,22 @@
-From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: [PATCH 001c/001] snd-powermac: more older kernel
-	compatibility
-Date: Fri, 18 Apr 2008 09:09:51 +0300
-Message-ID: <46e1c7760804172309i76e48453r32c5b8db9418445d@mail.gmail.com>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: [PATCH] asoc tlv320aic33: skip usage of PLL in
+	some cases
+Date: Fri, 18 Apr 2008 10:59:08 +0300
+Message-ID: <bd7b27490804180059h67a481b0md6fb1a5648338513@mail.gmail.com>
+References: <20080417191245.GA17039@buzzloop.caiaq.de>
+	<20080417192552.GC17039@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_3363_16992396.1208498991220"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id B89E924AAF
+Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB12D24AD1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Apr 2008 08:10:00 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so110004ana.80
-	for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2008 23:09:51 -0700 (PDT)
+	Fri, 18 Apr 2008 09:59:09 +0200 (CEST)
+Received: by hs-out-0708.google.com with SMTP id x43so320301hsb.0
+	for <alsa-devel@alsa-project.org>; Fri, 18 Apr 2008 00:59:08 -0700 (PDT)
+In-Reply-To: <20080417192552.GC17039@buzzloop.caiaq.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,95 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.org>
+Cc: alsa-devel@alsa-project.org, Vladimir Barinov <vbarinov@ru.mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_3363_16992396.1208498991220
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2008/4/17 Daniel Mack <daniel@caiaq.org>:
 
-2008/4/17, Takashi Iwai <tiwai@suse.de>:
+> On Thu, Apr 17, 2008 at 09:12:45PM +0200, Daniel Mack wrote:
+> > This patch makes the tlv320aic33 driver skip the initialisation of the
+> > PLL in case the sysclk is 256 * samplerate. Had to do some minor
+> > refactoring too - the check whether a sysclk set by set_sysclk() is
+> > valid is now done in set_hw_params().
 >
-> The hack isn't definitely for the latest upstream, so if this is
->  needed, rather define in each *.c in alsa-driver/ppc please.
+> Sorry, there was a small typo in the patch I just submitted.
+> Use this one instead.
 >
+>
+I had a quick look to your patch and AIC33 spec.
 
-Now it's done in ppc/*.patch.
+Is this the same than 256-clock transfer mode? Should you set the bit 3 in
+AIC3X_ASD_INTF_CTRLB in this case? Should you also still write the
+AIC3X_SAMPLE_RATE_SEL_REG?
 
-Risto
 
-------=_Part_3363_16992396.1208498991220
-Content-Type: text/plain; name=alsa-pmac_old-comp2-1.0.16-p5.diff
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ff6cwe2c
-Content-Disposition: attachment;
- filename=alsa-pmac_old-comp2-1.0.16-p5.diff
-
-RnJvbTogUmlzdG8gU3VvbWluZW4gPFJpc3RvLlN1b21pbmVuQGdtYWlsLmNvbT4KCk1vcmUgcGF0
-Y2hlcyB0byBhbGxvdyB0byBjb21waWxlIHNuZC1wb3dlcm1hYyBvbiBvbGRlciBrZXJuZWxzLgoK
-U2lnbmVkLW9mZi1ieTogUmlzdG8gU3VvbWluZW4gPFJpc3RvLlN1b21pbmVuQGdtYWlsLmNvbT4K
-LS0tCktlcm5lbCB2ZXJzaW9uIDwgMi42LjE2CgotLS0gcHBjL2JlZXAucGF0Y2gub3JpZwkyMDA4
-LTA0LTE3IDE1OjEyOjMyLjQwMDA5NDAwMCArMDMwMAorKysgcHBjL2JlZXAucGF0Y2gJMjAwOC0w
-NC0xNyAxNToyNjo1NS4xNzU3OTkyNjYgKzAzMDAKQEAgLTEsMTcgKzEsMjAgQEAKIC0tLSAuLi9h
-bHNhLWtlcm5lbC9wcGMvYmVlcC5jCTIwMDgtMDItMDUgMTE6MjM6MjQuMDAwMDAwMDAwICswMjAw
-Ci0rKysgYmVlcC5jCTIwMDgtMDMtMjcgMTE6NTY6MDEuNDgyNTY0MjcyICswMjAwCi1AQCAtMSwz
-ICsxLDEwIEBACisrKysgYmVlcC5jCTIwMDgtMDQtMTcgMTU6MjY6MTUuNzMyMjIzMDU2ICswMzAw
-CitAQCAtMSwzICsxLDEzIEBACiArI2RlZmluZSBfX05PX1ZFUlNJT05fXwogKyNpbmNsdWRlICJh
-ZHJpdmVyLmgiCiArCiArI2lmIExJTlVYX1ZFUlNJT05fQ09ERSA8IEtFUk5FTF9WRVJTSU9OKDIs
-IDYsIDApCiArI2luY2x1ZGUgImJlZXBfb2xkLmMiCiArI2Vsc2UgLyogMi42IGtlcm5lbHMgKi8K
-KysjaWYgTElOVVhfVkVSU0lPTl9DT0RFIDwgS0VSTkVMX1ZFUlNJT04oMiwgNiwgMTYpCisrI2Rl
-ZmluZSBpbnB1dF9nZXRfZHJ2ZGF0YShkZXYpIChkZXYtPnByaXZhdGUpCisrI2VuZGlmCiArCiAg
-LyoKICAgKiBCZWVwIHVzaW5nIHBjbQogICAqCi1AQCAtMjI2LDcgKzIzMywxMSBAQAorQEAgLTIy
-Niw3ICsyMzYsMTEgQEAKICAJCXJldHVybiAtRU5PTUVNOwogIAlkbWFidWYgPSBkbWFfYWxsb2Nf
-Y29oZXJlbnQoJmNoaXAtPnBkZXYtPmRldiwgQkVFUF9CVUZMRU4gKiA0LAogIAkJCQkgICAgJmJl
-ZXAtPmFkZHIsIEdGUF9LRVJORUwpOwpAQCAtMjMsNyArMjYsNyBAQAogIAlpZiAoISBkbWFidWYg
-fHwgISBpbnB1dF9kZXYpCiAgCQlnb3RvIGZhaWwxOwogIAotQEAgLTI0MSw4ICsyNTIsMTUgQEAK
-K0BAIC0yNDEsOCArMjU1LDE1IEBACiAgCWlucHV0X2Rldi0+ZXZiaXRbMF0gPSBCSVRfTUFTSyhF
-Vl9TTkQpOwogIAlpbnB1dF9kZXYtPnNuZGJpdFswXSA9IEJJVF9NQVNLKFNORF9CRUxMKSB8IEJJ
-VF9NQVNLKFNORF9UT05FKTsKICAJaW5wdXRfZGV2LT5ldmVudCA9IHNuZF9wbWFjX2JlZXBfZXZl
-bnQ7CkBAIC0zOSw3ICs0Miw3IEBACiAgCiAgCWJlZXAtPmRldiA9IGlucHV0X2RldjsKICAJYmVl
-cC0+YnVmID0gZG1hYnVmOwotQEAgLTI1NiwxNCArMjc0LDIzIEBACitAQCAtMjU2LDE0ICsyNzcs
-MjMgQEAKICAKICAJY2hpcC0+YmVlcCA9IGJlZXA7CiAgCkBAIC02NCw3ICs2Nyw3IEBACiAgCWlm
-IChkbWFidWYpCiAgCQlkbWFfZnJlZV9jb2hlcmVudCgmY2hpcC0+cGRldi0+ZGV2LCBCRUVQX0JV
-RkxFTiAqIDQsCiAgCQkJCSAgZG1hYnVmLCBiZWVwLT5hZGRyKTsKLUBAIC0yNzUsOSArMzAyLDE2
-IEBACitAQCAtMjc1LDkgKzMwNSwxNiBAQAogIHsKICAJaWYgKGNoaXAtPmJlZXApIHsKICAJCWlu
-cHV0X3VucmVnaXN0ZXJfZGV2aWNlKGNoaXAtPmJlZXAtPmRldik7Ci0tLSBwcGMvdHVtYmxlci5w
-YXRjaC5vcmlnCTIwMDgtMDItMDUgMTE6MjM6MjMuMDAwMDAwMDAwICswMjAwCisrKyBwcGMvdHVt
-Ymxlci5wYXRjaAkyMDA4LTA0LTE3IDE1OjM1OjA1Ljc4MzUyOTg3NCArMDMwMApAQCAtMSwyMSAr
-MSwyNyBAQAotLS0tIC4uL2Fsc2Eta2VybmVsL3BwYy90dW1ibGVyLmMJMjAwNy0xMi0yMCAxMTo0
-NzozNy4wMDAwMDAwMDAgKzAxMDAKLSsrKyB0dW1ibGVyLmMJMjAwNy0xMi0yMCAxMjoyNTowNS4w
-MDAwMDAwMDAgKzAxMDAKKy0tLSAuLi9hbHNhLWtlcm5lbC9wcGMvdHVtYmxlci5jCTIwMDgtMDIt
-MDUgMTE6MjM6MjQuMDAwMDAwMDAwICswMjAwCisrKysgdHVtYmxlci5jCTIwMDgtMDQtMTcgMTU6
-MzM6NTAuNTA0MzM4OTE4ICswMzAwCiBAQCAtMSwzICsxLDUgQEAKICsjZGVmaW5lIF9fTk9fVkVS
-U0lPTl9fCiArI2luY2x1ZGUgImFkcml2ZXIuaCIKICAvKgogICAqIFBNYWMgVHVtYmxlci9TbmFw
-cGVyIGxvd2xldmVsIGZ1bmN0aW9ucwogICAqCi1AQCAtMzgsNiArNDAsOCBAQAorQEAgLTM4LDYg
-KzQwLDE0IEBACiAgI2luY2x1ZGUgInBtYWMuaCIKICAjaW5jbHVkZSAidHVtYmxlcl92b2x1bWUu
-aCIKICAKICsjaW5jbHVkZSAicHBjLXByb20taGFjay5oIgogKworKyNpZiBMSU5VWF9WRVJTSU9O
-X0NPREUgPCBLRVJORUxfVkVSU0lPTigyLCA2LCAxNikKKysjZGVmaW5lIG9mX2RldmljZV9pc19j
-b21wYXRpYmxlKGRldiwgcykgZGV2aWNlX2lzX2NvbXBhdGlibGUoZGV2LCBzKQorKyNkZWZpbmUg
-aTJjX3NtYnVzX3dyaXRlX2kyY19ibG9ja19kYXRhKGNsaWVudCwgY21kLCBsZW4sIHZhbHMpIFwK
-KysJaTJjX3NtYnVzX3dyaXRlX2Jsb2NrX2RhdGEoY2xpZW50LCBjbWQsIGxlbiwgdmFscykKKysj
-ZW5kaWYKKysKICAjdW5kZWYgREVCVUcKICAKICAjaWZkZWYgREVCVUcKLUBAIC05NjUsNyArOTY5
-LDExIEBACitAQCAtOTY1LDcgKzk3NSwxMSBAQAogIAl9CiAgfQogIApAQCAtMjcsNyArMzMsNyBA
-QAogIHN0YXRpYyBzdHJ1Y3Qgc25kX3BtYWMgKmRldmljZV9jaGFuZ2VfY2hpcDsKICAKICBzdGF0
-aWMgdm9pZCBkZXZpY2VfY2hhbmdlX2hhbmRsZXIoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQot
-QEAgLTEwMzUsNyArMTA0MywxMSBAQAorQEAgLTEwMzUsNyArMTA0OSwxMSBAQAogIAkJbWl4ID0g
-Y2hpcC0+bWl4ZXJfZGF0YTsKICAJCXNuZF9hc3NlcnQobWl4LCByZXR1cm4pOwogIAkJbWl4LT5h
-dXRvX211dGVfbm90aWZ5ID0gZG9fbm90aWZ5OwpAQCAtMzksNyArNDUsNyBAQAogIAl9CiAgfQog
-ICNlbmRpZiAvKiBQTUFDX1NVUFBPUlRfQVVUT01VVEUgKi8KLUBAIC0xNDU1LDcgKzE0NjcsMTEg
-QEAKK0BAIC0xNDU1LDcgKzE0NzMsMTEgQEAKICAJY2hpcC0+cmVzdW1lID0gdHVtYmxlcl9yZXN1
-bWU7CiAgI2VuZGlmCiAgCg==
-------=_Part_3363_16992396.1208498991220
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_Part_3363_16992396.1208498991220--
+Jarkko
