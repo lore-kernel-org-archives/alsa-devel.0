@@ -1,23 +1,20 @@
-From: Simon Farnsworth <simon.farnsworth@onelan.co.uk>
-Subject: Re: snd_hda_intel locking up on VIA CX700M2 with
- VT1708A codec
-Date: Fri, 18 Apr 2008 18:39:15 +0100
-Message-ID: <4808DCC3.7030804@onelan.co.uk>
-References: <4808AE84.3000803@onelan.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Alsa Driver on Coldfire
+Date: Fri, 18 Apr 2008 18:11:52 +0100
+Message-ID: <20080418171152.GA14011@opensource.wolfsonmicro.com>
+References: <op.t9swu605hpbl6d@derby> <s5hwsmvea38.wl%tiwai@suse.de>
+	<20080418112340.GB19457@rakim.wolfsonmicro.main>
+	<op.t9tctqwjhpbl6d@derby>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay2.mail.uk.clara.net (relay2.mail.uk.clara.net
-	[80.168.70.182]) by alsa0.perex.cz (Postfix) with ESMTP id 501F724C39
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14C68246F8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Apr 2008 19:39:17 +0200 (CEST)
-Received: from host217-35-101-6.in-addr.btopenworld.com ([217.35.101.6]
-	helo=f8simon.office.onelan.co.uk)
-	by relay2.mail.uk.clara.net with esmtpa (Exim 4.62)
-	(envelope-from <simon.farnsworth@onelan.co.uk>) id 1JmuYO-0007Sm-Hp
-	for alsa-devel@alsa-project.org; Fri, 18 Apr 2008 18:39:16 +0100
-In-Reply-To: <4808AE84.3000803@onelan.co.uk>
+	Fri, 18 Apr 2008 19:11:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <op.t9tctqwjhpbl6d@derby>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Simon Dunn <sdunn@mpc-data.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Simon Farnsworth wrote:
-> Hello,
-> 
-> I'm trying to work out what's going wrong with the HDA controller in our 
-> VIA CX700M2 board; there's a full bug report at 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3910, but 
-> briefly, I'm seeing it lock up and refuse to DMA after long enough 
-> transferring audio data.
-> 
-Following up on myself; the last command sent to the codec is always 
-0x014f000a in my testing. Is it likely that the digital output (node 
-0x14) is causing problems (it's not wired to anything)?
--- 
-Simon Farnsworth
+On Fri, Apr 18, 2008 at 04:47:40PM +0100, Simon Dunn wrote:
+> On Fri, 18 Apr 2008 12:23:41 +0100, Mark Brown 
+
+> excluded.  Oh and thanks for the tip re the system on chip, I'll have
+> a look into that though the kernel version we're working with is
+> 2.6.10 and doesn't include it 'off the shelf'.
+
+> Can't imagine it would be too difficult to merge across unless anyone
+> knows different?
+
+Tedious more than hard - there was a change in the ALSA APIs from using
+typedefs to using 'struct foo' which creates a lot of code churn but is
+not at all difficult to deal with.  Other than that things should be
+pretty straightforward.
