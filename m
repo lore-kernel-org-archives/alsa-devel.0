@@ -1,18 +1,15 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: [PATCH] ALSA: Fix capturing for envy1724ht based
-	"audiophile 192"
-Date: Sun, 20 Apr 2008 00:52:51 +0200
-Message-ID: <200804200052.51804.fzu@wemgehoertderstaat.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: snd_pcm_rewind() weirdness
+Date: Sun, 20 Apr 2008 01:37:38 +0200
+Message-ID: <20080419233738.GA18371@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67C6224412
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 506082441C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Apr 2008 00:53:05 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id b21so486772nfd.32
-	for <alsa-devel@alsa-project.org>; Sat, 19 Apr 2008 15:52:56 -0700 (PDT)
+	Sun, 20 Apr 2008 01:37:39 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,100 +20,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hey!
 
-The 1st hunk changes snd_ice1712_gpio_write_bits() to not affect the gpio's mask
-register. Lets gpio writers that are unaware of a changed mask register
-successfully write the gpio.
-The 2nd and 3rd hunks toggle "chip reset" and "eeprom based setup" sequence so
-"chip reset" becomes first. Increasement of the "chip reset" related timeout
-leads to correctly read eeprom's contents here.
-Also corrects some arguments in calls to snd_ice1712_gpio_write_bits() from
-ap192_set_rate_val().
+On ALSA 1.0.16 with the HDA driver I am experiencing some weird things
+with snd_pcm_rewind() which I think are the result of a kernel bug,
+but I am not sure.
 
-Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
----
+Here's what I do to trigger this:
 
-Hi,
+I play some PCM. Eventually I want to rewrite what I already have
+written. I call snd_pcm_hwsync() and then snd_pcm_avail_update() to
+determine how "empty" the playback buffer is. I subtract that value
+from the total buffer size. The resulting value should be something
+resembling the number of frames that I might be able to rewind. I then
+subtract enough frames to keep away from the playback pointer far
+enough (50ms, the playback buffer is 370ms, period is 185ms).
 
-patch might hamper cards that actually relied on snd_ice1712_gpio_write_bits()
-setting the gpio's mask register. Cscope tells me terratec ews and m-audio
-rev51 are might be candidates. I guess they are ok ;-)
+Now I pass that value to snd_pcm_rewind() and it returns something that
+is higher than what I passed in. Which I find quite
+surprising. I had expected that the returned value could be equal or
+smaller than what I passed in, but never higher! 
 
-regards,
-      Karsten
+So, my interpretation of the API was apparently wrong. It looks like
+on HDA the snd_pcm_rewind() parameter is apparently rounded *up* to
+the next period boundary (which in this case was equivalent to the
+*entire* buffer)?
 
-diff -pur alsa.hg/alsa-kernel/pci/ice1712/ice1712.h fixed/alsa-kernel/pci/ice1712/ice1712.h
---- alsa.hg/alsa-kernel/pci/ice1712/ice1712.h	2008-03-20 12:25:01.000000000 +0100
-+++ fixed/alsa-kernel/pci/ice1712/ice1712.h	2008-04-19 23:21:31.000000000 +0200
-@@ -438,10 +438,14 @@ int snd_ice1712_gpio_put(struct snd_kcon
- static inline void snd_ice1712_gpio_write_bits(struct snd_ice1712 *ice,
- 					       unsigned int mask, unsigned int bits)
- {
-+	unsigned val;
-+
- 	ice->gpio.direction |= mask;
- 	snd_ice1712_gpio_set_dir(ice, ice->gpio.direction);
--	snd_ice1712_gpio_set_mask(ice, ~mask);
--	snd_ice1712_gpio_write(ice, mask & bits);
-+	val = snd_ice1712_gpio_read(ice);
-+	val &= ~mask;
-+	val |= mask & bits;
-+	snd_ice1712_gpio_write(ice, val);
- }
- 
- static inline int snd_ice1712_gpio_read_bits(struct snd_ice1712 *ice,
-diff -pur alsa.hg/alsa-kernel/pci/ice1712/ice1724.c fixed/alsa-kernel/pci/ice1712/ice1724.c
---- alsa.hg/alsa-kernel/pci/ice1712/ice1724.c	2008-03-20 12:25:01.000000000 +0100
-+++ fixed/alsa-kernel/pci/ice1712/ice1724.c	2008-04-19 23:07:29.000000000 +0200
-@@ -2045,12 +2045,16 @@ static int __devinit snd_vt1724_read_eep
- 
- 
- 
--static int __devinit snd_vt1724_chip_init(struct snd_ice1712 *ice)
-+static void __devinit snd_vt1724_chip_reset(struct snd_ice1712 *ice)
- {
- 	outb(VT1724_RESET , ICEREG1724(ice, CONTROL));
--	udelay(200);
-+	msleep(10);
- 	outb(0, ICEREG1724(ice, CONTROL));
--	udelay(200);
-+	msleep(10);
-+}
-+
-+static int __devinit snd_vt1724_chip_init(struct snd_ice1712 *ice)
-+{
- 	outb(ice->eeprom.data[ICE_EEP2_SYSCONF], ICEREG1724(ice, SYS_CFG));
- 	outb(ice->eeprom.data[ICE_EEP2_ACLINK], ICEREG1724(ice, AC97_CFG));
- 	outb(ice->eeprom.data[ICE_EEP2_I2S], ICEREG1724(ice, I2S_FEATURES));
-@@ -2223,6 +2227,7 @@ static int __devinit snd_vt1724_create(s
- 
- 	ice->irq = pci->irq;
- 
-+	snd_vt1724_chip_reset(ice);
- 	if (snd_vt1724_read_eeprom(ice, modelname) < 0) {
- 		snd_vt1724_free(ice);
- 		return -EIO;
-diff -pur alsa.hg/alsa-kernel/pci/ice1712/revo.c fixed/alsa-kernel/pci/ice1712/revo.c
---- alsa.hg/alsa-kernel/pci/ice1712/revo.c	2008-03-17 09:25:02.000000000 +0100
-+++ fixed/alsa-kernel/pci/ice1712/revo.c	2008-04-19 23:12:33.000000000 +0200
-@@ -327,7 +327,7 @@ static void ap192_set_rate_val(struct sn
- 	revo_set_rate_val(ak, rate);
- 
- 	/* reset CKS */
--	snd_ice1712_gpio_write_bits(ice, 1 << 8, rate > 96000 ? 1 : 0);
-+	snd_ice1712_gpio_write_bits(ice, 1 << 8, rate > 96000 ? 1 << 8 : 0);
- 	/* reset DFS pins of AK5385A for ADC, too */
- 	if (rate > 96000)
- 		dfs = 2;
-@@ -338,7 +338,7 @@ static void ap192_set_rate_val(struct sn
- 	snd_ice1712_gpio_write_bits(ice, 3 << 9, dfs << 9);
- 	/* reset ADC */
- 	snd_ice1712_gpio_write_bits(ice, 1 << 11, 0);
--	snd_ice1712_gpio_write_bits(ice, 1 << 11, 1);
-+	snd_ice1712_gpio_write_bits(ice, 1 << 11, 1 << 11);
- }
- 
- static const struct snd_akm4xxx_dac_channel ap192_dac[] = {
+Of course, rewinding that far immediately caused an XRUN. Which is why
+I think rounding up in this cases is a bad idea and the API shouldn't
+work this way. Rounding down is OK, rounding up is call for trouble.
+
+To tape over this I added some code to immediately call
+snd_pcm_forward() with the difference if I noticed that the device
+forwarded more than I requested. This value also got rounded up -- to
+twice the period size. So with this backward+forward operation I ended
+up at a frame index that is farther ahead than where I originally came
+from!
+
+So, what's the expected behaviour of snd_pcm_rewind()? Always round
+up? What's the rationale behind this?
+
+If this is not a bug but expected behaviour, could we at least add
+something for passing the direction to round to?
+
+What I am working on is the "glitch-free" playback model in PulseAudio
+(http://0pointer.de/blog/projects/pulse-glitch-free.html). To do this
+I am writing blocks smaller than the period size to the device via the
+mmap interface all the time. Given that on HDA _rewind() is apparently
+not granular to the frame size, is writing via mmap in small blocks
+like that OK?  If it's not, how can I learn about this in advance?
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
