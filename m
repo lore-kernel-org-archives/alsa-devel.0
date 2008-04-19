@@ -1,24 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] asoc tlv320aic3x: add GPIO support
-Date: Sat, 19 Apr 2008 19:51:30 +0100
-Message-ID: <20080419185129.GB3559@sirena.org.uk>
-References: <20080418181214.GB26197@buzzloop.caiaq.de>
-	<bd7b27490804181326v311f192bi8454c9c0661427d2@mail.gmail.com>
-	<20080419004103.GA29770@buzzloop.caiaq.de>
-	<20080419112425.GA18877@sirena.org.uk>
-	<20080419121838.GA1680@buzzloop.caiaq.de>
-	<20080419145005.GA23492@sirena.org.uk>
-	<20080419162418.GA3177@buzzloop.caiaq.de>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH] speaker-test.c - fix sine generator on
+	big-endian archs
+Date: Sat, 19 Apr 2008 23:50:08 +0200
+Message-ID: <20080419235008.83593d03.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CE6F243A6
+Received: from smtp-out25.alice.it (smtp-out25.alice.it [85.33.2.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EAAD243BB
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Apr 2008 20:51:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080419162418.GA3177@buzzloop.caiaq.de>
+	Sat, 19 Apr 2008 23:49:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,23 +20,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 19, 2008 at 06:24:18PM +0200, Daniel Mack wrote:
-> On Sat, Apr 19, 2008 at 03:50:06PM +0100, Mark Brown wrote:
+speaker-test doesn't work well when you choose a little-endian format on a
+big-endian processor, or the opposite. Yes, I know about plughw:, but for
+debugging purposes it may not be an option. The following patch add proper
+support for S32 and S16 support for but LE and BE processors:
 
-> > In the case of jack detect I'm actually currently working on a
-> > generalisation of that since it's such a common feature.  I hope to have
-> > something in the next week or two but it depends on my other work.
+- The "if (bits-per-sample)" construct was replaced by case (format).
+- Support for S16_BE, S32_BE formats was added.
+- S16_LE and S32_LE were made compatible with big-endian processors.
+- NB: The pink noise generator wasn't changed (I'll do if this patch is OK).
 
-> I attached a patch for a proprietary interface - is that what you were
-> talking about? Would that approach be mergeable with your generic jack
-> detect code?
 
-Yes, that was the sort of thing I was thinking about - looks good from
-an API perspective, though I've not looked at the code properly yet.  It
-should fit in with the jack detect code, the idea is more to let drivers
-push notifications of jack detect status - it doesn't really care how
-the driver detects the jack status.
+--- speaker-test/speaker-test.c__orig	2008-04-19 23:01:22.000000000 +0200
++++ speaker-test/speaker-test.c	2008-04-19 23:29:45.000000000 +0200
+@@ -139,7 +139,6 @@ static void generate_sine(uint8_t *frame
+   int16_t *samp16 = (int16_t*) frames;
+   int32_t *samp32 = (int32_t*) frames;
+   float   *samp_f = (float*) frames;
+-  int sample_size_bits = snd_pcm_format_width(format); 
+ 
+   while (count-- > 0) {
+     //res = sin((phase * 2 * M_PI) / max_phase - M_PI) * 32767;
+@@ -154,26 +153,43 @@ static void generate_sine(uint8_t *frame
+     //ires = 0;
+ 
+     for(chn=0;chn<channels;chn++) {
+-      if (sample_size_bits == 8) {
++      switch (format) {
++      case SND_PCM_FORMAT_S8:
+         if (chn==channel) {
+           res = (sin((phase * 2 * M_PI) / max_phase - M_PI)) * 0x03fffffff; /* Don't use MAX volume */
+           ires = res;
+-	  *samp8++ = ires >> 24;
+-	  //*samp8++ = 0x12;
++          *samp8++ = ires >> 24;
+         } else {
+-	  *samp8++ = 0;
++          *samp8++ = 0;
+         }
+-      } else if (sample_size_bits == 16) {
++        break;
++      case SND_PCM_FORMAT_S16_LE:
+         if (chn==channel) {
+           res = (sin((phase * 2 * M_PI) / max_phase - M_PI)) * 0x03fffffff; /* Don't use MAX volume */
+           ires = res;
+-	  *samp16++ = ires >>16;
+-	  //*samp16++ = 0x1234;
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++          *samp16++ = ires >> 16;
++#elif __BYTE_ORDER == __BIG_ENDIAN
++          *samp16++ = bswap_16(ires >> 16);
++#endif
+         } else {
+-	  //*samp16++ = (ires >>16)+1;
+-	  *samp16++ = 0;
++          *samp16++ = 0;
+         }
+-      } else if ((sample_size_bits == 32) && (format == SND_PCM_FORMAT_FLOAT_LE)) {
++        break;
++      case SND_PCM_FORMAT_S16_BE:
++        if (chn==channel) {
++          res = (sin((phase * 2 * M_PI) / max_phase - M_PI)) * 0x03fffffff; /* Don't use MAX volume */
++          ires = res;
++#if __BYTE_ORDER == __BIG_ENDIAN
++          *samp16++ = ires >> 16;
++#elif __BYTE_ORDER == __LITTLE_ENDIAN
++          *samp16++ = bswap_16(ires >> 16);
++#endif
++        } else {
++          *samp16++ = 0;
++        }
++        break;
++      case SND_PCM_FORMAT_FLOAT_LE:
+         if (chn==channel) {
+           res = (sin((phase * 2 * M_PI) / max_phase - M_PI)) * 0.75 ; /* Don't use MAX volume */
+           fres = res;
+@@ -185,18 +201,35 @@ static void generate_sine(uint8_t *frame
+ 	  //*samp32++ = ires;
+ 	  *samp_f++ = 0.0;
+         }
+-      } else if ((sample_size_bits == 32) && (format != SND_PCM_FORMAT_FLOAT_LE)) {
++        break;
++      case SND_PCM_FORMAT_S32_LE:
+         if (chn==channel) {
+           res = (sin((phase * 2 * M_PI) / max_phase - M_PI)) * 0x03fffffff; /* Don't use MAX volume */
+           ires = res;
+-	  *samp32++ = ires;
+-	  //*samp32++ = 0xF2345678;
+-	//printf("res=%lf, ires=%d 0x%x, samp32=0x%x\n",res,ires, ires, samp32[-1]);
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++          *samp32++ = ires;
++#elif __BYTE_ORDER == __BIG_ENDIAN
++          *samp32++ = bswap_32(ires);
++#endif
+         } else {
+-	  //*samp32++ = ires+0x10000;
+-	  //*samp32++ = ires;
+-	  *samp32++ = 0;
++          *samp32++ = 0;
+         }
++        break;
++      case SND_PCM_FORMAT_S32_BE:
++        if (chn==channel) {
++          res = (sin((phase * 2 * M_PI) / max_phase - M_PI)) * 0x03fffffff; /* Don't use MAX volume */
++          ires = res;
++#if __BYTE_ORDER == __BIG_ENDIAN
++          *samp32++ = ires;
++#elif __BYTE_ORDER == __LITTLE_ENDIAN
++          *samp32++ = bswap_32(ires);
++#endif
++        } else {
++          *samp32++ = 0;
++        }
++        break;
++      default:
++        ;
+       }
+     }
+ 
+
+--
+Giuliano.
