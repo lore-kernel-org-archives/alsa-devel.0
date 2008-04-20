@@ -1,25 +1,21 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Sun, 20 Apr 2008 03:01:17 +0200
-Message-ID: <20080420010116.GA22033@tango.0pointer.de>
-References: <20080411204610.GA32413@tango.0pointer.de>
-	<480099C6.3040708@superbug.co.uk>
-	<20080412133536.GC32491@tango.0pointer.de>
-	<48010E62.2020404@keyaccess.nl>
-	<20080414170022.GH22115@tango.0pointer.de>
-	<480392F3.9030701@keyaccess.nl>
-	<20080414172839.GA26513@tango.0pointer.de>
-	<4803C78A.3020109@superbug.co.uk>
+Subject: Re: My issues with the ALSA API
+Date: Sun, 20 Apr 2008 03:31:32 +0200
+Message-ID: <20080420013132.GA22690@tango.0pointer.de>
+References: <20080409221512.GA4466@tango.0pointer.de>
+	<Pine.LNX.4.61.0804100951180.13990@tm8103.perex-int.cz>
+	<20080410152038.GD5852@tango.0pointer.de>
+	<s5h7iez48fz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67E9F24334
+	by alsa0.perex.cz (Postfix) with ESMTP id EB1F12434E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Apr 2008 03:01:20 +0200 (CEST)
+	Sun, 20 Apr 2008 03:31:32 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4803C78A.3020109@superbug.co.uk>
+In-Reply-To: <s5h7iez48fz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,85 +25,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14.04.08 22:07, James Courtier-Dutton (James@superbug.co.uk) wrote:
+On Tue, 15.04.08 14:19, Takashi Iwai (tiwai@suse.de) wrote:
 
+> > As far as I understood there are a few soundcards around where
+> > the playback sample index is only known each time the hw changes to
+> > the next fragment. It would be good to know about this, to tweak the
+> > time interpolation in timer-based scheduling.
 > 
-> Lennart Poettering wrote:
+> We may add some hints to the PCM information, but I think maybe this
+> isn't only the question about granualrity.  For example, on some
+> hardwares, the query of the current position costs much due to the
+> hardware design.
+
+What is "much" if I may ask?
+
+> > > Documentantion - if you ask specific questions, we try to update 
+> > > documentantion for other developers.. unfortunately, saying that whole 
+> > > documentantion is bad is not productive
 > > 
-> > Yes, but what I am asking for is to define the dB values of the master
-> > control relative to the some ref level on this line-out. What happens
-> > after the line-out doesn't matter at all.
+> > Sorry. I'll make sure I'll ask for clarifications more clearly on
+> > alsa-devel from now on.
 > > 
-> > Lennart
+> > Here's my first batch of questions:
 > > 
+> > I am not sure I get what the "transfer align" is about.
 > 
-> The aim of the dB values in the ALSA mixer is this.
+> Just ignore, this is obsoleted in the latest version :)
+
+Please remove from the docs, then!
+
+Also the part in the "Managing parameters" chapter in the PCM
+introduction text.
+
+> > It is not clear how snd_pcm_update_avail() and snd_pcm_hwsync()
+> > actually play together, why they exist at all, and how exactly the
+> > optimization they are apparently useful for should  be used.
 > 
-> For Playback:
-> Set all the mixer controls to 0dB.
-> Send a sample digital signal from the CPU to the sound card.
-> The measured analog signal on the line-out should be the same for ALL 
-> sound cards.
+> The detailed description is found in PCM documentation.
+
+Uh, and that's the part I don't get. I did read it, and didn't get
+it. What exactly does _hwsync() do that _update_avail() doesnt?
+
+> > It would be good to have an explanation what a "card", what an "id",
+> > what a "name", what a "device" and what a "subdevice" actually refers
+> > to, with examples.
 > 
-> For Capture:
-> Set all the mixer controls to 0dB.
-> Send a sample analog signal to the line-in of the sound card.
-> The captured digital signal at the CPU should be the same for ALL sound 
-> cards.
+> The card (index) is the index number of the sound card instance.
+> Each card has an id string and name string(s).
+> One card instance may have several belonging components.  And each
+> component has (usually) a device index.  Some components (e.g. PCM or
+> rawmidi) can have multiple subdevices (or substreams).  Each subdevice
+> has a subdevice index.
+
+The question remains: what exactly is is a "device" and what is a
+"subdevice"? Examples?
+
+For a while I thought that for those sound cards wich can output to
+SPDIF and analog at the same time we have two different device
+indexes, but a single card index. However, for my HDA card that is
+listed in /proc/asound/pcm as "04-00 ALC882 Analog" and "04-01 ALC882
+Digital", aplay -L suggests to use "ec958:CARD=Intel,DEV=0" for spdif
+and "front:CARD=Intel,DEV=0" for analog -- both times with DEV=0!
+Since then I have no idea what devices, subdevices and stuff should
+actually be.
+
+So again, what exactly qualifies subdevices? Do they share a single
+crystal? Are they usually combined for multi-channel output? What's
+the story?
+
+> > regarding hw params: What exactly is "double buffering",
+> > "sample-resolution mmap", "block transfer", "batch", "sync_start" ,
+> > "fifo_size", "subformat", "export buffer", "min align";
 > 
-> The reason for using 0dB is that it should mean no gain and no 
-> attenuation to the signal and so minimize distortions.
+> Most of them can be ignored, at least for PA :)  I'd love to get rid
+> of most of them in future, too.
 
-Hmm, my interpretation of the whole discussion is that while this
-might be what you had in mind when designing the interface this is not
-how drivers implemented it because hardware doesn't provide this
-information in most cases.
+Really? "block transfer" sounds to me like something that would be
+interesting for mmap playback for cases where i randomly seek around
+in my mmap buffer, with frame granularity. Which is exactly what I do
+all the time in PA.
 
-The dB values exported by ALSA right now seem to be relative to zero
-gain -- at least for some devices and mixer tracks. For the remaining
-cases it is relative to maximum gain. There's currently no way to
-figure out from the ALSA API which case it is for a local setup.
+> > why there is a
+> > need for a seperate can_pause() and can_resume()?
+> 
+> can_pause() means the ability to pause/restart the stream.
+> 
+> can_resume() means the ability to resume the suspended/hibernated
+> stream by the driver natively.
 
-It would of course be great if each ALSA mixer control would also
-export the voltage (dBu) to which 0dB refers. However this information
-is probably only available in the specs of very little hardware (and
-if at all only on pro hw which doesn't really matter for what I try to
-do), and would require some non-trivial amount of testing with
-metering hardware and stuff for the others. Also, for devices like USB
-speakers voltages don't make any sense anyway since audio leaves those
-speakers only acoustically. Hence, relying on dBu info exported by
-ALSA is not really an option for me. It would be incomplete,
-unreliable and a thing of the future if at all.
+Uh. This has very confusing naming.
 
-So, what does this mean for the task I initially wanted to get done,
-i.e. to find some way to initialize mixers properly so that they are
-not fully unmuted? Nothing good. It probably makes sense to initialize
-mixer tracks that are not the "last" one in the chain to 0dB, but
-initializing the last one (i.e Master) unconditionally to 0dB seems to
-be a bad idea. However, under the assumption the mixer slider does not
-directly control a 1000W amplifier it is probably OK to initialize it
-to something like -47dB or lower. That should be good enough so that
-people hear at least something on many setups and then take the fact
-that it might be too low in volume as a suggestion to turn the volume
-up. It's better than total silence, and way better than the tool that
-Fedora currently ships which unconditionally initializes the volume of
-all previously-unseen hardware to 75% of the integer scale, for
-whatever that may be.
+> > regarding sw params: What exactly is a "boundary"? Difference between
+> > tstamp modes?
+> 
+> The boundary defines the limit PCM position (frames) can reach.  When
+> the PCM position reaches to the boundary size, then it backs to 0 at
+> next.  The boundary size is aligned to the buffer size, and it's not
+> LONG_MAX (although close to it).
 
-And again, what I am trying to do is not relevant at all for pro audio
-people. My focus is desktop audio. So please, complains that setting
-the default values of the mixers to anything that is not -inf dB might
-trash your pro audio equipment are not applicable right now.
+But what is this interesting for? I mean, I cannot read the raw
+hardware pointer index anyway from ALSA, so why should I care?
 
-Any complaints? Or can we end this dicussion with this summary of my
-plans?
+Or is it all for the case where I create a *major* buffer underrun
+with disabled stop_threshold and the value of _update_avail() keeps
+increasing but eventually wraps around?
 
-If my interpretation of the status quo of what dB values are relative
-to is correct, may I suggest adding this to the ALSA docs, to make
-this clear for the next poor sould who wants to make sense of this?
+> > how do silence_size and silence_threshold relate?
+> 
+> The PCM driver core has a feature to clear the samples automatically
+> at each period elapse call.  The silence_size and silence_threshold
+> defines this behavior.
+
+But in which way? Please elaborate!
+
+> > What is snd_pcm_xrun_t useful for? (I think it is obsolete, should
+> > also be removed from docs, then)
+> 
+> Right.  Maybe should be classified to the section "obsoleted
+> functions".  A part of the problem is that the reference document is
+> generated via doxygen, and it seems a bit confusing to arrange the
+> sections in a single file.
+
+You can use stuff like \cond in doxygen to hide certain parts of the
+API pretty easily. 
+
+> > Why is snd_pcm_scope included in the normal PCM docs?
+> 
+> I guess it was thought it'd be pretty useful.
+
+Maybe the plugin is useful. But why is it part of the API docs?
 
 Thanks,
 
