@@ -1,22 +1,22 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Sun, 20 Apr 2008 08:23:30 -0700
-Message-ID: <480B5FF2.7010906@cox.net>
-References: <20080411204610.GA32413@tango.0pointer.de>	<480099C6.3040708@superbug.co.uk>	<20080412133536.GC32491@tango.0pointer.de>	<48010E62.2020404@keyaccess.nl>	<20080414170022.GH22115@tango.0pointer.de>	<480392F3.9030701@keyaccess.nl>	<20080414172839.GA26513@tango.0pointer.de>	<4803C78A.3020109@superbug.co.uk>
-	<20080420010116.GA22033@tango.0pointer.de>
+From: John Rigg <aldev@sound-man.co.uk>
+Subject: envy24control can't set sample rate on Delta 1010
+Date: Mon, 21 Apr 2008 01:42:06 +0100
+Message-ID: <20080421004206.GA3431@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao106.cox.net (fed1rmmtao106.cox.net [68.230.241.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13D1F2435A
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58EDD2444C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Apr 2008 17:23:32 +0200 (CEST)
-Received: from fed1rmimpo03.cox.net ([70.169.32.75]) by fed1rmmtao106.cox.net
-	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP id
-	<20080420152325.OXIZ12496.fed1rmmtao106.cox.net@fed1rmimpo03.cox.net>
-	for <alsa-devel@alsa-project.org>; Sun, 20 Apr 2008 11:23:25 -0400
-In-Reply-To: <20080420010116.GA22033@tango.0pointer.de>
+	Mon, 21 Apr 2008 02:32:36 +0200 (CEST)
+Received: from localhost (78-32-150-178.no-dns-yet.enta.net [78.32.150.178])
+	by mail3.uklinux.net (Postfix) with ESMTP id A555C1F61C8
+	for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2008 01:32:35 +0100 (BST)
+Received: from anon by localhost with local (Exim 4.63)
+	(envelope-from <john@sound-man.co.uk>) id 1Jnk6g-0000tn-5j
+	for alsa-devel@alsa-project.org; Mon, 21 Apr 2008 01:42:06 +0100
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,27 +29,13 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lennart Poettering wrote:
-> On Mon, 14.04.08 22:07, James Courtier-Dutton (James@superbug.co.uk) wrote:
->   
->   
-[snip]
-> So, what does this mean for the task I initially wanted to get done,
-> i.e. to find some way to initialize mixers properly so that they are
-> not fully unmuted? Nothing good.
->   
-Why not open a dialog when encountering a device for which there is no 
-existing asound.state or equivalent pulseaudio file?  Something like 
-"This sound device has not been used on this machine before.  Therefore 
-the volume is muted.  Hit enter to go to alsamixer to adjust the volume 
-to the level you want".  Then bring up alsamixer for the device, and 
-when it exits write an asound.state.  And a pulseaudio version so if you 
-see the device again, you don't have to ask.  Or instead of alsamixer, 
-you could just bring up the window manager volume adjustment app, or 
-your own volume adjustment app.  No guessing, no problem.
+envy24control in alsa-tools-1.0.16 cannot set sample rate
+on the M-Audio Delta 1010. The Actual Rate window appears to
+be functioning correctly, as is the "S/PDIF in" button, but
+none of the internal clock sample rate buttons do anything.
+Setting the sample rate as a jackd parameter works as normal.
 
-> Thanks,
->
-> Lennart
->
->   
+I tried it with 2.6.20 and 2.6.25 kernels. Behaviour was
+the same on both. I've made a bug report (0003915).
+
+John
