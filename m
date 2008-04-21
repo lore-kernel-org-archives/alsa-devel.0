@@ -1,19 +1,17 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Mon, 21 Apr 2008 19:10:51 +0200
-Message-ID: <480CCA9B.9030500@keyaccess.nl>
-References: <20080411204610.GA32413@tango.0pointer.de>	<s5h8wzf4e35.wl%tiwai@suse.de>	<20080420000051.GA20381@tango.0pointer.de>
-	<s5hfxtfcoza.wl%tiwai@suse.de>
+From: "John Utz" <john.utz@dmx.com>
+Subject: Re: Alsa Callbacks and C++ classes
+Date: Mon, 21 Apr 2008 11:08:01 -0700
+Message-ID: <20080421110801.5013fa00@jutz-gnto64>
+References: <200804202128.25675.reuben.m@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
-	[213.51.146.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DC9E24436
+Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C71C24468
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Apr 2008 19:10:53 +0200 (CEST)
-In-Reply-To: <s5hfxtfcoza.wl%tiwai@suse.de>
+	Mon, 21 Apr 2008 20:08:21 +0200 (CEST)
+In-Reply-To: <200804202128.25675.reuben.m@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
+To: Reuben Martin <reuben.m@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 21-04-08 15:32, Takashi Iwai wrote:
+On Sun, 20 Apr 2008 21:28:25 -0500
+"Reuben Martin" <reuben.m@gmail.com> wrote:
 
-> At Sun, 20 Apr 2008 02:00:51 +0200,
-> Lennart Poettering wrote:
-
->> My understanding is that the dB values of this USB device are relative          
->> to its maximum gain, and as such consistent in itself. Does the USB
->> spec define the reference level for the dB values?       
+> Hello all,
 > 
-> Not clearly.  IIRC, it's against the line level...
+> I have an AES32 sound card that I am trying to write a general
+> control interface for using qt4. I'm wanting to register callbacks so
+> that the interface will reflect changes made by other apps. Now I'm
+> not entirely up to speed on the API, but from what I can gather, the
+> callback can be registered to call a regular function, or to change a
+> public class variable.
+> 
+> Since I decided to use qt4, everything is in classes. Is there any
+> way to have the callback trigger a public class function? I guess I
+> don't understand why you would want to use a public variable instead.
+> Wouldn't you have to set up a means within the class to continually
+> pole the variable to see if it has been changed? Or can the option to
+> call a regular function be used to call a public class function as
+> well?
 
-The 1.0 spec calls 0 dB line level indeed and (at least in the context of 
-the dynamic range compressor, section 3.5.6.6) suggests that it's "usually 
-15-20 dB below the maximum level".
+I am not looking at the API docs at the moment, but I would expect that
+it would work but would probably require a significant bit of casting
+fu to deal with the c++ pointers and maybe some #defines to deal
+with C++ name mangling, ie:
 
-Rene.
+00000000 T dqzport_CommunicateInit__FPi
+dfxportInit.o:
+00000000 a dqzportInit.cpp
+00000000 T dqzportInit__FPPiPciP6CSlout
+         U dqzport_CommunicateInit__FPi
+
+Given the grief that i have experienced attempting to get c and c++ to
+play nicely together, i'd be choosing to communicate via some other
+means.
+
+My interoperability issues may be tied to the fact that i am stuck with
+dealing with some legacy c++ libs that where written with g++2 and it
+may all be solved and work transparently when using gcc4/g++4, i dont
+really know because i dont get to use it for our application.
+
+> Go easy on me. I'm not much of an experienced programmer. More of a
+> hack who can kinda get by with his sloppy programming most of the
+> time.
+
+No prob, the public variable idea certainly seems to be appropriate
+given that perspective. :-)
+
+> Thanks,
+> -Reuben
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
