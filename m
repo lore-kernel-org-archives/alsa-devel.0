@@ -1,20 +1,20 @@
 From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: [PATCH] ice1724.c: toggle "chip reset" and "eeprom
-	based setup" sequence
-Date: Mon, 21 Apr 2008 22:45:03 +0200
-Message-ID: <200804212245.04052.fzu@wemgehoertderstaat.de>
+Subject: [PATCH] Don't set gpio mask register in
+	snd_ice1712_gpio_write_bits()
+Date: Mon, 21 Apr 2008 22:45:18 +0200
+Message-ID: <200804212245.18799.fzu@wemgehoertderstaat.de>
 References: <200804200052.51804.fzu@wemgehoertderstaat.de>
 	<s5htzhvcvih.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id D76522434E
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id C854C243A9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Apr 2008 22:45:08 +0200 (CEST)
-Received: by mu-out-0910.google.com with SMTP id i2so2673018mue.2
-	for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2008 13:45:07 -0700 (PDT)
+	Mon, 21 Apr 2008 22:45:22 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id f40so5720618fka.0
+	for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2008 13:45:22 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,41 +30,31 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Let "chip reset" become first. Increasement of the "chip reset" related timeout
-leads to correctly read eeprom's contents here.
+Some calls to snd_ice1712_gpio_write() go wrong, if
+snd_ice1712_gpio_write_bits() ran before and changed the gpio mask register.
+Read the actual gpio value and combine it with the to be set bits in the cpu
+instead.
 
 Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
 
 
-
-diff -pur alsa.hg/alsa-kernel/pci/ice1712/ice1724.c fixed/alsa-kernel/pci/ice1712/ice1724.c
---- alsa.hg/alsa-kernel/pci/ice1712/ice1724.c	2008-03-20 12:25:01.000000000 +0100
-+++ fixed/alsa-kernel/pci/ice1712/ice1724.c	2008-04-19 23:07:29.000000000 +0200
-@@ -2045,12 +2045,16 @@ static int __devinit snd_vt1724_read_eep
- 
- 
- 
--static int __devinit snd_vt1724_chip_init(struct snd_ice1712 *ice)
-+static void __devinit snd_vt1724_chip_reset(struct snd_ice1712 *ice)
+diff -pur alsa.hg/alsa-kernel/pci/ice1712/ice1712.h fixed/alsa-kernel/pci/ice1712/ice1712.h
+--- alsa.hg/alsa-kernel/pci/ice1712/ice1712.h	2008-03-20 12:25:01.000000000 +0100
++++ fixed/alsa-kernel/pci/ice1712/ice1712.h	2008-04-19 23:21:31.000000000 +0200
+@@ -438,10 +438,14 @@ int snd_ice1712_gpio_put(struct snd_kcon
+ static inline void snd_ice1712_gpio_write_bits(struct snd_ice1712 *ice,
+ 					       unsigned int mask, unsigned int bits)
  {
- 	outb(VT1724_RESET , ICEREG1724(ice, CONTROL));
--	udelay(200);
-+	msleep(10);
- 	outb(0, ICEREG1724(ice, CONTROL));
--	udelay(200);
-+	msleep(10);
-+}
++	unsigned val;
 +
-+static int __devinit snd_vt1724_chip_init(struct snd_ice1712 *ice)
-+{
- 	outb(ice->eeprom.data[ICE_EEP2_SYSCONF], ICEREG1724(ice, SYS_CFG));
- 	outb(ice->eeprom.data[ICE_EEP2_ACLINK], ICEREG1724(ice, AC97_CFG));
- 	outb(ice->eeprom.data[ICE_EEP2_I2S], ICEREG1724(ice, I2S_FEATURES));
-@@ -2223,6 +2227,7 @@ static int __devinit snd_vt1724_create(s
+ 	ice->gpio.direction |= mask;
+ 	snd_ice1712_gpio_set_dir(ice, ice->gpio.direction);
+-	snd_ice1712_gpio_set_mask(ice, ~mask);
+-	snd_ice1712_gpio_write(ice, mask & bits);
++	val = snd_ice1712_gpio_read(ice);
++	val &= ~mask;
++	val |= mask & bits;
++	snd_ice1712_gpio_write(ice, val);
+ }
  
- 	ice->irq = pci->irq;
- 
-+	snd_vt1724_chip_reset(ice);
- 	if (snd_vt1724_read_eeprom(ice, modelname) < 0) {
- 		snd_vt1724_free(ice);
- 		return -EIO;
+ static inline int snd_ice1712_gpio_read_bits(struct snd_ice1712 *ice,
