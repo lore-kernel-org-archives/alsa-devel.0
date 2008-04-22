@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] soc - s3c24xx - Improve diagnostic output
-Date: Tue, 22 Apr 2008 16:12:51 +0100
-Message-ID: <1208877172-16537-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1208877172-16537-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] soc - s3c24xx-i2s - Replace __FUNCTION__
+	with __func__
+Date: Tue, 22 Apr 2008 16:12:50 +0100
+Message-ID: <1208877172-16537-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64F63245CC
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4CE9C245C6
 	for <alsa-devel@alsa-project.org>;
 	Tue, 22 Apr 2008 17:12:54 +0200 (CEST)
-In-Reply-To: <1208877172-16537-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +21,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Tim Niemeyer <tim.niemeyer@mastersword.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tim Niemeyer <reddog@mastersword.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Tim Niemeyer <tim.niemeyer@mastersword.de>
+__FUNCTION__ is GCC specific and checkpatch won't let us submit with it.
 
-Add some debug messages for suspend/resume and to add a clear prefix to
-s3c24xx-i2s and s3c24xx-pcm.
-
-Signed-off-by: Tim Niemeyer <reddog@mastersword.de>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/s3c24xx/s3c24xx-i2s.c |    5 ++++-
- sound/soc/s3c24xx/s3c24xx-pcm.c |    2 +-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/s3c24xx/s3c24xx-i2s.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
-index 7d38f55..df71c9d 100644
+index 6b3cbbf..7d38f55 100644
 --- a/sound/soc/s3c24xx/s3c24xx-i2s.c
 +++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
-@@ -46,7 +46,7 @@
+@@ -89,7 +89,7 @@ static void s3c24xx_snd_txctrl(int on)
+ 	u32 iiscon;
+ 	u32 iismod;
  
- #define S3C24XX_I2S_DEBUG 0
- #if S3C24XX_I2S_DEBUG
--#define DBG(x...) printk(KERN_DEBUG x)
-+#define DBG(x...) printk(KERN_DEBUG "s3c24xx-i2s: " x)
- #else
- #define DBG(x...)
- #endif
-@@ -415,6 +415,8 @@ static int s3c24xx_i2s_probe(struct platform_device *pdev)
- int s3c24xx_i2s_suspend(struct platform_device *pdev,
- 		struct snd_soc_cpu_dai *cpu_dai)
- {
+-	DBG("Entered %s\n", __FUNCTION__);
 +	DBG("Entered %s\n", __func__);
-+
- 	s3c24xx_i2s.iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
- 	s3c24xx_i2s.iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
- 	s3c24xx_i2s.iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
-@@ -428,6 +430,7 @@ int s3c24xx_i2s_suspend(struct platform_device *pdev,
- int s3c24xx_i2s_resume(struct platform_device *pdev,
- 		struct snd_soc_cpu_dai *cpu_dai)
- {
+ 
+ 	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
+ 	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
+@@ -134,7 +134,7 @@ static void s3c24xx_snd_rxctrl(int on)
+ 	u32 iiscon;
+ 	u32 iismod;
+ 
+-	DBG("Entered %s\n", __FUNCTION__);
 +	DBG("Entered %s\n", __func__);
- 	clk_enable(s3c24xx_i2s.iis_clk);
  
- 	writel(s3c24xx_i2s.iiscon, s3c24xx_i2s.regs + S3C2410_IISCON);
-diff --git a/sound/soc/s3c24xx/s3c24xx-pcm.c b/sound/soc/s3c24xx/s3c24xx-pcm.c
-index 29a6c82..5394a40 100644
---- a/sound/soc/s3c24xx/s3c24xx-pcm.c
-+++ b/sound/soc/s3c24xx/s3c24xx-pcm.c
-@@ -39,7 +39,7 @@
+ 	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
+ 	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
+@@ -182,7 +182,7 @@ static int s3c24xx_snd_lrsync(void)
+ 	u32 iiscon;
+ 	int timeout = 50; /* 5ms */
  
- #define S3C24XX_PCM_DEBUG 0
- #if S3C24XX_PCM_DEBUG
--#define DBG(x...) printk(KERN_DEBUG x)
-+#define DBG(x...) printk(KERN_DEBUG "s3c24xx-pcm: " x)
- #else
- #define DBG(x...)
- #endif
+-	DBG("Entered %s\n", __FUNCTION__);
++	DBG("Entered %s\n", __func__);
+ 
+ 	while (1) {
+ 		iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
+@@ -202,7 +202,7 @@ static int s3c24xx_snd_lrsync(void)
+  */
+ static inline int s3c24xx_snd_is_clkmaster(void)
+ {
+-	DBG("Entered %s\n", __FUNCTION__);
++	DBG("Entered %s\n", __func__);
+ 
+ 	return (readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & S3C2410_IISMOD_SLAVE) ? 0:1;
+ }
+@@ -215,7 +215,7 @@ static int s3c24xx_i2s_set_fmt(struct snd_soc_cpu_dai *cpu_dai,
+ {
+ 	u32 iismod;
+ 
+-	DBG("Entered %s\n", __FUNCTION__);
++	DBG("Entered %s\n", __func__);
+ 
+ 	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 	DBG("hw_params r: IISMOD: %lx \n", iismod);
+@@ -251,7 +251,7 @@ static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	u32 iismod;
+ 
+-	DBG("Entered %s\n", __FUNCTION__);
++	DBG("Entered %s\n", __func__);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		rtd->dai->cpu_dai->dma_data = &s3c24xx_i2s_pcm_stereo_out;
+@@ -279,7 +279,7 @@ static int s3c24xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	int ret = 0;
+ 
+-	DBG("Entered %s\n", __FUNCTION__);
++	DBG("Entered %s\n", __func__);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -321,7 +321,7 @@ static int s3c24xx_i2s_set_sysclk(struct snd_soc_cpu_dai *cpu_dai,
+ {
+ 	u32 iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 
+-	DBG("Entered %s\n", __FUNCTION__);
++	DBG("Entered %s\n", __func__);
+ 
+ 	iismod &= ~S3C2440_IISMOD_MPLL;
+ 
+@@ -347,7 +347,7 @@ static int s3c24xx_i2s_set_clkdiv(struct snd_soc_cpu_dai *cpu_dai,
+ {
+ 	u32 reg;
+ 
+-	DBG("Entered %s\n", __FUNCTION__);
++	DBG("Entered %s\n", __func__);
+ 
+ 	switch (div_id) {
+ 	case S3C24XX_DIV_BCLK:
+@@ -382,7 +382,7 @@ EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
+ 
+ static int s3c24xx_i2s_probe(struct platform_device *pdev)
+ {
+-	DBG("Entered %s\n", __FUNCTION__);
++	DBG("Entered %s\n", __func__);
+ 
+ 	s3c24xx_i2s.regs = ioremap(S3C2410_PA_IIS, 0x100);
+ 	if (s3c24xx_i2s.regs == NULL)
 -- 
 1.5.5
