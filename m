@@ -1,57 +1,48 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [RFC/PATCH 1/1] ASoC: Add drivers for the Texas Instruments
- OMAP processors
-Date: Tue, 22 Apr 2008 09:48:45 +0300
-Message-ID: <20080422094845.722a949c.jarkko.nikula@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC/PATCH 1/1] ASoC: Add drivers for the
+	Texas	Instruments OMAP processors
+Date: Tue, 22 Apr 2008 09:49:28 +0100
+Message-ID: <20080422084928.GA1853@rakim.wolfsonmicro.main>
 References: <1207300948-11598-1-git-send-email-jarkko.nikula@nokia.com>
 	<1207300948-11598-2-git-send-email-jarkko.nikula@nokia.com>
 	<20080421181614.GZ12099@atomide.com>
+	<20080422094845.722a949c.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20080421181614.GZ12099@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: ext Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A5FE924556
+	for <alsa-devel@alsa-project.org>;
+	Tue, 22 Apr 2008 10:49:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20080422094845.722a949c.jarkko.nikula@nokia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: ext Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 21 Apr 2008 11:16:14 -0700
-"ext Tony Lindgren" <tony@atomide.com> wrote:
+On Tue, Apr 22, 2008 at 09:48:45AM +0300, Jarkko Nikula wrote:
+> "ext Tony Lindgren" <tony@atomide.com> wrote:
 
-> > +static struct platform_device *n810_snd_device;
-> > +
-> > +static int __init n810_soc_init(void)
-> > +{
-> > +	int err;
-> > +	struct device *dev;
-> > +
-> > +	if (!machine_is_nokia_n810())
-> > +		return -ENODEV;
-> > +
-> > +	n810_snd_device = platform_device_alloc("soc-audio", -1);
-> > +	if (!n810_snd_device)
-> > +		return -ENOMEM;
-> > +
-> 
-> The platform_device_register() should be done in board-*.c files.
-> 
-> This way you will know which board has this snd_device when
-> compiling in support for multiple boards into the same kernel,
-> and you don't need to use machine_is_some_arm() in drivers.
-> 
-This is a valid point. I think it should be possible to have also in
-ASoC v1 e.g n810_mcbsp_aic33 driver whose probe function would be more
-or less like n810_soc_init now. At least sound/soc/fsl/mpc8610_hpcd.c is
-doing similar thing.
+> > The platform_device_register() should be done in board-*.c files.
 
-Mark, any thoughts?
+> This is a valid point. I think it should be possible to have also in
+> ASoC v1 e.g n810_mcbsp_aic33 driver whose probe function would be more
+> or less like n810_soc_init now. At least sound/soc/fsl/mpc8610_hpcd.c is
+> doing similar thing.
 
-> You probably also will want to pass the struct clk * in the
-> platform_data so the driver can then do clk_enable/disable as needed.
-> 
-Makes sense since only sys_clkout2 is used here and other two
-sys_clkout2_src and func96m_clk are used to setup it to correct rate.
+> Mark, any thoughts?
 
-
-Jarkko
+Leave it as-is for ASoC v1, the soc-audio device can't meaningfully be
+defined in the platform data.  ASoC v2 lets you define a device for the
+platform driver for the particular board (as well as for things like I2S
+controllers on the SoC) which deals with this a lot better.
