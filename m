@@ -1,17 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/5] pxa2xx-ac97: Support PXA3xx AC97
-Date: Tue, 22 Apr 2008 14:14:36 +0100
-Message-ID: <1208870079-5325-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/5] soc - s3c24xx - Improve diagnostic output
+Date: Tue, 22 Apr 2008 14:14:39 +0100
+Message-ID: <1208870079-5325-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1208870079-5325-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1208870079-5325-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1208870079-5325-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1208870079-5325-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 08151245A4
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 16387245B7
 	for <alsa-devel@alsa-project.org>;
 	Tue, 22 Apr 2008 15:14:41 +0200 (CEST)
-In-Reply-To: <1208870079-5325-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1208870079-5325-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,62 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Tim Niemeyer <tim.niemeyer@mastersword.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tim Niemeyer <reddog@mastersword.de>
 List-Id: alsa-devel@alsa-project.org
 
+From: Tim Niemeyer <tim.niemeyer@mastersword.de>
+
+Add some debug messages for suspend/resume and to add a clear prefix to
+s3c24xx-i2s and s3c24xx-pcm.
+
+Signed-off-by: Tim Niemeyer <reddog@mastersword.de>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/arm/pxa2xx-ac97.c |   24 ++++++++++++++++++++++++
- 1 files changed, 24 insertions(+), 0 deletions(-)
+ sound/soc/s3c24xx/s3c24xx-i2s.c |    4 +++-
+ sound/soc/s3c24xx/s3c24xx-pcm.c |    2 +-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index cfea4eb..355ce28 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -106,6 +106,16 @@ static void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigne
- static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
- {
- 	/* First, try cold reset */
-+#ifdef CONFIG_PXA3xx
-+	int timeout;
-+
-+	/* Hold CLKBPB for 100us */
-+	GCR = 0;
-+	GCR = GCR_CLKBPB;
-+	udelay(100);
-+	GCR = 0;
-+#endif
-+
- 	GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
- 	GCR &= ~GCR_COLD_RST;  /* then assert nCRST */
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
+index 6b3cbbf..b7eca98 100644
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
+@@ -46,7 +46,7 @@
  
-@@ -117,6 +127,14 @@ static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
- 	pxa_set_cken(CKEN_AC97CONF, 0);
- 	GCR = GCR_COLD_RST;
- 	udelay(50);
-+#elif defined(CONFIG_PXA3xx)
-+	timeout = 1000;
-+	/* Can't use interrupts on PXA3xx */
-+	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
-+
-+	GCR = GCR_WARM_RST | GCR_COLD_RST;
-+	while (!(GSR & (GSR_PCR | GSR_SCR)) && timeout--)
-+		mdelay(10);
+ #define S3C24XX_I2S_DEBUG 0
+ #if S3C24XX_I2S_DEBUG
+-#define DBG(x...) printk(KERN_DEBUG x)
++#define DBG(x...) printk(KERN_DEBUG "s3c24xx-i2s: " x)
  #else
- 	GCR = GCR_COLD_RST;
- 	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
-@@ -137,6 +155,12 @@ static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
- 		GCR |= GCR_WARM_RST;
- 		pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
- 		udelay(500);
-+#elif defined(CONFIG_PXA3xx)
-+		timeout = 100;
-+		/* Can't use interrupts */
-+		GCR |= GCR_WARM_RST;
-+		while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
-+			mdelay(1);
+ #define DBG(x...)
+ #endif
+@@ -415,6 +415,7 @@ static int s3c24xx_i2s_probe(struct platform_device *pdev)
+ int s3c24xx_i2s_suspend(struct platform_device *pdev,
+ 		struct snd_soc_cpu_dai *cpu_dai)
+ {
++	DBG("Entered %s\n", __FUNCTION__);
+ 	s3c24xx_i2s.iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
+ 	s3c24xx_i2s.iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 	s3c24xx_i2s.iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
+@@ -428,6 +429,7 @@ int s3c24xx_i2s_suspend(struct platform_device *pdev,
+ int s3c24xx_i2s_resume(struct platform_device *pdev,
+ 		struct snd_soc_cpu_dai *cpu_dai)
+ {
++	DBG("Entered %s\n", __FUNCTION__);
+ 	clk_enable(s3c24xx_i2s.iis_clk);
+ 
+ 	writel(s3c24xx_i2s.iiscon, s3c24xx_i2s.regs + S3C2410_IISCON);
+diff --git a/sound/soc/s3c24xx/s3c24xx-pcm.c b/sound/soc/s3c24xx/s3c24xx-pcm.c
+index 29a6c82..5394a40 100644
+--- a/sound/soc/s3c24xx/s3c24xx-pcm.c
++++ b/sound/soc/s3c24xx/s3c24xx-pcm.c
+@@ -39,7 +39,7 @@
+ 
+ #define S3C24XX_PCM_DEBUG 0
+ #if S3C24XX_PCM_DEBUG
+-#define DBG(x...) printk(KERN_DEBUG x)
++#define DBG(x...) printk(KERN_DEBUG "s3c24xx-pcm: " x)
  #else
- 		GCR |= GCR_WARM_RST|GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
- 		wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
+ #define DBG(x...)
+ #endif
 -- 
 1.5.5
