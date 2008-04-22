@@ -1,15 +1,21 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Buffering issues
-Date: Mon, 21 Apr 2008 23:30:59 +0200
-Message-ID: <20080421213059.GA31343@tango.0pointer.de>
+From: Reuben Martin <reuben.m@gmail.com>
+Subject: Re: Alsa Callbacks and C++ classes
+Date: Mon, 21 Apr 2008 19:49:54 -0500
+Message-ID: <200804211949.54682.reuben.m@gmail.com>
+References: <200804202128.25675.reuben.m@gmail.com>
+	<s5hskxfb3tu.wl%tiwai@suse.de>
+Reply-To: Reuben Martin <reuben.m@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82557243A7
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1490624499
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Apr 2008 23:31:00 +0200 (CEST)
+	Tue, 22 Apr 2008 02:49:50 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so560001ana.80
+	for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2008 17:49:45 -0700 (PDT)
+In-Reply-To: <s5hskxfb3tu.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,60 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
+Back on Monday 21 April 2008, Takashi Iwai was like:
+> At Sun, 20 Apr 2008 21:28:25 -0500,
+>
+> Reuben Martin wrote:
+> > Hello all,
+> >
+> > I have an AES32 sound card that I am trying to write a general control
+> > interface for using qt4. I'm wanting to register callbacks so that the
+> > interface will reflect changes made by other apps. Now I'm not entirely
+> > up to speed on the API, but from what I can gather, the callback can be
+> > registered to call a regular function, or to change a public class
+> > variable.
+> >
+> > Since I decided to use qt4, everything is in classes. Is there any way to
+> > have the callback trigger a public class function? I guess I don't
+> > understand why you would want to use a public variable instead. Wouldn't
+> > you have to set up a means within the class to continually pole the
+> > variable to see if it has been changed? Or can the option to call a
+> > regular function be used to call a public class function as well?
+>
+> Well, which callback do you have in your mind?  A bit more
+> specificically please...
 
-As you might now I am currently working on something called
-"glitch-free playback model" for PulseAudio:
-http://0pointer.de/blog/projects/pulse-glitch-free.html
+Sorry about that. The callbacks I was referring to are mixer callbacks, 
+specifically snd_mixer_set_callback and snd_mixer_set_callback_private.
 
-One of the central ideas is to schedule audio via timer interrupts, no
-longer via period-based interrupts. To acomplish this I need to be
-able to estimate in advance how long (in time) it will take until the
-playback buffer runs empty at a certain point. Then I can set myself a
-system timer to wakeup a certain margin earlier than this and fill the
-buffer up again. That way I minimize wakeups and should always have
-enough safety margin to never get an xrun.
+I wrote "public" in my original post, when I meant "private". And now that I'm 
+looking at it I think I may have misunderstood what 
+snd_mixer_set_callback_private was for.
 
-Now, the way I implemented this right now is: in each iteration of my
-playback loop I first fill up the playback buffer completely if it is
-not fully filled up yet. After that I obviously can go to sleep for
-the time it takes to play buffer_size samples minus some safety
-margin, which i set to 20ms. Apparently this is actually not as
-obvious as I thought. This works fine on many soundcards but it
-apparently doesn't work on USB hardware. There, ALSA detects a buffer
-underrun much earlier than when my timer elapses. My loop wakes up due
-to activity on the ALSA fd, not because of the timer.
+Anyway, I'm just wondering if it's possible (while maintaining sanity) to 
+interface one of these mixer callbacks with a class public function. Or if 
+there is a better means to get feedback when changes are made to one of the 
+simple mixer elements.
 
-My code then goes and asks _avail_update() for the free space in the
-buffer and sees that the full buffer is available, thus assuming a
-xrun happened. This will cause PA to double the safety margin and do
-some other things to make sure an XRUN doesn't happen the next time
-again.
-
-So, how do I properly estimate how long the filled up buffer will take
-to play? Or to word it differently: how do I properly estimate how
-much time will pass until an XRUN would occur?
-
-[My interpretation of what's going on here with lots of guessing how
-things work is this: the buffer exposed by ALSA is merely a send
-buffer and just one of the buffers involved before the data actually
-reaches the speakers. ALSA just takes the data out of this buffer and
-sends it to the device via USB block-by-block. Thus the send buffer
-maintained by ALSA is much quicker empty than the audio data is
-actually played. And Boom! -- If that should actually be the case then
-I'd like to request an API that allows me to query an upper limit for
-how much buffering/latency actually happens after the audio data left
-the ALSA buffer. I could then use this an subtract it from my time to
-sleep.]
-
-Thanks, 
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Thanks,
+-Reuben
