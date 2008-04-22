@@ -1,22 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC/PATCH 1/1] ASoC: Add drivers for the
-	Texas	Instruments OMAP processors
-Date: Tue, 22 Apr 2008 09:49:28 +0100
-Message-ID: <20080422084928.GA1853@rakim.wolfsonmicro.main>
-References: <1207300948-11598-1-git-send-email-jarkko.nikula@nokia.com>
-	<1207300948-11598-2-git-send-email-jarkko.nikula@nokia.com>
-	<20080421181614.GZ12099@atomide.com>
-	<20080422094845.722a949c.jarkko.nikula@nokia.com>
+Subject: Re: [PATCH] asoc tlv320aic3x: add GPIO support
+Date: Tue, 22 Apr 2008 10:52:04 +0100
+Message-ID: <20080422095204.GA9268@rakim.wolfsonmicro.main>
+References: <20080418181214.GB26197@buzzloop.caiaq.de>
+	<bd7b27490804181326v311f192bi8454c9c0661427d2@mail.gmail.com>
+	<20080419004103.GA29770@buzzloop.caiaq.de>
+	<20080419112425.GA18877@sirena.org.uk>
+	<20080419121838.GA1680@buzzloop.caiaq.de>
+	<20080419145005.GA23492@sirena.org.uk>
+	<20080419162418.GA3177@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A5FE924556
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DC9A42455B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Apr 2008 10:49:30 +0200 (CEST)
+	Tue, 22 Apr 2008 11:52:05 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20080422094845.722a949c.jarkko.nikula@nokia.com>
+In-Reply-To: <20080419162418.GA3177@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,23 +28,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: ext Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: Daniel Mack <daniel@caiaq.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 22, 2008 at 09:48:45AM +0300, Jarkko Nikula wrote:
-> "ext Tony Lindgren" <tony@atomide.com> wrote:
+On Sat, Apr 19, 2008 at 06:24:18PM +0200, Daniel Mack wrote:
 
-> > The platform_device_register() should be done in board-*.c files.
+> I attached a patch for a proprietary interface - is that what you were
+> talking about? Would that approach be mergeable with your generic jack
+> detect code?
 
-> This is a valid point. I think it should be possible to have also in
-> ASoC v1 e.g n810_mcbsp_aic33 driver whose probe function would be more
-> or less like n810_soc_init now. At least sound/soc/fsl/mpc8610_hpcd.c is
-> doing similar thing.
-
-> Mark, any thoughts?
-
-Leave it as-is for ASoC v1, the soc-audio device can't meaningfully be
-defined in the platform data.  ASoC v2 lets you define a device for the
-platform driver for the particular board (as well as for things like I2S
-controllers on the SoC) which deals with this a lot better.
+The patch looks good but you've not signed off on it - is that just an
+oversight or do you think more updates are required?
