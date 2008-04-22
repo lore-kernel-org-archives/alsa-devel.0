@@ -1,73 +1,57 @@
-From: "Harsha priya gupta" <harshapriya@gmail.com>
-Subject: Re: snd_pcm_ops - .copy
-Date: Tue, 22 Apr 2008 08:08:06 +0530
-Message-ID: <827ad74d0804211938p6f78b6b5j5cd3ed3cc5f819bb@mail.gmail.com>
-References: <827ad74d0804210657p1c275b05jf16fd8daf3bf55e4@mail.gmail.com>
-	<s5hprsjb3l0.wl%tiwai@suse.de>
-	<827ad74d0804211937y4bcecf84n89da066b8e73ef2@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [RFC/PATCH 1/1] ASoC: Add drivers for the Texas Instruments
+ OMAP processors
+Date: Tue, 22 Apr 2008 09:48:45 +0300
+Message-ID: <20080422094845.722a949c.jarkko.nikula@nokia.com>
+References: <1207300948-11598-1-git-send-email-jarkko.nikula@nokia.com>
+	<1207300948-11598-2-git-send-email-jarkko.nikula@nokia.com>
+	<20080421181614.GZ12099@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65B1E2441A
-	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Apr 2008 04:38:08 +0200 (CEST)
-Received: by wx-out-0506.google.com with SMTP id t11so2135620wxc.23
-	for <alsa-devel@alsa-project.org>; Mon, 21 Apr 2008 19:38:06 -0700 (PDT)
-In-Reply-To: <827ad74d0804211937y4bcecf84n89da066b8e73ef2@mail.gmail.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20080421181614.GZ12099@atomide.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: ext Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 22, 2008 at 8:07 AM, Harsha priya gupta <harshapriya@gmail.com>
-wrote:
+On Mon, 21 Apr 2008 11:16:14 -0700
+"ext Tony Lindgren" <tony@atomide.com> wrote:
 
-> I am not using the mmap method. How can i make sure that everytime a user
-> buffer is passed to driver, my copy function would be called?
->
->
-> On Mon, Apr 21, 2008 at 9:30 PM, Takashi Iwai <tiwai@suse.de> wrote:
->
-> > At Mon, 21 Apr 2008 19:27:45 +0530,
-> > Harsha priya gupta wrote:
-> > >
-> > > Hi,
-> > > I am trying to implement the .copy function of playack_ops in my
-> > driver. But
-> > > when I try playing an mp3 file, my .copy's function code path was
-> > executing.
-> > > Suddenly I do not see that function being called. Can anyone help me
-> > > understand when the following code path will be executed
-> > >
-> > > snd_pcm_lib_write_transfer
-> > >    substream->ops->copy
-> >
-> > Do you use a mmap method?  If so, the copy callback won't be called.
-> > The copy callback is only for copying the data from the user-space
-> > buffer to the driver buffer, which is skipped via mmap.
-> >
-> >
-> > Takashi
-> >
->
->
->
-> --
-> -Harsha
+> > +static struct platform_device *n810_snd_device;
+> > +
+> > +static int __init n810_soc_init(void)
+> > +{
+> > +	int err;
+> > +	struct device *dev;
+> > +
+> > +	if (!machine_is_nokia_n810())
+> > +		return -ENODEV;
+> > +
+> > +	n810_snd_device = platform_device_alloc("soc-audio", -1);
+> > +	if (!n810_snd_device)
+> > +		return -ENOMEM;
+> > +
+> 
+> The platform_device_register() should be done in board-*.c files.
+> 
+> This way you will know which board has this snd_device when
+> compiling in support for multiple boards into the same kernel,
+> and you don't need to use machine_is_some_arm() in drivers.
+> 
+This is a valid point. I think it should be possible to have also in
+ASoC v1 e.g n810_mcbsp_aic33 driver whose probe function would be more
+or less like n810_soc_init now. At least sound/soc/fsl/mpc8610_hpcd.c is
+doing similar thing.
+
+Mark, any thoughts?
+
+> You probably also will want to pass the struct clk * in the
+> platform_data so the driver can then do clk_enable/disable as needed.
+> 
+Makes sense since only sys_clkout2 is used here and other two
+sys_clkout2_src and func96m_clk are used to setup it to correct rate.
 
 
-
-
--- 
--Harsha
+Jarkko
