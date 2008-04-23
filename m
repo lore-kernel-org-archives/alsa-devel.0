@@ -1,53 +1,37 @@
-From: Andy Green <andy@warmcat.com>
-Subject: Re: Acer Aspire 8920g / snd-hda-intel / ALC889
-Date: Wed, 23 Apr 2008 22:10:45 +0100
-Message-ID: <480FA5D5.9090208@warmcat.com>
-References: <480C8260.70501@warmcat.com>	<s5hr6czb3po.wl%tiwai@suse.de>	<480CDC26.3010506@warmcat.com>	<s5h63uab2k1.wl%tiwai@suse.de>	<480DC787.9070208@warmcat.com>	<s5h3apeb0gq.wl%tiwai@suse.de>
-	<480DCBC6.3050203@warmcat.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [alsa-devel] [RFC/PATCH 1/1] ASoC: Add drivers for the Texas
+	Instruments OMAP processors
+Date: Wed, 23 Apr 2008 16:59:13 -0700
+Message-ID: <20080423235913.GB27546@atomide.com>
+References: <1207300948-11598-1-git-send-email-jarkko.nikula@nokia.com> <1207300948-11598-2-git-send-email-jarkko.nikula@nokia.com> <20080421181614.GZ12099@atomide.com> <20080422094845.722a949c.jarkko.nikula@nokia.com> <20080422084928.GA1853@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.mog.warmcat.com (purr.warmcat.com [87.106.142.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id ADE3E24719
-	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Apr 2008 23:10:56 +0200 (CEST)
-In-Reply-To: <480DCBC6.3050203@warmcat.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20080422084928.GA1853@rakim.wolfsonmicro.main>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@nokia.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Somebody in the thread at some point said:
-
->> Hm, then the problem is somewhere different.
->> You hear neither from speaker nor HP-jack?
+* Mark Brown <broonie@opensource.wolfsonmicro.com> [080422 01:49]:
+> On Tue, Apr 22, 2008 at 09:48:45AM +0300, Jarkko Nikula wrote:
+> > "ext Tony Lindgren" <tony@atomide.com> wrote:
 > 
-> Nothing, despite changing settings "headphone" and "IEC958" in alsamixer 
-> -c0 (alsamixer by itself picks up pulseaudio nowadays apparently).  It's 
-> as if the amp is powered down, or we route everything to modem :-) 
+> > > The platform_device_register() should be done in board-*.c files.
+> 
+> > This is a valid point. I think it should be possible to have also in
+> > ASoC v1 e.g n810_mcbsp_aic33 driver whose probe function would be more
+> > or less like n810_soc_init now. At least sound/soc/fsl/mpc8610_hpcd.c is
+> > doing similar thing.
+> 
+> > Mark, any thoughts?
+> 
+> Leave it as-is for ASoC v1, the soc-audio device can't meaningfully be
+> defined in the platform data.  ASoC v2 lets you define a device for the
+> platform driver for the particular board (as well as for things like I2S
+> controllers on the SoC) which deals with this a lot better.
 
-Just some derisory extra information, external mic jack is working fine 
-(and has bias voltage), Line-jack is also OK, but built-in mic is dead 
-with some very small noise, maybe it is not given bias.  If the issue 
-was basically power management enabling, it could make sense.
+I'll push this to linux-omap tree, and will replace it with whatever
+falls from mainline tree later on.
 
-I saw realtek are pretty good with their datasheets, but there is none 
-for ALC889 in their ftp site that has the rest.
-
-I also recompiled alsa 1.0.16 for grins but it didn't make any change. 
-I looked in alsa-kernel/pci/hda/patch_realtek.c and enabled 
-SND_CONFIG_DEBUG and SND_CONFIG_VERBOSE_PRINTK because there seemed to 
-be some extra features generated then for ALC device GPIO pin control. 
-But they didn't turn up in alsamixer.  Do you know if there is an 
-existing way to meddle with GPIO controls on ALC889 from inside ALSA easily?
-
--Andy
+Tony
