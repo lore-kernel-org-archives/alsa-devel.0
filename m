@@ -1,18 +1,15 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: MIDI on ice1724 - preliminary findings and
-	questions
-Date: Wed, 23 Apr 2008 13:08:10 +0200
-Message-ID: <480F189A.7030500@insite.cz>
-References: <480E495B.20607@insite.cz> <s5h63u8evih.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 01/11] soc - s3c24xx-i2s - Use linux/io.h
+Date: Wed, 23 Apr 2008 13:07:55 +0100
+Message-ID: <1208952485-20385-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id E99002434C
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B62EA244BD
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Apr 2008 13:08:18 +0200 (CEST)
-In-Reply-To: <s5h63u8evih.wl%tiwai@suse.de>
+	Wed, 23 Apr 2008 14:08:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 22 Apr 2008 22:23:55 +0200,
-> Pavel Hofman wrote:
->> Hi,
->>
-...........
->>
->> After the playback stops, the interrupts are gone too. It seems as if 
->> the playback interrupt initiates the MPU TX interrupt.
->>
->> If we could avoid generating the MPU TX interrupt during regular 
->> playback, I believe the major problem would be resolved.
->>
->> Even if I mask the interrupts (CCS01) and do not explicitly unmask them 
->> (according to proc ice1724 the CCS01 register stays at 0xa0), the 
->> interrupt gets generated.
-> 
-> OK, then the simplest way would be to just ignore the TX bit at the
-> second or later check.
-> 
-> How about the patch below?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/s3c24xx-i2s.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Takashi, thanks for the hack idea. The overhead is just one more loop 
-which is nothing. I will test it and post details of further problems 
-(there is a bunch of them :) )
-
-Pavel.
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
+index 0de211c..c95ebe2 100644
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
+@@ -25,6 +25,7 @@
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+ #include <linux/jiffies.h>
++#include <linux/io.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -32,7 +33,6 @@
+ #include <sound/soc.h>
+ 
+ #include <asm/hardware.h>
+-#include <asm/io.h>
+ #include <asm/arch/regs-gpio.h>
+ #include <asm/arch/regs-clock.h>
+ #include <asm/arch/audio.h>
+-- 
+1.5.5.1
