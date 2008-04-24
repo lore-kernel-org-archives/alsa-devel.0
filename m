@@ -1,16 +1,22 @@
-From: Sebastian Siewior <al+sa@ml.breakpoint.cc>
-Subject: [RFC] ucb1400 touchscreen,
-	irq auto probing and ac97 with its	private field
-Date: Thu, 24 Apr 2008 16:04:59 +0200
-Message-ID: <20080424140459.GB24212@Chamillionaire.breakpoint.cc>
+From: Juergen Beisert <jbe@pengutronix.de>
+Subject: Re: SoC sound support for imx27
+Date: Thu, 24 Apr 2008 16:11:20 +0200
+Message-ID: <200804241611.21072.jbe@pengutronix.de>
+References: <200804231654.44526.jbe@pengutronix.de>
+	<1208964986.3286.62.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc
-	[85.10.199.196]) by alsa0.perex.cz (Postfix) with ESMTP id 8575224577
+Received: from metis.extern.pengutronix.de (metis.extern.pengutronix.de
+	[83.236.181.26]) by alsa0.perex.cz (Postfix) with ESMTP id D02B12457B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Apr 2008 16:05:06 +0200 (CEST)
+	Thu, 24 Apr 2008 16:11:29 +0200 (CEST)
+Received: from themisto.extern.pengutronix.de ([83.236.181.29] helo=localhost)
+	by metis.extern.pengutronix.de with esmtp (Exim 4.63)
+	(envelope-from <jbe@pengutronix.de>) id 1Jp2AU-0003Xs-5O
+	for alsa-devel@alsa-project.org; Thu, 24 Apr 2008 16:11:29 +0200
+In-Reply-To: <1208964986.3286.62.camel@localhost.localdomain>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,37 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, dtor@mail.ru, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-input@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wednesday 23 April 2008 17:36, Liam Girdwood wrote:
+> On Wed, 2008-04-23 at 16:54 +0200, Juergen Beisert wrote:
+> > Hi,
+> >
+> > I'm going to adapt Freescale's i.MX27 CPU to the SoC sound support via
+> > I2S. I found the imx21 already in the repository (may it will help for =
+my
+> > job). Is anybody else working on i.MX27 support (to avoid to reinvention
+> > everything)?
+>
+> It's not fully supported atm. However I've had interest from a few folks
+> who are interested in completing support.
+>
+> Currently working :-
+> [...]
 
-I've sent a RFC to the alsa mailing list [1] about adding an extra field in
-order to pass the IRQ from the AC97 driver to the ucb1400 driver. The
-result was:
-- William Pitcock recommended to hack up the ucb1400 driver and save the
-  irq there. The result is [2]. What I don't like very much is the
-  global variable and the fact that has to be done for every platform.
-- Mark Brown has the same problem with his wm97xx driver [3].
+Working in what tree? In the git repository I did not found a "struct =
 
-and while browsing a dead list archive of linux-input I noticed that a
-guy named Peter Ma has the same problem on his AVR32 [4].
+dma_channel_params" for imx. I'm confused.
 
-I haven't heard anything from the ALSA Maintainer but according to git
-he didn't put a sing-of-by line since Thu Jan 31 17:40:18 2008 +0100 so
-maybe he is sleeping. That's why I've add Takashi Iwai since he seems to
-be in charge some how.
+Juergen
 
-Now I'm curious what solution the people here prefer:
-- adding a private field [1] (my favorite)
-- hacking up the ucb1400 [2] (doesn't solve [3] and needs addition code
-  to solve [4]).
-- something totally different what did not come to my attention yet.
+-- =
 
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006555.html
-[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006559.html
-[3] http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006564.html
-[4] http://www.mail-archive.com/linux-input@vger.kernel.org/msg00307.html
-
-Sebastian
+Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
+=A0Pengutronix - Linux Solutions for Science and Industry
+=A0   Handelsregister: Amtsgericht Hildesheim, HRA 2686
+=A0 =A0 =A0    Vertretung Sued/Muenchen, Germany
+   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
