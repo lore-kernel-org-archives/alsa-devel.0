@@ -1,21 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: SoC sound support for imx27
-Date: Thu, 24 Apr 2008 09:31:29 -0500
-Message-ID: <481099C1.40600@freescale.com>
-References: <200804231654.44526.jbe@pengutronix.de>	
-	<1208964986.3286.62.camel@localhost.localdomain>	
-	<200804241319.40134.jbe@pengutronix.de>
-	<1209047171.3286.106.camel@localhost.localdomain>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [RFC] ucb1400 touchscreen,
+ irq auto probing and ac97 with its private field
+Date: Thu, 24 Apr 2008 16:32:37 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0804241625220.7882@tm8103.perex-int.cz>
+References: <20080424140459.GB24212@Chamillionaire.breakpoint.cc>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA2481037EC
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id CAD4210380F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Apr 2008 16:31:33 +0200 (CEST)
-In-Reply-To: <1209047171.3286.106.camel@localhost.localdomain>
+	Thu, 24 Apr 2008 16:32:37 +0200 (CEST)
+In-Reply-To: <20080424140459.GB24212@Chamillionaire.breakpoint.cc>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Juergen Beisert <jbe@pengutronix.de>
+To: Sebastian Siewior <al+sa@ml.breakpoint.cc>
+Cc: Takashi Iwai <tiwai@suse.de>, dtor@mail.ru, ALSA development <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
+On Thu, 24 Apr 2008, Sebastian Siewior wrote:
 
->> So now we have a few (nearly working) implementations. What should be used? 
->> The implementations from soc/imx or from soc/fsl?
->>
-> 
-> imx for ARM, fsl for PPC.
+> I've sent a RFC to the alsa mailing list [1] about adding an extra field 
+> in order to pass the IRQ from the AC97 driver to the ucb1400 driver. The 
+> result was:
 
-Whatever driver is in fsl/ should be for PPC and ARM.  The drivers in there
-should be updated to support i.MX.  Who's going to make that change?  Well, I
-can help, but I don't know enough about i.MX to do it all.
+The original patch seems to be acceptable. But I would choose a more 
+universal name and 'void *' type like 'void *device_private_data' and 
+specify more the purpose of this member (add USB1400 as example device).
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006555.html
+
+Could you change and resend your patch?
+
+				Thanks,
+					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
