@@ -1,37 +1,108 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [alsa-devel] [RFC/PATCH 1/1] ASoC: Add drivers for the Texas
-	Instruments OMAP processors
-Date: Wed, 23 Apr 2008 16:59:13 -0700
-Message-ID: <20080423235913.GB27546@atomide.com>
-References: <1207300948-11598-1-git-send-email-jarkko.nikula@nokia.com> <1207300948-11598-2-git-send-email-jarkko.nikula@nokia.com> <20080421181614.GZ12099@atomide.com> <20080422094845.722a949c.jarkko.nikula@nokia.com> <20080422084928.GA1853@rakim.wolfsonmicro.main>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: snd_pcm_rewind() weirdness
+Date: Thu, 24 Apr 2008 02:34:34 +0200
+Message-ID: <20080424003434.GA27865@tango.0pointer.de>
+References: <20080419233738.GA18371@tango.0pointer.de>
+	<Pine.LNX.4.61.0804210855520.7882@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADE3624757
+	for <alsa-devel@alsa-project.org>;
+	Thu, 24 Apr 2008 02:34:34 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20080422084928.GA1853@rakim.wolfsonmicro.main>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+In-Reply-To: <Pine.LNX.4.61.0804210855520.7882@tm8103.perex-int.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [080422 01:49]:
-> On Tue, Apr 22, 2008 at 09:48:45AM +0300, Jarkko Nikula wrote:
-> > "ext Tony Lindgren" <tony@atomide.com> wrote:
-> 
-> > > The platform_device_register() should be done in board-*.c files.
-> 
-> > This is a valid point. I think it should be possible to have also in
-> > ASoC v1 e.g n810_mcbsp_aic33 driver whose probe function would be more
-> > or less like n810_soc_init now. At least sound/soc/fsl/mpc8610_hpcd.c is
-> > doing similar thing.
-> 
-> > Mark, any thoughts?
-> 
-> Leave it as-is for ASoC v1, the soc-audio device can't meaningfully be
-> defined in the platform data.  ASoC v2 lets you define a device for the
-> platform driver for the particular board (as well as for things like I2S
-> controllers on the SoC) which deals with this a lot better.
+On Mon, 21.04.08 08:58, Jaroslav Kysela (perex@perex.cz) wrote:
 
-I'll push this to linux-omap tree, and will replace it with whatever
-falls from mainline tree later on.
+> 
+> On Sun, 20 Apr 2008, Lennart Poettering wrote:
+> 
+> > Hey!
+> > 
+> > On ALSA 1.0.16 with the HDA driver I am experiencing some weird things
+> > with snd_pcm_rewind() which I think are the result of a kernel bug,
+> > but I am not sure.
+> 
+> What alsa-lib plugins are on path? It looks like a rate plugin issue. Post 
+> also snd_pcm_dump() output. Driver does not do any alignment.
 
-Tony
+It's front:0. I don't think the rate plugin is used. 
+
+Device is being opened with
+SND_PCM_NO_AUTO_RESAMPLE|SND_PCM_NO_AUTO_CHANNELS|SND_PCM_NO_AUTO_FORMAT
+and snd_pcm_hw_params_set_rate_resample(..., 0).
+
+That should get me only softvol, right?
+
+The output of snd_pcm_dump() is here (please ignore the "D:
+alsa-util.c" prefix)
+
+<snip>
+D: alsa-util.c: Soft volume PCM
+D: alsa-util.c: Control: PCM Playback Volume
+D: alsa-util.c: min_dB: -51
+D: alsa-util.c: max_dB: 0
+D: alsa-util.c: resolution: 256
+D: alsa-util.c: Its setup is:
+D: alsa-util.c:   stream       : PLAYBACK
+D: alsa-util.c:   access       : MMAP_INTERLEAVED
+D: alsa-util.c:   format       : S16_LE
+D: alsa-util.c:   subformat    : STD
+D: alsa-util.c:   channels     : 2
+D: alsa-util.c:   rate         : 44100
+D: alsa-util.c:   exact rate   : 44100 (44100/1)
+D: alsa-util.c:   msbits       : 16
+D: alsa-util.c:   buffer_size  : 16384
+D: alsa-util.c:   period_size  : 8192
+D: alsa-util.c:   period_time  : 185759
+D: alsa-util.c:   tstamp_mode  : NONE
+D: alsa-util.c:   period_step  : 1
+D: alsa-util.c:   avail_min    : 31001
+D: alsa-util.c:   start_threshold  : -1
+D: alsa-util.c:   stop_threshold   : -1
+D: alsa-util.c:   silence_threshold: 0
+D: alsa-util.c:   silence_size : 0
+D: alsa-util.c:   boundary     : 4611686018427387904
+D: alsa-util.c: Slave: Hardware PCM card 4 'HDA Intel' device 0 subdevice 0
+D: alsa-util.c: Its setup is:
+D: alsa-util.c:   stream       : PLAYBACK
+D: alsa-util.c:   access       : MMAP_INTERLEAVED
+D: alsa-util.c:   format       : S16_LE
+D: alsa-util.c:   subformat    : STD
+D: alsa-util.c:   channels     : 2
+D: alsa-util.c:   rate         : 44100
+D: alsa-util.c:   exact rate   : 44100 (44100/1)
+D: alsa-util.c:   msbits       : 16
+D: alsa-util.c:   buffer_size  : 16384
+D: alsa-util.c:   period_size  : 8192
+D: alsa-util.c:   period_time  : 185759
+D: alsa-util.c:   tstamp_mode  : NONE
+D: alsa-util.c:   period_step  : 1
+D: alsa-util.c:   avail_min    : 31001
+D: alsa-util.c:   start_threshold  : -1
+D: alsa-util.c:   stop_threshold   : -1
+D: alsa-util.c:   silence_threshold: 0
+D: alsa-util.c:   silence_size : 0
+D: alsa-util.c:   boundary     : 4611686018427387904
+</snip>
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
