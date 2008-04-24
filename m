@@ -1,17 +1,21 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH v2][ASoC v2] Replace snd_soc_free_codec with
-	snd_soc_unregister_codec
-Date: Thu, 24 Apr 2008 14:06:57 -0500
-Message-ID: <1209064017-5147-1-git-send-email-timur@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] ucb1400 touchscreen,
+	irq auto probing and	ac97 with its private field
+Date: Thu, 24 Apr 2008 21:04:46 +0100
+Message-ID: <20080424200444.GB19029@sirena.org.uk>
+References: <20080424140459.GB24212@Chamillionaire.breakpoint.cc>
+	<20080424145749.GB22369@sirena.org.uk>
+	<20080424153520.GC26452@Chamillionaire.breakpoint.cc>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DDF724625
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F9B024618
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Apr 2008 21:07:02 +0200 (CEST)
+	Thu, 24 Apr 2008 22:04:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20080424153520.GC26452@Chamillionaire.breakpoint.cc>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,236 +25,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: lg@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
-Cc: Timur Tabi <timur@freescale.com>
+To: Sebastian Siewior <al+sa@ml.breakpoint.cc>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, dtor@mail.ru, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The functions snd_soc_register_codec() and snd_soc_free_codec() are companion
-functions, but snd_soc_free_codec() releases resources (via kfree) that were
-not allocated by snd_soc_register_codec().  This means that the caller of
-snd_soc_register_codec() has to use a specific method to allocate these
-resources.
+On Thu, Apr 24, 2008 at 05:35:20PM +0200, Sebastian Siewior wrote:
+> * Mark Brown | 2008-04-24 15:57:52 [+0100]:
+> >On Thu, Apr 24, 2008 at 04:04:59PM +0200, Sebastian Siewior wrote:
 
-So we replace snd_soc_free_codec() with snd_soc_unregister_codec().  This new
-function only unregisters the codec but does not free the memory resources.
-The caller can now allocate and free the memory resources as it sees fit.
+> >cite you're using OpenFirmware.  In that case isn't modifying the driver
+> >to query OpenFirmware an idiomatic solution anyway (though it still
+> >leaves other platforms in the lurch)?
 
-Also updated all callers of snd_soc_free_codec() to call
-snd_soc_unregister_codec() instead and free the resources themselves.
+> Not really. I have to parse the whole device tree and pick one single
+> value. This isn't done by any other driver as far as I can see and it
+> equals a global variable.
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
+There are several PCI device drivers which have OpenFirmware support -
+they appear to deal with this using the pci_device_to_OF_node() call
+rather than by groveling through the entire OF tree.  I've not looked
+much further than that.
 
-I cannot get ASoC V2 to compile on my machine, so this code is untested.
+In any case, this is a bit of a sidetrack since it doesn't remove the need
+for something beyond OpenFirmware given that there's quite a few
+architectures that don't use it at all (at least so far).
 
- include/sound/soc-codec.h |    2 +-
- sound/soc/codecs/wm8350.c |    8 ++++++--
- sound/soc/codecs/wm8731.c |    8 ++++++--
- sound/soc/codecs/wm8750.c |    8 ++++++--
- sound/soc/codecs/wm8753.c |    8 ++++++--
- sound/soc/codecs/wm9712.c |    8 ++++++--
- sound/soc/codecs/wm9713.c |    8 ++++++--
- sound/soc/soc-core.c      |   11 ++++-------
- 8 files changed, 41 insertions(+), 20 deletions(-)
+> >Something that worked for more than just AC97 would be nice - a method
+> >for getting platform data to drivers for devices on buses that are
+> >normally autoprobed.
 
-diff --git a/include/sound/soc-codec.h b/include/sound/soc-codec.h
-index 3cf4819..a809160 100644
---- a/include/sound/soc-codec.h
-+++ b/include/sound/soc-codec.h
-@@ -160,7 +160,7 @@ struct snd_soc_codec *snd_soc_new_codec(
- 
- int snd_soc_register_codec(struct snd_soc_codec *codec, struct device *dev);
- 
--void snd_soc_free_codec(struct snd_soc_codec *codec);
-+void snd_soc_unregister_codec(struct snd_soc_codec *codec);
- 
- int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
- 	struct snd_ac97_bus_ops *ops, struct snd_card *card,
-diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index 3195d13..4ea8ced 100644
---- a/sound/soc/codecs/wm8350.c
-+++ b/sound/soc/codecs/wm8350.c
-@@ -1436,7 +1436,9 @@ static int wm8350_codec_probe(struct platform_device *pdev)
- codec_err:
- 	kfree(wm8350);
- prv_err:
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return ret;
- }
- 
-@@ -1446,7 +1448,9 @@ static int wm8350_codec_remove(struct platform_device *pdev)
- 	struct wm8350_data *wm8350 = codec->private_data;
- 	
- 	snd_soc_unregister_codec_dai(wm8350->dai);
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	kfree(wm8350);
- 	return 0;
- }
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 0fe8766..2195c77 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -595,7 +595,9 @@ static int wm8731_codec_probe(struct platform_device *pdev)
- codec_err:
- 	kfree(wm8731);
- wm8731_err:
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return ret;
- }
- 
-@@ -606,7 +608,9 @@ static int wm8731_codec_remove(struct platform_device *pdev)
- 	
- 	snd_soc_unregister_codec_dai(wm8731->dai);
- 	kfree(wm8731);
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
-index 1b0296f..23e9126 100644
---- a/sound/soc/codecs/wm8750.c
-+++ b/sound/soc/codecs/wm8750.c
-@@ -898,7 +898,9 @@ static int wm8750_codec_probe(struct platform_device *pdev)
- codec_err:
- 	kfree(wm8750);
- wm8750_err:
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return ret;
- }
- 
-@@ -909,7 +911,9 @@ static int wm8750_codec_remove(struct platform_device *pdev)
- 	
- 	snd_soc_unregister_codec_dai(wm8750->dai);
- 	kfree(wm8750);
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return 0;
- }
- static struct platform_driver wm8750_codec_driver = {
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 0d795f4..1cb2d64 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -1584,7 +1584,9 @@ voice_err:
- codec_err:
- 	kfree(codec->private_data);
- err:
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return ret;
- }
- 
-@@ -1603,7 +1605,9 @@ static int wm8753_codec_remove(struct platform_device *pdev)
- 
- 	/* free codec */
- 	kfree(codec->private_data);
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 16b6a18..7014190 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -715,7 +715,9 @@ aux_dai_err:
- codec_err:
- 	kfree(wm9712);
- priv_err:
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return ret;
- }
- 
-@@ -728,7 +730,9 @@ static int wm9712_codec_remove(struct platform_device *pdev)
- 	snd_soc_unregister_codec_dai(wm9712->aux_dai);
- 
- 	kfree(codec->private_data);
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 5e99bbe..d9ded51 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1154,7 +1154,9 @@ aux_dai_err:
- codec_err:
- 	kfree(wm9713);
- priv_err:
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return ret;
- }
- 
-@@ -1168,7 +1170,9 @@ static int wm9713_codec_remove(struct platform_device *pdev)
- 	snd_soc_unregister_codec_dai(wm9713->voice_dai);
- 	
- 	kfree(codec->private_data);
--	snd_soc_free_codec(codec);
-+	snd_soc_unregister_codec(codec);
-+	kfree(codec->reg_cache);
-+	kfree(codec);
- 	return 0;
- }
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 939b543..7dc6d68 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1856,21 +1856,18 @@ int snd_soc_register_codec(struct snd_soc_codec *codec, struct device *dev)
- EXPORT_SYMBOL_GPL(snd_soc_register_codec);
- 
- /**
-- * snd_soc_free_codec - unregister and free codec.
-+ * snd_soc_unregister_codec - unregister a codec.
-  * @codec: codec driver
-  *
-- * Unregisters a codec driver with the core and frees all its resources.
-+ * Unregisters a codec driver with the core.
-  */
--void snd_soc_free_codec(struct snd_soc_codec *codec)
-+void snd_soc_unregister_codec(struct snd_soc_codec *codec)
- {
- 	mutex_lock(&client_mutex);
- 	list_del(&codec->list);
- 	mutex_unlock(&client_mutex);
--	if (codec->reg_cache)
--		kfree(codec->reg_cache);
--	kfree(codec);
- }
--EXPORT_SYMBOL_GPL(snd_soc_free_codec);
-+EXPORT_SYMBOL_GPL(snd_soc_unregister_codec);
- 
- /**
-  * snd_soc_register_platform_dai - registers a  platform DAI.
--- 
-1.5.5.1
+> I thing here is a miss understanding. What would be something beside
+> ac97? Gimme a real world example plz. According to grep ucb1400 is the
+
+Most of the examples I've encountered come when PCI devices (and other
+devices for buses which do autoprobing) are used in embedded systems and
+in order to save component costs the SEPROMs normally used to hold
+essential device configuration data (such as MAC addresses for ethernet
+devices) are not fitted and instead a single configuration source is
+used for the system.
+
+When I've seen it this has generally been handled with ifdefed calls
+into machine specific code to read from wherever the data should be read
+from - many of the OpenFirmware-using PCI devices appear to be doing
+basically this.
+
+> driver attached to ac97 bus (well, nothing else matches on ac97_bus_type
+> except the sound & codec thing in sound/ which don't need any extra
+> parameters).
+
+The WM97xx drivers should appear in the kernel during this merge window,
+FWIW.
