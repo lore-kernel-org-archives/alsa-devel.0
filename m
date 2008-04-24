@@ -1,64 +1,256 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [RFC] ucb1400 touchscreen, irq auto probing and ac97 with its	private field
-Date: Thu, 24 Apr 2008 19:56:58 +0100
-Message-ID: <20080424185658.GA19029@sirena.org.uk>
-References: <20080424140459.GB24212@Chamillionaire.breakpoint.cc> <20080424145749.GB22369@sirena.org.uk> <s5hr6cvb5f3.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH v2][ASoC v2] Replace snd_soc_free_codec with
+	snd_soc_unregister_codec
+Date: Thu, 24 Apr 2008 14:06:57 -0500
+Message-ID: <1209064017-5147-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hr6cvb5f3.wl%tiwai@suse.de>
-Sender: linux-input-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: dtor@mail.ru, Sebastian Siewior <al+sa@ml.breakpoint.cc>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from az33egw01.freescale.net (az33egw01.freescale.net
+	[192.88.158.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DDF724625
+	for <alsa-devel@alsa-project.org>;
+	Thu, 24 Apr 2008 21:07:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: lg@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Cc: Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 24, 2008 at 06:09:52PM +0200, Takashi Iwai wrote:
+The functions snd_soc_register_codec() and snd_soc_free_codec() are companion
+functions, but snd_soc_free_codec() releases resources (via kfree) that were
+not allocated by snd_soc_register_codec().  This means that the caller of
+snd_soc_register_codec() has to use a specific method to allocate these
+resources.
 
-> The problem with void * is that you don't know what it really is.
-> Yes, it's exactly the purpose - to be generic.  But, this means that
-> the true shape of the tossed data from the ac97 controller driver to
-> the platform driver is anonymous, too.
+So we replace snd_soc_free_codec() with snd_soc_unregister_codec().  This new
+function only unregisters the codec but does not free the memory resources.
+The caller can now allocate and free the memory resources as it sees fit.
 
-Indeed, but unfortunately if you try to cater for everything that might
-need to pass data through you rapidly get a balloning stucture - it's
-the same use case as the device_data in struct device (in fact, now that
-I think about it it may be best to just do the same thing as the
-platform bus does and define accessor macros for getting at this from a
-struct snd_ac97).
+Also updated all callers of snd_soc_free_codec() to call
+snd_soc_unregister_codec() instead and free the resources themselves.
 
-> > Note that this will also need changes in all the relevant AC97 drivers
-> > to support getting the private data from platform/machine definition
-> > code to the relevant driver using whatever methods are appropriate for
-> > the platform.
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
 
-> What kind of data are needed be passed?
+I cannot get ASoC V2 to compile on my machine, so this code is untested.
 
-In the case of the WM97xx driver it currently takes a structure
-containing seven function pointers, an interrupt number and a boolean
-for managing integration of the touchscreen interface an auxiliary ADCs
-with the rest of the system.  It's really not terribly generic and
-there's probably more things that could be added if there were use
-cases:
+ include/sound/soc-codec.h |    2 +-
+ sound/soc/codecs/wm8350.c |    8 ++++++--
+ sound/soc/codecs/wm8731.c |    8 ++++++--
+ sound/soc/codecs/wm8750.c |    8 ++++++--
+ sound/soc/codecs/wm8753.c |    8 ++++++--
+ sound/soc/codecs/wm9712.c |    8 ++++++--
+ sound/soc/codecs/wm9713.c |    8 ++++++--
+ sound/soc/soc-core.c      |   11 ++++-------
+ 8 files changed, 41 insertions(+), 20 deletions(-)
 
-/* Machine specific and accelerated touch operations */
-struct wm97xx_mach_ops {
-
-        /* accelerated touch readback - coords are transmited on AC97 link */
-        int acc_enabled;
-        void (*acc_pen_up) (struct wm97xx *);
-        int (*acc_pen_down) (struct wm97xx *);
-        int (*acc_startup) (struct wm97xx *);
-        void (*acc_shutdown) (struct wm97xx *);
-
-        /* interrupt mask control - required for accelerated operation */
-        void (*irq_enable) (struct wm97xx *, int enable);
-
-        /* GPIO pin used for accelerated operation */
-        int irq_gpio;
-
-        /* pre and post sample - can be used to minimise any analog noise */
-        void (*pre_sample) (int);  /* function to run before sampling */
-        void (*post_sample) (int);  /* function to run after sampling */
-};
-
+diff --git a/include/sound/soc-codec.h b/include/sound/soc-codec.h
+index 3cf4819..a809160 100644
+--- a/include/sound/soc-codec.h
++++ b/include/sound/soc-codec.h
+@@ -160,7 +160,7 @@ struct snd_soc_codec *snd_soc_new_codec(
+ 
+ int snd_soc_register_codec(struct snd_soc_codec *codec, struct device *dev);
+ 
+-void snd_soc_free_codec(struct snd_soc_codec *codec);
++void snd_soc_unregister_codec(struct snd_soc_codec *codec);
+ 
+ int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
+ 	struct snd_ac97_bus_ops *ops, struct snd_card *card,
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index 3195d13..4ea8ced 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -1436,7 +1436,9 @@ static int wm8350_codec_probe(struct platform_device *pdev)
+ codec_err:
+ 	kfree(wm8350);
+ prv_err:
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return ret;
+ }
+ 
+@@ -1446,7 +1448,9 @@ static int wm8350_codec_remove(struct platform_device *pdev)
+ 	struct wm8350_data *wm8350 = codec->private_data;
+ 	
+ 	snd_soc_unregister_codec_dai(wm8350->dai);
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	kfree(wm8350);
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 0fe8766..2195c77 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -595,7 +595,9 @@ static int wm8731_codec_probe(struct platform_device *pdev)
+ codec_err:
+ 	kfree(wm8731);
+ wm8731_err:
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return ret;
+ }
+ 
+@@ -606,7 +608,9 @@ static int wm8731_codec_remove(struct platform_device *pdev)
+ 	
+ 	snd_soc_unregister_codec_dai(wm8731->dai);
+ 	kfree(wm8731);
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
+index 1b0296f..23e9126 100644
+--- a/sound/soc/codecs/wm8750.c
++++ b/sound/soc/codecs/wm8750.c
+@@ -898,7 +898,9 @@ static int wm8750_codec_probe(struct platform_device *pdev)
+ codec_err:
+ 	kfree(wm8750);
+ wm8750_err:
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return ret;
+ }
+ 
+@@ -909,7 +911,9 @@ static int wm8750_codec_remove(struct platform_device *pdev)
+ 	
+ 	snd_soc_unregister_codec_dai(wm8750->dai);
+ 	kfree(wm8750);
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return 0;
+ }
+ static struct platform_driver wm8750_codec_driver = {
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 0d795f4..1cb2d64 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -1584,7 +1584,9 @@ voice_err:
+ codec_err:
+ 	kfree(codec->private_data);
+ err:
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return ret;
+ }
+ 
+@@ -1603,7 +1605,9 @@ static int wm8753_codec_remove(struct platform_device *pdev)
+ 
+ 	/* free codec */
+ 	kfree(codec->private_data);
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 16b6a18..7014190 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -715,7 +715,9 @@ aux_dai_err:
+ codec_err:
+ 	kfree(wm9712);
+ priv_err:
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return ret;
+ }
+ 
+@@ -728,7 +730,9 @@ static int wm9712_codec_remove(struct platform_device *pdev)
+ 	snd_soc_unregister_codec_dai(wm9712->aux_dai);
+ 
+ 	kfree(codec->private_data);
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 5e99bbe..d9ded51 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -1154,7 +1154,9 @@ aux_dai_err:
+ codec_err:
+ 	kfree(wm9713);
+ priv_err:
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return ret;
+ }
+ 
+@@ -1168,7 +1170,9 @@ static int wm9713_codec_remove(struct platform_device *pdev)
+ 	snd_soc_unregister_codec_dai(wm9713->voice_dai);
+ 	
+ 	kfree(codec->private_data);
+-	snd_soc_free_codec(codec);
++	snd_soc_unregister_codec(codec);
++	kfree(codec->reg_cache);
++	kfree(codec);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 939b543..7dc6d68 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1856,21 +1856,18 @@ int snd_soc_register_codec(struct snd_soc_codec *codec, struct device *dev)
+ EXPORT_SYMBOL_GPL(snd_soc_register_codec);
+ 
+ /**
+- * snd_soc_free_codec - unregister and free codec.
++ * snd_soc_unregister_codec - unregister a codec.
+  * @codec: codec driver
+  *
+- * Unregisters a codec driver with the core and frees all its resources.
++ * Unregisters a codec driver with the core.
+  */
+-void snd_soc_free_codec(struct snd_soc_codec *codec)
++void snd_soc_unregister_codec(struct snd_soc_codec *codec)
+ {
+ 	mutex_lock(&client_mutex);
+ 	list_del(&codec->list);
+ 	mutex_unlock(&client_mutex);
+-	if (codec->reg_cache)
+-		kfree(codec->reg_cache);
+-	kfree(codec);
+ }
+-EXPORT_SYMBOL_GPL(snd_soc_free_codec);
++EXPORT_SYMBOL_GPL(snd_soc_unregister_codec);
+ 
+ /**
+  * snd_soc_register_platform_dai - registers a  platform DAI.
+-- 
+1.5.5.1
