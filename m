@@ -1,59 +1,64 @@
-From: warped <warpme@o2.pl>
-Subject: Re:
-	=?utf-8?q?2=2E6=2E25-rc8=3A_why_=23define_SND=5FHDA?=
-	=?utf-8?q?=5FNEEDS=5FRESUMEis=09not_set_=3F?=
-Date: Thu, 24 Apr 2008 17:09:12 +0000 (UTC)
-Message-ID: <loom.20080424T165721-885@post.gmane.org>
-References: <loom.20080424T112202-229@post.gmane.org>
-	<s5htzhrb6id.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [RFC] ucb1400 touchscreen, irq auto probing and ac97 with its	private field
+Date: Thu, 24 Apr 2008 19:56:58 +0100
+Message-ID: <20080424185658.GA19029@sirena.org.uk>
+References: <20080424140459.GB24212@Chamillionaire.breakpoint.cc> <20080424145749.GB22369@sirena.org.uk> <s5hr6cvb5f3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A35E245AB
-	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Apr 2008 19:09:31 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Jp4wm-0005Em-P4
-	for alsa-devel@alsa-project.org; Thu, 24 Apr 2008 17:09:24 +0000
-Received: from ip-91.189.74.10.e-plan.pl ([91.189.74.10])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2008 17:09:24 +0000
-Received: from warpme by ip-91.189.74.10.e-plan.pl with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2008 17:09:24 +0000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hr6cvb5f3.wl%tiwai@suse.de>
+Sender: linux-input-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: dtor@mail.ru, Sebastian Siewior <al+sa@ml.breakpoint.cc>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai <at> suse.de> writes:
+On Thu, Apr 24, 2008 at 06:09:52PM +0200, Takashi Iwai wrote:
 
+> The problem with void * is that you don't know what it really is.
+> Yes, it's exactly the purpose - to be generic.  But, this means that
+> the true shape of the tossed data from the ac97 controller driver to
+> the platform driver is anonymous, too.
 
-> Hm?  It's just a define for #ifdefs.
-> Your problem is likely irrelevant.
-> 
-> thanks,
-> 
-> Takashi
-> 
+Indeed, but unfortunately if you try to cater for everything that might
+need to pass data through you rapidly get a balloning stucture - it's
+the same use case as the device_data in struct device (in fact, now that
+I think about it it may be best to just do the same thing as the
+platform bus does and define accessor macros for getting at this from a
+struct snd_ac97).
 
+> > Note that this will also need changes in all the relevant AC97 drivers
+> > to support getting the private data from platform/machine definition
+> > code to the relevant driver using whatever methods are appropriate for
+> > the platform.
 
-Right,
-I watch in wrong place :-(.
-Anyway - is there any chance to fix my issue ?
-I filled bug in Bugzilla month ago (10338) - no any results.
-As this bug is blocking me with use of .25 kernel and .25 kernel 
-is FIRST kernel offering me really 
-stable s3 resume on SMP - I'm really upset as S3 & SMP 
-are crucial for me
-May You help me with this situation ?
+> What kind of data are needed be passed?
+
+In the case of the WM97xx driver it currently takes a structure
+containing seven function pointers, an interrupt number and a boolean
+for managing integration of the touchscreen interface an auxiliary ADCs
+with the rest of the system.  It's really not terribly generic and
+there's probably more things that could be added if there were use
+cases:
+
+/* Machine specific and accelerated touch operations */
+struct wm97xx_mach_ops {
+
+        /* accelerated touch readback - coords are transmited on AC97 link */
+        int acc_enabled;
+        void (*acc_pen_up) (struct wm97xx *);
+        int (*acc_pen_down) (struct wm97xx *);
+        int (*acc_startup) (struct wm97xx *);
+        void (*acc_shutdown) (struct wm97xx *);
+
+        /* interrupt mask control - required for accelerated operation */
+        void (*irq_enable) (struct wm97xx *, int enable);
+
+        /* GPIO pin used for accelerated operation */
+        int irq_gpio;
+
+        /* pre and post sample - can be used to minimise any analog noise */
+        void (*pre_sample) (int);  /* function to run before sampling */
+        void (*post_sample) (int);  /* function to run after sampling */
+};
+
