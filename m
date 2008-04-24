@@ -1,26 +1,17 @@
-From: warped <warpme@o2.pl>
-Subject: =?utf-8?q?2=2E6=2E25-rc8=3A_why_=23define_SND=5FHDA?=
-	=?utf-8?q?=5FNEEDS=5FRESUME_is_not_set_=3F?=
-Date: Thu, 24 Apr 2008 11:31:04 +0000 (UTC)
-Message-ID: <loom.20080424T112202-229@post.gmane.org>
+From: Sebastian Siewior <al+sa@ml.breakpoint.cc>
+Subject: [RFC] ucb1400 touchscreen,
+	irq auto probing and ac97 with its	private field
+Date: Thu, 24 Apr 2008 16:04:59 +0200
+Message-ID: <20080424140459.GB24212@Chamillionaire.breakpoint.cc>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1CEF424500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc
+	[85.10.199.196]) by alsa0.perex.cz (Postfix) with ESMTP id 8575224577
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Apr 2008 13:35:07 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1JozjC-0003G4-TV
-	for alsa-devel@alsa-project.org; Thu, 24 Apr 2008 11:35:05 +0000
-Received: from proxy.lucent.com ([192.11.236.114])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2008 11:35:02 +0000
-Received: from warpme by proxy.lucent.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 24 Apr 2008 11:35:02 +0000
+	Thu, 24 Apr 2008 16:05:06 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,23 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, dtor@mail.ru, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hello,
 
-I have issue with 2.6.24/25 kernels and analog outs after s3 resume.
-Simply: after s3 resume analog outs are dead (no sound). SPDIF works OK.
-With 2.6.23.xx all was OK
+I've sent a RFC to the alsa mailing list [1] about adding an extra field in
+order to pass the IRQ from the AC97 driver to the ucb1400 driver. The
+result was:
+- William Pitcock recommended to hack up the ucb1400 driver and save the
+  irq there. The result is [2]. What I don't like very much is the
+  global variable and the fact that has to be done for every platform.
+- Mark Brown has the same problem with his wm97xx driver [3].
 
-I browse ALSA code in 2.6.25-rc8 and see that in hda_codec.h 
-define SND_HDA_NEEDS_RESUME is commented.
+and while browsing a dead list archive of linux-input I noticed that a
+guy named Peter Ma has the same problem on his AVR32 [4].
 
-Q is:
--might uncommenting this line help me with my issue ?
--why it is commented ?
+I haven't heard anything from the ALSA Maintainer but according to git
+he didn't put a sing-of-by line since Thu Jan 31 17:40:18 2008 +0100 so
+maybe he is sleeping. That's why I've add Takashi Iwai since he seems to
+be in charge some how.
 
-My hw is Abit AN-M2HD with ALC889.
-During boot Kernel reports:
-user.info kernel: hda_codec: Unknown model for ALC883, trying auto-probe from
-BIOS... 
+Now I'm curious what solution the people here prefer:
+- adding a private field [1] (my favorite)
+- hacking up the ucb1400 [2] (doesn't solve [3] and needs addition code
+  to solve [4]).
+- something totally different what did not come to my attention yet.
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006555.html
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006559.html
+[3] http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006564.html
+[4] http://www.mail-archive.com/linux-input@vger.kernel.org/msg00307.html
+
+Sebastian
