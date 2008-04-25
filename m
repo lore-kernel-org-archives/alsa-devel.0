@@ -1,40 +1,53 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [alsa-devel] [RFC] ucb1400 touchscreen, irq auto probing and
- ac97 with its private field
-Date: Fri, 25 Apr 2008 13:22:11 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0804251315430.7882@tm8103.perex-int.cz>
-References: <20080424140459.GB24212@Chamillionaire.breakpoint.cc>
- <20080424145749.GB22369@sirena.org.uk> <s5hr6cvb5f3.wl%tiwai@suse.de>
- <20080424185658.GA19029@sirena.org.uk> <s5h8wz24dto.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0804250906090.7882@tm8103.perex-int.cz> <s5h4p9q4d2e.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0804250931050.7882@tm8103.perex-int.cz> <s5hve26v0aw.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0804251008270.7882@tm8103.perex-int.cz>
- <20080425105429.GA5664@Chamillionaire.breakpoint.cc> <s5habjikx5k.wl%tiwai@suse.de>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: [PATCH 1/3] asoc tlv320aic3x: revisit clock setup
+Date: Fri, 25 Apr 2008 14:30:29 +0300
+Message-ID: <bd7b27490804250430p21446f54t42dbcff07ae1579@mail.gmail.com>
+References: <20080425091707.GA18452@buzzloop.caiaq.de>
+	<s5hlk32l1v7.wl%tiwai@suse.de>
+	<20080425093657.GC18558@buzzloop.caiaq.de>
+	<bd7b27490804250255j5ed1ea14l1df4b3c1d91e1b7c@mail.gmail.com>
+	<20080425101801.GE18558@buzzloop.caiaq.de>
+	<bd7b27490804250340y629cc7e6s61b056dc6505f55a@mail.gmail.com>
+	<20080425104731.GF18558@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <s5habjikx5k.wl%tiwai@suse.de>
-Sender: linux-input-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sebastian Siewior <al+sa@ml.breakpoint.cc>, Mark Brown <broonie@opensource.wolfsonmicro.com>, dtor@mail.ru, Dmitry Torokhov <dmitry.torokhov@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3D152470A
+	for <alsa-devel@alsa-project.org>;
+	Fri, 25 Apr 2008 13:30:30 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so991983ana.80
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2008 04:30:29 -0700 (PDT)
+In-Reply-To: <20080425104731.GF18558@buzzloop.caiaq.de>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@caiaq.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Apr 2008, Takashi Iwai wrote:
+On Fri, Apr 25, 2008 at 1:47 PM, Daniel Mack <daniel@caiaq.org> wrote:
 
-> Your driver does _not_ know what type it is because the data isn't
-> created by your driver but the controller driver.  And, it's free to
-> attach your driver to any controller.
+> On Fri, Apr 25, 2008 at 01:40:42PM +0300, Jarkko Nikula wrote:
+> > > Doesn't work for 64000 kHz since 48000 * 10 / 64000 = 7.5 and later
+> > calculations => 7*2 / 5 - 2 = 2 - 2 but this might to work:
+>
+> Good catch, thanks.
+>
 
-But controller knows which codec (using ID bytes) is attached, thus it can 
-fill appropriate information only for this codec. Of course, it will work 
-when only one additional device is sharing bus with codec. See:
+This dead code below was there but otherwise I think this is good now.
 
-http://www.nxp.com/pip/UCB1400-02.html
++        /* printk(KERN_INFO "%s(): bypassing PLL with Q=%d\n",
++            __func__, pll_q); */
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
 
+Jarkko
