@@ -1,20 +1,19 @@
-From: Timur Tabi <timur@freescale.com>
+From: Robert Jarzmik <rjarzmik@free.fr>
 Subject: Re: How can you tell if the speaker jack on your	sound
- card has anything plugged into it???
-Date: Fri, 25 Apr 2008 16:04:39 -0500
-Message-ID: <48124767.1090004@freescale.com>
-References: <48123137.70107@summitmediagroupllc.com>	<20080425194917.GA26621@sirena.org.uk>	<481244BD.3060501@summitmediagroupllc.com>	<4812458E.5030508@freescale.com>
-	<481246D1.1050101@summitmediagroupllc.com>
+	card has anything plugged into it???
+Date: 25 Apr 2008 23:08:49 +0200
+Message-ID: <87fxt9k5ge.fsf@free.fr>
+References: <48123137.70107@summitmediagroupllc.com>
+	<20080425194917.GA26621@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62D18103822
+Received: from smtp6-g19.free.fr (smtp6-g19.free.fr [212.27.42.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A1B710380F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 23:04:43 +0200 (CEST)
-In-Reply-To: <481246D1.1050101@summitmediagroupllc.com>
+	Fri, 25 Apr 2008 23:08:51 +0200 (CEST)
+In-Reply-To: <20080425194917.GA26621@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sean Thayne <sthayne@summitmediagroupllc.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Sean Thayne <sthayne@summitmediagroupllc.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sean Thayne wrote:
-> How do you think Vista does it? I've used a couple of different 
-> computers (totally different hardware) and it can detect insertion for 
-> them all...
+Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
 
-Since I've never used Vista, I have no idea how it does it.  However, my 
-point still stands: unless the hardware detects it and provide status 
-information to the driver, there's nothing you can do.
+> There's currently no standard way of getting this information from user
+> space even where the hardware provides it.
+Isn't the event api switch "SW_HEADPHONE_INSERT" standard ?
+I thought it was designed for such use.
 
-So just figure out how your hardware provides the info, and then update 
-your driver accordingly.
+If I'm not mistaken, the Neo teams handles it that way, as I do for the mio :
+ -> input_report_switch(mioa701_evdev, SW_HEADPHONE_INSERT, val);
+
+--
+Robert
