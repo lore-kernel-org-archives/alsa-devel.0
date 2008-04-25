@@ -1,22 +1,23 @@
 From: Daniel Mack <daniel@caiaq.org>
-Subject: [PATCH 1/3] asoc tlv320aic3x: revisit clock setup
-Date: Fri, 25 Apr 2008 11:17:07 +0200
-Message-ID: <20080425091707.GA18452@buzzloop.caiaq.de>
+Subject: [PATCH 0/3] asoc tlv320aic3x
+Date: Fri, 25 Apr 2008 11:17:14 +0200
+Message-ID: <20080425091714.GA18478@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="vtzGhvizbBRQ85DL"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id D1BD22473B
+	by alsa0.perex.cz (Postfix) with ESMTP id A8FFF103830
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 11:17:11 +0200 (CEST)
+	Fri, 25 Apr 2008 11:17:17 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id 815C37F4036
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 6388F7F4036
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 11:17:11 +0200 (CEST)
+	Fri, 25 Apr 2008 11:17:17 +0200 (CEST)
 Received: from buzzloop.caiaq.de ([127.0.0.1])
 	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 7E5EkSBqtfu0 for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 11:17:08 +0200 (CEST)
+	with ESMTP id MfB9VaFO9PID for <alsa-devel@alsa-project.org>;
+	Fri, 25 Apr 2008 11:17:15 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,338 +31,13 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Here are 3 patches regarding the tlv320aic3x driver.
 
-This patch cleans up the clocking setup for aic3x codecs. It drops the
-dividers table and determines the PLL control values programatically.
-Under certain conditions, the PLL is disabled entirely which could save
-some power.
+1/3: revisit clock setup and drop dividers table
+2/3: add support for GPIO lines
+3/3: add more controls to allow cross-mixing
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-
-
---vtzGhvizbBRQ85DL
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-tlv320aic33-clocking.diff"
-
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 630684f..87e5040 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -51,6 +51,8 @@
- #define AUDIO_NAME "aic3x"
- #define AIC3X_VERSION "0.1"
- 
-+#define ABS(x) (((x) >= 0) ? (x) : -(x))
-+
- /* codec private data */
- struct aic3x_priv {
- 	unsigned int sysclk;
-@@ -648,81 +650,6 @@ static int aic3x_add_widgets(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--struct aic3x_rate_divs {
--	u32 mclk;
--	u32 rate;
--	u32 fsref_reg;
--	u8 sr_reg:4;
--	u8 pllj_reg;
--	u16 plld_reg;
--};
--
--/* AIC3X codec mclk clock divider coefficients */
--static const struct aic3x_rate_divs aic3x_divs[] = {
--	/* 8k */
--	{12000000, 8000, 48000, 0xa, 16, 3840},
--	{19200000, 8000, 48000, 0xa, 10, 2400},
--	{22579200, 8000, 48000, 0xa, 8, 7075},
--	{33868800, 8000, 48000, 0xa, 5, 8049},
--	/* 11.025k */
--	{12000000, 11025, 44100, 0x6, 15, 528},
--	{19200000, 11025, 44100, 0x6, 9, 4080},
--	{22579200, 11025, 44100, 0x6, 8, 0},
--	{33868800, 11025, 44100, 0x6, 5, 3333},
--	/* 16k */
--	{12000000, 16000, 48000, 0x4, 16, 3840},
--	{19200000, 16000, 48000, 0x4, 10, 2400},
--	{22579200, 16000, 48000, 0x4, 8, 7075},
--	{33868800, 16000, 48000, 0x4, 5, 8049},
--	/* 22.05k */
--	{12000000, 22050, 44100, 0x2, 15, 528},
--	{19200000, 22050, 44100, 0x2, 9, 4080},
--	{22579200, 22050, 44100, 0x2, 8, 0},
--	{33868800, 22050, 44100, 0x2, 5, 3333},
--	/* 32k */
--	{12000000, 32000, 48000, 0x1, 16, 3840},
--	{19200000, 32000, 48000, 0x1, 10, 2400},
--	{22579200, 32000, 48000, 0x1, 8, 7075},
--	{33868800, 32000, 48000, 0x1, 5, 8049},
--	/* 44.1k */
--	{12000000, 44100, 44100, 0x0, 15, 528},
--	{19200000, 44100, 44100, 0x0, 9, 4080},
--	{22579200, 44100, 44100, 0x0, 8, 0},
--	{33868800, 44100, 44100, 0x0, 5, 3333},
--	/* 48k */
--	{12000000, 48000, 48000, 0x0, 16, 3840},
--	{19200000, 48000, 48000, 0x0, 10, 2400},
--	{22579200, 48000, 48000, 0x0, 8, 7075},
--	{33868800, 48000, 48000, 0x0, 5, 8049},
--	/* 64k */
--	{12000000, 64000, 96000, 0x1, 16, 3840},
--	{19200000, 64000, 96000, 0x1, 10, 2400},
--	{22579200, 64000, 96000, 0x1, 8, 7075},
--	{33868800, 64000, 96000, 0x1, 5, 8049},
--	/* 88.2k */
--	{12000000, 88200, 88200, 0x0, 15, 528},
--	{19200000, 88200, 88200, 0x0, 9, 4080},
--	{22579200, 88200, 88200, 0x0, 8, 0},
--	{33868800, 88200, 88200, 0x0, 5, 3333},
--	/* 96k */
--	{12000000, 96000, 96000, 0x0, 16, 3840},
--	{19200000, 96000, 96000, 0x0, 10, 2400},
--	{22579200, 96000, 96000, 0x0, 8, 7075},
--	{33868800, 96000, 96000, 0x0, 5, 8049},
--};
--
--static inline int aic3x_get_divs(int mclk, int rate)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(aic3x_divs); i++) {
--		if (aic3x_divs[i].rate == rate && aic3x_divs[i].mclk == mclk)
--			return i;
--	}
--
--	return 0;
--}
--
- static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *params)
- {
-@@ -730,49 +657,107 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_device *socdev = rtd->socdev;
- 	struct snd_soc_codec *codec = socdev->codec;
- 	struct aic3x_priv *aic3x = codec->private_data;
--	int i;
--	u8 data, pll_p, pll_r, pll_j;
--	u16 pll_d;
-+	int codec_clk = 0, bypass_pll = 0, fsref, last_clk = 0;
-+	u8 data, r, p, pll_q, pll_p = 1, pll_r = 1, pll_j = 1;
-+	u16 pll_d = 1;
- 
--	i = aic3x_get_divs(aic3x->sysclk, params_rate(params));
--
--	/* Route Left DAC to left channel input and
--	 * right DAC to right channel input */
--	data = (LDAC2LCH | RDAC2RCH);
--	switch (aic3x_divs[i].fsref_reg) {
--	case 44100:
--		data |= FSREF_44100;
-+	/* select data word length */
-+	data =
-+	    aic3x_read_reg_cache(codec, AIC3X_ASD_INTF_CTRLB) & (~(0x3 << 4));
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
- 		break;
--	case 48000:
--		data |= FSREF_48000;
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+		data |= (0x01 << 4);
- 		break;
--	case 88200:
--		data |= FSREF_44100 | DUAL_RATE_MODE;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		data |= (0x02 << 4);
- 		break;
--	case 96000:
--		data |= FSREF_48000 | DUAL_RATE_MODE;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		data |= (0x03 << 4);
- 		break;
- 	}
-+	aic3x_write(codec, AIC3X_ASD_INTF_CTRLB, data);
-+
-+	/* Fsref can be 44100 or 48000 */
-+	fsref = (params_rate(params) % 11025 == 0) ? 44100 : 48000;
-+
-+	/* Try to find a value for Q which allows us to bypass the PLL and
-+	 * generate CODEC_CLK directly. */
-+	for (pll_q = 2; pll_q < 18; pll_q++)
-+		if (aic3x->sysclk / (128 * pll_q) == fsref) {
-+			bypass_pll = 1;
-+			break;
-+		}
-+
-+	if (bypass_pll) {
-+		pll_q &= 0xf;
-+		aic3x_write(codec, AIC3X_PLL_PROGA_REG, pll_q << PLLQ_SHIFT);
-+		aic3x_write(codec, AIC3X_GPIOB_REG, CODEC_CLKIN_CLKDIV);
-+		/* printk(KERN_INFO "%s(): bypassing PLL with Q=%d\n",
-+			__func__, pll_q); */
-+	} else
-+		aic3x_write(codec, AIC3X_GPIOB_REG, CODEC_CLKIN_PLLDIV);
-+
-+	/* Route Left DAC to left channel input and
-+	 * right DAC to right channel input */
-+	data = (LDAC2LCH | RDAC2RCH);
-+	data |= (fsref == 44100) ? FSREF_44100 : FSREF_48000;
-+	if (params_rate(params) >= 64000) {
-+		data |= DUAL_RATE_MODE;
-+		fsref *= 2;
-+	}
- 	aic3x_write(codec, AIC3X_CODEC_DATAPATH_REG, data);
- 
- 	/* codec sample rate select */
--	data = aic3x_divs[i].sr_reg;
-+	data = (fsref * 10) / params_rate(params);
-+	data /= 5;
-+	data -= 2;
- 	data |= (data << 4);
- 	aic3x_write(codec, AIC3X_SAMPLE_RATE_SEL_REG, data);
- 
--	/* Use PLL for generation Fsref by equation:
--	 * Fsref = (MCLK * K * R)/(2048 * P);
--	 * Fix P = 2 and R = 1 and calculate K, if
--	 * K = J.D, i.e. J - an interger portion of K and D is the fractional
--	 * one with 4 digits of precision;
--	 * Example:
--	 * For MCLK = 22.5792 MHz and Fsref = 48kHz:
--	 * Select P = 2, R= 1, K = 8.7074, which results in J = 8, D = 7074
-+	if (bypass_pll)
-+		return 0;
-+
-+	/* Use PLL
-+	 * find an apropriate setup for j, d, r and p by iterating over
-+	 * p and r - j and d are calculated for each fraction.
-+	 * Up to 128 values are probed, the closest one wins the game.
-+	 * The sysclk is divided by 1000 to prevent integer overflows.
- 	 */
--	pll_p = 2;
--	pll_r = 1;
--	pll_j = aic3x_divs[i].pllj_reg;
--	pll_d = aic3x_divs[i].plld_reg;
-+	codec_clk = (2048 * fsref) / (aic3x->sysclk / 1000);
-+
-+	for (r = 1; r <= 16; r++)
-+		for (p = 1; p <= 8; p++) {
-+			int clk, tmp = (codec_clk * pll_r * 10) / pll_p;
-+			u8 j = tmp / 10000;
-+			u16 d = tmp % 10000;
-+
-+			if (j > 63)
-+				continue;
-+
-+			if (d != 0 && aic3x->sysclk < 10000000)
-+				continue;
-+
-+			/* This is actually 1000 * ((j + (d/10000)) * r) / p
-+			 * The term had to be converted to get rid of the
-+			 * division by 10000 */
-+			clk = ((10000 * j * r) + (d * r)) / (10 * p);
-+
-+			/* check whether this values get closer than the best
-+			 * ones we had before */
-+			if (ABS(codec_clk - clk) < ABS(codec_clk - last_clk)) {
-+				pll_j = j; pll_d = d; pll_r = r; pll_p = p;
-+				last_clk = clk;
-+			}
-+
-+			/* Early exit for exact matches */
-+			if (clk == codec_clk)
-+				break;
-+		}
-+
-+	/* printk(KERN_INFO "%s(): best PLL setup guess: k=%d.%d r=%d p=%d\n",
-+			__func__, pll_j, pll_d, pll_r, pll_p); */
- 
- 	data = aic3x_read_reg_cache(codec, AIC3X_PLL_PROGA_REG);
- 	aic3x_write(codec, AIC3X_PLL_PROGA_REG, data | (pll_p << PLLP_SHIFT));
-@@ -782,24 +767,6 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	aic3x_write(codec, AIC3X_PLL_PROGD_REG,
- 		    (pll_d & 0x3F) << PLLD_LSB_SHIFT);
- 
--	/* select data word length */
--	data =
--	    aic3x_read_reg_cache(codec, AIC3X_ASD_INTF_CTRLB) & (~(0x3 << 4));
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S16_LE:
--		break;
--	case SNDRV_PCM_FORMAT_S20_3LE:
--		data |= (0x01 << 4);
--		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
--		data |= (0x02 << 4);
--		break;
--	case SNDRV_PCM_FORMAT_S32_LE:
--		data |= (0x03 << 4);
--		break;
--	}
--	aic3x_write(codec, AIC3X_ASD_INTF_CTRLB, data);
--
- 	return 0;
- }
- 
-@@ -826,16 +793,8 @@ static int aic3x_set_dai_sysclk(struct snd_soc_codec_dai *codec_dai,
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct aic3x_priv *aic3x = codec->private_data;
- 
--	switch (freq) {
--	case 12000000:
--	case 19200000:
--	case 22579200:
--	case 33868800:
--		aic3x->sysclk = freq;
--		return 0;
--	}
--
--	return -EINVAL;
-+	aic3x->sysclk = freq;
-+	return 0;
- }
- 
- static int aic3x_set_dai_fmt(struct snd_soc_codec_dai *codec_dai,
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index d0cdeeb..d49d001 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -109,6 +109,7 @@
- #define LLOPM_CTRL			86
- #define RLOPM_CTRL			93
- /* Clock generation control register */
-+#define AIC3X_GPIOB_REG			101
- #define AIC3X_CLKGEN_CTRL_REG		102
- 
- /* Page select register bits */
-@@ -128,12 +129,15 @@
- 
- /* PLL registers bitfields */
- #define PLLP_SHIFT		0
-+#define PLLQ_SHIFT		3
- #define PLLR_SHIFT		0
- #define PLLJ_SHIFT		2
- #define PLLD_MSB_SHIFT		0
- #define PLLD_LSB_SHIFT		2
- 
- /* Clock generation register bits */
-+#define CODEC_CLKIN_PLLDIV	0
-+#define CODEC_CLKIN_CLKDIV	1
- #define PLL_CLKIN_SHIFT		4
- #define MCLK_SOURCE		0x0
- #define PLL_CLKDIV_SHIFT	0
-
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---vtzGhvizbBRQ85DL--
+Best regards,
+Daniel
