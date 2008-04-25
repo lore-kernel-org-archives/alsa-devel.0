@@ -1,43 +1,84 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [alsa-devel] [RFC] ucb1400 touchscreen, irq auto probing and
- ac97 with its private field
-Date: Fri, 25 Apr 2008 09:35:47 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0804250931050.7882@tm8103.perex-int.cz>
-References: <20080424140459.GB24212@Chamillionaire.breakpoint.cc>
- <20080424145749.GB22369@sirena.org.uk> <s5hr6cvb5f3.wl%tiwai@suse.de>
- <20080424185658.GA19029@sirena.org.uk> <s5h8wz24dto.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0804250906090.7882@tm8103.perex-int.cz> <s5h4p9q4d2e.wl%tiwai@suse.de>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [RFC] [PATCH] asoc tlv320aic3x: revisit clocking
+ setup
+Date: Fri, 25 Apr 2008 10:44:08 +0300
+Message-ID: <20080425104408.fe6018de.jarkko.nikula@nokia.com>
+References: <20080424145437.GA10882@buzzloop.caiaq.de>
+	<20080424152136.GB10882@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <s5h4p9q4d2e.wl%tiwai@suse.de>
-Sender: linux-input-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, dtor@mail.ru, Sebastian Siewior <al+sa@ml.breakpoint.cc>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 914F0103839
+	for <alsa-devel@alsa-project.org>;
+	Fri, 25 Apr 2008 09:43:39 +0200 (CEST)
+In-Reply-To: <20080424152136.GB10882@buzzloop.caiaq.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ext Daniel Mack <daniel@caiaq.org>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Apr 2008, Takashi Iwai wrote:
+On Thu, 24 Apr 2008 17:21:36 +0200
+"ext Daniel Mack" <daniel@caiaq.org> wrote:
 
-> > Sure. I applied the simple 'void *device_private_data' patch, because 
-> > current usage request is really trivial. We can implement complex code to 
-> > handle data for multiple "extra" devices on AC97 bus later.
+> On Thu, Apr 24, 2008 at 04:54:37PM +0200, Daniel Mack wrote:
+> > attached is a patch that reworks the clocking setup for the aic3x
+> > codec. It drops the dividers table and calculates the values
+> > instead. When simulated, this code does the right thing for all the
+> > examples described in the datasheet. Please review and let me know
+> > about any concerns.
 > 
-> Actually, it's not "used" yet.  The ucb1000 reads the data but no one
-> stores yet.  And, if its usage request is trivial, we should use "int
+> Same thing again, but some more comments.
+> 
+Hi
 
-Yes, I hope that the appropriate initialization code will be added to SoC 
-drivers, too.
+This is great work, calculates correct PLL values for my platform when
+using 12/19.2 MHz @ 44.1 and 48 kHz and takes into account issues we've
+been discussing before.
 
-> irq" as in the original patch instead of void data and cast.
+Here are my review comments:
 
-But other SoC (or other) drivers might want to pass to extra devices on 
-AC97 bus something different or more complex. Mark Brown already noted
-that. I would keep it as 'void *'.
++	if (bypass_pll) {
++		pll_q &= 0xf;
++		aic3x_write(codec, AIC3X_SAMPLE_RATE_SEL_REG, 0);
 
-					Jaroslav
+This is redundant write since register is updated below.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
++	if (params_rate(params) >= 88200)
++		data |= DUAL_RATE_MODE;
+ 	aic3x_write(codec, AIC3X_CODEC_DATAPATH_REG, data);
+ 
+Dual rate mode should be set when rate is >= 64000 kHz.
 
+ 	/* codec sample rate select */
+-	data = aic3x_divs[i].sr_reg;
++	data = (fsref * 10) / params_rate(params);
++	data /= 5;
++	data -= 2;
+ 	data |= (data << 4);
+ 	aic3x_write(codec, AIC3X_SAMPLE_RATE_SEL_REG, data);
+
+Note result here is 0xFF if rate is >= 64000 kHz. Will calculate
+correctly if fsref is doubled for those cases.
+
++	codec_clk = (2048 * fsref) / (aic3x->sysclk / 1000);
++
++	if (params_rate(params) >= 88200)
++		fsref *= 2;
+
+Here also 64000. Remember to take into account doubled fsref when
+calculating codec_clk if you move it before sample rate selection.
+
+Otherwise patch looks good to me.
+
+
+Jarkko
