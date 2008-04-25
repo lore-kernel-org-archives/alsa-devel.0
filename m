@@ -1,41 +1,49 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [alsa-devel] [RFC] ucb1400 touchscreen, irq auto probing and
-	ac97 with its private field
-Date: Fri, 25 Apr 2008 11:31:03 -0400
-Message-ID: <20080425112954.ZZRA012@mailhub.coreip.homeip.net>
-References: <20080424140459.GB24212@Chamillionaire.breakpoint.cc> <20080424145749.GB22369@sirena.org.uk> <s5hr6cvb5f3.wl%tiwai@suse.de> <20080424185658.GA19029@sirena.org.uk> <s5h8wz24dto.wl%tiwai@suse.de> <Pine.LNX.4.61.0804250906090.7882@tm8103.perex-int.cz> <s5h4p9q4d2e.wl%tiwai@suse.de> <Pine.LNX.4.61.0804250931050.7882@tm8103.perex-int.cz>
+From: Spike <spike@spykes.net>
+Subject: Re: Status of X-Fi support in ALSA?
+Date: Fri, 25 Apr 2008 14:30:04 -0400
+Message-ID: <20080425143004.7e8dc985@darius>
+References: <4811ED52.2060107@moving-picture.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0804250931050.7882@tm8103.perex-int.cz>
-Sender: linux-input-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sebastian Siewior <al+sa@ml.breakpoint.cc>, ALSA development <alsa-devel@alsa-project.org>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B450103861
+	for <alsa-devel@alsa-project.org>;
+	Fri, 25 Apr 2008 20:30:06 +0200 (CEST)
+In-Reply-To: <4811ED52.2060107@moving-picture.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 25, 2008 at 09:35:47AM +0200, Jaroslav Kysela wrote:
-> On Fri, 25 Apr 2008, Takashi Iwai wrote:
-> 
-> > > Sure. I applied the simple 'void *device_private_data' patch, because 
-> > > current usage request is really trivial. We can implement complex code to 
-> > > handle data for multiple "extra" devices on AC97 bus later.
-> > 
-> > Actually, it's not "used" yet.  The ucb1000 reads the data but no one
-> > stores yet.  And, if its usage request is trivial, we should use "int
-> 
-> Yes, I hope that the appropriate initialization code will be added to SoC 
-> drivers, too.
-> 
-> > irq" as in the original patch instead of void data and cast.
-> 
-> But other SoC (or other) drivers might want to pass to extra devices on 
-> AC97 bus something different or more complex. Mark Brown already noted
-> that. I would keep it as 'void *'.
+On Fri, 25 Apr 2008 15:40:18 +0100
+James Pearson <james-p@moving-picture.com> wrote:
 
-Need to pass irq data will be fairly common so we should probably have
-it in its own right and allow additional data be attached via a void
-*.
+> Out of general interest, what is the current status of X-Fi support?
+> 
+> On a related note, I notice that Creative have recently released the 2nd 
+> beta of their closed source drivers:
+> 
+> <http://connect.creativelabs.com/opensource/Wiki/SoundCard%20Support.aspx>
+> 
+> Thanks
+> 
+> James Pearson
 
--- 
-Dmitry
+Yeah, and they're still a big pile of crap that has zero build support
+for any newish kernel and still will Oops any SMP enabled machine.
+(almost everything now)
+
+I too am wondering the current status of snd-emu20k1, its been very
+quiet on this front since James stated he received the datasheets.....
+
+
+Bren
