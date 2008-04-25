@@ -1,19 +1,18 @@
-From: ext-jukka.hynninen@vaisala.com
-Subject: asoc tsc210x
-Date: Fri, 25 Apr 2008 10:05:22 +0300
-Message-ID: <B9D3C48C98930741A166756A50C44A610F17B3B5@helx1.corp.vaisala.com>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: MIDI on ice1724 -  fixing HG
+Date: Fri, 25 Apr 2008 09:06:19 +0200
+Message-ID: <481182EB.1010800@insite.cz>
+References: <480E495B.20607@insite.cz>	<s5h63u8evih.wl%tiwai@suse.de>	<480F189A.7030500@insite.cz>	<480F99B8.3010408@insite.cz>	<s5hod7zb4j7.wl%tiwai@suse.de>	<4810F1FA.4020300@insite.cz>
+	<s5hhcdq4fnz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw.vaisala.com (mailgw.vaisala.com [192.81.123.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 556241037F2
+Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB3962470A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 09:05:36 +0200 (CEST)
-Received: from helsrv02.vaisala.com (helsrv02.vaisala.com [192.81.123.16])
-	by mailgw.vaisala.com (8.13.6/8.13.3) with SMTP id m3P75VRd021345
-	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2008 10:05:34 +0300
-Content-class: urn:content-classes:message
+	Fri, 25 Apr 2008 09:06:27 +0200 (CEST)
+In-Reply-To: <s5hhcdq4fnz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
-
-I'm assessing TSC2100 codec on an embdedded system. 
-
-Any intentions on implementing an ASoC codec driver for TSC210x family?
-Could the multi-function nature of the chip raise some issues with ASoC
-framework?
 
 
--Jukka
+Takashi Iwai wrote:
+>>
+>> I do not know the reason for MPU401_INFO_NO_ACK. You removed it from the
+>> original patch, but without it I always get the input/output error.
+> 
+> Ah, thanks, I overlooked it.
+> Fixed now.
+
+Takashi, thanks, but the patch I sent you sets MPU401_INFO_INPUT and 
+MPU401_INFO_OUTPUT flags too. They enable the actual input/output 
+methods in mpu401_uart.c.
+
+Thanks a lot for fixing.
+
+Pavel.
