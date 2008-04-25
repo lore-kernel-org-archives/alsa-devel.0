@@ -1,112 +1,58 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [alsa-devel] [RFC] ucb1400 touchscreen, irq auto probing and
- ac97 with its private field
-Date: Fri, 25 Apr 2008 10:23:51 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0804251008270.7882@tm8103.perex-int.cz>
-References: <20080424140459.GB24212@Chamillionaire.breakpoint.cc>
- <20080424145749.GB22369@sirena.org.uk> <s5hr6cvb5f3.wl%tiwai@suse.de>
- <20080424185658.GA19029@sirena.org.uk> <s5h8wz24dto.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0804250906090.7882@tm8103.perex-int.cz> <s5h4p9q4d2e.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0804250931050.7882@tm8103.perex-int.cz> <s5hve26v0aw.wl%tiwai@suse.de>
+From: "Jarkko Nikula" <jhnikula@gmail.com>
+Subject: Re: asoc tsc210x
+Date: Fri, 25 Apr 2008 12:01:05 +0300
+Message-ID: <bd7b27490804250201t66eed57bw7201a0ceea6ea7c@mail.gmail.com>
+References: <B9D3C48C98930741A166756A50C44A610F17B3B5@helx1.corp.vaisala.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <s5hve26v0aw.wl%tiwai@suse.de>
-Sender: linux-input-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, dtor@mail.ru, Sebastian Siewior <al+sa@ml.breakpoint.cc>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id C80A92466A
+	for <alsa-devel@alsa-project.org>;
+	Fri, 25 Apr 2008 11:01:06 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c36so978810ana.80
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2008 02:01:05 -0700 (PDT)
+In-Reply-To: <B9D3C48C98930741A166756A50C44A610F17B3B5@helx1.corp.vaisala.com>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ext-jukka.hynninen@vaisala.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Apr 2008, Takashi Iwai wrote:
+On Fri, Apr 25, 2008 at 10:05 AM, <ext-jukka.hynninen@vaisala.com> wrote:
 
-> At Fri, 25 Apr 2008 09:35:47 +0200 (CEST),
-> Jaroslav Kysela wrote:
-> > 
-> > On Fri, 25 Apr 2008, Takashi Iwai wrote:
-> > 
-> > > > Sure. I applied the simple 'void *device_private_data' patch, because 
-> > > > current usage request is really trivial. We can implement complex code to 
-> > > > handle data for multiple "extra" devices on AC97 bus later.
-> > > 
-> > > Actually, it's not "used" yet.  The ucb1000 reads the data but no one
-> > > stores yet.  And, if its usage request is trivial, we should use "int
-> > 
-> > Yes, I hope that the appropriate initialization code will be added to SoC 
-> > drivers, too.
-> > 
-> > > irq" as in the original patch instead of void data and cast.
-> > 
-> > But other SoC (or other) drivers might want to pass to extra devices on 
-> > AC97 bus something different or more complex. Mark Brown already noted
-> > that. I would keep it as 'void *'.
-> 
-> That's the very problem I've been trying to point out.
-> The void pointer is good if the same driver assigns and casts.  But,
-> in this case, the allocator and the receiver are different.  Thus,
-> there is no guarantee that the data type is what you want.  OTOH, if
-> it's "int irq", this is crystal clear.
-> 
-> So, in short:
-> 
-> - if only one device needs such data, it should be a strong type like
->   "int irq" anyway -- no extra need to cast to void pointer
-> - if multiple devices need such a pass-away mechanism, then they can
->   crash because you have no data type check.  The void pointer is
->   dangerous for multiple devices.
+> Hello all,
+>
+> I'm assessing TSC2100 codec on an embdedded system.
+>
+> Any intentions on implementing an ASoC codec driver for TSC210x family?
 
-I see. In this case, I would propose to add a 32-bit "magic" at the 
-start of 'void *' data. How about this modification:
 
-diff -r e2ff47e8771b include/ac97_codec.h
---- a/include/ac97_codec.h	Fri Apr 25 08:29:05 2008 +0200
-+++ b/include/ac97_codec.h	Fri Apr 25 10:22:00 2008 +0200
-@@ -407,6 +407,9 @@
- #define AC97_RATES_MIC_ADC	4
- #define AC97_RATES_SPDIF	5
- 
-+/* device private data magic number */
-+#define AC97_PDEVMAGIC_IRQ	0x20495251	/* in ASCII: <space>IRQ */
-+
- /*
-  *
-  */
-@@ -545,6 +547,11 @@ static inline int ac97_can_spdif(struct 
- static inline int ac97_can_spdif(struct snd_ac97 * ac97)
- {
- 	return (ac97->ext_id & AC97_EI_SPDIF) != 0;
-+}
-+static inline int ac97_check_pdevdata_magic(struct snd_ac97 * ac97, unsigned int magic)
-+{
-+	return (ac97->device_private_data &&
-+		*((unsigned int *)ac97->device_private_data) == magic);
- }
- 
- /* functions */
-diff -r e2ff47e8771b kernel/drivers/input/touchscreen/ucb1400_ts.c
---- a/kernel/drivers/input/touchscreen/ucb1400_ts.c	Fri Apr 25 08:29:05 2008 +0200
-+++ b/kernel/drivers/input/touchscreen/ucb1400_ts.c	Fri Apr 25 10:22:00 2008 +0200
-@@ -492,14 +492,14 @@ static int ucb1400_ts_probe(struct devic
- 		goto err_free_devs;
- 	}
- 
--	if (!ucb->ac97->device_private_data) {
-+	if (!ac97_check_pdevdata_magic(usb->ac97, AC97_PDEVMAGIC_IRQ)) {
- 		error = ucb1400_detect_irq(ucb);
- 		if (error) {
- 			printk(KERN_ERR "UCB1400: IRQ probe failed\n");
- 			goto err_free_devs;
- 		}
- 	} else {
--		ucb->irq = (int) ucb->ac97->device_private_data;
-+		ucb->irq = ((int *) ucb->ac97->device_private_data)[1];
- 	}
- 
- 	error = request_irq(ucb->irq, ucb1400_hard_irq, IRQF_TRIGGER_RISING,
+I'm not aware, but in linux-omap there are some non-ASoC and touchscreen
+implementations for them.
 
-					Jaroslav
+http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=tree;f=sound/arm/omap;h=06529db6de88ab1cdd08807706e71ef5d1b764dd;hb=HEAD
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=tree;f=drivers/input/touchscreen;h=e48f7c3a3e2a1c77f52f6886e96658a2e43534a2;hb=HEAD
 
+http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=tree;f=drivers/spi;h=4b16fb8682fdc018297e4a329689b537e77f3971;hb=HEAD
+
+Could the multi-function nature of the chip raise some issues with ASoC
+> framework?
+>
+
+Probably. E.g. in TSC2301 the touchscreen subsystem starts using audio MCLK
+input whenever the audio subsystem is powered on and some internal clock
+otherwise. So there can always be some undocumented subsystem dependencies.
+
+
+Jarkko
