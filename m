@@ -1,20 +1,21 @@
-From: "Jarkko Nikula" <jhnikula@gmail.com>
-Subject: Re: asoc tsc210x
-Date: Fri, 25 Apr 2008 12:01:05 +0300
-Message-ID: <bd7b27490804250201t66eed57bw7201a0ceea6ea7c@mail.gmail.com>
-References: <B9D3C48C98930741A166756A50C44A610F17B3B5@helx1.corp.vaisala.com>
+From: Daniel Mack <daniel@caiaq.org>
+Subject: Re: [RFC] [PATCH] asoc tlv320aic3x: revisit
+	clocking	setup
+Date: Fri, 25 Apr 2008 11:07:10 +0200
+Message-ID: <20080425090710.GA18558@buzzloop.caiaq.de>
+References: <20080424145437.GA10882@buzzloop.caiaq.de>
+	<20080424152136.GB10882@buzzloop.caiaq.de>
+	<20080425104408.fe6018de.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id C80A92466A
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id EEE332473E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 11:01:06 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id c36so978810ana.80
-	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2008 02:01:05 -0700 (PDT)
-In-Reply-To: <B9D3C48C98930741A166756A50C44A610F17B3B5@helx1.corp.vaisala.com>
+	Fri, 25 Apr 2008 11:07:12 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20080425104408.fe6018de.jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext-jukka.hynninen@vaisala.com
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 25, 2008 at 10:05 AM, <ext-jukka.hynninen@vaisala.com> wrote:
+Hi Jarkko,
 
-> Hello all,
->
-> I'm assessing TSC2100 codec on an embdedded system.
->
-> Any intentions on implementing an ASoC codec driver for TSC210x family?
+On Fri, Apr 25, 2008 at 10:44:08AM +0300, Jarkko Nikula wrote:
+> This is great work, calculates correct PLL values for my platform when
+> using 12/19.2 MHz @ 44.1 and 48 kHz and takes into account issues we've
+> been discussing before.
+> 
+> Here are my review comments:
 
+Thanks for your comments. Please have a look at the patchset I'll post
+along with some other stuff in a few minutes.
 
-I'm not aware, but in linux-omap there are some non-ASoC and touchscreen
-implementations for them.
-
-http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=tree;f=sound/arm/omap;h=06529db6de88ab1cdd08807706e71ef5d1b764dd;hb=HEAD
-
-http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=tree;f=drivers/input/touchscreen;h=e48f7c3a3e2a1c77f52f6886e96658a2e43534a2;hb=HEAD
-
-http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=tree;f=drivers/spi;h=4b16fb8682fdc018297e4a329689b537e77f3971;hb=HEAD
-
-Could the multi-function nature of the chip raise some issues with ASoC
-> framework?
->
-
-Probably. E.g. in TSC2301 the touchscreen subsystem starts using audio MCLK
-input whenever the audio subsystem is powered on and some internal clock
-otherwise. So there can always be some undocumented subsystem dependencies.
-
-
-Jarkko
+Best regards,
+Daniel
