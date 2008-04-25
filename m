@@ -1,16 +1,16 @@
 From: Sean Thayne <sthayne@summitmediagroupllc.com>
 Subject: How can you tell if the speaker jack on your sound
  card has anything plugged into it???
-Date: Fri, 25 Apr 2008 13:28:53 -0600
-Message-ID: <481230F5.7090308@summitmediagroupllc.com>
+Date: Fri, 25 Apr 2008 13:29:16 -0600
+Message-ID: <4812310C.6070806@summitmediagroupllc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail46.opentransfer.com (mail46.opentransfer.com
-	[76.162.254.46]) by alsa0.perex.cz (Postfix) with SMTP id 009171037FB
+	[76.162.254.46]) by alsa0.perex.cz (Postfix) with SMTP id 5768C10383C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 21:35:09 +0200 (CEST)
+	Fri, 25 Apr 2008 21:39:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
