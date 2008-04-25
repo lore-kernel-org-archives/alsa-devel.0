@@ -1,59 +1,37 @@
-From: Chris Pemberton <cjpembo.mailing.lists@gmail.com>
-Subject: Re: Lenovo 3000 N100 ALC861-VD quirk
-Date: Fri, 25 Apr 2008 02:25:47 -0500
-Message-ID: <4811877B.9070609@gmail.com>
-References: <481175CD.7000500@gmail.com>	<s5hej8u4f8b.wl%tiwai@suse.de>	<48118037.4090007@gmail.com>
-	<s5habji4du3.wl%tiwai@suse.de>
+From: Sebastian Siewior <al+sa@ml.breakpoint.cc>
+Subject: Re: [RFC / PATCH] [SOUND] add a private field for ac97-device
+	drivers and let ucb1400 be its first user
+Date: Fri, 25 Apr 2008 09:28:47 +0200
+Message-ID: <20080425072847.GB4460@Chamillionaire.breakpoint.cc>
+References: <20080424153753.GD26452@Chamillionaire.breakpoint.cc> <Pine.LNX.4.61.0804250830030.7882@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9AC17103834
-	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 09:26:36 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id w49so4068299pyg.36
-	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2008 00:26:35 -0700 (PDT)
-In-Reply-To: <s5habji4du3.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=iso-8859-15
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0804250830030.7882@tm8103.perex-int.cz>
+Sender: linux-input-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, dtor@mail.ru, alsa-devel@alsa-project.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+* Jaroslav Kysela | 2008-04-25 08:30:40 [+0200]:
 
->> Just downloaded the lastest HG tarball from:
->> ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver
->> and patch_realtek.c, line #12684 still looks wrong, at least for me.
->>     
+>On Thu, 24 Apr 2008, Sebastian Siewior wrote:
 >
-> It is correct.  The model lenovo is exactly for Lenovo devices.
-> So, the right thing is to fix model lenovo properly instead of
-> assigining a wrong model.
+>> From: Sebastian Siewior <bigeasy@linutronix.de>
+>> 
+>> Currently the UCB1400 driver discovers the interrupt via probing. This works
+>> probably only on x86. This patch adds a private field to the ac97 struct
+>> where the ac97 driver can deposit informations for the device driver that
+>> serves a device which is attached to the ac97 bus.
+>> This patch also converts the UCB1400 driver to use this information if available.
+>> 
+>> Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
 >
->   
->> I'll get the latest ALSA from HG installed on this machine (Ubuntu 8.04) 
->> and get back to you soon.
->>     
->
-> That'll be helpful.  Thanks.
->
->
-> Takashi
->
->   
-Installed driver tarball hg20080425.
-(did not update alsa-libs or alsa-oss)
-Removed all module parameters and rebooted.
-Module snd-hda-intel loaded fine; yet no sound.
-Rebooted with model=3stack and sound works as described before
+>Thanks. I applied your patch to our tree.
 
-II can run more tests tomorrow.
+Cool thanks. I hope the input folks don't mind getting things touched by
+others but in this case they might be glad.
 
-Thanks again
+>						Jaroslav
+Sebastian
