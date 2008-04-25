@@ -1,22 +1,22 @@
 From: Daniel Mack <daniel@caiaq.org>
-Subject: [PATCH 2/3] asoc tlv320aic3x: add GPIO support
-Date: Fri, 25 Apr 2008 11:17:52 +0200
-Message-ID: <20080425091752.GA18501@buzzloop.caiaq.de>
+Subject: [PATCH 3/3] asoc tlv320aic3x: add more routing controls
+Date: Fri, 25 Apr 2008 11:18:09 +0200
+Message-ID: <20080425091809.GA18518@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="1yeeQ81UyVL57Vl7"
+Content-Type: multipart/mixed; boundary="PNTmBPCT7hxwcZjr"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9324D2474C
+	by alsa0.perex.cz (Postfix) with ESMTP id 9906F24756
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 11:17:55 +0200 (CEST)
+	Fri, 25 Apr 2008 11:18:13 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id 63C267F4036
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 584107F4037
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 11:17:55 +0200 (CEST)
+	Fri, 25 Apr 2008 11:18:13 +0200 (CEST)
 Received: from buzzloop.caiaq.de ([127.0.0.1])
 	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id g4j3qE2gGwFD for <alsa-devel@alsa-project.org>;
-	Fri, 25 Apr 2008 11:17:52 +0200 (CEST)
+	with ESMTP id 6eoDIHODuxFZ for <alsa-devel@alsa-project.org>;
+	Fri, 25 Apr 2008 11:18:10 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,193 +31,217 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---1yeeQ81UyVL57Vl7
+--PNTmBPCT7hxwcZjr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-This patch adds support for AIC3x GPIO lines. They can be configured for
-many possible functions as well as be driven manually. I also introduced
-i2c read functionality since the GPIO state register has to be read from
-hardware every time and can not be served from cache.
+Add more routing controls to AIC3x chips to allow things like routing
+the left PGA input to right line out.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 
 
---1yeeQ81UyVL57Vl7
+--PNTmBPCT7hxwcZjr
 Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-tlv320aic33-gpio.diff"
+Content-Disposition: attachment; filename="alsa-tlv320aic33-routing.diff"
 
 diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 87e5040..bddbae2 100644
+index bddbae2..c0c1714 100644
 --- a/sound/soc/codecs/tlv320aic3x.c
 +++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -140,6 +140,20 @@ static int aic3x_write(struct snd_soc_codec *codec, unsigned int reg,
- 		return -EIO;
- }
+@@ -330,7 +330,8 @@ SOC_DAPM_ENUM("Route", aic3x_enum[RHPCOM_ENUM]);
  
-+/*
-+ * read from the aic3x register space
-+ */
-+static int aic3x_read(struct snd_soc_codec *codec, unsigned int reg,
-+		      u8 *value)
-+{
-+	*value = reg & 0xff;
-+	if (codec->hw_read(codec->control_data, value, 1) != 1)
-+		return -EIO;
-+
-+	aic3x_write_reg_cache(codec, reg, *value);
-+	return 0;
-+}
-+
- #define SOC_DAPM_SINGLE_AIC3X(xname, reg, shift, mask, invert) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.info = snd_soc_info_volsw, \
-@@ -913,6 +927,33 @@ static int aic3x_dapm_event(struct snd_soc_codec *codec, int event)
- 	return 0;
- }
+ /* Left DAC_L1 Mixer */
+ static const struct snd_kcontrol_new aic3x_left_dac_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Line Switch", DACL1_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineL Switch", DACL1_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineR Switch", DACL1_2_RLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("Mono Switch", DACL1_2_MONOLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HP Switch", DACL1_2_HPLOUT_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HPCOM Switch", DACL1_2_HPLCOM_VOL, 7, 1, 0),
+@@ -338,7 +339,8 @@ static const struct snd_kcontrol_new aic3x_left_dac_mixer_controls[] = {
  
-+void aic3x_set_gpio(struct snd_soc_codec *codec, int gpio, int state)
-+{
-+	u8 reg = gpio ? AIC3X_GPIO2_REG : AIC3X_GPIO1_REG;
-+	u8 bit = gpio ? 3: 0;
-+	u8 val = aic3x_read_reg_cache(codec, reg) & ~(1 << bit);
-+	aic3x_write(codec, reg, val | (!!state << bit));
-+}
-+EXPORT_SYMBOL_GPL(aic3x_set_gpio);
-+
-+int aic3x_get_gpio(struct snd_soc_codec *codec, int gpio)
-+{
-+	u8 reg = gpio ? AIC3X_GPIO2_REG : AIC3X_GPIO1_REG;
-+	u8 val, bit = gpio ? 2: 1;
-+
-+	aic3x_read(codec, reg, &val);
-+	return !!(val & (1 << bit));
-+}
-+EXPORT_SYMBOL_GPL(aic3x_get_gpio);
-+
-+int aic3x_headset_detected(struct snd_soc_codec *codec)
-+{
-+	u8 val;
-+	aic3x_read(codec, AIC3X_RT_IRQ_FLAGS_REG, &val);
-+	return !!(val & (1 << 2));
-+}
-+EXPORT_SYMBOL_GPL(aic3x_headset_detected);
-+
- #define AIC3X_RATES	SNDRV_PCM_RATE_8000_96000
- #define AIC3X_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
-@@ -979,6 +1020,7 @@ static int aic3x_resume(struct platform_device *pdev)
- static int aic3x_init(struct snd_soc_device *socdev)
- {
- 	struct snd_soc_codec *codec = socdev->codec;
-+	struct aic3x_setup_data *setup = socdev->codec_data;
- 	int reg, ret = 0;
- 
- 	codec->name = "aic3x";
-@@ -1069,6 +1111,10 @@ static int aic3x_init(struct snd_soc_device *socdev)
- 	/* off, with power on */
- 	aic3x_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
- 
-+	/* setup GPIO functions */
-+	aic3x_write(codec, AIC3X_GPIO1_REG, (setup->gpio_func[0] & 0xf) << 4);
-+	aic3x_write(codec, AIC3X_GPIO2_REG, (setup->gpio_func[1] & 0xf) << 4);
-+
- 	aic3x_add_controls(codec);
- 	aic3x_add_widgets(codec);
- 	ret = snd_soc_register_card(socdev);
-@@ -1176,6 +1222,12 @@ static struct i2c_client client_template = {
- 	.name = "AIC3X",
- 	.driver = &aic3x_i2c_driver,
+ /* Right DAC_R1 Mixer */
+ static const struct snd_kcontrol_new aic3x_right_dac_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Line Switch", DACR1_2_RLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineL Switch", DACR1_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineR Switch", DACR1_2_RLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("Mono Switch", DACR1_2_MONOLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HP Switch", DACR1_2_HPROUT_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HPCOM Switch", DACR1_2_HPRCOM_VOL, 7, 1, 0),
+@@ -347,14 +349,18 @@ static const struct snd_kcontrol_new aic3x_right_dac_mixer_controls[] = {
+ /* Left PGA Mixer */
+ static const struct snd_kcontrol_new aic3x_left_pga_mixer_controls[] = {
+ 	SOC_DAPM_SINGLE_AIC3X("Line1L Switch", LINE1L_2_LADC_CTRL, 3, 1, 1),
++	SOC_DAPM_SINGLE_AIC3X("Line1R Switch", LINE1R_2_LADC_CTRL, 3, 1, 1),
+ 	SOC_DAPM_SINGLE_AIC3X("Line2L Switch", LINE2L_2_LADC_CTRL, 3, 1, 1),
+ 	SOC_DAPM_SINGLE_AIC3X("Mic3L Switch", MIC3LR_2_LADC_CTRL, 4, 1, 1),
++	SOC_DAPM_SINGLE_AIC3X("Mic3R Switch", MIC3LR_2_LADC_CTRL, 0, 1, 1),
  };
-+
-+static int aic3x_i2c_read(struct i2c_client *client, u8 *value, int len)
-+{
-+	value[0] = i2c_smbus_read_byte_data(client, value[0]);
-+	return (len == 1);
-+}
- #endif
  
- static int aic3x_probe(struct platform_device *pdev)
-@@ -1210,6 +1262,7 @@ static int aic3x_probe(struct platform_device *pdev)
- 	if (setup->i2c_address) {
- 		normal_i2c[0] = setup->i2c_address;
- 		codec->hw_write = (hw_write_t) i2c_master_send;
-+		codec->hw_read = (hw_read_t) aic3x_i2c_read;
- 		ret = i2c_add_driver(&aic3x_i2c_driver);
- 		if (ret != 0)
- 			printk(KERN_ERR "can't add i2c driver");
+ /* Right PGA Mixer */
+ static const struct snd_kcontrol_new aic3x_right_pga_mixer_controls[] = {
+ 	SOC_DAPM_SINGLE_AIC3X("Line1R Switch", LINE1R_2_RADC_CTRL, 3, 1, 1),
++	SOC_DAPM_SINGLE_AIC3X("Line1L Switch", LINE1L_2_RADC_CTRL, 3, 1, 1),
+ 	SOC_DAPM_SINGLE_AIC3X("Line2R Switch", LINE2R_2_RADC_CTRL, 3, 1, 1),
++	SOC_DAPM_SINGLE_AIC3X("Mic3L Switch", MIC3LR_2_RADC_CTRL, 4, 1, 1),
+ 	SOC_DAPM_SINGLE_AIC3X("Mic3R Switch", MIC3LR_2_RADC_CTRL, 0, 1, 1),
+ };
+ 
+@@ -376,7 +382,8 @@ SOC_DAPM_ENUM("Route", aic3x_enum[LINE2R_ENUM]);
+ 
+ /* Left PGA Bypass Mixer */
+ static const struct snd_kcontrol_new aic3x_left_pga_bp_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Line Switch", PGAL_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineL Switch", PGAL_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineR Switch", PGAL_2_RLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("Mono Switch", PGAL_2_MONOLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HP Switch", PGAL_2_HPLOUT_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HPCOM Switch", PGAL_2_HPLCOM_VOL, 7, 1, 0),
+@@ -384,7 +391,8 @@ static const struct snd_kcontrol_new aic3x_left_pga_bp_mixer_controls[] = {
+ 
+ /* Right PGA Bypass Mixer */
+ static const struct snd_kcontrol_new aic3x_right_pga_bp_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Line Switch", PGAR_2_RLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineL Switch", PGAR_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineR Switch", PGAR_2_RLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("Mono Switch", PGAR_2_MONOLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HP Switch", PGAR_2_HPROUT_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HPCOM Switch", PGAR_2_HPRCOM_VOL, 7, 1, 0),
+@@ -392,7 +400,8 @@ static const struct snd_kcontrol_new aic3x_right_pga_bp_mixer_controls[] = {
+ 
+ /* Left Line2 Bypass Mixer */
+ static const struct snd_kcontrol_new aic3x_left_line2_bp_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Line Switch", LINE2L_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineL Switch", LINE2L_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineR Switch", LINE2L_2_RLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("Mono Switch", LINE2L_2_MONOLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HP Switch", LINE2L_2_HPLOUT_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HPCOM Switch", LINE2L_2_HPLCOM_VOL, 7, 1, 0),
+@@ -400,7 +409,8 @@ static const struct snd_kcontrol_new aic3x_left_line2_bp_mixer_controls[] = {
+ 
+ /* Right Line2 Bypass Mixer */
+ static const struct snd_kcontrol_new aic3x_right_line2_bp_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Line Switch", LINE2R_2_RLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineL Switch", LINE2R_2_LLOPM_VOL, 7, 1, 0),
++	SOC_DAPM_SINGLE("LineR Switch", LINE2R_2_RLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("Mono Switch", LINE2R_2_MONOLOPM_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HP Switch", LINE2R_2_HPROUT_VOL, 7, 1, 0),
+ 	SOC_DAPM_SINGLE("HPCOM Switch", LINE2R_2_HPRCOM_VOL, 7, 1, 0),
+@@ -505,7 +515,8 @@ static const char *intercon[][3] = {
+ 	{"Left DAC Mux", "DAC_L2", "Left DAC"},
+ 	{"Left DAC Mux", "DAC_L3", "Left DAC"},
+ 
+-	{"Left DAC_L1 Mixer", "Line Switch", "Left DAC Mux"},
++	{"Left DAC_L1 Mixer", "LineL Switch", "Left DAC Mux"},
++	{"Left DAC_L1 Mixer", "LineR Switch", "Left DAC Mux"},
+ 	{"Left DAC_L1 Mixer", "Mono Switch", "Left DAC Mux"},
+ 	{"Left DAC_L1 Mixer", "HP Switch", "Left DAC Mux"},
+ 	{"Left DAC_L1 Mixer", "HPCOM Switch", "Left DAC Mux"},
+@@ -531,7 +542,8 @@ static const char *intercon[][3] = {
+ 	{"Right DAC Mux", "DAC_R2", "Right DAC"},
+ 	{"Right DAC Mux", "DAC_R3", "Right DAC"},
+ 
+-	{"Right DAC_R1 Mixer", "Line Switch", "Right DAC Mux"},
++	{"Right DAC_R1 Mixer", "LineL Switch", "Right DAC Mux"},
++	{"Right DAC_R1 Mixer", "LineR Switch", "Right DAC Mux"},
+ 	{"Right DAC_R1 Mixer", "Mono Switch", "Right DAC Mux"},
+ 	{"Right DAC_R1 Mixer", "HP Switch", "Right DAC Mux"},
+ 	{"Right DAC_R1 Mixer", "HPCOM Switch", "Right DAC Mux"},
+@@ -566,8 +578,10 @@ static const char *intercon[][3] = {
+ 	{"Left Line2L Mux", "differential", "LINE2L"},
+ 
+ 	{"Left PGA Mixer", "Line1L Switch", "Left Line1L Mux"},
++	{"Left PGA Mixer", "Line1R Switch", "Left Line1R Mux"},
+ 	{"Left PGA Mixer", "Line2L Switch", "Left Line2L Mux"},
+ 	{"Left PGA Mixer", "Mic3L Switch", "MIC3L"},
++	{"Left PGA Mixer", "Mic3R Switch", "MIC3R"},
+ 
+ 	{"Left ADC", NULL, "Left PGA Mixer"},
+ 
+@@ -579,13 +593,16 @@ static const char *intercon[][3] = {
+ 	{"Right Line2R Mux", "differential", "LINE2R"},
+ 
+ 	{"Right PGA Mixer", "Line1R Switch", "Right Line1R Mux"},
++	{"Right PGA Mixer", "Line1L Switch", "Right Line1L Mux"},
+ 	{"Right PGA Mixer", "Line2R Switch", "Right Line2R Mux"},
+ 	{"Right PGA Mixer", "Mic3R Switch", "MIC3R"},
++	{"Right PGA Mixer", "Mic3L Switch", "MIC3L"},
+ 
+ 	{"Right ADC", NULL, "Right PGA Mixer"},
+ 
+ 	/* Left PGA Bypass */
+-	{"Left PGA Bypass Mixer", "Line Switch", "Left PGA Mixer"},
++	{"Left PGA Bypass Mixer", "LineL Switch", "Left PGA Mixer"},
++	{"Left PGA Bypass Mixer", "LineR Switch", "Left PGA Mixer"},
+ 	{"Left PGA Bypass Mixer", "Mono Switch", "Left PGA Mixer"},
+ 	{"Left PGA Bypass Mixer", "HP Switch", "Left PGA Mixer"},
+ 	{"Left PGA Bypass Mixer", "HPCOM Switch", "Left PGA Mixer"},
+@@ -599,7 +616,8 @@ static const char *intercon[][3] = {
+ 	{"Left HP Out", NULL, "Left PGA Bypass Mixer"},
+ 
+ 	/* Right PGA Bypass */
+-	{"Right PGA Bypass Mixer", "Line Switch", "Right PGA Mixer"},
++	{"Right PGA Bypass Mixer", "LineL Switch", "Right PGA Mixer"},
++	{"Right PGA Bypass Mixer", "LineR Switch", "Right PGA Mixer"},
+ 	{"Right PGA Bypass Mixer", "Mono Switch", "Right PGA Mixer"},
+ 	{"Right PGA Bypass Mixer", "HP Switch", "Right PGA Mixer"},
+ 	{"Right PGA Bypass Mixer", "HPCOM Switch", "Right PGA Mixer"},
+@@ -615,7 +633,8 @@ static const char *intercon[][3] = {
+ 	{"Right HP Out", NULL, "Right PGA Bypass Mixer"},
+ 
+ 	/* Left Line2 Bypass */
+-	{"Left Line2 Bypass Mixer", "Line Switch", "Left Line2L Mux"},
++	{"Left Line2 Bypass Mixer", "LineL Switch", "Left Line2L Mux"},
++	{"Left Line2 Bypass Mixer", "LineR Switch", "Left Line2L Mux"},
+ 	{"Left Line2 Bypass Mixer", "Mono Switch", "Left Line2L Mux"},
+ 	{"Left Line2 Bypass Mixer", "HP Switch", "Left Line2L Mux"},
+ 	{"Left Line2 Bypass Mixer", "HPCOM Switch", "Left Line2L Mux"},
+@@ -629,7 +648,8 @@ static const char *intercon[][3] = {
+ 	{"Left HP Out", NULL, "Left Line2 Bypass Mixer"},
+ 
+ 	/* Right Line2 Bypass */
+-	{"Right Line2 Bypass Mixer", "Line Switch", "Right Line2R Mux"},
++	{"Right Line2 Bypass Mixer", "LineL Switch", "Right Line2R Mux"},
++	{"Right Line2 Bypass Mixer", "LineR Switch", "Right Line2R Mux"},
+ 	{"Right Line2 Bypass Mixer", "Mono Switch", "Right Line2R Mux"},
+ 	{"Right Line2 Bypass Mixer", "HP Switch", "Right Line2R Mux"},
+ 	{"Right Line2 Bypass Mixer", "HPCOM Switch", "Right Line2R Mux"},
 diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index d49d001..c1dd1ac 100644
+index c1dd1ac..136af06 100644
 --- a/sound/soc/codecs/tlv320aic3x.h
 +++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -108,8 +108,14 @@
+@@ -46,7 +46,9 @@
+ #define MIC3LR_2_RADC_CTRL		18
+ /* Line1 Input control registers */
+ #define LINE1L_2_LADC_CTRL		19
++#define LINE1R_2_LADC_CTRL		21
+ #define LINE1R_2_RADC_CTRL		22
++#define LINE1L_2_RADC_CTRL		24
+ /* Line2 Input control registers */
+ #define LINE2L_2_LADC_CTRL		20
+ #define LINE2R_2_RADC_CTRL		23
+@@ -101,11 +103,17 @@
+ #define MONOLOPM_CTRL			79
+ /* Line Output Plus/Minus control registers */
+ #define LINE2L_2_LLOPM_VOL		80
+-#define LINE2R_2_RLOPM_VOL		90
++#define LINE2L_2_RLOPM_VOL		87
++#define LINE2R_2_LLOPM_VOL		90
++#define LINE2R_2_RLOPM_VOL		83
+ #define PGAL_2_LLOPM_VOL		81
++#define PGAL_2_RLOPM_VOL		88
++#define PGAR_2_LLOPM_VOL		84
+ #define PGAR_2_RLOPM_VOL		91
+ #define DACL1_2_LLOPM_VOL		82
++#define DACL1_2_RLOPM_VOL		89
  #define DACR1_2_RLOPM_VOL		92
++#define DACR1_2_LLOPM_VOL		85
  #define LLOPM_CTRL			86
  #define RLOPM_CTRL			93
--/* Clock generation control register */
-+/* GPIO/IRQ registers */
-+#define AIC3X_STICKY_IRQ_FLAGS_REG	96
-+#define AIC3X_RT_IRQ_FLAGS_REG		97
-+#define AIC3X_GPIO1_REG			98
-+#define AIC3X_GPIO2_REG			99
-+#define AIC3X_GPIOA_REG			100
- #define AIC3X_GPIOB_REG			101
-+/* Clock generation control register */
- #define AIC3X_CLKGEN_CTRL_REG		102
- 
- /* Page select register bits */
-@@ -175,8 +181,49 @@
- /* Default input volume */
- #define DEFAULT_GAIN    0x20
- 
-+/* GPIO API */
-+enum {
-+	AIC3X_GPIO1_FUNC_DISABLED		= 0,
-+	AIC3X_GPIO1_FUNC_AUDIO_WORDCLK_ADC	= 1,
-+	AIC3X_GPIO1_FUNC_CLOCK_MUX		= 2,
-+	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV2		= 3,
-+	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV4		= 4,
-+	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV8		= 5,
-+	AIC3X_GPIO1_FUNC_SHORT_CIRCUIT_IRQ	= 6,
-+	AIC3X_GPIO1_FUNC_AGC_NOISE_IRQ		= 7,
-+	AIC3X_GPIO1_FUNC_INPUT			= 8,
-+	AIC3X_GPIO1_FUNC_OUTPUT			= 9,
-+	AIC3X_GPIO1_FUNC_DIGITAL_MIC_MODCLK	= 10,
-+	AIC3X_GPIO1_FUNC_AUDIO_WORDCLK		= 11,
-+	AIC3X_GPIO1_FUNC_BUTTON_IRQ		= 12,
-+	AIC3X_GPIO1_FUNC_HEADSET_DETECT_IRQ	= 13,
-+	AIC3X_GPIO1_FUNC_HEADSET_DETECT_OR_BUTTON_IRQ	= 14,
-+	AIC3X_GPIO1_FUNC_ALL_IRQ		= 16
-+};
-+
-+enum {
-+	AIC3X_GPIO2_FUNC_DISABLED		= 0,
-+	AIC3X_GPIO2_FUNC_HEADSET_DETECT_IRQ	= 2,
-+	AIC3X_GPIO2_FUNC_INPUT			= 3,
-+	AIC3X_GPIO2_FUNC_OUTPUT			= 4,
-+	AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT	= 5,
-+	AIC3X_GPIO2_FUNC_AUDIO_BITCLK		= 8,
-+	AIC3X_GPIO2_FUNC_HEADSET_DETECT_OR_BUTTON_IRQ = 9,
-+	AIC3X_GPIO2_FUNC_ALL_IRQ		= 10,
-+	AIC3X_GPIO2_FUNC_SHORT_CIRCUIT_OR_AGC_IRQ = 11,
-+	AIC3X_GPIO2_FUNC_HEADSET_OR_BUTTON_PRESS_OR_SHORT_CIRCUIT_IRQ = 12,
-+	AIC3X_GPIO2_FUNC_SHORT_CIRCUIT_IRQ	= 13,
-+	AIC3X_GPIO2_FUNC_AGC_NOISE_IRQ		= 14,
-+	AIC3X_GPIO2_FUNC_BUTTON_PRESS_IRQ	= 15
-+};
-+
-+void aic3x_set_gpio(struct snd_soc_codec *codec, int gpio, int state);
-+int aic3x_get_gpio(struct snd_soc_codec *codec, int gpio);
-+int aic3x_headset_detected(struct snd_soc_codec *codec);
-+
- struct aic3x_setup_data {
- 	unsigned short i2c_address;
-+	unsigned int gpio_func[2];
- };
- 
- extern struct snd_soc_codec_dai aic3x_dai;
+ /* GPIO/IRQ registers */
 
---1yeeQ81UyVL57Vl7
+--PNTmBPCT7hxwcZjr
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -228,4 +252,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---1yeeQ81UyVL57Vl7--
+--PNTmBPCT7hxwcZjr--
