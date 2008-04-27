@@ -1,21 +1,17 @@
-From: Kristoffer Janke <kj@conceptT.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: What is EAPD ?
-Date: Sun, 27 Apr 2008 13:18:49 +0200
-Message-ID: <48146119.1030705@conceptT.com>
+Date: Sun, 27 Apr 2008 12:22:20 +0100
+Message-ID: <481461EC.1090806@superbug.co.uk>
 References: <48144488.4020404@romanr.info>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.conceptT.com (unknown [84.200.19.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61A9524559
+Received: from anchor-post-37.mail.demon.net (anchor-post-37.mail.demon.net
+	[194.217.242.87])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A2392458F
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Apr 2008 13:20:22 +0200 (CEST)
-Received: from [192.168.1.210] (dslb-084-063-112-095.pools.arcor-ip.net
-	[84.63.112.95])
-	by mail.conceptT.com (Postfix) with ESMTP id 67EE8642DBC
-	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Apr 2008 13:20:20 +0200 (CEST)
+	Sun, 27 Apr 2008 13:22:23 +0200 (CEST)
 In-Reply-To: <48144488.4020404@romanr.info>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,19 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Roman Rybalko <alsa-devel@romanr.info>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Roman Rybalko schrieb:
+Roman Rybalko wrote:
 > Hi everyone,
 >
 > Does anybody know what is this "EAPD" ?
 > Should I enable it or not ?
 > What does it stands for ?
 >   
-External Amplifier Power Down: http://acronyms.thefreedictionary.com/EAPD
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->   
+External AMP Power Down.
+It is needed to get sound out of the speakers on some laptops.
