@@ -1,22 +1,18 @@
-From: "Nathan Schulte" <reklipz@gmail.com>
-Subject: Re: [snd-bt87x] Prolink PixelView PlayTV
-Date: Tue, 29 Apr 2008 00:15:04 -0500
-Message-ID: <a221c0100804282215q6491f41bo2ea6f8787ad22e24@mail.gmail.com>
-References: <27da43c40804271746h3992cea5rd4626ec6b8776ec3@mail.gmail.com>
-	<s5hlk2yi7qh.wl%tiwai@suse.de> <4815ADF4.1080208@ladisch.de>
-	<27da43c40804280606i321d4166mf933f65f67ab5c56@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Update CS4270 driver to ASoC V2
+Date: Tue, 29 Apr 2008 09:58:04 +0100
+Message-ID: <20080429085804.GA27000@rakim.wolfsonmicro.main>
+References: <1209414144-16010-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.236])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16AB8245E4
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B362524721
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Apr 2008 07:15:05 +0200 (CEST)
-Received: by rv-out-0506.google.com with SMTP id g37so2561126rvb.32
-	for <alsa-devel@alsa-project.org>; Mon, 28 Apr 2008 22:15:04 -0700 (PDT)
-In-Reply-To: <27da43c40804280606i321d4166mf933f65f67ab5c56@mail.gmail.com>
+	Tue, 29 Apr 2008 10:58:05 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1209414144-16010-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-I recently purchased an ECS A740GM-M Motherboard which has an IDT 92HD202
-integrated audio chipset.
+On Mon, Apr 28, 2008 at 03:22:24PM -0500, Timur Tabi wrote:
 
-Alsa is recognizing it as a SigmaTel 9221 A2. It is similar to the SigmaTel
-chipsets, but I cannot get spdif to work. After looking at the sigmatel
-hda-intel patch, it seems that spdif out is limited to two channels.
+> Update the CS4270 ASoC codec driver to support ASoC V2.  A side-effect is the
+> the removal of partial-support for stand-alone mode (no I2C interface).
+> However, this change also makes the driver into a cross-platform new-style I2C
+> driver.
 
-What I'm wondering is this; is there any need to write a new driver to get
-this chip working? And if so, where should I start, or has someone already
-started?
-
-I'm willing to take this on, but I don't know where to start. Any advice
-would be helpful!
-
--Nate
+Thanks, applied to asoc-v2-dev.
