@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/3] asoc tlv320aic3x
-Date: Tue, 29 Apr 2008 19:50:33 +0100
-Message-ID: <20080429185032.GA22205@sirena.org.uk>
-References: <20080425091714.GA18478@buzzloop.caiaq.de>
-	<20080429150315.GA7771@buzzloop.caiaq.de>
+From: "Nathan Schulte" <reklipz@gmail.com>
+Subject: Re: help with idt 92hd206 codec for intel hda?
+Date: Tue, 29 Apr 2008 14:01:29 -0500
+Message-ID: <a221c0100804291201s7d94c5efw12af5c5698b72d72@mail.gmail.com>
+References: <95ce66d80804262338k536d763bweca4e7d6ff39e06d@mail.gmail.com>
+	<s5h1w4oy84a.wl%tiwai@suse.de> <s5hod7swquv.wl%tiwai@suse.de>
+	<a221c0100804291001j1a2b043vdf1dc86dfd774df0@mail.gmail.com>
+	<16A430A423D62246A24C9A892622FE66134C51@CORPEXCH1.na.ads.idt.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6ED8D24929
+Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.229])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A39024890
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Apr 2008 20:50:34 +0200 (CEST)
+	Tue, 29 Apr 2008 21:01:30 +0200 (CEST)
+Received: by rv-out-0506.google.com with SMTP id g37so56706rvb.32
+	for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2008 12:01:29 -0700 (PDT)
+In-Reply-To: <16A430A423D62246A24C9A892622FE66134C51@CORPEXCH1.na.ads.idt.com>
 Content-Disposition: inline
-In-Reply-To: <20080429150315.GA7771@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +27,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+To: "Tellman, Steven" <Steven.Tellman@idt.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Greg Zornetzer <gzornetzer.lists@gmail.com>, alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 29, 2008 at 05:03:15PM +0200, Daniel Mack wrote:
-> On Fri, Apr 25, 2008 at 11:17:14AM +0200, Daniel Mack wrote:
+Well, when I first installed my distro, I managed to get the spdif to output
+2 channels. I could only get two channels, unless i sent a raw DTS or AC3
+stream for decoding on the receiver end.
 
-> > 1/3: revisit clock setup and drop dividers table
-> > 2/3: add support for GPIO lines
+Now, on after I reinstalled (changed from raid0 to raid5), I cannot get any
+audio whatsoever (even via analog outs).
 
-> After people ACK'd on those two, could they be applied?
+So there are really two separate issues now.
 
-I've applied these to the ASoC tree and queued them for Takashi, though
-they may not get applied until the merge window is closed.
+1) Getting audio to work.
+2) Getting 6+ Channel audio via spdif.
 
-When submitting patches please always submit the patches in a form that
-can be directly applied, including the commit message.  Otherwise it is
-much harder to apply the patch since the person applying it needs to
-grovel around the mailing list archives for the commit messages.  It is
-especially important to ensure that the signed-off-by is included with
-each submission of the patch.  It's also a good idea to add any acks
-that the patch has been given to the commit message so that people
-remember them.
+Should I try applying these patches or should I try compiling ALSA by hand
+instead of using the distro supplied package?
 
-If you want to include additional comments about the changes in a new
-revision of the patch please use the --- separator after the commit
-message as documented in Documentation/SubmittingPatches or include the
-patch plus commit message as an attachment.
+Also, after looking at the sigmatel patch for hda-intel, the 92xx chips are
+limited to two channels via spdif... On my first install, I changed the
+limit, and recompiled by hand. ALSA would then tell me that 6 channels was
+ok, as opposed to throwing an error, yet I still only got two channels.
 
-Basically, the idea is that someone should be able to apply your patch
-using 'git-am --signoff' - if you're using git then the combination of
-git format-patch and git send-email will generally do the job.
+Ideas?
+
+-Nate
+
+On Tue, Apr 29, 2008 at 1:19 PM, Tellman, Steven <Steven.Tellman@idt.com>
+wrote:
+
+>  Are you having issues with that board? The 92HD202 has the same ID as the
+> STAC9221.
+>
+>
+>
+> IDT *PC Audio* Marketing Engineer/Linux Manager
+>
+> W: (512) 330-3127
+>
+>
+>
+> *From:* Nathan Schulte [mailto:reklipz@gmail.com]
+> *Sent:* Tuesday, April 29, 2008 12:02 PM
+> *To:* Takashi Iwai
+> *Cc:* Greg Zornetzer; alsa-devel@alsa-project.org; Tellman, Steven;
+> Matthew Ranostay
+> *Subject:* Re: [alsa-devel] help with idt 92hd206 codec for intel hda?
+>
+>
+>
+> I recently purchased an ECS A740GM-M Motherboard which has also an IDT
+> 92HD202 integrated audio chipset.
+>
+> ALSA is recognizing it as a SigmaTel 9221 A2.
+>
+> I'm willing to test these patches as well as give any information you guys
+> might need.
+>
+> -Nate
+>
+> (sorry for any duplicate messages, I'm still trying to get hold of how
+> this listing thing works...)
+>
+> On Tue, Apr 29, 2008 at 11:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> At Tue, 29 Apr 2008 17:48:53 +0200,
+>
+> I wrote:
+> >
+> > At Sun, 27 Apr 2008 01:38:19 -0500,
+> > Greg Zornetzer wrote:
+> > >
+> > > Hi all,
+> > > I recently acquired an ECS GF7100PVT-M3 motherboard, which appears to
+> use
+> > > the IDT 92HD206 codec for HDA.  Unfortunately, it doesn't appear to
+> have
+> > > full support under ALSA.  It gets detected as another Sigmatel chip.
+>  Analog
+> > > stereo output appears to work, but the mixer doesn't find any of the
+> normal
+> > > inputs.
+> > >
+> > > I found the tech specs for the chip at
+> > > http://www.idt.com/products/getDoc.cfm?docID=13461840
+> > > I've attached an lspci output and the codec file to this email.  I'm
+> not
+> > > much of an driver hacker, but if someone could give me an idea of what
+> needs
+> > > to go into the patch_sigmatel.c file to make this thing work, I'd be
+> willing
+> > > to try.  I'm also more than willing to test out patches on my setup.
+> >
+> > The below is an entirely untested patch quickly made from the codec
+> > information you posted.  Could you give it a try with the latest ALSA
+> > HG version?
+>
+> Steven informed that this codec is compatible with STAC927x.
+> So the revised patch below is dramatically shorter.  Try this one
+> instead of the previous one.
+>
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+>
+> diff -r 19b486f73bd8 pci/hda/patch_sigmatel.c
+> --- a/pci/hda/patch_sigmatel.c  Fri Apr 25 14:25:04 2008 +0200
+>
+> +++ b/pci/hda/patch_sigmatel.c  Tue Apr 29 20:43:43 2008 +0200
+> @@ -4289,6 +4289,8 @@
+>
+>        { .id = 0x83847635, .name = "STAC9250D", .patch = patch_stac925x },
+>        { .id = 0x83847636, .name = "STAC9251", .patch = patch_stac925x },
+>        { .id = 0x83847637, .name = "STAC9250D", .patch = patch_stac925x },
+>
+> +       { .id = 0x83847645, .name = "92HD206X", .patch = patch_stac927x },
+> +       { .id = 0x83847646, .name = "92HD206D", .patch = patch_stac927x },
+>
+>        /* The following does not take into account .id=0x83847661 when
+> subsys =
+>         * 104D0C00 which is STAC9225s. Because of this, some SZ Notebooks
+> are
+>         * currently not fully supported.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>
+>
