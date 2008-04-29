@@ -1,25 +1,20 @@
-From: "Nathan Schulte" <reklipz@gmail.com>
+From: "Tellman, Steven" <Steven.Tellman@idt.com>
 Subject: Re: help with idt 92hd206 codec for intel hda?
-Date: Tue, 29 Apr 2008 14:37:07 -0500
-Message-ID: <a221c0100804291237n15a4da1euc94fdd986150ee29@mail.gmail.com>
-References: <95ce66d80804262338k536d763bweca4e7d6ff39e06d@mail.gmail.com>
-	<s5h1w4oy84a.wl%tiwai@suse.de> <s5hod7swquv.wl%tiwai@suse.de>
-	<a221c0100804291001j1a2b043vdf1dc86dfd774df0@mail.gmail.com>
-	<16A430A423D62246A24C9A892622FE66134C51@CORPEXCH1.na.ads.idt.com>
-	<a221c0100804291201s7d94c5efw12af5c5698b72d72@mail.gmail.com>
-	<16A430A423D62246A24C9A892622FE66134C67@CORPEXCH1.na.ads.idt.com>
+Date: Tue, 29 Apr 2008 12:48:48 -0700
+Message-ID: <16A430A423D62246A24C9A892622FE66134C7D@CORPEXCH1.na.ads.idt.com>
+References: <95ce66d80804262338k536d763bweca4e7d6ff39e06d@mail.gmail.com><s5h1w4oy84a.wl%tiwai@suse.de>
+	<s5hod7swquv.wl%tiwai@suse.de><a221c0100804291001j1a2b043vdf1dc86dfd774df0@mail.gmail.com><16A430A423D62246A24C9A892622FE66134C51@CORPEXCH1.na.ads.idt.com><a221c0100804291201s7d94c5efw12af5c5698b72d72@mail.gmail.com><16A430A423D62246A24C9A892622FE66134C67@CORPEXCH1.na.ads.idt.com>
+	<a221c0100804291237n15a4da1euc94fdd986150ee29@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0506.google.com (rv-out-0506.google.com [209.85.198.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id 605162492E
+Received: from mxout2.mainstreet.net (mxout2.mainstreet.net [204.69.220.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCDB024956
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Apr 2008 21:37:09 +0200 (CEST)
-Received: by rv-out-0506.google.com with SMTP id g37so62604rvb.32
-	for <alsa-devel@alsa-project.org>; Tue, 29 Apr 2008 12:37:07 -0700 (PDT)
-In-Reply-To: <16A430A423D62246A24C9A892622FE66134C67@CORPEXCH1.na.ads.idt.com>
-Content-Disposition: inline
+	Tue, 29 Apr 2008 21:48:56 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <a221c0100804291237n15a4da1euc94fdd986150ee29@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,13 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Tellman, Steven" <Steven.Tellman@idt.com>
+To: Nathan Schulte <reklipz@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>, Greg Zornetzer <gzornetzer.lists@gmail.com>, alsa-devel@alsa-project.org, Matthew Ranostay <mranostay@embeddedalley.com>
 List-Id: alsa-devel@alsa-project.org
 
+Chip has nothing to do with it, it's a SPDIF spec limitation. More info
+here:
+
+http://en.wikipedia.org/wiki/Iec958
+
+Yes, you can encode everything into AC3 and output to your receiver.
+
+IDT PC Audio Marketing Engineer/Linux Manager
+W: (512) 330-3127
+
+-----Original Message-----
+From: alsa-devel-bounces@alsa-project.org
+[mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Nathan Schulte
+Sent: Tuesday, April 29, 2008 2:37 PM
+To: Tellman, Steven
+Cc: Takashi Iwai; Greg Zornetzer; alsa-devel@alsa-project.org; Matthew
+Ranostay
+Subject: Re: [alsa-devel] help with idt 92hd206 codec for intel hda?
+
 Ok, that's good to know.
 
-So, it looks like I'll either need to encode everything to a DTS/AC3 stream
+So, it looks like I'll either need to encode everything to a DTS/AC3
+stream
 in ALSA before sending via SPDIF, that should work, right?
 
 Also, this is a chip limitation, not an SPDIF limitation, right?
@@ -43,7 +58,8 @@ Also, this is a chip limitation, not an SPDIF limitation, right?
 Thanks for the support!
 
 -Nate
-On Tue, Apr 29, 2008 at 2:21 PM, Tellman, Steven <Steven.Tellman@idt.com>
+On Tue, Apr 29, 2008 at 2:21 PM, Tellman, Steven
+<Steven.Tellman@idt.com>
 wrote:
 
 > SPDIF is limited to 2 channels when using PCM. DTS/AC3 is the only way
@@ -58,7 +74,8 @@ wrote:
 >
 > -----Original Message-----
 > From: alsa-devel-bounces@alsa-project.org
-> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Nathan Schulte
+> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Nathan
+Schulte
 > Sent: Tuesday, April 29, 2008 2:01 PM
 > To: Tellman, Steven
 > Cc: Takashi Iwai; Greg Zornetzer; alsa-devel@alsa-project.org; Matthew
@@ -71,7 +88,8 @@ wrote:
 > AC3
 > stream for decoding on the receiver end.
 >
-> Now, on after I reinstalled (changed from raid0 to raid5), I cannot get
+> Now, on after I reinstalled (changed from raid0 to raid5), I cannot
+get
 > any
 > audio whatsoever (even via analog outs).
 >
@@ -84,12 +102,15 @@ wrote:
 > hand
 > instead of using the distro supplied package?
 >
-> Also, after looking at the sigmatel patch for hda-intel, the 92xx chips
+> Also, after looking at the sigmatel patch for hda-intel, the 92xx
+chips
 > are
-> limited to two channels via spdif... On my first install, I changed the
+> limited to two channels via spdif... On my first install, I changed
+the
 > limit, and recompiled by hand. ALSA would then tell me that 6 channels
 > was
-> ok, as opposed to throwing an error, yet I still only got two channels.
+> ok, as opposed to throwing an error, yet I still only got two
+channels.
 >
 > Ideas?
 >
@@ -99,7 +120,8 @@ wrote:
 > <Steven.Tellman@idt.com>
 > wrote:
 >
-> >  Are you having issues with that board? The 92HD202 has the same ID as
+> >  Are you having issues with that board? The 92HD202 has the same ID
+as
 > the
 > > STAC9221.
 > >
@@ -116,25 +138,30 @@ wrote:
 > > *To:* Takashi Iwai
 > > *Cc:* Greg Zornetzer; alsa-devel@alsa-project.org; Tellman, Steven;
 > > Matthew Ranostay
-> > *Subject:* Re: [alsa-devel] help with idt 92hd206 codec for intel hda?
+> > *Subject:* Re: [alsa-devel] help with idt 92hd206 codec for intel
+hda?
 > >
 > >
 > >
-> > I recently purchased an ECS A740GM-M Motherboard which has also an IDT
+> > I recently purchased an ECS A740GM-M Motherboard which has also an
+IDT
 > > 92HD202 integrated audio chipset.
 > >
 > > ALSA is recognizing it as a SigmaTel 9221 A2.
 > >
-> > I'm willing to test these patches as well as give any information you
+> > I'm willing to test these patches as well as give any information
+you
 > guys
 > > might need.
 > >
 > > -Nate
 > >
-> > (sorry for any duplicate messages, I'm still trying to get hold of how
+> > (sorry for any duplicate messages, I'm still trying to get hold of
+how
 > > this listing thing works...)
 > >
-> > On Tue, Apr 29, 2008 at 11:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> > On Tue, Apr 29, 2008 at 11:47 AM, Takashi Iwai <tiwai@suse.de>
+wrote:
 > >
 > > At Tue, 29 Apr 2008 17:48:53 +0200,
 > >
@@ -144,7 +171,8 @@ wrote:
 > > > Greg Zornetzer wrote:
 > > > >
 > > > > Hi all,
-> > > > I recently acquired an ECS GF7100PVT-M3 motherboard, which appears
+> > > > I recently acquired an ECS GF7100PVT-M3 motherboard, which
+appears
 > to
 > > use
 > > > > the IDT 92HD206 codec for HDA.  Unfortunately, it doesn't appear
@@ -163,16 +191,19 @@ wrote:
 > > > > I've attached an lspci output and the codec file to this email.
 > I'm
 > > not
-> > > > much of an driver hacker, but if someone could give me an idea of
+> > > > much of an driver hacker, but if someone could give me an idea
+of
 > what
 > > needs
-> > > > to go into the patch_sigmatel.c file to make this thing work, I'd
+> > > > to go into the patch_sigmatel.c file to make this thing work,
+I'd
 > be
 > > willing
 > > > > to try.  I'm also more than willing to test out patches on my
 > setup.
 > > >
-> > > The below is an entirely untested patch quickly made from the codec
+> > > The below is an entirely untested patch quickly made from the
+codec
 > > > information you posted.  Could you give it a try with the latest
 > ALSA
 > > > HG version?
@@ -197,7 +228,8 @@ wrote:
 > >
 > >        { .id = 0x83847635, .name = "STAC9250D", .patch =
 > patch_stac925x },
-> >        { .id = 0x83847636, .name = "STAC9251", .patch = patch_stac925x
+> >        { .id = 0x83847636, .name = "STAC9251", .patch =
+patch_stac925x
 > },
 > >        { .id = 0x83847637, .name = "STAC9250D", .patch =
 > patch_stac925x },
@@ -207,7 +239,8 @@ wrote:
 > > +       { .id = 0x83847646, .name = "92HD206D", .patch =
 > patch_stac927x },
 > >
-> >        /* The following does not take into account .id=0x83847661 when
+> >        /* The following does not take into account .id=0x83847661
+when
 > > subsys =
 > >         * 104D0C00 which is STAC9225s. Because of this, some SZ
 > Notebooks
@@ -229,3 +262,7 @@ wrote:
 > Alsa-devel@alsa-project.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
