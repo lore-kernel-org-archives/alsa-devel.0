@@ -1,15 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/6] soc - wm8753 - Clean up checkpatch warnings
-Date: Wed, 30 Apr 2008 10:10:14 +0100
-Message-ID: <1209546619-14389-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 6/6] soc - tlv320aic3x - add GPIO support
+Date: Wed, 30 Apr 2008 10:10:19 +0100
+Message-ID: <1209546619-14389-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1209546619-14389-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1209546619-14389-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1209546619-14389-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1209546619-14389-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1209546619-14389-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C01B9103850
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C29BD103875
 	for <alsa-devel@alsa-project.org>;
 	Wed, 30 Apr 2008 11:10:21 +0200 (CEST)
+In-Reply-To: <1209546619-14389-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,144 +26,191 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
+From: Daniel Mack <daniel@caiaq.org>
+
+This patch adds support for AIC3x GPIO lines. They can be configured for
+many possible functions as well as be driven manually. I also introduced
+i2c read functionality since the GPIO state register has to be read from
+hardware every time and can not be served from cache.
+
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8753.c |   34 ++++++++++++++++++----------------
- 1 files changed, 18 insertions(+), 16 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c |   53 ++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic3x.h |   49 ++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 101 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 76a5c7b..fb41826 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -150,7 +150,7 @@ static int wm8753_write(struct snd_soc_codec *codec, unsigned int reg,
- 	data[0] = (reg << 1) | ((value >> 8) & 0x0001);
- 	data[1] = value & 0x00ff;
- 
--	wm8753_write_reg_cache (codec, reg, value);
-+	wm8753_write_reg_cache(codec, reg, value);
- 	if (codec->hw_write(codec->control_data, data, 2) == 2)
- 		return 0;
- 	else
-@@ -249,7 +249,7 @@ static int wm8753_set_dai(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
- 	int mode = wm8753_read_reg_cache(codec, WM8753_IOCTL);
- 
--	if (((mode &0xc) >> 2) == ucontrol->value.integer.value[0])
-+	if (((mode & 0xc) >> 2) == ucontrol->value.integer.value[0])
- 		return 0;
- 
- 	mode &= 0xfff3;
-@@ -342,7 +342,8 @@ static int wm8753_add_controls(struct snd_soc_codec *codec)
- 
- 	for (i = 0; i < ARRAY_SIZE(wm8753_snd_controls); i++) {
- 		err = snd_ctl_add(codec->card,
--				snd_soc_cnew(&wm8753_snd_controls[i],codec, NULL));
-+				snd_soc_cnew(&wm8753_snd_controls[i],
-+						codec, NULL));
- 		if (err < 0)
- 			return err;
- 	}
-@@ -722,7 +723,7 @@ static void pll_factors(struct _pll_div *pll_div, unsigned int target,
- 
- 	if ((Ndiv < 6) || (Ndiv > 12))
- 		printk(KERN_WARNING
--			"WM8753 N value outwith recommended range! N = %d\n",Ndiv);
-+			"wm8753: unsupported N = %d\n", Ndiv);
- 
- 	pll_div->n = Ndiv;
- 	Nmod = target % source;
-@@ -1300,8 +1301,9 @@ static int wm8753_dapm_event(struct snd_soc_codec *codec, int event)
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index d76fa35..6e4bc69 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -138,6 +138,20 @@ static int aic3x_write(struct snd_soc_codec *codec, unsigned int reg,
+ 		return -EIO;
  }
  
- #define WM8753_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
--		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | \
--		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-+		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
-+		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
-+		SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
- 
- #define WM8753_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
- 	SNDRV_PCM_FMTBIT_S24_LE)
-@@ -1507,9 +1509,9 @@ static int wm8753_suspend(struct platform_device *pdev, pm_message_t state)
- 	struct snd_soc_codec *codec = socdev->codec;
- 
- 	/* we only need to suspend if we are a valid card */
--	if(!codec->card)
-+	if (!codec->card)
- 		return 0;
--		
++/*
++ * read from the aic3x register space
++ */
++static int aic3x_read(struct snd_soc_codec *codec, unsigned int reg,
++		      u8 *value)
++{
++	*value = reg & 0xff;
++	if (codec->hw_read(codec->control_data, value, 1) != 1)
++		return -EIO;
 +
- 	wm8753_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
++	aic3x_write_reg_cache(codec, reg, *value);
++	return 0;
++}
++
+ #define SOC_DAPM_SINGLE_AIC3X(xname, reg, shift, mask, invert) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+ 	.info = snd_soc_info_volsw, \
+@@ -911,6 +925,33 @@ static int aic3x_dapm_event(struct snd_soc_codec *codec, int event)
  	return 0;
  }
-@@ -1523,7 +1525,7 @@ static int wm8753_resume(struct platform_device *pdev)
- 	u16 *cache = codec->reg_cache;
  
- 	/* we only need to resume if we are a valid card */
--	if(!codec->card)
-+	if (!codec->card)
- 		return 0;
- 
- 	/* Sync reg_cache with the hardware */
-@@ -1613,9 +1615,10 @@ static int wm8753_init(struct snd_soc_device *socdev)
- 	wm8753_add_widgets(codec);
- 	ret = snd_soc_register_card(socdev);
- 	if (ret < 0) {
--      	printk(KERN_ERR "wm8753: failed to register card\n");
-+		printk(KERN_ERR "wm8753: failed to register card\n");
- 		goto card_err;
--    }
-+	}
++void aic3x_set_gpio(struct snd_soc_codec *codec, int gpio, int state)
++{
++	u8 reg = gpio ? AIC3X_GPIO2_REG : AIC3X_GPIO1_REG;
++	u8 bit = gpio ? 3: 0;
++	u8 val = aic3x_read_reg_cache(codec, reg) & ~(1 << bit);
++	aic3x_write(codec, reg, val | (!!state << bit));
++}
++EXPORT_SYMBOL_GPL(aic3x_set_gpio);
 +
- 	return ret;
++int aic3x_get_gpio(struct snd_soc_codec *codec, int gpio)
++{
++	u8 reg = gpio ? AIC3X_GPIO2_REG : AIC3X_GPIO1_REG;
++	u8 val, bit = gpio ? 2: 1;
++
++	aic3x_read(codec, reg, &val);
++	return (val >> bit) & 1;
++}
++EXPORT_SYMBOL_GPL(aic3x_get_gpio);
++
++int aic3x_headset_detected(struct snd_soc_codec *codec)
++{
++	u8 val;
++	aic3x_read(codec, AIC3X_RT_IRQ_FLAGS_REG, &val);
++	return (val >> 2) & 1;
++}
++EXPORT_SYMBOL_GPL(aic3x_headset_detected);
++
+ #define AIC3X_RATES	SNDRV_PCM_RATE_8000_96000
+ #define AIC3X_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
+@@ -977,6 +1018,7 @@ static int aic3x_resume(struct platform_device *pdev)
+ static int aic3x_init(struct snd_soc_device *socdev)
+ {
+ 	struct snd_soc_codec *codec = socdev->codec;
++	struct aic3x_setup_data *setup = socdev->codec_data;
+ 	int reg, ret = 0;
  
- card_err:
-@@ -1630,7 +1633,7 @@ pcm_err:
-    around */
- static struct snd_soc_device *wm8753_socdev;
+ 	codec->name = "aic3x";
+@@ -1067,6 +1109,10 @@ static int aic3x_init(struct snd_soc_device *socdev)
+ 	/* off, with power on */
+ 	aic3x_dapm_event(codec, SNDRV_CTL_POWER_D3hot);
  
--#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	/* setup GPIO functions */
++	aic3x_write(codec, AIC3X_GPIO1_REG, (setup->gpio_func[0] & 0xf) << 4);
++	aic3x_write(codec, AIC3X_GPIO2_REG, (setup->gpio_func[1] & 0xf) << 4);
++
+ 	aic3x_add_controls(codec);
+ 	aic3x_add_widgets(codec);
+ 	ret = snd_soc_register_card(socdev);
+@@ -1174,6 +1220,12 @@ static struct i2c_client client_template = {
+ 	.name = "AIC3X",
+ 	.driver = &aic3x_i2c_driver,
+ };
++
++static int aic3x_i2c_read(struct i2c_client *client, u8 *value, int len)
++{
++	value[0] = i2c_smbus_read_byte_data(client, value[0]);
++	return (len == 1);
++}
+ #endif
  
- /*
-  * WM8753 2 wire address is determined by GPIO5
-@@ -1661,7 +1664,7 @@ static int wm8753_codec_probe(struct i2c_adapter *adap, int addr, int kind)
- 	client_template.addr = addr;
- 
- 	i2c =  kmemdup(&client_template, sizeof(client_template), GFP_KERNEL);
--	if (i2c == NULL){
-+	if (!i2c) {
- 		kfree(codec);
- 		return -ENOMEM;
- 	}
-@@ -1749,7 +1752,7 @@ static int wm8753_probe(struct platform_device *pdev)
- 	wm8753_socdev = socdev;
- 	INIT_DELAYED_WORK(&codec->delayed_work, wm8753_work);
- 
--#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ static int aic3x_probe(struct platform_device *pdev)
+@@ -1208,6 +1260,7 @@ static int aic3x_probe(struct platform_device *pdev)
  	if (setup->i2c_address) {
  		normal_i2c[0] = setup->i2c_address;
- 		codec->hw_write = (hw_write_t)i2c_master_send;
-@@ -1793,7 +1796,7 @@ static int wm8753_remove(struct platform_device *pdev)
- 	run_delayed_work(&codec->delayed_work);
- 	snd_soc_free_pcms(socdev);
- 	snd_soc_dapm_free(socdev);
--#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&wm8753_i2c_driver);
- #endif
- 	kfree(codec->private_data);
-@@ -1808,7 +1811,6 @@ struct snd_soc_codec_device soc_codec_dev_wm8753 = {
- 	.suspend = 	wm8753_suspend,
- 	.resume =	wm8753_resume,
- };
--
- EXPORT_SYMBOL_GPL(soc_codec_dev_wm8753);
+ 		codec->hw_write = (hw_write_t) i2c_master_send;
++		codec->hw_read = (hw_read_t) aic3x_i2c_read;
+ 		ret = i2c_add_driver(&aic3x_i2c_driver);
+ 		if (ret != 0)
+ 			printk(KERN_ERR "can't add i2c driver");
+diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
+index d49d001..c1dd1ac 100644
+--- a/sound/soc/codecs/tlv320aic3x.h
++++ b/sound/soc/codecs/tlv320aic3x.h
+@@ -108,8 +108,14 @@
+ #define DACR1_2_RLOPM_VOL		92
+ #define LLOPM_CTRL			86
+ #define RLOPM_CTRL			93
+-/* Clock generation control register */
++/* GPIO/IRQ registers */
++#define AIC3X_STICKY_IRQ_FLAGS_REG	96
++#define AIC3X_RT_IRQ_FLAGS_REG		97
++#define AIC3X_GPIO1_REG			98
++#define AIC3X_GPIO2_REG			99
++#define AIC3X_GPIOA_REG			100
+ #define AIC3X_GPIOB_REG			101
++/* Clock generation control register */
+ #define AIC3X_CLKGEN_CTRL_REG		102
  
- MODULE_DESCRIPTION("ASoC WM8753 driver");
+ /* Page select register bits */
+@@ -175,8 +181,49 @@
+ /* Default input volume */
+ #define DEFAULT_GAIN    0x20
+ 
++/* GPIO API */
++enum {
++	AIC3X_GPIO1_FUNC_DISABLED		= 0,
++	AIC3X_GPIO1_FUNC_AUDIO_WORDCLK_ADC	= 1,
++	AIC3X_GPIO1_FUNC_CLOCK_MUX		= 2,
++	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV2		= 3,
++	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV4		= 4,
++	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV8		= 5,
++	AIC3X_GPIO1_FUNC_SHORT_CIRCUIT_IRQ	= 6,
++	AIC3X_GPIO1_FUNC_AGC_NOISE_IRQ		= 7,
++	AIC3X_GPIO1_FUNC_INPUT			= 8,
++	AIC3X_GPIO1_FUNC_OUTPUT			= 9,
++	AIC3X_GPIO1_FUNC_DIGITAL_MIC_MODCLK	= 10,
++	AIC3X_GPIO1_FUNC_AUDIO_WORDCLK		= 11,
++	AIC3X_GPIO1_FUNC_BUTTON_IRQ		= 12,
++	AIC3X_GPIO1_FUNC_HEADSET_DETECT_IRQ	= 13,
++	AIC3X_GPIO1_FUNC_HEADSET_DETECT_OR_BUTTON_IRQ	= 14,
++	AIC3X_GPIO1_FUNC_ALL_IRQ		= 16
++};
++
++enum {
++	AIC3X_GPIO2_FUNC_DISABLED		= 0,
++	AIC3X_GPIO2_FUNC_HEADSET_DETECT_IRQ	= 2,
++	AIC3X_GPIO2_FUNC_INPUT			= 3,
++	AIC3X_GPIO2_FUNC_OUTPUT			= 4,
++	AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT	= 5,
++	AIC3X_GPIO2_FUNC_AUDIO_BITCLK		= 8,
++	AIC3X_GPIO2_FUNC_HEADSET_DETECT_OR_BUTTON_IRQ = 9,
++	AIC3X_GPIO2_FUNC_ALL_IRQ		= 10,
++	AIC3X_GPIO2_FUNC_SHORT_CIRCUIT_OR_AGC_IRQ = 11,
++	AIC3X_GPIO2_FUNC_HEADSET_OR_BUTTON_PRESS_OR_SHORT_CIRCUIT_IRQ = 12,
++	AIC3X_GPIO2_FUNC_SHORT_CIRCUIT_IRQ	= 13,
++	AIC3X_GPIO2_FUNC_AGC_NOISE_IRQ		= 14,
++	AIC3X_GPIO2_FUNC_BUTTON_PRESS_IRQ	= 15
++};
++
++void aic3x_set_gpio(struct snd_soc_codec *codec, int gpio, int state);
++int aic3x_get_gpio(struct snd_soc_codec *codec, int gpio);
++int aic3x_headset_detected(struct snd_soc_codec *codec);
++
+ struct aic3x_setup_data {
+ 	unsigned short i2c_address;
++	unsigned int gpio_func[2];
+ };
+ 
+ extern struct snd_soc_codec_dai aic3x_dai;
 -- 
 1.5.5.1
