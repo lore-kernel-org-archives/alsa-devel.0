@@ -1,21 +1,23 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: MIDI on ice1724 -  real-time kernel problem
-Date: Wed, 30 Apr 2008 22:07:42 +0200
-Message-ID: <4818D18E.5040409@insite.cz>
-References: <480E495B.20607@insite.cz>
-	<s5h63u8evih.wl%tiwai@suse.de>	<480F189A.7030500@insite.cz>
-	<480F99B8.3010408@insite.cz>	<s5hod7zb4j7.wl%tiwai@suse.de>
-	<4810F1FA.4020300@insite.cz>	<s5hhcdq4fnz.wl%tiwai@suse.de>
-	<481182EB.1010800@insite.cz> <s5h63u64dgt.wl%tiwai@suse.de>
+From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
+Subject: Problem with aloop
+Date: Wed, 30 Apr 2008 17:27:37 -0300
+Message-ID: <4818D639.6070008@tet.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D0F32476F
+Received: from einstein.tteng.com.br (mail4.tet.com.br [201.47.194.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA67B2477F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Apr 2008 22:07:49 +0200 (CEST)
-In-Reply-To: <s5h63u64dgt.wl%tiwai@suse.de>
+	Wed, 30 Apr 2008 22:27:41 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by einstein.tteng.com.br (Postfix) with ESMTP id 3B76EDE8448
+	for <alsa-devel@alsa-project.org>;
+	Wed, 30 Apr 2008 17:27:40 -0300 (BRST)
+Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
+	by einstein.tteng.com.br (Postfix) with ESMTP id 3A2AADE8445
+	for <alsa-devel@alsa-project.org>;
+	Wed, 30 Apr 2008 17:27:37 -0300 (BRST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 25 Apr 2008 09:06:19 +0200,
-> Pavel Hofman wrote:
->> Takashi Iwai wrote:
->>>> I do not know the reason for MPU401_INFO_NO_ACK. You removed it from the
->>>> original patch, but without it I always get the input/output error.
->>> Ah, thanks, I overlooked it.
->>> Fixed now.
->> Takashi, thanks, but the patch I sent you sets MPU401_INFO_INPUT and 
->> MPU401_INFO_OUTPUT flags too. They enable the actual input/output 
->> methods in mpu401_uart.c.
-> 
-> They aren't needed if you create full-duplex streams.
-> Could you check whether the latest code still causes any errors?
+Hi,
 
-The code works fine on standard kernel.
+    I am developing an application that captures sound and send it 
+through a network, just like a sound server. To test it I am using 
+kaffeine with alsa output plugin. After some time playing continuously, 
+or if I keep moving the position slider backward and forward, I get 
+choppy sound. If I close and reopen the capture stream opened by my 
+sound server, the sound is restored to good quality. Sometimes I have to 
+reopen many times before I get a good sound. When I use kaffeine oss 
+output plugin I don't have this issue. I don't have an audio sound card, 
+so I don't know if this is an aloop issue.
 
-But in the RT kernel of Ubuntu 7.10 (2.6.22-14-rt, 1000HZ compared to
-250HZ of the -generic kernel), MIDI interrupts get thrown continuously,
-hogging CPU with the IRQXX "process".
+Here are some details:
+- RedHat EL 4 kernel 2.6.9.55-ELsmp 64bit
+- Alsa 1.0.16
+- Xinelib 1.1.12
 
-When playing 44.1kHz audio with buffer size of 32768,
-snd_vt1724_interrupt is called every 185ms. With the buffer size of 
-4096, it is every 23ms. So far so good.
-
-But when I try to output some midi, the routine gets called every 24us
-(i.e. 1000 times faster). Comparing the time difference between my
-several debug printk's in snd_vt1724_interrupt (approx. 5us between each
-printk record a few lines of code apart) and between each call of the
-method (24us), I thought there would be a loop somewhere in the
-interrupt handler calling code. But /proc/interrupts really shows over
-40k interrupts a second for ICE1724.
-
-Changing the watermarks up to 0x1f makes no difference.
-
-Masking the MIDI interrupts works, snd_vt1724_interrupt is called only
-during VT1724_IRQ_MTPCM interrupts, with the MIDI status bits
-MPU_TX/MPU_RX set when reading/writing with amidi.
-
-My HW: ancient AMD Duron 900MHz.
-
-The interrupt flood occurs no matter whether the MIDI input is connected 
-to my MIDI keyboard or not.
-
-Thanks a lot to anyone for suggestions.
-
-
-Pavel.
+Please, if more details are needed I will be happy to provide them.
+Thanks in advance.
