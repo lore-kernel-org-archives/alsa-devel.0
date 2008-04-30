@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] soc - neo1973_wm8753.c cleanup checkpatch
-	issues
-Date: Wed, 30 Apr 2008 15:19:03 +0100
-Message-ID: <1209565146-32393-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] soc - DAPM - add hook to read state of
+	DAPM widget
+Date: Wed, 30 Apr 2008 15:19:06 +0100
+Message-ID: <1209565146-32393-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1209565146-32393-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1209565146-32393-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1209565146-32393-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6212C245F2
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 647A9245F8
 	for <alsa-devel@alsa-project.org>;
 	Wed, 30 Apr 2008 16:19:09 +0200 (CEST)
+In-Reply-To: <1209565146-32393-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,115 +30,63 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Graeme Gregory <graeme@openmoko.org>
 
-Clean up a few issues with the file that checkpatch noted, no functionality
-changes.
+This adds a hook to read the power state of a DAPM widget, I use this
+in the gta02 driver to expose certain DAPM widgets in the mixer for
+ease of audio routing.
 
 Signed-off-by: Graeme Gregory <graeme@openmoko.org>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/s3c24xx/neo1973_wm8753.c |   24 ++++++++++++------------
- 1 files changed, 12 insertions(+), 12 deletions(-)
+ include/sound/soc-dapm.h |    2 ++
+ sound/soc/soc-dapm.c     |   23 +++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
-index 962cc20..e2339b9 100644
---- a/sound/soc/s3c24xx/neo1973_wm8753.c
-+++ b/sound/soc/s3c24xx/neo1973_wm8753.c
-@@ -33,7 +33,7 @@
- #include <asm/arch/regs-gpio.h>
- #include <asm/hardware.h>
- #include <asm/arch/audio.h>
--#include <asm/io.h>
-+#include <linux/io.h>
- #include <asm/arch/spi-gpio.h>
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index a105b01..40cc695 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -223,6 +223,8 @@ int snd_soc_dapm_sys_add(struct device *dev);
+ /* dapm audio endpoint control */
+ int snd_soc_dapm_set_endpoint(struct snd_soc_codec *codec,
+ 	char *pin, int status);
++int snd_soc_dapm_get_endpoint_status(struct snd_soc_codec *codec,
++	char *pin);
+ int snd_soc_dapm_sync_endpoints(struct snd_soc_codec *codec);
  
- #include <asm/plat-s3c24xx/regs-iis.h>
-@@ -122,7 +122,7 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
+ /* dapm widget types */
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index af3326c..9fd5ee8 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1343,6 +1343,29 @@ int snd_soc_dapm_set_endpoint(struct snd_soc_codec *codec,
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_set_endpoint);
  
- 	/* set MCLK division for sample rate */
- 	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
--		S3C2410_IISMOD_32FS );
-+		S3C2410_IISMOD_32FS);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -133,7 +133,7 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* set prescaler division for sample rate */
- 	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
--		S3C24XX_PRESCALE(4,4));
-+		S3C24XX_PRESCALE(4, 4));
- 	if (ret < 0)
- 		return ret;
- 
-@@ -222,7 +222,7 @@ static struct snd_soc_ops neo1973_voice_ops = {
- 	.hw_free = neo1973_voice_hw_free,
- };
- 
--static int neo1973_scenario = 0;
-+static int neo1973_scenario;
- 
- static int neo1973_get_scenario(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
-@@ -233,7 +233,7 @@ static int neo1973_get_scenario(struct snd_kcontrol *kcontrol,
- 
- static int set_scenario_endpoints(struct snd_soc_codec *codec, int scenario)
- {
--	switch(neo1973_scenario) {
-+	switch (neo1973_scenario) {
- 	case NEO_AUDIO_OFF:
- 		snd_soc_dapm_set_endpoint(codec, "Audio Out",    0);
- 		snd_soc_dapm_set_endpoint(codec, "GSM Line Out", 0);
-@@ -334,7 +334,7 @@ static void lm4857_write_regs(void)
- static int lm4857_get_reg(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	int reg=kcontrol->private_value & 0xFF;
-+	int reg = kcontrol->private_value & 0xFF;
- 	int shift = (kcontrol->private_value >> 8) & 0x0F;
- 	int mask = (kcontrol->private_value >> 16) & 0xFF;
- 
-@@ -349,11 +349,11 @@ static int lm4857_set_reg(struct snd_kcontrol *kcontrol,
- 	int shift = (kcontrol->private_value >> 8) & 0x0F;
- 	int mask = (kcontrol->private_value >> 16) & 0xFF;
- 
--	if (((lm4857_regs[reg] >> shift ) & mask) ==
-+	if (((lm4857_regs[reg] >> shift) & mask) ==
- 		ucontrol->value.integer.value[0])
- 		return 0;
- 
--	lm4857_regs[reg] &= ~ (mask << shift);
-+	lm4857_regs[reg] &= ~(mask << shift);
- 	lm4857_regs[reg] |= ucontrol->value.integer.value[0] << shift;
- 	lm4857_write_regs();
- 	return 1;
-@@ -398,7 +398,7 @@ static const struct snd_soc_dapm_widget wm8753_dapm_widgets[] = {
- 
- 
- /* example machine audio_mapnections */
--static const char* audio_map[][3] = {
-+static const char *audio_map[][3] = {
- 
- 	/* Connections to the lm4857 amp */
- 	{"Audio Out", NULL, "LOUT1"},
-@@ -450,7 +450,7 @@ static const char *neo_scenarios[] = {
- };
- 
- static const struct soc_enum neo_scenario_enum[] = {
--	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(neo_scenarios),neo_scenarios),
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(neo_scenarios), neo_scenarios),
- };
- 
- static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
-@@ -521,8 +521,8 @@ static int neo1973_wm8753_init(struct snd_soc_codec *codec)
- /*
-  * BT Codec DAI
-  */
--static struct snd_soc_cpu_dai bt_dai =
--{	.name = "Bluetooth",
-+static struct snd_soc_cpu_dai bt_dai = {
-+	.name = "Bluetooth",
- 	.id = 0,
- 	.type = SND_SOC_DAI_PCM,
- 	.playback = {
+ /**
++ * snd_soc_dapm_get_endpoint_status - get audio endpoint status
++ * @codec: audio codec
++ * @endpoint: audio signal endpoint (or start point)
++ *
++ * Get audio endpoint status - connected or disconnected.
++ *
++ * Returns status
++ */
++int snd_soc_dapm_get_endpoint_status(struct snd_soc_codec *codec,
++	char *endpoint)
++{
++	struct snd_soc_dapm_widget *w;
++
++	list_for_each_entry(w, &codec->dapm_widgets, list) {
++		if (!strcmp(w->name, endpoint))
++			return w->connected;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_get_endpoint);
++
++/**
+  * snd_soc_dapm_free - free dapm resources
+  * @socdev: SoC device
+  *
 -- 
 1.5.5.1
