@@ -1,21 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] asoc tlv320aic3x: set power bits correctly
-Date: Wed, 30 Apr 2008 14:41:17 +0100
-Message-ID: <20080430134116.GA27364@rakim.wolfsonmicro.main>
-References: <20080430093719.GA13740@buzzloop.caiaq.de>
-	<20080430095747.GA28593@sirena.org.uk>
-	<bd7b27490804300450sc6c69d1v2edf2a8dca44bda@mail.gmail.com>
-	<80ACB17D-E7D2-4A4C-81F8-620C2D661781@caiaq.org>
+Subject: [PATCH 1/4] soc - neo1973_wm8753.c cleanup checkpatch
+	issues
+Date: Wed, 30 Apr 2008 15:19:03 +0100
+Message-ID: <1209565146-32393-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 143C324580
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6212C245F2
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Apr 2008 15:41:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <80ACB17D-E7D2-4A4C-81F8-620C2D661781@caiaq.org>
+	Wed, 30 Apr 2008 16:19:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +20,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Graeme Gregory <graeme@openmoko.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 30, 2008 at 03:11:06PM +0200, Daniel Mack wrote:
+From: Graeme Gregory <graeme@openmoko.org>
 
-> Hmm, ok - I might have a lack of knowledge here. All I was seeing with  
-> an I2C hardware analyzer is that those registers in question were  
-> written without the power bit set which makes them remain muted.  
-> What's the way to power up this entity properly?
+Clean up a few issues with the file that checkpatch noted, no functionality
+changes.
 
-You need to ensure that the entire DAPM path from the DAC to the output
-is powered by ensuring that the final output endpoint is marked as
-active.  Your machine driver should be using snd_soc_dapm_set_endpoint()
-to mark either the output pin of the codec or any external device (eg, a
-jack) that you've told DAPM about as enabled.  If you do not do this
-then DAPM will notice that none output paths are connected and not power
-on any of the components in the output path in order to save power.
+Signed-off-by: Graeme Gregory <graeme@openmoko.org>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/neo1973_wm8753.c |   24 ++++++++++++------------
+ 1 files changed, 12 insertions(+), 12 deletions(-)
 
-This should be integrated with any jack detection you are doing so that,
-for example, the headphone output will be marked as disabled when there
-is no headphone present.  The core will automatically manage the power
-state for DACs and ADCs but the machine driver needs to manage the power
-state for everything else.
-
-> And as we're on it - aic3x_dapm_event(SNDRV_CTL_POWER_D3cold) is  
-> called shortly after PCM playback has finished which clears the power  
-> bits of many registers. This in turn also makes the current PGA mixer  
-> setting become unfunctional as the outputs are switched off. Is there  
-> a proper way of preventing the glue layer to power down the chip in  
-> this case?
-
-Are you sure about that?  The chip should only be being placed into
-D3cold when the system is being suspended or powered off.  The chip will
-be placed into D3hot when the DACs and ADCs go idle but not D3cold.
-You will see similar behaviour if you haven't marked appropriate
-endpoints as active (since DAPM will power off anything it thinks is not
-in use, triggered when the DAC or ADC goes idle) but it shouldn't be
-done by the driver D3cold.
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index 962cc20..e2339b9 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -33,7 +33,7 @@
+ #include <asm/arch/regs-gpio.h>
+ #include <asm/hardware.h>
+ #include <asm/arch/audio.h>
+-#include <asm/io.h>
++#include <linux/io.h>
+ #include <asm/arch/spi-gpio.h>
+ 
+ #include <asm/plat-s3c24xx/regs-iis.h>
+@@ -122,7 +122,7 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* set MCLK division for sample rate */
+ 	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
+-		S3C2410_IISMOD_32FS );
++		S3C2410_IISMOD_32FS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -133,7 +133,7 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* set prescaler division for sample rate */
+ 	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
+-		S3C24XX_PRESCALE(4,4));
++		S3C24XX_PRESCALE(4, 4));
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -222,7 +222,7 @@ static struct snd_soc_ops neo1973_voice_ops = {
+ 	.hw_free = neo1973_voice_hw_free,
+ };
+ 
+-static int neo1973_scenario = 0;
++static int neo1973_scenario;
+ 
+ static int neo1973_get_scenario(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+@@ -233,7 +233,7 @@ static int neo1973_get_scenario(struct snd_kcontrol *kcontrol,
+ 
+ static int set_scenario_endpoints(struct snd_soc_codec *codec, int scenario)
+ {
+-	switch(neo1973_scenario) {
++	switch (neo1973_scenario) {
+ 	case NEO_AUDIO_OFF:
+ 		snd_soc_dapm_set_endpoint(codec, "Audio Out",    0);
+ 		snd_soc_dapm_set_endpoint(codec, "GSM Line Out", 0);
+@@ -334,7 +334,7 @@ static void lm4857_write_regs(void)
+ static int lm4857_get_reg(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+-	int reg=kcontrol->private_value & 0xFF;
++	int reg = kcontrol->private_value & 0xFF;
+ 	int shift = (kcontrol->private_value >> 8) & 0x0F;
+ 	int mask = (kcontrol->private_value >> 16) & 0xFF;
+ 
+@@ -349,11 +349,11 @@ static int lm4857_set_reg(struct snd_kcontrol *kcontrol,
+ 	int shift = (kcontrol->private_value >> 8) & 0x0F;
+ 	int mask = (kcontrol->private_value >> 16) & 0xFF;
+ 
+-	if (((lm4857_regs[reg] >> shift ) & mask) ==
++	if (((lm4857_regs[reg] >> shift) & mask) ==
+ 		ucontrol->value.integer.value[0])
+ 		return 0;
+ 
+-	lm4857_regs[reg] &= ~ (mask << shift);
++	lm4857_regs[reg] &= ~(mask << shift);
+ 	lm4857_regs[reg] |= ucontrol->value.integer.value[0] << shift;
+ 	lm4857_write_regs();
+ 	return 1;
+@@ -398,7 +398,7 @@ static const struct snd_soc_dapm_widget wm8753_dapm_widgets[] = {
+ 
+ 
+ /* example machine audio_mapnections */
+-static const char* audio_map[][3] = {
++static const char *audio_map[][3] = {
+ 
+ 	/* Connections to the lm4857 amp */
+ 	{"Audio Out", NULL, "LOUT1"},
+@@ -450,7 +450,7 @@ static const char *neo_scenarios[] = {
+ };
+ 
+ static const struct soc_enum neo_scenario_enum[] = {
+-	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(neo_scenarios),neo_scenarios),
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(neo_scenarios), neo_scenarios),
+ };
+ 
+ static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
+@@ -521,8 +521,8 @@ static int neo1973_wm8753_init(struct snd_soc_codec *codec)
+ /*
+  * BT Codec DAI
+  */
+-static struct snd_soc_cpu_dai bt_dai =
+-{	.name = "Bluetooth",
++static struct snd_soc_cpu_dai bt_dai = {
++	.name = "Bluetooth",
+ 	.id = 0,
+ 	.type = SND_SOC_DAI_PCM,
+ 	.playback = {
+-- 
+1.5.5.1
