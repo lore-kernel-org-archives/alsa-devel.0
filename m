@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/6] soc - s3c24xx-pcm - Fix checkpatch warnings
-Date: Wed, 30 Apr 2008 10:10:16 +0100
-Message-ID: <1209546619-14389-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1209546619-14389-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1209546619-14389-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/6] soc - wm8753 - Clean up checkpatch warnings
+Date: Wed, 30 Apr 2008 10:10:14 +0100
+Message-ID: <1209546619-14389-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BFA15103848
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C01B9103850
 	for <alsa-devel@alsa-project.org>;
 	Wed, 30 Apr 2008 11:10:21 +0200 (CEST)
-In-Reply-To: <1209546619-14389-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,138 +25,139 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/s3c24xx/s3c24xx-pcm.c |   33 ++++++++++++++++-----------------
- 1 files changed, 16 insertions(+), 17 deletions(-)
+ sound/soc/codecs/wm8753.c |   34 ++++++++++++++++++----------------
+ 1 files changed, 18 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/s3c24xx-pcm.c b/sound/soc/s3c24xx/s3c24xx-pcm.c
-index 49580fb..6c70a81 100644
---- a/sound/soc/s3c24xx/s3c24xx-pcm.c
-+++ b/sound/soc/s3c24xx/s3c24xx-pcm.c
-@@ -20,6 +20,7 @@
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 76a5c7b..fb41826 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -150,7 +150,7 @@ static int wm8753_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	data[0] = (reg << 1) | ((value >> 8) & 0x0001);
+ 	data[1] = value & 0x00ff;
  
- #include <linux/module.h>
- #include <linux/init.h>
-+#include <linux/io.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/dma-mapping.h>
-@@ -30,7 +31,6 @@
- #include <sound/soc.h>
+-	wm8753_write_reg_cache (codec, reg, value);
++	wm8753_write_reg_cache(codec, reg, value);
+ 	if (codec->hw_write(codec->control_data, data, 2) == 2)
+ 		return 0;
+ 	else
+@@ -249,7 +249,7 @@ static int wm8753_set_dai(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+ 	int mode = wm8753_read_reg_cache(codec, WM8753_IOCTL);
  
- #include <asm/dma.h>
--#include <asm/io.h>
- #include <asm/hardware.h>
- #include <asm/arch/dma.h>
- #include <asm/arch/audio.h>
-@@ -93,7 +93,7 @@ static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
- 	while (prtd->dma_loaded < prtd->dma_limit) {
- 		unsigned long len = prtd->dma_period;
+-	if (((mode &0xc) >> 2) == ucontrol->value.integer.value[0])
++	if (((mode & 0xc) >> 2) == ucontrol->value.integer.value[0])
+ 		return 0;
  
--		DBG("dma_loaded: %d\n",prtd->dma_loaded);
-+		DBG("dma_loaded: %d\n", prtd->dma_loaded);
+ 	mode &= 0xfff3;
+@@ -342,7 +342,8 @@ static int wm8753_add_controls(struct snd_soc_codec *codec)
  
- 		if ((pos + len) > prtd->dma_end) {
- 			len  = prtd->dma_end - pos;
-@@ -101,7 +101,7 @@ static void s3c24xx_pcm_enqueue(struct snd_pcm_substream *substream)
- 			       __func__, len);
- 		}
+ 	for (i = 0; i < ARRAY_SIZE(wm8753_snd_controls); i++) {
+ 		err = snd_ctl_add(codec->card,
+-				snd_soc_cnew(&wm8753_snd_controls[i],codec, NULL));
++				snd_soc_cnew(&wm8753_snd_controls[i],
++						codec, NULL));
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -722,7 +723,7 @@ static void pll_factors(struct _pll_div *pll_div, unsigned int target,
  
--		ret = s3c2410_dma_enqueue(prtd->params->channel, 
-+		ret = s3c2410_dma_enqueue(prtd->params->channel,
- 			substream, pos, len);
+ 	if ((Ndiv < 6) || (Ndiv > 12))
+ 		printk(KERN_WARNING
+-			"WM8753 N value outwith recommended range! N = %d\n",Ndiv);
++			"wm8753: unsupported N = %d\n", Ndiv);
  
- 		if (ret == 0) {
-@@ -129,7 +129,7 @@ static void s3c24xx_audio_buffdone(struct s3c2410_dma_chan *channel,
- 		return;
- 
- 	prtd = substream->runtime->private_data;
--	
-+
- 	if (substream)
- 		snd_pcm_period_elapsed(substream);
- 
-@@ -150,7 +150,7 @@ static int s3c24xx_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct s3c24xx_pcm_dma_params *dma = rtd->dai->cpu_dai->dma_data;
- 	unsigned long totbytes = params_buffer_bytes(params);
--	int ret=0;
-+	int ret = 0;
- 
- 	DBG("Entered %s\n", __func__);
- 
-@@ -223,7 +223,7 @@ static int s3c24xx_pcm_prepare(struct snd_pcm_substream *substream)
- 	/* return if this is a bufferless transfer e.g.
- 	 * codec <--> BT codec or GSM modem -- lg FIXME */
- 	if (!prtd->params)
--	 	return 0;
-+		return 0;
- 
- 	/* channel needs configuring for mem=>device, increment memory addr,
- 	 * sync to pclk, half-word transfers to the IIS-FIFO. */
-@@ -293,8 +293,8 @@ static int s3c24xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
+ 	pll_div->n = Ndiv;
+ 	Nmod = target % source;
+@@ -1300,8 +1301,9 @@ static int wm8753_dapm_event(struct snd_soc_codec *codec, int event)
  }
  
--static snd_pcm_uframes_t 
--	s3c24xx_pcm_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t
-+s3c24xx_pcm_pointer(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct s3c24xx_runtime_data *prtd = runtime->private_data;
-@@ -313,7 +313,7 @@ static snd_pcm_uframes_t
+ #define WM8753_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+-		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | \
+-		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
++		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
++		SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
  
- 	spin_unlock(&prtd->lock);
+ #define WM8753_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+ 	SNDRV_PCM_FMTBIT_S24_LE)
+@@ -1507,9 +1509,9 @@ static int wm8753_suspend(struct platform_device *pdev, pm_message_t state)
+ 	struct snd_soc_codec *codec = socdev->codec;
  
--	DBG("Pointer %x %x\n",src,dst);
-+	DBG("Pointer %x %x\n", src, dst);
- 
- 	/* we seem to be getting the odd error from the pcm library due
- 	 * to out-of-bounds pointers. this is maybe due to the dma engine
-@@ -355,11 +355,11 @@ static int s3c24xx_pcm_close(struct snd_pcm_substream *substream)
- 
- 	DBG("Entered %s\n", __func__);
- 
--	if (prtd)
--		kfree(prtd);
--	else
-+	if (!prtd)
- 		DBG("s3c24xx_pcm_close called with prtd == NULL\n");
- 
-+	kfree(prtd);
+ 	/* we only need to suspend if we are a valid card */
+-	if(!codec->card)
++	if (!codec->card)
+ 		return 0;
+-		
 +
+ 	wm8753_dapm_event(codec, SNDRV_CTL_POWER_D3cold);
  	return 0;
  }
+@@ -1523,7 +1525,7 @@ static int wm8753_resume(struct platform_device *pdev)
+ 	u16 *cache = codec->reg_cache;
  
-@@ -371,9 +371,9 @@ static int s3c24xx_pcm_mmap(struct snd_pcm_substream *substream,
- 	DBG("Entered %s\n", __func__);
+ 	/* we only need to resume if we are a valid card */
+-	if(!codec->card)
++	if (!codec->card)
+ 		return 0;
  
- 	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
--                                     runtime->dma_area,
--                                     runtime->dma_addr,
--                                     runtime->dma_bytes);
-+				     runtime->dma_area,
-+				     runtime->dma_addr,
-+				     runtime->dma_bytes);
- }
+ 	/* Sync reg_cache with the hardware */
+@@ -1613,9 +1615,10 @@ static int wm8753_init(struct snd_soc_device *socdev)
+ 	wm8753_add_widgets(codec);
+ 	ret = snd_soc_register_card(socdev);
+ 	if (ret < 0) {
+-      	printk(KERN_ERR "wm8753: failed to register card\n");
++		printk(KERN_ERR "wm8753: failed to register card\n");
+ 		goto card_err;
+-    }
++	}
++
+ 	return ret;
  
- static struct snd_pcm_ops s3c24xx_pcm_ops = {
-@@ -432,7 +432,7 @@ static void s3c24xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
+ card_err:
+@@ -1630,7 +1633,7 @@ pcm_err:
+    around */
+ static struct snd_soc_device *wm8753_socdev;
  
- static u64 s3c24xx_pcm_dmamask = DMA_32BIT_MASK;
+-#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
  
--static int s3c24xx_pcm_new(struct snd_card *card, 
-+static int s3c24xx_pcm_new(struct snd_card *card,
- 	struct snd_soc_codec_dai *dai, struct snd_pcm *pcm)
- {
- 	int ret = 0;
-@@ -467,7 +467,6 @@ struct snd_soc_platform s3c24xx_soc_platform = {
- 	.pcm_new	= s3c24xx_pcm_new,
- 	.pcm_free	= s3c24xx_pcm_free_dma_buffers,
+ /*
+  * WM8753 2 wire address is determined by GPIO5
+@@ -1661,7 +1664,7 @@ static int wm8753_codec_probe(struct i2c_adapter *adap, int addr, int kind)
+ 	client_template.addr = addr;
+ 
+ 	i2c =  kmemdup(&client_template, sizeof(client_template), GFP_KERNEL);
+-	if (i2c == NULL){
++	if (!i2c) {
+ 		kfree(codec);
+ 		return -ENOMEM;
+ 	}
+@@ -1749,7 +1752,7 @@ static int wm8753_probe(struct platform_device *pdev)
+ 	wm8753_socdev = socdev;
+ 	INIT_DELAYED_WORK(&codec->delayed_work, wm8753_work);
+ 
+-#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	if (setup->i2c_address) {
+ 		normal_i2c[0] = setup->i2c_address;
+ 		codec->hw_write = (hw_write_t)i2c_master_send;
+@@ -1793,7 +1796,7 @@ static int wm8753_remove(struct platform_device *pdev)
+ 	run_delayed_work(&codec->delayed_work);
+ 	snd_soc_free_pcms(socdev);
+ 	snd_soc_dapm_free(socdev);
+-#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	i2c_del_driver(&wm8753_i2c_driver);
+ #endif
+ 	kfree(codec->private_data);
+@@ -1808,7 +1811,6 @@ struct snd_soc_codec_device soc_codec_dev_wm8753 = {
+ 	.suspend = 	wm8753_suspend,
+ 	.resume =	wm8753_resume,
  };
 -
- EXPORT_SYMBOL_GPL(s3c24xx_soc_platform);
+ EXPORT_SYMBOL_GPL(soc_codec_dev_wm8753);
  
- MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
+ MODULE_DESCRIPTION("ASoC WM8753 driver");
 -- 
 1.5.5.1
