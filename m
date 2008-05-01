@@ -1,54 +1,38 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Pulseaudio alsa configure hook
-Date: Thu, 01 May 2008 14:58:22 +0100
-Message-ID: <fvci9u$2l7$1@ger.gmane.org>
-References: <20080427203709.GA13496@spring.luon.net>
-Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+From: Sean Thayne <sthayne@summitmediagroupllc.com>
+Subject: When turning up the volume,
+	the sound dies and I'm forced to reboot...
+Date: Thu, 01 May 2008 15:55:17 -0600
+Message-ID: <481A3C45.7070307@summitmediagroupllc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
-In-Reply-To: <20080427203709.GA13496@spring.luon.net>
-List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
-List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
-List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
-List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@mail.0pointer.de
-Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
-To: pulseaudio-discuss@mail.0pointer.de
-Cc: alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail46.opentransfer.com (mail46.opentransfer.com
+	[76.162.254.46]) by alsa0.perex.cz (Postfix) with SMTP id E9DC624938
+	for <alsa-devel@alsa-project.org>;
+	Thu,  1 May 2008 23:55:31 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sjoerd Simons wrote:
-> Hi,
-> 
->   The attached patch extends the alsa pulse plugin set with a alsa
->   configuration hook. Allowing one to specify some configuration parameters
->   that only come into effect when pulseaudio is running.
-> 
->   For example a configution file like:
-> 
->     @hooks [ {
->        func on_pulse_is_running
->          pcm.!default { type pulse }
->          ctl.!default { type pulse }
->        }
->    ]
+Hi All,
 
-Just a quick question as I've not had a chance to try this out yet!
+    I've got a via8237 audio card, and I'm using the latest alsa driver 
+via82xx, and I got a problem. Basically if I start playing say a music 
+file, and then turn the volume up above 75%, My sound craps out and I 
+get a muffled, very low volume version of the song, the only way I've 
+found to fix this is to reboot. This also happens randomly at low 
+volume. I thought it might be a hardware issue, but I've tried it on 3 
+other boxes with the same card.
 
-Does your code consider pulse as unavailable if it's suspended?
-
-e.g. by running:
-
-$ pasuspender <annoying application that uses alsa in a weird way>
-
-Would the hook still try and push alsa sound via pulse?
-
-
-It would rock if it didn't but I suspect it will :)
-
-Col
+Thanks for any input at all...
+-- 
+Sean Thayne
