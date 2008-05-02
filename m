@@ -1,18 +1,23 @@
-From: Will Wagner <will_wagner@carallon.com>
-Subject: error using aplay
-Date: Fri, 02 May 2008 17:42:20 +0100
-Message-ID: <481B446C.20800@carallon.com>
+From: Zoilo Gomez <zoilo@xs4all.nl>
+Subject: Re: [Alsa-user] Jetway j7f2 via82xx volume problem:
+ sound suddenly stops when increasing volume: "SOLVED"	(well	... sort of)
+Date: Fri, 02 May 2008 19:12:57 +0200
+Message-ID: <481B4B99.40303@xs4all.nl>
+References: <48063E0E.7010305@xs4all.nl>
+	<48111B88.80700@xs4all.nl>	<481643F8.1000401@xs4all.nl>
+	<s5hzlrcvn3n.wl%tiwai@suse.de>	<481721E5.50608@xs4all.nl>
+	<s5hve20vl40.wl%tiwai@suse.de>	<4818A330.4080000@xs4all.nl>
+	<s5hzlr9t1cd.wl%tiwai@suse.de>	<481B3001.5090003@xs4all.nl>
+	<s5habj83f2r.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from carallon.f9.co.uk (carallon.force9.co.uk [80.229.37.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 775B124376
+Received: from smtp-vbr15.xs4all.nl (smtp-vbr15.xs4all.nl [194.109.24.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 232A02438A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 May 2008 18:42:26 +0200 (CEST)
-Received: from [127.0.0.1] by carallon.f9.co.uk (MDaemon PRO v9.6.5)
-	with ESMTP id md50000227303.msg
-	for <alsa-devel@alsa-project.org>; Fri, 02 May 2008 17:42:23 +0100
+	Fri,  2 May 2008 19:12:59 +0200 (CEST)
+In-Reply-To: <s5habj83f2r.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,110 +27,232 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have cross compiled alsa-lib & alsa-utils for my arm platform. All 
-appears to be working as speaker_test works fine (and have had the 
-kernel sound driver working previously).
+Takashi Iwai wrote:
+> At Fri, 02 May 2008 17:15:13 +0200,
+> Zoilo Gomez wrote:
+>   
+>> Takashi Iwai wrote:
+>>     
+>>> At Wed, 30 Apr 2008 18:49:52 +0200,
+>>> Zoilo Gomez wrote:
+>>>   
+>>>       
+>>>> Takashi Iwai wrote:
+>>>>     
+>>>>         
+>>>>> At Tue, 29 Apr 2008 15:25:57 +0200,
+>>>>> Zoilo Gomez wrote:
+>>>>>   
+>>>>>       
+>>>>>           
+>>>>>>>> This is consistent with the apparent introduction of this bug in kernel
+>>>>>>>> 2.6.19 (includes alsa-driver version 1.0.12rc1): no such problem
+>>>>>>>> occurred until 2.6.18, but all kernels since 2.6.19 do suffer from this
+>>>>>>>> problem. The line of code above first shows up in linux-2.6.19.
+>>>>>>>>
+>>>>>>>> Unfortunately, since I do not have a datasheet for the VT1617A chip set,
+>>>>>>>> I cannot verify the exact semantics, or suggest an improvement.
+>>>>>>>>
+>>>>>>>> Can anyone with a datasheet please suggest a proper patch to this line
+>>>>>>>> of code?
+>>>>>>>>     
+>>>>>>>>         
+>>>>>>>>             
+>>>>>>>>                 
+>>>>>>> The register 0x5c is the VIA specific one.  I have a VT1617 (without
+>>>>>>> A) datasheet, and it suggests that the bit corresponds to the
+>>>>>>> "headphone amplifier temperature sensing control".  And setting this
+>>>>>>> bit means to _disable_ the temperature sensing control.  This sounds
+>>>>>>> rather the correct to set.
+>>>>>>>
+>>>>>>> However, I don't know whether any difference exists betweeen VIA1617
+>>>>>>> and 1617A although the codec id of both are identical.
+>>>>>>>
+>>>>>>> Andrey, any comments about your patch?
+>>>>>>>
+>>>>>>>
+>>>>>>> In anyway, it'd be helpful if we can know which ac97 registers work
+>>>>>>> and wich not.  Please take /proc/asound/card0/codec97#*/ac97#*-regs
+>>>>>>> file in both working and non-working cases to compare.  Especially,
+>>>>>>> the registers 0x5a and 0x5c look interesting.
+>>>>>>>   
+>>>>>>>       
+>>>>>>>           
+>>>>>>>               
+>>>>>> Code containing "snd_ac97_write_cache(a97, 0x5c, 0x20)":
+>>>>>> 0x5a = 8300
+>>>>>> 0x5c = 0000
+>>>>>>
+>>>>>> Code with "snd_ac97_write_cache(a97, 0x5c, 0x20)" commented out:
+>>>>>> 0x5a = 8301
+>>>>>> 0x5c = 0020
+>>>>>>
+>>>>>> Quite a surprise to me, I would have expected exactly the opposite .....!?
+>>>>>>     
+>>>>>>         
+>>>>>>             
+>>>>> I would, too.  Could you double-check, e.g. by adding a printk?
+>>>>>   
+>>>>>       
+>>>>>           
+>>>> I modified the driver code to:
+>>>>
+>>>>     
+>>>>         
+>>>>> int patch_vt1617a(struct snd_ac97 * ac97)
+>>>>> {
+>>>>>     int err = 0;
+>>>>>
+>>>>>     /* we choose to not fail out at this point, but we tell the
+>>>>>        caller when we return */
+>>>>>
+>>>>>     err = patch_build_controls(ac97, &snd_ac97_controls_vt1617a[0],
+>>>>>                    ARRAY_SIZE(snd_ac97_controls_vt1617a));
+>>>>>
+>>>>>     /* bring analog power consumption to normal by turning off the
+>>>>>      * headphone amplifier, like WinXP driver for EPIA SP
+>>>>>      */
+>>>>> printk("before: snd_ac97_read(ac97, 0x5c) = %04x\n", 
+>>>>> snd_ac97_read(ac97, 0x5c));
+>>>>>     snd_ac97_write_cache(ac97, 0x5c, 0x20);
+>>>>> printk("after: snd_ac97_read(ac97, 0x5c) = %04x\n", 
+>>>>> snd_ac97_read(ac97, 0x5c));
+>>>>>     ac97->ext_id |= AC97_EI_SPDIF;    /* force the detection of spdif */
+>>>>>     ac97->rates[AC97_RATES_SPDIF] = SNDRV_PCM_RATE_44100 | 
+>>>>> SNDRV_PCM_RATE_48000;
+>>>>>     ac97->build_ops = &patch_vt1616_ops;
+>>>>>
+>>>>>     return err;
+>>>>> }
+>>>>>       
+>>>>>           
+>>>> Surprise surprise ... the printk output in dmesg reads:
+>>>>
+>>>>     
+>>>>         
+>>>>> before: snd_ac97_read(ac97, 0x5c) = 0020
+>>>>> after: snd_ac97_read(ac97, 0x5c) = 0000
+>>>>>       
+>>>>>           
+>>>> If I write 0x00 (i.o. 0x20) into 0x5c, then the register content remains 
+>>>> unchanged, and returns: 0x20.
+>>>> If I write 0x20 into 0x5c twice, then the register content is also 0x00, 
+>>>> so no toggling.
+>>>>
+>>>> So it seems that the bit-value is inverted: write "1" clears the bit, 
+>>>> whereas writing "0" sets the bit.
+>>>>     
+>>>>         
+>>> Interesting.
+>>>
+>>>   
+>>>       
+>>>> And the code is trying to set the bit (with good intentions), but the 
+>>>> result is in fact the opposite.
+>>>>
+>>>> What do you think?
+>>>>     
+>>>>         
+>>> This sounds like a hardware bug to me...
+>>>   
+>>>       
+>> Agreed.
+>>
+>>     
+>>> How about the patch below then?
+>>>
+>>>
+>>> Takashi
+>>>
+>>> ---
+>>>
+>>> diff --git a/pci/ac97/ac97_patch.c b/pci/ac97/ac97_patch.c
+>>> index 726320b..e3e4dac 100644
+>>> --- a/pci/ac97/ac97_patch.c
+>>> +++ b/pci/ac97/ac97_patch.c
+>>> @@ -3448,6 +3448,7 @@ static const struct snd_kcontrol_new snd_ac97_controls_vt1617a[] = {
+>>>  int patch_vt1617a(struct snd_ac97 * ac97)
+>>>  {
+>>>  	int err = 0;
+>>> +	int val;
+>>>  
+>>>  	/* we choose to not fail out at this point, but we tell the
+>>>  	   caller when we return */
+>>> @@ -3458,7 +3459,10 @@ int patch_vt1617a(struct snd_ac97 * ac97)
+>>>  	/* bring analog power consumption to normal by turning off the
+>>>  	 * headphone amplifier, like WinXP driver for EPIA SP
+>>>  	 */
+>>> -	snd_ac97_write_cache(ac97, 0x5c, 0x20);
+>>> +	val = snd_ac97_read(ac97, 0x5c);
+>>> +	if (!(val & 0x20))
+>>> +		snd_ac97_write_cache(ac97, 0x5c, 0x20);
+>>>   
+>>>       
+>> This has no effect, since set/clear is apparently reversed here;
+>>     
+>
+> So, the bit 0x20 isn't set as default when you didn't write to 0x5c?
+>   
 
-However when I try to play a wav file with aplay it fails. This is 
-because in set_params(), after initialising the hardware (which happens 
-with no errors), it then tries to read back the period_size with the call:
+Yes it is; if I do not write to 0x5c after reset, then the register 
+value reads back as 0x20.
 
-	snd_pcm_hw_params_get_period_size(params, &chunk_size, 0);
+>> I think you mean:
+>>     
+>>> +	if (!(val & 0x20))
+>>> +		snd_ac97_write_cache(ac97, 0x5c, 0x00);
+>>>   
+>>>       
+>
+> No I meant as is.  See below.
+>
+>   
+>> But why so complicated? Why not omit the test, and write unconditionally:
+>>     
+>>> +	snd_ac97_write_cache(ac97, 0x5c, 0x00);
+>>>       
+> The patch was there for any good reason.  It was introduced to fix
+> some bugs on certain machines.  Removing it blindly breaks it again.
+>
+>
+>   
+>> Or perhaps even leave bit 5 in the reset state, which is 0x20 hence OK. 
+>>     
+>
+> Hm, they why the first test didn't pass?
+>   
 
-Which for the file I am playing should return 2048 but instead returns 
-zero. After that it reallocs the buffer to zero size and exits. To try 
-to work out what's going wrong I have been debugging this and inspecting 
-params get the following:
+OK, now I get your point: you are assuming that the chip set on my 
+machine can be recognized because it has bit 0x20 set after reset, and 
+in that case we leave the value as is. However if bit 0x20 is not set, 
+then we assume that it is a different chip set with "proper 
+1/0-set/clear-behaviour", and we set the bit to 0x20. Correct?
 
-(gdb) p *params
-$21 = {flags = 0, masks = {{bits = {8, 0, 0, 0, 0, 0, 0, 0}}, {bits = 
-{4, 0,
-         0, 0, 0, 0, 0, 0}}, {bits = {1, 0, 0, 0, 0, 0, 0, 0}}}, mres =
-{{
-       bits = {0, 0, 0, 0, 0, 0, 0, 0}}, {bits = {0, 0, 0, 0, 0, 0, 0,
-0}}, {
-       bits = {0, 0, 0, 0, 0, 0, 0, 0}}, {bits = {0, 0, 0, 0, 0, 0, 0,
-0}}, {
-       bits = {0, 0, 0, 0, 0, 0, 0, 0}}}, intervals = {{min = 16, max =
-16,
-       openmin = 0, openmax = 0, integer = 1, empty = 0}, {min = 32, max
-= 32,
-       openmin = 0, openmax = 0, integer = 1, empty = 0}, {min = 2, max =
-2,
-       openmin = 0, openmax = 0, integer = 1, empty = 0}, {min = 22050,
-       max = 22050, openmin = 0, openmax = 0, integer = 1, empty = 0}, {
-       min = 92879, max = 92880, openmin = 1, openmax = 1, integer = 0,
-       empty = 0}, {min = 2048, max = 2048, openmin = 0, openmax = 0,
-       integer = 1, empty = 0}, {min = 8192, max = 8192, openmin = 0,
-       openmax = 0, integer = 1, empty = 0}, {min = 5, max = 5, openmin =
-0,
-       openmax = 0, integer = 1, empty = 0}, {min = 464399, max = 464400,
-       openmin = 1, openmax = 1, integer = 0, empty = 0}, {min = 10240,
-       max = 10240, openmin = 0, openmax = 0, integer = 1, empty = 0}, {
-       min = 40960, max = 40960, openmin = 0, openmax = 0, integer = 1,
-       empty = 0}, {min = 10000, max = 10000, openmin = 0, openmax = 0,
-       integer = 1, empty = 0}}, ires = {{min = 0, max = 0, openmin = 0,
-       openmax = 0, integer = 0, empty = 0}, {min = 0, max = 0, openmin =
-0,
-       openmax = 0, integer = 0, empty = 0}, {min = 0, max = 0, openmin =
-0,
-       openmax = 0, integer = 0, empty = 0}, {min = 0, max = 0, openmin =
-0,
-       openmax = 0, integer = 0, empty = 0}, {min = 0, max = 0, openmin =
-0,
-       openmax = 0, integer = 0, empty = 0}, {min = 0, max = 0, openmin =
-0,
-       openmax = 0, integer = 0, empty = 0}, {min = 0, max = 0, openmin =
-0,
-       openmax = 0, integer = 0, empty = 0}, {min = 0, max = 0, openmin =
-0,
-       openmax = 0, integer = 0, empty = 0}, {min = 0, max = 0, openmin =
-0,
-       openmax = 0, integer = 0, empty = 0}}, rmask = 0, cmask = 1048327,
-   info = 65795, msbits = 16, rate_num = 22050, rate_den = 1, fifo_size =
-0,
-   reserved = '\0' <repeats 63 times>}
+Sorry for the confusion on my side.
 
+> No.  The situation is really complicated:
+>
+> - the current code is confirmed to work on some machines as is
+> - we don't know exactly whether the bit flip oocurs on every hardware
+>   with VT1617A (maybe not)
+> - we don't know exactly whether the bit is set or cleared as default
+>   
 
-My reading of this is that period_size is correct at 2048, however 
-openmin is 0 (dont' know what openmin is all about). So inspecting the 
-code I thought this should all work. However it appears that there is 
-some magic going on with functions being redirected as a backtrace shows:
+Understood.
 
-(gdb) bt
-#0  __snd_pcm_hw_params_get_period_size (params=0xbef44700,
-val=0xbef44674,
-     dir=0x2166c) at pcm.c:4263
-#1  0x4006f1c8 in __old_snd_pcm_hw_params_get_period_size
-(params=0xbef44700,
-     dir=0x2166c) at pcm.c:6822
-#2  0x0000eda0 in set_params () at aplay.c:983
-#3  0x00014004 in playback_go (fd=4, loaded=0, count=171008, rtype=2,
-     name=0xbef44de7 "/sdcard/sounds/tada.wav") at aplay.c:1950
-#4  0x000147b8 in playback (name=0xbef44de7 "/sdcard/sounds/tada.wav")
-     at aplay.c:2042
-#5  0x0000c8c4 in main (argc=3, argv=0xbef44ce4) at aplay.c:615
+OK, I confirm that your patch works fine on my machine, which (for the 
+record) is a Jetway J7F2 Mini-ITX motherboard.
 
-It seems the call is somehow being redirected through 
-__old_snd_pcm_hw_params_get_period_size and the implementation of this 
-means that I end up returning openmin instead of min for period_size.
+I have also cross-checked (well ... "cross-grepped") with the 
+viaudiocombo OSS-driver from the Arena web site; it seems that the 
+contents of register 0x5c are left unaltered after reset (hence the 
+value is 0x20). So that explains why the Arena driver does not suffer 
+from this problem.
 
-Can someone explain what is going on here? Why am I being redirected 
-through this old function? Is it correct that I should be reading 
-openmin here?
+Thanks a lot for your help Takashi!
 
-Any help much appreciated.
-
-Will.
-
-
-
--- 
-------------------------------------------------------------------------
-Will Wagner                                     will_wagner@carallon.com
-Senior Project Engineer                  Office Tel: +44 (0)20 7371 2032
-Carallon Ltd, Studio G20, Shepherds Building, Rockley Rd, London W14 0DA
-------------------------------------------------------------------------
+Zoilo.
