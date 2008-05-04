@@ -1,18 +1,20 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: MIDI on ice1724 -  real-time kernel problem
-Date: Sat, 03 May 2008 21:12:02 +0200
-Message-ID: <481CB902.9080905@insite.cz>
-References: <480E495B.20607@insite.cz>	<s5h63u8evih.wl%tiwai@suse.de>	<480F189A.7030500@insite.cz>	<480F99B8.3010408@insite.cz>	<s5hod7zb4j7.wl%tiwai@suse.de>	<4810F1FA.4020300@insite.cz>	<s5hhcdq4fnz.wl%tiwai@suse.de>	<481182EB.1010800@insite.cz>	<s5h63u64dgt.wl%tiwai@suse.de>	<4818D18E.5040409@insite.cz>
-	<s5htzhgub9a.wl%tiwai@suse.de>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: Buffering issues 2
+Date: Sat, 3 May 2008 21:12:19 -0400
+Message-ID: <75b66ecd0805031812o30684484u8cf99729467ffe30@mail.gmail.com>
+References: <20080424011833.GA28905@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E04824520
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E38B24628
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 May 2008 21:12:08 +0200 (CEST)
-In-Reply-To: <s5htzhgub9a.wl%tiwai@suse.de>
+	Sun,  4 May 2008 03:12:21 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so442401rvb.32
+	for <alsa-devel@alsa-project.org>; Sat, 03 May 2008 18:12:20 -0700 (PDT)
+In-Reply-To: <20080424011833.GA28905@tango.0pointer.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,54 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Apr 23, 2008 at 9:18 PM, Lennart Poettering <mznyfn@0pointer.de> wrote:
+>  The happens to be configured to 2 periods. So even if _avail_update()
+>  has some kind of period granularity (?) it should always have told us
+>  after we come back from the sleeping that at least *one* period is
+>  free. But it said 0 frames. Nada. Rien. Nichts. Kaputt.
 
+Should we just disallow 2 periods per buffer on HDA intel?  I've never
+heard of it working for anyone on the JACK and linux audio user lists
+with less than 3.
 
-Takashi Iwai wrote:
-> At Wed, 30 Apr 2008 22:07:42 +0200,
-> Pavel Hofman wrote:
->> Takashi Iwai wrote:
->>> At Fri, 25 Apr 2008 09:06:19 +0200,
->>> Pavel Hofman wrote:
->> The code works fine on standard kernel.
->>
->> But in the RT kernel of Ubuntu 7.10 (2.6.22-14-rt, 1000HZ compared to
->> 250HZ of the -generic kernel), MIDI interrupts get thrown continuously,
->> hogging CPU with the IRQXX "process".
->>
->> When playing 44.1kHz audio with buffer size of 32768,
->> snd_vt1724_interrupt is called every 185ms. With the buffer size of 
->> 4096, it is every 23ms. So far so good.
->>
->> But when I try to output some midi, the routine gets called every 24us
->> (i.e. 1000 times faster). Comparing the time difference between my
->> several debug printk's in snd_vt1724_interrupt (approx. 5us between each
->> printk record a few lines of code apart) and between each call of the
->> method (24us), I thought there would be a loop somewhere in the
->> interrupt handler calling code. But /proc/interrupts really shows over
->> 40k interrupts a second for ICE1724.
->>
->> Changing the watermarks up to 0x1f makes no difference.
-> 
-> That looks bad.
-> 
->> Masking the MIDI interrupts works, snd_vt1724_interrupt is called only
->> during VT1724_IRQ_MTPCM interrupts, with the MIDI status bits
->> MPU_TX/MPU_RX set when reading/writing with amidi.
-> 
-> Hm, is it TX or RX, or in both cases?
-> Could you check which one (TX or RX) causes this?
-> 
-
-Both reading (amidi -p hw:0 -d) and writing (amidi -p hw:0 -S 
-F0411042110C000000000074FF0411042110C000000) starts the TX interrupt 
-flood (irq status: 0x20) immediately. Upon opening input as well as 
-output the method snd_mpu401_do_reset is called - is perhaps the culprit 
-somewhere there?
-
-Thanks,
-
-Pavel.
+Lee
