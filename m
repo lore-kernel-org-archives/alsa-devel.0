@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: SoC sound support for imx27
-Date: Mon, 5 May 2008 14:12:17 +0100
-Message-ID: <20080505131216.GA5217@rakim.wolfsonmicro.main>
-References: <200804231654.44526.jbe@pengutronix.de>
-	<200805051256.38153.jbe@pengutronix.de>
-	<20080505124233.GE3426@sirena.org.uk>
-	<200805051455.05277.jbe@pengutronix.de>
+From: Andy Green <andy@warmcat.com>
+Subject: Re: Acer Aspire 8920g / snd-hda-intel / ALC889
+Date: Mon, 05 May 2008 23:06:50 +0100
+Message-ID: <481F84FA.4060307@warmcat.com>
+References: <480C8260.70501@warmcat.com>	<s5hr6czb3po.wl%tiwai@suse.de>	<480CDC26.3010506@warmcat.com>	<s5h63uab2k1.wl%tiwai@suse.de>	<480DC787.9070208@warmcat.com>	<s5h3apeb0gq.wl%tiwai@suse.de>	<480DCBC6.3050203@warmcat.com>	<480FA5D5.9090208@warmcat.com>
+	<s5h3apakthj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2777410380E
+Received: from mailserver.mog.warmcat.com (purr.warmcat.com [87.106.142.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6EAE24538
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 May 2008 15:12:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200805051455.05277.jbe@pengutronix.de>
+	Tue,  6 May 2008 00:07:00 +0200 (CEST)
+In-Reply-To: <s5h3apakthj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Juergen Beisert <jbe@pengutronix.de>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 05, 2008 at 02:55:04PM +0200, Juergen Beisert wrote:
+Somebody in the thread at some point said:
 
-> Hmm, how far away is ASoC v2 from mainline? When I start to develop the driver 
-> right now, what version I should use?
+> Build CONFIG_SND_HDA_HWDEP=y and you'll have /dev/snd/hwC0D0 device.
+> With the hda-verb program in the URL below, you can exec the verb on
+> the fly:
+> 	ftp://ftp.suse.com/pub/people/tiwai/misc/hda-verb-0.2.tar.bz2
 
-Depends on how quickly you want to get it into the mainline.  Developing
-for v1 would be the most conservative choice and let you get stuff in as
-soon as possible without being held up by v2 but it would mean that
-you'd be working with the ASoC v1 interfaces and that someone will have
-to convert to v2 at some point.
+Thanks for the hints and the applet... after some meddling around I 
+found the magic incantations to fire up the amp / speakers on this 
+laptop are to force model=acer-aspire in /etc/modprobe.conf, then using 
+the applet from the URL quoted above:
 
-The idea is that ASoC v2 itself should be starting to make its way into
-mainline during 2.6.27 but there's no guarantees that it'll make it
-then.
+./hda-verb /dev/snd/hwC0D0 0x15 SET_EAPD_BTLENABLE 2
+
+I confirmed stereo operation...  it doesn't react to headphone 
+insertion, plays audio through speakers and headphone jack in that case. 
+    Didn't try 5.1 (this laptop has a 5.1 speaker set) yet but I 
+wouldn't be surprised if that was trouble too.  Still this is waaaay 
+better than silence!  Thanks again for the help.
+
+-Andy
