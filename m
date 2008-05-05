@@ -1,65 +1,87 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: alsa pulse bugs
-Date: Mon, 05 May 2008 11:31:13 +0100
-Message-ID: <fvmnli$1t6$1@ger.gmane.org>
-References: <20080505103410.zv8dezd9z44cksoc@dbservice.com>	<fvmi82$f7a$1@ger.gmane.org>	<20080505111126.lhtr3bwyo0sg4wc4@dbservice.com>	<fvmjd0$it8$1@ger.gmane.org>
-	<fvmktt$ofl$1@ger.gmane.org>
-	<20080505122210.sbwpuulog00cos4c@dbservice.com>
-Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+From: Juergen Beisert <jbe@pengutronix.de>
+Subject: Re: SoC sound support for imx27
+Date: Mon, 5 May 2008 12:56:37 +0200
+Message-ID: <200805051256.38153.jbe@pengutronix.de>
+References: <200804231654.44526.jbe@pengutronix.de>
+	<200804241611.21072.jbe@pengutronix.de>
+	<1209047409.3286.111.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
-In-Reply-To: <20080505122210.sbwpuulog00cos4c@dbservice.com>
-List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
-List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
-List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
-List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@mail.0pointer.de
-Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
-To: pulseaudio-discuss@mail.0pointer.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.extern.pengutronix.de (metis.extern.pengutronix.de
+	[83.236.181.26]) by alsa0.perex.cz (Postfix) with ESMTP id 7C524243B6
+	for <alsa-devel@alsa-project.org>;
+	Mon,  5 May 2008 12:56:44 +0200 (CEST)
+In-Reply-To: <1209047409.3286.111.camel@localhost.localdomain>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-tom@dbservice.com wrote:
->> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#ga0d9e14a4be65209eb549e48a9f07302
->>
->> Closest it says is: "It's positive and less than buffer size in normal
->> situation".
->>
->> So perhaps this is an invalid assumption at the wine side?
-> 
-> However this part:
-> 
-> Delay is distance between current application frame position and sound  
-> frame position.
-> 
-> suggests that it indeed can be zero. Or why would a soundcard have a  
-> gap between the read and write positions if it has played everything?
+On Thursday 24 April 2008 16:30, Liam Girdwood wrote:
+> On Thu, 2008-04-24 at 16:11 +0200, Juergen Beisert wrote:
+> > On Wednesday 23 April 2008 17:36, Liam Girdwood wrote:
+> > > On Wed, 2008-04-23 at 16:54 +0200, Juergen Beisert wrote:
+> > > > Hi,
+> > > >
+> > > > I'm going to adapt Freescale's i.MX27 CPU to the SoC sound support
+> > > > via I2S. I found the imx21 already in the repository (may it will
+> > > > help for my job). Is anybody else working on i.MX27 support (to avo=
+id
+> > > > to reinvention everything)?
+> > >
+> > > It's not fully supported atm. However I've had interest from a few
+> > > folks who are interested in completing support.
+> > >
+> > > Currently working :-
+> > > [...]
+> >
+> > Working in what tree? In the git repository I did not found a "struct
+> > dma_channel_params" for imx. I'm confused.
+>
+> http://opensource.wolfsonmicro.com/cgi-bin/gitweb.cgi?p=3Dlinux-2.6-asoc.=
+git;
+>a=3Dsummary
+>
+> (dev branch)
+>
+> It's currently based on the 2.6.22 Freescale kernel (i.e. arch/arm/mxc)
+> from their i.MX31ADS board's BSP.
+>
+> Fwiw, I will be updating stuff as more i.MX code goes upstream, it's
+> just a matter of time.
 
-Indeed. I agree. However, for me this is something that should not be in 
-high level documentation, that should be an internal thing (i.e. it's a 
-detail of the implementation). It's perfectly true of hardware devices 
-(no doubt the context when the docs were written) but perhaps this 
-should not be true of non-h/w or ioplug based "devices"? Someone who 
-vaguely understands the ALSA stuff should have a better insight on this 
-to comment :p
+Hmm, I did a deeper look into this code. Why - for example - does the file =
 
->> Is there perhaps a more appropriate API call they can use to do whatever
->> test they are doing?
-> 
-> What Wine needs to know, is whether a particular sample has already  
-> been played or not. It does 'bytes_written - delay_in_bytes' to find  
-> out how much of the written data the soundcard has already played. If  
-> there is a better test for it, please explain.
+mx31ads-wm8753.c does the job of the BSP file? Why it registers devices? Fo=
+r =
 
-I've no idea, I'm just throwing up ideas/suggestions/opinions... there 
-is little technical background from my comments, just trying to raise 
-some points so people more familiar than I can comment :)
+my board I want to register platform_devices only in =
 
-Take care
+arc/arm/mach-mx2/pcm038.c. Nowhere else. If there is some glue required to =
 
-Col
+bring components together, IMHO also arc/arm/mach-mx2/pcm038.c is the corre=
+ct =
+
+place to do so. Why you did it in sound/ ? If you do it in sound/ , you =
+
+always need two locations to maintain. On in the arch/, one in sound/ .
+
+Juergen
+
+-- =
+
+Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
+=A0Pengutronix - Linux Solutions for Science and Industry
+=A0   Handelsregister: Amtsgericht Hildesheim, HRA 2686
+=A0 =A0 =A0    Vertretung Sued/Muenchen, Germany
+   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
