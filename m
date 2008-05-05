@@ -1,68 +1,55 @@
-From: =?utf-8?q?Bj=C3=B6rn_van_der_Meer?= <bvdm@chronovault.net>
-Subject: Request for Realtek patch - Nvidia MCP51 HDA / ALC883
-	(10de:026c) Notebook component
-Date: Mon, 5 May 2008 08:43:16 +0200
-Message-ID: <200805050843.16538.bvdm@chronovault.net>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: alsa pulse bugs
+Date: Mon, 05 May 2008 09:58:42 +0100
+Message-ID: <fvmi82$f7a$1@ger.gmane.org>
+References: <20080505103410.zv8dezd9z44cksoc@dbservice.com>
+Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CD3D244EA
-	for <alsa-devel@alsa-project.org>;
-	Mon,  5 May 2008 08:43:22 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so9356fgg.44
-	for <alsa-devel@alsa-project.org>; Sun, 04 May 2008 23:43:21 -0700 (PDT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
+In-Reply-To: <20080505103410.zv8dezd9z44cksoc@dbservice.com>
+List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
+List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
+List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
+List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@mail.0pointer.de
+Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
+To: pulseaudio-discuss@mail.0pointer.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gRXZlcnlvbmUsCgpJIGhhdmUgYWJvdmUgY29tcG9uZW50IGluIG15IGxhcHRvcCBhbmQg
-bGFjayB0aGUgZXhwZXJ0aXNlIHRvIGFkZCBpdCB0byB0byAKcGF0Y2hfcmVhbHRlay5jIG15c2Vs
-Zi4gCgpJIHRoaW5rIEkgaGF2ZSBjb2xsZWN0ZWQgYWxsIHRoZSByZWxldmFudCBpbmZvcm1hdGlv
-biBpZiBvbmUgb2YgdGhlIGRldmVsb3BlcnMgCndhbnRzIHRvIGdpdmUgaXQgYSB0cnkuCgpNeSBO
-b3RlYm9vazogTWVkaW9uIDk4MzAwIChhLmsuYS4gV0FNMjAzMCkKKFBsZWFzZSBub3RlOiBNZWRp
-b24gaXMgbm90IGFuIE9FTS4gVGhlIGJvYXJkIGlzIG5WaWRpYSBiYXNlZCwgT0VNIHRob3VnaHQg
-dG8gCmJlIFdpc3Ryb24uIEFwcGFyZW50bHkgcmFyZWx5IHVzZWQgc291bmQgY29tcG9uZW50PykK
-CkludGVybmFsIHNwZWFrZXJzCkludGVybmFsIG1pYyAtIHVua25vd24KdGhyZWUgamFja3M6IGhl
-YWRwaG9uZSwgbWljLCBTUERJRihkdWFsIHVzZSBqYWNrKS4KSmFjayBTZW5zaW5nIHVuZGVyIFdp
-bmRvd3MuCjUuMSBzdXJyb3VuZCAoc291bmRzIGxpa2UgdGhlIHNldHVwIHNob3VsZCBiZSBzdXBw
-b3J0ZWQgYnkgM3N0YWNrLTZjaC1kaWcpCgpsc3BjaToKMDA6MTAuMSBBdWRpbyBkZXZpY2UgWzA0
-MDNdOiBuVmlkaWEgQ29ycG9yYXRpb24gTUNQNTEgSGlnaCBEZWZpbml0aW9uIEF1ZGlvIApbMTBk
-ZTowMjZjXSAocmV2IGEyKQpTdWJzeXN0ZW06IFdpc3Ryb24gQ29ycC4gVW5rbm93biBkZXZpY2Ug
-WzE3YzA6NDA3OV0KRmxhZ3M6IDY2TUh6LCBmYXN0IGRldnNlbCwgSVJRIDIwCk1lbW9yeSBhdCBj
-MDAwMDAwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xNktdCkNhcGFiaWxpdGll
-czogWzQ0XSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMgpDYXBhYmlsaXRpZXM6IFs1MF0gTWVz
-c2FnZSBTaWduYWxsZWQgSW50ZXJydXB0czogTWFzaysgNjRiaXQrIFF1ZXVlPTAvMCAKRW5hYmxl
-LQpDYXBhYmlsaXRpZXM6IFs2Y10gSHlwZXJUcmFuc3BvcnQ6IE1TSSBNYXBwaW5nIAoKaHdpbmZv
-OgoyMjogUENJIDEwLjE6IDA0MDMgQXVkaW8gZGV2aWNlCiAgW0NyZWF0ZWQgYXQgcGNpLjI5Nl0K
-ICBVREk6IC9vcmcvZnJlZWRlc2t0b3AvSGFsL2RldmljZXMvcGNpXzEwZGVfMjZjCiAgVW5pcXVl
-IElEOiB3UnlELlg3WEozclRqclIzCiAgU3lzRlMgSUQ6IC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAw
-MDowMDoxMC4xCiAgU3lzRlMgQnVzSUQ6IDAwMDA6MDA6MTAuMQogIEhhcmR3YXJlIENsYXNzOiBz
-b3VuZAogIE1vZGVsOiAiV2lzdHJvbiBNQ1A1MSBIaWdoIERlZmluaXRpb24gQXVkaW8iCiAgVmVu
-ZG9yOiBwY2kgMHgxMGRlICJuVmlkaWEgQ29ycG9yYXRpb24iCiAgRGV2aWNlOiBwY2kgMHgwMjZj
-ICJNQ1A1MSBIaWdoIERlZmluaXRpb24gQXVkaW8iCiAgU3ViVmVuZG9yOiBwY2kgMHgxN2MwICJX
-aXN0cm9uIENvcnAuIgogIFN1YkRldmljZTogcGNpIDB4NDA3OSAKICBSZXZpc2lvbjogMHhhMgog
-IERyaXZlcjogIkhEQSBJbnRlbCIKICBEcml2ZXIgTW9kdWxlczogInNuZF9oZGFfaW50ZWwiCiAg
-TWVtb3J5IFJhbmdlOiAweGMwMDAwMDAwLTB4YzAwMDNmZmYgKHJ3LG5vbi1wcmVmZXRjaGFibGUp
-CiAgSVJROiAyMCAoMTk1NjkzIGV2ZW50cykKICBNb2R1bGUgQWxpYXM6ICJwY2k6djAwMDAxMERF
-ZDAwMDAwMjZDc3YwMDAwMTdDMHNkMDAwMDQwNzliYzA0c2MwM2kwMCIKICBEcml2ZXIgSW5mbyAj
-MDoKICAgIERyaXZlciBTdGF0dXM6IHNuZF9oZGFfaW50ZWwgaXMgYWN0aXZlCiAgICBEcml2ZXIg
-QWN0aXZhdGlvbiBDbWQ6ICJtb2Rwcm9iZSBzbmRfaGRhX2ludGVsIgogIENvbmZpZyBTdGF0dXM6
-IGNmZz1uZXcsIGF2YWlsPXllcywgbmVlZD1ubywgYWN0aXZlPXVua25vd24KCmFsc2EtaW5mby5z
-aCBvdXRwdXQgaXMgYXQgaHR0cDovL3Bhc3RlYmluLmNvbS9mNDk5NjJjOTIuCgogCgpDdXJyZW50
-bHkgdGhlIG9ubHkgdGhpbmcgd29ya2luZyBpcyBvdXRwdXQgdmlhIHRoZSBpbnRlcm5hbCBzcGVh
-a2Vycy4gCgoKVGhhbmsgeW91IHZlcnkgbXVjaCwgQi4KCgotLSAKQmrDtnJuIHZhbiBkZXIgTWVl
-cgpidmRtQGNocm9ub3ZhdWx0Lm5ldApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+tom@dbservice.com wrote:
+> I reported three bugs to the alsa bugtracker:
+> 
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3942
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3943
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3944
+> 
+> It's three bugs after all. Once these are fixed I expect Wine to work.  
+> *fingers crossed*
+
+Ace Tom :)
+
+I've cross posted this to the alsa devel list. Hopefully Takashi (who's 
+committed some pulse-related stuff recently) will have some insight here.
+
+Re the snd_pcm_delay() including network latency (#3945), this clearly 
+makes sense for network streams. Does you proposed fix include this 
+delay (albeit with the improvement that it also will drop to 0 if there 
+are no samples queued)?
+
+Also re #3942, I believe (but not sure) that the max buffer in the 
+glitch free branch has been increased significantly (as it now needs to 
+keep some degree of past sound as well as future buffer to allow the 
+rewinds to work properly (this is no doubt an inaccurate description of 
+why it's needed.... :p)) I'm not sure how this would affect this 
+solution, but Lennart will be able to advise better.
+
+Hopefully he'll have some comments on all of the above bugs as you've 
+clearly put in a lot of work to try and nail these issues :)
+
+Col
