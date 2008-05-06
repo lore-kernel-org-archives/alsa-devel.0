@@ -1,49 +1,65 @@
-From: Andy Green <andy@warmcat.com>
-Subject: Re: Acer Aspire 8920g / snd-hda-intel / ALC889
-Date: Mon, 05 May 2008 23:06:50 +0100
-Message-ID: <481F84FA.4060307@warmcat.com>
-References: <480C8260.70501@warmcat.com>	<s5hr6czb3po.wl%tiwai@suse.de>	<480CDC26.3010506@warmcat.com>	<s5h63uab2k1.wl%tiwai@suse.de>	<480DC787.9070208@warmcat.com>	<s5h3apeb0gq.wl%tiwai@suse.de>	<480DCBC6.3050203@warmcat.com>	<480FA5D5.9090208@warmcat.com>
-	<s5h3apakthj.wl%tiwai@suse.de>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: ALSA vs. non coherent DMA
+Date: Tue, 06 May 2008 10:08:28 +1000
+Message-ID: <1210032508.21644.129.camel@pasglop>
+Reply-To: benh@kernel.crashing.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.mog.warmcat.com (purr.warmcat.com [87.106.142.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6EAE24538
-	for <alsa-devel@alsa-project.org>;
-	Tue,  6 May 2008 00:07:00 +0200 (CEST)
-In-Reply-To: <s5h3apakthj.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1763110AbYEFAJA@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev list <linuxppc-dev@ozlabs.org>, Linux Kernel list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Somebody in the thread at some point said:
+Hi Takashi !
 
-> Build CONFIG_SND_HDA_HWDEP=y and you'll have /dev/snd/hwC0D0 device.
-> With the hda-verb program in the URL below, you can exec the verb on
-> the fly:
-> 	ftp://ftp.suse.com/pub/people/tiwai/misc/hda-verb-0.2.tar.bz2
+I'm bringing up an old thread as I'm just discovering that the problem
+still hasn't been fixed.
 
-Thanks for the hints and the applet... after some meddling around I 
-found the magic incantations to fire up the amp / speakers on this 
-laptop are to force model=acer-aspire in /etc/modprobe.conf, then using 
-the applet from the URL quoted above:
+There seem to be a few issues with ALSA current usage of mmap vs. non
+cache coherent architecture, such as embedded PowerPC's.
 
-./hda-verb /dev/snd/hwC0D0 0x15 SET_EAPD_BTLENABLE 2
+I can see at least two with a quick look to pcm-native.c, one I don't
+understand and one I think I do:
 
-I confirmed stereo operation...  it doesn't react to headphone 
-insertion, plays audio through speakers and headphone jack in that case. 
-    Didn't try 5.1 (this laptop has a 5.1 speaker set) yet but I 
-wouldn't be surprised if that was trouble too.  Still this is waaaay 
-better than silence!  Thanks again for the help.
+ - The control/status mapping. Can you elaborate a bit on what this is
+actually doing and why it shouldn't be done on "non coherent"
+architectures ? Currently this -is- done on all powerpc's, whether they
+are coherent or not and I want to understand what the underlying issue
+is.
 
--Andy
+ - The mmap of DMA pages. Here, the problem appears two fold:
+
+	* Use of virt_to_page() on virtual addresses returned by
+dma_alloc_coherent().
+
+	* No using the appropriate page protection for a DMA coherent mapping
+to userspace.
+
+It seems like you have solved that in part with implementing a generic
+dma_mmap_coherent() in the past that for some reason you never merged
+upstream (I can track that to about 2 years ago). Is there a reason ?
+
+I think we need to at least apply a band-aid today as it's becoming a
+nasty issue for several non-coherent powerpc platforms. It could be in
+the form of implementing dma_mmap_coherent() and changing Alsa to use it
+with the appropriate ifdef, or just adding an ifdef CONFIG_PPC with the
+right code in there for now until a better solution is found.
+
+It should be trivial though. Getting the PFN from the DMA address is
+easy if we have the dma handle and the virtual address, though that -is-
+definitely platform specific. I can implement a function for that if you
+need. As for the pgprot, we can come up with something like
+pgprot_mmap_dma(). Either that or I can fold it all in a powerpc wide
+implementation of a dma_mmap_coherent() like we envisioned initially.
+
+Let me know what approach is preferred here and I'll come up with
+patches ASAP. As far as I'm concerned, this is a bug and thus must be
+fixed now for .26 and possibly backported to stable even if we can come
+up with a non invasive solution). I'm annoyed because it represents a
+trivial amount of code, this problem should have been fixed a long time
+ago.
+
+Cheers,
+Ben.
