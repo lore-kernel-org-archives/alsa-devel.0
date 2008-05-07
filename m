@@ -1,68 +1,74 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [pulseaudio-discuss] alsa pulse bugs
-Date: Tue, 6 May 2008 21:38:24 +0200
-Message-ID: <20080506193824.GC25436@tango.0pointer.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: alsa pulse bugs
+Date: Wed, 07 May 2008 02:45:57 +0100
+Message-ID: <fvr1kl$m4$1@ger.gmane.org>
 References: <20080505103410.zv8dezd9z44cksoc@dbservice.com>
-	<fvmi82$f7a$1@ger.gmane.org>
+	<20080506193616.GB25436@tango.0pointer.de>
+Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7E04E243A4
-	for <alsa-devel@alsa-project.org>;
-	Tue,  6 May 2008 21:38:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <fvmi82$f7a$1@ger.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
+In-Reply-To: <20080506193616.GB25436@tango.0pointer.de>
+List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
+List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
+List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
+List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@mail.0pointer.de
+Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
+To: pulseaudio-discuss@mail.0pointer.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 05.05.08 09:58, Colin Guthrie (gmane@colin.guthr.ie) wrote:
+Cross posting Lennart's reply to the Alsa list as requested.
 
-> 
-> tom@dbservice.com wrote:
-> > I reported three bugs to the alsa bugtracker:
-> > 
-> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3942
-> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3943
-> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3944
-> > 
-> > It's three bugs after all. Once these are fixed I expect Wine to work.  
-> > *fingers crossed*
-> 
-> Ace Tom :)
-> 
-> I've cross posted this to the alsa devel list. Hopefully Takashi (who's 
-> committed some pulse-related stuff recently) will have some insight here.
-> 
-> Re the snd_pcm_delay() including network latency (#3945), this clearly 
-> makes sense for network streams. Does you proposed fix include this 
-> delay (albeit with the improvement that it also will drop to 0 if there 
-> are no samples queued)?
-> 
-> Also re #3942, I believe (but not sure) that the max buffer in the 
-> glitch free branch has been increased significantly (as it now needs to 
-> keep some degree of past sound as well as future buffer to allow the 
-> rewinds to work properly (this is no doubt an inaccurate description of 
-> why it's needed.... :p)) I'm not sure how this would affect this 
-> solution, but Lennart will be able to advise better.
+Please can you guys apply #3942 and #3944 (see below), as per Lennart's 
+recommendations?
 
-Yes, with glitch-free maxlength becomes mostly irrelevant. It should
-default to "0" know, to let the server decide.
+Cheers :)
 
-Lennart
+Col
 
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Lennart Poettering wrote:
+> On Mon, 05.05.08 10:34, tom@dbservice.com (tom@dbservice.com) wrote:
+> 
+>> I reported three bugs to the alsa bugtracker:
+>>
+>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3942
+> 
+> I though I already posted a patch like this a while back. This really
+> should be merged!
+> 
+>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3943
+> 
+> This is not correct. snd_pcm_delay() is the delay that it takes until
+> a sample you write now to the PCM stream takes to be played. For PCI
+> devices this is usually the same as write_index-read_index, but not
+> for virtual devices like PA, and not even for USB.
+> 
+> This is the only way snd_pcm_delay() has any value for synchronization
+> purposes (i.e. syncing video to audio).
+> 
+> I think there's simply in invalid assumption made by the WINE devs (or
+> possible even the MS devs who designed the API): they assume that all
+> sound cards are PCI sound cards. Which ain't really true.
+> 
+> In short: the transport latency *needs* to be taken into account,
+> there is no way around this.
+> 
+>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3944
+> 
+> This looks good to me and should also be applied.
+> 
+> Could you please post the patch for 3942 and 3944 to the ALSA ml? The
+> truth is that the ALSA devs are very good at ignoring the ALSA BTS. If
+> you want your stuff merged, post it to the ALSA ML, don't bother with
+> the BTS.
+> 
+> And thank you very much for your patches!
+> 
+> Lennart
+> 
