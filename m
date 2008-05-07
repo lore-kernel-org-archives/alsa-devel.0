@@ -1,20 +1,19 @@
-From: Will Wagner <will_wagner@carallon.com>
-Subject: Re: softvol plugin question
-Date: Wed, 07 May 2008 19:25:46 +0100
-Message-ID: <4821F42A.6020601@carallon.com>
-References: <4821AFFA.7010401@carallon.com> <4821E43A.5050402@tet.com.br>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: ALSA vs. non coherent DMA
+Date: Thu, 08 May 2008 07:53:11 +1000
+Message-ID: <1210197191.1421.12.camel@pasglop>
+References: <1210032508.21644.129.camel@pasglop>
+	<s5hmyn3d7d5.wl%tiwai@suse.de>  <4821BB0E.80000@freescale.com>
+Reply-To: benh@kernel.crashing.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from carallon.f9.co.uk (carallon.force9.co.uk [80.229.37.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78B5024482
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C99F2454C
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 May 2008 20:27:44 +0200 (CEST)
-Received: from [127.0.0.1] by carallon.f9.co.uk (MDaemon PRO v9.6.5)
-	with ESMTP id md50000229217.msg
-	for <alsa-devel@alsa-project.org>; Wed, 07 May 2008 19:27:15 +0100
-In-Reply-To: <4821E43A.5050402@tet.com.br>
+	Wed,  7 May 2008 23:53:21 +0200 (CEST)
+In-Reply-To: <4821BB0E.80000@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,76 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, alsa-devel@alsa-project.org, Linux Kernel list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Gustavo da Silva Serra wrote:
-> I had this problem with alsamixer itself. It doesn't appear until I call 
-> "alsactl restore". To automate I added this line to /etc/rc.local.
+
+On Wed, 2008-05-07 at 09:22 -0500, Timur Tabi wrote:
+> Takashi Iwai wrote:
 > 
+> > This is a mmap of the data record to be shared in realtime with apps.
+> > The app updates its data pointer (appl_ptr) on the mmapped buffer
+> > while the driver updates the data (e.g. DMA position, called hwptr) on
+> > the fly on the mmapped record.  Due to its real-time nature, it has to
+> > be coherent -- at least, it was a problem on ARM.
+> 
+> This doesn't sound like a coherency problem to me, and least not one you'd find
+> on PowerPC.  Both the driver and the application run on the host CPU, so there
+> shouldn't be any coherency problem.  My understanding is that a "non coherent"
+> platform is one where the host CPU isn't aware when a *hardware device* writes
+> directly to memory, e.g. via DMA.
 
-Thanks, that fixed it.
+Yes, precisely. I was about to make a reply here. There is some
+confusion at least in terminology, in Alsa. This is not DMA coherency,
+though it is a problem with virtually tagged data caches that some archs
+such as ARM have.
 
-As an aside I had to patch alsa-utils/alsactl/names.c to make it work 
-with my alsa lib as I have disabled midi & seq support. The patch is 
-below, the problem with it is that alsa-lib does not expose in a header 
-anywhere what is enabled/disabled (alsa-lib/include/config.h appears to 
-be a private header that does not get installed).
+So this is ok for all PowerPC since they all have a physically tagged
+data cache.
 
---- alsa-utils-1.0.16/alsactl/names.c	2008-05-07 19:03:59.000000000 +0100
-+++ alsa-utils-1.0.16/alsactl/names.c.new	2008-05-07 19:03:53.000000000 
-+0100
-@@ -282,6 +282,7 @@ static int probe_pcm(snd_config_t *confi
-  	return 0;
-  }
+The real problem -is- still the DMA coherency issue and as I see it, is
+two fold:
 
-+#ifdef BUILD_RAWMIDI
-  static int probe_rawmidi_virtual(snd_config_t *config,
-  				 const char *name, const char *comment)
-  {
-@@ -411,6 +412,7 @@ static int probe_rawmidi(snd_config_t *c
-  		return err;
-  	return 0;
-  }
-+#endif // BUILD_RAWMIDI
+ - mmap'ing of the result of dma_alloc_coherent() doesn't work. There
+are two issues at play here, one is the pgprot that -must- be set to
+uncached for such a mapping on non coherent architectures (and non
+coherent architectures only), and the other is our virt_to_page() that
+will puke on virtual addresses coming from dma_alloc_coherent().
 
-  static int probe_timers(snd_config_t *config)
-  {
-@@ -473,6 +475,7 @@ static int probe_timer(snd_config_t *con
-  	return 0;
-  }
+ - mmap'ing of SG lists for non coherent DMA. There the problem is a
+mixture of how Alsa allocate the SG buffers mixes with the previous
+problem.
 
-+#ifdef BUILD_SEQ
-  static int probe_seq(snd_config_t *config)
-  {
-  	int err;
-@@ -492,15 +495,20 @@ static int probe_seq(snd_config_t *confi
-  		return err;
-  	return 0;
-  }
-+#endif
+I think it's never valid to create an SG list with the output of
+dma_alloc_coherent though. We would need a dma_alloc_sg() for that...
 
-  typedef int (probe_fcn)(snd_config_t *config);
+sglists are made of pages, thus allocated with GFP, and later DMA mapped
+with dma_map_*, however this brings a whole other set of issues/constra
+ints such as bouce bufferring on some MMU less platforms if the memory
+happens to come out of the wrong place. Also, such mapped buffers are
+-not- coherent as they must not be modified via their virtual address
+while mapped, -unless- they are also mapped in kernel and/or user space
+(vmap & mmap) using some kind of "coherent" attributes such as
+pgprot_noncached. (and provided that is possible at all in kernel place
+for archs like MIPS).
 
-  static probe_fcn * probes[] = {
-  	probe_ctl,
-  	probe_pcm,
-+#ifdef BUILD_RAWMIDI
-  	probe_rawmidi,
-+#endif
-  	probe_timer,
-+#ifdef BUILD_SEQ
-  	probe_seq,
-+#endif
-  	NULL
-  };
+I don't have an easy answer there, it seems the bogosity roots deep in
+alsa, at least for the SG bits. For the non-SG bits, we can probably
+work around with an accessor to get the right pgprot and maybe some
+variant of virt_to_page() (dma_virt_to_page() ?) that would walk the
+kernel page tables to obtain the pfn.
 
-
-
--- 
-------------------------------------------------------------------------
-Will Wagner                                     will_wagner@carallon.com
-Senior Project Engineer                  Office Tel: +44 (0)20 7371 2032
-Carallon Ltd, Studio G20, Shepherds Building, Rockley Rd, London W14 0DA
-------------------------------------------------------------------------
+Ben.
