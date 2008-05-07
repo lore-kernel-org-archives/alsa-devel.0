@@ -1,18 +1,18 @@
-From: Will Wagner <will_wagner@carallon.com>
-Subject: softvol plugin question
-Date: Wed, 07 May 2008 14:34:50 +0100
-Message-ID: <4821AFFA.7010401@carallon.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: ALSA vs. non coherent DMA
+Date: Wed, 07 May 2008 09:22:06 -0500
+Message-ID: <4821BB0E.80000@freescale.com>
+References: <1210032508.21644.129.camel@pasglop> <s5hmyn3d7d5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from carallon.f9.co.uk (carallon.force9.co.uk [80.229.37.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id B5C9D2465D
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18BB1246A5
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 May 2008 15:36:33 +0200 (CEST)
-Received: from [127.0.0.1] by carallon.f9.co.uk (MDaemon PRO v9.6.5)
-	with ESMTP id md50000229026.msg
-	for <alsa-devel@alsa-project.org>; Wed, 07 May 2008 14:35:45 +0100
+	Wed,  7 May 2008 16:22:14 +0200 (CEST)
+In-Reply-To: <s5hmyn3d7d5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: benh@kernel.crashing.org, alsa-devel@alsa-project.org, Linux Kernel list <linux-kernel@vger.kernel.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Takashi Iwai wrote:
 
-I have successfully set up alsa for my custom hardware and am using 
-sofvol plugin to do volume control as my hardware does not support it.
+> This is a mmap of the data record to be shared in realtime with apps.
+> The app updates its data pointer (appl_ptr) on the mmapped buffer
+> while the driver updates the data (e.g. DMA position, called hwptr) on
+> the fly on the mmapped record.  Due to its real-time nature, it has to
+> be coherent -- at least, it was a problem on ARM.
 
-The problem I am having is that the softvol control does not appear to 
-amixer until I have first used the softvol plugin with aplay. Is there a 
-simple way of 'loading' the softvol plugin at startup so that the 
-control gets created immediately?
+This doesn't sound like a coherency problem to me, and least not one you'd find
+on PowerPC.  Both the driver and the application run on the host CPU, so there
+shouldn't be any coherency problem.  My understanding is that a "non coherent"
+platform is one where the host CPU isn't aware when a *hardware device* writes
+directly to memory, e.g. via DMA.
 
-Thanks,
-
-Will.
 -- 
-------------------------------------------------------------------------
-Will Wagner                                     will_wagner@carallon.com
-Senior Project Engineer                  Office Tel: +44 (0)20 7371 2032
-Carallon Ltd, Studio G20, Shepherds Building, Rockley Rd, London W14 0DA
-------------------------------------------------------------------------
+Timur Tabi
+Linux kernel developer at Freescale
