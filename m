@@ -1,25 +1,20 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
+From: Will Wagner <will_wagner@carallon.com>
 Subject: Re: softvol plugin question
-Date: Wed, 07 May 2008 14:17:46 -0300
-Message-ID: <4821E43A.5050402@tet.com.br>
-References: <4821AFFA.7010401@carallon.com>
+Date: Wed, 07 May 2008 19:25:46 +0100
+Message-ID: <4821F42A.6020601@carallon.com>
+References: <4821AFFA.7010401@carallon.com> <4821E43A.5050402@tet.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail4.tet.com.br [201.47.194.114])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1EBA5243ED
+Received: from carallon.f9.co.uk (carallon.force9.co.uk [80.229.37.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78B5024482
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 May 2008 19:17:55 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 4C32312000E
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 May 2008 14:17:52 -0300 (BRST)
-Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 47724120008
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 May 2008 14:17:49 -0300 (BRST)
-In-Reply-To: <4821AFFA.7010401@carallon.com>
+	Wed,  7 May 2008 20:27:44 +0200 (CEST)
+Received: from [127.0.0.1] by carallon.f9.co.uk (MDaemon PRO v9.6.5)
+	with ESMTP id md50000229217.msg
+	for <alsa-devel@alsa-project.org>; Wed, 07 May 2008 19:27:15 +0100
+In-Reply-To: <4821E43A.5050402@tet.com.br>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,45 +24,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I had this problem with alsamixer itself. It doesn't appear until I call =
+Gustavo da Silva Serra wrote:
+> I had this problem with alsamixer itself. It doesn't appear until I call 
+> "alsactl restore". To automate I added this line to /etc/rc.local.
+> 
 
-"alsactl restore". To automate I added this line to /etc/rc.local.
+Thanks, that fixed it.
 
-Will Wagner escreveu:
-> Hi,
->
-> I have successfully set up alsa for my custom hardware and am using =
+As an aside I had to patch alsa-utils/alsactl/names.c to make it work 
+with my alsa lib as I have disabled midi & seq support. The patch is 
+below, the problem with it is that alsa-lib does not expose in a header 
+anywhere what is enabled/disabled (alsa-lib/include/config.h appears to 
+be a private header that does not get installed).
 
-> sofvol plugin to do volume control as my hardware does not support it.
->
-> The problem I am having is that the softvol control does not appear to =
+--- alsa-utils-1.0.16/alsactl/names.c	2008-05-07 19:03:59.000000000 +0100
++++ alsa-utils-1.0.16/alsactl/names.c.new	2008-05-07 19:03:53.000000000 
++0100
+@@ -282,6 +282,7 @@ static int probe_pcm(snd_config_t *confi
+  	return 0;
+  }
 
-> amixer until I have first used the softvol plugin with aplay. Is there a =
++#ifdef BUILD_RAWMIDI
+  static int probe_rawmidi_virtual(snd_config_t *config,
+  				 const char *name, const char *comment)
+  {
+@@ -411,6 +412,7 @@ static int probe_rawmidi(snd_config_t *c
+  		return err;
+  	return 0;
+  }
++#endif // BUILD_RAWMIDI
 
-> simple way of 'loading' the softvol plugin at startup so that the =
+  static int probe_timers(snd_config_t *config)
+  {
+@@ -473,6 +475,7 @@ static int probe_timer(snd_config_t *con
+  	return 0;
+  }
 
-> control gets created immediately?
->
-> Thanks,
->
-> Will.
->   =
++#ifdef BUILD_SEQ
+  static int probe_seq(snd_config_t *config)
+  {
+  	int err;
+@@ -492,15 +495,20 @@ static int probe_seq(snd_config_t *confi
+  		return err;
+  	return 0;
+  }
++#endif
+
+  typedef int (probe_fcn)(snd_config_t *config);
+
+  static probe_fcn * probes[] = {
+  	probe_ctl,
+  	probe_pcm,
++#ifdef BUILD_RAWMIDI
+  	probe_rawmidi,
++#endif
+  	probe_timer,
++#ifdef BUILD_SEQ
+  	probe_seq,
++#endif
+  	NULL
+  };
 
 
 
--- =
-
-Gustavo da Silva Serra        gustavo.serra@tet.com.br
-=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=
-=97=97
-Tools & Technologies - T&T Engenheiros Associados Ltda.
-Projetos de SW & HW - Desenvolvendo solu=E7=F5es.
-Rua Riachuelo, 1098 Conj. 1204
-Centro - Porto Alegre - CEP 90010-272
-Fone DDR: (51)3220-3290
-Fone/Fax: (51)3220-3220 / 3220-3206
-http://www.tet.com.br/                                             tet@tet.=
-com.br
+-- 
+------------------------------------------------------------------------
+Will Wagner                                     will_wagner@carallon.com
+Senior Project Engineer                  Office Tel: +44 (0)20 7371 2032
+Carallon Ltd, Studio G20, Shepherds Building, Rockley Rd, London W14 0DA
+------------------------------------------------------------------------
