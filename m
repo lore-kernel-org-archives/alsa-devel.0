@@ -1,15 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] soc - at91-pcm - Fix line wrapping
-Date: Thu,  8 May 2008 11:27:54 +0100
-Message-ID: <1210242475-24279-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: How are events of headphone plug/unplug handled	in
+	ASOC.
+Date: Thu, 8 May 2008 11:31:27 +0100
+Message-ID: <20080508103127.GA10313@rakim.wolfsonmicro.main>
+References: <200804231654.44526.jbe@pengutronix.de>
+	<200805051256.38153.jbe@pengutronix.de>
+	<20080505124233.GE3426@sirena.org.uk>
+	<200805080954.28299.jbe@pengutronix.de>
+	<20080508093339.GA17836@rakim.wolfsonmicro.main>
+	<1210242424.6288.13.camel@kandagatla-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F24E01037FC
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8FBAE246FC
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 May 2008 12:27:57 +0200 (CEST)
+	Thu,  8 May 2008 12:31:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1210242424.6288.13.camel@kandagatla-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,47 +28,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Frank Mandarino <fmandarino@endrelia.com>
+To: "Srinivas.Kandagatla" <srinivas.kandagatla@azingo.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There's more checkpatch stuff to fix in the driver, this just fixes the
-minimum required for the following patch to be clean.
+On Thu, May 08, 2008 at 03:57:04PM +0530, Srinivas.Kandagatla wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/at91/at91-pcm.c |   11 +++++++----
- 1 files changed, 7 insertions(+), 4 deletions(-)
+> I see the background of ASOC states that it supports some mechanism for
+> events from plugging/unplugging headphone.
+> But I don't see this support in any of the drivers/alsa-lib or is this
+> feature is yet to come in ASOC core.
 
-diff --git a/sound/soc/at91/at91-pcm.c b/sound/soc/at91/at91-pcm.c
-index 67c88e3..e36533d 100644
---- a/sound/soc/at91/at91-pcm.c
-+++ b/sound/soc/at91/at91-pcm.c
-@@ -103,7 +103,8 @@ static void at91_pcm_dma_irq(u32 ssc_sr,
- 		if (prtd->period_ptr >= prtd->dma_buffer_end) {
- 			prtd->period_ptr = prtd->dma_buffer;
- 		}
--		at91_ssc_write(params->ssc_base + params->pdc->xnpr, prtd->period_ptr);
-+		at91_ssc_write(params->ssc_base + params->pdc->xnpr,
-+			       prtd->period_ptr);
- 		at91_ssc_write(params->ssc_base + params->pdc->xncr,
- 				prtd->period_size / params->pdc_xfer_size);
- 	}
-@@ -191,10 +192,12 @@ static int at91_pcm_trigger(struct snd_pcm_substream *substream,
- 		at91_ssc_write(params->ssc_base + AT91_SSC_IER,
- 			params->mask->ssc_endx | params->mask->ssc_endbuf);
- 
--		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_enable);
-+		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR,
-+			params->mask->pdc_enable);
- 
--		DBG("sr=%lx imr=%lx\n", at91_ssc_read(params->ssc_base + AT91_SSC_SR),
--					at91_ssc_read(params->ssc_base + AT91_SSC_IER));
-+		DBG("sr=%lx imr=%lx\n",
-+		    at91_ssc_read(params->ssc_base + AT91_SSC_SR),
-+		    at91_ssc_read(params->ssc_base + AT91_SSC_IER));
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_STOP:
--- 
-1.5.5.1
+There is currently no core support for this.  The machine driver needs
+to listen for headphone insert events using whatever mechanism the board
+supports and call snd_soc_dapm_set_endpoint() to enable and disable the
+relevant jacks when the headphones are connected and disconnected.
