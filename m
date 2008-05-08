@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] soc at91 minor bug fixes
-Date: Thu,  8 May 2008 11:27:55 +0100
-Message-ID: <1210242475-24279-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1210242475-24279-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] soc - at91-pcm - Fix line wrapping
+Date: Thu,  8 May 2008 11:27:54 +0100
+Message-ID: <1210242475-24279-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA2E41037ED
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F24E01037FC
 	for <alsa-devel@alsa-project.org>;
 	Thu,  8 May 2008 12:27:57 +0200 (CEST)
-In-Reply-To: <1210242475-24279-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,54 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Patrik Sevallius <patrik.sevallius@enea.com>, Frank Mandarino <fmandarino@endrelia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Frank Mandarino <fmandarino@endrelia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Patrik Sevallius <patrik.sevallius@enea.com>
+There's more checkpatch stuff to fix in the driver, this just fixes the
+minimum required for the following patch to be clean.
 
-Found these two bugs while browsing through the code.  The first one is
-a cut-n-paste bug, instead of disabling the clock when request_irq()
-fails, it enabled it once more.  The second one fixes a debug printout,
-AT91_SSC_IER is write only, AT91_SSC_IMR is readable (the printed string
-actually says imr).
-
-Frank Mandarino was busy so he asked me to send these to this list.
-
-/Patrik
-
-Signed-off-by: Patrik Sevallius <patrik.sevallius@enea.com>
-Acked-by: Frank Mandarino <fmandarino@endrelia.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/at91/at91-pcm.c |    2 +-
- sound/soc/at91/at91-ssc.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/at91/at91-pcm.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/at91/at91-pcm.c b/sound/soc/at91/at91-pcm.c
-index e36533d..ccac6bd 100644
+index 67c88e3..e36533d 100644
 --- a/sound/soc/at91/at91-pcm.c
 +++ b/sound/soc/at91/at91-pcm.c
-@@ -197,7 +197,7 @@ static int at91_pcm_trigger(struct snd_pcm_substream *substream,
+@@ -103,7 +103,8 @@ static void at91_pcm_dma_irq(u32 ssc_sr,
+ 		if (prtd->period_ptr >= prtd->dma_buffer_end) {
+ 			prtd->period_ptr = prtd->dma_buffer;
+ 		}
+-		at91_ssc_write(params->ssc_base + params->pdc->xnpr, prtd->period_ptr);
++		at91_ssc_write(params->ssc_base + params->pdc->xnpr,
++			       prtd->period_ptr);
+ 		at91_ssc_write(params->ssc_base + params->pdc->xncr,
+ 				prtd->period_size / params->pdc_xfer_size);
+ 	}
+@@ -191,10 +192,12 @@ static int at91_pcm_trigger(struct snd_pcm_substream *substream,
+ 		at91_ssc_write(params->ssc_base + AT91_SSC_IER,
+ 			params->mask->ssc_endx | params->mask->ssc_endbuf);
  
- 		DBG("sr=%lx imr=%lx\n",
- 		    at91_ssc_read(params->ssc_base + AT91_SSC_SR),
--		    at91_ssc_read(params->ssc_base + AT91_SSC_IER));
-+		    at91_ssc_read(params->ssc_base + AT91_SSC_IMR));
+-		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_enable);
++		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR,
++			params->mask->pdc_enable);
+ 
+-		DBG("sr=%lx imr=%lx\n", at91_ssc_read(params->ssc_base + AT91_SSC_SR),
+-					at91_ssc_read(params->ssc_base + AT91_SSC_IER));
++		DBG("sr=%lx imr=%lx\n",
++		    at91_ssc_read(params->ssc_base + AT91_SSC_SR),
++		    at91_ssc_read(params->ssc_base + AT91_SSC_IER));
  		break;
  
  	case SNDRV_PCM_TRIGGER_STOP:
-diff --git a/sound/soc/at91/at91-ssc.c b/sound/soc/at91/at91-ssc.c
-index f642d2d..bc35d00 100644
---- a/sound/soc/at91/at91-ssc.c
-+++ b/sound/soc/at91/at91-ssc.c
-@@ -590,7 +590,7 @@ static int at91_ssc_hw_params(struct snd_pcm_substream *substream,
- 			printk(KERN_WARNING "at91-ssc: request_irq failure\n");
- 
- 			DBG("Stopping pid %d clock\n", ssc_p->ssc.pid);
--			at91_sys_write(AT91_PMC_PCER, 1<<ssc_p->ssc.pid);
-+			at91_sys_write(AT91_PMC_PCDR, 1<<ssc_p->ssc.pid);
- 			return ret;
- 		}
- 
 -- 
 1.5.5.1
