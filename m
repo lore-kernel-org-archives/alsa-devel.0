@@ -1,21 +1,16 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] [ALSA] soc - fsl_ssi.c fix "BUG:
-	scheduling while	atomic"
-Date: Thu, 08 May 2008 14:43:51 -0500
-Message-ID: <482357F7.60602@freescale.com>
-References: <20080508160112.GA17085@polina.dev.rtsoft.ru>
-	<48235248.70305@freescale.com>
-	<20080508194146.GA5816@polina.dev.rtsoft.ru>
+From: maximilian attems <max@stro.at>
+Subject: [PATCH] emux midi synthesizer doesn't honor
+	SOFT_PEDAL-release event
+Date: Thu,  8 May 2008 22:53:36 +0200
+Message-ID: <1210280016-14742-1-git-send-email-max@stro.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DE8B24786
+Received: from baikonur.stro.at (baikonur.stro.at [213.239.196.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F731247BC
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 May 2008 21:43:56 +0200 (CEST)
-In-Reply-To: <20080508194146.GA5816@polina.dev.rtsoft.ru>
+	Thu,  8 May 2008 22:53:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: avorontsov@ru.mvista.com
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, maximilian attems <max@stro.at>, uwe_debbug@arcor.de
 List-Id: alsa-devel@alsa-project.org
 
-Anton Vorontsov wrote:
-
-> Are there any drawbacks of mdelay'ing? 
-
-All I remember is that without the delay, it wouldn't work.  But that was a long
-time ago, and I never revisited the issue, even after the silicon was updated.
-
-> Since some silicons need this
-> we'd better leave it then.
-
-The 1.0 silicon is dead and won't work with this driver anyway.  We should still
-leave it in for now, but I plan on doing thorough testing without it.  If the
-driver still works, I'll remove it for ASoC V2.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+V2hlbiB0aGUgaGFyZHdhcmUgd2F2ZXRhYmxlIHN5bnRoZXNpemVyIG9mIGFuIENyZWF0aXZlIFNC
+IEF1ZGlneSBvciBTQgpMaXZlISBjYXJkICh3aXRoIGVtdTEwayBjaGlwKSByZWNlaXZlcyB0aGUg
+TUlESSBTT0ZUX1BFQURBTC1wcmVzcyBldmVudAooPz8gNjcgMTI3KSB0aGUgYXBwcm9wcmlhdGUg
+dm9pY2UgaXMgYXR0ZW51dGVkLiBVbmZvcnR1bmF0ZWx5IHdoZW4gdGhlCnBlZGFsIGlzIHJlbGVh
+c2VkIChldmVudCA/PyA2NyAwKSB0aGUgdm9pY2UgZG9lcyBub3QgZ2V0IGl0J3Mgb3JpZ2luYWwK
+dm9sdW1lIGFnYWluLgoKVGhlIGF0dGFjaGVkIHBhdGNoIGZpeGVzIHRoaXMgcHJvYmxlbSBieSBh
+bmFseXNpbmcgdGhlIHZhbHVlICgwIG9yIDEyNykKb2YgdGhlIG1pZGkgY29udHJvbCBldmVudCBh
+bmQgcmVzZXR0aW5nIHRoZSBlZmZlY3QgcmVnaXN0ZXIgaW4gY2FzZSBvZiBhCnJlbGVhc2UgZXZl
+bnQuIEknbSBub3QgMTAwJSBzdXJlIGlmIHRoZSBjb2RlIHRvIHJlc2V0IHRoZSByZWdpc3RlciBp
+cwpjb3JyZWN0IGJ1dCBhdCBsZWFzdCBpdCB3b3Jrcy4KCk9yaWdpbmFsIHBhdGNoIGZyb20gIlV3
+ZSBLcsODI2dlciIgPHV3ZV9kZWJidWdAYXJjb3IuZGU+ClN1Ym1pdHRlZCB0byBodHRwOi8vYnVn
+cy5kZWJpYW4ub3JnLzQ3NDMxMgoKQ2M6IHV3ZV9kZWJidWdAYXJjb3IuZGUKU2lnbmVkLW9mZi1i
+eTogbWF4aW1pbGlhbiBhdHRlbXMgPG1heEBzdHJvLmF0PgotLS0KIHNvdW5kL3N5bnRoL2VtdXgv
+ZW11eF9zeW50aC5jIHwgICAgNiArKysrKy0KIDEgZmlsZXMgY2hhbmdlZCwgNSBpbnNlcnRpb25z
+KCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3N5bnRoL2VtdXgvZW11eF9z
+eW50aC5jIGIvc291bmQvc3ludGgvZW11eC9lbXV4X3N5bnRoLmMKaW5kZXggNDc4MzY5Yi4uZjgx
+ZTA4MSAxMDA2NDQKLS0tIGEvc291bmQvc3ludGgvZW11eC9lbXV4X3N5bnRoLmMKKysrIGIvc291
+bmQvc3ludGgvZW11eC9lbXV4X3N5bnRoLmMKQEAgLTM0MSw4ICszNDEsMTIgQEAgc25kX2VtdXhf
+Y29udHJvbCh2b2lkICpwLCBpbnQgdHlwZSwgc3RydWN0IHNuZF9taWRpX2NoYW5uZWwgKmNoYW4p
+CiAJY2FzZSBNSURJX0NUTF9TT0ZUX1BFREFMOgogI2lmZGVmIFNORFJWX0VNVVhfVVNFX1JBV19F
+RkZFQ1QKIAkJLyogRklYTUU6IHRoaXMgaXMgYW4gZW11bGF0aW9uICovCi0JCXNuZF9lbXV4X3Nl
+bmRfZWZmZWN0KHBvcnQsIGNoYW4sIEVNVVhfRlhfQ1VUT0ZGLCAtMTYwLAorCQlpZiAoY2hhbi0+
+Y29udHJvbFt0eXBlXSkKKwkJCXNuZF9lbXV4X3NlbmRfZWZmZWN0KHBvcnQsIGNoYW4sIEVNVVhf
+RlhfQ1VUT0ZGLCAtMTYwLAogCQkJCSAgICAgRU1VWF9GWF9GTEFHX0FERCk7CisJCWVsc2UKKwkJ
+CXNuZF9lbXV4X3NlbmRfZWZmZWN0KHBvcnQsIGNoYW4sIEVNVVhfRlhfQ1VUT0ZGLCAwLAorCQkJ
+CSAgICAgRU1VWF9GWF9GTEFHX09GRik7CiAjZW5kaWYKIAkJYnJlYWs7CiAKLS0gCjEuNS41LjEK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
