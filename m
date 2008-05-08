@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] soc - fsl_ssi.c fix "BUG: scheduling while
-	atomic"
-Date: Fri,  9 May 2008 10:14:17 +0100
-Message-ID: <1210324457-26021-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+Subject: [PATCH] [ALSA] soc - fsl_ssi.c fix "BUG: scheduling
+	while atomic"
+Date: Thu, 8 May 2008 20:01:12 +0400
+Message-ID: <20080508160112.GA17085@polina.dev.rtsoft.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 106C5243D4
+Received: from mail.dev.rtsoft.ru (unknown [85.21.88.2])
+	by alsa0.perex.cz (Postfix) with SMTP id C0DEA246D4
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 May 2008 11:14:18 +0200 (CEST)
+	Thu,  8 May 2008 18:01:13 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,11 +21,9 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Anton Vorontsov <avorontsov@ru.mvista.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
-
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
 
 This patch fixes following bug caught with PREEMPT enabled:
 
@@ -47,9 +46,12 @@ Call Trace:
 [df165ef0] [c0076478] vfs_read+0xb4/0x108
 [df165f10] [c00768cc] sys_read+0x4c/0x90
 [df165f40] [c00117a4] ret_from_syscall+0x0/0x38
+--- Exception: c01 at 0xfe9a8d4
+    LR = 0x10002b24
 
-Acked-by: Timur Tabi <timur@freescale.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+We must not sleep with irqs disabled, so replace msleep with mdelay.
+
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
 ---
  sound/soc/fsl/fsl_ssi.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
