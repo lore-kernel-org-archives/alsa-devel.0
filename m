@@ -1,24 +1,26 @@
 From: Daniel Mack <daniel@caiaq.org>
-Subject: [PATCH] snd_usb_caiaq: add support for "Session I/O"
-	interface
-Date: Thu, 8 May 2008 13:26:13 +0200
-Message-ID: <20080508112613.GA8677@buzzloop.caiaq.de>
+Subject: Re: [PATCH] snd_usb_caiaq: add support for
+	"Session	I/O" interface
+Date: Thu, 8 May 2008 13:47:07 +0200
+Message-ID: <20080508114707.GB8677@buzzloop.caiaq.de>
+References: <20080508112613.GA8677@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="7JfCtLOvnd9MIVvH"
+Content-Type: multipart/mixed; boundary="QKdGvSO+nmPlgiQ/"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id E545224573
+	by alsa0.perex.cz (Postfix) with ESMTP id BC523246D0
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 May 2008 13:26:18 +0200 (CEST)
+	Thu,  8 May 2008 13:47:14 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id 9D1627F4028
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 506187F4028
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 May 2008 13:26:18 +0200 (CEST)
+	Thu,  8 May 2008 13:47:10 +0200 (CEST)
 Received: from buzzloop.caiaq.de ([127.0.0.1])
 	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id LRmsEcjmIpGc for <alsa-devel@alsa-project.org>;
-	Thu,  8 May 2008 13:26:14 +0200 (CEST)
+	with ESMTP id GXvlJDbmX+bE for <alsa-devel@alsa-project.org>;
+	Thu,  8 May 2008 13:47:07 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20080508112613.GA8677@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,20 +34,21 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---7JfCtLOvnd9MIVvH
+--QKdGvSO+nmPlgiQ/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi,
+On Thu, May 08, 2008 at 01:26:13PM +0200, Daniel Mack wrote:
+> this patch adds support for "Session I/O". As it certainly won't break
+> anything it could still go for 2.6.26, right?
 
-this patch adds support for "Session I/O". As it certainly won't break
-anything it could still go for 2.6.26, right?
+Forgot to enable high sample rates for this device in my previous patch.
+Use the one attached to this mail instead.
 
-Thanks,
 Daniel
 
 
---7JfCtLOvnd9MIVvH
+--QKdGvSO+nmPlgiQ/
 Content-Type: text/x-diff; charset=us-ascii
 Content-Disposition: attachment; filename="alsa-usb-caiaq-1.3.8.diff"
 
@@ -54,18 +57,18 @@ This patch adds suport for Native Instruments new
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 
-diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
-index 9351b8a..f917ef4 100644
---- a/sound/usb/Kconfig
-+++ b/sound/usb/Kconfig
-@@ -45,6 +45,7 @@ config SND_USB_CAIAQ
- 	    * Native Instruments Kore Controller 2
- 	    * Native Instruments Audio Kontrol 1
- 	    * Native Instruments Audio 8 DJ
-+	    * Native Instruments Guitar Rig Session I/O
- 
- 	   To compile this driver as a module, choose M here: the module
- 	   will be called snd-usb-caiaq.
+diff --git a/sound/usb/caiaq/caiaq-audio.c b/sound/usb/caiaq/caiaq-audio.c
+index 24970a5..b3a6033 100644
+--- a/sound/usb/caiaq/caiaq-audio.c
++++ b/sound/usb/caiaq/caiaq-audio.c
+@@ -637,6 +637,7 @@ int snd_usb_caiaq_audio_init(struct snd_usb_caiaqdev *dev)
+ 	switch (dev->chip.usb_id) {
+ 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AK1):
+ 	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_RIGKONTROL3):
++	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_SESSIONIO):
+ 		dev->samplerates |= SNDRV_PCM_RATE_88200;
+ 		dev->samplerates |= SNDRV_PCM_RATE_192000;
+ 		break;
 diff --git a/sound/usb/caiaq/caiaq-device.c b/sound/usb/caiaq/caiaq-device.c
 index e97d8b2..8ae5134 100644
 --- a/sound/usb/caiaq/caiaq-device.c
@@ -114,7 +117,7 @@ index 9382d13..99e8a07 100644
  #define EP1_BUFSIZE 64
  #define CAIAQ_USB_STR_LEN 0xff
 
---7JfCtLOvnd9MIVvH
+--QKdGvSO+nmPlgiQ/
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -125,4 +128,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---7JfCtLOvnd9MIVvH--
+--QKdGvSO+nmPlgiQ/--
