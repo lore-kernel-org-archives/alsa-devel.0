@@ -1,16 +1,20 @@
-From: "Patrik Sevallius" <patrik.sevallius@enea.com>
-Subject: [PATCH] soc at91 minor bug fixes
-Date: Thu, 8 May 2008 08:22:48 +0200
-Message-ID: <DC6F86A94046A64094043D44A3A708F7A8DFE1@sestoex02.enea.se>
+From: Juergen Beisert <jbe@pengutronix.de>
+Subject: Re: SoC sound support for imx27
+Date: Thu, 8 May 2008 09:54:28 +0200
+Message-ID: <200805080954.28299.jbe@pengutronix.de>
+References: <200804231654.44526.jbe@pengutronix.de>
+	<200805051256.38153.jbe@pengutronix.de>
+	<20080505124233.GE3426@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx-1.enea.se (mx-1.enea.se [192.36.1.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8A622469C
+Received: from metis.extern.pengutronix.de (metis.extern.pengutronix.de
+	[83.236.181.26]) by alsa0.perex.cz (Postfix) with ESMTP id 50DD3246CA
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 May 2008 08:24:40 +0200 (CEST)
-Content-class: urn:content-classes:message
+	Thu,  8 May 2008 09:54:34 +0200 (CEST)
+In-Reply-To: <20080505124233.GE3426@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,45 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Frank Mandarino <fmandarino@endrelia.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Monday 05 May 2008 14:42, Mark Brown wrote:
+> On Mon, May 05, 2008 at 12:56:37PM +0200, Juergen Beisert wrote:
+> > Hmm, I did a deeper look into this code. Why - for example - does the
+> > file mx31ads-wm8753.c does the job of the BSP file? Why it registers
+> > devices? For my board I want to register platform_devices only in
+> > arc/arm/mach-mx2/pcm038.c. Nowhere else. If there is some glue required
+> > to bring components together, IMHO also arc/arm/mach-mx2/pcm038.c is the
+> > correct place to do so. Why you did it in sound/ ? If you do it in soun=
+d/
+> > , you always need two locations to maintain. On in the arch/, one in
+> > sound/ .
+> That said, you don't need to do things this way, especially with ASoC v2
+> where even if you do separate out the machine driver you can still
+> register everything in your architecture code including a platform
+> device for the machine driver.
 
-Found these two bugs while browsing through the code.
-The first one is a cut-n-paste bug, instead of disabling the clock when request_irq()
-fails, it enabled it once more.
-The second one fixes a debug printout, AT91_SSC_IER is write only, AT91_SSC_IMR is 
-readable (the printed string actually says imr).
+It seems the documentation in the "asoc-v2-dev" =
 
-Frank Mandarino was busy so he asked me to send these to this list.
+(Documentation/sound/alsa/soc/) is still v1, isn't it?
 
-/Patrik
+I'm confused how to link the pcm-layer and the transmission layer together. =
+
+pxa2xx-i2s.c registers a codec-dai (line 346), while the imx-ssi.c register=
+s =
+
+(line 864) a platform-dai (internally called a cpu_dai. BTW: why a differen=
+t =
+
+name?). I _believe_ the CPU DAI tries to connect the CPU-pcm to the =
+
+transmission interface like ssi or i2s on the same chip. But both =
+
+implementations are using the same layering (pcm-dma and ssi/i2s), but =
+
+registering different DAIs. =
 
 
-Signed-off-by: Patrik Sevallius <patrik.sevallius@enea.com>
-Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
+Now I have an ssi driver for my CPU (to be more precise: Two instances of i=
+t, =
 
-================================================================================
---- sound/soc/at91/at91-ssc.c.orig	2008-05-07 09:33:49.000000000 +0200
-+++ sound/soc/at91/at91-ssc.c	2008-05-07 09:34:18.000000000 +0200
-@@ -590,7 +590,7 @@
- 			printk(KERN_WARNING "at91-ssc: request_irq failure\n");
- 
- 			DBG("Stopping pid %d clock\n", ssc_p->ssc.pid);
--			at91_sys_write(AT91_PMC_PCER, 1<<ssc_p->ssc.pid);
-+			at91_sys_write(AT91_PMC_PCDR, 1<<ssc_p->ssc.pid);
- 			return ret;
- 		}
- 
+when I registering two ssi devices in my BSP file). But how to tell the CPU =
 
---- sound/soc/at91/at91-pcm.c.orig	2008-05-07 13:23:12.000000000 +0200
-+++ sound/soc/at91/at91-pcm.c	2008-05-07 13:26:40.000000000 +0200
-@@ -194,7 +194,7 @@
- 		at91_ssc_write(params->ssc_base + ATMEL_PDC_PTCR, params->mask->pdc_enable);
- 
- 		DBG("sr=%lx imr=%lx\n", at91_ssc_read(params->ssc_base + AT91_SSC_SR),
--					at91_ssc_read(params->ssc_base + AT91_SSC_IER));
-+					at91_ssc_read(params->ssc_base + AT91_SSC_IMR));
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_STOP:
+pcm-layer which one it should use (and for what purpose, play, capture)? An=
+d =
+
+only the ssi driver itself knows how to interact with the DMA controller. B=
+ut =
+
+this information is needed in the CPU pcm-layer as it setup the DMA.
+
+Does a list exists, where I can store driver's private data in each layer =
+
+(mapped iomem addresses for example)? And how to access it, when I only get =
+
+a "struct snd_pcm_substream" as a parameter?
+
+Regards
+Juergen
+-- =
+
+Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
+=A0Pengutronix - Linux Solutions for Science and Industry
+=A0   Handelsregister: Amtsgericht Hildesheim, HRA 2686
+=A0 =A0 =A0    Vertretung Sued/Muenchen, Germany
+   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
