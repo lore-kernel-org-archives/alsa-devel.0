@@ -1,21 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: SoC sound support for imx27
-Date: Thu, 8 May 2008 10:33:39 +0100
-Message-ID: <20080508093339.GA17836@rakim.wolfsonmicro.main>
+From: "Srinivas.Kandagatla" <srinivas.kandagatla@azingo.com>
+Subject: How are events of headphone plug/unplug handled in
+	ASOC.
+Date: Thu, 08 May 2008 15:57:04 +0530
+Message-ID: <1210242424.6288.13.camel@kandagatla-laptop>
 References: <200804231654.44526.jbe@pengutronix.de>
 	<200805051256.38153.jbe@pengutronix.de>
 	<20080505124233.GE3426@sirena.org.uk>
 	<200805080954.28299.jbe@pengutronix.de>
+	<20080508093339.GA17836@rakim.wolfsonmicro.main>
+Reply-To: srinivas.kandagatla@azingo.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 73512246FB
+Received: from iceblock02.celunite.com (iceblock02.azingo.com [12.53.234.6])
+	by alsa0.perex.cz (Postfix) with SMTP id 1B8A91037ED
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 May 2008 11:33:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200805080954.28299.jbe@pengutronix.de>
+	Thu,  8 May 2008 12:27:12 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by iceblock02.celunite.com (Postfix) with ESMTP id 936F756C003
+	for <alsa-devel@alsa-project.org>; Thu,  8 May 2008 03:34:05 -0700 (PDT)
+Received: from iceblock02.celunite.com ([127.0.0.1])
+	by localhost (Iceblock02.celunite.com [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id BDvpCDwvNs0c for <alsa-devel@alsa-project.org>;
+	Thu,  8 May 2008 03:34:03 -0700 (PDT)
+Received: from webmailindia.celunite.com (unknown [196.12.63.195])
+	by iceblock02.celunite.com (Postfix) with SMTP id 8A59E56C002
+	for <alsa-devel@alsa-project.org>; Thu,  8 May 2008 03:34:02 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by webmailindia.celunite.com (Postfix) with ESMTP id 569EF490F8
+	for <alsa-devel@alsa-project.org>; Thu,  8 May 2008 15:50:39 +0530 (IST)
+Received: from webmailindia.celunite.com ([127.0.0.1])
+	by localhost (webmailindia.celunite.com [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id aMlnoKq5JKwl for <alsa-devel@alsa-project.org>;
+	Thu,  8 May 2008 15:50:39 +0530 (IST)
+Received: from [172.17.5.179] (unknown [172.17.5.179])
+	by webmailindia.celunite.com (Postfix) with ESMTP
+	for <alsa-devel@alsa-project.org>; Thu,  8 May 2008 15:50:38 +0530 (IST)
+In-Reply-To: <20080508093339.GA17836@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,54 +49,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Juergen Beisert <jbe@pengutronix.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 08, 2008 at 09:54:28AM +0200, Juergen Beisert wrote:
+Hi all, 
+I see the background of ASOC states that it supports some mechanism for
+events from plugging/unplugging headphone.
+But I don't see this support in any of the drivers/alsa-lib or is this
+feature is yet to come in ASOC core.
 
-> It seems the documentation in the "asoc-v2-dev" 
-> (Documentation/sound/alsa/soc/) is still v1, isn't it?
 
-Yes.
-
-> I'm confused how to link the pcm-layer and the transmission layer together. 
-> pxa2xx-i2s.c registers a codec-dai (line 346), while the imx-ssi.c registers 
-> (line 864) a platform-dai (internally called a cpu_dai. BTW: why a different 
-> name?). I _believe_ the CPU DAI tries to connect the CPU-pcm to the 
-> transmission interface like ssi or i2s on the same chip. But both 
-> implementations are using the same layering (pcm-dma and ssi/i2s), but 
-> registering different DAIs. 
-
-The i.MX code is correct here.  
-
-The PXA I2S code isn't a good example to use - it doesn't compile at the
-minute due to changes in the underlying PXA platform code - and has only
-been translated mechanically for ASoC v2.  If you're looking for
-examples then the most heavily tested in-tree configurations for ASoC v2
-are:
-
- - i.MX31 I2S with WM8350
- - PXA3xx AC97 with WM9713
-
-> Now I have an ssi driver for my CPU (to be more precise: Two instances of it, 
-> when I registering two ssi devices in my BSP file). But how to tell the CPU 
-> pcm-layer which one it should use (and for what purpose, play, capture)? And 
-> only the ssi driver itself knows how to interact with the DMA controller. But 
-> this information is needed in the CPU pcm-layer as it setup the DMA.
-
-The CPU DAI has a dma_data member intended for this purpose - it can set
-up information the DMA driver will need in there for the DMA driver to
-pick up when it needs it.  The PXA code sets this up in hw_params since
-the DMA configuration depends on if the stream is mono or stereo but
-there's no need to set it up that late if you don't have a similar
-requirement.
-
-> Does a list exists, where I can store driver's private data in each layer 
-> (mapped iomem addresses for example)? And how to access it, when I only get 
-> a "struct snd_pcm_substream" as a parameter?
-
-Yes.  ASoC sets the private_data of snd_pcm_substream to point to the
-struct snd_soc_pcm_runtime for the substream.  That in turn contains
-pointers to the platform, codec and CPU DAIs.  Each of those has a
-private_data member which you can use.
+Rgrds
+srinivas.kandagatla
