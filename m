@@ -1,23 +1,16 @@
-From: Adrian Bunk <bunk@kernel.org>
-Subject: Re: [patch] snd-pcsp: relax dependancy on CONFIG_INPUT
-Date: Fri, 9 May 2008 01:48:26 +0300
-Message-ID: <20080508224826.GI22887@cs181133002.pp.htv.fi>
-References: <482316B8.5080200@aknet.ru> <s5h4p98yfof.wl%tiwai@suse.de>
-	<4823390D.8010000@aknet.ru>
-	<20080508173552.GA22887@cs181133002.pp.htv.fi>
-	<482345AD.2040909@aknet.ru>
-	<20080508221724.GG22887@cs181133002.pp.htv.fi>
-	<482380F6.3070309@aknet.ru>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: 2.6.26-rc1 regression: ISA DMA broken (bisected)
+Date: Fri, 09 May 2008 03:37:54 +0200
+Message-ID: <4823AAF2.7070102@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6.pp.htv.fi (smtp6.pp.htv.fi [213.243.153.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04206247B8
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6858D2487E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 May 2008 00:49:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <482380F6.3070309@aknet.ru>
+	Fri,  9 May 2008 03:36:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,39 +20,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stas Sergeev <stsp@aknet.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Glauber Costa <gcosta@redhat.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Pete Clements <clem@clem.clem-digital.net>, Ingo Molnar <mingo@elte.hu>, Thomas Gleixner <tglx@linutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 09, 2008 at 02:38:46AM +0400, Stas Sergeev wrote:
-> Hello.
-> 
-> Adrian Bunk wrote:
-> > And your patches breaks the compilation with CONFIG_SND_PCSP=y, 
-> > CONFIG_INPUT=m if anyone will ever try this combination.
-> OK, that's nasty indeed...
-> Then I guess it is not a big deal
-> to leave that dependancy as-is until
-> the real need in changing it appear.
-> 
-> Btw, is there really no way at all
-> to tell kconfig something like
-> depends on INPUT if SND_PCSP_INPUT
-> or similar?
+Good day.
 
-There are different ways how you could express this in kconfig
-depending on what exactly would be intended.
+commit 8779f2fc3b84ebb6c5181fb13d702e9944c16069
 
-But the stuff we already have in kconfig has enough problematic 
-cornercases, and making anything more complicated IMHO requires
-a justification that there's a real need for it.
+"x86: don't try to allocate from DMA zone at first"
 
-cu
-Adrian
+breaks all of ISA DMA. Or all of ALSA ISA DMA at least. All
+ISA soundcards are silent following that commit -- no error
+messages, everything appears fine, just silence.
 
--- 
+It won't just revert due to 32/64 merge.
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+Rene.
