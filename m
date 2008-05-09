@@ -1,82 +1,71 @@
-From: Ingo Molnar <mingo@elte.hu>
-Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
-Date: Fri, 9 May 2008 10:58:24 +0200
-Message-ID: <20080509085824.GF2592@elte.hu>
-References: <4823AAF2.7070102@keyaccess.nl> <s5hzlr0105c.wl%tiwai@suse.de> <20080509085511.GE2592@elte.hu>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] soc - fsl_ssi.c fix "BUG: scheduling while
+	atomic"
+Date: Fri,  9 May 2008 10:14:17 +0100
+Message-ID: <1210324457-26021-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756814AbYEII6v@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20080509085511.GE2592@elte.hu>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 106C5243D4
+	for <alsa-devel@alsa-project.org>;
+	Fri,  9 May 2008 11:14:18 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Rene Herman <rene.herman@keyaccess.nl>, Glauber Costa <gcosta@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Pete Clements <clem@clem.clem-digital.net>, Linux Kernel <linux-kernel@vger.kernel.org>, ALSA devel <alsa-devel@alsa-project.org>, Jesse Barnes <jbarnes@virtuousgeek.org>, "H. Peter Anvin" <hpa@zytor.com>
+Cc: alsa-devel@alsa-project.org, Anton Vorontsov <avorontsov@ru.mvista.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
 
-* Ingo Molnar <mingo@elte.hu> wrote:
+This patch fixes following bug caught with PREEMPT enabled:
 
-> good catch! Queued it up for testing. Jesse, do you concur?
+root@b1:~# cat /dev/dsp > /dev/null
+BUG: scheduling while atomic: cat/965/0x00000003
+Call Trace:
+[df165ce0] [c0008e84] show_stack+0x4c/0x1ac (unreliable)
+[df165d20] [c001c18c] __schedule_bug+0x64/0x78
+[df165d30] [c02b3344] schedule+0x2d8/0x334
+[df165d70] [c02b3674] schedule_timeout+0x64/0xe4
+[df165db0] [c002c05c] msleep+0x1c/0x34
+[df165dc0] [c01f2fe0] fsl_ssi_trigger+0x130/0x144
+[df165dd0] [c01ece54] soc_pcm_trigger+0x94/0xb8
+[df165df0] [c01da764] snd_pcm_do_start+0x48/0x60
+[df165e00] [c01da630] snd_pcm_action_single+0x4c/0xb4
+[df165e20] [c01e0f50] snd_pcm_lib_read1+0x2a0/0x2d4
+[df165e70] [c01ec274] snd_pcm_oss_read3+0xf0/0x13c
+[df165eb0] [c01ec2e4] snd_pcm_oss_read2+0x24/0x4c
+[df165ec0] [c01ec4ac] snd_pcm_oss_read+0x1a0/0x1f0
+[df165ef0] [c0076478] vfs_read+0xb4/0x108
+[df165f10] [c00768cc] sys_read+0x4c/0x90
+[df165f40] [c00117a4] ret_from_syscall+0x0/0x38
 
-here's the patch below, tidied up.
-
-	Ingo
-
-------------------------------->
-Subject: x86/pci: fix broken ISA DMA
-From: Takashi Iwai <tiwai@suse.de>
-Date: Fri, 09 May 2008 08:06:55 +0200
-
-Rene Herman reported:
-
-> commit 8779f2fc3b84ebb6c5181fb13d702e9944c16069
->
-> "x86: don't try to allocate from DMA zone at first"
->
-> breaks all of ISA DMA. Or all of ALSA ISA DMA at least. All
-> ISA soundcards are silent following that commit -- no error
-> messages, everything appears fine, just silence.
-
-That patch is buggy. We had an implicit assumption that
-dev = NULL for ISA devices that require 24bit DMA.
-
-The recent work on x86 dma_alloc_coherent() breaks the ISA DMA buffer
-allocation, which is represented by "dev = NULL" and requires 24bit
-DMA implicitly.
-
-Bisected-by: Rene Herman <rene.herman@keyaccess.nl>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Ingo Molnar <mingo@elte.hu>
+Acked-by: Timur Tabi <timur@freescale.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- arch/x86/kernel/pci-dma.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_ssi.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Index: linux-x86.q/arch/x86/kernel/pci-dma.c
-===================================================================
---- linux-x86.q.orig/arch/x86/kernel/pci-dma.c
-+++ linux-x86.q/arch/x86/kernel/pci-dma.c
-@@ -386,11 +386,13 @@ dma_alloc_coherent(struct device *dev, s
- 	if (dma_alloc_from_coherent_mem(dev, size, dma_handle, &memory))
- 		return memory;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index b2a11b0..f588545 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -416,7 +416,7 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd)
+ 			 * to put data into its FIFO.  Without it, ALSA starts
+ 			 * to complain about overruns.
+ 			 */
+-			msleep(1);
++			mdelay(1);
+ 		}
+ 		break;
  
--	if (!dev)
-+	if (!dev) {
- 		dev = &fallback_dev;
-+		gfp |= GFP_DMA;
-+	}
- 	dma_mask = dev->coherent_dma_mask;
- 	if (dma_mask == 0)
--		dma_mask = DMA_32BIT_MASK;
-+		dma_mask = (gfp & GFP_DMA) ? DMA_24BIT_MASK : DMA_32BIT_MASK;
- 
- 	/* Device not DMA able */
- 	if (dev->dma_mask == NULL)
-@@ -404,7 +406,7 @@ dma_alloc_coherent(struct device *dev, s
- 	   larger than 16MB and in this case we have a chance of
- 	   finding fitting memory in the next higher zone first. If
- 	   not retry with true GFP_DMA. -AK */
--	if (dma_mask <= DMA_32BIT_MASK)
-+	if (dma_mask <= DMA_32BIT_MASK && !(gfp & GFP_DMA))
- 		gfp |= GFP_DMA32;
- #endif
- 
+-- 
+1.5.5.1
