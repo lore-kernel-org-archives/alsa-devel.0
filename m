@@ -1,20 +1,21 @@
-From: "Harsha priya gupta" <harshapriya@gmail.com>
-Subject: Re: basic question on .pointer function
-Date: Fri, 9 May 2008 23:51:17 +0530
-Message-ID: <827ad74d0805091121u4c42d172yc2b8e734355ff81d@mail.gmail.com>
-References: <827ad74d0805062040i4c2977adrc4fb50fbbc0bff43@mail.gmail.com>
-	<s5hwsm321ag.wl%tiwai@suse.de>
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: No sound on nVidia MCP61 - snd-hda-intel
+Date: Fri, 9 May 2008 17:14:09 -0500
+Message-ID: <20080509221409.6CFF8164293@ws1-4.us4.outblaze.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id F353024391
+Received: from webmail-outgoing.us4.outblaze.com
+	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35665243A0
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 May 2008 20:21:18 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so339316and.80
-	for <alsa-devel@alsa-project.org>; Fri, 09 May 2008 11:21:17 -0700 (PDT)
-In-Reply-To: <s5hwsm321ag.wl%tiwai@suse.de>
+	Sat, 10 May 2008 00:14:12 +0200 (CEST)
+Received: from wfilter.us4.outblaze.com.int (wfilter.us4.outblaze.com.int
+	[192.168.9.180])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	8E17F1800129
+	for <alsa-devel@alsa-project.org>; Fri,  9 May 2008 22:14:09 +0000 (GMT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,51 +26,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks a lot for this pointer. A quick question;
+Hi everyone,
+I have a motherboard with an integrated MCP61. The device is detected and I have mixer controls but I get no sound output whatsoever. I'm using alsa-hg and I have a little experience with writing drivers for ALSA but I won't pretend to know anything about the hda driver. If someone could give me a little direction, I'd be happy to help get this problem sorted. I don't mind hacking on the driver. I just figured it was best to ask for advice first, seeing as it might be an easy problem for someone else to diagnose.
 
-For the .pointer function, it says " This callback is called when the PCM
-middle layer inquires the current hardware position on the buffer."
+alsa-info.sh output can be found here:
 
-Does the word "PCM middle layer" mean that the MMF like Helix / Gstreamer is
-continuously querying for hardware position on the buffer? Or does the
-player keep querying?
+http://pastebin.ca/1013173
 
-I also see that this function gets called quiet a number of times. Is there
-a way to reduce these calls? My guess is that to reduce the number of calls
-to .pointer, MMF or player needs to be modified. Am I thinking right?
-
--Harsha
-
-
-
-On Fri, May 9, 2008 at 4:26 PM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Wed, 7 May 2008 09:10:00 +0530,
-> Harsha priya gupta wrote:
-> >
-> > Hi,
-> > It would be really helpful if someone can help me understand why do we
-> need
-> > to implement .pointer and what does it need to do? I am facing an issue
-> to
-> > write a driver in this .pointer function. Please help
-> >
-> > Also if someone can point me to a document where all the playback_ops are
-> > defined, it would be really helpful
->
-> Did you check the page below?
->
-> http://www.alsa-project.org/main/index.php/ALSA_Driver_Documentation
->
->
-> Takashi
->
-
-
+Thanks,
+Ash
 
 -- 
--Harsha
+See Exclusive Video: 10th Annual Young Hollywood Awards
+http://www.hollywoodlife.net/younghollywoodawards2008/
