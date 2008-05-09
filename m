@@ -1,22 +1,19 @@
-From: "Ash Willis" <ashwillis@programmer.net>
-Subject: No sound on nVidia MCP61 - snd-hda-intel
-Date: Fri, 9 May 2008 17:14:09 -0500
-Message-ID: <20080509221409.6CFF8164293@ws1-4.us4.outblaze.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
+Date: Sat, 10 May 2008 01:00:44 +0200
+Message-ID: <4824D79C.7060303@keyaccess.nl>
+References: <4823AAF2.7070102@keyaccess.nl> <s5hzlr0105c.wl%tiwai@suse.de>
+	<48243D86.7020504@keyaccess.nl> <20080509122828.GB10855@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail-outgoing.us4.outblaze.com
-	(webmail-outgoing.us4.outblaze.com [205.158.62.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35665243A0
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF8FA243A3
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 May 2008 00:14:12 +0200 (CEST)
-Received: from wfilter.us4.outblaze.com.int (wfilter.us4.outblaze.com.int
-	[192.168.9.180])
-	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
-	8E17F1800129
-	for <alsa-devel@alsa-project.org>; Fri,  9 May 2008 22:14:09 +0000 (GMT)
-Content-Disposition: inline
+	Sat, 10 May 2008 00:59:43 +0200 (CEST)
+In-Reply-To: <20080509122828.GB10855@elte.hu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Ingo Molnar <mingo@elte.hu>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Glauber Costa <gcosta@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Pete Clements <clem@clem.clem-digital.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
-I have a motherboard with an integrated MCP61. The device is detected and I have mixer controls but I get no sound output whatsoever. I'm using alsa-hg and I have a little experience with writing drivers for ALSA but I won't pretend to know anything about the hda driver. If someone could give me a little direction, I'd be happy to help get this problem sorted. I don't mind hacking on the driver. I just figured it was best to ask for advice first, seeing as it might be an easy problem for someone else to diagnose.
+On 09-05-08 14:28, Ingo Molnar wrote:
+> * Rene Herman <rene.herman@keyaccess.nl> wrote:
+> 
+>> On 09-05-08 08:06, Takashi Iwai wrote:
+>>
+>>> Thanks for catching it.  Yeah, the patch looks buggy.  We had an
+>>> implicit assumption that dev = NULL for ISA devices that require 24bit
+>>> DMA.
+>>>
+>>> How about the patch below?  It's against the latest Linus git tree.
+>> Yes, works well. Thank you.
+> 
+> great, thanks Rene for catching this! Added this line to the patch as 
+> well:
+> 
+>  Tested-by: Rene Herman <rene.herman@keyaccess.nl>
 
-alsa-info.sh output can be found here:
+Oh... it was rather significantly in the AM when I posted so I forgot to
+mention in the haste to get this out of the way but it was Pete Clements
+who reported the regression:
 
-http://pastebin.ca/1013173
+http://www.nabble.com/Lost-Sound-from-2.6.24-to-2.6.25----CS4236-ISA-tc17062547.html
 
-Thanks,
-Ash
+He also tested it, so as long as we're name-mention-flattering around...
 
--- 
-See Exclusive Video: 10th Annual Young Hollywood Awards
-http://www.hollywoodlife.net/younghollywoodawards2008/
+And this a good excuse to ask how you edit changelog after the fact. Just
+reset/reapply and stuff or is there a "better" way? I fairly frequently
+find myself wanting to do just that but it's a bit of a mess when there's
+already commits on top.
+
+Rene.
