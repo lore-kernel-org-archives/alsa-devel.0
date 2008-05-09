@@ -1,153 +1,50 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re:
-	=?iso-8859-1?q?=A0=A0=A0=A0=A0=A0=A0=A0Request_=09fo?=
-	=?iso-8859-1?q?r_Realtek_patch_-_Nvidia_MCP51_HDA_/_ALC883_=2810de?=
-	=?iso-8859-1?q?=3A026c=29_Notebook_component?=
-Date: Fri, 09 May 2008 09:13:27 -0700
-Message-ID: <1210349607.6610.48.camel@razman>
-References: <200805091722.33326.bvdm@chronovault.net>
+From: Jesse Barnes <jbarnes@virtuousgeek.org>
+Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
+Date: Fri, 9 May 2008 10:20:22 -0700
+Message-ID: <200805091020.22541.jbarnes@virtuousgeek.org>
+References: <4823AAF2.7070102@keyaccess.nl> <20080509085511.GE2592@elte.hu> <20080509085824.GF2592@elte.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BB6424378
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 May 2008 18:13:31 +0200 (CEST)
-In-Reply-To: <200805091722.33326.bvdm@chronovault.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Bj=F6rn?= van der Meer <bvdm@chronovault.net>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1763691AbYEIRVG@vger.kernel.org>
+In-Reply-To: <20080509085824.GF2592@elte.hu>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ingo Molnar <mingo@elte.hu>
+Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, Glauber Costa <gcosta@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Pete Clements <clem@clem.clem-digital.net>, Linux Kernel <linux-kernel@vger.kernel.org>, ALSA devel <alsa-devel@alsa-project.org>, "H. Peter Anvin" <hpa@zytor.com>
 List-Id: alsa-devel@alsa-project.org
 
-QWN0dWFsbHksIHRoaXMgZHVhbCB1c2FnZSBoZWFkcGhvbmUgamFjayBpcyBxdWl0ZSBjb21tb24g
-YW1vbmcgbGFwdG9wcwp0aGF0IGhhdmUgZGlnaXRhbCBvdXQuICBCeSBkZWZhdWx0LCB0aG91Z2gs
-IEFsc2Egc2hvdWxkIHByb2JhYmx5IHR1cm4Kb2ZmIHNwZGlmIGZvciBwb3dlciBzYXZpbmdzLiAg
-SSdtIChzbG93bHkpIHdvcmtpbmcgb24gYSBtZWNoYW5pc20gdGhhdApjYW4gdHJpZ2dlciBhIHBv
-cHVwIGFwcGxpY2F0aW9uIHdoZW4gYSBkZXZpY2UgaXMgaW5zZXJ0ZWQgdG8gYSBqYWNrIHdpdGgK
-c2Vuc2UgZW5hYmxlZC4gIFRoZSBpZGVhIGlzIHRvIGJlIGFibGUgdG8gcG9wdXAgYW4gYXBwIHNv
-IHVzZXJzIGNhbgp0b2dnbGUgYmV0d2VlbiBhbmFsb2cgaGVhZHBob25lcyBvciBzcGRpZiBvbiBz
-eXN0ZW1zIGxpa2UgeW91cnMsIG9yCmJldHdlZW4gMm5kIGhlYWRwaG9uZS9taWNyb3Bob25lIG9u
-IG90aGVyIHN5c3RlbXMgdGhhdCBzdXBwb3J0IEhQIEFtcCBvbgptdWx0aXBsZSBwb3J0cy4KClRv
-YmluCgpPbiBGcmksIDIwMDgtMDUtMDkgYXQgMTc6MjIgKzAyMDAsIEJqw7ZybiB2YW4gZGVyIE1l
-ZXIgd3JvdGU6Cgo+ID4gQXQgRnJpLCA5IE1heSAyMDA4IDE1OjM1OjUwICswMjAwLAo+ID4KPiA+
-IEJqw7ZybiB2YW4gZGVyIE1lZXIgd3JvdGU6Cj4gPiA+ID4gQXQgTW9uLCA1IE1heSAyMDA4IDA4
-OjQzOjE2ICswMjAwLAo+ID4gPiA+Cj4gPiA+ID4gQmrDtnJuIHZhbiBkZXIgTWVlciB3cm90ZToK
-PiA+ID4gPiA+IEhlbGxvIEV2ZXJ5b25lLAo+ID4gPiA+ID4KPiA+ID4gPiA+IEkgaGF2ZSBhYm92
-ZSBjb21wb25lbnQgaW4gbXkgbGFwdG9wIGFuZCBsYWNrIHRoZSBleHBlcnRpc2UgdG8gYWRkIGl0
-Cj4gPiA+ID4gPiB0byB0byBwYXRjaF9yZWFsdGVrLmMgbXlzZWxmLgo+ID4gPiA+ID4KPiA+ID4g
-PiA+IEkgdGhpbmsgSSBoYXZlIGNvbGxlY3RlZCBhbGwgdGhlIHJlbGV2YW50IGluZm9ybWF0aW9u
-IGlmIG9uZSBvZiB0aGUKPiA+ID4gPiA+IGRldmVsb3BlcnMgd2FudHMgdG8gZ2l2ZSBpdCBhIHRy
-eS4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBNeSBOb3RlYm9vazogTWVkaW9uIDk4MzAwIChhLmsuYS4g
-V0FNMjAzMCkKPiA+ID4gPiA+IChQbGVhc2Ugbm90ZTogTWVkaW9uIGlzIG5vdCBhbiBPRU0uIFRo
-ZSBib2FyZCBpcyBuVmlkaWEgYmFzZWQsIE9FTQo+ID4gPiA+ID4gdGhvdWdodCB0byBiZSBXaXN0
-cm9uLiBBcHBhcmVudGx5IHJhcmVseSB1c2VkIHNvdW5kIGNvbXBvbmVudD8pCj4gPiA+ID4gPgo+
-ID4gPiA+ID4gSW50ZXJuYWwgc3BlYWtlcnMKPiA+ID4gPiA+IEludGVybmFsIG1pYyAtIHVua25v
-d24KPiA+ID4gPiA+IHRocmVlIGphY2tzOiBoZWFkcGhvbmUsIG1pYywgU1BESUYoZHVhbCB1c2Ug
-amFjaykuCj4gPiA+ID4gPiBKYWNrIFNlbnNpbmcgdW5kZXIgV2luZG93cy4KPiA+ID4gPiA+IDUu
-MSBzdXJyb3VuZCAoc291bmRzIGxpa2UgdGhlIHNldHVwIHNob3VsZCBiZSBzdXBwb3J0ZWQgYnkK
-PiA+ID4gPiA+IDNzdGFjay02Y2gtZGlnKQo+ID4gPiA+ID4KPiA+ID4gPiA+IGxzcGNpOgo+ID4g
-PiA+ID4gMDA6MTAuMSBBdWRpbyBkZXZpY2UgWzA0MDNdOiBuVmlkaWEgQ29ycG9yYXRpb24gTUNQ
-NTEgSGlnaCBEZWZpbml0aW9uCj4gPiA+ID4gPiBBdWRpbyBbMTBkZTowMjZjXSAocmV2IGEyKQo+
-ID4gPiA+ID4gU3Vic3lzdGVtOiBXaXN0cm9uIENvcnAuIFVua25vd24gZGV2aWNlIFsxN2MwOjQw
-NzldCj4gPiA+ID4gPiBGbGFnczogNjZNSHosIGZhc3QgZGV2c2VsLCBJUlEgMjAKPiA+ID4gPiA+
-IE1lbW9yeSBhdCBjMDAwMDAwMCAoMzItYml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xNktd
-Cj4gPiA+ID4gPiBDYXBhYmlsaXRpZXM6IFs0NF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIK
-PiA+ID4gPiA+IENhcGFiaWxpdGllczogWzUwXSBNZXNzYWdlIFNpZ25hbGxlZCBJbnRlcnJ1cHRz
-OiBNYXNrKyA2NGJpdCsKPiA+ID4gPiA+IFF1ZXVlPTAvMCBFbmFibGUtCj4gPiA+ID4gPiBDYXBh
-YmlsaXRpZXM6IFs2Y10gSHlwZXJUcmFuc3BvcnQ6IE1TSSBNYXBwaW5nCj4gPiA+ID4gPgo+ID4g
-PiA+ID4gaHdpbmZvOgo+ID4gPiA+ID4gMjI6IFBDSSAxMC4xOiAwNDAzIEF1ZGlvIGRldmljZQo+
-ID4gPiA+ID4gICBbQ3JlYXRlZCBhdCBwY2kuMjk2XQo+ID4gPiA+ID4gICBVREk6IC9vcmcvZnJl
-ZWRlc2t0b3AvSGFsL2RldmljZXMvcGNpXzEwZGVfMjZjCj4gPiA+ID4gPiAgIFVuaXF1ZSBJRDog
-d1J5RC5YN1hKM3JUanJSMwo+ID4gPiA+ID4gICBTeXNGUyBJRDogL2RldmljZXMvcGNpMDAwMDow
-MC8wMDAwOjAwOjEwLjEKPiA+ID4gPiA+ICAgU3lzRlMgQnVzSUQ6IDAwMDA6MDA6MTAuMQo+ID4g
-PiA+ID4gICBIYXJkd2FyZSBDbGFzczogc291bmQKPiA+ID4gPiA+ICAgTW9kZWw6ICJXaXN0cm9u
-IE1DUDUxIEhpZ2ggRGVmaW5pdGlvbiBBdWRpbyIKPiA+ID4gPiA+ICAgVmVuZG9yOiBwY2kgMHgx
-MGRlICJuVmlkaWEgQ29ycG9yYXRpb24iCj4gPiA+ID4gPiAgIERldmljZTogcGNpIDB4MDI2YyAi
-TUNQNTEgSGlnaCBEZWZpbml0aW9uIEF1ZGlvIgo+ID4gPiA+ID4gICBTdWJWZW5kb3I6IHBjaSAw
-eDE3YzAgIldpc3Ryb24gQ29ycC4iCj4gPiA+ID4gPiAgIFN1YkRldmljZTogcGNpIDB4NDA3OQo+
-ID4gPiA+ID4gICBSZXZpc2lvbjogMHhhMgo+ID4gPiA+ID4gICBEcml2ZXI6ICJIREEgSW50ZWwi
-Cj4gPiA+ID4gPiAgIERyaXZlciBNb2R1bGVzOiAic25kX2hkYV9pbnRlbCIKPiA+ID4gPiA+ICAg
-TWVtb3J5IFJhbmdlOiAweGMwMDAwMDAwLTB4YzAwMDNmZmYgKHJ3LG5vbi1wcmVmZXRjaGFibGUp
-Cj4gPiA+ID4gPiAgIElSUTogMjAgKDE5NTY5MyBldmVudHMpCj4gPiA+ID4gPiAgIE1vZHVsZSBB
-bGlhczoKPiA+ID4gPiA+ICJwY2k6djAwMDAxMERFZDAwMDAwMjZDc3YwMDAwMTdDMHNkMDAwMDQw
-NzliYzA0c2MwM2kwMCIgRHJpdmVyIEluZm8KPiA+ID4gPiA+ICMwOgo+ID4gPiA+ID4gICAgIERy
-aXZlciBTdGF0dXM6IHNuZF9oZGFfaW50ZWwgaXMgYWN0aXZlCj4gPiA+ID4gPiAgICAgRHJpdmVy
-IEFjdGl2YXRpb24gQ21kOiAibW9kcHJvYmUgc25kX2hkYV9pbnRlbCIKPiA+ID4gPiA+ICAgQ29u
-ZmlnIFN0YXR1czogY2ZnPW5ldywgYXZhaWw9eWVzLCBuZWVkPW5vLCBhY3RpdmU9dW5rbm93bgo+
-ID4gPiA+ID4KPiA+ID4gPiA+IGFsc2EtaW5mby5zaCBvdXRwdXQgaXMgYXQgaHR0cDovL3Bhc3Rl
-YmluLmNvbS9mNDk5NjJjOTIuCj4gPiA+ID4gPgo+ID4gPiA+ID4KPiA+ID4gPiA+Cj4gPiA+ID4g
-PiBDdXJyZW50bHkgdGhlIG9ubHkgdGhpbmcgd29ya2luZyBpcyBvdXRwdXQgdmlhIHRoZSBpbnRl
-cm5hbCBzcGVha2Vycy4KPiA+ID4gPgo+ID4gPiA+IEFuZCBkb2Vzbid0IHRoaXMgc3RpbGwgd29y
-ayB3aXRoIHRoZSBsYXRlc3QgQUxTQSBIRyBkcml2ZXI/Cj4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+
-IFRha2FzaGkKPiA+ID4KPiA+ID4gVGhhbmtzIGZvciB5b3VyIGFuc3dlci4gTGF0ZXN0IEhHIGRv
-ZXMgbm90IGNvbXBpbGUgb24gbXkgc3lzdGVtLCB0aHJvd3MKPiA+ID4gbWVtYWxsb2MuYyBlcnJv
-cnMuIChDb3VsZCBiZSBtZSBkb2luZyBzb21ldGhpbmcgd3JvbmcgdGhvdWdoIC0gb3V0IG9uIGEK
-PiA+ID4gbGltcCkKPiA+ID4KPiA+ID4gIENDIFtNXSAgL2hvbWUvYnZkbS9hbHNhLWRyaXZlci9h
-Y29yZS9tZW1hbGxvYy5vCj4gPiA+IC9ob21lL2J2ZG0vYWxzYS1kcml2ZXIvYWNvcmUvbWVtYWxs
-b2MuYzogSW4gZnVuY3Rpb24g4oCYc25kX21lbV9pbml04oCZOgo+ID4gPiAvaG9tZS9idmRtL2Fs
-c2EtZHJpdmVyL2Fjb3JlL21lbWFsbG9jLmM6NzI5OiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRp
-b24KPiA+ID4gb2YgZnVuY3Rpb24g4oCYcHJvY19jcmVhdGXigJkKPiA+ID4gL2hvbWUvYnZkbS9h
-bHNhLWRyaXZlci9hY29yZS9tZW1hbGxvYy5jOjczMDogd2FybmluZzogYXNzaWdubWVudCBtYWtl
-cwo+ID4gPiBwb2ludGVyIGZyb20gaW50ZWdlciB3aXRob3V0IGEgY2FzdAo+ID4gPiBtYWtlWzNd
-OiAqKiogWy9ob21lL2J2ZG0vYWxzYS1kcml2ZXIvYWNvcmUvbWVtYWxsb2Mub10gRXJyb3IgMQo+
-ID4gPiBtYWtlWzJdOiAqKiogWy9ob21lL2J2ZG0vYWxzYS1kcml2ZXIvYWNvcmVdIEVycm9yIDIK
-PiA+ID4gbWFrZVsxXTogKioqIFtfbW9kdWxlXy9ob21lL2J2ZG0vYWxzYS1kcml2ZXJdIEVycm9y
-IDIKPiA+ID4gbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4LWhlYWRl
-cnMtMi42LjI0LTE2LWdlbmVyaWMnCj4gPiA+Cj4gPiA+Cj4gPiA+Cj4gPiA+IEkgc2VlIHJlZmVy
-ZW5jZXMgdG8gc2ltaWxhciBlcnJvcnMgb24gdGhlIGxpc3QsIGhhZCB0byBkbyB3aXRoIHByb2Nl
-c3Nvcgo+ID4gPiBpZGVudGlmaWNhdGlvbj8KPiA+ID4KPiA+ID4KPiA+ID4gQ29uZmlndXJlIGRl
-dGVjdHMgdGhpczoKPiA+ID4gY2hlY2tpbmcgZm9yIHByb2Nlc3NvciB0eXBlLi4uIGk1ODYKPiA+
-ID4gY2hlY2tpbmcgZm9yIGkzODYgbWFjaGluZSB0eXBlLi4uIGRlZmF1bHQKPiA+ID4KPiA+ID4g
-L3Byb2MvY3B1aW5mbyBzdGFydHMgd2l0aDoKPiA+ID4gWy4uLl0KPiA+ID4gdmVuZG9yX2lkICAg
-ICAgIDogQXV0aGVudGljQU1ECj4gPiA+IGNwdSBmYW1pbHkgICAgICA6IDE1Cj4gPiA+IG1vZGVs
-ICAgICAgICAgICA6IDcyCj4gPiA+IG1vZGVsIG5hbWUgICAgICA6IEFNRCBUdXJpb24odG0pIDY0
-IFgyIE1vYmlsZSBUZWNobm9sb2d5IFRMLTUwCj4gPiA+IFsuLi5dCj4gPgo+ID4gSXQncyBhIHBy
-b2JsZW0gaW4gYWxzYS1kcml2ZXIgYnVpbGQgc3R1Yi4gIEkgZml4ZWQgaXQgcmlnaHQgbm93IG9u
-IEhHCj4gPiB0cmVlLgo+ID4KPiA+ID4gSSBoYXZlIGFsc28ganVzdCBsaWZ0ZWQgcGF0Y2hfcmVh
-bHRlay5jIGZyb20gdGhlIGN1cnJlbnQgaGcgYW5kIGNvbXBpbGVkCj4gPiA+IGl0IGluIGEgd29y
-a2luZyB0YXJiYWxsIChhY3R1YWxseSBsYWJlbGxlZCBhbHNhLWRyaXZlci1oZzIwMDgwNTAyLnRh
-ciAKPiA+ID4gZnJvbSB0aGUgcmVhbHRlayBzaXRlKSwgd2hpY2ggY29tcGlsZXMsIGxvb2tzIGEg
-Yml0IGJldHRlci4KPiA+ID4gR2l2ZXMgbWU6Cj4gPiA+ICAtIERpZmZlcmVudCBzZXQgb2YgbWl4
-ZXIgY29udHJvbHMgKG5vdCA1LjEgdGhvdWdoKQo+ID4KPiA+IE9LLCBJJ2xsIG5lZWQgYSBuZXdl
-ciBhbHNhLWluZm8uc2ggd2l0aCB0aGUgbGF0ZXN0IGRyaXZlci4KPiAKPiBOZXcgYWxzYS1pbmZv
-LnNoIGlzIGF0IGh0dHA6Ly9wYXN0ZWJpbi5jYS8xMDEyNzQ0Cj4gCj4gPgo+ID4gPiAgLSBoZWFk
-cGhvbmUgb3V0cHV0IGluIHRoZSBzdHJhbmdlIGR1YWwtdXNlIFNQRElGIGphY2sgb25seSAoaGVh
-ZHBob25lCj4gPiA+IGphY2sgb25seSBnb2VzIDIvMyBvZiB0aGUgd2F5IGluKQo+ID4KPiA+IFBs
-ZWFzZSBlbGFib3JhdGU/ICBJIGRvbid0IHVuZGVyc3RhbmQgeW91ciBkZXNjcmlwdGlvbi4KPiAK
-PiBoZWhlLCB5ZXMuIEkgZGlkbid0IGJlbGlldmUgaXQgZWl0aGVyLiBUaGlzIGxhcHRvcCBoYXMg
-dGhyZWUgamFja3MuIAo+ICAtIGxpZ2h0IGJsdWUsIHN5bWJvbCAiaGVhZHBob25lIiwgbm9ybWFs
-IDMuNW1tIGphY2sKPiAgLSBwaW5rLCBzeW1ib2wgIm1pY3JvcGhvbmUiLCBub3JtYWwgMy41bW0g
-amFjawo+ICAtIGJsYWNrLCBzeW1ib2wgbGluZSBvdXQsIG5vcm1hbCAzLjVtbSAodGhhdCBvbmx5
-IGdvZXMgaW4gMi8zIG9mIHRoZSB3YXkpIAo+IGphY2sgQU5EIFNQRElGICh5ZXMsIG5vdyBnbG93
-aW5nIHJlZCkKPiAKPiBBY3R1YWxseS4gU2VlaW5nIGlzIGJlbGlldmluZy4KPiAgd3d3LmNocm9u
-b3ZhdWx0Lm5ldC9zdGF0aWMvbWVkaW9uOTgzMDBqYWNrcy5qcGcKPiAKPiA+ID4gIC0gYnV0IHdp
-dGggamFjay1zZW5zaW5nIHdvcmtpbmcgaW4gdGhhdCBqYWNrLCB3aXRoIHRoZSBib3hlcyB0dXJu
-aW5nIG9mZgo+ID4gPiB3aGVuIEkgaW5zZXJ0IHRoZSBoZWFkcGhvbmUgaW50byB0aGUgU1BESUYu
-Cj4gPiBUaGlzIHNvdW5kcyBnb29kIC0tIGRvIHlvdSBtZWFuIHRoYXQgeW91IGhhdmUgYW5vdGhl
-ciBoZWFkcGhvbmUgamFja3M/Cj4gPgo+ID4KPiA+IFRha2FzaGkKPiAKPiBUaGFuayB5b3UgdmVy
-eSBtdWNoCj4gCj4gSnVzdCBoZydlZCBhZ2FpbiBjb21waWxlIHJ1bnMgZmluZS4KPiAKPiBUaGlz
-IGlzIHdpdGhvdXQgYW55ICJvcHRpb25zIHNuZC1oZGEtaW50ZWwgbW9kZWw9WFhYWCIgbGluZSAK
-PiBpbiAvZXRjL21vZHByb2JlLmQvYWxzYS1iYXNlCj4gCj4gIC0gSSBub3cgcHV0IG15IGhlYWRw
-aG9uZSBpbnRvIHRoZSBibGFjayBqYWNrIGFuZCBnZXQgc291bmQsIGJveGVzIHR1cm4gb2ZmLgo+
-ICAtIGxpZ2h0IGJsdWUgamFjayBpcyB3aXRob3V0IGZ1bmN0aW9uIG5vdy4gCj4gIC0gbWl4ZXIg
-b3B0aW9uICJoZWFkcGhvbmUiIGlzIHdpdGhvdXQgZnVuY3Rpb24uCj4gIC0gbWl4ZXIgbm93IGhh
-cyBtYXN0ZXIsIAo+IGhlYWRwaG9uZSxwY20sZnJvbnQsZnJvbnRtaWMsbGluZSxtaWMsbWljYm9v
-c3QsZGlnaXRhbAo+ICAtIG9ubHkgbWFzdGVyLHBjbSBhbmQgZnJvbnQgd29yaywgYWxsIHJlZ3Vs
-YXRlIG1hc3RlciB2b2x1bWUgb24gCj4gU1BESUYtdXNlZC1hcy1oZWFkcGhvbmUtamFjayBhbmQg
-dGhlIGludGVybmFsIGJveGVzCj4gLSBkb250IGhhdmUgYSBtaWMgcmlnaHQgaGVyZSB0byB0cnkg
-b3V0Cj4gCj4gU2hvdWxkIEkgdHJ5IG9wdGlvbnMgdGhlcmUgbm93PyBJcyAvZXRjL2luaXQuZC9h
-bHNhc291bmQgc3RvcCAvIHN0YXJ0IGEgZ29vZCAKPiB3YXkgdG8gY3ljbGUgdGhyb3VnaCBvcHRp
-b25zPwo+IAo+IAoKLS0gClRvYmluIERhdmlzIAoKCkJPRkggZXhjdXNlICMzMDk6CgpmaXJld2Fs
-bCBuZWVkcyBjb29saW5nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On Friday, May 09, 2008 1:58 am Ingo Molnar wrote:
+> * Ingo Molnar <mingo@elte.hu> wrote:
+> > good catch! Queued it up for testing. Jesse, do you concur?
+>
+> here's the patch below, tidied up.
+
+Yeah, that looks like a clear problem. :)
+
+> ------------------------------->
+> Subject: x86/pci: fix broken ISA DMA
+> From: Takashi Iwai <tiwai@suse.de>
+> Date: Fri, 09 May 2008 08:06:55 +0200
+>
+> Rene Herman reported:
+> > commit 8779f2fc3b84ebb6c5181fb13d702e9944c16069
+> >
+> > "x86: don't try to allocate from DMA zone at first"
+> >
+> > breaks all of ISA DMA. Or all of ALSA ISA DMA at least. All
+> > ISA soundcards are silent following that commit -- no error
+> > messages, everything appears fine, just silence.
+>
+> That patch is buggy. We had an implicit assumption that
+> dev = NULL for ISA devices that require 24bit DMA.
+>
+> The recent work on x86 dma_alloc_coherent() breaks the ISA DMA buffer
+> allocation, which is represented by "dev = NULL" and requires 24bit
+> DMA implicitly.
+
+Patch looks good, applied to my 'for-linus' tree.
+
+Thanks,
+Jesse
