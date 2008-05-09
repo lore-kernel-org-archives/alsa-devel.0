@@ -1,25 +1,23 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Problem with aloop
-Date: Fri, 09 May 2008 09:56:09 -0300
-Message-ID: <482449E9.3000405@tet.com.br>
-References: <d5eabee70805090546t5219e9e3v63df15b5d64fd7dd@mail.gmail.com>
+From: =?utf-8?q?Bj=C3=B6rn_van_der_Meer?= <bvdm@chronovault.net>
+Subject: Re:
+	=?utf-8?q?Request_for_Realtek_patch_-_Nvidia_MCP51_H?=
+	=?utf-8?q?DA_/_ALC883_=2810de=3A026c=29_Notebook_component?=
+Date: Fri, 9 May 2008 15:35:50 +0200
+Message-ID: <200805091535.50604.bvdm@chronovault.net>
+References: <200805050843.16538.bvdm@chronovault.net>
+	<s5h8wyk3fvi.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail4.tet.com.br [201.47.194.114])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E0422443D
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id A00C324486
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 May 2008 14:56:14 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by einstein.tteng.com.br (Postfix) with ESMTP id F03661204C6
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 May 2008 09:56:12 -0300 (BRST)
-Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
-	by einstein.tteng.com.br (Postfix) with ESMTP id E117D12000E
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 May 2008 09:56:09 -0300 (BRST)
-In-Reply-To: <d5eabee70805090546t5219e9e3v63df15b5d64fd7dd@mail.gmail.com>
+	Fri,  9 May 2008 15:35:55 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so868498fgg.44
+	for <alsa-devel@alsa-project.org>; Fri, 09 May 2008 06:35:54 -0700 (PDT)
+In-Reply-To: <s5h8wyk3fvi.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,63 +30,77 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Benjamin van den Hout escreveu:
-> Gustavo da Silva Serra wrote:
->
->   
->>    I am developing an application that captures sound and send it
->> through a network, just like a sound server. To test it I am using
->> kaffeine with alsa output plugin. After some time playing continuously,
->> or if I keep moving the position slider backward and forward, I get
->> choppy sound. If I close and reopen the capture stream opened by my
->> sound server, the sound is restored to good quality. Sometimes I have to
->> reopen many times before I get a good sound. When I use kaffeine oss
->> output plugin I don't have this issue. I don't have an audio sound card,
->> so I don't know if this is an *aloop* issue.
->>     
->
->   
->> Here are some details:
->> - RedHat EL 4 kernel 2.6.9.55-ELsmp 64bit
->> - Alsa 1.0.16
->> - Xinelib 1.1.12
->>     
->
-> Hi all,
->
-> I'm experiencing the same problem as Gustavo. In my case I have a SIP
-> client calling to another PC and I'm injecting audio with aplay (or
-> amarok, no difference there) into that SIP call. About 8/10 times
-> everything goes well, the other two times the audio that comes out at
-> the other PC sounds really choppy. Both PC's are on the same local
-> network so that is probably not the problem.
->
-> What I found out is that if I patch aloop-kernel.c in the 'static
-> struct snd_pcm_hardware snd_card_loopback_info' to have ".formats =
->  (SNDRV_PCM_FMTBIT_S8 )," this problem goes away. But then I'm stuck
-> with 8 bit audio. It sounds a bit like the aloop device sometimes
-> doesn't properly synchronise the 16 bit (or 32bit, tried that as well)
-> samples on both PCM devices and things get mis-aligned. I'm quite new
-> to ALSA so please don't laugh too hard if I'm missing something here
-> :)
->
-> Any input is greatly appreciated!
->
-> Kind regards,
-> Benjamin van den Hout
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-> __________ NOD32 3088 (20080509) Information __________
->
-> This message was checked by NOD32 antivirus system.
-> http://www.eset.com
->
->   
-
-Well, I discovered that only xinelib has this problem. Xmms and 
-alsaplayer, for example, don't have this issue. I am testing VLC and it 
-seems to work fine. I am not surprised, since the xine source code that 
-deals with alsa is huge and ugly, it must be very hard to mantain that.
+Cj4gQXQgTW9uLCA1IE1heSAyMDA4IDA4OjQzOjE2ICswMjAwLAo+Cj4gQmrDtnJuIHZhbiBkZXIg
+TWVlciB3cm90ZToKPiA+IEhlbGxvIEV2ZXJ5b25lLAo+ID4KPiA+IEkgaGF2ZSBhYm92ZSBjb21w
+b25lbnQgaW4gbXkgbGFwdG9wIGFuZCBsYWNrIHRoZSBleHBlcnRpc2UgdG8gYWRkIGl0IHRvCj4g
+PiB0byBwYXRjaF9yZWFsdGVrLmMgbXlzZWxmLgo+ID4KPiA+IEkgdGhpbmsgSSBoYXZlIGNvbGxl
+Y3RlZCBhbGwgdGhlIHJlbGV2YW50IGluZm9ybWF0aW9uIGlmIG9uZSBvZiB0aGUKPiA+IGRldmVs
+b3BlcnMgd2FudHMgdG8gZ2l2ZSBpdCBhIHRyeS4KPiA+Cj4gPiBNeSBOb3RlYm9vazogTWVkaW9u
+IDk4MzAwIChhLmsuYS4gV0FNMjAzMCkKPiA+IChQbGVhc2Ugbm90ZTogTWVkaW9uIGlzIG5vdCBh
+biBPRU0uIFRoZSBib2FyZCBpcyBuVmlkaWEgYmFzZWQsIE9FTQo+ID4gdGhvdWdodCB0byBiZSBX
+aXN0cm9uLiBBcHBhcmVudGx5IHJhcmVseSB1c2VkIHNvdW5kIGNvbXBvbmVudD8pCj4gPgo+ID4g
+SW50ZXJuYWwgc3BlYWtlcnMKPiA+IEludGVybmFsIG1pYyAtIHVua25vd24KPiA+IHRocmVlIGph
+Y2tzOiBoZWFkcGhvbmUsIG1pYywgU1BESUYoZHVhbCB1c2UgamFjaykuCj4gPiBKYWNrIFNlbnNp
+bmcgdW5kZXIgV2luZG93cy4KPiA+IDUuMSBzdXJyb3VuZCAoc291bmRzIGxpa2UgdGhlIHNldHVw
+IHNob3VsZCBiZSBzdXBwb3J0ZWQgYnkKPiA+IDNzdGFjay02Y2gtZGlnKQo+ID4KPiA+IGxzcGNp
+Ogo+ID4gMDA6MTAuMSBBdWRpbyBkZXZpY2UgWzA0MDNdOiBuVmlkaWEgQ29ycG9yYXRpb24gTUNQ
+NTEgSGlnaCBEZWZpbml0aW9uCj4gPiBBdWRpbyBbMTBkZTowMjZjXSAocmV2IGEyKQo+ID4gU3Vi
+c3lzdGVtOiBXaXN0cm9uIENvcnAuIFVua25vd24gZGV2aWNlIFsxN2MwOjQwNzldCj4gPiBGbGFn
+czogNjZNSHosIGZhc3QgZGV2c2VsLCBJUlEgMjAKPiA+IE1lbW9yeSBhdCBjMDAwMDAwMCAoMzIt
+Yml0LCBub24tcHJlZmV0Y2hhYmxlKSBbc2l6ZT0xNktdCj4gPiBDYXBhYmlsaXRpZXM6IFs0NF0g
+UG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDIKPiA+IENhcGFiaWxpdGllczogWzUwXSBNZXNzYWdl
+IFNpZ25hbGxlZCBJbnRlcnJ1cHRzOiBNYXNrKyA2NGJpdCsgUXVldWU9MC8wCj4gPiBFbmFibGUt
+Cj4gPiBDYXBhYmlsaXRpZXM6IFs2Y10gSHlwZXJUcmFuc3BvcnQ6IE1TSSBNYXBwaW5nCj4gPgo+
+ID4gaHdpbmZvOgo+ID4gMjI6IFBDSSAxMC4xOiAwNDAzIEF1ZGlvIGRldmljZQo+ID4gICBbQ3Jl
+YXRlZCBhdCBwY2kuMjk2XQo+ID4gICBVREk6IC9vcmcvZnJlZWRlc2t0b3AvSGFsL2RldmljZXMv
+cGNpXzEwZGVfMjZjCj4gPiAgIFVuaXF1ZSBJRDogd1J5RC5YN1hKM3JUanJSMwo+ID4gICBTeXNG
+UyBJRDogL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjEwLjEKPiA+ICAgU3lzRlMgQnVzSUQ6
+IDAwMDA6MDA6MTAuMQo+ID4gICBIYXJkd2FyZSBDbGFzczogc291bmQKPiA+ICAgTW9kZWw6ICJX
+aXN0cm9uIE1DUDUxIEhpZ2ggRGVmaW5pdGlvbiBBdWRpbyIKPiA+ICAgVmVuZG9yOiBwY2kgMHgx
+MGRlICJuVmlkaWEgQ29ycG9yYXRpb24iCj4gPiAgIERldmljZTogcGNpIDB4MDI2YyAiTUNQNTEg
+SGlnaCBEZWZpbml0aW9uIEF1ZGlvIgo+ID4gICBTdWJWZW5kb3I6IHBjaSAweDE3YzAgIldpc3Ry
+b24gQ29ycC4iCj4gPiAgIFN1YkRldmljZTogcGNpIDB4NDA3OQo+ID4gICBSZXZpc2lvbjogMHhh
+Mgo+ID4gICBEcml2ZXI6ICJIREEgSW50ZWwiCj4gPiAgIERyaXZlciBNb2R1bGVzOiAic25kX2hk
+YV9pbnRlbCIKPiA+ICAgTWVtb3J5IFJhbmdlOiAweGMwMDAwMDAwLTB4YzAwMDNmZmYgKHJ3LG5v
+bi1wcmVmZXRjaGFibGUpCj4gPiAgIElSUTogMjAgKDE5NTY5MyBldmVudHMpCj4gPiAgIE1vZHVs
+ZSBBbGlhczogInBjaTp2MDAwMDEwREVkMDAwMDAyNkNzdjAwMDAxN0Mwc2QwMDAwNDA3OWJjMDRz
+YzAzaTAwIgo+ID4gICBEcml2ZXIgSW5mbyAjMDoKPiA+ICAgICBEcml2ZXIgU3RhdHVzOiBzbmRf
+aGRhX2ludGVsIGlzIGFjdGl2ZQo+ID4gICAgIERyaXZlciBBY3RpdmF0aW9uIENtZDogIm1vZHBy
+b2JlIHNuZF9oZGFfaW50ZWwiCj4gPiAgIENvbmZpZyBTdGF0dXM6IGNmZz1uZXcsIGF2YWlsPXll
+cywgbmVlZD1ubywgYWN0aXZlPXVua25vd24KPiA+Cj4gPiBhbHNhLWluZm8uc2ggb3V0cHV0IGlz
+IGF0IGh0dHA6Ly9wYXN0ZWJpbi5jb20vZjQ5OTYyYzkyLgo+ID4KPiA+Cj4gPgo+ID4gQ3VycmVu
+dGx5IHRoZSBvbmx5IHRoaW5nIHdvcmtpbmcgaXMgb3V0cHV0IHZpYSB0aGUgaW50ZXJuYWwgc3Bl
+YWtlcnMuCj4KPiBBbmQgZG9lc24ndCB0aGlzIHN0aWxsIHdvcmsgd2l0aCB0aGUgbGF0ZXN0IEFM
+U0EgSEcgZHJpdmVyPwo+Cj4KPiBUYWthc2hpCgpUaGFua3MgZm9yIHlvdXIgYW5zd2VyLiBMYXRl
+c3QgSEcgZG9lcyBub3QgY29tcGlsZSBvbiBteSBzeXN0ZW0sIHRocm93cwptZW1hbGxvYy5jIGVy
+cm9ycy4gKENvdWxkIGJlIG1lIGRvaW5nIHNvbWV0aGluZyB3cm9uZyB0aG91Z2ggLSBvdXQgb24g
+YSBsaW1wKQoKIENDIFtNXSAgL2hvbWUvYnZkbS9hbHNhLWRyaXZlci9hY29yZS9tZW1hbGxvYy5v
+Ci9ob21lL2J2ZG0vYWxzYS1kcml2ZXIvYWNvcmUvbWVtYWxsb2MuYzogSW4gZnVuY3Rpb24g4oCY
+c25kX21lbV9pbml04oCZOgovaG9tZS9idmRtL2Fsc2EtZHJpdmVyL2Fjb3JlL21lbWFsbG9jLmM6
+NzI5OiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YKZnVuY3Rpb24g4oCYcHJvY19jcmVh
+dGXigJkKL2hvbWUvYnZkbS9hbHNhLWRyaXZlci9hY29yZS9tZW1hbGxvYy5jOjczMDogd2Fybmlu
+ZzogYXNzaWdubWVudCBtYWtlcyBwb2ludGVyCmZyb20gaW50ZWdlciB3aXRob3V0IGEgY2FzdApt
+YWtlWzNdOiAqKiogWy9ob21lL2J2ZG0vYWxzYS1kcml2ZXIvYWNvcmUvbWVtYWxsb2Mub10gRXJy
+b3IgMQptYWtlWzJdOiAqKiogWy9ob21lL2J2ZG0vYWxzYS1kcml2ZXIvYWNvcmVdIEVycm9yIDIK
+bWFrZVsxXTogKioqIFtfbW9kdWxlXy9ob21lL2J2ZG0vYWxzYS1kcml2ZXJdIEVycm9yIDIKbWFr
+ZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtMi42LjI0LTE2
+LWdlbmVyaWMnCgoKCkkgc2VlIHJlZmVyZW5jZXMgdG8gc2ltaWxhciBlcnJvcnMgb24gdGhlIGxp
+c3QsIGhhZCB0byBkbyB3aXRoIHByb2Nlc3NvcgppZGVudGlmaWNhdGlvbj8KCgpDb25maWd1cmUg
+ZGV0ZWN0cyB0aGlzOgpjaGVja2luZyBmb3IgcHJvY2Vzc29yIHR5cGUuLi4gaTU4NgpjaGVja2lu
+ZyBmb3IgaTM4NiBtYWNoaW5lIHR5cGUuLi4gZGVmYXVsdAoKL3Byb2MvY3B1aW5mbyBzdGFydHMg
+d2l0aDoKWy4uLl0KdmVuZG9yX2lkICAgICAgIDogQXV0aGVudGljQU1ECmNwdSBmYW1pbHkgICAg
+ICA6IDE1Cm1vZGVsICAgICAgICAgICA6IDcyCm1vZGVsIG5hbWUgICAgICA6IEFNRCBUdXJpb24o
+dG0pIDY0IFgyIE1vYmlsZSBUZWNobm9sb2d5IFRMLTUwClsuLi5dCgoKCkkgaGF2ZSBhbHNvIGp1
+c3QgbGlmdGVkIHBhdGNoX3JlYWx0ZWsuYyBmcm9tIHRoZSBjdXJyZW50IGhnIGFuZCBjb21waWxl
+ZCBpdCBpbgphIHdvcmtpbmcgdGFyYmFsbCAoYWN0dWFsbHkgbGFiZWxsZWQgYWxzYS1kcml2ZXIt
+aGcyMDA4MDUwMi50YXIgIGZyb20gdGhlCnJlYWx0ZWsgc2l0ZSksIHdoaWNoIGNvbXBpbGVzLCBs
+b29rcyBhIGJpdCBiZXR0ZXIuIApHaXZlcyBtZTogCiAtIERpZmZlcmVudCBzZXQgb2YgbWl4ZXIg
+Y29udHJvbHMgKG5vdCA1LjEgdGhvdWdoKQogLSBoZWFkcGhvbmUgb3V0cHV0IGluIHRoZSBzdHJh
+bmdlIGR1YWwtdXNlIFNQRElGIGphY2sgb25seSAoaGVhZHBob25lIGphY2sgCm9ubHkgZ29lcyAy
+LzMgb2YgdGhlIHdheSBpbikKIC0gYnV0IHdpdGggamFjay1zZW5zaW5nIHdvcmtpbmcgaW4gdGhh
+dCBqYWNrLCB3aXRoIHRoZSBib3hlcyB0dXJuaW5nIG9mZiB3aGVuIApJIGluc2VydCB0aGUgaGVh
+ZHBob25lIGludG8gdGhlIFNQRElGLgoKQ2hlZXJzLCBCLgoKLS0gCkJqw7ZybiB2YW4gZGVyIE1l
+ZXIKYnZkbUBjaHJvbm92YXVsdC5uZXQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
