@@ -1,50 +1,75 @@
-From: Jesse Barnes <jbarnes@virtuousgeek.org>
-Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
-Date: Fri, 9 May 2008 10:20:22 -0700
-Message-ID: <200805091020.22541.jbarnes@virtuousgeek.org>
-References: <4823AAF2.7070102@keyaccess.nl> <20080509085511.GE2592@elte.hu> <20080509085824.GF2592@elte.hu>
+From: "Harsha priya gupta" <harshapriya@gmail.com>
+Subject: Re: basic question on .pointer function
+Date: Fri, 9 May 2008 23:51:17 +0530
+Message-ID: <827ad74d0805091121u4c42d172yc2b8e734355ff81d@mail.gmail.com>
+References: <827ad74d0805062040i4c2977adrc4fb50fbbc0bff43@mail.gmail.com>
+	<s5hwsm321ag.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1763691AbYEIRVG@vger.kernel.org>
-In-Reply-To: <20080509085824.GF2592@elte.hu>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id F353024391
+	for <alsa-devel@alsa-project.org>;
+	Fri,  9 May 2008 20:21:18 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so339316and.80
+	for <alsa-devel@alsa-project.org>; Fri, 09 May 2008 11:21:17 -0700 (PDT)
+In-Reply-To: <s5hwsm321ag.wl%tiwai@suse.de>
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ingo Molnar <mingo@elte.hu>
-Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, Glauber Costa <gcosta@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Pete Clements <clem@clem.clem-digital.net>, Linux Kernel <linux-kernel@vger.kernel.org>, ALSA devel <alsa-devel@alsa-project.org>, "H. Peter Anvin" <hpa@zytor.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, May 09, 2008 1:58 am Ingo Molnar wrote:
-> * Ingo Molnar <mingo@elte.hu> wrote:
-> > good catch! Queued it up for testing. Jesse, do you concur?
->
-> here's the patch below, tidied up.
+Thanks a lot for this pointer. A quick question;
 
-Yeah, that looks like a clear problem. :)
+For the .pointer function, it says " This callback is called when the PCM
+middle layer inquires the current hardware position on the buffer."
 
-> ------------------------------->
-> Subject: x86/pci: fix broken ISA DMA
-> From: Takashi Iwai <tiwai@suse.de>
-> Date: Fri, 09 May 2008 08:06:55 +0200
->
-> Rene Herman reported:
-> > commit 8779f2fc3b84ebb6c5181fb13d702e9944c16069
+Does the word "PCM middle layer" mean that the MMF like Helix / Gstreamer is
+continuously querying for hardware position on the buffer? Or does the
+player keep querying?
+
+I also see that this function gets called quiet a number of times. Is there
+a way to reduce these calls? My guess is that to reduce the number of calls
+to .pointer, MMF or player needs to be modified. Am I thinking right?
+
+-Harsha
+
+
+
+On Fri, May 9, 2008 at 4:26 PM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Wed, 7 May 2008 09:10:00 +0530,
+> Harsha priya gupta wrote:
 > >
-> > "x86: don't try to allocate from DMA zone at first"
+> > Hi,
+> > It would be really helpful if someone can help me understand why do we
+> need
+> > to implement .pointer and what does it need to do? I am facing an issue
+> to
+> > write a driver in this .pointer function. Please help
 > >
-> > breaks all of ISA DMA. Or all of ALSA ISA DMA at least. All
-> > ISA soundcards are silent following that commit -- no error
-> > messages, everything appears fine, just silence.
+> > Also if someone can point me to a document where all the playback_ops are
+> > defined, it would be really helpful
 >
-> That patch is buggy. We had an implicit assumption that
-> dev = NULL for ISA devices that require 24bit DMA.
+> Did you check the page below?
 >
-> The recent work on x86 dma_alloc_coherent() breaks the ISA DMA buffer
-> allocation, which is represented by "dev = NULL" and requires 24bit
-> DMA implicitly.
+> http://www.alsa-project.org/main/index.php/ALSA_Driver_Documentation
+>
+>
+> Takashi
+>
 
-Patch looks good, applied to my 'for-linus' tree.
 
-Thanks,
-Jesse
+
+-- 
+-Harsha
