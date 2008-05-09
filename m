@@ -1,16 +1,18 @@
-From: maximilian attems <max@stro.at>
-Subject: [PATCH] emux midi synthesizer doesn't honor
-	SOFT_PEDAL-release event
-Date: Fri,  9 May 2008 10:44:54 +0200
-Message-ID: <1210322694-8868-1-git-send-email-max@stro.at>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
+Date: Fri, 9 May 2008 10:55:11 +0200
+Message-ID: <20080509085511.GE2592@elte.hu>
+References: <4823AAF2.7070102@keyaccess.nl> <s5hzlr0105c.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from baikonur.stro.at (baikonur.stro.at [213.239.196.228])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B249243AE
+Received: from mx3.mail.elte.hu (mx3.mail.elte.hu [157.181.1.138])
+	by alsa0.perex.cz (Postfix) with ESMTP id DFECF243B1
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 May 2008 10:45:34 +0200 (CEST)
+	Fri,  9 May 2008 10:55:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hzlr0105c.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, maximilian attems <max@stro.at>, uwe_debbug@arcor.de
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@keyaccess.nl>, Linux Kernel <linux-kernel@vger.kernel.org>, Jesse Barnes <jbarnes@virtuousgeek.org>, Glauber Costa <gcosta@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, Pete Clements <clem@clem.clem-digital.net>
 List-Id: alsa-devel@alsa-project.org
 
-V2hlbiB0aGUgaGFyZHdhcmUgd2F2ZXRhYmxlIHN5bnRoZXNpemVyIG9mIGFuIENyZWF0aXZlIFNC
-IEF1ZGlneSBvciBTQgpMaXZlISBjYXJkICh3aXRoIGVtdTEwayBjaGlwKSByZWNlaXZlcyB0aGUg
-TUlESSBTT0ZUX1BFQURBTC1wcmVzcyBldmVudAooPz8gNjcgMTI3KSB0aGUgYXBwcm9wcmlhdGUg
-dm9pY2UgaXMgYXR0ZW51dGVkLiBVbmZvcnR1bmF0ZWx5IHdoZW4gdGhlCnBlZGFsIGlzIHJlbGVh
-c2VkIChldmVudCA/PyA2NyAwKSB0aGUgdm9pY2UgZG9lcyBub3QgZ2V0IGl0J3Mgb3JpZ2luYWwK
-dm9sdW1lIGFnYWluLgoKQm9vbGVhbiBNSURJIGNvbnRyb2xzIHNob3VsZCBpbnRlcnByZXQgMC4u
-NjMgYXMgZmFsc2UgYW5kIDY0Li4xMjcgYXMgdHJ1ZS4KVGhhbmtzIHRvIENsZW1lbnMgTGFkaXNj
-aCBmb3IgcmV2aWV3IGFuZCBjb3JyZWN0aW9uLgoKT3JpZ2luYWwgcGF0Y2ggZnJvbSAiVXdlIEty
-w4MjZ2VyIiA8dXdlX2RlYmJ1Z0BhcmNvci5kZT4KU3VibWl0dGVkIHRvIGh0dHA6Ly9idWdzLmRl
-Ymlhbi5vcmcvNDc0MzEyCgpTaWduZWQtb2ZmLWJ5OiBtYXhpbWlsaWFuIGF0dGVtcyA8bWF4QHN0
-cm8uYXQ+CkNjOiB1d2VfZGViYnVnQGFyY29yLmRlCkNjOiBDbGVtZW5zIExhZGlzY2ggPGNsZW1l
-bnNAbGFkaXNjaC5kZT4KLS0tCiBzb3VuZC9zeW50aC9lbXV4L2VtdXhfc3ludGguYyB8ICAgIDYg
-KysrKystCiAxIGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9zb3VuZC9zeW50aC9lbXV4L2VtdXhfc3ludGguYyBiL3NvdW5kL3N5bnRo
-L2VtdXgvZW11eF9zeW50aC5jCmluZGV4IDQ3ODM2OWIuLmIzNDM4MTggMTAwNjQ0Ci0tLSBhL3Nv
-dW5kL3N5bnRoL2VtdXgvZW11eF9zeW50aC5jCisrKyBiL3NvdW5kL3N5bnRoL2VtdXgvZW11eF9z
-eW50aC5jCkBAIC0zNDEsOCArMzQxLDEyIEBAIHNuZF9lbXV4X2NvbnRyb2wodm9pZCAqcCwgaW50
-IHR5cGUsIHN0cnVjdCBzbmRfbWlkaV9jaGFubmVsICpjaGFuKQogCWNhc2UgTUlESV9DVExfU09G
-VF9QRURBTDoKICNpZmRlZiBTTkRSVl9FTVVYX1VTRV9SQVdfRUZGRUNUCiAJCS8qIEZJWE1FOiB0
-aGlzIGlzIGFuIGVtdWxhdGlvbiAqLwotCQlzbmRfZW11eF9zZW5kX2VmZmVjdChwb3J0LCBjaGFu
-LCBFTVVYX0ZYX0NVVE9GRiwgLTE2MCwKKwkJaWYgKGNoYW4tPmNvbnRyb2xbdHlwZV0gPj0gNjQp
-CisJCQlzbmRfZW11eF9zZW5kX2VmZmVjdChwb3J0LCBjaGFuLCBFTVVYX0ZYX0NVVE9GRiwgLTE2
-MCwKIAkJCQkgICAgIEVNVVhfRlhfRkxBR19BREQpOworCQllbHNlCisJCQlzbmRfZW11eF9zZW5k
-X2VmZmVjdChwb3J0LCBjaGFuLCBFTVVYX0ZYX0NVVE9GRiwgMCwKKwkJCQkgICAgIEVNVVhfRlhf
-RkxBR19PRkYpOwogI2VuZGlmCiAJCWJyZWFrOwogCi0tIAoxLjUuNS4xCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+* Takashi Iwai <tiwai@suse.de> wrote:
+
+> Thanks for catching it.  Yeah, the patch looks buggy.  We had an 
+> implicit assumption that dev = NULL for ISA devices that require 24bit 
+> DMA.
+> 
+> How about the patch below?  It's against the latest Linus git tree.
+
+good catch! Queued it up for testing. Jesse, do you concur?
+
+	Ingo
