@@ -1,19 +1,17 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
-Date: Sat, 10 May 2008 01:00:44 +0200
-Message-ID: <4824D79C.7060303@keyaccess.nl>
-References: <4823AAF2.7070102@keyaccess.nl> <s5hzlr0105c.wl%tiwai@suse.de>
-	<48243D86.7020504@keyaccess.nl> <20080509122828.GB10855@elte.hu>
+From: Philipp Zabel <philipp.zabel@gmail.com>
+Subject: [PATCH] ASoC: build fix for snd_soc_info_bool_ext
+Date: Sat, 10 May 2008 14:07:39 +0200
+Message-ID: <1210421259.3876.3.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF8FA243A3
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.159])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26CA0243C2
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 May 2008 00:59:43 +0200 (CEST)
-In-Reply-To: <20080509122828.GB10855@elte.hu>
+	Sat, 10 May 2008 14:07:44 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so1201407fgg.44
+	for <alsa-devel@alsa-project.org>; Sat, 10 May 2008 05:07:43 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ingo Molnar <mingo@elte.hu>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Glauber Costa <gcosta@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Pete Clements <clem@clem.clem-digital.net>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09-05-08 14:28, Ingo Molnar wrote:
-> * Rene Herman <rene.herman@keyaccess.nl> wrote:
-> 
->> On 09-05-08 08:06, Takashi Iwai wrote:
->>
->>> Thanks for catching it.  Yeah, the patch looks buggy.  We had an
->>> implicit assumption that dev = NULL for ISA devices that require 24bit
->>> DMA.
->>>
->>> How about the patch below?  It's against the latest Linus git tree.
->> Yes, works well. Thank you.
-> 
-> great, thanks Rene for catching this! Added this line to the patch as 
-> well:
-> 
->  Tested-by: Rene Herman <rene.herman@keyaccess.nl>
-
-Oh... it was rather significantly in the AM when I posted so I forgot to
-mention in the haste to get this out of the way but it was Pete Clements
-who reported the regression:
-
-http://www.nabble.com/Lost-Sound-from-2.6.24-to-2.6.25----CS4236-ISA-tc17062547.html
-
-He also tested it, so as long as we're name-mention-flattering around...
-
-And this a good excuse to ask how you edit changelog after the fact. Just
-reset/reapply and stuff or is there a "better" way? I fairly frequently
-find myself wanting to do just that but it's a bit of a mess when there's
-already commits on top.
-
-Rene.
+77u/SSBzdXNwZWN0IHRoYXQg77u/c25kX2N0bF9ib29sZWFuX21vbm8gc2hvdWxkIGhhdmUgYmVl
+bgpzbmRfY3RsX2Jvb2xlYW5fbW9ub19pbmZvIGluc3RlYWQuIFRoaXMgZml4ZXMgdGhlIGJ1aWxk
+IGZvciBtYWdpY2lhbi4KClNpZ25lZC1vZmYtYnk6IFBoaWxpcHAgWmFiZWwgPHBoaWxpcHAuemFi
+ZWxAZ21haWwuY29tPgoKLS0tCiBpbmNsdWRlL3NvdW5kL3NvYy5oIHwgICAgMiArLQogMSBmaWxl
+cyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
+aW5jbHVkZS9zb3VuZC9zb2MuaCBiL2luY2x1ZGUvc291bmQvc29jLmgKaW5kZXggZTZlYTZmNy4u
+ZDNjOGMwMyAxMDA2NDQKLS0tIGEvaW5jbHVkZS9zb3VuZC9zb2MuaAorKysgYi9pbmNsdWRlL3Nv
+dW5kL3NvYy5oCkBAIC0yMzgsNyArMjM4LDcgQEAgaW50IHNuZF9zb2NfaW5mb192b2xzdyhzdHJ1
+Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKIAlzdHJ1Y3Qgc25kX2N0bF9lbGVtX2luZm8gKnVp
+bmZvKTsKIGludCBzbmRfc29jX2luZm9fdm9sc3dfZXh0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtj
+b250cm9sLAogCXN0cnVjdCBzbmRfY3RsX2VsZW1faW5mbyAqdWluZm8pOwotI2RlZmluZSBzbmRf
+c29jX2luZm9fYm9vbF9leHQJCXNuZF9jdGxfYm9vbGVhbl9tb25vCisjZGVmaW5lIHNuZF9zb2Nf
+aW5mb19ib29sX2V4dAkJc25kX2N0bF9ib29sZWFuX21vbm9faW5mbwogaW50IHNuZF9zb2NfZ2V0
+X3ZvbHN3KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAogCXN0cnVjdCBzbmRfY3RsX2Vs
+ZW1fdmFsdWUgKnVjb250cm9sKTsKIGludCBzbmRfc29jX3B1dF92b2xzdyhzdHJ1Y3Qgc25kX2tj
+b250cm9sICprY29udHJvbCwKLS0gCjEuNS41LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
