@@ -1,142 +1,121 @@
-From: Sjoerd Simons <sjoerd@luon.net>
-Subject: Re: [alsa-devel] Pulseaudio alsa configure hook
-Date: Sat, 10 May 2008 21:46:25 +0200
-Message-ID: <20080510194625.GA5558@spring.luon.net>
-References: <20080427203709.GA13496@spring.luon.net>
-	<s5hiqxzuxev.wl%tiwai@suse.de>
-Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+From: "Simon Dunn" <sdunn@mpc-data.co.uk>
+Subject: softvol plug-in dependancies?
+Date: Sat, 10 May 2008 20:59:28 +0100
+Message-ID: <op.uaye5g1khpbl6d@derby>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="n8g4imXOkfNTN/H1"
-Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
-Content-Disposition: inline
-In-Reply-To: <s5hiqxzuxev.wl%tiwai@suse.de>
-List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
-List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
-List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
-List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@mail.0pointer.de
-Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
-To: Takashi Iwai <tiwai@suse.de>
-Cc: pulseaudio-discuss@mail.0pointer.de, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from molson.mpc-data.co.uk (cvs.mpc-ogw.co.uk [81.2.99.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id BF1DF244BA
+	for <alsa-devel@alsa-project.org>;
+	Sat, 10 May 2008 21:59:25 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Guys
 
---n8g4imXOkfNTN/H1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The softvol plug-in, are there any pre-requisites or dependancies
+to using this?  I've tried various entries in the /etc/asound.conf
+configuration file all with the same result.
 
-On Wed, Apr 30, 2008 at 06:20:40PM +0200, Takashi Iwai wrote:
-> At Sun, 27 Apr 2008 22:37:09 +0200,
-> >   The attached patch extends the alsa pulse plugin set with a alsa
-> >   configuration hook. Allowing one to specify some configuration parameters
-> >   that only come into effect when pulseaudio is running.
-> > 
-> >   For example a configution file like:
-> > 
-> >     @hooks [ {
-> >        func on_pulse_is_running
-> >          pcm.!default { type pulse }
-> >          ctl.!default { type pulse }
-> >        }
-> >    ]
-> > 
-> >   will redirect the default alsa pcm and ctl to pulse iff pulse is running.
-> >   (Assuming you defined the hook function correctly ofcourse)
+I can see the control in alsamixer, once I've run the speaker-test
+through it, but cannot adjust any settings.  Trying to run 'alsactl
+store 0' results in this error :
 
-> This looks pretty interesting.
-> I forgot that this kind of stuff can be also a plugin :)
-> 
-> Applied to HG tree now.
+.
+alsactl: control.c:2437: snd_ctl_elem_value_get_integer: Assertion `idx <  
+sizeof
+(obj->value.integer.value) / sizeof(obj->value.integer.value[0])' failed.
+Aborted
+.
 
-Thanks :).. Unfortunately some more testing revealed some issues with it,
-specifically if pulse is running your complete config is replaced the bits in
-the on_pulse_is_running directive. Which might not be what one actually wants :)
+Curiously using amixer the device is listed but its properties are
+displayed like this
 
-I couldn't find a proper solution for this. So i've changed the code to
-optionally load config files. Just like the load hook does. Actually i just
-optionally call the snd_config_hook_load function, but that's not actually in
-the alsa API....
+.
+Simple mixer control 'PCM Vol',0
+   Capabilities: volume
+   Playback channels: Front Left - Front Right - Rear Left - Rear Right -  
+Front C
+enter - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ? - ?  
+- ? -
+? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ?
+   Capture channels: Front Left - Front Right - Rear Left - Rear Right -  
+Front Ce
+nter - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ? - ? -  
+? - ?
+  - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ?
+   Limits: 0 - 0
+   Front Left: 0 [0%]
+   Front Right: 0 [0%]
+   Rear Left: 0 [0%]
+   Rear Right: 0 [0%]
+   Front Center: 0 [0%]
+   Woofer: 0 [0%]
+   Side Left: 0 [0%]
+   Side Right: 0 [0%]
+   Rear Center: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
+   ?: 0 [0%]
 
-Also it now decides pulse is running as soon as the authorizing step begins
-(just after the actually connection is setup), which should save some
-round-trips and overhead.
+Any clues as to what's going on here would be much appreciated before
+I have to start dissecting the library.
 
-Updated patch attached :)
+TIA for any hints
+Simon
 
-  Sjoerd
 -- 
-For fast-acting relief, try slowing down.
 
---n8g4imXOkfNTN/H1
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-pulse-conf.patch"
+Simon Dunn, Software Engineer
+MPC Data Limited
+e-mail: sdunn@mpc-data.co.uk
+web: www.mpc-data.co.uk
+tel: +44 (0) 1225 710600
+fax: +44 (0) 1225 710601
+ddi: +44 (0) 1225 710631
 
-diff -r 8b8cd8912f67 pulse/conf_pulse.c
---- a/pulse/conf_pulse.c	Wed Apr 30 20:18:15 2008 +0200
-+++ b/pulse/conf_pulse.c	Sat May 10 21:28:23 2008 +0200
-@@ -26,14 +26,19 @@
- #include <pulse/pulseaudio.h>
- 
- 
-+/* Not actually part of the alsa api....  */
-+extern int
-+snd_config_hook_load (snd_config_t *root, snd_config_t *config,
-+  snd_config_t **dst, snd_config_t *private_data);
-+
- int
--conf_pulse_hook_on_is_running (snd_config_t *root, snd_config_t *config,
-+conf_pulse_hook_load_if_running (snd_config_t *root, snd_config_t *config,
-     snd_config_t **dst, snd_config_t *private_data) {
--  snd_config_t *n = NULL;
-   pa_mainloop *loop = NULL;
-   pa_context *context = NULL;
-   int ret = 0, err, state;
- 
-+  *dst = NULL;
- 
-   /* Defined if we're called inside the pulsedaemon itself */
-   if (getenv("PULSE_INTERNAL") != NULL)
-@@ -65,12 +70,12 @@
-       goto out;
- 
-     state = pa_context_get_state(context);
--  } while (state < PA_CONTEXT_READY);
-+  } while (state < PA_CONTEXT_AUTHORIZING);
- 
--  if (state != PA_CONTEXT_READY)
-+  if (state > PA_CONTEXT_READY)
-     goto out;
- 
--  ret = snd_config_expand(config, root, NULL, private_data, &n);
-+  ret = snd_config_hook_load(root, config, dst, private_data);
- 
- out:
-   if (context != NULL)
-@@ -79,10 +84,8 @@
-   if (loop != NULL)
-     pa_mainloop_free(loop);
- 
--  *dst = n;
--
-   return ret;
- }
- 
--SND_DLSYM_BUILD_VERSION(conf_pulse_hook_on_is_running,
-+SND_DLSYM_BUILD_VERSION(conf_pulse_hook_load_if_running,
-   SND_CONFIG_DLSYM_VERSION_HOOK);
+MPC Data Limited is a company registered in England and Wales with company  
+number 05507446
+Registered Address: County Gate, County Way, Trowbridge, Wiltshire, BA14  
+7FJ
+VAT no: 850625238
 
---n8g4imXOkfNTN/H1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-pulseaudio-discuss mailing list
-pulseaudio-discuss@mail.0pointer.de
-https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss
-
---n8g4imXOkfNTN/H1--
+The information in this email and in the attached documents is  
+confidential and may be legally privileged. Any unauthorized review,  
+copying, disclosure or distribution is prohibited and may be unlawful. It  
+is intended solely for the addressee. Access to this email by anyone else  
+is unauthorized. If you are not the intended recipient, please contact the  
+sender by reply email and destroy all copies of the original message. When  
+addressed to our clients any opinions or advice contained in this email is  
+subject to the terms and conditions expressed in the governing contract.
