@@ -1,72 +1,142 @@
-From: "Andrew Paprocki" <andrew@ishiboo.com>
-Subject: Re: Embedded I2S / 192khz
-Date: Sat, 10 May 2008 14:15:33 -0400
-Message-ID: <76366b180805101115o3f057d49j7fb78ef53bd04d10@mail.gmail.com>
-References: <76366b180805080650p615851afi272602115ca1660a@mail.gmail.com>
-	<20080508140856.GC23041@sirena.org.uk>
-	<1210256561.20475.16.camel@odin>
+From: Sjoerd Simons <sjoerd@luon.net>
+Subject: Re: [alsa-devel] Pulseaudio alsa configure hook
+Date: Sat, 10 May 2008 21:46:25 +0200
+Message-ID: <20080510194625.GA5558@spring.luon.net>
+References: <20080427203709.GA13496@spring.luon.net>
+	<s5hiqxzuxev.wl%tiwai@suse.de>
+Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE7B824493
-	for <alsa-devel@alsa-project.org>;
-	Sat, 10 May 2008 20:15:35 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so1592673rvb.32
-	for <alsa-devel@alsa-project.org>; Sat, 10 May 2008 11:15:34 -0700 (PDT)
-In-Reply-To: <1210256561.20475.16.camel@odin>
+Content-Type: multipart/mixed; boundary="n8g4imXOkfNTN/H1"
+Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <s5hiqxzuxev.wl%tiwai@suse.de>
+List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
+List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
+List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
+List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@mail.0pointer.de
+Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: pulseaudio-discuss@mail.0pointer.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Has anyone heard of this BridgeCo DM850 chip? It seems powerful, but
-I'm not sure if there is any ALSA support from the company.. from the
-datasheet:
 
-"There are up to four Audio I/O ports, each with four I2S/I8S
-interfaces operating at up to 192 kHz in both I2S and I8S
-modes.
+--n8g4imXOkfNTN/H1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-There are up to eight SPDIF interfaces operating at up to
-192 kHz."
+On Wed, Apr 30, 2008 at 06:20:40PM +0200, Takashi Iwai wrote:
+> At Sun, 27 Apr 2008 22:37:09 +0200,
+> >   The attached patch extends the alsa pulse plugin set with a alsa
+> >   configuration hook. Allowing one to specify some configuration parameters
+> >   that only come into effect when pulseaudio is running.
+> > 
+> >   For example a configution file like:
+> > 
+> >     @hooks [ {
+> >        func on_pulse_is_running
+> >          pcm.!default { type pulse }
+> >          ctl.!default { type pulse }
+> >        }
+> >    ]
+> > 
+> >   will redirect the default alsa pcm and ctl to pulse iff pulse is running.
+> >   (Assuming you defined the hook function correctly ofcourse)
 
-http://www.bridgeco.com/pdfs/850/adp_dm850_02_pma_chip-overv.pdf
+> This looks pretty interesting.
+> I forgot that this kind of stuff can be also a plugin :)
+> 
+> Applied to HG tree now.
 
--Andrew
+Thanks :).. Unfortunately some more testing revealed some issues with it,
+specifically if pulse is running your complete config is replaced the bits in
+the on_pulse_is_running directive. Which might not be what one actually wants :)
 
-On Thu, May 8, 2008 at 10:22 AM, Liam Girdwood
-<lg@opensource.wolfsonmicro.com> wrote:
-> On Thu, 2008-05-08 at 15:08 +0100, Mark Brown wrote:
->> On Thu, May 08, 2008 at 09:50:32AM -0400, Andrew Paprocki wrote:
->>
->> > Is anyone aware of a Linux/ALSA capable chip that can drive 192khz
->> > I2S? I poked through the ASoC code and could only see 96khz
->> > capability.
->>
->> The PowerPC code in sound/soc/fsl (as of 2.6.25) supports up to 192kHz,
->> though it appears to require the codec to clock the bus.  The SuperH and
->> Alchemy code in:
->>
->>    git://opensource.wolfsonmicro.com/linux-2.6-asoc
->>
->> says they support up to 192kHz too.  PXA3xx should support this too when
->> it's done.
->
-> heh, shows how much attention I've been paying lately to commits.
->
-> PX2xx (SSP) and i.MX3x (SSI) should also do 192kHz too. Interestingly
-> pxa2xx I2S almost manages (datasheet max is 48kHz) 192kHz but underruns
-> a bit!
->
->
+I couldn't find a proper solution for this. So i've changed the code to
+optionally load config files. Just like the load hook does. Actually i just
+optionally call the snd_config_hook_load function, but that's not actually in
+the alsa API....
+
+Also it now decides pulse is running as soon as the authorizing step begins
+(just after the actually connection is setup), which should save some
+round-trips and overhead.
+
+Updated patch attached :)
+
+  Sjoerd
+-- 
+For fast-acting relief, try slowing down.
+
+--n8g4imXOkfNTN/H1
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="alsa-pulse-conf.patch"
+
+diff -r 8b8cd8912f67 pulse/conf_pulse.c
+--- a/pulse/conf_pulse.c	Wed Apr 30 20:18:15 2008 +0200
++++ b/pulse/conf_pulse.c	Sat May 10 21:28:23 2008 +0200
+@@ -26,14 +26,19 @@
+ #include <pulse/pulseaudio.h>
+ 
+ 
++/* Not actually part of the alsa api....  */
++extern int
++snd_config_hook_load (snd_config_t *root, snd_config_t *config,
++  snd_config_t **dst, snd_config_t *private_data);
++
+ int
+-conf_pulse_hook_on_is_running (snd_config_t *root, snd_config_t *config,
++conf_pulse_hook_load_if_running (snd_config_t *root, snd_config_t *config,
+     snd_config_t **dst, snd_config_t *private_data) {
+-  snd_config_t *n = NULL;
+   pa_mainloop *loop = NULL;
+   pa_context *context = NULL;
+   int ret = 0, err, state;
+ 
++  *dst = NULL;
+ 
+   /* Defined if we're called inside the pulsedaemon itself */
+   if (getenv("PULSE_INTERNAL") != NULL)
+@@ -65,12 +70,12 @@
+       goto out;
+ 
+     state = pa_context_get_state(context);
+-  } while (state < PA_CONTEXT_READY);
++  } while (state < PA_CONTEXT_AUTHORIZING);
+ 
+-  if (state != PA_CONTEXT_READY)
++  if (state > PA_CONTEXT_READY)
+     goto out;
+ 
+-  ret = snd_config_expand(config, root, NULL, private_data, &n);
++  ret = snd_config_hook_load(root, config, dst, private_data);
+ 
+ out:
+   if (context != NULL)
+@@ -79,10 +84,8 @@
+   if (loop != NULL)
+     pa_mainloop_free(loop);
+ 
+-  *dst = n;
+-
+   return ret;
+ }
+ 
+-SND_DLSYM_BUILD_VERSION(conf_pulse_hook_on_is_running,
++SND_DLSYM_BUILD_VERSION(conf_pulse_hook_load_if_running,
+   SND_CONFIG_DLSYM_VERSION_HOOK);
+
+--n8g4imXOkfNTN/H1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+pulseaudio-discuss mailing list
+pulseaudio-discuss@mail.0pointer.de
+https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss
+
+--n8g4imXOkfNTN/H1--
