@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ARM S3C2410: Trigger stop problems
-Date: Sun, 11 May 2008 13:47:53 +0100
-Message-ID: <20080511124752.GA14536@sirena.org.uk>
-References: <482697D3.1000306@elpa.it>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: Re: Embedded I2S / 192khz
+Date: Sun, 11 May 2008 13:55:14 +0100
+Message-ID: <1210510514.20475.154.camel@odin>
+References: <76366b180805080650p615851afi272602115ca1660a@mail.gmail.com>
+	<20080508140856.GC23041@sirena.org.uk> <1210256561.20475.16.camel@odin>
+	<76366b180805101115o3f057d49j7fb78ef53bd04d10@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E802C2435D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E3C12441E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 11 May 2008 14:47:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <482697D3.1000306@elpa.it>
+	Sun, 11 May 2008 14:55:15 +0200 (CEST)
+In-Reply-To: <76366b180805101115o3f057d49j7fb78ef53bd04d10@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ing. Davide Rizzo" <davide@elpa.it>
-Cc: Ben Dooks <ben@simtec.co.uk>, alsa-devel@alsa-project.org
+To: Andrew Paprocki <andrew@ishiboo.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 11, 2008 at 08:53:07AM +0200, ing. Davide Rizzo wrote:
-> My platform is a S3C2410 with a PCM3006 codec connected through I2S.
-> I have a problem on trigger stop: some part of the sound is replayed at 
-> the sound end.
-> I noticed that the s3c2410-pcm enqueue function at the end of the sound 
-> reprograms the dma at initial values, is this wanted ? Why ?
-> Who should call the trigger stop function to stop the sound at the exact 
-> final sample ?
+On Sat, 2008-05-10 at 14:15 -0400, Andrew Paprocki wrote:
+> Has anyone heard of this BridgeCo DM850 chip? It seems powerful, but
+> I'm not sure if there is any ALSA support from the company.. from the
+> datasheet:
 
-CCing in Ben Dooks, the s3c24xx maintainer.
+afaik, no. Do you know if there is Linux support for this chip ?
+
+> 
+> "There are up to four Audio I/O ports, each with four I2S/I8S
+> interfaces operating at up to 192 kHz in both I2S and I8S
+> modes.
+> 
+> There are up to eight SPDIF interfaces operating at up to
+> 192 kHz."
+> 
+> http://www.bridgeco.com/pdfs/850/adp_dm850_02_pma_chip-overv.pdf
+
+Looks nice for STB applications.
+
+Liam
