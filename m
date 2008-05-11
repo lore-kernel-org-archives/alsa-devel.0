@@ -1,15 +1,19 @@
-From: "Simon Dunn" <sdunn@mpc-data.co.uk>
-Subject: softvol plug-in dependancies?
-Date: Sat, 10 May 2008 20:59:28 +0100
-Message-ID: <op.uaye5g1khpbl6d@derby>
+From: "ing. Davide Rizzo" <davide@elpa.it>
+Subject: ARM S3C2410: Trigger start problems
+Date: Sun, 11 May 2008 08:48:30 +0200
+Message-ID: <482696BE.7080406@elpa.it>
+Reply-To: davide@elpa.it
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from molson.mpc-data.co.uk (cvs.mpc-ogw.co.uk [81.2.99.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF1DF244BA
+Received: from joe.mail.tiscali.it (joe.mail.tiscali.it [213.205.33.54])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A6F42444C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 May 2008 21:59:25 +0200 (CEST)
+	Sun, 11 May 2008 08:48:26 +0200 (CEST)
+Received: from [127.0.0.1] (217.133.78.74) by joe.mail.tiscali.it (8.0.016)
+	id 4816EB0C00E3CC59 for alsa-devel@alsa-project.org;
+	Sun, 11 May 2008 08:48:25 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,100 +26,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Guys
-
-The softvol plug-in, are there any pre-requisites or dependancies
-to using this?  I've tried various entries in the /etc/asound.conf
-configuration file all with the same result.
-
-I can see the control in alsamixer, once I've run the speaker-test
-through it, but cannot adjust any settings.  Trying to run 'alsactl
-store 0' results in this error :
-
-.
-alsactl: control.c:2437: snd_ctl_elem_value_get_integer: Assertion `idx <  
-sizeof
-(obj->value.integer.value) / sizeof(obj->value.integer.value[0])' failed.
-Aborted
-.
-
-Curiously using amixer the device is listed but its properties are
-displayed like this
-
-.
-Simple mixer control 'PCM Vol',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right - Rear Left - Rear Right -  
-Front C
-enter - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ? - ?  
-- ? -
-? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ?
-   Capture channels: Front Left - Front Right - Rear Left - Rear Right -  
-Front Ce
-nter - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ? - ? -  
-? - ?
-  - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ?
-   Limits: 0 - 0
-   Front Left: 0 [0%]
-   Front Right: 0 [0%]
-   Rear Left: 0 [0%]
-   Rear Right: 0 [0%]
-   Front Center: 0 [0%]
-   Woofer: 0 [0%]
-   Side Left: 0 [0%]
-   Side Right: 0 [0%]
-   Rear Center: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-   ?: 0 [0%]
-
-Any clues as to what's going on here would be much appreciated before
-I have to start dissecting the library.
-
-TIA for any hints
-Simon
-
--- 
-
-Simon Dunn, Software Engineer
-MPC Data Limited
-e-mail: sdunn@mpc-data.co.uk
-web: www.mpc-data.co.uk
-tel: +44 (0) 1225 710600
-fax: +44 (0) 1225 710601
-ddi: +44 (0) 1225 710631
-
-MPC Data Limited is a company registered in England and Wales with company  
-number 05507446
-Registered Address: County Gate, County Way, Trowbridge, Wiltshire, BA14  
-7FJ
-VAT no: 850625238
-
-The information in this email and in the attached documents is  
-confidential and may be legally privileged. Any unauthorized review,  
-copying, disclosure or distribution is prohibited and may be unlawful. It  
-is intended solely for the addressee. Access to this email by anyone else  
-is unauthorized. If you are not the intended recipient, please contact the  
-sender by reply email and destroy all copies of the original message. When  
-addressed to our clients any opinions or advice contained in this email is  
-subject to the terms and conditions expressed in the governing contract.
+I experienced a curious problem.
+My platform is a S3C2410 with a PCM3006 codec connected through I2S.
+The soc trigger function calls 3 other triggers functions:
+- first the codec function
+- then the platform function (that starts dma)
+- last the the i2s trigger function (that starts i2s peripheral).
+The dma start function programs and starts the dma peripheral, but the 
+transfer doesn't start because the i2s peripheral isn't started yet.
+The s3c2410 specific dma start programs the 1st transfer, but before 
+programming the 2nd start it waits about 30ms (2^18 count) in a closed 
+loop for 1st transfer to start. After that delay anyway it fails to 
+program the 2nd transfer.
+After that, when the i2s trigger function is called the 1st samples' 
+group starts, but nobody preprograms the 2nd sample group in the dma 
+peripheral. When the 1st group ends the dma interrupt service routine is 
+called , but it's too late and the 1st samples' group is repeated twice.
+I tested 2 solutions:
+- In the soc trigger function, call the i2s trigger function BEFORE the 
+platform trigger function. I don't know if this solution could broke 
+other platforms, but it's the more correct way to solve the problem.
+-  (platform specific): In arch/arm/plat-s3c24xx-dma.c, at the end of 
+s3c2410_dma_getposition() function, insert a call to 
+s3c2410_dma_started(). That function is periodically called by alsa-lib 
+when playing, and permits dma to program the 2nd buffer before (but it's 
+not guaranteed) the 1st group is completed. With this solution, the 
+programming of DMA till waits for the closed loop. I think this is a 
+patch, but not the correct solution.
+I wonder if other architectures that use DMA suffer the same problem, so 
+that the 1st proposed solution could help them, too.
+Davide
