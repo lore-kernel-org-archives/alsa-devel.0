@@ -1,17 +1,22 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: Mono streams
-Date: Mon, 12 May 2008 15:08:44 +0100
-Message-ID: <1210601324.20475.177.camel@odin>
-References: <E0D41E29EB0DAC4E9F3FF173962E9E9401234B506B@dbde02.ent.ti.com>
+From: Tim Jackson <lists@timj.co.uk>
+Subject: Impossible to enter bugs on bugtracker for ALSA
+	firmware
+Date: Mon, 12 May 2008 22:45:49 +0100
+Message-ID: <4828BA8D.9030002@timj.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 32BAD1037F1
+Received: from mx1.firecluster.net (blixt.firecluster.net [89.16.161.116])
+	by alsa0.perex.cz (Postfix) with ESMTP id BADAC24376
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 May 2008 16:08:47 +0200 (CEST)
-In-Reply-To: <E0D41E29EB0DAC4E9F3FF173962E9E9401234B506B@dbde02.ent.ti.com>
+	Mon, 12 May 2008 23:46:00 +0200 (CEST)
+Received: from langesund.plus.com ([84.92.175.66]:47949
+	helo=langesund.timj.co.uk)
+	by blixt.firecluster.net (relay.firecluster.net [89.16.161.116]:587)
+	with esmtpa id 1JvfqJ-0001zq-Q0 (Exim 4.63) for
+	alsa-devel@alsa-project.org
+	(return-path <lists@timj.co.uk>); Mon, 12 May 2008 22:45:59 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +26,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nagar, Mrigendra" <x0088697@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2008-05-12 at 18:35 +0530, Nagar, Mrigendra wrote:
-> Hi,
-> I have recently started working on ALSA libraries. I am facing following problems. It would be great help If some one can help me out.
-> 1) Mono streams:
->     If I try to play A MONO streams. It plays Faster.
->     My driver configuration is
-> i)                     Blocking mode
-> ii)                   Access mode is interleaved
-> iii)                  No of channels are set to 1
+It's impossible to enter bugs on the bugtracker for ALSA firmware - the 
+bugtracker says that the "Category" field is not completed - but there are 
+no options for that dropdown!
 
-It sounds like your hardware is playing mono as stereo. Check your
-driver as it may always play stereo regardless of the requested number
-of channels.
-
-Liam 
+I think this is a bug in Mantis 1.1.0 as I have seen it on other 
+installations. Workaround is to create a category "Default"...
