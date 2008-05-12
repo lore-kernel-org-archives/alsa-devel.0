@@ -1,17 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Forward/rewind APIs return 0
-Date: Mon, 12 May 2008 10:17:17 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0805121016590.18373@tm8103.perex-int.cz>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB02224F6413@dbde02.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] [ASOC]: AD1980 audio codec ASOC driver
+Date: Mon, 12 May 2008 12:54:16 +0100
+Message-ID: <20080512115416.GB23216@sirena.org.uk>
+References: <1210589112-12208-1-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28F8F248F3
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E66BB1037F2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 May 2008 10:17:18 +0200 (CEST)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB02224F6413@dbde02.ent.ti.com>
+	Mon, 12 May 2008 13:54:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1210589112-12208-1-git-send-email-cooloney@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,25 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Bryan Wu <cooloney@kernel.org>
+Cc: liam.girdwood@wolfsonmicro.com, Cliff Cai <cliff.cai@analog.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 12 May 2008, Aggarwal, Anuj wrote:
-
-> Hi,
+On Mon, May 12, 2008 at 06:45:12PM +0800, Bryan Wu wrote:
+> From: Cliff Cai <cliff.cai@analog.com>
 > 
-> I am trying to use snd_pcm_forward and snd_pcm_rewind APIs in my 
-> application. Although they are doing something (I am able to 'hear' the 
-> jump), they return me 0, instead of returning me the number of frames.
-> 
-> What could be the problem with the application/driver?
+> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+> Signed-off-by: Bryan Wu <cooloney@kernel.org>
 
-Show us output from snd_pcm_dump().
+Thanks, I've applied this to the ASoC git tree.  CCing in
+alsa-devel@alsa-project.org - ALSA patches should go via there.
 
-						Jaroslav
+> +static int ad1980_soc_suspend(struct platform_device *pdev,
+> +	pm_message_t state)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int ad1980_soc_resume(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Are you sure about these?  I would expect the suspend and resume
+functions to either do some register writes or be omitted if they don't
+do anything.  Standard AC97 codecs would have some power management via
+register 0x26 if they were doing anything.
