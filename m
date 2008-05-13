@@ -1,22 +1,15 @@
-From: Tim Jackson <lists@timj.co.uk>
-Subject: Impossible to enter bugs on bugtracker for ALSA
-	firmware
-Date: Mon, 12 May 2008 22:45:49 +0100
-Message-ID: <4828BA8D.9030002@timj.co.uk>
+From: Ben C <bchang_2@yahoo.com>
+Subject: PCM plugin transfer callback size issue
+Date: Mon, 12 May 2008 17:39:25 -0700 (PDT)
+Message-ID: <119405.9620.qm@web36508.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.firecluster.net (blixt.firecluster.net [89.16.161.116])
-	by alsa0.perex.cz (Postfix) with ESMTP id BADAC24376
+Received: from web36508.mail.mud.yahoo.com (web36508.mail.mud.yahoo.com
+	[209.191.85.8]) by alsa0.perex.cz (Postfix) with SMTP id D16C21037F1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 May 2008 23:46:00 +0200 (CEST)
-Received: from langesund.plus.com ([84.92.175.66]:47949
-	helo=langesund.timj.co.uk)
-	by blixt.firecluster.net (relay.firecluster.net [89.16.161.116]:587)
-	with esmtpa id 1JvfqJ-0001zq-Q0 (Exim 4.63) for
-	alsa-devel@alsa-project.org
-	(return-path <lists@timj.co.uk>); Mon, 12 May 2008 22:45:59 +0100
+	Tue, 13 May 2008 02:39:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,9 +22,22 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It's impossible to enter bugs on the bugtracker for ALSA firmware - the 
-bugtracker says that the "Category" field is not completed - but there are 
-no options for that dropdown!
+Hello,
 
-I think this is a bug in Mantis 1.1.0 as I have seen it on other 
-installations. Workaround is to create a category "Default"...
+I'm writing a PCM external filter type plugin. However, due to the processing I must handle fixed size each time. I can only handle 256 samples at a time. In the transfer callback, there would be no problem if the size is say 1024 each time, I just loop it. But the problem is that sometimes it comes back with other numbers.
+
+One instance, it came back with 1114. So I change my code to ONLY process 1024, and return 1024 at the conclusion of the transfer callback, to see if ALSA is smart enough to handle the fact that I didn't process everything. Well, ALSA is smart enough, except the next transfer call, it only sent me the 90 samples that I didn't process. But since I can't process 90 samples, it doesn't help me either; I needed ALSA to combine that 90 samples with the next block of incoming PCM data.
+
+My questions:
+1) Is there some sort of configuration I can do to constraint the number of samples?
+
+2) I could even manage the extra samples myself with an internal buffer to combine with the next block. But how do I tell ALSA to give me the next block? If I only processed 1024 samples out of 1114, I could store the 90 samples for next time, but if I lie to ALSA and say I did all 1114, wouldn't it try to process 1114 samples instead of 1024?
+
+Thanks,
+Ben
+
+
+
+      ____________________________________________________________________________________
+Be a better friend, newshound, and 
+know-it-all with Yahoo! Mobile.  Try it now.  http://mobile.yahoo.com/;_ylt=Ahu06i62sR8HDtDypao8Wcj9tAcJ
