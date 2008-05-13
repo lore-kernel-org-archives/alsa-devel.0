@@ -1,22 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] [ASOC]: AD1980 audio codec ASOC driver
-Date: Tue, 13 May 2008 16:24:23 +0100
-Message-ID: <20080513152423.GA649@sirena.org.uk>
-References: <1210589112-12208-1-git-send-email-cooloney@kernel.org>
-	<20080512115416.GB23216@sirena.org.uk>
-	<0F1B54C89D5F954D8535DB252AF412FA01F2EF2C@chinexm1.ad.analog.com>
-	<20080513140132.GG21292@sirena.org.uk>
-	<386072610805130807l3e3943e1w24c38b640ab331a6@mail.gmail.com>
+From: "Benjamin van den Hout" <bvdhout@gmail.com>
+Subject: Re: Alsa-devel Digest, Vol 15, Issue 30
+Date: Tue, 13 May 2008 17:56:30 +0200
+Message-ID: <d5eabee70805130856n1126f25cr36ccc2ab20e79e2@mail.gmail.com>
+References: <mailman.7743.1210692269.2095.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C38D24B32
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5C1C424B3E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 17:24:28 +0200 (CEST)
+	Tue, 13 May 2008 17:56:31 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 9so1709605ywk.2
+	for <alsa-devel@alsa-project.org>; Tue, 13 May 2008 08:56:30 -0700 (PDT)
+In-Reply-To: <mailman.7743.1210692269.2095.alsa-devel@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <386072610805130807l3e3943e1w24c38b640ab331a6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bryan Wu <cooloney@kernel.org>
-Cc: liam.girdwood@wolfsonmicro.com, "Cai, Cliff" <Cliff.Cai@analog.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 13, 2008 at 11:07:16PM +0800, Bryan Wu wrote:
-> On Tue, May 13, 2008 at 10:01 PM, Mark Brown
+Gustavo da Silva Serra wrote:
 
-> > We've had patches in the ASoC git tree for some time (along with the AD1980
-> >  driver) - it'd be good to get everything merged into ALSA.
+I tryied to use the HG versions, but they didn't work well for me. Maybe
+> you should give the 1.0.16 a try, just to make sure.
+> I need an asound.conf since my network application uses a very low
+> latency, that is not default. I am attaching my asound.conf.
+> Another possible source of problems are the artsd and esd daemons, are
+> they running?
+>
+> Hi Gustavo,
 
-> Do you mean there is another version AD1980 in ASoC git tree?
+I just downloaded the 10.0.16 version and the code for aloop-kernel.c looked
+quite different from the one in the HG version. I was under the
+understanding that the HG version is a current development snapshot that
+eventually gets tagged into an official 1.0.1xx version. That's not the case
+then?
 
-We're carrying both AD1980 and Blackfin platform code.  The AD1980
-driver is currently identical to the one you just sent.
+Anyway, I will try with the 10.0.16 version, I see some stuff about a
+#define called SND_CARD_LOOPBACK_START_SYNC, that sounds promising perhaps.
+I've also looked at the config file you attached, the stuff about
+period_time and buffer_size also looks quite interesting and is perhaps
+something I should play with then :)
 
-Everything is in the dev branch of:
+I'll let you know how things work out! Thanks for your continued help, it is
+greatly appreciated...
 
-	git://opensource.wolfsonmicro.com/linux-2.6-asoc
+Kind regards,
+Benjamin
