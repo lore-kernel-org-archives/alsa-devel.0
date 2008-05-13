@@ -1,19 +1,17 @@
-From: "Benjamin van den Hout" <bvdhout@gmail.com>
-Subject: Re: Alsa-devel Digest, Vol 15, Issue 30
-Date: Tue, 13 May 2008 17:56:30 +0200
-Message-ID: <d5eabee70805130856n1126f25cr36ccc2ab20e79e2@mail.gmail.com>
-References: <mailman.7743.1210692269.2095.alsa-devel@alsa-project.org>
+From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
+Date: Tue, 13 May 2008 10:59:32 -0600
+Message-ID: <200805131059.32911.bjorn.helgaas@hp.com>
+References: <4823AAF2.7070102@keyaccess.nl> <s5hzlr0105c.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C1C424B3E
+Received: from g5t0007.atlanta.hp.com (g5t0007.atlanta.hp.com [15.192.0.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C56C24B5A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 17:56:31 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so1709605ywk.2
-	for <alsa-devel@alsa-project.org>; Tue, 13 May 2008 08:56:30 -0700 (PDT)
-In-Reply-To: <mailman.7743.1210692269.2095.alsa-devel@alsa-project.org>
+	Tue, 13 May 2008 19:01:06 +0200 (CEST)
+In-Reply-To: <s5hzlr0105c.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,34 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@keyaccess.nl>, Ingo Molnar <mingo@elte.hu>, Linux Kernel <linux-kernel@vger.kernel.org>, Glauber Costa <gcosta@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Pete Clements <clem@clem.clem-digital.net>
 List-Id: alsa-devel@alsa-project.org
 
-Gustavo da Silva Serra wrote:
+On Friday 09 May 2008 12:06:55 am Takashi Iwai wrote:
+> Thanks for catching it.  Yeah, the patch looks buggy.  We had an
+> implicit assumption that dev = NULL for ISA devices that require 24bit
+> DMA.
 
-I tryied to use the HG versions, but they didn't work well for me. Maybe
-> you should give the 1.0.16 a try, just to make sure.
-> I need an asound.conf since my network application uses a very low
-> latency, that is not default. I am attaching my asound.conf.
-> Another possible source of problems are the artsd and esd daemons, are
-> they running?
->
-> Hi Gustavo,
+Naive question #1:  Why don't we have a struct device for these
+ISA devices?  PNP builds a struct device with DMA_24BIT_MASK
+for ISAPNP devices.
 
-I just downloaded the 10.0.16 version and the code for aloop-kernel.c looked
-quite different from the one in the HG version. I was under the
-understanding that the HG version is a current development snapshot that
-eventually gets tagged into an official 1.0.1xx version. That's not the case
-then?
+Naive question #2:  Do other architectures need similar fixes in
+dma_alloc_coherent()?
 
-Anyway, I will try with the 10.0.16 version, I see some stuff about a
-#define called SND_CARD_LOOPBACK_START_SYNC, that sounds promising perhaps.
-I've also looked at the config file you attached, the stuff about
-period_time and buffer_size also looks quite interesting and is perhaps
-something I should play with then :)
-
-I'll let you know how things work out! Thanks for your continued help, it is
-greatly appreciated...
-
-Kind regards,
-Benjamin
+> [PATCH] x86: Fix dma_alloc_coherent() for ISA devices
+> 
+> The recent work on x86 dma_alloc_coherent() breaks the ISA DMA buffer
+> allocation, which is represented by "dev = NULL" and requires 24bit
+> DMA implicitly.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 
+> ---
+> 
+> diff --git a/arch/x86/kernel/pci-dma.c b/arch/x86/kernel/pci-dma.c
+> index 0c37f16..c5ef1af 100644
+> --- a/arch/x86/kernel/pci-dma.c
+> +++ b/arch/x86/kernel/pci-dma.c
+> @@ -385,11 +385,13 @@ dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
+>  	if (dma_alloc_from_coherent_mem(dev, size, dma_handle, &memory))
+>  		return memory;
+>  
+> -	if (!dev)
+> +	if (!dev) {
+>  		dev = &fallback_dev;
+> +		gfp |= GFP_DMA;
+> +	}
+>  	dma_mask = dev->coherent_dma_mask;
+>  	if (dma_mask == 0)
+> -		dma_mask = DMA_32BIT_MASK;
+> +		dma_mask = (gfp & GFP_DMA) ? DMA_24BIT_MASK : DMA_32BIT_MASK;
+>  
+>  	/* Device not DMA able */
+>  	if (dev->dma_mask == NULL)
+> @@ -403,7 +405,7 @@ dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle,
+>  	   larger than 16MB and in this case we have a chance of
+>  	   finding fitting memory in the next higher zone first. If
+>  	   not retry with true GFP_DMA. -AK */
+> -	if (dma_mask <= DMA_32BIT_MASK)
+> +	if (dma_mask <= DMA_32BIT_MASK && !(gfp & GFP_DMA))
+>  		gfp |= GFP_DMA32;
+>  #endif
+>  
