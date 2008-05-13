@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2.6.26-rc2] ASoC: Fix wrong enum count for
-	jack_function in N810 machine driver
-Date: Tue, 13 May 2008 14:23:53 +0100
-Message-ID: <20080513132353.GD21292@sirena.org.uk>
-References: <1210682524-13966-1-git-send-email-jarkko.nikula@nokia.com>
+From: "Benjamin van den Hout" <bvdhout@gmail.com>
+Subject: Re: Problem with aloop
+Date: Tue, 13 May 2008 15:27:09 +0200
+Message-ID: <d5eabee70805130627v1dd7b675ua4fadc9bd1905357@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 23CC524B05
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BC6724B09
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 15:23:54 +0200 (CEST)
+	Tue, 13 May 2008 15:27:20 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 9so1667855ywk.2
+	for <alsa-devel@alsa-project.org>; Tue, 13 May 2008 06:27:09 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <1210682524-13966-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 13, 2008 at 03:42:04PM +0300, Jarkko Nikula wrote:
+Gustavo da Silva Serra wrote:
 
-> Fix this typo and avoid similar errors by using ARRAY_SIZE macro.
+I had some problems until I could figure it out how to configure alsa
+> properly in /etc/asound.conf. Maybe this could be your problem? What is
+> your alsa version? I heard that aloop didn't work well until 1.0.15, or
+> such (alsa guys: is this true?).
+>
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+My alsa is 1.0.14 but I'm using the 'HG' version of the alsa-drivers and
+alsa-kernel packages so that basically gets me the latest-and-greatest
+drivers from the source repository if I understand correctly. I saw some
+patches coming by in February and they are already in there so I presume I'm
+working with the most current source.
 
-and queued for Takashi if he doesn't pick it up directly first.
+I'm intrigued by the asound.conf, is there any specific configuration you
+needed to make the aloop device work properly? I'm using the
+distro-configured alsa (ubuntu 7.10) and there is no such file somehwere in
+/etc. Even on my debian server (running Etch), I can't find it.
+
+Kind regards,
+Benjamin
