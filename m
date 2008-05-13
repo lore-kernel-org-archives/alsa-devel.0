@@ -1,19 +1,22 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [Alsa-user] Pc Speaker
-Date: Tue, 13 May 2008 14:25:48 +0200
-Message-ID: <482988CC.3070109@keyaccess.nl>
-References: <20080513110322.030a5386.zoup@zoup.org>	<48296CFF.5000207@keyaccess.nl>	<20080513151425.448369e8.zoup@zoup.org>	<4829781E.6040909@keyaccess.nl>
-	<s5hlk2ee9gl.wl%tiwai@suse.de> <48297C5D.5010507@keyaccess.nl>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [PATCH 05/10] soc - tlv320aic3x - Convert to use
+ bulk registration APIs
+Date: Tue, 13 May 2008 15:34:19 +0300
+Message-ID: <20080513153419.360c23e6.jarkko.nikula@nokia.com>
+References: <1210678815-9755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A13924AEE
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6141C24AEE
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 14:24:18 +0200 (CEST)
-In-Reply-To: <48297C5D.5010507@keyaccess.nl>
+	Tue, 13 May 2008 14:34:22 +0200 (CEST)
+In-Reply-To: <1210678815-9755-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>, Armin ranjbar <zoup@zoup.org>
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 13-05-08 13:32, Rene Herman wrote:
+On Tue, 13 May 2008 12:40:10 +0100
+"ext Mark Brown" <broonie@opensource.wolfsonmicro.com> wrote:
 
-> On 13-05-08 13:20, Takashi Iwai wrote:
-
->> Anyway, the problem of beep on Dell XPS is a different. The PC beep 
->> isn't implemented (initialized) in the sound driver side. I have no 
->> interest in fixing it as I hate PC beep feature, but am willing to 
->> apply patches if provided :)
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
+> ---
+>  sound/soc/codecs/tlv320aic3x.c |   15 ++++-----------
+>  1 files changed, 4 insertions(+), 11 deletions(-)
 > 
-> I suppose his beeper should stil beep through the input driver if he
-> just selects "N" for snd-pcsp?
-> 
-> If not, if it worked before, and if I were him, I'd be throwing up a
-> stink calling it a regression...
+Hmm. I applied patches 2, 3, 5 and 10 to my n810-aic33 setup and
+following codec controls below disappear. Probably I miss some patch
+from asoc-dev since I build this test on top of linux-omap with two
+recent aic3x patches from Daniel?
 
-(yes, I get it, not a regression, just jumped to the conclusion it was a 
-changed situation due to the option juggling new to new kernels)
 
-Not having the hardware, I'm not very likely to be useful but if the 
-only problem is someone needing to turn available information into an 
-addition to the driver, you can try me...
+Jarkko
 
-Rene.
+--- curr	2008-05-13 15:18:09.000000000 +0300
++++ new	2008-05-13 15:19:40.000000000 +0300
+@@ -20,18 +20,7 @@
+ Simple mixer control 'Left DAC_L1 Mixer Mono',0
+ Simple mixer control 'Left HPCOM Mux',0
+ Simple mixer control 'Left Line1L Mux',0
+-Simple mixer control 'Left Line2 Bypass Mixer HP Swit',0
+-Simple mixer control 'Left Line2 Bypass Mixer HPCOM S',0
+-Simple mixer control 'Left Line2 Bypass Mixer Line Sw',0
+-Simple mixer control 'Left Line2 Bypass Mixer Mono Sw',0
+ Simple mixer control 'Left Line2L Mux',0
+-Simple mixer control 'Left PGA Bypass Mixer HP',0
+-Simple mixer control 'Left PGA Bypass Mixer HPCOM Swi',0
+-Simple mixer control 'Left PGA Bypass Mixer Line Swit',0
+-Simple mixer control 'Left PGA Bypass Mixer Mono Swit',0
+-Simple mixer control 'Left PGA Mixer Line1L',0
+-Simple mixer control 'Left PGA Mixer Line2L',0
+-Simple mixer control 'Left PGA Mixer Mic3L',0
+ Simple mixer control 'PGA',0
+ Simple mixer control 'Right DAC Mux',0
+ Simple mixer control 'Right DAC_R1 Mixer HP',0
+@@ -40,16 +29,5 @@
+ Simple mixer control 'Right DAC_R1 Mixer Mono',0
+ Simple mixer control 'Right HPCOM Mux',0
+ Simple mixer control 'Right Line1R Mux',0
+-Simple mixer control 'Right Line2 Bypass Mixer HP Swi',0
+-Simple mixer control 'Right Line2 Bypass Mixer HPCOM ',0
+-Simple mixer control 'Right Line2 Bypass Mixer Line S',0
+-Simple mixer control 'Right Line2 Bypass Mixer Mono S',0
+ Simple mixer control 'Right Line2R Mux',0
+-Simple mixer control 'Right PGA Bypass Mixer HP Switc',0
+-Simple mixer control 'Right PGA Bypass Mixer HPCOM Sw',0
+-Simple mixer control 'Right PGA Bypass Mixer Line Swi',0
+-Simple mixer control 'Right PGA Bypass Mixer Mono Swi',0
+-Simple mixer control 'Right PGA Mixer Line1R',0
+-Simple mixer control 'Right PGA Mixer Line2R',0
+-Simple mixer control 'Right PGA Mixer Mic3R',0
+ Simple mixer control 'Speaker Function',0
