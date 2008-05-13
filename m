@@ -1,57 +1,39 @@
-From: Andy Green <andy@warmcat.com>
-Subject: Re: Acer Aspire 8920g / snd-hda-intel / ALC889
-Date: Tue, 13 May 2008 15:41:58 +0100
-Message-ID: <4829A8B6.30409@warmcat.com>
-References: <480C8260.70501@warmcat.com>	<s5hr6czb3po.wl%tiwai@suse.de>	<480CDC26.3010506@warmcat.com>	<s5h63uab2k1.wl%tiwai@suse.de>	<480DC787.9070208@warmcat.com>	<s5h3apeb0gq.wl%tiwai@suse.de>	<480DCBC6.3050203@warmcat.com>	<480FA5D5.9090208@warmcat.com>	<s5h3apakthj.wl%tiwai@suse.de>	<481F84FA.4060307@warmcat.com>	<s5hod7jd8dc.wl%tiwai@suse.de>	<48203A6B.7020408@warmcat.com>
-	<s5hskwmcnxm.wl%tiwai@suse.de>
+From: "Bryan Wu" <cooloney@kernel.org>
+Subject: Re: [PATCH 1/1] [ASOC]: AD1980 audio codec ASOC driver
+Date: Tue, 13 May 2008 23:07:16 +0800
+Message-ID: <386072610805130807l3e3943e1w24c38b640ab331a6@mail.gmail.com>
+References: <1210589112-12208-1-git-send-email-cooloney@kernel.org>
+	 <20080512115416.GB23216@sirena.org.uk>
+	 <0F1B54C89D5F954D8535DB252AF412FA01F2EF2C@chinexm1.ad.analog.com>
+	 <20080513140132.GG21292@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.mog.warmcat.com (purr.warmcat.com [87.106.142.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D57E24B02
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 16:42:10 +0200 (CEST)
-In-Reply-To: <s5hskwmcnxm.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757973AbYEMPHk@vger.kernel.org>
+In-Reply-To: <20080513140132.GG21292@sirena.org.uk>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Cai, Cliff" <Cliff.Cai@analog.com>, Bryan Wu <cooloney@kernel.org>, liam.girdwood@wolfsonmicro.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Somebody in the thread at some point said:
-> At Tue, 06 May 2008 12:00:59 +0100,
-> Andy Green wrote:
->> Somebody in the thread at some point said:
->>
->> Hi -
->>
->>> Is this above with model=acer-aspire *and* your additional verb?
->>> Or, is it without model option?
->> I tried it with model=acer (same as no forcing) and acer-aspire, I was 
->> able to play 2-channel PCM sounds OK only with the extra verb either 
->> way.  I got more controls in alsamixer with just "acer" (like low 
->> frequency channel), but they didn't seem to do anything useful.
->>
->>> I found that one initialization is missing for auto-configuration mode
->>> of ALC889.  Please try the patch below and remove model=xxx option.
->> OK I will test this patch later today with no model forcing.
-> 
-> Did you get any positive/negative result?
+On Tue, May 13, 2008 at 10:01 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Tue, May 13, 2008 at 11:00:58AM +0800, Cai, Cliff wrote:
+>
+>  >  ok,we will implement these two functions later.
+>
+>  So they can be removed for now?
+>
+>  What's the current status of merging the Blackfin ASoC support?
 
-Sorry Takashi, I did try both patches but neither seemed to work.  I 
-didn't get any time since then to confirm it wasn't something dumb on my 
-side.  After failing to see anything from the recompile / re-install and 
-modprobing snd-hda-intel out and back in, running hda-verb as described 
-did continue to bring the audio right up.
+We plan to cleanup the Blackfin ASoC code, after that we will send out
+the code for merging.
 
-I should check that the mixer VID/PID actually is ...889 on this machine.
+> We've had patches in the ASoC git tree for some time (along with the AD1980
+>  driver) - it'd be good to get everything merged into ALSA.
+>
 
--Andy
+Do you mean there is another version AD1980 in ASoC git tree?
+
+Thanks
+-Bryan
