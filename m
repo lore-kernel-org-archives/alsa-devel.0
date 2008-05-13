@@ -1,20 +1,24 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [PATCH 2.6.26-rc2] ASoC: Fix wrong enum count for
-	jack_function in N810 machine driver
-Date: Tue, 13 May 2008 15:42:04 +0300
-Message-ID: <1210682524-13966-1-git-send-email-jarkko.nikula@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 05/10] soc - tlv320aic3x - Convert to use
+	bulk registration APIs
+Date: Tue, 13 May 2008 13:43:45 +0100
+Message-ID: <20080513124328.GC21292@sirena.org.uk>
+References: <1210678815-9755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<20080513153419.360c23e6.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC8BA24AFE
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 24F051037F4
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 14:41:54 +0200 (CEST)
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-mx06.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m4DCffK4031330
-	for <alsa-devel@alsa-project.org>; Tue, 13 May 2008 15:41:53 +0300
+	Tue, 13 May 2008 15:12:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20080513153419.360c23e6.jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +28,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix this typo and avoid similar errors by using ARRAY_SIZE macro.
+On Tue, May 13, 2008 at 03:34:19PM +0300, Jarkko Nikula wrote:
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
----
- sound/soc/omap/n810.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+> Hmm. I applied patches 2, 3, 5 and 10 to my n810-aic33 setup and
+> following codec controls below disappear. Probably I miss some patch
+> from asoc-dev since I build this test on top of linux-omap with two
+> recent aic3x patches from Daniel?
 
-diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-index 83b1eb4..6533563 100644
---- a/sound/soc/omap/n810.c
-+++ b/sound/soc/omap/n810.c
-@@ -188,8 +188,8 @@ static const char *audio_map[][3] = {
- static const char *spk_function[] = {"Off", "On"};
- static const char *jack_function[] = {"Off", "Headphone"};
- static const struct soc_enum n810_enum[] = {
--	SOC_ENUM_SINGLE_EXT(2, spk_function),
--	SOC_ENUM_SINGLE_EXT(3, jack_function),
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(spk_function), spk_function),
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(jack_function), jack_function),
- };
- 
- static const struct snd_kcontrol_new aic33_n810_controls[] = {
--- 
-1.5.5.1
+No, there shouldn't be any other dependencies.  I'll take a look but I
+don't have any relevant hardware.  Are there any complaints in dmesg?
