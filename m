@@ -1,15 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 01/10] ASoC: build fix for snd_soc_info_bool_ext
-Date: Tue, 13 May 2008 12:40:06 +0100
-Message-ID: <1210678815-9755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 05/10] soc - tlv320aic3x - Convert to use bulk
+	registration APIs
+Date: Tue, 13 May 2008 12:40:10 +0100
+Message-ID: <1210678815-9755-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1210678815-9755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B0A0E24AC0
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A651F24A9B
 	for <alsa-devel@alsa-project.org>;
 	Tue, 13 May 2008 13:40:17 +0200 (CEST)
+In-Reply-To: <1210678815-9755-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +26,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Philipp Zabel <philipp.zabel@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Philipp Zabel <philipp.zabel@gmail.com>
-
-I suspect that snd_ctl_boolean_mono should have been
-snd_ctl_boolean_mono_info instead. This fixes the build for magician.
-
-Signed-off-by: Philipp Zabel <philipp.zabel@gmail.com>
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
 ---
- include/sound/soc.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c |   15 ++++-----------
+ 1 files changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e6ea6f7..d3c8c03 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -238,7 +238,7 @@ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo);
- int snd_soc_info_volsw_ext(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo);
--#define snd_soc_info_bool_ext		snd_ctl_boolean_mono
-+#define snd_soc_info_bool_ext		snd_ctl_boolean_mono_info
- int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 957996e..cb8365a 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -497,7 +497,7 @@ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("LINE2R"),
+ };
+ 
+-static const char *intercon[][3] = {
++static const struct snd_soc_dapm_route intercon[] = {
+ 	/* Left Output */
+ 	{"Left DAC Mux", "DAC_L1", "Left DAC"},
+ 	{"Left DAC Mux", "DAC_L2", "Left DAC"},
+@@ -641,22 +641,15 @@ static const char *intercon[][3] = {
+ 	{"Right Line Out", NULL, "Right Line2 Bypass Mixer"},
+ 	{"Mono Out", NULL, "Right Line2 Bypass Mixer"},
+ 	{"Right HP Out", NULL, "Right Line2 Bypass Mixer"},
+-
+-	/* terminator */
+-	{NULL, NULL, NULL},
+ };
+ 
+ static int aic3x_add_widgets(struct snd_soc_codec *codec)
+ {
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(aic3x_dapm_widgets); i++)
+-		snd_soc_dapm_new_control(codec, &aic3x_dapm_widgets[i]);
++	snd_soc_dapm_new_controls(codec, aic3x_dapm_widgets,
++				  ARRAY_SIZE(aic3x_dapm_widgets));
+ 
+ 	/* set up audio path interconnects */
+-	for (i = 0; intercon[i][0] != NULL; i++)
+-		snd_soc_dapm_connect_input(codec, intercon[i][0],
+-					   intercon[i][1], intercon[i][2]);
++	snd_soc_dapm_add_routes(codec, intercon, ARRAY_SIZE(intercon));
+ 
+ 	snd_soc_dapm_new_widgets(codec);
+ 	return 0;
 -- 
 1.5.5.1
