@@ -1,25 +1,19 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Problem with aloop
-Date: Tue, 13 May 2008 08:51:39 -0300
-Message-ID: <482980CB.5070601@tet.com.br>
-References: <d5eabee70805130043s79f68c8yf5e971d147827360@mail.gmail.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [Alsa-user] Pc Speaker
+Date: Tue, 13 May 2008 14:25:48 +0200
+Message-ID: <482988CC.3070109@keyaccess.nl>
+References: <20080513110322.030a5386.zoup@zoup.org>	<48296CFF.5000207@keyaccess.nl>	<20080513151425.448369e8.zoup@zoup.org>	<4829781E.6040909@keyaccess.nl>
+	<s5hlk2ee9gl.wl%tiwai@suse.de> <48297C5D.5010507@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail4.tet.com.br [201.47.194.114])
-	by alsa0.perex.cz (Postfix) with ESMTP id DCFF724AEB
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A13924AEE
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 13:51:43 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by einstein.tteng.com.br (Postfix) with ESMTP id AC207120022
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 08:51:42 -0300 (BRST)
-Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
-	by einstein.tteng.com.br (Postfix) with ESMTP id A77E5120020
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 08:51:39 -0300 (BRST)
-In-Reply-To: <d5eabee70805130043s79f68c8yf5e971d147827360@mail.gmail.com>
+	Tue, 13 May 2008 14:24:18 +0200 (CEST)
+In-Reply-To: <48297C5D.5010507@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,69 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>, Armin ranjbar <zoup@zoup.org>
 List-Id: alsa-devel@alsa-project.org
 
-I had some problems until I could figure it out how to configure alsa =
+On 13-05-08 13:32, Rene Herman wrote:
 
-properly in /etc/asound.conf. Maybe this could be your problem? What is =
+> On 13-05-08 13:20, Takashi Iwai wrote:
 
-your alsa version? I heard that aloop didn't work well until 1.0.15, or =
+>> Anyway, the problem of beep on Dell XPS is a different. The PC beep 
+>> isn't implemented (initialized) in the sound driver side. I have no 
+>> interest in fixing it as I hate PC beep feature, but am willing to 
+>> apply patches if provided :)
+> 
+> I suppose his beeper should stil beep through the input driver if he
+> just selects "N" for snd-pcsp?
+> 
+> If not, if it worked before, and if I were him, I'd be throwing up a
+> stink calling it a regression...
 
-such (alsa guys: is this true?).
+(yes, I get it, not a regression, just jumped to the conclusion it was a 
+changed situation due to the option juggling new to new kernels)
 
-Benjamin van den Hout escreveu:
-> Gustavo da Silva Serra wrote:
->
-> Well, I discovered that only xinelib has this problem. Xmms and
->   =
+Not having the hardware, I'm not very likely to be useful but if the 
+only problem is someone needing to turn available information into an 
+addition to the driver, you can try me...
 
->> alsaplayer, for example, don't have this issue. I am testing VLC and it
->> seems to work fine. I am not surprised, since the xine source code that
->> deals with alsa is huge and ugly, it must be very hard to mantain that.
->>
->>     =
-
->
-> Thanks for your reply! I did some more testing and I can reproduce it as
-> well with the 8bit mode, it occurrs less frequently. When I switch back to
-> 16 bit it takes only a few tries with aplay to get the hiccups. So it see=
-ms
-> it is a bit more tricky than I initially thought. Xine can be a strange
-> beast some times, so that's why I used aplay as well. Anybody have some m=
-ore
-> ideas how to tackle this problem or point me in the right direction so I =
-can
-> solve it myself? It seems I am so close to a working solution...
->
-> Kind regards,
-> Benjamin
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-> __________ NOD32 3095 (20080513) Information __________
->
-> This message was checked by NOD32 antivirus system.
-> http://www.eset.com
->
->
->
->   =
-
-
-
--- =
-
-Gustavo da Silva Serra        gustavo.serra@tet.com.br
-=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=97=
-=97=97
-Tools & Technologies - T&T Engenheiros Associados Ltda.
-Projetos de SW & HW - Desenvolvendo solu=E7=F5es.
-Rua Riachuelo, 1098 Conj. 1204
-Centro - Porto Alegre - CEP 90010-272
-Fone DDR: (51)3220-3290
-Fone/Fax: (51)3220-3220 / 3220-3206
-http://www.tet.com.br/                                             tet@tet.=
-com.br
+Rene.
