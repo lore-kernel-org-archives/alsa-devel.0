@@ -1,18 +1,25 @@
-From: "Benjamin van den Hout" <bvdhout@gmail.com>
-Subject: Re: Problem with aloop
-Date: Tue, 13 May 2008 15:27:09 +0200
-Message-ID: <d5eabee70805130627v1dd7b675ua4fadc9bd1905357@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 05/10] soc - tlv320aic3x - Convert to use
+	bulk registration APIs
+Date: Tue, 13 May 2008 14:28:22 +0100
+Message-ID: <20080513132821.GE21292@sirena.org.uk>
+References: <1210678815-9755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1210678815-9755-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<20080513153419.360c23e6.jarkko.nikula@nokia.com>
+	<20080513162002.a7f8ccd7.jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7BC6724B09
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6577124B0A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 May 2008 15:27:20 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so1667855ywk.2
-	for <alsa-devel@alsa-project.org>; Tue, 13 May 2008 06:27:09 -0700 (PDT)
+	Tue, 13 May 2008 15:28:23 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20080513162002.a7f8ccd7.jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +29,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Gustavo da Silva Serra wrote:
+On Tue, May 13, 2008 at 04:20:02PM +0300, Jarkko Nikula wrote:
 
-I had some problems until I could figure it out how to configure alsa
-> properly in /etc/asound.conf. Maybe this could be your problem? What is
-> your alsa version? I heard that aloop didn't work well until 1.0.15, or
-> such (alsa guys: is this true?).
->
+> My own patch [1] fixed this problem. Thanks to new log message "Failed
+> to add route Mono Out->MONOLOUT" :-)
 
-My alsa is 1.0.14 but I'm using the 'HG' version of the alsa-drivers and
-alsa-kernel packages so that basically gets me the latest-and-greatest
-drivers from the source repository if I understand correctly. I saw some
-patches coming by in February and they are already in there so I presume I'm
-working with the most current source.
-
-I'm intrigued by the asound.conf, is there any specific configuration you
-needed to make the aloop device work properly? I'm using the
-distro-configured alsa (ubuntu 7.10) and there is no such file somehwere in
-/etc. Even on my debian server (running Etch), I can't find it.
-
-Kind regards,
-Benjamin
+Ah, excellent - that's already in ALSA so the patch series should apply
+safely.  Thanks.
