@@ -1,18 +1,17 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
-Date: Tue, 13 May 2008 17:18:39 -0600
-Message-ID: <200805131718.40138.bjorn.helgaas@hp.com>
-References: <4823AAF2.7070102@keyaccess.nl> <20080513180107.1a3893f1@core>
-	<4829D0E5.8050905@keyaccess.nl>
+From: "Kamil Kaminski" <kamilkss@gmail.com>
+Subject: Auzen X-Fi Prelude
+Date: Tue, 13 May 2008 21:46:44 -0500
+Message-ID: <aa85b9420805131946m25851f43tf77d2deaf4a7f84@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from g4t0014.houston.hp.com (g4t0014.houston.hp.com [15.201.24.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B8B324440
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id A90C924BC3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 May 2008 01:18:40 +0200 (CEST)
-In-Reply-To: <4829D0E5.8050905@keyaccess.nl>
+	Wed, 14 May 2008 04:46:45 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so2472478fgg.44
+	for <alsa-devel@alsa-project.org>; Tue, 13 May 2008 19:46:44 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,38 +22,8 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Glauber Costa <gcosta@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, Pete Clements <clem@clem.clem-digital.net>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 13 May 2008 11:33:25 am Rene Herman wrote:
-> On 13-05-08 19:01, Alan Cox wrote:
-> > On Tue, 13 May 2008 10:59:32 -0600, Bjorn Helgaas <bjorn.helgaas@hp.com> wrote:
-> >> On Friday 09 May 2008 12:06:55 am Takashi Iwai wrote:
-> >>> Thanks for catching it.  Yeah, the patch looks buggy.  We had an
-> >>> implicit assumption that dev = NULL for ISA devices that require 24bit
-> >>> DMA.
-> >> Naive question #1:  Why don't we have a struct device for these
-> >> ISA devices?  PNP builds a struct device with DMA_24BIT_MASK
-> >> for ISAPNP devices.
-> > 
-> > Because nobody has done the needed work to get all the old ISA drivers
-> > converted. I guess isa_device would actually be a platform_device
-> > wrapper ?
-> 
-> No, isa_device is its own thing, on its own isa_bus (*). It has a struct 
-> device * readily available though...
-> 
-> (*) drivers/base/isa.c, and explanatory changelog at:
-> 
-> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=a5117ba7da37deb09df5eb802dace229b3fb1e9f
-
-Thanks for the nice changelog.
-
-isa_register_driver() currently doesn't set a DMA mask.  Should it?
-
-I only see about 35 dma_alloc_coherent() calls that pass NULL.  I
-guess even those would be a fair amount of work to change, and I
-suppose there would be more that I missed.
-
-Bjorn
+Hi,
+When will be there a working driver for Auzen Prelude card?
