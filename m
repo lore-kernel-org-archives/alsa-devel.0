@@ -1,17 +1,20 @@
-From: Goran Sterjov <goran.sterjov@gmail.com>
-Subject: [Via8237]  -  VT1618 data sheet
-Date: Wed, 14 May 2008 23:26:56 +1000
-Message-ID: <1210771616.15569.11.camel@localhost>
+From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Subject: Re: 2.6.26-rc1 regression: ISA DMA broken (bisected)
+Date: Wed, 14 May 2008 09:26:04 -0600
+Message-ID: <200805140926.05103.bjorn.helgaas@hp.com>
+References: <4823AAF2.7070102@keyaccess.nl>
+	<200805131718.40138.bjorn.helgaas@hp.com>
+	<482ADF34.2010004@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 301062436F
+Received: from g1t0028.austin.hp.com (g1t0028.austin.hp.com [15.216.28.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5883B243B1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 May 2008 15:26:54 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so2979749rvb.32
-	for <alsa-devel@alsa-project.org>; Wed, 14 May 2008 06:26:53 -0700 (PDT)
+	Wed, 14 May 2008 17:26:05 +0200 (CEST)
+In-Reply-To: <482ADF34.2010004@keyaccess.nl>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Glauber Costa <gcosta@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, Pete Clements <clem@clem.clem-digital.net>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+On Wednesday 14 May 2008 06:46:44 am Rene Herman wrote:
+> On 14-05-08 01:18, Bjorn Helgaas wrote:
+> 
+> > On Tuesday 13 May 2008 11:33:25 am Rene Herman wrote:
+> 
+> >> No, isa_device is its own thing, on its own isa_bus (*). It has a struct 
+> >> device * readily available though...
+> >>
+> >> (*) drivers/base/isa.c, and explanatory changelog at:
+> >>
+> >> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=a5117ba7da37deb09df5eb802dace229b3fb1e9f
+> > 
+> > Thanks for the nice changelog.
+> > 
+> > isa_register_driver() currently doesn't set a DMA mask.  Should it?
+> 
+> If it's going to be useful, definitely. The attached does not just set
+> 
+>    dev->dma_mask = &dev->coherent_dma_mask
+> 
+> as in the fallback_dev when dma_alloc_coherent() is passed a NULL device 
+> only due to the mask juggling in snd_dma_hack_alloc_coherent() (which 
+> wouldn't break, but...) but introduces its own copy in struct isa_dev 
+> same as struct pnp_dev. As far as I'm aware, there's no actual reason 
+> for keeping it other than that and if the hack could go I'd rather lose 
+> the private mask copy again also.
+> 
+> (the device model still uses a plain u64 by the way but I guess the 
+> clean type would be a dma64_addr_t)
+> 
+> Inlining is whitespace-failing here. Patch itself is trivial...
+> 
+> > I only see about 35 dma_alloc_coherent() calls that pass NULL.  I 
+> > guess even those would be a fair amount of work to change, and I 
+> > suppose there would be more that I missed.
+> 
+> At least the ALSA one isn't passing a literal NULL it seems. But yes, 
+> current NULL-hack reinstatement (it's been merged by Linus already) is 
+> definitely the correct fix for now.
+> 
+> Would like a comment on the snd_dma_hack_alloc_coherent thing first (no 
+> signoff...) but other than that I'll submit this in preparation for it 
+> being useful, I guess?
 
-i tried out the VT1618 patch from john utz but i failed to get the
-"Smart 5.1" surround sound working.
-so i figured that i'd go ahead and experiment with the driver to make it
-work on my via epia en15000 motherboard.
-
-i tried requesting the data sheet from VIA ten ga-gillion times but they
-only responded once with a "the datasheet is a high level engineering
-document. visit the technical support forums for help".
-
-i tried explaining that i needed the information to further develop an
-ALSA driver for the linux system but it seems like i wont get my hands
-on this god forsaken document.
-
-Is there anyone out there who has any documentation on the vt1618..?
-via support is shocking. Nay, beyond shocking.
-
-in John's patch he mentions various registers but unfortunately they
-dont help me without the docs..
-
-
-Thanks
-Goran
+Yes, I like this patch.
