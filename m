@@ -1,66 +1,78 @@
-From: "Paul Adolph" <padolph@gmail.com>
-Subject: pcm output timing question
-Date: Wed, 14 May 2008 12:28:04 -0700
-Message-ID: <fe9483990805141228re9326dco182e9702e93e56ae@mail.gmail.com>
+From: "Gerhard Pircher" <gerhard_pircher@gmx.net>
+Subject: Re: ALSA fixes for non-coherent archs (Re: [PATCH] Sam440ep support)
+Date: Wed, 14 May 2008 23:01:10 +0200
+Message-ID: <20080514210110.155050@gmx.net>
+References: <a265241c0805051123h595123edrd46bf65a8099c3c2@mail.gmail.com>
+	<6DA6B1DA-11B5-4B89-88AD-561B4D17B33B@kernel.crashing.org>
+	<20080505195054.172000@gmx.net>	<1210031058.21644.120.camel@pasglop>
+	<20080506075115.269150@gmx.net>	<1210063719.21644.162.camel@pasglop>
+	<20080506091622.269180@gmx.net> <s5hr6c5ax6a.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id B602F24336
-	for <alsa-devel@alsa-project.org>;
-	Wed, 14 May 2008 21:28:05 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 50so35112wri.2
-	for <alsa-devel@alsa-project.org>; Wed, 14 May 2008 12:28:04 -0700 (PDT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
+In-Reply-To: <s5hr6c5ax6a.wl%tiwai@suse.de>
+List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, cjg@cruxppc.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA newbie warning...
 
-I have a funny application that does av sync by using the timing of a
-callback to set the audio timebase. In other words, I need to invoke
-that callback "as close as possible" to the time a previously-sent
-buffer of samples is presented, i.e. exits the speakers. The
-application uses the clock time of the arrival of this callback and
-does some math to figure out whether to repeat or skip video frames. I
-do not like this arrangement, but unfortunately I am stuck with it. My
-job is to hook this app to ALSA audio output.
+-------- Original-Nachricht --------
+> Datum: Wed, 14 May 2008 14:26:53 +0200
+> Von: Takashi Iwai <tiwai@suse.de>
+> An: "Gerhard Pircher" <gerhard_pircher@gmx.net>
+> CC: benh@kernel.crashing.org, galak@kernel.crashing.org, cjg@cruxppc.org,=
+ linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+> Betreff: ALSA fixes for non-coherent archs (Re: [PATCH] Sam440ep support)
 
-My current design uses a producer-consumer model with a thread that
-writes fixed-size application buffers to the ALSA ring buffer, driven
-by a message queue fed by the application. This is a little redundant
-I think, but I do not own the buffers sent by the app so this is what
-I came up with. The application needs a regular callback with the
-timing described above each time one of their buffers is played, and
-it is assumed they are played in sequence.
+> At Tue, 06 May 2008 11:16:22 +0200,
+> Gerhard Pircher wrote:
+> > =
 
-I tried setting the ALSA callback to trigger when there are an
-application-buffer-size amount of frames available, using
-snd_pcm_sw_params_set_avail_min(). My idea was that if I primed the
-ring buffer to be full before it starts transfers with
-snd_pcm_sw_params_set_start_threshold(), I would get the ALSA callback
-each time that number of frames exited the ring buffer. But this did
-not work: I seem to be getting callbacks much more frequently that I
-wanted, probably on ALSA period boundaries. So this means I do not
-understand how snd_pcm_sw_params_set_start_threshold() is supposed to
-work I guess.
+> > Naturally I can do some tests, if you or Takashi come up with a new
+> > patch.
+> =
 
-Will somebody please comment on the viability of and/or problems with
-my current design, or suggest an alternative way to configure ALSA
-that will give me the output timing I need?
+> OK, here is another patch for testing.  Since I lost my old patch
+> somewhere (and it's not worth to dig the archive), I wrote it up
+> quickly from scratch.  This version should cover both SG and non-SG
+> buffers.  It's against the latest git tree.
+> =
 
-Currently I am testing on an x86 ubuntu box, kernel 2.6.22-14, ALSA
-1.0.14, gcc 4.1.3, glibc 2.6.1, but will also cross-compile for
-several embedded platforms in the future.
+> The patch adds a hackish verison of dma_mmap_coherent() for some
+> architectures in sound/core/pcm_native.c.  I'm not sure whether this
+> works.  I just tested it on X86.  It'd be appreciated if someone can
+> test this.
+> =
 
-Thanks in advance.
+> Also, this disables HDSPM driver for non-X86/IA64 since the driver has
+> own copy and silence methods that are incompatible with the new
+> SG-buffer data.
+> =
+
+> =
+
+> And, yes, I know we need to clean up huge messes in ALSA memory
+> handling routines.  But, let's fix obvious bugs before starting a big
+> rewrite...
+Okay, it seems to work fine so far. No lock-ups or kernel oopses. Tested
+with kernel v2.6.26-rc2 and a Soundblaster 5.1/EMU10k1 device (which was
+not working with the old patch) on my non cache coherent G4 system.
+
+Thanks again!
+
+Gerhard
+
+-- =
+
+Psssst! Schon vom neuen GMX MultiMessenger geh=F6rt?
+Der kann`s mit allen: http://www.gmx.net/de/go/multimessenger
