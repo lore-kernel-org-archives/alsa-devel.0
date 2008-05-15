@@ -1,78 +1,147 @@
-From: "Gerhard Pircher" <gerhard_pircher@gmx.net>
-Subject: Re: ALSA fixes for non-coherent archs (Re: [PATCH] Sam440ep support)
-Date: Wed, 14 May 2008 23:01:10 +0200
-Message-ID: <20080514210110.155050@gmx.net>
-References: <a265241c0805051123h595123edrd46bf65a8099c3c2@mail.gmail.com>
-	<6DA6B1DA-11B5-4B89-88AD-561B4D17B33B@kernel.crashing.org>
-	<20080505195054.172000@gmx.net>	<1210031058.21644.120.camel@pasglop>
-	<20080506075115.269150@gmx.net>	<1210063719.21644.162.camel@pasglop>
-	<20080506091622.269180@gmx.net> <s5hr6c5ax6a.wl%tiwai@suse.de>
+From: "Xavi de Blas" <xaviblas@gmail.com>
+Subject: Re: Intel hda ICH7 not worked anymore after using wine
+	(SOLVED!). Problems again
+Date: Thu, 15 May 2008 03:26:00 +0200
+Message-ID: <256a87490805141826o70629b26x7caf4760c7db8c48@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
-In-Reply-To: <s5hr6c5ax6a.wl%tiwai@suse.de>
-List-Unsubscribe: <https://ozlabs.org/mailman/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, cjg@cruxppc.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7286624553
+	for <alsa-devel@alsa-project.org>;
+	Thu, 15 May 2008 03:26:02 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m28so164928wag.8
+	for <alsa-devel@alsa-project.org>; Wed, 14 May 2008 18:26:01 -0700 (PDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello, we have been talking on this thread:
 
--------- Original-Nachricht --------
-> Datum: Wed, 14 May 2008 14:26:53 +0200
-> Von: Takashi Iwai <tiwai@suse.de>
-> An: "Gerhard Pircher" <gerhard_pircher@gmx.net>
-> CC: benh@kernel.crashing.org, galak@kernel.crashing.org, cjg@cruxppc.org,=
- linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
-> Betreff: ALSA fixes for non-coherent archs (Re: [PATCH] Sam440ep support)
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-July/001939.html
 
-> At Tue, 06 May 2008 11:16:22 +0200,
-> Gerhard Pircher wrote:
-> > =
+because i had a problem with my hda that Takashi said it's really
+specific to my hardware:
 
-> > Naturally I can do some tests, if you or Takashi come up with a new
-> > patch.
-> =
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-July/001963.html
 
-> OK, here is another patch for testing.  Since I lost my old patch
-> somewhere (and it's not worth to dig the archive), I wrote it up
-> quickly from scratch.  This version should cover both SG and non-SG
-> buffers.  It's against the latest git tree.
-> =
+Now with kernel 2.6.24-16 and alsa 1.0.16, i have no audio again:
 
-> The patch adds a hackish verison of dma_mmap_coherent() for some
-> architectures in sound/core/pcm_native.c.  I'm not sure whether this
-> works.  I just tested it on X86.  It'd be appreciated if someone can
-> test this.
-> =
+i tried now using the patch Tobin made:
 
-> Also, this disables HDSPM driver for non-X86/IA64 since the driver has
-> own copy and silence methods that are incompatible with the new
-> SG-buffer data.
-> =
+http://mailman.alsa-project.org/pipermail/alsa-devel/2007-July/001934.html
 
-> =
+and it' doesn't work. In fact, i haven't used the patch, i only added the line:
 
-> And, yes, I know we need to clean up huge messes in ALSA memory
-> handling routines.  But, let's fix obvious bugs before starting a big
-> rewrite...
-Okay, it seems to work fine so far. No lock-ups or kernel oopses. Tested
-with kernel v2.6.26-rc2 and a Soundblaster 5.1/EMU10k1 device (which was
-not working with the old patch) on my non cache coherent G4 system.
+	{ .id = 0x51d41981, .name = "AD1981", .patch = patch_ad1981 },
+after the line:
+	{ .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
 
-Thanks again!
+on: /usr/local/src/alsa-driver-1.0.16/alsa-kernel/pci/hda/patch_analog.c
 
-Gerhard
+./configure, make, sudo make install
 
--- =
+on reboot, the error is the same as before:
 
-Psssst! Schon vom neuen GMX MultiMessenger geh=F6rt?
-Der kann`s mit allen: http://www.gmx.net/de/go/multimessenger
+dmesg|grep alsa
+[   41.284537] ALSA
+/build/buildd/linux-ubuntu-modules-2.6.24-2.6.24/debian/build/build-generic/sound/alsa-driver/pci/hda/hda_codec.c:230:
+hda_codec: invalid dep_range_val 53:1a
+
+here is my /proc/asound/card0/codec#0
+
+http://pastebin.ca/1018596
+
+Thanks a lot
+
+
+2007/7/9 Xavi de Blas <xaviblas@gmail.com>:
+> It worked!!!
+>
+> Thanks a lot
+>
+> I thought my hardware was broken!
+>
+> 2007/7/9, Tobin Davis <tdavis@dsl-only.net>:
+>>
+>> Patch needs to be applied as follows:
+>>
+>> cd alsa-driver-1.0.14/alsa-kernel
+>> patch -p1 < LenovoX60S.patch
+>> cd ..
+>>
+>> Then you can rerun configure && make && make install.
+>>
+>> Tobin
+>>
+>> On Mon, 2007-07-09 at 17:25 +0200, Xavi de Blas wrote:
+>>
+>> 2007/7/9, Tobin Davis <tdavis@dsl-only.net>:
+>> > Sorry for missing this thread.  I just woke up.
+>> >
+>> > I looked at your first pastebin output, and the actual audio codec shows
+>> > up as 0x51d41981, when it should be 0x11d41981.  This is why the Analog
+>> > driver patch isn't detecting it.
+>> >
+>> > Can you try this patch against alsa-driver-1.0.14?  It should detect
+>> > this codec.  Still not sure why it is misconfigured, unless there is a
+>> > bios issue.
+>> >
+>>
+>> I'm afraid, probably when i tried the Linuxant codecs for the modem it
+>> broke the
+>> bios. Not sure, but sound worked, and continued working some reboots
+>> later. But when i tried a few things with wine and rebooted, sound
+>> never worked again
+>>
+>> When i aply the patch (probably i don't do it good) there are problems:
+>>
+>>
+>> xavier@corall:/usr/local/src/alsa-src/alsa-driver-1.0.14$ cat
+>> LenovoX60S.patch | patch -p1
+>> patching file pci/hda/patch_analog.c
+>> Hunk #1 FAILED at 3402.
+>> 1 out of 1 hunk FAILED -- saving rejects to file
+>> pci/hda/patch_analog.c.rej
+>>
+>>
+>> xavier@corall:/usr/local/src/alsa-src/alsa-driver-1.0.14/pci/hda$ cat
+>> patch_analog.c.rej
+>> *************** struct hda_codec_preset snd_hda_preset_a
+>> *** 3402,3407 ****
+>>        { .id = 0x11d41882, .name = "AD1882", .patch = patch_ad1882 },
+>>        { .id = 0x11d41884, .name = "AD1884", .patch = patch_ad1884 },
+>>        { .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
+>>        { .id = 0x11d41983, .name = "AD1983", .patch = patch_ad1983 },
+>>        { .id = 0x11d41984, .name = "AD1984", .patch = patch_ad1984 },
+>>        { .id = 0x11d41986, .name = "AD1986A", .patch = patch_ad1986a },
+>> --- 3402,3408 ----
+>>        { .id = 0x11d41882, .name = "AD1882", .patch = patch_ad1882 },
+>>        { .id = 0x11d41884, .name = "AD1884", .patch = patch_ad1884 },
+>>        { .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
+>> +       { .id = 0x51d41981, .name = "AD1981", .patch = patch_ad1981 },
+>>        { .id = 0x11d41983, .name = "AD1983", .patch = patch_ad1983 },
+>>        { .id = 0x11d41984, .name = "AD1984", .patch = patch_ad1984 },
+>>        { .id = 0x11d41986, .name = "AD1986A", .patch = patch_ad1986a },
+>>
+>>
+>> The patch is ok?
+>>
+>> Thanks
+>>
+>> (Tobin sorry for sending messge two times)
+>>
+>> --
+>> Tobin Davis <tdavis@dsl-only.net>
+>
