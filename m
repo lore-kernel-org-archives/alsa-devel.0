@@ -1,17 +1,17 @@
 From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: Re: Kernel crashes for unsupported sample rates
-Date: Thu, 15 May 2008 16:40:52 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB022256EF67@dbde02.ent.ti.com>
-References: <s5hprrnamlb.wl%tiwai@suse.de>
+Subject: Re: Forward/rewind APIs return 0
+Date: Thu, 15 May 2008 16:48:42 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB022256EF6F@dbde02.ent.ti.com>
+References: <Pine.LNX.4.61.0805121016590.18373@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9109224773
+Received: from soda.ext.ti.com (soda.ext.ti.com [198.47.26.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F84124788
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 May 2008 13:12:02 +0200 (CEST)
-In-Reply-To: <s5hprrnamlb.wl%tiwai@suse.de>
+	Thu, 15 May 2008 13:18:52 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.61.0805121016590.18373@tm8103.perex-int.cz>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,24 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-It gave me the following error:
+--_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-bash-3.00$ patch -p 1 < audio_patch
-(Stripping trailing CRs from patch.)
-patching file include/sound/memalloc.h
-Hunk #1 succeeded at 62 with fuzz 1.
-Hunk #2 FAILED at 87.
-1 out of 2 hunks FAILED -- saving rejects to file include/sound/memalloc.h.rej
-(Stripping trailing CRs from patch.)
-patching file include/sound/pcm.h
-patch: **** malformed patch at line 60: @@ -306,6 +306,126 @@ int snd_pcm_lib_preallocate_pages_for_all(struct snd_pcm *pcm,
+Please find the output from snd_pcm_dump() attached.
 
-
-I think I have to apply the patch manually. Is there any other way to do that?
+Is there any simple app to show the usage of forward/rewind APIs? I want to=
+ cross check my app against the same.
 
 Thanks and Regards,
 Anuj Aggarwal
@@ -52,668 +46,125 @@ PSP Products RSS Feed PSP Product Announcements
 
 
 -----Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de]
-Sent: Thursday, May 15, 2008 3:58 PM
+From: Jaroslav Kysela [mailto:perex@perex.cz]
+Sent: Monday, May 12, 2008 1:47 PM
 To: Aggarwal, Anuj
 Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Kernel crashes for unsupported sample rates
+Subject: Re: [alsa-devel] Forward/rewind APIs return 0
 
-At Thu, 15 May 2008 15:53:11 +0530,
-Aggarwal, Anuj wrote:
->
+On Mon, 12 May 2008, Aggarwal, Anuj wrote:
+
 > Hi,
 >
-> I tried "pcm" sample application which is coming along with the
-> alsa-libs package (in the test folder). It works well for the
-> sample rates supported by my audio driver but gives me a kernel crash
-> when tried with any other non-supporting sample rate. If the driver
-> has explicitly said that these sample rates are not-supported, then
-> the app should have exited gracefully instead of trying further.
+> I am trying to use snd_pcm_forward and snd_pcm_rewind APIs in my
+> application. Although they are doing something (I am able to 'hear' the
+> jump), they return me 0, instead of returning me the number of frames.
+>
+> What could be the problem with the application/driver?
 
-Looks like a known long-standing problem with mmap of DMA pages.
-Does the patch below fix the problem (it's against the latest Linus
-git tree)?  If not, which architecture is it?
+Show us output from snd_pcm_dump().
+
+                                                Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
 
 
-Takashi
+--_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_
+Content-Type: text/plain; name="snd_dump.txt"
+Content-Description: snd_dump.txt
+Content-Disposition: attachment; filename="snd_dump.txt"; size=4245;
+	creation-date="Thu, 15 May 2008 16:47:02 GMT";
+	modification-date="Thu, 15 May 2008 16:47:20 GMT"
+Content-Transfer-Encoding: base64
 
----
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index ae2921d..ccf3dfa 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -62,6 +62,18 @@ struct snd_dma_buffer {
-        void *private_data;     /* private for allocator; don't touch */
- };
+W3Jvb3RAT01BUDNFVk0gYmluXSMgLi9mb3J3YXJkX3BjbV9uZXcNClBsYXliYWNrIDogT3BlbiBT
+dWNjZXNzDQpDYXB0dXJlIDogT3BlbiBTdWNjZXNzDQpIYXJkd2FyZSBDb25maWd1cmF0aW9uIDog
+TWVtb3J5IEFsbG9jYXRpb24sIFN1Y2Nlc3MNCkhhcmR3YXJlIENvbmZpZ3VyYXRpb24gOkluaXRp
+YWxpemF0aW9uLCBTdWNjZXNzDQpIYXJkd2FyZSBDb25maWd1cmF0aW9uIDogU2V0IEFjY2VzcyBT
+dWNjZXNzDQpIYXJkd2FyZSBDb25maWd1cmF0aW9uIDogU2V0IEZvcm1hdCBTdWNjZXNzDQpIYXJk
+d2FyZSBDb25maWd1cmF0aW9uIDogU2V0IFJhdGUgU3VjY2Vzcw0KSGFyZHdhcmUgQ29uZmlndXJh
+dGlvbiA6IFNldCBDaGFubmVsIFN1Y2Nlc3MNClBDTSBpcyBpbiBPUEVOIFN0YXRlIGJlZm9yZSBz
+bmRfcGNtX2h3X3BhcmFtcw0KUENNIGFjY2VzcyB0eXBlIGlzIFJXX0lOVEVSTEVBVkVEDQpIYXJk
+d2FyZSBDb25maWd1cmF0aW9uIDogU2V0IFBhcmFtZXRlcnMgU3VjY2Vzcw0KUENNIGlzIGluIFBS
+RVBBUkVEIFN0YXRlDQpDYXB0dXJlIDogSGFyZHdhcmUgQ29uZmlndXJhdGlvbiA6IFN1Y2Nlc3MN
+CkhhcmR3YXJlIENvbmZpZ3VyYXRpb24gOiBNZW1vcnkgQWxsb2NhdGlvbiwgU3VjY2Vzcw0KSGFy
+ZHdhcmUgQ29uZmlndXJhdGlvbiA6SW5pdGlhbGl6YXRpb24sIFN1Y2Nlc3MNCkhhcmR3YXJlIENv
+bmZpZ3VyYXRpb24gOiBTZXQgQWNjZXNzIFN1Y2Nlc3MNCkhhcmR3YXJlIENvbmZpZ3VyYXRpb24g
+OiBTZXQgRm9ybWF0IFN1Y2Nlc3MNCkhhcmR3YXJlIENvbmZpZ3VyYXRpb24gOiBTZXQgUmF0ZSBT
+dWNjZXNzDQpIYXJkd2FyZSBDb25maWd1cmF0aW9uIDogU2V0IENoYW5uZWwgU3VjY2Vzcw0KUENN
+IGlzIGluIE9QRU4gU3RhdGUgYmVmb3JlIHNuZF9wY21faHdfcGFyYW1zDQpQQ00gYWNjZXNzIHR5
+cGUgaXMgUldfSU5URVJMRUFWRUQNCkhhcmR3YXJlIENvbmZpZ3VyYXRpb24gOiBTZXQgUGFyYW1l
+dGVycyBTdWNjZXNzDQpQQ00gaXMgaW4gUFJFUEFSRUQgU3RhdGUNCkNhcHR1cmUgOiBIYXJkd2Fy
+ZSBDb25maWd1cmF0aW9uIDogU3VjY2Vzcw0KU1RGdWxsRHVwbGV4QXVkaW86OiBTVFJlY29yZEF1
+ZGlvIHRocmVhZDogUGFzczogU3RhdHVzID0gMA0KU1RGdWxsRHVwbGV4QXVkaW86OiBTVFBsYXli
+YWNrQXVkaW8gdGhyZWFkOiBQYXNzOiBTdGF0dXMgPSAwDQpQbGF5YmFjayBCdWZmZXIgbnVtYmVy
+OjANClNUUmVjb3JkQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAwLCAxMDc2ODMwMjE2DQpTVFBs
+YXliYWNrQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAwLCAxMDc2ODMwMjE2DQpQbGF5YmFjayBC
+dWZmZXIgbnVtYmVyOjENClNUUmVjb3JkQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAxLCAxMDc3
+ODgyODg4DQpTVFBsYXliYWNrQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAxLCAxMDc3ODgyODg4
+DQpQbGF5YmFjayBCdWZmZXIgbnVtYmVyOjINClNUUmVjb3JkQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1
+ZmZlciAyLCAxMDc4OTM1NTYwDQpTVFBsYXliYWNrQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAy
+LCAxMDc4OTM1NTYwDQpCZWZvcmU6DQpQbHVnIFBDTTogSGFyZHdhcmUgUENNIGNhcmQgMCAnVFdM
+NDAzMCcgZGV2aWNlIDAgc3ViZGV2aWNlIDANCkl0cyBzZXR1cCBpczoNCiAgc3RyZWFtICAgICAg
+IDogUExBWUJBQ0sNCiAgYWNjZXNzICAgICAgIDogUldfSU5URVJMRUFWRUQNCiAgZm9ybWF0ICAg
+ICAgIDogUzE2X0xFDQogIHN1YmZvcm1hdCAgICA6IFNURA0KICBjaGFubmVscyAgICAgOiAyDQog
+IHJhdGUgICAgICAgICA6IDQ0MTAwDQogIGV4YWN0IHJhdGUgICA6IDQ0MTAwICg0NDEwMC8xKQ0K
+ICBtc2JpdHMgICAgICAgOiAxNg0KICBidWZmZXJfc2l6ZSAgOiAzMjc2OA0KICBwZXJpb2Rfc2l6
+ZSAgOiAxMDI0DQogIHBlcmlvZF90aW1lICA6IDIzMjE5DQogIHRpY2tfdGltZSAgICA6IDc4MTIN
+CiAgdHN0YW1wX21vZGUgIDogTk9ORQ0KICBwZXJpb2Rfc3RlcCAgOiAxDQogIHNsZWVwX21pbiAg
+ICA6IDANCiAgYXZhaWxfbWluICAgIDogMTAyNA0KICB4ZmVyX2FsaWduICAgOiAxMDI0DQogIHN0
+YXJ0X3RocmVzaG9sZCAgOiAxDQogIHN0b3BfdGhyZXNob2xkICAgOiAzMjc2OA0KICBzaWxlbmNl
+X3RocmVzaG9sZDogMA0KICBzaWxlbmNlX3NpemUgOiAwDQogIGJvdW5kYXJ5ICAgICA6IDEwNzM3
+NDE4MjQNClBsYXliYWNrIDogRm9yd2FyZCBObyBBY3Rpb24NCkFmdGVyOg0KUGx1ZyBQQ006IEhh
+cmR3YXJlIFBDTSBjYXJkIDAgJ1RXTDQwMzAnIGRldmljZSAwIHN1YmRldmljZSAwDQpJdHMgc2V0
+dXAgaXM6DQogIHN0cmVhbSAgICAgICA6IFBMQVlCQUNLDQogIGFjY2VzcyAgICAgICA6IFJXX0lO
+VEVSTEVBVkVEDQogIGZvcm1hdCAgICAgICA6IFMxNl9MRQ0KICBzdWJmb3JtYXQgICAgOiBTVEQN
+CiAgY2hhbm5lbHMgICAgIDogMg0KICByYXRlICAgICAgICAgOiA0NDEwMA0KICBleGFjdCByYXRl
+ICAgOiA0NDEwMCAoNDQxMDAvMSkNCiAgbXNiaXRzICAgICAgIDogMTYNCiAgYnVmZmVyX3NpemUg
+IDogMzI3NjgNCiAgcGVyaW9kX3NpemUgIDogMTAyNA0KICBwZXJpb2RfdGltZSAgOiAyMzIxOQ0K
+ICB0aWNrX3RpbWUgICAgOiA3ODEyDQogIHRzdGFtcF9tb2RlICA6IE5PTkUNCiAgcGVyaW9kX3N0
+ZXAgIDogMQ0KICBzbGVlcF9taW4gICAgOiAwDQogIGF2YWlsX21pbiAgICA6IDEwMjQNCiAgeGZl
+cl9hbGlnbiAgIDogMTAyNA0KICBzdGFydF90aHJlc2hvbGQgIDogMQ0KICBzdG9wX3RocmVzaG9s
+ZCAgIDogMzI3NjgNCiAgc2lsZW5jZV90aHJlc2hvbGQ6IDANCiAgc2lsZW5jZV9zaXplIDogMA0K
+ICBib3VuZGFyeSAgICAgOiAxMDczNzQxODI0DQpQbGF5YmFjayBCdWZmZXIgbnVtYmVyOjINClNU
+UmVjb3JkQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAzLCAxMDc5OTg4MjMyDQpTVFBsYXliYWNr
+QXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAyLCAxMDc4OTM1NTYwDQpCZWZvcmU6DQpQbHVnIFBD
+TTogSGFyZHdhcmUgUENNIGNhcmQgMCAnVFdMNDAzMCcgZGV2aWNlIDAgc3ViZGV2aWNlIDANCkl0
+cyBzZXR1cCBpczoNCiAgc3RyZWFtICAgICAgIDogUExBWUJBQ0sNCiAgYWNjZXNzICAgICAgIDog
+UldfSU5URVJMRUFWRUQNCiAgZm9ybWF0ICAgICAgIDogUzE2X0xFDQogIHN1YmZvcm1hdCAgICA6
+IFNURA0KICBjaGFubmVscyAgICAgOiAyDQogIHJhdGUgICAgICAgICA6IDQ0MTAwDQogIGV4YWN0
+IHJhdGUgICA6IDQ0MTAwICg0NDEwMC8xKQ0KICBtc2JpdHMgICAgICAgOiAxNg0KICBidWZmZXJf
+c2l6ZSAgOiAzMjc2OA0KICBwZXJpb2Rfc2l6ZSAgOiAxMDI0DQogIHBlcmlvZF90aW1lICA6IDIz
+MjE5DQogIHRpY2tfdGltZSAgICA6IDc4MTINCiAgdHN0YW1wX21vZGUgIDogTk9ORQ0KICBwZXJp
+b2Rfc3RlcCAgOiAxDQogIHNsZWVwX21pbiAgICA6IDANCiAgYXZhaWxfbWluICAgIDogMTAyNA0K
+ICB4ZmVyX2FsaWduICAgOiAxMDI0DQogIHN0YXJ0X3RocmVzaG9sZCAgOiAxDQogIHN0b3BfdGhy
+ZXNob2xkICAgOiAzMjc2OA0KICBzaWxlbmNlX3RocmVzaG9sZDogMA0KICBzaWxlbmNlX3NpemUg
+OiAwDQogIGJvdW5kYXJ5ICAgICA6IDEwNzM3NDE4MjQNClBsYXliYWNrIDogRm9yd2FyZCBObyBB
+Y3Rpb24NCkFmdGVyOg0KUGx1ZyBQQ006IEhhcmR3YXJlIFBDTSBjYXJkIDAgJ1RXTDQwMzAnIGRl
+dmljZSAwIHN1YmRldmljZSAwDQpJdHMgc2V0dXAgaXM6DQogIHN0cmVhbSAgICAgICA6IFBMQVlC
+QUNLDQogIGFjY2VzcyAgICAgICA6IFJXX0lOVEVSTEVBVkVEDQogIGZvcm1hdCAgICAgICA6IFMx
+Nl9MRQ0KICBzdWJmb3JtYXQgICAgOiBTVEQNCiAgY2hhbm5lbHMgICAgIDogMg0KICByYXRlICAg
+ICAgICAgOiA0NDEwMA0KICBleGFjdCByYXRlICAgOiA0NDEwMCAoNDQxMDAvMSkNCiAgbXNiaXRz
+ICAgICAgIDogMTYNCiAgYnVmZmVyX3NpemUgIDogMzI3NjgNCiAgcGVyaW9kX3NpemUgIDogMTAy
+NA0KICBwZXJpb2RfdGltZSAgOiAyMzIxOQ0KICB0aWNrX3RpbWUgICAgOiA3ODEyDQogIHRzdGFt
+cF9tb2RlICA6IE5PTkUNCiAgcGVyaW9kX3N0ZXAgIDogMQ0KICBzbGVlcF9taW4gICAgOiAwDQog
+IGF2YWlsX21pbiAgICA6IDEwMjQNCiAgeGZlcl9hbGlnbiAgIDogMTAyNA0KICBzdGFydF90aHJl
+c2hvbGQgIDogMQ0KICBzdG9wX3RocmVzaG9sZCAgIDogMzI3NjgNCiAgc2lsZW5jZV90aHJlc2hv
+bGQ6IDANCiAgc2lsZW5jZV9zaXplIDogMA0KICBib3VuZGFyeSAgICAgOiAxMDczNzQxODI0DQpQ
+bGF5YmFjayBCdWZmZXIgbnVtYmVyOjINCg0K
 
-+/* needs to use dma_mmap_coherent() for pages allocated via
-+ * dma_alloc_coherent()
-+ */
-+#ifdef CONFIG_HAS_DMA
-+#if (defined(CONFIG_PPC32) && !defined(CONFIG_CONFIG_NOT_COHERENT_CACHE)) || \
-+       defined(CONFIG_ARM) || \
-+       defined(CONFIG_MIPS) || \
-+       defined(CONFIG_PARISC)
-+#define SND_NEEDS_DMA_MMAP_COHERENT
-+#endif /* archs */
-+#endif /* CONFIG_HAS_DMA */
-+
- /*
-  * Scatter-Gather generic device pages
-  */
-@@ -75,7 +87,9 @@ struct snd_sg_buf {
-        int pages;      /* allocated pages */
-        int tblsize;    /* allocated table size */
-        struct snd_sg_page *table;      /* address table */
-+#ifndef SND_NEEDS_DMA_MMAP_COHERENT
-        struct page **page_table;       /* page table (for vmap/vunmap) */
-+#endif
-        struct device *dev;
- };
+--_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 51d58cc..2e68420 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -969,10 +969,25 @@ int snd_pcm_lib_preallocate_pages_for_all(struct snd_pcm *pcm,
- int snd_pcm_lib_malloc_pages(struct snd_pcm_substream *substream, size_t size);
- int snd_pcm_lib_free_pages(struct snd_pcm_substream *substream);
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-+/*
-+ * SG-buffer
-+ */
- #define snd_pcm_substream_sgbuf(substream) ((substream)->runtime->dma_buffer_p->private_data)
- #define snd_pcm_sgbuf_pages(size) snd_sgbuf_aligned_pages(size)
- #define snd_pcm_sgbuf_get_addr(sgbuf,ofs) snd_sgbuf_get_addr(sgbuf,ofs)
-+
-+#ifdef SND_NEEDS_DMA_MMAP_COHERENT
-+int snd_pcm_sgbuf_ops_copy(struct snd_pcm_substream *substream,
-+                          int channel, snd_pcm_uframes_t pos,
-+                          void __user *buf, snd_pcm_uframes_t count);
-+int snd_pcm_sgbuf_ops_silence(struct snd_pcm_substream *substream, int channel,
-+                             snd_pcm_uframes_t pos, snd_pcm_uframes_t count);
-+#define snd_pcm_sgbuf_ops_page         NULL
-+#else
-+#define snd_pcm_sgbuf_ops_copy         NULL
-+#define snd_pcm_sgbuf_ops_silence      NULL
- struct page *snd_pcm_sgbuf_ops_page(struct snd_pcm_substream *substream, unsigned long offset);
-+#endif
-
- /* handle mmap counter - PCM mmap callback should handle this counter properly */
- static inline void snd_pcm_mmap_data_open(struct vm_area_struct *area)
-diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
-index ff07b4a..9e57032 100644
---- a/sound/core/pcm_memory.c
-+++ b/sound/core/pcm_memory.c
-@@ -306,6 +306,126 @@ int snd_pcm_lib_preallocate_pages_for_all(struct snd_pcm *pcm,
-
- EXPORT_SYMBOL(snd_pcm_lib_preallocate_pages_for_all);
-
-+#ifdef SND_NEEDS_DMA_MMAP_COHERENT
-+/*
-+ * snd_pcm_sgbuf_ops_copy - copy callback for DMA SG-buffer
-+ */
-+int snd_pcm_sgbuf_ops_copy(struct snd_pcm_substream *substream,
-+                          int channel, snd_pcm_uframes_t pos,
-+                          void __user *buf, snd_pcm_uframes_t count)
-+{
-+       struct snd_sg_buf *sgbuf = snd_pcm_substream_sgbuf(substream);
-+       struct snd_pcm_runtime *runtime = substream->runtime;
-+       unsigned int ofs, idx;
-+       char *ptr;
-+
-+       if (channel < 0) {
-+               pos = frames_to_bytes(runtime, pos);
-+               count = frames_to_bytes(runtime, count);
-+       } else {
-+               pos = channel * (runtime->dma_bytes / runtime->channels) +
-+                       samples_to_bytes(runtime, pos);
-+               count = samples_to_bytes(runtime, count);
-+       }
-+
-+       idx = pos >> PAGE_SHIFT;
-+       ofs = pos & (PAGE_SIZE - 1);
-+       ptr = sgbuf->table[idx].buf + ofs;
-+
-+       for (;;) {
-+               unsigned int size, ret;
-+               size = count;
-+               if (ofs + size > PAGE_SIZE)
-+                       size = PAGE_SIZE - ofs;
-+               if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+                       ret = copy_from_user(ptr, buf, size);
-+               else
-+                       ret = copy_to_user(buf, ptr, size);
-+               if (ret)
-+                       return -EFAULT;
-+               count -= size;
-+               if (!count)
-+                       return 0;
-+               ofs = 0;
-+               idx++;
-+               ptr = sgbuf->table[idx].buf;
-+               buf += size;
-+       }
-+}
-+EXPORT_SYMBOL(snd_pcm_sgbuf_ops_copy);
-+
-+/*
-+ * snd_pcm_sgbuf_ops_silence - fill with silence data
-+ */
-+int snd_pcm_sgbuf_ops_silence(struct snd_pcm_substream *substream, int channel,
-+                             snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
-+{
-+       struct snd_sg_buf *sgbuf = snd_pcm_substream_sgbuf(substream);
-+       struct snd_pcm_runtime *runtime = substream->runtime;
-+       unsigned int idx, ofs, width;
-+       const char *silence;
-+       char *ptr;
-+
-+       if (channel < 0) {
-+               pos = frames_to_bytes(runtime, pos);
-+               count = frames_to_bytes(runtime, count);
-+       } else {
-+               pos = channel * (runtime->dma_bytes / runtime->channels) +
-+                       samples_to_bytes(runtime, pos);
-+               count = samples_to_bytes(runtime, count);
-+       }
-+
-+       idx = pos >> PAGE_SHIFT;
-+       if (idx >= (unsigned int)sgbuf->pages)
-+               return -EFAULT;
-+       ofs = pos & (PAGE_SIZE - 1);
-+       ptr = sgbuf->table[idx].buf + ofs;
-+
-+       width = snd_pcm_format_physical_width(runtime->format);
-+       if (width < 8) {
-+               count /= 2;
-+               width = 8;
-+       }
-+       width /= 8;
-+       silence = snd_pcm_format_silence_64(runtime->format);
-+
-+       if (PAGE_SIZE % width) {
-+               unsigned int pat = 0;
-+               for (;;) {
-+                       *ptr = silence[pat];
-+                       pat = (pat + 1) % width;
-+                       count--;
-+                       if (!count)
-+                               return 0;
-+                       ofs++;
-+                       if (ofs == PAGE_SIZE) {
-+                               ofs = 0;
-+                               idx++;
-+                               ptr = sgbuf->table[idx].buf;
-+                       } else
-+                               ptr++;
-+               }
-+       } else {
-+               for (;;) {
-+                       unsigned int size, samples;
-+                       size = count;
-+                       if (ofs + size > PAGE_SIZE)
-+                               size = PAGE_SIZE - ofs;
-+                       samples = bytes_to_samples(runtime, size);
-+                       snd_pcm_format_set_silence(runtime->format, ptr,
-+                                                  samples);
-+                       count -= size;
-+                       if (!count)
-+                               return 0;
-+                       ofs = 0;
-+                       idx++;
-+                       ptr = sgbuf->table[idx].buf;
-+               }
-+       }
-+}
-+EXPORT_SYMBOL(snd_pcm_sgbuf_ops_silence);
-+
-+#else /* !SND_NEEDS_DMA_MMAP_COHERENT */
- /**
-  * snd_pcm_sgbuf_ops_page - get the page struct at the given offset
-  * @substream: the pcm substream instance
-@@ -323,9 +443,10 @@ struct page *snd_pcm_sgbuf_ops_page(struct snd_pcm_substream *substream, unsigne
-                return NULL;
-        return sgbuf->page_table[idx];
- }
--
- EXPORT_SYMBOL(snd_pcm_sgbuf_ops_page);
-
-+#endif /* SND_NEEDS_DMA_MMAP_COHERENT */
-+
- /**
-  * snd_pcm_lib_malloc_pages - allocate the DMA buffer
-  * @substream: the substream to allocate the DMA buffer to
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 61f5d42..e3f68d2 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3124,19 +3124,96 @@ static struct vm_operations_struct snd_pcm_vm_ops_data =
- {
-        .open =         snd_pcm_mmap_data_open,
-        .close =        snd_pcm_mmap_data_close,
-+};
-+
-+static struct vm_operations_struct snd_pcm_vm_ops_data_fault =
-+{
-+       .open =         snd_pcm_mmap_data_open,
-+       .close =        snd_pcm_mmap_data_close,
-        .fault =        snd_pcm_mmap_data_fault,
- };
-
-+#ifdef SND_NEEDS_DMA_MMAP_COHERENT
-+
-+/*
-+ * FIXME!!
-+ * dma_mmap_coherent is missing on most architectures...
-+ */
-+#ifndef CONFIG_ARM
-+static int dma_mmap_coherent(struct device *dev, struct vm_area_struct *vma,
-+                            void *cpu_addr, dma_addr_t handle, size_t size)
-+{
-+#if defined(CONFIG_PPC32) && !defined(CONFIG_CONFIG_NOT_COHERENT_CACHE)
-+       cpu_addr = bus_to_virt(handle);
-+#elif defined(CONFIG_MIPS)
-+       cpu_addr = phys_to_virt(plat_dma_addr_to_phys(handle));
-+#elif defined(CONFIG_PARISC)
-+       cpu_addr = __va(handle);
-+#endif
-+       return remap_pfn_range(vma, vma->vm_start,
-+                              page_to_pfn(virt_to_page(cpu_addr)),
-+                              size, vma->vm_page_prot);
-+}
-+#endif /* !ARM */
-+
-+/*
-+ * snd_pcm_sgbuf_ops_mmap - mmap SG DMA pages
-+ */
-+static int snd_pcm_mmap_sgbuf(struct snd_pcm_substream *substream,
-+                             struct vm_area_struct *area)
-+{
-+       struct snd_sg_buf *sgbuf = snd_pcm_substream_sgbuf(substream);
-+       unsigned long start, offset, offset_saved, size;
-+       int err = 0;
-+
-+       start = area->vm_start;
-+       offset_saved = offset = area->vm_pgoff;
-+       size = area->vm_end - area->vm_start;
-+       size = PAGE_ALIGN(size);
-+       while (size > 0) {
-+               if (offset >= sgbuf->pages) {
-+                       err = -EFAULT;
-+                       break;
-+               }
-+               err = dma_mmap_coherent(sgbuf->dev, area,
-+                                       sgbuf->table[offset].buf,
-+                                       sgbuf->table[offset].addr,
-+                                       PAGE_SIZE);
-+               if (err < 0)
-+                       break;
-+               offset++;
-+               area->vm_start += PAGE_SIZE;
-+               size -= PAGE_SIZE;
-+       }
-+       area->vm_start = start;
-+       area->vm_pgoff = offset_saved;
-+       return err;
-+}
-+#endif /* SND_NEEDS_DMA_MMAP_COHERENT */
-+
- /*
-  * mmap the DMA buffer on RAM
-  */
- static int snd_pcm_default_mmap(struct snd_pcm_substream *substream,
-                                struct vm_area_struct *area)
- {
--       area->vm_ops = &snd_pcm_vm_ops_data;
--       area->vm_private_data = substream;
-        area->vm_flags |= VM_RESERVED;
--       atomic_inc(&substream->mmap_count);
-+#ifdef SND_NEEDS_DMA_MMAP_COHERENT
-+       if (!substream->ops->page) {
-+               switch (substream->dma_buffer.dev.type) {
-+               case SNDRV_DMA_TYPE_DEV:
-+                       return dma_mmap_coherent(substream->dma_buffer.dev.dev,
-+                                                area,
-+                                                substream->runtime->dma_area,
-+                                                substream->runtime->dma_addr,
-+                                                area->vm_end - area->vm_start);
-+               case SNDRV_DMA_TYPE_DEV_SG:
-+                       return snd_pcm_mmap_sgbuf(substream, area);
-+               }
-+       }
-+#endif /* SND_NEEDS_DMA_MMAP_COHERENT */
-+       /* mmap with fault handler */
-+       area->vm_ops = &snd_pcm_vm_ops_data_fault;
-        return 0;
- }
-
-@@ -3144,12 +3221,6 @@ static int snd_pcm_default_mmap(struct snd_pcm_substream *substream,
-  * mmap the DMA buffer on I/O memory area
-  */
- #if SNDRV_PCM_INFO_MMAP_IOMEM
--static struct vm_operations_struct snd_pcm_vm_ops_data_mmio =
--{
--       .open =         snd_pcm_mmap_data_open,
--       .close =        snd_pcm_mmap_data_close,
--};
--
- int snd_pcm_lib_mmap_iomem(struct snd_pcm_substream *substream,
-                           struct vm_area_struct *area)
- {
-@@ -3159,8 +3230,6 @@ int snd_pcm_lib_mmap_iomem(struct snd_pcm_substream *substream,
- #ifdef pgprot_noncached
-        area->vm_page_prot = pgprot_noncached(area->vm_page_prot);
- #endif
--       area->vm_ops = &snd_pcm_vm_ops_data_mmio;
--       area->vm_private_data = substream;
-        area->vm_flags |= VM_IO;
-        size = area->vm_end - area->vm_start;
-        offset = area->vm_pgoff << PAGE_SHIFT;
-@@ -3168,7 +3237,6 @@ int snd_pcm_lib_mmap_iomem(struct snd_pcm_substream *substream,
-                                (substream->runtime->dma_addr + offset) >> PAGE_SHIFT,
-                                size, area->vm_page_prot))
-                return -EAGAIN;
--       atomic_inc(&substream->mmap_count);
-        return 0;
- }
-
-@@ -3185,6 +3253,7 @@ int snd_pcm_mmap_data(struct snd_pcm_substream *substream, struct file *file,
-        long size;
-        unsigned long offset;
-        size_t dma_bytes;
-+       int err;
-
-        if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-                if (!(area->vm_flags & (VM_WRITE|VM_READ)))
-@@ -3210,10 +3279,15 @@ int snd_pcm_mmap_data(struct snd_pcm_substream *substream, struct file *file,
-        if (offset > dma_bytes - size)
-                return -EINVAL;
-
-+       area->vm_ops = &snd_pcm_vm_ops_data;
-+       area->vm_private_data = substream;
-        if (substream->ops->mmap)
--               return substream->ops->mmap(substream, area);
-+               err = substream->ops->mmap(substream, area);
-        else
--               return snd_pcm_default_mmap(substream, area);
-+               err = snd_pcm_default_mmap(substream, area);
-+       if (!err)
-+               atomic_inc(&substream->mmap_count);
-+       return err;
- }
-
- EXPORT_SYMBOL(snd_pcm_mmap_data);
-diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
-index cefd228..67c6631 100644
---- a/sound/core/sgbuf.c
-+++ b/sound/core/sgbuf.c
-@@ -46,12 +46,14 @@ int snd_free_sgbuf_pages(struct snd_dma_buffer *dmab)
-                tmpb.bytes = PAGE_SIZE;
-                snd_dma_free_pages(&tmpb);
-        }
-+#ifndef SND_NEEDS_DMA_MMAP_COHERENT
-        if (dmab->area)
-                vunmap(dmab->area);
-+       kfree(sgbuf->page_table);
-+#endif
-        dmab->area = NULL;
-
-        kfree(sgbuf->table);
--       kfree(sgbuf->page_table);
-        kfree(sgbuf);
-        dmab->private_data = NULL;
-
-@@ -77,9 +79,11 @@ void *snd_malloc_sgbuf_pages(struct device *device,
-        sgbuf->table = kcalloc(sgbuf->tblsize, sizeof(*sgbuf->table), GFP_KERNEL);
-        if (! sgbuf->table)
-                goto _failed;
-+#ifndef SND_NEEDS_DMA_MMAP_COHERENT
-        sgbuf->page_table = kcalloc(sgbuf->tblsize, sizeof(*sgbuf->page_table), GFP_KERNEL);
-        if (! sgbuf->page_table)
-                goto _failed;
-+#endif
-
-        /* allocate each page */
-        for (i = 0; i < pages; i++) {
-@@ -91,14 +95,20 @@ void *snd_malloc_sgbuf_pages(struct device *device,
-                }
-                sgbuf->table[i].buf = tmpb.area;
-                sgbuf->table[i].addr = tmpb.addr;
-+#ifndef SND_NEEDS_DMA_MMAP_COHERENT
-                sgbuf->page_table[i] = virt_to_page(tmpb.area);
-+#endif
-                sgbuf->pages++;
-        }
-
-        sgbuf->size = size;
-+#ifndef SND_NEEDS_DMA_MMAP_COHERENT
-        dmab->area = vmap(sgbuf->page_table, sgbuf->pages, VM_MAP, PAGE_KERNEL);
-        if (! dmab->area)
-                goto _failed;
-+#else
-+       dmab->area = sgbuf->table[0].buf;
-+#endif
-        return dmab->area;
-
-  _failed:
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 7e47421..09af3f5 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -651,6 +651,7 @@ config SND_HDSP
- config SND_HDSPM
-        tristate "RME Hammerfall DSP MADI"
-        depends on SND
-+       depends on X86 || ALPHA || IA64
-        select SND_HWDEP
-        select SND_RAWMIDI
-        select SND_PCM
-diff --git a/sound/pci/au88x0/au88x0_pcm.c b/sound/pci/au88x0/au88x0_pcm.c
-index f9a58b4..222e599 100644
---- a/sound/pci/au88x0/au88x0_pcm.c
-+++ b/sound/pci/au88x0/au88x0_pcm.c
-@@ -409,6 +409,8 @@ static struct snd_pcm_ops snd_vortex_playback_ops = {
-        .prepare = snd_vortex_pcm_prepare,
-        .trigger = snd_vortex_pcm_trigger,
-        .pointer = snd_vortex_pcm_pointer,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-+       .silence = snd_pcm_sgbuf_ops_silence,
-        .page = snd_pcm_sgbuf_ops_page,
- };
-
-diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 4ecdd63..49b8ebc 100644
---- a/sound/pci/bt87x.c
-+++ b/sound/pci/bt87x.c
-@@ -548,6 +548,7 @@ static struct snd_pcm_ops snd_bt87x_pcm_ops = {
-        .prepare = snd_bt87x_prepare,
-        .trigger = snd_bt87x_trigger,
-        .pointer = snd_bt87x_pointer,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-        .page = snd_pcm_sgbuf_ops_page,
- };
-
-diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-index e16dc92..e2c3f3d 100644
---- a/sound/pci/echoaudio/echoaudio.c
-+++ b/sound/pci/echoaudio/echoaudio.c
-@@ -801,6 +801,8 @@ static struct snd_pcm_ops analog_playback_ops = {
-        .prepare = pcm_prepare,
-        .trigger = pcm_trigger,
-        .pointer = pcm_pointer,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-+       .silence = snd_pcm_sgbuf_ops_silence,
-        .page = snd_pcm_sgbuf_ops_page,
- };
- static struct snd_pcm_ops analog_capture_ops = {
-@@ -812,6 +814,7 @@ static struct snd_pcm_ops analog_capture_ops = {
-        .prepare = pcm_prepare,
-        .trigger = pcm_trigger,
-        .pointer = pcm_pointer,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-        .page = snd_pcm_sgbuf_ops_page,
- };
- #ifdef ECHOCARD_HAS_DIGITAL_IO
-@@ -825,6 +828,8 @@ static struct snd_pcm_ops digital_playback_ops = {
-        .prepare = pcm_prepare,
-        .trigger = pcm_trigger,
-        .pointer = pcm_pointer,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-+       .silence = snd_pcm_sgbuf_ops_silence,
-        .page = snd_pcm_sgbuf_ops_page,
- };
- #endif /* !ECHOCARD_HAS_VMIXER */
-@@ -837,6 +842,7 @@ static struct snd_pcm_ops digital_capture_ops = {
-        .prepare = pcm_prepare,
-        .trigger = pcm_trigger,
-        .pointer = pcm_pointer,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-        .page = snd_pcm_sgbuf_ops_page,
- };
- #endif /* ECHOCARD_HAS_DIGITAL_IO */
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index cf9276d..2d72959 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -1323,6 +1323,8 @@ static struct snd_pcm_ops snd_emu10k1_playback_ops = {
-        .prepare =              snd_emu10k1_playback_prepare,
-        .trigger =              snd_emu10k1_playback_trigger,
-        .pointer =              snd_emu10k1_playback_pointer,
-+       .copy =                 snd_pcm_sgbuf_ops_copy,
-+       .silence =              snd_pcm_sgbuf_ops_silence,
-        .page =                 snd_pcm_sgbuf_ops_page,
- };
-
-@@ -1347,6 +1349,8 @@ static struct snd_pcm_ops snd_emu10k1_efx_playback_ops = {
-        .prepare =              snd_emu10k1_efx_playback_prepare,
-        .trigger =              snd_emu10k1_efx_playback_trigger,
-        .pointer =              snd_emu10k1_efx_playback_pointer,
-+       .copy =                 snd_pcm_sgbuf_ops_copy,
-+       .silence =              snd_pcm_sgbuf_ops_silence,
-        .page =                 snd_pcm_sgbuf_ops_page,
- };
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index b3a618e..e5ac9e1 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1461,6 +1461,8 @@ static struct snd_pcm_ops azx_pcm_ops = {
-        .prepare = azx_pcm_prepare,
-        .trigger = azx_pcm_trigger,
-        .pointer = azx_pcm_pointer,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-+       .silence = snd_pcm_sgbuf_ops_silence,
-        .page = snd_pcm_sgbuf_ops_page,
- };
-
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index 979f7da..7fcb3d7 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -1696,6 +1696,8 @@ static struct snd_pcm_ops snd_riptide_playback_ops = {
-        .hw_params = snd_riptide_hw_params,
-        .hw_free = snd_riptide_hw_free,
-        .prepare = snd_riptide_prepare,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-+       .silence = snd_pcm_sgbuf_ops_silence,
-        .page = snd_pcm_sgbuf_ops_page,
-        .trigger = snd_riptide_trigger,
-        .pointer = snd_riptide_pointer,
-@@ -1707,6 +1709,7 @@ static struct snd_pcm_ops snd_riptide_capture_ops = {
-        .hw_params = snd_riptide_hw_params,
-        .hw_free = snd_riptide_hw_free,
-        .prepare = snd_riptide_prepare,
-+       .copy = snd_pcm_sgbuf_ops_copy,
-        .page = snd_pcm_sgbuf_ops_page,
-        .trigger = snd_riptide_trigger,
-        .pointer = snd_riptide_pointer,
-diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
-index bbcee2c..156e457 100644
---- a/sound/pci/trident/trident_main.c
-+++ b/sound/pci/trident/trident_main.c
-@@ -2081,6 +2081,8 @@ static struct snd_pcm_ops snd_trident_nx_playback_ops = {
-        .prepare =      snd_trident_playback_prepare,
-        .trigger =      snd_trident_trigger,
-        .pointer =      snd_trident_playback_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-+       .silence =      snd_pcm_sgbuf_ops_silence,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
-
-@@ -2126,6 +2128,8 @@ static struct snd_pcm_ops snd_trident_nx_foldback_ops = {
-        .prepare =      snd_trident_foldback_prepare,
-        .trigger =      snd_trident_trigger,
-        .pointer =      snd_trident_playback_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-+       .silence =      snd_pcm_sgbuf_ops_silence,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
-
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index b585cc3..4a9f132 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -1304,6 +1304,8 @@ static struct snd_pcm_ops snd_via686_playback_ops = {
-        .prepare =      snd_via686_playback_prepare,
-        .trigger =      snd_via82xx_pcm_trigger,
-        .pointer =      snd_via686_pcm_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-+       .silence =      snd_pcm_sgbuf_ops_silence,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
-
-@@ -1317,6 +1319,7 @@ static struct snd_pcm_ops snd_via686_capture_ops = {
-        .prepare =      snd_via686_capture_prepare,
-        .trigger =      snd_via82xx_pcm_trigger,
-        .pointer =      snd_via686_pcm_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
-
-@@ -1330,6 +1333,8 @@ static struct snd_pcm_ops snd_via8233_playback_ops = {
-        .prepare =      snd_via8233_playback_prepare,
-        .trigger =      snd_via82xx_pcm_trigger,
-        .pointer =      snd_via8233_pcm_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-+       .silence =      snd_pcm_sgbuf_ops_silence,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
-
-@@ -1343,6 +1348,8 @@ static struct snd_pcm_ops snd_via8233_multi_ops = {
-        .prepare =      snd_via8233_multi_prepare,
-        .trigger =      snd_via82xx_pcm_trigger,
-        .pointer =      snd_via8233_pcm_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-+       .silence =      snd_pcm_sgbuf_ops_silence,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
-
-@@ -1356,6 +1363,7 @@ static struct snd_pcm_ops snd_via8233_capture_ops = {
-        .prepare =      snd_via8233_capture_prepare,
-        .trigger =      snd_via82xx_pcm_trigger,
-        .pointer =      snd_via8233_pcm_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
-
-diff --git a/sound/pci/via82xx_modem.c b/sound/pci/via82xx_modem.c
-index 31f64ee..1431b08 100644
---- a/sound/pci/via82xx_modem.c
-+++ b/sound/pci/via82xx_modem.c
-@@ -803,6 +803,8 @@ static struct snd_pcm_ops snd_via686_playback_ops = {
-        .prepare =      snd_via82xx_pcm_prepare,
-        .trigger =      snd_via82xx_pcm_trigger,
-        .pointer =      snd_via686_pcm_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-+       .silence =      snd_pcm_sgbuf_ops_silence,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
-
-@@ -816,6 +818,7 @@ static struct snd_pcm_ops snd_via686_capture_ops = {
-        .prepare =      snd_via82xx_pcm_prepare,
-        .trigger =      snd_via82xx_pcm_trigger,
-        .pointer =      snd_via686_pcm_pointer,
-+       .copy =         snd_pcm_sgbuf_ops_copy,
-        .page =         snd_pcm_sgbuf_ops_page,
- };
+--_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_--
