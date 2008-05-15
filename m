@@ -1,18 +1,17 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: Forward/rewind APIs return 0
-Date: Thu, 15 May 2008 16:48:42 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB022256EF6F@dbde02.ent.ti.com>
-References: <Pine.LNX.4.61.0805121016590.18373@tm8103.perex-int.cz>
+Date: Thu, 15 May 2008 13:30:00 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0805151326470.18373@tm8103.perex-int.cz>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB022256EF6F@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from soda.ext.ti.com (soda.ext.ti.com [198.47.26.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F84124788
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 670F824788
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 May 2008 13:18:52 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.61.0805121016590.18373@tm8103.perex-int.cz>
-Content-Language: en-US
+	Thu, 15 May 2008 13:30:01 +0200 (CEST)
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB022256EF6F@dbde02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,149 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
+To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+On Thu, 15 May 2008, Aggarwal, Anuj wrote:
 
-Please find the output from snd_pcm_dump() attached.
+> Please find the output from snd_pcm_dump() attached.
 
-Is there any simple app to show the usage of forward/rewind APIs? I want to=
- cross check my app against the same.
+Ok, replace snd_pcm_dump() with snd_pcm_status_dump() and send output 
+again, please. Also, if you can send me (privately) your test code, I'll 
+try to check it and reproduce the problem.
 
-Thanks and Regards,
-Anuj Aggarwal
-
-Platform Support Products
-Texas Instruments Inc
-Ph: +91-80-2509-9542
-TI IP Ph: 509-9542
-PSP Products RSS Feed PSP Product Announcements
-
-
------Original Message-----
-From: Jaroslav Kysela [mailto:perex@perex.cz]
-Sent: Monday, May 12, 2008 1:47 PM
-To: Aggarwal, Anuj
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Forward/rewind APIs return 0
-
-On Mon, 12 May 2008, Aggarwal, Anuj wrote:
-
-> Hi,
->
-> I am trying to use snd_pcm_forward and snd_pcm_rewind APIs in my
-> application. Although they are doing something (I am able to 'hear' the
-> jump), they return me 0, instead of returning me the number of frames.
->
-> What could be the problem with the application/driver?
-
-Show us output from snd_pcm_dump().
-
-                                                Jaroslav
+						Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
 Linux Kernel Sound Maintainer
 ALSA Project, Red Hat, Inc.
-
-
---_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_
-Content-Type: text/plain; name="snd_dump.txt"
-Content-Description: snd_dump.txt
-Content-Disposition: attachment; filename="snd_dump.txt"; size=4245;
-	creation-date="Thu, 15 May 2008 16:47:02 GMT";
-	modification-date="Thu, 15 May 2008 16:47:20 GMT"
-Content-Transfer-Encoding: base64
-
-W3Jvb3RAT01BUDNFVk0gYmluXSMgLi9mb3J3YXJkX3BjbV9uZXcNClBsYXliYWNrIDogT3BlbiBT
-dWNjZXNzDQpDYXB0dXJlIDogT3BlbiBTdWNjZXNzDQpIYXJkd2FyZSBDb25maWd1cmF0aW9uIDog
-TWVtb3J5IEFsbG9jYXRpb24sIFN1Y2Nlc3MNCkhhcmR3YXJlIENvbmZpZ3VyYXRpb24gOkluaXRp
-YWxpemF0aW9uLCBTdWNjZXNzDQpIYXJkd2FyZSBDb25maWd1cmF0aW9uIDogU2V0IEFjY2VzcyBT
-dWNjZXNzDQpIYXJkd2FyZSBDb25maWd1cmF0aW9uIDogU2V0IEZvcm1hdCBTdWNjZXNzDQpIYXJk
-d2FyZSBDb25maWd1cmF0aW9uIDogU2V0IFJhdGUgU3VjY2Vzcw0KSGFyZHdhcmUgQ29uZmlndXJh
-dGlvbiA6IFNldCBDaGFubmVsIFN1Y2Nlc3MNClBDTSBpcyBpbiBPUEVOIFN0YXRlIGJlZm9yZSBz
-bmRfcGNtX2h3X3BhcmFtcw0KUENNIGFjY2VzcyB0eXBlIGlzIFJXX0lOVEVSTEVBVkVEDQpIYXJk
-d2FyZSBDb25maWd1cmF0aW9uIDogU2V0IFBhcmFtZXRlcnMgU3VjY2Vzcw0KUENNIGlzIGluIFBS
-RVBBUkVEIFN0YXRlDQpDYXB0dXJlIDogSGFyZHdhcmUgQ29uZmlndXJhdGlvbiA6IFN1Y2Nlc3MN
-CkhhcmR3YXJlIENvbmZpZ3VyYXRpb24gOiBNZW1vcnkgQWxsb2NhdGlvbiwgU3VjY2Vzcw0KSGFy
-ZHdhcmUgQ29uZmlndXJhdGlvbiA6SW5pdGlhbGl6YXRpb24sIFN1Y2Nlc3MNCkhhcmR3YXJlIENv
-bmZpZ3VyYXRpb24gOiBTZXQgQWNjZXNzIFN1Y2Nlc3MNCkhhcmR3YXJlIENvbmZpZ3VyYXRpb24g
-OiBTZXQgRm9ybWF0IFN1Y2Nlc3MNCkhhcmR3YXJlIENvbmZpZ3VyYXRpb24gOiBTZXQgUmF0ZSBT
-dWNjZXNzDQpIYXJkd2FyZSBDb25maWd1cmF0aW9uIDogU2V0IENoYW5uZWwgU3VjY2Vzcw0KUENN
-IGlzIGluIE9QRU4gU3RhdGUgYmVmb3JlIHNuZF9wY21faHdfcGFyYW1zDQpQQ00gYWNjZXNzIHR5
-cGUgaXMgUldfSU5URVJMRUFWRUQNCkhhcmR3YXJlIENvbmZpZ3VyYXRpb24gOiBTZXQgUGFyYW1l
-dGVycyBTdWNjZXNzDQpQQ00gaXMgaW4gUFJFUEFSRUQgU3RhdGUNCkNhcHR1cmUgOiBIYXJkd2Fy
-ZSBDb25maWd1cmF0aW9uIDogU3VjY2Vzcw0KU1RGdWxsRHVwbGV4QXVkaW86OiBTVFJlY29yZEF1
-ZGlvIHRocmVhZDogUGFzczogU3RhdHVzID0gMA0KU1RGdWxsRHVwbGV4QXVkaW86OiBTVFBsYXli
-YWNrQXVkaW8gdGhyZWFkOiBQYXNzOiBTdGF0dXMgPSAwDQpQbGF5YmFjayBCdWZmZXIgbnVtYmVy
-OjANClNUUmVjb3JkQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAwLCAxMDc2ODMwMjE2DQpTVFBs
-YXliYWNrQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAwLCAxMDc2ODMwMjE2DQpQbGF5YmFjayBC
-dWZmZXIgbnVtYmVyOjENClNUUmVjb3JkQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAxLCAxMDc3
-ODgyODg4DQpTVFBsYXliYWNrQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAxLCAxMDc3ODgyODg4
-DQpQbGF5YmFjayBCdWZmZXIgbnVtYmVyOjINClNUUmVjb3JkQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1
-ZmZlciAyLCAxMDc4OTM1NTYwDQpTVFBsYXliYWNrQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAy
-LCAxMDc4OTM1NTYwDQpCZWZvcmU6DQpQbHVnIFBDTTogSGFyZHdhcmUgUENNIGNhcmQgMCAnVFdM
-NDAzMCcgZGV2aWNlIDAgc3ViZGV2aWNlIDANCkl0cyBzZXR1cCBpczoNCiAgc3RyZWFtICAgICAg
-IDogUExBWUJBQ0sNCiAgYWNjZXNzICAgICAgIDogUldfSU5URVJMRUFWRUQNCiAgZm9ybWF0ICAg
-ICAgIDogUzE2X0xFDQogIHN1YmZvcm1hdCAgICA6IFNURA0KICBjaGFubmVscyAgICAgOiAyDQog
-IHJhdGUgICAgICAgICA6IDQ0MTAwDQogIGV4YWN0IHJhdGUgICA6IDQ0MTAwICg0NDEwMC8xKQ0K
-ICBtc2JpdHMgICAgICAgOiAxNg0KICBidWZmZXJfc2l6ZSAgOiAzMjc2OA0KICBwZXJpb2Rfc2l6
-ZSAgOiAxMDI0DQogIHBlcmlvZF90aW1lICA6IDIzMjE5DQogIHRpY2tfdGltZSAgICA6IDc4MTIN
-CiAgdHN0YW1wX21vZGUgIDogTk9ORQ0KICBwZXJpb2Rfc3RlcCAgOiAxDQogIHNsZWVwX21pbiAg
-ICA6IDANCiAgYXZhaWxfbWluICAgIDogMTAyNA0KICB4ZmVyX2FsaWduICAgOiAxMDI0DQogIHN0
-YXJ0X3RocmVzaG9sZCAgOiAxDQogIHN0b3BfdGhyZXNob2xkICAgOiAzMjc2OA0KICBzaWxlbmNl
-X3RocmVzaG9sZDogMA0KICBzaWxlbmNlX3NpemUgOiAwDQogIGJvdW5kYXJ5ICAgICA6IDEwNzM3
-NDE4MjQNClBsYXliYWNrIDogRm9yd2FyZCBObyBBY3Rpb24NCkFmdGVyOg0KUGx1ZyBQQ006IEhh
-cmR3YXJlIFBDTSBjYXJkIDAgJ1RXTDQwMzAnIGRldmljZSAwIHN1YmRldmljZSAwDQpJdHMgc2V0
-dXAgaXM6DQogIHN0cmVhbSAgICAgICA6IFBMQVlCQUNLDQogIGFjY2VzcyAgICAgICA6IFJXX0lO
-VEVSTEVBVkVEDQogIGZvcm1hdCAgICAgICA6IFMxNl9MRQ0KICBzdWJmb3JtYXQgICAgOiBTVEQN
-CiAgY2hhbm5lbHMgICAgIDogMg0KICByYXRlICAgICAgICAgOiA0NDEwMA0KICBleGFjdCByYXRl
-ICAgOiA0NDEwMCAoNDQxMDAvMSkNCiAgbXNiaXRzICAgICAgIDogMTYNCiAgYnVmZmVyX3NpemUg
-IDogMzI3NjgNCiAgcGVyaW9kX3NpemUgIDogMTAyNA0KICBwZXJpb2RfdGltZSAgOiAyMzIxOQ0K
-ICB0aWNrX3RpbWUgICAgOiA3ODEyDQogIHRzdGFtcF9tb2RlICA6IE5PTkUNCiAgcGVyaW9kX3N0
-ZXAgIDogMQ0KICBzbGVlcF9taW4gICAgOiAwDQogIGF2YWlsX21pbiAgICA6IDEwMjQNCiAgeGZl
-cl9hbGlnbiAgIDogMTAyNA0KICBzdGFydF90aHJlc2hvbGQgIDogMQ0KICBzdG9wX3RocmVzaG9s
-ZCAgIDogMzI3NjgNCiAgc2lsZW5jZV90aHJlc2hvbGQ6IDANCiAgc2lsZW5jZV9zaXplIDogMA0K
-ICBib3VuZGFyeSAgICAgOiAxMDczNzQxODI0DQpQbGF5YmFjayBCdWZmZXIgbnVtYmVyOjINClNU
-UmVjb3JkQXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAzLCAxMDc5OTg4MjMyDQpTVFBsYXliYWNr
-QXVkaW86IFN1Y2Nlc3MgZm9yIGJ1ZmZlciAyLCAxMDc4OTM1NTYwDQpCZWZvcmU6DQpQbHVnIFBD
-TTogSGFyZHdhcmUgUENNIGNhcmQgMCAnVFdMNDAzMCcgZGV2aWNlIDAgc3ViZGV2aWNlIDANCkl0
-cyBzZXR1cCBpczoNCiAgc3RyZWFtICAgICAgIDogUExBWUJBQ0sNCiAgYWNjZXNzICAgICAgIDog
-UldfSU5URVJMRUFWRUQNCiAgZm9ybWF0ICAgICAgIDogUzE2X0xFDQogIHN1YmZvcm1hdCAgICA6
-IFNURA0KICBjaGFubmVscyAgICAgOiAyDQogIHJhdGUgICAgICAgICA6IDQ0MTAwDQogIGV4YWN0
-IHJhdGUgICA6IDQ0MTAwICg0NDEwMC8xKQ0KICBtc2JpdHMgICAgICAgOiAxNg0KICBidWZmZXJf
-c2l6ZSAgOiAzMjc2OA0KICBwZXJpb2Rfc2l6ZSAgOiAxMDI0DQogIHBlcmlvZF90aW1lICA6IDIz
-MjE5DQogIHRpY2tfdGltZSAgICA6IDc4MTINCiAgdHN0YW1wX21vZGUgIDogTk9ORQ0KICBwZXJp
-b2Rfc3RlcCAgOiAxDQogIHNsZWVwX21pbiAgICA6IDANCiAgYXZhaWxfbWluICAgIDogMTAyNA0K
-ICB4ZmVyX2FsaWduICAgOiAxMDI0DQogIHN0YXJ0X3RocmVzaG9sZCAgOiAxDQogIHN0b3BfdGhy
-ZXNob2xkICAgOiAzMjc2OA0KICBzaWxlbmNlX3RocmVzaG9sZDogMA0KICBzaWxlbmNlX3NpemUg
-OiAwDQogIGJvdW5kYXJ5ICAgICA6IDEwNzM3NDE4MjQNClBsYXliYWNrIDogRm9yd2FyZCBObyBB
-Y3Rpb24NCkFmdGVyOg0KUGx1ZyBQQ006IEhhcmR3YXJlIFBDTSBjYXJkIDAgJ1RXTDQwMzAnIGRl
-dmljZSAwIHN1YmRldmljZSAwDQpJdHMgc2V0dXAgaXM6DQogIHN0cmVhbSAgICAgICA6IFBMQVlC
-QUNLDQogIGFjY2VzcyAgICAgICA6IFJXX0lOVEVSTEVBVkVEDQogIGZvcm1hdCAgICAgICA6IFMx
-Nl9MRQ0KICBzdWJmb3JtYXQgICAgOiBTVEQNCiAgY2hhbm5lbHMgICAgIDogMg0KICByYXRlICAg
-ICAgICAgOiA0NDEwMA0KICBleGFjdCByYXRlICAgOiA0NDEwMCAoNDQxMDAvMSkNCiAgbXNiaXRz
-ICAgICAgIDogMTYNCiAgYnVmZmVyX3NpemUgIDogMzI3NjgNCiAgcGVyaW9kX3NpemUgIDogMTAy
-NA0KICBwZXJpb2RfdGltZSAgOiAyMzIxOQ0KICB0aWNrX3RpbWUgICAgOiA3ODEyDQogIHRzdGFt
-cF9tb2RlICA6IE5PTkUNCiAgcGVyaW9kX3N0ZXAgIDogMQ0KICBzbGVlcF9taW4gICAgOiAwDQog
-IGF2YWlsX21pbiAgICA6IDEwMjQNCiAgeGZlcl9hbGlnbiAgIDogMTAyNA0KICBzdGFydF90aHJl
-c2hvbGQgIDogMQ0KICBzdG9wX3RocmVzaG9sZCAgIDogMzI3NjgNCiAgc2lsZW5jZV90aHJlc2hv
-bGQ6IDANCiAgc2lsZW5jZV9zaXplIDogMA0KICBib3VuZGFyeSAgICAgOiAxMDczNzQxODI0DQpQ
-bGF5YmFjayBCdWZmZXIgbnVtYmVyOjINCg0K
-
---_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---_002_5A47E75E594F054BAF48C5E4FC4B92AB022256EF6Fdbde02enttico_--
