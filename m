@@ -1,15 +1,17 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Oh, BTW... (OPL3 PM issue)
-Date: Wed, 14 May 2008 23:45:44 +0200
-Message-ID: <20080514214544.GA15207@rhlx01.hs-esslingen.de>
+From: "Alan Lu" <alanlu001@gmail.com>
+Subject: ASoC problem
+Date: Thu, 15 May 2008 12:02:46 +0800
+Message-ID: <ddeffb610805142102q5f19d120qd7e73c9babb838d4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7299924467
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22EE724668
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 May 2008 23:45:44 +0200 (CEST)
+	Thu, 15 May 2008 06:02:47 +0200 (CEST)
+Received: by ti-out-0910.google.com with SMTP id j3so147017tid.8
+	for <alsa-devel@alsa-project.org>; Wed, 14 May 2008 21:02:46 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,26 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-unfortunately I forgot to mention this:
+I built linux-2.6.25.2 kernel with ASoC driver for SMDK2412 board.
+ The following is dmesg,
 
-when I tested OPL3 functionality of my driver, I of course also
-tested this to do proper power management, and... well... it didn't!
-The result of doing an S2D was that the formerly perfectly playing
-emulated MIDI synth ended up with distorted (sort of Micky-Mouse'ish)
-voices directly after resume.
+  Advanced Linux Sound Architecture Driver Version 1.0.16rc2 (Thu Jan 31
+16:40:16
+ASoC version 0.13.2
 
-I really don't think that it's my driver's power management which is
-at fault here, and I'd strongly guesstimate that ALSA does its own
-generic OPL3 power management handling for standard OPL3 hardware registration.
+ALSA device
+list:
+  No soundcards found.
 
-So??? (aka "what the...!?")
+ I traced the soc_core.c and it never reaches soc_probe() routine.
+ That's why "No soundcards found."
 
-Thanks,
+ Could you give me some light ?
 
-Andreas Mohr
+ Appreciated!
