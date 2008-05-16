@@ -1,23 +1,17 @@
 From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: Re: Forward/rewind APIs return 0
-Date: Fri, 16 May 2008 16:26:21 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB02225E7333@dbde02.ent.ti.com>
-References: <Pine.LNX.4.61.0805151326470.18373@tm8103.perex-int.cz>
+Subject: Re: Kernel crashes for unsupported sample rates
+Date: Fri, 16 May 2008 17:16:18 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB02225E739A@dbde02.ent.ti.com>
+References: <s5htzgzrafp.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from soda.ext.ti.com (soda.ext.ti.com [198.47.26.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1CAD124981
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 17AB224996
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 May 2008 12:56:30 +0200 (CEST)
-Received: from dlep95.itg.ti.com ([157.170.170.107])
-	by soda.ext.ti.com (8.13.7/8.13.7) with ESMTP id m4GAuPad012641
-	for <alsa-devel@alsa-project.org>; Fri, 16 May 2008 05:56:30 -0500
-Received: from dbde71.ent.ti.com (localhost [127.0.0.1])
-	by dlep95.itg.ti.com (8.13.8/8.13.8) with ESMTP id m4GAuN04014971
-	for <alsa-devel@alsa-project.org>; Fri, 16 May 2008 05:56:24 -0500 (CDT)
-In-Reply-To: <Pine.LNX.4.61.0805151326470.18373@tm8103.perex-int.cz>
+	Fri, 16 May 2008 13:46:52 +0200 (CEST)
+In-Reply-To: <s5htzgzrafp.wl%tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,73 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The output from snd_pcm_status_dump () is as below:
+I have tried to apply the patch manually but I couldn't because I am on kernel version 2.6.22.1.
 
-Playback Buffer number:2
-STRecordAudio: Success for buffer 2, 1078935560
-STPlaybackAudio: Success for buffer 2, 1078935560
-Before:
-  state       : RUNNING
-  trigger_time: 4621.974609375
-  tstamp      : 4656.881958007
-  delay       : 32739
-  avail       : 29
-  avail_max   : 2048
-Playback : Forward No Action
-After:
-  state       : RUNNING
-  trigger_time: 4621.974609375
-  tstamp      : 4656.882232666
-  delay       : 32726
-  avail       : 42
-  avail_max   : 42
-Playback Buffer number:2
-STRecordAudio: Success for buffer 3, 1079988232
-STPlaybackAudio: Success for buffer 2, 1078935560
-Before:
-  state       : RUNNING
-  trigger_time: 4621.974609375
-  tstamp      : 4668.769989013
-  delay       : 32740
-  avail       : 28
-  avail_max   : 2048
-Playback : Forward No Action
-After:
-  state       : RUNNING
-  trigger_time: 4621.974609375
-  tstamp      : 4668.770141601
-  delay       : 32733
-  avail       : 35
-  avail_max   : 35
-Playback Buffer number:2
+Is the patch available for my kernel version? How should I go about it?
 
-I am able to jump but snd_pcm_forward() returns 0. Any sample showing the usage will really help.
+One observation I had was when I removed "SNDRV_PCM_INFO_MMAP" from the "pcm_hardware_playback", the kernel stopped crashing. It gave me some error and returned.
+
+[root@OMAP3EVM bin]# [root@OMAP3EVM bin]# ./pcm -f cd -r 1000
+Playback device is plughw:0,0
+Stream parameters are 4000Hz, S16_LE, 1 channels
+Sine wave rate is 440.0000Hz
+Using transfer method: write
+ALSA lib pcm_plug.c:773:(snd_pcm_plug_hw_refine_schange) Unable to find an usable access for 'plughw:0,0'
+Rate 4000Hz not available for playback: Invalid argument
+Setting of hwparams failed: Invalid argument
 
 Thanks and Regards,
 Anuj Aggarwal
 
+Platform Support Products
+Texas Instruments Inc
+Ph: +91-80-2509-9542
+TI IP Ph: 509-9542
+PSP Products RSS Feed PSP Product Announcements
+
 
 -----Original Message-----
-From: Jaroslav Kysela [mailto:perex@perex.cz]
-Sent: Thursday, May 15, 2008 5:00 PM
+From: Takashi Iwai [mailto:tiwai@suse.de]
+Sent: Thursday, May 15, 2008 6:28 PM
 To: Aggarwal, Anuj
 Cc: alsa-devel@alsa-project.org
-Subject: RE: [alsa-devel] Forward/rewind APIs return 0
+Subject: Re: [alsa-devel] Kernel crashes for unsupported sample rates
 
-On Thu, 15 May 2008, Aggarwal, Anuj wrote:
+At Thu, 15 May 2008 18:09:21 +0530,
+Aggarwal, Anuj wrote:
+>
+> Can you point me to any particular git tree which I can download and apply the patches directly, instead of committing any silly mistake? It would be really helpful.
 
-> Please find the output from snd_pcm_dump() attached.
+You can try my experimental tree:
+    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-unstable-2.6.git
 
-Ok, replace snd_pcm_dump() with snd_pcm_status_dump() and send output
-again, please. Also, if you can send me (privately) your test code, I'll
-try to check it and reproduce the problem.
 
-                                                Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Takashi
