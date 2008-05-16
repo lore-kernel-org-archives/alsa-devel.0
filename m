@@ -1,22 +1,17 @@
-From: "Xavi de Blas" <xaviblas@gmail.com>
-Subject: Re: Intel hda ICH7 not worked anymore after using wine
-	(SOLVED!). Problems again
-Date: Fri, 16 May 2008 02:29:23 +0200
-Message-ID: <256a87490805151729k32445b2dpa9f5d890ddf85114@mail.gmail.com>
-References: <256a87490805141826o70629b26x7caf4760c7db8c48@mail.gmail.com>
-	<s5hwslw9bgz.wl%tiwai@suse.de>
+From: "Ashwin Chandra" <Ashwin.Chandra@corel.com>
+Subject: Alsa: Get Playback Volume fails if set by outside
+	source
+Date: Fri, 16 May 2008 09:34:03 +0800
+Message-ID: <6AA7F928714999469B70E7707C87F82C44CBBA@TW-EVS02.corelcorp.corel.ics>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D698248BD
+Received: from twmail.corel.com (twmail.corel.com [220.128.92.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 97EFD248A8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 May 2008 02:29:25 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m28so740157wag.8
-	for <alsa-devel@alsa-project.org>; Thu, 15 May 2008 17:29:24 -0700 (PDT)
-In-Reply-To: <s5hwslw9bgz.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Fri, 16 May 2008 03:34:01 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,153 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hello,
 
-2008/5/15 Takashi Iwai <tiwai@suse.de>:
-> At Thu, 15 May 2008 03:26:00 +0200,
-> Xavi de Blas wrote:
->>
->> Hello, we have been talking on this thread:
->>
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-July/001939.html
->>
->> because i had a problem with my hda that Takashi said it's really
->> specific to my hardware:
->>
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-July/001963.html
->>
->> Now with kernel 2.6.24-16 and alsa 1.0.16, i have no audio again:
->>
->> i tried now using the patch Tobin made:
->>
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2007-July/001934.html
->>
->> and it' doesn't work. In fact, i haven't used the patch, i only added the line:
->>
->>       { .id = 0x51d41981, .name = "AD1981", .patch = patch_ad1981 },
->> after the line:
->>       { .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
->>
->> on: /usr/local/src/alsa-driver-1.0.16/alsa-kernel/pci/hda/patch_analog.c
->>
->> ./configure, make, sudo make install
->>
->> on reboot, the error is the same as before:
->>
->> dmesg|grep alsa
->> [   41.284537] ALSA
->> /build/buildd/linux-ubuntu-modules-2.6.24-2.6.24/debian/build/build-generic/sound/alsa-driver/pci/hda/hda_codec.c:230:
->> hda_codec: invalid dep_range_val 53:1a
->
-> This means that the codec information is fairly broken.
-> The driver should work still.  It just ignores the broken entries.
->
-> As this doesn't happen (the first time I got this kind of problem from
-> the good working codec support), I suspect the hardware problem..
->
+I am having an issue with the Alsa mixer. Currenty I have a function
+that gets the volume via snd_mixer_selem_get_playback_volume. This
+function works fine to get the last-set volume if my application is
+setting the volume. However if I change the volume using an outside
+source, such as alsamixer or gnome-volume-control and then I run the
+above function, the old volume that my application had set last is
+returned.
 
-But this it's exactly the same error message i had in previous kernel,
-and it gets solved with the patch.
+ 
 
-Do you think there's a solution for me?
-Why don't work now?
-Do you need more logs of my system?
+Now I edited amixer's source code to put a while(1) around the same
+functions (the snd_mixer_selem_get_playback_volume), and it too does not
+get the correct volume if set from an outside source. Alsamixer on the
+other hand seems to work find, but I am not quite sure how they do it. I
+thought maybe I had to reinitialize the alsa interface (ie.
+snd_mixer_close...and then open, attach, register, etc), but it doesn't
+seem that alsamixer does that. 
 
-Thanks a lot
+ 
 
->
-> Takashi
->
->>
->> here is my /proc/asound/card0/codec#0
->>
->> http://pastebin.ca/1018596
->>
->> Thanks a lot
->>
->>
->> 2007/7/9 Xavi de Blas <xaviblas@gmail.com>:
->> > It worked!!!
->> >
->> > Thanks a lot
->> >
->> > I thought my hardware was broken!
->> >
->> > 2007/7/9, Tobin Davis <tdavis@dsl-only.net>:
->> >>
->> >> Patch needs to be applied as follows:
->> >>
->> >> cd alsa-driver-1.0.14/alsa-kernel
->> >> patch -p1 < LenovoX60S.patch
->> >> cd ..
->> >>
->> >> Then you can rerun configure && make && make install.
->> >>
->> >> Tobin
->> >>
->> >> On Mon, 2007-07-09 at 17:25 +0200, Xavi de Blas wrote:
->> >>
->> >> 2007/7/9, Tobin Davis <tdavis@dsl-only.net>:
->> >> > Sorry for missing this thread.  I just woke up.
->> >> >
->> >> > I looked at your first pastebin output, and the actual audio codec shows
->> >> > up as 0x51d41981, when it should be 0x11d41981.  This is why the Analog
->> >> > driver patch isn't detecting it.
->> >> >
->> >> > Can you try this patch against alsa-driver-1.0.14?  It should detect
->> >> > this codec.  Still not sure why it is misconfigured, unless there is a
->> >> > bios issue.
->> >> >
->> >>
->> >> I'm afraid, probably when i tried the Linuxant codecs for the modem it
->> >> broke the
->> >> bios. Not sure, but sound worked, and continued working some reboots
->> >> later. But when i tried a few things with wine and rebooted, sound
->> >> never worked again
->> >>
->> >> When i aply the patch (probably i don't do it good) there are problems:
->> >>
->> >>
->> >> xavier@corall:/usr/local/src/alsa-src/alsa-driver-1.0.14$ cat
->> >> LenovoX60S.patch | patch -p1
->> >> patching file pci/hda/patch_analog.c
->> >> Hunk #1 FAILED at 3402.
->> >> 1 out of 1 hunk FAILED -- saving rejects to file
->> >> pci/hda/patch_analog.c.rej
->> >>
->> >>
->> >> xavier@corall:/usr/local/src/alsa-src/alsa-driver-1.0.14/pci/hda$ cat
->> >> patch_analog.c.rej
->> >> *************** struct hda_codec_preset snd_hda_preset_a
->> >> *** 3402,3407 ****
->> >>        { .id = 0x11d41882, .name = "AD1882", .patch = patch_ad1882 },
->> >>        { .id = 0x11d41884, .name = "AD1884", .patch = patch_ad1884 },
->> >>        { .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
->> >>        { .id = 0x11d41983, .name = "AD1983", .patch = patch_ad1983 },
->> >>        { .id = 0x11d41984, .name = "AD1984", .patch = patch_ad1984 },
->> >>        { .id = 0x11d41986, .name = "AD1986A", .patch = patch_ad1986a },
->> >> --- 3402,3408 ----
->> >>        { .id = 0x11d41882, .name = "AD1882", .patch = patch_ad1882 },
->> >>        { .id = 0x11d41884, .name = "AD1884", .patch = patch_ad1884 },
->> >>        { .id = 0x11d41981, .name = "AD1981", .patch = patch_ad1981 },
->> >> +       { .id = 0x51d41981, .name = "AD1981", .patch = patch_ad1981 },
->> >>        { .id = 0x11d41983, .name = "AD1983", .patch = patch_ad1983 },
->> >>        { .id = 0x11d41984, .name = "AD1984", .patch = patch_ad1984 },
->> >>        { .id = 0x11d41986, .name = "AD1986A", .patch = patch_ad1986a },
->> >>
->> >>
->> >> The patch is ok?
->> >>
->> >> Thanks
->> >>
->> >> (Tobin sorry for sending messge two times)
->> >>
->> >> --
->> >> Tobin Davis <tdavis@dsl-only.net>
->> >
->>
->
+Does anyone have any suggestions about what I can do to get the correct
+volume if set by an outside source??
+
+ 
+
+Thanks!
