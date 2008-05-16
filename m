@@ -1,17 +1,17 @@
 From: Anselm Reisner <anselm.reisner@googlemail.com>
-Subject: update: usb headset problem (solved)
-Date: Sat, 17 May 2008 22:43:13 +0200
-Message-ID: <1211056993.8997.6.camel@anselm-desktop>
+Subject: usb headset problem
+Date: Sat, 17 May 2008 00:35:50 +0200
+Message-ID: <1210977350.7324.29.camel@Anselm109>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1A25103806
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id DED8F103822
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 May 2008 22:43:17 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so1131276fgg.44
-	for <alsa-devel@alsa-project.org>; Sat, 17 May 2008 13:43:17 -0700 (PDT)
+	Sat, 17 May 2008 00:35:40 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id b27so944994fka.0
+	for <alsa-devel@alsa-project.org>; Fri, 16 May 2008 15:35:40 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,11 +24,30 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello
-
-I found the problem. It was completely my fault. Every time the computer started I pressed the mute 
-button but the button didn't mute the micro but froze my headset. 
-
-Sorry for the trouble.
-
-Anselm
+SGVsbG8KCkhlYWRzZXQ6IO+7v1BsYW50cm9uaWNzIERTUCA0MDAgKDA0N2Y6MGNhMSkKRGlzdHJv
+OiBVYnVudHUgOC4wNApvdXRwdXQgZnJvbSB0c2Fsc2Egc2NyaXB0IChmcm9tICNhbHNhKSA6IGh0
+dHA6Ly9ub3Bhc3RlLmNvbS9wL2E4eXlteGxkcAoKClByb2JsZW1kZXNjcmlwdGlvbjoKQWZ0ZXIg
+c29tZSB0aW1lKH4wLjUtMS41IGhvdXJzKSBsaXN0ZW5pbmcgdG8gbXVzaWMgbXkgaGVhZHNldCBz
+dWRkZW5seQpzdG9wcyBwbGF5aW5nLiBJZiBJIHRyeToKCu+7v1doZW4gdGhlIGhlYWRzZXQgY3Jh
+c2hlcyBkbWVzZyBzYXlzCkFMU0EgL3Vzci9zcmMvbW9kdWxlcy9hbHNhLWRyaXZlci91c2IvdXNi
+YXVkaW8uYzo5NDM6IHRpbWVvdXQ6IHN0aWxsIDMKYWN0aXZlIHVyYnMuLi4gCmF0IHRoZSBiZWdp
+bm5pbmcgdGhlIG51bWJlciBvZiB1cmJzIHdlcmUgNCBidXQgSSBibGFja2xpc3RlZCB0aGUgdXNi
+aGlkCm1vZHVsZSAobXkgaGVhZHNldCBoYXMgYSB2b2x1bWVjb250cm9sKSBzaW5jZSB0aGVuIGl0
+IGhhbmdzIGJ5IDMuCi9ldGMvaW5pdC5kL2Fsc2EtdXRpbHMgc3RvcCBjYXJkaWQgSSBnZXQgdGhl
+IG1lc3NhZ2UgCiJhbWl4ZXI6IE1peGVyIGh3OjEgbG9hZCBlcnJvcjogSW52YWxpZCBhcmd1bWVu
+dCIKSSBhbHNvIGRvd25sb2FkZWQgYWxzYS1zb3VyY2UgKGZyb20gdGhlIHJlcG9zaXR5KWFuZCBi
+dWlsdCB0aGUKYWxzYS1kcml2ZXIuIEJlY2F1c2UKCndoZW4gSSB0cnkgc3VkbyBhbHNhIGZvcmNl
+LXVubG9hZCBvciBtb2Rwcm9iZSAtciAgCm1vZHByb2JlIGhhbmdzIGFuZCBJIGNhbid0IFRlcm1p
+bmF0ZSBpdC4KCldoZW4gdGhlIGhlYWRzZXQgY3Jhc2hlcyBkbWVzZyBzYXlzCkFMU0EgL3Vzci9z
+cmMvbW9kdWxlcy9hbHNhLWRyaXZlci91c2IvdXNiYXVkaW8uYzo5NDM6IHRpbWVvdXQ6IHN0aWxs
+IDMKYWN0aXZlIHVyYnMuLi4gCmF0IHRoZSBiZWdpbm5pbmcgdGhlIG51bWJlciBvZiB1cmJzIHdl
+cmUgNCBidXQgSSBibGFja2xpc3RlZCB0aGUgdXNiaGlkCm1vZHVsZSAobXkgaGVhZHNldCBoYXMg
+YSB2b2x1bWVjb250cm9sKSBzaW5jZSB0aGVuIGl0IGhhbmdzIGJ5IDMuCgpTbyB0aGUgb25seSB0
+aGluZyB3aGF0IEkgY2FuIGRvIGlzIHJlYm9vdCB0byBnZXQgaXQgd29ya2luZyBhZ2Fpbi4gSXQn
+cwpyZWFsbHkgYW5ub3lpbmcuCkkgZmlyc3QgYXNrZWQgYXQgI2Fsc28gZm9yIGhlbHAgYnV0IHRo
+ZXkgY291bGRuJ3QgaGVscCAoZXhjZXB0IHRoYXQgaXQncwptYXliZSBzb21laG93IHJlbGF0ZWQg
+dG8gdGhlIHVzYiBzdWJzeXN0ZW0pIG1lIGJ1dCBnYXZlIG1lIHRoZSBhZHZpY2UgdG8KcG9zdCBt
+eSBwcm9ibGVtIGhlcmUuIAoKVGhhbmtzIAoKQW5zZWxtCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
