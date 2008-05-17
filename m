@@ -1,19 +1,25 @@
-From: ki.ber.kom.uni.st <ki.ber@kom.uni.st>
-Subject: pyalsa with threads allowed for python
-	(Py_BEGIN_ALLOW_THREADS & Py_END_ALLOW_THREADS)
-Date: Sat, 17 May 2008 18:40:04 +0200
-Message-ID: <95e4e4ce0805170940wb1aa76et3003ab926bfe03eb@mail.gmail.com>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: Re: [Bug #10679] 2.6.26-rc1
+ regression:	e5e1d3cb20034a3cbcfff1f0bae12201aa2ce17e breaks artsd
+Date: Sun, 18 May 2008 02:05:25 +0400
+Message-ID: <482F56A5.7000008@aknet.ru>
+References: <hPXlJLjt4XG.A._lF.Jv1JIB@chimera>
+	<88YBFoyd1CN.A._sF.Ov1JIB@chimera>
+	<s5hskwmeb1h.wl%tiwai@suse.de> <20080514212011.GH7054@mit.edu>
+	<s5hhcd0azv1.wl%tiwai@suse.de> <20080515130654.GC18825@mit.edu>
+	<s5h8wybr0c2.wl%tiwai@suse.de>
+	<20080517204725.GA11460@codemonkey.org.uk>
+	<482F47DC.60505@aknet.ru>
+	<20080517213231.GA31440@codemonkey.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8537C103800
+Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08B9910381E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 May 2008 18:40:06 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so305545and.80
-	for <alsa-devel@alsa-project.org>; Sat, 17 May 2008 09:40:05 -0700 (PDT)
-Content-Disposition: inline
+	Sun, 18 May 2008 00:05:54 +0200 (CEST)
+In-Reply-To: <20080517213231.GA31440@codemonkey.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +29,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Dave Jones <davej@codemonkey.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-i develop my app iterating ipython interactive sessions with pasting
-the good code into files (which eventually being loaded back to
-ipython sessions)...
+Hello.
 
-for that kind of development i need pyalsa to run in python threads...
-when i did (as it is now) alsaseq.Sequencer.receive_events(100) in
-infinite loop of pyqt4 thread it always steal interaction from ipython
-and it makes interaction unusable... it gets back every now and then
-almost randomly and definitively not frequent enough to be usable..
-hope this description explained enough of what's happening...
+Dave Jones wrote:
+> Unless someone has 10 sound cards :-)  (Sounds bizarre, but I never tire
+> of seeing some of the creative situations our users get themselves into).
+Yes, the hardcoded values sucks...
 
-the solution was to make time.sleep(.001) at the end of while True:
-loop... it took me several hours to find out the solution... i was
-quite happy with the solution but my guru friends told me that's dirty
-and i'm lame...
+> Something like this is probably the only real supportable way to do it though.
+> It would be great if alsa took something like -1 to mean 'never make this default'.
+-1 seems to be already reserved for
+"use first free slot", but maybe it
+would be nice to reserve some value
+for the "movable" index. For example,
+the index -2 can mean "use the first
+free slot, but move to the next one
+when some other driver is registering
+with -1 or explicitly to that slot".
+Of course I have no idea whether this
+is possible and acceptable, but maybe
+the alsa guys can tell.
 
-the other solution is in particular case of receive_events to put
-Py_*_ALLOW_THREADS
-
-    Py_BEGIN_ALLOW_THREADS;
-    ret = poll(self->receive_fds, self->receive_max, timeout);
-    Py_END_ALLOW_THREADS;
-
-around poll...
-
-this url should explain this strange phenomena (to me) to the real
-programmers: http://www.python.org/doc/1.5.2/api/threads.html
-
-in my case my programming guru akapav sort it out after couple of
-minuts checking the code...
-
-hope this is of some interest to pyalsa devs... i definitively would
-need most of the functions being ready to run in threads....
-
-thanx.. keep up the good work...
+> But until that lands in a module-init-tools update, we're kind of stuck.
+Well, they won't take 10 or any other
+value I guess...
