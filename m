@@ -1,19 +1,17 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Incorrect model selection for HDA Intel based card.
-Date: Mon, 19 May 2008 04:19:14 +1000
-Message-ID: <200805190419.14316.wishie@wishie.net>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: snd_pcsp locking mess
+Date: Sun, 18 May 2008 22:20:43 +0400
+Message-ID: <4830737B.70108@aknet.ru>
+References: <20080518172258.D0DFB108060@picon.linux-foundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wishie.net (202-137-99-066.dial.usertools.net [202.137.99.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9EE124357
+Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA48224369
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 May 2008 20:19:31 +0200 (CEST)
-Received: from [192.168.0.2] (fallen [192.168.0.2])
-	by wishie.net (Postfix) with ESMTP id 965E331C24
-	for <alsa-devel@alsa-project.org>; Sun, 18 May 2008 18:40:39 +1000 (EST)
-Content-Disposition: inline
+	Sun, 18 May 2008 20:20:54 +0200 (CEST)
+In-Reply-To: <20080518172258.D0DFB108060@picon.linux-foundation.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just had a user in #alsa on freenode, with an Asus P5GD1 mainboard.
-They couldnt seem to get surround sound working at all.
-It has an ALC880 based HDA-Intel sound device on board.
+bugme-daemon@bugzilla.kernel.org wrote:
+> ------- Comment #17 from tiwai@suse.de  2008-05-18 10:22 -------
+> Anyway, what I meant is that the part touching I/O ports could be a faster path
+> than softirq.  And the hrtimer code can use a bit simpler locks.  The hrtimer
+> callback needs just one thing about DMA buffer - the buffer is allocated and
+> the address doesn't change during the callback.  So, we'd need the lock for the
+> hr callback and for the PCM prepare, hwparams and free callbacks, i.e. to
+> assure that the hrtimer callback is finished when these PCM callbacks may
+> change the DMA buffer.  Thus this lock doesn't have to be PCM substream lock.
+I wonder if it would be better to introduce
+such a lock in an alsa core rather than in a
+driver. The same way as snd_pcm_stream_lock().
 
-Now, the problem lies in the Susbsystem ID's (1043:814e).
-These match in patch_realtek.c as follows:
-
-SND_PCI_QUIRK(0x1043, 0x814e, "ASUS", ALC880_ASUS)
-
-The users mainboard (The ASUS P5GD1) actually has 6 output jacks, aswell as 
-SPDIF, not the standard 3-jacks that the "ASUS" model quirk implies.
-
-I talked this user through forcing the driver to use '6stack-digout' for his 
-sound device, and things all work fine now.
-
-Below is a link to his alsa-info output, with the problem fixed. (so you can 
-check IDs etc)
-
-http://pastebin.ca/1022042
-
-Up until this point, i hadnt come across a wrong detection like that. Is there 
-anyway to differentiate this users card from the normal "3stack" model that 
-actually requires the "ASUS" model quirk ?
-
-Thanks,
-Travis Place
-
--- 
-Happiness is like peeing your pants. Everyone can see it, but only you can 
-feel its warmth 
+> The current lock mess may come from the PCM trigger (STOP) called from
+> snd_pcm_period_elapsed().  So, putting snd_pcm_period_elapsed() out of hrtimer
+> lock is anyway necessary.  A tasklet for snd_pcm_period_elapsed() is needed for
+> this reason, too.
+Wouldn't it be better to just make
+snd_pcm_period_elapsed() to not take
+the stream lock? There is a requirement
+right now to drop the stream lock before
+calling this. I still beleive this is
+the root of all the headache. If you
+need to drop it, then you either accept
+the race or need a second lock, and the
+troubles ensue.
