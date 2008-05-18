@@ -1,18 +1,23 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: Re: [patch] snd-pcsp: silent misleading warning
-Date: Sun, 18 May 2008 21:32:39 +0400
-Message-ID: <48306837.7030505@aknet.ru>
-References: <482737BE.20502@infracom.it>	<4827415A.7060101@aknet.ru>	<482756F0.8020609@infracom.it>	<48275D8D.10500@aknet.ru>	<4827F0A1.9090600@infracom.it>	<48288ACC.1020909@aknet.ru>	<48299F08.2060702@infracom.it>	<4829B6A1.90707@infracom.it>	<s5h7idycfmf.wl%tiwai@suse.de>	<482A7A17.8070706@infracom.it>	<s5hwslxb3t8.wl%tiwai@suse.de>	<482C9A3E.3000009@infracom.it>	<482C9F3E.4050104@aknet.ru>	<482EC93E.7080702@infracom.it>	<482EFED2.1020504@aknet.ru>
-	<s5hskwgkqe1.wl%tiwai@suse.de>
+From: Travis Place <wishie@wishie.net>
+Subject: [PATCH] alsa-info.sh - Fixed typo that stops the
+	'Automatic Upload' warning from appearing.
+Date: Mon, 19 May 2008 00:08:30 +1000
+Message-ID: <200805190008.30421.wishie@wishie.net>
+References: <200804290010.52696.wishie@wishie.net>
+	<s5h1w4nwly1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDACF103847
+Received: from wishie.net (202-137-99-066.dial.usertools.net [202.137.99.66])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7120824B8F
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 May 2008 15:32:49 +0200 (CEST)
-In-Reply-To: <s5hskwgkqe1.wl%tiwai@suse.de>
+	Sun, 18 May 2008 16:08:48 +0200 (CEST)
+Received: from [192.168.0.2] (fallen [192.168.0.2])
+	by wishie.net (Postfix) with ESMTP id BAA4F31C54
+	for <alsa-devel@alsa-project.org>; Sun, 18 May 2008 14:29:55 +1000 (EST)
+In-Reply-To: <s5h1w4nwly1.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +27,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Roberto Oppedisano <roberto.oppedisano@infracom.it>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+Fixed a typo that was causing no warning about the script automatically 
+uploading info to a pastebin. Some users were NOT too happy with this.
 
-Takashi Iwai wrote:
->>> [  417.338143] PCSP: playback_ptr inconsistent (4642 4661 18645)
->> It turns out that the buffer size you
->> get, is not evenly devided by period size.
->> 18645 % 4661 = 1.
->> That (wrongly) triggers the warning.
->> This may very well be an alsa bug, or
->> may not, but the code in the driver is
->> handling that properly, so there is no
->> need for such a verbose warning.
-> The right fix would be to add a hw_constraint to align the buffer
-> size.  The simplest way is to add the following in PCM open callback.
-But what does this fix? That's only a
-warning, the driver itself doesn't care
-at all. The fix you propose, will need
-more testing, at least a confirmation
-from the reporter. I simply thought this
-can't happen. Now you say its a perfectly
-sane situation, and then there is nothing
-to care about, just shut up the warning.
-No?
+Also, bumped up the version number so existing versions will automatically 
+update to the fixed version upon next script run.
+
+
+diff -r 93548f7b2086 alsa-info.sh
+--- a/alsa-info.sh	Wed Apr 30 14:47:42 2008 +0200
++++ b/alsa-info.sh	Mon May 19 00:01:04 2008 +1000
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+-SCRIPT_VERSION=0.4.43
++SCRIPT_VERSION=0.4.44
+ CHANGELOG="http://hg.alsa-project.org/alsa/log/tip/alsa-info.sh"
+ 
+ 
+#################################################################################
+@@ -215,7 +215,7 @@ if [ "$QUESTION" = "yes" ]; then
+ if [ "$QUESTION" = "yes" ]; then
+ if [[ -n "$DIALOG" ]]
+ then
+-if [ -z "NOUPLOAD" ]; then
++if [ -z "$NOUPLOAD" ]; then
+ 	dialog --backtitle "$BGTITLE" --title "ALSA-Info script v 
+$SCRIPT_VERSION" --yesno "\nThis script will collect information about your 
+ALSA installation and sound related hardware, to help diagnose your 
+problem\n\nBy default, this script will AUTOMATICALLY UPLOAD your information 
+to a pastebin site.\n\nSee $0 --help for options\n\nDo you want to run this 
+script?" 0 0
+ else
+ 	dialog --backtitle "$BGTITLE" --title "ALSA-Info script v 
+$SCRIPT_VERSION" --yesno "\nThis script will collect information about your 
+ALSA installation and sound related hardware, to help diagnose your 
+problem\n\nSee $0 --help for options\n\nDo you want to run this script?" 0 0
+
+
+Thanks,
+Travis Place
