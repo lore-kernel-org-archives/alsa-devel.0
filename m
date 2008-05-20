@@ -1,23 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: HG -> GIT migration
-Date: Tue, 20 May 2008 13:21:13 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0805201314190.1798@tm8103-a.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH][ASoC V2] Fix null-pointer dereference
+	in	soc_create_pcm()
+Date: Tue, 20 May 2008 12:31:30 +0100
+Message-ID: <20080520113130.GA32249@rakim.wolfsonmicro.main>
+References: <1211237159-26546-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 56C4824772
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D027724874
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 May 2008 13:21:14 +0200 (CEST)
-Received: from server.perex.cz (server.perex.cz [172.16.0.20])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	4CD9E149E2D for <alsa-devel@alsa-project.org>;
-	Tue, 20 May 2008 13:21:14 +0200 (CEST)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	3B06484375 for <alsa-devel@alsa-project.org>;
-	Tue, 20 May 2008 13:21:14 +0200 (CEST)
+	Tue, 20 May 2008 13:31:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1211237159-26546-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,23 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Mon, May 19, 2008 at 05:45:59PM -0500, Timur Tabi wrote:
+> When soc_create_pcm() finds all four components it needs, it displays a status
+> message.  This message references the local variables 'codec_dai' and
+> 'cpu_dai', but these variables are initialized only when the codec DAI and the
+> cpu DAI are the last to be registered.  This patch changes the code to use the
+> stored values instead of the local variables.
 
-	I finished migration from HG to GIT. All repositories are 
-converted and we have one "new" repository - alsa-kernel.git which is full 
-Linux 2.6 GIT tree. The old HG alsa-kernel repository was renamed to 
-alsa-kmirror - just to track our changes in continuous timeline for 
-releases and packaging. HG access to all repositories is closed now.
-	More information can be obtained here:
-
-http://www.alsa-project.org/main/index.php/GIT_Server
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Thanks, applied.
