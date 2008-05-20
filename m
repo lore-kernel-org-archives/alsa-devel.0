@@ -1,20 +1,16 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
- SOLVED
-Date: Tue, 20 May 2008 21:15:28 +0200
-Message-ID: <48332350.9010204@insite.cz>
-References: <480E495B.20607@insite.cz>	<s5h63u8evih.wl%tiwai@suse.de>	<480F189A.7030500@insite.cz>	<480F99B8.3010408@insite.cz>	<s5hod7zb4j7.wl%tiwai@suse.de>	<4810F1FA.4020300@insite.cz>	<s5hhcdq4fnz.wl%tiwai@suse.de>	<481182EB.1010800@insite.cz>	<s5h63u64dgt.wl%tiwai@suse.de>	<4818D18E.5040409@insite.cz>	<s5htzhgub9a.wl%tiwai@suse.de>	<481CB902.9080905@insite.cz>	<s5hd4nyh0lz.wl%tiwai@suse.de>	<48235617.2070906@insite.cz>
-	<482BE45E.1060401@ladisch.de>	<48308B4C.2030906@insite.cz>
-	<48328F6C.9000701@ladisch.de>
+From: Charles Eidsness <charles.eidsness@ieee.org>
+Subject: External Plugin Non-Interleaved
+Date: Tue, 20 May 2008 15:33:03 -0400
+Message-ID: <4833276F.6030502@ieee.org>
+Reply-To: charles.eidsness@ieee.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D5D824361
+Received: from smtp110.rog.mail.re2.yahoo.com (smtp110.rog.mail.re2.yahoo.com
+	[206.190.37.0]) by alsa0.perex.cz (Postfix) with SMTP id 8A44C2437A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 May 2008 21:15:34 +0200 (CEST)
-In-Reply-To: <48328F6C.9000701@ladisch.de>
+	Tue, 20 May 2008 21:33:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +20,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Pavel Hofman wrote:
->> Thanks a lot. After a few pointer fixes to make it compile your code
->> works flawlessly for both the generic as well as realtime ubuntu kernel.
-> 
-> Does it also work if you set the watermarks to 0?
+I'm working on a small ALSA pcm/ctl plugin to add support for LADSPA modules 
+that include real-time controls (unless I'm missing something it looks like the 
+native ALSA LADSPA module doesn't include real-time adjustable controls). I want 
+to use it as a system wide equalizer. I'm using snd_pcm_extplug, I want to force 
+access to be non-interleaved only but I can't figure out how. Is there some way 
+to force non-interleaved access for an extplug?
 
-Test results for rt kernel - watermarks set to 0 bring the IRQ flood 
-when the MIDI device is opened ( amidi -p hw:0 -d).
+If you're interested you can find the first pass of my plugin here:
+http://www.thedigitalmachine.net/alsaequal.html
 
-I am fine with the current setting - no floods, latency comparable to USB.
-
-Regards,
-
-Pavel.
+Thanks,
+Charles
