@@ -1,20 +1,20 @@
-From: Travis Place <wishie@wishie.net>
-Subject: [PATCH] Added another unknown card to hda-intel
-	driver. ASUS P5K-E/WIFI-AP
-Date: Wed, 21 May 2008 05:02:09 +1000
-Message-ID: <200805210502.09909.wishie@wishie.net>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
+ SOLVED
+Date: Tue, 20 May 2008 21:15:28 +0200
+Message-ID: <48332350.9010204@insite.cz>
+References: <480E495B.20607@insite.cz>	<s5h63u8evih.wl%tiwai@suse.de>	<480F189A.7030500@insite.cz>	<480F99B8.3010408@insite.cz>	<s5hod7zb4j7.wl%tiwai@suse.de>	<4810F1FA.4020300@insite.cz>	<s5hhcdq4fnz.wl%tiwai@suse.de>	<481182EB.1010800@insite.cz>	<s5h63u64dgt.wl%tiwai@suse.de>	<4818D18E.5040409@insite.cz>	<s5htzhgub9a.wl%tiwai@suse.de>	<481CB902.9080905@insite.cz>	<s5hd4nyh0lz.wl%tiwai@suse.de>	<48235617.2070906@insite.cz>
+	<482BE45E.1060401@ladisch.de>	<48308B4C.2030906@insite.cz>
+	<48328F6C.9000701@ladisch.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_xAyMI3U5qpYnT5q"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wishie.net (202-137-102-183.dial.usertools.net
-	[202.137.102.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0EE124346
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D5D824361
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 May 2008 21:02:39 +0200 (CEST)
-Received: from [192.168.0.2] (fallen [192.168.0.2])
-	by wishie.net (Postfix) with ESMTP id C9B7831CCF
-	for <alsa-devel@alsa-project.org>; Tue, 20 May 2008 19:23:46 +1000 (EST)
+	Tue, 20 May 2008 21:15:34 +0200 (CEST)
+In-Reply-To: <48328F6C.9000701@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_xAyMI3U5qpYnT5q
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Clemens Ladisch wrote:
+> Pavel Hofman wrote:
+>> Thanks a lot. After a few pointer fixes to make it compile your code
+>> works flawlessly for both the generic as well as realtime ubuntu kernel.
+> 
+> Does it also work if you set the watermarks to 0?
 
-Changelog: Added a config table entry for the ASUS P5K-E/WIFI-AP mainboard (ID 
-1043:8227) to use AD1988_6STACK_DIG
+Test results for rt kernel - watermarks set to 0 bring the IRQ flood 
+when the MIDI device is opened ( amidi -p hw:0 -d).
 
-Signed-off-by: Travis Place <wishie at wishie dot net>
+I am fine with the current setting - no floods, latency comparable to USB.
 
--- 
-Happiness is like peeing your pants. Everyone can see it, but only you can 
-feel its warmth 
+Regards,
 
---Boundary-00=_xAyMI3U5qpYnT5q
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="ASUS_P5K-E.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="ASUS_P5K-E.patch"
-
-diff -r e2b60934d1c8 pci/hda/patch_analog.c
---- a/pci/hda/patch_analog.c	Mon May 19 12:32:25 2008 +0200
-+++ b/pci/hda/patch_analog.c	Wed May 21 04:59:59 2008 +1000
-@@ -2858,6 +2858,7 @@ static struct snd_pci_quirk ad1988_cfg_t
- static struct snd_pci_quirk ad1988_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x81ec, "Asus P5B-DLX", AD1988_6STACK_DIG),
- 	SND_PCI_QUIRK(0x1043, 0x81f6, "Asus M2N-SLI", AD1988_6STACK_DIG),
-+	SND_PCI_QUIRK(0x1043, 0x8277, "Asus P5K-E/WIFI-AP", AD1988_6STACK_DIG),
- 	{}
- };
- 
-
---Boundary-00=_xAyMI3U5qpYnT5q
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_xAyMI3U5qpYnT5q--
+Pavel.
