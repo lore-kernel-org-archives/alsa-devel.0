@@ -1,18 +1,19 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Sam Ravnborg <sam@ravnborg.org>
 Subject: Re: Moving sound/* to drivers/ ?
-Date: Wed, 21 May 2008 14:44:56 -0700 (PDT)
-Message-ID: <alpine.LFD.1.10.0805211431370.3081@woody.linux-foundation.org>
+Date: Wed, 21 May 2008 23:54:03 +0200
+Message-ID: <20080521215403.GD15136@uranus.ravnborg.org>
 References: <s5hzlqjz74d.wl%tiwai@suse.de>
+	<alpine.LFD.1.10.0805211431370.3081@woody.linux-foundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.linux-foundation.org (smtp1.linux-foundation.org
-	[140.211.169.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id C9D6324575
+Received: from pasmtpA.tele.dk (pasmtpa.tele.dk [80.160.77.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 469D324581
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 May 2008 23:45:00 +0200 (CEST)
-In-Reply-To: <s5hzlqjz74d.wl%tiwai@suse.de>
+	Wed, 21 May 2008 23:53:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.1.10.0805211431370.3081@woody.linux-foundation.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,80 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On Wed, 21 May 2008, Takashi Iwai wrote:
 > 
-> One thing that annoys me sometimes is that the sound driver codes are
-> on a different subdirectory than other normal drivers, namely under
-> /sound. 
+> Me personally, I've been more irritated by include/asm-xyz vs arch/xyz. It 
+> would be so nice if all the arch-specific changes woudl always show up 
+> under arch/ (both from a statistics standpoint, and just because then a 
+> diffstat really shows arch-specific stuff really obviously, and sorts all 
+> the arch-specific stuff together).
 
-I would certainly personally like drivers/sound more, and the placement at 
-the top level is actually because the sound maintainers wanted it that 
-way, probably to avoid the confusion with the old OSS drivers that used to 
-live in drivers/sound.
+Something like:
+include/asm-$ARCH/ => arch/$ARCH/include/asm/*
+?
 
-I forget the exact details. It's been many many years, and there may have 
-been some real technical issues too. But basically sound/ was created when 
-ALSA was first merged, and we had a lot of renames from drivers/sound/xyz 
-to sound/oss/xyz.
+I can cook up something simple so kbuild will try both so we can
+move the archs that do symlinks later than the rest.
 
-(It may have been that it was simply easier to have a new subdirectory 
-than it was to re-use the old one. In fact, with BK and patches, that 
-was generally the best way to guarantee that the rename-tool did the 
-right thing, so details like that may have been part of it. I forget).
+I really like to keep the 'asm' directory so we can kill the asm symlink.
 
-So I would personally certainly not mind somebody doing a 
-
-	git mv sound drivers/sound
-	.. edit makefiles and Kconfig files appropriately ..
-	git commit -a
-
-and it wouldn't be a problem for git (ie the repository wouldn't grow or 
-anything like that).
-
-And doing pure renames (and not editing up a lot of actual files) would 
-make rename detection easy for subsequent merges. The only real pain of 
-renames is the efficiency of detection when you have lots and lots of 
-files, but if the SHA1 of the file stays the same for the big bulk of 
-them, that makes the problem basically go away (it becomes a much more 
-interesting problem when you move hundreds of files around and _also_ edit 
-the bulk of them - even if the edits are trivial, now you need to 
-actually look at the contents to figure out the renames).
-
-> If I understand correctly, with git, we can move the files in
-> relatively little costs.  So, what about moving sound/* back to
-> drivers/sound/* or drivers/media/sound/*?
-
-I'd personally prefer just drivers/sound - no point in making it any 
-deeper than that. 
-
-But I'd not be much affected myself, so I don't much care. I do agree that 
-it would fit better under drivers/, but it's really mostly up to you guys.
-
-> Of course, the primary question is whether it's really worth.
-> The obvious drawback is that patches won't be applicable after the
-> move.
-
-Well, git merging is actually pretty good at this, so you can apply the 
-patches to the old release and then merge it, and it will do the right 
-thing (perhaps not for newly created files, but that's pretty easy to fix 
-up). 
-
-Also, even if you keep it as patches, as long as you move the whole 
-subdirectory, then fixing up the patch is just a trivial 
-search-and-replace, so I doubt it would be a big issue.
-
-But it's really up to you guys.
-
-Me personally, I've been more irritated by include/asm-xyz vs arch/xyz. It 
-would be so nice if all the arch-specific changes woudl always show up 
-under arch/ (both from a statistics standpoint, and just because then a 
-diffstat really shows arch-specific stuff really obviously, and sorts all 
-the arch-specific stuff together).
-
-		Linus
+	Sam
