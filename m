@@ -1,19 +1,19 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
 Subject: Re: HG -> GIT migration
-Date: Wed, 21 May 2008 17:29:56 +0200
-Message-ID: <48343FF4.8090107@keyaccess.nl>
-References: <Pine.LNX.4.61.0805201314190.1798@tm8103-a.perex-int.cz>	<200805211430.06653.linux@audioscience.com>	<Pine.LNX.4.61.0805210805080.1798@tm8103-a.perex-int.cz>	<s5hve18vtml.wl%tiwai@suse.de>	<483415E7.5080402@keyaccess.nl>	<s5hfxsbx27f.wl%tiwai@suse.de>	<48341DF5.4090307@keyaccess.nl>	<Pine.LNX.4.61.0805211517290.1798@tm8103-a.perex-int.cz>	<48343465.2030905@keyaccess.nl>
-	<s5h8wy3wvyv.wl%tiwai@suse.de>
+Date: Wed, 21 May 2008 17:40:33 +0200
+Message-ID: <48344271.3090700@keyaccess.nl>
+References: <Pine.LNX.4.61.0805201314190.1798@tm8103-a.perex-int.cz>	<200805211430.06653.linux@audioscience.com>	<Pine.LNX.4.61.0805210805080.1798@tm8103-a.perex-int.cz>	<s5hve18vtml.wl%tiwai@suse.de>	<483415E7.5080402@keyaccess.nl>	<s5hfxsbx27f.wl%tiwai@suse.de>	<48341DF5.4090307@keyaccess.nl>
+	<s5habijww7r.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id C720124361
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA26324391
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 May 2008 17:27:29 +0200 (CEST)
-In-Reply-To: <s5h8wy3wvyv.wl%tiwai@suse.de>
+	Wed, 21 May 2008 17:38:03 +0200 (CEST)
+In-Reply-To: <s5habijww7r.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, ALSA development <alsa-devel@alsa-project.org>, Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 21-05-08 16:52, Takashi Iwai wrote:
+On 21-05-08 16:47, Takashi Iwai wrote:
 
-> At Wed, 21 May 2008 16:40:37 +0200,
-> Rene Herman wrote:
-
->> I'm also still frequently trying to figure out an/the efficient way of 
->> using GIT but it does seem it's not just a matter of "pure downstream" 
->> (which I do believe ALSA has few enough of to not make this be a huge 
->> problem). For example linux-next is also going to want to pull in ALSA 
->> and say it does, finds a trivial conflict with the trivial tree that it 
->> also pulls in and fixes things up. If you rebase that which linux-next 
->> pulls from I believe it will have to redo the fix next time it pulls 
->> from you since it's getting all those new changesets.
->>
->> I guess this can be avoided by just not rebasing that which linux-next 
->> is pulling... and I in fact don't even know if linux-next does any 
->> conflict resolution itself, trivial or otherwise.
+> Theoretically we can work only using merges.  However, the resultant
+> tree will look too complex with lots of merge points at the time of
+> the next merge window.  This is also a nightmare for bisecting.  Thus,
+> most subsystem trees do rebase before the merge window in practice,
+> AFAIK.
 > 
-> I thought linux-next does fresh merges at each time, thus it doesn't
-> matter whether a subsystem tree is rebased or not...
+> It'd be appreciated if someone can tell me any good workflow to keep a
+> good-shaped tree without rebasing...
 
-Let's ask...
+Over here:
 
-Fresh merges at each release boundary certainly but if it drops/remerges 
-each subsystem when a bug in its for-next branch is found (a supposedly 
-non rare occurence) all the hopefully hundreds or even thousands of 
-linux-next pullers/testers would seem to have to deal with all those 
-completely new merges everytime as well. I'd hope linux-next during a 
-single release would just pull in the one fix (the subsystem's for-linus 
-branch can still fold it in).
+http://lkml.org/lkml/2008/5/17/203
+
+Linus suggests to just not do many merges from upstream -- basically 
+only at releases.
+
+I'm only looking at and experiencing things from the limited viewpoint 
+of a leaf node though so I'll shut up for a bit first now as this might 
+not be helpful.
 
 Rene.
