@@ -1,46 +1,50 @@
-From: Jeff Garzik <jeff@garzik.org>
+From: Rene Herman <rene.herman@keyaccess.nl>
 Subject: Re: Moving sound/* to drivers/ ?
-Date: Wed, 21 May 2008 19:37:54 -0400
-Message-ID: <4834B252.1080700@garzik.org>
-References: <s5hzlqjz74d.wl%tiwai@suse.de>
+Date: Thu, 22 May 2008 01:53:06 +0200
+Message-ID: <4834B5E2.3040301@keyaccess.nl>
+References: <s5hzlqjz74d.wl%tiwai@suse.de> <4834B252.1080700@garzik.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S934940AbYEUXiS@vger.kernel.org>
-In-Reply-To: <s5hzlqjz74d.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, alsa-devel@alsa-project.org, perex@perex.cz
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 298A324607
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 May 2008 01:50:44 +0200 (CEST)
+In-Reply-To: <4834B252.1080700@garzik.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jeff Garzik <jeff@garzik.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> While we are at the issue ALSA HG <-> GIT transition...
-> 
-> One thing that annoys me sometimes is that the sound driver codes are
-> on a different subdirectory than other normal drivers, namely under
-> /sound.   I don't remember exactly why it came there, but this often
-> makes people forget to change the necessary code for the sound
-> subsystem, or slip from the statistics (I'm not sure whether Linus
-> counted sound/* with recent his posts).
-> 
-> If I understand correctly, with git, we can move the files in
-> relatively little costs.  So, what about moving sound/* back to
-> drivers/sound/* or drivers/media/sound/*?
-> 
-> Of course, the primary question is whether it's really worth.
-> The obvious drawback is that patches won't be applicable after the
-> move.  So, if we do it, doing at the last seems practical.  But, this
-> can be a bit problem with keeping such a change on linux-next until
-> the next merge...
-> 
-> And, another question is to where.  drivers/sound or
-> drivers/media/sound, or whatever.
+On 22-05-08 01:37, Jeff Garzik wrote:
 
-Speaking as a former OSS driver maintainer, I always preferred 
-drivers/sound.
+> Speaking as a former OSS driver maintainer, I always preferred 
+> drivers/sound.
+> 
+> Though Rene's suggestion (use both sound/ and drivers/sound/) might make 
+> sense if the subsystem code is huge -- I supported the drivers/block/ -> 
+> block/ code movement for example.
 
-Though Rene's suggestion (use both sound/ and drivers/sound/) might make 
-sense if the subsystem code is huge -- I supported the drivers/block/ -> 
-block/ code movement for example.
+Well, not _huge_ but ALSA is very much structured like that; large 
+middle layer with "miniport" drivers (I do by the way expect this was 
+also Takashi plan originally due to him using sound/* and not just 
+"sound/"; that is, I took the * to be shorthand for isa, pci, usb and so on)
 
-	Jeff
+ From a structural view, the PCM core is just as much not a driver as 
+the IP protocol isn't one and moving all of sound/ to drivers/ would 
+trade the current "why are the drivers not under drivers/?" issue for a 
+"why is all this non-driver code under drivers/?".
+
+This "net model" of sound/ and drivers/sound/ would be cleanest I feel.
+
+Rene.
