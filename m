@@ -1,18 +1,19 @@
-From: Charles Eidsness <charles.eidsness@ieee.org>
-Subject: Re: External Plugin Non-Interleaved
-Date: Wed, 21 May 2008 08:12:41 -0400
-Message-ID: <483411B9.5040204@ieee.org>
-References: <4833276F.6030502@ieee.org> <s5htzgsvtbh.wl%tiwai@suse.de>
-Reply-To: charles.eidsness@ieee.org
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: HG -> GIT migration
+Date: Wed, 21 May 2008 14:30:31 +0200
+Message-ID: <483415E7.5080402@keyaccess.nl>
+References: <Pine.LNX.4.61.0805201314190.1798@tm8103-a.perex-int.cz>	<200805211430.06653.linux@audioscience.com>	<Pine.LNX.4.61.0805210805080.1798@tm8103-a.perex-int.cz>
+	<s5hve18vtml.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp109.rog.mail.re2.yahoo.com (smtp109.rog.mail.re2.yahoo.com
-	[68.142.225.207]) by alsa0.perex.cz (Postfix) with SMTP id 820C22451E
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA23424545
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 May 2008 14:12:58 +0200 (CEST)
-In-Reply-To: <s5htzgsvtbh.wl%tiwai@suse.de>
+	Wed, 21 May 2008 14:28:03 +0200 (CEST)
+In-Reply-To: <s5hve18vtml.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,25 +27,23 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> At Tue, 20 May 2008 15:33:03 -0400,
-> Charles Eidsness wrote:
->> I'm working on a small ALSA pcm/ctl plugin to add support for LADSPA modules 
->> that include real-time controls (unless I'm missing something it looks like the 
->> native ALSA LADSPA module doesn't include real-time adjustable controls). I want 
->> to use it as a system wide equalizer. I'm using snd_pcm_extplug, I want to force 
->> access to be non-interleaved only but I can't figure out how. Is there some way 
->> to force non-interleaved access for an extplug?
+On 21-05-08 12:28, Takashi Iwai wrote:
 
-Takashi Iwai wrote:
-> No, extplug itself cannot restrict the access format, so far.
-> It's possible to add a new restriction to extplug, though...
-> 
-> 
-> Takashi
-> 
+> Anyway, I'll apply patches including major changes of kconfig parser
+> soon later (after some issues with shared git repo are resolved).
+> Then we'll revise the problem again.
 
-It would be a nice feature to have. I noticed that ioplug has that restriction, 
-could
-the restriction code some ioplug just be pulled into extplug?
+By the way, I've been pulling in the "latest alsa" repo you recently 
+provided an URL for:
 
-Charles
+$ git remote show sound-2.6
+* remote sound-2.6
+   URL: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+   Tracked remote branches
+     master
+
+What's the status of that one now? Should I continue pulling that one or 
+should I switch to the new alsa-kernel GIT repo? I want to pull it into 
+a Linus clone tree...
+
+Rene.
