@@ -1,122 +1,81 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [PATCH] Add async support to ioplug
-Date: Thu, 22 May 2008 00:16:43 +0200
-Message-ID: <20080521221642.GA12214@tango.0pointer.de>
-References: <s5hej7x9qok.wl%tiwai@suse.de>
+Subject: Re: [alsa-devel] Asynchronous notification in
+	ALSA - I/O Plugin -	Pulseaudio
+Date: Thu, 22 May 2008 00:24:22 +0200
+Message-ID: <20080521222422.GA12481@tango.0pointer.de>
+References: <8280850.2291211189691895.JavaMail.root@intra>
+	<20894191.2311211189919317.JavaMail.root@intra>
+Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D09D245C0
-	for <alsa-devel@alsa-project.org>;
-	Thu, 22 May 2008 00:16:43 +0200 (CEST)
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
 Content-Disposition: inline
-In-Reply-To: <s5hej7x9qok.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <20894191.2311211189919317.JavaMail.root@intra>
+List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
+List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
+List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
+List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@mail.0pointer.de
+Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
+To: alsa-devel@alsa-project.org, pulseaudio-discuss@mail.0pointer.de
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20.05.08 13:10, Takashi Iwai (tiwai@suse.de) wrote:
+On Mon, 19.05.08 12:38, Juha Erkkil=E4 (juha.erkkila@opinsys.fi) wrote:
 
-> Hi,
-> 
-> the patch below adds a framework to support async on ioplug.  Now
-> an external ioplug plugin can implement appropriate async methods if
-> possible.
-> 
-> The async callback is just a copy of snd_pcm_async().  When sig >= 0,
-> activate the async, and with a negative value, deactivate async.
-> 
-> The test patch to alsa-plugins will follow.
+> I'm trying to get Abode Flash Player working properly on a thin client,
+> with sound, using Pulseaudio as a sound server.  I'm using ALSA
+> version 1.10.15 and Pulseaudio version 0.9.10 on Ubuntu Hardy, with
+> Pulseaudio server running as a system-wide daemon on the thin client.
+> I already outlined the issues on Pulseaudio mailing list on this post:
+> https://tango.0pointer.de/pipermail/pulseaudio-discuss/2008-May/001793.ht=
+ml,
+> see also Lennart Poettering's answer:
+> https://tango.0pointer.de/pipermail/pulseaudio-discuss/2008-May/001796.ht=
+ml.
+> =
 
-Humm, I am not really happy about this. 
+> I feel the proper solution would involve writing support for
+> asynchronous notification into ALSA library and I/O-plugin layer.
 
-Firstly I thing that async is a really bad thing anyway. Signal handler
-segmantics are very different from normal process semantics, i.e. a
-lot of API functions are not reentrant and not signal handler
-safe. Also, a lot of people implementing signal handlers don't
-save/restore errno the way the should (libasound being one example
-btw, as I just checked, this needs fixing). It's a fact: implementing
-signal handlers is difficult, and people almost never get it right. I
-mean, because it is so difficult there's even a valgrind module that
-helps identifying problems with signal handlers!  
+I disagree. (See the other mail I just posted)
 
-Also, signals are a shared resource where no reservation scheme
-exists. If one library in a process takes posession of a signal then
-it might overwrite the previous signal handler, there is no sane way
-to detect that. Flash 9 for example registers an alsa async handler,
-which causes SIGIO to be overwritten. It's sheer luck that noone else
-in the Firefox process wants to use SIGIO, because that would clash
-with Flash -- and this would not even be detected! And SIGIO is used
-for a lot of stuff, among them the whole aio subsystem, dnotify alsa
-and a few others. To emphasize this: if you use alsa async, you cannot
-use aio or dnotify in the same process!
+> Currently, Pulse I/O-plugin does not work in the Flash case, because
+> Flash requires the asynchronous API.  On the other hand, Pulse requires
+> the I/O-plugin layer to work.  See the posts by Alexander Indenbaum,
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-April/007033.ht=
+ml,
+> and Takashi Iwai,
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-April/007335.ht=
+ml,
+> on this subject.
+> =
 
-Signal delivery for usage in event loops on Linux is slow. Much slower
-than poll() based event loop approaches (somewhere on the web is a detailed
-comparison of poll() loops vs. RT sig based event loops in regards to
-throughput, I can dig that up if someone wants to see that.)
+> I tried to tackle this issue, and did get the signal handling code to
+> call the Flash audio callback, but I'm new to both ALSA and Pulseaudio,
+> and it appears there are some issues with it I don't fully understand.
+> Thus I'm asking: are there any other people who have been looking into
+> this, or anyone who can tell whether this is a sane thing to do or not,
+> will it require some nasty hack, or can help with some pointers to
+> relevant information?
 
-In summary: async doesn't give any benefits. However, it creates quite
-a few problems:
+Actually I have been looking into this.
 
-In the case of flash it just signals a semaphore from the async
-handler which is slept on by the sound loop thread. This is really not
-a clean design, anyway. They should directly sleep on the audio
-fds. With Flash 10 they responded to criticism of mine. It doesn't use
-async anymore and is those compatible with PA and other ioplug
-modules.
+This doesn't really help however, since there's a unfixable race
+condition in Flash shutting down audio. It's not going to be much
+better than the libflashsupport code I came up with.
 
-What I want to say is: using signals is bad style. Don't use
-signals. I do believe the best would be to remove async support from
-ALSA entirely. Grepping through google code search I couldn't find a
-single program using alsa async where using it was actually a good
-idea. Adding even further async support to ALSA does not strike me as
-a good idea. I believe the plan must be to remove async, not extend
-its support. And such a plan I think would be perfectly in line with
-what happens on the kernel front anyway. We now have stuff like
-signalfd(), explicitly because signal handlers are so ugly. For aio
-people are looking for alternatives without sig handlers, too. And
-yes, one of the reasons dnotify got replaced by inotify is that it
-used SIGIO.
-
-What however strikes me particularly questionnable about this patch is
-that this way ioplug async handlers are not called from signal handler
-context, instead they are called directly from process context. This
-is really problematic. Firstly, if people start to use async on ioplug
-a lot they will very likely produce code that only runs fine from
-normal process context and will break horribly from signal handler
-process (e.g. use synchronization based on mutexes). More importantly
-however, if a program uses signal masks to make sure that the async
-handler is run from a very specific thread or temporarily disabled for
-criticial sections this will be breaking for ioplug drivers. 
-
-If you really think that extending async to iolpug is a good idea then
-this should probably done by using sigqueue() to manually enqueue
-SIGIO and thus make sure the async events pass the usual signal
-delivery logic.
-
-When I analyzed the Flash+PA incompatibility I though about extending
-ioplug for async myself. But in the end I thought that enqueing SIGIOs
-from userspace was so ugly it would never have a chance to go upstream.
-
-Again, please let's drop async altogether. It's error-prone, easy
-to misuse, and especially Flash 9 (which I assume is the reason you
-came up with the patch) is a prominent misuser of it, so with Flash as
-only reason to do this I think the whole idea is void.
+Adobe was informed about this. And in Flash 10 they responded to the
+criticism. Flash 10 doesn't use alsa async anymore and seems to work
+fine on ioplug and thus on PA.
 
 Lennart
 
--- 
+-- =
+
 Lennart Poettering                        Red Hat, Inc.
 lennart [at] poettering [dot] net         ICQ# 11060553
 http://0pointer.net/lennart/           GnuPG 0x1A015CC4
