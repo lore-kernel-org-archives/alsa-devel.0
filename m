@@ -1,81 +1,63 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [alsa-devel] Asynchronous notification in
-	ALSA - I/O Plugin -	Pulseaudio
-Date: Thu, 22 May 2008 00:24:22 +0200
-Message-ID: <20080521222422.GA12481@tango.0pointer.de>
-References: <8280850.2291211189691895.JavaMail.root@intra>
-	<20894191.2311211189919317.JavaMail.root@intra>
-Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+From: Adrian Bunk <bunk@kernel.org>
+Subject: Re: Moving sound/* to drivers/ ?
+Date: Thu, 22 May 2008 01:23:57 +0300
+Message-ID: <20080521222357.GB16376@cs181133002.pp.htv.fi>
+References: <s5hzlqjz74d.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1764646AbYEUW0Y@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20894191.2311211189919317.JavaMail.root@intra>
-List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
-List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
-List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
-List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@mail.0pointer.de
-Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
-To: alsa-devel@alsa-project.org, pulseaudio-discuss@mail.0pointer.de
+In-Reply-To: <s5hzlqjz74d.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, alsa-devel@alsa-project.org, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 19.05.08 12:38, Juha Erkkil=E4 (juha.erkkila@opinsys.fi) wrote:
+On Wed, May 21, 2008 at 11:20:50PM +0200, Takashi Iwai wrote:
+> While we are at the issue ALSA HG <-> GIT transition...
+> 
+> One thing that annoys me sometimes is that the sound driver codes are
+> on a different subdirectory than other normal drivers, namely under
+> /sound.   I don't remember exactly why it came there, but this often
+> makes people forget to change the necessary code for the sound
+> subsystem, or slip from the statistics (I'm not sure whether Linus
+> counted sound/* with recent his posts).
+> 
+> If I understand correctly, with git, we can move the files in
+> relatively little costs.  So, what about moving sound/* back to
+> drivers/sound/* or drivers/media/sound/*?
 
-> I'm trying to get Abode Flash Player working properly on a thin client,
-> with sound, using Pulseaudio as a sound server.  I'm using ALSA
-> version 1.10.15 and Pulseaudio version 0.9.10 on Ubuntu Hardy, with
-> Pulseaudio server running as a system-wide daemon on the thin client.
-> I already outlined the issues on Pulseaudio mailing list on this post:
-> https://tango.0pointer.de/pipermail/pulseaudio-discuss/2008-May/001793.ht=
-ml,
-> see also Lennart Poettering's answer:
-> https://tango.0pointer.de/pipermail/pulseaudio-discuss/2008-May/001796.ht=
-ml.
-> =
+Sounds good.
 
-> I feel the proper solution would involve writing support for
-> asynchronous notification into ALSA library and I/O-plugin layer.
+> Of course, the primary question is whether it's really worth.
+> The obvious drawback is that patches won't be applicable after the
+> move.  So, if we do it, doing at the last seems practical.  But, this
+> can be a bit problem with keeping such a change on linux-next until
+> the next merge...
+> 
+> And, another question is to where.  drivers/sound or
+> drivers/media/sound, or whatever.
 
-I disagree. (See the other mail I just posted)
+Under drivers/media/ it would only generate confusion regarding who's 
+responsible for what.
 
-> Currently, Pulse I/O-plugin does not work in the Flash case, because
-> Flash requires the asynchronous API.  On the other hand, Pulse requires
-> the I/O-plugin layer to work.  See the posts by Alexander Indenbaum,
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-April/007033.ht=
-ml,
-> and Takashi Iwai,
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-April/007335.ht=
-ml,
-> on this subject.
-> =
+But drivers/sound/ sounds good.
 
-> I tried to tackle this issue, and did get the signal handling code to
-> call the Flash audio callback, but I'm new to both ALSA and Pulseaudio,
-> and it appears there are some issues with it I don't fully understand.
-> Thus I'm asking: are there any other people who have been looking into
-> this, or anyone who can tell whether this is a sane thing to do or not,
-> will it require some nasty hack, or can help with some pointers to
-> relevant information?
+The only possible problem that comes into my mind is to check what 
+happens with the link order.
 
-Actually I have been looking into this.
+> Any comments appreciated.
+> 
+> thanks,
+> 
+> Takashi
 
-This doesn't really help however, since there's a unfixable race
-condition in Flash shutting down audio. It's not going to be much
-better than the libflashsupport code I came up with.
+cu
+Adrian
 
-Adobe was informed about this. And in Flash 10 they responded to the
-criticism. Flash 10 doesn't use alsa async anymore and seems to work
-fine on ioplug and thus on PA.
+-- 
 
-Lennart
-
--- =
-
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
