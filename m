@@ -1,18 +1,18 @@
-From: Dragan Noveski <perodog@gmx.net>
-Subject: Re: problems compiling alsa-drivers-1.0.16 into
-	2.6.25.4 kernel
-Date: Tue, 20 May 2008 12:17:09 +0200
-Message-ID: <4832A525.1030304@gmx.net>
-References: <48322370.4060704@gmx.net> <s5hmyml9unj.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@alsa-project.org>
+Subject: Re: Will ALSA ever call _prepare or _hw_params while
+ it's	playing?
+Date: Wed, 21 May 2008 17:53:38 +0200
+Message-ID: <48344582.8020601@alsa-project.org>
+References: <4834438A.4060702@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 15D5724868
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 41593243AA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 May 2008 12:17:54 +0200 (CEST)
-In-Reply-To: <s5hmyml9unj.wl%tiwai@suse.de>
+	Wed, 21 May 2008 17:53:44 +0200 (CEST)
+In-Reply-To: <4834438A.4060702@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 20 May 2008 03:03:44 +0200,
-> Dragan Noveski wrote:
->   
->> hallo list,
->> steven rostedt asked me to pass this problem to this list, so here it goes.
->>     
+Timur Tabi wrote:
+> I have an ASoC driver with a _hw_params, _prepare, and _trigger functions.  I've
+> recently discovered that I need to keep one of my devices disabled until
+> playback starts.
 >
-> No, it should be alsa-devel ML.
->
->   
->> when running make in the alsa-driver source  i get this error:
->>
->> .....
->> make[1]: Entering directory `/usr/src/linux-2.6.25'
->>     
->
-> ALSA 1.0.16 doesn't work for 2.6.25 kernel.  Get the latest HG
-> version.
->
->
-> Takashi
->   
+> So I would like to know if ALSA will ever call _hw_params, _prepare, or _trigger
+> if playback or capture is currently in process, or will ALSA first call the
+> _trigger to stop/pause the driver.
 
-ok - good to know that it is an known issue and not me who is doing sth 
-wrong!
-very much thanks for the clarification.
-now i ll have a look for 'the latest HG version'.
+While a stream is running (after trigger with START), ALSA will only
+call the pointer or the trigger (STOP/PAUSE/SUSPEND) callbacks.
+
+Different streams are not synchronized in any way.  (This also applies to
+the playback/capture streams of one card.)
 
 
-cheers,
-doc
+Regards,
+Clemens
