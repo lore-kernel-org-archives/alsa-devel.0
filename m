@@ -1,51 +1,43 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [alsa-devel] Asynchronous notification in
-	ALSA - I/O Plugin -	Pulseaudio
-Date: Thu, 22 May 2008 00:29:36 +0200
-Message-ID: <20080521222936.GB12214@tango.0pointer.de>
-References: <s5hfxsd9qt6.wl%tiwai@suse.de>
-	<18027403.3701211352364970.JavaMail.root@intra>
-	<s5hprrgvsre.wl%tiwai@suse.de>
-Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+From: "Adam Wiseman" <usn.mustanger@gmail.com>
+Subject: No audio from laptop speakers,
+	and very faint audio through headphones
+Date: Wed, 21 May 2008 16:03:05 -0700
+Message-ID: <5a7726b10805211603xa5f5f09nda8e8741d23e9a47@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1D0C245E9
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 May 2008 01:03:05 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id e27so1252580nfd.32
+	for <alsa-devel@alsa-project.org>; Wed, 21 May 2008 16:03:05 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <s5hprrgvsre.wl%tiwai@suse.de>
-List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
-List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
-List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
-List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@mail.0pointer.de
-Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
-To: alsa-devel@alsa-project.org, pulseaudio-discuss@mail.0pointer.de
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21.05.08 12:47, Takashi Iwai (tiwai@suse.de) wrote:
+Note:  I originally posted my problem on the alsa-user list, but due to the
+fact that I've got an intel "integrated-everything" chipset, which alsa
+apparently seems to be having all sorts of trouble with, I was referred to
+the devel list.  So here's my problem:
 
-> > > I have experimental patches to add async support to ioplug.  With a
-> > > quick test using jack plugin, it seems working somehow.  Will post
-> > > them alsa-devel now.
-> > 
-> > Thank you!  I tested these with Firefox + Flash 9 + Pulseaudio, and while
-> > sound output works, quitting any Flash application will freeze firefox.
-> 
-> It's a showstopper, then.  Could you figure out in which code does it
-> freeze?  My change is just to add async call, so it sounds like that
-> another hidden bug is hit by my change...
-
-That freeze is an unfixable race condition that Flash has when
-shutting down audio.
-
-See the explanation down on http://pulseaudio.org/ticket/267
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+On my Panasonic Toughbook, I get no sound from the laptop speakers, and just
+barely audible sound from the headphones.  I've googled, searched the ubuntu
+forums, and chatted with a very helpful individual (wishie) on IRC, to no
+avail.
+Here is my pastebin of my alsa-info.sh output:  http://pastebin.ca/1021657
+Here is my pastebin of my amixer output:  http://pastebin.ca/1021660
+I would be ridiculously grateful if anyone can help me get the sound working
+on this thing.
+Thanks,
+Adam
