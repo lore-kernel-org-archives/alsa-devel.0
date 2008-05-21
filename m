@@ -1,63 +1,51 @@
-From: Adrian Bunk <bunk@kernel.org>
-Subject: Re: Moving sound/* to drivers/ ?
-Date: Thu, 22 May 2008 01:23:57 +0300
-Message-ID: <20080521222357.GB16376@cs181133002.pp.htv.fi>
-References: <s5hzlqjz74d.wl%tiwai@suse.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [alsa-devel] Asynchronous notification in
+	ALSA - I/O Plugin -	Pulseaudio
+Date: Thu, 22 May 2008 00:29:36 +0200
+Message-ID: <20080521222936.GB12214@tango.0pointer.de>
+References: <s5hfxsd9qt6.wl%tiwai@suse.de>
+	<18027403.3701211352364970.JavaMail.root@intra>
+	<s5hprrgvsre.wl%tiwai@suse.de>
+Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1764646AbYEUW0Y@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
 Content-Disposition: inline
-In-Reply-To: <s5hzlqjz74d.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, alsa-devel@alsa-project.org, perex@perex.cz
+In-Reply-To: <s5hprrgvsre.wl%tiwai@suse.de>
+List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
+List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
+List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
+List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@mail.0pointer.de
+Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
+To: alsa-devel@alsa-project.org, pulseaudio-discuss@mail.0pointer.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 21, 2008 at 11:20:50PM +0200, Takashi Iwai wrote:
-> While we are at the issue ALSA HG <-> GIT transition...
+On Wed, 21.05.08 12:47, Takashi Iwai (tiwai@suse.de) wrote:
+
+> > > I have experimental patches to add async support to ioplug.  With a
+> > > quick test using jack plugin, it seems working somehow.  Will post
+> > > them alsa-devel now.
+> > 
+> > Thank you!  I tested these with Firefox + Flash 9 + Pulseaudio, and while
+> > sound output works, quitting any Flash application will freeze firefox.
 > 
-> One thing that annoys me sometimes is that the sound driver codes are
-> on a different subdirectory than other normal drivers, namely under
-> /sound.   I don't remember exactly why it came there, but this often
-> makes people forget to change the necessary code for the sound
-> subsystem, or slip from the statistics (I'm not sure whether Linus
-> counted sound/* with recent his posts).
-> 
-> If I understand correctly, with git, we can move the files in
-> relatively little costs.  So, what about moving sound/* back to
-> drivers/sound/* or drivers/media/sound/*?
+> It's a showstopper, then.  Could you figure out in which code does it
+> freeze?  My change is just to add async call, so it sounds like that
+> another hidden bug is hit by my change...
 
-Sounds good.
+That freeze is an unfixable race condition that Flash has when
+shutting down audio.
 
-> Of course, the primary question is whether it's really worth.
-> The obvious drawback is that patches won't be applicable after the
-> move.  So, if we do it, doing at the last seems practical.  But, this
-> can be a bit problem with keeping such a change on linux-next until
-> the next merge...
-> 
-> And, another question is to where.  drivers/sound or
-> drivers/media/sound, or whatever.
+See the explanation down on http://pulseaudio.org/ticket/267
 
-Under drivers/media/ it would only generate confusion regarding who's 
-responsible for what.
-
-But drivers/sound/ sounds good.
-
-The only possible problem that comes into my mind is to check what 
-happens with the link order.
-
-> Any comments appreciated.
-> 
-> thanks,
-> 
-> Takashi
-
-cu
-Adrian
+Lennart
 
 -- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
