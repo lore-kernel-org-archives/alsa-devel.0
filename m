@@ -1,66 +1,84 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Moving sound/* to drivers/ ?
-Date: Thu, 22 May 2008 10:55:28 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805221052050.971@fbirervta.pbzchgretzou.qr>
-References: <s5hzlqjz74d.wl%tiwai@suse.de> <4834B252.1080700@garzik.org> <4834B5E2.3040301@keyaccess.nl> <s5hy7623fqs.wl%tiwai@suse.de>
+From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Subject: Recording problem with ALSA: trying to set up some
+	constraints
+Date: Thu, 22 May 2008 11:33:34 +0200
+Message-ID: <48353DEE.1020502@atmel.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S936006AbYEVIzl@vger.kernel.org>
-In-Reply-To: <s5hy7623fqs.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Rene Herman <rene.herman@keyaccess.nl>, Jeff Garzik <jeff@garzik.org>, linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, alsa-devel@alsa-project.org, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A74D24784
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 May 2008 11:33:39 +0200 (CEST)
+Received: from fwat.rfo.atmel.com (gateway [192.168.1.1])
+	by atmel-es2.atmel.fr (8.11.6+Sun/8.11.6) with SMTP id m4M9NMZ05464
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 May 2008 11:23:23 +0200 (MEST)
+Received: from [127.0.0.1] ([10.159.245.197])
+	by meyreuil.atmel.fr (8.11.7p1+Sun/8.11.7) with ESMTP id m4M9XWr10615
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 May 2008 11:33:32 +0200 (MEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On Thursday 2008-05-22 10:27, Takashi Iwai wrote:
->> 
->>> Speaking as a former OSS driver maintainer, I always preferred
->>> drivers/sound.
->>> 
->>> Though Rene's suggestion (use both sound/ and drivers/sound/)
->>> might make sense if the subsystem code is huge -- I supported the
->>> drivers/block/ -> block/ code movement for example.
->> 
->> Well, not _huge_ but ALSA is very much structured like that; large
->> middle layer with "miniport" drivers (I do by the way expect this
->> was also Takashi plan originally due to him using sound/* and not
->> just "sound/"; that is, I took the * to be shorthand for isa, pci,
->> usb and so on)
->
->Well, no, I originally thought moving all $LINUX/sound to
->$LINUX/drivers/sound.  The sound core stuff is already in
->sound/core, so it can be peacefully in drivers/sound/core, just like
->other drivers like USB, V4L, etc.
-
-I am in favor of keeping /sound around with the
-non-hardware-dependent code, much like /block does with regard to
-/drivers/block.
-
-So that's /sound for PCM/mixer etc. and /drivers/sound with the
-actual driver parts like cs46xx.
-
-Just like:
-
->>  From a structural view, the PCM core is just as much not a driver as 
->> the IP protocol isn't one and moving all of sound/ to drivers/ would 
->> trade the current "why are the drivers not under drivers/?" issue for a 
->> "why is all this non-driver code under drivers/?".
->> 
->> This "net model" of sound/ and drivers/sound/ would be cleanest I feel.
->
->I think it's a question of the balance.  The net stuff is huge, 10
->times more codes than the sound core.
->
->An argument for keeping the sound core in /sound is that this is used
->not only by sound drivers but also by some video drivers.
+Hi,
 
 
-PS. But then again, I could also imagine
-	/block (core)
-	/block/drivers (drivers)
-	/net (core)
-	/net/drivers
-	/sound
-	/sound/drivers
-And the sound parts are already mostly there.
+I have a problem with my recording driver.
+I have set up a pcm_hardware structure in which I define the format 
+supported by my hardware:
+
+static struct snd_pcm_hardware snd_at91_ac97_capture_hw = {
+    .info            = (SNDRV_PCM_INFO_INTERLEAVED
+                   | SNDRV_PCM_INFO_MMAP
+                   | SNDRV_PCM_INFO_MMAP_VALID
+                                   | SNDRV_PCM_INFO_BLOCK_TRANSFER),
+    .formats        = (SNDRV_PCM_FMTBIT_S16_LE
+                   | SNDRV_PCM_FMTBIT_S16_BE
+                   | SNDRV_PCM_FMTBIT_S20_3LE
+                   | SNDRV_PCM_FMTBIT_U20_3LE
+                   | SNDRV_PCM_FMTBIT_S20_3BE
+                   | SNDRV_PCM_FMTBIT_U20_3BE
+                   | SNDRV_PCM_FMTBIT_S18_3LE
+                   | SNDRV_PCM_FMTBIT_U18_3LE
+                   | SNDRV_PCM_FMTBIT_S18_3BE
+                   | SNDRV_PCM_FMTBIT_U18_3BE),
+    .rates            = SNDRV_PCM_RATE_CONTINUOUS,
+    .rate_min        = 8000,
+    .rate_max        = 48000,
+    .channels_min        = 1,
+    .channels_max        = 2,
+    .buffer_bytes_max    = 256*1024,
+    .period_bytes_min    = 1024,
+    .period_bytes_max    = 4*1024,
+    .periods_min        = 1,
+    .periods_max        = 64,
+};
+
+Then in my open function I pass it to the runtime struct.
+
+Nevertheless if  I try to run arecord with this option: arecord -d 1 
+test.wav, I will have a kernel oops.
+The default format is U8, but it is not supported by my Hardware, abd it 
+is not defined in my structure, so I though that it should exit arecord 
+but not crash.
+
+Do I miss something when defining my pcm_hardware strucutre, or do I 
+forgot to use a specific function which should return me an error?
+
+I have try to set up some constraints as well(for the rate and the 
+format), but still I have the same crash.
+
+
+Regards,
+Sedji
