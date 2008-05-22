@@ -1,54 +1,74 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Recording problem with ALSA: trying to set up some
- constraints
-Date: Thu, 22 May 2008 13:03:33 +0200
-Message-ID: <48355305.1090808@ladisch.de>
-References: <48353DEE.1020502@atmel.com>
+From: Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: Re: Pc Speaker
+Date: Thu, 22 May 2008 21:31:55 +0930
+Message-ID: <483560B3.70204@internode.on.net>
+References: <20080513110322.030a5386.zoup@zoup.org>	<48296CFF.5000207@keyaccess.nl>	<20080513151425.448369e8.zoup@zoup.org>
+	<4829781E.6040909@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7E5421037F7
-	for <alsa-devel@alsa-project.org>;
-	Thu, 22 May 2008 13:03:35 +0200 (CEST)
-In-Reply-To: <48353DEE.1020502@atmel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <4829781E.6040909@keyaccess.nl>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sedji Gaouaou wrote:
-> I have a problem with my recording driver.
-> I have set up a pcm_hardware structure in which I define the format
-> supported by my hardware:
-> ...
->     .formats        = (SNDRV_PCM_FMTBIT_S16_LE
->                    | SNDRV_PCM_FMTBIT_S16_BE
->                    | SNDRV_PCM_FMTBIT_S20_3LE
->                    ...
->
-> Then in my open function I pass it to the runtime struct.
->
-> Nevertheless if  I try to run arecord with this option: arecord -d 1
-> test.wav, I will have a kernel oops.
-> The default format is U8, but it is not supported by my Hardware, abd it
-> is not defined in my structure, so I though that it should exit arecord
-> but not crash.
+Rene Herman wrote, on 2008-05-13 20:44:
+> On 13-05-08 12:44, Armin ranjbar wrote:
+> 
+>>> Device Drivers ->
+>>>   Input device support ->
+>>>     Miscelaneous devices
+>>>
+>>> With current mainline, it's:
+>>>
+>>> General setup ->
+>>>   Configure standard kernel features (for small systems)
+>>>      Enable PC-Speaker support
+>> Thank you very much for your reply , 
+>>
+>> but i have to say that i have this options activated , still no pc
+>> speaker .
+> 
+> Rechecked. Yes, you need this option, you need the ALSA one disabled (not
+> modular, disabled) and then the PC speaker driver option appears in its
+> input menu where you want to enable it. Paths as given in last reply.
+> 
+> Yes, that would seem to be amazingly clumsily done. Perhaps there was a
+> reason (adding alsa-devel).
+> 
+> Rene.
 
-The default device will do automatic sample format conversion, i.e.,
-your driver will see a request for S16_LE.
+Thanks for the clues. I attempted to compile a recent snapshot of 
+alsa-driver from 
+ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/alsa-driver-hg20080516.tar.bz2
 
-This looks like a bug somewhere else in your driver.
+under Debian unstable, by overwriting the unpacked Debian source tarball.
+
+The catch is that the Debian build information set up by
+
+dpkg-reconfigure alsa-source
+(which is stored in /etc/alsa/alsa-source.conf)
+
+is out of sync with the Mercurial snapshot and by compiling "all" ALSA 
+drivers, I get the ALSA pcspkr driver installed, which causes some problems.
+
+I'd probably need to hack /etc/alsa/alsa-source.conf based on the 
+drivers supported by the Mercurial snapshot *minus* pcspkr to build an 
+alsa-driver .deb based on the Mercurial snapshot.
+
+Arthur.
 
 
-Regards,
-Clemens
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
