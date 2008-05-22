@@ -1,19 +1,20 @@
-From: Adrian Bunk <bunk@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: Moving sound/* to drivers/ ?
-Date: Thu, 22 May 2008 17:22:36 +0300
-Message-ID: <20080522142236.GA27301@cs181133002.pp.htv.fi>
+Date: Thu, 22 May 2008 08:04:55 -0700 (PDT)
+Message-ID: <alpine.LFD.1.10.0805220758000.3081@woody.linux-foundation.org>
 References: <s5hzlqjz74d.wl%tiwai@suse.de> <4834B252.1080700@garzik.org>
 	<4834B5E2.3040301@keyaccess.nl> <s5hy7623fqs.wl%tiwai@suse.de>
+	<alpine.LNX.1.10.0805221052050.971@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6.pp.htv.fi (smtp6.pp.htv.fi [213.243.153.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id A2AC7243D9
+Received: from smtp1.linux-foundation.org (smtp1.linux-foundation.org
+	[140.211.169.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 324EB243B5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 May 2008 16:24:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hy7623fqs.wl%tiwai@suse.de>
+	Thu, 22 May 2008 17:05:30 +0200 (CEST)
+In-Reply-To: <alpine.LNX.1.10.0805221052050.971@fbirervta.pbzchgretzou.qr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jeff Garzik <jeff@garzik.org>, Rene Herman <rene.herman@keyaccess.nl>, linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: alsa-devel@alsa-project.org, Jeff Garzik <jeff@garzik.org>, Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@keyaccess.nl>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 22, 2008 at 10:27:55AM +0200, Takashi Iwai wrote:
-> At Thu, 22 May 2008 01:53:06 +0200,
-> Rene Herman wrote:
->...
-> An argument for keeping the sound core in /sound is that this is used
-> not only by sound drivers but also by some video drivers.
 
-Same goes for e.g. some of the USB or PCI code.
 
-We could start splitting stuff like crazy, but what would we really 
-gain by doing it?
+On Thu, 22 May 2008, Jan Engelhardt wrote:
+> 
+> I am in favor of keeping /sound around with the
+> non-hardware-dependent code, much like /block does with regard to
+> /drivers/block.
 
-> Takashi
+I'd personally *much* rather have just one subdirectory.
 
-cu
-Adrian
+I realize that block/ and drivers/block/ (and net/ vs drivers/net/) has 
+come up several times as an example that isn't that way, BUT:
 
--- 
+ - that's actually the odd man out. It's more common to do it the other 
+   way (and examples have already been given: drivers/usb/core, just plain 
+   drivers/base, drivers/scsi/ (where it's all mixed up and a lot of 
+   low-level drivers are in subdirectories of their own), etc etc.
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+ - perhaps more importantly, it's totally different from 'sound' in that 
+   the block/ and drivers/block/ maintainership is actually *separate*.
+
+   The same is actually true of net/ and drivers/net/ too. It so happens 
+   that within the last few months, drivers/net/ gets merged through the 
+   same maintainer as net/, but they really end up being maintained 
+   separately other than that.
+
+So the block/ and net/ layers have very much a higher level of separation 
+from their drivers. sound has always been very much _maintained_ as a 
+block, even if it then internally may be separate pieces. Partly this is 
+from historical reasons, I'm sure, but it's true none-the-less.
+
+So from an outside view, having a single subdirectory makes sense, because 
+that's how it has always been maintained.
+
+So I'd personally much rather see just one drivers/sound/ than have this 
+split up.
+
+		Linus
