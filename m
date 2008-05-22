@@ -1,18 +1,19 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: Re: snd_pcsp locking mess
-Date: Fri, 23 May 2008 00:28:36 +0400
-Message-ID: <4835D774.3070306@aknet.ru>
-References: <20080518172258.D0DFB108060@picon.linux-foundation.org>	<4830737B.70108@aknet.ru>	<s5hve1ac05g.wl%tiwai@suse.de>	<4831B260.1060802@aknet.ru>
-	<s5hhccrx2ey.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: HG -> GIT migration
+Date: Thu, 22 May 2008 22:43:04 +0200
+Message-ID: <4835DAD8.2090204@keyaccess.nl>
+References: <Pine.LNX.4.61.0805201314190.1798@tm8103-a.perex-int.cz>	<200805211430.06653.linux@audioscience.com>	<Pine.LNX.4.61.0805210805080.1798@tm8103-a.perex-int.cz>	<s5hve18vtml.wl%tiwai@suse.de>	<483415E7.5080402@keyaccess.nl>	<s5hfxsbx27f.wl%tiwai@suse.de>	<48341DF5.4090307@keyaccess.nl>	<Pine.LNX.4.61.0805211517290.1798@tm8103-a.perex-int.cz>	<48343465.2030905@keyaccess.nl>	<s5h8wy3wvyv.wl%tiwai@suse.de>	<48343FF4.8090107@keyaccess.nl>
+	<20080522112412.4a8406fd.sfr@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9541C1037F7
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB4B124453
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 May 2008 22:28:51 +0200 (CEST)
-In-Reply-To: <s5hhccrx2ey.wl%tiwai@suse.de>
+	Thu, 22 May 2008 22:40:35 +0200 (CEST)
+In-Reply-To: <20080522112412.4a8406fd.sfr@canb.auug.org.au>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,69 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+On 22-05-08 03:24, Stephen Rothwell wrote:
 
-Takashi Iwai wrote:
-> The substream lock can be removed from hrtimer callback gracefully.
-> So, you have no longer the issue with this lock/unlock procedure.
-> In hrtimer callback, you just need to have the DMA-buffer.  That can
-> be protected without the substream lock, too, I believe.
-OK. But still, the substream have to
-be protected against the close callback.
-So I still need 2 locks. One for the
-substream, another for the DMA buffer.
-That makes things better but not much.
-I don't want 2 locks in a softirq callback,
-even if they are independant.
-Or am I still missing your point?
+> Linux-next is rebuilt every day based on Linus' current kernel.  I merge
+> all the trees I have been told about and fixup minor conflicts (sometimes
+> reverting commits, sometimes applying patches).  So everyday, linux-next
+> is completely new.  I do not care if the trees I am merging get rebased.
 
-> In this scenario, the trigger-stop could be asynchronous.  Thus, the
-> prepare PCM callback should sync also with the hrtimer callback to
-> assure that the pending callback is finished.
-OK, so I need 3 locks after all - adding
-one for the position pointers. Now that
-may be not even better than using the
-pcm_stream_lock() after all...
-Can there be a more advanced version
-of a pcm stream lock? The one that will
-take something persistant as an argument
-(chip->pcm perhaps), take some lock from
-there, then check if the substream is
-not freed, and then take the substream
-lock. And if substream was freed - it
-unlocks and returns an error. Effectively
-similar to the current snd_pcm_stream_lock(),
-but without a need for the second lock
-to protect the substream itself.
+This means you're going to redo all those (same) minor conflict fixups 
+each day again, doesn't it? Or do you pass the fixups back to (one of) 
+the conflicting trees?
 
->> code. And I remember the last time we
->> discussed this, you admitted (some of)
->> the other drivers do get this part wrong
->> too. So fixing it properly once and for
->> all might be a good idea as you are at
->> it again.
-> I don't agree here unless any code is shown :)
-OK, lets try. My assumption is that all
-drivers do have the locking wrong because
-of that policy, but please show me what
-am I missing. :)
-So lets see hda_intel.c.
-What it does is to release some reg_lock
-before calling snd_pcm_period_elapsed().
-It takes that lock in azx_pcm_close().
-If it spins on that lock in azx_pcm_close()
-on one CPU and drops that lock in an IRQ
-handler on another CPU, then, I beleive,
-it will crash in snd_pcm_period_elapsed(),
-as the substream is freed before it takes
-the lock again.
-What am I missing? (that can't happen with
-a single CPU perhaps, as the lock is IRQ-safe,
-but IIRC this doesn't help on SMP at all)
-Or, what nm256.c does... hmm, it doesn't
-even do "substream = NULL" in a close
-callback - why?
+> I have only had a couple of occasions when the merge conflicts were so
+> bad that I had to drop a whole tree, but they were fixed up the next day.
+> 
+> Linux-next has only one downstream - Andrew's mm tree and he bases on a
+> particular day's linux-next tree each time he rebuilds mm.  Testers just
+> need to take the complete tree (which isn't too bad if you are using git
+> since all the linux-next trees share a lot of objects).
+> 
+> Does that answer your question?
+
+But yes, it does, thanks.
+
+Rene
