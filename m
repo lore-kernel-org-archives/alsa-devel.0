@@ -1,74 +1,93 @@
-From: Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: Re: Pc Speaker
-Date: Thu, 22 May 2008 21:31:55 +0930
-Message-ID: <483560B3.70204@internode.on.net>
-References: <20080513110322.030a5386.zoup@zoup.org>	<48296CFF.5000207@keyaccess.nl>	<20080513151425.448369e8.zoup@zoup.org>
-	<4829781E.6040909@keyaccess.nl>
+From: "Benjamin van den Hout" <bvdhout@gmail.com>
+Subject: Re: Kernel crash in snd-aloop (2)
+Date: Thu, 22 May 2008 15:02:02 +0200
+Message-ID: <d5eabee70805220602p73154e2buc1bd9e38d0c314e3@mail.gmail.com>
+References: <d5eabee70805210741p256d4b3dmaa15fbd39df7c53f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <4829781E.6040909@keyaccess.nl>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed;
+	boundary="----=_Part_2892_4568445.1211461322817"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC74324338
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 May 2008 15:02:04 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so26592rvb.32
+	for <alsa-devel@alsa-project.org>; Thu, 22 May 2008 06:02:02 -0700 (PDT)
+In-Reply-To: <d5eabee70805210741p256d4b3dmaa15fbd39df7c53f@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman wrote, on 2008-05-13 20:44:
-> On 13-05-08 12:44, Armin ranjbar wrote:
-> 
->>> Device Drivers ->
->>>   Input device support ->
->>>     Miscelaneous devices
->>>
->>> With current mainline, it's:
->>>
->>> General setup ->
->>>   Configure standard kernel features (for small systems)
->>>      Enable PC-Speaker support
->> Thank you very much for your reply , 
->>
->> but i have to say that i have this options activated , still no pc
->> speaker .
-> 
-> Rechecked. Yes, you need this option, you need the ALSA one disabled (not
-> modular, disabled) and then the PC speaker driver option appears in its
-> input menu where you want to enable it. Paths as given in last reply.
-> 
-> Yes, that would seem to be amazingly clumsily done. Perhaps there was a
-> reason (adding alsa-devel).
-> 
-> Rene.
+------=_Part_2892_4568445.1211461322817
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Thanks for the clues. I attempted to compile a recent snapshot of 
-alsa-driver from 
-ftp://ftp.suse.com/pub/projects/alsa/snapshot/driver/alsa-driver-hg20080516.tar.bz2
+Hello,
 
-under Debian unstable, by overwriting the unpacked Debian source tarball.
+So after much experimentation and thinking, I think I can come up with the
+following scenario why the kernel crashes:
 
-The catch is that the Debian build information set up by
+When the aloop soundcard is closed by jackd, all data structures are freed.
+This is OK, but the code forgets to check if any timers are still running.
+Most of the time this goes well and nothing bad happens. But sometimes the
+dpcm->timer.function fires after all data is cleaned up/freed. And that is
+of course not very desirable.
 
-dpkg-reconfigure alsa-source
-(which is stored in /etc/alsa/alsa-source.conf)
+I've attached a patch to the alsa-driver-hg20080516 version of
+drivers/aloop-kernel.c This patch does a del_timer() in three places, I
+would love to hear feedback from you guys on the list if some del_timers can
+be eliminated? It seems a bit paranoia but it works perfectly in my test
+setup.
 
-is out of sync with the Mercurial snapshot and by compiling "all" ALSA 
-drivers, I get the ALSA pcspkr driver installed, which causes some problems.
+So what do you guys think? I've never submitted patches before so I'm not
+sure if this is the correct procedure. Please correct me if necessary...
 
-I'd probably need to hack /etc/alsa/alsa-source.conf based on the 
-drivers supported by the Mercurial snapshot *minus* pcspkr to build an 
-alsa-driver .deb based on the Mercurial snapshot.
+Kind regards,
+Benjamin van den Hout
 
-Arthur.
+------=_Part_2892_4568445.1211461322817
+Content-Type: text/x-patch; name=aloop-del_timer.patch
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fgjcr9mm
+Content-Disposition: attachment; filename=aloop-del_timer.patch
 
+LS0tIGFsc2EtZHJpdmVyLWhnMjAwODA1MTYvZHJpdmVycy9hbG9vcC1rZXJuZWwuYwkyMDA4LTA1
+LTIyIDEzOjM3OjA5LjAwMDAwMDAwMCArMDIwMAorKysgYWxzYS1kcml2ZXItaGcyMDA4MDUxNi5w
+YXRjaC9kcml2ZXJzL2Fsb29wLWtlcm5lbC5jCTIwMDgtMDUtMjIgMTQ6NDk6MTIuMDAwMDAwMDAw
+ICswMjAwCkBAIC0yMzIsNiArMjMyLDggQEAKIHN0YXRpYyB2b2lkIHNuZF9jYXJkX2xvb3BiYWNr
+X3J1bnRpbWVfZnJlZShzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lKQogewogCXNuZF9j
+YXJkX2xvb3BiYWNrX3BjbV90ICpkcGNtID0gcnVudGltZS0+cHJpdmF0ZV9kYXRhOworCXNuZF9h
+c3NlcnQoZHBjbSAhPSBOVUxMLCByZXR1cm4pOworCWRlbF90aW1lcigmZHBjbS0+dGltZXIpOwog
+CWtmcmVlKGRwY20pOwogfQogCkBAIC0yNjUsNiArMjY3LDkgQEAKIAlzbmRfY2FyZF9sb29wYmFj
+a19wY21fdCAqZHBjbSA9IHJ1bnRpbWUtPnByaXZhdGVfZGF0YTsKIAlzbmRfY2FyZF9sb29wYmFj
+a19jYWJsZV90ICpjYWJsZSA9IGRwY20tPmNhYmxlOwogCisJc25kX2Fzc2VydChkcGNtICE9IE5V
+TEwsIHJldHVybiAtRUlOVkFMKTsKKwlkZWxfdGltZXIoJmRwY20tPnRpbWVyKTsKKwogCXNuZF9w
+Y21fc2V0X3J1bnRpbWVfYnVmZmVyKHN1YnN0cmVhbSwgTlVMTCk7CiAKIAlpZiAoU05EUlZfUENN
+X1NUUkVBTV9QTEFZQkFDSyA9PSBzdWJzdHJlYW0tPnN0cmVhbSkgewpAQCAtMzQ5LDYgKzM1NCwx
+MCBAQAogewogCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1
+bnRpbWU7CiAJc25kX2NhcmRfbG9vcGJhY2tfcGNtX3QgKmRwY20gPSBydW50aW1lLT5wcml2YXRl
+X2RhdGE7CisKKwlzbmRfYXNzZXJ0KGRwY20gIT0gTlVMTCwgcmV0dXJuIC1FSU5WQUwpOworCWRl
+bF90aW1lcigmZHBjbS0+dGltZXIpOworCiAJaWYgKFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0sg
+PT0gc3Vic3RyZWFtLT5zdHJlYW0pIHsKIAkJZHBjbS0+Y2FibGUtPnBsYXliYWNrX3ZhbGlkID0g
+MDsKIAkJZHBjbS0+Y2FibGUtPnBsYXliYWNrX3J1bm5pbmcgPSAwOwo=
+------=_Part_2892_4568445.1211461322817
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2008.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_Part_2892_4568445.1211461322817--
