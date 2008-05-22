@@ -1,17 +1,26 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Problem with intel-hda integrated audio
-Date: Thu, 22 May 2008 15:51:39 -0700
-Message-ID: <1211496699.8312.155.camel@razman>
-References: <200805222138.35409.matteo.sasso@gmail.com>
+From: Geoffrey Wossum <geoffrey@pager.net>
+Subject: Re: AT32AP7000 (AVR32) + WM8510
+Date: Thu, 22 May 2008 18:11:31 -0500
+Message-ID: <200805221811.31770.geoffrey@pager.net>
+References: <200805221120.08815.geoffrey@pager.net>
+	<200805221457.41748.geoffrey@pager.net>
+	<20080522224840.GA31117@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B9C1103802
+Received: from barracuda.pager.net (mail.pager.net [209.253.16.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id C83BF24472
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 May 2008 00:51:42 +0200 (CEST)
-In-Reply-To: <200805222138.35409.matteo.sasso@gmail.com>
+	Fri, 23 May 2008 01:11:23 +0200 (CEST)
+Received: from [192.168.1.71] (localhost [127.0.0.1])
+	by barracuda.pager.net (Spam Firewall) with ESMTP id E9A1DB4EF9
+	for <alsa-devel@alsa-project.org>; Thu, 22 May 2008 18:11:05 -0500 (CDT)
+Received: from [192.168.1.71] (LRS-CiscoBackup [192.168.1.1]) by
+	barracuda.pager.net with ESMTP id HJZTyxT8UQO090Pj for
+	<alsa-devel@alsa-project.org>; Thu, 22 May 2008 18:11:05 -0500 (CDT)
+In-Reply-To: <20080522224840.GA31117@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,61 +30,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Matteo Sasso <matteo.sasso@gmail.com>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-IF this is the same issue as previously posted in alsa-user, then i have
-an idea what may be going on.  Try rebooting the system with "acpi=off"
-in the kernel boot parameters.  If this makes audio work, you have an
-issue with your acpi tables.
+On Thursday 22 May 2008 05:48:41 pm Mark Brown wrote:
+> On Thu, May 22, 2008 at 02:57:41PM -0500, Geoffrey Wossum wrote:
+> > Looks like it should work to me.  Note that I do hear a pop from the
+> > speaker the first time I try to play a file.  Here's a dump of the
+> > registers while I'm trying to play a file with aplay.  I'm combing
+> > through them right now to see if I can find anything that looks off.
 
-Could you also download and run alsa-info.sh from
-http://alsa-project.org/ Help to debug section?
+> I'll have a look at it at some point, but not right now :) .  I should
+> also have asked you if you could post your machine driver - if you'd
+> rather post it off-list that'd be fine.
 
-Tobin
+I'll have to do that tomorrow, I'm on my way out the door.
 
+> I take it the digital audio looks fine with a scope - clocks at the
+> correct rate, sensible looking data and so on?
 
-On Thu, 2008-05-22 at 21:38 +0200, Matteo Sasso wrote: 
+The DACDAT signal looks pretty good.  However, I did notice something very 
+odd.  The BCLK is dead on for whatever bitrate I'm doing.  However, the FRAME 
+always runs at 44.1 kHz, no matter what I do.  From my understanding of I2S 
+(which could be wrong), I would expect FRAME to run at the sample rate I'm 
+playing back.  So if I'm playing back at 11025, I would expect BCLK to run at 
+352 kHz and FRAME to run at 11 kHz.  I see BCLK running at 352 kHz, check.  
+But frame is running at 44.1 kHz.  This doesn't seem right.  Am I missing 
+something here?
 
-> Hello, I'm having a problem with a soundcard under ubuntu. I tried nearly 
-> every workaround I could find on the Internet but I have not been successful 
-> so far.
-> 
-> The computer in question is a Toshiba Satellite Pro U200 series. The soundcard 
-> seems to be correctly identified by ALSA but it seems muted, nothing I tried 
-> seems to work. I followed the instructions given at
-> http://www.mjmwired.net/kernel/Documentation/sound/alsa/ALSA-Configuration.txt
-> I determined that my card uses a AD1981 codec, so I added the following 
-> to /etc/modprobe.d/alsa-base:
-> 
-> options snd-hda-intel model=toshiba
-> 
-> I tried many other combinations (3stack, basic, laptop), with and 
-> without "position_fix=1". I also tried using underscores instead of hypens 
-> ("snd_hda_intel"). I run update-initramfs -u after every try.
-> 
-> lspci -vn has to say the following:
-> 00:1b.0 0403: 8086:27d8 (rev 02)
->         Sybsystem: 1179:0001
->         Flags: bus master, fast devsel, latency 0, IRQ 23
->         Memory at 50080000 (64-bit, non-prefetchable) [size=16K]
->         Capabilities: [50] Power Management version 2
->         Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ 
-> Queue=0/0 Enable-
->         Capabilities: [70] Express Unknown type IRQ 0
-> 
-> I'll keep tabs on this mailing list, so feel free to ask for more info.
-> Any help is appreciated.
-> Thanks.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- Tobin Davis 
-
-
-Actresses will happen in the best regulated families.
-		-- Addison Mizner and Oliver Herford, "The Entirely
-		New Cynic's Calendar", 1905
+---
+Geoffrey
