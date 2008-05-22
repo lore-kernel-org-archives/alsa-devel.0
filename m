@@ -1,19 +1,19 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: HG -> GIT migration
-Date: Thu, 22 May 2008 22:43:04 +0200
-Message-ID: <4835DAD8.2090204@keyaccess.nl>
-References: <Pine.LNX.4.61.0805201314190.1798@tm8103-a.perex-int.cz>	<200805211430.06653.linux@audioscience.com>	<Pine.LNX.4.61.0805210805080.1798@tm8103-a.perex-int.cz>	<s5hve18vtml.wl%tiwai@suse.de>	<483415E7.5080402@keyaccess.nl>	<s5hfxsbx27f.wl%tiwai@suse.de>	<48341DF5.4090307@keyaccess.nl>	<Pine.LNX.4.61.0805211517290.1798@tm8103-a.perex-int.cz>	<48343465.2030905@keyaccess.nl>	<s5h8wy3wvyv.wl%tiwai@suse.de>	<48343FF4.8090107@keyaccess.nl>
-	<20080522112412.4a8406fd.sfr@canb.auug.org.au>
+Subject: Re: [Alsa-user] Pc Speaker
+Date: Thu, 22 May 2008 22:46:24 +0200
+Message-ID: <4835DBA0.90401@keyaccess.nl>
+References: <20080513110322.030a5386.zoup@zoup.org>	<48296CFF.5000207@keyaccess.nl>	<20080513151425.448369e8.zoup@zoup.org>
+	<4829781E.6040909@keyaccess.nl> <483560B3.70204@internode.on.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB4B124453
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id F13FF24462
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 May 2008 22:40:35 +0200 (CEST)
-In-Reply-To: <20080522112412.4a8406fd.sfr@canb.auug.org.au>
+	Thu, 22 May 2008 22:43:56 +0200 (CEST)
+In-Reply-To: <483560B3.70204@internode.on.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel <linux-kernel@vger.kernel.org>
+To: Arthur Marsh <arthur.marsh@internode.on.net>
+Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>, Armin ranjbar <zoup@zoup.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 22-05-08 03:24, Stephen Rothwell wrote:
+On 22-05-08 14:01, Arthur Marsh wrote:
 
-> Linux-next is rebuilt every day based on Linus' current kernel.  I merge
-> all the trees I have been told about and fixup minor conflicts (sometimes
-> reverting commits, sometimes applying patches).  So everyday, linux-next
-> is completely new.  I do not care if the trees I am merging get rebased.
+> under Debian unstable, by overwriting the unpacked Debian source tarball.
 
-This means you're going to redo all those (same) minor conflict fixups 
-each day again, doesn't it? Or do you pass the fixups back to (one of) 
-the conflicting trees?
+I'm afraid you lost me here. I have little clue about Debian.
 
-> I have only had a couple of occasions when the merge conflicts were so
-> bad that I had to drop a whole tree, but they were fixed up the next day.
-> 
-> Linux-next has only one downstream - Andrew's mm tree and he bases on a
-> particular day's linux-next tree each time he rebuilds mm.  Testers just
-> need to take the complete tree (which isn't too bad if you are using git
-> since all the linux-next trees share a lot of objects).
-> 
-> Does that answer your question?
-
-But yes, it does, thanks.
-
-Rene
+Rene.
