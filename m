@@ -1,39 +1,58 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: [alsa-devel] Asynchronous notification in
- ALSA - I/O Plugin - Pulseaudio
-Date: Fri, 23 May 2008 10:07:39 +0100
-Message-ID: <g161h9$t4i$1@ger.gmane.org>
-References: <s5hfxsd9qt6.wl%tiwai@suse.de>	<18027403.3701211352364970.JavaMail.root@intra>	<s5hprrgvsre.wl%tiwai@suse.de>	<20080521222936.GB12214@tango.0pointer.de>	<g13rdf$6os$1@ger.gmane.org>
-	<20080522135951.GA16685@tango.0pointer.de>
-Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+From: Juergen Beisert <jbe@pengutronix.de>
+Subject: Re: Question about "control names"
+Date: Fri, 23 May 2008 12:01:41 +0200
+Message-ID: <200805231201.41820.jbe@pengutronix.de>
+References: <200805231028.22282.jbe@pengutronix.de>
+	<4836902D.7000408@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
-In-Reply-To: <20080522135951.GA16685@tango.0pointer.de>
-List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
-List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
-List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
-List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
-	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
-Sender: pulseaudio-discuss-bounces@mail.0pointer.de
-Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
-To: pulseaudio-discuss@mail.0pointer.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <4836902D.7000408@alsa-project.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Clemens Ladisch <clemens@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lennart Poettering wrote:
-> On Thu, 22.05.08 14:11, Colin Guthrie (gmane@colin.guthr.ie) wrote:
->> I thought the whole point was that by adding async code to ioplug, the 
->> libflashsupport stuff wasn't needed and flash could just use it's native 
->> alsa support + alsa's pulse plugin.... or am I missing the point here?
-> 
-> The destruction dead lock issue is present both in libflashsupport and
-> the native ALSA backend. It's just that it is almost never triggered
-> if a hw device is used.
-
-Ahhhhhhhhh :)
-
-Col
+T24gRnJpZGF5IDIzIE1heSAyMDA4IDExOjM2LCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4gSnVl
+cmdlbiBCZWlzZXJ0IHdyb3RlOgo+ID4gSSdtIHBsYXlpbmcgd2l0aCB0aGUgY29udHJvbCBuYW1l
+cyBvZiBteSAic25kX2tjb250cm9sX25ldyIgY29udHJvbHMuCj4gPiBXaGVuIEknbSB1c2luZyAi
+UENNIFBsYXliYWNrIFN3aXRjaCIgYW5kICJQQ00gUGxheWJhY2sgVm9sdW1lIiBhbHNhbWl4ZXIK
+PiA+IHNob3dzIG1lIGEgc2xpZGVyIHdpdGggYSBzd2l0Y2ggYXQgaXRzIGJvdHRvbS4gVGhhdCdz
+IHdoYXQgSSBleHBlY3RlZC4KPiA+IEJ1dCB3aGVuIEknbSB1c2luZyBhIHNlY29uZCBzZXQgKCJs
+aW5lIGluIiB0byAibGluZSBvdXQiIGJ5cGFzcyksIHdpdGgKPiA+ICJMaW5lIEJ5cGFzcyBDYXB0
+dXJlIFN3aXRjaCIgYW5kICJMaW5lIEJ5cGFzcyBDYXB0dXJlIFZvbHVtZSIgY29udHJvbAo+ID4g
+bmFtZXMsIGl0cyBjb25mdXNpbmcgKEJUVzogIkxpbmUgQnlwYXNzIENhcHR1cmUgVm9sdW1lIiBp
+cyBvZiB0eXBlCj4gPiBTTkRSVl9DVExfRUxFTV9UWVBFX0VOVU1FUkFURUQpLgo+Cj4gVGhpcyBt
+YXkgYmUgY2F1c2VkIGJ5IHRoZSBjb250cm9sIHR5cGUuICBXaHkgaXMgdGhlIHZvbHVtZSAiZW51
+bWVyYXRlZCI/CgpJdHMgbm90IGxpbmVhci4gSXRzIGRlZmluZWQgaW4gZEIgYW5kIGhhcyBzb21l
+ICJob2xlcyIgaW4gaXQuCldoZW4gSSBjaGFuZ2UgaXQgdG8gU05EUlZfQ1RMX0VMRU1fVFlQRV9J
+TlRFR0VSIEkgc2VlIHRoZSBzbGlkZXIgaW4gdGhlIApbQ2FwdHVyZV0gc2NyZWVuLCBhbmQgYWxz
+byBzb21ldGhpbmcgYXQgaXRzIGJvdHRvbSwgYnV0IEkgY2FuJ3Qgc3dpdGNoIAphbnl0aGluZzoK
+CgogICDilILilpLilpLilIIgCiAgIOKUguKWkuKWkuKUgiAKICAg4pSU4pSA4pSA4pSYCiAgLS0t
+LS0tCiAgICAgNwo8TGluZSBCeXA+CgpUaGlzIEkgc2VlIGluIHRoZSBbUGxheWJhY2tdIHNjcmVl
+biBub3cgd2l0aCBpZGVudGljYWwgY29kZSBidXQgIlBDTSBQbGF5YmFjayAKU3dpdGNoIiBhbmQg
+IlBDTSBQbGF5YmFjayBWb2x1bWUiIGFzIGNvbnRyb2wgbmFtZXMuCgogIOKUgiAg4pSCIAogIOKU
+nOKUgOKUgOKUpCAKICDilIJNTeKUgiAKICDilJTilIDilIDilJggCiAgMDw+MCAKICBQQ00gCgpJ
+ZiBJIGNoYW5nZSB0aGUgIkxpbmUgQnlwYXNzIENhcHR1cmUgLi4uIiBjb250cm9sIG5hbWVzIHRv
+ICJDRCBQbGF5YmFjayAuLi4iIAp0aGUgY29udHJvbCBsb29rcyBsaWtlIHRoZSBQQ00gb25lIGFi
+b3ZlLgoKU2VlbXMgIkxpbmUgQnlwYXNzIENhcHR1cmUiIGlzIHNvbWV0aGluZyBhbHNhbWl4ZXIg
+Y2FuJ3QgaGFuZGxlLiBJcyB0aGVyZSBhIApiZXR0ZXIgY29udHJvbCBuYW1lIGZvciBzdWNoIGEg
+ZmVhdHVyZT8gSSBjYW4gcm91dGUgIkxpbmUgSW4iIHRocm91Z2ggYSAKYW1wbGlmaWVyIHRvICJM
+aW5lIE91dCIuCgpKdWVyZ2VuCgotLSAKRGlwbC4tSW5nLiBKdWVyZ2VuIEJlaXNlcnQgfCBodHRw
+Oi8vd3d3LnBlbmd1dHJvbml4LmRlCsKgUGVuZ3V0cm9uaXggLSBMaW51eCBTb2x1dGlvbnMgZm9y
+IFNjaWVuY2UgYW5kIEluZHVzdHJ5CsKgICAgSGFuZGVsc3JlZ2lzdGVyOiBBbXRzZ2VyaWNodCBI
+aWxkZXNoZWltLCBIUkEgMjY4NgrCoCDCoCDCoCAgICBWZXJ0cmV0dW5nIFN1ZWQvTXVlbmNoZW4s
+IEdlcm1hbnkKICAgUGhvbmU6ICs0OS04NzY2LTkzOSAyMjggfCAgRmF4OiArNDktNTEyMS0yMDY5
+MTctOQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
