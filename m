@@ -1,15 +1,26 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: [patch] snd-pcsp: fix pcsp_treble_info() to honour the
-	item number
-Date: Sat, 24 May 2008 00:04:33 +0400
-Message-ID: <48372351.9090900@aknet.ru>
+From: Geoffrey Wossum <geoffrey@pager.net>
+Subject: Re: AT32AP7000 (AVR32) + WM8510
+Date: Fri, 23 May 2008 17:56:00 -0500
+Message-ID: <200805231756.00609.geoffrey@pager.net>
+References: <200805221120.08815.geoffrey@pager.net>
+	<20080522224840.GA31117@sirena.org.uk>
+	<200805221811.31770.geoffrey@pager.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020706030701010104020500"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 23022246C7
+Received: from barracuda.pager.net (mail.pager.net [209.253.16.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8616245D5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 May 2008 22:04:54 +0200 (CEST)
+	Sat, 24 May 2008 00:55:46 +0200 (CEST)
+Received: from [192.168.1.71] (localhost [127.0.0.1])
+	by barracuda.pager.net (Spam Firewall) with ESMTP id 86DF4B6353
+	for <alsa-devel@alsa-project.org>; Fri, 23 May 2008 17:55:39 -0500 (CDT)
+Received: from [192.168.1.71] (LRS-CiscoBackup [192.168.1.1]) by
+	barracuda.pager.net with ESMTP id FD1s8k4AC4YM6NAJ for
+	<alsa-devel@alsa-project.org>; Fri, 23 May 2008 17:55:39 -0500 (CDT)
+In-Reply-To: <200805221811.31770.geoffrey@pager.net>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,89 +30,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Andreas Mohr <andi@lisas.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020706030701010104020500
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On Thursday 22 May 2008 06:11:31 pm Geoffrey Wossum wrote:
+> On Thursday 22 May 2008 05:48:41 pm Mark Brown wrote:
+> > On Thu, May 22, 2008 at 02:57:41PM -0500, Geoffrey Wossum wrote:
+> > > Looks like it should work to me.  Note that I do hear a pop from the
+> > > speaker the first time I try to play a file.  Here's a dump of the
+> > > registers while I'm trying to play a file with aplay.  I'm combing
+> > > through them right now to see if I can find anything that looks off.
+> >
+> > I'll have a look at it at some point, but not right now :) .  I should
+> > also have asked you if you could post your machine driver - if you'd
+> > rather post it off-list that'd be fine.
 
-Hello.
+Ok, I got it working.  It can now play "I'm sorry, Dave.  I'm afraid I can't 
+do that."  This should be the audio equivalent of "Hello world" :)
 
-The attached patch fixes the problem
-with mixers not properly displaying
-the PWM freq. The bug was that the
-pcsp_treble_info() didn't take the
-item number into an account.
+First, I changed it so the AVR32 provided the BCLK and FRAME.  I could never 
+get the WM8510 to generate what looked like proper FRAMES.  I did continue 
+using the WM8510's PLL to generate the DAC clock.  With the AVR32 providing 
+the clocks, I at least got some noise out of it.
 
-Takashi, could you please apply?
+After a lot of head scratching and analyzing register settings and what not, I 
+realized that I had based my AVR32 platform drivers on the AT91.  The AT91 is 
+little endian, the AVR32 is big endian.  Changing all the SNDRV_PCM_FMTBIT_ 
+settings to be BE instead of LE changed the noise into the files I was trying 
+to play.
 
---------------020706030701010104020500
-Content-Type: text/x-patch;
- name="pcsp_tre.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="pcsp_tre.diff"
+Finally, I really had to lie in the wm8510 code and say that it supported a 
+minimum of 2 channels, and a maximum of 2 channels.  This makes sense from 
+the data sheet, since it still wants a left and a right channel of data, and 
+just throws one away.
 
-# HG changeset patch
-# User Stas Sergeev <stsp@users.sourceforge.net>
-# Date 1211572692 -14400
-# Node ID 15efd0d72bdec6b30cad2ea225c0d9d2be07e150
-# Parent  2278b9a6058f5b45081f8227902df585474a81a6
-snd-pcsp: fix pcsp_treble_info() to honour an item number.
-This solves the problem with mixers wrongly displaying the PWM freq.
+A few questions:
 
-Signed-off-by: Stas Sergeev <stsp@aknet.ru>
-CC: Andreas Mohr <andi@lisas.de>
+I had to change the WM8510's format to say that it wanted big endian.  Should 
+the CODEC (and platform and machine) be setup just to say that it uses 
+SNDRV_PCM_FMTBIT_S16 instead of SNDRV_PCM_FMTBIT_S16_LE/BE?  Looks from 
+sound/pcm.h this should just do the Right Thing.
 
-diff -r 2278b9a6058f -r 15efd0d72bde drivers/pcsp/pcsp.h
---- a/drivers/pcsp/pcsp.h	Sat May 17 19:40:49 2008 +0400
-+++ b/drivers/pcsp/pcsp.h	Fri May 23 23:58:12 2008 +0400
-@@ -24,7 +24,8 @@
- /* default timer freq for PC-Speaker: 18643 Hz */
- #define DIV_18KHZ 64
- #define MAX_DIV DIV_18KHZ
--#define CUR_DIV() (MAX_DIV >> chip->treble)
-+#define CALC_DIV(d) (MAX_DIV >> (d))
-+#define CUR_DIV() CALC_DIV(chip->treble)
- #define PCSP_MAX_TREBLE 1
- 
- /* unfortunately, with hrtimers 37KHz does not work very well :( */
-@@ -36,7 +37,8 @@
- #define PCSP_DEFAULT_SDIV (DIV_18KHZ >> 1)
- #define PCSP_DEFAULT_SRATE (PIT_TICK_RATE / PCSP_DEFAULT_SDIV)
- #define PCSP_INDEX_INC() (1 << (PCSP_MAX_TREBLE - chip->treble))
--#define PCSP_RATE() (PIT_TICK_RATE / CUR_DIV())
-+#define PCSP_CALC_RATE(i) (PIT_TICK_RATE / CALC_DIV(i))
-+#define PCSP_RATE() PCSP_CALC_RATE(chip->treble)
- #define PCSP_MIN_RATE__1 MAX_DIV/PIT_TICK_RATE
- #define PCSP_MAX_RATE__1 MIN_DIV/PIT_TICK_RATE
- #define PCSP_MAX_PERIOD_NS (1000000000ULL * PCSP_MIN_RATE__1)
-diff -r 2278b9a6058f -r 15efd0d72bde drivers/pcsp/pcsp_mixer.c
---- a/drivers/pcsp/pcsp_mixer.c	Sat May 17 19:40:49 2008 +0400
-+++ b/drivers/pcsp/pcsp_mixer.c	Fri May 23 23:58:12 2008 +0400
-@@ -50,7 +50,8 @@
- 	uinfo->value.enumerated.items = chip->max_treble + 1;
- 	if (uinfo->value.enumerated.item > chip->max_treble)
- 		uinfo->value.enumerated.item = chip->max_treble;
--	sprintf(uinfo->value.enumerated.name, "%d", PCSP_RATE());
-+	sprintf(uinfo->value.enumerated.name, "%d",
-+			PCSP_CALC_RATE(uinfo->value.enumerated.item));
- 	return 0;
- }
- 
+Any idea why I couldn't get the WM8510 to generate the FRAME signal properly?  
+Like I said before, it generated a 44.1 kHz frame no matter the BCLK divider 
+or the word length were set to.
 
---------------020706030701010104020500
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks for the help!  As soon as I get the code cleaned up some, I'll 
+contribute the AVR32 platform driver code.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------020706030701010104020500--
+---
+Geoffrey
