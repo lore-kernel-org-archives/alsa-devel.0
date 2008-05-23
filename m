@@ -1,15 +1,36 @@
-From: Juergen Beisert <jbe@pengutronix.de>
-Subject: Re: Question about "control names"
-Date: Fri, 23 May 2008 12:01:41 +0200
-Message-ID: <200805231201.41820.jbe@pengutronix.de>
-References: <200805231028.22282.jbe@pengutronix.de>
-	<4836902D.7000408@alsa-project.org>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: [alsa-cvslog] alsa-kmirror: ALSA kernel mirror
+	repository branch,
+	master now at 9d46f4a919532c3f29a4ca1df3a4ce4686b11f37
+Date: Fri, 23 May 2008 12:26:35 +0200
+Message-ID: <m2bq2xtixw.fsf@vador.mandriva.com>
+References: <20080520112539.81C9D2484D@alsa0.perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <4836902D.7000408@alsa-project.org>
-Content-Disposition: inline
+Received: from mx1.mandriva.com (mx1.mandriva.com [212.85.150.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id E24BF24601
+	for <alsa-devel@alsa-project.org>;
+	Fri, 23 May 2008 12:26:25 +0200 (CEST)
+Received: from office.mandriva.com (office-abk.mandriva.com [84.55.162.90])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "office.mandrakesoft.com",
+	Issuer "smtp.mandrakesoft.com" (not verified))
+	by mx1.mandriva.com (Postfix) with ESMTP id 3E34A1F0076
+	for <alsa-devel@alsa-project.org>;
+	Fri, 23 May 2008 12:26:23 +0200 (CEST)
+Received: from vador.mandriva.com (anakin.mandriva.com [192.168.100.54])
+	by office.mandriva.com (Postfix) with ESMTP id D4F907EE2
+	for <alsa-devel@alsa-project.org>;
+	Fri, 23 May 2008 12:26:23 +0200 (CEST)
+Received: from vador.mandriva.com (vador.mandriva.com [127.0.0.1])
+	by vador.mandriva.com (Postfix) with ESMTP id A2CB31BD97
+	for <alsa-devel@alsa-project.org>;
+	Fri, 23 May 2008 12:26:35 +0200 (CEST)
+In-Reply-To: <20080520112539.81C9D2484D@alsa0.perex.cz>
+	(noreply-git@alsa-project.org's message of "Tue\,
+	20 May 2008 13\:25\:39 +0200 \(CEST\)")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,39 +41,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpZGF5IDIzIE1heSAyMDA4IDExOjM2LCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4gSnVl
-cmdlbiBCZWlzZXJ0IHdyb3RlOgo+ID4gSSdtIHBsYXlpbmcgd2l0aCB0aGUgY29udHJvbCBuYW1l
-cyBvZiBteSAic25kX2tjb250cm9sX25ldyIgY29udHJvbHMuCj4gPiBXaGVuIEknbSB1c2luZyAi
-UENNIFBsYXliYWNrIFN3aXRjaCIgYW5kICJQQ00gUGxheWJhY2sgVm9sdW1lIiBhbHNhbWl4ZXIK
-PiA+IHNob3dzIG1lIGEgc2xpZGVyIHdpdGggYSBzd2l0Y2ggYXQgaXRzIGJvdHRvbS4gVGhhdCdz
-IHdoYXQgSSBleHBlY3RlZC4KPiA+IEJ1dCB3aGVuIEknbSB1c2luZyBhIHNlY29uZCBzZXQgKCJs
-aW5lIGluIiB0byAibGluZSBvdXQiIGJ5cGFzcyksIHdpdGgKPiA+ICJMaW5lIEJ5cGFzcyBDYXB0
-dXJlIFN3aXRjaCIgYW5kICJMaW5lIEJ5cGFzcyBDYXB0dXJlIFZvbHVtZSIgY29udHJvbAo+ID4g
-bmFtZXMsIGl0cyBjb25mdXNpbmcgKEJUVzogIkxpbmUgQnlwYXNzIENhcHR1cmUgVm9sdW1lIiBp
-cyBvZiB0eXBlCj4gPiBTTkRSVl9DVExfRUxFTV9UWVBFX0VOVU1FUkFURUQpLgo+Cj4gVGhpcyBt
-YXkgYmUgY2F1c2VkIGJ5IHRoZSBjb250cm9sIHR5cGUuICBXaHkgaXMgdGhlIHZvbHVtZSAiZW51
-bWVyYXRlZCI/CgpJdHMgbm90IGxpbmVhci4gSXRzIGRlZmluZWQgaW4gZEIgYW5kIGhhcyBzb21l
-ICJob2xlcyIgaW4gaXQuCldoZW4gSSBjaGFuZ2UgaXQgdG8gU05EUlZfQ1RMX0VMRU1fVFlQRV9J
-TlRFR0VSIEkgc2VlIHRoZSBzbGlkZXIgaW4gdGhlIApbQ2FwdHVyZV0gc2NyZWVuLCBhbmQgYWxz
-byBzb21ldGhpbmcgYXQgaXRzIGJvdHRvbSwgYnV0IEkgY2FuJ3Qgc3dpdGNoIAphbnl0aGluZzoK
-CgogICDilILilpLilpLilIIgCiAgIOKUguKWkuKWkuKUgiAKICAg4pSU4pSA4pSA4pSYCiAgLS0t
-LS0tCiAgICAgNwo8TGluZSBCeXA+CgpUaGlzIEkgc2VlIGluIHRoZSBbUGxheWJhY2tdIHNjcmVl
-biBub3cgd2l0aCBpZGVudGljYWwgY29kZSBidXQgIlBDTSBQbGF5YmFjayAKU3dpdGNoIiBhbmQg
-IlBDTSBQbGF5YmFjayBWb2x1bWUiIGFzIGNvbnRyb2wgbmFtZXMuCgogIOKUgiAg4pSCIAogIOKU
-nOKUgOKUgOKUpCAKICDilIJNTeKUgiAKICDilJTilIDilIDilJggCiAgMDw+MCAKICBQQ00gCgpJ
-ZiBJIGNoYW5nZSB0aGUgIkxpbmUgQnlwYXNzIENhcHR1cmUgLi4uIiBjb250cm9sIG5hbWVzIHRv
-ICJDRCBQbGF5YmFjayAuLi4iIAp0aGUgY29udHJvbCBsb29rcyBsaWtlIHRoZSBQQ00gb25lIGFi
-b3ZlLgoKU2VlbXMgIkxpbmUgQnlwYXNzIENhcHR1cmUiIGlzIHNvbWV0aGluZyBhbHNhbWl4ZXIg
-Y2FuJ3QgaGFuZGxlLiBJcyB0aGVyZSBhIApiZXR0ZXIgY29udHJvbCBuYW1lIGZvciBzdWNoIGEg
-ZmVhdHVyZT8gSSBjYW4gcm91dGUgIkxpbmUgSW4iIHRocm91Z2ggYSAKYW1wbGlmaWVyIHRvICJM
-aW5lIE91dCIuCgpKdWVyZ2VuCgotLSAKRGlwbC4tSW5nLiBKdWVyZ2VuIEJlaXNlcnQgfCBodHRw
-Oi8vd3d3LnBlbmd1dHJvbml4LmRlCsKgUGVuZ3V0cm9uaXggLSBMaW51eCBTb2x1dGlvbnMgZm9y
-IFNjaWVuY2UgYW5kIEluZHVzdHJ5CsKgICAgSGFuZGVsc3JlZ2lzdGVyOiBBbXRzZ2VyaWNodCBI
-aWxkZXNoZWltLCBIUkEgMjY4NgrCoCDCoCDCoCAgICBWZXJ0cmV0dW5nIFN1ZWQvTXVlbmNoZW4s
-IEdlcm1hbnkKICAgUGhvbmU6ICs0OS04NzY2LTkzOSAyMjggfCAgRmF4OiArNDktNTEyMS0yMDY5
-MTctOQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+noreply-git@alsa-project.org writes:
+
+> Hello,
+> 
+> This is an automated email from the git hooks/update script, it was
+> generated because a ref change was pushed to the repository.
+> 
+> Updating branch, master,
+>        via  9d46f4a919532c3f29a4ca1df3a4ce4686b11f37 (commit)
+>       from  fc5102d6c6520f48d39faf572881bc520c41aeb7 (commit)
+> 
+> - Log -----------------------------------------------------------------
+> commit 9d46f4a919532c3f29a4ca1df3a4ce4686b11f37
+> Author:     Jaroslav Kysela <perex@perex.cz>
+> AuthorDate: Tue May 20 13:25:35 2008 +0200
+> Commit:     Jaroslav Kysela <perex@perex.cz>
+> CommitDate: Tue May 20 13:25:35 2008 +0200
+> 
+>     removed .hgtags
+
+can we make the log appears in subject instead of useless sha1 ID?
