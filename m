@@ -1,20 +1,20 @@
 From: Ben Stanley <Ben.Stanley@exemail.com.au>
-Subject: alsa-drivers-HEAD does not compile against recent
-	RHE5.1 kernels
-Date: Fri, 23 May 2008 11:41:40 +1000
-Message-ID: <1211506900.3811.105.camel@localhost>
+Subject: Re: HG -> GIT migration
+Date: Fri, 23 May 2008 12:31:08 +1000
+Message-ID: <1211509868.3811.119.camel@localhost>
+References: <Pine.LNX.4.61.0805201314190.1798@tm8103-a.perex-int.cz>
+	<200805211430.06653.linux@audioscience.com>
+	<Pine.LNX.4.61.0805210805080.1798@tm8103-a.perex-int.cz>
+	<200805221016.27143.linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id 663A2244A6
+	by alsa0.perex.cz (Postfix) with ESMTP id C674B244B5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 May 2008 03:41:46 +0200 (CEST)
-Received: from 168.78.233.220.exetel.com.au ([220.233.78.168]
-	helo=[192.168.1.2]) by smtp.po.exetel.com.au with esmtp (Exim 4.68)
-	(envelope-from <Ben.Stanley@exemail.com.au>) id 1JzMHt-0002Dy-K6
-	for alsa-devel@alsa-project.org; Fri, 23 May 2008 11:41:41 +1000
+	Fri, 23 May 2008 04:31:12 +0200 (CEST)
+In-Reply-To: <200805221016.27143.linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,87 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Eliot Blennerhassett <linux@audioscience.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I get the same problem as Eliot. The procedure 
+$ git clone git://git.alsa-project.org/alsa-kmirror.git alsa-kmirror
+$ git clone git://git.alsa-project.org/alsa-driver.git alsa-driver  
+$ cd alsa-driver
+$ ./gitcompile
 
-alsa-drivers-HEAD does not compile against recent RHE5 kernels, such as 
-ftp://ftp.redhat.com/pub/redhat/linux/enterprise/5Client/en/os/SRPMS/kernel-2.6.18-53.1.21.el5.src.rpm
+results in
 
-The problem is mixed up with the test for init_utsname in configure.in:
-
-dnl Check for init_utsname...
-if test "$kversion.$kpatchlevel" = "2.6" -a $ksublevel -ge 19; then
-  CONFIG_HAVE_INIT_UTSNAME=1
-else
-AC_MSG_CHECKING(for init_utsname)
-  init_utsname="0"
-  ac_save_CFLAGS="$CFLAGS"
-  ac_save_CC="$CC"
-  CFLAGS="$KERNEL_CHECK_CFLAGS -Werror"
-  CC=$KCC
-  AC_TRY_COMPILE([
-#define __KERNEL__
-#include <linux/config.h>
-#include <linux/utsname.h>
-],[
-  int *x = (int *)init_utsname();
-  *x = 0;
-],
-    AC_MSG_RESULT(yes);init_utsname="1",
-    AC_MSG_RESULT(no);init_utsname="0",
-    AC_MSG_RESULT(unknown);init_utsname="0"
-)
-  CFLAGS=$ac_save_CFLAGS
-  CC=$ac_save_CC
-  CONFIG_HAVE_INIT_UTSNAME=$init_utsname
-fi
-dnl AC_SUBST(CONFIG_HAVE_INIT_UTSNAME)
-if test "$CONFIG_HAVE_INIT_UTSNAME" = "1"; then
-  AC_DEFINE(CONFIG_HAVE_INIT_UTSNAME)
-fi
-
-The problem is that <linux/config.h> does not exist in recent kernel.org
-and RH 2.6.18 kernels. The AC_TRY_COMPILE produces a negative result
-(because of a warning, treated as an error, about the missing
-linux/config.h file), which then causes CONFIG_HAVE_INIT_UTSNAME to NOT
-be defined.
-
-This results in a compile failure in acore/info_oss.c .
-
-I'm not sure how this should be fixed. I'm also not sure why someone
-else hasn't noticed it already, since it affects me with a standard
-kernel.org kernel. Therefore, here is my test procedure.
-
-wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2
-tar -xjf linux-2.6.25.tar.bz2
-cd linux-2.6.25
-make defconfig
-make modules_prepare
-cd ..
-
-(This next step takes *forever*)
-git clone git://git.alsa-project.org/alsa-kernel.git alsa-kernel
-
-git clone git://git.alsa-project.org/alsa-driver.git alsa-driver
-cd alsa-driver
-./gitcompile --with-kernel=../linux-2.6.25 --with-build=../linux-2.6.25
-
-This currently produces an error:
 No alsa-kernel is found.
-Please specify the correct location via ALSAKERNELDIR environment
-variable.
+Please specify the correct location via ALSAKERNELDIR environment variable.
 
-So instead I run
-ALSAKERNELDIR=../alsa-kernel ./gitcompile --with-kernel=../linux-2.6.25
---with-build=../linux-2.6.25
-and I get the same error.
+The problem is masked once alsa-driver/alsa-kernel exists, 
+which can be arranged by running once
 
-when I repeat the above with an alsa-kernel from hg, I do not get this
-problem (in fact, alsa-driver compiles completely on the Ubuntu 7.10
-machine I'm using for this test).
+$ ALSAKERNELDIR=../alsa-kmirror ./gitcompile
 
-So, I've got perhaps two different problems here. I need a hand.
+I haven't found how this creates the link though.
+
+The Makefile references ../alsa-kmirror by default, 
+but the gitcompile (and probably other stuff too) needs to be updated to agree. 
+
+This solves one of the problems mentioned in my other post. Now that I
+know how to get around this, I'll try it on the RH kernel.
 
 Ben Stanley.
+
+
+On Thu, 2008-05-22 at 10:16 +1200, Eliot Blennerhassett wrote:
+> On Wednesday 21 May 2008 18:09:17 you wrote:
+> > It's not required to set ALSAKERNELDIR to ../alsa-kmirror - it's default
+> > now.
+> 
+> Without it I get this:
+> 
+> cd alsa-driver/
+> eliot@zaphod:~/src/alsagit/alsa-driver$ ./gitcompile
+> No alsa-kernel is found.
+> Please specify the correct location via ALSAKERNELDIR environment variable.
+> 
+> 
+> Looking at gitcompile script it doesn't mention alsa-kmirror
+> 
+> Meanwhile I will avoid the error by specifying the cards I'm interested in.
+> 
+> --
+> Eliot
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
