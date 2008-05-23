@@ -1,41 +1,39 @@
-From: Matteo Sasso <matteo.sasso@gmail.com>
-Subject: Re: Problem with intel-hda integrated audio
-Date: Fri, 23 May 2008 10:50:00 +0200
-Message-ID: <200805231050.00854.matteo.sasso@gmail.com>
-References: <200805222138.35409.matteo.sasso@gmail.com>
-	<1211496699.8312.155.camel@razman>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: [alsa-devel] Asynchronous notification in
+ ALSA - I/O Plugin - Pulseaudio
+Date: Fri, 23 May 2008 10:07:39 +0100
+Message-ID: <g161h9$t4i$1@ger.gmane.org>
+References: <s5hfxsd9qt6.wl%tiwai@suse.de>	<18027403.3701211352364970.JavaMail.root@intra>	<s5hprrgvsre.wl%tiwai@suse.de>	<20080521222936.GB12214@tango.0pointer.de>	<g13rdf$6os$1@ger.gmane.org>
+	<20080522135951.GA16685@tango.0pointer.de>
+Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55D9C24601
-	for <alsa-devel@alsa-project.org>;
-	Fri, 23 May 2008 10:50:06 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so312172fgg.44
-	for <alsa-devel@alsa-project.org>; Fri, 23 May 2008 01:50:05 -0700 (PDT)
-In-Reply-To: <1211496699.8312.155.camel@razman>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
+In-Reply-To: <20080522135951.GA16685@tango.0pointer.de>
+List-Unsubscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
+List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
+List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
+List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@mail.0pointer.de
+Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
+To: pulseaudio-discuss@mail.0pointer.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 23 May 2008 00:51:39 Tobin Davis wrote:
-> IF this is the same issue as previously posted in alsa-user, then i have
-> an idea what may be going on.  Try rebooting the system with "acpi=off"
-> in the kernel boot parameters.  If this makes audio work, you have an
-> issue with your acpi tables.
+Lennart Poettering wrote:
+> On Thu, 22.05.08 14:11, Colin Guthrie (gmane@colin.guthr.ie) wrote:
+>> I thought the whole point was that by adding async code to ioplug, the 
+>> libflashsupport stuff wasn't needed and flash could just use it's native 
+>> alsa support + alsa's pulse plugin.... or am I missing the point here?
+> 
+> The destruction dead lock issue is present both in libflashsupport and
+> the native ALSA backend. It's just that it is almost never triggered
+> if a hw device is used.
 
-Hey, that worked like a charm! I didn't know ACPI could do that, so it didn't 
-cross my mind to try fiddling with anything else other than the ALSA driver.
+Ahhhhhhhhh :)
 
-Thanks a lot, Tobin! ;)
+Col
