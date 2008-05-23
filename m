@@ -1,19 +1,20 @@
-From: Juergen Beisert <jbe@pengutronix.de>
-Subject: Question about "control names"
-Date: Fri, 23 May 2008 10:28:21 +0200
-Message-ID: <200805231028.22282.jbe@pengutronix.de>
+From: Matteo Sasso <matteo.sasso@gmail.com>
+Subject: Re: Problem with intel-hda integrated audio
+Date: Fri, 23 May 2008 10:50:00 +0200
+Message-ID: <200805231050.00854.matteo.sasso@gmail.com>
+References: <200805222138.35409.matteo.sasso@gmail.com>
+	<1211496699.8312.155.camel@razman>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.extern.pengutronix.de (metis.extern.pengutronix.de
-	[83.236.181.26]) by alsa0.perex.cz (Postfix) with ESMTP id 0C96D2460D
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55D9C24601
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 May 2008 10:28:27 +0200 (CEST)
-Received: from themisto.extern.pengutronix.de ([83.236.181.29] helo=localhost)
-	by metis.extern.pengutronix.de with esmtp (Exim 4.63)
-	(envelope-from <jbe@pengutronix.de>) id 1JzSdS-0002j7-W3
-	for alsa-devel@alsa-project.org; Fri, 23 May 2008 10:28:26 +0200
+	Fri, 23 May 2008 10:50:06 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so312172fgg.44
+	for <alsa-devel@alsa-project.org>; Fri, 23 May 2008 01:50:05 -0700 (PDT)
+In-Reply-To: <1211496699.8312.155.camel@razman>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,48 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Friday 23 May 2008 00:51:39 Tobin Davis wrote:
+> IF this is the same issue as previously posted in alsa-user, then i have
+> an idea what may be going on.  Try rebooting the system with "acpi=off"
+> in the kernel boot parameters.  If this makes audio work, you have an
+> issue with your acpi tables.
 
-I'm playing with the control names of my "snd_kcontrol_new" controls. When =
-I'm =
+Hey, that worked like a charm! I didn't know ACPI could do that, so it didn't 
+cross my mind to try fiddling with anything else other than the ALSA driver.
 
-using "PCM Playback Switch" and "PCM Playback Volume" alsamixer shows me a =
-
-slider with a switch at its bottom. That's what I expected.
-But when I'm using a second set ("line in" to "line out" bypass), with "Lin=
-e =
-
-Bypass Capture Switch" and "Line Bypass Capture Volume" control names, its =
-
-confusing (BTW: "Line Bypass Capture Volume" is of type =
-
-SNDRV_CTL_ELEM_TYPE_ENUMERATED).
-
-The "Line Bypass Capture Volume" control is shown on the [Playback] page wi=
-th =
-
-the name "Line Byp" and the default value. I can walk through the enumerate=
-d =
-
-values. But the "Line Bypass Capture Switch" is shown on the [Capture] page =
-
-in alsamixer as:
-
-  L    R
-  CAPTUR
-
-<Line Byp>
-
-What does it mean? Problem of alsamixer or the name of this set?
-
-Juergen
--- =
-
-Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
-=A0Pengutronix - Linux Solutions for Science and Industry
-=A0   Handelsregister: Amtsgericht Hildesheim, HRA 2686
-=A0 =A0 =A0    Vertretung Sued/Muenchen, Germany
-   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
+Thanks a lot, Tobin! ;)
