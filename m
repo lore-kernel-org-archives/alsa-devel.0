@@ -1,19 +1,18 @@
-From: =?ISO-8859-1?Q?Martin_Kr=FCger?= <m_a_krueger@gmx.de>
-Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
- SOLVED(?)
-Date: Sat, 24 May 2008 18:53:01 +0200
-Message-ID: <483847ED.8050208@gmx.de>
-References: <20080520112539.81C9D2484D@alsa0.perex.cz>
-	<m2bq2xtixw.fsf@vador.mandriva.com>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Surround and SPDIF on STAC9277
+Date: Sat, 24 May 2008 14:29:27 -0400
+Message-ID: <9e4733910805241129g784fd7a2k7b33f1a154a92584@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 22FA324343
+Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73287243AF
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 May 2008 18:53:03 +0200 (CEST)
-In-Reply-To: <m2bq2xtixw.fsf@vador.mandriva.com>
+	Sat, 24 May 2008 20:29:29 +0200 (CEST)
+Received: by py-out-1112.google.com with SMTP id a29so704876pyi.36
+	for <alsa-devel@alsa-project.org>; Sat, 24 May 2008 11:29:28 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,60 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Pavel Hofman wrote:
->Clemens,
->
->Thanks a lot. After a few pointer fixes to make it compile your code =
+How are you supposed to get 5.1 audio out of your PC? When I hook the
+SPDIF device from my STAC9227/HDA audio up to pulse, pulse says that
+the SPDIF channel only supports stereo.
 
->works flawlessly for both the generic as well as realtime ubuntu kernel.
->
->I am enclosing the functioning patch.
->
->Now I cannot feel any delay difference between usb and ice1724 midi =
+So I go digging around the in STAC9227 datasheet.
+http://www.idt.com/?genID=STAC9227
 
->inputs. Well done, gentlemen, thank you all.
+STAC9227 codec only supports 192Khz SPDIF with 4/1*48Khz channels. It
+doesn't support 384Khz with 8/1*48Khz channels.
 
-Hi, =
+So there are two problems, first the existing Intel HDA/STAC9227
+driver is not exposing the 4 channel SPDIF support. Or I can't figure
+out how to get to it.
 
+Second, the hardware doesn't seem to support any way to get digital
+5.1 audio out of the codec and into my Sony amp. STAC9227 does have
+six channel analog out, but my Sony amp doesn't have 6 channel analog
+in. Sony amp supports 384Khz 8-channel SPDIF in.
 
-thanks a lot for taking care for that issue. =
-
-I just tried it out by modifying the following files from the 2.6.26-rc3 ke=
-rnel:
-
-sound/pci/Kconfig (modified by hand)
-sound/pci/ice1712/ice1712.h (modified by hand)
-sound/pci/ice1712/envy24ht.h (modified by hand)
-sound/pci/ice1712/ice1724.c (copied from the actual Git snapshot)
-
-I double-checked all the handmade changes, should be ok. =
-
-
-Midi in via "amidi -p hw:0 -d" works now without problem, =
-
-but when trying to write to the device, for example by "amidi -p hw:0 -s tx=
-data.syx" =
-
-it causes an immediate crash. =
-
-
-That would not be a problem for me, but jackd probes all ports, and is unus=
-able now.
-
-Perhaps i forgot a patch, is the output working for you? =
-
-
-My System: =
-
-Amd64 @ 32Bit, =
-
-Debian Sid,
-Esi Juli@
-
-Regards, =
-
-
-Martin Kr=FCger
+-- 
+Jon Smirl
+jonsmirl@gmail.com
