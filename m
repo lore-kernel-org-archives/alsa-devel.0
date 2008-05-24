@@ -1,26 +1,19 @@
-From: Geoffrey Wossum <geoffrey@pager.net>
-Subject: Re: AT32AP7000 (AVR32) + WM8510
-Date: Fri, 23 May 2008 17:56:00 -0500
-Message-ID: <200805231756.00609.geoffrey@pager.net>
-References: <200805221120.08815.geoffrey@pager.net>
-	<20080522224840.GA31117@sirena.org.uk>
-	<200805221811.31770.geoffrey@pager.net>
+From: Travis Place <wishie@wishie.net>
+Subject: [PATCH] Added correct model selection for Intel DG35EC
+	mainboard - HDAIntel driver.
+Date: Sat, 24 May 2008 13:29:34 +1000
+Message-ID: <200805241329.34943.wishie@wishie.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_eu4NIH2vXlvxXsD"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barracuda.pager.net (mail.pager.net [209.253.16.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8616245D5
+Received: from wishie.net (202-137-100-089.dial.usertools.net [202.137.100.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id 188BB24743
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 May 2008 00:55:46 +0200 (CEST)
-Received: from [192.168.1.71] (localhost [127.0.0.1])
-	by barracuda.pager.net (Spam Firewall) with ESMTP id 86DF4B6353
-	for <alsa-devel@alsa-project.org>; Fri, 23 May 2008 17:55:39 -0500 (CDT)
-Received: from [192.168.1.71] (LRS-CiscoBackup [192.168.1.1]) by
-	barracuda.pager.net with ESMTP id FD1s8k4AC4YM6NAJ for
-	<alsa-devel@alsa-project.org>; Fri, 23 May 2008 17:55:39 -0500 (CDT)
-In-Reply-To: <200805221811.31770.geoffrey@pager.net>
-Content-Disposition: inline
+	Sat, 24 May 2008 05:30:29 +0200 (CEST)
+Received: from [192.168.0.2] (fallen [192.168.0.2])
+	by wishie.net (Postfix) with ESMTP id 1022A5D4DB
+	for <alsa-devel@alsa-project.org>; Sat, 24 May 2008 03:51:32 +1000 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,50 +26,56 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 22 May 2008 06:11:31 pm Geoffrey Wossum wrote:
-> On Thursday 22 May 2008 05:48:41 pm Mark Brown wrote:
-> > On Thu, May 22, 2008 at 02:57:41PM -0500, Geoffrey Wossum wrote:
-> > > Looks like it should work to me.  Note that I do hear a pop from the
-> > > speaker the first time I try to play a file.  Here's a dump of the
-> > > registers while I'm trying to play a file with aplay.  I'm combing
-> > > through them right now to see if I can find anything that looks off.
-> >
-> > I'll have a look at it at some point, but not right now :) .  I should
-> > also have asked you if you could post your machine driver - if you'd
-> > rather post it off-list that'd be fine.
+--Boundary-00=_eu4NIH2vXlvxXsD
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Ok, I got it working.  It can now play "I'm sorry, Dave.  I'm afraid I can't 
-do that."  This should be the audio equivalent of "Hello world" :)
+Changelog: Added the correct model for the Intel DG35EC mainboard 
+(http://www.intel.com/products/motherboard/DG35EC/index.htm)
+The card was previously 'unknown'. The following patch, adds the card to the 
+quirk table, to automatically select ALC883_3STACK_6CH.
 
-First, I changed it so the AVR32 provided the BCLK and FRAME.  I could never 
-get the WM8510 to generate what looked like proper FRAMES.  I did continue 
-using the WM8510's PLL to generate the DAC clock.  With the AVR32 providing 
-the clocks, I at least got some noise out of it.
+Confirmed working for all analogue outputs, and inputs.
 
-After a lot of head scratching and analyzing register settings and what not, I 
-realized that I had based my AVR32 platform drivers on the AT91.  The AT91 is 
-little endian, the AVR32 is big endian.  Changing all the SNDRV_PCM_FMTBIT_ 
-settings to be BE instead of LE changed the noise into the files I was trying 
-to play.
+Patch attached.
 
-Finally, I really had to lie in the wm8510 code and say that it supported a 
-minimum of 2 channels, and a maximum of 2 channels.  This makes sense from 
-the data sheet, since it still wants a left and a right channel of data, and 
-just throws one away.
+Signed-off-by: Travis Place <wishie at wishie dot net>
 
-A few questions:
+-- 
+Happiness is like peeing your pants. Everyone can see it, but only you can 
+feel its warmth 
 
-I had to change the WM8510's format to say that it wanted big endian.  Should 
-the CODEC (and platform and machine) be setup just to say that it uses 
-SNDRV_PCM_FMTBIT_S16 instead of SNDRV_PCM_FMTBIT_S16_LE/BE?  Looks from 
-sound/pcm.h this should just do the Right Thing.
+--Boundary-00=_eu4NIH2vXlvxXsD
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="IntelDG35EC.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="IntelDG35EC.patch"
 
-Any idea why I couldn't get the WM8510 to generate the FRAME signal properly?  
-Like I said before, it generated a 44.1 kHz frame no matter the BCLK divider 
-or the word length were set to.
+diff -r e2b60934d1c8 pci/hda/patch_realtek.c
+--- a/pci/hda/patch_realtek.c	Mon May 19 12:32:25 2008 +0200
++++ b/pci/hda/patch_realtek.c	Sat May 24 13:28:37 2008 +1000
+@@ -7785,6 +7785,7 @@ static struct snd_pci_quirk alc883_cfg_t
+ 	SND_PCI_QUIRK(0x17f2, 0x5000, "Albatron KI690-AM2", ALC883_6ST_DIG),
+ 	SND_PCI_QUIRK(0x1991, 0x5625, "Haier W66", ALC883_HAIER_W66),
+ 	SND_PCI_QUIRK(0x8086, 0xd601, "D102GGC", ALC883_3ST_6ch),
++	SND_PCI_QUIRK(0x8086, 0xd701, "Intel DG35EC", ALC883_3ST_6ch),
+ 	{}
+ };
+ 
 
-Thanks for the help!  As soon as I get the code cleaned up some, I'll 
-contribute the AVR32 platform driver code.
+--Boundary-00=_eu4NIH2vXlvxXsD
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
----
-Geoffrey
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--Boundary-00=_eu4NIH2vXlvxXsD--
