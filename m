@@ -1,62 +1,70 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: Surround and SPDIF on STAC9277
-Date: Sat, 24 May 2008 17:02:21 -0400
-Message-ID: <9e4733910805241402s56051579kb9e94eb1489acf17@mail.gmail.com>
-References: <9e4733910805241129g784fd7a2k7b33f1a154a92584@mail.gmail.com>
+From: stan <ghjeold_i_mwee@cox.net>
+Subject: Re: ICH8 HDA not detected after upgrade from Ubuntu
+ 7.10 to	8.04
+Date: Sun, 25 May 2008 14:50:35 -0700
+Message-ID: <4839DF2B.7020501@cox.net>
+References: <5ea2cfca0805250944g3705aa41jb78f3b89e43075ef@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA01E24407
-	for <alsa-devel@alsa-project.org>;
-	Sat, 24 May 2008 23:02:22 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m28so1119396wag.8
-	for <alsa-devel@alsa-project.org>; Sat, 24 May 2008 14:02:21 -0700 (PDT)
-In-Reply-To: <9e4733910805241129g784fd7a2k7b33f1a154a92584@mail.gmail.com>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA-devel <alsa-devel@alsa-project.org>
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <5ea2cfca0805250944g3705aa41jb78f3b89e43075ef@mail.gmail.com>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Janto Schraiber <brutus.dmc@googlemail.com>
+Cc: alsa-user@lists.sourceforge.net, ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've figure out that the answer that I'm looking for is AC3 over SPDIF
-support. Now I'm trying to figure out how to make it work in pulse.
+Janto Schraiber wrote:
+> I got the ASUS P5B mainboard with an Intel HDA compatible Soundchip 
+> (Analog Devices... AD 1988B afaik but I'm not realy sure about that). 
+> Under Ubunt 7.10 it works out of the box but I just recently updated 
+> to the new Ubuntu 8.04 where the card is no longer detected.
+>
+> There are some post on the web about the problem, but most deal with 
+> issues, after you get details per 'head -n 1 
+> /proc/asound/card0/codec*' or the like, but sine the card is not 
+> detected at all, i get no info from commands like that... see:
+>
+> $ cat /proc/asound/cards
+> --- no soundcards ---
+>
+> I installed the latest drivers from source, but it doesn't help. I 
+> also tried to update the kernel, etc. from the 'hardy-proposed' 
+> repository, still no luck.
+>
+> Here's the output from the 'alsa-info.sh' script:
+> http://pastebin.ca/1028944
+>
+> And here's my dmesg:
+> http://pastebin.ca/1028967
+>
+> What should I do to get my card working again?
+ From your dmesg here's the problem.
+HDA Intel: probe of 0000:00:1b.0 failed with error -16
 
-On 5/24/08, Jon Smirl <jonsmirl@gmail.com> wrote:
-> How are you supposed to get 5.1 audio out of your PC? When I hook the
->  SPDIF device from my STAC9227/HDA audio up to pulse, pulse says that
->  the SPDIF channel only supports stereo.
->
->  So I go digging around the in STAC9227 datasheet.
->  http://www.idt.com/?genID=STAC9227
->
->  STAC9227 codec only supports 192Khz SPDIF with 4/1*48Khz channels. It
->  doesn't support 384Khz with 8/1*48Khz channels.
->
->  So there are two problems, first the existing Intel HDA/STAC9227
->  driver is not exposing the 4 channel SPDIF support. Or I can't figure
->  out how to get to it.
->
->  Second, the hardware doesn't seem to support any way to get digital
->  5.1 audio out of the codec and into my Sony amp. STAC9227 does have
->  six channel analog out, but my Sony amp doesn't have 6 channel analog
->  in. Sony amp supports 384Khz 8-channel SPDIF in.
->
->
->  --
->  Jon Smirl
->  jonsmirl@gmail.com
->
+I'm not a developer so I don't know what that means, just that it is not 
+good.
 
+I think this is an issue for some hda-intel cards in kernel version 
+2.6.25.  In the cases I have seen the card was working on the 24 version 
+kernel, but when they moved to 25 it stopped working.  That is, it's a 
+regression.  I don't think there is anything you can do until the 
+problem is fixed there.  Using the earlier kernel is probably not 
+possible with the rest of the system.  I don't know this, but suspect 
+it.  You could try compiling an earlier kernel on your system. 
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+I'll cross post this to the alsa-devel mailing list so the developers 
+become aware of the problem.
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
