@@ -1,25 +1,19 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Re:
-	=?iso-8859-1?q?=5BPATCH=5D_Added_support_to_HDAIntel?=
-	=?iso-8859-1?q?_driver_for_the=09Foxconn_P35AX-S_mainboard?=
-Date: Mon, 26 May 2008 23:39:53 +1000
-Message-ID: <200805262339.53255.wishie@wishie.net>
-References: <200805210012.02703.wishie@wishie.net>
-	<200805262333.18391.wishie@wishie.net>
-	<s5h7idh18xh.wl%tiwai@suse.de>
+From: Kunal Singh <kunal@singhkunal.com>
+Subject: problem with usb-audio and oss emulation
+Date: Mon, 26 May 2008 20:10:11 +0530
+Message-ID: <483ACBCB.2020800@singhkunal.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wishie.net (202-137-100-089.dial.usertools.net [202.137.100.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B22324663
+Received: from outbound-mail-112.bluehost.com (outbound-mail-112.bluehost.com
+	[69.89.24.2]) by alsa0.perex.cz (Postfix) with SMTP id 9B1CC248E3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 May 2008 15:43:22 +0200 (CEST)
-Received: from [192.168.0.2] (fallen [192.168.0.2])
-	by wishie.net (Postfix) with ESMTP id C274266A4A
-	for <alsa-devel@alsa-project.org>; Mon, 26 May 2008 14:04:35 +1000 (EST)
-In-Reply-To: <s5h7idh18xh.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Mon, 26 May 2008 16:40:20 +0200 (CEST)
+Received: from [122.167.24.193] (helo=[127.0.0.1])
+	by host100.hostmonster.com with esmtpa (Exim 4.68)
+	(envelope-from <kunal@singhkunal.com>) id 1K0ds1-0003LZ-A8
+	for alsa-devel@alsa-project.org; Mon, 26 May 2008 08:40:18 -0600
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,65 +26,39 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 26 May 2008 11:39:22 pm Takashi Iwai wrote:
-> At Mon, 26 May 2008 23:33:18 +1000,
->
-> Travis Place wrote:
-> > On Mon, 26 May 2008 9:04:03 pm Takashi Iwai wrote:
-> > > At Wed, 21 May 2008 00:12:02 +1000,
-> > >
-> > > Travis Place wrote:
-> > > > Without forcing model type to 6stack-dig, the user gets no sound.
-> > > >
-> > > > Patch is attached, and alsa-info.sh output is at
-> > > > http://pastebin.ca/1023781.
-> > > >
-> > > > Changelog: Added IDs for the Foxconn P35AX-S mainboard to
-> > > > patch_realtek.c, so that ALC883_6ST_DIG is used by default.
-> > > >
-> > > > Signed-off-by: Travis Place <wishie at wishie dot net>
-> > >
-> > > It's also in the upstream, too.
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> > > _______________________________________________
-> > > Alsa-devel mailing list
-> > > Alsa-devel@alsa-project.org
-> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
-> > Sorry for the 3 seperate posts Takashi..
->
-> Don't worry, I just wanted to inform that these have been already
-> merged.
->
-> > Is it ok for me to unify the patches (in the future) and send 1 unified
-> > changelog ? Or is it preferred that the patches(and thei changelogs) are
-> > seperate ?
->
-> Depends.  I prefer seperate patches as long as they belong to the same
-> logical change.  The number of patches usually doesn't matter.
->
->
-> BTW, it'd be appreciated if you add me to Cc so that I can pick up the
-> patch immediately.
->
-Noted, and will do this from now on.
+Hi,
 
-Thanks again.
->
-> thanks,
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+    I am working on a ARM based target with 2.6.23 Kernel.  My project 
+involves streaming data from a USB-Audio Device (an iPod) and playing it 
+back on the target. I am using OSS-emulation API to communicate with the 
+audio devices.
+    What I am able to do:
+    (1) I have a sound card in my target. This is mapped to card0. I can 
+open the "dsp" device and can playback any audio data on this.
+    (2) I have enabled the usb-audio module support in kernel 
+configuration.   When I connect iPod to the target, I can see a new card 
+"card1" being added in the /proc/asound/ directory.
+    (3) I can open the "dsp1" device and can read from it. When I 
+connect a "USB-Analyzer" I can see some valid data being streamed to the 
+target.
 
+    However, I am stuck with following issues:
+    (1) The data being received on the target (in user mode) is junk. I 
+put some printfs in the function "retire_capture_urb" in file 
+"/linux/sound/usb/usbaudio.c", and I can see that the "data" which I see 
+through usb-analzyer is reaching till this point. However, there seem to 
+be some problem with one of the "snd_pmc_oss_ReadN" functions in file 
+"http://lxr.linux.no/linux/sound/core/oss/pcm_oss.c". I am not able to 
+exactly trace the problem, but I think that the "byte count" and "buffer 
+address" being passed to snd-usb-audio is getting messed up some where. 
+Has any one faced similar problems before?
+    (2) Once I connect the iPod to my target, I can not any more use the 
+default sound card. I read on the oss-emulation tutorial that this could 
+be a problem with "dsp_map". But I am not able to check the current 
+settings.
+   
+    Can some one give me some pointers for further debugging?
 
-
--- 
-Happiness is like peeing your pants. Everyone can see it, but only you can 
-feel its warmth 
+Thanks and Regards,
+Kunal Singh
+www.singhkunal.com
