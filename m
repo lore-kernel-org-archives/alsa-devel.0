@@ -1,18 +1,19 @@
-From: "Martin Tufnel" <martin.tufnel@gmail.com>
-Subject: hdsp rpm support
-Date: Mon, 26 May 2008 17:33:53 +1000
-Message-ID: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
+ SOLVED(?)
+Date: Mon, 26 May 2008 09:57:35 +0200
+Message-ID: <483A6D6F.1050108@insite.cz>
+References: <20080520112539.81C9D2484D@alsa0.perex.cz>	<m2bq2xtixw.fsf@vador.mandriva.com>
+	<483847ED.8050208@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8DD992489E
+Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 41692248A5
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 May 2008 09:34:07 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m28so1713639wag.8
-	for <alsa-devel@alsa-project.org>; Mon, 26 May 2008 00:34:05 -0700 (PDT)
-Content-Disposition: inline
+	Mon, 26 May 2008 09:57:42 +0200 (CEST)
+In-Reply-To: <483847ED.8050208@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?Martin_Kr=FCger?= <m_a_krueger@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi All
+Martin Kr=FCger wrote:
+> Pavel Hofman wrote:
+>> Clemens,
+>>
+>> Thanks a lot. After a few pointer fixes to make it compile your code =
 
-I was wondering if there is any more news in regard to the development
-effort toward supporting the RME HDSP RPM?
+>> works flawlessly for both the generic as well as realtime ubuntu kernel.
+>>
+>> I am enclosing the functioning patch.
+>>
+>> Now I cannot feel any delay difference between usb and ice1724 midi =
 
-The last couple of emails I could find on the development were from
-Karl Grill (please see below).
+>> inputs. Well done, gentlemen, thank you all.
+> =
 
-Does anyone know if Karl (or anyone else) is still working on this?
+> Hi, =
 
-Thanks in advance for any help anyone can provide.
+> =
 
-Regards, Martin
+> thanks a lot for taking care for that issue. =
+
+> I just tried it out by modifying the following files from the 2.6.26-rc3 =
+kernel:
+> =
+
+> sound/pci/Kconfig (modified by hand)
+> sound/pci/ice1712/ice1712.h (modified by hand)
+> sound/pci/ice1712/envy24ht.h (modified by hand)
+> sound/pci/ice1712/ice1724.c (copied from the actual Git snapshot)
+> =
+
+> I double-checked all the handmade changes, should be ok. =
+
+> =
+
+> Midi in via "amidi -p hw:0 -d" works now without problem, =
+
+> but when trying to write to the device, for example by "amidi -p hw:0 -s =
+txdata.syx" =
+
+> it causes an immediate crash. =
+
+> =
+
+> That would not be a problem for me, but jackd probes all ports, and is un=
+usable now.
+> =
+
+> Perhaps i forgot a patch, is the output working for you? =
 
 
-On Mon, 2008-02-25 at 08:45 +0100, Karl Grill wrote:
->* Dear Roman and all,
-*>* I'm sorry i promised a little too much - in fact I was too busy with
-*>* other things to get back to the rpm stuff in time; last night, I started
-*>* to check the current state of affairs, and it looks quite promising; in
-*>* the next three weeks, I won't have too much time to devote to this
-*>* project, but then there's the University's easter break which I hope
-*>* will give me the time to get things done, so, if all goes well, at least
-*>* an experimental version should be ready by the end of March.
-*
-*
-*On Tue, 2008-02-26 at 21:58 +0100, Karl Grill wrote:
-> *Hi all,
-> as a first step towards implementing support for the hdsp rpm, I've
-> uploaded a patch to the alsa-firmware branch as bug report #3810.
-> Besides the patch, I've put up the firmware binaries in .tar.gz format.
-> This contains replacements for the rev.11 firmware for the
-> digiface/multiface and also for the rpm. The latter is of little use
-> right now, but I'd be very happy if anybody could try those for the
-> digiface/multiface and report if it works, so I know if my assumptions
-> on the drivers are correct.
->
-> best regards
-> kg
->
-> PS. sorry I didn't file this report in the firmware section, but the web
-> form there doesn't give me any usable choice for Category yet insists
-> that I supply one.*
+Hello Martin,
+
+I did check the MIDI output using command
+
+amidi -p hw:0 -S F0411042110C000000000074FF0411042110C000000
+
+Ubuntu Studio 7.10, both -generic and -rt kernel, Audiotrak Prodigy 192, =
+
+the original patch (I assume the current git version is identical).
+
+There was no MIDI device connected to the output as I have none.
+
+I traced if MIDI-out on Juli goes through the Xilinx CPLD, and it seemed =
+
+the MIDI lines go straight to the connectors, just as on my Prodigy 192. =
+
+Unfortunately, I do not have Juli available any more to test the patch.
+
+Please could you provide more details about the crash?
+
+Thanks,
+
+Pavel.
