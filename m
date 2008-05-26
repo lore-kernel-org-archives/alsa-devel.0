@@ -1,21 +1,19 @@
-From: "Benjamin van den Hout" <bvdhout@gmail.com>
-Subject: Re: Kernel crash in snd-aloop (2)
-Date: Mon, 26 May 2008 12:44:09 +0200
-Message-ID: <d5eabee70805260344l204b966bj958f8039563df2f5@mail.gmail.com>
-References: <d5eabee70805210741p256d4b3dmaa15fbd39df7c53f@mail.gmail.com>
-	<d5eabee70805220602p73154e2buc1bd9e38d0c314e3@mail.gmail.com>
+From: =?ISO-8859-1?Q?Martin_Kr=FCger?= <m_a_krueger@gmx.de>
+Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
+ SOLVED(?)
+Date: Mon, 26 May 2008 12:54:32 +0200
+Message-ID: <483A96E8.8090507@gmx.de>
+References: <20080520112539.81C9D2484D@alsa0.perex.cz>	<m2bq2xtixw.fsf@vador.mandriva.com>	<483847ED.8050208@gmx.de>
+	<483A6D6F.1050108@insite.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.247])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78C53248CF
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id D04E7248D3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 May 2008 12:44:11 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so1713360rvb.32
-	for <alsa-devel@alsa-project.org>; Mon, 26 May 2008 03:44:09 -0700 (PDT)
-In-Reply-To: <d5eabee70805220602p73154e2buc1bd9e38d0c314e3@mail.gmail.com>
-Content-Disposition: inline
+	Mon, 26 May 2008 12:54:34 +0200 (CEST)
+In-Reply-To: <483A6D6F.1050108@insite.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,46 +23,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Pavel Hofman <pavel.hofman@insite.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Pavel Hofman wrote:
+> Martin Kr=FCger wrote:
+>   =
 
-Anybody have something to say about this? :)
+>> Pavel Hofman wrote:
+>>     =
 
-Kind regards,
-Benjamin
+>> Hi, =
 
-On 22/05/2008, Benjamin van den Hout <bvdhout@gmail.com> wrote:
->
-> Hello,
->
-> So after much experimentation and thinking, I think I can come up with the
-> following scenario why the kernel crashes:
->
-> When the aloop soundcard is closed by jackd, all data structures are freed.
-> This is OK, but the code forgets to check if any timers are still running.
-> Most of the time this goes well and nothing bad happens. But sometimes the
-> dpcm->timer.function fires after all data is cleaned up/freed. And that is
-> of course not very desirable.
->
-> I've attached a patch to the alsa-driver-hg20080516 version of
-> drivers/aloop-kernel.c This patch does a del_timer() in three places, I
-> would love to hear feedback from you guys on the list if some del_timers can
-> be eliminated? It seems a bit paranoia but it works perfectly in my test
-> setup.
->
-> So what do you guys think? I've never submitted patches before so I'm not
-> sure if this is the correct procedure. Please correct me if necessary...
->
-> Kind regards,
-> Benjamin van den Hout
->
->
+>>
+>> thanks a lot for taking care for that issue. =
 
+>> I just tried it out by modifying the following files from the 2.6.26-rc3=
+ kernel:
+>>
+>> sound/pci/Kconfig (modified by hand)
+>> sound/pci/ice1712/ice1712.h (modified by hand)
+>> sound/pci/ice1712/envy24ht.h (modified by hand)
+>> sound/pci/ice1712/ice1724.c (copied from the actual Git snapshot)
+>>
+>> I double-checked all the handmade changes, should be ok. =
 
--- 
-Groeten,
-Benjamin
+>>
+>> Midi in via "amidi -p hw:0 -d" works now without problem, =
 
-Call me for free! http://www.pushcall.com/client/?key=benjamin
+>> but when trying to write to the device, for example by "amidi -p hw:0 -s=
+ txdata.syx" =
+
+>> it causes an immediate crash. =
+
+>>
+>> That would not be a problem for me, but jackd probes all ports, and is u=
+nusable now.
+>>
+>> Perhaps i forgot a patch, is the output working for you? =
+
+>>     =
+
+>
+> Hello Martin,
+>
+> I did check the MIDI output using command
+>
+> amidi -p hw:0 -S F0411042110C000000000074FF0411042110C000000
+>
+> Ubuntu Studio 7.10, both -generic and -rt kernel, Audiotrak Prodigy 192, =
+
+> the original patch (I assume the current git version is identical).
+>
+> There was no MIDI device connected to the output as I have none.
+>
+> I traced if MIDI-out on Juli goes through the Xilinx CPLD, and it seemed =
+
+> the MIDI lines go straight to the connectors, just as on my Prodigy 192. =
+
+> Unfortunately, I do not have Juli available any more to test the patch.
+>
+> Please could you provide more details about the crash?
+>
+> Thanks,
+>
+> Pavel.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>   =
+
+Hello Pavel,
+
+i just compiled a new 2.6.25.4 kernel with realtime support. the kernel =
+
+is from kernel.org, so without any patches except the realtime patch =
+
+from the alsa wiki.
+
+The alsa source i use is the actual daily snapshot, compiled with
+
+./configure --with-isapnp=3Dno --with-sequencer=3Dyes --with-oss=3Dno =
+
+--with-debug=3Dfull --with-kconfig=3Dice1724
+make
+make install-modules
+
+This version should have the patches applied, i think.
+
+amidi -l gives the following output:
+Dir Device    Name
+IO  hw:0,0    ICE1724 MIDI
+, and as written above, amidi -p hw:0 -d works without any problems.
+
+The fault appears immediately after trying to write anything to the =
+
+hw:0, this
+
+amidi -p hw:0 -S F0411042110C000000000074FF0411042110C000000
+
+also produces a complete freeze of the system.
+No matter, if my keyboard is attached or not.
+
+That was the first time i compiled alsa with the debugging enabled, and =
+
+i am currently trying to find out how to use is to give you more =
+
+information. Is there anything else i can help? I tried to trace myself =
+
+through the source code, but my knowledge about the used api is very weak...
+
+Thanks much for your help,
+Martin
