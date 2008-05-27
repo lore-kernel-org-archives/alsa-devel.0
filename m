@@ -1,23 +1,20 @@
-From: "Martin Tufnel" <martin.tufnel@gmail.com>
-Subject: Re: hdsp rpm support
-Date: Tue, 27 May 2008 13:00:40 +1000
-Message-ID: <c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
-References: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>
-	<1211789980.5486.8.camel@localhost.localdomain>
-	<c62722740805260527i9e612adr8d3bb029a6ea1e8e@mail.gmail.com>
-	<47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu>
+From: "kunal@singhkunal.com" <kunal@singhkunal.com>
+Subject: bandwidth issue with usb-audio in alsa
+Date: Tue, 27 May 2008 00:23:18 -0400
+Message-ID: <380-22008522742318173@M2W010.mail2web.com>
+Reply-To: kunal@singhkunal.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA9C110383B
+Received: from xsmtp08.mail2web.com (xsmtp08.mail2web.com [168.144.250.208])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08B0C248F2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 May 2008 05:00:41 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m28so2120819wag.8
-	for <alsa-devel@alsa-project.org>; Mon, 26 May 2008 20:00:40 -0700 (PDT)
-In-Reply-To: <47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu>
-Content-Disposition: inline
+	Tue, 27 May 2008 06:23:20 +0200 (CEST)
+Received: from [168.144.108.10] (helo=M2W010.mail2web.com)
+	by xsmtp08.mail2web.com with smtp (Exim 4.63)
+	(envelope-from <kunal@singhkunal.com>) id 1K0qiU-0003WF-85
+	for alsa-devel@alsa-project.org; Tue, 27 May 2008 00:23:19 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,45 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: faber@faberman.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Flo
+Hi,
 
-That's great news!  Unfortunately, I don't have the unit yet so I'm unable
-to test it for you.  However, I'm sure Roman would be very happy to give it
-a go.  Roman?
+  My Platform
+ -------------
+  I am trying to stream audio data from a USB-device (an iPod) to my
+arm-based embedded device (running kernel 2.6.23). The USB-device confirms
+to usb digital audio (subclass - streaming) class. The endpoint buffer size
+196 bytes and transfer period is 1 msec. So, I should be reading data every
+msec.
 
-Just to clarify, given the driver is finished but the user tools are still
-under development, this means that the unit will basically work but not have
-its full functionality - is this correct?
+  Problem
+  -----------
+  I am facing some bandwidth issues. The data is not being captured fast
+enough.
 
-Also, did you use the new patched version of the firmware that Karl worked
-on?
-
-And, when do you think the driver will be incorporated into the main Alsa
-code branch?
-
-Thanks for your work!
-
-Regards, Martin
+  I notice that once one set of URBs are captured (one set equal to
+MAX_URBS), there is a significant delay in capturing the next set of URBs. =
 
 
-On Tue, May 27, 2008 at 1:30 AM, <faber@faberman.de> wrote:
+     I have set MAX_URBS equal to 32.
+     When I connect a USB-Analyzer and analyze the timings, I can see that
+32 URBs are captured at a interval of 1 msec each. After that there is a
+break of around 250 msec. And then again 32 URBs captured in sequence.
 
-> Martin,
->
-> > Nice to hear from you.  I saw your other posts and had wondered if you
-> had
-> > chucked in the towel.  I would really like to see the RPM supported as it
-> > suits my needs exactly.
->
-> RPM support is finished, I just need more time for the new userspace tools
-> (new totalmix etc.).
->
-> If you want to test the new driver, drop me a note.
->
->
-> Flo
->
+      If I change the MAX_URBs to any other value N, N URBs get captured at
+interval of 1 msec each, and then there is a break.
+
+      Can some one suggest a way to improve this problem. Is there some
+configuration or parameter which I can change, so that URBs get submitted
+fast enough? May be as soon as the old one has retired.
+
+Thanks and Regards,
+Kunal
+www.singhkunal.com
+  =
+
+
+--------------------------------------------------------------------
+mail2web.com =96 What can On Demand Business Solutions do for you?
+http://link.mail2web.com/Business/SharePoint
