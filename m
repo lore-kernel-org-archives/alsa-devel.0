@@ -1,21 +1,19 @@
-From: Florian Faber <faber@faberman.de>
-Subject: Re: hdsp rpm support
-Date: Tue, 27 May 2008 15:08:32 +0200
-Message-ID: <200805271508.32695.faber@faberman.de>
-References: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>
-	<200805270814.36011.faber@faberman.de>
-	<c62722740805270559q6a47d5fq3e3084a995494e1@mail.gmail.com>
+From: Kunal Singh <kunal@singhkunal.com>
+Subject: Re: bandwidth issue with usb-audio in alsa
+Date: Tue, 27 May 2008 18:40:31 +0530
+Message-ID: <483C0847.1080405@singhkunal.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de
-	(static-ip-85-25-152-101.inaddr.intergenia.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id B44BC243B9
+Received: from outbound-mail-35.bluehost.com (outbound-mail-35.bluehost.com
+	[69.89.18.155]) by alsa0.perex.cz (Postfix) with SMTP id 3F991243BC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 May 2008 15:08:17 +0200 (CEST)
-In-Reply-To: <c62722740805270559q6a47d5fq3e3084a995494e1@mail.gmail.com>
-Content-Disposition: inline
+	Tue, 27 May 2008 15:10:39 +0200 (CEST)
+Received: from [122.167.44.165] (helo=[127.0.0.1])
+	by host100.hostmonster.com with esmtpa (Exim 4.68)
+	(envelope-from <kunal@singhkunal.com>) id 1K0ywm-0001Yi-Oi
+	for alsa-devel@alsa-project.org; Tue, 27 May 2008 07:10:37 -0600
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,32 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Martin Tufnel <martin.tufnel@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Martin,
+Hi,
 
-> > The driver itself won't help you since the old user space tools
-> > don't know the io box. You wouldn't be able to upload the firmware,
-> > adjust the mixer levels etc. (unless you patch the old user space
-> > tools, of course).
-> I'm sorry, I'm a bit confused here.  You said above that "You have
-> IO, you can adjust the input levels, switch standby and disconnect
-> the box. So everything works as you would expect it." 
+	I have some update on the issue which I had reported earlier. In my last e-mail, I had not mentioned that iPod is connected to the target through a USB (HS) Hub. When I connect the
+same hub to my Desktop and read its configuration using "usbview" - I see that "interval" for this hub is mentioned
+as "256 msec". (I have two hubs and I get all the results same with both the hubs).
 
-With the hdsp*-tools that are currently part of the alsa-tools suite, 
-you cannot control the RPM. Neither can you control a lot of the other 
-RME cards. That's going to change with a whole new set of userspace 
-tools.
+	With 36 URBs, the gap between two set of transactions is appx 220 msec (220+36 => 256). So, I am wondering
+if the problem which I am seeing is because the external hub. I can not connect iPod directly to my target board,
+because this board does not support enough current (as needed by iPod).
 
-So, if you are curious, I can give you the new driver and a small 
-command line program that enables the RPM io box (which is on bypass 
-mode by default). Or you wait until I finished the new user space 
-tools..
+	Can some one suggest, where is the problem - is it with the host controller driver? 
 
+Regards,
+Kunal Singh
 
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key 6C002249          x-hkp://wwwkeys.eu.pgp.net
+-----------------------------
+
+Kunal Singh wrote:
+
+Hi,
+
+  My Platform
+ -------------
+  I am trying to stream audio data from a USB-device (an iPod) to my
+arm-based embedded device (running kernel 2.6.23). The USB-device confirms
+to usb digital audio (subclass - streaming) class. The endpoint buffer size
+196 bytes and transfer period is 1 msec. So, I should be reading data every
+msec.
+
+  Problem
+  -----------
+  I am facing some bandwidth issues. The data is not being captured fast
+enough.
+
+  I notice that once one set of URBs are captured (one set equal to
+MAX_URBS), there is a significant delay in capturing the next set of URBs. 
+
+     I have set MAX_URBS equal to 32.
+     When I connect a USB-Analyzer and analyze the timings, I can see that
+32 URBs are captured at a interval of 1 msec each. After that there is a
+break of around 250 msec. And then again 32 URBs captured in sequence.
+
+      If I change the MAX_URBs to any other value N, N URBs get captured at
+interval of 1 msec each, and then there is a break.
+
+      Can some one suggest a way to improve this problem. Is there some
+configuration or parameter which I can change, so that URBs get submitted
+fast enough? May be as soon as the old one has retired.
+
+Thanks and Regards,
+Kunal
+www.singhkunal.com
