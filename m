@@ -1,21 +1,22 @@
-From: Florian Faber <faber@faberman.de>
+From: Roman Haefeli <reduzierer@yahoo.de>
 Subject: Re: hdsp rpm support
-Date: Tue, 27 May 2008 08:14:35 +0200
-Message-ID: <200805270814.36011.faber@faberman.de>
+Date: Tue, 27 May 2008 13:45:18 +0200
+Message-ID: <1211888718.5482.4.camel@localhost.localdomain>
 References: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>
+	<1211789980.5486.8.camel@localhost.localdomain>
+	<c62722740805260527i9e612adr8d3bb029a6ea1e8e@mail.gmail.com>
 	<47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu>
 	<c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
+Reply-To: reduzierer@yahoo.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de
-	(static-ip-85-25-152-101.inaddr.intergenia.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C8B3103839
+Received: from n2b.bullet.mail.ac4.yahoo.com (n2b.bullet.mail.ac4.yahoo.com
+	[76.13.13.72]) by alsa0.perex.cz (Postfix) with SMTP id 52FED243A7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 May 2008 08:14:24 +0200 (CEST)
+	Tue, 27 May 2008 13:47:48 +0200 (CEST)
 In-Reply-To: <c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
-Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,33 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Martin Tufnel <martin.tufnel@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Cc: faber@faberman.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Martin,
+On Tue, 2008-05-27 at 13:00 +1000, Martin Tufnel wrote:
+> Hi Flo
+> 
+> That's great news!  Unfortunately, I don't have the unit yet so I'm unable
+> to test it for you.  However, I'm sure Roman would be very happy to give it
+> a go.  Roman?
 
-> Just to clarify, given the driver is finished but the user tools are
-> still under development, this means that the unit will basically work
-> but not have its full functionality - is this correct?
+i will be quite busy, until i will have finished my studies during the
+first week of june. but then i will be happy to update my old ubuntu
+dapper box and try the new alsa drivers. i'll give you a report, as soon
+as i am ready. 
 
-You have IO, you can adjust the input levels, switch standby and 
-disconnect the box. So everything works as you would expect it.
-
-> Also, did you use the new patched version of the firmware that Karl
-> worked on?
-
-No, it's the original firmware. Why would one want to patch it?
-
-> And, when do you think the driver will be incorporated into the main
-> Alsa code branch?
-
-The driver itself won't help you since the old user space tools don't 
-know the io box. You wouldn't be able to upload the firmware, adjust 
-the mixer levels etc. (unless you patch the old user space tools, of 
-course).
+roman
 
 
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key 6C002249          x-hkp://wwwkeys.eu.pgp.net
+		
+___________________________________________________________ 
+Telefonate ohne weitere Kosten vom PC zum PC: http://messenger.yahoo.de
