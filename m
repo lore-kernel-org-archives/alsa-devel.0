@@ -1,16 +1,16 @@
 From: Stas Sergeev <stsp@aknet.ru>
 Subject: Re: snd_pcsp locking mess
-Date: Tue, 27 May 2008 17:46:46 +0400
-Message-ID: <483C10C6.5020902@aknet.ru>
+Date: Tue, 27 May 2008 17:47:19 +0400
+Message-ID: <483C10E7.7070203@aknet.ru>
 References: <20080518172258.D0DFB108060@picon.linux-foundation.org>	<4830737B.70108@aknet.ru>	<s5hve1ac05g.wl%tiwai@suse.de>	<4831B260.1060802@aknet.ru>	<s5hhccrx2ey.wl%tiwai@suse.de>	<4835D774.3070306@aknet.ru>
 	<s5hprrduwdk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020302060200020204050005"
+Content-Type: multipart/mixed; boundary="------------020004060904030506090200"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp05.mtu.ru (smtp05.mtu.ru [62.5.255.52])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3887A243DA
+	by alsa0.perex.cz (Postfix) with ESMTP id 53E7A243DA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 May 2008 15:46:51 +0200 (CEST)
+	Tue, 27 May 2008 15:47:26 +0200 (CEST)
 In-Reply-To: <s5hprrduwdk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,7 +26,7 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------020302060200020204050005
+--------------020004060904030506090200
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -57,7 +57,7 @@ questionable) optimization. So why
 not would I just use the substream
 lock?
 
---------------020302060200020204050005
+--------------020004060904030506090200
 Content-Type: text/x-patch;
  name="a.diff"
 Content-Transfer-Encoding: 7bit
@@ -228,7 +228,7 @@ diff -r 63405ae5a92b drivers/pcsp/pcsp_lib.c
  }
  
 
---------------020302060200020204050005
+--------------020004060904030506090200
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -239,4 +239,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------020302060200020204050005--
+--------------020004060904030506090200--
