@@ -1,21 +1,23 @@
-From: Kunal Singh <kunal@singhkunal.com>
-Subject: Re: problem with usb-audio and oss emulation
-Date: Tue, 27 May 2008 18:16:07 +0530
-Message-ID: <483C028F.5050503@singhkunal.com>
-References: <mailman.276.1211814913.2149.alsa-devel@alsa-project.org>
+From: "Martin Tufnel" <martin.tufnel@gmail.com>
+Subject: Re: hdsp rpm support
+Date: Tue, 27 May 2008 22:59:26 +1000
+Message-ID: <c62722740805270559q6a47d5fq3e3084a995494e1@mail.gmail.com>
+References: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>
+	<47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu>
+	<c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
+	<200805270814.36011.faber@faberman.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from outbound-mail-35.bluehost.com (outbound-mail-35.bluehost.com
-	[69.89.18.155]) by alsa0.perex.cz (Postfix) with SMTP id 6BB9324339
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B14C243B0
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 May 2008 14:46:20 +0200 (CEST)
-Received: from [122.167.44.165] (helo=[127.0.0.1])
-	by host100.hostmonster.com with esmtpa (Exim 4.68)
-	(envelope-from <kunal@singhkunal.com>) id 1K0yZF-0006VZ-BC
-	for alsa-devel@alsa-project.org; Tue, 27 May 2008 06:46:18 -0600
-In-Reply-To: <mailman.276.1211814913.2149.alsa-devel@alsa-project.org>
+	Tue, 27 May 2008 14:59:28 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m28so2339646wag.8
+	for <alsa-devel@alsa-project.org>; Tue, 27 May 2008 05:59:27 -0700 (PDT)
+In-Reply-To: <200805270814.36011.faber@faberman.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,61 +27,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Florian Faber <faber@faberman.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+Hi Flo
 
-	The first issue was resolved by disabling the "CONFIG_SND_PCM_OSS_PLUGINS <http://lxr.linux.no/linux/+code=CONFIG_SND_PCM_OSS_PLUGINS>".i.e. disable the OSS plug-in support under KernelConfigMenu->sound->alsa
+On Tue, May 27, 2008 at 4:14 PM, Florian Faber <faber@faberman.de> wrote:
 
-	CAN SOME ONE PLEASE HELP ON THIS?
-	(2) Once I connect the iPod to my target, I can not any more use the default sound card. I read on the oss-emulation tutorial that this could be a problem with "dsp_map". But I am not able to check the current settings.
-	
+> Martin,
+>
+> > Just to clarify, given the driver is finished but the user tools are
+> > still under development, this means that the unit will basically work
+> > but not have its full functionality - is this correct?
+>
+> You have IO, you can adjust the input levels, switch standby and
+> disconnect the box. So everything works as you would expect it.
+>
 
-Thanks and Regards,
-Kunal
+Great!
 
 
-Date: Mon, 26 May 2008 20:10:11 +0530
-From: Kunal Singh <kunal@singhkunal.com>
-Subject: [alsa-devel] problem with usb-audio and oss emulation
-To: alsa-devel@alsa-project.org
-Message-ID: <483ACBCB.2020800@singhkunal.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+>
+> > Also, did you use the new patched version of the firmware that Karl
+> > worked on?
+>
+> No, it's the original firmware. Why would one want to patch it?
+>
 
-Hi,
+My understanding from Roman's previous posts was that there was a problem
+loading the firmware from within Linux.  If I understood him correctly, he
+needed to load the fireware from within a Windows boot and then boot into
+Linux (without turning off the machine of course).  Perhaps I misunderstood
+him.
 
-    I am working on a ARM based target with 2.6.23 Kernel.  My project 
-involves streaming data from a USB-Audio Device (an iPod) and playing it 
-back on the target. I am using OSS-emulation API to communicate with the 
-audio devices.
-    What I am able to do:
-    (1) I have a sound card in my target. This is mapped to card0. I can 
-open the "dsp" device and can playback any audio data on this.
-    (2) I have enabled the usb-audio module support in kernel 
-configuration.   When I connect iPod to the target, I can see a new card 
-"card1" being added in the /proc/asound/ directory.
-    (3) I can open the "dsp1" device and can read from it. When I 
-connect a "USB-Analyzer" I can see some valid data being streamed to the 
-target.
+Clearly, you're not suffering from the same problem!
 
-    However, I am stuck with following issues:
-    (1) The data being received on the target (in user mode) is junk. I 
-put some printfs in the function "retire_capture_urb" in file 
-"/linux/sound/usb/usbaudio.c", and I can see that the "data" which I see 
-through usb-analzyer is reaching till this point. However, there seem to 
-be some problem with one of the "snd_pmc_oss_ReadN" functions in file 
-"http://lxr.linux.no/linux/sound/core/oss/pcm_oss.c". I am not able to 
-exactly trace the problem, but I think that the "byte count" and "buffer 
-address" being passed to snd-usb-audio is getting messed up some where. 
-Has any one faced similar problems before?
-    (2) Once I connect the iPod to my target, I can not any more use the 
-default sound card. I read on the oss-emulation tutorial that this could 
-be a problem with "dsp_map". But I am not able to check the current 
-settings.
-   
-    Can some one give me some pointers for further debugging?
 
-Thanks and Regards,
-Kunal Singh
-www.singhkunal.com
+
+>
+> > And, when do you think the driver will be incorporated into the main
+> > Alsa code branch?
+>
+> The driver itself won't help you since the old user space tools don't
+> know the io box. You wouldn't be able to upload the firmware, adjust
+> the mixer levels etc. (unless you patch the old user space tools, of
+> course).
+>
+
+I'm sorry, I'm a bit confused here.  You said above that "You have IO, you
+can adjust the input levels, switch standby and disconnect the box. So
+everything works as you would expect it."  I'm assuming here that you're
+talking about the driver as you said that that was finished.  However, what
+you've just said above seems to contradict this as it seems you're saying
+that you can't do anything with just the driver - you need the user space
+tools??
+
+Thanks again for your efforts, Martin
