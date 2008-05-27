@@ -1,22 +1,24 @@
 From: "Martin Tufnel" <martin.tufnel@gmail.com>
 Subject: Re: hdsp rpm support
-Date: Tue, 27 May 2008 22:59:26 +1000
-Message-ID: <c62722740805270559q6a47d5fq3e3084a995494e1@mail.gmail.com>
+Date: Tue, 27 May 2008 23:02:11 +1000
+Message-ID: <c62722740805270602u33eb278bsc900de6dd42df796@mail.gmail.com>
 References: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>
+	<1211789980.5486.8.camel@localhost.localdomain>
+	<c62722740805260527i9e612adr8d3bb029a6ea1e8e@mail.gmail.com>
 	<47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu>
 	<c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
-	<200805270814.36011.faber@faberman.de>
+	<1211888718.5482.4.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B14C243B0
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8982E24350
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 May 2008 14:59:28 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m28so2339646wag.8
-	for <alsa-devel@alsa-project.org>; Tue, 27 May 2008 05:59:27 -0700 (PDT)
-In-Reply-To: <200805270814.36011.faber@faberman.de>
+	Tue, 27 May 2008 15:02:13 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m28so2340594wag.8
+	for <alsa-devel@alsa-project.org>; Tue, 27 May 2008 06:02:12 -0700 (PDT)
+In-Reply-To: <1211888718.5482.4.camel@localhost.localdomain>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,60 +29,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Florian Faber <faber@faberman.de>
+To: reduzierer@yahoo.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Flo
+Great Roman - thanks very much!  Look forward to it.
 
-On Tue, May 27, 2008 at 4:14 PM, Florian Faber <faber@faberman.de> wrote:
+Regards, Martin
 
-> Martin,
+On Tue, May 27, 2008 at 9:45 PM, Roman Haefeli <reduzierer@yahoo.de> wrote:
+
+> On Tue, 2008-05-27 at 13:00 +1000, Martin Tufnel wrote:
+> > Hi Flo
+> >
+> > That's great news!  Unfortunately, I don't have the unit yet so I'm
+> unable
+> > to test it for you.  However, I'm sure Roman would be very happy to give
+> it
+> > a go.  Roman?
 >
-> > Just to clarify, given the driver is finished but the user tools are
-> > still under development, this means that the unit will basically work
-> > but not have its full functionality - is this correct?
+> i will be quite busy, until i will have finished my studies during the
+> first week of june. but then i will be happy to update my old ubuntu
+> dapper box and try the new alsa drivers. i'll give you a report, as soon
+> as i am ready.
 >
-> You have IO, you can adjust the input levels, switch standby and
-> disconnect the box. So everything works as you would expect it.
+> roman
 >
-
-Great!
-
-
->
-> > Also, did you use the new patched version of the firmware that Karl
-> > worked on?
->
-> No, it's the original firmware. Why would one want to patch it?
->
-
-My understanding from Roman's previous posts was that there was a problem
-loading the firmware from within Linux.  If I understood him correctly, he
-needed to load the fireware from within a Windows boot and then boot into
-Linux (without turning off the machine of course).  Perhaps I misunderstood
-him.
-
-Clearly, you're not suffering from the same problem!
-
-
-
->
-> > And, when do you think the driver will be incorporated into the main
-> > Alsa code branch?
->
-> The driver itself won't help you since the old user space tools don't
-> know the io box. You wouldn't be able to upload the firmware, adjust
-> the mixer levels etc. (unless you patch the old user space tools, of
-> course).
->
-
-I'm sorry, I'm a bit confused here.  You said above that "You have IO, you
-can adjust the input levels, switch standby and disconnect the box. So
-everything works as you would expect it."  I'm assuming here that you're
-talking about the driver as you said that that was finished.  However, what
-you've just said above seems to contradict this as it seems you're saying
-that you can't do anything with just the driver - you need the user space
-tools??
-
-Thanks again for your efforts, Martin
