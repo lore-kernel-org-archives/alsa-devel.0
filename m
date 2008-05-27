@@ -1,21 +1,20 @@
-From: "Harsha priya gupta" <harshapriya@gmail.com>
-Subject: Re: snd_kcontrol questions
-Date: Tue, 27 May 2008 11:00:46 +0530
-Message-ID: <827ad74d0805262230t7f9f4b19gedc3e0a30aa442f6@mail.gmail.com>
-References: <827ad74d0805212315o7e55bf92q6aa81cfa9c1e461e@mail.gmail.com>
-	<483551D7.1000500@ladisch.de>
-	<827ad74d0805260242k15349ea3m2ecef3c5c8646218@mail.gmail.com>
+From: Florian Faber <faber@faberman.de>
+Subject: Re: hdsp rpm support
+Date: Tue, 27 May 2008 08:14:35 +0200
+Message-ID: <200805270814.36011.faber@faberman.de>
+References: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>
+	<47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu>
+	<c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id 22C1E103834
+Received: from india820.server4you.de
+	(static-ip-85-25-152-101.inaddr.intergenia.de [85.25.152.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C8B3103839
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 May 2008 07:30:48 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so483686and.80
-	for <alsa-devel@alsa-project.org>; Mon, 26 May 2008 22:30:46 -0700 (PDT)
-In-Reply-To: <827ad74d0805260242k15349ea3m2ecef3c5c8646218@mail.gmail.com>
+	Tue, 27 May 2008 08:14:24 +0200 (CEST)
+In-Reply-To: <c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,57 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>
+To: Martin Tufnel <martin.tufnel@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have a quick follow up question;
+Martin,
 
-In the KMix there is a balance bar. How do I get control access to the same
-from my driver?
+> Just to clarify, given the driver is finished but the user tools are
+> still under development, this means that the unit will basically work
+> but not have its full functionality - is this correct?
 
-On Mon, May 26, 2008 at 3:12 PM, Harsha priya gupta <harshapriya@gmail.com>
-wrote:
+You have IO, you can adjust the input levels, switch standby and 
+disconnect the box. So everything works as you would expect it.
 
-> Thanks a lot. Answers for 1 and 3 helped me fix my issues. Ill review my
-> code for 2 and shall seek your help if i find myself unlucky.
->
-> Thanks again.
->
->
->
-> On Thu, May 22, 2008 at 4:28 PM, Clemens Ladisch <clemens@ladisch.de>
-> wrote:
->
->> Harsha priya gupta wrote:
->> > 1. I want to define a snd_kcontrol that is of type mono.
->>
->> In the control's info callback, set the count element of the
->> snd_ctl_elem_info structure to 1.
->>
->> > 2. My input controls give out 9 channels when i say 'split channels' in
->> > kmix. can anyone help me how to fix that to 2 channels
->>
->> There's something wrong in your code.  Which you didn't show.
->>
->> > 3. I would want to get the individual setting of each channel from KMIX
->> into
->> > my ALSA driver. How do I get them?
->>
->> The snd_ctl_elem_value structure contains an array of values.
->>
->>
->> HTH
->> Clemens
->>
->
->
->
-> --
-> -Harsha
+> Also, did you use the new patched version of the firmware that Karl
+> worked on?
+
+No, it's the original firmware. Why would one want to patch it?
+
+> And, when do you think the driver will be incorporated into the main
+> Alsa code branch?
+
+The driver itself won't help you since the old user space tools don't 
+know the io box. You wouldn't be able to upload the firmware, adjust 
+the mixer levels etc. (unless you patch the old user space tools, of 
+course).
 
 
-
-
+Flo
 -- 
--Harsha
+Machines can do the work, so people have time to think.
+public key 6C002249          x-hkp://wwwkeys.eu.pgp.net
