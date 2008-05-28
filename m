@@ -1,16 +1,16 @@
 From: "kunal@singhkunal.com" <kunal@singhkunal.com>
 Subject: Re: bandwidth issue with usb-audio in alsa
-Date: Tue, 27 May 2008 23:03:31 -0400
-Message-ID: <380-2200853283331976@M2W027.mail2web.com>
+Date: Wed, 28 May 2008 01:12:55 -0400
+Message-ID: <380-22008532851255867@M2W041.mail2web.com>
 Reply-To: kunal@singhkunal.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from xsmtp04.mail2web.com (xsmtp04.mail2web.com [168.144.250.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58D682452B
+Received: from xsmtp13.mail2web.com (xsmtp13.mail2web.com [168.144.250.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id C08F824425
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 May 2008 05:03:35 +0200 (CEST)
+	Wed, 28 May 2008 07:12:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,8 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, clemens@ladisch.de, jonsmirl@gmail.com
+To: clemens@ladisch.de, jonsmirl@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+Hi Clemens/Jon,
+
+   I tried to understand the "lsusb -v" and started scanning through it.
+After a few scan I realized that Bus-001 where I have connected my device
+is a FS bus. The Bus-002 is HS. So, I moved my device to Bus-002. It all
+works without any Bandwidth issues.
+
+   Thanks a lot for guiding me in to the right direction.
+
+   Can some one also suggest, why is there a problem with oss-emulation on
+my system. I am using OSS-emulation API. As I mentioned earlier, I have a
+sound card "card0" on my system which is mapped to /dev/dsp and I am able
+to playback any data on this. As soon as I connect a USB-Audio device
+(which reflects as Card1 in /proc/asound and new nodes /dev/dsp1
+/dev/mixer1 etc created), I can no longer use the Card0. The /dev/dsp tries
+to open a USB-Audio type devices (which should actually happen when I try
+to open the /dev/dsp1). I think there is some dynamic remapping which
+happens, and I am unable to trace it. =
+
+
+Regards,
+Kunal
+
+....
 
 Hi Clemens,
 
@@ -67,7 +92,6 @@ scheduled at this desired speed. =
 
 Regards,
 Kunal
-
 
 Bus 002 Device 001: ID 0000:0000  =
 
@@ -540,5 +564,5 @@ the hubs).
 
 
 --------------------------------------------------------------------
-mail2web.com - Microsoft=AE Exchange solutions from a leading provider -
-http://link.mail2web.com/Business/Exchange
+mail2web.com =96 What can On Demand Business Solutions do for you?
+http://link.mail2web.com/Business/SharePoint
