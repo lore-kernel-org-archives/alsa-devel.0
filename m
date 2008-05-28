@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC Platform Driver for AT32AP7000 (AVR32)
-Date: Wed, 28 May 2008 16:40:00 +0100
-Message-ID: <20080528153958.GE12414@sirena.org.uk>
-References: <200805271732.00086.geoffrey@pager.net>
-	<20080528111854.GC12414@sirena.org.uk>
-	<200805281028.59582.geoffrey@pager.net>
+Subject: Re: ASOC, SPDIF and AC97
+Date: Wed, 28 May 2008 17:10:02 +0100
+Message-ID: <20080528161001.GF12414@sirena.org.uk>
+References: <9e4733910805271116t1d36e769qaedfc0362b03e48d@mail.gmail.com>
+	<20080528101430.GB12414@sirena.org.uk>
+	<9e4733910805280640nd460258i547c8bc6581b411a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C3761037F9
+	by alsa0.perex.cz (Postfix) with ESMTP id 7CE07246B4
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 May 2008 17:40:01 +0200 (CEST)
+	Wed, 28 May 2008 18:10:03 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <200805281028.59582.geoffrey@pager.net>
+In-Reply-To: <9e4733910805280640nd460258i547c8bc6581b411a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Geoffrey Wossum <geoffrey@pager.net>
-Cc: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 28, 2008 at 10:28:59AM -0500, Geoffrey Wossum wrote:
+On Wed, May 28, 2008 at 09:40:13AM -0400, Jon Smirl wrote:
 
-> Do I need to submit patches to fix the style issues?
+> can do this. Does ALSA hand me the two buffers simultaneously? I
+> haven't located any code yet supporting independent playback.
 
-Ideally, yes; there are some not entirely mechanical things in there as
-well so it'd be good to make sure that what goes in has been tested
-as-is.
+It shouldn't be fundamentally different to multiple independent records
+which the PXA code does support.  If you present them as separate PCMs
+then ALSA won't synchronise them for you.
 
-> > Will this driver work with a current mainline kernel or does it require
-> > other things from the Atmel kernel?
+> > The ASoC AC97 support doesn't use the AC97 patch infrastructure at all -
+> >  it's completely independent so things are pretty much as you describe,
+> >  everything is in the CODEC drivers.
 
-> at32-pcm.c and at32-ssc.c will compile against a vanilla 2.6.24.3 kernel.  
-> playpaq_wm8510.c will not, since it references the WM8510 code that is not in 
-> the mainline kernel.  Not sure if it would really work.  Even though AVR32 is 
+> I've figured out now that the pci codec code is independent of the
+> asoc code. Are there plans to unify this in the future?
 
-We should be able to submit the WM8510 driver so it shouldn't be a
-blocker.
-
-> in the mainline kernel, Atmel still has a fairly extensive patch against the 
-> kernel.  Until you can use an unpatched and current kernel for the AVR32, 
-> this code probably isn't a candidate for inclusion the mainline.
-
-OTOH, if it will build with current mainline then that reduces the diff
-that one needs to carry in order to use this support and means there's
-one less thing in that diff that needs to be merged into mainline.  That
-seems like a net win to me.
-
--- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+I'm not aware of anyone working on doing so.
