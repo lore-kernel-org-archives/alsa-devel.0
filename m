@@ -1,16 +1,20 @@
 From: "kunal@singhkunal.com" <kunal@singhkunal.com>
-Subject: Re: bandwidth issue with usb-audio in alsa
-Date: Wed, 28 May 2008 01:12:55 -0400
-Message-ID: <380-22008532851255867@M2W041.mail2web.com>
+Subject: Re: problem with usb-audio and oss emulation
+Date: Wed, 28 May 2008 03:47:39 -0400
+Message-ID: <380-22008532874739209@M2W103.mail2web.com>
 Reply-To: kunal@singhkunal.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from xsmtp13.mail2web.com (xsmtp13.mail2web.com [168.144.250.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id C08F824425
+Received: from xsmtp10.mail2web.com (xsmtp10.mail2web.com [168.144.250.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id ECE0A245A0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 May 2008 07:12:59 +0200 (CEST)
+	Wed, 28 May 2008 09:47:41 +0200 (CEST)
+Received: from [168.144.108.103] (helo=M2W103.mail2web.com)
+	by xsmtp10.mail2web.com with smtp (Exim 4.63)
+	(envelope-from <kunal@singhkunal.com>) id 1K1GNn-0001jL-8w
+	for alsa-devel@alsa-project.org; Wed, 28 May 2008 03:47:41 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,549 +24,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, jonsmirl@gmail.com, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens/Jon,
+Hi,
 
-   I tried to understand the "lsusb -v" and started scanning through it.
-After a few scan I realized that Bus-001 where I have connected my device
-is a FS bus. The Bus-002 is HS. So, I moved my device to Bus-002. It all
-works without any Bandwidth issues.
+   The second issue is resolved too.
+   I was using /dev/dsp to access the Default sound card -> card0.
+   (1) The /dev/dsp is mapped (through a symbolic link) to /dev/sound/dsp
+by default, when the system boots up. So, all works fine for me.
+   (2) When I connect a usb-audio-device to my system, =
 
-   Thanks a lot for guiding me in to the right direction.
+         (a) the /dev/dsp1 gets mapped to  /sound/dev/dsp1
+         (b) And /dev/dsp too gets mapped to /sound/dev/dsp1
+       So, I could not access /sound/dev/dsp. Is it not a bug?
+    (3) When I dis-connect the usb-audio-device from my system
+         both the "/dev/dsp" and "/dev/dsp1" entries dis-appear from my
+system.
+         Is this not a bug too?
 
-   Can some one also suggest, why is there a problem with oss-emulation on
-my system. I am using OSS-emulation API. As I mentioned earlier, I have a
-sound card "card0" on my system which is mapped to /dev/dsp and I am able
-to playback any data on this. As soon as I connect a USB-Audio device
-(which reflects as Card1 in /proc/asound and new nodes /dev/dsp1
-/dev/mixer1 etc created), I can no longer use the Card0. The /dev/dsp tries
-to open a USB-Audio type devices (which should actually happen when I try
-to open the /dev/dsp1). I think there is some dynamic remapping which
-happens, and I am unable to trace it. =
+    Every thing will work fine for me as long as I use entries
+/dev/sound/dspN, insteading of /dev/dspN. =
 
+    I think this issue must be fixed. Shall I report a bug or something? In
+any case, I will spend some time in fixing this issue, when I get free from
+current assignment.
 
-Regards,
+Thanks and Regards,
 Kunal
 
-....
 
-Hi Clemens,
-
-     I have copied the "lsusb -v" output below (end of this e-mail). The
-"HUB" and the "iPod" are connected to Bus-001. Bus-002 is not being used.
-
-      As I can see from the Log, BUS-001 and BUS-002 both have usb (root ?)
-hubs with single TT. Each of these buses have only one port available. So,
-I guess that single "TT" should not be a problem. Am I right?
-
-      The Belking hub which I have connected to "Bus-001" has "TT" per
-port. It also says "bInterval" equal to 255.
-
-      The iPod device which I am using has two configurations. I am using
-the second configuration. Second configuration again has two interfaces.
-Second (HID Class) interface is being used and works fine. Problem is with
-the the first interface (with altsetting=3D=3D1), which is an
-audio-streaming-class.
- =
-
-      The parameters for this interface are: (copied from the log below)
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x00c0  1x 192 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    =
-
-         Here "bInterval" is "1" and the transactions are not getting
-scheduled at this desired speed. =
+*****************
 
 
-Regards,
+Hi All,
+
+	The first issue was resolved by disabling the "CONFIG_SND_PCM_OSS_PLUGINS
+<http://lxr.linux.no/linux/+code=3DCONFIG_SND_PCM_OSS_PLUGINS>".i.e. disable
+the OSS plug-in support under KernelConfigMenu->sound->alsa
+
+	CAN SOME ONE PLEASE HELP ON THIS?
+	(2) Once I connect the iPod to my target, I can not any more use the
+default sound card. I read on the oss-emulation tutorial that this could be
+a problem with "dsp_map". But I am not able to check the current settings.
+	=
+
+
+Thanks and Regards,
 Kunal
 
-Bus 002 Device 001: ID 0000:0000  =
 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         1 Single TT
-  bMaxPacketSize0        64
-  idVendor           0x0000 =
+Date: Mon, 26 May 2008 20:10:11 +0530
+From: Kunal Singh <kunal at singhkunal.com>
+Subject: [alsa-devel] problem with usb-audio and oss emulation
+To: alsa-devel at alsa-project.org
+Message-ID: <483ACBCB.2020800 at singhkunal.com>
+Content-Type: text/plain; charset=3DISO-8859-1; format=3Dflowed
 
-  idProduct          0x0000 =
+Hi,
 
-  bcdDevice            2.06
-  iManufacturer           3 Linux 2.6.22.6 ehci_hcd
-  iProduct                2 Freescale On-Chip EHCI Host Controller
-  iSerial                 1 fsl-ehci.1
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0 =
+    I am working on a ARM based target with 2.6.23 Kernel.  My project =
 
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0 =
+involves streaming data from a USB-Audio Device (an iPod) and playing it =
 
-      iInterface              0 =
+back on the target. I am using OSS-emulation API to communicate with the =
 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval              12
-Hub Descriptor:
-  bLength               9
-  bDescriptorType      41
-  nNbrPorts             1
-  wHubCharacteristic 0x0009
-    Per-port power switching
-    Per-port overcurrent protection
-    TT think time 8 FS bits
-  bPwrOn2PwrGood       10 * 2 milli seconds
-  bHubContrCurrent      0 milli Ampere
-  DeviceRemovable    0x00
-  PortPwrCtrlMask    0x00 =
+audio devices.
+    What I am able to do:
+    (1) I have a sound card in my target. This is mapped to card0. I can =
 
- Hub Port Status:
-   Port 1: 0000.0100 power
+open the "dsp" device and can playback any audio data on this.
+    (2) I have enabled the usb-audio module support in kernel =
 
-Bus 001 Device 008: ID 05ac:1262 Apple Computer, Inc. =
+configuration.   When I connect iPod to the target, I can see a new card =
 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0 =
+"card1" being added in the /proc/asound/ directory.
+    (3) I can open the "dsp1" device and can read from it. When I =
 
-  bDeviceProtocol         0 =
+connect a "USB-Analyzer" I can see some valid data being streamed to the =
 
-  bMaxPacketSize0        64
-  idVendor           0x05ac Apple Computer, Inc.
-  idProduct          0x1262 =
+target.
 
-  bcdDevice            0.01
-  iManufacturer           1 Apple Inc.
-  iProduct                2 iPod
-  iSerial                 3 000A27001A2E8B0C
-  bNumConfigurations      2
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           32
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0 =
+    However, I am stuck with following issues:
+    (1) The data being received on the target (in user mode) is junk. I =
 
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass         8 Mass Storage
-      bInterfaceSubClass      6 SCSI
-      bInterfaceProtocol     80 Bulk (Zip)
-      iInterface              0 =
+put some printfs in the function "retire_capture_urb" in file =
 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          149
-    bNumInterfaces          3
-    bConfigurationValue     2
-    iConfiguration          4 iPod USB Interface
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0 =
+"/linux/sound/usb/usbaudio.c", and I can see that the "data" which I see =
 
-      iInterface              0 =
+through usb-analzyer is reaching till this point. However, there seem to =
 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           30
-        bInCollection           1
-        baInterfaceNr( 0)       1
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0201 Microphone
-        bAssocTerminal          2
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 =
+be some problem with one of the "snd_pmc_oss_ReadN" functions in file =
 
-        iTerminal               0 =
+"http://lxr.linux.no/linux/sound/core/oss/pcm_oss.c". I am not able to =
 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             2
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          1
-        bSourceID               1
-        iTerminal               0 =
+exactly trace the problem, but I think that the "byte count" and "buffer =
 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 =
+address" being passed to snd-usb-audio is getting messed up some where. =
 
-      iInterface              0 =
+Has any one faced similar problems before?
+    (2) Once I connect the iPod to my target, I can not any more use the =
 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 =
+default sound card. I read on the oss-emulation tutorial that this could =
 
-      iInterface              0 =
+be a problem with "dsp_map". But I am not able to check the current =
 
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           2
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                35
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            9 Discrete
-        tSamFreq[ 0]         8000
-        tSamFreq[ 1]        11025
-        tSamFreq[ 2]        12000
-        tSamFreq[ 3]        16000
-        tSamFreq[ 4]        22050
-        tSamFreq[ 5]        24000
-        tSamFreq[ 6]        32000
-        tSamFreq[ 7]        44100
-        tSamFreq[ 8]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x00c0  1x 192 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         3 Human Interface Devices
-      bInterfaceSubClass      0 No Subclass
-      bInterfaceProtocol      0 None
-      iInterface              0 =
+settings.
+   =
 
-        HID Device Descriptor:
-          bLength                 9
-          bDescriptorType        33
-          bcdHID               1.01
-          bCountryCode            0 Not supported
-          bNumDescriptors         1
-          bDescriptorType        34 Report
-          wDescriptorLength      96
-         Report Descriptors: =
+    Can some one give me some pointers for further debugging?
 
-           ** UNAVAILABLE **
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               1
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0 =
-
-  bDeviceProtocol         0 =
-
-  bMaxPacketSize0        64
-  bNumConfigurations      2
-
-Bus 001 Device 006: ID 050d:0234 Belkin Components F5U234 USB 2.0 4-Port Hub
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         0 =
-
-  bMaxPacketSize0        64
-  idVendor           0x050d Belkin Components
-  idProduct          0x0234 F5U234 USB 2.0 4-Port Hub
-  bcdDevice            0.00
-  iManufacturer           0 =
-
-  iProduct                0 =
-
-  iSerial                 0 =
-
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0 =
-
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower                2mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0 =
-
-      iInterface              0 =
-
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0001  1x 1 bytes
-        bInterval             255
-Hub Descriptor:
-  bLength               9
-  bDescriptorType      41
-  nNbrPorts             4
-  wHubCharacteristic 0x0000
-    Ganged power switching
-    Ganged overcurrent protection
-  bPwrOn2PwrGood       50 * 2 milli seconds
-  bHubContrCurrent      1 milli Ampere
-  DeviceRemovable    0x00
-  PortPwrCtrlMask    0x00 =
-
- Hub Port Status:
-   Port 1: 0000.0103 power enable connect
-   Port 2: 0000.0100 power
-   Port 3: 0000.0100 power
-   Port 4: 0000.0100 power
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         2 TT per port
-  bMaxPacketSize0        64
-  bNumConfigurations      1
-
-Bus 001 Device 001: ID 0000:0000  =
-
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         1 Single TT
-  bMaxPacketSize0        64
-  idVendor           0x0000 =
-
-  idProduct          0x0000 =
-
-  bcdDevice            2.06
-  iManufacturer           3 Linux 2.6.22.6 ehci_hcd
-  iProduct                2 Freescale On-Chip EHCI Host Controller
-  iSerial                 1 fsl-ehci.0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0 =
-
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0 =
-
-      iInterface              0 =
-
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval              12
-Hub Descriptor:
-  bLength               9
-  bDescriptorType      41
-  nNbrPorts             1
-  wHubCharacteristic 0x0009
-    Per-port power switching
-    Per-port overcurrent protection
-    TT think time 8 FS bits
-  bPwrOn2PwrGood       10 * 2 milli seconds
-  bHubContrCurrent      0 milli Ampere
-  DeviceRemovable    0x00
-  PortPwrCtrlMask    0x00 =
-
- Hub Port Status:
-   Port 1: 0000.0103 power enable connect
-
-Clemens Ladisch wrote:
-> Kunal Singh wrote:
->  =
-
->>     I have some update on the issue which I had reported earlier. In my
-last e-mail, I had not mentioned that iPod is connected to the target
-through a USB (HS) Hub. When I connect the
->> same hub to my Desktop and read its configuration using "usbview" - I
-see that "interval" for this hub is mentioned
->> as "256 msec". (I have two hubs and I get all the results same with both
-the hubs).
->>     =
-
->
-> Please show the output of "lsusb -v".
->
->
-> Regards,
-> Clemens =
-
+Thanks and Regards,
+Kunal Singh
+www.singhkunal.com
 
 --------------------------------------------------------------------
-mail2web.com =96 What can On Demand Business Solutions do for you?
-http://link.mail2web.com/Business/SharePoint
+myhosting.com - Premium Microsoft=AE Windows=AE and Linux web and applicati=
+on
+hosting - http://link.myhosting.com/myhosting
