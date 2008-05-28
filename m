@@ -1,21 +1,18 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: ASOC, SPDIF and AC97
-Date: Wed, 28 May 2008 09:40:13 -0400
-Message-ID: <9e4733910805280640nd460258i547c8bc6581b411a@mail.gmail.com>
-References: <9e4733910805271116t1d36e769qaedfc0362b03e48d@mail.gmail.com>
-	<20080528101430.GB12414@sirena.org.uk>
+From: Tony Vroon <tony@linx.net>
+Subject: Re: power save of snd_hda_intel
+Date: Wed, 28 May 2008 14:50:27 +0100
+Message-ID: <1211982627.4166.3.camel@localhost>
+References: <827ad74d0805280609p8420727gcf08dd557a52ae5a@mail.gmail.com>
+	<s5hk5hepnv9.wl%tiwai@suse.de>
+	<827ad74d0805280627h4aee4631sea6634d5be77a4d9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2928545971555302001=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id A43D424600
+Received: from bronze.linx.net (bronze.linx.net [195.66.232.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4893E2464E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 May 2008 15:40:14 +0200 (CEST)
-Received: by rn-out-0910.google.com with SMTP id k32so1608584rnd.21
-	for <alsa-devel@alsa-project.org>; Wed, 28 May 2008 06:40:13 -0700 (PDT)
-In-Reply-To: <20080528101430.GB12414@sirena.org.uk>
-Content-Disposition: inline
+	Wed, 28 May 2008 15:51:27 +0200 (CEST)
+In-Reply-To: <827ad74d0805280627h4aee4631sea6634d5be77a4d9@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,61 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA-devel <alsa-devel@alsa-project.org>
+To: Harsha priya gupta <harshapriya@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/28/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> On Tue, May 27, 2008 at 02:16:54PM -0400, Jon Smirl wrote:
->
->  > I'm having trouble with SPDIF. I can make two devices like this in the
->  > codec file. But how do I get the SPDIF device hooked up to the right
->  > AC97 slot, 10/11? Are any of the ASOC codecs implementing SPDIF?
->
->
-> None that I know of implementing SPDIF (or at least, none with driver
->  support for it) but it might be worth taking a look at the PXA2xx AC97
->  controller support - it implements supports for AC97 timeslots beyond
->  the base playback and record channels.
 
-I'll look at PXA2xx. I had assumed that some of the SOC codecs were
-implementing SPDIF and that wrongly led me into the pci code.
-
-I'm practicing on the Efika while I wait on our own hardware. The
-Efika hardware can support simultaneous independent playback on analog
-and spdif. I see now that it is too hard to jump straight to
-independent playback, instead I'll work on getting them both to play
-standalone.
-
-For independent playback I need to interleave the data from two
-buffers and DMA it into the PSC. I believe the Bestcomm DMA controller
-can do this. Does ALSA hand me the two buffers simultaneously? I
-haven't located any code yet supporting independent playback.
-
->
->  Briefly, the approach is to provide a DAI in the AC97 controller driver
->  which handles the relevant AC97 timeslots and a DAI in the CODEC driver
->  which does the CODEC side of things then match the two together.
->
->
->  > I also see that the STAC9766 is missing an ac97_patch. From my reading
->  > of the datasheet it needs somethings fixed up.
->
->  > Does the ac97 support belong in the PCI directory? It took me a while
->  > to locate it while working on ASOC. With a model more like ASOC
->  > codecs, the AC97 patches could be pushed into the codec files.
->
->
-> The ASoC AC97 support doesn't use the AC97 patch infrastructure at all -
->  it's completely independent so things are pretty much as you describe,
->  everything is in the CODEC drivers.
-
-I've figured out now that the pci codec code is independent of the
-asoc code. Are there plans to unify this in the future?
+--===============2928545971555302001==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-rmxKUeo9JIV96yusYozl"
 
 
->
+--=-rmxKUeo9JIV96yusYozl
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2008-05-28 at 18:57 +0530, Harsha priya gupta wrote:
+> 3. From ALSA .15 version, if am not wrong, power_save is enabled by defau=
+lt.
+
+The functionality is enabled, but the default timeout is 0 seconds
+(never power down). You may have to specify a timeout. 10 seconds works
+well for me, but you can try something more aggressive like 3 seconds if
+you want to see quick response on your measurements.
+Generally you can hear the power up as an audible pop as you start
+playback.
+
+Regards,
+Tony V.
+
+--=-rmxKUeo9JIV96yusYozl
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEABECAAYFAkg9YyMACgkQp5vW4rUFj5pQRQCglvw3m6K7L8gnXezGx+BFOo6v
+KLgAoKCzRyXruKy4hbT81hXoiWvtLmuq
+=PCW+
+-----END PGP SIGNATURE-----
+
+--=-rmxKUeo9JIV96yusYozl--
 
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+--===============2928545971555302001==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2928545971555302001==--
