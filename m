@@ -1,22 +1,24 @@
 From: "Martin Tufnel" <martin.tufnel@gmail.com>
 Subject: Re: hdsp rpm support
-Date: Wed, 28 May 2008 22:58:24 +1000
-Message-ID: <c62722740805280558k74b5add9ocb6ee622a60aada8@mail.gmail.com>
+Date: Wed, 28 May 2008 23:01:42 +1000
+Message-ID: <c62722740805280601pb33035dvd54a1e2973fa8c1d@mail.gmail.com>
 References: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>
+	<47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu>
+	<c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
 	<200805270814.36011.faber@faberman.de>
 	<c62722740805270559q6a47d5fq3e3084a995494e1@mail.gmail.com>
-	<200805271508.32695.faber@faberman.de>
+	<1211895981.5482.17.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55F3E245FB
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 437D7245FB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 May 2008 14:58:57 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 50so1754312wri.2
-	for <alsa-devel@alsa-project.org>; Wed, 28 May 2008 05:58:56 -0700 (PDT)
-In-Reply-To: <200805271508.32695.faber@faberman.de>
+	Wed, 28 May 2008 15:01:44 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m28so2866027wag.8
+	for <alsa-devel@alsa-project.org>; Wed, 28 May 2008 06:01:42 -0700 (PDT)
+In-Reply-To: <1211895981.5482.17.camel@localhost.localdomain>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,56 +29,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Florian Faber <faber@faberman.de>
+To: reduzierer@yahoo.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Flo
+Hi Roman
 
-On Tue, May 27, 2008 at 11:08 PM, Florian Faber <faber@faberman.de> wrote:
+On Tue, May 27, 2008 at 11:46 PM, Roman Haefeli <reduzierer@yahoo.de> wrote:
 
-> Martin,
+> On Tue, 2008-05-27 at 22:59 +1000, Martin Tufnel wrote:
+> > Hi Flo
+> >
+> > On Tue, May 27, 2008 at 4:14 PM, Florian Faber <faber@faberman.de>
+> wrote:
+> >
+> > > Martin,
+> > >
+> > > > Just to clarify, given the driver is finished but the user tools are
+> > > > still under development, this means that the unit will basically work
+> > > > but not have its full functionality - is this correct?
+> > >
+> > > You have IO, you can adjust the input levels, switch standby and
+> > > disconnect the box. So everything works as you would expect it.
+> > >
+> >
+> > Great!
+> >
+> >
+> > >
+> > > > Also, did you use the new patched version of the firmware that Karl
+> > > > worked on?
+> > >
+> > > No, it's the original firmware. Why would one want to patch it?
+> > >
+> >
+> > My understanding from Roman's previous posts was that there was a problem
+> > loading the firmware from within Linux.  If I understood him correctly,
+> he
+> > needed to load the fireware from within a Windows boot and then boot into
+> > Linux (without turning off the machine of course).  Perhaps I
+> misunderstood
+> > him.
 >
-> > > The driver itself won't help you since the old user space tools
-> > > don't know the io box. You wouldn't be able to upload the firmware,
-> > > adjust the mixer levels etc. (unless you patch the old user space
-> > > tools, of course).
-> > I'm sorry, I'm a bit confused here.  You said above that "You have
-> > IO, you can adjust the input levels, switch standby and disconnect
-> > the box. So everything works as you would expect it."
+> this is exactly what i do. it's no problem, though, to turn off the
+> computer after having sent the firmware from within windows, but as soon
+> as i power off the rpm, i need to do the process again. this works well
+> for me, since most of the time the rpm is sitting home powered on, so i
+> can plug it to the laptop and it works.
 >
-> With the hdsp*-tools that are currently part of the alsa-tools suite,
-> you cannot control the RPM. Neither can you control a lot of the other
-> RME cards. That's going to change with a whole new set of userspace
-> tools.
+> correct me if i am wrong, but i thought the problem is not the firmware
+> itself, or the fact that it is missing, but the (old) version of the
+> hdsploader i used to use only knows about the multiface and the
+> digiface, but not about the rpm, AFAIK. from what i know, the very same
+> firmware, that is used in windows, can be used in linux as well (since
+> its card specific and not os-specific), but as flo suggested, the
+> userspace tools need to be adapted.
 >
-> So, if you are curious, I can give you the new driver and a small
-> command line program that enables the RPM io box (which is on bypass
-> mode by default). Or you wait until I finished the new user space
-> tools..
+> with the old hdsp* stuff, it technically works, but the hdspmixer looks
+> like i'd be using a multiface (it shows more channels than the rpm
+> actually has) and also the hdspconf shows the switches for the
+> mutliface. some card settings can be changed anyway, but you need to
+> guess, what is what, since the labels are bogus (for use with the rpm).
+>
+> i hope i didn't confuse anyone with my old posts. those describe only
+> the kludges, i am using with old alsa-drives, until the final driver and
+> userspace tools are written.
+>
+> roman
 >
 
-Thanks for the clarification and, yes, I'd be interested in having a look at
-the new driver - if you don't mind sending it to me that would be great.
-
-Karl seemed to be patching the firmware for some reason - I don't know why.
-As Roman points out, the firmware is operating system independent.
-
-I'm still a little unclear as to what actually can be done with the box at
-the moment.  If the firmware loader (under Linux) is not ready, I'm unclear
-as to what the RPM can do without the firmware.
-
-At the risk of wasting your time with my questions (and drawing you away
-from your work), when you say a "small command line program that enables the
-RPM io box (which is on bypass mode by default)", does this mean that you
-can plug in a mic/headphone and get them both amplified and sent/received
-to/from the RME PCI board?  But if that's the case, I thought that was
-really all the RPM box did anyway??
-
-So, when you say "everything works as you would expect it", I'm a little
-unclear how that would be the case without any firmware loaded??
-
-Sorry, but it would be nice to know what can actually be done/not done as it
-stands at the moment.
+Thanks for the clarification.  This information is important to me because,
+as I've said previously, I don't have a Windows box, so I can't use your
+work-around.
 
 Regards, Martin
