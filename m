@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC Platform Driver for AT32AP7000 (AVR32)
-Date: Wed, 28 May 2008 12:18:55 +0100
-Message-ID: <20080528111854.GC12414@sirena.org.uk>
-References: <200805271732.00086.geoffrey@pager.net>
+From: =?ISO-8859-1?Q?Martin_Kr=FCger?= <m_a_krueger@gmx.de>
+Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
+ SOLVED(?)
+Date: Wed, 28 May 2008 13:58:22 +0200
+Message-ID: <483D48DE.1010105@gmx.de>
+References: <20080520112539.81C9D2484D@alsa0.perex.cz>	<m2bq2xtixw.fsf@vador.mandriva.com>	<483847ED.8050208@gmx.de>	<483A6D6F.1050108@insite.cz>	<483A96E8.8090507@gmx.de>	<s5hbq2tunel.wl%tiwai@suse.de>
+	<483AE54C.3090807@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id F21C9245E9
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id C716F2461B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 May 2008 13:18:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200805271732.00086.geoffrey@pager.net>
+	Wed, 28 May 2008 13:58:24 +0200 (CEST)
+In-Reply-To: <483AE54C.3090807@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,102 +23,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Geoffrey Wossum <geoffrey@pager.net>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 27, 2008 at 05:32:00PM -0500, Geoffrey Wossum wrote:
-> Add ASoC platform driver for AT32AP7000 (AVR32).
-> This is basically a port of the at91 ASoC platform code to the
+Martin Kr=FCger schrieb:
+> Takashi Iwai schrieb:
+>   =
 
-Thanks - I've added this to the ASoC git tree.
+>> At Mon, 26 May 2008 12:54:32 +0200,
+>> Martin Kr=FCger wrote:
+>>   =
 
-The driver looks good but there are quite a few issues that should be
-fixed up before submission to mainline but these are coding style issues
-rather than anything substantial - most of them can be picked up by
-running the script scripts/checkpatch.pl in the kernel source against
-your patch (it also has a --file argument which can be used to run it on
-regular files rather than patches).
+>>     =
 
-One thing that's missing is the build system updates in sound/soc to
-hook this in.
+>>> Pavel Hofman wrote:
+>>>     =
 
-> AVR32.  This is currently against the Linux 2.6.24.3.atmel.3 kernel,
-> the latest kernel Atmel has released for the AVR32.
+>>>       =
 
-Will this driver work with a current mainline kernel or does it require
-other things from the Atmel kernel?
+>>>> Martin Kr=FCger wrote:
+>>>>   =
 
-> playpaq_wm8510.c isn't necessarily intended for inclusion into the mainline
-> kernel or linux-2.6-asoc repository.  It's provided more as a 
-> reference machine driver for an AT32AP7000 system.
+>>>>       =
 
-It's generally useful to have reference machine drivers - apart from
-anything else, it helps from the point of view of doing build tests even
-if you don't have the hardware to actually run them.
+>>>>         =
 
-> +#define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
-> +#define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (reg))
+>>>>> Pavel Hofman wrote:
+>>>>>     =
 
-It might be a bit better to provide these as inline 
+>>>>> Hi, =
 
-> +#include <sound/driver.h>
+>>>>>
+>>>>> thanks a lot for taking care for that issue. =
 
-driver.h shouldn't be required with current ALSA versions, though I
-can't remember if it's needed on the older kernel you're running with.
+>>>>> I just tried it out by modifying the following files from the 2.6.26-=
+rc3 kernel:
+>>>>>
+>>>>> sound/pci/Kconfig (modified by hand)
+>>>>> sound/pci/ice1712/ice1712.h (modified by hand)
+>>>>> sound/pci/ice1712/envy24ht.h (modified by hand)
+>>>>> sound/pci/ice1712/ice1724.c (copied from the actual Git snapshot)
+>>>>>
+>>>>> I double-checked all the handmade changes, should be ok. =
 
-> +/*
-> + * SSC register values that Atmel left out of <linux/atmel-ssc.h>.  These
-> + * are expected to be used with SSC_BF
-> + */
-> +/* START bit field values */
-> +#define SSC_START_CONTINUOUS    0
-> +#define SSC_START_TX_RX         1
-> +#define SSC_START_LOW_RF        2
-> +#define SSC_START_HIGH_RF       3
-> +#define SSC_START_FALLING_RF    4
-> +#define SSC_START_RISING_RF     5
-> +#define SSC_START_LEVEL_RF      6
-> +#define SSC_START_EDGE_RF       7
-> +#define SSS_START_COMPARE_0     8
+>>>>>
+>>>>> Midi in via "amidi -p hw:0 -d" works now without problem, =
 
-I guess ideally these should be merged in there?  Shouldn't be a blocker
-for merging this, though.
+>>>>> but when trying to write to the device, for example by "amidi -p hw:0=
+ -s txdata.syx" =
 
-> +config SND_AT32_SOC_PLAYPAQ
-> +        tristate "SoC Audio support for PlayPaq with WM8510"
-> +        depends on SND_AT32_SOC
-> +        select SND_AT32_SOC_SSC
-> +        select SND_SOC_WM8510
-> +        help
-> +          Say Y or M here if you want to add support for SoC audio
-> +          on the LRS PlayPaq.
+>>>>> it causes an immediate crash. =
 
-Should this not also depend on having base support for the system?
+>>>>>
+>>>>> That would not be a problem for me, but jackd probes all ports, and i=
+s unusable now.
+>>>>>
+>>>>> Perhaps i forgot a patch, is the output working for you? =
 
-> +config SND_AT32_SOC_PLAYPAQ_SLAVE
-> +        bool "Run CODEC on PlayPaq in slave mode"
-> +        depends on SND_AT32_SOC_PLAYPAQ
-> +        default n
-> +        help
-> +          Say Y if you want to run with the AT32 SSC generating the BCLK
-> +          and FRAME signals on the PlayPaq
+>>>>>     =
 
-Probably best to include a note here explaining why you don't want to
-select this unless you want to test the AT32 clock generation or
-something?
+>>>>>         =
 
-> +static int playpaq_wm8510_startup(
-> +    struct snd_pcm_substream *substream)
-> +{
-> +    return 0;
-> +}
+>>>>>           =
 
-You shouldn't need to provide empty functions for things like this.
+>>>> Hello Martin,
+>>>>
+>>>> I did check the MIDI output using command
+>>>>
+>>>> amidi -p hw:0 -S F0411042110C000000000074FF0411042110C000000
+>>>>
+>>>> Ubuntu Studio 7.10, both -generic and -rt kernel, Audiotrak Prodigy 19=
+2, =
 
-> +    /* always connected endpoints */
-> +    snd_soc_dapm_set_endpoint(codec, "Int Mic", 1);
-> +    snd_soc_dapm_set_endpoint(codec, "Ext Spk", 1);
+>>>> the original patch (I assume the current git version is identical).
+>>>>
+>>>> There was no MIDI device connected to the output as I have none.
+>>>>
+>>>> I traced if MIDI-out on Juli goes through the Xilinx CPLD, and it seem=
+ed =
 
-It's also a good idea to explicitly disconnect any unused connections on
-the codec, although it's not in any way essential to do so.
+>>>> the MIDI lines go straight to the connectors, just as on my Prodigy 19=
+2. =
+
+>>>> Unfortunately, I do not have Juli available any more to test the patch.
+>>>>
+>>>> Please could you provide more details about the crash?
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Pavel.
+>>>> _______________________________________________
+>>>> Alsa-devel mailing list
+>>>> Alsa-devel@alsa-project.org
+>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>>>   =
+
+>>>>       =
+
+>>>>         =
+
+>>> Hello Pavel,
+>>>
+>>> i just compiled a new 2.6.25.4 kernel with realtime support. the kernel =
+
+>>> is from kernel.org, so without any patches except the realtime patch =
+
+>>> from the alsa wiki.
+>>>     =
+
+>>>       =
+
+>> To be sure -- does 2.6.25.4 without realtime support work?
+>>
+>>
+>> Takashi
+>>   =
+
+>>     =
+
+> No. Not with an unpatched kernel set to "Preemptible Kernel (Low-Latency =
+
+> Desktop) PREEMPT_DESKTOP". I didn't test the lower preemption modes.
+>
+> Martin
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>   =
+
+Hi,
+
+i just compiled a 2.6.25-3 with Preemption disabled and i still get the =
+
+the same.
+
+Midi in works, Midi out leads to a complete system freeze.
+Is there a workaroud of disabling just Midi out? That would solve the =
+
+bug for me, and would prevent other users from freezing their system...
+
+Thanks for your help,
+Martin
