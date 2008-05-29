@@ -1,19 +1,18 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
- SOLVED(?)
-Date: Thu, 29 May 2008 18:14:10 +0200
-Message-ID: <483ED652.6020805@insite.cz>
-References: <20080520112539.81C9D2484D@alsa0.perex.cz>	<m2bq2xtixw.fsf@vador.mandriva.com>	<483847ED.8050208@gmx.de>	<483A6D6F.1050108@insite.cz>	<483A96E8.8090507@gmx.de>	<s5hbq2tunel.wl%tiwai@suse.de>	<483AE54C.3090807@gmx.de>	<483D48DE.1010105@gmx.de>
-	<483E78E7.4020106@insite.cz> <20080529140349.115520@gmx.net>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: Re: snd_pcsp locking mess
+Date: Thu, 29 May 2008 21:07:55 +0400
+Message-ID: <483EE2EB.8040905@aknet.ru>
+References: <20080518172258.D0DFB108060@picon.linux-foundation.org>	<4830737B.70108@aknet.ru>	<s5hve1ac05g.wl%tiwai@suse.de>	<4831B260.1060802@aknet.ru>	<s5hhccrx2ey.wl%tiwai@suse.de>	<4835D774.3070306@aknet.ru>	<s5hprrduwdk.wl%tiwai@suse.de>	<483C10E7.7070203@aknet.ru>	<s5h4p8jbvaj.wl%tiwai@suse.de>	<483C477D.2000207@aknet.ru>	<s5hprr6u46f.wl%tiwai@suse.de>	<483DBBC0.1080001@aknet.ru>
+	<s5h63sxd4up.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9EDF6248CD
+Received: from smtp09.mtu.ru (smtp09.mtu.ru [62.5.255.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EDFC248DA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 May 2008 18:14:19 +0200 (CEST)
-In-Reply-To: <20080529140349.115520@gmx.net>
+	Thu, 29 May 2008 19:07:50 +0200 (CEST)
+In-Reply-To: <s5h63sxd4up.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TWFydGluIEtyw7xnZXI=?= <m_a_krueger@gmx.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpNYXJ0aW4gS3LDvGdlciB3cm90ZToKPiBQYXZlbCBIb2ZtYW4gc2NocmllYjoKPj4gSGkgTWFy
-dGluLAo+PgouLi4uLi4uLi4uLi4uLi4KPiAKPiBIaSBQYXZlbCwKPiAKPiBub3cgaSdtIGNvbmZ1
-c2VkLiBJIGp1c3QgY29tcGlsZWQgdGhlIGN1cnJlbnQgZGFpbHkgc25hcHNob3Qgd2l0aAo+ICIu
-L2NvbmZpZ3VyZSAtLXdpdGgtaXNhcG5wPW5vIC0td2l0aC1zZXF1ZW5jZXI9eWVzIC0td2l0aC1v
-c3M9bm8gCj4gLS13aXRoLWRlYnVnPXZlcmJvc2UgLS13aXRoLWNhcmRzPWljZTE3MjQiLgo+IAo+
-IFRoYXQgc2hvdWxkIGdpdmUgYXMgbXVjaCBkZWJ1ZyBtZXNzYWdlcyBhcyBpIG5lZWQsIGFzIGkg
-dW5kZXJzdG9vZC4gSSAKPiBnZXQgb25seSBvbmUgTWVzc2FnZSwgdGVsbGluZyBtZSB0aGF0IGlj
-ZTE3MjQgaXMgdXNpbmcgdGhlIGRlZmluZWQgCj4gZWVwcm9tLiBBZnRlciB1c2luZyB0aGUgbWlk
-aSBvdXRwdXQgcG9ydCwgdGhlcmUgaXMgbm8gbW9yZSBtZXNzYWdlIGluIAo+IGFueSBsb2cgYXQg
-YWxsLgoKVGhhdCBpcyBPSywgaXQgbWVhbnMgdGhlIGxvb3AtZGV0ZWN0aW9uIGNvZGUgZG9lcyBu
-b3Qga2ljayBpbiwgaS5lLiAKdGhlcmUgaXMgbm8gcHJvYmxlbSB3aXRoIGNsZWFyaW5nIGludGVy
-cnVwdCBzdGF0dXMgYml0cy4KCj4gCj4gRHVlIHRvIHRoaXMsIGl0IGlzIHJlYWxseSBoYXJkIHRv
-IHVuZGVyc3RhbmQgdGhlIHByb2JsZW0sIGZvciBtZSBpdCAKPiBsb29rcyBsaWtlIGEgY29tcGxl
-dGUgZnJlZXplLiBJZiBpIHdvdWxkIGdldCAianVzdCIgYSBoZWF2eSBvdmVybG9hZCwgCj4gdGhl
-IG51bWxvY2sgc2hvdWxkIHN0aWxsIHJlYWN0IHdpdGhpbiAxMCBtaW51dGVzLCBhbmQgdGhlIGNw
-dSBjb29sZXIgCj4gc2hvdWxkIGJlIGxvdWRlci4gQm90aCBvZiB0aGlzIHNob3VsZCBhbHNvIGhh
-cHBlbiBkdXJpbmcgYW4gaXJxIGZsb29kLCAKPiBpZiBpIHVuZGVyc3Rvb2QgdGhhdCByaWdodC4K
-Ck15IElSUSBmbG9vZCBsb2FkZWQgdGhlIFBDIGhlYXZpbHksIGJ1dCBJIGNvdWxkIHN0aWxsIHN3
-aXRjaCB3aW5kb3dzIGFuZCAKbW92ZSBtb3VzZSBhcm91bmQsIHdpdGggbG9uZyBkZWxheXMuIFlv
-dXJzIGxvb2tzIGxpa2UgYSByZWFsIGZyZWV6ZS4KCj4gCj4gRG8geW91IGhhdmUgYW55IGlkZWEg
-aG93IHRvIGZpbmQgb3V0IHdoYXRzIGhhcHBlbmluZyB0aGVyZT8gCgpJIGp1c3QgYWRkIGRlYnVn
-IHByaW50aydzIHRvIG1ham9yIGNvZGUgcG9pbnRzIGFsbCB0aGUgd2F5IGRvd24gdG8gCmJvdHRv
-bSBmdW5jdGlvbnMuIEl0IHRha2VzIG1hbnkgY29tcGlsaW5nIGFuZCByZWJvb3RpbmcgKGFmdGVy
-IGZyZWV6ZXMpLiAKICBVbmZvcnR1bmF0ZWx5IEkgZG8gbm90IGtub3cgb2YgYW55IG90aGVyIHdh
-eSB0byBodW50IHRoZSBidWcgZG93bi4KCkdvb2QgbHVjaywKClBhdmVsLgoKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hello.
+
+Takashi Iwai wrote:
+>> really be better if just snd_pcm_period_elapsed()
+>> would raise a softirq. That's something
+>> you proposed in the past IIRC.
+>> Is this acceptable to have that change
+>> not in the driver, or do you think it
+>> is snd-pcsp-specific, and no other driver
+>> will benefit?
+> It would be good in general.
+> However, better to be the next step after changing pcsp.
+But why do you need both changes?
+If you are going to change snd_pcm_period_elapsed()
+itself, then how would the snd-pcsp
+change be justified?
+
+> One big disadvantage of the softirq is its (possible) timing
+> inaccuracy.  (Note that this is about the normal non-preempt kernel.)
+> The thing like pcsp driver does, flipping the bits at a high rate,
+> isn't for softirq per se.
+OK, I see.
+
+> Well, it can be done in another away if you are so nervous about it.
+> Simply add chip->timer_running atomic_t and reset it when the callback
+> finished with HRTIMER_NORESTART.  In another side, wait until
+> chip->timer_running becomes zero.
+> But, it's just an uneeded addition of the code.
+But for some reasons it looks safer
+to me...
+
+>>> Because the substream lock isn't necessary!  It just makes things more
+>>> complicated -- if we take substream lock, AB/BA deadlocks occur again.
+>> Even if the callback is called within
+>> the softirq?
+> The runtime callbacks, pointer and trigger, are called already inside they
+> substream lock held by the PCM core.  Thus it doesn't matter whether
+> it's in a hard or a softirq.
+The difference is that in a softirq,
+the hrtimer code doesn't take a lock.
+The AB/BA problem was because of the
+hrtimer' lock, which is not there
+with the softirq callback. So what
+exactly A and B do you mean here?
+
+>> and yes, its nasty. But to me its nastiness
+>> is only because it needs another lock to
+>> protect the substream itself.
+> No, you don't need to protect the substream at all.
+But that was suggested by you in the
+past. :) But adding a syncronization
+point should be better I agree.
+I'll see if some minimal change is
+possible that will look sane to you
+and wont make me ask 100 questions
+about its safety at the same time. :)
