@@ -1,22 +1,19 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: ASOC, SPDIF and AC97
-Date: Wed, 28 May 2008 16:15:40 -0400
-Message-ID: <9e4733910805281315p3ced192aoddf368d5d201758b@mail.gmail.com>
-References: <9e4733910805271116t1d36e769qaedfc0362b03e48d@mail.gmail.com>
-	<20080528101430.GB12414@sirena.org.uk>
-	<9e4733910805280640nd460258i547c8bc6581b411a@mail.gmail.com>
-	<20080528161001.GF12414@sirena.org.uk>
+From: "Lee Revell" <rlrevell@joe-job.com>
+Subject: Re: my ALS drv gives DMA underrun
+Date: Wed, 28 May 2008 20:10:53 -0400
+Message-ID: <75b66ecd0805281710g5852332dw230d30d5995dd279@mail.gmail.com>
+References: <483D77A5.5020203@aimvalley.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rn-out-0910.google.com (rn-out-0910.google.com [64.233.170.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7071245D6
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DFF424785
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 May 2008 22:15:42 +0200 (CEST)
-Received: by rn-out-0910.google.com with SMTP id k32so1799837rnd.21
-	for <alsa-devel@alsa-project.org>; Wed, 28 May 2008 13:15:41 -0700 (PDT)
-In-Reply-To: <20080528161001.GF12414@sirena.org.uk>
+	Thu, 29 May 2008 02:10:55 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so2956669rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 28 May 2008 17:10:54 -0700 (PDT)
+In-Reply-To: <483D77A5.5020203@aimvalley.nl>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,35 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, ALSA-devel <alsa-devel@alsa-project.org>
+To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/28/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, May 28, 2008 at 09:40:13AM -0400, Jon Smirl wrote:
+On Wed, May 28, 2008 at 11:17 AM, Norbert van Bolhuis
+<nvbolhuis@aimvalley.nl> wrote:
+> probably this question is asked many times.
 >
->  > can do this. Does ALSA hand me the two buffers simultaneously? I
->  > haven't located any code yet supporting independent playback.
->
->
-> It shouldn't be fundamentally different to multiple independent records
->  which the PXA code does support.  If you present them as separate PCMs
->  then ALSA won't synchronize them for you.
+> Anyway, I hope the experts are willing to help me here.
+> I simply don't know how to avoid the DMA overrun that I'm facing
+> when playing a tone.
 
-Any words of wisdom on how to synchronize?
+Not calling snd_pcm_period_elapsed at the right time would cause the
+behavior you see.    This function wakes up any apps that are waiting
+to send data to the sound device.
 
+Where can I find the source code for your driver?
 
->  > > The ASoC AC97 support doesn't use the AC97 patch infrastructure at all -
->  > >  it's completely independent so things are pretty much as you describe,
->  > >  everything is in the CODEC drivers.
->
->  > I've figured out now that the pci codec code is independent of the
->  > asoc code. Are there plans to unify this in the future?
->
->
-> I'm not aware of anyone working on doing so.
->
-
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+Lee
