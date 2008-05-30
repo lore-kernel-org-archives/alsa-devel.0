@@ -1,21 +1,20 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: [DEVICE MODEL] dev->dma_mask
-Date: Fri, 30 May 2008 23:28:15 +0200
-Message-ID: <4840716F.9000309@keyaccess.nl>
-References: <4823AAF2.7070102@keyaccess.nl> <482B0807.9050404@keyaccess.nl>
-	<482B3274.2060006@keyaccess.nl>
-	<200805141250.57115.bjorn.helgaas@hp.com>
-	<482B38D6.5030804@keyaccess.nl> <48406E8D.8050408@keyaccess.nl>
+From: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Subject: Re: [PATCH] Re: 2.6.26-rc1 regression: ISA DMA broken
+	(bisected)
+Date: Fri, 30 May 2008 15:43:41 -0600
+Message-ID: <200805301543.42208.bjorn.helgaas@hp.com>
+References: <4823AAF2.7070102@keyaccess.nl> <482B38D6.5030804@keyaccess.nl>
+	<48406E8D.8050408@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63120243E6
+Received: from g5t0009.atlanta.hp.com (g5t0009.atlanta.hp.com [15.192.0.46])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58F8A243F3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 May 2008 23:25:09 +0200 (CEST)
+	Fri, 30 May 2008 23:43:40 +0200 (CEST)
 In-Reply-To: <48406E8D.8050408@keyaccess.nl>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,39 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Andrew Morton <akpm@osdl.org>, ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Bjorn Helgaas <bjorn.helgaas@hp.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Andrew Morton <akpm@osdl.org>, ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 30-05-08 23:15, Rene Herman wrote:
-
-On ...
-
-> @@ -167,6 +168,9 @@ struct pnp_card *pnp_alloc_card(struct pnp_protocol *protocol, int id, char *pnp
->  	sprintf(card->dev.bus_id, "%02x:%02x", card->protocol->number,
->  		card->number);
->  
-> +	card->dev.coherent_dma_mask = DMA_24BIT_MASK;
-> +	card->dev.dma_mask = &card->dev.coherent_dma_mask;
-> +
->  	dev_id = pnp_add_card_id(card, pnpid);
->  	if (!dev_id) {
->  		kfree(card);
+On Friday 30 May 2008 03:15:57 pm Rene Herman wrote:
+> On 14-05-08 21:09, Rene Herman wrote:
 > 
+> > On 14-05-08 20:50, Bjorn Helgaas wrote:
+> 
+> >> I agree, it seems a bit of a hack to use a DMA mask from the card
+> >> instead of from the device, since the driver should be programming
+> >> the device to do the DMA.
+> >>
+> >> But I know very little about pnp_card in general, so don't attach too
+> >> much weight to my opinion.
+> > 
+> > Okay, I'll sit on this for a bit. Right now we're using a global device 
+> > even but this is exactly about cleaning that up so couldn't convince 
+> > myself. Will see what happens when I try to make it nice...
+> 
+> It gets uglier. ALSA ISA drivers (for cards that exist both as legacy 
+> and as ISAPnP at least) keep a merged legacy/isapnp model; PnP is used 
+> mostly for initializing global variables that the same old legacy probe 
+> routines then reference. This means that beyond that global resource 
+> init step the specific struct device is no longer available. Without 
+> restructuring too many things really only fixable through other hacks 
+> again such as a global dma_dev[] array or some such.
+> 
+>  From the viewpoint of PnP itself setting the dma_mask for a pnp_card (a 
+> pnp_dev collection) makes isolated sense so if no objections, I'll 
+> submit the attached after all. From the ALSA side we'd then pass the 
+> card dev (which we'd also do for isa_dev) and keep in mind that we might 
+> want to get more specific if over time structure permits it.
+> 
+> struct snd_pcm already has its own struct device * which would be the 
+> right one here but it's setting that which gets ugly...
 
-... this note by the way I believe pnp_dev might as well get rid of its 
-dma_mask as well. As far I've googled up the history of that the reason 
-why dev->dma_mask is a pointer is only that it's been moved into struct 
-device from struct pci_dev where the latter location was kept as the 
-main one so as to not upset then current code.
+Looks good to me.  It does sound like a lot of work and possibly
+more risk than it's worth to fix up some of this stuff.
 
-Everyone else seems to have then faithfully cloned pci_dev and stuck it 
-in their private structs as well but for no good reason it would appear.
+I do still wonder whether any non-x86 architectures need similar
+fixes in dma_alloc_coherent(), i.e., check for dev==NULL and fall
+back to a 24-bit DMA mask.
 
-And in the case of the PnP ISA masks, we're talking about constant 
-masks, dictated by the shared global DMA controller and not the card 
-itself (there are a few ISA cards that do their own busmastering but 
-they're special) so the mask might as well just point to the coherent mask.
-
-Unless I'm missing something ofcourse...
-
-Rene.
+Acked-by: Bjorn Helgaas <bjorn.helgaas@hp.com>
