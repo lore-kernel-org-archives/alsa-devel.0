@@ -1,19 +1,18 @@
-From: "Aditya Shankar" <mc.aditya@gmail.com>
+From: Juergen Beisert <jbe@pengutronix.de>
 Subject: Re: Digital Audio Multiplexer of the i.MX27 processor
-Date: Fri, 30 May 2008 10:57:01 +0200
-Message-ID: <24a2bfdf0805300157w5483557fi7d0106f52face5c7@mail.gmail.com>
+Date: Fri, 30 May 2008 11:17:12 +0200
+Message-ID: <200805301117.13847.jbe@pengutronix.de>
 References: <200805271713.49868.jbe@pengutronix.de>
+	<24a2bfdf0805300157w5483557fi7d0106f52face5c7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F3C1243F6
+Received: from metis.extern.pengutronix.de (metis.extern.pengutronix.de
+	[83.236.181.26]) by alsa0.perex.cz (Postfix) with ESMTP id 25E9424407
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 May 2008 10:57:02 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id b27so118782fka.0
-	for <alsa-devel@alsa-project.org>; Fri, 30 May 2008 01:57:01 -0700 (PDT)
-In-Reply-To: <200805271713.49868.jbe@pengutronix.de>
+	Fri, 30 May 2008 11:17:20 +0200 (CEST)
+In-Reply-To: <24a2bfdf0805300157w5483557fi7d0106f52face5c7@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,87 +23,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Juergen Beisert <jbe@pengutronix.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Aditya Shankar <mc.aditya@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Juergen,
+Aditya,
 
-On Tue, May 27, 2008 at 5:13 PM, Juergen Beisert <jbe@pengutronix.de> wrote:
-
-> Hi,
+On Friday 30 May 2008 10:57, Aditya Shankar wrote:
+> On Tue, May 27, 2008 at 5:13 PM, Juergen Beisert <jbe@pengutronix.de> wro=
+te:
+> > Hi,
+> >
+> > does anybody understand the DAM unit in the i.MX27 processor?
+> > This routing device drivers me crazy, as I do not understand how to rou=
+te
+> > clocks, syncs and the data signals of my internal i2s unit to the
+> > processor's
+> > pins.
 >
-> does anybody understand the DAM unit in the i.MX27 processor?
-> This routing device drivers me crazy, as I do not understand how to route
-> clocks, syncs and the data signals of my internal i2s unit to the
-> processor's
-> pins.
+>  The DAM in the Freescale chip has 3 internal ports and 3 external ports.
 
+Are you sure? It seems the DAM unit in the i.MX27 has two on chip ports and =
 
- The DAM in the Freescale chip has 3 internal ports and 3 external ports.
-   The 3 internal ports connect to the on chip peripherals like the SSI. The
-    external ports can be configured to connect to the off-chip codecs or
-the PMIC
-    The internal ports are wired to the SSI1 , SSI2 and the SAP while the
-external ports
-    can be configured via the IOMUX settings to connect to the PMIC or
-another peripheral.
+four external ports.
 
+This I found yet (comparing mx27ads sources with mx27ads schematics):
 
+  SSI     DAM       ext. pins
+---------------------------------------
+ SSI1    port_1
+ SSI2    port_2
+         port_3        ???
+         port_4   SSI1_* pin group  <-- connected to PMIC on my board
+         port_5   SSI2_* pin group
+         port_6        ???
 
+There are still the SSI3_* and SSI4_* pin groups, where I'm not sure about =
+
+their connection to DAM unit's ports.
+
+> > All I can see is, when I enable the internal SSI unit in i2s mode, the
+> > DMA unit transfers some data into it, but the SSI unit does not shift it
+> > out. So
+> > everything stops, the DMA timeouts and I cannot hear anything. I can see
+> > the
+> > external device generates clock and frame signals, but it seems they do
+> > not reach the internal SSI unit.
 >
-> All I can see is, when I enable the internal SSI unit in i2s mode, the DMA
-> unit transfers some data into it, but the SSI unit does not shift it out.
-> So
-> everything stops, the DMA timeouts and I cannot hear anything. I can see
-> the
-> external device generates clock and frame signals, but it seems they do not
-> reach the internal SSI unit.
+>  When you configure the SSI in a slave mode, the PMIC
+> ( or your external device)will drive the FS and the clock
+>  required.
 
+SSI1 is configured as a slave, FS and clocks are inputs. Routing through th=
+e =
 
- When you configure the SSI in a slave mode, the PMIC
-( or your external device)will drive the FS and the clock
- required.  If you are using the file mxc-alsa-pmic.c ,
- then with SSI1 you will be mostly be connected Voice codec through
-the DAM. Your configuration will
- be SSI1 -> DAM port 1 -> DAM port 4 -> Codec( ext device)
-You say that the clock and frame sync from the ext. device is generated.
- SO can you check if the SSI is interrupting the DMA. If this does not
-happen,
- your app can time out. Also if the DAM external port is not configured
-properly
- to connect to your external device, your app would time out.
-This DAM port config is done through a gpio configuration with the function
-gpio_ssi_active()  in the file mx27_ads_gpio.c under arch/arm/mach-mx27
-You can verify this as well.
+DAM unit seems to work now, as the SSI unit shifts out the data I'm writing =
 
-Hope this helps.
+into its FIFO.
 
-Aditya
+> You say that the clock and frame sync from the ext. device is generated.
+>  SO can you check if the SSI is interrupting the DMA.
 
+This is currently my problem. The DMA does not work. If I enable the DMA it =
 
->
-> Has anybody a working DAM configuration which uses the internal SSI#1 as an
-> i2s slave, an external i2s device connected to the SSI#1 pin group of this
-> processor which acts as a master (I did not find anything in the manual,
-> how
-> the relation between the internal so called port-1 to port-6 at the DAM
-> unit
-> and the 4 external SSI1...SSI4 pin groups are). Means the external i2s
-> device
-> generates the clock and frame signal and the internal SSI#1 unit in i2s
-> mode
-> should use it to send serial sound data to the external device.
->
-> Juergen
-> --
-> Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
->  Pengutronix - Linux Solutions for Science and Industry
->     Handelsregister: Amtsgericht Hildesheim, HRA 2686
->          Vertretung Sued/Muenchen, Germany
->   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+seems to write something into the SSI FIFO. I can check it by reading the =
+
+FIFO counter. But at this point of time SSI1's dma_req is still disabled =
+
+(TDMAE is 0 in register SIER)! When I enable TDMAE after enabling the DMA =
+
+channel, next the DMA unit outputs an error: Error while transfer (DSESR bi=
+t =
+
+of the used channel goes 1).  When I transfer the sound data in software it =
+
+works. I'm confused.
+
+Juergen
+
+-- =
+
+Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
+=A0Pengutronix - Linux Solutions for Science and Industry
+=A0   Handelsregister: Amtsgericht Hildesheim, HRA 2686
+=A0 =A0 =A0    Vertretung Sued/Muenchen, Germany
+   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
