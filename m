@@ -1,18 +1,21 @@
-From: Karl Grill <kgrill@chello.at>
-Subject: Re: hdsp rpm support
-Date: Fri, 30 May 2008 18:15:26 +0200
-Message-ID: <4840281E.6020401@chello.at>
-References: <c62722740805260033t68f1ab1cu7ed5908f803fbacd@mail.gmail.com>	<47321.137.248.1.11.1211815832.squirrel@webmail.naturestudies.eu>	<c62722740805262000i33e9ea00p88bc808ef286732c@mail.gmail.com>
-	<200805270814.36011.faber@faberman.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: [PATCH] Re: 2.6.26-rc1 regression: ISA DMA broken
+	(bisected)
+Date: Fri, 30 May 2008 23:15:57 +0200
+Message-ID: <48406E8D.8050408@keyaccess.nl>
+References: <4823AAF2.7070102@keyaccess.nl> <482B0807.9050404@keyaccess.nl>
+	<482B3274.2060006@keyaccess.nl>
+	<200805141250.57115.bjorn.helgaas@hp.com>
+	<482B38D6.5030804@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------030605020307000902060404"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from viefep14-int.chello.at (viefep18-int.chello.at [213.46.255.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1A3324474
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82593243EC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 May 2008 18:07:58 +0200 (CEST)
-In-Reply-To: <200805270814.36011.faber@faberman.de>
+	Fri, 30 May 2008 23:12:54 +0200 (CEST)
+In-Reply-To: <482B38D6.5030804@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +25,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Florian Faber <faber@faberman.de>
-Cc: alsa-devel@alsa-project.org, Martin Tufnel <martin.tufnel@gmail.com>
+To: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Andrew Morton <akpm@osdl.org>, ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-just a word of clarification:
->> Also, did you use the new patched version of the firmware that Karl
->> worked on?
->>     
->
-> No, it's the original firmware. Why would one want to patch it?
->   
+This is a multi-part message in MIME format.
+--------------030605020307000902060404
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I didn't patch the firmware - I just copied the firmware from a Win2k
-driver (ver. 1.1) from the rme website - the linux firmware is the one 
-that came with the win 98 drivers, and there is no firmware for the rpm. 
-My hope was that someone might be able to verify that these firmware 
-files work with the multiface/digiface and the current linux drivers (if 
-this had been the case, it would have made things a bit easier for me, 
-but now that Florian is doing things that I only could dream of, there's 
-no need for me to continue my inferior efforts).
+On 14-05-08 21:09, Rene Herman wrote:
 
-Looking forward...
-Karl
+> On 14-05-08 20:50, Bjorn Helgaas wrote:
+
+>> I agree, it seems a bit of a hack to use a DMA mask from the card
+>> instead of from the device, since the driver should be programming
+>> the device to do the DMA.
+>>
+>> But I know very little about pnp_card in general, so don't attach too
+>> much weight to my opinion.
+> 
+> Okay, I'll sit on this for a bit. Right now we're using a global device 
+> even but this is exactly about cleaning that up so couldn't convince 
+> myself. Will see what happens when I try to make it nice...
+
+It gets uglier. ALSA ISA drivers (for cards that exist both as legacy 
+and as ISAPnP at least) keep a merged legacy/isapnp model; PnP is used 
+mostly for initializing global variables that the same old legacy probe 
+routines then reference. This means that beyond that global resource 
+init step the specific struct device is no longer available. Without 
+restructuring too many things really only fixable through other hacks 
+again such as a global dma_dev[] array or some such.
+
+ From the viewpoint of PnP itself setting the dma_mask for a pnp_card (a 
+pnp_dev collection) makes isolated sense so if no objections, I'll 
+submit the attached after all. From the ALSA side we'd then pass the 
+card dev (which we'd also do for isa_dev) and keep in mind that we might 
+want to get more specific if over time structure permits it.
+
+struct snd_pcm already has its own struct device * which would be the 
+right one here but it's setting that which gets ugly...
+
+Rene.
+
+--------------030605020307000902060404
+Content-Type: text/plain;
+ name="0001-PNP-set-the-pnp_card-dma_mask-for-use-by-ISAPnP-car.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename*0="0001-PNP-set-the-pnp_card-dma_mask-for-use-by-ISAPnP-car.pat";
+ filename*1="ch"
+
+>From b4e8e6b833d2e8ed3a2b78912c4afff563d8ae21 Mon Sep 17 00:00:00 2001
+From: Rene Herman <rene.herman@gmail.com>
+Date: Fri, 30 May 2008 23:10:23 +0200
+Subject: [PATCH] PNP: set the pnp_card dma_mask for use by ISAPnP cards.
+
+This makes the pnp_card->dev available as a DMAable device same as
+the pnp_dev->dev.
+
+Signed-off-by: Rene Herman <rene.herman@gmail.com>
+---
+ drivers/pnp/card.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/pnp/card.c b/drivers/pnp/card.c
+index a762a41..b00ef10 100644
+--- a/drivers/pnp/card.c
++++ b/drivers/pnp/card.c
+@@ -8,6 +8,7 @@
+ #include <linux/ctype.h>
+ #include <linux/slab.h>
+ #include <linux/pnp.h>
++#include <linux/dma-mapping.h>
+ #include "base.h"
+ 
+ LIST_HEAD(pnp_cards);
+@@ -167,6 +168,9 @@ struct pnp_card *pnp_alloc_card(struct pnp_protocol *protocol, int id, char *pnp
+ 	sprintf(card->dev.bus_id, "%02x:%02x", card->protocol->number,
+ 		card->number);
+ 
++	card->dev.coherent_dma_mask = DMA_24BIT_MASK;
++	card->dev.dma_mask = &card->dev.coherent_dma_mask;
++
+ 	dev_id = pnp_add_card_id(card, pnpid);
+ 	if (!dev_id) {
+ 		kfree(card);
+-- 
+1.5.2.2
+
+
+--------------030605020307000902060404
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------030605020307000902060404--
