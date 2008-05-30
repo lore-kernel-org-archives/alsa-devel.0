@@ -1,19 +1,19 @@
-From: Juergen Beisert <jbe@pengutronix.de>
-Subject: Re: Digital Audio Multiplexer of the i.MX27 processor
-Date: Fri, 30 May 2008 11:17:12 +0200
-Message-ID: <200805301117.13847.jbe@pengutronix.de>
-References: <200805271713.49868.jbe@pengutronix.de>
-	<24a2bfdf0805300157w5483557fi7d0106f52face5c7@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH/RFC 1/2] Add jack reporting API for ALSA
+Date: Fri, 30 May 2008 11:15:57 +0100
+Message-ID: <20080530101557.GB7729@sirena.org.uk>
+References: <1212095345928-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hhccgjjgw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.extern.pengutronix.de (metis.extern.pengutronix.de
-	[83.236.181.26]) by alsa0.perex.cz (Postfix) with ESMTP id 25E9424407
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id C4A45243F9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 May 2008 11:17:20 +0200 (CEST)
-In-Reply-To: <24a2bfdf0805300157w5483557fi7d0106f52face5c7@mail.gmail.com>
+	Fri, 30 May 2008 12:15:59 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hhccgjjgw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,88 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Aditya Shankar <mc.aditya@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dtor@insightbb.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Aditya,
+On Fri, May 30, 2008 at 10:15:43AM +0200, Takashi Iwai wrote:
 
-On Friday 30 May 2008 10:57, Aditya Shankar wrote:
-> On Tue, May 27, 2008 at 5:13 PM, Juergen Beisert <jbe@pengutronix.de> wro=
-te:
-> > Hi,
-> >
-> > does anybody understand the DAM unit in the i.MX27 processor?
-> > This routing device drivers me crazy, as I do not understand how to rou=
-te
-> > clocks, syncs and the data signals of my internal i2s unit to the
-> > processor's
-> > pins.
->
->  The DAM in the Freescale chip has 3 internal ports and 3 external ports.
+> The implementation looks good, simple enough.
 
-Are you sure? It seems the DAM unit in the i.MX27 has two on chip ports and =
+Thanks.
 
-four external ports.
+> Mark Brown wrote:
 
-This I found yet (comparing mx27ads sources with mx27ads schematics):
+> > +config SND_JACK
+> > +	tristate
+> > +	depends on SND
+> > +	depends on INPUT
 
-  SSI     DAM       ext. pins
----------------------------------------
- SSI1    port_1
- SSI2    port_2
-         port_3        ???
-         port_4   SSI1_* pin group  <-- connected to PMIC on my board
-         port_5   SSI2_* pin group
-         port_6        ???
+> The code is small, and I don't see a big merit to make it a module.
 
-There are still the SSI3_* and SSI4_* pin groups, where I'm not sure about =
+I agree - I had meant to flag this up, actually.  I hadn't been sure if
+some of the other objects were being built conditionally for size or not
+since they seemed relatively small too.  When I respin I'll remove this
+option.
 
-their connection to DAM unit's ports.
+> > +	snprintf(jack->name, sizeof(jack->name), "%s %s",
+> > +		 card->longname, jack->id);
 
-> > All I can see is, when I enable the internal SSI unit in i2s mode, the
-> > DMA unit transfers some data into it, but the SSI unit does not shift it
-> > out. So
-> > everything stops, the DMA timeouts and I cannot hear anything. I can see
-> > the
-> > external device generates clock and frame signals, but it seems they do
-> > not reach the internal SSI unit.
->
->  When you configure the SSI in a slave mode, the PMIC
-> ( or your external device)will drive the FS and the clock
->  required.
+> The longname field could be sometimes really too long and verbose.
+> I guess shortname would match better.
 
-SSI1 is configured as a slave, FS and clocks are inputs. Routing through th=
-e =
+The general style for input device names tends towards the long and
+verbose.  For example, on my work laptop I have devices with names like:
 
-DAM unit seems to work now, as the SSI unit shifts out the data I'm writing =
+   Macintosh mouse button emulation
+   AT Translated Set 2 Keyboard
+   Lid Switch
+   Power Button (CM)
+   Sleep Button (CM)
+   AlpsPS/2 ALPS GlidePoint
 
-into its FIFO.
+The ALSA long name seems more idiomatic for this context.
 
-> You say that the clock and frame sync from the ext. device is generated.
->  SO can you check if the SSI is interrupting the DMA.
+> > +int snd_jack_new(struct snd_card *card, const char *id, int type,
+> > +		 struct snd_jack **jjack)
+> (snip)
+> > +	jack->input_dev->phys = "ALSA";
+> > +	jack->input_dev->dev.parent = card->dev;
 
-This is currently my problem. The DMA does not work. If I enable the DMA it =
+> The card->dev pointer might not be initialized always at this stage.
+> You should check rather at register.
 
-seems to write something into the SSI FIFO. I can check it by reading the =
+Will do.
 
-FIFO counter. But at this point of time SSI1's dma_req is still disabled =
+> Also, someone may want to pass a different device pointer for this.
+> Passing struct device * to snd_jack_new would be an alternative.
 
-(TDMAE is 0 in register SIER)! When I enable TDMAE after enabling the DMA =
+Good idea, that might be useful for ASoC v2 sound cards.  I'll add
+something which allows the caller to optionally specify a parent,
+defaulting to the sound card if none is given.
 
-channel, next the DMA unit outputs an error: Error while transfer (DSESR bi=
-t =
-
-of the used channel goes 1).  When I transfer the sound data in software it =
-
-works. I'm confused.
-
-Juergen
-
--- =
-
-Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
-=A0Pengutronix - Linux Solutions for Science and Industry
-=A0   Handelsregister: Amtsgericht Hildesheim, HRA 2686
-=A0 =A0 =A0    Vertretung Sued/Muenchen, Germany
-   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
+The only issue might be for user space figuring out which sound card
+corresponds to which jack but if jacks might be implemented outside of
+ALSA anyway (which is possible) that could happen anyway.
