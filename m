@@ -1,23 +1,23 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: [PATCH] ISA: set 24-bit dma_mask for ISA devices.
-Date: Sat, 31 May 2008 01:55:52 +0200
-Message-ID: <48409408.8090901@keyaccess.nl>
-References: <4823AAF2.7070102@keyaccess.nl> <482B38D6.5030804@keyaccess.nl>
-	<48406E8D.8050408@keyaccess.nl>
-	<200805301543.42208.bjorn.helgaas@hp.com>
-	<48407B99.4080209@keyaccess.nl>
+From: "Brett Andrews" <bandrews@broadcom.com>
+Subject: FW: [Alsa-user] raw spdif frame capture
+Date: Fri, 30 May 2008 20:35:54 -0700
+Message-ID: <49DB790369A9994C9FFDBE788541873D057BD166@NT-IRVA-0750.brcm.ad.broadcom.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A69924438
+Received: from mms1.broadcom.com (mms1.broadcom.com [216.31.210.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C26E244AF
 	for <alsa-devel@alsa-project.org>;
-	Sat, 31 May 2008 01:52:46 +0200 (CEST)
-In-Reply-To: <48407B99.4080209@keyaccess.nl>
-Content-Disposition: inline;
-	filename="0002-ISA-set-24-bit-dma_mask-for-ISA-devices.patch"
+	Sat, 31 May 2008 05:36:26 +0200 (CEST)
+Received: from mail-irva-8.broadcom.com (mail-irva-8 [10.11.18.52]) by
+	mail-irva-10.broadcom.com (Postfix) with ESMTP id C863F2B0 for
+	<alsa-devel@alsa-project.org>; Fri, 30 May 2008 20:36:06 -0700 (PDT)
+Received: from NT-IRVA-0750.brcm.ad.broadcom.com (nt-irva-0750
+	[10.8.194.64]) by mail-irva-13.broadcom.com (Postfix) with ESMTP id
+	6875374CFF for <alsa-devel@alsa-project.org>; Fri, 30 May 2008 20:36:02
+	-0700 (PDT)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,59 +27,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Andrew Morton <akpm@osdl.org>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->From 56e4b14aa58612aeb41b51d73a75f85dd72127a1 Mon Sep 17 00:00:00 2001
-From: Rene Herman <rene.herman@gmail.com>
-Date: Sat, 31 May 2008 00:31:40 +0200
-Subject: [PATCH] ISA: set 24-bit dma_mask for ISA devices.
+Hi:
 
-dma_alloc_coherent() on x86 currently takes a passed in NULL device
-pointer to mean that it should allocate an ISA compatible (24-bit)
-buffer which is a bit of a hack.
+Anyone have any ideas about the following?  As a side note, when I saw
+raw I don't mean 61937 raw (just preambles and payload), I mean 60958
+raw (block sync, payload, VUCP).
 
-The ALSA ISA drivers are the main consumers of this but have a struct
-device in fact readily available.
+Thanks,
+Brett 
 
-For the legacy drivers, this sets the device dma_mask in preparation
-for using the actual device with the DMA API so as to eventually not
-need the NULL hack in dma_alloc_coherent().
+-----Original Message-----
+From: stan [mailto:ghjeold_i_mwee@cox.net]
+Sent: Friday, May 30, 2008 18:31
+To: Brett Andrews
+Cc: alsa-user@lists.sourceforge.net
+Subject: Re: [Alsa-user] raw spdif frame capture
 
-This does not fix a current bug -- 2.6.26-rc1 stumbled over the NULL
-hack in dma_alloc_coherent() but this has already been fixed in commit
-4a367f3a9dbf2e7ffcee4702203479809236ee6e by Takashi Iwai.
+Brett Andrews wrote:
+> Hi:
+>
+> I would like to perform raw spdif frame capture (all 64-bits, in 2 
+> 32-bit subframes) using an EMU 1212M under ALSA.  Can this be done?
+> If so, has anyone else already done it?  If not, does anyone have any 
+> idea how to do it?  EMU has claimed that it is possible with the 
+> hardware, but that the driver would need to support it (windows driver
 
-Signed-off-by: Rene Herman <rene.herman@gmail.com>
-Cc: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>
----
- drivers/base/isa.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+> does not, they didn't know about the ALSA driver).  Does the current
+> emu10k1 driver support this?  How would I enter this mode?
+>
+> Thanks,
+>
+> Brett Andrews
+> Software Engineer
+> BSE Reference Software
+>   
+I haven't got a lot of help for you as I'm not knowledgeable about this
+but I can give you some suggestions.
 
-diff --git a/drivers/base/isa.c b/drivers/base/isa.c
-index d222239..efd5775 100644
---- a/drivers/base/isa.c
-+++ b/drivers/base/isa.c
-@@ -7,6 +7,7 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/init.h>
-+#include <linux/dma-mapping.h>
- #include <linux/isa.h>
- 
- static struct device isa_bus = {
-@@ -141,6 +142,9 @@ int isa_register_driver(struct isa_driver *isa_driver, unsigned int ndev)
- 		isa_dev->dev.release		= isa_dev_release;
- 		isa_dev->id			= id;
- 
-+		isa_dev->dev.coherent_dma_mask = DMA_24BIT_MASK;
-+		isa_dev->dev.dma_mask = &isa_dev->dev.coherent_dma_mask;
-+
- 		error = device_register(&isa_dev->dev);
- 		if (error) {
- 			put_device(&isa_dev->dev);
--- 
-1.5.2.2
+You could ask you question on alsa-devel mailing list as they know the
+internals and might be able to answer your question directly.
+
+You could look at the alsa driver code.  Go to
+ftp://ftp.alsa-project.org/pub/driver/ and download
+File:alsa-driver-1.0.16.tar.bz2. 
+<ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.16.tar.bz2>
+This is the latest official alsa version.  Unpack it and then look in
+"top level"/alsa-kernel/pci/emu10k1.  That has the C source.
