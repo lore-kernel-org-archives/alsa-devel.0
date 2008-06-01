@@ -1,9 +1,8 @@
-From: Ahmet =?utf-8?B?xLBuYW4=?= <ainan@mathematik.uni-freiburg.de>
+From: "Benjamin van den Hout" <bvdhout@gmail.com>
 Subject: Re: Problem with aloop
-Date: Sat, 31 May 2008 22:00:59 +0200
-Message-ID: <20080531200059.GA11302@mathematik.uni-freiburg.de>
+Date: Sun, 1 Jun 2008 18:15:35 +0200
+Message-ID: <d5eabee70806010915m528a33b3h26ae77c959f5946b@mail.gmail.com>
 References: <20080220141906.GA15096@mathematik.uni-freiburg.de>
-	<s5h3arnpq4i.wl%tiwai@suse.de>
 	<20080221000601.GA4829@mathematik.uni-freiburg.de>
 	<s5hmypusssj.wl%tiwai@suse.de>
 	<20080222180528.GD6860@mathematik.uni-freiburg.de>
@@ -12,16 +11,19 @@ References: <20080220141906.GA15096@mathematik.uni-freiburg.de>
 	<s5hve468o55.wl%tiwai@suse.de>
 	<20080301233503.GA6175@mathematik.uni-freiburg.de>
 	<s5h7igf3l71.wl%tiwai@suse.de>
+	<20080531200059.GA11302@mathematik.uni-freiburg.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx02.qsc.de (mx02.qsc.de [213.148.130.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88BD4244A1
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id E58F424470
 	for <alsa-devel@alsa-project.org>;
-	Sat, 31 May 2008 22:01:01 +0200 (CEST)
+	Sun,  1 Jun 2008 18:15:36 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so521013rvb.32
+	for <alsa-devel@alsa-project.org>; Sun, 01 Jun 2008 09:15:35 -0700 (PDT)
+In-Reply-To: <20080531200059.GA11302@mathematik.uni-freiburg.de>
 Content-Disposition: inline
-In-Reply-To: <s5h7igf3l71.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,23 +33,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Gustavo da Silva Serra <gustavo.serra@tet.com.br>, Benjamin van den Hout <bvdhout@gmail.com>
+To: =?ISO-8859-9?Q?Ahmet_=DDnan?= <ainan@mathematik.uni-freiburg.de>
+Cc: alsa-devel@alsa-project.org, Gustavo da Silva Serra <gustavo.serra@tet.com.br>
 List-Id: alsa-devel@alsa-project.org
 
-aXZlIGp1c3QgcmVhZCBhYm91dCBhbG9vcCBwcm9ibGVtcyBieSBjaGFuY2UsIHNvIGV4Y3VzZSB0
-aGUgbGF0ZSBhbnN3ZXIsCmZvciBpdmUgZGlzYWJsZWQgcmVjaWV2aW5nIG1haWxzIGZyb20gdGhp
-cyBsaXN0LiBzbyBhbHNvIGNjIG1lIHdoZW4gcmVwbHlpbmcgOikKCj4gcmVwZWF0aW5nIHN0dXR0
-ZXJpbmcKdHJ5IHRpY2tsZXNzIGtlcm5lbCwgYXMgaXQgaW1wcm92ZXMgdGhlIHF1YWxpdHkgb2Yg
-dGltZXIgaW50ZXJydXB0cyBkcmFtYXRpY2FsbHkuCmRvbnQgZm9yZ2V0IHRvIGVuYWJsZSBoaWdo
-IHJlc29sdXRpb24gdGltZXIgc3VwcG9ydCwgaHBldCBhbmQgc28gb24uCgo+IHN5bmNocm9uaXph
-dGlvbiBpc3N1ZSBhdCB0aGUgYmVnaW5uaW5nCnRoaXMgaXMgc3RpbGwgbm90IHJlc29sdmVkIGFu
-ZCBpdHMgYSBwYWluIGluIHRoZSBhc3MgdG8gZ2V0IHRoaXMgZG9uZSByaWdodC4KaXZlIGltcGxl
-bWVudGVkIDQgZGlmZmVyZW50IHdheXMgdG8gc29sdmUgaXQgYW5kIGltIHN0aWxsIG5vdCBoYXBw
-eSB3aXRoIHdoYXQgaXZlIGdvdC4KCj4ga2VybmVsIGNyYXNoIHdoZW4gY2xvc2luZwpkbyB5b3Ug
-cmVhbGx5IGhhdmUgdG8gcHV0IGF0IHRoaXMgbWFubnkgcGxhY2VzIHRoaXMgZGVsX3RpbWVyPwp0
-cnkgdG8gZmluZCB0aGUgcmlnaHQgcGxhY2UgYW5kIHJlc3VibWl0LiA6KQoKYWhtZXQKCi0tCmFk
-bWluIGRlciBhYnRlaWx1bmcgZsO8ciBhbmdld2FuZHRlIG1hdGhlbWF0aWssIHRlbC4gMDc2MS0y
-MDMtNTYyNgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Ahmet,
+
+ive just read about aloop problems by chance, so excuse the late answer,
+> for ive disabled recieving mails from this list. so also cc me when
+> replying :)
+>
+
+No problem, I'm delighted somebody is answering my e-mails at all :)
+
+> repeating stuttering
+> try tickless kernel, as it improves the quality of timer interrupts
+> dramatically.
+> dont forget to enable high resolution timer support, hpet and so on.
+>
+
+OK, excellent tip. Thanks! High resolution timer support is already enabled
+and I've got the kernel configured for "realtime" performance (CONFIG_HZ or
+whatever it was called set to 1000 etc.). I'll try to see if the tickless
+kernel makes any difference.
+
+
+> > synchronization issue at the beginning
+> this is still not resolved and its a pain in the ass to get this done
+> right.
+> ive implemented 4 different ways to solve it and im still not happy with
+> what ive got.
+>
+
+The funny thing is, after I reverted to the 10.0.16 release tarball these
+stuttering problems went away. So the fixes that were committed in
+february/march under the 'fixes realtime behaviour' label actually made
+things much worse..
+
+
+> > kernel crash when closing
+> do you really have to put at this manny places this del_timer?
+> try to find the right place and resubmit. :)
+>
+
+I already presumed it was a bit much, I'll be the last one to deny that! ;-)
+
+But then again, I'm not too familiar with ALSA kernel stuff anyway and the
+existing documentation seems a bit sparse. Also, this patch was made as part
+of a time-limited project at my company so I sadly couldn't spend more time
+on it after I (crudely) fixed the bug. However, I'd love to refine my patch
+(in my own spare time). Can you give me any pointers perhaps? They would be
+greatly appreciated.
+
+Thanks for taking the time to reply!
+
+Kind regards,
+Benjamin
