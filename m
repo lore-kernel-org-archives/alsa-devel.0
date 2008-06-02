@@ -1,31 +1,25 @@
 From: "Paul Adolph" <padolph@gmail.com>
-Subject: Re: [Alsa-user] Async behavior and -EAGAIN on write?
-Date: Sun, 1 Jun 2008 19:46:08 -0700
-Message-ID: <fe9483990806011946y5fb77b73gaf19122a3574707c@mail.gmail.com>
+Subject: Re: Async behavior and -EAGAIN on write?
+Date: Sun, 1 Jun 2008 20:15:05 -0700
+Message-ID: <fe9483990806012015y5144ecb2h646adaf29eba8e10@mail.gmail.com>
 References: <fe9483990805301401h7d29aebdm4eeb8ccd5899687@mail.gmail.com>
-	<4840A7C9.30209@cox.net>
+	<75b66ecd0805301853n750434ex1ad2c7dfa94ecac9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8EFFD244F9
-	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Jun 2008 04:46:09 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so927438wfg.23
-	for <alsa-devel@alsa-project.org>; Sun, 01 Jun 2008 19:46:08 -0700 (PDT)
-In-Reply-To: <4840A7C9.30209@cox.net>
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <75b66ecd0805301853n750434ex1ad2c7dfa94ecac9@mail.gmail.com>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: stan <ghjeold_i_mwee@cox.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
 Cc: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
@@ -39,38 +33,48 @@ List-Id: alsa-devel@alsa-project.org
 >> Presumably this write failure is because there is not enough space in
 >> the ring buffer, but then why did the ALSA callback fire in the first
 >> place? As it stands my retries are eating needless amounts of CPU.
+>>
+>
+> What does snd_pcm_avail_update return if you call it before
+> snd_pcm_writei in your callback?
 
-> No definitive help.  I don't know the internals, but I have a guess.  It
-> probably leads the
-> amount so that on busy systems, underruns don't occur.   You could try
-> setting it to 2 buffer
-> min and still writing only a single buffer.  That way, you have a buffer of
-> slack.
+Taking the sleep out of my thread so I respond to the ALSA callback
+wakeups as often as possible, I found that snd_pcm_avail_update()
+returns very small values, usually less than 1/2 the period size and
+sometimes even 0!  It seems as if I'm getting callbacks whenever ALSA
+feels like giving them. This behavior does not seem to change at all
+even with different settings of snd_pcm_sw_params_set_avail_min()! I
+must be missing some key thing in all this.
 
-It seems to make no difference what snd_pcm_sw_set_avail_min() value I
-use. I tried setting it from twice to many times the period size. I
-still get ALSA callbacks very often. When I check available space at
-each callback invocation using snd_pcm_avail_update(), I almost always
-get much less than this setting. Indeed most usually much less than a
-single period size.
+Here are some of the readings. This is with
+snd_pcm_sw_params_set_avail_min(period_size) and period_size = 470
+frames.
+avail = 68
+avail = 202
+avail = 336
+avail = 0
+avail = 134
 
-> You might have better luck trying this on the alsa-devel list.  The
-> developers live there and they
-> know the internals.  It is possible they will answer.
+>What period and buffer sizes do you use?
 
-Good idea. I am cross-posting this email. (Hopefully to no-one's annoyance...)
+I am using set_buffer/period_time_near and read back the actual
+values. I get the following with the settings I'm using.
+  buffer_size  : 7526 frames
+  period_size  : 470 frames
 
-> I went and looked at the function you are using.
-> (snip)
-> Are you using a buffer size compatible with your card.  It is possible it is
-> using the closest one and that is less than the buffer size you have
-> defined.  Just a thought.
+I'm set to 22050 sampling rate, 16-bit signed interleaved samples.
 
-To set buffer sizes, I am using set_buffer/period_time_near() and
-taking whatever the card gives me - I read them back with the get
-functions. One weird thing I noticed is that my card  give me a period
-size of 470 frames *always*, regardless of whatever desired buffer and
-period time I ask for. I don't think this issue is related to the
-async behavior weirdness though.
+> FYI, you should seriously consider using poll() rather than the
+> async/callback interface.  It's more efficient than signals and more
+> compatible with various IO plugins like pulseaudio.
+
+Yes - I'm looking into this for sure. This async mode has caused me
+lots of problems. My main issue is that I'm almost out of time to
+spend on this part of the project. :-(
 
 Thanks for your help.
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
