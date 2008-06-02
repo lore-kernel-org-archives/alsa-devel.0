@@ -1,18 +1,17 @@
-From: "Christian Morales Vega" <cmorve69@yahoo.es>
-Subject: snd_pcm_set_params() bug?
-Date: Mon, 2 Jun 2008 18:30:54 +0200
-Message-ID: <8235e6f40806020930t42e9b62brff93c5e23b59eac5@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH][ASoC v2] Fix Kconfig and Makefile for
+	Freescale MPC8610 sound drivers
+Date: Mon,  2 Jun 2008 13:03:33 -0500
+Message-ID: <1212429813-10033-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id E748A103876
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B40310383A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Jun 2008 18:30:55 +0200 (CEST)
-Received: by wx-out-0506.google.com with SMTP id h30so792482wxd.23
-	for <alsa-devel@alsa-project.org>; Mon, 02 Jun 2008 09:30:54 -0700 (PDT)
-Content-Disposition: inline
+	Mon,  2 Jun 2008 20:03:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lg@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This code:
+Fix the Kconfig for the Freescale MPC8610 sound drivers so that only the
+board is selectable, but the SOC is still a Kconfig option.
 
-#include <alsa/asoundlib.h>
+Fix the Makefile so that all of the modules are named snd-soc-xxx.ko.
 
-int main(){
-    snd_pcm_t *handle;
-    if(snd_pcm_open(&handle, "default:1", SND_PCM_STREAM_PLAYBACK, 0) < 0) {
-      exit(1);
-    }
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
 
-    if(snd_pcm_set_params(handle, SND_PCM_FORMAT_S16_LE,
-SND_PCM_ACCESS_RW_INTERLEAVED,
-       2, 24000, 1, 100000) < 0) {
-      exit(2);
-    }
-}
+My patch, "Add CS4270 i2c data to fsl_soc.c" must be applied for these drivers
+to work.
 
-fails with error "ALSA lib pcm.c:7193:(snd_pcm_set_params) Unable to
-get period size for PLAYBACK: Invalid argument"
-Disable resampling and you get "ALSA lib
-pcm.c:7142:(snd_pcm_set_params) Rate doesn't match (requested 24000Hz,
-get 0Hz)" (normal, I suppose). With other samplerates works fine.
+ sound/soc/fsl/Kconfig  |   13 ++++++-------
+ sound/soc/fsl/Makefile |    7 +++++--
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
-I'm using alsa-driver-kmp-default-1.0.16.20080602 and
-alsa-1.0.16.hg20080510 RPM packages from multimedia:audio openSUSE
-Build Service repository (from Takashi Iwai) and an AD1988 (hda-intel)
-codec. A XUbuntu user also has the same problem with an hda-intel
-codec (that I suppose uses stable 1.0.16).
-With a SB Live! in the same computer there are no problems.
-
-
-This was discovered with bsnes ( http://byuu.cinnamonpirate.com/bsnes/
-- http://board.zsnes.com/phpBB2/viewtopic.php?t=11584 ) that can use
-openal, libao or alsa directly. The problem just happens when using
-24KHz with alsa. So I suppose the problem is in the
-snd_pcm_set_params() itself, since openal and libao have not the
-problem but they set parameters "manually", not with
-snd_pcm_set_params().
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 257101f..056dc2f 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -1,20 +1,19 @@
+-menu "ALSA SoC audio for Freescale SOCs"
+ 
+ config SND_SOC_MPC8610
+-	bool "ALSA SoC support for the MPC8610 SOC"
+-	depends on SND_SOC && MPC8610_HPCD
+-	default y if MPC8610
++	tristate
++	# ALSA SoC support for the MPC8610 SOC
++	depends on MPC8610
+ 	help
+ 	  Say Y if you want to add support for codecs attached to the SSI
+           device on an MPC8610.
+ 
+ config SND_SOC_MPC8610_HPCD
+-	bool "ALSA SoC support for the Freescale MPC8610 HPCD board"
+-	depends on SND_SOC_MPC8610
++	tristate "ALSA SoC support for the Freescale MPC8610 HPCD board"
++	depends on SND_SOC && MPC8610_HPCD
++	select SND_SOC_MPC8610
+ 	select SND_SOC_CS4270
+ 	select SND_SOC_CS4270_VD33_ERRATA
+ 	default y if MPC8610_HPCD
+ 	help
+ 	  Say Y if you want to enable audio on the Freescale MPC8610 HPCD.
+ 
+-endmenu
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 62f680a..3a2b64e 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -1,6 +1,9 @@
+ # MPC8610 HPCD Machine Support
+-obj-$(CONFIG_SND_SOC_MPC8610_HPCD) += mpc8610_hpcd.o
++snd-soc-mpc8610-hpcd-objs := mpc8610_hpcd.o
++obj-$(CONFIG_SND_SOC_MPC8610_HPCD) += snd-soc-mpc8610-hpcd.o
+ 
+ # MPC8610 Platform Support
+-obj-$(CONFIG_SND_SOC_MPC8610) += fsl_ssi.o fsl_dma.o
++snd-soc-fsl-ssi-objs := fsl_ssi.o
++snd-soc-fsl-dma-objs := fsl_dma.o
++obj-$(CONFIG_SND_SOC_MPC8610) += snd-soc-fsl-ssi.o snd-soc-fsl-dma.o
+ 
+-- 
+1.5.5
