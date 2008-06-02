@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH][ASoC V2] Make Freescale MPC8610 drivers
-	more dynamic
-Date: Mon, 2 Jun 2008 15:42:37 +0100
-Message-ID: <20080602144235.GA29975@sirena.org.uk>
-References: <1212187311-22901-1-git-send-email-timur@freescale.com>
-	<20080602110101.GE9031@rakim.wolfsonmicro.main>
-	<48440123.5070508@freescale.com>
+From: "Christian Morales Vega" <cmorve69@yahoo.es>
+Subject: snd_pcm_set_params() bug?
+Date: Mon, 2 Jun 2008 18:30:54 +0200
+Message-ID: <8235e6f40806020930t42e9b62brff93c5e23b59eac5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67CB9245EC
+Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id E748A103876
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Jun 2008 16:42:38 +0200 (CEST)
+	Mon,  2 Jun 2008 18:30:55 +0200 (CEST)
+Received: by wx-out-0506.google.com with SMTP id h30so792482wxd.23
+	for <alsa-devel@alsa-project.org>; Mon, 02 Jun 2008 09:30:54 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <48440123.5070508@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 02, 2008 at 09:18:11AM -0500, Timur Tabi wrote:
-> Mark Brown wrote:
+This code:
 
-> > This change means that if someone builds another board with the same CPU
-> > on it then they'll have to add all the objects for the core CPU support
-> > to the Makefile entry for their board.
+#include <alsa/asoundlib.h>
 
-> They'll need to update Kconfig and the Makefile anyway, so I decided to cut out
-> the "middle man" -- the SOC.
+int main(){
+    snd_pcm_t *handle;
+    if(snd_pcm_open(&handle, "default:1", SND_PCM_STREAM_PLAYBACK, 0) < 0) {
+      exit(1);
+    }
 
-[As discussed on IRC, summarising for the list archive.]
+    if(snd_pcm_set_params(handle, SND_PCM_FORMAT_S16_LE,
+SND_PCM_ACCESS_RW_INTERLEAVED,
+       2, 24000, 1, 100000) < 0) {
+      exit(2);
+    }
+}
 
-For the user-visible menu that's sensible enough - the issue is more
-with the fact that you've now got the CPU side objects encoded into each
-individual board entry rather than having the board build machinery say
-"I need the SSI controller" or similar.
+fails with error "ALSA lib pcm.c:7193:(snd_pcm_set_params) Unable to
+get period size for PLAYBACK: Invalid argument"
+Disable resampling and you get "ALSA lib
+pcm.c:7142:(snd_pcm_set_params) Rate doesn't match (requested 24000Hz,
+get 0Hz)" (normal, I suppose). With other samplerates works fine.
 
-> > though I
-> > appreciate that at the minute you're making a lot of changes that go
-> > over large portions of the code and can't be easily separated out so I
-> > wouldn't worry about it too much.
+I'm using alsa-driver-kmp-default-1.0.16.20080602 and
+alsa-1.0.16.hg20080510 RPM packages from multimedia:audio openSUSE
+Build Service repository (from Takashi Iwai) and an AD1988 (hda-intel)
+codec. A XUbuntu user also has the same problem with an hda-intel
+codec (that I suppose uses stable 1.0.16).
+With a SB Live! in the same computer there are no problems.
 
-> Normally, I would submit everything as one final patch, but I hate hanging on to
-> uncommitted code for too long.
 
-It's not the submitting individual patches that I was meaning, it's the
-fact that individual patches cover multiple issues.
+This was discovered with bsnes ( http://byuu.cinnamonpirate.com/bsnes/
+- http://board.zsnes.com/phpBB2/viewtopic.php?t=11584 ) that can use
+openal, libao or alsa directly. The problem just happens when using
+24KHz with alsa. So I suppose the problem is in the
+snd_pcm_set_params() itself, since openal and libao have not the
+problem but they set parameters "manually", not with
+snd_pcm_set_params().
