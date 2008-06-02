@@ -1,18 +1,20 @@
-From: Mauro Carvalho Chehab <mchehab@infradead.org>
-Subject: Re: [PATCH] Fix buffer position for ATI SB4x0
-Date: Mon, 2 Jun 2008 11:14:04 -0300
-Message-ID: <20080602111404.3929726c@gaivota>
-References: <20080529111022.102bf250@gaivota>
-	<s5hod6pchui.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH][ASoC V2] Make Freescale MPC8610 drivers
+	more dynamic
+Date: Mon, 02 Jun 2008 09:18:11 -0500
+Message-ID: <48440123.5070508@freescale.com>
+References: <1212187311-22901-1-git-send-email-timur@freescale.com>
+	<20080602110101.GE9031@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org [18.85.46.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id E67A0245E7
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19FF2245ED
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Jun 2008 16:14:18 +0200 (CEST)
-In-Reply-To: <s5hod6pchui.wl%tiwai@suse.de>
+	Mon,  2 Jun 2008 16:18:17 +0200 (CEST)
+In-Reply-To: <20080602110101.GE9031@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29 May 2008 16:20:21 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+Mark Brown wrote:
 
-> At Thu, 29 May 2008 11:10:22 -0300,
-> Mauro Carvalho Chehab wrote:
-> > 
-> > ATI SB4x0 doesn't need any fix at position.
+> This change means that if someone builds another board with the same CPU
+> on it then they'll have to add all the objects for the core CPU support
+> to the Makefile entry for their board.
+
+They'll need to update Kconfig and the Makefile anyway, so I decided to cut out
+the "middle man" -- the SOC.
+
+>  There should at least be a
+> separate Kconfig thing, even if it's not user visible.  I've committed a
+> patch backing this bit out for now.
+
+Grrr...
+
+>> +#define DEBUG
+>> +
 > 
-> It's not about the position fixing but whether to use the
-> position-buffer.  The devices on the blacklist are the ones that have
-> no position buffer.  So, it would fall into LPIB mode, and this list
-> avoids it from the beginning.
+> This probably shouldn't be on by default?
 
-Sometimes, I get this message:
+For now, I want it on.
 
-[  857.014011] hda-intel: Invalid position buffer, using LPIB read method instead.
+> In general, it'd be a bit easier to review the changes you're making if
+> you were able to submit individual changes in separate patches, 
 
-It is weird, since this line doesn't appear always.
+Yes, that would be nice :-)
 
-> > This patch solves the issue of receiving several clicks during capture on those
-> > devices.
-> > 
-> > Tested with a Gateway Notebook MX-6453.
-> 
-> The click noise is often a different problem.  Did you already try
-> the patch below?
+> though I
+> appreciate that at the minute you're making a lot of changes that go
+> over large portions of the code and can't be easily separated out so I
+> wouldn't worry about it too much.
 
-This patch is already here on my testing environment.
+Normally, I would submit everything as one final patch, but I hate hanging on to
+uncommitted code for too long.
 
-There are a few reports I found at the net about Gateway devices with SB450 ATI
-chipset. Some suggestions for working with MIC pointed the need of using
-position_fix=0 to avoid the clicks on those devices.
-
-
-One weird thing is that I've did this procedure, when I generated the patch:
-	- tested without the patch - clicks at mic;
-	- applied the patch I sent - no clicks;
-	- removed the patch after your email - no clicks;
-	- reapplied/removed several times - no clicks.
-
-I'll try today to test with and without the position fix after cold boot/soft
-boot/resume. Maybe there are some registers that aren't properly initialized on
-some cases.
-
-Btw, after a suspend/resume, some widgets aren't properly restored (at
-mercurial tree version). For example, if I suspend with master Mute on, after
-resume, mute is off (but the kmix still shows it as muted). I'm not sure if the
-clicks happen after resume. I'll double check it.
-
-Cheers,
-Mauro
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
