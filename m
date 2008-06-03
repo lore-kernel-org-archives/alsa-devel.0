@@ -1,42 +1,86 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: Specs available for Sweex External 5.1 with
- digital in/out USB 2.0 / C-Media CM6207
-Date: Tue, 03 Jun 2008 22:53:50 +0200
-Message-ID: <4845AF5E.7020502@keyaccess.nl>
-References: <4845A420.10804@slagter.name>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Jack reporting v2
+Date: Wed, 4 Jun 2008 00:38:14 +0100
+Message-ID: <20080603233813.GA30512@sirena.org.uk>
+References: <1212095345928-git-send-email-broonie@opensource.wolfsonmicro.com> <20080603104048.GA17007@rakim.wolfsonmicro.main> <20080603105920.ZZRA012@mailhub.coreip.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04269243E0
-	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jun 2008 22:53:50 +0200 (CEST)
-In-Reply-To: <4845A420.10804@slagter.name>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Erik Slagter <erik@slagter.name>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20080603105920.ZZRA012@mailhub.coreip.homeip.net>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, mjg59@srcf.ucam.org
 List-Id: alsa-devel@alsa-project.org
 
-On 03-06-08 22:05, Erik Slagter wrote:
+On Tue, Jun 03, 2008 at 11:17:26AM -0400, Dmitry Torokhov wrote:
 
-> The other good news is that Sweex supplies the "official" datasheet from 
-> C-media which I think is quite interesting and may very well be useful 
-> to resolve the last few issues.
+> Pros for using input devices:
+> - we already have them
 
-I'm afraid I am largely unfamiliar with USB audio but this I do find to 
-be interesting (sweex is a cheapo Dutch brand you can grab on each 
-street corner over here). By "supplies", do you mean you requested it 
-specifically or did sweex just put it up on a server someplace, or 
-something else?
+...and it already models switches.
 
-Rene.
+As mentioned in the description of the original patch there's also the
+fact that the existing implementations I've found are doing things this
+way.  The only in-kernel ones are corgi and spitz which skip the input
+device overhead by using the keyboard input device.
+
+There is an additional motivation for using an input device for jacks -
+it is common to support a button implemented by shorting the microphone
+connection as well as simply detecting the presence of something in the
+jack.
+
+> Cons:
+> - space consideration. Input_dev structure is quite fat. It has all
+>   the capabilities strings exported through sysfs, hist of other
+>   attributes, etc. On top of that we have a character device (evdev)
+>   plus its own sysfs representation. IOW lots of stuff.
+
+I'm not sure how many systems this is a concern for these days (the
+things I found exporting to user space at the minute are embedded) but
+it could be an issue.
+
+> - input device require ioctl to get the switch state, no easy way to
+>   do it through sysfs.
+
+That sounds like something that is worth adding anyway, regardless of
+what gets done with jacks.
+
+> - As the number of types of connectors grows new switches will need to
+>   be added to input, potentially completely unrelated. My lacmus test
+>   for it - does it make sense to add network cable state to inputi
+>   core?
+
+The number of potential switches could get rather large, yes - to my
+mind it's the main concern with using the input API.
+
+> Do you think that something small that has only one sysfs device per
+> switch and uses KOBJ_ONLINE/KOBJ_OFFLINE to signal state change would
+> be better suited here?
+
+It's certainly doable and it would avoid any issues with memory overhead
+and with the number of switch types.
+
+Jacks would in general have more than one thing to report - as well as
+jacks for headsets with both headphone and optional microphone support
+on one physical jack many devices will also be able to give an idea of
+the device connected to a jack, doing things like distinguishing between
+speakers and headphones.  This information could still be exported via
+the sort of interface you suggest, for example with one sysfs file per
+thing that can be detected contents indicating the state for that thing.
+It could also be exported as environment variables along with the
+uevent.  The jack API would be able to standardise the names so that
+shouldn't be an issue.
+
+Ignoring the buttons it should be fairly straightforward from a kernel
+point of view.  I'm not sure how some of the userspace people would feel
+about it, mainly those in embedded systems not already dealing with
+uevents, but if they don't want to use netlink then uevent_helper should
+do the job for them even though it is a bit more cumbersome than the
+input API.
+
+Buttons would presumably end up as an input device registered only if
+supported by the jack - this would be easy enough for the kernel.
+
+If jack reporting is implemented this way we'd want to add a comment
+indicating that SW_HEADPHONE_INSERT shouldn't be used.
