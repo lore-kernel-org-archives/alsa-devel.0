@@ -1,16 +1,14 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: [PATCH] maestro3: Fix hw volume on HP OmniBook
-Date: Tue, 3 Jun 2008 20:52:10 +0300
-Message-ID: <20080603175210.GB5067@sci.fi>
+From: Thorsten =?ISO-8859-1?Q?Edelh=E4u=DFer?= <toersi@gmx.de>
+Subject: MIDI message handling
+Date: Tue, 03 Jun 2008 21:54:47 +0200
+Message-ID: <1212522887.17865.14.camel@un1001x>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5229179811530836659=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.pp.htv.fi (smtp4.pp.htv.fi [213.243.153.38])
-	by alsa0.perex.cz (Postfix) with ESMTP id E422D2480F
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 745032483D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jun 2008 19:52:12 +0200 (CEST)
-Content-Disposition: inline
+	Tue,  3 Jun 2008 21:54:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,90 +21,55 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-maestro3: Fix hw volume on HP OmniBook
 
-Make the hw volume buttons work correctly on some HP OmniBook laptops.
-The original quirk was apparently applied a bit too early and it was
-also lacking some critial register writes. This improved sequence was
-discovered by trial and error (like the original sequence). Tested and
-found working on OB500 and OB6000 laptops.
+--===============5229179811530836659==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-9AFVD5OQl6Fd077fqsQw"
 
-Signed-off-by: Ville Syrjala <syrjala@sci.fi>
----
- sound/pci/maestro3.c |   42 +++++++++++++++++++++++++++---------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
 
-Index: linux-2.6.25.4/sound/pci/maestro3.c
-===================================================================
---- linux-2.6.25.4.orig/sound/pci/maestro3.c
-+++ linux-2.6.25.4/sound/pci/maestro3.c
-@@ -2427,6 +2427,29 @@ snd_m3_amp_enable(struct snd_m3 *chip, i
- 	outw(0xffff, io + GPIO_MASK);
- }
- 
-+static void
-+snd_m3_hv_init(struct snd_m3 *chip)
-+{
-+	unsigned long io = chip->iobase;
-+	u16 val = GPI_VOL_DOWN | GPI_VOL_UP;
-+
-+	if (!chip->is_omnibook)
-+		return;
-+
-+	/*
-+	 * Volume buttons on some HP OmniBook laptops
-+	 * require some GPIO magic to work correctly.
-+	 */
-+	outw(0xffff, io + GPIO_MASK);
-+	outw(0x0000, io + GPIO_DATA);
-+
-+	outw(~val, io + GPIO_MASK);
-+	outw(inw(io + GPIO_DIRECTION) & ~val, io + GPIO_DIRECTION);
-+	outw(val, io + GPIO_MASK);
-+
-+	outw(0xffff, io + GPIO_MASK);
-+}
-+
- static int
- snd_m3_chip_init(struct snd_m3 *chip)
- {
-@@ -2442,21 +2465,6 @@ snd_m3_chip_init(struct snd_m3 *chip)
- 	       DISABLE_LEGACY);
- 	pci_write_config_word(pcidev, PCI_LEGACY_AUDIO_CTRL, w);
- 
--	if (chip->is_omnibook) {
--		/*
--		 * Volume buttons on some HP OmniBook laptops don't work
--		 * correctly. This makes them work for the most part.
--		 *
--		 * Volume up and down buttons on the laptop side work.
--		 * Fn+cursor_up (volme up) works.
--		 * Fn+cursor_down (volume down) doesn't work.
--		 * Fn+F7 (mute) works acts as volume up.
--		 */
--		outw(~(GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_MASK);
--		outw(inw(io + GPIO_DIRECTION) & ~(GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_DIRECTION);
--		outw((GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_DATA);
--		outw(0xffff, io + GPIO_MASK);
--	}
- 	pci_read_config_dword(pcidev, PCI_ALLEGRO_CONFIG, &n);
- 	n &= ~(HV_CTRL_ENABLE | REDUCED_DEBOUNCE | HV_BUTTON_FROM_GD);
- 	n |= chip->hv_config;
-@@ -2644,6 +2652,8 @@ static int m3_resume(struct pci_dev *pci
- 	snd_m3_enable_ints(chip);
- 	snd_m3_amp_enable(chip, 1);
- 
-+	snd_m3_hv_init(chip);
-+
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
- 	return 0;
- }
-@@ -2783,6 +2793,8 @@ snd_m3_create(struct snd_card *card, str
- 
- 	snd_m3_amp_enable(chip, 1);
- 
-+	snd_m3_hv_init(chip);
-+
- 	tasklet_init(&chip->hwvol_tq, snd_m3_update_hw_volume, (unsigned long)chip);
- 
- 	if (request_irq(pci->irq, snd_m3_interrupt, IRQF_SHARED,
+--=-9AFVD5OQl6Fd077fqsQw
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+I'm writing a driver for the MARIAN MARC 8 Midi soundcard. Today I
+tested some MIDI functionality and get some errors from hydrogen
+("unhandled midi message type"). I did some research and got to the
+point, that the MIDI alive message (0xfe) should not arrive at the
+application. So my question is: Do I have to process the midi messages
+by myself before I give it to the alsa "snd_rawmidi_receive" function?
+Or is there already some code, which will do it?
+
+If someone is interested here is the project page:
+http://sourceforge.net/projects/marc8-driver/=20
+
+Regards,
+Thorsten
+
+--=-9AFVD5OQl6Fd077fqsQw
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dies ist ein digital signierter Nachrichtenteil
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBIRaGHOMZokbhZ9v4RAsBFAJ9AR7keMGahP+zsnw2xV2Ih+cQUYACfal8O
+D0rJhGpFahV1qRc4uRBqsyQ=
+=9pA6
+-----END PGP SIGNATURE-----
+
+--=-9AFVD5OQl6Fd077fqsQw--
+
+
+--===============5229179811530836659==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5229179811530836659==--
