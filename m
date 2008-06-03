@@ -1,14 +1,20 @@
-From: Thorsten =?ISO-8859-1?Q?Edelh=E4u=DFer?= <toersi@gmx.de>
-Subject: MIDI message handling
-Date: Tue, 03 Jun 2008 21:54:47 +0200
-Message-ID: <1212522887.17865.14.camel@un1001x>
+From: "Jordi Haarman" <haarman@gmail.com>
+Subject: Re: asus bracket 'bug'
+Date: Tue, 3 Jun 2008 21:59:30 +0200
+Message-ID: <9c338210806031259r73780739le9152ab2d4ab1404@mail.gmail.com>
+References: <9c338210806010955m546e6141va7b241b94a4710f2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5229179811530836659=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 745032483D
+Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08D6D24847
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jun 2008 21:54:50 +0200 (CEST)
+	Tue,  3 Jun 2008 21:59:32 +0200 (CEST)
+Received: by gv-out-0910.google.com with SMTP id i36so319026gve.24
+	for <alsa-devel@alsa-project.org>; Tue, 03 Jun 2008 12:59:31 -0700 (PDT)
+In-Reply-To: <9c338210806010955m546e6141va7b241b94a4710f2@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,55 +27,42 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Someone is trying to help and suggested to get the latest sources using git
+but I keep getting the following error:
 
---===============5229179811530836659==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-9AFVD5OQl6Fd077fqsQw"
+# git clone git://git.alsa-project.org/alsa-driver.git alsa-driver
 
+Initialized empty Git repository in /root/alsa-driver/.git/
+fatal: The remote end hung up unexpectedly
+fetch-pack from 'git://git.alsa-project.org/alsa-driver.git' failed.
 
---=-9AFVD5OQl6Fd077fqsQw
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Any suggestions?
 
-Hi!
+On Sun, Jun 1, 2008 at 6:55 PM, Jordi Haarman <haarman@gmail.com> wrote:
 
-I'm writing a driver for the MARIAN MARC 8 Midi soundcard. Today I
-tested some MIDI functionality and get some errors from hydrogen
-("unhandled midi message type"). I did some research and got to the
-point, that the MIDI alive message (0xfe) should not arrive at the
-application. So my question is: Do I have to process the midi messages
-by myself before I give it to the alsa "snd_rawmidi_receive" function?
-Or is there already some code, which will do it?
-
-If someone is interested here is the project page:
-http://sourceforge.net/projects/marc8-driver/=20
-
-Regards,
-Thorsten
-
---=-9AFVD5OQl6Fd077fqsQw
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Dies ist ein digital signierter Nachrichtenteil
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBIRaGHOMZokbhZ9v4RAsBFAJ9AR7keMGahP+zsnw2xV2Ih+cQUYACfal8O
-D0rJhGpFahV1qRc4uRBqsyQ=
-=9pA6
------END PGP SIGNATURE-----
-
---=-9AFVD5OQl6Fd077fqsQw--
+> Hi,
+>
+> I was asked in the channel to post a bug and send it to the mailinglist in
+> the hope that somebody can fix it. (they said it would be pretty easy).
+>
+> The bug is located here (with the debug info):
+>
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3965
+>
+> The problem is that the spdif of the bracket does not work and should be
+> added somehow.
+>
+> --
+> Groet,
+>
+> J
+> http://startu.net - esperanto startpagina
 
 
---===============5229179811530836659==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============5229179811530836659==--
+-- 
+Groet,
+
+Jordi
+http://startu.net - esperanto startpagina
