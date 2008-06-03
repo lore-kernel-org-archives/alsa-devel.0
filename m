@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] Add microphone and headset reporting
-Date: Tue,  3 Jun 2008 11:42:03 +0100
-Message-ID: <1212489723-31562-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20080603104048.GA17007@rakim.wolfsonmicro.main>
-	<1212489723-31562-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: testing of 1.0.17rc1 packages
+Date: Tue, 3 Jun 2008 14:50:36 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0806031442150.1798@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8F0E1247B0
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7A26247B1
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Jun 2008 12:42:04 +0200 (CEST)
-In-Reply-To: <1212489723-31562-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Tue,  3 Jun 2008 14:50:37 +0200 (CEST)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	D5277149EBB for <alsa-devel@alsa-project.org>;
+	Tue,  3 Jun 2008 14:50:37 +0200 (CEST)
+Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	AED2684364 for <alsa-devel@alsa-project.org>;
+	Tue,  3 Jun 2008 14:50:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,72 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Dmitry Torokhov <dtor@insightbb.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-input@vger.kernel.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add a new switch type to the input API for reporting microphone
-insertion and extend the ALSA jack reporting API to include this.
-Since a headset is a combination of a microphone and at least a mono
-headphone a convenience defintion is provided for describing them.
+Hello,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/linux/input.h |    1 +
- include/sound/jack.h  |    4 +++-
- sound/core/jack.c     |    6 ++++++
- 3 files changed, 10 insertions(+), 1 deletions(-)
+	finally, I prepared 1.0.17rc1 packages for testing. This is not 
+release announce - official 1.0.17rc1 packages might be little different. 
+I would like to invite people on devel list to test these packages, 
+because we moved from HG to GIT and the gap between releases was too big.
 
-diff --git a/include/linux/input.h b/include/linux/input.h
-index e075c4b..462e891 100644
---- a/include/linux/input.h
-+++ b/include/linux/input.h
-@@ -640,6 +640,7 @@ struct input_absinfo {
- #define SW_RFKILL_ALL		0x03  /* rfkill master switch, type "any"
- 					 set = radio enabled */
- #define SW_RADIO		SW_RFKILL_ALL	/* deprecated */
-+#define SW_MICROPHONE_INSERT	0x04  /* set = inserted */
- #define SW_MAX			0x0f
- #define SW_CNT			(SW_MAX+1)
- 
-diff --git a/include/sound/jack.h b/include/sound/jack.h
-index 5cb610d..743f559 100644
---- a/include/sound/jack.h
-+++ b/include/sound/jack.h
-@@ -32,7 +32,9 @@ struct input_dev;
-  * bitmask.
-  */
- enum snd_jack_types {
--	SND_JACK_HEADPHONE = 0x0001,
-+	SND_JACK_HEADPHONE	= 0x0001,
-+	SND_JACK_MICROPHONE	= 0x0002,
-+	SND_JACK_HEADSET	= 0x0003,  /* Both microphone and headphone */
- };
- 
- struct snd_jack {
-diff --git a/sound/core/jack.c b/sound/core/jack.c
-index 36ecc57..9c05ec8 100644
---- a/sound/core/jack.c
-+++ b/sound/core/jack.c
-@@ -102,6 +102,9 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 	if (type & SND_JACK_HEADPHONE)
- 		input_set_capability(jack->input_dev, EV_SW,
- 				     SW_HEADPHONE_INSERT);
-+	if (type & SND_JACK_MICROPHONE)
-+		input_set_capability(jack->input_dev, EV_SW,
-+				     SW_MICROPHONE_INSERT);
- 
- 	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
- 	if (err < 0)
-@@ -147,6 +150,9 @@ void snd_jack_report(struct snd_jack *jack, int status)
- 	if (jack->type & SND_JACK_HEADPHONE)
- 		input_report_switch(jack->input_dev, SW_HEADPHONE_INSERT,
- 				    status & SND_JACK_HEADPHONE);
-+	if (jack->type & SND_JACK_MICROPHONE)
-+		input_report_switch(jack->input_dev, SW_MICROPHONE_INSERT,
-+				    status & SND_JACK_MICROPHONE);
- 
- 	input_sync(jack->input_dev);
- }
--- 
-1.5.5.3
+	ftp://ftp.alsa-project.org/pub/testing
+
+	Please, if you reach any major compilation or functionality issue, 
+e-mail me directly or on this list to fix this problem. I'm going to make
+official release tomorrow.
+
+					Thanks,
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
