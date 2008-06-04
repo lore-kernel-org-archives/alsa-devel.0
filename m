@@ -1,15 +1,15 @@
-From: Tony Vroon <tony@vroon.org>
-Subject: [ALC268 patch_realtek.c] COMPAL IFL90/JFL-92 laptop
-	quirk to	select ALC268_TOSHIBA
-Date: Wed, 04 Jun 2008 10:52:35 +0100
-Message-ID: <1212573155.3937.10.camel@localhost>
+From: Tony Vroon <tony@linx.net>
+Subject: RESEND: [ALC268 patch_realtek.c] COMPAL IFL90/JFL-92
+	laptop quirk	to select ALC268_TOSHIBA
+Date: Wed, 04 Jun 2008 11:05:59 +0100
+Message-ID: <1212573959.3937.13.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6597960839744775765=="
+Content-Type: multipart/mixed; boundary="===============8950588017365272450=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F2E324366
+Received: from bronze.linx.net (bronze.linx.net [195.66.232.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9A8924380
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jun 2008 11:53:33 +0200 (CEST)
+	Wed,  4 Jun 2008 12:07:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +24,22 @@ Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6597960839744775765==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-d1+KxAjQa0VmnEdXza6m"
+--===============8950588017365272450==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-3pf9HDlPoUcuR2/CF2b+"
 
 
---=-d1+KxAjQa0VmnEdXza6m
-Content-Type: multipart/mixed; boundary="=-vMQFsSwJkfZiuBuL+7c5"
+--=-3pf9HDlPoUcuR2/CF2b+
+Content-Type: multipart/mixed; boundary="=-P4dzS2Kdp/Es4XOot/Qi"
 
 
---=-vMQFsSwJkfZiuBuL+7c5
+--=-P4dzS2Kdp/Es4XOot/Qi
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Good morning,
+=EF=BB=BF=EF=BB=BFRight then, leave it to me to send the wrong version of t=
+he patch from
+the wrong e-mail address. Please disregard the previous message, that
+diff will not apply. Apologies.
 
 Could you please consider the attached patch. The COMPAL IFL90/JFL-92
 laptop defaults to an incorrect output channel on autoprobe, resulting
@@ -53,10 +56,10 @@ Regards,
 Tony V.
 LINX sysadmin
 
---=-vMQFsSwJkfZiuBuL+7c5
-Content-Disposition: attachment; filename=COMPAL-ALC268_TOSHIBA.patch
-Content-Type: text/x-patch; name=COMPAL-ALC268_TOSHIBA.patch; charset=UTF-8
+--=-P4dzS2Kdp/Es4XOot/Qi
+Content-Disposition: attachment; filename=COMPAL-ALC268_TOSHIBA-v3.patch
 Content-Transfer-Encoding: base64
+Content-Type: text/x-patch; name=COMPAL-ALC268_TOSHIBA-v3.patch; charset=UTF-8
 
 VXNlIHF1aXJrIHRhYmxlIHRvIGFzc2lnbiBBTEMyNjhfVE9TSElCQSB0byBDT01QQUwgSUZMOTAv
 SkZMLTkyIGxhcHRvcHMuDQpObyBhbmFsb2cgb3V0cHV0IG9uIGF1dG9wcm9iZS4NCg0KVGVzdGVk
@@ -73,24 +76,24 @@ X1FVSVJLKDB4MTUyZCwgMHgwNzYzLCAiRGl2ZXJzZSAoQ1BSMjAwMCkiLCBBTEMyNjhfQUNFUiks
 DQogCXt9DQogfTsNCg==
 
 
---=-vMQFsSwJkfZiuBuL+7c5--
+--=-P4dzS2Kdp/Es4XOot/Qi--
 
---=-d1+KxAjQa0VmnEdXza6m
+--=-3pf9HDlPoUcuR2/CF2b+
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.9 (GNU/Linux)
 
-iEYEABECAAYFAkhGZeMACgkQp5vW4rUFj5qiKQCgiu5TumJYuj3/7dyVV+DGLPjV
-9+gAoI41zDVEfL3eidZyoKMA/1ZtsX+X
-=Gs0N
+iEYEABECAAYFAkhGaQcACgkQp5vW4rUFj5r8uwCfSSD29EUtHWXBgtgQ3tYHGveM
+SCEAoL39ks6F9JTq9wSaqb8YvcRq3Njg
+=Y9XQ
 -----END PGP SIGNATURE-----
 
---=-d1+KxAjQa0VmnEdXza6m--
+--=-3pf9HDlPoUcuR2/CF2b+--
 
 
---===============6597960839744775765==
+--===============8950588017365272450==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -101,4 +104,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============6597960839744775765==--
+--===============8950588017365272450==--
