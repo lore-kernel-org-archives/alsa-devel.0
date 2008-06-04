@@ -1,21 +1,21 @@
 From: Ben Stanley <Ben.Stanley@exemail.com.au>
-Subject: Re: git down?
-Date: Thu, 05 Jun 2008 01:02:51 +1000
-Message-ID: <1212591771.28032.102.camel@localhost>
-References: <58658.220.233.78.168.1212589386.squirrel@webmail.exetel.com.au>
+Subject: Re: alsa-drivers-HEAD does not compile against
+	recent	RHE5.1 kernels
+Date: Thu, 05 Jun 2008 01:12:28 +1000
+Message-ID: <1212592348.28032.111.camel@localhost>
+References: <1211506900.3811.105.camel@localhost>
+	<1211542742.3811.139.camel@localhost>
+	<1211545221.3811.142.camel@localhost>
+	<1212104263.17410.114.camel@localhost> <s5habi15rck.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA7982442B
+	by alsa0.perex.cz (Postfix) with ESMTP id B0B5D2447B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jun 2008 17:02:54 +0200 (CEST)
-Received: from 168.78.233.220.exetel.com.au ([220.233.78.168]
-	helo=[192.168.1.2]) by smtp.po.exetel.com.au with esmtp (Exim 4.68)
-	(envelope-from <Ben.Stanley@exemail.com.au>) id 1K3uVn-0006JJ-Or
-	for alsa-devel@alsa-project.org; Thu, 05 Jun 2008 01:02:51 +1000
-In-Reply-To: <58658.220.233.78.168.1212589386.squirrel@webmail.exetel.com.au>
+	Wed,  4 Jun 2008 17:12:31 +0200 (CEST)
+In-Reply-To: <s5habi15rck.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It works for me now. I didn't do anything to fix it.
 
-Ben Stanley.
+So, if config.h is not needed in 'newer' kernels (and causes an error?),
+and is needed in 'older' kernels, it is then an error to universally
+include it in a configure test program where it causes an error if used
+inappropriately...
 
-On Thu, 2008-06-05 at 00:23 +1000, ben.stanley@exemail.com.au wrote:
-> I'm having trouble with git:
+I think the error is not noticed in newer newer kernels because
+init_utsname is defined in newer newer kernels. (I should look into this
+statement some more.)
+
+I think it comes down to figuring out the point between 'newer' and
+'older' kernels and modifying the configure test appropriately to use or
+not use config.h as required. I'm not sure how that should be done.
+
+Ben.
+
+On Wed, 2008-06-04 at 14:15 +0200, Takashi Iwai wrote:
+> At Fri, 30 May 2008 09:37:43 +1000,
+> Ben Stanley wrote:
+> > 
+> > [PING] 
+> > 
+> > I need some help on this one. I don't know how to determine whether or
+> > not the config.h file should be included in the test program or not.
 > 
-> ben@mythtv:~/alsa-git$ git clone
-> git://git.alsa-project.org/alsa-driver.git alsa-driver
-> Initialized empty Git repository in /home/ben/alsa-git/alsa-driver/.git/
-> fatal: The remote end hung up unexpectedly
-> fetch-pack from 'git://git.alsa-project.org/alsa-driver.git' failed.
-> ben@mythtv:~/alsa-git$
-> 
-> Anyone else seeing this?
-> 
-> Ben Stanley.
+> config.h is needed for older kernels indeed.
 > 
 > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Takashi
+> 
+> > 
+> > Ben Stanley.
+> > 
+> > On Fri, 2008-05-23 at 22:20 +1000, Ben Stanley wrote:
+> > > Further to my previous email,
+> > > 
+> > > The config.log file shows the following output for the test for
+> > > init_utsname in the case of the RHEL 5.1 kernel 2.6.18-53.1.19:
+> > > 
+> > > configure:10792: checking for init_utsname
+> > > configure:10822: gcc -c -Wall -fno-strict-aliasing -g -O2
+> > > -I/lib/modules/2.6.18-53.1.19.el5/build/include
+> > > -I/lib/modules/2.6.18-53.1.19.el5/source/include  -Iinclude -nostdinc
+> > > -iwithprefix include -DKBUILD_STR(s)=#s
+> > > -DKBUILD_BASENAME=KBUILD_STR(dummy) -DKBUILD_MODNAME=KBUILD_BASENAME
+> > > -Werror  conftest.c >&5
+> > > In file included from conftest.c:52:
+> > > /lib/modules/2.6.18-53.1.19.el5/build/include/linux/config.h:6:2: error:
+> > > #warning Including config.h is deprecated.
+> > > configure:10828: $? = 1
+> > > configure: failed program was:
+> > > 
+> > > I think it is failing because of the config.h warning.
+> > > 
+> > > Ben Stanley.
+> > > 
