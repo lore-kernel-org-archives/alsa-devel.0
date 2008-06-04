@@ -1,16 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
+From: Ben Stanley <Ben.Stanley@exemail.com.au>
 Subject: Re: git down?
-Date: Wed, 4 Jun 2008 16:59:43 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0806041659200.1798@tm8103-a.perex-int.cz>
+Date: Thu, 05 Jun 2008 01:02:51 +1000
+Message-ID: <1212591771.28032.102.camel@localhost>
 References: <58658.220.233.78.168.1212589386.squirrel@webmail.exetel.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 049FC2441D
+Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA7982442B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jun 2008 16:59:45 +0200 (CEST)
+	Wed,  4 Jun 2008 17:02:54 +0200 (CEST)
+Received: from 168.78.233.220.exetel.com.au ([220.233.78.168]
+	helo=[192.168.1.2]) by smtp.po.exetel.com.au with esmtp (Exim 4.68)
+	(envelope-from <Ben.Stanley@exemail.com.au>) id 1K3uVn-0006JJ-Or
+	for alsa-devel@alsa-project.org; Thu, 05 Jun 2008 01:02:51 +1000
 In-Reply-To: <58658.220.233.78.168.1212589386.squirrel@webmail.exetel.com.au>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,12 +25,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ben.stanley@exemail.com.au
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 5 Jun 2008 ben.stanley@exemail.com.au wrote:
+It works for me now. I didn't do anything to fix it.
 
+Ben Stanley.
+
+On Thu, 2008-06-05 at 00:23 +1000, ben.stanley@exemail.com.au wrote:
 > I'm having trouble with git:
 > 
 > ben@mythtv:~/alsa-git$ git clone
@@ -37,13 +43,11 @@ On Thu, 5 Jun 2008 ben.stanley@exemail.com.au wrote:
 > ben@mythtv:~/alsa-git$
 > 
 > Anyone else seeing this?
-
-Sorry, git-daemon-export-ok files were missing in repos on server. It's 
-fixed now. Thanks for notice.
-
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+> 
+> Ben Stanley.
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
