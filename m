@@ -1,17 +1,15 @@
-From: Erik Slagter <erik@slagter.name>
-Subject: Re: Specs available for Sweex External 5.1 with
- digital in/out USB 2.0 / C-Media CM6207
-Date: Wed, 04 Jun 2008 09:22:03 +0200
-Message-ID: <4846429B.9030109@slagter.name>
-References: <4845A420.10804@slagter.name> <4845AF5E.7020502@keyaccess.nl>
+From: Tony Vroon <tony@vroon.org>
+Subject: [ALC268 patch_realtek.c] COMPAL IFL90/JFL-92 laptop
+	quirk to	select ALC268_TOSHIBA
+Date: Wed, 04 Jun 2008 10:52:35 +0100
+Message-ID: <1212573155.3937.10.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4521295819070352039=="
+Content-Type: multipart/mixed; boundary="===============6597960839744775765=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eriks.xs4all.nl (eriks.xs4all.nl [83.160.41.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id B09F524471
+Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F2E324366
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jun 2008 09:22:04 +0200 (CEST)
-In-Reply-To: <4845AF5E.7020502@keyaccess.nl>
+	Wed,  4 Jun 2008 11:53:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,109 +19,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is a cryptographically signed message in MIME format.
 
---===============4521295819070352039==
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms040100070901070603090302"
+--===============6597960839744775765==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-d1+KxAjQa0VmnEdXza6m"
 
-This is a cryptographically signed message in MIME format.
 
---------------ms040100070901070603090302
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+--=-d1+KxAjQa0VmnEdXza6m
+Content-Type: multipart/mixed; boundary="=-vMQFsSwJkfZiuBuL+7c5"
 
-Rene Herman wrote:
->> The other good news is that Sweex supplies the "official" datasheet 
->> from C-media which I think is quite interesting and may very well be 
->> useful to resolve the last few issues.
-> 
-> I'm afraid I am largely unfamiliar with USB audio but this I do find to 
-> be interesting (sweex is a cheapo Dutch brand you can grab on each 
-> street corner over here). By "supplies", do you mean you requested it 
-> specifically or did sweex just put it up on a server someplace, or 
-> something else?
 
-The interesting part is that the IC's datasheet is actually on the 
-CD-ROM, in the directory with manuals. The only other manual to be found 
-there is a "joke", it is sort of a leaflet in eight languages and tells 
-you how to "install the driver". This is how I know Sweex, Trust and 
-similar brands.
+--=-vMQFsSwJkfZiuBuL+7c5
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
---------------ms040100070901070603090302
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Good morning,
+
+Could you please consider the attached patch. The COMPAL IFL90/JFL-92
+laptop defaults to an incorrect output channel on autoprobe, resulting
+in no audio. The user was unable to enable analog audio with the mixer
+controls provided.
+Testing confirms that the Toshiba model enables both headphone with
+automuting and the internal speakers. Embedded sign-off and short patch
+description.
+
+Tested-By: Guri <gurashka@gmail.com>
+=EF=BB=BFSigned-Off-By: Tony Vroon <tony@linx.net>
+
+Regards,
+Tony V.
+LINX sysadmin
+
+--=-vMQFsSwJkfZiuBuL+7c5
+Content-Disposition: attachment; filename=COMPAL-ALC268_TOSHIBA.patch
+Content-Type: text/x-patch; name=COMPAL-ALC268_TOSHIBA.patch; charset=UTF-8
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJUTCC
-AwMwggJsoAMCAQICEDGJsD9UPajwBl+GeyaBWA0wDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
-BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMT
-I1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA3MDkxNzEwMzAwM1oX
-DTA4MDkxNjEwMzAwM1owajEQMA4GA1UEBBMHU2xhZ3RlcjEVMBMGA1UEKhMMRXJpayBNYXJ0
-aWpuMR0wGwYDVQQDExRFcmlrIE1hcnRpam4gU2xhZ3RlcjEgMB4GCSqGSIb3DQEJARYRZXJp
-a0BzbGFndGVyLm5hbWUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4bkf+nXAx
-akUjjwscSMjaKSUFQiJPxTgOUEh+uKVsBVGvY7CB8XcCmU7+oO1s9NaTL7BVy7Lwpj5SJV/B
-v8gZWrHwsR3D7U2rcKUW81v7dkTu9GTAUt5Qc8b7+GehjZuZKZPjMdH6vJK9G7YnZu1gG9b0
-CoEC4jOdIR4+4di2ZUN9M5JLlVKofOP4fo8MKFny88ThmxHLGzzQGsshfs7wuYB2hivouPCf
-kmc+tnTI90mLrV748Yc6M9gq1brUajcy+tL0wdTS0NOJ2FVa/0HFlxaMrt88nko2J7wA+yPM
-RY1L+ziU+Qr45JxoCE6pI/6lZNlMtHeYvdveQZs/3n5HAgMBAAGjLjAsMBwGA1UdEQQVMBOB
-EWVyaWtAc2xhZ3Rlci5uYW1lMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEFBQADgYEAZrik
-whMvx+aaj7gXQDVuy+zs7eqq1zJilrNS1130Hrq0JeLC6Rnl6a1gE52gap2O6uLyfpdGBmXu
-loCzA9OPYKcZT6EtcZKF3+TCP0m9L3G1scQPPrxZt/oA4uZ4MDTvLElPJH2ONOvCoRPrp5aD
-YHD5NlsDjs+kG6559873oTwwggMDMIICbKADAgECAhAxibA/VD2o8AZfhnsmgVgNMA0GCSqG
-SIb3DQEBBQUAMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAo
-UHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBD
-QTAeFw0wNzA5MTcxMDMwMDNaFw0wODA5MTYxMDMwMDNaMGoxEDAOBgNVBAQTB1NsYWd0ZXIx
-FTATBgNVBCoTDEVyaWsgTWFydGlqbjEdMBsGA1UEAxMURXJpayBNYXJ0aWpuIFNsYWd0ZXIx
-IDAeBgkqhkiG9w0BCQEWEWVyaWtAc2xhZ3Rlci5uYW1lMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEAuG5H/p1wMWpFI48LHEjI2iklBUIiT8U4DlBIfrilbAVRr2OwgfF3AplO
-/qDtbPTWky+wVcuy8KY+UiVfwb/IGVqx8LEdw+1Nq3ClFvNb+3ZE7vRkwFLeUHPG+/hnoY2b
-mSmT4zHR+rySvRu2J2btYBvW9AqBAuIznSEePuHYtmVDfTOSS5VSqHzj+H6PDChZ8vPE4ZsR
-yxs80BrLIX7O8LmAdoYr6Ljwn5JnPrZ0yPdJi61e+PGHOjPYKtW61Go3MvrS9MHU0tDTidhV
-Wv9BxZcWjK7fPJ5KNie8APsjzEWNS/s4lPkK+OScaAhOqSP+pWTZTLR3mL3b3kGbP95+RwID
-AQABoy4wLDAcBgNVHREEFTATgRFlcmlrQHNsYWd0ZXIubmFtZTAMBgNVHRMBAf8EAjAAMA0G
-CSqGSIb3DQEBBQUAA4GBAGa4pMITL8fmmo+4F0A1bsvs7O3qqtcyYpazUtdd9B66tCXiwukZ
-5emtYBOdoGqdjuri8n6XRgZl7paAswPTj2CnGU+hLXGShd/kwj9JvS9xtbHEDz68Wbf6AOLm
-eDA07yxJTyR9jjTrwqET66eWg2Bw+TZbA47PpBuueffO96E8MIIDPzCCAqigAwIBAgIBDTAN
-BgkqhkiG9w0BAQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTES
-MBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UE
-CxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBl
-cnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0
-aGF3dGUuY29tMB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVowYjELMAkGA1UEBhMC
-WkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1Ro
-YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GN
-ADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU5VAK
-MNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTX
-p6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIGA1UdEwEB/wQIMAYB
-Af8CAQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUuY29tL1RoYXd0ZVBl
-cnNvbmFsRnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYD
-VQQDExFQcml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBIjNFQg+oLLswNo2as
-Zw9/r6y+whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZfoSxmRsAxRoLgnSe
-JVCUYsfbJ3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4gtwhGTXeJLHT
-HUb/XV9lTzGCA3EwggNtAgEBMHYwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBD
-b25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFp
-bCBJc3N1aW5nIENBAhAxibA/VD2o8AZfhnsmgVgNMAkGBSsOAwIaBQCgggHQMBgGCSqGSIb3
-DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA4MDYwNDA3MjIwM1owIwYJKoZI
-hvcNAQkEMRYEFLaP0ndO/usCXDFl1RRK21AC+WLhMF8GCSqGSIb3DQEJDzFSMFAwCwYJYIZI
-AWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUr
-DgMCBzANBggqhkiG9w0DAgIBKDCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJaQTEl
-MCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3Rl
-IFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECEDGJsD9UPajwBl+GeyaBWA0wgYcGCyqG
-SIb3DQEJEAILMXigdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRp
-bmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3Vp
-bmcgQ0ECEDGJsD9UPajwBl+GeyaBWA0wDQYJKoZIhvcNAQEBBQAEggEAa9ziwdYpjxiXzK5N
-pCppsk1YrG4pNHgfAZQf6ENx+aPCzn2Q6axk2MZJpgeGZIPYX7h7i42FIwLjpssWJKjQzW5F
-BfdHKApBbFx3NClGkMQGzuZxgg+N0+vRYIUVMmoqicqr+3NN8As8xCvHKwyBX+vQY6NbOjze
-qgIgUOggWJH+bUspjKT2oV79MUA19emLA7eUAWf8wuwkWhH0DO0w7jBflTnc5jBeSCMypEpN
-wuK4A8t6jJadHmZ/szciU3N8lQxctEdm5ekOXvKuTYq/WEgx0ggVTgZSvgv6ZIRAqU3hH9VV
-3RMi7IJ4qeEuu19xwT9kks8cSz+9iyBnKwNe+AAAAAAAAA==
---------------ms040100070901070603090302--
+VXNlIHF1aXJrIHRhYmxlIHRvIGFzc2lnbiBBTEMyNjhfVE9TSElCQSB0byBDT01QQUwgSUZMOTAv
+SkZMLTkyIGxhcHRvcHMuDQpObyBhbmFsb2cgb3V0cHV0IG9uIGF1dG9wcm9iZS4NCg0KVGVzdGVk
+LUJ5OiBHdXJpIDxndXJhc2hrYUBnbWFpbC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBUb255IFZyb29u
+IDx0b255QGxpbngubmV0Pg0KDQotLS0gc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMub3Jp
+ZwkyMDA4LTA2LTAzIDIyOjEzOjA0LjAwMDAwMDAwMCArMDEwMA0KKysrIHNvdW5kL3BjaS9oZGEv
+cGF0Y2hfcmVhbHRlay5jCTIwMDgtMDYtMDMgMjI6MTQ6NDIuMDAwMDAwMDAwICswMTAwDQpAQCAt
+OTI4MCw2ICs5MjgwLDcgQEANCiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MzBjYywgIlRPU0hJ
+QkEiLCBBTEMyNjhfVE9TSElCQSksDQogCVNORF9QQ0lfUVVJUksoMHgxMDI1LCAweDAxMjYsICJB
+Y2VyIiwgQUxDMjY4X0FDRVIpLA0KIAlTTkRfUENJX1FVSVJLKDB4MTAyNSwgMHgwMTMwLCAiQWNl
+ciBFeHRlbnNhIDUyMTAiLCBBTEMyNjhfQUNFUiksDQorCVNORF9QQ0lfUVVJUksoMHgxNGMwLCAw
+eDAwMjUsICJDT01QQUwgSUZMOTAvSkZMLTkyIiwgQUxDMjY4X1RPU0hJQkEpLA0KIAlTTkRfUENJ
+X1FVSVJLKDB4MTUyZCwgMHgwNzYzLCAiRGl2ZXJzZSAoQ1BSMjAwMCkiLCBBTEMyNjhfQUNFUiks
+DQogCXt9DQogfTsNCg==
 
---===============4521295819070352039==
+
+--=-vMQFsSwJkfZiuBuL+7c5--
+
+--=-d1+KxAjQa0VmnEdXza6m
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEABECAAYFAkhGZeMACgkQp5vW4rUFj5qiKQCgiu5TumJYuj3/7dyVV+DGLPjV
+9+gAoI41zDVEfL3eidZyoKMA/1ZtsX+X
+=Gs0N
+-----END PGP SIGNATURE-----
+
+--=-d1+KxAjQa0VmnEdXza6m--
+
+
+--===============6597960839744775765==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -134,4 +101,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============4521295819070352039==--
+--===============6597960839744775765==--
