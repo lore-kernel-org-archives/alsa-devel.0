@@ -1,15 +1,17 @@
-From: Jiang zhe <zhe.jiang@intel.com>
-Subject: [PATCH]model for alc888 to support intel DG33
-	motherboards
-Date: Wed, 04 Jun 2008 14:44:40 +0800
-Message-ID: <1212561880.16582.5.camel@localhost.localdomain>
+From: Erik Slagter <erik@slagter.name>
+Subject: Re: Specs available for Sweex External 5.1 with
+ digital in/out USB 2.0 / C-Media CM6207
+Date: Wed, 04 Jun 2008 09:22:03 +0200
+Message-ID: <4846429B.9030109@slagter.name>
+References: <4845A420.10804@slagter.name> <4845AF5E.7020502@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-XmonJrE/JPWsIm59AySc"
+Content-Type: multipart/mixed; boundary="===============4521295819070352039=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0295124467
+Received: from eriks.xs4all.nl (eriks.xs4all.nl [83.160.41.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id B09F524471
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jun 2008 08:41:37 +0200 (CEST)
+	Wed,  4 Jun 2008 09:22:04 +0200 (CEST)
+In-Reply-To: <4845AF5E.7020502@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,190 +21,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, zhe.jiang@intel.com
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a cryptographically signed message in MIME format.
 
---=-XmonJrE/JPWsIm59AySc
-Content-Type: text/plain
+--===============4521295819070352039==
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms040100070901070603090302"
+
+This is a cryptographically signed message in MIME format.
+
+--------------ms040100070901070603090302
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi,
+Rene Herman wrote:
+>> The other good news is that Sweex supplies the "official" datasheet 
+>> from C-media which I think is quite interesting and may very well be 
+>> useful to resolve the last few issues.
+> 
+> I'm afraid I am largely unfamiliar with USB audio but this I do find to 
+> be interesting (sweex is a cheapo Dutch brand you can grab on each 
+> street corner over here). By "supplies", do you mean you requested it 
+> specifically or did sweex just put it up on a server someplace, or 
+> something else?
 
-Please see the attachment.
+The interesting part is that the IC's datasheet is actually on the 
+CD-ROM, in the directory with manuals. The only other manual to be found 
+there is a "joke", it is sort of a leaflet in eight languages and tells 
+you how to "install the driver". This is how I know Sweex, Trust and 
+similar brands.
 
-These two motherboards's pin configuration are not covered by driver.
-I wrote a new model to support them.
+--------------ms040100070901070603090302
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Thanks!
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJUTCC
+AwMwggJsoAMCAQICEDGJsD9UPajwBl+GeyaBWA0wDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
+BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMT
+I1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA3MDkxNzEwMzAwM1oX
+DTA4MDkxNjEwMzAwM1owajEQMA4GA1UEBBMHU2xhZ3RlcjEVMBMGA1UEKhMMRXJpayBNYXJ0
+aWpuMR0wGwYDVQQDExRFcmlrIE1hcnRpam4gU2xhZ3RlcjEgMB4GCSqGSIb3DQEJARYRZXJp
+a0BzbGFndGVyLm5hbWUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4bkf+nXAx
+akUjjwscSMjaKSUFQiJPxTgOUEh+uKVsBVGvY7CB8XcCmU7+oO1s9NaTL7BVy7Lwpj5SJV/B
+v8gZWrHwsR3D7U2rcKUW81v7dkTu9GTAUt5Qc8b7+GehjZuZKZPjMdH6vJK9G7YnZu1gG9b0
+CoEC4jOdIR4+4di2ZUN9M5JLlVKofOP4fo8MKFny88ThmxHLGzzQGsshfs7wuYB2hivouPCf
+kmc+tnTI90mLrV748Yc6M9gq1brUajcy+tL0wdTS0NOJ2FVa/0HFlxaMrt88nko2J7wA+yPM
+RY1L+ziU+Qr45JxoCE6pI/6lZNlMtHeYvdveQZs/3n5HAgMBAAGjLjAsMBwGA1UdEQQVMBOB
+EWVyaWtAc2xhZ3Rlci5uYW1lMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEFBQADgYEAZrik
+whMvx+aaj7gXQDVuy+zs7eqq1zJilrNS1130Hrq0JeLC6Rnl6a1gE52gap2O6uLyfpdGBmXu
+loCzA9OPYKcZT6EtcZKF3+TCP0m9L3G1scQPPrxZt/oA4uZ4MDTvLElPJH2ONOvCoRPrp5aD
+YHD5NlsDjs+kG6559873oTwwggMDMIICbKADAgECAhAxibA/VD2o8AZfhnsmgVgNMA0GCSqG
+SIb3DQEBBQUAMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAo
+UHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBD
+QTAeFw0wNzA5MTcxMDMwMDNaFw0wODA5MTYxMDMwMDNaMGoxEDAOBgNVBAQTB1NsYWd0ZXIx
+FTATBgNVBCoTDEVyaWsgTWFydGlqbjEdMBsGA1UEAxMURXJpayBNYXJ0aWpuIFNsYWd0ZXIx
+IDAeBgkqhkiG9w0BCQEWEWVyaWtAc2xhZ3Rlci5uYW1lMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAuG5H/p1wMWpFI48LHEjI2iklBUIiT8U4DlBIfrilbAVRr2OwgfF3AplO
+/qDtbPTWky+wVcuy8KY+UiVfwb/IGVqx8LEdw+1Nq3ClFvNb+3ZE7vRkwFLeUHPG+/hnoY2b
+mSmT4zHR+rySvRu2J2btYBvW9AqBAuIznSEePuHYtmVDfTOSS5VSqHzj+H6PDChZ8vPE4ZsR
+yxs80BrLIX7O8LmAdoYr6Ljwn5JnPrZ0yPdJi61e+PGHOjPYKtW61Go3MvrS9MHU0tDTidhV
+Wv9BxZcWjK7fPJ5KNie8APsjzEWNS/s4lPkK+OScaAhOqSP+pWTZTLR3mL3b3kGbP95+RwID
+AQABoy4wLDAcBgNVHREEFTATgRFlcmlrQHNsYWd0ZXIubmFtZTAMBgNVHRMBAf8EAjAAMA0G
+CSqGSIb3DQEBBQUAA4GBAGa4pMITL8fmmo+4F0A1bsvs7O3qqtcyYpazUtdd9B66tCXiwukZ
+5emtYBOdoGqdjuri8n6XRgZl7paAswPTj2CnGU+hLXGShd/kwj9JvS9xtbHEDz68Wbf6AOLm
+eDA07yxJTyR9jjTrwqET66eWg2Bw+TZbA47PpBuueffO96E8MIIDPzCCAqigAwIBAgIBDTAN
+BgkqhkiG9w0BAQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTES
+MBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UE
+CxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBl
+cnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0
+aGF3dGUuY29tMB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVowYjELMAkGA1UEBhMC
+WkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1Ro
+YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GN
+ADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU5VAK
+MNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTX
+p6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIGA1UdEwEB/wQIMAYB
+Af8CAQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUuY29tL1RoYXd0ZVBl
+cnNvbmFsRnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYD
+VQQDExFQcml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBIjNFQg+oLLswNo2as
+Zw9/r6y+whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZfoSxmRsAxRoLgnSe
+JVCUYsfbJ3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4gtwhGTXeJLHT
+HUb/XV9lTzGCA3EwggNtAgEBMHYwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBD
+b25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFp
+bCBJc3N1aW5nIENBAhAxibA/VD2o8AZfhnsmgVgNMAkGBSsOAwIaBQCgggHQMBgGCSqGSIb3
+DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA4MDYwNDA3MjIwM1owIwYJKoZI
+hvcNAQkEMRYEFLaP0ndO/usCXDFl1RRK21AC+WLhMF8GCSqGSIb3DQEJDzFSMFAwCwYJYIZI
+AWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUr
+DgMCBzANBggqhkiG9w0DAgIBKDCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJaQTEl
+MCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3Rl
+IFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECEDGJsD9UPajwBl+GeyaBWA0wgYcGCyqG
+SIb3DQEJEAILMXigdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRp
+bmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3Vp
+bmcgQ0ECEDGJsD9UPajwBl+GeyaBWA0wDQYJKoZIhvcNAQEBBQAEggEAa9ziwdYpjxiXzK5N
+pCppsk1YrG4pNHgfAZQf6ENx+aPCzn2Q6axk2MZJpgeGZIPYX7h7i42FIwLjpssWJKjQzW5F
+BfdHKApBbFx3NClGkMQGzuZxgg+N0+vRYIUVMmoqicqr+3NN8As8xCvHKwyBX+vQY6NbOjze
+qgIgUOggWJH+bUspjKT2oV79MUA19emLA7eUAWf8wuwkWhH0DO0w7jBflTnc5jBeSCMypEpN
+wuK4A8t6jJadHmZ/szciU3N8lQxctEdm5ekOXvKuTYq/WEgx0ggVTgZSvgv6ZIRAqU3hH9VV
+3RMi7IJ4qeEuu19xwT9kks8cSz+9iyBnKwNe+AAAAAAAAA==
+--------------ms040100070901070603090302--
 
-Signed-off-by: Jiang zhe <zhe.jiang@intel.com>
-
---=-XmonJrE/JPWsIm59AySc
-Content-Disposition: attachment; filename=intel_dg33_alc888.patch
-Content-Type: text/x-patch; name=intel_dg33_alc888.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
---- alsa-driver-20080603/alsa-kernel/pci/hda/patch_realtek.c	2008-06-03 06:05:08.000000000 +0800
-+++ b/alsa-kernel/pci/hda/patch_realtek.c	2008-06-04 13:38:18.000000000 +0800
-@@ -209,6 +209,7 @@ enum {
- 	ALC883_MITAC,
- 	ALC883_CLEVO_M720,
- 	ALC883_FUJITSU_PI2515,
-+	ALC883_3ST_6ch_INTEL,
- 	ALC883_AUTO,
- 	ALC883_MODEL_LAST,
- };
-@@ -6604,6 +6605,16 @@ static struct hda_input_mux alc883_captu
- 	},
- };
- 
-+static struct hda_input_mux alc883_3stack_6ch_intel = {
-+	.num_items = 4,
-+	.items = {
-+		{ "Mic", 0x1 },
-+		{ "Front Mic", 0x0 },
-+		{ "Line", 0x2 },
-+		{ "CD", 0x4 },
-+	},
-+};
-+
- static struct hda_input_mux alc883_lenovo_101e_capture_source = {
- 	.num_items = 2,
- 	.items = {
-@@ -6685,6 +6696,48 @@ static struct hda_channel_mode alc883_3S
- };
- 
- /*
-+ * 2ch mode
-+ */
-+static struct hda_verb alc883_3ST_ch2_intel_init[] = {
-+	{ 0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80 },
-+	{ 0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE },
-+	{ 0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
-+	{ 0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE },
-+	{ } /* end */
-+};
-+
-+/*
-+ * 4ch mode
-+ */
-+static struct hda_verb alc883_3ST_ch4_intel_init[] = {
-+	{ 0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80 },
-+	{ 0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE },
-+	{ 0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ 0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE },
-+	{ 0x1a, AC_VERB_SET_CONNECT_SEL, 0x01 },
-+	{ } /* end */
-+};
-+
-+/*
-+ * 6ch mode
-+ */
-+static struct hda_verb alc883_3ST_ch6_intel_init[] = {
-+	{ 0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ 0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE },
-+	{ 0x19, AC_VERB_SET_CONNECT_SEL, 0x02 },
-+	{ 0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ 0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE },
-+	{ 0x1a, AC_VERB_SET_CONNECT_SEL, 0x01 },
-+	{ } /* end */
-+};
-+
-+static struct hda_channel_mode alc883_3ST_6ch_intel_modes[3] = {
-+	{ 2, alc883_3ST_ch2_intel_init },
-+	{ 4, alc883_3ST_ch4_intel_init },
-+	{ 6, alc883_3ST_ch6_intel_init },
-+};
-+
-+/*
-  * 6ch mode
-  */
- static struct hda_verb alc883_sixstack_ch6_init[] = {
-@@ -6916,6 +6969,44 @@ static struct snd_kcontrol_new alc883_3S
- 	{ } /* end */
- };
- 
-+static struct snd_kcontrol_new alc883_3ST_6ch_intel_mixer[] = {
-+	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Surround Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE("Surround Playback Switch", 0x0d, 2, HDA_INPUT),
-+	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x0e, 1, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x0e, 2, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0e, 1, 2, HDA_INPUT),
-+	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0e, 2, 2, HDA_INPUT),
-+	HDA_CODEC_MUTE("Headphone Playback Switch", 0x15, 0x0, HDA_OUTPUT),
-+	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
-+	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
-+	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Boost", 0x19, 0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Front Mic Boost", 0x18, 0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Front Mic Playback Switch", 0x0b, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
-+	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Capture Switch", 0x08, 0x0, HDA_INPUT),
-+	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x09, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE_IDX("Capture Switch", 1, 0x09, 0x0, HDA_INPUT),
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		/* .name = "Capture Source", */
-+		.name = "Input Source",
-+		.count = 2,
-+		.info = alc883_mux_enum_info,
-+		.get = alc883_mux_enum_get,
-+		.put = alc883_mux_enum_put,
-+	},
-+	{ } /* end */
-+};
-+
- static struct snd_kcontrol_new alc883_fivestack_mixer[] = {
- 	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
- 	HDA_CODEC_MUTE("Front Playback Switch", 0x14, 0x0, HDA_OUTPUT),
-@@ -7764,6 +7855,7 @@ static const char *alc883_models[ALC883_
- 	[ALC883_MITAC]		= "mitac",
- 	[ALC883_CLEVO_M720]	= "clevo-m720",
- 	[ALC883_FUJITSU_PI2515] = "fujitsu-pi2515",
-+	[ALC883_3ST_6ch_INTEL]	= "3stack-6ch-intel",
- 	[ALC883_AUTO]		= "auto",
- };
- 
-@@ -7821,6 +7913,8 @@ static struct snd_pci_quirk alc883_cfg_t
- 	SND_PCI_QUIRK(0x17c0, 0x4071, "MEDION MD2", ALC883_MEDION_MD2),
- 	SND_PCI_QUIRK(0x17f2, 0x5000, "Albatron KI690-AM2", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1991, 0x5625, "Haier W66", ALC883_HAIER_W66),
-+	SND_PCI_QUIRK(0x8086, 0x0001, "DG33BUC", ALC883_3ST_6ch_INTEL),
-+	SND_PCI_QUIRK(0x8086, 0x0002, "DG33FBC", ALC883_3ST_6ch_INTEL),
- 	SND_PCI_QUIRK(0x8086, 0xd601, "D102GGC", ALC883_3ST_6ch),
- 	{}
- };
-@@ -7859,6 +7953,18 @@ static struct alc_config_preset alc883_p
- 		.need_dac_fix = 1,
- 		.input_mux = &alc883_capture_source,
- 	},
-+	[ALC883_3ST_6ch_INTEL] = {
-+		.mixers = { alc883_3ST_6ch_intel_mixer, alc883_chmode_mixer },
-+		.init_verbs = { alc883_init_verbs },
-+		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
-+		.dac_nids = alc883_dac_nids,
-+		.dig_out_nid = ALC883_DIGOUT_NID,
-+		.dig_in_nid = ALC883_DIGIN_NID,
-+		.num_channel_mode = ARRAY_SIZE(alc883_3ST_6ch_intel_modes),
-+		.channel_mode = alc883_3ST_6ch_intel_modes,
-+		.need_dac_fix = 1,
-+		.input_mux = &alc883_3stack_6ch_intel,
-+	},
- 	[ALC883_6ST_DIG] = {
- 		.mixers = { alc883_base_mixer, alc883_chmode_mixer },
- 		.init_verbs = { alc883_init_verbs },
-
---=-XmonJrE/JPWsIm59AySc
+--===============4521295819070352039==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -213,4 +134,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---=-XmonJrE/JPWsIm59AySc--
+--===============4521295819070352039==--
