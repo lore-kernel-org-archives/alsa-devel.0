@@ -1,19 +1,17 @@
-From: ben.stanley@exemail.com.au
-Subject: git down?
-Date: Thu, 5 Jun 2008 00:23:06 +1000 (EST)
-Message-ID: <58658.220.233.78.168.1212589386.squirrel@webmail.exetel.com.au>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: git down?
+Date: Wed, 4 Jun 2008 16:59:43 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0806041659200.1798@tm8103-a.perex-int.cz>
+References: <58658.220.233.78.168.1212589386.squirrel@webmail.exetel.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from acorn.exetel.com.au (acorn.exetel.com.au [220.233.0.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DDB72436F
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 049FC2441D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Jun 2008 16:23:10 +0200 (CEST)
-Received: from localhost ([127.0.0.1] helo=webmail.exetel.com.au)
-	by acorn.exetel.com.au with esmtp (Exim 4.68)
-	(envelope-from <ben.stanley@exemail.com.au>) id 1K3ttK-0002kh-7a
-	for alsa-devel@alsa-project.org; Thu, 05 Jun 2008 00:23:06 +1000
+	Wed,  4 Jun 2008 16:59:45 +0200 (CEST)
+In-Reply-To: <58658.220.233.78.168.1212589386.squirrel@webmail.exetel.com.au>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ben.stanley@exemail.com.au
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm having trouble with git:
+On Thu, 5 Jun 2008 ben.stanley@exemail.com.au wrote:
 
-ben@mythtv:~/alsa-git$ git clone
-git://git.alsa-project.org/alsa-driver.git alsa-driver
-Initialized empty Git repository in /home/ben/alsa-git/alsa-driver/.git/
-fatal: The remote end hung up unexpectedly
-fetch-pack from 'git://git.alsa-project.org/alsa-driver.git' failed.
-ben@mythtv:~/alsa-git$
+> I'm having trouble with git:
+> 
+> ben@mythtv:~/alsa-git$ git clone
+> git://git.alsa-project.org/alsa-driver.git alsa-driver
+> Initialized empty Git repository in /home/ben/alsa-git/alsa-driver/.git/
+> fatal: The remote end hung up unexpectedly
+> fetch-pack from 'git://git.alsa-project.org/alsa-driver.git' failed.
+> ben@mythtv:~/alsa-git$
+> 
+> Anyone else seeing this?
 
-Anyone else seeing this?
+Sorry, git-daemon-export-ok files were missing in repos on server. It's 
+fixed now. Thanks for notice.
 
-Ben Stanley.
+					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
