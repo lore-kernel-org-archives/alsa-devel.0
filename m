@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: MIDI message handling
-Date: Thu, 05 Jun 2008 13:25:26 +0200
-Message-ID: <4847CD26.4030705@ladisch.de>
-References: <1212522887.17865.14.camel@un1001x>
+From: "Harsha priya gupta" <harshapriya@gmail.com>
+Subject: aplay works but not real player
+Date: Thu, 5 Jun 2008 16:56:27 +0530
+Message-ID: <827ad74d0806050426o787c34eo49432eea5abdeee6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 94B4B245EA
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.244])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBC1924607
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jun 2008 13:25:53 +0200 (CEST)
-In-Reply-To: <1212522887.17865.14.camel@un1001x>
+	Thu,  5 Jun 2008 13:26:29 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so119296and.80
+	for <alsa-devel@alsa-project.org>; Thu, 05 Jun 2008 04:26:28 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-15?Q?Thorsten_Edelh=E4u=DFer?= <toersi@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thorsten Edelh=E4u=DFer wrote:
-> I'm writing a driver for the MARIAN MARC 8 Midi soundcard. Today I
-> tested some MIDI functionality and get some errors from hydrogen
-> ("unhandled midi message type"). I did some research and got to the
-> point, that the MIDI alive message (0xfe) should not arrive at the
-> application.
+I am using .copy function in my driver.
+aplay playes any .wav file given. When i open real player and try playing it
+says device is busy.
+I tried the earlier advice to write the following into ~./asoundrc but does
+not help
+pcm.!default{
+type hw
+card 0
+}
 
-The Active Sensing message is a valid MIDI message.  This seems to be a
-bug in hydrogen.
+any clue that can help me ?
 
-> So my question is: Do I have to process the midi messages by myself
-> before I give it to the alsa "snd_rawmidi_receive" function?
-> Or is there already some code, which will do it?
-
-The ALSA framework handles this automatically; your driver is not
-required to interpret the MIDI data stream.
-
-
-Regards,
-Clemens
+-- 
+-Harsha
