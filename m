@@ -1,21 +1,21 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: git workflow for casual developers
-Date: Thu, 05 Jun 2008 16:57:22 +1200
-Message-ID: <200806051657.22205.linux@audioscience.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: Add WM8510 driver
+Date: Thu, 5 Jun 2008 09:47:32 +0100
+Message-ID: <20080605084732.GA30658@sirena.org.uk>
+References: <1212597211-14495-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hiqwp401i.wl%tiwai@suse.de>
+	<20080604192455.GA10244@opensource.wolfsonmicro.com>
+	<s5hr6bc98z8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47078103839
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id CEAF9245DF
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jun 2008 06:57:14 +0200 (CEST)
-Received: from zaphod.local
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0K1Z005XI4FBXB80@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 05 Jun 2008 16:57:13 +1200 (NZST)
-Content-disposition: inline
+	Thu,  5 Jun 2008 10:47:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hr6bc98z8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,58 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Brett Saunders <breton.saunders@ntlworld.com>, Geoffrey Wossum <geoffrey@pager.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Wed, Jun 04, 2008 at 11:38:19PM +0200, Takashi Iwai wrote:
+> OK.  I just wanted to confirm since the patch had no extra From: line
+> although the comment in the code shows Liam as the author.
 
-So. we are now using git repositories. I'd better find out how to use git...
+Ideally we'd be able to merge the full history.
 
-I plan to turn responses to this into a howto here
-http://alsa-project.org/main/index.php/GIT_Server
-I.e. what should someone do who is going to clone the repo, make a few 
-changes, then email patches to a maintainer + alsa-devel?
+> This is likely superfluous.
 
-0) clone the repository
-    git clone git://git.alsa-project.org/alsa-driver.git alsa-driver 
-    git clone git://git.alsa-project.org/alsa-kmirror.git alsa-kmirror 
+> > +#include <sound/initval.h>
 
-What should I do next if I want to make some changes?
-Here's what I did, or discovered I should have done :(
+> Ditto.
 
-1) git-config --add user.email me@domain.com
-Otherwise commits get spurious email address for Author and Commiter (is there 
-any way to fix this after the fact?)
+Needed for SNDRV_DEFAULT_IDX1 and SNDRV_DEFAULT_STR1.
 
-2) should I create a branch in my cloned repo for my changes, or just go ahead 
-and commit?
-(I didn't create a branch)
+> > +	codec->reg_cache_size = sizeof(wm8510_reg);
 
-3)  How do I generate patches for my changes to the repo?
-Luckily for me there was a tag that was close enough so I could
-git-diff v1.0.17rc1
+> Isn't this ARRAY_SIZE()?  Looks like the all codec codes set the wrong
+> values for this...
 
-Should I really have used this as the "revision"?
-git-diff remotes/origin/master
-
-Then do this to generate the patchset
-git-format-patch -s -n -p --subject-prefix="PATCH - my module" v1.0.17rc1
-
-4) Check the patches
-/lib/modules/2.6.24-17-generic/build/scripts/checkpatch.pl --no-tree *.patch
-
-5) Sending the patches
-Make sure it knows how to send
-git-config --add sendemail.smtpserver smtp.domain.com
-
-git-send-email --from=me --to=tiwai@suse.de --cc=alsa-devel@alsa-project.org 
-000*.patch                                           
-
-6) OK, what have I missed?
-
-regards
-
--- 
---
-Eliot Blennerhassett
-www.audioscience.com
+Not all, but most.
