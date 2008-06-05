@@ -1,16 +1,16 @@
 From: Adrian Bunk <bunk@kernel.org>
-Subject: [2.6 patch] usbaudio.c: remove #ifndef
-	CONFIG_USB_EHCI_SPLIT_ISO	code
-Date: Thu, 5 Jun 2008 21:24:10 +0300
-Message-ID: <20080605182335.GD1469@cs181133002.pp.htv.fi>
+Subject: [2.6 patch] ALSA: make sparc/dbri.c:snd_dbri_proc()
+	static
+Date: Thu, 5 Jun 2008 21:29:18 +0300
+Message-ID: <20080605182906.GN1469@cs181133002.pp.htv.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.pp.htv.fi (smtp4.pp.htv.fi [213.243.153.38])
-	by alsa0.perex.cz (Postfix) with ESMTP id 31FBC24366
+Received: from smtp6.pp.htv.fi (smtp6.pp.htv.fi [213.243.153.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 41C5F24344
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jun 2008 20:24:47 +0200 (CEST)
+	Thu,  5 Jun 2008 20:29:55 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,28 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: perex@perex.cz
-Cc: alsa-devel@alsa-project.org, "Robert P. J. Day" <rpjday@crashcourse.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since USB_EHCI_SPLIT_ISO is now unconditionally enabled the
-#ifndef CONFIG_USB_EHCI_SPLIT_ISO became wrong.
+This patch makes the needlessly global snd_dbri_proc() static.
 
-Reported-by: Robert P. J. Day <rpjday@crashcourse.ca>
 Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
 ---
-e532a1cdc3f2ece89567abd4cd0c219a8e749e3a diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
-index 410be4a..b8cfb7c 100644
---- a/sound/usb/usbaudio.c
-+++ b/sound/usb/usbaudio.c
-@@ -819,10 +819,6 @@ static const char *usb_error_string(int err)
- 		return "device disabled";
- 	case -EHOSTUNREACH:
- 		return "device suspended";
--#ifndef CONFIG_USB_EHCI_SPLIT_ISO
--	case -ENOSYS:
--		return "enable CONFIG_USB_EHCI_SPLIT_ISO to play through a hub";
--#endif
- 	case -EINVAL:
- 	case -EAGAIN:
- 	case -EFBIG:
+5e6dd8dea3d11e2be46a77f8e731780f0a7b7591 diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
+index 3d00e07..ee2e1b4 100644
+--- a/sound/sparc/dbri.c
++++ b/sound/sparc/dbri.c
+@@ -2490,7 +2490,7 @@ static void dbri_debug_read(struct snd_info_entry *entry,
+ }
+ #endif
+ 
+-void __devinit snd_dbri_proc(struct snd_card *card)
++static void __devinit snd_dbri_proc(struct snd_card *card)
+ {
+ 	struct snd_dbri *dbri = card->private_data;
+ 	struct snd_info_entry *entry;
