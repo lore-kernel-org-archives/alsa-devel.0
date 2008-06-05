@@ -1,17 +1,18 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: Re: aplay works but not real player
-Date: Thu, 05 Jun 2008 11:32:03 -0700
-Message-ID: <48483123.7050504@cox.net>
-References: <827ad74d0806050426o787c34eo49432eea5abdeee6@mail.gmail.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: git down?
+Date: Thu, 5 Jun 2008 22:49:53 +0200
+Message-ID: <20080605224953.fdd627b6.pochini@shiny.it>
+References: <58658.220.233.78.168.1212589386.squirrel@webmail.exetel.com.au>
+	<Pine.LNX.4.61.0806041659200.1798@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao107.cox.net (fed1rmmtao107.cox.net [68.230.241.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1A82E24344
+Received: from smtp-out25.alice.it (smtp-out25.alice.it [85.33.2.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id A530D243FB
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jun 2008 20:32:05 +0200 (CEST)
-In-Reply-To: <827ad74d0806050426o787c34eo49432eea5abdeee6@mail.gmail.com>
+	Thu,  5 Jun 2008 22:51:38 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.61.0806041659200.1798@tm8103-a.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Harsha priya gupta <harshapriya@gmail.com>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Harsha priya gupta wrote:
-> I am using .copy function in my driver.
-> aplay playes any .wav file given. When i open real player and try playing it
-> says device is busy.
-> I tried the earlier advice to write the following into ~./asoundrc but does
-> not help
-> pcm.!default{
-> type hw
-> card 0
-> }
->
-> any clue that can help me ?
->
->   
-Have you got realaudio configured to use alsa or oss?  If oss, do you 
-have package aoss installed,
-the alsa oss emulation layer?  Whatever device it wants to use is
-in use by something else.  A sound server can cause this problem as well.
+On Wed, 4 Jun 2008 16:59:43 +0200 (CEST)
+Jaroslav Kysela <perex@perex.cz> wrote:
 
-Try with something like xmms or audacity also.
+> On Thu, 5 Jun 2008 ben.stanley@exemail.com.au wrote:
+> 
+> > I'm having trouble with git:
+> > 
+> > ben@mythtv:~/alsa-git$ git clone
+> > git://git.alsa-project.org/alsa-driver.git alsa-driver
+> > Initialized empty Git repository in /home/ben/alsa-git/alsa-driver/.git/
+> > fatal: The remote end hung up unexpectedly
+> > fetch-pack from 'git://git.alsa-project.org/alsa-driver.git' failed.
+> > ben@mythtv:~/alsa-git$
+> > 
+> > Anyone else seeing this?
+> 
+> Sorry, git-daemon-export-ok files were missing in repos on server. It's 
+> fixed now. Thanks for notice.
 
-The fact that aplay can play means this is a configuration issue.
+Same problem here. I tried one minute ago. None of the repositories work.
+
+
+--
+Giuliano.
