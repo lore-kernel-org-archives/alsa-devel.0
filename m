@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: Add WM8510 driver
-Date: Thu, 5 Jun 2008 15:46:55 +0100
-Message-ID: <20080605144655.GA24582@rakim.wolfsonmicro.main>
-References: <1212670174-19810-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<200806050917.23252.geoffrey@pager.net>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: [ANNOUNCE] ALSA scenario manager library
+Date: Thu, 05 Jun 2008 18:09:18 +0100
+Message-ID: <1212685758.3480.64.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2194324638
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8DF1F2462E
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jun 2008 16:46:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200806050917.23252.geoffrey@pager.net>
+	Thu,  5 Jun 2008 19:09:19 +0200 (CEST)
+Received: from [172.20.21.6] (lumison.wolfsonmicro.com [87.246.78.27])
+	by opensource2.wolfsonmicro.com (Postfix) with ESMTP id AB6CC110179
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2008 18:09:18 +0100 (BST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +22,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Geoffrey Wossum <geoffrey@pager.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Brett Saunders <breton.saunders@ntlworld.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 05, 2008 at 09:17:23AM -0500, Geoffrey Wossum wrote:
-> On Thursday 05 June 2008 07:49:32 am Mark Brown wrote:
+I've now released the first version (v0.1) of an ALSA scenario (or use
+case) manager. It's currently a stand alone library that can either be
+linked against alsa-lib or salsa (not tested - afaik I've not used any
+alsa-lib only symbols). This library is designed to provide userspace
+applications (e.g. Pulse Audio) with a generic API to change the audio
+*hardware* scenario or use case.
 
-> > +	case SNDRV_PCM_FORMAT_S32_LE:
-> > +		iface |= 0x0060;
-> > +		break;
-> > +	}
+Features:-
 
-> This should either be changed to use SNDRV_PCM_FORMAT_S16 and friends, which I 
-> think will automagically use the correct endian for the selected 
-> architecture, or explicitly list both _LE and _BE formats.  Not an issue, 
+* scenario get() and set()
+* scenario list()
+* scenario dump() (dumps all sound card control settings)
+* mixer aliasing (master hardware volumes and switches can be found in
+each scenario - they may be different kcontrols)
 
-It should list both.  The codec really doesn't care how the data is laid
-out in memory, it's up to the other end of the link to format it into
-the appropriate format for the bus and there's no reason why controllers
-wouldn't be able to offer byteswapping.
+API header is here :-
 
-> unless you're using a correct endian, I mean big endian, processor like I 
-> am :)  I would think this would need to be propagated to other CODEC drivers.
+http://opensource.wolfsonmicro.com/cgi-bin/gitweb.cgi?p=alsa-scenario;a=blob;f=include/ascenario.h;h=fd341133a601e121978054d5b2064a7a1b2d78b7;hb=633aaccc37f845146e490090dbd2a1ebb8064fd6
 
-Yes - I've got a change queued up to do this which applies it uniformly
-over all codec drivers (as part of some other cross-driver cleanup
-work I'm still working on).  For clarity it's a change which should be
-applied uniformly to all codec drivers rather than over some of them
-(creating confusion) so for the minute this driver does the same as all
-the rest.
 
-> Mark, were able to verify that the default value SPKMIX differs from the 
-> datasheet?  Is this a datasheet mistake, or an issue in the WM8510 part I 
-> have?  The full markings on the part are "WM8510G / 63AETV9", and the 
-> datasheet is "February 2008, Rev 4.4".
+The library saves each scenario in a simple file i.e.
 
-It's most likely a typo in the datasheet; I should have confirmed this
-by tomorrow.
+1:'Master Playback Switch':1:1
+2:'Master Playback Volume':2:0,0
+3:'Headphone Playback Switch':1:1
+4:'Headphone Playback Volume':2:17,17
+
+This differs from the format used by alsactl in order to support
+salsa-lib. There is a utility called scndump (in the examples directory)
+to dump the sound cards current state in this format.
+
+Each sound card also needs a master file describing supported scenario
+information i.e.
+
+# Test scenario configuration for Machine X
+# Author: Joe Bloggs <joe@bloggs.com>
+# lines beginning with # are comments 
+
+Section "Scenario"
+
+# scenario unique name (mandatory)
+	Identifier = "playback speaker"
+
+# scenario file name (mandatory)
+	File = "playback_spk"
+
+# scenario audio quality of service (optional) - HIFI, VOICE or SYSTEM
+	QoS = HIFI
+
+# alias for master playback volume (optional)
+	MasterPlaybackVolume = 8
+
+# alias for master playback switch (optional)
+	MasterPlaybackSwitch = 2
+
+# alias for master capture volume (optional)
+	MasterCaptureVolume = 3
+
+# alias for master capture switch (optional)
+	MasterCaptureSwitch = 4
+EndSection
+
+Section "Scenario"
+
+# scenario unique name (mandatory)
+	Identifier = "playback headphones"
+
+# scenario file name (mandatory)
+	File = "playback_hp"
+
+# scenario audio quality of service (optional) - HIFI, VOICE or SYSTEM
+	QoS = HIFI
+
+# alias for master playback volume (optional)
+	MasterPlaybackVolume = 10
+
+# alias for master playback switch (optional)
+	MasterPlaybackSwitch = 20
+
+# alias for master capture volume (optional)
+	MasterCaptureVolume = 30
+
+# alias for master capture switch (optional)
+	MasterCaptureSwitch = 40
+EndSection
+
+This file provides information to the library about each supported
+scenario. The library needs both a master file and scenario kcontrol
+files in order to change between scenarios.
+
+There is still some work todo (i.e QoS, locking, auto* cleanup,
+sequencer, etc) and it obviously needs more testing and cleanup. I'm not
+really in the position to continue working on this in the near future.
+Ideally, it would be good to have another developer(s) with spare time
+involved. I can provide git access.
+
+Fwiw, I'd ideally like to merge this into alsa-lib and salsa when things
+are mature. It useful code for embedded devices and laptops (maybe PC's
+too).
+
+Source tarball is here :-
+
+http://opensource.wolfsonmicro.com/~lg/alsa-scenario/scenario-lib-0.1.0.tar.bz2
+
+Git here :-
+
+http://opensource.wolfsonmicro.com/cgi-bin/gitweb.cgi?p=alsa-scenario;a=summary
+
+
+More info here :-
+
+http://opensource.wolfsonmicro.com/node/14
+
+Feedback and patches welcome.
+
+Liam
