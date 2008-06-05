@@ -1,20 +1,23 @@
 From: linux@audioscience.com
-Subject: [PATCH - ASIHPI 1/8] Common init files for HPI
-Date: Thu, 05 Jun 2008 16:06:54 +1200
-Message-ID: <1212638821-2779-1-git-send-email-linux@audioscience.com>
+Subject: [PATCH - ASIHPI 2/8] Fix sampleclock source get. Fix
+ volume control dB range.
+Date: Thu, 05 Jun 2008 16:06:55 +1200
+Message-ID: <1212638821-2779-2-git-send-email-linux@audioscience.com>
+References: <1212638821-2779-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7769B2448A
+	by alsa0.perex.cz (Postfix) with ESMTP id 87EF024579
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Jun 2008 06:07:01 +0200 (CEST)
+	Thu,  5 Jun 2008 06:07:02 +0200 (CEST)
 Received: from localhost.localdomain
 	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
 	by smtp4.clear.net.nz (CLEAR Net Mail)
 	with ESMTP id <0K1Z0043N23FR170@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 05 Jun 2008 16:06:56 +1200 (NZST)
+	alsa-devel@alsa-project.org; Thu, 05 Jun 2008 16:07:02 +1200 (NZST)
+In-reply-to: <1212638821-2779-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,515 +36,553 @@ From: Eliot Blennerhassett <linux@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-diff --git a/pci/asihpi/hpioctl.c b/pci/asihpi/hpioctl.c
-new file mode 100644
-index 0000000..5192db3
---- /dev/null
-+++ b/pci/asihpi/hpioctl.c
-@@ -0,0 +1,440 @@
-+/*******************************************************************************
+diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
+index 538c771..3ffc47b 100644
+--- a/pci/asihpi/asihpi.c
++++ b/pci/asihpi/asihpi.c
+@@ -24,9 +24,6 @@
+ /* >0: print Hw params, timer vars. >1: print stream write/copy sizes  */
+ #define REALLY_VERBOSE_LOGGING 0
+ 
+-/* Experimental HPI hwdep interface */
+-#define EXPERIMENTAL_HWDEP 0
+-
+ #if REALLY_VERBOSE_LOGGING
+ #define VPRINTK1 printk
+ #else
+@@ -50,7 +47,14 @@
+ #define ASI_STYLE_NAMES 1
+ #endif
+ 
++#ifndef KERNEL_ALSA_BUILD
++/* building in ALSA source tree */
+ #include "adriver.h"
++#else
++/* building in kernel tree */
++#include <sound/driver.h>
++#endif
 +
-+    AudioScience HPI driver
-+    Copyright (C) 1997-2003  AudioScience Inc. <support@audioscience.com>
-+
-+    This program is free software; you can redistribute it and/or modify
-+    it under the terms of version 2 of the GNU General Public License as
-+    published by the Free Software Foundation;
-+
-+    This program is distributed in the hope that it will be useful,
-+    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+    GNU General Public License for more details.
-+
-+    You should have received a copy of the GNU General Public License
-+    along with this program; if not, write to the Free Software
-+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+
-+Common Linux HPI ioctl and module probe/remove functions
-+*******************************************************************************/
-+#define SOURCEFILE_NAME "hpioctl.c"
-+
-+#include "hpi.h"
-+#include "hpidebug.h"
-+#include "hpimsgx.h"
+ #include <linux/pci.h>
+ #include <linux/version.h>
+ #include <linux/init.h>
+@@ -68,11 +72,16 @@
+ #include <sound/hwdep.h>
+ 
+ #include "hpi.h"
 +#include "hpioctl.h"
 +
-+#include <linux/fs.h>
-+#include <linux/slab.h>
-+#include <linux/moduleparam.h>
-+#include <asm/uaccess.h>
-+#include <linux/stringify.h>
-+
-+#ifndef HPIMOD_DEFAULT_BUF_SIZE
-+#   define HPIMOD_DEFAULT_BUF_SIZE 192000
-+#endif
-+
-+#ifdef MODULE_FIRMWARE
-+MODULE_FIRMWARE("asihpi/dsp5000.bin");
-+MODULE_FIRMWARE("asihpi/dsp6200.bin");
-+MODULE_FIRMWARE("asihpi/dsp6205.bin");
-+MODULE_FIRMWARE("asihpi/dsp6400.bin");
-+MODULE_FIRMWARE("asihpi/dsp6600.bin");
-+MODULE_FIRMWARE("asihpi/dsp8700.bin");
-+MODULE_FIRMWARE("asihpi/dsp8900.bin");
-+#endif
-+
-+static int bufsize = HPIMOD_DEFAULT_BUF_SIZE;
-+module_param(bufsize, int,
-+	S_IRUGO
-+);
-+/* Allow the debug level to be changed after module load.
-+ E.g.   echo 2 > /sys/module/asihpi/parameters/hpiDebugLevel
-+*/
-+module_param(hpiDebugLevel, int,
-+	S_IRUGO | S_IWUSR
-+);
-+
-+/* List of adapters found */
-+static struct hpi_adapter adapters[HPI_MAX_ADAPTERS];
-+
-+/* Wrapper function to HPI_Message to enable dumping of the
-+   message and response types.
-+*/
-+static void HPI_MessageF(
-+	struct hpi_message *phm,
-+	struct hpi_response *phr,
-+	struct file *file
-+)
-+{
-+	int nAdapter = phm->wAdapterIndex;
-+
-+	if ((nAdapter >= HPI_MAX_ADAPTERS || nAdapter < 0) &&
-+		(phm->wObject != HPI_OBJ_SUBSYSTEM))
-+		phr->wError = HPI_ERROR_INVALID_OBJ_INDEX;
-+	else
-+		HPI_MessageEx(phm, phr, file);
-+}
-+
-+/* This is called from hpifunc.c functions, called by ALSA
-+ * (or other kernel process) In this case there is no file descriptor
-+ * available for the message cache code
-+ */
-+void HPI_Message(
-+	struct hpi_message *phm,
-+	struct hpi_response *phr
-+)
-+{
-+	HPI_MessageF(phm, phr, HOWNER_KERNEL);
-+}
-+
-+EXPORT_SYMBOL(HPI_Message);
-+/* export HPI_Message for radio-asihpi */
-+
-+int asihpi_hpi_release(
-+	struct file *file
-+)
-+{
-+	struct hpi_message hm;
-+	struct hpi_response hr;
-+
-+/* HPI_DEBUG_LOG(INFO,"hpi_release file %p, pid %d\n", file, current->pid); */
-+	/* close the subsystem just in case the application forgot to. */
-+	HPI_InitMessage(&hm, HPI_OBJ_SUBSYSTEM, HPI_SUBSYS_CLOSE);
-+	HPI_MessageEx(&hm, &hr, file);
-+	return 0;
-+}
-+
-+#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 11)
-+long asihpi_hpi_ioctl(
-+	struct file *file,
-+	unsigned int cmd,
-+	unsigned long arg
-+)
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("AudioScience Inc. <support@audioscience.com>");
++MODULE_DESCRIPTION("AudioScience ALSA ASI5000 ASI6000 ASI87xx ASI89xx");
+ 
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
+ static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+ static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+-static int enable_hpi_hwdep;
++static int enable_hpi_hwdep = 1;
+ 
+ module_param_array(index, int, NULL, S_IRUGO);
+ MODULE_PARM_DESC(index, "ALSA Index value for AudioScience soundcard.");
+@@ -85,15 +94,18 @@ MODULE_PARM_DESC(enable, "ALSA Enable AudioScience soundcard.");
+ 
+ module_param(enable_hpi_hwdep, bool, S_IRUGO|S_IWUSR);
+ MODULE_PARM_DESC(enable_hpi_hwdep,
+-		"ALSA Enable HPI hwdep for AudioScience soundcard "
+-		"(experimental)");
+-
+-/* used by hpimod.c, stop sparse from complaining */
+-int snd_asihpi_bind(struct hpi_adapter *hpi_card);
+-void snd_asihpi_unbind(struct hpi_adapter *hpi_card);
++		"ALSA Enable HPI hwdep for AudioScience soundcard ");
+ 
+-/* index base 0 or 1 for control names or indices */
+-static const int ixb;
++/* identify driver */
++#ifdef KERNEL_ALSA_BUILD
++static char * build_info = "Built using headers from kernel source";
++module_param(build_info, charp, S_IRUGO);
++MODULE_PARM_DESC(build_info, "Built using headers from kernel source");
 +#else
-+int asihpi_hpi_ioctl(
-+	struct inode *inode,
-+	struct file *file,
-+	unsigned int cmd,
-+	unsigned long arg
-+)
++static char * build_info = "Built within ALSA source";
++module_param(build_info, charp, S_IRUGO);
++MODULE_PARM_DESC(build_info, "Built within ALSA source");
 +#endif
+ 
+ /* set to 1 to dump every control from adapter to log */
+ static const int mixer_dump;
+@@ -142,6 +154,7 @@ struct snd_card_asihpi {
+ 
+ 	int support_mmap;
+ 	int support_grouping;
++	int support_mrx;
+ };
+ 
+ /* Per stream data */
+@@ -352,6 +365,89 @@ static int snd_card_asihpi_format_alsa2hpi(snd_pcm_format_t alsaFormat,
+ 	return -EINVAL;
+ }
+ 
++static void snd_card_asihpi_pcm_samplerates(struct snd_card_asihpi *asihpi,
++					 struct snd_pcm_hardware *pcmhw)
 +{
-+	struct hpi_ioctl_linux __user *phpi_ioctl_data;
-+	void __user *phm;
-+	void __user *phr;
-+	struct hpi_message hm;
-+	struct hpi_response hr;
-+	u32 uncopied_bytes;
-+	struct hpi_adapter *pa;
-+
-+	if (cmd != HPI_IOCTL_LINUX)
-+		return -EINVAL;
-+
-+	phpi_ioctl_data = (struct hpi_ioctl_linux __user *)arg;
-+
-+	/* Read the message and response pointers from user space.  */
-+	get_user(phm, &phpi_ioctl_data->phm);
-+	get_user(phr, &phpi_ioctl_data->phr);
-+
-+	/* Now read the message size and data from user space.  */
-+	/* get_user(hm.wSize, (u16 __user *)phm); */
-+	uncopied_bytes = copy_from_user(&hm, phm, sizeof(hm));
-+	if (uncopied_bytes)
-+		return -EFAULT;
-+
-+	pa = &adapters[hm.wAdapterIndex];
-+
-+	if ((hm.wAdapterIndex > HPI_MAX_ADAPTERS) || (!pa->type)) {
-+		HPI_InitResponse(&hr, HPI_OBJ_ADAPTER, HPI_ADAPTER_OPEN,
-+			HPI_ERROR_BAD_ADAPTER_NUMBER);
-+
-+		uncopied_bytes = copy_to_user(phr, &hr, sizeof(hr));
-+		if (uncopied_bytes)
-+			return -EFAULT;
-+		return 0;
-+	}
-+
-+	hr.wSize = 0;
-+	/* Response filled either copy from cache, or by HPI_Message() */
-+	{
-+		/* Dig out any pointers embedded in the message.  */
-+		u16 __user *ptr = NULL;
-+		u32 size = 0;
-+
-+		/* -1=no data 0=read from user mem, 1=write to user mem */
-+		int wrflag = -1;
-+		u32 nAdapter = hm.wAdapterIndex;
-+		switch (hm.wFunction) {
-+		case HPI_SUBSYS_CREATE_ADAPTER:
-+		case HPI_SUBSYS_DELETE_ADAPTER:
-+			/* Application must not use these functions! */
-+			hr.wSize = sizeof(struct hpi_response_header);
-+			hr.wError = HPI_ERROR_INVALID_OPERATION;
-+			hr.wFunction = hm.wFunction;
-+			uncopied_bytes = copy_to_user(phr, &hr, hr.wSize);
-+			if (uncopied_bytes)
-+				return -EFAULT;
-+			return 0;
-+		case HPI_OSTREAM_WRITE:
-+		case HPI_ISTREAM_READ:
-+			/* Yes, sparse, this is correct. */
-+			ptr = (u16 __user *)hm.u.d.u.Data.pbData;
-+			size = hm.u.d.u.Data.dwDataSize;
-+
-+			hm.u.d.u.Data.pbData = pa->pBuffer;
-+			/*
-+			   if (size > bufsize) {
-+			   size = bufsize;
-+			   hm.u.d.u.Data.dwDataSize = size;
-+			   }
-+			 */
-+
-+			if (hm.wFunction == HPI_ISTREAM_READ)
-+				/* from card, WRITE to user mem */
-+				wrflag = 1;
-+			else
-+				wrflag = 0;
-+			break;
-+
-+		default:
-+			break;
-+		}
-+
-+		if (mutex_lock_interruptible(&adapters[nAdapter].mutex))
-+			return -EINTR;
-+
-+		if (wrflag == 0) {
-+			if (size > bufsize) {
-+				mutex_unlock(&adapters[nAdapter].mutex);
-+				HPI_DEBUG_LOG(ERROR,
-+					"Requested transfer of %d "
-+					"bytes, max buffer size "
-+					"is %d bytes.\n", size, bufsize);
-+				return -EINVAL;
-+			}
-+
-+			uncopied_bytes =
-+				copy_from_user(pa->pBuffer, ptr, size);
-+			if (uncopied_bytes)
-+				HPI_DEBUG_LOG(WARNING,
-+					"Missed %d of %d "
-+					"bytes from user\n",
-+					uncopied_bytes, size);
-+		}
-+
-+		HPI_MessageF(&hm, &hr, file);
-+
-+		if (wrflag == 1) {
-+			if (size > bufsize) {
-+				mutex_unlock(&adapters[nAdapter].mutex);
-+				HPI_DEBUG_LOG(ERROR,
-+					"Requested transfer of %d "
-+					"bytes, max buffer size is "
-+					"%d bytes.\n", size, bufsize);
-+				return -EINVAL;
-+			}
-+
-+			uncopied_bytes = copy_to_user(ptr, pa->pBuffer, size);
-+			if (uncopied_bytes)
-+				HPI_DEBUG_LOG(WARNING,
-+					"Missed %d of %d "
-+					"bytes to user\n",
-+					uncopied_bytes, size);
-+		}
-+
-+		mutex_unlock(&adapters[nAdapter].mutex);
-+	}
-+
-+	/* on return response size must be set */
-+	if (!hr.wSize)
-+		return -EFAULT;
-+
-+	/* Copy the response back to user space.  */
-+	uncopied_bytes = copy_to_user(phr, &hr, sizeof(hr));
-+	if (uncopied_bytes)
-+		return -EFAULT;
-+	return 0;
-+}
-+
-+int __devinit asihpi_adapter_probe(
-+	struct pci_dev *pci_dev,
-+	const struct pci_device_id *pci_id
-+)
-+{
-+	int err, idx;
-+	unsigned int memlen;
-+	struct hpi_message hm;
-+	struct hpi_response hr;
-+	struct hpi_adapter adapter;
-+	struct hpi_pci Pci;
-+
-+	memset(&adapter, 0, sizeof(adapter));
-+
-+	printk(KERN_DEBUG "Probe PCI device (%04x:%04x,%04x:%04x,%04x)\n",
-+		pci_dev->vendor, pci_dev->device, pci_dev->subsystem_vendor,
-+		pci_dev->subsystem_device, pci_dev->devfn);
-+
-+	HPI_InitMessage(&hm, HPI_OBJ_SUBSYSTEM, HPI_SUBSYS_CREATE_ADAPTER);
-+	HPI_InitResponse(&hr, HPI_OBJ_SUBSYSTEM, HPI_SUBSYS_CREATE_ADAPTER,
-+		HPI_ERROR_PROCESSING_MESSAGE);
-+
-+	hm.wAdapterIndex = -1;	/* an invalid index */
-+
-+	/* fill in HPI_PCI information from kernel provided information */
-+	adapter.pci = pci_dev;
-+
-+	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
-+		HPI_DEBUG_LOG(DEBUG, "Resource %d %s %llx-%llx\n",
-+			idx, pci_dev->resource[idx].name,
-+			(unsigned long long)pci_resource_start(pci_dev, idx),
-+			(unsigned long long)pci_resource_end(pci_dev, idx));
-+
-+		memlen = pci_resource_len(pci_dev, idx);
-+		if (memlen) {
-+			adapter.apRemappedMemBase[idx] =
-+				ioremap(pci_resource_start(pci_dev, idx),
-+				memlen);
-+			if (!adapter.apRemappedMemBase[idx]) {
-+				HPI_DEBUG_LOG(ERROR,
-+					"ioremap failed, aborting\n");
-+				/* unmap previously mapped pci mem space */
-+				goto err;
-+			}
-+		} else
-+			adapter.apRemappedMemBase[idx] = NULL;
-+
-+		Pci.apMemBase[idx] = adapter.apRemappedMemBase[idx];
-+	}
-+
-+	Pci.wBusNumber = pci_dev->bus->number;
-+	Pci.wVendorId = (u16)pci_dev->vendor;
-+	Pci.wDeviceId = (u16)pci_dev->device;
-+	Pci.wSubSysVendorId = (u16)(pci_dev->subsystem_vendor & 0xffff);
-+	Pci.wSubSysDeviceId = (u16)(pci_dev->subsystem_device & 0xffff);
-+	Pci.wDeviceNumber = pci_dev->devfn;
-+	Pci.wInterrupt = pci_dev->irq;
-+	Pci.pOsData = pci_dev;
-+
-+	hm.u.s.Resource.wBusType = HPI_BUS_PCI;
-+	hm.u.s.Resource.r.Pci = &Pci;
-+
-+	/* call CreateAdapterObject on the relevant hpi module */
-+	HPI_MessageEx(&hm, &hr, HOWNER_KERNEL);
-+	if (hr.wError)
-+		goto err;
-+
-+	adapter.pBuffer = vmalloc(bufsize);
-+	if (adapter.pBuffer == NULL) {
-+		HPI_DEBUG_LOG(ERROR,
-+			"HPI could not allocate kernel buffer size %d\n",
-+			bufsize);
-+		goto err;
-+	}
-+
-+	adapter.index = hr.u.s.wAdapterIndex;
-+	adapter.type = hr.u.s.awAdapterList[adapter.index];
-+	hm.wAdapterIndex = adapter.index;
-+
-+	err = HPI_AdapterOpen(NULL, adapter.index);
-+	if (err)
-+		goto err;
-+
-+	adapter.snd_card_asihpi = NULL;
-+	/* WARNING can't init mutex in 'adapter'
-+	 * and then copy it to adapters[] ?!?!
-+	 */
-+	adapters[hr.u.s.wAdapterIndex] = adapter;
-+	mutex_init(&adapters[adapter.index].mutex);
-+	pci_set_drvdata(pci_dev, &adapters[adapter.index]);
-+
-+	/* printk(KERN_INFO
-+	   "Probe found adapter ASI%04X HPI index #%d.\n",
-+	   adapter.type,
-+	   adapter.index);
-+	 */
-+	return 0;
-+
-+err:
-+	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
-+		if (adapter.apRemappedMemBase[idx]) {
-+			iounmap(adapter.apRemappedMemBase[idx]);
-+			adapter.apRemappedMemBase[idx] = NULL;
-+		}
-+	}
-+
-+	if (adapter.pBuffer)
-+		vfree(adapter.pBuffer);
-+
-+	HPI_DEBUG_LOG(ERROR, "adapter_probe failed\n");
-+	return -ENODEV;
-+}
-+
-+void __devexit asihpi_adapter_remove(
-+	struct pci_dev *pci_dev
-+)
-+{
++	u16 err;
++	u32 hControl;
++	u32 sampleRate;
 +	int idx;
-+	struct hpi_message hm;
-+	struct hpi_response hr;
-+	struct hpi_adapter *pa;
-+	pa = (struct hpi_adapter *)pci_get_drvdata(pci_dev);
++	unsigned int rate_min = 200000;
++	unsigned int rate_max = 0;
++	unsigned int rates = 0;
 +
-+	HPI_InitMessage(&hm, HPI_OBJ_SUBSYSTEM, HPI_SUBSYS_DELETE_ADAPTER);
-+	hm.wAdapterIndex = pa->index;
-+	HPI_MessageEx(&hm, &hr, HOWNER_KERNEL);
++	if (asihpi->support_mrx) {
++		rates |= SNDRV_PCM_RATE_CONTINUOUS;
++		rates |= SNDRV_PCM_RATE_8000_96000;
++		rate_min = 8000;
++		rate_max = 100000;
++	} else {
++		/* on cards without SRC, valid rates are determined by sampleclock */
++		err = HPI_MixerGetControl(phSubSys, asihpi->hMixer,
++					  HPI_SOURCENODE_CLOCK_SOURCE, 0, 0, 0,
++					  HPI_CONTROL_SAMPLECLOCK, &hControl);
 +
-+	/* unmap PCI memory space, mapped during device init. */
-+	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
-+		if (pa->apRemappedMemBase[idx]) {
-+			iounmap(pa->apRemappedMemBase[idx]);
-+			pa->apRemappedMemBase[idx] = NULL;
++		for (idx=0; idx<100; idx++) {
++			if (HPI_ControlQuery(phSubSys, hControl, HPI_SAMPLECLOCK_SAMPLERATE,
++					idx, 0, &sampleRate))
++				break;
++
++			rate_min = min(rate_min, sampleRate);
++			rate_max = max(rate_max, sampleRate);
++
++			switch (sampleRate) {
++			case 5512:
++				rates |= SNDRV_PCM_RATE_5512;
++				break;
++			case 8000:
++				rates |= SNDRV_PCM_RATE_8000;
++				break;
++			case 11025:
++				rates |= SNDRV_PCM_RATE_11025;
++				break;
++			case 16000:
++				rates |= SNDRV_PCM_RATE_16000;
++				break;
++			case 22050:
++				rates |= SNDRV_PCM_RATE_22050;
++				break;
++			case 32000:
++				rates |= SNDRV_PCM_RATE_32000;
++				break;
++			case 44100:
++				rates |= SNDRV_PCM_RATE_44100;
++				break;
++			case 48000:
++				rates |= SNDRV_PCM_RATE_48000;
++				break;
++			case 64000:
++				rates |= SNDRV_PCM_RATE_64000;
++				break;
++			case 88200:
++				rates |= SNDRV_PCM_RATE_88200;
++				break;
++			case 96000:
++				rates |= SNDRV_PCM_RATE_96000;
++				break;
++			case 176400:
++				rates |= SNDRV_PCM_RATE_176400;
++				break;
++			case 192000:
++				rates |= SNDRV_PCM_RATE_192000;
++				break;
++			default: /* some other rate */
++				rates |= SNDRV_PCM_RATE_KNOT;
++			}
 +		}
 +	}
 +
-+	if (pa->pBuffer)
-+		vfree(pa->pBuffer);
++	/*printk(KERN_INFO "Supported rates %X %d %d\n", rates, rate_min, rate_max); */
++	pcmhw->rates = rates;
++	pcmhw->rate_min = rate_min;
++	pcmhw->rate_max = rate_max;
 +
-+	pci_set_drvdata(pci_dev, NULL);
-+	/*
-+	   printk(KERN_INFO "PCI device (%04x:%04x,%04x:%04x,%04x),"
-+	   " HPI index # %d, removed.\n",
-+	   pci_dev->vendor, pci_dev->device,
-+	   pci_dev->subsystem_vendor,
-+	   pci_dev->subsystem_device, pci_dev->devfn,
-+	   pa->index);
-+	 */
 +}
 +
-+void __init asihpi_init(
-+	void
-+)
+ static int snd_card_asihpi_pcm_hw_params(struct snd_pcm_substream *substream,
+ 					 struct snd_pcm_hw_params *params)
+ {
+@@ -784,7 +880,7 @@ snd_card_asihpi_playback_pointer(struct snd_pcm_substream *substream)
+ 
+ static void snd_card_asihpi_playback_format(struct snd_card_asihpi *asihpi,
+ 						u32 hStream,
+-						u64 *formats)
++						struct snd_pcm_hardware * pcmhw)
+ {
+   struct hpi_format hpi_format;
+ 	u16 wFormat;
+@@ -810,7 +906,7 @@ static void snd_card_asihpi_playback_format(struct snd_card_asihpi *asihpi,
+ 		err = HPI_OutStreamQueryFormat(phSubSys, hStream,
+ 					     &hpi_format);
+ 		if (!err && (hpi_to_alsa_formats[wFormat] != -1))
+-			*formats |= (1ULL << hpi_to_alsa_formats[wFormat]);
++			pcmhw->formats |= (1ULL << hpi_to_alsa_formats[wFormat]);
+ 	}
+ }
+ 
+@@ -860,11 +956,10 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
+ 	runtime->private_free = snd_card_asihpi_runtime_free;
+ 
+ 	snd_card_asihpi_playback_format(card, dpcm->hStream,
+-					&snd_card_asihpi_playback.formats);
+-	snd_card_asihpi_playback.rates = SNDRV_PCM_RATE_CONTINUOUS |
+-					SNDRV_PCM_RATE_8000_192000;
+-	snd_card_asihpi_playback.rate_min = 5500;
+-	snd_card_asihpi_playback.rate_max = 192000;
++					&snd_card_asihpi_playback);
++
++	snd_card_asihpi_pcm_samplerates(card,  &snd_card_asihpi_playback);
++
+ 	snd_card_asihpi_playback.info = SNDRV_PCM_INFO_INTERLEAVED |
+ 					SNDRV_PCM_INFO_PAUSE;
+ 
+@@ -1006,12 +1101,13 @@ static int snd_card_asihpi_capture_prepare(struct snd_pcm_substream *substream)
+ 
+ static void snd_card_asihpi_capture_format(struct snd_card_asihpi *asihpi,
+ 					u32 hStream,
+-					u64 *formats)
++					 struct snd_pcm_hardware *pcmhw)
+ {
+   struct hpi_format hpi_format;
+ 	u16 wFormat;
+ 	u16 err;
+ 	u32 hControl;
++	u32 dwSampleRate = 48000;
+ 
+ 	/* on cards without SRC, must query at valid rate,
+ 		maybe set by external sync */
+@@ -1021,20 +1117,21 @@ static void snd_card_asihpi_capture_format(struct snd_card_asihpi *asihpi,
+ 
+ 	if (!err)
+ 		err = HPI_SampleClock_GetSampleRate(phSubSys, hControl,
+-			&hpi_format.dwSampleRate);
++			&dwSampleRate);
+ 
+ 	for (wFormat = HPI_FORMAT_PCM8_UNSIGNED;
+ 		wFormat <= HPI_FORMAT_PCM24_SIGNED; wFormat++) {
+ 
+-		HPI_FormatCreate(&hpi_format, 2, wFormat, 48000, 128000, 0);
++		HPI_FormatCreate(&hpi_format, 2, wFormat, dwSampleRate, 128000, 0);
+ 		err =
+ 		    HPI_InStreamQueryFormat(phSubSys, hStream,
+ 					    &hpi_format);
+ 		if (!err)
+-			*formats |= (1ULL << hpi_to_alsa_formats[wFormat]);
++			pcmhw->formats |= (1ULL << hpi_to_alsa_formats[wFormat]);
+ 	}
+ }
+ 
++
+ static struct snd_pcm_hardware snd_card_asihpi_capture = {
+ 	.channels_min = 1,
+ 	.channels_max = 2,
+@@ -1079,12 +1176,11 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
+ 	runtime->private_free = snd_card_asihpi_runtime_free;
+ 
+ 	snd_card_asihpi_capture_format(card, dpcm->hStream,
+-				       &snd_card_asihpi_capture.formats);
+-	snd_card_asihpi_capture.rates = SNDRV_PCM_RATE_CONTINUOUS |
+-					SNDRV_PCM_RATE_8000_192000;
+-	snd_card_asihpi_capture.rate_min = 5500;
+-	snd_card_asihpi_capture.rate_max = 192000;
++				       &snd_card_asihpi_capture);
++
++	snd_card_asihpi_pcm_samplerates(card,  &snd_card_asihpi_capture);
+ 	snd_card_asihpi_capture.info = SNDRV_PCM_INFO_INTERLEAVED;
++
+ 	if (card->support_mmap)
+ 		snd_card_asihpi_capture.info |= SNDRV_PCM_INFO_MMAP |
+ 						SNDRV_PCM_INFO_MMAP_VALID;
+@@ -1300,50 +1396,29 @@ static inline int ctl_add(struct snd_card *card, struct snd_kcontrol_new *ctl,
+ 	return 0;
+ }
+ 
++/* Convert HPI control name and location into ALSA control name */
+ static void asihpi_ctl_name(struct snd_kcontrol_new *snd_control,
+ 				struct hpi_control *asihpi_control,
+ 				char *name)
+ {
+-#if 1
+-/* entire control ID is a string */
+ 	if (asihpi_control->wSrcNodeType && asihpi_control->wDstNodeType)
+ 		sprintf(snd_control->name, "%s%d to %s%d %s",
+ 			asihpi_src_names[asihpi_control->wSrcNodeType],
+-			asihpi_control->wSrcNodeIndex + ixb,
++			asihpi_control->wSrcNodeIndex,
+ 			asihpi_dst_names[asihpi_control->wDstNodeType],
+-			asihpi_control->wDstNodeIndex + ixb,
++			asihpi_control->wDstNodeIndex,
+ 			name);
+ 	else if (asihpi_control->wDstNodeType) {
+ 		sprintf(snd_control->name, "%s%d %s",
+ 		asihpi_dst_names[asihpi_control->wDstNodeType],
+-		asihpi_control->wDstNodeIndex + ixb,
++		asihpi_control->wDstNodeIndex,
+ 		name);
+ 	} else {
+ 		sprintf(snd_control->name, "%s%d %s",
+ 		asihpi_src_names[asihpi_control->wSrcNodeType],
+-		asihpi_control->wSrcNodeIndex + ixb,
++		asihpi_control->wSrcNodeIndex,
+ 		name);
+ 	}
+-#else
+-/* use string plus index of destination or only node */
+-	snd_control->index = asihpi_control->wDstNodeIndex + ixb;
+-	if (asihpi_control->wSrcNodeType && asihpi_control->wDstNodeType)
+-		sprintf(snd_control->name, "%s%d to %s %s",
+-			asihpi_src_names[asihpi_control->wSrcNodeType],
+-			asihpi_control->wSrcNodeIndex + ixb,
+-			asihpi_dst_names[asihpi_control->wDstNodeType],
+-			name);
+-	else if (asihpi_control->wDstNodeType)
+-		sprintf(snd_control->name, "%s %s",
+-		asihpi_dst_names[asihpi_control->wDstNodeType],
+-		name);
+-	else {
+-		sprintf(snd_control->name, "%s %s",
+-		asihpi_src_names[asihpi_control->wSrcNodeType],
+-		name);
+-		snd_control->index = asihpi_control->wSrcNodeIndex + ixb;
+-	}
+-#endif
+ }
+ 
+ /*------------------------------------------------------------
+@@ -2041,7 +2116,7 @@ static int snd_asihpi_mux_info(struct snd_kcontrol *kcontrol,
+ 
+ 	sprintf(uinfo->value.enumerated.name, "%s %d",
+ 		asihpi_src_names[wSrcNodeType - HPI_SOURCENODE_BASE],
+-		wSrcNodeIndex + ixb);
++		wSrcNodeIndex);
+ 	return 0;
+ }
+ 
+@@ -2201,15 +2276,16 @@ static int snd_asihpi_clksrc_get(struct snd_kcontrol *kcontrol,
+ 			(struct snd_card_asihpi *)(kcontrol->private_data);
+ 	struct clk_cache *clkcache = &asihpi->cc;
+ 	u32 hControl = kcontrol->private_value;
+-	u16 wSource, wIndex;
++	u16 wSource, wIndex = 0;
+ 	int i;
+ 
+ 	ucontrol->value.enumerated.item[0] = 0;
+-	/*Get current clock source, return "N/A" if an error occurs*/
+ 	if (HPI_SampleClock_GetSource(phSubSys, hControl, &wSource))
+ 		wSource = 0;
+-	if (HPI_SampleClock_GetSourceIndex(phSubSys, hControl, &wIndex))
+-		wIndex = 0;
++
++	if (wSource == HPI_SAMPLECLOCK_SOURCE_AESEBU_INPUT)
++		if (HPI_SampleClock_GetSourceIndex(phSubSys, hControl, &wIndex))
++			wIndex = 0;
+ 
+ 	for (i = 0; i < clkcache->count; i++)
+ 		if ((clkcache->s[i].source == wSource) &&
+@@ -2290,6 +2366,7 @@ static void __devinit snd_asihpi_clksrc_new(struct snd_card_asihpi *asihpi,
+ /*------------------------------------------------------------
+    Clkrate controls
+  ------------------------------------------------------------*/
++/* Need to change this to enumerated control with list of rates */
+ static int snd_asihpi_clklocal_info(struct snd_kcontrol *kcontrol,
+ 				   struct snd_ctl_elem_info *uinfo)
+ {
+@@ -2335,6 +2412,8 @@ static void __devinit snd_asihpi_clklocal_new(
+ 	snd_control->info = snd_asihpi_clklocal_info;
+ 	snd_control->get = snd_asihpi_clklocal_get;
+ 	snd_control->put = snd_asihpi_clklocal_put;
++	snd_control->access = SNDRV_CTL_ELEM_ACCESS_READWRITE ;
++
+ 
+ 	asihpi_ctl_name(snd_control, asihpi_control, "LocalRate");
+ }
+@@ -2425,9 +2504,7 @@ static int __devinit snd_card_asihpi_mixer_new(struct snd_card_asihpi *asihpi)
+ 		asihpi_control.wDstNodeType -= HPI_DESTNODE_BASE;
+ 		snd_control.index = 0;
+ 		snd_control.private_value = hControl;
+-		snd_control.access =
+-		    SNDRV_CTL_ELEM_ACCESS_WRITE |
+-		    SNDRV_CTL_ELEM_ACCESS_READ;
++		snd_control.access = SNDRV_CTL_ELEM_ACCESS_READWRITE ;
+ 		switch (asihpi_control.wControlType) {
+ 		case HPI_CONTROL_VOLUME:
+ 			snd_asihpi_volume_new(&asihpi_control,
+@@ -2576,29 +2653,36 @@ static void __devinit snd_asihpi_proc_init(struct snd_card_asihpi *asihpi)
+ 
+ static int snd_asihpi_hpi_open(struct snd_hwdep *hw, struct file *file)
+ {
+-	return 0;
++	if (enable_hpi_hwdep)
++		return 0;
++	else
++		return -ENODEV;
++
+ }
+ 
+ static int snd_asihpi_hpi_release(struct snd_hwdep *hw, struct file *file)
+ {
+-	return 0;
++	if (enable_hpi_hwdep)
++		return asihpi_hpi_release(file);
++	else
++		return -ENODEV;
+ }
+ 
+-long asihpi_hpi_ioctl(struct file *file,
+-	  unsigned int cmd, unsigned long arg);
+-
+ static int snd_asihpi_hpi_ioctl(struct snd_hwdep *hw, struct file *file,
+ 				unsigned int cmd, unsigned long arg)
+ {
+-	return asihpi_hpi_ioctl(file, cmd, arg);
++	if (enable_hpi_hwdep)
++		return asihpi_hpi_ioctl(file, cmd, arg);
++	else
++		return -ENODEV;
+ }
+ 
+ 
+ /* results in /dev/snd/hwC#D0 file for each card with index #
+    also /proc/asound/hwdep will contain '#-00: asihpi (HPI) for each card'
+ */
+-int __devinit snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi, int device,
+-				struct snd_hwdep **rhwdep)
++static int __devinit snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi,
++	int device, struct snd_hwdep **rhwdep)
+ {
+ 	struct snd_hwdep *hw;
+ 	int err;
+@@ -2622,13 +2706,15 @@ int __devinit snd_asihpi_hpi_new(struct snd_card_asihpi *asihpi, int device,
+ /*------------------------------------------------------------
+    CARD
+  ------------------------------------------------------------*/
+-int __devinit snd_asihpi_bind(struct hpi_adapter *hpi_card)
++int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
++				       const struct pci_device_id *pci_id)
+ {
+ 	int err;
+ 
+ 	u16 wVersion;
+ 	int pcm_substreams;
+ 
++	struct hpi_adapter *hpi_card;
+ 	struct snd_card *card;
+ 	struct snd_card_asihpi *asihpi;
+ 
+@@ -2645,6 +2731,12 @@ int __devinit snd_asihpi_bind(struct hpi_adapter *hpi_card)
+ 		return -ENOENT;
+ 	}
+ 
++	err = asihpi_adapter_probe(pci_dev, pci_id);
++	if (err < 0)
++		return err;
++
++	hpi_card = pci_get_drvdata(pci_dev);
++
+ 	/* first try to give the card the same index as its hardware index */
+ 	card = snd_card_new(hpi_card->index,
+ 			id[hpi_card->index], THIS_MODULE,
+@@ -2672,8 +2764,9 @@ int __devinit snd_asihpi_bind(struct hpi_adapter *hpi_card)
+ 				 &asihpi->wNumInStreams,
+ 				 &asihpi->wVersion,
+ 				 &asihpi->dwSerialNumber, &asihpi->wType));
++
+ 	wVersion = asihpi->wVersion;
+-	snd_printk(KERN_INFO "Adapter ID=%4X Index=%d NumOutStreams=%d"
++	snd_printk(KERN_INFO "Adapter ID=%4X Index=%d NumOutStreams=%d "
+ 			"NumInStreams=%d S/N=%d\n"
+ 			"Hw Version %c%d DSP code version %03d\n",
+ 			asihpi->wType, asihpi->wAdapterIndex,
+@@ -2695,6 +2788,11 @@ int __devinit snd_asihpi_bind(struct hpi_adapter *hpi_card)
+ 
+ 	err = HPI_InStreamHostBufferFree(phSubSys, hStream);
+ 	asihpi->support_mmap = (!err);
++
++	asihpi->support_mrx = (((asihpi->wType & 0xFF00) == 0x8900) ||
++	                       ((asihpi->wType & 0xF000) == 0x6000));
++
++
+ 	printk(KERN_INFO "Supports mmap:%d grouping:%d\n",
+ 			asihpi->support_mmap, asihpi->support_grouping);
+ 
+@@ -2717,8 +2815,9 @@ int __devinit snd_asihpi_bind(struct hpi_adapter *hpi_card)
+ 
+ 	snd_asihpi_proc_init(asihpi);
+ 
+-	if (enable_hpi_hwdep)
+-		snd_asihpi_hpi_new(asihpi, 0, NULL);
++	/* always create, can be enabled or disabled dynamically
++	    by enable_hwdep  module param*/
++	snd_asihpi_hpi_new(asihpi, 0, NULL);
+ 
+ 	if (asihpi->support_mmap)
+ 		strcpy(card->driver, "ASIHPI-MMAP");
+@@ -2727,7 +2826,7 @@ int __devinit snd_asihpi_bind(struct hpi_adapter *hpi_card)
+ 
+ 	sprintf(card->shortname, "AudioScience ASI%4X", asihpi->wType);
+ 	sprintf(card->longname, "%s %i",
+-			card->shortname, asihpi->wAdapterIndex + ixb);
++			card->shortname, asihpi->wAdapterIndex);
+ 	err = snd_card_register(card);
+ 	if (!err) {
+ 		hpi_card->snd_card_asihpi = card;
+@@ -2740,8 +2839,50 @@ __nodev:
+ 
+ }
+ 
+-void snd_asihpi_unbind(struct hpi_adapter *hpi_card)
++static void __devexit snd_asihpi_remove(struct pci_dev *pci_dev)
+ {
++	struct hpi_adapter *hpi_card = pci_get_drvdata(pci_dev);
++
+ 	snd_card_free(hpi_card->snd_card_asihpi);
+ 	hpi_card->snd_card_asihpi = NULL;
++	asihpi_adapter_remove(pci_dev);
++}
++
++struct pci_device_id  asihpi_pci_tbl[] = {
++	{HPI_PCI_VENDOR_ID_TI, HPI_ADAPTER_DSP6205,
++		HPI_PCI_VENDOR_ID_AUDIOSCIENCE, PCI_ANY_ID, 0, 0,
++		(kernel_ulong_t)HPI_6205},
++	{HPI_PCI_VENDOR_ID_TI, HPI_ADAPTER_PCI2040,
++		HPI_PCI_VENDOR_ID_AUDIOSCIENCE, PCI_ANY_ID, 0, 0,
++		(kernel_ulong_t)HPI_6000},
++	{0,}
++};
++MODULE_DEVICE_TABLE(pci, asihpi_pci_tbl);
++
++static struct pci_driver driver = {
++	.name = "asihpi",
++	.id_table = asihpi_pci_tbl,
++	.probe = snd_asihpi_probe,
++	.remove = __devexit_p(snd_asihpi_remove),
++#ifdef CONFIG_PM
++/*	.suspend = snd_asihpi_suspend,
++	.resume = snd_asihpi_resume, */
++#endif
++};
++
++static int __init snd_asihpi_init(void)
 +{
-+	struct hpi_message hm;
-+	struct hpi_response hr;
++	asihpi_init();
++	return pci_register_driver(&driver);
+ }
 +
-+	memset(adapters, 0, sizeof(adapters));
-+
-+	/* HPI_DebugLevelSet(debug); now set directly as module param */
-+	printk(KERN_INFO "ASIHPI driver %d.%02d.%02d\n",
-+		HPI_VER_MAJOR(HPI_VER),
-+		HPI_VER_MINOR(HPI_VER), HPI_VER_RELEASE(HPI_VER));
-+
-+	HPI_InitMessage(&hm, HPI_OBJ_SUBSYSTEM, HPI_SUBSYS_DRIVER_LOAD);
-+	HPI_MessageEx(&hm, &hr, HOWNER_KERNEL);
-+}
-+
-+void asihpi_exit(
-+	void
-+)
++static void __exit snd_asihpi_exit(void)
 +{
-+	struct hpi_message hm;
-+	struct hpi_response hr;
 +
-+	HPI_InitMessage(&hm, HPI_OBJ_SUBSYSTEM, HPI_SUBSYS_DRIVER_UNLOAD);
-+	HPI_MessageEx(&hm, &hr, HOWNER_KERNEL);
++	pci_unregister_driver(&driver);
++	asihpi_exit();
 +}
 +
-+/***********************************************************
-+*/
-diff --git a/pci/asihpi/hpioctl.h b/pci/asihpi/hpioctl.h
-new file mode 100644
-index 0000000..5363472
---- /dev/null
-+++ b/pci/asihpi/hpioctl.h
-@@ -0,0 +1,58 @@
-+/*******************************************************************************
++module_init(snd_asihpi_init)
++module_exit(snd_asihpi_exit)
 +
-+    AudioScience HPI driver
-+    Copyright (C) 1997-2003  AudioScience Inc. <support@audioscience.com>
-+
-+    This program is free software; you can redistribute it and/or modify
-+    it under the terms of version 2 of the GNU General Public License as
-+    published by the Free Software Foundation;
-+
-+    This program is distributed in the hope that it will be useful,
-+    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+    GNU General Public License for more details.
-+
-+    You should have received a copy of the GNU General Public License
-+    along with this program; if not, write to the Free Software
-+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+
-+Linux HPI ioctl, and shared module init functions
-+*******************************************************************************/
-+
-+int __devinit asihpi_adapter_probe(
-+	struct pci_dev *pci_dev,
-+	const struct pci_device_id *pci_id
-+);
-+void __devexit asihpi_adapter_remove(
-+	struct pci_dev *pci_dev
-+);
-+void __init asihpi_init(
-+	void
-+);
-+void __exit asihpi_exit(
-+	void
-+);
-+
-+int asihpi_hpi_release(
-+	struct file *file
-+);
-+
-+long asihpi_hpi_ioctl(
-+	struct file *file,
-+	unsigned int cmd,
-+	unsigned long arg
-+);
-+
-+/* This is called from hpifunc.c functions, called by ALSA
-+ * (or other kernel process) In this case there is no file descriptor
-+ * available for the message cache code
-+ */
-+void HPI_Message(
-+	struct hpi_message *phm,
-+	struct hpi_response *phr
-+);
-+
-+#define HOWNER_KERNEL ((void *)-1)
-+
-+	/***********************************************************
-+*/
 -- 
 1.5.4.3
