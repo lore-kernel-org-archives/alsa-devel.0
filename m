@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack reporting v2
-Date: Fri, 6 Jun 2008 15:23:01 +0100
-Message-ID: <20080606142300.GE24872@sirena.org.uk>
-References: <1212095345928-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20080603104048.GA17007@rakim.wolfsonmicro.main>
-	<20080603105920.ZZRA012@mailhub.coreip.homeip.net>
-	<20080603233813.GA30512@sirena.org.uk>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
+Subject: Re: [PATCH] Fix buffer position for ATI SB4x0
+Date: Fri, 6 Jun 2008 11:52:32 -0300
+Message-ID: <20080606115232.411c13e3@gaivota>
+References: <20080529111022.102bf250@gaivota>
+	<s5hod6pchui.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51F9A1037EF
+Received: from bombadil.infradead.org (bombadil.infradead.org [18.85.46.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 263571037EF
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jun 2008 16:23:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080603233813.GA30512@sirena.org.uk>
+	Fri,  6 Jun 2008 16:52:40 +0200 (CEST)
+In-Reply-To: <s5hod6pchui.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, mjg59@srcf.ucam.org, alsa-devel@alsa-project.org, linux-input@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 04, 2008 at 12:38:14AM +0100, Mark Brown wrote:
+On Thu, 29 May 2008 16:20:21 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> There is an additional motivation for using an input device for jacks -
-> it is common to support a button implemented by shorting the microphone
-> connection as well as simply detecting the presence of something in the
-> jack.
+> At Thu, 29 May 2008 11:10:22 -0300,
+> Mauro Carvalho Chehab wrote:
+> > 
+> > ATI SB4x0 doesn't need any fix at position.
+> 
+> It's not about the position fixing but whether to use the
+> position-buffer.  The devices on the blacklist are the ones that have
+> no position buffer.  So, it would fall into LPIB mode, and this list
+> avoids it from the beginning.
+> 
+> > This patch solves the issue of receiving several clicks during capture on those
+> > devices.
+> > 
+> > Tested with a Gateway Notebook MX-6453.
+> 
+> The click noise is often a different problem.  Did you already try
+> the patch below?
 
-Dimitry, do you have any further thoughts on this?  Due to jacks being
-able to function as buttons as well as switches I do prefer the use of
-input devices for jack reporting but if you still disagree I'll redo the
-patch since I don't feel *that* strongly.
+The click seems associated to some residual samples inside the buffer. Here it
+is a sample of the king of click noise I'm hearing here (captured from CD input entry):
+	http://linuxtv.org/~mchehab/snd.ogg
+
+I've started/stopped the CD some times (with cdplay). When volume goes to zero,
+after an "echoed click", it disappears.
+
+I've did some trials with position_fix changes, but nothing solved. So, my
+previous patch were wrong. The click is somewhere else (still, I suspect that
+it is linked to the buffer handling).
+
+Cheers,
+Mauro
