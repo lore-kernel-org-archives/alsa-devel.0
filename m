@@ -1,18 +1,19 @@
-From: Mauro Carvalho Chehab <mchehab@infradead.org>
-Subject: Re: [PATCH] Fix buffer position for ATI SB4x0
-Date: Fri, 6 Jun 2008 15:31:45 -0300
-Message-ID: <20080606153145.4329a297@gaivota>
-References: <20080529111022.102bf250@gaivota> <s5hod6pchui.wl%tiwai@suse.de>
-	<20080606115232.411c13e3@gaivota> <s5hfxrqcxuv.wl%tiwai@suse.de>
+From: "Christian Morales Vega" <cmorve69@yahoo.es>
+Subject: snd_pcm_avail_update() needed before snd_pcm_delay()
+	with hda-intel
+Date: Fri, 6 Jun 2008 21:54:22 +0200
+Message-ID: <8235e6f40806061254v41604524l4e43647482602098@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org [18.85.46.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id B61E2244B6
+Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E4FF1037FA
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Jun 2008 20:32:02 +0200 (CEST)
-In-Reply-To: <s5hfxrqcxuv.wl%tiwai@suse.de>
+	Fri,  6 Jun 2008 21:54:24 +0200 (CEST)
+Received: by wx-out-0506.google.com with SMTP id h30so975563wxd.23
+	for <alsa-devel@alsa-project.org>; Fri, 06 Jun 2008 12:54:23 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,62 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 06 Jun 2008 18:49:28 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+snd_pcm_avail_update() documentation says: "Using of this function is
+useless for the standard read/write operations. Use it only for mmap
+access. See to snd_pcm_delay."
 
-> At Fri, 6 Jun 2008 11:52:32 -0300,
-> Mauro Carvalho Chehab wrote:
-> > 
-> > On Thu, 29 May 2008 16:20:21 +0200
-> > Takashi Iwai <tiwai@suse.de> wrote:
-> > 
-> > > At Thu, 29 May 2008 11:10:22 -0300,
-> > > Mauro Carvalho Chehab wrote:
-> > > > 
-> > > > ATI SB4x0 doesn't need any fix at position.
-> > > 
-> > > It's not about the position fixing but whether to use the
-> > > position-buffer.  The devices on the blacklist are the ones that have
-> > > no position buffer.  So, it would fall into LPIB mode, and this list
-> > > avoids it from the beginning.
-> > > 
-> > > > This patch solves the issue of receiving several clicks during capture on those
-> > > > devices.
-> > > > 
-> > > > Tested with a Gateway Notebook MX-6453.
-> > > 
-> > > The click noise is often a different problem.  Did you already try
-> > > the patch below?
-> > 
-> > The click seems associated to some residual samples inside the buffer. Here it
-> > is a sample of the king of click noise I'm hearing here (captured from CD input entry):
-> > 	http://linuxtv.org/~mchehab/snd.ogg
-> 
-> (I didn't check the ogg file yet, and just a wild guess)
-> 
-> Is it with dsnoop plugin?  With "default" PCM, ALSA uses dsnoop for
-> capture to allow multiplexing for HD-audio.  Does it happen with "hw"
-> or "plughw" PCM?
+snd_pcm_delay() documentation says: "Note this function does not
+update the actual r/w pointer for applications. The function
+snd_pcm_avail_update() have to be called before any begin+commit
+operation."
 
-Results with the cdplay:
+My english is far from perfect, and so the problem can be that I
+missunderstood the docs but:
+1- "Using of this function"? Should not be "Use of this function"?
+2- Is snd_pcm_avail_update() really useless when not using mmap?
+I have a SB Live! where snd_pcm_delay() always returns the correct
+value, without any need for snd_pcm_avail_update(). But the same code
+in the same machine with an hda-intel AD1988 needs a call to
+snd_pcm_avail_update() before snd_pcm_delay() to give the correct
+result. Without it snd_pcm_delay() always returns the value that *was*
+correct in the last snd_pcm_writei() call.
 
-With "default" PCM (both with and without mmap):
-	several clicks per second, very high clicks;
-	(like a very risky analog disk)
-
-With "hw" or "plughw" (no mmap):
-	less clicks (something like two clicks or three per second), with less volume.
-	both hw and plughw produces the same effect.
-
-With "hw" or "plughw" and mmap (-M):
-	high quality. no noticeable clicks.
-
-So, it seems that there are two different issues: one with dsnoop and another
-with non-mmapped captures.
-
-Cheers,
-Mauro
+So should the "application frame position" be always updated, or only
+in read/write operations? In the first case AD1988 fails, in the
+second case perhaps SB Live! is making too mucho work ;-)
