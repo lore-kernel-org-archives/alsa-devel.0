@@ -1,18 +1,19 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Re: Previous patch to alsa-info.sh
-Date: Sun, 08 Jun 2008 01:19:01 +1000
-Message-ID: <1212851941.26085.3.camel@temp-fallen>
-References: <1212553783.12514.3.camel@temp-fallen>
-	<s5hlk1i69z3.wl%tiwai@suse.de>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
+ SOLVED(?)
+Date: Sat, 07 Jun 2008 23:36:55 +0200
+Message-ID: <484AFF77.3030901@insite.cz>
+References: <20080520112539.81C9D2484D@alsa0.perex.cz>	<m2bq2xtixw.fsf@vador.mandriva.com>	<483847ED.8050208@gmx.de>	<483A6D6F.1050108@insite.cz>	<483A96E8.8090507@gmx.de>	<s5hbq2tunel.wl%tiwai@suse.de>	<483AE54C.3090807@gmx.de>	<483D48DE.1010105@gmx.de>	<483E78E7.4020106@insite.cz>
+	<20080529140349.115520@gmx.net> <483ED652.6020805@insite.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wishie.net (202-137-100-089.dial.usertools.net [202.137.100.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D45A1037EC
+Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 504552461D
 	for <alsa-devel@alsa-project.org>;
-	Sat,  7 Jun 2008 17:19:03 +0200 (CEST)
-In-Reply-To: <s5hlk1i69z3.wl%tiwai@suse.de>
+	Sat,  7 Jun 2008 23:37:02 +0200 (CEST)
+In-Reply-To: <483ED652.6020805@insite.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: =?UTF-8?B?TWFydGluIEtyw7xnZXI=?= <m_a_krueger@gmx.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I could bring back the old http://linux-sound.info domain name, as a
-temp webhop to the script.. There has to be some nicer way we can access
-it, surely.. I have to get something sorted out, so i can tell the
-script where to update from. As it stands now, people download the
-script from GIT, as it 'updates' to the HG version as soon as they run
-it (which is really a downgrade).
-
-Any ideas would be appreciated.
-
-Thanks,
-Travis Place. 
-
-
-On Fri, 2008-06-06 at 14:09 +0200, Takashi Iwai wrote:
-> http://git.alsa-project.org/?p=alsa-driver.git;a=blob_plain;f=utils/alsa-info.sh
+UGF2ZWwgSG9mbWFuIHdyb3RlOgo+IAo+IE1hcnRpbiBLcsO8Z2VyIHdyb3RlOgo+PiBQYXZlbCBI
+b2ZtYW4gc2NocmllYjoKPj4+IEhpIE1hcnRpbiwKPj4+Cj4gLi4uLi4uLi4uLi4uLi4uCj4+IEhp
+IFBhdmVsLAo+Pgo+PiBub3cgaSdtIGNvbmZ1c2VkLiBJIGp1c3QgY29tcGlsZWQgdGhlIGN1cnJl
+bnQgZGFpbHkgc25hcHNob3Qgd2l0aAo+PiAiLi9jb25maWd1cmUgLS13aXRoLWlzYXBucD1ubyAt
+LXdpdGgtc2VxdWVuY2VyPXllcyAtLXdpdGgtb3NzPW5vIAo+PiAtLXdpdGgtZGVidWc9dmVyYm9z
+ZSAtLXdpdGgtY2FyZHM9aWNlMTcyNCIuCj4+Cj4+IFRoYXQgc2hvdWxkIGdpdmUgYXMgbXVjaCBk
+ZWJ1ZyBtZXNzYWdlcyBhcyBpIG5lZWQsIGFzIGkgdW5kZXJzdG9vZC4gSSAKPj4gZ2V0IG9ubHkg
+b25lIE1lc3NhZ2UsIHRlbGxpbmcgbWUgdGhhdCBpY2UxNzI0IGlzIHVzaW5nIHRoZSBkZWZpbmVk
+IAo+PiBlZXByb20uIEFmdGVyIHVzaW5nIHRoZSBtaWRpIG91dHB1dCBwb3J0LCB0aGVyZSBpcyBu
+byBtb3JlIG1lc3NhZ2UgaW4gCj4+IGFueSBsb2cgYXQgYWxsLgo+IAo+IFRoYXQgaXMgT0ssIGl0
+IG1lYW5zIHRoZSBsb29wLWRldGVjdGlvbiBjb2RlIGRvZXMgbm90IGtpY2sgaW4sIGkuZS4gCj4g
+dGhlcmUgaXMgbm8gcHJvYmxlbSB3aXRoIGNsZWFyaW5nIGludGVycnVwdCBzdGF0dXMgYml0cy4K
+PiAKPj4gRHVlIHRvIHRoaXMsIGl0IGlzIHJlYWxseSBoYXJkIHRvIHVuZGVyc3RhbmQgdGhlIHBy
+b2JsZW0sIGZvciBtZSBpdCAKPj4gbG9va3MgbGlrZSBhIGNvbXBsZXRlIGZyZWV6ZS4gSWYgaSB3
+b3VsZCBnZXQgImp1c3QiIGEgaGVhdnkgb3ZlcmxvYWQsIAo+PiB0aGUgbnVtbG9jayBzaG91bGQg
+c3RpbGwgcmVhY3Qgd2l0aGluIDEwIG1pbnV0ZXMsIGFuZCB0aGUgY3B1IGNvb2xlciAKPj4gc2hv
+dWxkIGJlIGxvdWRlci4gQm90aCBvZiB0aGlzIHNob3VsZCBhbHNvIGhhcHBlbiBkdXJpbmcgYW4g
+aXJxIGZsb29kLCAKPj4gaWYgaSB1bmRlcnN0b29kIHRoYXQgcmlnaHQuCj4gCj4gTXkgSVJRIGZs
+b29kIGxvYWRlZCB0aGUgUEMgaGVhdmlseSwgYnV0IEkgY291bGQgc3RpbGwgc3dpdGNoIHdpbmRv
+d3MgYW5kIAo+IG1vdmUgbW91c2UgYXJvdW5kLCB3aXRoIGxvbmcgZGVsYXlzLiBZb3VycyBsb29r
+cyBsaWtlIGEgcmVhbCBmcmVlemUuCj4gCj4+IERvIHlvdSBoYXZlIGFueSBpZGVhIGhvdyB0byBm
+aW5kIG91dCB3aGF0cyBoYXBwZW5pbmcgdGhlcmU/IAo+IAo+IEkganVzdCBhZGQgZGVidWcgcHJp
+bnRrJ3MgdG8gbWFqb3IgY29kZSBwb2ludHMgYWxsIHRoZSB3YXkgZG93biB0byAKPiBib3R0b20g
+ZnVuY3Rpb25zLiBJdCB0YWtlcyBtYW55IGNvbXBpbGluZyBhbmQgcmVib290aW5nIChhZnRlciBm
+cmVlemVzKS4gCj4gICBVbmZvcnR1bmF0ZWx5IEkgZG8gbm90IGtub3cgb2YgYW55IG90aGVyIHdh
+eSB0byBodW50IHRoZSBidWcgZG93bi4KCgpVYnVudHUgU3R1ZGlvIDcuMTAgd2l0aCBrZXJuZWwg
+dXBncmFkZWQgdG8gMi42LjI1IGFjY29yZGluZyB0byAKaHR0cDovLzc0LjEyNS4zOS4xMDQvc2Vh
+cmNoP3E9Y2FjaGU6MGZER05HMEtSYndKOmZvcnVtLnphY2t5ZmlsZXMuY29tL3Nob3d0aHJlYWQu
+cGhwJTNGcCUzRDMzNTExODgrZ3V0c3krMi42LjI1K3BhY2thZ2UmaGw9ZW4mY3Q9Y2xuayZjZD0x
+IAoKCkxhdGVzdCBkb3dubG9hZCBvZiBhbHNhIGZyb20gZ2l0LCBjb21waWxlZCBieSAuL2dpdGNv
+bXBpbGUuCgpBbmNpZW50IER1cm9uIDFHSHosIEF1ZGlvdHJhayBQcm9kaWd5IDE5MgoKQm90aCBN
+SURJIGlucHV0IChhbWlkaSAtcCBodzowIC1kKSBhbmQgb3V0cHV0IChhbWlkaSAtcCBodzowIC1T
+IApGMDQxMTA0MjExMEMwMDAwMDAwMDAwNzRGRjA0MTEwNDIxMTBDMDAwMDAwMDAwMFwKNzRGN0Yw
+NDExMDQyMTEwQzAwMDAwMDAwMDA3NEY3RjA0MTEwNDIxMTBDMEYwNDExXAowNDIxMTBDMDAwMDAw
+MDAwMDc0RkYwNDExMDQyMTEwQzAwMDAwMDAwMDA3NEY3RjBcCjQxMTA0MjExMEMwMDAwMDAwMDAw
+NzRGN0YwNDExMDQyMTEwQzApCndvcmsgZmluZSwgbm8gcHJvYmxlbXMuCgpSZWdhcmRzLAoKUGF2
+ZWwuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
