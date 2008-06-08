@@ -1,15 +1,19 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] opti93x: fix sound ouput for Opti930
-Date: Sun, 8 Jun 2008 07:57:53 +0200
-Message-ID: <20080608075753.6e55b6ba.krzysztof.h1@poczta.fm>
+From: "Christian Morales Vega" <cmorve69@yahoo.es>
+Subject: Wrong period size interval with hda-intel makes
+	snd_pcm_set_params() fail
+Date: Sun, 8 Jun 2008 10:18:19 +0200
+Message-ID: <8235e6f40806080118t7d981350ta9240fb22f371e60@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 7B83D2474F
+Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.236])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE6EE10381C
 	for <alsa-devel@alsa-project.org>;
-	Sun,  8 Jun 2008 07:55:18 +0200 (CEST)
+	Sun,  8 Jun 2008 10:18:20 +0200 (CEST)
+Received: by wx-out-0506.google.com with SMTP id h30so1141991wxd.23
+	for <alsa-devel@alsa-project.org>; Sun, 08 Jun 2008 01:18:19 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Rene Herman <rene.herman@keyaccess.nl>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+I looked deeper into the problem and looks like a hda-intel problem.
 
-This patch fixes silenced output from the Opti930.
+This code fails with "ALSA lib pcm.c:7193:(snd_pcm_set_params) Unable
+to get period size for PLAYBACK: Invalid argument"
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+#include <alsa/asoundlib.h>
 
----
-The bug was introduced by me in the patch which added 
-QS1000 wavetable support:
+int main(){
+   snd_pcm_t *handle;
+   if(snd_pcm_open(&handle, "default:1", SND_PCM_STREAM_PLAYBACK, 0) < 0) {
+     exit(1);
+   }
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=f81b953d43c2c12f617da3ecec25e04b5c9e6eb2
+   if(snd_pcm_set_params(handle, SND_PCM_FORMAT_S16_LE,
+SND_PCM_ACCESS_RW_INTERLEAVED, 2, 24000, 1, 100000) < 0) {
+     exit(2);
+   }
+}
 
-Simply do not change digital input bits on Opti930.
 
-diff -urp linux-rc2/sound/isa/opti9xx/opti92x-ad1848.c linux-rc5/sound/isa/opti9xx/opti92x-ad1848.c
---- linux-rc2/sound/isa/opti9xx/opti92x-ad1848.c	2008-04-17 04:49:44.000000000 +0200
-+++ linux-rc5/sound/isa/opti9xx/opti92x-ad1848.c	2008-06-07 23:59:27.218950875 +0200
-@@ -491,16 +491,9 @@ static int __devinit snd_opti9xx_configu
- 		break;
- 
- #else	/* OPTi93X */
--	case OPTi9XX_HW_82C930:
- 	case OPTi9XX_HW_82C931:
- 	case OPTi9XX_HW_82C933:
--		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(6), 0x02, 0x03);
--		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0x00, 0xff);
--		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(4), 0x10 |
--			(chip->hardware == OPTi9XX_HW_82C930 ? 0x00 : 0x04),
--			0x34);
--		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(5), 0x20, 0xbf);
--		/* 
-+		/*
- 		 * The BTC 1817DW has QS1000 wavetable which is connected
- 		 * to the serial digital input of the OPTI931.
- 		 */
-@@ -510,6 +503,13 @@ static int __devinit snd_opti9xx_configu
- 		 * or digital input signal.
- 		 */
- 		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(26), 0x01, 0x01);
-+	case OPTi9XX_HW_82C930: /* FALL THROUGH */
-+		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(6), 0x02, 0x03);
-+		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0x00, 0xff);
-+		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(4), 0x10 |
-+			(chip->hardware == OPTi9XX_HW_82C930 ? 0x00 : 0x04),
-+			0x34);
-+		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(5), 0x20, 0xbf);
- 		break;
- #endif	/* OPTi93X */
- 
+The "Invalid argument" comes from pcm_params.c:145. The test
+"!snd_interval_single(i)" fails since the interval for
+SND_PCM_HW_PARAM_PERIOD_SIZE ends being min=511 and max=513.
+I understand that this interval is set at the driver, correct? I don't
+know where exactly, so some help in finding it or a patch would be
+welcome.
 
----------------------------------------------------------------
-Sprawdz jak zdobyc zdrowy usmiech!
-Kliknij >> http://link.interia.pl/f1e26
+
+I'm using alsa-driver-kmp-default-1.0.16.20080608,
+libasound2-1.0.16.hg20080510 and
+alsa-1.0.16.hg20080510 RPM packages from multimedia:audio openSUSE
+Build Service repository (from Takashi Iwai) and an AD1988 (hda-intel)
+codec. A XUbuntu user also has the same problem with an hda-intel
+codec (that I suppose uses stable 1.0.16).
+With a SB Live! in the same computer there are no problems.
