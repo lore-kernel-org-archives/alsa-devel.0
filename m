@@ -1,19 +1,15 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
- SOLVED(?)
-Date: Sat, 07 Jun 2008 23:36:55 +0200
-Message-ID: <484AFF77.3030901@insite.cz>
-References: <20080520112539.81C9D2484D@alsa0.perex.cz>	<m2bq2xtixw.fsf@vador.mandriva.com>	<483847ED.8050208@gmx.de>	<483A6D6F.1050108@insite.cz>	<483A96E8.8090507@gmx.de>	<s5hbq2tunel.wl%tiwai@suse.de>	<483AE54C.3090807@gmx.de>	<483D48DE.1010105@gmx.de>	<483E78E7.4020106@insite.cz>
-	<20080529140349.115520@gmx.net> <483ED652.6020805@insite.cz>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] opti93x: fix sound ouput for Opti930
+Date: Sun, 8 Jun 2008 07:57:53 +0200
+Message-ID: <20080608075753.6e55b6ba.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailserver.bobrnet.net (bobrnet.cust.inethome.cz [88.146.180.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 504552461D
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 7B83D2474F
 	for <alsa-devel@alsa-project.org>;
-	Sat,  7 Jun 2008 23:37:02 +0200 (CEST)
-In-Reply-To: <483ED652.6020805@insite.cz>
+	Sun,  8 Jun 2008 07:55:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TWFydGluIEtyw7xnZXI=?= <m_a_krueger@gmx.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Rene Herman <rene.herman@keyaccess.nl>
 List-Id: alsa-devel@alsa-project.org
 
-UGF2ZWwgSG9mbWFuIHdyb3RlOgo+IAo+IE1hcnRpbiBLcsO8Z2VyIHdyb3RlOgo+PiBQYXZlbCBI
-b2ZtYW4gc2NocmllYjoKPj4+IEhpIE1hcnRpbiwKPj4+Cj4gLi4uLi4uLi4uLi4uLi4uCj4+IEhp
-IFBhdmVsLAo+Pgo+PiBub3cgaSdtIGNvbmZ1c2VkLiBJIGp1c3QgY29tcGlsZWQgdGhlIGN1cnJl
-bnQgZGFpbHkgc25hcHNob3Qgd2l0aAo+PiAiLi9jb25maWd1cmUgLS13aXRoLWlzYXBucD1ubyAt
-LXdpdGgtc2VxdWVuY2VyPXllcyAtLXdpdGgtb3NzPW5vIAo+PiAtLXdpdGgtZGVidWc9dmVyYm9z
-ZSAtLXdpdGgtY2FyZHM9aWNlMTcyNCIuCj4+Cj4+IFRoYXQgc2hvdWxkIGdpdmUgYXMgbXVjaCBk
-ZWJ1ZyBtZXNzYWdlcyBhcyBpIG5lZWQsIGFzIGkgdW5kZXJzdG9vZC4gSSAKPj4gZ2V0IG9ubHkg
-b25lIE1lc3NhZ2UsIHRlbGxpbmcgbWUgdGhhdCBpY2UxNzI0IGlzIHVzaW5nIHRoZSBkZWZpbmVk
-IAo+PiBlZXByb20uIEFmdGVyIHVzaW5nIHRoZSBtaWRpIG91dHB1dCBwb3J0LCB0aGVyZSBpcyBu
-byBtb3JlIG1lc3NhZ2UgaW4gCj4+IGFueSBsb2cgYXQgYWxsLgo+IAo+IFRoYXQgaXMgT0ssIGl0
-IG1lYW5zIHRoZSBsb29wLWRldGVjdGlvbiBjb2RlIGRvZXMgbm90IGtpY2sgaW4sIGkuZS4gCj4g
-dGhlcmUgaXMgbm8gcHJvYmxlbSB3aXRoIGNsZWFyaW5nIGludGVycnVwdCBzdGF0dXMgYml0cy4K
-PiAKPj4gRHVlIHRvIHRoaXMsIGl0IGlzIHJlYWxseSBoYXJkIHRvIHVuZGVyc3RhbmQgdGhlIHBy
-b2JsZW0sIGZvciBtZSBpdCAKPj4gbG9va3MgbGlrZSBhIGNvbXBsZXRlIGZyZWV6ZS4gSWYgaSB3
-b3VsZCBnZXQgImp1c3QiIGEgaGVhdnkgb3ZlcmxvYWQsIAo+PiB0aGUgbnVtbG9jayBzaG91bGQg
-c3RpbGwgcmVhY3Qgd2l0aGluIDEwIG1pbnV0ZXMsIGFuZCB0aGUgY3B1IGNvb2xlciAKPj4gc2hv
-dWxkIGJlIGxvdWRlci4gQm90aCBvZiB0aGlzIHNob3VsZCBhbHNvIGhhcHBlbiBkdXJpbmcgYW4g
-aXJxIGZsb29kLCAKPj4gaWYgaSB1bmRlcnN0b29kIHRoYXQgcmlnaHQuCj4gCj4gTXkgSVJRIGZs
-b29kIGxvYWRlZCB0aGUgUEMgaGVhdmlseSwgYnV0IEkgY291bGQgc3RpbGwgc3dpdGNoIHdpbmRv
-d3MgYW5kIAo+IG1vdmUgbW91c2UgYXJvdW5kLCB3aXRoIGxvbmcgZGVsYXlzLiBZb3VycyBsb29r
-cyBsaWtlIGEgcmVhbCBmcmVlemUuCj4gCj4+IERvIHlvdSBoYXZlIGFueSBpZGVhIGhvdyB0byBm
-aW5kIG91dCB3aGF0cyBoYXBwZW5pbmcgdGhlcmU/IAo+IAo+IEkganVzdCBhZGQgZGVidWcgcHJp
-bnRrJ3MgdG8gbWFqb3IgY29kZSBwb2ludHMgYWxsIHRoZSB3YXkgZG93biB0byAKPiBib3R0b20g
-ZnVuY3Rpb25zLiBJdCB0YWtlcyBtYW55IGNvbXBpbGluZyBhbmQgcmVib290aW5nIChhZnRlciBm
-cmVlemVzKS4gCj4gICBVbmZvcnR1bmF0ZWx5IEkgZG8gbm90IGtub3cgb2YgYW55IG90aGVyIHdh
-eSB0byBodW50IHRoZSBidWcgZG93bi4KCgpVYnVudHUgU3R1ZGlvIDcuMTAgd2l0aCBrZXJuZWwg
-dXBncmFkZWQgdG8gMi42LjI1IGFjY29yZGluZyB0byAKaHR0cDovLzc0LjEyNS4zOS4xMDQvc2Vh
-cmNoP3E9Y2FjaGU6MGZER05HMEtSYndKOmZvcnVtLnphY2t5ZmlsZXMuY29tL3Nob3d0aHJlYWQu
-cGhwJTNGcCUzRDMzNTExODgrZ3V0c3krMi42LjI1K3BhY2thZ2UmaGw9ZW4mY3Q9Y2xuayZjZD0x
-IAoKCkxhdGVzdCBkb3dubG9hZCBvZiBhbHNhIGZyb20gZ2l0LCBjb21waWxlZCBieSAuL2dpdGNv
-bXBpbGUuCgpBbmNpZW50IER1cm9uIDFHSHosIEF1ZGlvdHJhayBQcm9kaWd5IDE5MgoKQm90aCBN
-SURJIGlucHV0IChhbWlkaSAtcCBodzowIC1kKSBhbmQgb3V0cHV0IChhbWlkaSAtcCBodzowIC1T
-IApGMDQxMTA0MjExMEMwMDAwMDAwMDAwNzRGRjA0MTEwNDIxMTBDMDAwMDAwMDAwMFwKNzRGN0Yw
-NDExMDQyMTEwQzAwMDAwMDAwMDA3NEY3RjA0MTEwNDIxMTBDMEYwNDExXAowNDIxMTBDMDAwMDAw
-MDAwMDc0RkYwNDExMDQyMTEwQzAwMDAwMDAwMDA3NEY3RjBcCjQxMTA0MjExMEMwMDAwMDAwMDAw
-NzRGN0YwNDExMDQyMTEwQzApCndvcmsgZmluZSwgbm8gcHJvYmxlbXMuCgpSZWdhcmRzLAoKUGF2
-ZWwuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
+
+This patch fixes silenced output from the Opti930.
+
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+
+---
+The bug was introduced by me in the patch which added 
+QS1000 wavetable support:
+
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=f81b953d43c2c12f617da3ecec25e04b5c9e6eb2
+
+Simply do not change digital input bits on Opti930.
+
+diff -urp linux-rc2/sound/isa/opti9xx/opti92x-ad1848.c linux-rc5/sound/isa/opti9xx/opti92x-ad1848.c
+--- linux-rc2/sound/isa/opti9xx/opti92x-ad1848.c	2008-04-17 04:49:44.000000000 +0200
++++ linux-rc5/sound/isa/opti9xx/opti92x-ad1848.c	2008-06-07 23:59:27.218950875 +0200
+@@ -491,16 +491,9 @@ static int __devinit snd_opti9xx_configu
+ 		break;
+ 
+ #else	/* OPTi93X */
+-	case OPTi9XX_HW_82C930:
+ 	case OPTi9XX_HW_82C931:
+ 	case OPTi9XX_HW_82C933:
+-		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(6), 0x02, 0x03);
+-		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0x00, 0xff);
+-		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(4), 0x10 |
+-			(chip->hardware == OPTi9XX_HW_82C930 ? 0x00 : 0x04),
+-			0x34);
+-		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(5), 0x20, 0xbf);
+-		/* 
++		/*
+ 		 * The BTC 1817DW has QS1000 wavetable which is connected
+ 		 * to the serial digital input of the OPTI931.
+ 		 */
+@@ -510,6 +503,13 @@ static int __devinit snd_opti9xx_configu
+ 		 * or digital input signal.
+ 		 */
+ 		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(26), 0x01, 0x01);
++	case OPTi9XX_HW_82C930: /* FALL THROUGH */
++		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(6), 0x02, 0x03);
++		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(3), 0x00, 0xff);
++		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(4), 0x10 |
++			(chip->hardware == OPTi9XX_HW_82C930 ? 0x00 : 0x04),
++			0x34);
++		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(5), 0x20, 0xbf);
+ 		break;
+ #endif	/* OPTi93X */
+ 
+
+---------------------------------------------------------------
+Sprawdz jak zdobyc zdrowy usmiech!
+Kliknij >> http://link.interia.pl/f1e26
