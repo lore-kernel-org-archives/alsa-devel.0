@@ -1,18 +1,22 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [PATCH 2/2] opti93x: use cs4231 lib
-Date: Tue, 10 Jun 2008 01:29:16 +0200
-Message-ID: <484DBCCC.5050800@keyaccess.nl>
-References: <20080609230732.cb77724c.krzysztof.h1@poczta.fm>
+Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
+Date: Tue, 10 Jun 2008 01:37:05 +0200
+Message-ID: <484DBEA1.4060409@keyaccess.nl>
+References: <20080411204610.GA32413@tango.0pointer.de>	<20080414172839.GA26513@tango.0pointer.de>	<4803C78A.3020109@superbug.co.uk>	<200804150552.13578.faber@faberman.de>
+	<20080415131203.GA2818@localhost>
+	<4804BCB8.9060707@keyaccess.nl> <48060D2F.2000701@keyaccess.nl>
+	<480618F3.40707@keyaccess.nl> <48061D1F.6060809@keyaccess.nl>
+	<4807B569.6000008@superbug.co.uk> <4807C17F.8030603@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
 	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 371F324A27
+	by alsa0.perex.cz (Postfix) with ESMTP id BE5A624A22
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jun 2008 01:29:15 +0200 (CEST)
-In-Reply-To: <20080609230732.cb77724c.krzysztof.h1@poczta.fm>
+	Tue, 10 Jun 2008 01:37:03 +0200 (CEST)
+In-Reply-To: <4807C17F.8030603@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +26,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09-06-08 23:07, Krzysztof Helt wrote:
+On 17-04-08 23:30, Rene Herman wrote:
 
-> From: Krzysztof Helt <krzysztof.h1@wp.pl>
+>>>>> James, I believe you are the emu10k1 person? Data:
+>>>>>
+>>>>> TerraTec DMX = ESS Canyon3D (ES1970MS-3D) + Sigmatel STAC9704T
+>>>>>
+>>>>> Creative Audigy 2 (SB0240) = Creative CA0102-ICT + Sigmatel 
+>>>>> STAC9721T (+ Crystal CS4382-KQ which seems to provide digital 
+>>>>> attenuation as well)
+>>>>>
+>>>>> At 0 dB master the Audigy 2 is much louder than the DMX is and 
+>>>>> audibly distorts. Judging by hearing, keeping the master at -16 dB 
+>>>>> (60 in the integer scale) gets things about the same. Was that 
+>>>>> scale provided by datasheet or just guessed? Especially the 
+>>>>> distortion would seem to indicate that something is actually doing 
+>>>>> analogue amplification at the 0 dB ALSA setting...
+>>>>
+>>>> Expanding, with the 'Line' control at 0 dB (74 integer) and 'Analog 
+>>>> Mix' at 0 dB (100 integer) everything does sound right with both 
+>>>> 'Master Capture' and 'Master' at  full, and too faint with 'Master' 
+>>>> at -16 dB. I guess this indicates that it's something at the DSP 
+>>>> side only? (sort of loosing my way in this bewildering array of 
+>>>> controls so if I need to be guided to possibly say sensible things 
+>>>> -- please do)
+>>>
+>>> When I do actually capture, -16 dB master is again the correct 
+>>> setting when playing back (with everything else still set to 0 dB as 
+>>> described above). It's then equally load as when directly monitored 
+>>> during recording. I expect then the Master dB scale needs to be 
+>>> adjusted down? If yes, I'll try to make very, very sure that -16 dB 
+>>> now is the correct new 0 dB.
+>>
+>> Can we narrow this down a bit please.
+>> Run speaker-test -c2 -twav
+>> Do the test to each sound card with alsamixer set to 0dB for most 
+>> controls accept the master, and leave the master at a sensible setting 
+>> for your setup so that you can hear sound at a sensible level
+>> With the same dB values on the Andigy 2 and DMX, do you get the same 
+>> loudness of sound output to the speakers?
 > 
-> This patch converts the Opti93x driver to use
-> the cs4231 library instead of duplicating the code.
+> Very much not. Sorry, it seems the report (unsnipped above) got a little 
+> confusing due to the followups but with everything at 0 dB on both DMX 
+> and Audigy 2, the Audigy 2 is much louder and distorts.
 > 
-> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+> DMX has 'PCM' -34.5 --> +12 dB and 'Master' -46.5 --> 0 dB. I always 
+> keep both at 0 dB for a good, comfortable level (adjusted further 
+> externally).
 > 
-> ---
-> This patch requires the patch which adds opti93x
-> support to the cs4231 library. It saves few hundreds LOCs.
+> Audigy 2 'Front' and 'Wave' are both  at 0 dB (max) (everything default 
+> in fact) and with 'Master' at 0 dB, it's much louder then the DMX. 
+> Setting 'Master' to -16 dB (60) gets things the same.
 > 
-> This patch was sent some time ago. It should work
-> now on Opti93x.
+>> I would like to find out if the problem is in the playback path, or 
+>> the capture path.
 > 
-> The patch was prepared against the 2.6.26-rc5 kernel.
+> Playback I'd say and I personally consider DMX right here, due to the 
+> distortion from the Audigy.
 > 
-> Tested on Opti 930, 931 and 933.
+> Only introduced capture into the story above as "additional evidence" 
+> where I could do a a comparison using only the Audigy itself and not the 
+> DMX: with everything at 0 dB in the capture direction, a captured file 
+> needs to be played back at -16 dB 'Master' to be equally loud to what I 
+> hear _during_ capturing as well ("hear" from 'Analog Mix' at 0 dB). So I 
+> get the feeling it's a simple matter of transposing 0 dB on the Master 
+> scale for the Audigy (ie, new 0 dB is old -16 dB).
+> 
+> I should have another emu10k1 driven card here somewhere. Is it useful 
+> if I try to dig it up and see if the story's the same on it?
 
-Tested-by: Rene Herman <rene.herman@gmail.com>
-
-again also on 930, 931 and 933. As said, good to see this. Only quickly 
-scanned the code and didn't immedately see the mixer level issue. Is the 
-level difference reproducible at your end or should I investigate further?
+Was this a useful report?
 
 Rene.
