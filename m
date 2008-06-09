@@ -1,17 +1,17 @@
-From: idak <zbe64533@gmail.com>
-Subject: [PATCH] Fix "alc262_sony_unsol[]" hda_verb array
-Date: Mon, 9 Jun 2008 22:46:07 +0900
-Message-ID: <aeb93b2b0806090646l1585adbfwf3cd701d7a15944e@mail.gmail.com>
+From: "Akio Idehara" <zbe64533@gmail.com>
+Subject: [PATCH] Add Toshiba dynabook SS RX1 support
+Date: Mon, 9 Jun 2008 22:57:40 +0900
+Message-ID: <aeb93b2b0806090657r3b49e942g235104059e1484c1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01014249E4
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.168])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB0CB249D1
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jun 2008 15:46:08 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so3054741wfg.23
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jun 2008 06:46:07 -0700 (PDT)
+	Mon,  9 Jun 2008 15:57:42 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so3061057wfg.23
+	for <alsa-devel@alsa-project.org>; Mon, 09 Jun 2008 06:57:41 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,22 +25,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I think that hda_verb array must have "terminator (empty array)".
-But alc262_sony_unsol[] does not have it.
-And it causes gcc-4.3's buggy behavior
-with snd_hda_sequence_write().
+I have Toshiba dynabook SS RX1 and this patch adds that support.
 
 Signed-off-by: Akio Idehara <zbe64533@gmail.com>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c |    2 ++
+ 1 file changed, 2 insertions(+)
 --- a/sound/pci/hda/patch_realtek.c	2008-06-08 19:23:57.000000000 +0900
-+++ b/sound/pci/hda/patch_realtek.c	2008-06-08 19:42:19.000000000 +0900
-@@ -8839,6 +8839,7 @@ static struct hda_verb alc262_sony_unsol
-
- 	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | ALC880_HP_EVENT},
- 	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
-+	{}
- };
-
- /* mute/unmute internal speaker according to the hp jack and mute state */
++++ b/sound/pci/hda/patch_realtek.c	2008-06-08 20:55:34.000000000 +0900
+@@ -9718,6 +9718,8 @@ static struct snd_pci_quirk alc262_cfg_t
+ 	SND_PCI_QUIRK(0x104d, 0x820f, "Sony ASSAMD", ALC262_SONY_ASSAMD),
+ 	SND_PCI_QUIRK(0x104d, 0x900e, "Sony ASSAMD", ALC262_SONY_ASSAMD),
+ 	SND_PCI_QUIRK(0x104d, 0x9015, "Sony 0x9015", ALC262_SONY_ASSAMD),
++	SND_PCI_QUIRK(0x1179, 0x0001, "Toshiba dynabook SS RX1",
++		      ALC262_SONY_ASSAMD),
+ 	SND_PCI_QUIRK(0x10cf, 0x1397, "Fujitsu", ALC262_FUJITSU),
+ 	SND_PCI_QUIRK(0x10cf, 0x142d, "Fujitsu Lifebook E8410", ALC262_FUJITSU),
+ 	SND_PCI_QUIRK(0x144d, 0xc032, "Samsung Q1 Ultra", ALC262_ULTRA),
