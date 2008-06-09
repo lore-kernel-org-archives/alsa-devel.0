@@ -1,18 +1,19 @@
-From: "Akio Idehara" <zbe64533@gmail.com>
-Subject: [PATCH] Add Toshiba dynabook SS RX1 support
-Date: Mon, 9 Jun 2008 22:57:40 +0900
-Message-ID: <aeb93b2b0806090657r3b49e942g235104059e1484c1@mail.gmail.com>
+From: Travis Place <wishie@wishie.net>
+Subject: Re: Problems regarding alsa-info.sh
+Date: Tue, 10 Jun 2008 00:19:23 +1000
+Message-ID: <1213021163.5323.0.camel@temp-fallen>
+References: <1212935251.554.11.camel@temp-fallen>
+	<s5hskvmbv6w.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB0CB249D1
+Received: from www.wishie.net (202-137-100-089.dial.usertools.net
+	[202.137.100.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6A311037FC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jun 2008 15:57:42 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so3061057wfg.23
-	for <alsa-devel@alsa-project.org>; Mon, 09 Jun 2008 06:57:41 -0700 (PDT)
-Content-Disposition: inline
+	Mon,  9 Jun 2008 16:19:09 +0200 (CEST)
+In-Reply-To: <s5hskvmbv6w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have Toshiba dynabook SS RX1 and this patch adds that support.
+Does anyone have the power to update it, just for this one thing ? Im
+take it the repo is still up, just not active.
 
-Signed-off-by: Akio Idehara <zbe64533@gmail.com>
----
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 file changed, 2 insertions(+)
---- a/sound/pci/hda/patch_realtek.c	2008-06-08 19:23:57.000000000 +0900
-+++ b/sound/pci/hda/patch_realtek.c	2008-06-08 20:55:34.000000000 +0900
-@@ -9718,6 +9718,8 @@ static struct snd_pci_quirk alc262_cfg_t
- 	SND_PCI_QUIRK(0x104d, 0x820f, "Sony ASSAMD", ALC262_SONY_ASSAMD),
- 	SND_PCI_QUIRK(0x104d, 0x900e, "Sony ASSAMD", ALC262_SONY_ASSAMD),
- 	SND_PCI_QUIRK(0x104d, 0x9015, "Sony 0x9015", ALC262_SONY_ASSAMD),
-+	SND_PCI_QUIRK(0x1179, 0x0001, "Toshiba dynabook SS RX1",
-+		      ALC262_SONY_ASSAMD),
- 	SND_PCI_QUIRK(0x10cf, 0x1397, "Fujitsu", ALC262_FUJITSU),
- 	SND_PCI_QUIRK(0x10cf, 0x142d, "Fujitsu Lifebook E8410", ALC262_FUJITSU),
- 	SND_PCI_QUIRK(0x144d, 0xc032, "Samsung Q1 Ultra", ALC262_ULTRA),
+Thanks again,
+Travis Place
+
+
+On Mon, 2008-06-09 at 15:21 +0200, Takashi Iwai wrote:
+> At Mon, 09 Jun 2008 00:27:31 +1000,
+> Travis Place wrote:
+> > 
+> > Sorry for the quick 2nd post, but ive just been thinking about this.. If
+> > we can patch the GIT version with the patch i just emailed, and
+> > temporarily put that same file (version 0.4.46) into the HG repo (even
+> > if it has to be entered manually) then current script users will get the
+> > new script (which contains the new URLs). That will solve half the
+> > problem.
+> 
+> Well, unfortunately the HG is blocked and I cannot update it any
+> more...  If this is once updated, then yes, it'll be a good
+> workaround.
+> 
+> Anyway I'll update the GIT version first.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > Then we just need a friendly URL to post in wikis etc.
+> > 
+> > Ive setup a very temporary tinyurl page.. http://tinyurl.com/5bz98h
+> > 
+> > Seems to work ok, but we want something more perm, and more professional
+> > looking, really.
+> > 
+> > Travis Place.
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
