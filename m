@@ -1,16 +1,20 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: What does snd_pcm_delay() actually return?
-Date: Mon, 9 Jun 2008 21:02:25 +0200
-Message-ID: <20080609190225.GA4534@tango.0pointer.de>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
+Subject: Re: [PATCH] Fix buffer position for ATI SB4x0
+Date: Mon, 9 Jun 2008 17:29:23 -0300
+Message-ID: <20080609172923.053f24ea@gaivota>
+References: <20080529111022.102bf250@gaivota> <s5hod6pchui.wl%tiwai@suse.de>
+	<20080606115232.411c13e3@gaivota> <s5hfxrqcxuv.wl%tiwai@suse.de>
+	<20080606153145.4329a297@gaivota> <s5hmylxhcol.wl%tiwai@suse.de>
+	<s5htzg2bvd6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A2B8103848
+Received: from bombadil.infradead.org (bombadil.infradead.org [18.85.46.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F49F24347
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Jun 2008 21:02:26 +0200 (CEST)
-Content-Disposition: inline
+	Mon,  9 Jun 2008 22:29:35 +0200 (CEST)
+In-Reply-To: <s5htzg2bvd6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,84 +24,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi, Jaroslav,
+On Mon, 09 Jun 2008 15:17:41 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-could you please explain what exactly snd_pcm_delay() returns? 
+> At Sat, 07 Jun 2008 10:27:54 +0200,
+> I wrote:
+> > 
+> > At Fri, 6 Jun 2008 15:31:45 -0300,
+> > Mauro Carvalho Chehab wrote:
+> > > 
+> > > On Fri, 06 Jun 2008 18:49:28 +0200
+> > > Takashi Iwai <tiwai@suse.de> wrote:
+> > > 
+> > > > At Fri, 6 Jun 2008 11:52:32 -0300,
+> > > > Mauro Carvalho Chehab wrote:
+> > > > > 
+> > > > > On Thu, 29 May 2008 16:20:21 +0200
+> > > > > Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > 
+> > > > > > At Thu, 29 May 2008 11:10:22 -0300,
+> > > > > > Mauro Carvalho Chehab wrote:
+> > > > > > > 
+> > > > > > > ATI SB4x0 doesn't need any fix at position.
+> > > > > > 
+> > > > > > It's not about the position fixing but whether to use the
+> > > > > > position-buffer.  The devices on the blacklist are the ones that have
+> > > > > > no position buffer.  So, it would fall into LPIB mode, and this list
+> > > > > > avoids it from the beginning.
+> > > > > > 
+> > > > > > > This patch solves the issue of receiving several clicks during capture on those
+> > > > > > > devices.
+> > > > > > > 
+> > > > > > > Tested with a Gateway Notebook MX-6453.
+> > > > > > 
+> > > > > > The click noise is often a different problem.  Did you already try
+> > > > > > the patch below?
+> > > > > 
+> > > > > The click seems associated to some residual samples inside the buffer. Here it
+> > > > > is a sample of the king of click noise I'm hearing here (captured from CD input entry):
+> > > > > 	http://linuxtv.org/~mchehab/snd.ogg
+> > > > 
+> > > > (I didn't check the ogg file yet, and just a wild guess)
+> > > > 
+> > > > Is it with dsnoop plugin?  With "default" PCM, ALSA uses dsnoop for
+> > > > capture to allow multiplexing for HD-audio.  Does it happen with "hw"
+> > > > or "plughw" PCM?
+> > > 
+> > > Results with the cdplay:
+> > > 
+> > > With "default" PCM (both with and without mmap):
+> > > 	several clicks per second, very high clicks;
+> > > 	(like a very risky analog disk)
+> > 
+> > Hm, it's obviously a problem.  I couldn't reproduce it on my machine
+> > with HD-audio, so it might be controller/codec-specific, though.
+> > 
+> > > With "hw" or "plughw" (no mmap):
+> > > 	less clicks (something like two clicks or three per second), with less volume.
+> > > 	both hw and plughw produces the same effect.
+> > 
+> > If it works with hw, plughw should have no effect (i.e. no conversion
+> > is done).  Thus it's logical that both hw and plughw have the same
+> > result.
+> > 
+> > > With "hw" or "plughw" and mmap (-M):
+> > > 	high quality. no noticeable clicks.
+> > > 
+> > > So, it seems that there are two different issues: one with dsnoop and another
+> > > with non-mmapped captures.
+> > 
+> > Interesting.  The fact that even "hw" without mmap causes occasional
+> > click noises implies that there is certainly a problem with the DMA
+> > position calculation.  The dsnoop has more problems likely because it
+> > uses smaller period size and more periods than hw, I guess.
+> > Still not sure why the mmap mode works.
+> > 
+> > Anyway, it means that the capture position is wrongly reported, maybe
+> > just in a reverse way of the playback position -- a few samples ahead
+> > than the real position.  Sigh, another workaround is needed.
+> 
+> The patch below adds another workaround for the DMA buffer position.
+> Could you give it a try?  It adds as default one sample delay for
+> issuing the interrupt so that the DMA pointer gets the right
+> position.  The delay can be changed (even dynamically) via bdl_pos_adj
+> module option.
 
-Some applications (such as WINE) assume it is the time that would pass
-until we reach an underrun if we would stop writing any further data
-to the PCM device.
+I tried it here, but I didn't noticed any results. I've ranged the value from 1
+to 317 (I had to stop/start record each time). I tried with the default PCM input,
+since this way is easier to notice the click.
 
-Other applications (such as most media players) use it for time
-synchronisation. i.e. assume that it is the time that passes until a
-sample I write to a PCM device now would take to be played.
-
-Why does this make a difference? For all drivers/ioplug backends where
-audio is not directly written to the hardware buffer of the audio
-device the underrun might happen much earlier than the last sample
-written is heard. This seems to be the case of USB audio for
-example. If I fill up the hw buffer completely, I will be notified
-about a buffer underrun much earlier than the buffer size would
-suggest. 
-
-Another example is the PulseAudio backend: for each client stream we
-maintain a private playback buffer. After that buffer there is the
-hardware buffer.  If the client buffer runs empty we'd like to signal
-an underrun. However, in that situation it still will take some time
-until the underrun is really hearable, because the audio first has to
-pass the second buffer in line, the hardware buffer.
-
-Or in other words: in some backends (PCI/DMA) after a sample is read
-from the ALSA playback buffer and the read index is increased it is
-immediately heard. In others it will still take substantial time until
-it is heard. The current API doesn't expose any information about how
-long that additional time can be, and it is not clear if
-snd_pcm_delay() includes or does not include this extra time in its
-result.
-
-The ALSA documentation claims that snd_pcm_delay() returns the
-"distance between current application frame position and sound frame
-position". That would point that WINE's interpretation is
-correct. (i.e. ignore the extra time)
-
-However, the USB audio driver actually seems to return the total time
-delay as it is useful for synchronization, so follows what media
-players expect. (i.e. take the extra time into account)
-
-I personally believe that the USB audio driver does it right because
-the most important use for snd_pcm_delay() is to achieve
-synchronization between audio and video. However, the other value is
-very important too. Not just for WINE, but also for my own work,
-PulseAudio.
-
-Most of the time the small difference between those two values doesn't
-really matter, since the difference is very small and for classic
-PCI/DMI devices zero. However, with USB I am now encountering this
-problem, because I cannot reliably estimate from the data ALSA supplies me
-with when the next underrun would happen. Also, the WINE people
-are pretty vocal that I am not right with my interepretation of the
-sitaution.
-
-Takashi, Jaroslav, could you please eleborate on this, and explain
-which interpretation is the correct one?
-
-Also, regardless which one is the correct one, could we please add a
-second API function the allows clients to query the other value?
-
-I have already raised this issue in differents words two times before
-[1]. I never got a comment from you on this. So, please please with
-cream on top, respond!
-
-Thank you very much,
-
-Lennart
-
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2008-April/007354.html
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Cheers,
+Mauro
