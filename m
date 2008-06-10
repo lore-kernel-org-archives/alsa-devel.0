@@ -1,20 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Problems regarding alsa-info.sh
-Date: Tue, 10 Jun 2008 10:35:05 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0806101033060.1798@tm8103-a.perex-int.cz>
-References: <1212935251.554.11.camel@temp-fallen>
-	<s5hskvmbv6w.wl%tiwai@suse.de>
-	<1213021163.5323.0.camel@temp-fallen>
-	<Pine.LNX.4.61.0806091624550.1798@tm8103-a.perex-int.cz>
+From: Emmanuel Kasper <emmanuel@libera.cc>
+Subject: Vendor support in Alsa Drivers
+Date: Tue, 10 Jun 2008 11:49:24 +0200
+Message-ID: <484E4E24.1060509@libera.cc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8135703454275822915=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3005424A9A
+Received: from smtp-01.sil.at (smtp-01.sil.at [78.142.186.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B229245C7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jun 2008 10:35:08 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.61.0806091624550.1798@tm8103-a.perex-int.cz>
+	Tue, 10 Jun 2008 11:49:39 +0200 (CEST)
+Received: from [213.129.227.98] by smtp-01.sil.at with esmtp (Exim 4.63)
+	(envelope-from <emmanuel@libera.cc>) id 1K60Ty-0006HZ-RI
+	for alsa-devel@alsa-project.org; Tue, 10 Jun 2008 11:49:39 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +21,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Travis Place <wishie@wishie.net>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 9 Jun 2008, Jaroslav Kysela wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============8135703454275822915==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigBB844FF14ECD1113083C6F08"
 
-> On Tue, 10 Jun 2008, Travis Place wrote:
-> 
-> > Does anyone have the power to update it, just for this one thing ? Im
-> > take it the repo is still up, just not active.
-> 
-> I'll switch the script to new repo and redirect old URL to new 
-> location tomorrow. I'm busy with other things today.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigBB844FF14ECD1113083C6F08
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-As promised, things are clear and maintainable again, now.
+Hello
+With a couple of other french folks, we are building a kind of webshop
+for Linux/FreeBSD compatible hardware. We will reference only devices
+which work with a free driver, so no nvidia binary thingie or atheros HAL=
+=2E
+Based on the information found  on  the alsa wiki we plan to reference
+the following sound devices:
 
-The "official" URLs for download and changelog are:
+M-Audio Audiophile 24/96 (  snd-ice1712 driver )
+Terratec AUREON 5.1
+M-Audio Fast Track usb
+Hercules Muse Pocket LT
+Ion TTUSB usb turnable ( these 4 working with snd-usb-driver )
 
-http://www.alsa-project.org/alsa-info.sh
-http://www.alsa-project.org/alsa-info.sh.changelog
+We would be also interested to indicate on each product description, if
+the vendor of the product, or the chipset maker for that matters had
+been helpful with developers trying to write a free driver. So for the
+devices mentionned above, was any of the vendor helpful by providing
+programming documentation or sample hardware ?
 
-They are redirected on ALSA server to real (but no so nice) URLs to 
-alsa-driver.git repo.
+If yes we will mention it on the product description with an extra tag
+like "programmer friendly"
 
-						Jaroslav
+Regards
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+
+--=20
+Emmanuel Kasper
+System Administrator
+www.libera.cc
+Find, compare, buy Linux & FreeBSD compatible hardware
+
+
+
+
+
+--------------enigBB844FF14ECD1113083C6F08
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFITk4xwfhkdwZoef4RArRoAJ4/yR815S2a8qNfRGP5KV4HJtoaFgCeKJFp
+RUvtbEamNlI67sOKfm7gtys=
+=KB7v
+-----END PGP SIGNATURE-----
+
+--------------enigBB844FF14ECD1113083C6F08--
+
+--===============8135703454275822915==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8135703454275822915==--
