@@ -1,28 +1,22 @@
-From: =?utf-8?b?UmFmYcWC?= =?utf-8?b?TXXFvHnFgm8=?= <galtgendo@o2.pl>
-Subject: Re:
-	=?utf-8?q?What_does_snd=5Fpcm=5Fdelay=28=29_actually?=
-	=?utf-8?q?_return=3F?=
-Date: Tue, 10 Jun 2008 14:01:42 +0000 (UTC)
-Message-ID: <loom.20080610T134958-492@post.gmane.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: What does snd_pcm_delay() actually return?
+Date: Tue, 10 Jun 2008 15:36:02 +0100
+Message-ID: <484E9152.6090908@superbug.co.uk>
 References: <20080609190225.GA4534@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 812AE24783
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net
+	[194.217.242.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4594324363
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jun 2008 16:01:57 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1K64Q4-0007v8-Ut
-	for alsa-devel@alsa-project.org; Tue, 10 Jun 2008 14:01:53 +0000
-Received: from host-89-228-42-12.elk.mm.pl ([89.228.42.12])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jun 2008 14:01:52 +0000
-Received: from galtgendo by host-89-228-42-12.elk.mm.pl with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jun 2008 14:01:52 +0000
+	Tue, 10 Jun 2008 16:36:03 +0200 (CEST)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.0.10])
+	by anchor-post-31.mail.demon.net with esmtp (Exim 4.67)
+	id 1K64x8-000HWQ-59
+	for alsa-devel@alsa-project.org; Tue, 10 Jun 2008 14:36:02 +0000
+In-Reply-To: <20080609190225.GA4534@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,17 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Just to add my 2c: wine 1.0-rc4 kind of "works" with pulseaudio 0.9.10,
-however in a funny kind of way.
-First of all, volume seems quite a bit lower than it should be and volume
-control doesn't seem to work (or at least it's barely noticeable).
-Then there's a silly effect:
-'wine winmm_test wave' sometimes completes with 0-2 failures, sometimes hangs
-(in a random spot).
-I'm using standard pulseaudio asound.conf (from the webpage).
-The strange thing is that wine opens hw:0 for default, while I think that
-asound.conf should have changed that (though I may simple fail to understand
-that file).
+Lennart Poettering wrote:
+> Takashi, Jaroslav,
+> 
+> could you please explain what exactly snd_pcm_delay() returns? 
+> 
+> Some applications (such as WINE) assume it is the time that would pass
+> until we reach an underrun if we would stop writing any further data
+> to the PCM device.
+
+<WRONG>
+
+
+> 
+> Other applications (such as most media players) use it for time
+> synchronisation. i.e. assume that it is the time that passes until a
+> sample I write to a PCM device now would take to be played.
+> 
+
+
+<RIGHT>
