@@ -1,22 +1,19 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: What does 0dB refer to? (Logitech USB Speakers)
-Date: Tue, 10 Jun 2008 01:37:05 +0200
-Message-ID: <484DBEA1.4060409@keyaccess.nl>
-References: <20080411204610.GA32413@tango.0pointer.de>	<20080414172839.GA26513@tango.0pointer.de>	<4803C78A.3020109@superbug.co.uk>	<200804150552.13578.faber@faberman.de>
-	<20080415131203.GA2818@localhost>
-	<4804BCB8.9060707@keyaccess.nl> <48060D2F.2000701@keyaccess.nl>
-	<480618F3.40707@keyaccess.nl> <48061D1F.6060809@keyaccess.nl>
-	<4807B569.6000008@superbug.co.uk> <4807C17F.8030603@keyaccess.nl>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH 1/2] opti93x: add support for Opti93x codec
+ in cs4231-lib
+Date: Tue, 10 Jun 2008 07:04:49 +0200
+Message-ID: <20080610070449.955c9429.krzysztof.h1@poczta.fm>
+References: <20080609230728.273c9e1e.krzysztof.h1@poczta.fm>
+	<484DBB07.1080802@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE5A624A22
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 7201A24A4C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Jun 2008 01:37:03 +0200 (CEST)
-In-Reply-To: <4807C17F.8030603@keyaccess.nl>
+	Tue, 10 Jun 2008 07:02:09 +0200 (CEST)
+In-Reply-To: <484DBB07.1080802@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,79 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 17-04-08 23:30, Rene Herman wrote:
+On Tue, 10 Jun 2008 01:21:43 +0200
+Rene Herman <rene.herman@keyaccess.nl> wrote:
 
->>>>> James, I believe you are the emu10k1 person? Data:
->>>>>
->>>>> TerraTec DMX = ESS Canyon3D (ES1970MS-3D) + Sigmatel STAC9704T
->>>>>
->>>>> Creative Audigy 2 (SB0240) = Creative CA0102-ICT + Sigmatel 
->>>>> STAC9721T (+ Crystal CS4382-KQ which seems to provide digital 
->>>>> attenuation as well)
->>>>>
->>>>> At 0 dB master the Audigy 2 is much louder than the DMX is and 
->>>>> audibly distorts. Judging by hearing, keeping the master at -16 dB 
->>>>> (60 in the integer scale) gets things about the same. Was that 
->>>>> scale provided by datasheet or just guessed? Especially the 
->>>>> distortion would seem to indicate that something is actually doing 
->>>>> analogue amplification at the 0 dB ALSA setting...
->>>>
->>>> Expanding, with the 'Line' control at 0 dB (74 integer) and 'Analog 
->>>> Mix' at 0 dB (100 integer) everything does sound right with both 
->>>> 'Master Capture' and 'Master' at  full, and too faint with 'Master' 
->>>> at -16 dB. I guess this indicates that it's something at the DSP 
->>>> side only? (sort of loosing my way in this bewildering array of 
->>>> controls so if I need to be guided to possibly say sensible things 
->>>> -- please do)
->>>
->>> When I do actually capture, -16 dB master is again the correct 
->>> setting when playing back (with everything else still set to 0 dB as 
->>> described above). It's then equally load as when directly monitored 
->>> during recording. I expect then the Master dB scale needs to be 
->>> adjusted down? If yes, I'll try to make very, very sure that -16 dB 
->>> now is the correct new 0 dB.
->>
->> Can we narrow this down a bit please.
->> Run speaker-test -c2 -twav
->> Do the test to each sound card with alsamixer set to 0dB for most 
->> controls accept the master, and leave the master at a sensible setting 
->> for your setup so that you can hear sound at a sensible level
->> With the same dB values on the Andigy 2 and DMX, do you get the same 
->> loudness of sound output to the speakers?
+> On 09-06-08 23:07, Krzysztof Helt wrote:
 > 
-> Very much not. Sorry, it seems the report (unsnipped above) got a little 
-> confusing due to the followups but with everything at 0 dB on both DMX 
-> and Audigy 2, the Audigy 2 is much louder and distorts.
+> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> > 
+> > This patch adds support for WSS compatible Opti93x
+> > codec to the cs4231-lib.
+> > 
+> > Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+> > 
+> > ---
+> > This patch was sent some time ago but was not accepted
+> > due to regression of the driver on the  opti 930 chip.
+> > The regression is fixed with already accepted patch, so 
+> > it should work now. 
 > 
-> DMX has 'PCM' -34.5 --> +12 dB and 'Master' -46.5 --> 0 dB. I always 
-> keep both at 0 dB for a good, comfortable level (adjusted further 
-> externally).
+> Could you elaborate a bit? Yesterday's patch removing the QS1000 from 
+> 82C930 fixed the 930 staying silent but the regression this introduced 
+> previously at least appeared to be a different one.
 > 
-> Audigy 2 'Front' and 'Wave' are both  at 0 dB (max) (everything default 
-> in fact) and with 'Master' at 0 dB, it's much louder then the DMX. 
-> Setting 'Master' to -16 dB (60) gets things the same.
+> Post QS1000, 82C930 appeared to work fine, just didn't actually produce 
+> a signal onto its analog out. Post CS4231, 82C930 wasn't just silent but 
+> didn't even generate any interrupts anymore.
 > 
->> I would like to find out if the problem is in the playback path, or 
->> the capture path.
-> 
-> Playback I'd say and I personally consider DMX right here, due to the 
-> distortion from the Audigy.
-> 
-> Only introduced capture into the story above as "additional evidence" 
-> where I could do a a comparison using only the Audigy itself and not the 
-> DMX: with everything at 0 dB in the capture direction, a captured file 
-> needs to be played back at -16 dB 'Master' to be equally loud to what I 
-> hear _during_ capturing as well ("hear" from 'Analog Mix' at 0 dB). So I 
-> get the feeling it's a simple matter of transposing 0 dB on the Master 
-> scale for the Audigy (ie, new 0 dB is old -16 dB).
-> 
-> I should have another emu10k1 driven card here somewhere. Is it useful 
-> if I try to dig it up and see if the story's the same on it?
 
-Was this a useful report?
+It seems that setting something in the digital input register broke sound
+on the Opti930 before cs4321 patches (silence) and after using cs4231 library
+(no interrupts). 
 
-Rene.
+> I didn't compare with your old code...
+> 
+
+No changes in the code. Finally, I hunted the opti 930 on an online auction, so
+I was able to test the old patches. After the QS1000 patch everything got
+magically fixed and no changes were required.
+
+> 
+> also on 930, 931 and 933 for playback, capture on 930 and 931. So 
+> whatever the answer to the above, it appears that problem is now also 
+> fixed. Which is very good; this is a rather welcome unification/cleanup 
+> as far as I'm concerned.
+> 
+> The mixer levels do seem different between the old and new driver. Does 
+> that make sense? The new one appears to  be a bit louder so there might 
+> be an offset issue somewhere I suppose. I didn't compare that closely.
+> 
+
+I will check this. I haven't had time yet. I will try investigating this week.
+
+Regards,
+Krzysztof
+
+---------------------------------------------------------------
+Sprawdz jak zdobyc zdrowy usmiech!
+Kliknij >> http://link.interia.pl/f1e26
