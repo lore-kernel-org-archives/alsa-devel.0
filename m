@@ -1,17 +1,23 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: Vendor support in Alsa Drivers
-Date: Wed, 11 Jun 2008 10:09:57 -0700
-Message-ID: <1213204197.19326.132.camel@razman>
-References: <484E4E24.1060509@libera.cc>  <s5h4p802ahz.wl%tiwai@suse.de>
+From: "Christian Morales Vega" <cmorve69@yahoo.es>
+Subject: Re: snd_pcm_avail_update() needed before
+	snd_pcm_delay() with hda-intel
+Date: Wed, 11 Jun 2008 20:07:28 +0200
+Message-ID: <8235e6f40806111107h61e2853csde88ef9a7207d4c@mail.gmail.com>
+References: <8235e6f40806061254v41604524l4e43647482602098@mail.gmail.com>
+	<75b66ecd0806061746r1f542ed2i6c966465c1475152@mail.gmail.com>
+	<8235e6f40806062325v974543bn35c4a40fcfdf2677@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id D843124842
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6EA0248AF
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Jun 2008 19:10:00 +0200 (CEST)
-In-Reply-To: <s5h4p802ahz.wl%tiwai@suse.de>
+	Wed, 11 Jun 2008 20:07:29 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so2862902rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jun 2008 11:07:28 -0700 (PDT)
+In-Reply-To: <8235e6f40806062325v974543bn35c4a40fcfdf2677@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,71 +27,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Emmanuel Kasper <emmanuel@libera.cc>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just an addendum to this, I have had good support for most of the
-on-board Intel HD audio codec vendors, most of which have been generous
-enough to send me development boards, and most of them have their codec
-specs posted on their web sites.  Unfortunately, lately I have been too
-overwhelmed with other activities to do much more than read emails, but
-I'm almost done with my degree program so I'll be jumping back into the
-developers pool soon.
-
-Tobin
-
-On Wed, 2008-06-11 at 18:37 +0200, Takashi Iwai wrote:
-
-> At Tue, 10 Jun 2008 11:49:24 +0200,
-> Emmanuel Kasper wrote:
-> > 
-> > Hello
-> > With a couple of other french folks, we are building a kind of webshop
-> > for Linux/FreeBSD compatible hardware. We will reference only devices
-> > which work with a free driver, so no nvidia binary thingie or atheros HAL.
-> > Based on the information found  on  the alsa wiki we plan to reference
-> > the following sound devices:
-> > 
-> > M-Audio Audiophile 24/96 (  snd-ice1712 driver )
-> > Terratec AUREON 5.1
-> > M-Audio Fast Track usb
-> > Hercules Muse Pocket LT
-> > Ion TTUSB usb turnable ( these 4 working with snd-usb-driver )
-> > 
-> > We would be also interested to indicate on each product description, if
-> > the vendor of the product, or the chipset maker for that matters had
-> > been helpful with developers trying to write a free driver. So for the
-> > devices mentionned above, was any of the vendor helpful by providing
-> > programming documentation or sample hardware ?
-> 
-> We have a good contact with M-Audio.  The above two devices were
-> provided once for testing by M-Audio indeed.
-> 
-> The datasheet is another question -- for USB devices, it's often
-> harder than PCI devices (by unknown reasons).
-> 
-> Terratec Aureon 5.1 (which model, BTW?) isn't well tested by
-> developers.  We had once good contact with Terratec, and lost again.
-> 
-> AFAIK, no one had a contact with Hercules.
-> I don't know about Ion.  Possibly Clemens had any contact?
-> But, if the USB device works "as is", then it's all fine, even without
-> a datasheet or a test device.  It means that the device is compliant
-> to USB-standard protocol.  The bad case is that the device requires
-> special vendor-specific protocols (often called "advanced mode").
-> 
-> 
-> HTH,
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- 
-Tobin Davis 
-
-
-It's the thought, if any, that counts!
+2008/6/7 Christian Morales Vega <cmorve69@yahoo.es>:
+>> Is this with the latest ALSA HG sources?
+> openSUSE Build Service multimedia:audio packages:
+> - alsa-1.0.16.hg20080510
+> - libasound2-1.0.16.hg20080510
+> - alsa-driver-kmp-default-1.0.16.20080606_2.6.22.17_0.1
+Since there have been a big update (a month, from 05-10 to 06-10),
+just note that with
+- alsa-1.0.17rc1.git20080610-1.1
+- libasound2-1.0.17rc1.git20080610-1.2
+- alsa-driver-kmp-default-1.0.16.20080611_2.6.22.17_0.1-1.1
+that now really is something similar to the latest sources, the
+behavior is the same.
