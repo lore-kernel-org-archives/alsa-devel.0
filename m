@@ -1,21 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 05/10] ASoC: Pass the DAI being configured into
-	CPU DAI probe and remove
-Date: Wed, 11 Jun 2008 13:47:10 +0100
-Message-ID: <1213188435-1986-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 09/10] ASoC: Add TLV information to the LM4857
+	controls on the GTA01
+Date: Wed, 11 Jun 2008 13:47:14 +0100
+Message-ID: <1213188435-1986-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1213188435-1986-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1213188435-1986-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1213188435-1986-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1213188435-1986-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1213188435-1986-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1213188435-1986-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1213188435-1986-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1213188435-1986-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 76DC624825
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7706224827
 	for <alsa-devel@alsa-project.org>;
 	Wed, 11 Jun 2008 14:47:17 +0200 (CEST)
-In-Reply-To: <1213188435-1986-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1213188435-1986-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,159 +30,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Mike Montour <mail@mmontour.net>
 List-Id: alsa-devel@alsa-project.org
 
-This allows per-DAI initialisation to be done by the CPU DAI drivers.
+From: Mike Montour <mail@mmontour.net>
 
+Signed-off-by: Mike Montour <mail@mmontour.net>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h              |    6 ++++--
- sound/soc/davinci/davinci-i2s.c  |    6 ++++--
- sound/soc/pxa/pxa2xx-ac97.c      |    3 ++-
- sound/soc/s3c24xx/s3c2412-i2s.c  |    3 ++-
- sound/soc/s3c24xx/s3c2443-ac97.c |    6 ++++--
- sound/soc/s3c24xx/s3c24xx-i2s.c  |    3 ++-
- sound/soc/soc-core.c             |    6 +++---
- 7 files changed, 21 insertions(+), 12 deletions(-)
+ sound/soc/s3c24xx/neo1973_wm8753.c |   16 ++++++++++------
+ 1 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 9fa2093..56d2224 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -358,8 +358,10 @@ struct snd_soc_cpu_dai {
- 	unsigned char type;
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index c1a0161..3485123 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -22,6 +22,7 @@
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
++#include <sound/tlv.h>
  
- 	/* DAI callbacks */
--	int (*probe)(struct platform_device *pdev);
--	void (*remove)(struct platform_device *pdev);
-+	int (*probe)(struct platform_device *pdev,
-+		     struct snd_soc_cpu_dai *dai);
-+	void (*remove)(struct platform_device *pdev,
-+		       struct snd_soc_cpu_dai *dai);
- 	int (*suspend)(struct platform_device *pdev,
- 		struct snd_soc_cpu_dai *cpu_dai);
- 	int (*resume)(struct platform_device *pdev,
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index c421774..c3b545c 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -295,7 +295,8 @@ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
--static int davinci_i2s_probe(struct platform_device *pdev)
-+static int davinci_i2s_probe(struct platform_device *pdev,
-+			     struct snd_soc_cpu_dai *dai)
- {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct snd_soc_machine *machine = socdev->machine;
-@@ -356,7 +357,8 @@ err_release_region:
- 	return ret;
- }
- 
--static void davinci_i2s_remove(struct platform_device *pdev)
-+static void davinci_i2s_remove(struct platform_device *pdev,
-+			       struct snd_soc_cpu_dai *dai)
- {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct snd_soc_machine *machine = socdev->machine;
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 97ec2d9..cb94795 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -310,7 +310,8 @@ static int pxa2xx_ac97_resume(struct platform_device *pdev,
- #define pxa2xx_ac97_resume	NULL
- #endif
- 
--static int pxa2xx_ac97_probe(struct platform_device *pdev)
-+static int pxa2xx_ac97_probe(struct platform_device *pdev,
-+			     struct snd_soc_cpu_dai *dai)
- {
- 	int ret;
- 
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index c4a46dd..c463a82 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -601,7 +601,8 @@ struct clk *s3c2412_get_iisclk(void)
- EXPORT_SYMBOL_GPL(s3c2412_get_iisclk);
- 
- 
--static int s3c2412_i2s_probe(struct platform_device *pdev)
-+static int s3c2412_i2s_probe(struct platform_device *pdev,
-+			     struct snd_soc_cpu_dai *dai)
- {
- 	DBG("Entered %s\n", __func__);
- 
-diff --git a/sound/soc/s3c24xx/s3c2443-ac97.c b/sound/soc/s3c24xx/s3c2443-ac97.c
-index 0eed140..533565b 100644
---- a/sound/soc/s3c24xx/s3c2443-ac97.c
-+++ b/sound/soc/s3c24xx/s3c2443-ac97.c
-@@ -209,7 +209,8 @@ static struct s3c24xx_pcm_dma_params s3c2443_ac97_mic_mono_in = {
- 	.dma_size	= 4,
+ #include <asm/mach-types.h>
+ #include <asm/hardware/scoop.h>
+@@ -474,13 +475,16 @@ static const struct soc_enum neo_scenario_enum[] = {
+ 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(neo_scenarios), neo_scenarios),
  };
  
--static int s3c2443_ac97_probe(struct platform_device *pdev)
-+static int s3c2443_ac97_probe(struct platform_device *pdev,
-+			      struct snd_soc_cpu_dai *dai)
- {
- 	int ret;
- 	u32 ac_glbctrl;
-@@ -260,7 +261,8 @@ static int s3c2443_ac97_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static void s3c2443_ac97_remove(struct platform_device *pdev)
-+static void s3c2443_ac97_remove(struct platform_device *pdev,
-+				struct snd_soc_cpu_dai *dai)
- {
- 	free_irq(IRQ_S3C244x_AC97, NULL);
- 	clk_disable(s3c24xx_ac97.ac97_clk);
-diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
-index 4c52f79..42e96b5 100644
---- a/sound/soc/s3c24xx/s3c24xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
-@@ -377,7 +377,8 @@ u32 s3c24xx_i2s_get_clockrate(void)
- }
- EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
- 
--static int s3c24xx_i2s_probe(struct platform_device *pdev)
-+static int s3c24xx_i2s_probe(struct platform_device *pdev,
-+			     struct snd_soc_cpu_dai *dai)
- {
- 	DBG("Entered %s\n", __func__);
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f594ab8..c96a618 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -768,7 +768,7 @@ static int soc_probe(struct platform_device *pdev)
- 	for (i = 0; i < machine->num_links; i++) {
- 		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->probe) {
--			ret = cpu_dai->probe(pdev);
-+			ret = cpu_dai->probe(pdev, cpu_dai);
- 			if (ret < 0)
- 				goto cpu_dai_err;
- 		}
-@@ -798,7 +798,7 @@ cpu_dai_err:
- 	for (i--; i >= 0; i--) {
- 		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->remove)
--			cpu_dai->remove(pdev);
-+			cpu_dai->remove(pdev, cpu_dai);
- 	}
- 
- 	if (machine->remove)
-@@ -827,7 +827,7 @@ static int soc_remove(struct platform_device *pdev)
- 	for (i = 0; i < machine->num_links; i++) {
- 		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->remove)
--			cpu_dai->remove(pdev);
-+			cpu_dai->remove(pdev, cpu_dai);
- 	}
- 
- 	if (machine->remove)
++static const DECLARE_TLV_DB_SCALE(stereo_tlv, -4050, 150, 0);
++static const DECLARE_TLV_DB_SCALE(mono_tlv, -3450, 150, 0);
++
+ static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
+-	SOC_SINGLE_EXT("Amp Left Playback Volume", LM4857_LVOL, 0, 31, 0,
+-		lm4857_get_reg, lm4857_set_reg),
+-	SOC_SINGLE_EXT("Amp Right Playback Volume", LM4857_RVOL, 0, 31, 0,
+-		lm4857_get_reg, lm4857_set_reg),
+-	SOC_SINGLE_EXT("Amp Mono Playback Volume", LM4857_MVOL, 0, 31, 0,
+-		lm4857_get_reg, lm4857_set_reg),
++	SOC_SINGLE_EXT_TLV("Amp Left Playback Volume", LM4857_LVOL, 0, 31, 0,
++		lm4857_get_reg, lm4857_set_reg, stereo_tlv),
++	SOC_SINGLE_EXT_TLV("Amp Right Playback Volume", LM4857_RVOL, 0, 31, 0,
++		lm4857_get_reg, lm4857_set_reg, stereo_tlv),
++	SOC_SINGLE_EXT_TLV("Amp Mono Playback Volume", LM4857_MVOL, 0, 31, 0,
++		lm4857_get_reg, lm4857_set_reg, mono_tlv),
+ 	SOC_ENUM_EXT("Amp Mode", lm4857_mode_enum[0],
+ 		lm4857_get_mode, lm4857_set_mode),
+ 	SOC_ENUM_EXT("Neo Mode", neo_scenario_enum[0],
 -- 
 1.5.5.3
