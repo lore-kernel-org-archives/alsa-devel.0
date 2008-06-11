@@ -1,45 +1,26 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [PATCH 03/10] ASoC: Tweak tlv320aicx reg_cache_size
-Date: Wed, 11 Jun 2008 16:07:57 +0300
-Message-ID: <20080611160757.be4be6ee.jarkko.nikula@nokia.com>
-References: <1213188435-1986-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1213188435-1986-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1213188435-1986-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: RE: [PATCH] sound: emu10k1 - fix system hang with Audigy2 ZS Notebook PCMCIA
+Date: Wed, 11 Jun 2008 08:21:09 -0700 (PDT)
+Message-ID: <839605.45533.qm@web52911.mail.re2.yahoo.com>
+Reply-To: rankincj@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E5BC2481B
-	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Jun 2008 15:07:39 +0200 (CEST)
-In-Reply-To: <1213188435-1986-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1761259AbYFKPVU@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 11 Jun 2008 13:47:08 +0100
-"ext Mark Brown" <broonie@opensource.wolfsonmicro.com> wrote:
+Hi,
 
-> ASoC codec drivers frequently set the register cache size using sizeof
-> () rather than ARRAY_SIZE(). For tlv320aicx either is correct since
-> the registers are 8 bit but update to use ARRAY_SIZE() for clarity.
-> =
+I can't say whether this patch fixes the hang at boot-time with the Audigy2 ZS Notebook card, but my workstation with its Audigy 2 PCI card boots a LOT more quietly with this patch. It used to make a sound like a herd of stampeding elephants rushing past (and had done for quiet a while...), but now is far better behaved.
 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
-> ---
->  sound/soc/codecs/tlv320aic3x.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> =
+Cheers,
+Chris
 
-Acked-by: Jarkko Nikula=A0<jarkko.nikula@nokia.com>
+
+
+      __________________________________________________________
+Sent from Yahoo! Mail.
+A Smarter Email http://uk.docs.yahoo.com/nowyoucan.html
