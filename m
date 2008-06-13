@@ -1,23 +1,25 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: What does snd_pcm_delay() actually return?
-Date: Fri, 13 Jun 2008 16:29:23 +0200
-Message-ID: <20080613142923.GC21255@tango.0pointer.de>
-References: <20080609190225.GA4534@tango.0pointer.de>
-	<s5h1w333o7r.wl%tiwai@suse.de>
-	<20080612205225.GB20818@tango.0pointer.de>
-	<s5hfxrhhnff.wl%tiwai@suse.de>
-	<20080613135128.GA21255@tango.0pointer.de>
-	<Pine.LNX.4.61.0806131553450.1798@tm8103-a.perex-int.cz>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: [PATCH][ASoC v2] Update Freescale MPC8610HPCD
+	fabric driver to support multiple codecs
+Date: Fri, 13 Jun 2008 10:29:16 -0400
+Message-ID: <9e4733910806130729u1bdf5159n5fd820e4e644573a@mail.gmail.com>
+References: <1213315299-30592-1-git-send-email-timur@freescale.com>
+	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
+	<20080613134206.GA29575@rakim.wolfsonmicro.main>
+	<9e4733910806130710k38c45e18p29188e1426851339@mail.gmail.com>
+	<4852837C.6050401@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9540D103817
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE94F2447D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 16:29:23 +0200 (CEST)
+	Fri, 13 Jun 2008 16:29:17 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so3619799rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2008 07:29:16 -0700 (PDT)
+In-Reply-To: <4852837C.6050401@freescale.com>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0806131553450.1798@tm8103-a.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,36 +29,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13.06.08 15:55, Jaroslav Kysela (perex@perex.cz) wrote:
+On 6/13/08, Timur Tabi <timur@freescale.com> wrote:
+> Jon Smirl wrote:
+>  > On 6/13/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+>  >> On Thu, Jun 12, 2008 at 10:57:39PM -0400, Jon Smirl wrote:
+>  >>
+>  >>  > In my model a lot of the code in your fabric driver would be pushed
+>  >>  > into the ssi driver. So if you used ssi and a codec in the standard
+>  >>  > manner, the board wouldn't need a fabric driver at all. That would
+>  >>  > probably be the case for most AC97/HDA systems.
+>  >>
+>  >>
+>  >> I'd certainly like to see some standard support for setting up at least
+>  >>  AC97 DAI links automatically based on the probed codec.  That bit could
+>  >>  probably be done by the core.  HDA should be amenable to this model too
+>  >>  but I haven't looked at it in anything more than passing detail yet.
+>  >>
+>  >>  That's only part of the story, though.  What's much more tricky is
+>  >>  making the decision that you've got all the components for the sound
+>  >>  subsystem - for example, there are AC97 codecs like the WM9712 and
+>  >>  WM9713 which also have I2S interfaces.  You also get systems which need
+>  >>  to jump through hoops to set up the clocking since they're doing
+>  >>  non-standard things.  Simple systems would probably need an explict flag
+>  >>  to say that they could be handled as such, which isn't a million miles
+>  >>  off having something to load a generic machine driver.
+>  >
+>  > We can't eliminate a fabric driver is all cases, I'd just like to
+>  > minimize its need. This code has the card and codec creation code in
+>  > the fabric driver, I would push down into the ssi driver. Code in the
+>  > ssi would locate the codec and load it. The model needs to be able to
+>  > function if there is no need for a fabric driver.
+>
+>
+> Like I said earlier, I don't like this idea.  I don't want all this gunk in the
+>  SSI driver, and I don't see anything wrong with the fabric driver being the
+>  master that sets up all the inter-device connections.
 
-> On Fri, 13 Jun 2008, Lennart Poettering wrote:
-> 
-> > c) snd_pcm_hw_params_get_buffer_size() - snd_pcm_update_avail()
-> >    returns the fill level, but only works on mmap.
-> 
-> snd_pcm_update_avail() works (or should work) also for standard r/w
-> ops.
+That forces every board to copy/paste the fabric driver and then makes
+tweaks to it even if it doesn't need board specific code.
 
-Ok, so it's just the documentation that needs fixing? Quoting: "Using
-of this function is useless for the standard read/write
-operations. Use it only for mmap access."
 
-> > d) The snd_pcm_hw_params_get_fifo_size() was supposed to return the
-> >    'difference' between a) and c), but was never actually used
-> >    for that.
-> 
-> Nope. It's maximum latency added by an extra fifo/queue (it does not 
-> depend if it's hw or sw fifo). For variable fifo size, we need to extend 
-> API.
+>  > That also flips things around, now the ssi driver needs to locate the
+>  > fabric driver, not the other way around. In this model the fabric
+>  > driver doesn't need to make a device, it just becomes a library of
+>  > code called by the ssi driver.
+>
+>
+> The DMA driver is already a library that is called by the SSI.  It registers
+>  itself as a regular driver, but under ASoC V2, it really acts like a library.
+>
+>
+>  > Code in the ssi driver could make a
+>  > list of codec parameters, pass it to the fabric driver for
+>  > modification, and then set it into the codec.
+>
+>
+> That sounds too complicated.
+>
+>
+>  > We're missing a cross platform way to set parameters into a codec.
+>
+>
+> No we're not.  ASoC already provides an API for sending parameters to a codec,
+>  and if we need more than that, we can create platform resources and pass those
+>  to the codec.
+>
+>
+>  --
+>  Timur Tabi
+>  Linux kernel developer at Freescale
+>
 
-Ok, so it's an upper ceiling for the difference between a) and c), right?
-
-Lennart
 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Jon Smirl
+jonsmirl@gmail.com
