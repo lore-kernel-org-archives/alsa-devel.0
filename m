@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH][ASoC v2] Update Freescale
-	MPC8610HPCD	fabric driver to support multiple codecs
-Date: Fri, 13 Jun 2008 14:42:06 +0100
-Message-ID: <20080613134206.GA29575@rakim.wolfsonmicro.main>
-References: <1213315299-30592-1-git-send-email-timur@freescale.com>
-	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: What does snd_pcm_delay() actually return?
+Date: Fri, 13 Jun 2008 15:51:29 +0200
+Message-ID: <20080613135128.GA21255@tango.0pointer.de>
+References: <20080609190225.GA4534@tango.0pointer.de>
+	<s5h1w333o7r.wl%tiwai@suse.de>
+	<20080612205225.GB20818@tango.0pointer.de>
+	<s5hfxrhhnff.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9D421244DF
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id B31961037F3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 15:42:07 +0200 (CEST)
+	Fri, 13 Jun 2008 15:51:29 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
+In-Reply-To: <s5hfxrhhnff.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 12, 2008 at 10:57:39PM -0400, Jon Smirl wrote:
+On Fri, 13.06.08 08:13, Takashi Iwai (tiwai@suse.de) wrote:
 
-> In my model a lot of the code in your fabric driver would be pushed
-> into the ssi driver. So if you used ssi and a codec in the standard
-> manner, the board wouldn't need a fabric driver at all. That would
-> probably be the case for most AC97/HDA systems.
+> > uh? I think we have a misunderstanding here. What you are explaining
+> > here would suggest that the first answer is the right one, but you
+> > actually claim it is the second one? This doesn't make sense to me.
+> > 
+> > As far as I understood the "hw_ptr" is the index where the PCM data is
+> > *read* from the playback buffer, While "appl_ptr" is where the data is
+> > *written* to the playback buffer. Right?
+> 
+> No, the hwptr is the point whether the data is being played... well,
+> ideally.  The hwptr can behind the actual point.  But, it shouldn't be
+> ahead the actual point.
 
-I'd certainly like to see some standard support for setting up at least
-AC97 DAI links automatically based on the probed codec.  That bit could
-probably be done by the core.  HDA should be amenable to this model too
-but I haven't looked at it in anything more than passing detail yet.
+Ah, that's good to know. Thanks for the clarification!
 
-That's only part of the story, though.  What's much more tricky is
-making the decision that you've got all the components for the sound
-subsystem - for example, there are AC97 codecs like the WM9712 and
-WM9713 which also have I2S interfaces.  You also get systems which need
-to jump through hoops to set up the clocking since they're doing
-non-standard things.  Simple systems would probably need an explict flag
-to say that they could be handled as such, which isn't a million miles
-off having something to load a generic machine driver.
+> > However, since the data is not dma'd
+> > sample-by-sample but in a block at a time, the sample that is
+> > currently hearable is still quite a bit before this index. Right? And
+> > hence would snd_pcm_delay() when always defined as "appl_ptr - hw_ptr"
+> > not really be suitable for synchronization because the hw_ptr is
+> > always a bit ahead of what is actually being played -- and WINE's
+> > interpretation would be right and the media player's (and mine)
+> > wrong. In contrast to what James and you just said.
+> 
+> It's a problem of usb-driver.
 
-Things get a lot more tricky for I2S due to the complexity of the
-available clocking configurations - there are so many possible ways of
-connecting devices, especially once you start to take into account codec
-internal clocking and systems which support more than two devices 
+OK, so to summarize the situation:
+
+a) snd_pcm_delay() should actually return write-to-hear latency. And
+   is supposed to be called *before* the next write and it will tell
+   you when that next write will reach the speakers, in the sound card
+   device time domain. For networked outputs it will most likely never 
+   return 0.
+
+b) for the usb driver this is however broken and it returns the fill
+   level of the playback buffer
+
+c) snd_pcm_hw_params_get_buffer_size() - snd_pcm_update_avail()
+   returns the fill level, but only works on mmap.
+
+d) The snd_pcm_hw_params_get_fifo_size() was supposed to return the
+   'difference' between a) and c), but was never actually used
+   for that.
+
+(Since this matches Lennart's original interpretation of the situation
+he's now happy... ;-))
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
