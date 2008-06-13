@@ -1,17 +1,18 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: ALSA 1.0.17rc1 release
-Date: Fri, 13 Jun 2008 11:16:51 +0100
-Message-ID: <200806131116.51894.gineera@aspect135.co.uk>
-References: <Pine.LNX.4.61.0806061059040.1798@tm8103-a.perex-int.cz>
+From: Juergen Beisert <jbe@pengutronix.de>
+Subject: Re: Names for ALSA controls
+Date: Fri, 13 Jun 2008 12:08:31 +0200
+Message-ID: <200806131208.31381.jbe@pengutronix.de>
+References: <200806121158.20112.jbe@pengutronix.de>
+	<s5hmylr0wwc.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (smtp-out-1.talktalk.net [62.24.128.231])
-	by alsa0.perex.cz (Postfix) with ESMTP id A582424486
+Received: from metis.extern.pengutronix.de (metis.extern.pengutronix.de
+	[83.236.181.26]) by alsa0.perex.cz (Postfix) with ESMTP id E245224486
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 12:07:05 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.61.0806061059040.1798@tm8103-a.perex-int.cz>
+	Fri, 13 Jun 2008 12:08:36 +0200 (CEST)
+In-Reply-To: <s5hmylr0wwc.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,42 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Build problem with released 1.0.17rc1 driver package on kernel 2.4.21-99 
-(Suse9.0):
+On Thursday 12 June 2008 12:29, Takashi Iwai wrote:
+> At Thu, 12 Jun 2008 11:58:19 +0200,
+> Juergen Beisert wrote:
+> > Hi,
+> >
+> > when I register these mixer controls:
+> >
+> > Line Playback Switch
+> > Line Playback Route
+> > Mono Playback Switch
+> > Mono Playback Route
+> > Phone Playback Switch
+> > Phone Playback Route
+> > Headphone Playback Switch
+> > Headphone Playback Route
+> > PCM Playback Switch
+> > PCM Playback Volume
+> > Line Bypass Capture Switch
+> > Line Bypass Capture Volume
+> > ADC Capture Route
+> >
+> > Running "alsamixer" fails with:
+> >
+> >  ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Headphone
+> > Playback Switch',0,0,0) appears twice or more
+> >
+> > It seems there are restrictions what kind of control name I can use for
+> > each control, but what restrictions? Are there better names for my outp=
+ut
+> > amplifiers? Each of it I can enable/disable (-> Switch) and select a
+> > source (-> Route) independently.
+>
+> You can use "xxx Source" instead of "xxx Route", I guess, as a
+> workaround.
 
-Compiling all modules:
+I changed my controls to a single enumerated type instead of a switch and =
 
-ld  -r -o snd-ens1370.o ens1370.o ak4531_codec.o
-ak4531_codec.o(.modinfo+0x40): multiple definition of `__module_author'
-ens1370.o(.modinfo+0x40): first defined here
-ld: Warning: size of symbol `__module_author' changed from 79 in ens1370.o to 
-40 in ak4531_codec.o
-ak4531_codec.o(.modinfo+0x80): multiple definition of `__module_description'
-ens1370.o(.modinfo+0xa0): first defined here
-ld: Warning: size of symbol `__module_description' changed from 36 in 
-ens1370.o to 48 in ak4531_codec.o
-make[1]: *** [snd-ens1370.o] Error 1
-make[1]: Leaving directory `/usr/share/alsa1.0.17rc1/alsa-driver-1.0.17rc1/
-pci'
-make: *** [compile] Error 1
+route. Now with shown words like "Off", "Source1", "Source2" its easier to =
 
-Compiling my usual au8820,ice1712,ymfpci:
+understand, what this control does. Thanks for your hint.
 
-make[2]: Entering directory `/usr/share/alsa1.0.17rc1/alsa-driver-1.0.17rc1/
-pci/ac97'
-make[2]: *** No rule to make target `ak4531_codec.c', needed by 
-`ac97_codec.o'.  Stop.
-make[2]: Leaving directory `/usr/share/alsa1.0.17rc1/alsa-driver-1.0.17rc1/
-pci/ac97'
-make[1]: *** [_modsubdir_ac97] Error 2
-make[1]: Leaving directory `/usr/share/alsa1.0.17rc1/alsa-driver-1.0.17rc1/
-pci'
-make: *** [compile] Error 1
+Juergen
 
-Any other info needed?
+-- =
 
-Alan
+Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
+=A0Pengutronix - Linux Solutions for Science and Industry
+=A0   Handelsregister: Amtsgericht Hildesheim, HRA 2686
+=A0 =A0 =A0    Vertretung Sued/Muenchen, Germany
+   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
