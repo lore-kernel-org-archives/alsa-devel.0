@@ -1,20 +1,19 @@
-From: linuxconsole@free.fr
-Subject: alsa and 2.6.25.4 kernel
-Date: Fri, 13 Jun 2008 19:02:40 +0200
-Message-ID: <1213376560.4852a830e906b@imp.free.fr>
+From: Travis Place <wishie@wishie.net>
+Subject: Problem regarding CA0106
+Date: Sat, 14 Jun 2008 03:18:33 +1000
+Message-ID: <1213377513.27630.5.camel@temp-fallen>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wmproxy1-g27.free.fr (wmproxy1-g27.free.fr [212.27.42.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 683BC24495
+Received: from www.wishie.net (202-137-100-089.dial.usertools.net
+	[202.137.100.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id 442AA103822
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 19:04:29 +0200 (CEST)
-Received: from imp7-g19.priv.proxad.net (imp7-g19.priv.proxad.net
-	[172.20.243.49])
-	by wmproxy1-g27.free.fr (Postfix) with ESMTP id 9BD8E2A03F
-	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 19:04:30 +0200 (CEST)
+	Fri, 13 Jun 2008 19:17:38 +0200 (CEST)
+Received: from [192.168.0.7] (unknown [192.168.0.200])
+	by www.wishie.net (Postfix) with ESMTP id 302BB2E9F9
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2008 17:39:08 +1000 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,30 +26,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Just been speaking with a guy in #alsa about the problems with his "MSI
+K8N Diamond MB" which has an onboard "SB Live 24bit" or "Audigy".
 
-I can't play sound or use mixer with alsa on 2.6.25.4 kernel.
+While looking through ca0106_main.c in GIT, i saw the following section:
 
-I tried all alsa-libs (1.16, 1.17rc1, hg) without success.
+/* MSI K8N Diamond Motherboard with onboard SB Live 24bit without AC97
+*/
+	 /* SB0438
+	  * CTRL:CA0106-DAT
+	  * ADC: WM8775SEDS
+	  * DAC: CS4382-KQZ
+	  */
+	 { .serial = 0x10091462,
+	   .name   = "MSI K8N Diamond MB [SB0438]",
+	   .gpio_type = 2,
+	   .i2c_adc = 1 } ,
 
-the file /proc/asound/cards is :
+For this guys sound to work, we had to change the serial line to:
 
-cat /proc/asound/cards
- 0 [NVidia         ]: HDA-Intel - HDA NVidia
-                      HDA NVidia at 0xf0100000 irq 18
+	 { .serial = 0x10091102,
 
- strace -e open amixer :
+Seems to be a bit hackish, and maybe some more investigation is required, but, it got sound to work, and the card is recognised.
 
-...
-open("/dev/snd/controlC0", O_RDONLY)    = -1 ENODEV (No such device)
-open("/dev/aloadC0", O_RDONLY)          = -1 ENODEV (No such device)
+Perhaps there is (for some odd reason) 2 variants of the onboard sound on that motherboard (Perhaps a rev 1.0 and rev 1.1 motherboard difference?)
 
-ls -l /dev/snd/controlC0
-crw-rwxrw- 1 root users 116, 0 Aug 23  2004 /dev/snd/controlC0
+Let me know if any more information is required, or if I can just make and submit a patch (ill add a new section for the new card, not the hackish way).
 
-
-what happens ???
-
-Regards.
-
-Yann.
+Thanks,
+Travis Place
