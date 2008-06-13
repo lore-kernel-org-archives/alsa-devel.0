@@ -1,23 +1,22 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: git-http interface to ALSA git repositories?
-Date: Fri, 13 Jun 2008 10:44:15 -0500
-Message-ID: <485295CF.2080802@freescale.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: What does snd_pcm_delay() actually return?
+Date: Fri, 13 Jun 2008 17:44:24 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0806131733180.1798@tm8103-a.perex-int.cz>
+References: <20080609190225.GA4534@tango.0pointer.de>
+	<s5h1w333o7r.wl%tiwai@suse.de>
+	<20080612205225.GB20818@tango.0pointer.de>
+	<s5hd4mlhlau.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0806130958000.1798@tm8103-a.perex-int.cz>
+	<s5hr6b1qrri.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42B4E103834
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id B123F103846
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 17:44:19 +0200 (CEST)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
-	m5DFiGnu020619
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2008 08:44:16 -0700 (MST)
-Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
-	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m5DFiFad025723
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2008 10:44:15 -0500 (CDT)
+	Fri, 13 Jun 2008 17:44:26 +0200 (CEST)
+In-Reply-To: <s5hr6b1qrri.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,12 +26,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
-My company's firewall blocks the git protocol, so I need to use http:// to clone
-git repositories.  What is the http path for the ALSA git repository?
+On Fri, 13 Jun 2008, Takashi Iwai wrote:
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+> > >     Ditto, or we may reuse snd_pcm_hw_params_fifo_size()?
+> > 
+> > Yes, fifo_size was designed to announce possible extra latency to 
+> > applications.
+> 
+> On the second thought, it's better *not* to query this value as
+> hw_params.  The latency may be variable.  And the word "FIFO" isn't
+> appropriate in every case.
+> 
+> And, above all, reviving an old API is bad...
+
+This value should define maximum latency - not actual latency. 
+snd_pcm_delay() should give actual overall latency to apps.
+
+> > I think that the current PCM API concept is tightly period based. You 
+> > cannot change it easily. It would be probably better to move to 
+> > "byte-stream" in next revision of PCM API.
+> 
+> Not that difficult, I guess, from API POV.  The major work is in the
+> PCM core part and some alsa-lib plugins.  But, it's not API.
+>
+> What I once worked on is an extra timinig queue.  Suppose that we
+> provide an API to access a timing queue that holds the wake-up
+> schedule, either in time or sample unit.  The poll / read / write
+> syscalls are woken up at the time of this schedule.  In the case of
+> period model, it means that the queue is automatically filled up with
+> a constant period.  If app wants to schedule by itself, it can use
+> this queue manually.  (Of course, this means that the timing queue
+> must be filled before starting the stream.)
+
+It look like more complicated sleep_min implementation we already had:
+
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=31e8960b35975ed235d283d6fb95d0e28dffded0
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
