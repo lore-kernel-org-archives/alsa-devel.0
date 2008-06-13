@@ -1,25 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH][ASoC v2] Update Freescale MPC8610HPCD
- fabric driver to support multiple codecs
-Date: Fri, 13 Jun 2008 10:13:05 -0500
-Message-ID: <48528E81.2050901@freescale.com>
-References: <1213315299-30592-1-git-send-email-timur@freescale.com>	
-	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>	
-	<9e4733910806122016q4e10b56atc2fb9c91e129d6cb@mail.gmail.com>	
-	<9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>	
-	<48526566.8080400@freescale.com>	
-	<20080613150427.GA32377@rakim.wolfsonmicro.main>
-	<9e4733910806130810y24e6a04bh12eed5a26d0a79c4@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: Check for exact register match
+	in wm97xx_reset()
+Date: Fri, 13 Jun 2008 16:19:02 +0100
+Message-ID: <20080613151901.GB2853@sirena.org.uk>
+References: <1213367953-32239-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5hskvhqsj9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id ADBC6103803
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B79C1037FD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 17:13:09 +0200 (CEST)
-In-Reply-To: <9e4733910806130810y24e6a04bh12eed5a26d0a79c4@mail.gmail.com>
+	Fri, 13 Jun 2008 17:19:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hskvhqsj9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,25 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jon Smirl wrote:
+On Fri, Jun 13, 2008 at 05:11:06PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> My system works like you describe. We have an external clock
-> generator. It needs to be set up in the fabric code.
+> >  	soc_ac97_ops.reset(codec->ac97);
+> > -	if (ac97_read(codec, 0) & 0x8000)
+> > +	if (ac97_read(codec, 0) != 0x6174)
 
-But can the clock frequency change during runtime?  The current ASoC interface
-can handle that.
+> Can we define this magic value more understandable?
 
-> Isn't the parameter needed for codecs like AC97 where they supply the
-> clock back to the CPU? Timur's device tree is the one with a codec
-> clock rate. Are there other parameters the system might need to set
-> into a codec?
-
-The direction of the clock.  That's why I have "i2s-slave" in the SSI nodes.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+It's the default value for the (non-modifiable) register - building it
+up from a bitmask with semantics isn't particularly meaningful.  The
+only thing I can think is to just reference the register cache default
+values, I'll resend in a minute or two.
