@@ -1,28 +1,18 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH][ASoC v2] Update Freescale
-	MPC8610HPCD	fabric driver to support multiple codecs
-Date: Fri, 13 Jun 2008 21:04:53 +0100
-Message-ID: <1213387493.6376.28.camel@odin>
-References: <9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
-	<9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>
-	<48526566.8080400@freescale.com>
-	<20080613150427.GA32377@rakim.wolfsonmicro.main>
-	<9e4733910806130810y24e6a04bh12eed5a26d0a79c4@mail.gmail.com>
-	<48528E81.2050901@freescale.com>
-	<9e4733910806130826l55342b78mae243e7715c61e83@mail.gmail.com>
-	<20080613155712.GA9955@rakim.wolfsonmicro.main>
-	<9e4733910806130959m5cfbefbbo747642789190c285@mail.gmail.com>
-	<20080613185942.GB12536@opensource.wolfsonmicro.com>
-	<9e4733910806131225t7b40f3ado98b648b3f6798361@mail.gmail.com>
+From: Erik Slagter <erik@slagter.name>
+Subject: Re: Specs available for Sweex External 5.1 with
+ digital in/out USB 2.0 / C-Media CM6207
+Date: Fri, 13 Jun 2008 23:40:47 +0200
+Message-ID: <4852E95F.5040404@slagter.name>
+References: <4845A420.10804@slagter.name>
+	<9e4733910806041038j171bee15j1ec3395e00d772bb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3328192696808998268=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C65792447C
+Received: from eriks.xs4all.nl (eriks.xs4all.nl [83.160.41.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 91478244F3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 22:04:47 +0200 (CEST)
-In-Reply-To: <9e4733910806131225t7b40f3ado98b648b3f6798361@mail.gmail.com>
+	Fri, 13 Jun 2008 23:40:48 +0200 (CEST)
+In-Reply-To: <9e4733910806041038j171bee15j1ec3395e00d772bb@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,92 +23,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2008-06-13 at 15:25 -0400, Jon Smirl wrote:
-> On 6/13/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> > On Fri, Jun 13, 2008 at 12:59:44PM -0400, Jon Smirl wrote:
-> >
-> >  > In the PowerPC world the ssi drivers are loaded based on the device
-> >  > tree. When the ssi driver loads it gets passed in it's device tree
-> >  > node and can see what codecs are on its bus.
-> >  > Codecs get loaded two ways, if they are i2c based the i2c subsystem
-> >  > loaded them. That's because of the PowerPC rule that the controlling
-> >  > bus should load the driver. If it is an AC97/HDA codec, the ssi code
-> >  > needs to trigger the loading since the AC97/HDA bus is the controlling
-> >  > bus.
-> >
-> >
-> > This is no different to any other system.
-> >
-> >
-> >  > After the codec is loaded it may need parameters from the device tree.
-> >  > My though was to have two mechanisms. First a very simple one where
-> >  > the SSI driver just copies the parameters from the device tree into
-> >  > the codec. That removes the need for platform specific code from the
-> >  > codec driver.  The simple copy should be enough for AC97/HDA.
-> >
-> >  > In the second case the SSI would have a call out into the fabric code.
-> >  > If the simple copy isn't enough the fabric code can do whatever
-> >  > complicated things it needs to do. This is the case in my hardware,
-> >  > the fabric driver needs to set up the external clock chip.
-> >
-> >
-> > I'm not seeing much substantial difference between the two cases here:
-> >  in both of them you look at the system and load a machine driver, it's
-> >  just that in the first case the machine driver happens to be a generic
-> >  one that gets more of what it needs from the device tree.
+This is a cryptographically signed message in MIME format.
+
+--===============3328192696808998268==
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms040309070002020703060603"
+
+This is a cryptographically signed message in MIME format.
+
+--------------ms040309070002020703060603
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Jon Smirl wrote:
+> On 6/3/08, Erik Slagter <erik@slagter.name> wrote:
+>> Hi there,
+>>
+>>  Today I bought this sound device, I was hoping it had the C-Media CM650?
+>> USB chip which is already supported by alsa (according to the list).
+>>
+>>  Instead it has a CM6207 inside.
+>>
+>>  The good news is that it supports USB audio "class" and it's more or less
+>> usable, some mixer outputs are available (although they're all called
+>> "speaker") and with some trickery the various outputs can be used.
+>>
+>>  The other good news is that Sweex supplies the "official" datasheet from
+>> C-media which I think is quite interesting and may very well be useful to
+>> resolve the last few issues.
 > 
-> The idea was to allow the fabric driver to be optional for very simple
-> hard. For example the Efika has simple hardware. It is a STAC9766
-> hooked to a PSC. No GPIOs or special clocks are involved.  AC97 has
-> registers for allowing the BIOS to indicate jack presence. Efika
-> shouldn't need a fabric driver.
 > 
-> Everything except for the most basic system will need a fabric driver.
-> I think being able to run with an optional fabric driver is a good
-> test of having the design right.
-
-The fabric is still required for most SoC based AC97 configurations.
-Although for AC97 (basic stereo playback & capture) it's only really
-used to map the DMA channel, irq & AC97 port to the codec (so it's
-possible this could be optional or minimised in the future) and to
-configure unused DAPM pins (to conserve power).
-
-The main reason for AC97 fabric is when we want to do anything special
-with AC97 (which we usually do in embedded systems - it's usually an
-embedded codec's selling point!). Another benefit is for workarounds
-(the AC97 spec has many grey area's that have been implemented
-differently by different vendors).
-
-AC97 implements better on Laptop/PC hardware because the spec is well
-defined in the basic areas (i.e stereo playback and capture, 5.1
-playback). 
-
-> >
-> >
-> >  > The basic concept is that there is one SSI driver per device and a
-> >  > single global fabric driver. So anything that needs to be done on a
-> >  > per ssi case needs to go into the ssi driver. Making the soc
-> >  > structures and attaching the codec is a per ssi task, so the code
-> >
-> >
-> > Remember that if there's more than one SSI<->codec link they may not be
-> >  independant of each other.  For example, a six channel DAC could be
-> >  connected to three stereo I2S ports on the SoC with shared clock
-> >  signals.  You can also get codec<->codec links (for example, separate
-> >  ADC and DAC parts or Bluetooth devices) which bypass the SoC entirely.
-> >
-> >  It may be that you just intend to wrap all these cases up in your "or
-> >  load a machine driver" case, I'm not clear.
+> Write this up for the Free Linux Driver project.
 > 
-> Yes, anything but the most basic configuration ends up in the loading
-> a fabric driver. I suspect all i2s setups will need one. AC97 and HDA
-> may not.
+> http://lwn.net/Articles/276973/
+> http://www.linuxdriverproject.org/twiki/bin/view/Main/DriversNeeded
+> 
+> 
+>>  These are the actual issues (so far, I didn't yet test it exhaustively):
+>>
+>>   - using 2 channel output the sound is garbled; it looks like the "wrong" 2
+>> channel alt setting is used (output of /proc/asound/card?/stream0 on
+>> request), 4/6 channel output is OK though.
+>>   - some high squeeking noise although C-Media claims the IC to be high-end
+>> (or maybe their definition of high-end differs from mine ;-))
+>>   - all outputs are labelled "speaker 1"
+>>   - only two outputs have a mute knob, the others cannot be silenced in any
+>> way, only turned down
+>>   - one of the two outputs with the mute knob doesn't appear to do anything
+>> (or maybe it's the sp/dif output?)
+>>   - the other (with mute) controls the front output
+>>   - the others (without mute) don't seem to do anything at all
+>>
+>>  Is this a typical case of (a) bug(s) in the usb audio class driver or
+>> should I think of "vendor extensions" here?
+>>
+>>  Would any of the developers have some interest in the datasheet of the chip
+>> and or any data of this thing? Of course I'd like it very much if the device
+>> would be fully supported but I can only ask nicely ;-)
+>>
+>> _______________________________________________
+>>  Alsa-devel mailing list
+>>  Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-I agree, all I2S & PCM setups will need fabric. HDA and Mipi won't due
-to well defined specs whilst AC97 is the grey area. AC97 needs fabric on
-some systems but not others.
+BTW, issues 3,4 are my fault: alsamixer calls the mixers all "speaker-1" 
+but if you use amixer, you'll see that this is actually one device with 
+separate mixers for front, side, back, etc. So it's logical it only has 
+one mute knob.
 
-Liam
+
+--------------ms040309070002020703060603
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJUTCC
+AwMwggJsoAMCAQICEDGJsD9UPajwBl+GeyaBWA0wDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
+BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMT
+I1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA3MDkxNzEwMzAwM1oX
+DTA4MDkxNjEwMzAwM1owajEQMA4GA1UEBBMHU2xhZ3RlcjEVMBMGA1UEKhMMRXJpayBNYXJ0
+aWpuMR0wGwYDVQQDExRFcmlrIE1hcnRpam4gU2xhZ3RlcjEgMB4GCSqGSIb3DQEJARYRZXJp
+a0BzbGFndGVyLm5hbWUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4bkf+nXAx
+akUjjwscSMjaKSUFQiJPxTgOUEh+uKVsBVGvY7CB8XcCmU7+oO1s9NaTL7BVy7Lwpj5SJV/B
+v8gZWrHwsR3D7U2rcKUW81v7dkTu9GTAUt5Qc8b7+GehjZuZKZPjMdH6vJK9G7YnZu1gG9b0
+CoEC4jOdIR4+4di2ZUN9M5JLlVKofOP4fo8MKFny88ThmxHLGzzQGsshfs7wuYB2hivouPCf
+kmc+tnTI90mLrV748Yc6M9gq1brUajcy+tL0wdTS0NOJ2FVa/0HFlxaMrt88nko2J7wA+yPM
+RY1L+ziU+Qr45JxoCE6pI/6lZNlMtHeYvdveQZs/3n5HAgMBAAGjLjAsMBwGA1UdEQQVMBOB
+EWVyaWtAc2xhZ3Rlci5uYW1lMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEFBQADgYEAZrik
+whMvx+aaj7gXQDVuy+zs7eqq1zJilrNS1130Hrq0JeLC6Rnl6a1gE52gap2O6uLyfpdGBmXu
+loCzA9OPYKcZT6EtcZKF3+TCP0m9L3G1scQPPrxZt/oA4uZ4MDTvLElPJH2ONOvCoRPrp5aD
+YHD5NlsDjs+kG6559873oTwwggMDMIICbKADAgECAhAxibA/VD2o8AZfhnsmgVgNMA0GCSqG
+SIb3DQEBBQUAMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAo
+UHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBD
+QTAeFw0wNzA5MTcxMDMwMDNaFw0wODA5MTYxMDMwMDNaMGoxEDAOBgNVBAQTB1NsYWd0ZXIx
+FTATBgNVBCoTDEVyaWsgTWFydGlqbjEdMBsGA1UEAxMURXJpayBNYXJ0aWpuIFNsYWd0ZXIx
+IDAeBgkqhkiG9w0BCQEWEWVyaWtAc2xhZ3Rlci5uYW1lMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAuG5H/p1wMWpFI48LHEjI2iklBUIiT8U4DlBIfrilbAVRr2OwgfF3AplO
+/qDtbPTWky+wVcuy8KY+UiVfwb/IGVqx8LEdw+1Nq3ClFvNb+3ZE7vRkwFLeUHPG+/hnoY2b
+mSmT4zHR+rySvRu2J2btYBvW9AqBAuIznSEePuHYtmVDfTOSS5VSqHzj+H6PDChZ8vPE4ZsR
+yxs80BrLIX7O8LmAdoYr6Ljwn5JnPrZ0yPdJi61e+PGHOjPYKtW61Go3MvrS9MHU0tDTidhV
+Wv9BxZcWjK7fPJ5KNie8APsjzEWNS/s4lPkK+OScaAhOqSP+pWTZTLR3mL3b3kGbP95+RwID
+AQABoy4wLDAcBgNVHREEFTATgRFlcmlrQHNsYWd0ZXIubmFtZTAMBgNVHRMBAf8EAjAAMA0G
+CSqGSIb3DQEBBQUAA4GBAGa4pMITL8fmmo+4F0A1bsvs7O3qqtcyYpazUtdd9B66tCXiwukZ
+5emtYBOdoGqdjuri8n6XRgZl7paAswPTj2CnGU+hLXGShd/kwj9JvS9xtbHEDz68Wbf6AOLm
+eDA07yxJTyR9jjTrwqET66eWg2Bw+TZbA47PpBuueffO96E8MIIDPzCCAqigAwIBAgIBDTAN
+BgkqhkiG9w0BAQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTES
+MBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UE
+CxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBl
+cnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0
+aGF3dGUuY29tMB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVowYjELMAkGA1UEBhMC
+WkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1Ro
+YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GN
+ADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU5VAK
+MNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTX
+p6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIGA1UdEwEB/wQIMAYB
+Af8CAQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUuY29tL1RoYXd0ZVBl
+cnNvbmFsRnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYD
+VQQDExFQcml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBIjNFQg+oLLswNo2as
+Zw9/r6y+whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZfoSxmRsAxRoLgnSe
+JVCUYsfbJ3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4gtwhGTXeJLHT
+HUb/XV9lTzGCA3EwggNtAgEBMHYwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBD
+b25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFp
+bCBJc3N1aW5nIENBAhAxibA/VD2o8AZfhnsmgVgNMAkGBSsOAwIaBQCgggHQMBgGCSqGSIb3
+DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA4MDYxMzIxNDA0N1owIwYJKoZI
+hvcNAQkEMRYEFIE2tcUAcZYmxb5L///5BBKBZc1+MF8GCSqGSIb3DQEJDzFSMFAwCwYJYIZI
+AWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUr
+DgMCBzANBggqhkiG9w0DAgIBKDCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJaQTEl
+MCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3Rl
+IFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECEDGJsD9UPajwBl+GeyaBWA0wgYcGCyqG
+SIb3DQEJEAILMXigdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRp
+bmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3Vp
+bmcgQ0ECEDGJsD9UPajwBl+GeyaBWA0wDQYJKoZIhvcNAQEBBQAEggEAKdoYXXHi0Yrm0fiB
+yprzYw3U7lySSIVMKeQNlTMJm+LrN6UGo9dSQ8rJivgqVDNgatcRFfOWBVmphKDVGpqBa5RX
+xPQ5zOerjzHBdqaVTrETTbQDKfaxvjmC3WGZk3S2HLSGAzzR5I3QQQ3MRZgo2/8p1p3pdsRK
+tps8a49oOzJjBsIu5LfOCFlZ82Q6cicZpmNhB7ADHbgtwKMUXUgVU6q2rt6AYsC0zy1teTSS
+1z/BXtMm2jmvCO4NdfucQ7wUlutbJYkbMNqJkwxrNUFXiWrCRyvLU7GVUevDCBOgcQ2ILHGO
+xAO2BSFGWcZIIxPeRK2+jh1/24SLP7VM0/Jf4wAAAAAAAA==
+--------------ms040309070002020703060603--
+
+--===============3328192696808998268==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3328192696808998268==--
