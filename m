@@ -1,20 +1,21 @@
 From: "Jon Smirl" <jonsmirl@gmail.com>
 Subject: Re: [PATCH][ASoC v2] Update Freescale MPC8610HPCD
 	fabric driver to support multiple codecs
-Date: Thu, 12 Jun 2008 22:57:39 -0400
-Message-ID: <9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
+Date: Thu, 12 Jun 2008 23:16:48 -0400
+Message-ID: <9e4733910806122016q4e10b56atc2fb9c91e129d6cb@mail.gmail.com>
 References: <1213315299-30592-1-git-send-email-timur@freescale.com>
+	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0EADB2437F
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CFB6243A8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 04:57:40 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so3457575rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2008 19:57:39 -0700 (PDT)
-In-Reply-To: <1213315299-30592-1-git-send-email-timur@freescale.com>
+	Fri, 13 Jun 2008 05:16:49 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so3461466rvb.32
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2008 20:16:48 -0700 (PDT)
+In-Reply-To: <9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,25 +30,16 @@ To: Timur Tabi <timur@freescale.com>
 Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-I've been out of the loop for a few months working on something else.
-I just looked at this driver. My understanding of the fabric driver is
-different than the way you implemented it. I thought the fabric driver
-would only contain the essence of code specific to the board. Your
-fabric driver has a lot more in it than just this minimal essence.
+ * Even more frustrating is the fact that the CS4270 driver is an I2C
+ * driver, so it's probed via the I2C bus.  We need to update the powerpc
+ * platform to initialize client->dev->archdata.of_node to point to the
+ * device node.  Then the CS4270 driver can get its own clock rate.
 
-In my model a lot of the code in your fabric driver would be pushed
-into the ssi driver. So if you used ssi and a codec in the standard
-manner, the board wouldn't need a fabric driver at all. That would
-probably be the case for most AC97/HDA systems.
+That is easy to fix in drivers/of/of_i2c.c, add...
+info.platform_data = node;
 
-My fabric driver contains code for hooking processor GPIOs up to the
-codec, initializing an external clock generator, etc. All of the code
-for parsing the device tree and setting up DMA is in the ssi driver.
-
-Moving this code would also fix your problem with creating a fabric
-device for each SSI. There shouldn't need to be a loop in the fabric
-driver iterating over the SSIs.
-
+The node will be in
+client->dev.platform_data
 
 -- 
 Jon Smirl
