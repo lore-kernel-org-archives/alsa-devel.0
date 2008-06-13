@@ -1,22 +1,28 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH][ASoC v2] Update Freescale MPC8610HPCD
- fabric driver to support multiple codecs
-Date: Fri, 13 Jun 2008 07:17:42 -0500
-Message-ID: <48526566.8080400@freescale.com>
-References: <1213315299-30592-1-git-send-email-timur@freescale.com>	
-	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>	
-	<9e4733910806122016q4e10b56atc2fb9c91e129d6cb@mail.gmail.com>
-	<9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: What does snd_pcm_delay() actually return?
+Date: Fri, 13 Jun 2008 13:44:42 +0100
+Message-ID: <g2tq3q$969$1@ger.gmane.org>
+References: <20080609190225.GA4534@tango.0pointer.de>	<s5h1w333o7r.wl%tiwai@suse.de>	<20080612205225.GB20818@tango.0pointer.de>	<s5hd4mlhlau.wl%tiwai@suse.de>	<Pine.LNX.4.61.0806130958000.1798@tm8103-a.perex-int.cz>
+	<48524882.6050606@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18A3E24489
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18923244D3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 14:17:46 +0200 (CEST)
-In-Reply-To: <9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>
+	Fri, 13 Jun 2008 14:44:57 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1K78eA-000069-Oy
+	for alsa-devel@alsa-project.org; Fri, 13 Jun 2008 12:44:50 +0000
+Received: from host-84-9-255-116.dslgb.com ([84.9.255.116])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2008 12:44:50 +0000
+Received: from gmane by host-84-9-255-116.dslgb.com with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2008 12:44:50 +0000
+In-Reply-To: <48524882.6050606@superbug.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,60 +32,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jon Smirl wrote:
-> On 6/12/08, Jon Smirl <jonsmirl@gmail.com> wrote:
->>  * Even more frustrating is the fact that the CS4270 driver is an I2C
->>   * driver, so it's probed via the I2C bus.  We need to update the powerpc
->>   * platform to initialize client->dev->archdata.of_node to point to the
->>   * device node.  Then the CS4270 driver can get its own clock rate.
+James Courtier-Dutton wrote:
+> Jaroslav Kysela wrote:
+>> On Fri, 13 Jun 2008, Takashi Iwai wrote:
 >>
->>  That is easy to fix in drivers/of/of_i2c.c, add...
->>  info.platform_data = node;
+>>   
+>>> - Add some new API functions,
+>>>     
+>> I would prefer to extend the current API than to change meaning of hw_ptr 
+>> to handle extra latencies.
 >>
->>  The node will be in
->>  client->dev.platform_data
+>>   
+> I would prefer the definition of snd_pcm_delay() to be:
+> Before the next sample is written to the buffer, snd_pcm_delay() returns 
+> the expect time delay, in frames, indicating the time the next sample 
+> will reach the speakers.
+> This is what snd_pcm_delay() was introduced into the ALSA api for. I 
+> remember, because it was added as a result of me requesting it.
 > 
-> Thinking about this for a minute, it is not what you want. Adding code
-> like this will make the codec driver platform specific. Codecs are
-> platform drivers, not of_platform drivers specific since they are
-> supposed to be arch independent.
+> 
+> Then implement a totally different api call to help with under run timings.
 
-Or, we could say that client->dev.platform_data must point to 
-platform-agnostic information for the codec, regardless of the 
-architecture.  That is, in order for this codec driver to work on ARM, 
-the ARM's platform code would need to do the same thing.
+Big +1
 
-That's why I didn't go this route right away.  I wanted to think about 
-it some more.
+You also have to think of the use cases currently out there.
 
-> Instead the codec should make a module parameter for the clock rate.
+* World + Dog uses it as James (and Lennart) states.
+* Wine uses it sans latency.
 
-Ugh.  I'm not really crazy about parameters.
+So lots of apps having to change to cope verses one (known) app 
+changing. I think even the wine folk would agree this is more sensible!
 
-> On platforms without a device tree you would set the clock rate on the
-> load module command line or some other way. With device trees the ssi
-> driver can stuff the clock rate into the module parameter after the
-> module is loaded.
+Also by changing the definition, would you not have to change the 
+usb-audio driver works? In general I'd say it's a whole lot less work to 
+leave snd_pcm_delay() as it is, update the docs and add a new api 
+function for under run stuff.
 
-Well, ASoC already has a mechanism for passing the clock rate from the 
-fabric driver to the codec driver.  I currently use it, as you know, but 
-my comment in the code is really just "thinking out loud" about another 
-way to do it.  I'm still on the fence about this.
-
-> Now I just have to remember how to access a module parameter from code
-> inside the kernel. I think there is a way to access the names of the
-> modules parameters.
-
-Yeah, it's not a big deal, but I don't think there's a standard way for 
-platform code to pass parameters to a module.
-
-> Code in the ssi driver (or a library) could match
-> up entries in the devices tree to parameter names. That will let one
-> piece of code in ssi load different modules with varying parameters.
-
-This is normally done the way fsl_soc.c does it:  Create a platform 
-device, and add platform resources objects to it.
+Col
