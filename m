@@ -1,27 +1,28 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: What does snd_pcm_delay() actually return?
-Date: Fri, 13 Jun 2008 20:48:32 +0200
-Message-ID: <20080613184831.GC1954@tango.0pointer.de>
-References: <s5h1w333o7r.wl%tiwai@suse.de>
-	<20080612205225.GB20818@tango.0pointer.de>
-	<s5hd4mlhlau.wl%tiwai@suse.de>
-	<20080613142526.GB21255@tango.0pointer.de>
-	<s5hod65qqhh.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0806131800160.1798@tm8103-a.perex-int.cz>
-	<s5hhcbxqp1y.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0806131835180.1798@tm8103-a.perex-int.cz>
-	<s5h8wx9qnv0.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0806131900590.1798@tm8103-a.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH][ASoC v2] Update Freescale
+	MPC8610HPCD	fabric driver to support multiple codecs
+Date: Fri, 13 Jun 2008 19:59:42 +0100
+Message-ID: <20080613185942.GB12536@opensource.wolfsonmicro.com>
+References: <9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
+	<9e4733910806122016q4e10b56atc2fb9c91e129d6cb@mail.gmail.com>
+	<9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>
+	<48526566.8080400@freescale.com>
+	<20080613150427.GA32377@rakim.wolfsonmicro.main>
+	<9e4733910806130810y24e6a04bh12eed5a26d0a79c4@mail.gmail.com>
+	<48528E81.2050901@freescale.com>
+	<9e4733910806130826l55342b78mae243e7715c61e83@mail.gmail.com>
+	<20080613155712.GA9955@rakim.wolfsonmicro.main>
+	<9e4733910806130959m5cfbefbbo747642789190c285@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42B5B244EF
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9CCFF103818
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 20:48:32 +0200 (CEST)
+	Fri, 13 Jun 2008 20:59:43 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0806131900590.1798@tm8103-a.perex-int.cz>
+In-Reply-To: <9e4733910806130959m5cfbefbbo747642789190c285@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,30 +32,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13.06.08 19:37, Jaroslav Kysela (perex@perex.cz) wrote:
+On Fri, Jun 13, 2008 at 12:59:44PM -0400, Jon Smirl wrote:
 
-> It means that the PCM midlevel code thinks that samples in URBs are 
-> played (underrun can be detected), but they are queued in URBs.
-> 
-> OK, my fault. It's exactly behaviour I proposed (URBs are extra buffers), 
-> but we need to take in account the right snd_pcm_delay() output. Lennart 
-> probably meant that samples are consumed too much quickly at the stream 
-> start and impossibility to detect the extra buffering mechanism with the 
-> current code.
+> In the PowerPC world the ssi drivers are loaded based on the device
+> tree. When the ssi driver loads it gets passed in it's device tree
+> node and can see what codecs are on its bus.
+> Codecs get loaded two ways, if they are i2c based the i2c subsystem
+> loaded them. That's because of the PowerPC rule that the controlling
+> bus should load the driver. If it is an AC97/HDA codec, the ssi code
+> needs to trigger the loading since the AC97/HDA bus is the controlling
+> bus.
 
-Yes, this is exactly what I am experiencing. At stream start my
-estimations (based on update_avail) are way off. Afterwards everything
-is fine. As a dirty workaround to fix this I halve the initial sleep
-time always so that I can make sure I don't sleep for too long and get
-an xrun. But that's really ugly, because halving it is just a wild
-guess and it isn't even necessary on PCI hardware.
+This is no different to any other system.
 
-Lennart
+> After the codec is loaded it may need parameters from the device tree.
+> My though was to have two mechanisms. First a very simple one where
+> the SSI driver just copies the parameters from the device tree into
+> the codec. That removes the need for platform specific code from the
+> codec driver.  The simple copy should be enough for AC97/HDA.
 
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+> In the second case the SSI would have a call out into the fabric code.
+> If the simple copy isn't enough the fabric code can do whatever
+> complicated things it needs to do. This is the case in my hardware,
+> the fabric driver needs to set up the external clock chip.
+
+I'm not seeing much substantial difference between the two cases here:
+in both of them you look at the system and load a machine driver, it's
+just that in the first case the machine driver happens to be a generic
+one that gets more of what it needs from the device tree.
+
+> The basic concept is that there is one SSI driver per device and a
+> single global fabric driver. So anything that needs to be done on a
+> per ssi case needs to go into the ssi driver. Making the soc
+> structures and attaching the codec is a per ssi task, so the code
+
+Remember that if there's more than one SSI<->codec link they may not be
+independant of each other.  For example, a six channel DAC could be
+connected to three stereo I2S ports on the SoC with shared clock
+signals.  You can also get codec<->codec links (for example, separate
+ADC and DAC parts or Bluetooth devices) which bypass the SoC entirely.
+
+It may be that you just intend to wrap all these cases up in your "or
+load a machine driver" case, I'm not clear.
+
+> should go into the ssi driver. There's on a single, global fabric
+> driver, that's why Timur had to add a loop initializing the ssi
+> drivers.
+
+There's one machine driver per system in V1, but one of the intentions
+going forward is to remove that limitation.  IIRC it may already be
+possible to have more than one SoC card in V2 but I don't know if anyone
+actually did that yet.
