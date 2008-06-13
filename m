@@ -1,21 +1,22 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: What does snd_pcm_delay() actually return?
-Date: Fri, 13 Jun 2008 16:25:26 +0200
-Message-ID: <20080613142526.GB21255@tango.0pointer.de>
-References: <20080609190225.GA4534@tango.0pointer.de>
-	<s5h1w333o7r.wl%tiwai@suse.de>
-	<20080612205225.GB20818@tango.0pointer.de>
-	<s5hd4mlhlau.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH][ASoC v2] Update Freescale MPC8610HPCD
+ fabric driver to support multiple codecs
+Date: Fri, 13 Jun 2008 09:26:04 -0500
+Message-ID: <4852837C.6050401@freescale.com>
+References: <1213315299-30592-1-git-send-email-timur@freescale.com>	
+	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>	
+	<20080613134206.GA29575@rakim.wolfsonmicro.main>
+	<9e4733910806130710k38c45e18p29188e1426851339@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFDA51037F7
+Received: from az33egw01.freescale.net (az33egw01.freescale.net
+	[192.88.158.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id D285D10380E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 16:25:26 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hd4mlhlau.wl%tiwai@suse.de>
+	Fri, 13 Jun 2008 16:26:10 +0200 (CEST)
+In-Reply-To: <9e4733910806130710k38c45e18p29188e1426851339@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,107 +26,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13.06.08 08:59, Takashi Iwai (tiwai@suse.de) wrote:
-
-> About the latency, my proposal is like below:
+Jon Smirl wrote:
+> On 6/13/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+>> On Thu, Jun 12, 2008 at 10:57:39PM -0400, Jon Smirl wrote:
+>>
+>>  > In my model a lot of the code in your fabric driver would be pushed
+>>  > into the ssi driver. So if you used ssi and a codec in the standard
+>>  > manner, the board wouldn't need a fabric driver at all. That would
+>>  > probably be the case for most AC97/HDA systems.
+>>
+>>
+>> I'd certainly like to see some standard support for setting up at least
+>>  AC97 DAI links automatically based on the probed codec.  That bit could
+>>  probably be done by the core.  HDA should be amenable to this model too
+>>  but I haven't looked at it in anything more than passing detail yet.
+>>
+>>  That's only part of the story, though.  What's much more tricky is
+>>  making the decision that you've got all the components for the sound
+>>  subsystem - for example, there are AC97 codecs like the WM9712 and
+>>  WM9713 which also have I2S interfaces.  You also get systems which need
+>>  to jump through hoops to set up the clocking since they're doing
+>>  non-standard things.  Simple systems would probably need an explict flag
+>>  to say that they could be handled as such, which isn't a million miles
+>>  off having something to load a generic machine driver.
 > 
-> - Renew the definition of hwptr -- make it what you imagned, the
->   pointer where hardware is reading or has read.
-> 
->   This won't change anything for PCI drivers, so the impact is
->   minimal.
+> We can't eliminate a fabric driver is all cases, I'd just like to
+> minimize its need. This code has the card and codec creation code in
+> the fabric driver, I would push down into the ssi driver. Code in the
+> ssi would locate the codec and load it. The model needs to be able to
+> function if there is no need for a fabric driver.
 
-And it would suddenly make the USB drivers do the right thing ;-)
+Like I said earlier, I don't like this idea.  I don't want all this gunk in the
+SSI driver, and I don't see anything wrong with the fabric driver being the
+master that sets up all the inter-device connections.
 
-OTOH I am not a big fan of this solution, since the delay in
-"snd_pcm_delay()" kind of suggests that it is useful for time
-synchronization.
+> That also flips things around, now the ssi driver needs to locate the
+> fabric driver, not the other way around. In this model the fabric
+> driver doesn't need to make a device, it just becomes a library of
+> code called by the ssi driver.
 
-> - Add some new API functions,
->   * To give the accuracy of the position inquiry (optional)
-> 
->     This requires some new kernel <-> user-space stuff.
+The DMA driver is already a library that is called by the SSI.  It registers
+itself as a regular driver, but under ASoC V2, it really acts like a library.
 
-I'd really like to have this. Only when I know this I can know how
-near to the current hw_ptr I can actually still make changes in the
-playback buffer.
+> Code in the ssi driver could make a
+> list of codec parameters, pass it to the fabric driver for
+> modification, and then set it into the codec.
 
->   * To query the known latency
-> 
->     Ditto, or we may reuse snd_pcm_hw_params_fifo_size()?
+That sounds too complicated.
 
-I am not a fan of snd_pcm_hw_params_fifo_size() because the 'fifo'
-latency is dynamic in the network case, it changes all the time with
-the level of network congestion. However if something is part of
-hw_params it is supposed to stay fixed, right? 
+> We're missing a cross platform way to set parameters into a codec. 
 
-Hence I'd rather prefer if we let snd_pcm_hw_params_fifo_size() rest
-in peace.
-
-My personal favourite solution would actually be to have a new call
-that allows you to query *all* timing related values
-*atomically*. Why? different programs need different timing
-information from ALSA. Also, timing information happens to change all
-the time. If we just export two basic values, than people might end up
-doing arithmetics on them, in the risk the two values are not
-consistent with each other, since between querying them some time
-already passed. So, what I would suggest is this:
-
-  typedef enum snd_pcm_timing {
-        SND_PCM_TIMING_ABSOLUTE_WRITE,
-        SND_PCM_TIMING_ABSOLUTE_READ,
-        SND_PCM_TIMING_ABSOLUTE_HEAR,
-        SND_PCM_TIMING_WRITE_TO_READ,
-        SND_PCM_TIMING_WRITE_TO_HEAR,
-        SND_PCM_TIMING_READ_TO_HEAR,
-        SND_PCM_TIMING_CAN_WRITE,
-        SND_PCM_TIMING_LEFT_TO_PLAY
-  } snd_pcm_timing_t;
-
-  snd_pcm_sframes_t snd_pcm_get_timing(snd_pcm_t *pcm, snd_pcm_timing_t timing);
-
-The user would just pass which of the timing values he needs. The
-meaning would be:
-
-        ABSOLUTE_WRITE: the current absolute write counter in samples, since the device was opened.
-        ABSOLUTE_READ:  the current absolute read counter in samples, since the device was opened.
-        ABSOLUTE_HEAR:  the current absolute hear counter in samples, since the device was opened.
-        WRITE_TO_READ:  the current fill level of the playback buffer
-        WRITE_TO_HEAR:  if i write a sample immediately after this call, how much time takes it to be played.
-        READ_TO_HEAR:   the 'fifo' latency, i.e. the time that passes
-                        after a sample was read form the playback buffer that it is
-                        actually played.
-        CAN_WRITE:      how much can be written into the buffer right
-                        now  (buffer_size - WRITE_TO_READ)
-        LEFT_TO_PLAY:   similar to WRITE_TO_HEAR but callable *after* we
-                        wrote something, and it will return how much
-                        of what we wrote has not been heard yet. In
-                        contrast to WRITE_TO_HEAR this will return 0 eventually.        
-
-snd_pcm_delay() would be identical to snd_pcm_get_timing(SND_PCM_TIMING_WRITE_TO_HEAR)
-
-snd_pcm_update_avail() would be identical to snd_pcm_get_timing(SND_PCM_TIMING_CAN_WRITE).
-
-Media players would use WRITE_TO_HEAR for doing their sync stuff. WINE
-would use LEFT_TO_PLAY. PulseAudio would use WRITE_TO_READ to estimate
-when the next XRUN might happen.
-
-Of course, the fragment granularity would need to be added to this in
-some way.
-
-If we had an API like this we can also make sure that people
-using this won't do invalid calculations. I mean, we have the
-situation now that WINE does invalid calculations. If ALSA does all
-the calculations for them and they just have to pick the one value
-that suits what they need we'd have a much better chance that people
-wouldn't misuse the ALSA API.
-
-Lennart
+No we're not.  ASoC already provides an API for sending parameters to a codec,
+and if we need more than that, we can create platform resources and pass those
+to the codec.
 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Timur Tabi
+Linux kernel developer at Freescale
