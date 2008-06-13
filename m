@@ -1,22 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: What does snd_pcm_delay() actually return?
-Date: Fri, 13 Jun 2008 15:06:09 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0806131453280.1798@tm8103-a.perex-int.cz>
-References: <20080609190225.GA4534@tango.0pointer.de>
-	<s5h1w333o7r.wl%tiwai@suse.de>
-	<20080612205225.GB20818@tango.0pointer.de>
-	<s5hd4mlhlau.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0806130958000.1798@tm8103-a.perex-int.cz>
-	<48524882.6050606@superbug.co.uk> <g2tq3q$969$1@ger.gmane.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH][ASoC v2] Update Freescale
+	MPC8610HPCD	fabric driver to support multiple codecs
+Date: Fri, 13 Jun 2008 14:42:06 +0100
+Message-ID: <20080613134206.GA29575@rakim.wolfsonmicro.main>
+References: <1213315299-30592-1-git-send-email-timur@freescale.com>
+	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC2D624499
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9D421244DF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 15:06:11 +0200 (CEST)
-In-Reply-To: <g2tq3q$969$1@ger.gmane.org>
+	Fri, 13 Jun 2008 15:42:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,63 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13 Jun 2008, Colin Guthrie wrote:
+On Thu, Jun 12, 2008 at 10:57:39PM -0400, Jon Smirl wrote:
 
-> James Courtier-Dutton wrote:
-> > Jaroslav Kysela wrote:
-> >> On Fri, 13 Jun 2008, Takashi Iwai wrote:
-> >>
-> >>   
-> >>> - Add some new API functions,
-> >>>     
-> >> I would prefer to extend the current API than to change meaning of hw_ptr 
-> >> to handle extra latencies.
-> >>
-> >>   
-> > I would prefer the definition of snd_pcm_delay() to be:
-> > Before the next sample is written to the buffer, snd_pcm_delay() returns 
-> > the expect time delay, in frames, indicating the time the next sample 
-> > will reach the speakers.
-> > This is what snd_pcm_delay() was introduced into the ALSA api for. I 
-> > remember, because it was added as a result of me requesting it.
-> > 
-> > 
-> > Then implement a totally different api call to help with under run timings.
-> 
-> Big +1
-> 
-> You also have to think of the use cases currently out there.
-> 
-> * World + Dog uses it as James (and Lennart) states.
-> * Wine uses it sans latency.
+> In my model a lot of the code in your fabric driver would be pushed
+> into the ssi driver. So if you used ssi and a codec in the standard
+> manner, the board wouldn't need a fabric driver at all. That would
+> probably be the case for most AC97/HDA systems.
 
-The comment for snd_pcm_delay() in alsa-lib is clear and it's what James 
-wrote. If only one app interprets this wrongly, then I agree it would be 
-better not to change original meaning.
+I'd certainly like to see some standard support for setting up at least
+AC97 DAI links automatically based on the probed codec.  That bit could
+probably be done by the core.  HDA should be amenable to this model too
+but I haven't looked at it in anything more than passing detail yet.
 
-Then we have snd_pcm_avail_update(). Although it is stated in comment that 
-this function is useless for non-mmap mode, it's quite clear that returns 
-number of available frames to be handled (r/w) by application.
+That's only part of the story, though.  What's much more tricky is
+making the decision that you've got all the components for the sound
+subsystem - for example, there are AC97 codecs like the WM9712 and
+WM9713 which also have I2S interfaces.  You also get systems which need
+to jump through hoops to set up the clocking since they're doing
+non-standard things.  Simple systems would probably need an explict flag
+to say that they could be handled as such, which isn't a million miles
+off having something to load a generic machine driver.
 
-The easiest method would be just to remove "useless for non-mmap" from 
-comments for snd_pcm_avail_update() and suggest to application developers:
-
-1) overall latency is returned by snd_pcm_delay()
-2) ring buffer filling is controlled by snd_pcm_avail_update(), for 
-   non-mmap access is usage of this function optional
-
-As mentioned, it will need to fix some drivers mixing software output FIFO 
-with ring buffer (USB, PCMCIA)..
-
-Opinions?
-
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Things get a lot more tricky for I2S due to the complexity of the
+available clocking configurations - there are so many possible ways of
+connecting devices, especially once you start to take into account codec
+internal clocking and systems which support more than two devices 
