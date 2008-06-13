@@ -1,20 +1,22 @@
 From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH][ASoC v2] Update Freescale MPC8610HPCD
  fabric driver to support multiple codecs
-Date: Fri, 13 Jun 2008 07:11:59 -0500
-Message-ID: <4852640F.8050808@freescale.com>
-References: <1213315299-30592-1-git-send-email-timur@freescale.com>
-	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
+Date: Fri, 13 Jun 2008 07:17:42 -0500
+Message-ID: <48526566.8080400@freescale.com>
+References: <1213315299-30592-1-git-send-email-timur@freescale.com>	
+	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>	
+	<9e4733910806122016q4e10b56atc2fb9c91e129d6cb@mail.gmail.com>
+	<9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from az33egw01.freescale.net (az33egw01.freescale.net
 	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14837244C6
+	by alsa0.perex.cz (Postfix) with ESMTP id 18A3E24489
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 14:12:02 +0200 (CEST)
-In-Reply-To: <9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
+	Fri, 13 Jun 2008 14:17:46 +0200 (CEST)
+In-Reply-To: <9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,31 +31,55 @@ Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 Jon Smirl wrote:
-> I've been out of the loop for a few months working on something else.
-> I just looked at this driver. My understanding of the fabric driver is
-> different than the way you implemented it. 
+> On 6/12/08, Jon Smirl <jonsmirl@gmail.com> wrote:
+>>  * Even more frustrating is the fact that the CS4270 driver is an I2C
+>>   * driver, so it's probed via the I2C bus.  We need to update the powerpc
+>>   * platform to initialize client->dev->archdata.of_node to point to the
+>>   * device node.  Then the CS4270 driver can get its own clock rate.
+>>
+>>  That is easy to fix in drivers/of/of_i2c.c, add...
+>>  info.platform_data = node;
+>>
+>>  The node will be in
+>>  client->dev.platform_data
+> 
+> Thinking about this for a minute, it is not what you want. Adding code
+> like this will make the codec driver platform specific. Codecs are
+> platform drivers, not of_platform drivers specific since they are
+> supposed to be arch independent.
 
-Well, my fabric driver does work, so it can't be that different. :-)
+Or, we could say that client->dev.platform_data must point to 
+platform-agnostic information for the codec, regardless of the 
+architecture.  That is, in order for this codec driver to work on ARM, 
+the ARM's platform code would need to do the same thing.
 
-> I thought the fabric driver
-> would only contain the essence of code specific to the board. 
+That's why I didn't go this route right away.  I wanted to think about 
+it some more.
 
-No, the fabric driver also tells ASoC how the other three drivers are 
-connected.  That is, it tells ASoC "please connect SSI1 to the codec at 
-address 4F, and here's the DMA information that the SSI driver needs".
+> Instead the codec should make a module parameter for the clock rate.
 
-> In my model a lot of the code in your fabric driver would be pushed
-> into the ssi driver. So if you used ssi and a codec in the standard
-> manner, the board wouldn't need a fabric driver at all. That would
-> probably be the case for most AC97/HDA systems.
+Ugh.  I'm not really crazy about parameters.
 
-The SSI driver is only concerned with talking to an SSI.  I don't see 
-how you could get away with no fabric driver.  That just isn't the model.
+> On platforms without a device tree you would set the clock rate on the
+> load module command line or some other way. With device trees the ssi
+> driver can stuff the clock rate into the module parameter after the
+> module is loaded.
 
-> My fabric driver contains code for hooking processor GPIOs up to the
-> codec, initializing an external clock generator, etc. All of the code
-> for parsing the device tree and setting up DMA is in the ssi driver.
+Well, ASoC already has a mechanism for passing the clock rate from the 
+fabric driver to the codec driver.  I currently use it, as you know, but 
+my comment in the code is really just "thinking out loud" about another 
+way to do it.  I'm still on the fence about this.
 
-That's how my driver *used* to be.  With ASoC V2, I chose to move some 
-of that code from the SSI driver into the fabric driver.  It just makes 
-more sense to me.
+> Now I just have to remember how to access a module parameter from code
+> inside the kernel. I think there is a way to access the names of the
+> modules parameters.
+
+Yeah, it's not a big deal, but I don't think there's a standard way for 
+platform code to pass parameters to a module.
+
+> Code in the ssi driver (or a library) could match
+> up entries in the devices tree to parameter names. That will let one
+> piece of code in ssi load different modules with varying parameters.
+
+This is normally done the way fsl_soc.c does it:  Create a platform 
+device, and add platform resources objects to it.
