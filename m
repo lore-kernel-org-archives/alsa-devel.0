@@ -1,29 +1,26 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH][ASoC v2] Update Freescale MPC8610HPCD
- fabric driver to support multiple codecs
-Date: Fri, 13 Jun 2008 13:40:23 -0500
-Message-ID: <4852BF17.50408@freescale.com>
-References: <1213315299-30592-1-git-send-email-timur@freescale.com>	
-	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>	
-	<9e4733910806122016q4e10b56atc2fb9c91e129d6cb@mail.gmail.com>	
-	<9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>	
-	<48526566.8080400@freescale.com>	
-	<20080613150427.GA32377@rakim.wolfsonmicro.main>	
-	<9e4733910806130810y24e6a04bh12eed5a26d0a79c4@mail.gmail.com>	
-	<48528E81.2050901@freescale.com>	
-	<9e4733910806130826l55342b78mae243e7715c61e83@mail.gmail.com>	
-	<20080613155712.GA9955@rakim.wolfsonmicro.main>
-	<9e4733910806130959m5cfbefbbo747642789190c285@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: What does snd_pcm_delay() actually return?
+Date: Fri, 13 Jun 2008 20:43:27 +0200
+Message-ID: <20080613184327.GB1954@tango.0pointer.de>
+References: <20080609190225.GA4534@tango.0pointer.de>
+	<s5h1w333o7r.wl%tiwai@suse.de>
+	<20080612205225.GB20818@tango.0pointer.de>
+	<s5hd4mlhlau.wl%tiwai@suse.de>
+	<20080613142526.GB21255@tango.0pointer.de>
+	<s5hod65qqhh.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0806131800160.1798@tm8103-a.perex-int.cz>
+	<s5hhcbxqp1y.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0806131835180.1798@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id F1A9A2448D
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id CFC73244EF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 20:40:27 +0200 (CEST)
-In-Reply-To: <9e4733910806130959m5cfbefbbo747642789190c285@mail.gmail.com>
+	Fri, 13 Jun 2008 20:43:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0806131835180.1798@tm8103-a.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,19 +30,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jon Smirl wrote:
-> Each of these drivers configures
-> the psc in to the correct mode when they load. (I think Timur has a
-> unified driver, I don't work with his hardware).
+On Fri, 13.06.08 18:47, Jaroslav Kysela (perex@perex.cz) wrote:
 
-I only support the I2S mode of the SSI hardware.  If I were to add AC97 support,
-then I would probably make it a unified driver, but I'm not sure because I don't
-know enough about AC97 to see how that would work.
+> > > > What about just providing three pointers: curr_ptr, hw_ptr and
+> > > > appl_ptr?  curr_ptr corresponds to the point being played, and hw_ptr
+> > > > is the point where the data was already sent to h/w, and appl_ptr is
+> > > > the point where the data is filled by user.  The above definitions are
+> > > > all combinations of these pointers.
+> > > 
+> > > But I think that curr_ptr can be managed in drivers, thus invisible to 
+> > > user space (except for snd_pcm_delay() propagation).
+> > 
+> > Ditto for hw_ptr.  Why is it hidden at all?
+> 
+> Does it improve something to show this pointer to apps? I don't see any 
+> reason to show it outside alsa-lib.
+
+As I already pointed out different applications need different kinds
+of timing information. Some want to estimate when the next xrun will
+happen, other's want the delay that the next write will take to be
+played, even other's want how much of the already written data is not
+yet played. Even other's want absolute times.
+
+And I do follow Takashi in so far that when you'd just choose to
+export the three pointers to userspace, so that they can be queried
+atomically everybody can relatively easily calculate from these 'raw'
+values what they need.
+
+The problem I see with those 'cooked' values that are currently
+exported (i.e. delay and update_avail) is that they only serve a
+single purpose and there are so many different ways to use and
+especially misuse them, as we have seen in the WINE case. Certainly,
+the ptrs can be misused too, but at least all the information the
+kernel has that it uses to calculate those 'cooked' values is
+available to userspace too, so without too ugly code userspace can
+always calculate what is necessary. If you only have a subset of the
+cooked stuff and want to calculate the other cooked stuff from it your
+in pain.
+
+I think there are two extremes:
+
+a) export the 'raw' info to userspace: the three pointers
+
+b) export the 'cooked' info to userspace in all its variations:
+   similar to the API I suggested that would take an enum for
+   choosing the right timing parameter the app wants.
+
+Everything in between these extremes would be incomplete.
+
+I could live with any situation of these two. The question is do you
+trust userspace programmers to use the three pointers correctly, or do
+you want to make sure they get things right with the enum API?
+
+Lennart
 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
