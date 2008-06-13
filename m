@@ -1,17 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Don't block system resume
-Date: Fri, 13 Jun 2008 16:24:05 +0100
-Message-ID: <1213370645-9831-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1213370645-9831-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: [PATCH][ASoC v2] Update Freescale MPC8610HPCD
+	fabric driver to support multiple codecs
+Date: Fri, 13 Jun 2008 11:26:57 -0400
+Message-ID: <9e4733910806130826l55342b78mae243e7715c61e83@mail.gmail.com>
+References: <1213315299-30592-1-git-send-email-timur@freescale.com>
+	<9e4733910806121957y3a8a15dawb50af2d2bb0d7d0b@mail.gmail.com>
+	<9e4733910806122016q4e10b56atc2fb9c91e129d6cb@mail.gmail.com>
+	<9e4733910806122036g5b8d86f6wed526f29377a065d@mail.gmail.com>
+	<48526566.8080400@freescale.com>
+	<20080613150427.GA32377@rakim.wolfsonmicro.main>
+	<9e4733910806130810y24e6a04bh12eed5a26d0a79c4@mail.gmail.com>
+	<48528E81.2050901@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BE2BF10381C
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id 400531037FD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Jun 2008 17:24:06 +0200 (CEST)
-In-Reply-To: <1213370645-9831-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri, 13 Jun 2008 17:26:59 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so3641607rvb.32
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2008 08:26:57 -0700 (PDT)
+In-Reply-To: <48528E81.2050901@freescale.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,125 +32,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Andy Green <andy@openmoko.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Andy Green <andy@openmoko.com>
+On 6/13/08, Timur Tabi <timur@freescale.com> wrote:
+> Jon Smirl wrote:
+>
+>  > My system works like you describe. We have an external clock
+>  > generator. It needs to be set up in the fabric code.
+>
+>
+> But can the clock frequency change during runtime?  The current ASoC interface
+>  can handle that.
 
-On OpenMoko soc-audio resume is taking 700ms of the whole resume time of
-1.3s, dominated by writes to the codec over I2C.  This patch shunts the
-resume guts into a workqueue which then is done asynchronously.
+Our i2s hardware is capable of changing the clock frequency at
+runtime. I haven't tried doing it in software yet. The main reason for
+changing is to adjust to sources that are multiples of 44.1 vs 48K.
+Intel HDA has a much better scheme for handling that via a fixed clock
+and skipping slots. I suspect I'll have to do some work on alsa to
+make this work.
 
-The "card" is locked using the ALSA power state APIs as suggested by
-Mark Brown.
+Get Freescale to put an HDA interface into the SOC chips so that I can
+used HDA codecs. The only reason we are using an external clock chip
+is because the MPC5200 generates a 192K audio clock that has a 0.7%
+error in it. If the MPC5200 had a fractional-N divider instead of an
+integer one on the audio clock we wouldn't need the external chip.
+There's no way to fix the MPC5200 clock error without breaking the USB
+clock.
 
-[Added fix for race with resume to suspend and fixed a couple of nits
-from checkpatch -- broonie.]
+>  > Isn't the parameter needed for codecs like AC97 where they supply the
+>  > clock back to the CPU? Timur's device tree is the one with a codec
+>  > clock rate. Are there other parameters the system might need to set
+>  > into a codec?
+>
+> The direction of the clock.  That's why I have "i2s-slave" in the SSI nodes.
 
-Signed-off-by: Andy Green <andy@openmoko.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc.h  |    1 +
- sound/soc/soc-core.c |   46 +++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 44 insertions(+), 3 deletions(-)
+There should be a way for the ssi driver to extract the parameters
+from the device tree and then feed them into the codec in an arch
+independent manner. The codecs need to stay arch independent. I
+haven't tried doing this yet in the code since I haven't needed setup
+parameters.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1f5c621..340223a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -510,6 +510,7 @@ struct snd_soc_device {
- 	struct snd_soc_codec *codec;
- 	struct snd_soc_codec_device *codec_dev;
- 	struct delayed_work delayed_work;
-+	struct work_struct deferred_resume_work;
- 	void *codec_data;
- };
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c96a618..b931039 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -639,6 +639,16 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
- 	struct snd_soc_codec *codec = socdev->codec;
- 	int i;
- 
-+	/* Due to the resume being scheduled into a workqueue we could
-+	* suspend before that's finished - wait for it to complete.
-+	 */
-+	snd_power_lock(codec->card);
-+	snd_power_wait(codec->card, SNDRV_CTL_POWER_D0);
-+	snd_power_unlock(codec->card);
-+
-+	/* we're going to block userspace touching us until resume completes */
-+	snd_power_change_state(codec->card, SNDRV_CTL_POWER_D3hot);
-+
- 	/* mute any active DAC's */
- 	for (i = 0; i < machine->num_links; i++) {
- 		struct snd_soc_codec_dai *dai = machine->dai_link[i].codec_dai;
-@@ -691,16 +701,27 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
- 	return 0;
- }
- 
--/* powers up audio subsystem after a suspend */
--static int soc_resume(struct platform_device *pdev)
-+/* deferred resume work, so resume can complete before we finished
-+ * setting our codec back up, which can be very slow on I2C
-+ */
-+static void soc_resume_deferred(struct work_struct *work)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_device *socdev = container_of(work,
-+						     struct snd_soc_device,
-+						     deferred_resume_work);
- 	struct snd_soc_machine *machine = socdev->machine;
- 	struct snd_soc_platform *platform = socdev->platform;
- 	struct snd_soc_codec_device *codec_dev = socdev->codec_dev;
- 	struct snd_soc_codec *codec = socdev->codec;
-+	struct platform_device *pdev = to_platform_device(socdev->dev);
- 	int i;
- 
-+	/* our power state is still SNDRV_CTL_POWER_D3hot from suspend time,
-+	 * so userspace apps are blocked from touching us
-+	 */
-+
-+	dev_info(socdev->dev, "starting resume work\n");
-+
- 	if (machine->resume_pre)
- 		machine->resume_pre(pdev);
- 
-@@ -742,6 +763,22 @@ static int soc_resume(struct platform_device *pdev)
- 	if (machine->resume_post)
- 		machine->resume_post(pdev);
- 
-+	dev_info(socdev->dev, "resume work completed\n");
-+
-+	/* userspace can access us now we are back as we were before */
-+	snd_power_change_state(codec->card, SNDRV_CTL_POWER_D0);
-+}
-+
-+/* powers up audio subsystem after a suspend */
-+static int soc_resume(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+
-+	dev_info(socdev->dev, "scheduling resume work\n");
-+
-+	if (!schedule_work(&socdev->deferred_resume_work))
-+		dev_err(socdev->dev, "work item may be lost\n");
-+
- 	return 0;
- }
- 
-@@ -788,6 +825,9 @@ static int soc_probe(struct platform_device *pdev)
- 
- 	/* DAPM stream work */
- 	INIT_DELAYED_WORK(&socdev->delayed_work, close_delayed_work);
-+	/* deferred resume work */
-+	INIT_WORK(&socdev->deferred_resume_work, soc_resume_deferred);
-+
- 	return 0;
- 
- platform_err:
+>
+>
+>  --
+>  Timur Tabi
+>  Linux kernel developer at Freescale
+>
+
+
 -- 
-1.5.5.4
+Jon Smirl
+jonsmirl@gmail.com
