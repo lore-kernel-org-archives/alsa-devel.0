@@ -1,23 +1,21 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: What does snd_pcm_delay() actually return?
-Date: Sat, 14 Jun 2008 10:51:10 +0100
-Message-ID: <4853948E.3040508@superbug.co.uk>
-References: <20080609190225.GA4534@tango.0pointer.de>	<s5h1w333o7r.wl%tiwai@suse.de>	<20080612205225.GB20818@tango.0pointer.de>	<s5hd4mlhlau.wl%tiwai@suse.de>	<20080613142526.GB21255@tango.0pointer.de>	<s5hod65qqhh.wl%tiwai@suse.de>
-	<20080613182234.GB1335@tango.0pointer.de>
+From: Ben Stanley <Ben.Stanley@exemail.com.au>
+Subject: Re: git-http interface to ALSA git repositories?
+Date: Sat, 14 Jun 2008 20:56:16 +1000
+Message-ID: <1213440976.28032.269.camel@localhost>
+References: <485295CF.2080802@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-33.mail.demon.net (anchor-post-33.mail.demon.net
-	[194.217.242.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8DB110380F
+Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9F88245A7
 	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Jun 2008 11:51:12 +0200 (CEST)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[127.0.0.1])
-	by anchor-post-33.mail.demon.net with esmtp (Exim 4.67)
-	id 1K7SPg-000MO3-Am
-	for alsa-devel@alsa-project.org; Sat, 14 Jun 2008 09:51:12 +0000
-In-Reply-To: <20080613182234.GB1335@tango.0pointer.de>
+	Sat, 14 Jun 2008 12:56:21 +0200 (CEST)
+Received: from 168.78.233.220.exetel.com.au ([220.233.78.168]
+	helo=[192.168.1.2]) by smtp.po.exetel.com.au with esmtp (Exim 4.68)
+	(envelope-from <Ben.Stanley@exemail.com.au>) id 1K7TQf-0005fL-2n
+	for alsa-devel@alsa-project.org; Sat, 14 Jun 2008 20:56:17 +1000
+In-Reply-To: <485295CF.2080802@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,25 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lennart Poettering wrote:
-> I could agree to that. However, to be useful it must be possible to
-> query those three pointers atomically. i.e. in a single call:
->
->    typedef struct snd_ptr_info {
->         snd_uframes_t curr_ptr;
->         snd_uframes_t hw_ptr;
->         snd_uframes_t appl_ptr;
->    } snd_ptr_info_t;
->
->    int snd_pcm_get_ptr_info(snd_pcm_t *pcm, snd_ptr_info_t *i);
->
->   
 
-We would have to be careful. The current snd_pcm_delay() sorts out all 
-the wrap around detection etc. for us.
-Having the raw pointers would require the application to do the wrap 
-around detection but the driver has extra information in order for it to 
-detect wrap around.
+I have this problem at work too. My easiest solution is to work at
+home...
+
+Anyway, http access to the alsa git repository would help me too.
+
+Ben.
+
+On Fri, 2008-06-13 at 10:44 -0500, Timur Tabi wrote:
+> My company's firewall blocks the git protocol, so I need to use http:// to clone
+> git repositories.  What is the http path for the ALSA git repository?
+> 
