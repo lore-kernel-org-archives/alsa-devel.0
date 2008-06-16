@@ -1,27 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Thoughts on ASOC v2 driver architecture
-Date: Mon, 16 Jun 2008 12:10:36 -0500
-Message-ID: <48569E8C.3030708@freescale.com>
-References: <9e4733910806151110y13f171dct3948a1555608c0ee@mail.gmail.com>
-	<1213612755.6599.51.camel@odin>
-	<9e4733910806160626h12525bb5ydfb61acd62ef3f09@mail.gmail.com>
-	<4856776B.7040300@freescale.com>
-	<9e4733910806160732h2b1b42f3s1afde73ac8f92026@mail.gmail.com>
-	<20080616150337.GB22229@sirena.org.uk>
-	<48568873.3040906@freescale.com>
-	<20080616154529.GA8544@sirena.org.uk>
-	<48568B87.2000408@freescale.com>
-	<20080616170325.GD8544@sirena.org.uk>
+From: Travis Place <wishie@wishie.net>
+Subject: Re: Problem regarding CA0106
+Date: Tue, 17 Jun 2008 03:26:06 +1000
+Message-ID: <1213637166.4031.10.camel@temp-fallen>
+References: <1213377513.27630.5.camel@temp-fallen>
+	<s5hve09psuz.wl%tiwai@suse.de> <1213631528.4031.4.camel@temp-fallen>
+	<s5hd4mhpdy0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49FFB243F6
+Received: from www.wishie.net (202-137-100-089.dial.usertools.net
+	[202.137.100.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id B842C243D7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jun 2008 19:10:41 +0200 (CEST)
-In-Reply-To: <20080616170325.GD8544@sirena.org.uk>
+	Mon, 16 Jun 2008 19:24:50 +0200 (CEST)
+In-Reply-To: <s5hd4mhpdy0.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,28 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>, Jon Smirl <jonsmirl@gmail.com>, ALSA-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-
-> Right, but you could not then idiomatically have a device tree entry
-> saying something to the effect of "This board has a Frobnitz 2000 with
-> control line 1 connected to GPIO4 and control line 2 connected to GPIO5"
-
-Yes.
-
-> which would register the presence of this other device (in the same way
-> as you have an entry for an I2C device)?
-
-I'm still not sure I understand.  I2C devices are represented by complete nodes
-under the I2C adapter node.  The file fsl_soc.c scans each I2C adapter node, and
-enumerates every child node under the adapter node.  It creates I2C platform
-devices this way.
-
-I'm not sure how we could use this model for ASoC.  There is no "ASoC adapter
-node" in the device tree, because there is no ASoC adapter.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+T24gTW9uLCAyMDA4LTA2LTE2IGF0IDE4OjAwICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+QXQgVHVlLCAxNyBKdW4gMjAwOCAwMTo1MjowOCArMTAwMCwKPiBUcmF2aXMgUGxhY2Ugd3JvdGU6
+Cj4gPiAKPiA+IE9uIE1vbiwgMjAwOC0wNi0xNiBhdCAxMjozOCArMDIwMCwgVGFrYXNoaSBJd2Fp
+IHdyb3RlOgo+ID4gPiBBdCBTYXQsIDE0IEp1biAyMDA4IDAzOjE4OjMzICsxMDAwLAo+ID4gPiBU
+cmF2aXMgUGxhY2Ugd3JvdGU6Cj4gPiA+ID4gCj4gPiA+ID4gSnVzdCBiZWVuIHNwZWFraW5nIHdp
+dGggYSBndXkgaW4gI2Fsc2EgYWJvdXQgdGhlIHByb2JsZW1zIHdpdGggaGlzICJNU0kKPiA+ID4g
+PiBLOE4gRGlhbW9uZCBNQiIgd2hpY2ggaGFzIGFuIG9uYm9hcmQgIlNCIExpdmUgMjRiaXQiIG9y
+ICJBdWRpZ3kiLgo+ID4gPiA+IAo+ID4gPiA+IFdoaWxlIGxvb2tpbmcgdGhyb3VnaCBjYTAxMDZf
+bWFpbi5jIGluIEdJVCwgaSBzYXcgdGhlIGZvbGxvd2luZyBzZWN0aW9uOgo+ID4gPiA+IAo+ID4g
+PiA+IC8qIE1TSSBLOE4gRGlhbW9uZCBNb3RoZXJib2FyZCB3aXRoIG9uYm9hcmQgU0IgTGl2ZSAy
+NGJpdCB3aXRob3V0IEFDOTcKPiA+ID4gPiAqLwo+ID4gPiA+IAkgLyogU0IwNDM4Cj4gPiA+ID4g
+CSAgKiBDVFJMOkNBMDEwNi1EQVQKPiA+ID4gPiAJICAqIEFEQzogV004Nzc1U0VEUwo+ID4gPiA+
+IAkgICogREFDOiBDUzQzODItS1FaCj4gPiA+ID4gCSAgKi8KPiA+ID4gPiAJIHsgLnNlcmlhbCA9
+IDB4MTAwOTE0NjIsCj4gPiA+ID4gCSAgIC5uYW1lICAgPSAiTVNJIEs4TiBEaWFtb25kIE1CIFtT
+QjA0MzhdIiwKPiA+ID4gPiAJICAgLmdwaW9fdHlwZSA9IDIsCj4gPiA+ID4gCSAgIC5pMmNfYWRj
+ID0gMSB9ICwKPiA+ID4gPiAKPiA+ID4gPiBGb3IgdGhpcyBndXlzIHNvdW5kIHRvIHdvcmssIHdl
+IGhhZCB0byBjaGFuZ2UgdGhlIHNlcmlhbCBsaW5lIHRvOgo+ID4gPiA+IAo+ID4gPiA+IAkgeyAu
+c2VyaWFsID0gMHgxMDA5MTEwMiwKPiA+ID4gCj4gPiA+IERvZXMgaXQgbWVhbiB0aGF0IHRoaXMg
+bnVtYmVyIDEwMDk6MTEwMiBpcyBtaXNzaW5nLCBvciBhIHdyb25nCj4gPiA+IDEwMDk6MTQ2MiBl
+bnRyeSBtYXRjaGVzIHdpdGggaGlzIGhhcmR3YXJlPwo+ID4gPiAKPiA+IO+7v1dlbGwsIGl0IGFw
+cGVhcnMgdG8gbWUgKGR1ZSB0byBhbm90aGVyIHJlcG9ydCBmaWxlZCBwcmV2aW91c2x5KSB0aGF0
+Cj4gPiB0aGUgbW90aGVyYm9hcmQgaXMgYSAnbmV3ZXIgcmV2aXNpb24nIGFuZCBoYXMgYSBkaWZm
+ZXJlbnQgSUQgZm9yIHRoZQo+ID4gc291bmRjYXJkLgo+IAo+IEhtLCBzbyB5b3UgZGlkbid0IHJl
+Y2VpdmUgYWxzYS1pbmZvLnNoIG9yICJsc3BjaSAtbnYiIG91dHB1dD8KPiAKT2YgY291cnNlIEkg
+Z290IGFsc2EtaW5mby5zaCBvdXRwdXQgOikKKGFza3MgaGltc2VsZiB3aHkgaGUgZGlkbnQgaW5j
+bHVkZSBpdCB0aG91Z2gpCgpodHRwOi8vcGFzdGViaW4uY2EvMTA0ODY0NAoKCj4gPiA+IEluIHRo
+ZSBmb3JtZXIgY2FzZSwgaXQgaGFwcGVucyBvZnRlbi4gIFdlIGp1c3QgbmVlZCB0byBhZGQgYSBu
+ZXcgZW50cnkKPiA+ID4gZm9yIHRoZSBuZXdlciBtb2RlbC4gIEluIHRoZSBsYXR0ZXIgY2FzZSwg
+aXQncyBvZGQuCj4gPiA+IAo+ID4gCj4gPiDvu79JIHRoaW5rIHRoYXQgYWRkaW5nIHRoZSBuZXcg
+SUQgdG8gdGhlIGRyaXZlciB3b250IGNhdXNlIGFueSBpbW1lZGlhdGUKPiA+IHByb2JsZW1zLiBU
+aGUgb2xkIHZhbHVlICgxMDA5OjE0NjIpIHNob3VsZCByZW1haW4sIHVudGlsIHdlIGNhbiBjb25m
+aXJtCj4gPiBpdCBhZ2FpbnN0IGFub3RoZXIgSzhOIERpYW1vbmQgbW90aGVyYm9hcmQgKGFsdGhv
+dWdoIGltIG5vdCBzdXJlIGhvdwo+ID4gY29tbW9uIHRoZXNlIGJvYXJkcyBhcmUpLgo+IAo+IFll
+YWgsIEkgZ3Vlc3Mgc28sIHRvby4gIEJ1dCBqdXN0IHRvIGJlIHN1cmUuLi4KPiAKV2VsbCwgd2Un
+bGwganVzdCBoYXZlIHRvIHNlZSB3aGF0IGhhcHBlbnMsIEkgZ3Vlc3MuCgpGb3IgdGhlIHJlY29y
+ZCwgaW4gYm90aCBvbGRlciBBTFNBIHZlcnNpb25zLCBhbmQgMS4wLjE2LCBjaGFuZ2luZyBvbmx5
+CnRoZSBzZXJpYWwgc2VlbXMgdG8gYmUgc3VmZmljaWVudC4gU28gYWRkaW5nIGFub3RoZXIgc2Vy
+aWFsIHNob3VsZCBiZSBhbgplYXN5IGZpeC4KClRoYW5rcywKVHJhdmlzCQo+IAo+IFRha2FzaGkK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
