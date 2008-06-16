@@ -1,18 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Maximum buffer size on HDA
-Date: Mon, 16 Jun 2008 12:53:11 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0806161246330.1798@tm8103-a.perex-int.cz>
-References: <20080613191303.GA3899@tango.0pointer.de>
-	<s5hzlplpt58.wl%tiwai@suse.de>
+From: "anuj aggarwal" <anuj.aggarwal@gmail.com>
+Subject: Function to update the PCM status in alsa lib?
+Date: Mon, 16 Jun 2008 17:14:55 +0530
+Message-ID: <2ee9e08d0806160444v48a65788uacf175e70fbe820f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79EA92454B
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5CB924593
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jun 2008 12:53:13 +0200 (CEST)
-In-Reply-To: <s5hzlplpt58.wl%tiwai@suse.de>
+	Mon, 16 Jun 2008 13:44:56 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so1078338and.80
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2008 04:44:55 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 16 Jun 2008, Takashi Iwai wrote:
+Hi,
 
-> At Fri, 13 Jun 2008 21:13:03 +0200,
-> Lennart Poettering wrote:
-> > 
-> > Heya,
-> > 
-> > the HDA driver allows a playback buffer size of something like 64K
-> > onyl. Is this a driver limitation or a limitation of the hardware?
-> > Skimming through the docs I cannot see anything like this, and I got
-> > the idea that the audio buffer is maintained in system memory, not
-> > sound card memory, so why this limit?
-> 
-> This comes from the buffer pre-allocator.
-> Run the below:
-> 
-> 	# echo 1024 > /proc/asound/card0/pcm0p/sub0/prealloc
-> 
-> then you can use now 1MB buffer.  snd-hda-intel has max
-> pre-allocation buffer size 1MB, and this is the hard-coded limit.
-> 
-> It's rather a silly constraint, and I think it'd be better cut off.
-> OTOH, this makes the system safer (e.g. avoiding page allocations for
-> too large buffers), and there is a proper workaround, too.
-> So, I'm open about this change, so far.
+I am calling snd_pcm_period_elapsed() in my DMA callback routine.
+After doing that, I check for more data in the 'runtime' struct and
+pass a new request to xfer data to the codec driver.
 
-Which workaround you're talking about?
+snd_pcm_period_elapsed() is used to update the pcm status for the next
+period, by the codec driver. I want to know which function is used by
+the ALSA library to do the same when it receives a new request from
+the user to transfer data (i.e. when user calls snd_pcm_writei()).
 
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Thanks,
+Anuj
