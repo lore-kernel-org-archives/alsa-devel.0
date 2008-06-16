@@ -1,18 +1,22 @@
-From: linuxconsole@free.fr
-Subject: Re: alsa and 2.6.25.4 kernel
-Date: Mon, 16 Jun 2008 17:15:52 +0200
-Message-ID: <1213629352.485683a853269@imp.free.fr>
-References: <1213376560.4852a830e906b@imp.free.fr>
-	<s5hwskppt0f.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: Thoughts on ASOC v2 driver architecture
+Date: Mon, 16 Jun 2008 10:34:42 -0500
+Message-ID: <48568812.5020101@freescale.com>
+References: <9e4733910806151110y13f171dct3948a1555608c0ee@mail.gmail.com>	
+	<1213612755.6599.51.camel@odin>	
+	<9e4733910806160626h12525bb5ydfb61acd62ef3f09@mail.gmail.com>	
+	<4856776B.7040300@freescale.com>
+	<9e4733910806160732h2b1b42f3s1afde73ac8f92026@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wmproxy1-g27.free.fr (wmproxy1-g27.free.fr [212.27.42.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8745B24355
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id EEC7324359
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jun 2008 17:17:30 +0200 (CEST)
-In-Reply-To: <s5hwskppt0f.wl%tiwai@suse.de>
+	Mon, 16 Jun 2008 17:34:49 +0200 (CEST)
+In-Reply-To: <9e4733910806160732h2b1b42f3s1afde73ac8f92026@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +26,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your response.
+Jon Smirl wrote:
 
-My distro (http://linuxconsole.org) doesn't use udev, to go faster.
+> I think I've come up with a solution. Push all of that generic setup
+> code in mpc8610_hpcd into fsl_ssi.
 
-I disabled alsa from 2.6.25.4 kernel, build alsa drivers from
-alsa-driver-1.0.17rc1 and now it works fine.
+I would NACK a patch that did that, if you were to submit it here.
 
-Best regards.
+> Leave only the platform specific
+> support in mpc8610_hpcd. Now turn mpc8610_hpcd into a loadable module
+> but leave it as a platform_driver. During the fsl_ssi probe function
+> extract the platform name from the device tree and use it to
+> dynamically load the mpc8610_hpcd driver.
 
-Yann.
+If you want to augment the drivers to get more information from the device tree,
+like names, I would be okay with that.  But I don't like moving any fabric
+functionality from the fabric driver into another driver.  The SSI driver cannot
+ever be aware of more than one SSI at a time.
 
-Selon Takashi Iwai <tiwai@suse.de>:
-
->
-> My wild guess is that the device file doesn't match with the kernel
-> setting.  You can build ALSA drivers with dynamic minor numbers.  In
-> this case, the minor numbers of device files are assigned dynamically,
-> and thus the device files must be handled via udev.  If you have
-> static device files with different numbers, this won't match
-> properly.
->
->
-> Takashi
->
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
