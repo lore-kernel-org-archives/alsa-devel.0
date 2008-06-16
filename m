@@ -1,20 +1,20 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Re: Problem regarding CA0106
-Date: Tue, 17 Jun 2008 03:26:06 +1000
-Message-ID: <1213637166.4031.10.camel@temp-fallen>
-References: <1213377513.27630.5.camel@temp-fallen>
-	<s5hve09psuz.wl%tiwai@suse.de> <1213631528.4031.4.camel@temp-fallen>
-	<s5hd4mhpdy0.wl%tiwai@suse.de>
+From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
+Subject: hda-intel on Asus M2N-X Plus NVIDIA GeForce
+	6100/nForce 430 mobo
+Date: Mon, 16 Jun 2008 20:00:02 +0200
+Message-ID: <200806162000.02321.cave.dnb2m97pp@aliceadsl.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.wishie.net (202-137-100-089.dial.usertools.net
-	[202.137.100.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id B842C243D7
+Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id 87461243D7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jun 2008 19:24:50 +0200 (CEST)
-In-Reply-To: <s5hd4mhpdy0.wl%tiwai@suse.de>
+	Mon, 16 Jun 2008 20:00:08 +0200 (CEST)
+Received: from [192.168.0.230] (213.36.0.56) by mail.libertysurf.net
+	(7.3.118.8) id 484CEE8B00238C02 for alsa-devel@alsa-project.org;
+	Mon, 16 Jun 2008 21:05:43 +0200
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,48 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDA4LTA2LTE2IGF0IDE4OjAwICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-QXQgVHVlLCAxNyBKdW4gMjAwOCAwMTo1MjowOCArMTAwMCwKPiBUcmF2aXMgUGxhY2Ugd3JvdGU6
-Cj4gPiAKPiA+IE9uIE1vbiwgMjAwOC0wNi0xNiBhdCAxMjozOCArMDIwMCwgVGFrYXNoaSBJd2Fp
-IHdyb3RlOgo+ID4gPiBBdCBTYXQsIDE0IEp1biAyMDA4IDAzOjE4OjMzICsxMDAwLAo+ID4gPiBU
-cmF2aXMgUGxhY2Ugd3JvdGU6Cj4gPiA+ID4gCj4gPiA+ID4gSnVzdCBiZWVuIHNwZWFraW5nIHdp
-dGggYSBndXkgaW4gI2Fsc2EgYWJvdXQgdGhlIHByb2JsZW1zIHdpdGggaGlzICJNU0kKPiA+ID4g
-PiBLOE4gRGlhbW9uZCBNQiIgd2hpY2ggaGFzIGFuIG9uYm9hcmQgIlNCIExpdmUgMjRiaXQiIG9y
-ICJBdWRpZ3kiLgo+ID4gPiA+IAo+ID4gPiA+IFdoaWxlIGxvb2tpbmcgdGhyb3VnaCBjYTAxMDZf
-bWFpbi5jIGluIEdJVCwgaSBzYXcgdGhlIGZvbGxvd2luZyBzZWN0aW9uOgo+ID4gPiA+IAo+ID4g
-PiA+IC8qIE1TSSBLOE4gRGlhbW9uZCBNb3RoZXJib2FyZCB3aXRoIG9uYm9hcmQgU0IgTGl2ZSAy
-NGJpdCB3aXRob3V0IEFDOTcKPiA+ID4gPiAqLwo+ID4gPiA+IAkgLyogU0IwNDM4Cj4gPiA+ID4g
-CSAgKiBDVFJMOkNBMDEwNi1EQVQKPiA+ID4gPiAJICAqIEFEQzogV004Nzc1U0VEUwo+ID4gPiA+
-IAkgICogREFDOiBDUzQzODItS1FaCj4gPiA+ID4gCSAgKi8KPiA+ID4gPiAJIHsgLnNlcmlhbCA9
-IDB4MTAwOTE0NjIsCj4gPiA+ID4gCSAgIC5uYW1lICAgPSAiTVNJIEs4TiBEaWFtb25kIE1CIFtT
-QjA0MzhdIiwKPiA+ID4gPiAJICAgLmdwaW9fdHlwZSA9IDIsCj4gPiA+ID4gCSAgIC5pMmNfYWRj
-ID0gMSB9ICwKPiA+ID4gPiAKPiA+ID4gPiBGb3IgdGhpcyBndXlzIHNvdW5kIHRvIHdvcmssIHdl
-IGhhZCB0byBjaGFuZ2UgdGhlIHNlcmlhbCBsaW5lIHRvOgo+ID4gPiA+IAo+ID4gPiA+IAkgeyAu
-c2VyaWFsID0gMHgxMDA5MTEwMiwKPiA+ID4gCj4gPiA+IERvZXMgaXQgbWVhbiB0aGF0IHRoaXMg
-bnVtYmVyIDEwMDk6MTEwMiBpcyBtaXNzaW5nLCBvciBhIHdyb25nCj4gPiA+IDEwMDk6MTQ2MiBl
-bnRyeSBtYXRjaGVzIHdpdGggaGlzIGhhcmR3YXJlPwo+ID4gPiAKPiA+IO+7v1dlbGwsIGl0IGFw
-cGVhcnMgdG8gbWUgKGR1ZSB0byBhbm90aGVyIHJlcG9ydCBmaWxlZCBwcmV2aW91c2x5KSB0aGF0
-Cj4gPiB0aGUgbW90aGVyYm9hcmQgaXMgYSAnbmV3ZXIgcmV2aXNpb24nIGFuZCBoYXMgYSBkaWZm
-ZXJlbnQgSUQgZm9yIHRoZQo+ID4gc291bmRjYXJkLgo+IAo+IEhtLCBzbyB5b3UgZGlkbid0IHJl
-Y2VpdmUgYWxzYS1pbmZvLnNoIG9yICJsc3BjaSAtbnYiIG91dHB1dD8KPiAKT2YgY291cnNlIEkg
-Z290IGFsc2EtaW5mby5zaCBvdXRwdXQgOikKKGFza3MgaGltc2VsZiB3aHkgaGUgZGlkbnQgaW5j
-bHVkZSBpdCB0aG91Z2gpCgpodHRwOi8vcGFzdGViaW4uY2EvMTA0ODY0NAoKCj4gPiA+IEluIHRo
-ZSBmb3JtZXIgY2FzZSwgaXQgaGFwcGVucyBvZnRlbi4gIFdlIGp1c3QgbmVlZCB0byBhZGQgYSBu
-ZXcgZW50cnkKPiA+ID4gZm9yIHRoZSBuZXdlciBtb2RlbC4gIEluIHRoZSBsYXR0ZXIgY2FzZSwg
-aXQncyBvZGQuCj4gPiA+IAo+ID4gCj4gPiDvu79JIHRoaW5rIHRoYXQgYWRkaW5nIHRoZSBuZXcg
-SUQgdG8gdGhlIGRyaXZlciB3b250IGNhdXNlIGFueSBpbW1lZGlhdGUKPiA+IHByb2JsZW1zLiBU
-aGUgb2xkIHZhbHVlICgxMDA5OjE0NjIpIHNob3VsZCByZW1haW4sIHVudGlsIHdlIGNhbiBjb25m
-aXJtCj4gPiBpdCBhZ2FpbnN0IGFub3RoZXIgSzhOIERpYW1vbmQgbW90aGVyYm9hcmQgKGFsdGhv
-dWdoIGltIG5vdCBzdXJlIGhvdwo+ID4gY29tbW9uIHRoZXNlIGJvYXJkcyBhcmUpLgo+IAo+IFll
-YWgsIEkgZ3Vlc3Mgc28sIHRvby4gIEJ1dCBqdXN0IHRvIGJlIHN1cmUuLi4KPiAKV2VsbCwgd2Un
-bGwganVzdCBoYXZlIHRvIHNlZSB3aGF0IGhhcHBlbnMsIEkgZ3Vlc3MuCgpGb3IgdGhlIHJlY29y
-ZCwgaW4gYm90aCBvbGRlciBBTFNBIHZlcnNpb25zLCBhbmQgMS4wLjE2LCBjaGFuZ2luZyBvbmx5
-CnRoZSBzZXJpYWwgc2VlbXMgdG8gYmUgc3VmZmljaWVudC4gU28gYWRkaW5nIGFub3RoZXIgc2Vy
-aWFsIHNob3VsZCBiZSBhbgplYXN5IGZpeC4KClRoYW5rcywKVHJhdmlzCQo+IAo+IFRha2FzaGkK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+I've just built a new machine, and expected problems with the onboard 
+soundcard, and also have problems with the onboard NIC, but that's another 
+problem, which is resolved by installing my last remaining realtek 8139 PCI 
+card.
+
+Anyway the mobo is an Asus M2N-X Plus NVIDIA GeForce 6100/nForce 430, and the 
+Southbridge (which appears to handle allsorts of stuff) is MCP61.
+
+the specs for the soundcard from the Asus site are below.
+ALC662 6-Channel High Definition Audio Azalia CODEC
+Support Jack-Sensing, Enumeration, Multi-streaming
+S/PDIF out on back I/O port
+
+This is using the Fedora 8 distro, which has alsa driver 1.0.15, and is 
+probably a bit old. 
+
+The card is not detected at bootup, but I did a modprobe snd-hda-intel, using 
+various model options. the modules were loaded, but a cat /proc/asound/cards 
+showed "no soundcards detected"
+
+I don't want to waste too much time on this onboard card, and will probably 
+buy a cheap well supported card, just to get some sounds on this new machine. 
+All the same I've run the alsa-info.sh script, and the link is below.
+
+http://pastebin.ca/1048647
+
+Any comments, as always welcome.
+
+Btw: My other machines use Audigy2 soundblaster (emu10k1) on the first 
+machine, and Ensoniq (ens1371) on the other machine, and no problems with 
+these cards at all. I cannot repeat my opinions/thoughts about hda-intel 
+cards.
+
+Thanks for all your work you folks.
+
+Nigel.
