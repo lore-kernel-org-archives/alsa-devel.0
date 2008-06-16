@@ -1,21 +1,23 @@
-From: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
-Subject: Re:
-	=?iso-8859-1?q?hda-intel_on_Asus_M2N-X_Plus_NVIDIA_G?=
-	=?iso-8859-1?q?eForce=096100/nForce_430_mobo?=
-Date: Mon, 16 Jun 2008 20:54:12 +0200
-Message-ID: <200806162054.12813.cave.dnb2m97pp@aliceadsl.fr>
-References: <200806162000.02321.cave.dnb2m97pp@aliceadsl.fr>
-	<4856B078.1000002@cox.net>
+From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
+Subject: Still have choppy audio using 1.0.17
+Date: Mon, 16 Jun 2008 17:04:56 -0300
+Message-ID: <4856C768.1060404@tet.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.libertysurf.net (mx-out.libertysurf.net [213.36.80.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8309F2441A
+Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF836243F6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jun 2008 20:54:25 +0200 (CEST)
-In-Reply-To: <4856B078.1000002@cox.net>
-Content-Disposition: inline
+	Mon, 16 Jun 2008 22:04:53 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by einstein.tteng.com.br (Postfix) with ESMTP id AC66212000A
+	for <alsa-devel@alsa-project.org>;
+	Mon, 16 Jun 2008 17:04:51 -0300 (BRST)
+Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
+	by einstein.tteng.com.br (Postfix) with ESMTP id 64528120008
+	for <alsa-devel@alsa-project.org>;
+	Mon, 16 Jun 2008 17:04:48 -0300 (BRST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,81 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: stan <ghjeold_i_mwee@cox.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 16 June 2008 20:27, stan wrote:
-> Nigel Henry wrote:
-> > I've just built a new machine, and expected problems with the onboard
-> > soundcard, and also have problems with the onboard NIC, but that's
-> > another problem, which is resolved by installing my last remaining
-> > realtek 8139 PCI card.
->
-> Is the sound device enabled in BIOS?  And I'm surprised that your NIC
-> isn't working.  Those are
-> almost generic these days.
+I have been trying for many weeks to solve this problem, but with no 
+success. After updating to Alsa 1.0.17, which include changes to aloop, 
+I still have choppy audio. I will try to summarize what happens:
 
-Hi Stan. I don't want to check the BIOS at the mo, as I'm DL'ing a load of 
-updates for F8 on this machine, but I'm pretty sure that the sounds are 
-enabled. I wil check this though.
+- I need to use aloop, if I change to a sound card all the problems are 
+gone;
+- After some time of continuous play, applications start to reproduce 
+choppy audio. Choppy audio doesn't happens all the time;
+- If I repeatedly start and stop my sound capture application choppy 
+audio occur sooner;
+- Start/stop my application restores the sound quality (after some tryies);
+- This happens with ALSA applications (xine, vlc) and OSS emulated;
+- I have tryied many period_size and buffer_size in asound.conf, now I 
+am using 960 for period and 3840 for buffer. As I decrease period size, 
+the audio quality improves, but choppy audio still happens;
+- I test for overrun but no errors occur.
+- I am using block mode, interleaved, 44100, 16 bit, 2 channels
+- I am using dmix, dsnoop, removing them does not correct the audio
 
-I googled a bit for the NIC problem with the MCP61 chipset, and did see 
-someones lspci listing Ethernet against a MCP61 entry, but I have no such 
-entry. Anyway, a possible fix for the sounds would be nice.
->
-> > Anyway the mobo is an Asus M2N-X Plus NVIDIA GeForce 6100/nForce 430, and
-> > the Southbridge (which appears to handle allsorts of stuff) is MCP61.
-> >
-> > the specs for the soundcard from the Asus site are below.
-> > ALC662 6-Channel High Definition Audio Azalia CODEC
-> > Support Jack-Sensing, Enumeration, Multi-streaming
-> > S/PDIF out on back I/O port
->
-> Did a search in the driver source and the azalia is mentioned in the
-> hda-intel.c module.  Using hg snapshot of 20080520.
->
-> > This is using the Fedora 8 distro, which has alsa driver 1.0.15, and is
-> > probably a bit old.
->
-> Yeah, probably a good idea to upgrade this.  Did you notice that
-> jaroslav had just posted the 1.0.17rc2 link?
+These are some of the information I have, I don't know if is is enough. 
+If necessary I can provide any other information.
+What do you suggest that I do? Are there any known issues or 
+configuration requirements?
 
-Yes I saw that. When the updates for F8 have finished, I'll DL, and install 
-the latest driver
->
-> http://www.alsa-project.org/main/index.php/Changes_v1.0.17rc1_v1.0.17rc2
->
-> > The card is not detected at bootup, but I did a modprobe snd-hda-intel,
-> > using various model options. the modules were loaded, but a cat
-> > /proc/asound/cards showed "no soundcards detected"
->
-> If you do a search in the dmesg output for intel or hda or snd or alsa
-> or azalia does anything turn up?
-
-Don't get anything from any of them, just returned to the command prompt
->
-> > I don't want to waste too much time on this onboard card, and will
-> > probably buy a cheap well supported card, just to get some sounds on this
-> > new machine. All the same I've run the alsa-info.sh script, and the link
-> > is below.
-> >
-> > http://pastebin.ca/1048647
->
-> The modules showing here are not from bootup, but are manually installed?
-
-Yes. lsmod had no alsa stuff loaded after bootup. I modprobed snd-hda-intel, 
-and the alsa modules were loaded, but cat /proc/asound/cards showed "no 
-soundcards"
->
-> > Any comments, as always welcome.
-> >
-> > Btw: My other machines use Audigy2 soundblaster (emu10k1) on the first
-> > machine, and Ensoniq (ens1371) on the other machine, and no problems with
-> > these cards at all. I cannot repeat my opinions/thoughts about hda-intel
-> > cards.
-> >
-> > Thanks for all your work you folks.
-> >
-> > Nigel.
-> > _______________________________________________
+Thanks in advance.
