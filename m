@@ -1,25 +1,18 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: Thoughts on ASOC v2 driver architecture
-Date: Mon, 16 Jun 2008 11:53:27 -0400
-Message-ID: <9e4733910806160853o2970f281m239712d8a2619e91@mail.gmail.com>
-References: <9e4733910806151110y13f171dct3948a1555608c0ee@mail.gmail.com>
-	<1213612755.6599.51.camel@odin>
-	<9e4733910806160626h12525bb5ydfb61acd62ef3f09@mail.gmail.com>
-	<4856776B.7040300@freescale.com>
-	<9e4733910806160732h2b1b42f3s1afde73ac8f92026@mail.gmail.com>
-	<20080616150337.GB22229@sirena.org.uk>
+From: Travis Place <wishie@wishie.net>
+Subject: [Fwd: Re:  Problem regarding CA0106]
+Date: Tue, 17 Jun 2008 01:56:11 +1000
+Message-ID: <1213631771.4031.6.camel@temp-fallen>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-rded96TlqCJce0LRIW0F"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id E084B24375
+Received: from www.wishie.net (202-137-100-089.dial.usertools.net
+	[202.137.100.89])
+	by alsa0.perex.cz (Postfix) with ESMTP id 390A224375
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jun 2008 17:53:31 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so2692049ywk.2
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2008 08:53:27 -0700 (PDT)
-In-Reply-To: <20080616150337.GB22229@sirena.org.uk>
-Content-Disposition: inline
+	Mon, 16 Jun 2008 17:55:04 +0200 (CEST)
+Received: from [192.168.0.7] (unknown [192.168.0.200])
+	by www.wishie.net (Postfix) with ESMTP id 20A114B87B
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2008 16:16:38 +1000 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,83 +22,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>, ALSA-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/16/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Jun 16, 2008 at 10:32:37AM -0400, Jon Smirl wrote:
->  > On 6/16/08, Timur Tabi <timur@freescale.com> wrote:
->  > > Jon Smirl wrote:
->
->  > > > I'd like for the fabric driver to be dynamically loaded by the device
->  > > tree.
->
->  > >  You have a PPC problem, not an ASoC problem.  You're trying to use the
->  > > device tree to load a device without specifying a specific node.  This is
->
->
-> ...
->
->
->  > I think I've come up with a solution. Push all of that generic setup
->  > code in mpc8610_hpcd into fsl_ssi. Leave only the platform specific
->  > support in mpc8610_hpcd. Now turn mpc8610_hpcd into a loadable module
->  > but leave it as a platform_driver. During the fsl_ssi probe function
->  > extract the platform name from the device tree and use it to
->  > dynamically load the mpc8610_hpcd driver.
->
->
-> That should work from an ASoC point of view.
->
->  As Timur says, this is a PowerPC-specific problem - ASoC v2 itself
->  doesn't care how the various devices get instantiated.  The fabric,
->  codec and SoC drivers can all come up in any order and the core will
->  sort things out.
->
->  OOI, I guess that if there were some visible control on the board (eg, a
->  few controls via GPIO) then this would be less of an issue since there
->  would be real hardware for the machine/fabric driver to control?
 
-This seems to be a more global problem. I'm working on audio devices
-so I was putting it into the ASOC bucket.
+--=-rded96TlqCJce0LRIW0F
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Some more pieces of the puzzle are starting to come together for me.
-It's this type of code is causing the problem. Timur's version of this
-is more complicated.
 
-static struct platform_device codec = {
-	.name		= "wm9713-codec",
-	.id		= -1,
-};
 
-static struct platform_device platform = {
-	.name		= "Mainstone-WM9713",
-	.id		= -1,
-};
+--=-rded96TlqCJce0LRIW0F
+Content-Disposition: inline
+Content-Description: Forwarded message - Re: [alsa-devel] Problem regarding
+	CA0106
+Content-Type: message/rfc822
 
-static struct platform_device *devices[] = {
-	&codec,
-	&platform,
-};
+Subject: Re: [alsa-devel] Problem regarding CA0106
+From: Travis Place <wishie@wishie.net>
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <s5hve09psuz.wl%tiwai@suse.de>
+References: <1213377513.27630.5.camel@temp-fallen>
+	 <s5hve09psuz.wl%tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Message-Id: <1213631528.4031.4.camel@temp-fallen>
+Mime-Version: 1.0
+X-Mailer: Evolution 2.22.1.1 
+Date: Tue, 17 Jun 2008 01:52:29 +1000
+Content-Transfer-Encoding: quoted-printable
 
-static int __init mainstone_asoc_init(void)
-{
-	platform_add_devices(&devices[0], ARRAY_SIZE(devices));
-	return platform_driver_register(&mainstone_wm9713_driver);
-}
+On Mon, 2008-06-16 at 12:38 +0200, Takashi Iwai wrote:
+> At Sat, 14 Jun 2008 03:18:33 +1000,
+> Travis Place wrote:
+> >=20
+> > Just been speaking with a guy in #alsa about the problems with his "M=
+SI
+> > K8N Diamond MB" which has an onboard "SB Live 24bit" or "Audigy".
+> >=20
+> > While looking through ca0106_main.c in GIT, i saw the following secti=
+on:
+> >=20
+> > /* MSI K8N Diamond Motherboard with onboard SB Live 24bit without AC9=
+7
+> > */
+> > 	 /* SB0438
+> > 	  * CTRL:CA0106-DAT
+> > 	  * ADC: WM8775SEDS
+> > 	  * DAC: CS4382-KQZ
+> > 	  */
+> > 	 { .serial =3D 0x10091462,
+> > 	   .name   =3D "MSI K8N Diamond MB [SB0438]",
+> > 	   .gpio_type =3D 2,
+> > 	   .i2c_adc =3D 1 } ,
+> >=20
+> > For this guys sound to work, we had to change the serial line to:
+> >=20
+> > 	 { .serial =3D 0x10091102,
+>=20
+> Does it mean that this number 1009:1102 is missing, or a wrong
+> 1009:1462 entry matches with his hardware?
+>=20
+=EF=BB=BFWell, it appears to me (due to another report filed previously) =
+that
+the motherboard is a 'newer revision' and has a different ID for the
+soundcard.
 
-The drivers are creating their own platform devices. Constructing them
-in the driver builds in the assumption that if the driver is loaded,
-then the devices are present.  But that's not right in my case, I have
-four fabric drivers built in and I only want one of them active.
+> In the former case, it happens often.  We just need to add a new entry
+> for the newer model.  In the latter case, it's odd.
+>=20
 
-The devices are being created in the wrong place. So instead of my
-proposal of reading the platform name out of the device tree and
-loading the driver from fsl_ssi,  in Timur's case the fabric device
-should be created in arch/powerpc/platforms/86xx/mpc8610_hpcd.c.
-PowerPC is already capable of making the codec device from the device
-tree.
+=EF=BB=BFI think that adding the new ID to the driver wont cause any imme=
+diate
+problems. The old value (1009:1462) should remain, until we can confirm
+it against another K8N Diamond motherboard (although im not sure how
+common these boards are).
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+>=20
+> thanks,
+>=20
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+Thanks,
+Travis Place
+
+--=-rded96TlqCJce0LRIW0F
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-rded96TlqCJce0LRIW0F--
