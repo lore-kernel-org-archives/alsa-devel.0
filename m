@@ -1,22 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Thoughts on ASOC v2 driver architecture
-Date: Mon, 16 Jun 2008 16:03:38 +0100
-Message-ID: <20080616150337.GB22229@sirena.org.uk>
-References: <9e4733910806151110y13f171dct3948a1555608c0ee@mail.gmail.com>
-	<1213612755.6599.51.camel@odin>
-	<9e4733910806160626h12525bb5ydfb61acd62ef3f09@mail.gmail.com>
-	<4856776B.7040300@freescale.com>
-	<9e4733910806160732h2b1b42f3s1afde73ac8f92026@mail.gmail.com>
+From: linuxconsole@free.fr
+Subject: Re: alsa and 2.6.25.4 kernel
+Date: Mon, 16 Jun 2008 17:15:52 +0200
+Message-ID: <1213629352.485683a853269@imp.free.fr>
+References: <1213376560.4852a830e906b@imp.free.fr>
+	<s5hwskppt0f.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D41A22432F
+Received: from wmproxy1-g27.free.fr (wmproxy1-g27.free.fr [212.27.42.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8745B24355
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jun 2008 17:03:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <9e4733910806160732h2b1b42f3s1afde73ac8f92026@mail.gmail.com>
+	Mon, 16 Jun 2008 17:17:30 +0200 (CEST)
+In-Reply-To: <s5hwskppt0f.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,36 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: ALSA-devel <alsa-devel@alsa-project.org>, Timur Tabi <timur@freescale.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 16, 2008 at 10:32:37AM -0400, Jon Smirl wrote:
-> On 6/16/08, Timur Tabi <timur@freescale.com> wrote:
-> > Jon Smirl wrote:
+Thanks for your response.
 
-> > > I'd like for the fabric driver to be dynamically loaded by the device
-> > tree.
+My distro (http://linuxconsole.org) doesn't use udev, to go faster.
 
-> >  You have a PPC problem, not an ASoC problem.  You're trying to use the
-> > device tree to load a device without specifying a specific node.  This is
+I disabled alsa from 2.6.25.4 kernel, build alsa drivers from
+alsa-driver-1.0.17rc1 and now it works fine.
 
-...
+Best regards.
 
-> I think I've come up with a solution. Push all of that generic setup
-> code in mpc8610_hpcd into fsl_ssi. Leave only the platform specific
-> support in mpc8610_hpcd. Now turn mpc8610_hpcd into a loadable module
-> but leave it as a platform_driver. During the fsl_ssi probe function
-> extract the platform name from the device tree and use it to
-> dynamically load the mpc8610_hpcd driver.
+Yann.
 
-That should work from an ASoC point of view.
+Selon Takashi Iwai <tiwai@suse.de>:
 
-As Timur says, this is a PowerPC-specific problem - ASoC v2 itself
-doesn't care how the various devices get instantiated.  The fabric,
-codec and SoC drivers can all come up in any order and the core will
-sort things out.
-
-OOI, I guess that if there were some visible control on the board (eg, a
-few controls via GPIO) then this would be less of an issue since there
-would be real hardware for the machine/fabric driver to control?
+>
+> My wild guess is that the device file doesn't match with the kernel
+> setting.  You can build ALSA drivers with dynamic minor numbers.  In
+> this case, the minor numbers of device files are assigned dynamically,
+> and thus the device files must be handled via udev.  If you have
+> static device files with different numbers, this won't match
+> properly.
+>
+>
+> Takashi
+>
