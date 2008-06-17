@@ -1,21 +1,15 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: Re: hda-intel on Asus M2N-X Plus NVIDIA GeForce
- 6100/nForce 430 mobo
-Date: Tue, 17 Jun 2008 09:54:16 -0700
-Message-ID: <4857EC38.2030502@cox.net>
-References: <200806162000.02321.cave.dnb2m97pp@aliceadsl.fr>
-	<4856B078.1000002@cox.net>
-	<200806162054.12813.cave.dnb2m97pp@aliceadsl.fr>
-	<200806171817.03604.cave.dnb2m97pp@aliceadsl.fr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: fix PM=n build
+Date: Tue, 17 Jun 2008 19:19:34 +0100
+Message-ID: <12137267743172-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao106.cox.net (fed1rmmtao106.cox.net [68.230.241.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6DDF324595
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8393424634
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Jun 2008 18:54:19 +0200 (CEST)
-In-Reply-To: <200806171817.03604.cave.dnb2m97pp@aliceadsl.fr>
+	Tue, 17 Jun 2008 20:19:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nigel Henry <cave.dnb2m97pp@aliceadsl.fr>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Nigel Henry wrote:
-> I've CC'd the Alsa-user list on this reply, in case it's usefull to those that 
-> arn't subscribed to Alsa-devel.
->
-> Anyway sound problem resolved, as below.
->   
->   
-[snip]
-> I may try some of the model options for the hda intel card, but it seems to be 
-> producing sounds ok with the default. Speaker-test just trying left front is 
-> strange though.
->   
-I don't know if this is related but there has been a problem with the 
-ice1724 driver forever
-that until you change the volume on boot, only the left channel works.  
-Once it has been
-adjusted once, it is ok until reboot.  Maybe your driver copied some of 
-that ice1724 code
-and copied the behavior as well.
-> http://pastebin.ca/1049215
->
-> Thanks Stan, and all you other folks at Alsa-devel who are working on 
-> resolving Alsa driver problems.
->
-> Nigel.
->
->   
-You're welcome.  Good to hear a success story once in a while. :-)
+From: Randy Dunlap <randy.dunlap@oracle.com>
+
+Fix sound/soc build failure when CONFIG_PM=n:
+
+linux-next-20080617/sound/soc/soc-core.c:829: error: 'soc_resume_deferred' undeclared (first use in this function)
+soc3.out:make[3]: *** [sound/soc/soc-core.o] Error 1
+
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b931039..bdbbc6a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -825,8 +825,10 @@ static int soc_probe(struct platform_device *pdev)
+ 
+ 	/* DAPM stream work */
+ 	INIT_DELAYED_WORK(&socdev->delayed_work, close_delayed_work);
++#ifdef CONFIG_PM
+ 	/* deferred resume work */
+ 	INIT_WORK(&socdev->deferred_resume_work, soc_resume_deferred);
++#endif
+ 
+ 	return 0;
+ 
+-- 
+1.5.2.5
