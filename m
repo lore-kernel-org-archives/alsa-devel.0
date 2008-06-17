@@ -1,29 +1,21 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: Thoughts on ASOC v2 driver architecture
-Date: Mon, 16 Jun 2008 20:58:05 -0400
-Message-ID: <9e4733910806161758l55429b08o645c0a040dd2fdad@mail.gmail.com>
-References: <9e4733910806151110y13f171dct3948a1555608c0ee@mail.gmail.com>
-	<1213612755.6599.51.camel@odin>
-	<9e4733910806160626h12525bb5ydfb61acd62ef3f09@mail.gmail.com>
-	<4856776B.7040300@freescale.com>
-	<9e4733910806160732h2b1b42f3s1afde73ac8f92026@mail.gmail.com>
-	<20080616150337.GB22229@sirena.org.uk>
-	<9e4733910806160853o2970f281m239712d8a2619e91@mail.gmail.com>
-	<48568E60.10206@freescale.com>
-	<9e4733910806160923u1e7b3688tba4af776db2ddeef@mail.gmail.com>
-	<485693BA.9010801@freescale.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: [PATCH][asihpi] Meter control return peak.
+Date: Tue, 17 Jun 2008 13:35:44 +1200
+Message-ID: <200806171335.44469.linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F13124492
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A9222446E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Jun 2008 02:58:07 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so2812478ywk.2
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2008 17:58:06 -0700 (PDT)
-In-Reply-To: <485693BA.9010801@freescale.com>
-Content-Disposition: inline
+	Tue, 17 Jun 2008 03:35:48 +0200 (CEST)
+Received: from zaphod.local
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0K2L00LPD33KPI20@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Tue, 17 Jun 2008 13:35:46 +1200 (NZST)
+Content-disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,70 +25,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/16/08, Timur Tabi <timur@freescale.com> wrote:
-> Jon Smirl wrote:
->
->  > The driver stays in sound/soc/fsl. It's only the creation of the
->  > device that moves. You just need to add this to
->  > arch/powerpc/platforms/86xx/mpc8610_hpcd.c and remove it from
->  > mpc8610_hpcd.c. Adding this to
->  > arch/powerpc/platforms/86xx/mpc8610_hpcd.c will have no effect if the
->  > mpc8610_hpcd.c driver is not to be found.
->
->
-> Ok, I'll do that.
+Use Peak meter instead of Rms meter because it is supported by all card 
+families.
+Minor checkpatch cleanups.
 
-The architecture still doesn't appear right to me. fsl-dma.c is
-another driver that is self-creating its own device. We can certainly
-add code to arch/powerpc/platforms/86xx/mpc8610_hpcd.c to create a
-"fsl-elo" device, but it's another fake device. Plus there's already a
-driver for the real "fsl,eloplus-dma" hardware in the system. Needing
-to create fake devices is a sign that the design is not correct. dma
-support should probably be a library that is linked into the ssi
-driver and not be a standalone device driver.
+Signed-off-by: Eliot Blennerhassett <linux@audioscience.com>
 
-I'm going to be gone for a week with no email. When I get back I'll
-work on where to do snd_soc_card_create("MPC8610"). If you do it in
-the fabric driver, then the fabric driver can never be optional.  But
-if you don't do it in the fabric driver, how does the fabric driver
-find the soc_card? There's no call to retrieve the soc_card for
-"MPC8610".
-
->
->
->  > You've complicated it by creating two fabric devices but I believe
->  > your code could be changed to only make one.
->  >
->  > static struct platform_device alsa_fabric = {
->  >       .name           = "MPC8610HPCD",
->  >       .id             = -1,
->  > };
->  >
->  > static struct platform_device *devices[] = {
->  >       &alsa_fabric,
->  > };
->  >
->  > platform_add_devices(&devices[0], ARRAY_SIZE(devices));
->  >
->  >
->  > I'd rename the driver to something less generic.
->  >       .name           = "MPC8610HPCD-fabric",
->
->
-> These are all good ideas.  Thanks.
->
->
->  --
->
-> Timur Tabi
->  Linux kernel developer at Freescale
->
-
+---
+diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
+index 8cbefab..ab90b08 100644
+--- a/pci/asihpi/asihpi.c
++++ b/pci/asihpi/asihpi.c
+@@ -383,15 +383,15 @@ static void snd_card_asihpi_pcm_samplerates(struct 
+snd_card_asihpi *asihpi,
+ 		rate_max = 100000;
+ 	} else {
+ 		/* on cards without SRC,
+-		    valid rates are determined by sampleclock */
++		   valid rates are determined by sampleclock */
+ 		err = HPI_MixerGetControl(phSubSys, asihpi->hMixer,
+ 					  HPI_SOURCENODE_CLOCK_SOURCE, 0, 0, 0,
+ 					  HPI_CONTROL_SAMPLECLOCK, &hControl);
+ 
+ 		for (idx = 0; idx < 100; idx++) {
+ 			if (HPI_ControlQuery(phSubSys, hControl,
+-				HPI_SAMPLECLOCK_SAMPLERATE, idx, 0,
+-				&sampleRate))
++					HPI_SAMPLECLOCK_SAMPLERATE,
++					idx, 0, &sampleRate))
+ 				break;
+ 
+ 			rate_min = min(rate_min, sampleRate);
+@@ -443,7 +443,7 @@ static void snd_card_asihpi_pcm_samplerates(struct 
+snd_card_asihpi *asihpi,
+ 		}
+ 	}
+ 
+-	/*printk(KERN_INFO "Supported rates %X %d %d\n",
++	/* printk(KERN_INFO "Supported rates %X %d %d\n",
+ 	   rates, rate_min, rate_max); */
+ 	pcmhw->rates = rates;
+ 	pcmhw->rate_min = rate_min;
+@@ -885,7 +885,7 @@ static void snd_card_asihpi_playback_format(struct 
+snd_card_asihpi *asihpi,
+ 						u32 hStream,
+ 						struct snd_pcm_hardware *pcmhw)
+ {
+-  struct hpi_format hpi_format;
++	struct hpi_format hpi_format;
+ 	u16 wFormat;
+ 	u16 err;
+ 	u32 hControl;
+@@ -1126,10 +1126,10 @@ static void snd_card_asihpi_capture_format(struct 
+snd_card_asihpi *asihpi,
+ 	for (wFormat = HPI_FORMAT_PCM8_UNSIGNED;
+ 		wFormat <= HPI_FORMAT_PCM24_SIGNED; wFormat++) {
+ 
+-		HPI_FormatCreate(
+-			&hpi_format, 2, wFormat, dwSampleRate, 128000, 0);
+-
+-		err = HPI_InStreamQueryFormat(phSubSys, hStream,
++		HPI_FormatCreate(&hpi_format, 2, wFormat, dwSampleRate,
++						128000, 0);
++		err =
++		    HPI_InStreamQueryFormat(phSubSys, hStream,
+ 					    &hpi_format);
+ 		if (!err)
+ 			pcmhw->formats |=
+@@ -2025,7 +2025,7 @@ static int snd_asihpi_meter_get(struct snd_kcontrol 
+*kcontrol,
+ 	short anGain0_01dB[HPI_MAX_CHANNELS], i;
+ 	u16 err;
+ 
+-	err = HPI_MeterGetRms(phSubSys, hControl, anGain0_01dB);
++	err = HPI_MeterGetPeak(phSubSys, hControl, anGain0_01dB);
+ 
+ 	for (i = 0; i < HPI_MAX_CHANNELS; i++) {
+ #if ASIHPI_LINEAR_METERS
+@@ -2796,7 +2796,7 @@ int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
+ 	asihpi->support_mmap = (!err);
+ 
+ 	asihpi->support_mrx = (((asihpi->wType & 0xFF00) == 0x8900) ||
+-					((asihpi->wType & 0xF000) == 0x6000));
++			((asihpi->wType & 0xF000) == 0x6000));
+ 
+ 
+ 	printk(KERN_INFO "Supports mmap:%d grouping:%d\n",
 
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+--
+Eliot Blennerhassett
+www.audioscience.com
