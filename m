@@ -1,31 +1,29 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: What does snd_pcm_delay() actually return?
-Date: Tue, 17 Jun 2008 12:53:59 +1200
-Message-ID: <48570B27.2090403@audioscience.com>
-References: <20080609190225.GA4534@tango.0pointer.de>
-	<s5h1w333o7r.wl%tiwai@suse.de>
-	<20080612205225.GB20818@tango.0pointer.de>
-	<s5hd4mlhlau.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0806130958000.1798@tm8103-a.perex-int.cz>
-	<48524882.6050606@superbug.co.uk> <g2tq3q$969$1@ger.gmane.org>
-	<Pine.LNX.4.61.0806131453280.1798@tm8103-a.perex-int.cz>
-	<20080613144850.GE21255@tango.0pointer.de>
-	<Pine.LNX.4.61.0806131654510.1798@tm8103-a.perex-int.cz>
-	<s5hprqlqr29.wl%tiwai@suse.de>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: Thoughts on ASOC v2 driver architecture
+Date: Mon, 16 Jun 2008 20:58:05 -0400
+Message-ID: <9e4733910806161758l55429b08o645c0a040dd2fdad@mail.gmail.com>
+References: <9e4733910806151110y13f171dct3948a1555608c0ee@mail.gmail.com>
+	<1213612755.6599.51.camel@odin>
+	<9e4733910806160626h12525bb5ydfb61acd62ef3f09@mail.gmail.com>
+	<4856776B.7040300@freescale.com>
+	<9e4733910806160732h2b1b42f3s1afde73ac8f92026@mail.gmail.com>
+	<20080616150337.GB22229@sirena.org.uk>
+	<9e4733910806160853o2970f281m239712d8a2619e91@mail.gmail.com>
+	<48568E60.10206@freescale.com>
+	<9e4733910806160923u1e7b3688tba4af776db2ddeef@mail.gmail.com>
+	<485693BA.9010801@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3964824481
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F13124492
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Jun 2008 02:54:09 +0200 (CEST)
-Received: from [192.168.1.4]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0K2L00GHG16217P2@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Tue, 17 Jun 2008 12:54:04 +1200 (NZST)
-In-reply-to: <s5hprqlqr29.wl%tiwai@suse.de>
+	Tue, 17 Jun 2008 02:58:07 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 9so2812478ywk.2
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2008 17:58:06 -0700 (PDT)
+In-Reply-To: <485693BA.9010801@freescale.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,46 +33,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-  > First off, it's not only about USB but for hardwares that require the
-> own h/w queue.  There bunch of such hardwares, and we provide really
-> poor support for them.  The above sounds like bandaiding on a bandaid 
-> over a bandaid.
+On 6/16/08, Timur Tabi <timur@freescale.com> wrote:
+> Jon Smirl wrote:
+>
+>  > The driver stays in sound/soc/fsl. It's only the creation of the
+>  > device that moves. You just need to add this to
+>  > arch/powerpc/platforms/86xx/mpc8610_hpcd.c and remove it from
+>  > mpc8610_hpcd.c. Adding this to
+>  > arch/powerpc/platforms/86xx/mpc8610_hpcd.c will have no effect if the
+>  > mpc8610_hpcd.c driver is not to be found.
+>
+>
+> Ok, I'll do that.
 
-Hmm.  This thread will take some digesting...meanwhile here are my (not 
-particularly coherent) thoughts from the POV of driver developer for 
-cards that have large on-card FIFOs. (asihpi)
+The architecture still doesn't appear right to me. fsl-dma.c is
+another driver that is self-creating its own device. We can certainly
+add code to arch/powerpc/platforms/86xx/mpc8610_hpcd.c to create a
+"fsl-elo" device, but it's another fake device. Plus there's already a
+driver for the real "fsl,eloplus-dma" hardware in the system. Needing
+to create fake devices is a sign that the design is not correct. dma
+support should probably be a library that is linked into the ssi
+driver and not be a standalone device driver.
 
-The period-based refresh makes it hard to use the fifo effectively.  If 
-the card fifo is allowed to 'suck' all the data from the ringbuffer then 
-it makes it look like an underrun. Also it makes time appear to run fast 
-until the fifo is filled up.
+I'm going to be gone for a week with no email. When I get back I'll
+work on where to do snd_soc_card_create("MPC8610"). If you do it in
+the fabric driver, then the fabric driver can never be optional.  But
+if you don't do it in the fabric driver, how does the fabric driver
+find the soc_card? There's no call to retrieve the soc_card for
+"MPC8610".
 
-The 'fast time' creates problems for ALSA on playback start, because 
-alsa assumes that it will take a whole period for a period of data to be 
-consumed, while the driver is capable of consuming multiple periods 
-almost instantly.  In my driver I have to throttle the rate that data is 
-transferred to the card fifos.
+>
+>
+>  > You've complicated it by creating two fabric devices but I believe
+>  > your code could be changed to only make one.
+>  >
+>  > static struct platform_device alsa_fabric = {
+>  >       .name           = "MPC8610HPCD",
+>  >       .id             = -1,
+>  > };
+>  >
+>  > static struct platform_device *devices[] = {
+>  >       &alsa_fabric,
+>  > };
+>  >
+>  > platform_add_devices(&devices[0], ARRAY_SIZE(devices));
+>  >
+>  >
+>  > I'd rename the driver to something less generic.
+>  >       .name           = "MPC8610HPCD-fabric",
+>
+>
+> These are all good ideas.  Thanks.
+>
+>
+>  --
+>
+> Timur Tabi
+>  Linux kernel developer at Freescale
+>
 
-Just as in the network case, where it is desirable to get data across 
-the network as early as possible to allow secure playback, we want to 
-fill the oncard fifo as early and as much as possible.
 
-Only if both ringbuffer and fifo are empty (playback) or full (record) 
-is a true xrun occuring.
-
-Our underlying API returns the following info
-* Size of host ringbuffer
-* Amount of unread data in host ringbuffer
-* Amount of unread data in card fifo
-* Frames output at the DAC/input at ADC since stream start
-Plus info about granularity and latency of the above info.
-
-I suspect that a byte-stream approach would be a better match to our cards.
-
-regards
-
-Eliot Blennerhassett
+-- 
+Jon Smirl
+jonsmirl@gmail.com
