@@ -1,19 +1,35 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: looping S/PDIF data
-Date: Wed, 18 Jun 2008 09:24:59 +0200
-Message-ID: <4858B84B.4030800@keyaccess.nl>
-References: <20080531112606.5884a1c9@mjolnir.drzeus.cx>
-	<20080617215504.3203a5ed@mjolnir.drzeus.cx>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: can we make the log appears in subject instead of
+	useless sha1 ID?
+Date: Wed, 18 Jun 2008 11:58:12 +0200
+Message-ID: <m2y753oyiz.fsf_-_@vador.mandriva.com>
+References: <20080520112539.81C9D2484D@alsa0.perex.cz>
+	<m2bq2xtixw.fsf@vador.mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id CEA40243D6
+Received: from mx1.mandriva.com (mx1.mandriva.com [212.85.150.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F345103808
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Jun 2008 09:24:31 +0200 (CEST)
-In-Reply-To: <20080617215504.3203a5ed@mjolnir.drzeus.cx>
+	Wed, 18 Jun 2008 11:58:15 +0200 (CEST)
+Received: from office.mandriva.com (office-abk.mandriva.com [84.55.162.90])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "office.mandrakesoft.com",
+	Issuer "smtp.mandrakesoft.com" (not verified))
+	by mx1.mandriva.com (Postfix) with ESMTP id D67E11F0076
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 Jun 2008 11:58:11 +0200 (CEST)
+Received: from vador.mandriva.com (anakin.mandriva.com [192.168.100.54])
+	by office.mandriva.com (Postfix) with ESMTP id D237C7EE2
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 Jun 2008 11:58:12 +0200 (CEST)
+Received: from vador.mandriva.com (vador.mandriva.com [127.0.0.1])
+	by vador.mandriva.com (Postfix) with ESMTP id 4B4771BE83
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 Jun 2008 11:58:12 +0200 (CEST)
+In-Reply-To: <m2bq2xtixw.fsf@vador.mandriva.com> (Thierry Vignaud's message of
+	"Fri\, 23 May 2008 12\:26\:35 +0200")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +39,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre Ossman <drzeus@drzeus.cx>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, mulix@mulix.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 17-06-08 21:55, Pierre Ossman wrote:
+Thierry Vignaud <tvignaud@mandriva.com> writes:
 
-> Ping
+> > This is an automated email from the git hooks/update script, it was
+> > generated because a ref change was pushed to the repository.
+> > 
+> > Updating branch, master,
+> >        via  9d46f4a919532c3f29a4ca1df3a4ce4686b11f37 (commit)
+> >       from  fc5102d6c6520f48d39faf572881bc520c41aeb7 (commit)
+> > 
+> > - Log -----------------------------------------------------------------
+> > commit 9d46f4a919532c3f29a4ca1df3a4ce4686b11f37
+> > Author:     Jaroslav Kysela <perex@perex.cz>
+> > AuthorDate: Tue May 20 13:25:35 2008 +0200
+> > Commit:     Jaroslav Kysela <perex@perex.cz>
+> > CommitDate: Tue May 20 13:25:35 2008 +0200
+> > 
+> >     removed .hgtags
 > 
-> On Sat, 31 May 2008 11:26:06 +0200
-> Pierre Ossman <drzeus-list@drzeus.cx> wrote:
-> 
->> I have a minor annoyance with the snd_trident driver that I was hoping
->> you might have a fix for:
->>
->> Pausing the output does not seem to take on the S/PDIF output. Analog
->> outputs properly stop in their tracks, but the S/PDIF port keeps
->> looping the current data buffer, which gives a rather unpleasant end
->> result. :)
+> can we make the log appears in subject instead of useless sha1 ID?
 
-Try the alsa-devel list...
+I ask again if we could make the change log appears in subject instead
+of useless sha1 ID?
 
-Rene.
+Current commits mails are fare less readable than previous ones (when
+using hg).  This is a regression... :-(
