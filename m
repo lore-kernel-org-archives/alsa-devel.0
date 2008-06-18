@@ -1,25 +1,18 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Still have choppy audio using 1.0.17
-Date: Wed, 18 Jun 2008 16:44:48 -0300
-Message-ID: <485965B0.9020102@tet.com.br>
-References: <4856C768.1060404@tet.com.br> <485952C5.30307@tet.com.br>
+From: "=?ISO-8859-1?Q?Andreas_P=E5hlsson?=" <andreas@pahlsson.info>
+Subject: Re: Avoid overload of PCM volume on Cx5045 codec
+Date: Wed, 18 Jun 2008 21:58:40 +0200
+Message-ID: <fff10a40806181258t20e5c5f5rfd9fc234a91770d8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0584C1037ED
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE79710380B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Jun 2008 21:44:19 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 70A97DE801B
-	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Jun 2008 16:44:17 -0300 (BRST)
-Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 40D6812000A
-	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Jun 2008 16:44:14 -0300 (BRST)
-In-Reply-To: <485952C5.30307@tet.com.br>
+	Wed, 18 Jun 2008 21:58:42 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so5131755rvb.32
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2008 12:58:41 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,70 +25,18 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBoYXZlIGRpc2NvdmVyZWQgc29tZXRoaW5nIGVsc2U6IEkgYW0gZGlzcGxheSB0aGUgY3VycmVu
-dCBidWZmZXIgCnBvaW50ZXIgKGNhcHR1cmUgcG9pbnRlciBhbmQgYnVmZmVyIHBvaW50ZXIpLCB3
-aGVuIGNob3BweSBhdWRpbyBvY2N1cnMgCnRoZSBwbGF5YmFjayBwb2ludGVyIGlzIHByaW50ZWQg
-YXMgYSBnaXZlbiB2YWx1ZSBhbmQsIGFmdGVyLCB0aGUgY2FwdHVyZSAKcG9pbnRlciBoYXMgdGhl
-IHNhbWUgdmFsdWUuIEZvciBleGFtcGxlLCBhIG5vcm1hbCBzaXR1YXRpb24gd291bGQgYmU6CgpQ
-bGF5YmFjayBwb2ludGVyOiAzMDAwCkNhcHR1cmUgcG9pbnRlcjogMTAwMApQbGF5YmFjayBwb2lu
-dGVyOiA0MDAwCkNhcHR1cmUgcG9pbnRlcjogMjAwMApQbGF5YmFjayBwb2ludGVyOiAwMDAwCkNh
-cHR1cmUgcG9pbnRlcjogMzAwMAoKQSBjaG9wcHkgYXVkaW8gc2l0dWF0aW9uIHdvdWxkIGJlOgoK
-UGxheWJhY2sgcG9pbnRlcjogMzAwMApDYXB0dXJlIHBvaW50ZXI6IDMwMDAKUGxheWJhY2sgcG9p
-bnRlcjogNDAwMApDYXB0dXJlIHBvaW50ZXI6IDQwMDAKUGxheWJhY2sgcG9pbnRlcjogMDAwMApD
-YXB0dXJlIHBvaW50ZXI6IDAwMDAKClRoZSBmb2xsb3dpbmcgc2l0dWF0aW9uIGlzIE5PVCBjaG9w
-cHk6CgpDYXB0dXJlIHBvaW50ZXI6IDMwMDAKUGxheWJhY2sgcG9pbnRlcjogMzAwMApDYXB0dXJl
-IHBvaW50ZXI6IDQwMDAKUGxheWJhY2sgcG9pbnRlcjogNDAwMApDYXB0dXJlIHBvaW50ZXI6IDAw
-MDAKUGxheWJhY2sgcG9pbnRlcjogMDAwMAoKVGhhbmtzIGFueSByZXBseS4KCkd1c3Rhdm8gZGEg
-U2lsdmEgU2VycmEgZXNjcmV2ZXU6Cj4gSSBhbSB0cmFjaW5nIGFsb29wIGV4ZWN1dGlvbiBhbmQg
-dGhlIGNob3BweSBhdWRpbyBoYXBwZW5zIHdoZW4gYW4gCj4gYXBwbGljYXRpb24gKGNhcHR1cmUg
-b3IgcGxheWJhY2spIG9wZW5zIHRoZSBkZXZpY2Ugd2hpbGUgYW5vdGhlciBvbmUgaXMgCj4gY2Fw
-dHVyaW5nIG9yIHBsYXlpbmcuIEl0IHNlZW1zIHRvIG1lLCBJIG1heSBiZSBjb21wbGV0ZWx5IHdy
-b25nLCB0aGF0IAo+IHRoZSBwcm9ibGVtIGNvdWxkIGJlIGEgc3luY2hyb25pemF0aW9uIGlzc3Vl
-IChhIGNyaXRpY2FsIHJlZ2lvbiB3aXRoIG5vIAo+IG11dGV4ZXMsIGZvciBpbnN0YW5jZSkuIEkg
-YW5hbHlzZWQgdGhlIHNvdW5kIHdhdmUgd2l0aCBBdWRhY2l0eSB3aGlsZSBpbiAKPiBjaG9wcHkg
-YXVkaW8gY29uZGl0aW9uIGFuZCBJIHJlYWxpemVkIHRoYXQgdGhlcmUgYXJlIHNpbGVudCBnYXBz
-LCAKPiBtaWxpc2Vjb25kcyB3aXRoIG5vIHNvdW5kIGF0IGFsbCAoYXMgaWYgc29tZSBidWZmZXIg
-cG9pbnRlciB3YXMgbG9zdCwgCj4gZm9yIGV4YW1wbGUpLgo+Cj4gSSBoYXZlbid0IHJlY2VpdmVk
-IGFueSBhbnN3ZXIgZnJvbSB5b3UgPSgKPiBXaGF0IGRvIHlvdSB0aGluayB0aGF0IGlzIGhhcHBl
-bmluZz8KPgo+IFRoYW5rcyBpbiBhZHZhbmNlLgo+Cj4gR3VzdGF2byBkYSBTaWx2YSBTZXJyYSBl
-c2NyZXZldToKPiAgIAo+PiBJIGhhdmUgYmVlbiB0cnlpbmcgZm9yIG1hbnkgd2Vla3MgdG8gc29s
-dmUgdGhpcyBwcm9ibGVtLCBidXQgd2l0aCBubyAKPj4gc3VjY2Vzcy4gQWZ0ZXIgdXBkYXRpbmcg
-dG8gQWxzYSAxLjAuMTcsIHdoaWNoIGluY2x1ZGUgY2hhbmdlcyB0byBhbG9vcCwgCj4+IEkgc3Rp
-bGwgaGF2ZSBjaG9wcHkgYXVkaW8uIEkgd2lsbCB0cnkgdG8gc3VtbWFyaXplIHdoYXQgaGFwcGVu
-czoKPj4KPj4gLSBJIG5lZWQgdG8gdXNlIGFsb29wLCBpZiBJIGNoYW5nZSB0byBhIHNvdW5kIGNh
-cmQgYWxsIHRoZSBwcm9ibGVtcyBhcmUgCj4+IGdvbmU7Cj4+IC0gQWZ0ZXIgc29tZSB0aW1lIG9m
-IGNvbnRpbnVvdXMgcGxheSwgYXBwbGljYXRpb25zIHN0YXJ0IHRvIHJlcHJvZHVjZSAKPj4gY2hv
-cHB5IGF1ZGlvLiBDaG9wcHkgYXVkaW8gZG9lc24ndCBoYXBwZW5zIGFsbCB0aGUgdGltZTsKPj4g
-LSBJZiBJIHJlcGVhdGVkbHkgc3RhcnQgYW5kIHN0b3AgbXkgc291bmQgY2FwdHVyZSBhcHBsaWNh
-dGlvbiBjaG9wcHkgCj4+IGF1ZGlvIG9jY3VyIHNvb25lcjsKPj4gLSBTdGFydC9zdG9wIG15IGFw
-cGxpY2F0aW9uIHJlc3RvcmVzIHRoZSBzb3VuZCBxdWFsaXR5IChhZnRlciBzb21lIHRyeWllcyk7
-Cj4+IC0gVGhpcyBoYXBwZW5zIHdpdGggQUxTQSBhcHBsaWNhdGlvbnMgKHhpbmUsIHZsYykgYW5k
-IE9TUyBlbXVsYXRlZDsKPj4gLSBJIGhhdmUgdHJ5aWVkIG1hbnkgcGVyaW9kX3NpemUgYW5kIGJ1
-ZmZlcl9zaXplIGluIGFzb3VuZC5jb25mLCBub3cgSSAKPj4gYW0gdXNpbmcgOTYwIGZvciBwZXJp
-b2QgYW5kIDM4NDAgZm9yIGJ1ZmZlci4gQXMgSSBkZWNyZWFzZSBwZXJpb2Qgc2l6ZSwgCj4+IHRo
-ZSBhdWRpbyBxdWFsaXR5IGltcHJvdmVzLCBidXQgY2hvcHB5IGF1ZGlvIHN0aWxsIGhhcHBlbnM7
-Cj4+IC0gSSB0ZXN0IGZvciBvdmVycnVuIGJ1dCBubyBlcnJvcnMgb2NjdXIuCj4+IC0gSSBhbSB1
-c2luZyBibG9jayBtb2RlLCBpbnRlcmxlYXZlZCwgNDQxMDAsIDE2IGJpdCwgMiBjaGFubmVscwo+
-PiAtIEkgYW0gdXNpbmcgZG1peCwgZHNub29wLCByZW1vdmluZyB0aGVtIGRvZXMgbm90IGNvcnJl
-Y3QgdGhlIGF1ZGlvCj4+Cj4+IFRoZXNlIGFyZSBzb21lIG9mIHRoZSBpbmZvcm1hdGlvbiBJIGhh
-dmUsIEkgZG9uJ3Qga25vdyBpZiBpcyBpcyBlbm91Z2guIAo+PiBJZiBuZWNlc3NhcnkgSSBjYW4g
-cHJvdmlkZSBhbnkgb3RoZXIgaW5mb3JtYXRpb24uCj4+IFdoYXQgZG8geW91IHN1Z2dlc3QgdGhh
-dCBJIGRvPyBBcmUgdGhlcmUgYW55IGtub3duIGlzc3VlcyBvciAKPj4gY29uZmlndXJhdGlvbiBy
-ZXF1aXJlbWVudHM/Cj4+Cj4+IFRoYW5rcyBpbiBhZHZhbmNlLgo+PiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dAo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4KPj4gX19fX19fX19fXyBO
-T0QzMiAzMTkxICgyMDA4MDYxNikgSW5mb3JtYXRpb24gX19fX19fX19fXwo+Pgo+PiBUaGlzIG1l
-c3NhZ2Ugd2FzIGNoZWNrZWQgYnkgTk9EMzIgYW50aXZpcnVzIHN5c3RlbS4KPj4gaHR0cDovL3d3
-dy5lc2V0LmNvbQo+Pgo+Pgo+Pgo+PiAgIAo+PiAgICAgCj4KPgo+ICAgCgoKLS0gCkd1c3Rhdm8g
-ZGEgU2lsdmEgU2VycmEgICAgICAgIGd1c3Rhdm8uc2VycmFAdGV0LmNvbS5icgrigJTigJTigJTi
-gJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTi
-gJTigJTigJTigJTigJQKVG9vbHMgJiBUZWNobm9sb2dpZXMgLSBUJlQgRW5nZW5oZWlyb3MgQXNz
-b2NpYWRvcyBMdGRhLgpQcm9qZXRvcyBkZSBTVyAmIEhXIC0gRGVzZW52b2x2ZW5kbyBzb2x1w6fD
-tWVzLgpSdWEgUmlhY2h1ZWxvLCAxMDk4IENvbmouIDEyMDQKQ2VudHJvIC0gUG9ydG8gQWxlZ3Jl
-IC0gQ0VQIDkwMDEwLTI3MgpGb25lIEREUjogKDUxKTMyMjAtMzI5MApGb25lL0ZheDogKDUxKTMy
-MjAtMzIyMCAvIDMyMjAtMzIwNgpodHRwOi8vd3d3LnRldC5jb20uYnIvICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGV0QHRldC5jb20uYnIKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hello.
+
+I've had a problem with low volume on my laptop and while scratching
+this itch I found the patch titled "hda-codec - Avoid overload of PCM
+volume on Cx5045 codec" I reverted this patch and of course got a lot
+more volume. The description states: "The PCM volume of Cx5045 codec
+has overload that isn't useful but rather harmful.  Add a hack to
+override the amp info to set the max level 0 dB.". Does anybody know
+where to find more information on a better default value for the max
+level setting?
+
+
+regards,
+
+Andreas P=E5hlsson
