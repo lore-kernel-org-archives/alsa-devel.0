@@ -1,16 +1,25 @@
-From: Travis Place <wishie@wishie.net>
-Subject: [PATCH] Added model selection for iMac 24"
-Date: Thu, 19 Jun 2008 03:29:49 +1000
-Message-ID: <1213810189.7775.1.camel@temp-fallen>
+From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
+Subject: Re: Still have choppy audio using 1.0.17
+Date: Wed, 18 Jun 2008 15:24:05 -0300
+Message-ID: <485952C5.30307@tet.com.br>
+References: <4856C768.1060404@tet.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.wishie.net (202-137-100-089.dial.usertools.net
-	[202.137.100.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id 227EC244B3
+Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70CB424494
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Jun 2008 19:29:53 +0200 (CEST)
+	Wed, 18 Jun 2008 20:23:37 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by einstein.tteng.com.br (Postfix) with ESMTP id B3AAF12000E
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 Jun 2008 15:23:35 -0300 (BRST)
+Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
+	by einstein.tteng.com.br (Postfix) with ESMTP id 78E5E12000A
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 Jun 2008 15:23:32 -0300 (BRST)
+In-Reply-To: <4856C768.1060404@tet.com.br>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,23 +29,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Changelog: Added the SSID of a known iMac 24" to automatically use
-ALC885_IMAC24 quirk.
-
---- a/pci/hda/patch_realtek.c
-+++ b/pci/hda/patch_realtek.c
-@@ -6196,6 +6196,7 @@ static struct snd_pci_quirk alc882_cfg_tbl[] = {
-        SND_PCI_QUIRK(0x1462, 0x28fb, "Targa T8", ALC882_TARGA), /*
-MSI-1049 T8  */
-        SND_PCI_QUIRK(0x1462, 0x6668, "MSI", ALC882_6ST_DIG),
-        SND_PCI_QUIRK(0x161f, 0x2054, "Arima W820", ALC882_ARIMA),
-+       SND_PCI_QUIRK(0x106b, 0x00a0, "Apple iMac 24''", ALC885_IMAC24),
-        {}
- };
-
-
-Signed-off-by: Travis Place <wishie@wishie.net>
+SSBhbSB0cmFjaW5nIGFsb29wIGV4ZWN1dGlvbiBhbmQgdGhlIGNob3BweSBhdWRpbyBoYXBwZW5z
+IHdoZW4gYW4gCmFwcGxpY2F0aW9uIChjYXB0dXJlIG9yIHBsYXliYWNrKSBvcGVucyB0aGUgZGV2
+aWNlIHdoaWxlIGFub3RoZXIgb25lIGlzIApjYXB0dXJpbmcgb3IgcGxheWluZy4gSXQgc2VlbXMg
+dG8gbWUsIEkgbWF5IGJlIGNvbXBsZXRlbHkgd3JvbmcsIHRoYXQgCnRoZSBwcm9ibGVtIGNvdWxk
+IGJlIGEgc3luY2hyb25pemF0aW9uIGlzc3VlIChhIGNyaXRpY2FsIHJlZ2lvbiB3aXRoIG5vIApt
+dXRleGVzLCBmb3IgaW5zdGFuY2UpLiBJIGFuYWx5c2VkIHRoZSBzb3VuZCB3YXZlIHdpdGggQXVk
+YWNpdHkgd2hpbGUgaW4gCmNob3BweSBhdWRpbyBjb25kaXRpb24gYW5kIEkgcmVhbGl6ZWQgdGhh
+dCB0aGVyZSBhcmUgc2lsZW50IGdhcHMsIAptaWxpc2Vjb25kcyB3aXRoIG5vIHNvdW5kIGF0IGFs
+bCAoYXMgaWYgc29tZSBidWZmZXIgcG9pbnRlciB3YXMgbG9zdCwgCmZvciBleGFtcGxlKS4KCkkg
+aGF2ZW4ndCByZWNlaXZlZCBhbnkgYW5zd2VyIGZyb20geW91ID0oCldoYXQgZG8geW91IHRoaW5r
+IHRoYXQgaXMgaGFwcGVuaW5nPwoKVGhhbmtzIGluIGFkdmFuY2UuCgpHdXN0YXZvIGRhIFNpbHZh
+IFNlcnJhIGVzY3JldmV1Ogo+IEkgaGF2ZSBiZWVuIHRyeWluZyBmb3IgbWFueSB3ZWVrcyB0byBz
+b2x2ZSB0aGlzIHByb2JsZW0sIGJ1dCB3aXRoIG5vIAo+IHN1Y2Nlc3MuIEFmdGVyIHVwZGF0aW5n
+IHRvIEFsc2EgMS4wLjE3LCB3aGljaCBpbmNsdWRlIGNoYW5nZXMgdG8gYWxvb3AsIAo+IEkgc3Rp
+bGwgaGF2ZSBjaG9wcHkgYXVkaW8uIEkgd2lsbCB0cnkgdG8gc3VtbWFyaXplIHdoYXQgaGFwcGVu
+czoKPgo+IC0gSSBuZWVkIHRvIHVzZSBhbG9vcCwgaWYgSSBjaGFuZ2UgdG8gYSBzb3VuZCBjYXJk
+IGFsbCB0aGUgcHJvYmxlbXMgYXJlIAo+IGdvbmU7Cj4gLSBBZnRlciBzb21lIHRpbWUgb2YgY29u
+dGludW91cyBwbGF5LCBhcHBsaWNhdGlvbnMgc3RhcnQgdG8gcmVwcm9kdWNlIAo+IGNob3BweSBh
+dWRpby4gQ2hvcHB5IGF1ZGlvIGRvZXNuJ3QgaGFwcGVucyBhbGwgdGhlIHRpbWU7Cj4gLSBJZiBJ
+IHJlcGVhdGVkbHkgc3RhcnQgYW5kIHN0b3AgbXkgc291bmQgY2FwdHVyZSBhcHBsaWNhdGlvbiBj
+aG9wcHkgCj4gYXVkaW8gb2NjdXIgc29vbmVyOwo+IC0gU3RhcnQvc3RvcCBteSBhcHBsaWNhdGlv
+biByZXN0b3JlcyB0aGUgc291bmQgcXVhbGl0eSAoYWZ0ZXIgc29tZSB0cnlpZXMpOwo+IC0gVGhp
+cyBoYXBwZW5zIHdpdGggQUxTQSBhcHBsaWNhdGlvbnMgKHhpbmUsIHZsYykgYW5kIE9TUyBlbXVs
+YXRlZDsKPiAtIEkgaGF2ZSB0cnlpZWQgbWFueSBwZXJpb2Rfc2l6ZSBhbmQgYnVmZmVyX3NpemUg
+aW4gYXNvdW5kLmNvbmYsIG5vdyBJIAo+IGFtIHVzaW5nIDk2MCBmb3IgcGVyaW9kIGFuZCAzODQw
+IGZvciBidWZmZXIuIEFzIEkgZGVjcmVhc2UgcGVyaW9kIHNpemUsIAo+IHRoZSBhdWRpbyBxdWFs
+aXR5IGltcHJvdmVzLCBidXQgY2hvcHB5IGF1ZGlvIHN0aWxsIGhhcHBlbnM7Cj4gLSBJIHRlc3Qg
+Zm9yIG92ZXJydW4gYnV0IG5vIGVycm9ycyBvY2N1ci4KPiAtIEkgYW0gdXNpbmcgYmxvY2sgbW9k
+ZSwgaW50ZXJsZWF2ZWQsIDQ0MTAwLCAxNiBiaXQsIDIgY2hhbm5lbHMKPiAtIEkgYW0gdXNpbmcg
+ZG1peCwgZHNub29wLCByZW1vdmluZyB0aGVtIGRvZXMgbm90IGNvcnJlY3QgdGhlIGF1ZGlvCj4K
+PiBUaGVzZSBhcmUgc29tZSBvZiB0aGUgaW5mb3JtYXRpb24gSSBoYXZlLCBJIGRvbid0IGtub3cg
+aWYgaXMgaXMgZW5vdWdoLiAKPiBJZiBuZWNlc3NhcnkgSSBjYW4gcHJvdmlkZSBhbnkgb3RoZXIg
+aW5mb3JtYXRpb24uCj4gV2hhdCBkbyB5b3Ugc3VnZ2VzdCB0aGF0IEkgZG8/IEFyZSB0aGVyZSBh
+bnkga25vd24gaXNzdWVzIG9yIAo+IGNvbmZpZ3VyYXRpb24gcmVxdWlyZW1lbnRzPwo+Cj4gVGhh
+bmtzIGluIGFkdmFuY2UuCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCj4KPiBfX19fX19fX19fIE5PRDMyIDMxOTEgKDIwMDgwNjE2KSBJbmZvcm1h
+dGlvbiBfX19fX19fX19fCj4KPiBUaGlzIG1lc3NhZ2Ugd2FzIGNoZWNrZWQgYnkgTk9EMzIgYW50
+aXZpcnVzIHN5c3RlbS4KPiBodHRwOi8vd3d3LmVzZXQuY29tCj4KPgo+Cj4gICAKCgotLSAKR3Vz
+dGF2byBkYSBTaWx2YSBTZXJyYSAgICAgICAgZ3VzdGF2by5zZXJyYUB0ZXQuY29tLmJyCuKAlOKA
+lOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKA
+lOKAlOKAlOKAlOKAlOKAlOKAlApUb29scyAmIFRlY2hub2xvZ2llcyAtIFQmVCBFbmdlbmhlaXJv
+cyBBc3NvY2lhZG9zIEx0ZGEuClByb2pldG9zIGRlIFNXICYgSFcgLSBEZXNlbnZvbHZlbmRvIHNv
+bHXDp8O1ZXMuClJ1YSBSaWFjaHVlbG8sIDEwOTggQ29uai4gMTIwNApDZW50cm8gLSBQb3J0byBB
+bGVncmUgLSBDRVAgOTAwMTAtMjcyCkZvbmUgRERSOiAoNTEpMzIyMC0zMjkwCkZvbmUvRmF4OiAo
+NTEpMzIyMC0zMjIwIC8gMzIyMC0zMjA2Cmh0dHA6Ly93d3cudGV0LmNvbS5ici8gICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZXRAdGV0LmNvbS5icgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
