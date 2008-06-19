@@ -1,21 +1,19 @@
-From: "=?ISO-8859-1?Q?Andreas_P=E5hlsson?=" <andreas@pahlsson.info>
-Subject: Re: Avoid overload of PCM volume on Cx5045 codec
-Date: Thu, 19 Jun 2008 13:34:25 +0200
-Message-ID: <fff10a40806190434u6998dbfaq23d2f0148704be85@mail.gmail.com>
-References: <fff10a40806181258t20e5c5f5rfd9fc234a91770d8@mail.gmail.com>
-	<s5hk5gl92hi.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: looping S/PDIF data
+Date: Thu, 19 Jun 2008 14:39:05 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0806191435270.1798@tm8103-a.perex-int.cz>
+References: <20080531112606.5884a1c9@mjolnir.drzeus.cx>
+	<20080617215504.3203a5ed@mjolnir.drzeus.cx>
+	<4858B84B.4030800@keyaccess.nl> <s5hej6t91u1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71403245A7
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71E9910381F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jun 2008 13:34:27 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so5371518rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jun 2008 04:34:26 -0700 (PDT)
-In-Reply-To: <s5hk5gl92hi.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Thu, 19 Jun 2008 14:39:08 +0200 (CEST)
+In-Reply-To: <s5hej6t91u1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,65 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Rene Herman <rene.herman@keyaccess.nl>, Pierre Ossman <drzeus@drzeus.cx>, ALSA devel <alsa-devel@alsa-project.org>, mulix@mulix.org
 List-Id: alsa-devel@alsa-project.org
 
-Hardware:
+On Thu, 19 Jun 2008, Takashi Iwai wrote:
 
-    description: Notebook
-    product: AMILO Pro V3205
-    vendor: FUJITSU SIEMENS
-    version: Rev 1
-    serial: YK2H004201
-    width: 32 bits
-    capabilities: smbios-2.4 dmi-2.4 smp-1.4 smp
-    configuration: boot=oem-specific chassis=notebook cpus=2
-uuid=00CAAE3D-9113-0E10-AFC7-E4C0949DBF47
-
-
-alsa-info.sh:
-
-http://pastebin.ca/1050962
-
-I have of course played with all the settings with alsamixer before
-compiling a kernelmodule. As per the comment to the patch the sound
-can become very distorted without it. 6 dB works fine for me.
-
-For me it is a little strange that it is the PCM volume and not the
-Master volume that can be boosted. PCM sounds like it would be a
-internal digital amplification control, Master sounds more like an
-analog output amplifier control. But thats just me and I don't know
-the chip at all.
-
-
-regards,
-
-Andreas
-
-2008/6/19 Takashi Iwai <tiwai@suse.de>:
-> At Wed, 18 Jun 2008 21:58:40 +0200,
-> =?ISO-8859-1?Q?Andreas_P=E5hlsson?= wrote:
->>
->> Hello.
->>
->> I've had a problem with low volume on my laptop and while scratching
->> this itch I found the patch titled "hda-codec - Avoid overload of PCM
->> volume on Cx5045 codec" I reverted this patch and of course got a lot
->> more volume. The description states: "The PCM volume of Cx5045 codec
->> has overload that isn't useful but rather harmful.  Add a hack to
->> override the amp info to set the max level 0 dB.". Does anybody know
->> where to find more information on a better default value for the max
->> level setting?
->
-> Then maybe this workaround is specific to HP laptops.
-> Could you give the alsa-info.sh output, and a more detailed
-> information of your laptop (vendor, model)?  Before working on the
-> source code, one should check the mixer setting at first.
->
->
+> At Wed, 18 Jun 2008 09:24:59 +0200,
+> Rene Herman wrote:
+> > 
+> > On 17-06-08 21:55, Pierre Ossman wrote:
+> > 
+> > > Ping
+> > > 
+> > > On Sat, 31 May 2008 11:26:06 +0200
+> > > Pierre Ossman <drzeus-list@drzeus.cx> wrote:
+> > > 
+> > >> I have a minor annoyance with the snd_trident driver that I was hoping
+> > >> you might have a fix for:
+> > >>
+> > >> Pausing the output does not seem to take on the S/PDIF output. Analog
+> > >> outputs properly stop in their tracks, but the S/PDIF port keeps
+> > >> looping the current data buffer, which gives a rather unpleasant end
+> > >> result. :)
+> > 
+> > Try the alsa-devel list...
+> 
+> Does the patch below help?
+> 
+> 
 > Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+> 
+> diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
+> index bbcee2c..916d4b8 100644
+> --- a/sound/pci/trident/trident_main.c
+> +++ b/sound/pci/trident/trident_main.c
+> @@ -1593,7 +1593,11 @@ static int snd_trident_trigger(struct snd_pcm_substream *substream,
+>  			outb(trident->spdif_pcm_ctrl, TRID_REG(trident, NX_SPCTRL_SPCSO + 3));
+>  		} else {
+>  			outl(trident->spdif_pcm_bits, TRID_REG(trident, SI_SPDIF_CS));
+> -			val = inl(TRID_REG(trident, SI_SERIAL_INTF_CTRL)) | SPDIF_EN;
+> +			val = inl(TRID_REG(trident, SI_SERIAL_INTF_CTRL));
+> +			if (go)
+> +				val |= SPDIF_EN;
+> +			else
+> +				val &= ~SPDIF_EN;
+>  			outl(val, TRID_REG(trident, SI_SERIAL_INTF_CTRL));
+>  		}
+>  	}
+
+I don't think that this patch is correct. DMA transfers should be disabled 
+by:
+
+outl(what, TRID_REG(trident, T4D_STOP_B));
+outl(val, TRID_REG(trident, T4D_AINTEN_B));
+
+lines. Adding &= ~SPDIF_EN can disable output from AC97 to S/PDIF as well.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
