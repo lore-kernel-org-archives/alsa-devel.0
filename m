@@ -1,20 +1,19 @@
-From: randall <lists_rlr@roadrunner.com>
-Subject: note on Suse 10.3 build
-Date: Thu, 19 Jun 2008 15:02:35 -0700
-Message-ID: <200806191502.36138.lists_rlr@roadrunner.com>
+From: Pierre Ossman <drzeus@drzeus.cx>
+Subject: Re: looping S/PDIF data
+Date: Fri, 20 Jun 2008 01:02:14 +0200
+Message-ID: <20080620010214.2185225e@mjolnir.drzeus.cx>
+References: <20080531112606.5884a1c9@mjolnir.drzeus.cx>
+	<20080617215504.3203a5ed@mjolnir.drzeus.cx>
+	<4858B84B.4030800@keyaccess.nl> <s5hej6t91u1.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0806191435270.1798@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2944020893094890474=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta13.adelphia.net (mta13.mail.adelphia.net [68.168.78.44])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A9DB2449C
+Received: from smtp.drzeus.cx (server.drzeus.cx [85.8.24.28])
+	by alsa0.perex.cz (Postfix) with ESMTP id 759A2244B3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Jun 2008 00:02:39 +0200 (CEST)
-Received: from [192.168.1.100] (really [76.176.117.148]) by mta13.adelphia.net
-	(InterMail vM.6.01.05.02 201-2131-123-102-20050715) with ESMTP
-	id <20080619220102.FHTS7723.mta13.adelphia.net@[192.168.1.100]>
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jun 2008 18:01:02 -0400
-Content-Disposition: inline
+	Fri, 20 Jun 2008 01:02:24 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.61.0806191435270.1798@tm8103-a.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,70 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, Rene Herman <rene.herman@keyaccess.nl>, ALSA devel <alsa-devel@alsa-project.org>, mulix@mulix.org
 List-Id: alsa-devel@alsa-project.org
 
-To all:
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-Had to rebuild the Suse 10.3 kernel again to get back the NVidia MCP61 
-(RealTek ALC662) on board sound.  Turned on two SND parameters in the kernel 
-config file:
+--===============2944020893094890474==
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=PGP-SHA1; boundary="=_freyr.drzeus.cx-21577-1213916048-0001-2"
 
-CONFIG_SND_DEBUG=y
-CONFIG_SND_DEBUG_DETECT=y
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-and enabled a module:
+--=_freyr.drzeus.cx-21577-1213916048-0001-2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-CONFIG_SND_SOC=m
+On Thu, 19 Jun 2008 14:39:05 +0200 (CEST)
+Jaroslav Kysela <perex@perex.cz> wrote:
 
-The kernal is 2.6.22.18-0.2 x86_64 architecture.
+>=20
+> I don't think that this patch is correct. DMA transfers should be disable=
+d=20
+> by:
+>=20
+> outl(what, TRID_REG(trident, T4D_STOP_B));
+> outl(val, TRID_REG(trident, T4D_AINTEN_B));
+>=20
+> lines. Adding &=3D ~SPDIF_EN can disable output from AC97 to S/PDIF as we=
+ll.
+>=20
 
-The sound file under /etc/modprobe.d is
+FWIW, the patch had zero effect on the system here.
 
-------------------- snip ----------------------
-options snd-hda-intel enable=1 index=0 model=3stack-6ch-dig position_fix=1
+Rgds
+--=20
+     -- Pierre Ossman
 
-# CvwD.9hpqWdunz16:MCP61 High Definition Audio
-alias snd-card-0 snd-hda-intel
-------------- end snippet -------------------
+  WARNING: This correspondence is being monitored by the
+  Swedish government. Use end-to-end encryption where
+  possible.
 
-and the 3stack 6 channel SPIF digital setting for the model type works for the 
-NVidia MCP61 setup.
+--=_freyr.drzeus.cx-21577-1213916048-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=signature.asc
 
-There were NO changes to the modprobe.conf file.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
 
-Not sure why the kernel has to be rebuilt to restore the onboard sound, any 
-ideas?  The 3 changes are the only ones I've made, when running menuconfig.
+iEYEARECAAYFAkha5XsACgkQ7b8eESbyJLjGnwCgoKvMtl4xbSydjOXP5punXG3u
+WOIAoJhw2GouT726EBx2kZXcSuJt0e+u
+=imtr
+-----END PGP SIGNATURE-----
 
-Motherboard is Elite Computer Systems (ECS) GF6100-M754 with NVidia 
-GeForce6100/nForce 405 running the AMD Athlon 64 3200+ processor.
+--=_freyr.drzeus.cx-21577-1213916048-0001-2--
 
-and hwinfo --sound
+--===============2944020893094890474==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-18: PCI 05.0: 0403 Audio device
-  [Created at pci.301]
-  UDI: /org/freedesktop/Hal/devices/pci_10de_3f0
-  Unique ID: CvwD.9hpqWdunz16
-  SysFS ID: /devices/pci0000:00/0000:00:05.0
-  SysFS BusID: 0000:00:05.0
-  Hardware Class: sound
-  Model: "Elitegroup MCP61 High Definition Audio"
-  Vendor: pci 0x10de "nVidia Corporation"
-  Device: pci 0x03f0 "MCP61 High Definition Audio"
-  SubVendor: pci 0x1019 "Elitegroup Computer Systems"
-  SubDevice: pci 0x2151
-  Revision: 0xa2
-  Driver: "HDA Intel"
-  Driver Modules: "snd_hda_intel"
-  Memory Range: 0xfe028000-0xfe02bfff (rw,non-prefetchable)
-  IRQ: 22 (7841 events)
-  Module Alias: "pci:v000010DEd000003F0sv00001019sd00002151bc04sc03i00"
-  Driver Info #0:
-    Driver Status: snd_hda_intel is active
-    Driver Activation Cmd: "modprobe snd_hda_intel"
-  Config Status: cfg=no, avail=yes, need=no, active=unknown
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Again, any ideas as to why the kernel has to be regenerated to enable on-board 
-sound?
-
-- Randall
+--===============2944020893094890474==--
