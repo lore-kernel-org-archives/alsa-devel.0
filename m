@@ -1,18 +1,18 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH - asihpi 2/2] Disable S24_3LE incompatible
- with 2^N buffer size.
-Date: Thu, 19 Jun 2008 10:30:08 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0806191029410.1798@tm8103-a.perex-int.cz>
-References: <1213841713-20114-1-git-send-email-linux@audioscience.com>
+Subject: Re: [PATCH 2/2] ad1848: replace duplicated constants
+ in cs4231
+Date: Thu, 19 Jun 2008 10:31:41 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0806191030140.1798@tm8103-a.perex-int.cz>
+References: <20080615124128.48486ddc.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6867B10380C
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C6F910380C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jun 2008 10:30:11 +0200 (CEST)
-In-Reply-To: <1213841713-20114-1-git-send-email-linux@audioscience.com>
+	Thu, 19 Jun 2008 10:31:44 +0200 (CEST)
+In-Reply-To: <20080615124128.48486ddc.krzysztof.h1@poczta.fm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux@audioscience.com
-Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, ALSA development <alsa-devel@alsa-project.org>
+To: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@keyaccess.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Jun 2008 linux@audioscience.com wrote:
+On Sun, 15 Jun 2008, Krzysztof Helt wrote:
 
-> From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+> From: Krzysztof Helt <krzysztof.h1@wp.pl>
 > 
+> Use AD1848 register names in the cs4231 library as well.
 > 
-> Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Applied.
+Applied to ALSA repo. Thanks.
 
-					Jaroslav
+						Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
