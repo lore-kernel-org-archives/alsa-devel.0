@@ -1,18 +1,23 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Re: [PATCH] Added model selection for iMac 24"
-Date: Fri, 20 Jun 2008 04:48:55 +1000
-Message-ID: <1213901335.10095.2.camel@temp-fallen>
-References: <1213810189.7775.1.camel@temp-fallen>
-	<s5hskv99394.wl%tiwai@suse.de>
+From: "=?ISO-8859-1?Q?Andreas_P=E5hlsson?=" <andreas@pahlsson.info>
+Subject: Re: Avoid overload of PCM volume on Cx5045 codec
+Date: Thu, 19 Jun 2008 21:30:31 +0200
+Message-ID: <fff10a40806191230j39eec6cat4d709eeb37824330@mail.gmail.com>
+References: <fff10a40806181258t20e5c5f5rfd9fc234a91770d8@mail.gmail.com>
+	<s5hk5gl92hi.wl%tiwai@suse.de>
+	<fff10a40806190434u6998dbfaq23d2f0148704be85@mail.gmail.com>
+	<s5hprqd7f5w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-4cpHVRcqdck6aTB8IF/X"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.wishie.net (202-137-100-089.dial.usertools.net
-	[202.137.100.89])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B30E243BF
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4360824451
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jun 2008 20:48:49 +0200 (CEST)
-In-Reply-To: <s5hskv99394.wl%tiwai@suse.de>
+	Thu, 19 Jun 2008 21:30:33 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so5535330rvb.32
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jun 2008 12:30:32 -0700 (PDT)
+In-Reply-To: <s5hprqd7f5w.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+2008/6/19 Takashi Iwai <tiwai@suse.de>:
+>> compiling a kernelmodule. As per the comment to the patch the sound
+>> can become very distorted without it. 6 dB works fine for me.
+>
+> Hm, but it has far higher values.  Do they also work fine (suppose you
+> reverted the amp override patch)?
 
---=-4cpHVRcqdck6aTB8IF/X
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+They do work but give distorted sound.
 
-Attached is the corrected patch. Sorry
+For my test I just removed the amp override patch but I would really
+want to do-the-right-thing.
 
-Changelog: Added the SSID of a known iMac 24" to automatically use
-ALC885_IMAC24 quirk.
+> It's just a matter of name.  In general, "PCM" volume means that the
+> volume control path specific to the PCM, not for other sources.  In
+> the case of Conexant codec, there is no loopback route, so it doesn't
+> matter, though.
 
-Signed-off-by: Travis Place <wishie@wishie.net>
+Ok.
 
-
---=-4cpHVRcqdck6aTB8IF/X
-Content-Disposition: attachment; filename=imac24.patch
-Content-Type: text/x-patch; name=imac24.patch; charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-diff --git a/pci/hda/patch_realtek.c b/pci/hda/patch_realtek.c
-index 61f8c13..d96a876 100644
---- a/pci/hda/patch_realtek.c
-+++ b/pci/hda/patch_realtek.c
-@@ -6192,6 +6192,7 @@ static struct snd_pci_quirk alc882_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x817f, "Asus P5LD2", ALC882_6ST_DIG),
- 	SND_PCI_QUIRK(0x1043, 0x81d8, "Asus P5WD", ALC882_6ST_DIG),
- 	SND_PCI_QUIRK(0x105b, 0x6668, "Foxconn", ALC882_6ST_DIG),
-+	SND_PCI_QUIRK(0x106b, 0x00a0, "Apple iMac 24''", ALC885_IMAC24),
- 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte P35 DS3R", ALC882_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x28fb, "Targa T8", ALC882_TARGA), /* MSI-1049 T8  */
- 	SND_PCI_QUIRK(0x1462, 0x6668, "MSI", ALC882_6ST_DIG),
-
---=-4cpHVRcqdck6aTB8IF/X
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-4cpHVRcqdck6aTB8IF/X--
+Andreas P=E5hlsson
