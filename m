@@ -1,26 +1,16 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Still have choppy audio using 1.0.17
-Date: Thu, 19 Jun 2008 10:01:21 -0300
-Message-ID: <485A58A1.6040002@tet.com.br>
-References: <4856C768.1060404@tet.com.br> <485952C5.30307@tet.com.br>
-	<485965B0.9020102@tet.com.br>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Linux Plumbers Conference CFP
+Date: Thu, 19 Jun 2008 17:19:29 +0200
+Message-ID: <20080619151929.GA17165@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id B02FF103843
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 68A34243C7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jun 2008 15:00:51 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 92AFCDE801B
-	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jun 2008 10:00:48 -0300 (BRST)
-Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 1A98112000A
-	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jun 2008 10:00:45 -0300 (BRST)
-In-Reply-To: <485965B0.9020102@tet.com.br>
+	Thu, 19 Jun 2008 17:19:30 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,78 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SXMgaXQgcG9zc2libGUgdG8gZGV0ZWN0IHRoaXMgc2l0dWF0aW9uIHdpdGggYWxzYSBBUEksIGku
-ZS4sIGF0IAphcHBsaWNhdGlvbiBsZXZlbD8KClRoYW5rcy4KCkd1c3Rhdm8gZGEgU2lsdmEgU2Vy
-cmEgZXNjcmV2ZXU6Cj4gSSBoYXZlIGRpc2NvdmVyZWQgc29tZXRoaW5nIGVsc2U6IEkgYW0gZGlz
-cGxheSB0aGUgY3VycmVudCBidWZmZXIgCj4gcG9pbnRlciAoY2FwdHVyZSBwb2ludGVyIGFuZCBi
-dWZmZXIgcG9pbnRlciksIHdoZW4gY2hvcHB5IGF1ZGlvIG9jY3VycyAKPiB0aGUgcGxheWJhY2sg
-cG9pbnRlciBpcyBwcmludGVkIGFzIGEgZ2l2ZW4gdmFsdWUgYW5kLCBhZnRlciwgdGhlIGNhcHR1
-cmUgCj4gcG9pbnRlciBoYXMgdGhlIHNhbWUgdmFsdWUuIEZvciBleGFtcGxlLCBhIG5vcm1hbCBz
-aXR1YXRpb24gd291bGQgYmU6Cj4KPiBQbGF5YmFjayBwb2ludGVyOiAzMDAwCj4gQ2FwdHVyZSBw
-b2ludGVyOiAxMDAwCj4gUGxheWJhY2sgcG9pbnRlcjogNDAwMAo+IENhcHR1cmUgcG9pbnRlcjog
-MjAwMAo+IFBsYXliYWNrIHBvaW50ZXI6IDAwMDAKPiBDYXB0dXJlIHBvaW50ZXI6IDMwMDAKPgo+
-IEEgY2hvcHB5IGF1ZGlvIHNpdHVhdGlvbiB3b3VsZCBiZToKPgo+IFBsYXliYWNrIHBvaW50ZXI6
-IDMwMDAKPiBDYXB0dXJlIHBvaW50ZXI6IDMwMDAKPiBQbGF5YmFjayBwb2ludGVyOiA0MDAwCj4g
-Q2FwdHVyZSBwb2ludGVyOiA0MDAwCj4gUGxheWJhY2sgcG9pbnRlcjogMDAwMAo+IENhcHR1cmUg
-cG9pbnRlcjogMDAwMAo+Cj4gVGhlIGZvbGxvd2luZyBzaXR1YXRpb24gaXMgTk9UIGNob3BweToK
-Pgo+IENhcHR1cmUgcG9pbnRlcjogMzAwMAo+IFBsYXliYWNrIHBvaW50ZXI6IDMwMDAKPiBDYXB0
-dXJlIHBvaW50ZXI6IDQwMDAKPiBQbGF5YmFjayBwb2ludGVyOiA0MDAwCj4gQ2FwdHVyZSBwb2lu
-dGVyOiAwMDAwCj4gUGxheWJhY2sgcG9pbnRlcjogMDAwMAo+Cj4gVGhhbmtzIGFueSByZXBseS4K
-Pgo+IEd1c3Rhdm8gZGEgU2lsdmEgU2VycmEgZXNjcmV2ZXU6Cj4gICAKPj4gSSBhbSB0cmFjaW5n
-IGFsb29wIGV4ZWN1dGlvbiBhbmQgdGhlIGNob3BweSBhdWRpbyBoYXBwZW5zIHdoZW4gYW4gCj4+
-IGFwcGxpY2F0aW9uIChjYXB0dXJlIG9yIHBsYXliYWNrKSBvcGVucyB0aGUgZGV2aWNlIHdoaWxl
-IGFub3RoZXIgb25lIGlzIAo+PiBjYXB0dXJpbmcgb3IgcGxheWluZy4gSXQgc2VlbXMgdG8gbWUs
-IEkgbWF5IGJlIGNvbXBsZXRlbHkgd3JvbmcsIHRoYXQgCj4+IHRoZSBwcm9ibGVtIGNvdWxkIGJl
-IGEgc3luY2hyb25pemF0aW9uIGlzc3VlIChhIGNyaXRpY2FsIHJlZ2lvbiB3aXRoIG5vIAo+PiBt
-dXRleGVzLCBmb3IgaW5zdGFuY2UpLiBJIGFuYWx5c2VkIHRoZSBzb3VuZCB3YXZlIHdpdGggQXVk
-YWNpdHkgd2hpbGUgaW4gCj4+IGNob3BweSBhdWRpbyBjb25kaXRpb24gYW5kIEkgcmVhbGl6ZWQg
-dGhhdCB0aGVyZSBhcmUgc2lsZW50IGdhcHMsIAo+PiBtaWxpc2Vjb25kcyB3aXRoIG5vIHNvdW5k
-IGF0IGFsbCAoYXMgaWYgc29tZSBidWZmZXIgcG9pbnRlciB3YXMgbG9zdCwgCj4+IGZvciBleGFt
-cGxlKS4KPj4KPj4gSSBoYXZlbid0IHJlY2VpdmVkIGFueSBhbnN3ZXIgZnJvbSB5b3UgPSgKPj4g
-V2hhdCBkbyB5b3UgdGhpbmsgdGhhdCBpcyBoYXBwZW5pbmc/Cj4+Cj4+IFRoYW5rcyBpbiBhZHZh
-bmNlLgo+Pgo+PiBHdXN0YXZvIGRhIFNpbHZhIFNlcnJhIGVzY3JldmV1Ogo+PiAgIAo+PiAgICAg
-Cj4+PiBJIGhhdmUgYmVlbiB0cnlpbmcgZm9yIG1hbnkgd2Vla3MgdG8gc29sdmUgdGhpcyBwcm9i
-bGVtLCBidXQgd2l0aCBubyAKPj4+IHN1Y2Nlc3MuIEFmdGVyIHVwZGF0aW5nIHRvIEFsc2EgMS4w
-LjE3LCB3aGljaCBpbmNsdWRlIGNoYW5nZXMgdG8gYWxvb3AsIAo+Pj4gSSBzdGlsbCBoYXZlIGNo
-b3BweSBhdWRpby4gSSB3aWxsIHRyeSB0byBzdW1tYXJpemUgd2hhdCBoYXBwZW5zOgo+Pj4KPj4+
-IC0gSSBuZWVkIHRvIHVzZSBhbG9vcCwgaWYgSSBjaGFuZ2UgdG8gYSBzb3VuZCBjYXJkIGFsbCB0
-aGUgcHJvYmxlbXMgYXJlIAo+Pj4gZ29uZTsKPj4+IC0gQWZ0ZXIgc29tZSB0aW1lIG9mIGNvbnRp
-bnVvdXMgcGxheSwgYXBwbGljYXRpb25zIHN0YXJ0IHRvIHJlcHJvZHVjZSAKPj4+IGNob3BweSBh
-dWRpby4gQ2hvcHB5IGF1ZGlvIGRvZXNuJ3QgaGFwcGVucyBhbGwgdGhlIHRpbWU7Cj4+PiAtIElm
-IEkgcmVwZWF0ZWRseSBzdGFydCBhbmQgc3RvcCBteSBzb3VuZCBjYXB0dXJlIGFwcGxpY2F0aW9u
-IGNob3BweSAKPj4+IGF1ZGlvIG9jY3VyIHNvb25lcjsKPj4+IC0gU3RhcnQvc3RvcCBteSBhcHBs
-aWNhdGlvbiByZXN0b3JlcyB0aGUgc291bmQgcXVhbGl0eSAoYWZ0ZXIgc29tZSB0cnlpZXMpOwo+
-Pj4gLSBUaGlzIGhhcHBlbnMgd2l0aCBBTFNBIGFwcGxpY2F0aW9ucyAoeGluZSwgdmxjKSBhbmQg
-T1NTIGVtdWxhdGVkOwo+Pj4gLSBJIGhhdmUgdHJ5aWVkIG1hbnkgcGVyaW9kX3NpemUgYW5kIGJ1
-ZmZlcl9zaXplIGluIGFzb3VuZC5jb25mLCBub3cgSSAKPj4+IGFtIHVzaW5nIDk2MCBmb3IgcGVy
-aW9kIGFuZCAzODQwIGZvciBidWZmZXIuIEFzIEkgZGVjcmVhc2UgcGVyaW9kIHNpemUsIAo+Pj4g
-dGhlIGF1ZGlvIHF1YWxpdHkgaW1wcm92ZXMsIGJ1dCBjaG9wcHkgYXVkaW8gc3RpbGwgaGFwcGVu
-czsKPj4+IC0gSSB0ZXN0IGZvciBvdmVycnVuIGJ1dCBubyBlcnJvcnMgb2NjdXIuCj4+PiAtIEkg
-YW0gdXNpbmcgYmxvY2sgbW9kZSwgaW50ZXJsZWF2ZWQsIDQ0MTAwLCAxNiBiaXQsIDIgY2hhbm5l
-bHMKPj4+IC0gSSBhbSB1c2luZyBkbWl4LCBkc25vb3AsIHJlbW92aW5nIHRoZW0gZG9lcyBub3Qg
-Y29ycmVjdCB0aGUgYXVkaW8KPj4+Cj4+PiBUaGVzZSBhcmUgc29tZSBvZiB0aGUgaW5mb3JtYXRp
-b24gSSBoYXZlLCBJIGRvbid0IGtub3cgaWYgaXMgaXMgZW5vdWdoLiAKPj4+IElmIG5lY2Vzc2Fy
-eSBJIGNhbiBwcm92aWRlIGFueSBvdGhlciBpbmZvcm1hdGlvbi4KPj4+IFdoYXQgZG8geW91IHN1
-Z2dlc3QgdGhhdCBJIGRvPyBBcmUgdGhlcmUgYW55IGtub3duIGlzc3VlcyBvciAKPj4+IGNvbmZp
-Z3VyYXRpb24gcmVxdWlyZW1lbnRzPwo+Pj4KPj4+IFRoYW5rcyBpbiBhZHZhbmNlLgo+Pj4gX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+IEFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0Cj4+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4+IGh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+
-Pgo+Pj4gX19fX19fX19fXyBOT0QzMiAzMTkxICgyMDA4MDYxNikgSW5mb3JtYXRpb24gX19fX19f
-X19fXwo+Pj4KPj4+IFRoaXMgbWVzc2FnZSB3YXMgY2hlY2tlZCBieSBOT0QzMiBhbnRpdmlydXMg
-c3lzdGVtLgo+Pj4gaHR0cDovL3d3dy5lc2V0LmNvbQo+Pj4KPj4+Cj4+Pgo+Pj4gICAKPj4+ICAg
-ICAKPj4+ICAgICAgIAo+PiAgIAo+PiAgICAgCj4KPgo+ICAgCgoKLS0gCkd1c3Rhdm8gZGEgU2ls
-dmEgU2VycmEgICAgICAgIGd1c3Rhdm8uc2VycmFAdGV0LmNvbS5icgrigJTigJTigJTigJTigJTi
-gJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTi
-gJTigJTigJQKVG9vbHMgJiBUZWNobm9sb2dpZXMgLSBUJlQgRW5nZW5oZWlyb3MgQXNzb2NpYWRv
-cyBMdGRhLgpQcm9qZXRvcyBkZSBTVyAmIEhXIC0gRGVzZW52b2x2ZW5kbyBzb2x1w6fDtWVzLgpS
-dWEgUmlhY2h1ZWxvLCAxMDk4IENvbmouIDEyMDQKQ2VudHJvIC0gUG9ydG8gQWxlZ3JlIC0gQ0VQ
-IDkwMDEwLTI3MgpGb25lIEREUjogKDUxKTMyMjAtMzI5MApGb25lL0ZheDogKDUxKTMyMjAtMzIy
-MCAvIDMyMjAtMzIwNgpodHRwOi8vd3d3LnRldC5jb20uYnIvICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgdGV0QHRldC5jb20uYnIKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Heya!
+
+Anyone doing (audio) infrastructure work on Linux? If so, please make
+sure to join us at the Linux Plumbers Conference in Portland/Oregon in
+September. I will be doing an Audio track there and would like to make
+sure that everyone who does audio infrastructure work will submit a
+paper, or at least attend, or maybe just know about this conference!
+
+It's a conference about the kernel-userspace interfacing, about the
+lower levels in our software stack.
+
+For further details, checkout the conference website:
+
+http://www.linuxplumbersconf.org/
+
+Or this blog story of mine:
+
+http://0pointer.de/blog/projects/plumbersconf.html
+
+Spread the word!
+
+Thanks,
+
+        Lennart
+
+(Sorry for this Spam!)
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
