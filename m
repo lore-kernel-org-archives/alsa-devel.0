@@ -1,23 +1,19 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Maximum buffer size on HDA
-Date: Thu, 19 Jun 2008 19:42:38 +0200
-Message-ID: <20080619174238.GA7022@tango.0pointer.de>
-References: <20080613191303.GA3899@tango.0pointer.de>
-	<s5hzlplpt58.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0806161246330.1798@tm8103-a.perex-int.cz>
-	<s5hprqhpok8.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0806161415010.1798@tm8103-a.perex-int.cz>
-	<20080616123740.GA15742@tango.0pointer.de>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH 2/2] ad1848: replace duplicated constants
+ in cs4231
+Date: Thu, 19 Jun 2008 19:56:39 +0200
+Message-ID: <20080619195639.7d96b068.krzysztof.h1@poczta.fm>
+References: <20080615124128.48486ddc.krzysztof.h1@poczta.fm>
+	<s5hy75194ev.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0DD9E2441A
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 4874E2441A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jun 2008 19:42:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080616123740.GA15742@tango.0pointer.de>
+	Thu, 19 Jun 2008 19:53:24 +0200 (CEST)
+In-Reply-To: <s5hy75194ev.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,37 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@keyaccess.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 16.06.08 14:37, Lennart Poettering (mznyfn@0pointer.de) wrote:
+On Thu, 19 Jun 2008 11:10:00 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-heya!
-
-> > I'm not quite sure what you like to change. Make 1MB limit smaller? Or 
-> > change the default preallocated size? Or remove preallocation? I think 
-> > that it might make sense to increase the default preallocation value to 
-> > 128KB or 192KB.
+> At Sun, 15 Jun 2008 12:41:28 +0200,
+> Krzysztof Helt wrote:
+> > 
+> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> > 
+> > Use AD1848 register names in the cs4231 library as well.
+> > 
+> > Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 > 
-> For PulseAudio it would be of big benefit if we could change the
-> default in a way the for the highest sensible sampling rate/number of
-> channels/sample type we'd always be able to get a two-second
-> buffer. Windows and Mac use 2s of buffer by default, and I think it
-> would make sense for PulseAudio to do that too. 
+> Please fix to be checkpatch.pl clean at the next repost.
 > 
-> i.e. if the soundcard can do 2ch/16bit/44100hz at best I'd like to
-> have a buffer size of up to 344KB; if the soundcard can to
-> 5.1/32bit/48000 at best then i'd like to have a buffer of up to 2.2MB
-> or so.
+> WARNING: line over 80 characters
+> #438: FILE: sound/isa/cs423x/cs4231_lib.c:525:
+> +		snd_cs4231_dout(chip, AD1848_LEFT_INPUT, chip->image[AD1848_LEFT_INPUT]);
+> ...
+> total: 0 errors, 60 warnings, 1319 lines checked
+> 
 
-Takashi, Jarsolav, how can I bribe you into increasing this limit?
+I have fixed all errors except too long lines, because most of them are in
+the macros CS4231_DOUBLE and CS4231_SINGLE (mixer elements definitions).
+Should I break these definitions as well?
 
-What are the implications of this change? (Just wondering if it would
-make sense for us to change this limit in the Fedora kernel packages)
+I have gone berserk with the changes and done three patches till now:
+1. Move isa/cs423x/cs4231_lib.c to isa/wss/wss_lib.c
+2. Renamed cs4231.h to wss.h
+3. Renamed all cs4231_lib function cs4231_foo() into wss_foo().
 
-Lennart
+The next step is to use snd_wss (former snd_cs4231) into the ad1848_lib
+functions then slowly assimilate the whole ad1848_lib into the wss_lib.
 
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Question: should I also fix any checkpatch errors/warnings in the first
+two patches (move file and rename file)?
+
+Regards,
+Krzysztof
+
+----------------------------------------------------------------------
+Gdzie warto jechac na urlop? Sprawdz!
+kliknij >>> http://link.interia.pl/f1e32
