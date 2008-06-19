@@ -1,20 +1,17 @@
-From: randall <rlrathbun@roadrunner.com>
-Subject: Nvida HDA MCP61 - Realtek ALC622 question
-Date: Mon, 16 Jun 2008 09:23:40 -0700
-Message-ID: <200806160923.40663.rlrathbun@roadrunner.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH][asihpi] Meter control return peak.
+Date: Thu, 19 Jun 2008 10:27:33 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0806191026370.1798@tm8103-a.perex-int.cz>
+References: <200806171335.44469.linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta9.adelphia.net (mta9.adelphia.net [68.168.78.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0507243B3
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 735E824598
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Jun 2008 18:23:45 +0200 (CEST)
-Received: from [192.168.1.100] (really [76.176.117.148]) by mta9.adelphia.net
-	(InterMail vM.6.01.05.02 201-2131-123-102-20050715) with ESMTP
-	id <20080616162754.MSAX4520.mta9.adelphia.net@[192.168.1.100]>
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2008 12:27:54 -0400
-Content-Disposition: inline
+	Thu, 19 Jun 2008 10:27:36 +0200 (CEST)
+In-Reply-To: <200806171335.44469.linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Eliot Blennerhassett <linux@audioscience.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Andy:
+On Tue, 17 Jun 2008, Eliot Blennerhassett wrote:
 
-Who works on the snd-hda-intel sound module?  I have been unable to get the 
-codec working on my Athlon 64 3200+ processor (64 bit libs) despite gradually 
-working my way up from Alsa 1.0.14 to 1.0.17.git and fighting YaST2 issues 
-with Suse 10.3
+> Use Peak meter instead of Rms meter because it is supported by all card 
+> families.
+> Minor checkpatch cleanups.
+> 
+> Signed-off-by: Eliot Blennerhassett <linux@audioscience.com>
+> 
+> ---
+> diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
+> index 8cbefab..ab90b08 100644
+> --- a/pci/asihpi/asihpi.c
+> +++ b/pci/asihpi/asihpi.c
+> @@ -383,15 +383,15 @@ static void snd_card_asihpi_pcm_samplerates(struct 
+> snd_card_asihpi *asihpi,
 
-Since I do software development, I'd like to add my $0.02 worth of coding to 
-get the Alsa code working for my ECS EliteGroup motherboard as I have seen 
-others posting to the web frustrated by the same problem (indeed openSuse has 
-a web site devoted to soundcard issues, but no one has yet fixed this 
-problem)
+Applied, but could you mail git messages directly or from a mailer which 
+does not wrap lines? Thanks.
 
-I did a dump using the alsa-info.sh to pastebin, but probably have to run that 
-again.  http://pastebin.ca/1048637 is the latest dump of my board.
+						Jaroslav
 
-Randall
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
