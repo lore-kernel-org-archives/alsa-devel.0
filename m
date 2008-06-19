@@ -1,17 +1,18 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH][asihpi] Meter control return peak.
-Date: Thu, 19 Jun 2008 10:27:33 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0806191026370.1798@tm8103-a.perex-int.cz>
-References: <200806171335.44469.linux@audioscience.com>
+Subject: Re: [PATCH - asihpi 2/2] Disable S24_3LE incompatible
+ with 2^N buffer size.
+Date: Thu, 19 Jun 2008 10:30:08 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0806191029410.1798@tm8103-a.perex-int.cz>
+References: <1213841713-20114-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 735E824598
+	by alsa0.perex.cz (Postfix) with ESMTP id 6867B10380C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Jun 2008 10:27:36 +0200 (CEST)
-In-Reply-To: <200806171335.44469.linux@audioscience.com>
+	Thu, 19 Jun 2008 10:30:11 +0200 (CEST)
+In-Reply-To: <1213841713-20114-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: linux@audioscience.com
+Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 17 Jun 2008, Eliot Blennerhassett wrote:
+On Thu, 19 Jun 2008 linux@audioscience.com wrote:
 
-> Use Peak meter instead of Rms meter because it is supported by all card 
-> families.
-> Minor checkpatch cleanups.
+> From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 > 
-> Signed-off-by: Eliot Blennerhassett <linux@audioscience.com>
 > 
-> ---
-> diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
-> index 8cbefab..ab90b08 100644
-> --- a/pci/asihpi/asihpi.c
-> +++ b/pci/asihpi/asihpi.c
-> @@ -383,15 +383,15 @@ static void snd_card_asihpi_pcm_samplerates(struct 
-> snd_card_asihpi *asihpi,
+> Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Applied, but could you mail git messages directly or from a mailer which 
-does not wrap lines? Thanks.
+Applied.
 
-						Jaroslav
+					Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
