@@ -1,20 +1,15 @@
-From: Joshua Boyd <jdboyd@jdboyd.net>
-Subject: A few general questions (my first driver): Marian MARC4
-Date: Fri, 20 Jun 2008 02:07:49 -0400
-Message-ID: <FCDBA326-635A-4820-8F25-4377CB4A17A4@jdboyd.net>
-Mime-Version: 1.0 (Apple Message framework v753)
+From: Felix Radensky <felix@embedded-sol.com>
+Subject: Problems compiling Davinci ASoC driver in 2.6.26-rc6
+Date: Fri, 20 Jun 2008 09:34:28 +0300
+Message-ID: <485B4F74.4020506@embedded-sol.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from jdboyd.net (jdboyd.net [206.192.23.82])
-	by alsa0.perex.cz (Postfix) with ESMTP id D3D5B2452D
+Received: from vega.surpasshosting.com (vega.surpasshosting.com [72.29.83.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id 685AE24539
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Jun 2008 08:07:55 +0200 (CEST)
-Received: from [192.168.1.45] (pool-72-70-142-78.hrbgpa.east.verizon.net
-	[72.70.142.78]) (using TLSv1 with cipher AES128-SHA (128/128 bits))
-	(No client certificate requested)
-	by jdboyd.net (Postfix) with ESMTP id 4878796D19
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2008 02:10:01 -0400 (EDT)
+	Fri, 20 Jun 2008 08:35:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +19,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, vova.barinov@gmail.com, vbarinov@ru.mvista.com
 List-Id: alsa-devel@alsa-project.org
 
-I have a Marian Marc4 card.  I have the documentation for this card,  
-which has been on their web site for quite some time.  I want to  
-write a driver for this card.  This is my first ALSA driver, but it  
-isn't my first kernel driver.
+Hi,
 
-Anyway, I can't google any mention of this family of cards on this  
-mailing list, which seems a bit odd.  I did find some mentions on  
-linux-audio-developer, about the documentation, but no mention there  
-of prior work on this family.
+I wanted to test Davinci ASoC driver on Davinci EVM evaluation
+board, but encountered the following compilation errors:
 
-However, I did find a MARC8 driver on sourceforge (http:// 
-sourceforge.net/projects/marc8-driver).  Does anyone know anything  
-about this?  I'm vary curious about why I've never seen it mentioned  
-here before.  The license is listed as GPL.  The Marian Marc8 was  
-formerly known as the Sek'd Siena, but again I can't find any real  
-mention of that in the archives.  Does anyone have any idea why the  
-MARC8 wasn't mentioned and merged into the main ALSA sources?
+ CC      sound/soc/codecs/tlv320aic3x.o
+sound/soc/codecs/tlv320aic3x.c:1012: warning: 'aic3x_init' defined but 
+not used
+  LD      sound/soc/codecs/snd-soc-tlv320aic3x.o
+  LD      sound/soc/codecs/built-in.o
+  CC      sound/soc/davinci/davinci-i2s.o
+sound/soc/davinci/davinci-i2s.c:402: warning: initialization from 
+incompatible pointer type
+  CC      sound/soc/davinci/davinci-pcm.o
+sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_enqueue_dma':
+sound/soc/davinci/davinci-pcm.c:99: error: implicit declaration of 
+function `davinci_set_dma_src_params'
+sound/soc/davinci/davinci-pcm.c:99: error: `INCR' undeclared (first use 
+in this function)
+sound/soc/davinci/davinci-pcm.c:99: error: (Each undeclared identifier 
+is reported only once
+sound/soc/davinci/davinci-pcm.c:99: error: for each function it appears in.)
+sound/soc/davinci/davinci-pcm.c:99: error: `W8BIT' undeclared (first use 
+in this function)
+sound/soc/davinci/davinci-pcm.c:100: error: implicit declaration of 
+function `davinci_set_dma_dest_params'
+sound/soc/davinci/davinci-pcm.c:101: error: implicit declaration of 
+function `davinci_set_dma_src_index'
+sound/soc/davinci/davinci-pcm.c:102: error: implicit declaration of 
+function `davinci_set_dma_dest_index'
+sound/soc/davinci/davinci-pcm.c:103: error: implicit declaration of 
+function `davinci_set_dma_transfer_params'
+sound/soc/davinci/davinci-pcm.c:103: error: `ASYNC' undeclared (first 
+use in this function)
+sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_dma_irq':
+sound/soc/davinci/davinci-pcm.c:117: error: `DMA_COMPLETE' undeclared 
+(first use in this function)
+sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_dma_request':
+sound/soc/davinci/davinci-pcm.c:134: error: `TCC_ANY' undeclared (first 
+use in this function)
+sound/soc/davinci/davinci-pcm.c:143: error: implicit declaration of 
+function `davinci_request_dma'
+sound/soc/davinci/davinci-pcm.c:145: error: `EVENTQ_0' undeclared (first 
+use in this function)
+sound/soc/davinci/davinci-pcm.c:150: error: `PARAM_ANY' undeclared 
+(first use in this function)
+sound/soc/davinci/davinci-pcm.c:153: error: implicit declaration of 
+function `davinci_free_dma'
+sound/soc/davinci/davinci-pcm.c:158: error: implicit declaration of 
+function `davinci_dma_link_lch'
+sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_trigger':
+sound/soc/davinci/davinci-pcm.c:174: error: implicit declaration of 
+function `davinci_start_dma'
+sound/soc/davinci/davinci-pcm.c:179: error: implicit declaration of 
+function `davinci_stop_dma'
+sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_prepare':
+sound/soc/davinci/davinci-pcm.c:194: error: storage size of 'temp' isn't 
+known
+sound/soc/davinci/davinci-pcm.c:200: error: implicit declaration of 
+function `davinci_get_dma_params'
+sound/soc/davinci/davinci-pcm.c:201: error: implicit declaration of 
+function `davinci_set_dma_params'
+sound/soc/davinci/davinci-pcm.c:194: warning: unused variable `temp'
+sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_pointer':
+sound/soc/davinci/davinci-pcm.c:217: error: implicit declaration of 
+function `davinci_dma_getposition'
+sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_close':
+sound/soc/davinci/davinci-pcm.c:262: error: implicit declaration of 
+function `davinci_dma_unlink_lch'
+make[3]: *** [sound/soc/davinci/davinci-pcm.o] Error 1
+make[2]: *** [sound/soc/davinci] Error 2
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
 
-I did go ahead and add some Marian product information to the support  
-matrix on the alsa wiki, including a link to the sourceforge page.
+Are there plans to fix this before release of 2.6.26 ?
 
-My plan is to add MARC4 to the MARC8 driver.  The register layout is  
-basically the same, adjusted for the 4 versus 8 channels.  Both cards  
-use the same PLX chip.  The biggest difference is in the layout of  
-the play/capture RAM area, which is because of the 4 versus 8  
-channels.  It seems silly to make two separate drivers.  I would like  
-to see my results eventually merged into the main ALSA.  I'm hoping  
-that if I get these into the main tree that I would then be able to  
-get some support from Marian in the form of clearance (and a card) to  
-do the Trace D4 and D4 SRC, and possibly even documentation and  
-hardware for the UCON CX.
+Thanks.
 
-Anyway, moving on to my specific questions.
-
-First, is it appropriate to put support for two device IDs in the  
-same file?  The examples I tried looking at ended up being a single  
-device id, differentiated by a subvendor ID.
-
-Second, is it wrong to use the same structures, but with an enum  
-field in the main snd_marc device structure that points out which  
-card I'm talking about, then else where switching on that enum to  
-figure out how many channels I need to operate on?
-
-Third, once I get this functional on my MARC4 card, how hard is it  
-likely to be to get it accepted?  I don't expect low standards for  
-code that is accepted, but I'd like to have some idea how picky the  
-process may be.
+Felix.
