@@ -1,19 +1,19 @@
-From: randall <lists_rlr@roadrunner.com>
-Subject: Re: note on Suse 10.3 build
-Date: Fri, 20 Jun 2008 12:50:24 -0700
-Message-ID: <200806201250.25197.lists_rlr@roadrunner.com>
-References: <200806191502.36138.lists_rlr@roadrunner.com>
-	<s5hiqw4poxq.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: looping S/PDIF data
+Date: Fri, 20 Jun 2008 21:52:55 +0200
+Message-ID: <485C0A97.7020909@keyaccess.nl>
+References: <20080531112606.5884a1c9@mjolnir.drzeus.cx>	<20080617215504.3203a5ed@mjolnir.drzeus.cx>	<4858B84B.4030800@keyaccess.nl>	<s5hej6t91u1.wl%tiwai@suse.de>	<Pine.LNX.4.61.0806191435270.1798@tm8103-a.perex-int.cz>	<s5hskv97fqk.wl%tiwai@suse.de>
+	<20080620214516.28e9d3f3@mjolnir.drzeus.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta11.adelphia.net (mta11.adelphia.net [68.168.78.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4794C2464D
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id F375624653
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Jun 2008 21:50:27 +0200 (CEST)
-In-Reply-To: <s5hiqw4poxq.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Fri, 20 Jun 2008 21:52:21 +0200 (CEST)
+In-Reply-To: <20080620214516.28e9d3f3@mjolnir.drzeus.cx>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Pierre Ossman <drzeus@drzeus.cx>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, mulix@mulix.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi writes:
+On 20-06-08 21:45, Pierre Ossman wrote:
 
-> You did something wrong, if the changes you did are really only the
-> above ones.
->
-> Did you try alsa-driver-kmp package on openSUSE BS multimedia:audio
-> repo?
+> On Thu, 19 Jun 2008 14:48:19 +0200
+> Takashi Iwai <tiwai@suse.de> wrote:
+> 
+>> At Thu, 19 Jun 2008 14:39:05 +0200 (CEST),
+>> Jaroslav Kysela wrote:
+>>> I don't think that this patch is correct. DMA transfers should be disabled 
+>>> by:
+>>>
+>>> outl(what, TRID_REG(trident, T4D_STOP_B));
+>>> outl(val, TRID_REG(trident, T4D_AINTEN_B));
+>> They are already in the trigger callback as long as I saw the code
+>> quickly.  So the problem should be somewhere else.
+>>
+>>> lines. Adding &= ~SPDIF_EN can disable output from AC97 to S/PDIF as well.
+>> That's true.
+>>
+>> Anyway, if you are up now, I'll let you hunt further as you are the
+>> author of the driver :)
+>>
+> 
+> Are there any specs on this hardware? I could play around a bit myself,
+> but I can't really find any documentation on the registers.
 
-Yes, made no difference.
+At:
 
-This morning I carefully built the kernel step-by-step and found that changing 
-this parameter in config for the kernel enabled my Nvidia MCP61 sound card to 
-work:
+ftp://ftp.alsa-project.org/pub/manuals/trident/
 
-CONFIG_SND_SOC =m
+there's a 4D-Wave DX technical reference manual and .doc files which at 
+first glance look useful.
 
-Once I set this to module, and rebuilt, then I was able to successfully have 
-sound working.
-
-Good thing it's just a one parameter change.
-
-- Randall
+Rene.
