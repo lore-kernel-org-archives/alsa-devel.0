@@ -1,27 +1,23 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Still have choppy audio using 1.0.17
-Date: Fri, 20 Jun 2008 16:07:17 -0300
-Message-ID: <485BFFE5.4030207@tet.com.br>
-References: <4856C768.1060404@tet.com.br>
-	<485952C5.30307@tet.com.br>	<485965B0.9020102@tet.com.br>
-	<485A58A1.6040002@tet.com.br>
+From: Timur Tabi <timur@freescale.com>
+Subject: Requiring the same sample rate for playback and record?
+Date: Fri, 20 Jun 2008 14:08:50 -0500
+Message-ID: <485C0042.4050008@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 64E2B2463F
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id F27D024645
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Jun 2008 21:06:34 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 39594DE806F
-	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Jun 2008 16:06:32 -0300 (BRST)
-Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 33690DE801B
-	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Jun 2008 16:06:28 -0300 (BRST)
-In-Reply-To: <485A58A1.6040002@tet.com.br>
+	Fri, 20 Jun 2008 21:08:53 +0200 (CEST)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
+	m5KJ8pF2022609
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2008 12:08:51 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m5KJ8oLO011394
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2008 14:08:50 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,85 +27,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-V2h5IGlzIHRoYXQgbm9ib2R5IGFuc3dlciBtZT8KRGlkIEkgc2F5IHNvbWV0aGluZyB3cm9uZz8K
-CkkgaGFkIHRvIGNoYW5nZSBhbG9vcCB0byBzdG9wIHRoZSBjaG9wcHkgYXVkaW8sIGJ1dCBvZiBj
-b3Vyc2UgaXQgaXMgYSAKd29ya2Fyb3VuZCBhbmQgbm90IGEgcmVhbCBzb2x1dGlvbiBvciBwYXRj
-aC4gSSBsYWNrIHRoZSBuZWNlc3NhcnkgCmtub3dsZWRnZSB0byBkbyBpdCBwcm9wZXJseS4KCkd1
-c3Rhdm8gZGEgU2lsdmEgU2VycmEgZXNjcmV2ZXU6Cj4gSXMgaXQgcG9zc2libGUgdG8gZGV0ZWN0
-IHRoaXMgc2l0dWF0aW9uIHdpdGggYWxzYSBBUEksIGkuZS4sIGF0IAo+IGFwcGxpY2F0aW9uIGxl
-dmVsPwo+Cj4gVGhhbmtzLgo+Cj4gR3VzdGF2byBkYSBTaWx2YSBTZXJyYSBlc2NyZXZldToKPiAg
-IAo+PiBJIGhhdmUgZGlzY292ZXJlZCBzb21ldGhpbmcgZWxzZTogSSBhbSBkaXNwbGF5IHRoZSBj
-dXJyZW50IGJ1ZmZlciAKPj4gcG9pbnRlciAoY2FwdHVyZSBwb2ludGVyIGFuZCBidWZmZXIgcG9p
-bnRlciksIHdoZW4gY2hvcHB5IGF1ZGlvIG9jY3VycyAKPj4gdGhlIHBsYXliYWNrIHBvaW50ZXIg
-aXMgcHJpbnRlZCBhcyBhIGdpdmVuIHZhbHVlIGFuZCwgYWZ0ZXIsIHRoZSBjYXB0dXJlIAo+PiBw
-b2ludGVyIGhhcyB0aGUgc2FtZSB2YWx1ZS4gRm9yIGV4YW1wbGUsIGEgbm9ybWFsIHNpdHVhdGlv
-biB3b3VsZCBiZToKPj4KPj4gUGxheWJhY2sgcG9pbnRlcjogMzAwMAo+PiBDYXB0dXJlIHBvaW50
-ZXI6IDEwMDAKPj4gUGxheWJhY2sgcG9pbnRlcjogNDAwMAo+PiBDYXB0dXJlIHBvaW50ZXI6IDIw
-MDAKPj4gUGxheWJhY2sgcG9pbnRlcjogMDAwMAo+PiBDYXB0dXJlIHBvaW50ZXI6IDMwMDAKPj4K
-Pj4gQSBjaG9wcHkgYXVkaW8gc2l0dWF0aW9uIHdvdWxkIGJlOgo+Pgo+PiBQbGF5YmFjayBwb2lu
-dGVyOiAzMDAwCj4+IENhcHR1cmUgcG9pbnRlcjogMzAwMAo+PiBQbGF5YmFjayBwb2ludGVyOiA0
-MDAwCj4+IENhcHR1cmUgcG9pbnRlcjogNDAwMAo+PiBQbGF5YmFjayBwb2ludGVyOiAwMDAwCj4+
-IENhcHR1cmUgcG9pbnRlcjogMDAwMAo+Pgo+PiBUaGUgZm9sbG93aW5nIHNpdHVhdGlvbiBpcyBO
-T1QgY2hvcHB5Ogo+Pgo+PiBDYXB0dXJlIHBvaW50ZXI6IDMwMDAKPj4gUGxheWJhY2sgcG9pbnRl
-cjogMzAwMAo+PiBDYXB0dXJlIHBvaW50ZXI6IDQwMDAKPj4gUGxheWJhY2sgcG9pbnRlcjogNDAw
-MAo+PiBDYXB0dXJlIHBvaW50ZXI6IDAwMDAKPj4gUGxheWJhY2sgcG9pbnRlcjogMDAwMAo+Pgo+
-PiBUaGFua3MgYW55IHJlcGx5Lgo+Pgo+PiBHdXN0YXZvIGRhIFNpbHZhIFNlcnJhIGVzY3JldmV1
-Ogo+PiAgIAo+PiAgICAgCj4+PiBJIGFtIHRyYWNpbmcgYWxvb3AgZXhlY3V0aW9uIGFuZCB0aGUg
-Y2hvcHB5IGF1ZGlvIGhhcHBlbnMgd2hlbiBhbiAKPj4+IGFwcGxpY2F0aW9uIChjYXB0dXJlIG9y
-IHBsYXliYWNrKSBvcGVucyB0aGUgZGV2aWNlIHdoaWxlIGFub3RoZXIgb25lIGlzIAo+Pj4gY2Fw
-dHVyaW5nIG9yIHBsYXlpbmcuIEl0IHNlZW1zIHRvIG1lLCBJIG1heSBiZSBjb21wbGV0ZWx5IHdy
-b25nLCB0aGF0IAo+Pj4gdGhlIHByb2JsZW0gY291bGQgYmUgYSBzeW5jaHJvbml6YXRpb24gaXNz
-dWUgKGEgY3JpdGljYWwgcmVnaW9uIHdpdGggbm8gCj4+PiBtdXRleGVzLCBmb3IgaW5zdGFuY2Up
-LiBJIGFuYWx5c2VkIHRoZSBzb3VuZCB3YXZlIHdpdGggQXVkYWNpdHkgd2hpbGUgaW4gCj4+PiBj
-aG9wcHkgYXVkaW8gY29uZGl0aW9uIGFuZCBJIHJlYWxpemVkIHRoYXQgdGhlcmUgYXJlIHNpbGVu
-dCBnYXBzLCAKPj4+IG1pbGlzZWNvbmRzIHdpdGggbm8gc291bmQgYXQgYWxsIChhcyBpZiBzb21l
-IGJ1ZmZlciBwb2ludGVyIHdhcyBsb3N0LCAKPj4+IGZvciBleGFtcGxlKS4KPj4+Cj4+PiBJIGhh
-dmVuJ3QgcmVjZWl2ZWQgYW55IGFuc3dlciBmcm9tIHlvdSA9KAo+Pj4gV2hhdCBkbyB5b3UgdGhp
-bmsgdGhhdCBpcyBoYXBwZW5pbmc/Cj4+Pgo+Pj4gVGhhbmtzIGluIGFkdmFuY2UuCj4+Pgo+Pj4g
-R3VzdGF2byBkYSBTaWx2YSBTZXJyYSBlc2NyZXZldToKPj4+ICAgCj4+PiAgICAgCj4+PiAgICAg
-ICAKPj4+PiBJIGhhdmUgYmVlbiB0cnlpbmcgZm9yIG1hbnkgd2Vla3MgdG8gc29sdmUgdGhpcyBw
-cm9ibGVtLCBidXQgd2l0aCBubyAKPj4+PiBzdWNjZXNzLiBBZnRlciB1cGRhdGluZyB0byBBbHNh
-IDEuMC4xNywgd2hpY2ggaW5jbHVkZSBjaGFuZ2VzIHRvIGFsb29wLCAKPj4+PiBJIHN0aWxsIGhh
-dmUgY2hvcHB5IGF1ZGlvLiBJIHdpbGwgdHJ5IHRvIHN1bW1hcml6ZSB3aGF0IGhhcHBlbnM6Cj4+
-Pj4KPj4+PiAtIEkgbmVlZCB0byB1c2UgYWxvb3AsIGlmIEkgY2hhbmdlIHRvIGEgc291bmQgY2Fy
-ZCBhbGwgdGhlIHByb2JsZW1zIGFyZSAKPj4+PiBnb25lOwo+Pj4+IC0gQWZ0ZXIgc29tZSB0aW1l
-IG9mIGNvbnRpbnVvdXMgcGxheSwgYXBwbGljYXRpb25zIHN0YXJ0IHRvIHJlcHJvZHVjZSAKPj4+
-PiBjaG9wcHkgYXVkaW8uIENob3BweSBhdWRpbyBkb2Vzbid0IGhhcHBlbnMgYWxsIHRoZSB0aW1l
-Owo+Pj4+IC0gSWYgSSByZXBlYXRlZGx5IHN0YXJ0IGFuZCBzdG9wIG15IHNvdW5kIGNhcHR1cmUg
-YXBwbGljYXRpb24gY2hvcHB5IAo+Pj4+IGF1ZGlvIG9jY3VyIHNvb25lcjsKPj4+PiAtIFN0YXJ0
-L3N0b3AgbXkgYXBwbGljYXRpb24gcmVzdG9yZXMgdGhlIHNvdW5kIHF1YWxpdHkgKGFmdGVyIHNv
-bWUgdHJ5aWVzKTsKPj4+PiAtIFRoaXMgaGFwcGVucyB3aXRoIEFMU0EgYXBwbGljYXRpb25zICh4
-aW5lLCB2bGMpIGFuZCBPU1MgZW11bGF0ZWQ7Cj4+Pj4gLSBJIGhhdmUgdHJ5aWVkIG1hbnkgcGVy
-aW9kX3NpemUgYW5kIGJ1ZmZlcl9zaXplIGluIGFzb3VuZC5jb25mLCBub3cgSSAKPj4+PiBhbSB1
-c2luZyA5NjAgZm9yIHBlcmlvZCBhbmQgMzg0MCBmb3IgYnVmZmVyLiBBcyBJIGRlY3JlYXNlIHBl
-cmlvZCBzaXplLCAKPj4+PiB0aGUgYXVkaW8gcXVhbGl0eSBpbXByb3ZlcywgYnV0IGNob3BweSBh
-dWRpbyBzdGlsbCBoYXBwZW5zOwo+Pj4+IC0gSSB0ZXN0IGZvciBvdmVycnVuIGJ1dCBubyBlcnJv
-cnMgb2NjdXIuCj4+Pj4gLSBJIGFtIHVzaW5nIGJsb2NrIG1vZGUsIGludGVybGVhdmVkLCA0NDEw
-MCwgMTYgYml0LCAyIGNoYW5uZWxzCj4+Pj4gLSBJIGFtIHVzaW5nIGRtaXgsIGRzbm9vcCwgcmVt
-b3ZpbmcgdGhlbSBkb2VzIG5vdCBjb3JyZWN0IHRoZSBhdWRpbwo+Pj4+Cj4+Pj4gVGhlc2UgYXJl
-IHNvbWUgb2YgdGhlIGluZm9ybWF0aW9uIEkgaGF2ZSwgSSBkb24ndCBrbm93IGlmIGlzIGlzIGVu
-b3VnaC4gCj4+Pj4gSWYgbmVjZXNzYXJ5IEkgY2FuIHByb3ZpZGUgYW55IG90aGVyIGluZm9ybWF0
-aW9uLgo+Pj4+IFdoYXQgZG8geW91IHN1Z2dlc3QgdGhhdCBJIGRvPyBBcmUgdGhlcmUgYW55IGtu
-b3duIGlzc3VlcyBvciAKPj4+PiBjb25maWd1cmF0aW9uIHJlcXVpcmVtZW50cz8KPj4+Pgo+Pj4+
-IFRoYW5rcyBpbiBhZHZhbmNlLgo+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCj4+Pj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4+PiBBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKPj4+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Pj4+Cj4+Pj4gX19fX19fX19fXyBOT0QzMiAz
-MTkxICgyMDA4MDYxNikgSW5mb3JtYXRpb24gX19fX19fX19fXwo+Pj4+Cj4+Pj4gVGhpcyBtZXNz
-YWdlIHdhcyBjaGVja2VkIGJ5IE5PRDMyIGFudGl2aXJ1cyBzeXN0ZW0uCj4+Pj4gaHR0cDovL3d3
-dy5lc2V0LmNvbQo+Pj4+Cj4+Pj4KPj4+Pgo+Pj4+ICAgCj4+Pj4gICAgIAo+Pj4+ICAgICAgIAo+
-Pj4+ICAgICAgICAgCj4+PiAgIAo+Pj4gICAgIAo+Pj4gICAgICAgCj4+ICAgCj4+ICAgICAKPgo+
-Cj4gICAKCgotLSAKR3VzdGF2byBkYSBTaWx2YSBTZXJyYSAgICAgICAgZ3VzdGF2by5zZXJyYUB0
-ZXQuY29tLmJyCuKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKA
-lOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlOKAlApUb29scyAmIFRlY2hub2xvZ2llcyAt
-IFQmVCBFbmdlbmhlaXJvcyBBc3NvY2lhZG9zIEx0ZGEuClByb2pldG9zIGRlIFNXICYgSFcgLSBE
-ZXNlbnZvbHZlbmRvIHNvbHXDp8O1ZXMuClJ1YSBSaWFjaHVlbG8sIDEwOTggQ29uai4gMTIwNApD
-ZW50cm8gLSBQb3J0byBBbGVncmUgLSBDRVAgOTAwMTAtMjcyCkZvbmUgRERSOiAoNTEpMzIyMC0z
-MjkwCkZvbmUvRmF4OiAoNTEpMzIyMC0zMjIwIC8gMzIyMC0zMjA2Cmh0dHA6Ly93d3cudGV0LmNv
-bS5ici8gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZXRAdGV0
-LmNvbS5icgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+In my driver, how do I tell ALSA that the sample rate for playback must be the
+same as for capture?
+
+I know I can have my driver remember the sample rate for the first stream open,
+and then if the second stream doesn't specify the same sample rate, it can
+reject it, but this is inelegant.  I'm hoping there's a more straightforward way.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
