@@ -1,8 +1,8 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
 Subject: Re: 2.6.26-rc6 snd-pcsp: "Timer resolution is not
 	sufficient"
-Date: Sat, 21 Jun 2008 03:00:41 +0200
-Message-ID: <485C52B9.4010607@keyaccess.nl>
+Date: Sat, 21 Jun 2008 03:14:16 +0200
+Message-ID: <485C55E8.3090703@keyaccess.nl>
 References: <485AB878.5080101@keyaccess.nl> <485B2A92.4000801@aknet.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,9 +10,9 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
 	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id E83331038A7
+	by alsa0.perex.cz (Postfix) with ESMTP id 50498246AC
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Jun 2008 03:00:04 +0200 (CEST)
+	Sat, 21 Jun 2008 03:13:40 +0200 (CEST)
 In-Reply-To: <485B2A92.4000801@aknet.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,7 +24,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Stas Sergeev <stsp@aknet.ru>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 On 20-06-08 05:57, Stas Sergeev wrote:
@@ -54,11 +54,11 @@ CCed onto linux-kernel to possibly help future googlers...
 > Try adding the hrtimers people to
 > CC if this is a problem.
 
-In this case the problem was the ACPI PM-Timer (CONFIG_X86_PM_TIMER) got 
+In this case the problem was the ACPI PM-Timer (CONFIG_X86_PM_TIMER) got
 disabled. Re-enabling it, snd-pcsp is working fine again.
 
-It does seem a bit off that you needs something as (relatively) modern 
-as an ACPI timing source (or HPET, or ...) to drive something quite as 
+It does seem a bit off that you needs something as (relatively) modern
+as an ACPI timing source (or HPET, or ...) to drive something quite as
 legacy as the PC speaker, but oh well.
 
 Rene.
