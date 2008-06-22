@@ -1,19 +1,21 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: looping S/PDIF data
-Date: Sat, 21 Jun 2008 14:14:38 +0200
-Message-ID: <485CF0AE.3020204@keyaccess.nl>
-References: <20080531112606.5884a1c9@mjolnir.drzeus.cx>	<20080617215504.3203a5ed@mjolnir.drzeus.cx>	<4858B84B.4030800@keyaccess.nl>	<s5hej6t91u1.wl%tiwai@suse.de>	<Pine.LNX.4.61.0806191435270.1798@tm8103-a.perex-int.cz>	<s5hskv97fqk.wl%tiwai@suse.de>	<20080620214516.28e9d3f3@mjolnir.drzeus.cx>	<485C0A97.7020909@keyaccess.nl>	<20080621000050.43160d47@mjolnir.drzeus.cx>	<485C2DF7.7080408@keyaccess.nl>
-	<20080621010910.018f880d@mjolnir.drzeus.cx>
+From: Aryeh Leib Taurog <vim@aryehleib.com>
+Subject: Nonblocking non-synchronized io plugin?
+Date: Sun, 22 Jun 2008 06:04:54 +0300
+Message-ID: <20080622030454.GD14300@tishbi32.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BB1824638
+Received: from mxout-03.mxes.net (mxout-03.mxes.net [216.86.168.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CF391039D6
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Jun 2008 14:14:03 +0200 (CEST)
-In-Reply-To: <20080621010910.018f880d@mjolnir.drzeus.cx>
+	Sun, 22 Jun 2008 05:05:50 +0200 (CEST)
+Received: from localhost (unknown [80.179.212.190])
+	(using TLSv1 with cipher AES128-SHA (128/128 bits))
+	(No client certificate requested)
+	by smtp.mxes.net (Postfix) with ESMTP id 6F4E323E4B8
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2008 23:05:47 -0400 (EDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre Ossman <drzeus@drzeus.cx>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, mulix@mulix.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21-06-08 01:09, Pierre Ossman wrote:
+Hello,
 
-> trident: pause s/pdif output
-> 
-> Stop the S/PDIF DMA engine and output when the device is told to pause.
-> It will keep on looping the current buffer contents if this isn't done.
-> 
-> Signed-off-by: Pierre Ossman <drzeus@drzeus.cx>
+    I am trying to develop an io plugin to route audio input/output to/from 
+a network application I'm developing.  I'm working on openSUSE 10.2, which 
+I think means I'm using ALSA 1.0.13rc2
 
-Verified to fix the reported pause problem on a 4DWaveNX (and indeed to 
-not affect a 4DWaveDX). The Trident SPDIF doesn't seem capable of 44100 
-which for me means it's not all that useful but you no doubt know 
-yourself that/if it is for you...
+I am running into two problems:
 
-Tested-by: Rene Herman <rene.herman@gmail.com>
+1. ALSA calls my transfer function with io->nonblock = 0 and seems to be 
+   quite picky about the timing of the function.  I'm having trouble 
+getting the timing correct, and it seems to be causing ALSA to stop/crash.  
+Is there any way that I can get ALSA to handle the timing for me and call 
+my transfer function with io->nonblock = 1 instead?
 
-Rene.
+2. ALSA seems to require that the capture and playback transfers be 
+   synchronized.  That seems like a simple enough expectation, but for some 
+reason, I am having a hard time providing this.  I tried splitting the 
+capture and playback up in .asoundrc as below, but it doesn't seem to help.  
+(Actually I can't be sure, since it could just be a timing issue).  Is 
+there a way to separate the capture from the playback so it won't require 
+them to be synchronized?
+
+Basically, I want the ioplug to have as much latitude as possible to just 
+transfer the data and return as soon as it can.  I guess if the calls are 
+non-blocking, then they also won't need to be syncronized.  Please correct 
+me if I'm wrong.
+
+.asoundrc:
+-----------------------------
+pcm.read {
+    type myplug
+}
+
+pcm.write {
+    type myplug
+}
+
+ctl.myapp {
+    type myplug
+}
+
+pcm.myapp {
+    type asym
+    playback.pcm "write"
+    capture.pcm "read"
+}
+
+pcm.!default myapp
+------------------------------
+
+
+Thanks very much
+Please let me know if I need to clarify anything.
+
+Aryeh Leib Taurog
