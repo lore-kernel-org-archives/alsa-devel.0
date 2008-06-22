@@ -1,22 +1,19 @@
-From: daedra <daedra@charter.net>
-Subject: emu20k1 in 1.0.17?
-Date: Sat, 21 Jun 2008 01:35:38 -0700
-Message-ID: <485CBD5A.6070305@charter.net>
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: Re: [PATCH] alsa: add annotations to bitwise
+	type	snd_pcm_hw_param_t
+Date: Sun, 22 Jun 2008 08:50:40 +0100
+Message-ID: <20080622075040.GR28946@ZenIV.linux.org.uk>
+References: <1213821913.2125.21.camel@brick>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta21.charter.net (mta21.charter.net [216.33.127.81])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C4681038CD
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [195.92.253.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8517924683
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Jun 2008 10:35:23 +0200 (CEST)
-Received: from aarprv04.charter.net ([10.20.200.74]) by mta21.charter.net
-	(InterMail vM.7.08.03.00 201-2186-126-20070710) with ESMTP
-	id <20080621083516.DBJL23078.mta21.charter.net@aarprv04.charter.net>
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2008 04:35:16 -0400
-Received: from [24.176.218.68] by aarprv04.charter.net with ESMTP
-	id <20080621083516.SFRT4495.aarprv04.charter.net@[24.176.218.68]>
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2008 04:35:16 -0400
+	Sun, 22 Jun 2008 09:50:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1213821913.2125.21.camel@brick>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,8 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Harvey Harrison <harvey.harrison@gmail.com>
+Cc: alsa-devel@alsa-project.org, Alexander Viro <viro@ftp.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-I was just wondering if there is a chance of the emu20k1 driver making 
-it's way into 1.0.17?
+On Wed, Jun 18, 2008 at 01:45:13PM -0700, Harvey Harrison wrote:
+> Fully half of all alsa sparse warnings are from snd_pcm_hw_param_t degrading
+> to integer type, this goes a long way towards eliminating them.
+
+FWIW, *all* this stuff is not bitwise at all.  For crying out loud, half
+of these types are routinely used as array indices and loop variables...
+
+If anything, we want a different set of allowed operations - subtraction
+between elements of type (yielding integer), addition/subtraction of
+integer types not bigger than ours (yielding our type), comparisons,
+assignments (=, +=, -=, passing to function as argument, return from
+function, initializers) and second/third arguments in ?:.  With 0 *not*
+being allowed as a constant of such type.
+
+It's not bitwise; we may use the same infrastructure in sparse, but it
+should be a separate class of types (__attribute__((affine))).
+
+dma_addr_t is another candidate for the same treatment, but there we'll
+need helpers for conversions to hw-acceptable form (dma_to_le32(), etc.)
+and gradual conversion of drivers.
+
+ALSA ones and pm mess are absolutely straightforward cases, though.
