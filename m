@@ -1,15 +1,16 @@
 From: Andreas Mohr <andi@lisas.de>
-Subject: [PATCH] PCI168 snd-azt3328: some more fixups
-Date: Sun, 22 Jun 2008 23:17:12 +0200
-Message-ID: <20080622211712.GA16882@rhlx01.hs-esslingen.de>
+Subject: Repaired version ([PATCH] PCI168 snd-azt3328: some
+	more fixups)
+Date: Mon, 23 Jun 2008 00:07:24 +0200
+Message-ID: <20080622220724.GA15867@rhlx01.hs-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00D7424588
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C77B10381A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 22 Jun 2008 23:17:13 +0200 (CEST)
+	Mon, 23 Jun 2008 00:07:24 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,6 +26,14 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
+
+update: darn, I just noticed that those "unknown" play/rec IRQ types
+actually do turn up on dmesg _sometimes_ (a bit too often),
+thus a printk KERN_WARNING wasn't quite such a good idea...
+(revert it to optional debug logging, will possibly figure out its meaning
+later)
+
+----
 
 another update:
 
@@ -50,8 +59,9 @@ Thanks!
 
 Signed-off-by: Andreas Mohr <andi@lisas.de>
 
+
 --- azt3328.c.my_org	2008-06-14 08:20:36.000000000 +0200
-+++ azt3328.c	2008-06-22 14:05:55.000000000 +0200
++++ azt3328.c	2008-06-22 23:02:57.000000000 +0200
 @@ -289,6 +289,12 @@
  	struct pci_dev *pci;
  	int irq;
@@ -218,9 +228,9 @@ Signed-off-by: Andreas Mohr <andi@lisas.de>
 +static inline void
 +snd_azf3328_irq_log_unknown_type(u8 which)
 +{
-+	printk(KERN_WARNING
-+		"azt3328: unknown IRQ type (%x) occurred, please report!\n",
-+			which
++	snd_azf3328_dbgplay(
++	"azt3328: unknown IRQ type (%x) occurred, please report!\n",
++		which
 +	);
 +}
 +
@@ -282,7 +292,6 @@ Signed-off-by: Andreas Mohr <andi@lisas.de>
  	for (reg = 0; reg < AZF_IO_SIZE_GAME_PM / 2; ++reg)
  		chip->saved_regs_game[reg] = inw(chip->game_io + reg * 2);
  	for (reg = 0; reg < AZF_IO_SIZE_MPU_PM / 2; ++reg)
-
 
 --- azt3328.h.my_org	2008-06-14 08:18:51.000000000 +0200
 +++ azt3328.h	2008-06-22 14:03:30.000000000 +0200
