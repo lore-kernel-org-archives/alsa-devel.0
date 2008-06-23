@@ -1,19 +1,15 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: [Fwd: [Alsa-user] Intel Poulsbo(SCH) chipset does not
- recognize Adi 1986	codec under linux]
-Date: Mon, 23 Jun 2008 06:20:59 -0700
-Message-ID: <485FA33B.70202@cox.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Add AK4535 driver
+Date: Mon, 23 Jun 2008 14:51:28 +0100
+Message-ID: <1214229089-26991-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010301020403070202090700"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao102.cox.net (fed1rmmtao102.cox.net [68.230.241.44])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0471248BD
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id BDDDB103831
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jun 2008 15:21:02 +0200 (CEST)
-Received: from fed1rmimpo01.cox.net ([70.169.32.71]) by fed1rmmtao102.cox.net
-	(InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP id
-	<20080623132049.GPPG12709.fed1rmmtao102.cox.net@fed1rmimpo01.cox.net>
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2008 09:20:49 -0400
+	Mon, 23 Jun 2008 15:51:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,542 +19,818 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developers <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Graeme Gregory <gg@opensource.wolfsonmicro.com>, Richard Purdie <richard@openedhand.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Milan Plzik <milan.plzik@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010301020403070202090700
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Richard Purdie <richard@openedhand.com>
 
-Sent to wrong list.
+The AK4535 codec is included in some HP iPAQ systems.
 
---------------010301020403070202090700
-Content-Type: message/rfc822;
- name="[Alsa-user] Intel Poulsbo(SCH) chipset does not recognize Adi 1986	codec underlinux.eml"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename*0="[Alsa-user] Intel Poulsbo(SCH) chipset does not recognize Ad";
- filename*1="i 1986	codec under linux.eml"
+This driver was originally written by Richard Purdie and with some bug
+fixes from Milan Plzik.  While out of tree it has also had some
+mechanical updates for new APIs and current best practices from Liam
+Girdwood, Graeme Gregory and Mark Brown.
 
-X-Account-Key: account6
-X-Mozilla-Keys: 
-Return-Path: <alsa-user-bounces@lists.sourceforge.net>
-Received: from eastrmimpi04.cox.net ([68.1.16.122])
-          by eastrmmtai105.cox.net
-          (InterMail vM.7.08.02.01 201-2186-121-102-20070209) with ESMTP
-          id <20080623115349.PXWI22065.eastrmmtai105.cox.net@eastrmimpi04.cox.net>
-          for <ghjeold_i_mwee@cox.net>; Mon, 23 Jun 2008 07:53:49 -0400
-Received: from lists-outbound.sourceforge.net ([66.35.250.225])
-	by eastrmimpi04.cox.net with IMP
-	id hPtn1Z01u4sY9d601PtoX0; Mon, 23 Jun 2008 07:53:49 -0400
-X-VR-Score: -140.00
-X-CM-Score: 0.00
-Received: from sc8-sf-list2-new.sourceforge.net (sc8-sf-list2-new-b.sourceforge.net [10.3.1.94])
-	by sc8-sf-spam2.sourceforge.net (Postfix) with ESMTP
-	id F0C98FE85; Mon, 23 Jun 2008 04:53:46 -0700 (PDT)
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list2-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KAkc3-0006X8-Ff
-	for alsa-user@lists.sourceforge.net; Mon, 23 Jun 2008 04:53:35 -0700
-Received: from fk-out-0910.google.com ([209.85.128.188])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KAkcC-0003nK-7u
-	for alsa-user@lists.sourceforge.net; Mon, 23 Jun 2008 04:53:45 -0700
-Received: by fk-out-0910.google.com with SMTP id 18so2342127fkq.10
-	for <alsa-user@lists.sourceforge.net>;
-	Mon, 23 Jun 2008 04:53:42 -0700 (PDT)
-Received: by 10.78.176.20 with SMTP id y20mr2673913hue.71.1214222022410;
-	Mon, 23 Jun 2008 04:53:42 -0700 (PDT)
-Received: by 10.78.167.20 with HTTP; Mon, 23 Jun 2008 04:53:42 -0700 (PDT)
-Message-ID: <1e8a3dd0806230453g7c3545fq422d0edc8147fd1e@mail.gmail.com>
-Date: Mon, 23 Jun 2008 20:53:42 +0900
-From: "Kan-I Jyo" <cecilhsujp@gmail.com>
-To: alsa-user@lists.sourceforge.net
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_14072_14459219.1214222022410"
-X-Spam-Score: 0.0 (/)
-X-Spam-Report: Spam Filtering performed by sourceforge.net.
-	See http://spamassassin.org/tag/ for more details.
-	Report problems to
-	http://sf.net/tracker/?func=add&group_id=1&atid=200001
-	0.0 RCVD_BY_IP             Received by mail server with no name
-Subject: [Alsa-user] Intel Poulsbo(SCH) chipset does not recognize Adi 1986
-	codec under linux
-X-BeenThere: alsa-user@lists.sourceforge.net
-X-Mailman-Version: 2.1.8
-Precedence: list
-List-Id: Advanced Linux Sound Architecture - User
-	<alsa-user.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
+Signed-off-by: Richard Purdie <richard@openedhand.com>
+Signed-off-by: Milan Plzik <milan.plzik@gmail.com>
+Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Signed-off-by: Graeme Gregory <gg@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/Kconfig  |    3 +
+ sound/soc/codecs/Makefile |    2 +
+ sound/soc/codecs/ak4535.c |  696 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ak4535.h |   46 +++
+ 4 files changed, 747 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/ak4535.c
+ create mode 100644 sound/soc/codecs/ak4535.h
 
-------=_Part_14072_14459219.1214222022410
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Dear list,
-
-I have recently got a device with Intel's Poulsbo chipset and Adi 1986
-codec attatched.
-
-The Adi 1986 codec along with the Poulsbo chipset could been
-recognized by installing the SoundMAX driver under Windows XP.
-
-While switching to Linux, the snd_intel_hda is loaded but the Adi 1986
-codec could not been seen and there is no "codec#0" entry under
-/proc/asound/card0.
-
->From what I can see from dmesg, the hda_intel module had complained
-about "no codecs found!".
-
-<dmesg.txt>
--- snip --
-[   93.463277] PCI: Setting latency timer of device 0000:00:1b.0 to 64
-[   93.463286] Do fixup for Poulsbo <6>D0 or newer stepping
-[   93.463439] HDA snoop disabled, try to enable ... OK
-[   93.491624] hda-intel: no codecs found!
--- snip --
-
-I have attached both output of dmesg command the "lspci -nnvvvxxx"
-result along with this mail. Any comment would be greatly appreciated.
-
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f439138..1db04a2 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -2,6 +2,9 @@ config SND_SOC_AC97_CODEC
+ 	tristate
+ 	select SND_AC97_CODEC
+ 
++config SND_SOC_AK4535
++	tristate
++
+ config SND_SOC_UDA1380
+         tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index d9826f3..d7b97ab 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -1,4 +1,5 @@
+ snd-soc-ac97-objs := ac97.o
++snd-soc-ak4535-objs := ak4535.o
+ snd-soc-uda1380-objs := uda1380.o
+ snd-soc-wm8510-objs := wm8510.o
+ snd-soc-wm8731-objs := wm8731.o
+@@ -11,6 +12,7 @@ snd-soc-cs4270-objs := cs4270.o
+ snd-soc-tlv320aic3x-objs := tlv320aic3x.o
+ 
+ obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
++obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
+ obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
+ obj-$(CONFIG_SND_SOC_WM8510)	+= snd-soc-wm8510.o
+ obj-$(CONFIG_SND_SOC_WM8731)	+= snd-soc-wm8731.o
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+new file mode 100644
+index 0000000..469266e
+--- /dev/null
++++ b/sound/soc/codecs/ak4535.c
+@@ -0,0 +1,696 @@
++/*
++ * ak4535.c  --  AK4535 ALSA Soc Audio driver
++ *
++ * Copyright 2005 Openedhand Ltd.
++ *
++ * Author: Richard Purdie <richard@openedhand.com>
++ *
++ * Based on wm8753.c by Liam Girdwood
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++
++#include "ak4535.h"
++
++#define AUDIO_NAME "ak4535"
++#define AK4535_VERSION "0.3"
++
++struct snd_soc_codec_device soc_codec_dev_ak4535;
++
++/* codec private data */
++struct ak4535_priv {
++	unsigned int sysclk;
++};
++
++/*
++ * ak4535 register cache
++ */
++static const u16 ak4535_reg[AK4535_CACHEREGNUM] = {
++    0x0000, 0x0080, 0x0000, 0x0003,
++    0x0002, 0x0000, 0x0011, 0x0001,
++    0x0000, 0x0040, 0x0036, 0x0010,
++    0x0000, 0x0000, 0x0057, 0x0000,
++};
++
++/*
++ * read ak4535 register cache
++ */
++static inline unsigned int ak4535_read_reg_cache(struct snd_soc_codec *codec,
++	unsigned int reg)
++{
++	u16 *cache = codec->reg_cache;
++	if (reg >= AK4535_CACHEREGNUM)
++		return -1;
++	return cache[reg];
++}
++
++static inline unsigned int ak4535_read(struct snd_soc_codec *codec,
++	unsigned int reg)
++{
++	u8 data;
++	data = reg;
++
++	if (codec->hw_write(codec->control_data, &data, 1) != 1)
++		return -EIO;
++
++	if (codec->hw_read(codec->control_data, &data, 1) != 1)
++		return -EIO;
++
++	return data;
++};
++
++/*
++ * write ak4535 register cache
++ */
++static inline void ak4535_write_reg_cache(struct snd_soc_codec *codec,
++	u16 reg, unsigned int value)
++{
++	u16 *cache = codec->reg_cache;
++	if (reg >= AK4535_CACHEREGNUM)
++		return;
++	cache[reg] = value;
++}
++
++/*
++ * write to the AK4535 register space
++ */
++static int ak4535_write(struct snd_soc_codec *codec, unsigned int reg,
++	unsigned int value)
++{
++	u8 data[2];
++
++	/* data is
++	 *   D15..D8 AK4535 register offset
++	 *   D7...D0 register data
++	 */
++	data[0] = reg & 0xff;
++	data[1] = value & 0xff;
++
++	ak4535_write_reg_cache(codec, reg, value);
++	if (codec->hw_write(codec->control_data, data, 2) == 2)
++		return 0;
++	else
++		return -EIO;
++}
++
++static int ak4535_sync(struct snd_soc_codec *codec)
++{
++	u16 *cache = codec->reg_cache;
++	int i, r = 0;
++
++	for (i = 0; i < AK4535_CACHEREGNUM; i++)
++		r |= ak4535_write(codec, i, cache[i]);
++
++	return r;
++};
++
++static const char *ak4535_mono_gain[] = {"+6dB", "-17dB"};
++static const char *ak4535_mono_out[] = {"(L + R)/2", "Hi-Z"};
++static const char *ak4535_hp_out[] = {"Stereo", "Mono"};
++static const char *ak4535_deemp[] = {"44.1kHz", "Off", "48kHz", "32kHz"};
++static const char *ak4535_mic_select[] = {"Internal", "External"};
++
++static const struct soc_enum ak4535_enum[] = {
++	SOC_ENUM_SINGLE(AK4535_SIG1, 7, 2, ak4535_mono_gain),
++	SOC_ENUM_SINGLE(AK4535_SIG1, 6, 2, ak4535_mono_out),
++	SOC_ENUM_SINGLE(AK4535_MODE2, 2, 2, ak4535_hp_out),
++	SOC_ENUM_SINGLE(AK4535_DAC, 0, 4, ak4535_deemp),
++	SOC_ENUM_SINGLE(AK4535_MIC, 1, 2, ak4535_mic_select),
++};
++
++static const struct snd_kcontrol_new ak4535_snd_controls[] = {
++	SOC_SINGLE("ALC2 Switch", AK4535_SIG1, 1, 1, 0),
++	SOC_ENUM("Mono 1 Output", ak4535_enum[1]),
++	SOC_ENUM("Mono 1 Gain", ak4535_enum[0]),
++	SOC_ENUM("Headphone Output", ak4535_enum[2]),
++	SOC_ENUM("Playback Deemphasis", ak4535_enum[3]),
++	SOC_SINGLE("Bass Volume", AK4535_DAC, 2, 3, 0),
++	SOC_SINGLE("Mic Boost (+20dB) Switch", AK4535_MIC, 0, 1, 0),
++	SOC_ENUM("Mic Select", ak4535_enum[4]),
++	SOC_SINGLE("ALC Operation Time", AK4535_TIMER, 0, 3, 0),
++	SOC_SINGLE("ALC Recovery Time", AK4535_TIMER, 2, 3, 0),
++	SOC_SINGLE("ALC ZC Time", AK4535_TIMER, 4, 3, 0),
++	SOC_SINGLE("ALC 1 Switch", AK4535_ALC1, 5, 1, 0),
++	SOC_SINGLE("ALC 2 Switch", AK4535_ALC1, 6, 1, 0),
++	SOC_SINGLE("ALC Volume", AK4535_ALC2, 0, 127, 0),
++	SOC_SINGLE("Capture Volume", AK4535_PGA, 0, 127, 0),
++	SOC_SINGLE("Left Playback Volume", AK4535_LATT, 0, 127, 1),
++	SOC_SINGLE("Right Playback Volume", AK4535_RATT, 0, 127, 1),
++	SOC_SINGLE("AUX Bypass Volume", AK4535_VOL, 0, 15, 0),
++	SOC_SINGLE("Mic Sidetone Volume", AK4535_VOL, 4, 7, 0),
++};
++
++/* add non dapm controls */
++static int ak4535_add_controls(struct snd_soc_codec *codec)
++{
++	int err, i;
++
++	for (i = 0; i < ARRAY_SIZE(ak4535_snd_controls); i++) {
++		err = snd_ctl_add(codec->card,
++			snd_soc_cnew(&ak4535_snd_controls[i], codec, NULL));
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++/* Mono 1 Mixer */
++static const struct snd_kcontrol_new ak4535_mono1_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Mic Sidetone Switch", AK4535_SIG1, 4, 1, 0),
++	SOC_DAPM_SINGLE("Mono Playback Switch", AK4535_SIG1, 5, 1, 0),
++};
++
++/* Stereo Mixer */
++static const struct snd_kcontrol_new ak4535_stereo_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Mic Sidetone Switch", AK4535_SIG2, 4, 1, 0),
++	SOC_DAPM_SINGLE("Playback Switch", AK4535_SIG2, 7, 1, 0),
++	SOC_DAPM_SINGLE("Aux Bypass Switch", AK4535_SIG2, 5, 1, 0),
++};
++
++/* Input Mixer */
++static const struct snd_kcontrol_new ak4535_input_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Mic Capture Switch", AK4535_MIC, 2, 1, 0),
++	SOC_DAPM_SINGLE("Aux Capture Switch", AK4535_MIC, 5, 1, 0),
++};
++
++/* Input mux */
++static const struct snd_kcontrol_new ak4535_input_mux_control =
++	SOC_DAPM_ENUM("Input Select", ak4535_enum[4]);
++
++/* HP L switch */
++static const struct snd_kcontrol_new ak4535_hpl_control =
++	SOC_DAPM_SINGLE("Switch", AK4535_SIG2, 1, 1, 1);
++
++/* HP R switch */
++static const struct snd_kcontrol_new ak4535_hpr_control =
++	SOC_DAPM_SINGLE("Switch", AK4535_SIG2, 0, 1, 1);
++
++/* mono 2 switch */
++static const struct snd_kcontrol_new ak4535_mono2_control =
++	SOC_DAPM_SINGLE("Switch", AK4535_SIG1, 0, 1, 0);
++
++/* Line out switch */
++static const struct snd_kcontrol_new ak4535_line_control =
++	SOC_DAPM_SINGLE("Switch", AK4535_SIG2, 6, 1, 0);
++
++/* ak4535 dapm widgets */
++static const struct snd_soc_dapm_widget ak4535_dapm_widgets[] = {
++	SND_SOC_DAPM_MIXER("Stereo Mixer", SND_SOC_NOPM, 0, 0,
++		&ak4535_stereo_mixer_controls[0],
++		ARRAY_SIZE(ak4535_stereo_mixer_controls)),
++	SND_SOC_DAPM_MIXER("Mono1 Mixer", SND_SOC_NOPM, 0, 0,
++		&ak4535_mono1_mixer_controls[0],
++		ARRAY_SIZE(ak4535_mono1_mixer_controls)),
++	SND_SOC_DAPM_MIXER("Input Mixer", SND_SOC_NOPM, 0, 0,
++		&ak4535_input_mixer_controls[0],
++		ARRAY_SIZE(ak4535_input_mixer_controls)),
++	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
++		&ak4535_input_mux_control),
++	SND_SOC_DAPM_DAC("DAC", "Playback", AK4535_PM2, 0, 0),
++	SND_SOC_DAPM_SWITCH("Mono 2 Enable", SND_SOC_NOPM, 0, 0,
++		&ak4535_mono2_control),
++	/* speaker powersave bit */
++	SND_SOC_DAPM_PGA("Speaker Enable", AK4535_MODE2, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SWITCH("Line Out Enable", SND_SOC_NOPM, 0, 0,
++		&ak4535_line_control),
++	SND_SOC_DAPM_SWITCH("Left HP Enable", SND_SOC_NOPM, 0, 0,
++		&ak4535_hpl_control),
++	SND_SOC_DAPM_SWITCH("Right HP Enable", SND_SOC_NOPM, 0, 0,
++		&ak4535_hpr_control),
++	SND_SOC_DAPM_OUTPUT("LOUT"),
++	SND_SOC_DAPM_OUTPUT("HPL"),
++	SND_SOC_DAPM_OUTPUT("ROUT"),
++	SND_SOC_DAPM_OUTPUT("HPR"),
++	SND_SOC_DAPM_OUTPUT("SPP"),
++	SND_SOC_DAPM_OUTPUT("SPN"),
++	SND_SOC_DAPM_OUTPUT("MOUT1"),
++	SND_SOC_DAPM_OUTPUT("MOUT2"),
++	SND_SOC_DAPM_OUTPUT("MICOUT"),
++	SND_SOC_DAPM_ADC("ADC", "Capture", AK4535_PM1, 0, 0),
++	SND_SOC_DAPM_PGA("Spk Amp", AK4535_PM2, 3, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("HP R Amp", AK4535_PM2, 1, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("HP L Amp", AK4535_PM2, 2, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Mic", AK4535_PM1, 1, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Line Out", AK4535_PM1, 4, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Mono Out", AK4535_PM1, 3, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("AUX In", AK4535_PM1, 2, 0, NULL, 0),
++
++	SND_SOC_DAPM_MICBIAS("Mic Int Bias", AK4535_MIC, 3, 0),
++	SND_SOC_DAPM_MICBIAS("Mic Ext Bias", AK4535_MIC, 4, 0),
++	SND_SOC_DAPM_INPUT("MICIN"),
++	SND_SOC_DAPM_INPUT("MICEXT"),
++	SND_SOC_DAPM_INPUT("AUX"),
++	SND_SOC_DAPM_INPUT("MIN"),
++	SND_SOC_DAPM_INPUT("AIN"),
++};
++
++static const struct snd_soc_dapm_route audio_map[] = {
++	/*stereo mixer */
++	{"Stereo Mixer", "Playback Switch", "DAC"},
++	{"Stereo Mixer", "Mic Sidetone Switch", "Mic"},
++	{"Stereo Mixer", "Aux Bypass Switch", "AUX In"},
++
++	/* mono1 mixer */
++	{"Mono1 Mixer", "Mic Sidetone Switch", "Mic"},
++	{"Mono1 Mixer", "Mono Playback Switch", "DAC"},
++
++	/* Mic */
++	{"Mic", NULL, "AIN"},
++	{"Input Mux", "Internal", "Mic Int Bias"},
++	{"Input Mux", "External", "Mic Ext Bias"},
++	{"Mic Int Bias", NULL, "MICIN"},
++	{"Mic Ext Bias", NULL, "MICEXT"},
++	{"MICOUT", NULL, "Input Mux"},
++
++	/* line out */
++	{"LOUT", NULL, "Line Out Enable"},
++	{"ROUT", NULL, "Line Out Enable"},
++	{"Line Out Enable", "Switch", "Line Out"},
++	{"Line Out", NULL, "Stereo Mixer"},
++
++	/* mono1 out */
++	{"MOUT1", NULL, "Mono Out"},
++	{"Mono Out", NULL, "Mono1 Mixer"},
++
++	/* left HP */
++	{"HPL", NULL, "Left HP Enable"},
++	{"Left HP Enable", "Switch", "HP L Amp"},
++	{"HP L Amp", NULL, "Stereo Mixer"},
++
++	/* right HP */
++	{"HPR", NULL, "Right HP Enable"},
++	{"Right HP Enable", "Switch", "HP R Amp"},
++	{"HP R Amp", NULL, "Stereo Mixer"},
++
++	/* speaker */
++	{"SPP", NULL, "Speaker Enable"},
++	{"SPN", NULL, "Speaker Enable"},
++	{"Speaker Enable", "Switch", "Spk Amp"},
++	{"Spk Amp", NULL, "MIN"},
++
++	/* mono 2 */
++	{"MOUT2", NULL, "Mono 2 Enable"},
++	{"Mono 2 Enable", "Switch", "Stereo Mixer"},
++
++	/* Aux In */
++	{"Aux In", NULL, "AUX"},
++
++	/* ADC */
++	{"ADC", NULL, "Input Mixer"},
++	{"Input Mixer", "Mic Capture Switch", "Mic"},
++	{"Input Mixer", "Aux Capture Switch", "Aux In"},
++};
++
++static int ak4535_add_widgets(struct snd_soc_codec *codec)
++{
++	snd_soc_dapm_new_controls(codec, ak4535_dapm_widgets,
++				  ARRAY_SIZE(ak4535_dapm_widgets));
++
++	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
++
++	snd_soc_dapm_new_widgets(codec);
++	return 0;
++}
++
++static int ak4535_set_dai_sysclk(struct snd_soc_codec_dai *codec_dai,
++	int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct ak4535_priv *ak4535 = codec->private_data;
++
++	ak4535->sysclk = freq;
++	return 0;
++}
++
++static int ak4535_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_codec *codec = socdev->codec;
++	struct ak4535_priv *ak4535 = codec->private_data;
++	u8 mode2 = ak4535_read_reg_cache(codec, AK4535_MODE2) & ~(0x3 << 5);
++	int rate = params_rate(params), fs = 256;
++
++	if (rate)
++		fs = ak4535->sysclk / rate;
++
++	/* set fs */
++	switch (fs) {
++	case 1024:
++		mode2 |= (0x2 << 5);
++		break;
++	case 512:
++		mode2 |= (0x1 << 5);
++		break;
++	case 256:
++		break;
++	}
++
++	/* set rate */
++	ak4535_write(codec, AK4535_MODE2, mode2);
++	return 0;
++}
++
++static int ak4535_set_dai_fmt(struct snd_soc_codec_dai *codec_dai,
++		unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	u8 mode1 = 0;
++
++	/* interface format */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		mode1 = 0x0002;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		mode1 = 0x0001;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* use 32 fs for BCLK to save power */
++	mode1 |= 0x4;
++
++	ak4535_write(codec, AK4535_MODE1, mode1);
++	return 0;
++}
++
++static int ak4535_mute(struct snd_soc_codec_dai *dai, int mute)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	u16 mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC) & 0xffdf;
++	if (!mute)
++		ak4535_write(codec, AK4535_DAC, mute_reg);
++	else
++		ak4535_write(codec, AK4535_DAC, mute_reg | 0x20);
++	return 0;
++}
++
++static int ak4535_set_bias_level(struct snd_soc_codec *codec,
++	enum snd_soc_bias_level level)
++{
++	u16 i;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		ak4535_mute(codec->dai, 0);
++		break;
++	case SND_SOC_BIAS_PREPARE:
++		ak4535_mute(codec->dai, 1);
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		i = ak4535_read_reg_cache(codec, AK4535_PM1);
++		ak4535_write(codec, AK4535_PM1, i | 0x80);
++		i = ak4535_read_reg_cache(codec, AK4535_PM2);
++		ak4535_write(codec, AK4535_PM2, i & (~0x80));
++		break;
++	case SND_SOC_BIAS_OFF:
++		i = ak4535_read_reg_cache(codec, AK4535_PM1);
++		ak4535_write(codec, AK4535_PM1, i & (~0x80));
++		break;
++	}
++	codec->bias_level = level;
++	return 0;
++}
++
++#define AK4535_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
++		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
++		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
++
++struct snd_soc_codec_dai ak4535_dai = {
++	.name = "AK4535",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = AK4535_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = AK4535_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
++	.ops = {
++		.hw_params = ak4535_hw_params,
++	},
++	.dai_ops = {
++		.set_fmt = ak4535_set_dai_fmt,
++		.digital_mute = ak4535_mute,
++		.set_sysclk = ak4535_set_dai_sysclk,
++	},
++};
++EXPORT_SYMBOL_GPL(ak4535_dai);
++
++static int ak4535_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	ak4535_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	return 0;
++}
++
++static int ak4535_resume(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++	ak4535_sync(codec);
++	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	ak4535_set_bias_level(codec, codec->suspend_bias_level);
++	return 0;
++}
++
++/*
++ * initialise the AK4535 driver
++ * register the mixer and dsp interfaces with the kernel
++ */
++static int ak4535_init(struct snd_soc_device *socdev)
++{
++	struct snd_soc_codec *codec = socdev->codec;
++	int ret = 0;
++
++	codec->name = "AK4535";
++	codec->owner = THIS_MODULE;
++	codec->read = ak4535_read_reg_cache;
++	codec->write = ak4535_write;
++	codec->set_bias_level = ak4535_set_bias_level;
++	codec->dai = &ak4535_dai;
++	codec->num_dai = 1;
++	codec->reg_cache_size = ARRAY_SIZE(ak4535_reg);
++	codec->reg_cache = kmemdup(ak4535_reg, sizeof(ak4535_reg), GFP_KERNEL);
++
++	if (codec->reg_cache == NULL)
++		return -ENOMEM;
++
++	/* register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		printk(KERN_ERR "ak4535: failed to create pcms\n");
++		goto pcm_err;
++	}
++
++	/* power on device */
++	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++
++	ak4535_add_controls(codec);
++	ak4535_add_widgets(codec);
++	ret = snd_soc_register_card(socdev);
++	if (ret < 0) {
++		printk(KERN_ERR "ak4535: failed to register card\n");
++		goto card_err;
++	}
++
++	return ret;
++
++card_err:
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++pcm_err:
++	kfree(codec->reg_cache);
++
++	return ret;
++}
++
++static struct snd_soc_device *ak4535_socdev;
++
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++
++#define I2C_DRIVERID_AK4535 0xfefe /* liam -  need a proper id */
++
++static unsigned short normal_i2c[] = { 0, I2C_CLIENT_END };
++
++/* Magic definition of all other variables and things */
++I2C_CLIENT_INSMOD;
++
++static struct i2c_driver ak4535_i2c_driver;
++static struct i2c_client client_template;
++
++/* If the i2c layer weren't so broken, we could pass this kind of data
++   around */
++static int ak4535_codec_probe(struct i2c_adapter *adap, int addr, int kind)
++{
++	struct snd_soc_device *socdev = ak4535_socdev;
++	struct ak4535_setup_data *setup = socdev->codec_data;
++	struct snd_soc_codec *codec = socdev->codec;
++	struct i2c_client *i2c;
++	int ret;
++
++	if (addr != setup->i2c_address)
++		return -ENODEV;
++
++	client_template.adapter = adap;
++	client_template.addr = addr;
++
++	i2c = kmemdup(&client_template, sizeof(client_template), GFP_KERNEL);
++	if (i2c == NULL) {
++		kfree(codec);
++		return -ENOMEM;
++	}
++	i2c_set_clientdata(i2c, codec);
++	codec->control_data = i2c;
++
++	ret = i2c_attach_client(i2c);
++	if (ret < 0) {
++		printk(KERN_ERR "failed to attach codec at addr %x\n", addr);
++		goto err;
++	}
++
++	ret = ak4535_init(socdev);
++	if (ret < 0) {
++		printk(KERN_ERR "failed to initialise AK4535\n");
++		goto err;
++	}
++	return ret;
++
++err:
++	kfree(codec);
++	kfree(i2c);
++	return ret;
++}
++
++static int ak4535_i2c_detach(struct i2c_client *client)
++{
++	struct snd_soc_codec *codec = i2c_get_clientdata(client);
++	i2c_detach_client(client);
++	kfree(codec->reg_cache);
++	kfree(client);
++	return 0;
++}
++
++static int ak4535_i2c_attach(struct i2c_adapter *adap)
++{
++	return i2c_probe(adap, &addr_data, ak4535_codec_probe);
++}
++
++/* corgi i2c codec control layer */
++static struct i2c_driver ak4535_i2c_driver = {
++	.driver = {
++		.name = "AK4535 I2C Codec",
++		.owner = THIS_MODULE,
++	},
++	.id =             I2C_DRIVERID_AK4535,
++	.attach_adapter = ak4535_i2c_attach,
++	.detach_client =  ak4535_i2c_detach,
++	.command =        NULL,
++};
++
++static struct i2c_client client_template = {
++	.name =   "AK4535",
++	.driver = &ak4535_i2c_driver,
++};
++#endif
++
++static int ak4535_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct ak4535_setup_data *setup;
++	struct snd_soc_codec *codec;
++	struct ak4535_priv *ak4535;
++	int ret = 0;
++
++	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
++
++	setup = socdev->codec_data;
++	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
++	if (codec == NULL)
++		return -ENOMEM;
++
++	ak4535 = kzalloc(sizeof(struct ak4535_priv), GFP_KERNEL);
++	if (ak4535 == NULL) {
++		kfree(codec);
++		return -ENOMEM;
++	}
++
++	codec->private_data = ak4535;
++	socdev->codec = codec;
++	mutex_init(&codec->mutex);
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
++	ak4535_socdev = socdev;
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	if (setup->i2c_address) {
++		normal_i2c[0] = setup->i2c_address;
++		codec->hw_write = (hw_write_t)i2c_master_send;
++		codec->hw_read = (hw_read_t)i2c_master_recv;
++		ret = i2c_add_driver(&ak4535_i2c_driver);
++		if (ret != 0)
++			printk(KERN_ERR "can't add i2c driver");
++	}
++#else
++	/* Add other interfaces here */
++#endif
++	return ret;
++}
++
++/* power down chip */
++static int ak4535_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->codec;
++
++	if (codec->control_data)
++		ak4535_set_bias_level(codec, SND_SOC_BIAS_OFF);
++
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	i2c_del_driver(&ak4535_i2c_driver);
++#endif
++	kfree(codec->private_data);
++	kfree(codec);
++
++	return 0;
++}
++
++struct snd_soc_codec_device soc_codec_dev_ak4535 = {
++	.probe = 	ak4535_probe,
++	.remove = 	ak4535_remove,
++	.suspend = 	ak4535_suspend,
++	.resume =	ak4535_resume,
++};
++EXPORT_SYMBOL_GPL(soc_codec_dev_ak4535);
++
++MODULE_DESCRIPTION("Soc AK4535 driver");
++MODULE_AUTHOR("Richard Purdie");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/ak4535.h b/sound/soc/codecs/ak4535.h
+new file mode 100644
+index 0000000..fc686dd
+--- /dev/null
++++ b/sound/soc/codecs/ak4535.h
+@@ -0,0 +1,46 @@
++/*
++ * ak4535.h  --  AK4535 Soc Audio driver
++ *
++ * Copyright 2005 Openedhand Ltd.
++ *
++ * Author: Richard Purdie <richard@openedhand.com>
++ *
++ * Based on wm8753.h
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _AK4535_H
++#define _AK4535_H
++
++/* AK4535 register space */
++
++#define AK4535_PM1		0x0
++#define AK4535_PM2		0x1
++#define AK4535_SIG1		0x2
++#define AK4535_SIG2		0x3
++#define AK4535_MODE1		0x4
++#define AK4535_MODE2		0x5
++#define AK4535_DAC		0x6
++#define AK4535_MIC		0x7
++#define AK4535_TIMER		0x8
++#define AK4535_ALC1		0x9
++#define AK4535_ALC2		0xa
++#define AK4535_PGA		0xb
++#define AK4535_LATT		0xc
++#define AK4535_RATT		0xd
++#define AK4535_VOL		0xe
++#define AK4535_STATUS		0xf
++
++#define AK4535_CACHEREGNUM 	0x10
++
++struct ak4535_setup_data {
++	unsigned short i2c_address;
++};
++
++extern struct snd_soc_codec_dai ak4535_dai;
++extern struct snd_soc_codec_device soc_codec_dev_ak4535;
++
++#endif
 -- 
-Sincerely,
-
-Jyo
-
-------=_Part_14072_14459219.1214222022410
-Content-Type: text/plain; name=lspci_nnvvvxxxx.txt
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fhsyl2480
-Content-Disposition: attachment; filename=lspci_nnvvvxxxx.txt
-
-MDA6MWIuMCBBdWRpbyBkZXZpY2UgWzA0MDNdOiBJbnRlbCBDb3Jwb3JhdGlvbiBTeXN0ZW0gQ29u
-dHJvbGxlciBIdWIgKFNDSCBQb3Vsc2JvKSBIRCBBdWRpbyBDb250cm9sbGVyIFs4MDg2OjgxMWJd
-IChyZXYgMDYpCglTdWJzeXN0ZW06IEludGVsIENvcnBvcmF0aW9uIFVua25vd24gZGV2aWNlIFs4
-MDg2OjgxMTldCglDb250cm9sOiBJL08tIE1lbSsgQnVzTWFzdGVyLSBTcGVjQ3ljbGUtIE1lbVdJ
-TlYtIFZHQVNub29wLSBQYXJFcnItIFN0ZXBwaW5nLSBTRVJSLSBGYXN0QjJCLQoJU3RhdHVzOiBD
-YXArIDY2TUh6LSBVREYtIEZhc3RCMkItIFBhckVyci0gREVWU0VMPWZhc3QgPlRBYm9ydC0gPFRB
-Ym9ydC0gPE1BYm9ydC0gPlNFUlItIDxQRVJSLQoJSW50ZXJydXB0OiBwaW4gQSByb3V0ZWQgdG8g
-SVJRIDE3CglSZWdpb24gMDogTWVtb3J5IGF0IGRmZjVjMDAwICg2NC1iaXQsIG5vbi1wcmVmZXRj
-aGFibGUpIFtzaXplPTE2S10KCUNhcGFiaWxpdGllczogWzUwXSBQb3dlciBNYW5hZ2VtZW50IHZl
-cnNpb24gMgoJCUZsYWdzOiBQTUVDbGstIERTSS0gRDEtIEQyLSBBdXhDdXJyZW50PTBtQSBQTUUo
-RDArLEQxLSxEMi0sRDNob3QrLEQzY29sZC0pCgkJU3RhdHVzOiBEMCBQTUUtRW5hYmxlLSBEU2Vs
-PTAgRFNjYWxlPTAgUE1FLQoJQ2FwYWJpbGl0aWVzOiBbNzBdIEV4cHJlc3MgVW5rbm93biB0eXBl
-IElSUSAwCgkJRGV2aWNlOiBTdXBwb3J0ZWQ6IE1heFBheWxvYWQgMTI4IGJ5dGVzLCBQaGFudEZ1
-bmMgMCwgRXh0VGFnLQoJCURldmljZTogTGF0ZW5jeSBMMHMgPDY0bnMsIEwxIDwxdXMKCQlEZXZp
-Y2U6IEVycm9yczogQ29ycmVjdGFibGUtIE5vbi1GYXRhbC0gRmF0YWwtIFVuc3VwcG9ydGVkLQoJ
-CURldmljZTogUmx4ZE9yZC0gRXh0VGFnLSBQaGFudEZ1bmMtIEF1eFB3ci0gTm9Tbm9vcC0KCQlE
-ZXZpY2U6IE1heFBheWxvYWQgMTI4IGJ5dGVzLCBNYXhSZWFkUmVxIDEyOCBieXRlcwoJCUxpbms6
-IFN1cHBvcnRlZCBTcGVlZCB1bmtub3duLCBXaWR0aCB4MCwgQVNQTSB1bmtub3duLCBQb3J0IDAK
-CQlMaW5rOiBMYXRlbmN5IEwwcyA8NjRucywgTDEgPDF1cwoJCUxpbms6IEFTUE0gTDBzIEVuYWJs
-ZWQgQ29tbUNsay0gRXh0U3luY2gtCgkJTGluazogU3BlZWQgdW5rbm93biwgV2lkdGggeDAKMDA6
-IDg2IDgwIDFiIDgxIDAyIDAwIDEwIDAwIDA2IDAwIDAzIDA0IDA4IDAwIDAwIDAwCjEwOiAwNCBj
-MCBmNSBkZiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAoyMDogMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgODYgODAgMTkgODEKMzA6IDAwIDAwIDAwIDAwIDUw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDBhIDAxIDAwIDAwCjQwOiAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCA4MCAwMCAwMAo1MDogMDEgNzAgMDIgNDggMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKNjA6IDA1IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwCjcwOiAxMCAwMCA5MSAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMAo4MDogMDEgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAKOTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwCmEwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApi
-MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYzA6IDAw
-IDAwIDAwIDBkIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmQwOiAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAplMDogMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZjA6IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDg2IDBmIDA2IDAwIDAyIDAwIDAwIDAwCgo=
-------=_Part_14072_14459219.1214222022410
-Content-Type: text/plain; name=dmesg.txt
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fht0bufa1
-Content-Disposition: attachment; filename=dmesg.txt
-
-WyAgICAwLjAwMDAwMF0gTGludXggdmVyc2lvbiAyLjYuMjQtMTYtbHBpYSAoYnVpbGRkQG1vbHli
-ZGVudW0pIChnY2MgdmVyc2lvbiA0LjIuMyAoVWJ1bnR1IDQuMi4zLTJ1YnVudHU3KSkgIzEgU01Q
-IFRodSBBcHIgMTAgMTM6MDA6MjQgVVRDIDIwMDggKFVub2ZmaWNpYWwpClsgICAgMC4wMDAwMDBd
-IEJJT1MtcHJvdmlkZWQgcGh5c2ljYWwgUkFNIG1hcDoKWyAgICAwLjAwMDAwMF0gIEJJT1MtZTgy
-MDogMDAwMDAwMDAwMDAwMDAwMCAtIDAwMDAwMDAwMDAwOWZjMDAgKHVzYWJsZSkKWyAgICAwLjAw
-MDAwMF0gIEJJT1MtZTgyMDogMDAwMDAwMDAwMDA5ZmMwMCAtIDAwMDAwMDAwMDAwYTAwMDAgKHJl
-c2VydmVkKQpbICAgIDAuMDAwMDAwXSAgQklPUy1lODIwOiAwMDAwMDAwMDAwMGUwMDAwIC0gMDAw
-MDAwMDAwMDEwMDAwMCAocmVzZXJ2ZWQpClsgICAgMC4wMDAwMDBdICBCSU9TLWU4MjA6IDAwMDAw
-MDAwMDAxMDAwMDAgLSAwMDAwMDAwMDNmYTkwMDAwICh1c2FibGUpClsgICAgMC4wMDAwMDBdICBC
-SU9TLWU4MjA6IDAwMDAwMDAwM2ZhOTAwMDAgLSAwMDAwMDAwMDNmYWEwMDAwIChyZXNlcnZlZCkK
-WyAgICAwLjAwMDAwMF0gIEJJT1MtZTgyMDogMDAwMDAwMDAzZmFhMDAwMCAtIDAwMDAwMDAwM2Zh
-YWUwMDAgKEFDUEkgZGF0YSkKWyAgICAwLjAwMDAwMF0gIEJJT1MtZTgyMDogMDAwMDAwMDAzZmFh
-ZTAwMCAtIDAwMDAwMDAwM2ZhZTgwMDAgKEFDUEkgTlZTKQpbICAgIDAuMDAwMDAwXSAgQklPUy1l
-ODIwOiAwMDAwMDAwMDNmYWU4MDAwIC0gMDAwMDAwMDAzZmMwMDAwMCAocmVzZXJ2ZWQpClsgICAg
-MC4wMDAwMDBdICBCSU9TLWU4MjA6IDAwMDAwMDAwZmVlMDAwMDAgLSAwMDAwMDAwMGZlZTAxMDAw
-IChyZXNlcnZlZCkKWyAgICAwLjAwMDAwMF0gIEJJT1MtZTgyMDogMDAwMDAwMDBmZmYwMDAwMCAt
-IDAwMDAwMDAxMDAwMDAwMDAgKHJlc2VydmVkKQpbICAgIDAuMDAwMDAwXSBXYXJuaW5nIG9ubHkg
-ODk2TUIgd2lsbCBiZSB1c2VkLgpbICAgIDAuMDAwMDAwXSBVc2UgYSBISUdITUVNIGVuYWJsZWQg
-a2VybmVsLgpbICAgIDAuMDAwMDAwXSA4OTZNQiBMT1dNRU0gYXZhaWxhYmxlLgpbICAgIDAuMDAw
-MDAwXSBmb3VuZCBTTVAgTVAtdGFibGUgYXQgMDAwZmY3ODAKWyAgICAwLjAwMDAwMF0gRW50ZXJp
-bmcgYWRkX2FjdGl2ZV9yYW5nZSgwLCAwLCAyMjkzNzYpIDAgZW50cmllcyBvZiAyNTYgdXNlZApb
-ICAgIDAuMDAwMDAwXSBab25lIFBGTiByYW5nZXM6ClsgICAgMC4wMDAwMDBdICAgRE1BICAgICAg
-ICAgICAgIDAgLT4gICAgIDQwOTYKWyAgICAwLjAwMDAwMF0gICBOb3JtYWwgICAgICAgNDA5NiAt
-PiAgIDIyOTM3NgpbICAgIDAuMDAwMDAwXSBNb3ZhYmxlIHpvbmUgc3RhcnQgUEZOIGZvciBlYWNo
-IG5vZGUKWyAgICAwLjAwMDAwMF0gZWFybHlfbm9kZV9tYXBbMV0gYWN0aXZlIFBGTiByYW5nZXMK
-WyAgICAwLjAwMDAwMF0gICAgIDA6ICAgICAgICAwIC0+ICAgMjI5Mzc2ClsgICAgMC4wMDAwMDBd
-IE9uIG5vZGUgMCB0b3RhbHBhZ2VzOiAyMjkzNzYKWyAgICAwLjAwMDAwMF0gICBETUEgem9uZTog
-MzIgcGFnZXMgdXNlZCBmb3IgbWVtbWFwClsgICAgMC4wMDAwMDBdICAgRE1BIHpvbmU6IDAgcGFn
-ZXMgcmVzZXJ2ZWQKWyAgICAwLjAwMDAwMF0gICBETUEgem9uZTogNDA2NCBwYWdlcywgTElGTyBi
-YXRjaDowClsgICAgMC4wMDAwMDBdICAgTm9ybWFsIHpvbmU6IDE3NjAgcGFnZXMgdXNlZCBmb3Ig
-bWVtbWFwClsgICAgMC4wMDAwMDBdICAgTm9ybWFsIHpvbmU6IDIyMzUyMCBwYWdlcywgTElGTyBi
-YXRjaDozMQpbICAgIDAuMDAwMDAwXSAgIE1vdmFibGUgem9uZTogMCBwYWdlcyB1c2VkIGZvciBt
-ZW1tYXAKWyAgICAwLjAwMDAwMF0gRE1JIHByZXNlbnQuClsgICAgMC4wMDAwMDBdIEludGVsIE11
-bHRpUHJvY2Vzc29yIFNwZWNpZmljYXRpb24gdjEuMQpbICAgIDAuMDAwMDAwXSAgICAgVmlydHVh
-bCBXaXJlIGNvbXBhdGliaWxpdHkgbW9kZS4KWyAgICAwLjAwMDAwMF0gT0VNIElEOiBJbnRlbCAg
-ICBQcm9kdWN0IElEOiBQb3Vsc2JvICAgICAgQVBJQyBhdDogMHhGRUUwMDAwMApbICAgIDAuMDAw
-MDAwXSBQcm9jZXNzb3IgIzAgNjoxMiBBUElDIHZlcnNpb24gMjAKWyAgICAwLjAwMDAwMF0gSS9P
-IEFQSUMgIzEgVmVyc2lvbiAzMiBhdCAweEZFQzAwMDAwLgpbICAgIDAuMDAwMDAwXSBFbmFibGlu
-ZyBBUElDIG1vZGU6ICBGbGF0LiAgVXNpbmcgMSBJL08gQVBJQ3MKWyAgICAwLjAwMDAwMF0gUHJv
-Y2Vzc29yczogMQpbICAgIDAuMDAwMDAwXSBBbGxvY2F0aW5nIFBDSSByZXNvdXJjZXMgc3RhcnRp
-bmcgYXQgNDAwMDAwMDAgKGdhcDogM2ZjMDAwMDA6YmYyMDAwMDApClsgICAgMC4wMDAwMDBdIHN3
-c3VzcDogUmVnaXN0ZXJlZCBub3NhdmUgbWVtb3J5IHJlZ2lvbjogMDAwMDAwMDAwMDA5ZjAwMCAt
-IDAwMDAwMDAwMDAwYTAwMDAKWyAgICAwLjAwMDAwMF0gc3dzdXNwOiBSZWdpc3RlcmVkIG5vc2F2
-ZSBtZW1vcnkgcmVnaW9uOiAwMDAwMDAwMDAwMGEwMDAwIC0gMDAwMDAwMDAwMDBlMDAwMApbICAg
-IDAuMDAwMDAwXSBzd3N1c3A6IFJlZ2lzdGVyZWQgbm9zYXZlIG1lbW9yeSByZWdpb246IDAwMDAw
-MDAwMDAwZTAwMDAgLSAwMDAwMDAwMDAwMTAwMDAwClsgICAgMC4wMDAwMDBdIEJ1aWx0IDEgem9u
-ZWxpc3RzIGluIFpvbmUgb3JkZXIsIG1vYmlsaXR5IGdyb3VwaW5nIG9uLiAgVG90YWwgcGFnZXM6
-IDIyNzU4NApbICAgIDAuMDAwMDAwXSBLZXJuZWwgY29tbWFuZCBsaW5lOiBpbml0cmQ9aW5pdHJk
-MS5pbWcgYm9vdD11c2IgQk9PVF9JTUFHRT1saW51eDEgYWNwaT1vZmYKWyAgICAwLjAwMDAwMF0g
-bWFwcGVkIEFQSUMgdG8gZmZmZmIwMDAgKGZlZTAwMDAwKQpbICAgIDAuMDAwMDAwXSBtYXBwZWQg
-SU9BUElDIHRvIGZmZmZhMDAwIChmZWMwMDAwMCkKWyAgICAwLjAwMDAwMF0gRW5hYmxpbmcgZmFz
-dCBGUFUgc2F2ZSBhbmQgcmVzdG9yZS4uLiBkb25lLgpbICAgIDAuMDAwMDAwXSBFbmFibGluZyB1
-bm1hc2tlZCBTSU1EIEZQVSBleGNlcHRpb24gc3VwcG9ydC4uLiBkb25lLgpbICAgIDAuMDAwMDAw
-XSBJbml0aWFsaXppbmcgQ1BVIzAKWyAgICAwLjAwMDAwMF0gUElEIGhhc2ggdGFibGUgZW50cmll
-czogNDA5NiAob3JkZXI6IDEyLCAxNjM4NCBieXRlcykKWyAgICAwLjAwMDAwMF0gRGV0ZWN0ZWQg
-MTU5OS45NTAgTUh6IHByb2Nlc3Nvci4KWyAgIDYwLjA0MTc1Ml0gQ29uc29sZTogY29sb3VyIFZH
-QSsgODB4MjUKWyAgIDYwLjA0MTc1OF0gY29uc29sZSBbdHR5MF0gZW5hYmxlZApbICAgNjAuMDQ1
-MzMyXSBEZW50cnkgY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAxMzEwNzIgKG9yZGVyOiA3LCA1
-MjQyODggYnl0ZXMpClsgICA2MC4wNDYyOTddIElub2RlLWNhY2hlIGhhc2ggdGFibGUgZW50cmll
-czogNjU1MzYgKG9yZGVyOiA2LCAyNjIxNDQgYnl0ZXMpClsgICA2MC4wNzM5MzldIE1lbW9yeTog
-OTAyMjM2ay85MTc1MDRrIGF2YWlsYWJsZSAoMjA0NGsga2VybmVsIGNvZGUsIDE0NzQ0ayByZXNl
-cnZlZCwgOTc1ayBkYXRhLCAyNjhrIGluaXQsIDBrIGhpZ2htZW0pClsgICA2MC4wNzQwNTldIHZp
-cnR1YWwga2VybmVsIG1lbW9yeSBsYXlvdXQ6ClsgICA2MC4wNzQwNjFdICAgICBmaXhtYXAgIDog
-MHhmZmZiMzAwMCAtIDB4ZmZmZmYwMDAgICAoIDMwNCBrQikKWyAgIDYwLjA3NDA2M10gICAgIHZt
-YWxsb2MgOiAweGY4ODAwMDAwIC0gMHhmZmZiMTAwMCAgICggMTE5IE1CKQpbICAgNjAuMDc0MDY2
-XSAgICAgbG93bWVtICA6IDB4YzAwMDAwMDAgLSAweGY4MDAwMDAwICAgKCA4OTYgTUIpClsgICA2
-MC4wNzQwNjhdICAgICAgIC5pbml0IDogMHhjMDNmOTAwMCAtIDB4YzA0M2MwMDAgICAoIDI2OCBr
-QikKWyAgIDYwLjA3NDA3MF0gICAgICAgLmRhdGEgOiAweGMwMmZmMTFiIC0gMHhjMDNmMmQyNCAg
-ICggOTc1IGtCKQpbICAgNjAuMDc0MDcyXSAgICAgICAudGV4dCA6IDB4YzAxMDAwMDAgLSAweGMw
-MmZmMTFiICAgKDIwNDQga0IpClsgICA2MC4wNzQ1OTBdIENoZWNraW5nIGlmIHRoaXMgcHJvY2Vz
-c29yIGhvbm91cnMgdGhlIFdQIGJpdCBldmVuIGluIHN1cGVydmlzb3IgbW9kZS4uLiBPay4KWyAg
-IDYwLjA3NDc5M10gU0xVQjogR2Vuc2xhYnM9MTEsIEhXYWxpZ249NjQsIE9yZGVyPTAtMSwgTWlu
-T2JqZWN0cz00LCBDUFVzPTEsIE5vZGVzPTEKWyAgIDYwLjE1NDkyN10gQ2FsaWJyYXRpbmcgZGVs
-YXkgdXNpbmcgdGltZXIgc3BlY2lmaWMgcm91dGluZS4uIDMyMDUuOTQgQm9nb01JUFMgKGxwaj02
-NDExODk3KQpbICAgNjAuMTU1MTU0XSBNb3VudC1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDUx
-MgpbICAgNjAuMTU1MzgwXSBDUFU6IEFmdGVyIGdlbmVyaWMgaWRlbnRpZnksIGNhcHM6IGFmZTlm
-YmZmIDIwMTAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwNDBlM2JkIDAwMDAwMDAwIDAwMDAwMDAx
-IDAwMDAwMDAwClsgICA2MC4xNTUzOTNdIG1vbml0b3IvbXdhaXQgZmVhdHVyZSBwcmVzZW50Lgpb
-ICAgNjAuMTU1NDY3XSB1c2luZyBtd2FpdCBpbiBpZGxlIHRocmVhZHMuClsgICA2MC4xNTU1NDNd
-IENQVTogTDEgSSBjYWNoZTogMzJLLCBMMSBEIGNhY2hlOiAyNEsKWyAgIDYwLjE1NTY2MV0gQ1BV
-OiBMMiBjYWNoZTogNTEySwpbICAgNjAuMTU1NzMzXSBDUFU6IEFmdGVyIGFsbCBpbml0cywgY2Fw
-czogYWZlOWZiZmYgMjAxMDAwMDAgMDAwMDAwMDAgMDAwMDM5NDAgMDA0MGUzYmQgMDAwMDAwMDAg
-MDAwMDAwMDEgMDAwMDAwMDAKWyAgIDYwLjE1NTc0N10gQ29tcGF0IHZEU08gbWFwcGVkIHRvIGZm
-ZmZlMDAwLgpbICAgNjAuMTU1ODM1XSBDaGVja2luZyAnaGx0JyBpbnN0cnVjdGlvbi4uLiBPSy4K
-WyAgIDYwLjE3MTM2OV0gU01QIGFsdGVybmF0aXZlczogc3dpdGNoaW5nIHRvIFVQIGNvZGUKWyAg
-IDYwLjE3MzExMF0gRnJlZWluZyBTTVAgYWx0ZXJuYXRpdmVzOiAxMWsgZnJlZWQKWyAgIDYwLjE3
-MzM3MV0gRWFybHkgdW5wYWNraW5nIGluaXRyYW1mcy4uLiBkb25lClsgICA2MC4zOTE2MjJdIENQ
-VTA6IEludGVsIEdlbnVpbmUgSW50ZWwoUikgQ1BVICAgICAgICBAIDEuNjBHSHogc3RlcHBpbmcg
-MDIKWyAgIDYwLjM5MTg2MF0gVG90YWwgb2YgMSBwcm9jZXNzb3JzIGFjdGl2YXRlZCAoMzIwNS45
-NCBCb2dvTUlQUykuClsgICA2MC4zOTE5OTVdIEV4dElOVCBub3Qgc2V0dXAgaW4gaGFyZHdhcmUg
-YnV0IHJlcG9ydGVkIGJ5IE1QIHRhYmxlClsgICA2MC4zOTIxNTVdIEVOQUJMSU5HIElPLUFQSUMg
-SVJRcwpbICAgNjAuMzkyNDE0XSAuLlRJTUVSOiB2ZWN0b3I9MHgzMSBhcGljMT0wIHBpbjE9MiBh
-cGljMj0wIHBpbjI9MApbICAgNjAuNjQ3MDE3XSBCcm91Z2h0IHVwIDEgQ1BVcwpbICAgNjAuNjQ3
-MTI0XSBDUFUwIGF0dGFjaGluZyBzY2hlZC1kb21haW46ClsgICA2MC42NDcxMjldICBkb21haW4g
-MDogc3BhbiAwMQpbICAgNjAuNjQ3MTMyXSAgIGdyb3VwczogMDEKWyAgIDYwLjY0NzQyMl0gbmV0
-X25hbWVzcGFjZTogNjQgYnl0ZXMKWyAgIDYwLjY0NzUwN10gSW50ZWwgQ3Jvd24gQmVhY2ggYm9h
-cmQgc2VyaWVzIGJvYXJkIGRldGVjdGVkLiBTZWxlY3RpbmcgQklPUy1tZXRob2QgZm9yIHJlYm9v
-dHMuClsgICA2MC42NDc2MTNdIEJvb3RpbmcgcGFyYXZpcnR1YWxpemVkIGtlcm5lbCBvbiBiYXJl
-IGhhcmR3YXJlClsgICA2MC42NDg1NzFdIFRpbWU6IDIwOjM0OjI0ICBEYXRlOiAwNi8yMy8wOApb
-ICAgNjAuNjQ4NzM2XSBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDE2ClsgICA2MC42
-NDk2MjZdIFBDSTogUENJIEJJT1MgcmV2aXNpb24gMy4wMCBlbnRyeSBhdCAweGYwMDMxLCBsYXN0
-IGJ1cz0wClsgICA2MC42NDk3MTFdIFBDSTogVXNpbmcgY29uZmlndXJhdGlvbiB0eXBlIDEKWyAg
-IDYwLjY0OTc4NV0gU2V0dGluZyB1cCBzdGFuZGFyZCBQQ0kgcmVzb3VyY2VzClsgICA2MC42NTc3
-MDBdIEFDUEk6IEludGVycHJldGVyIGRpc2FibGVkLgpbICAgNjAuNjU3NzgwXSBMaW51eCBQbHVn
-IGFuZCBQbGF5IFN1cHBvcnQgdjAuOTcgKGMpIEFkYW0gQmVsYXkKWyAgIDYwLjY1NzkxNV0gcG5w
-OiBQblAgQUNQSTogZGlzYWJsZWQKWyAgIDYwLjY1ODYzNF0gUENJOiBQcm9iaW5nIFBDSSBoYXJk
-d2FyZQpbICAgNjAuNjU4NzI2XSBQQ0k6IFByb2JpbmcgUENJIGhhcmR3YXJlIChidXMgMDApClsg
-ICA2MC42NjA1MjddIFBDSTogVXNpbmcgSVJRIHJvdXRlciBkZWZhdWx0IFs4MDg2LzgxMTldIGF0
-IDAwMDA6MDA6MWYuMApbICAgNjAuNjYwNjIyXSBQQ0ktPkFQSUMgSVJRIHRyYW5zZm9ybTogMDAw
-MDowMDowMi4wW0FdIC0+IElSUSAxNgpbICAgNjAuNjYwNzAyXSBQQ0ktPkFQSUMgSVJRIHRyYW5z
-Zm9ybTogMDAwMDowMDoxYS4wW0FdIC0+IElSUSAxNgpbICAgNjAuNjYwNzgyXSBQQ0ktPkFQSUMg
-SVJRIHRyYW5zZm9ybTogMDAwMDowMDoxYi4wW0FdIC0+IElSUSAxNgpbICAgNjAuNjYwODYyXSBQ
-Q0ktPkFQSUMgSVJRIHRyYW5zZm9ybTogMDAwMDowMDoxZC4wW0FdIC0+IElSUSAxNgpbICAgNjAu
-NjYwOTQxXSBQQ0ktPkFQSUMgSVJRIHRyYW5zZm9ybTogMDAwMDowMDoxZC4xW0JdIC0+IElSUSAx
-NwpbICAgNjAuNjYxMDIxXSBQQ0ktPkFQSUMgSVJRIHRyYW5zZm9ybTogMDAwMDowMDoxZC4yW0Nd
-IC0+IElSUSAxOApbICAgNjAuNjYxMTAxXSBQQ0ktPkFQSUMgSVJRIHRyYW5zZm9ybTogMDAwMDow
-MDoxZC43W0RdIC0+IElSUSAxOQpbICAgNjAuNjYxMTgwXSBQQ0ktPkFQSUMgSVJRIHRyYW5zZm9y
-bTogMDAwMDowMDoxZS4wW0FdIC0+IElSUSAxNgpbICAgNjAuNjYxMjY2XSBQQ0ktPkFQSUMgSVJR
-IHRyYW5zZm9ybTogMDAwMDowMDoxZS4xW0JdIC0+IElSUSAxNwpbICAgNjAuNjYxMzQ2XSBQQ0kt
-PkFQSUMgSVJRIHRyYW5zZm9ybTogMDAwMDowMDoxZS4yW0NdIC0+IElSUSAxOApbICAgNjAuNjcx
-MTA5XSBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDgKWyAgIDYwLjY3MTE5Ml0gTkVU
-OiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAyMApbICAgNjAuNjcyMTYxXSBORVQ6IFJlZ2lz
-dGVyZWQgcHJvdG9jb2wgZmFtaWx5IDIKWyAgIDYwLjY3NDk1MV0gVGltZTogdHNjIGNsb2Nrc291
-cmNlIGhhcyBiZWVuIGluc3RhbGxlZC4KWyAgIDYwLjcwNzA4M10gSVAgcm91dGUgY2FjaGUgaGFz
-aCB0YWJsZSBlbnRyaWVzOiAzMjc2OCAob3JkZXI6IDUsIDEzMTA3MiBieXRlcykKWyAgIDYwLjcw
-NzYzN10gVENQIGVzdGFibGlzaGVkIGhhc2ggdGFibGUgZW50cmllczogMTMxMDcyIChvcmRlcjog
-OCwgMTA0ODU3NiBieXRlcykKWyAgIDYwLjcwODkxOV0gVENQIGJpbmQgaGFzaCB0YWJsZSBlbnRy
-aWVzOiA2NTUzNiAob3JkZXI6IDcsIDUyNDI4OCBieXRlcykKWyAgIDYwLjcwOTY3Nl0gVENQOiBI
-YXNoIHRhYmxlcyBjb25maWd1cmVkIChlc3RhYmxpc2hlZCAxMzEwNzIgYmluZCA2NTUzNikKWyAg
-IDYwLjcwOTc2Ml0gVENQIHJlbm8gcmVnaXN0ZXJlZApbICAgNjAuNzE5MjE4XSBjaGVja2luZyBp
-ZiBpbWFnZSBpcyBpbml0cmFtZnMuLi4gaXQgaXMKWyAgIDYxLjE0NDQzNl0gRnJlZWluZyBpbml0
-cmQgbWVtb3J5OiAyOTgxayBmcmVlZApbICAgNjEuMTQ1NzQ2XSBhdWRpdDogaW5pdGlhbGl6aW5n
-IG5ldGxpbmsgc29ja2V0IChkaXNhYmxlZCkKWyAgIDYxLjE0NTg0N10gYXVkaXQoMTIxNDI1MzI2
-My45NjQ6MSk6IGluaXRpYWxpemVkClsgICA2MS4xNDk1MzNdIFZGUzogRGlzayBxdW90YXMgZHF1
-b3RfNi41LjEKWyAgIDYxLjE0OTc1NF0gRHF1b3QtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAx
-MDI0IChvcmRlciAwLCA0MDk2IGJ5dGVzKQpbICAgNjEuMTUwMTI5XSBpbyBzY2hlZHVsZXIgbm9v
-cCByZWdpc3RlcmVkClsgICA2MS4xNTAyMDZdIGlvIHNjaGVkdWxlciBhbnRpY2lwYXRvcnkgcmVn
-aXN0ZXJlZApbICAgNjEuMTUwMjgxXSBpbyBzY2hlZHVsZXIgZGVhZGxpbmUgcmVnaXN0ZXJlZApb
-ICAgNjEuMTUwNDYzXSBpbyBzY2hlZHVsZXIgY2ZxIHJlZ2lzdGVyZWQgKGRlZmF1bHQpClsgICA2
-MS4xNTA1NTddIEJvb3QgdmlkZW8gZGV2aWNlIGlzIDAwMDA6MDA6MDIuMApbICAgNjEuMjMxNzc3
-XSBSZWFsIFRpbWUgQ2xvY2sgRHJpdmVyIHYxLjEyYWMKWyAgIDYxLjIzMTk5N10gU2VyaWFsOiA4
-MjUwLzE2NTUwIGRyaXZlciAkUmV2aXNpb246IDEuOTAgJCA0IHBvcnRzLCBJUlEgc2hhcmluZyBl
-bmFibGVkClsgICA2MS4yMzQwMDJdIFJBTURJU0sgZHJpdmVyIGluaXRpYWxpemVkOiAxNiBSQU0g
-ZGlza3Mgb2YgNjU1MzZLIHNpemUgMTAyNCBibG9ja3NpemUKWyAgIDYxLjIzNDE3N10gaXVzYmMg
-MDAwMDowMDoxYS4wOiAtLS0+IGl1c2JjX3Byb2JlKCkgClsgICA2MS4yMzQyMDddIGl1c2JjIDAw
-MDA6MDA6MWEuMDogLS0tPiBpdXNiY19yZXNldCgpIApbICAgNjEuMjM0MjExXSBpdXNiYyAwMDAw
-OjAwOjFhLjA6IDwtLS0gaXVzYmNfcmVzZXQoKSAKWyAgIDYxLjIzNDIxNV0gaXVzYmMgMDAwMDow
-MDoxYS4wOiAtLS0+IGl1c2JjX3JlaW5pdCgpIApbICAgNjEuMjM0MjE5XSBpdXNiYyAwMDAwOjAw
-OjFhLjA6IDwtLS0gaXVzYmNfcmVpbml0KCkgClsgICA2MS4yMzQyNDNdIFBDSTogU2V0dGluZyBs
-YXRlbmN5IHRpbWVyIG9mIGRldmljZSAwMDAwOjAwOjFhLjAgdG8gNjQKWyAgIDYxLjIzNDI0OF0g
-aXVzYmMgMDAwMDowMDoxYS4wOiBJbnRlbCBQb3Vsc2JvIFVTQiBDbGllbnQgQ29udHJvbGxlciBE
-cml2ZXIKWyAgIDYxLjIzNDMzMF0gaXVzYmMgMDAwMDowMDoxYS4wOiBpcnEgMTYsIHBjaSBtZW0g
-Zjg4MDAwMDAKWyAgIDYxLjIzNDQwNl0gaXVzYmMgMDAwMDowMDoxYS4wOiB2ZXJzaW9uOiAyLjAu
-MC4zMkwuMDAwOQpbICAgNjEuMjM0NDgyXSBpdXNiYyAwMDAwOjAwOjFhLjA6IHN1cHBvcnQgKG1h
-eCkgOCBlbmRwb2ludHMKWyAgIDYxLjIzNDU2OV0gaXVzYmMgMDAwMDowMDoxYS4wOiA8LS0tIGl1
-c2JjX3Byb2JlKCkgClsgICA2MS4yMzQ4MDRdIFBOUDogTm8gUFMvMiBjb250cm9sbGVyIGZvdW5k
-LiBQcm9iaW5nIHBvcnRzIGRpcmVjdGx5LgpbICAgNjEuMjU0NTkwXSBpODA0Mi5jOiBEZXRlY3Rl
-ZCBhY3RpdmUgbXVsdGlwbGV4aW5nIGNvbnRyb2xsZXIsIHJldiAxLjAuClsgICA2MS4yNjQ2ODdd
-IHNlcmlvOiBpODA0MiBLQkQgcG9ydCBhdCAweDYwLDB4NjQgaXJxIDEKWyAgIDYxLjI2NDc2OF0g
-c2VyaW86IGk4MDQyIEFVWDAgcG9ydCBhdCAweDYwLDB4NjQgaXJxIDEyClsgICA2MS4yNjQ4NDZd
-IHNlcmlvOiBpODA0MiBBVVgxIHBvcnQgYXQgMHg2MCwweDY0IGlycSAxMgpbICAgNjEuMjY0OTIy
-XSBzZXJpbzogaTgwNDIgQVVYMiBwb3J0IGF0IDB4NjAsMHg2NCBpcnEgMTIKWyAgIDYxLjI2NDk5
-OV0gc2VyaW86IGk4MDQyIEFVWDMgcG9ydCBhdCAweDYwLDB4NjQgaXJxIDEyClsgICA2MS4yNjUz
-MjZdIG1pY2U6IFBTLzIgbW91c2UgZGV2aWNlIGNvbW1vbiBmb3IgYWxsIG1pY2UKWyAgIDYxLjI2
-NTU0MV0gY3B1aWRsZTogdXNpbmcgZ292ZXJub3IgbGFkZGVyClsgICA2MS4yNjU2MTVdIGNwdWlk
-bGU6IHVzaW5nIGdvdmVybm9yIG1lbnUKWyAgIDYxLjI2NTk0MF0gc2RoY2k6IFNlY3VyZSBEaWdp
-dGFsIEhvc3QgQ29udHJvbGxlciBJbnRlcmZhY2UgZHJpdmVyClsgICA2MS4yNjYwMTldIHNkaGNp
-OiBDb3B5cmlnaHQoYykgUGllcnJlIE9zc21hbgpbICAgNjEuMjY2MTYxXSBzZGhjaTogU0RIQ0kg
-Y29udHJvbGxlciBmb3VuZCBhdCAwMDAwOjAwOjFlLjAgWzgwODY6ODExY10gKHJldiA2KQpbICAg
-NjEuMjY2MjY0XSBQQ0k6IFNldHRpbmcgbGF0ZW5jeSB0aW1lciBvZiBkZXZpY2UgMDAwMDowMDox
-ZS4wIHRvIDY0ClsgICA2MS4yNjYzNTJdIG1tYzA6IFNESENJIGF0IDB4ZGZmNWU4MDAgaXJxIDE2
-IERNQQpbICAgNjEuMjY2NDM2XSBzZGhjaTogU0RIQ0kgY29udHJvbGxlciBmb3VuZCBhdCAwMDAw
-OjAwOjFlLjEgWzgwODY6ODExZF0gKHJldiA2KQpbICAgNjEuMjY2NTMzXSBQQ0k6IFNldHRpbmcg
-bGF0ZW5jeSB0aW1lciBvZiBkZXZpY2UgMDAwMDowMDoxZS4xIHRvIDY0ClsgICA2MS4yNjk2MDZd
-IG1tYzE6IFNESENJIGF0IDB4ZGZmNWU0MDAgaXJxIDE3IERNQQpbICAgNjEuMjY5NjkxXSBzZGhj
-aTogU0RIQ0kgY29udHJvbGxlciBmb3VuZCBhdCAwMDAwOjAwOjFlLjIgWzgwODY6ODExZV0gKHJl
-diA2KQpbICAgNjEuMjY5Nzg3XSBQQ0k6IFNldHRpbmcgbGF0ZW5jeSB0aW1lciBvZiBkZXZpY2Ug
-MDAwMDowMDoxZS4yIHRvIDY0ClsgICA2MS4yNjk4NjVdIG1tYzI6IFNESENJIGF0IDB4ZGZmNWUw
-MDAgaXJxIDE4IERNQQpbICAgNjEuMjcwMTA1XSBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFt
-aWx5IDEKWyAgIDYxLjI3MDIyOV0gVXNpbmcgSVBJIE5vLVNob3J0Y3V0IG1vZGUKWyAgIDYxLjI3
-MDQ0Ml0gICBNYWdpYyBudW1iZXI6IDEyOjg3ODo1OTkKWyAgIDYxLjI3MDUyMl0gICBoYXNoIG1h
-dGNoZXMgZGV2aWNlIHNlcmlhbDgyNTAKWyAgIDYxLjI3MDY1OV0gICBoYXNoIG1hdGNoZXMgZGV2
-aWNlIHB0eWQzClsgICA2MS4yNzA5NThdIEZyZWVpbmcgdW51c2VkIGtlcm5lbCBtZW1vcnk6IDI2
-OGsgZnJlZWQKWyAgIDYxLjMwMjU2N10gaW5wdXQ6IEFUIFRyYW5zbGF0ZWQgU2V0IDIga2V5Ym9h
-cmQgYXMgL2RldmljZXMvcGxhdGZvcm0vaTgwNDIvc2VyaW8wL2lucHV0L2lucHV0MApbICAgNjEu
-NTExNDM5XSB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2UgZHJpdmVyIHVzYmZzClsg
-ICA2MS41MTE1OTZdIHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIgaHVi
-ClsgICA2MS41MTE3NTNdIHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGRldmljZSBkcml2ZXIgdXNi
-ClsgICA2MS41Mjc0NzhdIHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIg
-aGlkZGV2ClsgICA2MS41Mjc2MjRdIHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBk
-cml2ZXIgdXNiaGlkClsgICA2MS41Mjc3MDVdIC9idWlsZC9idWlsZGQvbGludXgtMi42LjI0L2Rl
-Ymlhbi9idWlsZC9jdXN0b20tc291cmNlLWxwaWEvZHJpdmVycy9oaWQvdXNiaGlkL2hpZC1jb3Jl
-LmM6IHYyLjY6VVNCIEhJRCBjb3JlIGRyaXZlcgpbICAgNjEuNTM1ODIyXSBQQ0k6IFNldHRpbmcg
-bGF0ZW5jeSB0aW1lciBvZiBkZXZpY2UgMDAwMDowMDoxZC43IHRvIDY0ClsgICA2MS41MzU4MzFd
-IGVoY2lfaGNkIDAwMDA6MDA6MWQuNzogRUhDSSBIb3N0IENvbnRyb2xsZXIKWyAgIDYxLjUzNjAx
-MF0gZWhjaV9oY2QgMDAwMDowMDoxZC43OiBuZXcgVVNCIGJ1cyByZWdpc3RlcmVkLCBhc3NpZ25l
-ZCBidXMgbnVtYmVyIDEKWyAgIDYxLjU0MDA0MV0gZWhjaV9oY2QgMDAwMDowMDoxZC43OiBkZWJ1
-ZyBwb3J0IDEKWyAgIDYxLjU0MDEyMl0gUENJOiBjYWNoZSBsaW5lIHNpemUgb2YgMzIgaXMgbm90
-IHN1cHBvcnRlZCBieSBkZXZpY2UgMDAwMDowMDoxZC43ClsgICA2MS41NDAxMzhdIGVoY2lfaGNk
-IDAwMDA6MDA6MWQuNzogaXJxIDE5LCBpbyBtZW0gMHhkZmY1ZWMwMApbICAgNjEuNTU0OTc0XSBl
-aGNpX2hjZCAwMDAwOjAwOjFkLjc6IFVTQiAyLjAgc3RhcnRlZCwgRUhDSSAxLjAwLCBkcml2ZXIg
-MTAgRGVjIDIwMDQKWyAgIDYxLjU1NTM4N10gdXNiIHVzYjE6IGNvbmZpZ3VyYXRpb24gIzEgY2hv
-c2VuIGZyb20gMSBjaG9pY2UKWyAgIDYxLjU1NTU1Nl0gaHViIDEtMDoxLjA6IFVTQiBodWIgZm91
-bmQKWyAgIDYxLjU1NTYzOV0gaHViIDEtMDoxLjA6IDggcG9ydHMgZGV0ZWN0ZWQKWyAgIDYxLjY2
-NjU3Nl0gVVNCIFVuaXZlcnNhbCBIb3N0IENvbnRyb2xsZXIgSW50ZXJmYWNlIGRyaXZlciB2My4w
-ClsgICA2MS42NjY3NzddIFBDSTogU2V0dGluZyBsYXRlbmN5IHRpbWVyIG9mIGRldmljZSAwMDAw
-OjAwOjFkLjAgdG8gNjQKWyAgIDYxLjY2Njc4NF0gdWhjaV9oY2QgMDAwMDowMDoxZC4wOiBVSENJ
-IEhvc3QgQ29udHJvbGxlcgpbICAgNjEuNjY2OTQzXSB1aGNpX2hjZCAwMDAwOjAwOjFkLjA6IG5l
-dyBVU0IgYnVzIHJlZ2lzdGVyZWQsIGFzc2lnbmVkIGJ1cyBudW1iZXIgMgpbICAgNjEuNjY3MDg1
-XSB1aGNpX2hjZCAwMDAwOjAwOjFkLjA6IGlycSAxNiwgaW8gYmFzZSAweDAwMDBlNDgwClsgICA2
-MS42Njc0MzZdIHVzYiB1c2IyOiBjb25maWd1cmF0aW9uICMxIGNob3NlbiBmcm9tIDEgY2hvaWNl
-ClsgICA2MS42Njc1OTNdIGh1YiAyLTA6MS4wOiBVU0IgaHViIGZvdW5kClsgICA2MS42Njc2NzZd
-IGh1YiAyLTA6MS4wOiAyIHBvcnRzIGRldGVjdGVkClsgICA2MS43NzExMjVdIFBDSTogU2V0dGlu
-ZyBsYXRlbmN5IHRpbWVyIG9mIGRldmljZSAwMDAwOjAwOjFkLjEgdG8gNjQKWyAgIDYxLjc3MTEz
-Ml0gdWhjaV9oY2QgMDAwMDowMDoxZC4xOiBVSENJIEhvc3QgQ29udHJvbGxlcgpbICAgNjEuNzcx
-MjgxXSB1aGNpX2hjZCAwMDAwOjAwOjFkLjE6IG5ldyBVU0IgYnVzIHJlZ2lzdGVyZWQsIGFzc2ln
-bmVkIGJ1cyBudW1iZXIgMwpbICAgNjEuNzcxNDA2XSB1aGNpX2hjZCAwMDAwOjAwOjFkLjE6IGly
-cSAxNywgaW8gYmFzZSAweDAwMDBlMDgwClsgICA2MS43NzI4NzRdIHVzYiB1c2IzOiBjb25maWd1
-cmF0aW9uICMxIGNob3NlbiBmcm9tIDEgY2hvaWNlClsgICA2MS43NzMwMzRdIGh1YiAzLTA6MS4w
-OiBVU0IgaHViIGZvdW5kClsgICA2MS43NzMxMTVdIGh1YiAzLTA6MS4wOiAyIHBvcnRzIGRldGVj
-dGVkClsgICA2MS44NzUxMTVdIFBDSTogU2V0dGluZyBsYXRlbmN5IHRpbWVyIG9mIGRldmljZSAw
-MDAwOjAwOjFkLjIgdG8gNjQKWyAgIDYxLjg3NTEyMl0gdWhjaV9oY2QgMDAwMDowMDoxZC4yOiBV
-SENJIEhvc3QgQ29udHJvbGxlcgpbICAgNjEuODc1MjcwXSB1aGNpX2hjZCAwMDAwOjAwOjFkLjI6
-IG5ldyBVU0IgYnVzIHJlZ2lzdGVyZWQsIGFzc2lnbmVkIGJ1cyBudW1iZXIgNApbICAgNjEuODc1
-Mzk1XSB1aGNpX2hjZCAwMDAwOjAwOjFkLjI6IGlycSAxOCwgaW8gYmFzZSAweDAwMDBlZjAwClsg
-ICA2MS44NzU3MjJdIHVzYiB1c2I0OiBjb25maWd1cmF0aW9uICMxIGNob3NlbiBmcm9tIDEgY2hv
-aWNlClsgICA2MS44NzU4NzddIGh1YiA0LTA6MS4wOiBVU0IgaHViIGZvdW5kClsgICA2MS44NzU5
-NThdIGh1YiA0LTA6MS4wOiAyIHBvcnRzIGRldGVjdGVkClsgICA2MS45OTgzODVdIFNDU0kgc3Vi
-c3lzdGVtIGluaXRpYWxpemVkClsgICA2Mi4wMTMyODhdIGxpYmF0YSB2ZXJzaW9uIDMuMDAgbG9h
-ZGVkLgpbICAgNjIuMDMwODc2XSBhdGFfcGlpeCAwMDAwOjAwOjFmLjE6IHZlcnNpb24gMi4xMgpb
-ICAgNjIuMDMwOTQwXSBQQ0k6IFNldHRpbmcgbGF0ZW5jeSB0aW1lciBvZiBkZXZpY2UgMDAwMDow
-MDoxZi4xIHRvIDY0ClsgICA2Mi4wMzEwNDZdIHNjc2kwIDogYXRhX3BpaXgKWyAgIDYyLjAzMTI0
-MF0gc2NzaTEgOiBhdGFfcGlpeApbICAgNjIuMDMxMzk3XSBhdGExOiBQQVRBIG1heCBVRE1BLzEw
-MCBjbWQgMHgxZjAgY3RsIDB4M2Y2IGJtZG1hIDB4ZmZhMCBpcnEgMTQKWyAgIDYyLjAzMTQ3OV0g
-YXRhMjogUEFUQSBtYXggVURNQS8xMDAgY21kIDB4MTcwIGN0bCAweDM3NiBibWRtYSAweGZmYTgg
-aXJxIDE1ClsgICA2Mi4xOTUzMTVdIGF0YTEuMDA6IGZhaWxlZCB0byByZWFkIG5hdGl2ZSBtYXgg
-YWRkcmVzcyAoZXJyX21hc2s9MHgxKQpbICAgNjIuMTk1Mzk4XSBhdGExOiBmYWlsZWQgdG8gcmVj
-b3ZlciBzb21lIGRldmljZXMsIHJldHJ5aW5nIGluIDUgc2VjcwpbICAgNjIuODU5MDAwXSB1c2Ig
-Mi0xOiBuZXcgZnVsbCBzcGVlZCBVU0IgZGV2aWNlIHVzaW5nIHVoY2lfaGNkIGFuZCBhZGRyZXNz
-IDIKWyAgIDYzLjAzNzM5Ml0gdXNiIDItMTogY29uZmlndXJhdGlvbiAjMSBjaG9zZW4gZnJvbSAx
-IGNob2ljZQpbICAgNjMuMjgzMDA5XSB1c2IgMi0yOiBuZXcgZnVsbCBzcGVlZCBVU0IgZGV2aWNl
-IHVzaW5nIHVoY2lfaGNkIGFuZCBhZGRyZXNzIDMKWyAgIDYzLjQ2MTM0M10gdXNiIDItMjogY29u
-ZmlndXJhdGlvbiAjMSBjaG9zZW4gZnJvbSAxIGNob2ljZQpbICAgNjMuNzA3MDE3XSB1c2IgMy0y
-OiBuZXcgZnVsbCBzcGVlZCBVU0IgZGV2aWNlIHVzaW5nIHVoY2lfaGNkIGFuZCBhZGRyZXNzIDIK
-WyAgIDYzLjg3NzMzM10gdXNiIDMtMjogY29uZmlndXJhdGlvbiAjMSBjaG9zZW4gZnJvbSAxIGNo
-b2ljZQpbICAgNjMuODgwMjA4XSBodWIgMy0yOjEuMDogVVNCIGh1YiBmb3VuZApbICAgNjMuODgy
-MTM1XSBodWIgMy0yOjEuMDogMyBwb3J0cyBkZXRlY3RlZApbICAgNjQuMTk2MTIyXSB1c2IgMy0y
-LjE6IG5ldyBmdWxsIHNwZWVkIFVTQiBkZXZpY2UgdXNpbmcgdWhjaV9oY2QgYW5kIGFkZHJlc3Mg
-MwpbICAgNjQuMzMxMzExXSB1c2IgMy0yLjE6IGNvbmZpZ3VyYXRpb24gIzEgY2hvc2VuIGZyb20g
-MSBjaG9pY2UKWyAgIDY0LjM0MDUyM10gaW5wdXQ6IENoaWNvbnkgUEZVLTY4IFVTQiBLZXlib2Fy
-ZCBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWQuMS91c2IzLzMtMi8zLTIuMS8zLTIu
-MToxLjAvaW5wdXQvaW5wdXQxClsgICA2NC4zNTExMTRdIGlucHV0LGhpZHJhdzA6IFVTQiBISUQg
-djEuMDAgS2V5Ym9hcmQgW0NoaWNvbnkgUEZVLTY4IFVTQiBLZXlib2FyZF0gb24gdXNiLTAwMDA6
-MDA6MWQuMS0yLjEKWyAgIDY0LjU1NjExMF0gdXNiIDMtMi4zOiBuZXcgZnVsbCBzcGVlZCBVU0Ig
-ZGV2aWNlIHVzaW5nIHVoY2lfaGNkIGFuZCBhZGRyZXNzIDQKWyAgIDY0LjY2MDEwNF0gdXNiIDMt
-Mi4zOiBub3QgcnVubmluZyBhdCB0b3Agc3BlZWQ7IGNvbm5lY3QgdG8gYSBoaWdoIHNwZWVkIGh1
-YgpbICAgNjQuNjk0MzA2XSB1c2IgMy0yLjM6IGNvbmZpZ3VyYXRpb24gIzEgY2hvc2VuIGZyb20g
-MSBjaG9pY2UKWyAgIDY3LjM2MzQyMV0gYXRhMS4wMDogZmFpbGVkIHRvIHJlYWQgbmF0aXZlIG1h
-eCBhZGRyZXNzIChlcnJfbWFzaz0weDEpClsgICA2Ny4zNjM1MDZdIGF0YTEuMDA6IHJldmFsaWRh
-dGlvbiBmYWlsZWQgKGVycm5vPS0xMykKWyAgIDY3LjM2MzU4Ml0gYXRhMTogZmFpbGVkIHRvIHJl
-Y292ZXIgc29tZSBkZXZpY2VzLCByZXRyeWluZyBpbiA1IHNlY3MKWyAgIDcyLjUzMTUxOF0gYXRh
-MS4wMDogZmFpbGVkIHRvIHJlYWQgbmF0aXZlIG1heCBhZGRyZXNzIChlcnJfbWFzaz0weDEpClsg
-ICA3Mi41MzE1OTldIGF0YTEuMDA6IHJldmFsaWRhdGlvbiBmYWlsZWQgKGVycm5vPS0xMykKWyAg
-IDcyLjUzMTY3NV0gYXRhMS4wMDogZGlzYWJsZWQKWyAgIDczLjIxNTg1OV0gRHJpdmVyICdzZCcg
-bmVlZHMgdXBkYXRpbmcgLSBwbGVhc2UgdXNlIGJ1c190eXBlIG1ldGhvZHMKWyAgIDczLjIyMjY4
-Nl0gdXNiY29yZTogcmVnaXN0ZXJlZCBuZXcgaW50ZXJmYWNlIGRyaXZlciBsaWJ1c3VhbApbICAg
-NzMuMjMxNjgwXSBJbml0aWFsaXppbmcgVVNCIE1hc3MgU3RvcmFnZSBkcml2ZXIuLi4KWyAgIDcz
-LjIzNjA4OF0gc2NzaTIgOiBTQ1NJIGVtdWxhdGlvbiBmb3IgVVNCIE1hc3MgU3RvcmFnZSBkZXZp
-Y2VzClsgICA3My4yMzYzMzNdIHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2
-ZXIgdXNiLXN0b3JhZ2UKWyAgIDczLjIzNjQxNl0gVVNCIE1hc3MgU3RvcmFnZSBzdXBwb3J0IHJl
-Z2lzdGVyZWQuClsgICA3My4yMzcyNTFdIHVzYi1zdG9yYWdlOiBkZXZpY2UgZm91bmQgYXQgNApb
-ICAgNzMuMjM3MjU2XSB1c2Itc3RvcmFnZTogd2FpdGluZyBmb3IgZGV2aWNlIHRvIHNldHRsZSBi
-ZWZvcmUgc2Nhbm5pbmcKWyAgIDczLjI0NDI5Ml0gUmVnaXN0ZXJpbmcgdW5pb25mcyAxLjQKWyAg
-IDczLjI0NDM3M10gdW5pb25mczogZGVidWdnaW5nIGlzIG5vdCBlbmFibGVkClsgICA3My4yNTI1
-NzBdIHNxdWFzaGZzOiB2ZXJzaW9uIDMuMyAoMjAwNy8xMC8zMSkgUGhpbGxpcCBMb3VnaGVyClsg
-ICA3My4yODYzOTBdIGxvb3A6IG1vZHVsZSBsb2FkZWQKWyAgIDczLjM2NTI2NV0gdGhlcm1hbDog
-VW5rbm93biBzeW1ib2wgYWNwaV9wcm9jZXNzb3Jfc2V0X3RoZXJtYWxfbGltaXQKWyAgIDc4LjIz
-NjY1Ml0gdXNiLXN0b3JhZ2U6IGRldmljZSBzY2FuIGNvbXBsZXRlClsgICA3OC4yMzk2NTVdIHNj
-c2kgMjowOjA6MDogRGlyZWN0LUFjY2VzcyAgICAgU29ueSAgICAgU3RvcmFnZSBNZWRpYSAgICAw
-MTAwIFBROiAwIEFOU0k6IDAgQ0NTClsgICA3OC4yNDk2NDVdIHNkIDI6MDowOjA6IFtzZGFdIDM5
-NjM5MDQgNTEyLWJ5dGUgaGFyZHdhcmUgc2VjdG9ycyAoMjAzMCBNQikKWyAgIDc4LjI1MjYyMV0g
-c2QgMjowOjA6MDogW3NkYV0gV3JpdGUgUHJvdGVjdCBpcyBvZmYKWyAgIDc4LjI1MjcwMl0gc2Qg
-MjowOjA6MDogW3NkYV0gTW9kZSBTZW5zZTogNDMgMDAgMDAgMDAKWyAgIDc4LjI1MjcwNl0gc2Qg
-MjowOjA6MDogW3NkYV0gQXNzdW1pbmcgZHJpdmUgY2FjaGU6IHdyaXRlIHRocm91Z2gKWyAgIDc4
-LjI2NDY0MV0gc2QgMjowOjA6MDogW3NkYV0gMzk2MzkwNCA1MTItYnl0ZSBoYXJkd2FyZSBzZWN0
-b3JzICgyMDMwIE1CKQpbICAgNzguMjY3NjE2XSBzZCAyOjA6MDowOiBbc2RhXSBXcml0ZSBQcm90
-ZWN0IGlzIG9mZgpbICAgNzguMjY3Njk2XSBzZCAyOjA6MDowOiBbc2RhXSBNb2RlIFNlbnNlOiA0
-MyAwMCAwMCAwMApbICAgNzguMjY3NzAwXSBzZCAyOjA6MDowOiBbc2RhXSBBc3N1bWluZyBkcml2
-ZSBjYWNoZTogd3JpdGUgdGhyb3VnaApbICAgNzguMjY3Nzg1XSAgc2RhOiB1bmtub3duIHBhcnRp
-dGlvbiB0YWJsZQpbICAgNzguMzUwNzcwXSBzZCAyOjA6MDowOiBbc2RhXSBBdHRhY2hlZCBTQ1NJ
-IHJlbW92YWJsZSBkaXNrClsgICA3OS4xNzg4MzJdIEVYVDItZnM6IGxvb3AxOiBjb3VsZG4ndCBt
-b3VudCBiZWNhdXNlIG9mIHVuc3VwcG9ydGVkIG9wdGlvbmFsIGZlYXR1cmVzICg0KS4KWyAgIDgx
-LjQ0NDU4NV0ga2pvdXJuYWxkIHN0YXJ0aW5nLiAgQ29tbWl0IGludGVydmFsIDUgc2Vjb25kcwpb
-ICAgODEuNDQ0NzEyXSBFWFQzIEZTIG9uIGxvb3AxLCBpbnRlcm5hbCBqb3VybmFsClsgICA4MS40
-NDQ4MzJdIEVYVDMtZnM6IHJlY292ZXJ5IGNvbXBsZXRlLgpbICAgODEuNDQ0OTE5XSBFWFQzLWZz
-OiBtb3VudGVkIGZpbGVzeXN0ZW0gd2l0aCBvcmRlcmVkIGRhdGEgbW9kZS4KWyAgIDkyLjM5MTc2
-MF0gaW5wdXQ6IFBDIFNwZWFrZXIgYXMgL2RldmljZXMvcGxhdGZvcm0vcGNzcGtyL2lucHV0L2lu
-cHV0MgpbICAgOTIuOTIyMTI1XSBwb3Vsc2JvX3NtYnVzIDAwMDA6MDA6MWYuMDogRm91bmQgUE9V
-TFNCTyBTTUJVUyAwMDAwOjAwOjFmLjAgZGV2aWNlClsgICA5Mi45MjIyNDBdIHBvdWxzYm9fc21i
-dXMgMDAwMDowMDoxZi4wOiBQT1VMU0JPIFNNIGJhc2UgPSAweDA0MDAKWyAgIDkzLjQ2MzI3N10g
-UENJOiBTZXR0aW5nIGxhdGVuY3kgdGltZXIgb2YgZGV2aWNlIDAwMDA6MDA6MWIuMCB0byA2NApb
-ICAgOTMuNDYzMjg2XSBEbyBmaXh1cCBmb3IgUG91bHNibyA8Nj5EMCBvciBuZXdlciBzdGVwcGlu
-ZwpbICAgOTMuNDYzNDM5XSBIREEgc25vb3AgZGlzYWJsZWQsIHRyeSB0byBlbmFibGUgLi4uIE9L
-ClsgICA5My40OTE2MjRdIGhkYS1pbnRlbDogbm8gY29kZWNzIGZvdW5kIQpbICAgOTQuMTUyNzU3
-XSB1c2Jjb3JlOiByZWdpc3RlcmVkIG5ldyBpbnRlcmZhY2UgZHJpdmVyIHVzYnNlcmlhbApbICAg
-OTQuMTUyODk4XSAvYnVpbGQvYnVpbGRkL2xpbnV4LTIuNi4yNC9kZWJpYW4vYnVpbGQvY3VzdG9t
-LXNvdXJjZS1scGlhL2RyaXZlcnMvdXNiL3NlcmlhbC91c2Itc2VyaWFsLmM6IFVTQiBTZXJpYWwg
-c3VwcG9ydCByZWdpc3RlcmVkIGZvciBnZW5lcmljClsgICA5NC4xNTMwOTBdIHVzYmNvcmU6IHJl
-Z2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIgdXNic2VyaWFsX2dlbmVyaWMKWyAgIDk0LjE1
-MzE3M10gL2J1aWxkL2J1aWxkZC9saW51eC0yLjYuMjQvZGViaWFuL2J1aWxkL2N1c3RvbS1zb3Vy
-Y2UtbHBpYS9kcml2ZXJzL3VzYi9zZXJpYWwvdXNiLXNlcmlhbC5jOiBVU0IgU2VyaWFsIERyaXZl
-ciBjb3JlClsgICA5NC4yNjU4MzhdIC9idWlsZC9idWlsZGQvbGludXgtMi42LjI0L2RlYmlhbi9i
-dWlsZC9jdXN0b20tc291cmNlLWxwaWEvZHJpdmVycy91c2Ivc2VyaWFsL3VzYi1zZXJpYWwuYzog
-VVNCIFNlcmlhbCBzdXBwb3J0IHJlZ2lzdGVyZWQgZm9yIEZUREkgVVNCIFNlcmlhbCBEZXZpY2UK
-WyAgIDk0LjI2NjAzMF0gZnRkaV9zaW8gMi0xOjEuMDogRlRESSBVU0IgU2VyaWFsIERldmljZSBj
-b252ZXJ0ZXIgZGV0ZWN0ZWQKWyAgIDk0LjI2NjE1MF0gL2J1aWxkL2J1aWxkZC9saW51eC0yLjYu
-MjQvZGViaWFuL2J1aWxkL2N1c3RvbS1zb3VyY2UtbHBpYS9kcml2ZXJzL3VzYi9zZXJpYWwvZnRk
-aV9zaW8uYzogRGV0ZWN0ZWQgRlQyMzJCTQpbICAgOTQuMjY2NDE0XSB1c2IgMi0xOiBGVERJIFVT
-QiBTZXJpYWwgRGV2aWNlIGNvbnZlcnRlciBub3cgYXR0YWNoZWQgdG8gdHR5VVNCMApbICAgOTQu
-MjY2NTA5XSBmdGRpX3NpbyAyLTI6MS4wOiBGVERJIFVTQiBTZXJpYWwgRGV2aWNlIGNvbnZlcnRl
-ciBkZXRlY3RlZApbICAgOTQuMjY2NjIyXSAvYnVpbGQvYnVpbGRkL2xpbnV4LTIuNi4yNC9kZWJp
-YW4vYnVpbGQvY3VzdG9tLXNvdXJjZS1scGlhL2RyaXZlcnMvdXNiL3NlcmlhbC9mdGRpX3Npby5j
-OiBEZXRlY3RlZCBGVDIzMkJNClsgICA5NC4yNjY4MDJdIHVzYiAyLTI6IEZUREkgVVNCIFNlcmlh
-bCBEZXZpY2UgY29udmVydGVyIG5vdyBhdHRhY2hlZCB0byB0dHlVU0IxClsgICA5NC4yNjY4OTdd
-IHVzYmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIgZnRkaV9zaW8KWyAgIDk0
-LjI2Njk3Nl0gL2J1aWxkL2J1aWxkZC9saW51eC0yLjYuMjQvZGViaWFuL2J1aWxkL2N1c3RvbS1z
-b3VyY2UtbHBpYS9kcml2ZXJzL3VzYi9zZXJpYWwvZnRkaV9zaW8uYzogdjEuNC4zOlVTQiBGVERJ
-IFNlcmlhbCBDb252ZXJ0ZXJzIERyaXZlcgpbICAgOTQuNTgzOTAyXSBzZCAyOjA6MDowOiBBdHRh
-Y2hlZCBzY3NpIGdlbmVyaWMgc2cwIHR5cGUgMApbICAgOTYuNTA5NjE5XSBXYXJuaW5nISBkaXJz
-IGRlbGV0ZSBhbmQgaW1hcCBvcHRpb25zIHRvIHJlbW91bnQgYXJlIGlnbm9yZWQKWyAgMTA1LjYz
-MzYyOV0gTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAxMApbICAxMDUuNjM0Nzg5XSBs
-bzogRGlzYWJsZWQgUHJpdmFjeSBFeHRlbnNpb25zClsgIDEyMy4zMzYyMDBdIEJsdWV0b290aDog
-Q29yZSB2ZXIgMi4xMQpbICAxMjMuMzM3NzQzXSBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFt
-aWx5IDMxClsgIDEyMy4zMzc3NTFdIEJsdWV0b290aDogSENJIGRldmljZSBhbmQgY29ubmVjdGlv
-biBtYW5hZ2VyIGluaXRpYWxpemVkClsgIDEyMy4zMzc3NTldIEJsdWV0b290aDogSENJIHNvY2tl
-dCBsYXllciBpbml0aWFsaXplZApbICAxMjMuMzkxMzcyXSBCbHVldG9vdGg6IEwyQ0FQIHZlciAy
-LjkKWyAgMTIzLjM5MTM4MF0gQmx1ZXRvb3RoOiBMMkNBUCBzb2NrZXQgbGF5ZXIgaW5pdGlhbGl6
-ZWQKWyAgMTIzLjkxNTM1Nl0gQmx1ZXRvb3RoOiBSRkNPTU0gc29ja2V0IGxheWVyIGluaXRpYWxp
-emVkClsgIDEyMy45MTYyNzZdIEJsdWV0b290aDogUkZDT01NIFRUWSBsYXllciBpbml0aWFsaXpl
-ZApbICAxMjMuOTE2Mjg0XSBCbHVldG9vdGg6IFJGQ09NTSB2ZXIgMS44Cg==
-------=_Part_14072_14459219.1214222022410
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-Check out the new SourceForge.net Marketplace.
-It's the best place to buy or sell services for
-just about anything Open Source.
-http://sourceforge.net/services/buy/index.php
-------=_Part_14072_14459219.1214222022410
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
-
-------=_Part_14072_14459219.1214222022410--
-
-
-
---------------010301020403070202090700
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------010301020403070202090700--
+1.5.6
