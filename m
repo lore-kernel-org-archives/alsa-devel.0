@@ -1,22 +1,18 @@
-From: Kevin Hilman <khilman@mvista.com>
-Subject: Re: Problems compiling Davinci ASoC driver
-	in	2.6.26-rc6
-Date: Mon, 23 Jun 2008 09:40:47 -0700
-Message-ID: <87mylct88g.fsf@paris.hilman.org>
-References: <485B4F74.4020506@embedded-sol.com>
-	<1213955679.11838.12.camel@odin> <485B98B6.3010802@gmail.com>
-	<485C11EF.9070104@embedded-sol.com>
+From: =?iso-8859-1?q?C=E9dric_Br=E9gardis?= <cedric.bregardis@free.fr>
+Subject: Re: Audiowerk2 driver doesnt check pci subsystem id.
+Date: Mon, 23 Jun 2008 19:43:20 +0200
+Message-ID: <200806231943.21376.cedric.bregardis@free.fr>
+References: <200806231732.19461.mike@mtgambier.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway-1237.mvista.com (gateway-1237.mvista.com
-	[63.81.120.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 821CA103872
+Received: from smtp6-g19.free.fr (smtp6-g19.free.fr [212.27.42.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58AFC248EE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jun 2008 18:40:53 +0200 (CEST)
-In-Reply-To: <485C11EF.9070104@embedded-sol.com> (Felix Radensky's message of
-	"Fri\, 20 Jun 2008 23\:24\:15 +0300")
+	Mon, 23 Jun 2008 19:43:24 +0200 (CEST)
+In-Reply-To: <200806231732.19461.mike@mtgambier.net>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,140 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Radensky <felix@embedded-sol.com>
-Cc: Vova Barinov <vova.barinov@gmail.com>, alsa-devel@alsa-project.org
+To: Mike Lampard <mike@mtgambier.net>
+Cc: Takashi Iwai <tiwai@suse.de>, jhassler@free.fr, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yes, unfortunately the DaVinci ASoC changes were done based on DMA
-work that is not yet available in DaVinci git or mainline.
+Hi
 
-A month or so back, I posted to the davinci list saying I have a
-branch available where folks can play with ASoC until I get the DMA
-merge sorted out.  That branch is here[1], but has not been updated to
-the latest asoc-dev tree.
-
-Kevin
-
-
-[1] http://linux.omap.com/pipermail/davinci-linux-open-source/2008-April/006008.html
-
-Felix Radensky <felix@embedded-sol.com> writes:
-
-> Hi,  Vova
+At Monday 23 June 2008 10:02:17, Mike Lampard wrote:
+> Hi
 >
-> I've tried Davinci git tree and had the same compilation errors as
-> with upstream 2.6.26-rc6.
+> Is there any chance you could add a pci subsystem id check to your
+> Audiowerk2 alsa driver?  As you know, at the moment it claims all saa7146
+> devices as AW2's, which is a pain for me because I also have DVB hardware
+> that uses the SAA7146..
+
+Indeed, it is a problem. However, I am not sure that the subsystem id is 
+working correctly for AW2. In any case the behavior on my system is strange. 
+Here is the result of the command 'lspci -x'
+
+[...]
+02:0b.0 Multimedia controller: Philips Semiconductors SAA7146 (rev 01)
+00: 31 11 46 71 02 00 80 02 01 00 80 04 00 40 00 00
+10: 00 bc af fe 00 00 00 00 00 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+30: 00 00 00 00 00 00 00 00 00 00 00 00 0b 01 00 00
+[...]
+
+SAA7146 datasheet says that subsystem ID is at address 0x2C of configuration 
+space regsiters, and:
+
+"this value will be loaded after a PCI reset from external
+hardware using the I2C-bus; the default value is 0000H"
+
+So there is no specific subsystem id on my AW2: it is the default value.
+
+I have noted that the card has an eeprom on i2c (reference 8585c) but it seams 
+it doesn't help.
+
+The solution could be to suppose that the AW2 subid is 0. But if another card 
+has the same behavior, there will be a problem.
+
+Mike, could you give us the result of 'lspci -x' command on your system 
+please ?
+
+And I rely upon the list to correct me if I made wrong assumption ;-).
+
+Cedric.
+
+
 >
-> Felix.
+> Cheers & Good Work,
 >
-> Vova Barinov wrote:
->> Hi Freix,
->>
->> I see that you use upstream kernel but you should use now davinci
->> git tree that at 2.6.26-rc5.
->> I'm not familiar with it's current status. Kevin Hilman is a
->> maintainer and possible that he can answer about ASoC support there
->> and about Davinci upstream status too.
->> FYI: I can't see that Davinci DMA used in Davinci PCM is not in git
->> tree. Not sure but possible that Kevin adapted ASoC for git DMA
->> stuff.
->> You can try the attached required patch that was sent to arm-linux
->> mailing list some time ago and patch for i2c hack that is needed for
->> Davinici but is not acceptable upstream.
->>
->> Also I'm no more with MV. So have nothing access to h/w.
->>
->> Vladimir
->>
->> Liam Girdwood wrote:
->>> On Fri, 2008-06-20 at 09:34 +0300, Felix Radensky wrote:
->>>  
->>>> Hi,
->>>>
->>>> I wanted to test Davinci ASoC driver on Davinci EVM evaluation
->>>> board, but encountered the following compilation errors:
->>>>
->>>>  CC      sound/soc/codecs/tlv320aic3x.o
->>>> sound/soc/codecs/tlv320aic3x.c:1012: warning: 'aic3x_init' defined
->>>> but not used
->>>>   LD      sound/soc/codecs/snd-soc-tlv320aic3x.o
->>>>   LD      sound/soc/codecs/built-in.o
->>>>   CC      sound/soc/davinci/davinci-i2s.o
->>>> sound/soc/davinci/davinci-i2s.c:402: warning: initialization from
->>>> incompatible pointer type
->>>>   CC      sound/soc/davinci/davinci-pcm.o
->>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_enqueue_dma':
->>>> sound/soc/davinci/davinci-pcm.c:99: error: implicit declaration of
->>>> function `davinci_set_dma_src_params'
->>>> sound/soc/davinci/davinci-pcm.c:99: error: `INCR' undeclared
->>>> (first use in this function)
->>>> sound/soc/davinci/davinci-pcm.c:99: error: (Each undeclared
->>>> identifier is reported only once
->>>> sound/soc/davinci/davinci-pcm.c:99: error: for each function it
->>>> appears in.)
->>>> sound/soc/davinci/davinci-pcm.c:99: error: `W8BIT' undeclared
->>>> (first use in this function)
->>>> sound/soc/davinci/davinci-pcm.c:100: error: implicit declaration
->>>> of function `davinci_set_dma_dest_params'
->>>> sound/soc/davinci/davinci-pcm.c:101: error: implicit declaration
->>>> of function `davinci_set_dma_src_index'
->>>> sound/soc/davinci/davinci-pcm.c:102: error: implicit declaration
->>>> of function `davinci_set_dma_dest_index'
->>>> sound/soc/davinci/davinci-pcm.c:103: error: implicit declaration
->>>> of function `davinci_set_dma_transfer_params'
->>>> sound/soc/davinci/davinci-pcm.c:103: error: `ASYNC' undeclared
->>>> (first use in this function)
->>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_dma_irq':
->>>> sound/soc/davinci/davinci-pcm.c:117: error: `DMA_COMPLETE'
->>>> undeclared (first use in this function)
->>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_dma_request':
->>>> sound/soc/davinci/davinci-pcm.c:134: error: `TCC_ANY' undeclared
->>>> (first use in this function)
->>>> sound/soc/davinci/davinci-pcm.c:143: error: implicit declaration
->>>> of function `davinci_request_dma'
->>>> sound/soc/davinci/davinci-pcm.c:145: error: `EVENTQ_0' undeclared
->>>> (first use in this function)
->>>> sound/soc/davinci/davinci-pcm.c:150: error: `PARAM_ANY' undeclared
->>>> (first use in this function)
->>>> sound/soc/davinci/davinci-pcm.c:153: error: implicit declaration
->>>> of function `davinci_free_dma'
->>>> sound/soc/davinci/davinci-pcm.c:158: error: implicit declaration
->>>> of function `davinci_dma_link_lch'
->>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_trigger':
->>>> sound/soc/davinci/davinci-pcm.c:174: error: implicit declaration
->>>> of function `davinci_start_dma'
->>>> sound/soc/davinci/davinci-pcm.c:179: error: implicit declaration
->>>> of function `davinci_stop_dma'
->>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_prepare':
->>>> sound/soc/davinci/davinci-pcm.c:194: error: storage size of 'temp'
->>>> isn't known
->>>> sound/soc/davinci/davinci-pcm.c:200: error: implicit declaration
->>>> of function `davinci_get_dma_params'
->>>> sound/soc/davinci/davinci-pcm.c:201: error: implicit declaration
->>>> of function `davinci_set_dma_params'
->>>> sound/soc/davinci/davinci-pcm.c:194: warning: unused variable `temp'
->>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_pointer':
->>>> sound/soc/davinci/davinci-pcm.c:217: error: implicit declaration
->>>> of function `davinci_dma_getposition'
->>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_close':
->>>> sound/soc/davinci/davinci-pcm.c:262: error: implicit declaration
->>>> of function `davinci_dma_unlink_lch'
->>>> make[3]: *** [sound/soc/davinci/davinci-pcm.o] Error 1
->>>> make[2]: *** [sound/soc/davinci] Error 2
->>>> make[1]: *** [sound/soc] Error 2
->>>> make: *** [sound] Error 2
->>>>
->>>> Are there plans to fix this before release of 2.6.26 ?
->>>>     
->>>
->>> It looks like we are missing some DaVinci DMA definitions for audio.
->>> They are not anywhere in the current HEAD or in
->>> include/asm-arm/arch-davinci history.
->>>
->>> Vladimir, is this something you could help with.
->>>
->>> Thanks
->>>
->>> Liam
->>>
->>>   
+> Mike
