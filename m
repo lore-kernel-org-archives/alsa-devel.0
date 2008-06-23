@@ -1,19 +1,22 @@
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: [PATCH] alsa: add annotations to bitwise
-	type	snd_pcm_hw_param_t
-Date: Sun, 22 Jun 2008 08:50:40 +0100
-Message-ID: <20080622075040.GR28946@ZenIV.linux.org.uk>
-References: <1213821913.2125.21.camel@brick>
+From: Kevin Hilman <khilman@mvista.com>
+Subject: Re: Problems compiling Davinci ASoC driver
+	in	2.6.26-rc6
+Date: Mon, 23 Jun 2008 09:40:47 -0700
+Message-ID: <87mylct88g.fsf@paris.hilman.org>
+References: <485B4F74.4020506@embedded-sol.com>
+	<1213955679.11838.12.camel@odin> <485B98B6.3010802@gmail.com>
+	<485C11EF.9070104@embedded-sol.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [195.92.253.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8517924683
+Received: from gateway-1237.mvista.com (gateway-1237.mvista.com
+	[63.81.120.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 821CA103872
 	for <alsa-devel@alsa-project.org>;
-	Sun, 22 Jun 2008 09:50:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1213821913.2125.21.camel@brick>
+	Mon, 23 Jun 2008 18:40:53 +0200 (CEST)
+In-Reply-To: <485C11EF.9070104@embedded-sol.com> (Felix Radensky's message of
+	"Fri\, 20 Jun 2008 23\:24\:15 +0300")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +26,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Harvey Harrison <harvey.harrison@gmail.com>
-Cc: alsa-devel@alsa-project.org, Alexander Viro <viro@ftp.linux.org.uk>
+To: Felix Radensky <felix@embedded-sol.com>
+Cc: Vova Barinov <vova.barinov@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 18, 2008 at 01:45:13PM -0700, Harvey Harrison wrote:
-> Fully half of all alsa sparse warnings are from snd_pcm_hw_param_t degrading
-> to integer type, this goes a long way towards eliminating them.
+Yes, unfortunately the DaVinci ASoC changes were done based on DMA
+work that is not yet available in DaVinci git or mainline.
 
-FWIW, *all* this stuff is not bitwise at all.  For crying out loud, half
-of these types are routinely used as array indices and loop variables...
+A month or so back, I posted to the davinci list saying I have a
+branch available where folks can play with ASoC until I get the DMA
+merge sorted out.  That branch is here[1], but has not been updated to
+the latest asoc-dev tree.
 
-If anything, we want a different set of allowed operations - subtraction
-between elements of type (yielding integer), addition/subtraction of
-integer types not bigger than ours (yielding our type), comparisons,
-assignments (=, +=, -=, passing to function as argument, return from
-function, initializers) and second/third arguments in ?:.  With 0 *not*
-being allowed as a constant of such type.
+Kevin
 
-It's not bitwise; we may use the same infrastructure in sparse, but it
-should be a separate class of types (__attribute__((affine))).
 
-dma_addr_t is another candidate for the same treatment, but there we'll
-need helpers for conversions to hw-acceptable form (dma_to_le32(), etc.)
-and gradual conversion of drivers.
+[1] http://linux.omap.com/pipermail/davinci-linux-open-source/2008-April/006008.html
 
-ALSA ones and pm mess are absolutely straightforward cases, though.
+Felix Radensky <felix@embedded-sol.com> writes:
+
+> Hi,  Vova
+>
+> I've tried Davinci git tree and had the same compilation errors as
+> with upstream 2.6.26-rc6.
+>
+> Felix.
+>
+> Vova Barinov wrote:
+>> Hi Freix,
+>>
+>> I see that you use upstream kernel but you should use now davinci
+>> git tree that at 2.6.26-rc5.
+>> I'm not familiar with it's current status. Kevin Hilman is a
+>> maintainer and possible that he can answer about ASoC support there
+>> and about Davinci upstream status too.
+>> FYI: I can't see that Davinci DMA used in Davinci PCM is not in git
+>> tree. Not sure but possible that Kevin adapted ASoC for git DMA
+>> stuff.
+>> You can try the attached required patch that was sent to arm-linux
+>> mailing list some time ago and patch for i2c hack that is needed for
+>> Davinici but is not acceptable upstream.
+>>
+>> Also I'm no more with MV. So have nothing access to h/w.
+>>
+>> Vladimir
+>>
+>> Liam Girdwood wrote:
+>>> On Fri, 2008-06-20 at 09:34 +0300, Felix Radensky wrote:
+>>>  
+>>>> Hi,
+>>>>
+>>>> I wanted to test Davinci ASoC driver on Davinci EVM evaluation
+>>>> board, but encountered the following compilation errors:
+>>>>
+>>>>  CC      sound/soc/codecs/tlv320aic3x.o
+>>>> sound/soc/codecs/tlv320aic3x.c:1012: warning: 'aic3x_init' defined
+>>>> but not used
+>>>>   LD      sound/soc/codecs/snd-soc-tlv320aic3x.o
+>>>>   LD      sound/soc/codecs/built-in.o
+>>>>   CC      sound/soc/davinci/davinci-i2s.o
+>>>> sound/soc/davinci/davinci-i2s.c:402: warning: initialization from
+>>>> incompatible pointer type
+>>>>   CC      sound/soc/davinci/davinci-pcm.o
+>>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_enqueue_dma':
+>>>> sound/soc/davinci/davinci-pcm.c:99: error: implicit declaration of
+>>>> function `davinci_set_dma_src_params'
+>>>> sound/soc/davinci/davinci-pcm.c:99: error: `INCR' undeclared
+>>>> (first use in this function)
+>>>> sound/soc/davinci/davinci-pcm.c:99: error: (Each undeclared
+>>>> identifier is reported only once
+>>>> sound/soc/davinci/davinci-pcm.c:99: error: for each function it
+>>>> appears in.)
+>>>> sound/soc/davinci/davinci-pcm.c:99: error: `W8BIT' undeclared
+>>>> (first use in this function)
+>>>> sound/soc/davinci/davinci-pcm.c:100: error: implicit declaration
+>>>> of function `davinci_set_dma_dest_params'
+>>>> sound/soc/davinci/davinci-pcm.c:101: error: implicit declaration
+>>>> of function `davinci_set_dma_src_index'
+>>>> sound/soc/davinci/davinci-pcm.c:102: error: implicit declaration
+>>>> of function `davinci_set_dma_dest_index'
+>>>> sound/soc/davinci/davinci-pcm.c:103: error: implicit declaration
+>>>> of function `davinci_set_dma_transfer_params'
+>>>> sound/soc/davinci/davinci-pcm.c:103: error: `ASYNC' undeclared
+>>>> (first use in this function)
+>>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_dma_irq':
+>>>> sound/soc/davinci/davinci-pcm.c:117: error: `DMA_COMPLETE'
+>>>> undeclared (first use in this function)
+>>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_dma_request':
+>>>> sound/soc/davinci/davinci-pcm.c:134: error: `TCC_ANY' undeclared
+>>>> (first use in this function)
+>>>> sound/soc/davinci/davinci-pcm.c:143: error: implicit declaration
+>>>> of function `davinci_request_dma'
+>>>> sound/soc/davinci/davinci-pcm.c:145: error: `EVENTQ_0' undeclared
+>>>> (first use in this function)
+>>>> sound/soc/davinci/davinci-pcm.c:150: error: `PARAM_ANY' undeclared
+>>>> (first use in this function)
+>>>> sound/soc/davinci/davinci-pcm.c:153: error: implicit declaration
+>>>> of function `davinci_free_dma'
+>>>> sound/soc/davinci/davinci-pcm.c:158: error: implicit declaration
+>>>> of function `davinci_dma_link_lch'
+>>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_trigger':
+>>>> sound/soc/davinci/davinci-pcm.c:174: error: implicit declaration
+>>>> of function `davinci_start_dma'
+>>>> sound/soc/davinci/davinci-pcm.c:179: error: implicit declaration
+>>>> of function `davinci_stop_dma'
+>>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_prepare':
+>>>> sound/soc/davinci/davinci-pcm.c:194: error: storage size of 'temp'
+>>>> isn't known
+>>>> sound/soc/davinci/davinci-pcm.c:200: error: implicit declaration
+>>>> of function `davinci_get_dma_params'
+>>>> sound/soc/davinci/davinci-pcm.c:201: error: implicit declaration
+>>>> of function `davinci_set_dma_params'
+>>>> sound/soc/davinci/davinci-pcm.c:194: warning: unused variable `temp'
+>>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_pointer':
+>>>> sound/soc/davinci/davinci-pcm.c:217: error: implicit declaration
+>>>> of function `davinci_dma_getposition'
+>>>> sound/soc/davinci/davinci-pcm.c: In function `davinci_pcm_close':
+>>>> sound/soc/davinci/davinci-pcm.c:262: error: implicit declaration
+>>>> of function `davinci_dma_unlink_lch'
+>>>> make[3]: *** [sound/soc/davinci/davinci-pcm.o] Error 1
+>>>> make[2]: *** [sound/soc/davinci] Error 2
+>>>> make[1]: *** [sound/soc] Error 2
+>>>> make: *** [sound] Error 2
+>>>>
+>>>> Are there plans to fix this before release of 2.6.26 ?
+>>>>     
+>>>
+>>> It looks like we are missing some DaVinci DMA definitions for audio.
+>>> They are not anywhere in the current HEAD or in
+>>> include/asm-arm/arch-davinci history.
+>>>
+>>> Vladimir, is this something you could help with.
+>>>
+>>> Thanks
+>>>
+>>> Liam
+>>>
+>>>   
