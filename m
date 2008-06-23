@@ -1,20 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: wrong print debugging message code
-Date: Mon, 23 Jun 2008 19:51:01 +0100
-Message-ID: <20080623185100.GA31751@sirena.org.uk>
-References: <280b69ac0806202244s11e74363l4de3f020fed849be@mail.gmail.com>
-	<s5habhc4dz6.wl%tiwai@suse.de>
-	<280b69ac0806231118n2349bedbl1b9462ecd5f1ecf3@mail.gmail.com>
+From: walt <w41ter@gmail.com>
+Subject: ECS K7VTA3:  Mixer channels reversed
+Date: Mon, 23 Jun 2008 16:15:05 -0700
+Message-ID: <g3paoc$41v$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C63EE24905
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CDB224946
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jun 2008 20:51:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <280b69ac0806231118n2349bedbl1b9462ecd5f1ecf3@mail.gmail.com>
+	Tue, 24 Jun 2008 01:20:08 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1KAvKN-00039u-0s
+	for alsa-devel@alsa-project.org; Mon, 23 Jun 2008 23:20:03 +0000
+Received: from adsl-69-234-192-13.dsl.irvnca.pacbell.net ([69.234.192.13])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2008 23:20:03 +0000
+Received: from w41ter by adsl-69-234-192-13.dsl.irvnca.pacbell.net with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2008 23:20:03 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +29,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jin-Young Park <mcjin02@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 24, 2008 at 03:18:49AM +0900, Jin-Young Park wrote:
+Hi list,
 
-> I defined "#define XXXX_DEBUG 0" and dbg() put into mute
-> function(wm8960_digital_mute()).
+I just replaced a mobo with an ECS K7VTA3 and I find that the
+Headphones control is now controlling the master channel and the
+Master control does nothing.
 
-The WM8960 driver isn't in the standard Linux kernel yet, it is currently
-distributed via the Wolfson web site.  None of the drivers included in
-the standard Linux kernel were using their dbg() macros, though some had
-such macros present.
+I tried 'modprobe via82xx ac97_quirk=hp_only' but that makes the
+audio device unusable (although alsamixer still seems happy to set
+the individual channels).  Any other quirks I should try?
 
-> I think, it maybe potential that reduce performance before one knows.
+Here is some hardware info:
 
-The performance impact should be very minor - the digital mute is not
-used in any hot paths and the output will only go do the dmesg buffer by
-default so won't have the overhead of writing to the console.
+ALSA sound/pci/via82xx.c:2409: via82xx: DXS white list for ESC K8 found
 
-Out of interest, which platform are you working with?
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
+         Subsystem: Elitegroup Computer Systems Unknown device 1841
+         Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+         Interrupt: pin C routed to IRQ 5
+         Region 0: I/O ports at dc00 [size=256]
+         Capabilities: [c0] Power Management version 2
+                 Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+         Kernel driver in use: VIA 82xx Audio
+         Kernel modules: snd-via82xx
+
+I'm running Linus' git kernel, current as of today, and alsa 1.0.16.
