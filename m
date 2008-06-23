@@ -1,16 +1,18 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: sb_mixer.c/save_mixer() awfully buggy?
-Date: Mon, 23 Jun 2008 00:46:35 +0200
-Message-ID: <20080622224635.GA2431@rhlx01.hs-esslingen.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [PATCH 1/2] wss_lib: move cs4231_lib into wss_lib
+Date: Mon, 23 Jun 2008 02:22:13 +0200
+Message-ID: <485EECB5.4070808@keyaccess.nl>
+References: <20080619230718.044b7905.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 844C52439C
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF49F2484A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jun 2008 00:46:35 +0200 (CEST)
-Content-Disposition: inline
+	Mon, 23 Jun 2008 02:21:32 +0200 (CEST)
+In-Reply-To: <20080619230718.044b7905.krzysztof.h1@poczta.fm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,59 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On 19-06-08 23:07, Krzysztof Helt wrote:
 
-with my ALS4000, I'm hitting this upon resume:
+> From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> 
+> Move the file sound/isa/cs423x/cs4231_lib.c 
+> into sound/isa/cs423x/wss_lib.c
+> This is the first step toward merging all libraries
+> for Windows Sound System compatible chips
+> into a single library.
+> 
+> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-ALSA sound/isa/sb/sb_mixer.c:936: BUG? (num_regs > (sizeof(chip->saved_regs) / sizeof(
-(chip->saved_regs)[0]) + (sizeof(char[1 - 2 * !!(__builtin_types_compatible_p(typeof(c
-hip->saved_regs), typeof(&chip->saved_regs[0])))]) - 1)))
-Pid: 4498, comm: my_sleep Not tainted 2.6.26-rc3 #1
- [<e097ac8c>] restore_mixer+0x6c/0x70 [snd_sb_common]
- [<e097ad07>] snd_sbmixer_resume+0x77/0x80 [snd_sb_common]
- [<e098030a>] snd_als4000_resume+0x5a/0xd0 [snd_als4000]
- [<c0281a72>] pci_device_resume+0x22/0x60
- [<c0303e76>] device_resume+0x86/0x100
- [<c0145bb7>] hibernation_snapshot+0xc7/0x180
- [<c0144f9f>] ? freeze_processes+0x3f/0x80
- [<c0145d4c>] hibernate+0xdc/0x180
- [<c0144980>] ? state_store+0x0/0xd0
- [<c0144a3f>] state_store+0xbf/0xd0
- [<c0144980>] ? state_store+0x0/0xd0
- [<c02743d4>] kobj_attr_store+0x24/0x30
- [<c01aaf5b>] sysfs_write_file+0xbb/0x110
- [<c016ee56>] vfs_write+0x96/0x130
- [<c01aaea0>] ? sysfs_write_file+0x0/0x110
- [<c016f3cd>] sys_write+0x3d/0x70
- [<c0103026>] syscall_call+0x7/0xb
- =======================
+Acked-by: Rene Herman <rene.herman@gmail.com>
 
-triggered by this line:
+Only small request:
 
-static void restore_mixer(struct snd_sb *chip, unsigned char *regs, int num_regs)
-{
-	unsigned char *val = chip->saved_regs;
-	snd_assert(num_regs > ARRAY_SIZE(chip->saved_regs), return);
-	for (; num_regs; num_regs--)
-		snd_sbmixer_write(chip, *regs++, *val++);
-}
+> diff -urNp linux-alsa/sound/isa/wss/Makefile linux-mm/sound/isa/wss/Makefile
+> --- linux-alsa/sound/isa/wss/Makefile	1970-01-01 01:00:00.000000000 +0100
+> +++ linux-mm/sound/isa/wss/Makefile	2008-06-15 22:38:44.705642447 +0200
+> @@ -0,0 +1,10 @@
+> +#
+> +# Makefile for ALSA
+> +# Copyright (c) 2008 by Krzysztof Helt <krzysztof.h1@wp.pl>
+> +#
+> +
+> +snd-wss-lib-objs := wss_lib.o
+> +
+> +# Toplevel Module Dependency
+> +obj-$(CONFIG_SND_WSS_LIB) += snd-wss-lib.o
+> +
 
-Uhmm, forgive my utterly dumb state of mind, but isn't this assert
-_exactly_ wrong?
-We assert that the number of regs to copy is _higher_ than the array
-size of the content we want to copy, IOW we want to make _certain_
-that we'll hit a nice array overflow or segmentation violation later.
-Doesn't make too much - well, exactly zero, zilch - sense to me.
+Could you maybe "donate" the copyright on this Makefile to Jaroslav Kysela?
 
-Dito save_mixer().
+Basically, this single file is too trivial (and uncreative due to being 
+rather fully dictated by the build-system as a whole) to be protectable 
+under copyright in the first place but the ALSA build system as a whole 
+IS copyrightable and Jaroslav holds the copyright on all others (except 
+David Miller on the one sparc specific one).
 
-Forgive me if this is already fixed in ALSA head (still exists in current
-2.6.26-rc7).
-Sounds like 2.6.26(!) material to me if it is indeed buggy.
+It's likely not a practical issue really but I feel it's probably good 
+to keep this concentrated.
 
-Thanks,
-
-Andreas Mohr
+Rene.
