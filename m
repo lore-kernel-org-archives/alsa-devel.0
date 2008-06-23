@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: AUDIO: Split WM8750 IO routines from core for SPI
-Date: Mon, 23 Jun 2008 15:42:17 +0100
-Message-ID: <20080623144217.GD9318@sirena.org.uk>
-References: <20080623115406.920274505@fluff.org.uk>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] Fix register programming in Freescale
+ MPC8610 HPCD sound driver
+Date: Mon, 23 Jun 2008 11:41:13 -0500
+Message-ID: <485FD229.1090102@freescale.com>
+References: <1213383751-17284-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 39C6B248CC
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id A83DD103872
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Jun 2008 16:42:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080623115406.920274505@fluff.org.uk>
+	Mon, 23 Jun 2008 18:41:18 +0200 (CEST)
+In-Reply-To: <1213383751-17284-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-alsa@fluff.org>
-Cc: alsa-devel@alsa-project.org, Ben Dooks <ben-linux@fluff.org>
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 23, 2008 at 12:54:07PM +0100, Ben Dooks wrote:
-> Add SPI support to the WM8750 ASoC codec by splitting
-> the I2C out of the WM8750 codec and adding an standard
-> SPI driver to the system.
+Timur Tabi wrote:
+> Fix the Freescale MPC8610 HPCD sound driver so that it programs the DMACR
+> and PMUXCR registers in the global utilities correctly.
+> 
+> Signed-off-by: Timur Tabi <timur@freescale.com>
+> ---
+> 
+> This patch is for 2.6.26.  A similar fix has already been made in the ASOC V2
+> repository.  
 
-This looks good.  My only substantial concern with it is that it means
-that this driver isn't consistent with the other codec drivers since
-there are now three modules built for it - one for the core and one for
-each bus type.  Would it be possible to integrate the SPI support into
-the main WM8750 driver or are there substantial drawbacks from doing
-that?  The main thing is ending up loading SPI when it's not needed but
-I'm not sure how big a cost that is or if there's anything else?
+Is this patch going to get picked up for 2.6.26?  I posted it 10 days ago, but
+it looks like no one noticed.
 
-Also (very minor, but it'll get picked up on):
-
-> -static int wm8750_suspend(struct platform_device *pdev, pm_message_t state)
-> +int wm8750_suspend(struct platform_device *pdev, pm_message_t state)
->  {
->  	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
->  	struct snd_soc_codec *codec = socdev->codec;
-> @@ -760,7 +759,9 @@ static int wm8750_suspend(struct platfor
->  	return 0;
->  }
->  
-> -static int wm8750_resume(struct platform_device *pdev)
-> +EXPORT_SYMBOL_GPL(wm8750_suspend);
-
-checkpatch will want there to be no space between the function and the
-EXPORT_SYMBOL_GPL() for it.
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
