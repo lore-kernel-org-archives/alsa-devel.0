@@ -1,19 +1,18 @@
-From: =?UTF-8?B?TWFydGluIEtyw7xnZXI=?= <m_a_krueger@gmx.de>
-Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
- SOLVED(?)
-Date: Tue, 24 Jun 2008 13:07:42 +0200
-Message-ID: <4860D57E.10509@gmx.de>
-References: <20080520112539.81C9D2484D@alsa0.perex.cz>	<m2bq2xtixw.fsf@vador.mandriva.com>	<483847ED.8050208@gmx.de>	<483A6D6F.1050108@insite.cz>	<483A96E8.8090507@gmx.de>	<s5hbq2tunel.wl%tiwai@suse.de>	<483AE54C.3090807@gmx.de>	<483D48DE.1010105@gmx.de>	<483E78E7.4020106@insite.cz>	<20080529140349.115520@gmx.net>
-	<483ED652.6020805@insite.cz> <484AFF77.3030901@insite.cz>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH 1/2] wss_lib: move cs4231_lib into wss_lib
+Date: Tue, 24 Jun 2008 18:47:40 +0200
+Message-ID: <20080624184740.b927c3c4.krzysztof.h1@poczta.fm>
+References: <20080619230718.044b7905.krzysztof.h1@poczta.fm>
+	<485EECB5.4070808@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id A11A4245AF
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 25E2F24A1A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Jun 2008 13:07:44 +0200 (CEST)
-In-Reply-To: <484AFF77.3030901@insite.cz>
+	Tue, 24 Jun 2008 18:44:13 +0200 (CEST)
+In-Reply-To: <485EECB5.4070808@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,65 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@insite.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Pavel Hofman schrieb:
-> Pavel Hofman wrote:
->
-> Ubuntu Studio 7.10 with kernel upgraded to 2.6.25 according to 
-> http://74.125.39.104/search?q=cache:0fDGNG0KRbwJ:forum.zackyfiles.com/showthread.php%3Fp%3D3351188+gutsy+2.6.25+package&hl=en&ct=clnk&cd=1 
->
->
-> Latest download of alsa from git, compiled by ./gitcompile.
->
-> Ancient Duron 1GHz, Audiotrak Prodigy 192
->
-> Both MIDI input (amidi -p hw:0 -d) and output (amidi -p hw:0 -S 
-> F0411042110C000000000074FF0411042110C0000000000\
-> 74F7F0411042110C000000000074F7F0411042110C0F0411\
-> 042110C000000000074FF0411042110C000000000074F7F0\
-> 411042110C000000000074F7F0411042110C0)
-> work fine, no problems.
->
-> Regards,
->
-> Pavel.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->   
+On Mon, 23 Jun 2008 02:22:13 +0200
+Rene Herman <rene.herman@keyaccess.nl> wrote:
 
+> On 19-06-08 23:07, Krzysztof Helt wrote:
+> 
+> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> > 
+> > Move the file sound/isa/cs423x/cs4231_lib.c 
+> > into sound/isa/cs423x/wss_lib.c
+> > This is the first step toward merging all libraries
+> > for Windows Sound System compatible chips
+> > into a single library.
+> > 
+> > Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+> 
+> Acked-by: Rene Herman <rene.herman@gmail.com>
+> 
+> Only small request:
+> 
+> > diff -urNp linux-alsa/sound/isa/wss/Makefile linux-mm/sound/isa/wss/Makefile
+> > --- linux-alsa/sound/isa/wss/Makefile	1970-01-01 01:00:00.000000000 +0100
+> > +++ linux-mm/sound/isa/wss/Makefile	2008-06-15 22:38:44.705642447 +0200
+> > @@ -0,0 +1,10 @@
+> > +#
+> > +# Makefile for ALSA
+> > +# Copyright (c) 2008 by Krzysztof Helt <krzysztof.h1@wp.pl>
+> > +#
+> > +
+> > +snd-wss-lib-objs := wss_lib.o
+> > +
+> > +# Toplevel Module Dependency
+> > +obj-$(CONFIG_SND_WSS_LIB) += snd-wss-lib.o
+> > +
+> 
+> Could you maybe "donate" the copyright on this Makefile to Jaroslav Kysela?
+> 
 
-Hi Pavel,
+I don't mind. I'll repost the patch with only this change.
 
-sorry for the long break, i was really busy at studying.
+Regards,
+Krzysztof
 
-The problem still exists for me, and i tried to debug it a bit by adding 
-printk's to the rawmidi module.
-Unfortunatly, i am more confused at this problem than ever before.
-
-I added printk("some text"); to the following subroutines:
-
-- int snd_rawmidi_transmit
-- snd_rawmidi_kernel_write1
-- snd_rawmidi_kernel_write
-
-As i read the source, these routines should be the ones who do all the 
-midi output to the device. And the printk's should appear in the 
-kern.log files.
-Please tell me, if i am wrong here.
-But none of the printk outputs appear in the logging. I added some 
-outputs similar to the other ones to the Midi Input procedures, and 
-everything works fine.
-
-Does amidi write directly to the routines above? Or is there some Stuff 
-between? I tried to read the amidi source, but my C/C++ knowledge is 
-very poor, i am more on the java side of code...
-
-Perhaps you have an idea where to start the debugging, to find that bug...
-
-Thanks a lot,
-Martin
+----------------------------------------------------------------------
+Mieszkasz w USA? Zobacz portal dla Polonii!
+kliknij >>> http://link.interia.pl/f1e36
