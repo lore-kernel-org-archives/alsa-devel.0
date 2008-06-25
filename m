@@ -1,19 +1,20 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [asoc-dev][RFC/PATCH 3/3] ASoC: Add digital
-	mic	configuration to N810 machine driver
-Date: Wed, 25 Jun 2008 13:06:10 +0100
-Message-ID: <1214395571.3877.64.camel@localhost.localdomain>
-References: <1214395127-7169-1-git-send-email-jarkko.nikula@nokia.com>
-	<1214395127-7169-4-git-send-email-jarkko.nikula@nokia.com>
+From: "Claudio Matsuoka" <cmatsuoka@gmail.com>
+Subject: Re: No sound on MacBook 3.1
+Date: Wed, 25 Jun 2008 09:11:50 -0300
+Message-ID: <5f52f6d70806250511t6fdb21d4hf7e2eff79a4a053@mail.gmail.com>
+References: <1214384314.21257.12.camel@blackadder.site>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 21D662434D
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.168])
+	by alsa0.perex.cz (Postfix) with ESMTP id 501A924369
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 14:06:28 +0200 (CEST)
-In-Reply-To: <1214395127-7169-4-git-send-email-jarkko.nikula@nokia.com>
+	Wed, 25 Jun 2008 14:11:56 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id u40so93095ugc.50
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2008 05:11:55 -0700 (PDT)
+In-Reply-To: <1214384314.21257.12.camel@blackadder.site>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>, Takashi Iwai <tiwai@suse.de>
+To: Marco Vermeulen <vermeulen.mp@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2008-06-25 at 14:58 +0300, Jarkko Nikula wrote:
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-> ---
->  sound/soc/omap/n810.c |   34 ++++++++++++++++++++++++++++++++++
->  1 files changed, 34 insertions(+), 0 deletions(-)
+On Wed, Jun 25, 2008 at 5:58 AM, Marco Vermeulen <vermeulen.mp@gmail.com> wrote:
 
-All 3 look fine. Thanks.
+> I purchased a Macbook 3.1 earlier this year. On installing Linux, I
+> haven't been able to get any sound going. I've tried several
+> distributions: Ubuntu Hardy, Fedora 8/9, and now openSuse.
 
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+I received a contribution of a Macbook 3.1 codec data from Leonardo
+Boiko (leoboiko at the same domain as yours), perhaps you could
+contact him to see what he did to have sound working.
+
+Best regards,
+Claudio
