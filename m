@@ -1,20 +1,20 @@
-From: Marco Vermeulen <vermeulen.mp@gmail.com>
-Subject: Re: No sound on MacBook 3.1
-Date: Thu, 26 Jun 2008 00:08:40 +0100
-Message-ID: <7D07D569-9984-4D79-8FD0-9D83C8EC7F27@gmail.com>
-References: <1214384314.21257.12.camel@blackadder.site>
-	<48627AD7.4070109@cox.net>
-Mime-Version: 1.0 (iPod Mail 4A102)
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: ALSA with Ubuntu 8.04
+Date: Thu, 26 Jun 2008 11:47:13 +1200
+Message-ID: <4862D901.4070700@audioscience.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 583F824500
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05159244FC
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jun 2008 01:08:55 +0200 (CEST)
-Received: by nf-out-0910.google.com with SMTP id e27so154656nfd.32
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2008 16:08:54 -0700 (PDT)
-In-Reply-To: <48627AD7.4070109@cox.net>
+	Thu, 26 Jun 2008 01:47:21 +0200 (CEST)
+Received: from [192.168.1.4]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0K3100B0GM2SPP20@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 26 Jun 2008 11:47:16 +1200 (NZST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: stan <ghjeold_i_mwee@cox.net>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-I just wanted to let everyone know that I got it working on my  
-Macbook. I got hold of Leonardo, and we compared specs (to rule out  
-that my machine was some fringe case). It turned out that we had  
-identical machines...
+This just an FYI
 
-Next up I started playing with the module options, restarted the alsa  
-daemon and then it worked!
+In Ubuntu 8.04, ubuntu has packaged alsa-drivers including some out of 
+tree drivers in a separate package: linux-ubuntu-modules-$kernelver
 
-Thanks for pointing me in the right direction!
+This gets installed in /lib/modules/$kernelver/ubuntu/sound
 
-One last thing: my volume in Linux seems far lower than in OSX. All  
-the faders are on max, yet the volume remains low. Any ideas how I  
-might boost this?
+The only things installed in /lib/modules/$kernelver/sound are 
+soundcore.ko and ac97_bus.ko
 
-Thanks again,
-Marco.
+However, when you do a default "make install" from alsa-driver source, 
+the modules get installed in /lib/modules/$kernelver/kernel/sound
 
-On 25 Jun 2008, at 18:05, stan wrote:
->>
->>
->>
->>
-> It looks like you should have sound.  Alsa is recognizing your card  
-> and loading the driver.
->
-> You could upgrade to alsa 1.0.17.RC2 to see if that helps.
-> You could try sending parameters to the driver load (3-stack, 6- 
-> stack, etc.) to see if that helps.
->
-> Also try aplay -D plughw:0,0  some.wav to see if there is any sound.
->
-> Are you running any sound servers?  They can interfere if the rest  
-> of the system isn't compatible with them.
->
-> Maybe someone else here knows exactly what is wrong.
+So, now there are 2 copies of the drivers in different places.
+
+I have taken to removing (moving away to say /root) 
+/lib/modules/$kernelver/ubuntu/sound to avoid any confusion and some odd 
+module versioning problems that I was having.
+
+regards
+
+Eliot.
