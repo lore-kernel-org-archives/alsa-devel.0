@@ -1,21 +1,22 @@
 From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: [asoc-dev][RFC/PATCH 1/2] ASoC: Add support for
-	generic DAPM register modifier widget
-Date: Wed, 25 Jun 2008 14:42:07 +0300
-Message-ID: <1214394128-7062-2-git-send-email-jarkko.nikula@nokia.com>
+Subject: [asoc-dev][RFC/PATCH 2/2] ASoC: TLV320AIC3X: Use
+	register modifier widget for mic bias
+Date: Wed, 25 Jun 2008 14:42:08 +0300
+Message-ID: <1214394128-7062-3-git-send-email-jarkko.nikula@nokia.com>
 References: <1214394128-7062-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32E2C24359
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5996E24359
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 13:42:18 +0200 (CEST)
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-mx09.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m5PBd8Op031825
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2008 06:42:12 -0500
+	Wed, 25 Jun 2008 13:42:49 +0200 (CEST)
+Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
+	[10.160.244.31])
+	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m5PBgSDF009270
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2008 14:42:45 +0300
 In-Reply-To: <1214394128-7062-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,83 +31,31 @@ To: alsa-devel@alsa-project.org
 Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-This generic register modifier widget is for updating multiple codec
-register bits at once when the widget changes its power state.
-
 Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
 ---
- include/sound/soc-dapm.h |   14 ++++++++++++++
- sound/soc/soc-dapm.c     |   19 +++++++++++++++++++
- 2 files changed, 33 insertions(+), 0 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index f8223fa..b284953 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -130,6 +130,13 @@
- {	.id = snd_soc_dapm_adc, .name = wname, .sname = stname, .reg = wreg, \
- 	.shift = wshift, .invert = winvert}
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 528c26a..0c7452f 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -456,10 +456,12 @@ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
+ 			 &aic3x_right_line2_mux_controls),
  
-+/* generic register modifier widget */
-+#define SND_SOC_DAPM_REG(wid, wname, wreg, wshift, wmask, won_val, woff_val) \
-+{	.id = wid, .name = wname, .kcontrols = NULL, .num_kcontrols = 0, \
-+	.reg = -((wreg) + 1), .shift = wshift, .mask = wmask, \
-+	.on_val = won_val, .off_val = woff_val, .event = dapm_reg_event, \
-+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD}
-+
- /* dapm kcontrol types */
- #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-@@ -227,6 +234,10 @@ int snd_soc_dapm_set_bias_level(struct snd_soc_device *socdev,
- /* dapm sys fs - used by the core */
- int snd_soc_dapm_sys_add(struct device *dev);
+ 	/* Mic Bias */
+-	SND_SOC_DAPM_MICBIAS("Mic Bias 2V", MICBIAS_CTRL, 6, 0),
+-	SND_SOC_DAPM_MICBIAS("Mic Bias 2.5V", MICBIAS_CTRL, 7, 0),
+-	SND_SOC_DAPM_MICBIAS("Mic Bias AVDD", MICBIAS_CTRL, 6, 0),
+-	SND_SOC_DAPM_MICBIAS("Mic Bias AVDD", MICBIAS_CTRL, 7, 0),
++	SND_SOC_DAPM_REG(snd_soc_dapm_micbias, "Mic Bias 2V",
++			 MICBIAS_CTRL, 6, 3, 1, 0),
++	SND_SOC_DAPM_REG(snd_soc_dapm_micbias, "Mic Bias 2.5V",
++			 MICBIAS_CTRL, 6, 3, 2, 0),
++	SND_SOC_DAPM_REG(snd_soc_dapm_micbias, "Mic Bias AVDD",
++			 MICBIAS_CTRL, 6, 3, 3, 0),
  
-+/* event handler for register modifier widget - used by the soc-dapm */
-+int dapm_reg_event(struct snd_soc_dapm_widget *w,
-+		   struct snd_kcontrol *kcontrol, int event);
-+
- /* dapm audio endpoint control */
- int snd_soc_dapm_set_endpoint(struct snd_soc_codec *codec,
- 	char *pin, int status);
-@@ -298,6 +309,9 @@ struct snd_soc_dapm_widget {
- 	unsigned char shift;			/* bits to shift */
- 	unsigned int saved_value;		/* widget saved value */
- 	unsigned int value;				/* widget current value */
-+	unsigned int mask;			/* non-shifted mask */
-+	unsigned int on_val;			/* on state value */
-+	unsigned int off_val;			/* off state value */
- 	unsigned char power:1;			/* block power status */
- 	unsigned char invert:1;			/* invert the power bit */
- 	unsigned char active:1;			/* active stream on DAC, ADC's */
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 728f3ac..2536382 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -443,6 +443,25 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
- }
- 
- /*
-+ * Handler for generic register modifier widget.
-+ */
-+int dapm_reg_event(struct snd_soc_dapm_widget *w,
-+		   struct snd_kcontrol *kcontrol, int event)
-+{
-+	unsigned int val;
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		val = w->on_val;
-+	else
-+		val = w->off_val;
-+
-+	snd_soc_update_bits(w->codec, -(w->reg + 1),
-+			    w->mask << w->shift, val << w->shift);
-+
-+	return 0;
-+}
-+
-+/*
-  * Scan each dapm widget for complete audio path.
-  * A complete path is a route that has valid endpoints i.e.:-
-  *
+ 	/* Left PGA to Left Output bypass */
+ 	SND_SOC_DAPM_MIXER("Left PGA Bypass Mixer", SND_SOC_NOPM, 0, 0,
 -- 
 1.5.5.4
