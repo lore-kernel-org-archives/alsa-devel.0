@@ -1,18 +1,19 @@
 From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [asoc-dev][RFC/PATCH 0/2] Generic DAPM
-	register	modifier widget
-Date: Wed, 25 Jun 2008 13:01:20 +0100
-Message-ID: <1214395280.3877.61.camel@localhost.localdomain>
-References: <1214394128-7062-1-git-send-email-jarkko.nikula@nokia.com>
+Subject: Re: [asoc-dev][RFC/PATCH 3/3] ASoC: Add digital
+	mic	configuration to N810 machine driver
+Date: Wed, 25 Jun 2008 13:06:10 +0100
+Message-ID: <1214395571.3877.64.camel@localhost.localdomain>
+References: <1214395127-7169-1-git-send-email-jarkko.nikula@nokia.com>
+	<1214395127-7169-4-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 297052438D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 21D662434D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 14:01:37 +0200 (CEST)
-In-Reply-To: <1214394128-7062-1-git-send-email-jarkko.nikula@nokia.com>
+	Wed, 25 Jun 2008 14:06:28 +0200 (CEST)
+In-Reply-To: <1214395127-7169-4-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
+To: Jarkko Nikula <jarkko.nikula@nokia.com>, Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2008-06-25 at 14:42 +0300, Jarkko Nikula wrote:
-> Hi
-> 
-> At least tlv320aic3x codec has several use cases where multiple register
-> bits are needed to change when widget power state changes and where
-> these are not worth/safe to expose into user space. Like mic bias
-> voltage.
-> 
-> Currently there is one use case for this multiple bit change in tlv320aic3x:
-> 
-> 	SND_SOC_DAPM_MICBIAS("Mic Bias AVDD", MICBIAS_CTRL, 6, 0),
-> 	SND_SOC_DAPM_MICBIAS("Mic Bias AVDD", MICBIAS_CTRL, 7, 0),
-> 
-> There are two problems with that:
-> 
-> 1. Two widgets having the same name and thus snd_soc_dapm_add_route will
->    add only first one them into audio path
-> 2. Even then bits aren't modified at once and thus some fault bit
->    configuration might be present while power state is changing.
-> 
-> So I came with this idea of generic register modifiers widget and event
-> handler for it.
-> 
+On Wed, 2008-06-25 at 14:58 +0300, Jarkko Nikula wrote:
+> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+> ---
+>  sound/soc/omap/n810.c |   34 ++++++++++++++++++++++++++++++++++
+>  1 files changed, 34 insertions(+), 0 deletions(-)
 
-Any chance you could also add a little text to
-Docs/sound/alsa/soc/dapm.txt for this.
+All 3 look fine. Thanks.
 
-Thanks
-
-Liam
+Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
