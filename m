@@ -1,21 +1,17 @@
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-Subject: sw parameter boundary
-Date: Wed, 25 Jun 2008 10:44:19 +0200
-Message-ID: <48620563.3050207@aimvalley.nl>
+From: Marco Vermeulen <vermeulen.mp@gmail.com>
+Subject: No sound on MacBook 3.1
+Date: Wed, 25 Jun 2008 09:58:34 +0100
+Message-ID: <1214384314.21257.12.camel@blackadder.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr10.xs4all.nl (smtp-vbr10.xs4all.nl [194.109.24.30])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B29A103828
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.168])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0CCD10383C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 10:44:30 +0200 (CEST)
-Received: from mail3.aimsys.nl (a80-127-156-242.adsl.xs4all.nl
-	[80.127.156.242])
-	by smtp-vbr10.xs4all.nl (8.13.8/8.13.8) with ESMTP id m5P8iOrm046254
-	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 10:44:29 +0200 (CEST)
-	(envelope-from nvbolhuis@aimvalley.nl)
+	Wed, 25 Jun 2008 10:58:38 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id u40so75726ugc.50
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2008 01:58:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,17 +24,17 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-is the boundary sw parameter still used ?
-where is it for ?
-
-in the PCM kernel core (e.g. snd_pcm_playback_avail) it clearly serves
-as a pointers wrap point, but which one ?
-The one at the end of the DMA buffer or the one at the end of a process
-(virtual) address range (4 GB) ?
-
-
-
-
--- 
-This message has been scanned for viruses and is believed to be clean
+77u/SGkgdGhlcmUsCgpJIGhvcGUgdGhhdCBzb21lb25lIGNhbiBoZWxwIG1lLCBhcyBJJ3ZlIHRy
+aWVkIGV2ZXJ5dGhpbmcgY29uY2VpdmFibGUgdG8KZ2V0IHNvdW5kIHdvcmtpbmcgb24gbXkgTWFj
+Ym9vayAzLjEuIEkndmUgdmlzaXRlZCBtYW55IGEgZm9ydW0sIGFuZApldmVudHVhbGx5IGNhbWUg
+YWNyb3NzIHRoaXMgbGlzdC4gTXkgbGFzdCBob3BlIDopCgpJIHB1cmNoYXNlZCBhIE1hY2Jvb2sg
+My4xIGVhcmxpZXIgdGhpcyB5ZWFyLiBPbiBpbnN0YWxsaW5nIExpbnV4LCBJCmhhdmVuJ3QgYmVl
+biBhYmxlIHRvIGdldCBhbnkgc291bmQgZ29pbmcuIEkndmUgdHJpZWQgc2V2ZXJhbApkaXN0cmli
+dXRpb25zOiBVYnVudHUgSGFyZHksIEZlZG9yYSA4LzksIGFuZCBub3cgb3BlblN1c2UuIEkgY2Ft
+ZSBhY3Jvc3MKYSBzY3JpcHQgdGhhdCB1cGxvYWRzIGxvY2FsIHJlbGV2YW50IGluZm9ybWF0aW9u
+IHRvIGEgcGFzdGUgYmluLCBzbwpoZXJlJ3MgYSBsaW5rOgpodHRwOi8vcGFzdGViaW4uY2EvMTA1
+NTYxMAoKUGxlYXNlIGhlbHAsIEknbSBkZXNwZXJhdGUgdG8gZ2V0IHRoaXMgZ29pbmcgb24gbXkg
+bWFjaGluZSEKVGhhbmtzICYgUmVnYXJkcywKTWFyY28uCgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
