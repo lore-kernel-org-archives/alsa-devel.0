@@ -1,19 +1,25 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [asoc-dev][RFC/PATCH 1/2] ASoC: Add support
-	for	generic DAPM register modifier widget
-Date: Wed, 25 Jun 2008 12:59:14 +0100
-Message-ID: <1214395154.3877.56.camel@localhost.localdomain>
-References: <1214394128-7062-1-git-send-email-jarkko.nikula@nokia.com>
-	<1214394128-7062-2-git-send-email-jarkko.nikula@nokia.com>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: [asoc-dev][RFC/PATCH 0/3] Add digital mic support to
+	TLV320AIC3X and N810
+Date: Wed, 25 Jun 2008 14:58:44 +0300
+Message-ID: <1214395127-7169-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 162A024367
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6912D2437B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 13:59:41 +0200 (CEST)
-In-Reply-To: <1214394128-7062-2-git-send-email-jarkko.nikula@nokia.com>
+	Wed, 25 Jun 2008 13:59:48 +0200 (CEST)
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-mx06.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m5PBxJqI008372
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2008 14:59:46 +0300
+Received: from localhost.localdomain (esdhcp04052.research.nokia.com
+	[172.21.40.52])
+	by mgw-int01.ntc.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	m5PBwRgg003837
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2008 14:58:27 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +29,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2008-06-25 at 14:42 +0300, Jarkko Nikula wrote:
-> This generic register modifier widget is for updating multiple codec
-> register bits at once when the widget changes its power state.
-> 
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+Hi
 
-Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+These patches are built on top of my recent generic register modifier widget
+patches:
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-June/008778.html
+
+Basically AIC3x will capture data either from its ADC converter or from
+external digital mic. Therefore I named this input selection in n810.c
+as "Input Select" == "ADC" | "Digital Mic".
+
+
+-- 
+Jarkko
