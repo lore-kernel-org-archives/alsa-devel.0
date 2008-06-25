@@ -1,27 +1,22 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Still have choppy audio using 1.0.17
-Date: Wed, 25 Jun 2008 08:24:33 -0300
-Message-ID: <48622AF1.3000304@tet.com.br>
-References: <4856C768.1060404@tet.com.br>
-	<485952C5.30307@tet.com.br>	<485965B0.9020102@tet.com.br>
-	<485A58A1.6040002@tet.com.br>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: [asoc-dev][RFC/PATCH 1/2] ASoC: Add support for
+	generic DAPM register modifier widget
+Date: Wed, 25 Jun 2008 14:42:07 +0300
+Message-ID: <1214394128-7062-2-git-send-email-jarkko.nikula@nokia.com>
+References: <1214394128-7062-1-git-send-email-jarkko.nikula@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35D502434E
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32E2C24359
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 13:23:36 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 6D1CCDE83DF
-	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 08:23:33 -0300 (BRST)
-Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 1B547DE8035
-	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Jun 2008 08:23:30 -0300 (BRST)
-In-Reply-To: <485A58A1.6040002@tet.com.br>
+	Wed, 25 Jun 2008 13:42:18 +0200 (CEST)
+Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
+	by mgw-mx09.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m5PBd8Op031825
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2008 06:42:12 -0500
+In-Reply-To: <1214394128-7062-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,84 +27,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-SWYgSSBrZWVwIHRoZSBkaWZmZXJlbmNlIGJldHdlZW4gdGhlIHBsYXliYWNrIGFuZCBjYXB0dXJl
-IHBvaW50ZXJzIGF0IApvbmUgcGVyaW9kLCBubyBjaG9wcHkgYXVkaW8gb2NjdXJzLiBJZiB0aGUg
-ZGlmZmVyZW5jZSBpcyAwLCAyIG9yIDUgCnBlcmlvZHMgZm9yIGV4YW1wbGUsIGNob3BweSBhdWRp
-byB3aWxsIGFsd2F5cyBvY2N1ci4gQW55IGlkZWFzIHdoeT8KCgpHdXN0YXZvIGRhIFNpbHZhIFNl
-cnJhIGVzY3JldmV1Ogo+IElzIGl0IHBvc3NpYmxlIHRvIGRldGVjdCB0aGlzIHNpdHVhdGlvbiB3
-aXRoIGFsc2EgQVBJLCBpLmUuLCBhdCAKPiBhcHBsaWNhdGlvbiBsZXZlbD8KPgo+IFRoYW5rcy4K
-Pgo+IEd1c3Rhdm8gZGEgU2lsdmEgU2VycmEgZXNjcmV2ZXU6Cj4gICAKPj4gSSBoYXZlIGRpc2Nv
-dmVyZWQgc29tZXRoaW5nIGVsc2U6IEkgYW0gZGlzcGxheSB0aGUgY3VycmVudCBidWZmZXIgCj4+
-IHBvaW50ZXIgKGNhcHR1cmUgcG9pbnRlciBhbmQgYnVmZmVyIHBvaW50ZXIpLCB3aGVuIGNob3Bw
-eSBhdWRpbyBvY2N1cnMgCj4+IHRoZSBwbGF5YmFjayBwb2ludGVyIGlzIHByaW50ZWQgYXMgYSBn
-aXZlbiB2YWx1ZSBhbmQsIGFmdGVyLCB0aGUgY2FwdHVyZSAKPj4gcG9pbnRlciBoYXMgdGhlIHNh
-bWUgdmFsdWUuIEZvciBleGFtcGxlLCBhIG5vcm1hbCBzaXR1YXRpb24gd291bGQgYmU6Cj4+Cj4+
-IFBsYXliYWNrIHBvaW50ZXI6IDMwMDAKPj4gQ2FwdHVyZSBwb2ludGVyOiAxMDAwCj4+IFBsYXli
-YWNrIHBvaW50ZXI6IDQwMDAKPj4gQ2FwdHVyZSBwb2ludGVyOiAyMDAwCj4+IFBsYXliYWNrIHBv
-aW50ZXI6IDAwMDAKPj4gQ2FwdHVyZSBwb2ludGVyOiAzMDAwCj4+Cj4+IEEgY2hvcHB5IGF1ZGlv
-IHNpdHVhdGlvbiB3b3VsZCBiZToKPj4KPj4gUGxheWJhY2sgcG9pbnRlcjogMzAwMAo+PiBDYXB0
-dXJlIHBvaW50ZXI6IDMwMDAKPj4gUGxheWJhY2sgcG9pbnRlcjogNDAwMAo+PiBDYXB0dXJlIHBv
-aW50ZXI6IDQwMDAKPj4gUGxheWJhY2sgcG9pbnRlcjogMDAwMAo+PiBDYXB0dXJlIHBvaW50ZXI6
-IDAwMDAKPj4KPj4gVGhlIGZvbGxvd2luZyBzaXR1YXRpb24gaXMgTk9UIGNob3BweToKPj4KPj4g
-Q2FwdHVyZSBwb2ludGVyOiAzMDAwCj4+IFBsYXliYWNrIHBvaW50ZXI6IDMwMDAKPj4gQ2FwdHVy
-ZSBwb2ludGVyOiA0MDAwCj4+IFBsYXliYWNrIHBvaW50ZXI6IDQwMDAKPj4gQ2FwdHVyZSBwb2lu
-dGVyOiAwMDAwCj4+IFBsYXliYWNrIHBvaW50ZXI6IDAwMDAKPj4KPj4gVGhhbmtzIGFueSByZXBs
-eS4KPj4KPj4gR3VzdGF2byBkYSBTaWx2YSBTZXJyYSBlc2NyZXZldToKPj4gICAKPj4gICAgIAo+
-Pj4gSSBhbSB0cmFjaW5nIGFsb29wIGV4ZWN1dGlvbiBhbmQgdGhlIGNob3BweSBhdWRpbyBoYXBw
-ZW5zIHdoZW4gYW4gCj4+PiBhcHBsaWNhdGlvbiAoY2FwdHVyZSBvciBwbGF5YmFjaykgb3BlbnMg
-dGhlIGRldmljZSB3aGlsZSBhbm90aGVyIG9uZSBpcyAKPj4+IGNhcHR1cmluZyBvciBwbGF5aW5n
-LiBJdCBzZWVtcyB0byBtZSwgSSBtYXkgYmUgY29tcGxldGVseSB3cm9uZywgdGhhdCAKPj4+IHRo
-ZSBwcm9ibGVtIGNvdWxkIGJlIGEgc3luY2hyb25pemF0aW9uIGlzc3VlIChhIGNyaXRpY2FsIHJl
-Z2lvbiB3aXRoIG5vIAo+Pj4gbXV0ZXhlcywgZm9yIGluc3RhbmNlKS4gSSBhbmFseXNlZCB0aGUg
-c291bmQgd2F2ZSB3aXRoIEF1ZGFjaXR5IHdoaWxlIGluIAo+Pj4gY2hvcHB5IGF1ZGlvIGNvbmRp
-dGlvbiBhbmQgSSByZWFsaXplZCB0aGF0IHRoZXJlIGFyZSBzaWxlbnQgZ2FwcywgCj4+PiBtaWxp
-c2Vjb25kcyB3aXRoIG5vIHNvdW5kIGF0IGFsbCAoYXMgaWYgc29tZSBidWZmZXIgcG9pbnRlciB3
-YXMgbG9zdCwgCj4+PiBmb3IgZXhhbXBsZSkuCj4+Pgo+Pj4gSSBoYXZlbid0IHJlY2VpdmVkIGFu
-eSBhbnN3ZXIgZnJvbSB5b3UgPSgKPj4+IFdoYXQgZG8geW91IHRoaW5rIHRoYXQgaXMgaGFwcGVu
-aW5nPwo+Pj4KPj4+IFRoYW5rcyBpbiBhZHZhbmNlLgo+Pj4KPj4+IEd1c3Rhdm8gZGEgU2lsdmEg
-U2VycmEgZXNjcmV2ZXU6Cj4+PiAgIAo+Pj4gICAgIAo+Pj4gICAgICAgCj4+Pj4gSSBoYXZlIGJl
-ZW4gdHJ5aW5nIGZvciBtYW55IHdlZWtzIHRvIHNvbHZlIHRoaXMgcHJvYmxlbSwgYnV0IHdpdGgg
-bm8gCj4+Pj4gc3VjY2Vzcy4gQWZ0ZXIgdXBkYXRpbmcgdG8gQWxzYSAxLjAuMTcsIHdoaWNoIGlu
-Y2x1ZGUgY2hhbmdlcyB0byBhbG9vcCwgCj4+Pj4gSSBzdGlsbCBoYXZlIGNob3BweSBhdWRpby4g
-SSB3aWxsIHRyeSB0byBzdW1tYXJpemUgd2hhdCBoYXBwZW5zOgo+Pj4+Cj4+Pj4gLSBJIG5lZWQg
-dG8gdXNlIGFsb29wLCBpZiBJIGNoYW5nZSB0byBhIHNvdW5kIGNhcmQgYWxsIHRoZSBwcm9ibGVt
-cyBhcmUgCj4+Pj4gZ29uZTsKPj4+PiAtIEFmdGVyIHNvbWUgdGltZSBvZiBjb250aW51b3VzIHBs
-YXksIGFwcGxpY2F0aW9ucyBzdGFydCB0byByZXByb2R1Y2UgCj4+Pj4gY2hvcHB5IGF1ZGlvLiBD
-aG9wcHkgYXVkaW8gZG9lc24ndCBoYXBwZW5zIGFsbCB0aGUgdGltZTsKPj4+PiAtIElmIEkgcmVw
-ZWF0ZWRseSBzdGFydCBhbmQgc3RvcCBteSBzb3VuZCBjYXB0dXJlIGFwcGxpY2F0aW9uIGNob3Bw
-eSAKPj4+PiBhdWRpbyBvY2N1ciBzb29uZXI7Cj4+Pj4gLSBTdGFydC9zdG9wIG15IGFwcGxpY2F0
-aW9uIHJlc3RvcmVzIHRoZSBzb3VuZCBxdWFsaXR5IChhZnRlciBzb21lIHRyeWllcyk7Cj4+Pj4g
-LSBUaGlzIGhhcHBlbnMgd2l0aCBBTFNBIGFwcGxpY2F0aW9ucyAoeGluZSwgdmxjKSBhbmQgT1NT
-IGVtdWxhdGVkOwo+Pj4+IC0gSSBoYXZlIHRyeWllZCBtYW55IHBlcmlvZF9zaXplIGFuZCBidWZm
-ZXJfc2l6ZSBpbiBhc291bmQuY29uZiwgbm93IEkgCj4+Pj4gYW0gdXNpbmcgOTYwIGZvciBwZXJp
-b2QgYW5kIDM4NDAgZm9yIGJ1ZmZlci4gQXMgSSBkZWNyZWFzZSBwZXJpb2Qgc2l6ZSwgCj4+Pj4g
-dGhlIGF1ZGlvIHF1YWxpdHkgaW1wcm92ZXMsIGJ1dCBjaG9wcHkgYXVkaW8gc3RpbGwgaGFwcGVu
-czsKPj4+PiAtIEkgdGVzdCBmb3Igb3ZlcnJ1biBidXQgbm8gZXJyb3JzIG9jY3VyLgo+Pj4+IC0g
-SSBhbSB1c2luZyBibG9jayBtb2RlLCBpbnRlcmxlYXZlZCwgNDQxMDAsIDE2IGJpdCwgMiBjaGFu
-bmVscwo+Pj4+IC0gSSBhbSB1c2luZyBkbWl4LCBkc25vb3AsIHJlbW92aW5nIHRoZW0gZG9lcyBu
-b3QgY29ycmVjdCB0aGUgYXVkaW8KPj4+Pgo+Pj4+IFRoZXNlIGFyZSBzb21lIG9mIHRoZSBpbmZv
-cm1hdGlvbiBJIGhhdmUsIEkgZG9uJ3Qga25vdyBpZiBpcyBpcyBlbm91Z2guIAo+Pj4+IElmIG5l
-Y2Vzc2FyeSBJIGNhbiBwcm92aWRlIGFueSBvdGhlciBpbmZvcm1hdGlvbi4KPj4+PiBXaGF0IGRv
-IHlvdSBzdWdnZXN0IHRoYXQgSSBkbz8gQXJlIHRoZXJlIGFueSBrbm93biBpc3N1ZXMgb3IgCj4+
-Pj4gY29uZmlndXJhdGlvbiByZXF1aXJlbWVudHM/Cj4+Pj4KPj4+PiBUaGFua3MgaW4gYWR2YW5j
-ZS4KPj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-Pj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+Pj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCj4+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwKPj4+Pgo+Pj4+IF9fX19fX19fX18gTk9EMzIgMzE5MSAoMjAwODA2MTYpIElu
-Zm9ybWF0aW9uIF9fX19fX19fX18KPj4+Pgo+Pj4+IFRoaXMgbWVzc2FnZSB3YXMgY2hlY2tlZCBi
-eSBOT0QzMiBhbnRpdmlydXMgc3lzdGVtLgo+Pj4+IGh0dHA6Ly93d3cuZXNldC5jb20KPj4+Pgo+
-Pj4+Cj4+Pj4KPj4+PiAgIAo+Pj4+ICAgICAKPj4+PiAgICAgICAKPj4+PiAgICAgICAgIAo+Pj4g
-ICAKPj4+ICAgICAKPj4+ICAgICAgIAo+PiAgIAo+PiAgICAgCj4KPgo+ICAgCgoKLS0gCkd1c3Rh
-dm8gZGEgU2lsdmEgU2VycmEgICAgICAgIGd1c3Rhdm8uc2VycmFAdGV0LmNvbS5icgrigJTigJTi
-gJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTi
-gJTigJTigJTigJTigJTigJQKVG9vbHMgJiBUZWNobm9sb2dpZXMgLSBUJlQgRW5nZW5oZWlyb3Mg
-QXNzb2NpYWRvcyBMdGRhLgpQcm9qZXRvcyBkZSBTVyAmIEhXIC0gRGVzZW52b2x2ZW5kbyBzb2x1
-w6fDtWVzLgpSdWEgUmlhY2h1ZWxvLCAxMDk4IENvbmouIDEyMDQKQ2VudHJvIC0gUG9ydG8gQWxl
-Z3JlIC0gQ0VQIDkwMDEwLTI3MgpGb25lIEREUjogKDUxKTMyMjAtMzI5MApGb25lL0ZheDogKDUx
-KTMyMjAtMzIyMCAvIDMyMjAtMzIwNgpodHRwOi8vd3d3LnRldC5jb20uYnIvICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGV0QHRldC5jb20uYnIKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This generic register modifier widget is for updating multiple codec
+register bits at once when the widget changes its power state.
+
+Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
+---
+ include/sound/soc-dapm.h |   14 ++++++++++++++
+ sound/soc/soc-dapm.c     |   19 +++++++++++++++++++
+ 2 files changed, 33 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index f8223fa..b284953 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -130,6 +130,13 @@
+ {	.id = snd_soc_dapm_adc, .name = wname, .sname = stname, .reg = wreg, \
+ 	.shift = wshift, .invert = winvert}
+ 
++/* generic register modifier widget */
++#define SND_SOC_DAPM_REG(wid, wname, wreg, wshift, wmask, won_val, woff_val) \
++{	.id = wid, .name = wname, .kcontrols = NULL, .num_kcontrols = 0, \
++	.reg = -((wreg) + 1), .shift = wshift, .mask = wmask, \
++	.on_val = won_val, .off_val = woff_val, .event = dapm_reg_event, \
++	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD}
++
+ /* dapm kcontrol types */
+ #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+@@ -227,6 +234,10 @@ int snd_soc_dapm_set_bias_level(struct snd_soc_device *socdev,
+ /* dapm sys fs - used by the core */
+ int snd_soc_dapm_sys_add(struct device *dev);
+ 
++/* event handler for register modifier widget - used by the soc-dapm */
++int dapm_reg_event(struct snd_soc_dapm_widget *w,
++		   struct snd_kcontrol *kcontrol, int event);
++
+ /* dapm audio endpoint control */
+ int snd_soc_dapm_set_endpoint(struct snd_soc_codec *codec,
+ 	char *pin, int status);
+@@ -298,6 +309,9 @@ struct snd_soc_dapm_widget {
+ 	unsigned char shift;			/* bits to shift */
+ 	unsigned int saved_value;		/* widget saved value */
+ 	unsigned int value;				/* widget current value */
++	unsigned int mask;			/* non-shifted mask */
++	unsigned int on_val;			/* on state value */
++	unsigned int off_val;			/* off state value */
+ 	unsigned char power:1;			/* block power status */
+ 	unsigned char invert:1;			/* invert the power bit */
+ 	unsigned char active:1;			/* active stream on DAC, ADC's */
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 728f3ac..2536382 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -443,6 +443,25 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget)
+ }
+ 
+ /*
++ * Handler for generic register modifier widget.
++ */
++int dapm_reg_event(struct snd_soc_dapm_widget *w,
++		   struct snd_kcontrol *kcontrol, int event)
++{
++	unsigned int val;
++
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		val = w->on_val;
++	else
++		val = w->off_val;
++
++	snd_soc_update_bits(w->codec, -(w->reg + 1),
++			    w->mask << w->shift, val << w->shift);
++
++	return 0;
++}
++
++/*
+  * Scan each dapm widget for complete audio path.
+  * A complete path is a route that has valid endpoints i.e.:-
+  *
+-- 
+1.5.5.4
