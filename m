@@ -1,18 +1,19 @@
-From: Jerry Geis <geisj@pagestation.com>
-Subject: Re: seg fault with 1.0.17rc2
-Date: Thu, 26 Jun 2008 15:44:39 -0400
-Message-ID: <4863F1A7.70403@pagestation.com>
-References: <4863AA01.7080900@pagestation.com>	<s5hwskcp4w5.wl%tiwai@suse.de>	<4863BDCC.8010708@pagestation.com>	<s5hskv0p3qw.wl%tiwai@suse.de>	<4863C7E0.4000605@pagestation.com>	<s5hprq4p2dz.wl%tiwai@suse.de>	<4863CADC.8030802@pagestation.com>
-	<s5hlk0sp1ot.wl%tiwai@suse.de>
+From: =?ISO-8859-1?Q?Martin_Kr=FCger?= <m_a_krueger@gmx.de>
+Subject: Re: PATCH - MIDI on ice1724 - real-time kernel problem
+ SOLVED(?)
+Date: Thu, 26 Jun 2008 23:01:15 +0200
+Message-ID: <4864039B.7020405@gmx.de>
+References: <20080520112539.81C9D2484D@alsa0.perex.cz>	<m2bq2xtixw.fsf@vador.mandriva.com>	<483847ED.8050208@gmx.de>	<483A6D6F.1050108@insite.cz>	<483A96E8.8090507@gmx.de>	<s5hbq2tunel.wl%tiwai@suse.de>	<483AE54C.3090807@gmx.de>	<483D48DE.1010105@gmx.de>	<483E78E7.4020106@insite.cz>	<20080529140349.115520@gmx.net>	<483ED652.6020805@insite.cz>
+	<484AFF77.3030901@insite.cz> <4860D57E.10509@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from unifiedpaging.messagenetsystems.com (unknown [24.123.23.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4337C2417E
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id B5FAA10381B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jun 2008 21:44:45 +0200 (CEST)
-In-Reply-To: <s5hlk0sp1ot.wl%tiwai@suse.de>
+	Thu, 26 Jun 2008 23:01:17 +0200 (CEST)
+In-Reply-To: <4860D57E.10509@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,146 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Pavel Hofman <pavel.hofman@insite.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Martin Kr=FCger schrieb:
+> Hi Pavel,
+>
+> sorry for the long break, i was really busy at studying.
+>
+> ---snip---
+>
+> Thanks a lot,
+> Martin
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>   =
 
 
-Takashi Iwai wrote:
-> At Thu, 26 Jun 2008 12:59:08 -0400,
-> Jerry Geis wrote:
->   
->> Takashi Iwai wrote:
->>
->>     At Thu, 26 Jun 2008 12:46:24 -0400,
->>     Jerry Geis wrote:
->>
->>         Takashi Iwai wrote:
->>         
->>             At Thu, 26 Jun 2008 12:03:24 -0400,
->>             Jerry Geis wrote:
->>         
->>                 Takashi Iwai wrote:
->>         
->>                     At Thu, 26 Jun 2008 10:38:57 -0400,
->>                     Jerry Geis wrote:
->>         
->>                         #0  0xb7e892ff in memcpy () from /lib/tls/libc.so.6
->>                         #1  0xb74e40a9 in snd_pcm_area_copy (dst_area=0xb7125b70, dst_offset=0, 
->>                         src_area=0x81dc1c0, src_offset=170, samples=0, 
->>                         format=SND_PCM_FORMAT_S16_LE) at pcm.c:2589
->>         
->>                     samples = 0 and...
->>         
->>                         #2  0xb74e438d in snd_pcm_areas_copy (dst_areas=0xb7125b7c, 
->>                         dst_offset=0, src_areas=0x81dc1cc, src_offset=170, channels=1, 
->>                         frames=122, format=SND_PCM_FORMAT_S16_LE) at pcm.c:2736
->>         
->>                     ... here frames = 122.  Something inconsistent around here.
->>                     snd_pcm_areas_copy() must passe samples=frames when channels=1.
->>                     Could you check the values via gdb?
->>         
->>                     Takashi
->>         
->>                 Takashi,
->>                 
->>                 I am not sure what your asking me. The output I provided is gdb what else
->>                 can I check? Really anxious to get this USB sound device playing 
->>                 consistantly.
->>         
->>             Check whether frames still 122 in frame#1, for example.
->>         
->>                 Is there a better asound.conf to use?
->>         
->>             The strange thing is that the recent config for usb-audio also uses
->>             dmix/dsnoop.  And you don't get any errors with the system-default
->>             config?
->>         
->>             Takashi
->>         
->>         Takashi,
->>         
->>         checking frames still 122 in frame #1 is way over my expertise.
->>         
->>         With this asound.conf file It plays but choppy audio.
->>
->>     And doesn't it work if you don't define anything, just using the
->>     system default?
->>     
->>     The bug must be fixed, of course.  But I still don't see why you have
->>     to redefine the configuration...
->>
->>     Takashi
->>
->>         defaults.ctl.card 0
->>         defaults.pcm.card 0
->>         
->>         pcm.card0 {
->>           type hw
->>           card 0
->>         }
->>         
->>         pcm.dmixer {
->>           type dmix
->>           ipc_key 1025
->>           slave {
->>             pcm "hw:0,0"
->>             period_time 0
->>             period_size 2048
->>             buffer_size 32768
->>             rate 48000
->>           }
->>           bindings {
->>             0 0
->>             1 1
->>           }
->>         }
->>         pcm.skype {
->>           type asym
->>         
->>           playback.pcm "dmixer"
->>           capture.pcm "card0"
->>         }
->>         
->>         pcm.!default {
->>           type plug
->>           slave.pcm "skype"
->>         }
->>         
->>         Jerry
->>
->> No, thats what I am saying, when I remove the /etc/asound.conf file I get seg
->> faults.
->> When I run with the above file I get choppy audio but at least 15 times it
->> played with no fault.
->> I presume the system-default file is have no asound.conf file.
->>     
->
-> OK.  Also make sure that you have no ~/.asoundrc file.
->
->   
->> Now also, I am not just doing aplay, which seems to work everytime and audio
->> sounds fine.
->> I am using the console/dsp from asterisks and playing a wave file through that.
->> Does that help.
->>     
->
-> The best is to find a simpler test case, such as arecord, because
-> otherwise your problem cannot be reproduced on other environment
-> easily.
->
-> Not sure which format and sample rate asterisk is using, but you may
-> adjust parameters for arecord via command line options to fit with
-> asterisk, too.
->
->
-> Takashi
->
->   
+Hi again,
 
-I am not having any luck using arecord and aplay to simulate my problem.
+i did some other playing around this evening. (Debugging would be a word =
 
-Do you have any further suggestions?
+much too big...)
 
-Jerry
+I commented out the logic stuff in the following subroutines of the =
+
+ice1724.c:
+
+- static int vt1724_midi_output_open(struct snd_rawmidi_substream *s)
+- static int vt1724_midi_output_close(struct snd_rawmidi_substream *s)
+- static void vt1724_midi_output_trigger(struct snd_rawmidi_substream =
+
+*s, int up)
+- static void vt1724_midi_output_drain(struct snd_rawmidi_substream *s)
+
+The vt1724_enable_midi_irq(s, VT1724_IRQ_MPU_TX, 1) is killing my =
+
+kernel, i don't know why.
+On the input side everything works, so i am a bit confused. Again. ;-)
+
+I will continue debugging, at all this seems to be a good starting point =
+
+for me.
+
+It would be glad, if you could help me some way.
+
+Martin
