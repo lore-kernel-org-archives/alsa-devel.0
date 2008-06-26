@@ -1,29 +1,21 @@
-From: walt <w41ter@gmail.com>
-Subject: Re: ECS K7VTA3:  Mixer channels reversed [PATCH]
-Date: Thu, 26 Jun 2008 05:47:18 -0700
-Message-ID: <g40338$d49$1@ger.gmane.org>
-References: <g3paoc$41v$1@ger.gmane.org>
-	<s5hzlp97bvq.wl%tiwai@suse.de>	<4862DDE2.5020603@gmail.com>
-	<s5hskv04uee.wl%tiwai@suse.de>
+From: "Tony \"Chainsaw\" Vroon" <chainsaw@gentoo.org>
+Subject: Audigy bay protocol
+Date: Thu, 26 Jun 2008 14:11:55 +0100
+Message-ID: <1214485915.3972.32.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6401867370108392719=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDF00245C8
+Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id 150B124648
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jun 2008 14:46:47 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KBqs4-0000J3-Jb
-	for alsa-devel@alsa-project.org; Thu, 26 Jun 2008 12:46:40 +0000
-Received: from adsl-69-234-188-58.dsl.irvnca.pacbell.net ([69.234.188.58])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2008 12:46:40 +0000
-Received: from w41ter by adsl-69-234-188-58.dsl.irvnca.pacbell.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2008 12:46:40 +0000
-In-Reply-To: <s5hskv04uee.wl%tiwai@suse.de>
+	Thu, 26 Jun 2008 15:13:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by ganymede.vroon.org (Postfix) with ESMTP id 37E565B8355
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2008 14:13:09 +0100 (BST)
+Received: from [195.66.233.95] (amalthea.dyn.pbo.linx.net [195.66.233.95])
+	(Authenticated sender: tony@vroon.org)
+	by ganymede.vroon.org (Postfix) with ESMTP id C43C35B8345
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2008 14:12:59 +0100 (BST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,52 +28,92 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 25 Jun 2008 17:08:02 -0700,
-> walt wrote:
->> Takashi Iwai wrote:
->>> At Mon, 23 Jun 2008 16:15:05 -0700,
->>> walt wrote:
->>>> Hi list,
->>>>
->>>> I just replaced a mobo with an ECS K7VTA3 and I find that the
->>>> Headphones control is now controlling the master channel and the
->>>> Master control does nothing.
->>>>
->>>> I tried 'modprobe via82xx ac97_quirk=hp_only' but that makes the
->>>> audio device unusable (although alsamixer still seems happy to set
->>>> the individual channels).
->>> You mean that you don't hear any outputs?  Which I/O (HP out,
->>> line-out, etc) are you testing?
->> Sorry, I forgot to mention that RealAudio player complains that it
->> "cannot open the audio device. Another application may be using it."
->>
->> However, I just tried mplayer, which *does* work normally and the
->> master channel also works properly again.
->>
->> So it seems that hp_only works, but only partly.  Any idea why
->> RealPlayer is complaining?
->
-> Hard to believe that the error of RealPlayer comes from ac97_quirk
-> option.  It's likely a coincidence.  Please double-check.
 
-Okay, this patch seems to make everything work correctly, but lspci
-still reports "unknown device" in spite of it.
+--===============6401867370108392719==
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ikGVGN8XJqPH+58srMen"
 
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index b585cc3..aa5c2e0 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -1746,6 +1746,12 @@ static struct ac97_quirk ac97_quirks[] = {
-         },
-         {
-                 .subvendor = 0x1019,
-+               .subdevice = 0x1841,
-+               .name = "ECS K7VTA3",
-+               .type = AC97_TUNE_HP_ONLY
-+       },
-+       {
-+               .subvendor = 0x1019,
-                 .subdevice = 0x0a81,
-                 .name = "ECS K7VTA3",
-                 .type = AC97_TUNE_HP_ONLY
+
+--=-ikGVGN8XJqPH+58srMen
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Good afternoon,
+
+Having spent some time looking at the MIDI that the internal/external
+Audigy bays emit, I noticed that they report more then is currently used
+by the LIRC driver.
+
+There is one thing missing in here, which is how to control the bay
+power LED (which is supposed to blink when the card is muted) and the
+CMSS LED. I am not sure whether this is controlled through MIDI SysEx
+sequences or through other means.
+
+Due to an annoying hardware failure in my Audigy 4 Pro I can not
+continue this endeavour, but I want to share what I have.
+
+Based on this, perhaps one can extend the EMU10K1/2 driver a bit with
+headphone muting and volume control through the bay. With thanks to the
+libdouze author, Arnaud de Bossoreille de Ribou.
+
+=EF=BB=BFMidi System Exclusive ( extended manufacturer id =3D=3D 0x2021 )
+Payload for 61 bay message:
+61 00 01 00 XX YY
+
+XX=20
+00 =3D button push event
+01 =3D volume knob event
+02 =3D jack sense event
+
+For XX=3D00 button push:
+Bit 1: CMSS
+Bit 2: Mute
+
+For XX=3D01 volume knob:
+Bit 1: Always set
+Bit 7: Set for downward adjustment, unset for upward adjustment
+
+For XX=3D02 jack sense:
+YY contains jacks
+Bit 1: headphone
+Bit 2: digital out (back of bay)
+
+Response to initialization:
+Midi System Exclusive ( extended manufacturer id =3D=3D 0x2021, payload =3D=
+=3D |
+60 00 02 03 | )       <-- Unknown, bay version?
+Midi System Exclusive ( extended manufacturer id =3D=3D 0x2021, payload =3D=
+=3D |
+61 00 01 00 02 01 | ) <-- Jack sense update
+
+I hope it is of use to someone.
+
+Regards,
+Tony V.
+
+--=-ikGVGN8XJqPH+58srMen
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iEYEABECAAYFAkhjlZsACgkQp5vW4rUFj5oB7wCgsHHSk4yOs2rEpVa+5XI7KjIO
+A0EAn1z1mFWsANDvE2rBniRCg7vffVcW
+=0q85
+-----END PGP SIGNATURE-----
+
+--=-ikGVGN8XJqPH+58srMen--
+
+
+--===============6401867370108392719==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6401867370108392719==--
