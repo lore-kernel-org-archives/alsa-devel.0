@@ -1,24 +1,20 @@
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-Subject: Re: sw parameter boundary
-Date: Thu, 26 Jun 2008 16:36:36 +0200
-Message-ID: <4863A974.5030502@aimvalley.nl>
-References: <48620563.3050207@aimvalley.nl>	<s5h3an18qmu.wl%tiwai@suse.de>	<4863569C.5040502@aimvalley.nl>
-	<s5hiqvwqz14.wl%tiwai@suse.de>
+From: Jerry Geis <geisj@pagestation.com>
+Subject: seg fault with 1.0.17rc2
+Date: Thu, 26 Jun 2008 10:38:57 -0400
+Message-ID: <4863AA01.7080900@pagestation.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr10.xs4all.nl (smtp-vbr10.xs4all.nl [194.109.24.30])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5854C2465B
+Received: from unifiedpaging.messagenetsystems.com
+	(www.emergencycommunicationsystems.com [24.123.23.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 130A4103807
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jun 2008 16:36:39 +0200 (CEST)
-Received: from mail3.aimsys.nl (a80-127-156-242.adsl.xs4all.nl
-	[80.127.156.242])
-	by smtp-vbr10.xs4all.nl (8.13.8/8.13.8) with ESMTP id m5QEacED041201
-	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jun 2008 16:36:38 +0200 (CEST)
-	(envelope-from nvbolhuis@aimvalley.nl)
-In-Reply-To: <s5hiqvwqz14.wl%tiwai@suse.de>
+	Thu, 26 Jun 2008 16:39:00 +0200 (CEST)
+Received: from devcentos5x64.msgnet.com (devcentos5x64 [192.168.1.8])
+	by unifiedpaging.messagenetsystems.com (8.13.1/8.13.1) with ESMTP id
+	m5QEcwUe005586
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2008 10:38:58 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,15 +27,51 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- >> OK, but what does an ALSA driver need to do with boundary, nothing ?
- >
- > The boundary is aligned to buffer_size so that the offset can be
- > calculated properly even after the overwrap.
- >
+#0  0xb7e892ff in memcpy () from /lib/tls/libc.so.6
+#1  0xb74e40a9 in snd_pcm_area_copy (dst_area=0xb7125b70, dst_offset=0, 
+src_area=0x81dc1c0, src_offset=170, samples=0, 
+format=SND_PCM_FORMAT_S16_LE) at pcm.c:2589
+#2  0xb74e438d in snd_pcm_areas_copy (dst_areas=0xb7125b7c, 
+dst_offset=0, src_areas=0x81dc1cc, src_offset=170, channels=1, 
+frames=122, format=SND_PCM_FORMAT_S16_LE) at pcm.c:2736
+#3  0xb74ee0a1 in snd_pcm_mmap_read_areas (pcm=0x81de3b8, 
+areas=0xb7125b70, offset=0, size=122) at pcm_mmap.c:151
+#4  0xb74e350d in snd1_pcm_read_areas (pcm=0x81de3b8, areas=0xb7125b70, 
+offset=0, size=122, func=0xb74edfd0 <snd_pcm_mmap_read_areas>) at pcm.c:6501
+#5  0xb74ed2df in snd_pcm_mmap_readi (pcm=0x81de3b8, buffer=0xb6352a04, 
+size=122) at pcm_mmap.c:236
+#6  0xb74dbb14 in snd_pcm_readi (pcm=0x81de110, buffer=0xb6352a04, 
+size=61) at pcm_local.h:526
+#7  0xb756279b in alsa_read (chan=0x821c928) at chan_alsa.c:683
+#8  0x080855b1 in __ast_read (chan=0x821c928, dropaudio=0) at channel.c:2100
 
-OK, so I assume that's a yes.
-I don't see any driver maniplating boundary though.
+I am using a usb-audio device.
 
+Bus 003 Device 001: ID 0000:0000 
+Bus 003 Device 002: ID 0d8c:000c C-Media Electronics, Inc. Audio Adapter
+Bus 002 Device 002: ID 13fe:1f00 
+Bus 002 Device 001: ID 0000:0000 
+Bus 004 Device 001: ID 0000:0000 
+Bus 001 Device 001: ID 0000:0000 
 
--- 
-This message has been scanned for viruses and is believed to be clean
+I am using this as my asound.conf file
+
+       pcm.usb-audio {
+          type hw
+          card 0
+       }
+      
+       ctl.usb-audio {
+          type hw
+          card 0
+       }
+
+I am using debian etch  2.6.18-6-486 #1 Fri Jun 6 21:47:01 UTC 2008 i486 
+GNU/Linux
+
+It works for a couple times then I get the seg fault. I am using the 
+Console output from asterisk.
+
+help? Thanks,
+
+Jerry
