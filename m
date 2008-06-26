@@ -1,25 +1,18 @@
-From: walt <w41ter@gmail.com>
-Subject: [PATCH] Add another VIA audio chip to ac97 quirks list
-Date: Thu, 26 Jun 2008 11:01:32 -0700
-Message-ID: <g40lge$lfh$1@ger.gmane.org>
+From: Jerry Geis <geisj@pagestation.com>
+Subject: Re: seg fault with 1.0.17rc2
+Date: Thu, 26 Jun 2008 15:44:39 -0400
+Message-ID: <4863F1A7.70403@pagestation.com>
+References: <4863AA01.7080900@pagestation.com>	<s5hwskcp4w5.wl%tiwai@suse.de>	<4863BDCC.8010708@pagestation.com>	<s5hskv0p3qw.wl%tiwai@suse.de>	<4863C7E0.4000605@pagestation.com>	<s5hprq4p2dz.wl%tiwai@suse.de>	<4863CADC.8030802@pagestation.com>
+	<s5hlk0sp1ot.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8AEFD103823
+Received: from unifiedpaging.messagenetsystems.com (unknown [24.123.23.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4337C2417E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Jun 2008 20:00:55 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KBvmB-00056r-Cf
-	for alsa-devel@alsa-project.org; Thu, 26 Jun 2008 18:00:55 +0000
-Received: from adsl-69-234-213-244.dsl.irvnca.pacbell.net ([69.234.213.244])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2008 18:00:55 +0000
-Received: from w41ter by adsl-69-234-213-244.dsl.irvnca.pacbell.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2008 18:00:55 +0000
+	Thu, 26 Jun 2008 21:44:45 +0200 (CEST)
+In-Reply-To: <s5hlk0sp1ot.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,34 +22,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Author: Walter Sheets <w41ter@gmail.com>
-Date:   Thu Jun 26 10:39:19 PDT 2008
-
-     x86: Add VIA audio device #1841 to ac97_quirk list
-
-     Signed-off-by: Walter Sheets <w41ter@gmail.com>
-
----
-Takashi, feel free to modify this in any way you need to.  Thanks.
 
 
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index b585cc3..aa5c2e0 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -1746,6 +1746,12 @@ static struct ac97_quirk ac97_quirks[] = {
-         },
-         {
-                 .subvendor = 0x1019,
-+               .subdevice = 0x1841,
-+               .name = "ECS K7VTA3",
-+               .type = AC97_TUNE_HP_ONLY
-+       },
-+       {
-+               .subvendor = 0x1019,
-                 .subdevice = 0x0a81,
-                 .name = "ECS K7VTA3",
-                 .type = AC97_TUNE_HP_ONLY
+Takashi Iwai wrote:
+> At Thu, 26 Jun 2008 12:59:08 -0400,
+> Jerry Geis wrote:
+>   
+>> Takashi Iwai wrote:
+>>
+>>     At Thu, 26 Jun 2008 12:46:24 -0400,
+>>     Jerry Geis wrote:
+>>
+>>         Takashi Iwai wrote:
+>>         
+>>             At Thu, 26 Jun 2008 12:03:24 -0400,
+>>             Jerry Geis wrote:
+>>         
+>>                 Takashi Iwai wrote:
+>>         
+>>                     At Thu, 26 Jun 2008 10:38:57 -0400,
+>>                     Jerry Geis wrote:
+>>         
+>>                         #0  0xb7e892ff in memcpy () from /lib/tls/libc.so.6
+>>                         #1  0xb74e40a9 in snd_pcm_area_copy (dst_area=0xb7125b70, dst_offset=0, 
+>>                         src_area=0x81dc1c0, src_offset=170, samples=0, 
+>>                         format=SND_PCM_FORMAT_S16_LE) at pcm.c:2589
+>>         
+>>                     samples = 0 and...
+>>         
+>>                         #2  0xb74e438d in snd_pcm_areas_copy (dst_areas=0xb7125b7c, 
+>>                         dst_offset=0, src_areas=0x81dc1cc, src_offset=170, channels=1, 
+>>                         frames=122, format=SND_PCM_FORMAT_S16_LE) at pcm.c:2736
+>>         
+>>                     ... here frames = 122.  Something inconsistent around here.
+>>                     snd_pcm_areas_copy() must passe samples=frames when channels=1.
+>>                     Could you check the values via gdb?
+>>         
+>>                     Takashi
+>>         
+>>                 Takashi,
+>>                 
+>>                 I am not sure what your asking me. The output I provided is gdb what else
+>>                 can I check? Really anxious to get this USB sound device playing 
+>>                 consistantly.
+>>         
+>>             Check whether frames still 122 in frame#1, for example.
+>>         
+>>                 Is there a better asound.conf to use?
+>>         
+>>             The strange thing is that the recent config for usb-audio also uses
+>>             dmix/dsnoop.  And you don't get any errors with the system-default
+>>             config?
+>>         
+>>             Takashi
+>>         
+>>         Takashi,
+>>         
+>>         checking frames still 122 in frame #1 is way over my expertise.
+>>         
+>>         With this asound.conf file It plays but choppy audio.
+>>
+>>     And doesn't it work if you don't define anything, just using the
+>>     system default?
+>>     
+>>     The bug must be fixed, of course.  But I still don't see why you have
+>>     to redefine the configuration...
+>>
+>>     Takashi
+>>
+>>         defaults.ctl.card 0
+>>         defaults.pcm.card 0
+>>         
+>>         pcm.card0 {
+>>           type hw
+>>           card 0
+>>         }
+>>         
+>>         pcm.dmixer {
+>>           type dmix
+>>           ipc_key 1025
+>>           slave {
+>>             pcm "hw:0,0"
+>>             period_time 0
+>>             period_size 2048
+>>             buffer_size 32768
+>>             rate 48000
+>>           }
+>>           bindings {
+>>             0 0
+>>             1 1
+>>           }
+>>         }
+>>         pcm.skype {
+>>           type asym
+>>         
+>>           playback.pcm "dmixer"
+>>           capture.pcm "card0"
+>>         }
+>>         
+>>         pcm.!default {
+>>           type plug
+>>           slave.pcm "skype"
+>>         }
+>>         
+>>         Jerry
+>>
+>> No, thats what I am saying, when I remove the /etc/asound.conf file I get seg
+>> faults.
+>> When I run with the above file I get choppy audio but at least 15 times it
+>> played with no fault.
+>> I presume the system-default file is have no asound.conf file.
+>>     
+>
+> OK.  Also make sure that you have no ~/.asoundrc file.
+>
+>   
+>> Now also, I am not just doing aplay, which seems to work everytime and audio
+>> sounds fine.
+>> I am using the console/dsp from asterisks and playing a wave file through that.
+>> Does that help.
+>>     
+>
+> The best is to find a simpler test case, such as arecord, because
+> otherwise your problem cannot be reproduced on other environment
+> easily.
+>
+> Not sure which format and sample rate asterisk is using, but you may
+> adjust parameters for arecord via command line options to fit with
+> asterisk, too.
+>
+>
+> Takashi
+>
+>   
+
+I am not having any luck using arecord and aplay to simulate my problem.
+
+Do you have any further suggestions?
+
+Jerry
