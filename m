@@ -1,18 +1,18 @@
-From: Jerry Geis <geisj@pagestation.com>
-Subject: Re: seg fault with 1.0.17rc2
-Date: Fri, 27 Jun 2008 16:48:37 -0400
-Message-ID: <48655225.3060503@pagestation.com>
-References: <4863AA01.7080900@pagestation.com>	<s5hwskcp4w5.wl%tiwai@suse.de>	<4863BDCC.8010708@pagestation.com>	<s5hskv0p3qw.wl%tiwai@suse.de>	<4863C7E0.4000605@pagestation.com>	<s5hprq4p2dz.wl%tiwai@suse.de>	<4863CADC.8030802@pagestation.com>
-	<s5hlk0sp1ot.wl%tiwai@suse.de> <4863F1A7.70403@pagestation.com>
+From: "Sean McNamara" <smcnam@gmail.com>
+Subject: [PATCH] [alsa-utils] Fix build with library options
+	disabled
+Date: Fri, 27 Jun 2008 14:57:26 -0700
+Message-ID: <74eb1fe20806271457h2ca1f3a2r97fb0b3536c3f68e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_25361_33169278.1214603846869"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from unifiedpaging.messagenetsystems.com (unknown [24.123.23.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 69059244E6
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.245])
+	by alsa0.perex.cz (Postfix) with ESMTP id 563C4244FB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Jun 2008 22:48:44 +0200 (CEST)
-In-Reply-To: <4863F1A7.70403@pagestation.com>
+	Fri, 27 Jun 2008 23:57:28 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so136420and.80
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2008 14:57:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,151 +22,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jerry Geis wrote:
->
->
-> Takashi Iwai wrote:
->> At Thu, 26 Jun 2008 12:59:08 -0400,
->> Jerry Geis wrote:
->>   
->>> Takashi Iwai wrote:
->>>
->>>     At Thu, 26 Jun 2008 12:46:24 -0400,
->>>     Jerry Geis wrote:
->>>
->>>         Takashi Iwai wrote:
->>>         
->>>             At Thu, 26 Jun 2008 12:03:24 -0400,
->>>             Jerry Geis wrote:
->>>         
->>>                 Takashi Iwai wrote:
->>>         
->>>                     At Thu, 26 Jun 2008 10:38:57 -0400,
->>>                     Jerry Geis wrote:
->>>         
->>>                         #0  0xb7e892ff in memcpy () from /lib/tls/libc.so.6
->>>                         #1  0xb74e40a9 in snd_pcm_area_copy (dst_area=0xb7125b70, dst_offset=0, 
->>>                         src_area=0x81dc1c0, src_offset=170, samples=0, 
->>>                         format=SND_PCM_FORMAT_S16_LE) at pcm.c:2589
->>>         
->>>                     samples = 0 and...
->>>         
->>>                         #2  0xb74e438d in snd_pcm_areas_copy (dst_areas=0xb7125b7c, 
->>>                         dst_offset=0, src_areas=0x81dc1cc, src_offset=170, channels=1, 
->>>                         frames=122, format=SND_PCM_FORMAT_S16_LE) at pcm.c:2736
->>>         
->>>                     ... here frames = 122.  Something inconsistent around here.
->>>                     snd_pcm_areas_copy() must passe samples=frames when channels=1.
->>>                     Could you check the values via gdb?
->>>         
->>>                     Takashi
->>>         
->>>                 Takashi,
->>>                 
->>>                 I am not sure what your asking me. The output I provided is gdb what else
->>>                 can I check? Really anxious to get this USB sound device playing 
->>>                 consistantly.
->>>         
->>>             Check whether frames still 122 in frame#1, for example.
->>>         
->>>                 Is there a better asound.conf to use?
->>>         
->>>             The strange thing is that the recent config for usb-audio also uses
->>>             dmix/dsnoop.  And you don't get any errors with the system-default
->>>             config?
->>>         
->>>             Takashi
->>>         
->>>         Takashi,
->>>         
->>>         checking frames still 122 in frame #1 is way over my expertise.
->>>         
->>>         With this asound.conf file It plays but choppy audio.
->>>
->>>     And doesn't it work if you don't define anything, just using the
->>>     system default?
->>>     
->>>     The bug must be fixed, of course.  But I still don't see why you have
->>>     to redefine the configuration...
->>>
->>>     Takashi
->>>
->>>         defaults.ctl.card 0
->>>         defaults.pcm.card 0
->>>         
->>>         pcm.card0 {
->>>           type hw
->>>           card 0
->>>         }
->>>         
->>>         pcm.dmixer {
->>>           type dmix
->>>           ipc_key 1025
->>>           slave {
->>>             pcm "hw:0,0"
->>>             period_time 0
->>>             period_size 2048
->>>             buffer_size 32768
->>>             rate 48000
->>>           }
->>>           bindings {
->>>             0 0
->>>             1 1
->>>           }
->>>         }
->>>         pcm.skype {
->>>           type asym
->>>         
->>>           playback.pcm "dmixer"
->>>           capture.pcm "card0"
->>>         }
->>>         
->>>         pcm.!default {
->>>           type plug
->>>           slave.pcm "skype"
->>>         }
->>>         
->>>         Jerry
->>>
->>> No, thats what I am saying, when I remove the /etc/asound.conf file I get seg
->>> faults.
->>> When I run with the above file I get choppy audio but at least 15 times it
->>> played with no fault.
->>> I presume the system-default file is have no asound.conf file.
->>>     
->>
->> OK.  Also make sure that you have no ~/.asoundrc file.
->>
->>   
->>> Now also, I am not just doing aplay, which seems to work everytime and audio
->>> sounds fine.
->>> I am using the console/dsp from asterisks and playing a wave file through that.
->>> Does that help.
->>>     
->>
->> The best is to find a simpler test case, such as arecord, because
->> otherwise your problem cannot be reproduced on other environment
->> easily.
->>
->> Not sure which format and sample rate asterisk is using, but you may
->> adjust parameters for arecord via command line options to fit with
->> asterisk, too.
->>
->>
->> Takashi
->>
->>   
->
-> I am not having any luck using arecord and aplay to simulate my problem.
->
-> Do you have any further suggestions?
->
-> Jerry
-As a thought I switched my asterisk interface from using alsa to oss.
-The audio is fine now not choppy and no seg faults.
+------=_Part_25361_33169278.1214603846869
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Jerry
+Hello,
+
+It's been a perennial problem with alsa-utils that there is no
+configure option to disable the seq and amidi apps. These apps depend
+on how you configured alsa-lib: If you pass --disable-seq
+--disable-instr to the alsa-lib configure, there does not currently
+exist a configure-time option to allow alsa-utils to build against
+this particular alsa-lib.
+
+Of course, you could hack makefiles and stuff so it doesn't build seq
+and amidi, but I thought it would be nice to commit changes to the
+configure.in and Makefile.am to upstream, so that we can disable seq
+and amidi the "right" way.
+
+The attached patches are diffed against the latest revision of
+alsa-utils. With this change, you can:
+
+1. Disable building amidi by passing --disable-midi to the configure
+in alsa-utils.
+2. Disable building seq by passing --disable-seq to the configure in alsa-utils.
+
+With this change, we can get a "good" build of alsa-utils (albeit,
+missing two of the utilities, which is intended) in the following
+circumstances:
+
+1. seq and instr are DISABLED in alsa-lib; seq and midi are DISABLED
+in alsa-utils
+2. seq and instr are ENABLED in alsa-lib; seq and midi are ENABLED in
+alsa-utils (the default).
+3. seq and instr are ENABLED in alsa-lib; seq and midi are DISABLED in
+alsa-utils.
+
+Of course, it does not build cleanly if seq and instr are DISABLED in
+alsa-lib, but seq and midi are ENABLED in alsa-utils.
+
+Patches are attached -- please let me know if there any issues, and if
+not, could one of the committers please commit them.
+
+Thanks,
+
+Sean
+
+------=_Part_25361_33169278.1214603846869
+Content-Type: application/x-bzip2; name=patch-alsa-utils-no-midi.tar.bz2
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fhzbpvfp0
+Content-Disposition: attachment; filename=patch-alsa-utils-no-midi.tar.bz2
+
+QlpoOTFBWSZTWTxDHFAAAnd/xPwwAEBUf//qf+/+Sv/v/2oAEAAAgAhQA36tu5NZtgAEopNkp5Ta
+j9KbU9J6mygNHqAA0A0Ghpp6mmgAiakAekNPUGQA0BoHqAaNAGmgMmjQGJENIMSNNMmgNDQaANMQ
+AaA0AA40ZMjCMQDCaDAJoNAyZNGTIYQGEkgpjQmIJpmpqNPSNB6mTQDRoHqGhp6jQxNpNsMp2QGB
+KEQBENCoDTnvdEwItGABkDwKKKhMGxDNqz4qMDK68vHU3iXowkFkIxIz2WMJPXHWPMRTPONlLhBo
+xDgAppkKLCbYVmIqHaXrPfKCJIQHA0gOp0SFAN5jFPUlRhiEFAQbbQ8yeA7sqgi7DAxZJHFyhaX3
+5+zKikRn4lplj7LxCVNG6buG6SvvsWnZRh8FGmZxAGsUZhawBJKv4lCbIgheD7FmtzF4sBYb4vSD
+SDFwyRKUqii/yX8I0VqCRSIbE9JgqLZ+nzRQzI1cHf6cAww1R6qANdpxvANf45BTDHE4iFxUgw64
+xo4hIIM6KreW5KoMb7Bg91AroIXLaTwYh2SuhOKQqB1qdhJLYliiwk5ZNwrJgDFwu3Xuc64zYALp
+AUopbFDdN+tiR4EaX8jkLERYR53uYUxVPNRURpTbgDwR5BTFxfJjFFY5JpTQR7sUBPP7S1IGBhJs
+KMnDRiCABBDKitltxp24wu9jmfLdOgeixMtoZrb1JJ8oWXEFhTSyKehDKAOYWDDUsCiojI/TzRSi
+Bw4lSFsdE1tGJkipuMJGoSUm2opopzl5JZ0tJMRdbMzM1SyDGBVjtjKAxcomSSBROIvomIQxuAx9
+mdpdHMf4DCiaesYZfdxSZzavyG2IVrlBcvtcrTcpMjimghgHHEHXMQFi6jA+gds+nsEQXYY9BNmR
+JMMUEeZh6YQ5F/PBaMg1Z1omp5CtdiKHkK8Ij9h2nuJDf0u6uQ3kUEETlq3DKOHmoZxBK9FiI9MY
+5CL0rirXBpCOgQ8csgxXWws6YU5gO0hjYZoE/vGNKqS30msxTFxhMrtaTCZE7hkFyYnGQrE2TxOe
+/wOOGCTt0LZJOJIHAycgjdtI2Fx6LAgMg4AzokGXOQr0kFhLSCQ4mTkMyNQncZ1kq9AFW9eSUQZO
+BUjG/ovsde4vbKMUIzYzGD6xsoGEfSTp8wxQVndTKxFwHPpF2EkYUmVaTKk0mREkZwA/4u5IpwoS
+B4hjigA=
+------=_Part_25361_33169278.1214603846869
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+------=_Part_25361_33169278.1214603846869--
