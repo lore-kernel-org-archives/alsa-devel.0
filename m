@@ -1,28 +1,24 @@
-From: Pierre Ossman <drzeus@drzeus.cx>
-Subject: Re: looping S/PDIF data
-Date: Mon, 30 Jun 2008 21:22:32 +0200
-Message-ID: <20080630212232.15b379cf@mjolnir.drzeus.cx>
-References: <20080531112606.5884a1c9@mjolnir.drzeus.cx>
-	<20080617215504.3203a5ed@mjolnir.drzeus.cx>
-	<4858B84B.4030800@keyaccess.nl> <s5hej6t91u1.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0806191435270.1798@tm8103-a.perex-int.cz>
-	<s5hskv97fqk.wl%tiwai@suse.de>
-	<20080620214516.28e9d3f3@mjolnir.drzeus.cx>
-	<485C0A97.7020909@keyaccess.nl>
-	<20080621000050.43160d47@mjolnir.drzeus.cx>
-	<485C2DF7.7080408@keyaccess.nl>
-	<20080621010910.018f880d@mjolnir.drzeus.cx>
-	<485CF0AE.3020204@keyaccess.nl>
-	<20080630191133.7f7c349d@mjolnir.drzeus.cx>
-	<48692415.3070204@keyaccess.nl>
+From: "Mitul Sen (misen)" <misen@cisco.com>
+Subject: Setting format to SND_PCM_FORMAT_MU_LAW does not let
+	me apply hardware parameters
+Date: Mon, 30 Jun 2008 15:09:07 -0700
+Message-ID: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0032462219545066391=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.drzeus.cx (server.drzeus.cx [85.8.24.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4669124736
+Received: from sj-iport-1.cisco.com (sj-iport-1.cisco.com [171.71.176.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 638562475C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Jun 2008 21:22:39 +0200 (CEST)
-In-Reply-To: <48692415.3070204@keyaccess.nl>
+	Tue,  1 Jul 2008 00:09:08 +0200 (CEST)
+Received: from sj-core-2.cisco.com (sj-core-2.cisco.com [171.71.177.254])
+	by sj-dkim-2.cisco.com (8.12.11/8.12.11) with ESMTP id m5UM97lO016018
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2008 15:09:07 -0700
+Received: from xbh-sjc-231.amer.cisco.com (xbh-sjc-231.cisco.com
+	[128.107.191.100])
+	by sj-core-2.cisco.com (8.13.8/8.13.8) with ESMTP id m5UM970N006479
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2008 22:09:07 GMT
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,78 +28,199 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, mulix@mulix.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+I am a newbie to ALSA and any help will be much appreciated.
 
---===============0032462219545066391==
-Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=PGP-SHA1; boundary="=_freyr.drzeus.cx-10645-1214853122-0001-2"
+I have an application which sets up the signaling between an IP phone
+and my desktop and then sets up the audio path between the two. 
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+On my desktop application, I am able to receive RTP packets from IP
+phone. I use an RTP stack to parse the data and after going through the
+RTP stack, I try to play back the audio using ALSA. When I use the ALSA
+code to play back (in real time) using sound card of my device, there is
+only noise, I cannot hear the audio that I speak into the IP phone.
+However, if I take the raw data coming from the RTP stack and write it
+to a file, I can play back the file successfully.
 
---=_freyr.drzeus.cx-10645-1214853122-0001-2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Since my data from IP phone is G.711 encoded, I have set the sampling
+rate within ALSA to 8000. Also I am using one source (mono) and
+non-interleaved data option for preparing ALSA for playback. When I set
+the format to SND_PCM_FORMAT_MU_LAW, at runtime it lets me set that
+format ie. snd_pcm_hw_params_set_format (for SND_PCM_FORMAT_MU_LAW) is
+successful. However I get a runtime error while applying the hardware
+parameters using snd_pcm_hw_params(..) if the format set earlier is
+SND_PCM_FORMAT_MU_LAW. Using any other format like SND_PCM_FORMAT_U8 or
+SND_PCM_FORMAT_S8, lets me apply the hardware parameters but it gives
+the problem of the noise (no "audible" voice) that I described earlier.
 
-On Mon, 30 Jun 2008 20:21:09 +0200
-Rene Herman <rene.herman@keyaccess.nl> wrote:
+This is what my ALSA code looks like
 
->=20
-> Your fix is commit f19a62ecba9d0963cee2b673f0ad34917b5e57ad in the=20
-> "sound-2.6" git repo (Takashi Iwai's tree), branch "master", at
->=20
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
->=20
-> also viewable at:
->=20
-> http://git.kernel.org/?p=3Dlinux/kernel/git/tiwai/sound-2.6.git;a=3Dcommi=
-t;h=3Df19a62ecba9d0963cee2b673f0ad34917b5e57ad
->=20
-> That commit is pre the 1.0.17-rc3 release/tag so it's in. Will find its=20
-> way into the kernel during the next merge window no doubt...
->=20
+***** beginning of code snippet *****************
 
-Delightful. :)
+int err;
 
-Now I just need to poke my vendor of choice to backport it aswell...
+snd_pcm_hw_params_t *hw_params;
 
-Rgds
---=20
-     -- Pierre Ossman
+// Try to open the default device
 
-  WARNING: This correspondence is being monitored by the
-  Swedish government. Make sure your server uses encryption
-  for SMTP traffic and consider using PGP for end-to-end
-  encryption.
+err = snd_pcm_open( &_soundDevice, "plughw:0,0",
+SND_PCM_STREAM_PLAYBACK, 0 );
 
---=_freyr.drzeus.cx-10645-1214853122-0001-2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=signature.asc
+// Check for error on open.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
+if( err < 0 )
 
-iEYEARECAAYFAkhpMn0ACgkQ7b8eESbyJLi+DgCeJzk+uslCvmqO5kbPCBjVPu2K
-6CcAoLiYvvp8crPV5Hm9EbyrPQgQz/12
-=W2Ka
------END PGP SIGNATURE-----
+{
 
---=_freyr.drzeus.cx-10645-1214853122-0001-2--
+printf("Init: cannot open audio device\n");
 
---===============0032462219545066391==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+return -1;
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+}
 
---===============0032462219545066391==--
+// Allocate the hardware parameter structure.
+
+if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0)
+
+{
+
+printf("Init: cannot allocate hardware parameter structure\n");
+
+return -1;
+
+}
+
+if ((err = snd_pcm_hw_params_any (_soundDevice, hw_params)) < 0)
+
+{
+
+printf("Init: cannot initialize hardware parameter structure\n");
+
+return -1;
+
+}
+
+// Set access to RW interleaved.
+
+if ((err = snd_pcm_hw_params_set_access (_soundDevice, hw_params,
+SND_PCM_ACCESS_RW_NONINTERLEAVED)) < 0)
+
+{
+
+printf("Init: cannot set access type\n");
+
+return -1;
+
+}
+
+if ((err = snd_pcm_hw_params_set_format (_soundDevice, hw_params,
+SND_PCM_FORMAT_MU_LAW)) < 0)
+
+{
+
+return -1;
+
+}
+
+// Set channels to mono (1)
+
+if ((err = snd_pcm_hw_params_set_channels (_soundDevice, hw_params, 1))
+< 0)
+
+{
+
+return -1;
+
+}
+
+// Set sample rate.
+
+unsigned int actualRate = 8000;
+
+if ((err = snd_pcm_hw_params_set_rate_near (_soundDevice, hw_params,
+&actualRate,
+
+0)) < 0)
+
+{
+
+return -1;
+
+}
+
+// Apply the hardware parameters that we've set.
+
+if ((err = snd_pcm_hw_params (_soundDevice, hw_params)) < 0)
+
+{
+
+printf("Audio device parameters have not been set
+successfully.(%s)(%s)\n", strerror (err), snd_strerror (err));
+
+return -1;
+
+}
+
+// Free the hardware parameters now that we're done with them.
+
+snd_pcm_hw_params_free (hw_params);
+
+/* Prepare interface for use.
+
+if ((err = snd_pcm_prepare (_soundDevice)) < 0)
+
+{
+
+printf("Audio device not prepared for use\n");
+
+return -1;
+
+}
+
+// If the frames are received...
+
+/* find out how much space is available for playback data
+
+if ((frames_to_deliver = snd_pcm_avail_update (_soundDevice)) < 0)
+
+{
+
+printf("Error returned by snd_pcm_avail_update\n");
+
+}
+
+frames_to_deliver = frames_to_deliver > 4096 ? 4096 : frames_to_deliver;
+
+printf("frames to deliver is %d\n",(int)frames_to_deliver);
+
+*/
+
+frames_to_deliver = 172;
+
+bufs[1] = (void*)buffer;
+
+if ((err = snd_pcm_writen( _soundDevice, bufs, frames_to_deliver)) < 0)
+
+{
+
+printf ("write failed (%s)\n", snd_strerror (err));
+
+}
+
+****************** end of code snippet
+**********************************
+
+The error I get is as follows:-
+
+Audio device parameters have not been set successfully.(Unknown error
+4294967274)(Invalid argument)
+
+ 
+
+Any pointers on what I could be doing wrong? 
+
+Thanks and regards,
+
+Mitul
