@@ -1,19 +1,19 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Re: [PATCH] Add some system information
-	to	alsa-info.sh output
-Date: Tue, 01 Jul 2008 03:36:00 +1000
-Message-ID: <1214847360.11032.9.camel@temp-fallen>
-References: <1214843497.11032.4.camel@temp-fallen>
-	<20080630164210.GC21804@sirena.org.uk>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: looping S/PDIF data
+Date: Mon, 30 Jun 2008 20:21:09 +0200
+Message-ID: <48692415.3070204@keyaccess.nl>
+References: <20080531112606.5884a1c9@mjolnir.drzeus.cx>	<20080617215504.3203a5ed@mjolnir.drzeus.cx>	<4858B84B.4030800@keyaccess.nl>	<s5hej6t91u1.wl%tiwai@suse.de>	<Pine.LNX.4.61.0806191435270.1798@tm8103-a.perex-int.cz>	<s5hskv97fqk.wl%tiwai@suse.de>	<20080620214516.28e9d3f3@mjolnir.drzeus.cx>	<485C0A97.7020909@keyaccess.nl>	<20080621000050.43160d47@mjolnir.drzeus.cx>	<485C2DF7.7080408@keyaccess.nl>	<20080621010910.018f880d@mjolnir.drzeus.cx>	<485CF0AE.3020204@keyaccess.nl>
+	<20080630191133.7f7c349d@mjolnir.drzeus.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.wishie.net (202-137-99-053.dial.usertools.net
-	[202.137.99.53]) by alsa0.perex.cz (Postfix) with ESMTP id 130D424700
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 77D8624727
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Jun 2008 19:35:55 +0200 (CEST)
-In-Reply-To: <20080630164210.GC21804@sirena.org.uk>
+	Mon, 30 Jun 2008 20:20:06 +0200 (CEST)
+In-Reply-To: <20080630191133.7f7c349d@mjolnir.drzeus.cx>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Pierre Ossman <drzeus@drzeus.cx>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, mulix@mulix.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I think i was a bit quick/excited about getting this info in
-there..Tested on my 2 machines here (both running 2.6.24 though) without
-issues.. Will have to look into it further (after taking your advice)
-and rework this patch.
+On 30-06-08 19:11, Pierre Ossman wrote:
 
-On Mon, 2008-06-30 at 17:42 +0100, Mark Brown wrote:
-> On Tue, Jul 01, 2008 at 02:31:37AM +1000, Travis Place wrote:
+> On Sat, 21 Jun 2008 14:14:38 +0200
+> Rene Herman <rene.herman@keyaccess.nl> wrote:
 > 
-> > +if [ -d $SYSFS ]
-> > +then
-> > +BOARD_VENDOR=`cat /sys/devices/virtual/dmi/id/board_vendor`
-> > +PRODUCT_VERSION=`cat /sys/devices/virtual/dmi/id/product_version`
-> > +PRODUCT_NAME=`cat /sys/devices/virtual/dmi/id/product_name`
+>> On 21-06-08 01:09, Pierre Ossman wrote:
+>>
+>>> trident: pause s/pdif output
+>>>
+>>> Stop the S/PDIF DMA engine and output when the device is told to pause.
+>>> It will keep on looping the current buffer contents if this isn't done.
+>>>
+>>> Signed-off-by: Pierre Ossman <drzeus@drzeus.cx>
+>> Verified to fix the reported pause problem on a 4DWaveNX (and indeed to 
+>> not affect a 4DWaveDX). The Trident SPDIF doesn't seem capable of 44100 
+>> which for me means it's not all that useful but you no doubt know 
+>> yourself that/if it is for you...
+>>
+>> Tested-by: Rene Herman <rene.herman@gmail.com>
 > 
-> This produces visible errors if the information isn't present (which
-> would be reasonable enough).  It might be better to check for errors and
-> include something about being unable to read DMI information in the
-> report - that'd be a bit less scary.
 > 
-> Also, on my system the DMI information is under /sys/class/dmi rather
-> than /sys/devices/virtual (this is with 2.6.25).
+> Sooo.... ack? nak? limbo?
 
-This will certainly be a pain, if the info keep moving around.. unless
-we do some quick 'search' for the 'dmi' dir.
-> 
-> > +fi
-> 
-> How about bios_vendor, bios_date and bios_version as well?
-> 
-How useful is the BIOS information going to be, in most cases ?
+... come on shake your body baby, do the limbo, I know ...
 
-> For embedded devices the relevant information is often in /proc/cpuinfo
-> so it might be worth adding that too.
+Your fix is commit f19a62ecba9d0963cee2b673f0ad34917b5e57ad in the 
+"sound-2.6" git repo (Takashi Iwai's tree), branch "master", at
 
-Can i get an example output or 'cpuinfo' on an embedded device (if you
-have one available) so i can see what im looking for.
+git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
 
-Thanks,
-Travis Place
+also viewable at:
+
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commit;h=f19a62ecba9d0963cee2b673f0ad34917b5e57ad
+
+That commit is pre the 1.0.17-rc3 release/tag so it's in. Will find its 
+way into the kernel during the next merge window no doubt...
+
+Rene.
