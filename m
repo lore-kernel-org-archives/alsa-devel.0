@@ -1,17 +1,24 @@
-From: Ben Stanley <Ben.Stanley@exemail.com.au>
-Subject: Re: ALSA with Ubuntu 8.04
-Date: Sat, 28 Jun 2008 23:15:28 +1000
-Message-ID: <1214658928.30056.74.camel@localhost>
-References: <4862D901.4070700@audioscience.com>
+From: "Kan-I Jyo" <cecilhsujp@gmail.com>
+Subject: Re: [Fwd: [Alsa-user] Intel Poulsbo(SCH) chipset does
+	not recognize Adi 1986 codec under linux]]
+Date: Mon, 30 Jun 2008 22:20:17 +0900
+Message-ID: <1e8a3dd0806300620i2be727afibc932c1df6744f7f@mail.gmail.com>
+References: <1e8a3dd0806241840m76069ad8sa35058ad8ddb843b@mail.gmail.com>
+	<s5hprq5onxz.wl%tiwai@suse.de>
+	<1e8a3dd0806250500p6f7a343u89b11d42f556347@mail.gmail.com>
+	<s5hhcbhogef.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id 190172432D
+Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A58F246EC
 	for <alsa-devel@alsa-project.org>;
-	Sat, 28 Jun 2008 15:15:34 +0200 (CEST)
-In-Reply-To: <4862D901.4070700@audioscience.com>
+	Mon, 30 Jun 2008 15:20:18 +0200 (CEST)
+Received: by fk-out-0910.google.com with SMTP id b27so1409946fka.0
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2008 06:20:17 -0700 (PDT)
+In-Reply-To: <s5hhcbhogef.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,66 +28,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I happened to be in this territory a couple of nights ago... so here's a
-summary of what I learned.
+Dear Takashi,
 
-The priority order for the case of multiple modules with the same name
-may be controlled by modifying /etc/depmod.conf .
+Thank you for your kind help all the time.
 
-As Takashi says, and quoting from `man depmod.conf`:
+2008/6/25 Takashi Iwai <tiwai@suse.de>:
+> The hardware sets the corresponding bits to this register when the
+> codec is found on the slot.  So, this seems really like a hardware
+> problem.
 
-By default, depmod will give a higher priority  to  a  directory
-with  the  name  updates  using  this  built-in  search  string:
-"updates built-in" but more complex  arrangements  are  possible
-and are used in several popular distributions.
+For all my try these days have all led to a non-working audio device,
+I can not help thinking the high possibility of a hardware problem.
+Just want to make sure that I have made good efforts before blaming on
+hardware side.
 
+>
+> Or, if it's a timing issue, you can try to add some delays in
+> azx_reset()...
 
-Other directories may be given priority by specifying your own search
-line as follows:
-in /etc/depmod.conf
--------------------------
-search my-custom-drivers updates built-in
--------------------------
+Considering this kind of issue, I have increased the "msleep" in
+azx_reset() from 1 to 1000.
+With no luck, stiil there the "no codecs found" message.
 
-After installing a new module (and perhaps manually running depmod), you
-can check which module will actually be used with
-grep my-module-name /lib/modules/`uname -r`/modules.dep
+Moreover, I have changed the "msleep" to "ssleep" with a even larger
+value. As you may have expected, no recognization of the ADi 1986A
+codec at all.
 
-This takes out all the guesswork and makes success a 'sure thing' :-) .
+Though there might be no much left for trying, I just want to make
+sure that I did not miss any import part.
+And I would like say thank you as well for your timely advetise.
 
-Ben Stanley.
+-- 
+Sincerely,
 
-
-On Thu, 2008-06-26 at 11:47 +1200, Eliot Blennerhassett wrote:
-> This just an FYI
-> 
-> In Ubuntu 8.04, ubuntu has packaged alsa-drivers including some out of 
-> tree drivers in a separate package: linux-ubuntu-modules-$kernelver
-> 
-> This gets installed in /lib/modules/$kernelver/ubuntu/sound
-> 
-> The only things installed in /lib/modules/$kernelver/sound are 
-> soundcore.ko and ac97_bus.ko
-> 
-> However, when you do a default "make install" from alsa-driver source, 
-> the modules get installed in /lib/modules/$kernelver/kernel/sound
-> 
-> So, now there are 2 copies of the drivers in different places.
-> 
-> I have taken to removing (moving away to say /root) 
-> /lib/modules/$kernelver/ubuntu/sound to avoid any confusion and some odd 
-> module versioning problems that I was having.
-> 
-> regards
-> 
-> Eliot.
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Jyo
