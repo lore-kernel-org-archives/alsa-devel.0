@@ -1,17 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] autoconf problems
-Date: Tue, 1 Jul 2008 09:18:15 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0807010915230.20581@tm8103-a.perex-int.cz>
-References: <4548.125.7.7.9.1214884076.squirrel@webmail.exetel.com.au>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
+ let	me apply hardware parameters
+Date: Tue, 01 Jul 2008 09:39:27 +0200
+Message-ID: <4869DF2F.8090609@ladisch.de>
+References: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE00E2480F
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D7CB92481E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jul 2008 09:18:18 +0200 (CEST)
-In-Reply-To: <4548.125.7.7.9.1214884076.squirrel@webmail.exetel.com.au>
+	Tue,  1 Jul 2008 09:39:30 +0200 (CEST)
+In-Reply-To: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ben.stanley@exemail.com.au
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: "Mitul Sen (misen)" <misen@cisco.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 1 Jul 2008 ben.stanley@exemail.com.au wrote:
+Mitul Sen (misen) wrote:
+> // Set access to RW interleaved.
+> if ((err = snd_pcm_hw_params_set_access (_soundDevice, hw_params,
+> SND_PCM_ACCESS_RW_NONINTERLEAVED)) < 0)
 
-> Dear List,
-> 
-> A month ago I was having trouble building alsa-drivers on RHEL5.
-> 
-> The following patch fixes the problems.
+The comment and the code do not agree.  Please try
+SND_PCM_ACCESS_RW_INTERLEAVED.
 
-Applied. Thanks.
 
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Regards,
+Clemens
