@@ -1,19 +1,20 @@
 From: "Mark T.B. Carroll" <mtbc@ixod.org>
 Subject: Re: [ALSA] hda-codec - Fix laptop models for Cxt5045
-Date: Tue, 01 Jul 2008 08:26:47 -0400
-Message-ID: <87y74liyd4.fsf@ixod.org>
+Date: Tue, 01 Jul 2008 09:03:31 -0400
+Message-ID: <87tzf9eoyk.fsf@ixod.org>
 References: <871w2ea4ek.fsf@ixod.org>
 	<Pine.LNX.4.61.0807010906240.20581@tm8103-a.perex-int.cz>
-	<s5h63rqexpj.wl%tiwai@suse.de>
+	<s5h63rqexpj.wl%tiwai@suse.de> <87y74liyd4.fsf@ixod.org>
+	<s5hod5heq04.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: multipart/mixed; boundary="=-=-="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sabji.vm.bytemark.co.uk (sabji.ixod.org [80.68.89.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB2D524399
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F0F62439C
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jul 2008 14:27:26 +0200 (CEST)
-In-Reply-To: <s5h63rqexpj.wl%tiwai@suse.de> (Takashi Iwai's message of "Tue,
-	01 Jul 2008 11:54:32 +0200")
+	Tue,  1 Jul 2008 15:03:32 +0200 (CEST)
+In-Reply-To: <s5hod5heq04.wl%tiwai@suse.de> (Takashi Iwai's message of "Tue,
+	01 Jul 2008 14:40:59 +0200")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,57 +32,28 @@ List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai <tiwai@suse.de> writes:
 
-> At Tue, 1 Jul 2008 09:07:30 +0200 (CEST),
-> Jaroslav Kysela wrote:
->> 
->> On Mon, 30 Jun 2008, Mark T.B. Carroll wrote:
->> 
->> > Greetings. I thought I should mention that your patch
->> > http://kerneltrap.org/mailarchive/git-commits-head/2008/2/1/670694
->> > broke headphone sound for me on a Toshiba Satellite P105-S6197,
->> > sound card PCI ID 8086:27d8 with Conexant CX20549 codec. The speakers
->> > silence when I plug the headphones in but no sound comes from them.
->
-> Do you mean that the no sound comes from the headphone even if you
-> plug it?  And, the speaker works again after unplugging the HP?
+> There is no difference in the amp state, so I suppose the headphone
+> isn't plugged with these.
 
-Yes.
+Correct.
 
->> > Details are at http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=488063
->> > but half of my Debian bug reports go ignored for years.
->> > 
->> > A sufficient workaround for me is to comment out the `default:' in the
->> > `switch (board_config)' in the function `patch_cxt5045' in
->> > sound/pci/hda/patch_conexant.c. Then everything works fine again.
->
-> Does the speaker auto-muting work if you do that?
+> If so, please run alsa-info.sh with the headphone plugged, for both
+> working and broken cases.
 
-Yes.
-
-In both cases, the speakers work fine: they mute if I plug the
-headphones in, and unmute when I unplug them.
-
-The difference is that if I leave the `default:' in the code, no sound
-comes from the headphones when they are plugged in.
-
-> Please run alsa-info.sh (with --no-upload option) for both working
-> (patched) and non-working (the original) cases, and attach generated 
-> files to compare.  This will be helpful to analyze the problem.
-
-Okay.
+Enclosed.
 
 Mark
 
 --=-=-=
 Content-Disposition: inline; filename=alsa-info-broken.txt
-Content-Description: alsa-info.txt from configuration that breaks headphones
+Content-Description: With headphone sound not working
 
 name=root&type=33&description=/tmp/alsa-info.txt&expiry=&s=Submit+Post&content=
 !!################################
 !!ALSA Information Script v 0.4.48
 !!################################
 
-!!Script ran on: Tue Jul  1 08:16:19 EDT 2008
+!!Script ran on: Tue Jul  1 08:55:50 EDT 2008
 
 
 !!Linux Distribution
@@ -166,7 +138,7 @@ Default Amp-Out caps: N/A
 GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
 Node 0x10 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
   Amp-Out caps: ofs=0x2b, nsteps=0x2b, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x2b 0x2b]
+  Amp-Out vals:  [0xab 0xab]
   Pincap 0x0810014: OUT EAPD Detect
   EAPD 0x2: EAPD
   Pin Default 0x95170110: [Fixed] Speaker at Int Top
@@ -237,7 +209,7 @@ Node 0x17 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
   Connection: 5
      0x19 0x14 0x12 0x11 0x15
 Node 0x18 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
+  Converter: stream=5, channel=0
   Digital: Enabled
   Digital category: 0x1
   PCM:
@@ -245,7 +217,7 @@ Node 0x18 [Audio Output] wcaps 0x211: Stereo Digital
     bits [0x6]: 16 20
     formats [0x5]: PCM AC3
 Node 0x19 [Audio Output] wcaps 0xc11: Stereo R/L
-  Converter: stream=0, channel=0
+  Converter: stream=5, channel=0
   PCM:
     rates [0x540]: 48000 96000 192000
     bits [0xe]: 16 20 24
@@ -266,12 +238,12 @@ Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
 !!ALSA Device nodes
 !!-----------------
 
-crw-rw---- 1 root audio 116, 7 2008-07-01 08:14 /dev/snd/controlC0
-crw-rw---- 1 root audio 116, 6 2008-07-01 08:14 /dev/snd/pcmC0D0c
-crw-rw---- 1 root audio 116, 5 2008-07-01 08:15 /dev/snd/pcmC0D0p
-crw-rw---- 1 root audio 116, 4 2008-07-01 08:14 /dev/snd/pcmC0D1p
-crw-rw---- 1 root audio 116, 3 2008-07-01 08:14 /dev/snd/seq
-crw-rw---- 1 root audio 116, 2 2008-07-01 08:14 /dev/snd/timer
+crw-rw---- 1 root audio 116, 7 2008-07-01 08:54 /dev/snd/controlC0
+crw-rw---- 1 root audio 116, 6 2008-07-01 08:54 /dev/snd/pcmC0D0c
+crw-rw---- 1 root audio 116, 5 2008-07-01 08:55 /dev/snd/pcmC0D0p
+crw-rw---- 1 root audio 116, 4 2008-07-01 08:54 /dev/snd/pcmC0D1p
+crw-rw---- 1 root audio 116, 3 2008-07-01 08:54 /dev/snd/seq
+crw-rw---- 1 root audio 116, 2 2008-07-01 08:54 /dev/snd/timer
 
 
 !!Aplay/Arecord output
@@ -281,7 +253,7 @@ APLAY
 
 **** List of PLAYBACK Hardware Devices ****
 card 0: Intel [HDA Intel], device 0: CONEXANT Analog [CONEXANT Analog]
-  Subdevices: 1/1
+  Subdevices: 0/1
   Subdevice #0: subdevice #0
 card 0: Intel [HDA Intel], device 1: Conexant Digital [Conexant Digital]
   Subdevices: 1/1
@@ -560,15 +532,14 @@ iwl3945
 
 --=-=-=
 Content-Disposition: inline; filename=alsa-info-working.txt
-Content-Description: alsa-info.txt from configuration where headphones work
- fine
+Content-Description: With headphone sound working
 
 name=root&type=33&description=/tmp/alsa-info.txt&expiry=&s=Submit+Post&content=
 !!################################
 !!ALSA Information Script v 0.4.48
 !!################################
 
-!!Script ran on: Tue Jul  1 08:09:52 EDT 2008
+!!Script ran on: Tue Jul  1 08:59:41 EDT 2008
 
 
 !!Linux Distribution
@@ -724,7 +695,7 @@ Node 0x17 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
   Connection: 5
      0x19 0x14 0x12 0x11 0x15
 Node 0x18 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
+  Converter: stream=5, channel=0
   Digital: Enabled
   Digital category: 0x1
   PCM:
@@ -732,7 +703,7 @@ Node 0x18 [Audio Output] wcaps 0x211: Stereo Digital
     bits [0x6]: 16 20
     formats [0x5]: PCM AC3
 Node 0x19 [Audio Output] wcaps 0xc11: Stereo R/L
-  Converter: stream=0, channel=0
+  Converter: stream=5, channel=0
   PCM:
     rates [0x540]: 48000 96000 192000
     bits [0xe]: 16 20 24
@@ -753,12 +724,12 @@ Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
 !!ALSA Device nodes
 !!-----------------
 
-crw-rw---- 1 root audio 116, 7 2008-07-01 08:07 /dev/snd/controlC0
-crw-rw---- 1 root audio 116, 6 2008-07-01 08:07 /dev/snd/pcmC0D0c
-crw-rw---- 1 root audio 116, 5 2008-07-01 08:09 /dev/snd/pcmC0D0p
-crw-rw---- 1 root audio 116, 4 2008-07-01 08:07 /dev/snd/pcmC0D1p
-crw-rw---- 1 root audio 116, 3 2008-07-01 08:07 /dev/snd/seq
-crw-rw---- 1 root audio 116, 2 2008-07-01 08:07 /dev/snd/timer
+crw-rw---- 1 root audio 116, 7 2008-07-01 08:58 /dev/snd/controlC0
+crw-rw---- 1 root audio 116, 6 2008-07-01 08:58 /dev/snd/pcmC0D0c
+crw-rw---- 1 root audio 116, 5 2008-07-01 08:59 /dev/snd/pcmC0D0p
+crw-rw---- 1 root audio 116, 4 2008-07-01 08:58 /dev/snd/pcmC0D1p
+crw-rw---- 1 root audio 116, 3 2008-07-01 08:58 /dev/snd/seq
+crw-rw---- 1 root audio 116, 2 2008-07-01 08:58 /dev/snd/timer
 
 
 !!Aplay/Arecord output
@@ -768,7 +739,7 @@ APLAY
 
 **** List of PLAYBACK Hardware Devices ****
 card 0: Intel [HDA Intel], device 0: CONEXANT Analog [CONEXANT Analog]
-  Subdevices: 1/1
+  Subdevices: 0/1
   Subdevice #0: subdevice #0
 card 0: Intel [HDA Intel], device 1: Conexant Digital [Conexant Digital]
   Subdevices: 1/1
