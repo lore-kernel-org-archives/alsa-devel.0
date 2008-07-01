@@ -1,18 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
- let	me apply hardware parameters
-Date: Tue, 01 Jul 2008 09:39:27 +0200
-Message-ID: <4869DF2F.8090609@ladisch.de>
-References: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
+From: Aldrin Martoq <amartoq@dcc.uchile.cl>
+Subject: GIT repo (connection refused)
+Date: Tue, 01 Jul 2008 05:18:19 -0400
+Message-ID: <1214903899.7099.5.camel@videopodcast>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D7CB92481E
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0253C2485B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jul 2008 09:39:30 +0200 (CEST)
-In-Reply-To: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
+	Tue,  1 Jul 2008 11:18:25 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so335595and.80
+	for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2008 02:18:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mitul Sen (misen)" <misen@cisco.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mitul Sen (misen) wrote:
-> // Set access to RW interleaved.
-> if ((err = snd_pcm_hw_params_set_access (_soundDevice, hw_params,
-> SND_PCM_ACCESS_RW_NONINTERLEAVED)) < 0)
+Hello!
 
-The comment and the code do not agree.  Please try
-SND_PCM_ACCESS_RW_INTERLEAVED.
+http://www.alsa-project.org/main/index.php/GIT_Server#Occasional_Developers
+
+Says but doesn't work:
+$ git clone git://git.alsa-project.org/alsa-driver.git alsa-driver 
+Initialized empty Git repository in /tmp/alsa-driver/.git/
+git.alsa-project.org[0: 212.20.107.51]: errno=Connection refused
+fatal: unable to connect a socket (Connection refused)
+fetch-pack from 'git://git.alsa-project.org/alsa-driver.git' failed.
 
 
-Regards,
-Clemens
+Well, this works:
+git clone http://git.alsa-project.org/http/alsa-driver.git alsa-driver 
+
+
+Is this the right repository for submitting patches?
+
+
+Thanks!
+
+-- 
+Aldrin Martoq <amartoq@dcc.uchile.cl>
+http://aldrinvideopodcast.podshow.com/
