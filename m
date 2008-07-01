@@ -1,19 +1,19 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Still have choppy audio using 1.0.17
-Date: Tue, 01 Jul 2008 15:28:39 -0300
-Message-ID: <486A7757.4060907@tet.com.br>
-References: <4856C768.1060404@tet.com.br>
-	<485952C5.30307@tet.com.br>	<485965B0.9020102@tet.com.br>
-	<485A58A1.6040002@tet.com.br>	<48622AF1.3000304@tet.com.br>
-	<s5hprq5qz2t.wl%tiwai@suse.de>
+From: "Mitul Sen (misen)" <misen@cisco.com>
+Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
+	let	me apply hardware parameters
+Date: Tue, 1 Jul 2008 11:42:27 -0700
+Message-ID: <3B6F5C9068D5864096EB291236C3386F03B35428@xmb-sjc-21d.amer.cisco.com>
+References: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
+	<486A384B.6090103@cox.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080609090703060600000805"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0F4524462
+Received: from sj-iport-1.cisco.com (sj-iport-1.cisco.com [171.71.176.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10FBC24458
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jul 2008 20:28:40 +0200 (CEST)
-In-Reply-To: <s5hprq5qz2t.wl%tiwai@suse.de>
+	Tue,  1 Jul 2008 20:43:17 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,650 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: stan <ghjeold_i_mwee@cox.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080609090703060600000805
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-I have tried to implement the solution you proposed. However I still get 
-choppy audio, just like before, otherwise the sound is clear.
+Thanks for your suggestions. For the first suggestion, how would I know the version of alsa-lib that I am using so that I can download the source code for the same? Is alsa-lib the same as libasound? Under /usr/lib/libasound.so I have a symbolic link to libasound.so.2.0.0. Is that then the version I should be looking for?
 
-Basically I moved the timer to the cable struct, and updated the timer 
-function to update both playback and capture.
-I am sending the code attached so you can see if I implemented what you 
-suggested. The code is not very clean, nor completely functional, as I 
-never programmed to kernel before, and might cause kernel panic when 
-closing a stream.
+I am really new to this so please excuse me if these questions are too basic for this forum!
 
-Any other suggestions?
-Thanks for the help and the attention.
+Thanks,
+Mitul 
 
-Takashi Iwai escreveu:
-> At Wed, 25 Jun 2008 08:24:33 -0300,
-> Gustavo da Silva Serra wrote:
+
+-----Original Message-----
+From: stan [mailto:ghjeold_i_mwee@cox.net]
+Sent: Tue 7/1/2008 6:59 AM
+To: Mitul Sen (misen)
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Setting format to SND_PCM_FORMAT_MU_LAW does not let	me apply hardware parameters
+ 
+Mitul Sen (misen) wrote:
+> I am a newbie to ALSA and any help will be much appreciated.
+>
+> I have an application which sets up the signaling between an IP phone
+> and my desktop and then sets up the audio path between the two. 
+>
+> On my desktop application, I am able to receive RTP packets from IP
+> phone. I use an RTP stack to parse the data and after going through the
+> RTP stack, I try to play back the audio using ALSA. When I use the ALSA
+> code to play back (in real time) using sound card of my device, there is
+> only noise, I cannot hear the audio that I speak into the IP phone.
+> However, if I take the raw data coming from the RTP stack and write it
+> to a file, I can play back the file successfully.
+>
+> Since my data from IP phone is G.711 encoded, I have set the sampling
+> rate within ALSA to 8000. Also I am using one source (mono) and
+> non-interleaved data option for preparing ALSA for playback. When I set
+> the format to SND_PCM_FORMAT_MU_LAW, at runtime it lets me set that
+> format ie. snd_pcm_hw_params_set_format (for SND_PCM_FORMAT_MU_LAW) is
+> successful. However I get a runtime error while applying the hardware
+> parameters using snd_pcm_hw_params(..) if the format set earlier is
+> SND_PCM_FORMAT_MU_LAW. Using any other format like SND_PCM_FORMAT_U8 or
+> SND_PCM_FORMAT_S8, lets me apply the hardware parameters but it gives
+> the problem of the noise (no "audible" voice) that I described earlier.
 >   
->> If I keep the difference between the playback and capture pointers at 
->> one period, no choppy audio occurs. If the difference is 0, 2 or 5 
->> periods for example, choppy audio will always occur. Any ideas why?
->>     
->
-> Through a quick look at the code, it's likely the problem of the
-> timing of timer handlers for playback/capture streams.  In the current
-> code, the timer handlers are invoked individually.
->
-> One possible fix would be to force to synchronize the updates of both
-> directions instead of individual timers.  That is, share the same
-> timer for the connected streams so that the update order is
-> guaranteed.
->
->
-> Just my $0.02.
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------080609090703060600000805
-Content-Type: text/plain;
- name="aloop-kernel.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="aloop-kernel.c"
-
-/*
- *  Loopback soundcard
- *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
- */
-
-#include <linux/init.h>
-#include <linux/jiffies.h>
-#include <linux/slab.h>
-#include <linux/time.h>
-#include <linux/wait.h>
-#include <linux/moduleparam.h>
-#include <sound/core.h>
-#include <sound/control.h>
-#include <sound/pcm.h>
-#include <sound/initval.h>
-
-MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
-MODULE_DESCRIPTION("A loopback soundcard");
-MODULE_LICENSE("GPL");
-MODULE_SUPPORTED_DEVICE("{{ALSA,Loopback soundcard}}");
-
-#define MAX_PCM_SUBSTREAMS	8
-
-static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
-static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
-static int enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
-static int pcm_substreams[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8};
-
-module_param_array(index, int, NULL, 0444);
-MODULE_PARM_DESC(index, "Index value for loopback soundcard.");
-module_param_array(id, charp, NULL, 0444);
-MODULE_PARM_DESC(id, "ID string for loopback soundcard.");
-module_param_array(enable, bool, NULL, 0444);
-MODULE_PARM_DESC(enable, "Enable this loopback soundcard.");
-module_param_array(pcm_substreams, int, NULL, 0444);
-MODULE_PARM_DESC(pcm_substreams, "PCM substreams # (1-8) for loopback driver.");
-
-struct snd_card_loopback_pcm;
-
-typedef struct snd_card_loopback_cable {
-	struct snd_card_loopback_pcm *playback;
-	struct snd_card_loopback_pcm *capture;
-	struct snd_dma_buffer *dma_buffer;
-	struct snd_pcm_hardware hw;
-	struct timer_list timer;
-	spinlock_t lock;
-	int playback_valid;
-	int capture_valid;
-	int playback_running;
-	int capture_running;
-	int playback_busy;
-	int capture_busy;
-} snd_card_loopback_cable_t;
-
-typedef struct snd_card_loopback {
-	struct snd_card *card;
-	struct snd_card_loopback_cable cables[MAX_PCM_SUBSTREAMS][2];
-} snd_card_loopback_t;
-
-typedef struct snd_card_loopback_pcm {
-	unsigned int pcm_buffer_size;
-	unsigned int pcm_period_size;
-	unsigned int pcm_bps;		/* bytes per second */
-	unsigned int pcm_irq_pos;	/* IRQ position */
-	unsigned int pcm_buf_pos;	/* position in buffer */
-	struct snd_pcm_substream *substream;
-	struct snd_card_loopback_cable *cable;
-} snd_card_loopback_pcm_t;
-
-static struct snd_card *snd_loopback_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
-static DECLARE_MUTEX(gl_sem);
-
-static void snd_card_loopback_timer_start(snd_card_loopback_cable_t* cable)
-{
-	printk("%s: initiated\n", __FUNCTION__);
-	cable->timer.expires = 1 + jiffies;
-	add_timer(&cable->timer);
-}
-
-static void snd_card_loopback_timer_stop(snd_card_loopback_cable_t* cable)
-{
-	printk("%s: stopped\n", __FUNCTION__);
-	del_timer(&cable->timer);
-}
-
-static int snd_card_loopback_playback_trigger(struct snd_pcm_substream *substream, int cmd)
-{
-	struct snd_pcm_runtime *runtime = substream->runtime;
-	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-
-	if (cmd == SNDRV_PCM_TRIGGER_START) {
-		printk("%s: start\n", __FUNCTION__);
-		dpcm->cable->playback_running = 1;
-		if (!dpcm->cable->capture_running) {
-			snd_card_loopback_timer_start(dpcm->cable);
-		}
-	} else if (cmd == SNDRV_PCM_TRIGGER_STOP) {
-		printk("%s: stop\n", __FUNCTION__);
-		dpcm->cable->playback_running = 0;
-		if (!dpcm->cable->capture_running) {
-			snd_card_loopback_timer_stop(dpcm->cable);
-			snd_pcm_format_set_silence(runtime->format, runtime->dma_area,
-				bytes_to_samples(runtime, runtime->dma_bytes));
-		}
-	} else {
-		return -EINVAL;
-	}
-	return 0;
-}
-
-static int snd_card_loopback_capture_trigger(struct snd_pcm_substream *substream, int cmd)
-{
-	struct snd_pcm_runtime *runtime = substream->runtime;
-	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-
-	if (cmd == SNDRV_PCM_TRIGGER_START) {
-		printk("%s: start\n", __FUNCTION__);
-		dpcm->cable->capture_running = 1;
-		if (!dpcm->cable->playback_running) {
-			snd_card_loopback_timer_start(dpcm->cable);
-		}
-	} else if (cmd == SNDRV_PCM_TRIGGER_STOP) {
-		printk("%s: stop\n", __FUNCTION__);
-		dpcm->cable->capture_running = 0;
-		if (!dpcm->cable->playback_running) {
-			snd_card_loopback_timer_stop(dpcm->cable);
-		}
-	} else {
-		return -EINVAL;
-	}
-	return 0;
-}
-
-static int snd_card_loopback_prepare(struct snd_pcm_substream *substream)
-{
-	struct snd_pcm_runtime *runtime = substream->runtime;
-	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-	snd_card_loopback_cable_t *cable = dpcm->cable;
-	unsigned int bps;
-
-	printk("%s\n", __FUNCTION__);
-
-	bps = runtime->rate * runtime->channels;
-	bps *= snd_pcm_format_width(runtime->format);
-	bps /= 8;
-	if (bps <= 0)
-		return -EINVAL;
-	dpcm->pcm_bps = bps;
-	dpcm->pcm_buffer_size = frames_to_bytes(runtime, runtime->buffer_size);
-	dpcm->pcm_period_size = frames_to_bytes(runtime, runtime->period_size);
-	dpcm->pcm_irq_pos = 0;
-	dpcm->pcm_buf_pos = 0;
-
-	cable->hw.formats = (1ULL << runtime->format);
-	cable->hw.rate_min = runtime->rate;
-	cable->hw.rate_max = runtime->rate;
-	cable->hw.channels_min = runtime->channels;
-	cable->hw.channels_max = runtime->channels;
-	cable->hw.buffer_bytes_max = frames_to_bytes(runtime, runtime->buffer_size);
-	cable->hw.period_bytes_min = frames_to_bytes(runtime, runtime->period_size);
-	cable->hw.period_bytes_max = frames_to_bytes(runtime, runtime->period_size);
-	cable->hw.periods_min = runtime->periods;
-	cable->hw.periods_max = runtime->periods;
-
-	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-		snd_pcm_format_set_silence(runtime->format, runtime->dma_area,
-				bytes_to_samples(runtime, runtime->dma_bytes));
-		cable->playback_valid = 1;
-	} else {
-		if (!cable->playback_running) {
-			snd_pcm_format_set_silence(runtime->format, runtime->dma_area,
-					bytes_to_samples(runtime, runtime->dma_bytes));
-		}
-		cable->capture_valid = 1;
-	}
-
-	return 0;
-}
-
-static void snd_card_loopback_timer_function(unsigned long data)
-{
-	snd_card_loopback_cable_t* cable = (snd_card_loopback_cable_t*)data;
-	snd_card_loopback_pcm_t *dpcm = NULL;
-
-	down_interruptible(&gl_sem);
-	dpcm = cable->playback;
-	if (dpcm) {
-		spin_lock_irq(&cable->lock);
-		dpcm->pcm_irq_pos += dpcm->pcm_bps;
-		dpcm->pcm_buf_pos += dpcm->pcm_bps;
-		dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size * HZ;
-		if (dpcm->pcm_irq_pos >= dpcm->pcm_period_size * HZ) {
-			dpcm->pcm_irq_pos %= dpcm->pcm_period_size * HZ;
-			spin_unlock_irq(&cable->lock);
-			snd_pcm_period_elapsed(dpcm->substream);
-		} else {
-			spin_unlock_irq(&cable->lock);
-		}
-	}
-
-	dpcm = cable->capture;
-	if (dpcm) {
-		spin_lock_irq(&cable->lock);
-		dpcm->pcm_irq_pos += dpcm->pcm_bps;
-		dpcm->pcm_buf_pos += dpcm->pcm_bps;
-		dpcm->pcm_buf_pos %= dpcm->pcm_buffer_size * HZ;
-		if (dpcm->pcm_irq_pos >= dpcm->pcm_period_size * HZ) {
-			dpcm->pcm_irq_pos %= dpcm->pcm_period_size * HZ;
-			spin_unlock_irq(&cable->lock);
-			snd_pcm_period_elapsed(dpcm->substream);
-		} else {
-			spin_unlock_irq(&cable->lock);
-		}
-	}
-
-	up(&gl_sem);
-	cable->timer.expires = 1 + jiffies;
-	add_timer(&cable->timer);
-
-}
-
-static snd_pcm_uframes_t snd_card_loopback_pointer(struct snd_pcm_substream *substream)
-{
-	snd_card_loopback_pcm_t *dpcm = substream->runtime->private_data;
-
-	printk("%s: %s = %lu\n", __FUNCTION__, (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ? "playback" : "capture", bytes_to_frames(substream->runtime, dpcm->pcm_buf_pos / HZ));
-
-	return bytes_to_frames(substream->runtime, dpcm->pcm_buf_pos / HZ);
-}
-
-static struct snd_pcm_hardware snd_card_loopback_info =
-{
-	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
-				 SNDRV_PCM_INFO_MMAP_VALID),
-	.formats =		(SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE |
-				 SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT_LE),
-	.rates =		(SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_192000),
-	.rate_min =		8000,
-	.rate_max =		192000,
-	.channels_min =		1,
-	.channels_max =		32,
-	.buffer_bytes_max =	64 * 1024,
-	.period_bytes_min =	64,
-	.period_bytes_max =	64 * 1024,
-	.periods_min =		1,
-	.periods_max =		1024,
-	.fifo_size =		0,
-};
-
-static void snd_card_loopback_runtime_free(struct snd_pcm_runtime *runtime)
-{
-	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-
-	printk("%s: freeing pointer %p\n", __FUNCTION__, dpcm);
-
-	kfree(dpcm);
-
-	printk("%s: END\n", __FUNCTION__);
-}
-
-static int snd_card_loopback_hw_params(struct snd_pcm_substream *substream,
-				    struct snd_pcm_hw_params *hw_params)
-{
-	struct snd_pcm_runtime *runtime = substream->runtime;
-	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-	struct snd_dma_buffer *dmab = NULL;
-
-	printk("%s\n", __FUNCTION__);
-
-	if (NULL == dpcm->cable->dma_buffer) {
-		dmab = kzalloc(sizeof(*dmab), GFP_KERNEL);
-		if (NULL == dmab)
-			return -ENOMEM;
-
-		if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_CONTINUOUS,
-					snd_dma_continuous_data(GFP_KERNEL),
-					params_buffer_bytes(hw_params),
-					dmab) < 0) {
-			kfree(dmab);
-			return -ENOMEM;
-		}
-		dpcm->cable->dma_buffer = dmab;
-	}
-	snd_pcm_set_runtime_buffer(substream, dpcm->cable->dma_buffer);
-
-	printk("%s: END\n", __FUNCTION__);
-	return 0;
-}
-
-static int snd_card_loopback_hw_free(struct snd_pcm_substream *substream)
-{
-	struct snd_pcm_runtime *runtime = substream->runtime;
-	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-	snd_card_loopback_cable_t *cable = dpcm->cable;
-
-	// TODO: Should we free timer?
-	printk("%s\n", __FUNCTION__);
-	snd_pcm_set_runtime_buffer(substream, NULL);
-
-	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-		if (cable->capture_busy)
-			return 0;
-	} else {
-		if (cable->playback_busy)
-			return 0;
-	}
-
-	if (NULL == cable->dma_buffer)
-		return 0;
-
-	snd_dma_free_pages(cable->dma_buffer);
-	kfree(cable->dma_buffer);
-	cable->dma_buffer = NULL;
-	return 0;
-}
-
-static int snd_card_loopback_open(struct snd_pcm_substream *substream)
-{
-	int half;
-	snd_card_loopback_pcm_t *dpcm;
-	struct snd_card_loopback *loopback = substream->private_data;
-	struct snd_pcm_runtime *runtime = substream->runtime;
-	snd_card_loopback_cable_t* cable;
-
-	printk("%s\n", __FUNCTION__);
-
-	if (0 == substream->pcm->device) {
-		if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream)
-			half = 1;
-		else
-			half = 0;
-	} else {
-		if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream)
-			half = 0;
-		else
-			half = 1;
-	}
-	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-		printk("%s: Opening PLAYBACK device\n", __FUNCTION__);
-		if (loopback->cables[substream->number][half].playback_busy)
-			return -EBUSY;
-	} else {
-		printk("%s: Opening CAPTURE device\n", __FUNCTION__);
-		if (loopback->cables[substream->number][half].capture_busy)
-			return -EBUSY;
-	}
-
-	dpcm = kzalloc(sizeof(*dpcm), GFP_KERNEL);
-	if (dpcm == NULL)
-		return -ENOMEM;
-
-	dpcm->substream = substream;
-	dpcm->cable = &loopback->cables[substream->number][half];
-	runtime->private_data = dpcm;
-	runtime->private_free = snd_card_loopback_runtime_free;
-	runtime->hw = snd_card_loopback_info;
-
-	cable = dpcm->cable;
-	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-		cable->playback = dpcm;
-	}
-	else {
-		cable->capture = dpcm;
-	}
-
-	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-		dpcm->cable->playback_valid = 0;
-		dpcm->cable->playback_running = 0;
-		dpcm->cable->playback_busy = 1;
-		if (dpcm->cable->capture_valid)
-			runtime->hw = dpcm->cable->hw;
-		else
-			dpcm->cable->hw = snd_card_loopback_info;
-	} else {
-		dpcm->cable->capture_valid = 0;
-		dpcm->cable->capture_running = 0;
-		dpcm->cable->capture_busy = 1;
-		if (dpcm->cable->playback_valid)
-			runtime->hw = dpcm->cable->hw;
-		else
-			dpcm->cable->hw = snd_card_loopback_info;
-	}
-	printk("%s: END\n", __FUNCTION__);
-
-	return 0;
-}
-
-static int snd_card_loopback_close(struct snd_pcm_substream *substream)
-{
-	struct snd_pcm_runtime *runtime = substream->runtime;
-	snd_card_loopback_pcm_t *dpcm = runtime->private_data;
-
-	down_interruptible(&gl_sem);
-
-	printk("%s\n", __FUNCTION__);
-
-	if (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) {
-		printk("%s: Closing PLAYBACK device\n", __FUNCTION__);
-		dpcm->cable->playback_valid = 0;
-		dpcm->cable->playback_running = 0;
-		dpcm->cable->playback_busy = 0;
-		dpcm->cable->playback = NULL;
-	} else {
-		printk("%s: Closing CAPTURE device\n", __FUNCTION__);
-		dpcm->cable->capture_valid = 0;
-		dpcm->cable->capture_running = 0;
-		dpcm->cable->capture_busy = 0;
-		dpcm->cable->capture = NULL;
-	}
-
-	printk("%s: END\n", __FUNCTION__);
-
-	up(&gl_sem);
-	return 0;
-}
-
-static struct snd_pcm_ops snd_card_loopback_playback_ops = {
-	.open =			snd_card_loopback_open,
-	.close =		snd_card_loopback_close,
-	.ioctl =		snd_pcm_lib_ioctl,
-	.hw_params =	snd_card_loopback_hw_params,
-	.hw_free =		snd_card_loopback_hw_free,
-	.prepare =		snd_card_loopback_prepare,
-	.trigger =		snd_card_loopback_playback_trigger,
-	.pointer =		snd_card_loopback_pointer,
-};
-
-static struct snd_pcm_ops snd_card_loopback_capture_ops = {
-	.open =			snd_card_loopback_open,
-	.close =		snd_card_loopback_close,
-	.ioctl =		snd_pcm_lib_ioctl,
-	.hw_params =	snd_card_loopback_hw_params,
-	.hw_free =		snd_card_loopback_hw_free,
-	.prepare =		snd_card_loopback_prepare,
-	.trigger =		snd_card_loopback_capture_trigger,
-	.pointer =		snd_card_loopback_pointer,
-};
-
-static int __init snd_card_loopback_pcm(snd_card_loopback_t *loopback, int device, int substreams)
-{
-	struct snd_pcm *pcm;
-	int err;
-
-	printk("%s\n", __FUNCTION__);
-
-	if ((err = snd_pcm_new(loopback->card, "Loopback PCM", device, substreams, substreams, &pcm)) < 0)
-		return err;
-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_loopback_playback_ops);
-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_loopback_capture_ops);
-
-	pcm->private_data = loopback;
-	pcm->info_flags = 0;
-	strcpy(pcm->name, "Loopback PCM");
-	return 0;
-}
-
-static int __init snd_card_loopback_new_mixer(snd_card_loopback_t *loopback)
-{
-	struct snd_card *card = loopback->card;
-
-	printk("%s\n", __FUNCTION__);
-
-	snd_assert(loopback != NULL, return -EINVAL);
-	strcpy(card->mixername, "Loopback Mixer");
-	return 0;
-}
-
-static int __init snd_card_loopback_probe(int dev)
-{
-	struct snd_card *card;
-	struct snd_card_loopback *loopback;
-	struct snd_card_loopback_cable *cable;
-	int subdev, half, err;
-
-	printk("%s\n", __FUNCTION__);
-
-	if (!enable[dev])
-		return -ENODEV;
-	card = snd_card_new(index[dev], id[dev], THIS_MODULE,
-			    sizeof(struct snd_card_loopback));
-	if (card == NULL)
-		return -ENOMEM;
-	loopback = (struct snd_card_loopback *)card->private_data;
-
-	if (pcm_substreams[dev] < 1)
-		pcm_substreams[dev] = 1;
-	if (pcm_substreams[dev] > MAX_PCM_SUBSTREAMS)
-		pcm_substreams[dev] = MAX_PCM_SUBSTREAMS;
-
-	for (subdev = 0; subdev < pcm_substreams[dev]; subdev++) {
-		for (half = 0; half < 2; half++) {
-			cable = &loopback->cables[subdev][half];
-			cable->playback = NULL;
-			cable->capture = NULL;
-			cable->dma_buffer = NULL;
-			cable->playback_valid = 0;
-			cable->capture_valid = 0;
-			cable->playback_running = 0;
-			cable->capture_running = 0;
-			cable->playback_busy = 0;
-			cable->capture_busy = 0;
-			cable->timer.function = 0;
-
-			init_timer(&cable->timer);
-			spin_lock_init(&cable->lock);
-			cable->timer.data = (unsigned long)cable;
-			cable->timer.function = snd_card_loopback_timer_function;
-		}
-	}
-
-	loopback->card = card;
-	if ((err = snd_card_loopback_pcm(loopback, 0, pcm_substreams[dev])) < 0)
-		goto __nodev;
-	if ((err = snd_card_loopback_pcm(loopback, 1, pcm_substreams[dev])) < 0)
-		goto __nodev;
-	if ((err = snd_card_loopback_new_mixer(loopback)) < 0)
-		goto __nodev;
-	strcpy(card->driver, "Loopback");
-	strcpy(card->shortname, "Loopback");
-	sprintf(card->longname, "Loopback %i", dev + 1);
-	if ((err = snd_card_register(card)) == 0) {
-		snd_loopback_cards[dev] = card;
-		return 0;
-	}
-      __nodev:
-	snd_card_free(card);
-	return err;
-}
-
-static int __init alsa_card_loopback_init(void)
-{
-	int dev, cards;
-
-	printk("%s\n", __FUNCTION__);
-
-	for (dev = cards = 0; dev < SNDRV_CARDS && enable[dev]; dev++) {
-		if (snd_card_loopback_probe(dev) < 0) {
-#ifdef MODULE
-			printk(KERN_ERR "Loopback soundcard #%i not found or device busy\n", dev + 1);
-#endif
-			break;
-		}
-		cards++;
-	}
-	if (!cards) {
-#ifdef MODULE
-		printk(KERN_ERR "Loopback soundcard not found or device busy\n");
-#endif
-		return -ENODEV;
-	}
-	return 0;
-}
-
-static void __exit alsa_card_loopback_exit(void)
-{
-	int idx;
-
-	for (idx = 0; idx < SNDRV_CARDS; idx++)
-		snd_card_free(snd_loopback_cards[idx]);
-}
-
-module_init(alsa_card_loopback_init)
-module_exit(alsa_card_loopback_exit)
-
---------------080609090703060600000805
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------080609090703060600000805--
+This sounds like there is a mismatch in the data.  Two suggestions.
+
+Look at the code that implements SND_PCM_FORMAT_MU_LAW in alsa-lib
+and make sure it is correct (or actually there and not a stub).  See if 
+there is some
+other parameter(s) you have to set in order for it to function.
+
+Write the output being sent to alsa-lib to a file as you are sending it 
+and compare it
+to the raw data you have captured that plays OK.  You want it to be the 
+same.  If it
+isn't, that is your problem.  If it is, the problem is in the alsa-lib 
+decoding for this case.
+Obviously, the coding must work in some case, because you are playing the
+raw data successfully.  Either the application or alsa is decoding it 
+successfully.  Compare
+the successful decoding process with the unsuccessful decoding process.
