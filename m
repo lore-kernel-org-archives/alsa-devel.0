@@ -1,17 +1,17 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [ALSA] hda-codec - Fix laptop models for Cxt5045
-Date: Tue, 1 Jul 2008 09:07:30 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0807010906240.20581@tm8103-a.perex-int.cz>
-References: <871w2ea4ek.fsf@ixod.org>
+Subject: Re: [PATCH] autoconf problems
+Date: Tue, 1 Jul 2008 09:18:15 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0807010915230.20581@tm8103-a.perex-int.cz>
+References: <4548.125.7.7.9.1214884076.squirrel@webmail.exetel.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5E0424809
+	by alsa0.perex.cz (Postfix) with ESMTP id AE00E2480F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jul 2008 09:07:33 +0200 (CEST)
-In-Reply-To: <871w2ea4ek.fsf@ixod.org>
+	Tue,  1 Jul 2008 09:18:18 +0200 (CEST)
+In-Reply-To: <4548.125.7.7.9.1214884076.squirrel@webmail.exetel.com.au>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,32 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mark T.B. Carroll" <mtbc@ixod.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Marc Boucher <marc@linuxant.com>
+To: ben.stanley@exemail.com.au
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 30 Jun 2008, Mark T.B. Carroll wrote:
+On Tue, 1 Jul 2008 ben.stanley@exemail.com.au wrote:
 
-> Greetings. I thought I should mention that your patch
-> http://kerneltrap.org/mailarchive/git-commits-head/2008/2/1/670694
-> broke headphone sound for me on a Toshiba Satellite P105-S6197,
-> sound card PCI ID 8086:27d8 with Conexant CX20549 codec. The speakers
-> silence when I plug the headphones in but no sound comes from them.
+> Dear List,
 > 
-> Details are at http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=488063
-> but half of my Debian bug reports go ignored for years.
+> A month ago I was having trouble building alsa-drivers on RHEL5.
 > 
-> A sufficient workaround for me is to comment out the `default:' in the
-> `switch (board_config)' in the function `patch_cxt5045' in
-> sound/pci/hda/patch_conexant.c. Then everything works fine again.
-> 
-> The same problem appears to be reported by evilviper77 at
-> http://bbs.archlinux.org/viewtopic.php?pid=373770 - they have a
-> Toshiba P105-9339.
+> The following patch fixes the problems.
 
-CCing to alsa-devel mailing list.
+Applied. Thanks.
 
-						Jaroslav
+					Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
