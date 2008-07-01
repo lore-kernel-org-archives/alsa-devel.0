@@ -1,24 +1,19 @@
-From: "Mitul Sen (misen)" <misen@cisco.com>
-Subject: Setting format to SND_PCM_FORMAT_MU_LAW does not let
-	me apply hardware parameters
-Date: Mon, 30 Jun 2008 15:09:07 -0700
-Message-ID: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
+From: ben.stanley@exemail.com.au
+Subject: [PATCH] autoconf problems
+Date: Tue, 1 Jul 2008 13:47:56 +1000 (EST)
+Message-ID: <4548.125.7.7.9.1214884076.squirrel@webmail.exetel.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sj-iport-1.cisco.com (sj-iport-1.cisco.com [171.71.176.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 638562475C
+Received: from acorn.exetel.com.au (acorn.exetel.com.au [220.233.0.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A6C5247AE
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jul 2008 00:09:08 +0200 (CEST)
-Received: from sj-core-2.cisco.com (sj-core-2.cisco.com [171.71.177.254])
-	by sj-dkim-2.cisco.com (8.12.11/8.12.11) with ESMTP id m5UM97lO016018
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2008 15:09:07 -0700
-Received: from xbh-sjc-231.amer.cisco.com (xbh-sjc-231.cisco.com
-	[128.107.191.100])
-	by sj-core-2.cisco.com (8.13.8/8.13.8) with ESMTP id m5UM970N006479
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2008 22:09:07 GMT
-Content-class: urn:content-classes:message
+	Tue,  1 Jul 2008 05:48:00 +0200 (CEST)
+Received: from localhost ([127.0.0.1] helo=webmail.exetel.com.au)
+	by acorn.exetel.com.au with esmtp (Exim 4.68)
+	(envelope-from <ben.stanley@exemail.com.au>) id 1KDWqS-0000Xa-Oc
+	for alsa-devel@alsa-project.org; Tue, 01 Jul 2008 13:47:56 +1000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,196 +26,488 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am a newbie to ALSA and any help will be much appreciated.
-
-I have an application which sets up the signaling between an IP phone
-and my desktop and then sets up the audio path between the two. 
-
-On my desktop application, I am able to receive RTP packets from IP
-phone. I use an RTP stack to parse the data and after going through the
-RTP stack, I try to play back the audio using ALSA. When I use the ALSA
-code to play back (in real time) using sound card of my device, there is
-only noise, I cannot hear the audio that I speak into the IP phone.
-However, if I take the raw data coming from the RTP stack and write it
-to a file, I can play back the file successfully.
-
-Since my data from IP phone is G.711 encoded, I have set the sampling
-rate within ALSA to 8000. Also I am using one source (mono) and
-non-interleaved data option for preparing ALSA for playback. When I set
-the format to SND_PCM_FORMAT_MU_LAW, at runtime it lets me set that
-format ie. snd_pcm_hw_params_set_format (for SND_PCM_FORMAT_MU_LAW) is
-successful. However I get a runtime error while applying the hardware
-parameters using snd_pcm_hw_params(..) if the format set earlier is
-SND_PCM_FORMAT_MU_LAW. Using any other format like SND_PCM_FORMAT_U8 or
-SND_PCM_FORMAT_S8, lets me apply the hardware parameters but it gives
-the problem of the noise (no "audible" voice) that I described earlier.
-
-This is what my ALSA code looks like
-
-***** beginning of code snippet *****************
-
-int err;
-
-snd_pcm_hw_params_t *hw_params;
-
-// Try to open the default device
-
-err = snd_pcm_open( &_soundDevice, "plughw:0,0",
-SND_PCM_STREAM_PLAYBACK, 0 );
-
-// Check for error on open.
-
-if( err < 0 )
-
-{
-
-printf("Init: cannot open audio device\n");
-
-return -1;
-
-}
-
-// Allocate the hardware parameter structure.
-
-if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0)
-
-{
-
-printf("Init: cannot allocate hardware parameter structure\n");
-
-return -1;
-
-}
-
-if ((err = snd_pcm_hw_params_any (_soundDevice, hw_params)) < 0)
-
-{
-
-printf("Init: cannot initialize hardware parameter structure\n");
-
-return -1;
-
-}
-
-// Set access to RW interleaved.
-
-if ((err = snd_pcm_hw_params_set_access (_soundDevice, hw_params,
-SND_PCM_ACCESS_RW_NONINTERLEAVED)) < 0)
-
-{
-
-printf("Init: cannot set access type\n");
-
-return -1;
-
-}
-
-if ((err = snd_pcm_hw_params_set_format (_soundDevice, hw_params,
-SND_PCM_FORMAT_MU_LAW)) < 0)
-
-{
-
-return -1;
-
-}
-
-// Set channels to mono (1)
-
-if ((err = snd_pcm_hw_params_set_channels (_soundDevice, hw_params, 1))
-< 0)
-
-{
-
-return -1;
-
-}
-
-// Set sample rate.
-
-unsigned int actualRate = 8000;
-
-if ((err = snd_pcm_hw_params_set_rate_near (_soundDevice, hw_params,
-&actualRate,
-
-0)) < 0)
-
-{
-
-return -1;
-
-}
-
-// Apply the hardware parameters that we've set.
-
-if ((err = snd_pcm_hw_params (_soundDevice, hw_params)) < 0)
-
-{
-
-printf("Audio device parameters have not been set
-successfully.(%s)(%s)\n", strerror (err), snd_strerror (err));
-
-return -1;
-
-}
-
-// Free the hardware parameters now that we're done with them.
-
-snd_pcm_hw_params_free (hw_params);
-
-/* Prepare interface for use.
-
-if ((err = snd_pcm_prepare (_soundDevice)) < 0)
-
-{
-
-printf("Audio device not prepared for use\n");
-
-return -1;
-
-}
-
-// If the frames are received...
-
-/* find out how much space is available for playback data
-
-if ((frames_to_deliver = snd_pcm_avail_update (_soundDevice)) < 0)
-
-{
-
-printf("Error returned by snd_pcm_avail_update\n");
-
-}
-
-frames_to_deliver = frames_to_deliver > 4096 ? 4096 : frames_to_deliver;
-
-printf("frames to deliver is %d\n",(int)frames_to_deliver);
-
-*/
-
-frames_to_deliver = 172;
-
-bufs[1] = (void*)buffer;
-
-if ((err = snd_pcm_writen( _soundDevice, bufs, frames_to_deliver)) < 0)
-
-{
-
-printf ("write failed (%s)\n", snd_strerror (err));
-
-}
-
-****************** end of code snippet
-**********************************
-
-The error I get is as follows:-
-
-Audio device parameters have not been set successfully.(Unknown error
-4294967274)(Invalid argument)
-
- 
-
-Any pointers on what I could be doing wrong? 
-
-Thanks and regards,
-
-Mitul
+Dear List,
+
+A month ago I was having trouble building alsa-drivers on RHEL5.
+
+The following patch fixes the problems.
+
+The root of the problem is that including the header
+include/linux/config.h produces a warning on RHEL5. This interferes with
+several autoconf tests that treat warnings as errors. Therefore it seemed
+best to globally check use of
+#include <linux/config.h>
+in the same pattern as was already done for init_utsname.
+
+Furthermore, the check for is_power_of_2 would produce 2 warnings: one for
+the use of an undeclared function (desired), and another warning for an
+un-used variable. Still the test would succeed, because the required
+condition is flagged by warnings, not errors. This was fixed by following
+the pattern from init_utsname.
+
+Signed-off-by: Ben Stanley <Ben.Stanley@exemail.com.au>
+
+--- a/configure.in	2008-07-01 13:09:02.000000000 +1000
++++ b/configure.in	2008-07-01 13:26:12.000000000 +1000
+@@ -1567,7 +1567,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ ],[
+@@ -1595,7 +1599,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/kernel.h>
+ ],[
+   char buf[128];
+@@ -1622,7 +1630,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/kernel.h>
+ void f(const char *fmt, ...)
+ {
+@@ -1656,7 +1668,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/kernel.h>
+ ],[
+   char buf[128];
+@@ -1683,7 +1699,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/kernel.h>
+ ],[
+   unsigned int i;
+@@ -1710,7 +1730,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/time.h>
+ #include <linux/sched.h>
+ #include <linux/interrupt.h>
+@@ -1740,7 +1764,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/kmod.h>
+ ],[
+ 	request_module("abcd", "def", "ixj");
+@@ -1766,7 +1794,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/fs.h>
+ #include <linux/proc_fs.h>
+ ],[
+@@ -1794,7 +1826,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/pci.h>
+ ],[
+ 	int (*func)();
+@@ -1820,7 +1856,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/pci.h>
+ ],[
+ 	int (*func)();
+@@ -1846,7 +1886,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/delay.h>
+ ],[
+   void (*func)(unsigned int);
+@@ -1874,7 +1918,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/delay.h>
+ ],[
+   unsigned long (*func)(unsigned int);
+@@ -1902,7 +1950,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/jiffies.h>
+ #include <linux/time.h>
+ ],[
+@@ -1930,7 +1982,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/tty.h>
+ ],[
+ 	struct tty_struct tty;
+@@ -1957,7 +2013,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/videodev.h>
+ #include "media/v4l2-dev.h"
+ ],[
+@@ -1995,7 +2055,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/mm.h>
+ ],[
+   static pgprot_t p;
+@@ -2020,7 +2084,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/mm.h>
+ ],[
+   static pgprot_t p;
+@@ -2046,7 +2114,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/slab.h>
+ ],[
+   void * (*func)(size_t, size_t, int);
+@@ -2073,7 +2145,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/string.h>
+ ],[
+   char * (*func)(const char *, int);
+@@ -2100,7 +2176,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/slab.h>
+ ],[
+   void * (*func)(size_t, int);
+@@ -2128,7 +2208,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/workqueue.h>
+ ],[
+     create_workqueue("abcd", 0);
+@@ -2155,7 +2239,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/pci.h>
+ ],[
+   struct pci_dev dev;
+@@ -2183,7 +2271,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/pci.h>
+ ],[
+   struct pci_dev *pci;
+@@ -2209,7 +2301,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/sound.h>
+ ],[
+   void (*func)(struct file_operations *, int, struct device *);
+@@ -2453,7 +2549,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/device.h>
+ ],[
+   struct class_simple *(*foo)(struct module *, char *) =
+class_simple_create;
+@@ -2482,7 +2582,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/device.h>
+ ],[
+   static struct device_driver driver;
+@@ -2511,7 +2615,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/mm.h>
+ ],[
+   void (*func)(struct vm_area_struct *, pte_t, unsigned long) =
+print_bad_pte;
+@@ -2539,7 +2647,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/device.h>
+ ],[
+   struct class_device dev;
+@@ -2568,7 +2680,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/interrupt.h>
+ ],[
+   irq_handler_t handle = 0;
+@@ -2596,7 +2712,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/types.h>
+ #include <linux/gfp.h>
+ ],[
+@@ -2623,7 +2743,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/types.h>
+ #include <linux/gfp.h>
+ ],[
+@@ -2650,7 +2774,11 @@
+ CC=$KCC
+ AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/types.h>
+ #include <linux/mm.h>
+ ],[
+@@ -2716,14 +2844,19 @@
+   is_power_of_2="0"
+   ac_save_CFLAGS="$CFLAGS"
+   ac_save_CC="$CC"
+-  CFLAGS="$KERNEL_CHECK_CFLAGS"
++  CFLAGS="$KERNEL_CHECK_CFLAGS -Werror"
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/log2.h>
+ ],[
+   int a = is_power_of_2(2);
++  a = 2;
+ ],
+     AC_MSG_RESULT(yes);is_power_of_2="1",
+     AC_MSG_RESULT(no);is_power_of_2="0",
+@@ -2750,7 +2883,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/bitops.h>
+ ],[
+   unsigned long (*x)(unsigned long);
+@@ -2779,7 +2916,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/pnp.h>
+ ],[
+   struct pnp_driver pnp;
+@@ -2808,7 +2949,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/device.h>
+ ],[
+   struct device *(*foo)() = device_create_drvdata;
+@@ -2836,7 +2981,11 @@
+   CC=$KCC
+   AC_TRY_COMPILE([
+ #define __KERNEL__
++#ifdef CONFIG_HAVE_DEPRECATED_CONFIG_H
++#include <linux/autoconf.h>
++#else
+ #include <linux/config.h>
++#endif
+ #include <linux/fs.h>
+ ],[
+   struct file_operations ops;
+@@ -3005,4 +3154,4 @@
+ dnl avoid changing include/sound/version.h
+ if test "$update_versoin" != "yes"; then
+   touch alsa-kernel/include/version.h
+-fi
+\ No newline at end of file
++fi
