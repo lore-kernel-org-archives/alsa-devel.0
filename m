@@ -1,18 +1,19 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
- let	me apply hardware parameters
-Date: Tue, 01 Jul 2008 06:59:39 -0700
-Message-ID: <486A384B.6090103@cox.net>
-References: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
+From: "=?ISO-8859-1?Q?Anders_R=F8nningen?=" <andersronningen@gmail.com>
+Subject: Low output from a Dell XPS M1530 with a STAC 9228 codec
+Date: Tue, 1 Jul 2008 16:22:53 +0200
+Message-ID: <194b8d500807010722n32b8b086h12bac5e7843d41da@mail.gmail.com>
+Reply-To: anders.ronningen@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao107.cox.net (fed1rmmtao107.cox.net [68.230.241.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C665243BC
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90F08243F3
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jul 2008 15:59:41 +0200 (CEST)
-In-Reply-To: <3B6F5C9068D5864096EB291236C3386F02CE1628@xmb-sjc-21d.amer.cisco.com>
+	Tue,  1 Jul 2008 16:22:55 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so635202yxh.2
+	for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2008 07:22:54 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mitul Sen (misen)" <misen@cisco.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mitul Sen (misen) wrote:
-> I am a newbie to ALSA and any help will be much appreciated.
->
-> I have an application which sets up the signaling between an IP phone
-> and my desktop and then sets up the audio path between the two. 
->
-> On my desktop application, I am able to receive RTP packets from IP
-> phone. I use an RTP stack to parse the data and after going through the
-> RTP stack, I try to play back the audio using ALSA. When I use the ALSA
-> code to play back (in real time) using sound card of my device, there is
-> only noise, I cannot hear the audio that I speak into the IP phone.
-> However, if I take the raw data coming from the RTP stack and write it
-> to a file, I can play back the file successfully.
->
-> Since my data from IP phone is G.711 encoded, I have set the sampling
-> rate within ALSA to 8000. Also I am using one source (mono) and
-> non-interleaved data option for preparing ALSA for playback. When I set
-> the format to SND_PCM_FORMAT_MU_LAW, at runtime it lets me set that
-> format ie. snd_pcm_hw_params_set_format (for SND_PCM_FORMAT_MU_LAW) is
-> successful. However I get a runtime error while applying the hardware
-> parameters using snd_pcm_hw_params(..) if the format set earlier is
-> SND_PCM_FORMAT_MU_LAW. Using any other format like SND_PCM_FORMAT_U8 or
-> SND_PCM_FORMAT_S8, lets me apply the hardware parameters but it gives
-> the problem of the noise (no "audible" voice) that I described earlier.
->   
-This sounds like there is a mismatch in the data.  Two suggestions.
+The output on the mentioned setup is much lower in Ubuntu than in Vista. I
+have gotten support in #alsa, so I'm fairly sure my alsamixer settings are
+correct. I have also tried different model options in alsa-base, but without
+any luck. The volume is much lower both from the internal speakers and from
+the headphone outputs on the card. The behaviour fits the description at
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D3785
 
-Look at the code that implements SND_PCM_FORMAT_MU_LAW in alsa-lib
-and make sure it is correct (or actually there and not a stub).  See if 
-there is some
-other parameter(s) you have to set in order for it to function.
+My alsa-info output is at http://paste.ubuntu.com/24221/
 
-Write the output being sent to alsa-lib to a file as you are sending it 
-and compare it
-to the raw data you have captured that plays OK.  You want it to be the 
-same.  If it
-isn't, that is your problem.  If it is, the problem is in the alsa-lib 
-decoding for this case.
-Obviously, the coding must work in some case, because you are playing the
-raw data successfully.  Either the application or alsa is decoding it 
-successfully.  Compare
-the successful decoding process with the unsuccessful decoding process.
+Any idea what can be done to debug/solve this? Someone on a Dell forum
+suggested that maybe the volume ranges for the STAC9228 card could be wrong.
+
+
+What model-option am I supposed to use for this card? I've seen this info:
+
+STAC9227/9228/9229/927x
+    ref        Reference board
+    3stack    D965 3stack
+    5stack    D965 5stack + SPDIF
+    dell-3stack    Dell Dimension E520
+    dell-bios    Fixes with Dell BIOS setup
+
+but I'm not sure which one fits my setup.
+
+-- =
+
+Anders R=F8nningen
