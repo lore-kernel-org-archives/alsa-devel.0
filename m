@@ -1,19 +1,18 @@
-From: "Mitul Sen (misen)" <misen@cisco.com>
-Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
-	let	me apply hardware parameters
-Date: Tue, 1 Jul 2008 16:50:36 -0700
-Message-ID: <3B6F5C9068D5864096EB291236C3386F02CE1633@xmb-sjc-21d.amer.cisco.com>
-References: <486AABC6.6020906@cox.net>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: [PATCH 1/3] ALSA SoC: Add OpenFirmware helper for
+	matching bus and	codec drivers
+Date: Tue, 01 Jul 2008 17:53:30 -0600
+Message-ID: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sj-iport-1.cisco.com (sj-iport-1.cisco.com [171.71.176.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id BABA1244CE
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7790B243DF
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jul 2008 01:50:59 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <486AABC6.6020906@cox.net>
+	Wed,  2 Jul 2008 01:53:36 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so153876wfg.23
+	for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2008 16:53:33 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,120 +22,225 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: stan <ghjeold_i_mwee@cox.net>
-Cc: alsa-devel@alsa-project.org
+To: liam.girdwood@wolfsonmicro.com, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org, timur@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Stan,
+From: Grant Likely <grant.likely@secretlab.ca>
 
-Thanks for all your help! I have some more questions though...
+Simple utility layer for creating ASoC machine instances based on data
+in the OpenFirmware device tree.  OF aware platform drivers and codec
+drivers register themselves with this framework and the framework
+automatically instantiates a machine driver.
 
-I downloaded the source code for alsa-lib-1.0.15 
-Based on the code, if the format is SND_PCM_FORMAT_MU_LAW, I am not sure
-why it does a get/put index to SND_PCM_FORMAT_S16 Also, if the stream is
-SND_PCM_STREAM_PLAYBACK, then I would think that it should decode the
-data. Why does it call snd_pcm_mulaw_decode function if the format is
-SND_PCM_FORMAT_MU_LAW and snd_pcm_mulaw_encode otherwise. I have an
-Intel HDA soundcard and according to the specs, it should support PCM
-ulaw format.
+This is most likely temporary glue code to work around limitations in
+the ASoC v1 framework.  I expect ASoC v2 won't need this.
+---
 
-All ALSA documentation and examples I have come across use specific
-hw_params (like sample rate of 44100, SND_PCM_FORMAT_S16, 2 channel
-interleaved data). According to the documents, hw_params refer to the
-stream related info so that's the reason I tried to change it to that of
-mu-law (sampling rate of 8000 Hz, SND_PCM_FORMAT_MU_LAW etc). Not sure
-if that's the way to do it though. Based on the code it looks like the
-hardware just seems to support SND_PCM_FORMAT_S16. Any pointers to help
-me better understand the ALSA code would be much appreciated.
+ sound/soc/Kconfig  |    6 ++
+ sound/soc/Makefile |    1 
+ sound/soc/soc-of.c |  171 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 178 insertions(+), 0 deletions(-)
 
-The code that I am referring to is in pcm_mulaw.c and is as follows:-
-
-static int snd_pcm_mulaw_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t *
-params)
-{
-        snd_pcm_mulaw_t *mulaw = pcm->private_data;
-        snd_pcm_format_t format;
-        int err = snd_pcm_hw_params_slave(pcm, params,
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 18f28ac..c5736e5 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -23,6 +23,12 @@ config SND_SOC
+ 	  This ASoC audio support can also be built as a module.  If so, the module
+ 	  will be called snd-soc-core.
  
-snd_pcm_mulaw_hw_refine_cchange,
++config SND_SOC_OF
++	tristate "OF helpers for SoC audio support"
++	depends on SND_SOC
++	---help---
++	  Add support for OpenFirmware device tree descriptions of sound device
++
+ # All the supported Soc's
+ source "sound/soc/at91/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 782db21..191c2e5 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -2,3 +2,4 @@ snd-soc-core-objs := soc-core.o soc-dapm.o
  
-snd_pcm_mulaw_hw_refine_sprepare,
- 
-snd_pcm_mulaw_hw_refine_schange,
-                                          snd_pcm_generic_hw_params);
-        if (err < 0)
-                return err;
-
-        err = INTERNAL(snd_pcm_hw_params_get_format)(params, &format);
-        if (err < 0)
-                return err;
-
-        if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
-                if (mulaw->sformat == SND_PCM_FORMAT_MU_LAW) {
-                        mulaw->getput_idx =
-snd_pcm_linear_get_index(format, SND_PCM_FORMAT_S16);
-                        mulaw->func = snd_pcm_mulaw_encode;
-                } else {
-                        mulaw->getput_idx =
-snd_pcm_linear_put_index(SND_PCM_FORMAT_S16, mulaw->sformat);
-                        mulaw->func = snd_pcm_mulaw_decode;
-                }
-        } else {
-                if (mulaw->sformat == SND_PCM_FORMAT_MU_LAW) {
-                        mulaw->getput_idx =
-snd_pcm_linear_put_index(SND_PCM_FORMAT_S16, format);
-                        mulaw->func = snd_pcm_mulaw_decode;
-                } else {
-                        mulaw->getput_idx =
-snd_pcm_linear_get_index(mulaw->sformat, SND_PCM_FORMAT_S16);
-                        mulaw->func = snd_pcm_mulaw_encode;
-                }
-        }
-        return 0;
-}  
-
-Thanks and regards,
-Mitul
-
------Original Message-----
-From: stan [mailto:ghjeold_i_mwee@cox.net] 
-Sent: Tuesday, July 01, 2008 3:12 PM
-To: Mitul Sen (misen)
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Setting format to SND_PCM_FORMAT_MU_LAW does
-not let me apply hardware parameters
-
-Mitul Sen (misen) wrote:
->
-> Thanks for your suggestions. For the first suggestion, how would I 
-> know the version of alsa-lib that I am using so that I can download 
-> the source code for the same? Is alsa-lib the same as libasound? Under
-
-> /usr/lib/libasound.so I have a symbolic link to libasound.so.2.0.0. Is
-
-> that then the version I should be looking for?
->
-> I am really new to this so please excuse me if these questions are too
-
-> basic for this forum!
->
-> Thanks,
-> Mitul
->
-Good queston.  I know because of the package.  You can find the driver 
-version by running    cat  /proc/asound/version    and the utilities 
-version by running   aplay --version   .
-I couldn't find a way to get the library version.  You can use the run 
-   alsa-info.sh --no-upload     and the output will have the driver, 
-library, and tool version at the top.
-The script is found at http://www.alsa-project.org/alsa-info.sh
-
-libasound is always version 2.0.0, no matter the alsa-lib version.  I
-presume that is to facilitate testing and upgrading.  Nothing will break
-with newer versions.  So that is unrelated to alsa version.
-
-You can find the latest beta versions of all the alsa source here  
-
-http://www.alsa-project.org/main/index.php/Changes_v1.0.17rc2_v1.0.17rc3
-
-And a link to the latest stable release here http://www.alsa-project.org
+ obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
+ obj-$(CONFIG_SND_SOC)	+= codecs/ at91/ pxa/ s3c24xx/ sh/ fsl/ davinci/ omap/
++obj-$(CONFIG_SND_SOC_OF)	+= soc-of.o
+diff --git a/sound/soc/soc-of.c b/sound/soc/soc-of.c
+new file mode 100644
+index 0000000..9694979
+--- /dev/null
++++ b/sound/soc/soc-of.c
+@@ -0,0 +1,171 @@
++/*
++ * OF helpers for ALSA SoC Layer
++ *
++ * Copyright (C) 2008, Secret Lab Technologies Ltd.
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/bitops.h>
++#include <linux/platform_device.h>
++#include <linux/of.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-of.h>
++#include <sound/initval.h>
++
++MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("ALSA SoC OpenFirmware bindings");
++
++DEFINE_MUTEX(of_snd_soc_mutex);
++LIST_HEAD(of_snd_soc_device_list);
++static int of_snd_soc_next_index;
++
++struct of_snd_soc_device {
++	int id;
++	struct list_head list;
++	struct snd_soc_device device;
++	struct snd_soc_machine machine;
++	struct snd_soc_dai_link dai_link;
++	struct platform_device *pdev;
++	struct device_node *platform_node;
++	struct device_node *codec_node;
++};
++
++static struct snd_soc_ops of_snd_soc_ops = {
++};
++
++static struct of_snd_soc_device *
++of_snd_soc_get_device(struct device_node *codec_node)
++{
++	struct of_snd_soc_device *of_soc;
++
++	list_for_each_entry(of_soc, &of_snd_soc_device_list, list) {
++		if (of_soc->codec_node == codec_node)
++			return of_soc;
++	}
++
++	of_soc = kzalloc(sizeof(struct of_snd_soc_device), GFP_KERNEL);
++	if (!of_soc)
++		return NULL;
++
++	/* Initialize the structure and add it to the global list */
++	of_soc->codec_node = codec_node;
++	of_soc->id = of_snd_soc_next_index++;
++	of_soc->machine.dai_link = &of_soc->dai_link;
++	of_soc->machine.num_links = 1;
++	of_soc->device.machine = &of_soc->machine;
++	of_soc->dai_link.ops = &of_snd_soc_ops;
++	list_add(&of_soc->list, &of_snd_soc_device_list);
++
++	return of_soc;
++}
++
++static void of_snd_soc_register_device(struct of_snd_soc_device *of_soc)
++{
++	struct platform_device *pdev;
++	int rc;
++
++	/* Only register the device if both the codec and platform have
++	 * been registered */
++	if ((!of_soc->device.codec_data) || (!of_soc->platform_node))
++		return;
++
++	pr_info("platform<-->codec match achieved; registering machine\n");
++
++	pdev = platform_device_alloc("soc-audio", of_soc->id);
++	if (!pdev) {
++		pr_err("of_soc: platform_device_alloc() failed\n");
++		return;
++	}
++
++	pdev->dev.platform_data = of_soc;
++	platform_set_drvdata(pdev, &of_soc->device);
++	of_soc->device.dev = &pdev->dev;
++
++	/* The ASoC device is complete; register it */
++	rc = platform_device_add(pdev);
++	if (rc) {
++		pr_err("of_soc: platform_device_add() failed\n");
++		return;
++	}
++
++}
++
++int of_snd_soc_register_codec(struct snd_soc_codec_device *codec_dev,
++			      void *codec_data, struct snd_soc_codec_dai *dai,
++			      struct device_node *node)
++{
++	struct of_snd_soc_device *of_soc;
++	int rc = 0;
++
++	pr_info("registering ASoC codec driver: %s\n", node->full_name);
++
++	mutex_lock(&of_snd_soc_mutex);
++	of_soc = of_snd_soc_get_device(node);
++	if (!of_soc) {
++		rc = -ENOMEM;
++		goto out;
++	}
++
++	/* Store the codec data */
++	of_soc->device.codec_data = codec_data;
++	of_soc->device.codec_dev = codec_dev;
++	of_soc->dai_link.name = node->name;
++	of_soc->dai_link.stream_name = node->name;
++	of_soc->dai_link.codec_dai = dai;
++
++	/* Now try to register the SoC device */
++	of_snd_soc_register_device(of_soc);
++
++ out:
++	mutex_unlock(&of_snd_soc_mutex);
++	return rc;
++}
++EXPORT_SYMBOL_GPL(of_snd_soc_register_codec);
++
++int of_snd_soc_register_platform(struct snd_soc_platform *platform,
++				 struct device_node *node,
++				 struct snd_soc_cpu_dai *cpu_dai)
++{
++	struct of_snd_soc_device *of_soc;
++	struct device_node *codec_node;
++	const phandle *handle;
++	int len, rc = 0;
++
++	pr_info("registering ASoC platform driver: %s\n", node->full_name);
++
++	handle = of_get_property(node, "codec-handle", &len);
++	if (!handle || len < sizeof(handle))
++		return -ENODEV;
++	codec_node = of_find_node_by_phandle(*handle);
++	if (!codec_node)
++		return -ENODEV;
++	pr_info("looking for codec: %s\n", codec_node->full_name);
++
++	mutex_lock(&of_snd_soc_mutex);
++	of_soc = of_snd_soc_get_device(codec_node);
++	if (!of_soc) {
++		rc = -ENOMEM;
++		goto out;
++	}
++
++	of_soc->platform_node = node;
++	of_soc->dai_link.cpu_dai = cpu_dai;
++	of_soc->device.platform = platform;
++	of_soc->machine.name = of_soc->dai_link.cpu_dai->name;
++
++	/* Now try to register the SoC device */
++	of_snd_soc_register_device(of_soc);
++
++ out:
++	mutex_unlock(&of_snd_soc_mutex);
++	return rc;
++}
++EXPORT_SYMBOL_GPL(of_snd_soc_register_platform);
