@@ -1,16 +1,29 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Advertise 16000Hz rate for WM9713
-	PCM interface
-Date: Wed,  2 Jul 2008 11:51:19 +0100
-Message-ID: <1214995880-2773-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Wolfgang Rosenauer <wolfgang@rosenauer.org>
+Subject: Alsa 32-64 bit issue
+Date: Wed, 02 Jul 2008 13:48:18 +0200
+Message-ID: <486B6B02.4020202@rosenauer.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2FAB2462E
+Received: from ds9.rosenauer.org (ds9.rosenauer.org [78.47.28.164])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0DB86245E1
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jul 2008 12:51:23 +0200 (CEST)
+	Wed,  2 Jul 2008 13:48:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by ds9.rosenauer.org (Postfix) with ESMTP id BE3CF4C2EA
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 Jul 2008 13:48:20 +0200 (CEST)
+Received: from ds9.rosenauer.org ([127.0.0.1])
+	by localhost (78.47.28.164 [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id I-d+D2wVm3zF for <alsa-devel@alsa-project.org>;
+	Wed,  2 Jul 2008 13:48:18 +0200 (CEST)
+Received: from [192.168.250.1] (p4FD03B64.dip0.t-ipconnect.de [79.208.59.100])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by ds9.rosenauer.org (Postfix) with ESMTP id 8DA594C2B7
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 Jul 2008 13:48:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,56 +33,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm9713.c |   19 ++++++++++++++-----
- 1 files changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
-index 0db9637..a480618 100644
---- a/sound/soc/codecs/wm9713.c
-+++ b/sound/soc/codecs/wm9713.c
-@@ -1001,9 +1001,18 @@ static int ac97_aux_prepare(struct snd_pcm_substream *substream)
- 	return ac97_write(codec, AC97_PCM_SURR_DAC_RATE, runtime->rate);
- }
- 
--#define WM9713_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
--		SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 |\
--		SNDRV_PCM_RATE_48000)
-+#define WM9713_RATES (SNDRV_PCM_RATE_8000  |	\
-+		      SNDRV_PCM_RATE_11025 |	\
-+		      SNDRV_PCM_RATE_22050 |	\
-+		      SNDRV_PCM_RATE_44100 |	\
-+		      SNDRV_PCM_RATE_48000)
-+
-+#define WM9713_PCM_RATES (SNDRV_PCM_RATE_8000  |	\
-+			  SNDRV_PCM_RATE_11025 |	\
-+			  SNDRV_PCM_RATE_16000 |	\
-+			  SNDRV_PCM_RATE_22050 |	\
-+			  SNDRV_PCM_RATE_44100 |	\
-+			  SNDRV_PCM_RATE_48000)
- 
- #define WM9713_PCM_FORMATS \
- 	(SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S20_3LE | \
-@@ -1051,13 +1060,13 @@ struct snd_soc_codec_dai wm9713_dai[] = {
- 		.stream_name = "Voice Playback",
- 		.channels_min = 1,
- 		.channels_max = 1,
--		.rates = WM9713_RATES,
-+		.rates = WM9713_PCM_RATES,
- 		.formats = WM9713_PCM_FORMATS,},
- 	.capture = {
- 		.stream_name = "Voice Capture",
- 		.channels_min = 1,
- 		.channels_max = 2,
--		.rates = WM9713_RATES,
-+		.rates = WM9713_PCM_RATES,
- 		.formats = WM9713_PCM_FORMATS,},
- 	.ops = {
- 		.hw_params = wm9713_pcm_hw_params,
--- 
-1.5.6
+SGksCgpJJ20gbmV3IHRvIHRvIHRoaXMgbGlzdCAoYW5kIGFsc28gQWxzYSkgc28gcGxlYXNlIGZv
+cmdpdmUgbWUgc29tZSBuZXdiaWUgCnF1ZXN0aW9ucyB5b3UgcHJvYmFibHkgZmluZCA7LSkKCkkg
+aGF2ZSBhbiBhcHBsaWNhdGlvbiB3aGljaCBkb2VzIHNpbXBsZSBQQ00gb3V0cHV0IHRvIEFsc2Eu
+IEl0IHdvcmtzIHNvIApmYXIgKGlmIHB1bHNlYXVkaW8gaXMgbm90IHVzZWQgYnV0IHRoYXQncyBh
+bm90aGVyIGlzc3VlKS4KQnV0IGlmIEkgdHJ5IHRvIHJ1biB0aGUgYXBwICh3aGljaCBpcyBjb21w
+aWxlZCBmb3IgMzJiaXQpIG9uIGEgNjRiaXQgCkxpbnV4IHN5c3RlbSBpdCBmYWlscyBhdCBzbmRf
+cGNtX3N0YXJ0KCkgd2l0aCB0aGUgZm9sbG93aW5nIGVycm9yOgoKIkRhdGVuw4PCvGJlcmdhYmUg
+dW50ZXJicm9jaGVuIChicm9rZW4gcGlwZSkiCgpTbyBpcyB0aGF0IGFuIGFwcCwgc3lzdGVtIG9y
+IGtlcm5lbCBpc3N1ZT8gU291bmQgb3V0cHV0IGZyb20gb3RoZXIgMzJiaXQgCmFwcGxpY2F0aW9u
+cyAobm90YWJseSBmbGFzaCkgd29ya3MgaW4gZ2VuZXJhbCBzbyBJIGd1ZXNzIHNvbWV0aGluZyBp
+biAKdGhlIGFwcCBpcyBicm9rZW4/CldoYXQgY291bGQgYmUgdGhlIGlzc3VlPwoKVGhhbmtzLAog
+IFdvbGZnYW5nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
