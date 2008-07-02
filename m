@@ -1,20 +1,18 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 3/3] ALSA SoC: Add Texas Instruments
-	TLV320AIC26 codec driver
-Date: Tue, 01 Jul 2008 17:53:40 -0600
-Message-ID: <20080701235340.16923.48024.stgit@trillian.secretlab.ca>
-References: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
+From: stan <ghjeold_i_mwee@cox.net>
+Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
+ let	me apply hardware parameters
+Date: Tue, 01 Jul 2008 19:20:27 -0700
+Message-ID: <486AE5EB.1010908@cox.net>
+References: <3B6F5C9068D5864096EB291236C3386F02CE1633@xmb-sjc-21d.amer.cisco.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B338243DF
+Received: from fed1rmmtao101.cox.net (fed1rmmtao101.cox.net [68.230.241.45])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC687244FC
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jul 2008 01:53:43 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so153876wfg.23
-	for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2008 16:53:43 -0700 (PDT)
-In-Reply-To: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
+	Wed,  2 Jul 2008 04:20:29 +0200 (CEST)
+In-Reply-To: <3B6F5C9068D5864096EB291236C3386F02CE1633@xmb-sjc-21d.amer.cisco.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,687 +22,175 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: liam.girdwood@wolfsonmicro.com, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org, timur@freescale.com
+To: "Mitul Sen (misen)" <misen@cisco.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Grant Likely <grant.likely@secretlab.ca>
+Mitul Sen (misen) wrote:
+> Hi Stan,
+>
+> Thanks for all your help! I have some more questions though...
+>
+> I downloaded the source code for alsa-lib-1.0.15 =
 
-ASoC Codec driver for the TLV320AIC26 device.  This driver uses the ASoC
-v1 API, so I don't expect it to get merged as-is, but I want to get it
-out there for review.
----
+> Based on the code, if the format is SND_PCM_FORMAT_MU_LAW, I am not sure
+> why it does a get/put index to SND_PCM_FORMAT_S16 Also, if the stream is
+> SND_PCM_STREAM_PLAYBACK, then I would think that it should decode the
+> data. Why does it call snd_pcm_mulaw_decode function if the format is
+> SND_PCM_FORMAT_MU_LAW and snd_pcm_mulaw_encode otherwise. I have an
+> Intel HDA soundcard and according to the specs, it should support PCM
+> ulaw format.
+>
+> All ALSA documentation and examples I have come across use specific
+> hw_params (like sample rate of 44100, SND_PCM_FORMAT_S16, 2 channel
+> interleaved data). According to the documents, hw_params refer to the
+> stream related info so that's the reason I tried to change it to that of
+> mu-law (sampling rate of 8000 Hz, SND_PCM_FORMAT_MU_LAW etc). Not sure
+> if that's the way to do it though. Based on the code it looks like the
+> hardware just seems to support SND_PCM_FORMAT_S16. Any pointers to help
+> me better understand the ALSA code would be much appreciated.
+>
+>   =
 
- sound/soc/codecs/Kconfig       |    4 
- sound/soc/codecs/Makefile      |    2 
- sound/soc/codecs/tlv320aic26.c |  630 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 636 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 3903ab7..96c7bfe 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -41,6 +41,10 @@ config SND_SOC_CS4270_VD33_ERRATA
- 	bool
- 	depends on SND_SOC_CS4270
- 
-+config SND_SOC_TLV320AIC26
-+	tristate "TI TLB320AIC26 Codec support"
-+	depends on SND_SOC && SPI
-+
- config SND_SOC_TLV320AIC3X
- 	tristate
- 	depends on SND_SOC && I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 4e1314c..ec0cd93 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -5,6 +5,7 @@ snd-soc-wm8753-objs := wm8753.o
- snd-soc-wm9712-objs := wm9712.o
- snd-soc-wm9713-objs := wm9713.o
- snd-soc-cs4270-objs := cs4270.o
-+snd-soc-tlv320aic26-objs := tlv320aic26.o
- snd-soc-tlv320aic3x-objs := tlv320aic3x.o
- 
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
-@@ -14,4 +15,5 @@ obj-$(CONFIG_SND_SOC_WM8753)	+= snd-soc-wm8753.o
- obj-$(CONFIG_SND_SOC_WM9712)	+= snd-soc-wm9712.o
- obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
- obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
-+obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
- obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-new file mode 100644
-index 0000000..aee1dbc
---- /dev/null
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -0,0 +1,630 @@
-+/*
-+ * Texas Instruments TLV320AIC26 low power audio CODEC
-+ * ALSA SoC CODEC driver
-+ *
-+ * Copyright (C) 2008 Secret Lab Technologies Ltd.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/device.h>
-+#include <linux/sysfs.h>
-+#include <linux/spi/spi.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/soc-of.h>
-+#include <sound/initval.h>
-+
-+MODULE_DESCRIPTION("ASoC TLV320AIC26 codec driver");
-+MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
-+MODULE_LICENSE("GPL");
-+
-+/* AIC26 Registers */
-+#define AIC26_READ_COMMAND_WORD(addr)	((1 << 15) | (addr << 5))
-+#define AIC26_WRITE_COMMAND_WORD(addr)	((0 << 15) | (addr << 5))
-+#define AIC26_PAGE_ADDR(page, offset)	((page << 6) | offset)
-+#define AIC26_NUM_REGS			AIC26_PAGE_ADDR(3, 0)
-+#define AIC26_REG_CACHE_SIZE		(0x20) /* only page 2 cached */
-+#define AIC26_REG_IS_CACHED(addr)	((addr & ~0x1f) == (2 << 6))
-+#define AIC26_REG_CACHE_ADDR(addr)	(addr & 0x1f)
-+
-+/* Page 0: Auxillary data registers */
-+#define AIC26_REG_BAT1			AIC26_PAGE_ADDR(0, 0x05)
-+#define AIC26_REG_BAT2			AIC26_PAGE_ADDR(0, 0x06)
-+#define AIC26_REG_AUX			AIC26_PAGE_ADDR(0, 0x07)
-+#define AIC26_REG_TEMP1			AIC26_PAGE_ADDR(0, 0x09)
-+#define AIC26_REG_TEMP2			AIC26_PAGE_ADDR(0, 0x0A)
-+
-+/* Page 1: Auxillary control registers */
-+#define AIC26_REG_AUX_ADC		AIC26_PAGE_ADDR(1, 0x00)
-+#define AIC26_REG_STATUS		AIC26_PAGE_ADDR(1, 0x01)
-+#define AIC26_REG_REFERENCE		AIC26_PAGE_ADDR(1, 0x03)
-+#define AIC26_REG_RESET			AIC26_PAGE_ADDR(1, 0x04)
-+
-+/* Page 2: Audio control registers */
-+#define AIC26_REG_AUDIO_CTRL1		AIC26_PAGE_ADDR(2, 0x00)
-+#define AIC26_REG_ADC_GAIN		AIC26_PAGE_ADDR(2, 0x01)
-+#define AIC26_REG_DAC_GAIN		AIC26_PAGE_ADDR(2, 0x02)
-+#define AIC26_REG_SIDETONE		AIC26_PAGE_ADDR(2, 0x03)
-+#define AIC26_REG_AUDIO_CTRL2		AIC26_PAGE_ADDR(2, 0x04)
-+#define AIC26_REG_POWER_CTRL		AIC26_PAGE_ADDR(2, 0x05)
-+#define AIC26_REG_AUDIO_CTRL3		AIC26_PAGE_ADDR(2, 0x06)
-+
-+#define AIC26_REG_FILTER_COEFF_L_N0	AIC26_PAGE_ADDR(2, 0x07)
-+#define AIC26_REG_FILTER_COEFF_L_N1	AIC26_PAGE_ADDR(2, 0x08)
-+#define AIC26_REG_FILTER_COEFF_L_N2	AIC26_PAGE_ADDR(2, 0x09)
-+#define AIC26_REG_FILTER_COEFF_L_N3	AIC26_PAGE_ADDR(2, 0x0A)
-+#define AIC26_REG_FILTER_COEFF_L_N4	AIC26_PAGE_ADDR(2, 0x0B)
-+#define AIC26_REG_FILTER_COEFF_L_N5	AIC26_PAGE_ADDR(2, 0x0C)
-+#define AIC26_REG_FILTER_COEFF_L_D1	AIC26_PAGE_ADDR(2, 0x0D)
-+#define AIC26_REG_FILTER_COEFF_L_D2	AIC26_PAGE_ADDR(2, 0x0E)
-+#define AIC26_REG_FILTER_COEFF_L_D4	AIC26_PAGE_ADDR(2, 0x0F)
-+#define AIC26_REG_FILTER_COEFF_L_D5	AIC26_PAGE_ADDR(2, 0x10)
-+#define AIC26_REG_FILTER_COEFF_R_N0	AIC26_PAGE_ADDR(2, 0x11)
-+#define AIC26_REG_FILTER_COEFF_R_N1	AIC26_PAGE_ADDR(2, 0x12)
-+#define AIC26_REG_FILTER_COEFF_R_N2	AIC26_PAGE_ADDR(2, 0x13)
-+#define AIC26_REG_FILTER_COEFF_R_N3	AIC26_PAGE_ADDR(2, 0x14)
-+#define AIC26_REG_FILTER_COEFF_R_N4	AIC26_PAGE_ADDR(2, 0x15)
-+#define AIC26_REG_FILTER_COEFF_R_N5	AIC26_PAGE_ADDR(2, 0x16)
-+#define AIC26_REG_FILTER_COEFF_R_D1	AIC26_PAGE_ADDR(2, 0x17)
-+#define AIC26_REG_FILTER_COEFF_R_D2	AIC26_PAGE_ADDR(2, 0x18)
-+#define AIC26_REG_FILTER_COEFF_R_D4	AIC26_PAGE_ADDR(2, 0x19)
-+#define AIC26_REG_FILTER_COEFF_R_D5	AIC26_PAGE_ADDR(2, 0x1A)
-+
-+#define AIC26_REG_PLL_PROG1		AIC26_PAGE_ADDR(2, 0x1B)
-+#define AIC26_REG_PLL_PROG2		AIC26_PAGE_ADDR(2, 0x1C)
-+#define AIC26_REG_AUDIO_CTRL4		AIC26_PAGE_ADDR(2, 0x1D)
-+#define AIC26_REG_AUDIO_CTRL5		AIC26_PAGE_ADDR(2, 0x1E)
-+
-+#define AIC26_RATES	(SNDRV_PCM_RATE_8000  | SNDRV_PCM_RATE_11025 |\
-+			 SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
-+			 SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
-+			 SNDRV_PCM_RATE_48000)
-+#define AIC26_FORMATS	(SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_BE |\
-+			 SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S32_BE)
-+
-+/* fsref dividers; used in register 'Audio Control 1' */
-+enum aic26_divisors {
-+	AIC26_DIV_1	= 0,
-+	AIC26_DIV_1_5	= 1,
-+	AIC26_DIV_2	= 2,
-+	AIC26_DIV_3	= 3,
-+	AIC26_DIV_4	= 4,
-+	AIC26_DIV_5	= 5,
-+	AIC26_DIV_5_5	= 6,
-+	AIC26_DIV_6	= 7,
-+};
-+
-+/* Digital data format */
-+enum aic26_datfm {
-+	AIC26_DATFM_I2S		= 0 << 8,
-+	AIC26_DATFM_DSP		= 1 << 8,
-+	AIC26_DATFM_RIGHTJ	= 2 << 8, /* right justified */
-+	AIC26_DATFM_LEFTJ	= 3 << 8, /* left justified */
-+};
-+
-+/* Sample word length in bits; used in register 'Audio Control 1' */
-+enum aic26_wlen {
-+	AIC26_WLEN_16	= 0 << 10,
-+	AIC26_WLEN_20	= 1 << 10,
-+	AIC26_WLEN_24	= 2 << 10,
-+	AIC26_WLEN_32	= 3 << 10,
-+};
-+
-+/* AIC26 driver private data */
-+struct aic26 {
-+	struct spi_device *spi;
-+	struct snd_soc_codec codec;
-+	u16 reg_cache[AIC26_REG_CACHE_SIZE];	/* shadow registers */
-+	int master;
-+	int datfm;
-+	int mclk;
-+
-+	/* Keyclick parameters */
-+	int keyclick_amplitude;
-+	int keyclick_freq;
-+	int keyclick_len;
-+};
-+
-+/* ---------------------------------------------------------------------
-+ * Register access routines
-+ */
-+static unsigned int aic26_reg_read(struct snd_soc_codec *codec,
-+				   unsigned int reg)
-+{
-+	struct aic26 *aic26 = codec->private_data;
-+	u16 *cache = codec->reg_cache;
-+	u16 cmd, value;
-+	u8 buffer[2];
-+	int rc;
-+
-+	if ((reg < 0) || (reg >= AIC26_NUM_REGS)) {
-+		WARN_ON_ONCE(1);
-+		return 0;
-+	}
-+
-+	/* Do SPI transfer; first 16bits are command; remaining is
-+	 * register contents */
-+	cmd = AIC26_READ_COMMAND_WORD(reg);
-+	buffer[0] = (cmd >> 8) & 0xff;
-+	buffer[1] = cmd & 0xff;
-+	rc = spi_write_then_read(aic26->spi, buffer, 2, buffer, 2);
-+	if (rc) {
-+		dev_err(&aic26->spi->dev, "AIC26 reg read error\n");
-+		return -EIO;
-+	}
-+	value = (buffer[0] << 8) | buffer[1];
-+
-+	/* Update the cache before returning with the value */
-+	if (AIC26_REG_IS_CACHED(reg))
-+		cache[AIC26_REG_CACHE_ADDR(reg)] = value;
-+	return value;
-+}
-+
-+static unsigned int aic26_reg_read_cache(struct snd_soc_codec *codec,
-+					 unsigned int reg)
-+{
-+	u16 *cache = codec->reg_cache;
-+
-+	if ((reg < 0) || (reg >= AIC26_NUM_REGS)) {
-+		WARN_ON_ONCE(1);
-+		return 0;
-+	}
-+
-+	if (AIC26_REG_IS_CACHED(reg))
-+		return cache[AIC26_REG_CACHE_ADDR(reg)];
-+
-+	return aic26_reg_read(codec, reg);
-+}
-+
-+static int aic26_reg_write(struct snd_soc_codec *codec, unsigned int reg,
-+		           unsigned int value)
-+{
-+	struct aic26 *aic26 = codec->private_data;
-+	u16 *cache = codec->reg_cache;
-+	u16 cmd;
-+	u8 buffer[4];
-+	int rc;
-+
-+	if ((reg < 0) || (reg >= AIC26_NUM_REGS)) {
-+		WARN_ON_ONCE(1);
-+		return -EINVAL;
-+	}
-+
-+	/* Do SPI transfer; first 16bits are command; remaining is data
-+	 * to write into register */
-+	cmd = AIC26_WRITE_COMMAND_WORD(reg);
-+	buffer[0] = (cmd >> 8) & 0xff;
-+	buffer[1] = cmd & 0xff;
-+	buffer[2] = value >> 8;
-+	buffer[3] = value;
-+	rc = spi_write(aic26->spi, buffer, 4);
-+	if (rc) {
-+		dev_err(&aic26->spi->dev, "AIC26 reg read error\n");
-+		return -EIO;
-+	}
-+
-+	/* update cache before returning */
-+	if (AIC26_REG_IS_CACHED(reg))
-+		cache[AIC26_REG_CACHE_ADDR(reg)] = value;
-+	return 0;
-+}
-+
-+/* ---------------------------------------------------------------------
-+ * Digital Audio Interface Operations
-+ */
-+static int aic26_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
-+	struct aic26 *aic26 = codec->private_data;
-+	int fsref, divisor, wlen, pval, jval, dval, qval;
-+	u16 reg;
-+
-+	dev_dbg(&aic26->spi->dev, "aic26_hw_params(substream=%p, params=%p)\n",
-+		substream, params);
-+	dev_dbg(&aic26->spi->dev, "rate=%i format=%i\n", params_rate(params),
-+		params_format(params));
-+
-+	switch (params_rate(params)) {
-+	 case 8000: fsref = 48000; divisor = AIC26_DIV_6; break;
-+	 case 11025: fsref = 44100; divisor = AIC26_DIV_4; break;
-+	 case 12000: fsref = 48000; divisor = AIC26_DIV_4; break;
-+	 case 16000: fsref = 48000; divisor = AIC26_DIV_3; break;
-+	 case 22050: fsref = 44100; divisor = AIC26_DIV_2; break;
-+	 case 24000: fsref = 48000; divisor = AIC26_DIV_2; break;
-+	 case 32000: fsref = 48000; divisor = AIC26_DIV_1_5; break;
-+	 case 44100: fsref = 44100; divisor = AIC26_DIV_1; break;
-+	 case 48000: fsref = 48000; divisor = AIC26_DIV_1; break;
-+	 default: dev_dbg(&aic26->spi->dev, "bad rate\n"); return -EINVAL;
-+	}
-+
-+	/* select data word length */
-+	switch (params_format(params)) {
-+	 case SNDRV_PCM_FORMAT_S8: wlen = AIC26_WLEN_16; break;
-+	 case SNDRV_PCM_FORMAT_S16_BE: wlen = AIC26_WLEN_16; break;
-+	 case SNDRV_PCM_FORMAT_S24_BE: wlen = AIC26_WLEN_24; break;
-+	 case SNDRV_PCM_FORMAT_S32_BE: wlen = AIC26_WLEN_32; break;
-+	 default: dev_dbg(&aic26->spi->dev, "bad format\n"); return -EINVAL;
-+	}
-+
-+	/* Configure PLL */
-+	pval = 1;
-+	jval = (fsref == 44100) ? 7 : 8;
-+	dval = (fsref == 44100) ? 5264 : 1920;
-+	qval = 0;
-+	reg = 0x8000 | qval << 11 | pval << 8 | jval << 2;
-+	aic26_reg_write(codec, AIC26_REG_PLL_PROG1, reg);
-+	reg = dval << 2;
-+	aic26_reg_write(codec, AIC26_REG_PLL_PROG2, reg);
-+
-+	/* Power up CODEC */
-+	aic26_reg_write(codec, AIC26_REG_POWER_CTRL, 0);
-+
-+	/* Audio Control 3 (master mode, fsref rate) */
-+	reg = aic26_reg_read_cache(codec, AIC26_REG_AUDIO_CTRL3);
-+	reg &= ~0xf800;
-+	if (aic26->master)
-+		reg |= 0x0800;
-+	if (fsref == 48000)
-+		reg |= 0x2000;
-+	aic26_reg_write(codec, AIC26_REG_AUDIO_CTRL3, reg);
-+
-+	/* Audio Control 1 (FSref divisor) */
-+	reg = aic26_reg_read_cache(codec, AIC26_REG_AUDIO_CTRL1);
-+	reg &= ~0x0fff;
-+	reg |= wlen | aic26->datfm | (divisor << 3) | divisor;
-+	aic26_reg_write(codec, AIC26_REG_AUDIO_CTRL1, reg);
-+
-+	return 0;
-+}
-+
-+/**
-+ * aic26_mute - Mute control to reduce noise when changing audio format
-+ */
-+static int aic26_mute(struct snd_soc_codec_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct aic26 *aic26 = codec->private_data;
-+	u16 reg = aic26_reg_read_cache(codec, AIC26_REG_DAC_GAIN);
-+
-+	dev_dbg(&aic26->spi->dev, "aic26_mute(dai=%p, mute=%i)\n",
-+		dai, mute);
-+
-+	if (mute)
-+		reg |= 0x8080;
-+	else
-+		reg &= ~0x8080;
-+	aic26_reg_write(codec, AIC26_REG_DAC_GAIN, reg);
-+
-+	return 0;
-+}
-+
-+static int aic26_set_sysclk(struct snd_soc_codec_dai *codec_dai,
-+			    int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct aic26 *aic26 = codec->private_data;
-+
-+	dev_dbg(&aic26->spi->dev, "aic26_set_sysclk(dai=%p, clk_id==%i,"
-+		" freq=%i, dir=%i)\n",
-+		codec_dai, clk_id, freq, dir);
-+
-+	/* MCLK needs to fall between 2MHz and 50 MHz */
-+	if ((freq < 2000000) || (freq > 50000000))
-+		return -EINVAL;
-+
-+	aic26->mclk = freq;
-+	return 0;
-+}
-+
-+static int aic26_set_fmt(struct snd_soc_codec_dai *codec_dai, unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct aic26 *aic26 = codec->private_data;
-+
-+	dev_dbg(&aic26->spi->dev, "aic26_set_fmt(dai=%p, fmt==%i)\n",
-+		codec_dai, fmt);
-+
-+	/* set master/slave audio interface */
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	 case SND_SOC_DAIFMT_CBM_CFM: aic26->master = 1; break;
-+	 //case SND_SOC_DAIFMT_CBS_CFS: aic26->master = 0; break;
-+	 default: dev_dbg(&aic26->spi->dev, "bad master\n"); return -EINVAL;
-+	}
-+
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	 case SND_SOC_DAIFMT_I2S: aic26->datfm = AIC26_DATFM_I2S; break;
-+	 case SND_SOC_DAIFMT_DSP_A: aic26->datfm = AIC26_DATFM_DSP; break;
-+	 case SND_SOC_DAIFMT_RIGHT_J: aic26->datfm = AIC26_DATFM_RIGHTJ; break;
-+	 case SND_SOC_DAIFMT_LEFT_J: aic26->datfm = AIC26_DATFM_LEFTJ; break;
-+	 default: dev_dbg(&aic26->spi->dev, "bad format\n"); return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+/* ---------------------------------------------------------------------
-+ * Digital Audio Interface Definition
-+ */
-+struct snd_soc_codec_dai aic26_dai = {
-+	.name = "tlv320aic26",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = AIC26_RATES,
-+		.formats = AIC26_FORMATS,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = AIC26_RATES,
-+		.formats = AIC26_FORMATS,
-+	},
-+	.ops = {
-+		.hw_params = aic26_hw_params,
-+	},
-+	.dai_ops = {
-+		.digital_mute = aic26_mute,
-+		.set_sysclk = aic26_set_sysclk,
-+		.set_fmt = aic26_set_fmt,
-+	},
-+};
-+EXPORT_SYMBOL_GPL(aic26_dai);
-+
-+/* ---------------------------------------------------------------------
-+ * ALSA controls
-+ */
-+static const char *aic26_capture_src_text[] = {"Mic", "Aux"};
-+static const struct soc_enum aic26_capture_src_enum =
-+	SOC_ENUM_SINGLE(AIC26_REG_AUDIO_CTRL1, 12,2, aic26_capture_src_text);
-+
-+static const struct snd_kcontrol_new aic26_snd_controls[] = {
-+	/* Output */
-+	SOC_DOUBLE("PCM Playback Volume", AIC26_REG_DAC_GAIN, 8, 0, 0x7f, 1),
-+	SOC_DOUBLE("PCM Playback Switch", AIC26_REG_DAC_GAIN, 15, 7, 1, 1),
-+	SOC_SINGLE("PCM Capture Volume", AIC26_REG_ADC_GAIN, 8, 0x7f, 0),
-+	SOC_SINGLE("PCM Capture Mute", AIC26_REG_ADC_GAIN, 15, 1, 1),
-+	SOC_ENUM("Capture Source", aic26_capture_src_enum),
-+};
-+
-+/* ---------------------------------------------------------------------
-+ * SoC CODEC portion of driver: probe and release routines
-+ */
-+static int aic26_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec;
-+	struct snd_kcontrol *kcontrol;
-+	struct aic26 *aic26;
-+	int i, ret, err;
-+
-+	dev_info(&pdev->dev, "Probing AIC26 SoC CODEC driver\n");
-+	dev_dbg(&pdev->dev, "socdev=%p\n", socdev);
-+	dev_dbg(&pdev->dev, "codec_data=%p\n", socdev->codec_data);
-+
-+	/* Fetch the relevant aic26 private data here (it's already been
-+	 * stored in the .codec pointer) */
-+	aic26 = socdev->codec_data;
-+	if (aic26 == NULL) {
-+		dev_err(&pdev->dev, "aic26: missing codec pointer\n");
-+		return -ENODEV;
-+	}
-+	codec = &aic26->codec;
-+	socdev->codec = codec;
-+
-+	dev_dbg(&pdev->dev, "Registering PCMs, dev=%p, socdev->dev=%p\n",
-+		&pdev->dev, socdev->dev);
-+	/* register pcms */
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "aic26: failed to create pcms\n");
-+		return -ENODEV;
-+	}
-+
-+	/* register controls */
-+	dev_dbg(&pdev->dev, "Registering controls\n");
-+	for (i = 0; i < ARRAY_SIZE(aic26_snd_controls); i++) {
-+		kcontrol = snd_soc_cnew(&aic26_snd_controls[i], codec, NULL);
-+		err = snd_ctl_add(codec->card, kcontrol);
-+		WARN_ON(err < 0);
-+	}
-+
-+	/* CODEC is setup, we can register the card now */
-+	dev_dbg(&pdev->dev, "Registering card\n");
-+	ret = snd_soc_register_card(socdev);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "aic26: failed to register card\n");
-+		goto card_err;
-+	}
-+	return 0;
-+
-+ card_err:
-+	snd_soc_free_pcms(socdev);
-+	return ret;
-+}
-+
-+static int aic26_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	snd_soc_free_pcms(socdev);
-+	return 0;
-+}
-+
-+struct snd_soc_codec_device aic26_soc_codec_dev = {
-+	.probe = aic26_probe,
-+	.remove = aic26_remove,
-+};
-+
-+/* ---------------------------------------------------------------------
-+ * SPI device portion of driver: sysfs files for debugging
-+ */
-+
-+static ssize_t aic26_regs_show(struct device *dev,
-+				struct device_attribute *attr, char *buf)
-+{
-+	struct aic26 *aic26 = dev_get_drvdata(dev);
-+	char *idx = buf;
-+	int cache_flag, addr, page, i, reg;
-+
-+	cache_flag = (strcmp(attr->attr.name, "regs_cache") == 0);
-+
-+	for (page = 0; page < 3; page++) {
-+		for (i = 0; i < 0x20; i++) {
-+			addr = AIC26_PAGE_ADDR(page, i);
-+			if (i % 8 == 0)
-+				idx += sprintf(idx, "%i:%.2i:", page,i);
-+			if (cache_flag)
-+				reg = aic26_reg_read_cache(&aic26->codec, addr);
-+			else
-+				reg = aic26_reg_read(&aic26->codec, addr);
-+			idx += sprintf(idx, " %.4x", reg);
-+			if (i % 8 == 7)
-+				idx += sprintf(idx, "\n");
-+		}
-+	}
-+	return idx - buf;
-+}
-+
-+static ssize_t aic26_keyclick_show(struct device *dev,
-+				   struct device_attribute *attr, char *buf)
-+{
-+	struct aic26 *aic26 = dev_get_drvdata(dev);
-+	int val, amp, freq, len;
-+
-+	val = aic26_reg_read_cache(&aic26->codec, AIC26_REG_AUDIO_CTRL2);
-+	amp = (val >> 12) & 0x7;
-+	freq = (125 << ((val >> 8) & 0x7)) >> 1;
-+	len = 2 * (1 +((val >> 8) & 0xf));
-+
-+	return sprintf(buf, "amp=%x freq=%iHz len=%iclks\n", amp, freq, len);
-+}
-+
-+/* Any write to the keyclick attribute will trigger the keyclick */
-+static ssize_t aic26_keyclick_set(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t count)
-+{
-+	struct aic26 *aic26 = dev_get_drvdata(dev);
-+	int val;
-+
-+	val = aic26_reg_read_cache(&aic26->codec, AIC26_REG_AUDIO_CTRL2);
-+	val |= 0x8000;
-+	aic26_reg_write(&aic26->codec, AIC26_REG_AUDIO_CTRL2, val);
-+
-+	return count;
-+}
-+
-+DEVICE_ATTR(regs, 0644, aic26_regs_show, NULL);
-+DEVICE_ATTR(regs_cache, 0644, aic26_regs_show, NULL);
-+DEVICE_ATTR(keyclick, 0644, aic26_keyclick_show, aic26_keyclick_set);
-+
-+/* ---------------------------------------------------------------------
-+ * SPI device portion of driver: probe and release routines and SPI
-+ * 				 driver registration.
-+ */
-+static int aic26_spi_probe(struct spi_device *spi)
-+{
-+	struct aic26 *aic26;
-+	int rc, i, reg;
-+
-+	dev_dbg(&spi->dev, "probing tlv320aic26 spi device\n");
-+
-+	/* Allocate driver data */
-+	aic26 = kzalloc(sizeof *aic26, GFP_KERNEL);
-+	if (!aic26)
-+		return -ENOMEM;
-+
-+	/* Initialize the driver data */
-+	aic26->spi = spi;
-+	dev_set_drvdata(&spi->dev, aic26);
-+
-+	/* Setup what we can in the codec structure so that the register
-+	 * access functions will work as expected.  More will be filled
-+	 * out when it is probed by the SoC CODEC part of this driver */
-+	aic26->codec.private_data = aic26;
-+	aic26->codec.name = "aic26";
-+	aic26->codec.owner = THIS_MODULE;
-+	aic26->codec.dai = &aic26_dai;
-+	aic26->codec.num_dai = 1;
-+	aic26->codec.read = aic26_reg_read;
-+	aic26->codec.write = aic26_reg_write;
-+	aic26->master = 1;
-+	mutex_init(&aic26->codec.mutex);
-+	INIT_LIST_HEAD(&aic26->codec.dapm_widgets);
-+	INIT_LIST_HEAD(&aic26->codec.dapm_paths);
-+	aic26->codec.reg_cache_size = sizeof(aic26->reg_cache);
-+	aic26->codec.reg_cache = aic26->reg_cache;
-+
-+	/* Reset the codec to power on defaults */
-+	aic26_reg_write(&aic26->codec, AIC26_REG_RESET, 0xBB00);
-+
-+	/* Power up CODEC */
-+	aic26_reg_write(&aic26->codec, AIC26_REG_POWER_CTRL, 0);
-+
-+	/* Audio Control 3 (master mode, fsref rate) */
-+	reg = aic26_reg_read(&aic26->codec, AIC26_REG_AUDIO_CTRL3);
-+	reg &= ~0xf800;
-+	reg |= 0x0800; /* set master mode */
-+	aic26_reg_write(&aic26->codec, AIC26_REG_AUDIO_CTRL3, reg);
-+
-+	/* Fill page 2 register cache */
-+	for (i = 0; i < ARRAY_SIZE(aic26->reg_cache); i++)
-+		aic26_reg_read(&aic26->codec, AIC26_PAGE_ADDR(2, i));
-+
-+	/* Register the sysfs files for debugging */
-+	/* Create SysFS files */
-+	rc = device_create_file(&spi->dev, &dev_attr_regs);
-+	rc |= device_create_file(&spi->dev, &dev_attr_regs_cache);
-+	rc |= device_create_file(&spi->dev, &dev_attr_keyclick);
-+	if (rc)
-+		dev_info(&spi->dev, "error creating sysfs files\n");
-+
-+	/* Tell the of_soc helper about this codec */
-+	of_snd_soc_register_codec(&aic26_soc_codec_dev, aic26, &aic26_dai,
-+				  spi->dev.archdata.of_node);
-+
-+	dev_dbg(&spi->dev, "SPI device initialized\n");
-+	return 0;
-+}
-+
-+static int aic26_spi_remove(struct spi_device *spi)
-+{
-+	struct aic26 *aic26 = dev_get_drvdata(&spi->dev);
-+
-+	kfree(aic26);
-+
-+	return 0;
-+}
-+
-+static struct spi_driver aic26_spi = {
-+	.driver = {
-+		.name = "tlv320aic26",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = aic26_spi_probe,
-+	.remove = aic26_spi_remove,
-+};
-+
-+static int __init aic26_init(void)
-+{
-+	return spi_register_driver(&aic26_spi);
-+}
-+module_init(aic26_init);
-+
-+static void __exit aic26_exit(void)
-+{
-+	spi_unregister_driver(&aic26_spi);
-+}
-+module_exit(aic26_exit);
+Hi Misen,
+
+First, a gentle remonstrance.  You probably have noticed that I always =
+
+put my responses after or mixed with your message.  On public mailing =
+
+lists this is considered good form, rather than posting your response at =
+
+the top of the message.  Why?  So that anyone who steps into the =
+
+interaction doesn't have to read the messages out of order and that =
+
+future searchers have an easier time understanding the message.  While =
+
+top posting is the norm in communications between two or a few people =
+
+because the context is familiar to all and it saves time not to have to =
+
+look for the response, on a public mailing list that isn't necessarily true.
+
+Now to the matter at hand.
+I had never heard of mu law so I looked it up.  =
+
+http://www.digitalpreservation.gov/formats/fdd/fdd000039.shtml
+...
+Standard companding algorithm used in digital communications systems in =
+
+North America and Japan (telephones, for the most part) to optimize the =
+
+dynamic range of an analog signal (generally a voice) for digitizing, =
+
+i.e., to compress 16 bit LPCM =
+
+<http://www.digitalpreservation.gov/formats/fdd/fdd000011.shtml> (Linear =
+
+Pulse Code Modulated) data down to 8 bits of logarithmic data. See also =
+
+Notes =
+
+<http://www.digitalpreservation.gov/formats/fdd/fdd000039.shtml#notes> =
+
+below. =B5-Law is similar to the A-Law =
+
+<http://www.digitalpreservation.gov/formats/fdd/fdd000038.shtml> =
+
+algorithm used in Europe.
+...
+
+The code that you extracted below is designed to convert mu law from the =
+
+compressed form back into the 16 bit signed form.  I haven't checked the =
+
+rest of the code myself, but it appears to assume that the sound device =
+
+is incapable of internal conversion.  If that is true, you shouldn't =
+
+have to specify anything else to the library except mu law.  It should =
+
+take care of everything else. i.e.  as soon as you specify mu law, it is =
+
+known that the stream is 8 bit mono that has to be uncompressed to 16 =
+
+bit mono.   I presume that is why there is the error when you try to set =
+
+the hardware parms with mu law.  The library should probably be modified =
+
+to use this new capability of sound device internal conversion for mu =
+
+law if it is available on the sound device.  Maybe it already does;  as =
+
+I said I haven't looked at the code, and I'm not really familiar with mu =
+
+law.
+
+So, given my ignorance, my explanation and proposed solution might be =
+
+completely wrong.  :-)  Perhaps a developer familiar with the coding of =
+
+mu law will give a better explanation.
+
+At this point, I really don't have more to offer for your problem.  I =
+
+would have to look at the code to decipher it in order to give an =
+
+answer.  You might as well do that yourself, as you will get a better =
+
+understanding than I could give with an explanation.
+> The code that I am referring to is in pcm_mulaw.c and is as follows:-
+>
+> static int snd_pcm_mulaw_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t *
+> params)
+> {
+>         snd_pcm_mulaw_t *mulaw =3D pcm->private_data;
+>         snd_pcm_format_t format;
+>         int err =3D snd_pcm_hw_params_slave(pcm, params,
+>  =
+
+> snd_pcm_mulaw_hw_refine_cchange,
+>  =
+
+> snd_pcm_mulaw_hw_refine_sprepare,
+>  =
+
+> snd_pcm_mulaw_hw_refine_schange,
+>                                           snd_pcm_generic_hw_params);
+>         if (err < 0)
+>                 return err;
+>
+>         err =3D INTERNAL(snd_pcm_hw_params_get_format)(params, &format);
+>         if (err < 0)
+>                 return err;
+>
+>         if (pcm->stream =3D=3D SND_PCM_STREAM_PLAYBACK) {
+>                 if (mulaw->sformat =3D=3D SND_PCM_FORMAT_MU_LAW) {
+>                         mulaw->getput_idx =3D
+> snd_pcm_linear_get_index(format, SND_PCM_FORMAT_S16);
+>                         mulaw->func =3D snd_pcm_mulaw_encode;
+>                 } else {
+>                         mulaw->getput_idx =3D
+> snd_pcm_linear_put_index(SND_PCM_FORMAT_S16, mulaw->sformat);
+>                         mulaw->func =3D snd_pcm_mulaw_decode;
+>                 }
+>         } else {
+>                 if (mulaw->sformat =3D=3D SND_PCM_FORMAT_MU_LAW) {
+>                         mulaw->getput_idx =3D
+> snd_pcm_linear_put_index(SND_PCM_FORMAT_S16, format);
+>                         mulaw->func =3D snd_pcm_mulaw_decode;
+>                 } else {
+>                         mulaw->getput_idx =3D
+> snd_pcm_linear_get_index(mulaw->sformat, SND_PCM_FORMAT_S16);
+>                         mulaw->func =3D snd_pcm_mulaw_encode;
+>                 }
+>         }
+>         return 0;
+> }  =
+
+>
+> Thanks and regards,
+> Mitul
+>
+> -----Or
