@@ -1,19 +1,20 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Re: [PATCH 2/2] wss: use stuct snd_wss instead of
- snd_ad1848
-Date: Thu, 3 Jul 2008 19:03:30 +0200
-Message-ID: <20080703190330.588e604a.krzysztof.h1@poczta.fm>
-References: <20080701201411.e7715d83.krzysztof.h1@poczta.fm>
-	<s5hprpvs2l6.wl%tiwai@suse.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [PATCH 2/2] wss: use stuct snd_wss instead
+	of	snd_ad1848
+Date: Thu, 03 Jul 2008 19:07:38 +0200
+Message-ID: <486D075A.1090409@keyaccess.nl>
+References: <20080701201411.e7715d83.krzysztof.h1@poczta.fm>	<s5hprpvs2l6.wl%tiwai@suse.de>	<486CACF8.7010607@keyaccess.nl>
+	<s5hk5g3rv7v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id D98F62485C
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FC9B24956
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jul 2008 18:59:31 +0200 (CEST)
-In-Reply-To: <s5hprpvs2l6.wl%tiwai@suse.de>
+	Thu,  3 Jul 2008 19:06:25 +0200 (CEST)
+In-Reply-To: <s5hk5g3rv7v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,51 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@keyaccess.nl>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 03 Jul 2008 12:07:33 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+On 03-07-08 14:46, Takashi Iwai wrote:
 
-> At Tue, 1 Jul 2008 20:14:11 +0200,
-> Krzysztof Helt wrote:
-> > 
-> > 
-> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
-> > 
-> > The snd_wss is superset of the snd_ad1848 so kill
-> > the latter and replace it with the snd_wss.
-> > 
-> > Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-> > 
-> > ---
-> > Another step toward unification of all WSS compatible
-> > chips handling.
+> At Thu, 03 Jul 2008 12:42:00 +0200,
+> Rene Herman wrote:
+
+>> Yes these should probably grow as a series with somewhat of a (semi-) 
+>> final result being apparent after applying patch N of N. I'm importing 
+>> Krzysztof' patches into a "wss" branch in my local git tree and will be 
+>> testing them as they come in though -- and frankly, I think it's better 
+>> if they come in as he does them a few at a time rather than a large 
+>> number at once as it's easier for review purposes.
 > 
-> Right, and without the unification, these patches have little merits.
-> So far, it's more addition than deletion in total.
+> Well, I can keep it in a branch if you prefer.  Just let me know.
 
-Like all my patches, finally somebody has caught this ;-)
+If that is to me specifically, I don't really care. "git am" is a very 
+useful tool.
 
-Seriously, these patches are just easier part. More renaming
-then real changes. Only the last one (use struct snd_wss instead of snd_ad1848)
-unify some code.
+>> But as far as I'm concerned you could just sit back until the series is 
+>> somewhat "complete".
+> 
+> OK.  As 2.6.26 will come out soon, it's a bit too late to include
+> such a big change for 2.6.27.  So we have still some time :)
 
-The next step is to merge the ad1848_lib into the wss_lib. I want to do
-this in 3 to 5 steps for easier testing (and review). The problem is 
-that temporary steps would require exporting of internal wss_lib functions.
-My idea is to do this include in the ad1848_lib.c:
-#include "../wss/wss_lib.c" 
-then replace ad1848 functions with the wss_lib functions.
+If Krzysztof is anything like me, he's not mucking around with ISA stuff 
+due to compatibility with deadlines, so there's even going to be kernels 
+after 2.6.28 I'd say... :-)
 
-As Rene wrote, doing it in steps helps us testing changes on cards we have
-for regressions.
-
-BTW. I am on holidays next two weeks so do not expect too much.
-
-Regards,
-Krzysztof
-
-----------------------------------------------------------------------
-W kosciele tez zdarzaja sie wpadki!
-Smieszny filmik >>> http://link.interia.pl/f1e61
+Rene.
