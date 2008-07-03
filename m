@@ -1,19 +1,19 @@
-From: "Mitul Sen (misen)" <misen@cisco.com>
-Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
-	let	me apply hardware parameters
-Date: Thu, 3 Jul 2008 11:55:38 -0700
-Message-ID: <3B6F5C9068D5864096EB291236C3386F02CE1639@xmb-sjc-21d.amer.cisco.com>
-References: <486AE5EB.1010908@cox.net>
+From: Ben Stanley <Ben.Stanley@exemail.com.au>
+Subject: Re: GIT repo (connection refused)
+Date: Fri, 04 Jul 2008 06:53:51 +1000
+Message-ID: <1215118431.30056.194.camel@localhost>
+References: <1214903899.7099.5.camel@videopodcast>
+	<1214918384.30056.147.camel@localhost>
+	<Pine.LNX.4.61.0807011521070.20581@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sj-iport-6.cisco.com (sj-iport-6.cisco.com [171.71.176.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id F1B1F24993
+Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id A5E15249B3
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jul 2008 21:02:43 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <486AE5EB.1010908@cox.net>
+	Thu,  3 Jul 2008 22:53:56 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.61.0807011521070.20581@tm8103-a.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,264 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: stan <ghjeold_i_mwee@cox.net>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
- =
-
-
-> -----Original Message-----
-> From: stan [mailto:ghjeold_i_mwee@cox.net] =
-
-> Sent: Tuesday, July 01, 2008 7:20 PM
-> To: Mitul Sen (misen)
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] Setting format to =
-
-> SND_PCM_FORMAT_MU_LAW does not let me apply hardware parameters
-> =
-
-> Mitul Sen (misen) wrote:
-> > Hi Stan,
-> >
-> > Thanks for all your help! I have some more questions though...
-> >
-> > I downloaded the source code for alsa-lib-1.0.15 Based on =
-
-> the code, if =
-
-> > the format is SND_PCM_FORMAT_MU_LAW, I am not sure why it does a =
-
-> > get/put index to SND_PCM_FORMAT_S16 Also, if the stream is =
-
-> > SND_PCM_STREAM_PLAYBACK, then I would think that it should =
-
-> decode the =
-
-> > data. Why does it call snd_pcm_mulaw_decode function if the =
-
-> format is =
-
-> > SND_PCM_FORMAT_MU_LAW and snd_pcm_mulaw_encode otherwise. I have an =
-
-> > Intel HDA soundcard and according to the specs, it should =
-
-> support PCM =
-
-> > ulaw format.
-> >
-> > All ALSA documentation and examples I have come across use specific =
-
-> > hw_params (like sample rate of 44100, SND_PCM_FORMAT_S16, 2 channel =
-
-> > interleaved data). According to the documents, hw_params =
-
-> refer to the =
-
-> > stream related info so that's the reason I tried to change =
-
-> it to that =
-
-> > of mu-law (sampling rate of 8000 Hz, SND_PCM_FORMAT_MU_LAW =
-
-> etc). Not =
-
-> > sure if that's the way to do it though. Based on the code it looks =
-
-> > like the hardware just seems to support SND_PCM_FORMAT_S16. Any =
-
-> > pointers to help me better understand the ALSA code would =
-
-> be much appreciated.
-> >
-> >   =
-
-> =
-
-> Hi Misen,
-> =
-
-> First, a gentle remonstrance.  You probably have noticed that =
-
-> I always put my responses after or mixed with your message.  =
-
-> On public mailing lists this is considered good form, rather =
-
-> than posting your response at the top of the message.  Why?  =
-
-> So that anyone who steps into the interaction doesn't have to =
-
-> read the messages out of order and that future searchers have =
-
-> an easier time understanding the message.  While top posting =
-
-> is the norm in communications between two or a few people =
-
-> because the context is familiar to all and it saves time not =
-
-> to have to look for the response, on a public mailing list =
-
-> that isn't necessarily true.
-
-Point noted!
-
-> =
-
-> Now to the matter at hand.
-> I had never heard of mu law so I looked it up.  =
-
-> http://www.digitalpreservation.gov/formats/fdd/fdd000039.shtml
-> ...
-> Standard companding algorithm used in digital communications =
-
-> systems in North America and Japan (telephones, for the most =
-
-> part) to optimize the dynamic range of an analog signal =
-
-> (generally a voice) for digitizing, i.e., to compress 16 bit =
-
-> LPCM =
-
-> <http://www.digitalpreservation.gov/formats/fdd/fdd000011.shtm
-> l> (Linear Pulse Code Modulated) data down to 8 bits of =
-
-> logarithmic data. See also Notes =
-
-> <http://www.digitalpreservation.gov/formats/fdd/fdd000039.shtml#notes>
-> below. =B5-Law is similar to the A-Law
-> <http://www.digitalpreservation.gov/formats/fdd/fdd000038.shtml>
-> algorithm used in Europe.
-> ...
-> =
-
-> The code that you extracted below is designed to convert mu =
-
-> law from the compressed form back into the 16 bit signed =
-
-> form.  I haven't checked the rest of the code myself, but it =
-
-> appears to assume that the sound device is incapable of =
-
-> internal conversion.  If that is true, you shouldn't have to =
-
-> specify anything else to the library except mu law.  It =
-
-> should take care of everything else. i.e.  as soon as you =
-
-> specify mu law, it is known that the stream is 8 bit mono =
-
-> that has to be uncompressed to 16 =
-
-> bit mono.   I presume that is why there is the error when you =
-
-> try to set =
-
-> the hardware parms with mu law. =
-
-
-Thanks! You are right. I don't get the error when I only specify mu law and=
- let the library convert it to 16 bit signed form. I can now hear "some" au=
-dio but it sounds very faint. I have been playing around with the frame siz=
-e because I seem to be able to hear the audio only when I use a small frame=
- size. I need to get a better understanding of the code and my sound device=
- to improve the audio quality. For now, at least I am able to set the hardw=
-are parms with mulaw.
-
-> The library should probably =
-
-> be modified to use this new capability of sound device =
-
-> internal conversion for mu law if it is available on the =
-
-> sound device.  Maybe it already does;  as I said I haven't =
-
-> looked at the code, and I'm not really familiar with mu law.
-> =
-
-> So, given my ignorance, my explanation and proposed solution =
-
-> might be completely wrong.  :-)  Perhaps a developer familiar =
-
-> with the coding of mu law will give a better explanation.
-> =
-
-> At this point, I really don't have more to offer for your =
-
-> problem.  I would have to look at the code to decipher it in =
-
-> order to give an answer.  You might as well do that yourself, =
-
-> as you will get a better understanding than I could give with =
-
-> an explanation.
-> > The code that I am referring to is in pcm_mulaw.c and is as =
-
-> follows:-
-> >
-> > static int snd_pcm_mulaw_hw_params(snd_pcm_t *pcm, =
-
-> snd_pcm_hw_params_t =
-
-> > *
-> > params)
-> > {
-> >         snd_pcm_mulaw_t *mulaw =3D pcm->private_data;
-> >         snd_pcm_format_t format;
-> >         int err =3D snd_pcm_hw_params_slave(pcm, params,
-> >  =
-
-> > snd_pcm_mulaw_hw_refine_cchange,
-> >  =
-
-> > snd_pcm_mulaw_hw_refine_sprepare,
-> >  =
-
-> > snd_pcm_mulaw_hw_refine_schange,
-> >                                           =
-
-> snd_pcm_generic_hw_params);
-> >         if (err < 0)
-> >                 return err;
-> >
-> >         err =3D =
-
-> INTERNAL(snd_pcm_hw_params_get_format)(params, &format);
-> >         if (err < 0)
-> >                 return err;
-> >
-> >         if (pcm->stream =3D=3D SND_PCM_STREAM_PLAYBACK) {
-> >                 if (mulaw->sformat =3D=3D SND_PCM_FORMAT_MU_LAW) {
-> >                         mulaw->getput_idx =3D =
-
-> > snd_pcm_linear_get_index(format, SND_PCM_FORMAT_S16);
-> >                         mulaw->func =3D snd_pcm_mulaw_encode;
-> >                 } else {
-> >                         mulaw->getput_idx =3D =
-
-> > snd_pcm_linear_put_index(SND_PCM_FORMAT_S16, mulaw->sformat);
-> >                         mulaw->func =3D snd_pcm_mulaw_decode;
-> >                 }
-> >         } else {
-> >                 if (mulaw->sformat =3D=3D SND_PCM_FORMAT_MU_LAW) {
-> >                         mulaw->getput_idx =3D =
-
-> > snd_pcm_linear_put_index(SND_PCM_FORMAT_S16, format);
-> >                         mulaw->func =3D snd_pcm_mulaw_decode;
-> >                 } else {
-> >                         mulaw->getput_idx =3D =
-
-> > snd_pcm_linear_get_index(mulaw->sformat, SND_PCM_FORMAT_S16);
-> >                         mulaw->func =3D snd_pcm_mulaw_encode;
-> >                 }
-> >         }
-> >         return 0;
-> > }
-> >
-> > Thanks and regards,
-> > Mitul
-> >
-> > -----Or
-> =
-
-> =
+Jaroslav,
+
+When I try to edit the Occasional Developers section on the page
+http://www.alsa-project.org/main/index.php/GIT_Server
+I am told:
+
+This page has been locked to prevent editing.
+
+Ben.
+
+On Tue, 2008-07-01 at 15:22 +0200, Jaroslav Kysela wrote:
+> On Tue, 1 Jul 2008, Ben Stanley wrote:
+> 
+> > 
+> > Check if you are behind a firewall that blocks the git protocol on port
+> > 9418. The http version is there for people who are behind such a
+> > firewall.
+> > 
+> > That being said, the http version should be documented on the git page,
+> > rather than just on the mailing list at
+> > http://thread.gmane.org/gmane.linux.alsa.devel/53959/focus=54060
+> > (Nudge to Jaroslav)
+> 
+> HTTP access is on http://www.alsa-project.org/main/index.php/GIT_Server 
+> already, but not in Occasional Developers section. Just add this 
+> information there. Everybody registered can modify this page.
+> 
+> 					Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, Red Hat, Inc.
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
