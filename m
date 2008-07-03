@@ -1,17 +1,19 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Application hangs with different period sizes
-Date: Thu, 03 Jul 2008 08:41:29 -0300
-Message-ID: <486CBAE9.60203@tet.com.br>
-References: <2ee9e08d0807030019i1442729cyd241d72074791077@mail.gmail.com>
+From: Ben Stanley <Ben.Stanley@exemail.com.au>
+Subject: ca0106 SPDIF Output Problems
+Date: Thu, 03 Jul 2008 22:09:12 +1000
+Message-ID: <1215086952.30056.190.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id A74B1248CF
+Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5AA7248E1
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jul 2008 13:41:34 +0200 (CEST)
-In-Reply-To: <2ee9e08d0807030019i1442729cyd241d72074791077@mail.gmail.com>
+	Thu,  3 Jul 2008 14:09:16 +0200 (CEST)
+Received: from 168.78.233.220.exetel.com.au ([220.233.78.168]
+	helo=[192.168.1.2]) by smtp.po.exetel.com.au with esmtp (Exim 4.68)
+	(envelope-from <Ben.Stanley@exemail.com.au>) id 1KENcf-00069d-5D
+	for alsa-devel@alsa-project.org; Thu, 03 Jul 2008 22:09:13 +1000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,68 +23,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: anuj aggarwal <anuj.aggarwal@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Do you check the result of the function that sets the period size? Some 
-periods are not supported and you can't assume that they are valid and 
-proceed in your application. Use snd_pcm_hw_params_set_period_time_near 
-to see what is the nearest possible value for period. 
-<http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html#gf5e53bcb748185a4da3b8538720a5792>
+Hi,
 
-anuj aggarwal escreveu:
-> My audio driver supports buffer sizes from 128 to 32768 and period sizes
-> from 8 to 2048. I am trying to set the period size as 1030 (just a random
-> number between 8 & 2048, but not multiple of 2^n) and buffer size as
-> 16*buffer_size (i.e. 16480). The output is as follows:
->
-> Buffer size range from 128 to 32768
-> Period size range from 8 to 2048
-> Request period size 1030 and got 1030
-> Plug PCM: Hardware PCM card 0 'TWL4030' device 0 subdevice 0
-> Its setup is:
->   stream       : PLAYBACK
->   access       : RW_INTERLEAVED
->   format       : S16_LE
->   subformat    : STD
->   channels     : 2
->   rate         : 44100
->   exact rate   : 44100 (44100/1)
->   msbits       : 16
->   buffer_size  : 16480
->   period_size  : 1030
->   period_time  : 23356
->   tstamp_mode  : NONE
->   period_step  : 1
->   avail_min    : 1030
->   start_threshold  : 16480
->   stop_threshold   : 16480
->   silence_threshold: 0
->   silence_size : 0
->   boundary     : 1080033280
->
-> The problem with this setup is the application just hangs without playing
-> anything. If I use period size as 2048, the app plays the song but clips the
-> last part of it. If I use 1024/512, it works fine.
->
-> I have tried alsa lib version 1.0.15 & 1.0.16 but the problem persists. Is
-> there anything wrong with my app or audio driver?
->
-> Please help.
->
-> Thanks in advance,
-> Anuj Aggarwal
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-> __________ NOD32 3238 (20080703) Information __________
->
-> This message was checked by NOD32 antivirus system.
-> http://www.eset.com
->
->
->
->   
+I am having some problems getting sound out of a ca0106 card using
+SPDIF. I have enabled SPDIF output using alsamixer. Some programs
+produce sound, and others stubbornly don't.
+
+I need some hints about what to try next, what information I could look
+at, to be able to diagnose some factor common to the failures, and
+hopefully the cause.
+
+I am familiar with part of the driver, I have already written a patch
+which used to enable 44.1kHz output on an earlier Ubuntu.
+
+Anyway, the details are all recorded below. I would appreciate it if a
+patient person could have a look through and throw me some ideas.
+
+Thanks,
+Ben Stanley.
+
+
+I did a git checkout yesterday and built alsa 1.0.17rc3 on Ubuntu 8.04
+kernel 2.6.24-19-generic.
+
+I used the following configure options:
+./configure --with-debug=full --with-cards=ca0106
+--with-moddir=/lib/modules/`uname -r`/alsa-driver-orig
+
+(I am using the --with-moddir to avoid clobbering the distro alsa
+modules. I am selecting which modules to use by editing /etc/depmod.conf
+and changing the priority order, and then re-running depmod. I can
+verify the result by checking /var/lib/`uname -r`/modules.dep .)
+
+Everything builds and installs without any warnings or errors.
+
+So, after all that, I tested three applications:
+MythTV
+xine
+speaker-test
+
+My sound output is via SPDIF to a Yamaha RX-V557 digital amplifier.
+
+I only get sound out of MythTV. I get nothing out of xine (playing
+flacs) or out of speaker-test. However, I do get signal out of xine
+playing DVDs.
+
+Details:
+================================================================
+speaker-test --device-hw:0,0 --channels=2 --rate=48000
+This should work, but instead it produces no SPDIF output. The amplifier
+shows no digital signals.
+
+root@mythtv:/proc/asound/card0/pcm0p/sub0# cat hw_params 
+access: RW_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1)
+period_size: 4096
+buffer_size: 16384
+
+================================================================
+Testing with xine playing a 44100Hz stereo S16_LE flac:
+root@mythtv:/proc/asound/card0/pcm0p/sub0# cat hw_params 
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1)
+period_size: 1024
+buffer_size: 8192
+
+The amplifier says 'Unknown Digital', NO SOUND PRODUCED.
+
+================================================================Testing
+with xine playing 'Riverdance' DVD in DTS surround with AC3 Passthrough:
+Sound output WORKS
+Amplifier says 48kHz DTS
+root@mythtv:/proc/asound/card0/pcm0p/sub0# cat hw_params 
+access: RW_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1)
+period_size: 2048
+buffer_size: 16384
+
+================================================================
+Running MythTV: Configured to open ALSA:hw:0,0 directly.
+root@mythtv:/proc/asound/card0/pcm0p/sub0# cat hw_params 
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1)
+period_size: 8192
+buffer_size: 16384
+
+The amplifier identifies this as a 48kHz PCM signal.
+Sound output WORKS.
+================================================================
+
+As a general observation, this problem was present in Ubuntu 7.10, but
+was 'intermittent' (I used to be able to get speaker-test and xine
+playing flacs to work most of the time.) The failures now seem to be
+permanent after upgrading to Ubuntu 8.04, whether latest alsa-git is
+installed or not.
+
+Now, I need some ideas for what to look for here. I can't see
+differentiating factor between things that work and things that do not.
+Perhaps I need to look at some registers.
+I don't know what relationship the files at 
+/proc/asound/CA0106/ca0106_reg*
+have to the registers declared in
+alsa-kmirror/pcm/ca0106/ca0106.h
+but I think I understand the registers from the header file.
+
+Ideas please?
+
+Once I get this sorted out I can test my patch allowing 44100Hz sampling
+rates to be output to SPDIF. At the moment this bug is preventing me
+from testing...
+
+Thanks,
+Ben Stanley.
