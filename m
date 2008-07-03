@@ -1,22 +1,15 @@
-From: "anuj aggarwal" <anuj.aggarwal@gmail.com>
-Subject: Re: Application hangs with different period sizes
-Date: Thu, 3 Jul 2008 19:11:29 +0530
-Message-ID: <2ee9e08d0807030641g15a14349o8cce5a029f555132@mail.gmail.com>
-References: <2ee9e08d0807030019i1442729cyd241d72074791077@mail.gmail.com>
-	<486CBAE9.60203@tet.com.br>
-	<2ee9e08d0807030554t259c3b79x9023d901408a36e7@mail.gmail.com>
-	<486CCD83.4040408@tet.com.br>
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+Subject: [PATCH] ALSA: soc - fsl_ssi.c fix audio capture
+Date: Thu, 3 Jul 2008 18:37:14 +0400
+Message-ID: <20080703143714.GA7003@polina.dev.rtsoft.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD9462477F
+Received: from buildserver.ru.mvista.com (unknown [85.21.88.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0629D248F6
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jul 2008 15:41:30 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so152005and.80
-	for <alsa-devel@alsa-project.org>; Thu, 03 Jul 2008 06:41:29 -0700 (PDT)
-In-Reply-To: <486CCD83.4040408@tet.com.br>
+	Thu,  3 Jul 2008 16:37:20 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,125 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Gustavo da Silva Serra <gustavo.serra@tet.com.br>, alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-I think the library/driver is able to configure the way user has requested.
-See the logs (in my first mail) which confirm that the requested period size
-has been taken for configuration.
+Since we're using SSI in synchronous mode, the STCCR register controls
+both the receive and transmit sections. So, when we're trying to record
+anything, stccr register does not get initialized, thus the output file
+filled with the white noise.
 
-Where can I found the limitation in the driver code/spec which says that
-these period sizes are not supported? Any suggestion is most welcome...
+Fix this by initializing the STCCR for both playback and capture. If
+TX/RX widths don't match, return that we're busy at the moment.
 
-Thanks,
-Anuj
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+---
+ sound/soc/fsl/fsl_ssi.c |   21 +++++++++++++++------
+ 1 files changed, 15 insertions(+), 6 deletions(-)
 
-On Thu, Jul 3, 2008 at 6:30 PM, Gustavo da Silva Serra <
-gustavo.serra@tet.com.br> wrote:
-
-> I think that snd_pcm_hw_params_set_period_size_near() will not return an
-> error, but you must check the "val" parameter, is it returning the same
-> value that you passed?
->
-> "Some periods are not supported" means that some cards may not support
-> periods that aren't power of two. I am not sure, since I am new to ALSA and
-> I am working most with aloop.
->
-> anuj aggarwal escreveu:
->
->> I am doing the same. I used snd_pcm_hw_params_set_period_size_near() to
->> set the period size and checked the return value also; it was not an error.
->>
->> I have one more question. When you say 'Some periods are not supported',
->> what does that mean? What are the constraints which make some periods
->> not-supported by the audio codec driver?
->>
->> On Thu, Jul 3, 2008 at 5:11 PM, Gustavo da Silva Serra <
->> gustavo.serra@tet.com.br <mailto:gustavo.serra@tet.com.br>> wrote:
->>
->>    Do you check the result of the function that sets the period size?
->>    Some periods are not supported and you can't assume that they are
->>    valid and proceed in your application. Use
->>    snd_pcm_hw_params_set_period_time_near to see what is the nearest
->>    possible value for period.
->>    <
->> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html#gf5e53bcb748185a4da3b8538720a5792
->> >
->>
->>    anuj aggarwal escreveu:
->>
->>        My audio driver supports buffer sizes from 128 to 32768 and
->>        period sizes
->>        from 8 to 2048. I am trying to set the period size as 1030
->>        (just a random
->>        number between 8 & 2048, but not multiple of 2^n) and buffer
->>        size as
->>        16*buffer_size (i.e. 16480). The output is as follows:
->>
->>        Buffer size range from 128 to 32768
->>        Period size range from 8 to 2048
->>        Request period size 1030 and got 1030
->>        Plug PCM: Hardware PCM card 0 'TWL4030' device 0 subdevice 0
->>        Its setup is:
->>         stream       : PLAYBACK
->>         access       : RW_INTERLEAVED
->>         format       : S16_LE
->>         subformat    : STD
->>         channels     : 2
->>         rate         : 44100
->>         exact rate   : 44100 (44100/1)
->>         msbits       : 16
->>         buffer_size  : 16480
->>         period_size  : 1030
->>         period_time  : 23356
->>         tstamp_mode  : NONE
->>         period_step  : 1
->>         avail_min    : 1030
->>         start_threshold  : 16480
->>         stop_threshold   : 16480
->>         silence_threshold: 0
->>         silence_size : 0
->>         boundary     : 1080033280
->>
->>        The problem with this setup is the application just hangs
->>        without playing
->>        anything. If I use period size as 2048, the app plays the song
->>        but clips the
->>        last part of it. If I use 1024/512, it works fine.
->>
->>        I have tried alsa lib version 1.0.15 & 1.0.16 but the problem
->>        persists. Is
->>        there anything wrong with my app or audio driver?
->>
->>        Please help.
->>
->>        Thanks in advance,
->>        Anuj Aggarwal
->>        _______________________________________________
->>        Alsa-devel mailing list
->>        Alsa-devel@alsa-project.org <mailto:Alsa-devel@alsa-project.org>
->>        http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->>        __________ NOD32 3238 (20080703) Information __________
->>
->>        This message was checked by NOD32 antivirus system.
->>        http://www.eset.com
->>
->>
->>
->>
->>
->>
->>
->>
->> --
->> Best Regards,
->> Anuj Aggarwal
->>
->
->
-
-
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index f588545..31f689e 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -372,16 +372,24 @@ static int fsl_ssi_prepare(struct snd_pcm_substream *substream)
+ 
+ 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+ 	u32 wl;
++	u32 cur_wl;
+ 
+ 	wl = CCSR_SSI_SxCCR_WL(snd_pcm_format_width(runtime->format));
+ 
+-	clrbits32(&ssi->scr, CCSR_SSI_SCR_SSIEN);
+-
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		clrsetbits_be32(&ssi->stccr, CCSR_SSI_SxCCR_WL_MASK, wl);
+-	else
+-		clrsetbits_be32(&ssi->srccr, CCSR_SSI_SxCCR_WL_MASK, wl);
++	/*
++	 * MPC8610 spec says: "The STCCR register is dedicated to the transmit
++	 * section, and the SRCCR register is dedicated to the receive section
++	 * except in Synchronous mode, in which the STCCR register controls
++	 * both the receive and transmit sections."
++	 * So, the width for TX and RX should match, otherwise we're busy with
++	 * either TX or RX.
++	 */
++	cur_wl = in_be32(&ssi->stccr) & CCSR_SSI_SxCCR_WL_MASK;
++	if (cur_wl && cur_wl != wl)
++		return -EBUSY;
+ 
++	clrbits32(&ssi->scr, CCSR_SSI_SCR_SSIEN);
++	clrsetbits_be32(&ssi->stccr, CCSR_SSI_SxCCR_WL_MASK, wl);
+ 	setbits32(&ssi->scr, CCSR_SSI_SCR_SSIEN);
+ 
+ 	return 0;
+@@ -460,6 +468,7 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream)
+ 		struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+ 
+ 		clrbits32(&ssi->scr, CCSR_SSI_SCR_SSIEN);
++		clrsetbits_be32(&ssi->stccr, CCSR_SSI_SxCCR_WL_MASK, 0);
+ 
+ 		free_irq(ssi_private->irq, ssi_private);
+ 	}
 -- 
-Best Regards,
-Anuj Aggarwal
+1.5.5.4
