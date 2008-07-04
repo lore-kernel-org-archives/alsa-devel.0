@@ -1,21 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 1/3] ALSA SoC: Add OpenFirmware helper for
-	matching bus and codec drivers
-Date: Fri, 4 Jul 2008 07:05:17 -0400
-Message-ID: <FECB7589-9A1B-48E5-805F-4253E6FECC9F@freescale.com>
-References: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
-	<9e4733910807020827k115fe63r7a0dd09daffc1895@mail.gmail.com>
-	<20080703163351.GJ2284@secretlab.ca>
-Mime-Version: 1.0 (Apple Message framework v924)
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: soc - fsl_ssi.c fix audio capture
+Date: Fri, 4 Jul 2008 12:01:47 +0100
+Message-ID: <20080704110147.GA26499@rakim.wolfsonmicro.main>
+References: <20080703143714.GA7003@polina.dev.rtsoft.ru>
+	<20080703144254.GB652@sirena.org.uk>
+	<B615D57E-324C-4812-997C-9E5C90FDE967@freescale.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id AAA82103800
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 18D10103810
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Jul 2008 13:01:29 +0200 (CEST)
-In-Reply-To: <20080703163351.GJ2284@secretlab.ca>
+	Fri,  4 Jul 2008 13:01:49 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <B615D57E-324C-4812-997C-9E5C90FDE967@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linuxppc-dev@ozlabs.org
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Anton Vorontsov <avorontsov@ru.mvista.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 04, 2008 at 07:02:17AM -0400, Timur Tabi wrote:
 
-On Jul 3, 2008, at 12:33 PM, Grant Likely wrote:
+> Anton, are you sure returning -EBUSY is the right fix?  Would this make 
+> applications like mplayer detect the problem and automatically pick a 
+> matching sample format that does work?
 
-> Yes, but you hadn't written these functions when I wrote this helper.
-> :-P.  I believe ASoC v2 makes all this stuff unnecessary, but I'm
-> waiting for v2 to hit mainline before I port forward.
-
-FYI, it took me about a month to port my drivers to ASoC V2.  I had  
-more work than most people because I addressed issues that others  
-drivers didn't.  For instance, my CS4270 driver is the only codec  
-driver in V2 that supports multiple instances of itself.
+It's probably worth testing with OSS emulation too, though you could
+decide that you don't want to support that.
