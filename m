@@ -1,21 +1,21 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 2/3] ALSA SoC: Add mpc5200-psc I2S driver
-Date: Fri, 4 Jul 2008 07:03:25 -0400
-Message-ID: <B7AF0D32-4A05-4DE1-88F5-06B28C9723EF@freescale.com>
+Subject: Re: [PATCH 1/3] ALSA SoC: Add OpenFirmware helper for
+	matching bus and codec drivers
+Date: Fri, 4 Jul 2008 07:05:17 -0400
+Message-ID: <FECB7589-9A1B-48E5-805F-4253E6FECC9F@freescale.com>
 References: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
-	<20080701235335.16923.43253.stgit@trillian.secretlab.ca>
-	<9e4733910807020651u368763en9362653ed613b2d1@mail.gmail.com>
-	<20080703162809.GH2284@secretlab.ca>
+	<9e4733910807020827k115fe63r7a0dd09daffc1895@mail.gmail.com>
+	<20080703163351.GJ2284@secretlab.ca>
 Mime-Version: 1.0 (Apple Message framework v924)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from de01egw02.freescale.net (de01egw02.freescale.net
 	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E0A31037FF
+	by alsa0.perex.cz (Postfix) with ESMTP id AAA82103800
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Jul 2008 12:59:38 +0200 (CEST)
-In-Reply-To: <20080703162809.GH2284@secretlab.ca>
+	Fri,  4 Jul 2008 13:01:29 +0200 (CEST)
+In-Reply-To: <20080703163351.GJ2284@secretlab.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,8 +29,14 @@ To: Grant Likely <grant.likely@secretlab.ca>
 Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-> 	i2s@2200 {		// PSC2
-> 		compatible = "fsl,mpc5200b-psc-i2s","fsl,mpc5200-psc-i2s";
-> 		cell-index = <1>;
 
-cell-index should be zero-based, not one-based.
+On Jul 3, 2008, at 12:33 PM, Grant Likely wrote:
+
+> Yes, but you hadn't written these functions when I wrote this helper.
+> :-P.  I believe ASoC v2 makes all this stuff unnecessary, but I'm
+> waiting for v2 to hit mainline before I port forward.
+
+FYI, it took me about a month to port my drivers to ASoC V2.  I had  
+more work than most people because I addressed issues that others  
+drivers didn't.  For instance, my CS4270 driver is the only codec  
+driver in V2 that supports multiple instances of itself.
