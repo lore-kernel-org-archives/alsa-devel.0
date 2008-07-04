@@ -1,21 +1,15 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ALSA: soc - fsl_ssi.c fix audio capture
-Date: Fri, 4 Jul 2008 07:08:40 -0400
-Message-ID: <188E0BE6-392F-4571-9225-6492F25BB1B9@freescale.com>
-References: <20080703143714.GA7003@polina.dev.rtsoft.ru>
-	<20080703144254.GB652@sirena.org.uk>
-	<B615D57E-324C-4812-997C-9E5C90FDE967@freescale.com>
-	<20080704110147.GA26499@rakim.wolfsonmicro.main>
-Mime-Version: 1.0 (Apple Message framework v924)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: DSP Tech <dsptech@hotmail.com>
+Subject: Repeated calls to trigger and prepare in ALSA driver
+Date: Fri, 4 Jul 2008 16:42:31 +0530
+Message-ID: <BLU123-W525F0D533D07797E6AAA77B29B0@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id D605B245C4
+Received: from blu0-omc3-s8.blu0.hotmail.com (blu0-omc3-s8.blu0.hotmail.com
+	[65.55.116.83]) by alsa0.perex.cz (Postfix) with ESMTP id 943B110380A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Jul 2008 13:04:52 +0200 (CEST)
-In-Reply-To: <20080704110147.GA26499@rakim.wolfsonmicro.main>
+	Fri,  4 Jul 2008 13:12:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Anton Vorontsov <avorontsov@ru.mvista.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On Jul 4, 2008, at 7:01 AM, Mark Brown wrote:
+Hi All,
+ =
 
-> It's probably worth testing with OSS emulation too, though you could
-> decide that you don't want to support that.
+I am trying to develop ALSA PCM driver for my hardware board which has I2S-=
+DMA interface. =
 
-Sadly, we have a customer that insists on OSS support, so that is a  
-hard requirement.
+ =
+
+I ran a OSS test application. I find that trigger() and prepare() calls are=
+ being called repeatedly. Consequently, the DMA tries to reset and start pl=
+ayback for every buffer.
+ =
+
+Have any of you faced this problem?
+Any clue in this matter would be helpful.
+ =
+
+Thanks
+_________________________________________________________________
+Tried the new MSN Messenger? It=92s cool! Download now.
+http://messenger.msn.com/Download/Default.aspx?mkt=3Den-in
