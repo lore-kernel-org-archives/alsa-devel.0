@@ -1,20 +1,16 @@
-From: Ben Stanley <Ben.Stanley@exemail.com.au>
-Subject: Re: GIT repo (connection refused)
-Date: Fri, 04 Jul 2008 07:33:30 +1000
-Message-ID: <1215120810.30056.213.camel@localhost>
-References: <1214903899.7099.5.camel@videopodcast>
-	<1214918384.30056.147.camel@localhost>
-	<Pine.LNX.4.61.0807011521070.20581@tm8103-a.perex-int.cz>
-	<1215118431.30056.194.camel@localhost>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: snd_pcm_writei() -last value sustained
+Date: Fri, 4 Jul 2008 09:38:53 +0100
+Message-ID: <200807040938.53662.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_dGebIHhksPNBlrO"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.po.exetel.com.au (pecan.exetel.com.au [220.233.0.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5DFD249BF
+Received: from smtp.talktalk.net (smtp-out-3.talktalk.net [62.24.128.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF2E42446A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jul 2008 23:33:32 +0200 (CEST)
-In-Reply-To: <1215118431.30056.194.camel@localhost>
+	Fri,  4 Jul 2008 10:23:37 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,60 +20,196 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: ALSA devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
-Never mind,
+--Boundary-00=_dGebIHhksPNBlrO
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I tried to edit the page before my wiki registration had been accepted.
+Working on an app I am seeing several strange effects, and this is one of 
+them.
 
-Its all done now.
+It can be demonstrated with the pcm.c example program, and I have attempted to 
+attach a small shot of Audacity capturing the effect.
 
-Ben.
+After writing to the pcm with snd_pcm_writei() a certain amount of data (I 
+have pcm.c doing 2 periods) the value captured from the soundcard remains at 
+the last value thereafter; clearly this card doesn't have DC elimination or 
+this would not be seen.
 
-On Fri, 2008-07-04 at 06:53 +1000, Ben Stanley wrote:
-> Jaroslav,
-> 
-> When I try to edit the Occasional Developers section on the page
-> http://www.alsa-project.org/main/index.php/GIT_Server
-> I am told:
-> 
-> This page has been locked to prevent editing.
-> 
-> Ben.
-> 
-> On Tue, 2008-07-01 at 15:22 +0200, Jaroslav Kysela wrote:
-> > On Tue, 1 Jul 2008, Ben Stanley wrote:
-> > 
-> > > 
-> > > Check if you are behind a firewall that blocks the git protocol on port
-> > > 9418. The http version is there for people who are behind such a
-> > > firewall.
-> > > 
-> > > That being said, the http version should be documented on the git page,
-> > > rather than just on the mailing list at
-> > > http://thread.gmane.org/gmane.linux.alsa.devel/53959/focus=54060
-> > > (Nudge to Jaroslav)
-> > 
-> > HTTP access is on http://www.alsa-project.org/main/index.php/GIT_Server 
-> > already, but not in Occasional Developers section. Just add this 
-> > information there. Everybody registered can modify this page.
-> > 
-> > 					Jaroslav
-> > 
-> > -----
-> > Jaroslav Kysela <perex@perex.cz>
-> > Linux Kernel Sound Maintainer
-> > ALSA Project, Red Hat, Inc.
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+The sound card is ice1712 (DMX6fire); I had always noticed the PCM meters in 
+envy24control often stayed high if something like XMMS was stopped or paused 
+during play, but thought it a metering fault.  Now it appears to be actual 
+pcm value that 'gets stuck'.
+
+Close examination with Audacity shows it is in fact the last-but-one value 
+that is sustained.
+
+Is this expected behaviour, configuration fault, driver bug or other problem?  
+I had expected that after the block of data had been written out as audio the 
+signal would return to zero straightaway.  Can anyone give me any clues?
+
+Alan
+
+
+
+--Boundary-00=_dGebIHhksPNBlrO
+Content-Type: image/png;
+  name="Output-stays-high-cut-pcmex-ice1712.png"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="Output-stays-high-cut-pcmex-ice1712.png"
+
+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
+RwAAAABJRU5ErkJggg==
+
+--Boundary-00=_dGebIHhksPNBlrO
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--Boundary-00=_dGebIHhksPNBlrO--
