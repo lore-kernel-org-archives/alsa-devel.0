@@ -1,18 +1,18 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: EMU10K1 Problem. Im stumped.
-Date: Sat, 05 Jul 2008 10:06:45 +0100
-Message-ID: <486F39A5.2040108@superbug.co.uk>
-References: <1215192750.9160.6.camel@temp-fallen>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: ASOC: codec_reg_show and variable length registers
+Date: Sat, 5 Jul 2008 09:37:45 -0400
+Message-ID: <9e4733910807050637p6583ae25m592aca4c5728a4d3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net
-	[194.217.242.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D1C324405
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2228A24474
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Jul 2008 11:06:47 +0200 (CEST)
-In-Reply-To: <1215192750.9160.6.camel@temp-fallen>
+	Sat,  5 Jul 2008 15:37:57 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 9so697012ywk.2
+	for <alsa-devel@alsa-project.org>; Sat, 05 Jul 2008 06:37:45 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Travis Place <wishie@wishie.net>
-Cc: alsa-devel@alsa-project.org
+To: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Travis Place wrote:
-> Just had a user on #alsa with an EMU10K1 problem.
->
-> To summarize, the card shows up in linux (but doesnt work), yet the card
-> works perfectly in windows. The correct modules are loading, but ALSA
-> doesnt see the card.
->
-> It had the user unload/reload snd-emu10k1 and check dmesg output, and
-> the relevant result is as follows.
->
-> EMU10K1_Audigy: probe of 0000:00:0a.0 failed with error -16
->
->   
-The driver is requesting an IRQ to use, but fails to get it.
-the output of
-cat /proc/interrupts
+codec_reg_show() can't handle my TAS5504 codec. The codec has 104
+(sparse out of 256) registers with variable lengths from 1 to 32
+bytes.
 
-and the entire dmesg output would help track this one down.
+Should the register cache really be part of the core? The core could
+still make the sysfs entries and use a callback to print them.
+reg_cache_size/reg_cache_step would then become private.
+
+It's the sprintf that is the problem. I need to push that into my
+driver so that I can print out variable lengths. Or we need to make
+the core use an indirect table that encodes the lengths.
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
