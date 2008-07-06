@@ -1,18 +1,21 @@
-From: "Constrabus Gegami" <constrabus@gmail.com>
-Subject: HDA Intel ALC885 - Need new or edited model option
-Date: Sun, 6 Jul 2008 11:26:52 -0400
-Message-ID: <b09778df0807060826m1b816cf2s8dbe0751fc2a4fd0@mail.gmail.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: 1.0.16->1.0.17 regression for some HDA NVidia's
+Date: Sun, 06 Jul 2008 19:18:01 +0300
+Message-ID: <4870F039.8020207@pardus.org.tr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A016244FD
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DBC924502
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Jul 2008 17:26:53 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so328513and.80
-	for <alsa-devel@alsa-project.org>; Sun, 06 Jul 2008 08:26:52 -0700 (PDT)
-Content-Disposition: inline
+	Sun,  6 Jul 2008 18:17:30 +0200 (CEST)
+Received: from [192.168.1.2] (unknown [88.249.178.198])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by pardus.org.tr (Postfix) with ESMTP id F3BB66261912
+	for <alsa-devel@alsa-project.org>;
+	Sun,  6 Jul 2008 19:17:21 +0300 (EEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +28,26 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I need a new or edited model option for this card:
-HDA Intel card in Alienware m15x laptop
+Everything seems OK with those onboard audio chipsets but there's 
+absolutely no sound.
+We have 2 bug reports on our bug tracking system indicating this 
+regression for MCP51, MCP61 and MCP73.
 
-That uses codec:
-ALC885
+Here are the URL's for alsa-info.sh output's:
 
-Detailed specifications on the card:
-http://www.alienware.com/Configurator_Pages/Details_Pages/Details_Page.aspx?CatId=1421&ItemId=16514&ItemIdList=16515
+MCP51: http://pastebin.ca/1062418
+MCP61: http://pastebin.ca/1058482
+MCP73: http://pastebin.ca/1058319
 
-alsa-info.sh genterated output:
-http://pastebin.ca/1061774
-(i switched back to no model options before i ran the script, i dont know
-  if it leaves behind anything or if it even matters)
+Those users have recently reported that downgrading to 1.0.16 series 
+solves the problem.
 
-Jack Observations:
--1x auto-sensing headphone jack
--1x auto-sensing microphone jack
+I have an ASUS mainboard which contains the MCP51 one, I can help if you 
+want me to rebuild the driver with a patch, or anything else.
 
+Thanks.
 
-All current available model options either present me with:
--working switchable internal speakers with non working headphone jack
--working switchable headphone jack with non working internal speakers
--non working headphone jack and internal speakers
--working non switchable internal speakers with non working heaphone
--working non switchable headphones with non working speakers
--no working sound
-
-What is needed:
-- working switchable internal speakers with working headphone and mic jack
-(preferably switchable)
-
-
-Distro: Gentoo amd64 using alsa driver package (not in kernel modules)
-
-I hope that this will benefit others as well as I.
-If any more information is needed, please email me.
-
--- 
---Constrabus
+--
+Ozan Caglayan
+<ozan_at_pardus.org.tr>
+http://www.pardus.org.tr/eng
