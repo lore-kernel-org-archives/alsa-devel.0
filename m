@@ -1,16 +1,16 @@
 From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: [PATCH 01/10] asoc: core - merge structs
+Subject: [PATCH 02/10] asoc: at32 - merge structs
 	snd_soc_codec_dai and	snd_soc_cpu_dai.
-Date: Mon, 07 Jul 2008 16:07:17 +0100
-Message-ID: <1215443237.4882.178.camel@localhost.localdomain>
+Date: Mon, 07 Jul 2008 16:07:29 +0100
+Message-ID: <1215443249.4882.179.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 798C224612
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 298E610380B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jul 2008 17:07:19 +0200 (CEST)
+	Mon,  7 Jul 2008 17:07:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,334 +25,141 @@ Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This patch series merges struct snd_soc_codec_dai and struct
-snd_soc_cpu_dai into struct snd_soc_dai in preparation for further
-ASoC v2 patches.
-
-This merger removes duplication in both DAI structures and simplifies
-the API for other users.
+snd_soc_cpu_dai into struct snd_soc_dai for AT32 platform.
 
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |   71 ++++++++++++++++---------------------------------
- sound/soc/soc-core.c |   50 +++++++++++++++++-----------------
- 2 files changed, 48 insertions(+), 73 deletions(-)
+ sound/soc/at32/at32-pcm.c       |    6 +++---
+ sound/soc/at32/at32-ssc.c       |   12 ++++++------
+ sound/soc/at32/at32-ssc.h       |    2 +-
+ sound/soc/at32/playpaq_wm8510.c |    6 +++---
+ 4 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 340223a..778e57e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -221,8 +221,7 @@ struct snd_soc_pcm_stream;
- struct snd_soc_ops;
- struct snd_soc_dai_mode;
- struct snd_soc_pcm_runtime;
--struct snd_soc_codec_dai;
--struct snd_soc_cpu_dai;
-+struct snd_soc_dai;
- struct snd_soc_codec;
- struct snd_soc_machine_config;
- struct soc_enum;
-@@ -317,50 +316,24 @@ struct snd_soc_ops {
- /* ASoC DAI ops */
- struct snd_soc_dai_ops {
- 	/* DAI clocking configuration */
--	int (*set_sysclk)(struct snd_soc_codec_dai *codec_dai,
-+	int (*set_sysclk)(struct snd_soc_dai *dai,
- 		int clk_id, unsigned int freq, int dir);
--	int (*set_pll)(struct snd_soc_codec_dai *codec_dai,
-+	int (*set_pll)(struct snd_soc_dai *dai,
- 		int pll_id, unsigned int freq_in, unsigned int freq_out);
--	int (*set_clkdiv)(struct snd_soc_codec_dai *codec_dai,
--		int div_id, int div);
-+	int (*set_clkdiv)(struct snd_soc_dai *dai, int div_id, int div);
+diff --git a/sound/soc/at32/at32-pcm.c b/sound/soc/at32/at32-pcm.c
+index cf76e89..435f1da 100644
+--- a/sound/soc/at32/at32-pcm.c
++++ b/sound/soc/at32/at32-pcm.c
+@@ -366,7 +366,7 @@ static struct snd_pcm_ops at32_pcm_ops = {
+ static u64 at32_pcm_dmamask = 0xffffffff;
  
- 	/* DAI format configuration */
--	int (*set_fmt)(struct snd_soc_codec_dai *codec_dai,
--		unsigned int fmt);
--	int (*set_tdm_slot)(struct snd_soc_codec_dai *codec_dai,
-+	int (*set_fmt)(struct snd_soc_dai *dai, unsigned int fmt);
-+	int (*set_tdm_slot)(struct snd_soc_dai *dai,
- 		unsigned int mask, int slots);
--	int (*set_tristate)(struct snd_soc_codec_dai *, int tristate);
-+	int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
- 
- 	/* digital mute */
--	int (*digital_mute)(struct snd_soc_codec_dai *, int mute);
-+	int (*digital_mute)(struct snd_soc_dai *dai, int mute);
- };
- 
--/* SoC Codec DAI */
--struct snd_soc_codec_dai {
--	char *name;
--	int id;
--	unsigned char type;
--
--	/* DAI capabilities */
--	struct snd_soc_pcm_stream playback;
--	struct snd_soc_pcm_stream capture;
--
--	/* DAI runtime info */
--	struct snd_soc_codec *codec;
--	unsigned int active;
--	unsigned char pop_wait:1;
--
--	/* ops */
--	struct snd_soc_ops ops;
--	struct snd_soc_dai_ops dai_ops;
--
--	/* DAI private data */
--	void *private_data;
--};
--
--/* SoC CPU DAI */
--struct snd_soc_cpu_dai {
--
-+/* SoC  DAI (Digital Audio Interface) */
-+struct snd_soc_dai {
- 	/* DAI description */
- 	char *name;
- 	unsigned int id;
-@@ -368,13 +341,13 @@ struct snd_soc_cpu_dai {
- 
- 	/* DAI callbacks */
- 	int (*probe)(struct platform_device *pdev,
--		     struct snd_soc_cpu_dai *dai);
-+		     struct snd_soc_dai *dai);
- 	void (*remove)(struct platform_device *pdev,
--		       struct snd_soc_cpu_dai *dai);
-+		       struct snd_soc_dai *dai);
- 	int (*suspend)(struct platform_device *pdev,
--		struct snd_soc_cpu_dai *cpu_dai);
-+		struct snd_soc_dai *dai);
- 	int (*resume)(struct platform_device *pdev,
--		struct snd_soc_cpu_dai *cpu_dai);
-+		struct snd_soc_dai *dai);
- 
- 	/* ops */
- 	struct snd_soc_ops ops;
-@@ -386,7 +359,9 @@ struct snd_soc_cpu_dai {
- 
- 	/* DAI runtime info */
- 	struct snd_pcm_runtime *runtime;
--	unsigned char active:1;
-+	struct snd_soc_codec *codec;
-+	unsigned int active;
-+	unsigned char pop_wait:1;
- 	void *dma_data;
- 
- 	/* DAI private data */
-@@ -428,7 +403,7 @@ struct snd_soc_codec {
- 	struct delayed_work delayed_work;
- 
- 	/* codec DAI's */
--	struct snd_soc_codec_dai *dai;
-+	struct snd_soc_dai *dai;
- 	unsigned int num_dai;
- };
- 
-@@ -447,12 +422,12 @@ struct snd_soc_platform {
- 	int (*probe)(struct platform_device *pdev);
- 	int (*remove)(struct platform_device *pdev);
- 	int (*suspend)(struct platform_device *pdev,
--		struct snd_soc_cpu_dai *cpu_dai);
-+		struct snd_soc_dai *dai);
- 	int (*resume)(struct platform_device *pdev,
--		struct snd_soc_cpu_dai *cpu_dai);
-+		struct snd_soc_dai *dai);
- 
- 	/* pcm creation and destruction */
--	int (*pcm_new)(struct snd_card *, struct snd_soc_codec_dai *,
-+	int (*pcm_new)(struct snd_card *, struct snd_soc_dai *,
- 		struct snd_pcm *);
- 	void (*pcm_free)(struct snd_pcm *);
- 
-@@ -466,8 +441,8 @@ struct snd_soc_dai_link  {
- 	char *stream_name;		/* Stream name */
- 
- 	/* DAI */
--	struct snd_soc_codec_dai *codec_dai;
--	struct snd_soc_cpu_dai *cpu_dai;
-+	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_dai *cpu_dai;
- 
- 	/* machine stream operations */
- 	struct snd_soc_ops *ops;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index bdbbc6a..4d626b4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -134,8 +134,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_dai_link *machine = rtd->dai;
- 	struct snd_soc_platform *platform = socdev->platform;
--	struct snd_soc_cpu_dai *cpu_dai = machine->cpu_dai;
--	struct snd_soc_codec_dai *codec_dai = machine->codec_dai;
-+	struct snd_soc_dai *cpu_dai = machine->cpu_dai;
-+	struct snd_soc_dai *codec_dai = machine->codec_dai;
- 	int ret = 0;
- 
- 	mutex_lock(&pcm_mutex);
-@@ -272,7 +272,7 @@ static void close_delayed_work(struct work_struct *work)
- 	struct snd_soc_device *socdev =
- 		container_of(work, struct snd_soc_device, delayed_work.work);
- 	struct snd_soc_codec *codec = socdev->codec;
--	struct snd_soc_codec_dai *codec_dai;
-+	struct snd_soc_dai *codec_dai;
- 	int i;
- 
- 	mutex_lock(&pcm_mutex);
-@@ -323,8 +323,8 @@ static int soc_codec_close(struct snd_pcm_substream *substream)
- 	struct snd_soc_device *socdev = rtd->socdev;
- 	struct snd_soc_dai_link *machine = rtd->dai;
- 	struct snd_soc_platform *platform = socdev->platform;
--	struct snd_soc_cpu_dai *cpu_dai = machine->cpu_dai;
--	struct snd_soc_codec_dai *codec_dai = machine->codec_dai;
-+	struct snd_soc_dai *cpu_dai = machine->cpu_dai;
-+	struct snd_soc_dai *codec_dai = machine->codec_dai;
- 	struct snd_soc_codec *codec = socdev->codec;
- 
- 	mutex_lock(&pcm_mutex);
-@@ -384,8 +384,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct snd_soc_device *socdev = rtd->socdev;
- 	struct snd_soc_dai_link *machine = rtd->dai;
- 	struct snd_soc_platform *platform = socdev->platform;
--	struct snd_soc_cpu_dai *cpu_dai = machine->cpu_dai;
--	struct snd_soc_codec_dai *codec_dai = machine->codec_dai;
-+	struct snd_soc_dai *cpu_dai = machine->cpu_dai;
-+	struct snd_soc_dai *codec_dai = machine->codec_dai;
- 	struct snd_soc_codec *codec = socdev->codec;
- 	int ret = 0;
- 
-@@ -489,8 +489,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_device *socdev = rtd->socdev;
- 	struct snd_soc_dai_link *machine = rtd->dai;
- 	struct snd_soc_platform *platform = socdev->platform;
--	struct snd_soc_cpu_dai *cpu_dai = machine->cpu_dai;
--	struct snd_soc_codec_dai *codec_dai = machine->codec_dai;
-+	struct snd_soc_dai *cpu_dai = machine->cpu_dai;
-+	struct snd_soc_dai *codec_dai = machine->codec_dai;
- 	int ret = 0;
- 
- 	mutex_lock(&pcm_mutex);
-@@ -559,8 +559,8 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 	struct snd_soc_device *socdev = rtd->socdev;
- 	struct snd_soc_dai_link *machine = rtd->dai;
- 	struct snd_soc_platform *platform = socdev->platform;
--	struct snd_soc_cpu_dai *cpu_dai = machine->cpu_dai;
--	struct snd_soc_codec_dai *codec_dai = machine->codec_dai;
-+	struct snd_soc_dai *cpu_dai = machine->cpu_dai;
-+	struct snd_soc_dai *codec_dai = machine->codec_dai;
- 	struct snd_soc_codec *codec = socdev->codec;
- 
- 	mutex_lock(&pcm_mutex);
-@@ -594,8 +594,8 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct snd_soc_device *socdev = rtd->socdev;
- 	struct snd_soc_dai_link *machine = rtd->dai;
- 	struct snd_soc_platform *platform = socdev->platform;
--	struct snd_soc_cpu_dai *cpu_dai = machine->cpu_dai;
--	struct snd_soc_codec_dai *codec_dai = machine->codec_dai;
-+	struct snd_soc_dai *cpu_dai = machine->cpu_dai;
-+	struct snd_soc_dai *codec_dai = machine->codec_dai;
- 	int ret;
- 
- 	if (codec_dai->ops.trigger) {
-@@ -651,7 +651,7 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
- 
- 	/* mute any active DAC's */
- 	for (i = 0; i < machine->num_links; i++) {
--		struct snd_soc_codec_dai *dai = machine->dai_link[i].codec_dai;
-+		struct snd_soc_dai *dai = machine->dai_link[i].codec_dai;
- 		if (dai->dai_ops.digital_mute && dai->playback.active)
- 			dai->dai_ops.digital_mute(dai, 1);
- 	}
-@@ -664,7 +664,7 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
- 		machine->suspend_pre(pdev, state);
- 
- 	for (i = 0; i < machine->num_links; i++) {
--		struct snd_soc_cpu_dai  *cpu_dai = machine->dai_link[i].cpu_dai;
-+		struct snd_soc_dai  *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->suspend && cpu_dai->type != SND_SOC_DAI_AC97)
- 			cpu_dai->suspend(pdev, cpu_dai);
- 		if (platform->suspend)
-@@ -690,7 +690,7 @@ static int soc_suspend(struct platform_device *pdev, pm_message_t state)
- 		codec_dev->suspend(pdev, state);
- 
- 	for (i = 0; i < machine->num_links; i++) {
--		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		struct snd_soc_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->suspend && cpu_dai->type == SND_SOC_DAI_AC97)
- 			cpu_dai->suspend(pdev, cpu_dai);
- 	}
-@@ -726,7 +726,7 @@ static void soc_resume_deferred(struct work_struct *work)
- 		machine->resume_pre(pdev);
- 
- 	for (i = 0; i < machine->num_links; i++) {
--		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		struct snd_soc_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->resume && cpu_dai->type == SND_SOC_DAI_AC97)
- 			cpu_dai->resume(pdev, cpu_dai);
- 	}
-@@ -747,13 +747,13 @@ static void soc_resume_deferred(struct work_struct *work)
- 
- 	/* unmute any active DACs */
- 	for (i = 0; i < machine->num_links; i++) {
--		struct snd_soc_codec_dai *dai = machine->dai_link[i].codec_dai;
-+		struct snd_soc_dai *dai = machine->dai_link[i].codec_dai;
- 		if (dai->dai_ops.digital_mute && dai->playback.active)
- 			dai->dai_ops.digital_mute(dai, 0);
- 	}
- 
- 	for (i = 0; i < machine->num_links; i++) {
--		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		struct snd_soc_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->resume && cpu_dai->type != SND_SOC_DAI_AC97)
- 			cpu_dai->resume(pdev, cpu_dai);
- 		if (platform->resume)
-@@ -803,7 +803,7 @@ static int soc_probe(struct platform_device *pdev)
- 	}
- 
- 	for (i = 0; i < machine->num_links; i++) {
--		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		struct snd_soc_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->probe) {
- 			ret = cpu_dai->probe(pdev, cpu_dai);
- 			if (ret < 0)
-@@ -838,7 +838,7 @@ platform_err:
- 
- cpu_dai_err:
- 	for (i--; i >= 0; i--) {
--		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		struct snd_soc_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->remove)
- 			cpu_dai->remove(pdev, cpu_dai);
- 	}
-@@ -867,7 +867,7 @@ static int soc_remove(struct platform_device *pdev)
- 		codec_dev->remove(pdev);
- 
- 	for (i = 0; i < machine->num_links; i++) {
--		struct snd_soc_cpu_dai *cpu_dai = machine->dai_link[i].cpu_dai;
-+		struct snd_soc_dai *cpu_dai = machine->dai_link[i].cpu_dai;
- 		if (cpu_dai->remove)
- 			cpu_dai->remove(pdev, cpu_dai);
- 	}
-@@ -895,8 +895,8 @@ static int soc_new_pcm(struct snd_soc_device *socdev,
- 	struct snd_soc_dai_link *dai_link, int num)
+ static int at32_pcm_new(struct snd_card *card,
+-			struct snd_soc_codec_dai *dai,
++			struct snd_soc_dai *dai,
+ 			struct snd_pcm *pcm)
  {
- 	struct snd_soc_codec *codec = socdev->codec;
--	struct snd_soc_codec_dai *codec_dai = dai_link->codec_dai;
--	struct snd_soc_cpu_dai *cpu_dai = dai_link->cpu_dai;
-+	struct snd_soc_dai *codec_dai = dai_link->codec_dai;
-+	struct snd_soc_dai *cpu_dai = dai_link->cpu_dai;
- 	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_pcm *pcm;
- 	char new_name[64];
-@@ -1211,7 +1211,7 @@ void snd_soc_free_pcms(struct snd_soc_device *socdev)
- {
- 	struct snd_soc_codec *codec = socdev->codec;
- #ifdef CONFIG_SND_SOC_AC97_BUS
--	struct snd_soc_codec_dai *codec_dai;
-+	struct snd_soc_dai *codec_dai;
- 	int i;
- #endif
+ 	int ret = 0;
+@@ -422,7 +422,7 @@ static void at32_pcm_free_dma_buffers(struct snd_pcm *pcm)
  
+ #ifdef CONFIG_PM
+ static int at32_pcm_suspend(struct platform_device *pdev,
+-			    struct snd_soc_cpu_dai *dai)
++			    struct snd_soc_dai *dai)
+ {
+ 	struct snd_pcm_runtime *runtime = dai->runtime;
+ 	struct at32_runtime_data *prtd;
+@@ -447,7 +447,7 @@ static int at32_pcm_suspend(struct platform_device *pdev,
+ 
+ 
+ static int at32_pcm_resume(struct platform_device *pdev,
+-			   struct snd_soc_cpu_dai *dai)
++			   struct snd_soc_dai *dai)
+ {
+ 	struct snd_pcm_runtime *runtime = dai->runtime;
+ 	struct at32_runtime_data *prtd;
+diff --git a/sound/soc/at32/at32-ssc.c b/sound/soc/at32/at32-ssc.c
+index 0ca4410..4ef6492 100644
+--- a/sound/soc/at32/at32-ssc.c
++++ b/sound/soc/at32/at32-ssc.c
+@@ -336,7 +336,7 @@ static void at32_ssc_shutdown(struct snd_pcm_substream *substream)
+ /*
+  * Set the SSC system clock rate
+  */
+-static int at32_ssc_set_dai_sysclk(struct snd_soc_cpu_dai *cpu_dai,
++static int at32_ssc_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 				   int clk_id, unsigned int freq, int dir)
+ {
+ 	/* TODO: What the heck do I do here? */
+@@ -348,7 +348,7 @@ static int at32_ssc_set_dai_sysclk(struct snd_soc_cpu_dai *cpu_dai,
+ /*
+  * Record DAI format for use by hw_params()
+  */
+-static int at32_ssc_set_dai_fmt(struct snd_soc_cpu_dai *cpu_dai,
++static int at32_ssc_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 				unsigned int fmt)
+ {
+ 	struct at32_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
+@@ -362,7 +362,7 @@ static int at32_ssc_set_dai_fmt(struct snd_soc_cpu_dai *cpu_dai,
+ /*
+  * Record SSC clock dividers for use in hw_params()
+  */
+-static int at32_ssc_set_dai_clkdiv(struct snd_soc_cpu_dai *cpu_dai,
++static int at32_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+ 				   int div_id, int div)
+ {
+ 	struct at32_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
+@@ -670,7 +670,7 @@ static int at32_ssc_prepare(struct snd_pcm_substream *substream)
+ 
+ #ifdef CONFIG_PM
+ static int at32_ssc_suspend(struct platform_device *pdev,
+-			    struct snd_soc_cpu_dai *cpu_dai)
++			    struct snd_soc_dai *cpu_dai)
+ {
+ 	struct at32_ssc_info *ssc_p;
+ 
+@@ -699,7 +699,7 @@ static int at32_ssc_suspend(struct platform_device *pdev,
+ 
+ 
+ static int at32_ssc_resume(struct platform_device *pdev,
+-			   struct snd_soc_cpu_dai *cpu_dai)
++			   struct snd_soc_dai *cpu_dai)
+ {
+ 	struct at32_ssc_info *ssc_p;
+ 	u32 cr;
+@@ -746,7 +746,7 @@ static int at32_ssc_resume(struct platform_device *pdev,
+      SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_S32)
+ 
+ 
+-struct snd_soc_cpu_dai at32_ssc_dai[NUM_SSC_DEVICES] = {
++struct snd_soc_dai at32_ssc_dai[NUM_SSC_DEVICES] = {
+ 	{
+ 	 .name = "at32-ssc0",
+ 	 .id = 0,
+diff --git a/sound/soc/at32/at32-ssc.h b/sound/soc/at32/at32-ssc.h
+index 3c6901a..3c052db 100644
+--- a/sound/soc/at32/at32-ssc.h
++++ b/sound/soc/at32/at32-ssc.h
+@@ -52,7 +52,7 @@ struct at32_ssc_info {
+ #define AT32_SSC_RCMR_PERIOD    2	/* BCLK divider for receive FS */
+ 
+ 
+-extern struct snd_soc_cpu_dai at32_ssc_dai[];
++extern struct snd_soc_dai at32_ssc_dai[];
+ 
+ 
+ 
+diff --git a/sound/soc/at32/playpaq_wm8510.c b/sound/soc/at32/playpaq_wm8510.c
+index d6b9fd5..18ac7d7 100644
+--- a/sound/soc/at32/playpaq_wm8510.c
++++ b/sound/soc/at32/playpaq_wm8510.c
+@@ -82,7 +82,7 @@ static struct clk *_pll0;
+ #if defined CONFIG_SND_AT32_SOC_PLAYPAQ_SLAVE
+ static struct ssc_clock_data playpaq_wm8510_calc_ssc_clock(
+ 	struct snd_pcm_hw_params *params,
+-	struct snd_soc_cpu_dai *cpu_dai)
++	struct snd_soc_dai *cpu_dai)
+ {
+ 	struct at32_ssc_info *ssc_p = cpu_dai->private_data;
+ 	struct ssc_device *ssc = ssc_p->ssc;
+@@ -132,8 +132,8 @@ static int playpaq_wm8510_hw_params(struct snd_pcm_substream *substream,
+ 				    struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+ 	struct at32_ssc_info *ssc_p = cpu_dai->private_data;
+ 	struct ssc_device *ssc = ssc_p->ssc;
+ 	unsigned int pll_out = 0, bclk = 0, mclk_div = 0;
 -- 
 1.5.4.2
