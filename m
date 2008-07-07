@@ -1,22 +1,17 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: [PATCH 2/3] ALSA SoC: Add mpc5200-psc I2S driver
-Date: Mon, 7 Jul 2008 09:23:24 -0400
-Message-ID: <9e4733910807070623u4c17b319p48e96a3022f3459b@mail.gmail.com>
-References: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
-	<20080701235335.16923.43253.stgit@trillian.secretlab.ca>
-	<9e4733910807061056m7b0dbf1fr578cbfcda31586ea@mail.gmail.com>
-	<20080707105905.GA19240@rakim.wolfsonmicro.main>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: snd_pcm_writei() -last value sustained
+Date: Mon, 7 Jul 2008 14:53:35 +0100
+Message-ID: <200807071453.35353.gineera@aspect135.co.uk>
+References: <200807040938.53662.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06D43245C3
+Received: from smtp.talktalk.net (smtp-out-4.talktalk.net [62.24.128.234])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6FA7245CA
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jul 2008 15:23:25 +0200 (CEST)
-Received: by el-out-1112.google.com with SMTP id o28so133060ele.2
-	for <alsa-devel@alsa-project.org>; Mon, 07 Jul 2008 06:23:24 -0700 (PDT)
-In-Reply-To: <20080707105905.GA19240@rakim.wolfsonmicro.main>
+	Mon,  7 Jul 2008 15:37:29 +0200 (CEST)
+In-Reply-To: <200807040938.53662.gineera@aspect135.co.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,46 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>, liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org, timur@freescale.com
+To: ALSA devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/7/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> On Sun, Jul 06, 2008 at 01:56:48PM -0400, Jon Smirl wrote:
+On Friday 04 July 2008 09:38, I wrote:
+> Working on an app I am seeing several strange effects, and this is one of
+> them.
 >
->  > The driver is assuming a capture stream exists. My codec is output only.
+> It can be demonstrated with the pcm.c example program, and I have attempted
+> to attach a small shot of Audacity capturing the effect.
 >
+> After writing to the pcm with snd_pcm_writei() a certain amount of data (I
+> have pcm.c doing 2 periods) the value captured from the soundcard remains
+> at the last value thereafter; clearly this card doesn't have DC elimination
+> or this would not be seen.
 >
-> While the driver declares a capture stream the core doesn't require that
->  both capture and playback be available - it will cope with a capture
->  only or a playback only DAI (this is fairly common due to DAC only and
->  ADC only parts).  Unless there's some other issue specific to this
->  driver?
+> The sound card is ice1712 (DMX6fire); I had always noticed the PCM meters
+> in envy24control often stayed high if something like XMMS was stopped or
+> paused during play, but thought it a metering fault.  Now it appears to be
+> actual pcm value that 'gets stuck'.
+>
+> Close examination with Audacity shows it is in fact the last-but-one value
+> that is sustained.
+>
+> Is this expected behaviour, configuration fault, driver bug or other
+> problem? I had expected that after the block of data had been written out
+> as audio the signal would return to zero straightaway.  Can anyone give me
+> any clues?
 
-Yes, it GPFs allocating a a DMA buffer on the null capture stream pointer.
+This seems to be an issue with the ice1712 driver: it does not occur with 
+au8820 device at all.
+Note that all the results reported here are using pcm.c, not any other app 
+code at all, and correspond to effects seen in normal usage over the past 
+couple of years.
 
->
->  > I'm using external clocking, but the driver should support using the
->  > mpc5200 for clocking. That's a little complicated since you have to
->  > compute the divisors. For example the Phytec pcm030 board has a
->  > 33.3333Mhz xtal and runs at 400Mhz.
->
->
-> This is desirable, though it shouldn't be an obstacle for merging if the
->  driver only supports running in slave mode.
->
->
->  > In order to reduce options, can the psc-i2s driver always try to use
->  > mpc5200 clocking, then let the codec or fabric driver override it?
->
->
-> The clocking should always be under the control of the machine driver
->  with the codec and platform drivers exporting the required dividers and
->  PLLs/FLLs.  Neither the platform driver nor the codec driver are really
->  in a position to know how a given board is wired up and what
->  interdependencies or external requirements there are.
->
+I have very littlle idea about the inner workings of alsa drivers, but notice 
+that in
+	snd_ice1712_pro_trigger()
+the effect of SNDRV_PCM_TRIGGER_STOP is to set the envy24 chip play bit off, 
+which I would expect to essentially freeze the cards playback operation.  
+Could that be why?
 
+My tests have involved adding to pcm.c (write method) firstly to limit the 
+number of periods played, set to 1.  Then I re-use the data space, writing 
+various waveforms including a ramp, or individual data points, before writei 
+another period from the start.  It can be clearly demonstrated that setting 
+the last-but one sample for a particular channel sets the output to zero 
+long-term.  This does not happen with the last sample.  Otherwise it remains 
+forever at the last-but-one sample value.
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+The attached shot shows existing sine data in the space, except for the 
+last-but-one sample being zero, and shows that the output ends up at zero.
+
+Can anyone confirm this looks like a flaw in the driver, or am I using it 
+wrongly etc?
+
+Alan
+
+Actually, I've attached the shot to subsequent email in case it would cause 
+this email to be blocked.
