@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Dump DAPM state for non-stream
-	changes
-Date: Mon,  7 Jul 2008 19:26:04 +0100
-Message-ID: <1215455164-29019-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1215455164-29019-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Switch DAPM to use of standard DEBUG
+	macro
+Date: Mon,  7 Jul 2008 19:26:03 +0100
+Message-ID: <1215455164-29019-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 15D34246A3
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 55481246A5
 	for <alsa-devel@alsa-project.org>;
 	Mon,  7 Jul 2008 20:26:07 +0200 (CEST)
-In-Reply-To: <1215455164-29019-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,52 +24,93 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Explicit DAPM syncs are likely to cause DAPM state updates, as are mixer
-and mux configuration changes, so display the DAPM status after them too.
+DAPM contains debug output controlled by a DAPM_DEBUG macro. Change this
+to be controlled by the standard DEBUG, dropping the custom dbg() macro
+as we go.
+
+Also fix the error printed when configuring an unknown pin to be an
+unconditionally displayed error rather than debug output.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |   12 +++++++++---
- 1 files changed, 9 insertions(+), 3 deletions(-)
+ sound/soc/soc-dapm.c |   22 ++++++++++------------
+ 1 files changed, 10 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index d18ebc6..2c87061 100644
+index 94296b5..d18ebc6 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -717,8 +717,10 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 			path->connect = 0; /* old connection must be powered down */
+@@ -45,13 +45,10 @@
+ #include <sound/initval.h>
+ 
+ /* debug */
+-#define DAPM_DEBUG 0
+-#if DAPM_DEBUG
++#ifdef DEBUG
+ #define dump_dapm(codec, action) dbg_dump_dapm(codec, action)
+-#define dbg(format, arg...) printk(format, ## arg)
+ #else
+ #define dump_dapm(codec, action)
+-#define dbg(format, arg...)
+ #endif
+ 
+ /* dapm power sequences - make this per codec in the future */
+@@ -233,7 +230,8 @@ static int dapm_update_bits(struct snd_soc_dapm_widget *widget)
+ 		snd_soc_write(codec, widget->reg, new);
+ 		pop_wait();
  	}
- 
--	if (found)
-+	if (found) {
- 		dapm_power_widgets(widget->codec, SND_SOC_DAPM_STREAM_NOP);
-+		dump_dapm(widget->codec, "mux power update");
-+	}
- 
- 	return 0;
+-	dbg("reg %x old %x new %x change %d\n", widget->reg, old, new, change);
++	pr_debug("reg %x old %x new %x change %d\n", widget->reg,
++		 old, new, change);
+ 	return change;
  }
-@@ -754,8 +756,10 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
- 		break;
- 	}
  
--	if (found)
-+	if (found) {
- 		dapm_power_widgets(widget->codec, SND_SOC_DAPM_STREAM_NOP);
-+		dump_dapm(widget->codec, "mixer power update");
-+	}
- 
- 	return 0;
+@@ -591,8 +589,8 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ 			/* call any power change event handlers */
+ 			if (power_change) {
+ 				if (w->event) {
+-					dbg("power %s event for %s flags %x\n",
+-						w->power ? "on" : "off", w->name, w->event_flags);
++					pr_debug("power %s event for %s flags %x\n",
++						 w->power ? "on" : "off", w->name, w->event_flags);
+ 					if (power) {
+ 						/* power up event */
+ 						if (w->event_flags & SND_SOC_DAPM_PRE_PMU) {
+@@ -634,7 +632,7 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ 	return ret;
  }
-@@ -906,7 +910,9 @@ static int snd_soc_dapm_set_pin(struct snd_soc_codec *codec,
-  */
- int snd_soc_dapm_sync(struct snd_soc_codec *codec)
+ 
+-#if DAPM_DEBUG
++#ifdef DEBUG
+ static void dbg_dump_dapm(struct snd_soc_codec* codec, const char *action)
  {
--	return dapm_power_widgets(codec, SND_SOC_DAPM_STREAM_NOP);
-+	int ret = dapm_power_widgets(codec, SND_SOC_DAPM_STREAM_NOP);
-+	dump_dapm(codec, "sync");
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_sync);
+ 	struct snd_soc_dapm_widget *w;
+@@ -887,13 +885,13 @@ static int snd_soc_dapm_set_pin(struct snd_soc_codec *codec,
  
+ 	list_for_each_entry(w, &codec->dapm_widgets, list) {
+ 		if (!strcmp(w->name, pin)) {
+-			dbg("dapm: %s: pin %s\n", codec->name, pin);
++			pr_debug("dapm: %s: pin %s\n", codec->name, pin);
+ 			w->connected = status;
+ 			return 0;
+ 		}
+ 	}
+ 
+-	dbg("dapm: %s: configuring unknown pin %s\n", codec->name, pin);
++	pr_err("dapm: %s: configuring unknown pin %s\n", codec->name, pin);
+ 	return -EINVAL;
+ }
+ 
+@@ -1397,8 +1395,8 @@ int snd_soc_dapm_stream_event(struct snd_soc_codec *codec,
+ 	{
+ 		if (!w->sname)
+ 			continue;
+-		dbg("widget %s\n %s stream %s event %d\n", w->name, w->sname,
+-			stream, event);
++		pr_debug("widget %s\n %s stream %s event %d\n",
++			 w->name, w->sname, stream, event);
+ 		if (strstr(w->sname, stream)) {
+ 			switch(event) {
+ 			case SND_SOC_DAPM_STREAM_START:
 -- 
 1.5.6
