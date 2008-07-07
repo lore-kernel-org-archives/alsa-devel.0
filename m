@@ -1,16 +1,16 @@
 From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: [PATCH 08/10] asoc: pxa - merge structs
+Subject: [PATCH 09/10] asoc: s3c24xx - merge structs
 	snd_soc_codec_dai and	snd_soc_cpu_dai.
-Date: Mon, 07 Jul 2008 16:08:11 +0100
-Message-ID: <1215443291.4882.185.camel@localhost.localdomain>
+Date: Mon, 07 Jul 2008 16:08:24 +0100
+Message-ID: <1215443304.4882.186.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8148610382A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E96FF10381A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jul 2008 17:08:12 +0200 (CEST)
+	Mon,  7 Jul 2008 17:08:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,25 +26,25 @@ List-Id: alsa-devel@alsa-project.org
 
 
 This patch merges struct snd_soc_codec_dai and struct
-snd_soc_cpu_dai into struct snd_soc_dai for the PXA platform.
+snd_soc_cpu_dai into struct snd_soc_dai for the S3C24xx platform.
 
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 ---
- sound/soc/pxa/corgi.c       |    4 ++--
- sound/soc/pxa/poodle.c      |    4 ++--
- sound/soc/pxa/pxa2xx-ac97.c |   14 +++++++-------
- sound/soc/pxa/pxa2xx-ac97.h |    2 +-
- sound/soc/pxa/pxa2xx-i2s.c  |   14 +++++++-------
- sound/soc/pxa/pxa2xx-i2s.h  |    2 +-
- sound/soc/pxa/pxa2xx-pcm.c  |    2 +-
- sound/soc/pxa/spitz.c       |    4 ++--
- 8 files changed, 23 insertions(+), 23 deletions(-)
+ sound/soc/s3c24xx/neo1973_wm8753.c |   12 ++++++------
+ sound/soc/s3c24xx/s3c2412-i2s.c    |   14 +++++++-------
+ sound/soc/s3c24xx/s3c2412-i2s.h    |    2 +-
+ sound/soc/s3c24xx/s3c2443-ac97.c   |   10 +++++-----
+ sound/soc/s3c24xx/s3c24xx-ac97.h   |    2 +-
+ sound/soc/s3c24xx/s3c24xx-i2s.c    |   14 +++++++-------
+ sound/soc/s3c24xx/s3c24xx-i2s.h    |    2 +-
+ sound/soc/s3c24xx/s3c24xx-pcm.c    |    2 +-
+ 8 files changed, 29 insertions(+), 29 deletions(-)
 
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index db18ef6..782afbf 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -123,8 +123,8 @@ static int corgi_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index f053e85..51a4ce3 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -66,8 +66,8 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
  	struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -52,56 +52,148 @@ index db18ef6..782afbf 100644
 -	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
 +	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
 +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	unsigned int clk = 0;
+ 	unsigned int pll_out = 0, bclk = 0;
  	int ret = 0;
+ 	unsigned long iis_clkrate;
+@@ -156,7 +156,7 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
+ static int neo1973_hifi_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
  
-diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-index 36cbf69..ce25b6b 100644
---- a/sound/soc/pxa/poodle.c
-+++ b/sound/soc/pxa/poodle.c
-@@ -102,8 +102,8 @@ static int poodle_hw_params(struct snd_pcm_substream *substream,
+ 	DBG("Entered %s\n", __func__);
+ 
+@@ -176,7 +176,7 @@ static int neo1973_voice_hw_params(struct snd_pcm_substream *substream,
  	struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
 +	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	unsigned int clk = 0;
+ 	unsigned int pcmdiv = 0;
  	int ret = 0;
- 
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index cb94795..b458667 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -283,7 +283,7 @@ static struct pxa2xx_pcm_dma_params pxa2xx_ac97_pcm_mic_mono_in = {
- 
- #ifdef CONFIG_PM
- static int pxa2xx_ac97_suspend(struct platform_device *pdev,
--	struct snd_soc_cpu_dai *dai)
-+	struct snd_soc_dai *dai)
+ 	unsigned long iis_clkrate;
+@@ -222,7 +222,7 @@ static int neo1973_voice_hw_params(struct snd_pcm_substream *substream,
+ static int neo1973_voice_hw_free(struct snd_pcm_substream *substream)
  {
- 	GCR |= GCR_ACLINK_OFF;
- 	clk_disable(ac97_clk);
-@@ -291,7 +291,7 @@ static int pxa2xx_ac97_suspend(struct platform_device *pdev,
- }
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
  
- static int pxa2xx_ac97_resume(struct platform_device *pdev,
--	struct snd_soc_cpu_dai *dai)
-+	struct snd_soc_dai *dai)
+ 	DBG("Entered %s\n", __func__);
+ 
+@@ -546,7 +546,7 @@ static int neo1973_wm8753_init(struct snd_soc_codec *codec)
+ /*
+  * BT Codec DAI
+  */
+-static struct snd_soc_cpu_dai bt_dai = {
++static struct snd_soc_dai bt_dai = {
+ 	.name = "Bluetooth",
+ 	.id = 0,
+ 	.type = SND_SOC_DAI_PCM,
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
+index c463a82..ee4676e 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.c
++++ b/sound/soc/s3c24xx/s3c2412-i2s.c
+@@ -295,7 +295,7 @@ static inline int s3c2412_snd_is_clkmaster(void)
+ /*
+  * Set S3C2412 I2S DAI format
+  */
+-static int s3c2412_i2s_set_fmt(struct snd_soc_cpu_dai *cpu_dai,
++static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 			       unsigned int fmt)
  {
- 	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
- 	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
-@@ -311,7 +311,7 @@ static int pxa2xx_ac97_resume(struct platform_device *pdev,
- #endif
+ 	u32 iismod;
+@@ -500,7 +500,7 @@ EXPORT_SYMBOL_GPL(s3c2412_iis_calc_rate);
+ /*
+  * Set S3C2412 Clock source
+  */
+-static int s3c2412_i2s_set_sysclk(struct snd_soc_cpu_dai *cpu_dai,
++static int s3c2412_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 				  int clk_id, unsigned int freq, int dir)
+ {
+ 	u32 iismod = readl(s3c2412_i2s.regs + S3C2412_IISMOD);
+@@ -528,7 +528,7 @@ static int s3c2412_i2s_set_sysclk(struct snd_soc_cpu_dai *cpu_dai,
+ /*
+  * Set S3C2412 Clock dividers
+  */
+-static int s3c2412_i2s_set_clkdiv(struct snd_soc_cpu_dai *cpu_dai,
++static int s3c2412_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
+ 				  int div_id, int div)
+ {
+ 	struct s3c2412_i2s_info *i2s = &s3c2412_i2s;
+@@ -602,7 +602,7 @@ EXPORT_SYMBOL_GPL(s3c2412_get_iisclk);
  
- static int pxa2xx_ac97_probe(struct platform_device *pdev,
+ 
+ static int s3c2412_i2s_probe(struct platform_device *pdev,
 -			     struct snd_soc_cpu_dai *dai)
 +			     struct snd_soc_dai *dai)
  {
- 	int ret;
+ 	DBG("Entered %s\n", __func__);
  
-@@ -373,7 +373,7 @@ static int pxa2xx_ac97_hw_params(struct snd_pcm_substream *substream,
+@@ -648,7 +648,7 @@ static int s3c2412_i2s_probe(struct platform_device *pdev,
+ 
+ #ifdef CONFIG_PM
+ static int s3c2412_i2s_suspend(struct platform_device *dev,
+-			      struct snd_soc_cpu_dai *dai)
++			      struct snd_soc_dai *dai)
+ {
+ 	struct s3c2412_i2s_info *i2s = &s3c2412_i2s;
+ 	u32 iismod;
+@@ -676,7 +676,7 @@ static int s3c2412_i2s_suspend(struct platform_device *dev,
+ }
+ 
+ static int s3c2412_i2s_resume(struct platform_device *pdev,
+-			      struct snd_soc_cpu_dai *dai)
++			      struct snd_soc_dai *dai)
+ {
+ 	struct s3c2412_i2s_info *i2s = &s3c2412_i2s;
+ 
+@@ -708,7 +708,7 @@ static int s3c2412_i2s_resume(struct platform_device *pdev,
+ 	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+ 	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+ 
+-struct snd_soc_cpu_dai s3c2412_i2s_dai = {
++struct snd_soc_dai s3c2412_i2s_dai = {
+ 	.name	= "s3c2412-i2s",
+ 	.id	= 0,
+ 	.type	= SND_SOC_DAI_I2S,
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.h b/sound/soc/s3c24xx/s3c2412-i2s.h
+index 27f48e1..aac08a2 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.h
++++ b/sound/soc/s3c24xx/s3c2412-i2s.h
+@@ -24,7 +24,7 @@
+ 
+ extern struct clk *s3c2412_get_iisclk(void);
+ 
+-extern struct snd_soc_cpu_dai s3c2412_i2s_dai;
++extern struct snd_soc_dai s3c2412_i2s_dai;
+ 
+ struct s3c2412_rate_calc {
+ 	unsigned int	clk_div;	/* for prescaler */
+diff --git a/sound/soc/s3c24xx/s3c2443-ac97.c b/sound/soc/s3c24xx/s3c2443-ac97.c
+index 533565b..783349b 100644
+--- a/sound/soc/s3c24xx/s3c2443-ac97.c
++++ b/sound/soc/s3c24xx/s3c2443-ac97.c
+@@ -210,7 +210,7 @@ static struct s3c24xx_pcm_dma_params s3c2443_ac97_mic_mono_in = {
+ };
+ 
+ static int s3c2443_ac97_probe(struct platform_device *pdev,
+-			      struct snd_soc_cpu_dai *dai)
++			      struct snd_soc_dai *dai)
+ {
+ 	int ret;
+ 	u32 ac_glbctrl;
+@@ -262,7 +262,7 @@ static int s3c2443_ac97_probe(struct platform_device *pdev,
+ }
+ 
+ static void s3c2443_ac97_remove(struct platform_device *pdev,
+-				struct snd_soc_cpu_dai *dai)
++				struct snd_soc_dai *dai)
+ {
+ 	free_irq(IRQ_S3C244x_AC97, NULL);
+ 	clk_disable(s3c24xx_ac97.ac97_clk);
+@@ -274,7 +274,7 @@ static int s3c2443_ac97_hw_params(struct snd_pcm_substream *substream,
  				struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -109,17 +201,8 @@ index cb94795..b458667 100644
 +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
  
  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		cpu_dai->dma_data = &pxa2xx_ac97_pcm_stereo_out;
-@@ -387,7 +387,7 @@ static int pxa2xx_ac97_hw_aux_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		cpu_dai->dma_data = &pxa2xx_ac97_pcm_aux_mono_out;
-@@ -401,7 +401,7 @@ static int pxa2xx_ac97_hw_mic_params(struct snd_pcm_substream *substream,
+ 		cpu_dai->dma_data = &s3c2443_ac97_pcm_stereo_out;
+@@ -316,7 +316,7 @@ static int s3c2443_ac97_hw_mic_params(struct snd_pcm_substream *substream,
  	struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -128,133 +211,117 @@ index cb94795..b458667 100644
  
  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
  		return -ENODEV;
-@@ -419,7 +419,7 @@ static int pxa2xx_ac97_hw_mic_params(struct snd_pcm_substream *substream,
-  * There is only 1 physical AC97 interface for pxa2xx, but it
-  * has extra fifo's that can be used for aux DACs and ADCs.
-  */
--struct snd_soc_cpu_dai pxa_ac97_dai[] = {
-+struct snd_soc_dai pxa_ac97_dai[] = {
+@@ -352,7 +352,7 @@ static int s3c2443_ac97_mic_trigger(struct snd_pcm_substream *substream,
+ 		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | \
+ 		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
+ 
+-struct snd_soc_cpu_dai s3c2443_ac97_dai[] = {
++struct snd_soc_dai s3c2443_ac97_dai[] = {
  {
- 	.name = "pxa2xx-ac97",
+ 	.name = "s3c2443-ac97",
  	.id = 0,
-diff --git a/sound/soc/pxa/pxa2xx-ac97.h b/sound/soc/pxa/pxa2xx-ac97.h
-index b8ccfee..e390de8 100644
---- a/sound/soc/pxa/pxa2xx-ac97.h
-+++ b/sound/soc/pxa/pxa2xx-ac97.h
-@@ -14,7 +14,7 @@
- #define PXA2XX_DAI_AC97_AUX		1
- #define PXA2XX_DAI_AC97_MIC		2
+diff --git a/sound/soc/s3c24xx/s3c24xx-ac97.h b/sound/soc/s3c24xx/s3c24xx-ac97.h
+index bf03e8e..a96dcad 100644
+--- a/sound/soc/s3c24xx/s3c24xx-ac97.h
++++ b/sound/soc/s3c24xx/s3c24xx-ac97.h
+@@ -26,6 +26,6 @@
+ #define IRQ_S3C244x_AC97 IRQ_S3C2443_AC97
+ #endif
  
--extern struct snd_soc_cpu_dai pxa_ac97_dai[3];
-+extern struct snd_soc_dai pxa_ac97_dai[3];
+-extern struct snd_soc_cpu_dai s3c2443_ac97_dai[];
++extern struct snd_soc_dai s3c2443_ac97_dai[];
  
- /* platform data */
- extern struct snd_ac97_bus_ops pxa2xx_ac97_ops;
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 35090c2..9c06553 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -77,7 +77,7 @@ static struct pxa2xx_gpio gpio_bus[] = {
- static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 
- 	if (!cpu_dai->active) {
- 		SACR0 |= SACR0_RST;
-@@ -98,7 +98,7 @@ static int pxa_i2s_wait(void)
- 	return 0;
- }
- 
--static int pxa2xx_i2s_set_dai_fmt(struct snd_soc_cpu_dai *cpu_dai,
-+static int pxa2xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ #endif /*S3C24XXAC97_H_*/
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
+index 42e96b5..3975242 100644
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
+@@ -205,7 +205,7 @@ static inline int s3c24xx_snd_is_clkmaster(void)
+ /*
+  * Set S3C24xx I2S DAI format
+  */
+-static int s3c24xx_i2s_set_fmt(struct snd_soc_cpu_dai *cpu_dai,
++static int s3c24xx_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
  		unsigned int fmt)
  {
- 	/* interface format */
-@@ -124,7 +124,7 @@ static int pxa2xx_i2s_set_dai_fmt(struct snd_soc_cpu_dai *cpu_dai,
- 	return 0;
- }
- 
--static int pxa2xx_i2s_set_dai_sysclk(struct snd_soc_cpu_dai *cpu_dai,
-+static int pxa2xx_i2s_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int dir)
+ 	u32 iismod;
+@@ -313,7 +313,7 @@ exit_err:
+ /*
+  * Set S3C24xx Clock source
+  */
+-static int s3c24xx_i2s_set_sysclk(struct snd_soc_cpu_dai *cpu_dai,
++static int s3c24xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 	int clk_id, unsigned int freq, int dir)
  {
- 	if (clk_id != PXA2XX_I2S_SYSCLK)
-@@ -140,7 +140,7 @@ static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
+ 	u32 iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+@@ -339,7 +339,7 @@ static int s3c24xx_i2s_set_sysclk(struct snd_soc_cpu_dai *cpu_dai,
+ /*
+  * Set S3C24xx Clock dividers
+  */
+-static int s3c24xx_i2s_set_clkdiv(struct snd_soc_cpu_dai *cpu_dai,
++static int s3c24xx_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
+ 	int div_id, int div)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+ 	u32 reg;
+@@ -378,7 +378,7 @@ u32 s3c24xx_i2s_get_clockrate(void)
+ EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
  
- 	pxa_gpio_mode(gpio_bus[pxa_i2s.master].rx);
- 	pxa_gpio_mode(gpio_bus[pxa_i2s.master].tx);
-@@ -237,7 +237,7 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream *substream)
+ static int s3c24xx_i2s_probe(struct platform_device *pdev,
+-			     struct snd_soc_cpu_dai *dai)
++			     struct snd_soc_dai *dai)
+ {
+ 	DBG("Entered %s\n", __func__);
+ 
+@@ -411,7 +411,7 @@ static int s3c24xx_i2s_probe(struct platform_device *pdev,
  
  #ifdef CONFIG_PM
- static int pxa2xx_i2s_suspend(struct platform_device *dev,
--	struct snd_soc_cpu_dai *dai)
-+	struct snd_soc_dai *dai)
+ static int s3c24xx_i2s_suspend(struct platform_device *pdev,
+-		struct snd_soc_cpu_dai *cpu_dai)
++		struct snd_soc_dai *cpu_dai)
  {
- 	if (!dai->active)
- 		return 0;
-@@ -255,7 +255,7 @@ static int pxa2xx_i2s_suspend(struct platform_device *dev,
+ 	DBG("Entered %s\n", __func__);
+ 
+@@ -426,7 +426,7 @@ static int s3c24xx_i2s_suspend(struct platform_device *pdev,
  }
  
- static int pxa2xx_i2s_resume(struct platform_device *pdev,
--	struct snd_soc_cpu_dai *dai)
-+	struct snd_soc_dai *dai)
+ static int s3c24xx_i2s_resume(struct platform_device *pdev,
+-		struct snd_soc_cpu_dai *cpu_dai)
++		struct snd_soc_dai *cpu_dai)
  {
- 	if (!dai->active)
- 		return 0;
-@@ -280,7 +280,7 @@ static int pxa2xx_i2s_resume(struct platform_device *pdev,
- 		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | \
- 		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
+ 	DBG("Entered %s\n", __func__);
+ 	clk_enable(s3c24xx_i2s.iis_clk);
+@@ -449,7 +449,7 @@ static int s3c24xx_i2s_resume(struct platform_device *pdev,
+ 	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+ 	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
  
--struct snd_soc_cpu_dai pxa_i2s_dai = {
-+struct snd_soc_dai pxa_i2s_dai = {
- 	.name = "pxa2xx-i2s",
+-struct snd_soc_cpu_dai s3c24xx_i2s_dai = {
++struct snd_soc_dai s3c24xx_i2s_dai = {
+ 	.name = "s3c24xx-i2s",
  	.id = 0,
  	.type = SND_SOC_DAI_I2S,
-diff --git a/sound/soc/pxa/pxa2xx-i2s.h b/sound/soc/pxa/pxa2xx-i2s.h
-index 4435bd9..e2def44 100644
---- a/sound/soc/pxa/pxa2xx-i2s.h
-+++ b/sound/soc/pxa/pxa2xx-i2s.h
-@@ -15,6 +15,6 @@
- /* I2S clock */
- #define PXA2XX_I2S_SYSCLK		0
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.h b/sound/soc/s3c24xx/s3c24xx-i2s.h
+index 537b4ec..726d91c 100644
+--- a/sound/soc/s3c24xx/s3c24xx-i2s.h
++++ b/sound/soc/s3c24xx/s3c24xx-i2s.h
+@@ -32,6 +32,6 @@
  
--extern struct snd_soc_cpu_dai pxa_i2s_dai;
-+extern struct snd_soc_dai pxa_i2s_dai;
+ u32 s3c24xx_i2s_get_clockrate(void);
  
- #endif
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index 01ad7bf..2df03ee 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -330,7 +330,7 @@ static void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
+-extern struct snd_soc_cpu_dai s3c24xx_i2s_dai;
++extern struct snd_soc_dai s3c24xx_i2s_dai;
  
- static u64 pxa2xx_pcm_dmamask = DMA_32BIT_MASK;
+ #endif /*S3C24XXI2S_H_*/
+diff --git a/sound/soc/s3c24xx/s3c24xx-pcm.c b/sound/soc/s3c24xx/s3c24xx-pcm.c
+index ef59974..cef79b3 100644
+--- a/sound/soc/s3c24xx/s3c24xx-pcm.c
++++ b/sound/soc/s3c24xx/s3c24xx-pcm.c
+@@ -429,7 +429,7 @@ static void s3c24xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
+ static u64 s3c24xx_pcm_dmamask = DMA_32BIT_MASK;
  
--int pxa2xx_pcm_new(struct snd_card *card, struct snd_soc_codec_dai *dai,
-+int pxa2xx_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
- 	struct snd_pcm *pcm)
+ static int s3c24xx_pcm_new(struct snd_card *card,
+-	struct snd_soc_codec_dai *dai, struct snd_pcm *pcm)
++	struct snd_soc_dai *dai, struct snd_pcm *pcm)
  {
- 	int ret = 0;
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index ec18163..fd1abc7 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -121,8 +121,8 @@ static int spitz_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	unsigned int clk = 0;
  	int ret = 0;
  
 -- 
