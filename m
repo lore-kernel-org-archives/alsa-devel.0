@@ -1,21 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] PalmTX aSoC sound support
-Date: Mon, 7 Jul 2008 12:01:38 +0100
-Message-ID: <20080707110138.GB19240@rakim.wolfsonmicro.main>
-References: <200807042126.29154.marek.vasut@gmail.com>
-	<200807042149.57697.marek.vasut@gmail.com>
-	<20080704202615.GB20719@sirena.org.uk>
-	<200807050019.08444.marek.vasut@gmail.com>
+Subject: Re: ASOC: codec_reg_show and variable length registers
+Date: Mon, 7 Jul 2008 12:44:18 +0100
+Message-ID: <20080707114417.GC19240@rakim.wolfsonmicro.main>
+References: <9e4733910807050637p6583ae25m592aca4c5728a4d3@mail.gmail.com>
+	<20080705230331.GA10301@sirena.org.uk>
+	<9e4733910807051743w62f37b54nd18bb21a3475f5bf@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 102A924519
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28A1A24573
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jul 2008 13:01:40 +0200 (CEST)
+	Mon,  7 Jul 2008 13:44:19 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <200807050019.08444.marek.vasut@gmail.com>
+In-Reply-To: <9e4733910807051743w62f37b54nd18bb21a3475f5bf@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,16 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 05, 2008 at 12:19:08AM +0200, Marek Vasut wrote:
+On Sat, Jul 05, 2008 at 08:43:30PM -0400, Jon Smirl wrote:
 
-> +/* PalmTX audio map */
-> +static const char *audio_map[][3] = {
-> +
+> The big registers are arrays. For example register 0x41 is 32 bytes.
+> It is an array of eight 32b float gains for that channel's mixer
+> inputs.
 
-This should be an array of struct snd_soc_dapm_route.
+> Or register 0x51 - 20 bytes, five 32b floats describing a biquad filter.
 
-Other than that one minor nit everything looks good.
+> Datasheet: http://www.ti.com/lit/gpn/tas5504
+
+Yeah, I checked that it's not a problem for this codec before replying.
+I'd imagine that other usages of this sort of large register would be
+for similar things and therefore OK with the current implementation.
