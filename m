@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Switch DAPM to use of standard DEBUG
-	macro
-Date: Mon,  7 Jul 2008 19:26:03 +0100
-Message-ID: <1215455164-29019-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: 1.0.16->1.0.17 regression for some HDA NVidia's
+Date: Tue, 08 Jul 2008 00:31:43 +0300
+Message-ID: <48728B3F.4070100@pardus.org.tr>
+References: <4870F039.8020207@pardus.org.tr> <s5hvdzhvg44.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 55481246A5
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 298D124708
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jul 2008 20:26:07 +0200 (CEST)
+	Mon,  7 Jul 2008 23:31:18 +0200 (CEST)
+In-Reply-To: <s5hvdzhvg44.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,96 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-DAPM contains debug output controlled by a DAPM_DEBUG macro. Change this
-to be controlled by the standard DEBUG, dropping the custom dbg() macro
-as we go.
-
-Also fix the error printed when configuring an unknown pin to be an
-unconditionally displayed error rather than debug output.
-
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |   22 ++++++++++------------
- 1 files changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 94296b5..d18ebc6 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -45,13 +45,10 @@
- #include <sound/initval.h>
- 
- /* debug */
--#define DAPM_DEBUG 0
--#if DAPM_DEBUG
-+#ifdef DEBUG
- #define dump_dapm(codec, action) dbg_dump_dapm(codec, action)
--#define dbg(format, arg...) printk(format, ## arg)
- #else
- #define dump_dapm(codec, action)
--#define dbg(format, arg...)
- #endif
- 
- /* dapm power sequences - make this per codec in the future */
-@@ -233,7 +230,8 @@ static int dapm_update_bits(struct snd_soc_dapm_widget *widget)
- 		snd_soc_write(codec, widget->reg, new);
- 		pop_wait();
- 	}
--	dbg("reg %x old %x new %x change %d\n", widget->reg, old, new, change);
-+	pr_debug("reg %x old %x new %x change %d\n", widget->reg,
-+		 old, new, change);
- 	return change;
- }
- 
-@@ -591,8 +589,8 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 			/* call any power change event handlers */
- 			if (power_change) {
- 				if (w->event) {
--					dbg("power %s event for %s flags %x\n",
--						w->power ? "on" : "off", w->name, w->event_flags);
-+					pr_debug("power %s event for %s flags %x\n",
-+						 w->power ? "on" : "off", w->name, w->event_flags);
- 					if (power) {
- 						/* power up event */
- 						if (w->event_flags & SND_SOC_DAPM_PRE_PMU) {
-@@ -634,7 +632,7 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 	return ret;
- }
- 
--#if DAPM_DEBUG
-+#ifdef DEBUG
- static void dbg_dump_dapm(struct snd_soc_codec* codec, const char *action)
- {
- 	struct snd_soc_dapm_widget *w;
-@@ -887,13 +885,13 @@ static int snd_soc_dapm_set_pin(struct snd_soc_codec *codec,
- 
- 	list_for_each_entry(w, &codec->dapm_widgets, list) {
- 		if (!strcmp(w->name, pin)) {
--			dbg("dapm: %s: pin %s\n", codec->name, pin);
-+			pr_debug("dapm: %s: pin %s\n", codec->name, pin);
- 			w->connected = status;
- 			return 0;
- 		}
- 	}
- 
--	dbg("dapm: %s: configuring unknown pin %s\n", codec->name, pin);
-+	pr_err("dapm: %s: configuring unknown pin %s\n", codec->name, pin);
- 	return -EINVAL;
- }
- 
-@@ -1397,8 +1395,8 @@ int snd_soc_dapm_stream_event(struct snd_soc_codec *codec,
- 	{
- 		if (!w->sname)
- 			continue;
--		dbg("widget %s\n %s stream %s event %d\n", w->name, w->sname,
--			stream, event);
-+		pr_debug("widget %s\n %s stream %s event %d\n",
-+			 w->name, w->sname, stream, event);
- 		if (strstr(w->sname, stream)) {
- 			switch(event) {
- 			case SND_SOC_DAPM_STREAM_START:
--- 
-1.5.6
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFN1biwgMDYgSnVsIDIwMDggMTk6MTg6MDEgKzAzMDAs
+Cj4gT3phbiDDh2HEn2xheWFuIHdyb3RlOgo+ICAgCj4+IEV2ZXJ5dGhpbmcgc2VlbXMgT0sgd2l0
+aCB0aG9zZSBvbmJvYXJkIGF1ZGlvIGNoaXBzZXRzIGJ1dCB0aGVyZSdzIAo+PiBhYnNvbHV0ZWx5
+IG5vIHNvdW5kLgo+PiBXZSBoYXZlIDIgYnVnIHJlcG9ydHMgb24gb3VyIGJ1ZyB0cmFja2luZyBz
+eXN0ZW0gaW5kaWNhdGluZyB0aGlzIAo+PiByZWdyZXNzaW9uIGZvciBNQ1A1MSwgTUNQNjEgYW5k
+IE1DUDczLgo+Pgo+PiBIZXJlIGFyZSB0aGUgVVJMJ3MgZm9yIGFsc2EtaW5mby5zaCBvdXRwdXQn
+czoKPj4KPj4gTUNQNTE6IGh0dHA6Ly9wYXN0ZWJpbi5jYS8xMDYyNDE4Cj4+IE1DUDYxOiBodHRw
+Oi8vcGFzdGViaW4uY2EvMTA1ODQ4Mgo+PiBNQ1A3MzogaHR0cDovL3Bhc3RlYmluLmNhLzEwNTgz
+MTkKPj4KPj4gVGhvc2UgdXNlcnMgaGF2ZSByZWNlbnRseSByZXBvcnRlZCB0aGF0IGRvd25ncmFk
+aW5nIHRvIDEuMC4xNiBzZXJpZXMgCj4+IHNvbHZlcyB0aGUgcHJvYmxlbS4KPj4gICAgIAo+Cj4g
+Q291bGQgeW91IHJ1biBhbHNhLWluZm8uc2ggb24gMS4wLjE2LCB0b28/ICBUaGVuIHdlIGNhbiBj
+b21wYXJlCj4gYmV0d2VlbiB3b3JraW5nIGFuZCBub24td29ya2luZyBzdGF0ZXMuCj4KPgo+IHRo
+YW5rcywKPgo+IFRha2FzaGkKPiAgIApIaSwKCkkndmUgYWxzbyBlbnRlcmVkIGEgYnVnIHJlcG9y
+dCBmb3IgdGhpcyBwcm9ibGVtIHdoaWNoIGluY2x1ZGVzIHRoZSB0d28gCm91dHB1dHM6CgpodHRw
+czovL2J1Z3RyYWNrLmFsc2EtcHJvamVjdC5vcmcvYWxzYS1idWcvdmlldy5waHA/aWQ9NDAzOAoK
+VGhhbmtzLgoKLS0gCgpPemFuIMOHYcSfbGF5YW4KPG96YW5fYXRfcGFyZHVzLm9yZy50cj4KCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
