@@ -1,20 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASOC: codec_reg_show and variable length registers
-Date: Mon, 7 Jul 2008 12:44:18 +0100
-Message-ID: <20080707114417.GC19240@rakim.wolfsonmicro.main>
-References: <9e4733910807050637p6583ae25m592aca4c5728a4d3@mail.gmail.com>
-	<20080705230331.GA10301@sirena.org.uk>
-	<9e4733910807051743w62f37b54nd18bb21a3475f5bf@mail.gmail.com>
+Subject: Re: [PATCH] PalmTX aSoC sound support
+Date: Mon, 7 Jul 2008 13:29:25 +0100
+Message-ID: <20080707122925.GD19240@rakim.wolfsonmicro.main>
+References: <200807042126.29154.marek.vasut@gmail.com>
+	<20080704202615.GB20719@sirena.org.uk>
+	<200807050019.08444.marek.vasut@gmail.com>
+	<200807050717.41965.marek.vasut@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28A1A24573
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 53EA024562
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jul 2008 13:44:19 +0200 (CEST)
+	Mon,  7 Jul 2008 14:29:27 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <9e4733910807051743w62f37b54nd18bb21a3475f5bf@mail.gmail.com>
+In-Reply-To: <200807050717.41965.marek.vasut@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: ALSA-devel <alsa-devel@alsa-project.org>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 05, 2008 at 08:43:30PM -0400, Jon Smirl wrote:
+On Sat, Jul 05, 2008 at 07:17:41AM +0200, Marek Vasut wrote:
 
-> The big registers are arrays. For example register 0x41 is 32 bytes.
-> It is an array of eight 32b float gains for that channel's mixer
-> inputs.
+> even better version of the previous one
 
-> Or register 0x51 - 20 bytes, five 32b floats describing a biquad filter.
+> Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
 
-> Datasheet: http://www.ti.com/lit/gpn/tas5504
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Yeah, I checked that it's not a problem for this codec before replying.
-I'd imagine that other usages of this sort of large register would be
-for similar things and therefore OK with the current implementation.
+It might be best to merge this via the ARM tree since it depends on the
+machine support which is still pending but the Kconfig should prevent
+anyone actually trying to build it until that happens.
