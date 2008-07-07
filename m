@@ -1,18 +1,18 @@
 From: Alan Horstmann <gineera@aspect135.co.uk>
 Subject: Re: snd_pcm_writei() -last value sustained
-Date: Mon, 7 Jul 2008 14:53:35 +0100
-Message-ID: <200807071453.35353.gineera@aspect135.co.uk>
+Date: Mon, 7 Jul 2008 14:55:32 +0100
+Message-ID: <200807071455.32137.gineera@aspect135.co.uk>
 References: <200807040938.53662.gineera@aspect135.co.uk>
+	<200807071453.35353.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_UBicI6lBkMWgQAw"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.talktalk.net (smtp-out-4.talktalk.net [62.24.128.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6FA7245CA
+	by alsa0.perex.cz (Postfix) with ESMTP id 46F7D245CA
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jul 2008 15:37:29 +0200 (CEST)
-In-Reply-To: <200807040938.53662.gineera@aspect135.co.uk>
-Content-Disposition: inline
+	Mon,  7 Jul 2008 15:39:23 +0200 (CEST)
+In-Reply-To: <200807071453.35353.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,59 +26,95 @@ To: ALSA devel <alsa-devel@alsa-project.org>
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 04 July 2008 09:38, I wrote:
-> Working on an app I am seeing several strange effects, and this is one of
-> them.
->
-> It can be demonstrated with the pcm.c example program, and I have attempted
-> to attach a small shot of Audacity capturing the effect.
->
-> After writing to the pcm with snd_pcm_writei() a certain amount of data (I
-> have pcm.c doing 2 periods) the value captured from the soundcard remains
-> at the last value thereafter; clearly this card doesn't have DC elimination
-> or this would not be seen.
->
-> The sound card is ice1712 (DMX6fire); I had always noticed the PCM meters
-> in envy24control often stayed high if something like XMMS was stopped or
-> paused during play, but thought it a metering fault.  Now it appears to be
-> actual pcm value that 'gets stuck'.
->
-> Close examination with Audacity shows it is in fact the last-but-one value
-> that is sustained.
->
-> Is this expected behaviour, configuration fault, driver bug or other
-> problem? I had expected that after the block of data had been written out
-> as audio the signal would return to zero straightaway.  Can anyone give me
-> any clues?
 
-This seems to be an issue with the ice1712 driver: it does not occur with 
-au8820 device at all.
-Note that all the results reported here are using pcm.c, not any other app 
-code at all, and correspond to effects seen in normal usage over the past 
-couple of years.
+--Boundary-00=_UBicI6lBkMWgQAw
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I have very littlle idea about the inner workings of alsa drivers, but notice 
-that in
-	snd_ice1712_pro_trigger()
-the effect of SNDRV_PCM_TRIGGER_STOP is to set the envy24 chip play bit off, 
-which I would expect to essentially freeze the cards playback operation.  
-Could that be why?
+On Monday 07 July 2008 14:53, I wrote:
+> The attached shot shows existing sine data in the space, except for the
+> last-but-one sample being zero, and shows that the output ends up at zero.
 
-My tests have involved adding to pcm.c (write method) firstly to limit the 
-number of periods played, set to 1.  Then I re-use the data space, writing 
-various waveforms including a ramp, or individual data points, before writei 
-another period from the start.  It can be clearly demonstrated that setting 
-the last-but one sample for a particular channel sets the output to zero 
-long-term.  This does not happen with the last sample.  Otherwise it remains 
-forever at the last-but-one sample value.
+(snip)
 
-The attached shot shows existing sine data in the space, except for the 
-last-but-one sample being zero, and shows that the output ends up at zero.
+> Actually, I've attached the shot to subsequent email in case it would cause
+> this email to be blocked.
 
-Can anyone confirm this looks like a flaw in the driver, or am I using it 
-wrongly etc?
+Attached here.
 
 Alan
 
-Actually, I've attached the shot to subsequent email in case it would cause 
-this email to be blocked.
+--Boundary-00=_UBicI6lBkMWgQAw
+Content-Type: image/png;
+  name="Last-but-one-zeroing-pcmex-ice1712.png"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="Last-but-one-zeroing-pcmex-ice1712.png"
+
+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
+
+--Boundary-00=_UBicI6lBkMWgQAw
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--Boundary-00=_UBicI6lBkMWgQAw--
