@@ -1,7 +1,7 @@
 From: Manuel Lauss <mano@roarinelk.homelinux.net>
 Subject: Re: ASoC: Au12x0/Au1550 PSC Audio support.
-Date: Mon, 7 Jul 2008 19:15:35 +0200
-Message-ID: <20080707171535.GA29477@roarinelk.homelinux.net>
+Date: Mon, 7 Jul 2008 19:38:12 +0200
+Message-ID: <20080707173812.GA29718@roarinelk.homelinux.net>
 References: <20080703073309.GA24116@roarinelk.homelinux.net>
 	<1215077359.4882.115.camel@localhost.localdomain>
 	<20080703095344.GA24177@roarinelk.homelinux.net>
@@ -17,9 +17,9 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
 	[217.175.205.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15A1B24666
+	by alsa0.perex.cz (Postfix) with ESMTP id 52A5224677
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jul 2008 19:15:36 +0200 (CEST)
+	Mon,  7 Jul 2008 19:38:13 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <1215446996.4882.191.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -35,57 +35,17 @@ To: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Liam, Takashi,
+Hi again,
 
-On Mon, Jul 07, 2008 at 05:09:56PM +0100, Liam Girdwood wrote:
-> On Mon, 2008-07-07 at 18:05 +0200, Takashi Iwai wrote:
-> > At Fri, 04 Jul 2008 18:36:56 +0100,
-> > Liam Girdwood wrote:
-> > > 
-> > > On Fri, 2008-07-04 at 18:24 +0200, Manuel Lauss wrote:
-> > > > Hello Takashi,
-> > > > 
-> > > > Takashi Iwai wrote:
-> > > > > 
-> > > > > Shall I apply this one?  At a quick glance, the patch looks OK.
-> > > > 
-> > > > I certainly have no objections, but I intended to wait for ASoCv2 to hit
-> > > > mainline, convert the drivers to it, then (re)submit. There's still a lot
-> > > > to be done IMO (it has never been tested with preemption, i2s bitclk master
-> > > > mode is untested, ...)
-> > > > 
-> > > 
-> > > Please apply.
-> > > 
-> > > Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-> > > 
-> > > Btw, I've now started sending patches for v2 (although I seem to have
-> > > sent a little extra in the last patch ) ;)
-> > 
-> > Manuel's patch can't be applied cleanly to the latest ALSA tree.
-> > And I applied Liam's patches right now, so there must be more conflicts
-> > (e.g. snd_soc_cpu_dai replacement).
-> > 
-> 
-> My bad ;)
-> 
-> > Manuel, could you regenerate the patch against the following tree?
-> >     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-> 
-> 
-> Manuel, I'll fix the Au1xx and resubmit with the DAI changes. I have
-> another pending change wrt DAI and will queue the Aux1xx after this.
+[...]
 
-Hold on a sec, I've prepared a new patch which fixes a few smaller issues
-(most notably it no longer breaks the OSS Au1550_ac97 driver [not that it
-matters as it is broken anyway], it is now checkpatch clean and fixes an
-AC97 issue wrt. simultaneous playback and capture).
+the previous patch contained a bug in the I2S part, here's a new one.
 
-Find it below,
 Thanks!
 	Manuel Lauss
 
----
+--- 
+
 From: Manuel Lauss <mano@roarinelk.homelinux.net>
 
 Audio for Au12x0/Au1550 PSCs in AC97 and I2S mode, for ASoC v1 framework.
@@ -103,9 +63,9 @@ Signed-off-by: Manuel Lauss <mano@roarinelk.homelinux.net>
  sound/soc/au1x/dbdma2.c                   |  421 +++++++++++++++++++++++++++++
  sound/soc/au1x/psc-ac97.c                 |  385 ++++++++++++++++++++++++++
  sound/soc/au1x/psc-i2s.c                  |  413 ++++++++++++++++++++++++++++
- sound/soc/au1x/psc.h                      |   54 ++++
+ sound/soc/au1x/psc.h                      |   53 ++++
  sound/soc/au1x/sample-ac97.c              |  144 ++++++++++
- 10 files changed, 1475 insertions(+), 12 deletions(-)
+ 10 files changed, 1474 insertions(+), 12 deletions(-)
  create mode 100644 sound/soc/au1x/Kconfig
  create mode 100644 sound/soc/au1x/Makefile
  create mode 100644 sound/soc/au1x/dbdma2.c
@@ -1046,7 +1006,7 @@ index 0000000..dc7c437
 +MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
 diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
 new file mode 100644
-index 0000000..a2f4b71
+index 0000000..0af9683
 --- /dev/null
 +++ b/sound/soc/au1x/psc-i2s.c
 @@ -0,0 +1,413 @@
@@ -1186,7 +1146,7 @@ index 0000000..a2f4b71
 +	} else {
 +		/* set sample bitdepth */
 +		pscdata->cfg &= ~(0x1f << 4);
-+		pscdata->cfg |= PSC_I2SCFG_SET_LEN(params->msbits - 1);
++		pscdata->cfg |= PSC_I2SCFG_SET_LEN(params->msbits);
 +		/* remember current rate for other stream */
 +		pscdata->rate = params_rate(params);
 +	}
@@ -1465,10 +1425,10 @@ index 0000000..a2f4b71
 +MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
 diff --git a/sound/soc/au1x/psc.h b/sound/soc/au1x/psc.h
 new file mode 100644
-index 0000000..2232972
+index 0000000..85a0540
 --- /dev/null
 +++ b/sound/soc/au1x/psc.h
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,53 @@
 +/*
 + * Au12x0/Au1550 PSC ALSA ASoC audio support.
 + *
@@ -1494,13 +1454,12 @@ index 0000000..2232972
 +
 +struct au1xpsc_audio_data {
 +	void __iomem *mmio;
-+	int irq;
-+	struct resource *ioarea;
 +
 +	unsigned long cfg;
 +	unsigned long rate;
 +
 +	unsigned long pm[2];
++	struct resource *ioarea;
 +};
 +
 +#define PCM_TX	0
