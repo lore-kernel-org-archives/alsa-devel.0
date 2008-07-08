@@ -1,16 +1,16 @@
 From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: [PATCH 01/02] asoc: core - add Digital Audio Interface
-	(DAI)	control functions.
-Date: Tue, 08 Jul 2008 13:19:13 +0100
-Message-ID: <1215519553.4882.208.camel@localhost.localdomain>
+Subject: [PATCH 02/02] asoc: machines - add Digital Audio
+	Interface (DAI)	control functions.
+Date: Tue, 08 Jul 2008 13:19:18 +0100
+Message-ID: <1215519558.4882.209.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C63C9243B8
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A93A7243BD
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jul 2008 14:19:14 +0200 (CEST)
+	Tue,  8 Jul 2008 14:19:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,224 +26,506 @@ List-Id: alsa-devel@alsa-project.org
 
 This patch adds several functions for DAI control and config
 and replaces the current method of calling function pointers within
-the DAI struct.
+the DAI struct within the machine drivers.
 
 Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |   21 ++++++++
- sound/soc/soc-core.c |  140 +++++++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 153 insertions(+), 8 deletions(-)
+ sound/soc/at32/playpaq_wm8510.c    |   16 ++++-----
+ sound/soc/at91/eti_b1_wm8731.c     |   18 +++++-----
+ sound/soc/davinci/davinci-evm.c    |    6 ++--
+ sound/soc/fsl/mpc8610_hpcd.c       |   58 +++++++++++++++---------------------
+ sound/soc/omap/n810.c              |    6 ++--
+ sound/soc/pxa/corgi.c              |    8 ++--
+ sound/soc/pxa/poodle.c             |    8 ++--
+ sound/soc/pxa/spitz.c              |    8 ++--
+ sound/soc/s3c24xx/neo1973_wm8753.c |   26 ++++++++--------
+ 9 files changed, 71 insertions(+), 83 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 778e57e..1890d87 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -256,6 +256,27 @@ int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
- 	struct snd_ac97_bus_ops *ops, int num);
- void snd_soc_free_ac97_codec(struct snd_soc_codec *codec);
+diff --git a/sound/soc/at32/playpaq_wm8510.c b/sound/soc/at32/playpaq_wm8510.c
+index 18ac7d7..fd62f25 100644
+--- a/sound/soc/at32/playpaq_wm8510.c
++++ b/sound/soc/at32/playpaq_wm8510.c
+@@ -210,14 +210,14 @@ static int playpaq_wm8510_hw_params(struct snd_pcm_substream *substream,
+ 	/*
+ 	 * set CPU and CODEC DAI configuration
+ 	 */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai, fmt);
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
+ 	if (ret < 0) {
+ 		pr_warning("playpaq_wm8510: "
+ 			   "Failed to set CODEC DAI format (%d)\n",
+ 			   ret);
+ 		return ret;
+ 	}
+-	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, fmt);
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
+ 	if (ret < 0) {
+ 		pr_warning("playpaq_wm8510: "
+ 			   "Failed to set CPU DAI format (%d)\n",
+@@ -233,14 +233,13 @@ static int playpaq_wm8510_hw_params(struct snd_pcm_substream *substream,
+ 	cd = playpaq_wm8510_calc_ssc_clock(params, cpu_dai);
+ 	pr_debug("playpaq_wm8510: cmr_div = %d, period = %d\n",
+ 		 cd.cmr_div, cd.period);
+-	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai,
+-					  AT32_SSC_CMR_DIV, cd.cmr_div);
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, AT32_SSC_CMR_DIV, cd.cmr_div);
+ 	if (ret < 0) {
+ 		pr_warning("playpaq_wm8510: Failed to set CPU CMR_DIV (%d)\n",
+ 			   ret);
+ 		return ret;
+ 	}
+-	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, AT32_SSC_TCMR_PERIOD,
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, AT32_SSC_TCMR_PERIOD,
+ 					  cd.period);
+ 	if (ret < 0) {
+ 		pr_warning("playpaq_wm8510: "
+@@ -260,7 +259,7 @@ static int playpaq_wm8510_hw_params(struct snd_pcm_substream *substream,
  
-+/* Digital Audio Interface clocking API.*/
-+int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-+	unsigned int freq, int dir);
-+
-+int snd_soc_dai_set_clkdiv(struct snd_soc_dai *dai,
-+	int div_id, int div);
-+
-+int snd_soc_dai_set_pll(struct snd_soc_dai *dai,
-+	int pll_id, unsigned int freq_in, unsigned int freq_out);
-+
-+/* Digital Audio interface formatting */
-+int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt);
-+
-+int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
-+	unsigned int mask, int slots);
-+
-+int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
-+
-+/* Digital Audio Interface mute */
-+int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute);
-+
- /*
-  *Controls
-  */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4d626b4..83f1190 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -434,8 +434,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 		else {
- 			codec_dai->pop_wait = 0;
- 			cancel_delayed_work(&socdev->delayed_work);
--			if (codec_dai->dai_ops.digital_mute)
--				codec_dai->dai_ops.digital_mute(codec_dai, 0);
-+			snd_soc_dai_digital_mute(codec_dai, 0);
- 		}
- 	} else {
- 		/* no delayed work - do we need to power up codec */
-@@ -454,8 +453,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 					SND_SOC_DAPM_STREAM_START);
  
- 			snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_ON);
--			if (codec_dai->dai_ops.digital_mute)
--				codec_dai->dai_ops.digital_mute(codec_dai, 0);
-+			snd_soc_dai_digital_mute(codec_dai, 0);
+ #if !defined CONFIG_SND_AT32_SOC_PLAYPAQ_SLAVE
+-	ret = codec_dai->dai_ops.set_clkdiv(codec_dai, WM8510_BCLKDIV, bclk);
++	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8510_BCLKDIV, bclk);
+ 	if (ret < 0) {
+ 		pr_warning
+ 		    ("playpaq_wm8510: Failed to set CODEC DAI BCLKDIV (%d)\n",
+@@ -270,7 +269,7 @@ static int playpaq_wm8510_hw_params(struct snd_pcm_substream *substream,
+ #endif /* CONFIG_SND_AT32_SOC_PLAYPAQ_SLAVE */
  
- 		} else {
- 			/* codec already powered - power on widgets */
-@@ -467,8 +465,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 				snd_soc_dapm_stream_event(codec,
- 					codec_dai->capture.stream_name,
- 					SND_SOC_DAPM_STREAM_START);
--			if (codec_dai->dai_ops.digital_mute)
--				codec_dai->dai_ops.digital_mute(codec_dai, 0);
-+
-+			snd_soc_dai_digital_mute(codec_dai, 0);
- 		}
+ 
+-	ret = codec_dai->dai_ops.set_pll(codec_dai, 0,
++	ret = snd_soc_dai_set_pll(codec_dai, 0,
+ 					 clk_get_rate(CODEC_CLK), pll_out);
+ 	if (ret < 0) {
+ 		pr_warning("playpaq_wm8510: Failed to set CODEC DAI PLL (%d)\n",
+@@ -279,8 +278,7 @@ static int playpaq_wm8510_hw_params(struct snd_pcm_substream *substream,
  	}
  
-@@ -566,8 +564,8 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 	mutex_lock(&pcm_mutex);
  
- 	/* apply codec digital mute */
--	if (!codec->active && codec_dai->dai_ops.digital_mute)
--		codec_dai->dai_ops.digital_mute(codec_dai, 1);
-+	if (!codec->active)
-+		snd_soc_dai_digital_mute(codec_dai, 1);
+-	ret = codec_dai->dai_ops.set_clkdiv(codec_dai,
+-					    WM8510_MCLKDIV, mclk_div);
++	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8510_MCLKDIV, mclk_div);
+ 	if (ret < 0) {
+ 		pr_warning("playpaq_wm8510: Failed to set CODEC MCLKDIV (%d)\n",
+ 			   ret);
+diff --git a/sound/soc/at91/eti_b1_wm8731.c b/sound/soc/at91/eti_b1_wm8731.c
+index 9d42139..d532de9 100644
+--- a/sound/soc/at91/eti_b1_wm8731.c
++++ b/sound/soc/at91/eti_b1_wm8731.c
+@@ -58,13 +58,13 @@ static int eti_b1_startup(struct snd_pcm_substream *substream)
+ 	int ret;
  
- 	/* free any machine hw params */
- 	if (machine->ops && machine->ops->hw_free)
-@@ -1703,6 +1701,132 @@ int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
+ 	/* cpu clock is the AT91 master clock sent to the SSC */
+-	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, AT91_SYSCLK_MCK,
++	ret = snd_soc_dai_set_sysclk(cpu_dai, AT91_SYSCLK_MCK,
+ 		60000000, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* codec system clock is supplied by PCK1, set to 12MHz */
+-	ret = codec_dai->dai_ops.set_sysclk(codec_dai, WM8731_SYSCLK,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK,
+ 		12000000, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+@@ -96,13 +96,13 @@ static int eti_b1_hw_params(struct snd_pcm_substream *substream,
+ 	int cmr_div, period;
+ 
+ 	/* set codec DAI configuration */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set cpu DAI configuration */
+-	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+@@ -141,17 +141,17 @@ static int eti_b1_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* set the MCK divider for BCLK */
+-	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, AT91SSC_CMR_DIV, cmr_div);
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, AT91SSC_CMR_DIV, cmr_div);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		/* set the BCLK divider for DACLRC */
+-		ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai,
++		ret = snd_soc_dai_set_clkdiv(cpu_dai,
+ 						AT91SSC_TCMR_PERIOD, period);
+ 	} else {
+ 		/* set the BCLK divider for ADCLRC */
+-		ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai,
++		ret = snd_soc_dai_set_clkdiv(cpu_dai,
+ 						AT91SSC_RCMR_PERIOD, period);
+ 	}
+ 	if (ret < 0)
+@@ -163,13 +163,13 @@ static int eti_b1_hw_params(struct snd_pcm_substream *substream,
+ 	 */
+ 
+ 	/* set codec DAI configuration */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set cpu DAI configuration */
+-	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 4249e6a..5e2c306 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -38,19 +38,19 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 	int ret = 0;
+ 
+ 	/* set codec DAI configuration */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+ 					 SND_SOC_DAIFMT_CBM_CFM);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set cpu DAI configuration */
+-	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_CBM_CFM |
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBM_CFM |
+ 				       SND_SOC_DAIFMT_IB_NF);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the codec system clock */
+-	ret = codec_dai->dai_ops.set_sysclk(codec_dai, 0, EVM_CODEC_CLOCK,
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, EVM_CODEC_CLOCK,
+ 					    SND_SOC_CLOCK_OUT);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index 59d7e49..4bdc9d8 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -103,55 +103,45 @@ static int mpc8610_hpcd_startup(struct snd_pcm_substream *substream)
+ 	int ret = 0;
+ 
+ 	/* Tell the CPU driver what the serial protocol is. */
+-	if (cpu_dai->dai_ops.set_fmt) {
+-		ret = cpu_dai->dai_ops.set_fmt(cpu_dai,
+-			machine_data->dai_format);
+-		if (ret < 0) {
+-			dev_err(substream->pcm->card->dev,
+-				"could not set CPU driver audio format\n");
+-			return ret;
+-		}
++	ret = snd_soc_dai_set_fmt(cpu_dai, machine_data->dai_format);
++	if (ret < 0) {
++		dev_err(substream->pcm->card->dev,
++			"could not set CPU driver audio format\n");
++		return ret;
+ 	}
+ 
+ 	/* Tell the codec driver what the serial protocol is. */
+-	if (codec_dai->dai_ops.set_fmt) {
+-		ret = codec_dai->dai_ops.set_fmt(codec_dai,
+-			machine_data->dai_format);
+-		if (ret < 0) {
+-			dev_err(substream->pcm->card->dev,
+-				"could not set codec driver audio format\n");
+-			return ret;
+-		}
++	ret = snd_soc_dai_set_fmt(codec_dai, machine_data->dai_format);
++	if (ret < 0) {
++		dev_err(substream->pcm->card->dev,
++			"could not set codec driver audio format\n");
++		return ret;
+ 	}
+ 
+ 	/*
+ 	 * Tell the CPU driver what the clock frequency is, and whether it's a
+ 	 * slave or master.
+ 	 */
+-	if (cpu_dai->dai_ops.set_sysclk) {
+-		ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, 0,
+-			machine_data->clk_frequency,
+-			machine_data->cpu_clk_direction);
+-		if (ret < 0) {
+-			dev_err(substream->pcm->card->dev,
+-				"could not set CPU driver clock parameters\n");
+-			return ret;
+-		}
++	ret = snd_soc_dai_set_sysclk(cpu_dai, 0,
++					machine_data->clk_frequency,
++					machine_data->cpu_clk_direction);
++	if (ret < 0) {
++		dev_err(substream->pcm->card->dev,
++			"could not set CPU driver clock parameters\n");
++		return ret;
+ 	}
+ 
+ 	/*
+ 	 * Tell the codec driver what the MCLK frequency is, and whether it's
+ 	 * a slave or master.
+ 	 */
+-	if (codec_dai->dai_ops.set_sysclk) {
+-		ret = codec_dai->dai_ops.set_sysclk(codec_dai, 0,
+-			machine_data->clk_frequency,
+-			machine_data->codec_clk_direction);
+-		if (ret < 0) {
+-			dev_err(substream->pcm->card->dev,
+-				"could not set codec driver clock params\n");
+-			return ret;
+-		}
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
++					machine_data->clk_frequency,
++					machine_data->codec_clk_direction);
++	if (ret < 0) {
++		dev_err(substream->pcm->card->dev,
++			"could not set codec driver clock params\n");
++		return ret;
+ 	}
+ 
+ 	return 0;
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index d1233c0..e53c055 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -91,7 +91,7 @@ static int n810_hw_params(struct snd_pcm_substream *substream,
+ 	int err;
+ 
+ 	/* Set codec DAI configuration */
+-	err = codec_dai->dai_ops.set_fmt(codec_dai,
++	err = snd_soc_dai_set_fmt(codec_dai,
+ 					 SND_SOC_DAIFMT_I2S |
+ 					 SND_SOC_DAIFMT_NB_NF |
+ 					 SND_SOC_DAIFMT_CBM_CFM);
+@@ -99,7 +99,7 @@ static int n810_hw_params(struct snd_pcm_substream *substream,
+ 		return err;
+ 
+ 	/* Set cpu DAI configuration */
+-	err = cpu_dai->dai_ops.set_fmt(cpu_dai,
++	err = snd_soc_dai_set_fmt(cpu_dai,
+ 				       SND_SOC_DAIFMT_I2S |
+ 				       SND_SOC_DAIFMT_NB_NF |
+ 				       SND_SOC_DAIFMT_CBM_CFM);
+@@ -107,7 +107,7 @@ static int n810_hw_params(struct snd_pcm_substream *substream,
+ 		return err;
+ 
+ 	/* Set the codec system clock for DAC and ADC */
+-	err = codec_dai->dai_ops.set_sysclk(codec_dai, 0, 12000000,
++	err = snd_soc_dai_set_sysclk(codec_dai, 0, 12000000,
+ 					    SND_SOC_CLOCK_IN);
+ 
+ 	return err;
+diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+index 782afbf..c029446 100644
+--- a/sound/soc/pxa/corgi.c
++++ b/sound/soc/pxa/corgi.c
+@@ -143,25 +143,25 @@ static int corgi_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* set codec DAI configuration */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set cpu DAI configuration */
+-	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the codec system clock for DAC and ADC */
+-	ret = codec_dai->dai_ops.set_sysclk(codec_dai, WM8731_SYSCLK, clk,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK, clk,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the I2S system clock as input (unused) */
+-	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
++	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index ce25b6b..65a4e9a 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -122,25 +122,25 @@ static int poodle_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* set codec DAI configuration */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set cpu DAI configuration */
+-	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the codec system clock for DAC and ADC */
+-	ret = codec_dai->dai_ops.set_sysclk(codec_dai, WM8731_SYSCLK, clk,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK, clk,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the I2S system clock as input (unused) */
+-	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
++	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index fd1abc7..6438579 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -141,25 +141,25 @@ static int spitz_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* set codec DAI configuration */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set cpu DAI configuration */
+-	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the codec system clock for DAC and ADC */
+-	ret = codec_dai->dai_ops.set_sysclk(codec_dai, WM8750_SYSCLK, clk,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the I2S system clock as input (unused) */
+-	ret = cpu_dai->dai_ops.set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
++	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index 51a4ce3..4d7a9aa 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -108,44 +108,44 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* set codec DAI configuration */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai,
++	ret = snd_soc_dai_set_fmt(codec_dai,
+ 		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		SND_SOC_DAIFMT_CBM_CFM);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set cpu DAI configuration */
+-	ret = cpu_dai->dai_ops.set_fmt(cpu_dai,
++	ret = snd_soc_dai_set_fmt(cpu_dai,
+ 		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		SND_SOC_DAIFMT_CBM_CFM);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the codec system clock for DAC and ADC */
+-	ret = codec_dai->dai_ops.set_sysclk(codec_dai, WM8753_MCLK, pll_out,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_MCLK, pll_out,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set MCLK division for sample rate */
+-	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
+ 		S3C2410_IISMOD_32FS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set codec BCLK division for sample rate */
+-	ret = codec_dai->dai_ops.set_clkdiv(codec_dai, WM8753_BCLKDIV, bclk);
++	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_BCLKDIV, bclk);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set prescaler division for sample rate */
+-	ret = cpu_dai->dai_ops.set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
+ 		S3C24XX_PRESCALE(4, 4));
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* codec PLL input is PCLK/4 */
+-	ret = codec_dai->dai_ops.set_pll(codec_dai, WM8753_PLL1,
++	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL1,
+ 		iis_clkrate / 4, pll_out);
+ 	if (ret < 0)
+ 		return ret;
+@@ -161,7 +161,7 @@ static int neo1973_hifi_hw_free(struct snd_pcm_substream *substream)
+ 	DBG("Entered %s\n", __func__);
+ 
+ 	/* disable the PLL */
+-	return codec_dai->dai_ops.set_pll(codec_dai, WM8753_PLL1, 0, 0);
++	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0, 0);
  }
- EXPORT_SYMBOL_GPL(snd_soc_put_volsw_s8);
  
-+/**
-+ * snd_soc_dai_set_sysclk - configure DAI system or master clock.
-+ * @dai: DAI
-+ * @clk_id: DAI specific clock ID
-+ * @freq: new clock frequency in Hz
-+ * @dir: new clock direction - input/output.
-+ *
-+ * Configures the DAI master (MCLK) or system (SYSCLK) clocking.
-+ */
-+int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-+	unsigned int freq, int dir)
-+{
-+	if (dai->dai_ops.set_sysclk)
-+		return dai->dai_ops.set_sysclk(dai, clk_id, freq, dir);
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_set_sysclk);
-+
-+/**
-+ * snd_soc_dai_set_clkdiv - configure DAI clock dividers.
-+ * @dai: DAI
-+ * @clk_id: DAI specific clock divider ID
-+ * @div: new clock divisor.
-+ *
-+ * Configures the clock dividers. This is used to derive the best DAI bit and
-+ * frame clocks from the system or master clock. It's best to set the DAI bit
-+ * and frame clocks as low as possible to save system power.
-+ */
-+int snd_soc_dai_set_clkdiv(struct snd_soc_dai *dai,
-+	int div_id, int div)
-+{
-+	if (dai->dai_ops.set_clkdiv)
-+		return dai->dai_ops.set_clkdiv(dai, div_id, div);
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_set_clkdiv);
-+
-+/**
-+ * snd_soc_dai_set_pll - configure DAI PLL.
-+ * @dai: DAI
-+ * @pll_id: DAI specific PLL ID
-+ * @freq_in: PLL input clock frequency in Hz
-+ * @freq_out: requested PLL output clock frequency in Hz
-+ *
-+ * Configures and enables PLL to generate output clock based on input clock.
-+ */
-+int snd_soc_dai_set_pll(struct snd_soc_dai *dai,
-+	int pll_id, unsigned int freq_in, unsigned int freq_out)
-+{
-+	if (dai->dai_ops.set_pll)
-+		return dai->dai_ops.set_pll(dai, pll_id, freq_in, freq_out);
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_set_pll);
-+
-+/**
-+ * snd_soc_dai_set_fmt - configure DAI hardware audio format.
-+ * @dai: DAI
-+ * @clk_id: DAI specific clock ID
-+ * @fmt: SND_SOC_DAIFMT_ format value.
-+ *
-+ * Configures the DAI hardware format and clocking.
-+ */
-+int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	if (dai->dai_ops.set_fmt)
-+		return dai->dai_ops.set_fmt(dai, fmt);
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_set_fmt);
-+
-+/**
-+ * snd_soc_dai_set_tdm_slot - configure DAI TDM.
-+ * @dai: DAI
-+ * @mask: DAI specific mask representing used slots.
-+ * @slots: Number of slots in use.
-+ *
-+ * Configures a DAI for TDM operation. Both mask and slots are codec and DAI
-+ * specific.
-+ */
-+int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
-+	unsigned int mask, int slots)
-+{
-+	if (dai->dai_ops.set_sysclk)
-+		return dai->dai_ops.set_tdm_slot(dai, mask, slots);
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
-+
-+/**
-+ * snd_soc_dai_set_tristate - configure DAI system or master clock.
-+ * @dai: DAI
-+ * @tristate: tristate enable
-+ *
-+ * Tristates the DAI so that others can use it.
-+ */
-+int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
-+{
-+	if (dai->dai_ops.set_sysclk)
-+		return dai->dai_ops.set_tristate(dai, tristate);
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_set_tristate);
-+
-+/**
-+ * snd_soc_dai_digital_mute - configure DAI system or master clock.
-+ * @dai: DAI
-+ * @mute: mute enable
-+ *
-+ * Mutes the DAI DAC.
-+ */
-+int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	if (dai->dai_ops.digital_mute)
-+		return dai->dai_ops.digital_mute(dai, mute);
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
-+
- static int __devinit snd_soc_init(void)
- {
- 	printk(KERN_INFO "ASoC version %s\n", SND_SOC_VERSION);
+ /*
+@@ -194,24 +194,24 @@ static int neo1973_voice_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* todo: gg check mode (DSP_B) against CSR datasheet */
+ 	/* set codec DAI configuration */
+-	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
+ 		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set the codec system clock for DAC and ADC */
+-	ret = codec_dai->dai_ops.set_sysclk(codec_dai, WM8753_PCMCLK, 12288000,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_PCMCLK, 12288000,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* set codec PCM division for sample rate */
+-	ret = codec_dai->dai_ops.set_clkdiv(codec_dai, WM8753_PCMDIV, pcmdiv);
++	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_PCMDIV, pcmdiv);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	/* configue and enable PLL for 12.288MHz output */
+-	ret = codec_dai->dai_ops.set_pll(codec_dai, WM8753_PLL2,
++	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL2,
+ 		iis_clkrate / 4, 12288000);
+ 	if (ret < 0)
+ 		return ret;
+@@ -227,7 +227,7 @@ static int neo1973_voice_hw_free(struct snd_pcm_substream *substream)
+ 	DBG("Entered %s\n", __func__);
+ 
+ 	/* disable the PLL */
+-	return codec_dai->dai_ops.set_pll(codec_dai, WM8753_PLL2, 0, 0);
++	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0, 0);
+ }
+ 
+ static struct snd_soc_ops neo1973_voice_ops = {
 -- 
 1.5.4.2
