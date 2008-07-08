@@ -1,19 +1,18 @@
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH] Add initial support of Mitac mioa701 master
-	volume.
-Date: Tue,  8 Jul 2008 22:45:06 +0200
-Message-ID: <1215549906-14829-2-git-send-email-robert.jarzmik@free.fr>
+Subject: [PATCH] Add initial support of Mitac mioa701 device
+	SoC.
+Date: Tue,  8 Jul 2008 22:45:05 +0200
+Message-ID: <1215549906-14829-1-git-send-email-robert.jarzmik@free.fr>
 References: <87vdzgp0ue.fsf@free.fr>
-	<1215549906-14829-1-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp6-g19.free.fr (smtp6-g19.free.fr [212.27.42.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1756A244A3
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A1E024496
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jul 2008 22:45:09 +0200 (CEST)
-In-Reply-To: <1215549906-14829-1-git-send-email-robert.jarzmik@free.fr>
+	Tue,  8 Jul 2008 22:45:08 +0200 (CEST)
+In-Reply-To: <87vdzgp0ue.fsf@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,44 +26,77 @@ To: broonie@opensource.wolfsonmicro.com, liam.girdwood@wolfsonmicro.com, alsa-de
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Depending on the "Mio Mode" chosen, the master volume
-controls the widget volume/mute levels, providing userspace
-a unified vision of volume control (one control only).
+This machine driver enables sound functions on Mitac mio
+a701 smartphone. Build upon ASoC v2, it handles :
+ - rear speaker
+ - front speaker
+ - microphone
+ - GSM
 
-The master volume is adapted to smartphones because :
- - it only handles 2 sub-controls (left and right)
- - the generic code is split apart from mio specific code
- - it abstracts to userland audiopath within the chip
+A global "Mio Mode" switch is provided to cope with audio
+path setup. It ensures balance on audio chip line, which if
+not respected can produce a lot of heat and even fry the
+battery behind the wm9713 and the speaker amplificator.
+
+It doesn't cope with :
+ - headset jack (will be integrade after jack support has
+   hit ASoC v2)
+ - master volume control (depending on current Mio Mode,
+   will be submitted in a second patch)
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- sound/soc/pxa/Makefile             |    2 +-
- sound/soc/pxa/mioa701_masterctrl.c |  243 ++++++++++++++++++++++++++++++++++++
- sound/soc/pxa/mioa701_wm9713.c     |    7 +
- 3 files changed, 251 insertions(+), 1 deletions(-)
- create mode 100644 sound/soc/pxa/mioa701_masterctrl.c
+ sound/soc/pxa/Kconfig          |    9 +
+ sound/soc/pxa/Makefile         |    2 +
+ sound/soc/pxa/mioa701_wm9713.c |  639 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 650 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/pxa/mioa701_wm9713.c
 
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 7530227..ca60dec 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -139,3 +139,12 @@ config SND_PXA2XX_SOC_E800
+ 	help
+ 	  Say Y if you want to add support for SoC audio on the
+ 	  Toshiba e800 PDA
++
++config SND_PXA2XX_SOC_MIOA701
++        tristate "SoC Audio support for MIO A701"
++        depends on SND_PXA2XX_SOC
++        select SND_PXA2XX_SOC_AC97
++        select SND_SOC_WM9713
++        help
++          Say Y if you want to add support for SoC audio on the
++          MIO A701.
 diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
-index ce171c3..53134ba 100644
+index fd45a09..ce171c3 100644
 --- a/sound/soc/pxa/Makefile
 +++ b/sound/soc/pxa/Makefile
-@@ -21,7 +21,7 @@ snd-soc-spitz-objs := spitz.o
+@@ -21,6 +21,7 @@ snd-soc-spitz-objs := spitz.o
  snd-soc-amesom-tlv320-objs := amesom_tlv320.o
  snd-soc-magician-objs := magician.o
  snd-soc-h5000-objs := h5000.o
--snd-soc-mioa701-objs := mioa701_wm9713.o
-+snd-soc-mioa701-objs := mioa701_wm9713.o mioa701_masterctrl.o
++snd-soc-mioa701-objs := mioa701_wm9713.o
  snd-soc-mainstone-wm8753-objs := mainstone_wm8753.o
  snd-soc-mainstone-wm9713-objs := mainstone_wm9713.o
  snd-soc-mainstone-wm9712-objs := mainstone_wm9712.o
-diff --git a/sound/soc/pxa/mioa701_masterctrl.c b/sound/soc/pxa/mioa701_masterctrl.c
+@@ -34,6 +35,7 @@ obj-$(CONFIG_SND_PXA2XX_SOC_SPITZ) += snd-soc-spitz.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_AMESOM_TLV320) += snd-soc-amesom-tlv320.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_MAGICIAN) += snd-soc-magician.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_H5000) += snd-soc-h5000.o
++obj-$(CONFIG_SND_PXA2XX_SOC_MIOA701) += snd-soc-mioa701.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_MAINSTONE_WM8753) += snd-soc-mainstone-wm8753.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_MAINSTONE_WM9713) += snd-soc-mainstone-wm9713.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_MAINSTONE_WM9712) += snd-soc-mainstone-wm9712.o
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
 new file mode 100644
-index 0000000..92055c8
+index 0000000..4df42e0
 --- /dev/null
-+++ b/sound/soc/pxa/mioa701_masterctrl.c
-@@ -0,0 +1,243 @@
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -0,0 +1,639 @@
 +/*
-+ * Handles the Mitac mioa701 Master Volume Control
++ * Handles the Mitac mioa701 SoC system
 + *
 + * Copyright (C) 2008 Robert Jarzmik
 + *
@@ -83,34 +115,191 @@ index 0000000..92055c8
 + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 + *
 + */
-+#include <linux/vmalloc.h>
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/platform_device.h>
++
 +#include <sound/core.h>
++#include <sound/pcm.h>
 +#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++#include <sound/ac97_codec.h>
 +
-+#define MASTER_MAX_CTL 2
-+#define MAST2CARD(m) (((struct kctl_master_t *)m)->card)
-+#define KCTL2MAST(k) ((struct kctl_master_t *) k->private_data)
++#include <asm/arch/audio.h>
 +
-+struct kctl_master_t {
-+	unsigned int count;
-+	snd_ctl_elem_type_t type;
-+	char *names[MASTER_MAX_CTL];
-+	int nidx[MASTER_MAX_CTL];
-+	struct snd_soc_card *card;
++#include "pxa2xx-pcm.h"
++#include "../codecs/wm9713.h"
++
++#define ARRAY_AND_SIZE(x)	(x), ARRAY_SIZE(x)
++
++#define AC97_GPIO_PULL		0x58
++
++/* define the scenarios */
++#define MIO_AUDIO_OFF			0
++#define MIO_GSM_AUDIO_HANDSET		1
++#define MIO_GSM_AUDIO_HEADSET		2
++#define MIO_GSM_AUDIO_HANDSFREE		3
++#define MIO_GSM_AUDIO_BLUETOOTH		4
++#define MIO_STEREO_TO_SPEAKER		5
++#define MIO_STEREO_TO_HEADPHONES	6
++#define MIO_CAPTURE_HANDSET		7
++#define MIO_CAPTURE_HEADSET		8
++#define MIO_CAPTURE_BLUETOOTH		9
++
++static int mio_scenario = MIO_AUDIO_OFF;
++
++static int phone_stream_start(struct snd_soc_card *card);
++static int phone_stream_stop(struct snd_soc_card *card);
++
++struct mio_mixes_t {
++	char *mixname;
++	int  val;
 +};
 +
-+#define MVOL2(name1, idx1, name2, idx2) \
-+{	.count = 2, .names = { name1, name2 }, .nidx = { idx1, idx2 }, \
-+	.type = SNDRV_CTL_ELEM_TYPE_INTEGER, \
-+}
-+#define MMUTE2(name1, idx1, name2, idx2) \
-+{	.count = 2, .names = { name1, name2 }, .nidx = { idx1, idx2 }, \
-+	.type = SNDRV_CTL_ELEM_TYPE_BOOLEAN, \
-+}
-+#define MVOL2_DEFAULT MVOL2(NULL, 0, NULL, 0)
-+#define MMUTE2_DEFAULT MMUTE2(NULL, 0, NULL, 0)
++static const struct mio_mixes_t mixes_reset_all[] = {
++	/* left HP mixer */
++	{"Left HP Mixer PC Beep Playback Switch", 0},
++	{"Left HP Mixer Voice Playback Switch",	  0},
++	{"Left HP Mixer Aux Playback Switch",	  0},
++	{"Left HP Mixer Bypass Playback Switch",  0},
++	{"Left HP Mixer PCM Playback Switch",	  0},
++	{"Left HP Mixer MonoIn Playback Switch",  0},
++	{"Left HP Mixer Capture Headphone Mux",	  0},
 +
-+static struct snd_kcontrol *kctrl_byname(struct snd_soc_card *card, char *n)
++	/* right HP mixer */
++	{"Right HP Mixer PC Beep Playback Switch", 0},
++	{"Right HP Mixer Voice Playback Switch",   0},
++	{"Right HP Mixer Aux Playback Switch",	   0},
++	{"Right HP Mixer Bypass Playback Switch",  0},
++	{"Right HP Mixer PCM Playback Switch",	   0},
++	{"Right HP Mixer MonoIn Playback Switch",  0},
++	{"Right HP Mixer Capture Headphone Mux",   0},
++
++	/* speaker mixer */
++	{"Speaker Mixer PC Beep Playback Switch", 0},
++	{"Speaker Mixer Voice Playback Switch",	  0},
++	{"Speaker Mixer Aux Playback Switch",	  0},
++	{"Speaker Mixer Bypass Playback Switch",  0},
++	{"Speaker Mixer PCM Playback Switch",	  0},
++	{"Speaker Mixer MonoIn Playback Switch",  0},
++	{"Speaker Mixer Mic 1 Sidetone Switch",	  0},
++
++	/* mono mixer */
++	{"Mono Mixer PC Beep Playback Switch", 0},
++	{"Mono Mixer Voice Playback Switch",   0},
++	{"Mono Mixer Aux Playback Switch",     0},
++	{"Mono Mixer Bypass Playback Switch",  0},
++	{"Mono Mixer PCM Playback Switch",     0},
++	{"Mono Mixer Capture Mono Mux",	       0},
++	{"Mono Mixer MonoIn Playback Switch",  0},
++	{"Mono Mixer Mic 1 Sidetone Switch",   0},
++	{"Mono Playback Switch",	       0},
++
++	/* headphone muxers */
++	{"Left Headphone Out Mux", 0},
++	{"Right Headphone Out Mux", 0},
++
++	/* speaker muxer */
++	{"Left Speaker Out Mux", 0},
++	{"Right Speaker Out Mux", 0},
++
++	/* Out3 muxer */
++	{ "Out 3 Mux", 0},
++
++	{ NULL, 0 }
++};
++
++static const struct mio_mixes_t mixes_gsm_call_headset[] = {
++	/*
++	 * GSM Out to Headset HPL Path
++	 *   => PCBeep -> Headphone Mixer, Headphone Mixer -> HPL
++	 */
++	{ "Left HP Mixer PC Beep Playback Switch", 1 },
++	{ "Left Headphone Out Mux", 2 },
++	/*
++	 * GSM Out to Headset HPR Path
++	 *   => MonoIn -> Headphone Mixer, Headphone Mixer -> HPR
++	 */
++	{ "Right HP Mixer MonoIn Playback Switch" , 1 },
++	{ "Right Headphone Out Mux", 2 },
++	/*
++	 * LineL to GSM In
++	 * LineL -> MonoMixer, MonoMixer -> Mono, Unmute Mono Mixer
++	 */
++	{ "Mono Mixer Bypass Playback Switch",	1},
++	{ "Mono Out Mux", 2 },
++	{ "Mono Playback Switch", 1},
++	{ NULL, 0 }
++};
++
++static const struct mio_mixes_t mixes_gsm_call_handset[] = {
++	/*
++	 * GSM Out to Front Speaker HPL Path
++	 *   => PCBeep -> Headphone Mixer, Headphone Mixer -> HPL
++	 */
++	{ "Left HP Mixer PC Beep Playback Switch", 1 },
++	{ "Left Headphone Out Mux", 2 },
++	/*
++	 * GSM Out to Front Speaker Out3 Path
++	 *   => MonoIn -> Speaker Mixer, Speaker Mixer -> Inv1, Inv1 -> Out3
++	 */
++	{ "Speaker Mixer MonoIn Playback Switch" , 1 },
++	{ "DAC Inv Mux 1", 2 },
++	{ "Out 3 Mux", 2 },
++	/*
++	 * MIC1 to GSM In
++	 *   => MIC1 -> MICA, MICA -> Mono Mixer, Mono Mixer -> MONO,
++	 *      UnMute Mono Mixer
++	 */
++	{ "Mic A Source", 0 },
++	{ "Mono Mixer Mic 1 Sidetone Switch", 1 },
++	{ "Mono Out Mux", 2 },
++	{ "Mono Playback Switch", 1},
++	{ NULL, 0 }
++};
++
++static const struct mio_mixes_t mixes_gsm_call_handsfree[] = {
++	/*
++	 * GSM Out to Rear Speaker SPKL Path
++	 *   => PCBeep -> Speaker Mixer, Speaker Mixer -> Inv1, Inv1 -> SPKL
++	 */
++	{ "Speaker Mixer PC Beep Playback Switch", 1 },
++	{ "DAC Inv Mux 1", 2 },
++	{ "Left Speaker Out Mux", 4 },
++	/*
++	 * GSM Out to Rear Speaker SPKR Path
++	 *   => MonoIn -> Speaker Mixer, Speaker Mixer -> SPKR
++	 */
++	{ "Speaker Mixer MonoIn Playback Switch" , 1 },
++	{ "Right Speaker Out Mux", 3 },
++	/*
++	 * MIC1 to GSM In
++	 *   => MIC1 -> MICA, MICA -> Mono Mixer, Mono Mixer -> MONO,
++	 *      Unmute Mono Mixer
++	 */
++	{ "Mic A Source", 0 },
++	{ "Mono Mixer Mic 1 Sidetone Switch", 1 },
++	{ "Mono Out Mux", 2 },
++	{ "Mono Playback Switch", 1},
++	{ NULL, 0 }
++};
++
++static const struct mio_mixes_t mixes_stereo_to_rearspeaker[] = {
++	/*
++	 * PCM to Rear Speakers
++	 *   => PCM -> Speaker Mixer, Speaker Mixer -> Inv1, Inv1 -> SPKL,
++	 *      Speaker Mixer -> SPKR
++	 */
++	{ "Speaker Mixer PCM Playback Switch", 1},
++	{ "DAC Inv Mux 1", 2 },
++	{ "Left Speaker Out Mux", 4 },
++	{ "Right Speaker Out Mux", 3 },
++	{ NULL, 0 }
++};
++
++struct snd_kcontrol *mioa701_kctrl_byname(struct snd_soc_card *card, char *n)
 +{
 +	struct snd_ctl_elem_id rid;
 +
@@ -120,223 +309,430 @@ index 0000000..92055c8
 +	return snd_ctl_find_id(card->card, &rid);
 +}
 +
-+static int master_find(struct snd_soc_card *card, char *name,
-+		int *max, struct snd_kcontrol **kctl)
++void setup_muxers(struct snd_soc_card *card, const struct mio_mixes_t mixes[])
 +{
-+	struct snd_ctl_elem_info info;
-+	int rc;
++	int pos = 0;
++	struct snd_kcontrol *kctl;
++	struct snd_ctl_elem_value ucontrol;
++	char mname[44];
 +
-+	memset(&info, 0, sizeof(struct snd_ctl_elem_info));
-+	*kctl = NULL;
++	while (mixes[pos].mixname) {
++		memset(mname, 0, 44);
++		strncpy(mname, mixes[pos].mixname, 43);
++		kctl = mioa701_kctrl_byname(card, mname);
++		memset(&ucontrol, 0, sizeof(ucontrol));
++		if (kctl) {
++			kctl->get(kctl, &ucontrol);
++			ucontrol.value.enumerated.item[0] = mixes[pos].val;
++			kctl->put(kctl, &ucontrol);
++		}
++		pos++;
++	}
++}
 +
-+	if (name)
-+		*kctl = kctrl_byname(card, name);
++#define NB_ENDP ARRAY_SIZE(endpn)
++static int set_scenario_endpoints(struct snd_soc_card *card, int scenario)
++{
++	static char *endpn[] = { "Front Speaker", "Rear Speaker",
++				 "GSM Line Out", "GSM Line In",
++				 "Headset Mic", "Front Mic", "Headset" };
++	static const int typ_endps[][NB_ENDP] = {
++		{ 0, 0, 0, 0, 0, 0, 0 }, /* MIO_AUDIO_OFF		*/
++		{ 1, 0, 1, 1, 0, 1, 0 }, /* MIO_GSM_AUDIO_HANDSET	*/
++		{ 0, 0, 1, 1, 1, 0, 1 }, /* MIO_GSM_AUDIO_HEADSET	*/
++		{ 0, 1, 1, 1, 0, 1, 0 }, /* MIO_GSM_AUDIO_HANDSFREE*/
++		{ 0, 0, 1, 1, 0, 0, 0 }, /* MIO_GSM_AUDIO_BLUETOOTH*/
++		{ 0, 1, 0, 0, 0, 0, 0 }, /* MIO_STEREO_TO_SPEAKER	*/
++		{ 0, 0, 0, 0, 0, 0, 1 }, /* MIO_STEREO_TO_HEADPHONES	*/
++		{ 0, 0, 0, 0, 0, 1, 0 }, /* MIO_CAPTURE_HANDSET		*/
++		{ 0, 0, 0, 0, 1, 0, 0 }, /* MIO_CAPTURE_HEADSET		*/
++		{ 0, 0, 0, 0, 0, 0, 0 }, /* MIO_CAPTURE_BLUETOOTH	*/
++	};
++	const int *endps = typ_endps[scenario];
++	int i;
 +
-+	if (*kctl) {
-+		(*kctl)->info(*kctl, &info);
-+		*max = info.value.integer.max;
++	for (i = 0; i < NB_ENDP; i++)
++		if (endps[i])
++			snd_soc_dapm_enable_pin(card, endpn[i]);
++		else
++			snd_soc_dapm_disable_pin(card, endpn[i]);
++	snd_soc_dapm_sync(card);
++
++	return 0;
++}
++
++static int get_scenario(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = mio_scenario;
++	return 0;
++}
++
++static int isPhoneMode(int scenario)
++{
++	int onPhone = 0;
++
++	switch (scenario) {
++	case MIO_GSM_AUDIO_HANDSET:
++	case MIO_GSM_AUDIO_HEADSET:
++	case MIO_GSM_AUDIO_BLUETOOTH:
++	case MIO_GSM_AUDIO_HANDSFREE:
++		onPhone = 1;
 +	}
 +
-+	rc = (*kctl != NULL);
++	return onPhone;
++}
++
++static void switch_mio_mode(struct snd_soc_card *card, int new_scenario)
++{
++	int wasPhone = 0, willPhone = 0;
++
++	wasPhone  = isPhoneMode(mio_scenario);
++	willPhone = isPhoneMode(new_scenario);
++
++	mio_scenario = new_scenario;
++	set_scenario_endpoints(card, mio_scenario);
++
++	if (!wasPhone && willPhone)
++		phone_stream_start(card);
++	if (wasPhone && !willPhone)
++		phone_stream_stop(card);
++
++	setup_muxers(card, mixes_reset_all);
++	switch (mio_scenario) {
++	case MIO_STEREO_TO_SPEAKER:
++		setup_muxers(card, mixes_stereo_to_rearspeaker);
++		break;
++	case MIO_GSM_AUDIO_HANDSET:
++		setup_muxers(card, mixes_gsm_call_handset);
++		break;
++	case MIO_GSM_AUDIO_HANDSFREE:
++		setup_muxers(card, mixes_gsm_call_handsfree);
++		break;
++	case MIO_GSM_AUDIO_HEADSET:
++		setup_muxers(card, mixes_gsm_call_headset);
++		break;
++	default:
++		break;
++	}
++}
++
++static int set_scenario(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_card *card = snd_kcontrol_chip(kcontrol);
++
++	if (mio_scenario == ucontrol->value.integer.value[0])
++		return 0;
++
++	switch_mio_mode(card, ucontrol->value.integer.value[0]);
++	return 1;
++}
++
++static int phone_stream_start(struct snd_soc_card *card)
++{
++	snd_soc_dapm_stream_event(card, "AC97 HiFi",
++				  SND_SOC_DAPM_STREAM_START);
++	return 0;
++}
++
++static int phone_stream_stop(struct snd_soc_card *card)
++{
++	snd_soc_dapm_stream_event(card, "AC97 HiFi",
++				  SND_SOC_DAPM_STREAM_STOP);
++	return 0;
++}
++
++/* Use GPIO8 for rear speaker amplificator */
++static int rear_amp_power(struct snd_soc_codec *codec, int power)
++{
++	unsigned short reg;
++
++	if (power) {
++		reg = snd_soc_read(codec, AC97_GPIO_CFG);
++		snd_soc_write(codec, AC97_GPIO_CFG, reg | 0x0100);
++		reg = snd_soc_read(codec, AC97_GPIO_PULL);
++		snd_soc_write(codec, AC97_GPIO_PULL, reg | (1<<15));
++	} else {
++		reg = snd_soc_read(codec, AC97_GPIO_CFG);
++		snd_soc_write(codec, AC97_GPIO_CFG, reg & ~0x0100);
++		reg = snd_soc_read(codec, AC97_GPIO_PULL);
++		snd_soc_write(codec, AC97_GPIO_PULL, reg & ~(1<<15));
++	}
++
++	return 0;
++}
++
++static int rear_amp_event(struct snd_soc_dapm_widget *widget,
++			  struct snd_kcontrol *kctl, int event)
++{
++	struct snd_soc_codec *codec = widget->codec;
++	int rc;
++
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		rc = rear_amp_power(codec, 1);
++	else
++		rc = rear_amp_power(codec, 0);
++
 +	return rc;
 +}
 +
-+static int master_info(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_info *uinfo)
-+{
-+	struct kctl_master_t *master = KCTL2MAST(kcontrol);
-+
-+	uinfo->type = master->type;
-+	uinfo->count = master->count;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 0;
-+	if (master->type & SNDRV_CTL_ELEM_TYPE_BOOLEAN)
-+		uinfo->value.integer.max = 1;
-+	if (master->type & SNDRV_CTL_ELEM_TYPE_INTEGER)
-+		uinfo->value.integer.max = 256;
-+	return 0;
-+}
-+
-+static int master_get(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_kcontrol *kctl;
-+	struct snd_ctl_elem_value uc;
-+	struct kctl_master_t *master = KCTL2MAST(kcontrol);
-+	struct snd_soc_card *card = MAST2CARD(master);
-+	int i, ind, max, old;
-+
-+	for (i = 0; i < master->count; i++) {
-+		max = old = 0;
-+		ind = master->nidx[i];
-+		if (!master_find(card, master->names[i], &max, &kctl))
-+			continue;
-+		if (kctl->get(kctl, &uc) < 0)
-+			continue;
-+		old = uc.value.integer.value[ind];
-+		if (master->type == SNDRV_CTL_ELEM_TYPE_INTEGER)
-+			old = old * 256 / (max+1);
-+		ucontrol->value.integer.value[i] = old;
-+	}
-+
-+	return 0;
-+}
-+
-+static int master_put(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_kcontrol *kctl;
-+	struct snd_ctl_elem_value uc;
-+	struct kctl_master_t *master = KCTL2MAST(kcontrol);
-+	struct snd_soc_card *card = MAST2CARD(master);
-+
-+	int i, ind, max, new;
-+
-+	for (i = 0; i < master->count; i++) {
-+		max = new = 0;
-+		ind = master->nidx[i];
-+		if (!master_find(card, master->names[i], &max, &kctl))
-+			continue;
-+		new = ucontrol->value.integer.value[i];
-+		if (master->type == SNDRV_CTL_ELEM_TYPE_INTEGER)
-+			new = new * (max+1) / 256;
-+
-+		if (kctl->get(kctl, &uc) < 0)
-+			continue;
-+
-+		uc.value.integer.value[ind] = new;
-+		if (kctl->put(kctl, &uc) < 0)
-+			continue;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Beware : masterconf must be of same type, and have same count as the old
-+ * master
-+ */
-+void master_change(struct snd_kcontrol *k, struct kctl_master_t *masterconf)
-+{
-+	if (masterconf && k)
-+		masterconf->card = MAST2CARD(k->private_data);
-+	if (k)
-+		k->private_data = masterconf;
-+}
-+
-+struct snd_kcontrol *master_init(struct snd_soc_card *card, char *mname,
-+				 struct kctl_master_t *master)
-+{
-+	struct snd_kcontrol_new *kctln = NULL;
-+	struct snd_kcontrol *kctl = NULL;
-+	int rc;
-+
-+	kctln = kmalloc(sizeof(struct snd_kcontrol_new), GFP_KERNEL);
-+	if (!kctln)
-+		return NULL;
-+
-+	memset(kctln, 0, sizeof(struct snd_kcontrol_new));
-+	kctln->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	kctln->name = mname;
-+	kctln->info = master_info;
-+	kctln->get = master_get;
-+	kctln->put = master_put;
-+	master->card = card;
-+
-+	kctl = snd_soc_cnew(kctln, master, NULL);
-+
-+	rc = snd_ctl_add(card->card, kctl);
-+	if (rc < 0) {
-+		kfree(kctln);
-+		kctl = NULL;
-+	}
-+
-+	return kctl;
-+}
-+
-+/* MIO Specific */
-+static struct kctl_master_t miomastervol[] = {
-+	MVOL2_DEFAULT,				/* MIO_AUDIO_OFF */
-+	MVOL2("Headphone Playback Volume", 0,	/* MIO_GSM_AUDIO_HANDSET */
-+	      "Out3 Playback Volume", 0),
-+	MVOL2("Headphone Playback Volume", 0,	/* MIO_GSM_AUDIO_HEADSET */
-+	      "Headphone Playback Volume", 1),
-+	MVOL2("Speaker Playback Volume", 0,	/* MIO_GSM_AUDIO_HANDSFREE */
-+	      "Speaker Playback Volume", 1),
-+	MVOL2_DEFAULT,				/* MIO_GSM_AUDIO_BLUETOOTH */
-+	MVOL2("Speaker Playback Volume", 0,	/* MIO_STEREO_TO_SPEAKER */
-+	      "Speaker Playback Volume", 1),
-+	MVOL2("Headphone Playback Volume", 0,	/* MIO_STEREO_TO_HEADPHONES */
-+	      "Headphone Playback Volume", 1),
-+	MVOL2_DEFAULT,				/* MIO_CAPTURE_HANDSET */
-+	MVOL2_DEFAULT,				/* MIO_CAPTURE_HEADSET */
-+	MVOL2_DEFAULT,				/* MIO_CAPTURE_BLUETOOTH */
++static const char *mio_scenarios[] = {
++	"Off",
++	"GSM Handset",
++	"GSM Headset",
++	"GSM Handsfree",
++	"GSM Bluetooth",
++	"PCM Speaker",
++	"Headphones",
++	"Capture Handset",
++	"Capture Headset",
++	"Capture Bluetooth"
++};
++static const struct soc_enum mio_scenario_enum[] = {
++	SOC_ENUM_SINGLE_EXT(10, mio_scenarios),
 +};
 +
-+static struct kctl_master_t miomastermute[] = {
-+	MMUTE2_DEFAULT,				/* MIO_AUDIO_OFF */
-+	MMUTE2("Headphone Playback Switch", 0,	/* MIO_GSM_AUDIO_HANDSET */
-+	      "Out3 Playback Switch", 0),
-+	MMUTE2("Headphone Playback Switch", 0,	/* MIO_GSM_AUDIO_HEADSET */
-+	       "Headphone Playback Switch", 1),
-+	MMUTE2("Speaker Playback Switch", 0,	/* MIO_GSM_AUDIO_HANDSFREE */
-+	       "Speaker Playback Switch", 1),
-+	MMUTE2_DEFAULT,				/* MIO_GSM_AUDIO_BLUETOOTH */
-+	MMUTE2("Speaker Playback Switch", 0,	/* MIO_STEREO_TO_SPEAKER */
-+	       "Speaker Playback Switch", 1),
-+	MMUTE2("Headphone Playback Switch", 0,	/* MIO_STEREO_TO_HEADPHONES */
-+	       "Headphone Playback Switch", 1),
-+	MMUTE2_DEFAULT,				/* MIO_CAPTURE_HANDSET */
-+	MMUTE2_DEFAULT,				/* MIO_CAPTURE_HEADSET */
-+	MMUTE2_DEFAULT,				/* MIO_CAPTURE_BLUETOOTH */
++static const struct snd_kcontrol_new mioa701_controls[] = {
++	SOC_ENUM_EXT("Mio Mode", mio_scenario_enum[0],
++		     get_scenario, set_scenario),
 +};
 +
-+static struct snd_kcontrol *miovol, *miomute;
++/* mioa701 machine dapm widgets */
++static const struct snd_soc_dapm_widget mioa701_dapm_widgets[] = {
++	SND_SOC_DAPM_SPK("Front Speaker", NULL),
++	SND_SOC_DAPM_SPK("Rear Speaker", rear_amp_event),
++	SND_SOC_DAPM_MIC("Headset", NULL),
++	SND_SOC_DAPM_LINE("GSM Line Out", NULL),
++	SND_SOC_DAPM_LINE("GSM Line In", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Front Mic", NULL),
++};
 +
-+int mioa701_master_init(struct snd_soc_card *card)
++static const struct snd_soc_dapm_route audio_map[] = {
++	/* Call Mic */
++	{"Mic Bias", NULL, "Front Mic"},
++	{"MIC1", NULL, "Mic Bias"},
++
++	/* Headset Mic */
++	{"LINEL", NULL, "Headset Mic"},
++	{"LINER", NULL, "Headset Mic"},
++
++	/* GSM Module */
++	{"MONOIN", NULL, "GSM Line Out"},
++	{"PCBEEP", NULL, "GSM Line Out"},
++	{"GSM Line In", NULL, "MONO"},
++
++	/* headphone connected to HPL, HPR */
++	{"Headset", NULL, "HPL"},
++	{"Headset", NULL, "HPR"},
++
++	/* front speaker connected to HPL, OUT3 */
++	{"Front Speaker", NULL, "HPL"},
++	{"Front Speaker", NULL, "OUT3"},
++
++	/* rear speaker connected to SPKL, SPKR */
++	{"Rear Speaker", NULL, "SPKL"},
++	{"Rear Speaker", NULL, "SPKR"},
++};
++
++static int mioa701_wm9713_init(struct snd_soc_card *card)
 +{
-+	miovol =  master_init(card, "Mio Volume", &miomastervol[0]);
-+	miomute = master_init(card, "Mio Switch", &miomastermute[0]);
++	struct snd_soc_codec *codec;
++	struct snd_ac97_bus_ops *ac97_ops;
++	int i, ret;
++	unsigned short reg;
 +
++	codec = snd_soc_card_get_codec(card, wm9713_codec_id, 0);
++	if (codec == NULL)
++		return -ENODEV;
++
++	ac97_ops = snd_soc_card_get_ac97_ops(card, pxa_ac97_hifi_dai_id);
++	if (!ac97_ops) {
++		printk(KERN_ERR "Unable to obtain AC97 operations\n");
++		return -ENODEV;
++	}
++
++	/* register with AC97 bus for ad-hoc driver access */
++	ret = snd_soc_new_ac97_codec(codec, ac97_ops, card->card, 0, 0);
++	if (ret < 0)
++		return ret;
++
++	/* do a cold reset for the controller and then try
++	 * a warm reset followed by an optional cold reset for codec */
++	ac97_ops->reset(codec->ac97);
++	ac97_ops->warm_reset(codec->ac97);
++	if (ac97_ops->read(codec->ac97, AC97_VENDOR_ID1) == 0) {
++		printk(KERN_ERR "AC97 link error\n");
++		return ret;
++	}
++
++	snd_soc_card_init_codec(codec, card);
++
++	/* initialize mioa701 codec pins */
++	set_scenario_endpoints(card, mio_scenario);
++
++	/* Add mioa701 specific controls */
++	for (i = 0; i < ARRAY_SIZE(mioa701_controls); i++) {
++		ret = snd_ctl_add(card->card, snd_soc_cnew(&mioa701_controls[i],
++							   card, NULL));
++		if (ret)
++			goto out;
++	}
++
++	/* Add mioa701 specific widgets */
++	ret = snd_soc_dapm_new_controls(card, codec,
++					ARRAY_AND_SIZE(mioa701_dapm_widgets));
++	if (ret)
++		goto out;
++
++	/* Set up mioa701 specific audio path audio_mapnects */
++	ret = snd_soc_dapm_add_routes(card, ARRAY_AND_SIZE(audio_map));
++	if (ret)
++		goto out;
++
++	/* Prepare MIC input */
++	reg = snd_soc_read(codec, AC97_3D_CONTROL);
++	snd_soc_write(codec, AC97_3D_CONTROL, reg | 0xc000);
++
++	snd_soc_dapm_sync(card);
++
++	return 0;
++out:
++	return ret;
++}
++
++static void mioa701_wm9713_exit(struct snd_soc_card *card)
++{
++}
++
++#ifdef CONFIG_PM
++static int mioa701_wm9713_suspend(struct platform_device *pdev,
++				  pm_message_t state)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec;
++
++	codec = snd_soc_card_get_codec(card, wm9713_codec_id, 0);
++	if (codec == NULL)
++		return -ENODEV;
++
++	rear_amp_power(codec, 0);
++	return 0; /* snd_soc_card_suspend_pcms(card, state) doesn't work */
++}
++
++static int mioa701_wm9713_resume(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec;
++
++	codec = snd_soc_card_get_codec(card, wm9713_codec_id, 0);
++	if (codec == NULL)
++		return -ENODEV;
++
++	rear_amp_power(codec, 0);
++	return 0; /* snd_soc_card_resume_pcms(card) doesn't work */
++}
++
++#else
++#define mioa701_wm9713_suspend NULL
++#define mioa701_wm9713_resume  NULL
++#endif
++
++static struct snd_soc_ops mioa701_hifi_ops = {
++};
++
++static struct snd_soc_ops mioa701_aux_ops = {
++};
++
++static struct snd_soc_pcm_config pcm_configs[] = {
++	{
++		.name		= "Aux",
++		.codec		= wm9713_codec_id,
++		.codec_dai	= wm9713_codec_aux_dai_id,
++		.platform	= pxa_platform_id,
++		.cpu_dai	= pxa_ac97_aux_dai_id,
++		.playback	= 1,
++		.ops		= &mioa701_aux_ops,
++	},
++	{
++		.name		= "HiFi",
++		.codec		= wm9713_codec_id,
++		.codec_dai	= wm9713_codec_hifi_dai_id,
++		.platform	= pxa_platform_id,
++		.cpu_dai	= pxa_ac97_hifi_dai_id,
++		.playback	= 1,
++		.capture	= 1,
++		.ops		= &mioa701_hifi_ops,
++	},
++};
++
++static int mioa701_wm9713_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card;
++	int ret;
++
++	card = snd_soc_card_create("mioa701", &pdev->dev,
++				   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (card == NULL)
++		return -ENOMEM;
++
++	card->longname = "WM9713";
++	card->init = mioa701_wm9713_init;
++	card->exit = mioa701_wm9713_exit;
++	card->private_data = pdev;
++	platform_set_drvdata(pdev, card);
++
++	ret = snd_soc_card_create_pcms(card, ARRAY_AND_SIZE(pcm_configs));
++	if (ret < 0)
++		goto errpcms;
++
++	ret = snd_soc_card_register(card);
++	if (ret < 0)
++		goto errcard;
++	return ret;
++
++errpcms:
++	snd_soc_card_free(card);
++errcard:
++	return ret;
++}
++
++static int __devexit mioa701_wm9713_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_card_free(card);
 +	return 0;
 +}
 +
-+void mioa701_master_change(int scenario)
++static struct platform_driver mioa701_wm9713_driver = {
++	.probe		= mioa701_wm9713_probe,
++	.remove		= __devexit_p(mioa701_wm9713_remove),
++	.suspend	= mioa701_wm9713_suspend,
++	.resume		= mioa701_wm9713_resume,
++	.driver		= {
++		.name		= "mioa701-wm9713",
++		.owner		= THIS_MODULE,
++	},
++};
++
++static int __init mioa701_asoc_init(void)
 +{
-+	master_change(miovol, &miomastervol[scenario]);
-+	master_change(miomute, &miomastermute[scenario]);
++	return platform_driver_register(&mioa701_wm9713_driver);
 +}
-diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
-index 4df42e0..f063023 100644
---- a/sound/soc/pxa/mioa701_wm9713.c
-+++ b/sound/soc/pxa/mioa701_wm9713.c
-@@ -53,6 +53,8 @@
- 
- static int mio_scenario = MIO_AUDIO_OFF;
- 
-+extern int mioa701_master_init(struct snd_soc_card *card);
-+extern void mioa701_master_change(int scenario);
- static int phone_stream_start(struct snd_soc_card *card);
- static int phone_stream_stop(struct snd_soc_card *card);
- 
-@@ -318,6 +320,8 @@ static void switch_mio_mode(struct snd_soc_card *card, int new_scenario)
- 	default:
- 		break;
- 	}
 +
-+	mioa701_master_change(mio_scenario);
- }
- 
- static int set_scenario(struct snd_kcontrol *kcontrol,
-@@ -483,6 +487,9 @@ static int mioa701_wm9713_init(struct snd_soc_card *card)
- 			goto out;
- 	}
- 
-+	/* Add mio Masters */
-+	mioa701_master_init(card);
++static void __exit mioa701_asoc_exit(void)
++{
++	platform_driver_unregister(&mioa701_wm9713_driver);
++}
 +
- 	/* Add mioa701 specific widgets */
- 	ret = snd_soc_dapm_new_controls(card, codec,
- 					ARRAY_AND_SIZE(mioa701_dapm_widgets));
++module_init(mioa701_asoc_init);
++module_exit(mioa701_asoc_exit);
++
++/* Module information */
++MODULE_AUTHOR("Robert Jarzmik (rjarzmik@free.fr)");
++MODULE_DESCRIPTION("ALSA SoC WM9713 MIO A701");
++MODULE_LICENSE("GPL");
 -- 
 1.5.5.3
