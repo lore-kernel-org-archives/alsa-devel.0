@@ -1,19 +1,22 @@
-From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
-Subject: Re: [PATCH] ALSA driver for SGI O2 audio board
-Date: Wed, 9 Jul 2008 19:50:59 +0200
-Message-ID: <20080709175059.GA10046@alpha.franken.de>
-References: <20080704234559.C959CFB63A@solo.franken.de>
-	<s5hy74dvga5.wl%tiwai@suse.de>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH] Add initial support of Mitac mioa701
+	master volume.
+Date: Wed, 09 Jul 2008 20:00:19 +0200
+Message-ID: <871w23kkek.fsf@free.fr>
+References: <87vdzgp0ue.fsf@free.fr>
+	<1215549906-14829-1-git-send-email-robert.jarzmik@free.fr>
+	<1215549906-14829-2-git-send-email-robert.jarzmik@free.fr>
+	<1215601158.4882.257.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FFB82448E
+Received: from smtp6-g19.free.fr (smtp6-g19.free.fr [212.27.42.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id E24FC24469
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Jul 2008 19:57:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hy74dvga5.wl%tiwai@suse.de>
+	Wed,  9 Jul 2008 20:00:20 +0200 (CEST)
+In-Reply-To: <1215601158.4882.257.camel@localhost.localdomain> (Liam
+	Girdwood's message of "Wed\, 09 Jul 2008 11\:59\:18 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,56 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 07, 2008 at 05:57:06PM +0200, Takashi Iwai wrote:
-> Thanks for the patch.
-> Below is a quick review.
+Liam Girdwood <liam.girdwood@wolfsonmicro.com> writes:
 
-thank you.
+> On Tue, 2008-07-08 at 22:45 +0200, Robert Jarzmik wrote:
+>> Depending on the "Mio Mode" chosen, the master volume
+>> controls the widget volume/mute levels, providing userspace
+>> a unified vision of volume control (one control only).
+>> 
+>
+> The userspace manager does the same thing here. I prefer the userspace
+> approach for the long term instead of this being handled differently by
+> each driver. It's in git atm though.  
 
-> > +	wmb();
-> > +	val = readq(&mace->perif.audio.codec_control); /* flush bus */
-> > +	udelay(200);
-> 
-> It'd be nicer if this long delay can be avoided.  Or, could it be
-> mutex?
-> 
-> This isn't a fatal problem, so it's OK as is, though.
+OK. So drop the patch. If the same functionnality is already available, I'll see
+if I can use it. May I know how stable that API is, and who actually uses it ?
 
-I'm not quite sure, what delay really is sufficient at the moment. It
-worked without delay on my slow O2, but caused problems on faster
-maschines. I want to figure out a good value and if it's just a
-few microsecons simply use an udelay(). If a longer delay is needed
-I'll switch over to something more kernel friendly.
-
-> > +	/* allocate IRQs */
-> > +	for (i = 0; i < ARRAY_SIZE(snd_sgio2_isr_table); i++) {
-> > +		if (request_irq(snd_sgio2_isr_table[i].irq,
-> > +				snd_sgio2_isr_table[i].isr,
-> > +				IRQF_SHARED,
-> > +				snd_sgio2_isr_table[i].desc,
-> > +				&chip->channel[snd_sgio2_isr_table[i].idx])) {
-> > +			snd_sgio2audio_free(chip);
-> > +			printk(KERN_ERR "sgio2audio: cannot allocate irq %d\n",
-> > +			       snd_sgio2_isr_table[i].irq);
-> > +			return -EBUSY;
-> > +		}
-> > +	}
-> 
-> If there are shared interrupts, they could be called before the
-> initialization below.  So, safer to move after the init.
-
-they can't be shared and it's already done before any hardware init.
-We only check, whether there is a sound module installed before
-that.
-
-I'll post an updated patch in a couple of minutes.
-
-Thomas,
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                                [ RFC1925, 2.3 ]
+--
+Robert
