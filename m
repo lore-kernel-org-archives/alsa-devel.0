@@ -1,22 +1,19 @@
-From: "Justin Mattock" <justinmattock@gmail.com>
-Subject: Re: FWIW: is this right
-Date: Wed, 9 Jul 2008 16:59:35 +0000
-Message-ID: <dd18b0c30807090959u121b0d7oc1e58312723e915b@mail.gmail.com>
-References: <dd18b0c30807081218t30d33614yf79509ceb07502e6@mail.gmail.com>
-	<s5hd4lnymgs.wl%tiwai@suse.de> <20080709143101.GJ7132@sci.fi>
-	<s5hy74ayjl7.wl%tiwai@suse.de>
+From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
+Subject: Re: [PATCH] ALSA driver for SGI O2 audio board
+Date: Wed, 9 Jul 2008 19:50:59 +0200
+Message-ID: <20080709175059.GA10046@alpha.franken.de>
+References: <20080704234559.C959CFB63A@solo.franken.de>
+	<s5hy74dvga5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FBD724408
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FFB82448E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Jul 2008 18:59:37 +0200 (CEST)
-Received: by hs-out-0708.google.com with SMTP id x43so712790hsb.0
-	for <alsa-devel@alsa-project.org>; Wed, 09 Jul 2008 09:59:36 -0700 (PDT)
-In-Reply-To: <s5hy74ayjl7.wl%tiwai@suse.de>
+	Wed,  9 Jul 2008 19:57:46 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hy74dvga5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,48 +27,52 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 9, 2008 at 6:54 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 9 Jul 2008 17:31:01 +0300,
-> Ville Syrj=E4l=E4 wrote:
->>
->> On Wed, Jul 09, 2008 at 07:52:03PM +0200, Takashi Iwai wrote:
->> > At Tue, 8 Jul 2008 19:18:21 +0000,
->> > Justin Mattock wrote:
->> > >
->> > > Hello; FWIW I think this is the right area for this question:
->> > > basically I have a bug filed:http://bugzilla.kernel.org/show_bug.cgi=
-?id=3D10954
->> > > and am trying to fix it or find a work around.
->> > > what I'm seeing in dmesg is:
->> > > hda_intel: azx_get_response timeout, switching to polling mode: last
->> > > cmd=3D0x010f1c00
->> > > I can't seem to reproduce this issue, only seems to appear every 100=
-  +/- boots.
->> > > any ideas.(attached is dmesg of the bug).
->> > > regards;
->> >
->> > This is no fatal error and you can mostly ignore it...
->>
->> It is fatal at least in my case. PCM playback doesn't work after getting
->> the error until you close all applications using the device.
->
-> It alone can't be a fatal error.  Either you must have more error
-> messages or a different error is hidden behind.
->
->
-> Takashi
->
+On Mon, Jul 07, 2008 at 05:57:06PM +0200, Takashi Iwai wrote:
+> Thanks for the patch.
+> Below is a quick review.
 
-This is interesting after removing:options snd-hda-intel position_fix=3D1
-from /etc/modprobe.d/alsa-base I have not seen this after recompiling
-my kernel loads of times
-keep in mind I'm using a macbook pro: the above option was used to
-help with the crackling
-noise in the headphones. I'm going to watch this and see if I see this
-message appears.
-regards;
+thank you.
 
+> > +	wmb();
+> > +	val = readq(&mace->perif.audio.codec_control); /* flush bus */
+> > +	udelay(200);
+> 
+> It'd be nicer if this long delay can be avoided.  Or, could it be
+> mutex?
+> 
+> This isn't a fatal problem, so it's OK as is, though.
 
--- =
+I'm not quite sure, what delay really is sufficient at the moment. It
+worked without delay on my slow O2, but caused problems on faster
+maschines. I want to figure out a good value and if it's just a
+few microsecons simply use an udelay(). If a longer delay is needed
+I'll switch over to something more kernel friendly.
 
-Justin P. Mattock
+> > +	/* allocate IRQs */
+> > +	for (i = 0; i < ARRAY_SIZE(snd_sgio2_isr_table); i++) {
+> > +		if (request_irq(snd_sgio2_isr_table[i].irq,
+> > +				snd_sgio2_isr_table[i].isr,
+> > +				IRQF_SHARED,
+> > +				snd_sgio2_isr_table[i].desc,
+> > +				&chip->channel[snd_sgio2_isr_table[i].idx])) {
+> > +			snd_sgio2audio_free(chip);
+> > +			printk(KERN_ERR "sgio2audio: cannot allocate irq %d\n",
+> > +			       snd_sgio2_isr_table[i].irq);
+> > +			return -EBUSY;
+> > +		}
+> > +	}
+> 
+> If there are shared interrupts, they could be called before the
+> initialization below.  So, safer to move after the init.
+
+they can't be shared and it's already done before any hardware init.
+We only check, whether there is a sound module installed before
+that.
+
+I'll post an updated patch in a couple of minutes.
+
+Thomas,
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                                [ RFC1925, 2.3 ]
