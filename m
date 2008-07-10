@@ -1,18 +1,16 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: 1.0.16->1.0.17 regression for some HDA NVidia's
-Date: Fri, 11 Jul 2008 00:26:26 +0300
-Message-ID: <48767E82.2090002@pardus.org.tr>
-References: <4870F039.8020207@pardus.org.tr>	<s5hvdzhvg44.wl%tiwai@suse.de>	<48728B3F.4070100@pardus.org.tr>	<s5h4p70vgae.wl%tiwai@suse.de>	<48763BC9.40005@pardus.org.tr>
-	<s5hbq15rpro.wl%tiwai@suse.de>
+From: "D. Sen" <dsen@homemail.com>
+Subject: RME madiface
+Date: Fri, 11 Jul 2008 09:31:40 +1000
+Message-ID: <48769BDC.80007@homemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B21D10380B
+Received: from smtpout09.prod.mesa1.secureserver.net
+	(smtpout09-04.prod.mesa1.secureserver.net [64.202.165.17])
+	by alsa0.perex.cz (Postfix) with SMTP id 0AE08247B7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Jul 2008 23:26:05 +0200 (CEST)
-In-Reply-To: <s5hbq15rpro.wl%tiwai@suse.de>
+	Fri, 11 Jul 2008 01:31:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFRodSwgMTAgSnVsIDIwMDggMTk6NDE6NDUgKzAzMDAs
-Cj4gT3phbiDDh2HEn2xheWFuIHdyb3RlOgo+ICAgCj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4g
-ICAgIAo+Pj4gQXQgVHVlLCAwOCBKdWwgMjAwOCAwMDozMTo0MyArMDMwMCwKPj4+IE96YW4gw4dh
-xJ9sYXlhbiB3cm90ZToKPj4+ICAgCj4+PiAgICAgICAKPj4+PiBUYWthc2hpIEl3YWkgd3JvdGU6
-Cj4+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+Pj4+IEF0IFN1biwgMDYgSnVsIDIwMDggMTk6MTg6
-MDEgKzAzMDAsCj4+Pj4+IE96YW4gw4dhxJ9sYXlhbiB3cm90ZToKPj4+Pj4gICAKPj4+Pj4gICAg
-ICAgCj4+Pj4+ICAgICAgICAgICAKPj4+Pj4+IEV2ZXJ5dGhpbmcgc2VlbXMgT0sgd2l0aCB0aG9z
-ZSBvbmJvYXJkIGF1ZGlvIGNoaXBzZXRzIGJ1dCB0aGVyZSdzIAo+Pj4+Pj4gYWJzb2x1dGVseSBu
-byBzb3VuZC4KPj4+Pj4+IFdlIGhhdmUgMiBidWcgcmVwb3J0cyBvbiBvdXIgYnVnIHRyYWNraW5n
-IHN5c3RlbSBpbmRpY2F0aW5nIHRoaXMgCj4+Pj4+PiByZWdyZXNzaW9uIGZvciBNQ1A1MSwgTUNQ
-NjEgYW5kIE1DUDczLgo+Pj4+Pj4KPj4+Pj4+IEhlcmUgYXJlIHRoZSBVUkwncyBmb3IgYWxzYS1p
-bmZvLnNoIG91dHB1dCdzOgo+Pj4+Pj4KPj4+Pj4+IE1DUDUxOiBodHRwOi8vcGFzdGViaW4uY2Ev
-MTA2MjQxOAo+Pj4+Pj4gTUNQNjE6IGh0dHA6Ly9wYXN0ZWJpbi5jYS8xMDU4NDgyCj4+Pj4+PiBN
-Q1A3MzogaHR0cDovL3Bhc3RlYmluLmNhLzEwNTgzMTkKPj4+Pj4+Cj4+Pj4+PiBUaG9zZSB1c2Vy
-cyBoYXZlIHJlY2VudGx5IHJlcG9ydGVkIHRoYXQgZG93bmdyYWRpbmcgdG8gMS4wLjE2IHNlcmll
-cyAKPj4+Pj4+IHNvbHZlcyB0aGUgcHJvYmxlbS4KPj4+Pj4+ICAgICAKPj4+Pj4+ICAgICAgICAg
-Cj4+Pj4+PiAgICAgICAgICAgICAKPj4+Pj4gQ291bGQgeW91IHJ1biBhbHNhLWluZm8uc2ggb24g
-MS4wLjE2LCB0b28/ICBUaGVuIHdlIGNhbiBjb21wYXJlCj4+Pj4+IGJldHdlZW4gd29ya2luZyBh
-bmQgbm9uLXdvcmtpbmcgc3RhdGVzLgo+Pj4+Pgo+Pj4+Pgo+Pj4+PiB0aGFua3MsCj4+Pj4+Cj4+
-Pj4+IFRha2FzaGkKPj4+Pj4gICAKPj4+Pj4gICAgICAgCj4+Pj4+ICAgICAgICAgICAKPj4+PiBI
-aSwKPj4+Pgo+Pj4+IEkndmUgYWxzbyBlbnRlcmVkIGEgYnVnIHJlcG9ydCBmb3IgdGhpcyBwcm9i
-bGVtIHdoaWNoIGluY2x1ZGVzIHRoZSB0d28gCj4+Pj4gb3V0cHV0czoKPj4+Pgo+Pj4+IGh0dHBz
-Oi8vYnVndHJhY2suYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD00MDM4Cj4+
-Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+PiBUaGUgZmlyc3QgdGhpbmcgdG8gY2hlY2sgaXMgdGhh
-dCB5b3UgYXJlIHVzaW5nIHB1bHNlIHBsdWdpbi4KPj4+IElzIGl0IGludGVuZGVkLCBhbmQgY29u
-ZmlybWVkIHRvIHdvcms/Cj4+Pgo+Pj4gVGhlIG5leHQgdGhpbmcgdG8gY2hlY2sgaXMgd2hldGhl
-ciAxLjAuMTYgZHJpdmVyIHdvcmtzIHdpdGggdGhlIHNhbWUgCj4+PiBlbnZpcm9ubWVudCAoMS4w
-LjE3IGxpYiwgdXRpbHMsIGV0YykgLS0gdGhhdCBpcywgeW91ciAxLjAuMTYgYWxzYS1pbmZvCj4+
-PiBvdXRwdXQuICBJZiB5ZXMsIGdldCBhbHNhLWluZm8uc2ggb3V0cHV0IGFnYWluLCB0aGVuIGlu
-c3RhbGwgMS4wLjE3Cj4+PiBkcml2ZXIgYWdhaW4gYW5kIHJlLXRlc3QuICBHZXQgYWxzYS1pbmZv
-LnNoIG91dHB1dCBvbiAxLjAuMTcgYWdhaW4KPj4+IChmb3Igbm9uLXdvcmtpbmcpIHRvIGNvbXBh
-cmUgZXhhY3RseS4KPj4+ICAgCj4+PiAgICAgICAKPj4gRmlyc3QgdGhlIHByb2JsZW0gaXMgbm90
-IHByZXNlbnQgd2hlbiBwdWxzZWF1ZGlvIGlzIHN0b3BwZWQuIEFuZCBhbHNvLCAKPj4gd2UgY2Fu
-IGdldCBzb3VuZCB3aXRoIDEuMC4xN3JjMSB0b28uIFNvIGJyaWVmbHk6Cj4+Cj4+IDEuMC4xNiAr
-IHB1bHNlIC0+IHdvcmtzIHdlbGwKPj4gMS4wLjE3cmMxICsgcHVsc2UgLT4gd29ya3Mgd2VsbAo+
-PiAxLjAuMTdyYzEscmMyICsgcHVsc2UgLT4gTm8gc291bmQuCj4+Cj4+IEl0IHNlZW1zIHRoYXQg
-c29tZXRoaW5nIGlzIGJyb2tlbiBmb3IgdGhlc2UgY2hpcHNldHMgaW4gZWl0aGVyIGFsc2Egb3Ig
-Cj4+IHB1bHNlIHRyZWUuIEFueSBpZGVhcyBmb3IgeW91ciBhbHNhLXtkcml2ZXIsbGliLHBsdWdp
-bnN9IHBhcnQ/Cj4+ICAgICAKPgo+IFRyeSB0byBDb21wYXJlIGFsc2EtaW5mby5zaCBvdXRwdXRz
-IGJldHdlZW4gdGhlc2UgdmVyc2lvbnMuCj4gSWYgdGhlcmUgaXMgYSBzaWduaWZpY2FudCBkaWZm
-ZXJlbmNlIGluIGNvZGVjIyogcHJvYyBmaWxlcywgdGhlbgo+IHNvbWV0aGluZyB3YXMgY2hhbmdl
-ZCBpbiB0aGUgZHJpdmVyIHNpZGUuICBJZiBub3QsIGl0J3MgcHVsc2UKPiBwcm9ibGVtLgo+ICAg
-Ckl0IHNlZW1zIHRoYXQgd2UndmUgZm91bmQgdGhlIHByb2JsZW0uCk1DUDUxIGFuZCBNQ1A2MSB3
-b3JrcyB3ZWxsIHdoZW4gdGhlIDEuMC4xNyBpbnRyb2R1Y2VkIG1vZHVsZSBwYXJhbWV0ZXIgCmJk
-bF9wb3NfYWRqIGlzIGV4cGxpY2l0bHkgc2V0IHRvIDAgd2hlbiBwcm9iaW5nIHRoZSBzbmQtaGRh
-LWludGVsIG1vZHVsZS4KCi0tIAoKT3phbiDDh2HEn2xheWFuCjxvemFuX2F0X3BhcmR1cy5vcmcu
-dHI+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello,
+
+I have been trying to use the hdspm driver with a recently purchased RME
+Madiface device. The functionality that I require is to play various
+files through various channels under program (script) control. I am
+happy to report that it *almost* works - in that I can use my simple
+userspace programs to play files. However, there are subtle problems -
+in that the external MADI A-to-D (an Euphonix 703) does not seem to lock
+into the sampling rate (something that works under windows). Its very
+close to achieving full functionality (for my needs) - but just that
+tiny bit away from being fully useable.
+
+Any ideas?
+
+Havent had much luck contacting RME and Winfried Ritsch (who
+wrote/maintains the code).
+
+Information on the the hardware and/or windows code would help to figure
+out how to modify the driver (which was originally written for the rme
+9652/aes32 devices).
+
+
+Regards,
+D. Sen
