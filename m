@@ -1,21 +1,19 @@
-From: "Kristin Low" <kristin.low@gmail.com>
-Subject: Re: ALSA Problem - Broken Pipe
-Date: Thu, 10 Jul 2008 11:34:27 -0400
-Message-ID: <3b2c72ff0807100834r2c921ca4pc7958d95a0bc87fb@mail.gmail.com>
-References: <3b2c72ff0807091731m27ed3247nb91a8e55702bd3e3@mail.gmail.com>
-	<s5hlk09k0s8.wl%tiwai@suse.de>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: 1.0.16->1.0.17 regression for some HDA NVidia's
+Date: Thu, 10 Jul 2008 19:41:45 +0300
+Message-ID: <48763BC9.40005@pardus.org.tr>
+References: <4870F039.8020207@pardus.org.tr>
+	<s5hvdzhvg44.wl%tiwai@suse.de>	<48728B3F.4070100@pardus.org.tr>
+	<s5h4p70vgae.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7B6E2475A
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E8082476B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Jul 2008 17:34:29 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id a29so2170983pyi.36
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2008 08:34:28 -0700 (PDT)
-In-Reply-To: <s5hlk09k0s8.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Thu, 10 Jul 2008 18:41:24 +0200 (CEST)
+In-Reply-To: <s5h4p70vgae.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,59 +27,40 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I don't get any kernel warning/error messages from what I can tell. I
-checked /var/log/messages and dmesg (hopefully that's where I'm supposed to
-look). The only messages I get are from selecting ALSA output: "[00000351]
-alsa audio output error: write failed (Broken pipe)" or if I select
-pulseaudio: "pulseaudio[5593]: module-alsa-sink.c: Got POLLERR from ALSA".
-These usually happen near the beginning of a sound, but also may not come up
-for several minutes.
-
-When I say OSS works, I mean that when I set Sound Events and Music and
-Movies in my Sound Preferences (setting the default setting for programs),
-sound works fine (I just don't get simultaneous sounds, which I believe is
-normal because of OSS). Also, if I set Amarok or VLC to use OSS and not ALSA
-or pulseaudio, my sound works. However, if I run VLC with the aoss wrapper,
-I get the same error messages as above. Totem and Rhythmbox don't work
-either.
-
-Thanks so much for looking at this for me.
-
-On Thu, Jul 10, 2008 at 3:16 PM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Wed, 9 Jul 2008 20:31:19 -0400,
-> Kristin Low wrote:
-> >
-> > Hi all,
-> >
-> >
-> > I apologize if this isn't the right place to ask for help, but no one who
-> > I've asked knows how to help and I'm somewhat new to Linux.
-> >
-> > I'm running Ubuntu Hardy Heron and haven't changed any config files
-> > (practically a fresh install) however ALSA does not work properly and I
-> > assume that because of this, Pulseaudio doesn't work either (it breaks
-> when
-> > ALSA does). Playing a song, I can hear the song for a random length of
-> time
-> > and then it cuts out. If I run VLC from a terminal, it claims "alsa
-> output
-> > error: write error (broken pipe)" as the cause and continues to write
-> that
-> > over the screen until I force VLC to quit. If I restart the song again,
-> the
-> > same thing occurs. Pulseaudio cuts out and says it gets a POLLERR from
-> ALSA.
-> > When I login, only part of the login sounds play and are cut just the
-> same
-> > as any songs or audio files I try. It seems like my sound card is
-> detected
-> > fine, and OSS works when I select to use it instead. It's on a laptop, a
-> > Toshiba Satellite a70.
->
-> Do you have any kernel error/warning messages?
-> Also, do you mean "OSS works" that OSS emulation works?
->
->
-> Takashi
->
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFR1ZSwgMDggSnVsIDIwMDggMDA6MzE6NDMgKzAzMDAs
+Cj4gT3phbiDDh2HEn2xheWFuIHdyb3RlOgo+ICAgCj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4g
+ICAgIAo+Pj4gQXQgU3VuLCAwNiBKdWwgMjAwOCAxOToxODowMSArMDMwMCwKPj4+IE96YW4gw4dh
+xJ9sYXlhbiB3cm90ZToKPj4+ICAgCj4+PiAgICAgICAKPj4+PiBFdmVyeXRoaW5nIHNlZW1zIE9L
+IHdpdGggdGhvc2Ugb25ib2FyZCBhdWRpbyBjaGlwc2V0cyBidXQgdGhlcmUncyAKPj4+PiBhYnNv
+bHV0ZWx5IG5vIHNvdW5kLgo+Pj4+IFdlIGhhdmUgMiBidWcgcmVwb3J0cyBvbiBvdXIgYnVnIHRy
+YWNraW5nIHN5c3RlbSBpbmRpY2F0aW5nIHRoaXMgCj4+Pj4gcmVncmVzc2lvbiBmb3IgTUNQNTEs
+IE1DUDYxIGFuZCBNQ1A3My4KPj4+Pgo+Pj4+IEhlcmUgYXJlIHRoZSBVUkwncyBmb3IgYWxzYS1p
+bmZvLnNoIG91dHB1dCdzOgo+Pj4+Cj4+Pj4gTUNQNTE6IGh0dHA6Ly9wYXN0ZWJpbi5jYS8xMDYy
+NDE4Cj4+Pj4gTUNQNjE6IGh0dHA6Ly9wYXN0ZWJpbi5jYS8xMDU4NDgyCj4+Pj4gTUNQNzM6IGh0
+dHA6Ly9wYXN0ZWJpbi5jYS8xMDU4MzE5Cj4+Pj4KPj4+PiBUaG9zZSB1c2VycyBoYXZlIHJlY2Vu
+dGx5IHJlcG9ydGVkIHRoYXQgZG93bmdyYWRpbmcgdG8gMS4wLjE2IHNlcmllcyAKPj4+PiBzb2x2
+ZXMgdGhlIHByb2JsZW0uCj4+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+PiBDb3VsZCB5b3UgcnVu
+IGFsc2EtaW5mby5zaCBvbiAxLjAuMTYsIHRvbz8gIFRoZW4gd2UgY2FuIGNvbXBhcmUKPj4+IGJl
+dHdlZW4gd29ya2luZyBhbmQgbm9uLXdvcmtpbmcgc3RhdGVzLgo+Pj4KPj4+Cj4+PiB0aGFua3Ms
+Cj4+Pgo+Pj4gVGFrYXNoaQo+Pj4gICAKPj4+ICAgICAgIAo+PiBIaSwKPj4KPj4gSSd2ZSBhbHNv
+IGVudGVyZWQgYSBidWcgcmVwb3J0IGZvciB0aGlzIHByb2JsZW0gd2hpY2ggaW5jbHVkZXMgdGhl
+IHR3byAKPj4gb3V0cHV0czoKPj4KPj4gaHR0cHM6Ly9idWd0cmFjay5hbHNhLXByb2plY3Qub3Jn
+L2Fsc2EtYnVnL3ZpZXcucGhwP2lkPTQwMzgKPj4gICAgIAo+Cj4gVGhlIGZpcnN0IHRoaW5nIHRv
+IGNoZWNrIGlzIHRoYXQgeW91IGFyZSB1c2luZyBwdWxzZSBwbHVnaW4uCj4gSXMgaXQgaW50ZW5k
+ZWQsIGFuZCBjb25maXJtZWQgdG8gd29yaz8KPgo+IFRoZSBuZXh0IHRoaW5nIHRvIGNoZWNrIGlz
+IHdoZXRoZXIgMS4wLjE2IGRyaXZlciB3b3JrcyB3aXRoIHRoZSBzYW1lIAo+IGVudmlyb25tZW50
+ICgxLjAuMTcgbGliLCB1dGlscywgZXRjKSAtLSB0aGF0IGlzLCB5b3VyIDEuMC4xNiBhbHNhLWlu
+Zm8KPiBvdXRwdXQuICBJZiB5ZXMsIGdldCBhbHNhLWluZm8uc2ggb3V0cHV0IGFnYWluLCB0aGVu
+IGluc3RhbGwgMS4wLjE3Cj4gZHJpdmVyIGFnYWluIGFuZCByZS10ZXN0LiAgR2V0IGFsc2EtaW5m
+by5zaCBvdXRwdXQgb24gMS4wLjE3IGFnYWluCj4gKGZvciBub24td29ya2luZykgdG8gY29tcGFy
+ZSBleGFjdGx5Lgo+ICAgCkZpcnN0IHRoZSBwcm9ibGVtIGlzIG5vdCBwcmVzZW50IHdoZW4gcHVs
+c2VhdWRpbyBpcyBzdG9wcGVkLiBBbmQgYWxzbywgCndlIGNhbiBnZXQgc291bmQgd2l0aCAxLjAu
+MTdyYzEgdG9vLiBTbyBicmllZmx5OgoKMS4wLjE2ICsgcHVsc2UgLT4gd29ya3Mgd2VsbAoxLjAu
+MTdyYzEgKyBwdWxzZSAtPiB3b3JrcyB3ZWxsCjEuMC4xN3JjMSxyYzIgKyBwdWxzZSAtPiBObyBz
+b3VuZC4KCkl0IHNlZW1zIHRoYXQgc29tZXRoaW5nIGlzIGJyb2tlbiBmb3IgdGhlc2UgY2hpcHNl
+dHMgaW4gZWl0aGVyIGFsc2Egb3IgCnB1bHNlIHRyZWUuIEFueSBpZGVhcyBmb3IgeW91ciBhbHNh
+LXtkcml2ZXIsbGliLHBsdWdpbnN9IHBhcnQ/CgpUaGFua3MgYSBsb3QuCgotLSAKCk96YW4gw4dh
+xJ9sYXlhbgo8b3phbl9hdF9wYXJkdXMub3JnLnRyPgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
