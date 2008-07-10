@@ -1,22 +1,17 @@
-From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Add initial support of Mitac
-	mioa701	master volume.
-Date: Thu, 10 Jul 2008 09:50:20 +0100
-Message-ID: <1215679820.23761.7.camel@localhost.localdomain>
-References: <87vdzgp0ue.fsf@free.fr>
-	<1215549906-14829-1-git-send-email-robert.jarzmik@free.fr>
-	<1215549906-14829-2-git-send-email-robert.jarzmik@free.fr>
-	<1215601158.4882.257.camel@localhost.localdomain>
-	<871w23kkek.fsf@free.fr>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: S24_LE is 3 bytes ? in alsa-lib example pcm.c
+Date: Thu, 10 Jul 2008 11:23:10 +0200
+Message-ID: <4875D4FE.3000607@ladisch.de>
+References: <4875C730.7080003@aimvalley.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C432C246C5
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id D8CE52469C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Jul 2008 10:50:36 +0200 (CEST)
-In-Reply-To: <871w23kkek.fsf@free.fr>
+	Thu, 10 Jul 2008 11:23:11 +0200 (CEST)
+In-Reply-To: <4875C730.7080003@aimvalley.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,31 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2008-07-09 at 20:00 +0200, Robert Jarzmik wrote:
-> Liam Girdwood <liam.girdwood@wolfsonmicro.com> writes:
-> 
-> > On Tue, 2008-07-08 at 22:45 +0200, Robert Jarzmik wrote:
-> >> Depending on the "Mio Mode" chosen, the master volume
-> >> controls the widget volume/mute levels, providing userspace
-> >> a unified vision of volume control (one control only).
-> >> 
-> >
-> > The userspace manager does the same thing here. I prefer the userspace
-> > approach for the long term instead of this being handled differently by
-> > each driver. It's in git atm though.  
-> 
-> OK. So drop the patch. If the same functionnality is already available, I'll see
-> if I can use it. May I know how stable that API is, and who actually uses it ?
+Norbert van Bolhuis wrote:
+> as far as I know:
+> sample format S24_LE is 24bit sample in 4 bytes
+> sample format S24_3LE is 24bit sample in 3 bytes
+> (why else have separate definitions), right ?
 
-I'm not going to drop the patch yet as it works for you :)
+Yes.
 
-The API is very new and is in need of more users (i.e. more than just me
-atm). Openmoko folks have expressed interest and will hopefully start
-using this in the future. The overall aim would be to integrate this
-into alsa-lib and salsa-lib when it's mature.
+> In the ALSA-LIb example /test/pcm.c however
+> (http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_8c-example.html)
+> there is no diff between the 2 sample formats.
 
-Liam
+That example program uses snd_pcm_format_width() although it should
+have used snd_pcm_format_physical_width() when calculating memory
+buffer sizes.
+
+
+Regards,
+Clemens
