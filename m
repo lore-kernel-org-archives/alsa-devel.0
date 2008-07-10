@@ -1,24 +1,18 @@
-From: Marek Lotke <lollul@wp.pl>
-Subject: Re:
- =?iso-8859-1?q?hda-codec_conexant_-_no_external_mic_?=
- =?iso-8859-1?q?on_FSC_V5505_=28with_patch=29?=
-Date: Thu, 10 Jul 2008 21:56:49 +0200
-Message-ID: <200807102156.49466.lollul@wp.pl>
-References: <200807091822.40851.lollul@wp.pl> <s5hmykpk0xt.wl%tiwai@suse.de>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: 1.0.16->1.0.17 regression for some HDA NVidia's
+Date: Fri, 11 Jul 2008 00:26:26 +0300
+Message-ID: <48767E82.2090002@pardus.org.tr>
+References: <4870F039.8020207@pardus.org.tr>	<s5hvdzhvg44.wl%tiwai@suse.de>	<48728B3F.4070100@pardus.org.tr>	<s5h4p70vgae.wl%tiwai@suse.de>	<48763BC9.40005@pardus.org.tr>
+	<s5hbq15rpro.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.wp.pl (mx1.wp.pl [212.77.101.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA1941037FB
+Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B21D10380B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Jul 2008 21:56:57 +0200 (CEST)
-Received: from 171.214-247-81.adsl-dyn.isp.belgacom.be (HELO r2d2.localnet)
-	(lollul@[81.247.214.171]) (envelope-sender <lollul@wp.pl>)
-	by smtp.wp.pl (WP-SMTPD) with AES256-SHA encrypted SMTP
-	for <alsa-devel@alsa-project.org>; 10 Jul 2008 21:56:45 +0200
-In-Reply-To: <s5hmykpk0xt.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Thu, 10 Jul 2008 23:26:05 +0200 (CEST)
+In-Reply-To: <s5hbq15rpro.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,84 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 10 July 2008, Takashi Iwai wrote:
-> At Wed, 9 Jul 2008 18:22:40 +0200,
->
-> Marek Lotke wrote:
-> > Hi,
-> > I've tried all conextant models for my new laptop... External mic would
-> > work only with benq but then the external headphones don't work.
-> >
-> > I managed to get the external mic working with this little patch:
-> > --- a/sound/pci/hda/patch_conexant.c
-> > +++ b/sound/pci/hda/patch_conexant.c
-> > @@ -686,7 +686,7 @@ static struct snd_kcontrol_new cxt5045_mixers_hp530[]
-> > = {
-> >
-> >  static struct hda_verb cxt5045_init_verbs[] = {
-> >         /* Line in, Mic */
-> > -       {0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
-> > +       {0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_80
-> > }, {0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_80 }, /*
-> > HP, Amp  */
-> >         {0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-> >
-> > Now I can switch between the mics with mixer. Still no mic auto sensing
-> > though but maybe there is none in hardware.
-> > Attached are the outputs of alsa-info.sh: default, with model benq and
-> > with default model with my patch with mixer set to external.
-> >
-> > I'll be glad to provide any info or try any patch...
->
-> How about the patch below?  Your device is already listed in the
-> config, so basically it has to work without specifying the model
-> option.
->
->
-> Takashi
->
-
-Works nicely! Thanks!
-
-Marek
-> ---
-> diff --git a/sound/pci/hda/patch_conexant.c
-> b/sound/pci/hda/patch_conexant.c index 95e3367..7c1eb23 100644
-> --- a/sound/pci/hda/patch_conexant.c
-> +++ b/sound/pci/hda/patch_conexant.c
-> @@ -686,7 +686,7 @@ static struct snd_kcontrol_new cxt5045_mixers_hp530[] =
-> {
->
->  static struct hda_verb cxt5045_init_verbs[] = {
->  	/* Line in, Mic */
-> -	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
-> +	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_80 },
->  	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN|AC_PINCTL_VREF_80 },
->  	/* HP, Amp  */
->  	{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-> @@ -910,7 +910,8 @@ static struct snd_pci_quirk cxt5045_cfg_tbl[] = {
->  	SND_PCI_QUIRK(0x152d, 0x0753, "Benq R55E", CXT5045_BENQ),
->  	SND_PCI_QUIRK(0x1734, 0x10ad, "Fujitsu Si1520", CXT5045_LAPTOP_MICSENSE),
->  	SND_PCI_QUIRK(0x1734, 0x10cb, "Fujitsu Si3515",
-> CXT5045_LAPTOP_HPMICSENSE), -	SND_PCI_QUIRK(0x1734, 0x110e, "Fujitsu
-> V5505", CXT5045_LAPTOP_HPSENSE), +	SND_PCI_QUIRK(0x1734, 0x110e, "Fujitsu
-> V5505",
-> +		      CXT5045_LAPTOP_HPMICSENSE),
->  	SND_PCI_QUIRK(0x1509, 0x1e40, "FIC", CXT5045_LAPTOP_HPMICSENSE),
->  	SND_PCI_QUIRK(0x1509, 0x2f05, "FIC", CXT5045_LAPTOP_HPMICSENSE),
->  	SND_PCI_QUIRK(0x1509, 0x2f06, "FIC", CXT5045_LAPTOP_HPMICSENSE),
-> @@ -962,6 +963,7 @@ static int patch_cxt5045(struct hda_codec *codec)
->  		codec->patch_ops.init = cxt5045_init;
->  		break;
->  	case CXT5045_LAPTOP_MICSENSE:
-> +		codec->patch_ops.unsol_event = cxt5045_hp_unsol_event;
->  		spec->input_mux = &cxt5045_capture_source;
->  		spec->num_init_verbs = 2;
->  		spec->init_verbs[1] = cxt5045_mic_sense_init_verbs;
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFRodSwgMTAgSnVsIDIwMDggMTk6NDE6NDUgKzAzMDAs
+Cj4gT3phbiDDh2HEn2xheWFuIHdyb3RlOgo+ICAgCj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4g
+ICAgIAo+Pj4gQXQgVHVlLCAwOCBKdWwgMjAwOCAwMDozMTo0MyArMDMwMCwKPj4+IE96YW4gw4dh
+xJ9sYXlhbiB3cm90ZToKPj4+ICAgCj4+PiAgICAgICAKPj4+PiBUYWthc2hpIEl3YWkgd3JvdGU6
+Cj4+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+Pj4+IEF0IFN1biwgMDYgSnVsIDIwMDggMTk6MTg6
+MDEgKzAzMDAsCj4+Pj4+IE96YW4gw4dhxJ9sYXlhbiB3cm90ZToKPj4+Pj4gICAKPj4+Pj4gICAg
+ICAgCj4+Pj4+ICAgICAgICAgICAKPj4+Pj4+IEV2ZXJ5dGhpbmcgc2VlbXMgT0sgd2l0aCB0aG9z
+ZSBvbmJvYXJkIGF1ZGlvIGNoaXBzZXRzIGJ1dCB0aGVyZSdzIAo+Pj4+Pj4gYWJzb2x1dGVseSBu
+byBzb3VuZC4KPj4+Pj4+IFdlIGhhdmUgMiBidWcgcmVwb3J0cyBvbiBvdXIgYnVnIHRyYWNraW5n
+IHN5c3RlbSBpbmRpY2F0aW5nIHRoaXMgCj4+Pj4+PiByZWdyZXNzaW9uIGZvciBNQ1A1MSwgTUNQ
+NjEgYW5kIE1DUDczLgo+Pj4+Pj4KPj4+Pj4+IEhlcmUgYXJlIHRoZSBVUkwncyBmb3IgYWxzYS1p
+bmZvLnNoIG91dHB1dCdzOgo+Pj4+Pj4KPj4+Pj4+IE1DUDUxOiBodHRwOi8vcGFzdGViaW4uY2Ev
+MTA2MjQxOAo+Pj4+Pj4gTUNQNjE6IGh0dHA6Ly9wYXN0ZWJpbi5jYS8xMDU4NDgyCj4+Pj4+PiBN
+Q1A3MzogaHR0cDovL3Bhc3RlYmluLmNhLzEwNTgzMTkKPj4+Pj4+Cj4+Pj4+PiBUaG9zZSB1c2Vy
+cyBoYXZlIHJlY2VudGx5IHJlcG9ydGVkIHRoYXQgZG93bmdyYWRpbmcgdG8gMS4wLjE2IHNlcmll
+cyAKPj4+Pj4+IHNvbHZlcyB0aGUgcHJvYmxlbS4KPj4+Pj4+ICAgICAKPj4+Pj4+ICAgICAgICAg
+Cj4+Pj4+PiAgICAgICAgICAgICAKPj4+Pj4gQ291bGQgeW91IHJ1biBhbHNhLWluZm8uc2ggb24g
+MS4wLjE2LCB0b28/ICBUaGVuIHdlIGNhbiBjb21wYXJlCj4+Pj4+IGJldHdlZW4gd29ya2luZyBh
+bmQgbm9uLXdvcmtpbmcgc3RhdGVzLgo+Pj4+Pgo+Pj4+Pgo+Pj4+PiB0aGFua3MsCj4+Pj4+Cj4+
+Pj4+IFRha2FzaGkKPj4+Pj4gICAKPj4+Pj4gICAgICAgCj4+Pj4+ICAgICAgICAgICAKPj4+PiBI
+aSwKPj4+Pgo+Pj4+IEkndmUgYWxzbyBlbnRlcmVkIGEgYnVnIHJlcG9ydCBmb3IgdGhpcyBwcm9i
+bGVtIHdoaWNoIGluY2x1ZGVzIHRoZSB0d28gCj4+Pj4gb3V0cHV0czoKPj4+Pgo+Pj4+IGh0dHBz
+Oi8vYnVndHJhY2suYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD00MDM4Cj4+
+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+PiBUaGUgZmlyc3QgdGhpbmcgdG8gY2hlY2sgaXMgdGhh
+dCB5b3UgYXJlIHVzaW5nIHB1bHNlIHBsdWdpbi4KPj4+IElzIGl0IGludGVuZGVkLCBhbmQgY29u
+ZmlybWVkIHRvIHdvcms/Cj4+Pgo+Pj4gVGhlIG5leHQgdGhpbmcgdG8gY2hlY2sgaXMgd2hldGhl
+ciAxLjAuMTYgZHJpdmVyIHdvcmtzIHdpdGggdGhlIHNhbWUgCj4+PiBlbnZpcm9ubWVudCAoMS4w
+LjE3IGxpYiwgdXRpbHMsIGV0YykgLS0gdGhhdCBpcywgeW91ciAxLjAuMTYgYWxzYS1pbmZvCj4+
+PiBvdXRwdXQuICBJZiB5ZXMsIGdldCBhbHNhLWluZm8uc2ggb3V0cHV0IGFnYWluLCB0aGVuIGlu
+c3RhbGwgMS4wLjE3Cj4+PiBkcml2ZXIgYWdhaW4gYW5kIHJlLXRlc3QuICBHZXQgYWxzYS1pbmZv
+LnNoIG91dHB1dCBvbiAxLjAuMTcgYWdhaW4KPj4+IChmb3Igbm9uLXdvcmtpbmcpIHRvIGNvbXBh
+cmUgZXhhY3RseS4KPj4+ICAgCj4+PiAgICAgICAKPj4gRmlyc3QgdGhlIHByb2JsZW0gaXMgbm90
+IHByZXNlbnQgd2hlbiBwdWxzZWF1ZGlvIGlzIHN0b3BwZWQuIEFuZCBhbHNvLCAKPj4gd2UgY2Fu
+IGdldCBzb3VuZCB3aXRoIDEuMC4xN3JjMSB0b28uIFNvIGJyaWVmbHk6Cj4+Cj4+IDEuMC4xNiAr
+IHB1bHNlIC0+IHdvcmtzIHdlbGwKPj4gMS4wLjE3cmMxICsgcHVsc2UgLT4gd29ya3Mgd2VsbAo+
+PiAxLjAuMTdyYzEscmMyICsgcHVsc2UgLT4gTm8gc291bmQuCj4+Cj4+IEl0IHNlZW1zIHRoYXQg
+c29tZXRoaW5nIGlzIGJyb2tlbiBmb3IgdGhlc2UgY2hpcHNldHMgaW4gZWl0aGVyIGFsc2Egb3Ig
+Cj4+IHB1bHNlIHRyZWUuIEFueSBpZGVhcyBmb3IgeW91ciBhbHNhLXtkcml2ZXIsbGliLHBsdWdp
+bnN9IHBhcnQ/Cj4+ICAgICAKPgo+IFRyeSB0byBDb21wYXJlIGFsc2EtaW5mby5zaCBvdXRwdXRz
+IGJldHdlZW4gdGhlc2UgdmVyc2lvbnMuCj4gSWYgdGhlcmUgaXMgYSBzaWduaWZpY2FudCBkaWZm
+ZXJlbmNlIGluIGNvZGVjIyogcHJvYyBmaWxlcywgdGhlbgo+IHNvbWV0aGluZyB3YXMgY2hhbmdl
+ZCBpbiB0aGUgZHJpdmVyIHNpZGUuICBJZiBub3QsIGl0J3MgcHVsc2UKPiBwcm9ibGVtLgo+ICAg
+Ckl0IHNlZW1zIHRoYXQgd2UndmUgZm91bmQgdGhlIHByb2JsZW0uCk1DUDUxIGFuZCBNQ1A2MSB3
+b3JrcyB3ZWxsIHdoZW4gdGhlIDEuMC4xNyBpbnRyb2R1Y2VkIG1vZHVsZSBwYXJhbWV0ZXIgCmJk
+bF9wb3NfYWRqIGlzIGV4cGxpY2l0bHkgc2V0IHRvIDAgd2hlbiBwcm9iaW5nIHRoZSBzbmQtaGRh
+LWludGVsIG1vZHVsZS4KCi0tIAoKT3phbiDDh2HEn2xheWFuCjxvemFuX2F0X3BhcmR1cy5vcmcu
+dHI+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
