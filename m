@@ -1,18 +1,16 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: 1.0.16->1.0.17 regression for some HDA NVidia's
-Date: Fri, 11 Jul 2008 14:31:25 +0300
-Message-ID: <4877448D.9090603@pardus.org.tr>
-References: <4870F039.8020207@pardus.org.tr>	<s5hvdzhvg44.wl%tiwai@suse.de>	<48728B3F.4070100@pardus.org.tr>	<s5h4p70vgae.wl%tiwai@suse.de>	<48763BC9.40005@pardus.org.tr>	<s5hbq15rpro.wl%tiwai@suse.de>	<48767E82.2090002@pardus.org.tr>	<s5h4p6w5msv.wl%tiwai@suse.de>	<4876FE5F.2070908@pardus.org.tr>
-	<s5h3amgru3l.wl%tiwai@suse.de>
+From: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+Subject: [PATCH] asoc: kbuild - only show menus for the current
+	ASoC CPU	platform.
+Date: Fri, 11 Jul 2008 14:05:17 +0100
+Message-ID: <1215781517.6634.14.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE0502448A
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 46469248C2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Jul 2008 13:27:18 +0200 (CEST)
-In-Reply-To: <s5h3amgru3l.wl%tiwai@suse.de>
+	Fri, 11 Jul 2008 15:05:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,56 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDEyLTA3LTIwMDggMDA6MjU6Cj4gQXQgRnJpLCAxMSBKdWwg
-MjAwOCAwOTozMTo1OSArMDMwMCwKPiBPemFuIMOHYcSfbGF5YW4gd3JvdGU6Cj4gICAKPj4gVGFr
-YXNoaSBJd2FpIHdyb3RlIE9uIDExLTA3LTIwMDggMjA6NTQ6Cj4+ICAgICAKPj4+IFRvIG1ha2Ug
-c3VyZTogYmRsX3Bvc19hZGo9MzIgb3IgaGlnaGVyIGRvZXNuJ3Qgd29yaywgdG9vPwo+Pj4gQWxz
-bywgaWYgeW91IHNldCBiZGxfcG9zX2Fkaj0wLCBkbyB5b3UgZ2V0IGFueSB3YXJuaW5nIG1lc3Nh
-Z2VzPwo+Pj4KPj4+IEl0J3MgZmluZSB0byB0YWtlIGJkbF9wb3NfYWRqPTAgYXMgZGVmYXVsdCBm
-b3IgTnZpZGlhIGNoaXBzLiAgQnV0LAo+Pj4gYmFzaWNhbGx5IHRoaXMgdmFsdWUgKHdoZW4gaXQn
-cyBiaWcgZW5vdWdoKSBzaG91bGRuJ3QgZGlzYWJsZSB0aGUKPj4+IHNvdW5kIGF0IGFsbC4KPj4+
-ICAgCj4+PiAgICAgICAKPj4gSSd2ZSB0cmllZCB0aGUgdmFsdWVzICgyLDgsMTYsMzIsNjQsMTI4
-LDI1NiwxMDI0LDIwNDgsNDA5Niw4MTkyKS4KPj4gV2hlbiB0aGUgcGFyYW1ldGVyIGlzIHNldCB0
-byAyMDQ4LDQwOTYgb3IgODE5MiwgaGVyZSdzIHRoZSBkbWVzZyBtZXNzYWdlIAo+PiB3ZSBnZXQ6
-Cj4+Cj4+IEFMU0EgLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMDU2OiBUb28g
-YmlnIGFkanVzdG1lbnQgNDA5Ngo+PiBBTFNBIC4uL2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2lu
-dGVsLmM6MTA1NjogVG9vIGJpZyBhZGp1c3RtZW50IDQwOTYKPj4gQUxTQSAuLi9hbHNhLWtlcm5l
-bC9wY2kvaGRhL2hkYV9pbnRlbC5jOjEwNTY6IFRvbyBiaWcgYWRqdXN0bWVudCA0MDk2Cj4+IEFM
-U0EgLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMDU2OiBUb28gYmlnIGFkanVz
-dG1lbnQgNDA5Ngo+PiBoZGEtaW50ZWw6IElSUSB0aW1pbmcgd29ya2Fyb3VuZCBpcyBhY3RpdmF0
-ZWQgZm9yIGNhcmQgIzAuIFN1Z2dlc3QgYSAKPj4gYmlnZ2VyIGJkbF9wb3NfYWRqLgo+PiBBTFNB
-IC4uL2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2ludGVsLmM6MTA1NjogVG9vIGJpZyBhZGp1c3Rt
-ZW50IDQwOTYKPj4gQUxTQSAuLi9hbHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9pbnRlbC5jOjEwNTY6
-IFRvbyBiaWcgYWRqdXN0bWVudCA0MDk2Cj4+IEFMU0EgLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9o
-ZGFfaW50ZWwuYzoxMDU2OiBUb28gYmlnIGFkanVzdG1lbnQgNDA5Ngo+PiBBTFNBIC4uL2Fsc2Et
-a2VybmVsL3BjaS9oZGEvaGRhX2ludGVsLmM6MTA1NjogVG9vIGJpZyBhZGp1c3RtZW50IDQwOTYK
-Pj4KPj4gVGhlIHNvdW5kIHdvcmtzIHdlbGwgd2l0aCB0aG9zZSB2YWx1ZXMuCj4+ICAgICAKPgo+
-IEl0J3MgYmVjYXVzZSBiZGxfcG9zX2Fkaj0wIGlzIHRha2VuIGFzIGZhbGxiYWNrLgo+Cj4gICAK
-Pj4gVGhlIG90aGVyIHNtYWxsIHZhbHVlcyBhdm9pZCBwdWxzZSB0byB3b3JrIGNvcnJlY3RseSB3
-aXRoIEFMU0EuCj4+ICAgICAKPgo+IFdoYXQgYWJvdXQgb3RoZXIgYXBwbGljYXRpb25zPyAgQ291
-bGQgeW91IHJ1biBBTFNBIGFwcHMsIGUuZy4gYXBsYXksCj4gd2l0aG91dCBwdWxzZT8KPiAgIApZ
-ZXMuIEkgY2FuIHBsYXkgYW4gbXAzIGZpbGUgd2l0aCBtcGxheWVyLCB1c2luZyBhbHNhIG91dHB1
-dC4KV2l0aG91dCBwdWxzZSBldmVyeXRoaW5nIHdhcyBhbHJlYWR5IGZpbmUuLgo+ICAgCj4+IFdo
-ZW4gdGhlIHBhcmFtZXRlciBpcyBzZXQgMCwgdGhlIHNvdW5kIHdvcmtzIHdlbGwgYW5kIHRoZSBk
-cml2ZXIgb3V0cHV0cyAKPj4gdGhpcyBtZXNzYWdlOgo+PiBoZGEtaW50ZWw6IElSUSB0aW1pbmcg
-d29ya2Fyb3VuZCBpcyBhY3RpdmF0ZWQgZm9yIGNhcmQgIzAuIFN1Z2dlc3QgYSAKPj4gYmlnZ2Vy
-IGJkbF9wb3NfYWRqLgo+PiAgICAgCj4KPiBTbywgaXQgbWVhbnMgdGhhdCB0aGUgcHJvYmxlbSBz
-dGlsbCBleGlzdHMuICBUaGUgZHJpdmVyIGRlbGF5cyB0aGUKPiBjYWxsIG9mIHNuZF9wY21fcGVy
-aW9kX2VsYXBzZWQoKSB3aXRoIGEgYnVzeSBsb29wLiAgVGhlIGJkbF9wb3NfYWRqCj4gYWRkcyBh
-IGNvbnN0YW50IGRlbGF5LCBPVE9ILgo+ICAgClNvIElmIEkgcmVzdW1lIGEgbGl0dGxlIGJpdCB3
-aGF0IHdlIGhhdmUgbm93OgoKLSBPbiBhIHN5c3RlbSB3aGljaCBkb2VzIG5vdCB1c2UgcHVsc2Vh
-dWRpbywgdGhlIGNoaXBzZXQgd29ya3Mgd2l0aCAKMS4wLjE2IGFuZCBhbGwgMS4wLjE2IFJDJ3Mu
-Ci0gT24gYSBzeXN0ZW0gdXNpbmcgcHVsc2VhdWRpbywgaXQncyBpbXBvc3NpYmxlIHRvIGdldCBz
-b3VuZCB3aGVuIHVzaW5nIAoxLjAuMTdyYzIgYW5kIDEuMC4xN3JjMyBpZiBiZGxfcG9zX2FkaiBp
-cyBub3QgZXhwbGljaXRseSBzZXQgdG8gMC4gZG1lc2cgCm91dHB1dCBjb250YWlucyBhbHNvIHRo
-ZXNlIHR3byBsaW5lcyB3aGVuIHRoZSBtb2R1bGUgaXMgbG9hZGVkOgoKQUNQSTogUENJIEludGVy
-cnVwdCAwMDAwOjAwOjEwLjFbQl0gLT4gTGluayBbQUFaQV0gLT4gR1NJIDIyIChsZXZlbCwgCmxv
-dykgLT4gSVJRIDIyCmhkYS1pbnRlbDogSVJRIHRpbWluZyB3b3JrYXJvdW5kIGlzIGFjdGl2YXRl
-ZCBmb3IgY2FyZCAjMC4gU3VnZ2VzdCBhIApiaWdnZXIgYmRsX3Bvc19hZGouCgotLSAKT3phbiDD
-h2HEn2xheWFuCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+We don't want to see ASoC platform menus for other non selected
+architectures in our config.
+
+Signed-off-by: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+---
+ sound/soc/fsl/Kconfig  |    4 ----
+ sound/soc/omap/Kconfig |    4 ----
+ 2 files changed, 0 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 19802e2..3368ace 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -1,5 +1,3 @@
+-menu "ALSA SoC audio for Freescale SOCs"
+-
+ config SND_SOC_MPC8610
+ 	bool "ALSA SoC support for the MPC8610 SOC"
+ 	depends on MPC8610_HPCD
+@@ -16,5 +14,3 @@ config SND_SOC_MPC8610_HPCD
+ 	default y if MPC8610_HPCD
+ 	help
+ 	  Say Y if you want to enable audio on the Freescale MPC8610 HPCD.
+-
+-endmenu
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 0230d83..aea27e7 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -1,5 +1,3 @@
+-menu "SoC Audio for the Texas Instruments OMAP"
+-
+ config SND_OMAP_SOC
+ 	tristate "SoC Audio for the Texas Instruments OMAP chips"
+ 	depends on ARCH_OMAP && SND_SOC
+@@ -15,5 +13,3 @@ config SND_OMAP_SOC_N810
+ 	select SND_SOC_TLV320AIC3X
+ 	help
+ 	  Say Y if you want to add support for SoC audio on Nokia N810.
+-
+-endmenu
+-- 
+1.5.4.3
