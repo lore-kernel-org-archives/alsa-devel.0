@@ -1,18 +1,19 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: 1.0.16->1.0.17 regression for some HDA NVidia's
-Date: Fri, 11 Jul 2008 09:31:59 +0300
-Message-ID: <4876FE5F.2070908@pardus.org.tr>
-References: <4870F039.8020207@pardus.org.tr>	<s5hvdzhvg44.wl%tiwai@suse.de>	<48728B3F.4070100@pardus.org.tr>	<s5h4p70vgae.wl%tiwai@suse.de>	<48763BC9.40005@pardus.org.tr>	<s5hbq15rpro.wl%tiwai@suse.de>	<48767E82.2090002@pardus.org.tr>
-	<s5h4p6w5msv.wl%tiwai@suse.de>
+From: "D. Sen" <dsen@homemail.com>
+Subject: Re: RME madiface
+Date: Fri, 11 Jul 2008 16:50:07 +1000
+Message-ID: <4877029F.6080006@homemail.com>
+References: <48769BDC.80007@homemail.com>
+	<200807110626.52197.faber@faberman.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pardus.org.tr (ns2.uludag.org.tr [193.140.100.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7B09103801
+Received: from smtpout08.prod.mesa1.secureserver.net
+	(smtpout08-04.prod.mesa1.secureserver.net [64.202.165.12])
+	by alsa0.perex.cz (Postfix) with SMTP id 476FE103819
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Jul 2008 08:27:48 +0200 (CEST)
-In-Reply-To: <s5h4p6w5msv.wl%tiwai@suse.de>
+	Fri, 11 Jul 2008 08:50:24 +0200 (CEST)
+In-Reply-To: <200807110626.52197.faber@faberman.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +23,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Florian Faber <faber@faberman.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlIE9uIDExLTA3LTIwMDggMjA6NTQ6Cj4KPiBUbyBtYWtlIHN1cmU6
-IGJkbF9wb3NfYWRqPTMyIG9yIGhpZ2hlciBkb2Vzbid0IHdvcmssIHRvbz8KPiBBbHNvLCBpZiB5
-b3Ugc2V0IGJkbF9wb3NfYWRqPTAsIGRvIHlvdSBnZXQgYW55IHdhcm5pbmcgbWVzc2FnZXM/Cj4K
-PiBJdCdzIGZpbmUgdG8gdGFrZSBiZGxfcG9zX2Fkaj0wIGFzIGRlZmF1bHQgZm9yIE52aWRpYSBj
-aGlwcy4gIEJ1dCwKPiBiYXNpY2FsbHkgdGhpcyB2YWx1ZSAod2hlbiBpdCdzIGJpZyBlbm91Z2gp
-IHNob3VsZG4ndCBkaXNhYmxlIHRoZQo+IHNvdW5kIGF0IGFsbC4KPiAgIApJJ3ZlIHRyaWVkIHRo
-ZSB2YWx1ZXMgKDIsOCwxNiwzMiw2NCwxMjgsMjU2LDEwMjQsMjA0OCw0MDk2LDgxOTIpLgpXaGVu
-IHRoZSBwYXJhbWV0ZXIgaXMgc2V0IHRvIDIwNDgsNDA5NiBvciA4MTkyLCBoZXJlJ3MgdGhlIGRt
-ZXNnIG1lc3NhZ2UgCndlIGdldDoKCkFMU0EgLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50
-ZWwuYzoxMDU2OiBUb28gYmlnIGFkanVzdG1lbnQgNDA5NgpBTFNBIC4uL2Fsc2Eta2VybmVsL3Bj
-aS9oZGEvaGRhX2ludGVsLmM6MTA1NjogVG9vIGJpZyBhZGp1c3RtZW50IDQwOTYKQUxTQSAuLi9h
-bHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9pbnRlbC5jOjEwNTY6IFRvbyBiaWcgYWRqdXN0bWVudCA0
-MDk2CkFMU0EgLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMDU2OiBUb28gYmln
-IGFkanVzdG1lbnQgNDA5NgpoZGEtaW50ZWw6IElSUSB0aW1pbmcgd29ya2Fyb3VuZCBpcyBhY3Rp
-dmF0ZWQgZm9yIGNhcmQgIzAuIFN1Z2dlc3QgYSAKYmlnZ2VyIGJkbF9wb3NfYWRqLgpBTFNBIC4u
-L2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2ludGVsLmM6MTA1NjogVG9vIGJpZyBhZGp1c3RtZW50
-IDQwOTYKQUxTQSAuLi9hbHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9pbnRlbC5jOjEwNTY6IFRvbyBi
-aWcgYWRqdXN0bWVudCA0MDk2CkFMU0EgLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwu
-YzoxMDU2OiBUb28gYmlnIGFkanVzdG1lbnQgNDA5NgpBTFNBIC4uL2Fsc2Eta2VybmVsL3BjaS9o
-ZGEvaGRhX2ludGVsLmM6MTA1NjogVG9vIGJpZyBhZGp1c3RtZW50IDQwOTYKClRoZSBzb3VuZCB3
-b3JrcyB3ZWxsIHdpdGggdGhvc2UgdmFsdWVzLgoKVGhlIG90aGVyIHNtYWxsIHZhbHVlcyBhdm9p
-ZCBwdWxzZSB0byB3b3JrIGNvcnJlY3RseSB3aXRoIEFMU0EuCgpXaGVuIHRoZSBwYXJhbWV0ZXIg
-aXMgc2V0IDAsIHRoZSBzb3VuZCB3b3JrcyB3ZWxsIGFuZCB0aGUgZHJpdmVyIG91dHB1dHMgCnRo
-aXMgbWVzc2FnZToKaGRhLWludGVsOiBJUlEgdGltaW5nIHdvcmthcm91bmQgaXMgYWN0aXZhdGVk
-IGZvciBjYXJkICMwLiBTdWdnZXN0IGEgCmJpZ2dlciBiZGxfcG9zX2Fkai4KCjIgTUNQNTEgYW5k
-IDIgTUNQNjEgdXNlcnMgcmVwb3J0ZWQgdGhhdCBzZXR0aW5nIHRoZSBwYXJhbWV0ZXIgdG8gMCAK
-c29sdmVzIHRoZSBpbmNvbXBhdGliaWxpdHkgYmV0d2VlbiBhbHNhIGFuZCBwdWxzZS4KClRoYW5r
-cy4KCgotLSAKT3phbiDDh2HEn2xheWFuCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+Florian Faber wrote:
+> Pleaseuseafullname,
+> 
+>> I have been trying to use the hdspm driver with a recently purchased
+>> RME Madiface device. The functionality that I require is to play
+>> various files through various channels under program (script)
+>> control. I am happy to report that it *almost* works - in that I can
+>> use my simple userspace programs to play files. However, there are
+>> subtle problems - in that the external MADI A-to-D (an Euphonix 703)
+>> does not seem to lock into the sampling rate (something that works
+>> under windows). Its very close to achieving full functionality (for
+>> my needs) - but just that tiny bit away from being fully useable.
+>>
+>> Any ideas?
+> 
+> There is no difference on the MADI bus wether you use Windows, OS X or 
+> Linux. This seems to be a specific problem with the Euphonix.
+
+I have no reason to believe the MADI bus is different. However, I
+suspect the stream are different.
+
+I have two Euphonix boxes and they both behave perfectly under windows -
+but not under linux. The main problem under linux is that they lose sync
+- at the slightest electromagnetic interference (such as turning off/on
+the speakers - on the analogue side - even from a distance of 3 metres).
+The actual detection of the incorrect sampling rate (or "custom") while
+disconcerting is not really much of a problem if the files are playing fine.
+
+
+> 
+> What are the exact parameters you use on Windows (when the Euphonix 
+> worked)?
+
+Windows Parameters:
+
+Buffer Size: 256
+Clock Mode: Both "Auto sync" and "Master"
+Madi Out: Both "56" and "64"
+WDM Devices: 32
+96 kHz: both "48 k" and "96 k" Frame
+System Clock: 44.1
+DDS: not selected
+
+The linux parameters:
+>cat /proc/asound/card0/hdspm
+RME HDSPM MADI (Card #2) Rev.d5 Status2first3bits: 1
+IRQ: 16 Registers bus: 0xe3100000 VM: 0xffffc20009640000
+--- System ---
+IRQ Pending: Audio=0, MIDI0=0, MIDI1=0, IRQcount=109
+HW pointer: id = 0, rawptr = 0 (0->65472) estimated= 0 (bytes)
+MIDI FIFO: Out1=0x0, Out2=0x0, In1=0x80, In2=0x80
+Register: ctrl1=0x1094c9e, ctrl2=0x0, status1=0xc00000, status2=0xc0050701
+--- Settings ---
+Size (Latency): 8192 samples (2 periods of 32768 bytes)
+Line out: on ,   Precise Pointer: off
+Inputsel = Coaxial, SyncRef = MADI
+ClearTrackMarker = on, Transmit in 64 Channel Mode, Auto Input on
+Sample Clock Source: Internal 44.1 kHz
+System Clock Mode: Master
+Preferred Sync Reference: MADI Sync
+System Clock Frequency: 44100
+--- Status:
+Inputs MADI=NoLock, WordClock=NoLock
+AutoSync: Reference= Input not valid, Freq=0 (MADI = 3, Word = 0)
+Input: Optical, Mode=56 channels
+
+> 
+>> Havent had much luck contacting RME and Winfried Ritsch (who
+>> wrote/maintains the code).
+> 
+> I maintain the code at the moment.
+> 
+
+Good to hear.
+
+> 
+> Flo
+Dee
+
+-- 
+Dr. D. Sen
+School of Electrical Engineering & Telecommunications
+University of New South Wales
+Sydney
+NSW 2052
+Australia
+Tel: +612+93854754
