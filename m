@@ -1,22 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ALSA SoC: Add Texas
-	Instruments	TLV320AIC26 codec driver
-Date: Sat, 12 Jul 2008 18:36:10 +0100
-Message-ID: <20080712173609.GA6523@sirena.org.uk>
-References: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
-	<20080701235340.16923.48024.stgit@trillian.secretlab.ca>
-	<1214995713.4882.54.camel@localhost.localdomain>
-	<20080712060018.GB23213@secretlab.ca>
+Subject: Re: [PATCH v2 3/3] ALSA SoC: Add Texas Instruments
+	TLV320AIC26 codec	driver
+Date: Sat, 12 Jul 2008 19:10:00 +0100
+Message-ID: <20080712180959.GB6523@sirena.org.uk>
+References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
+	<20080712083939.15025.31192.stgit@trillian.secretlab.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F271103812
+	by alsa0.perex.cz (Postfix) with ESMTP id 4DFFD103830
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Jul 2008 19:36:14 +0200 (CEST)
+	Sat, 12 Jul 2008 20:10:03 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20080712060018.GB23213@secretlab.ca>
+In-Reply-To: <20080712083939.15025.31192.stgit@trillian.secretlab.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,44 +25,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Grant Likely <grant.likely@secretlab.ca>
-Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, timur@freescale.com, linuxppc-dev@ozlabs.org
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 12, 2008 at 12:00:18AM -0600, Grant Likely wrote:
-> On Wed, Jul 02, 2008 at 11:48:33AM +0100, Liam Girdwood wrote:
+On Sat, Jul 12, 2008 at 02:39:39AM -0600, Grant Likely wrote:
 
-> > PLL/FLL/clock config is usually done in a separate function
-> > (codec_set_pll(), callable by machine driver) so that we can change
-> > clocks depending on the available machine clocks and srate. 
+> ASoC Codec driver for the TLV320AIC26 device.  This driver uses the ASoC
+> v1 API, so I don't expect it to get merged as-is, but I want to get it
+> out there for review.
 
-...
-
-> > Codec domain (i.e Bias power) PM stuff should be done in
-> > codec_dapm_event(). This allows us to power the codec on when we do
-> > things like sidetone (with no active playback or capture stream).
-
-> Ugh, I'm going to have to leave these two for now.  I don't understand
-> enough about the ASoC structure yet to understand what it should look
-> like.  I'll probably need help, but I don't think I can get it sorted
-> out before the merge window.
-
-> Do these two comments need to be addressed before the driver is merged?
-
-It wouldn't be the only driver not to implement PLL configuration in
-this way so that's probably be OK for an initial merge.  What's expected
-for PLL configuration is that you implement the DAI set_pll() operation
-in the codec driver, allowing machine drivers to configure the PLL when
-they wish.
-
-The power configuration should be fixed, though.  Normally drivers
-either fully implement DAPM (including set_bias_level()) or power
-everything in the codec up when the driver is loaded.  At the minute
-what the driver is doing appears to be powering the codec up in both
-_hw_params() and _probe() but never powering anything down - if that is
-the case then probably all you need to do is remove the extra power up
-from hw_params(), giving you the simple option.
-
-> Hmmm, I haven't been able to find this; either in the code or on a live
-> running system.  Where is the common reg dump implemented.
-
-/sys/bus/platform/devices/soc-audio/codec_reg
+I've not reviewed this revision of these drivers yet but I just wanted
+to point out that there's absoluely no problem with merging v1 drivers -
+so long as a driver uses the existing merged APIs there's no issue from
+that point of view.
