@@ -1,22 +1,19 @@
-From: "Grant Likely" <grant.likely@secretlab.ca>
-Subject: Re: [PATCH v2 3/3] ALSA SoC: Add Texas Instruments
-	TLV320AIC26 codec driver
-Date: Sat, 12 Jul 2008 12:14:40 -0600
-Message-ID: <fa686aa40807121114u2f7c8ae6p1c1919c713e53c1a@mail.gmail.com>
-References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
-	<20080712083939.15025.31192.stgit@trillian.secretlab.ca>
-	<20080712180959.GB6523@sirena.org.uk>
+From: Hans-Frieder Vogt <hfvogt@gmx.net>
+Subject: Re: 1.0.16->1.0.17 regression for some HDA NVidia's
+Date: Sun, 13 Jul 2008 08:45:55 +0200
+Message-ID: <200807130845.55733.hfvogt@gmx.net>
+References: <4870F039.8020207@pardus.org.tr> <s5h3amgru3l.wl%tiwai@suse.de>
+	<4877448D.9090603@pardus.org.tr>
+Reply-To: hfvogt@gmx.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A8E2103821
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 9D74B24B63
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Jul 2008 20:14:41 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so776911and.80
-	for <alsa-devel@alsa-project.org>; Sat, 12 Jul 2008 11:14:40 -0700 (PDT)
-In-Reply-To: <20080712180959.GB6523@sirena.org.uk>
+	Sun, 13 Jul 2008 08:46:02 +0200 (CEST)
+In-Reply-To: <4877448D.9090603@pardus.org.tr>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,28 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com, jonsmirl@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, ozan@pardus.org.tr
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 12, 2008 at 12:10 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Sat, Jul 12, 2008 at 02:39:39AM -0600, Grant Likely wrote:
->
->> ASoC Codec driver for the TLV320AIC26 device.  This driver uses the ASoC
->> v1 API, so I don't expect it to get merged as-is, but I want to get it
->> out there for review.
->
-> I've not reviewed this revision of these drivers yet but I just wanted
-> to point out that there's absoluely no problem with merging v1 drivers -
-> so long as a driver uses the existing merged APIs there's no issue from
-> that point of view.
-
-Oops, I forgot to update my commit messages.  I'll probably repost v3
-of the series this evening and I'll fix this.
-
-Cheers,
-g.
-
--- 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+SnVzdCBhIGZldyBtb3JlIHRoaW5ncyB0byBhZGQgKG1heWJlIGl0IGdldHMgY2xlYXJlcik6Ck9u
+IGEgR2VGb3JjZSA4MjAwIGJvYXJkIChNQ1A3OFMpLCB1c2luZyB0aGUgcGNtIGV4YW1wbGUgcHJv
+Z3JhbSBmcm9tIGFsc2EtbGliLTEuMC4xN3JjMi90ZXN0LAprZXJuZWwgZHJpdmVyIHZlcnNpb24g
+MS4wLjE3cmMzOgooaWdub3JpbmcgbXkgZ2VuZXJhbCBzb3VuZCBkaXN0b3J0aW9uIHByb2JsZW0g
+d2hpY2ggSSB3aWxsIGFkZHJlc3MgYWdhaW4gaW4gYW5vdGhlciBwb3N0KQoKYmRsX3Bvc19hZGo9
+MApib3RoIGRldmljZXMgImRlZmF1bHQiIGFuZCAicGx1Z2h3OjAsMCIgd29yaywgaS5lLiBnaXZl
+IGNvbnRpbnVvdXMgc291bmQKCmJkbF9wb3NfYWRqPTEKYmRsX3Bvc19hZGo9MgpiZGxfcG9zX2Fk
+aj04Cm5vIHNvdW5kLCBwY20gc2VlbXMgdG8gZ2V0cyBzdHVjayAoZXhhbXBsZSBwcm9ncmFtIGRv
+ZXMgbm90IHJldHVybikKCmJkbF9wb3NfYWRqPTE2CmJkbF9wb3NfYWRqPTMyCmJkbF9wb3NfYWRq
+PTY0CmJkbF9wb3NfYWRqPTEyOApiZGxfcG9zX2Fkaj0yNTYKYmRsX3Bvc19hZGo9NTEyCmJkbF9w
+b3NfYWRqPTEwMjQKYmRsX3Bvc19hZGo9MjA0OApkZWZhdWx0IGRldmljZTogd29ya3MsIGkuZS4g
+c291bmQKcGx1Z2h3OjAsMDogbm8gc291bmQsIHBjbSBnZXRzIHN0dWNrCgpiZGxfcG9zX2Fkaj00
+MDk2CmJkbF9wb3NfYWRqPTgxOTIKQUxTQSAvaG9tZS9oYWVmL1RyZWliZXIvYWxzYS1kcml2ZXIt
+MS4wLjE3cmMzL3BjaS9oZGEvLi4vLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzox
+MDU2OiBUb28gYmlnIGFkanVzdG1lbnQgNDA5NgpkZWZhdWx0IGRldmljZTogd29ya3MsIGkuZS4g
+c291bmQKcGx1Z2h3OjAsMDoganVzdCBvbmUgYmVlcCAoYXBwcm94LiAwLjVzIG9mIHNvdW5kKSwg
+dGhlbiBwY20gZ2V0cyBzdHVjawoKQW55IGlkZWFzPwoKQW0gRnJlaXRhZywgMTEuIEp1bGkgMjAw
+OCBzY2hyaWViIE96YW4gw4dhxJ9sYXlhbjoKPiBUYWthc2hpIEl3YWkgd3JvdGUgT24gMTItMDct
+MjAwOCAwMDoyNToKPiA+IEF0IEZyaSwgMTEgSnVsIDIwMDggMDk6MzE6NTkgKzAzMDAsCj4gPiBP
+emFuIMOHYcSfbGF5YW4gd3JvdGU6Cj4gPiAgIAo+ID4+IFRha2FzaGkgSXdhaSB3cm90ZSBPbiAx
+MS0wNy0yMDA4IDIwOjU0Ogo+ID4+ICAgICAKPiA+Pj4gVG8gbWFrZSBzdXJlOiBiZGxfcG9zX2Fk
+aj0zMiBvciBoaWdoZXIgZG9lc24ndCB3b3JrLCB0b28/Cj4gPj4+IEFsc28sIGlmIHlvdSBzZXQg
+YmRsX3Bvc19hZGo9MCwgZG8geW91IGdldCBhbnkgd2FybmluZyBtZXNzYWdlcz8KPiA+Pj4KPiA+
+Pj4gSXQncyBmaW5lIHRvIHRha2UgYmRsX3Bvc19hZGo9MCBhcyBkZWZhdWx0IGZvciBOdmlkaWEg
+Y2hpcHMuICBCdXQsCj4gPj4+IGJhc2ljYWxseSB0aGlzIHZhbHVlICh3aGVuIGl0J3MgYmlnIGVu
+b3VnaCkgc2hvdWxkbid0IGRpc2FibGUgdGhlCj4gPj4+IHNvdW5kIGF0IGFsbC4KPiA+Pj4gICAK
+PiA+Pj4gICAgICAgCj4gPj4gSSd2ZSB0cmllZCB0aGUgdmFsdWVzICgyLDgsMTYsMzIsNjQsMTI4
+LDI1NiwxMDI0LDIwNDgsNDA5Niw4MTkyKS4KPiA+PiBXaGVuIHRoZSBwYXJhbWV0ZXIgaXMgc2V0
+IHRvIDIwNDgsNDA5NiBvciA4MTkyLCBoZXJlJ3MgdGhlIGRtZXNnIG1lc3NhZ2UgCj4gPj4gd2Ug
+Z2V0Ogo+ID4+Cj4gPj4gQUxTQSAuLi9hbHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9pbnRlbC5jOjEw
+NTY6IFRvbyBiaWcgYWRqdXN0bWVudCA0MDk2Cj4gPj4gQUxTQSAuLi9hbHNhLWtlcm5lbC9wY2kv
+aGRhL2hkYV9pbnRlbC5jOjEwNTY6IFRvbyBiaWcgYWRqdXN0bWVudCA0MDk2Cj4gPj4gQUxTQSAu
+Li9hbHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9pbnRlbC5jOjEwNTY6IFRvbyBiaWcgYWRqdXN0bWVu
+dCA0MDk2Cj4gPj4gQUxTQSAuLi9hbHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9pbnRlbC5jOjEwNTY6
+IFRvbyBiaWcgYWRqdXN0bWVudCA0MDk2Cj4gPj4gaGRhLWludGVsOiBJUlEgdGltaW5nIHdvcmth
+cm91bmQgaXMgYWN0aXZhdGVkIGZvciBjYXJkICMwLiBTdWdnZXN0IGEgCj4gPj4gYmlnZ2VyIGJk
+bF9wb3NfYWRqLgo+ID4+IEFMU0EgLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzox
+MDU2OiBUb28gYmlnIGFkanVzdG1lbnQgNDA5Ngo+ID4+IEFMU0EgLi4vYWxzYS1rZXJuZWwvcGNp
+L2hkYS9oZGFfaW50ZWwuYzoxMDU2OiBUb28gYmlnIGFkanVzdG1lbnQgNDA5Ngo+ID4+IEFMU0Eg
+Li4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMDU2OiBUb28gYmlnIGFkanVzdG1l
+bnQgNDA5Ngo+ID4+IEFMU0EgLi4vYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYzoxMDU2
+OiBUb28gYmlnIGFkanVzdG1lbnQgNDA5Ngo+ID4+Cj4gPj4gVGhlIHNvdW5kIHdvcmtzIHdlbGwg
+d2l0aCB0aG9zZSB2YWx1ZXMuCj4gPj4gICAgIAo+ID4KPiA+IEl0J3MgYmVjYXVzZSBiZGxfcG9z
+X2Fkaj0wIGlzIHRha2VuIGFzIGZhbGxiYWNrLgo+ID4KPiA+ICAgCj4gPj4gVGhlIG90aGVyIHNt
+YWxsIHZhbHVlcyBhdm9pZCBwdWxzZSB0byB3b3JrIGNvcnJlY3RseSB3aXRoIEFMU0EuCj4gPj4g
+ICAgIAo+ID4KPiA+IFdoYXQgYWJvdXQgb3RoZXIgYXBwbGljYXRpb25zPyAgQ291bGQgeW91IHJ1
+biBBTFNBIGFwcHMsIGUuZy4gYXBsYXksCj4gPiB3aXRob3V0IHB1bHNlPwo+ID4gICAKPiBZZXMu
+IEkgY2FuIHBsYXkgYW4gbXAzIGZpbGUgd2l0aCBtcGxheWVyLCB1c2luZyBhbHNhIG91dHB1dC4K
+PiBXaXRob3V0IHB1bHNlIGV2ZXJ5dGhpbmcgd2FzIGFscmVhZHkgZmluZS4uCj4gPiAgIAo+ID4+
+IFdoZW4gdGhlIHBhcmFtZXRlciBpcyBzZXQgMCwgdGhlIHNvdW5kIHdvcmtzIHdlbGwgYW5kIHRo
+ZSBkcml2ZXIgb3V0cHV0cyAKPiA+PiB0aGlzIG1lc3NhZ2U6Cj4gPj4gaGRhLWludGVsOiBJUlEg
+dGltaW5nIHdvcmthcm91bmQgaXMgYWN0aXZhdGVkIGZvciBjYXJkICMwLiBTdWdnZXN0IGEgCj4g
+Pj4gYmlnZ2VyIGJkbF9wb3NfYWRqLgo+ID4+ICAgICAKPiA+Cj4gPiBTbywgaXQgbWVhbnMgdGhh
+dCB0aGUgcHJvYmxlbSBzdGlsbCBleGlzdHMuICBUaGUgZHJpdmVyIGRlbGF5cyB0aGUKPiA+IGNh
+bGwgb2Ygc25kX3BjbV9wZXJpb2RfZWxhcHNlZCgpIHdpdGggYSBidXN5IGxvb3AuICBUaGUgYmRs
+X3Bvc19hZGoKPiA+IGFkZHMgYSBjb25zdGFudCBkZWxheSwgT1RPSC4KPiA+ICAgCj4gU28gSWYg
+SSByZXN1bWUgYSBsaXR0bGUgYml0IHdoYXQgd2UgaGF2ZSBub3c6Cj4gCj4gLSBPbiBhIHN5c3Rl
+bSB3aGljaCBkb2VzIG5vdCB1c2UgcHVsc2VhdWRpbywgdGhlIGNoaXBzZXQgd29ya3Mgd2l0aCAK
+PiAxLjAuMTYgYW5kIGFsbCAxLjAuMTYgUkMncy4KPiAtIE9uIGEgc3lzdGVtIHVzaW5nIHB1bHNl
+YXVkaW8sIGl0J3MgaW1wb3NzaWJsZSB0byBnZXQgc291bmQgd2hlbiB1c2luZyAKPiAxLjAuMTdy
+YzIgYW5kIDEuMC4xN3JjMyBpZiBiZGxfcG9zX2FkaiBpcyBub3QgZXhwbGljaXRseSBzZXQgdG8g
+MC4gZG1lc2cgCj4gb3V0cHV0IGNvbnRhaW5zIGFsc28gdGhlc2UgdHdvIGxpbmVzIHdoZW4gdGhl
+IG1vZHVsZSBpcyBsb2FkZWQ6Cj4gCj4gQUNQSTogUENJIEludGVycnVwdCAwMDAwOjAwOjEwLjFb
+Ql0gLT4gTGluayBbQUFaQV0gLT4gR1NJIDIyIChsZXZlbCwgCj4gbG93KSAtPiBJUlEgMjIKPiBo
+ZGEtaW50ZWw6IElSUSB0aW1pbmcgd29ya2Fyb3VuZCBpcyBhY3RpdmF0ZWQgZm9yIGNhcmQgIzAu
+IFN1Z2dlc3QgYSAKPiBiaWdnZXIgYmRsX3Bvc19hZGouCj4gCgoKCi0tIAotLQpIYW5zLUZyaWVk
+ZXIgVm9ndCAgICAgICAgICAgICAgICAgZS1tYWlsOiBoZnZvZ3QgPGF0PiBnbXggLmRvdC4gbmV0
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
