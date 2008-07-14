@@ -1,19 +1,29 @@
-From: Tony Vroon <tony@vroon.org>
-Subject: Re: SB0880 X-Fi Titanium Fatal1ty Pro (with	codecgraph)
-Date: Mon, 14 Jul 2008 22:35:29 +0100
-Message-ID: <1216071329.4018.1.camel@localhost>
-References: <1215985902.4196.11.camel@localhost>
-	<s5h4p6rw5zu.wl%tiwai@suse.de> <487B5344.7020709@gmx.de>
-	<s5hskubq72c.wl%tiwai@suse.de> <487B5BD9.7090307@gmx.de>
-	<s5h4p6qreho.wl%tiwai@suse.de>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH v2 1/3] ALSA SoC: Add OpenFirmware
+	helper	for matching bus and codec drivers
+Date: Mon, 14 Jul 2008 16:28:08 -0600
+Message-ID: <20080714222808.GA7073@secretlab.ca>
+References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
+	<20080714134930.GC25448@sirena.org.uk>
+	<9e4733910807140713r5739efedw81e65632006d101d@mail.gmail.com>
+	<20080714150527.GD25448@sirena.org.uk>
+	<487B7B71.9060606@freescale.com>
+	<20080714165302.GG25448@sirena.org.uk>
+	<fa686aa40807141021ka4f84e9ycc4ac78db760726c@mail.gmail.com>
+	<20080714183632.GI25448@sirena.org.uk>
+	<487B9D98.8010008@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7078330285720450213=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0E7624478
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4137B24426
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jul 2008 23:35:06 +0200 (CEST)
-In-Reply-To: <s5h4p6qreho.wl%tiwai@suse.de>
+	Tue, 15 Jul 2008 00:28:34 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 9so2533696ywk.2
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2008 15:28:11 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <487B9D98.8010008@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,94 +33,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Maximilian =?ISO-8859-1?Q?G=FCntner?= <beomuex@gmx.de>
+To: Timur Tabi <timur@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 14, 2008 at 01:40:24PM -0500, Timur Tabi wrote:
+> Mark Brown wrote:
+> 
+> > Desktop Management Interface, a standard BIOS interface for getting
+> > system data on x86 class hardware.  Of particular interest here is the
+> > fact that it contains various ID strings for things like motherboard and
+> > chassis - on Linux drivers can be automatically loaded based on these
+> > strings.  See drivers/misc/thinkpad_acpi.c for an example of a driver
+> > that does this.
+> 
+> The only problem with this is that the OF probing code in the kernel binds
+> drivers to device tree nodes.  So when a driver claims a node, no other driver
+> will be probed with it.
 
---===============7078330285720450213==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-VE7D6thQlRpTC4F/1omt"
+Yes, but that is only for the of_platform bus which is just one way to
+setup device drivers from the device tree.  Setting it up from the
+platform code is just as valid an option.  Or, each ASoC machine driver could
+read the device tree itself in the module_init hook to decide whether or not
+to instantiate itself.
 
-
---=-VE7D6thQlRpTC4F/1omt
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-Clearly a harder reboot is required, I will power the machine off and
-unplug it from the AC for a few minutes. A regular powercycle resulted
-in the following oops report:
-
-ACPI: PCI Interrupt Link [LK2E] enabled at IRQ 47
-ACPI: PCI Interrupt 0000:83:00.0[A] -> Link [LK2E] -> GSI 47 (level,
-high) -> IRQ 47
-PCI: Setting latency timer of device 0000:83:00.0 to 64
-ALSA sound/pci/hda/hda_intel.c:2022: chipset global capabilities =3D
-0x3500
-ALSA sound/pci/hda/hda_intel.c:754: codec_mask =3D 0x2
-ALSA sound/pci/hda/hda_codec.c:3242: autoconfig: line_outs=3D4
-(0xd/0xf/0xe/0x10/0x0)
-ALSA sound/pci/hda/hda_codec.c:3246:    speaker_outs=3D0
-(0x0/0x0/0x0/0x0/0x0)
-ALSA sound/pci/hda/hda_codec.c:3250:    hp_outs=3D1 (0x11/0x0/0x0/0x0/0x0)
-ALSA sound/pci/hda/hda_codec.c:3251:    mono: mono_out=3D0x0
-ALSA sound/pci/hda/hda_codec.c:3259:    inputs: mic=3D0x14, fmic=3D0x0,
-line=3D0x13, fline=3D0x0, cd=3D0x0, aux=3D0x0
-ALSA sound/pci/hda/hda_codec.c:2336: BUG? (info->nid)
-Pid: 1, comm: swapper Not tainted 2.6.26-rc7-00240-gfae47c0 #1
-
-Call Trace:
- [<ffffffff804668ed>] snd_hda_build_pcms+0x1fc/0x29c
- [<ffffffff804ec225>] azx_probe+0x7ed/0x7fd
- [<ffffffff804639b5>] azx_send_cmd+0x0/0x130
- [<ffffffff80463ae5>] azx_get_response+0x0/0x207
- [<ffffffff8046320a>] azx_attach_pcm_stream+0x0/0x1a0
- [<ffffffff80462ed4>] azx_power_notify+0x0/0x51
- [<ffffffff80324bd1>] pci_device_probe+0xa9/0xf6
- [<ffffffff803b138a>] driver_probe_device+0xb5/0x159
- [<ffffffff803b1474>] __driver_attach+0x46/0x6d
- [<ffffffff803b142e>] __driver_attach+0x0/0x6d
- [<ffffffff803b0c9e>] bus_for_each_dev+0x44/0x78
- [<ffffffff803b0630>] bus_add_driver+0xac/0x1e6
- [<ffffffff803b1638>] driver_register+0xa2/0x11f
- [<ffffffff80324e4a>] __pci_register_driver+0x4a/0x7c
- [<ffffffff80660b68>] alsa_card_azx_init+0x0/0x15
- [<ffffffff80644656>] kernel_init+0x146/0x28b
- [<ffffffff8020cc08>] child_rip+0xa/0x12
- [<ffffffff80644510>] kernel_init+0x0/0x28b
- [<ffffffff8020cbfe>] child_rip+0x0/0x12
-
-ACPI: PCI interrupt for device 0000:83:00.0 disabled
-HDA Intel: probe of 0000:83:00.0 failed with error -22
-ALSA device list:
-  No soundcards found.
-
-Regards,
-Tony V.
-
---=-VE7D6thQlRpTC4F/1omt
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkh7xqEACgkQp5vW4rUFj5rxEQCgnxv2ed9BqyE8wXE9lrTTHMAo
-utgAoL0kZgpzxPQrmPyHtKTiIQ0PGY27
-=f/II
------END PGP SIGNATURE-----
-
---=-VE7D6thQlRpTC4F/1omt--
-
-
---===============7078330285720450213==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7078330285720450213==--
+Cheers,
+g.
