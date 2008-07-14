@@ -1,23 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: "Grant Likely" <grant.likely@secretlab.ca>
 Subject: Re: [PATCH v2 1/3] ALSA SoC: Add OpenFirmware helper
 	for matching bus and codec drivers
-Date: Mon, 14 Jul 2008 17:53:04 +0100
-Message-ID: <20080714165302.GG25448@sirena.org.uk>
+Date: Mon, 14 Jul 2008 11:06:34 -0600
+Message-ID: <fa686aa40807141006k402b6a5fq8da1424081a20011@mail.gmail.com>
 References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
 	<20080714134930.GC25448@sirena.org.uk>
-	<9e4733910807140713r5739efedw81e65632006d101d@mail.gmail.com>
-	<20080714150527.GD25448@sirena.org.uk>
-	<487B7B71.9060606@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62E53243D6
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32651243E6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jul 2008 18:53:11 +0200 (CEST)
+	Mon, 14 Jul 2008 19:06:36 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so866251and.80
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2008 10:06:35 -0700 (PDT)
+In-Reply-To: <20080714134930.GC25448@sirena.org.uk>
 Content-Disposition: inline
-In-Reply-To: <487B7B71.9060606@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,44 +26,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
+To: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com, jonsmirl@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 14, 2008 at 11:14:41AM -0500, Timur Tabi wrote:
-> Mark Brown wrote:
+On Mon, Jul 14, 2008 at 7:49 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Sat, Jul 12, 2008 at 02:39:29AM -0600, Grant Likely wrote:
+>> +static void of_snd_soc_register_device(struct of_snd_soc_device *of_soc)
+>> +{
+>> +     struct platform_device *pdev;
+>> +     int rc;
+>> +
+>> +     /* Only register the device if both the codec and platform have
+>> +      * been registered */
+>> +     if ((!of_soc->device.codec_data) || (!of_soc->platform_node))
+>> +             return;
+>> +
+>> +     pr_info("platform<-->codec match achieved; registering machine\n");
+>
+> So what this does is add an extremely simple machine driver which
+> matches up the first DAI on a single codec and platform with no facility
+> for setting up any configurable clocking or anything?  This is fine in
+> so far as it goes but it's going to work for very few systems as it is -
+> most codecs will need some additional configuration.  This could be
+> added later, though.
 
-> > I'm finding it difficult to square these two statements - from an ASoC
-> > point of view the main thing this patch is doing is adding a machine
-> > driver and that's not something that's going to go away.  
+Yes, that is pretty much exactly what it is.  When I wrote this my
+goal was just to get something working that had some semblance of
+cleanliness.  Since it is now looking like something that could get
+merged, I'll clean up the documentation describing exactly what it is
+and what the limitations are.  I fully expect that if others find it
+useful then they will need to extend it to extract additional
+configuration information out of the device tree.
 
-> Jon's concern is that there is no straightforward way to build a kernel with
-> multiple fabric drivers and have the right one chosen via the device tree.  This
-> is just a limitation of the device tree model, and no one has come up with a
-> good solution yet.
+That being said, I expect this code to be completely rewritten when
+ASoC v2 hits mainline.  Most of the code is devoted to matching
+platforms with codecs.  The mechanism will be completely different
+when the ASoC layer handles making sure all devices are present before
+setting up the machine driver.  I expect that some machines can be
+handled with some form of generic of-asoc driver, while more complex
+ones will need custom code.
 
-Indeed - I understand what the problem you guys have is, I just want to
-make sure that there is a reasonable consensus among the PowerPC people
-that this approach is OK to go in and won't create ructions.  The lack
-of resolution on this issue makes me nervous about any proposed solution
-where I haven't seen any explicit indication that the community is OK
-with it.
+> Given this it might be worth renaming it to something less generic and
+> perhaps pushing it down into an of directory below the main ASoC
+> directory to parallel existing machine drivers.  I'm happy with the code
+> from an ASoC point of view.
 
-Incidentally, nobody ever really commented on my suggestion to do
-something DMI-like - you've already got the board type information
-present in the device trees (in the model and compatible information in
-the root nodes), all that's needed is an API to allow matching on it.
+I'm okay with that.  How about fsl/mpc5200-of-machine.c for now?
+(only the mpc5200 i2s driver uses it at the moment).  It can always be
+renamed if other folks want to use it for other chips.
 
-> The problem still exists in ASoC V2.  However, it's not anything that ASoC
-> itself needs to be concerned with.  It's purely a PowerPC problem.
+Cheers,
+g.
 
-Right, I just want to be clear that you guys all understand what this
-code does and that there won't be too many complaints after the fact.
-
-> > ASoC has always called it a machine driver.
-
-> Wait, I thought it's supposed to be called a fabric driver now?  On PowerPC, it
-> should be called a fabric driver because we already have machine drivers.
-
-I don't mind - you can call it what you like inside PowerPC-specific
-code.
+-- 
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
