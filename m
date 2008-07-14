@@ -1,26 +1,25 @@
-From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Subject: Re: Still have choppy audio using 1.0.17
-Date: Mon, 14 Jul 2008 14:57:13 -0300
-Message-ID: <487B9379.5030200@tet.com.br>
-References: <4856C768.1060404@tet.com.br>	<485952C5.30307@tet.com.br>	<485965B0.9020102@tet.com.br>	<485A58A1.6040002@tet.com.br>	<48622AF1.3000304@tet.com.br>	<s5hprq5qz2t.wl%tiwai@suse.de>	<486A7757.4060907@tet.com.br>
-	<486E1A26.1030802@tet.com.br>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/3] ALSA SoC: Add OpenFirmware helper
+	for matching bus and codec drivers
+Date: Mon, 14 Jul 2008 19:36:32 +0100
+Message-ID: <20080714183632.GI25448@sirena.org.uk>
+References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
+	<20080714134930.GC25448@sirena.org.uk>
+	<9e4733910807140713r5739efedw81e65632006d101d@mail.gmail.com>
+	<20080714150527.GD25448@sirena.org.uk>
+	<487B7B71.9060606@freescale.com>
+	<20080714165302.GG25448@sirena.org.uk>
+	<fa686aa40807141021ka4f84e9ycc4ac78db760726c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 820772440C
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B788B24403
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jul 2008 19:57:14 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by einstein.tteng.com.br (Postfix) with ESMTP id 3D85EDE8004
-	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jul 2008 14:57:12 -0300 (BRST)
-Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
-	by einstein.tteng.com.br (Postfix) with ESMTP id BE73F120008
-	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jul 2008 14:57:08 -0300 (BRST)
-In-Reply-To: <486E1A26.1030802@tet.com.br>
+	Mon, 14 Jul 2008 20:36:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <fa686aa40807141021ka4f84e9ycc4ac78db760726c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,80 +29,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>, liam.girdwood@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-I have discovered something else. Choppy audio occurs when 
-snd_pcm_playback_silence, in pcm_lib.c, will silence the same period 
-than the capture pointer is pointing at. I am printing this variables 
-"ofs" in snd_pcm_playback_silence and what is returned from 
-snd_card_loopback_pointer when the substream is capture.
+On Mon, Jul 14, 2008 at 11:21:12AM -0600, Grant Likely wrote:
+> On Mon, Jul 14, 2008 at 10:53 AM, Mark Brown
 
-How snd_pcm_playback_silence is supposed to work? Must it silence the 
-next period from the playback pointer? How is ensured that this 
-situation (ofs == capture pointer) does not happen with sound cards?
+> > Incidentally, nobody ever really commented on my suggestion to do
+> > something DMI-like
 
-Thanks ANY help... any...
+> I'm feeling stupid;  what does "DMI" stand for?
 
-Gustavo da Silva Serra escreveu:
-> I forgot a very important detail, when I can choose the output plugin 
-> (alsa or oss in Kaffeine, for example), only alsa has choppy audio. oss 
-> plugin works perfectly, only using kernel module emulation.
->
-> Gustavo da Silva Serra escreveu:
->   
->> I have tried to implement the solution you proposed. However I still 
->> get choppy audio, just like before, otherwise the sound is clear.
->>
->> Basically I moved the timer to the cable struct, and updated the timer 
->> function to update both playback and capture.
->> I am sending the code attached so you can see if I implemented what 
->> you suggested. The code is not very clean, nor completely functional, 
->> as I never programmed to kernel before, and might cause kernel panic 
->> when closing a stream.
->>
->> Any other suggestions?
->> Thanks for the help and the attention.
->>
->> Takashi Iwai escreveu:
->>     
->>> At Wed, 25 Jun 2008 08:24:33 -0300,
->>> Gustavo da Silva Serra wrote:
->>>  
->>>       
->>>> If I keep the difference between the playback and capture pointers 
->>>> at one period, no choppy audio occurs. If the difference is 0, 2 or 
->>>> 5 periods for example, choppy audio will always occur. Any ideas why?
->>>>     
->>>>         
->>> Through a quick look at the code, it's likely the problem of the
->>> timing of timer handlers for playback/capture streams.  In the current
->>> code, the timer handlers are invoked individually.
->>>
->>> One possible fix would be to force to synchronize the updates of both
->>> directions instead of individual timers.  That is, share the same
->>> timer for the connected streams so that the update order is
->>> guaranteed.
->>>
->>>
->>> Just my $0.02.
->>>
->>> Takashi
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>>       
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-> __________ NOD32 3241 (20080704) Information __________
->
-> This message was checked by NOD32 antivirus system.
-> http://www.eset.com
->
->
->
->   
+Desktop Management Interface, a standard BIOS interface for getting
+system data on x86 class hardware.  Of particular interest here is the
+fact that it contains various ID strings for things like motherboard and
+chassis - on Linux drivers can be automatically loaded based on these
+strings.  See drivers/misc/thinkpad_acpi.c for an example of a driver
+that does this.
+
+Note that it's *not* binding a driver,  it just provides the hooks to
+enable the modules to be automatically loaded and to let drivers query
+information in DMI.
+
+> Yes, we have APIs for matching against device trees.  Personally, I'm
+> leaning towards having the powerpc platform code
+> (arch/powerpc/platforms/* stuff; not ASoC platform stuff) register a
+> platform device for the machine driver and let as many machine drivers
+> as needed be written.  Hopefully we'll be able to do at least one
+
+That would be what I'd expected initially - it is, after all, what other
+platforms are doing here.
+
+> generic machine driver that will be usable by most PowerPC boards, but
+> I don't think it is a requirement or even realistic to shoehorn all
+> powerpc sound circuits into a single driver.
+
+Yes, that'd be completely unrealistic.
+
+> > I don't mind - you can call it what you like inside PowerPC-specific
+> > code.
+
+> Oh help!  Don't tell us that!  Otherwise we'll always be talking
+> across purposes.  When ambiguous, let's just be sure to always refer
+> to them as "ASoC machine drivers".  :-)
+
+Feh, from now on I shall me naming all new concepts with pwgen :) .
