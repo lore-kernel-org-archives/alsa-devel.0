@@ -1,21 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/3] ALSA SoC: Add OpenFirmware helper
-	for matching bus and codec drivers
-Date: Mon, 14 Jul 2008 16:05:28 +0100
-Message-ID: <20080714150527.GD25448@sirena.org.uk>
-References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
-	<20080714134930.GC25448@sirena.org.uk>
-	<9e4733910807140713r5739efedw81e65632006d101d@mail.gmail.com>
+Subject: Re: [PATCH] PalmTX aSoC sound support
+Date: Mon, 14 Jul 2008 16:07:58 +0100
+Message-ID: <20080714150757.GE25448@sirena.org.uk>
+References: <200807042126.29154.marek.vasut@gmail.com>
+	<20080704202615.GB20719@sirena.org.uk>
+	<200807050019.08444.marek.vasut@gmail.com>
+	<200807050717.41965.marek.vasut@gmail.com>
+	<20080707122925.GD19240@rakim.wolfsonmicro.main>
+	<s5hwsjxvg7r.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF4C5243A5
+	by alsa0.perex.cz (Postfix) with ESMTP id DB887243A9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jul 2008 17:05:30 +0200 (CEST)
+	Mon, 14 Jul 2008 17:07:58 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <9e4733910807140713r5739efedw81e65632006d101d@mail.gmail.com>
+In-Reply-To: <s5hwsjxvg7r.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +27,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 14, 2008 at 10:13:14AM -0400, Jon Smirl wrote:
-> On 7/14/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+On Mon, Jul 07, 2008 at 05:58:32PM +0200, Takashi Iwai wrote:
 
-> > Ideally someone from the PowerPC community would sign off on this -
-> >  given the nature and volume of discussion people obviously have very
+> Doesn't matter much to me, so just let me know to merge via which
+> tree.
 
-> Grant is one of the core PowerPC developers. There's no big
-
-OK, fair enough...
-
-> Hopefully we can get the driver model sorted out in v2. If the ASoC
-> driver model is fixed all of this glue code disappears.
-
-> The PowerPC side isn't without fault too. PowerPC still doesn't have a
-> good way to load the fabric/machine driver.
-
-I'm finding it difficult to square these two statements - from an ASoC
-point of view the main thing this patch is doing is adding a machine
-driver and that's not something that's going to go away.  With version 2
-you will get the wait for all components to come on-line logic that's
-implemented here from the ASoC core but that doesn't remove the need for
-a machine driver to tell the core what to wait for and arrange any
-machine specific things like clocking.  It's this debate about machine
-drivers that makes me nervous here.
-
-Like I say, from an ASoC point of view it's not an issue and the current
-approach is fine.
-
-> Which are we going to call it, fabric or machine? I had been working
-> on the Apple code in sound/aoa. It is called fabric in that code. The
-> equivalent driver is called machine in ASoC v1.
-
-ASoC has always called it a machine driver.
-
-> >  > This is most likely temporary glue code to work around limitations in
-> >  > the ASoC v1 framework.  I expect ASoC v2 won't need this.
-> >
-> >
-> > It will need some way of providing a machine driver, generic (like this
-> >  one) or otherwise.
-
-[BTW, it'd be helpful if you could delete unreferenced quotes when you
-reply - it makes things much easier to read, especially when reviewing
-lengthy patches.  Unfortunately the GMail UI encourages doing this :(]
+Either way it needs another spin of the driver so...
