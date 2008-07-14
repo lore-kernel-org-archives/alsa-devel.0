@@ -1,28 +1,19 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH v2 1/3] ALSA SoC: Add OpenFirmware helper
- for matching bus and codec drivers
-Date: Mon, 14 Jul 2008 13:53:35 -0500
-Message-ID: <487BA0AF.10803@freescale.com>
-References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
-	<20080714134930.GC25448@sirena.org.uk>
-	<9e4733910807140713r5739efedw81e65632006d101d@mail.gmail.com>
-	<20080714150527.GD25448@sirena.org.uk>
-	<487B7B71.9060606@freescale.com>
-	<20080714165302.GG25448@sirena.org.uk>
-	<fa686aa40807141021ka4f84e9ycc4ac78db760726c@mail.gmail.com>
-	<20080714183632.GI25448@sirena.org.uk>
-	<487B9D98.8010008@freescale.com>
-	<20080714184929.GJ25448@sirena.org.uk>
+Subject: Re: Requiring the same sample rate for playback and
+ record?
+Date: Mon, 14 Jul 2008 16:25:04 -0500
+Message-ID: <487BC430.8040109@freescale.com>
+References: <485C0042.4050008@freescale.com> <s5h7icg4dsd.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from de01egw02.freescale.net (de01egw02.freescale.net
 	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id C352624429
+	by alsa0.perex.cz (Postfix) with ESMTP id 6617024474
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jul 2008 20:53:40 +0200 (CEST)
-In-Reply-To: <20080714184929.GJ25448@sirena.org.uk>
+	Mon, 14 Jul 2008 23:25:11 +0200 (CEST)
+In-Reply-To: <s5h7icg4dsd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,34 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>, Grant Likely <grant.likely@secretlab.ca>, Jon Smirl <jonsmirl@gmail.com>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
+Takashi Iwai wrote:
 
->> The only problem with this is that the OF probing code in the kernel binds
->> drivers to device tree nodes.  So when a driver claims a node, no other driver
->> will be probed with it.
-> 
->> So we can't have generic nodes that classify the motherboard and just let
->> everyone get probed on it.
-> 
-> My suggestion is that you change this for the root node. 
+> Right now there is no "elegant" way for this, unfortunately.
+> A common way many drivers use is to remember the rate of the first
+> stream, then add it to hw_constraint of the secondary streams.
 
-That's an interesting idea.
+Can you give me an example of a driver that does this?  I can't seem to find one.
 
-> It's already
-> got the information required in there, it's just there's no way to use
-> it to load modules at the minute.
+> But, this could be also a bit racy (unavoidable due to its design)
+> although practically it seems working.
 
-Correct.
+I've been trying to implement this, but I'm not sure how.  I have a couple
+questions:
 
->  You could presumably read the
-> information out of the device tree using existing APIs to check you're
-> running on the right board once code is loaded?
+1) Which snd_pcm_hw_constraint_xxx function should I use to specify a sample
+rate or sample size constraint of a single number?  I'm thinking
+snd_pcm_hw_constraint_list().
 
-Yes.  The driver <-> node binding is only for probing.  Any driver can scan the
-entire tree at any time.
+2) Where should I be calling this function?  In my _hw_params() function?  What
+I would like to do is require the constraint to be enforced only when a stream
+is already playing.  That is, if playback is paused, then the capture stream can
+set any sample rate it wants.  Is this doable, or just too complicated?
+
 
 -- 
 Timur Tabi
