@@ -1,29 +1,20 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: [PATCH v2 1/3] ALSA SoC: Add OpenFirmware helper
-	for matching bus and codec drivers
-Date: Mon, 14 Jul 2008 19:45:46 -0400
-Message-ID: <9e4733910807141645l404881b0m1d17d88c26792c78@mail.gmail.com>
-References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
-	<20080714134930.GC25448@sirena.org.uk>
-	<9e4733910807140713r5739efedw81e65632006d101d@mail.gmail.com>
-	<20080714150527.GD25448@sirena.org.uk>
-	<487B7B71.9060606@freescale.com>
-	<20080714165302.GG25448@sirena.org.uk>
-	<fa686aa40807141021ka4f84e9ycc4ac78db760726c@mail.gmail.com>
-	<20080714183632.GI25448@sirena.org.uk>
-	<487B9D98.8010008@freescale.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [Alsa-user] is this card supported by ALSA?
+Date: Tue, 15 Jul 2008 02:11:41 +0200
+Message-ID: <487BEB3D.6000209@keyaccess.nl>
+References: <BLU137-W526424D3E9A79DA1437849959A0@phx.gbl>	<48701633.7040601@keyaccess.nl>	<loom.20080708T141841-614@post.gmane.org>	<4873AB3B.1070403@keyaccess.nl>
+	<4873CED6.2040704@keyaccess.nl>	<4873D033.8010604@keyaccess.nl>	<BLU137-W434EEB6A014E95FD1E225C95910@phx.gbl>	<48769D84.1050102@keyaccess.nl>	<BLU137-W51DDE8E1756609BBE5CF7F95910@phx.gbl>	<4876A0DE.2050803@keyaccess.nl>	<BLU137-W23A4FF48E97AC32476FD6095900@phx.gbl>	<4876AC75.2010305@keyaccess.nl>	<BLU137-W541C318CC744C4BF6461DE95900@phx.gbl>	<4876B329.80700@keyaccess.nl>	<BLU137-W3234537335E7D553F03AF195900@phx.gbl>	<48798CF7.6020303@keyaccess.nl>
+	<loom.20080714T232812-533@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA6A124351
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id E5DA424351
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jul 2008 01:45:47 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so1487297yxh.2
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2008 16:45:46 -0700 (PDT)
-In-Reply-To: <487B9D98.8010008@freescale.com>
-Content-Disposition: inline
+	Tue, 15 Jul 2008 02:09:52 +0200 (CEST)
+In-Reply-To: <loom.20080714T232812-533@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,53 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
+To: Landis McGauhey <b3zdomny@hotmail.com>
+Cc: alsa-user@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/14/08, Timur Tabi <timur@freescale.com> wrote:
-> Mark Brown wrote:
->
->  > Desktop Management Interface, a standard BIOS interface for getting
->  > system data on x86 class hardware.  Of particular interest here is the
->  > fact that it contains various ID strings for things like motherboard and
->  > chassis - on Linux drivers can be automatically loaded based on these
->  > strings.  See drivers/misc/thinkpad_acpi.c for an example of a driver
->  > that does this.
->
->
-> The only problem with this is that the OF probing code in the kernel binds
->  drivers to device tree nodes.  So when a driver claims a node, no other driver
->  will be probed with it.
->
->  So we can't have generic nodes that classify the motherboard and just let
->  everyone get probed on it.
-
-Allowing multiple binds at the root causes the problem of something
-like compatible="lite5200b,mpc5200-simple". Both platforms would bind
-and that's not what you want.
-
-I'm not a fan of each platform creating a platform device in
-arch/powerpc/platforms/*. That implies that each platform would cause
-another source file to be added each containing pretty much identical
-code. It also makes the mpc5200-simple platform pointless. Of course
-this scheme works and I'm doing it right now, but it's clearly not an
-optimal solution.
-
-Another scheme would be to add kernel code to always create virtual OF
-devices like "lite5200b-fabric" that are derived off from the machine
-name that achieved a bind.
-
-A third scheme would be to convert the powerpc machine drivers
-themselves to device drivers and move them out of
-arch/powerpc/platforms/* into drivers/whatever. Then add the ASoC
-fabric code to them. I don't know if you can load device drivers early
-enough to load a powerpc machine driver from initrd.
-
-A fourth scheme is to do it at compile time. But that means no
-universal firmware images that support multiple hardware revisions. We
-have this one today too.
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+T24gMTUtMDctMDggMDE6MzYsIExhbmRpcyBNY0dhdWhleSB3cm90ZToKCkl0IHNlZW1zIHRoZXJl
+J3MganVzdCBhIGJpdCB0b28gbXVjaCBvZGRuZXNzIGdvaW5nIG9uLiBUYWthc2hpLCB5b3Uga25v
+dyAKbW9yZSBhYm91dCBhYzk3LiBBbHNvIGJyaW5naW5nIGluIGFsc2EtZGV2ZWwuLi4KCj4gIyBj
+YXQgL3Byb2MvYXNvdW5kL0F1ZGlvUENJL2NvZGVjOTcjMC9hYzk3IzAtMD0KPiAKPiAwLTAvMDog
+MHg3NjA1ODM4NCBG77+9UwoKRWVwPyBBIDB4ODM4NDc2MDUgd291bGQgYmUgYSBTaWdtYVRlbCBT
+VEFDOTcwNC4gQW5kOgoKWyAuLi4gXQoKPiAjIGNhdCAvcHJvYy9hc291bmQvQXVkaW9QQ0kvY29k
+ZWM5NyMwL2FjOTcjMC0wK3JlZ3M9CgpbIC4uLiBdCgo+IDA6N2MgPSAwMDAwCj4gMDo3ZSA9IDgz
+ODQKCmRvZXMndCBmaXQgdGhlIGFib3ZlIElELiBEbyB3ZSBqdXN0IGhhdmUgYSBjcnVtbXkgY29k
+ZWMgdGhhdCBuZWVkcyBkZWxheSAKYmV0d2VlbiBhY2Nlc2VzIHNvbWV3aGVyZSBvciBzb21ldGhp
+bmc/CgpIZXJlIGZ1bGwgY29udGVudHMgYWdhaW46Cgo+ICMgY2F0IC9wcm9jL2Fzb3VuZC9BdWRp
+b1BDSS9jb2RlYzk3IzAvYWM5NyMwLTA9Cj4gCj4gMC0wLzA6IDB4NzYwNTgzODQgRu+/vVMKPiAK
+PiBQQ0kgU3Vic3lzIFZlbmRvcjogMHgwMDAwCj4gUENJIFN1YnN5cyBEZXZpY2U6IDB4MDAwMAo+
+IAo+IENhcGFiaWxpdGllcyAgICAgOiAtZGVkaWNhdGVkIE1JQyBQQ00gSU4gY2hhbm5lbC0gLWJh
+c3MgJiB0cmVibGUtCj4gREFDIHJlc29sdXRpb24gICA6IDE2LWJpdAo+IEFEQyByZXNvbHV0aW9u
+ICAgOiAyMC1iaXQKPiAzRCBlbmhhbmNlbWVudCAgIDogUmVzZXJ2ZWQgMjkKPiAKPiBDdXJyZW50
+IHNldHVwCj4gTWljIGdhaW4gICAgICAgICA6ICswZEIgWysyMGRCXQo+IFBPUCBwYXRoICAgICAg
+ICAgOiBwb3N0IDNECj4gU2ltLiBzdGVyZW8gICAgICA6IG9mZgo+IDNEIGVuaGFuY2VtZW50ICAg
+OiBvZmYKPiBMb3VkbmVzcyAgICAgICAgIDogb24KPiBNb25vIG91dHB1dCAgICAgIDogTUlYCj4g
+TWljIHNlbGVjdCAgICAgICA6IE1pYzIKPiBBREMvREFDIGxvb3BiYWNrIDogb2ZmCj4gCj4gIyBj
+YXQgL3Byb2MvYXNvdW5kL0F1ZGlvUENJL2NvZGVjOTcjMC9hYzk3IzAtMCtyZWdzPQo+IAo+IDA6
+MDAgPSAwMDAwCj4gMDowMiA9IDAxNDAKPiAwOjA0ID0gODkwOQo+IDA6MDYgPSA4MDAwCj4gMDow
+OCA9IDgwMDkKPiAwOjBhID0gZmZmZgo+IDA6MGMgPSAxNTBiCj4gMDowZSA9IDgwMWYKPiAwOjEw
+ID0gODA1Zgo+IDA6MTIgPSA5NTE1Cj4gMDoxNCA9IDkyMTIKPiAwOjE2ID0gOWYxZgo+IDA6MTgg
+PSA5ZjFmCj4gMDoxYSA9IDkwMTAKPiAwOjFjID0gMDAwMAo+IDA6MWUgPSAwMDAwCj4gMDoyMCA9
+IDAwMDAKPiAwOjIyID0gMDAwMAo+IDA6MjQgPSAwMDAwCj4gMDoyNiA9IDAwMDAKPiAwOjI4ID0g
+MDAwZgo+IDA6MmEgPSBmZmZmCj4gMDoyYyA9IGZmZmYKPiAwOjJlID0gZmZmZgo+IDA6MzAgPSBm
+ZmZmCj4gMDozMiA9IGZmZmYKPiAwOjM0ID0gZmZmZgo+IDA6MzYgPSBmZmZmCj4gMDozOCA9IGZm
+ZmYKPiAwOjNhID0gZmZmZgo+IDA6M2MgPSBmZmZmCj4gMDozZSA9IGZmZmYKPiAwOjQwID0gZmZm
+Zgo+IDA6NDIgPSBmZmZmCj4gMDo0NCA9IGZmZmYKPiAwOjQ2ID0gZmZmZgo+IDA6NDggPSBmZmZm
+Cj4gMDo0YSA9IGZmZmYKPiAwOjRjID0gZmZmZgo+IDA6NGUgPSBmZmZmCj4gMDo1MCA9IGZmZmYK
+PiAwOjUyID0gZmZmZgo+IDA6NTQgPSBmZmZmCj4gMDo1NiA9IGZmZmYKPiAwOjU4ID0gZmZmZgo+
+IDA6NWEgPSAwMDAwCj4gMDo1YyA9IDAwMDAKPiAwOjVlID0gMDAwMAo+IDA6NjAgPSAwMDAwCj4g
+MDo2MiA9IDAwMDAKPiAwOjY0ID0gMDAwMAo+IDA6NjYgPSAwMDAwCj4gMDo2OCA9IDAwMDAKPiAw
+OjZhID0gMDAwMAo+IDA6NmMgPSAwMDAwCj4gMDo2ZSA9IDAwMDAKPiAwOjcwID0gMDAwMAo+IDA6
+NzIgPSAwMDAwCj4gMDo3NCA9IDAwMDAKPiAwOjc2ID0gMDAwMAo+IDA6NzggPSAwMDAwCj4gMDo3
+YSA9IDAwMDAKPiAwOjdjID0gMDAwMAo+IDA6N2UgPSA4Mzg0CgpSZW5lLgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
