@@ -1,18 +1,19 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: Re: Still have choppy audio using 1.0.17
-Date: Mon, 14 Jul 2008 17:50:26 -0700
-Message-ID: <487BF452.2090301@cox.net>
-References: <4856C768.1060404@tet.com.br>	<485952C5.30307@tet.com.br>	<485965B0.9020102@tet.com.br>	<485A58A1.6040002@tet.com.br>	<48622AF1.3000304@tet.com.br>	<s5hprq5qz2t.wl%tiwai@suse.de>	<486A7757.4060907@tet.com.br>	<486E1A26.1030802@tet.com.br>
-	<487B9379.5030200@tet.com.br>
+From: Simon Tremblay <bidou@videotron.qc.ca>
+Subject: [ASoC] ASoC on a AT91RM9200 with a tlv320aic23b codec
+Date: Mon, 14 Jul 2008 20:59:11 -0400
+Message-ID: <487BF65F.2040307@videotron.qc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao103.cox.net (fed1rmmtao103.cox.net [68.230.241.43])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03555243BC
+Received: from randymail-a1.g.dreamhost.com (sd-green-bigip-177.dreamhost.com
+	[208.97.132.177])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83FE52439E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jul 2008 02:50:38 +0200 (CEST)
-In-Reply-To: <487B9379.5030200@tet.com.br>
+	Tue, 15 Jul 2008 02:59:14 +0200 (CEST)
+Received: from BiDoUMaC.local (211.174-ppp.3menatwork.com [72.0.211.174])
+	by randymail-a1.g.dreamhost.com (Postfix) with ESMTP id B3D9918DBB5
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2008 17:59:12 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Gustavo da Silva Serra wrote:
-> I have discovered something else. Choppy audio occurs when 
-> snd_pcm_playback_silence, in pcm_lib.c, will silence the same period 
-> than the capture pointer is pointing at. I am printing this variables 
-> "ofs" in snd_pcm_playback_silence and what is returned from 
-> snd_card_loopback_pointer when the substream is capture.
-> 
-> How snd_pcm_playback_silence is supposed to work? Must it silence the 
-> next period from the playback pointer? How is ensured that this 
-> situation (ofs == capture pointer) does not happen with sound cards?
-> 
-> Thanks ANY help... any...
-> 
-The way the API docs describe it the silence function 
-fills the play buffer with a set amount of silence when 
-the buffer has fewer than threshold frames to play. 
-So, if your playback is running close to that 
-threshold, it will be continuously injecting chunks of 
-silence into the stream.  That would certainly sound 
-choppy.  From the docs it sounds like the silence is 
-always injected into the existing stream at the current 
-pointer.
+Hello,
 
-Note:  this is just from reading the docs.  I haven't 
-actually used this.
+Basically I want to use alsa on my embedded system running with a 
+AT91RM9200.  I have few questions about ASoC development.
+
+I think there is a driver for tlv320 (looks like a generic driver for 
+tlv320xxx) in dev branch. Anybody knows if this driver works with 
+tlv320aic23b?
+
+I saw this driver isn't tagged in any kernel version (currently I use 
+2.6.24 and tlv320.c and tlv320.h aren't in the codecs directory). Is it 
+because the driver isn't tested yet?
+
+Thank you,
+
+
+Simon
