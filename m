@@ -1,58 +1,79 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: is this card supported by ALSA?
-Date: Tue, 15 Jul 2008 18:52:42 +0200
-Message-ID: <487CD5DA.2030103@keyaccess.nl>
-References: <BLU137-W526424D3E9A79DA1437849959A0@phx.gbl>	<48701633.7040601@keyaccess.nl>	<loom.20080708T141841-614@post.gmane.org>
-	<4873AB3B.1070403@keyaccess.nl>	<4873CED6.2040704@keyaccess.nl>
-	<4873D033.8010604@keyaccess.nl>
-	<BLU137-W434EEB6A014E95FD1E225C95910@phx.gbl>
-	<48769D84.1050102@keyaccess.nl>
-	<BLU137-W51DDE8E1756609BBE5CF7F95910@phx.gbl>
-	<4876A0DE.2050803@keyaccess.nl>
-	<BLU137-W23A4FF48E97AC32476FD6095900@phx.gbl>
-	<4876AC75.2010305@keyaccess.nl>
-	<BLU137-W541C318CC744C4BF6461DE95900@phx.gbl>	<4876B329.80700@keyaccess.nl>
-	<BLU137-W3234537335E7D553F03AF195900@phx.gbl>
-	<48798CF7.6020303@keyaccess.nl>	<loom.20080714T232812-533@post.gmane.org>
-	<487BEB3D.6000209@keyaccess.nl>	<s5hvdz7uwb6.wl%tiwai@suse.de>
+Subject: Re: [Alsa-user] is this card supported by ALSA?
+Date: Tue, 15 Jul 2008 19:02:46 +0200
+Message-ID: <487CD836.3030600@keyaccess.nl>
+References: <BLU137-W526424D3E9A79DA1437849959A0@phx.gbl>	<48701633.7040601@keyaccess.nl>	<loom.20080708T141841-614@post.gmane.org>	<4873AB3B.1070403@keyaccess.nl>	<4873CED6.2040704@keyaccess.nl>	<4873D033.8010604@keyaccess.nl>	<BLU137-W434EEB6A014E95FD1E225C95910@phx.gbl>	<48769D84.1050102@keyaccess.nl>	<BLU137-W51DDE8E1756609BBE5CF7F95910@phx.gbl>	<4876A0DE.2050803@keyaccess.nl>	<BLU137-W23A4FF48E97AC32476FD6095900@phx.gbl>	<4876AC75.2010305@keyaccess.nl>	<BLU137-W541C318CC744C4BF6461DE95900@phx.gbl>	<4876B329.80700@keyaccess.nl>	<BLU137-W3234537335E7D553F03AF195900@phx.gbl>	<48798CF7.6020303@keyaccess.nl>	<loom.20080714T232812-533@post.gmane.org>	<487BEB3D.6000209@keyaccess.nl>	<s5hvdz7uwb6.wl%tiwai@suse.de>
 	<s5hod4zxm9v.wl%tiwai@suse.de> <487CB73D.4050808@keyaccess.nl>
-	<BLU137-W34E0AFAD1183AF146DF6F8958C0@phx.gbl>
-	<487CC3EE.4000001@keyaccess.nl>
-	<BLU137-W547E560AD7B2B9E7C4281C958C0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <BLU137-W547E560AD7B2B9E7C4281C958C0@phx.gbl>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id BBB37244BB
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 Jul 2008 19:00:54 +0200 (CEST)
+In-Reply-To: <487CB73D.4050808@keyaccess.nl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Landis McGauhey <b3zdomny@hotmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTUtMDctMDggMTg6NDUsIExhbmRpcyBNY0dhdWhleSB3cm90ZToKCj4gIyBjYXQgL3Byb2Mv
-YXNvdW5kL0F1ZGlvUENJL2NvZGVjOTcjMC9hYzk3IzAtMD0KPiAwLTAvMDogMHg3NjA1ODM4NCBG
-77+9UwoKWyAuLi4gXQoKPiAwOjdjID0gMDAwMAo+IDA6N2UgPSA4Mzg0Cj4gCj4gCj4gV2lsbCBk
-byBibGFja2xpc3QgYXMgcmVjb21tZW5kZWQgaW4gZWFybGllciBtZXNzYWdlLCB0aGVuIHJlYm9v
-dCBhbmQgc2VlIHdoYXQgaGFwcGVucy4KCk5haCwgZG9uJ3QgYm90aGVyLiBJZiB5b3UgYXJlIHN1
-cmUgdGhlIGRpc3BsYXkgb2YgdGhlIGNvZGVjIGZpbGVzIGFib3ZlIAppcyB3aXRoIHRoZSBwYXRj
-aGVkIGRyaXZlciwgbm90aGluZyBjaGFuZ2VkLCBhbmQgc29tZXRoaW5nIGlzIHN0aWxsIHZlcnkg
-Cndyb25nLiBJIG5lZWQgdG8gYmUgZ29uZSBub3cgYWdhaW4gYnV0IHdpbGwgcmUtc3RhcmUgYXQg
-dGhpbmdzIGFnYWluIGF0IAplYXJsaWVzdCBwb3NzaWJsZSBvcHBvcnR1bml0eS4KClJlbmUuCgot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tClRoaXMgU0YuTmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieSB0aGUgTW9i
-bGluIFlvdXIgTW92ZSBEZXZlbG9wZXIncyBjaGFsbGVuZ2UKQnVpbGQgdGhlIGNvb2xlc3QgTGlu
-dXggYmFzZWQgYXBwbGljYXRpb25zIHdpdGggTW9ibGluIFNESyAmIHdpbiBncmVhdCBwcml6ZXMK
-R3JhbmQgcHJpemUgaXMgYSB0cmlwIGZvciB0d28gdG8gYW4gT3BlbiBTb3VyY2UgZXZlbnQgYW55
-d2hlcmUgaW4gdGhlIHdvcmxkCmh0dHA6Ly9tb2JsaW4tY29udGVzdC5vcmcvcmVkaXJlY3QucGhw
-P2Jhbm5lcl9pZD0xMDAmdXJsPS8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS11c2VyIG1haWxpbmcgbGlzdApBbHNhLXVzZXJAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2Fs
-c2EtdXNlcgo=
+On 15-07-08 16:42, Rene Herman wrote:
+
+> On 15-07-08 16:19, Takashi Iwai wrote:
+> 
+>> The below is a patch to improve the codec access routines in a bit
+>> more robust way (and clean-ups, too).  Give it a try.
+> 
+> Thank you for taking this...
+> 
+> Landis, if it's easier for you due to webmail stuff, I'm attaching the 
+> patch to this message so that it might be easier for you to save it 
+> (Takashi posted it "inline" in the message).
+> 
+> The way to use this is very similar to what you did for the OSS driver 
+> patch. You save this somewhere, then from the root of the source tree 
+> (from /usr/src/linux-2.6.25.9 it was...) you do
+> 
+> # patch -p1 --dry-run < /some/where/ens1371-ac97.diff
+> 
+> and upon seeing that complete without errors, without the --dry-run:
+> 
+> # patch -p1 --dry-run < /some/where/ens1371-ac97.diff
+
+Just in case... I did _say_ "without the --dry-run" but then neglected 
+to actually delete it from the second line here. You _did_ delete it, right?
+
+> You then recompile the kernel with "make" (which should now only 
+> recompile the snd-ens1371 driver) and do a "make modules_install" after 
+> it finishes.
+> 
+> Then, make sure no old driver for the card is loaded:
+> 
+> # modprobe -r snd-ens1371
+> # modprobe -r es1371
+> 
+> and load the new one:
+> 
+> # modprobe snd-ens1371
+> 
+> then up and unmute volumes in alsamixer again and try if you have sound 
+> with "speaker-test" or "aplay foo.wav".
+> 
+> If you do, you should blacklist the now installed OSS es1371 driver (add 
+> "blacklist es1371" to /etc/modprobe.d/blacklist) and make sure 
+> snd-ens1371 is no longer blacklisted. If all's well, working sound 
+> should then survive a reboot (and a future kernel would include the fix 
+> autonmatically so things just work out of the box).
+
+Off,
+Rene.
