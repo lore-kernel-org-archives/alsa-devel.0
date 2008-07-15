@@ -1,16 +1,26 @@
-From: "Tony \"Chainsaw\" Vroon" <chainsaw@gentoo.org>
-Subject: Re: SB0880 X-Fi Titanium Fatal1ty Pro (with	codecgraph)
-Date: Tue, 15 Jul 2008 18:22:18 +0100
-Message-ID: <1216142538.4014.8.camel@localhost>
-References: <1215985902.4196.11.camel@localhost> <s5h4p6rw5zu.wl%tiwai@suse.de>
+From: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
+Subject: Re: Still have choppy audio using 1.0.17
+Date: Tue, 15 Jul 2008 15:40:00 -0300
+Message-ID: <487CEF00.1050207@tet.com.br>
+References: <4856C768.1060404@tet.com.br>	<485952C5.30307@tet.com.br>	<485965B0.9020102@tet.com.br>	<485A58A1.6040002@tet.com.br>	<48622AF1.3000304@tet.com.br>	<s5hprq5qz2t.wl%tiwai@suse.de>	<486A7757.4060907@tet.com.br>	<486E1A26.1030802@tet.com.br>	<487B9379.5030200@tet.com.br>	<487BF452.2090301@cox.net>
+	<487C9065.9080800@tet.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8802456278738475638=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganymede.vroon.org (ganymede.vroon.org [195.66.242.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id D18C42446F
+Received: from einstein.tteng.com.br (mail.tteng.com.br [201.86.232.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id C067324500
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jul 2008 19:21:53 +0200 (CEST)
-In-Reply-To: <s5h4p6rw5zu.wl%tiwai@suse.de>
+	Tue, 15 Jul 2008 20:40:03 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by einstein.tteng.com.br (Postfix) with ESMTP id D99A0DE846E
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 Jul 2008 15:40:00 -0300 (BRST)
+Received: from [192.168.0.84] (gserra.tteng.com.br [192.168.0.84])
+	by einstein.tteng.com.br (Postfix) with ESMTP id 5FEDCDE846A
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 Jul 2008 15:39:57 -0300 (BRST)
+In-Reply-To: <487C9065.9080800@tet.com.br>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,189 +30,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8802456278738475638==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-GjteR+paILDpJueL8VPe"
-
-
---=-GjteR+paILDpJueL8VPe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-Being without power for longer reset it properly, it seems:
-ACPI: PCI Interrupt Link [LK2E] enabled at IRQ 47
-ACPI: PCI Interrupt 0000:83:00.0[A] -> Link [LK2E] -> GSI 47 (level,
-high) -> IRQ 47
-PCI: Setting latency timer of device 0000:83:00.0 to 64
-ALSA sound/pci/hda/hda_intel.c:2022: chipset global capabilities =3D
-0x3500
-ALSA sound/pci/hda/hda_intel.c:754: codec_mask =3D 0x2
-ALSA sound/pci/hda/hda_codec.c:3242: autoconfig: line_outs=3D4
-(0xd/0xf/0xe/0x10/0x0)
-ALSA sound/pci/hda/hda_codec.c:3246:    speaker_outs=3D0
-(0x0/0x0/0x0/0x0/0x0)
-ALSA sound/pci/hda/hda_codec.c:3250:    hp_outs=3D1 (0x11/0x0/0x0/0x0/0x0)
-ALSA sound/pci/hda/hda_codec.c:3251:    mono: mono_out=3D0x0
-ALSA sound/pci/hda/hda_codec.c:3259:    inputs: mic=3D0x14, fmic=3D0x0,
-line=3D0x13, fline=3D0x0, cd=3D0x0, aux=3D0x0
-ALSA device list:
-  #0: HDA Intel at 0xd0100000 irq 47
-
-The mixer restore script then complained about control #4, saying it was
-unable to set it; the ALSA mixer state dump contains:
-        control.4 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 31'
-                comment.dbmin -3450
-                comment.dbmax 1200
-                iface MIXER
-                name 'Mic Playback Volume'
-                value.0 0
-                value.1 0
-        }
-
-All seemed normal, until I started mplayer and got no audio:
-[AO_ALSA] alsa-lib: pcm_dmix.c:996:(snd_pcm_dmix_open) unable to open
-slave
-[AO_ALSA] Playback open error: Invalid argument
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-Kernel-side, things look like the usual 'short attention span' bug:
-Pid: 3987, comm: mplayer Not tainted 2.6.26-rc7-00240-gfae47c0 #1
-
-Call Trace:
- [<ffffffff80453c7e>] snd_pcm_hw_constraints_complete+0xbf/0x2b7
- [<ffffffff80453ee8>] snd_pcm_open_substream+0x72/0xb9
- [<ffffffff804ee718>] mutex_lock+0xd/0x1e
- [<ffffffff80453fbe>] snd_pcm_open+0x8f/0x188
- [<ffffffff80228d82>] default_wake_function+0x0/0xe
- [<ffffffff8027f1ec>] exact_lock+0xc/0x14
- [<ffffffff804466f8>] snd_open+0x40/0x53
- [<ffffffff8027f3f6>] chrdev_open+0x120/0x144
- [<ffffffff80285d28>] do_path_lookup+0x1cc/0x1ec
- [<ffffffff8027f2d6>] chrdev_open+0x0/0x144
- [<ffffffff8027b9b1>] __dentry_open+0xe6/0x1e2
- [<ffffffff80286e56>] do_filp_open+0x3ac/0x7f6
- [<ffffffff8027b740>] get_unused_fd_flags+0x7f/0x10e
- [<ffffffff8027b815>] do_sys_open+0x46/0xca
- [<ffffffff8020bdeb>] system_call_after_swapgs+0x7b/0x80
-
-ALSA sound/core/pcm_native.c:2051: snd_pcm_hw_constraints_complete
-failed
-ALSA sound/pci/hda/hda_codec.c:774: hda_codec_cleanup_stream: NID=3D0x2
-ALSA sound/pci/hda/hda_codec.c:774: hda_codec_cleanup_stream: NID=3D0x4
-ALSA sound/pci/hda/hda_codec.c:774: hda_codec_cleanup_stream: NID=3D0x3
-ALSA sound/pci/hda/hda_codec.c:774: hda_codec_cleanup_stream: NID=3D0x5
-hda_codec: num_steps =3D 0 for NID=3D0x2 (ctl =3D Front Playback Volume)
-hda_codec: num_steps =3D 0 for NID=3D0x4 (ctl =3D Surround Playback Volume)
-hda_codec: num_steps =3D 0 for NID=3D0x3 (ctl =3D Center Playback Volume)
-hda_codec: num_steps =3D 0 for NID=3D0x3 (ctl =3D LFE Playback Volume)
-hda_codec: num_steps =3D 0 for NID=3D0x5 (ctl =3D Side Playback Volume)
-ALSA sound/pci/hda/hda_intel.c:601: hda_intel: azx_get_response timeout,
-switching to polling mode: last cmd=3D0x102ba000
-ALSA sound/pci/hda/hda_intel.c:608: hda_intel: azx_get_response timeout,
-switching to single_cmd mode: last cmd=3D0x102ba000
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-__ratelimit: 455 messages suppressed
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-__ratelimit: 21 messages suppressed
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-__ratelimit: 155 messages suppressed
-ALSA sound/pci/hda/hda_intel.c:666: hda-intel: get_response timeout:
-IRS=3D0x0
-
-PCM streams are advertised, which is new:
-prometheus ~ # aplay -L
-default:CARD=3DIntel
-    HDA Intel, CA0110 Analog
-    Default Audio Device
-front:CARD=3DIntel,DEV=3D0
-    HDA Intel, CA0110 Analog
-    Front speakers
-surround40:CARD=3DIntel,DEV=3D0
-    HDA Intel, CA0110 Analog
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=3DIntel,DEV=3D0
-    HDA Intel, CA0110 Analog
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=3DIntel,DEV=3D0
-    HDA Intel, CA0110 Analog
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=3DIntel,DEV=3D0
-    HDA Intel, CA0110 Analog
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=3DIntel,DEV=3D0
-    HDA Intel, CA0110 Analog
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-null
-    Discard all samples (playback) or generate zero samples (capture)
-prometheus ~ # aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: CA0110 Analog [CA0110 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 1: CA0110 Digital [CA0110 Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Sorry to report that I was too late in capturing codec info, this had
-already reverted to the phantom 255 GPIOs configuration.
-
-Regards,
-Tony V.
-
---=-GjteR+paILDpJueL8VPe
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iEYEABECAAYFAkh83MoACgkQp5vW4rUFj5oGgwCeOEsyCvjBG6Qb+h/KxwdcajW3
-XmcAn0hmqxQ42PS8JBBDNppI8XOY9c5k
-=mxFc
------END PGP SIGNATURE-----
-
---=-GjteR+paILDpJueL8VPe--
-
-
---===============8802456278738475638==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8802456278738475638==--
+Gustavo da Silva Serra escreveu:
+> stan escreveu:
+>   
+>> Gustavo da Silva Serra wrote:
+>>   
+>>     
+>>> I have discovered something else. Choppy audio occurs when 
+>>> snd_pcm_playback_silence, in pcm_lib.c, will silence the same period 
+>>> than the capture pointer is pointing at. I am printing this variables 
+>>> "ofs" in snd_pcm_playback_silence and what is returned from 
+>>> snd_card_loopback_pointer when the substream is capture.
+>>>
+>>> How snd_pcm_playback_silence is supposed to work? Must it silence the 
+>>> next period from the playback pointer? How is ensured that this 
+>>> situation (ofs == capture pointer) does not happen with sound cards?
+>>>
+>>> Thanks ANY help... any...
+>>>
+>>>     
+>>>       
+>> The way the API docs describe it the silence function 
+>> fills the play buffer with a set amount of silence when 
+>> the buffer has fewer than threshold frames to play. 
+>> So, if your playback is running close to that 
+>> threshold, it will be continuously injecting chunks of 
+>> silence into the stream.  That would certainly sound 
+>> choppy.  From the docs it sounds like the silence is 
+>> always injected into the existing stream at the current 
+>> pointer.
+>>
+>> Note:  this is just from reading the docs.  I haven't 
+>> actually used this.
+>>     
+>
+> I don't know if the silence function snd_pcm_playback_silence is the 
+> same from alsa library. It uses the threshold, but it is not clear for 
+> me how. It seems that this function clears the buffer for the new stream 
+> arriving, because, from time to time, it silences a whole period.
+>
+> Thanks for the attention :)
+> _______________________________________________
+>   
+It silences a whole period because the pointer inside aloop behaves like 
+that. Logging the pointer inside aloop I discovered that it is 
+incremented so fast inside timer function that when pointer function is 
+called, the pointer is not being incremented anymore. It is like a 
+concurrency issue: first the pointer will be incremented many times, 
+after that, the pointer function will be called many times with the same 
+pointer value. Later, the pointer will be incremented some more, and so 
+on...
+I wonder if this is not the problem, logging the pointer for my sound 
+card I see a different behavior: the pointer function return offset 
+between two periods.
