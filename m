@@ -1,19 +1,16 @@
-From: Hans-Frieder Vogt <hfvogt@gmx.net>
-Subject: Re: 1.0.16->1.0.17 regression for some HDA NVidia's
-Date: Tue, 15 Jul 2008 22:54:51 +0200
-Message-ID: <200807152254.51098.hfvogt@gmx.net>
-References: <4870F039.8020207@pardus.org.tr>
-	<200807130845.55733.hfvogt@gmx.net> <s5hhcar8lww.wl%tiwai@suse.de>
-Reply-To: hfvogt@gmx.net
+From: georg <georg.brand@web.de>
+Subject: CS5530 on Geode GX1 won't work
+Date: Tue, 15 Jul 2008 23:15:22 +0200
+Message-ID: <200807152315.23490.georg.brand@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 4048510380F
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3F07B24511
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jul 2008 22:54:58 +0200 (CEST)
-In-Reply-To: <s5hhcar8lww.wl%tiwai@suse.de>
+	Tue, 15 Jul 2008 23:15:28 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,191 +21,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, ozan@pardus.org.tr, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+Hello
 
-with aplay things are a bit more differentiated:
+As Alsa-User mailinglist could not help, I hopefully sent my mail to this list 
+now.
 
-bdl_pos_adj=0 and 1 are as described below
+I am playing around, trying to get this sound card working for a while now. 
 
-bdl_pos_adj=32
-device "default" works
-device "plughw:0,0" works or does not work, may be depending on the sound format. For a nonworking file, here is the output of the files /proc/asound/card0/pcm0p/sub0/*:
-/proc/asound/card0/pcm0p/sub0/hw_params:
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 44100 (44100/1)
-period_size: 4096
-buffer_size: 16384
-/proc/asound/card0/pcm0p/sub0/info:
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: ALC883 Analog
-name: ALC883 Analog
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-/proc/asound/card0/pcm0p/sub0/prealloc:
-64
-/proc/asound/card0/pcm0p/sub0/prealloc_max:
-1024
-/proc/asound/card0/pcm0p/sub0/status:
-state: RUNNING
-trigger_time: 2795.506618360
-tstamp      : 2797.052537640
-delay       : 16384
-avail       : 0
-avail_max   : 818
------
-hw_ptr      : 818
-appl_ptr    : 17202
-/proc/asound/card0/pcm0p/sub0/sw_params:
-tstamp_mode: NONE
-period_step: 1
-avail_min: 4096
-start_threshold: 16384
-stop_threshold: 16384
-silence_threshold: 0
-silence_size: 0
-boundary: 4611686018427387904
+The Hardware is an embedded Geode GX1. Kernel is vanilla 2.6.25.9.
 
-the same file played with mmap (aplay -D plughw:0,0 --mmap soundfile) also gives no sound. 
-/proc/asound/card0/pcm0p/sub0/hw_params:
-access: MMAP_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 44100 (44100/1)
-period_size: 4096
-buffer_size: 16384
-/proc/asound/card0/pcm0p/sub0/info:
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: ALC883 Analog
-name: ALC883 Analog
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-/proc/asound/card0/pcm0p/sub0/prealloc:
-64
-/proc/asound/card0/pcm0p/sub0/prealloc_max:
-1024
-/proc/asound/card0/pcm0p/sub0/status:
-state: RUNNING
-trigger_time: 2948.343350480
-tstamp      : 2949.758334160
-delay       : 16384
-avail       : 0
-avail_max   : 0
------
-hw_ptr      : 0
-appl_ptr    : 16384
-/proc/asound/card0/pcm0p/sub0/sw_params:
-tstamp_mode: NONE
-period_step: 1
-avail_min: 4096
-start_threshold: 16384
-stop_threshold: 16384
-silence_threshold: 0
-silence_size: 0
-boundary: 4611686018427387904
+Problem:
+------------------------ 8<-------------------------
+root@tux:~# aplay foo.wav         
+ALSA lib pcm_dmix.c:866:(snd_pcm_dmix_open) unable to open slave
+aplay: main:546: audio open error: Device or resource busy
 
-Your patch really solves this problem for bdl_pos_adj=32 (for bdl_pos_adj=0 and 1 unchanged). Thanks!
+root@tux:~# lspci 
+...
+00:12.2 IDE interface: Cyrix Corporation 5530 IDE [Kahlua]
+00:12.3 Multimedia audio controller: Cyrix Corporation 5530 Audio [Kahlua]
+00:12.4 VGA compatible controller: Cyrix Corporation 5530 Video [Kahlua]
+...
 
-Cheers,
-Hans-Frieder
+root@tux:~# lsmod
+Module                  Size  Used by
+snd_cs5530              4388  0 
+snd_sb16_dsp            8608  1 snd_cs5530
+snd_sb_common          14432  2 snd_cs5530,snd_sb16_dsp
+snd_pcm                63208  1 snd_sb16_dsp
+snd_timer              19492  1 snd_pcm
+snd                    38804  5 
+snd_cs5530,snd_sb16_dsp,snd_sb_common,snd_pcm,snd_timer
+snd_page_alloc          7752  1 snd_pcm
 
-Am Dienstag, 15. Juli 2008 schrieb Takashi Iwai:
-> At Sun, 13 Jul 2008 08:45:55 +0200,
-> Hans-Frieder Vogt wrote:
-> > 
-> > Just a few more things to add (maybe it gets clearer):
-> > On a GeForce 8200 board (MCP78S), using the pcm example program from alsa-lib-1.0.17rc2/test,
-> > kernel driver version 1.0.17rc3:
-> > (ignoring my general sound distortion problem which I will address again in another post)
-> > 
-> > bdl_pos_adj=0
-> > both devices "default" and "plughw:0,0" work, i.e. give continuous sound
-> > 
-> > bdl_pos_adj=1
-> > bdl_pos_adj=2
-> > bdl_pos_adj=8
-> > no sound, pcm seems to gets stuck (example program does not return)
-> > 
-> > bdl_pos_adj=16
-> > bdl_pos_adj=32
-> > bdl_pos_adj=64
-> > bdl_pos_adj=128
-> > bdl_pos_adj=256
-> > bdl_pos_adj=512
-> > bdl_pos_adj=1024
-> > bdl_pos_adj=2048
-> > default device: works, i.e. sound
-> > plughw:0,0: no sound, pcm gets stuck
-> > 
-> > bdl_pos_adj=4096
-> > bdl_pos_adj=8192
-> > ALSA /home/haef/Treiber/alsa-driver-1.0.17rc3/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1056: Too big adjustment 4096
-> > default device: works, i.e. sound
-> > plughw:0,0: just one beep (approx. 0.5s of sound), then pcm gets stuck
-> > 
-> > Any ideas?
-> 
-> Thanks, that's really good to know.  Does this happen with aplay, too? 
-> 
-> Now you don't need to play so many bdl_pos_adj values any more.
-> Checking 1 and 32 should suffice.
-> 
-> Could you check /proc/asound/card0/pcm0p/sub0/* at non-working time
-> with bdl_pos_adj=32?
-> 
-> Also, try the patch below.  If my guess is right, the problem is
-> unaligned period size.
-> 
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 16715a6..ef9f072 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1047,9 +1047,13 @@ static int azx_setup_periods(struct azx *chip,
->  	pos_adj = bdl_pos_adj[chip->dev_index];
->  	if (pos_adj > 0) {
->  		struct snd_pcm_runtime *runtime = substream->runtime;
-> +		int pos_align = pos_adj;
->  		pos_adj = (pos_adj * runtime->rate + 47999) / 48000;
->  		if (!pos_adj)
-> -			pos_adj = 1;
-> +			pos_adj = pos_align;
-> +		else
-> +			pos_adj = ((pos_adj + pos_align - 1) / pos_align) *
-> +				pos_align;
->  		pos_adj = frames_to_bytes(runtime, pos_adj);
->  		if (pos_adj >= period_bytes) {
->  			snd_printk(KERN_WARNING "Too big adjustment %d\n",
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-> 
+dmesg:
+...
+CS5530: XpressAudio at 0x220
+CS5530: MPU at 0x330
+CS5530: IRQ: 5 DMA8: 1 DMA16: 5
+...
+
+root@tux:~# cat /proc/interrupts 
+           CPU0       
+  0:     249130    XT-PIC-XT        timer
+  1:          2    XT-PIC-XT        i8042
+  2:          0    XT-PIC-XT        cascade
+  5:          0    XT-PIC-XT        SoundBlaster
+  9:     184193    XT-PIC-XT        ohci_hcd:usb1, eth0
+ 12:          1    XT-PIC-XT      
+ 14:      41917    XT-PIC-XT        ide0
 
 
+root@tux:~# strace aplay foo.wav
+...
+shmctl(32768, 0x102 /* SHM_??? */, 0xbfc94a68) = 0
+shmctl(32768, 0x101 /* SHM_??? */, 0xbfc94a68) = 0
+open("/dev/snd/controlC0", O_RDWR)      = 3
+ioctl(3, USBDEVFS_CONTROL, 0xbfc947a8)  = 0
+ioctl(3, 0x40045532, 0xbfc947a4)        = 0
+open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = -1 EBUSY (Device or resource 
+busy)
+close(3)                                = 0
+write(2, "ALSA lib pcm_dmix.c:866:(snd_pcm"..., 44ALSA lib pcm_dmix.c:866:
+(snd_pcm_dmix_open) ) = 44
+write(2, "unable to open slave", 20unable to open slave)    = 20
+write(2, "\n", 1)                       = 1
+...
 
--- 
---
-Hans-Frieder Vogt                 e-mail: hfvogt <at> gmx .dot. net
+root@tux:~# lsof | grep -i pcmC0D0p
+root@tux:~# 
+
+root@tux:~# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Audio [CS5530 Audio], device 0: SB16 DSP [DSP v4.12]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+root@tux:~# aplay -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+
+------------------------ 8<-------------------------
+
+No one is using the sound device. But strace shows error 'Device or resource 
+busy'. The thing that confuses me is the output of 'aplay -L'...
+
+Any help is appreciated :-)...
+
+Bye
+Georg
