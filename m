@@ -1,153 +1,129 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: [PATCH] ALSA: re-order AC97 codec ID table.
-Date: Tue, 15 Jul 2008 03:23:55 +0200
-Message-ID: <487BFC2B.8010107@keyaccess.nl>
+From: Landis McGauhey <b3zdomny@hotmail.com>
+Subject: Re: is this card supported by ALSA?
+Date: Mon, 14 Jul 2008 21:12:05 -0700
+Message-ID: <BLU137-W3499DD939692C9193970DE958C0@phx.gbl>
+References: <BLU137-W526424D3E9A79DA1437849959A0@phx.gbl>
+	<48701633.7040601@keyaccess.nl>	<loom.20080708T141841-614@post.gmane.org>
+	<4873AB3B.1070403@keyaccess.nl> <4873CED6.2040704@keyaccess.nl>
+	<4873D033.8010604@keyaccess.nl>
+	<BLU137-W434EEB6A014E95FD1E225C95910@phx.gbl>
+	<48769D84.1050102@keyaccess.nl>
+	<BLU137-W51DDE8E1756609BBE5CF7F95910@phx.gbl>
+	<4876A0DE.2050803@keyaccess.nl>
+	<BLU137-W23A4FF48E97AC32476FD6095900@phx.gbl>
+	<4876AC75.2010305@keyaccess.nl>
+	<BLU137-W541C318CC744C4BF6461DE95900@phx.gbl>	<4876B329.80700@keyaccess.nl>
+	<BLU137-W3234537335E7D553F03AF195900@phx.gbl>
+	<48798CF7.6020303@keyaccess.nl>
+	<loom.20080714T232812-533@post.gmane.org>
+	<487BEB3D.6000209@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080101080400020509010302"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35AC4243CC
-	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jul 2008 03:23:02 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============0899815119=="
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <487BEB3D.6000209@keyaccess.nl>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: alsa-user@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, devel <alsa-devel@alsa-project.org>, ALSA@sc8-sf-spam2.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080101080400020509010302
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+--===============0899815119==
+Content-Type: multipart/alternative;
+	boundary="_bcd91ccc-1d79-46d1-83ef-bb2066fe339a_"
+
+--_bcd91ccc-1d79-46d1-83ef-bb2066fe339a_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+
+
+
+> Date: Tue=2C 15 Jul 2008 02:11:41 +0200
+> From: rene.herman@keyaccess.nl
+> To: b3zdomny@hotmail.com
+> CC: alsa-user@lists.sourceforge.net=3B tiwai@suse.de=3B alsa-devel@alsa-p=
+roject.org
+> Subject: Re: [Alsa-user] is this card supported by ALSA?
+>=20
+<snip>
+
+Thanks=2C Rene=2C especially for bringing in Takashi and alsa-devel.  I'm o=
+ff to bed and will check my mail again in about eight hours.  Please don't =
+hesitate to let me know if there's any more output I can post.  I appreciat=
+e the help and am sure together we'll find the ALSA solution.
+
+best regards=2C
+
+Landis
+
+_________________________________________________________________
+Making the world a better place one message at a time.
+http://www.imtalkathon.com/?source=3DEML_WLH_Talkathon_BetterPlace=
+
+--_bcd91ccc-1d79-46d1-83ef-bb2066fe339a_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<style>
+.hmmessage P
+{
+margin:0px=3B
+padding:0px
+}
+body.hmmessage
+{
+FONT-SIZE: 10pt=3B
+FONT-FAMILY:Tahoma
+}
+</style>
+</head>
+<body class=3D'hmmessage'>
+<br><br>&gt=3B Date: Tue=2C 15 Jul 2008 02:11:41 +0200<br>&gt=3B From: rene=
+.herman@keyaccess.nl<br>&gt=3B To: b3zdomny@hotmail.com<br>&gt=3B CC: alsa-=
+user@lists.sourceforge.net=3B tiwai@suse.de=3B alsa-devel@alsa-project.org<=
+br>&gt=3B Subject: Re: [Alsa-user] is this card supported by ALSA?<br>&gt=
+=3B <br>&lt=3Bsnip&gt=3B<br><br>Thanks=2C Rene=2C especially for bringing i=
+n Takashi and alsa-devel.&nbsp=3B I'm off to bed and will check my mail aga=
+in in about eight hours.&nbsp=3B Please don't hesitate to let me know if th=
+ere's any more output I can post.&nbsp=3B I appreciate the help and am sure=
+ together we'll find the ALSA solution.<br><br>best regards=2C<br><br>Landi=
+s<br><br /><hr />Making the world a better place one message at a time. <a =
+href=3D'http://www.imtalkathon.com/?source=3DEML_WLH_Talkathon_BetterPlace'=
+ target=3D'_new'>Check out the i'm Talkathon.</a></body>
+</html>=
+
+--_bcd91ccc-1d79-46d1-83ef-bb2066fe339a_--
+
+
+--===============0899815119==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Hi Takashi.
-
-Feel free to drop if considered pointless churn but keeping it ordered 
-makes checking easier.
-
-Rene.
-
---------------080101080400020509010302
-Content-Type: text/plain;
- name="0002-ALSA-re-order-AC97-codec-ID-table.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="0002-ALSA-re-order-AC97-codec-ID-table.patch"
-
->From 389e02fd488d8ffdaabd6cc10cf788792258916d Mon Sep 17 00:00:00 2001
-From: Rene Herman <rene.herman@gmail.com>
-Date: Tue, 15 Jul 2008 03:13:01 +0200
-Subject: [PATCH] ALSA: re-order AC97 codec ID table.
-
-Signed-off-by: Rene Herman <rene.herman@gmail.com>
----
- sound/pci/ac97/ac97_codec.c |   34 +++++++++++++++++-----------------
- 1 files changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
-index 8c49a00..f1e3a47 100644
---- a/sound/pci/ac97/ac97_codec.c
-+++ b/sound/pci/ac97/ac97_codec.c
-@@ -67,8 +67,8 @@ struct ac97_codec_id {
- };
- 
- static const struct ac97_codec_id snd_ac97_codec_id_vendors[] = {
--{ 0x414b4d00, 0xffffff00, "Asahi Kasei",	NULL,	NULL },
- { 0x41445300, 0xffffff00, "Analog Devices",	NULL,	NULL },
-+{ 0x414b4d00, 0xffffff00, "Asahi Kasei",	NULL,	NULL },
- { 0x414c4300, 0xffffff00, "Realtek",		NULL,	NULL },
- { 0x414c4700, 0xffffff00, "Realtek",		NULL,	NULL },
- { 0x434d4900, 0xffffff00, "C-Media Electronics", NULL,	NULL },
-@@ -94,11 +94,6 @@ static const struct ac97_codec_id snd_ac97_codec_id_vendors[] = {
- };
- 
- static const struct ac97_codec_id snd_ac97_codec_ids[] = {
--{ 0x414b4d00, 0xffffffff, "AK4540",		NULL,		NULL },
--{ 0x414b4d01, 0xffffffff, "AK4542",		NULL,		NULL },
--{ 0x414b4d02, 0xffffffff, "AK4543",		NULL,		NULL },
--{ 0x414b4d06, 0xffffffff, "AK4544A",		NULL,		NULL },
--{ 0x414b4d07, 0xffffffff, "AK4545",		NULL,		NULL },
- { 0x41445303, 0xffffffff, "AD1819",		patch_ad1819,	NULL },
- { 0x41445340, 0xffffffff, "AD1881",		patch_ad1881,	NULL },
- { 0x41445348, 0xffffffff, "AD1881A",		patch_ad1881,	NULL },
-@@ -112,20 +107,25 @@ static const struct ac97_codec_id snd_ac97_codec_ids[] = {
- { 0x41445374, 0xffffffff, "AD1981B",		patch_ad1981b,	NULL },
- { 0x41445375, 0xffffffff, "AD1985",		patch_ad1985,	NULL },
- { 0x41445378, 0xffffffff, "AD1986",		patch_ad1986,	NULL },
-+{ 0x414b4d00, 0xffffffff, "AK4540",		NULL,		NULL },
-+{ 0x414b4d01, 0xffffffff, "AK4542",		NULL,		NULL },
-+{ 0x414b4d02, 0xffffffff, "AK4543",		NULL,		NULL },
-+{ 0x414b4d06, 0xffffffff, "AK4544A",		NULL,		NULL },
-+{ 0x414b4d07, 0xffffffff, "AK4545",		NULL,		NULL },
- { 0x414c4300, 0xffffff00, "ALC100,100P", 	NULL,		NULL },
- { 0x414c4710, 0xfffffff0, "ALC200,200P",	NULL,		NULL },
-+{ 0x414c4720, 0xfffffff0, "ALC650",		patch_alc650,	NULL },
- { 0x414c4721, 0xffffffff, "ALC650D",		NULL,	NULL }, /* already patched */
- { 0x414c4722, 0xffffffff, "ALC650E",		NULL,	NULL }, /* already patched */
- { 0x414c4723, 0xffffffff, "ALC650F",		NULL,	NULL }, /* already patched */
--{ 0x414c4720, 0xfffffff0, "ALC650",		patch_alc650,	NULL },
--{ 0x414c4760, 0xfffffff0, "ALC655",		patch_alc655,	NULL },
--{ 0x414c4781, 0xffffffff, "ALC658D",		NULL,	NULL }, /* already patched */
--{ 0x414c4780, 0xfffffff0, "ALC658",		patch_alc655,	NULL },
--{ 0x414c4790, 0xfffffff0, "ALC850",		patch_alc850,	NULL },
- { 0x414c4730, 0xffffffff, "ALC101",		NULL,		NULL },
- { 0x414c4740, 0xfffffff0, "ALC202",		NULL,		NULL },
- { 0x414c4750, 0xfffffff0, "ALC250",		NULL,		NULL },
-+{ 0x414c4760, 0xfffffff0, "ALC655",		patch_alc655,	NULL },
- { 0x414c4770, 0xfffffff0, "ALC203",		NULL,		NULL },
-+{ 0x414c4780, 0xfffffff0, "ALC658",		patch_alc655,	NULL },
-+{ 0x414c4781, 0xffffffff, "ALC658D",		NULL,	NULL }, /* already patched */
-+{ 0x414c4790, 0xfffffff0, "ALC850",		patch_alc850,	NULL },
- { 0x434d4941, 0xffffffff, "CMI9738",		patch_cm9738,	NULL },
- { 0x434d4961, 0xffffffff, "CMI9739",		patch_cm9739,	NULL },
- { 0x434d4969, 0xffffffff, "CMI9780",		patch_cm9780,	NULL },
-@@ -143,7 +143,7 @@ static const struct ac97_codec_id snd_ac97_codec_ids[] = {
- { 0x43525970, 0xfffffff8, "CS4202",		NULL,		NULL },
- { 0x43585421, 0xffffffff, "HSD11246",		NULL,		NULL },	// SmartMC II
- { 0x43585428, 0xfffffff8, "Cx20468",		patch_conexant,	NULL }, // SmartAMC fixme: the mask might be different
--{ 0x43585431, 0xffffffff, "Cx20551",           patch_cx20551,  NULL },
-+{ 0x43585431, 0xffffffff, "Cx20551",		patch_cx20551,  NULL },
- { 0x44543031, 0xfffffff0, "DT0398",		NULL,		NULL },
- { 0x454d4328, 0xffffffff, "EM28028",		NULL,		NULL },  // same as TR28028?
- { 0x45838308, 0xffffffff, "ESS1988",		NULL,		NULL },
-@@ -171,11 +171,11 @@ static const struct ac97_codec_id snd_ac97_codec_ids[] = {
- { 0x56494182, 0xffffffff, "VIA1618",		NULL,		NULL },
- { 0x57454301, 0xffffffff, "W83971D",		NULL,		NULL },
- { 0x574d4c00, 0xffffffff, "WM9701,WM9701A",	NULL,		NULL },
--{ 0x574d4C03, 0xffffffff, "WM9703,WM9707,WM9708,WM9717", patch_wolfson03, NULL},
--{ 0x574d4C04, 0xffffffff, "WM9704M,WM9704Q",	patch_wolfson04, NULL},
--{ 0x574d4C05, 0xffffffff, "WM9705,WM9710",	patch_wolfson05, NULL},
--{ 0x574d4C09, 0xffffffff, "WM9709",		NULL,		NULL},
--{ 0x574d4C12, 0xffffffff, "WM9711,WM9712",	patch_wolfson11, NULL},
-+{ 0x574d4c03, 0xffffffff, "WM9703,WM9707,WM9708,WM9717", patch_wolfson03, NULL},
-+{ 0x574d4c04, 0xffffffff, "WM9704M,WM9704Q",	patch_wolfson04, NULL},
-+{ 0x574d4c05, 0xffffffff, "WM9705,WM9710",	patch_wolfson05, NULL},
-+{ 0x574d4c09, 0xffffffff, "WM9709",		NULL,		NULL},
-+{ 0x574d4c12, 0xffffffff, "WM9711,WM9712",	patch_wolfson11, NULL},
- { 0x574d4c13, 0xffffffff, "WM9713,WM9714",	patch_wolfson13, NULL, AC97_DEFAULT_POWER_OFF},
- { 0x594d4800, 0xffffffff, "YMF743",		patch_yamaha_ymf743,	NULL },
- { 0x594d4802, 0xffffffff, "YMF752",		NULL,		NULL },
--- 
-1.5.5
-
-
---------------080101080400020509010302
+-------------------------------------------------------------------------
+This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
+Build the coolest Linux based applications with Moblin SDK & win great prizes
+Grand prize is a trip for two to an Open Source event anywhere in the world
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
+--===============0899815119==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 _______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
 
---------------080101080400020509010302--
+--===============0899815119==--
