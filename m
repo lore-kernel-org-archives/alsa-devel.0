@@ -1,7 +1,7 @@
 From: Landis McGauhey <b3zdomny@hotmail.com>
 Subject: Re: is this card supported by ALSA?
-Date: Tue, 15 Jul 2008 08:38:37 -0700
-Message-ID: <BLU137-W402750FD6BFEAFA9165812958C0@phx.gbl>
+Date: Tue, 15 Jul 2008 09:45:18 -0700
+Message-ID: <BLU137-W547E560AD7B2B9E7C4281C958C0@phx.gbl>
 References: <BLU137-W526424D3E9A79DA1437849959A0@phx.gbl>
 	<48701633.7040601@keyaccess.nl>	<loom.20080708T141841-614@post.gmane.org>
 	<4873AB3B.1070403@keyaccess.nl>	<4873CED6.2040704@keyaccess.nl>
@@ -17,10 +17,13 @@ References: <BLU137-W526424D3E9A79DA1437849959A0@phx.gbl>
 	<48798CF7.6020303@keyaccess.nl>	<loom.20080714T232812-533@post.gmane.org>
 	<487BEB3D.6000209@keyaccess.nl>	<s5hvdz7uwb6.wl%tiwai@suse.de>
 	<s5hod4zxm9v.wl%tiwai@suse.de> <487CB73D.4050808@keyaccess.nl>
+	<BLU137-W34E0AFAD1183AF146DF6F8958C0@phx.gbl>
+	<487CC3EE.4000001@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2145659147=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <487CB73D.4050808@keyaccess.nl>
+In-Reply-To: <487CC3EE.4000001@keyaccess.nl>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
 	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
@@ -34,158 +37,83 @@ To: Rene Herman <rene.herman@keyaccess.nl>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-user@lists.sourceforge.net, devel <alsa-devel@alsa-project.org>, ALSA@sc8-sf-spam2.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============2145659147==
-Content-Type: multipart/alternative;
-	boundary="_7339e849-ee0d-4a5b-81ba-ba29d8221b54_"
-
---_7339e849-ee0d-4a5b-81ba-ba29d8221b54_
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-
-
-
-> Date: Tue=2C 15 Jul 2008 16:42:05 +0200
-> From: rene.herman@keyaccess.nl
-> To: b3zdomny@hotmail.com
-> CC: tiwai@suse.de=3B alsa-user@lists.sourceforge.net=3B alsa-devel@alsa-p=
-roject.org
-> Subject: Re: [Alsa-user] is this card supported by ALSA?
->=20
-<snip>
-
-OK=2C ran alsaconf and it detected the card and finished without error.  Pl=
-us=2C when it loaded the driver=2C there was a loud "click" in the speakers=
-.  I don't think that has happened before.
-
-Then=2C the audio tests:
-
-# speaker-test
-
-speaker-test 1.0.16
-
-Playback device is default
-Stream parameters are 48000Hz=2C S16_LE=2C 1 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2048 to 16384
-Period size range from 1024 to 1024
-Using max buffer size 16384
-Periods =3D 4
-was set period_size =3D 1024
-was set buffer_size =3D 16384
- 0 - Front Left
-Time per period =3D 2.664700
- 0 - Front Left
-
-but with silence.
-
-# aplay /usr/share/sounds/startup3.wav
-Playing WAVE '/usr/share/sounds/startup3.wav' : Signed 16 bit Little Endian=
-=2C Rate 44100 Hz=2C Stereo
-aplay: set_params:1017: unable to install sw params:
-start_mode: DATA
-xrun_mode: STOP
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 940
-xfer_align: 940
-silence_threshold: 0
-silence_size: 0
-boundary: 986447872
-
-but with silence.
-
-tried running audacity.  according to kde system guard process table=2C aud=
-acity was running=2C but it did not appear on the screen.   Used kde system=
- guard process table to kill audacity.
-
-ran xmms.  song played without error=2C but with silence.
-
-Now I am going to do the blacklisting you suggested and reboot to see if th=
-at makes any difference.  I will let you know what happens.
-
-Landis=20
-
-_________________________________________________________________
-The i=92m Talkaton. Can 30-days of conversation change the world?
-http://www.imtalkathon.com/?source=3DEML_WLH_Talkathon_ChangeWorld=
-
---_7339e849-ee0d-4a5b-81ba-ba29d8221b54_
-Content-Type: text/html; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-<head>
-<style>
-.hmmessage P
-{
-margin:0px=3B
-padding:0px
-}
-body.hmmessage
-{
-FONT-SIZE: 10pt=3B
-FONT-FAMILY:Tahoma
-}
-</style>
-</head>
-<body class=3D'hmmessage'>
-<br><br>&gt=3B Date: Tue=2C 15 Jul 2008 16:42:05 +0200<br>&gt=3B From: rene=
-.herman@keyaccess.nl<br>&gt=3B To: b3zdomny@hotmail.com<br>&gt=3B CC: tiwai=
-@suse.de=3B alsa-user@lists.sourceforge.net=3B alsa-devel@alsa-project.org<=
-br>&gt=3B Subject: Re: [Alsa-user] is this card supported by ALSA?<br>&gt=
-=3B <br>&lt=3Bsnip&gt=3B<br><br>OK=2C ran alsaconf and it detected the card=
- and finished without error.&nbsp=3B Plus=2C when it loaded the driver=2C t=
-here was a loud "click" in the speakers.&nbsp=3B I don't think that has hap=
-pened before.<br><br>Then=2C the audio tests:<br><br># speaker-test<br><br>=
-speaker-test 1.0.16<br><br>Playback device is default<br>Stream parameters =
-are 48000Hz=2C S16_LE=2C 1 channels<br>Using 16 octaves of pink noise<br>Ra=
-te set to 48000Hz (requested 48000Hz)<br>Buffer size range from 2048 to 163=
-84<br>Period size range from 1024 to 1024<br>Using max buffer size 16384<br=
->Periods =3D 4<br>was set period_size =3D 1024<br>was set buffer_size =3D 1=
-6384<br>&nbsp=3B0 - Front Left<br>Time per period =3D 2.664700<br>&nbsp=3B0=
- - Front Left<br><br>but with silence.<br><br># aplay /usr/share/sounds/sta=
-rtup3.wav<br>Playing WAVE '/usr/share/sounds/startup3.wav' : Signed 16 bit =
-Little Endian=2C Rate 44100 Hz=2C Stereo<br>aplay: set_params:1017: unable =
-to install sw params:<br>start_mode: DATA<br>xrun_mode: STOP<br>tstamp_mode=
-: NONE<br>period_step: 1<br>sleep_min: 0<br>avail_min: 940<br>xfer_align: 9=
-40<br>silence_threshold: 0<br>silence_size: 0<br>boundary: 986447872<br><br=
->but with silence.<br><br>tried running audacity.&nbsp=3B according to kde =
-system guard process table=2C audacity was running=2C but it did not appear=
- on the screen.&nbsp=3B&nbsp=3B Used kde system guard process table to kill=
- audacity.<br><br>ran xmms.&nbsp=3B song played without error=2C but with s=
-ilence.<br><br>Now I am going to do the blacklisting you suggested and rebo=
-ot to see if that makes any difference.&nbsp=3B I will let you know what ha=
-ppens.<br><br>Landis <br><br /><hr />The i=92m Talkaton. Can 30-days of con=
-versation change the world? <a href=3D'http://www.imtalkathon.com/?source=
-=3DEML_WLH_Talkathon_ChangeWorld' target=3D'_new'>Find out now.</a></body>
-</html>=
-
---_7339e849-ee0d-4a5b-81ba-ba29d8221b54_--
-
-
---===============2145659147==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
-Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
---===============2145659147==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
-
---===============2145659147==--
+DQoNCg0KDQoNCg0KDQo+IERhdGU6IFR1ZSwgMTUgSnVsIDIwMDggMTc6MzY6MTQgKzAyMDANCj4g
+RnJvbTogcmVuZS5oZXJtYW5Aa2V5YWNjZXNzLm5sDQo+IFRvOiBiM3pkb21ueUBob3RtYWlsLmNv
+bQ0KPiBDQzogdGl3YWlAc3VzZS5kZTsgYWxzYS11c2VyQGxpc3RzLnNvdXJjZWZvcmdlLm5ldDsg
+YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+IFN1YmplY3Q6IFJlOiBbQWxzYS11c2VyXSBp
+cyB0aGlzIGNhcmQgc3VwcG9ydGVkIGJ5IEFMU0E/DQo+DQo+IE9uIDE1LTA3LTA4IDE3OjI1LCBM
+YW5kaXMgTWNHYXVoZXkgd3JvdGU6DQo+Pg0KPj4NCj4+PiBEYXRlOiBUdWUsIDE1IEp1bCAyMDA4
+IDE2OjQyOjA1ICswMjAwDQo+Pj4gRnJvbTogcmVuZS5oZXJtYW5Aa2V5YWNjZXNzLm5sDQo+Pj4g
+VG86IGIzemRvbW55QGhvdG1haWwuY29tDQo+Pj4gQ0M6IHRpd2FpQHN1c2UuZGU7IGFsc2EtdXNl
+ckBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ7DQo+PiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcN
+Cj4+PiBTdWJqZWN0OiBSZTogW0Fsc2EtdXNlcl0gaXMgdGhpcyBjYXJkIHN1cHBvcnRlZCBieSBB
+TFNBPw0KPj4gDQo+Pg0KPj4gT0ssIGludGVyaW0gcmVwb3J0Og0KPj4NCj4+IHRoZSBwYXRjaCwg
+dGhlIG1ha2UsIHRoZSBtYWtlbW9kdWxlcywgYW5kIHRoZSBtb2Rwcm9iZXMgYWxsIHByb2NlZWRl
+ZA0KPj4gd2l0aG91dCBlcnJvci4NCj4NCj4gdGhlICJtYWtlIG1vZHVsZXNfaW5zdGFsbCIgSSBo
+b3BlLiAibWFrZSBtb2R1bGVzIiB3b3VsZCBqdXN0IG1ha2UgdGhlDQo+IG1vZHVsZXMsIG5vdCBp
+bnN0YWxsIHRoZW0uIFlvdSBuZWVkIHRvIGJlIHZlcnkgc3VyZSB5b3UncmUgcnVubmluZyB0aGUN
+Cj4gbmV3O3kgY29tcGlsZWQgZHJpdmVyIChpZSwgYXMgc2FpZCwgdW5sb2FkIGFueSBjdXJyZW50
+IGRyaXZlciwgYW5kDQo+IHJlbG9hZCBhZnRlciB0aGUgbWFrZSBtb2R1bGVzX2luc3RhbGwpLg0K
+Pg0KPiBXaGF0ZXZlciB0aGUgcmVzdWx0LCBzb3VuZCBvciBubywgcGxlYXNlIGFsc28gcmVwb3J0
+IHRoZQ0KPiAvcHJvYy9hc291bmQvQXVkaW9QQ0kvY29kZTk3IzAvIGZpbGVzDQo+DQo+PiAjIGFw
+bGF5IC91c3Ivc2hhcmUvc291bmRzL3N0YXJ0dXAzLndhdg0KPj4gQUxTQSBsaWIgcGNtX2RtaXgu
+Yzo4NjQ6KHNuZF9wY21fZG1peF9vcGVuKSB1bmFibGUgdG8gb3BlbiBzbGF2ZQ0KPj4gYXBsYXk6
+IG1haW46NTY0OiBhdWRpbyBvcGVuIGVycm9yOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5DQo+
+DQo+IFF1aXRlIGZyYW5rbHksIEkgaGF2ZW4ndCBhIGNsdWUgd2hhdCBfdGhhdF8gaXMgbm93IGFi
+b3V0IGFnYWluIGFsbCBvZiBhDQo+IHN1ZGRlbiwgYnV0IGFsc28gdHJ5ICJhcGxheSAtRCBodzpB
+dWRpb1BDSSBmb28ud2F2Ii4NCj4NCj4gUmVuZS4NCg0KT0ssIGRvdWJsZS1jaGVja2VkIGNvbW1h
+bmQgbGluZSBhbmQgbWFrZSBtb2R1bGVzX2luc3RhbGwgaW5kZWVkIGhhZCBiZWVuIHJ1bi4NCg0K
+V2VudCBrbWVudT5zZXR0aW5ncz5zb3VuZCAmIG11bHRpbWVkaWE+c291bmQgc3lzdGVtPmhhcmR3
+YXJlIHRhYiBhbmQgcmVzdGFydGVkIHRoZSBzb3VuZCBzeXN0ZW0uDQoNCldlbnQgdG8gcHJvY2Vz
+cyB0YWJsZSBhbmQga2lsbGVkIG1hbnksIG1hbnkgc2Vzc2lvbnMgb2YgYXJ0c2QtLSBzZWVtcyBJ
+J3ZlIHJlYWQgZWxzZXdoZXJlIGhlcmUgb24gdGhlIGJvYXJkIHRoYXQgYW55IHNvdW5kIHNlcnZl
+ciB3aWxsIGJsb2NrIGFueSBvdGhlciBhcHBsaWNhdGlvbiB0cnlpbmcgdG8gcGxheS4NCg0KIyBh
+cGxheSAvdXNyL3NoYXJlL3NvdW5kcy9zdGFydHVwMy53YXYNClBsYXlpbmcgV0FWRSAnL3Vzci9z
+aGFyZS9zb3VuZHMvc3RhcnR1cDMud2F2JyA6IFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlhbiwg
+UmF0ZSA0NDEwMCBIeiwgU3RlcmVvDQphcGxheTogc2V0X3BhcmFtczoxMDE3OiB1bmFibGUgdG8g
+aW5zdGFsbCBzdyBwYXJhbXM6DQpzdGFydF9tb2RlOiBEQVRBDQp4cnVuX21vZGU6IFNUT1ANCnRz
+dGFtcF9tb2RlOiBOT05FDQpwZXJpb2Rfc3RlcDogMQ0Kc2xlZXBfbWluOiAwDQphdmFpbF9taW46
+IDk0MA0KeGZlcl9hbGlnbjogOTQwDQpzaWxlbmNlX3RocmVzaG9sZDogMA0Kc2lsZW5jZV9zaXpl
+OiAwDQpib3VuZGFyeTogOTg2NDQ3ODcyDQoNCnRyaWVkIHRvIHJ1biBhdWRhY2l0eSBidXQgYXMg
+YmVmb3JlIGl0IHdvdWxkIG5vdCBhcHBlYXIgb24gdGhlIHNjcmVlbi4gIHVzZWQgcHJvY2VzcyB0
+YWJsZSB0byBraWxsIGl0LiANCg0KcmFuIHhtbXM6ICBwbGF5ZWQgc29uZyBidXQgd2l0aCBzaWxl
+bmNlLg0KDQojIGNhdCAvcHJvYy9hc291bmQvQXVkaW9QQ0kvY29kZWM5NyMwL2FjOTcjMC0wPQ0K
+MC0wLzA6IDB4NzYwNTgzODQgRu+/vVMNCg0KUENJIFN1YnN5cyBWZW5kb3I6IDB4MDAwMA0KUENJ
+IFN1YnN5cyBEZXZpY2U6IDB4MDAwMA0KDQpDYXBhYmlsaXRpZXMgICAgIDogLWRlZGljYXRlZCBN
+SUMgUENNIElOIGNoYW5uZWwtIC1iYXNzICYgdHJlYmxlLQ0KREFDIHJlc29sdXRpb24gICA6IDE2
+LWJpdA0KQURDIHJlc29sdXRpb24gICA6IDIwLWJpdA0KM0QgZW5oYW5jZW1lbnQgICA6IFJlc2Vy
+dmVkIDI5DQoNCkN1cnJlbnQgc2V0dXANCk1pYyBnYWluICAgICAgICAgOiArMGRCIFsrMjBkQl0N
+ClBPUCBwYXRoICAgICAgICAgOiBwcmUgM0QNClNpbS4gc3RlcmVvICAgICAgOiBvZmYNCjNEIGVu
+aGFuY2VtZW50ICAgOiBvZmYNCkxvdWRuZXNzICAgICAgICAgOiBvZmYNCk1vbm8gb3V0cHV0ICAg
+ICAgOiBNSVgNCk1pYyBzZWxlY3QgICAgICAgOiBNaWMxDQpBREMvREFDIGxvb3BiYWNrIDogb2Zm
+DQoNCiMgY2F0IC9wcm9jL2Fzb3VuZC9BdWRpb1BDSS9jb2RlYzk3IzAvYWM5NyMwLTArcmVncz0N
+CjA6MDAgPSAwMDAwDQowOjAyID0gODQwNA0KMDowNCA9IDg0MDQNCjA6MDYgPSA4MDAwDQowOjA4
+ID0gODAwNQ0KMDowYSA9IGZmZmYNCjA6MGMgPSAxMDBhDQowOjBlID0gODAxZg0KMDoxMCA9IDgw
+NWYNCjA6MTIgPSA5MDEwDQowOjE0ID0gODcwNw0KMDoxNiA9IDlmMWYNCjA6MTggPSA5ZjFmDQow
+OjFhID0gOGEwYQ0KMDoxYyA9IDgwMDANCjA6MWUgPSAwMDAwDQowOjIwID0gMDAwMA0KMDoyMiA9
+IDAwMDANCjA6MjQgPSAwMDAwDQowOjI2ID0gMDAwMA0KMDoyOCA9IDAwMGYNCjA6MmEgPSBmZmZm
+DQowOjJjID0gZmZmZg0KMDoyZSA9IGZmZmYNCjA6MzAgPSBmZmZmDQowOjMyID0gZmZmZg0KMDoz
+NCA9IGZmZmYNCjA6MzYgPSBmZmZmDQowOjM4ID0gZmZmZg0KMDozYSA9IGZmZmYNCjA6M2MgPSBm
+ZmZmDQowOjNlID0gZmZmZg0KMDo0MCA9IGZmZmYNCjA6NDIgPSBmZmZmDQowOjQ0ID0gZmZmZg0K
+MDo0NiA9IGZmZmYNCjA6NDggPSBmZmZmDQowOjRhID0gZmZmZg0KMDo0YyA9IGZmZmYNCjA6NGUg
+PSBmZmZmDQowOjUwID0gZmZmZg0KMDo1MiA9IGZmZmYNCjA6NTQgPSBmZmZmDQowOjU2ID0gZmZm
+Zg0KMDo1OCA9IGZmZmYNCjA6NWEgPSBmZmZmDQowOjVjID0gMDAwMA0KMDo1ZSA9IDAwMDANCjA6
+NjAgPSAwMDAwDQowOjYyID0gMDAwMA0KMDo2NCA9IDAwMDANCjA6NjYgPSAwMDAwDQowOjY4ID0g
+MDAwMA0KMDo2YSA9IDAwMDANCjA6NmMgPSAwMDAwDQowOjZlID0gMDAwMA0KMDo3MCA9IDAwMDAN
+CjA6NzIgPSAwMDAwDQowOjc0ID0gMDAwMA0KMDo3NiA9IDAwMDANCjA6NzggPSAwMDAwDQowOjdh
+ID0gMDAwMA0KMDo3YyA9IDAwMDANCjA6N2UgPSA4Mzg0DQoNCg0KV2lsbCBkbyBibGFja2xpc3Qg
+YXMgcmVjb21tZW5kZWQgaW4gZWFybGllciBtZXNzYWdlLCB0aGVuIHJlYm9vdCBhbmQgc2VlIHdo
+YXQgaGFwcGVucy4NCg0KTGFuZGlzDQoNCg0KDQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCk5lZWQgdG8ga25vdyBu
+b3c/IEdldCBpbnN0YW50IGFuc3dlcnMgd2l0aCBXaW5kb3dzIExpdmUgTWVzc2VuZ2VyLg0KaHR0
+cDovL3d3dy53aW5kb3dzbGl2ZS5jb20vbWVzc2VuZ2VyL2Nvbm5lY3RfeW91cl93YXkuaHRtbD9v
+Y2lkPVRYVF9UQUdMTV9XTF9tZXNzZW5nZXJfMDcyMDA4Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBT
+Ri5OZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IHRoZSBNb2JsaW4gWW91ciBNb3ZlIERldmVsb3Bl
+cidzIGNoYWxsZW5nZQpCdWlsZCB0aGUgY29vbGVzdCBMaW51eCBiYXNlZCBhcHBsaWNhdGlvbnMg
+d2l0aCBNb2JsaW4gU0RLICYgd2luIGdyZWF0IHByaXplcwpHcmFuZCBwcml6ZSBpcyBhIHRyaXAg
+Zm9yIHR3byB0byBhbiBPcGVuIFNvdXJjZSBldmVudCBhbnl3aGVyZSBpbiB0aGUgd29ybGQKaHR0
+cDovL21vYmxpbi1jb250ZXN0Lm9yZy9yZWRpcmVjdC5waHA/YmFubmVyX2lkPTEwMCZ1cmw9Lwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLXVzZXIg
+bWFpbGluZyBsaXN0CkFsc2EtdXNlckBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
+cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS11c2VyCg==
