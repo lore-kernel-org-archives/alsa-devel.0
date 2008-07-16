@@ -1,52 +1,58 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Requiring the same sample rate for playback and
- record?
-Date: Wed, 16 Jul 2008 10:11:27 -0500
-Message-ID: <487E0F9F.1060401@freescale.com>
-References: <485C0042.4050008@freescale.com>	<s5h7icg4dsd.wl%tiwai@suse.de>	<487BC430.8040109@freescale.com>
-	<s5hmyki14d5.wl%tiwai@suse.de>
+From: Sergei Steshenko <steshenko_sergei@list.ru>
+Subject: Re:
+	=?koi8-r?b?aXMgdGhpcyBjYXJkIHN1cHBvcnRlZCBieSBBTFNB?=
+	=?koi8-r?b?Pw==?=
+Date: Wed, 16 Jul 2008 19:12:26 +0400
+Message-ID: <E1KJ8g6-000IzW-00.steshenko_sergei-list-ru@f134.mail.ru>
+References: <487E093B.30601@keyaccess.nl>
+Reply-To: Sergei Steshenko <steshenko_sergei@list.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 996ED24432
-	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Jul 2008 17:11:32 +0200 (CEST)
-In-Reply-To: <s5hmyki14d5.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <487E093B.30601@keyaccess.nl>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, Landis McGauhey <b3zdomny@hotmail.com>, devel <alsa-devel@alsa-project.org>, alsa-user@lists.sourceforge.net, ALSA@sc8-sf-spam2.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
-> In a simple case, you don't need hw_constraint functions.  Just
-> override the corresponding fields of runtime->hw in open callback.
+
+-----Original Message-----
+From: Rene Herman <rene.herman@keyaccess.nl>
+To: Landis McGauhey <b3zdomny@hotmail.com>
+Date: Wed, 16 Jul 2008 16:44:11 +0200
+Subject: Re: [Alsa-user] is this card supported by ALSA?
+
 > 
-> For example, pci/via82xx.c sets the current rate value to
-> runtime->hw.rate_min/max if there is another stream.
+> On 16-07-08 16:40, Rene Herman wrote:
+> 
+> > # moodprobe -r  ens1371-ac97_reset_hack.diff
+> > # moodprobe -r  ens1371-ac97.diff
+> 
+> I'm getting really sick of the fact that I seem to need to make at least 
+> one typo or other small error per post. "modprobe" ofcourse.
+> 
+> Rene.
+> 
+>
 
-Are you talking about this code:
+Actually, 'moodprobe' is a really nice word :-). I love it !
 
-	} else {
-		/* a fixed rate */
-		runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
-		runtime->hw.rate_max = runtime->hw.rate_min = ratep->rate;
-	}
+Probably Linux distros should symlink ln -s modprobe moodprobe .
 
-Last I heard, ASoC doesn't work with SNDRV_PCM_RATE_KNOT.  But I think I can
-still use this method.  I'll just need to use a real SNDRV_PCM_RATE_xxx value.
+--Sergei.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+-------------------------------------------------------------------------
+This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
+Build the coolest Linux based applications with Moblin SDK & win great prizes
+Grand prize is a trip for two to an Open Source event anywhere in the world
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
