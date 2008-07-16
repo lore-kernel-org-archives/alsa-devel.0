@@ -1,22 +1,20 @@
-From: "Nobin Mathew" <nobin.mathew@gmail.com>
+From: dinesh <dinesh.dua@coraltele.com>
 Subject: Re: WRITING AN SOC DRIVER WITHOUT DMA
-Date: Wed, 16 Jul 2008 15:37:54 +0530
-Message-ID: <8d6898730807160307g4455597ck921d55da8f51455d@mail.gmail.com>
+Date: Wed, 16 Jul 2008 15:43:26 +0530
+Message-ID: <1216203206.9723.0.camel@dinesh.dua>
 References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
 	<20080712083939.15025.31192.stgit@trillian.secretlab.ca>
 	<1216199130.749.4.camel@dinesh.dua>
+	<8d6898730807160307g4455597ck921d55da8f51455d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wx-out-0506.google.com (wx-out-0506.google.com [66.249.82.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id E78122443A
+Received: from mail.coraltele.com (unknown [122.160.64.235])
+	by alsa0.perex.cz (Postfix) with ESMTP id CEACB24437
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Jul 2008 12:07:56 +0200 (CEST)
-Received: by wx-out-0506.google.com with SMTP id h30so3085154wxd.23
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2008 03:07:55 -0700 (PDT)
-In-Reply-To: <1216199130.749.4.camel@dinesh.dua>
-Content-Disposition: inline
+	Wed, 16 Jul 2008 12:15:51 +0200 (CEST)
+In-Reply-To: <8d6898730807160307g4455597ck921d55da8f51455d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,9 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: dinesh <dinesh.dua@coraltele.com>
+To: Nobin Mathew <nobin.mathew@gmail.com>
 Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
+
+no i am working on powerpc.     MPC8323
+
+
+-----Original Message-----
+From: Nobin Mathew <nobin.mathew@gmail.com>
+To: dinesh <dinesh.dua@coraltele.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org,
+alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
+Subject: Re: [alsa-devel] WRITING AN SOC DRIVER WITHOUT DMA
+Date: Wed, 16 Jul 2008 15:37:54 +0530
+
 
 Hi dinesh,
 
@@ -50,3 +60,7 @@ On 7/16/08, dinesh <dinesh.dua@coraltele.com> wrote:
 > Alsa-devel@alsa-project.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
