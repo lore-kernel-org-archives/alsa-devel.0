@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: CS5530 on Geode GX1 won't work
-Date: Wed, 16 Jul 2008 10:43:26 +0200
-Message-ID: <487DB4AE.4070901@ladisch.de>
-References: <200807152315.23490.georg.brand@web.de>
+From: dinesh <dinesh.dua@coraltele.com>
+Subject: WRITING AN SOC DRIVER WITHOUT DMA
+Date: Wed, 16 Jul 2008 14:35:30 +0530
+Message-ID: <1216199130.749.4.camel@dinesh.dua>
+References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
+	<20080712083939.15025.31192.stgit@trillian.secretlab.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 7C8CD243B4
+Received: from mail.coraltele.com (unknown [122.160.64.235])
+	by alsa0.perex.cz (Postfix) with ESMTP id B993E243FF
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Jul 2008 10:43:28 +0200 (CEST)
-In-Reply-To: <200807152315.23490.georg.brand@web.de>
+	Wed, 16 Jul 2008 11:07:44 +0200 (CEST)
+In-Reply-To: <20080712083939.15025.31192.stgit@trillian.secretlab.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,20 +22,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: georg <georg.brand@web.de>
-Cc: alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-georg wrote:
-> root@tux:~# aplay foo.wav
-> aplay: main:546: audio open error: Device or resource busy
-> ...
-> root@tux:~# lsof | grep -i pcmC0D0p
-
-It's possible that the device has been opened with OSS (i.e., /dev/dsp*)
-or that somebody has opened the capture device (SB doesn't do full
-duplex).  Is there anything in /dev/ that is being used?
-
-
-Regards,
-Clemens
+Hi,
+I am writing a soc sound driver for MPC8323 board linux 2.6.24 in which i want to do data transfer to and from device myself using BUFFER DESCRIPTOR not with the usual DMA transfer.
+Please help me.
