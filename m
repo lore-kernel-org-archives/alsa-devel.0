@@ -1,71 +1,135 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: snd_pcm_writei() -last value sustained
-Date: Wed, 16 Jul 2008 13:01:08 +0100
-Message-ID: <200807161301.08608.gineera@aspect135.co.uk>
-References: <200807040938.53662.gineera@aspect135.co.uk>
-	<s5h4p6qspru.wl%tiwai@suse.de>
-	<200807161222.07440.gineera@aspect135.co.uk>
+From: Landis McGauhey <b3zdomny@hotmail.com>
+Subject: Re: is this card supported by ALSA?
+Date: Wed, 16 Jul 2008 05:06:15 -0700
+Message-ID: <BLU137-W18F0EABAFCDE657CE4E80F958F0@phx.gbl>
+References: <BLU137-W110C592A46588437241F1A958C0@phx.gbl>
+	<487DBC70.1000307@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (smtp-out-3.talktalk.net [62.24.128.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5A0624481
-	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Jul 2008 13:42:51 +0200 (CEST)
-In-Reply-To: <200807161222.07440.gineera@aspect135.co.uk>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============0444661948=="
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <487DBC70.1000307@keyaccess.nl>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-user@lists.sourceforge.net, devel <alsa-devel@alsa-project.org>, ALSA@sc8-sf-spam2.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 16 July 2008 12:22, Alan Horstmann wrote:
-> On Wednesday 16 July 2008 00:15, you wrote:
-> > At Mon, 7 Jul 2008 14:53:35 +0100,
+--===============0444661948==
+Content-Type: multipart/alternative;
+	boundary="_283a3bf5-1ec2-4ff1-b94a-be3bb7b93323_"
 
-(snip)
+--_283a3bf5-1ec2-4ff1-b94a-be3bb7b93323_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> > Well, I'd call it's a hardware "feature".  No other hardwares do like
-> > that.
-> >
-> > As a workaround, we'll need to put zero'ed short samples before
-> > actually stopping the stream.
-> >
-> > I wonder whether this also occurs to pause operation, too.  In the
-> > case of pause, it's a tougher problem...
->
-> Thanks for the response on this one.  I'm not sure how to test pause,
-> unless xmms uses that for 'PAUSE' button action, when the same effect is
-> seen.
->
-> I did try setting various values for silence threshold and size, and when
-> (as per the original test) writing 1 period of sine followed by a 2nd
-> writei of experimental data, silence values could be found that would
-> eliminate the 'sustain effect'.  However, when only the single period
-> writei occured I could not find any effective values.
->
-> Unsurprisingly, my other ice1712 card, ST Audio /Hoontech DSP2000 shows the
-> same effect, so if it is a 'hardware feature' it presumably relates to the
-> way the envy24 chip operates?
->
-> How would I go about experimenting with zeroing the stream just before
-> stopping?  Do you mean in _pro_trigger()?
 
-Further info, I noticed in the envy24 datasheet, (rev 2.2 1.03.00) p 4-24 
-states (near bottom of page)
 
-'... when DMAs are stopped, the last latched value is retained.  This "DC" 
-value ...'
 
-so you were right about 'hardware feature'!
+> Date: Wed=2C 16 Jul 2008 11:16:32 +0200
+> From: rene.herman@keyaccess.nl
+> To: b3zdomny@hotmail.com
+> CC: tiwai@suse.de=3B alsa-user@lists.sourceforge.net=3B alsa-devel@alsa-p=
+roject.org
+> Subject: Re: [Alsa-user] is this card supported by ALSA?
+>=20
+> On 15-07-08 22:28=2C Landis McGauhey wrote:
+>=20
+> > Yes=2C I did delete '-dry-run'.
+> >=20
+> > In fact=2C just to be doubly certain=2C I just re-ran the whole process=
+ and
+>=20
+> I still worry a little bit=2C since if all's well=2C you should have seen=
+=20
+> the "patch -p1" command fail this time (it commenting that the patch=20
+> seemed already applied) but I'll assume you did see that then.<snip>
 
-Alan
+Yes=2C I did see that and re-installed the patch anyway.
+
+Good afternoon=2C Rene!  Thank you for the new patch and thank you for your=
+ persistence and patience-- they are very much appreciated.  Just having my=
+ first cup of coffee-- it's 0500 here on the Left Coast of the USA.  I'll r=
+un the new patch and let you know the results.
+
+best regards=2C
+
+Landis=20
+
+_________________________________________________________________
+Time for vacation? WIN what you need- enter now!
+http://www.gowindowslive.com/summergiveaway/?ocid=3Dtag_jlyhm=
+
+--_283a3bf5-1ec2-4ff1-b94a-be3bb7b93323_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<style>
+.hmmessage P
+{
+margin:0px=3B
+padding:0px
+}
+body.hmmessage
+{
+FONT-SIZE: 10pt=3B
+FONT-FAMILY:Tahoma
+}
+</style>
+</head>
+<body class=3D'hmmessage'>
+<br><br>&gt=3B Date: Wed=2C 16 Jul 2008 11:16:32 +0200<br>&gt=3B From: rene=
+.herman@keyaccess.nl<br>&gt=3B To: b3zdomny@hotmail.com<br>&gt=3B CC: tiwai=
+@suse.de=3B alsa-user@lists.sourceforge.net=3B alsa-devel@alsa-project.org<=
+br>&gt=3B Subject: Re: [Alsa-user] is this card supported by ALSA?<br>&gt=
+=3B <br>&gt=3B On 15-07-08 22:28=2C Landis McGauhey wrote:<br>&gt=3B <br>&g=
+t=3B &gt=3B Yes=2C I did delete '-dry-run'.<br>&gt=3B &gt=3B <br>&gt=3B &gt=
+=3B In fact=2C just to be doubly certain=2C I just re-ran the whole process=
+ and<br>&gt=3B <br>&gt=3B I still worry a little bit=2C since if all's well=
+=2C you should have seen <br>&gt=3B the "patch -p1" command fail this time =
+(it commenting that the patch <br>&gt=3B seemed already applied) but I'll a=
+ssume you did see that then.&lt=3Bsnip&gt=3B<br><br>Yes=2C I did see that a=
+nd re-installed the patch anyway.<br><br>Good afternoon=2C Rene!&nbsp=3B Th=
+ank you for the new patch and thank you for your persistence and patience--=
+ they are very much appreciated.&nbsp=3B Just having my first cup of coffee=
+-- it's 0500 here on the Left Coast of the USA.&nbsp=3B I'll run the new pa=
+tch and let you know the results.<br><br>best regards=2C<br><br>Landis <br>=
+<br /><hr />Time for vacation? WIN what you need. <a href=3D'http://www.gow=
+indowslive.com/summergiveaway/?ocid=3Dtag_jlyhm' target=3D'_new'>Enter Now!=
+</a></body>
+</html>=
+
+--_283a3bf5-1ec2-4ff1-b94a-be3bb7b93323_--
+
+
+--===============0444661948==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+-------------------------------------------------------------------------
+This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
+Build the coolest Linux based applications with Moblin SDK & win great prizes
+Grand prize is a trip for two to an Open Source event anywhere in the world
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
+--===============0444661948==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+--===============0444661948==--
