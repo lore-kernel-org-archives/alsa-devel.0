@@ -1,20 +1,18 @@
-From: georg <georg.brand@web.de>
-Subject: Re: CS5530 on Geode GX1 won't work
-Date: Wed, 16 Jul 2008 16:29:42 +0200
-Message-ID: <200807161629.43001.georg.brand@web.de>
-References: <200807152315.23490.georg.brand@web.de>
-	<487DB4AE.4070901@ladisch.de>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [Alsa-user] is this card supported by ALSA?
+Date: Wed, 16 Jul 2008 16:40:20 +0200
+Message-ID: <487E0854.6010203@keyaccess.nl>
+References: <BLU137-W200E329BE55D7983681A9958F0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0407124456
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A34D24458
 	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Jul 2008 16:30:10 +0200 (CEST)
-In-Reply-To: <487DB4AE.4070901@ladisch.de>
-Content-Disposition: inline
+	Wed, 16 Jul 2008 16:38:28 +0200 (CEST)
+In-Reply-To: <BLU137-W200E329BE55D7983681A9958F0@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,60 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: Landis McGauhey <b3zdomny@hotmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-user@lists.sourceforge.net, devel <alsa-devel@alsa-project.org>, ALSA@sc8-sf-spam2.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+On 16-07-08 15:38, Landis McGauhey wrote:
 
-> > root@tux:~# aplay foo.wav
-> > aplay: main:546: audio open error: Device or resource busy
-> > ...
-> > root@tux:~# lsof | grep -i pcmC0D0p
->
-> It's possible that the device has been opened with OSS (i.e., /dev/dsp*)
-> or that somebody has opened the capture device (SB doesn't do full
-> duplex).  Is there anything in /dev/ that is being used?
+> "pop" in speaker as alsaconf loads snd-ens1371
+> 
+> running alsamixer-- no mute toggle underneath mic, that's a first
+> 
+> and just so you know,  there's no mute toggle under "master", 
+> "master-m", and "PCM", either, but that's nominal.  There was one
+> time, however, that "master" and/or "PCM" had a mute toggle.  Perhaps
+> "master" and/or "PCM" are muted and we can't tell because there are
+> supposed to be mute toggles there, but they are missing?  Something
+> to consider...
 
-OSS is completely disabled in kernel .config.
+I'm afraid that codec communication is just really messed up and the 
+last two patches seem to have made things worse, so in preparation for 
+any possible follow ups, you might as well revert those:
 
-Here is a complete grep on /dev:
+from /usr/src/linux-2.6.25.9:
 
-root@tux:~# lsof | grep "/dev"
-init         1       root   10u     FIFO       0,13            
-111 /dev/initctl
-udevd      915       root    0u      CHR        1,3          31003 /dev/null
-udevd      915       root    1u      CHR        1,3          31003 /dev/null
-udevd      915       root    2u      CHR        1,3          31003 /dev/null
-dropbear  3223       root    0u      CHR        1,3             86 /dev/null
-dropbear  3223       root    1u      CHR        1,3             86 /dev/null
-dropbear  3223       root    2u      CHR        1,3             86 /dev/null
-dbus-daem 3232 messagebus    0u      CHR        1,3             86 /dev/null
-dbus-daem 3232 messagebus    1u      CHR        1,3             86 /dev/null
-dbus-daem 3232 messagebus    2u      CHR        1,3             86 /dev/null
-dbus-daem 3232 messagebus    4u      CHR        1,3             86 /dev/null
-hcid      3245       root    0u      CHR        1,3             86 /dev/null
-hcid      3245       root    1u      CHR        1,3             86 /dev/null
-hcid      3245       root    2u      CHR        1,3             86 /dev/null
-getty     3264       root  cwd       DIR       0,13   13580     48 /dev
-getty     3264       root    0u      CHR        4,1            864 /dev/tty1
-getty     3264       root    1u      CHR        4,1            864 /dev/tty1
-getty     3264       root    2u      CHR        4,1            864 /dev/tty1
-dropbear  3272       root    0u      CHR        1,3             86 /dev/null
-dropbear  3272       root    1u      CHR        1,3             86 /dev/null
-dropbear  3272       root    2u      CHR        1,3             86 /dev/null
-dropbear  3272       root    6u      CHR        5,2            179 /dev/ptmx
-sh        3273       root    0u      CHR      136,0              2 /dev/pts/0
-sh        3273       root    1u      CHR      136,0              2 /dev/pts/0
-sh        3273       root    2u      CHR      136,0              2 /dev/pts/0
-sh        3273       root   10u      CHR        5,0            858 /dev/tty
-lsof      3278       root    0u      CHR      136,0              2 /dev/pts/0
-lsof      3278       root    2u      CHR      136,0              2 /dev/pts/0
-grep      3279       root    1u      CHR      136,0              2 /dev/pts/0
-grep      3279       root    2u      CHR      136,0              2 /dev/pts/0
+# moodprobe -r  ens1371-ac97_reset_hack.diff
+# moodprobe -r  ens1371-ac97.diff
 
-Thank you for your help!
-Any further suggestions?
+do please again run "make" and "make modules_install" after this but 
+that's just so that I'm satisfied you're back at the start. No need to 
+test anything, you'd just find the old behaviour again.
 
-Bye
-Georg
+One thing I am noticing now that we've been looking at the codec ID in 
+ALSA in the OSS driver output there:
+
+===
+es1371: found chip, vendor id 0x1102 device id 0x8938 revision 0x00
+es1371: found es1371 rev 0 at io 0xde80 irq 23
+es1371: Enabling internal amplifier.
+ac97_codec: AC97 Audio codec, id:  (Unknown)
+gameport: ESS1371 Gameport is isa0218/gameport0, io 0x218, speed 1125kHz
+===
+
+is the "id: (Unknown)" bit. The OSS driver also definitely knows about 
+the Sigmatel STAC9704 codec so it seems _this_ problam might not be 
+unique to the ALSA driver. The OSS driver does produce sound, so perhaps 
+we're chasing something not maximally productive right now...
+
+It would be sort of interesting to have you look at the physical card 
+and verify that it's indeed a Sigmatel STAC9704. It should be a tiny 
+chip with a greek sigma sign and "STAC9704" in small enough letters that 
+you might even need a magnifying glass. If it's hard or clumsy to take 
+it out, don't bother though, it's not that important. You had 76058384 
+as an ID and a STAC9704 is 83847605 (upper/lower 16-bit switched) but 
+that will not have gotten to be there by accident.
+
+Yes, before anyone wonders, I verified that the ALSA driver does that 
+"Enabling internal amplifier" thing (that might be that pop that you 
+hear; is the pop also present when loading the OSS driver?)
+
+> Rene & Takashi: I fear this is taking up too much of our time and
+> this effort may have long passed the point of diminishing returns. 
+> Personally, my goal is to have audio with Skype, whether with OSS or
+> ALSA, I don't care.  If you want to continue to work on this for the
+> sake of the community at large and others who have this same card
+> and this same problem, then I'm willing and would be honored to be
+> the guinea pig and be an active participant in the community. I'm
+> sorry this problem is so stubborn and if you have better things to
+> do, I understand.  If you don't care to work on this anymore, I would
+> understand and if you could perhaps just help me get sound in Skype
+> (that is, to have /dev/dsp appear as I/O options in Skype
+> configuration) with OSS, then I would be a happy camper indeed.
+
+I'm afraid I don't know Skype. Older versions of it couldn't use ALSA 
+but needed the OSS emulation. If newer version now can't use OSS but 
+need ALSA, lovely...
+
+I'll keep looking for a bit but ofcourse you don't have to wait around 
+for anything. If I find anything with a good chance of success I'll let 
+you know. Please conform that you've reverted the last two patches as 
+mentioned above.
+
+Rene.
