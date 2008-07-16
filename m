@@ -1,57 +1,67 @@
-From: Juergen Beisert <jbe@pengutronix.de>
-Subject: Re: CS5530 on Geode GX1 won't work
-Date: Wed, 16 Jul 2008 17:42:52 +0200
-Message-ID: <200807161742.54249.jbe@pengutronix.de>
-References: <200807152315.23490.georg.brand@web.de>
-	<487DB4AE.4070901@ladisch.de>
-	<200807161629.43001.georg.brand@web.de>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [alsa-devel] [0/2] Jack reporting
+Date: Wed, 16 Jul 2008 12:36:06 -0400
+Message-ID: <20080716112939.ZZRA012@mailhub.coreip.homeip.net>
+References: <20080703095026.GA652@sirena.org.uk> <20080714151058.GF25448@sirena.org.uk> <s5hlk02148k.wl%tiwai@suse.de> <20080716125053.GA17134@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.extern.pengutronix.de (metis.extern.pengutronix.de
-	[83.236.181.26]) by alsa0.perex.cz (Postfix) with ESMTP id C376C244C5
-	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Jul 2008 17:43:58 +0200 (CEST)
-In-Reply-To: <200807161629.43001.georg.brand@web.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: georg <georg.brand@web.de>, Clemens Ladisch <clemens@ladisch.de>
+In-Reply-To: <20080716125053.GA17134@rakim.wolfsonmicro.main>
+Sender: linux-input-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mittwoch, 16. Juli 2008, georg wrote:
-> Hello
->
-> > > root@tux:~# aplay foo.wav
-> > > aplay: main:546: audio open error: Device or resource busy
-> > > ...
-> > > root@tux:~# lsof | grep -i pcmC0D0p
-> >
-> > It's possible that the device has been opened with OSS (i.e., /dev/dsp*)
-> > or that somebody has opened the capture device (SB doesn't do full
-> > duplex).  Is there anything in /dev/ that is being used?
-> [...]
-> Any further suggestions?
+On Wed, Jul 16, 2008 at 01:50:53PM +0100, Mark Brown wrote:
+> On Wed, Jul 16, 2008 at 01:02:35PM +0200, Takashi Iwai wrote:
+> > Mark Brown wrote:
+> 
+> > > Takashi, do you have any comments on these patches?
+> 
+> > I have no strong opinion about this.  Your implementation looks small
+> > enough.  But, if Dmitry finds the input layer not suitable for such a
+> > purpose, this isn't a good way to go.
+> 
+> Unfortunately Dimitry hasn't been responding to any of the e-mails on
+> this subject since his initial one.  :/
+> 
 
-As the sb16 is fully emulated on Geode GX1/CS5530 based systems, it could a=
-lso =
+Completely my fault, I am verry sorry.
 
-be a bug in the system management code (SMM or VSA)?
+> > I think the question is how general and how extensible these features
+> > should be.  If it's just a jack reporting, there are bunch of other
+> 
+> To reiterate points I've previously made:
+> 
+> As well as detecting the presence of a connected device typical jack
+> detection implementations also support the implementation of at least
+> one button which would require an input device for at least some jacks
+> even if something else were done.  This is consistent with existing
+> usage of the input layer - it's similar to multimedia keys which are
+> normally reported via the input layer.  Things like sleep and power
+> buttons are implemented as individual input devices.
+> 
 
-Juergen
--- =
+It really depends on what you can do with this button. If it is just a
+simple circuit breaker then it is not really an input device. However
+is you can remap it for different purposes or map a regular key on a
+keybaord to perform this function then I will agree with you. For example
+sleep and power buttons can be anywhere. They can be implemented as
+ACPI button but there also a bunch of keyboards that have a sleep
+button on them. Or, like you said, multimedia keys - they not always
+control hardware directly, often you have an option to remap and
+re-use them.
 
-Dipl.-Ing. Juergen Beisert | http://www.pengutronix.de
-=A0Pengutronix - Linux Solutions for Science and Industry
-=A0   Handelsregister: Amtsgericht Hildesheim, HRA 2686
-=A0 =A0 =A0    Vertretung Sued/Muenchen, Germany
-   Phone: +49-8766-939 228 |  Fax: +49-5121-206917-9
+> We do also already have existing in-kernel users of the input API to
+> report jack status (usually done via GPIOs outside of ALSA).  From that
+> point of view this ALSA helper is simply implementing the existing user
+> space interface for reporting jacks.  I feel that if we want to do
+> something different we should work out how to transition these existing
+> users to it too.  We can always add the existing code while working out
+> what that transition plan might be.
+
+Yes, I agree, we would need to transit the existing users to the new
+scheme.
+
+-- 
+Dmitry
