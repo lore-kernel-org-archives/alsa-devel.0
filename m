@@ -1,25 +1,25 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 3/3] ALSA SoC: Add Texas
-	Instruments	TLV320AIC26 codec driver
-Date: Thu, 17 Jul 2008 17:31:53 -0600
-Message-ID: <20080717233153.GA8187@secretlab.ca>
-References: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
-	<20080701235340.16923.48024.stgit@trillian.secretlab.ca>
-	<1214995713.4882.54.camel@localhost.localdomain>
-	<20080712060018.GB23213@secretlab.ca>
-	<20080712173609.GA6523@sirena.org.uk>
+From: Neil Schemenauer <nas@arctrix.com>
+Subject: Weirdness with on-board CM6501 USB
+Date: Thu, 17 Jul 2008 21:39:50 +0000 (UTC)
+Message-ID: <g5oe76$vfj$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id D46DB24396
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E839103803
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Jul 2008 01:31:56 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so103922wfg.23
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2008 16:31:55 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20080712173609.GA6523@sirena.org.uk>
+	Fri, 18 Jul 2008 01:45:04 +0200 (CEST)
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1KJd9i-00019P-JW
+	for alsa-devel@alsa-project.org; Thu, 17 Jul 2008 23:45:02 +0000
+Received: from s0106001ee5441427.ss.shawcable.net ([70.64.10.242])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2008 23:45:02 +0000
+Received: from nas by s0106001ee5441427.ss.shawcable.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2008 23:45:02 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,39 +29,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, timur@freescale.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 12, 2008 at 06:36:10PM +0100, Mark Brown wrote:
-> On Sat, Jul 12, 2008 at 12:00:18AM -0600, Grant Likely wrote:
+Hi,
 
-> It wouldn't be the only driver not to implement PLL configuration in
-> this way so that's probably be OK for an initial merge.  What's expected
-> for PLL configuration is that you implement the DAI set_pll() operation
-> in the codec driver, allowing machine drivers to configure the PLL when
-> they wish.
+I have a Asus M2N-E SLI board with a CM6501 sound on-board.  I asked
+some months ago if anyone had any advice for how to get it working:
 
-okay
+    http://article.gmane.org/gmane.linux.alsa.user/29626
 
-> The power configuration should be fixed, though.  Normally drivers
-> either fully implement DAPM (including set_bias_level()) or power
-> everything in the codec up when the driver is loaded.  At the minute
-> what the driver is doing appears to be powering the codec up in both
-> _hw_params() and _probe() but never powering anything down - if that is
-> the case then probably all you need to do is remove the extra power up
-> from hw_params(), giving you the simple option.
+Apparently there are still people having problems with this card.
+Today I spend some more time tinkering with it and have finally got
+some noise out of it.  The magic is a .asoundrc file as follows:
 
-done
+    pcm.!default {
+            type plug
+            slave.pcm "surround51:CARD=1"
+            slave.channels 6
+            route_policy duplicate
+    }
 
-> > Hmmm, I haven't been able to find this; either in the code or on a live
-> > running system.  Where is the common reg dump implemented.
-> 
-> /sys/bus/platform/devices/soc-audio/codec_reg
+    ctl.!default {
+            type hw
+            card 1
+    }
 
-Yikes.  The AIC26 has registers all over the place and most of them are
-empty.  The codec_reg attribute handling means I need to maintain a
-cache of the entire register file; not just the part that is actually
-used.  Oh well; I can work around it.
+Note that it's card "1" because I have a second PCI sound card.  I
+have my stereo speakers connected to the gray plug (side speaker out
+according to the manual).  The lime plug is supposed to be for front
+speakers but no signal is present.  The volume is turned up on all
+mixer controls.
 
-Thanks,
-g.
+Anyone have ideas on why no sound comes out of the front speaker
+plug?
+
+Regards,
+
+  Neil
