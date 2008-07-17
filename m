@@ -1,16 +1,20 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Several versions of 1.0.15??
-Date: Thu, 17 Jul 2008 16:44:44 +0100
-Message-ID: <200807171644.44764.gineera@aspect135.co.uk>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH v2 3/3] ALSA SoC: Add Texas Instruments
+ TLV320AIC26 codec driver
+Date: Thu, 17 Jul 2008 11:02:15 -0500
+Message-ID: <487F6D07.40503@freescale.com>
+References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
+	<20080712083939.15025.31192.stgit@trillian.secretlab.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (smtp-out-2.talktalk.net [62.24.128.232])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D484243B8
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60186243C8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jul 2008 17:26:02 +0200 (CEST)
-Content-Disposition: inline
+	Thu, 17 Jul 2008 18:02:21 +0200 (CEST)
+In-Reply-To: <20080712083939.15025.31192.stgit@trillian.secretlab.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Sorry to have a flood of posts; I have a flood of problems, though.
+Grant Likely wrote:
 
-We are building (ARM) from 2.6.24.4 kernel, and experiencing issues like 
-segfaults with aplay and alsamixer that might relate to incompatible versions 
-of driver, lib, utils, so I have tried to check carefully.  The kernel has 
-1.0.15, dated 20 Nov 07, but when I check Alsa-git:
+> +	aic26->codec.reg_cache_size = sizeof(aic26->reg_cache);
+> +	aic26->codec.reg_cache = aic26->reg_cache;
 
-http://git.alsa-project.org/?p=alsa-kernel.git;a=history;f=include/sound/
-version.h;hb=fe0a3fe324811385b64790d42079bf534798a0cd
+...
 
-3 tags are shown of 1.0.15, the first is 16-10-07, the last 20-11-07.
+> +	/* Register the sysfs files for debugging */
+> +	/* Create SysFS files */
+> +	rc = device_create_file(&spi->dev, &dev_attr_regs);
+> +	rc |= device_create_file(&spi->dev, &dev_attr_regs_cache);
+> +	rc |= device_create_file(&spi->dev, &dev_attr_keyclick);
+> +	if (rc)
+> +		dev_info(&spi->dev, "error creating sysfs files\n");
 
-However, the 1.0.15 tarballs (driver, lib, utils) at
-	ftp://ftp.alsa-project.org/pub
-are dated 15-10-07.  (Which I presume is what the builds will grab.)
+I believe ASoC creates sysfs entries if you use reg_cache and reg_cache_size, so
+you should not be creating your own sysfs entries if you use these variables.
 
-A lot of changes were commited on 16-10-07, and some up to 20-11-07.  Is it 
-possible for this to cause a problem?  Should I attempt to create snapshots 
-of 20-11-07 to build correctly with the kernel, or is it concern about 
-nothing.
+> +
+> +#if defined(CONFIG_SND_SOC_OF)
+> +	/* Tell the of_soc helper about this codec */
+> +	of_snd_soc_register_codec(&aic26_soc_codec_dev, aic26, &aic26_dai,
+> +				  spi->dev.archdata.of_node);
+> +#endif
 
-Alan
+I haven't paid any attention to the of_soc helper, because it's for ASoC V1
+only.  However, I don't understand why you need to reference it in the codec
+driver.  My CS4270 codec driver knows nothing about OF and works fine in
+arch/powerpc.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
