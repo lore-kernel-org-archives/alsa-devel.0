@@ -1,20 +1,19 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: snd_pcm_writei() -last value sustained
-Date: Thu, 17 Jul 2008 14:56:50 +0100
-Message-ID: <200807171456.50182.gineera@aspect135.co.uk>
-References: <200807040938.53662.gineera@aspect135.co.uk>
-	<200807161222.07440.gineera@aspect135.co.uk>
-	<200807161301.08608.gineera@aspect135.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: Refector DAPM event handler
+Date: Thu, 17 Jul 2008 14:48:06 +0100
+Message-ID: <20080717134756.GE15333@sirena.org.uk>
+References: <1216292376-2583-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<s5habgghe74.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.talktalk.net (smtp-out-3.talktalk.net [62.24.128.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 029952438D
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1805C2437C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jul 2008 15:38:08 +0200 (CEST)
-In-Reply-To: <200807161301.08608.gineera@aspect135.co.uk>
+	Thu, 17 Jul 2008 15:48:07 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5habgghe74.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,66 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 16 July 2008 13:01, Alan Horstmann wrote:
-> On Wednesday 16 July 2008 12:22, Alan Horstmann wrote:
-> > On Wednesday 16 July 2008 00:15, you wrote:
-> > > At Mon, 7 Jul 2008 14:53:35 +0100,
->
-> (snip)
->
-> > > Well, I'd call it's a hardware "feature".  No other hardwares do like
-> > > that.
-> > >
-> > > As a workaround, we'll need to put zero'ed short samples before
-> > > actually stopping the stream.
-> > >
-> > > I wonder whether this also occurs to pause operation, too.  In the
-> > > case of pause, it's a tougher problem...
-> >
-> > Thanks for the response on this one.  I'm not sure how to test pause,
-> > unless xmms uses that for 'PAUSE' button action, when the same effect is
-> > seen.
-> >
-> > I did try setting various values for silence threshold and size, and when
-> > (as per the original test) writing 1 period of sine followed by a 2nd
-> > writei of experimental data, silence values could be found that would
-> > eliminate the 'sustain effect'.  However, when only the single period
-> > writei occured I could not find any effective values.
-> >
-> > Unsurprisingly, my other ice1712 card, ST Audio /Hoontech DSP2000 shows
-> > the same effect, so if it is a 'hardware feature' it presumably relates
-> > to the way the envy24 chip operates?
-> >
-> > How would I go about experimenting with zeroing the stream just before
-> > stopping?  Do you mean in _pro_trigger()?
->
-> Further info, I noticed in the envy24 datasheet, (rev 2.2 1.03.00) p 4-24
-> states (near bottom of page)
->
-> '... when DMAs are stopped, the last latched value is retained.  This "DC"
-> value ...'
->
-> so you were right about 'hardware feature'!
+On Thu, Jul 17, 2008 at 02:45:19PM +0200, Takashi Iwai wrote:
 
-Perhaps I should mention now another odd effect I am getting on this card.  
-Using the same pcm.c test code, if after writei() 1 period of sine I write, 
-say 1/3 period from a zeroed samples area, what I see is 1 period of sine 
-followed by 1/3 period of zero, then 2/3 period of sine, apparently appearing 
-out of nowhere.  (Presumably from the sound buffers somewhere).
+> With this patch, dapm_update_bits() is called even when
+> power_change=0, so it changes the behavior.  You can check
+> power_change only once and skip the rest via continue if it's false.
 
-This suggests to me that the pcm system, once started, is always transfering a 
-full period, even if there is not a full period of new data.  Is this 
-possible or to be expected, or another feature of the hardware?  In other 
-cases where I simply writei() less than 1 period of data I see phantom 
-garbage following on to a complete period size.
+Fixed - dapm_update_bits() already suppresses duplicate writes.
 
-How can I trace this further, as it is deeper than my present Alsa knowledge 
-(apart from the slow process of learning of course!).
+> Also, better to put parentheses around bit-and operation.
 
-Thanks
+Fixed.  As with some other things it might be worth adding checks you
+want like this to checkpatch.
 
-Alan
+> Anyway, if the indent level really matters, you should better to put
+> it as a function.
+
+The new indentation level is fine - the major issue was that the old
+layout was over 80 columns already (checkpatch!), plus the way it was
+structured would lead to exploding nesting levels when new cases were
+added.  Splitting it out would only move it away from the handling of
+other widgets which wouldn't help so much.
+
+I'll resubmit shortly.
