@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Factor PGA DAPM handling into main
-Date: Thu, 17 Jul 2008 15:06:51 +0100
-Message-ID: <1216303611-5815-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1216303611-5815-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Several versions of 1.0.15??
+Date: Thu, 17 Jul 2008 16:44:44 +0100
+Message-ID: <200807171644.44764.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 310BE103819
+Received: from smtp.talktalk.net (smtp-out-2.talktalk.net [62.24.128.232])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D484243B8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jul 2008 16:06:53 +0200 (CEST)
-In-Reply-To: <1216303611-5815-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Thu, 17 Jul 2008 17:26:02 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,62 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: ALSA devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This allows pre and post event hooks to be provided for PGA widgets.
+Sorry to have a flood of posts; I have a flood of problems, though.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |   26 ++++++++------------------
- 1 files changed, 8 insertions(+), 18 deletions(-)
+We are building (ARM) from 2.6.24.4 kernel, and experiencing issues like 
+segfaults with aplay and alsamixer that might relate to incompatible versions 
+of driver, lib, utils, so I have tried to check carefully.  The kernel has 
+1.0.15, dated 20 Nov 07, but when I check Alsa-git:
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 17698ef..820347c 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -523,24 +523,6 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 				continue;
- 			}
- 
--			/* programmable gain/attenuation */
--			if (w->id == snd_soc_dapm_pga) {
--				int on;
--				in = is_connected_input_ep(w);
--				dapm_clear_walk(w->codec);
--				out = is_connected_output_ep(w);
--				dapm_clear_walk(w->codec);
--				w->power = on = (out != 0 && in != 0) ? 1 : 0;
--
--				if (!on)
--					dapm_set_pga(w, on); /* lower volume to reduce pops */
--				dapm_update_bits(w);
--				if (on)
--					dapm_set_pga(w, on); /* restore volume from zero */
--
--				continue;
--			}
--
- 			/* pre and post event widgets */
- 			if (w->id == snd_soc_dapm_pre) {
- 				if (!w->event)
-@@ -611,8 +593,16 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 					return ret;
- 			}
- 
-+			/* Lower PGA volume to reduce pops */
-+			if (w->id == snd_soc_dapm_pga && !power)
-+				dapm_set_pga(w, power);
-+
- 			dapm_update_bits(w);
- 
-+			/* Raise PGA volume to reduce pops */
-+			if (w->id == snd_soc_dapm_pga && power)
-+				dapm_set_pga(w, power);
-+
- 			/* power up post event */
- 			if (power && w->event &&
- 			    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
--- 
-1.5.6.2
+http://git.alsa-project.org/?p=alsa-kernel.git;a=history;f=include/sound/
+version.h;hb=fe0a3fe324811385b64790d42079bf534798a0cd
+
+3 tags are shown of 1.0.15, the first is 16-10-07, the last 20-11-07.
+
+However, the 1.0.15 tarballs (driver, lib, utils) at
+	ftp://ftp.alsa-project.org/pub
+are dated 15-10-07.  (Which I presume is what the builds will grab.)
+
+A lot of changes were commited on 16-10-07, and some up to 20-11-07.  Is it 
+possible for this to cause a problem?  Should I attempt to create snapshots 
+of 20-11-07 to build correctly with the kernel, or is it concern about 
+nothing.
+
+Alan
