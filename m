@@ -1,27 +1,15 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: WRITING AN SOC DRIVER WITHOUT DMA
-Date: Thu, 17 Jul 2008 08:05:49 -0400
-Message-ID: <9e4733910807170505k5aaf1c6fp10c6c268cb8e15c7@mail.gmail.com>
-References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
-	<20080712083939.15025.31192.stgit@trillian.secretlab.ca>
-	<1216199130.749.4.camel@dinesh.dua>
-	<8d6898730807160307g4455597ck921d55da8f51455d@mail.gmail.com>
-	<1216203206.9723.0.camel@dinesh.dua>
-	<1216274611.18207.6.camel@dinesh.dua>
-	<20080717105614.GC15333@sirena.org.uk>
-	<8d6898730807170426wac4719cv7cd925cfcd91aa68@mail.gmail.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: [PATCH] ALSA: ens1370: communicate PCI device to AC97
+Date: Thu, 17 Jul 2008 14:10:07 +0200
+Message-ID: <487F369F.4020301@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070204000106090400030805"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id 39C6D243BB
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD2C6103806
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jul 2008 14:05:51 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so4827117rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2008 05:05:49 -0700 (PDT)
-In-Reply-To: <8d6898730807170426wac4719cv7cd925cfcd91aa68@mail.gmail.com>
-Content-Disposition: inline
+	Thu, 17 Jul 2008 14:08:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,53 +19,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nobin Mathew <nobin.mathew@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, dinesh <dinesh.dua@coraltele.com>, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com, linuxppc-dev@ozlabs.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/17/08, Nobin Mathew <nobin.mathew@gmail.com> wrote:
-> Hi Dinesh,
->
-> If that is your requirement then go and see the actual code
-> sound/arm/aaci.c. They are not using DMA. It is programmed IO.
+This is a multi-part message in MIME format.
+--------------070204000106090400030805
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Currently the subsys_vendor/device values always display as 0x0000 in 
+the codec97#n/ac97#m-k file at least.
 
-Search around the list archives, the first version of the
-Efika/mpc5200 ac97 driver was programmed IO. The next version updated
-it to DMA.
+--------------070204000106090400030805
+Content-Type: text/plain;
+ name="0001-ALSA-ens1370-communicate-PCI-device-to-AC97.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename*0="0001-ALSA-ens1370-communicate-PCI-device-to-AC97.patch"
 
+>From b3f151d5100783ff72c08365cec417254a871aad Mon Sep 17 00:00:00 2001
+From: Rene Herman <rene.herman@gmail.com>
+Date: Thu, 17 Jul 2008 14:02:16 +0200
+Subject: [PATCH] ALSA: ens1370: communicate PCI device to AC97
 
->
->
-> Thanks
-> Nobin Mathew
->
->
-> On 7/17/08, Mark Brown
-> <broonie@opensource.wolfsonmicro.com> wrote:
-> > On Thu, Jul 17, 2008 at 11:33:31AM +0530, dinesh wrote:
-> >
-> > > What i want is that i have a buffer in driver code which is also handled
-> > > by some other application i want that this buffer data is to be used for
-> > > capture and playback  stream fills data to another buffer which i can
-> > > passover to my other application.
-> >
-> > Depending on what exactly you're doing here you may find that this is
-> > best implemented in user space with an ALSA plugin rather than doing it
-> > as part of a driver.  If you do want to do this in kernel space then the
-> > parts of an ASoC driver which transfer audio data are just the same as
-> > those for any other ALSA driver so things like sound/arm/aaci.c may
-> > provide useful examples.
-> >
->
->
-> _______________________________________________
->  Linuxppc-dev mailing list
->  Linuxppc-dev@ozlabs.org
->  https://ozlabs.org/mailman/listinfo/linuxppc-dev
->
+communicate the ES137x PCI device to the AC97 code for its
+subsys_vendor/device values
 
+Signed-off-by: Rene Herman <rene.herman@gmail.com>
+---
+ sound/pci/ens1370.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
+diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
+index 38808fb..7298fe0 100644
+--- a/sound/pci/ens1370.c
++++ b/sound/pci/ens1370.c
+@@ -1629,6 +1629,7 @@ static int __devinit snd_ensoniq_1371_mixer(struct ensoniq *ensoniq,
+ 	memset(&ac97, 0, sizeof(ac97));
+ 	ac97.private_data = ensoniq;
+ 	ac97.private_free = snd_ensoniq_mixer_free_ac97;
++	ac97.pci = ensoniq->pci;
+ 	ac97.scaps = AC97_SCAP_AUDIO;
+ 	if ((err = snd_ac97_mixer(pbus, &ac97, &ensoniq->u.es1371.ac97)) < 0)
+ 		return err;
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+1.5.5
+
+
+--------------070204000106090400030805
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070204000106090400030805--
