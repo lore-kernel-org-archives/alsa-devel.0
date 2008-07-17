@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 1/2] ASoC: Refector DAPM event handler
-Date: Thu, 17 Jul 2008 13:53:22 +0100
-Message-ID: <20080717125320.GD15333@sirena.org.uk>
+Date: Thu, 17 Jul 2008 14:07:33 +0100
+Message-ID: <20080717130732.GA8479@rakim.wolfsonmicro.main>
 References: <1216292376-2583-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<s5habgghe74.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1859E24335
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9558124368
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jul 2008 14:53:25 +0200 (CEST)
+	Thu, 17 Jul 2008 15:07:34 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <s5habgghe74.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -34,5 +34,4 @@ On Thu, Jul 17, 2008 at 02:45:19PM +0200, Takashi Iwai wrote:
 
 > Refactor?
 
-Rewrite it into something functionally equivalent but has fewer layers
-of indentation.
+Oh, I see - yes, that's misspelt.
