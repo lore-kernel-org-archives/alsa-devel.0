@@ -1,15 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Refector DAPM event handler
-Date: Thu, 17 Jul 2008 11:59:35 +0100
-Message-ID: <1216292376-2583-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Nobin Mathew" <nobin.mathew@gmail.com>
+Subject: Re: WRITING AN SOC DRIVER WITHOUT DMA
+Date: Thu, 17 Jul 2008 16:56:52 +0530
+Message-ID: <8d6898730807170426wac4719cv7cd925cfcd91aa68@mail.gmail.com>
+References: <20080712083929.15025.47682.stgit@trillian.secretlab.ca>
+	<20080712083939.15025.31192.stgit@trillian.secretlab.ca>
+	<1216199130.749.4.camel@dinesh.dua>
+	<8d6898730807160307g4455597ck921d55da8f51455d@mail.gmail.com>
+	<1216203206.9723.0.camel@dinesh.dua>
+	<1216274611.18207.6.camel@dinesh.dua>
+	<20080717105614.GC15333@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E2D8D10381B
+Received: from el-out-1112.google.com (el-out-1112.google.com [209.85.162.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8AE2F103814
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jul 2008 12:59:37 +0200 (CEST)
+	Thu, 17 Jul 2008 13:26:54 +0200 (CEST)
+Received: by el-out-1112.google.com with SMTP id o28so1577708ele.2
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2008 04:26:53 -0700 (PDT)
+In-Reply-To: <20080717105614.GC15333@sirena.org.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,105 +30,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: dinesh <dinesh.dua@coraltele.com>, Nobin Mathew <nobin.mathew@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.gird
 List-Id: alsa-devel@alsa-project.org
 
-The DAPM event callback code has many layers of indentation. Refector
-the code to give less indentation in order to facilitiate further
-refactoring.
+Hi Dinesh,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |   76 +++++++++++++++++++++++++-------------------------
- 1 files changed, 38 insertions(+), 38 deletions(-)
+If that is your requirement then go and see the actual code
+sound/arm/aaci.c. They are not using DMA. It is programmed IO.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 2c87061..9307b10 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -587,44 +587,44 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 			w->power = power;
- 
- 			/* call any power change event handlers */
--			if (power_change) {
--				if (w->event) {
--					pr_debug("power %s event for %s flags %x\n",
--						 w->power ? "on" : "off", w->name, w->event_flags);
--					if (power) {
--						/* power up event */
--						if (w->event_flags & SND_SOC_DAPM_PRE_PMU) {
--							ret = w->event(w,
--								NULL, SND_SOC_DAPM_PRE_PMU);
--							if (ret < 0)
--								return ret;
--						}
--						dapm_update_bits(w);
--						if (w->event_flags & SND_SOC_DAPM_POST_PMU){
--							ret = w->event(w,
--								NULL, SND_SOC_DAPM_POST_PMU);
--							if (ret < 0)
--								return ret;
--						}
--					} else {
--						/* power down event */
--						if (w->event_flags & SND_SOC_DAPM_PRE_PMD) {
--							ret = w->event(w,
--								NULL, SND_SOC_DAPM_PRE_PMD);
--							if (ret < 0)
--								return ret;
--						}
--						dapm_update_bits(w);
--						if (w->event_flags & SND_SOC_DAPM_POST_PMD) {
--							ret = w->event(w,
--								NULL, SND_SOC_DAPM_POST_PMD);
--							if (ret < 0)
--								return ret;
--						}
--					}
--				} else
--					/* no event handler */
--					dapm_update_bits(w);
-+			if (power_change && w->event)
-+				pr_debug("power %s event for %s flags %x\n",
-+					 w->power ? "on" : "off",
-+					 w->name, w->event_flags);
-+
-+			/* power up pre event */
-+			if (power_change && power && w->event &&
-+			    w->event_flags & SND_SOC_DAPM_PRE_PMU) {
-+				ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
-+				if (ret < 0)
-+					return ret;
-+			}
-+
-+			/* power down pre event */
-+			if (power_change && !power && w->event &&
-+			    w->event_flags & SND_SOC_DAPM_PRE_PMD) {
-+				ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
-+				if (ret < 0)
-+					return ret;
-+			}
-+
-+			dapm_update_bits(w);
-+
-+			/* power up post event */
-+			if (power_change && power && w->event &&
-+			    w->event_flags & SND_SOC_DAPM_POST_PMU){
-+				ret = w->event(w,
-+					       NULL, SND_SOC_DAPM_POST_PMU);
-+				if (ret < 0)
-+					return ret;
-+			}
-+
-+			/* power down post event */
-+			if (power_change && !power && w->event &&
-+			    w->event_flags & SND_SOC_DAPM_POST_PMD) {
-+				ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
-+				if (ret < 0)
-+					return ret;
- 			}
- 		}
- 	}
--- 
-1.5.6.2
+
+Thanks
+Nobin Mathew
+
+On 7/17/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+>
+> On Thu, Jul 17, 2008 at 11:33:31AM +0530, dinesh wrote:
+>
+> > What i want is that i have a buffer in driver code which is also handled
+> > by some other application i want that this buffer data is to be used for
+> > capture and playback  stream fills data to another buffer which i can
+> > passover to my other application.
+>
+> Depending on what exactly you're doing here you may find that this is
+> best implemented in user space with an ALSA plugin rather than doing it
+> as part of a driver.  If you do want to do this in kernel space then the
+> parts of an ASoC driver which transfer audio data are just the same as
+> those for any other ALSA driver so things like sound/arm/aaci.c may
+> provide useful examples.
+>
