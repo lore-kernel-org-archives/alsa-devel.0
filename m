@@ -1,136 +1,160 @@
-From: Landis McGauhey <b3zdomny@hotmail.com>
-Subject: Re: is this card supported by ALSA?
-Date: Fri, 18 Jul 2008 12:35:20 -0700
-Message-ID: <BLU137-W3360DB66E3C3EFC7F65FF095890@phx.gbl>
-References: <BLU137-W51E7DF3E0152023F07FC0C958F0@phx.gbl>
-	<487E42ED.7050000@keyaccess.nl> <4880C552.50706@keyaccess.nl>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: ASOC, master clock direction
+Date: Fri, 18 Jul 2008 15:44:37 -0400
+Message-ID: <9e4733910807181244k1ad1a2f8tecfd8d2baa463f57@mail.gmail.com>
+References: <9e4733910807180954s47157b84m90eed202d4ab3dc2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0627965865=="
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <4880C552.50706@keyaccess.nl>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-user@lists.sourceforge.net, devel <alsa-devel@alsa-project.org>, alsa@sc8-sf-spam2.sourceforge.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB6DD2458B
+	for <alsa-devel@alsa-project.org>;
+	Fri, 18 Jul 2008 21:44:38 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 5so191540qwf.56
+	for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2008 12:44:37 -0700 (PDT)
+In-Reply-To: <9e4733910807180954s47157b84m90eed202d4ab3dc2@mail.gmail.com>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============0627965865==
-Content-Type: multipart/alternative;
-	boundary="_876e4e61-4a66-4f1d-bba5-6fd93390b1e2_"
+On 7/18/08, Jon Smirl <jonsmirl@gmail.com> wrote:
+> The MPC5200 has three clock configurations
+>
+>  1) Clock out, normal master mode
+>  2) Clock in, normal slave mode
+>  3) Something Freescale calls cellphone slave but it is more like clock
+>  distribution.
+>
+>  In cellslave mode one i2s port is in normal slave mode. The clock from
+>  this port is used to drive up to three other i2s ports in master mode.
+>
+>  I have two choices for set_sysclk:
+>  #define SND_SOC_CLOCK_IN        0
+>  #define SND_SOC_CLOCK_OUT       1
+>
+>  When the clock frequency changes I need to notify the i2s drivers for
+>  the dependent channels. Do we need a third choice,
+>  SND_SOC_CLOCK_SLAVE? Alternatively I can use another clock id value.
 
---_876e4e61-4a66-4f1d-bba5-6fd93390b1e2_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I can implement it like this, in cellslave mode I just record the
+frequency, CLOCK_OUT not in cellslave mode needs to set up the
+internal MPC clock generation (which can't make accurate audio
+clocks).
 
-
-
-
-> Date: Fri=2C 18 Jul 2008 18:31:14 +0200
-> From: rene.herman@keyaccess.nl
-> To: b3zdomny@hotmail.com
-> CC: tiwai@suse.de=3B alsa-user@lists.sourceforge.net=3B alsa-devel@alsa-p=
-roject.org=3B alsa@sc8-sf-spam2.sourceforge.net
-> Subject: Re: [Alsa-user] is this card supported by ALSA?
->=20
-> On 16-07-08 20:50=2C Rene Herman wrote:
->=20
-<snip>
-
-# patch -p1 --dry-run < ac97_dont_mute.diff=3D
-"(Stripping trailing CRs from patch.)
-can't find file to patch at input line 5
-Perhaps you used the wrong -p or --strip option?
-The text leading up to this was:
---------------------------
-|diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
-|index 4f4343d..97a4365 100644
-|--- a/sound/pci/ac97/ac97_codec.c
-|+++ b/sound/pci/ac97/ac97_codec.c
---------------------------
-File to patch:"
-
-And I didn't know how to proceed and didn't want to mess things up by guess=
-ing=2C so I exited the process.
-
-Thanks=2C
-
-Landis
-
-_________________________________________________________________
-Keep your kids safer online with Windows Live Family Safety.
-http://www.windowslive.com/family_safety/overview.html?ocid=3DTXT_TAGLM_WL_=
-family_safety_072008=
-
---_876e4e61-4a66-4f1d-bba5-6fd93390b1e2_
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-<head>
-<style>
-.hmmessage P
+static int psc_i2s_set_sysclk(struct snd_soc_cpu_dai *cpu_dai,
+			      int clk_id, unsigned int freq, int dir)
 {
-margin:0px=3B
-padding:0px
+	struct psc_i2s *psc_i2s = cpu_dai->private_data;
+	dev_dbg(psc_i2s->dev, "psc_i2s_set_sysclk(cpu_dai=%p, freq=%ui, dir=%i)\n",
+				cpu_dai, freq, dir);
+	switch (dir) {
+	case SND_SOC_CLOCK_IN:
+		return 0;
+	case SND_SOC_CLOCK_OUT:
+	default:
+		if (!(psc_i2s->sicr & MPC52xx_PSC_SICR_CELLSLAVE)) {
+			/* implement me */
+			/* compute and set the needed dividers for the internal clock */
+			return -EINVAL;
+		}
+		psc_i2s->sysclk = freq;
+		return -EINVAL;
+	}
 }
-body.hmmessage
+
+
+static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
+				 struct snd_pcm_hw_params *params)
 {
-FONT-SIZE: 10pt=3B
-FONT-FAMILY:Tahoma
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct psc_i2s *psc_i2s = rtd->dai->cpu_dai->private_data;
+	u32 sicr, rate, bits, bitblk, err, wordclk;
+
+	dev_dbg(psc_i2s->dev, "%s(substream=%p) p_size=%i p_bytes=%i"
+		" periods=%i buffer_size=%i  buffer_bytes=%i\n",
+		__FUNCTION__, substream, params_period_size(params),
+		params_period_bytes(params), params_periods(params),
+		params_buffer_size(params), params_buffer_bytes(params));
+
+	sicr = psc_i2s->sicr;
+	switch (params_format(params)) {
+	 case SNDRV_PCM_FORMAT_S8:
+		sicr |= MPC52xx_PSC_SICR_SIM_CODEC_8;
+		bits = 8;
+		break;
+	 case SNDRV_PCM_FORMAT_S16_BE:
+		sicr |= MPC52xx_PSC_SICR_SIM_CODEC_16;
+		bits = 16;
+		break;
+	 case SNDRV_PCM_FORMAT_S24_BE:
+		sicr |= MPC52xx_PSC_SICR_SIM_CODEC_24;
+		bits = 24;
+		break;
+	 case SNDRV_PCM_FORMAT_S32_BE:
+		sicr |= MPC52xx_PSC_SICR_SIM_CODEC_32;
+		bits = 32;
+		break;
+	 default:
+		dev_dbg(psc_i2s->dev, "invalid format\n");
+		return -EINVAL;
+	}
+	out_be32(&psc_i2s->psc_regs->sicr, sicr);
+	
+	if (psc_i2s->sysclk) {
+		switch (params_rate(params)) {
+		case SNDRV_PCM_RATE_5512: rate = 5512; break;
+		case SNDRV_PCM_RATE_8000: rate = 8000; break;
+		case SNDRV_PCM_RATE_11025: rate = 11025; break;
+		case SNDRV_PCM_RATE_16000: rate = 16000; break;
+		case SNDRV_PCM_RATE_22050: rate = 22050; break;
+		case SNDRV_PCM_RATE_32000: rate = 32000; break;
+		case SNDRV_PCM_RATE_44100: rate = 44100; break;
+		case SNDRV_PCM_RATE_48000: rate = 48000; break;
+		case SNDRV_PCM_RATE_64000: rate = 64000; break;
+		case SNDRV_PCM_RATE_88200: rate = 88200; break;
+		case SNDRV_PCM_RATE_96000: rate = 96000; break;
+		case SNDRV_PCM_RATE_176400: rate = 176400; break;
+		case SNDRV_PCM_RATE_192000: rate = 192000; break;
+		 default:
+			dev_dbg(psc_i2s->dev, "invalid format\n");
+			return -EINVAL;
+		}
+		bitclk = psc_i2s->sysclk / rate;
+		wordclk = bitclk / bits;
+		out_be32(&psc_i2s->psc_regs->ccr, (bitclk - 1) << 24 | (wordclk << 16);
+	}
+
+	//rc = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+	//if (rc) {
+	//	dev_err(psc_i2s->dev, "could not allocate dma buffer\n");
+	//	return rc;
+	//}
+
+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+
+	return 0;
 }
-</style>
-</head>
-<body class=3D'hmmessage'>
-<br><br>&gt=3B Date: Fri=2C 18 Jul 2008 18:31:14 +0200<br>&gt=3B From: rene=
-.herman@keyaccess.nl<br>&gt=3B To: b3zdomny@hotmail.com<br>&gt=3B CC: tiwai=
-@suse.de=3B alsa-user@lists.sourceforge.net=3B alsa-devel@alsa-project.org=
-=3B alsa@sc8-sf-spam2.sourceforge.net<br>&gt=3B Subject: Re: [Alsa-user] is=
- this card supported by ALSA?<br>&gt=3B <br>&gt=3B On 16-07-08 20:50=2C Ren=
-e Herman wrote:<br>&gt=3B <br>&lt=3Bsnip&gt=3B<br><br># patch -p1 --dry-run=
- &lt=3B ac97_dont_mute.diff=3D<br>"(Stripping trailing CRs from patch.)<br>=
-can't find file to patch at input line 5<br>Perhaps you used the wrong -p o=
-r --strip option?<br>The text leading up to this was:<br>------------------=
---------<br>|diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97=
-_codec.c<br>|index 4f4343d..97a4365 100644<br>|--- a/sound/pci/ac97/ac97_co=
-dec.c<br>|+++ b/sound/pci/ac97/ac97_codec.c<br>--------------------------<b=
-r>File to patch:"<br><br>And I didn't know how to proceed and didn't want t=
-o mess things up by guessing=2C so I exited the process.<br><br>Thanks=2C<b=
-r><br>Landis<br><br /><hr />Keep your kids safer online with Windows Live F=
-amily Safety. <a href=3D'http://www.windowslive.com/family_safety/overview.=
-html?ocid=3DTXT_TAGLM_WL_family_safety_072008' target=3D'_new'>Help protect=
- your kids.</a></body>
-</html>=
-
---_876e4e61-4a66-4f1d-bba5-6fd93390b1e2_--
 
 
---===============0627965865==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
-Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
---===============0627965865==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>
+>
+>  --
+>  Jon Smirl
+>  jonsmirl@gmail.com
+>
 
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
 
---===============0627965865==--
+-- 
+Jon Smirl
+jonsmirl@gmail.com
