@@ -1,15 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Allow codecs to override register display
-Date: Fri, 18 Jul 2008 11:57:22 +0100
-Message-ID: <1216378642-14987-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [boot crash,
+ bisected] in 9f240a55 "ALSA: opti93x: use cs4231 lib"
+Date: Fri, 18 Jul 2008 14:28:49 +0200
+Message-ID: <20080718142849.f11ce4c8.krzysztof.h1@poczta.fm>
+References: <Pine.LNX.4.61.0807141105150.7676@tm8103-a.perex-int.cz>
+	<20080717170657.GA14593@elte.hu> <s5h3am8jqvy.wl%tiwai@suse.de>
+	<487F9B9B.2010905@keyaccess.nl> <487F9FA1.7020101@keyaccess.nl>
+	<48806017.1040307@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C40401037F2
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 394A524492
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Jul 2008 12:57:23 +0200 (CEST)
+	Fri, 18 Jul 2008 14:24:24 +0200 (CEST)
+In-Reply-To: <48806017.1040307@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,58 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@wp.pl>, Takashi Iwai <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Ingo Molnar <mingo@elte.hu>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some codecs have unusual features in their register maps such as very
-large registers representing arrays of coefficients. Support these
-codecs in the register cache sysfs file by allowing them to provide a
-function register_display() overriding the default output for register
-contents.
+On Fri, 18 Jul 2008 11:19:19 +0200
+Rene Herman <rene.herman@keyaccess.nl> wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc.h  |    1 +
- sound/soc/soc-core.c |   14 ++++++++++----
- 2 files changed, 11 insertions(+), 4 deletions(-)
+> On 17-07-08 21:38, Rene Herman wrote:
+> 
+> > On 17-07-08 21:20, Rene Herman wrote:
+> > 
+> >> On 17-07-08 20:40, Takashi Iwai wrote:
+> >>
+> >>> Could you try the patch below?
+> >>
+>
+> This bug was uncovered by !CONFIG_PNP and we had trouble in this driver 
+> due to that before so was rewriting the init to be a generic multi-card 
+> ALSA init but, actually, not much point.
+>
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1890d87..8b1a3e7 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -410,6 +410,7 @@ struct snd_soc_codec {
- 	void *control_data; /* codec control (i2c/3wire) data */
- 	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
- 	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
-+	int (*display_register)(struct snd_soc_codec *, char *, unsigned int);
- 	hw_write_t hw_write;
- 	hw_read_t hw_read;
- 	void *reg_cache;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 83f1190..49532d9 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -970,10 +970,16 @@ static ssize_t codec_reg_show(struct device *dev,
- 		step = codec->reg_cache_step;
+The bug was introduced by the patch as it used (tried to free) the codec pointer
+before it was assigned any value. It happened only if the card was missing and
+I didn't test the driver on such a configuration. My mistake. The CONFIG_PNP
+setting makes no difference.
  
- 	count += sprintf(buf, "%s registers\n", codec->name);
--	for (i = 0; i < codec->reg_cache_size; i += step)
--		count += sprintf(buf + count, "%2x: %4x\n", i,
--			codec->read(codec, i));
--
-+	for (i = 0; i < codec->reg_cache_size; i += step) {
-+		count += sprintf(buf + count, "%2x: ", i);
-+		if (codec->display_register)
-+			count += codec->display_register(codec,
-+							 buf + count, i);
-+		else
-+			count += sprintf(buf + count, "%4x",
-+					 codec->read(codec, i));
-+		count += sprintf(buf + count, "\n");
-+	}
- 	return count;
- }
- static DEVICE_ATTR(codec_reg, 0444, codec_reg_show, NULL);
--- 
-1.5.6.3
+> 
+> In fact, in the meantime I'll look at splitting 92x and 93x again. It's 
+> much better now that Krzysztof made it use the generic library code but 
+> I still hate this driver. It's also poking at ports without being told 
+> something is there by either system or user.
+> 
+
+Please hold your axe until Monday. The last patch (not posted yet) from the 
+unification of the WSS library series removes some ifdefs in this driver.
+This may (or may not) change your view on splitting the driver.
+
+Regards,
+Krzysztof
+
+----------------------------------------------------------------------
+Zobacz cala prawde o Lukaszu Podolskim!
+kliknij >>> http://link.interia.pl/f1e57
