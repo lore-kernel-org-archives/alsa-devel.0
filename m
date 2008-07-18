@@ -1,16 +1,19 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: [PATCH 2/3] fix type of internally used sframes
-	variable, to avoid	unnecessary casts
-Date: Fri, 18 Jul 2008 21:22:50 +0200
-Message-ID: <20080718192250.GA13489@omega>
+From: "Aaron J. Grier" <agrier@poofygoof.com>
+Subject: snd_pcm_sw_params_set_xfer_align replacement?
+Date: Fri, 18 Jul 2008 12:23:15 -0700
+Message-ID: <20080718192315.GU835@arwen.poofy.goof.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id F21C824570
+Received: from smtp.poofygoof.com (209-162-215-114.dq1sn.easystreet.com
+	[209.162.215.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D99F1037FC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Jul 2008 21:22:50 +0200 (CEST)
+	Fri, 18 Jul 2008 21:23:19 +0200 (CEST)
+Received: from arwen.poofy.goof.com (muzgash.poofy.goof.com [10.0.0.26])
+	by smtp.poofygoof.com (Postfix) with ESMTP id 29F7229ED
+	for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2008 12:23:17 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,48 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This minor patch fixes the type of the sframes variable in
-snd_pcm_plugin_forward(). With this fix we need to cast less and the
-code is less confusing.
+snd_pcm_sw_params_set_xfer_align() has been deprecated but the docs
+don't mention what it was replaced with.
 
-Signed-off-by: Lennart Poettering <lennart@poettering.net>
----
- src/pcm/pcm_plugin.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
-index c199d8d..b377cb2 100644
---- a/src/pcm/pcm_plugin.c
-+++ b/src/pcm/pcm_plugin.c
-@@ -234,7 +234,7 @@ static snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_
- {
- 	snd_pcm_plugin_t *plugin = pcm->private_data;
- 	snd_pcm_sframes_t n = snd_pcm_mmap_avail(pcm);
--	snd_pcm_uframes_t sframes;
-+	snd_pcm_sframes_t sframes;
- 
- 	if ((snd_pcm_uframes_t)n < frames)
- 		frames = n;
-@@ -246,8 +246,8 @@ static snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_
- 	else
- 		sframes = frames;
- 	snd_atomic_write_begin(&plugin->watom);
--	sframes = INTERNAL(snd_pcm_forward)(plugin->gen.slave, (snd_pcm_uframes_t) sframes);
--	if ((snd_pcm_sframes_t) sframes < 0) {
-+	sframes = INTERNAL(snd_pcm_forward)(plugin->gen.slave, sframes);
-+	if (sframes < 0) {
- 		snd_atomic_write_end(&plugin->watom);
- 		return sframes;
- 	}
--- 
-1.5.6
-
-Lennart
+I don't ever want or need partial reads and writes -- my app would
+actually be happiest being completely synchronous to the hardware with
+fixed-size buffers.  any suggestions how to get ALSA to do this?
 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+  Aaron J. Grier | "Not your ordinary poofy goof." | agrier@poofygoof.com
