@@ -1,19 +1,18 @@
-From: "Aaron J. Grier" <agrier@poofygoof.com>
-Subject: snd_pcm_sw_params_set_xfer_align replacement?
-Date: Fri, 18 Jul 2008 12:23:15 -0700
-Message-ID: <20080718192315.GU835@arwen.poofy.goof.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: [PATCH 3/3] fix return value of
+	snd_pcm_rewind()/snd_pcm_forward()	to return how much
+	actually has been rewound,
+	instead of what	actually could have rewound
+Date: Fri, 18 Jul 2008 21:24:38 +0200
+Message-ID: <20080718192438.GA13519@omega>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.poofygoof.com (209-162-215-114.dq1sn.easystreet.com
-	[209.162.215.114])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D99F1037FC
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD2FC24571
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Jul 2008 21:23:19 +0200 (CEST)
-Received: from arwen.poofy.goof.com (muzgash.poofy.goof.com [10.0.0.26])
-	by smtp.poofygoof.com (Postfix) with ESMTP id 29F7229ED
-	for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2008 12:23:17 -0700 (PDT)
+	Fri, 18 Jul 2008 21:24:39 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,15 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_sw_params_set_xfer_align() has been deprecated but the docs
-don't mention what it was replaced with.
+Make snd_pcm_plugin_rewind()/_forward() actually return how much has
+been rewound/forwarded instead of how much could have been
+rewounded/forwarded. This makes the code actually do what the
+documentation of snd_pcm_rewind() suggests.
 
-I don't ever want or need partial reads and writes -- my app would
-actually be happiest being completely synchronous to the hardware with
-fixed-size buffers.  any suggestions how to get ALSA to do this?
+Signed-off-by: Lennart Poettering <lennart@poettering.net>
+---
+ src/pcm/pcm_plugin.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
+index b377cb2..c4f5b4a 100644
+--- a/src/pcm/pcm_plugin.c
++++ b/src/pcm/pcm_plugin.c
+@@ -222,7 +222,7 @@ static snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t
+ 		frames = plugin->client_frames(pcm, sframes);
+ 	snd_pcm_mmap_appl_backward(pcm, (snd_pcm_uframes_t) frames);
+ 	snd_atomic_write_end(&plugin->watom);
+-	return n;
++	return (snd_pcm_sframes_t) frames;
+ }
+ 
+ static snd_pcm_sframes_t snd_pcm_plugin_forwardable(snd_pcm_t *pcm)
+@@ -255,7 +255,7 @@ static snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_
+ 		frames = plugin->client_frames(pcm, sframes);
+ 	snd_pcm_mmap_appl_forward(pcm, (snd_pcm_uframes_t) frames);
+ 	snd_atomic_write_end(&plugin->watom);
+-	return n;
++	return (snd_pcm_sframes_t) frames;
+ }
+ 
+ static snd_pcm_sframes_t snd_pcm_plugin_write_areas(snd_pcm_t *pcm,
+-- 
+1.5.6
+
+
+
+Lennart
 
 -- 
-  Aaron J. Grier | "Not your ordinary poofy goof." | agrier@poofygoof.com
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
