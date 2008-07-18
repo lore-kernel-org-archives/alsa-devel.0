@@ -1,20 +1,24 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [boot crash,
- bisected] in 9f240a55 "ALSA: opti93x: use cs4231 lib"
-Date: Fri, 18 Jul 2008 11:19:19 +0200
-Message-ID: <48806017.1040307@keyaccess.nl>
-References: <Pine.LNX.4.61.0807141105150.7676@tm8103-a.perex-int.cz>	<20080717170657.GA14593@elte.hu>
-	<s5h3am8jqvy.wl%tiwai@suse.de> <487F9B9B.2010905@keyaccess.nl>
-	<487F9FA1.7020101@keyaccess.nl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] ALSA SoC: Add Texas
+	Instruments	TLV320AIC26 codec driver
+Date: Fri, 18 Jul 2008 10:58:25 +0100
+Message-ID: <20080718095823.GA14416@sirena.org.uk>
+References: <20080701235330.16923.67218.stgit@trillian.secretlab.ca>
+	<20080701235340.16923.48024.stgit@trillian.secretlab.ca>
+	<1214995713.4882.54.camel@localhost.localdomain>
+	<20080712060018.GB23213@secretlab.ca>
+	<20080712173609.GA6523@sirena.org.uk>
+	<20080717233153.GA8187@secretlab.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070007060903020506000905"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F8B42446E
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA49024465
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Jul 2008 11:17:21 +0200 (CEST)
-In-Reply-To: <487F9FA1.7020101@keyaccess.nl>
+	Fri, 18 Jul 2008 11:58:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20080717233153.GA8187@secretlab.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,111 +28,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@wp.pl>, LKML <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Ingo Molnar <mingo@elte.hu>, Rene Herman <rene.herman@gmail.com>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Liam Girdwood <liam.girdwood@wolfsonmicro.com>, alsa-devel@alsa-project.org, timur@freescale.com, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070007060903020506000905
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, Jul 17, 2008 at 05:31:53PM -0600, Grant Likely wrote:
+> On Sat, Jul 12, 2008 at 06:36:10PM +0100, Mark Brown wrote:
 
-On 17-07-08 21:38, Rene Herman wrote:
+> > /sys/bus/platform/devices/soc-audio/codec_reg
 
-> On 17-07-08 21:20, Rene Herman wrote:
-> 
->> On 17-07-08 20:40, Takashi Iwai wrote:
->>
->>> Could you try the patch below?
->>
->> No, please hang on, it's much simpler. Above commit isn't actually 
->> itself guilty. Have a patch ready, but am testing a bit.
-> 
-> I retract that. Your patch should fix things.
+> Yikes.  The AIC26 has registers all over the place and most of them are
+> empty.  The codec_reg attribute handling means I need to maintain a
+> cache of the entire register file; not just the part that is actually
+> used.  Oh well; I can work around it.
 
-It does. Acked/Tested-by: Rene Herman <rene.herman@gmail.com>
-
-> I would like to place something on top to make the init isa/pnp choice 
-> look more generic but I'll submit that tomorrow.
-
-This bug was uncovered by !CONFIG_PNP and we had trouble in this driver 
-due to that before so was rewriting the init to be a generic multi-card 
-ALSA init but, actually, not much point.
-
-The hardware fundamentally doesn't support more than one card per system 
-due to the fixed chip->mc_base and the bug was in this case not _caused_ 
-but only uncovered by !CONFIG_PNP (it triggers for CONFIG_PNP after 
-supplying "isapnp=0" as a module param) so I'll just wait for the next 
-time this ifdeffed together mess breaks on !CONFIG_PNP to make the init 
-look generic ;-)
-
-In fact, in the meantime I'll look at splitting 92x and 93x again. It's 
-much better now that Krzysztof made it use the generic library code but 
-I still hate this driver. It's also poking at ports without being told 
-something is there by either system or user.
-
-Trivial remainder of init rewrite that's still applicable:
-
-Rene.
-
-
---------------070007060903020506000905
-Content-Type: text/plain;
- name="0001-ALSA-opti9xx-no-isapnp-param-for-CONFIG_PNP.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename*0="0001-ALSA-opti9xx-no-isapnp-param-for-CONFIG_PNP.patch"
-
->From fc64af262b44d41cd45fbe96be301e4662ba1c1a Mon Sep 17 00:00:00 2001
-From: Rene Herman <rene.herman@gmail.com>
-Date: Fri, 18 Jul 2008 11:15:12 +0200
-Subject: [PATCH] ALSA: opti9xx: no isapnp param for !CONFIG_PNP
-
-"isapnp" needs CONFIG_PNP to be useful.
-
-Signed-off-by: Rene Herman <rene.herman@gmail.com>
----
- sound/isa/opti9xx/opti92x-ad1848.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
-
-diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-index e5d9028..5dfead9 100644
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -68,7 +68,9 @@ MODULE_SUPPORTED_DEVICE("{{OPTi,82C924 (AD1848)},"
- static int index = SNDRV_DEFAULT_IDX1;	/* Index 0-MAX */
- static char *id = SNDRV_DEFAULT_STR1;		/* ID for this card */
- //static int enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
-+#ifdef CONFIG_PNP
- static int isapnp = 1;			/* Enable ISA PnP detection */
-+#endif
- static long port = SNDRV_DEFAULT_PORT1; 	/* 0x530,0xe80,0xf40,0x604 */
- static long mpu_port = SNDRV_DEFAULT_PORT1;	/* 0x300,0x310,0x320,0x330 */
- static long fm_port = SNDRV_DEFAULT_PORT1;	/* 0x388 */
-@@ -85,8 +87,10 @@ module_param(id, charp, 0444);
- MODULE_PARM_DESC(id, "ID string for opti9xx based soundcard.");
- //module_param(enable, bool, 0444);
- //MODULE_PARM_DESC(enable, "Enable opti9xx soundcard.");
-+#ifdef CONFIG_PNP
- module_param(isapnp, bool, 0444);
- MODULE_PARM_DESC(isapnp, "Enable ISA PnP detection for specified soundcard.");
-+#endif
- module_param(port, long, 0444);
- MODULE_PARM_DESC(port, "WSS port # for opti9xx driver.");
- module_param(mpu_port, long, 0444);
--- 
-1.5.5
-
-
---------------070007060903020506000905
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------070007060903020506000905--
+Sparse (or sparsely used) register maps are pretty common - in practice
+it's not been a problem to just have a cache that covers everything and
+only gets read, the amount of data involved is rarely that large in the
+context of what you need to store the audio you're working with.
