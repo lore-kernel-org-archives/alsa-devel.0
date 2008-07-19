@@ -1,91 +1,45 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH] wm9712 mono mixer
-Date: Sat, 19 Jul 2008 00:51:25 +0200
-Message-ID: <200807190051.25749.marek.vasut@gmail.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: is this card supported by ALSA?
+Date: Sat, 19 Jul 2008 06:48:12 +0200
+Message-ID: <4881720C.3020301@keyaccess.nl>
+References: <BLU137-W3360DB66E3C3EFC7F65FF095890@phx.gbl>
+	<E1KJvvd-000HBe-00.steshenko_sergei-list-ru@f153.mail.ru>
+	<BLU137-W42282B2B9289DBCB6563E295890@phx.gbl>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_t5RgI4Ej9ESfSrX"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fk-out-0910.google.com (fk-out-0910.google.com [209.85.128.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 12738245BB
-	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Jul 2008 00:49:15 +0200 (CEST)
-Received: by fk-out-0910.google.com with SMTP id b27so339359fka.0
-	for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2008 15:49:14 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <BLU137-W42282B2B9289DBCB6563E295890@phx.gbl>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-user-bounces@lists.sourceforge.net
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Landis McGauhey <b3zdomny@hotmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sergei Steshenko <steshenko_sergei@list.ru>, devel <alsa-devel@alsa-project.org>, alsa-user@lists.sourceforge.net, alsa@sc8-sf-spam2.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_t5RgI4Ej9ESfSrX
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On 18-07-08 22:11, Landis McGauhey wrote:
 
-Hi,
-this fixes typo in wm9712 codec which prevents it from registering all audio 
-routes (and thus working correctly). Please consider applying.
+>  > From: steshenko_sergei@list.ru
 
-(Tested and works on palmtx, palmld and palmt5)
+>  > Were you in the correct subdirectory when running 'patch' ?
 
---Boundary-00=_t5RgI4Ej9ESfSrX
-Content-Type: text/x-diff;
-  charset="iso 8859-15";
-  name="01-wm9712-mixer-fix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="01-wm9712-mixer-fix.patch"
+> Yes, I was.  Thanks for confirming this.
 
-Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 9fc8edd..1fb7f9a 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -427,20 +427,20 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"HPOUTR", NULL, "Headphone PGA"},
- 	{"Headphone PGA", NULL, "Right HP Mixer"},
- 
--	/* mono hp mixer */
--	{"Mono HP Mixer", NULL, "Left HP Mixer"},
--	{"Mono HP Mixer", NULL, "Right HP Mixer"},
-+	/* mono mixer */
-+	{"Mono Mixer", NULL, "Left HP Mixer"},
-+	{"Mono Mixer", NULL, "Right HP Mixer"},
- 
- 	/* Out3 Mux */
- 	{"Out3 Mux", "Left", "Left HP Mixer"},
- 	{"Out3 Mux", "Mono", "Phone Mixer"},
--	{"Out3 Mux", "Left + Right", "Mono HP Mixer"},
-+	{"Out3 Mux", "Left + Right", "Mono Mixer"},
- 	{"Out 3 PGA", NULL, "Out3 Mux"},
- 	{"OUT3", NULL, "Out 3 PGA"},
- 
- 	/* speaker Mux */
- 	{"Speaker Mux", "Speaker Mix", "Speaker Mixer"},
--	{"Speaker Mux", "Headphone Mix", "Mono HP Mixer"},
-+	{"Speaker Mux", "Headphone Mix", "Mono Mixer"},
- 	{"Speaker PGA", NULL, "Speaker Mux"},
- 	{"LOUT2", NULL, "Speaker PGA"},
- 	{"ROUT2", NULL, "Speaker PGA"},
+No you weren't. But yes, I'll leave this issue be. It can't be debugged 
+this way. Please note that when/if you upgrade to a newer kernel release 
+you'll have to apply the OSS ES1371 driver restoration patch as posted 
+at the beginning of this all again, so hang on to it.
 
---Boundary-00=_t5RgI4Ej9ESfSrX
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Rene.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_t5RgI4Ej9ESfSrX--
+-------------------------------------------------------------------------
+This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
+Build the coolest Linux based applications with Moblin SDK & win great prizes
+Grand prize is a trip for two to an Open Source event anywhere in the world
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
