@@ -1,21 +1,19 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: ASOC and 12 bit volume control
-Date: Sun, 20 Jul 2008 11:51:12 -0400
-Message-ID: <9e4733910807200851s632d99dna3fffc4e53c04987@mail.gmail.com>
-References: <9e4733910807191918w24558b25o783da05843499580@mail.gmail.com>
-	<20080720125639.GB27546@sirena.org.uk>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [PATCH 10/10] wss_lib: use wss detection code
+ instead of ad1848 one
+Date: Sun, 20 Jul 2008 18:09:14 +0200
+Message-ID: <4883632A.8090106@keyaccess.nl>
+References: <20080718215126.7128a6f9.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E29124444
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl
+	[213.51.146.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 598B3243E9
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Jul 2008 17:51:13 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so375682ywk.2
-	for <alsa-devel@alsa-project.org>; Sun, 20 Jul 2008 08:51:12 -0700 (PDT)
-In-Reply-To: <20080720125639.GB27546@sirena.org.uk>
-Content-Disposition: inline
+	Sun, 20 Jul 2008 18:07:03 +0200 (CEST)
+In-Reply-To: <20080718215126.7128a6f9.krzysztof.h1@poczta.fm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,49 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, ALSA-devel <alsa-devel@alsa-project.org>
+To: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Another problem is the crossbar mixer. It is a full 8x4 crossbar with
-28 bit gain controls on each path. There are four 32 byte registers,
-each register holds 8 32 bit wide gain fields. There are several more
-mixers with 28 bit gain controls.
+On 18-07-08 21:51, Krzysztof Helt wrote:
 
-28 bit gain fields are all on all of the bass/loudness/etc control.
+> From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> 
+> Use the wss detection code and kill the ad1848 library.
+> The library is fully assimilated into the new wss library.
+> 
+> This patch fixes also the issue with AD1848 codec
+> MCE timeout - a waiting loop is now 10 times longer.
+> 
+> I have tested it on following cards:
+> Gallant SC-6600 (codec: AD1848, driver: snd-sc6600]
+> SoundScape VIVO/90 (codec: AD1845, driver: snd-sscape]
+> SG Waverider (codec: CS4231A, driver: Rene Herman's snd-galaxy]
 
-On 7/20/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> On Sat, Jul 19, 2008 at 10:18:55PM -0400, Jon Smirl wrote:
->
->  > How do I define a volume control that is the bottom 12 bits of a 32
->  > bit register?
->
->  > #define SOC_SINGLE_VALUE(reg, shift, max, invert) ((reg) | ((shift) << 8) |\
->  >       ((shift) << 12) | ((max) << 16) | ((invert) << 24))
->
->  > This looks like it only support an 8 bit max. Is there another way to do it?
->
->
-> SOC_SINGLE() (or SOC_SINGLE_TLV() if you've got dB scale information for
->  the volume control, which is likely?) is the way to do it but like you
->  say it's not able to cope currently.  Since invert is a boolean so there
->  should actually be enough space to store a 12 bit max so it shouldn't be
->  such a major job to adjust for this unless I'm missing something, I've
->  only had a brief look.
->
->  Also note that the core currently has assumptions in it that registers
->  aren't bigger than 16 bits - the main thing is that it uses unsigned
->  shorts for passing them around.  Someone posted in the past week about
->  fixing this.
->
->  If you don't want to do core changes then either write a custom control
->  or (if the stuff in the upper bits will allow it) adjust the shift to
->  ignore the bottom 4 bits of the control.  The ASoC control macros all
->  boil down to standard ALSA controls types and you can mix in regular ALSA
->  controls without problems if required - the macros just save having to
->  implement standard register accesses by hand.
->
+Now that you mention it... I should revive and submit that thing.
 
+> Opti930 (codec: built-in - CS4231 compatible, driver: snd-opti93x]
+> Opti931 (codec: built-in - CS4231 compatible, driver: snd-opti93x]
+> Gallant SC-70P (chip/codec: CS4237B, driver: snd-cs4236]
+> 
+> Sound playback and recording works on all these cards.
+> 
+> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+Just a quick note to say I'm now running this series (and am at the 
+moment listening to a snd-cs4236 card) on top of Takashi's sound-2.6 
+tree (and including the PNP stuff that's going into 2.6.27 but that's 
+unrelated).
+
+For anyone interested, I have placed the complete series as I have it 
+here at:
+
+http://members.home.nl/rene.herman/wss/
+
+It's against current ALSA. I'll give this a proper review early this 
+coming week. Takashi was away for the week so that should get things 
+looked at before he returns.
+
+Thanks!
+
+Rene.
