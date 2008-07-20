@@ -1,38 +1,41 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: ASOC and 12 bit volume control
-Date: Sat, 19 Jul 2008 22:18:55 -0400
-Message-ID: <9e4733910807191918w24558b25o783da05843499580@mail.gmail.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [alsa-devel] [0/2] Jack reporting
+Date: Sun, 20 Jul 2008 01:23:20 -0400
+Message-ID: <20080720052320.GB7853@anvil.corenet.prv>
+References: <20080703095026.GA652@sirena.org.uk> <20080714151058.GF25448@sirena.org.uk> <s5hlk02148k.wl%tiwai@suse.de> <20080716125053.GA17134@rakim.wolfsonmicro.main> <20080716112939.ZZRA012@mailhub.coreip.homeip.net> <20080717103111.GB15333@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73C64247DB
-	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Jul 2008 04:18:56 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so308363ywk.2
-	for <alsa-devel@alsa-project.org>; Sat, 19 Jul 2008 19:18:55 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA-devel <alsa-devel@alsa-project.org>
+In-Reply-To: <20080717103111.GB15333@sirena.org.uk>
+Sender: linux-input-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-How do I define a volume control that is the bottom 12 bits of a 32
-bit register?
+On Thu, Jul 17, 2008 at 11:31:12AM +0100, Mark Brown wrote:
+> On Wed, Jul 16, 2008 at 12:36:06PM -0400, Dmitry Torokhov wrote:
+> > On Wed, Jul 16, 2008 at 01:50:53PM +0100, Mark Brown wrote:
+> 
+> > > As well as detecting the presence of a connected device typical jack
+> > > detection implementations also support the implementation of at least
+> > > one button which would require an input device for at least some jacks
+> 
+> > It really depends on what you can do with this button. If it is just a
+> > simple circuit breaker then it is not really an input device. However
+> > is you can remap it for different purposes or map a regular key on a
+> > keybaord to perform this function then I will agree with you. For example
+> 
+> As far as the hardware is concerned it's just a button - if it's visible
+> to software then there's no fixed function for it and any action taken
+> will be application/system specific.  There will normally be a side
+> effect in hardware muting the microphone but that's not intended to be
+> the main effect.
 
-#define SOC_SINGLE_VALUE(reg, shift, max, invert) ((reg) | ((shift) << 8) |\
-	((shift) << 12) | ((max) << 16) | ((invert) << 24))
+Ok, let's add it to the input subsystem then. If we see lots of switch
+types sprnging up we cam talk about the new subsystem again. 
 
-This looks like it only support an 8 bit max. Is there another way to do it?
+I added the switch definition to input.h and it shoudl hit the mainline
+when I ask Linus to pull early next week. 
 
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+Dmitry
