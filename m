@@ -1,15 +1,22 @@
-From: krzysztof.h1@poczta.fm
-Subject: Re: [PATCH] cs4232: fix crash during chip PNP detection
-Date: 23 Jul 2008 15:03:20 +0200
-Message-ID: <20080723130320.6D83D860F79@f35.poczta.interia.pl>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ALSA: soc - fsl_ssi.c fix audio capture
+Date: Mon, 21 Jul 2008 09:35:01 -0500
+Message-ID: <48849E95.1050800@freescale.com>
+References: <20080703143714.GA7003@polina.dev.rtsoft.ru>
+	<20080703144254.GB652@sirena.org.uk>
+	<B615D57E-324C-4812-997C-9E5C90FDE967@freescale.com>
+	<20080704154313.GA11635@polina.dev.rtsoft.ru>
+	<20080721111518.GA17872@polina.dev.rtsoft.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id BBE3B2476B
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id BDCE924350
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 15:03:21 +0200 (CEST)
+	Mon, 21 Jul 2008 16:35:09 +0200 (CEST)
+In-Reply-To: <20080721111518.GA17872@polina.dev.rtsoft.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,68 +26,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
+To: avorontsov@ru.mvista.com
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman napisa=B3(a):
-> On 23-07-08 07:48, Krzysztof Helt wrote:
-> =
+Anton Vorontsov wrote:
 
-> =
+> Timur, have you had a chance to look into these two patches?
 
-> Looking back, it seems this was broken at least as far back as 2.6.20 =
+No, sorry.  Unfortunately, I have a more critical issue with the SSI that I'm
+debugging now, so it's holding up other work.
 
-> which would nicely show how much testing that code path gets. Do I =
-
-> understand correctly from the backtrace that you have the PNPBIOS =
-
-> hardware? If so, good...
-> =
-
-
-Yes, I borrowed old laptop with PNP bios but no ISA PnP devices.
-I will test my wss_lib on it.
-
-> > --- linux-2.6.26/sound/isa/cs423x/cs4236.c~	2008-07-23
-> 07:40:16.129637645 +0200
-> > +++ linux-2.6.26/sound/isa/cs423x/cs4236.c	2008-07-23 07:40:32.905641806
-> +0200
-> > @@ -325,6 +325,7 @@ static int __devinit snd_cs423x_pnp_init
-> >  static int __devinit snd_card_cs4232_pnp(int dev, struct
-> snd_card_cs4236 *acard,
-> >  					 struct pnp_dev *pdev)
-> >  {
-> > +	acard->wss =3D pdev;
-> >  	if (snd_cs423x_pnp_init_wss(dev, acard->wss) > 0)
-> >  		return -EBUSY;
-> >  	cport[dev] =3D -1;
-> > =
-
-> =
-
-> Acked-by: Rene Herman >rene.herman@gmail.com>
-> =
-
-> (I believe I noticed earlier that struct snd_cs4236->wss, ctrl and mpu =
-
-> really needn&#039;t/shouldn&#039;t be kept around in the first place and =
-you could =
-
-> just pass pdev directly as well but that&#039;s for another cleanup; this=
- has =
-
-> it look most similar to the card variant)
-> =
-
-
-Feel free to changed it but I prefer to have the wss_lib patches merged fir=
-st to avoid
-conflicts and redoing the patches.
-
-
-Krzysztof
-
-----------------------------------------------------------------------
-Galeria absurdow.
-zobacz >>> http://link.interia.pl/f1e5e
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
