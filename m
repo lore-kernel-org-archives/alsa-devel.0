@@ -1,20 +1,21 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: GIT: something wrong with sound-2.6/devel?
-Date: Mon, 21 Jul 2008 10:45:29 +0200
-Message-ID: <48844CA9.9060408@keyaccess.nl>
-References: <48838A54.40404@keyaccess.nl>
-	<Pine.LNX.4.61.0807202104390.7676@tm8103-a.perex-int.cz>
-	<48839A55.6080304@keyaccess.nl>
+From: =?UTF-8?Q?midragius?= <midragius@o2.pl>
+Subject: Re: =?utf-8?q?Patch_-_ESI_Maya44_driver?=
+Date: Mon, 21 Jul 2008 11:27:02 +0200
+Message-ID: <308026ab.112da2f3.48845666.33b6a@o2.pl>
+References: <8a97a87.5d9a5e2e.48821e24.45f@o2.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
-	[213.51.146.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 824B6245E0
-	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jul 2008 10:43:16 +0200 (CEST)
-In-Reply-To: <48839A55.6080304@keyaccess.nl>
+Received: from rekin23.go2.pl (rekin23.go2.pl [193.17.41.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB70224387
+	for <Alsa-devel@alsa-project.org>;
+	Mon, 21 Jul 2008 11:27:02 +0200 (CEST)
+Received: from o2.pl (unknown [10.0.0.36])
+	by rekin23.go2.pl (Postfix) with SMTP id 3817C1288AB
+	for <Alsa-devel@alsa-project.org>;
+	Mon, 21 Jul 2008 11:27:02 +0200 (CEST)
+In-Reply-To: <8a97a87.5d9a5e2e.48821e24.45f@o2.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 20-07-08 22:04, Rene Herman wrote:
-
-> On 20-07-08 21:08, Jaroslav Kysela wrote:
+> > At Fri, 9 May 2008 09:22:13 +0200,
+> > Piotr Zaryk wrote:
+> > > 
+> > > Hi,
+> > > 
+> > > Is there anybody who could integrate the MAYA44 driver with ALSA? Rainer
+> > > does not respond and I don't know what's going on. Maya44 driver should be
+> > > integrated as soon as possible because of the improvements in the ice-1724
+> > > code. Anybody interested?
+> > 
+> > Such a big patch cannot be merged to the upstream without a proper
+> > sign-off.  I mailed Rainer again but no response yet, unfortunately.
+> > 
+> > 
+> > Takashi
 > 
->> On Sun, 20 Jul 2008, Rene Herman wrote:
-> 
->>> Is there something wrong with your devel branch or is it me?
->>
->> I think that you have to recommit your patches on top of new Takashi's 
->> tree, because Takashi rebased his tree on top of Linus's tree.
-> 
-> Hmm. If Takashi did not just now change something, then something that I 
-> don't understand is happening since right now it's working fine:
-> 
-> rene@7ixe4:~/src/linux/7ixe4$ git remote show tiwai
-> * remote tiwai
->   URL: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6
->   Tracked remote branches
->     devel dma-fix for-linus master upstream
-> rene@7ixe4:~/src/linux/7ixe4$ git checkout -b alsa v2.6.26
-> Switched to a new branch "alsa"
-> rene@7ixe4:~/src/linux/7ixe4$ git pull tiwai devel
-> Updating bce7f79..e0bf09b
-> Fast forward
-> 
-> [ ... ]
-> 
-> ... and a clean merge. Takashi, if you did -- it's fixed.. :-/
 
-But you didn't... the "manual" git fetch tiwai/git merge tiwai/devel 
-still fails.
+Rainer in his ESI Maya44 driver, put something like this:
 
-It probably has something to do with this:
++/*
 
-rene@7ixe4:~/src/linux/7ixe4$ git fetch tiwai
- From git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6
-  ! [rejected]        devel      -> tiwai/devel  (non fast forward)
-  ! [rejected]        dma-fix    -> tiwai/dma-fix  (non fast forward)
-  ! [rejected]        master     -> tiwai/master  (non fast forward)
++ *   Low-level routines for Wolfson WM8776 codec
 
-I'll go ask on the GIT list what this might be about...
++ *
 
-Rene.
++ *	Copyright (c) 2007 Rainer Zimmermann <mail@lightshed.de>
+
++ *
+
++ *   This program is free software; you can redistribute it and/or modify
+
++ *   it under the terms of the GNU General Public License as published by
+
++ *   the Free Software Foundation; either version 2 of the License, or
+
++ *   (at your option) any later version.
+
++ *
+
++ *   This program is distributed in the hope that it will be useful,
+
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+
++ *   GNU General Public License for more details.
+
++ *
+
++ *   You should have received a copy of the GNU General Public License
+
++ *   along with this program; if not, write to the Free Software
+
++ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+
++ *
+
++ */ 
+
+
+Why this is not enough, to merge his driver with alsa?
+
+I'm afraid that we lost contact with Rainer permamently. 
+
+Patryk Krawczyk 
