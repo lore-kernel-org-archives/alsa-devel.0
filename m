@@ -1,22 +1,22 @@
 From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: CS4279 and hw_read_t/hw_write_t
-Date: Mon, 21 Jul 2008 11:25:05 -0400
-Message-ID: <9e4733910807210825r5d50adbem225cf83e31c21908@mail.gmail.com>
-References: <9e4733910807210806v4caf49f1ke90cefda07b63579@mail.gmail.com>
-	<4884A641.80304@freescale.com>
-	<9e4733910807210816i624618fy8093dc2609e0922d@mail.gmail.com>
-	<4884A8E0.3040907@freescale.com>
+Subject: Re: RFC: reworking ASOC for large registers
+Date: Mon, 21 Jul 2008 11:35:41 -0400
+Message-ID: <9e4733910807210835m4321f6bet823a466cabd4ed1c@mail.gmail.com>
+References: <9e4733910807201847q6d914e58l567a96904679ada8@mail.gmail.com>
+	<20080721094828.GC7083@sirena.org.uk>
+	<9e4733910807210551m7b4ac64qa111557d104c2993@mail.gmail.com>
+	<20080721125444.GH7083@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id 830BB24356
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72A4F243B8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jul 2008 17:25:06 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so208335yxh.2
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2008 08:25:05 -0700 (PDT)
-In-Reply-To: <4884A8E0.3040907@freescale.com>
+	Mon, 21 Jul 2008 17:35:42 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so210768yxh.2
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2008 08:35:41 -0700 (PDT)
+In-Reply-To: <20080721125444.GH7083@sirena.org.uk>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,50 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/21/08, Timur Tabi <timur@freescale.com> wrote:
-> Jon Smirl wrote:
->
->  > You'd have to read the CS4270 datasheet in detail to see if can even
->  > be hooked up to an smbus controller. smbus is a subset of full i2c.
->
->
-> There's no mention of SM Bus anywhere in the CS4270 datasheet.  Can I ass=
-ume
->  that it won't work?
+These signatures need to change a lot:
 
-SMBus devices will work on an i2c controller. But i2c devices won't
-always work on a smbus controller. i2c is a superset of smbus, it can
-do things smbus can't.
-
-SMbus (system management bus) is usually used for simple things like
-fan and temperature monitors.
-
->From wikipedia on i2c:
-"Pure I=B2C systems support arbitrary message structures. SMBus is
-restricted to nine of those structures, such as "read word N" and
-"write word N", involving a single slave."
+/* codec register bit access */
+int snd_soc_update_bits(struct snd_soc_codec *codec, unsigned short reg,
+				unsigned short mask, unsigned short value);
+int snd_soc_test_bits(struct snd_soc_codec *codec, unsigned short reg,
+				unsigned short mask, unsigned short value);
 
 
->
->  I remember now trying to use a standard I2C-only function and it didn't =
-work,
->  but that was a long time ago before I knew much about the hardware.  I'l=
-l have
->  to try it again.
->
->
->  --
->
-> Timur Tabi
->  Linux kernel developer at Freescale
->
+Something like:
+int snd_soc_update_bits(struct snd_soc_codec *codec, uint reg,
+				uint mask, uint shift, u64 value);
 
+shift is needed to shift the mask around for huge registers like 256
+bits. For existing hardware it will always be zero. value has to go to
+u64.
 
--- =
-
+-- 
 Jon Smirl
 jonsmirl@gmail.com
