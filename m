@@ -1,21 +1,18 @@
-From: =?UTF-8?Q?midragius?= <midragius@o2.pl>
-Subject: Re: =?utf-8?q?Patch_-_ESI_Maya44_driver?=
-Date: Mon, 21 Jul 2008 11:27:02 +0200
-Message-ID: <308026ab.112da2f3.48845666.33b6a@o2.pl>
-References: <8a97a87.5d9a5e2e.48821e24.45f@o2.pl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: RFC: reworking ASOC for large registers
+Date: Mon, 21 Jul 2008 10:48:32 +0100
+Message-ID: <20080721094828.GC7083@sirena.org.uk>
+References: <9e4733910807201847q6d914e58l567a96904679ada8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rekin23.go2.pl (rekin23.go2.pl [193.17.41.16])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB70224387
-	for <Alsa-devel@alsa-project.org>;
-	Mon, 21 Jul 2008 11:27:02 +0200 (CEST)
-Received: from o2.pl (unknown [10.0.0.36])
-	by rekin23.go2.pl (Postfix) with SMTP id 3817C1288AB
-	for <Alsa-devel@alsa-project.org>;
-	Mon, 21 Jul 2008 11:27:02 +0200 (CEST)
-In-Reply-To: <8a97a87.5d9a5e2e.48821e24.45f@o2.pl>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2FCE3245E5
+	for <alsa-devel@alsa-project.org>;
+	Mon, 21 Jul 2008 11:48:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910807201847q6d914e58l567a96904679ada8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,71 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > At Fri, 9 May 2008 09:22:13 +0200,
-> > Piotr Zaryk wrote:
-> > > 
-> > > Hi,
-> > > 
-> > > Is there anybody who could integrate the MAYA44 driver with ALSA? Rainer
-> > > does not respond and I don't know what's going on. Maya44 driver should be
-> > > integrated as soon as possible because of the improvements in the ice-1724
-> > > code. Anybody interested?
-> > 
-> > Such a big patch cannot be merged to the upstream without a proper
-> > sign-off.  I mailed Rainer again but no response yet, unfortunately.
-> > 
-> > 
-> > Takashi
-> 
+On Sun, Jul 20, 2008 at 09:47:04PM -0400, Jon Smirl wrote:
 
-Rainer in his ESI Maya44 driver, put something like this:
+> How about making them work on an array of bytes?
+> 	unsigned int read(struct snd_soc_codec *codec, unsigned int reg, u8 *value);
+> 	int write(struct snd_soc_codec *codec, unsigned int reg, u8* value);
 
-+/*
+This looks like a reasonable way of handling large registers.  We'd need
+to have a look at the effect on driver code - the main concern would be
+the effect on drivers for chips with more normally sized registers.
+Currently they can just call their register access functions with
+immediate values and it'd be a usability problem if they lost that
+ability.
 
-+ *   Low-level routines for Wolfson WM8776 codec
+I think it's most likely that the best way forward would be to have both
+interfaces in parallel and let drivers use either (or a mix) rather than
+having the only interface be the large register one.
 
-+ *
+> If read is sucessful, it returns the number of bytes read. Reading a
+> non-existent register returns -ENODEV, or you can get other errors
+> like -EIO when the IO fails.
 
-+ *	Copyright (c) 2007 Rainer Zimmermann <mail@lightshed.de>
+You also need to pass in the size of the buffer being supplied by the
+caller.
 
-+ *
+> Instead of u8 I've been using a union in my internal code. We can come
+> up with better names for the members.
 
-+ *   This program is free software; you can redistribute it and/or modify
+> typedef struct {
+> 	union {
+> 		u16 s16;
+> 		u8 byte[32];
 
-+ *   it under the terms of the GNU General Public License as published by
+There's a scalability issue here...
 
-+ *   the Free Software Foundation; either version 2 of the License, or
+> After the low level is changed, the ASOC core needs to be updated to
+> allow 16 bit shifts and masks up to 64 bits.
 
-+ *   (at your option) any later version.
-
-+ *
-
-+ *   This program is distributed in the hope that it will be useful,
-
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-
-+ *   GNU General Public License for more details.
-
-+ *
-
-+ *   You should have received a copy of the GNU General Public License
-
-+ *   along with this program; if not, write to the Free Software
-
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-
-+ *
-
-+ */ 
-
-
-Why this is not enough, to merge his driver with alsa?
-
-I'm afraid that we lost contact with Rainer permamently. 
-
-Patryk Krawczyk 
+We should be able support 15 bit masks with a small rearrangement of the
+existing stuff.
