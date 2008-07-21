@@ -1,22 +1,21 @@
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: Re: [PATCH] ALSA: soc - fsl_ssi.c fix audio capture
-Date: Mon, 21 Jul 2008 15:15:18 +0400
-Message-ID: <20080721111518.GA17872@polina.dev.rtsoft.ru>
-References: <20080703143714.GA7003@polina.dev.rtsoft.ru>
-	<20080703144254.GB652@sirena.org.uk>
-	<B615D57E-324C-4812-997C-9E5C90FDE967@freescale.com>
-	<20080704154313.GA11635@polina.dev.rtsoft.ru>
-Reply-To: avorontsov@ru.mvista.com
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: RFC: reworking ASOC for large registers
+Date: Mon, 21 Jul 2008 08:51:23 -0400
+Message-ID: <9e4733910807210551m7b4ac64qa111557d104c2993@mail.gmail.com>
+References: <9e4733910807201847q6d914e58l567a96904679ada8@mail.gmail.com>
+	<20080721094828.GC7083@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buildserver.ru.mvista.com (unknown [85.21.88.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63D93245F6
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id F316710384D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jul 2008 13:15:22 +0200 (CEST)
+	Mon, 21 Jul 2008 14:51:24 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 9so533073ywk.2
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2008 05:51:23 -0700 (PDT)
+In-Reply-To: <20080721094828.GC7083@sirena.org.uk>
 Content-Disposition: inline
-In-Reply-To: <20080704154313.GA11635@polina.dev.rtsoft.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,62 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 04, 2008 at 07:43:13PM +0400, Anton Vorontsov wrote:
-[...]
-> >>> Since we're using SSI in synchronous mode, the STCCR register  
-> >>> controls
-> >>> both the receive and transmit sections. So, when we're trying to  
-> >>> record
-> >>> anything, stccr register does not get initialized, thus the output  
-> >>> file
-> >>> filled with the white noise.
-> >>
-> >>> Fix this by initializing the STCCR for both playback and capture. If
-> >>> TX/RX widths don't match, return that we're busy at the moment.
-> >>
-> >>> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
-> >>
-> >> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> >>
-> >> but Timur needs to ack it since I don't have any particular knowledge 
-> >> of
-> >> the hardware.
-> >
-> > Anton has the right idea, but I'm not sure the fix is the best.  I was  
-> > planning on posting my fix after I got back from vacation.
-> >
-> > Part of the problem is that STCK and SRCK can be wired together, which  
-> > means that even though you're not in synchronous mode, the sample rates 
-> > have to match.  For the 8610 HPCD, this isn't a problem, but the SSI 
-> > driver is supposed to support more than just that board.  We need device 
-> > tree additions to cover all cases.
-> 
-> Ok, we can set both.
-> 
-> > Anton, are you sure returning -EBUSY is the right fix? 
-> 
-> Since we're using prepare(), yes. But we probably should use
-> hw_params() and return -EINVAL.
-> 
-> > Would this make 
-> > applications like mplayer detect the problem and automatically pick a 
-> > matching sample format that does work?
-> 
-> I don't think that anyone tries to negotiate if/when prepare() failed.
-> But if hw_params() failed, then yes. Here is updated patch.
-> 
-> Also new patch for the codec used on the HPCD: it seem has the similar
-> issue, but wrt sampling rate.
+On 7/21/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> On Sun, Jul 20, 2008 at 09:47:04PM -0400, Jon Smirl wrote:
+>
+>  > How about making them work on an array of bytes?
+>  >       unsigned int read(struct snd_soc_codec *codec, unsigned int reg, u8 *value);
+>  >       int write(struct snd_soc_codec *codec, unsigned int reg, u8* value);
+>
+>
+> This looks like a reasonable way of handling large registers.  We'd need
+>  to have a look at the effect on driver code - the main concern would be
+>  the effect on drivers for chips with more normally sized registers.
+>  Currently they can just call their register access functions with
+>  immediate values and it'd be a usability problem if they lost that
+>  ability.
 
-Timur, have you had a chance to look into these two patches?
+I just noticed, the hw read/write routines are already an array of bytes.
 
-Thanks,
+typedef int (*hw_write_t)(void *,const char* ,int);
+typedef int (*hw_read_t)(void *,char* ,int);
+
+
+
+>
+>  I think it's most likely that the best way forward would be to have both
+>  interfaces in parallel and let drivers use either (or a mix) rather than
+>  having the only interface be the large register one.
+>
+>
+>  > If read is sucessful, it returns the number of bytes read. Reading a
+>  > non-existent register returns -ENODEV, or you can get other errors
+>  > like -EIO when the IO fails.
+>
+>
+> You also need to pass in the size of the buffer being supplied by the
+>  caller.
+>
+>
+>  > Instead of u8 I've been using a union in my internal code. We can come
+>  > up with better names for the members.
+>
+>  > typedef struct {
+>  >       union {
+>  >               u16 s16;
+>  >               u8 byte[32];
+>
+>
+> There's a scalability issue here...
+>
+>
+>  > After the low level is changed, the ASOC core needs to be updated to
+>  > allow 16 bit shifts and masks up to 64 bits.
+>
+>
+> We should be able support 15 bit masks with a small rearrangement of the
+>  existing stuff.
+>
+
 
 -- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+Jon Smirl
+jonsmirl@gmail.com
