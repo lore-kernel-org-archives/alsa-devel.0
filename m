@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 1/3] ALSA SoC: Add OpenFirmware
-	helper	for matching bus and codec drivers
-Date: Tue, 22 Jul 2008 18:51:22 +0100
-Message-ID: <20080722175121.GA6432@sirena.org.uk>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: [PATCH v3 2/3] ALSA SoC: Add mpc5200-psc I2S driver
+Date: Tue, 22 Jul 2008 14:28:12 -0400
+Message-ID: <9e4733910807221128h4a425c37qd9a86e8d9458d005@mail.gmail.com>
 References: <20080722065352.7306.60679.stgit@trillian.secretlab.ca>
-	<9e4733910807220938k7452f40co8d51e4b03e79ee8b@mail.gmail.com>
+	<20080722065358.7306.9412.stgit@trillian.secretlab.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 10A7F103805
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0CFA1038A1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Jul 2008 19:51:32 +0200 (CEST)
+	Tue, 22 Jul 2008 20:28:13 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so364275yxh.2
+	for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2008 11:28:12 -0700 (PDT)
+In-Reply-To: <20080722065358.7306.9412.stgit@trillian.secretlab.ca>
 Content-Disposition: inline
-In-Reply-To: <9e4733910807220938k7452f40co8d51e4b03e79ee8b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, timur@freescale.com, liam.girdwood@wolfsonmicro.com
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, timur@freescale.com, liam.girdwood@wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 22, 2008 at 12:38:30PM -0400, Jon Smirl wrote:
-> On 7/22/08, Grant Likely <grant.likely@secretlab.ca> wrote:
+What about the mpc5200b?
 
-> >  +int of_snd_soc_register_platform(struct snd_soc_platform *platform,
-> >  +                                struct device_node *node,
-> >  +                                struct snd_soc_dai *cpu_dai);
-> >  +
++/* Match table for of_platform binding */
++static struct of_device_id psc_i2s_match[] __devinitdata = {
++       { .compatible = "fsl,mpc5200-psc-i2s", },
++       {}
++};
++MODULE_DEVICE_TABLE(of, psc_i2s_match);
++
 
-> This doesn't compile for me.  Where is struct snd_soc_dai being defined?
+I'm just being grumpy because updating to linus/master made me fix
+over a hundred merge conflicts, now I have to test everything again.
 
-> It used to be....
-
-In ALSA and ASoC git struct snd_soc_{cpu,codec}_dai have been replaced
-by a shared snd_soc_dai defined in soc.h as the previous two were.
+-- 
+Jon Smirl
+jonsmirl@gmail.com
