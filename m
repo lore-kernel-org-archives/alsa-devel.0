@@ -1,21 +1,16 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH v3 0/3] ALSA SoC: MPC5200 audio driver
-Date: Tue, 22 Jul 2008 17:26:40 -0400
-Message-ID: <20080722212640.GG12412@secretlab.ca>
-References: <fa686aa40807212358p17c824ia1d6516a87a7aac1@mail.gmail.com>
-	<20080722092646.GA7251@sirena.org.uk>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] cs4236: add missing pnp_request_card_device()
+Date: Tue, 22 Jul 2008 23:51:00 +0200
+Message-ID: <20080722235100.0ecfa7f8.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qb-out-1314.google.com (qb-out-1314.google.com [72.14.204.168])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90C141038D2
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBC0B1038DC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Jul 2008 23:27:04 +0200 (CEST)
-Received: by qb-out-1314.google.com with SMTP id a29so3950127qbd.44
-	for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2008 14:27:03 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20080722092646.GA7251@sirena.org.uk>
+	Tue, 22 Jul 2008 23:46:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com, timur@freescale.com
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Rene Herman <rene.herman@keyaccess.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 22, 2008 at 10:26:47AM +0100, Mark Brown wrote:
-> On Tue, Jul 22, 2008 at 12:58:09AM -0600, Grant Likely wrote:
-> 
-> > Here is the latest series for adding MPC5200 I2S and TI AIC26 codec
-> > support to ALSA SoC.  I believe all the comments are addressed and I
-> > hope that this series is now ready to be merged.  I would really like
-> > to see these ones land in 2.6.27.
-> 
-> That might be a bit of a push given how far into the merge window we
-> are and Takashi's holiday this week, though as they are new drivers
-> things could be a bit more relaxed.
-> 
-> Takashi, I'll queue these (and other ASoC patches) for submission in
-> bulk once you return.
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Thanks Mark, I owe you a beer.
+There is a missing pnp_request_card_device() call
+for cs4232 card. The acard->wss pointer is left
+uninitialized which leads to crash during detection.
 
-g.
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+
+This bug was found in the 2.6.26-git9 kernel.
+
+Please compare the snd_card_cs4232_pnp() and
+the snd_card_cs423x_pnpc().
+
+--- linux-2.6.26/sound/isa/cs423x/cs4236.c~	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26/sound/isa/cs423x/cs4236.c	2008-07-22 23:41:56.010942922 +0200
+@@ -325,6 +325,9 @@ static int __devinit snd_cs423x_pnp_init
+ static int __devinit snd_card_cs4232_pnp(int dev, struct snd_card_cs4236 *acard,
+ 					 struct pnp_dev *pdev)
+ {
++	acard->wss = pnp_request_card_device(card, id->devs[0].id, NULL);
++	if (acard->wss == NULL)
++		return -EBUSY;
+ 	if (snd_cs423x_pnp_init_wss(dev, acard->wss) < 0)
+ 		return -EBUSY;
+ 	cport[dev] = -1;
+
+----------------------------------------------------------------------
+Czy Twoj mezczyzna gotuje dla Ciebie? 
+Wygraj nagrody >>> http://link.interia.pl/f1e86 
