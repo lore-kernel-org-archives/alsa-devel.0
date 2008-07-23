@@ -1,21 +1,17 @@
 From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: [PATCH] V2,
-	Convert bitfields in ASOC into full int width
-Date: Wed, 23 Jul 2008 15:06:10 -0400
-Message-ID: <9e4733910807231206y541856d2n41f7841b27a63830@mail.gmail.com>
-References: <20080723174302.14968.56684.stgit@terra>
-	<20080723182937.GA25367@rakim.wolfsonmicro.main>
+Subject: dapm_reg_event, etc
+Date: Wed, 23 Jul 2008 15:34:38 -0400
+Message-ID: <9e4733910807231234r10ae0b5erb6044667c0cb090@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id C32B31037F2
+Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE79624811
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 21:06:11 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so446718yxh.2
-	for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2008 12:06:10 -0700 (PDT)
-In-Reply-To: <20080723182937.GA25367@rakim.wolfsonmicro.main>
+	Wed, 23 Jul 2008 21:34:39 +0200 (CEST)
+Received: by yw-out-1718.google.com with SMTP id 9so1140917ywk.2
+	for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2008 12:34:38 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,41 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/23/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Jul 23, 2008 at 01:43:02PM -0400, Jon Smirl wrote:
->  > Convert bitfields in ASOC into full int width. This is a
->  > simple mechanical conversion. Two places in the DAPM code
->  > were fixed to properly use mask.
->
->
->   CHECK   sound/soc/soc-core.c
->  include/sound/soc.h:71:4: error: Expected ; end of type declaration
->  include/sound/soc.h:71:4: error: got .
->  sound/soc/soc-core.c:295:6: error: undefined identifier 'SND_SOC_BIAS_PREPARE'
->  sound/soc/soc-core.c:308:6: error: undefined identifier 'SND_SOC_BIAS_STANDBY'
->  sound/soc/soc-core.c:369:7: error: undefined identifier 'SND_SOC_BIAS_STANDBY'
->  sound/soc/soc-core.c:441:28: error: undefined identifier 'SND_SOC_BIAS_ON'
->  sound/soc/soc-core.c:444:11: error: undefined identifier 'SND_SOC_BIAS_PREPARE'
->  sound/soc/soc-core.c:455:40: error: undefined identifier 'SND_SOC_BIAS_ON'
->   CC      sound/soc/soc-core.o
->  In file included from sound/soc/soc-core.c:34:
->  include/sound/soc.h:71: error: expected identifier or '(' before '.' token
->  include/sound/soc.h:71: error: expected identifier or '(' before '}' token
->
->  The fix was trivial enough so I've made and applied it (and done some
->  brief testing of my own) - please be more careful in future.
+I modified Kconfig to build all of the codecs. That exposed a couple
+more errors.
 
-I did that making checkpatch happy. I don't have easily buildable test
-cases for powerpc so I'm doing this via inspection.  I'll see if I can
-mess with Kconfig and force all of the codecs to build.
+tlv320aic3x won't build . dapm_reg_event() is missing from soc_dapm.h:
 
-So this one is ok with the \ added? Next round I need to clean
-everything up to make it 32 bit safe instead of only 16 bit. It will
-probably touch some of the same code and needs to apply on top of this
-patch.
+/* generic register modifier widget */
+#define SND_SOC_DAPM_REG(wid, wname, wreg, wshift, wmask, won_val, woff_val) \
+{	.id = wid, .name = wname, .kcontrols = NULL, .num_kcontrols = 0, \
+	.reg = -((wreg) + 1), .shift = wshift, .mask = wmask, \
+	.on_val = won_val, .off_val = woff_val, .event = dapm_reg_event, \
+	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD}
+
+int dapm_reg_event(struct snd_soc_dapm_widget *w,
+                   struct snd_kcontrol *kcontrol, int event);
+
+and there is another error in my patch:
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 41e73fc..cc64b04 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -67,7 +67,7 @@
+        .info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
+        .put = snd_soc_put_volsw, \
+        .private_value = (unsigned long)&(struct soc_mixer_control) \
+-               {.reg = xreg, .shift = shift_left, .rshift = right_shift, \
++               {.reg = xreg, .shift = shift_left, .rshift = shift_right, \
+                 .max = xmax, .invert = xinvert} }
+ #define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax,
+xinvert, tlv_array) \
+ {      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
+
+And the AC97 codec won't link, not sure why.
+
+sound/built-in.o: In function `ac97_read':
+ac97.c:(.text+0x2513a): undefined reference to `soc_ac97_ops'
+ac97.c:(.text+0x25146): undefined reference to `soc_ac97_ops'
+sound/built-in.o: In function `ac97_write':
+ac97.c:(.text+0x2516e): undefined reference to `soc_ac97_ops'
+ac97.c:(.text+0x2517e): undefined reference to `soc_ac97_ops'
+sound/built-in.o: In function `ac97_soc_probe':
+ac97.c:(.text+0x252f6): undefined reference to `soc_ac97_ops'
+sound/built-in.o:ac97.c:(.text+0x25302): more undefined references to
+`soc_ac97_ops' follow
+make: *** [.tmp_vmlinux1] Error 1
+jonsmirl@terra:~/fs$ make
+
+I'll make a new version and put these fixes into it. I'll also make a
+patch for a Kconfig option to force all of the codecs to build.
 
 -- 
 Jon Smirl
