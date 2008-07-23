@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] V2,
-	Convert bitfields in ASOC into full int width
-Date: Wed, 23 Jul 2008 21:33:57 +0100
-Message-ID: <20080723203357.GA16407@opensource.wolfsonmicro.com>
-References: <20080723174302.14968.56684.stgit@terra>
-	<20080723182937.GA25367@rakim.wolfsonmicro.main>
-	<9e4733910807231206y541856d2n41f7841b27a63830@mail.gmail.com>
+Subject: Re: [PATCH] Add a Kconfig option to force all ASOC
+	codecs to build
+Date: Wed, 23 Jul 2008 21:44:11 +0100
+Message-ID: <20080723204411.GC16407@opensource.wolfsonmicro.com>
+References: <20080723195723.24968.88510.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D2C82481F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 25FBD24834
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 22:33:58 +0200 (CEST)
+	Wed, 23 Jul 2008 22:44:12 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <9e4733910807231206y541856d2n41f7841b27a63830@mail.gmail.com>
+In-Reply-To: <20080723195723.24968.88510.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,21 +27,12 @@ To: Jon Smirl <jonsmirl@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 23, 2008 at 03:06:10PM -0400, Jon Smirl wrote:
+On Wed, Jul 23, 2008 at 03:57:23PM -0400, Jon Smirl wrote:
 
-> I did that making checkpatch happy. I don't have easily buildable test
-> cases for powerpc so I'm doing this via inspection.  I'll see if I can
-> mess with Kconfig and force all of the codecs to build.
+> +config SND_SOC_ALL_CODECS
+> +	bool "Force all codecs to build"
+> +	default N
+> +	---help---
 
-Check the upstream branch of:
-
-	git://opensource.wolfsonicro.com/linux-2.6-asoc
-
-which contains a patch that does just that.
-
-> So this one is ok with the \ added? Next round I need to clean
-> everything up to make it 32 bit safe instead of only 16 bit. It will
-> probably touch some of the same code and needs to apply on top of this
-> patch.
-
-Yes.  Like I say, I've applied it.
+I already have an equivalent patch queued for merge once Takashi gets
+back from holiday (done differently).
