@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] Allow a custom ASOC machine driver
-	with soc-of-simple
-Date: Wed, 23 Jul 2008 11:53:37 +0100
-Message-ID: <20080723105334.GC8377@sirena.org.uk>
-References: <20080722235349.11648.90112.stgit@terra>
-	<20080722235351.11648.56387.stgit@terra>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Linux Plumbers Conference CFP Extended!
+Date: Wed, 23 Jul 2008 14:06:36 +0200
+Message-ID: <20080723120636.GA22127@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17F02244A4
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D37E24756
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 12:53:39 +0200 (CEST)
+	Wed, 23 Jul 2008 14:06:36 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20080722235351.11648.56387.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 22, 2008 at 07:53:51PM -0400, Jon Smirl wrote:
+Heya!
 
-> Allow a custom ASOC machine driver with soc-of-simple
+The Call For Papers for the Linux Plumbers Conference has been
+extended until July 31st!
 
-As with the clocking configuration: this looks fine from an ASoC point
-of view but please fix the checkpatch warnings.  However...
+Anyone doing (audio) infrastructure work on Linux? If so, please make
+sure to join us at the Linux Plumbers Conference in Portland/Oregon in
+September. I will be doing a track about "Audio" there and would like
+to make sure that everyone who does audio infrastructure work will
+submit a paper, or at least attend, or maybe just knows about this
+conference!
 
->  	/* Only register the device if both the codec and platform have
->  	 * been registered */
-> -	if ((!of_soc->device.codec_data) || (!of_soc->platform_node))
-> +	if ((!of_soc->device.codec_data) || (!of_soc->platform_node) || !machine_name)
->  		return;
+It's a conference about the kernel-userspace interfacing, about the
+lower levels in our software stack.
 
-...this doesn't just allow a custom machine driver, it requires that
-something configures at least the machine name.  That's not a problem
-from the ASoC point of view but possibly from the PowerPC side?
+For further details, checkout the conference website:
+
+http://www.linuxplumbersconf.org/
+
+(Sorry for this spam!)
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
