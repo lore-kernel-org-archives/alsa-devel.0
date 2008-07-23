@@ -1,18 +1,19 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH 1/2] Support internal I2S clock sources on
-	MPC5200
-Date: Tue, 22 Jul 2008 19:53:49 -0400
-Message-ID: <20080722235349.11648.90112.stgit@terra>
+From: "Mitul Sen (misen)" <misen@cisco.com>
+Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
+	let	me apply hardware parameters
+Date: Tue, 22 Jul 2008 17:11:26 -0700
+Message-ID: <3B6F5C9068D5864096EB291236C3386F02CE1663@xmb-sjc-21d.amer.cisco.com>
+References: <487EBCBE.70504@cox.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DA331038B3
+Received: from sj-iport-6.cisco.com (sj-iport-6.cisco.com [171.71.176.117])
+	by alsa0.perex.cz (Postfix) with ESMTP id C53341037F9
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 01:53:51 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so942504ywk.2
-	for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2008 16:53:50 -0700 (PDT)
+	Wed, 23 Jul 2008 02:11:58 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <487EBCBE.70504@cox.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,157 +23,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: stan <ghjeold_i_mwee@cox.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Support internal I2S clock sources on MPC5200
+Hi, 
 
-Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
----
+> -----Original Message-----
+> From: stan [mailto:ghjeold_i_mwee@cox.net] 
+> Sent: Wednesday, July 16, 2008 8:30 PM
+> To: Mitul Sen (misen)
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] Setting format to 
+> SND_PCM_FORMAT_MU_LAW does not let me apply hardware parameters
+> 
+> Mitul Sen (misen) wrote:
+> 
+> > 
+> > I am making some changes to the alsa-lib code and I have built 
+> > alsa-lib. But I don't think its really picking up my 
+> changes. How can 
+> > I make sure that my application uses the
+> modified library? I don't have to load any modules, do I? I 
+> am sorry if this is too basic a question but I couldn't find 
+> the info on a quick google search. 
+> Basically what I want to know is what are the steps to 
+> develop alsa-lib. This is what I did
+> > 1) Downloaded the source code
+> > 2) Configured the system using ./configure
+> > 3) Did a build using make
+> > 4) Did a "make install"
+> > 
+> > Am I missing something here? 
+> 
+> It looks correct.  Do an   ls -l /usr/lib/libasound*. 
+> The file there should have the same timestamp as the file in 
+> your build directory.  If it doesn't, it didn't install.  You 
+> could just copy it over.
+> 
+> Make sure there is no other copy in /lib.
+> 
 
- sound/soc/fsl/mpc5200_psc_i2s.c |   58 ++++++++++++++++++++++++++++++++++-----
- sound/soc/fsl/mpc5200_psc_i2s.h |   13 +++++++++
- 2 files changed, 64 insertions(+), 7 deletions(-)
- create mode 100644 sound/soc/fsl/mpc5200_psc_i2s.h
+I have checked the timestamps for libasound.so and the soft links
+created in the /usr/lib directory after an install. They are the same as
+in my build directory.
 
-diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
-index 8692329..f028f61 100644
---- a/sound/soc/fsl/mpc5200_psc_i2s.c
-+++ b/sound/soc/fsl/mpc5200_psc_i2s.c
-@@ -23,8 +23,12 @@
- 
- #include <sysdev/bestcomm/bestcomm.h>
- #include <sysdev/bestcomm/gen_bd.h>
-+#include <asm/time.h>
-+#include <asm/mpc52xx.h>
- #include <asm/mpc52xx_psc.h>
- 
-+#include "mpc5200_psc_i2s.h"
-+
- MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
- MODULE_DESCRIPTION("Freescale MPC5200 PSC in I2S mode ASoC Driver");
- MODULE_LICENSE("GPL");
-@@ -93,6 +97,7 @@ struct psc_i2s {
- 	struct snd_soc_dai dai;
- 	spinlock_t lock;
- 	u32 sicr;
-+	uint sysclk;
- 
- 	/* per-stream data */
- 	struct psc_i2s_stream playback;
-@@ -224,6 +229,7 @@ static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct psc_i2s *psc_i2s = rtd->dai->cpu_dai->private_data;
-+	uint bits, framesync, bitclk, value;
- 	u32 mode;
- 
- 	dev_dbg(psc_i2s->dev, "%s(substream=%p) p_size=%i p_bytes=%i"
-@@ -235,15 +241,19 @@ static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S8:
- 		mode = MPC52xx_PSC_SICR_SIM_CODEC_8;
-+		bits = 8;
- 		break;
- 	case SNDRV_PCM_FORMAT_S16_BE:
- 		mode = MPC52xx_PSC_SICR_SIM_CODEC_16;
-+		bits = 16;
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_BE:
- 		mode = MPC52xx_PSC_SICR_SIM_CODEC_24;
-+		bits = 24;
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_BE:
- 		mode = MPC52xx_PSC_SICR_SIM_CODEC_32;
-+		bits = 32;
- 		break;
- 	default:
- 		dev_dbg(psc_i2s->dev, "invalid format\n");
-@@ -251,7 +261,24 @@ static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	out_be32(&psc_i2s->psc_regs->sicr, psc_i2s->sicr | mode);
- 
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+	if (psc_i2s->sysclk) {
-+		framesync = bits * 2;
-+		bitclk = (psc_i2s->sysclk) / (params_rate(params) * framesync);
-+		
-+		/* bitclk field is byte swapped due to mpc5200/b compatibility */
-+		value = ((framesync - 1) << 24) |
-+			(((bitclk - 1) & 0xFF) << 16) | ((bitclk - 1) & 0xFF00);
-+		
-+		dev_dbg(psc_i2s->dev, "%s(substream=%p) rate=%i sysclk=%i"
-+			" framesync=%i bitclk=%i reg=%X\n",
-+			__FUNCTION__, substream, params_rate(params), psc_i2s->sysclk,
-+			framesync, bitclk, value);
-+		
-+		out_be32(&psc_i2s->psc_regs->ccr, value);
-+		out_8(&psc_i2s->psc_regs->ctur, bits - 1);
-+	}
-+	
-+  	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
- 
- 	return 0;
- }
-@@ -429,9 +456,29 @@ static int psc_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
- 			      int clk_id, unsigned int freq, int dir)
- {
- 	struct psc_i2s *psc_i2s = cpu_dai->private_data;
--	dev_dbg(psc_i2s->dev, "psc_i2s_set_sysclk(cpu_dai=%p, dir=%i)\n",
--				cpu_dai, dir);
--	return (dir == SND_SOC_CLOCK_IN) ? 0 : -EINVAL;
-+	int clkdiv, err; 
-+	dev_dbg(psc_i2s->dev, "psc_i2s_set_sysclk(cpu_dai=%p, freq=%u, dir=%i)\n",
-+				cpu_dai, freq, dir);
-+	if (dir == SND_SOC_CLOCK_OUT) {
-+		psc_i2s->sysclk = freq;
-+		if (clk_id == MPC52xx_CLK_CELLSLAVE) {
-+			psc_i2s->sicr |= MPC52xx_PSC_SICR_CELLSLAVE | MPC52xx_PSC_SICR_GENCLK;
-+		} else { /* MPC52xx_CLK_INTERNAL */
-+			psc_i2s->sicr &= ~MPC52xx_PSC_SICR_CELLSLAVE;
-+			psc_i2s->sicr |= MPC52xx_PSC_SICR_GENCLK;
-+
-+			clkdiv = ppc_proc_freq / freq;
-+			err = ppc_proc_freq % freq;
-+			if (err > freq / 2)
-+				clkdiv++;
-+
-+			dev_dbg(psc_i2s->dev, "psc_i2s_set_sysclk(clkdiv %d freq error=%ldHz)\n",
-+					clkdiv, (ppc_proc_freq / clkdiv - freq));
-+				
-+			return mpc52xx_set_psc_clkdiv(psc_i2s->dai.id + 1, clkdiv); 
-+		}
-+	}
-+	return 0;
- }
- 
- /**
-@@ -784,9 +831,6 @@ static int __devinit psc_i2s_of_probe(struct of_device *op,
- 	/* Configure the serial interface mode; defaulting to CODEC8 mode */
- 	psc_i2s->sicr = MPC52xx_PSC_SICR_DTS1 | MPC52xx_PSC_SICR_I2S |
- 			MPC52xx_PSC_SICR_CLKPOL;
--	if (of_get_property(op->node, "fsl,cellslave", NULL))
--		psc_i2s->sicr |= MPC52xx_PSC_SICR_CELLSLAVE |
--				 MPC52xx_PSC_SICR_GENCLK;
- 	out_be32(&psc_i2s->psc_regs->sicr,
- 		 psc_i2s->sicr | MPC52xx_PSC_SICR_SIM_CODEC_8);
- 
-diff --git a/sound/soc/fsl/mpc5200_psc_i2s.h b/sound/soc/fsl/mpc5200_psc_i2s.h
-new file mode 100644
-index 0000000..0e0a84e
---- /dev/null
-+++ b/sound/soc/fsl/mpc5200_psc_i2s.h
-@@ -0,0 +1,13 @@
-+/*
-+ * Freescale MPC5200 PSC in I2S mode
-+ * ALSA SoC Digital Audio Interface (DAI) driver
-+ *
-+ */
-+ 
-+#ifndef __SOUND_SOC_FSL_MPC52xx_PSC_I2S_H__
-+#define __SOUND_SOC_FSL_MPC52xx_PSC_I2S_H__
-+
-+#define MPC52xx_CLK_INTERNAL 0
-+#define MPC52xx_CLK_CELLSLAVE 1
-+
-+#endif /* __SOUND_SOC_FSL_MPC52xx_PSC_I2S_H__ */
+> > 
+> > Also regarding the original problem, when I run my program, 
+> the output 
+> > of /proc/asound/card0/pcm0p/sub0/hw_params is
+> > 
+> > access: MMAP_INTERLEAVED
+> > format: S16_LE
+> > subformat: STD
+> > channels: 2
+> > rate: 48000 (48000/1)
+> > period_size: 32
+> > buffer_size: 1024
+> > 
+> > This is clearly not what it should be since the data access 
+> should be RW_NONINTERLEAVED, format should be MU_LAW, there 
+> is only one channel and rate is 8000. Which would mean that 
+> alsa assumes a different set of parameters (for mu law)from 
+> what the data actually is. Am I right in thinking this?
+> > 
+> > Just got back after a long break and trying to pick up the threads 
+> > again:-)
+> > 
+> > Again, any help will be much appreciated.
+> > 
+> > 
+> > 
+> 
+> Unless your changes changed the mu-law code to use your 
+> card's mu-law decoder, they will still be the decoded values.
+> 
+> The best way to do this is to compile your program with 
+> debugging enabled (  -ggdb  -O0) and the alsa library with 
+> debugging enabled.  ./configure  --help should give you the 
+> option.  Then move only the library to /usr/lib and run your 
+> program as
+> gdb --args yourprogram yourargs   .  You can see the 
+> info on how to run gdb in  info gdb  .  With the debugger you 
+> can step through the program and the library to see where it 
+> is not working the way you expected.  But you don't want to 
+> leave it like that as it is very inefficient.
+> 
+> If your code works for the mu-law, you could submit a patch.  
+> Of course, you would have to check for the functionality and 
+> branch to the old code if the card doesn't support mu-law decoding.
+> 
+
+I have tried using gdb both from the command line as you suggested and
+also from within eclipse. Even though I can step through the code and
+break properly, I think there is some mismatch between the source code
+and object code used by gdb. I say that because it sometimes steps
+through code in a way that makes no sense. For example, I see that a
+particular 'if' condition is satified and it goes into the 'if' clause
+and then again goes into the 'else' clause that is not expected. Is
+there any module that needs to be reloaded after building and installing
+the shared library? I have done a clean make at all times, checked
+timestamps, even rebooted the machine in case some driver related data
+needs to be reloaded at startup but none of this has helped.
+
+Another thing that I notice is that when I use aplay to play the rtp
+data that I save to file (before writing to the sound device), and check
+the output of /proc/asound/card0/pcm0p/sub0/hw_params file, it is
+exactly the same as when I run my application. Using aplay does the
+playback properly even though hw_params still shows as
+
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1) 
+
+Please note that I can play back the file using aplay, I only have the
+problem of bad audio when I try to write to the sound device in
+real-time. With this observation though I am not sure if the fact that
+the library seems to not use the card's decoder is really the problem. I
+am trying to look into the source code of aplay to see if I can spot any
+difference in the way the data is written to the buffer.
+
+Meanwhile, any comments and help will be greatly appreciated as usual.
+
+Thanks for your help.
+
+Regards,
+Mitul
