@@ -1,18 +1,19 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
- let	me apply hardware parameters
-Date: Wed, 23 Jul 2008 11:25:54 -0700
-Message-ID: <488777B2.1060608@cox.net>
-References: <3B6F5C9068D5864096EB291236C3386F02CE1663@xmb-sjc-21d.amer.cisco.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] V2,
+	Convert bitfields in ASOC into full int width
+Date: Wed, 23 Jul 2008 19:29:37 +0100
+Message-ID: <20080723182937.GA25367@rakim.wolfsonmicro.main>
+References: <20080723174302.14968.56684.stgit@terra>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao102.cox.net (fed1rmmtao102.cox.net [68.230.241.44])
-	by alsa0.perex.cz (Postfix) with ESMTP id 216B4247FB
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A842010380A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 20:25:56 +0200 (CEST)
-In-Reply-To: <3B6F5C9068D5864096EB291236C3386F02CE1663@xmb-sjc-21d.amer.cisco.com>
+	Wed, 23 Jul 2008 20:29:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20080723174302.14968.56684.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,59 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mitul Sen (misen)" <misen@cisco.com>
+To: Jon Smirl <jonsmirl@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mitul Sen (misen) wrote:
-> Hi, 
-> 
-> I have tried using gdb both from the command line as you suggested and
-> also from within eclipse. Even though I can step through the code and
-> break properly, I think there is some mismatch between the source code
-> and object code used by gdb. I say that because it sometimes steps
-> through code in a way that makes no sense. For example, I see that a
-> particular 'if' condition is satified and it goes into the 'if' clause
-> and then again goes into the 'else' clause that is not expected. Is
-> there any module that needs to be reloaded after building and installing
-> the shared library? I have done a clean make at all times, checked
-> timestamps, even rebooted the machine in case some driver related data
-> needs to be reloaded at startup but none of this has helped.
-I suspect you are debugging optimized code.  The 
-optimizer rearranges and deletes instructions.  Did you 
-specify -O0 so that no optimization occurs?  The other 
-gotcha in the alsa-lib code is that some of the 
-functions are actually macros.  They cannot be stepped 
-through.  When you hit them in the debugger it is 
-disconcerting.
-> 
-> Another thing that I notice is that when I use aplay to play the rtp
-> data that I save to file (before writing to the sound device), and check
-> the output of /proc/asound/card0/pcm0p/sub0/hw_params file, it is
-> exactly the same as when I run my application. Using aplay does the
-> playback properly even though hw_params still shows as
-> 
-> access: MMAP_INTERLEAVED
-> format: S16_LE
-> subformat: STD
-> channels: 2
-> rate: 48000 (48000/1) 
-It is decoding it before it is playing it, it must be 
-calling a routine somewhere to do that, or else it is 
-built in.
-> 
-> Please note that I can play back the file using aplay, I only have the
-> problem of bad audio when I try to write to the sound device in
-> real-time. With this observation though I am not sure if the fact that
-> the library seems to not use the card's decoder is really the problem. I
-> am trying to look into the source code of aplay to see if I can spot any
-> difference in the way the data is written to the buffer.
-> 
-Good not to limit the possibilities you are examining.
-> Meanwhile, any comments and help will be greatly appreciated as usual.
-> 
-> Thanks for your help.
-> 
-> Regards,
-> Mitul
-> 
+T24gV2VkLCBKdWwgMjMsIDIwMDggYXQgMDE6NDM6MDJQTSAtMDQwMCwgSm9uIFNtaXJsIHdyb3Rl
+Ogo+IENvbnZlcnQgYml0ZmllbGRzIGluIEFTT0MgaW50byBmdWxsIGludCB3aWR0aC4gVGhpcyBp
+cyBhCj4gc2ltcGxlIG1lY2hhbmljYWwgY29udmVyc2lvbi4gVHdvIHBsYWNlcyBpbiB0aGUgREFQ
+TSBjb2RlCj4gd2VyZSBmaXhlZCB0byBwcm9wZXJseSB1c2UgbWFzay4KCiAgQ0hFQ0sgICBzb3Vu
+ZC9zb2Mvc29jLWNvcmUuYwppbmNsdWRlL3NvdW5kL3NvYy5oOjcxOjQ6IGVycm9yOiBFeHBlY3Rl
+ZCA7IGVuZCBvZiB0eXBlIGRlY2xhcmF0aW9uCmluY2x1ZGUvc291bmQvc29jLmg6NzE6NDogZXJy
+b3I6IGdvdCAuCnNvdW5kL3NvYy9zb2MtY29yZS5jOjI5NTo2OiBlcnJvcjogdW5kZWZpbmVkIGlk
+ZW50aWZpZXIgJ1NORF9TT0NfQklBU19QUkVQQVJFJwpzb3VuZC9zb2Mvc29jLWNvcmUuYzozMDg6
+NjogZXJyb3I6IHVuZGVmaW5lZCBpZGVudGlmaWVyICdTTkRfU09DX0JJQVNfU1RBTkRCWScKc291
+bmQvc29jL3NvYy1jb3JlLmM6MzY5Ojc6IGVycm9yOiB1bmRlZmluZWQgaWRlbnRpZmllciAnU05E
+X1NPQ19CSUFTX1NUQU5EQlknCnNvdW5kL3NvYy9zb2MtY29yZS5jOjQ0MToyODogZXJyb3I6IHVu
+ZGVmaW5lZCBpZGVudGlmaWVyICdTTkRfU09DX0JJQVNfT04nCnNvdW5kL3NvYy9zb2MtY29yZS5j
+OjQ0NDoxMTogZXJyb3I6IHVuZGVmaW5lZCBpZGVudGlmaWVyICdTTkRfU09DX0JJQVNfUFJFUEFS
+RScKc291bmQvc29jL3NvYy1jb3JlLmM6NDU1OjQwOiBlcnJvcjogdW5kZWZpbmVkIGlkZW50aWZp
+ZXIgJ1NORF9TT0NfQklBU19PTicKICBDQyAgICAgIHNvdW5kL3NvYy9zb2MtY29yZS5vCkluIGZp
+bGUgaW5jbHVkZWQgZnJvbSBzb3VuZC9zb2Mvc29jLWNvcmUuYzozNDoKaW5jbHVkZS9zb3VuZC9z
+b2MuaDo3MTogZXJyb3I6IGV4cGVjdGVkIGlkZW50aWZpZXIgb3Ig4oCYKOKAmSBiZWZvcmUg4oCY
+LuKAmSB0b2tlbgppbmNsdWRlL3NvdW5kL3NvYy5oOjcxOiBlcnJvcjogZXhwZWN0ZWQgaWRlbnRp
+ZmllciBvciDigJgo4oCZIGJlZm9yZSDigJh94oCZIHRva2VuCgpUaGUgZml4IHdhcyB0cml2aWFs
+IGVub3VnaCBzbyBJJ3ZlIG1hZGUgYW5kIGFwcGxpZWQgaXQgKGFuZCBkb25lIHNvbWUKYnJpZWYg
+dGVzdGluZyBvZiBteSBvd24pIC0gcGxlYXNlIGJlIG1vcmUgY2FyZWZ1bCBpbiBmdXR1cmUuCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
