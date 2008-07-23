@@ -1,18 +1,21 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: [PATCH] Add a Kconfig option to force all ASOC codecs
-	to build
-Date: Wed, 23 Jul 2008 15:57:23 -0400
-Message-ID: <20080723195723.24968.88510.stgit@terra>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] V2,
+	Convert bitfields in ASOC into full int width
+Date: Wed, 23 Jul 2008 21:33:57 +0100
+Message-ID: <20080723203357.GA16407@opensource.wolfsonmicro.com>
+References: <20080723174302.14968.56684.stgit@terra>
+	<20080723182937.GA25367@rakim.wolfsonmicro.main>
+	<9e4733910807231206y541856d2n41f7841b27a63830@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF45B24813
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D2C82481F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 21:57:25 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so519526and.80
-	for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2008 12:57:24 -0700 (PDT)
+	Wed, 23 Jul 2008 22:33:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9e4733910807231206y541856d2n41f7841b27a63830@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,91 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jul 23, 2008 at 03:06:10PM -0400, Jon Smirl wrote:
 
----
+> I did that making checkpatch happy. I don't have easily buildable test
+> cases for powerpc so I'm doing this via inspection.  I'll see if I can
+> mess with Kconfig and force all of the codecs to build.
 
- sound/soc/Kconfig        |    7 +++++++
- sound/soc/codecs/Kconfig |   15 ++++++++++++++-
- 2 files changed, 21 insertions(+), 1 deletions(-)
+Check the upstream branch of:
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index f743530..ec5d036 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -35,5 +35,12 @@ source "sound/soc/omap/Kconfig"
- # Supported codecs
- source "sound/soc/codecs/Kconfig"
- 
-+config SND_SOC_ALL_CODECS
-+	bool "Force all codecs to build"
-+	default N
-+	---help---
-+	
-+		Select this to force all codecs to build to assist with testing.
-+
- endif	# SND_SOC
- 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 1db04a2..6d82c6d 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1,37 +1,48 @@
- config SND_SOC_AC97_CODEC
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 	select SND_AC97_CODEC
- 
- config SND_SOC_AK4535
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- config SND_SOC_UDA1380
--        tristate
-+	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- config SND_SOC_WM8510
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- config SND_SOC_WM8731
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- config SND_SOC_WM8750
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- config SND_SOC_WM8753
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- config SND_SOC_WM8990
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- config SND_SOC_WM9712
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- config SND_SOC_WM9713
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- # Cirrus Logic CS4270 Codec
- config SND_SOC_CS4270
- 	tristate
-+	default y if SND_SOC_ALL_CODECS
- 
- # Cirrus Logic CS4270 Codec Hardware Mute Support
- # Select if you have external muting circuitry attached to your CS4270.
-@@ -50,3 +61,5 @@ config SND_SOC_CS4270_VD33_ERRATA
- config SND_SOC_TLV320AIC3X
- 	tristate
- 	depends on I2C
-+	default y if SND_SOC_ALL_CODECS
-+	
-\ No newline at end of file
+	git://opensource.wolfsonicro.com/linux-2.6-asoc
+
+which contains a patch that does just that.
+
+> So this one is ok with the \ added? Next round I need to clean
+> everything up to make it 32 bit safe instead of only 16 bit. It will
+> probably touch some of the same code and needs to apply on top of this
+> patch.
+
+Yes.  Like I say, I've applied it.
