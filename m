@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: "Jon Smirl" <jonsmirl@gmail.com>
 Subject: Re: [PATCH] V2,
 	Convert bitfields in ASOC into full int width
-Date: Wed, 23 Jul 2008 19:29:37 +0100
-Message-ID: <20080723182937.GA25367@rakim.wolfsonmicro.main>
+Date: Wed, 23 Jul 2008 15:06:10 -0400
+Message-ID: <9e4733910807231206y541856d2n41f7841b27a63830@mail.gmail.com>
 References: <20080723174302.14968.56684.stgit@terra>
+	<20080723182937.GA25367@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A842010380A
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id C32B31037F2
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 20:29:38 +0200 (CEST)
+	Wed, 23 Jul 2008 21:06:11 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so446718yxh.2
+	for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2008 12:06:10 -0700 (PDT)
+In-Reply-To: <20080723182937.GA25367@rakim.wolfsonmicro.main>
 Content-Disposition: inline
-In-Reply-To: <20080723174302.14968.56684.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdWwgMjMsIDIwMDggYXQgMDE6NDM6MDJQTSAtMDQwMCwgSm9uIFNtaXJsIHdyb3Rl
-Ogo+IENvbnZlcnQgYml0ZmllbGRzIGluIEFTT0MgaW50byBmdWxsIGludCB3aWR0aC4gVGhpcyBp
-cyBhCj4gc2ltcGxlIG1lY2hhbmljYWwgY29udmVyc2lvbi4gVHdvIHBsYWNlcyBpbiB0aGUgREFQ
-TSBjb2RlCj4gd2VyZSBmaXhlZCB0byBwcm9wZXJseSB1c2UgbWFzay4KCiAgQ0hFQ0sgICBzb3Vu
-ZC9zb2Mvc29jLWNvcmUuYwppbmNsdWRlL3NvdW5kL3NvYy5oOjcxOjQ6IGVycm9yOiBFeHBlY3Rl
-ZCA7IGVuZCBvZiB0eXBlIGRlY2xhcmF0aW9uCmluY2x1ZGUvc291bmQvc29jLmg6NzE6NDogZXJy
-b3I6IGdvdCAuCnNvdW5kL3NvYy9zb2MtY29yZS5jOjI5NTo2OiBlcnJvcjogdW5kZWZpbmVkIGlk
-ZW50aWZpZXIgJ1NORF9TT0NfQklBU19QUkVQQVJFJwpzb3VuZC9zb2Mvc29jLWNvcmUuYzozMDg6
-NjogZXJyb3I6IHVuZGVmaW5lZCBpZGVudGlmaWVyICdTTkRfU09DX0JJQVNfU1RBTkRCWScKc291
-bmQvc29jL3NvYy1jb3JlLmM6MzY5Ojc6IGVycm9yOiB1bmRlZmluZWQgaWRlbnRpZmllciAnU05E
-X1NPQ19CSUFTX1NUQU5EQlknCnNvdW5kL3NvYy9zb2MtY29yZS5jOjQ0MToyODogZXJyb3I6IHVu
-ZGVmaW5lZCBpZGVudGlmaWVyICdTTkRfU09DX0JJQVNfT04nCnNvdW5kL3NvYy9zb2MtY29yZS5j
-OjQ0NDoxMTogZXJyb3I6IHVuZGVmaW5lZCBpZGVudGlmaWVyICdTTkRfU09DX0JJQVNfUFJFUEFS
-RScKc291bmQvc29jL3NvYy1jb3JlLmM6NDU1OjQwOiBlcnJvcjogdW5kZWZpbmVkIGlkZW50aWZp
-ZXIgJ1NORF9TT0NfQklBU19PTicKICBDQyAgICAgIHNvdW5kL3NvYy9zb2MtY29yZS5vCkluIGZp
-bGUgaW5jbHVkZWQgZnJvbSBzb3VuZC9zb2Mvc29jLWNvcmUuYzozNDoKaW5jbHVkZS9zb3VuZC9z
-b2MuaDo3MTogZXJyb3I6IGV4cGVjdGVkIGlkZW50aWZpZXIgb3Ig4oCYKOKAmSBiZWZvcmUg4oCY
-LuKAmSB0b2tlbgppbmNsdWRlL3NvdW5kL3NvYy5oOjcxOiBlcnJvcjogZXhwZWN0ZWQgaWRlbnRp
-ZmllciBvciDigJgo4oCZIGJlZm9yZSDigJh94oCZIHRva2VuCgpUaGUgZml4IHdhcyB0cml2aWFs
-IGVub3VnaCBzbyBJJ3ZlIG1hZGUgYW5kIGFwcGxpZWQgaXQgKGFuZCBkb25lIHNvbWUKYnJpZWYg
-dGVzdGluZyBvZiBteSBvd24pIC0gcGxlYXNlIGJlIG1vcmUgY2FyZWZ1bCBpbiBmdXR1cmUuCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 7/23/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> On Wed, Jul 23, 2008 at 01:43:02PM -0400, Jon Smirl wrote:
+>  > Convert bitfields in ASOC into full int width. This is a
+>  > simple mechanical conversion. Two places in the DAPM code
+>  > were fixed to properly use mask.
+>
+>
+>   CHECK   sound/soc/soc-core.c
+>  include/sound/soc.h:71:4: error: Expected ; end of type declaration
+>  include/sound/soc.h:71:4: error: got .
+>  sound/soc/soc-core.c:295:6: error: undefined identifier 'SND_SOC_BIAS_PREPARE'
+>  sound/soc/soc-core.c:308:6: error: undefined identifier 'SND_SOC_BIAS_STANDBY'
+>  sound/soc/soc-core.c:369:7: error: undefined identifier 'SND_SOC_BIAS_STANDBY'
+>  sound/soc/soc-core.c:441:28: error: undefined identifier 'SND_SOC_BIAS_ON'
+>  sound/soc/soc-core.c:444:11: error: undefined identifier 'SND_SOC_BIAS_PREPARE'
+>  sound/soc/soc-core.c:455:40: error: undefined identifier 'SND_SOC_BIAS_ON'
+>   CC      sound/soc/soc-core.o
+>  In file included from sound/soc/soc-core.c:34:
+>  include/sound/soc.h:71: error: expected identifier or '(' before '.' token
+>  include/sound/soc.h:71: error: expected identifier or '(' before '}' token
+>
+>  The fix was trivial enough so I've made and applied it (and done some
+>  brief testing of my own) - please be more careful in future.
+
+I did that making checkpatch happy. I don't have easily buildable test
+cases for powerpc so I'm doing this via inspection.  I'll see if I can
+mess with Kconfig and force all of the codecs to build.
+
+So this one is ok with the \ added? Next round I need to clean
+everything up to make it 32 bit safe instead of only 16 bit. It will
+probably touch some of the same code and needs to apply on top of this
+patch.
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
