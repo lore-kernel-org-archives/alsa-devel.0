@@ -1,16 +1,15 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Linux Plumbers Conference CFP Extended!
-Date: Wed, 23 Jul 2008 14:06:36 +0200
-Message-ID: <20080723120636.GA22127@tango.0pointer.de>
+From: krzysztof.h1@poczta.fm
+Subject: Re: [PATCH] cs4232: fix crash during chip PNP detection
+Date: 23 Jul 2008 15:03:20 +0200
+Message-ID: <20080723130320.6D83D860F79@f35.poczta.interia.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D37E24756
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id BBE3B2476B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 14:06:36 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 23 Jul 2008 15:03:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,33 +19,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Heya!
+Rene Herman napisa=B3(a):
+> On 23-07-08 07:48, Krzysztof Helt wrote:
+> =
 
-The Call For Papers for the Linux Plumbers Conference has been
-extended until July 31st!
+> =
 
-Anyone doing (audio) infrastructure work on Linux? If so, please make
-sure to join us at the Linux Plumbers Conference in Portland/Oregon in
-September. I will be doing a track about "Audio" there and would like
-to make sure that everyone who does audio infrastructure work will
-submit a paper, or at least attend, or maybe just knows about this
-conference!
+> Looking back, it seems this was broken at least as far back as 2.6.20 =
 
-It's a conference about the kernel-userspace interfacing, about the
-lower levels in our software stack.
+> which would nicely show how much testing that code path gets. Do I =
 
-For further details, checkout the conference website:
+> understand correctly from the backtrace that you have the PNPBIOS =
 
-http://www.linuxplumbersconf.org/
+> hardware? If so, good...
+> =
 
-(Sorry for this spam!)
 
-Lennart
+Yes, I borrowed old laptop with PNP bios but no ISA PnP devices.
+I will test my wss_lib on it.
 
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net         ICQ# 11060553
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+> > --- linux-2.6.26/sound/isa/cs423x/cs4236.c~	2008-07-23
+> 07:40:16.129637645 +0200
+> > +++ linux-2.6.26/sound/isa/cs423x/cs4236.c	2008-07-23 07:40:32.905641806
+> +0200
+> > @@ -325,6 +325,7 @@ static int __devinit snd_cs423x_pnp_init
+> >  static int __devinit snd_card_cs4232_pnp(int dev, struct
+> snd_card_cs4236 *acard,
+> >  					 struct pnp_dev *pdev)
+> >  {
+> > +	acard->wss =3D pdev;
+> >  	if (snd_cs423x_pnp_init_wss(dev, acard->wss) > 0)
+> >  		return -EBUSY;
+> >  	cport[dev] =3D -1;
+> > =
+
+> =
+
+> Acked-by: Rene Herman >rene.herman@gmail.com>
+> =
+
+> (I believe I noticed earlier that struct snd_cs4236->wss, ctrl and mpu =
+
+> really needn&#039;t/shouldn&#039;t be kept around in the first place and =
+you could =
+
+> just pass pdev directly as well but that&#039;s for another cleanup; this=
+ has =
+
+> it look most similar to the card variant)
+> =
+
+
+Feel free to changed it but I prefer to have the wss_lib patches merged fir=
+st to avoid
+conflicts and redoing the patches.
+
+
+Krzysztof
+
+----------------------------------------------------------------------
+Galeria absurdow.
+zobacz >>> http://link.interia.pl/f1e5e
