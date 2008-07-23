@@ -1,18 +1,18 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Re: [PATCH] cs4236: add missing
- pnp_request_card_device()
-Date: Wed, 23 Jul 2008 06:18:58 +0200
-Message-ID: <20080723061858.51b312e1.krzysztof.h1@poczta.fm>
-References: <20080722235100.0ecfa7f8.krzysztof.h1@poczta.fm>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH 2/2] Allow a custom ASOC machine driver
+ with soc-of-simple
+Date: Wed, 23 Jul 2008 15:30:17 +1000
+Message-ID: <20080723153017.1b235313.sfr@canb.auug.org.au>
+References: <20080722235349.11648.90112.stgit@terra>
+	<20080722235351.11648.56387.stgit@terra>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6537839849376154781=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id A1FC2246EB
+Received: from smtps.tip.net.au (chilli.pcug.org.au [203.10.76.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E0A31038CE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 06:14:07 +0200 (CEST)
-In-Reply-To: <20080722235100.0ecfa7f8.krzysztof.h1@poczta.fm>
+	Wed, 23 Jul 2008 07:30:26 +0200 (CEST)
+In-Reply-To: <20080722235351.11648.56387.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@keyaccess.nl>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 22 Jul 2008 23:51:00 +0200
-Krzysztof Helt <krzysztof.h1@poczta.fm> wrote:
+--===============6537839849376154781==
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Wed__23_Jul_2008_15_30_17_+1000_pK2cvj=ojNPkxJLN"
 
-> From: Krzysztof Helt <krzysztof.h1@wp.pl>
-> 
-> There is a missing pnp_request_card_device() call
-> for cs4232 card. The acard->wss pointer is left
-> uninitialized which leads to crash during detection.
-> 
-> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-> ---
-> 
-> This bug was found in the 2.6.26-git9 kernel.
-> 
+--Signature=_Wed__23_Jul_2008_15_30_17_+1000_pK2cvj=ojNPkxJLN
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The patch below is incorrect. Please wait for another one.
+Hi John,
 
-Regards,
-Krzysztof
+On Tue, 22 Jul 2008 19:53:51 -0400 Jon Smirl <jonsmirl@gmail.com> wrote:
+>
+> +static struct snd_soc_ops *machine_ops =3D NULL;
+> +static char *machine_name =3D NULL;
 
-> Please compare the snd_card_cs4232_pnp() and
-> the snd_card_cs423x_pnpc().
-> 
-> --- linux-2.6.26/sound/isa/cs423x/cs4236.c~	2008-07-13 23:51:29.000000000 +0200
-> +++ linux-2.6.26/sound/isa/cs423x/cs4236.c	2008-07-22 23:41:56.010942922 +0200
-> @@ -325,6 +325,9 @@ static int __devinit snd_cs423x_pnp_init
->  static int __devinit snd_card_cs4232_pnp(int dev, struct snd_card_cs4236 *acard,
->  					 struct pnp_dev *pdev)
->  {
-> +	acard->wss = pnp_request_card_device(card, id->devs[0].id, NULL);
-> +	if (acard->wss == NULL)
-> +		return -EBUSY;
->  	if (snd_cs423x_pnp_init_wss(dev, acard->wss) < 0)
->  		return -EBUSY;
->  	cport[dev] = -1;
-> 
-> ----------------------------------------------------------------------
-> Czy Twoj mezczyzna gotuje dla Ciebie? 
-> Wygraj nagrody >>> http://link.interia.pl/f1e86 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+You don't need these initialisations.
 
-----------------------------------------------------------------------
-Galeria absurdow.
-zobacz >>> http://link.interia.pl/f1e5e
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Wed__23_Jul_2008_15_30_17_+1000_pK2cvj=ojNPkxJLN
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkiGwekACgkQjjKRsyhoI8yRywCfeVwTrAHd2MVL1QWc/2EAm3xs
+FykAn0hTPK6uXBcW3Nt9U3/+zQGBwMk4
+=nIzX
+-----END PGP SIGNATURE-----
+
+--Signature=_Wed__23_Jul_2008_15_30_17_+1000_pK2cvj=ojNPkxJLN--
+
+--===============6537839849376154781==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6537839849376154781==--
