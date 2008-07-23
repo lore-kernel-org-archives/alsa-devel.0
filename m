@@ -1,18 +1,19 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [PATCH] cs4232: fix crash during chip PNP detection
-Date: Wed, 23 Jul 2008 12:04:38 +0200
-Message-ID: <48870236.1010506@keyaccess.nl>
-References: <20080723074849.7c280237.krzysztof.h1@poczta.fm>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Convert bitfields in ASOC into full int
+	width
+Date: Wed, 23 Jul 2008 11:30:27 +0100
+Message-ID: <20080723103024.GA8377@sirena.org.uk>
+References: <20080723030135.21577.69012.stgit@terra>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F2732434B
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D971A2473E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 12:02:23 +0200 (CEST)
-In-Reply-To: <20080723074849.7c280237.krzysztof.h1@poczta.fm>
+	Wed, 23 Jul 2008 12:30:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20080723030135.21577.69012.stgit@terra>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,48 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 23-07-08 07:48, Krzysztof Helt wrote:
+On Tue, Jul 22, 2008 at 11:01:35PM -0400, Jon Smirl wrote:
 
-Jaroslav or Takashi: would like to be in .27. Not a regression, but very 
-minimal fix.
+> Convert bitfields in ASOC into full int width. This needs testing, I don't have sample controls for all of the different configurations. This is a simple mechanical conversion, behavior should not be changed. I did find two places in the DAPM code where max was being used as a mask. I fixed them to convert max to a mask, was this right?
 
-> From: Krzysztof Helt <krzysztof.h1@wp.pl>
-> 
-> The acard->wss pointer is uninitialized in this function
-> which leads to crash during chip PNP detection.
-> 
-> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-> ---
-> This bug was found in the 2.6.26-git9 kernel.
+Might want to look at your line wrapping here :) .
 
-ACK.
+The patch looks like a good approach and should work - the issues below
+a look fixable.
 
-Looking back, it seems this was broken at least as far back as 2.6.20 
-which would nicely show how much testing that code path gets. Do I 
-understand correctly from the backtrace that you have the PNPBIOS 
-hardware? If so, good...
+When I tried testing this patch I found that SOC_ENUM no longer builds -
+the first error is 'error: extra brace group at end of initializer'.
+Looks like that needs adjusting as well.  There's also rather a lot of
+checkpatch warnings, mostly lines over 80 columns and whitespace errors.
 
-> --- linux-2.6.26/sound/isa/cs423x/cs4236.c~	2008-07-23 07:40:16.129637645 +0200
-> +++ linux-2.6.26/sound/isa/cs423x/cs4236.c	2008-07-23 07:40:32.905641806 +0200
-> @@ -325,6 +325,7 @@ static int __devinit snd_cs423x_pnp_init
->  static int __devinit snd_card_cs4232_pnp(int dev, struct snd_card_cs4236 *acard,
->  					 struct pnp_dev *pdev)
->  {
-> +	acard->wss = pdev;
->  	if (snd_cs423x_pnp_init_wss(dev, acard->wss) < 0)
->  		return -EBUSY;
->  	cport[dev] = -1;
-> 
+> +/* mixer control */
+> +struct mixer_control {
+> +	int min, max;
+> + 	uint reg, rreg, shift, rshift, invert;
+> +};
 
-Acked-by: Rene Herman <rene.herman@gmail.com>
+This should be namespaced - soc_mixer_control, snd_soc_mixer_control or
+simlar.
 
-(I believe I noticed earlier that struct snd_cs4236->wss, ctrl and mpu 
-really needn't/shouldn't be kept around in the first place and you could 
-just pass pdev directly as well but that's for another cleanup; this has 
-it look most similar to the card variant)
+> @@ -104,10 +104,12 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
+>  	case snd_soc_dapm_switch:
+>  	case snd_soc_dapm_mixer: {
+>  		int val;
+> -		int reg = w->kcontrols[i].private_value & 0xff;
+> -		int shift = (w->kcontrols[i].private_value >> 8) & 0x0f;
+> -		int mask = (w->kcontrols[i].private_value >> 16) & 0xff;
+> -		int invert = (w->kcontrols[i].private_value >> 24) & 0x01;
+> +		struct mixer_control *mc = (struct mixer_control *)w->kcontrols[i].private_value; 
+> +		uint reg = mc->reg;
+> +		uint shift = mc->shift;
+> +		int max = mc->max;
+> +		uint mask = (1 << fls(max)) - 1;
+> +		uint invert = mc->invert;
 
-Rene.
+What the original code is doing here is checking to see if the control
+is on at all.
