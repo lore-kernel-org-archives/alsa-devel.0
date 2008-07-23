@@ -1,19 +1,18 @@
-From: "Mitul Sen (misen)" <misen@cisco.com>
-Subject: Re: Setting format to SND_PCM_FORMAT_MU_LAW does not
-	let	me apply hardware parameters
-Date: Wed, 23 Jul 2008 14:31:11 -0700
-Message-ID: <3B6F5C9068D5864096EB291236C3386F02CE1664@xmb-sjc-21d.amer.cisco.com>
-References: <488777B2.1060608@cox.net>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: soc_enum has issues
+Date: Wed, 23 Jul 2008 18:00:52 -0400
+Message-ID: <9e4733910807231500j69913f5cs5d1479d7ba560de8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sj-iport-5.cisco.com (sj-iport-5.cisco.com [171.68.10.87])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2940C2485E
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 65F5B24825
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jul 2008 23:31:23 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <488777B2.1060608@cox.net>
+	Thu, 24 Jul 2008 00:00:53 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so458431yxh.2
+	for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2008 15:00:52 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,87 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: stan <ghjeold_i_mwee@cox.net>
-Cc: alsa-devel@alsa-project.org
+To: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
+It is treating mask like a max:
 
-> -----Original Message-----
-> From: stan [mailto:ghjeold_i_mwee@cox.net] 
-> Sent: Wednesday, July 23, 2008 11:26 AM
-> To: Mitul Sen (misen)
-> Cc: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] Setting format to 
-> SND_PCM_FORMAT_MU_LAW does not let me apply hardware parameters
-> 
-> Mitul Sen (misen) wrote:
-> > Hi,
-> > 
-> > I have tried using gdb both from the command line as you 
-> suggested and 
-> > also from within eclipse. Even though I can step through 
-> the code and 
-> > break properly, I think there is some mismatch between the 
-> source code 
-> > and object code used by gdb. I say that because it sometimes steps 
-> > through code in a way that makes no sense. For example, I 
-> see that a 
-> > particular 'if' condition is satified and it goes into the 
-> 'if' clause 
-> > and then again goes into the 'else' clause that is not expected. Is 
-> > there any module that needs to be reloaded after building and 
-> > installing the shared library? I have done a clean make at 
-> all times, 
-> > checked timestamps, even rebooted the machine in case some driver 
-> > related data needs to be reloaded at startup but none of 
-> this has helped.
-> I suspect you are debugging optimized code.  The optimizer 
-> rearranges and deletes instructions.  Did you specify -O0 so 
-> that no optimization occurs?  The other gotcha in the 
-> alsa-lib code is that some of the functions are actually 
-> macros.  They cannot be stepped through.  When you hit them 
-> in the debugger it is disconcerting.
-> > 
+dapm_connect_mux...
+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+	int i;
 
-I did specify -O0 to disable optimizations. 
+	for (i = 0; i < e->mask; i++) {
+		if (!(strcmp(control_name, e->texts[i]))) {
 
-> > Another thing that I notice is that when I use aplay to 
-> play the rtp 
-> > data that I save to file (before writing to the sound device), and 
-> > check the output of /proc/asound/card0/pcm0p/sub0/hw_params 
-> file, it 
-> > is exactly the same as when I run my application. Using 
-> aplay does the 
-> > playback properly even though hw_params still shows as
-> > 
-> > access: MMAP_INTERLEAVED
-> > format: S16_LE
-> > subformat: STD
-> > channels: 2
-> > rate: 48000 (48000/1)
-> It is decoding it before it is playing it, it must be calling 
-> a routine somewhere to do that, or else it is built in.
-> > 
-> > Please note that I can play back the file using aplay, I 
-> only have the 
-> > problem of bad audio when I try to write to the sound device in 
-> > real-time. With this observation though I am not sure if 
-> the fact that 
-> > the library seems to not use the card's decoder is really 
-> the problem. 
-> > I am trying to look into the source code of aplay to see if 
-> I can spot 
-> > any difference in the way the data is written to the buffer.
-> > 
-> Good not to limit the possibilities you are examining.
-> > Meanwhile, any comments and help will be greatly 
-> appreciated as usual.
-> > 
-> > Thanks for your help.
-> > 
-> > Regards,
-> > Mitul
-> > 
-> 
-> 
+This looks like an error. I don't think there is a requirement that
+the number of elements in an enum be a power of two.
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
