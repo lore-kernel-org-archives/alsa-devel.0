@@ -1,19 +1,22 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: Roland/Edirol M-16DX
-Date: Wed, 23 Jul 2008 22:38:38 -0400
-Message-ID: <9e4733910807231938j732b9031nb0334e3287fc5433@mail.gmail.com>
-References: <4887E647.4050406@trn.iki.fi>
+From: "Timur Tabi" <timur@freescale.com>
+Subject: Re: [PATCH] Clean up ASOC functions to support 32b
+	values instead of 16b
+Date: Wed, 23 Jul 2008 22:55:19 -0500
+Message-ID: <ed82fe3e0807232055t3ab09348x789959c834784ca2@mail.gmail.com>
+References: <20080723233635.6900.55269.stgit@terra>
+	<ed82fe3e0807231841s2489781fr7515cd0bd0195586@mail.gmail.com>
+	<9e4733910807231908s449922adtd24f911d467d51fd@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA9BA248EB
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D8A82437D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jul 2008 04:38:39 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 36so1509969wra.24
-	for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2008 19:38:38 -0700 (PDT)
-In-Reply-To: <4887E647.4050406@trn.iki.fi>
+	Thu, 24 Jul 2008 05:55:20 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 36so1533885wra.24
+	for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2008 20:55:19 -0700 (PDT)
+In-Reply-To: <9e4733910807231908s449922adtd24f911d467d51fd@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,23 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Lasse_K=E4rkk=E4inen?= <tronic+8nhy@trn.iki.fi>
-Cc: alsa-devel@alsa-project.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-It takes a lot of effort to reverse engineer a device without any
-documentation. It would be much easier if you got Roland to give you a
-detailed spec on the protocol. Ask their customer support for Linux
-drivers. Tell them you'll write a driver if you get the specs and then
-send the specs to GregKH's free Linux drivers group.
+On Wed, Jul 23, 2008 at 9:08 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
 
-Once you get a spec it shouldn't be too hard to write a driver unless
-they did something really crazy.
+>> Please use "unsigned int" instead of "uint".
+>
+> Why? uint is a standard Linux kernel definition. I almost made them all u32.
 
-Open then box up and look at the chip labels. They could just be
-obscuring something that already has a driver by changing the USB
-profile.
+For consistency.  The rest of the source file doesn't use the
+abbreviated types.  Also, sized integer types like u32 should only be
+used when the variable must have a certain number of bits, so you
+shouldn't use u32 as a general purpose integer type.
 
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+Timur Tabi
+Linux kernel developer at Freescale
