@@ -1,21 +1,17 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH 2/2] Update Poodle to current ASoC API
-Date: Thu, 24 Jul 2008 23:07:52 +0800
-Message-ID: <48889AC8.90401@gmail.com>
-References: <20080724125448.GA4695@doriath.ww600.siemens.net>
-	<20080724131019.GA14962@sirena.org.uk> <488885CB.702@gmail.com>
-	<20080724140353.GC14962@sirena.org.uk>
+From: stan <ghjeold_i_mwee@cox.net>
+Subject: Re: [Fwd:  Filling "Struct snd_dma_buffer" manually]
+Date: Thu, 24 Jul 2008 09:45:51 -0700
+Message-ID: <4888B1BF.4050109@cox.net>
+References: <1216908561.2846.35.camel@dinesh.dua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 74B782492F
+Received: from fed1rmmtao107.cox.net (fed1rmmtao107.cox.net [68.230.241.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id B3DBC103811
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jul 2008 17:07:53 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id a29so2383869pyi.36
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2008 08:07:52 -0700 (PDT)
-In-Reply-To: <20080724140353.GC14962@sirena.org.uk>
+	Thu, 24 Jul 2008 18:45:53 +0200 (CEST)
+In-Reply-To: <1216908561.2846.35.camel@dinesh.dua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,37 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>, Dmitry Baryshkov <dbaryshkov@gmail.com>, linux-arm-kernel@lists.arm.linux.org.uk, alsa-devel@alsa-project.org
+To: dinesh <dinesh.dua@coraltele.com>
+Cc: ALSA list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Thu, Jul 24, 2008 at 09:38:19PM +0800, Eric Miao wrote:
->> Mark Brown wrote:
+dinesh wrote:
 > 
->>> I've queued this for Takashi, thanks (he's on holiday this week).  I
->>> had thought that at least the second hunk was already fixed but it seems
->>> not.
 > 
->> This probably should go through the arm tree, along with other
->> poodle patches, otherwise it just creates headache for Russell
->> in the next merge.
+> Hello,
 > 
-> Avoiding headaches for Russell was part of the goal here - ASoC is
-> currently undergoing some fairly invasive renovations which increase the
-> chances of conflicts being introduced with changes done to sound/soc
-> outside that.
+> I am stuck with a problem please help me.
 > 
-> This patch is in sound/soc only so it can't directly conflict with the
-> arch/arm changes that Russell is or will be carrying.
+> I have allocated a buffer in ram and i want that if i playback something
+> from user end then alsa library exchanges data with this buffer using
+> memory  mapping but for this i have to fill a
+> 
+>  structure  "snd_dma_buffer" in driver code but as i have told i dont
+> want to use dma so i have to fill it manually with address of ram
+> buffer.
+> 
+> Please tell me if it is possible if yes then help me.
+> 
+> Thanks in advance..
+> 
+> Regards,
+> Dinesh Dua
 > 
 
-Oh, I've mistaken it with the poodle.c in arch/arm/mach-pxa.
+I don't know the part of alsa you are working with so I 
+can't answer your question.  But I have some advice.
 
->> As if should go into 2.6.27, I don't know. Depending on if it
->> qualifies to be a fix or just a clean-up, from ALSA's point of
->> view.
-> 
-> Currently it fails to build, partially fixed by this patch, so it's
-> not just coding style.
+The list you are posting to is called alsa-devel.  The 
+devel stands for development, but it really isn't meant 
+for development using alsa, but development of alsa. 
+If the developers choose to they might answer your 
+question.  Or not.  The other list for alsa is 
+alsa-user, and this is for users of the api as well as 
+end users of alsa.  Again, you might have luck there 
+with your query, or not.
 
-Right, and I was just wondering why those "snd_*_t" still exists.
+However, your question is very ill formed.  To you your 
+problem is immediate and obvious, you understand the 
+context, you know all the details.  No one on this list 
+does.  You are more likely to get help if you explain 
+the context of your question at a higher level.  What 
+are you trying to accomplish?  How are you trying to 
+accomplish it?  Also put in snippets of code 
+illustrating your approach where appropriate.  This 
+gives the information someone needs to answer your 
+question.  Someone might even be able to give you a 
+better way to accomplish what you want to do.  But no 
+guarantees, this is a mailing list, no one is required 
+to answer.
+
+Your other alternative is to 'use the source'.  All of 
+the source for alsa is available, so you can look at 
+that source to see if what you want to do is possible, 
+and how it would have to be done.  You could probably 
+start with a grep of snd_dma_buffer in the library and 
+driver source trees.  This will likely bring up many 
+hits, but you can then search for other context in 
+those hits to find the area of interest.  Then read the 
+code to see how it works.
+
+Slightly slower than getting a ready made answer, but 
+surer. The code doesn't lie.
