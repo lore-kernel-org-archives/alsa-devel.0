@@ -1,21 +1,20 @@
 From: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Subject: [PATCH] pxa2xx-lib: support building for several pxa's
-Date: Sat, 26 Jul 2008 01:51:54 +0400
-Message-ID: <1217022714-2521-4-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH] Make pxa-ac97-lib separate module
+Date: Sat, 26 Jul 2008 01:51:53 +0400
+Message-ID: <1217022714-2521-3-git-send-email-dbaryshkov@gmail.com>
 References: <1217022714-2521-1-git-send-email-dbaryshkov@gmail.com>
 	<1217022714-2521-2-git-send-email-dbaryshkov@gmail.com>
-	<1217022714-2521-3-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.189])
-	by alsa0.perex.cz (Postfix) with ESMTP id F220A2446E
+	by alsa0.perex.cz (Postfix) with ESMTP id BCBAD2445D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Jul 2008 23:52:09 +0200 (CEST)
+	Fri, 25 Jul 2008 23:52:07 +0200 (CEST)
 Received: by nf-out-0910.google.com with SMTP id e27so1235413nfd.32
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2008 14:52:10 -0700 (PDT)
-In-Reply-To: <1217022714-2521-3-git-send-email-dbaryshkov@gmail.com>
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2008 14:52:07 -0700 (PDT)
+In-Reply-To: <1217022714-2521-2-git-send-email-dbaryshkov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,277 +28,334 @@ To: alsa-devel@alsa-project.org
 Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, broonie@opensource.wolfsonmicro.com, eric.miao@marvell.com, rmk@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Support building pxa2xx-lib for several pxa chip versions by making code
-run-time selected, not only compile-time
+Make pxa-ac97-lib separate compilation unit, thus cleaning up
+all dependencies.
 
 Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
 ---
- sound/arm/pxa2xx-ac97-lib.c |  183 ++++++++++++++++++++++++++-----------------
- 1 files changed, 111 insertions(+), 72 deletions(-)
+ include/sound/pxa2xx-lib.h  |   17 +++++++++++++
+ sound/arm/Kconfig           |    5 ++++
+ sound/arm/Makefile          |    3 ++
+ sound/arm/pxa2xx-ac97-lib.c |   55 ++++++++++++++++++++++++++++++++++--------
+ sound/arm/pxa2xx-ac97.c     |   18 +------------
+ sound/soc/pxa/Kconfig       |    2 +
+ sound/soc/pxa/pxa2xx-ac97.c |   21 ++--------------
+ 7 files changed, 76 insertions(+), 45 deletions(-)
+ create mode 100644 include/sound/pxa2xx-lib.h
 
+diff --git a/include/sound/pxa2xx-lib.h b/include/sound/pxa2xx-lib.h
+new file mode 100644
+index 0000000..a300e46
+--- /dev/null
++++ b/include/sound/pxa2xx-lib.h
+@@ -0,0 +1,17 @@
++#ifndef PXA2XX_LIB_H
++#define PXA2XX_LIB_H
++
++extern unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg);
++extern void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val);
++
++extern bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97);
++extern bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97);
++extern void pxa2xx_ac97_finish_reset(struct snd_ac97 *ac97);
++
++extern int pxa2xx_ac97_hw_suspend(void);
++extern int pxa2xx_ac97_hw_resume(void);
++
++extern int pxa2xx_ac97_hw_probe(struct platform_device *dev);
++extern void pxa2xx_ac97_hw_remove(struct platform_device *dev);
++
++#endif
+diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
+index 351e19e..556ed8b 100644
+--- a/sound/arm/Kconfig
++++ b/sound/arm/Kconfig
+@@ -32,10 +32,15 @@ config SND_PXA2XX_PCM
+ 	tristate
+ 	select SND_PCM
+ 
++config SND_PXA2XX_LIB
++	tristate
++	select SND_AC97_CODEC
++
+ config SND_PXA2XX_AC97
+ 	tristate "AC97 driver for the Intel PXA2xx chip"
+ 	depends on ARCH_PXA
+ 	select SND_PXA2XX_PCM
++	select SND_PXA2XX
+ 	select SND_AC97_CODEC
+ 	help
+ 	  Say Y or M if you want to support any AC97 codec attached to
+diff --git a/sound/arm/Makefile b/sound/arm/Makefile
+index 4ef6dd0..bb2ed88 100644
+--- a/sound/arm/Makefile
++++ b/sound/arm/Makefile
+@@ -11,5 +11,8 @@ snd-aaci-objs			:= aaci.o devdma.o
+ obj-$(CONFIG_SND_PXA2XX_PCM)	+= snd-pxa2xx-pcm.o
+ snd-pxa2xx-pcm-objs		:= pxa2xx-pcm.o
+ 
++obj-$(CONFIG_SND_PXA2XX_LIB)	+= snd-pxa2xx-lib.o
++snd-pxa2xx-lib-objs		:= pxa2xx-ac97-lib.o
++
+ obj-$(CONFIG_SND_PXA2XX_AC97)	+= snd-pxa2xx-ac97.o
+ snd-pxa2xx-ac97-objs		:= pxa2xx-ac97.o
 diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
-index 87c75b9..9576d24 100644
+index ee0de4d..87c75b9 100644
 --- a/sound/arm/pxa2xx-ac97-lib.c
 +++ b/sound/arm/pxa2xx-ac97-lib.c
-@@ -35,18 +35,22 @@ static struct clk *ac97conf_clk;
- unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+@@ -1,3 +1,18 @@
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++
++#include <sound/ac97_codec.h>
++#include <sound/pxa2xx-lib.h>
++
++#include <asm/irq.h>
++#include <asm/hardware.h>
++
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/pxa2xx-gpio.h>
++#include <asm/arch/audio.h>
+ 
+ static DEFINE_MUTEX(car_mutex);
+ static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
+@@ -17,7 +32,7 @@ static struct clk *ac97conf_clk;
+  * 1 jiffy timeout if interrupt never comes).
+  */
+ 
+-static unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
++unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
  {
  	unsigned short val = -1;
--	volatile u32 *reg_addr;
-+	volatile u32 *reg_addr = NULL;
+ 	volatile u32 *reg_addr;
+@@ -59,8 +74,9 @@ static unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg
+ out:	mutex_unlock(&car_mutex);
+ 	return val;
+ }
++EXPORT_SYMBOL(pxa2xx_ac97_read);
  
- 	mutex_lock(&car_mutex);
- 
- 	/* set up primary or secondary codec space */
- #if defined(CONFIG_PXA27x) || defined(CONFIG_PXA3xx)
--	reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
--#else
--	if (reg == AC97_GPIO_STATUS)
--		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
--	else
--		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+	if (cpu_is_pxa27x() || cpu_is_pxa3xx())
-+		reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#endif
-+#ifdef CONFIG_PXA25x
-+	if (cpu_is_pxa21x() || cpu_is_pxa25x()) {
-+		if (reg == AC97_GPIO_STATUS)
-+			reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
-+		else
-+			reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+	}
- #endif
- 	reg_addr += (reg >> 1);
- 
-@@ -78,18 +82,22 @@ EXPORT_SYMBOL(pxa2xx_ac97_read);
- 
- void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val)
+-static void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val)
++void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val)
  {
--	volatile u32 *reg_addr;
-+	volatile u32 *reg_addr = NULL;
+ 	volatile u32 *reg_addr;
  
- 	mutex_lock(&car_mutex);
+@@ -87,8 +103,9 @@ static void pxa2xx_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigne
  
- 	/* set up primary or secondary codec space */
- #if defined(CONFIG_PXA27x) || defined(CONFIG_PXA3xx)
--	reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
--#else
--	if (reg == AC97_GPIO_STATUS)
--		reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
--	else
--		reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+	if (cpu_is_pxa27x() || cpu_is_pxa3xx())
-+		reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
-+#endif
-+#ifdef CONFIG_PXA25x
-+	if (cpu_is_pxa21x() || cpu_is_pxa25x()) {
-+		if (reg == AC97_GPIO_STATUS)
-+			reg_addr = ac97->num ? &SMC_REG_BASE : &PMC_REG_BASE;
-+		else
-+			reg_addr = ac97->num ? &SAC_REG_BASE : &PAC_REG_BASE;
-+	}
- #endif
- 	reg_addr += (reg >> 1);
+ 	mutex_unlock(&car_mutex);
+ }
++EXPORT_SYMBOL(pxa2xx_ac97_write);
  
-@@ -113,21 +121,29 @@ bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
- 	gsr_bits = 0;
- 
- #ifdef CONFIG_PXA27x
--	/* warm reset broken on Bulverde,
--	   so manually keep AC97 reset high */
--	pxa_gpio_mode(113 | GPIO_OUT | GPIO_DFLT_HIGH);
--	udelay(10);
--	GCR |= GCR_WARM_RST;
--	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
--	udelay(500);
--#elif defined(CONFIG_PXA3xx)
--	/* Can't use interrupts */
--	GCR |= GCR_WARM_RST;
--	while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
--		mdelay(1);
--#else
--	GCR |= GCR_WARM_RST | GCR_PRIRDY_IEN | GCR_SECRDY_IEN;
--	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-+	if (cpu_is_pxa27x()) {
-+		/* warm reset broken on Bulverde,
-+		   so manually keep AC97 reset high */
-+		pxa_gpio_mode(113 | GPIO_OUT | GPIO_DFLT_HIGH);
-+		udelay(10);
-+		GCR |= GCR_WARM_RST;
-+		pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+		udelay(500);
-+	}
-+#endif
-+#ifdef CONFIG_PXA3xx
-+	if (cpu_is_pxa3xx()) {
-+		/* Can't use interrupts */
-+		GCR |= GCR_WARM_RST;
-+		while (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)) && timeout--)
-+			mdelay(1);
-+	}
-+#endif
-+#ifdef CONFIG_PXA25x
-+	if (cpu_is_pxa21x() || cpu_is_pxa25x()) {
-+		GCR |= GCR_WARM_RST | GCR_PRIRDY_IEN | GCR_SECRDY_IEN;
-+		wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-+	}
+-static bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
++bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
+ {
+ #ifdef CONFIG_PXA3xx
+ 	int timeout = 100;
+@@ -113,13 +130,18 @@ static bool pxa2xx_ac97_try_warm_reset(struct snd_ac97 *ac97)
+ 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
  #endif
  
- 	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
-@@ -146,11 +162,13 @@ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
+-	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)))
++	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
++		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
++				 __func__, gsr_bits);
++
+ 		return false;
++	}
+ 
+ 	return true;
+ }
++EXPORT_SYMBOL(pxa2xx_ac97_try_warm_reset);
+ 
+-static bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
++bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
+ {
  #ifdef CONFIG_PXA3xx
  	int timeout = 1000;
- 
--	/* Hold CLKBPB for 100us */
--	GCR = 0;
--	GCR = GCR_CLKBPB;
--	udelay(100);
--	GCR = 0;
-+	if (cpu_is_pxa3xx()) {
-+		/* Hold CLKBPB for 100us */
-+		GCR = 0;
-+		GCR = GCR_CLKBPB;
-+		udelay(100);
-+		GCR = 0;
-+	}
+@@ -155,18 +177,24 @@ static bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
+ 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
  #endif
  
- 	GCR &=  GCR_COLD_RST;  /* clear everything but nCRST */
-@@ -158,23 +176,31 @@ bool pxa2xx_ac97_try_cold_reset(struct snd_ac97 *ac97)
- 
- 	gsr_bits = 0;
- #ifdef CONFIG_PXA27x
--	/* PXA27x Developers Manual section 13.5.2.2.1 */
--	clk_enable(ac97conf_clk);
--	udelay(5);
--	clk_disable(ac97conf_clk);
--	GCR = GCR_COLD_RST;
--	udelay(50);
--#elif defined(CONFIG_PXA3xx)
--	/* Can't use interrupts on PXA3xx */
--	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
-+	if (cpu_is_pxa27x()) {
-+		/* PXA27x Developers Manual section 13.5.2.2.1 */
-+		clk_enable(ac97conf_clk);
-+		udelay(5);
-+		clk_disable(ac97conf_clk);
-+		GCR = GCR_COLD_RST;
-+		udelay(50);
+-	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR)))
++	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
++		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
++				 __func__, gsr_bits);
++
+ 		return false;
 +	}
-+#endif
-+#ifdef CONFIG_PXA3xx
-+	if (cpu_is_pxa3xx()) {
-+		/* Can't use interrupts on PXA3xx */
-+		GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
  
--	GCR = GCR_WARM_RST | GCR_COLD_RST;
--	while (!(GSR & (GSR_PCR | GSR_SCR)) && timeout--)
--		mdelay(10);
--#else
--	GCR = GCR_COLD_RST;
--	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
--	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-+		GCR = GCR_WARM_RST | GCR_COLD_RST;
-+		while (!(GSR & (GSR_PCR | GSR_SCR)) && timeout--)
-+			mdelay(10);
-+	}
-+#endif
-+#ifdef CONFIG_PXA25x
-+	if (cpu_is_pxa21x() || cpu_is_pxa25x()) {
-+		GCR = GCR_COLD_RST;
-+		GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
-+		wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-+	}
- #endif
+ 	return true;
+ }
++EXPORT_SYMBOL(pxa2xx_ac97_try_cold_reset);
  
- 	if (!((GSR | gsr_bits) & (GSR_PCR | GSR_SCR))) {
-@@ -210,9 +236,11 @@ static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id)
- 		/* Although we don't use those we still need to clear them
- 		   since they tend to spuriously trigger when MMC is used
- 		   (hardware bug? go figure)... */
--		MISR = MISR_EOC;
--		PISR = PISR_EOC;
--		MCSR = MCSR_EOC;
-+		if (cpu_is_pxa27x()) {
-+			MISR = MISR_EOC;
-+			PISR = PISR_EOC;
-+			MCSR = MCSR_EOC;
-+		}
- #endif
  
- 		return IRQ_HANDLED;
-@@ -232,14 +260,16 @@ EXPORT_SYMBOL(pxa2xx_ac97_hw_suspend);
- 
- int pxa2xx_ac97_hw_resume(void)
+-static void pxa2xx_ac97_finish_reset(struct snd_ac97 *ac97)
++void pxa2xx_ac97_finish_reset(struct snd_ac97 *ac97)
  {
--	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
--	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
--	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
--	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
-+	if (!cpu_is_pxa3xx()) {
-+		pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
-+		pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
-+		pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
-+		pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
- #ifdef CONFIG_PXA27x
--	/* Use GPIO 113 as AC97 Reset on Bulverde */
--	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+		/* Use GPIO 113 as AC97 Reset on Bulverde */
-+		pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
- #endif
-+	}
+ 	GCR &= ~(GCR_PRIRDY_IEN|GCR_SECRDY_IEN);
+ 	GCR |= GCR_SDONE_IE|GCR_CDONE_IE;
+ }
++EXPORT_SYMBOL(pxa2xx_ac97_finish_reset);
+ 
+ static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id)
+ {
+@@ -194,14 +222,15 @@ static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id)
+ }
+ 
+ #ifdef CONFIG_PM
+-static int pxa2xx_ac97_hw_suspend(void)
++int pxa2xx_ac97_hw_suspend(void)
+ {
+ 	GCR |= GCR_ACLINK_OFF;
+ 	clk_disable(ac97_clk);
+ 	return 0;
+ }
++EXPORT_SYMBOL(pxa2xx_ac97_hw_suspend);
+ 
+-static int pxa2xx_ac97_hw_resume(void)
++int pxa2xx_ac97_hw_resume(void)
+ {
+ 	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
+ 	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
+@@ -214,9 +243,10 @@ static int pxa2xx_ac97_hw_resume(void)
  	clk_enable(ac97_clk);
  	return 0;
  }
-@@ -254,18 +284,25 @@ int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
- 	if (ret < 0)
- 		goto err;
- 
--	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
--	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
--	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
--	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
-+	if (!cpu_is_pxa3xx()) {
-+		pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
-+		pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
-+		pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
-+		pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
- #ifdef CONFIG_PXA27x
--	/* Use GPIO 113 as AC97 Reset on Bulverde */
--	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
--	ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
--	if (IS_ERR(ac97conf_clk)) {
--		ret = PTR_ERR(ac97conf_clk);
--		ac97conf_clk = NULL;
--		goto err_irq;
-+		/* Use GPIO 113 as AC97 Reset on Bulverde */
-+		pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-+#endif
-+	}
-+
-+#ifdef CONFIG_PXA27x
-+	if (cpu_is_pxa27x()) {
-+		ac97conf_clk = clk_get(&dev->dev, "AC97CONFCLK");
-+		if (IS_ERR(ac97conf_clk)) {
-+			ret = PTR_ERR(ac97conf_clk);
-+			ac97conf_clk = NULL;
-+			goto err_irq;
-+		}
- 	}
++EXPORT_SYMBOL(pxa2xx_ac97_hw_resume);
  #endif
  
-@@ -297,8 +334,10 @@ void pxa2xx_ac97_hw_remove(struct platform_device *dev)
+-static int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
++int __devinit pxa2xx_ac97_hw_probe(struct platform_device *dev)
+ {
+ 	int ret;
+ 
+@@ -260,8 +290,9 @@ err_irq:
+ err:
+ 	return ret;
+ }
++EXPORT_SYMBOL(pxa2xx_ac97_hw_probe);
+ 
+-static void pxa2xx_ac97_hw_remove(struct platform_device *dev)
++void pxa2xx_ac97_hw_remove(struct platform_device *dev)
+ {
  	GCR |= GCR_ACLINK_OFF;
  	free_irq(IRQ_AC97, NULL);
- #ifdef CONFIG_PXA27x
--	clk_put(ac97conf_clk);
--	ac97conf_clk = NULL;
-+	if (ac97conf_clk) {
-+		clk_put(ac97conf_clk);
-+		ac97conf_clk = NULL;
-+	}
- #endif
- 	clk_disable(ac97_clk);
+@@ -273,3 +304,5 @@ static void pxa2xx_ac97_hw_remove(struct platform_device *dev)
  	clk_put(ac97_clk);
+ 	ac97_clk = NULL;
+ }
++EXPORT_SYMBOL(pxa2xx_ac97_hw_remove);
++
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index cb29076..52f3f50 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -12,38 +12,24 @@
+ 
+ #include <linux/init.h>
+ #include <linux/module.h>
+-#include <linux/kernel.h>
+ #include <linux/platform_device.h>
+-#include <linux/interrupt.h>
+-#include <linux/wait.h>
+-#include <linux/clk.h>
+-#include <linux/delay.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/ac97_codec.h>
+ #include <sound/initval.h>
++#include <sound/pxa2xx-lib.h>
+ 
+-#include <asm/irq.h>
+-#include <linux/mutex.h>
+ #include <asm/hardware.h>
+ #include <asm/arch/pxa-regs.h>
+-#include <asm/arch/pxa2xx-gpio.h>
+ #include <asm/arch/audio.h>
+ 
+ #include "pxa2xx-pcm.h"
+ 
+-#include "pxa2xx-ac97-lib.c"
+-
+ static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
+ {
+ 	if (!pxa2xx_ac97_try_cold_reset(ac97)) {
+-		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
+-				 __func__, gsr_bits);
+-
+-		if (!pxa2xx_ac97_try_warm_reset(ac97))
+-			printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
+-					 __func__, gsr_bits);
++		pxa2xx_ac97_try_warm_reset(ac97);
+ 	}
+ 
+ 	pxa2xx_ac97_finish_reset(ac97);
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 9212c37..d1ccbdc 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -13,6 +13,8 @@ config SND_PXA2XX_AC97
+ config SND_PXA2XX_SOC_AC97
+ 	tristate
+ 	select AC97_BUS
++	select SND_ARM
++	select SND_PXA2XX_LIB
+ 	select SND_SOC_AC97_BUS
+ 
+ config SND_PXA2XX_SOC_I2S
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 0b5a920..3db5630 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -13,43 +13,28 @@
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+-#include <linux/interrupt.h>
+-#include <linux/wait.h>
+-#include <linux/clk.h>
+-#include <linux/delay.h>
+ 
+ #include <sound/core.h>
+-#include <sound/pcm.h>
+ #include <sound/ac97_codec.h>
+-#include <sound/initval.h>
+ #include <sound/soc.h>
++#include <sound/pxa2xx-lib.h>
+ 
+-#include <asm/irq.h>
+-#include <linux/mutex.h>
+ #include <asm/hardware.h>
+ #include <asm/arch/pxa-regs.h>
+-#include <asm/arch/pxa2xx-gpio.h>
+-#include <asm/arch/audio.h>
+ 
+ #include "pxa2xx-pcm.h"
+ #include "pxa2xx-ac97.h"
+ 
+-#include "../../arm/pxa2xx-ac97-lib.c"
+-
+ static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97)
+ {
+-	if (!pxa2xx_ac97_try_warm_reset(ac97))
+-		printk(KERN_INFO "%s: warm reset timeout (GSR=%#lx)\n",
+-				 __func__, gsr_bits);
++	pxa2xx_ac97_try_warm_reset(ac97);
+ 
+ 	pxa2xx_ac97_finish_reset(ac97);
+ }
+ 
+ static void pxa2xx_ac97_cold_reset(struct snd_ac97 *ac97)
+ {
+-	if (!pxa2xx_ac97_try_cold_reset(ac97))
+-		printk(KERN_INFO "%s: cold reset timeout (GSR=%#lx)\n",
+-				 __func__, gsr_bits);
++	pxa2xx_ac97_try_cold_reset(ac97);
+ 
+ 	pxa2xx_ac97_finish_reset(ac97);
+ }
 -- 
 1.5.6.2
