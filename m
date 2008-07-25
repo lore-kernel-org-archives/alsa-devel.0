@@ -1,22 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: Requiring the same sample rate for playback and
- record?
-Date: Fri, 25 Jul 2008 14:55:32 -0500
-Message-ID: <488A2FB4.7040202@freescale.com>
-References: <485C0042.4050008@freescale.com>
-	<s5h7icg4dsd.wl%tiwai@suse.de>	<487BC430.8040109@freescale.com>
-	<s5hmyki14d5.wl%tiwai@suse.de>	<487E49CF.7010709@freescale.com>
-	<s5h7ibk3joa.wl%tiwai@suse.de>
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Subject: [PATCH] Permit simultaneous compilation of both PXA
+	AC97 drivers
+Date: Sat, 26 Jul 2008 01:51:51 +0400
+Message-ID: <1217022714-2521-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 019DB2441C
+Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7417C2445C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Jul 2008 21:55:36 +0200 (CEST)
-In-Reply-To: <s5h7ibk3joa.wl%tiwai@suse.de>
+	Fri, 25 Jul 2008 23:52:03 +0200 (CEST)
+Received: by nf-out-0910.google.com with SMTP id e27so1235413nfd.32
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2008 14:52:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,31 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, broonie@opensource.wolfsonmicro.com, eric.miao@marvell.com, rmk@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ sound/soc/pxa/pxa2xx-pcm.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-> Then you can call like:
-> 
->      snd_pcm_hw_constraint_minmax(substream->runtime,
-> 		SNDRV_PCM_HW_PARAM_RATE, fixed_rate, fixed_rate);
-
-Ok, I think I got this working.  However, I'm not sure how to handle the sample
-size.  I have this:
-
-	struct snd_pcm_runtime *first_runtime =
-		ssi_private->first_stream->runtime;
-
-	snd_pcm_hw_constraint_minmax(substream->runtime,
-		SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-		first_runtime->sample_bits, first_runtime->sample_bits);
-
-Is SNDRV_PCM_HW_PARAM_SAMPLE_BITS for the logical or physical width?  That is,
-if my first stream is playing S24_BE samples, do I restrict the second stream to
-24 bits or 32 bits?
-
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index 2df03ee..45ac468 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -330,7 +330,7 @@ static void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
+ 
+ static u64 pxa2xx_pcm_dmamask = DMA_32BIT_MASK;
+ 
+-int pxa2xx_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
++static int pxa2xx_soc_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 	struct snd_pcm *pcm)
+ {
+ 	int ret = 0;
+@@ -360,7 +360,7 @@ int pxa2xx_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
+ struct snd_soc_platform pxa2xx_soc_platform = {
+ 	.name		= "pxa2xx-audio",
+ 	.pcm_ops 	= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_pcm_new,
++	.pcm_new	= pxa2xx_soc_pcm_new,
+ 	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
+ };
+ EXPORT_SYMBOL_GPL(pxa2xx_soc_platform);
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+1.5.6.2
