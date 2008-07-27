@@ -1,21 +1,23 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: [PATCH 1/2] Support internal I2S clock sources on
-	MPC5200
-Date: Sun, 27 Jul 2008 00:48:08 -0400
-Message-ID: <9e4733910807262148j2b8446efx4f5e564ec036e961@mail.gmail.com>
+From: "Grant Likely" <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 2/2] Allow a custom ASOC machine driver
+	with soc-of-simple
+Date: Sat, 26 Jul 2008 23:29:36 -0600
+Message-ID: <fa686aa40807262229r76750664v48405f13dcb84f23@mail.gmail.com>
 References: <20080722235349.11648.90112.stgit@terra>
-	<20080727020536.GL12191@secretlab.ca>
+	<20080722235351.11648.56387.stgit@terra>
+	<20080727011206.GD12191@secretlab.ca>
+	<9e4733910807262144l7be98192l95dd526bf08e0434@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.235])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0520D24514
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 370AF2452D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jul 2008 06:48:09 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 36so2928208wra.24
-	for <alsa-devel@alsa-project.org>; Sat, 26 Jul 2008 21:48:09 -0700 (PDT)
-In-Reply-To: <20080727020536.GL12191@secretlab.ca>
+	Sun, 27 Jul 2008 07:29:38 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so796361and.80
+	for <alsa-devel@alsa-project.org>; Sat, 26 Jul 2008 22:29:37 -0700 (PDT)
+In-Reply-To: <9e4733910807262144l7be98192l95dd526bf08e0434@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,195 +28,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
+To: Jon Smirl <jonsmirl@gmail.com>
 Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 7/26/08, Grant Likely <grant.likely@secretlab.ca> wrote:
-> On Tue, Jul 22, 2008 at 07:53:49PM -0400, Jon Smirl wrote:
->
-> > Support internal I2S clock sources on MPC5200
->  >
->  > Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
->
->
-> I'll play with this when I get home.  In the mean time I've got some
->  comments below.  Overall, it looks right to me.
->
->  g.
->
->
->
->  > ---
->  >
->  >  sound/soc/fsl/mpc5200_psc_i2s.c |   58 ++++++++++++++++++++++++++++++++++-----
->  >  sound/soc/fsl/mpc5200_psc_i2s.h |   13 +++++++++
->  >  2 files changed, 64 insertions(+), 7 deletions(-)
->  >  create mode 100644 sound/soc/fsl/mpc5200_psc_i2s.h
->  >
->  > diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
->  > index 8692329..f028f61 100644
->  > --- a/sound/soc/fsl/mpc5200_psc_i2s.c
->  > +++ b/sound/soc/fsl/mpc5200_psc_i2s.c
->  > @@ -23,8 +23,12 @@
->  >
->  >  #include <sysdev/bestcomm/bestcomm.h>
->  >  #include <sysdev/bestcomm/gen_bd.h>
->  > +#include <asm/time.h>
->  > +#include <asm/mpc52xx.h>
->  >  #include <asm/mpc52xx_psc.h>
->  >
->  > +#include "mpc5200_psc_i2s.h"
->  > +
->  >  MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
->  >  MODULE_DESCRIPTION("Freescale MPC5200 PSC in I2S mode ASoC Driver");
->  >  MODULE_LICENSE("GPL");
->  > @@ -93,6 +97,7 @@ struct psc_i2s {
->  >       struct snd_soc_dai dai;
->  >       spinlock_t lock;
->  >       u32 sicr;
->  > +     uint sysclk;
->  >
->  >       /* per-stream data */
->  >       struct psc_i2s_stream playback;
->  > @@ -224,6 +229,7 @@ static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
->  >  {
->  >       struct snd_soc_pcm_runtime *rtd = substream->private_data;
->  >       struct psc_i2s *psc_i2s = rtd->dai->cpu_dai->private_data;
->  > +     uint bits, framesync, bitclk, value;
->  >       u32 mode;
->  >
->  >       dev_dbg(psc_i2s->dev, "%s(substream=%p) p_size=%i p_bytes=%i"
->  > @@ -235,15 +241,19 @@ static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
->  >       switch (params_format(params)) {
->  >       case SNDRV_PCM_FORMAT_S8:
->  >               mode = MPC52xx_PSC_SICR_SIM_CODEC_8;
->  > +             bits = 8;
->  >               break;
->  >       case SNDRV_PCM_FORMAT_S16_BE:
->  >               mode = MPC52xx_PSC_SICR_SIM_CODEC_16;
->  > +             bits = 16;
->  >               break;
->  >       case SNDRV_PCM_FORMAT_S24_BE:
->  >               mode = MPC52xx_PSC_SICR_SIM_CODEC_24;
->  > +             bits = 24;
->  >               break;
->  >       case SNDRV_PCM_FORMAT_S32_BE:
->  >               mode = MPC52xx_PSC_SICR_SIM_CODEC_32;
->  > +             bits = 32;
->  >               break;
->  >       default:
->  >               dev_dbg(psc_i2s->dev, "invalid format\n");
->  > @@ -251,7 +261,24 @@ static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
->  >       }
->  >       out_be32(&psc_i2s->psc_regs->sicr, psc_i2s->sicr | mode);
->  >
->  > -     snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
->  > +     if (psc_i2s->sysclk) {
->  > +             framesync = bits * 2;
->  > +             bitclk = (psc_i2s->sysclk) / (params_rate(params) * framesync);
->  > +
->  > +             /* bitclk field is byte swapped due to mpc5200/b compatibility */
->  > +             value = ((framesync - 1) << 24) |
->  > +                     (((bitclk - 1) & 0xFF) << 16) | ((bitclk - 1) & 0xFF00);
->  > +
->  > +             dev_dbg(psc_i2s->dev, "%s(substream=%p) rate=%i sysclk=%i"
->  > +                     " framesync=%i bitclk=%i reg=%X\n",
->  > +                     __FUNCTION__, substream, params_rate(params), psc_i2s->sysclk,
->  > +                     framesync, bitclk, value);
->  > +
->  > +             out_be32(&psc_i2s->psc_regs->ccr, value);
->  > +             out_8(&psc_i2s->psc_regs->ctur, bits - 1);
->  > +     }
->
->
-> This should probably only be executed if the psc is the clock master;
->  just like you've done in psc_i2s_set_sysclk()
->
+On Sun, Jul 27, 2008 at 12:44 AM, Jon Smirl <jonsmirl@gmail.com> wrote:
+> On 7/26/08, Grant Likely <grant.likely@secretlab.ca> wrote:
+>> On Tue, Jul 22, 2008 at 07:53:51PM -0400, Jon Smirl wrote:
+>>
+>> > Allow a custom ASOC machine driver with soc-of-simple
+>>  >
+>>  > Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
+>>  > diff --git a/sound/soc/fsl/soc-of-simple.c b/sound/soc/fsl/soc-of-simple.c
+>>  > index 0382fda..dd2fa23 100644
+>>  > --- a/sound/soc/fsl/soc-of-simple.c
+>>  > +++ b/sound/soc/fsl/soc-of-simple.c
+>>  > @@ -38,8 +38,8 @@ struct of_snd_soc_device {
+>>  >       struct device_node *codec_node;
+>>  >  };
+>>  >
+>>  > -static struct snd_soc_ops of_snd_soc_ops = {
+>>  > -};
+>>  > +static struct snd_soc_ops *machine_ops = NULL;
+>>  > +static char *machine_name = NULL;
+>>
+>>
+>> Doing this prevents multiple instances of this machine driver (which is
+>>  exactly what I have on my board).  To register a machine driver it
+>>  creates a 3-way bind condition instead of the existing 2-way one.  Right
+>>  now it is easy to match up codec and platform drivers because a common
+>>  key is available in the device tree.
+>>
+>>  Alternately, it might be okay to only allow for a single machine driver
+>>  that is able to create multiple sound card instances, but this current
+>>  code just uses the same name and ops for each registered device.
+>>
+> We need to call them fabric drivers since we already have machine
+> drivers in arch/.... It is too confusing.
 
-psc_i2s->sysclk can only get set if there is a clock master. Note that
-there are two ways to be a clock master, internal and cellslave.
+heh, even worse; we've already got platform drivers under drivers/.
+:-P  I disagree.  We need to be consistent with ALSA terminology, but
+I will be more diligent to call them ASoC Machine drivers.
 
-i2s_set_sysclk() is dynamically called from my fabric driver to adjust
-the timebase to match the music.
+> My fabric driver was getting probed after the rest of ASOC bound,
+> that's why I had to add the third condition.
+>
+> An important feature for me is the ability to compile in multiple
+> fabric drivers and then get the right one selected based on the
+> machine name in the device tree.
 
+Absolutely; this is a hard requirement as far as I'm concerned.
+
+It is also a hard requirement for either multiple *active* ASoC
+machine drivers, or support ASoC machine drivers that control multiple
+ASoC device instances.
+
+>  I'm doing via my machine driver.
 >
->  > +
->  > +     snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
->  >
->  >       return 0;
->  >  }
->  > @@ -429,9 +456,29 @@ static int psc_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
->  >                             int clk_id, unsigned int freq, int dir)
->  >  {
->  >       struct psc_i2s *psc_i2s = cpu_dai->private_data;
->  > -     dev_dbg(psc_i2s->dev, "psc_i2s_set_sysclk(cpu_dai=%p, dir=%i)\n",
->  > -                             cpu_dai, dir);
->  > -     return (dir == SND_SOC_CLOCK_IN) ? 0 : -EINVAL;
->  > +     int clkdiv, err;
->  > +     dev_dbg(psc_i2s->dev, "psc_i2s_set_sysclk(cpu_dai=%p, freq=%u, dir=%i)\n",
->  > +                             cpu_dai, freq, dir);
->  > +     if (dir == SND_SOC_CLOCK_OUT) {
->  > +             psc_i2s->sysclk = freq;
->  > +             if (clk_id == MPC52xx_CLK_CELLSLAVE) {
->  > +                     psc_i2s->sicr |= MPC52xx_PSC_SICR_CELLSLAVE | MPC52xx_PSC_SICR_GENCLK;
->  > +             } else { /* MPC52xx_CLK_INTERNAL */
->  > +                     psc_i2s->sicr &= ~MPC52xx_PSC_SICR_CELLSLAVE;
->  > +                     psc_i2s->sicr |= MPC52xx_PSC_SICR_GENCLK;
->  > +
->  > +                     clkdiv = ppc_proc_freq / freq;
->  > +                     err = ppc_proc_freq % freq;
->  > +                     if (err > freq / 2)
->  > +                             clkdiv++;
->  > +
->  > +                     dev_dbg(psc_i2s->dev, "psc_i2s_set_sysclk(clkdiv %d freq error=%ldHz)\n",
->  > +                                     clkdiv, (ppc_proc_freq / clkdiv - freq));
->  > +
->  > +                     return mpc52xx_set_psc_clkdiv(psc_i2s->dai.id + 1, clkdiv);
->  > +             }
->  > +     }
->  > +     return 0;
->  >  }
->  >
->  >  /**
->  > @@ -784,9 +831,6 @@ static int __devinit psc_i2s_of_probe(struct of_device *op,
->  >       /* Configure the serial interface mode; defaulting to CODEC8 mode */
->  >       psc_i2s->sicr = MPC52xx_PSC_SICR_DTS1 | MPC52xx_PSC_SICR_I2S |
->  >                       MPC52xx_PSC_SICR_CLKPOL;
->  > -     if (of_get_property(op->node, "fsl,cellslave", NULL))
->  > -             psc_i2s->sicr |= MPC52xx_PSC_SICR_CELLSLAVE |
->  > -                              MPC52xx_PSC_SICR_GENCLK;
->  >       out_be32(&psc_i2s->psc_regs->sicr,
->  >                psc_i2s->sicr | MPC52xx_PSC_SICR_SIM_CODEC_8);
->  >
->  > diff --git a/sound/soc/fsl/mpc5200_psc_i2s.h b/sound/soc/fsl/mpc5200_psc_i2s.h
->  > new file mode 100644
->  > index 0000000..0e0a84e
->  > --- /dev/null
->  > +++ b/sound/soc/fsl/mpc5200_psc_i2s.h
->  > @@ -0,0 +1,13 @@
->  > +/*
->  > + * Freescale MPC5200 PSC in I2S mode
->  > + * ALSA SoC Digital Audio Interface (DAI) driver
->  > + *
->  > + */
->  > +
->  > +#ifndef __SOUND_SOC_FSL_MPC52xx_PSC_I2S_H__
->  > +#define __SOUND_SOC_FSL_MPC52xx_PSC_I2S_H__
->  > +
->  > +#define MPC52xx_CLK_INTERNAL 0
->  > +#define MPC52xx_CLK_CELLSLAVE 1
->  > +
->  > +#endif /* __SOUND_SOC_FSL_MPC52xx_PSC_I2S_H__ */
->  >
+> Could we dynamically build an OF fabric device entry with a compatible
+> string like this: compatible="machinename-fabric,generic-fabric"
+> Now a hard requirement for a fabric driver is ok since one of those
+> two will load for sure. generic-fabric is just a do nothing driver
+> that is always built in.
+
+Ugh; unfortunately that results in Linux internal details getting
+leaked out to the device tree.  Not a good idea; especially when we
+*know* this driver is a stop gap measure until v2 changes things on
+us.
+
+But that still doesn't help the question of how to trigger loading of
+the board specific machine drivers.  grumble.  But I do think that the
+sanest approach is still to trigger on the top level model property in
+the tree.
+
+Oh well, if I need to add a dummy machine driver that matches on my
+board, then that's what I'll do.  It certainly sidesteps all the ugly
+heuristics of figuring out when custom code is needed.
+
+> /* Trigger the platform specific ASOC driver to load */
+> static struct platform_device platform = {
+>        .name           = "dspeak01-fabric",
+>        .id             = -1,
+> };
 >
-> > _______________________________________________
->  > Linuxppc-dev mailing list
->  > Linuxppc-dev@ozlabs.org
->  > https://ozlabs.org/mailman/listinfo/linuxppc-dev
+> static struct platform_device *devices[] = {
+>        &platform,
+> };
 >
+> static void __init digispeaker_declare_platform_devices(void)
+> {
+>        mpc52xx_declare_of_platform_devices();
+>        platform_add_devices(&devices[0], ARRAY_SIZE(devices));
+> }
+
+I'm not convinced that all this is necessary.  I'm partial to just
+having the ASoC machine module probe routine check the top level board
+property and registering the ASoC machine driver if it is a match.
+That also eliminates needing to build knowledge of the sound circuit
+into the PPC platform driver which helps stem the tide of
+proliferating platform files.
+
+g.
 
 
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
