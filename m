@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/2] ALSA jack reporting API
-Date: Sun, 27 Jul 2008 12:11:08 +0100
-Message-ID: <20080727111107.GA6667@sirena.org.uk>
+Subject: [PATCH 1/3] Input: add microphone insert switch
+	definition
+Date: Sun, 27 Jul 2008 12:12:23 +0100
+Message-ID: <1217157145-7647-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20080727111107.GA6667@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BA6A245C0
+	by alsa0.perex.cz (Postfix) with ESMTP id 2329A103812
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jul 2008 13:11:18 +0200 (CEST)
-Content-Disposition: inline
+	Sun, 27 Jul 2008 13:12:33 +0200 (CEST)
+In-Reply-To: <20080727111107.GA6667@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,11 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Dmitry Torokhov <dtor@mail.ru>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series is a repost of the jack reporting API previously
-discussed on this list.  Patch 1 is a cherry pick of the commit from the
-input subsystem (available from Linus' current tree) adding a switch
-type for reporting microphone insertion which could be skipped if Linus'
-current tree were merged in to ALSA.
+Add a new switch type to the input API for reporting microphone
+insertion. This will be used by the ALSA jack reporting API.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
+---
+ include/linux/input.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/input.h b/include/linux/input.h
+index d150c57..d297dec 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -640,6 +640,7 @@ struct input_absinfo {
+ #define SW_RFKILL_ALL		0x03  /* rfkill master switch, type "any"
+ 					 set = radio enabled */
+ #define SW_RADIO		SW_RFKILL_ALL	/* deprecated */
++#define SW_MICROPHONE_INSERT	0x04  /* set = inserted */
+ #define SW_MAX			0x0f
+ #define SW_CNT			(SW_MAX+1)
+ 
+-- 
+1.5.4.3
