@@ -1,19 +1,16 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [PATCH] cs4232: fix crash during chip PNP detection
-Date: Sun, 27 Jul 2008 11:01:26 +0200
-Message-ID: <488C3966.7040603@keyaccess.nl>
-References: <20080723130320.6D83D860F79@f35.poczta.interia.pl>
-	<s5hr69fiudn.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/2] ALSA jack reporting API
+Date: Sun, 27 Jul 2008 12:11:08 +0100
+Message-ID: <20080727111107.GA6667@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0F6F103847
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BA6A245C0
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jul 2008 10:59:02 +0200 (CEST)
-In-Reply-To: <s5hr69fiudn.wl%tiwai@suse.de>
+	Sun, 27 Jul 2008 13:11:18 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +21,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, krzysztof.h1@poczta.fm
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjctMDctMDggMTA6NDksIFRha2FzaGkgSXdhaSB3cm90ZToKCj4gQXQgMjMgSnVsIDIwMDgg
-MTU6MDM6MjAgKzAyMDAsCj4ga3J6eXN6dG9mLmgxQHBvY3p0YS5mbSB3cm90ZToKPj4gUmVuZSBI
-ZXJtYW4gbmFwaXNhxYIoYSk6Cj4+PiBPbiAyMy0wNy0wOCAwNzo0OCwgS3J6eXN6dG9mIEhlbHQg
-d3JvdGU6Cj4+Pgo+Pj4KPj4+IExvb2tpbmcgYmFjaywgaXQgc2VlbXMgdGhpcyB3YXMgYnJva2Vu
-IGF0IGxlYXN0IGFzIGZhciBiYWNrIGFzIDIuNi4yMCAKPj4+IHdoaWNoIHdvdWxkIG5pY2VseSBz
-aG93IGhvdyBtdWNoIHRlc3RpbmcgdGhhdCBjb2RlIHBhdGggZ2V0cy4gRG8gSSAKPj4+IHVuZGVy
-c3RhbmQgY29ycmVjdGx5IGZyb20gdGhlIGJhY2t0cmFjZSB0aGF0IHlvdSBoYXZlIHRoZSBQTlBC
-SU9TIAo+Pj4gaGFyZHdhcmU/IElmIHNvLCBnb29kLi4uCj4+Pgo+PiBZZXMsIEkgYm9ycm93ZWQg
-b2xkIGxhcHRvcCB3aXRoIFBOUCBiaW9zIGJ1dCBubyBJU0EgUG5QIGRldmljZXMuCj4+IEkgd2ls
-bCB0ZXN0IG15IHdzc19saWIgb24gaXQuCj4+Cj4+Pj4gLS0tIGxpbnV4LTIuNi4yNi9zb3VuZC9p
-c2EvY3M0MjN4L2NzNDIzNi5jfgkyMDA4LTA3LTIzCj4+PiAwNzo0MDoxNi4xMjk2Mzc2NDUgKzAy
-MDAKPj4+PiArKysgbGludXgtMi42LjI2L3NvdW5kL2lzYS9jczQyM3gvY3M0MjM2LmMJMjAwOC0w
-Ny0yMyAwNzo0MDozMi45MDU2NDE4MDYKPj4+ICswMjAwCj4+Pj4gQEAgLTMyNSw2ICszMjUsNyBA
-QCBzdGF0aWMgaW50IF9fZGV2aW5pdCBzbmRfY3M0MjN4X3BucF9pbml0Cj4+Pj4gIHN0YXRpYyBp
-bnQgX19kZXZpbml0IHNuZF9jYXJkX2NzNDIzMl9wbnAoaW50IGRldiwgc3RydWN0Cj4+PiBzbmRf
-Y2FyZF9jczQyMzYgKmFjYXJkLAo+Pj4+ICAJCQkJCSBzdHJ1Y3QgcG5wX2RldiAqcGRldikKPj4+
-PiAgewo+Pj4+ICsJYWNhcmQtPndzcyA9IHBkZXY7Cj4+Pj4gIAlpZiAoc25kX2NzNDIzeF9wbnBf
-aW5pdF93c3MoZGV2LCBhY2FyZC0+d3NzKSA+IDApCj4+Pj4gIAkJcmV0dXJuIC1FQlVTWTsKPj4+
-PiAgCWNwb3J0W2Rldl0gPSAtMTsKPj4+Pgo+Pj4gQWNrZWQtYnk6IFJlbmUgSGVybWFuID5yZW5l
-Lmhlcm1hbkBnbWFpbC5jb20+Cj4+Pgo+Pj4gKEkgYmVsaWV2ZSBJIG5vdGljZWQgZWFybGllciB0
-aGF0IHN0cnVjdCBzbmRfY3M0MjM2LT53c3MsIGN0cmwgYW5kIG1wdSAKPj4+IHJlYWxseSBuZWVk
-biYjMDM5O3Qvc2hvdWxkbiYjMDM5O3QgYmUga2VwdCBhcm91bmQgaW4gdGhlIGZpcnN0IHBsYWNl
-IGFuZCB5b3UgY291bGQgCj4+PiBqdXN0IHBhc3MgcGRldiBkaXJlY3RseSBhcyB3ZWxsIGJ1dCB0
-aGF0JiMwMzk7cyBmb3IgYW5vdGhlciBjbGVhbnVwOyB0aGlzIGhhcyAKPj4+IGl0IGxvb2sgbW9z
-dCBzaW1pbGFyIHRvIHRoZSBjYXJkIHZhcmlhbnQpCj4+Pgo+PiBGZWVsIGZyZWUgdG8gY2hhbmdl
-ZCBpdCBidXQgSSBwcmVmZXIgdG8gaGF2ZSB0aGUgd3NzX2xpYiBwYXRjaGVzIG1lcmdlZCBmaXJz
-dCB0byBhdm9pZAo+PiBjb25mbGljdHMgYW5kIHJlZG9pbmcgdGhlIHBhdGNoZXMuCj4gCj4gU29y
-cnksIGJ1dCB0aGlzIGhhcyB0byBiZSBwdXNoZWQgYXMgc29vbiBhcyBwb3NzaWJsZSB3aGlsZSB3
-c3NfbGliCj4gcGF0Y2hlcyBhcmUgZm9yIDIuNi4yOC4KClllcywgS3J5c3p0b2YncyBwYXRjaCBk
-b2VzIC0tIGhlJ3MganVzdCBjb21tZW50aW5nIG9uIG15IGNvbW1lbnQgYmV0d2VlbiAKKCkgdGhl
-cmUuIEkgYWNrZWQgaGlzIG1pbmltYWwgcGF0Y2ggYW5kIGFkZGVkIHlvdSBhbmQgSmFyb3NsYXYg
-dG8gdGhlIENDIAphbmQgY29tbWVudGVkIHRoYXQgaXQgd2FzIGZvciAuMjcuLi4KClJlbmUuCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This patch series is a repost of the jack reporting API previously
+discussed on this list.  Patch 1 is a cherry pick of the commit from the
+input subsystem (available from Linus' current tree) adding a switch
+type for reporting microphone insertion which could be skipped if Linus'
+current tree were merged in to ALSA.
