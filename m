@@ -1,17 +1,17 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] asoc: restrict sample rate and size in
+Subject: [PATCH v2] asoc: restrict sample rate and size in
 	Freescale MPC8610 sound drivers
-Date: Mon, 28 Jul 2008 14:41:10 -0500
-Message-ID: <1217274070-10537-1-git-send-email-timur@freescale.com>
+Date: Mon, 28 Jul 2008 17:04:39 -0500
+Message-ID: <1217282679-16103-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from de01egw02.freescale.net (de01egw02.freescale.net
 	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1813624787
+	by alsa0.perex.cz (Postfix) with ESMTP id CD2D51037F2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Jul 2008 21:41:15 +0200 (CEST)
+	Tue, 29 Jul 2008 00:04:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -46,8 +46,8 @@ Please apply this patch for 2.6.26.1 and for 2.6.27-rc1.  Without this patch,
 recording on the MPC8610 is just plain broken, so it is a must-fix for 2.6.26.
 
  sound/soc/fsl/fsl_dma.c |    7 ++++-
- sound/soc/fsl/fsl_ssi.c |   66 +++++++++++++++++++++++++++++++++++++++-------
- 2 files changed, 62 insertions(+), 11 deletions(-)
+ sound/soc/fsl/fsl_ssi.c |   74 ++++++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 70 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
 index da2bc59..7ceea2b 100644
@@ -73,44 +73,38 @@ index da2bc59..7ceea2b 100644
  	.rates  		= FSLDMA_PCM_RATES,
  	.rate_min       	= 5512,
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 71bff33..da71876 100644
+index 71bff33..157a789 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -67,6 +67,7 @@
+@@ -67,6 +67,8 @@
   * @ssi: pointer to the SSI's registers
   * @ssi_phys: physical address of the SSI registers
   * @irq: IRQ of this SSI
-+ * @first_stream: stream ID of first stream to program hardware
++ * @first_stream: pointer to the stream that was opened first
++ * @second_stream: pointer to second stream
   * @dev: struct device pointer
   * @playback: the number of playback streams opened
   * @capture: the number of capture streams opened
-@@ -79,6 +80,7 @@ struct fsl_ssi_private {
+@@ -79,6 +81,8 @@ struct fsl_ssi_private {
  	struct ccsr_ssi __iomem *ssi;
  	dma_addr_t ssi_phys;
  	unsigned int irq;
 +	struct snd_pcm_substream *first_stream;
++	struct snd_pcm_substream *second_stream;
  	struct device *dev;
  	unsigned int playback;
  	unsigned int capture;
-@@ -283,6 +285,8 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream)
- 			return ret;
- 		}
- 
-+		ssi_private->first_stream = substream;
-+
- 		/*
- 		 * Section 16.5 of the MPC8610 reference manual says that the
- 		 * SSI needs to be disabled before updating the registers we set
-@@ -340,6 +344,44 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream)
- 		 * this is bad is because at this point, the PCM driver has not
- 		 * finished initializing the DMA controller.
+@@ -342,6 +346,49 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream)
  		 */
-+
-+	} else {
-+		/* This is not the first stream open, so we need to impose
-+		 * sample rate and maybe sample size constraints.  Note that
-+		 * this can cause a race condition if the second stream is
-+		 * opened before the first stream is fully initialized.
+ 	}
+ 
++	if (!ssi_private->first_stream)
++		ssi_private->first_stream = substream;
++	else {
++		/* This is the second stream open, so we need to impose sample
++		 * rate and maybe sample size constraints.  Note that this can
++		 * cause a race condition if the second stream is opened before
++		 * the first stream is fully initialized.
 +		 *
 +		 * We provide some protection by checking to make sure the first
 +		 * stream is initialized, but it's not perfect.  ALSA sometimes
@@ -143,10 +137,14 @@ index 71bff33..da71876 100644
 +			SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
 +			first_runtime->sample_bits,
 +			first_runtime->sample_bits);
- 	}
- 
++
++		ssi_private->second_stream = substream;
++	}
++
  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -371,18 +413,16 @@ static int fsl_ssi_prepare(struct snd_pcm_substream *substream)
+ 		ssi_private->playback++;
+ 
+@@ -371,18 +418,16 @@ static int fsl_ssi_prepare(struct snd_pcm_substream *substream)
  	struct fsl_ssi_private *ssi_private = rtd->dai->cpu_dai->private_data;
  
  	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
@@ -171,7 +169,7 @@ index 71bff33..da71876 100644
  
  	return 0;
  }
-@@ -407,9 +447,13 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd)
+@@ -407,9 +452,13 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd)
  	case SNDRV_PCM_TRIGGER_RESUME:
  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
  		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
@@ -187,14 +185,17 @@ index 71bff33..da71876 100644
  
  			/*
  			 * I think we need this delay to allow time for the SSI
-@@ -462,6 +506,8 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream)
- 		clrbits32(&ssi->scr, CCSR_SSI_SCR_SSIEN);
+@@ -452,6 +501,11 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream)
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+ 		ssi_private->capture--;
  
- 		free_irq(ssi_private->irq, ssi_private);
++	if (ssi_private->first_stream == substream)
++		ssi_private->first_stream = ssi_private->second_stream;
 +
-+		ssi_private->first_stream = NULL;
- 	}
- }
- 
++	ssi_private->second_stream = NULL;
++
+ 	/*
+ 	 * If this is the last active substream, disable the SSI and release
+ 	 * the IRQ.
 -- 
 1.5.5
