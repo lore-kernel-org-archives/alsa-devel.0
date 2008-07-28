@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ALSA: Build jack detection
-Date: Mon, 28 Jul 2008 19:05:36 +0100
-Message-ID: <1217268336-9263-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <>
-	<1217268336-9263-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [PATCH 10/10] wss_lib: use wss detection code
+ instead of ad1848 one
+Date: Mon, 28 Jul 2008 20:39:05 +0200
+Message-ID: <488E1249.7020401@keyaccess.nl>
+References: <20080718215126.7128a6f9.krzysztof.h1@poczta.fm>	<4883632A.8090106@keyaccess.nl>	<4887A28F.90506@keyaccess.nl>	<20080724072620.4197510c.krzysztof.h1@poczta.fm>	<48884BD4.3010308@keyaccess.nl>
+	<s5hy73maula.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7954C24767
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D3651038A2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Jul 2008 20:05:44 +0200 (CEST)
-In-Reply-To: <1217268336-9263-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon, 28 Jul 2008 20:36:36 +0200 (CEST)
+In-Reply-To: <s5hy73maula.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>
 List-Id: alsa-devel@alsa-project.org
 
-Since jack detection requires the input subsystem which may not be
-desired on small systems it is not built unless required by a driver
-that is being built. Drivers using jack detection should use a pattern
-like this:
+On 28-07-08 17:37, Takashi Iwai wrote:
 
-config SND_FOO
-        tristate "..."
-        ...
-        select SND_JACK if INPUT=y || INPUT=SND
+> Well, I still prefer folding lines to fit 80-column - of course
+> only if the result is somewhat reasonable and more readable.
 
-to ensure that the jack detection API is enabled if the input subsystem
-is.  If the input subsystem is not enabled then a stub version of the
-API is provided.
+Which it absolutely never is, because if it were, the original 
+programmer would've already formatted it that way.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/core/Kconfig  |    6 ++++++
- sound/core/Makefile |    1 +
- 2 files changed, 7 insertions(+), 0 deletions(-)
+> Usually, you set the ter
+> minal with 80-column
 
-diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-index 335d45e..9c4da1c 100644
---- a/sound/core/Kconfig
-+++ b/sound/core/Kconfig
-@@ -12,6 +12,12 @@ config SND_HWDEP
- config SND_RAWMIDI
- 	tristate
- 
-+# To be effective this also requires INPUT - users should say:
-+#    select SND_JACK if INPUT=y || INPUT=SND
-+# to avoid having to force INPUT on.
-+config SND_JACK
-+	bool
-+
- config SND_SEQUENCER
- 	tristate "Sequencer support"
- 	select SND_TIMER
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index da8e685..d57125a 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -7,6 +7,7 @@ snd-y     := sound.o init.o memory.o info.o control.o misc.o device.o
- snd-$(CONFIG_ISA_DMA_API) += isadma.o
- snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o info_oss.o
- snd-$(CONFIG_SND_VMASTER) += vmaster.o
-+snd-$(CONFIG_SND_JACK)	  += jack.o
- 
- snd-pcm-objs := pcm.o pcm_native.o pcm_lib.o pcm_timer.o pcm_misc.o \
- 		pcm_memory.o
--- 
-1.5.4.3
+For a definition of "you" which includes... well, "you" (and ofcourse 
+other than that everyone who will now take the opportunity to show us 
+their True b@dazz h@ck0r terminal skilzzzz).
+
+> Takashi  (love 80's)
+
+/me forcefeeds Rick Astley's collected works down Takashi's throat.
+
+Bah.
+
+Rene.
