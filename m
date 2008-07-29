@@ -1,20 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 01/14] ASoC: Update Poodle to current ASoC
-	API
-Date: Tue, 29 Jul 2008 14:47:13 +0100
-Message-ID: <20080729134713.GA32229@rakim.wolfsonmicro.main>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Re: [PATCH 05/14] ASoC: Convert bitfields in ASoC into
+	full int width
+Date: Tue, 29 Jul 2008 09:49:30 -0400
+Message-ID: <9e4733910807290649r7da6d154xbeebeab45c2fba8f@mail.gmail.com>
 References: <1217328155-30158-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5h7ib4dd6v.wl%tiwai@suse.de>
+	<1217328155-30158-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CDB531038BD
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12C56103841
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 15:47:14 +0200 (CEST)
+	Tue, 29 Jul 2008 15:49:31 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so3573506rvb.32
+	for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2008 06:49:30 -0700 (PDT)
+In-Reply-To: <1217328155-30158-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 Content-Disposition: inline
-In-Reply-To: <s5h7ib4dd6v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +29,382 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, alsa-devel@alsa-project.org, Richard Purdie <rpurdie@rpsys.net>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 29, 2008 at 03:36:56PM +0200, Takashi Iwai wrote:
+On 7/29/08, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> From: Jon Smirl <jonsmirl@gmail.com>
+>
+>  Convert bitfields in ASoC into full int width. This is a
+>  simple mechanical conversion. Two places in the DAPM code
+>  were fixed to properly use mask.
 
-> All others are for the next kernel, right?
+Do you want me to change the uints to unsigned int?
 
-Actually, "Export dapm_reg_event() fully" should probably be pushed in
-too but it's not so urgent.
+>
+>  Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
+>  Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>  ---
+>   include/sound/soc.h  |   50 ++++++++++++++++++-----------
+>   sound/soc/soc-core.c |   86 ++++++++++++++++++++++++++++++--------------------
+>   sound/soc/soc-dapm.c |   52 ++++++++++++++++++------------
+>   3 files changed, 114 insertions(+), 74 deletions(-)
+>
+>  diff --git a/include/sound/soc.h b/include/sound/soc.h
+>  index 2ce530e..e647a34 100644
+>  --- a/include/sound/soc.h
+>  +++ b/include/sound/soc.h
+>  @@ -26,10 +26,12 @@
+>   /*
+>   * Convenience kcontrol builders
+>   */
+>  -#define SOC_SINGLE_VALUE(reg, shift, max, invert) ((reg) | ((shift) << 8) |\
+>  -       ((shift) << 12) | ((max) << 16) | ((invert) << 24))
+>  -#define SOC_SINGLE_VALUE_EXT(reg, max, invert) ((reg) | ((max) << 16) |\
+>  -       ((invert) << 31))
+>  +#define SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert) \
+>  +       ((unsigned long)&(struct soc_mixer_control) \
+>  +       {.reg = xreg, .shift = xshift, .max = xmax, .invert = xinvert})
+>  +#define SOC_SINGLE_VALUE_EXT(xreg, xmax, xinvert) \
+>  +       ((unsigned long)&(struct soc_mixer_control) \
+>  +       {.reg = xreg, .max = xmax, .invert = xinvert})
+>   #define SOC_SINGLE(xname, reg, shift, max, invert) \
+>   {      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
+>         .info = snd_soc_info_volsw, .get = snd_soc_get_volsw,\
+>  @@ -43,45 +45,49 @@
+>         .info = snd_soc_info_volsw, .get = snd_soc_get_volsw,\
+>         .put = snd_soc_put_volsw, \
+>         .private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
+>  -#define SOC_DOUBLE(xname, reg, shift_left, shift_right, max, invert) \
+>  +#define SOC_DOUBLE(xname, xreg, shift_left, shift_right, xmax, xinvert) \
+>   {      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
+>         .info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
+>         .put = snd_soc_put_volsw, \
+>  -       .private_value = (reg) | ((shift_left) << 8) | \
+>  -               ((shift_right) << 12) | ((max) << 16) | ((invert) << 24) }
+>  -#define SOC_DOUBLE_R(xname, reg_left, reg_right, shift, max, invert) \
+>  +       .private_value = (unsigned long)&(struct soc_mixer_control) \
+>  +               {.reg = xreg, .shift = shift_left, .rshift = shift_right, \
+>  +                .max = xmax, .invert = xinvert} }
+>  +#define SOC_DOUBLE_R(xname, reg_left, reg_right, xshift, xmax, xinvert) \
+>   {      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+>         .info = snd_soc_info_volsw_2r, \
+>         .get = snd_soc_get_volsw_2r, .put = snd_soc_put_volsw_2r, \
+>  -       .private_value = (reg_left) | ((shift) << 8)  | \
+>  -               ((max) << 12) | ((invert) << 20) | ((reg_right) << 24) }
+>  -#define SOC_DOUBLE_TLV(xname, reg, shift_left, shift_right, max, invert, tlv_array) \
+>  +       .private_value = (unsigned long)&(struct soc_mixer_control) \
+>  +               {.reg = reg_left, .rreg = reg_right, .shift = xshift, \
+>  +               .max = xmax, .invert = xinvert} }
+>  +#define SOC_DOUBLE_TLV(xname, xreg, shift_left, shift_right, xmax, xinvert, tlv_array) \
+>   {      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
+>         .access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
+>                  SNDRV_CTL_ELEM_ACCESS_READWRITE,\
+>         .tlv.p = (tlv_array), \
+>         .info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
+>         .put = snd_soc_put_volsw, \
+>  -       .private_value = (reg) | ((shift_left) << 8) | \
+>  -               ((shift_right) << 12) | ((max) << 16) | ((invert) << 24) }
+>  -#define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, shift, max, invert, tlv_array) \
+>  +       .private_value = (unsigned long)&(struct soc_mixer_control) \
+>  +               {.reg = xreg, .shift = shift_left, .rshift = shift_right,\
+>  +                .max = xmax, .invert = xinvert} }
+>  +#define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert, tlv_array) \
+>   {      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
+>         .access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
+>                  SNDRV_CTL_ELEM_ACCESS_READWRITE,\
+>         .tlv.p = (tlv_array), \
+>         .info = snd_soc_info_volsw_2r, \
+>         .get = snd_soc_get_volsw_2r, .put = snd_soc_put_volsw_2r, \
+>  -       .private_value = (reg_left) | ((shift) << 8)  | \
+>  -               ((max) << 12) | ((invert) << 20) | ((reg_right) << 24) }
+>  -#define SOC_DOUBLE_S8_TLV(xname, reg, min, max, tlv_array) \
+>  +       .private_value = (unsigned long)&(struct soc_mixer_control) \
+>  +               {.reg = reg_left, .rreg = reg_right, .shift = xshift, \
+>  +               .max = xmax, .invert = xinvert} }
+>  +#define SOC_DOUBLE_S8_TLV(xname, xreg, xmin, xmax, tlv_array) \
+>   {      .iface  = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+>         .access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
+>                   SNDRV_CTL_ELEM_ACCESS_READWRITE, \
+>         .tlv.p  = (tlv_array), \
+>         .info   = snd_soc_info_volsw_s8, .get = snd_soc_get_volsw_s8, \
+>         .put    = snd_soc_put_volsw_s8, \
+>  -       .private_value = (reg) | (((signed char)max) << 16) | \
+>  -                        (((signed char)min) << 24) }
+>  +       .private_value = (unsigned long)&(struct soc_mixer_control) \
+>  +               {.reg = xreg, .min = xmin, .max = xmax} }
+>   #define SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, xtexts) \
+>   {      .reg = xreg, .shift_l = xshift_l, .shift_r = xshift_r, \
+>         .mask = xmask, .texts = xtexts }
+>  @@ -518,6 +524,12 @@ struct snd_soc_pcm_runtime {
+>         struct snd_soc_device *socdev;
+>   };
+>
+>  +/* mixer control */
+>  +struct soc_mixer_control {
+>  +       int min, max;
+>  +       uint reg, rreg, shift, rshift, invert;
+>  +};
+>  +
+>   /* enumerated kcontrol */
+>   struct soc_enum {
+>         unsigned short reg;
+>  diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+>  index 5d3bf73..4b94f1f 100644
+>  --- a/sound/soc/soc-core.c
+>  +++ b/sound/soc/soc-core.c
+>  @@ -1454,9 +1454,11 @@ EXPORT_SYMBOL_GPL(snd_soc_info_volsw_ext);
+>   int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_info *uinfo)
+>   {
+>  -       int max = (kcontrol->private_value >> 16) & 0xff;
+>  -       int shift = (kcontrol->private_value >> 8) & 0x0f;
+>  -       int rshift = (kcontrol->private_value >> 12) & 0x0f;
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>  +       int max = mc->max;
+>  +       uint shift = mc->min;
+>  +       uint rshift = mc->rshift;
+>
+>         if (max == 1)
+>                 uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+>  @@ -1482,13 +1484,15 @@ EXPORT_SYMBOL_GPL(snd_soc_info_volsw);
+>   int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_value *ucontrol)
+>   {
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>         struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+>  -       int reg = kcontrol->private_value & 0xff;
+>  -       int shift = (kcontrol->private_value >> 8) & 0x0f;
+>  -       int rshift = (kcontrol->private_value >> 12) & 0x0f;
+>  -       int max = (kcontrol->private_value >> 16) & 0xff;
+>  -       int mask = (1 << fls(max)) - 1;
+>  -       int invert = (kcontrol->private_value >> 24) & 0x01;
+>  +       uint reg = mc->reg;
+>  +       uint shift = mc->shift;
+>  +       uint rshift = mc->rshift;
+>  +       int max = mc->max;
+>  +       uint mask = (1 << fls(max)) - 1;
+>  +       uint invert = mc->invert;
+>
+>         ucontrol->value.integer.value[0] =
+>                 (snd_soc_read(codec, reg) >> shift) & mask;
+>  @@ -1519,13 +1523,15 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw);
+>   int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_value *ucontrol)
+>   {
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>         struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+>  -       int reg = kcontrol->private_value & 0xff;
+>  -       int shift = (kcontrol->private_value >> 8) & 0x0f;
+>  -       int rshift = (kcontrol->private_value >> 12) & 0x0f;
+>  -       int max = (kcontrol->private_value >> 16) & 0xff;
+>  -       int mask = (1 << fls(max)) - 1;
+>  -       int invert = (kcontrol->private_value >> 24) & 0x01;
+>  +       uint reg = mc->reg;
+>  +       uint shift = mc->shift;
+>  +       uint rshift = mc->rshift;
+>  +       int max = mc->max;
+>  +       uint mask = (1 << fls(max)) - 1;
+>  +       uint invert = mc->invert;
+>         unsigned short val, val2, val_mask;
+>
+>         val = (ucontrol->value.integer.value[0] & mask);
+>  @@ -1557,7 +1563,9 @@ EXPORT_SYMBOL_GPL(snd_soc_put_volsw);
+>   int snd_soc_info_volsw_2r(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_info *uinfo)
+>   {
+>  -       int max = (kcontrol->private_value >> 12) & 0xff;
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>  +       int max = mc->max;
+>
+>         if (max == 1)
+>                 uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+>  @@ -1583,13 +1591,15 @@ EXPORT_SYMBOL_GPL(snd_soc_info_volsw_2r);
+>   int snd_soc_get_volsw_2r(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_value *ucontrol)
+>   {
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>         struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+>  -       int reg = kcontrol->private_value & 0xff;
+>  -       int reg2 = (kcontrol->private_value >> 24) & 0xff;
+>  -       int shift = (kcontrol->private_value >> 8) & 0x0f;
+>  -       int max = (kcontrol->private_value >> 12) & 0xff;
+>  -       int mask = (1<<fls(max))-1;
+>  -       int invert = (kcontrol->private_value >> 20) & 0x01;
+>  +       uint reg = mc->reg;
+>  +       uint reg2 = mc->rreg;
+>  +       uint shift = mc->shift;
+>  +       int max = mc->max;
+>  +       uint mask = (1<<fls(max))-1;
+>  +       uint invert = mc->invert;
+>
+>         ucontrol->value.integer.value[0] =
+>                 (snd_soc_read(codec, reg) >> shift) & mask;
+>  @@ -1618,13 +1628,15 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_2r);
+>   int snd_soc_put_volsw_2r(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_value *ucontrol)
+>   {
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>         struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+>  -       int reg = kcontrol->private_value & 0xff;
+>  -       int reg2 = (kcontrol->private_value >> 24) & 0xff;
+>  -       int shift = (kcontrol->private_value >> 8) & 0x0f;
+>  -       int max = (kcontrol->private_value >> 12) & 0xff;
+>  -       int mask = (1 << fls(max)) - 1;
+>  -       int invert = (kcontrol->private_value >> 20) & 0x01;
+>  +       uint reg = mc->reg;
+>  +       uint reg2 = mc->rreg;
+>  +       uint shift = mc->shift;
+>  +       int max = mc->max;
+>  +       uint mask = (1 << fls(max)) - 1;
+>  +       uint invert = mc->invert;
+>         int err;
+>         unsigned short val, val2, val_mask;
+>
+>  @@ -1661,8 +1673,10 @@ EXPORT_SYMBOL_GPL(snd_soc_put_volsw_2r);
+>   int snd_soc_info_volsw_s8(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_info *uinfo)
+>   {
+>  -       int max = (signed char)((kcontrol->private_value >> 16) & 0xff);
+>  -       int min = (signed char)((kcontrol->private_value >> 24) & 0xff);
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>  +       int max = mc->max;
+>  +       int min = mc->min;
+>
+>         uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+>         uinfo->count = 2;
+>  @@ -1684,9 +1698,11 @@ EXPORT_SYMBOL_GPL(snd_soc_info_volsw_s8);
+>   int snd_soc_get_volsw_s8(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_value *ucontrol)
+>   {
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>         struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+>  -       int reg = kcontrol->private_value & 0xff;
+>  -       int min = (signed char)((kcontrol->private_value >> 24) & 0xff);
+>  +       uint reg = mc->reg;
+>  +       int min = mc->min;
+>         int val = snd_soc_read(codec, reg);
+>
+>         ucontrol->value.integer.value[0] =
+>  @@ -1709,9 +1725,11 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_s8);
+>   int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_value *ucontrol)
+>   {
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>         struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+>  -       int reg = kcontrol->private_value & 0xff;
+>  -       int min = (signed char)((kcontrol->private_value >> 24) & 0xff);
+>  +       uint reg = mc->reg;
+>  +       int min = mc->min;
+>         unsigned short val;
+>
+>         val = (ucontrol->value.integer.value[0]+min) & 0xff;
+>  diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+>  index f9d100b..bbdca0d 100644
+>  --- a/sound/soc/soc-dapm.c
+>  +++ b/sound/soc/soc-dapm.c
+>  @@ -104,10 +104,13 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
+>         case snd_soc_dapm_switch:
+>         case snd_soc_dapm_mixer: {
+>                 int val;
+>  -               int reg = w->kcontrols[i].private_value & 0xff;
+>  -               int shift = (w->kcontrols[i].private_value >> 8) & 0x0f;
+>  -               int mask = (w->kcontrols[i].private_value >> 16) & 0xff;
+>  -               int invert = (w->kcontrols[i].private_value >> 24) & 0x01;
+>  +               struct soc_mixer_control *mc = (struct soc_mixer_control *)
+>  +                       w->kcontrols[i].private_value;
+>  +               uint reg = mc->reg;
+>  +               uint shift = mc->shift;
+>  +               int max = mc->max;
+>  +               uint mask = (1 << fls(max)) - 1;
+>  +               uint invert = mc->invert;
+>
+>                 val = snd_soc_read(w->codec, reg);
+>                 val = (val >> shift) & mask;
+>  @@ -247,16 +250,19 @@ static int dapm_set_pga(struct snd_soc_dapm_widget *widget, int power)
+>                 return 0;
+>
+>         if (widget->num_kcontrols && k) {
+>  -               int reg = k->private_value & 0xff;
+>  -               int shift = (k->private_value >> 8) & 0x0f;
+>  -               int mask = (k->private_value >> 16) & 0xff;
+>  -               int invert = (k->private_value >> 24) & 0x01;
+>  +               struct soc_mixer_control *mc =
+>  +                       (struct soc_mixer_control *)k->private_value;
+>  +               uint reg = mc->reg;
+>  +               uint shift = mc->shift;
+>  +               int max = mc->max;
+>  +               uint mask = (1 << fls(max)) - 1;
+>  +               uint invert = mc->invert;
+>
+>                 if (power) {
+>                         int i;
+>                         /* power up has happended, increase volume to last level */
+>                         if (invert) {
+>  -                               for (i = mask; i > widget->saved_value; i--)
+>  +                               for (i = max; i > widget->saved_value; i--)
+>                                         snd_soc_update_bits(widget->codec, reg, mask, i);
+>                         } else {
+>                                 for (i = 0; i < widget->saved_value; i++)
+>  @@ -1133,12 +1139,14 @@ int snd_soc_dapm_get_volsw(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_value *ucontrol)
+>   {
+>         struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
+>  -       int reg = kcontrol->private_value & 0xff;
+>  -       int shift = (kcontrol->private_value >> 8) & 0x0f;
+>  -       int rshift = (kcontrol->private_value >> 12) & 0x0f;
+>  -       int max = (kcontrol->private_value >> 16) & 0xff;
+>  -       int invert = (kcontrol->private_value >> 24) & 0x01;
+>  -       int mask = (1 << fls(max)) - 1;
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>  +       uint reg = mc->reg;
+>  +       uint shift = mc->shift;
+>  +       uint rshift = mc->rshift;
+>  +       int max = mc->max;
+>  +       uint invert = mc->invert;
+>  +       uint mask = (1 << fls(max)) - 1;
+>
+>         /* return the saved value if we are powered down */
+>         if (widget->id == snd_soc_dapm_pga && !widget->power) {
+>  @@ -1176,12 +1184,14 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+>         struct snd_ctl_elem_value *ucontrol)
+>   {
+>         struct snd_soc_dapm_widget *widget = snd_kcontrol_chip(kcontrol);
+>  -       int reg = kcontrol->private_value & 0xff;
+>  -       int shift = (kcontrol->private_value >> 8) & 0x0f;
+>  -       int rshift = (kcontrol->private_value >> 12) & 0x0f;
+>  -       int max = (kcontrol->private_value >> 16) & 0xff;
+>  -       int mask = (1 << fls(max)) - 1;
+>  -       int invert = (kcontrol->private_value >> 24) & 0x01;
+>  +       struct soc_mixer_control *mc =
+>  +               (struct soc_mixer_control *)kcontrol->private_value;
+>  +       uint reg = mc->reg;
+>  +       uint shift = mc->shift;
+>  +       uint rshift = mc->rshift;
+>  +       int max = mc->max;
+>  +       uint mask = (1 << fls(max)) - 1;
+>  +       uint invert = mc->invert;
+>         unsigned short val, val2, val_mask;
+>         int ret;
+>
+>
+>  --
+>  1.5.6.3
+>
+>
 
-There's no urgent reason to hold the drivers out of mainline but that'd
-bypass -next.
 
-The core changes should definitely wait for next.
+-- 
+Jon Smirl
+jonsmirl@gmail.com
