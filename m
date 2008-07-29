@@ -1,12 +1,24 @@
-From: Pawel MOLL <pawel.moll@st.com>
-Subject: [PATCH 1/1] ALSA: Fix limit of 8 PCM devices
-	in	SNDRV_CTL_IOCTL_PCM_NEXT_DEVICE
-Date: Tue, 29 Jul 2008 17:34:26 +0100
-Message-ID: <1217349266.29863.40.camel@bri1004.bri.st.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH 10/10] wss_lib: use wss detection code
+ instead of ad1848 one
+Date: Tue, 29 Jul 2008 20:53:05 +0200
+Message-ID: <20080729205305.3ce547de.krzysztof.h1@poczta.fm>
+References: <20080718215126.7128a6f9.krzysztof.h1@poczta.fm>
+	<4883632A.8090106@keyaccess.nl> <4887A28F.90506@keyaccess.nl>
+	<20080724072620.4197510c.krzysztof.h1@poczta.fm>
+	<48884BD4.3010308@keyaccess.nl> <s5hy73maula.wl%tiwai@suse.de>
+	<488E1249.7020401@keyaccess.nl> <s5hd4kwdeso.wl%tiwai@suse.de>
+	<488F25EE.4080104@keyaccess.nl> <s5hsktsbw3v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D91910390E
+	for <alsa-devel@alsa-project.org>;
+	Tue, 29 Jul 2008 20:47:55 +0200 (CEST)
+In-Reply-To: <s5hsktsbw3v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,217 +28,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Rene Herman <rene.herman@keyaccess.nl>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-ALSA: Fix limit of 8 PCM devices in SNDRV_CTL_IOCTL_PCM_NEXT_DEVICE
+On Tue, 29 Jul 2008 16:31:16 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-When compiled with CONFIG_SND_DYNAMIC_MINORS the ALSA core is fine
-to have more than 8 PCM devices per card, except one place - the
-SNDRV_CTL_IOCTL_PCM_NEXT_DEVICE ioctl, which will not enumerate
-devices > 7. This patch fixes the issue, changing the devices list
-organisation.
+> At Tue, 29 Jul 2008 16:15:10 +0200,
+> Rene Herman wrote:
+> > 
+> > > At Mon, 28 Jul 2008 20:39:05 +0200,
+> > > Rene Herman wrote:
+> > >> On 28-07-08 17:37, Takashi Iwai wrote:
+> > >>
+> > >>> Well, I still prefer folding lines to fit 80-column - of course
+> > >>> only if the result is somewhat reasonable and more readable.
+> > >> Which it absolutely never is, because if it were, the original 
+> > >> programmer would've already formatted it that way.
+> > > 
+> > > ... only if the original author respected the standard CodingStyle.
+> > > Many old ALSA codes are not in that category.
+> > > 
+> > > Honestly, I don't mind much to keep them as they are now, even though
+> > > checkpatch grumbles, if the author (or the heir) wants to keep it
+> > > intentionally even after reading the CodingStyle text carefully...
+> > 
+> > I'm also definitely not speaking about things such as function headers 
+> > which needlessly walk of to the far right, but specifically about stuff 
+> > where the formatting _not_ inside 80 cols made things much easier to 
+> > read. In this case, my specific comments were about:
+> > 
+> > 1) mixer element macros
+> > 
+> > Many spots in this patchset, but for IMO most clearly bad example:
+> > 
+> > http://mailman.alsa-project.org/pipermail/alsa-devel/2008-July/009272.html
+> > 
+> > See the cmi8330 ones.
+> 
+> This kind of change isn't always bad.  The problem is that the
+> expressions aren't consistent through the whole list.  If the same
+> style is used for each element, e.g.
+> 
+> WSS_DOUBLE("LONG NAME HERE", 0,
+> 	   LEFT_REG, RIGHT_REG,
+> 	   0, 1, 2, 3),
+> 
+> then it'll be easier to compare each item than before.
+> 
+> A general problem of such macros or functions with many arguments is
+> that you can loose easily the relationship of each argument, because
+> they are listed just plainly.  Breaking lines properly could help a
+> bit.
+> 
+> > Not only do these kind of changes muddy up a patch, they muddy up the 
+> > result as well. Hate it...
+> > 
+> > 2) debug printks
+> > 
+> > For one example here, see:
+> > 
+> > http://mailman.alsa-project.org/pipermail/alsa-devel/2008-July/008978.html
+> > 
+> > /snd_wss_debug
+> > 
+> > Bad, bad, triply bad.
+> 
+> This change is actually buggy.  Each second printk should have no
+> KERN_* prefix.  KERN_* prefix is only for the beginning of the line.
+> 
+> A more better fix would be to rewrite this to use a loop, BTW.
+> 
 
-Instead of adding new device to the tail, the list is now kept always
-ordered (by card number, then device number). Thus, during enumeration,
-it is easy to discover the fact that there is no more given card's
-devices. The same limit was present in OSS emulation code. It has
-been fixed as well.
+I'll undo some damage I have done.
 
-Additionally the device field of struct snd_pcm is now int, instead of
-unsigned int, as there is no obvious reason for keeping it unsigned.
-This caused a lot of problems with comparing this value with other
-(almost always signed) variables. There is just one more place where
-device number is unsigned - in struct snd_pcm_info, which should be
-also sorted out in future.
+> > 3) trivial switches, although I don't feel hugely strongly about those.
+> > 
+> > Example:
+> > 
+> > http://mailman.alsa-project.org/pipermail/alsa-devel/2008-July/009314.html
+> > 
+> > /snd_wss_chip_id
+> 
+> This is really trivial and fine to keep in the old way.
+> 
 
-Signed-off-by: Pawel MOLL <pawel.moll@st.com>
+I like the new one - when case lines stand out from the code.
 
-diff --git a/include/sound/minors.h b/include/sound/minors.h
-index 46bcd20..a81798a 100644
---- a/include/sound/minors.h
-+++ b/include/sound/minors.h
-@@ -21,6 +21,8 @@
-  *
-  */
- 
-+#define SNDRV_OS_MINORS			256
-+
- #define SNDRV_MINOR_DEVICES		32
- #define SNDRV_MINOR_CARD(minor)		((minor) >> 5)
- #define SNDRV_MINOR_DEVICE(minor)	((minor) & 0x001f)
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 51d58cc..bfc096a 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -84,8 +84,6 @@ struct snd_pcm_ops {
-  *
-  */
- 
--#define SNDRV_PCM_DEVICES		8
--
- #define SNDRV_PCM_IOCTL1_FALSE		((void *)0)
- #define SNDRV_PCM_IOCTL1_TRUE		((void *)1)
- 
-@@ -416,7 +414,7 @@ struct snd_pcm_str {
- struct snd_pcm {
- 	struct snd_card *card;
- 	struct list_head list;
--	unsigned int device;	/* device number */
-+	int device; /* device number */
- 	unsigned int info_flags;
- 	unsigned short dev_class;
- 	unsigned short dev_subclass;
-diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index 4c601b1..4ccd761 100644
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -2947,7 +2947,7 @@ static void register_oss_dsp(struct snd_pcm *pcm, int index)
- static int snd_pcm_oss_register_minor(struct snd_pcm *pcm)
- {
- 	pcm->oss.reg = 0;
--	if (dsp_map[pcm->card->number] == (int)pcm->device) {
-+	if (dsp_map[pcm->card->number] == pcm->device) {
- 		char name[128];
- 		int duplex;
- 		register_oss_dsp(pcm, 0);
-@@ -2963,7 +2963,7 @@ static int snd_pcm_oss_register_minor(struct snd_pcm *pcm)
- 		pcm->oss.reg++;
- 		pcm->oss.reg_mask |= 1;
- 	}
--	if (adsp_map[pcm->card->number] == (int)pcm->device) {
-+	if (adsp_map[pcm->card->number] == pcm->device) {
- 		register_oss_dsp(pcm, 1);
- 		pcm->oss.reg++;
- 		pcm->oss.reg_mask |= 2;
-@@ -2988,7 +2988,7 @@ static int snd_pcm_oss_disconnect_minor(struct snd_pcm *pcm)
- 			snd_unregister_oss_device(SNDRV_OSS_DEVICE_TYPE_PCM,
- 						  pcm->card, 1);
- 		}
--		if (dsp_map[pcm->card->number] == (int)pcm->device) {
-+		if (dsp_map[pcm->card->number] == pcm->device) {
- #ifdef SNDRV_OSS_INFO_DEV_AUDIO
- 			snd_oss_info_unregister(SNDRV_OSS_INFO_DEV_AUDIO, pcm->card->number);
- #endif
-@@ -3019,12 +3019,12 @@ static int __init alsa_pcm_oss_init(void)
- 
- 	/* check device map table */
- 	for (i = 0; i < SNDRV_CARDS; i++) {
--		if (dsp_map[i] < 0 || dsp_map[i] >= SNDRV_PCM_DEVICES) {
-+		if (dsp_map[i] < 0 || dsp_map[i] >= SNDRV_OS_MINORS) {
- 			snd_printk(KERN_ERR "invalid dsp_map[%d] = %d\n",
- 				   i, dsp_map[i]);
- 			dsp_map[i] = 0;
- 		}
--		if (adsp_map[i] < 0 || adsp_map[i] >= SNDRV_PCM_DEVICES) {
-+		if (adsp_map[i] < 0 || adsp_map[i] >= SNDRV_OS_MINORS) {
- 			snd_printk(KERN_ERR "invalid adsp_map[%d] = %d\n",
- 				   i, adsp_map[i]);
- 			adsp_map[i] = 1;
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 9dd9bc7..df4c8a3 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -42,7 +42,7 @@ static int snd_pcm_dev_free(struct snd_device *device);
- static int snd_pcm_dev_register(struct snd_device *device);
- static int snd_pcm_dev_disconnect(struct snd_device *device);
- 
--static struct snd_pcm *snd_pcm_search(struct snd_card *card, int device)
-+static inline struct snd_pcm *snd_pcm_get(struct snd_card *card, int device)
- {
- 	struct snd_pcm *pcm;
- 
-@@ -53,6 +53,37 @@ static struct snd_pcm *snd_pcm_search(struct snd_card *card, int device)
- 	return NULL;
- }
- 
-+static inline int snd_pcm_next(struct snd_card *card, int device)
-+{
-+	struct snd_pcm *pcm;
-+
-+	list_for_each_entry(pcm, &snd_pcm_devices, list) {
-+		if (pcm->card == card && pcm->device > device)
-+			return pcm->device;
-+		else if (pcm->card->number > card->number)
-+			return -1;
-+	}
-+	return -1;
-+}
-+
-+static inline int snd_pcm_add(struct snd_pcm *newpcm)
-+{
-+	struct snd_pcm *pcm;
-+
-+	list_for_each_entry(pcm, &snd_pcm_devices, list) {
-+		if (pcm->card == newpcm->card && pcm->device == newpcm->device)
-+			return -EBUSY;
-+		if (pcm->card->number > newpcm->card->number ||
-+				(pcm->card == newpcm->card &&
-+				pcm->device > newpcm->device)) {
-+			list_add(&newpcm->list, pcm->list.prev);
-+			return 0;
-+		}
-+	}
-+	list_add_tail(&newpcm->list, &snd_pcm_devices);
-+	return 0;
-+}
-+
- static int snd_pcm_control_ioctl(struct snd_card *card,
- 				 struct snd_ctl_file *control,
- 				 unsigned int cmd, unsigned long arg)
-@@ -65,14 +96,7 @@ static int snd_pcm_control_ioctl(struct snd_card *card,
- 			if (get_user(device, (int __user *)arg))
- 				return -EFAULT;
- 			mutex_lock(&register_mutex);
--			device = device < 0 ? 0 : device + 1;
--			while (device < SNDRV_PCM_DEVICES) {
--				if (snd_pcm_search(card, device))
--					break;
--				device++;
--			}
--			if (device == SNDRV_PCM_DEVICES)
--				device = -1;
-+			device = snd_pcm_next(card, device);
- 			mutex_unlock(&register_mutex);
- 			if (put_user(device, (int __user *)arg))
- 				return -EFAULT;
-@@ -98,7 +122,7 @@ static int snd_pcm_control_ioctl(struct snd_card *card,
- 			if (get_user(subdevice, &info->subdevice))
- 				return -EFAULT;
- 			mutex_lock(&register_mutex);
--			pcm = snd_pcm_search(card, device);
-+			pcm = snd_pcm_get(card, device);
- 			if (pcm == NULL) {
- 				err = -ENXIO;
- 				goto _error;
-@@ -931,11 +955,11 @@ static int snd_pcm_dev_register(struct snd_device *device)
- 
- 	snd_assert(pcm != NULL && device != NULL, return -ENXIO);
- 	mutex_lock(&register_mutex);
--	if (snd_pcm_search(pcm->card, pcm->device)) {
-+	err = snd_pcm_add(pcm);
-+	if (err) {
- 		mutex_unlock(&register_mutex);
--		return -EBUSY;
-+		return err;
- 	}
--	list_add_tail(&pcm->list, &snd_pcm_devices);
- 	for (cidx = 0; cidx < 2; cidx++) {
- 		int devtype = -1;
- 		if (pcm->streams[cidx].substream == NULL)
-diff --git a/sound/core/sound.c b/sound/core/sound.c
-index 1003ae3..838dd9e 100644
---- a/sound/core/sound.c
-+++ b/sound/core/sound.c
-@@ -34,8 +34,6 @@
- #include <linux/kmod.h>
- #include <linux/mutex.h>
- 
--#define SNDRV_OS_MINORS 256
--
- static int major = CONFIG_SND_MAJOR;
- int snd_major;
- EXPORT_SYMBOL(snd_major);
--- 
-1.5.5.1
+BTW, I am one of people who use only 80 character terminals. I just use xterm
+and vim even in X11.
+
+This set of patches has a gray area: the ad1848-lib and ad1848.h. All changes into
+these files are killed by the end of set as the files are deleted. It is not worth 
+to be picky about changes into them.
+
+Regards,
+Krzysztof
+
+----------------------------------------------------------------------
+Nie dla mieczakow!
+Sprawdz >>> http://link.interia.pl/f1e93
