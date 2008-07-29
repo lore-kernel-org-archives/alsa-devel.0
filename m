@@ -1,20 +1,29 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 04/14] ASoC: Allow codecs to override register
-	display
-Date: Tue, 29 Jul 2008 11:42:25 +0100
-Message-ID: <1217328155-30158-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 14/14] ASoC: Add all CODECs Kconfig option
+Date: Tue, 29 Jul 2008 11:42:35 +0100
+Message-ID: <1217328155-30158-14-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1217328155-30158-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1217328155-30158-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1217328155-30158-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-8-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-9-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-10-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-12-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1217328155-30158-13-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E4E82483C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8B8AD103818
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 12:42:40 +0200 (CEST)
-In-Reply-To: <1217328155-30158-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Tue, 29 Jul 2008 12:42:41 +0200 (CEST)
+In-Reply-To: <1217328155-30158-13-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,70 +37,49 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some codecs have unusual features in their register maps such as very
-large registers representing arrays of coefficients. Support these
-codecs in the register cache sysfs file by allowing them to provide a
-function register_display() overriding the default output for register
-contents.
+Allow all the CODEC drivers to be built without a machine driver in order
+to facilitate testing of subsystem-wide changes and gain better coverage
+from automated testing efforts. This also helps things like the generic
+OpenFirmware machine driver for PowerPC.
 
-Also ensure that we don't overflow PAGE_SIZE while writing out the
-register dump.
+Currently AC97 CODECs are not included since the current setup relies
+on having a controller driver available.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |    2 ++
- sound/soc/soc-core.c |   26 +++++++++++++++++++++++---
- 2 files changed, 25 insertions(+), 3 deletions(-)
+ sound/soc/codecs/Kconfig |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1890d87..2ce530e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -410,6 +410,8 @@ struct snd_soc_codec {
- 	void *control_data; /* codec control (i2c/3wire) data */
- 	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
- 	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
-+	int (*display_register)(struct snd_soc_codec *, char *,
-+				size_t, unsigned int);
- 	hw_write_t hw_write;
- 	hw_read_t hw_read;
- 	void *reg_cache;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 83f1190..5d3bf73 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -970,9 +970,29 @@ static ssize_t codec_reg_show(struct device *dev,
- 		step = codec->reg_cache_step;
- 
- 	count += sprintf(buf, "%s registers\n", codec->name);
--	for (i = 0; i < codec->reg_cache_size; i += step)
--		count += sprintf(buf + count, "%2x: %4x\n", i,
--			codec->read(codec, i));
-+	for (i = 0; i < codec->reg_cache_size; i += step) {
-+		count += sprintf(buf + count, "%2x: ", i);
-+		if (count >= PAGE_SIZE - 1)
-+			break;
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 7ab74cd..1c93423 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1,3 +1,26 @@
++config SND_SOC_ALL_CODECS
++	tristate "Build all ASoC CODEC drivers"
++	select I2C
++	select SPI
++	select SND_SOC_AK4535
++	select SND_SOC_UDA1380
++	select SND_SOC_WM8510
++	select SND_SOC_WM8731
++	select SND_SOC_WM8750
++	select SND_SOC_WM8753
++	select SND_SOC_WM8990
++	select SND_SOC_CS4270
++	select SND_SOC_TLV320AIC26
++	select SND_SOC_TLV320AIC3X
++        help
++          Normally ASoC codec drivers are only built if a machine driver which
++          uses them is also built since they are only usable with a machine
++          driver.  Selecting this option will allow these drivers to be built
++          without an explicit machine driver for test and development purposes.
 +
-+		if (codec->display_register)
-+			count += codec->display_register(codec, buf + count,
-+							 PAGE_SIZE - count, i);
-+		else
-+			count += snprintf(buf + count, PAGE_SIZE - count,
-+					  "%4x", codec->read(codec, i));
++          If unsure select "N".
 +
-+		if (count >= PAGE_SIZE - 1)
-+			break;
 +
-+		count += snprintf(buf + count, PAGE_SIZE - count, "\n");
-+		if (count >= PAGE_SIZE - 1)
-+			break;
-+	}
-+
-+	/* Truncate count; min() would cause a warning */
-+	if (count >= PAGE_SIZE)
-+		count = PAGE_SIZE - 1;
- 
- 	return count;
- }
+ config SND_SOC_AC97_CODEC
+ 	tristate
+ 	select SND_AC97_CODEC
 -- 
 1.5.6.3
