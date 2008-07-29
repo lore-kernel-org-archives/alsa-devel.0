@@ -1,29 +1,18 @@
-From: Wolfgang Rosenauer <wolfgang@rosenauer.org>
-Subject: app-internal volume control
-Date: Tue, 29 Jul 2008 11:00:47 +0200
-Message-ID: <488EDC3F.3030501@rosenauer.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC widgets questions
+Date: Tue, 29 Jul 2008 10:23:19 +0100
+Message-ID: <20080729092250.GA5931@sirena.org.uk>
+References: <B082902A12CAEE4EA7FE2ED20609013B040528E2@dlee15.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ds9.rosenauer.org (ds9.rosenauer.org [78.47.28.164])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D00F1037F9
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D58324717
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 11:00:50 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by ds9.rosenauer.org (Postfix) with ESMTP id 3F06E4C32A
-	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 11:00:50 +0200 (CEST)
-Received: from ds9.rosenauer.org ([127.0.0.1])
-	by localhost (78.47.28.164 [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id fYTyRgsAtaVz for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 11:00:48 +0200 (CEST)
-Received: from [192.168.250.1] (p4FD03C64.dip0.t-ipconnect.de [79.208.60.100])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by ds9.rosenauer.org (Postfix) with ESMTP id 0E1DA4C32C
-	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 11:00:48 +0200 (CEST)
+	Tue, 29 Jul 2008 11:23:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <B082902A12CAEE4EA7FE2ED20609013B040528E2@dlee15.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,21 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: "Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, Jul 28, 2008 at 09:22:37PM -0500, Lopez Cruz, Misael wrote:
 
-might be a dumb question for people knowing the externals of Alsa but 
-I'm not sure :-(
+[Please word wrap your mails at 80 columns, it makes them easier to
+read.]
 
-What is the best practice to control the volume of a Linux application?
-I could control Alsa'x mixer for Master or PCM but that looks like a bad 
-thing to do since it changes the volume for every other app as well.
+> I started to read about ASoC, but I didn't find much information apart
+> from the kernel documentation files. Is there any other documents?
+> Below are some questions mainly related to DAPM for codec driver.
 
-Is there another mixer I could use which is application specific?
-Or do I need to implement an application internal filter to control the 
-volume by modifying the audio stream?
+Apart from the mailing list archives all the documentation is in the
+kernel.
 
-Thanks,
-  Wolfgang
+> How should the interconnections map be created?
+
+Use snd_soc_dapm_add_routes() during your codec initialisation.  This
+should be done after you have set up your DAPM and non-DAPM controls.
+
+> What is the difference between using "SND_SOC_DAPM_PGA" and
+> "SND_SOC_DAPM_MICBIAS" for an input? When to use each one?
+
+SND_SOC_DAPM_PGA is an amplifier (Programmable Gain Amplifier).
+
+SND_SOC_DAPM_MICBIAS is a bias current source for a microphone.  Usually
+any such signal on the device will be clearly identified in the
+datasheet.
+
+> Why in some codec drivers there is a distinction between left and
+> right ADC/DACs when creating DAPM widgets and in others not?
+
+It depends on what the hardware supports.  If the left and right
+channels can be controlled independantly then DAPM may be able to
+deliver power savings from not powering up unconnected channels but if
+there is no separate power control for each channel in the hardware then
+that can't be done and the DAC or ADC is represented as a single widget.
+
+> How should be handled digital gains and mixing (after ADCs/before DACs)?
+
+These are usually exported as regular ALSA controls added with
+snd_ctl_add().
+
+-- 
+"You grabbed my hand and we fell into it, like a daydream - or a fever."
