@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASOC: convert use of uint to unsigned int
-Date: Tue, 29 Jul 2008 15:32:33 +0100
-Message-ID: <20080729143233.GE5931@sirena.org.uk>
-References: <20080729142224.19026.32191.stgit@terra>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [PATCH 10/10] wss_lib: use wss detection code
+ instead of ad1848 one
+Date: Tue, 29 Jul 2008 16:37:08 +0200
+Message-ID: <488F2B14.7050704@keyaccess.nl>
+References: <20080718215126.7128a6f9.krzysztof.h1@poczta.fm>	<4883632A.8090106@keyaccess.nl>	<4887A28F.90506@keyaccess.nl>	<20080724072620.4197510c.krzysztof.h1@poczta.fm>	<48884BD4.3010308@keyaccess.nl>	<s5hy73maula.wl%tiwai@suse.de>	<488E1249.7020401@keyaccess.nl>	<s5hd4kwdeso.wl%tiwai@suse.de>	<488F25EE.4080104@keyaccess.nl>
+	<s5hsktsbw3v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 483501038FA
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57562103920
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 16:32:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20080729142224.19026.32191.stgit@terra>
+	Tue, 29 Jul 2008 16:34:37 +0200 (CEST)
+In-Reply-To: <s5hsktsbw3v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 29, 2008 at 10:22:24AM -0400, Jon Smirl wrote:
-> ASOC: convert use of uint to unsigned int
+On 29-07-08 16:31, Takashi Iwai wrote:
 
-It's ASoC, not ASOC, but as far as the change itself goes:
+>> 2) debug printks
+>>
+>> For one example here, see:
+>>
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-July/008978.html
+>>
+>> /snd_wss_debug
+>>
+>> Bad, bad, triply bad.
+> 
+> This change is actually buggy.  Each second printk should have no
+> KERN_* prefix.  KERN_* prefix is only for the beginning of the line.
 
-> Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
+See how these formatting "fixes" made me miss that? ;-)
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> A more better fix would be to rewrite this to use a loop, BTW.
+
+Rene.
