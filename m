@@ -1,17 +1,29 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Exposing control of my device
-Date: Tue, 29 Jul 2008 10:15:30 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0807291010350.7676@tm8103-a.perex-int.cz>
-References: <9e4733910807281929s10561ec9w3d6c411d742a3b7d@mail.gmail.com>
+From: Wolfgang Rosenauer <wolfgang@rosenauer.org>
+Subject: app-internal volume control
+Date: Tue, 29 Jul 2008 11:00:47 +0200
+Message-ID: <488EDC3F.3030501@rosenauer.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD39F1038BD
+Received: from ds9.rosenauer.org (ds9.rosenauer.org [78.47.28.164])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D00F1037F9
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 10:15:35 +0200 (CEST)
-In-Reply-To: <9e4733910807281929s10561ec9w3d6c411d742a3b7d@mail.gmail.com>
+	Tue, 29 Jul 2008 11:00:50 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by ds9.rosenauer.org (Postfix) with ESMTP id 3F06E4C32A
+	for <alsa-devel@alsa-project.org>;
+	Tue, 29 Jul 2008 11:00:50 +0200 (CEST)
+Received: from ds9.rosenauer.org ([127.0.0.1])
+	by localhost (78.47.28.164 [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id fYTyRgsAtaVz for <alsa-devel@alsa-project.org>;
+	Tue, 29 Jul 2008 11:00:48 +0200 (CEST)
+Received: from [192.168.250.1] (p4FD03C64.dip0.t-ipconnect.de [79.208.60.100])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by ds9.rosenauer.org (Postfix) with ESMTP id 0E1DA4C32C
+	for <alsa-devel@alsa-project.org>;
+	Tue, 29 Jul 2008 11:00:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,31 +33,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: ALSA-devel <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 28 Jul 2008, Jon Smirl wrote:
+Hi,
 
-> My device has 220 registers, some of these are quite long (32 bytes)
-> and I have split them up into multiple 32b pseudo registers.  That
-> results in about 300 registers for a TAS5504 and 450 for a TAS5508.
-> 
-> A large number of these registers are for BiQuads, DRC, loudness, etc.
-> They're not general purpose ALSA functions. What is an efficient way
-> to expose several hundred registers of this class? Making
-> snd_kcontrols for all of them seems pretty inefficient.
+might be a dumb question for people knowing the externals of Alsa but 
+I'm not sure :-(
 
-Note you can handle up to 128 32-bit words in one snd_kcontrol, so if you 
-can group some registers, you can reduce the number of controls.
+What is the best practice to control the volume of a Linux application?
+I could control Alsa'x mixer for Master or PCM but that looks like a bad 
+thing to do since it changes the volume for every other app as well.
 
-Another possibility is to use the hwdep device and create own ioctl 
-interface to drive your hw. But you'll lose nice things like event 
-notifier (unless you implement it in hwdep, too).
+Is there another mixer I could use which is application specific?
+Or do I need to implement an application internal filter to control the 
+volume by modifying the audio stream?
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Thanks,
+  Wolfgang
