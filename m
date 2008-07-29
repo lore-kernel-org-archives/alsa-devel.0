@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC widgets questions
-Date: Tue, 29 Jul 2008 10:23:19 +0100
-Message-ID: <20080729092250.GA5931@sirena.org.uk>
-References: <B082902A12CAEE4EA7FE2ED20609013B040528E2@dlee15.ent.ti.com>
+Subject: [PATCH 01/14] ASoC: Update Poodle to current ASoC API
+Date: Tue, 29 Jul 2008 11:42:22 +0100
+Message-ID: <1217328155-30158-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D58324717
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8C70B2483A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 11:23:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <B082902A12CAEE4EA7FE2ED20609013B040528E2@dlee15.ent.ti.com>
+	Tue, 29 Jul 2008 12:42:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +19,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Richard Purdie <rpurdie@rpsys.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 28, 2008 at 09:22:37PM -0500, Lopez Cruz, Misael wrote:
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
 
-[Please word wrap your mails at 80 columns, it makes them easier to
-read.]
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Cc: Richard Purdie <rpurdie@rpsys.net>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+This is a compile fix and it would therefore be good if it could be
+considered for merge into 2.6.27.
 
-> I started to read about ASoC, but I didn't find much information apart
-> from the kernel documentation files. Is there any other documents?
-> Below are some questions mainly related to DAPM for codec driver.
+ sound/soc/pxa/poodle.c |    8 ++------
+ 1 files changed, 2 insertions(+), 6 deletions(-)
 
-Apart from the mailing list archives all the documentation is in the
-kernel.
-
-> How should the interconnections map be created?
-
-Use snd_soc_dapm_add_routes() during your codec initialisation.  This
-should be done after you have set up your DAPM and non-DAPM controls.
-
-> What is the difference between using "SND_SOC_DAPM_PGA" and
-> "SND_SOC_DAPM_MICBIAS" for an input? When to use each one?
-
-SND_SOC_DAPM_PGA is an amplifier (Programmable Gain Amplifier).
-
-SND_SOC_DAPM_MICBIAS is a bias current source for a microphone.  Usually
-any such signal on the device will be clearly identified in the
-datasheet.
-
-> Why in some codec drivers there is a distinction between left and
-> right ADC/DACs when creating DAPM widgets and in others not?
-
-It depends on what the hardware supports.  If the left and right
-channels can be controlled independantly then DAPM may be able to
-deliver power savings from not powering up unconnected channels but if
-there is no separate power control for each channel in the hardware then
-that can't be done and the DAC or ADC is represented as a single widget.
-
-> How should be handled digital gains and mixing (after ADCs/before DACs)?
-
-These are usually exported as regular ALSA controls added with
-snd_ctl_add().
-
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index 65a4e9a..d968cf7 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -85,17 +85,13 @@ static int poodle_startup(struct snd_pcm_substream *substream)
+ }
+ 
+ /* we need to unmute the HP at shutdown as the mute burns power on poodle */
+-static int poodle_shutdown(struct snd_pcm_substream *substream)
++static void poodle_shutdown(struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec *codec = rtd->socdev->codec;
+-
+ 	/* set = unmute headphone */
+ 	locomo_gpio_write(&poodle_locomo_device.dev,
+ 		POODLE_LOCOMO_GPIO_MUTE_L, 1);
+ 	locomo_gpio_write(&poodle_locomo_device.dev,
+ 		POODLE_LOCOMO_GPIO_MUTE_R, 1);
+-	return 0;
+ }
+ 
+ static int poodle_hw_params(struct snd_pcm_substream *substream,
+@@ -232,7 +228,7 @@ static const struct soc_enum poodle_enum[] = {
+ 	SOC_ENUM_SINGLE_EXT(2, spk_function),
+ };
+ 
+-static const snd_kcontrol_new_t wm8731_poodle_controls[] = {
++static const struct snd_kcontrol_new wm8731_poodle_controls[] = {
+ 	SOC_ENUM_EXT("Jack Function", poodle_enum[0], poodle_get_jack,
+ 		poodle_set_jack),
+ 	SOC_ENUM_EXT("Speaker Function", poodle_enum[1], poodle_get_spk,
 -- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+1.5.6.3
