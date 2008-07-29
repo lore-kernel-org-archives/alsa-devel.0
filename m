@@ -1,22 +1,18 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: ASoC widgets questions
-Date: Mon, 28 Jul 2008 21:22:37 -0500
-Message-ID: <B082902A12CAEE4EA7FE2ED20609013B040528E2@dlee15.ent.ti.com>
+From: "Jon Smirl" <jonsmirl@gmail.com>
+Subject: Exposing control of my device
+Date: Mon, 28 Jul 2008 22:29:41 -0400
+Message-ID: <9e4733910807281929s10561ec9w3d6c411d742a3b7d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from soda.ext.ti.com (soda.ext.ti.com [198.47.26.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5573810380B
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id D91C0247D1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jul 2008 04:22:45 +0200 (CEST)
-Received: from dlep95.itg.ti.com ([157.170.170.107])
-	by soda.ext.ti.com (8.13.7/8.13.7) with ESMTP id m6T2Mc4h017264
-	for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2008 21:22:43 -0500
-Received: from dsbe71.ent.ti.com (localhost [127.0.0.1])
-	by dlep95.itg.ti.com (8.13.8/8.13.8) with ESMTP id m6T2McCV025474
-	for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2008 21:22:38 -0500 (CDT)
-Content-class: urn:content-classes:message
+	Tue, 29 Jul 2008 04:29:42 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 5so371734qwf.56
+	for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2008 19:29:41 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,17 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+My device has 220 registers, some of these are quite long (32 bytes)
+and I have split them up into multiple 32b pseudo registers.  That
+results in about 300 registers for a TAS5504 and 450 for a TAS5508.
 
-I started to read about ASoC, but I didn't find much information apart from the kernel documentation files. Is there any other documents? Below are some questions mainly related to DAPM for codec driver.
+A large number of these registers are for BiQuads, DRC, loudness, etc.
+They're not general purpose ALSA functions. What is an efficient way
+to expose several hundred registers of this class? Making
+snd_kcontrols for all of them seems pretty inefficient.
 
-How should the interconnections map be created?
-What is the difference between using "SND_SOC_DAPM_PGA" and "SND_SOC_DAPM_MICBIAS" for an input? When to use each one?
-Why in some codec drivers there is a distinction between left and right ADC/DACs when creating DAPM widgets and in others not?
-How should be handled digital gains and mixing (after ADCs/before DACs)?
+Is there some generic way to do register access from user space that I
+haven't found yet? Or should I make two special snd_kcontrols, one for
+read register and write register?
 
-Regards,
-Misael
+-- 
+Jon Smirl
+jonsmirl@gmail.com
