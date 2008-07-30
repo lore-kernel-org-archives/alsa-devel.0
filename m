@@ -1,18 +1,20 @@
-From: "Andrew Paprocki" <andrew@ishiboo.com>
-Subject: Proper way to set SCMS copy prohibited bits on IEC958
-	S/PDIF
-Date: Wed, 30 Jul 2008 16:37:45 -0400
-Message-ID: <76366b180807301337k3776e656p3b5edc6c0d2f56a5@mail.gmail.com>
+From: Dmitry <dbaryshkov@gmail.com>
+Subject: Re: [PATCH] pxa2xx-lib: support building for several
+	pxa's
+Date: Thu, 31 Jul 2008 02:41:21 +0400
+Message-ID: <bc64b4640807301541m3f070da9o1c44ec14e160e829@mail.gmail.com>
+References: <1217441805.20421.4.camel@ubuntu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 56D9D24428
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id B12FD24469
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Jul 2008 22:37:47 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so163545rvb.32
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2008 13:37:45 -0700 (PDT)
+	Thu, 31 Jul 2008 00:41:22 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so44574and.80
+	for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2008 15:41:21 -0700 (PDT)
+In-Reply-To: <1217441805.20421.4.camel@ubuntu>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,14 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Russ Dill <russ.dill@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, eric.miao@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
-I briefly checked the code for the Delta1010 (ice1712) to see if there
-was a way from user space to force the SCMS copy prohibited bits on in
-the S/PDIF stream. I see the driver initializes the bits to 0. Is
-there already a way to do this from user space, or would I have to
-modify the driver to force them on (or use a module parameter)?
+Hi,
 
-Thanks,
--Andrew
+2008/7/30 Russ Dill <russ.dill@gmail.com>:
+> Here's a version of the third patch in the series without all the
+> #ifdef's. Just a quick question for Dmitry, why all the if (!
+> cpu_is_pxa3xx())'s around the pxa_gpio_mode's? Also, there was a build
+> error when just building the sound/arm pxa2xx-ac97.
+
+Good!
+
+AFAIR pxa_gpio_mode isn't valid for the the pxa3xx, so cpu_is_pxa3xx().
+
+>
+> Support building pxa2xx-lib for several pxa chip versions by making code
+> run-time selected, not only compile-time
+>
+> Signed-off-by: Russ Dill <russ.dill@gmail.com>
+> ---
+>  include/asm-arm/arch-pxa/pxa-regs.h |    4 +-
+>  sound/arm/Kconfig                   |    2 +-
+>  sound/arm/pxa2xx-ac97-lib.c         |  174 ++++++++++++++++------------------
+>  sound/soc/pxa/pxa2xx-i2s.c          |   16 ++-
+>  4 files changed, 95 insertions(+), 101 deletions(-)
+>
+-- 
+With best wishes
+Dmitry
