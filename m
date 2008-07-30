@@ -1,30 +1,23 @@
-From: Russ Dill <Russ.Dill@gmail.com>
-Subject: Re: [PATCH] pxa2xx-lib: support building for several
-	pxa's
-Date: Wed, 30 Jul 2008 17:08:19 +0000 (UTC)
-Message-ID: <loom.20080730T165541-413@post.gmane.org>
-References: <1217022714-2521-1-git-send-email-dbaryshkov@gmail.com>
-	<1217022714-2521-2-git-send-email-dbaryshkov@gmail.com>
-	<1217022714-2521-3-git-send-email-dbaryshkov@gmail.com>
-	<1217022714-2521-4-git-send-email-dbaryshkov@gmail.com>
+From: "Aaron J. Grier" <agrier@poofygoof.com>
+Subject: Re: alsa-lib has anyone ever looked at taking it cross
+	platform?
+Date: Wed, 30 Jul 2008 12:07:26 -0700
+Message-ID: <20080730190726.GT835@arwen.poofy.goof.com>
+References: <e7d8f83e0807250351j42894f2dm7f19483f8d66afaa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id E547024375
+Received: from smtp.poofygoof.com (209-162-215-114.dq1sn.easystreet.com
+	[209.162.215.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25D072438E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Jul 2008 19:10:04 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1KOFBb-0000E3-6L
-	for alsa-devel@alsa-project.org; Wed, 30 Jul 2008 17:10:04 +0000
-Received: from ip70-190-167-62.ph.ph.cox.net ([70.190.167.62])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2008 17:10:03 +0000
-Received: from Russ.Dill by ip70-190-167-62.ph.ph.cox.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2008 17:10:03 +0000
+	Wed, 30 Jul 2008 21:07:32 +0200 (CEST)
+Received: from arwen.poofy.goof.com (muzgash.poofy.goof.com [10.0.0.26])
+	by smtp.poofygoof.com (Postfix) with ESMTP id 997032989
+	for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2008 12:07:29 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <e7d8f83e0807250351j42894f2dm7f19483f8d66afaa@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,26 +30,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 25, 2008 at 08:51:13PM +1000, Peter Dolding wrote:
+> Now why are not alsa interfaces practical to use.   It is ment to be
+> "Advanced Linux Sound Architecture"  The complete Architecture.   Not
+> something you have to tack bits onto because its not functional or
+> hard to use.  Have we got to the point like xlib where the complete
+> alsa-lib has to be reworked for usability.
 
-[...]
+alsa-lib's weakness from my perspective is the sheer breadth and extent
+of its API.  the simplest polled output case for PCM requires a
+significant amount of code.  there are a dozen snd_pcm_*() functions
+before snd_pcm_writei() can be called.  I can't just open() a device,
+ioctl() a struct or two to set sampling and buffer parameters, and start
+write()ing data.  
 
-(in pxa2xx_ac97_hw_resume)
-> +		pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
->  #ifdef CONFIG_PXA27x
-> -	/* Use GPIO 113 as AC97 Reset on Bulverde */
-> -	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-> +		/* Use GPIO 113 as AC97 Reset on Bulverde */
-> +		pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
->  #endif
+ALSA appears to trade large data structures for large numbers of
+function calls.  I assume this is intended to give finer granularity of
+error reporting, but it makes programming ALSA very involved, perhaps
+unnecessarily.
 
-forgot a cpu_is_pxa27x()
+the recent step of deprecating (and subsequently removing) function
+calls to slim down the API is a step in the right direction.
 
-[...]
-
-(in pxa2xx_ac97_hw_probe
-> -		goto err_irq;
-> +		/* Use GPIO 113 as AC97 Reset on Bulverde */
-> +		pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
-> +#endif
-
-another one
+-- 
+  Aaron J. Grier | "Not your ordinary poofy goof." | agrier@poofygoof.com
