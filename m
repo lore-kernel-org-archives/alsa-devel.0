@@ -1,23 +1,27 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: Re: [PATCH 04/14] ASoC: Allow codecs to override
-	register display
-Date: Thu, 31 Jul 2008 21:41:48 -0400
-Message-ID: <9e4733910807311841v3ebe98f5i327606d7d793f832@mail.gmail.com>
-References: <1217328155-30158-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1217328155-30158-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1217328155-30158-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1217328155-30158-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Kan-I Jyo" <cecilhsujp@gmail.com>
+Subject: Re: [Fwd: [Alsa-user] Intel Poulsbo(SCH) chipset does
+	not recognize Adi 1986 codec under linux]]
+Date: Fri, 1 Aug 2008 12:30:54 +0900
+Message-ID: <1e8a3dd0807312030r215d7d00qa0c4fc08ddf5c63f@mail.gmail.com>
+References: <1e8a3dd0806241840m76069ad8sa35058ad8ddb843b@mail.gmail.com>
+	<s5hprq5onxz.wl%tiwai@suse.de>
+	<1e8a3dd0806250500p6f7a343u89b11d42f556347@mail.gmail.com>
+	<s5hhcbhogef.wl%tiwai@suse.de>
+	<1e8a3dd0806300620i2be727afibc932c1df6744f7f@mail.gmail.com>
+	<s5hy74lewe7.wl%tiwai@suse.de>
+	<1e8a3dd0807022242sd33c315xa4613da95d039f38@mail.gmail.com>
+	<s5hmykxlstg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C8EF244F3
+Received: from mu-out-0910.google.com (mu-out-0910.google.com [209.85.134.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9B2F24501
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Aug 2008 03:41:49 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so542372ywk.2
-	for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2008 18:41:48 -0700 (PDT)
-In-Reply-To: <1217328155-30158-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri,  1 Aug 2008 05:30:54 +0200 (CEST)
+Received: by mu-out-0910.google.com with SMTP id g7so869878muf.2
+	for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2008 20:30:54 -0700 (PDT)
+In-Reply-To: <s5hmykxlstg.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,74 +32,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark, I see this patch is already in your tree. I have rewritten it a
-little differently to ensure that too many results can't be returned.
-This is in my system and tested. I had a bug too so I know the
-limiting it to pagesize code works.
+Dear Takhashi,
 
-Signed-off-by: Jon Smirl <jonsmirl@gmail.com>
----
+After having some discussions with the hardware vender and reviewing
+some technical specifiction documents on Intel's website, this issue
+has now been fixed by a rework of the hardware.
 
- include/sound/soc.h  |    1 +
- sound/soc/soc-core.c |   19 +++++++++++++------
- 2 files changed, 14 insertions(+), 6 deletions(-)
+I would like to say thank you for all your kind support on this issue.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1890d87..b95c0c2 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -410,6 +410,7 @@ struct snd_soc_codec {
- 	void *control_data; /* codec control (i2c/3wire) data */
- 	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
- 	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
-+	int (*display_register)(struct snd_soc_codec *, char *, unsigned
-int, unsigned int);
- 	hw_write_t hw_write;
- 	hw_read_t hw_read;
- 	void *reg_cache;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 83f1190..55f7559 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -961,7 +961,7 @@ static ssize_t codec_reg_show(struct device *dev,
- {
- 	struct snd_soc_device *devdata = dev_get_drvdata(dev);
- 	struct snd_soc_codec *codec = devdata->codec;
--	int i, step = 1, count = 0;
-+	int i, step = 1, count;
+2008/7/4 Takashi Iwai <tiwai@suse.de>:
+> At Thu, 3 Jul 2008 14:42:16 +0900,
+> Kan-I Jyo wrote:
+>>
+>> Dear Takashi,
+>>
+>> Thank you for your reply.
+>>
+>> 2008/7/1 Takashi Iwai <tiwai@suse.de>:
+>>
+>> > If you know the slot number of the codec beforehand, you can modify to
+>> > force to set chip->codec_mask in azx_reset().  Then the driver will
+>> > continue to probe the codec.
+>>
+>> By changing the "chip->codec_mask", amazingly the codec chip is now recognized.
+>>
+>> <hda_intel.c.diff>
+>> --- hda_intel.c.orig  2008-07-02 13:27:14.699908463 +0900
+>> +++ hda_intel.c       2008-07-02 13:27:48.303899618 +0900
+>> @@ -750,7 +750,8 @@ static int azx_reset(struct azx *chip)
+>>
+>>       /* detect codecs */
+>>       if (!chip->codec_mask) {
+>> -             chip->codec_mask = azx_readw(chip, STATESTS);
+>> +             /* chip->codec_mask = azx_readw(chip, STATESTS); */
+>> +             chip->codec_mask = 1;
+>>               snd_printdd("codec_mask = 0x%x\n", chip->codec_mask);
+>>       }
+>>
+>> <ends here>
+>>
+>> I do not consider this as a good way to solve this issue, this is
+>> quite a progress to me. Thank you for your advise, Takashi.
+>>
+>> Regardless of being recognized and been configurable by alsamixer,
+>> there is no sound output from the speaker. I have tried all the model
+>> option listed in Documentation/sound/alsa/ALSA-Configuration.txt for
+>> AD1986A and none provides a sound output.
+>>
+>> By switching to different models, it results some similar log output
+>> in both dmesg and /var/log/messages have some info like this:
+>>
+>> <dmesg>
+>>
+>> --snip--
+>> ALSA /root/alsa-driver-1.0.17rc3/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:601:
+>> hda_intel: azx_get_response timeout, switching to polling mode: last
+>> cmd=0x000f0000
+>> ALSA /root/alsa-driver-1.0.17rc3/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:608:
+>> hda_intel: azx_get_response timeout, switching to single_cmd mode:
+>> last cmd=0x000f0000
+>
+> If this happens, usually it means that the device access is pretty
+> ragged.  Does /proc/asound/card0/codec#* show the correct values?
+>
+>> ALSA /root/alsa-driver-1.0.17rc3/pci/hda/hda_codec.c:2334: hda_codec:
+>> model '6stack' is selected
+>> ALSA /root/alsa-driver-1.0.17rc3/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:1196:
+>> snd_hda_codec_new() results is 0
+>>
+>> <ends here>
+>>
+>> When trying to apply the "position_fix" module option to values other
+>> than the default "0", I got following ouput from dmesg.
+>>
+>> <dmesg>
+>>
+>> --snip--
+>> ALSA /root/alsa-driver-1.0.17rc3/acore/../alsa-kernel/core/pcm_lib.c:1540:
+>> playback write error (DMA or IRQ trouble?)
+>
+> This error is fatal, and implies that the IRQ isn't triggered
+> properly.  Doesn't this happen if you set position_fix=0?  Still
+> weird...
+>
+>>
+>> <ends here>
+>>
+>> And in /var/log/messages, I have following messages complaining that
+>> the position buffer is invalid.
+>>
+>> </var/log/messages>
+>>
+>> --snip--
+>> Jan  2 18:34:03 localhost kernel: hda-intel: Invalid position buffer,
+>> using LPIB read method instead.
+>> Jan  2 18:34:03 localhost kernel: hda-intel: IRQ timing workaround is
+>> activated for card #0. Suggest a bigger bdl_pos_adj.
+>
+> On Intel devices, we choose the 1 sample position fix while 32 samples
+> for other controller chips.  This might be a wrong assumption, but I'd
+> like to check all other cases first.
+>
+> And, this basically is no fatal error.  This may lead to higher CPU
+> load (for busy wait) but the playback should still work.
+>
+>
+> Takashi
+>
 
- 	if (!codec->reg_cache_size)
- 		return 0;
-@@ -969,11 +969,18 @@ static ssize_t codec_reg_show(struct device *dev,
- 	if (codec->reg_cache_step)
- 		step = codec->reg_cache_step;
-
--	count += sprintf(buf, "%s registers\n", codec->name);
--	for (i = 0; i < codec->reg_cache_size; i += step)
--		count += sprintf(buf + count, "%2x: %4x\n", i,
--			codec->read(codec, i));
--
-+	count = sprintf(buf, "%s registers\n", codec->name);
-+	for (i = 0; i < codec->reg_cache_size; i += step) {
-+		if (codec->display_register)
-+			count += codec->display_register(codec,
-+							 buf + count, PAGE_SIZE - count, i);
-+		else {
-+			count += snprintf(buf + count, PAGE_SIZE - count, "%2x: ", i);
-+			count += snprintf(buf + count, PAGE_SIZE - count, "%4x",
-+					 codec->read(codec, i));
-+			count += snprintf(buf + count, PAGE_SIZE - count, "\n");
-+		}
-+	}
- 	return count;
- }
- static DEVICE_ATTR(codec_reg, 0444, codec_reg_show, NULL);
 
 
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+Sincerely,
+
+Jyo
