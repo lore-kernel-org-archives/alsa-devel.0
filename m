@@ -1,18 +1,19 @@
-From: "John L. Utz III" <john.utz@dmx.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
 Subject: Re: git clone alsa-driver behind a firewall?
-Date: Fri, 01 Aug 2008 15:35:16 -0700
-Message-ID: <op.ue8bo2d2647oa9@jutz-gnto64>
-References: <op.ue79spew647oa9@jutz-gnto64>
-	<489387FA.2080200@keyaccess.nl> <op.ue796w2d647oa9@jutz-gnto64>
+Date: Sat, 02 Aug 2008 00:45:25 +0200
+Message-ID: <48939205.7090200@keyaccess.nl>
+References: <op.ue79spew647oa9@jutz-gnto64> <489387FA.2080200@keyaccess.nl>
+	<op.ue796w2d647oa9@jutz-gnto64> <op.ue8bo2d2647oa9@jutz-gnto64>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5693D2452F
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1D412453F
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Aug 2008 00:35:37 +0200 (CEST)
-In-Reply-To: <op.ue796w2d647oa9@jutz-gnto64>
+	Sat,  2 Aug 2008 00:42:44 +0200 (CEST)
+In-Reply-To: <op.ue8bo2d2647oa9@jutz-gnto64>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "John L. Utz III" <john.utz@dmx.com>, Rene Herman <rene.herman@keyaccess.nl>
+To: "John L. Utz III" <john.utz@dmx.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-that works, it might be good to update the git page to list that mechanism  
-more explicitly:
+On 02-08-08 00:35, John L. Utz III wrote:
 
-  git clone http://git.alsa-project.org/http/alsa-driver.git alsa-driver
+> that works, it might be good to update the git page to list that 
+> mechanism more explicitly:
+> 
+>  git clone http://git.alsa-project.org/http/alsa-driver.git alsa-driver
 
-On Fri, 01 Aug 2008 15:02:46 -0700, John L. Utz III <john.utz@dmx.com>  
-wrote:
+It's already at:
 
-> Hi Rene
->
-> On Fri, 01 Aug 2008 15:02:34 -0700, Rene Herman  
-> <rene.herman@keyaccess.nl>
-> wrote:
->
->> http://git.alsa-project.org/http/alsa-driver.git
->
-> tnx mucho!
->
-> johnu
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+http://www.alsa-project.org/main/index.php/GIT_Server
+
+The HTTP URL is fairly at the top and under "Occasional Developers" the 
+clone is spelled out (note though that if you can make requests of your 
+admin, native GIT protocol usage is better/more economic).
+
+Rene
