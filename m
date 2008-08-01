@@ -1,18 +1,15 @@
-From: "Jon Smirl" <jonsmirl@gmail.com>
-Subject: amixer and mono
-Date: Fri, 1 Aug 2008 17:32:00 -0400
-Message-ID: <9e4733910808011432x232cec34t282aec253053a073@mail.gmail.com>
+From: "John L. Utz III" <john.utz@dmx.com>
+Subject: git clone alsa-driver behind a firewall?
+Date: Fri, 01 Aug 2008 14:54:15 -0700
+Message-ID: <op.ue79spew647oa9@jutz-gnto64>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yw-out-1718.google.com (yw-out-1718.google.com [74.125.46.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5AF5524567
+Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9D3F2451A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Aug 2008 23:32:01 +0200 (CEST)
-Received: by yw-out-1718.google.com with SMTP id 9so761877ywk.2
-	for <alsa-devel@alsa-project.org>; Fri, 01 Aug 2008 14:32:00 -0700 (PDT)
-Content-Disposition: inline
+	Fri,  1 Aug 2008 23:54:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Amixer says my device is mono:
+Hi guys;
 
-root@phyCORE-MPC5200B-tiny:~ amixer
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 1023
-  Mono: Playback 942 [92%]
-root@phyCORE-MPC5200B-tiny:~
+I am trying to re-sync so that i can try to get my vt1618 stuff into alsa  
+that got rejected last year.
 
-That's coming from the Volume control....
+But since my last attempted patch, alsa's moved from hg to git and i cant  
+seem to clone the repository.
 
-                if (snd_mixer_selem_has_playback_volume(elem) ||
-                    snd_mixer_selem_has_playback_switch(elem)) {
-                        printf("%sPlayback channels:", space);
-                        if (snd_mixer_selem_is_playback_mono(elem)) {
-                                printf(" Mono");
-                        } else {
 
-The device's master volume control controls all channels through one
-value. The device really is stereo. You use biquads if you want to
-process the channels differently.
+jutz@jutz-gnto64 ~/Compile/AlsaDev $ git clone  
+git://git.alsa-project.org/alsa-driver.git alsa-driver
+Initialized empty Git repository in  
+/home/jutz/Compile/AlsaDev/alsa-driver/.git/
+git.alsa-project.org[0: 212.20.107.51]: errno=Connection timed out
+fatal: unable to connect a socket (Connection timed out)
+fetch-pack from 'git://git.alsa-project.org/alsa-driver.git' failed.
 
-What do I do about this?
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+am i correct in assuming that git runs on a port that a diligent admin  
+would not have open by default?
+
+tnx!
+
+johnu
