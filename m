@@ -1,19 +1,17 @@
-From: "Lee Revell" <rlrevell@joe-job.com>
-Subject: Re: amixer and mono
-Date: Sat, 2 Aug 2008 19:20:51 -0400
-Message-ID: <75b66ecd0808021620v18ee3cc5h4828770d33ef57f1@mail.gmail.com>
-References: <9e4733910808011432x232cec34t282aec253053a073@mail.gmail.com>
+From: "Bankim Bhavsar" <bankim.bhavsar@gmail.com>
+Subject: dmix in a forked process
+Date: Sat, 2 Aug 2008 19:38:12 -0700
+Message-ID: <4eccebac0808021938i3266024dr7ec38e54ed869c0d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51B6A103842
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id 600D0103832
 	for <alsa-devel@alsa-project.org>;
-	Sun,  3 Aug 2008 01:20:53 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so1232797rvb.32
-	for <alsa-devel@alsa-project.org>; Sat, 02 Aug 2008 16:20:51 -0700 (PDT)
-In-Reply-To: <9e4733910808011432x232cec34t282aec253053a073@mail.gmail.com>
+	Sun,  3 Aug 2008 04:38:14 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so2103646wfg.23
+	for <alsa-devel@alsa-project.org>; Sat, 02 Aug 2008 19:38:12 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,17 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: ALSA-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 1, 2008 at 5:32 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
-> The device's master volume control controls all channels through one
-> value. The device really is stereo. You use biquads if you want to
-> process the channels differently.
->
-> What do I do about this?
+Reading the source of alsa-lib I see that dmix runs in a forked process
+*without* exec.
 
-Nothing.  The mono refers to the control, not the underlying audio stream.
+file: src/pcm/pcm_direct.c
+function: snd_pcm_direct_server_create
 
-Lee
+       ret = fork();
+       if (ret < 0) {
+               close(dmix->server_fd);
+               return ret;
+       } else if (ret == 0) {
+               ret = fork();
+               if (ret == 0)
+                       server_job(dmix);
+               _exit(EXIT_SUCCESS);
+       } else {
+               waitpid(ret, NULL, 0);
+       }
+
+>From what I understand, this is a concern since if our app is the
+first to start dmix then a copy of the process (app) will remain till
+the system is shutdown ?
+
+Also I see that from alsa-lib 1.0.12 a check is performed before starting dmix.
+
+file: src/pcm/pcm_dmix.c
+function: snd_pcm_dmix_open
+
+               if (dmix->shmptr->use_server) {
+                       dmix->server_free = dmix_server_free;
+
+                       ret = snd_pcm_direct_server_create(dmix);
+                       if (ret < 0) {
+                               SNDERR("unable to create server");
+                               goto _err;
+                       }
+               }
+
+When I checked how dmix->shmptr->use_server is set
+
+file: src/pcm/pcm_dmix.c
+function: snd_pcm_direct_initialize_slave
+
+               int ver = 0;
+               ioctl(spcm->poll_fd, SNDRV_PCM_IOCTL_PVERSION, &ver);
+               if (ver < SNDRV_PROTOCOL_VERSION(2, 0, 8))
+                       dmix->shmptr->use_server = 1;
+
+So if sndrv version is older than 2.0.8, use_server is set!
+
+So even using alsa-lib greater than 1.0.12 doesn't guarantee that the
+forked process (without exec) code path will be avoided.
+
+I'm currently porting the sound code of our app from OSS to ALSA but
+this problem is preventing me from doing so.
+Is there any way to get around this problem?
+
+Help here will be greatly appreciated.
+
+Thanks,
+Bankim.
+
+PS: I've tried using the ioctl mentioned above after copying the
+necessary macros from kernel headers but ioctl returns error
+"Inappropriate ioctl for this device" on my Ubuntu 7.04 system.
