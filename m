@@ -1,16 +1,18 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] wss_lib: remove second mutexes initialization
-Date: Sun, 3 Aug 2008 17:57:21 +0200
-Message-ID: <20080803175721.c95f9cf1.krzysztof.h1@poczta.fm>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: dmix in a forked process
+Date: Sun, 3 Aug 2008 20:38:49 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0808032036330.31850@tm8103-a.perex-int.cz>
+References: <4eccebac0808012003j49ea4351pc34f3f1ed7690f15@mail.gmail.com>
+	<4eccebac0808021945s66b362e3u51ecedea830a04e4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id EFD6C1037F8
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DD392475A
 	for <alsa-devel@alsa-project.org>;
-	Sun,  3 Aug 2008 17:51:57 +0200 (CEST)
+	Sun,  3 Aug 2008 20:38:55 +0200 (CEST)
+In-Reply-To: <4eccebac0808021945s66b362e3u51ecedea830a04e4@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,37 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@gmail.com>
+To: Bankim Bhavsar <bankim.bhavsar@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+On Sat, 2 Aug 2008, Bankim Bhavsar wrote:
 
-Remove initializations of spinlock and mutexes which
-are done earlier in snd_wss_new(). The snd_wss_new()
-is called from snd_wss_create().
+> I'm currently porting the sound code of our app from OSS to ALSA but
+> this problem is preventing me from doing so.
+> Is there any way to get around this problem?
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
+What's your problem with fork()? I don't see the reason, why fork should 
+be avoided. The server_job() process ends when the last application closes 
+shared device. It's just management task to manage and release resources 
+shared among audio processes.
 
-diff -urp linux-alsa/sound/isa/wss/wss_lib.c linux-2.6.26/sound/isa/wss/wss_lib.c
---- linux-alsa/sound/isa/wss/wss_lib.c	2008-07-31 20:39:59.000000000 +0200
-+++ linux-2.6.26/sound/isa/wss/wss_lib.c	2008-08-03 16:54:01.293267081 +0200
-@@ -1866,10 +1866,6 @@ int snd_wss_pcm(struct snd_wss *chip, in
- 	if (err < 0)
- 		return err;
- 
--	spin_lock_init(&chip->reg_lock);
--	mutex_init(&chip->mce_mutex);
--	mutex_init(&chip->open_mutex);
--
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_wss_playback_ops);
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_wss_capture_ops);
- 
+					Jaroslav
 
-
-
-
-----------------------------------------------------------------------
-Tylko dla detektywow! Konkurs na Smaker.pl
-Kliknij >>> http://link.interia.pl/f1eb1
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
