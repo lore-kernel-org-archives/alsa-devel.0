@@ -1,17 +1,19 @@
 From: "Bankim Bhavsar" <bankim.bhavsar@gmail.com>
 Subject: dmix in a forked process
-Date: Sat, 2 Aug 2008 19:38:12 -0700
-Message-ID: <4eccebac0808021938i3266024dr7ec38e54ed869c0d@mail.gmail.com>
+Date: Sat, 2 Aug 2008 19:45:04 -0700
+Message-ID: <4eccebac0808021945s66b362e3u51ecedea830a04e4@mail.gmail.com>
+References: <4eccebac0808012003j49ea4351pc34f3f1ed7690f15@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 600D0103832
+Received: from wf-out-1314.google.com (wf-out-1314.google.com [209.85.200.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B7E3103802
 	for <alsa-devel@alsa-project.org>;
-	Sun,  3 Aug 2008 04:38:14 +0200 (CEST)
-Received: by wf-out-1314.google.com with SMTP id 24so2103646wfg.23
-	for <alsa-devel@alsa-project.org>; Sat, 02 Aug 2008 19:38:12 -0700 (PDT)
+	Sun,  3 Aug 2008 04:45:05 +0200 (CEST)
+Received: by wf-out-1314.google.com with SMTP id 24so2104989wfg.23
+	for <alsa-devel@alsa-project.org>; Sat, 02 Aug 2008 19:45:04 -0700 (PDT)
+In-Reply-To: <4eccebac0808012003j49ea4351pc34f3f1ed7690f15@mail.gmail.com>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,7 +27,9 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Reading the source of alsa-lib I see that dmix runs in a forked process
+Don't know why the earlier message got truncated so here it is again...
+
+Reading the source alsa-lib I see that dmix runs in a forked process
 *without* exec.
 
 file: src/pcm/pcm_direct.c
@@ -84,9 +88,11 @@ Is there any way to get around this problem?
 
 Help here will be greatly appreciated.
 
+If this is an incorrect list then kindly fwd it to the appropriate one.
+
 Thanks,
 Bankim.
 
 PS: I've tried using the ioctl mentioned above after copying the
 necessary macros from kernel headers but ioctl returns error
-"Inappropriate ioctl for this device" on my Ubuntu 7.04 system.
+"Inappropriate ioctl for this device" on my Ubuntu 7.04 host.
