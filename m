@@ -1,18 +1,24 @@
-From: "george pee" <georgepee@gmail.com>
-Subject: [PATCH] ac97 mono-out w/internal speaker
-Date: Mon, 4 Aug 2008 11:46:28 -0500
-Message-ID: <d75a31820808040946y15700f82p78a6cb17f54e49d1@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ALSA: ASoC V2: restrict sample rate and
+ size in Freescale MPC8610 sound drivers
+Date: Mon, 04 Aug 2008 12:35:39 -0500
+Message-ID: <48973DEB.3010101@freescale.com>
+References: <1217867506-19730-1-git-send-email-timur@freescale.com>
+	<20080804164337.GA4193@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4349F2417B
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id CABD124338
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Aug 2008 18:46:30 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so350936and.80
-	for <alsa-devel@alsa-project.org>; Mon, 04 Aug 2008 09:46:29 -0700 (PDT)
-Content-Disposition: inline
+	Mon,  4 Aug 2008 19:35:44 +0200 (CEST)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
+	m74HZf7Z001426
+	for <alsa-devel@alsa-project.org>; Mon, 4 Aug 2008 10:35:41 -0700 (MST)
+In-Reply-To: <20080804164337.GA4193@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +28,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have a wireless tablet (webdt310)
-http://dtresearch.com/product/wt310/index.htm
+Mark Brown wrote:
+> On Mon, Aug 04, 2008 at 11:31:46AM -0500, Timur Tabi wrote:
+> 
+>> A future version of this driver will lift the sample size restriction.
+>> Supporting independent sample rates is more difficult, because only certain
+>> codecs provide dual independent clocks.
+> 
+> Generally the approach here is for the platform drivers to allow as much
+> flexability as they can and rely on the codec and/or machine drivers to
+> restrict things as needed.  Even where both codec and platform can
+> support separate clocks they can be made shared by the board design.
 
-It has cs5536 audio and a realtek alc203 codec.
+In order for me to get the SSI to handle dual clock signals, I need actual
+hardware that implements those signals so that I can test it.
 
-The headphone jack works perfectly, but the internal speaker was not.
-
-After a bit a twiddling and reading the ALC203 data sheet, I finally figured
-out that the function of Pin 37 had to be changed to MONO-OUT to get sound
-out of the
-internal speaker.
-
-I'm not sure that this is the best approach (maybe there could be some pin
-sensing?)
-but I added this as an ac97 quirk.  Here's the patch.
-
-diff -rub linux-2.6.26.orig/sound/pci/ac97/ac97_codec.c
-linux-2.6.26.new/sound/pci/ac97/ac97_codec.c
---- linux-2.6.26.orig/sound/pci/ac97/ac97_codec.c       2008-07-29
-15:30:57.000000000 -0500
-+++ linux-2.6.26.new/sound/pci/ac97/ac97_codec.c        2008-08-04
-10:58:12.000000000 -0500
-@@ -2709,6 +2710,12 @@
-        return snd_ctl_add(ac97->bus->card,
-snd_ac97_cnew(&snd_ac97_alc_jack_detect, ac97));
- }
-
-+/* ac97 tune: turn on mono-out */
-+static int tune_mono_out(struct snd_ac97 *ac97)
-+{
-+       snd_ac97_update_bits(ac97, 0x7a, 0x400, 0x400);
-+       return 1;
-+}
-+
- /* ac97 tune: inversed EAPD bit */
- static int tune_inv_eapd(struct snd_ac97 *ac97)
- {
-@@ -2801,6 +2808,7 @@
-        { "inv_eapd", tune_inv_eapd },
-        { "mute_led", tune_mute_led },
-        { "hp_mute_led", tune_hp_mute_led },
-+      { "mono_out", tune_mono_out },
- };
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
