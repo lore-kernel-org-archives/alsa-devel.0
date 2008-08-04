@@ -1,91 +1,44 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Re: [PATCH] ALSA: wss_lib: opti92x-ad1848
- WSS_HW_DETECT fix
-Date: Mon, 4 Aug 2008 06:36:04 +0200
-Message-ID: <20080804063604.506c8656.krzysztof.h1@poczta.fm>
-References: <489678D7.8030104@keyaccess.nl>
+From: "peerchen" <peerchen@gmail.com>
+Subject: [alsa-devel][PATCH] hda_intel: enable snoop for nvidia HDA controller
+Date: Mon, 4 Aug 2008 17:57:18 +0800
+Message-ID: <200808041757132250842@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 831282440D
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Aug 2008 06:30:39 +0200 (CEST)
-In-Reply-To: <489678D7.8030104@keyaccess.nl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754162AbYHDJ5d@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: akpm <akpm@linux-foundation.org>, pchen <pchen@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 04 Aug 2008 05:34:47 +0200
-Rene Herman <rene.herman@keyaccess.nl> wrote:
+Enable the snoop for nvidia hda controller to avoid data coherence issue.
 
-> [0001-ALSA-wss_lib-opti92x-ad1848-WSS_HW_DETECT-fix.patch  text/plain (1.3KB)]
-> From 3e75fdd69c577bf29ee5a6583d479646a12c9d52 Mon Sep 17 00:00:00 2001
-> From: Rene Herman <rene.herman@gmail.com>
-> Date: Mon, 4 Aug 2008 05:26:26 +0200
-> Subject: [PATCH] ALSA: wss_lib: opti92x-ad1848 WSS_HW_DETECT fix
-> 
-> snd-opti92x-ad1848 mistakingly passes WSS_HW_OPTI93X currently. This
-> fixes it as tested with a OPTi 82C929A/AD1848 card.
-> 
-> Signed-off-by: Rene Herman <rene.herman@gmail.com>
-> ---
-
-Acked-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-
-
->  sound/isa/opti9xx/opti92x-ad1848.c |    8 +++++---
->  1 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-> index cb5f66b..19706b0 100644
-> --- a/sound/isa/opti9xx/opti92x-ad1848.c
-> +++ b/sound/isa/opti9xx/opti92x-ad1848.c
-> @@ -719,6 +719,8 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
->  	chip->dma1 = dma1;
->  #if defined(CS4231) || defined(OPTi93X)
->  	chip->dma2 = dma2;
-> +#else
-> +	chip->dma2 = -1;
->  #endif
->  
->  	if (chip->wss_base == SNDRV_AUTO_PORT) {
-> @@ -734,10 +736,10 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
->  
->  	error = snd_wss_create(card, chip->wss_base + 4, -1,
->  			       chip->irq, chip->dma1, chip->dma2,
-> -#ifdef CS4231
-> -			       WSS_HW_DETECT, 0,
-> -#else /* OPTi93x */
-> +#ifdef OPTi93X
->  			       WSS_HW_OPTI93X, WSS_HWSHARE_IRQ,
-> +#else
-> +			       WSS_HW_DETECT, 0,
->  #endif
->  			       &codec);
->  	if (error < 0)
-> -- 
-> 1.5.5
-> 
-> 
-> 
-> [text/plain (161B)]
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-
-----------------------------------------------------------------------
-Te newsy nakreca Cie na caly dzien!
-Sprawdz >>> http://link.interia.pl/f1e94
+Signed-off-by: Peer Chen <peerchen@gmail.com>
+---
+--- linux-2.6.27-rc1/sound/pci/hda/hda_intel.c.orig	2008-08-01 14:14:54.000000000 -0400
++++ linux-2.6.27-rc1/sound/pci/hda/hda_intel.c	2008-08-01 14:31:38.000000000 -0400
+@@ -277,6 +277,9 @@ enum {
+ /* Defines for Nvidia HDA support */
+ #define NVIDIA_HDA_TRANSREG_ADDR      0x4e
+ #define NVIDIA_HDA_ENABLE_COHBITS     0x0f
++#define NVIDIA_HDA_ISTRM_COH          0x4d
++#define NVIDIA_HDA_OSTRM_COH          0x4c
++#define NVIDIA_HDA_ENABLE_COHBIT      0x01
+ 
+ /* Defines for Intel SCH HDA snoop control */
+ #define INTEL_SCH_HDA_DEVC      0x78
+@@ -899,6 +902,12 @@ static void azx_init_pci(struct azx *chi
+ 		update_pci_byte(chip->pci,
+ 				NVIDIA_HDA_TRANSREG_ADDR,
+ 				0x0f, NVIDIA_HDA_ENABLE_COHBITS);
++		update_pci_byte(chip->pci,
++				NVIDIA_HDA_ISTRM_COH,
++				0x01, NVIDIA_HDA_ENABLE_COHBIT);
++		update_pci_byte(chip->pci,
++				NVIDIA_HDA_OSTRM_COH,
++				0x01, NVIDIA_HDA_ENABLE_COHBIT);				
+ 		break;
+ 	case AZX_DRIVER_SCH:
+ 		pci_read_config_word(chip->pci, INTEL_SCH_HDA_DEVC, &snoop);
+-
