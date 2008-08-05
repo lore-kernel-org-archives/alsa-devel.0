@@ -1,16 +1,21 @@
-From: krzysztof.h1@poczta.fm
-Subject: Re: [PATCH 07/11] wss_lib: use CS4231P instead of
-	AD1848P (kill the AD1848P)
-Date: 05 Aug 2008 12:53:43 +0200
-Message-ID: <20080805105343.904D1E714B7@f16.poczta.interia.pl>
+From: "george pee" <georgepee@gmail.com>
+Subject: Re: [PATCH] ac97 mono-out w/internal speaker
+Date: Tue, 5 Aug 2008 08:33:34 -0500
+Message-ID: <d75a31820808050633m7a926017k21e8792ba302391c@mail.gmail.com>
+References: <d75a31820808040946y15700f82p78a6cb17f54e49d1@mail.gmail.com>
+	<s5hmyjrsror.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 6FFED2456C
+Received: from hs-out-0708.google.com (hs-out-0708.google.com [64.233.178.247])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B923103828
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Aug 2008 12:53:47 +0200 (CEST)
+	Tue,  5 Aug 2008 15:33:35 +0200 (CEST)
+Received: by hs-out-0708.google.com with SMTP id x43so119957hsb.0
+	for <alsa-devel@alsa-project.org>; Tue, 05 Aug 2008 06:33:34 -0700 (PDT)
+In-Reply-To: <s5hmyjrsror.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,36 +25,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>, Krzysztof Helt <krzysztof.h1@poczta.fm>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> On 31-07-08 21:07, Krzysztof Helt wrote:
-> 
-> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
-> > 
-> > Use CS4231P instead of AD1848P (kill the AD1848P).
-> > 
-> > Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-> > ---
-> > Changes since previous version:
-> > 
-> > 1. No reformatting of the snd_ad1848_debug()
-> >    as the file is going to be killed.
-> > 1. Nicer formatting of WSS_SINGLE and WSS_DOUBLE
-> >    macros.
-> 
-> I believe 1 no. 2 is a cut & paste error? There are no such changes in 
-> this patch.
-> 
+It works!
 
-Right.
-
-Regards,
-Krzysztof
+The reason that I did it the other way is because I didn't know if all
+alc203 users want that pin used that way,
+and since I hadn't seen any issues, I figured that it be better to make it
+something that I could turn on just for my device.
 
 
+On Tue, Aug 5, 2008 at 5:05 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-----------------------------------------------------------------------
-Wymien zeszyty na notebooka!
-Sprawdz >>> http://link.interia.pl/f1eab 
+> At Mon, 4 Aug 2008 11:46:28 -0500,
+> george pee wrote:
+> >
+> > I have a wireless tablet (webdt310)
+> > http://dtresearch.com/product/wt310/index.htm
+> >
+> > It has cs5536 audio and a realtek alc203 codec.
+> >
+> > The headphone jack works perfectly, but the internal speaker was not.
+> >
+> > After a bit a twiddling and reading the ALC203 data sheet, I finally
+> figured
+> > out that the function of Pin 37 had to be changed to MONO-OUT to get
+> sound
+> > out of the
+> > internal speaker.
+> >
+> > I'm not sure that this is the best approach (maybe there could be some
+> pin
+> > sensing?)
+> > but I added this as an ac97 quirk.  Here's the patch.
+>
+> I prefer this kind of change with ac97->patch().
+> How about the patch below (untested)?
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
+> index f6a7d72..171559c 100644
+> --- a/sound/pci/ac97/ac97_codec.c
+> +++ b/sound/pci/ac97/ac97_codec.c
+> @@ -122,7 +122,7 @@ static const struct ac97_codec_id snd_ac97_codec_ids[]
+> = {
+>  { 0x414c4740, 0xfffffff0, "ALC202",            NULL,           NULL },
+>  { 0x414c4750, 0xfffffff0, "ALC250",            NULL,           NULL },
+>  { 0x414c4760, 0xfffffff0, "ALC655",            patch_alc655,   NULL },
+> -{ 0x414c4770, 0xfffffff0, "ALC203",            NULL,           NULL },
+> +{ 0x414c4770, 0xfffffff0, "ALC203",            patch_alc203,   NULL },
+>  { 0x414c4781, 0xffffffff, "ALC658D",           NULL,   NULL }, /* already
+> patched */
+>  { 0x414c4780, 0xfffffff0, "ALC658",            patch_alc655,   NULL },
+>  { 0x414c4790, 0xfffffff0, "ALC850",            patch_alc850,   NULL },
+> diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
+> index f4fbc79..bb028f8 100644
+> --- a/sound/pci/ac97/ac97_patch.c
+> +++ b/sound/pci/ac97/ac97_patch.c
+> @@ -2560,6 +2560,14 @@ static int patch_ad1986(struct snd_ac97 * ac97)
+>        return 0;
+>  }
+>
+> +/*
+> + * realtek ALC203: use mono-out for pin 37
+> + */
+> +static int patch_alc203(struct snd_ac97 *ac97)
+> +{
+> +       snd_ac97_update_bits(ac97, 0x7a, 0x400, 0x400);
+> +       return 0;
+> +}
+>
+>  /*
+>  * realtek ALC65x/850 codecs
+>
