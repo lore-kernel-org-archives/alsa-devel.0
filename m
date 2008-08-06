@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC V2: Improve pause/unpause
-	performance in	Freescale 8610 drivers
-Date: Wed, 6 Aug 2008 09:47:10 +0100
-Message-ID: <20080806084710.GA19301@rakim.wolfsonmicro.main>
-References: <1217965051-14051-1-git-send-email-timur@freescale.com>
+Subject: Re: WM9712 Not Giving output
+Date: Wed, 6 Aug 2008 10:26:00 +0100
+Message-ID: <20080806092559.GA26169@sirena.org.uk>
+References: <20080804121221.GC2499@sirena.org.uk>
+	<13184.28411.qm@web50106.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C9E2F2475B
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E51B52476F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Aug 2008 10:47:11 +0200 (CEST)
+	Wed,  6 Aug 2008 11:26:01 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1217965051-14051-1-git-send-email-timur@freescale.com>
+In-Reply-To: <13184.28411.qm@web50106.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
+To: Nitin Mahajan <nitinm76@yahoo.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 05, 2008 at 02:37:31PM -0500, Timur Tabi wrote:
+On Tue, Aug 05, 2008 at 08:06:06PM -0700, Nitin Mahajan wrote:
 
-> Signed-off-by: Timur Tabi <timur@freescale.com>
+> Here is the mixer-config file got through 'alsactl'. Could you please guide me which controls to set with what values using amixer, for playback through Headphone and Recording?
 
-Applied, thanks.
+For playback try these:
 
-> +			 * Wait until the SSI has filled its FIFO. Without this
-> +			 * delay, ALSA complains about overruns.  When the FIFO
-> +			 * is full, the DMA controller initiates its first
-> +			 * transfer.  Until then, however, the DMA's DAR
-> +			 * register is zero, which translates to an
-> +			 * out-of-bounds pointer.  This makes ALSA think an
-> +			 * overrun has occurred.
->  			 */
-> -			mdelay(1);
-> +			while (!(in_be32(&ssi->sisr) & CCSR_SSI_SISR_RFF0));
+> 	control.4 {
+> 		comment.access 'read write'
+> 		comment.type BOOLEAN
+> 		comment.count 1
+> 		iface MIXER
+> 		name 'Headphone Playback Switch'
+> 		value false
+> 	}
 
-It'd be nice to have a timeout here in case the FIFO never fills.
+This should be enabled.
+
+> 	control.8 {
+> 		comment.access 'read write'
+> 		comment.type BOOLEAN
+> 		comment.count 1
+> 		iface MIXER
+> 		name 'Headphone Playback ZC Switch'
+> 		value false
+> 	}
+
+It's better to enable this but not essential - it avoids audio artifacts
+while doing volume updates during playback.
+
+> 	control.64 {
+> 		comment.access 'read write'
+> 		comment.type BOOLEAN
+> 		comment.count 1
+> 		iface MIXER
+> 		name 'Right Mixer PCM Playback Switch'
+> 		value false
+> 	}
+> 	control.65 {
+> 		comment.access 'read write'
+> 		comment.type BOOLEAN
+> 		comment.count 1
+> 		iface MIXER
+> 		name 'Left Mixer PCM Playback Switch'
+> 		value false
+> 	}
+
+These should be enabled.
+
+If this still gives you trouble then please build with DAPM_DEBUG
+enabled in soc-dapm.c (or #define DEBUG at very the top of the file
+prior to the includes if using a very current version).  This will cause
+ASoC to produce debug output when it starts playback which should show
+anything that needs to be enabled but isn't.
+
+Please also make sure that you are using a driver with the patch that
+Marek identified earlier in the thread.
