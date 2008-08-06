@@ -1,15 +1,17 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: [PATCH] ALSA: wss_lib: rework snd_ad1848_probe()
-Date: Wed, 06 Aug 2008 08:42:08 +0200
-Message-ID: <489947C0.30104@keyaccess.nl>
+Subject: Re: [PATCH] ALSA: wss_lib: rework snd_ad1848_probe()
+Date: Wed, 06 Aug 2008 08:56:40 +0200
+Message-ID: <48994B28.1040107@keyaccess.nl>
+References: <489947C0.30104@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060807000500060608070809"
+Content-Type: multipart/mixed; boundary="------------080803020607030707060103"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
 	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62C6724757
+	by alsa0.perex.cz (Postfix) with ESMTP id C069710385C
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Aug 2008 08:42:09 +0200 (CEST)
+	Wed,  6 Aug 2008 08:56:40 +0200 (CEST)
+In-Reply-To: <489947C0.30104@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +26,43 @@ Cc: ALSA devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczt
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------060807000500060608070809
+--------------080803020607030707060103
 Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Takashi.
+On 06-08-08 08:42, Rene Herman wrote:
 
-This reworks snd_ad1848_probe(), making for IMO significantly more 
-straightforward reading.
+> This reworks snd_ad1848_probe(), making for IMO significantly more 
+> straightforward reading.
+> 
+> The original had a somewhat odd try-loop where it not only waited for 
+> the codec to come out of init but also retried a failed basic detect 
+> which seems to not make sense. Except for that, the detection logic 
+> should be unchanged.
+> 
+> I am by the way rather unsure what it is that the spin_lock is trying to 
+> protect us from here. What's the error scenario if we just not take it? 
+> We aren't live yet...
+> 
+> Next step is folding this into snd_wss_probe() directly.
 
-The original had a somewhat odd try-loop where it not only waited for 
-the codec to come out of init but also retried a failed basic detect 
-which seems to not make sense. Except for that, the detection logic 
-should be unchanged.
+Oh, but now that I decided to do so not immediately, this first one 
+should remeber to switch back to MODE 1, if only for cleanliness.
 
-I am by the way rather unsure what it is that the spin_lock is trying to 
-protect us from here. What's the error scenario if we just not take it? 
-We aren't live yet...
-
-Next step is folding this into snd_wss_probe() directly.
+New version. Never mind the somewhat ugly goto. Disappears when folded 
+again.
 
 Rene.
 
 
---------------060807000500060608070809
+--------------080803020607030707060103
 Content-Type: text/plain;
  name="0001-ALSA-wss_lib-rework-snd_ad1848_probe.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
  filename="0001-ALSA-wss_lib-rework-snd_ad1848_probe.patch"
 
->From 69a1e117af7fd35ebd4c093fcd8151996a43a69b Mon Sep 17 00:00:00 2001
+>From 97559e0fd8c8d2e6d300640ebf60d953b87c945c Mon Sep 17 00:00:00 2001
 From: Rene Herman <rene.herman@gmail.com>
 Date: Wed, 6 Aug 2008 08:09:34 +0200
 Subject: [PATCH] ALSA: wss_lib: rework snd_ad1848_probe()
@@ -65,14 +73,14 @@ that's needed) the detection logic should be unchanged.
 
 Signed-off-by: Rene Herman <rene.herman@gmail.com>
 ---
- sound/isa/wss/wss_lib.c |  131 ++++++++++++++++++++++++-----------------------
- 1 files changed, 67 insertions(+), 64 deletions(-)
+ sound/isa/wss/wss_lib.c |  133 ++++++++++++++++++++++++----------------------
+ 1 files changed, 69 insertions(+), 64 deletions(-)
 
 diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
-index 955db45..802474b 100644
+index 955db45..cbe9565 100644
 --- a/sound/isa/wss/wss_lib.c
 +++ b/sound/isa/wss/wss_lib.c
-@@ -1147,79 +1147,82 @@ static snd_pcm_uframes_t snd_wss_capture_pointer(struct snd_pcm_substream *subst
+@@ -1147,79 +1147,84 @@ static snd_pcm_uframes_t snd_wss_capture_pointer(struct snd_pcm_substream *subst
  
  static int snd_ad1848_probe(struct snd_wss *chip)
  {
@@ -196,7 +204,7 @@ index 955db45..802474b 100644
 +		if (snd_wss_in(chip, i) != snd_wss_in(chip, 16 + i)) {
 +			/* we have more than 16 registers: check ID */
 +			if ((r & 0xf) != 0xa)
-+				goto out;
++				goto out_mode;
 +			/*
 +			 * on CMI8330, CS4231_VERSION is volume control and
 +			 * can be set to 0
@@ -205,13 +213,15 @@ index 955db45..802474b 100644
 +			r = snd_wss_in(chip, CS4231_VERSION) & 0xe7;
 +			if (!r)
 +				chip->hardware = WSS_HW_CMI8330;
-+			goto out;
++			goto out_mode;
 +		}
 +	}
 +	if (r & 0x80)
 +		chip->hardware = WSS_HW_CS4248;
 +	else
 +		chip->hardware = WSS_HW_AD1848;
++out_mode:
++	snd_wss_out(chip, CS4231_MISC_INFO, 0);
 +out:
  	spin_unlock_irqrestore(&chip->reg_lock, flags);
 -	return 0;		/* all things are ok.. */
@@ -223,7 +233,7 @@ index 955db45..802474b 100644
 1.5.5
 
 
---------------060807000500060608070809
+--------------080803020607030707060103
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -234,4 +244,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------060807000500060608070809--
+--------------080803020607030707060103--
