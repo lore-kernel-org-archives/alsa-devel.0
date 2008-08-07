@@ -1,19 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: WM9712 Not Giving output
-Date: Thu, 7 Aug 2008 12:14:07 +0100
-Message-ID: <20080807111405.GA19334@sirena.org.uk>
-References: <20080806092559.GA26169@sirena.org.uk>
-	<584334.24810.qm@web50106.mail.re2.yahoo.com>
+From: "anuj aggarwal" <anuj.aggarwal@gmail.com>
+Subject: Re: Application hangs with different period sizes
+Date: Thu, 7 Aug 2008 15:48:49 +0530
+Message-ID: <2ee9e08d0808070318s7cc6c971ibae1e9b6e5e179f8@mail.gmail.com>
+References: <2ee9e08d0807030019i1442729cyd241d72074791077@mail.gmail.com>
+	<486CBAE9.60203@tet.com.br>
+	<2ee9e08d0807030554t259c3b79x9023d901408a36e7@mail.gmail.com>
+	<486CCD83.4040408@tet.com.br>
+	<2ee9e08d0807030641g15a14349o8cce5a029f555132@mail.gmail.com>
+	<486CF0B6.7090004@tet.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE6AC103878
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.241])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2CA4024133
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Aug 2008 15:07:42 +0200 (CEST)
+	Thu,  7 Aug 2008 15:11:21 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id d31so71822and.80
+	for <alsa-devel@alsa-project.org>; Thu, 07 Aug 2008 06:11:19 -0700 (PDT)
+In-Reply-To: <486CF0B6.7090004@tet.com.br>
 Content-Disposition: inline
-In-Reply-To: <584334.24810.qm@web50106.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +29,214 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nitin Mahajan <nitinm76@yahoo.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Gustavo da Silva Serra <gustavo.serra@tet.com.br>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 06, 2008 at 03:04:07AM -0700, Nitin Mahajan wrote:
+Hi,
 
-> I am not able to make the Mic recording work now. Apart from the mixer controls, I identified these registers to be programmed with following values, which again to seperate out the problem area, H/w or S/w.I am using single ended mono microphone on Left i.e Mic 1.
+Regarding the below mentioned problem, we added some debugging in ALSA layer
+and our audio codec driver to understand the problem.  And I think, we
+understand the root cause of the issue.
+Whenever we call *snd_pcm_writei* function from application, it executes
+kernel function *snd_pcm_lib_write1* from sound/core/pcm_lib.c. This
+function copies the user buffer and updates some alsa  variables
+and trigger the DMA ( if alsa is in PREPARED state).  And same thing is
+done in snd_pcm_readi() function call.
 
-Please work in terms of the ALSA controls - it is much easier to provide
-support when working through the exposed interfaces and direct register
-writes may be overwritten by the driver, causing additional confusion.
+In case of DMA transfer, the DMA callback will update the hw_ptr depending
+on the number of bytes xfered. So now two functions are updating the hw_ptr
+(DMA callback and write/read function) and this is the problem. Only DMA
+callback should update the hw_ptr because DMA is the one who is doing the
+real transfer, not  the write/read function. Read and write function should
+only update the appl_ptr and leave the hw_ptr for DMA callback.
 
-> Also , If I take the Linux-2.6.26 kernel from mips, can you tell me how to get the patch from wolfson ASOC git so that I have all the latest ASOC and WM related code?
-> I am not familiar with git :(.
+After applying the below patch, my application works fine. Can someone look
+into the patch provided below and confirm our understanding?
 
-To get the latest development code:
+diff -uNr lsp_0.9.7_old/sound/core/pcm_lib.c
+lsp_0.9.7_new/sound/core/pcm_lib.c
+--- lsp_0.9.7_old/sound/core/pcm_lib.c  2007-11-26 07:57:25.000000000 -0600
++++ lsp_0.9.7_new/sound/core/pcm_lib.c  2008-07-10 23:16:19.000000000 -0500
+@@ -1648,8 +1648,6 @@
+                snd_pcm_uframes_t frames, appl_ptr, appl_ofs;
+                snd_pcm_uframes_t avail;
+                snd_pcm_uframes_t cont;
+-               if (runtime->sleep_min == 0 && runtime->status->state ==
+SNDRV_PCM_STATE_RUNNING)
+-                       snd_pcm_update_hw_ptr(substream);
+                avail = snd_pcm_playback_avail(runtime);
+                if (((avail < runtime->control->avail_min && size > avail)
+||
+                   (size >= runtime->xfer_align && avail <
+runtime->xfer_align))) {
+@@ -1924,8 +1922,6 @@
+                snd_pcm_uframes_t frames, appl_ptr, appl_ofs;
+                snd_pcm_uframes_t avail;
+                snd_pcm_uframes_t cont;
+-               if (runtime->sleep_min == 0 && runtime->status->state ==
+SNDRV_PCM_STATE_RUNNING)
+-                       snd_pcm_update_hw_ptr(substream);
+              __draining:
+                avail = snd_pcm_capture_avail(runtime);
+                if (runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
 
-	git clone git://opensource.wolfsonmicro.com/linux-2.6-asoc
-	cd linux-2.6-asoc
+Please provide your comments.
 
-You can generate a diff from a tag to the latest development branch like
-this:
+Regards,
+Anuj
 
-	git diff v2.6.26..origin/dev
 
-(Linux releases are tagged in that format - 'git tag' will list the
-known tags) specifying directories lets you filter what's included so:
+On Thu, Jul 3, 2008 at 9:01 PM, Gustavo da Silva Serra <
+gustavo.serra@tet.com.br> wrote:
 
-	git diff v2.6.26..origin/dev sound include/sound
+> Sorry, I didn't read the log.
+>
+> I don't know where you can find this limitation, the only thing I know is
+> that a specific model of Audigy, for example, seems to support only two
+> periods.
+> Can't you just use 1024 or 512? I don't know why the application crashes,
+> it is something that is beyond my knowledge, sorry.
+>
+>
+> anuj aggarwal escreveu:
+>
+>> I think the library/driver is able to configure the way user has
+>> requested. See the logs (in my first mail) which confirm that the requested
+>> period size has been taken for configuration.
+>>
+>> Where can I found the limitation in the driver code/spec which says that
+>> these period sizes are not supported? Any suggestion is most welcome...
+>>
+>> Thanks,
+>> Anuj
+>>
+>> On Thu, Jul 3, 2008 at 6:30 PM, Gustavo da Silva Serra <
+>> gustavo.serra@tet.com.br <mailto:gustavo.serra@tet.com.br>> wrote:
+>>
+>>    I think that snd_pcm_hw_params_set_period_size_near() will not
+>>    return an error, but you must check the "val" parameter, is it
+>>    returning the same value that you passed?
+>>
+>>    "Some periods are not supported" means that some cards may not
+>>    support periods that aren't power of two. I am not sure, since I
+>>    am new to ALSA and I am working most with aloop.
+>>
+>>    anuj aggarwal escreveu:
+>>
+>>        I am doing the same. I used
+>>        snd_pcm_hw_params_set_period_size_near() to set the period
+>>        size and checked the return value also; it was not an error.
+>>
+>>        I have one more question. When you say 'Some periods are not
+>>        supported', what does that mean? What are the constraints
+>>        which make some periods not-supported by the audio codec driver?
+>>
+>>        On Thu, Jul 3, 2008 at 5:11 PM, Gustavo da Silva Serra
+>>        <gustavo.serra@tet.com.br <mailto:gustavo.serra@tet.com.br>
+>>        <mailto:gustavo.serra@tet.com.br
+>>        <mailto:gustavo.serra@tet.com.br>>> wrote:
+>>
+>>           Do you check the result of the function that sets the
+>>        period size?
+>>           Some periods are not supported and you can't assume that
+>>        they are
+>>           valid and proceed in your application. Use
+>>           snd_pcm_hw_params_set_period_time_near to see what is the
+>>        nearest
+>>           possible value for period.
+>>                 <
+>> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html#gf5e53bcb748185a4da3b8538720a5792
+>> >
+>>
+>>           anuj aggarwal escreveu:
+>>
+>>               My audio driver supports buffer sizes from 128 to 32768 and
+>>               period sizes
+>>               from 8 to 2048. I am trying to set the period size as 1030
+>>               (just a random
+>>               number between 8 & 2048, but not multiple of 2^n) and
+>>        buffer
+>>               size as
+>>               16*buffer_size (i.e. 16480). The output is as follows:
+>>
+>>               Buffer size range from 128 to 32768
+>>               Period size range from 8 to 2048
+>>               Request period size 1030 and got 1030
+>>               Plug PCM: Hardware PCM card 0 'TWL4030' device 0
+>>        subdevice 0
+>>               Its setup is:
+>>                stream       : PLAYBACK
+>>                access       : RW_INTERLEAVED
+>>                format       : S16_LE
+>>                subformat    : STD
+>>                channels     : 2
+>>                rate         : 44100
+>>                exact rate   : 44100 (44100/1)
+>>                msbits       : 16
+>>                buffer_size  : 16480
+>>                period_size  : 1030
+>>                period_time  : 23356
+>>                tstamp_mode  : NONE
+>>                period_step  : 1
+>>                avail_min    : 1030
+>>                start_threshold  : 16480
+>>                stop_threshold   : 16480
+>>                silence_threshold: 0
+>>                silence_size : 0
+>>                boundary     : 1080033280
+>>
+>>               The problem with this setup is the application just hangs
+>>               without playing
+>>               anything. If I use period size as 2048, the app plays
+>>        the song
+>>               but clips the
+>>               last part of it. If I use 1024/512, it works fine.
+>>
+>>               I have tried alsa lib version 1.0.15 & 1.0.16 but the
+>>        problem
+>>               persists. Is
+>>               there anything wrong with my app or audio driver?
+>>
+>>               Please help.
+>>
+>>               Thanks in advance,
+>>               Anuj Aggarwal
+>>               _______________________________________________
+>>               Alsa-devel mailing list
+>>               Alsa-devel@alsa-project.org
+>>        <mailto:Alsa-devel@alsa-project.org>
+>>        <mailto:Alsa-devel@alsa-project.org
+>>        <mailto:Alsa-devel@alsa-project.org>>
+>>
+>>               http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>>               __________ NOD32 3238 (20080703) Information __________
+>>
+>>               This message was checked by NOD32 antivirus system.
+>>               http://www.eset.com
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>        --        Best Regards,
+>>        Anuj Aggarwal
+>>
+>>
+>>
+>>
+>>
+>> --
+>> Best Regards,
+>> Anuj Aggarwal
+>>
+>
+>
 
-will only give you ALSA related changes.
+
+-- 
+Best Regards,
+Anuj Aggarwal
