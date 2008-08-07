@@ -1,20 +1,19 @@
-From: "Tellman, Steven" <Steven.Tellman@idt.com>
-Subject: Re: SOLVED: Re: Dell Studio 15 - aka Inspiron 1535
-	sound problems: HDA intel and codec IDT (STAC) 92HD73C1X5
-Date: Thu, 7 Aug 2008 08:32:25 -0700
-Message-ID: <16A430A423D62246A24C9A892622FE663464C0@CORPEXCH1.na.ads.idt.com>
-References: <48987087.4040001@avalpa.com> <48995ECF.2040607@avalpa.com>
-	<489A1376.3040005@avalpa.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] ALSA: ASoC V2: disable automatic volume
+	control in the CS4270 sound driver
+Date: Thu,  7 Aug 2008 11:22:32 -0500
+Message-ID: <1218126153-26095-2-git-send-email-timur@freescale.com>
+References: <1218126153-26095-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxout2.mainstreet.net (mxout2.mainstreet.net [204.69.220.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60AE2248C5
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39926248F9
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Aug 2008 17:32:35 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <489A1376.3040005@avalpa.com>
+	Thu,  7 Aug 2008 18:22:41 +0200 (CEST)
+In-Reply-To: <1218126153-26095-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Andrea Venturi <a.venturi@avalpa.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lg@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Yes, EQ is in development as an ALSA plug-in.
+Disable the automatic volume control feature of the CS4270 audio codec.  This
+feature, which is enabled by default, causes volume change commands to be
+delayed.  Sometimes the volume change happens after playback is started.
 
-IDT PC Audio Marketing Engineer/Linux Manager
-W: (512) 330-3127
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
 
------Original Message-----
-From: alsa-devel-bounces@alsa-project.org
-[mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Andrea Venturi
-Sent: Wednesday, August 06, 2008 4:11 PM
-To: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] SOLVED: Re: Dell Studio 15 - aka Inspiron 1535
-sound problems: HDA intel and codec IDT (STAC) 92HD73C1X5
+This patch is for ASoC V2.
 
-Andrea Venturi wrote:
-> Andrea Venturi wrote:
->> hi, i own a brand new Dell laptop Studio 15
->>
->> the audio speakers stay mute if i play an audio file. :-|
->>
->
-> now it works (more or less).
+ sound/soc/codecs/cs4270.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
 
-hi. i'm back again with a little issue.
-
-the sound max volume is not as high as the other OS standard.
-
-i had a little thread in the Dell Linux mailing list about this issue:
-
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index df3294d..e1c3fbd 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -430,6 +430,19 @@ static int cs4270_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
  
-http://lists.us.dell.com/pipermail/linux-desktops/2008-August/001808.htm
-l
-
-
-and, to make a long story short, Dell's Mario Limonciello told me that
-the max master volume has been reduced from 0xff to 0xec, to solve some
-distortion (resonance) issues at higher levels, with this commit:
-
-http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=d654a660355f9d
-c30d3a6bf1493d32363bde8570
-
-this is not going to change until there's some Band EQualization
-software support in the alsa driver that can reduce this resonance
-issues at higher volume levels.
-
-do you know if something like this is in development?
-
-i gave a quick look to the Stac/IDT 92HD73C1XXX codec datasheet
-http://www.idt.com/?genID=92HD73C1 and i'm going to believe there's no
-HW support about band filtering..  (the datasheet indeed speaks about a
-SigmaTel Kernel Processing Interface AKA /SKPI/ ) so it should it be a
-complete software solution for linux too! right?
-
-bye
-
-andrea venturi
++	/* Disable automatic volume control.  It's enabled by default, and
++	 * it causes volume change commands to be delayed, sometimes until
++	 * after playback has started.
++	 */
++
++	reg = cs4270_read_reg_cache(codec, CS4270_TRANS);
++	reg &= ~(CS4270_TRANS_SOFT | CS4270_TRANS_ZERO);
++	ret = cs4270_i2c_write(codec, CS4270_TRANS, reg);
++	if (ret < 0) {
++		dev_err(codec->dev, "I2C write failed\n");
++		return ret;
++	}
++
+ 	/* Thaw and power-up the codec */
+ 
+ 	ret = cs4270_i2c_write(codec, CS4270_PWRCTL, 0);
+-- 
+1.5.5
