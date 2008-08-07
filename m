@@ -1,23 +1,22 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Why is substream->pcm->dev == NULL?
-Date: Thu, 07 Aug 2008 13:51:55 -0500
-Message-ID: <489B444B.9010202@freescale.com>
+From: "Timur Tabi" <timur@freescale.com>
+Subject: Re: How to report error in _pointer function?
+Date: Thu, 7 Aug 2008 13:59:56 -0500
+Message-ID: <ed82fe3e0808071159k7aea218cm6184680a9c63d3d2@mail.gmail.com>
+References: <ed82fe3e0807300856q6c6daf99n224df8ae4bfe6954@mail.gmail.com>
+	<s5hhca7s64k.wl%tiwai@suse.de> <489A1D9E.7040709@freescale.com>
+	<s5hfxpg6b65.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw01.freescale.net (az33egw01.freescale.net
-	[192.88.158.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE5B324957
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.232])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1A81124961
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Aug 2008 20:52:01 +0200 (CEST)
-Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
-	by az33egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
-	m77IpuNO014434
-	for <alsa-devel@alsa-project.org>; Thu, 7 Aug 2008 11:51:56 -0700 (MST)
-Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
-	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m77IptSr007432
-	for <alsa-devel@alsa-project.org>; Thu, 7 Aug 2008 13:51:55 -0500 (CDT)
+	Thu,  7 Aug 2008 21:27:12 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 36so479106wra.24
+	for <alsa-devel@alsa-project.org>; Thu, 07 Aug 2008 12:27:11 -0700 (PDT)
+In-Reply-To: <s5hfxpg6b65.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +26,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In my _pointer callback function, I have this:
+On Thu, Aug 7, 2008 at 11:29 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-printk(KERN_INFO "%s:%u substream->pcm->dev=%p, substream->pcm->card->dev=%p\n",
-__func__, __LINE__, substream->pcm->dev, substream->pcm->card->dev);
+> How is the PCM status during hang?  Check
+> /proc/asound/card0/pcm*/sub*/* files.
 
-During playback, it displays this:
+I wrote a script that repeatedly dumps the contents of
+/proc/asound/card0/pcm0p/sub0/status.  I started playback, and it
+shows this:
 
-fsl_dma_pointer:698 substream->pcm->dev=00000000, substream->pcm->card->dev=dfa50a08
+...
+closed
+closed
+closed
+state: OPEN
+trigger_time: 0.000000000
+tstamp      : 0.000000000
+delay       : 0
+avail       : 0
+avail_max   : 0
+-----
+hw_ptr      : 0
+appl_ptr    : 0
+state: OPEN
+trigger_time: 0.000000000
+tstamp      : 0.000000000
+delay       : 0
+avail       : 0
+avail_max   : 0
+-----
+hw_ptr      : 0
+appl_ptr    : 0
+state: XRUN
+trigger_time: 165.300191122
+tstamp      : 165.302136461
+delay       : 0
+avail       : 0
+avail_max   : 0
+-----
+hw_ptr      : 0
+appl_ptr    : 17840
+state: XRUN
+trigger_time: 165.300191122
+tstamp      : 165.304661787
+delay       : 0
+avail       : 0
+avail_max   : 0
+-----
+hw_ptr      : 0
+appl_ptr    : 17840
+state: XRUN
+trigger_time: 165.300191122
+tstamp      : 165.306860459
+delay       : 0
+avail       : 0
+avail_max   : 0
+-----
+hw_ptr      : 0
+appl_ptr    : 17840
 
-Why is substream->pcm->dev == NULL?  What's the point of having this field if
-you're not going to use it?
+and so on.
+
+> Also, could you run with gdb and check at which code-path is it
+> stopped?
+
+Sorry, I don't use gdb that much.  How can I do this?  I don't think I
+have debug versions of alsa-lib or mplayer.
 
 -- 
 Timur Tabi
