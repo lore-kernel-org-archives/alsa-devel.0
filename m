@@ -1,17 +1,19 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] ALSA: fix DMA channel selection in Freescale
-	MPC8610 sound drivers
-Date: Wed,  6 Aug 2008 15:01:01 -0500
-Message-ID: <1218052861-15903-1-git-send-email-timur@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: WM9712 Not Giving output
+Date: Thu, 7 Aug 2008 12:14:07 +0100
+Message-ID: <20080807111405.GA19334@sirena.org.uk>
+References: <20080806092559.GA26169@sirena.org.uk>
+	<584334.24810.qm@web50106.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id A737E10392D
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE6AC103878
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Aug 2008 22:01:10 +0200 (CEST)
+	Thu,  7 Aug 2008 15:07:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <584334.24810.qm@web50106.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,86 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
+To: Nitin Mahajan <nitinm76@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On the Freescale MPC8610, SSI1 is hard-coded to use DMA channels 0 and 1
-for playback and capture, and SSI2 is hard-coded to use DMA channels 2 and 3.
-This patch fixes the fabric driver so that it uses the right channels.
+On Wed, Aug 06, 2008 at 03:04:07AM -0700, Nitin Mahajan wrote:
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
- sound/soc/fsl/mpc8610_hpcd.c |   26 +++++++++++++++-----------
- 1 files changed, 15 insertions(+), 11 deletions(-)
+> I am not able to make the Mic recording work now. Apart from the mixer controls, I identified these registers to be programmed with following values, which again to seperate out the problem area, H/w or S/w.I am using single ended mono microphone on Left i.e Mic 1.
 
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index 4bdc9d8..94f89de 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -68,10 +68,6 @@ static int mpc8610_hpcd_machine_probe(struct platform_device *sound_device)
- 	guts_set_pmuxcr_dma(machine_data->guts, machine_data->dma_id,
- 		machine_data->dma_channel_id[1], 0);
- 
--	guts_set_pmuxcr_dma(machine_data->guts, 1, 0, 0);
--	guts_set_pmuxcr_dma(machine_data->guts, 1, 3, 0);
--	guts_set_pmuxcr_dma(machine_data->guts, 0, 3, 0);
--
- 	switch (machine_data->ssi_id) {
- 	case 0:
- 		clrsetbits_be32(&machine_data->guts->pmuxcr,
-@@ -230,6 +226,8 @@ static int mpc8610_hpcd_probe(struct of_device *ofdev,
- 	struct fsl_ssi_info ssi_info;
- 	struct fsl_dma_info dma_info;
- 	int ret = -ENODEV;
-+	unsigned int playback_dma_channel;
-+	unsigned int capture_dma_channel;
- 
- 	machine_data = kzalloc(sizeof(struct mpc8610_hpcd_data), GFP_KERNEL);
- 	if (!machine_data)
-@@ -381,8 +379,9 @@ static int mpc8610_hpcd_probe(struct of_device *ofdev,
- 		goto error;
- 	}
- 
--	/* Find the DMA channels to use.  For now, we always use the first DMA
--	   controller. */
-+	/* Find the DMA channels to use.  Both SSIs need to use the same DMA
-+	 * controller, so let's use DMA#1.
-+	 */
- 	for_each_compatible_node(dma_np, NULL, "fsl,mpc8610-dma") {
- 		iprop = of_get_property(dma_np, "cell-index", NULL);
- 		if (iprop && (*iprop == 0)) {
-@@ -397,14 +396,19 @@ static int mpc8610_hpcd_probe(struct of_device *ofdev,
- 	}
- 	machine_data->dma_id = *iprop;
- 
-+	/* SSI1 needs to use DMA Channels 0 and 1, and SSI2 needs to use DMA
-+	 * channels 2 and 3.  This is just how the MPC8610 is wired
-+	 * internally.
-+	 */
-+	playback_dma_channel = (machine_data->ssi_id == 0) ? 0 : 2;
-+	capture_dma_channel = (machine_data->ssi_id == 0) ? 1 : 3;
-+
- 	/*
--	 * Find the DMA channels to use.  For now, we always use DMA channel 0
--	 * for playback, and DMA channel 1 for capture.
-+	 * Find the DMA channels to use.
- 	 */
- 	while ((dma_channel_np = of_get_next_child(dma_np, dma_channel_np))) {
- 		iprop = of_get_property(dma_channel_np, "cell-index", NULL);
--		/* Is it DMA channel 0? */
--		if (iprop && (*iprop == 0)) {
-+		if (iprop && (*iprop == playback_dma_channel)) {
- 			/* dma_channel[0] and dma_irq[0] are for playback */
- 			dma_info.dma_channel[0] = of_iomap(dma_channel_np, 0);
- 			dma_info.dma_irq[0] =
-@@ -412,7 +416,7 @@ static int mpc8610_hpcd_probe(struct of_device *ofdev,
- 			machine_data->dma_channel_id[0] = *iprop;
- 			continue;
- 		}
--		if (iprop && (*iprop == 1)) {
-+		if (iprop && (*iprop == capture_dma_channel)) {
- 			/* dma_channel[1] and dma_irq[1] are for capture */
- 			dma_info.dma_channel[1] = of_iomap(dma_channel_np, 0);
- 			dma_info.dma_irq[1] =
--- 
-1.5.5
+Please work in terms of the ALSA controls - it is much easier to provide
+support when working through the exposed interfaces and direct register
+writes may be overwritten by the driver, causing additional confusion.
+
+> Also , If I take the Linux-2.6.26 kernel from mips, can you tell me how to get the patch from wolfson ASOC git so that I have all the latest ASOC and WM related code?
+> I am not familiar with git :(.
+
+To get the latest development code:
+
+	git clone git://opensource.wolfsonmicro.com/linux-2.6-asoc
+	cd linux-2.6-asoc
+
+You can generate a diff from a tag to the latest development branch like
+this:
+
+	git diff v2.6.26..origin/dev
+
+(Linux releases are tagged in that format - 'git tag' will list the
+known tags) specifying directories lets you filter what's included so:
+
+	git diff v2.6.26..origin/dev sound include/sound
+
+will only give you ALSA related changes.
