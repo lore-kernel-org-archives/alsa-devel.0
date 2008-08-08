@@ -1,63 +1,38 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: How to report error in _pointer function?
-Date: Fri, 08 Aug 2008 17:26:11 -0500
-Message-ID: <489CC803.9030408@freescale.com>
-References: <ed82fe3e0807300856q6c6daf99n224df8ae4bfe6954@mail.gmail.com>	<s5hhca7s64k.wl%tiwai@suse.de>	<489A1D9E.7040709@freescale.com>	<s5hfxpg6b65.wl%tiwai@suse.de>	<ed82fe3e0808071159k7aea218cm6184680a9c63d3d2@mail.gmail.com>
-	<s5h1w0z67eq.wl%tiwai@suse.de>
+From: Seth Heasley <seth.heasley@intel.com>
+Subject: [PATCH 2.6.26.2] hda_intel: ALSA HD Audio patch for Intel Ibex Peak DeviceIDs
+Date: Fri, 8 Aug 2008 15:56:39 -0700
+Message-ID: <200808081556.40013.seth.heasley@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55E8A24B4E
-	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Aug 2008 00:26:16 +0200 (CEST)
-In-Reply-To: <s5h1w0z67eq.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1761510AbYHHWwM@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: seth.heasley@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+This patch adds the Intel Ibex Peak (PCH) HD Audio Controller DeviceIDs.
 
-> So, the PCM status is properly changed to XRUN as expected.  From the
-> driver perspective, everything must be fine.
+Signed-off by: Seth Heasley <seth.heasley@intel.com>
 
-I've been debugging aplay.  The main loop is function pcm_write().  It calls
-writei_func() which returns -EPIPE.  This causes aplay to jump to xrun(), which
-attempts to recover.
-
-This is not what I want.  I don't want to return overrun/underrun.  I want to
-return failure.  Returning XRUN is wrong.
-
-Instead, I need to take a look at this code I have:
-
-	snd_pcm_stream_lock_irqsave(substream, flags);
-
-	if (snd_pcm_running(substream))
-		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
-
-	snd_pcm_stream_unlock_irqrestore(substream, flags);
-
-It's the call to snd_pcm_stop() that I don't like.  There doesn't appear to be a
-SNDRV_PCM_STATE_xxx state that makes sense.  This function should eventually
-bring me to snd_pcm_pre_stop().  But this function returns -EBADFD because the
-current state is RUNNING and not OPEN.  Because it returns an error,
-snd_pcm_do_stop() is never called.
-
-This doesn't make any sense to me.  Why should I be able to stop a stream only
-if it's open but not running?  If it's open, but not running, then there's
-nothing to stop!  Can you explain the restriction in snd_pcm_pre_stop()?
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+--- linux-2.6.26.2/sound/pci/hda/hda_intel.c.orig       2008-08-08 11:25:05.000000000 -0700
++++ linux-2.6.26.2/sound/pci/hda/hda_intel.c    2008-08-08 11:27:24.000000000 -0700
+@@ -98,6 +98,7 @@
+                         "{Intel, ICH8},"
+                         "{Intel, ICH9},"
+                         "{Intel, ICH10},"
++                        "{Intel, PCH},"
+                         "{Intel, SCH},"
+                         "{ATI, SB450},"
+                         "{ATI, SB600},"
+@@ -2181,6 +2182,8 @@
+        { PCI_DEVICE(0x8086, 0x293f), .driver_data = AZX_DRIVER_ICH },
+        { PCI_DEVICE(0x8086, 0x3a3e), .driver_data = AZX_DRIVER_ICH },
+        { PCI_DEVICE(0x8086, 0x3a6e), .driver_data = AZX_DRIVER_ICH },
++       /* PCH */
++       { PCI_DEVICE(0x8086, 0x3b56), .driver_data = AZX_DRIVER_ICH },
+        /* SCH */
+        { PCI_DEVICE(0x8086, 0x811b), .driver_data = AZX_DRIVER_SCH },
+        /* ATI SB 450/600 */
