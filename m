@@ -1,21 +1,19 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ALSA: ASoC V2: disable automatic volume
- control in the CS4270 sound driver
-Date: Fri, 08 Aug 2008 10:03:30 -0500
-Message-ID: <489C6042.80203@freescale.com>
-References: <1218126153-26095-1-git-send-email-timur@freescale.com>
-	<1218126153-26095-2-git-send-email-timur@freescale.com>
-	<20080808105436.GA10867@rakim.wolfsonmicro.main>
+Subject: Re: How to report error in _pointer function?
+Date: Fri, 08 Aug 2008 10:55:56 -0500
+Message-ID: <489C6C8C.7020706@freescale.com>
+References: <ed82fe3e0807300856q6c6daf99n224df8ae4bfe6954@mail.gmail.com>	<s5hhca7s64k.wl%tiwai@suse.de>	<489A1D9E.7040709@freescale.com>	<s5hfxpg6b65.wl%tiwai@suse.de>	<ed82fe3e0808071159k7aea218cm6184680a9c63d3d2@mail.gmail.com>
+	<s5h1w0z67eq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A3DF24AD0
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14EE824B29
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Aug 2008 17:03:43 +0200 (CEST)
-In-Reply-To: <20080808105436.GA10867@rakim.wolfsonmicro.main>
+	Fri,  8 Aug 2008 18:10:09 +0200 (CEST)
+In-Reply-To: <s5h1w0z67eq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, lg@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Thu, Aug 07, 2008 at 11:22:32AM -0500, Timur Tabi wrote:
->> Disable the automatic volume control feature of the CS4270 audio codec.  This
->> feature, which is enabled by default, causes volume change commands to be
->> delayed.  Sometimes the volume change happens after playback is started.
-> 
-> All applied, thanks.
-> 
-> Should this also be done for current mainline?
+Takashi Iwai wrote:
 
-No.  I'm only doing critical fixes for mainline now.  Unless someone
-specifically asks for this particular fix, I'm not going to put it in.  I have
-no more planned fixes for mainline.
+> What about ltrace?  I'd like to know which functions are called.
+
+This is an embedded system.  I don't have ltrace or strace installed.
+
+I suspect that this problem can easily be reproduced on any system.  Just modify
+the _pointer function to always return XRUN, and see what aplay does.
+
+Anyway, I tried debugging aplay.  I'm not familiar with ALSA application
+programming (just drivers), so I don't know what to look for, but I did find a
+pattern.
+
+I set a breakpoint on function snd_pcm_hw_writei(), which I presume is an
+alsa-lib function.  When I run aplay, the breakpoint is hit:
+
+Breakpoint 1, snd_pcm_hw_writei (pcm=0x10024fd8, buffer=0x100250e8, size=6000)
+    at pcm_hw.c:627
+627             err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi);
+(gdb)
+
+I hit continue, and then it immediately stops at this function again.  I can do
+continue four more times and it does the same thing.  On the sixth "continue",
+there is an 8-second delay.  Then my driver prints a message saying that it's
+returning XRUN, and GDB stops again at snd_pcm_hw_writei().  I don't know what's
+happening during that 8-second delay.
+
+This whole process repeats forever.
 
 -- 
 Timur Tabi
