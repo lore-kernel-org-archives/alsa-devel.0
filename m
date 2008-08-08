@@ -1,23 +1,19 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Suggestion for http://git.alsa-project.org/
-Date: Fri, 08 Aug 2008 15:29:42 -0500
-Message-ID: <489CACB6.4030304@freescale.com>
+Subject: Re: How to report error in _pointer function?
+Date: Fri, 08 Aug 2008 17:26:11 -0500
+Message-ID: <489CC803.9030408@freescale.com>
+References: <ed82fe3e0807300856q6c6daf99n224df8ae4bfe6954@mail.gmail.com>	<s5hhca7s64k.wl%tiwai@suse.de>	<489A1D9E.7040709@freescale.com>	<s5hfxpg6b65.wl%tiwai@suse.de>	<ed82fe3e0808071159k7aea218cm6184680a9c63d3d2@mail.gmail.com>
+	<s5h1w0z67eq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49D2524B1E
+Received: from de01egw02.freescale.net (de01egw02.freescale.net
+	[192.88.165.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55E8A24B4E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Aug 2008 22:29:47 +0200 (CEST)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by de01egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
-	m78KTh9o002190
-	for <alsa-devel@alsa-project.org>; Fri, 8 Aug 2008 13:29:44 -0700 (MST)
-Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
-	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m78KThuq014639
-	for <alsa-devel@alsa-project.org>; Fri, 8 Aug 2008 15:29:43 -0500 (CDT)
+	Sat,  9 Aug 2008 00:26:16 +0200 (CEST)
+In-Reply-To: <s5h1w0z67eq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,24 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If you go to http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git, you
-will see this text:
+Takashi Iwai wrote:
 
-description	Sound development tree
-owner	Takashi Iwai
-last change	Fri, 8 Aug 2008 14:50:58 +0000
-URL	git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-	http://www.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+> So, the PCM status is properly changed to XRUN as expected.  From the
+> driver perspective, everything must be fine.
 
-This is very helpful information.  It makes git-clone much easier, because I can
-just copy/psate the URL.
+I've been debugging aplay.  The main loop is function pcm_write().  It calls
+writei_func() which returns -EPIPE.  This causes aplay to jump to xrun(), which
+attempts to recover.
 
-Can we have the same thing at http://git.alsa-project.org/?  I don't want to
-have to keep figuring out the http URL for cloning alsa-lib, every time I need
-to do it.
+This is not what I want.  I don't want to return overrun/underrun.  I want to
+return failure.  Returning XRUN is wrong.
+
+Instead, I need to take a look at this code I have:
+
+	snd_pcm_stream_lock_irqsave(substream, flags);
+
+	if (snd_pcm_running(substream))
+		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+
+	snd_pcm_stream_unlock_irqrestore(substream, flags);
+
+It's the call to snd_pcm_stop() that I don't like.  There doesn't appear to be a
+SNDRV_PCM_STATE_xxx state that makes sense.  This function should eventually
+bring me to snd_pcm_pre_stop().  But this function returns -EBADFD because the
+current state is RUNNING and not OPEN.  Because it returns an error,
+snd_pcm_do_stop() is never called.
+
+This doesn't make any sense to me.  Why should I be able to stop a stream only
+if it's open but not running?  If it's open, but not running, then there's
+nothing to stop!  Can you explain the restriction in snd_pcm_pre_stop()?
 
 -- 
 Timur Tabi
