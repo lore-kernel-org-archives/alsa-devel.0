@@ -1,19 +1,19 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [PATCH 03/11] wss_lib: rename cs4321_foo to wss_foo
-Date: Fri, 08 Aug 2008 13:28:37 +0200
-Message-ID: <489C2DE5.6010503@keyaccess.nl>
-References: <20080731210341.969b54be.krzysztof.h1@poczta.fm>	<4897CBCD.4080909@keyaccess.nl>
-	<s5hsktjsskw.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Questions about /dev/snd and /proc/asound (new
+	ASoC driver)
+Date: Fri, 8 Aug 2008 12:43:34 +0100
+Message-ID: <20080808114334.GB17329@sirena.org.uk>
+References: <489B6322.8080307@videotron.qc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 040B62472F
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B54C524ADF
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Aug 2008 13:28:29 +0200 (CEST)
-In-Reply-To: <s5hsktjsskw.wl%tiwai@suse.de>
+	Fri,  8 Aug 2008 13:43:35 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <489B6322.8080307@videotron.qc.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,60 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>, Rene Herman <rene.herman@gmail.com>
+To: Simon Tremblay <bidou@videotron.qc.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05-08-08 11:45, Takashi Iwai wrote:
+On Thu, Aug 07, 2008 at 05:03:30PM -0400, Simon Tremblay wrote:
 
-> I've changed the tree structure in my git repo, so I added your
-> Reviewed-by tags to all wss-lib patches now.
+> I read documentation in sound/soc and created a codec driver
+> (tlv320aic23b) and a machine driver (for my board). I think it's all I
+> have to do since AT91 is supported and tlv320aic23b works with i2c and I2S.
 
-I see them, including the MODE_RUNNING changelog addition. Thanks.
+That should be it, yes.
 
+> But there is no /dev/snd created. I don't know for now why... Maybe
+> someone has an idea?
 
-> Now, the tree contains various topic/* branches.  For example,
-> topic/wss-lib holds the whole series of wss and related patches, and
-> topic/asoc holds ASoC-related patches.  The master and other branches
-> merge the topic branches appropriately.  In this way, the patches can
-> be sorted nicely and rebase can be avoided better as well.
-> 
-> Also, some topic branches are for experimental patches that aren't yet
-> merged.  For example, topic/hda-reconfig contains my HD-audio dynamic
-> reconfig patches, and topic/modem-integrate contains MC97 integration
-> patches.
-> 
-> The git URL is:
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-> 
-> and gitweb is:
->   http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=summary
+This is the responsibility of user space - to create files dynamically
+usually one of udev or mdev will be installed on the device.
 
-I see. That stopped me for a bit.
+> I think all I have in /proc/asound is correct too:
 
-I used to pull your devel branch directly into v2.6.26 which worked 
-nicely, what with that branch being based at v2.6.26. topic/wss-lib now 
-though is based at v2.6.27-rc1 meaning pulling it pulled in all of 
-2.6.27-rc1 as well.
+udev and mdev rely on the information in /sys/class/sound to create
+device files - check the dev files in the directories under there.
 
-I understand why; the wss-lib patches were dependent on some earlier 
-opti9xx patches that are in 2.6.27-rc1 but I specifically this cycle 
-decided to stay on -stable for a bit and not allow myself to be 
-continously sidetracked by all sorts of problems in those megabytes upon 
-megabytes of unrelated changes in the upstream kernel. Last cycle was 
-particularly bad.
+> I think it's because I have nothing in /dev/snd. I'm right?
 
-So I was just now cherry-picking the WSS patches and its dependents into 
-a local topic/wss-lib when I decided to give it up after all and just go 
-to 2.6.27-rc2. I'm debugging a PAT related problem in 2.6.27 anyway so I 
-guess the attempt _already_ failed independent of ALSA. <sob>.
-
-Hey, now I get to side-track myself with Merkey's kernel debugger...
-
-Anyways -- what's the status of devel (topic/devel now I see) now? Is 
-that still going to be a branch that's just current ALSA, pullable into 
-current release? Worked great for me but if it's too much trouble to 
-maintain, I can appreciate that and will just cherry-pick/rebase things 
-myself locally I guess.
-
-Rene.
+Yes.
