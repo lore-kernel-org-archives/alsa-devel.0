@@ -1,19 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: How to report error in _pointer function?
-Date: Fri, 08 Aug 2008 10:55:56 -0500
-Message-ID: <489C6C8C.7020706@freescale.com>
-References: <ed82fe3e0807300856q6c6daf99n224df8ae4bfe6954@mail.gmail.com>	<s5hhca7s64k.wl%tiwai@suse.de>	<489A1D9E.7040709@freescale.com>	<s5hfxpg6b65.wl%tiwai@suse.de>	<ed82fe3e0808071159k7aea218cm6184680a9c63d3d2@mail.gmail.com>
-	<s5h1w0z67eq.wl%tiwai@suse.de>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH] ALSA: wss_lib: missing closing brace in
+ (ifdeffed out) debug function.
+Date: Fri, 8 Aug 2008 19:04:47 +0200
+Message-ID: <20080808190447.72d74f48.krzysztof.h1@poczta.fm>
+References: <489C5B2A.7010405@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14EE824B29
+Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
+	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 3A96D24909
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Aug 2008 18:10:09 +0200 (CEST)
-In-Reply-To: <s5h1w0z67eq.wl%tiwai@suse.de>
+	Fri,  8 Aug 2008 18:59:12 +0200 (CEST)
+In-Reply-To: <489C5B2A.7010405@keyaccess.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, Krzysztof Helt <krzysztof.h1@gmail.com>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On Fri, 08 Aug 2008 16:41:46 +0200
+Rene Herman <rene.herman@keyaccess.nl> wrote:
 
-> What about ltrace?  I'd like to know which functions are called.
+> From c5c7bb20460d9cb20fa85fcd6b0121c9cc8bc13c Mon Sep 17 00:00:00 2001
+> From: Rene Herman <rene.herman@gmail.com>
+> Date: Fri, 8 Aug 2008 16:39:21 +0200
+> Subject: [PATCH] ALSA: wss_lib: missing closing brace in (ifdeffed out) debug function.
+> 
+> Signed-off-by: Rene Herman <rene.herman@gmail.com>
+> ---
 
-This is an embedded system.  I don't have ltrace or strace installed.
+Acked-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-I suspect that this problem can easily be reproduced on any system.  Just modify
-the _pointer function to always return XRUN, and see what aplay does.
+>  sound/isa/wss/wss_lib.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
+> index 011da7a..6b7a0fc 100644
+> --- a/sound/isa/wss/wss_lib.c
+> +++ b/sound/isa/wss/wss_lib.c
+> @@ -282,7 +282,7 @@ static void snd_wss_debug(struct snd_wss *chip)
+>  	printk(KERN_DEBUG
+>  		"CS4231 REGS:      INDEX = 0x%02x  "
+>  		"                 STATUS = 0x%02x\n",
+> -					wss_inb(chip, CS4231P(REGSEL),
+> +					wss_inb(chip, CS4231P(REGSEL)),
+>  					wss_inb(chip, CS4231P(STATUS)));
+>  	printk(KERN_DEBUG
+>  		"  0x00: left input      = 0x%02x  "
+> -- 
+> 1.5.5
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
 
-Anyway, I tried debugging aplay.  I'm not familiar with ALSA application
-programming (just drivers), so I don't know what to look for, but I did find a
-pattern.
 
-I set a breakpoint on function snd_pcm_hw_writei(), which I presume is an
-alsa-lib function.  When I run aplay, the breakpoint is hit:
-
-Breakpoint 1, snd_pcm_hw_writei (pcm=0x10024fd8, buffer=0x100250e8, size=6000)
-    at pcm_hw.c:627
-627             err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi);
-(gdb)
-
-I hit continue, and then it immediately stops at this function again.  I can do
-continue four more times and it does the same thing.  On the sixth "continue",
-there is an 8-second delay.  Then my driver prints a message saying that it's
-returning XRUN, and GDB stops again at snd_pcm_hw_writei().  I don't know what's
-happening during that 8-second delay.
-
-This whole process repeats forever.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+----------------------------------------------------------------------
+Tylko dla detektywow! Konkurs na Smaker.pl
+Kliknij >>> http://link.interia.pl/f1eb1
