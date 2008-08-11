@@ -1,18 +1,16 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: [PATCH] sound/pci/Kconfig: update for ice1712/24
-Date: Mon, 11 Aug 2008 02:52:42 +0400
-Message-ID: <20080810225242.GE5093@orion>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] powerpc/drivers: use linux/of_device.h instead
+ of asm/of_device.h
+Date: Mon, 11 Aug 2008 17:04:32 +1000
+Message-ID: <20080811170432.f747ab5e.sfr@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1901924530
+Received: from smtps.tip.net.au (chilli.pcug.org.au [203.10.76.44])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B6CC245A8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Aug 2008 00:52:48 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so896717fgg.44
-	for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2008 15:52:47 -0700 (PDT)
-Content-Disposition: inline
+	Mon, 11 Aug 2008 09:04:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Paul Mackerras <paulus@samba.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: alsa-devel@alsa-project.org, Stelian Pop <stelian@popies.net>, Hanselmann <linux-kernel@hansmi.ch>, Michael@alsa-project.org, lm-sensors@lm-sensors.org, linuxppc-dev@ozlabs.org, Delvare <khali@linux-fr.org>, Johannes Berg <johannes@sipsolutions.net>, Jean@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Alexander Beregalov <a.beregalov@gmail.com>
 
-sound/pci/Kconfig: update for ice1712/24
-
-
-Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
+ drivers/hwmon/ams/ams.h       |    2 +-
+ sound/aoa/soundbus/soundbus.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- sound/pci/Kconfig |   14 +++++++++-----
- 1 files changed, 9 insertions(+), 5 deletions(-)
+These are the last two users of asm/of_device.h.  If everyone is happy,
+we can put this through the powerpc tree.  I have build tested for
+ppc64_defconfig and ppc6xx_defconfig (which uses the relevant drivers).
 
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index f7d95b2..e14dc54 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -649,8 +649,9 @@ config SND_ICE1712
+After this we can remove the include of linux/of_device.h from
+asm/of_device.h
+
+diff --git a/drivers/hwmon/ams/ams.h b/drivers/hwmon/ams/ams.h
+index a6221e5..221ef69 100644
+--- a/drivers/hwmon/ams/ams.h
++++ b/drivers/hwmon/ams/ams.h
+@@ -4,7 +4,7 @@
+ #include <linux/mutex.h>
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
+-#include <asm/of_device.h>
++#include <linux/of_device.h>
  
- 	  Currently supported hardware is: M-Audio Delta 1010(LT),
- 	  DiO 2496, 66, 44, 410, Audiophile 24/96; Digigram VX442;
--	  TerraTec EWX 24/96, EWS 88MT, 88D, DMX 6Fire, Phase 88;
--	  Hoontech SoundTrack DSP 24/Value/Media7.1; Event EZ8.
-+	  TerraTec EWX 24/96, EWS 88MT/D, DMX 6Fire, Phase 88;
-+	  Hoontech SoundTrack DSP 24/Value/Media7.1; Event EZ8;
-+	  Lionstracs Mediastation, Terrasoniq TS 88.
+ enum ams_irq {
+ 	AMS_IRQ_FREEFALL = 0x01,
+diff --git a/sound/aoa/soundbus/soundbus.h b/sound/aoa/soundbus/soundbus.h
+index 622cd37..a0f223c 100644
+--- a/sound/aoa/soundbus/soundbus.h
++++ b/sound/aoa/soundbus/soundbus.h
+@@ -8,7 +8,7 @@
+ #ifndef __SOUNDBUS_H
+ #define __SOUNDBUS_H
  
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-ice1712.
-@@ -665,9 +666,12 @@ config SND_ICE1724
- 	  ICE/VT1724/1720 (Envy24HT/PT) chips.
+-#include <asm/of_device.h>
++#include <linux/of_device.h>
+ #include <sound/pcm.h>
+ #include <linux/list.h>
  
- 	  Currently supported hardware is: AMP AUDIO2000; M-Audio
--	  Revolution 7.1; TerraTec Aureon 5.1 Sky, 7.1 Space/Universe;
--	  AudioTrak Prodigy 7.1; Pontis MS300; Albatron K8X800 Pro II;
--	  Chaintech ZNF3-150/250.
-+	  Revolution 5.1, 7.1, Audiophile 192; TerraTec Aureon 5.1 Sky,
-+	  7.1 Space/Universe, Phase 22/28; Onkyo SE-90PCI, SE-200PCI;
-+	  AudioTrak Prodigy 192, 7.1 (HIFI/LT/XT), HD2; Hercules
-+	  Fortissimo IV; ESI Juli@; Pontis MS300; EGO-SYS WaveTerminal
-+	  192M; Albatron K8X800 Pro II; Chaintech ZNF3-150/250, 9CJS,
-+	  AV-710; Shuttle SN25P.
- 
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-ice1724.
+-- 
+1.5.6.3
+
+-- 
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
