@@ -1,19 +1,17 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: How to report error in _pointer function?
-Date: Mon, 11 Aug 2008 10:37:29 -0500
-Message-ID: <48A05CB9.7010205@freescale.com>
-References: <ed82fe3e0807300856q6c6daf99n224df8ae4bfe6954@mail.gmail.com>	<s5hhca7s64k.wl%tiwai@suse.de>	<489A1D9E.7040709@freescale.com>	<s5hfxpg6b65.wl%tiwai@suse.de>	<ed82fe3e0808071159k7aea218cm6184680a9c63d3d2@mail.gmail.com>	<s5h1w0z67eq.wl%tiwai@suse.de>	<489CC803.9030408@freescale.com>
-	<s5hhc9sm32f.wl%tiwai@suse.de>
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Subject: [PATCH] spitz: MONO -> MONO1
+Date: Tue, 12 Aug 2008 02:45:30 +0400
+Message-ID: <1218494731-2649-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw01.freescale.net (de01egw01.freescale.net
-	[192.88.165.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id EADB6245F3
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id C4DC22434D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Aug 2008 17:37:33 +0200 (CEST)
-In-Reply-To: <s5hhc9sm32f.wl%tiwai@suse.de>
+	Tue, 12 Aug 2008 00:46:44 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 16so1148387fgg.44
+	for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2008 15:46:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Correct route name to be MONO1 instead of MONO to follow
+recent fix in wm8750.
 
-> Hm?  snd_pcm_pre_stop() returns -EBADFD if the stream *IS* OPEN.
-> If it's RUNNING, it will stop the stream and change the state.
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/pxa/spitz.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Hmmm.... you're right.  I don't know what I was thinking.
-
-Tracing the code, I see that ALSA does call my driver's trigger function to stop
-the stream.  So why doesn't the application also stop?
-
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index eefc25b..37cb768 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -297,7 +297,7 @@ static int spitz_wm8750_init(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_disable_pin(codec, "LINPUT3");
+ 	snd_soc_dapm_disable_pin(codec, "RINPUT3");
+ 	snd_soc_dapm_disable_pin(codec, "OUT3");
+-	snd_soc_dapm_disable_pin(codec, "MONO");
++	snd_soc_dapm_disable_pin(codec, "MONO1");
+ 
+ 	/* Add spitz specific controls */
+ 	for (i = 0; i < ARRAY_SIZE(wm8750_spitz_controls); i++) {
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+1.5.6.3
