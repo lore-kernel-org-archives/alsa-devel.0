@@ -1,52 +1,40 @@
-From: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Subject: [PATCH] wm8750: add missing VREF output
-Date: Tue, 12 Aug 2008 02:45:31 +0400
-Message-ID: <1218494731-2649-2-git-send-email-dbaryshkov@gmail.com>
-References: <1218494731-2649-1-git-send-email-dbaryshkov@gmail.com>
+From: Seth Heasley <seth.heasley@intel.com>
+Subject: [PATCH 2.6.26.2][RESEND] hda_intel: ALSA HD patch for Intel Ibex Peak DeviceIDs
+Date: Mon, 11 Aug 2008 17:02:58 -0700
+Message-ID: <200808111702.58184.seth.heasley@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0610B2434D
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Aug 2008 00:46:45 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 16so1148387fgg.44
-	for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2008 15:46:45 -0700 (PDT)
-In-Reply-To: <1218494731-2649-1-git-send-email-dbaryshkov@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1758726AbYHKX6h@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de
+Cc: seth.heasley@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Add missing output VREF. After a65f0568f6cc8433877fb71dd7d36b551854b0bc
-it's critical, since it makes chip routing initialisation to fail.
+Resend with proper whitespace.
 
-Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8750.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+This patch adds the Intel Ibex Peak (PCH) HD Audio Controller DeviceIDs.
 
-diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
-index 2e71394..c6a8edf 100644
---- a/sound/soc/codecs/wm8750.c
-+++ b/sound/soc/codecs/wm8750.c
-@@ -350,6 +350,7 @@ static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("ROUT2"),
- 	SND_SOC_DAPM_OUTPUT("MONO1"),
- 	SND_SOC_DAPM_OUTPUT("OUT3"),
-+	SND_SOC_DAPM_OUTPUT("VREF"),
- 
- 	SND_SOC_DAPM_INPUT("LINPUT1"),
- 	SND_SOC_DAPM_INPUT("LINPUT2"),
--- 
-1.5.6.3
+Signed-off-by: Seth Heasley <seth.heasley@intel.com>
+
+--- linux-2.6.26.2/sound/pci/hda/hda_intel.c.orig	2008-08-08 11:25:05.000000000 -0700
++++ linux-2.6.26.2/sound/pci/hda/hda_intel.c	2008-08-08 11:27:24.000000000 -0700
+@@ -98,6 +98,7 @@
+ 			 "{Intel, ICH8},"
+ 			 "{Intel, ICH9},"
+ 			 "{Intel, ICH10},"
++			 "{Intel, PCH},"
+ 			 "{Intel, SCH},"
+ 			 "{ATI, SB450},"
+ 			 "{ATI, SB600},"
+@@ -2181,6 +2182,8 @@
+ 	{ PCI_DEVICE(0x8086, 0x293f), .driver_data = AZX_DRIVER_ICH },
+ 	{ PCI_DEVICE(0x8086, 0x3a3e), .driver_data = AZX_DRIVER_ICH },
+ 	{ PCI_DEVICE(0x8086, 0x3a6e), .driver_data = AZX_DRIVER_ICH },
++	/* PCH */
++	{ PCI_DEVICE(0x8086, 0x3b56), .driver_data = AZX_DRIVER_ICH },
+ 	/* SCH */
+ 	{ PCI_DEVICE(0x8086, 0x811b), .driver_data = AZX_DRIVER_SCH },
+ 	/* ATI SB 450/600 */
