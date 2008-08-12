@@ -1,21 +1,25 @@
-From: "Alexander Beregalov" <a.beregalov@gmail.com>
-Subject: Re: [PATCH] ALSA-Configuration.txt: supported cards
-	update
-Date: Wed, 13 Aug 2008 00:20:59 +0400
-Message-ID: <a4423d670808121320w49f8d46bg5149bb2dfa0b1f1a@mail.gmail.com>
-References: <20080812201055.GA12411@orion>
+From: Simon Tremblay <bidou@videotron.qc.ca>
+Subject: ASoC machine driver: use more than one at91 ssc
+Date: Tue, 12 Aug 2008 20:24:55 +0000 (UTC)
+Message-ID: <loom.20080812T193653-308@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D920243B8
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1CB8A24470
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Aug 2008 22:21:01 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 36so2080251wra.24
-	for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2008 13:21:00 -0700 (PDT)
-In-Reply-To: <20080812201055.GA12411@orion>
-Content-Disposition: inline
+	Tue, 12 Aug 2008 22:25:14 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1KT0QW-0004Sn-Nm
+	for alsa-devel@alsa-project.org; Tue, 12 Aug 2008 20:25:08 +0000
+Received: from modemcable024.51-130-66.mc.videotron.ca ([66.130.51.24])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2008 20:25:08 +0000
+Received: from bidou by modemcable024.51-130-66.mc.videotron.ca with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2008 20:25:08 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,16 +29,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2008/8/13 Alexander Beregalov <a.beregalov@gmail.com>:
-> From: Alexander Beregalov <a.beregalov@gmail.com>
->
-> ALSA-Configuration.txt: supported cards update
->
->
-> Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+Hi, 
 
-Oh, it was changed in -next branch, should I rewrite it to be on top
-of linux-next or is it ok?
+I want to use more than one SSC (2 to be more accurate) to be able to do what is
+indicated at Figure 4 of page 10/13 of this document
+http://www.atmel.com/dyn/resources/prod_documents/doc6020.pdf (how to setup SSC
+with a I2S codec).
+
+I saw in sound/soc/at91/eti_b1_wm8731.c use of 1 SSC.
+
+Does I need more than one snd_soc_dai_link in my snd_soc_machine? But for what I
+understand for now, I need one SSC for sound output and 2 SSC for sound input.
+
+I don't know if there is some example about how to do that.
+
+
+Simon
