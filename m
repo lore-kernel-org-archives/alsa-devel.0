@@ -1,28 +1,20 @@
-From: Simon Tremblay <bidou@videotron.qc.ca>
-Subject: Re: ASoC machine driver: use more than one at91 ssc
-Date: Wed, 13 Aug 2008 16:49:37 +0000 (UTC)
-Message-ID: <loom.20080813T163128-717@post.gmane.org>
-References: <loom.20080812T193653-308@post.gmane.org>
-	<loom.20080813T060220-577@post.gmane.org>
-	<20080813094706.GB30710@sirena.org.uk>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsactl init - implementation and more..
+Date: Wed, 13 Aug 2008 19:26:25 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0808131903520.21669@tm8103-a.perex-int.cz>
+References: <Pine.LNX.4.61.0808131205130.21669@tm8103-a.perex-int.cz>
+	<s5h3al99ixf.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0808131510350.21669@tm8103-a.perex-int.cz>
+	<s5hskt980d3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 992A824537
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16D0824546
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Aug 2008 18:49:50 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KTJXe-0003En-7R
-	for alsa-devel@alsa-project.org; Wed, 13 Aug 2008 16:49:46 +0000
-Received: from modemcable024.51-130-66.mc.videotron.ca ([66.130.51.24])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2008 16:49:46 +0000
-Received: from bidou by modemcable024.51-130-66.mc.videotron.ca with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2008 16:49:46 +0000
+	Wed, 13 Aug 2008 19:26:32 +0200 (CEST)
+In-Reply-To: <s5hskt980d3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,54 +24,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie <at> sirena.org.uk> writes:
+On Wed, 13 Aug 2008, Takashi Iwai wrote:
 
+> At Wed, 13 Aug 2008 16:04:47 +0200 (CEST),
+> Jaroslav Kysela wrote:
+> > 
+> > > The card-specific configs shouldn't be read from 00main, but read from
+> > > its file, i.e. 50hda.  That is, the config files are to be simply
+> > > added / removed without modifying the existing file.
+> > 
+> > I'm not sure if it's useful for our purposes. The 00main also contains
+> > some "global" configuration (like SYSFS_DEVICE setup and more variables 
+> > can be added in future) and my initial (not saying that it's optimal) 
+> > configuration assumes that first file lookup is a driver name.
+> > 
+> > If you like to add extra configuration files in a directory, I would 
+> > enhance 'INCLUDE' executer code to check, if the source path is directory 
+> > and then include all files from it. But for the standard "database" 
+> > purposes, I don't see a reason to check every file and skip contents of 
+> > large files just after parsing first lines with false condition.
 > 
-> On Wed, Aug 13, 2008 at 06:03:40AM +0000, Simon Tremblay wrote:
-> > Simon Tremblay <bidou <at> videotron.qc.ca> writes:
+> Of course, it's a question how fine-grained each file should be.  But
+> in general, modifying the default configuration just for adding a new,
+> fairly independent item is a bad idea.  In my scenario: you want to
+> add the support for a new hardware -- fine, just add the file without
+> changing anything else.  This would make the maintenance a lot easier
+> (imagine you maintain a distro package).
 > 
-> > > Does I need more than one snd_soc_dai_link in my snd_soc_machine? But for
-> > what I
-> > > understand for now, I need one SSC for sound output and 2 SSC for sound
- input.
-> 
-> If the two SSCs were completely independant you'd have separate DAIs for
-> SSC0 and SSC1 but it looks like you need to use both in a closely
-> coupled configuration to get stereo record.
-> 
-> > > I don't know if there is some example about how to do that.
-> 
-> Not that spring to mind - the SoCs I'm aware of all support stereo
-> natively.
-> 
-> > I was thinking about that and maybe the best way to resolve this is to modify
-> > at91-ssc.c and add a new entry in at91_ssc_dai that supports ssc0 and ssc1
-> > together (and modify / add some functions to support this new entry). Humm,
- I
-> > need to find a way to be able to reuse code here. What do you think about
-all of
-> > that ?
-> 
-> That looks like the best bet for this situation unless you treat the
-> stereo signal as two mono channels.  The WM8753 driver does something
-> vaugely similar with the DAI mode configuration it offers, you might
-> find some inspiration there, though in this case simply declaring an
-> additional link and leaving it up to the machine driver to only register
-> the desired one might be the best bet.
-> 
-> Code reuse shouldn't be too much of a problem - many of the DAI
-> operations will be shared and at worst I'd expect you'll end up writing
-> wrapper functions to pass through the operations to both DAIs.
-> 
+> If scanning too many files really matters, then they can be
+> concatenated at appropriate timing.
 
-Ok thank you for comments. Currently I'm working on that to be able to use my
-codec properly (because the two SSC are connected to my codec).
+My idea is to have a default database (which should be quite optimized for 
+parser) and distro specific addons install to a directory as you 
+suggested. So, something like (in alsactl init syntax) in 00main:
 
-But just for to test, I activated only SSC1 and I got a weird problem. When my
-machine driver module is loaded, I hear something from my headphone like it
-"synced" with console serial output (I hear noise when characters are
-transmitted to console serial output). But I don't know if there is something
-about not activating SSC0 that could cause that...
+INCLUDE="addon"
+
+Tree:
+
+/usr/share/alsa/init/addon/Acer_XY80
+/usr/share/alsa/init/addon/Acer_ZY91
+
+etc...
+
+The 00main file might remain (just to handle global specific 
+configuration).
+
+Eventualy, another INCLUDE can be placed before the default database
+processing to override the default database.
+
+> > > Another would-be-nice feature is one command to do both init and
+> > > restore.  First initialize the hardware, then restore (overwrite) the
+> > > setting from the asound.state if already eixsts.  This is what udev
+> > > needs to call.
+> > 
+> > I'm not sure. The restore action will always overwrite all 'init' values 
+> > (at least when control identifier list is not changed in the driver). 
+> > Probably, I would prefer a buildin procedure like 'if restore fails then 
+> > do init'. What about 'alsactl boot' action name?
+> 
+> The init makes sense in the case when the driver is updated and some
+> new controls.  Then the newly added controls are set up properly, then
+> the other values are overwritten via restore.
+
+Upgrading a driver is quite specific process. In this case would be 
+probably better to read saved state and compare it to the actual driver 
+controls. If something differs, call init and then restore with force 
+flag. At least, the init procedure would be skipped (almost every boot 
+time) if all controls are present in the state file.
+
+So, I'm proposing this 'alsactl boot' behaviour:
+
+1) read /etc/asound.state
+2) if the state does not exist run 'alsactl init' and exit
+3) if the state exists but controls do not match these in driver, run 
+   'alsactl init'
+4) run 'alsactl restore'
+
+Opinions?
+
+					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
