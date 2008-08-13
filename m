@@ -1,23 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: alsactl init - implementation and more..
-Date: Wed, 13 Aug 2008 12:59:32 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0808131205130.21669@tm8103-a.perex-int.cz>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: S24_LE Mode for USB Driver
+Date: Wed, 13 Aug 2008 13:17:44 +0200
+Message-ID: <48A2C2D8.4040401@ladisch.de>
+References: <489B5A4E.3040903@ieee.org> <s5htzdpi62s.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id DEA12244CC
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 8D505244CD
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Aug 2008 12:59:41 +0200 (CEST)
-Received: from server.perex.cz (server.perex.cz [172.16.0.20])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	C9CE2149C3D for <alsa-devel@alsa-project.org>;
-	Wed, 13 Aug 2008 12:59:39 +0200 (CEST)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	BA45D84378 for <alsa-devel@alsa-project.org>;
-	Wed, 13 Aug 2008 12:59:39 +0200 (CEST)
+	Wed, 13 Aug 2008 13:17:50 +0200 (CEST)
+In-Reply-To: <s5htzdpi62s.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,40 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, charles.eidsness@ieee.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Takashi Iwai wrote:
+> Charles Eidsness wrote:
+> > It looks like the parse_audio_format_i_type function at line 2369 of usbaudio.c
+> > (linux v2.6.23) doesn't support the case where  bSubframeSize (fmt[5]) = 4 bytes
+> > and  bBitResolution (fmt[6]) = 24 bits, which should correspond to a S24_LE (or
+> > BE) type. I'm developing a new USD DAC which supports this mode (24-bit sample
+> > in a 4 byte package). Right now Linux sends me S32_LE formated data, which is
+> > wrong. Would it be possible to expand this function to support S24_LE/BE? It
+> > would only require adding a few lines of code.
+>
+> Yes, it's possible, of course.
+>
+> BTW, is this behavior strictly defined?  I fail to find in the
+> usb-audio spec that bBitResolution specifies the lower bits, not the
+> higher bits...
 
-	some developers probably already noted, I commited to alsactl 
-utility (alsa-utils package) initial implementation of soundcard 
-initialization stuff aka 'alsactl init'.
-	The basic idea was to "reuse" nice udev configuration style and 
-modify it to ALSA purposes. I hope that I ended up with a syntax which is 
-easy understandable and configuration can be created with minimal effort.
-Please, look to 'man 7 alsactl_init' for more details and to 
-alsa-utils/alsactl/init directory for example files.
-	Note that the runtime evaluation of commands can be modified using 
-environment variables like udev does. Just try 'alsactl -E CMD=help init' 
-or 'CMD=help alsactl init'.
-	Hardware can be detected using sysfs. For older kernel, I'm 
-plannig to add some compatibility layer to read at least 
-ATTR{subsystem_vendor} and ATTR{subsystem_device} information from procfs 
-(codec files).
-	Also, a way to gather working configurations for specific hardware 
-is required. A nice script alsa-info.sh is already in the alsa-driver 
-package, so I just created a simple persistent "file" dabatase on 
-www.alsa-project.org: http://www.alsa-project.org/cardinfo-db/ and 
-modified alsa-info.sh to use this database for the contents upload by 
-default. Developers can download whole database in a tar package to 
-extract necessary information using command line text tools and use this 
-database also for other purposes (HDA codec graphing and so).
+The spec assumes that 24-bit samples use S24_3LE.  24-bit samples in
+32-bit words are an extension that must be handled with some device-
+specific code (like with the UA-1000).
 
-	More ideas, corrections, opinions are welcome.
+(The audio 2.0 spec allows 32-bit words, and the wording seems to imply
+that samples are aligned to the most significant bit, i.e., that S32_LE
+would be used in this case.)
 
-						Jaroslav	
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Regards,
+Clemens
