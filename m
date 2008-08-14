@@ -1,18 +1,16 @@
-From: "nguyen tritai" <nguyentritai@gmail.com>
-Subject: Alsa-driver compile fail on Ubuntu powerpc
-Date: Thu, 14 Aug 2008 16:25:24 +0700
-Message-ID: <ce83e6480808140225q7481c888qb47b7008b1ba862d@mail.gmail.com>
+From: Manuel Schneider <manuel.schneider@kanal-ratte.de>
+Subject: Swissonic TS22PCI / Teratec Phase 22 / driver problems
+	with ice1724
+Date: Thu, 14 Aug 2008 15:29:18 +0200
+Message-ID: <48A4332E.4070704@kanal-ratte.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id A05421038B4
+Received: from mx1.mastersmail.com (mx1.mastersmail.com [195.114.98.122])
+	by alsa0.perex.cz (Postfix) with ESMTP id 463B824703
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Aug 2008 11:25:26 +0200 (CEST)
-Received: by rv-out-0708.google.com with SMTP id f25so266820rvb.32
-	for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2008 02:25:25 -0700 (PDT)
-Content-Disposition: inline
+	Thu, 14 Aug 2008 15:29:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,106 +23,168 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi,
 
-I'm trying to bring up audio on powerpc AMCC 440EPX board with the soundcard
-Sound Blaster Audigy CA0106.
-The board is runing Ubuntu 7.04.
-I configured: ./configure --with-cards=3Dca0106 --with-sequencer=3Dyes
---with-kernel=3D/usr/src/linux
-Then I make and get issue:
+we had a Teratec Phase 22 on our transmitter line which works great
+under Linux, using the ice1724 driver from alsa.
+As the original sound card broke due to electrical surge on the
+transmitter line, we had to replace it. The Phase 22 is not available
+anymore, so we bought a Swissonic TS22PCI which is based on the Phase 22:
+http://www.thomann.de/gb/swissonic_ts22pci.htm
 
-make[2]: Leaving directory `/root/alsa-driver-1.0.17/usb'
-make[2]: Entering directory `/root/alsa-driver-1.0.17/misc'
-make[2]: Leaving directory `/root/alsa-driver-1.0.17/misc'
-make[1]: Leaving directory `/root/alsa-driver-1.0.17'
-make -C /usr/src/linux SUBDIRS=3D/root/alsa-driver-1.0.17  CPP=3D"gcc -E"
-CC=3D"gcc" modules
-make[1]: Entering directory `/usr/src/linux'
-  CC [M]  /root/alsa-driver-1.0.17/acore/memory_wrapper.o
-make[1]: Leaving directory `/usr/src/linux'
-root@sequoia:~/alsa-driver-1.0.17# vim log
-In file included from /root/alsa-driver-1.0.17/acore/memory_wrapper.c:25:
-/root/alsa-driver-1.0.17/include/adriver.h:278:1: warning: "GFP_DMA32"
-redefined
-In file included from include/linux/slab.h:14,
-                 from include/linux/percpu.h:5,
-                 from include/linux/rcupdate.h:41,
-                 from include/linux/pid.h:4,
-                 from include/linux/sched.h:76,
-                 from /root/alsa-driver-1.0.17/include/asm/elf.h:5,
-                 from include/linux/elf.h:7,
-                 from include/linux/module.h:14,
-                 from /root/alsa-driver-1.0.17/include/adriver.h:26,
-                 from /root/alsa-driver-1.0.17/acore/memory_wrapper.c:25:
-include/linux/gfp.h:105:1: warning: this is the location of the previous
-definition
-In file included from /root/alsa-driver-1.0.17/acore/memory_wrapper.c:25:
-/root/alsa-driver-1.0.17/include/adriver.h:828: error: static declaration of
-=E2jiffies_to_msecs=E2 follows non-static declaration
-include/linux/jiffies.h:270: error: previous declaration of
-=E2jiffies_to_msecs=E2 was here
-/root/alsa-driver-1.0.17/include/adriver.h:847: error: static declaration of
-=E2msecs_to_jiffies=E2 follows non-static declaration
-include/linux/jiffies.h:272: error: previous declaration of
-=E2msecs_to_jiffies=E2 was here
-In file included from /root/alsa-driver-1.0.17/include/adriver.h:944,
-                 from /root/alsa-driver-1.0.17/acore/memory_wrapper.c:25:
-include/linux/pci.h:594: error: expected identifier or =E2(=E2 before numer=
-ic
-constant
-In file included from /root/alsa-driver-1.0.17/include/asm/pci.h:8,
-                 from include/linux/pci.h:945,
-                 from /root/alsa-driver-1.0.17/include/adriver.h:944,
-                 from /root/alsa-driver-1.0.17/acore/memory_wrapper.c:25:
-include/linux/mm.h:235: error: conflicting types for
-=E2snd_compat_vmalloc_to_page=E2
-/root/alsa-driver-1.0.17/include/adriver.h:748: error: previous declaration
-of =E2snd_compat_vmalloc_to_page=E2 was here
-In file included from /root/alsa-driver-1.0.17/acore/memory_wrapper.c:25:
-/root/alsa-driver-1.0.17/include/adriver.h: In function
-=E2snd_pci_orig_save_state=E2:
-/root/alsa-driver-1.0.17/include/adriver.h:1186: error: too many arguments
-to function =E2pci_save_state=E2
-/root/alsa-driver-1.0.17/include/adriver.h: In function
-=E2snd_pci_orig_restore_state=E2:
-/root/alsa-driver-1.0.17/include/adriver.h:1190: error: too many arguments
-to function =E2pci_restore_state=E2
-In file included from /root/alsa-driver-1.0.17/acore/memory_wrapper.c:25:
-/root/alsa-driver-1.0.17/include/adriver.h:1552:1: warning: "page_to_pfn"
-redefined
-In file included from /root/alsa-driver-1.0.17/include/asm/page.h:150,
-                 from /root/alsa-driver-1.0.17/include/asm/thread_info.h:30,
-                 from include/linux/thread_info.h:35,
-                 from include/linux/preempt.h:9,
-                 from include/linux/spinlock.h:49,
-                 from include/linux/seqlock.h:29,
-                 from include/linux/time.h:8,
-                 from include/linux/stat.h:60,
-                 from include/linux/module.h:10,
-                 from /root/alsa-driver-1.0.17/include/adriver.h:26,
-                 from /root/alsa-driver-1.0.17/acore/memory_wrapper.c:25:
-include/asm-generic/memory_model.h:79:1: warning: this is the location of
-the previous definition
-/root/alsa-driver-1.0.17/acore/memory_wrapper.c: In function
-=E2snd_compat_vmalloc_to_page=E2:
-/root/alsa-driver-1.0.17/acore/memory_wrapper.c:44: error: implicit
-declaration of function =E2VMALLOC_VMADDR=E2
-/root/alsa-driver-1.0.17/acore/memory_wrapper.c:50: error: implicit
-declaration of function =E2pte_offset=E2
-/root/alsa-driver-1.0.17/acore/memory_wrapper.c:50: warning: assignment
-makes pointer from integer without a cast
-make[3]: *** [/root/alsa-driver-1.0.17/acore/memory_wrapper.o] Error 1
-make[2]: *** [/root/alsa-driver-1.0.17/acore] Error 2
-make[1]: *** [_module_/root/alsa-driver-1.0.17] Error 2
+The PCB looks exactly the same as the Phase 22, but the driver does not
+initialize the card correctly:
+
+---
+dmesg:
+ice1724: No matching model found for ID 0x3b157b11
+ice1724: Invalid EEPROM version 0
+AC'97 0 does not respond - RESET
+AC'97 0 access is not valid [0xffffffff], removing mixer.
+ice1712: cannot initialize pro ac97, skipped
+---
+
+I already updated to Linux 2.6.25 and tried the current alsa-drivers
+package (1.0.17), but I get always the same errors in the kernel log.
+I also deleted /etc/asound.* and /var/lib/alsa/asound.state, ran
+alsa-conf - no luck.
+
+Do you have any ideas how I can get this card to work?
+
+Thanks a lot for your suggestions, more information see attached.
+
+Manuel
+
+---
+-:[~]#> lspci -vv
+
+               00:0a.0 Multimedia audio controller: VIA Technologies
+Inc. VT1720/24 [Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+         Subsystem: TERRATEC Electronic GmbH Unknown device 117b
+         Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium
+
+>TAbort- <TAbort- <MAbort- >SERR- <PERR-
 
 
-The issue looks like an error in alsa-driver source code.
-I searched the error information and It seems there're lots of people having
-the same issue but no helpful answers.
+         Latency: 32
+         Interrupt: pin A routed to IRQ 18
+         Region 0: I/O ports at c000 [size=32]
+         Region 1: I/O ports at bc00 [size=128]
+         Capabilities: [80] Power Management version 1
+                 Flags: PMEClk- DSI- D1- D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Do anyone knows how to pass the issue?
 
-Thanks,
 
-TaiNguyen
+---
+-:[~]#> cat /etc/modules.d/alsa
+
+alias /dev/mixer snd-mixer-oss
+alias /dev/dsp snd-pcm-oss
+alias /dev/midi snd-seq-oss
+
+# --- BEGIN: Generated by ALSACONF, do not edit. ---
+# --- ALSACONF version 1.0.16 ---
+alias snd-card-0 snd-ice1724
+alias sound-slot-0 snd-ice1724
+# --- END: Generated by ALSACONF, do not edit. ---
+
+---
+-:[~]#> lsmod
+Module                  Size  Used by
+snd_pcm_oss            24224  0
+snd_mixer_oss          14720  1 snd_pcm_oss
+snd_ice1724            92328  0
+snd_ice17xx_ak4xxx      3648  1 snd_ice1724
+snd_ac97_codec        105704  1 snd_ice1724
+snd_ak4114              8448  1 snd_ice1724
+snd_pcm                59660  4
+snd_pcm_oss,snd_ice1724,snd_ac97_codec,snd_ak4114
+snd_timer              19272  1 snd_pcm
+snd_page_alloc          8272  1 snd_pcm
+snd_pt2258              4032  1 snd_ice1724
+snd_i2c                 5312  2 snd_ice1724,snd_pt2258
+snd_ak4xxx_adda         8512  2 snd_ice1724,snd_ice17xx_ak4xxx
+snd_mpu401_uart         6912  1 snd_ice1724
+snd_rawmidi            19808  1 snd_mpu401_uart
+snd                    49288  12
+snd_pcm_oss,snd_mixer_oss,snd_ice1724,snd_ac97_codec,snd_ak4114,snd_pcm,snd_timer,snd_pt2258,snd_i2c,snd_ak4xxx_adda,snd_mpu401_uart,snd_rawmidi
+capi                   14272  0
+capifs                  5072  2 capi
+kernelcapi             31936  1 capi
+nfs                   118264  3
+lockd                  62064  2 nfs
+sunrpc                167432  17 nfs,lockd
+rtc                    11384  0
+via_rhine              19976  0
+mii                     4928  1 via_rhine
+ac97_bus                1984  1 snd_ac97_codec
+soundcore               6624  1 snd
+
+---
+-:[~]#> modinfo snd_ice1724
+filename:
+/lib/modules/2.6.25-gentoo-r7/kernel/sound/pci/ice1712/snd-ice1724.ko
+license:        GPL
+description:    VIA ICEnsemble ICE1724/1720 (Envy24HT/PT)
+author:         Jaroslav Kysela <perex@perex.cz>
+alias:          pci:v00001412d00001724sv*sd*bc*sc*i*
+depends:
+snd,snd-ac97-codec,snd-pcm,snd-i2c,snd-mpu401-uart,snd-ice17xx-ak4xxx,snd-pt2258,snd-ak4xxx-adda,snd-ak4114
+vermagic:       2.6.25-gentoo-r7 mod_unload
+parm:           index:Index value for ICE1724 soundcard. (array of int)
+parm:           id:ID string for ICE1724 soundcard. (array of charp)
+parm:           enable:Enable ICE1724 soundcard. (array of bool)
+parm:           model:Use the given board model. (array of charp)
+
+---
+-:[~]#> cat /proc/asound/cards
+  0 [ICE1724        ]: ICE1724 - ICEnsemble ICE1724
+                       ICEnsemble ICE1724 at 0xc000, irq 18
+
+---
+-:[~]#> cat /proc/asound/ICE1724/ice1724
+ICEnsemble ICE1724 at 0xc000, irq 18
+
+EEPROM:
+   Subvendor        : 0x3b157b11
+   Size             : 32 bytes
+   Version          : 0
+   System Config    : 0x0
+   ACLink           : 0x0
+   I2S              : 0x0
+   S/PDIF           : 0x0
+   GPIO direction   : 0xffff00
+   GPIO mask        : 0xffffff
+   GPIO state       : 0xffffff
+   Extra #18        : 0xff
+   Extra #19        : 0xff
+   Extra #20        : 0xff
+   Extra #21        : 0xff
+   Extra #22        : 0xff
+   Extra #23        : 0xff
+   Extra #24        : 0xff
+   Extra #25        : 0xff
+   Extra #26        : 0x0
+   Extra #27        : 0x0
+   Extra #28        : 0x0
+   Extra #29        : 0x0
+   Extra #30        : 0x0
+   Extra #31        : 0x0
+
+
+...
+---
+
+-- 
+Kanal Ratte 104,5 MHz
+...das Freie Radio im Wiesental
+
+Hauptstrasse 82
+79650 Schopfheim
+
+Tel: +49 7622 6692-53
+Fax: +49 7622 6692-54
