@@ -1,19 +1,23 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [Alsa-user] found bug, fixed bug,
-	cannot tell anyone
-Date: Fri, 15 Aug 2008 09:19:59 +0200
-Message-ID: <48A52E1F.4060303@keyaccess.nl>
-References: <001d01c8fe5e$3e4eed40$0402a8c0@sj4>
+From: Tobias Kaefer <Tobias.Kaefer@abas.de>
+Subject: Re: sound-problems with ALC262
+Date: Fri, 15 Aug 2008 09:19:09 +0200
+Message-ID: <48A52DED.4090300@abas.de>
+References: <48A27A29.4010604@abas.de>
+	<s5hvdy5i6rk.wl%tiwai@suse.de>	<48A3BE15.6020403@abas.de>
+	<s5hd4kc2koz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
-	[213.51.130.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id F403424497
-	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Aug 2008 09:19:18 +0200 (CEST)
-In-Reply-To: <001d01c8fe5e$3e4eed40$0402a8c0@sj4>
+Received: from gate.abas.de (gate.abas.de [212.202.226.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 062D324497
+	for <Alsa-devel@alsa-project.org>;
+	Fri, 15 Aug 2008 09:19:17 +0200 (CEST)
+Received: from gate.abas.de (localhost [127.0.0.1])
+	by gate.abas.de (8.14.0/8.14.0) with ESMTP id m7F7JH3I000894
+	for <Alsa-devel@alsa-project.org>;
+	Fri, 15 Aug 2008 09:19:17 +0200 (CEST)
+In-Reply-To: <s5hd4kc2koz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,67 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wesley Johnson <johnson2412@usgo.net>
-Cc: alsa-user@lists.sourceforge.net, ALSA devel <alsa-devel@alsa-project.org>
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 14-08-08 22:36, Wesley Johnson wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> How do you notify ALSA dev team about a bug that has been in 1.0.16
-> and 1.0.17.  ???
 
-Here will do, although the alsa-devel mailing list would've been better 
-still. Added to CC.
 
-> Bugtracker will not let me login, nor email an account confirmation. 
-> Getting an ALSA home page account seems to have no purpose at all, it
-> does not let you do anything.
+Takashi Iwai schrieb:
+| At Thu, 14 Aug 2008 07:09:41 +0200,
+| Tobias Kaefer wrote:
+|> -----BEGIN PGP SIGNED MESSAGE-----
+|> Hash: SHA1
+|>
+|>
+|>
+|> Takashi Iwai schrieb:
+|> | At Wed, 13 Aug 2008 08:07:37 +0200,
+|> | Tobias Kaefer wrote:
+|> |> ...
+|> |> "stan" told me to use this script
+|> |> http://www.alsa-project.org/alsa-info.sh  to create more information
+|> |> about my system. Here is the pastebin link of the output of that
+script:
+|> |> http://pastebin.ca/1169153
+|> |
+|> | At a quick glance, I see no problem in the configuration.
+|> |
+|> | Does the problem exist even if you play via PCM "hw" device, such as
+|> |
+|> | 	% aplay -Dhw foo.wav
+|> |
+|> | ??
+|> | If your WAV file isn't with the supported format/rate, use plughw:
+|> |
+|> | 	% aplay -Dplughw foo.wav
+|>
+|> Yes. The problem still exists when using the PCM "hw" or "plughw" device.
+|
+| What happens when you load the driver with bdl_pos_adj=0 option?
 
-The homepage is a wiki so it surely does.
+The reverberation increases a little.
+Tobias
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-> BUG:
-> When you try to compile driver for ens1371 by itself the compile will fail.
-> The driver for ens1371 has an include of the file for ens1370, but the
-> makefule does not have this dependency
-> so the ens1370 file is missing.  The dev team is probably always compiling
-> for all.
-> 
-> Diff file that fixes this problem follows.
-> 
-> *** pci/Makefile.orig Mon Jul 14 02:53:57 2008
-> --- pci/Makefile Thu Jul 17 21:25:42 2008
-> ***************
-> *** 27,34 ****
-> --- 27,35 ----
->   atiixp_modem.c: atiixp_modem.patch
-> $(SND_TOPDIR)/alsa-kernel/pci/atiixp_modem.c
->   bt87x.c: bt87x.patch $(SND_TOPDIR)/alsa-kernel/pci/bt87x.c
->   cmipci.c: cmipci.patch $(SND_TOPDIR)/alsa-kernel/pci/cmipci.c
->   ens1370.c: ens1370.patch $(SND_TOPDIR)/alsa-kernel/pci/ens1370.c
-> + ens1371.c: ens1370.c
-
-I expect this should be a straight copy of the ens1370.c line but never 
-use the standalone alsa-driver package. Now that we're on alsa-devel, 
-people who do will reply though.
-
->   fm801.c: fm801.patch $(SND_TOPDIR)/alsa-kernel/pci/fm801.c
->   intel8x0.c: intel8x0.patch $(SND_TOPDIR)/alsa-kernel/pci/intel8x0.c
->   maestro3.c: maestro3.patch $(SND_TOPDIR)/alsa-kernel/pci/maestro3.c
->   via82xx.c: via82xx.patch $(SND_TOPDIR)/alsa-kernel/pci/via82xx.c
-> 
-> 
-> I have been trying for since July 17 to try to send this to ALSA dev team,
-> and have been blocked at every attempt
-> It is now Aug 13.  If someone knows how to do this, please post a reply.
-
-Well, not to unduly annoy you, and thank you very much for the report 
-and the persistence, but basically all Linux development happens on 
-mailinglists and the mailinglist information is right there on the 
-homepage so, well...
-
-The alsa-devel mailinglist is moderated for non-subscribers; if you did 
-email alsa-devel before and just weren't let through the moderation 
-queue then please say so because in that case we definitely have a 
-problem to fix.
-
-Rene.
+iD8DBQFIpS3tdJJ1JNEzpd0RAg7SAJ9CbNMKbh+TpAC7WBNzrkGDgaGxSwCfaFgh
+JFhzo/0V3txO0JwWYCRahyM=
+=o9ue
+-----END PGP SIGNATURE-----
