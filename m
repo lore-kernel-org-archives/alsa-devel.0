@@ -1,16 +1,17 @@
-From: Harald Radke <harryrat@postnuklear.de>
-Subject: WM8750 utilization
-Date: Fri, 15 Aug 2008 18:32:37 +0200
-Message-ID: <200808151832.37747.harryrat@postnuklear.de>
+From: stan <ghjeold_i_mwee@cox.net>
+Subject: Re: latest Mac Pro (quad core) audio issues
+Date: Fri, 15 Aug 2008 09:54:12 -0700
+Message-ID: <48A5B4B4.2060706@cox.net>
+References: <775236.60926.qm@web65608.mail.ac4.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.netbeat.de (mail.netbeat.de [83.243.58.160])
-	by alsa0.perex.cz (Postfix) with SMTP id F1B8924701
+Received: from fed1rmmtao107.cox.net (fed1rmmtao107.cox.net [68.230.241.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43AFB103890
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Aug 2008 18:32:39 +0200 (CEST)
-Content-Disposition: inline
+	Fri, 15 Aug 2008 18:54:14 +0200 (CEST)
+In-Reply-To: <775236.60926.qm@web65608.mail.ac4.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "S. Aguinaga" <sa_jr@ieee.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there!
+S. Aguinaga wrote:
+> Hello,
+> 
+> I just installed fedora (9) on one of the latest Mac Pro, all is well except for the audio.  I have no audio out of the main Tower speaker or via the headphones.  Eventually I want to drive audio out of the optical ports.  Any links to howto's or work-around would greatly appreciated.
+> 
+> // Salvador
+> 
+Fedora uses pulseaudio by default.  How are you determining that there 
+is no output?  i.e. what program are you using, and how
 
-Sorry, if this is the wrong list for this, just tell me if so (and maybe point 
-out where to go instead *g*).
+Try aplay -vv some.wav
+Try aplay -vv -Dhw:0,0 some.wav
+Try aplay -vv -Dplughw:0,0 some.wav
 
-I am trying to improve usage of the wm8750 codec on my Loox720 PDA. Its a 
-PXA272 device. So far WM8750 driver works quite ok (via I2S), however there 
-are some things that are kinda strange.
+Are there error messages or does it look like it is playing without 
+sound?  Are there messages in /var/log/messages regarding sound at 
+boot or while trying to play.
 
-The Loox720 has a headphone jack, a earpiece and a speaker.
+I don't use pulseaudio and don't know it very well, but there is more 
+information here.  http://www.pulseaudio.org
 
-When driving LOUT1/ROUT1, sound goes via headphones, LOUT2/ROUT2 drives the 
-earpiece. When setting OUT3 on ROUT1, the speaker plays fine.
+Could you run a script which provides more information about your 
+sound setup and post the link back here?
 
-Strange: 
+The script is found at http://www.alsa-project.org/alsa-info.sh
 
-- when disabling either LOUT2 or ROUT2 (while the other is enabled), the 
-speaker plays the sound (not sure if the earpiece still is active as speaker 
-output is much louder, but I think so)
+You can run the script so the results occur locally, by specifying the 
+   ---no-upload   option.
 
-- when disabling ROUT1/LOUT1 with LOUT2/ROUT2 active, the earpiece plays fine, 
-however there is still some output on the headphone (really really silently)
+alsa-info.sh --no-upload
 
-- Trying to utilize headphone switch via the WM8750 registers doesn't really 
-work ): depending on the polarity bit either one of the OUTs is either not 
-muted at all or activated at all.
+You would then paste the output into your email instead of providing a 
+link.
 
-Any ideas or hints?
-
-Thanks a lot!
-
-Harald Radke
+This information will enable me to determine if your setup is OK, and 
+look for other problems.
