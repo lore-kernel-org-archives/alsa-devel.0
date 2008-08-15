@@ -1,17 +1,18 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: Re: latest Mac Pro (quad core) audio issues
-Date: Fri, 15 Aug 2008 09:54:12 -0700
-Message-ID: <48A5B4B4.2060706@cox.net>
-References: <775236.60926.qm@web65608.mail.ac4.yahoo.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: WM8750 utilization
+Date: Fri, 15 Aug 2008 17:58:15 +0100
+Message-ID: <20080815165814.GI23120@sirena.org.uk>
+References: <200808151832.37747.harryrat@postnuklear.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao107.cox.net (fed1rmmtao107.cox.net [68.230.241.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43AFB103890
+Received: from cassiel.sirena.org.uk (unknown [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 432521038C9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Aug 2008 18:54:14 +0200 (CEST)
-In-Reply-To: <775236.60926.qm@web65608.mail.ac4.yahoo.com>
+	Fri, 15 Aug 2008 18:58:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200808151832.37747.harryrat@postnuklear.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,43 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "S. Aguinaga" <sa_jr@ieee.org>
+To: Harald Radke <harryrat@postnuklear.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-S. Aguinaga wrote:
-> Hello,
-> 
-> I just installed fedora (9) on one of the latest Mac Pro, all is well except for the audio.  I have no audio out of the main Tower speaker or via the headphones.  Eventually I want to drive audio out of the optical ports.  Any links to howto's or work-around would greatly appreciated.
-> 
-> // Salvador
-> 
-Fedora uses pulseaudio by default.  How are you determining that there 
-is no output?  i.e. what program are you using, and how
+On Fri, Aug 15, 2008 at 06:32:37PM +0200, Harald Radke wrote:
 
-Try aplay -vv some.wav
-Try aplay -vv -Dhw:0,0 some.wav
-Try aplay -vv -Dplughw:0,0 some.wav
+> The Loox720 has a headphone jack, a earpiece and a speaker.
 
-Are there error messages or does it look like it is playing without 
-sound?  Are there messages in /var/log/messages regarding sound at 
-boot or while trying to play.
+Please post your machine driver.  If you are doing code modifications to
+make any of the changes you discuss below please also show these
+changes.
 
-I don't use pulseaudio and don't know it very well, but there is more 
-information here.  http://www.pulseaudio.org
+> When driving LOUT1/ROUT1, sound goes via headphones, LOUT2/ROUT2 drives the 
+> earpiece. When setting OUT3 on ROUT1, the speaker plays fine.
 
-Could you run a script which provides more information about your 
-sound setup and post the link back here?
+Could you please also clarify how the hardware is connected up here?
+Which outputs on the device are connected to each of the headphone,
+speaker and earpiece?
 
-The script is found at http://www.alsa-project.org/alsa-info.sh
+> - Trying to utilize headphone switch via the WM8750 registers doesn't really 
+> work ): depending on the polarity bit either one of the OUTs is either not 
+> muted at all or activated at all.
 
-You can run the script so the results occur locally, by specifying the 
-   ---no-upload   option.
-
-alsa-info.sh --no-upload
-
-You would then paste the output into your email instead of providing a 
-link.
-
-This information will enable me to determine if your setup is OK, and 
-look for other problems.
+Are you sure that HPDETECT is wired up correctly and that the expected
+level change occurs on it when the jack is inserted and removed?
