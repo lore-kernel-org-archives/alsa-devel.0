@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] wm8990: Implement speaker volume PGA
-Date: Fri, 15 Aug 2008 16:22:33 +0100
-Message-ID: <1218813753-24344-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1218813753-24344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Ben Stanley <Ben.Stanley@exemail.com.au>
+Subject: Re: SPDIF audio / non-audio bit
+Date: Sat, 16 Aug 2008 01:56:14 +1000
+Message-ID: <1218815774.32652.40.camel@localhost>
+References: <1218725321.32652.14.camel@localhost>
+	<s5hmyjfzks2.wl%tiwai@suse.de> <1218811533.32652.33.camel@localhost>
+	<s5hd4ka5np1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14441246ED
+Received: from pecan2.exetel.com.au (pecan2.exetel.com.au [220.233.0.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88658103890
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Aug 2008 17:22:35 +0200 (CEST)
-In-Reply-To: <1218813753-24344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri, 15 Aug 2008 17:56:19 +0200 (CEST)
+In-Reply-To: <s5hd4ka5np1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,90 +24,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The latest revisions of the WM8990 provide a programmable gain amplifier
-for the speaker - configure the register cache and implement controls
-for this. Older revisions of the device ignore writes to these controls.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8990.c |    8 ++++++--
- sound/soc/codecs/wm8990.h |   14 ++++++++++++--
- 2 files changed, 18 insertions(+), 4 deletions(-)
+On Fri, 2008-08-15 at 16:59 +0200, Takashi Iwai wrote:
+> At Sat, 16 Aug 2008 00:45:33 +1000,
+> Ben Stanley wrote:
+> > Could you please clarify 
+> > 'independent PCM IEC958 status bits' vs 
+> > 'default IEC958 status bits', 
+> > perhaps by pointing out some drivers implementing each type?
+> 
+> Run the following:
+> 	grep -r 'IEC958.*PCM_STREAM' sound/pci
+> 
+> These drivers have "IEC958 Playback PCM Stream" controls.  These
+> controls are assigned to PCM streams, and changed individually from
+> the "IEC958 Playback Default" control.  When the PCM stream is closed,
+> it's back to the status of "IEC958 Playback Default".
+> 
+Thanks for the info.
+> 
+> > > You can change the status easily via iecset program in alsa-utils.
+> > I note here that iecset does not accept --device=hw:0,1 for example. Any
+> > reason for this?
+> 
+> Because it's invalid.  The --device option is for a control device,
+> not for a PCM device.  If you want to change the secondary control
+> (i.e. "IEC958 Playback Default" with index=1), pass "-n 1" to iecset.
+> 
+um, that doesn't work either.
 
-This ought to go into 2.6.27 - without this current revisions will have
-problems with the speaker on resume due to the register cache default.
+mythtv@mythtv:~$ iecset -D=hw:0 -n 1 audio on
+iecset: invalid option -- n
+Usage: iecset [options] [cmd arg...]
+Options:
+    -D device   specifies the control device to use
+    -c card     specifies the card number to use (equiv. with -Dhw:#)
+    -x          dump the dump the AESx hex code for IEC958 PCM
+parameters
+    -i          read commands from stdin
+Commands:
+    professional (common)
+    off = consumer mode, on = professional mode
+    audio (common)
+    on = audio mode, off = non-audio mode
+    rate (common)
+    sample rate in Hz
+    emphasis (common)
+    0 = none, 1 = 50/15us, 2 = CCITT
+    lock (prof.)
+    off = rate unlocked, on = rate locked
+    sbits (prof.)
+    sample bits 2 = 20bit, 4 = 24bit, 6 = undef
+    wordlength (prof.)
+    0=no, 2=22-18bit, 4=23-19bit, 5=24-20bit, 6=20-16bit
+    category (consumer)
+    0-0x7f
+    copyright (consumer)
+    off = non-copyright, on = copyright
+    original (consumer)
+    off = 1st-gen, on = original
 
-diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
-index 9505a18..e44153f 100644
---- a/sound/soc/codecs/wm8990.c
-+++ b/sound/soc/codecs/wm8990.c
-@@ -82,7 +82,7 @@ static const u16 wm8990_reg[] = {
- 	0x0003,     /* R35 - ClassD1 */
- 	0x0000,     /* R36 */
- 	0x0100,     /* R37 - ClassD3 */
--	0x0000,     /* R38 */
-+	0x0079,     /* R38 - ClassD4 */
- 	0x0000,     /* R39 - Input Mixer1 */
- 	0x0000,     /* R40 - Input Mixer2 */
- 	0x0000,     /* R41 - Input Mixer3 */
-@@ -311,11 +311,15 @@ SOC_SINGLE("Speaker Mode Switch", WM8990_CLASSD1,
- 	WM8990_CDMODE_BIT, 1, 0),
- 
- SOC_SINGLE("Speaker Output Attenuation Volume", WM8990_SPEAKER_VOLUME,
--	WM8990_SPKVOL_SHIFT, WM8990_SPKVOL_MASK, 0),
-+	WM8990_SPKATTN_SHIFT, WM8990_SPKATTN_MASK, 0),
- SOC_SINGLE("Speaker DC Boost Volume", WM8990_CLASSD3,
- 	WM8990_DCGAIN_SHIFT, WM8990_DCGAIN_MASK, 0),
- SOC_SINGLE("Speaker AC Boost Volume", WM8990_CLASSD3,
- 	WM8990_ACGAIN_SHIFT, WM8990_ACGAIN_MASK, 0),
-+SOC_SINGLE_TLV("Speaker Volume", WM8990_CLASSD4,
-+	WM8990_SPKVOL_SHIFT, WM8990_SPKVOL_MASK, 0, out_pga_tlv),
-+SOC_SINGLE("Speaker ZC Switch", WM8990_CLASSD4,
-+	WM8990_SPKZC_SHIFT, WM8990_SPKZC_MASK, 0),
- 
- SOC_WM899X_OUTPGA_SINGLE_R_TLV("Left DAC Digital Volume",
- 	WM8990_LEFT_DAC_DIGITAL_VOLUME,
-diff --git a/sound/soc/codecs/wm8990.h b/sound/soc/codecs/wm8990.h
-index 6bea574..0a08325 100644
---- a/sound/soc/codecs/wm8990.h
-+++ b/sound/soc/codecs/wm8990.h
-@@ -54,6 +54,7 @@
- #define WM8990_SPEAKER_VOLUME                   0x22
- #define WM8990_CLASSD1                          0x23
- #define WM8990_CLASSD3                          0x25
-+#define WM8990_CLASSD4                          0x26
- #define WM8990_INPUT_MIXER1                     0x27
- #define WM8990_INPUT_MIXER2                     0x28
- #define WM8990_INPUT_MIXER3                     0x29
-@@ -528,8 +529,8 @@
- /*
-  * R34 (0x22) - Speaker Volume
-  */
--#define WM8990_SPKVOL_MASK                      0x0003  /* SPKVOL - [1:0] */
--#define WM8990_SPKVOL_SHIFT			0
-+#define WM8990_SPKATTN_MASK                      0x0003  /* SPKATTN - [1:0] */
-+#define WM8990_SPKATTN_SHIFT			 0
- 
- /*
-  * R35 (0x23) - ClassD1
-@@ -544,6 +545,15 @@
- #define WM8990_DCGAIN_SHIFT			3
- #define WM8990_ACGAIN_MASK                      0x0007  /* ACGAIN - [2:0] */
- #define WM8990_ACGAIN_SHIFT			0
-+
-+/*
-+ * R38 (0x26) - ClassD4
-+ */
-+#define WM8990_SPKZC_MASK                       0x0001  /* SPKZC */
-+#define WM8990_SPKZC_SHIFT                           7  /* SPKZC */
-+#define WM8990_SPKVOL_MASK                      0x007F  /* SPKVOL - [6:0] */
-+#define WM8990_SPKVOL_SHIFT                          0  /* SPKVOL - [6:0] */
-+
- /*
-  * R39 (0x27) - Input Mixer1
-  */
--- 
-1.5.6.3
+I see that I have alsa-utils 1.0.15-3ubuntu2 (from ubuntu 8.04). Perhaps
+my version is too old?
+
+I will use my clunky old method for now, but I would like to clear up
+this iecset issue.
+
+Ben.
