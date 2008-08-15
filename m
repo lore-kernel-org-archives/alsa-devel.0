@@ -1,16 +1,16 @@
-From: stan <ghjeold_i_mwee@cox.net>
-Subject: [Fwd: [Alsa-user] found bug, fixed bug,
-	cannot tell anyone]
-Date: Thu, 14 Aug 2008 16:17:32 -0700
-Message-ID: <48A4BD0C.4020905@cox.net>
+From: "S. Aguinaga" <sa_jr@yahoo.com>
+Subject: latest Mac Pro (quad core) audio issues
+Date: Thu, 14 Aug 2008 20:00:20 -0700 (PDT)
+Message-ID: <775236.60926.qm@web65608.mail.ac4.yahoo.com>
+Reply-To: "S. Aguinaga" <sa_jr@ieee.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmmtao101.cox.net (fed1rmmtao101.cox.net [68.230.241.45])
-	by alsa0.perex.cz (Postfix) with ESMTP id A38F3247E1
+Received: from web65608.mail.ac4.yahoo.com (web65608.mail.ac4.yahoo.com
+	[76.13.9.76]) by alsa0.perex.cz (Postfix) with SMTP id 75FFB24335
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Aug 2008 01:17:35 +0200 (CEST)
+	Fri, 15 Aug 2008 05:00:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,77 +20,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Developers <alsa-devel@alsa-project.org>, johnson2412@usgo.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Forwarded as per request
+Hello,
 
+I just installed fedora (9) on one of the latest Mac Pro, all is well except for the audio.  I have no audio out of the main Tower speaker or via the headphones.  Eventually I want to drive audio out of the optical ports.  Any links to howto's or work-around would greatly appreciated.
 
--------- Original Message --------
-From: - Thu Aug 14 15:28:40 2008
-Message-ID: <001d01c8fe5e$3e4eed40$0402a8c0@sj4>
-From: Wesley Johnson <johnson2412@usgo.net>
-To: <alsa-user@lists.sourceforge.net>
-Date: Thu, 14 Aug 2008 15:36:55 -0500 (CDT)
-MIME-Version: 1.0
-
-How do you notify ALSA dev team about a bug that has been in 1.0.16 and
-1.0.17.  ???
-Bugtracker will not let me login, nor email an account confirmation.
-Getting an ALSA home page account seems to have no purpose at all, it does
-not let you do anything.
-
-BUG:
-When you try to compile driver for ens1371 by itself the compile will 
-fail.
-The driver for ens1371 has an include of the file for ens1370, but the
-makefule does not have this dependency
-so the ens1370 file is missing.  The dev team is probably always compiling
-for all.
-
-Diff file that fixes this problem follows.
-
-*** pci/Makefile.orig Mon Jul 14 02:53:57 2008
---- pci/Makefile Thu Jul 17 21:25:42 2008
-***************
-*** 27,34 ****
---- 27,35 ----
-   atiixp_modem.c: atiixp_modem.patch
-$(SND_TOPDIR)/alsa-kernel/pci/atiixp_modem.c
-   bt87x.c: bt87x.patch $(SND_TOPDIR)/alsa-kernel/pci/bt87x.c
-   cmipci.c: cmipci.patch $(SND_TOPDIR)/alsa-kernel/pci/cmipci.c
-   ens1370.c: ens1370.patch $(SND_TOPDIR)/alsa-kernel/pci/ens1370.c
-+ ens1371.c: ens1370.c
-   fm801.c: fm801.patch $(SND_TOPDIR)/alsa-kernel/pci/fm801.c
-   intel8x0.c: intel8x0.patch $(SND_TOPDIR)/alsa-kernel/pci/intel8x0.c
-   maestro3.c: maestro3.patch $(SND_TOPDIR)/alsa-kernel/pci/maestro3.c
-   via82xx.c: via82xx.patch $(SND_TOPDIR)/alsa-kernel/pci/via82xx.c
-
-
-I have been trying for since July 17 to try to send this to ALSA dev team,
-and have been blocked at every attempt
-It is now Aug 13.  If someone knows how to do this, please post a reply.
-
-Wesley D. Johnson
-
-
-
-
-
-
---- Get FREE High Speed Internet from USFamily.Net! -- 
-http://www.usfamily.net/mkt-freepromo.html ---
-
-
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's 
-challenge
-Build the coolest Linux based applications with Moblin SDK & win great 
-prizes
-Grand prize is a trip for two to an Open Source event anywhere in the 
-world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
+// Salvador
