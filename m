@@ -1,19 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
- GIT repository for Linux 2.6 branch, master now at v2.6.27-rc3-74-g027ee62
-Date: Fri, 15 Aug 2008 13:00:39 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0808151254380.21669@tm8103-a.perex-int.cz>
-References: <20080815103920.39D00245AF@alsa0.perex.cz>
-	<s5hvdy2y2s6.wl%tiwai@suse.de>
+From: Ben Stanley <Ben.Stanley@exemail.com.au>
+Subject: Re: SPDIF audio / non-audio bit
+Date: Sat, 16 Aug 2008 00:45:33 +1000
+Message-ID: <1218811533.32652.33.camel@localhost>
+References: <1218725321.32652.14.camel@localhost>
+	<s5hmyjfzks2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id E76E6245A1
+Received: from pecan2.exetel.com.au (pecan2.exetel.com.au [220.233.0.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F38A246CD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Aug 2008 13:00:45 +0200 (CEST)
-In-Reply-To: <s5hvdy2y2s6.wl%tiwai@suse.de>
+	Fri, 15 Aug 2008 16:45:40 +0200 (CEST)
+In-Reply-To: <s5hmyjfzks2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 15 Aug 2008, Takashi Iwai wrote:
 
-> At Fri, 15 Aug 2008 12:39:19 +0200 (CEST),
-> noreply-git@alsa-project.org wrote:
-> > 
-> > @@ -362,10 +363,8 @@ static int snd_card_dummy_playback_open(struct snd_pcm_substream *substream)
-> >  	}
-> >  	if (substream->pcm->device & 2)
-> >  		runtime->hw.info &= ~(SNDRV_PCM_INFO_MMAP|SNDRV_PCM_INFO_MMAP_VALID);
-> > -	if ((err = add_playback_constraints(runtime)) < 0) {
-> > -		kfree(dpcm);
-> > +	if ((err = add_playback_constraints(runtime)) < 0)
-> >  		return err;
-> > -	}
+On Thu, 2008-08-14 at 17:19 +0200, Takashi Iwai wrote:
+> Some drivers have the independent PCM IEC958 status bits while many
+> have only the default IEC958 status bits.  In the former case, the
+> driver resets automatically the status bits after closing the PCM
+> stream.  Your case is the latter one, which doesn't reset.  In this
+> case, usually alsa-lib takes the old setting back.  But when the
+> program crashes (or aborted unexpectedly), the new setting is kept
+> even after that, as you described in the above.
+
+Could you please clarify 
+'independent PCM IEC958 status bits' vs 
+'default IEC958 status bits', 
+perhaps by pointing out some drivers implementing each type?
 > 
-> Run checkpatch.pl please...
+> > Could someone set me straight here so that I can try to produce a
+> > permanent fix for this?
+> 
+> You can change the status easily via iecset program in alsa-utils.
+I note here that iecset does not accept --device=hw:0,1 for example. Any
+reason for this?
+> 
+> Maybe it's safer to have an independent PCM iec958 setting on all
+> drivers.  But this requires the change in alsa-lib (system) config,
+> i.e. it may cause an incompatibility with older alsa-lib configs.
+> This is an only drawback, I think.
+I will try to figure this out after I have validated and submitted my
+44100Hz patch for ca0106.
 
-The patch conformed to coding style in dummy.c. I commited new patch on 
-top of this patch to remove (almost all) assignments in if conditions..
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Ben.
