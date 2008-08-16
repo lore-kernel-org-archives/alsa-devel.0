@@ -1,22 +1,17 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Problem with latest alsa-info.sh patch
-Date: Sun, 17 Aug 2008 05:38:59 +1000
-Message-ID: <200808170538.59670.wishie@wishie.net>
+From: Huang Weiyi <weiyi.huang@gmail.com>
+Subject: [SOUND/SOC] removed unused #include <version.h>
+Date: Sun, 17 Aug 2008 07:51:15 +0800
+Message-ID: <20080817072047.162D.WEIYI.HUANG@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.wishie.net (202-137-100-224.dial.usertools.net
-	[202.137.100.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A8AE243B4
+Received: from ti-out-0910.google.com (ti-out-0910.google.com [209.85.142.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78D5624353
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 Aug 2008 21:39:04 +0200 (CEST)
-Received: from laptop.local (unknown [192.168.0.200])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.wishie.net (Postfix) with ESMTP id B35865B6C6
-	for <alsa-devel@alsa-project.org>; Sat, 16 Aug 2008 20:03:08 +1000 (EST)
-Content-Disposition: inline
+	Sun, 17 Aug 2008 01:51:27 +0200 (CEST)
+Received: by ti-out-0910.google.com with SMTP id j3so603825tid.8
+	for <alsa-devel@alsa-project.org>; Sat, 16 Aug 2008 16:51:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,20 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: liam.girdwood@wolfsonmicro.com, broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The latest patch to allow the uploading to alsa-project.org seems to work 
-fine, for the most part, unless you want to use the --pastebin option for the 
-legacy upload to pastebin.ca . It seems that the uploaded data gets 
-truncated. Not sure if this is the script, or the pastebin having problems. 
-Ill look into it a bit more when i have time (its 5:30am here, and i need 
-sleep).
+The files below do not use LINUX_VERSION_CODE nor KERNEL_VERSION.
+  sound/soc/codecs/wm8753.c
+  sound/soc/codecs/wm9712.c
 
-Just thought id point this out. I realise the 'default' behaviour is to use 
-alsa-project.org for uploading, but i feel the other pastebin.ca mode should 
-still function(I personally get people to upload there first, and 
-then 'submit' card details to alsa-project.org/db/ afterwards.
+This patch removes the said #include <version.h>.
 
-Thanks,
-Travis Place (wishie)
+Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
+
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 8604809..dc7b18f 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -34,7 +34,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 1fb7f9a..2f1c91b 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -13,7 +13,6 @@
+ 
+ #include <linux/init.h>
+ #include <linux/module.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/device.h>
+ #include <sound/core.h>
