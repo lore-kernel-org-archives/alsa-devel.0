@@ -1,23 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: alsactl init - next round
-Date: Mon, 18 Aug 2008 17:30:23 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0808181706320.21669@tm8103-a.perex-int.cz>
+From: "S. Aguinaga" <sa_jr@yahoo.com>
+Subject: Re: Alsa-devel Digest, Vol 18, Issue 45
+Date: Mon, 18 Aug 2008 10:26:42 -0700 (PDT)
+Message-ID: <5839.99561.qm@web65615.mail.ac4.yahoo.com>
+Reply-To: "S. Aguinaga" <sa_jr@ieee.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90B3124456
+Received: from web65615.mail.ac4.yahoo.com (web65615.mail.ac4.yahoo.com
+	[76.13.9.83]) by alsa0.perex.cz (Postfix) with SMTP id C5C611037F1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Aug 2008 17:30:30 +0200 (CEST)
-Received: from server.perex.cz (server.perex.cz [172.16.0.20])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	804C7149E11 for <alsa-devel@alsa-project.org>;
-	Mon, 18 Aug 2008 17:30:30 +0200 (CEST)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	6B61084378 for <alsa-devel@alsa-project.org>;
-	Mon, 18 Aug 2008 17:30:30 +0200 (CEST)
+	Mon, 18 Aug 2008 19:26:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,34 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, "S. Aguinaga" <sa_jr@ieee.org>
+Cc: alsa-devel@alsa-project.org, stan <ghjeold_i_mwee@cox.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+==============================================
+Trying to figure out where to add this "model=macpro"
+and it looks like it should be in a file called modprobe.conf or an options file under /etc/modprobe.d/
 
-	The 'alsactl init' command becomes more powerful now.
+but I don't have (with my installation -- fedora {9} ) those files, do you have any input on this?
 
-- support for dB
-- better support for enumerated controls
-- better "ready to use" udev support, expected use:
-    RUN="/usr/sbin/alsactl -r /var/run/alsactl.init restore $name"
-- initialization using a guess method - the init/default configuration
-    mostly copied from the alsaconf script, see
-    http://git.alsa-project.org/?p=alsa-utils.git;a=blob_plain;f=alsactl/init/default;hb=HEAD
+below are the only files I have.
 
-The cardinfo database is slowly filling. We have over 120 files there now. 
-Any volunteer for watching of these files and writting a suitable 
-configuration files for 'alsactl init' here?
+/etc/modprobe.d/
+ 
+anaconda   
+blacklist-visor  
+i915modeset
+blacklist  
+floppy-pnp       
+modprobe.conf.dist
 
-I'm not sure about the initialization procedure. I selected the method - 
-look to database and if not found - use the default "guess" method 
-(without any warranty). But the opposite way is also possible - do a 
-universal initialization and modify only special parameters for specific 
-hardware.
 
-						Jaroslav
+==============================================
+Subject: Re: [alsa-devel] Alsa-devel Digest, Vol 18, Issue 45
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+At Sat, 16 Aug 2008 06:15:46 -0700 (PDT),
+S. Aguinaga wrote:
+> 
+> S. Aguinaga wrote:
+> > 
+> > Hello Stan,
+> > 
+> > This is awesome I did find the problem it's listed in the /var/log/messages under ALSA.
+> > 
+> > 1.   When I bring up the "Pulse Volume Control" gui, the first tab "Playback"  comes up empty, and grayed-out is "No Streams Available"
+> > 2.   aplay does not produce sound, period!
+> > 3.   Amrok's welcome sample does not produce sound out of the std tower speaker or the headphone jack.
+> > 
+> > I didn't notice anything strange on the output of the alsa-info.sh file, but when I checked the var/log/messages, this is what I found:
+> > 
+> >  sudo cat /var/log/messages | grep ALSA
+> > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_intel.c:1810: chipset global capabilities = 0x4401
+> > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_intel.c:749: codec_mask = 0x1
+> > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_codec.c:1073: Cannot find slave Surround Playback Volume, skipped
+(snip)
+
+These messages are harmless.  It's just information from the driver,
+enabled only when you build it with CONFIG_SND_DEBUG_VERBOSE=y.
+
+> I think your problem is a misidentification of your sound chip.  The 
+> model being used for your 889A appears to be incompatible, thus all 
+> the errors above.  It appears that the macpro ALC885 is being selected 
+> before it gets to the choice for the ALC889A.  Perhaps a developer can 
+> look into this.
+
+Well, ALC882, ALC885 and ALC889A are almost compatible.  In the
+driver, they are all handled in the same routine.
+
+There are a few models for intel macs with ALC88x.  Try to specify
+either model=macpro, model=mbp3 or model=imac24 as the module option
+of snd-hda-intel driver.
+
+
+Takashi
