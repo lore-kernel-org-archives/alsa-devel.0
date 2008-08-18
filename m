@@ -1,18 +1,20 @@
-From: "Henry Ho" <yjho@richwave.com.tw>
-Subject: Re: developing audio with ALSA
-Date: Mon, 18 Aug 2008 17:15:02 +0800
-Message-ID: <000e01c90112$e89e7e30$ba3ea8c0@Richwave.net>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: Configure and use dmix with a new ASoC driver
+Date: Mon, 18 Aug 2008 10:31:53 +0100
+Message-ID: <20080818093150.GA1846@sirena.org.uk>
+References: <loom.20080816T061550-625@post.gmane.org>
+	<20080816165641.GA24879@sirena.org.uk>
+	<loom.20080816T190958-341@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from richwave.com.tw (richwave.richwave.com.tw [60.248.29.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id E3F40103803
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1630624408
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Aug 2008 11:17:07 +0200 (CEST)
-Received: from nbhoyj ([192.168.62.186])
-	by richwave.com.tw (8.13.1/8.12.8) with SMTP id m7I9BSq1016153
-	for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2008 17:11:29 +0800
+	Mon, 18 Aug 2008 11:31:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <loom.20080816T190958-341@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Simon Tremblay <bidou@videotron.qc.ca>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Sat, Aug 16, 2008 at 07:17:19PM +0000, Simon Tremblay wrote:
 
-After reading the cross-compilation instruction in INSTALL file, 
-I already successfully configured the alsa-lib-2.0.17. I also 
-successfully made the library. Adding --prefix=xxx during 
-configuration can set the output directory to xxx.
+> Must I create a .conf file for my tlv320aic23b codec or it's ok if I don't have
+> one?
 
-I also modify my Makefile for application, including the search 
-path of libasound.so.2.***. Now I can successfully make it.
-
-However, when I run my application on the target, I got the following 
-error message:
-
-******************************************************************************************
-./pcm: error while loading shared libraries: libasound.so.2: cannot open 
-shared object file: No such file or directory
-******************************************************************************************
-
-I have put libasound.so.2.0.0 in /tmp of the target. I also modified 
-/etc/ld.so.conf, adding /tmp in ld.so.conf file. However, I cannot 
-find ldconfig on the target. Is anyone can tell me how to solve it?
-Should I rebuild a busybox with this command?
-
-Henry
-
-
-=====================================================================================================================================
-The privileged confidential information  contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of RichWave is strictly prohibited; and any information in this email irrelevant to the official business of RichWave shall be deemed as neither given nor endorsed by RichWave. 
+You shouldn't need a specific configuration file for your card but you
+will need the standard ALSA configuration files there.
