@@ -1,16 +1,24 @@
-From: "S. Aguinaga" <sa_jr@yahoo.com>
-Subject: Re: Alsa-devel Digest, Vol 18, Issue 45
-Date: Mon, 18 Aug 2008 10:26:42 -0700 (PDT)
-Message-ID: <5839.99561.qm@web65615.mail.ac4.yahoo.com>
-Reply-To: "S. Aguinaga" <sa_jr@ieee.org>
+From: Travis Place <wishie@wishie.net>
+Subject: Re: alsactl init - next round
+Date: Tue, 19 Aug 2008 04:23:53 +1000
+Message-ID: <200808190423.54278.wishie@wishie.net>
+References: <Pine.LNX.4.61.0808181706320.21669@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web65615.mail.ac4.yahoo.com (web65615.mail.ac4.yahoo.com
-	[76.13.9.83]) by alsa0.perex.cz (Postfix) with SMTP id C5C611037F1
+Received: from www.wishie.net (202-137-100-224.dial.usertools.net
+	[202.137.100.224])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3329F24469
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Aug 2008 19:26:44 +0200 (CEST)
+	Mon, 18 Aug 2008 20:23:57 +0200 (CEST)
+Received: from laptop.local (unknown [192.168.0.200])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by www.wishie.net (Postfix) with ESMTP id 28A125AAA2
+	for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2008 18:48:05 +1000 (EST)
+In-Reply-To: <Pine.LNX.4.61.0808181706320.21669@tm8103-a.perex-int.cz>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,67 +28,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "S. Aguinaga" <sa_jr@ieee.org>
-Cc: alsa-devel@alsa-project.org, stan <ghjeold_i_mwee@cox.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-==============================================
-Trying to figure out where to add this "model=macpro"
-and it looks like it should be in a file called modprobe.conf or an options file under /etc/modprobe.d/
+I was wondering what the overall 'goal' of storing alsa-info.sh posts was all 
+about.. now i get it. If you would like, I can request irc users to run the 
+new incarnation of the script, to help fill the database.
 
-but I don't have (with my installation -- fedora {9} ) those files, do you have any input on this?
+Thanks,
+Travis Place (wishie)
 
-below are the only files I have.
-
-/etc/modprobe.d/
- 
-anaconda   
-blacklist-visor  
-i915modeset
-blacklist  
-floppy-pnp       
-modprobe.conf.dist
-
-
-==============================================
-Subject: Re: [alsa-devel] Alsa-devel Digest, Vol 18, Issue 45
-
-At Sat, 16 Aug 2008 06:15:46 -0700 (PDT),
-S. Aguinaga wrote:
-> 
-> S. Aguinaga wrote:
-> > 
-> > Hello Stan,
-> > 
-> > This is awesome I did find the problem it's listed in the /var/log/messages under ALSA.
-> > 
-> > 1.   When I bring up the "Pulse Volume Control" gui, the first tab "Playback"  comes up empty, and grayed-out is "No Streams Available"
-> > 2.   aplay does not produce sound, period!
-> > 3.   Amrok's welcome sample does not produce sound out of the std tower speaker or the headphone jack.
-> > 
-> > I didn't notice anything strange on the output of the alsa-info.sh file, but when I checked the var/log/messages, this is what I found:
-> > 
-> >  sudo cat /var/log/messages | grep ALSA
-> > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_intel.c:1810: chipset global capabilities = 0x4401
-> > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_intel.c:749: codec_mask = 0x1
-> > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_codec.c:1073: Cannot find slave Surround Playback Volume, skipped
-(snip)
-
-These messages are harmless.  It's just information from the driver,
-enabled only when you build it with CONFIG_SND_DEBUG_VERBOSE=y.
-
-> I think your problem is a misidentification of your sound chip.  The 
-> model being used for your 889A appears to be incompatible, thus all 
-> the errors above.  It appears that the macpro ALC885 is being selected 
-> before it gets to the choice for the ALC889A.  Perhaps a developer can 
-> look into this.
-
-Well, ALC882, ALC885 and ALC889A are almost compatible.  In the
-driver, they are all handled in the same routine.
-
-There are a few models for intel macs with ALC88x.  Try to specify
-either model=macpro, model=mbp3 or model=imac24 as the module option
-of snd-hda-intel driver.
-
-
-Takashi
+On Tuesday 19 August 2008 1:30:23 am Jaroslav Kysela wrote:
+> Hello,
+>
+> 	The 'alsactl init' command becomes more powerful now.
+>
+> - support for dB
+> - better support for enumerated controls
+> - better "ready to use" udev support, expected use:
+>     RUN="/usr/sbin/alsactl -r /var/run/alsactl.init restore $name"
+> - initialization using a guess method - the init/default configuration
+>     mostly copied from the alsaconf script, see
+>    
+> http://git.alsa-project.org/?p=alsa-utils.git;a=blob_plain;f=alsactl/init/d
+>efault;hb=HEAD
+>
+> The cardinfo database is slowly filling. We have over 120 files there now.
+> Any volunteer for watching of these files and writting a suitable
+> configuration files for 'alsactl init' here?
+>
+> I'm not sure about the initialization procedure. I selected the method -
+> look to database and if not found - use the default "guess" method
+> (without any warranty). But the opposite way is also possible - do a
+> universal initialization and modify only special parameters for specific
+> hardware.
+>
+> 						Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, Red Hat, Inc.
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
