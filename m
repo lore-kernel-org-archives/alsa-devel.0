@@ -1,27 +1,19 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: developing audio with ALSA
-Date: Mon, 18 Aug 2008 11:34:40 +0100
-Message-ID: <g8bj80$fmd$1@ger.gmane.org>
-References: <000e01c90112$e89e7e30$ba3ea8c0@Richwave.net>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [PATCH] wss_lib: snd_wss_calibrate_mute improvement
+Date: Mon, 18 Aug 2008 13:04:16 +0200
+Message-ID: <48A95730.20505@keyaccess.nl>
+References: <20080817223827.d3250ef5.krzysztof.h1@poczta.fm>	<48A937C7.2040600@keyaccess.nl>
+	<s5h1w0m7hnh.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 740F91037FB
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl
+	[213.51.130.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7336424429
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Aug 2008 12:34:53 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KV24W-0008HM-C3
-	for alsa-devel@alsa-project.org; Mon, 18 Aug 2008 10:34:48 +0000
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2008 10:34:48 +0000
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2008 10:34:48 +0000
-In-Reply-To: <000e01c90112$e89e7e30$ba3ea8c0@Richwave.net>
+	Mon, 18 Aug 2008 13:03:19 +0200 (CEST)
+In-Reply-To: <s5h1w0m7hnh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,57 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Krzysztof Helt <krzysztof.h1@poczta.fm>
 List-Id: alsa-devel@alsa-project.org
 
-Henry Ho wrote:
-> Hi
+On 18-08-08 12:16, Takashi Iwai wrote:
+
+> At Mon, 18 Aug 2008 10:50:15 +0200,
+> Rene Herman wrote:
+>> On 17-08-08 22:38, Krzysztof Helt wrote:
+>>
+>>> From: Krzysztof Helt <krzysztof.h1@wp.pl>
+>>>
+>>> Mute sound by setting mute bit without
+>>> setting volume to 0. It makes both source code
+>>> and binary shorter.
+>>>
+>>> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+>> Grmmbbled-over-by: Rene Herman <rene.herman@gmail.com>
+>>
+>> This should be safe and the current function indeed generates crap code 
+>> but in the sense of always expecting the worst broken hardware variants 
+>> to be out there I must say I'd rather have seen that GCC were beter. But 
+>> yes, sure.
 > 
-> After reading the cross-compilation instruction in INSTALL file, 
-> I already successfully configured the alsa-lib-2.0.17. I also 
-> successfully made the library. Adding --prefix=xxx during 
-> configuration can set the output directory to xxx.
-> 
-> I also modify my Makefile for application, including the search 
-> path of libasound.so.2.***. Now I can successfully make it.
-> 
-> However, when I run my application on the target, I got the following 
-> error message:
-> 
-> ******************************************************************************************
-> ./pcm: error while loading shared libraries: libasound.so.2: cannot open 
-> shared object file: No such file or directory
-> ******************************************************************************************
-> 
-> I have put libasound.so.2.0.0 in /tmp of the target. I also modified 
-> /etc/ld.so.conf, adding /tmp in ld.so.conf file. However, I cannot 
-> find ldconfig on the target. Is anyone can tell me how to solve it?
-> Should I rebuild a busybox with this command?
+> Yeah, the slightest concern is the intention of using 0x80 there.
 
-I'm wondering if you are mixing up --prefix and DESTDIR...
+Yes, shared that same concern but it's very likely not significant. The 
+original thought may just have been that you have to write _something_ 
+so you might as well simply write 0x80 instead or or-ing in a bit and 
+with volume at 0, your're even "doubly safe"...
 
---prefix is the location that should be the *running systems* path on 
-normal use. Even if you have a folder on your development machine that 
-is different to that. e.g. say you are booting from compact flash: on 
-your dev machine this may be mounted as /media/cf, but when you use it 
-to boot it is actually the / of that system.
+> If this patch was already tested on some real hardwares (and I guess
+> it should work), I'm willing to apply it.  Krzystof, was this tested
+> on your machines?
 
-In this case I'd recommend you do:
-./configure --prefix=/usr ....
-make
-sudo make DESTDIR=/media/cf install
+Not (yet) on any of mine at least but actually having something where it 
+does not work would be surprising. I could sort of imagine something 
+being out there that ignores the mute bit but I doubt that either of us 
+is actually going to have it even if it is.
 
-That will install things in /media/cf.
+Avoiding cargo-cult programming isn't unimportant so let's not be _too_ 
+cautious I guess. It does currently make for crap code (GCC could be 
+using cmov here it seems but it doesn't) which is an excuse...
 
-You then need to modify other parts of your build to look in /media/cf 
-for stuff and to strip out /media/cf from the linking, but that's 
-another story.
-
-
-All that said, I'd imagine you just didn't copy the symlinks that 
-accoumpany the file libasound.so.2.0.0 ... it should come sith some 
-symlinks that give it the name libasound.so.2 as well. (i.e. 
-libasound.so.2 is a symlink to libasound.so.2.0.0)
-
-
-Col
+Rene.
