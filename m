@@ -1,23 +1,17 @@
-From: ikke <ikke@iki.fi>
-Subject: Re: maestro3 & es1988: mic range too low
-Date: Tue, 19 Aug 2008 08:03:14 +0300
-Message-ID: <e3156df0808182203p1e1cebd0g1efb08c58aa1807b@mail.gmail.com>
-References: <e3156df0808171207p71c685e4r40ce079fdad77f89@mail.gmail.com>
-	<s5hzlna62w6.wl%tiwai@suse.de>
-	<e3156df0808180528s7926ea01mb51ef0449bb5fce@mail.gmail.com>
-	<s5hod3qze7x.wl%tiwai@suse.de>
+From: "Johannes Berg" <johannes@sipsolutions.net>
+Subject: Re: [PATCH] duplicate SNDRV_PCM_FMTBIT_S{16,24}_BE
+Date: Tue, 19 Aug 2008 08:15:05 +0200 (CEST)
+Message-ID: <3ef3fed769e5aa57681bacea1230e82b.squirrel@secure.sipsolutions.net>
+References: <48AA407C.8090409@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 430E11037EB
+Received: from sipsolutions.net (xc.sipsolutions.net [83.246.72.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id D4BD4245DC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Aug 2008 07:03:16 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so1658894yxh.2
-	for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2008 22:03:15 -0700 (PDT)
-In-Reply-To: <s5hod3qze7x.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Tue, 19 Aug 2008 08:15:09 +0200 (CEST)
+In-Reply-To: <48AA407C.8090409@gmail.com> 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,307 +21,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: roel kluin <roel.kluin@gmail.com>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 18, 2008 at 3:42 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 18 Aug 2008 15:28:00 +0300,
-> Ilkka Tengvall wrote:
->>
->> >> the reasoning for the original patch sounds reasonable. The
->> >> mic volume is tunable, only at the very low range. I recall the laptop
->> >> came with Win98, and there was no problem then with the sound -> not a
->> >> HW problem. I have never got this laptop mic working with linux, so
->> >> this is not anything that broke recently. I see there is
->> >> check_volume_resolution function which tries to guess some of the
->> >> register ranges, but maybe it get's it wrong with this HW.
->> >
->> > Maybe, maybe not.  You should check rather ac97 registers in
->> > /proc/asound/card0/codec97#0/ac97#0-0+regs.  If build with
->> > CONFIG_SND_DEBUG=y, you can write to the register directly, too.
->> > See Documentaiton[/sound/alsa]/Procfile.txt.
->> >
->>
->> I checked this file. It seems it gets the regs right for the mic
->> (range 0x1f). The capture range is 0xf. I don't have the specs to
->> compare it against, so I assume there is nothing to do more here.
+roel kluin wrote:
+> untested, is it correct?
+
+not a clue, do you know how long ago that was? :)
+does the driver check endianness anywhere?
+
+> duplicate SNDRV_PCM_FMTBIT_S{16,24}_BE
 >
-> Which registers, exactly?
-
-The ones affected by changing mic volume and capture in alsamixer,
-those I that I pasted the diffs of previously. In alsamixer it has
-slider for mic volume, and capture volume. And mic can be set as
-capture device. In code (which the patch touched) it speaks about "Mic
-Capture Volume", that made me think it would affect the volume used
-for capturing (recording?) mic.
-
-ac97_codec.c:
-AC97_SINGLE("Mic Capture Switch", AC97_REC_GAIN_MIC, 15, 1, 1),
-AC97_SINGLE("Mic Capture Volume", AC97_REC_GAIN_MIC, 0, 15, 0)
-
-That is 4 bits (15, f), not 5 bits (31, 1f). But if this is really
-only volume control for mic playback, not capture, then I assume it
-doesn't matter. Could you please still confirm this?
-
->> It seems mic value decreases while going up to full, where as capture
->> increases.
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> ---
+> diff --git a/sound/aoa/codecs/snd-aoa-codec-tas.c
+> b/sound/aoa/codecs/snd-aoa-codec-tas.c
+> index 7a16a33..c922505 100644
+> --- a/sound/aoa/codecs/snd-aoa-codec-tas.c
+> +++ b/sound/aoa/codecs/snd-aoa-codec-tas.c
+> @@ -654,15 +654,15 @@ static struct snd_kcontrol_new bass_control = {
+>  static struct transfer_info tas_transfers[] = {
+>  	{
+>  		/* input */
+> -		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_BE |
+> -			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_BE,
+> +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
+> +			   SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE,
+>  		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
+> SNDRV_PCM_RATE_48000,
+>  		.transfer_in = 1,
+>  	},
+>  	{
+>  		/* output */
+> -		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_BE |
+> -			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_BE,
+> +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
+> +			   SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE,
+>  		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
+> SNDRV_PCM_RATE_48000,
+>  		.transfer_in = 0,
+>  	},
 >
-> I guess the former one is the mic loopback volume (attenuation), so no
-> wonder it behaves so.
 >
->> Another difference is maybe stereo / mono related, the
->> capture changes both bytes whereas mic only the other one. Also one
->> thing, should the mic level be around 0x40 - 0x5f, not 0x0 - 0x1f.
->
-> The bit 0x40 indicates the mic boost +20dB.
->
-
-Thanks for the explanation,
-
- ikke
-
-
-
-I still attach here the all ac97 regs dump, ac97info from same dir and
-amixer dump:
-
-
-ac97#0-0+regs
----------------------
-0:00 = 3e80
-0:02 = 0606
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 0000
-0:0c = 8000
-0:0e = 0040
-0:10 = 0000
-0:12 = 0000
-0:14 = 0000
-0:16 = 0000
-0:18 = 0000
-0:1a = 0000
-0:1c = 0f0f
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0002
-0:2a = 0000
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 4583
-0:7e = 8308
----------------------
-
-
-ac97#0-0
----------------------
-0-0/0: ESS Technology ESS1988
-
-PCI Subsys Vendor: 0x0000
-PCI Subsys Device: 0x0000
-
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 20-bit
-3D enhancement   : ESS Technology Stereo Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Double rate slots: 10/11
-Extended ID      : codec=0 rev=0 DSA=0 DRA
-Extended status  :
----------------------
-
-amixer
----------------------
-0-0/0: ESS Technology ESS1988
-
-PCI Subsys Vendor: 0x0000
-PCI Subsys Device: 0x0000
-
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 20-bit
-3D enhancement   : ESS Technology Stereo Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Double rate slots: 10/11
-Extended ID      : codec=0 rev=0 DSA=0 DRA
-Extended status  :
-kaarina@kannettava:~$ cat /tmp/amixer
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 25 [81%] [-9.00dB] [on]
-  Front Right: Playback 25 [81%] [-9.00dB] [on]
-Simple mixer control 'Master Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [0.00dB] [on]
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 15 [100%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 15 [100%]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [12.00dB] [on]
-  Front Right: Playback 31 [100%] [12.00dB] [on]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [12.00dB] [on] Capture [off]
-  Front Right: Playback 31 [100%] [12.00dB] [on] Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [12.00dB] [on] Capture [off]
-  Front Right: Playback 31 [100%] [12.00dB] [on] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [12.00dB] [on]
-  Front Left: Capture [on]
-  Front Right: Capture [on]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mic Select',0
-  Capabilities: enum
-  Items: 'Mic1' 'Mic2'
-  Item0: 'Mic1'
-Simple mixer control 'Video',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [12.00dB] [off]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 15 [100%] [0.00dB] [on]
-Simple mixer control 'Aux',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities: enum
-  Items: 'Mix' 'Mic'
-  Item0: 'Mix'
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 15 [100%] [22.50dB] [on]
-  Front Right: Capture 15 [100%] [22.50dB] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
----------------------
