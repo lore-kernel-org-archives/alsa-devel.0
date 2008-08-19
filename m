@@ -1,19 +1,19 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: Re: [snd-bt87x]: seems cannot powerup after
-	powerdown...
-Date: Tue, 19 Aug 2008 10:04:22 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0808191002300.23833@shell4.speakeasy.net>
-References: <48A993AC.2010900@odu.neva.ru> <s5hzln9wa0t.wl%tiwai@suse.de>
-	<48AAB4C8.70803@odu.neva.ru>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: ALSA Driver DB Says to Contact You if I have This
+ Hardware... So Here I am.
+Date: Tue, 19 Aug 2008 21:28:46 +0200
+Message-ID: <48AB1EEE.8040101@keyaccess.nl>
+References: <d90eeee60808190659y21a10726x90e5f79338830470@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.sea5.speakeasy.net (mail1.sea5.speakeasy.net
-	[69.17.117.3]) by alsa0.perex.cz (Postfix) with ESMTP id B2FCD2447E
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl
+	[213.51.146.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1354A24345
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Aug 2008 19:04:25 +0200 (CEST)
-In-Reply-To: <48AAB4C8.70803@odu.neva.ru>
+	Tue, 19 Aug 2008 21:27:43 +0200 (CEST)
+In-Reply-To: <d90eeee60808190659y21a10726x90e5f79338830470@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Butskoy <buc@odusz.so-cdu.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@suse.cz>
+To: Bugs Bane <bugsbane@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Aug 2008, Dmitry Butskoy wrote:
-> Takashi Iwai wrote:
-> > Added Clemens and alsa-devel to Cc.
-> >
-> > At Mon, 18 Aug 2008 19:22:20 +0400,
-> > Dmitry Butskoy wrote:
-> >
-> >> Hi,
-> >>
-> >> Recently snd-bt87x driver has started to use CTL_A_PWRDN bit, see
-> >> http://git.kernel.org/?p=linux/kernel/git/stable/linux-2.6.26.y.git;a=commitdiff;h=950fb626dc28e17ae4ad01dba07957bdc6e0b997
-> >>
-> >> Unfortunately, it produces a regression, at least in my case.
-> >>
-> >> I have "AVerMedia TVPhone 98" card, lspci is:
+On 19-08-08 15:59, Bugs Bane wrote:
 
-Which PCM device are you using?
+Only adding CCs.
+
+> I have an Edirol 100FX. It has two modes, standard and advanced. The driver
+> DB says it's currently supported for standard mode only, but to get in touch
+> if I have this device so advanced mode can be worked on.
+> 
+> I'm wondering what info I can supply to be of help?
+> 
+> lsusb reads:
+> Bus 004 Device 002: ID 0582:0046 Roland Corp.
+> 
+> Bugsbane
