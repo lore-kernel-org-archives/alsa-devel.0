@@ -1,59 +1,46 @@
-From: roel kluin <roel.kluin@gmail.com>
-Subject: [alsa-devel] [PATCH v2] duplicate SNDRV_PCM_FMTBIT_S{16,24}_BE
-Date: Tue, 19 Aug 2008 11:53:54 -0400
-Message-ID: <48AAEC92.8050108@gmail.com>
-References: <48AA407C.8090409@gmail.com>	<3ef3fed769e5aa57681bacea1230e82b.squirrel@secure.sipsolutions.net> <s5hbpzpxrfh.wl%tiwai@suse.de>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: Re: [snd-bt87x]: seems cannot powerup after
+	powerdown...
+Date: Tue, 19 Aug 2008 10:04:22 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0808191002300.23833@shell4.speakeasy.net>
+References: <48A993AC.2010900@odu.neva.ru> <s5hzln9wa0t.wl%tiwai@suse.de>
+	<48AAB4C8.70803@odu.neva.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755368AbYHSPyS@vger.kernel.org>
-In-Reply-To: <s5hbpzpxrfh.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.sea5.speakeasy.net (mail1.sea5.speakeasy.net
+	[69.17.117.3]) by alsa0.perex.cz (Postfix) with ESMTP id B2FCD2447E
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Aug 2008 19:04:25 +0200 (CEST)
+In-Reply-To: <48AAB4C8.70803@odu.neva.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dmitry Butskoy <buc@odusz.so-cdu.ru>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 19 Aug 2008 08:15:05 +0200 (CEST),
-> Johannes Berg wrote:
->> roel kluin wrote:
->>> untested, is it correct?
->> not a clue, do you know how long ago that was? :)
->> does the driver check endianness anywhere?
-> 
-> AFAIK snd-aoa supports only bit-endian formats (at least in
-> sound/aoa/soundbus/i2sbus-pcm.c), so this addition makes little
-> sense.
-> 
-> Better to drop the duplicated words there.
+On Tue, 19 Aug 2008, Dmitry Butskoy wrote:
+> Takashi Iwai wrote:
+> > Added Clemens and alsa-devel to Cc.
+> >
+> > At Mon, 18 Aug 2008 19:22:20 +0400,
+> > Dmitry Butskoy wrote:
+> >
+> >> Hi,
+> >>
+> >> Recently snd-bt87x driver has started to use CTL_A_PWRDN bit, see
+> >> http://git.kernel.org/?p=linux/kernel/git/stable/linux-2.6.26.y.git;a=commitdiff;h=950fb626dc28e17ae4ad01dba07957bdc6e0b997
+> >>
+> >> Unfortunately, it produces a regression, at least in my case.
+> >>
+> >> I have "AVerMedia TVPhone 98" card, lspci is:
 
-Thanks Johannes and Takashi,
-
-FWIW this removes the duplicates.
----
-Remove duplicate assignment of SNDRV_PCM_FMTBIT_S{16,24}_BE bits
-
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
----
-diff --git a/sound/aoa/codecs/snd-aoa-codec-tas.c b/sound/aoa/codecs/snd-aoa-codec-tas.c
-index 7a16a33..6c515b2 100644
---- a/sound/aoa/codecs/snd-aoa-codec-tas.c
-+++ b/sound/aoa/codecs/snd-aoa-codec-tas.c
-@@ -654,15 +654,13 @@ static struct snd_kcontrol_new bass_control = {
- static struct transfer_info tas_transfers[] = {
- 	{
- 		/* input */
--		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_BE |
--			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_BE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S24_BE,
- 		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
- 		.transfer_in = 1,
- 	},
- 	{
- 		/* output */
--		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_BE |
--			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_BE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S24_BE,
- 		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
- 		.transfer_in = 0,
- 	},
+Which PCM device are you using?
