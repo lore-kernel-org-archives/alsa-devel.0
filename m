@@ -1,40 +1,59 @@
-From: "Bugs Bane" <bugsbane@gmail.com>
-Subject: ALSA Driver DB Says to Contact You if I have This
-	Hardware... So Here I am.
-Date: Tue, 19 Aug 2008 09:59:24 -0400
-Message-ID: <d90eeee60808190659y21a10726x90e5f79338830470@mail.gmail.com>
+From: roel kluin <roel.kluin@gmail.com>
+Subject: [alsa-devel] [PATCH v2] duplicate SNDRV_PCM_FMTBIT_S{16,24}_BE
+Date: Tue, 19 Aug 2008 11:53:54 -0400
+Message-ID: <48AAEC92.8050108@gmail.com>
+References: <48AA407C.8090409@gmail.com>	<3ef3fed769e5aa57681bacea1230e82b.squirrel@secure.sipsolutions.net> <s5hbpzpxrfh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.174])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20F2E243C8
-	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Aug 2008 15:59:25 +0200 (CEST)
-Received: by ug-out-1314.google.com with SMTP id m2so649872uge.24
-	for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2008 06:59:24 -0700 (PDT)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755368AbYHSPyS@vger.kernel.org>
+In-Reply-To: <s5hbpzpxrfh.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+Takashi Iwai wrote:
+> At Tue, 19 Aug 2008 08:15:05 +0200 (CEST),
+> Johannes Berg wrote:
+>> roel kluin wrote:
+>>> untested, is it correct?
+>> not a clue, do you know how long ago that was? :)
+>> does the driver check endianness anywhere?
+> 
+> AFAIK snd-aoa supports only bit-endian formats (at least in
+> sound/aoa/soundbus/i2sbus-pcm.c), so this addition makes little
+> sense.
+> 
+> Better to drop the duplicated words there.
 
-I have an Edirol 100FX. It has two modes, standard and advanced. The driver
-DB says it's currently supported for standard mode only, but to get in touch
-if I have this device so advanced mode can be worked on.
+Thanks Johannes and Takashi,
 
-I'm wondering what info I can supply to be of help?
+FWIW this removes the duplicates.
+---
+Remove duplicate assignment of SNDRV_PCM_FMTBIT_S{16,24}_BE bits
 
-lsusb reads:
-Bus 004 Device 002: ID 0582:0046 Roland Corp.
-
-Bugsbane
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+diff --git a/sound/aoa/codecs/snd-aoa-codec-tas.c b/sound/aoa/codecs/snd-aoa-codec-tas.c
+index 7a16a33..6c515b2 100644
+--- a/sound/aoa/codecs/snd-aoa-codec-tas.c
++++ b/sound/aoa/codecs/snd-aoa-codec-tas.c
+@@ -654,15 +654,13 @@ static struct snd_kcontrol_new bass_control = {
+ static struct transfer_info tas_transfers[] = {
+ 	{
+ 		/* input */
+-		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_BE |
+-			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_BE,
++		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S24_BE,
+ 		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
+ 		.transfer_in = 1,
+ 	},
+ 	{
+ 		/* output */
+-		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_BE |
+-			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_BE,
++		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S24_BE,
+ 		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
+ 		.transfer_in = 0,
+ 	},
