@@ -1,23 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: alsa-utils,alsa-plugins v1.0.18rc2
-Date: Tue, 19 Aug 2008 14:28:53 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0808191352000.21669@tm8103-a.perex-int.cz>
+From: "Bugs Bane" <bugsbane@gmail.com>
+Subject: ALSA Driver DB Says to Contact You if I have This
+	Hardware... So Here I am.
+Date: Tue, 19 Aug 2008 09:59:24 -0400
+Message-ID: <d90eeee60808190659y21a10726x90e5f79338830470@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC2FB24341
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20F2E243C8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Aug 2008 14:29:00 +0200 (CEST)
-Received: from server.perex.cz (server.perex.cz [172.16.0.20])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	AC541149CC3 for <alsa-devel@alsa-project.org>;
-	Tue, 19 Aug 2008 14:29:00 +0200 (CEST)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	9CCCE8436F for <alsa-devel@alsa-project.org>;
-	Tue, 19 Aug 2008 14:29:00 +0200 (CEST)
+	Tue, 19 Aug 2008 15:59:25 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id m2so649872uge.24
+	for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2008 06:59:24 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,19 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+Hi there,
 
-	I released alsa-utils and alsa-plugins v1.0.18rc2 packages. The 
-changelog is available here:
+I have an Edirol 100FX. It has two modes, standard and advanced. The driver
+DB says it's currently supported for standard mode only, but to get in touch
+if I have this device so advanced mode can be worked on.
 
-http://www.alsa-project.org/main/index.php/Changes_v1.0.18rc1_v1.0.18rc2
+I'm wondering what info I can supply to be of help?
 
-					Jaroslav
+lsusb reads:
+Bus 004 Device 002: ID 0582:0046 Roland Corp.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Bugsbane
