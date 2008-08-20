@@ -1,18 +1,18 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
+From: Mark Brown <broonie@sirena.org.uk>
 Subject: Re: PATCH - vt1618 7.1 Audio
-Date: Wed, 20 Aug 2008 21:05:33 +0200
-Message-ID: <48AC6AFD.6030806@keyaccess.nl>
+Date: Wed, 20 Aug 2008 20:21:22 +0100
+Message-ID: <20080820192121.GA26994@sirena.org.uk>
 References: <op.uf5sfuct647oa9@jutz-gnto64> <s5h1w0knl8o.wl%tiwai@suse.de>
 	<op.uf646zdn647oa9@jutz-gnto64>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id AABE324563
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A5C02432C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Aug 2008 21:04:25 +0200 (CEST)
+	Wed, 20 Aug 2008 21:21:17 +0200 (CEST)
+Content-Disposition: inline
 In-Reply-To: <op.uf646zdn647oa9@jutz-gnto64>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,21 +27,50 @@ To: "John L. Utz III" <john.utz@dmx.com>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 20-08-08 19:50, John L. Utz III wrote:
-
+On Wed, Aug 20, 2008 at 10:50:49AM -0700, John L. Utz III wrote:
 > On Wed, 20 Aug 2008 01:28:39 -0700, Takashi Iwai <tiwai@suse.de> wrote:
 
->> Also, a Windows style variable name should be avoided.  People tend to
->> hate it.
-> 
+> > They must be consistent -- usually 0 = disable, 1 = enable.
+> > In general, the controls like "XXX Disable" is bad.  A switch should
+> > be to turn on, not to turn off.  If the register bit is to disable
+> > something, implement the control element in a reverse way.
+
+> OK.
+
+> note that it makes the code more complex in some places because the chip  
+> is inconsistent.
+
+ASoC does this by having a flag in the control specific data saying if
+the control is inverted which works pretty well for dealing with this
+situation.
+
+> > Avoid too long lines (also in other places).
+
+> OK. 80 column?
+
+Yes.  See Documentation/CodingStyle (and checkpatch).
+
+> > Also, a Windows style variable name should be avoided.  People tend to
+> > hate it.
+
 > Why would you call this 'Windows Style?' Is that supposed to be a  
 > perjorative comment?
 
-You insult really quickly... :-)
+This style is used throughout the Windows API documentation and is
+therefore frequently encounterd in Windows code but it's rarely
+encountered anywhere else.  It's called Hungarian notation, though in
+the form it's normally seen it's very far from what was originally
+intended by that.
 
-The style is more generally known as Hungarian Notation after its 
-Hungarian "inventor" who was a chief architect at Microsoft. This 
-notational conventation saw widespread use in the Windows API and not 
-much use anywhere beyond that.
+> Having variable type decorations provides valuable context and (IMHO)  
+> makes the code more maintainable.
 
-Rene.
+Many people have forcefuly held views in the opposite direction - google
+will turn up a bunch.  I have the following in my fortune database:
+
+prepAs nounOthers verbHave verbNoted, pronThis nounStyle verbIs
+verbCalled adjHungarian nounNotation.  pronI verbFind pronIt
+advCompletely adjUseless.  pronI verbHope pronYou verbCan verbSee
+possMy nounPoint -- verbEspecially nounWhen possThe advPrefixes
+conjBecome verbUtterly adjWrong. :-)
+                -- Chris Torek <nospam@elf.eng.bsdi.com>
