@@ -1,18 +1,19 @@
-From: "John L. Utz III" <john.utz@dmx.com>
+From: Rene Herman <rene.herman@keyaccess.nl>
 Subject: Re: PATCH - vt1618 7.1 Audio
-Date: Wed, 20 Aug 2008 10:50:49 -0700
-Message-ID: <op.uf646zdn647oa9@jutz-gnto64>
-References: <op.uf5sfuct647oa9@jutz-gnto64>
- <s5h1w0knl8o.wl%tiwai@suse.de>
+Date: Wed, 20 Aug 2008 21:05:33 +0200
+Message-ID: <48AC6AFD.6030806@keyaccess.nl>
+References: <op.uf5sfuct647oa9@jutz-gnto64> <s5h1w0knl8o.wl%tiwai@suse.de>
+	<op.uf646zdn647oa9@jutz-gnto64>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDFD6103844
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id AABE324563
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Aug 2008 19:51:50 +0200 (CEST)
-In-Reply-To: <s5h1w0knl8o.wl%tiwai@suse.de>
+	Wed, 20 Aug 2008 21:04:25 +0200 (CEST)
+In-Reply-To: <op.uf646zdn647oa9@jutz-gnto64>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,147 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Developers <alsa-devel@alsa-project.org>
+To: "John L. Utz III" <john.utz@dmx.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi;
+On 20-08-08 19:50, John L. Utz III wrote:
 
-tnx for the review, a few questions inline.
+> On Wed, 20 Aug 2008 01:28:39 -0700, Takashi Iwai <tiwai@suse.de> wrote:
 
-On Wed, 20 Aug 2008 01:28:39 -0700, Takashi Iwai <tiwai@suse.de> wrote:
+>> Also, a Windows style variable name should be avoided.  People tend to
+>> hate it.
+> 
+> Why would you call this 'Windows Style?' Is that supposed to be a  
+> perjorative comment?
 
-> At Tue, 19 Aug 2008 17:17:44 -0700,
-> John L. Utz III wrote:
->>
->> Signed-off-by: John L. Utz III john.utz@dmx.com
->
-> Thanks for the patch.
->
-> First off, could you give a brief description what this patch
-> does/fixes exactly?
->
-> Below is a quick review.
->
->> diff --git a/pci/ac97/ac97_codec.c b/pci/ac97/ac97_codec.c
->> index d0023e9..a34f1ea 100644
->> --- a/pci/ac97/ac97_codec.c
->> +++ b/pci/ac97/ac97_codec.c
->> @@ -168,7 +168,7 @@ static const struct ac97_codec_id  
->> snd_ac97_codec_ids[]
->> = {
->>   { 0x54584e20, 0xffffffff, "TLC320AD9xC",	NULL,		NULL },
->>   { 0x56494161, 0xffffffff, "VIA1612A",		NULL,		NULL }, // modified  
->> ICE1232
->> with S/PDIF
->>   { 0x56494170, 0xffffffff, "VIA1617A",		patch_vt1617a,	NULL }, //  
->> modified
->> VT1616 with S/PDIF
->> -{ 0x56494182, 0xffffffff, "VIA1618",		NULL,		NULL },
->> +{ 0x56494182, 0xffffffff, "VIA1618",		patch_vt1618,   NULL }, // clean
->
-> Please avoid C++ comments.  Yeah, we see it in other places here and
-> there, but you don't need to introduce more in the newly added code.
->
+You insult really quickly... :-)
 
-OK. takes more space tho.
+The style is more generally known as Hungarian Notation after its 
+Hungarian "inventor" who was a chief architect at Microsoft. This 
+notational conventation saw widespread use in the Windows API and not 
+much use anywhere beyond that.
 
->> +
->> +/* use these alot in the 1618 code but i cant find a better place to  
->> put
->> them */
->> +
->> +static const char* std_enable[]  = {"Enabled", "Disabled"};
->> +static const char* std_disable[] = {"Disabled","Enabled"};
->
-> They must be consistent -- usually 0 = disable, 1 = enable.
-> In general, the controls like "XXX Disable" is bad.  A switch should
-> be to turn on, not to turn off.  If the register bit is to disable
-> something, implement the control element in a reverse way.
-
-OK.
-
-note that it makes the code more complex in some places because the chip  
-is inconsistent.
-
-> Also, you can consider to implement it as a switch, not as an enum,
-> depending on the role.  Then it'll be often better handled in many
-> mixer apps.
->
-> The rest are mostly about coding styles.
->
->> +static int snd_ac97_vt1618_UAJ0_info(struct snd_kcontrol *kcontrol,
->> +				     struct snd_ctl_elem_info *uinfo)
->> +{
->> +	static const char* texts[] = { "Speaker Out", "DAC Unmixed Out", "Line
->> In", "Mic In"};
->
-> Avoid too long lines (also in other places).
-
-OK. 80 column?
-
->> +{
->> +	struct snd_ac97 *pac97;
->> +	ushort usDatPag, usUAJ, usShift = 0; // 0 is a possible value
->
-> ushort isn't a standard type.  Use either unsigned short or u16 if it
-> must be 16bit.
-> Also, a Windows style variable name should be avoided.  People tend to
-> hate it.
-
-Why would you call this 'Windows Style?' Is that supposed to be a  
-perjorative comment?
-
-The code compiled with gcc and creates a linux kernel module and I am  
-using Gentoo. Wouldnt that then make it reasonable to call it 'Linux  
-Style' or 'GPL Style' or 'Gentoo Style? or 'John Utz Style' ?
-
-Having variable type decorations provides valuable context and (IMHO)  
-makes the code more maintainable.
-
->> +	if(0x000C == mask) usShift = 2;
->> +	if(0x0030 == mask) usShift = 4;
->
-> Fix coding style please.
-
-specifics please. wait. nevermind, i'll run checkpatch against it. i  
-forgot to do that last nite. :-)
-
->> +
->> +	pac97 = snd_kcontrol_chip(kcontrol);
->> +        mutex_lock(&pac97->page_mutex);
->
-> Keep to use tabs instead of space letters (found in other places).
-
-OK
-
->> +static int snd_ac97_vt1618_UAJ0_get(struct snd_kcontrol *kcontrol,
->> +				    struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	return snd_ac97_vt1618_UAJ_get(kcontrol, ucontrol, 0x0003);
->> +}
->> +
->> +static int snd_ac97_vt1618_UAJ1_get(struct snd_kcontrol *kcontrol,
->> +				    struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	return snd_ac97_vt1618_UAJ_get(kcontrol, ucontrol, 0x000C);
->> +}
->
-> You can use private_value field in each definition of the control,
-> so that you don't have to create each different function.
-
-OH, that would be AWESOME. Can you elaborate? I'll go grep for private  
-value in the existing code and see if i can find an example whilst i wait  
-for your explanation.
-
-> About the coding style, I recommend to run checkpatch.pl script once
-> before reposting your patch.  The script is found in scripts directory
-> of the recent linux-kernel source tree.
-
-yes. i realized as i was walking to the bus last nite that i had forgotten  
-to do so.
-
-johnu
-
-> Takashi
->
+Rene.
