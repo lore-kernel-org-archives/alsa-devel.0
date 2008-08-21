@@ -1,16 +1,20 @@
-From: "S. Aguinaga" <sa_jr@yahoo.com>
-Subject: alsa driver on latest Mac Pro (MacPro3,1)
-Date: Thu, 21 Aug 2008 13:34:04 -0700 (PDT)
-Message-ID: <295071.94996.qm@web65614.mail.ac4.yahoo.com>
-Reply-To: "S. Aguinaga" <sa_jr@ieee.org>
+From: Simon Tremblay <bidou@videotron.qc.ca>
+Subject: About ipc_key, ipc_gid and ipc_perm
+Date: Thu, 21 Aug 2008 16:53:20 -0400
+Message-ID: <48ADD5C0.8030307@videotron.qc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web65614.mail.ac4.yahoo.com (web65614.mail.ac4.yahoo.com
-	[76.13.9.82]) by alsa0.perex.cz (Postfix) with SMTP id AD1BB244D1
+Received: from relais.videotron.ca (relais.videotron.ca [24.201.245.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F25C103871
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Aug 2008 22:34:05 +0200 (CEST)
+	Thu, 21 Aug 2008 22:53:24 +0200 (CEST)
+Received: from BiDoUMaC.local ([66.130.51.24]) by VL-MO-MR004.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0K5Y00GFDY0Y9NE0@VL-MO-MR004.ip.videotron.ca> for
+	alsa-devel@alsa-project.org; Thu, 21 Aug 2008 16:53:23 -0400 (EDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,122 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "S. Aguinaga" <sa_jr@ieee.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Additionally, I noticed that the results file from 'alsa-info.sh' the section about Module is does now show "macpro" under the model section.
+someone knows to what is related ipc_key, ipc_gid and ipc_perm settings
+in /usr/share/alsa/alsa.conf file?
 
-Might I be doing something wrong?
-< snippet >
-....
+I ask that because even if I don't have an audio group created on my
+embedded system, I can play a wave file with aplay.
 
-!!Module: snd_hda_intel
-bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1
-enable : Y,Y,Y,Y,Y,Y,Y,Y
-enable_msi : 0
-id : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-index : -1,-1,-1,-1,-1,-1,-1,-1
-model : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-position_fix : 0,0,0,0,0,0,0,0
-power_save : 0
-power_save_controller : Y
-probe_mask : -1,-1,-1,-1,-1,-1,-1,-1
-single_cmd : N
- ....
-< snippet >
+But since I want to use -D plug:dmix option, I can't. It asks me to
+create audio group.
 
-// Salvador 
-// Northwestern Univeristy
+But after that, I have a strange error I can't explain: audio open
+error: Operation not permitted.
+
+I think ipc_perm has something related to chmod 0660 file?
+
+But what is ipc_key ? Does I have to set it somewhere since I installed
+manually alsa on my system ?
 
 
+Also, On SuSE, I see a + at the end of permission listing of each device
+ file. What does it mean? Like this:
+
+crw-rw----+ 1 dax audio 116, 7 2008-08-13 14:06 controlC0
+crw-rw----+ 1 dax audio 116, 3 2008-08-13 14:06 midiC0D0
+crw-rw----+ 1 dax audio 116, 6 2008-08-13 14:06 pcmC0D0c
+crw-rw----+ 1 dax audio 116, 5 2008-08-13 14:06 pcmC0D0p
+crw-rw----+ 1 dax audio 116, 4 2008-08-13 14:06 pcmC0D1p
+
+I don't have that on my embedded system, is it something related only to
+SuSE ?
 
 
------ Original Message ----
-From: Takashi Iwai <tiwai@suse.de>
-To: S. Aguinaga <sa_jr@ieee.org>
-Cc: alsa-devel@alsa-project.org
-Sent: Tuesday, August 19, 2008 5:48:47 AM
-Subject: Re: [alsa-devel] Alsa-devel Digest, Vol 18, Issue 45
-
-At Mon, 18 Aug 2008 10:26:42 -0700 (PDT),
-S. Aguinaga wrote:
-> 
-> ==============================================
-> Trying to figure out where to add this "model=macpro"
-> and it looks like it should be in a file called modprobe.conf or an options file under /etc/modprobe.d/
-> 
-> but I don't have (with my installation -- fedora {9} ) those files, do you have any input on this?
-
-You can create any file, typically, /etc/modprobe.d/sound or so.
-Put the following line there
-
-options snd-hda-intel model=macpro
-
-Then reload the module, check the sysfs file
-/sys/modules/snd_hda_intel/parameters/macpro to see whether the
-specified option was really passed properly.
+Thanks,
 
 
-Takashi
-
-> below are the only files I have.
-> 
-> /etc/modprobe.d/
->  
-> anaconda  
-> blacklist-visor  
-> i915modeset
-> blacklist  
-> floppy-pnp      
-> modprobe.conf.dist
-> 
-> 
-> ==============================================
-> Subject: Re: [alsa-devel] Alsa-devel Digest, Vol 18, Issue 45
-> 
-> At Sat, 16 Aug 2008 06:15:46 -0700 (PDT),
-> S. Aguinaga wrote:
-> > 
-> > S. Aguinaga wrote:
-> > > 
-> > > Hello Stan,
-> > > 
-> > > This is awesome I did find the problem it's listed in the /var/log/messages under ALSA.
-> > > 
-> > > 1.   When I bring up the "Pulse Volume Control" gui, the first tab "Playback"  comes up empty, and grayed-out is "No Streams Available"
-> > > 2.   aplay does not produce sound, period!
-> > > 3.   Amrok's welcome sample does not produce sound out of the std tower speaker or the headphone jack.
-> > > 
-> > > I didn't notice anything strange on the output of the alsa-info.sh file, but when I checked the var/log/messages, this is what I found:
-> > > 
-> > >  sudo cat /var/log/messages | grep ALSA
-> > > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_intel.c:1810: chipset global capabilities = 0x4401
-> > > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_intel.c:749: codec_mask = 0x1
-> > > Aug 11 07:52:10 macprolinx kernel: ALSA sound/pci/hda/hda_codec.c:1073: Cannot find slave Surround Playback Volume, skipped
-> (snip)
-> 
-> These messages are harmless.  It's just information from the driver,
-> enabled only when you build it with CONFIG_SND_DEBUG_VERBOSE=y.
-> 
-> > I think your problem is a misidentification of your sound chip.  The 
-> > model being used for your 889A appears to be incompatible, thus all 
-> > the errors above.  It appears that the macpro ALC885 is being selected 
-> > before it gets to the choice for the ALC889A.  Perhaps a developer can 
-> > look into this.
-> 
-> Well, ALC882, ALC885 and ALC889A are almost compatible.  In the
-> driver, they are all handled in the same routine.
-> 
-> There are a few models for intel macs with ALC88x.  Try to specify
-> either model=macpro, model=mbp3 or model=imac24 as the module option
-> of snd-hda-intel driver.
-> 
-> 
-> Takashi
-> 
-> 
-> 
->      
-> 
+Simon
