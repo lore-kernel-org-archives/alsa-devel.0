@@ -1,18 +1,17 @@
-From: Pavel Hofman <pavel.hofman@insite.cz>
-Subject: Re: [PATCH] revo51: add headphone output
-Date: Thu, 21 Aug 2008 12:09:19 +0200
-Message-ID: <48AD3ECF.9000209@insite.cz>
-References: <20080821042842.GA7789@orion>	<48AD15CD.8090601@insite.cz>
-	<s5hbpzmbusq.wl%tiwai@suse.de>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: Re: snd_pcsp locking mess
+Date: Thu, 21 Aug 2008 14:25:36 +0400
+Message-ID: <48AD42A0.9030509@aknet.ru>
+References: <20080518172258.D0DFB108060@picon.linux-foundation.org>	<4830737B.70108@aknet.ru>	<s5hve1ac05g.wl%tiwai@suse.de>	<4831B260.1060802@aknet.ru>	<s5hhccrx2ey.wl%tiwai@suse.de>	<4835D774.3070306@aknet.ru>	<s5hprrduwdk.wl%tiwai@suse.de>	<483C10E7.7070203@aknet.ru>	<s5h4p8jbvaj.wl%tiwai@suse.de>	<48AD21EF.8010906@aknet.ru>
+	<s5hej4ibuus.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------040008090209000004020905"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id BCC802448D
+Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83DB8244B3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Aug 2008 12:09:26 +0200 (CEST)
-In-Reply-To: <s5hbpzmbusq.wl%tiwai@suse.de>
+	Thu, 21 Aug 2008 12:24:21 +0200 (CEST)
+In-Reply-To: <s5hej4ibuus.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,82 +22,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Alexander Beregalov <a.beregalov@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------040008090209000004020905
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hello.
+
 Takashi Iwai wrote:
-> At Thu, 21 Aug 2008 09:14:21 +0200,
-> Pavel Hofman wrote:
->> Alexander Beregalov wrote:
->>>  It is ALSA bug #1754.
->>>  D6 bit in 02 register is PW4.
->>>
->>> Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
->>> ---
->>>
->>>  sound/i2c/other/ak4xxx-adda.c |    4 ++--
->>>  sound/pci/ice1712/revo.c      |    5 +++--
->>>  2 files changed, 5 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/sound/i2c/other/ak4xxx-adda.c b/sound/i2c/other/ak4xxx-adda.c
->>> index 288926d..4c94458 100644
->>> --- a/sound/i2c/other/ak4xxx-adda.c
->>> +++ b/sound/i2c/other/ak4xxx-adda.c
->>> @@ -233,8 +233,8 @@ void snd_akm4xxx_init(struct snd_akm4xxx *ak)
->>>  		0x01, 0x02, /* 1: reset and soft-mute */
->>>  		0x00, 0x06, /* 0: mode3(i2s), disable auto-clock detect,
->>>  			     * disable DZF, sharp roll-off, RSTN#=0 */
->>> -		0x02, 0x0e, /* 2: DA's power up, normal speed, RSTN#=0 */
->>> -		// 0x02, 0x2e, /* quad speed */
->>> +		0x02, 0x4e, /* 2: DA's power up, normal speed, RSTN#=0 */
->>> +		// 0x02, 0x6e, /* quad speed */
->> Fantastic, I guess this could help to fix the problem with 
->> non-functioning monitoring in ESI Juli@ too. I did not notice the fourth 
->> DAC was powered down. Thanks a lot!
-> 
-> Maybe we need a change like in revo.c for Juli@, too?
-> 
-> 
-> Takashi
+> I don't remember exactly, but adding a new callback doesn't sound so
+> perfect.  Well, it's just one pointer, but it's added all over
+> places.
+Well, it can be a concern only as long
+as the callback is entirely useless. :)
+If it does the right thing, then it
+certainly worth a pointer.
 
->From what I understand, the changes in revo.c:
+> Anyway, could you repost it?  Then we can discuss about it more
+> concretely.
+Attached, and the entire message is at
+the bottom.
 
-@@ -216,6 +216,7 @@ static const struct snd_akm4xxx_dac_channel 
-revo51_dac[] = {
-  	AK_DAC("PCM Center Playback Volume", 1),
-  	AK_DAC("PCM LFE Playback Volume", 1),
-  	AK_DAC("PCM Rear Playback Volume", 2),
-+	AK_DAC("PCM Headphone Volume", 2),
-  };
+> A known problem with PCM substream lock is that it's to be used for
+> multiple bound streams as well.  My concern is whether this can be
+> still avoided well by your changes.
+That's why I haven't made the patch
+for the PCM locking change. Someone
+else should know better how to make
+it the safe way.
 
-Already in juli.c, monitors volume.
+Below is an old message with the patch.
+---
+Hi.
 
-  static struct snd_akm4xxx akm_revo51 __devinitdata = {
-  	.type = SND_AK4358,
--	.num_dacs = 6,
-+	.num_dacs = 8,
-  	.ops = {
+I was trying to get the locking right
+in my pcsp driver, and I have the following
+problem.
+I am using the chip->playback_substream in
+the IRQ handler context. To prevent the chance
+of closing the substream on another CPU while
+the IRQ handler still messes with it, I
+decided to protect it with the spinlock.
+So I acquire the same lock both in an IRQ
+handler and in the pcsp_stop_playing() routine.
+That way I can be sure they never step on
+each other's feet, even on SMP.
+The problem is though that ALSA calls the
+trigger() function to stop the playback both
+within the task context and within the IRQ
+context (later is via snd_pcm_period_elapsed(),
+which is called from an IRQ context).
+So the above locking scheme does not work,
+because trigger() being called from an IRQ
+context, takes the already taken lock.
+I can drop the lock before calling snd_pcm_period_elapsed(),
+but I beleive this opens a (very small) race
+condition.
+What can be a solution to this problem?
+I think it is never too good to call the same
+callbacks from both the task and IRQ contexts,
+but the ALSA does this. In other words, can
+something like the attached patch ever be applied,
+or am I misunderstanding the problem completely?
+The patch adds the separate callback, which is
+intended to be called from an IRQ context only.
+Does this look like the right solution?
+---
 
-Important, already in juli.c
+
+--------------040008090209000004020905
+Content-Type: text/x-patch;
+ name="as_stop.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="as_stop.diff"
+
+--- linux-2.6.21/sound/core/pcm_native.c.old	2007-05-12 11:30:06.000000000 +0400
++++ linux-2.6.21/sound/core/pcm_native.c	2007-05-20 01:22:45.000000000 +0400
+@@ -922,8 +922,14 @@
+ static int snd_pcm_do_stop(struct snd_pcm_substream *substream, int state)
+ {
+ 	if (substream->runtime->trigger_master == substream &&
+-	    snd_pcm_running(substream))
+-		substream->ops->trigger(substream, SNDRV_PCM_TRIGGER_STOP);
++	    snd_pcm_running(substream)) {
++		if (substream->ops->async_stop)
++			/* the driver provides a separate callback
++			 * for the IRQ context */
++			substream->ops->async_stop(substream);
++		else
++			substream->ops->trigger(substream, SNDRV_PCM_TRIGGER_STOP);
++	}
+ 	return 0; /* unconditonally stop all substreams */
+ }
+ 
+--- linux-2.6.21/include/sound/pcm.h.old	2007-05-12 11:30:01.000000000 +0400
++++ linux-2.6.21/include/sound/pcm.h	2007-05-20 01:21:29.000000000 +0400
+@@ -68,6 +68,7 @@
+ 	int (*hw_free)(struct snd_pcm_substream *substream);
+ 	int (*prepare)(struct snd_pcm_substream *substream);
+ 	int (*trigger)(struct snd_pcm_substream *substream, int cmd);
++	int (*async_stop)(struct snd_pcm_substream *substream);
+ 	snd_pcm_uframes_t (*pointer)(struct snd_pcm_substream *substream);
+ 	int (*copy)(struct snd_pcm_substream *substream, int channel,
+ 		    snd_pcm_uframes_t pos,
 
 
+--------------040008090209000004020905
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-@@ -508,7 +509,7 @@ static int __devinit revo_init(struct snd_ice1712 *ice)
-  		ice->gpio.i2s_mclk_changed = revo_i2s_mclk_changed;
-  		break;
-  	case VT1724_SUBDEVICE_REVOLUTION51:
--		ice->num_total_dacs = 6;
-+		ice->num_total_dacs = 8;
-  		ice->num_total_adcs = 2;
-  		break;
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Enables additional snd_vt1724_mixer_pro_analog_route controls for the 
-new channels, we do not need them in Juli monitoring (ice1724 does not 
-process these channels, their i2s lines go straight from adc/spdif 
-receiver to the DAC chip via the Xilinx FPGA array.
-
-I do not have the card available anymore, perhaps anyone could please check?
-
-Thanks,
-
-Pavel.
+--------------040008090209000004020905--
