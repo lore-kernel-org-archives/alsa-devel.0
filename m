@@ -1,18 +1,21 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: [PATCH] revo51: add headphone output
-Date: Thu, 21 Aug 2008 08:28:42 +0400
-Message-ID: <20080821042842.GA7789@orion>
+From: Tobias Kaefer <Tobias.Kaefer@abas.de>
+Subject: Re: sound-problems with ALC262
+Date: Thu, 21 Aug 2008 07:22:47 +0200
+Message-ID: <48ACFBA7.8000808@abas.de>
+References: <48A27A29.4010604@abas.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qb-out-1314.google.com (qb-out-1314.google.com [72.14.204.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1529243B1
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Aug 2008 06:28:48 +0200 (CEST)
-Received: by qb-out-1314.google.com with SMTP id e10so1314922qbe.44
-	for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2008 21:28:47 -0700 (PDT)
-Content-Disposition: inline
+Received: from gate.abas.de (gate.abas.de [212.202.226.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id E475E2437F
+	for <Alsa-devel@alsa-project.org>;
+	Thu, 21 Aug 2008 07:23:02 +0200 (CEST)
+Received: from gate.abas.de (localhost [127.0.0.1])
+	by gate.abas.de (8.14.0/8.14.0) with ESMTP id m7L5N2jF023613
+	for <Alsa-devel@alsa-project.org>;
+	Thu, 21 Aug 2008 07:23:02 +0200 (CEST)
+In-Reply-To: <48A27A29.4010604@abas.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +25,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: voss@seehuhn.de
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
- It is ALSA bug #1754.
- D6 bit in 02 register is PW4.
+No more ideas? Any hints?
 
-Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
----
+Tobias
 
- sound/i2c/other/ak4xxx-adda.c |    4 ++--
- sound/pci/ice1712/revo.c      |    5 +++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+Tobias Kaefer schrieb:
+> Hi!
+> =
 
-diff --git a/sound/i2c/other/ak4xxx-adda.c b/sound/i2c/other/ak4xxx-adda.c
-index 288926d..4c94458 100644
---- a/sound/i2c/other/ak4xxx-adda.c
-+++ b/sound/i2c/other/ak4xxx-adda.c
-@@ -233,8 +233,8 @@ void snd_akm4xxx_init(struct snd_akm4xxx *ak)
- 		0x01, 0x02, /* 1: reset and soft-mute */
- 		0x00, 0x06, /* 0: mode3(i2s), disable auto-clock detect,
- 			     * disable DZF, sharp roll-off, RSTN#=0 */
--		0x02, 0x0e, /* 2: DA's power up, normal speed, RSTN#=0 */
--		// 0x02, 0x2e, /* quad speed */
-+		0x02, 0x4e, /* 2: DA's power up, normal speed, RSTN#=0 */
-+		// 0x02, 0x6e, /* quad speed */
- 		0x03, 0x01, /* 3: de-emphasis off */
- 		0x04, 0x00, /* 4: LOUT1 volume muted */
- 		0x05, 0x00, /* 5: ROUT1 volume muted */
-diff --git a/sound/pci/ice1712/revo.c b/sound/pci/ice1712/revo.c
-index 4d26314..30b5e83 100644
---- a/sound/pci/ice1712/revo.c
-+++ b/sound/pci/ice1712/revo.c
-@@ -216,6 +216,7 @@ static const struct snd_akm4xxx_dac_channel revo51_dac[] = {
- 	AK_DAC("PCM Center Playback Volume", 1),
- 	AK_DAC("PCM LFE Playback Volume", 1),
- 	AK_DAC("PCM Rear Playback Volume", 2),
-+	AK_DAC("PCM Headphone Volume", 2),
- };
- 
- static const char *revo51_adc_input_names[] = {
-@@ -279,7 +280,7 @@ static struct snd_ak4xxx_private akm_revo_surround_priv __devinitdata = {
- 
- static struct snd_akm4xxx akm_revo51 __devinitdata = {
- 	.type = SND_AK4358,
--	.num_dacs = 6,
-+	.num_dacs = 8,
- 	.ops = {
- 		.set_rate_val = revo_set_rate_val
- 	},
-@@ -508,7 +509,7 @@ static int __devinit revo_init(struct snd_ice1712 *ice)
- 		ice->gpio.i2s_mclk_changed = revo_i2s_mclk_changed;
- 		break;
- 	case VT1724_SUBDEVICE_REVOLUTION51:
--		ice->num_total_dacs = 6;
-+		ice->num_total_dacs = 8;
- 		ice->num_total_adcs = 2;
- 		break;
- 	case VT1724_SUBDEVICE_AUDIOPHILE192:
+> I posted a message at alsa-user list just yesterday about my problem
+> with the on-board ALC262 on my workstation, see mailings lists archive:
+> http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg23236.html
+> =
+
+> Quote from my initial post:
+> | I just got a new workstation. It's an Fujitsu-Siemens Esprimo P5625
+> | with an on-board ALC262 sound chip. I'm running a Kubuntu 8.04.1 on
+> | that system.
+> |
+> | The sound I get from that chip is really horrible. There are
+> | cracks and some kind of a reverberation in there.
+> |
+> | I compiled the recent version of alsa (1.0.17) and I tried all the
+> | model-options for /etc/modprobe.d/alsa-base.
+> =
+
+> "stan" told me to use this script
+> http://www.alsa-project.org/alsa-info.sh  to create more information
+> about my system. Here is the pastebin link of the output of that script:
+> http://pastebin.ca/1169153
+> =
+
+> Maybe I can help evolve the snd-hda-intel by being a tester.
+> Unfortunately my kernel-hacking skills are as rusty as my C skills -
+> because of being a Java developer for some years now.
+> =
+
+> Greets
+> Tobias
+> =
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+- --
+Mit freundlichen Gruessen / with kind regards
+
+Tobias S. K=E4fer
+
+Tobias S. Kaefer * Portal-Development
+ABAS Software AG, Suedendstrasse 42, 76135 Karlsruhe, GERMANY
+Fon: +49 721 967 23 0, Fax: +49 721 967 23 100
+Managing board / Vorstand: Werner Strub (CEO, Vorsitzender), Peter Walser
+Chairman supervisory board / Aufsichtsratsvorsitzender: Thomas Frank
+Company Register / Handelsregister: HRB 107644 Amtsgericht Mannheim
+please visit our homepage / Bitte besuchen Sie unsere Homepage:
+http://www.abas.de
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFIrPundJJ1JNEzpd0RAqqZAJ4z25qtRs18eBvNbh90suvuDvgPhgCfQtH2
+QE9Bhn95TpUUhxxiAxITIb8=3D
+=3DVCKz
+-----END PGP SIGNATURE-----
