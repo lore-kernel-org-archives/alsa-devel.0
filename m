@@ -1,14 +1,11 @@
 From: linux@audioscience.com
-Subject: [PATCH - asihpi 2/3] Include adapter buffer alloc
-	inside adapter mutex
-Date: Thu, 21 Aug 2008 13:29:55 +1200
-Message-ID: <1219282196-20834-2-git-send-email-linux@audioscience.com>
-References: <1219282196-20834-1-git-send-email-linux@audioscience.com>
+Subject: [PATCH - asihpi 1/3] Fix format in portable way.
+Date: Thu, 21 Aug 2008 13:29:54 +1200
+Message-ID: <1219282196-20834-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-reply-to: <1219282196-20834-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +21,45 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eliot@zaphod.(none)>
 
-
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-diff --git a/pci/asihpi/hpioctl.c b/pci/asihpi/hpioctl.c
-index 27a273a..8222178 100644
---- a/pci/asihpi/hpioctl.c
-+++ b/pci/asihpi/hpioctl.c
-@@ -159,6 +159,9 @@ long asihpi_hpi_ioctl(
- 			return 0;
- 		}
+diff --git a/pci/asihpi/hpicmn.c b/pci/asihpi/hpicmn.c
+index 12bc6ad..c56e60d 100644
+--- a/pci/asihpi/hpicmn.c
++++ b/pci/asihpi/hpicmn.c
+@@ -288,8 +288,8 @@ short HpiCheckBufferMapping(
+ 	sizeof(((struct hpi_control_cache_pad *)(NULL))->m) }
  
-+		if (mutex_lock_interruptible(&adapters[nAdapter].mutex))
-+			return -EINTR;
-+
- 		/* Dig out any pointers embedded in the message.  */
- 		switch (hm.wFunction) {
- 		case HPI_SUBSYS_CREATE_ADAPTER:
-@@ -216,9 +219,6 @@ long asihpi_hpi_ioctl(
- 			break;
- 		}
+ struct pad_ofs_size {
+-	size_t offset;
+-	size_t field_size;
++	unsigned int offset;
++	unsigned int field_size;
+ };
  
--		if (mutex_lock_interruptible(&adapters[nAdapter].mutex))
--			return -EINTR;
--
- 		if (wrflag == 0) {
- 			uncopied_bytes =
- 				copy_from_user(pa->pBuffer, ptr, size);
-@@ -246,11 +246,10 @@ long asihpi_hpi_ioctl(
- 	/* on return response size must be set */
- 	if (!hr.wSize)
- 		return -EFAULT;
--
--	/* Copy the response back to user space.  */
- 	uncopied_bytes = copy_to_user(phr, &hr, sizeof(hr));
- 	if (uncopied_bytes)
- 		return -EFAULT;
-+
- 	return 0;
- }
+ static struct pad_ofs_size aPadDesc[] = {
+@@ -441,10 +441,10 @@ short HpiCheckControlCache(
+ 		else {
+ 			unsigned int index =
+ 				HPI_CTL_ATTR_INDEX(phm->u.c.wAttribute) - 1;
+-			size_t offset = phm->u.c.dwParam1;
+-			size_t pad_string_len, field_size;
++			unsigned int offset = phm->u.c.dwParam1;
++			unsigned int pad_string_len, field_size;
+ 			char *pad_string;
+-			size_t tocopy;
++			unsigned int tocopy;
  
+ 			HPI_DEBUG_LOG(VERBOSE,
+ 				"PADS HPI_PADS_ %d\n", phm->u.c.wAttribute);
+@@ -472,7 +472,7 @@ short HpiCheckControlCache(
+ 				tocopy = sizeof(phr->u.cu.chars8.szData);
+ 
+ 			HPI_DEBUG_LOG(VERBOSE,
+-				"PADS memcpy(%zd), offset %zd \n", tocopy,
++				"PADS memcpy(%d), offset %d \n", tocopy,
+ 				offset);
+ 			memcpy(phr->u.cu.chars8.szData, &pad_string[offset],
+ 				tocopy);
 -- 
 1.5.4.3
