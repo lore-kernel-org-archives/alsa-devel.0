@@ -1,19 +1,18 @@
-From: Manuel Schneider <manuel.schneider@kanal-ratte.de>
-Subject: Re: Swissonic TS22PCI / Teratec Phase 22
- /	driver	problems with ice1724
-Date: Thu, 21 Aug 2008 11:34:19 +0200
-Message-ID: <48AD369B.1080805@kanal-ratte.de>
-References: <48A4332E.4070704@kanal-ratte.de>	<s5habff1zft.wl%tiwai@suse.de>	<48A43A2A.7050701@kanal-ratte.de>	<s5h63q31yoh.wl%tiwai@suse.de>	<48A43C11.10904@kanal-ratte.de>	<s5hzlnfznty.wl%tiwai@suse.de>	<48ABBEFB.7050406@kanal-ratte.de>
-	<s5h7iaabuhl.wl%tiwai@suse.de>
+From: Pavel Hofman <pavel.hofman@insite.cz>
+Subject: Re: [PATCH] revo51: add headphone output
+Date: Thu, 21 Aug 2008 12:09:19 +0200
+Message-ID: <48AD3ECF.9000209@insite.cz>
+References: <20080821042842.GA7789@orion>	<48AD15CD.8090601@insite.cz>
+	<s5hbpzmbusq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.mastersmail.com (mx1.mastersmail.com [195.114.98.122])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D76F24473
+Received: from server.insite.cz (cable.insite.cz [84.242.84.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCC802448D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Aug 2008 11:34:22 +0200 (CEST)
-In-Reply-To: <s5h7iaabuhl.wl%tiwai@suse.de>
+	Thu, 21 Aug 2008 12:09:26 +0200 (CEST)
+In-Reply-To: <s5hbpzmbusq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,55 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Alexander Beregalov <a.beregalov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai schrieb, Am 21.08.2008 11:14:
-
+Takashi Iwai wrote:
+> At Thu, 21 Aug 2008 09:14:21 +0200,
+> Pavel Hofman wrote:
+>> Alexander Beregalov wrote:
+>>>  It is ALSA bug #1754.
+>>>  D6 bit in 02 register is PW4.
+>>>
+>>> Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+>>> ---
+>>>
+>>>  sound/i2c/other/ak4xxx-adda.c |    4 ++--
+>>>  sound/pci/ice1712/revo.c      |    5 +++--
+>>>  2 files changed, 5 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/sound/i2c/other/ak4xxx-adda.c b/sound/i2c/other/ak4xxx-adda.c
+>>> index 288926d..4c94458 100644
+>>> --- a/sound/i2c/other/ak4xxx-adda.c
+>>> +++ b/sound/i2c/other/ak4xxx-adda.c
+>>> @@ -233,8 +233,8 @@ void snd_akm4xxx_init(struct snd_akm4xxx *ak)
+>>>  		0x01, 0x02, /* 1: reset and soft-mute */
+>>>  		0x00, 0x06, /* 0: mode3(i2s), disable auto-clock detect,
+>>>  			     * disable DZF, sharp roll-off, RSTN#=0 */
+>>> -		0x02, 0x0e, /* 2: DA's power up, normal speed, RSTN#=0 */
+>>> -		// 0x02, 0x2e, /* quad speed */
+>>> +		0x02, 0x4e, /* 2: DA's power up, normal speed, RSTN#=0 */
+>>> +		// 0x02, 0x6e, /* quad speed */
+>> Fantastic, I guess this could help to fix the problem with 
+>> non-functioning monitoring in ESI Juli@ too. I did not notice the fourth 
+>> DAC was powered down. Thanks a lot!
 > 
-> OK, then I can add TS22PCI entry as phase22 compatible.
-
-
-
-
-yes, you can do that. On x86 both recording and playback is just fine.
-
->> Suspecting a hardware problem with this individual card I replaced it, 
->> but the problem persists with other cards which worked fine in the x86 
->> systems. I also copied over /etc/modules.d/alsa, /etc/asound.conf and 
->> /var/lib/alsa/asound.state from the other system - just to be sure.
+> Maybe we need a change like in revo.c for Juli@, too?
 > 
-> How is the problem?  Still only the recording doesn't work while
-> playback is OK as you described before?
 > 
-> And which "other cards"?  Another TS88PCI?
+> Takashi
+
+>From what I understand, the changes in revo.c:
+
+@@ -216,6 +216,7 @@ static const struct snd_akm4xxx_dac_channel 
+revo51_dac[] = {
+  	AK_DAC("PCM Center Playback Volume", 1),
+  	AK_DAC("PCM LFE Playback Volume", 1),
+  	AK_DAC("PCM Rear Playback Volume", 2),
++	AK_DAC("PCM Headphone Volume", 2),
+  };
+
+Already in juli.c, monitors volume.
+
+  static struct snd_akm4xxx akm_revo51 __devinitdata = {
+  	.type = SND_AK4358,
+-	.num_dacs = 6,
++	.num_dacs = 8,
+  	.ops = {
+
+Important, already in juli.c
 
 
 
-Another TS22PCI. I've got three of them - one to replace the broken
-Phase 22 in the server (which doesn't work) and two others for x86
-systems which work fine.
-To exclude a hardware problem with this specific card I've put into the
-server I replaced the three cards but the server still has the same problem.
-Unfurtunatly it is a problem for me to check playback due to missing
-equipment at the server rack to plug into the sound card to check it. I
-will look for a solution. The server is at a remote place so I mostly
-have only ssh access to it.
+@@ -508,7 +509,7 @@ static int __devinit revo_init(struct snd_ice1712 *ice)
+  		ice->gpio.i2s_mclk_changed = revo_i2s_mclk_changed;
+  		break;
+  	case VT1724_SUBDEVICE_REVOLUTION51:
+-		ice->num_total_dacs = 6;
++		ice->num_total_dacs = 8;
+  		ice->num_total_adcs = 2;
+  		break;
 
-Is there any other information I can provide for you to help finding the
-problem?
+Enables additional snd_vt1724_mixer_pro_analog_route controls for the 
+new channels, we do not need them in Juli monitoring (ice1724 does not 
+process these channels, their i2s lines go straight from adc/spdif 
+receiver to the DAC chip via the Xilinx FPGA array.
 
-Greets,
+I do not have the card available anymore, perhaps anyone could please check?
 
+Thanks,
 
-Manuel
-
--- 
-Kanal Ratte 104,5 MHz
-...das Freie Radio im Wiesental
-
-Hauptstrasse 82
-79650 Schopfheim
-
-Tel: +49 7622 6692-53
-Fax: +49 7622 6692-54
+Pavel.
