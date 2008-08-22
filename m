@@ -1,22 +1,17 @@
-From: Travis Place <wishie@wishie.net>
-Subject: [PATCH] alsa-info.sh - Add checks for device
-	permissions
-Date: Sat, 23 Aug 2008 02:34:59 +1000
-Message-ID: <200808230234.59730.wishie@wishie.net>
+From: =?us-ascii?Q?Vaclav=20Peroutka?= <vaclavpe@seznam.cz>
+Subject: Re: Compilation of Alsa 1.0.17 on Suse10 crashes
+Date: Fri, 22 Aug 2008 20:47:15 +0200 (CEST)
+Message-ID: <3855.6892-863-2034445574-1219430835@seznam.cz>
+References: <s5h8wup8t00.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_zqurIeRQ8GPI0Of"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.wishie.net (202-137-100-224.dial.usertools.net
-	[202.137.100.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D44E103880
+Received: from mxh.seznam.cz (mxh.seznam.cz [77.75.72.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5122F103852
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Aug 2008 18:35:04 +0200 (CEST)
-Received: from laptop.local (unknown [192.168.0.200])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.wishie.net (Postfix) with ESMTP id 252D65B70C
-	for <alsa-devel@alsa-project.org>; Fri, 22 Aug 2008 16:59:23 +1000 (EST)
+	Fri, 22 Aug 2008 20:47:17 +0200 (CEST)
+In-Reply-To: <s5h8wup8t00.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,74 +24,48 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_zqurIeRQ8GPI0Of
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Changelog: 
-
-1) Show if the script was run as root, or as a user.
-
-2) Check the group permissions of the ALSA device nodes, and check to see if 
-the user is in that group, and display a warning if they are not.
-
-3) Bumped version to 0.4.52
-
-Signed-off-by: Travis Place <wishie@wishie.net>
-
-Notes: Im sure this code is far from perfect, and welcome any changes to it.
-
---Boundary-00=_zqurIeRQ8GPI0Of
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="alsa-info.sh_0.4.52.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="alsa-info.sh_0.4.52.patch"
-
---- alsa-info.sh	2008-08-23 02:30:27.000000000 +1000
-+++ alsa-info.sh.latest	2008-08-23 02:30:38.000000000 +1000
-@@ -1,6 +1,6 @@
- #!/bin/bash
- 
--SCRIPT_VERSION=0.4.51
-+SCRIPT_VERSION=0.4.52
- CHANGELOG="http://www.alsa-project.org/alsa-info.sh.changelog"
- 
- #################################################################################
-@@ -138,6 +138,12 @@
-         echo "!!-----------------" >> $FILE
-         echo "" >> $FILE
-         ls -la /dev/snd/* >> $FILE
-+	if [[ $USER != "root" ]];then
-+	echo "" >> $FILE
-+	for groups in `ls -la /dev/snd/*|awk {'print $4'}`; do
-+	groups $USER|grep $groups >/dev/null || echo "User not in group $groups!" >> $FILE;
-+	done
-+	fi
-         echo "" >> $FILE
-         echo "" >> $FILE
- }
-@@ -312,6 +318,7 @@
- echo "!!################################" >> $FILE
- echo "" >> $FILE
- echo "!!Script ran on: `LANG=C date`" >> $FILE
-+echo "!!Script ran as: `if [ $USER == "root" ];then echo 'Root'; else echo 'A User';fi`" >> $FILE
- echo "" >> $FILE
- echo "" >> $FILE
- echo "!!Linux Distribution" >> $FILE
-
---Boundary-00=_zqurIeRQ8GPI0Of
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_zqurIeRQ8GPI0Of--
+SGVsbG8gYWxsLAoKSSB0cmllZCB0byBjb21waWxlIGFsc2EtZHJpdmVyLXNuYXBzaG9ydCBidXQg
+dGhlIHNhbWUgZXJybyBhcHBlYXJlZC4KCkkgZm91bmQgdGhhdCBpbiBzdXNlIDEwLjAga2VybmVs
+IDIuNi4xMy0xNSB0aGVyZSBhcmUgZm9sbG93aW5nIGZ1bmN0aW9ucyBtaXNzaW5nOgpwbGF0Zm9y
+bV9kZXZpY2VfYWxsb2MoKSwgcGxhdGZvcm1fZGV2aWNlX2FkZCgpLCBwbGF0Zm9ybV9kZXZpY2Vf
+cHV0KCkKCkkgdHJpZWQgdG8gZmluZCB0aGVtIG9uIGludGVybmV0IGFuZCBhZGQgdGhlbSBpbnRv
+IHBsYXRmb3JtX2RldmljZV9jb21wYXQuaCAuIEJ1dCBubyBzdWNjZXNzIGF0IGFsbCAtIG1vcmUg
+ZXJyb3JzLiBTbyB0aGV5IHdlcmUgbm90IHRoZSBjb3JyZWN0IG9uZS4KCkNhbiBzb21lYm9keSBz
+ZW5kIG1lIHRob3NlIG5lY2Vzc2FyeSBmdW5jdGlvbnMgPwoKVGhhbmsgeW91IGluIGFkdmFuY2Us
+ClZhY2xhdgoKPiAtLS0tLS0tLS0tLS0gUMWvdm9kbsOtIHpwcsOhdmEgLS0tLS0tLS0tLS0tCj4g
+UMWZZWRtxJt0OiBSZTogW2Fsc2EtZGV2ZWxdIENvbXBpbGF0aW9uIG9mIEFsc2EgMS4wLjE3IG9u
+IFN1c2UxMCBjcmFzaGVzCj4gRGF0dW06IDIyLjguMjAwOCAwODo0MDo0Nwo+IC0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBBdCBUaHUsIDIxIEF1ZyAyMDA4IDIzOjU5
+OjE0ICswMjAwIChDRVNUKSwKPiBWYWNsYXYgUGVyb3V0a2Egd3JvdGU6Cj4gPiAKPiA+IEhlbGxv
+IGFsbCwKPiA+IAo+ID4gSSBkb3dubG9hZGVkIGFsc2EtZHJpdmVyLTEuMC4xNyBhbmQgdHJpZWQg
+dG8gY29tcGlsZSBpdC4gSSBzdGFydGVkIHdpdGgKPiAiLi9jb25maWd1cmUgLS13aXRoLXN1c2U9
+YXV0byAtLXdpdGgtb3NzPXllcyAtLXdpdGgtY2FyZHM9YWxsLG10czY0PW4iIGFuZCB0aGVuCj4g
+Im1ha2UiLgo+ID4gCj4gPiBCdXQgSSBhbHdheXMgZ2V0IGZvbGxvd2luZzoKPiA+IC4uLgo+ID4g
+ICBDQyBbTV0gIC90bXAvYWxzYS1kcml2ZXItMS4wLjE3L2RyaXZlcnMvbXRzNjQubwo+ID4gL3Rt
+cC9hbHNhLWRyaXZlci0xLjAuMTcvZHJpdmVycy9tdHM2NC5jOiBJbiBmdW5jdGlvbiDigJhzbmRf
+bXRzNjRfYXR0YWNo4oCZOgo+ID4gL3RtcC9hbHNhLWRyaXZlci0xLjAuMTcvZHJpdmVycy9tdHM2
+NC5jOjg5NjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mCj4gZnVuY3Rpb24g4oCYcGxh
+dGZvcm1fZGV2aWNlX2FsbG9j4oCZCj4gPiAvdG1wL2Fsc2EtZHJpdmVyLTEuMC4xNy9kcml2ZXJz
+L210czY0LmM6ODk2OiB3YXJuaW5nOiBhc3NpZ25tZW50IG1ha2VzIHBvaW50ZXIKPiBmcm9tIGlu
+dGVnZXIgd2l0aG91dCBhIGNhc3QKPiA+IC90bXAvYWxzYS1kcml2ZXItMS4wLjE3L2RyaXZlcnMv
+bXRzNjQuYzo5MDM6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZgo+IGZ1bmN0aW9uIOKA
+mHBsYXRmb3JtX2RldmljZV9hZGTigJkKPiA+IC90bXAvYWxzYS1kcml2ZXItMS4wLjE3L2RyaXZl
+cnMvbXRzNjQuYzo5MDQ6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZgo+IGZ1bmN0aW9u
+IOKAmHBsYXRmb3JtX2RldmljZV9wdXTigJkKPiA+IG1ha2VbNF06ICoqKiBbL3RtcC9hbHNhLWRy
+aXZlci0xLjAuMTcvZHJpdmVycy9tdHM2NC5vXSBFcnJvciAxCj4gPiBtYWtlWzNdOiAqKiogWy90
+bXAvYWxzYS1kcml2ZXItMS4wLjE3L2RyaXZlcnNdIEVycm9yIDIKPiA+IG1ha2VbMl06ICoqKiBb
+X21vZHVsZV8vdG1wL2Fsc2EtZHJpdmVyLTEuMC4xN10gRXJyb3IgMgo+ID4gbWFrZVsxXTogKioq
+IFttb2R1bGVzXSBFcnJvciAyCj4gPiBtYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Vzci9z
+cmMvbGludXgtMi42LjEzLTE1Jwo+ID4gCj4gPiBNeSBHQ0M6Cj4gPiA+IGdjYyAtLXZlcnNpb24K
+PiA+IGdjYyAoR0NDKSA0LjAuMiAyMDA1MDkwMSAocHJlcmVsZWFzZSkgKFNVU0UgTGludXgpCj4g
+PiAKPiA+IElzIHRoZXJlIHNvbWV0aGluZyBtaXNzaW5nID8gV2hhdCBzaG91bGQgSSBkbyBub3cg
+Pwo+IAo+IFVzZSB0aGUgbGF0ZXIgdmVyc2lvbiwgYXQgYmVzdCwgdGhlIGRhaWx5IHNuYXBzaG90
+IHRhcmJhbGwKPiAgICAgaHR0cDovL2Z0cC5rZXJuZWwub3JnL3B1Yi9saW51eC9rZXJuZWwvcGVv
+cGxlL3Rpd2FpL3NuYXBzaG90Lwo+IAo+IE9yLCB5b3UgY2FuIHRyeSBhbHNhLWRyaXZlci1rbXAg
+b24gc3RhbmRhcmQgU1VTRSBzeXN0ZW1zLgo+ICAgICBodHRwOi8vZG93bmxvYWQub3BlbnN1c2Uu
+b3JnL3JlcG9zaXRvcmllcy9tdWx0aW1lZGlhOi9hdWRpbzovS01QLwo+IAo+IENoZWNrIG9wZW5T
+VVNFIFdpa2kgU0RCOkF1ZGlvVHJvdWJsZXNob290aW5nIGZvciBkZXRhaWxzLgo+IAo+IAo+IFRh
+a2FzaGkKPiAKPiAKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
