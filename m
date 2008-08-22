@@ -1,16 +1,15 @@
 From: "John L. Utz III" <john.utz@dmx.com>
-Subject: Does anybody reading this list have an MB with a
- vt1618 with all four jacks?
-Date: Fri, 22 Aug 2008 15:25:20 -0700
-Message-ID: <op.uga68irf647oa9@jutz-gnto64>
+Subject: PATCH - via82xx  vt1618 7.1 Audio Support
+Date: Fri, 22 Aug 2008 16:26:59 -0700
+Message-ID: <op.uga92914647oa9@jutz-gnto64>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0412243BE
+	by alsa0.perex.cz (Postfix) with ESMTP id 887D824462
 	for <alsa-devel@alsa-project.org>;
-	Sat, 23 Aug 2008 00:25:39 +0200 (CEST)
+	Sat, 23 Aug 2008 01:27:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +22,261 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Our vt1618 motherboards for our product only has 3 of the 4 possible  
-jacks, so i cant test my changes to support the Aux In/Surround Back Out  
-Jack.
+Makes Audio > 2.0 work on the VIA vt1618 7.1 Channel AC97 Codec
 
-I have reason to think that i have done it correctly, but it would be nice  
-to get a blessing from somebody that actually has them.
+Patched against ALSA-GIT Fri Aug 22 16:24:52 PDT 2008
 
-tnx!
+Authored-by:   John L. Utz III john.utz@dmx.com
+Signed-off-by: John L. Utz III john.utz@dmx.com
 
-johnu
+diff --git a/pci/ac97/ac97_codec.c b/pci/ac97/ac97_codec.c
+index d0023e9..89f3050 100644
+--- a/pci/ac97/ac97_codec.c
++++ b/pci/ac97/ac97_codec.c
+@@ -168,7 +168,7 @@ static const struct ac97_codec_id snd_ac97_codec_ids[]  
+= {
+  { 0x54584e20, 0xffffffff, "TLC320AD9xC",	NULL,		NULL },
+  { 0x56494161, 0xffffffff, "VIA1612A",		NULL,		NULL }, // modified ICE1232  
+with S/PDIF
+  { 0x56494170, 0xffffffff, "VIA1617A",		patch_vt1617a,	NULL }, // modified  
+VT1616 with S/PDIF
+-{ 0x56494182, 0xffffffff, "VIA1618",		NULL,		NULL },
++{ 0x56494182, 0xffffffff, "VIA1618",		patch_vt1618,   NULL },
+  { 0x57454301, 0xffffffff, "W83971D",		NULL,		NULL },
+  { 0x574d4c00, 0xffffffff, "WM9701,WM9701A",	NULL,		NULL },
+  { 0x574d4C03, 0xffffffff, "WM9703,WM9707,WM9708,WM9717", patch_wolfson03,  
+NULL},
+@@ -609,7 +609,6 @@ AC97_SINGLE("PC Speaker Playback Volume",  
+AC97_PC_BEEP, 1, 15, 1)
+  static const struct snd_kcontrol_new snd_ac97_controls_mic_boost =
+  	AC97_SINGLE("Mic Boost (+20dB)", AC97_MIC, 6, 1, 0);
+
+-
+  static const char* std_rec_sel[] = {"Mic", "CD", "Video", "Aux", "Line",  
+"Mix", "Mix Mono", "Phone"};
+  static const char* std_3d_path[] = {"pre 3D", "post 3D"};
+  static const char* std_mix[] = {"Mix", "Mic"};
+diff --git a/pci/ac97/ac97_patch.c b/pci/ac97/ac97_patch.c
+index bb028f8..24f1e98 100644
+--- a/pci/ac97/ac97_patch.c
++++ b/pci/ac97/ac97_patch.c
+@@ -3465,7 +3465,7 @@ static int patch_vt1616(struct snd_ac97 * ac97)
+
+  /*
+   * unfortunately, the vt1617a stashes the twiddlers required for
+- * nooding the i/o jacks on 2 different regs. * thameans that we cant
++ * noodling the i/o jacks on 2 different regs. that means that we cant
+   * use the easy way provided by AC97_ENUM_DOUBLE() we have to write
+   * are own funcs.
+   *
+@@ -3498,7 +3498,7 @@ static int snd_ac97_vt1617a_smart51_get(struct  
+snd_kcontrol *kcontrol,
+  	
+  	pac97 = snd_kcontrol_chip(kcontrol); /* grab codec handle */
+
+-	/* grab our desirec bits, then mash them together in a manner
++	/* grab our desired bits, then mash them together in a manner
+  	 * consistent with Table 6 on page 17 in the 1617a docs */
+
+  	usSM51 = snd_ac97_read(pac97, 0x7a) >> 14;
+@@ -3576,6 +3576,200 @@ int patch_vt1617a(struct snd_ac97 * ac97)
+  	return err;
+  }
+
++/* VIA VT1618 8 CHANNEL AC97 CODEC */
++
++/* config aux in jack - not found on 3 jack motherboards or soundcards */
++
++static int snd_ac97_vt1618_aux_info(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_info *uinfo)
++{
++	static const  char  *acTxtAux[] = {"Aux In", "Back Surr Out"};
++
++	return ac97_enum_text_info(kcontrol, uinfo, acTxtAux, 2);
++}
++
++static int snd_ac97_vt1618_aux_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.enumerated.item[0] =
++		(snd_ac97_read(snd_kcontrol_chip(kcontrol), 0x5c) & 0x0008)>>3;
++	return 0;
++}
++
++static int snd_ac97_vt1618_aux_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	/* toggle surround rear dac power */
++
++	snd_ac97_update_bits(snd_kcontrol_chip(kcontrol), 0x5c, 0x0008,
++			     ucontrol->value.enumerated.item[0] << 3);
++
++	/* toggle aux in surround rear out jack */
++
++	return snd_ac97_update_bits(snd_kcontrol_chip(kcontrol), 0x76, 0x0008,
++				    ucontrol->value.enumerated.item[0] << 3);
++}
++
++
++/*
++ * VIA implements 'Smart 5.1' completely differently on the 1618 than
++ * it does on the 1617a. awesome! They seem to have sourced this
++ * particular revision of the technology from somebody else, it's
++ * called Universal Audio Jack and it shows up on some other folk's chips
++ * as well.
++ *
++ * ordering in this list reflects vt1618 docs for Reg 60h and
++ * the block diagram, DACs are as follows:
++ *
++ *        OUT_O -> Front,
++ *	  OUT_1 -> Surround,
++ *	  OUT_2 -> C/LFE
++ *
++ * Unlike the 1617a, each OUT has a consistent set of mappings
++ * for all bitpatterns other than 00:
++ *
++ *        01       Unmixed Output
++ *        10       Line In
++ *        11       Mic  In
++ *
++ * Special Case of 00:
++ *
++ *        OUT_0    Mixed Output
++ *        OUT_1    Reserved
++ *        OUT_2    Reserved
++ *
++ * I have no idea what the hell Reserved does, but on an MSI
++ * CN700T, i have to set it to get surround output - YMMV, bad
++ * shit may happen.
++ *
++ * If other chips use Universal Audio Jack, then this code might be
++ * applicable to them.
++ */
++
++static int snd_ac97_vt1618_UAJ_info(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_info *uinfo)
++{
++	/* cribbed from ac97_surround_jack_mode_info() ordering in these lists
++	 * reflects vt1618 docs for Vendor Defined Register 0x60 */
++
++	static const char *acTxtUAJ0[] =
++		{ "Speaker Out", "DAC Unmixed Out", "Line In", "Mic In"};
++
++	static const char *acTxtUAJ1[] =
++		{ "Surround Out", "DAC Unmixed Out", "Line In", "Mic In"};
++
++	static const char *acTxtUAJ2[] =
++		{ "Center LFE Out", "DAC Unmixed Out", "Line In", "Mic In"};
++
++	const char **ppacTxt = acTxtUAJ0;
++
++	if (0x000C == kcontrol->private_value)
++		ppacTxt = acTxtUAJ1;
++
++	if (0x0030 == kcontrol->private_value)
++		ppacTxt = acTxtUAJ2;
++
++	return ac97_enum_text_info(kcontrol, uinfo, ppacTxt, 4);
++}
++
++/* All of the vt1618 Universal Audio Jack twiddlers are on
++   Vendor Defined Register 0x60, page 0. The bits, and thus
++   the mask, are the only thing that changes */
++
++static int snd_ac97_vt1618_UAJ_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	unsigned short usDatPag, usUAJ, usShift = 0;
++	struct snd_ac97 *pac97 = snd_kcontrol_chip(kcontrol);
++
++	if (0x000C == kcontrol->private_value)
++		usShift = 2;
++
++	if (0x0030 == kcontrol->private_value)
++		usShift = 4;
++
++	mutex_lock(&pac97->page_mutex);
++
++	usDatPag = snd_ac97_read(pac97, AC97_INT_PAGING) & AC97_PAGE_MASK;
++	snd_ac97_update_bits(pac97, AC97_INT_PAGING, AC97_PAGE_MASK, 0);
++
++	usUAJ = snd_ac97_read(pac97, 0x60) & kcontrol->private_value;
++
++	snd_ac97_update_bits(pac97, AC97_INT_PAGING, AC97_PAGE_MASK, usDatPag);
++	mutex_unlock(&pac97->page_mutex);
++
++	ucontrol->value.enumerated.item[0] = usUAJ >> usShift;
++
++	return 0;
++}
++
++static int snd_ac97_vt1618_UAJ_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	unsigned short usSft = 0;
++
++	if (0x000C == kcontrol->private_value)
++		usSft = 2;
++
++	if (0x0030 == kcontrol->private_value)
++		usSft = 4;
++
++	/* UAJ1 and UAJ2 are not supposed to have 00 written to them?? i
++	 * dunno, because thats something that i have to do to get 5.1 out to
++	 * work. */
++
++	return ac97_update_bits_page(snd_kcontrol_chip(kcontrol),
++				     0x60, kcontrol->private_value,
++				     ucontrol->value.enumerated.item[0]<<usSft,
++				     0);
++}
++
++static const struct snd_kcontrol_new snd_ac97_controls_vt1618[] = {
++	AC97_SINGLE("Exchange Center/LFE", 0x5a,  8, 1,     0),
++	AC97_SINGLE("DC Offset",           0x5a, 10, 1,     0),
++	AC97_SINGLE("Soft Mute",           0x5c,  0, 1,     1),
++	AC97_SINGLE("Headphone Amp",       0x5c,  5, 1,     1),
++	AC97_DOUBLE("Back Surr Volume",    0x5e,  8, 0, 31, 1),
++	AC97_SINGLE("Back Surr Switch",    0x5e, 15, 1,     1),
++	{
++		.iface         = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name          = "Aux Jack",
++		.info          = snd_ac97_vt1618_aux_info,
++		.get           = snd_ac97_vt1618_aux_get,
++		.put           = snd_ac97_vt1618_aux_put,
++	},
++	{
++		.iface         = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name          = "Speaker Jack",
++		.info          = snd_ac97_vt1618_UAJ_info,
++		.get           = snd_ac97_vt1618_UAJ_get,
++		.put           = snd_ac97_vt1618_UAJ_put,
++		.private_value = 0x0003
++	},
++	{
++		.iface         = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name          = "Line Jack",
++		.info          = snd_ac97_vt1618_UAJ_info,
++		.get           = snd_ac97_vt1618_UAJ_get,
++		.put           = snd_ac97_vt1618_UAJ_put,
++		.private_value = 0x000C
++	},
++	{
++		.iface         = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name          = "Mic Jack",
++		.info          = snd_ac97_vt1618_UAJ_info,
++		.get           = snd_ac97_vt1618_UAJ_get,
++		.put           = snd_ac97_vt1618_UAJ_put,
++		.private_value = 0x0030
++	},
++};
++
++int patch_vt1618(struct snd_ac97 *ac97)
++{
++	return patch_build_controls(ac97, snd_ac97_controls_vt1618,
++				    ARRAY_SIZE(snd_ac97_controls_vt1618));
++}
++
+  /*
+   */
+  static void it2646_update_jacks(struct snd_ac97 *ac97)
