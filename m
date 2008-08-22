@@ -1,15 +1,13 @@
-From: =?us-ascii?Q?Vaclav=20Peroutka?= <vaclavpe@seznam.cz>
-Subject: Compilation of Alsa 1.0.17 on Suse10 crashes
-Date: Thu, 21 Aug 2008 23:59:14 +0200 (CEST)
-Message-ID: <3942.7052-22831-928779598-1219355954@seznam.cz>
+From: linux@audioscience.com
+Subject: [PATCH - asihpi 5/6] Avoid null pointer dereference.
+Date: Fri, 22 Aug 2008 17:26:32 +1200
+Message-ID: <1219382793-21272-2-git-send-email-linux@audioscience.com>
+References: <1219382793-21272-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxh.seznam.cz (mxh.seznam.cz [77.75.72.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5244D24504
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Aug 2008 23:59:14 +0200 (CEST)
+In-reply-to: <1219382793-21272-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +17,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gYWxsLAoKSSBkb3dubG9hZGVkIGFsc2EtZHJpdmVyLTEuMC4xNyBhbmQgdHJpZWQgdG8g
-Y29tcGlsZSBpdC4gSSBzdGFydGVkIHdpdGggIi4vY29uZmlndXJlIC0td2l0aC1zdXNlPWF1dG8g
-LS13aXRoLW9zcz15ZXMgLS13aXRoLWNhcmRzPWFsbCxtdHM2ND1uIiBhbmQgdGhlbiAibWFrZSIu
-CgpCdXQgSSBhbHdheXMgZ2V0IGZvbGxvd2luZzoKLi4uCiAgQ0MgW01dICAvdG1wL2Fsc2EtZHJp
-dmVyLTEuMC4xNy9kcml2ZXJzL210czY0Lm8KL3RtcC9hbHNhLWRyaXZlci0xLjAuMTcvZHJpdmVy
-cy9tdHM2NC5jOiBJbiBmdW5jdGlvbiDigJhzbmRfbXRzNjRfYXR0YWNo4oCZOgovdG1wL2Fsc2Et
-ZHJpdmVyLTEuMC4xNy9kcml2ZXJzL210czY0LmM6ODk2OiBlcnJvcjogaW1wbGljaXQgZGVjbGFy
-YXRpb24gb2YgZnVuY3Rpb24g4oCYcGxhdGZvcm1fZGV2aWNlX2FsbG9j4oCZCi90bXAvYWxzYS1k
-cml2ZXItMS4wLjE3L2RyaXZlcnMvbXRzNjQuYzo4OTY6IHdhcm5pbmc6IGFzc2lnbm1lbnQgbWFr
-ZXMgcG9pbnRlciBmcm9tIGludGVnZXIgd2l0aG91dCBhIGNhc3QKL3RtcC9hbHNhLWRyaXZlci0x
-LjAuMTcvZHJpdmVycy9tdHM2NC5jOjkwMzogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9m
-IGZ1bmN0aW9uIOKAmHBsYXRmb3JtX2RldmljZV9hZGTigJkKL3RtcC9hbHNhLWRyaXZlci0xLjAu
-MTcvZHJpdmVycy9tdHM2NC5jOjkwNDogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1
-bmN0aW9uIOKAmHBsYXRmb3JtX2RldmljZV9wdXTigJkKbWFrZVs0XTogKioqIFsvdG1wL2Fsc2Et
-ZHJpdmVyLTEuMC4xNy9kcml2ZXJzL210czY0Lm9dIEVycm9yIDEKbWFrZVszXTogKioqIFsvdG1w
-L2Fsc2EtZHJpdmVyLTEuMC4xNy9kcml2ZXJzXSBFcnJvciAyCm1ha2VbMl06ICoqKiBbX21vZHVs
-ZV8vdG1wL2Fsc2EtZHJpdmVyLTEuMC4xN10gRXJyb3IgMgptYWtlWzFdOiAqKiogW21vZHVsZXNd
-IEVycm9yIDIKbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4LTIuNi4x
-My0xNScKCk15IEdDQzoKPiBnY2MgLS12ZXJzaW9uCmdjYyAoR0NDKSA0LjAuMiAyMDA1MDkwMSAo
-cHJlcmVsZWFzZSkgKFNVU0UgTGludXgpCgpJcyB0aGVyZSBzb21ldGhpbmcgbWlzc2luZyA/IFdo
-YXQgc2hvdWxkIEkgZG8gbm93ID8KClRoYW5rIHlvdSBpbiBhZHZhbmNlLApWYWNsYXYKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+
+
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+
+diff --git a/pci/asihpi/hpi6205.c b/pci/asihpi/hpi6205.c
+index daa359d..1654070 100644
+--- a/pci/asihpi/hpi6205.c
++++ b/pci/asihpi/hpi6205.c
+@@ -2126,6 +2126,9 @@ static short Hpi6205_TransferData(
+ 	u32 dwTimeOut, dwTemp2;
+ 	struct bus_master_interface *interface = pHw6205->pInterfaceBuffer;
+ 
++	if (!pData)
++		return HPI_ERROR_INVALID_DATA_TRANSFER;
++
+ 	dwDataSize &= ~3L;	/* round dwDataSize down to nearest 4 bytes */
+ 
+ 	/* make sure state is IDLE */
+-- 
+1.5.4.3
