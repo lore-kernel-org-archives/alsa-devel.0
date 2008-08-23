@@ -1,17 +1,21 @@
-From: Ben Stanley <Ben.Stanley@exemail.com.au>
-Subject: Re: Compilation of Alsa 1.0.17 on Suse10 crashes
-Date: Sat, 23 Aug 2008 22:29:24 +1000
-Message-ID: <1219494564.32652.268.camel@localhost>
-References: <3855.6892-863-2034445574-1219430835@seznam.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: ASoC V2: disable automatic volume
+	control in the	CS4270 sound driver
+Date: Sat, 23 Aug 2008 14:39:06 +0100
+Message-ID: <20080823133906.GA19258@opensource.wolfsonmicro.com>
+References: <1218126153-26095-1-git-send-email-timur@freescale.com>
+	<1218126153-26095-2-git-send-email-timur@freescale.com>
+	<48AF2D39.6000701@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pecan2.exetel.com.au (pecan2.exetel.com.au [220.233.0.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D11A24682
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BAE5610380D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 23 Aug 2008 14:29:31 +0200 (CEST)
-In-Reply-To: <3855.6892-863-2034445574-1219430835@seznam.cz>
+	Sat, 23 Aug 2008 15:39:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <48AF2D39.6000701@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,69 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vaclav Peroutka <vaclavpe@seznam.cz>
+To: Timur Tabi <timur@freescale.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VmFjbGF2LAoKSWYgeW91IHJlYWxseSB3YW50IHRvIHJ1biBuZXcgYWxzYSBvbiBhIGtlcm5lbCB0
-aGF0IG9sZCwgeW91IHdpbGwgaGF2ZQp0byBiYWNrcG9ydCB0aGUgZnVuY3Rpb25zIHlvdSBtZW50
-aW9uZWQgZnJvbSBhIGtlcm5lbCBpbiB3aGljaCB0aGV5CmFwcGVhci4KClRoZSBjb2RlIHlvdSBu
-ZWVkIHdpbGwgYmUgaW4gTGludXMnIGdpdCB0cmVlIGF0Cmh0dHA6Ly9naXQua2VybmVsLm9yZy8/
-cD1saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LTIuNi5naXQ7YT10cmVlCgpZb3UgbWln
-aHQgY29uc2lkZXIgbW9kaWZ5aW5nIHRoZSBhbHNhIGF1dG9jb25mIHN5c3RlbSB0byBzdXBwbHkg
-dGhlc2UKZnVuY3Rpb25zIGlmIHRoZXkgYXJlIG5vdCBwcmVzZW50IGluIHRoZSBrZXJuZWwuCgpC
-YWNrcG9ydGluZyBuZXcgZmVhdHVyZXMgdG8gb2xkIGtlcm5lbHMgaXMgbm90IGEgdHJpdmlhbCB0
-YXNrIGFuZCB3aWxsCnJlcXVpcmUga2VybmVsIGhhY2tpbmcga25vd2xlZGdlLiBUaGUgZGlmZmlj
-dWx0eSBpbmNyZWFzZXMgd2l0aCB0aGUKZGlzdGFuY2UgYmV0d2VlbiB0aGUgaW50cm9kdWN0aW9u
-IG9mIHRoZSBuZXcgZmVhdHVyZSBhbmQgdGhlIHRhcmdldCBvZgp0aGUgYmFja3BvcnQuCgpHb29k
-IEx1Y2suCkJlbiBTdGFubGV5LgoKT24gRnJpLCAyMDA4LTA4LTIyIGF0IDIwOjQ3ICswMjAwLCBW
-YWNsYXYgUGVyb3V0a2Egd3JvdGU6Cj4gSGVsbG8gYWxsLAo+IAo+IEkgdHJpZWQgdG8gY29tcGls
-ZSBhbHNhLWRyaXZlci1zbmFwc2hvcnQgYnV0IHRoZSBzYW1lIGVycm8gYXBwZWFyZWQuCj4gCj4g
-SSBmb3VuZCB0aGF0IGluIHN1c2UgMTAuMCBrZXJuZWwgMi42LjEzLTE1IHRoZXJlIGFyZSBmb2xs
-b3dpbmcgZnVuY3Rpb25zIG1pc3Npbmc6Cj4gcGxhdGZvcm1fZGV2aWNlX2FsbG9jKCksIHBsYXRm
-b3JtX2RldmljZV9hZGQoKSwgcGxhdGZvcm1fZGV2aWNlX3B1dCgpCj4gCj4gSSB0cmllZCB0byBm
-aW5kIHRoZW0gb24gaW50ZXJuZXQgYW5kIGFkZCB0aGVtIGludG8gcGxhdGZvcm1fZGV2aWNlX2Nv
-bXBhdC5oIC4gQnV0IG5vIHN1Y2Nlc3MgYXQgYWxsIC0gbW9yZSBlcnJvcnMuIFNvIHRoZXkgd2Vy
-ZSBub3QgdGhlIGNvcnJlY3Qgb25lLgo+IAo+IENhbiBzb21lYm9keSBzZW5kIG1lIHRob3NlIG5l
-Y2Vzc2FyeSBmdW5jdGlvbnMgPwo+IAo+IFRoYW5rIHlvdSBpbiBhZHZhbmNlLAo+IFZhY2xhdgo+
-IAo+ID4gLS0tLS0tLS0tLS0tIFDFr3ZvZG7DrSB6cHLDoXZhIC0tLS0tLS0tLS0tLQo+ID4gUMWZ
-ZWRtxJt0OiBSZTogW2Fsc2EtZGV2ZWxdIENvbXBpbGF0aW9uIG9mIEFsc2EgMS4wLjE3IG9uIFN1
-c2UxMCBjcmFzaGVzCj4gPiBEYXR1bTogMjIuOC4yMDA4IDA4OjQwOjQ3Cj4gPiAtLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gPiBBdCBUaHUsIDIxIEF1ZyAyMDA4IDIz
-OjU5OjE0ICswMjAwIChDRVNUKSwKPiA+IFZhY2xhdiBQZXJvdXRrYSB3cm90ZToKPiA+ID4gCj4g
-PiA+IEhlbGxvIGFsbCwKPiA+ID4gCj4gPiA+IEkgZG93bmxvYWRlZCBhbHNhLWRyaXZlci0xLjAu
-MTcgYW5kIHRyaWVkIHRvIGNvbXBpbGUgaXQuIEkgc3RhcnRlZCB3aXRoCj4gPiAiLi9jb25maWd1
-cmUgLS13aXRoLXN1c2U9YXV0byAtLXdpdGgtb3NzPXllcyAtLXdpdGgtY2FyZHM9YWxsLG10czY0
-PW4iIGFuZCB0aGVuCj4gPiAibWFrZSIuCj4gPiA+IAo+ID4gPiBCdXQgSSBhbHdheXMgZ2V0IGZv
-bGxvd2luZzoKPiA+ID4gLi4uCj4gPiA+ICAgQ0MgW01dICAvdG1wL2Fsc2EtZHJpdmVyLTEuMC4x
-Ny9kcml2ZXJzL210czY0Lm8KPiA+ID4gL3RtcC9hbHNhLWRyaXZlci0xLjAuMTcvZHJpdmVycy9t
-dHM2NC5jOiBJbiBmdW5jdGlvbiDigJhzbmRfbXRzNjRfYXR0YWNo4oCZOgo+ID4gPiAvdG1wL2Fs
-c2EtZHJpdmVyLTEuMC4xNy9kcml2ZXJzL210czY0LmM6ODk2OiBlcnJvcjogaW1wbGljaXQgZGVj
-bGFyYXRpb24gb2YKPiA+IGZ1bmN0aW9uIOKAmHBsYXRmb3JtX2RldmljZV9hbGxvY+KAmQo+ID4g
-PiAvdG1wL2Fsc2EtZHJpdmVyLTEuMC4xNy9kcml2ZXJzL210czY0LmM6ODk2OiB3YXJuaW5nOiBh
-c3NpZ25tZW50IG1ha2VzIHBvaW50ZXIKPiA+IGZyb20gaW50ZWdlciB3aXRob3V0IGEgY2FzdAo+
-ID4gPiAvdG1wL2Fsc2EtZHJpdmVyLTEuMC4xNy9kcml2ZXJzL210czY0LmM6OTAzOiBlcnJvcjog
-aW1wbGljaXQgZGVjbGFyYXRpb24gb2YKPiA+IGZ1bmN0aW9uIOKAmHBsYXRmb3JtX2RldmljZV9h
-ZGTigJkKPiA+ID4gL3RtcC9hbHNhLWRyaXZlci0xLjAuMTcvZHJpdmVycy9tdHM2NC5jOjkwNDog
-ZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mCj4gPiBmdW5jdGlvbiDigJhwbGF0Zm9ybV9k
-ZXZpY2VfcHV04oCZCj4gPiA+IG1ha2VbNF06ICoqKiBbL3RtcC9hbHNhLWRyaXZlci0xLjAuMTcv
-ZHJpdmVycy9tdHM2NC5vXSBFcnJvciAxCj4gPiA+IG1ha2VbM106ICoqKiBbL3RtcC9hbHNhLWRy
-aXZlci0xLjAuMTcvZHJpdmVyc10gRXJyb3IgMgo+ID4gPiBtYWtlWzJdOiAqKiogW19tb2R1bGVf
-L3RtcC9hbHNhLWRyaXZlci0xLjAuMTddIEVycm9yIDIKPiA+ID4gbWFrZVsxXTogKioqIFttb2R1
-bGVzXSBFcnJvciAyCj4gPiA+IG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvdXNyL3NyYy9s
-aW51eC0yLjYuMTMtMTUnCj4gPiA+IAo+ID4gPiBNeSBHQ0M6Cj4gPiA+ID4gZ2NjIC0tdmVyc2lv
-bgo+ID4gPiBnY2MgKEdDQykgNC4wLjIgMjAwNTA5MDEgKHByZXJlbGVhc2UpIChTVVNFIExpbnV4
-KQo+ID4gPiAKPiA+ID4gSXMgdGhlcmUgc29tZXRoaW5nIG1pc3NpbmcgPyBXaGF0IHNob3VsZCBJ
-IGRvIG5vdyA/Cj4gPiAKPiA+IFVzZSB0aGUgbGF0ZXIgdmVyc2lvbiwgYXQgYmVzdCwgdGhlIGRh
-aWx5IHNuYXBzaG90IHRhcmJhbGwKPiA+ICAgICBodHRwOi8vZnRwLmtlcm5lbC5vcmcvcHViL2xp
-bnV4L2tlcm5lbC9wZW9wbGUvdGl3YWkvc25hcHNob3QvCj4gPiAKPiA+IE9yLCB5b3UgY2FuIHRy
-eSBhbHNhLWRyaXZlci1rbXAgb24gc3RhbmRhcmQgU1VTRSBzeXN0ZW1zLgo+ID4gICAgIGh0dHA6
-Ly9kb3dubG9hZC5vcGVuc3VzZS5vcmcvcmVwb3NpdG9yaWVzL211bHRpbWVkaWE6L2F1ZGlvOi9L
-TVAvCj4gPiAKPiA+IENoZWNrIG9wZW5TVVNFIFdpa2kgU0RCOkF1ZGlvVHJvdWJsZXNob290aW5n
-IGZvciBkZXRhaWxzLgo+ID4gCj4gPiAKPiA+IFRha2FzaGkKPiA+IAo+ID4gCj4gPiAKPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Fri, Aug 22, 2008 at 04:18:49PM -0500, Timur Tabi wrote:
+
+> Did you guys forget about this patch?  I don't see it in asoc-v2-dev.
+
+Just lost in the shuffle.  I've managed to locate a copy in my archives
+and applied it now.  When sending reminders like this the more normal
+approach is to resubmit the entire patch - apart from anything else,
+there's a reasonable chance that if the patch was lost the original mail
+has been lost as well so it'll need to be resent anyway.
+
+It really would be better if changes like this could also be made to
+mainline as well - it is much easier to review the differences between
+the two branches if there aren't changes like this one that are
+unrelated to the API changes mixed in as well.
