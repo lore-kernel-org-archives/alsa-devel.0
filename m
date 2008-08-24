@@ -1,80 +1,59 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Re: [PATCH] wss_lib: do not mess mixer settings during
- probe
-Date: Sun, 24 Aug 2008 21:48:32 +0200
-Message-ID: <20080824214832.daa13d68.krzysztof.h1@poczta.fm>
-References: <20080824180804.b88effc0.krzysztof.h1@poczta.fm>
-	<48B1AA48.7020403@keyaccess.nl>
+From: "Guillaume Chazarain" <guichaz@gmail.com>
+Subject: Re: [ALSA PATCH] alsa-git merge request
+Date: Sun, 24 Aug 2008 23:30:08 +0200
+Message-ID: <3d8471ca0808241430p2e3fbb85g63f1340512339d31@mail.gmail.com>
+References: <Pine.LNX.4.61.0807141105150.7676@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239]) by alsa0.perex.cz (Postfix) with ESMTP id 11EAF24133
-	for <alsa-devel@alsa-project.org>;
-	Sun, 24 Aug 2008 21:42:19 +0200 (CEST)
-In-Reply-To: <48B1AA48.7020403@keyaccess.nl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756764AbYHXVa2@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.61.0807141105150.7676@tm8103-a.perex-int.cz>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Travis Place <wishie@wishie.net>, Takashi Iwai <tiwai@suse.de>, LKML <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 24 Aug 2008 20:36:56 +0200
-Rene Herman <rene.herman@keyaccess.nl> wrote:
+On Mon, Jul 14, 2008 at 11:09 AM, Jaroslav Kysela <perex@perex.cz> wrote:
+>      ALSA: hda - Added model selection for iMac 24"
 
-> On 24-08-08 18:08, Krzysztof Helt wrote:
-> 
-> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
-> > 
-> > Use the wss_dout function which does not mess
-> > shadowed register values during chip probing.
-> > Otherwise, user ends up with stupid mixer settings
-> > after driver loading.
-> > 
-> > Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-> 
-> Acked-by: Rene Herman <rene.herman@gmail.com>
-> 
-> Must say that I only now notice that we're doing that init loop there. 
+This commit introduces a regression from 2.6.26 on my MacBookPro 3,1.
+I lose the "Front" mixer entry but this I don't mind.
+The actual regression is that when I plug headphones, the internal
+speakers are not muted anymore so I hear the sound from both outputs
+(headphones & internal). Reverting this commit fixes the problem for
+me.
 
-I noticed it on at least three different cards.
+Thanks.
 
-> I 
-> believe it could be better to introduce an inline __snd_wss_out() with 
-> just the two outb()s and use that from snd_wss_out() and here directly.
-> 
+commit 3e0e469fa216ec70c93b1593821b759d19ee2e6b
+Author: Travis Place <wishie@wishie.net>
+Date:   Fri Jun 20 16:51:45 2008 +0200
 
-snd_wss_dout() is almost the same. The waiting loop should never trigger
-there and it is safer in case some write needs few micro-secs to finish.
+    ALSA: hda - Added model selection for iMac 24"
 
-> And with respect to the mb() ... if anywhere, should't that be between 
-> the two outb's really?
-> 
+    Added the SSID of a known iMac 24" to automatically use
+    ALC885_IMAC24 quirk.
 
->From the Documentation/memory-barriers.txt
-"
-(*) inX(), outX():
-...
-    They are guaranteed to be fully ordered with respect to each other.
+    Signed-off-by: Travis Place <wishie@wishie.net>
+    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+    Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-    They are not guaranteed to be fully ordered with respect to other types of
-     memory and I/O operation.
-...
-"
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 61f8c13..d96a876 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6192,6 +6192,7 @@ static struct snd_pci_quirk alc882_cfg_tbl[] = {
+        SND_PCI_QUIRK(0x1043, 0x817f, "Asus P5LD2", ALC882_6ST_DIG),
+        SND_PCI_QUIRK(0x1043, 0x81d8, "Asus P5WD", ALC882_6ST_DIG),
+        SND_PCI_QUIRK(0x105b, 0x6668, "Foxconn", ALC882_6ST_DIG),
++       SND_PCI_QUIRK(0x106b, 0x00a0, "Apple iMac 24''", ALC885_IMAC24),
+        SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte P35 DS3R", ALC882_6ST_DIG),
+        SND_PCI_QUIRK(0x1462, 0x28fb, "Targa T8", ALC882_TARGA), /*
+MSI-1049 T8  */
+        SND_PCI_QUIRK(0x1462, 0x6668, "MSI", ALC882_6ST_DIG),
 
-No barriers are needed in this case. 
 
-Regards,
-Krzysztof
 
-----------------------------------------------------------------------
-Alergia na seks?
->> http://link.interia.pl/f1eec
+-- 
+Guillaume
