@@ -1,18 +1,27 @@
-From: "Risto Suominen" <risto.suominen@gmail.com>
-Subject: [PATCH 002/002] snd-powermac: HP detection for 1st
-	iMac G3 SL
-Date: Sat, 23 Aug 2008 23:48:12 +0300
-Message-ID: <46e1c7760808231348r4b36c294g4183a82cf0e1ef6e@mail.gmail.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: alsa-utils,alsa-plugins v1.0.18rc2
+Date: Sun, 24 Aug 2008 14:28:45 +0100
+Message-ID: <g8rnmd$4q7$1@ger.gmane.org>
+References: <Pine.LNX.4.61.0808191352000.21669@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_90017_4239940.1219524492812"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDC571037F4
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 00EEC24348
 	for <alsa-devel@alsa-project.org>;
-	Sat, 23 Aug 2008 22:48:13 +0200 (CEST)
-Received: by an-out-0708.google.com with SMTP id d31so147450and.80
-	for <alsa-devel@alsa-project.org>; Sat, 23 Aug 2008 13:48:13 -0700 (PDT)
+	Sun, 24 Aug 2008 15:28:56 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1KXFeJ-0001E9-48
+	for alsa-devel@alsa-project.org; Sun, 24 Aug 2008 13:28:55 +0000
+Received: from 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk
+	([80.192.67.147]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 24 Aug 2008 13:28:55 +0000
+Received: from gmane by 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 24 Aug 2008 13:28:55 +0000
+In-Reply-To: <Pine.LNX.4.61.0808191352000.21669@tm8103-a.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,83 +31,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_90017_4239940.1219524492812
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Jaroslav Kysela wrote:
+> Hello all,
+> 
+> 	I released alsa-utils and alsa-plugins v1.0.18rc2 packages. The 
+> changelog is available here:
+> 
+> http://www.alsa-project.org/main/index.php/Changes_v1.0.18rc1_v1.0.18rc2
+
+
+I'm unable to compile alsa-utils 1.0.18rc2.
+
+
+if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -O2 -g -pipe 
+-Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector 
+--param=ssp-buffer-size=4 -MT init_parse.o -MD -MP -MF 
+".deps/init_parse.Tpo" -c -o init_parse.o init_parse.c; \
+         then mv -f ".deps/init_parse.Tpo" ".deps/init_parse.Po"; else 
+rm -f ".deps/init_parse.Tpo"; exit 1; fi
+init_parse.c:43:18: error: list.h: No such file or directory 
+
+init_parse.c:92:26: error: init_sysdeps.c: No such file or directory 
+
+init_parse.c:93:31: error: init_utils_string.c: No such file or 
+directory
+init_parse.c:94:28: error: init_utils_run.c: No such file or directory 
+
+init_parse.c:95:24: error: init_sysfs.c: No such file or directory 
 
 
 
-------=_Part_90017_4239940.1219524492812
-Content-Type: text/plain; name=alsa-awacs-1.0.16-p7.diff
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fk8pdee2
-Content-Disposition: attachment; filename=alsa-awacs-1.0.16-p7.diff
+Dodgy tarball?
 
-RnJvbTogUmlzdG8gU3VvbWluZW4gPFJpc3RvLlN1b21pbmVuQGdtYWlsLmNvbT4KCkNvcnJlY3Qg
-aGVhZHBob25lIGRldGVjdGlvbiBmb3IgMXN0IGdlbmVyYXRpb24gaU1hYyBHMyBTbG90LWxvYWRp
-bmcgKFNjcmVhbWVyKS4KClNpZ25lZC1vZmYtYnk6IFJpc3RvIFN1b21pbmVuIDxSaXN0by5TdW9t
-aW5lbkBnbWFpbC5jb20+Ci0tLQpLZXJuZWwgdmVyc2lvbiAyLjYuMjUtcmM4IChwcm9iYWJseSBh
-bnkgMi42KQoKLS0tIGEvYWxzYS1rZXJuZWwvcHBjL2F3YWNzLmMub3JpZwkyMDA4LTA0LTIxIDIw
-OjAxOjE2LjAwMDAwMDAwMCArMDMwMAorKysgYi9hbHNhLWtlcm5lbC9wcGMvYXdhY3MuYwkyMDA4
-LTA1LTA2IDEzOjMwOjA2LjAwMDAwMDAwMCArMDMwMApAQCAtNjk1LDcgKzY5NSwxMCBAQCBzdGF0
-aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgc25kX3BtYWNfCiBzdGF0aWMgc3RydWN0IHNuZF9r
-Y29udHJvbF9uZXcgc25kX3BtYWNfYXdhY3Nfc3BlYWtlcl9zdyBfX2luaXRkYXRhID0KIEFXQUNT
-X1NXSVRDSCgiUEMgU3BlYWtlciBQbGF5YmFjayBTd2l0Y2giLCAxLCBTSElGVF9TUEtNVVRFLCAx
-KTsKIAotc3RhdGljIHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IHNuZF9wbWFjX2F3YWNzX3NwZWFr
-ZXJfc3dfaW1hYyBfX2luaXRkYXRhID0KK3N0YXRpYyBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBz
-bmRfcG1hY19hd2Fjc19zcGVha2VyX3N3X2ltYWMxIF9faW5pdGRhdGEgPQorQVdBQ1NfU1dJVENI
-KCJQQyBTcGVha2VyIFBsYXliYWNrIFN3aXRjaCIsIDEsIFNISUZUX1BBUk9VVDEsIDEpOworCitz
-dGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgc25kX3BtYWNfYXdhY3Nfc3BlYWtlcl9zd19p
-bWFjMiBfX2luaXRkYXRhID0KIEFXQUNTX1NXSVRDSCgiUEMgU3BlYWtlciBQbGF5YmFjayBTd2l0
-Y2giLCAxLCBTSElGVF9QQVJPVVQxLCAwKTsKIAogCkBAIC03NzIsMTIgKzc3NSwxMiBAQCBzdGF0
-aWMgdm9pZCBzbmRfcG1hY19hd2Fjc19yZXN1bWUoc3RydWN0CiAKICNkZWZpbmUgSVNfUE03NTAw
-IChtYWNoaW5lX2lzX2NvbXBhdGlibGUoIkFBUEwsNzUwMCIpKQogI2RlZmluZSBJU19CRUlHRSAo
-bWFjaGluZV9pc19jb21wYXRpYmxlKCJBQVBMLEdvc3NhbWVyIikpCi0jZGVmaW5lIElTX0lNQUMg
-KG1hY2hpbmVfaXNfY29tcGF0aWJsZSgiUG93ZXJNYWMyLDEiKSBcCi0JCXx8IG1hY2hpbmVfaXNf
-Y29tcGF0aWJsZSgiUG93ZXJNYWMyLDIiKSBcCisjZGVmaW5lIElTX0lNQUMxIChtYWNoaW5lX2lz
-X2NvbXBhdGlibGUoIlBvd2VyTWFjMiwxIikpCisjZGVmaW5lIElTX0lNQUMyIChtYWNoaW5lX2lz
-X2NvbXBhdGlibGUoIlBvd2VyTWFjMiwyIikgXAogCQl8fCBtYWNoaW5lX2lzX2NvbXBhdGlibGUo
-IlBvd2VyTWFjNCwxIikpCiAjZGVmaW5lIElTX0c0QUdQIChtYWNoaW5lX2lzX2NvbXBhdGlibGUo
-IlBvd2VyTWFjMywxIikpCiAKLXN0YXRpYyBpbnQgaW1hYzsKK3N0YXRpYyBpbnQgaW1hYzEsIGlt
-YWMyOwogCiAjaWZkZWYgUE1BQ19TVVBQT1JUX0FVVE9NVVRFCiAvKgpAQCAtODIzLDEzICs4MjYs
-MTggQEAgc3RhdGljIHZvaWQgc25kX3BtYWNfYXdhY3NfdXBkYXRlX2F1dG9tdQogCQl7CiAJCQlp
-bnQgcmVnID0gY2hpcC0+YXdhY3NfcmVnWzFdCiAJCQkJfCAoTUFTS19IRE1VVEUgfCBNQVNLX1NQ
-S01VVEUpOwotCQkJaWYgKGltYWMpIHsKKwkJCWlmIChpbWFjMSkgeworCQkJCXJlZyAmPSB+TUFT
-S19TUEtNVVRFOworCQkJCXJlZyB8PSBNQVNLX1BBUk9VVDE7CisJCQl9IGVsc2UgaWYgKGltYWMy
-KSB7CiAJCQkJcmVnICY9IH5NQVNLX1NQS01VVEU7CiAJCQkJcmVnICY9IH5NQVNLX1BBUk9VVDE7
-CiAJCQl9CiAJCQlpZiAoc25kX3BtYWNfYXdhY3NfZGV0ZWN0X2hlYWRwaG9uZShjaGlwKSkKIAkJ
-CQlyZWcgJj0gfk1BU0tfSERNVVRFOwotCQkJZWxzZSBpZiAoaW1hYykKKwkJCWVsc2UgaWYgKGlt
-YWMxKQorCQkJCXJlZyAmPSB+TUFTS19QQVJPVVQxOworCQkJZWxzZSBpZiAoaW1hYzIpCiAJCQkJ
-cmVnIHw9IE1BU0tfUEFST1VUMTsKIAkJCWVsc2UKIAkJCQlyZWcgJj0gfk1BU0tfU1BLTVVURTsK
-QEAgLTg1OSw5ICs4NjcsMTIgQEAgc25kX3BtYWNfYXdhY3NfaW5pdChzdHJ1Y3Qgc25kX3BtYWMg
-KmNoaQogCWludCBwbTc1MDAgPSBJU19QTTc1MDA7CiAJaW50IGJlaWdlID0gSVNfQkVJR0U7CiAJ
-aW50IGc0YWdwID0gSVNfRzRBR1A7CisJaW50IGltYWM7CiAJaW50IGVyciwgdm9sOwogCi0JaW1h
-YyA9IElTX0lNQUM7CisJaW1hYzEgPSBJU19JTUFDMTsKKwlpbWFjMiA9IElTX0lNQUMyOworCWlt
-YWMgPSBpbWFjMSB8fCBpbWFjMjsKIAkvKiBsb29rcyBsaWtlIE1BU0tfR0FJTkxJTkUgdHJpZ2dl
-cnMgc29tZXRoaW5nLCBzbyB3ZSBzZXQgaGVyZQogCSAqIGFzIHN0YXJ0LXVwCiAJICovCkBAIC0x
-MDE3LDggKzEwMjgsMTAgQEAgc25kX3BtYWNfYXdhY3NfaW5pdChzdHJ1Y3Qgc25kX3BtYWMgKmNo
-aQogCQkJCQlzbmRfcG1hY19hd2Fjc19zcGVha2VyX3ZvbCk7CiAJCWlmIChlcnIgPCAwKQogCQkJ
-cmV0dXJuIGVycjsKLQkJY2hpcC0+c3BlYWtlcl9zd19jdGwgPSBzbmRfY3RsX25ldzEoaW1hYwot
-CQkJCT8gJnNuZF9wbWFjX2F3YWNzX3NwZWFrZXJfc3dfaW1hYworCQljaGlwLT5zcGVha2VyX3N3
-X2N0bCA9IHNuZF9jdGxfbmV3MShpbWFjMQorCQkJCT8gJnNuZF9wbWFjX2F3YWNzX3NwZWFrZXJf
-c3dfaW1hYzEKKwkJCQk6IGltYWMyCisJCQkJPyAmc25kX3BtYWNfYXdhY3Nfc3BlYWtlcl9zd19p
-bWFjMgogCQkJCTogJnNuZF9wbWFjX2F3YWNzX3NwZWFrZXJfc3csIGNoaXApOwogCQllcnIgPSBz
-bmRfY3RsX2FkZChjaGlwLT5jYXJkLCBjaGlwLT5zcGVha2VyX3N3X2N0bCk7CiAJCWlmIChlcnIg
-PCAwKQo=
-------=_Part_90017_4239940.1219524492812
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Col
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
 
-------=_Part_90017_4239940.1219524492812--
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+   Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+   Mandriva Linux Contributor [http://www.mandriva.com/]
+   PulseAudio Hacker [http://www.pulseaudio.org/]
+   Trac Hacker [http://trac.edgewall.org/]
