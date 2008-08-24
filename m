@@ -1,28 +1,15 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: alsa-utils,alsa-plugins v1.0.18rc2
-Date: Sun, 24 Aug 2008 15:29:34 +0100
-Message-ID: <48B1704E.2040405@colin.guthr.ie>
-References: <Pine.LNX.4.61.0808191352000.21669@tm8103-a.perex-int.cz>
-	<g8rnmd$4q7$1@ger.gmane.org>
+From: =?us-ascii?Q?Vaclav=20Peroutka?= <vaclavpe@seznam.cz>
+Subject: repost - snd_via82xx input channels problem
+Date: Sun, 24 Aug 2008 17:14:28 +0200 (CEST)
+Message-ID: <3621.6574-20902-997551035-1219590868@seznam.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80DEF2458B
+Received: from mxh.seznam.cz (mxh.seznam.cz [77.75.72.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20AF524353
 	for <alsa-devel@alsa-project.org>;
-	Sun, 24 Aug 2008 16:29:50 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KXGbA-0003k6-JY
-	for alsa-devel@alsa-project.org; Sun, 24 Aug 2008 14:29:44 +0000
-Received: from 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk
-	([80.192.67.147]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 24 Aug 2008 14:29:44 +0000
-Received: from gmane by 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 24 Aug 2008 14:29:44 +0000
-In-Reply-To: <g8rnmd$4q7$1@ger.gmane.org>
+	Sun, 24 Aug 2008 17:14:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,35 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Vaclav Peroutka <vaclavpe@seznam.cz>
 List-Id: alsa-devel@alsa-project.org
 
-(back on list)
 
-Vaclav Peroutka wrote:
- >> Dodgy tarball?
- >>
- >
- > Older system. I have the same problem with Suse 10.0
+thank you for your answer. Finally I found, that backporting is not so
+necessary for me as I needed just three drivers - bt87x, via82xx and ice1724.
+Those drivers do not use newer functions I mentioned before, so the compilation
+has successfully ended.
 
-Not sure what an "older system" has to do with it as I'm fairly certain 
-the tarball is just missing several files from GIT.....
+But I noticed that even with the newset driver the alc655 line-in inputs do
+not work well. Before ( alsa 1.0.9 ) I had the right channel always connected to
+the Mic input. Now (Alsa 2008-08-22 ) in the right channel there is a copy of
+the left channel. Thus I have monophonic input instead of stereo.
 
-http://git.alsa-project.org/?p=alsa-utils.git;a=tree;f=alsactl;h=b8c3f6715f72645dd19d77ce6c5a8b400df067e8;hb=3b8bdeb3fce2277464a47689ac40b773bc60cf50
+I just downloaded the datasheet of ALC655 codec. I will read it hopefully
+tomorrow. But can you just advice me where to look to try to fix the problem ?
+It should be somewhere in snd_via82xx module ? Or somewhere else ? Inputs in
+snd_ice1724 (my second sound card) work properly. But I have never worked with
+kernel modules or kernel programming. I am just interested how to fix the
+problem I have.
 
-Several of these files are not in the tarball....
-
-Col
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-   Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-   Mandriva Linux Contributor [http://www.mandriva.com/]
-   PulseAudio Hacker [http://www.pulseaudio.org/]
-   Trac Hacker [http://trac.edgewall.org/]
+Thank you in advance,
+Vaclav
