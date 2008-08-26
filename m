@@ -1,19 +1,25 @@
-From: "Sean McNamara" <smcnam@gmail.com>
-Subject: Re: The state of Linux audio
-Date: Mon, 25 Aug 2008 17:10:55 -0700
-Message-ID: <74eb1fe20808251710l318ff30ch8afd436013ca47ff@mail.gmail.com>
-References: <f188924b0808240837nfb54b9aq6330d9994df291ba@mail.gmail.com>
+From: "nguyen tritai" <nguyentritai@gmail.com>
+Subject: Re: Alsa-driver compile fail on Ubuntu powerpc
+Date: Tue, 26 Aug 2008 11:49:44 +0700
+Message-ID: <ce83e6480808252149h13a2ce18y544701c4f3969406@mail.gmail.com>
+References: <ce83e6480808140225q7481c888qb47b7008b1ba862d@mail.gmail.com>
+	<s5h8wuz1zc0.wl%tiwai@suse.de>
+	<ce83e6480808171952p69058dedo661fe9deaa07ca79@mail.gmail.com>
+	<ce83e6480808180426i57f0347fic73adb9d44cc52ec@mail.gmail.com>
+	<s5hvdxy5ycf.wl%tiwai@suse.de>
+	<ce83e6480808250304t1ad72e89l494bc93d8ffdc178@mail.gmail.com>
+	<s5hod3he2uu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id C612E245B7
+Received: from rv-out-0708.google.com (rv-out-0708.google.com [209.85.198.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FC4824669
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Aug 2008 02:10:56 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m28so972515wag.8
-	for <alsa-devel@alsa-project.org>; Mon, 25 Aug 2008 17:10:55 -0700 (PDT)
-In-Reply-To: <f188924b0808240837nfb54b9aq6330d9994df291ba@mail.gmail.com>
+	Tue, 26 Aug 2008 06:49:45 +0200 (CEST)
+Received: by rv-out-0708.google.com with SMTP id f25so1580272rvb.32
+	for <alsa-devel@alsa-project.org>; Mon, 25 Aug 2008 21:49:44 -0700 (PDT)
+In-Reply-To: <s5hod3he2uu.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,209 +30,224 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Fred ." <eldmannen@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This sounds like a homework question to me ;-)
+Takashi,
 
- That said, there are no "right" answers to these questions which
-encapsulate every opinion about this topic. A comprehensive answer
-would take many pages -- one could write a book on the different
-viewpoints. But here's my personal viewpoint (comments inline).
+I'm using the alsa-driver from git  with the latest kernel.org 2.6.26 as you
+suggested me.
+The issue is the same with alsa-driver stable v1.0.18rc1.
 
-On Sun, Aug 24, 2008 at 8:37 AM, Fred . <eldmannen@gmail.com> wrote:
-> What is the state of audio in Linux?
-> How does it compare against other operating systems?
-I'm going to answer these two questions at the same time.
-Depends on how you define "audio" and "Linux".
-(a) If you define audio = "the ability to send/capture PCM data
-to/from a sound card and have it playback/capture at low latency", and
-Linux = "the Linux kernel", I'd argue that ALSA is the most
-featureful, stable, and comprehensive implementation of more audio
-drivers than any other platform. Not only does ALSA support virtually
-every consumer audio device on the market; it also supports many
-high-end pro audio solutions, as well as sound chips for embedded
-systems. I'd say that Windows supports the same core consumer audio
-devices out of the box, it probably supports all pro audio devices
-with third-party drivers, and supports few to no embedded SoC chips.
-So in sheer number of chipsets supported out of the box, I think ALSA
-takes the cake. In addition, fragmentation at the kernel level is
-fairly low; the OSS/Free implementation in the Linux kernel is quickly
-fading into bitrot oblivion, and 4-Front Technologies' OSS 4.x is the
-only real competitor to ALSA's kernel-level support. The fragmentation
-in the kernel is really between two implementations, where one
-implementation (ALSA) is what a vast majority of people use, if only
-because distributions ship it as the default sound stack. If all
-you're interested in is the kernel, I'd argue that you can envision
-Linux audio as a thriving, successful, victorious project whose only
-kernel-level goals going forward are to maintain the current level of
-excellence they've achieved, by supporting new hardware as it comes
-down the R&D pipe.
+TaiNguyen
 
-(b) If you define audio more broadly to include userspace support for
-audio editing, consistent audio playback, and a worry-free user
-experience where applications "just work", and you define Linux as "a
-typical distribution of GNU/Linux which includes many FOSS graphical
-applications and utilities", the scenario is much uglier. At the user
-space level, there are tens of different APIs available which offer
-mostly-overlapping feature sets; unfortunately, almost every library
-claims one or more compelling features which distinguish it from the
-pack.
+On Mon, Aug 25, 2008 at 6:44 PM, Takashi Iwai <tiwai@suse.de> wrote:
 
-Due to the strong emphasis on consistency in the large desktop
-environment efforts, GNOME and KDE, software belonging under the
-umbrella of these projects often behaves well as ALSA applications. In
-KDE 4's case, we have Phonon, which eventually gets around to using
-ALSA. As Colin said, these projects are quickly moving to also support
-native PulseAudio.
-
-When an independent software developer (not associated with GNOME or
-KDE) writes a new application making heavy use of audio, they are
-almost equally likely to choose among one of a half-dozen leading
-competitors offering easy to use or featureful audio programming APIs:
-FMOD, OpenAL, libao, libpulse, ALSA, JACK, and so on. While many of
-these advertise support for ALSA as a back-end, such implementations
-are hit-or-miss as to whether they actually work. Once you start
-interposing a plugin library that translates ALSA calls into
-PulseAudio calls (a necessary step towards desktop integration and API
-interoperability), the chances of correct functionality diminish.
-Basically, the more pass-through layers the audio has to run through
-before it's sent out your speakers, you have exponentially worse
-chances of it actually succeeding (and if it does succeed, the sound
-quality and reliability also diminish the more indirection you have).
-In this way, the standard UNIX model of employing many small
-programs/libraries together in cooperation falls down with audio. It's
-just very hard to ensure proper interoperability between different
-audio APIs.
-
-A consequence of this fragmentation, coupled with the fact that ALSA
-has no "forced" mixing of multiple applications' sound at once, means
-that the reliability of sound playback on a user's desktop can be
-extraordinarily poor when they have installed more than one or two
-audio-playing applications.
-
-If your distribution does not ship any software mixing installed and
-ready to use out of the box, which has been the case for every distro
-until ca. 2007, then you will automatically run into problems if you
-try to play sound from two applications at once. But even if your
-distribution has PulseAudio or ALSA's dmix enabled by default, any of
-the above mentioned libraries may decide at any time that it doesn't
-want to play nicely with other applications, and hog your sound card,
-shutting out any other applications indefinitely. This peculiar
-limitation is fundamental to ALSA's design and cannot be fixed without
-breaking backwards compatibility.
-
-PulseAudio is solving many of these problems, including a mandate that
-any applications using PulseAudio must allow their audio to be mixed
-with other applications. But PulseAudio still sits on top of a fragile
-and complicated ALSA userspace, which limits Pulse's ability to do its
-job. Here are two issues foremost in my mind pertaining to ALSA
-userland, presented at a high level:
-
-1. Most developers, novice or experienced, are unable to correctly
-write an ALSA client that cooperates nicely with ALSA plugins such as
-ALSA<->Pulse. A huge percentage of existing ALSA clients are
-semantically misaligned with any ALSA userspace backend except the
-most basic direct hardware access (which, again, lacks any sort of
-mixing). This is partly the fault of these developers, and partly the
-fault of the API designers for creating something that is capable of
-being misused so easily. Application writers should not be given a
-choice between using a slower, more compatible code path or a faster,
-less compatible code path; Murphy's Law says that most developers will
-choose the less compatible path to make their application faster,
-giving users no choice to fall back to the more compatible path. And
-of course (Murphy's Law again) most users will need the compatibility
-mode to get the application's audio output to work at all. I'm
-referring to mmap'ed playback for anyone who is familiar with ALSA
-internals, but this is merely one example of several.
-
-2. The ALSA plugin interface leaves (too) many things open to the
-interpretation of the plugin writer. This is mostly a documentation
-issue: syntax of function prototypes means absolutely nothing if those
-implementing the APIs do not know what state the program must be in
-before and after each function call, what sort of errors must be
-thrown, and so on. As a result, it is very difficult to write an ALSA
-plugin and proclaim, "There; any sane ALSA client will now be able to
-interface seamlessly with my sound server/library through my ALSA
-plugin." This is exacerbated by the client-side problems in the
-previous point -- there are even fewer sane ALSA clients than there
-are sane ALSA plugins :P
-
-
+> At Mon, 25 Aug 2008 17:04:52 +0700,
+> nguyen tritai wrote:
+> >
+> > Takashi,
+> >
+> > The issue is still present with the latest alsa-driver.
 >
-> Is the Linux audio functionality good or bad?
-
-This question is SO subjective that I think I'll let you infer this
-from the rest of my post, rather than trying to address it directly.
-
-> What could be better?
-
-As I said, unification on a core set of components is the most
-important step going forward. This has to be a conscious effort made
-between audio stack developers (PulseAudio and ALSA's maintainers) and
-application authors. On the one hand, the audio stack needs to end its
-decade-long streak of uniform mediocrity, and allow for a champion to
-arise -- one implementation that gains mass support and recognition.
-This should not be done through force or FUD; it should be done
-through sheer software quality and excellence. I for one am nominating
-PulseAudio for that place, assisted in no small part by ALSA.
-Eventually, there might arise two competing solutions at the top, both
-of which gain mass acceptance - but this is no worse than the current
-GTK/QT split. They consciously interoperate with one another anyway,
-which is a hallmark of their excellence.
-
-Basically, I think we are experiencing somewhat of a repeat of the
-early X11 days: way back then, it wasn't such an unreasonable thing
-for people to hack their own basic window management, widget toolkit,
-etc. for their applications. A vast majority agreed upon the fact that
-the X server was a viable foundation, but no one agreed upon where to
-go from there. Some people (the GTK, CDE, Motif and Qt authors) wanted
-to create a framework that others could build upon, discouraging
-application writers to directly use X11 calls; other people wanted to
-go their own way and directly access X11 through their own
-abstractions, or use one of the numerous other abstractions which were
-sitting around in mediocrity.
-
-But then a tipping point came, and a vast majority of developers saw
-the real value of unifying on a common widget toolkit. After that, we
-basically had Motif, GTK, and Qt (in no particular order) arise as
-better-than-mediocre champions, and by 2000 it was more or less a
-strange thing when an application writer wanted to directly use libX11
-for all their drawing operations.
-
-I see the PulseAudio camp saying the same thing to ALSA as the GTK
-camp was saying to XFree86 (and now X.Org) a couple of years ago:
-(Audio) I hope ALSA will continue to thrive at the kernel level, but
-eventually either reinvent itself or disappear out of developers'
-minds at the user-space level.
-(Graphics) I hope X11 will continue to thrive on the server-side, but
-eventually either reinvent itself or disappear out of developers'
-minds on the client-side.
-
-> What is planned for the future?
-
-So from my not-so-unbias perspective, I'd say that Linux audio is at
-the base of the final peak that we must climb to get Linux audio ready
-for prime time. Most of the climb will involve application developers
-recognizing the one or two most successful audio projects, and
-adopting these instead of continuing the fragmentation. The more we
-can get applications to use the best APIs, the better the user
-experience will be.
-
-Of course, there will always be multiple champions at the top; this is
-necessary in the FOSS world. But when 95% of the applications use only
-two or three different well-supported paths, the success rate of audio
-interoperability (software mixing, effects, etc.) will be much higher
-than it currently is.
-
-HTH,
-
-Sean
-
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Which one did you take?  It must be sound-unstable tree.
+>
+> Anyway, you should better to use sound-unstable-2.6 git tree together
+> with the latest Linus tree.
+>
+>
+> Takashi
+>
+> > Do you think that it's problem with 64 bit resource  with  pcm _mmap.
+> > Here is dmesg :
+> >
+> > TASK = cf8b70c0[1579] 'aplay' THREAD: cfab4000
+> > GPR00: f0f0f0f4 cfab5e20 cf8b70c0 c0ae7040 00000000 4814b000 cfab2900
+> 00000000
+> > GPR08: 00000000 00004000 00000000 f0f0f0f0 20008448 1002557c 10020000
+> 10020000
+> > GPR16: 10010000 10024a58 00000008 10042050 100406d8 0ff80d50 cfa41d40
+> 00000000
+> > GPR24: 00000000 4814b000 00000000 cfa12948 00000000 4814b000 cfab2900
+> cfab5e38
+> > NIP [d10d4814] snd_pcm_mmap_data_fault+0x78/0xec [snd_pcm]
+> > LR [c0059fe8] __do_fault+0x64/0x428
+> > Call Trace:
+> > [cfab5e20] [c004b748] unlock_page+0x48/0x5c (unreliable)
+> > [cfab5e30] [c0059fe8] __do_fault+0x64/0x428
+> > [cfab5e80] [c000fd88] do_page_fault+0x2e8/0x540
+> > [cfab5f40] [c000d2ec] handle_page_fault+0xc/0x80
+> > Instruction dump:
+> > 80090028 2f800000 419e0074 7c0903a6 4e800421 2c030000 41820048 80030000
+> > 7c6b1b78 70094000 40820074 380b0004 <7d200028> 31290001 7d20012d 40a2fff4
+> > ---[ end trace 11885f716998bc3c ]---
+> >
+> > Please show me where the issue is from and can I do something to fix it ?
+> >
+> > Thanks
+> > TaiNguyen
+> >
+> > On Mon, Aug 18, 2008 at 6:58 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> >     At Mon, 18 Aug 2008 18:26:40 +0700,
+> >     nguyen tritai wrote:
+> >     >
+> >     > Takashi,
+> >     >
+> >     > Now I can build and install driver for ca0106 sb Audigy but I got
+> >     another
+> >     > issue when play an example file.
+> >     > >> aplay -vv child.wav
+> >     > Playing WAVE '/root/child.wav' : Unsigned 8 bit, Rate 22050 Hz,
+> Mono
+> >     > Plug PCM: Rate conversion PCM (48000, sformat=U8)
+> >     > Its setup is:
+> >     >   stream       : PLAYBACK
+> >     >   access       : RW_INTERLEAVED
+> >     >   format       : U8
+> >     >   subformat    : STD
+> >     >   channels     : 1
+> >     >   rate         : 22050
+> >     >   exact rate   : 22050 (22050/1)
+> >     >   msbits       : 8
+> >     >   buffer_size  : 3763
+> >     >   period_size  : 470
+> >     >   period_time  : 21333
+> >     >   tstamp_mode  : NONE
+> >     >   period_step  : 1
+> >     >   avail_min    : 470
+> >     >   period_event : 0
+> >     >   start_threshold  : 3763
+> >     >   stop_threshold   : 3763
+> >     >   silence_threshold: 0
+> >     >   silence_size : 0
+> >     >   boundary     : 493223936
+> >     > Slave: Route conversion PCM (sformat=S32_LE)
+> >     >   Transformation table:
+> >     >     0 <- 0
+> >     >     1 <- 0
+> >     > Its setup is:
+> >     >   stream       : PLAYBACK
+> >     >   access       : MMAP_INTERLEAVED
+> >     >   format       : U8
+> >     >   subformat    : STD
+> >     >   channels     : 1
+> >     >   rate         : 48000
+> >     >   exact rate   : 48000 (48000/1)
+> >     >   msbits       : 8
+> >     >   buffer_size  : 8192
+> >     >   period_size  : 1024
+> >     >   period_time  : 21333
+> >     >   tstamp_mode  : NONE
+> >     >   period_step  : 1
+> >     >   avail_min    : 1024
+> >     >   period_event : 0
+> >     >   start_threshold  : 8192
+> >     >   stop_threshold   : 8192
+> >     >   silence_threshold: 0
+> >     >   silence_size : 0
+> >     >   boundary     : 1073741824
+> >     > Slave: Direct Stream Mixing PCM
+> >     > Its setup is:
+> >     >   stream       : PLAYBACK
+> >     >   access       : MMAP_INTERLEAVED
+> >     >   format       : S32_LE
+> >     >   subformat    : STD
+> >     >   channels     : 2
+> >     >   rate         : 48000
+> >     >   exact rate   : 48000 (48000/1)
+> >     >   msbits       : 32
+> >     >   buffer_size  : 8192
+> >     >   period_size  : 1024
+> >     >   period_time  : 21333
+> >     >   tstamp_mode  : NONE
+> >     >   period_step  : 1
+> >     >   avail_min    : 1024
+> >     >   period_event : 0
+> >     >   start_threshold  : 8192
+> >     >   stop_threshold   : 8192
+> >     >   silence_threshold: 0
+> >     >   silence_size : 0
+> >     >   boundary     : 1073741824
+> >     > Hardware PCM card 0 'CA0106' device 0 subdevice 0
+> >     > Its setup is:
+> >     >   stream       : PLAYBACK
+> >     >   access       : MMAP_INTERLEAVED
+> >     >   format       : S32_LE
+> >     >   subformat    : STD
+> >     >   channels     : 2
+> >     >   rate         : 48000
+> >     >   exact rate   : 48000 (48000/1)
+> >     >   msbits       : 32
+> >     >   buffer_size  : 8192
+> >     >   period_size  : 1024
+> >     >   period_time  : 21333
+> >     >   tstamp_mode  : ENABLE
+> >     >   period_step  : 1
+> >     >   avail_min    : 1024
+> >     >   period_event : 0
+> >     >   start_threshold  : 1
+> >     >   stop_threshold   : 1073741824
+> >     >   silence_threshold: 0
+> >     >   silence_size : 1073741824
+> >     >   boundary     : 1073741824
+> >     > #########         +                                |
+> 35%Segmentation
+> >     fault
+> >     >
+> >     > Kernel dump message
+> >     > >> dmesg
+> >     > Unable to handle kernel paging request for data at address
+> 0x00000000
+> >     > Faulting instruction address: 0xc0033fd4
+> >     > Oops: Kernel access of bad area, sig: 11 [#7]
+> >     > Canyonlands
+> >     > Modules linked in: snd_seq_midi snd_ca0106 snd_rawmidi snd_seq_oss
+> >     > snd_seq_midi_event snd_seq snd_seq_device snd_ac97_codec
+> snd_pcm_oss
+> >     > snd_mixer_oss snd_pcm snd_timer snd_page_alloc snd ac97_bus
+> >     > NIP: c0033fd4 LR: c004ac94 CTR: e901a6c8
+> >     > REGS: dfbf3d40 TRAP: 0300   Tainted: G      D
+> >     (2.6.26-00015-gc0b03c1-dirty)
+> >     > MSR: 00029000 <EE,ME>  CR: 48022444  XER: 20000000
+> >     > DEAR: 00000000, ESR: 00000000
+> >     > TASK = dfa57000[15245] 'aplay' THREAD: dfbf2000
+> >     > GPR00: c004ac94 dfbf3df0 dfa57000 00000000 c0b2c180 00000000
+> 3f10c149
+> >     00000000
+> >     > GPR08: 00000000 00000000 9e370001 c030b10c 00000149 10025478
+> 1000bd14
+> >     bff7ab68
+> >     > GPR16: c0320000 c030ae74 c0320000 00000000 00000000 00000000
+> 00000000
+> >     de14c340
+> >     > GPR24: 4814b000 00000000 dfbf2000 de00c2c0 c0b2c180 00000000
+> 00000000
+> >     c0b2c180
+> >     > NIP [c0033fd4] __wake_up_bit+0x10/0x40
+> >     > LR [c004ac94] unlock_page+0x48/0x5c
+> >     > Call Trace:
+> >     > [dfbf3e10] [c004ac94] unlock_page+0x48/0x5c
+> >     > [dfbf3e20] [c005a2d8] __do_fault+0x254/0x618
+> >     > [dfbf3e80] [c000faf0] do_page_fault+0x2d8/0x518
+> >     > [dfbf3f40] [c000d134] handle_page_fault+0xc/0x80
+> >     > Instruction dump:
+> >     > 7d6b4a14 800b0280 812b0278 20000020 7c630430 54631838 7c634a14
+> 4e800020
+> >     > 7c0802a6 9421ffe0 90810008 90010024 <80030000> 90a1000c 7f801800
+> >     419e0014
+> >     > ---[ end trace a0b9d3bfbd44991b ]---
+> >     >
+> >     > I tried with another example file.wav but the problem is the same.
+> >     > The issue seems from accessing memory.
+> >     > I'm using AMCC 460EX board with distribution Ubuntu-7.04
+> >
+> >     It's a known problem with non-coherent PPC architecture.
+> >     Try my sound-unstable-2.6 git tree (or alsa-driver-unstable
+> snapshot).
+> >
+> >     Takashi
+> >
+> >
 >
