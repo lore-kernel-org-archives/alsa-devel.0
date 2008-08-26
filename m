@@ -1,18 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Online code snapshots on ALSA server
-Date: Tue, 26 Aug 2008 08:57:40 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0808260853420.23810@tm8103-a.perex-int.cz>
-References: <Pine.LNX.4.61.0808251030050.23810@tm8103-a.perex-int.cz>
-	<74eb1fe20808251815g7d7a5f8ao6c6d292cc94cfbba@mail.gmail.com>
+From: Ash <hashbrown100@hotmail.com>
+Subject: Issue with Alsa and PulseAudio
+Date: Tue, 26 Aug 2008 08:30:41 +0000
+Message-ID: <BAY102-W3417CC50075C3DE003B2F68A660@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id ADD4F103830
+Received: from bay0-omc2-s5.bay0.hotmail.com (bay0-omc2-s5.bay0.hotmail.com
+	[65.54.246.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 004AB103827
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Aug 2008 08:57:48 +0200 (CEST)
-In-Reply-To: <74eb1fe20808251815g7d7a5f8ao6c6d292cc94cfbba@mail.gmail.com>
+	Tue, 26 Aug 2008 10:30:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sean McNamara <smcnam@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 25 Aug 2008, Sean McNamara wrote:
 
-> Glad to hear it, Jaroslav! That's much easier than checking out from GIT.
-> 
-> If these are automatically updated, any idea how frequently the
-> packages will be regenerated? Is it after every commit, or only at
-> particular time intervals?
+Hello,
+I have a media application that uses alsa as its sound renderer. It has wor=
+ked on numerous systems without any problems until I came across a mandriva=
+ distro that bundles with PulseAudio. The alsa pulseaudio plugin is install=
+ed correctly, however I am having weird problems.
+ =
 
-You can grab the latest code immediately after commit to GIT repository 
-(but generation of new package takes awhile as mentioned on page when it's 
-not built on server already). The package generation is triggered from the 
-web server by users requesting latest package immediately.
+When I am setting up my hw params, and I call snd_pcm_hw_params_any(), I ge=
+t an "Operation not permitted" error. I am not sure why this is happening, =
+anyone else see this before? I am using pulseaudio version 0.9.9 and alsa 1=
+.0.16.
+ =
 
-					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Thanks in advance!
+_________________________________________________________________
+Be the filmmaker you always wanted to be=97learn how to burn a DVD with Win=
+dows=AE.
+http://clk.atdmt.com/MRT/go/108588797/direct/01/
