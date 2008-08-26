@@ -1,54 +1,85 @@
-From: "Guillaume Chazarain" <guichaz@gmail.com>
-Subject: Re: [ALSA PATCH] alsa-git merge request
-Date: Tue, 26 Aug 2008 23:10:55 +0200
-Message-ID: <3d8471ca0808261410t791c3627s9e3f9d82b1a7093@mail.gmail.com>
-References: <Pine.LNX.4.61.0807141105150.7676@tm8103-a.perex-int.cz>
-	 <3d8471ca0808241430p2e3fbb85g63f1340512339d31@mail.gmail.com>
-	 <s5hiqtpd4nb.wl%tiwai@suse.de>
-	 <3d8471ca0808251436q5742fb09t9291362669870fb3@mail.gmail.com>
-	 <3d8471ca0808251543x7ce782e2n52b31ae306d45ec6@mail.gmail.com>
-	 <s5hwsi42u66.wl%tiwai@suse.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: Issue with Alsa and PulseAudio
+Date: Tue, 26 Aug 2008 23:13:03 +0100
+Message-ID: <g91v5f$qe6$1@ger.gmane.org>
+References: <BAY102-W3417CC50075C3DE003B2F68A660@phx.gbl>	<g9171a$jko$1@ger.gmane.org>	<s5hd4jvlrlr.wl%tiwai@suse.de>
+	<48B423AD.4090601@colin.guthr.ie>
+	<BAY102-W254533A08D3B13E0989D028A660@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752832AbYHZVLP@vger.kernel.org>
-In-Reply-To: <s5hwsi42u66.wl%tiwai@suse.de>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Travis Place <wishie@wishie.net>, LKML <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D9EC24507
+	for <alsa-devel@alsa-project.org>;
+	Wed, 27 Aug 2008 00:13:18 +0200 (CEST)
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1KY6mp-00029N-Dw
+	for alsa-devel@alsa-project.org; Tue, 26 Aug 2008 22:13:15 +0000
+Received: from 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk
+	([80.192.67.147]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2008 22:13:15 +0000
+Received: from gmane by 80-192-67-147.cable.ubr10.edin.blueyonder.co.uk with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2008 22:13:15 +0000
+In-Reply-To: <BAY102-W254533A08D3B13E0989D028A660@phx.gbl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 26, 2008 at 7:59 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> Are you sure both are the same kernel but just one commit reverted?
+Ash wrote:
+> Thanks Colin, Takashi.
+> 
+> The thing is, I've noticed other applications such as aplay or amarok
+> call the same function and not exhibit the same behavior. That's why
+> I am  not sure what I am doing wrong.
 
-I retested, yes.
-With or without the revert, model=auto disables sound completely, and
-I get this in dmesg:
+Well amarok presumably uses xine... aplay tho' is probably more 
+interesting. I presume you are passing the same values etc. as e.g. aplay?
 
-HDA Intel 0000:00:1b.0: PCI INT A disabled
-HDA Intel 0000:00:1b.0: PCI INT A -> GSI 20 (level, low) -> IRQ 20
-HDA Intel 0000:00:1b.0: setting latency timer to 64
-ALSA /home/g/linux-2.6/sound/pci/hda/hda_codec.c:2325: hda_codec:
-model 'auto' is selected
-ALSA /home/g/linux-2.6/sound/pci/hda/hda_codec.c:3021: autoconfig:
-line_outs=1 (0x14/0x0/0x0/0x0/0x0)
-ALSA /home/g/linux-2.6/sound/pci/hda/hda_codec.c:3025:
-speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-ALSA /home/g/linux-2.6/sound/pci/hda/hda_codec.c:3029:    hp_outs=1
-(0x15/0x0/0x0/0x0/0x0)
-ALSA /home/g/linux-2.6/sound/pci/hda/hda_codec.c:3030:    mono: mono_out=0x0
-ALSA /home/g/linux-2.6/sound/pci/hda/hda_codec.c:3038:    inputs:
-mic=0x18, fmic=0x0, line=0x1a, fline=0x0, cd=0x0, aux=0x0
+> 
+> Also intersetingly enough, if I do not use the "default"
+> ALSA_DEVICE_DEFAULT, and instead use "front" (which I believe is
+> direct access to alsa driver, whereas "default" goes through
+> pulseaudio), strange things happen. For example, setting a rate or
+> channels returns -22 Invalid Argument.
 
-I played with model=intel-mac-auto and model=intel-mac-v3 but it had
-no effect, i.e. same as without the model= parameter.
+Don't use "front", you should use "default". "front" will only exist on 
+some sound hardware AFAIK, and in the case that the user has selected 
+their "default" device to route through pulseaudio, you should respect this.
 
-So, without model=auto the problem is that I get the output on both
-the internal speakers and the headphones, and this is fixed by
-reverting the commit.
+I'm sure there is probably a technical reason why "front" does not let 
+you set rate or channels (probably because it represents the front 
+speakers system of a multi-channel setup), but I'm sure someone more 
+familiar with the API will be able to enlighten you :)
 
-Thanks.
+> I am not sure if I need to change or upgrade alsa. I just want to get
+> to the bottom of this with existing pulseaudio/alsa since other
+> players seem to work.
+
+Indeed. If aplay is calling this function and works via pulseaudio, then 
+it stands to reason so should you!
+
+Col
 
 -- 
-Guillaume
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+   Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+   Mandriva Linux Contributor [http://www.mandriva.com/]
+   PulseAudio Hacker [http://www.pulseaudio.org/]
+   Trac Hacker [http://trac.edgewall.org/]
