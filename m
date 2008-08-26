@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: Fix error paths in N810 machine
-	driver init and release clocks at exit
-Date: Tue, 26 Aug 2008 11:35:43 +0100
-Message-ID: <20080826103541.GC24258@sirena.org.uk>
-References: <1219746777-17328-1-git-send-email-jarkko.nikula@nokia.com>
+From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
+Subject: Commit 2a3fdf2e7bbeae557b4a1ee64c071ae4c3c561e5 makes
+	unable to compile ca106 module
+Date: Tue, 26 Aug 2008 13:29:13 +0200
+Message-ID: <fd3eb9bf0808260429x6807ff8fl135b7fe314c1207f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BAA5103850
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id D2BAB2447C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Aug 2008 12:35:44 +0200 (CEST)
+	Tue, 26 Aug 2008 13:29:14 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so1685183yxh.2
+	for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2008 04:29:13 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <1219746777-17328-1-git-send-email-jarkko.nikula@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: alsa-devel@alsa-project.org, Felipe Balbi <felipe.balbi@nokia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 26, 2008 at 01:32:57PM +0300, Jarkko Nikula wrote:
-> Thanks to Felipe Balbi <felipe.balbi@nokia.com> by noticing that if clk_get
-> to sys_clkout2_src fails, then n810_snd_device is never released.
-
-> Add also sys_clkout2_src release into error path, error code return and
-> release the clocks at exit.
-
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+SGVyZSdzIGEgcHJvcGVyIHBhdGNoOgoKLS0tIGEvcGNpL2NhMDEwNi9jYTAxMDZfbWFpbi5jCisr
+KyBiL3BjaS9jYTAxMDYvY2EwMTA2X21haW4uYwpAQCAtMjQ5LDExICsyNDksMTIgQEAgc3RhdGlj
+IHN0cnVjdCBzbmRfY2EwMTA2X2RldGFpbHMgY2EwMTA2X2NoaXBfZGV0YWlsc1tdID0gewogICAg
+ICAgICAgIC5uYW1lICAgPSAiTVNJIEs4TiBEaWFtb25kIE1CIFtTQjA0MzhdIiwKICAgICAgICAg
+ICAuZ3Bpb190eXBlID0gMiwKICAgICAgICAgICAuaTJjX2FkYyA9IDEgfSAsCi0gICAgICAgIC8q
+IEFub3RoZXIgTVNJIEs4TiBEaWFtb25kIE1CLCB3aGljaCBoYXMgYXBwcmVudGx5IGEgZGlmZmVy
+ZW50IFNTSUQgKi8KKyAgICAgICAgLyogTVNJIEs4TiBEaWFtb25kIFBMVVMgTUIgKi8KICAgICAg
+ICAgeyAuc2VyaWFsID0gMHgxMDA5MTEwMiwKICAgICAgICAgICAubmFtZSAgID0gIk1TSSBLOE4g
+RGlhbW9uZCBNQiIsCiAgICAgICAgICAgLmdwaW9fdHlwZSA9IDIsCi0gICAgICAgICAgLmkyY19h
+ZGMgPSAxIH0gLAorICAgICAgICAgIC5pMmNfYWRjID0gMSwKKyAgICAgICAgICAuc3BpX2RhYyA9
+IDIgfSAsCiAgICAgICAgIC8qIFNodXR0bGUgWFBDIFNEMzFQIHdoaWNoIGhhcyBhbiBvbmJvYXJk
+IENyZWF0aXZlIExhYnMKICAgICAgICAgICogU291bmQgQmxhc3RlciBMaXZlISAyNC1iaXQgRUFY
+CiAgICAgICAgICAqIGhpZ2gtZGVmaW5pdGlvbiA3LjEgYXVkaW8gcHJvY2Vzc29yIi4KClRoZSBj
+b21tYSB3YXMgbWlzc2luZyBhZnRlciAuc3BpX2RhYyBsaW5lLgoKLS0gClZlZHJhbiBNaWxldGnE
+hwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
