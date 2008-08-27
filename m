@@ -1,11 +1,11 @@
 From: Tejun Heo <tj@kernel.org>
-Subject: sound: make OSS sound core optional
-Date: Wed, 27 Aug 2008 10:18:15 +0200
-Message-ID: <48B50DC7.8090905@kernel.org>
+Subject: [PATCH RESEND] sound: make OSS sound core optional
+Date: Wed, 27 Aug 2008 10:19:35 +0200
+Message-ID: <48B50E17.4020106@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754552AbYH0IT6@vger.kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754841AbYH0IVR@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
@@ -30,6 +30,8 @@ factor.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
+Aieee.. forgot to add [PATCH].  Resending.  Thanks.
+
  arch/um/Kconfig.char |    4 ++
  sound/Kconfig        |    5 +++
  sound/core/Kconfig   |    1 
