@@ -1,45 +1,36 @@
-From: Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH RESEND] sound: make OSS sound core optional
-Date: Wed, 27 Aug 2008 11:37:44 +0200
-Message-ID: <48B52068.2090502@kernel.org>
-References: <48B50E17.4020106@kernel.org> <s5hprnubz89.wl%tiwai@suse.de>
+From: Bryan Wu <cooloney@kernel.org>
+Subject: [PATCH 0/4] Blackfin supports for ALSA/ASOC
+Date: Wed, 27 Aug 2008 17:39:24 +0800
+Message-ID: <1219829968-6431-1-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755272AbYH0JjW@vger.kernel.org>
-In-Reply-To: <s5hprnubz89.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, perex@perex.cz
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1813103855
+	for <alsa-devel@alsa-project.org>;
+	Wed, 27 Aug 2008 11:39:19 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: perex@perex.cz, liam.girdwood@wolfsonmicro.com, broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-Takashi Iwai wrote:
->> +config SOUND_OSS_CORE
->> +	bool
->> +	default n
->> +
->>  source "sound/oss/dmasound/Kconfig"
-> 
-> This seems missing from the scope.
-> But, I think this should be rather in the block "if SOUND_PRIME" below.
+Hi folks,
 
-SOUND_OSS_CORE should be turned on if ALSA OSS emul is turned on or
-arch-um hostsound is turned on, both of which can be enabled regardless
-of SOUND_PRIME, no?
+It's very happy to release this ASOC Blackfin ports. Please review our drivers
+and feel free to ask us update it.
 
->> --- work.orig/sound/sound_core.c
->> +++ work/sound/sound_core.c
-> (snip)
->> +MODULE_ALIAS_CHARDEV_MAJOR(SOUND_MAJOR);
-> 
-> This alias should be in #ifdef CONFIG_SOUND_OSS_CORE.
-> The module doesn't provide that major without CONFIG_SOUND_OSS_CORE.
+In this patchset, we post ASOC Blackfin supports, SSM2602 audio codec driver
+and other 2 ALSA/ASOC patches.
 
-Ah.. right.  Moving.
-
-Thanks.
-
--- 
-tejun
+Thanks a lot
+-Bryan
