@@ -1,21 +1,18 @@
-From: "=?UTF-8?Q?Vedran_Mileti=C4=87?=" <rivanvx@gmail.com>
-Subject: Re: [PATCH] ice1724 MIDI on PHASE 22 and PHASE 28 and
-	a few minor fixes
-Date: Thu, 28 Aug 2008 18:50:15 +0200
-Message-ID: <fd3eb9bf0808280950l4c2fef27r9805d8790282ff91@mail.gmail.com>
-References: <fd3eb9bf0808280709o3a738a0au4ab636034d78c406@mail.gmail.com>
-	<s5hod3d8bol.wl%tiwai@suse.de>
+From: "John L. Utz III" <john.utz@dmx.com>
+Subject: Re: PATCH - via82xx  vt1618 7.1 Audio Support
+Date: Thu, 28 Aug 2008 10:03:17 -0700
+Message-ID: <op.uglwbrn0647oa9@jutz-gnto64>
+References: <op.ugkfadrw647oa9@jutz-gnto64>
+ <s5hprnt8byz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_40855_23951779.1219942215828"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1B9B243A9
+Received: from mail.dmxmusic.com (mail.dmxmusic.com [199.201.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8319D243AF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Aug 2008 18:50:17 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so347370yxh.2
-	for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2008 09:50:16 -0700 (PDT)
-In-Reply-To: <s5hod3d8bol.wl%tiwai@suse.de>
+	Thu, 28 Aug 2008 19:06:58 +0200 (CEST)
+In-Reply-To: <s5hprnt8byz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,75 +22,303 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_40855_23951779.1219942215828
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+On Thu, 28 Aug 2008 07:12:52 -0700, Takashi Iwai <tiwai@suse.de> wrote:
 
-SG9wZWZ1bGx5IHRoaXMgaXMgaXQuCgpCVFcsIHdoaWxlIGF0IGl0LCBsZXQncyBmaXggb25lIG1v
-cmUgdGhpbmcuIEluIGphY2ssIHRoaXMgY2FyZCAoUEhBU0UKMjIpIHNob3dzIHBsYXliYWNrXzEs
-IHBsYXliYWNrXzIsIHBsYXliYWNrXzMuLi5wbGF5YmFja184LiBMYXN0IDYgYXJlCnVzZWxlc3Mg
-YmVjYXVzZSB0aGlzIGNhcmQgaGFzIG9ubHkgdHdvIGFuYWxvZyBvdXRwdXRzLiBUaGV5IHJlYWxs
-eQpkb24ndCBvdXRwdXQgYW55d2hlcmUuIEkgd291bGQgc2F5IHRoYXQgaXQncyBwcm9iYWJseSB0
-aGF0IFBIQVNFIDIyCmFuZCBQSEFTRSAyOCBzaGFyZSB0aGF0IHBhcnQgb2YgY29kZSwgd2hpbGUg
-dGhleSBzaG91bGRuJ3QuCgpDYW4geW91IHBvaW50IHRvIHRoZSBjb2RlIHdoaWNoIGNyZWF0ZXMg
-dGhvc2UgZGV2aWNlcz8KCi0tIApWZWRyYW4gTWlsZXRpxIcK
-------=_Part_40855_23951779.1219942215828
-Content-Type: text/x-diff; name=phase-midi.patch
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fkflz35t0
-Content-Disposition: attachment; filename=phase-midi.patch
+> At Wed, 27 Aug 2008 14:57:39 -0700,
+> John L. Utz III wrote:
+>>
+>> 1. Implement 7.1 Output for vt1618 codec.
+>> 2. Fix typos in comments from my previous 1617a patch.
+>>
+>> Signed-off-by: John L. Utz III <john.utz@dmx.com>
+>
+> Thanks.  Since the embedded patch is broken (likely due to your MUA),
 
-ZGlmZiAtLWdpdCBhL3BjaS9pY2UxNzEyL3BoYXNlLmMgYi9wY2kvaWNlMTcxMi9waGFzZS5jCmlu
-ZGV4IGY1YWNkZWUuLjZlNTk2ZTkgMTAwNjQ0Ci0tLSBhL3BjaS9pY2UxNzEyL3BoYXNlLmMKKysr
-IGIvcGNpL2ljZTE3MTIvcGhhc2UuYwpAQCAtMjQsNyArMjQsOCBAQAogLyogUEhBU0UgMjIgb3Zl
-cnZpZXc6CiAgKiAgIEF1ZGlvIGNvbnRyb2xsZXI6IFZJQSBFbnZ5MjRIVC1TIChzbGlnaHRseSB0
-cmltbWVkIGRvd24gdmVyc2lvbiBvZiBFbnZ5MjRIVCkKICAqICAgQW5hbG9nIGNoaXA6IEFLNDUy
-NCAocGFydGlhbGx5IHZpYSBQaGlsaXAncyA3NEhDVDEyNSkKLSAqICAgRGlnaXRhbCByZWNlaXZl
-cjogQ1M4NDE0LUNTIChub3Qgc3VwcG9ydGVkIGluIHRoaXMgcmVsZWFzZSkKKyAqICAgRGlnaXRh
-bCByZWNlaXZlcjogQ1M4NDE0LUNTIChzdXBwb3J0ZWQgaW4gdGhpcyByZWxlYXNlKQorICoJCVBI
-QVNFIDIyIHJldmlzaW9uIDIuMCBhbmQgVGVycmFzb25pcS9NdXNvbmlrIFRTMjJQQ0kgaGF2ZSBD
-Uzg0MTYKKyAqCQkoc3VwcG9ydCBzdGF0dXMgdW5rbm93biwgcGxlYXNlIHRlc3QgYW5kIHJlcG9y
-dCkKICAqCiAgKiAgIEVudnkgY29ubmVjdHMgdG8gQUs0NTI0CiAgKgktIENTIGRpcmVjdGx5IGZy
-b20gR1BJTyAxMApAQCAtMzMsNiArMzQsMTIgQEAKICAqCQlDRFRJIG1heSBiZSBjb21wbGV0ZWx5
-IGJsb2NrZWQgYnkgNzRIQ1QxMjUncyBnYXRlICMxIGNvbnRyb2xsZWQgYnkgR1BJTyAzCiAgKi8K
-CisvKiBQSEFTRSAyOCBvdmVydmlldzoKKyAqICAgQXVkaW8gY29udHJvbGxlcjogVklBIEVudnky
-NEhUIChmdWxsIHVudHJpbW1lZCB2ZXJzaW9uLCA4IGlucyA4IG91dHMpCisgKiAgIEFuYWxvZyBj
-aGlwOiBXTTg3NzAgKDggY2hhbm5lbCBEQUMsIDIgY2hhbm5lbCBBREMpCisgKiAgIERpZ2l0YWwg
-cmVjZWl2ZXI6IENTODQxNC1DUyAoc3VwcG9ydGVkIGluIHRoaXMgcmVsZWFzZSkKKyAqLworCiAj
-aW5jbHVkZSA8YXNtL2lvLmg+CiAjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KICNpbmNsdWRlIDxs
-aW51eC9pbnRlcnJ1cHQuaD4KQEAgLTE2MSw5ICsxNjgsOSBAQCBzdGF0aWMgaW50IF9fZGV2aW5p
-dCBwaGFzZTIyX2FkZF9jb250cm9scyhzdHJ1Y3QKc25kX2ljZTE3MTIgKmljZSkKIH0KCiBzdGF0
-aWMgdW5zaWduZWQgY2hhciBwaGFzZTIyX2VlcHJvbVtdIF9fZGV2aW5pdGRhdGEgPSB7Ci0JW0lD
-RV9FRVAyX1NZU0NPTkZdICAgICA9IDB4MDAsICAvKiAxeEFEQywgMXhEQUNzICovCisJW0lDRV9F
-RVAyX1NZU0NPTkZdICAgICA9IDB4MjgsICAvKiBjbG9jayA1MTIsIG1wdSA0MDEsCisJCQkJCXNw
-ZGlmLWluLzF4QURDLCAxeERBQ3MgKi8KCVtJQ0VfRUVQMl9BQ0xJTktdICAgICAgPSAweDgwLCAg
-LyogSTJTICovCi0JW0lDRV9FRVAyX0kyU10gICAgICAgICA9IDB4ZjgsICAvKiB2b2wsIDk2aywg
-MjRiaXQgKi8KKwlbSUNFX0VFUDJfSTJTXSAgICAgICAgID0gMHhmMCwgIC8qIHZvbCwgOTZrLCAy
-NGJpdCAqLwoJW0lDRV9FRVAyX1NQRElGXSAgICAgICA9IDB4YzMsICAvKiBvdXQtZW4sIG91dC1p
-bnQsIHNwZGlmLWluICovCglbSUNFX0VFUDJfR1BJT19ESVJdICAgID0gMHhmZiwKCVtJQ0VfRUVQ
-Ml9HUElPX0RJUjFdICAgPSAweGZmLApAQCAtMTc3LDcgKzE4NCw3IEBAIHN0YXRpYyB1bnNpZ25l
-ZCBjaGFyIHBoYXNlMjJfZWVwcm9tW10gX19kZXZpbml0ZGF0YSA9IHsKIH07Cgogc3RhdGljIHVu
-c2lnbmVkIGNoYXIgcGhhc2UyOF9lZXByb21bXSBfX2RldmluaXRkYXRhID0gewotCVtJQ0VfRUVQ
-Ml9TWVNDT05GXSAgICAgPSAweDBiLCAgLyogY2xvY2sgNTEyLCBzcGRpZi1pbi9BREMsIDREQUNz
-ICovCisJW0lDRV9FRVAyX1NZU0NPTkZdICAgICA9IDB4MmIsICAvKiBjbG9jayA1MTIsIG1wdTQw
-MSwKKwkJCQkJc3BkaWYtaW4vMXhBREMsIDR4REFDcyAqLwoJW0lDRV9FRVAyX0FDTElOS10gICAg
-ICA9IDB4ODAsICAvKiBJMlMgKi8KCVtJQ0VfRUVQMl9JMlNdICAgICAgICAgPSAweGZjLCAgLyog
-dm9sLCA5NmssIDI0Yml0LCAxOTJrICovCglbSUNFX0VFUDJfU1BESUZdICAgICAgID0gMHhjMywg
-IC8qIG91dC1lbiwgb3V0LWludCwgc3BkaWYtaW4gKi8K
-------=_Part_40855_23951779.1219942215828
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Oh heck! sorry about that.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+i did cut n paste it into opera. i attempted to do the git-patch thing  
+ from the alsa wiki and i couldnt generate a patch.
 
-------=_Part_40855_23951779.1219942215828--
+i will attempt to figure out how to use git correctly for my next patch  
+for ac97 7.1 infrastructure.
+
+> I applied it manually now.  Check it later whether it's OK.
+
+when is later? doesnt need to be exact. rough estimate is fine.
+
+>
+> Takashi
+>
+>>
+>> diff --git a/pci/ac97/ac97_codec.c b/pci/ac97/ac97_codec.c
+>> index d0023e9..89f3050 100644
+>> --- a/pci/ac97/ac97_codec.c
+>> +++ b/pci/ac97/ac97_codec.c
+>> @@ -168,7 +168,7 @@ static const struct ac97_codec_id  
+>> snd_ac97_codec_ids[]
+>> = {
+>>   { 0x54584e20, 0xffffffff, "TLC320AD9xC",	NULL,		NULL },
+>>   { 0x56494161, 0xffffffff, "VIA1612A",		NULL,		NULL }, // modified  
+>> ICE1232
+>> with S/PDIF
+>>   { 0x56494170, 0xffffffff, "VIA1617A",		patch_vt1617a,	NULL }, //  
+>> modified
+>> VT1616 with S/PDIF
+>> -{ 0x56494182, 0xffffffff, "VIA1618",		NULL,		NULL },
+>> +{ 0x56494182, 0xffffffff, "VIA1618",		patch_vt1618,   NULL },
+>>   { 0x57454301, 0xffffffff, "W83971D",		NULL,		NULL },
+>>   { 0x574d4c00, 0xffffffff, "WM9701,WM9701A",	NULL,		NULL },
+>>   { 0x574d4C03, 0xffffffff, "WM9703,WM9707,WM9708,WM9717",  
+>> patch_wolfson03,
+>> NULL},
+>> @@ -609,7 +609,6 @@ AC97_SINGLE("PC Speaker Playback Volume",
+>> AC97_PC_BEEP, 1, 15, 1)
+>>   static const struct snd_kcontrol_new snd_ac97_controls_mic_boost =
+>>   	AC97_SINGLE("Mic Boost (+20dB)", AC97_MIC, 6, 1, 0);
+>>
+>> -
+>>   static const char* std_rec_sel[] = {"Mic", "CD", "Video", "Aux",  
+>> "Line",
+>> "Mix", "Mix Mono", "Phone"};
+>>   static const char* std_3d_path[] = {"pre 3D", "post 3D"};
+>>   static const char* std_mix[] = {"Mix", "Mic"};
+>> diff --git a/pci/ac97/ac97_patch.c b/pci/ac97/ac97_patch.c
+>> index bb028f8..7d5abf5 100644
+>> --- a/pci/ac97/ac97_patch.c
+>> +++ b/pci/ac97/ac97_patch.c
+>> @@ -3465,7 +3465,7 @@ static int patch_vt1616(struct snd_ac97 * ac97)
+>>
+>>   /*
+>>    * unfortunately, the vt1617a stashes the twiddlers required for
+>> - * nooding the i/o jacks on 2 different regs. * thameans that we cant
+>> + * noodling the i/o jacks on 2 different regs. that means that we cant
+>>    * use the easy way provided by AC97_ENUM_DOUBLE() we have to write
+>>    * are own funcs.
+>>    *
+>> @@ -3498,7 +3498,7 @@ static int snd_ac97_vt1617a_smart51_get(struct
+>> snd_kcontrol *kcontrol,
+>>   	
+>>   	pac97 = snd_kcontrol_chip(kcontrol); /* grab codec handle */
+>>
+>> -	/* grab our desirec bits, then mash them together in a manner
+>> +	/* grab our desired bits, then mash them together in a manner
+>>   	 * consistent with Table 6 on page 17 in the 1617a docs */
+>>
+>>   	usSM51 = snd_ac97_read(pac97, 0x7a) >> 14;
+>> @@ -3576,6 +3576,201 @@ int patch_vt1617a(struct snd_ac97 * ac97)
+>>   	return err;
+>>   }
+>>
+>> +/* VIA VT1618 8 CHANNEL AC97 CODEC
+>> + *
+>> + * VIA implements 'Smart 5.1' completely differently on the 1618 than
+>> + * it does on the 1617a. awesome! They seem to have sourced this
+>> + * particular revision of the technology from somebody else, it's
+>> + * called Universal Audio Jack and it shows up on some other folk's  
+>> chips
+>> + * as well.
+>> + *
+>> + * ordering in this list reflects vt1618 docs for Reg 60h and
+>> + * the block diagram, DACs are as follows:
+>> + *
+>> + *        OUT_O -> Front,
+>> + *	  OUT_1 -> Surround,
+>> + *	  OUT_2 -> C/LFE
+>> + *
+>> + * Unlike the 1617a, each OUT has a consistent set of mappings
+>> + * for all bitpatterns other than 00:
+>> + *
+>> + *        01       Unmixed Output
+>> + *        10       Line In
+>> + *        11       Mic  In
+>> + *
+>> + * Special Case of 00:
+>> + *
+>> + *        OUT_0    Mixed Output
+>> + *        OUT_1    Reserved
+>> + *        OUT_2    Reserved
+>> + *
+>> + * I have no idea what the hell Reserved does, but on an MSI
+>> + * CN700T, i have to set it to get 5.1 output - YMMV, bad
+>> + * shit may happen.
+>> + *
+>> + * If other chips use Universal Audio Jack, then this code might be
+>> applicable
+>> + * to them.
+>> + */
+>> +
+>> +struct vt1618_uaj_item {
+>> +	unsigned short mask;
+>> +	unsigned short shift;
+>> +	const char *items[4];
+>> +};
+>> +
+>> +/* This list reflects the vt1618 docs for Vendor Defined Register  
+>> 0x60. */
+>> +
+>> +static struct vt1618_uaj_item vt1618_uaj[3] = {
+>> +	{
+>> +		/* speaker jack */
+>> +		.mask  = 0x03,
+>> +		.shift = 0,
+>> +		.items = {
+>> +			"Speaker Out", "DAC Unmixed Out", "Line In", "Mic In"
+>> +		}
+>> +	},
+>> +	{
+>> +		/* line jack */
+>> +		.mask  = 0x0c,
+>> +		.shift = 2,
+>> +		.items = {
+>> +			"Surround Out", "DAC Unmixed Out", "Line In", "Mic In"
+>> +		}
+>> +	},
+>> +	{
+>> +		/* mic jack */
+>> +		.mask  = 0x30,
+>> +		.shift = 4,
+>> +		.items = {
+>> +			"Center LFE Out", "DAC Unmixed Out", "Line In", "Mic In"
+>> +		},
+>> +	},
+>> +};
+>> +
+>> +static int snd_ac97_vt1618_UAJ_info(struct snd_kcontrol *kcontrol,
+>> +				    struct snd_ctl_elem_info *uinfo)
+>> +{
+>> +	return ac97_enum_text_info(kcontrol, uinfo,
+>> +				   vt1618_uaj[kcontrol->private_value].items,
+>> +				   4);
+>> +}
+>> +
+>> +/* All of the vt1618 Universal Audio Jack twiddlers are on
+>> +   Vendor Defined Register 0x60, page 0. The bits, and thus
+>> +   the mask, are the only thing that changes */
+>> +
+>> +static int snd_ac97_vt1618_UAJ_get(struct snd_kcontrol *kcontrol,
+>> +				   struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	unsigned short datpag, uaj;
+>> +
+>> +	struct snd_ac97 *pac97 = snd_kcontrol_chip(kcontrol);
+>> +
+>> +	mutex_lock(&pac97->page_mutex);
+>> +
+>> +	datpag = snd_ac97_read(pac97, AC97_INT_PAGING) & AC97_PAGE_MASK;
+>> +	snd_ac97_update_bits(pac97, AC97_INT_PAGING, AC97_PAGE_MASK, 0);
+>> +
+>> +	uaj = snd_ac97_read(pac97, 0x60) &
+>> +		vt1618_uaj[kcontrol->private_value].mask;
+>> +
+>> +	snd_ac97_update_bits(pac97, AC97_INT_PAGING, AC97_PAGE_MASK, datpag);
+>> +	mutex_unlock(&pac97->page_mutex);
+>> +
+>> +	ucontrol->value.enumerated.item[0] = uaj >>
+>> +		vt1618_uaj[kcontrol->private_value].shift;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int snd_ac97_vt1618_UAJ_put(struct snd_kcontrol *kcontrol,
+>> +				   struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	return ac97_update_bits_page(snd_kcontrol_chip(kcontrol), 0x60,
+>> +				     vt1618_uaj[kcontrol->private_value].mask,
+>> +				     ucontrol->value.enumerated.item[0]<<
+>> +				     vt1618_uaj[kcontrol->private_value].shift,
+>> +				     0);
+>> +}
+>> +
+>> +/* config aux in jack - not found on 3 jack motherboards or soundcards  
+>> */
+>> +
+>> +static int snd_ac97_vt1618_aux_info(struct snd_kcontrol *kcontrol,
+>> +				    struct snd_ctl_elem_info *uinfo)
+>> +{
+>> +	static const  char  *txt_aux[] = {"Aux In", "Back Surr Out"};
+>> +
+>> +	return ac97_enum_text_info(kcontrol, uinfo, txt_aux, 2);
+>> +}
+>> +
+>> +static int snd_ac97_vt1618_aux_get(struct snd_kcontrol *kcontrol,
+>> +				   struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	ucontrol->value.enumerated.item[0] =
+>> +		(snd_ac97_read(snd_kcontrol_chip(kcontrol), 0x5c) & 0x0008)>>3;
+>> +	return 0;
+>> +}
+>> +
+>> +static int snd_ac97_vt1618_aux_put(struct snd_kcontrol *kcontrol,
+>> +				   struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	/* toggle surround rear dac power */
+>> +
+>> +	snd_ac97_update_bits(snd_kcontrol_chip(kcontrol), 0x5c, 0x0008,
+>> +			     ucontrol->value.enumerated.item[0] << 3);
+>> +
+>> +	/* toggle aux in surround rear out jack */
+>> +
+>> +	return snd_ac97_update_bits(snd_kcontrol_chip(kcontrol), 0x76, 0x0008,
+>> +				    ucontrol->value.enumerated.item[0] << 3);
+>> +}
+>> +
+>> +static const struct snd_kcontrol_new snd_ac97_controls_vt1618[] = {
+>> +	AC97_SINGLE("Exchange Center/LFE", 0x5a,  8, 1,     0),
+>> +	AC97_SINGLE("DC Offset",           0x5a, 10, 1,     0),
+>> +	AC97_SINGLE("Soft Mute",           0x5c,  0, 1,     1),
+>> +	AC97_SINGLE("Headphone Amp",       0x5c,  5, 1,     1),
+>> +	AC97_DOUBLE("Back Surr Volume",    0x5e,  8, 0, 31, 1),
+>> +	AC97_SINGLE("Back Surr Switch",    0x5e, 15, 1,     1),
+>> +	{
+>> +		.iface         = SNDRV_CTL_ELEM_IFACE_MIXER,
+>> +		.name          = "Speaker Jack Mode",
+>> +		.info          = snd_ac97_vt1618_UAJ_info,
+>> +		.get           = snd_ac97_vt1618_UAJ_get,
+>> +		.put           = snd_ac97_vt1618_UAJ_put,
+>> +		.private_value = 0
+>> +	},
+>> +	{
+>> +		.iface         = SNDRV_CTL_ELEM_IFACE_MIXER,
+>> +		.name          = "Line Jack Mode",
+>> +		.info          = snd_ac97_vt1618_UAJ_info,
+>> +		.get           = snd_ac97_vt1618_UAJ_get,
+>> +		.put           = snd_ac97_vt1618_UAJ_put,
+>> +		.private_value = 1
+>> +	},
+>> +	{
+>> +		.iface         = SNDRV_CTL_ELEM_IFACE_MIXER,
+>> +		.name          = "Mic Jack Mode",
+>> +		.info          = snd_ac97_vt1618_UAJ_info,
+>> +		.get           = snd_ac97_vt1618_UAJ_get,
+>> +		.put           = snd_ac97_vt1618_UAJ_put,
+>> +		.private_value = 2
+>> +	},
+>> +	{
+>> +		.iface         = SNDRV_CTL_ELEM_IFACE_MIXER,
+>> +		.name          = "Aux Jack Mode",
+>> +		.info          = snd_ac97_vt1618_aux_info,
+>> +		.get           = snd_ac97_vt1618_aux_get,
+>> +		.put           = snd_ac97_vt1618_aux_put,
+>> +	}
+>> +};
+>> +
+>> +int patch_vt1618(struct snd_ac97 *ac97)
+>> +{
+>> +	return patch_build_controls(ac97, snd_ac97_controls_vt1618,
+>> +				    ARRAY_SIZE(snd_ac97_controls_vt1618));
+>> +}
+>> +
+>>   /*
+>>    */
+>>   static void it2646_update_jacks(struct snd_ac97 *ac97)
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
