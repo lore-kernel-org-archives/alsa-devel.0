@@ -1,45 +1,47 @@
 From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [alsa-devel] [PATCH 2/4] ASOC codec: add support for SSM2602 audio codec in ALSA SoC framework
-Date: Thu, 28 Aug 2008 11:06:18 +0100
-Message-ID: <20080828100615.GA11132@sirena.org.uk>
-References: <1219829968-6431-1-git-send-email-cooloney@kernel.org> <1219829968-6431-3-git-send-email-cooloney@kernel.org> <20080827105456.GA10834@sirena.org.uk> <386072610808272255o7ef18860u29e10727e6e11a11@mail.gmail.com>
+Subject: Re: [PATCH 3/4] ASOC: WM8731 codec: add SPI support as
+	well as I2C
+Date: Thu, 28 Aug 2008 11:14:35 +0100
+Message-ID: <20080828101434.GB11132@sirena.org.uk>
+References: <1219829968-6431-1-git-send-email-cooloney@kernel.org>
+	<1219829968-6431-4-git-send-email-cooloney@kernel.org>
+	<20080827110143.GB10834@sirena.org.uk>
+	<386072610808272046u270c1302g1102bf1f0bd9b6ee@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753528AbYH1KGh@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4CB8C245D8
+	for <alsa-devel@alsa-project.org>;
+	Thu, 28 Aug 2008 12:14:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <386072610808272255o7ef18860u29e10727e6e11a11@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <386072610808272046u270c1302g1102bf1f0bd9b6ee@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Bryan Wu <cooloney@kernel.org>
-Cc: perex@perex.cz, lrg@kernel.org, Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, khali@linux-fr.org
+Cc: linux-kernel@vger.kernel.org, Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, lrg@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 28, 2008 at 01:55:33PM +0800, Bryan Wu wrote:
-> On Wed, Aug 27, 2008 at 6:54 PM, Mark Brown <broonie@sirena.org.uk> wrote:
+On Thu, Aug 28, 2008 at 11:46:24AM +0800, Bryan Wu wrote:
+> On Wed, Aug 27, 2008 at 7:01 PM, Mark Brown <broonie@sirena.org.uk> wrote:
 
-> > Current kernels have a Kconfig option SND_SOC_ALL_CODECS which should
-> > have your codec added - this allows codec drivers to be built without
-> > boards for test purposes.
+> > ...as for the SSM2602 it'd be good if it were possible to build a kernel
+> > which supports both I2C and SPI.  If you like I could do this for you -
+> > there's likely to be merge issues due to the update to the new I2C API
+> > anyway?
 
-> Is this option in alsa git tree or in the mainline? I fail to find it
-> in upstream mainline.
-> And do you mean I don't need to add SND_SOC_SSM2602 at all?
+> Oh, do you mean SSM2602 or WM8731? I also noticed the i2c API updates
+> patch from Jean and I'd like to use the new one
 
-It's in ALSA git, queued for the 2.6.28 merge window.  See the
-topic/asoc branch of:
-
-        git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-
-for the current ASoC merge queue.  The other API changes will all be
-queued there too.
-
-There's quite a bit of churn in ASoC at the minute but additional API
-changes will be taken care of by whoever does them once your driver is
-merged so it should save you some work if you're able to get this in
-soon.
-
-> Yes, I will fix this issue by running checkpatch.pl. And for other API
-> conflicts and I2C interface upgrading stuffs,
-> I will leave them to Cliff.
-
-OK.  Jean might be willing to do the I2C API conversion for you (I've
-CCed him in).
+Sorry, that could've been clearer - I meant wm8731.  Obviously if you
+want to update that too then that would be great but I figured it'd make
+life easier for you if I were to ensure that one gets merged OK.  Which
+way do you prefer?
