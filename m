@@ -1,17 +1,27 @@
 From: Travis Place <wishie@wishie.net>
-Subject: [PATCH] Automatically use ALC268_TOSHIBA for Toshiba
-	L305 Laptop
-Date: Sat, 30 Aug 2008 04:51:04 +1000
-Message-ID: <200808300451.04275.wishie@wishie.net>
+Subject: Re: Issues with alsa-info.sh - Trying to track down
+	the problem.
+Date: Sat, 30 Aug 2008 04:52:20 +1000
+Message-ID: <200808300452.20412.wishie@wishie.net>
+References: <200808292246.06365.wishie@wishie.net>
+	<200808300429.36424.wishie@wishie.net>
+	<Pine.LNX.4.61.0808292041530.23810@tm8103-a.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_YUEuIEuTuULSSq6"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from www.wishie.net (202-137-100-224.dial.usertools.net
 	[202.137.100.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id BDFEA24440
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F1DD24441
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Aug 2008 20:51:01 +0200 (CEST)
+	Fri, 29 Aug 2008 20:52:17 +0200 (CEST)
+Received: from laptop.local (unknown [192.168.0.200])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by www.wishie.net (Postfix) with ESMTP id 9FB0CEB3B8
+	for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2008 19:16:55 +1000 (EST)
+In-Reply-To: <Pine.LNX.4.61.0808292041530.23810@tm8103-a.perex-int.cz>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,53 +31,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_YUEuIEuTuULSSq6
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Saturday 30 August 2008 4:43:38 am Jaroslav Kysela wrote:
+> On Sat, 30 Aug 2008, Travis Place wrote:
+> > Ok, the file from a failed post can be found at:
+> >
+> > http://pastebin.ca/1188698
+>
+> Thanks for this file. Fixed now.
+Thanks.
+>
+> > Can i see the sites code that validates the uploaded files ?
+>
+> I would like to keep this code private for security reasons.
 
-Changelog: Added Subsystem IDs (0x1179, 0xff64) for the Toshiba Satellite L305 
-laptop, so it automatically uses the ALC268_TOSHIBA quirk.
-
-Signed-off-by: Travis Place <wishie@wishie.net>
-
-Patch Attached.
+Understood. Just wanted to sort it out :)
+>
+> 					Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, Red Hat, Inc.
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 Thanks,
 Travis Place (wishie)
-
---Boundary-00=_YUEuIEuTuULSSq6
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="patch_realtek.c.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="patch_realtek.c.patch"
-
---- patch_realtek.c.orig	2008-08-30 04:45:43.000000000 +1000
-+++ patch_realtek.c	2008-08-30 04:47:21.000000000 +1000
-@@ -11447,6 +11447,7 @@
- 	SND_PCI_QUIRK(0x1043, 0x1205, "ASUS W7J", ALC268_3ST),
- 	SND_PCI_QUIRK(0x1179, 0xff10, "TOSHIBA A205", ALC268_TOSHIBA),
- 	SND_PCI_QUIRK(0x1179, 0xff50, "TOSHIBA A305", ALC268_TOSHIBA),
-+	SND_PCI_QUIRK(0x1179, 0xff64, "TOSHIBA L305", ALC268_TOSHIBA),
- 	SND_PCI_QUIRK(0x14c0, 0x0025, "COMPAL IFL90/JFL-92", ALC268_TOSHIBA),
- 	SND_PCI_QUIRK(0x152d, 0x0763, "Diverse (CPR2000)", ALC268_ACER),
- 	SND_PCI_QUIRK(0x152d, 0x0771, "Quanta IL1", ALC267_QUANTA_IL1),
-
---Boundary-00=_YUEuIEuTuULSSq6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_YUEuIEuTuULSSq6--
