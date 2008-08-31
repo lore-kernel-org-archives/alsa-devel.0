@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH] ASoC: fix pxa2xx-i2s clk_get call
-Date: Sun, 31 Aug 2008 18:21:47 +0100
-Message-ID: <20080831172143.GB6790@sirena.org.uk>
-References: <1220129102-20140-1-git-send-email-dbaryshkov@gmail.com>
-	<20080830215137.GA28645@sirena.org.uk>
-	<bc64b4640808301452x3acec2der2a153d0218706587@mail.gmail.com>
+From: Matthew Ranostay <mranostay@embeddedalley.com>
+Subject: [PATCH] hda: Distortion  fix for dell_m6_core_init
+Date: Sun, 31 Aug 2008 14:53:38 -0400
+Message-ID: <48BAE8B2.4020204@embeddedalley.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B99591037F6
+Received: from easi.embeddedalley.com (easi.embeddedalley.com [71.6.201.124])
+	by alsa0.perex.cz (Postfix) with SMTP id 3D11D24591
 	for <alsa-devel@alsa-project.org>;
-	Sun, 31 Aug 2008 19:21:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <bc64b4640808301452x3acec2der2a153d0218706587@mail.gmail.com>
+	Sun, 31 Aug 2008 20:53:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry <dbaryshkov@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, "Tellman, Steven" <Steven.Tellman@idt.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 31, 2008 at 01:52:09AM +0400, Dmitry wrote:
-> 2008/8/31 Mark Brown <broonie@sirena.org.uk>:
+Added the EQ distortion fix to the dell_m6_core_init.
 
-> > and IIRC Liam acked it already as well.
+---
+Signed-off-by: Matthew Ranostay <mranostay@embeddedalley.com>
 
-> ... and asked to repost on alsa-devel
+diff --git a/pci/hda/patch_sigmatel.c b/pci/hda/patch_sigmatel.c
+index 6ad6ef3..9968ee4 100644
+--- a/pci/hda/patch_sigmatel.c
++++ b/pci/hda/patch_sigmatel.c
+@@ -606,8 +606,9 @@ static struct hda_verb dell_eq_core_init[] = {
+ };
 
-Right, my point was that it's helpful to also include acks when
-reposting patches since that lets people know what review has already
-been carried out.  I know I find it helpful for my own acks since it
-saves me re-reviewing patches I've already checked.
+ static struct hda_verb dell_m6_core_init[] = {
+-	/* set master volume and direct control */
+-	{ 0x1f, AC_VERB_SET_VOLUME_KNOB_CONTROL, 0xff},
++	/* set master volume to max value without distortion
++	 * and direct control */
++	{ 0x1f, AC_VERB_SET_VOLUME_KNOB_CONTROL, 0xec},
+ 	/* setup audio connections */
+ 	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x00},
+ 	{ 0x0a, AC_VERB_SET_CONNECT_SEL, 0x01},
