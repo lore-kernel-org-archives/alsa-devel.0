@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: snd-soc-cs4270: Convert to a new-style i2c
-	driver	(work in progress)
-Date: Sun, 31 Aug 2008 18:17:41 +0100
-Message-ID: <20080831171741.GA6790@sirena.org.uk>
-References: <20080831161843.227b31f3@hyperion.delvare>
-	<ed82fe3e0808310928v18eed8bdh98faa6796a516142@mail.gmail.com>
-	<20080831190928.2931b0ed@hyperion.delvare>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: fix pxa2xx-i2s clk_get call
+Date: Sun, 31 Aug 2008 18:21:47 +0100
+Message-ID: <20080831172143.GB6790@sirena.org.uk>
+References: <1220129102-20140-1-git-send-email-dbaryshkov@gmail.com>
+	<20080830215137.GA28645@sirena.org.uk>
+	<bc64b4640808301452x3acec2der2a153d0218706587@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4FB924369
+	by alsa0.perex.cz (Postfix) with ESMTP id B99591037F6
 	for <alsa-devel@alsa-project.org>;
-	Sun, 31 Aug 2008 19:17:51 +0200 (CEST)
+	Sun, 31 Aug 2008 19:21:56 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20080831190928.2931b0ed@hyperion.delvare>
+In-Reply-To: <bc64b4640808301452x3acec2der2a153d0218706587@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jean Delvare <khali@linux-fr.org>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+To: Dmitry <dbaryshkov@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 31, 2008 at 07:09:28PM +0200, Jean Delvare wrote:
-> On Sun, 31 Aug 2008 11:28:08 -0500, Timur Tabi wrote:
+On Sun, Aug 31, 2008 at 01:52:09AM +0400, Dmitry wrote:
+> 2008/8/31 Mark Brown <broonie@sirena.org.uk>:
 
-> > I don't know why this commit hasn't been pushed upstream, though.
+> > and IIRC Liam acked it already as well.
 
-> As I understand it, without that patch the mpc8610_hpcd doesn't work,
-> as the I2C address of the sound codec will be made busy by the platform
-> code and thus the snd-soc-cs4270 driver won't be able to attach to it.
-> If I am correct then I suggest that you ask Takashi to push the patch
-> to Linus now to fix that.
+> ... and asked to repost on alsa-devel
 
-Yeah, AFAICR it wasn't made clear when this was posted that it was a bug
-fix.
-
-> > That's correct.  I've never seen any interest in the CS4270 outside of
-> > Freescale.
-
-That's not entirely suprising - the vast majority of embedded devices
-never go anywhere near mainline so it tends to only be reference boards
-and devices with some sort of public community that have activity that's
-visible upstream.
-
-> Very good point indeed. I'll make sure to check Takashi's sound-2.6
-> tree before attempting to convert any other SoC codec driver. Do you
-> know off the top of your head if other drivers have already been
-> converted?
-
-None - the only other one is Takashi's current tree is WM8903.
+Right, my point was that it's helpful to also include acks when
+reposting patches since that lets people know what review has already
+been carried out.  I know I find it helpful for my own acks since it
+saves me re-reviewing patches I've already checked.
