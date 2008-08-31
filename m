@@ -1,29 +1,19 @@
-From: Dmitry Baryshkov <dbaryshkov@gmail.com>
-Subject: Re: [PATCH] ASoC: fix pxa2xx-i2s clk_get call
-Date: Sun, 31 Aug 2008 16:29:38 +0000 (UTC)
-Message-ID: <g9egti$3hp$1@ger.gmane.org>
-References: <1220129102-20140-1-git-send-email-dbaryshkov@gmail.com>
-	<20080830215137.GA28645@sirena.org.uk>
-	<bc64b4640808301452x3acec2der2a153d0218706587@mail.gmail.com>
-	<1220180736.6499.100.camel@odin>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: snd-soc-cs4270: Convert to a new-style i2c driver
+ (work in progress)
+Date: Sun, 31 Aug 2008 19:09:28 +0200
+Message-ID: <20080831190928.2931b0ed@hyperion.delvare>
+References: <20080831161843.227b31f3@hyperion.delvare>
+	<ed82fe3e0808310928v18eed8bdh98faa6796a516142@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB6B424559
+Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id D055124562
 	for <alsa-devel@alsa-project.org>;
-	Sun, 31 Aug 2008 18:29:54 +0200 (CEST)
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KZpoB-00024D-R5
-	for alsa-devel@alsa-project.org; Sun, 31 Aug 2008 16:29:47 +0000
-Received: from ppp89-110-3-214.pppoe.avangarddsl.ru ([89.110.3.214])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2008 16:29:47 +0000
-Received: from dbaryshkov by ppp89-110-3-214.pppoe.avangarddsl.ru with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2008 16:29:47 +0000
+	Sun, 31 Aug 2008 19:09:35 +0200 (CEST)
+In-Reply-To: <ed82fe3e0808310928v18eed8bdh98faa6796a516142@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,32 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
+Hi Timur,
 
-> On Sun, 2008-08-31 at 01:52 +0400, Dmitry wrote:
->> 2008/8/31 Mark Brown <broonie@sirena.org.uk>:
->> > On Sun, Aug 31, 2008 at 12:45:02AM +0400, Dmitry Baryshkov wrote:
->> >> pxa2xx-isa: probe actual device and use it for clk_get call thus
->> >> fixing error during startup hook
->> >
->> > i2s, not isa.  Other than that
->> >
->> > Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
->> >
->> > and IIRC Liam acked it already as well.
->> >
->> >
->> ... and asked to repost on alsa-devel
->> 
->> 
-> It's best to additionally post these patches to alsa-devel for Takashi
-> to upstream.
+On Sun, 31 Aug 2008 11:28:08 -0500, Timur Tabi wrote:
+> On Sun, Aug 31, 2008 at 9:18 AM, Jean Delvare <khali@linux-fr.org> wrote:
+> > Hi Tibur,
+> 
+> It's "Timur"
 
-And since it fixes the regression, could it be pushed into 2.6.27-rc?
+Oops, apparently I mixed your first name and last name. Sorry about
+that.
 
+> > I am in the process of converting your cs4270 codec driver from the
+> > legacy i2c model to the new (standard) one.
+> 
+> It has already been converted.
+> 
+> http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commit;h=0daa075ea4905823ee7c2375d26bb134e5e74f74
+
+Ah, excellent. One less thing for me to do :) Thanks!
+
+Two comments about your patch:
+
+* Your driver now lacks a remove method. Unless I miss something, if
+the snd-soc-cs4270 driver is unloaded, you will leave dangling
+resources behind (codec->reg_cache in particular.)
+
+* I2C_DRIVERID_CS4270 must be removed from i2c-id.h.
+
+> I don't know why this commit hasn't been pushed upstream, though.
+
+As I understand it, without that patch the mpc8610_hpcd doesn't work,
+as the I2C address of the sound codec will be made busy by the platform
+code and thus the snd-soc-cs4270 driver won't be able to attach to it.
+If I am correct then I suggest that you ask Takashi to push the patch
+to Linus now to fix that.
+
+> > This is work in progress.
+> > The patch below converts the cs4270 driver itself. However we also need
+> > to convert its users. As far as I can see there's only one user at this
+> > point: mpc8610_hpcd.
+> 
+> That's correct.  I've never seen any interest in the CS4270 outside of
+> Freescale.
+> 
+> > The problem is that this driver doesn't look like the other codec
+> > drivers I have already converted. So, we need to add code to
+> > instantiate the cs4270 i2c device, but I don't know where this should
+> > happen. Given that the mpc8610_hpcd is apparently based on Open
+> > Firmware, I guess that the i2c device should be instantiated directly
+> > by the platform code. I see that the device is declared in
+> > mpc8610_hpcd.dts, so maybe it's already done and my patch should work
+> > already? What do you think?
+> 
+> I think you need to use the right git repository for your development. :-)
+
+Very good point indeed. I'll make sure to check Takashi's sound-2.6
+tree before attempting to convert any other SoC codec driver. Do you
+know off the top of your head if other drivers have already been
+converted?
+
+Thanks,
 -- 
-With best wishes
-Dmitry
+Jean Delvare
