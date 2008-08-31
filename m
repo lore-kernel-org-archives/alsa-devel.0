@@ -1,16 +1,16 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: [PATCH] alsa-lib: Make sure SND_PCM_NO_xxx flags don't
-	get lost	when nonblocking mode is enabled
-Date: Sun, 31 Aug 2008 03:41:48 +0200
-Message-ID: <20080831014148.GA21199@omega>
+Subject: [PATCH] alsa-lib: Reword doxygen doc for
+	snd_pcm_delay()
+Date: Sun, 31 Aug 2008 03:42:20 +0200
+Message-ID: <20080831014220.GA21232@omega>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 998431037F9
+	by alsa0.perex.cz (Postfix) with ESMTP id 854281037FE
 	for <alsa-devel@alsa-project.org>;
-	Sun, 31 Aug 2008 03:41:50 +0200 (CEST)
+	Sun, 31 Aug 2008 03:42:21 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,52 +24,59 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The plug PCM copies the 'mode' field from the slave PCM. If blocking mode is
-enabled for the plug PCM the mode is subsequently overwritten with the original
-requested 'mode'. If non-blocking mode is requested this does not happen.
+snd_pcm_delay() is for synchronization purposes, it returns the overall latency
+of the stream, not just the latency induced by the hardware playback buffer.
+The documentation is a bit misleading about this fact, and some people already
+misunderstood it. So let's reword this to make the explanation clearer and
+explicit.
 
-Because the hw PCM synthesizes the 'mode' from the actual file descriptor flags
-no SND_PCM_NO_xxx will ever be set for it. This has the effect that the 'mode'
-of the plug PCM will also not include those flags anymore -- unless they are
-overwritten as mentioned above. This basically means SND_PCM_NO_xxx is ignored
-for plug:hw:4711 style device strings opened in non-blocking mode.
+This is a result of the discussions of the thread this mail belongs to:
 
-You can easily test this with "aplay --channels 7 --disable-channels -f S16_LE
--r 44100 -D plug:hw:0" on a device that cannot do 7 channels. Normally this
-call should fail, however if you add "-N" to the command line this call will
-succeed.
-
-This patch simply copies the SND_PCM_NO_xxx flags back into the 'mode' field in
-case we don't overwrite it with the original anyway.
-
-Probably closes bug 3571 for good.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2008-June/008456.html
 
 Lennart
----
- src/pcm/pcm_hw.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
 
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 1e1889c..c8d9a62 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -1507,7 +1507,13 @@ int _snd_pcm_hw_open(snd_pcm_t **pcmp, const char *name,
- 		/* revert to blocking mode for read/write access */
- 		snd_pcm_hw_nonblock(*pcmp, 0);
- 		(*pcmp)->mode = mode;
--	}
-+	} else
-+		/* make sure the SND_PCM_NO_xxx flags don't get lost on the
-+		 * way */
-+		(*pcmp)->mode |= mode & (SND_PCM_NO_AUTO_RESAMPLE|
-+					 SND_PCM_NO_AUTO_CHANNELS|
-+					 SND_PCM_NO_AUTO_FORMAT|
-+					 SND_PCM_NO_SOFTVOL);
- 
- 	hw = (*pcmp)->private_data;
- 	if (format != SND_PCM_FORMAT_UNKNOWN)
+---
+ src/pcm/pcm.c |   22 +++++++++++++++++-----
+ 1 files changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index ee2300e..ae89795 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -939,11 +939,23 @@ int snd_pcm_hwsync(snd_pcm_t *pcm)
+  * \param delayp Returned delay in frames
+  * \return 0 on success otherwise a negative error code
+  *
+- * Delay is distance between current application frame position and
+- * sound frame position.
+- * It's positive and less than buffer size in normal situation,
+- * negative on playback underrun and greater than buffer size on
+- * capture overrun.
++ * For playback the delay is defined as the time that a frame that is written
++ * to the PCM stream shortly after this call will take to be actually
++ * audible. It is as such the overall latency from the write call to the final
++ * DAC.
++ *
++ * For capture the delay is defined as the time that a frame that was
++ * digitized by the audio device takes until it can be read from the PCM
++ * stream shortly after this call returns. It is as such the overall latency
++ * from the initial ADC to the read call.
++ *
++ * Please note that hence in case of a playback underrun this value will not
++ * necessarily got down to 0.
++ *
++ * If the application is interested in the fill level of the playback buffer
++ * of the device, it should use snd_pcm_avail_update(). The
++ * value returned by that call is not directly related to the delay, since the
++ * latter might include some additional, fixed latencies the former does not.
+  *
+  * Note this function does not update the actual r/w pointer
+  * for applications. The function #snd_pcm_avail_update()
 -- 
 1.6.0.1
+
+
 
 Lennart
 
