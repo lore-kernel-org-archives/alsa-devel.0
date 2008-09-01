@@ -1,82 +1,42 @@
-From: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Subject: Re: [PATCH] ASoC: Convert wm8731 to a new-style	i2c
- driver (testers wanted)
-Date: Mon, 01 Sep 2008 15:54:53 +0200
-Message-ID: <48BBF42D.5010901@atmel.com>
-References: <20080826182437.4c5e2f3e@hyperion.delvare>	<20080826192043.GA3812@roarinelk.homelinux.net>	<20080826193728.GD3461@sirena.org.uk>	<20080828172540.GA21551@roarinelk.homelinux.net>	<20080828193754.6f8f6594@hyperion.delvare>
-	<20080828184251.GA21868@roarinelk.homelinux.net>
+From: Liam Girdwood <lrg@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 3/4] ASOC: WM8731 codec: add SPI support
+	as well as I2C
+Date: Mon, 01 Sep 2008 15:00:16 +0100
+Message-ID: <1220277616.6499.119.camel@odin>
+References: <1219829968-6431-1-git-send-email-cooloney@kernel.org>
+	 <1219829968-6431-4-git-send-email-cooloney@kernel.org>
+	 <200809011452.08070.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atmel-es2.atmel.fr (mail.atmel.fr [81.80.104.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C8562441F
-	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Sep 2008 15:55:41 +0200 (CEST)
-In-Reply-To: <20080828184251.GA21868@roarinelk.homelinux.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <mano@roarinelk.homelinux.net>
-Cc: alsa-devel@alsa-project.org, Dmitry Baryshkov <dbaryshkov@gmail.com>, Eric Miao <eric.miao@marvell.com>, Jean Delvare <khali@linux-fr.org>, Richard Purdie <rpurdie@rpsys.net>, Andrew Victor <linux@maxim.org.za>, Liam Girdwood <lrg@kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753315AbYIAOAm@vger.kernel.org>
+In-Reply-To: <200809011452.08070.gineera@aspect135.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Bryan Wu <cooloney@kernel.org>, Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, liam.girdwood@wolfsonmicro.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Manuel,
->  
-> diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-> index 72b7a51..4837bdb 100644
-> --- a/sound/soc/pxa/corgi.c
-> +++ b/sound/soc/pxa/corgi.c
-> @@ -328,18 +328,11 @@ static struct snd_soc_machine snd_soc_machine_corgi = {
->  	.num_links = 1,
->  };
->  
-> -/* corgi audio private data */
-> -static struct wm8731_setup_data corgi_wm8731_setup = {
-> -	.i2c_bus = 0,
-> -	.i2c_address = 0x1b,
-> -};
-> -
->  /* corgi audio subsystem */
->  static struct snd_soc_device corgi_snd_devdata = {
->  	.machine = &snd_soc_machine_corgi,
->  	.platform = &pxa2xx_soc_platform,
->  	.codec_dev = &soc_codec_dev_wm8731,
-> -	.codec_data = &corgi_wm8731_setup,
->  };
->  
->  static struct platform_device *corgi_snd_device;
-> diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-> index f84f7d8..a6adb46 100644
-> --- a/sound/soc/pxa/poodle.c
-> +++ b/sound/soc/pxa/poodle.c
-> @@ -282,18 +282,11 @@ static struct snd_soc_machine snd_soc_machine_poodle = {
->  	.num_links = 1,
->  };
->  
-> -/* poodle audio private data */
-> -static struct wm8731_setup_data poodle_wm8731_setup = {
-> -	.i2c_bus = 0,
-> -	.i2c_address = 0x1b,
-> -};
-> -
->  /* poodle audio subsystem */
->  static struct snd_soc_device poodle_snd_devdata = {
->  	.machine = &snd_soc_machine_poodle,
->  	.platform = &pxa2xx_soc_platform,
->  	.codec_dev = &soc_codec_dev_wm8731,
-> -	.codec_data = &poodle_wm8731_setup,
->  };
->  
->  static struct platform_device *poodle_snd_device;
+On Mon, 2008-09-01 at 14:52 +0100, Alan Horstmann wrote:
+> We have just started trying this out as an alternative to i2c, and picked out 
+> the following:
+> 
+> On Wednesday 27 August 2008 10:39, Bryan Wu wrote:
+> > -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+> > +#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE) && !defined
+> > (CONFIG_SND_SOC_WM8731_SPI)
+> 
+> I think this needs extra brackets round the ||'s before the && thus:
+> 
+> > +#if (defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)) && !defined
+> > (CONFIG_SND_SOC_WM8731_SPI)
+> 
+> in order to force use of SPI when (CONFIG_SND_SOC_WM8731_SPI) and (CONFIG_I2C) 
+> are both defined.  Or have we misunderstood the intention?  This is in 2 
+> other places also in the patch.
+> 
 
-Shouldn't it be the same for the file sound/soc/at91/eti_b1_wm8731.c ??
+It may be simpler to only have CONFIG_SND_SOC_WM8731_SPI and
+CONFIG_SND_SOC_WM8731_I2C definitions for all the codec drivers. These
+would be set by machine Kconfig. 
 
-Regards,
-Sedji
+Liam
