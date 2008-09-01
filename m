@@ -1,21 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/4] ASOC: WM8731 codec: add SPI support	as
-	well as I2C
-Date: Mon, 1 Sep 2008 15:02:27 +0100
-Message-ID: <20080901140227.GA17103@rakim.wolfsonmicro.main>
-References: <1219829968-6431-1-git-send-email-cooloney@kernel.org>
-	<1219829968-6431-4-git-send-email-cooloney@kernel.org>
-	<200809011452.08070.gineera@aspect135.co.uk>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: [PATCH 1/3] ASoC: Fix an error path in neo1973_wm8753
+Date: Mon, 1 Sep 2008 17:44:05 +0200
+Message-ID: <20080901174405.73e5ea98@hyperion.delvare>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C67AD24412
+Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id ACFC024476
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Sep 2008 16:02:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200809011452.08070.gineera@aspect135.co.uk>
+	Mon,  1 Sep 2008 17:44:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: liam.girdwood@wolfsonmicro.com, Bryan Wu <cooloney@kernel.org>, Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Ville@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Graeme Gregory <graeme@openmoko.org>, Tim Niemeyer <reddog@mastersword.de>, Frank Mandarino <fmandarino@endrelia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 01, 2008 at 02:52:08PM +0100, Alan Horstmann wrote:
+The error handling in neo1973_init is incorrect:
 
-> in order to force use of SPI when (CONFIG_SND_SOC_WM8731_SPI) and (CONFIG_I2C) 
-> are both defined.  Or have we misunderstood the intention?  This is in 2 
-> other places also in the patch.
+* If platform_device_add fails, we go on with the rest of the
+  initialization instead of bailing out. Things will break when the
+  module is removed (platform_device_unregister called on a device
+  that wasn't registered.)
 
-I've reworked the patch to allow a single kernel image to support both
-I2C and SPI which sidesteps this problem.  I'll post this later today.
+* If i2c_add_driver fails, we return an error so the module will not
+  load, but we don't unregister neo1973_snd_device, so we are leaking
+  resources.
+
+Add the missing error handling.
+
+Signed-off-by: Jean Delvare <khali@linux-fr.org>
+Cc: Tim Niemeyer <reddog@mastersword.de>
+Cc: Graeme Gregory <graeme@openmoko.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+I couldn't even test-build that one. Tim, Graeme, can any of you
+please review and test this patch? Thanks.
+
+ sound/soc/s3c24xx/neo1973_wm8753.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+--- linux-2.6.27-rc5.orig/sound/soc/s3c24xx/neo1973_wm8753.c	2008-09-01 15:13:17.000000000 +0200
++++ linux-2.6.27-rc5/sound/soc/s3c24xx/neo1973_wm8753.c	2008-09-01 15:22:42.000000000 +0200
+@@ -717,12 +717,16 @@ static int __init neo1973_init(void)
+ 	neo1973_snd_devdata.dev = &neo1973_snd_device->dev;
+ 	ret = platform_device_add(neo1973_snd_device);
+ 
+-	if (ret)
++	if (ret) {
+ 		platform_device_put(neo1973_snd_device);
++		return ret;
++	}
+ 
+ 	ret = i2c_add_driver(&lm4857_i2c_driver);
+-	if (ret != 0)
++	if (ret != 0) {
+ 		printk(KERN_ERR "can't add i2c driver");
++		platform_device_unregister(neo1973_snd_device);
++	}
+ 
+ 	return ret;
+ }
+
+
+-- 
+Jean Delvare
