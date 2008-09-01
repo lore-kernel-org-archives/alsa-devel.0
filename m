@@ -1,16 +1,15 @@
 From: Jean Delvare <khali@linux-fr.org>
-Subject: [PATCH] ASoC: Convert tlv320aic3x to a new-style i2c
-	driver
-Date: Mon, 1 Sep 2008 11:21:31 +0200
-Message-ID: <20080901112131.08cdbb59@hyperion.delvare>
+Subject: |PATCH] ASoC: Convert wm8510 to a new-style i2c driver
+Date: Mon, 1 Sep 2008 11:23:31 +0200
+Message-ID: <20080901112331.594bb663@hyperion.delvare>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from services.gcu-squad.org (unknown [212.85.147.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id F1BC6244FD
+Received: from services.gcu-squad.org (zone0.gcu-squad.org [212.85.147.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 089DE244FE
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Sep 2008 11:21:41 +0200 (CEST)
+	Mon,  1 Sep 2008 11:23:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,51 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Vladimir Barinov <vbarinov@ru.mvista.com>
+Cc: Geoffrey Wossum <gwossum@acm.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Convert the tlv320aic3x codec driver to the new (standard) device
+Convert the wm8510 codec driver to the new (standard) device
 driver binding model.
 
 Signed-off-by: Jean Delvare <khali@linux-fr.org>
-Cc: Vladimir Barinov <vbarinov@ru.mvista.com>
-Cc: Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: Geoffrey Wossum <gwossum@acm.org>
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
-Warning: this assumes that the davinci-evm and n810 have their codec
-chips on I2C bus 0, which may or may not be the case. Someone with
-these machines please test and report.
+Warning: this assumes that the playpaq has its codec chip on I2C bus
+0, which may or may not be the case. Someone with this machine please
+test and report.
 
- sound/soc/codecs/tlv320aic3x.c  |  106 +++++++++++++++++++--------------------
- sound/soc/codecs/tlv320aic3x.h  |    1 
- sound/soc/davinci/davinci-evm.c |    1 
- sound/soc/omap/n810.c           |    1 
- 4 files changed, 57 insertions(+), 52 deletions(-)
+ sound/soc/at32/playpaq_wm8510.c |    1 
+ sound/soc/codecs/wm8510.c       |  108 +++++++++++++++++++--------------------
+ sound/soc/codecs/wm8510.h       |    1 
+ 3 files changed, 55 insertions(+), 55 deletions(-)
 
---- linux-2.6.27-rc5.orig/sound/soc/codecs/tlv320aic3x.c	2008-08-29 09:32:24.000000000 +0200
-+++ linux-2.6.27-rc5/sound/soc/codecs/tlv320aic3x.c	2008-09-01 09:55:44.000000000 +0200
-@@ -1172,71 +1172,39 @@ static struct snd_soc_device *aic3x_socd
-  * AIC3X 2 wire address can be up to 4 devices with device addresses
-  * 0x18, 0x19, 0x1A, 0x1B
+--- linux-2.6.27-rc5.orig/sound/soc/at32/playpaq_wm8510.c	2008-09-01 09:59:13.000000000 +0200
++++ linux-2.6.27-rc5/sound/soc/at32/playpaq_wm8510.c	2008-09-01 09:59:21.000000000 +0200
+@@ -377,6 +377,7 @@ static struct snd_soc_machine snd_soc_ma
+ 
+ 
+ static struct wm8510_setup_data playpaq_wm8510_setup = {
++	.i2c_bus = 0,
+ 	.i2c_address = 0x1a,
+ };
+ 
+--- linux-2.6.27-rc5.orig/sound/soc/codecs/wm8510.c	2008-09-01 09:59:13.000000000 +0200
++++ linux-2.6.27-rc5/sound/soc/codecs/wm8510.c	2008-09-01 09:59:21.000000000 +0200
+@@ -665,85 +665,85 @@ static struct snd_soc_device *wm8510_soc
+ /*
+  * WM8510 2 wire address is 0x1a
   */
 -static unsigned short normal_i2c[] = { 0, I2C_CLIENT_END };
--
+ 
 -/* Magic definition of all other variables and things */
 -I2C_CLIENT_INSMOD;
 -
--static struct i2c_driver aic3x_i2c_driver;
+-static struct i2c_driver wm8510_i2c_driver;
 -static struct i2c_client client_template;
- 
- /*
-  * If the i2c layer weren't so broken, we could pass this kind of data
-  * around
-  */
--static int aic3x_codec_probe(struct i2c_adapter *adap, int addr, int kind)
-+static int aic3x_i2c_probe(struct i2c_client *i2c,
-+			   const struct i2c_device_id *id)
+-
+-/* If the i2c layer weren't so broken, we could pass this kind of data
+-   around */
+-
+-static int wm8510_codec_probe(struct i2c_adapter *adap, int addr, int kind)
++static int wm8510_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
  {
- 	struct snd_soc_device *socdev = aic3x_socdev;
--	struct aic3x_setup_data *setup = socdev->codec_data;
+ 	struct snd_soc_device *socdev = wm8510_socdev;
+-	struct wm8510_setup_data *setup = socdev->codec_data;
  	struct snd_soc_codec *codec = socdev->codec;
 -	struct i2c_client *i2c;
  	int ret;
@@ -85,15 +91,14 @@ these machines please test and report.
  
 -	ret = i2c_attach_client(i2c);
 -	if (ret < 0) {
--		printk(KERN_ERR "aic3x: failed to attach codec at addr %x\n",
--		       addr);
+-		pr_err("failed to attach codec at addr %x\n", addr);
 -		goto err;
 -	}
 -
- 	ret = aic3x_init(socdev);
+ 	ret = wm8510_init(socdev);
 -	if (ret < 0) {
 +	if (ret < 0)
- 		printk(KERN_ERR "aic3x: failed to initialise AIC3X\n");
+ 		pr_err("failed to initialise WM8510\n");
 -		goto err;
 -	}
 -	return ret;
@@ -103,8 +108,8 @@ these machines please test and report.
  	return ret;
  }
  
--static int aic3x_i2c_detach(struct i2c_client *client)
-+static int aic3x_i2c_remove(struct i2c_client *client)
+-static int wm8510_i2c_detach(struct i2c_client *client)
++static int wm8510_i2c_remove(struct i2c_client *client)
  {
  	struct snd_soc_codec *codec = i2c_get_clientdata(client);
 -	i2c_detach_client(client);
@@ -113,49 +118,43 @@ these machines please test and report.
  	return 0;
  }
  
--static int aic3x_i2c_attach(struct i2c_adapter *adap)
+-static int wm8510_i2c_attach(struct i2c_adapter *adap)
 -{
--	return i2c_probe(adap, &addr_data, aic3x_codec_probe);
+-	return i2c_probe(adap, &addr_data, wm8510_codec_probe);
 -}
-+static const struct i2c_device_id aic3x_i2c_id[] = {
-+	{ "tlv320aic3x", 0 },
++static const struct i2c_device_id wm8510_i2c_id[] = {
++	{ "wm8510", 0 },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(i2c, aic3x_i2c_id);
++MODULE_DEVICE_TABLE(i2c, wm8510_i2c_id);
  
- /* machine i2c codec control layer */
- static struct i2c_driver aic3x_i2c_driver = {
-@@ -1244,13 +1212,9 @@ static struct i2c_driver aic3x_i2c_drive
- 		.name = "aic3x I2C Codec",
+-/* corgi i2c codec control layer */
+ static struct i2c_driver wm8510_i2c_driver = {
+ 	.driver = {
+ 		.name = "WM8510 I2C Codec",
  		.owner = THIS_MODULE,
  	},
--	.attach_adapter = aic3x_i2c_attach,
--	.detach_client = aic3x_i2c_detach,
--};
--
--static struct i2c_client client_template = {
--	.name = "AIC3X",
--	.driver = &aic3x_i2c_driver,
-+	.probe = aic3x_i2c_probe,
-+	.remove = aic3x_i2c_remove,
-+	.id_table = aic3x_i2c_id,
+-	.attach_adapter = wm8510_i2c_attach,
+-	.detach_client =  wm8510_i2c_detach,
+-	.command =        NULL,
++	.probe =    wm8510_i2c_probe,
++	.remove =   wm8510_i2c_remove,
++	.id_table = wm8510_i2c_id,
  };
  
- static int aic3x_i2c_read(struct i2c_client *client, u8 *value, int len)
-@@ -1258,6 +1222,46 @@ static int aic3x_i2c_read(struct i2c_cli
- 	value[0] = i2c_smbus_read_byte_data(client, value[0]);
- 	return (len == 1);
- }
-+
-+static int aic3x_add_i2c_device(struct platform_device *pdev,
-+				 const struct aic3x_setup_data *setup)
+-static struct i2c_client client_template = {
+-	.name =   "WM8510",
+-	.driver = &wm8510_i2c_driver,
+-};
++static int wm8510_add_i2c_device(struct platform_device *pdev,
++				 const struct wm8510_setup_data *setup)
 +{
 +	struct i2c_board_info info;
 +	struct i2c_adapter *adapter;
 +	struct i2c_client *client;
 +	int ret;
 +
-+	ret = i2c_add_driver(&aic3x_i2c_driver);
++	ret = i2c_add_driver(&wm8510_i2c_driver);
 +	if (ret != 0) {
 +		dev_err(&pdev->dev, "can't add i2c driver\n");
 +		return ret;
@@ -163,7 +162,7 @@ these machines please test and report.
 +
 +	memset(&info, 0, sizeof(struct i2c_board_info));
 +	info.addr = setup->i2c_address;
-+	strlcpy(info.type, "tlv320aic3x", I2C_NAME_SIZE);
++	strlcpy(info.type, "wm8510", I2C_NAME_SIZE);
 +
 +	adapter = i2c_get_adapter(setup->i2c_bus);
 +	if (!adapter) {
@@ -183,64 +182,43 @@ these machines please test and report.
 +	return 0;
 +
 +err_driver:
-+	i2c_del_driver(&aic3x_i2c_driver);
++	i2c_del_driver(&wm8510_i2c_driver);
 +	return -ENODEV;
 +}
  #endif
  
- static int aic3x_probe(struct platform_device *pdev)
-@@ -1290,12 +1294,9 @@ static int aic3x_probe(struct platform_d
- 	aic3x_socdev = socdev;
+ static int wm8510_probe(struct platform_device *pdev)
+@@ -768,11 +768,8 @@ static int wm8510_probe(struct platform_
+ 	wm8510_socdev = socdev;
  #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
  	if (setup->i2c_address) {
 -		normal_i2c[0] = setup->i2c_address;
- 		codec->hw_write = (hw_write_t) i2c_master_send;
- 		codec->hw_read = (hw_read_t) aic3x_i2c_read;
--		ret = i2c_add_driver(&aic3x_i2c_driver);
+ 		codec->hw_write = (hw_write_t)i2c_master_send;
+-		ret = i2c_add_driver(&wm8510_i2c_driver);
 -		if (ret != 0)
 -			printk(KERN_ERR "can't add i2c driver");
-+		ret = aic3x_add_i2c_device(pdev, setup);
++		ret = wm8510_add_i2c_device(pdev, setup);;
  	}
  #else
  	/* Add other interfaces here */
-@@ -1320,6 +1321,7 @@ static int aic3x_remove(struct platform_
+@@ -795,6 +792,7 @@ static int wm8510_remove(struct platform
  	snd_soc_free_pcms(socdev);
  	snd_soc_dapm_free(socdev);
  #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 +	i2c_unregister_device(codec->control_data);
- 	i2c_del_driver(&aic3x_i2c_driver);
+ 	i2c_del_driver(&wm8510_i2c_driver);
  #endif
- 	kfree(codec->private_data);
---- linux-2.6.27-rc5.orig/sound/soc/codecs/tlv320aic3x.h	2008-08-05 18:18:18.000000000 +0200
-+++ linux-2.6.27-rc5/sound/soc/codecs/tlv320aic3x.h	2008-09-01 08:29:55.000000000 +0200
-@@ -224,6 +224,7 @@ int aic3x_get_gpio(struct snd_soc_codec 
- int aic3x_headset_detected(struct snd_soc_codec *codec);
+ 	kfree(codec);
+--- linux-2.6.27-rc5.orig/sound/soc/codecs/wm8510.h	2008-09-01 09:59:13.000000000 +0200
++++ linux-2.6.27-rc5/sound/soc/codecs/wm8510.h	2008-09-01 09:59:21.000000000 +0200
+@@ -94,6 +94,7 @@
+ #define WM8510_MCLKDIV_12	(7 << 5)
  
- struct aic3x_setup_data {
+ struct wm8510_setup_data {
 +	int i2c_bus;
  	unsigned short i2c_address;
- 	unsigned int gpio_func[2];
- };
---- linux-2.6.27-rc5.orig/sound/soc/davinci/davinci-evm.c	2008-08-13 09:51:02.000000000 +0200
-+++ linux-2.6.27-rc5/sound/soc/davinci/davinci-evm.c	2008-09-01 08:30:20.000000000 +0200
-@@ -136,6 +136,7 @@ static struct snd_soc_machine snd_soc_ma
- 
- /* evm audio private data */
- static struct aic3x_setup_data evm_aic3x_setup = {
-+	.i2c_bus = 0,
- 	.i2c_address = 0x1b,
  };
  
---- linux-2.6.27-rc5.orig/sound/soc/omap/n810.c	2008-08-29 09:32:25.000000000 +0200
-+++ linux-2.6.27-rc5/sound/soc/omap/n810.c	2008-09-01 08:30:10.000000000 +0200
-@@ -290,6 +290,7 @@ static struct snd_soc_machine snd_soc_ma
- 
- /* Audio private data */
- static struct aic3x_setup_data n810_aic33_setup = {
-+	.i2c_bus = 0,
- 	.i2c_address = 0x18,
- 	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
- 	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
 
 
 -- 
