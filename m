@@ -1,22 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 7/8] ASoC: Add SPI support for WM8731
-Date: Mon,  1 Sep 2008 18:47:03 +0100
-Message-ID: <1220291224-11269-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/8] ASoC: Convert wm8731 to a new-style i2c
+	driver
+Date: Mon,  1 Sep 2008 18:47:01 +0100
+Message-ID: <1220291224-11269-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1220291224-11269-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220291224-11269-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220291224-11269-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220291224-11269-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220291224-11269-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220291224-11269-6-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 374CC1037FD
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A6B9D103805
 	for <alsa-devel@alsa-project.org>;
 	Mon,  1 Sep 2008 19:47:07 +0200 (CEST)
-In-Reply-To: <1220291224-11269-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1220291224-11269-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,154 +26,235 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliff.cai@analog.com>, Bryan Wu <cooloney@kernel.org>
+Cc: Jean Delvare <khali@linux-fr.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Cliff Cai <cliff.cai@analog.com>
+From: Jean Delvare <khali@linux-fr.org>
 
-[Modified to allow runtime selection between I2C and SPI and to select
-SPI_MASTER for all codecs build so this is included. -- broonie]
+Convert the wm8731 codec driver to the new (standard) device driver
+binding model.
 
-Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
+Signed-off-by: Jean Delvare <khali@linux-fr.org>
+Tested-by: Manuel Lauss <mano@roarinelk.homelinux.net>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/Kconfig  |    1 +
- sound/soc/codecs/wm8731.c |   71 +++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/wm8731.h |    1 +
- 3 files changed, 71 insertions(+), 2 deletions(-)
+ sound/soc/at91/eti_b1_wm8731.c |    1 +
+ sound/soc/codecs/wm8731.c      |  108 +++++++++++++++++++--------------------
+ sound/soc/codecs/wm8731.h      |    1 +
+ sound/soc/pxa/corgi.c          |    1 +
+ sound/soc/pxa/poodle.c         |    1 +
+ 5 files changed, 57 insertions(+), 55 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 13ae4fd..cceac73 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -2,6 +2,7 @@ config SND_SOC_ALL_CODECS
- 	tristate "Build all ASoC CODEC drivers"
- 	depends on I2C
- 	select SPI
-+	select SPI_MASTER
- 	select SND_SOC_AK4535
- 	select SND_SOC_UDA1380
- 	select SND_SOC_WM8510
+diff --git a/sound/soc/at91/eti_b1_wm8731.c b/sound/soc/at91/eti_b1_wm8731.c
+index b81d6b2..684781e 100644
+--- a/sound/soc/at91/eti_b1_wm8731.c
++++ b/sound/soc/at91/eti_b1_wm8731.c
+@@ -243,6 +243,7 @@ static struct snd_soc_machine snd_soc_machine_eti_b1 = {
+ };
+ 
+ static struct wm8731_setup_data eti_b1_wm8731_setup = {
++	.i2c_bus = 0,
+ 	.i2c_address = 0x1a,
+ };
+ 
 diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 5814f9b..975befd 100644
+index 9402fca..5814f9b 100644
 --- a/sound/soc/codecs/wm8731.c
 +++ b/sound/soc/codecs/wm8731.c
-@@ -19,6 +19,7 @@
- #include <linux/pm.h>
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
-+#include <linux/spi/spi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -652,6 +653,61 @@ err_driver:
- }
- #endif
+@@ -570,86 +570,86 @@ static struct snd_soc_device *wm8731_socdev;
+  *    low  = 0x1a
+  *    high = 0x1b
+  */
+-static unsigned short normal_i2c[] = { 0, I2C_CLIENT_END };
  
-+#if defined(CONFIG_SPI_MASTER)
-+static int __devinit wm8731_spi_probe(struct spi_device *spi)
+-/* Magic definition of all other variables and things */
+-I2C_CLIENT_INSMOD;
+-
+-static struct i2c_driver wm8731_i2c_driver;
+-static struct i2c_client client_template;
+-
+-/* If the i2c layer weren't so broken, we could pass this kind of data
+-   around */
+-
+-static int wm8731_codec_probe(struct i2c_adapter *adap, int addr, int kind)
++static int wm8731_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
+ {
+ 	struct snd_soc_device *socdev = wm8731_socdev;
+-	struct wm8731_setup_data *setup = socdev->codec_data;
+ 	struct snd_soc_codec *codec = socdev->codec;
+-	struct i2c_client *i2c;
+ 	int ret;
+ 
+-	if (addr != setup->i2c_address)
+-		return -ENODEV;
+-
+-	client_template.adapter = adap;
+-	client_template.addr = addr;
+-
+-	i2c = kmemdup(&client_template, sizeof(client_template), GFP_KERNEL);
+-	if (i2c == NULL)
+-		return -ENOMEM;
+-
+ 	i2c_set_clientdata(i2c, codec);
+ 	codec->control_data = i2c;
+ 
+-	ret = i2c_attach_client(i2c);
+-	if (ret < 0) {
+-		pr_err("failed to attach codec at addr %x\n", addr);
+-		goto err;
+-	}
+-
+ 	ret = wm8731_init(socdev);
+-	if (ret < 0) {
++	if (ret < 0)
+ 		pr_err("failed to initialise WM8731\n");
+-		goto err;
+-	}
+-	return ret;
+ 
+-err:
+-	kfree(i2c);
+ 	return ret;
+ }
+ 
+-static int wm8731_i2c_detach(struct i2c_client *client)
++static int wm8731_i2c_remove(struct i2c_client *client)
+ {
+ 	struct snd_soc_codec *codec = i2c_get_clientdata(client);
+-	i2c_detach_client(client);
+ 	kfree(codec->reg_cache);
+-	kfree(client);
+ 	return 0;
+ }
+ 
+-static int wm8731_i2c_attach(struct i2c_adapter *adap)
+-{
+-	return i2c_probe(adap, &addr_data, wm8731_codec_probe);
+-}
++static const struct i2c_device_id wm8731_i2c_id[] = {
++	{ "wm8731", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, wm8731_i2c_id);
+ 
+-/* corgi i2c codec control layer */
+ static struct i2c_driver wm8731_i2c_driver = {
+ 	.driver = {
+ 		.name = "WM8731 I2C Codec",
+ 		.owner = THIS_MODULE,
+ 	},
+-	.id =             I2C_DRIVERID_WM8731,
+-	.attach_adapter = wm8731_i2c_attach,
+-	.detach_client =  wm8731_i2c_detach,
+-	.command =        NULL,
++	.probe =    wm8731_i2c_probe,
++	.remove =   wm8731_i2c_remove,
++	.id_table = wm8731_i2c_id,
+ };
+ 
+-static struct i2c_client client_template = {
+-	.name =   "WM8731",
+-	.driver = &wm8731_i2c_driver,
+-};
++static int wm8731_add_i2c_device(struct platform_device *pdev,
++				 const struct wm8731_setup_data *setup)
 +{
-+	struct snd_soc_device *socdev = wm8731_socdev;
-+	struct snd_soc_codec *codec = socdev->codec;
++	struct i2c_board_info info;
++	struct i2c_adapter *adapter;
++	struct i2c_client *client;
 +	int ret;
 +
-+	codec->control_data = spi;
++	ret = i2c_add_driver(&wm8731_i2c_driver);
++	if (ret != 0) {
++		dev_err(&pdev->dev, "can't add i2c driver\n");
++		return ret;
++	}
 +
-+	ret = wm8731_init(socdev);
-+	if (ret < 0)
-+		dev_err(&spi->dev, "failed to initialise WM8731\n");
++	memset(&info, 0, sizeof(struct i2c_board_info));
++	info.addr = setup->i2c_address;
++	strlcpy(info.type, "wm8731", I2C_NAME_SIZE);
 +
-+	return ret;
-+}
++	adapter = i2c_get_adapter(setup->i2c_bus);
++	if (!adapter) {
++		dev_err(&pdev->dev, "can't get i2c adapter %d\n",
++			setup->i2c_bus);
++		goto err_driver;
++	}
 +
-+static int __devexit wm8731_spi_remove(struct spi_device *spi)
-+{
++	client = i2c_new_device(adapter, &info);
++	i2c_put_adapter(adapter);
++	if (!client) {
++		dev_err(&pdev->dev, "can't add i2c device at 0x%x\n",
++			(unsigned int)info.addr);
++		goto err_driver;
++	}
++
 +	return 0;
++
++err_driver:
++	i2c_del_driver(&wm8731_i2c_driver);
++	return -ENODEV;
 +}
-+
-+static struct spi_driver wm8731_spi_driver = {
-+	.driver = {
-+		.name	= "wm8731",
-+		.bus	= &spi_bus_type,
-+		.owner	= THIS_MODULE,
-+	},
-+	.probe		= wm8731_spi_probe,
-+	.remove		= __devexit_p(wm8731_spi_remove),
-+};
-+
-+static int wm8731_spi_write(struct spi_device *spi, const char *data, int len)
-+{
-+	struct spi_transfer t;
-+	struct spi_message m;
-+	u16 msg[2];
-+
-+	if (len <= 0)
-+		return 0;
-+
-+	msg[0] = (data[0] << 8) + data[1];
-+
-+	spi_message_init(&m);
-+	memset(&t, 0, (sizeof t));
-+
-+	t.tx_buf = &msg[0];
-+	t.len = len;
-+
-+	spi_message_add_tail(&t, &m);
-+	spi_sync(spi, &m);
-+
-+	return len;
-+}
-+#endif /* CONFIG_SPI_MASTER */
-+
- static int wm8731_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-@@ -680,13 +736,21 @@ static int wm8731_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&codec->dapm_paths);
+ #endif
  
+ static int wm8731_probe(struct platform_device *pdev)
+@@ -682,11 +682,8 @@ static int wm8731_probe(struct platform_device *pdev)
  	wm8731_socdev = socdev;
-+	ret = -ENODEV;
-+
  #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
  	if (setup->i2c_address) {
+-		normal_i2c[0] = setup->i2c_address;
  		codec->hw_write = (hw_write_t)i2c_master_send;
- 		ret = wm8731_add_i2c_device(pdev, setup);
+-		ret = i2c_add_driver(&wm8731_i2c_driver);
+-		if (ret != 0)
+-			printk(KERN_ERR "can't add i2c driver");
++		ret = wm8731_add_i2c_device(pdev, setup);
  	}
--#else
--	/* Add other interfaces here */
-+#endif
-+#if defined(CONFIG_SPI_MASTER)
-+	if (setup->spi) {
-+		codec->hw_write = (hw_write_t)wm8731_spi_write;
-+		ret = spi_register_driver(&wm8731_spi_driver);
-+		if (ret != 0)
-+			printk(KERN_ERR "can't add spi driver");
-+	}
- #endif
- 
- 	if (ret != 0) {
-@@ -711,6 +775,9 @@ static int wm8731_remove(struct platform_device *pdev)
- 	i2c_unregister_device(codec->control_data);
+ #else
+ 	/* Add other interfaces here */
+@@ -711,6 +708,7 @@ static int wm8731_remove(struct platform_device *pdev)
+ 	snd_soc_free_pcms(socdev);
+ 	snd_soc_dapm_free(socdev);
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	i2c_unregister_device(codec->control_data);
  	i2c_del_driver(&wm8731_i2c_driver);
  #endif
-+#if defined(CONFIG_SPI_MASTER)
-+	spi_unregister_driver(&wm8731_spi_driver);
-+#endif
  	kfree(codec->private_data);
- 	kfree(codec);
- 
 diff --git a/sound/soc/codecs/wm8731.h b/sound/soc/codecs/wm8731.h
-index 0f81239..95190e9 100644
+index 99f2e3c..0f81239 100644
 --- a/sound/soc/codecs/wm8731.h
 +++ b/sound/soc/codecs/wm8731.h
 @@ -35,6 +35,7 @@
  #define WM8731_DAI		0
  
  struct wm8731_setup_data {
-+	int            spi;
- 	int            i2c_bus;
++	int            i2c_bus;
  	unsigned short i2c_address;
  };
+ 
+diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+index 0a53f72..72b7a51 100644
+--- a/sound/soc/pxa/corgi.c
++++ b/sound/soc/pxa/corgi.c
+@@ -330,6 +330,7 @@ static struct snd_soc_machine snd_soc_machine_corgi = {
+ 
+ /* corgi audio private data */
+ static struct wm8731_setup_data corgi_wm8731_setup = {
++	.i2c_bus = 0,
+ 	.i2c_address = 0x1b,
+ };
+ 
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index a4697f7..f84f7d8 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -284,6 +284,7 @@ static struct snd_soc_machine snd_soc_machine_poodle = {
+ 
+ /* poodle audio private data */
+ static struct wm8731_setup_data poodle_wm8731_setup = {
++	.i2c_bus = 0,
+ 	.i2c_address = 0x1b,
+ };
+ 
 -- 
 1.5.6.5
