@@ -1,50 +1,50 @@
-From: "Steve Sakoman" <sakoman@gmail.com>
-Subject: Re: [PATCH 3/4] SOUND: SOC: OMAP: Add support for
-	Gumstix Overo
-Date: Tue, 2 Sep 2008 06:19:10 -0700
-Message-ID: <5e088bd90809020619k2a852e78ra33ae5ee4415da4d@mail.gmail.com>
-References: <1220306279-27977-1-git-send-email-sakoman@gmail.com>
-	<1220306279-27977-2-git-send-email-sakoman@gmail.com>
-	<1220306279-27977-3-git-send-email-sakoman@gmail.com>
-	<1220306279-27977-4-git-send-email-sakoman@gmail.com>
-	<20080902112936.GC25176@sirena.org.uk>
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+Subject: Re: [PATCH 1/1] ALSA: add dummy function to support shared mmap in nommu Blackfin arch (v2)
+Date: Tue, 2 Sep 2008 09:37:01 -0400
+Message-ID: <8bd0f97a0809020637n2c7e29bexe87bd3dca50cee88@mail.gmail.com>
+References: <1220349522-17995-1-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65333246B1
-	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Sep 2008 15:19:12 +0200 (CEST)
-Received: by wa-out-1112.google.com with SMTP id m28so1921875wag.8
-	for <alsa-devel@alsa-project.org>; Tue, 02 Sep 2008 06:19:10 -0700 (PDT)
-In-Reply-To: <20080902112936.GC25176@sirena.org.uk>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753090AbYIBNhS@vger.kernel.org>
+In-Reply-To: <1220349522-17995-1-git-send-email-cooloney@kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: sakoman@gmail.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bryan Wu <cooloney@kernel.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 2, 2008 at 4:29 AM, Mark Brown <broonie@sirena.org.uk> wrote:
-
->>  # OMAP Machine Support
->>  snd-soc-n810-objs := n810.o
->> +snd-soc-omap3evm-objs := omap3evm.o
->> +snd-soc-omap3beagle-objs := omap3beagle.o
->> +snd-soc-overo-objs := overo.o
+On Tue, Sep 2, 2008 at 5:58 AM, Bryan Wu wrote:
+> From: Cliff Cai <cliff.cai@analog.com>
 >
-> Looks like some extra stuff crept in here...
+> v1-v2:
+>  - only adding this dummy function in nommu arch
 >
+> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+> ---
+>  sound/core/pcm_native.c |   14 ++++++++++++++
+>  1 files changed, 14 insertions(+), 0 deletions(-)
+>
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index c49b9d9..1e88cde 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -3391,6 +3391,14 @@ out:
+>  }
+>  #endif /* CONFIG_SND_SUPPORT_OLD_API */
+>
+> +#ifndef CONFIG_MMU
+> +unsigned long dummy_get_unmapped_area(struct file *file, unsigned long addr,
+> +                                     unsigned long len, unsigned long pgoff, unsigned long flags)
+> +{
+> +       return 0;
+> +}
+> +#endif
 
-Heh :-)  Right you are!
-
-I've been testing the driver on Beagle and OMAP3EVM too.  I'll fix and resubmit.
-
-Steve
+if you had:
+#else
+# define dummy_get_unmapped_area NULL
+#endif
+then you could avoid #ifdef in the rest of the file ...
+-mike
