@@ -1,278 +1,103 @@
-From: Felipe Balbi <me@felipebalbi.com>
-Subject: Re: [PATCH 1/4] ARM: OMAP2: Add support for the Gumstix Overo board
-Date: Tue, 2 Sep 2008 03:46:13 +0300
-Message-ID: <20080902004605.GA6928@frodo>
-References: <1220306279-27977-1-git-send-email-sakoman@gmail.com> <1220306279-27977-2-git-send-email-sakoman@gmail.com>
-Reply-To: me@felipebalbi.com
+From: "Cai, Cliff" <Cliff.Cai@analog.com>
+Subject: Re: [PATCH 4/4] ALSA: add dummy function to support
+	shared mmap in nommu Blackfin arch
+Date: Tue, 2 Sep 2008 11:16:37 +0800
+Message-ID: <0F1B54C89D5F954D8535DB252AF412FA029D5EC2@chinexm1.ad.analog.com>
+References: <1219829968-6431-1-git-send-email-cooloney@kernel.org><1219829968-6431-5-git-send-email-cooloney@kernel.org>
+	<s5h4p559umn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1220306279-27977-2-git-send-email-sakoman@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: sakoman@gmail.com
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id B0820245E6
+	for <alsa-devel@alsa-project.org>;
+	Tue,  2 Sep 2008 05:14:57 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <s5h4p559umn.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Bryan Wu <cooloney@kernel.org>
+Cc: liam.girdwood@wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 01, 2008 at 02:57:56PM -0700, sakoman@gmail.com wrote:
-> +	if ((gpio_request(W2W_NRESET, "W2W_NRESET") == 0) &&
-> +	    (gpio_direction_output(W2W_NRESET, 1) == 0)) {
-> +		gpio_export(W2W_NRESET, 0);
-> +		gpio_direction_output(W2W_NRESET, 0);
-> +		udelay(10);
-> +		gpio_direction_output(W2W_NRESET, 1);
-> +	} else
-> +		printk(KERN_ERR "could not obtain gpio for W2W_NRESET\n");
+ 
 
-	you should put {} on the else as well. The basic rule is that if
-one "arm" of the conditional needs {}, you put on both. Ditto below.
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Thursday, August 28, 2008 8:45 PM
+To: Bryan Wu
+Cc: perex@perex.cz; liam.girdwood@wolfsonmicro.com;
+broonie@opensource.wolfsonmicro.com; alsa-devel@alsa-project.org;
+linux-kernel@vger.kernel.org; Cliff Cai
+Subject: Re: [PATCH 4/4] ALSA: add dummy function to support shared mmap
+in nommu Blackfin arch
 
-> diff --git a/drivers/video/omap/Kconfig b/drivers/video/omap/Kconfig
-> index bdeb8fb..5ebd591 100644
-> --- a/drivers/video/omap/Kconfig
-> +++ b/drivers/video/omap/Kconfig
-> @@ -7,6 +7,27 @@ config FB_OMAP
->  	help
->            Frame buffer driver for OMAP based boards.
+At Wed, 27 Aug 2008 17:39:28 +0800,
+Bryan Wu wrote:
+> 
+> From: Cliff Cai <cliff.cai@analog.com>
+> 
+> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+> ---
+>  sound/core/pcm_native.c |    8 ++++++++
+>  1 files changed, 8 insertions(+), 0 deletions(-)
+>
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c index 
+> c49b9d9..cb202a1 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -3391,6 +3391,12 @@ out:
+>  }
+>  #endif /* CONFIG_SND_SUPPORT_OLD_API */
 >  
-> +choice
-> +	depends on FB_OMAP && MACH_OVERO
-> +	prompt "Screen resolution"
-> +	default FB_OMAP_079M3R
-> +	help
-> +	  Selected desired screen resolution
-> +
-> +config FB_OMAP_031M3R
-> +	boolean "640 x 480 @ 60 Hz Reduced blanking"
-> +
-> +config FB_OMAP_048M3R
-> +	boolean "800 x 600 @ 60 Hz Reduced blanking"
-> +
-> +config FB_OMAP_079M3R
-> +	boolean "1024 x 768 @ 60 Hz Reduced blanking"
-> +
-> +config FB_OMAP_092M9R
-> +	boolean "1280 x 720 @ 60 Hz Reduced blanking"
-> +
-> +endchoice
-> +
-
-This part should come in a separate patch.
-
-> diff --git a/drivers/video/omap/Makefile b/drivers/video/omap/Makefile
-> index f9b5cd4..291c46e 100644
-> --- a/drivers/video/omap/Makefile
-> +++ b/drivers/video/omap/Makefile
-> @@ -35,6 +35,7 @@ objs-y$(CONFIG_MACH_OMAP2EVM) += lcd_omap2evm.o
->  objs-y$(CONFIG_MACH_OMAP3EVM) += lcd_omap3evm.o
->  objs-y$(CONFIG_MACH_OMAP3_BEAGLE) += lcd_omap3beagle.o
->  objs-y$(CONFIG_FB_OMAP_LCD_MIPID) += lcd_mipid.o
-> +objs-y$(CONFIG_MACH_OVERO) += lcd_overo.o
->  
->  omapfb-objs := $(objs-yy)
-
-Also this.
-
-> diff --git a/drivers/video/omap/lcd_overo.c b/drivers/video/omap/lcd_overo.c
-> new file mode 100644
-> index 0000000..831936d
-> --- /dev/null
-> +++ b/drivers/video/omap/lcd_overo.c
-> @@ -0,0 +1,189 @@
-> +/*
-> + * LCD panel support for the Gumstix Overo
-> + *
-> + * Author: Steve Sakoman <steve@sakoman.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License as published by the
-> + * Free Software Foundation; either version 2 of the License, or (at your
-> + * option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + * General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write to the Free Software Foundation, Inc.,
-> + * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/i2c/twl4030.h>
-> +
-> +#include <mach/gpio.h>
-> +#include <mach/mux.h>
-> +#include <mach/omapfb.h>
-> +#include <asm/mach-types.h>
-> +
-> +#define LCD_ENABLE       144
-> +
-> +static int overo_panel_init(struct lcd_panel *panel,
-> +				struct omapfb_device *fbdev)
-> +{
-> +	if ((gpio_request(LCD_ENABLE, "LCD_ENABLE") == 0) &&
-> +	    (gpio_direction_output(LCD_ENABLE, 1) == 0))
-> +		gpio_export(LCD_ENABLE, 0);
-> +	else
-> +		printk(KERN_ERR "could not obtain gpio for LCD_ENABLE\n");
-> +
+> +unsigned long dummy_get_unmapped_area(struct file *file, unsigned
+long addr,
+> +				      unsigned long len, unsigned long
+pgoff, unsigned long 
+> +flags) {
 > +	return 0;
 > +}
-> +
-> +static void overo_panel_cleanup(struct lcd_panel *panel)
-> +{
-> +}
-> +
-> +static int overo_panel_enable(struct lcd_panel *panel)
-> +{
-> +	gpio_direction_output(LCD_ENABLE, 1);
-> +	return 0;
-> +}
-> +
-> +static void overo_panel_disable(struct lcd_panel *panel)
-> +{
-> +	gpio_direction_output(LCD_ENABLE, 0);
-> +}
-> +
-> +static unsigned long overo_panel_get_caps(struct lcd_panel *panel)
-> +{
-> +	return 0;
-> +}
-> +
-> +struct lcd_panel overo_panel = {
-> +	.name		= "overo",
-> +	.config		= OMAP_LCDC_PANEL_TFT,
-> +	.bpp		= 16,
-> +	.data_lines	= 24,
-> +
-> +#if defined CONFIG_FB_OMAP_031M3R
-> +
-> +	/* 640 x 480 @ 60 Hz  Reduced blanking VESA CVT 0.31M3-R */
-> +	.x_res		= 640,
-> +	.y_res		= 480,
-> +	.hfp		= 48,
-> +	.hsw		= 32,
-> +	.hbp		= 80,
-> +	.vfp		= 3,
-> +	.vsw		= 4,
-> +	.vbp		= 7,
-> +	.pixel_clock	= 23500,
-> +
-> +#elif defined CONFIG_FB_OMAP_048M3R
-> +
-> +	/* 800 x 600 @ 60 Hz  Reduced blanking VESA CVT 0.48M3-R */
-> +	.x_res		= 800,
-> +	.y_res		= 600,
-> +	.hfp		= 48,
-> +	.hsw		= 32,
-> +	.hbp		= 80,
-> +	.vfp		= 3,
-> +	.vsw		= 4,
-> +	.vbp		= 11,
-> +	.pixel_clock	= 35500,
-> +
-> +#elif defined CONFIG_FB_OMAP_079M3R
-> +
-> +	/* 1024 x 768 @ 60 Hz  Reduced blanking VESA CVT 0.79M3-R */
-> +	.x_res		= 1024,
-> +	.y_res		= 768,
-> +	.hfp		= 48,
-> +	.hsw		= 32,
-> +	.hbp		= 80,
-> +	.vfp		= 3,
-> +	.vsw		= 4,
-> +	.vbp		= 15,
-> +	.pixel_clock	= 56000,
-> +
-> +#elif defined CONFIG_FB_OMAP_092M9R
-> +
-> +	/* 1280 x 720 @ 60 Hz  Reduced blanking VESA CVT 0.92M9-R */
-> +	.x_res		= 1280,
-> +	.y_res		= 720,
-> +	.hfp		= 48,
-> +	.hsw		= 32,
-> +	.hbp		= 80,
-> +	.vfp		= 3,
-> +	.vsw		= 5,
-> +	.vbp		= 13,
-> +	.pixel_clock	= 64000,
-> +
-> +#else
-> +
-> +	/* use 640 x 480 if no config option */
-> +	/* 640 x 480 @ 60 Hz  Reduced blanking VESA CVT 0.31M3-R */
-> +	.x_res		= 640,
-> +	.y_res		= 480,
-> +	.hfp		= 48,
-> +	.hsw		= 32,
-> +	.hbp		= 80,
-> +	.vfp		= 3,
-> +	.vsw		= 4,
-> +	.vbp		= 7,
-> +	.pixel_clock	= 23500,
-> +
-> +#endif
-> +
-> +	.init		= overo_panel_init,
-> +	.cleanup	= overo_panel_cleanup,
-> +	.enable		= overo_panel_enable,
-> +	.disable	= overo_panel_disable,
-> +	.get_caps	= overo_panel_get_caps,
-> +};
-> +
-> +static int overo_panel_probe(struct platform_device *pdev)
-> +{
-> +	omapfb_register_panel(&overo_panel);
-> +	return 0;
-> +}
-> +
-> +static int overo_panel_remove(struct platform_device *pdev)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int overo_panel_suspend(struct platform_device *pdev,
-> +				   pm_message_t mesg)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int overo_panel_resume(struct platform_device *pdev)
-> +{
-> +	return 0;
-> +}
-> +
-> +struct platform_driver overo_panel_driver = {
-> +	.probe		= overo_panel_probe,
-> +	.remove		= overo_panel_remove,
-> +	.suspend	= overo_panel_suspend,
-> +	.resume		= overo_panel_resume,
-> +	.driver		= {
-> +		.name	= "overo_lcd",
-> +		.owner	= THIS_MODULE,
-> +	},
-> +};
-> +
-> +static int __init overo_panel_drv_init(void)
-> +{
-> +	return platform_driver_register(&overo_panel_driver);
-> +}
-> +
-> +static void __exit overo_panel_drv_exit(void)
-> +{
-> +	platform_driver_unregister(&overo_panel_driver);
-> +}
-> +
-> +module_init(overo_panel_drv_init);
-> +module_exit(overo_panel_drv_exit);
 
-And this driver.
+>Always zero is confirmed to work for other architectures, too?
+I'm not sure about this but for non-mmu arch it's enough and harmless.
 
-You should put the lcd stuff in a separate patch, then it's easier to
-follow the changes in a logical way.
 
--- 
-balbi
+>  /*
+>   *  Register section
+>   */
+> @@ -3407,6 +3413,7 @@ const struct file_operations snd_pcm_f_ops[2] =
+{
+>  		.compat_ioctl = 	snd_pcm_ioctl_compat,
+>  		.mmap =			snd_pcm_mmap,
+>  		.fasync =		snd_pcm_fasync,
+> +		.get_unmapped_area =	dummy_get_unmapped_area,
+>  	},
+>  	{
+>  		.owner =		THIS_MODULE,
+> @@ -3419,5 +3426,6 @@ const struct file_operations snd_pcm_f_ops[2] =
+{
+>  		.compat_ioctl = 	snd_pcm_ioctl_compat,
+>  		.mmap =			snd_pcm_mmap,
+>  		.fasync =		snd_pcm_fasync,
+> +		.get_unmapped_area =	dummy_get_unmapped_area,
+>  	}
+>  };
+
+>I don't think adding this dummy get_unmapped_area unconditionally for
+every driver is good.  This overrides the default
+>mm->get_unmaped_area.
+But without this dummy function,shared mmap on nommu arch would
+fail,refer to validate_mmap_request() in mm/nommu.c.
+May be we can add a kernel config item to include or not include this
+function depending on non-mmu or mmu arch.  
+
+Cliff
