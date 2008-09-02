@@ -1,20 +1,26 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: snd-soc-cs4270: Convert to a new-style i2c driver
- (work in progress)
-Date: Tue, 02 Sep 2008 10:03:59 -0500
-Message-ID: <48BD55DF.8060203@freescale.com>
-References: <20080831161843.227b31f3@hyperion.delvare>	<ed82fe3e0808310928v18eed8bdh98faa6796a516142@mail.gmail.com>
-	<20080831190928.2931b0ed@hyperion.delvare>
+From: "Steve Sakoman" <sakoman@gmail.com>
+Subject: Re: [PATCH 2/4] SOUND: SOC: CODECS: Add support for
+	the TWL4030 audio codec
+Date: Tue, 2 Sep 2008 09:36:29 -0700
+Message-ID: <5e088bd90809020936i2d5e8a12lee33acfe5cbd8cd6@mail.gmail.com>
+References: <1220306279-27977-1-git-send-email-sakoman@gmail.com>
+	<1220306279-27977-2-git-send-email-sakoman@gmail.com>
+	<1220306279-27977-3-git-send-email-sakoman@gmail.com>
+	<20080902112633.GB25176@sirena.org.uk>
+	<5e088bd90809020725g1d0dff70ue84f861ea3e22201@mail.gmail.com>
+	<20080902145328.GA3764@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from de01egw02.freescale.net (de01egw02.freescale.net
-	[192.88.165.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8AB621037FB
+Received: from ug-out-1314.google.com (ug-out-1314.google.com [66.249.92.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B7082470D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Sep 2008 17:47:45 +0200 (CEST)
-In-Reply-To: <20080831190928.2931b0ed@hyperion.delvare>
+	Tue,  2 Sep 2008 18:36:30 +0200 (CEST)
+Received: by ug-out-1314.google.com with SMTP id m2so1656187uge.24
+	for <alsa-devel@alsa-project.org>; Tue, 02 Sep 2008 09:36:29 -0700 (PDT)
+In-Reply-To: <20080902145328.GA3764@rakim.wolfsonmicro.main>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,42 +30,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jean Delvare <khali@linux-fr.org>
-Cc: alsa-devel@alsa-project.org
+To: Steve Sakoman <sakoman@gmail.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jean Delvare wrote:
+On Tue, Sep 2, 2008 at 7:53 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Tue, Sep 02, 2008 at 07:25:48AM -0700, Steve Sakoman wrote:
+>> On Tue, Sep 2, 2008 at 4:26 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+>
+>> > This should also be added to SND_SOC_ALL_CODECS to ensure testing
+>> > coverage.
+>
+>> Hmm . . . I get no hits grep-ing for SND_SOC_ALL_CODECS.  Could this
+>> be something we are missing in the linux-omap git?
+>
+> Yes, it's queued in ALSA for merge in the next window:
 
-> * Your driver now lacks a remove method. Unless I miss something, if
-> the snd-soc-cs4270 driver is unloaded, you will leave dangling
-> resources behind (codec->reg_cache in particular.)
+OK, I'll leave this out for now and maerge when it appears in linux-omap
 
-Indeed, but then, I don't think I ever supported loading and unload this driver
-as a module.  The Kconfig does say it's a tristate, though.  I'll take a look at
-it.
+>> >> +struct twl4030_priv {
+>> >> +     unsigned int dummy;
+>> >> +};
+>
+>> > If this is empty it should be removable?
+>
+>> I plan to support further codec features in future patches and have a
+>> strong suspicion that private data may be required.  Is it preferred
+>> to add the infrastructure now, or wait till it is required in the
+>> future?  I opted for the former, but don't really care either way.
+>
+> It'd be a bit cleaner to remove it but it's not a big deal either way -
+> leave it in if you find it useful.
 
-Most of my real development is going to the ASoC V2 version of this driver, and
-that version should be a lot better.  I'll take another look at both driver to
-make sure I didn't screw this up.
+I'll remove it for now and add it back when required.
 
-> * I2C_DRIVERID_CS4270 must be removed from i2c-id.h.
+>> >> +             twl4030_write(codec, REG_ARXL2PGA, 0x00);
+>> >> +             twl4030_write(codec, REG_ARXR2PGA, 0x00);
+>> >> +             twl4030_write_reg_cache(codec, REG_ARXL2PGA, ldac_reg);
+>> >> +             twl4030_write_reg_cache(codec, REG_ARXR2PGA, rdac_reg);
+>> >> +     } else {
+>> >> +             twl4030_write(codec, REG_ARXL2PGA, ldac_reg);
+>> >> +             twl4030_write(codec, REG_ARXR2PGA, rdac_reg);
+>> >> +     }
+>
+>> > It may be better to make these user visible controls - usually the mute
+>> > provided here is specifically for the DAC but these look like controls
+>> > for the PGA.  The intention here is to avoid artifacts from the DAC when
+>> > the input clock stops and start - if there aren't any then user space
+>> > may well appreciate the control.  Either way is fine.
+>
+>> I'm not hearing any clicks & pops, so I will leave this in.
+>
+> The point is that adding it in suppresses problems that might otherwise
+> occur - if it doesn't misbehave without this users may find it useful if
+> the mute control to be visible to them.
 
-It can't be removed until this patch goes upstream, but thanks for the reminder.
+I'll investigate to see if removing this results in clicks & pops.
+Will then do "the right thing"
 
-> As I understand it, without that patch the mpc8610_hpcd doesn't work,
-> as the I2C address of the sound codec will be made busy by the platform
-> code and thus the snd-soc-cs4270 driver won't be able to attach to it.
+>> >> +     twl4030_init_chip();
+>> >> +     twl4030_power_up(codec, APLL_RATE_44100 | OPT_MODE);
+>
+>> > It looks like the driver is assuming a particular clock rate going into
+>> > the codec - does the chip require a fixed clock or is the driver only
+>> > supporting one configuration?  Either is fine.
+>
+>> There is a fixed clock.
+>
+> Fixed per board or fixed by the chip?
 
-That's correct.  I though I made that clear in the changelog.
+The chip allows 19.2 Mhz, 26 Mhz, or 38.4 Mhz input clocks to the
+codec.  All existing boards (Overo, Beagle, and OMAP3 EVM) use 26 Mhz
+(generated by a fixed external oscillator chip).  I'll check with the
+Pandora folks, but I believe that they are also 26 Mhz.
 
-> Do you
-> know off the top of your head if other drivers have already been
-> converted?
-
-I doubt it.  ASoC V1 doesn't generally support PowerPC, although there is code
-to make it work.  That's why there's not a lot of support across the board for
-PowerPC-isms.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Steve
