@@ -1,19 +1,25 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: |PATCH] ASoC: Convert wm8510 to a new-style i2c
-	driver
-Date: Tue, 2 Sep 2008 14:07:20 +0100
-Message-ID: <20080902130720.GD25176@sirena.org.uk>
-References: <20080901112331.594bb663@hyperion.delvare>
+From: "Steve Sakoman" <sakoman@gmail.com>
+Subject: Re: [PATCH 3/4] SOUND: SOC: OMAP: Add support for
+	Gumstix Overo
+Date: Tue, 2 Sep 2008 06:19:10 -0700
+Message-ID: <5e088bd90809020619k2a852e78ra33ae5ee4415da4d@mail.gmail.com>
+References: <1220306279-27977-1-git-send-email-sakoman@gmail.com>
+	<1220306279-27977-2-git-send-email-sakoman@gmail.com>
+	<1220306279-27977-3-git-send-email-sakoman@gmail.com>
+	<1220306279-27977-4-git-send-email-sakoman@gmail.com>
+	<20080902112936.GC25176@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9896A246B2
+Received: from wa-out-1112.google.com (wa-out-1112.google.com [209.85.146.180])
+	by alsa0.perex.cz (Postfix) with ESMTP id 65333246B1
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Sep 2008 15:07:21 +0200 (CEST)
+	Tue,  2 Sep 2008 15:19:12 +0200 (CEST)
+Received: by wa-out-1112.google.com with SMTP id m28so1921875wag.8
+	for <alsa-devel@alsa-project.org>; Tue, 02 Sep 2008 06:19:10 -0700 (PDT)
+In-Reply-To: <20080902112936.GC25176@sirena.org.uk>
 Content-Disposition: inline
-In-Reply-To: <20080901112331.594bb663@hyperion.delvare>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +29,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jean Delvare <khali@linux-fr.org>
-Cc: alsa-devel@alsa-project.org, Geoffrey Wossum <gwossum@acm.org>
+To: sakoman@gmail.com, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 01, 2008 at 11:23:31AM +0200, Jean Delvare wrote:
-> Convert the wm8510 codec driver to the new (standard) device
-> driver binding model.
+On Tue, Sep 2, 2008 at 4:29 AM, Mark Brown <broonie@sirena.org.uk> wrote:
 
-Hrm.  This doesn't actually apply for me, even if I apply directly
-against 2.6.27-rc5 - I get rejects in wm8510.c in the main conversion
-hunk.  Any chance you could regenerated it against Takashi's tree?
+>>  # OMAP Machine Support
+>>  snd-soc-n810-objs := n810.o
+>> +snd-soc-omap3evm-objs := omap3evm.o
+>> +snd-soc-omap3beagle-objs := omap3beagle.o
+>> +snd-soc-overo-objs := overo.o
+>
+> Looks like some extra stuff crept in here...
+>
 
-> --- linux-2.6.27-rc5.orig/sound/soc/at32/playpaq_wm8510.c	2008-09-01 09:59:13.000000000 +0200
-> +++ linux-2.6.27-rc5/sound/soc/at32/playpaq_wm8510.c	2008-09-01 09:59:21.000000000 +0200
+Heh :-)  Right you are!
+
+I've been testing the driver on Beagle and OMAP3EVM too.  I'll fix and resubmit.
+
+Steve
