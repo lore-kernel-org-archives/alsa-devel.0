@@ -1,23 +1,21 @@
-From: "Steve Sakoman" <sakoman@gmail.com>
-Subject: Re: [PATCH 1/4] ARM: OMAP2: Add support for the
-	Gumstix Overo board
-Date: Tue, 2 Sep 2008 14:06:21 -0700
-Message-ID: <5e088bd90809021406n435a07d1m595ef8ca0e455989@mail.gmail.com>
-References: <1220306279-27977-1-git-send-email-sakoman@gmail.com>
-	<1220306279-27977-2-git-send-email-sakoman@gmail.com>
-	<20080902205822.GA32575@flint.arm.linux.org.uk>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [PATCH 1/2] ca0106 playback 44100Hz
+ support	to	SPDIF and	playback	format & rate constraints
+Date: Tue, 02 Sep 2008 22:18:03 +0100
+Message-ID: <48BDAD8B.8060007@superbug.co.uk>
+References: <1219415921.32652.254.camel@localhost>	<s5h63ptf48b.wl%tiwai@suse.de>
+	<1219502224.15980.32.camel@localhost>	<s5h7ia5dpe0.wl%tiwai@suse.de>
+	<1220375467.7459.8.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from py-out-1112.google.com (py-out-1112.google.com [64.233.166.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 706CD2476E
+Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net
+	[194.217.242.90])
+	by alsa0.perex.cz (Postfix) with ESMTP id 133EE24662
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Sep 2008 23:06:23 +0200 (CEST)
-Received: by py-out-1112.google.com with SMTP id a29so1366968pyi.36
-	for <alsa-devel@alsa-project.org>; Tue, 02 Sep 2008 14:06:22 -0700 (PDT)
-In-Reply-To: <20080902205822.GA32575@flint.arm.linux.org.uk>
-Content-Disposition: inline
+	Tue,  2 Sep 2008 23:18:10 +0200 (CEST)
+In-Reply-To: <1220375467.7459.8.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,26 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
+To: Ben Stanley <Ben.Stanley@exemail.com.au>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 2, 2008 at 1:58 PM, Russell King - ARM Linux
-<linux@arm.linux.org.uk> wrote:
-> On Mon, Sep 01, 2008 at 02:57:56PM -0700, sakoman@gmail.com wrote:
->> +             .size           =  15 * NAND_BLOCK_SIZE,
->
-> Unnecessary additional spacing after '='.
+Ben Stanley wrote:
+> +		/* We only support 44100 to spdif, not to DAC.
+> +		   (FIXME WHY?)*/
 
-<<SNIP>>
+WHY?  Because the DAC cannot be clocked at 44100, only 48000 and 96000
+from the CA0106 chip.
+The SPDIF can be clocked at 44100.
+It is a hardware limitation.
 
->> +struct platform_driver overo_panel_driver = {
->
-> Should be static.
->
+Kind Regards
 
-Lots of great suggestions!  I will incorporate them in my resubmission.
-
-Thanks,
-
-Steve
+James
