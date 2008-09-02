@@ -1,22 +1,16 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: CORRECTION (get rid of controls
-	with?snd_ctl_remove )
-Date: Tue, 2 Sep 2008 10:46:17 +0100
-Message-ID: <20080902094615.GA25176@sirena.org.uk>
-References: <200808291454.42441.harryrat@postnuklear.de>
-	<200809011309.22478.harryrat@postnuklear.de>
-	<1220269870.6499.107.camel@odin>
-	<200809021002.13540.harryrat@postnuklear.de>
+From: Bryan Wu <cooloney@kernel.org>
+Subject: [PATCH 1/1] ALSA: add dummy function to support shared
+	mmap in nommu Blackfin arch (v2)
+Date: Tue,  2 Sep 2008 17:58:42 +0800
+Message-ID: <1220349522-17995-1-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A68901037F8
+Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 208021037FB
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Sep 2008 11:46:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200809021002.13540.harryrat@postnuklear.de>
+	Tue,  2 Sep 2008 11:58:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,25 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Harald Radke <harryrat@postnuklear.de>
-Cc: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Bryan Wu <cooloney@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 02, 2008 at 10:02:13AM +0200, Harald Radke wrote:
+From: Cliff Cai <cliff.cai@analog.com>
 
-> Hm, a great thing would be to have something like "codec_instanciate()" where 
-> u could select a codec device and an array with control names and values for 
-> items to be deactivated and get the "modified" codec...but I guess that would 
-> be ways to high level for the sound driver structure (;
+v1-v2:
+ - only adding this dummy function in nommu arch
 
-For the greatest flexibility you really want the activation and
-deactivation to be doable via user space - many devices (especially
-complex ones like smartphones) can run with several different audio
-setups and need to change between them on the fly at run time.  Trying
-to encode all the possible scenarios in the kernel makes for a
-relatively large amount of work when there are a lot of options.
+Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
+---
+ sound/core/pcm_native.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
-Liam has been working on an API to facilitate that sort of scenario
-setup:
-
-	http://opensource.wolfsonmicro.com/node/14
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index c49b9d9..1e88cde 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3391,6 +3391,14 @@ out:
+ }
+ #endif /* CONFIG_SND_SUPPORT_OLD_API */
+ 
++#ifndef CONFIG_MMU
++unsigned long dummy_get_unmapped_area(struct file *file, unsigned long addr,
++				      unsigned long len, unsigned long pgoff, unsigned long flags)
++{
++	return 0;
++}
++#endif
++
+ /*
+  *  Register section
+  */
+@@ -3407,6 +3415,9 @@ const struct file_operations snd_pcm_f_ops[2] = {
+ 		.compat_ioctl = 	snd_pcm_ioctl_compat,
+ 		.mmap =			snd_pcm_mmap,
+ 		.fasync =		snd_pcm_fasync,
++#ifndef CONFIG_MMU
++		.get_unmapped_area =	dummy_get_unmapped_area,
++#endif
+ 	},
+ 	{
+ 		.owner =		THIS_MODULE,
+@@ -3419,5 +3430,8 @@ const struct file_operations snd_pcm_f_ops[2] = {
+ 		.compat_ioctl = 	snd_pcm_ioctl_compat,
+ 		.mmap =			snd_pcm_mmap,
+ 		.fasync =		snd_pcm_fasync,
++#ifndef CONFIG_MMU
++		.get_unmapped_area =	dummy_get_unmapped_area,
++#endif
+ 	}
+ };
+-- 
+1.5.6
