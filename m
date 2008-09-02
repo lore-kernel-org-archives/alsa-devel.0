@@ -1,38 +1,27 @@
-From: Liam Girdwood <lrg@kernel.org>
-Subject: Re: [PATCH] ASoC: Convert wm8510 to a new-style
-	i2c	driver (v2)
-Date: Tue, 02 Sep 2008 21:11:46 +0100
-Message-ID: <1220386306.6499.226.camel@odin>
-References: <20080902170730.737ff34d@hyperion.delvare>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH 2/4] SOUND: SOC: CODECS: Add support for	the TWL4030 audio codec
+Date: Tue, 2 Sep 2008 21:31:21 +0100
+Message-ID: <20080902203120.GA20914@sirena.org.uk>
+References: <1220306279-27977-1-git-send-email-sakoman@gmail.com> <1220306279-27977-2-git-send-email-sakoman@gmail.com> <1220306279-27977-3-git-send-email-sakoman@gmail.com> <20080902112633.GB25176@sirena.org.uk> <5e088bd90809020725g1d0dff70ue84f861ea3e22201@mail.gmail.com> <20080902145328.GA3764@rakim.wolfsonmicro.main> <5e088bd90809020936i2d5e8a12lee33acfe5cbd8cd6@mail.gmail.com> <20080902185432.GA3553@sirena.org.uk> <1220386089.6499.223.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6033924756
-	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Sep 2008 22:11:53 +0200 (CEST)
-In-Reply-To: <20080902170730.737ff34d@hyperion.delvare>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jean Delvare <khali@linux-fr.org>
-Cc: alsa-devel@alsa-project.org, Geoffrey Wossum <gwossum@acm.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1220386089.6499.223.camel@odin>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@kernel.org>
+Cc: Steve Sakoman <sakoman@gmail.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2008-09-02 at 17:07 +0200, Jean Delvare wrote:
-> Convert the wm8510 codec driver to the new (standard) device
-> driver binding model.
+On Tue, Sep 02, 2008 at 09:08:09PM +0100, Liam Girdwood wrote:
+> On Tue, 2008-09-02 at 19:54 +0100, Mark Brown wrote:
 
-If you ever bump into either Mark or I at a conference then we are
-probably due you a beer or two for all this fine work.
+> > OK, a comment to that effect somewhere (perhaps in set_sysclk() which
+> > only accepts 26MHz) probably wouldn't go amiss.
 
-Cheers
+> The codec set_sysclk() should also accept 19.2MHz and 38.4MHz otherwise
+> return -EINVAL. It should also have a nice comment too :)
 
-Liam
+Ideally, yes but it looked like that'd need additional code to set the
+codec up to use them.  Obviously the ideal thing would be if the driver
+supports everything the chip does.
