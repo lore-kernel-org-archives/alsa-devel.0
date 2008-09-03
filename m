@@ -1,24 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [PATCH 1/2] ca0106 playback 44100Hz support	to
- SPDIF and	playback	format & rate constraints
-Date: Wed, 03 Sep 2008 19:36:51 +0100
-Message-ID: <48BED943.1080504@superbug.co.uk>
-References: <1219415921.32652.254.camel@localhost>
-	<s5h63ptf48b.wl%tiwai@suse.de>
-	<1219502224.15980.32.camel@localhost>
-	<s5h7ia5dpe0.wl%tiwai@suse.de> <1220375467.7459.8.camel@localhost>
-	<48BDAD8B.8060007@superbug.co.uk>
-	<Pine.LNX.4.58.0809030912020.24305@shell4.speakeasy.net>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Pull request for alsa-plugins
+Date: Wed, 3 Sep 2008 21:17:41 +0200
+Message-ID: <20080903191741.GA13536@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-33.mail.demon.net (anchor-post-33.mail.demon.net
-	[194.217.242.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E28F103826
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id F38E3244F4
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Sep 2008 20:36:56 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.58.0809030912020.24305@shell4.speakeasy.net>
+	Wed,  3 Sep 2008 21:17:41 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,20 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <xyzzy@speakeasy.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Ben Stanley <Ben.Stanley@exemail.com.au>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Trent Piepho wrote:
-> On Tue, 2 Sep 2008, James Courtier-Dutton wrote:
->> Ben Stanley wrote:
->>> +		/* We only support 44100 to spdif, not to DAC.
->>> +		   (FIXME WHY?)*/
->> WHY?  Because the DAC cannot be clocked at 44100, only 48000 and 96000
->> from the CA0106 chip.
->> The SPDIF can be clocked at 44100.
->> It is a hardware limitation.
-> 
-> The DAC supports 44100.  Is the problem that the ca0106 can't provide a
-> 44100 clock to the DAC?
-It does not really matter why, it does not work at 44100 and that is fact.
+Takashi, Jaroslav,
+
+please pull and merge a series of 26 patches for alsa-plugins'
+PulseAudio driver which I prepared in this repository of mine:
+
+    git://git.0pointer.de/alsa-plugins.git
+
+gitweb is here:
+
+    http://git.0pointer.de/?p=alsa-plugins.git
+
+There are quite a few bug fixes and feature enhancements among those
+patches. It also includes some clean-ups in the coding
+style. i.e. previously the indenting of the PA driver was pure chaos,
+every single patch seemed to introduce a new indentation width. The
+first patch in this series simply reindents the driver to Linux
+style. All other patches are on top of that one.
+
+Here's the shortlog:
+
+Lennart Poettering (26):
+      Reindent to Linux kernel style
+      Add Emacs-style /*-*- linux-c -*-*/ header comment
+      Make pulse_new() a proper C function
+      Don't modify the SIGPIPE handler
+      Call pa_context_disconnect() explicitly
+      use SNDERR instead of fprintf to print error messages
+      Support S32 sample types
+      Add trailing NUL character to snprintf output
+      Get rid of pulse_poll_revents()
+      Add more error checking
+      Remove fix for bug 0003470
+      Rework hardware parameter selection
+      A bag of minor clean ups for ctl_pulse.c
+      Make pulse_ext_callback const
+      Drop our own implementation of the poll() callbacks
+      A bag of minor clean-ups for pulse.c
+      Split out O_NONBLOCK setting into seperate function
+      Save a byte of memory
+      Adjust buffering metrics to match what PA internally uses
+      Make sure we always have a sensible channel mapping
+      Use PA_STREAM_EARLY_REQUESTS if available
+      Use S32/FLOAT32 only where available in the PA libs
+      Add const to our snd_pcm_ioplug_callback_t instances
+      Don't implement our own poll handlers, we can use the default
+      ones
+      Remove our own poll handler implementation entirely
+      A bag of clean-ups for pcm_ctl.c
+
+Those patches only touch the pulse/ subdir. 
+
+The tree is freshly rebased against current alsa-plugins master.
+
+May I ask you to make me the "semi-official" maintainer of this
+driver? I.e. I'd like to be consulted (as in 'Signed-Off-by') before
+any patches for it are merged?
+
+If requested I can also mail this as series of 26 seperate patches.
+
+Thank you,
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net         ICQ# 11060553
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
