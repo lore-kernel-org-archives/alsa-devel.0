@@ -1,16 +1,23 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Does Gravis Classic driver work?
-Date: Wed, 3 Sep 2008 21:31:53 +0200
-Message-ID: <20080903213153.f3feda45.krzysztof.h1@poczta.fm>
+From: "Timur Tabi" <timur@freescale.com>
+Subject: Re: snd-soc-cs4270: Convert to a new-style i2c driver
+	(work in progress)
+Date: Wed, 3 Sep 2008 14:47:27 -0500
+Message-ID: <ed82fe3e0809031247t3085e409x3141f9712ad962a9@mail.gmail.com>
+References: <20080831161843.227b31f3@hyperion.delvare>
+	<ed82fe3e0808310928v18eed8bdh98faa6796a516142@mail.gmail.com>
+	<20080831190928.2931b0ed@hyperion.delvare>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp239.poczta.interia.pl (smtp239.poczta.interia.pl
-	[217.74.64.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id 450DF103821
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.235])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08BFD244E0
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Sep 2008 21:25:05 +0200 (CEST)
+	Wed,  3 Sep 2008 21:47:28 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 36so2489807wra.24
+	for <alsa-devel@alsa-project.org>; Wed, 03 Sep 2008 12:47:27 -0700 (PDT)
+In-Reply-To: <20080831190928.2931b0ed@hyperion.delvare>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,45 +27,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Rene Herman <rene.herman@gmail.com>
+To: Jean Delvare <khali@linux-fr.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, Aug 31, 2008 at 12:09 PM, Jean Delvare <khali@linux-fr.org> wrote:
 
-I have acquired an unknown clone of the GF1 classic card.
+> * Your driver now lacks a remove method. Unless I miss something, if
+> the snd-soc-cs4270 driver is unloaded, you will leave dangling
+> resources behind (codec->reg_cache in particular.)
 
-I load the snd-gusclassic driver with
-modprobe snd-gusclassic port=0x220
+I'm working on a fix for this, but there's something you need to know.
+ I don't think ASoC V1 modules can be unloaded.  The drivers have
+hard-coded cross-dependencies.  The codec driver doesn't have this
+problem, but in general it's not really possible to select ASoC
+drivers as modules in Kconfig anyway.  The "tristate" I mentioned is
+misleading.
 
-and the /proc/asound/cards says
- 0 [G37            ]: GUS - Gravis UltraSound Classic (3.7)
-                      Gravis UltraSound Classic (3.7) at 0x220, irq 5, dma 5&5
-
-The alsamixer works. I set maximum volume for the PCM and master controls.
-
-The aplay -l says:
-**** List of PLAYBACK Hardware Devices ****
-card 0: G37 [Gravis UltraSound Classic (3.7)], device 0: GF1 [GF1 (synth)]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-but the aplay -L says nothing.
-
-the aplay with the .wav file does not play.
-aplay /usr/share/sounds/alsa/Front_Center.wav
-ALSA lib pcm.c:2144:(snd_pcm_open_noupdate) Unknown PCM default
-aplay: main:545: audio open error: No such file or directory
-
-I have tried to follow the alsa wiki but it has not helped (btw, there is no
-driver the "gusclassic" listed, only the "gus"). Could you point me to
-any piece of information how to set up the card?
-
-The card works with DOS game with Miles (?) drivers.
-
-Regards,
-Krzysztof
-
-----------------------------------------------------------------------
-Teraz taniej na zagraniczne komorki!
-Sprawdz >> http://link.interia.pl/f1ef7 
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
