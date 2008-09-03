@@ -1,21 +1,21 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [PATCH 1/2] ca0106 playback 44100Hz
- support	to	SPDIF and	playback	format & rate constraints
-Date: Tue, 02 Sep 2008 22:18:03 +0100
-Message-ID: <48BDAD8B.8060007@superbug.co.uk>
-References: <1219415921.32652.254.camel@localhost>	<s5h63ptf48b.wl%tiwai@suse.de>
-	<1219502224.15980.32.camel@localhost>	<s5h7ia5dpe0.wl%tiwai@suse.de>
-	<1220375467.7459.8.camel@localhost>
+From: "Cai, Cliff" <Cliff.Cai@analog.com>
+Subject: Re: [PATCH 1/4] ASOC: Blackfin driver for ALSA SoC
+	framework
+Date: Wed, 3 Sep 2008 12:09:49 +0800
+Message-ID: <0F1B54C89D5F954D8535DB252AF412FA02A26AC0@chinexm1.ad.analog.com>
+References: <1219829968-6431-1-git-send-email-cooloney@kernel.org>
+	<1219829968-6431-2-git-send-email-cooloney@kernel.org>
+	<20080827134830.GC10834@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net
-	[194.217.242.90])
-	by alsa0.perex.cz (Postfix) with ESMTP id 133EE24662
+Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id C63CB24158
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Sep 2008 23:18:10 +0200 (CEST)
-In-Reply-To: <1220375467.7459.8.camel@localhost>
+	Wed,  3 Sep 2008 06:10:21 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <20080827134830.GC10834@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +25,170 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Stanley <Ben.Stanley@exemail.com.au>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@sirena.org.uk>, Bryan Wu <cooloney@kernel.org>
+Cc: Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lrg@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Ben Stanley wrote:
-> +		/* We only support 44100 to spdif, not to DAC.
-> +		   (FIXME WHY?)*/
+ 
 
-WHY?  Because the DAC cannot be clocked at 44100, only 48000 and 96000
-from the CA0106 chip.
-The SPDIF can be clocked at 44100.
-It is a hardware limitation.
+-----Original Message-----
+From: Mark Brown [mailto:broonie@sirena.org.uk] 
+Sent: Wednesday, August 27, 2008 9:49 PM
+To: Bryan Wu
+Cc: perex@perex.cz; lrg@kernel.org; alsa-devel@alsa-project.org;
+linux-kernel@vger.kernel.org; Cliff Cai
+Subject: Re: [PATCH 1/4] ASOC: Blackfin driver for ALSA SoC framework
 
-Kind Regards
+On Wed, Aug 27, 2008 at 05:39:25PM +0800, Bryan Wu wrote:
+> From: Cliff Cai <cliff.cai@analog.com>
+> 
+> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+> Signed-off-by: Bryan Wu <cooloney@kernel.org>
 
-James
+As with the other patches in the series this looks good but it has been
+affected by changes in the ASoC APIs and needs to be updated to reflect
+current ALSA.  The topic/asoc branch of Takashi's tree:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+
+is what's currently queued for 2.6.28.
+
+Other than that, checkpatch-style things and a few more minor issues the
+main things are the register write interface in /proc and the hardware
+parameters for the I2S driver.  I've not flagged all the checkpatch
+stuff here.
+
+Can I also suggest splitting this up into a series of patches for easier
+review - for example, adding the SPORT support first, followed by the
+AC97 and I2S drivers and then the machine drivers?  I'd certainly have
+appreciated having seen the SPORT support (which appears at the end of
+the patch) before looking at the AC97 and I2S stuff.
+
+> +	depends on BLACKFIN && SND_SOC
+> +	help
+> +	  Say Y or M if you want to add support for codecs attached to
+> +	  the Blackfin SPORT (synchronous serial ports) interface in
+slot 16 
+> +	  mode (pseudo AC97 interface).
+> +	  You will also need to select the audio interfaces to support
+below.
+> +
+> +	  Note:
+> +	  AC'97 codecs which do not implment the slot-16 mode will not
+function
+> +	  properly with this driver. This driver is known to work with
+the
+> +	  Analog Devices line of AC97 codecs.
+
+Your spelling of AC97 isn't consistent here.  The kernel seems to prefer
+AC97, as do you.
+
+> + * File:         sound/soc/blackfin/bf5xx-ac97-pcm.c
+> + * Author:       Cliff Cai <Cliff.Cai@analog.com>
+> + *
+> + * Created:      Tue June 06 2008
+> + * Description:  Driver for SSM2602 sound chip built in ADSP-BF52xC
+
+Hopefully the driver is more generic than that?
+
+> +static int bf5xx_pcm_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params)
+> +{
+> +	size_t size = bf5xx_pcm_hardware.buffer_bytes_max *
+sizeof(struct 
+> +ac97_frame)/4;
+
+Checkpatch picks up on this and quite a few other places being over 80
+columns.
+
+> +static int bf5xx_pcm_trigger(struct snd_pcm_substream *substream, int
+
+> +cmd) {
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	struct sport_device *sport = runtime->private_data;
+> +	int ret = 0;
+> +
+> +	pr_debug("%s %s\n", substream->stream?"Capture":"Playback", \
+> +			cmd?" start":" stop");
+
+This looks wrong - there's rather more options for cmd, for example, and
+you're making assumptions about the value of SNDRV_PMC_STREAM_PLAYBACK.
+
+> +/*Need to allocate local buffer when enable MMAP for SPORT working in
+
+> +TMD mode(include AC97).*/
+
+Indentation?
+
+
+> +	ret = sport_config_rx(sport_handle, IRFS, 0xF, 0, (16*16-1));
+> +
+> +	if (ret) {
+> +		printk(KERN_ERR "SPORT is busy!\n");
+> +		return -EBUSY;
+> +	}
+> +	ret = sport_config_tx(sport_handle, ITFS, 0xF, 0, (16*16-1));
+> +
+> +	if (ret) {
+> +		printk(KERN_ERR "SPORT is busy!\n");
+> +		return -EBUSY;
+> +	}
+
+>Shouldn't this undo the previous sport_confix_rx() on error?
+
+>Also, the use of blank lines is a bit funny here - I'd expect the blank
+before rather than after the function calls.
+> +	/*SPORT works in TDM mode to simulate AC97 transfers*/
+> +	ret = sport_set_multichannel(sport_handle, 16, 0x1F, 1);
+> +
+> +	if (ret) {
+> +		printk(KERN_ERR "SPORT is busy!\n");
+> +		return -EBUSY;
+> +	}
+> +	ret = sport_config_rx(sport_handle, IRFS, 0xF, 0, (16*16-1));
+> +
+> +	if (ret) {
+> +		printk(KERN_ERR "SPORT is busy!\n");
+> +		return -EBUSY;
+> +	}
+
+>Again, odd blank lines and presumably there needs to be something to
+undo things on error?
+
+t's not necessary to do anything else on error, these functions only set
+registers.
+
+
+> +	/*  TX and RX are not independent,they are enabled at the same
+time,
+> +	 *  even if only one side is running.So,we need to configure
+both of them in advance.
+> +	 *  CPU DAI format:I2S,word length:32 bit,slave mode.
+> +	 */
+
+>Are the RX and TX clocks independant?  If not you should probably tell
+user space about the constraint in startup(), forcing the second stream
+that's opened to use the 
+>same configuration as the first - take a look at the fsl_ssi driver or
+the wm8903 driver for examples of how to do this.
+
+TX and RX Clocks are also not independent,currently,in order to
+implement full duplex,we have to enable both RX and TX side even if
+there is only a steam is opened,
+And make the other side running on a dummy buffer,so all registers
+cann't be configured any more. when the second stream is opened we just
+switch the DMA form dummy buffer to the normal data buffer.
+
+>I'm also not seeing the code that configures the sample rate anywhere -
+but then it looks like the driver only support slave mode ATM?  That's
+what the machine driver is
+ >using.  There should still be a set_fmt() to document what's supported
+if nothing else.
+
+Yes ,the codec runs in master mode and provides bit clock..Do you mean
+just implement a dummy set_fmt() with comments for CPU DAI,
+Refer to my description above,it's not possible to configure anything
+for CPU DAI after a stream is opened ,that why we have to configure CPU
+DAI before any stream is opened.
+
+Cliff   
