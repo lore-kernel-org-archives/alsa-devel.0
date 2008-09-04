@@ -1,60 +1,56 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [alsa-devel] [PATCH 3/5] SOUND: SOC: CODECS: Add support for the TWL4030 audio codec
-Date: Thu, 4 Sep 2008 13:25:42 +0100
-Message-ID: <20080904122542.GC21663@sirena.org.uk>
-References: <1220504520-6067-1-git-send-email-sakoman@gmail.com> <1220504520-6067-2-git-send-email-sakoman@gmail.com> <1220504520-6067-3-git-send-email-sakoman@gmail.com> <1220504520-6067-4-git-send-email-sakoman@gmail.com> <20080904132632.e64c3ce2.jarkko.nikula@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/9] ASoC: Blackfin: DMA Driver for AC97
+	sound chip
+Date: Thu, 4 Sep 2008 13:37:41 +0100
+Message-ID: <20080904123741.GA13735@rakim.wolfsonmicro.main>
+References: <1220516528-20301-1-git-send-email-cooloney@kernel.org>
+	<1220516528-20301-5-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 560DE243ED
+	for <alsa-devel@alsa-project.org>;
+	Thu,  4 Sep 2008 14:37:42 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20080904132632.e64c3ce2.jarkko.nikula@nokia.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: "ext sakoman@gmail.com" <sakoman@gmail.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
+In-Reply-To: <1220516528-20301-5-git-send-email-cooloney@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Bryan Wu <cooloney@kernel.org>
+Cc: Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 04, 2008 at 01:26:32PM +0300, Jarkko Nikula wrote:
+On Thu, Sep 04, 2008 at 04:22:03PM +0800, Bryan Wu wrote:
+> From: Cliff Cai <cliff.cai@analog.com>
+> 
+> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
 
-> > +static void twl4030_dump_registers(void)
-> > +{
-> This is not needed since there is already nice function
-> for it: sound/soc/soc-core.c: codec_reg_show.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-It's doing something slighly different and dumping the chip registers
-rather than the register cache (the read() operation for this chip is
-_read_reg_cache()) but yes, should be sensible to drop it.
+A couple of coding standards nits below but please fix these as an
+incremental patch to save on reviewing.
 
-> > +static void twl4030_power_down(struct snd_soc_codec *codec)
-> > +{
-> ...
-> > +	udelay(10);
-> > +}
-> REVISIT comment for these kind of magic delays if doesn't work without.
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		curr = sport_curr_offset_tx(sport) / sizeof(struct ac97_frame);
+> +	else {
+> +		curr = sport_curr_offset_rx(sport) / sizeof(struct ac97_frame);
+> +
+> +	}
 
-Alternatively, if writes to CODECPDZ are always supposed to have delays
-after them according to the datasheet perhaps a function to wrap up the
-write plus delay would be a good idea?
+Don't need the { }.
 
-> > +static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-> > +		int clk_id, unsigned int freq, int dir)
-> > +{
-> ...
-> > +
-> > +	infreq |= APLL_EN;
-> > +	twl4030_write(codec, REG_APLL_CTL, infreq);
-> > +
-> > +	return 0;
-> > +}
+> +	ret = snd_pcm_hw_constraint_integer(runtime, \
+> +			SNDRV_PCM_HW_PARAM_PERIODS);
+> +	if (ret < 0)
+> +		goto out;
 
-> If this actually place for set_pll callback if one wants to manage PLL
-> (APLL_EN bit) dynamically?
-
-Might be nice, yes.  That said, how much flexibility is there regarding
-the PLL on this part?  If the configuration is determined very strongly
-by the audio configuration and it's likely that the configuration is
-entirely determined by the current audio status then it may not be worth
-exposing the decision making to the user, at least for a first pass.
-The impression I got from the code was that it was very fixed purpose.
-
-If you do do this then make sure it interacts well with power_up() and
-power_down().
+No need for the line continuation here.
