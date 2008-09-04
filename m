@@ -1,16 +1,22 @@
-From: Pawel MOLL <pawel.moll@st.com>
-Subject: Audio buffer mmap-ing on sh arch vs. cache aliasing
-	problem
-Date: Thu, 04 Sep 2008 12:23:54 +0100
-Message-ID: <1220527434.3299.2074.camel@bri1004.bri.st.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 3/5] SOUND: SOC: CODECS: Add support for
+	the TWL4030 audio codec
+Date: Thu, 4 Sep 2008 13:04:42 +0100
+Message-ID: <20080904120441.GB21663@sirena.org.uk>
+References: <1220504520-6067-1-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-2-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-3-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-4-git-send-email-sakoman@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from s200bog18.obsmtp.com (s200bog18.obsmtp.com [207.126.150.132])
-	by alsa0.perex.cz (Postfix) with ESMTP id C35B12435A
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E736243AA
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 13:23:58 +0200 (CEST)
+	Thu,  4 Sep 2008 14:04:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1220504520-6067-4-git-send-email-sakoman@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,81 +26,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-sh@vger.kernel.org
+To: sakoman@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgR3V5cywKClJlY2VudGx5IEkgd2FzIGludmVzdGlnYXRpbmcgYW4gaXNzdWUgd2l0aCBjYXB0
-dXJpbmcgYXVkaW8gdXNpbmcgVVNCCkF1ZGlvIENsYXNzIGRldmljZSBvbiBhIHNoNC1iYXNlZCBi
-b2FyZC4gIkJhZCB2b2ljZSBxdWFsaXR5IiB3YXMKcmVwb3J0ZWQuLi4KCkZpbmFsbHkgSSBoYXZl
-IHRyYWNlZCB0aGUgcHJvYmxlbSB0byBzb21ldGhpbmcgd2hpY2ggaXMgKHVuZm9ydHVuYXRlbHkp
-CndlbGwga25vd24gdG8gc2ggZGV2ZWxvcGVycyBhcyBhIEQtY2FjaGUgYWxpYXNpbmcgKG9yIHN5
-bm9ueW0pIHByb2JsZW0uIAoKQnJpZWZseSBzcGVha2luZzogZHVlIHRvIHNvbWUgTU1VIGRlc2ln
-biBkZWNpc2lvbnMsIG9uZSBjYW4gaGF2ZSB0d28KZGlmZmVyZW50IHZpcnR1YWwgYWRkcmVzcyBw
-b2ludGluZyB0byB0aGUgc2FtZSBwaHlzaWNhbCBsb2NhdGlvbiwgd2hpY2gKaXMgZmluZSwgYnV0
-IGdvaW5nIHZpYSBkaWZmZXJlbnQgY2FjaGUgc2xvdHMhIFNvIGlmIHRoZXJlIHdhcyBhIHZhbHVl
-IG9mCiIwIiBpbiB0aGUgbWVtb3J5IGFuZCB1c2VyICJBIiB3aWxsIHdyaXRlICIxIiB0aGVyZSwg
-dXNlciAiQiIgd2lsbCBzdGlsbApyZWFkICIwIi4uLgoKVGhlIHNvbHV0aW9uIGlzIHRvIGVuc3Vy
-ZSBhbGwgVExCIGVudHJpZXMgKHNvIHZpcnR1YWwgbWVtb3J5IGFyZWFzKSBhcmUKYmVnaW5uaW5n
-IGZyb20gYSAxNmtCLWFsaWduZWQgdmlydHVhbCBhZGRyZXNzLiBPdGhlcndpc2UgaXQgaXMgbmVj
-ZXNzYXJ5CnRvIGZsdXNoIHRoZSBjYWNoZSBiZXR3ZWVuIGFjY2Vzc2VzIGZyb20gIkEiIGFuZCAi
-QiIgc2lkZXMuCgpBbmQgbm93LiBUaGUgVVNCIEF1ZGlvIENsYXNzIGRyaXZlciAoc291bmQvdXNi
-L3VzYmF1ZGlvLmMpIGlzIGFsbG9jYXRpbmcKdGhlIHNvdW5kIGJ1ZmZlciBsaWtlIHRoaXMuLi4K
-CnN0YXRpYyBpbnQgc25kX3BjbV9hbGxvY192bWFsbG9jX2J1ZmZlcihzdHJ1Y3Qgc25kX3BjbV9z
-dWJzdHJlYW0gKnN1YnMsIHNpemVfdCBzaXplKQp7ClsuLi5dCglydW50aW1lLT5kbWFfYXJlYSA9
-IHZtYWxsb2Moc2l6ZSk7ClsuLi5dCn0KCi4uLiBhbmQgdm1hbGxvYyB3aWxsIHJldHVybiBhIHBh
-Z2UoNGspLWFsaWduZWQgcG9pbnRlciwgcG9zc2libHkgbm90CjE2ay1hbGlnbmVkIG9uZS4gVGhp
-cyBpcyB0aGUgc291cmNlIG9mIGFsbCBldmlsIDstKSAKCldoZW4gdXNpbmcgUlcgdHJhbnNmZXJz
-IGV2ZXJ5dGhpbmcgaXMgZmluZSwgYXMgZGF0YSBpcyBtZW1jb3BpZWQgYmV0d2Vlbgp0d28gaW5k
-ZXBlbmRlbnQgYnVmZmVycy4KCkluIGEgY2FzZSBvZiBNTUFQIG1vZGUgd2Ugd2lsbCBlbmQgdXAg
-d2l0aCBzdWNoIGEgc2l0dWF0aW9uOgoKMS4gVGhlIGRyaXZlciB3aWxsIG1lbWNweSBkYXRhIGZy
-b20gYW4gVVJCIHRvIHRoZSBidWZmZXIuIEl0IHdpbGwKcG9wdWxhdGUgc2V2ZXJhbCBjYWNoZSBs
-aW5lcy4gTGV0J3MgY2FsbCBpdCBhICJrZXJuZWwgY2FjaGUiLgoyLiBBcyB0aGUgbGlicmFyeSBo
-YXMgbWFwcGVkIHRoZSBub24tMTZrLWFsaWduZWQgYWRkcmVzcyB2aWEgZGlmZmVyZW50CmNhY2hl
-IGxpbmUgKCJ1c2VyIGNhY2hlIiksIGl0IHdpbGwgcmVhZCBzb21lIHJ1YmJpc2ggZnJvbSB0aGUg
-cGh5c2ljYWwKbWVtb3J5LCBwb3B1bGF0aW5nIHRoZSAidXNlciBjYWNoZSIgYnkgdGhlIHdheS4K
-My4gU29tZSB0aW1lIGxhdGVyIHRoZSAia2VybmVsIGNhY2hlIiBpcyBmbHVzaGVkLCB3cml0aW5n
-IHRoZSBkYXRhIHRvCnRoZSBtZW1vcnkuCjQuIFNvbWUgbmV3IGRhdGEgZnJvbSBVUkIgaXMgZW50
-ZXJpbmcgImtlcm5lbCBjYWNoZSIuCjUuIFRoZSBsaWJyYXJ5IHdpbGwgYWNjZXNzIG1tYXAtZWQg
-YXJlYSBhZ2FpbiwgZ29pbmcgdmlhIHRoZSAidXNlcgpjYWNoZSIsIHdoaWNoIG1heSBvciBtYXkg
-bm90IHJlZmxlY3QgdGhlIGNvcnJlY3QgZGF0YSAoZGVwZW5kaW5nIG9uIHRoZQpmYWN0IHdhcyB0
-aGUgInVzZXIgY2FjaGUiIGZsdXNoZWQgb3Igbm90KSBldGMuCgpPZiBjb3Vyc2UgdGhpcyBjeWNs
-ZSBpcyBjb21wbGV0ZWx5IG5vdCBkZXRlcm1pbmlzdGljLCBzbyBzb21lIG9mIHRoZQoia2VybmVs
-IGNhY2hlIiBsaW5lcyB3aWxsIGJlIGZsdXNoZWQgYmVmb3JlIGJlaW5nIGFjY2Vzc2VkIGZyb20g
-dXNlcgpzcGFjZSwgb3RoZXIgbm90Li4uIFRoZSBmaW5hbCBlZmZlY3QgaXMuLi4gaG1tLi4uIGJp
-emFycmUgOi0pIEZpcnN0LCBvZgpjb3Vyc2UsIHlvdSB3aWxsIGdldCBhIChwcm9iYWJseSBsb3Vk
-KSBnbGl0Y2ggKHJ1YmJpc2ggZnJvbSBidWZmZXIncwp1bmRlcmx5aW5nIG1lbW9yeSwgYmVmb3Jl
-IHRoZSBmaXJzdCB2YWxpZCBkYXRhIGlzIHdyaXR0ZW4gYmFjayksIGFuZAp0aGVuIHNvbWV0aGlu
-ZyB0aGF0IGNvdWxkIGJlIGRlc2NyaWJlZCBhcyBhbiAiZWNobyIgOy0pIEkgbWVhbiAtIHlvdSBh
-cmUKY2FwdHVyaW5nICIxIDIgMyA0IDUgNiA3Li4uIiBhbmQgdGhlIHJlc3VsdCBpcyAoRyBzdGFu
-ZHMgZm9yIEdsaXRjaCA7LSkKIkcgMSAyMyAzIDQgNCA2IDY3Li4uIgoKQXMgYSBxdWljay1hbmQt
-ZGlydHkgd29yay1hcm91bmQgSSBoYXZlIG1vZGlmaWVkCnNuZF9wY21fYWxsb2Nfdm1hbGxvY19i
-dWZmZXIoKSB0byBhbGxvY2F0ZSBhbHdheXMgMTJrQiBtb3JlIGFuZCB0aGVuIHVzZQoxNmstYWxp
-Z25lZCBwb2ludGVyOgoKc3RhdGljIGludCBzbmRfcGNtX2FsbG9jX3ZtYWxsb2NfYnVmZmVyKHN0
-cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vicywgc2l6ZV90IHNpemUpCnsKICAgICAgICBzdHJ1
-Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lID0gc3Vicy0+cnVudGltZTsKICAgICAgICBpZiAo
-cnVudGltZS0+ZG1hX2FkZHIpIHsKICAgICAgICAgICAgICAgIGlmIChydW50aW1lLT5kbWFfYnl0
-ZXMgPj0gc2l6ZSkKICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDA7IC8qIGFscmVhZHkg
-bGFyZ2UgZW5vdWdoICovCiAgICAgICAgICAgICAgICB2ZnJlZSgodm9pZCAqKXJ1bnRpbWUtPmRt
-YV9hZGRyKTsKICAgICAgICB9CiAgICAgICAgcnVudGltZS0+ZG1hX2FkZHIgPSAodW5zaWduZWQg
-bG9uZyl2bWFsbG9jKHNpemUgKyAxMiAqIDEwMjQpOwogICAgICAgIGlmICghcnVudGltZS0+ZG1h
-X2FkZHIpCiAgICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsKICAgICAgICBydW50aW1lLT5k
-bWFfYXJlYSA9ICh2b2lkICopQUxJR04ocnVudGltZS0+ZG1hX2FkZHIsIDE2ICogMTAyNCk7CiAg
-ICAgICAgcnVudGltZS0+ZG1hX2J5dGVzID0gc2l6ZTsKICAgICAgICByZXR1cm4gMDsKfQoKT2Yg
-Y291cnNlIGl0IGNhbm5vdCBiZSByZWdhcmRlZCBhcyBhbnl0aGluZyBtb3JlIGFzIGEgaGFjay4g
-QW5kCmRlZmluaXRlbHkgbm90IGFzIGEgc29sdXRpb24uLi4gU28gbXkgcXVlc3Rpb24gaXM6CgpB
-bnkgaWRlYSBob3cgdGhlICJwcm9wZXIgc29sdXRpb24iIHNob3VsZCBsb29rIGxpa2U/IEkgc2Vl
-IG5vIG9idmlvdXMKbWV0aG9kIHRvIGdldCBhbiBhcmNoLWluZGVwZW5kZW50ICJtbWFwLWNvbXBs
-aWFudCIgYnVmZmVyLiBUaGlzIHByb2JsZW0Kd2FzIGZvdW5kIG9uIGEgc2ggYXJjaCwgdXNpbmcg
-YW4gVVNCIEF1ZGlvIENsYXNzIGRldmljZSwgaG93ZXZlciBvdXQKdGhlcmUgc29tZSBvdGhlciBh
-cmNoaXRlY3R1cmVzIGFyZSBzdWZmZXJpbmcgZnJvbSB0aGlzIE1NVSAiZmVhdHVyZSIgYXMKd2Vs
-bCAoaWUuIHNlZSBodHRwOi8vZG9jcy5ocC5jb20vZW4vQjM5MDYtOTAwMDYvY2gwN3MwOS5odG1s
-KSBhbmQKcG9zc2libHkgb3RoZXIgZHJpdmVycyBjb3VsZCBiZWhhdmUgIndyb25nbHkiIChxdW90
-ZWQgYXMgdGhlIGRyaXZlciBpcwphY3R1YWxseSBpbm5vY2VudC4uLikKClRvIGJlIGhvbmVzdCBJ
-IGp1c3QgaGF2ZSBhYnNvbHV0ZWx5IG5vIGlkZWEgd2hhdCB0byBkbyB3aXRoIHRoaXMKYWxsISA6
-LU8KCkkgaG9wZSBJIHdhcyBjbGVhciBlbm91Z2ggaW4gdGhlIGRlc2NyaXB0aW9uLi4uIEFueSBm
-ZWVkYmFjaywgYWR2aXNlLAppZGVhIGV0Yy4gd2lsbCBiZSBtb3JlIHRoYW4gYXBwcmVjaWF0ZWQu
-CgpDaGVlcnMKClBhd2XFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On Wed, Sep 03, 2008 at 10:01:58PM -0700, sakoman@gmail.com wrote:
+
+> +static void twl4030_power_up(struct snd_soc_codec *codec)
+> +{
+> +	u8 mode, byte, popn, hsgain;
+> +
+> +	/* set CODECPDZ to turn on codec */
+> +	mode = twl4030_read_reg_cache(codec, REG_CODEC_MODE);
+> +	twl4030_write(codec, REG_CODEC_MODE, mode | CODECPDZ);
+> +	udelay(10);
+> +
+> +	/* initiate offset cancellation */
+> +	twl4030_write(codec, REG_ANAMICL,
+> +		twl4030_reg[REG_ANAMICL] | CNCL_OFFSET_START);
+
+It looks a bit odd to see this reading the register defaults rather than
+the register cache.
+
+> +	/* wait for offset cancellation to complete */
+> +	twl4030_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte, REG_ANAMICL);
+> +	while ((byte & CNCL_OFFSET_START) == CNCL_OFFSET_START)
+> +		twl4030_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE,
+> +					&byte, REG_ANAMICL);
+
+How long is this likely to take?  If it might take a while then putting
+a delay in between reads might be nice.  As Jarkko said, a timeout would
+be a good idea too in case something went wrong.
+
+> +	/* anti-pop when changing analog gain */
+> +	twl4030_write(codec, REG_MISC_SET_1,
+> +		twl4030_reg[REG_MISC_SET_1] | SMOOTH_ANAVOL_EN);
+
+Another one reading the register defaults rather than register cache...
+
+> +	/* disable bias out */
+> +	popn &= ~VMID_EN;
+> +	twl4030_write(codec, REG_HS_POPN_SET, popn);
+
+...
+
+> +	case SND_SOC_BIAS_ON:
+> +		twl4030_power_up(codec);
+> +		break;
+> +	case SND_SOC_BIAS_PREPARE:
+> +		break;
+> +	case SND_SOC_BIAS_STANDBY:
+> +		twl4030_power_down(codec);
+> +		break;
+
+Normally SND_SOC_BIAS_STANDBY would leave Vmid enabled but your power
+down function turns it off.  The normal thing here is to have standby
+bring the codec up and then apply relatively small tweaks in _ON and
+_PREPARE that do things like improve the quality of the reference
+voltages.  Equally well, since the driver does not yet implement DAPM
+support doing this will give you power savings that you wouldn't
+otherwise get.
+
+Does the codec have any bypass paths that can be set up?  If not it
+shouldn't do much harm either way until you implement DAPM.
+
+> +/* AUDIO_IF (0x0E) Fields */
+> +
+> +#define AIF_SLAVE_EN		0x80
+> +#define DATA_WIDTH		0x60
+
+These should really all get namespaced - some of them look relatively
+likely to collide with registers for CPU side stuff.
