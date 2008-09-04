@@ -1,104 +1,114 @@
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
-Subject: Re: [PATCH 3/5] SOUND: SOC: CODECS: Add support for
- the TWL4030 audio codec
-Date: Thu, 4 Sep 2008 13:26:32 +0300
-Message-ID: <20080904132632.e64c3ce2.jarkko.nikula@nokia.com>
-References: <1220504520-6067-1-git-send-email-sakoman@gmail.com>
-	<1220504520-6067-2-git-send-email-sakoman@gmail.com>
-	<1220504520-6067-3-git-send-email-sakoman@gmail.com>
-	<1220504520-6067-4-git-send-email-sakoman@gmail.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 1/1] ASoC codec: SSM2602 audio codec driver (v2)
+Date: Thu, 4 Sep 2008 11:32:02 +0100
+Message-ID: <20080904103201.GC13828@sirena.org.uk>
+References: <1220511557-12140-1-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53EB32433A
-	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 12:27:06 +0200 (CEST)
-In-Reply-To: <1220504520-6067-4-git-send-email-sakoman@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext sakoman@gmail.com" <sakoman@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755739AbYIDKcX@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1220511557-12140-1-git-send-email-cooloney@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bryan Wu <cooloney@kernel.org>
+Cc: khali@linux-fr.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed,  3 Sep 2008 22:01:58 -0700
-"ext sakoman@gmail.com" <sakoman@gmail.com> wrote:
+On Thu, Sep 04, 2008 at 02:59:17PM +0800, Bryan Wu wrote:
 
-> From: Steve Sakoman <steve@sakoman.com>
-> 
-> ---
->  sound/soc/codecs/Kconfig   |    5 +
->  sound/soc/codecs/Makefile  |    2 +
->  sound/soc/codecs/twl4030.c |  628 +++++++++++++++++++++++++++++++++++
-...
-> +static void twl4030_dump_registers(void)
-> +{
-This is not needed since there is already nice function
-for it: sound/soc/soc-core.c: codec_reg_show.
+Looks good - most of this is minor stuff here that shouldn't be an
+obstacle to merging, but there does look to be an issue with DAPM
+and the bias configuration.
 
-> +static void twl4030_power_up(struct snd_soc_codec *codec)
-> +{
-> +	u8 mode, byte, popn, hsgain;
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -92,3 +92,6 @@ config SND_SOC_TLV320AIC26
+>  config SND_SOC_TLV320AIC3X
+>  	tristate
+>  	depends on I2C
 > +
-...
-> +	/* wait for offset cancellation to complete */
-> +	twl4030_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte,
-> REG_ANAMICL);
-> +	while ((byte & CNCL_OFFSET_START) == CNCL_OFFSET_START)
-> +		twl4030_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE,
-> +					&byte, REG_ANAMICL);
+> +config SND_SOC_SSM2602
+> +	tristate
+
+Please also add the codec to SND_SOC_ALL_CODECS.
+
+> +#define ssm2602_reset(c)	ssm2602_write(c, SSM2602_RESET, 0)
+> +/*Appending several "None"s just for OSS mixer use*/
+
+Very minor but a blank line between these two would help.
+
+> +	/* terminator */
+> +	{NULL, NULL, NULL},
+
+This terminator is not needed with the bulk registration API.
+
+> +static inline int get_coeff(int mclk, int rate)
+> +{
+> +	int i;
 > +
-Probably some timeout escape here.
-
-> +static void twl4030_power_down(struct snd_soc_codec *codec)
-> +{
-...
-> +	udelay(10);
-> +}
-REVISIT comment for these kind of magic delays if doesn't work without.
-
-> +static int twl4030_hw_params(struct snd_pcm_substream *substream,
-> +			   struct snd_pcm_hw_params *params)
-> +{
-...
-> +	switch (params_rate(params)) {
-> +	case 44100:
-> +		mode |= APLL_RATE_44100;
-> +		break;
-> +	case 48000:
-> +		mode |= APLL_RATE_48000;
-> +		break;
-> +	default:
-> +		printk(KERN_ERR "TWL4030 hw params: unknown rate %d
-> \n",
-> +			params_rate(params));
-> +		return -EINVAL;
+> +	for (i = 0; i < ARRAY_SIZE(coeff_div); i++) {
+> +		if (coeff_div[i].rate == rate && coeff_div[i].mclk == mclk)
+> +			return i;
 > +	}
-I checked that chip supports also other standard rates from 8 kHz,
-11.025 kHz, etc. However I didn't find from quick look how this relates
-to interface rate. I would say that small TODO comment to whom who has
-platform to try these combinations would be nice.
-
-> +static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-> +		int clk_id, unsigned int freq, int dir)
-> +{
-...
-> +
-> +	infreq |= APLL_EN;
-> +	twl4030_write(codec, REG_APLL_CTL, infreq);
-> +
 > +	return 0;
 > +}
-If this actually place for set_pll callback if one wants to manage PLL
-(APLL_EN bit) dynamically?
 
+Zero is a valid return value but is also returned if no match is found.
+Is this intended?
 
-Jarkko
+> +static void ssm2602_shutdown(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_device *socdev = rtd->socdev;
+> +	struct snd_soc_codec *codec = socdev->codec;
+> +	/* deactivate */
+> +	if (!codec->active) {
+> +		udelay(50);
+> +		ssm2602_write(codec, SSM2602_ACTIVE, 0);
+> +	}
+
+Hrm.  That udelay() looks suspicious - what's it there for?  There's no
+previous activity in this function for it to leave an interval from.  If
+it's delaying from some previous activity then might the udelay() break
+if the time between that activity and this being called changes for some
+reason.
+
+> +static int ssm2602_mute(struct snd_soc_dai *dai, int mute)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	u16 mute_reg = ssm2602_read_reg_cache(codec, SSM2602_APDIGI) & 0xfff7;
+> +	if (mute)
+> +		ssm2602_write(codec, SSM2602_APDIGI,
+> +				mute_reg | ENABLE_DAC_MUTE);
+> +	else
+> +		ssm2602_write(codec, SSM2602_APDIGI, mute_reg);
+> +	return 0;
+> +}
+
+Might be slightly clearer to use ~ENABLE_DAC_MUTE rather than 0xfff7.
+
+> +static int ssm2602_set_bias_level(struct snd_soc_codec *codec,
+> +				 enum snd_soc_bias_level level)
+> +{
+> +	u16 reg = ssm2602_read_reg_cache(codec, SSM2602_PWR) & 0xff7f;
+> +
+> +	switch (level) {
+> +	case SND_SOC_BIAS_ON:
+> +		/* vref/mid, osc on, dac unmute */
+> +		ssm2602_write(codec, SSM2602_PWR, 0);
+> +		break;
+
+This looks like it's going to override DAPM - when the driver goes to
+bias on this will overwrite the DAPM power configuration.  This will
+mean that, for example, the ADC will be powered up during playback.  The
+bias configuration should be leaving the power bits controlled by
+DAPM as they are when changing bias levels.
+
+> +/*Left ADC Volume Control (SSM2602_REG_LEFT_ADC_VOL)*/
+> +#define     LIN_VOL                0x01F   /* Left Channel PGA Volume control                      */
+> +#define     LIN_ENABLE_MUTE        0x080   /* Left Channel Input Mute                              */
+> +#define     LRIN_BOTH              0x100   /* Left Channel Line Input Volume update                */
+
+Sorry, didn't pick this up last time but the register bit defines in the
+header may benefit from namespacing.  It's not such a big deal since
+only machine drivers and this codec driver should be using this header
+but it'd be nice.
