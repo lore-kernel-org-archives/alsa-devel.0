@@ -1,28 +1,21 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Pull request for alsa-plugins
-Date: Thu, 04 Sep 2008 11:23:09 +0100
-Message-ID: <g9ocud$jjq$2@ger.gmane.org>
-References: <20080903191741.GA13536@tango.0pointer.de>
-	<s5h63pcnygu.wl%tiwai@suse.de>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [PATCH 3/5] SOUND: SOC: CODECS: Add support for
+ the TWL4030 audio codec
+Date: Thu, 4 Sep 2008 13:26:32 +0300
+Message-ID: <20080904132632.e64c3ce2.jarkko.nikula@nokia.com>
+References: <1220504520-6067-1-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-2-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-3-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-4-git-send-email-sakoman@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ciao.gmane.org (main.gmane.org [80.91.229.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 863D32433F
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 53EB32433A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 12:25:03 +0200 (CEST)
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1KbC1O-0008EQ-Rp
-	for alsa-devel@alsa-project.org; Thu, 04 Sep 2008 10:25:03 +0000
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 04 Sep 2008 10:25:02 +0000
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 04 Sep 2008 10:25:02 +0000
-In-Reply-To: <s5h63pcnygu.wl%tiwai@suse.de>
+	Thu,  4 Sep 2008 12:27:06 +0200 (CEST)
+In-Reply-To: <1220504520-6067-4-git-send-email-sakoman@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,42 +25,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "ext sakoman@gmail.com" <sakoman@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> One of my concerns in the current pulse code is the many use of
-> assert().  In many cases, assert() is a wrong choice.  For example,
-> checking the return value of malloc in assert() is definitely wrong.
-> It should be always checked, and should return an error instead of
-> aborting the program.
+On Wed,  3 Sep 2008 22:01:58 -0700
+"ext sakoman@gmail.com" <sakoman@gmail.com> wrote:
+
+> From: Steve Sakoman <steve@sakoman.com>
 > 
-> Yes, alsa-lib has also many assert() although I removed already many.
-> Some of them may be still wrong ones.  Hopefully this can be sorted
-> out later.
+> ---
+>  sound/soc/codecs/Kconfig   |    5 +
+>  sound/soc/codecs/Makefile  |    2 +
+>  sound/soc/codecs/twl4030.c |  628 +++++++++++++++++++++++++++++++++++
+...
+> +static void twl4030_dump_registers(void)
+> +{
+This is not needed since there is already nice function
+for it: sound/soc/soc-core.c: codec_reg_show.
 
-There has been a rather large thread on this on PA mailing list over the 
-last couple days :)
+> +static void twl4030_power_up(struct snd_soc_codec *codec)
+> +{
+> +	u8 mode, byte, popn, hsgain;
+> +
+...
+> +	/* wait for offset cancellation to complete */
+> +	twl4030_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte,
+> REG_ANAMICL);
+> +	while ((byte & CNCL_OFFSET_START) == CNCL_OFFSET_START)
+> +		twl4030_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE,
+> +					&byte, REG_ANAMICL);
+> +
+Probably some timeout escape here.
 
-http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/2014
+> +static void twl4030_power_down(struct snd_soc_codec *codec)
+> +{
+...
+> +	udelay(10);
+> +}
+REVISIT comment for these kind of magic delays if doesn't work without.
 
-I personally got some stuff wrong, but learned from Lennart's responses.
+> +static int twl4030_hw_params(struct snd_pcm_substream *substream,
+> +			   struct snd_pcm_hw_params *params)
+> +{
+...
+> +	switch (params_rate(params)) {
+> +	case 44100:
+> +		mode |= APLL_RATE_44100;
+> +		break;
+> +	case 48000:
+> +		mode |= APLL_RATE_48000;
+> +		break;
+> +	default:
+> +		printk(KERN_ERR "TWL4030 hw params: unknown rate %d
+> \n",
+> +			params_rate(params));
+> +		return -EINVAL;
+> +	}
+I checked that chip supports also other standard rates from 8 kHz,
+11.025 kHz, etc. However I didn't find from quick look how this relates
+to interface rate. I would say that small TODO comment to whom who has
+platform to try these combinations would be nice.
 
-Certainly I think a lot of the cases where this plugin could have 
-previously hit an assert have now been removed. Not sure about the 
-malloc asserts() tho'...
+> +static int twl4030_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+> +		int clk_id, unsigned int freq, int dir)
+> +{
+...
+> +
+> +	infreq |= APLL_EN;
+> +	twl4030_write(codec, REG_APLL_CTL, infreq);
+> +
+> +	return 0;
+> +}
+If this actually place for set_pll callback if one wants to manage PLL
+(APLL_EN bit) dynamically?
 
-Col
 
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-   Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-   Mandriva Linux Contributor [http://www.mandriva.com/]
-   PulseAudio Hacker [http://www.pulseaudio.org/]
-   Trac Hacker [http://trac.edgewall.org/]
+Jarkko
