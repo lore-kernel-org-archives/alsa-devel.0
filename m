@@ -1,18 +1,23 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: Does Gravis Classic driver work?
-Date: Thu, 04 Sep 2008 00:22:01 +0200
-Message-ID: <48BF0E09.9060804@keyaccess.nl>
-References: <20080903213153.f3feda45.krzysztof.h1@poczta.fm>
+From: "Bryan Wu" <cooloney@kernel.org>
+Subject: Re: [PATCH 7/8] ASoC: Add SPI support for WM8731
+Date: Thu, 4 Sep 2008 09:46:20 +0800
+Message-ID: <386072610809031846j18a1534s937a143f66203782@mail.gmail.com>
+References: <1220291224-11269-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220291224-11269-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220291224-11269-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<200809031701.46791.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
-	[213.51.130.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D18C24517
+Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id BFF00103815
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 00:19:47 +0200 (CEST)
-In-Reply-To: <20080903213153.f3feda45.krzysztof.h1@poczta.fm>
+	Thu,  4 Sep 2008 03:46:21 +0200 (CEST)
+Received: by yx-out-1718.google.com with SMTP id 36so1917058yxh.2
+	for <alsa-devel@alsa-project.org>; Wed, 03 Sep 2008 18:46:20 -0700 (PDT)
+In-Reply-To: <200809031701.46791.gineera@aspect135.co.uk>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,52 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, Rene Herman <rene.herman@gmail.com>
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliff.cai@analog.com>, Liam Girdwood <lrg@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 03-09-08 21:31, Krzysztof Helt wrote:
+On Thu, Sep 4, 2008 at 12:01 AM, Alan Horstmann <gineera@aspect135.co.uk> wrote:
+> On Monday 01 September 2008 18:47, Mark Brown wrote:
+>> From: Cliff Cai <cliff.cai@analog.com>
+>>
+>> [Modified to allow runtime selection between I2C and SPI and to select
+>> SPI_MASTER for all codecs build so this is included. -- broonie]
+>>
+>> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+>> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+>> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>> ---
+>
+> What architecture has this SPI code been tested on?  Specifically, what
+> endianess?
+>
 
-> I have acquired an unknown clone of the GF1 classic card.
+We tested on Blackfin machine and it's little-endian.
 
-Probably a Primax Soundstorm.
+-Bryan
 
-> I load the snd-gusclassic driver with
-> modprobe snd-gusclassic port=0x220
-> 
-> and the /proc/asound/cards says
->  0 [G37            ]: GUS - Gravis UltraSound Classic (3.7)
->                       Gravis UltraSound Classic (3.7) at 0x220, irq 5, dma 5&5
-> 
-> The alsamixer works. I set maximum volume for the PCM and master controls.
-> 
-> The aplay -l says:
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: G37 [Gravis UltraSound Classic (3.7)], device 0: GF1 [GF1 (synth)]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> 
-> but the aplay -L says nothing.
-> 
-> the aplay with the .wav file does not play.
-> aplay /usr/share/sounds/alsa/Front_Center.wav
-> ALSA lib pcm.c:2144:(snd_pcm_open_noupdate) Unknown PCM default
-> aplay: main:545: audio open error: No such file or directory
-> 
-> I have tried to follow the alsa wiki but it has not helped (btw, there is no
-> driver the "gusclassic" listed, only the "gus"). Could you point me to
-> any piece of information how to set up the card?
-> 
-> The card works with DOS game with Miles (?) drivers.
-
-Known issue indeed. It works via OSS. When I noticed this (it's on this 
-list somewhere) I was quite unaware of the user space stuff and none 
-else seemed capable of hinting in some general direction either so the 
-issue fell of the radar again. But it's probably just some lib/config 
-issue. As said, OSS players (such as ogg123 -d oss, mpg321 -o oss) worked.
-
-(I'm by the way ouf of action currently. I do have an original GUS 
-classic, GUS MAX, GUS Extreme and several clones so I'll confirm 
-anything you find in due course).
-
-Rene.
+>> --- a/sound/soc/codecs/wm8731.c
+>> +++ b/sound/soc/codecs/wm8731.c
+>
+>
+>> +static int wm8731_spi_write(struct spi_device *spi, const char *data, int
+>> len) +{
+>> +     struct spi_transfer t;
+>> +     struct spi_message m;
+>> +     u16 msg[2];
+>> +
+>> +     if (len <= 0)
+>> +             return 0;
+>> +
+>> +     msg[0] = (data[0] << 8) + data[1];
+>> +
+>> +     spi_message_init(&m);
+>> +     memset(&t, 0, (sizeof t));
+>> +
+>> +     t.tx_buf = &msg[0];
+>> +     t.len = len;
+>> +
+>> +     spi_message_add_tail(&t, &m);
+>> +     spi_sync(spi, &m);
+>> +
+>> +     return len;
+>> +}
+>
+> Is this _spi_write arch BE/LE proof?
+>
+> Alan
+>
+>
