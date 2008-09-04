@@ -1,52 +1,48 @@
-From: Caglar Akyuz <caglarakyuz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: DaVinci ASoC DMA stalls
-Date: Thu, 04 Sep 2008 20:06:58 +0300
-Message-ID: <48C015B2.2070401@gmail.com>
-References: <48BFE50E.3000802@acdstar.com>
+From: "Timur Tabi" <timur@freescale.com>
+Subject: Re: [PATCH] ALSA: ASoC: Fix memory leaks for the
+	CS4270 driver
+Date: Thu, 4 Sep 2008 13:20:33 -0500
+Message-ID: <ed82fe3e0809041120u7b070c33j4bae7c221b935f36@mail.gmail.com>
+References: <1220479634-26912-1-git-send-email-timur@freescale.com>
+	<s5hd4jko0p2.wl%tiwai@suse.de> <48C004B4.2000208@freescale.com>
+	<s5htzcv98j8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <48BFE50E.3000802-3mWahjwryh5BDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.omap.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Mark Lokowich <lokowich-3mWahjwryh5BDgjK7y7TUQ@public.gmane.org>
-Cc: ALSA-devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, davinci-linux-open-source <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.234])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BD242444B
+	for <alsa-devel@alsa-project.org>;
+	Thu,  4 Sep 2008 20:20:35 +0200 (CEST)
+Received: by wr-out-0506.google.com with SMTP id 36so70968wra.24
+	for <alsa-devel@alsa-project.org>; Thu, 04 Sep 2008 11:20:34 -0700 (PDT)
+In-Reply-To: <s5htzcv98j8.wl%tiwai@suse.de>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Lokowich wrote:
+On Thu, Sep 4, 2008 at 11:32 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> Well, the latest ALSA tree != 2.6.27.
+> The question is whether we need a fix for 2.6.27 or not.
 
-> I've been using the DaVinci ASoC for a few months and have recently
-> upgraded to the 2.6.26 based DaVinci git kernel.  Now my audio DMA
-> stalls more readily after stopping an active stream.  I can manually
-> trigger the event by poking the ESR to reactivate the stalled stream,
-> suggesting the problem is in the ASP-to-DMA XEVT interface.  This
-> problem is less prevalent in the 2.6.25 based kernel.  Any help?
-> 
+I guess not.  Technically, there are bugs, but they'll never be seen.
+Kconfig doesn't allow the code to be compiled as modules anyway, and
+forcing an I2C unbind will break everything.  Plus, none of these bugs
+exists in the ASoC V2 version of this driver, so any patch I submit
+will be superseded anyway.
 
+Therefore, I official rescind this patch.
 
-I don't know if this helps but, I am using ASoC code on my DaVinci board
-with latest git kernel(2.6.27) and I have no visible issues with the ASoC
-code. However, there may be some code-coverage issue with my usage so if you
-have any test method to verify that I really don't have your problem I'll
-be happy to perform some tests.
-
-My real concern is that this code has never been built without any problems here.
-First there was a separate asoc branch in davinci tree which failed to built.
-I tried with 2.6.25 and there was again build issues. Finally I wasn't able to
-build ASoC code with 2.6.27 so I tried to patch it. I think some part of it 
-relies on some dma code which is not present in davinci tree.[1] I don't know
-if everybody else is patching kernel source to build asoc support, maybe I'm
-doing something wrong. I'm not sure, just FYI.
-
-Regards,
-Caglar
-
-[1] http://linux.omap.com/pipermail/davinci-linux-open-source/2008-March/005920.html
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
