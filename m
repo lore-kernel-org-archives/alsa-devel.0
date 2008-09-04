@@ -1,51 +1,52 @@
-From: Travis Place <wishie@wishie.net>
-Subject: Problems recording with HP DV2839TX laptop.
-Date: Fri, 5 Sep 2008 02:46:50 +1000
-Message-ID: <200809050246.51117.wishie@wishie.net>
+From: Caglar Akyuz <caglarakyuz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: DaVinci ASoC DMA stalls
+Date: Thu, 04 Sep 2008 20:06:58 +0300
+Message-ID: <48C015B2.2070401@gmail.com>
+References: <48BFE50E.3000802@acdstar.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www.wishie.net (202-137-100-224.dial.usertools.net
-	[202.137.100.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1046324445
-	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 18:46:49 +0200 (CEST)
-Received: from laptop.local (unknown [192.168.0.200])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.wishie.net (Postfix) with ESMTP id E3479EB483
-	for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2008 17:11:38 +1000 (EST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <48BFE50E.3000802-3mWahjwryh5BDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.omap.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Mark Lokowich <lokowich-3mWahjwryh5BDgjK7y7TUQ@public.gmane.org>
+Cc: ALSA-devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, davinci-linux-open-source <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello everyone,
+Mark Lokowich wrote:
 
-Im Travis (wishie) once of the many helpers who man the unofficial #alsa on 
-freenode irc network.. I usually spend my time fixing other peoples sound 
-issues, but now i have my own.
+> I've been using the DaVinci ASoC for a few months and have recently
+> upgraded to the 2.6.26 based DaVinci git kernel.  Now my audio DMA
+> stalls more readily after stopping an active stream.  I can manually
+> trigger the event by poking the ESR to reactivate the stalled stream,
+> suggesting the problem is in the ASP-to-DMA XEVT interface.  This
+> problem is less prevalent in the 2.6.25 based kernel.  Any help?
+> 
 
-I have a HP DV2839TX laptop, and i get ALOT of static when recording via the 
-inbuilt mic. Also, the mic controls are very strange.. I have (in the Capture 
-section of alsamixer).. Digital, Docking Mic, External Mic, Internal Mic.. 
-only the "Digital" control seems to effect my recording volume at all. 
-Strangely, though, the '* Mic' controls in the PLAYBACK section of alsamixer 
-do change the recording properties somewhat (volume being the main factor). 
-In any event, i get a rather large amount of static, no matter what mixer 
-settings i try. This isnt a problem in the 'other' OS.
 
-My alsa-info.sh output for alsa-driver 1.0.16 is at : 
-http://www.alsa-project.org/db/?f=0d1df6446ff1c71ad305e7b7b367f0a6b22b80c8
+I don't know if this helps but, I am using ASoC code on my DaVinci board
+with latest git kernel(2.6.27) and I have no visible issues with the ASoC
+code. However, there may be some code-coverage issue with my usage so if you
+have any test method to verify that I really don't have your problem I'll
+be happy to perform some tests.
 
-My alsa-info.sh output for alsa-driver 1.0.18rc1 is at : 
-http://www.alsa-project.org/db/?f=9e5cd99f4822e0d671866fa630698bd1b0cd954b
+My real concern is that this code has never been built without any problems here.
+First there was a separate asoc branch in davinci tree which failed to built.
+I tried with 2.6.25 and there was again build issues. Finally I wasn't able to
+build ASoC code with 2.6.27 so I tried to patch it. I think some part of it 
+relies on some dma code which is not present in davinci tree.[1] I don't know
+if everybody else is patching kernel source to build asoc support, maybe I'm
+doing something wrong. I'm not sure, just FYI.
+
+Regards,
+Caglar
+
+[1] http://linux.omap.com/pipermail/davinci-linux-open-source/2008-March/005920.html
