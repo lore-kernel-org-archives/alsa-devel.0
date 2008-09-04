@@ -1,17 +1,21 @@
-From: Mark Lokowich <lokowich@acdstar.com>
-Subject: Re: DaVinci ASoC DMA stalls
-Date: Thu, 04 Sep 2008 17:23:57 -0500
-Message-ID: <48C05FFD.4030009@acdstar.com>
-References: <48BFE50E.3000802@acdstar.com> <48C015B2.2070401@gmail.com>
+From: Kevin Gilbert <kevin952@tpg.com.au>
+Subject: Problems with pulseaudio / asla on PS3
+Date: Fri, 5 Sep 2008 08:42:08 +1000
+Message-ID: <200809050842.08596.kevin952@tpg.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from g2host.com (mailfront2.g2host.com [208.42.176.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3337F243B5
+Received: from mail8.tpgi.com.au (mail8.tpgi.com.au [203.12.160.165])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18D9A244F5
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 00:24:28 +0200 (CEST)
-In-Reply-To: <48C015B2.2070401@gmail.com>
+	Fri,  5 Sep 2008 00:42:36 +0200 (CEST)
+Received: from giles.localnet (203-30-105-25.rucc.net.au [203.30.105.25])
+	(authenticated bits=0)
+	by mail8.tpgi.com.au (envelope-from kevin952@tpg.com.au)
+	(8.14.3/8.14.3) with ESMTP id m84MgWVh029817
+	for <alsa-devel@alsa-project.org>; Fri, 5 Sep 2008 08:42:34 +1000
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,50 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Caglar Akyuz <caglarakyuz@gmail.com>
-Cc: ALSA-devel <alsa-devel@alsa-project.org>, davinci-linux-open-source <davinci-linux-open-source@linux.davincidsp.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I did have to add a getposition accessor to the DaVinci DMA module, 
-which is used by the pcm_pointer function.  Other than that, I believe 
-the ASoC should build.  My test is simply to run aplay or speaker-test, 
-then quit and run it again.  The first run is audible, the second and 
-subsequent runs are not audible until I provide a manual DMA event trigger.
+Hi,
 
-Mark
+I'm trying to get an jukebox application going on a Sony PlayStation3 using 
+Qt-Embedded, Phonon and PulseAudio. The application is working well on my KDE-
+based laptop where it appears that the application is using Phonon -> ALSA -> 
+PulseAudio. But there is no sound from the application when run on the PS3.
 
-Caglar Akyuz wrote:
-> Mark Lokowich wrote:
->
->   
->> I've been using the DaVinci ASoC for a few months and have recently
->> upgraded to the 2.6.26 based DaVinci git kernel.  Now my audio DMA
->> stalls more readily after stopping an active stream.  I can manually
->> trigger the event by poking the ESR to reactivate the stalled stream,
->> suggesting the problem is in the ASP-to-DMA XEVT interface.  This
->> problem is less prevalent in the 2.6.25 based kernel.  Any help?
->>
->>     
->
->
-> I don't know if this helps but, I am using ASoC code on my DaVinci board
-> with latest git kernel(2.6.27) and I have no visible issues with the ASoC
-> code. However, there may be some code-coverage issue with my usage so if you
-> have any test method to verify that I really don't have your problem I'll
-> be happy to perform some tests.
->
-> My real concern is that this code has never been built without any problems here.
-> First there was a separate asoc branch in davinci tree which failed to built.
-> I tried with 2.6.25 and there was again build issues. Finally I wasn't able to
-> build ASoC code with 2.6.27 so I tried to patch it. I think some part of it 
-> relies on some dma code which is not present in davinci tree.[1] I don't know
-> if everybody else is patching kernel source to build asoc support, maybe I'm
-> doing something wrong. I'm not sure, just FYI.
->
-> Regards,
-> Caglar
->
-> [1] http://linux.omap.com/pipermail/davinci-linux-open-source/2008-March/005920.html
->
->
->   
+I initially reported this problem to the PulseAudio mailing list. The first 
+post on this topic is at https://tango.0pointer.de/pipermail/pulseaudio-
+discuss/2008-August/002249.html . In pacticular, see these posts:
+
+1) https://tango.0pointer.de/pipermail/pulseaudio-discuss/2008-
+September/002346.html where I detail the results of a final test using the 
+latest development version of PulseAudio; and
+
+2) https://tango.0pointer.de/pipermail/pulseaudio-discuss/2008-
+September/002347.html where a PulseAudio developer diagnoses the problem as 
+being within ALSA.
+
+For convenience, the following is from the latter post:
+
+"So, what happens here is this: your device can only do non-interleaved audio 
+and is hence configured for it (as we can see from that "slave setup" listing 
+above). Because your hardware lacks a hardware volume control ALSA puts 
+"softvol" on top of the hw device: the "Soft Volume PCM" you can see in the 
+first part. That device is initialized for interleaved audio as you can see. 
+Which is what PA supports and PA asked for.
+
+Now, if softval takes non-interleaved from below and gives interleaved to the 
+layer above than it would need to rearrange those samples -- which it however 
+doesn't actually. PA hence checks with those asserts if the audio data is 
+properly arranged -- which it is not as we can see.
+
+This is a bug in ALSA's softvol module. Please report this on alsa-devel. 
+softvol falsely claims to be able to rearrange non-interleaved audio to 
+interleaved."
+
+Not sure what other information I should post here so I'll wait for any 
+feedback.
+
+Thanks in advance,
+Kevin
