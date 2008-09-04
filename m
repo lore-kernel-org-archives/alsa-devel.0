@@ -1,85 +1,117 @@
-From: "Bryan Wu" <cooloney@kernel.org>
-Subject: Re: [PATCH 7/8] ASoC: Add SPI support for WM8731
-Date: Thu, 4 Sep 2008 09:46:20 +0800
-Message-ID: <386072610809031846j18a1534s937a143f66203782@mail.gmail.com>
-References: <1220291224-11269-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220291224-11269-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220291224-11269-7-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<200809031701.46791.gineera@aspect135.co.uk>
+From: Cliff Cai <xcahua@hotmail.com>
+Subject: RE: [alsa-devel] [PATCH 1/4] ASOC: Blackfin driver for ALSA SoC
+	framework
+Date: Thu, 4 Sep 2008 03:54:10 +0000
+Message-ID: <BAY110-W23D3CD96F1CD07678A9100C9590@phx.gbl>
+References: <1219829968-6431-1-git-send-email-cooloney@kernel.org>
+	<1219829968-6431-2-git-send-email-cooloney@kernel.org>
+ 	<20080827134830.GC10834@sirena.org.uk>
+ 	<0F1B54C89D5F954D8535DB252AF412FA02A26AC0@chinexm1.ad.analog.com>
+ <20080903103850.GA20438@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yx-out-1718.google.com (yx-out-1718.google.com [74.125.44.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFF00103815
-	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 03:46:21 +0200 (CEST)
-Received: by yx-out-1718.google.com with SMTP id 36so1917058yxh.2
-	for <alsa-devel@alsa-project.org>; Wed, 03 Sep 2008 18:46:20 -0700 (PDT)
-In-Reply-To: <200809031701.46791.gineera@aspect135.co.uk>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliff.cai@analog.com>, Liam Girdwood <lrg@kernel.org>
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755969AbYIDEAk@vger.kernel.org>
+In-Reply-To: <20080903103850.GA20438@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@sirena.org.uk>
+Cc: linux-kernel@vger.kernel.org, Bryan Wu <cooloney@kernel.org>, alsa-devel@alsa-project.org, lrg@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 4, 2008 at 12:01 AM, Alan Horstmann <gineera@aspect135.co.uk> wrote:
-> On Monday 01 September 2008 18:47, Mark Brown wrote:
->> From: Cliff Cai <cliff.cai@analog.com>
->>
->> [Modified to allow runtime selection between I2C and SPI and to select
->> SPI_MASTER for all codecs build so this is included. -- broonie]
->>
->> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
->> Signed-off-by: Bryan Wu <cooloney@kernel.org>
->> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
->> ---
->
-> What architecture has this SPI code been tested on?  Specifically, what
-> endianess?
->
 
-We tested on Blackfin machine and it's little-endian.
 
--Bryan
 
->> --- a/sound/soc/codecs/wm8731.c
->> +++ b/sound/soc/codecs/wm8731.c
+
+> Date: Wed, 3 Sep 2008 11:38:52 +0100
+> From: broonie@sirena.org.uk
+> To: Cliff.Cai@analog.com
+> CC: linux-kernel@vger.kernel.org; cooloney@kernel.org; alsa-devel@als=
+a-project.org; lrg@kernel.org
+> Subject: Re: [alsa-devel] [PATCH 1/4] ASOC: Blackfin driver for ALSA =
+SoC framework
 >
+> On Wed, Sep 03, 2008 at 12:09:49PM +0800, Cai, Cliff wrote:
 >
->> +static int wm8731_spi_write(struct spi_device *spi, const char *data, int
->> len) +{
->> +     struct spi_transfer t;
->> +     struct spi_message m;
->> +     u16 msg[2];
->> +
->> +     if (len <= 0)
->> +             return 0;
->> +
->> +     msg[0] = (data[0] << 8) + data[1];
->> +
->> +     spi_message_init(&m);
->> +     memset(&t, 0, (sizeof t));
->> +
->> +     t.tx_buf = &msg[0];
->> +     t.len = len;
->> +
->> +     spi_message_add_tail(&t, &m);
->> +     spi_sync(spi, &m);
->> +
->> +     return len;
->> +}
+> Cliff, please fix your mail client configuration - the formatting of
+> your reply makes little (if any) distinction between the text of my
+> original mail which makes your message difficult to read.
 >
-> Is this _spi_write arch BE/LE proof?
+>> -----Original Message-----
+>> From: Mark Brown [mailto:broonie@sirena.org.uk]
+>> Sent: Wednesday, August 27, 2008 9:49 PM
+>> To: Bryan Wu
+>> Cc: perex@perex.cz; lrg@kernel.org; alsa-devel@alsa-project.org;
+>> linux-kernel@vger.kernel.org; Cliff Cai
+>> Subject: Re: [PATCH 1/4] ASOC: Blackfin driver for ALSA SoC framewor=
+k
 >
-> Alan
+>> On Wed, Aug 27, 2008 at 05:39:25PM +0800, Bryan Wu wrote:
+>>> From: Cliff Cai=20
 >
+>>>Again, odd blank lines and presumably there needs to be something to
+>> undo things on error?
 >
+>> t's not necessary to do anything else on error, these functions only=
+ set
+>> registers.
+>
+> And none of these settings will leave things so that the port looks b=
+usy
+> or anything like that?
+
+
+No,they are called just to configure somthing but won't start it,it onl=
+y fails when the port is busy.
+
+
+>
+>> TX and RX Clocks are also not independent,currently,in order to
+>> implement full duplex,we have to enable both RX and TX side even if
+>> there is only a steam is opened,
+>> And make the other side running on a dummy buffer,so all registers
+>> cann't be configured any more. when the second stream is opened we j=
+ust
+>> switch the DMA form dummy buffer to the normal data buffer.
+>
+> Right, in that case your driver should use constraints to stop
+> applications trying to configure the capture and playback sides
+> differently.
+>
+>>>I'm also not seeing the code that configures the sample rate anywher=
+e -
+>> but then it looks like the driver only support slave mode ATM? That'=
+s
+>> what the machine driver is
+>>>using. There should still be a set_fmt() to document what's supporte=
+d
+>> if nothing else.
+>
+>> Yes ,the codec runs in master mode and provides bit clock..Do you me=
+an
+>> just implement a dummy set_fmt() with comments for CPU DAI,
+>
+> It shouldn't just be a dummy - it should reject DAI formats other tha=
+n
+> CBS_CFM if that is the only configuration that's supported.
+>
+>> Refer to my description above,it's not possible to configure anythin=
+g
+>> for CPU DAI after a stream is opened ,that why we have to configure =
+CPU
+>> DAI before any stream is opened.
+>
+> This is normal (and generally trying would result in audio artifacts =
+if
+> you try), but normally there is at least some configuration that can =
+be
+> done before the stream actually starts running.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+_________________________________________________________________
+=D2=BB=B1=DF=C1=C4=CC=EC=D2=BB=B1=DF=BF=EC=CB=D9=CB=D1=CB=F7=A3=AC=B2=A2=
+=B0=D1=BD=E1=B9=FB=B9=B2=CF=ED=B8=F8=BA=C3=D3=D1=A3=AC=C1=A2=BF=CC=CA=D4=
+=CA=D4=A3=A1
+http://im.live.cn/Share/18.htm
