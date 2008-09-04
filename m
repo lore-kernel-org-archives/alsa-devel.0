@@ -1,19 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 7/9] ASoC: Blackfin: I2S CPU DAI driver
-Date: Thu, 4 Sep 2008 15:43:43 +0100
-Message-ID: <20080904144343.GB32531@rakim.wolfsonmicro.main>
-References: <1220516528-20301-1-git-send-email-cooloney@kernel.org>
-	<1220516528-20301-8-git-send-email-cooloney@kernel.org>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: snd-soc-cs4270: Convert to a new-style i2c driver
+ (work in progress)
+Date: Thu, 04 Sep 2008 09:44:00 -0500
+Message-ID: <48BFF430.1090201@freescale.com>
+References: <20080831161843.227b31f3@hyperion.delvare>
+	<ed82fe3e0808310928v18eed8bdh98faa6796a516142@mail.gmail.com>
+	<20080831190928.2931b0ed@hyperion.delvare>
+	<ed82fe3e0809031247t3085e409x3141f9712ad962a9@mail.gmail.com>
+	<ed82fe3e0809031330s5036e9d0g1c2b3e73096f2a6@mail.gmail.com>
+	<20080904104224.GE13828@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DF95424350
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id A31E424398
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 16:43:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1220516528-20301-8-git-send-email-cooloney@kernel.org>
+	Thu,  4 Sep 2008 16:44:06 +0200 (CEST)
+In-Reply-To: <20080904104224.GE13828@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,40 +28,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bryan Wu <cooloney@kernel.org>
-Cc: Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Timur Tabi <timur@freescale.com>, Jean Delvare <khali@linux-fr.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 04, 2008 at 04:22:06PM +0800, Bryan Wu wrote:
-> From: Cliff Cai <cliff.cai@analog.com>
-> 
-> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+Mark Brown wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> If you build the codec driver as a module then you also need to build
+> the machine driver as a module.  Your Kconfig ought to be enforcing
+> that which I guess is the hack you had to put in?
 
-Please fix the minor issues below as incremental patches for ease of
-review.
+I guess that's my problem, I was just loading the codec driver as a module.
 
-> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +	case SND_SOC_DAIFMT_I2S:
-> +		break;
-> +	case SND_SOC_DAIFMT_LEFT_J:
-> +		ret = -EINVAL;
-> +		break;
-> +	}
-
-The SND_SOC_DAFIMT_LEFT_J: ought to be default: instead - there's more
-DAI formats than just that.
-
-> +	if (!bf5xx_i2s.master) {
-> +	/*
-> +	 * TX and RX are not independent,they are enabled at the same time,
-> +	 * even if only one side is running.So,we need to configure both of
-> +	 * them in advance.
-> +	 *
-> +	 * CPU DAI format:I2S, slave mode.
-> +	 */
-
-The indentation here is odd.  Also, is the expecation that this
-configuration be done only once ever - nothing seems to clear the flag?
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
