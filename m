@@ -1,114 +1,80 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 1/1] ASoC codec: SSM2602 audio codec driver (v2)
-Date: Thu, 4 Sep 2008 11:32:02 +0100
-Message-ID: <20080904103201.GC13828@sirena.org.uk>
-References: <1220511557-12140-1-git-send-email-cooloney@kernel.org>
+From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Subject: Re: [PATCH 4/5] SOUND: SOC: OMAP: Add support for
+	Gumstix Overo
+Date: Thu, 4 Sep 2008 13:40:13 +0300
+Message-ID: <20080904134013.0331f17c.jarkko.nikula@nokia.com>
+References: <1220504520-6067-1-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-2-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-3-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-4-git-send-email-sakoman@gmail.com>
+	<1220504520-6067-5-git-send-email-sakoman@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755739AbYIDKcX@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1220511557-12140-1-git-send-email-cooloney@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bryan Wu <cooloney@kernel.org>
-Cc: khali@linux-fr.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Cliff Cai <cliff.cai@analog.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4285D24365
+	for <alsa-devel@alsa-project.org>;
+	Thu,  4 Sep 2008 12:40:36 +0200 (CEST)
+In-Reply-To: <1220504520-6067-5-git-send-email-sakoman@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "ext sakoman@gmail.com" <sakoman@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 04, 2008 at 02:59:17PM +0800, Bryan Wu wrote:
+On Wed,  3 Sep 2008 22:01:59 -0700
+"ext sakoman@gmail.com" <sakoman@gmail.com> wrote:
 
-Looks good - most of this is minor stuff here that shouldn't be an
-obstacle to merging, but there does look to be an issue with DAPM
-and the bias configuration.
+> From: Steve Sakoman <steve@sakoman.com>
+> 
+> ---
+>  sound/soc/omap/Kconfig  |    9 +++
+>  sound/soc/omap/Makefile |    3 +
+>  sound/soc/omap/overo.c  |  149 ++++++++++++++++++++++++++++++++++++++
+> +++++++++ 3 files changed, 161 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/soc/omap/overo.c
+> 
+> diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+> index aea27e7..d7b8939 100644
+> --- a/sound/soc/omap/Kconfig
+> +++ b/sound/soc/omap/Kconfig
+> @@ -13,3 +13,12 @@ config SND_OMAP_SOC_N810
+>  	select SND_SOC_TLV320AIC3X
+>  	help
+>  	  Say Y if you want to add support for SoC audio on Nokia
+> N810. +
+> +config SND_OMAP_SOC_OVERO
+> +	tristate "SoC Audio support for Gumstix Overo"
+> +	depends on SND_OMAP_SOC && MACH_OVERO
+> +	select SND_OMAP_SOC_MCBSP
+> +	select SND_SOC_TWL4030
+> +	help
+> +	  Say Y if you want to add support for SoC audio on the
+> Gumstix Overo. +
 
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -92,3 +92,6 @@ config SND_SOC_TLV320AIC26
->  config SND_SOC_TLV320AIC3X
->  	tristate
->  	depends on I2C
-> +
-> +config SND_SOC_SSM2602
-> +	tristate
+Just advertisement that Overo (+ Beagle and SDP) needs two patches
+from me in order to work. One for McBSP low-level driver and one for
+McBSP DAI driver.
 
-Please also add the codec to SND_SOC_ALL_CODECS.
+http://marc.info/?l=linux-omap&m=121931987919296&w=2
 
-> +#define ssm2602_reset(c)	ssm2602_write(c, SSM2602_RESET, 0)
-> +/*Appending several "None"s just for OSS mixer use*/
+http://marc.info/?l=linux-omap&m=121931988119303&w=2
+http://marc.info/?l=linux-omap&m=121931988019300&w=2
 
-Very minor but a blank line between these two would help.
+Assuming TWL4030 core and codec driver will find their way into
+upstream, it looks like sound/soc/omap/overo.c is still "make
+randconfig" safe even if my patches are missing.
 
-> +	/* terminator */
-> +	{NULL, NULL, NULL},
+I'll post my second patch to alsa-devel as soon it's possible after
+joint effort to clean low-level McBSP driver in linux-omap is done :-)
 
-This terminator is not needed with the bulk registration API.
 
-> +static inline int get_coeff(int mclk, int rate)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(coeff_div); i++) {
-> +		if (coeff_div[i].rate == rate && coeff_div[i].mclk == mclk)
-> +			return i;
-> +	}
-> +	return 0;
-> +}
-
-Zero is a valid return value but is also returned if no match is found.
-Is this intended?
-
-> +static void ssm2602_shutdown(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_device *socdev = rtd->socdev;
-> +	struct snd_soc_codec *codec = socdev->codec;
-> +	/* deactivate */
-> +	if (!codec->active) {
-> +		udelay(50);
-> +		ssm2602_write(codec, SSM2602_ACTIVE, 0);
-> +	}
-
-Hrm.  That udelay() looks suspicious - what's it there for?  There's no
-previous activity in this function for it to leave an interval from.  If
-it's delaying from some previous activity then might the udelay() break
-if the time between that activity and this being called changes for some
-reason.
-
-> +static int ssm2602_mute(struct snd_soc_dai *dai, int mute)
-> +{
-> +	struct snd_soc_codec *codec = dai->codec;
-> +	u16 mute_reg = ssm2602_read_reg_cache(codec, SSM2602_APDIGI) & 0xfff7;
-> +	if (mute)
-> +		ssm2602_write(codec, SSM2602_APDIGI,
-> +				mute_reg | ENABLE_DAC_MUTE);
-> +	else
-> +		ssm2602_write(codec, SSM2602_APDIGI, mute_reg);
-> +	return 0;
-> +}
-
-Might be slightly clearer to use ~ENABLE_DAC_MUTE rather than 0xfff7.
-
-> +static int ssm2602_set_bias_level(struct snd_soc_codec *codec,
-> +				 enum snd_soc_bias_level level)
-> +{
-> +	u16 reg = ssm2602_read_reg_cache(codec, SSM2602_PWR) & 0xff7f;
-> +
-> +	switch (level) {
-> +	case SND_SOC_BIAS_ON:
-> +		/* vref/mid, osc on, dac unmute */
-> +		ssm2602_write(codec, SSM2602_PWR, 0);
-> +		break;
-
-This looks like it's going to override DAPM - when the driver goes to
-bias on this will overwrite the DAPM power configuration.  This will
-mean that, for example, the ADC will be powered up during playback.  The
-bias configuration should be leaving the power bits controlled by
-DAPM as they are when changing bias levels.
-
-> +/*Left ADC Volume Control (SSM2602_REG_LEFT_ADC_VOL)*/
-> +#define     LIN_VOL                0x01F   /* Left Channel PGA Volume control                      */
-> +#define     LIN_ENABLE_MUTE        0x080   /* Left Channel Input Mute                              */
-> +#define     LRIN_BOTH              0x100   /* Left Channel Line Input Volume update                */
-
-Sorry, didn't pick this up last time but the register bit defines in the
-header may benefit from namespacing.  It's not such a big deal since
-only machine drivers and this codec driver should be using this header
-but it'd be nice.
+Jarkko
