@@ -1,23 +1,19 @@
-From: "Timur Tabi" <timur@freescale.com>
-Subject: Re: [PATCH] ALSA: ASoC: Fix memory leaks for the
-	CS4270 driver
-Date: Thu, 4 Sep 2008 13:20:33 -0500
-Message-ID: <ed82fe3e0809041120u7b070c33j4bae7c221b935f36@mail.gmail.com>
-References: <1220479634-26912-1-git-send-email-timur@freescale.com>
-	<s5hd4jko0p2.wl%tiwai@suse.de> <48C004B4.2000208@freescale.com>
-	<s5htzcv98j8.wl%tiwai@suse.de>
+From: andy baxter <andy@earthsong.free-online.co.uk>
+Subject: are freebob firewire cards likely to be supported by
+ alsa in the future?
+Date: Thu, 04 Sep 2008 22:46:35 +0100
+Message-ID: <48C0573B.4080801@earthsong.free-online.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wr-out-0506.google.com (wr-out-0506.google.com [64.233.184.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BD242444B
+Received: from ptb-relay02.plus.net (ptb-relay02.plus.net [212.159.14.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id D54FF244FB
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 20:20:35 +0200 (CEST)
-Received: by wr-out-0506.google.com with SMTP id 36so70968wra.24
-	for <alsa-devel@alsa-project.org>; Thu, 04 Sep 2008 11:20:34 -0700 (PDT)
-In-Reply-To: <s5htzcv98j8.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Thu,  4 Sep 2008 23:46:41 +0200 (CEST)
+Received: from [83.216.128.236] (helo=[192.168.1.6])
+	by ptb-relay02.plus.net with esmtp (Exim) id 1KbMf2-0005f5-PR
+	for alsa-devel@alsa-project.org; Thu, 04 Sep 2008 22:46:40 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,22 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 4, 2008 at 11:32 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> Well, the latest ALSA tree != 2.6.27.
-> The question is whether we need a fix for 2.6.27 or not.
+Hello,
 
-I guess not.  Technically, there are bugs, but they'll never be seen.
-Kconfig doesn't allow the code to be compiled as modules anyway, and
-forcing an I2C unbind will break everything.  Plus, none of these bugs
-exists in the ASoC V2 version of this driver, so any patch I submit
-will be superseded anyway.
+Just wondering if there are any plans to develop alsa support for 
+firewire freebob cards like the M-Audio firewire solo (which I have). I 
+have this working fine under jackd using the freebob driver, but as far 
+as I know there isn't an alsa driver for it. I assume that since there 
+is already open source code to drive the chip, it should be possible to 
+write an alsa driver? This isn't an urgent thing for me - for the moment 
+I'm quite happy to use my onboard card for playing music / movies etc, 
+and keep the firewire card for recording music etc, but it might be 
+useful sometimes to have an alsa driver for this card as well.
 
-Therefore, I official rescind this patch.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+andy
