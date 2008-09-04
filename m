@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 9/9] ASoC: Blackfin: board driver for
-	SSM2602 sound chip
-Date: Thu, 4 Sep 2008 15:49:03 +0100
-Message-ID: <20080904144902.GD32531@rakim.wolfsonmicro.main>
-References: <1220516528-20301-1-git-send-email-cooloney@kernel.org>
-	<1220516528-20301-10-git-send-email-cooloney@kernel.org>
+From: Timur Tabi <timur@freescale.com>
+Subject: Playing silence instead of pausing during underrun
+Date: Thu, 04 Sep 2008 10:04:32 -0500
+Message-ID: <48BFF900.50002@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F14CF243C8
+Received: from de01egw01.freescale.net (de01egw01.freescale.net
+	[192.88.165.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86AB2243E6
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Sep 2008 16:49:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1220516528-20301-10-git-send-email-cooloney@kernel.org>
+	Thu,  4 Sep 2008 17:04:35 +0200 (CEST)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
+	m84F4W2B025784
+	for <alsa-devel@alsa-project.org>; Thu, 4 Sep 2008 08:04:33 -0700 (MST)
+Received: from [10.82.19.119] (ld0169-tx32.am.freescale.net [10.82.19.119])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m84F4WmR000680
+	for <alsa-devel@alsa-project.org>; Thu, 4 Sep 2008 10:04:32 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +27,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bryan Wu <cooloney@kernel.org>
-Cc: Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 04, 2008 at 04:22:08PM +0800, Bryan Wu wrote:
-> From: Cliff Cai <cliff.cai@analog.com>
-> 
-> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+If I understand it correctly, when ALSA detects an underrun during playback, it
+throttles the driver by sending pause and resume commands.
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+It turns out that our hardware doesn't really like this.  We're looking at
+various solutions, but one proposal would be to keep the hardware running during
+a pause, but just have it play silence instead.  That is, ALSA keeps feeding
+silence data during an underrun recovery.
+
+Is there an easy way to do this in ALSA?  Is there another driver that does this?
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
