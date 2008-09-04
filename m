@@ -1,30 +1,34 @@
-From: "Steve Sakoman" <sakoman@gmail.com>
-Subject: Re: [PATCH 4/5] SOUND: SOC: OMAP: Add support for Gumstix Overo
-Date: Thu, 4 Sep 2008 06:12:32 -0700
-Message-ID: <5e088bd90809040612g1ab215b5p85d23c8024bdfd15@mail.gmail.com>
-References: <1220504520-6067-1-git-send-email-sakoman@gmail.com>
-	 <1220504520-6067-2-git-send-email-sakoman@gmail.com>
-	 <1220504520-6067-3-git-send-email-sakoman@gmail.com>
-	 <1220504520-6067-4-git-send-email-sakoman@gmail.com>
-	 <1220504520-6067-5-git-send-email-sakoman@gmail.com>
-	 <20080904134013.0331f17c.jarkko.nikula@nokia.com>
+From: Mark Lokowich <lokowich@acdstar.com>
+Subject: DaVinci ASoC DMA stalls
+Date: Thu, 04 Sep 2008 08:39:26 -0500
+Message-ID: <48BFE50E.3000802@acdstar.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20080904134013.0331f17c.jarkko.nikula@nokia.com>
-Content-Disposition: inline
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@nokia.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Steve Sakoman <steve@sakoman.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from g2host.com (mailfront2.g2host.com [208.42.176.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2301024156
+	for <alsa-devel@alsa-project.org>;
+	Thu,  4 Sep 2008 15:40:00 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA-devel <alsa-devel@alsa-project.org>, davinci-linux-open-source <davinci-linux-open-source@linux.davincidsp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 4, 2008 at 3:40 AM, Jarkko Nikula <jarkko.nikula@nokia.com> wrote:
+I've been using the DaVinci ASoC for a few months and have recently 
+upgraded to the 2.6.26 based DaVinci git kernel.  Now my audio DMA 
+stalls more readily after stopping an active stream.  I can manually 
+trigger the event by poking the ESR to reactivate the stalled stream, 
+suggesting the problem is in the ASP-to-DMA XEVT interface.  This 
+problem is less prevalent in the 2.6.25 based kernel.  Any help?
 
-> Just advertisement that Overo (+ Beagle and SDP) needs two patches
-> from me in order to work. One for McBSP low-level driver and one for
-> McBSP DAI driver.
-
-This is correct!  I unfortunately left that out of my cover letter.
-
-Steve
+Regards,
+Mark Lokowich
+Advanced Communication Design
