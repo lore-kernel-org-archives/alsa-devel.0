@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 12/14] ASoC: Blackfin: board driver for SSM2602
-	sound chip
-Date: Fri,  5 Sep 2008 15:35:20 +0100
-Message-ID: <1220625322-27982-12-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 14/14] ASoC: Blackfin: Include Blackfin
+	architecture support in build
+Date: Fri,  5 Sep 2008 15:35:22 +0100
+Message-ID: <1220625322-27982-14-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20080905143504.GA27793@rakim.wolfsonmicro.main>
 	<1220625322-27982-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220625322-27982-2-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -15,15 +15,17 @@ References: <20080905143504.GA27793@rakim.wolfsonmicro.main>
 	<1220625322-27982-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220625322-27982-10-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220625322-27982-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-12-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-13-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E632D10385F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 79E4A103867
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 16:35:26 +0200 (CEST)
-In-Reply-To: <1220625322-27982-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri,  5 Sep 2008 16:35:27 +0200 (CEST)
+In-Reply-To: <1220625322-27982-13-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -43,201 +45,31 @@ Signed-off-by: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/blackfin/bf5xx-ssm2602.c |  186 ++++++++++++++++++++++++++++++++++++
- 1 files changed, 186 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/blackfin/bf5xx-ssm2602.c
+ sound/soc/Kconfig  |    1 +
+ sound/soc/Makefile |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ssm2602.c b/sound/soc/blackfin/bf5xx-ssm2602.c
-new file mode 100644
-index 0000000..e15f67f
---- /dev/null
-+++ b/sound/soc/blackfin/bf5xx-ssm2602.c
-@@ -0,0 +1,186 @@
-+/*
-+ * File:         sound/soc/blackfin/bf5xx-ssm2602.c
-+ * Author:       Cliff Cai <Cliff.Cai@analog.com>
-+ *
-+ * Created:      Tue June 06 2008
-+ * Description:  board driver for SSM2602 sound chip
-+ *
-+ * Modified:
-+ *               Copyright 2008 Analog Devices Inc.
-+ *
-+ * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, see the file COPYING, or write
-+ * to the Free Software Foundation, Inc.,
-+ * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/device.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/pcm_params.h>
-+
-+#include <asm/dma.h>
-+#include <asm/portmux.h>
-+#include <linux/gpio.h>
-+#include "../codecs/ssm2602.h"
-+#include "bf5xx-sport.h"
-+#include "bf5xx-i2s-pcm.h"
-+#include "bf5xx-i2s.h"
-+
-+static struct snd_soc_machine bf5xx_ssm2602;
-+
-+static int bf5xx_ssm2602_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+
-+	pr_debug("%s enter\n", __func__);
-+	cpu_dai->private_data = sport_handle;
-+	return 0;
-+}
-+
-+static int bf5xx_ssm2602_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	unsigned int clk = 0;
-+	int ret = 0;
-+
-+	pr_debug("%s rate %d format %x\n", __func__, params_rate(params),
-+		params_format(params));
-+	/*
-+	 * If you are using a crystal source which frequency is not 12MHz
-+	 * then modify the below case statement with frequency of the crystal.
-+	 *
-+	 * If you are using the SPORT to generate clocking then this is
-+	 * where to do it.
-+	 */
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+	case 48000:
-+	case 96000:
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+		clk = 12000000;
-+		break;
-+	}
-+
-+	/*
-+	 * CODEC is master for BCLK and LRC in this configuration.
-+	 */
-+
-+	/* set codec DAI configuration */
-+	ret = codec_dai->dai_ops.set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+	/* set cpu DAI configuration */
-+	ret = cpu_dai->dai_ops.set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = codec_dai->dai_ops.set_sysclk(codec_dai, SSM2602_SYSCLK, clk,
-+		SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops bf5xx_ssm2602_ops = {
-+	.startup = bf5xx_ssm2602_startup,
-+	.hw_params = bf5xx_ssm2602_hw_params,
-+};
-+
-+static struct snd_soc_dai_link bf5xx_ssm2602_dai = {
-+	.name = "ssm2602",
-+	.stream_name = "SSM2602",
-+	.cpu_dai = &bf5xx_i2s_dai,
-+	.codec_dai = &ssm2602_dai,
-+	.ops = &bf5xx_ssm2602_ops,
-+};
-+
-+/*
-+ * SSM2602 2 wire address is determined by CSB
-+ * state during powerup.
-+ *    low  = 0x1a
-+ *    high = 0x1b
-+ */
-+
-+static struct ssm2602_setup_data bf5xx_ssm2602_setup = {
-+	.i2c_bus = 0,
-+	.i2c_address = 0x1b,
-+};
-+
-+static struct snd_soc_machine bf5xx_ssm2602 = {
-+	.name = "bf5xx_ssm2602",
-+	.dai_link = &bf5xx_ssm2602_dai,
-+	.num_links = 1,
-+};
-+
-+static struct snd_soc_device bf5xx_ssm2602_snd_devdata = {
-+	.machine = &bf5xx_ssm2602,
-+	.platform = &bf5xx_i2s_soc_platform,
-+	.codec_dev = &soc_codec_dev_ssm2602,
-+	.codec_data = &bf5xx_ssm2602_setup,
-+};
-+
-+static struct platform_device *bf52x_ssm2602_snd_device;
-+
-+static int __init bf5xx_ssm2602_init(void)
-+{
-+	int ret;
-+
-+	pr_debug("%s enter\n", __func__);
-+	bf52x_ssm2602_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!bf52x_ssm2602_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(bf52x_ssm2602_snd_device,
-+				&bf5xx_ssm2602_snd_devdata);
-+	bf5xx_ssm2602_snd_devdata.dev = &bf52x_ssm2602_snd_device->dev;
-+	ret = platform_device_add(bf52x_ssm2602_snd_device);
-+
-+	if (ret)
-+		platform_device_put(bf52x_ssm2602_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit bf5xx_ssm2602_exit(void)
-+{
-+	pr_debug("%s enter\n", __func__);
-+	platform_device_unregister(bf52x_ssm2602_snd_device);
-+}
-+
-+module_init(bf5xx_ssm2602_init);
-+module_exit(bf5xx_ssm2602_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Cliff Cai");
-+MODULE_DESCRIPTION("ALSA SoC SSM2602 BF527-EZKIT");
-+MODULE_LICENSE("GPL");
-+
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index f743530..32ac940 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -31,6 +31,7 @@ source "sound/soc/sh/Kconfig"
+ source "sound/soc/fsl/Kconfig"
+ source "sound/soc/davinci/Kconfig"
+ source "sound/soc/omap/Kconfig"
++source "sound/soc/blackfin/Kconfig"
+ 
+ # Supported codecs
+ source "sound/soc/codecs/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 933a66d..d849349 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -2,4 +2,4 @@ snd-soc-core-objs := soc-core.o soc-dapm.o
+ 
+ obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
+ obj-$(CONFIG_SND_SOC)	+= codecs/ at32/ at91/ pxa/ s3c24xx/ sh/ fsl/ davinci/
+-obj-$(CONFIG_SND_SOC)	+= omap/ au1x/
++obj-$(CONFIG_SND_SOC)	+= omap/ au1x/ blackfin/
 -- 
 1.5.6.5
