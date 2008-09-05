@@ -1,158 +1,51 @@
-From: Bryan Wu <cooloney@kernel.org>
-Subject: [PATCH 7/9] ASoC: Blackfin: board driver for AD1980/1
-	audio codec
-Date: Fri,  5 Sep 2008 18:21:40 +0800
-Message-ID: <1220610102-7716-8-git-send-email-cooloney@kernel.org>
-References: <1220610102-7716-1-git-send-email-cooloney@kernel.org>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH 3/5] SOUND: SOC: CODECS: Add support for the TWL4030 audio codec
+Date: Fri, 5 Sep 2008 11:30:40 +0100
+Message-ID: <20080905103040.GD12383@sirena.org.uk>
+References: <1220504520-6067-1-git-send-email-sakoman@gmail.com> <1220504520-6067-2-git-send-email-sakoman@gmail.com> <1220504520-6067-3-git-send-email-sakoman@gmail.com> <1220504520-6067-4-git-send-email-sakoman@gmail.com> <20080904132632.e64c3ce2.jarkko.nikula@nokia.com> <5e088bd90809040732x24b2123cl68fa9d2242ae2ae0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89F9A2460B
-	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 12:21:32 +0200 (CEST)
-In-Reply-To: <1220610102-7716-1-git-send-email-cooloney@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@sirena.org.uk
-Cc: Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Bryan Wu <cooloney@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5e088bd90809040732x24b2123cl68fa9d2242ae2ae0@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Steve Sakoman <sakoman@gmail.com>
+Cc: Jarkko Nikula <jarkko.nikula@nokia.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Steve Sakoman <steve@sakoman.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Cliff Cai <cliff.cai@analog.com>
+On Thu, Sep 04, 2008 at 07:32:28AM -0700, Steve Sakoman wrote:
+> On Thu, Sep 4, 2008 at 3:26 AM, Jarkko Nikula <jarkko.nikula@nokia.com> wrote:
 
-Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
----
- sound/soc/blackfin/bf5xx-ad1980.c |  113 +++++++++++++++++++++++++++++++++++++
- 1 files changed, 113 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/blackfin/bf5xx-ad1980.c
+> >> +static void twl4030_dump_registers(void)
+> >> +{
 
-diff --git a/sound/soc/blackfin/bf5xx-ad1980.c b/sound/soc/blackfin/bf5xx-ad1980.c
-new file mode 100644
-index 0000000..124425d
---- /dev/null
-+++ b/sound/soc/blackfin/bf5xx-ad1980.c
-@@ -0,0 +1,113 @@
-+/*
-+ * File:         sound/soc/blackfin/bf5xx-ad1980.c
-+ * Author:       Cliff Cai <Cliff.Cai@analog.com>
-+ *
-+ * Created:      Tue June 06 2008
-+ * Description:  Board driver for AD1980/1 audio codec
-+ *
-+ * Modified:
-+ *               Copyright 2008 Analog Devices Inc.
-+ *
-+ * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, see the file COPYING, or write
-+ * to the Free Software Foundation, Inc.,
-+ * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/device.h>
-+#include <asm/dma.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+
-+#include <linux/gpio.h>
-+#include <asm/portmux.h>
-+
-+#include "../codecs/ad1980.h"
-+#include "bf5xx-sport.h"
-+#include "bf5xx-ac97-pcm.h"
-+#include "bf5xx-ac97.h"
-+
-+static struct snd_soc_machine bf5xx_board;
-+
-+static int bf5xx_board_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+
-+	pr_debug("%s enter\n", __func__);
-+	cpu_dai->private_data = sport_handle;
-+	return 0;
-+}
-+
-+static struct snd_soc_ops bf5xx_board_ops = {
-+	.startup = bf5xx_board_startup,
-+};
-+
-+static struct snd_soc_dai_link bf5xx_board_dai = {
-+	.name = "AC97",
-+	.stream_name = "AC97 HiFi",
-+	.cpu_dai = &bfin_ac97_dai,
-+	.codec_dai = &ad1980_dai,
-+	.ops = &bf5xx_board_ops,
-+};
-+
-+static struct snd_soc_machine bf5xx_board = {
-+	.name = "bf5xx-board",
-+	.dai_link = &bf5xx_board_dai,
-+	.num_links = 1,
-+};
-+
-+static struct snd_soc_device bf5xx_board_snd_devdata = {
-+	.machine = &bf5xx_board,
-+	.platform = &bf5xx_ac97_soc_platform,
-+	.codec_dev = &soc_codec_dev_ad1980,
-+};
-+
-+static struct platform_device *bf5xx_board_snd_device;
-+
-+static int __init bf5xx_board_init(void)
-+{
-+	int ret;
-+
-+	bf5xx_board_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!bf5xx_board_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(bf5xx_board_snd_device, &bf5xx_board_snd_devdata);
-+	bf5xx_board_snd_devdata.dev = &bf5xx_board_snd_device->dev;
-+	ret = platform_device_add(bf5xx_board_snd_device);
-+
-+	if (ret)
-+		platform_device_put(bf5xx_board_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit bf5xx_board_exit(void)
-+{
-+	platform_device_unregister(bf5xx_board_snd_device);
-+}
-+
-+module_init(bf5xx_board_init);
-+module_exit(bf5xx_board_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Cliff Cai");
-+MODULE_DESCRIPTION("ALSA SoC AD1980/1 BF5xx board");
-+MODULE_LICENSE("GPL");
--- 
-1.5.6
+> > This is not needed since there is already nice function
+> > for it: sound/soc/soc-core.c: codec_reg_show.
+
+> I could probably get rid of this function.  It was quite useful during
+> debugging and I was not aware of codec_reg_show.  IIRC, most of the
+> other codec drivers also have the equivalent of this function, so we
+> might want to clean them up too if there is a standard function to
+> replace them.
+
+Any references?  None of the in-tree drivers have them...
+
+> >> +static void twl4030_power_down(struct snd_soc_codec *codec)
+> >> +{
+> > ...
+> >> +     udelay(10);
+> >> +}
+> > REVISIT comment for these kind of magic delays if doesn't work without.
+
+> It *seems* to work without them, but every historic TI driver seemed
+> to have them.  I figured that they might know something not reflected
+> in the documentation.  I will add a REVIST comment.
+
+This sort of stuff is very common in codec drivers - normally the delays
+are there to allow the analogue side of the system time to settle down
+(waiting for capacitors to charge/discharge or reference voltages to
+stabalise, for example).  Ideally they have comments saying what's going
+on, of course.  Missing these delays often won't actually stop things
+working completely but will instead do things like reduce performance or
+generate audio artefacts - and sometimes it's application dependant if
+these are important.
