@@ -1,28 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 11/14] ASoC: Blackfin: board driver for
-	AD1980/1 audio codec
-Date: Fri,  5 Sep 2008 15:35:19 +0100
-Message-ID: <1220625322-27982-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 03/14] ASoC: Convert neo1973/lm4857 to a
+	new-style i2c driver
+Date: Fri,  5 Sep 2008 15:35:11 +0100
+Message-ID: <1220625322-27982-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20080905143504.GA27793@rakim.wolfsonmicro.main>
 	<1220625322-27982-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 	<1220625322-27982-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-5-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-6-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-7-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-8-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-9-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1220625322-27982-10-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4B1C10385D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B7847103841
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 16:35:26 +0200 (CEST)
-In-Reply-To: <1220625322-27982-10-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri,  5 Sep 2008 16:35:24 +0200 (CEST)
+In-Reply-To: <1220625322-27982-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,137 +25,187 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliff.cai@analog.com>, Bryan Wu <cooloney@kernel.org>
+Cc: Jean Delvare <khali@linux-fr.org>, Graeme Gregory <graeme@openmoko.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tim Niemeyer <reddog@mastersword.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Cliff Cai <cliff.cai@analog.com>
+From: Jean Delvare <khali@linux-fr.org>
 
-Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
+Convert the lm4857 driver in neo1973_wm8753 to the new (standard)
+i2c device driver binding model. I assumed that the LM4857 was always
+on the same I2C bus as the WM8753 codec.
+
+Signed-off-by: Jean Delvare <khali@linux-fr.org>
+Cc: Tim Niemeyer <reddog@mastersword.de>
+Cc: Graeme Gregory <graeme@openmoko.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/blackfin/bf5xx-ad1980.c |  113 +++++++++++++++++++++++++++++++++++++
- 1 files changed, 113 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/blackfin/bf5xx-ad1980.c
+ sound/soc/s3c24xx/neo1973_wm8753.c |  110 +++++++++++++++++++-----------------
+ 1 files changed, 58 insertions(+), 52 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ad1980.c b/sound/soc/blackfin/bf5xx-ad1980.c
-new file mode 100644
-index 0000000..124425d
---- /dev/null
-+++ b/sound/soc/blackfin/bf5xx-ad1980.c
-@@ -0,0 +1,113 @@
-+/*
-+ * File:         sound/soc/blackfin/bf5xx-ad1980.c
-+ * Author:       Cliff Cai <Cliff.Cai@analog.com>
-+ *
-+ * Created:      Tue June 06 2008
-+ * Description:  Board driver for AD1980/1 audio codec
-+ *
-+ * Modified:
-+ *               Copyright 2008 Analog Devices Inc.
-+ *
-+ * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, see the file COPYING, or write
-+ * to the Free Software Foundation, Inc.,
-+ * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/device.h>
-+#include <asm/dma.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+
-+#include <linux/gpio.h>
-+#include <asm/portmux.h>
-+
-+#include "../codecs/ad1980.h"
-+#include "bf5xx-sport.h"
-+#include "bf5xx-ac97-pcm.h"
-+#include "bf5xx-ac97.h"
-+
-+static struct snd_soc_machine bf5xx_board;
-+
-+static int bf5xx_board_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+
-+	pr_debug("%s enter\n", __func__);
-+	cpu_dai->private_data = sport_handle;
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index 181d299..47ddcde 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -597,54 +597,20 @@ static struct snd_soc_device neo1973_snd_devdata = {
+ 	.codec_data = &neo1973_wm8753_setup,
+ };
+ 
+-static struct i2c_client client_template;
+-
+-static const unsigned short normal_i2c[] = { 0x7C, I2C_CLIENT_END };
+-
+-/* Magic definition of all other variables and things */
+-I2C_CLIENT_INSMOD;
+-
+-static int lm4857_amp_probe(struct i2c_adapter *adap, int addr, int kind)
++static int lm4857_i2c_probe(struct i2c_client *client,
++			    const struct i2c_device_id *id)
+ {
+-	int ret;
+-
+ 	DBG("Entered %s\n", __func__);
+ 
+-	client_template.adapter = adap;
+-	client_template.addr = addr;
+-
+-	i2c = kmemdup(&client_template, sizeof(client_template), GFP_KERNEL);
+-	if (i2c == NULL)
+-		return -ENOMEM;
+-
+-	ret = i2c_attach_client(i2c);
+-	if (ret < 0) {
+-		printk(KERN_ERR "LM4857 failed to attach at addr %x\n", addr);
+-		goto exit_err;
+-	}
+-
+ 	lm4857_write_regs();
+-	return ret;
+-
+-exit_err:
+-	kfree(i2c);
+-	return ret;
+-}
+-
+-static int lm4857_i2c_detach(struct i2c_client *client)
+-{
+-	DBG("Entered %s\n", __func__);
+-
+-	i2c_detach_client(client);
+-	kfree(client);
+ 	return 0;
+ }
+ 
+-static int lm4857_i2c_attach(struct i2c_adapter *adap)
++static int lm4857_i2c_remove(struct i2c_client *client)
+ {
+ 	DBG("Entered %s\n", __func__);
+ 
+-	return i2c_probe(adap, &addr_data, lm4857_amp_probe);
 +	return 0;
-+}
-+
-+static struct snd_soc_ops bf5xx_board_ops = {
-+	.startup = bf5xx_board_startup,
+ }
+ 
+ static u8 lm4857_state;
+@@ -682,27 +648,67 @@ static void lm4857_shutdown(struct i2c_client *dev)
+ 	lm4857_write_regs();
+ }
+ 
+-/* corgi i2c codec control layer */
++static const struct i2c_device_id lm4857_i2c_id[] = {
++	{ "neo1973_lm4857", 0 }
++	{ }
 +};
 +
-+static struct snd_soc_dai_link bf5xx_board_dai = {
-+	.name = "AC97",
-+	.stream_name = "AC97 HiFi",
-+	.cpu_dai = &bfin_ac97_dai,
-+	.codec_dai = &ad1980_dai,
-+	.ops = &bf5xx_board_ops,
-+};
+ static struct i2c_driver lm4857_i2c_driver = {
+ 	.driver = {
+ 		.name = "LM4857 I2C Amp",
+ 		.owner = THIS_MODULE,
+ 	},
+-	.id =             I2C_DRIVERID_LM4857,
+ 	.suspend =        lm4857_suspend,
+ 	.resume	=         lm4857_resume,
+ 	.shutdown =       lm4857_shutdown,
+-	.attach_adapter = lm4857_i2c_attach,
+-	.detach_client =  lm4857_i2c_detach,
+-	.command =        NULL,
+-};
+-
+-static struct i2c_client client_template = {
+-	.name =   "LM4857",
+-	.driver = &lm4857_i2c_driver,
++	.probe =          lm4857_i2c_probe,
++	.remove =         lm4857_i2c_remove,
++	.id_table =       lm4857_i2c_id,
+ };
+ 
+ static struct platform_device *neo1973_snd_device;
++static struct i2c_client *lm4857_client;
 +
-+static struct snd_soc_machine bf5xx_board = {
-+	.name = "bf5xx-board",
-+	.dai_link = &bf5xx_board_dai,
-+	.num_links = 1,
-+};
-+
-+static struct snd_soc_device bf5xx_board_snd_devdata = {
-+	.machine = &bf5xx_board,
-+	.platform = &bf5xx_ac97_soc_platform,
-+	.codec_dev = &soc_codec_dev_ad1980,
-+};
-+
-+static struct platform_device *bf5xx_board_snd_device;
-+
-+static int __init bf5xx_board_init(void)
++static int __init neo1973_add_lm4857_device(struct platform_device *pdev,
++					    int i2c_bus,
++					    unsigned short i2c_address)
 +{
++	struct i2c_board_info info;
++	struct i2c_adapter *adapter;
++	struct i2c_client *client;
 +	int ret;
 +
-+	bf5xx_board_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!bf5xx_board_snd_device)
-+		return -ENOMEM;
++	ret = i2c_add_driver(&lm4857_i2c_driver);
++	if (ret != 0) {
++		dev_err(&pdev->dev, "can't add lm4857 driver\n");
++		return ret;
++	}
 +
-+	platform_set_drvdata(bf5xx_board_snd_device, &bf5xx_board_snd_devdata);
-+	bf5xx_board_snd_devdata.dev = &bf5xx_board_snd_device->dev;
-+	ret = platform_device_add(bf5xx_board_snd_device);
++	memset(&info, 0, sizeof(struct i2c_board_info));
++	info.addr = i2c_address;
++	strlcpy(info.type, "neo1973_lm4857", I2C_NAME_SIZE);
 +
-+	if (ret)
-+		platform_device_put(bf5xx_board_snd_device);
++	adapter = i2c_get_adapter(i2c_bus);
++	if (!adapter) {
++		dev_err(&pdev->dev, "can't get i2c adapter %d\n", i2c_bus);
++		goto err_driver;
++	}
 +
-+	return ret;
++	client = i2c_new_device(adapter, &info);
++	i2c_put_adapter(adapter);
++	if (!client) {
++		dev_err(&pdev->dev, "can't add lm4857 device at 0x%x\n",
++			(unsigned int)info.addr);
++		goto err_driver;
++	}
++
++	lm4857_client = client;
++	return 0;
++
++err_driver:
++	i2c_del_driver(&lm4857_i2c_driver);
++	return -ENODEV;
 +}
-+
-+static void __exit bf5xx_board_exit(void)
-+{
-+	platform_device_unregister(bf5xx_board_snd_device);
-+}
-+
-+module_init(bf5xx_board_init);
-+module_exit(bf5xx_board_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Cliff Cai");
-+MODULE_DESCRIPTION("ALSA SoC AD1980/1 BF5xx board");
-+MODULE_LICENSE("GPL");
+ 
+ static int __init neo1973_init(void)
+ {
+@@ -723,11 +729,10 @@ static int __init neo1973_init(void)
+ 		return ret;
+ 	}
+ 
+-	ret = i2c_add_driver(&lm4857_i2c_driver);
+-	if (ret != 0) {
+-		printk(KERN_ERR "can't add i2c driver");
++	ret = neo1973_add_lm4857_device(neo1973_snd_device,
++					neo1973_wm8753_setup, 0x7C);
++	if (ret != 0)
+ 		platform_device_unregister(neo1973_snd_device);
+-	}
+ 
+ 	return ret;
+ }
+@@ -736,6 +741,7 @@ static void __exit neo1973_exit(void)
+ {
+ 	DBG("Entered %s\n", __func__);
+ 
++	i2c_unregister_device(lm4857_client);
+ 	i2c_del_driver(&lm4857_i2c_driver);
+ 	platform_device_unregister(neo1973_snd_device);
+ }
 -- 
 1.5.6.5
