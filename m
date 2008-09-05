@@ -1,19 +1,26 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 02/14] ASoC: Convert wm8753 to a new-style i2c
-	driver
-Date: Fri,  5 Sep 2008 15:35:10 +0100
-Message-ID: <1220625322-27982-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 09/14] ASoC: Blackfin: DMA Driver for I2S sound
+	chip
+Date: Fri,  5 Sep 2008 15:35:17 +0100
+Message-ID: <1220625322-27982-9-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20080905143504.GA27793@rakim.wolfsonmicro.main>
 	<1220625322-27982-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1220625322-27982-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1A7B9103841
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 391BA103864
 	for <alsa-devel@alsa-project.org>;
 	Fri,  5 Sep 2008 16:35:27 +0200 (CEST)
-In-Reply-To: <1220625322-27982-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1220625322-27982-8-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,209 +31,349 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jean Delvare <khali@linux-fr.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Frank Mandarino <fmandarino@endrelia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliff.cai@analog.com>, Bryan Wu <cooloney@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jean Delvare <khali@linux-fr.org>
+From: Cliff Cai <cliff.cai@analog.com>
 
-Convert the wm8753 codec driver to the new (standard) i2c device
-driver binding model.
-
-Signed-off-by: Jean Delvare <khali@linux-fr.org>
-Cc: Ville Syrjala <syrjala@sci.fi>
-Cc: Frank Mandarino <fmandarino@endrelia.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8753.c          |  106 ++++++++++++++++++------------------
- sound/soc/codecs/wm8753.h          |    1 +
- sound/soc/s3c24xx/neo1973_wm8753.c |    1 +
- 3 files changed, 55 insertions(+), 53 deletions(-)
+ sound/soc/blackfin/bf5xx-i2s-pcm.c |  288 ++++++++++++++++++++++++++++++++++++
+ sound/soc/blackfin/bf5xx-i2s-pcm.h |   29 ++++
+ 2 files changed, 317 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/blackfin/bf5xx-i2s-pcm.c
+ create mode 100644 sound/soc/blackfin/bf5xx-i2s-pcm.h
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 5761164..b3e1b37 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -1637,84 +1637,86 @@ static struct snd_soc_device *wm8753_socdev;
-  *    low  = 0x1a
-  *    high = 0x1b
-  */
--static unsigned short normal_i2c[] = { 0, I2C_CLIENT_END };
- 
--/* Magic definition of all other variables and things */
--I2C_CLIENT_INSMOD;
--
--static struct i2c_driver wm8753_i2c_driver;
--static struct i2c_client client_template;
--
--static int wm8753_codec_probe(struct i2c_adapter *adap, int addr, int kind)
-+static int wm8753_i2c_probe(struct i2c_client *i2c,
-+			    const struct i2c_device_id *id)
- {
- 	struct snd_soc_device *socdev = wm8753_socdev;
--	struct wm8753_setup_data *setup = socdev->codec_data;
- 	struct snd_soc_codec *codec = socdev->codec;
--	struct i2c_client *i2c;
- 	int ret;
- 
--	if (addr != setup->i2c_address)
--		return -ENODEV;
--
--	client_template.adapter = adap;
--	client_template.addr = addr;
--
--	i2c =  kmemdup(&client_template, sizeof(client_template), GFP_KERNEL);
--	if (!i2c)
--		return -ENOMEM;
--
- 	i2c_set_clientdata(i2c, codec);
- 	codec->control_data = i2c;
- 
--	ret = i2c_attach_client(i2c);
--	if (ret < 0) {
--		pr_err("failed to attach codec at addr %x\n", addr);
--		goto err;
--	}
--
- 	ret = wm8753_init(socdev);
--	if (ret < 0) {
-+	if (ret < 0)
- 		pr_err("failed to initialise WM8753\n");
--		goto err;
--	}
--
--	return ret;
- 
--err:
--	kfree(i2c);
- 	return ret;
- }
- 
--static int wm8753_i2c_detach(struct i2c_client *client)
-+static int wm8753_i2c_remove(struct i2c_client *client)
- {
- 	struct snd_soc_codec *codec = i2c_get_clientdata(client);
--	i2c_detach_client(client);
- 	kfree(codec->reg_cache);
--	kfree(client);
- 	return 0;
- }
- 
--static int wm8753_i2c_attach(struct i2c_adapter *adap)
--{
--	return i2c_probe(adap, &addr_data, wm8753_codec_probe);
--}
-+static const struct i2c_device_id wm8753_i2c_id[] = {
-+	{ "wm8753", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, wm8753_i2c_id);
- 
--/* corgi i2c codec control layer */
- static struct i2c_driver wm8753_i2c_driver = {
- 	.driver = {
- 		.name = "WM8753 I2C Codec",
- 		.owner = THIS_MODULE,
- 	},
--	.id =             I2C_DRIVERID_WM8753,
--	.attach_adapter = wm8753_i2c_attach,
--	.detach_client =  wm8753_i2c_detach,
--	.command =        NULL,
-+	.probe =    wm8753_i2c_probe,
-+	.remove =   wm8753_i2c_remove,
-+	.id_table = wm8753_i2c_id,
- };
- 
--static struct i2c_client client_template = {
--	.name =   "WM8753",
--	.driver = &wm8753_i2c_driver,
--};
-+static int wm8753_add_i2c_device(struct platform_device *pdev,
-+				 const struct wm8753_setup_data *setup)
+diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
+new file mode 100644
+index 0000000..61fccf9
+--- /dev/null
++++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
+@@ -0,0 +1,288 @@
++/*
++ * File:         sound/soc/blackfin/bf5xx-i2s-pcm.c
++ * Author:       Cliff Cai <Cliff.Cai@analog.com>
++ *
++ * Created:      Tue June 06 2008
++ * Description:  DMA driver for i2s codec
++ *
++ * Modified:
++ *               Copyright 2008 Analog Devices Inc.
++ *
++ * Bugs:         Enter bugs at http://blackfin.uclinux.org/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see the file COPYING, or write
++ * to the Free Software Foundation, Inc.,
++ * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/dma-mapping.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#include <asm/dma.h>
++
++#include "bf5xx-i2s-pcm.h"
++#include "bf5xx-i2s.h"
++#include "bf5xx-sport.h"
++
++static void bf5xx_dma_irq(void *data)
 +{
-+	struct i2c_board_info info;
-+	struct i2c_adapter *adapter;
-+	struct i2c_client *client;
-+	int ret;
++	struct snd_pcm_substream *pcm = data;
++	snd_pcm_period_elapsed(pcm);
++}
 +
-+	ret = i2c_add_driver(&wm8753_i2c_driver);
-+	if (ret != 0) {
-+		dev_err(&pdev->dev, "can't add i2c driver\n");
-+		return ret;
-+	}
++static const struct snd_pcm_hardware bf5xx_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_INTERLEAVED |
++				   SNDRV_PCM_INFO_MMAP |
++				   SNDRV_PCM_INFO_MMAP_VALID |
++				   SNDRV_PCM_INFO_BLOCK_TRANSFER,
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
++				   SNDRV_PCM_FMTBIT_S24_LE |
++				   SNDRV_PCM_FMTBIT_S32_LE,
++	.period_bytes_min	= 32,
++	.period_bytes_max	= 0x10000,
++	.periods_min		= 1,
++	.periods_max		= PAGE_SIZE/32,
++	.buffer_bytes_max	= 0x20000, /* 128 kbytes */
++	.fifo_size		= 16,
++};
 +
-+	memset(&info, 0, sizeof(struct i2c_board_info));
-+	info.addr = setup->i2c_address;
-+	strlcpy(info.type, "wm8753", I2C_NAME_SIZE);
++static int bf5xx_pcm_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	size_t size = bf5xx_pcm_hardware.buffer_bytes_max;
++	snd_pcm_lib_malloc_pages(substream, size);
 +
-+	adapter = i2c_get_adapter(setup->i2c_bus);
-+	if (!adapter) {
-+		dev_err(&pdev->dev, "can't get i2c adapter %d\n",
-+			setup->i2c_bus);
-+		goto err_driver;
-+	}
++	return 0;
++}
 +
-+	client = i2c_new_device(adapter, &info);
-+	i2c_put_adapter(adapter);
-+	if (!client) {
-+		dev_err(&pdev->dev, "can't add i2c device at 0x%x\n",
-+			(unsigned int)info.addr);
-+		goto err_driver;
++static int bf5xx_pcm_hw_free(struct snd_pcm_substream *substream)
++{
++	snd_pcm_lib_free_pages(substream);
++
++	return 0;
++}
++
++static int bf5xx_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct sport_device *sport = runtime->private_data;
++	int period_bytes = frames_to_bytes(runtime, runtime->period_size);
++
++	pr_debug("%s enter\n", __func__);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		sport_set_tx_callback(sport, bf5xx_dma_irq, substream);
++		sport_config_tx_dma(sport, runtime->dma_area,
++			runtime->periods, period_bytes);
++	} else {
++		sport_set_rx_callback(sport, bf5xx_dma_irq, substream);
++		sport_config_rx_dma(sport, runtime->dma_area,
++			runtime->periods, period_bytes);
 +	}
 +
 +	return 0;
-+
-+err_driver:
-+	i2c_del_driver(&wm8753_i2c_driver);
-+	return -ENODEV;
 +}
- #endif
- 
- static int wm8753_probe(struct platform_device *pdev)
-@@ -1748,11 +1750,8 @@ static int wm8753_probe(struct platform_device *pdev)
- 
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	if (setup->i2c_address) {
--		normal_i2c[0] = setup->i2c_address;
- 		codec->hw_write = (hw_write_t)i2c_master_send;
--		ret = i2c_add_driver(&wm8753_i2c_driver);
--		if (ret != 0)
--			printk(KERN_ERR "can't add i2c driver");
-+		ret = wm8753_add_i2c_device(pdev, setup);
- 	}
- #else
- 		/* Add other interfaces here */
-@@ -1796,6 +1795,7 @@ static int wm8753_remove(struct platform_device *pdev)
- 	snd_soc_free_pcms(socdev);
- 	snd_soc_dapm_free(socdev);
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+	i2c_unregister_device(codec->control_data);
- 	i2c_del_driver(&wm8753_i2c_driver);
- #endif
- 	kfree(codec->private_data);
-diff --git a/sound/soc/codecs/wm8753.h b/sound/soc/codecs/wm8753.h
-index 44f5f1f..7defde0 100644
---- a/sound/soc/codecs/wm8753.h
-+++ b/sound/soc/codecs/wm8753.h
-@@ -79,6 +79,7 @@
- #define WM8753_ADCTL2		0x3f
- 
- struct wm8753_setup_data {
-+	int i2c_bus;
- 	unsigned short i2c_address;
- };
- 
-diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
-index 3aa441f..181d299 100644
---- a/sound/soc/s3c24xx/neo1973_wm8753.c
-+++ b/sound/soc/s3c24xx/neo1973_wm8753.c
-@@ -586,6 +586,7 @@ static struct snd_soc_machine neo1973 = {
- };
- 
- static struct wm8753_setup_data neo1973_wm8753_setup = {
-+	.i2c_bus = 0,
- 	.i2c_address = 0x1a,
- };
- 
++
++static int bf5xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct sport_device *sport = runtime->private_data;
++	int ret = 0;
++
++	pr_debug("%s enter\n", __func__);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			sport_tx_start(sport);
++		else
++			sport_rx_start(sport);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			sport_tx_stop(sport);
++		else
++			sport_rx_stop(sport);
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static snd_pcm_uframes_t bf5xx_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct sport_device *sport = runtime->private_data;
++	unsigned int diff;
++	snd_pcm_uframes_t frames;
++	pr_debug("%s enter\n", __func__);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		diff = sport_curr_offset_tx(sport);
++		frames = bytes_to_frames(substream->runtime, diff);
++	} else {
++		diff = sport_curr_offset_rx(sport);
++		frames = bytes_to_frames(substream->runtime, diff);
++	}
++	return frames;
++}
++
++static int bf5xx_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int ret;
++
++	pr_debug("%s enter\n", __func__);
++	snd_soc_set_runtime_hwparams(substream, &bf5xx_pcm_hardware);
++
++	ret = snd_pcm_hw_constraint_integer(runtime, \
++			SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0)
++		goto out;
++
++	if (sport_handle != NULL)
++		runtime->private_data = sport_handle;
++	else {
++		pr_err("sport_handle is NULL\n");
++		return -1;
++	}
++	return 0;
++
++ out:
++	return ret;
++}
++
++static int bf5xx_pcm_mmap(struct snd_pcm_substream *substream,
++	struct vm_area_struct *vma)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	size_t size = vma->vm_end - vma->vm_start;
++	vma->vm_start = (unsigned long)runtime->dma_area;
++	vma->vm_end = vma->vm_start + size;
++	vma->vm_flags |=  VM_SHARED;
++
++	return 0 ;
++}
++
++struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
++	.open		= bf5xx_pcm_open,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= bf5xx_pcm_hw_params,
++	.hw_free	= bf5xx_pcm_hw_free,
++	.prepare	= bf5xx_pcm_prepare,
++	.trigger	= bf5xx_pcm_trigger,
++	.pointer	= bf5xx_pcm_pointer,
++	.mmap		= bf5xx_pcm_mmap,
++};
++
++static int bf5xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
++{
++	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
++	struct snd_dma_buffer *buf = &substream->dma_buffer;
++	size_t size = bf5xx_pcm_hardware.buffer_bytes_max;
++
++	buf->dev.type = SNDRV_DMA_TYPE_DEV;
++	buf->dev.dev = pcm->card->dev;
++	buf->private_data = NULL;
++	buf->area = dma_alloc_coherent(pcm->card->dev, size,
++			&buf->addr, GFP_KERNEL);
++	if (!buf->area) {
++		pr_err("Failed to allocate dma memory \
++			Please increase uncached DMA memory region\n");
++		return -ENOMEM;
++	}
++	buf->bytes = size;
++
++	pr_debug("%s, area:%p, size:0x%08lx\n", __func__,
++		buf->area, buf->bytes);
++
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		sport_handle->tx_buf = buf->area;
++	else
++		sport_handle->rx_buf = buf->area;
++
++	return 0;
++}
++
++static void bf5xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream;
++	struct snd_dma_buffer *buf;
++	int stream;
++
++	for (stream = 0; stream < 2; stream++) {
++		substream = pcm->streams[stream].substream;
++		if (!substream)
++			continue;
++
++		buf = &substream->dma_buffer;
++		if (!buf->area)
++			continue;
++		dma_free_coherent(NULL, buf->bytes, buf->area, 0);
++		buf->area = NULL;
++	}
++	if (sport_handle)
++		sport_done(sport_handle);
++}
++
++static u64 bf5xx_pcm_dmamask = DMA_32BIT_MASK;
++
++int bf5xx_pcm_i2s_new(struct snd_card *card, struct snd_soc_dai *dai,
++	struct snd_pcm *pcm)
++{
++	int ret = 0;
++
++	pr_debug("%s enter\n", __func__);
++	if (!card->dev->dma_mask)
++		card->dev->dma_mask = &bf5xx_pcm_dmamask;
++	if (!card->dev->coherent_dma_mask)
++		card->dev->coherent_dma_mask = DMA_32BIT_MASK;
++
++	if (dai->playback.channels_min) {
++		ret = bf5xx_pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_PLAYBACK);
++		if (ret)
++			goto out;
++	}
++
++	if (dai->capture.channels_min) {
++		ret = bf5xx_pcm_preallocate_dma_buffer(pcm,
++			SNDRV_PCM_STREAM_CAPTURE);
++		if (ret)
++			goto out;
++	}
++ out:
++	return ret;
++}
++
++struct snd_soc_platform bf5xx_i2s_soc_platform = {
++	.name		= "bf5xx-audio",
++	.pcm_ops 	= &bf5xx_pcm_i2s_ops,
++	.pcm_new	= bf5xx_pcm_i2s_new,
++	.pcm_free	= bf5xx_pcm_free_dma_buffers,
++};
++EXPORT_SYMBOL_GPL(bf5xx_i2s_soc_platform);
++
++MODULE_AUTHOR("Cliff Cai");
++MODULE_DESCRIPTION("ADI Blackfin I2S PCM DMA module");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.h b/sound/soc/blackfin/bf5xx-i2s-pcm.h
+new file mode 100644
+index 0000000..4d4609a
+--- /dev/null
++++ b/sound/soc/blackfin/bf5xx-i2s-pcm.h
+@@ -0,0 +1,29 @@
++/*
++ * linux/sound/arm/bf5xx-i2s-pcm.h -- ALSA PCM interface for the Blackfin
++ *
++ * Copyright 2007 Analog Device Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _BF5XX_I2S_PCM_H
++#define _BF5XX_I2S_PCM_H
++
++struct bf5xx_pcm_dma_params {
++	char *name;			/* stream identifier */
++};
++
++struct bf5xx_gpio {
++	u32 sys;
++	u32 rx;
++	u32 tx;
++	u32 clk;
++	u32 frm;
++};
++
++/* platform data */
++extern struct snd_soc_platform bf5xx_i2s_soc_platform;
++
++#endif
 -- 
 1.5.6.5
