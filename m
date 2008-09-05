@@ -1,24 +1,18 @@
-From: Kevin Gilbert <kevin952@tpg.com.au>
-Subject: Re: Problems with pulseaudio / asla on PS3
-Date: Fri, 5 Sep 2008 21:02:06 +1000
-Message-ID: <200809052102.06534.kevin952@tpg.com.au>
-References: <200809050842.08596.kevin952@tpg.com.au>
-	<s5hwshrt84y.wl%tiwai@suse.de>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: Re: [PATCH 0/9] ASoC Blackfin supporting (v2)
+Date: Fri, 5 Sep 2008 13:37:07 +0100
+Message-ID: <20080905123701.GE12383@sirena.org.uk>
+References: <1220610102-7716-1-git-send-email-cooloney@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail9.tpgi.com.au (mail9.tpgi.com.au [203.12.160.104])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0123103825
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 591BC245F2
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 13:02:35 +0200 (CEST)
-Received: from giles.localnet (60-242-39-232.static.tpgi.com.au
-	[60.242.39.232]) (authenticated bits=0)
-	by mail9.tpgi.com.au (envelope-from kevin952@tpg.com.au)
-	(8.14.3/8.14.3) with ESMTP id m85B2UcA003855
-	for <alsa-devel@alsa-project.org>; Fri, 5 Sep 2008 21:02:32 +1000
-In-Reply-To: <s5hwshrt84y.wl%tiwai@suse.de>
+	Fri,  5 Sep 2008 14:37:08 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1220610102-7716-1-git-send-email-cooloney@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,18 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Bryan Wu <cooloney@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Fri, Sep 05, 2008 at 06:21:33PM +0800, Bryan Wu wrote:
 
-On Fri, 5 Sep 2008, Takashi Iwai opined:
-> Well, it's no bug in softvol, at least.  The softvol doesn't do any
-> format or layout conversions.  The layout conversion is done via plug
-> plugin applied onto the softvol.
+> With Cliff's effort, we update this patch series quickly according to
+> your review.
 
-OK (not that I fully understand what you have said) but where does that leave 
-me? Is there something that I should try? Some ALSA or kernel configuration 
-option that might be in error?
-
-Kevin
+Thanks.  Please, when sending updates to this patch series could you
+send incremental patches as I asked?  There is a lot of code here, most
+of which has already been acked and is not changing so showing only the
+changes that have been made will greatly simplify the review process.
