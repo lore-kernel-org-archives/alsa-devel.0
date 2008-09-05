@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: Re: [PATCH 2/9] ASoC: Blackfin: SPORT peripheral
-	interface driver
-Date: Fri, 5 Sep 2008 14:10:50 +0100
-Message-ID: <20080905131049.GH12383@sirena.org.uk>
-References: <1220610102-7716-1-git-send-email-cooloney@kernel.org>
-	<1220610102-7716-3-git-send-email-cooloney@kernel.org>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ALSA: ASoC: Fix memory leaks for the
+ CS4270 driver
+Date: Fri, 05 Sep 2008 08:45:40 -0500
+Message-ID: <48C13804.8070307@freescale.com>
+References: <1220479634-26912-1-git-send-email-timur@freescale.com>	<s5hd4jko0p2.wl%tiwai@suse.de>	<48C004B4.2000208@freescale.com>	<s5htzcv98j8.wl%tiwai@suse.de>	<ed82fe3e0809041120u7b070c33j4bae7c221b935f36@mail.gmail.com>
+	<s5hvdxbt81w.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D1FE24615
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A1DB244EB
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 15:10:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1220610102-7716-3-git-send-email-cooloney@kernel.org>
+	Fri,  5 Sep 2008 15:45:48 +0200 (CEST)
+In-Reply-To: <s5hvdxbt81w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +24,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bryan Wu <cooloney@kernel.org>
-Cc: Cliff Cai <cliff.cai@analog.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 05, 2008 at 06:21:35PM +0800, Bryan Wu wrote:
+Takashi Iwai wrote:
 
-> +	/* Maybe the dummy buffer descriptor ring is damaged */
-> +	sport->dummy_rx_desc->next_desc_addr = \
-> +			(unsigned long)(sport->dummy_rx_desc+1);
+> OK, thanks.  Let me know if you finish the revised patch.
 
-Here and elsewhere in this driver you've got continuation characters
-which aren't need.  I've fixed this up locally (and some additional
-checkpatch/coding standards things) here and in other patches in the
-series.
+No, I'm just going to drop the whole thing.  It's not worth fixing.
 
-Otherwise the patch series looks good to go, thanks - I'm just about to
-review the codec driver patch that it depends upon.
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
