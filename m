@@ -1,26 +1,20 @@
-From: "Steve Sakoman" <sakoman@gmail.com>
-Subject: Re: [PATCH 3/5] SOUND: SOC: CODECS: Add support for
-	the TWL4030 audio codec
-Date: Fri, 5 Sep 2008 08:08:05 -0700
-Message-ID: <5e088bd90809050808sca612eci536dc1dad8daa599@mail.gmail.com>
-References: <1220504520-6067-1-git-send-email-sakoman@gmail.com>
-	<1220504520-6067-2-git-send-email-sakoman@gmail.com>
-	<1220504520-6067-3-git-send-email-sakoman@gmail.com>
-	<1220504520-6067-4-git-send-email-sakoman@gmail.com>
-	<5e088bd90809050734x16e7cf6exb2d2e789124cb836@mail.gmail.com>
-	<20080905144850.GJ12383@sirena.org.uk>
+From: "Aaron J. Grier" <agrier@poofygoof.com>
+Subject: Re: proper use of snd_mixer_selem_set_capture_switch ?
+Date: Fri, 5 Sep 2008 10:16:07 -0700
+Message-ID: <20080905171607.GN5930@arwen.poofy.goof.com>
+References: <20080905005707.GJ5930@arwen.poofy.goof.com>
+	<Pine.LNX.4.61.0809050936130.9153@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f17.google.com (mail-gx0-f17.google.com
-	[209.85.217.17]) by alsa0.perex.cz (Postfix) with ESMTP id 3C56524524
+Received: from smtp.poofygoof.com (209-162-215-114.dq1sn.easystreet.com
+	[209.162.215.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9B71224687
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Sep 2008 17:08:06 +0200 (CEST)
-Received: by gxk10 with SMTP id 10so6729399gxk.8
-	for <alsa-devel@alsa-project.org>; Fri, 05 Sep 2008 08:08:05 -0700 (PDT)
-In-Reply-To: <20080905144850.GJ12383@sirena.org.uk>
+	Fri,  5 Sep 2008 19:16:13 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0809050936130.9153@tm8103.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,23 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Steve Sakoman <sakoman@gmail.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, steve@sakoman.com
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 5, 2008 at 7:48 AM, Mark Brown <broonie@sirena.org.uk> wrote:
+On Fri, Sep 05, 2008 at 09:38:36AM +0200, Jaroslav Kysela wrote:
+> snd_mixer_handle_events() is your friend, otherwise values are cached
+> in alsa-lib. Or maybe, you reached a bug ;-) Let me know, if mentioned
+> function does not fix your problem.
 
-> Looks good.
->
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
->
->> SOUND: SOC: CODECS: Add support for the TWL4030 audio codec
->
-> Usually it'd be formatted as
->
->  ALSA: ASoC: Add support for TWL4030 audio codec
+that's exactly what I needed, and now everything is working as expected!
+thanks!
 
-Thanks Mark!
-
-I'll change the title on my final resubmission of the series
-
-Steve
+-- 
+  Aaron J. Grier | "Not your ordinary poofy goof." | agrier@poofygoof.com
